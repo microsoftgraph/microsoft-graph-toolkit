@@ -23,4 +23,13 @@ export class Graph {
     {
         return this.get('/me') as MicrosoftGraph.User;
     }
+
+    async calendar(startDateTime : Date, endDateTime : Date) : Promise<Array<MicrosoftGraph.Event>> {
+        let sdt = `startdatetime=${startDateTime.toISOString()}`;
+        let edt = `enddatetime=${endDateTime.toISOString()}`
+        let uri = `/me/calendarview?${sdt}&${edt}`;
+        let calendar = await this.get(uri);
+        console.log(calendar);
+        return calendar.value;
+    }
 }
