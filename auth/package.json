@@ -4,7 +4,7 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "build": "tsc && webpack",
+    "build": "tsc && webpack && xcopy dist\\* ..\\components\\www /Y",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "author": "",
