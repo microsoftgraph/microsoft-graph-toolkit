@@ -1,7 +1,8 @@
 
 import { V2Provider } from './V2Provider';
+import { IAuthProvider } from './IAuthProvider';
 
-let _provider = null;
+let _provider : IAuthProvider = null;
 
 export function getAuthProvider()
 {
@@ -9,9 +10,9 @@ export function getAuthProvider()
 }
 
 export function initV2Provider(clientId : string,
-                                scopes : string[] = ["user.read"],
+                                scopes : string[] = ["user.read", "calendars.read"],
                                 authority : string = null,
-                                options : any = null)
+                                options : any = { cacheLocation: 'localStorage'})
 {
     _provider = new V2Provider(clientId, scopes, authority, options);
 }

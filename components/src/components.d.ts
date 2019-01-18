@@ -12,19 +12,39 @@ import '@stencil/core';
 
 export namespace Components {
 
+  interface MyAuth {
+    'name': string;
+  }
+  interface MyAuthAttributes extends StencilHTMLAttributes {
+    'name'?: string;
+  }
+
   interface MyComponent {}
   interface MyComponentAttributes extends StencilHTMLAttributes {}
+
+  interface MyDay {}
+  interface MyDayAttributes extends StencilHTMLAttributes {}
 }
 
 declare global {
   interface StencilElementInterfaces {
+    'MyAuth': Components.MyAuth;
     'MyComponent': Components.MyComponent;
+    'MyDay': Components.MyDay;
   }
 
   interface StencilIntrinsicElements {
+    'my-auth': Components.MyAuthAttributes;
     'my-component': Components.MyComponentAttributes;
+    'my-day': Components.MyDayAttributes;
   }
 
+
+  interface HTMLMyAuthElement extends Components.MyAuth, HTMLStencilElement {}
+  var HTMLMyAuthElement: {
+    prototype: HTMLMyAuthElement;
+    new (): HTMLMyAuthElement;
+  };
 
   interface HTMLMyComponentElement extends Components.MyComponent, HTMLStencilElement {}
   var HTMLMyComponentElement: {
@@ -32,12 +52,22 @@ declare global {
     new (): HTMLMyComponentElement;
   };
 
+  interface HTMLMyDayElement extends Components.MyDay, HTMLStencilElement {}
+  var HTMLMyDayElement: {
+    prototype: HTMLMyDayElement;
+    new (): HTMLMyDayElement;
+  };
+
   interface HTMLElementTagNameMap {
+    'my-auth': HTMLMyAuthElement
     'my-component': HTMLMyComponentElement
+    'my-day': HTMLMyDayElement
   }
 
   interface ElementTagNameMap {
+    'my-auth': HTMLMyAuthElement;
     'my-component': HTMLMyComponentElement;
+    'my-day': HTMLMyDayElement;
   }
 
 
