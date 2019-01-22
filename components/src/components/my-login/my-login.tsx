@@ -5,37 +5,43 @@ import * as MicrosoftGraph from "@microsoft/microsoft-graph-types"
 declare var Auth : any;
 
 @Component({
-  tag: 'my-component',
-  styleUrl: 'my-component.css',
+  tag: 'my-login',
+  styleUrl: 'my-login.css',
   shadow: true
 })
-export class MyComponent {
+export class MyLogin {
 
   private provider : any;
 
   async componentWillLoad()
   {
-    
+    if (typeof Auth !== 'undefined') {
+      Auth.onAuthProviderChanged(_ => this.init())
+      this.init();
+    }
+  }
+
+  private async init() {
     this.provider = Auth.getAuthProvider();
 
-    if (this.provider && this.provider.graph) {
-      this.user = await this.provider.graph.me();
-      console.log(this.user.displayName);
+    if (this.provider) {
+      await this.provider.loginSilent();
+      if (this.provider.graph) {
+        this.user = await this.provider.graph.me();
+      }
     }
-    
   }
 
   async login()
   {
     if (this.provider)
     {
-      await this.provider.login();
+    await this.provider.login();
       if (typeof this.provider.graph !== 'undefined')
       {
         this.user = await this.provider.graph.me();
       }
     }
-    console.log('login');
   }
 
   async logout()

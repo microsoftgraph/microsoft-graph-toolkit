@@ -19,24 +19,24 @@ export namespace Components {
     'name'?: string;
   }
 
-  interface MyComponent {}
-  interface MyComponentAttributes extends StencilHTMLAttributes {}
-
   interface MyDay {}
   interface MyDayAttributes extends StencilHTMLAttributes {}
+
+  interface MyLogin {}
+  interface MyLoginAttributes extends StencilHTMLAttributes {}
 }
 
 declare global {
   interface StencilElementInterfaces {
     'MyAuth': Components.MyAuth;
-    'MyComponent': Components.MyComponent;
     'MyDay': Components.MyDay;
+    'MyLogin': Components.MyLogin;
   }
 
   interface StencilIntrinsicElements {
     'my-auth': Components.MyAuthAttributes;
-    'my-component': Components.MyComponentAttributes;
     'my-day': Components.MyDayAttributes;
+    'my-login': Components.MyLoginAttributes;
   }
 
 
@@ -46,28 +46,28 @@ declare global {
     new (): HTMLMyAuthElement;
   };
 
-  interface HTMLMyComponentElement extends Components.MyComponent, HTMLStencilElement {}
-  var HTMLMyComponentElement: {
-    prototype: HTMLMyComponentElement;
-    new (): HTMLMyComponentElement;
-  };
-
   interface HTMLMyDayElement extends Components.MyDay, HTMLStencilElement {}
   var HTMLMyDayElement: {
     prototype: HTMLMyDayElement;
     new (): HTMLMyDayElement;
   };
 
+  interface HTMLMyLoginElement extends Components.MyLogin, HTMLStencilElement {}
+  var HTMLMyLoginElement: {
+    prototype: HTMLMyLoginElement;
+    new (): HTMLMyLoginElement;
+  };
+
   interface HTMLElementTagNameMap {
     'my-auth': HTMLMyAuthElement
-    'my-component': HTMLMyComponentElement
     'my-day': HTMLMyDayElement
+    'my-login': HTMLMyLoginElement
   }
 
   interface ElementTagNameMap {
     'my-auth': HTMLMyAuthElement;
-    'my-component': HTMLMyComponentElement;
     'my-day': HTMLMyDayElement;
+    'my-login': HTMLMyLoginElement;
   }
 
 

@@ -1,6 +1,7 @@
 
 import { V2Provider } from './V2Provider';
 import { IAuthProvider } from './IAuthProvider';
+import { EventDispatcher, EventHandler } from './EventHandler';
 
 let _provider : IAuthProvider = null;
 
@@ -15,4 +16,13 @@ export function initV2Provider(clientId : string,
                                 options : any = { cacheLocation: 'localStorage'})
 {
     _provider = new V2Provider(clientId, scopes, authority, options);
+    _eventDispatcher.fire( { newProvider: _provider } );
+}
+
+interface AuthProviderChangedEvent { newProvider : IAuthProvider }
+
+let _eventDispatcher = new EventDispatcher<AuthProviderChangedEvent>();
+
+export function onAuthProviderChanged(event : EventHandler<AuthProviderChangedEvent>) {
+    _eventDispatcher.register(event)
 }
