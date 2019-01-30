@@ -46,3 +46,13 @@
     border: 0;
     border-radius: 35px;
 }
+
+/* dropdown */
+
+.login-dropdown-root {
+    display: none;
+}
+
+.login-dropdown-root.show-dropdown {
+    display: block;
+}
