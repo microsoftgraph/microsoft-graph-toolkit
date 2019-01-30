@@ -1,6 +1,5 @@
 import { Component, Prop, Watch } from '@stencil/core';
-
-declare var Auth : any;
+import * as Auth from '../../auth/Auth'
 
 @Component({
     tag: 'my-auth'

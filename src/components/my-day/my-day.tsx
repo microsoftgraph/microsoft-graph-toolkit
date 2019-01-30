@@ -1,7 +1,6 @@
 import { Component, State } from '@stencil/core';
 import * as MicrosoftGraph from '@microsoft/microsoft-graph-types';
-
-declare var Auth : any;
+import * as Auth from '../../auth/Auth'
 
 @Component({
     tag: 'my-day',

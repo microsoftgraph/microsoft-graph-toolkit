@@ -28,13 +28,20 @@ export class V2Provider implements IAuthProvider {
         }
     }
 
-    async loginSilent(): Promise<void> {
+    async loginSilent(): Promise<boolean> {
         let provider = this.provider as UserAgentApplication;
-        let accessToken = await provider.acquireTokenSilent(this.scopes);
-        if (accessToken) {
-            this.graph = new Graph(accessToken);
-            this.fireLoginChangedEvent({});
+        try {
+            let accessToken = await provider.acquireTokenSilent(this.scopes);
+            if (accessToken) {
+                this.graph = new Graph(accessToken);
+                this.fireLoginChangedEvent({});
+                return true;
+            }
+        } catch {
+            return false;
         }
+
+        return false;
     }
     
     async logout(): Promise<void> {

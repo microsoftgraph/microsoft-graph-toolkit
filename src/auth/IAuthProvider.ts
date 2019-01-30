@@ -6,7 +6,7 @@ export interface IAuthProvider
     type : ProviderType;
 
     login() : Promise<void>;
-    loginSilent() : Promise<void>;
+    loginSilent() : Promise<boolean>;
     logout() : Promise<void>;
 
     // get access to underlying provider
