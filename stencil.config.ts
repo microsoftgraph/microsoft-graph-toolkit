@@ -10,5 +10,8 @@ export const config: Config = {
       type: 'www',
       serviceWorker: null // disable service workers
     }
-  ]
+  ],
+  testing: {
+    testResultsProcessor: './jestTrxProcessor.js'
+  }
 };
