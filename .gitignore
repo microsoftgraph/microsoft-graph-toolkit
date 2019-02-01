@@ -24,4 +24,7 @@ $RECYCLE.BIN/
 Thumbs.db
 UserInterfaceState.xcuserstate
 .env
-*.trx
+
+# testing
+coverage/
+test/

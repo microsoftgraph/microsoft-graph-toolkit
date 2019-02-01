@@ -12,6 +12,8 @@ export const config: Config = {
     }
   ],
   testing: {
-    testResultsProcessor: './jestTrxProcessor.js'
+    collectCoverage: true,
+    coverageReporters: [ 'cobertura', 'html' ],
+    reporters: ['jest-junit']
   }
 };

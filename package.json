@@ -22,13 +22,21 @@
   },
   "devDependencies": {
     "@microsoft/microsoft-graph-types": "^1.5.0",
-    "@stencil/core": "^0.17.0",
+    "@stencil/core": "^0.17.1",
     "@types/jest": "23.3.13",
     "@types/puppeteer": "1.11.1",
     "jest": "23.6.0",
     "jest-cli": "23.6.0",
-    "jest-trx-results-processor": "0.0.7",
+    "jest-junit": "^6.2.1",
     "puppeteer": "1.11.0"
+  },
+  "jest-junit": {
+    "suiteName": "jest tests",
+    "output": "test/junit.xml",
+    "classNameTemplate": "{classname} - {title}",
+    "titleTemplate": "{classname} - {title}",
+    "ancestorSeparator": " > ",
+    "usePathForSuiteName": "true"
   },
   "license": "MIT"
 }
