@@ -22,7 +22,12 @@
   },
   "devDependencies": {
     "@microsoft/microsoft-graph-types": "^1.5.0",
-    "@stencil/core": "^0.16.4"
+    "@stencil/core": "^0.17.0",
+    "@types/jest": "23.3.13",
+    "@types/puppeteer": "1.11.1",
+    "jest": "23.6.0",
+    "jest-cli": "23.6.0",
+    "puppeteer": "1.11.0"
   },
   "license": "MIT"
 }
