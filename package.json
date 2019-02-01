@@ -1,7 +1,7 @@
 {
-  "name": "test",
+  "name": "m365toolkit",
   "version": "0.0.1",
-  "description": "Stencil Component Starter",
+  "description": "Microsoft 365 Toolkit",
   "module": "dist/esm/index.js",
   "main": "dist/index.js",
   "unpkg": "dist/ionic.js",
