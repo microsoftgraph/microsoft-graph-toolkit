@@ -10,5 +10,10 @@ export const config: Config = {
       type: 'www',
       serviceWorker: null // disable service workers
     }
-  ]
+  ],
+  testing: {
+    collectCoverage: true,
+    coverageReporters: [ 'cobertura', 'html' ],
+    reporters: ['jest-junit']
+  }
 };
