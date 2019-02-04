@@ -1,7 +1,7 @@
 
 import { MSALProvider } from './MSALProvider';
 import { MSALConfig } from "./MSALConfig";
-import { IAuthProvider } from './IAuthProvider';
+import { IAuthProvider, LoginType } from './IAuthProvider';
 import { EventDispatcher, EventHandler } from './EventHandler';
 
 let _provider : IAuthProvider = null;
@@ -13,12 +13,14 @@ export function getAuthProvider()
 
 export function initMSALProvider(clientId : string,
                                 scopes? : string[],
-                                authority? : string)
+                                authority? : string,
+                                loginType? : LoginType)
 {
     let config = {
         clientId: clientId,
         scopes: scopes,
-        authority: authority
+        authority: authority,
+        loginType : loginType
     }
     _provider = new MSALProvider(config);
     _eventDispatcher.fire( { newProvider: _provider } );

@@ -8,6 +8,8 @@ export class MSALProvider implements IAuthProvider {
 
     private _loginChangedDispatcher = new EventDispatcher<LoginChangedEvent>();
     private _loginType : LoginType;
+    private _clientId : string;
+
     private _idToken : string;
 
     readonly type: ProviderType;
@@ -26,24 +28,45 @@ export class MSALProvider implements IAuthProvider {
             throw "ClientID must be a valid string";
         }
 
+        this._clientId = config.clientId;
         this.scopes = (typeof config.scopes !== 'undefined') ? config.scopes : ["user.read"];
         this.authority = (typeof config.authority !== 'undefined') ? config.authority : null;
         let options = (typeof config.options != 'undefined') ? config.options : {};
         this._loginType = (typeof config.loginType !== 'undefined') ? config.loginType : LoginType.Redirect;
 
+        let callbackFunction = ((errorDesc : string, token: string, error: any, state: any) => {
+            this.tokenReceivedCallback(errorDesc, token, error, state);
+        }).bind(this);
+
         this.type = ProviderType.V2;
-        this.provider = new UserAgentApplication(config.clientId, this.authority, this.tokenReceivedCallback, options);
+        this.provider = new UserAgentApplication(this._clientId, this.authority, callbackFunction, options);
         this.graph = new Graph(this);
+
+        this.tryGetIdTokenSilent();
     }
     
     async login(): Promise<void> {
         let provider = this.provider as UserAgentApplication;
         
-        if (this._loginType == LoginType.Redirect) {
-            provider.loginRedirect(this.scopes);
-        } else {
+        if (this._loginType == LoginType.Popup) {
             this._idToken = await provider.loginPopup(this.scopes);
             this.fireLoginChangedEvent({});
+        } else {
+            provider.loginRedirect(this.scopes);
+        }
+    }
+
+    async tryGetIdTokenSilent() : Promise<boolean> {
+        let provider = this.provider as UserAgentApplication;
+        try {
+            this._idToken = await provider.acquireTokenSilent([this._clientId]);
+            if (this._idToken) {
+                this.fireLoginChangedEvent({});
+            }
+            return this.isLogedIn;
+        } catch (e) {
+            console.log(e);
+            return false;
         }
     }
 

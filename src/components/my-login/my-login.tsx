@@ -32,7 +32,10 @@ export class MyLogin {
 
   private async init() {
     this.provider = Auth.getAuthProvider();
-    await this.loadState();
+    if (this.provider) {
+      this.provider.onLoginChanged(_ => this.loadState());
+      await this.loadState();
+    }
   }
 
   private async loadState() {

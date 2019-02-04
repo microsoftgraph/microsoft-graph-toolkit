@@ -13,9 +13,11 @@ import '@stencil/core';
 export namespace Components {
 
   interface MyAuth {
+    'loginType': string;
     'name': string;
   }
   interface MyAuthAttributes extends StencilHTMLAttributes {
+    'loginType'?: string;
     'name'?: string;
   }
 
