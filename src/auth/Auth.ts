@@ -1,5 +1,6 @@
 
-import { V2Provider } from './V2Provider';
+import { MSALProvider } from './MSALProvider';
+import { MSALConfig } from "./MSALConfig";
 import { IAuthProvider } from './IAuthProvider';
 import { EventDispatcher, EventHandler } from './EventHandler';
 
@@ -10,12 +11,16 @@ export function getAuthProvider()
     return _provider;
 }
 
-export function initV2Provider(clientId : string,
-                                scopes : string[] = ["user.read", "calendars.read"],
-                                authority : string = null,
-                                options : any = { cacheLocation: 'localStorage'})
+export function initMSALProvider(clientId : string,
+                                scopes? : string[],
+                                authority? : string)
 {
-    _provider = new V2Provider(clientId, scopes, authority, options);
+    let config = {
+        clientId: clientId,
+        scopes: scopes,
+        authority: authority
+    }
+    _provider = new MSALProvider(config);
     _eventDispatcher.fire( { newProvider: _provider } );
 }
 

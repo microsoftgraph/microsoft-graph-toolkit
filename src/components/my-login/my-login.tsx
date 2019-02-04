@@ -2,6 +2,7 @@ import { Component, State, Element } from '@stencil/core';
 
 import * as MicrosoftGraph from "@microsoft/microsoft-graph-types"
 import * as Auth from '../../auth/Auth'
+import { IAuthProvider } from '../../auth/IAuthProvider';
 
 @Component({
   tag: 'my-login',
@@ -10,7 +11,7 @@ import * as Auth from '../../auth/Auth'
 })
 export class MyLogin {
 
-  private provider : any;
+  private provider : IAuthProvider;
 
   async componentWillLoad()
   {
@@ -31,15 +32,11 @@ export class MyLogin {
 
   private async init() {
     this.provider = Auth.getAuthProvider();
-
-    if (this.provider) {
-      await this.provider.loginSilent();
-      await this.loadState();
-    }
+    await this.loadState();
   }
 
   private async loadState() {
-    if (this.provider.graph) {
+    if (this.provider && this.provider.isLogedIn) {
       this.user = await this.provider.graph.me();
       let profileImage = await this.provider.graph.photo();
       let reader = new FileReader();

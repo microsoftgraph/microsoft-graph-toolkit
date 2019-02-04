@@ -12,10 +12,9 @@ export class MyAuth {
 
     @Watch('name')
     validateName(newValue : string) {
-        console.log(newValue);
         if (typeof Auth !== 'undefined'){
             if (typeof newValue !== null) {
-                Auth.initV2Provider(newValue);
+                Auth.initMSALProvider(newValue);
                 this._initialized = true;
             }
         }

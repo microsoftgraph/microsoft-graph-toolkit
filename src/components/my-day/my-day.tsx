@@ -1,6 +1,7 @@
 import { Component, State } from '@stencil/core';
 import * as MicrosoftGraph from '@microsoft/microsoft-graph-types';
 import * as Auth from '../../auth/Auth'
+import { IAuthProvider } from '../../auth/IAuthProvider';
 
 @Component({
     tag: 'my-day',
@@ -9,7 +10,7 @@ import * as Auth from '../../auth/Auth'
 export class MyDay {
 
     @State() _things : Array<MicrosoftGraph.Event> 
-    private _provider: any;
+    private _provider: IAuthProvider;
 
     async componentWillLoad()
     {
@@ -28,7 +29,7 @@ export class MyDay {
     }
 
     private async loadData() {
-        if (this._provider && this._provider.graph) {
+        if (this._provider && this._provider.isLogedIn) {
             let today = new Date();
             let tomorrow = new Date();
             tomorrow.setDate(today.getDate() + 1);

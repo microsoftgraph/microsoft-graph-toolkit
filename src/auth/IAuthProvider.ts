@@ -4,10 +4,11 @@ import { EventHandler } from "./EventHandler";
 export interface IAuthProvider 
 {
     type : ProviderType;
+    readonly isLogedIn : boolean;
 
     login() : Promise<void>;
-    loginSilent() : Promise<boolean>;
     logout() : Promise<void>;
+    getAccessToken(scopes?: string[]) : Promise<string>;
 
     // get access to underlying provider
     provider : any;
