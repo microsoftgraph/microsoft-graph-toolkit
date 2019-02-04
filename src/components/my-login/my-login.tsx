@@ -1,8 +1,8 @@
-import { Component, State, Element } from '@stencil/core';
+import { Component, State, Element, Prop, Watch } from '@stencil/core';
 
 import * as MicrosoftGraph from "@microsoft/microsoft-graph-types"
 import * as Auth from '../../auth/Auth'
-import { IAuthProvider } from '../../auth/IAuthProvider';
+import { IAuthProvider, LoginType } from '../../auth/IAuthProvider';
 
 @Component({
   tag: 'my-login',
@@ -12,13 +12,44 @@ import { IAuthProvider } from '../../auth/IAuthProvider';
 export class MyLogin {
 
   private provider : IAuthProvider;
+  private _providerInitialized : boolean = false;
+
+  @Prop() clientId : string;
+  @Watch('clientId')
+  validateName() {
+      this.validateAuthProps();
+  }
+
+  @Prop() loginType : string;
+  @Watch('loginType')
+  validateLoginType() {
+      this.validateAuthProps();
+  }
+
+  private validateAuthProps() {
+    if (this.clientId !== null) {
+        if (this.loginType && this.loginType.length > 1) {
+            let loginType = this.loginType.toLowerCase();
+            loginType = loginType[0].toUpperCase() + loginType.slice(1);
+
+            let loginTypeEnum = LoginType[loginType];
+            Auth.initMSALProvider(this.clientId, null, null, loginTypeEnum);
+        } else {
+            Auth.initMSALProvider(this.clientId);
+        }
+
+        this._providerInitialized = true;
+    }
+}
 
   async componentWillLoad()
   {
-    if (typeof Auth !== 'undefined') {
-      Auth.onAuthProviderChanged(_ => this.init())
-      this.init();
+    if (!this._providerInitialized){
+        this.validateAuthProps();
     }
+
+    Auth.onAuthProviderChanged(_ => this.init())
+    this.init();
   }
 
   componentDidLoad() {
@@ -33,6 +64,7 @@ export class MyLogin {
   private async init() {
     this.provider = Auth.getAuthProvider();
     if (this.provider) {
+      this._providerInitialized = true;
       this.provider.onLoginChanged(_ => this.loadState());
       await this.loadState();
     }
