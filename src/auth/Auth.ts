@@ -11,17 +11,8 @@ export function getAuthProvider()
     return _provider;
 }
 
-export function initMSALProvider(clientId : string,
-                                scopes? : string[],
-                                authority? : string,
-                                loginType? : LoginType)
+export function initMSALProvider(config : MSALConfig)
 {
-    let config = {
-        clientId: clientId,
-        scopes: scopes,
-        authority: authority,
-        loginType : loginType
-    }
     _provider = new MSALProvider(config);
     _eventDispatcher.fire( { newProvider: _provider } );
 }

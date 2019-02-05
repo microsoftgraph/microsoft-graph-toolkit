@@ -3,6 +3,7 @@ import { Component, State, Element, Prop, Watch } from '@stencil/core';
 import * as MicrosoftGraph from "@microsoft/microsoft-graph-types"
 import * as Auth from '../../auth/Auth'
 import { IAuthProvider, LoginType } from '../../auth/IAuthProvider';
+import { MSALConfig } from '../../auth/MSALConfig';
 
 @Component({
   tag: 'my-login',
@@ -28,15 +29,19 @@ export class MyLogin {
 
   private validateAuthProps() {
     if (this.clientId !== null) {
-        if (this.loginType && this.loginType.length > 1) {
-            let loginType = this.loginType.toLowerCase();
-            loginType = loginType[0].toUpperCase() + loginType.slice(1);
+      let config : MSALConfig = {
+        clientId: this.clientId
+      };
+      
+      if (this.loginType && this.loginType.length > 1) {
+          let loginType = this.loginType.toLowerCase();
+          loginType = loginType[0].toUpperCase() + loginType.slice(1);
 
-            let loginTypeEnum = LoginType[loginType];
-            Auth.initMSALProvider(this.clientId, null, null, loginTypeEnum);
-        } else {
-            Auth.initMSALProvider(this.clientId);
-        }
+          let loginTypeEnum = LoginType[loginType];
+          config.loginType = loginTypeEnum;
+      }
+
+        Auth.initMSALProvider(config);
 
         this._providerInitialized = true;
     }
