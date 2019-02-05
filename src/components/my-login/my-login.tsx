@@ -1,9 +1,8 @@
-import { Component, State, Element, Prop, Watch } from '@stencil/core';
+import { Component, State, Element, Prop, Watch, Method } from '@stencil/core';
 
 import * as MicrosoftGraph from "@microsoft/microsoft-graph-types"
 import * as Auth from '../../auth/Auth'
 import { IAuthProvider, LoginType } from '../../auth/IAuthProvider';
-import { MSALConfig } from '../../auth/MSALConfig';
 
 @Component({
   tag: 'my-login',
@@ -29,23 +28,18 @@ export class MyLogin {
 
   private validateAuthProps() {
     if (this.clientId !== null) {
-      let config : MSALConfig = {
-        clientId: this.clientId
-      };
-
+      let loginTypeEnum : LoginType = null;
       if (this.loginType && this.loginType.length > 1) {
-          let loginType = this.loginType.toLowerCase();
-          loginType = loginType[0].toUpperCase() + loginType.slice(1);
-
-          let loginTypeEnum = LoginType[loginType];
-          config.loginType = loginTypeEnum;
+        let loginType = this.loginType.toLowerCase();
+        loginType = loginType[0].toUpperCase() + loginType.slice(1);
+        loginTypeEnum = LoginType[loginType];
       }
 
-        Auth.initMSALProvider(config);
+      Auth.init(this.clientId, loginTypeEnum);
 
-        this._providerInitialized = true;
+      this._providerInitialized = true;
     }
-}
+  }
 
   async componentWillLoad()
   {
@@ -87,6 +81,7 @@ export class MyLogin {
     }
   }
 
+  @Method()
   async login()
   {
     if (this.provider)
@@ -96,12 +91,19 @@ export class MyLogin {
     }
   }
 
+  @Method()
   async logout()
   {
     if (this.provider)
     {
       await this.provider.logout();
     }
+  }
+
+  @Method()
+  async useFakeAuth()
+  {
+    Auth.useFakeAuth();
   }
 
   toggleDropdown() {

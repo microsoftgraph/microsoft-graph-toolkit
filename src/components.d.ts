@@ -17,7 +17,10 @@ export namespace Components {
 
   interface MyLogin {
     'clientId': string;
+    'login': () => Promise<void>;
     'loginType': string;
+    'logout': () => Promise<void>;
+    'useFakeAuth': () => Promise<void>;
   }
   interface MyLoginAttributes extends StencilHTMLAttributes {
     'clientId'?: string;

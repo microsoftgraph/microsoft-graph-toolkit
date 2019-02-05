@@ -14,6 +14,6 @@ export const config: Config = {
   testing: {
     collectCoverage: true,
     coverageReporters: [ 'cobertura', 'html' ],
-    reporters: ['jest-junit']
+    reporters: ['default', 'jest-junit']
   }
 };
