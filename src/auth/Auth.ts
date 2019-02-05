@@ -17,6 +17,11 @@ export function initMSALProvider(config : MSALConfig)
     _eventDispatcher.fire( { newProvider: _provider } );
 }
 
+export function initWithCustomProvider(provider: IAuthProvider) {
+    _provider = provider;
+    _eventDispatcher.fire( { newProvider: _provider } );
+}
+
 interface AuthProviderChangedEvent { newProvider : IAuthProvider }
 
 let _eventDispatcher = new EventDispatcher<AuthProviderChangedEvent>();

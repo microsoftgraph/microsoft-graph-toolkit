@@ -78,7 +78,7 @@ export class MyLogin {
   private async loadState() {
     if (this.provider && this.provider.isLoggedIn) {
       this.user = await this.provider.graph.me();
-      let profileImage = await this.provider.graph.photo();
+      let profileImage = await this.provider.graph.myPhoto();
       let reader = new FileReader();
       reader.onload = () => {
         this.profileImage = reader.result;

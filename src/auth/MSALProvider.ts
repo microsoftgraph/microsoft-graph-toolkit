@@ -1,5 +1,5 @@
 import { UserAgentApplication } from 'msal';
-import { IAuthProvider, ProviderType, LoginChangedEvent, LoginType } from "./IAuthProvider";
+import { IAuthProvider, LoginChangedEvent, LoginType } from "./IAuthProvider";
 import { Graph } from './GraphSDK';
 import { EventHandler, EventDispatcher } from './EventHandler';
 import { MSALConfig } from './MSALConfig';
@@ -12,7 +12,6 @@ export class MSALProvider implements IAuthProvider {
 
     private _idToken : string;
 
-    readonly type: ProviderType;
     readonly provider: any;
     get isLoggedIn() : boolean {
         return !!this._idToken;
@@ -38,7 +37,6 @@ export class MSALProvider implements IAuthProvider {
             this.tokenReceivedCallback(errorDesc, token, error, state);
         }).bind(this);
 
-        this.type = ProviderType.V2;
         this.provider = new UserAgentApplication(this._clientId, this.authority, callbackFunction, options);
         this.graph = new Graph(this);
 

@@ -1,7 +1,13 @@
 import * as MicrosoftGraph from "@microsoft/microsoft-graph-types"
 import { IAuthProvider } from "./IAuthProvider";
 
-export class Graph {
+export interface IGraph {
+    me() : Promise<MicrosoftGraph.User>;
+    myPhoto() : Promise<Response>;
+    calendar(startDateTime : Date, endDateTime : Date) : Promise<Array<MicrosoftGraph.Event>>
+}
+
+export class Graph implements IGraph {
 
     // private token: string;
     private _provider : IAuthProvider;
@@ -55,7 +61,7 @@ export class Graph {
         return this.getJson('/me', scopes) as MicrosoftGraph.User;
     }
 
-    async photo() : Promise<Response> {
+    async myPhoto() : Promise<Response> {
         let scopes = ['user.read'];
         return this.get('/me/photo/$value', scopes);
     }

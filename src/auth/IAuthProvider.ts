@@ -1,9 +1,8 @@
-import { Graph } from "./GraphSDK";
+import { IGraph } from "./GraphSDK";
 import { EventHandler } from "./EventHandler";
 
 export interface IAuthProvider 
 {
-    type : ProviderType;
     readonly isLoggedIn : boolean;
 
     login() : Promise<void>;
@@ -12,18 +11,13 @@ export interface IAuthProvider
 
     // get access to underlying provider
     provider : any;
-    graph : Graph;
+    graph : IGraph;
 
     // events
     onLoginChanged(eventHandler : EventHandler<LoginChangedEvent>)
 }
 
 export interface LoginChangedEvent { }
-
-export enum ProviderType
-{
-    V2
-}
 
 export enum LoginType
 {
