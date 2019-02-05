@@ -14,7 +14,7 @@ export class MSALProvider implements IAuthProvider {
 
     readonly type: ProviderType;
     readonly provider: any;
-    get isLogedIn() : boolean {
+    get isLoggedIn() : boolean {
         return !!this._idToken;
     }
 
@@ -63,7 +63,7 @@ export class MSALProvider implements IAuthProvider {
             if (this._idToken) {
                 this.fireLoginChangedEvent({});
             }
-            return this.isLogedIn;
+            return this.isLoggedIn;
         } catch (e) {
             console.log(e);
             return false;

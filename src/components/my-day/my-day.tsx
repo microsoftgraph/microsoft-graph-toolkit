@@ -29,7 +29,7 @@ export class MyDay {
     }
 
     private async loadData() {
-        if (this._provider && this._provider.isLogedIn) {
+        if (this._provider && this._provider.isLoggedIn) {
             let today = new Date();
             let tomorrow = new Date();
             tomorrow.setDate(today.getDate() + 1);

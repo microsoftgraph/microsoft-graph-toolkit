@@ -32,7 +32,7 @@ export class MyLogin {
       let config : MSALConfig = {
         clientId: this.clientId
       };
-      
+
       if (this.loginType && this.loginType.length > 1) {
           let loginType = this.loginType.toLowerCase();
           loginType = loginType[0].toUpperCase() + loginType.slice(1);
@@ -76,7 +76,7 @@ export class MyLogin {
   }
 
   private async loadState() {
-    if (this.provider && this.provider.isLogedIn) {
+    if (this.provider && this.provider.isLoggedIn) {
       this.user = await this.provider.graph.me();
       let profileImage = await this.provider.graph.photo();
       let reader = new FileReader();
@@ -130,7 +130,7 @@ export class MyLogin {
 
   render() {
     let content = this.user ?
-        this.renderLogedIn() : this.renderLogedOut();
+        this.renderLoggedIn() : this.renderLoggedOut();
 
     return <div class='login-root'>
       <button class='login-root-button' onClick={() => {this.clicked()}}>
@@ -140,11 +140,11 @@ export class MyLogin {
     </div>
   }
 
-  renderLogedOut() {
+  renderLoggedOut() {
     return 'Login';
   }
 
-  renderLogedIn() {
+  renderLoggedIn() {
     return <div>
         <div class="login-header">
           <div class="login-header-user">
