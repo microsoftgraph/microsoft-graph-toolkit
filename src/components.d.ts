@@ -12,35 +12,60 @@ import '@stencil/core';
 
 export namespace Components {
 
-  interface MyDay {}
-  interface MyDayAttributes extends StencilHTMLAttributes {}
-
-  interface MyLogin {
+  interface MyAuth {
     'clientId': string;
     'loginType': string;
   }
-  interface MyLoginAttributes extends StencilHTMLAttributes {
+  interface MyAuthAttributes extends StencilHTMLAttributes {
     'clientId'?: string;
     'loginType'?: string;
   }
+
+  interface MyDay {}
+  interface MyDayAttributes extends StencilHTMLAttributes {}
+
+  interface MyFakeAuth {}
+  interface MyFakeAuthAttributes extends StencilHTMLAttributes {}
+
+  interface MyLogin {
+    'login': () => Promise<void>;
+    'logout': () => Promise<void>;
+  }
+  interface MyLoginAttributes extends StencilHTMLAttributes {}
 }
 
 declare global {
   interface StencilElementInterfaces {
+    'MyAuth': Components.MyAuth;
     'MyDay': Components.MyDay;
+    'MyFakeAuth': Components.MyFakeAuth;
     'MyLogin': Components.MyLogin;
   }
 
   interface StencilIntrinsicElements {
+    'my-auth': Components.MyAuthAttributes;
     'my-day': Components.MyDayAttributes;
+    'my-fake-auth': Components.MyFakeAuthAttributes;
     'my-login': Components.MyLoginAttributes;
   }
 
+
+  interface HTMLMyAuthElement extends Components.MyAuth, HTMLStencilElement {}
+  var HTMLMyAuthElement: {
+    prototype: HTMLMyAuthElement;
+    new (): HTMLMyAuthElement;
+  };
 
   interface HTMLMyDayElement extends Components.MyDay, HTMLStencilElement {}
   var HTMLMyDayElement: {
     prototype: HTMLMyDayElement;
     new (): HTMLMyDayElement;
+  };
+
+  interface HTMLMyFakeAuthElement extends Components.MyFakeAuth, HTMLStencilElement {}
+  var HTMLMyFakeAuthElement: {
+    prototype: HTMLMyFakeAuthElement;
+    new (): HTMLMyFakeAuthElement;
   };
 
   interface HTMLMyLoginElement extends Components.MyLogin, HTMLStencilElement {}
@@ -50,12 +75,16 @@ declare global {
   };
 
   interface HTMLElementTagNameMap {
+    'my-auth': HTMLMyAuthElement
     'my-day': HTMLMyDayElement
+    'my-fake-auth': HTMLMyFakeAuthElement
     'my-login': HTMLMyLoginElement
   }
 
   interface ElementTagNameMap {
+    'my-auth': HTMLMyAuthElement;
     'my-day': HTMLMyDayElement;
+    'my-fake-auth': HTMLMyFakeAuthElement;
     'my-login': HTMLMyLoginElement;
   }
 

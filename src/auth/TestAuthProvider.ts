@@ -25,7 +25,7 @@ export class TestAuthProvider implements IAuthProvider {
 
     graph: IGraph = new TestGraph();
 
-    onLoginChanged(eventHandler: import("c:/Users/nikol/source/M365Toolkit/src/auth/EventHandler").EventHandler<import("c:/Users/nikol/source/M365Toolkit/src/auth/IAuthProvider").LoginChangedEvent>) {
+    onLoginChanged(eventHandler: import('./EventHandler').EventHandler<import('./IAuthProvider').LoginChangedEvent>) {
         this._loginChangedDispatcher.register(eventHandler);
     }
 }

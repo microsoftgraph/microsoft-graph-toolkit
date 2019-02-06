@@ -1,9 +1,8 @@
-import { Component, State, Element, Prop, Watch } from '@stencil/core';
+import { Component, State, Element, Method } from '@stencil/core';
 
 import * as MicrosoftGraph from "@microsoft/microsoft-graph-types"
 import * as Auth from '../../auth/Auth'
-import { IAuthProvider, LoginType } from '../../auth/IAuthProvider';
-import { MSALConfig } from '../../auth/MSALConfig';
+import { IAuthProvider } from '../../auth/IAuthProvider';
 
 @Component({
   tag: 'my-login',
@@ -13,46 +12,9 @@ import { MSALConfig } from '../../auth/MSALConfig';
 export class MyLogin {
 
   private provider : IAuthProvider;
-  private _providerInitialized : boolean = false;
-
-  @Prop() clientId : string;
-  @Watch('clientId')
-  validateName() {
-      this.validateAuthProps();
-  }
-
-  @Prop() loginType : string;
-  @Watch('loginType')
-  validateLoginType() {
-      this.validateAuthProps();
-  }
-
-  private validateAuthProps() {
-    if (this.clientId !== null) {
-      let config : MSALConfig = {
-        clientId: this.clientId
-      };
-
-      if (this.loginType && this.loginType.length > 1) {
-          let loginType = this.loginType.toLowerCase();
-          loginType = loginType[0].toUpperCase() + loginType.slice(1);
-
-          let loginTypeEnum = LoginType[loginType];
-          config.loginType = loginTypeEnum;
-      }
-
-        Auth.initMSALProvider(config);
-
-        this._providerInitialized = true;
-    }
-}
 
   async componentWillLoad()
   {
-    if (!this._providerInitialized){
-        this.validateAuthProps();
-    }
-
     Auth.onAuthProviderChanged(_ => this.init())
     this.init();
   }
@@ -69,7 +31,6 @@ export class MyLogin {
   private async init() {
     this.provider = Auth.getAuthProvider();
     if (this.provider) {
-      this._providerInitialized = true;
       this.provider.onLoginChanged(_ => this.loadState());
       await this.loadState();
     }
@@ -87,6 +48,7 @@ export class MyLogin {
     }
   }
 
+  @Method()
   async login()
   {
     if (this.provider)
@@ -96,6 +58,7 @@ export class MyLogin {
     }
   }
 
+  @Method()
   async logout()
   {
     if (this.provider)
