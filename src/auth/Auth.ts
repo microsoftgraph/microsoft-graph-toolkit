@@ -7,29 +7,22 @@ import { TestAuthProvider } from './TestAuthProvider';
 
 let _provider : IAuthProvider = null;
 
-let _useFakeAuth : boolean = true;
-
 export function getAuthProvider()
 {
     return _provider;
 }
 
-export function useFakeAuth(){
-    _useFakeAuth = true;
+export function initWithProvider(provider : IAuthProvider) {
+    _provider = provider;
+    _eventDispatcher.fire( { newProvider: _provider } );
 }
 
-export function init(clientId : string, loginType? : LoginType) {
-    if(_useFakeAuth) {
-        _provider = new TestAuthProvider();
-    } else {
-        let config : MSALConfig = {
-            clientId: clientId,
-            loginType: loginType
-        };
-        _provider = new MSALProvider(config);
-    }
+export function initWithFakeProvider() {
+    initWithProvider(new TestAuthProvider());
+}
 
-    _eventDispatcher.fire( { newProvider: _provider } );
+export function initMSALProvider(config : MSALConfig) {
+    initWithProvider(new MSALProvider(config));
 }
 
 interface AuthProviderChangedEvent { newProvider : IAuthProvider }

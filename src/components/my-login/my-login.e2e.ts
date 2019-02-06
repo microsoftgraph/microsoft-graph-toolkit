@@ -13,13 +13,11 @@ describe('my-login', () => {
     const page = await newE2EPage();
     
     // popup or redirect
-    await page.setContent("<my-login clientId='a974dfa0-9f57-49b9-95db-90f04ce2111a' login-type='redirect'></my-login>");
+    await page.setContent("<body><my-fake-auth></my-fake-auth><my-login></my-login></body>");
     const element = await page.find('my-login');
 
-    await element.callMethod('useFakeAuth');
-
     await element.callMethod('login');
-    
+
     page.waitForChanges();
 
     const loginHeaderUser = await page.find('my-login >>> .login-header-user');
