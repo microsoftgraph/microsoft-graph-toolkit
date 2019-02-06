@@ -3,6 +3,7 @@ import { MSALProvider } from './MSALProvider';
 import { MSALConfig } from "./MSALConfig";
 import { IAuthProvider, LoginType } from './IAuthProvider';
 import { EventDispatcher, EventHandler } from './EventHandler';
+import { WAMProvider } from './WAMProvider';
 
 let _provider : IAuthProvider = null;
 
@@ -14,6 +15,11 @@ export function getAuthProvider()
 export function initMSALProvider(config : MSALConfig)
 {
     _provider = new MSALProvider(config);
+    _eventDispatcher.fire( { newProvider: _provider } );
+}
+
+export function initWithWam(clientId: string, authority?: string) {
+    _provider = new WAMProvider(clientId, authority);
     _eventDispatcher.fire( { newProvider: _provider } );
 }
 

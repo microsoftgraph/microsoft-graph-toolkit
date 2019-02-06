@@ -29,6 +29,9 @@ export class MyLogin {
 
   private validateAuthProps() {
     if (this.clientId !== null) {
+      Auth.initWithWam(this.clientId);
+      return;
+      
       let config : MSALConfig = {
         clientId: this.clientId
       };
