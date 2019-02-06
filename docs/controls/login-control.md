@@ -14,6 +14,7 @@ Alternatively, you can initialize the authentication provider directly in HTML w
 ## Graph scopes
 
 This control uses the following Microsoft Graph APIs and permissions:
+
 | resource | permission/scope |
 | - | - |
 | [/me](https://docs.microsoft.com/en-us/graph/api/user-get?view=graph-rest-1.0) | `User.Read` |
@@ -95,8 +96,8 @@ The following attributes are available to initialize an authentication provider.
 
 If you do not want to use the built in authentication provider, you can use the following properties to set the logged in user's details.
 
-| property  |  Description |
-| --- | --- | --- |
+| property | Description |
+| --- | --- |
 | `userDetails` | set the user object that will be displayed on the control |
 
 Ex: 
@@ -118,8 +119,8 @@ Use the `loginInitiated` and `logoutInitiated` events to handle logging in and o
 
 In addition to the logout command in the dropdown, you can add custom commands that are rendered above the logout command in the dropdown.
 
-| property  |  Description |
-| --- | --- | --- |
+| property | Description |
+| --- | --- |
 | `commands` | `LoginDropdownCommand` object that describes each additional command |
 
 `LoginDropdownCommand` is defined as:
