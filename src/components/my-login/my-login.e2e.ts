@@ -20,7 +20,7 @@ describe('my-login', () => {
 
     page.waitForChanges();
 
-    const loginHeaderUser = await page.find('my-login >>> .login-header-user');
+    const loginHeaderUser = await page.find('my-login >>> .login-signed-in-content');
     expect(loginHeaderUser).toEqualText('Test User');
   });
 });
