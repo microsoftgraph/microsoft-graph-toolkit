@@ -12,8 +12,12 @@ import '@stencil/core';
 
 export namespace Components {
 
-  interface MyDay {}
-  interface MyDayAttributes extends StencilHTMLAttributes {}
+  interface MyDay {
+    'eventTemplateFunction': (event: any) => string;
+  }
+  interface MyDayAttributes extends StencilHTMLAttributes {
+    'eventTemplateFunction'?: (event: any) => string;
+  }
 
   interface MyLogin {
     'clientId': string;
