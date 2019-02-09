@@ -3,6 +3,7 @@ import { Component, State, Element, Method } from '@stencil/core';
 import * as MicrosoftGraph from "@microsoft/microsoft-graph-types"
 import * as Auth from '../../auth/Auth'
 import { IAuthProvider } from '../../auth/IAuthProvider';
+import { hasClass, removeClass, toggleClass } from '../../global/helpers';
 
 @Component({
   tag: 'my-login',
@@ -13,6 +14,12 @@ export class MyLogin {
 
   private provider : IAuthProvider;
 
+  @Element() $rootElement : HTMLElement;
+  private $menuElement : HTMLElement;
+
+  @State() user : MicrosoftGraph.User;
+  @State() profileImage: string | ArrayBuffer;
+
   async componentWillLoad()
   {
     Auth.onAuthProvidersChanged(_ => this.init())
@@ -21,7 +28,6 @@ export class MyLogin {
 
   componentDidLoad() {
     this.$menuElement = this.$rootElement.shadowRoot.querySelector('.login-menu-root');
-    this.menuVisible = false;
   }
 
   componentDidUpdate() {
@@ -68,11 +74,7 @@ export class MyLogin {
   }
 
   toggleMenu() {
-    if (this.$menuElement) {
-      this.menuVisible = !this.menuVisible;
-      this.$menuElement.className = 'login-menu-root' +
-        (this.menuVisible ? ' show-menu' : '');
-    }
+    toggleClass(this.$menuElement, 'show-menu');
   }
 
   clicked() {
@@ -82,14 +84,6 @@ export class MyLogin {
       this.login();
     }
   }
-
-  @Element() $rootElement : HTMLElement;
-
-  private $menuElement : HTMLElement;
-  private menuVisible : boolean = false;
-
-  @State() user : MicrosoftGraph.User;
-  @State() profileImage: string | ArrayBuffer;
 
   render() {
     let content = this.user ?
