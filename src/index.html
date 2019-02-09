@@ -5,16 +5,15 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=5.0">
   <title>Stencil Component Starter</title>
   <script src="/build/toolkit.js"></script>
+  <link rel=stylesheet href="/build/toolkit.css"></link>
   
 </head>
 <body>
-  <!-- <script>
-    Auth.initMSALProvider();
-  </script> -->
+
+  <my-auth client-id='a974dfa0-9f57-49b9-95db-90f04ce2111a'
+            login-type='popup'></my-auth>
   
-  <my-login style="float: right;"
-    client-id='a974dfa0-9f57-49b9-95db-90f04ce2111a'
-    login-type='redirect'></my-login>
+  <my-login style="float: right;"></my-login>
 
   <my-day></my-day>
 

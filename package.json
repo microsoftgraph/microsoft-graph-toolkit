@@ -3,8 +3,7 @@
   "version": "0.0.1",
   "description": "Microsoft 365 Toolkit",
   "module": "dist/esm/index.js",
-  "main": "dist/index.js",
-  "unpkg": "dist/ionic.js",
+  "main" : "dist/index.js",
   "types": "dist/types/components.d.ts",
   "collection": "dist/collection/collection-manifest.json",
   "files": [
