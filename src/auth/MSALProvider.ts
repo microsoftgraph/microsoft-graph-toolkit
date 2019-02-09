@@ -5,16 +5,20 @@ import { EventHandler, EventDispatcher } from './EventHandler';
 import { MSALConfig } from './MSALConfig';
 
 export class MSALProvider implements IAuthProvider {
-
+    
     private _loginChangedDispatcher = new EventDispatcher<LoginChangedEvent>();
     private _loginType : LoginType;
     private _clientId : string;
-
+    
     private _idToken : string;
-
+    
     readonly provider: any;
     get isLoggedIn() : boolean {
         return !!this._idToken;
+    }
+
+    get isAvailable(): boolean{
+        return true;
     }
 
     scopes: string[];

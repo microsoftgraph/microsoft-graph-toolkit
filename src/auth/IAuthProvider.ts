@@ -4,6 +4,7 @@ import { EventHandler } from "./EventHandler";
 export interface IAuthProvider 
 {
     readonly isLoggedIn : boolean;
+    readonly isAvailable : boolean;
 
     login() : Promise<void>;
     logout() : Promise<void>;

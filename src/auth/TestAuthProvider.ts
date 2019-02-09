@@ -4,6 +4,8 @@ import { IGraph } from "./GraphSDK";
 import { EventDispatcher } from "./EventHandler";
 
 export class TestAuthProvider implements IAuthProvider {
+    
+    isAvailable: boolean = true;
 
     isLoggedIn: boolean = false;
     private _loginChangedDispatcher = new EventDispatcher<LoginChangedEvent>();

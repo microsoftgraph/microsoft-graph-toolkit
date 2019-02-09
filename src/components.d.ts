@@ -12,15 +12,6 @@ import '@stencil/core';
 
 export namespace Components {
 
-  interface MyAuth {
-    'clientId': string;
-    'loginType': string;
-  }
-  interface MyAuthAttributes extends StencilHTMLAttributes {
-    'clientId'?: string;
-    'loginType'?: string;
-  }
-
   interface MyDay {}
   interface MyDayAttributes extends StencilHTMLAttributes {}
 
@@ -32,29 +23,41 @@ export namespace Components {
     'logout': () => Promise<void>;
   }
   interface MyLoginAttributes extends StencilHTMLAttributes {}
+
+  interface MyMsalProvider {
+    'clientId': string;
+    'loginType': string;
+  }
+  interface MyMsalProviderAttributes extends StencilHTMLAttributes {
+    'clientId'?: string;
+    'loginType'?: string;
+  }
+
+  interface MyWamProvider {
+    'clientId': string;
+  }
+  interface MyWamProviderAttributes extends StencilHTMLAttributes {
+    'clientId'?: string;
+  }
 }
 
 declare global {
   interface StencilElementInterfaces {
-    'MyAuth': Components.MyAuth;
     'MyDay': Components.MyDay;
     'MyFakeAuth': Components.MyFakeAuth;
     'MyLogin': Components.MyLogin;
+    'MyMsalProvider': Components.MyMsalProvider;
+    'MyWamProvider': Components.MyWamProvider;
   }
 
   interface StencilIntrinsicElements {
-    'my-auth': Components.MyAuthAttributes;
     'my-day': Components.MyDayAttributes;
     'my-fake-auth': Components.MyFakeAuthAttributes;
     'my-login': Components.MyLoginAttributes;
+    'my-msal-provider': Components.MyMsalProviderAttributes;
+    'my-wam-provider': Components.MyWamProviderAttributes;
   }
 
-
-  interface HTMLMyAuthElement extends Components.MyAuth, HTMLStencilElement {}
-  var HTMLMyAuthElement: {
-    prototype: HTMLMyAuthElement;
-    new (): HTMLMyAuthElement;
-  };
 
   interface HTMLMyDayElement extends Components.MyDay, HTMLStencilElement {}
   var HTMLMyDayElement: {
@@ -74,18 +77,32 @@ declare global {
     new (): HTMLMyLoginElement;
   };
 
+  interface HTMLMyMsalProviderElement extends Components.MyMsalProvider, HTMLStencilElement {}
+  var HTMLMyMsalProviderElement: {
+    prototype: HTMLMyMsalProviderElement;
+    new (): HTMLMyMsalProviderElement;
+  };
+
+  interface HTMLMyWamProviderElement extends Components.MyWamProvider, HTMLStencilElement {}
+  var HTMLMyWamProviderElement: {
+    prototype: HTMLMyWamProviderElement;
+    new (): HTMLMyWamProviderElement;
+  };
+
   interface HTMLElementTagNameMap {
-    'my-auth': HTMLMyAuthElement
     'my-day': HTMLMyDayElement
     'my-fake-auth': HTMLMyFakeAuthElement
     'my-login': HTMLMyLoginElement
+    'my-msal-provider': HTMLMyMsalProviderElement
+    'my-wam-provider': HTMLMyWamProviderElement
   }
 
   interface ElementTagNameMap {
-    'my-auth': HTMLMyAuthElement;
     'my-day': HTMLMyDayElement;
     'my-fake-auth': HTMLMyFakeAuthElement;
     'my-login': HTMLMyLoginElement;
+    'my-msal-provider': HTMLMyMsalProviderElement;
+    'my-wam-provider': HTMLMyWamProviderElement;
   }
 
 

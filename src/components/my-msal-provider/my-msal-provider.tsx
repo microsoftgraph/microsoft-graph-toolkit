@@ -2,13 +2,14 @@ import { Component, Prop, Watch } from '@stencil/core';
 import * as Auth from '../../auth/Auth'
 import { LoginType } from '../../auth/IAuthProvider';
 import { MSALConfig } from '../../auth/MSALConfig';
+import { MSALProvider } from '../../auth/MSALProvider';
 
 @Component({
-    tag: 'my-auth'
+    tag: 'my-msal-provider'
 })
-export class MyAuth {
+export class MyMsalProvider {
 
-    private _providerInitialized : boolean = false;
+    private _provider : MSALProvider;
 
     @Prop() clientId : string;
     @Watch('clientId')
@@ -35,20 +36,16 @@ export class MyAuth {
                 config.loginType = loginTypeEnum;
             }
 
-            Auth.initMSALProvider(config);
+            this._provider = new MSALProvider(config);
 
-            this._providerInitialized = true;
+            Auth.initWithProvider(this._provider);
+
         }
     }
 
     componentWillLoad(){
-        if (!this._providerInitialized){
+        if (!this._provider){
             this.validateAuthProps();
         }
     }
-
-    render() {
-        return <div></div>;
-    }
-
 }

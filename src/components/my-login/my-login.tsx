@@ -15,7 +15,7 @@ export class MyLogin {
 
   async componentWillLoad()
   {
-    Auth.onAuthProviderChanged(_ => this.init())
+    Auth.onAuthProvidersChanged(_ => this.init())
     this.init();
   }
 
