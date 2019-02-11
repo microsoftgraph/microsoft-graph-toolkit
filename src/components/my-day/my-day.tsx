@@ -15,7 +15,7 @@ export class MyDay {
     async componentWillLoad()
     {
         if (typeof Auth !== "undefined") {
-            Auth.onAuthProviderChanged(_ => this.init());
+            Auth.onAuthProvidersChanged(_ => this.init());
             await this.init();
         }
     }

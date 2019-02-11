@@ -12,6 +12,7 @@
   "scripts": {
     "build": "stencil build --docs",
     "start": "stencil build --dev --watch --serve",
+    "startes5": "stencil build --dev --watch --serve --es5",
     "test": "stencil test --spec --e2e",
     "test.watch": "stencil test --spec --e2e --watchAll"
   },
@@ -24,6 +25,7 @@
     "@stencil/core": "^0.17.1",
     "@types/jest": "23.3.13",
     "@types/puppeteer": "1.11.1",
+    "@types/winrt-uwp": "0.0.19",
     "jest": "23.6.0",
     "jest-cli": "23.6.0",
     "jest-junit": "^6.2.1",
