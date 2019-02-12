@@ -14,6 +14,7 @@ export const config: Config = {
   testing: {
     collectCoverage: true,
     coverageReporters: [ 'cobertura', 'html' ],
-    reporters: ['default', 'jest-junit']
+    reporters: ['default', 'jest-junit'],
+    coveragePathIgnorePatterns: ['/node_modules/', '<rootDir>/src/auth/TestAuthProvider.ts']
   }
 };

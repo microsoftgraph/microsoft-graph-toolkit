@@ -1,5 +1,5 @@
 import { Component, Prop, Watch } from '@stencil/core';
-import { MSALProvider, MSALConfig, LoginType, initWithProvider } from '@m365toolkit/providers';
+import { MSALProvider, MSALConfig, LoginType, Providers } from '@m365toolkit/providers';
 
 @Component({
     tag: 'my-msal-provider'
@@ -35,7 +35,7 @@ export class MyMsalProvider {
 
             this._provider = new MSALProvider(config);
 
-            initWithProvider(this._provider);
+            Providers.add(this._provider);
 
         }
     }

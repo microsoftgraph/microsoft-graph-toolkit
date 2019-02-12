@@ -2,8 +2,8 @@
   "name": "@m365toolkit/providers",
   "version": "0.0.1",
   "description": "Microsoft 365 Toolkit Context Providers",
-  "main": "dist/commonjs/index.js",
-  "types": "dist/commonjs/index.d.ts",
+  "main": "dist/es6/index.js",
+  "types": "dist/es6/index.d.ts",
   "files": [
     "dist/"
   ],
