@@ -15,14 +15,14 @@ export namespace Components {
   interface GraphAgenda {}
   interface GraphAgendaAttributes extends StencilHTMLAttributes {}
 
-  interface GraphTestAuth {}
-  interface GraphTestAuthAttributes extends StencilHTMLAttributes {}
-
   interface GraphLogin {
     'login': () => Promise<void>;
     'logout': () => Promise<void>;
   }
   interface GraphLoginAttributes extends StencilHTMLAttributes {}
+
+  interface GraphTestAuth {}
+  interface GraphTestAuthAttributes extends StencilHTMLAttributes {}
 
   interface GraphMsalProvider {
     'clientId': string;
@@ -44,16 +44,16 @@ export namespace Components {
 declare global {
   interface StencilElementInterfaces {
     'GraphAgenda': Components.GraphAgenda;
-    'GraphTestAuth': Components.GraphTestAuth;
     'GraphLogin': Components.GraphLogin;
+    'GraphTestAuth': Components.GraphTestAuth;
     'GraphMsalProvider': Components.GraphMsalProvider;
     'GraphWamProvider': Components.GraphWamProvider;
   }
 
   interface StencilIntrinsicElements {
     'graph-agenda': Components.GraphAgendaAttributes;
-    'graph-test-auth': Components.GraphTestAuthAttributes;
     'graph-login': Components.GraphLoginAttributes;
+    'graph-test-auth': Components.GraphTestAuthAttributes;
     'graph-msal-provider': Components.GraphMsalProviderAttributes;
     'graph-wam-provider': Components.GraphWamProviderAttributes;
   }
@@ -65,16 +65,16 @@ declare global {
     new (): HTMLGraphAgendaElement;
   };
 
-  interface HTMLGraphTestAuthElement extends Components.GraphTestAuth, HTMLStencilElement {}
-  var HTMLGraphTestAuthElement: {
-    prototype: HTMLGraphTestAuthElement;
-    new (): HTMLGraphTestAuthElement;
-  };
-
   interface HTMLGraphLoginElement extends Components.GraphLogin, HTMLStencilElement {}
   var HTMLGraphLoginElement: {
     prototype: HTMLGraphLoginElement;
     new (): HTMLGraphLoginElement;
+  };
+
+  interface HTMLGraphTestAuthElement extends Components.GraphTestAuth, HTMLStencilElement {}
+  var HTMLGraphTestAuthElement: {
+    prototype: HTMLGraphTestAuthElement;
+    new (): HTMLGraphTestAuthElement;
   };
 
   interface HTMLGraphMsalProviderElement extends Components.GraphMsalProvider, HTMLStencilElement {}
@@ -91,16 +91,16 @@ declare global {
 
   interface HTMLElementTagNameMap {
     'graph-agenda': HTMLGraphAgendaElement
-    'graph-test-auth': HTMLGraphTestAuthElement
     'graph-login': HTMLGraphLoginElement
+    'graph-test-auth': HTMLGraphTestAuthElement
     'graph-msal-provider': HTMLGraphMsalProviderElement
     'graph-wam-provider': HTMLGraphWamProviderElement
   }
 
   interface ElementTagNameMap {
     'graph-agenda': HTMLGraphAgendaElement;
-    'graph-test-auth': HTMLGraphTestAuthElement;
     'graph-login': HTMLGraphLoginElement;
+    'graph-test-auth': HTMLGraphTestAuthElement;
     'graph-msal-provider': HTMLGraphMsalProviderElement;
     'graph-wam-provider': HTMLGraphWamProviderElement;
   }
