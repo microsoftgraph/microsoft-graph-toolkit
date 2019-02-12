@@ -1,5 +1,5 @@
 import { Component, Prop, Watch } from '@stencil/core';
-import * as Auth from '../../auth/Auth'
+import { Auth } from '../../auth/Auth'
 import { LoginType } from '../../auth/IAuthProvider';
 import { MSALConfig } from '../../auth/MSALConfig';
 import { MSALProvider } from '../../auth/MSALProvider';

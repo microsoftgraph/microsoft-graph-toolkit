@@ -1,5 +1,5 @@
 import { Component, Prop, Watch } from '@stencil/core';
-import * as Auth from '../../auth/Auth'
+import { Auth } from '../../auth/Auth'
 import { WAMProvider } from '../../auth/WAMProvider';
 
 @Component({

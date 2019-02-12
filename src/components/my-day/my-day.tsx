@@ -1,6 +1,6 @@
 import { Component, State } from '@stencil/core';
 import * as MicrosoftGraph from '@microsoft/microsoft-graph-types';
-import * as Auth from '../../auth/Auth'
+import { Auth } from '../../auth/Auth'
 import { IAuthProvider } from '../../auth/IAuthProvider';
 
 @Component({
