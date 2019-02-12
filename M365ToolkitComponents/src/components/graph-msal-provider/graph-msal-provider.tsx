@@ -2,7 +2,7 @@ import { Component, Prop, Watch } from '@stencil/core';
 import { MsalProvider, MsalConfig, LoginType, Providers } from '@m365toolkit/providers';
 
 @Component({
-    tag: 'm365-msal-provider'
+    tag: 'graph-msal-provider'
 })
 export class MsalProviderComponent {
 

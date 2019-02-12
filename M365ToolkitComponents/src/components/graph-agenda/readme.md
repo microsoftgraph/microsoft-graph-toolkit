@@ -1,4 +1,4 @@
-# m365-test-auth
+# graph-agenda
 
 
 

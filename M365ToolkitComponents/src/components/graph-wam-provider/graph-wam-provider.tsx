@@ -2,7 +2,7 @@ import { Component, Prop, Watch } from '@stencil/core';
 import { Providers, WamProvider } from '@m365toolkit/providers';
 
 @Component({
-    tag: 'm365-wam-provider'
+    tag: 'graph-wam-provider'
 })
 export class WamProviderComponent {
 

@@ -5,8 +5,8 @@ import { Providers, IAuthProvider} from '@m365toolkit/providers'
 import { toggleClass } from '../../global/helpers';
 
 @Component({
-  tag: 'm365-login',
-  styleUrl: 'm365-login.css',
+  tag: 'graph-login',
+  styleUrl: 'graph-login.css',
   shadow: true
 })
 export class LoginComponent {

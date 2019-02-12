@@ -3,7 +3,7 @@ import * as MicrosoftGraph from '@microsoft/microsoft-graph-types';
 import { Providers, IAuthProvider } from '@m365toolkit/providers';
 
 @Component({
-    tag: 'm365-agenda',
+    tag: 'graph-agenda',
     shadow: true
 })
 export class AgendaComponent {

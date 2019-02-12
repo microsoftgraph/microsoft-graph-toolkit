@@ -12,97 +12,97 @@ import '@stencil/core';
 
 export namespace Components {
 
-  interface M365Agenda {}
-  interface M365AgendaAttributes extends StencilHTMLAttributes {}
+  interface GraphAgenda {}
+  interface GraphAgendaAttributes extends StencilHTMLAttributes {}
 
-  interface M365TestAuth {}
-  interface M365TestAuthAttributes extends StencilHTMLAttributes {}
+  interface GraphTestAuth {}
+  interface GraphTestAuthAttributes extends StencilHTMLAttributes {}
 
-  interface M365Login {
+  interface GraphLogin {
     'login': () => Promise<void>;
     'logout': () => Promise<void>;
   }
-  interface M365LoginAttributes extends StencilHTMLAttributes {}
+  interface GraphLoginAttributes extends StencilHTMLAttributes {}
 
-  interface M365MsalProvider {
+  interface GraphMsalProvider {
     'clientId': string;
     'loginType': string;
   }
-  interface M365MsalProviderAttributes extends StencilHTMLAttributes {
+  interface GraphMsalProviderAttributes extends StencilHTMLAttributes {
     'clientId'?: string;
     'loginType'?: string;
   }
 
-  interface M365WamProvider {
+  interface GraphWamProvider {
     'clientId': string;
   }
-  interface M365WamProviderAttributes extends StencilHTMLAttributes {
+  interface GraphWamProviderAttributes extends StencilHTMLAttributes {
     'clientId'?: string;
   }
 }
 
 declare global {
   interface StencilElementInterfaces {
-    'M365Agenda': Components.M365Agenda;
-    'M365TestAuth': Components.M365TestAuth;
-    'M365Login': Components.M365Login;
-    'M365MsalProvider': Components.M365MsalProvider;
-    'M365WamProvider': Components.M365WamProvider;
+    'GraphAgenda': Components.GraphAgenda;
+    'GraphTestAuth': Components.GraphTestAuth;
+    'GraphLogin': Components.GraphLogin;
+    'GraphMsalProvider': Components.GraphMsalProvider;
+    'GraphWamProvider': Components.GraphWamProvider;
   }
 
   interface StencilIntrinsicElements {
-    'm365-agenda': Components.M365AgendaAttributes;
-    'm365-test-auth': Components.M365TestAuthAttributes;
-    'm365-login': Components.M365LoginAttributes;
-    'm365-msal-provider': Components.M365MsalProviderAttributes;
-    'm365-wam-provider': Components.M365WamProviderAttributes;
+    'graph-agenda': Components.GraphAgendaAttributes;
+    'graph-test-auth': Components.GraphTestAuthAttributes;
+    'graph-login': Components.GraphLoginAttributes;
+    'graph-msal-provider': Components.GraphMsalProviderAttributes;
+    'graph-wam-provider': Components.GraphWamProviderAttributes;
   }
 
 
-  interface HTMLM365AgendaElement extends Components.M365Agenda, HTMLStencilElement {}
-  var HTMLM365AgendaElement: {
-    prototype: HTMLM365AgendaElement;
-    new (): HTMLM365AgendaElement;
+  interface HTMLGraphAgendaElement extends Components.GraphAgenda, HTMLStencilElement {}
+  var HTMLGraphAgendaElement: {
+    prototype: HTMLGraphAgendaElement;
+    new (): HTMLGraphAgendaElement;
   };
 
-  interface HTMLM365TestAuthElement extends Components.M365TestAuth, HTMLStencilElement {}
-  var HTMLM365TestAuthElement: {
-    prototype: HTMLM365TestAuthElement;
-    new (): HTMLM365TestAuthElement;
+  interface HTMLGraphTestAuthElement extends Components.GraphTestAuth, HTMLStencilElement {}
+  var HTMLGraphTestAuthElement: {
+    prototype: HTMLGraphTestAuthElement;
+    new (): HTMLGraphTestAuthElement;
   };
 
-  interface HTMLM365LoginElement extends Components.M365Login, HTMLStencilElement {}
-  var HTMLM365LoginElement: {
-    prototype: HTMLM365LoginElement;
-    new (): HTMLM365LoginElement;
+  interface HTMLGraphLoginElement extends Components.GraphLogin, HTMLStencilElement {}
+  var HTMLGraphLoginElement: {
+    prototype: HTMLGraphLoginElement;
+    new (): HTMLGraphLoginElement;
   };
 
-  interface HTMLM365MsalProviderElement extends Components.M365MsalProvider, HTMLStencilElement {}
-  var HTMLM365MsalProviderElement: {
-    prototype: HTMLM365MsalProviderElement;
-    new (): HTMLM365MsalProviderElement;
+  interface HTMLGraphMsalProviderElement extends Components.GraphMsalProvider, HTMLStencilElement {}
+  var HTMLGraphMsalProviderElement: {
+    prototype: HTMLGraphMsalProviderElement;
+    new (): HTMLGraphMsalProviderElement;
   };
 
-  interface HTMLM365WamProviderElement extends Components.M365WamProvider, HTMLStencilElement {}
-  var HTMLM365WamProviderElement: {
-    prototype: HTMLM365WamProviderElement;
-    new (): HTMLM365WamProviderElement;
+  interface HTMLGraphWamProviderElement extends Components.GraphWamProvider, HTMLStencilElement {}
+  var HTMLGraphWamProviderElement: {
+    prototype: HTMLGraphWamProviderElement;
+    new (): HTMLGraphWamProviderElement;
   };
 
   interface HTMLElementTagNameMap {
-    'm365-agenda': HTMLM365AgendaElement
-    'm365-test-auth': HTMLM365TestAuthElement
-    'm365-login': HTMLM365LoginElement
-    'm365-msal-provider': HTMLM365MsalProviderElement
-    'm365-wam-provider': HTMLM365WamProviderElement
+    'graph-agenda': HTMLGraphAgendaElement
+    'graph-test-auth': HTMLGraphTestAuthElement
+    'graph-login': HTMLGraphLoginElement
+    'graph-msal-provider': HTMLGraphMsalProviderElement
+    'graph-wam-provider': HTMLGraphWamProviderElement
   }
 
   interface ElementTagNameMap {
-    'm365-agenda': HTMLM365AgendaElement;
-    'm365-test-auth': HTMLM365TestAuthElement;
-    'm365-login': HTMLM365LoginElement;
-    'm365-msal-provider': HTMLM365MsalProviderElement;
-    'm365-wam-provider': HTMLM365WamProviderElement;
+    'graph-agenda': HTMLGraphAgendaElement;
+    'graph-test-auth': HTMLGraphTestAuthElement;
+    'graph-login': HTMLGraphLoginElement;
+    'graph-msal-provider': HTMLGraphMsalProviderElement;
+    'graph-wam-provider': HTMLGraphWamProviderElement;
   }
 
 

@@ -1,7 +1,7 @@
 jest.mock('@m365toolkit/providers');
 
 import { MsalProvider, LoginType, Providers} from '@m365toolkit/providers'
-import {MsalProviderComponent} from "./m365-msal-provider"
+import {MsalProviderComponent} from "./graph-msal-provider"
 
 describe('MsalProviderComponent', () => {
 
