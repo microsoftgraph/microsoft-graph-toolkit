@@ -12,7 +12,7 @@ export class MSALProvider implements IAuthProvider {
     
     private _idToken : string;
     
-    readonly provider: any;
+    readonly provider: UserAgentApplication;
     get isLoggedIn() : boolean {
         return !!this._idToken;
     }
@@ -48,20 +48,17 @@ export class MSALProvider implements IAuthProvider {
     }
     
     async login(): Promise<void> {
-        let provider = this.provider as UserAgentApplication;
-        
         if (this._loginType == LoginType.Popup) {
-            this._idToken = await provider.loginPopup(this.scopes);
+            this._idToken = await this.provider.loginPopup(this.scopes);
             this.fireLoginChangedEvent({});
         } else {
-            provider.loginRedirect(this.scopes);
+            this.provider.loginRedirect(this.scopes);
         }
     }
 
     async tryGetIdTokenSilent() : Promise<boolean> {
-        let provider = this.provider as UserAgentApplication;
         try {
-            this._idToken = await provider.acquireTokenSilent([this._clientId]);
+            this._idToken = await this.provider.acquireTokenSilent([this._clientId]);
             if (this._idToken) {
                 this.fireLoginChangedEvent({});
             }
@@ -73,18 +70,17 @@ export class MSALProvider implements IAuthProvider {
     }
 
     async getAccessToken(scopes?: string[]): Promise<string> {
-        let provider = this.provider as UserAgentApplication;
         let accessToken : string;
         try {
-            accessToken = await provider.acquireTokenSilent(scopes);
+            accessToken = await this.provider.acquireTokenSilent(scopes);
         } catch (e) {
             try {
                 // TODO - figure out for what error this logic is needed so we
                 // don't prompt the user to login unnecessarily
                 if (this._loginType == LoginType.Redirect) {
-                    await provider.acquireTokenRedirect(scopes);
+                    await this.provider.acquireTokenRedirect(scopes);
                 } else {
-                    accessToken = await provider.acquireTokenPopup(scopes);
+                    accessToken = await this.provider.acquireTokenPopup(scopes);
                 }
             } catch (e) {
                 // TODO - figure out how to expose this during dev to make it easy for the dev to figure out
@@ -97,8 +93,7 @@ export class MSALProvider implements IAuthProvider {
     }
     
     async logout(): Promise<void> {
-        let provider = this.provider as UserAgentApplication;
-        provider.logout();
+        this.provider.logout();
         this.fireLoginChangedEvent({});
     }
     
