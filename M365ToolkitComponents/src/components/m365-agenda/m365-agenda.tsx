@@ -3,10 +3,10 @@ import * as MicrosoftGraph from '@microsoft/microsoft-graph-types';
 import { Providers, IAuthProvider } from '@m365toolkit/providers';
 
 @Component({
-    tag: 'my-day',
+    tag: 'm365-agenda',
     shadow: true
 })
-export class MyDay {
+export class AgendaComponent {
 
     @State() _things : Array<MicrosoftGraph.Event> 
     private _provider: IAuthProvider;

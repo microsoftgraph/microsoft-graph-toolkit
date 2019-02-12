@@ -1,12 +1,12 @@
 import { Component, Prop, Watch } from '@stencil/core';
-import { Providers, WAMProvider } from '@m365toolkit/providers';
+import { Providers, WamProvider } from '@m365toolkit/providers';
 
 @Component({
-    tag: 'my-wam-provider'
+    tag: 'm365-wam-provider'
 })
-export class MyWamProvider {
+export class WamProviderComponent {
 
-    private _provider : WAMProvider;
+    private _provider : WamProvider;
 
     @Prop() clientId : string;
     @Watch('clientId')
@@ -16,7 +16,7 @@ export class MyWamProvider {
 
     private validateAuthProps() {
         if (this.clientId !== undefined) {
-            this._provider = new WAMProvider(this.clientId);
+            this._provider = new WamProvider(this.clientId);
             Providers.add(this._provider);
         }
     }

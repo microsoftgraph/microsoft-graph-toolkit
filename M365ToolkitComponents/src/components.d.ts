@@ -12,97 +12,97 @@ import '@stencil/core';
 
 export namespace Components {
 
-  interface MyDay {}
-  interface MyDayAttributes extends StencilHTMLAttributes {}
+  interface M365Agenda {}
+  interface M365AgendaAttributes extends StencilHTMLAttributes {}
 
-  interface MyFakeAuth {}
-  interface MyFakeAuthAttributes extends StencilHTMLAttributes {}
+  interface M365TestAuth {}
+  interface M365TestAuthAttributes extends StencilHTMLAttributes {}
 
-  interface MyLogin {
+  interface M365Login {
     'login': () => Promise<void>;
     'logout': () => Promise<void>;
   }
-  interface MyLoginAttributes extends StencilHTMLAttributes {}
+  interface M365LoginAttributes extends StencilHTMLAttributes {}
 
-  interface MyMsalProvider {
+  interface M365MsalProvider {
     'clientId': string;
     'loginType': string;
   }
-  interface MyMsalProviderAttributes extends StencilHTMLAttributes {
+  interface M365MsalProviderAttributes extends StencilHTMLAttributes {
     'clientId'?: string;
     'loginType'?: string;
   }
 
-  interface MyWamProvider {
+  interface M365WamProvider {
     'clientId': string;
   }
-  interface MyWamProviderAttributes extends StencilHTMLAttributes {
+  interface M365WamProviderAttributes extends StencilHTMLAttributes {
     'clientId'?: string;
   }
 }
 
 declare global {
   interface StencilElementInterfaces {
-    'MyDay': Components.MyDay;
-    'MyFakeAuth': Components.MyFakeAuth;
-    'MyLogin': Components.MyLogin;
-    'MyMsalProvider': Components.MyMsalProvider;
-    'MyWamProvider': Components.MyWamProvider;
+    'M365Agenda': Components.M365Agenda;
+    'M365TestAuth': Components.M365TestAuth;
+    'M365Login': Components.M365Login;
+    'M365MsalProvider': Components.M365MsalProvider;
+    'M365WamProvider': Components.M365WamProvider;
   }
 
   interface StencilIntrinsicElements {
-    'my-day': Components.MyDayAttributes;
-    'my-fake-auth': Components.MyFakeAuthAttributes;
-    'my-login': Components.MyLoginAttributes;
-    'my-msal-provider': Components.MyMsalProviderAttributes;
-    'my-wam-provider': Components.MyWamProviderAttributes;
+    'm365-agenda': Components.M365AgendaAttributes;
+    'm365-test-auth': Components.M365TestAuthAttributes;
+    'm365-login': Components.M365LoginAttributes;
+    'm365-msal-provider': Components.M365MsalProviderAttributes;
+    'm365-wam-provider': Components.M365WamProviderAttributes;
   }
 
 
-  interface HTMLMyDayElement extends Components.MyDay, HTMLStencilElement {}
-  var HTMLMyDayElement: {
-    prototype: HTMLMyDayElement;
-    new (): HTMLMyDayElement;
+  interface HTMLM365AgendaElement extends Components.M365Agenda, HTMLStencilElement {}
+  var HTMLM365AgendaElement: {
+    prototype: HTMLM365AgendaElement;
+    new (): HTMLM365AgendaElement;
   };
 
-  interface HTMLMyFakeAuthElement extends Components.MyFakeAuth, HTMLStencilElement {}
-  var HTMLMyFakeAuthElement: {
-    prototype: HTMLMyFakeAuthElement;
-    new (): HTMLMyFakeAuthElement;
+  interface HTMLM365TestAuthElement extends Components.M365TestAuth, HTMLStencilElement {}
+  var HTMLM365TestAuthElement: {
+    prototype: HTMLM365TestAuthElement;
+    new (): HTMLM365TestAuthElement;
   };
 
-  interface HTMLMyLoginElement extends Components.MyLogin, HTMLStencilElement {}
-  var HTMLMyLoginElement: {
-    prototype: HTMLMyLoginElement;
-    new (): HTMLMyLoginElement;
+  interface HTMLM365LoginElement extends Components.M365Login, HTMLStencilElement {}
+  var HTMLM365LoginElement: {
+    prototype: HTMLM365LoginElement;
+    new (): HTMLM365LoginElement;
   };
 
-  interface HTMLMyMsalProviderElement extends Components.MyMsalProvider, HTMLStencilElement {}
-  var HTMLMyMsalProviderElement: {
-    prototype: HTMLMyMsalProviderElement;
-    new (): HTMLMyMsalProviderElement;
+  interface HTMLM365MsalProviderElement extends Components.M365MsalProvider, HTMLStencilElement {}
+  var HTMLM365MsalProviderElement: {
+    prototype: HTMLM365MsalProviderElement;
+    new (): HTMLM365MsalProviderElement;
   };
 
-  interface HTMLMyWamProviderElement extends Components.MyWamProvider, HTMLStencilElement {}
-  var HTMLMyWamProviderElement: {
-    prototype: HTMLMyWamProviderElement;
-    new (): HTMLMyWamProviderElement;
+  interface HTMLM365WamProviderElement extends Components.M365WamProvider, HTMLStencilElement {}
+  var HTMLM365WamProviderElement: {
+    prototype: HTMLM365WamProviderElement;
+    new (): HTMLM365WamProviderElement;
   };
 
   interface HTMLElementTagNameMap {
-    'my-day': HTMLMyDayElement
-    'my-fake-auth': HTMLMyFakeAuthElement
-    'my-login': HTMLMyLoginElement
-    'my-msal-provider': HTMLMyMsalProviderElement
-    'my-wam-provider': HTMLMyWamProviderElement
+    'm365-agenda': HTMLM365AgendaElement
+    'm365-test-auth': HTMLM365TestAuthElement
+    'm365-login': HTMLM365LoginElement
+    'm365-msal-provider': HTMLM365MsalProviderElement
+    'm365-wam-provider': HTMLM365WamProviderElement
   }
 
   interface ElementTagNameMap {
-    'my-day': HTMLMyDayElement;
-    'my-fake-auth': HTMLMyFakeAuthElement;
-    'my-login': HTMLMyLoginElement;
-    'my-msal-provider': HTMLMyMsalProviderElement;
-    'my-wam-provider': HTMLMyWamProviderElement;
+    'm365-agenda': HTMLM365AgendaElement;
+    'm365-test-auth': HTMLM365TestAuthElement;
+    'm365-login': HTMLM365LoginElement;
+    'm365-msal-provider': HTMLM365MsalProviderElement;
+    'm365-wam-provider': HTMLM365WamProviderElement;
   }
 
 

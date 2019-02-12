@@ -1,8 +1,8 @@
-import { MSALProvider as MsalProvider } from './MSALProvider';
-import { MSALConfig } from "./MSALConfig";
+import { MsalProvider as MsalProvider } from './MsalProvider';
+import { MsalConfig } from "./MsalConfig";
 import { IAuthProvider } from './IAuthProvider';
 import { EventDispatcher, EventHandler } from './EventHandler';
-import { WAMProvider } from './WAMProvider';
+import { WamProvider } from './WamProvider';
 
 declare global {
     interface Window {
@@ -31,10 +31,10 @@ export module Providers {
     }
 
     export function addWamProvider(clientId: string, authority?: string) {
-        add(new WAMProvider(clientId, authority));
+        add(new WamProvider(clientId, authority));
     }
 
-    export function addMsalProvider(config : MSALConfig) {
+    export function addMsalProvider(config : MsalConfig) {
         add(new MsalProvider(config));
     }
 
@@ -54,9 +54,9 @@ export module Providers {
     }
 }
 
-export * from "./MSALConfig"
-export * from "./MSALProvider"
-export * from "./WAMProvider"
+export * from "./MsalConfig"
+export * from "./MsalProvider"
+export * from "./WamProvider"
 export * from "./IAuthProvider"
 export * from "./GraphSDK"
 export * from "./EventHandler"

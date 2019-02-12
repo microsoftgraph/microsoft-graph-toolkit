@@ -1,12 +1,12 @@
 import { Component, Prop, Watch } from '@stencil/core';
-import { MSALProvider, MSALConfig, LoginType, Providers } from '@m365toolkit/providers';
+import { MsalProvider, MsalConfig, LoginType, Providers } from '@m365toolkit/providers';
 
 @Component({
-    tag: 'my-msal-provider'
+    tag: 'm365-msal-provider'
 })
-export class MyMsalProvider {
+export class MsalProviderComponent {
 
-    private _provider : MSALProvider;
+    private _provider : MsalProvider;
 
     @Prop() clientId : string;
     @Watch('clientId')
@@ -22,7 +22,7 @@ export class MyMsalProvider {
 
     private validateAuthProps() {
         if (this.clientId !== undefined) {
-            let config: MSALConfig = {
+            let config: MsalConfig = {
                 clientId: this.clientId,
             };
 
@@ -33,7 +33,7 @@ export class MyMsalProvider {
                 config.loginType = loginTypeEnum;
             }
 
-            this._provider = new MSALProvider(config);
+            this._provider = new MsalProvider(config);
 
             Providers.add(this._provider);
 

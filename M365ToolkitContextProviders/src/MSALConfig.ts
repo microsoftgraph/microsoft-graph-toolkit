@@ -1,5 +1,5 @@
 import { LoginType } from "./IAuthProvider";
-export interface MSALConfig {
+export interface MsalConfig {
     clientId: string;
     scopes?: string[];
     authority?: string;

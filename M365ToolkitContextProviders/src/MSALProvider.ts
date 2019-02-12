@@ -1,10 +1,10 @@
 import { IAuthProvider, LoginChangedEvent, LoginType } from "./IAuthProvider";
 import { Graph } from './GraphSDK';
 import { EventHandler, EventDispatcher } from './EventHandler';
-import { MSALConfig } from './MSALConfig';
+import { MsalConfig } from './MsalConfig';
 import {UserAgentApplication} from "msal/lib-es6";
 
-export class MSALProvider implements IAuthProvider {
+export class MsalProvider implements IAuthProvider {
     
     private _loginChangedDispatcher = new EventDispatcher<LoginChangedEvent>();
     private _loginType : LoginType;
@@ -31,7 +31,7 @@ export class MSALProvider implements IAuthProvider {
     
     graph: Graph;
 
-    constructor(config: MSALConfig) {
+    constructor(config: MsalConfig) {
         if (!config.clientId) {
             throw "ClientID must be a valid string";
         }
@@ -39,7 +39,7 @@ export class MSALProvider implements IAuthProvider {
         this.initProvider(config);
     }
 
-    private initProvider(config: MSALConfig) {
+    private initProvider(config: MsalConfig) {
         this._clientId = config.clientId;
         this.scopes = (typeof config.scopes !== 'undefined') ? config.scopes : ["user.read"];
         this.authority = (typeof config.authority !== 'undefined') ? config.authority : null;

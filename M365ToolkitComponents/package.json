@@ -27,7 +27,8 @@
     "@types/winrt-uwp": "0.0.19",
     "jest": "23.6.0",
     "jest-cli": "23.6.0",
-    "jest-junit": "^6.2.1"
+    "jest-junit": "^6.2.1",
+    "puppeteer": "1.11.0"
   },
   "jest-junit": {
     "suiteName": "jest tests",
@@ -35,7 +36,8 @@
     "classNameTemplate": "{classname} - {title}",
     "titleTemplate": "{classname} - {title}",
     "ancestorSeparator": " > ",
-    "usePathForSuiteName": "true"
+    "usePathForSuiteName": "true",
+    "puppeteer": "1.11.0"
   },
   "license": "MIT"
 }

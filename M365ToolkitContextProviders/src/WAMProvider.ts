@@ -8,7 +8,7 @@ declare interface Window {
 
 declare var window: Window;
 
-export class WAMProvider implements IAuthProvider {
+export class WamProvider implements IAuthProvider {
 
     private graphResource = 'https://graph.microsoft.com';
     private clientId : string;
