@@ -1,5 +1,5 @@
 import { Component } from '@stencil/core';
-import * as Auth from '../../auth/Auth'
+import { initWithFakeProvider } from '@m365toolkit/providers';
 
 @Component({
     tag: 'my-fake-auth'
@@ -7,7 +7,7 @@ import * as Auth from '../../auth/Auth'
 export class MyFakeAuth {
 
     async componentWillLoad() {
-        Auth.initWithFakeProvider();
+        initWithFakeProvider();
     }
 
     render() {

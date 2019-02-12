@@ -1,0 +1,31 @@
+{
+  "name": "@m365toolkit/providers",
+  "version": "0.0.1",
+  "description": "Microsoft 365 Toolkit Context Providers",
+  "main": "dist/commonjs/index.js",
+  "types": "dist/commonjs/index.d.ts",
+  "files": [
+    "dist/"
+  ],
+  "scripts": {
+    "clean": "shx rm -rf dist",
+    "build:modules": "tsc && tsc -m es6 --outDir dist/es6",
+    "build": "npm run clean && npm run build:modules && webpack"
+  },
+  "dependencies": {
+    "@microsoft/microsoft-graph-client": "^1.3.0",
+    "@microsoft/microsoft-graph-types": "^1.5.0",
+    "msal": "^0.2.4"
+  },
+  "license": "MIT",
+  "devDependencies": {
+    "fork-ts-checker-webpack-plugin": "^0.5.2",
+    "shx": "^0.3.2",
+    "ts-loader": "^5.3.3",
+    "tslint": "^5.12.1",
+    "typescript": "^3.3.3",
+    "webpack": "^4.29.3",
+    "webpack-cli": "^3.2.3",
+    "webpack-dev-middleware": "^3.5.2"
+  }
+}

@@ -1,8 +1,8 @@
-import { UserAgentApplication } from 'msal';
 import { IAuthProvider, LoginChangedEvent, LoginType } from "./IAuthProvider";
 import { Graph } from './GraphSDK';
 import { EventHandler, EventDispatcher } from './EventHandler';
 import { MSALConfig } from './MSALConfig';
+import {UserAgentApplication} from "msal/lib-es6";
 
 export class MSALProvider implements IAuthProvider {
     
@@ -11,15 +11,20 @@ export class MSALProvider implements IAuthProvider {
     private _clientId : string;
     
     private _idToken : string;
+
+    private _provider : UserAgentApplication;
     
-    readonly provider: any;
+    get provider() {
+        return this._provider;
+    };
+
     get isLoggedIn() : boolean {
         return !!this._idToken;
-    }
+    };
 
     get isAvailable(): boolean{
         return true;
-    }
+    };
 
     scopes: string[];
     authority: string;
@@ -31,6 +36,10 @@ export class MSALProvider implements IAuthProvider {
             throw "ClientID must be a valid string";
         }
 
+        this.initProvider(config);
+    }
+
+    private initProvider(config: MSALConfig) {
         this._clientId = config.clientId;
         this.scopes = (typeof config.scopes !== 'undefined') ? config.scopes : ["user.read"];
         this.authority = (typeof config.authority !== 'undefined') ? config.authority : null;
@@ -41,27 +50,27 @@ export class MSALProvider implements IAuthProvider {
             this.tokenReceivedCallback(errorDesc, token, error, state);
         }).bind(this);
 
-        this.provider = new UserAgentApplication(this._clientId, this.authority, callbackFunction, options);
+        // import msal
+        // let msal = await import(/* webpackChunkName: "msal" */ "msal/lib-es6");
+
+        this._provider = new UserAgentApplication(this._clientId, this.authority, callbackFunction, options);
         this.graph = new Graph(this);
 
         this.tryGetIdTokenSilent();
     }
     
     async login(): Promise<void> {
-        let provider = this.provider as UserAgentApplication;
-        
         if (this._loginType == LoginType.Popup) {
-            this._idToken = await provider.loginPopup(this.scopes);
+            this._idToken = await this.provider.loginPopup(this.scopes);
             this.fireLoginChangedEvent({});
         } else {
-            provider.loginRedirect(this.scopes);
+            this.provider.loginRedirect(this.scopes);
         }
     }
 
     async tryGetIdTokenSilent() : Promise<boolean> {
-        let provider = this.provider as UserAgentApplication;
         try {
-            this._idToken = await provider.acquireTokenSilent([this._clientId]);
+            this._idToken = await this.provider.acquireTokenSilent([this._clientId]);
             if (this._idToken) {
                 this.fireLoginChangedEvent({});
             }
@@ -73,18 +82,17 @@ export class MSALProvider implements IAuthProvider {
     }
 
     async getAccessToken(scopes?: string[]): Promise<string> {
-        let provider = this.provider as UserAgentApplication;
         let accessToken : string;
         try {
-            accessToken = await provider.acquireTokenSilent(scopes);
+            accessToken = await this.provider.acquireTokenSilent(scopes);
         } catch (e) {
             try {
                 // TODO - figure out for what error this logic is needed so we
                 // don't prompt the user to login unnecessarily
                 if (this._loginType == LoginType.Redirect) {
-                    await provider.acquireTokenRedirect(scopes);
+                    await this.provider.acquireTokenRedirect(scopes);
                 } else {
-                    accessToken = await provider.acquireTokenPopup(scopes);
+                    accessToken = await this.provider.acquireTokenPopup(scopes);
                 }
             } catch (e) {
                 // TODO - figure out how to expose this during dev to make it easy for the dev to figure out
@@ -97,8 +105,7 @@ export class MSALProvider implements IAuthProvider {
     }
     
     async logout(): Promise<void> {
-        let provider = this.provider as UserAgentApplication;
-        provider.logout();
+        this.provider.logout();
         this.fireLoginChangedEvent({});
     }
     

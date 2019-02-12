@@ -1,8 +1,5 @@
 import { Component, Prop, Watch } from '@stencil/core';
-import * as Auth from '../../auth/Auth'
-import { LoginType } from '../../auth/IAuthProvider';
-import { MSALConfig } from '../../auth/MSALConfig';
-import { MSALProvider } from '../../auth/MSALProvider';
+import { MSALProvider, MSALConfig, LoginType, initWithProvider } from '@m365toolkit/providers';
 
 @Component({
     tag: 'my-msal-provider'
@@ -38,7 +35,7 @@ export class MyMsalProvider {
 
             this._provider = new MSALProvider(config);
 
-            Auth.initWithProvider(this._provider);
+            initWithProvider(this._provider);
 
         }
     }

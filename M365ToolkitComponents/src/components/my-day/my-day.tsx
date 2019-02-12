@@ -1,7 +1,6 @@
 import { Component, State } from '@stencil/core';
 import * as MicrosoftGraph from '@microsoft/microsoft-graph-types';
-import * as Auth from '../../auth/Auth'
-import { IAuthProvider } from '../../auth/IAuthProvider';
+import { onAuthProvidersChanged, getAuthProvider, IAuthProvider } from '@m365toolkit/providers';
 
 @Component({
     tag: 'my-day',
@@ -14,14 +13,12 @@ export class MyDay {
 
     async componentWillLoad()
     {
-        if (typeof Auth !== "undefined") {
-            Auth.onAuthProvidersChanged(_ => this.init());
+            onAuthProvidersChanged(_ => this.init());
             await this.init();
-        }
     }
 
     private async init() {
-        this._provider = Auth.getAuthProvider();
+        this._provider = getAuthProvider();
         if (this._provider) {
             this._provider.onLoginChanged(_ => this.loadData());
             await this.loadData();

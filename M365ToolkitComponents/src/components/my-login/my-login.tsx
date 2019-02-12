@@ -1,9 +1,8 @@
 import { Component, State, Element, Method } from '@stencil/core';
 
 import * as MicrosoftGraph from "@microsoft/microsoft-graph-types"
-import * as Auth from '../../auth/Auth'
-import { IAuthProvider } from '../../auth/IAuthProvider';
-import { hasClass, removeClass, toggleClass } from '../../global/helpers';
+import { onAuthProvidersChanged, getAuthProvider, IAuthProvider} from '@m365toolkit/providers'
+import { toggleClass } from '../../global/helpers';
 
 @Component({
   tag: 'my-login',
@@ -22,7 +21,7 @@ export class MyLogin {
 
   async componentWillLoad()
   {
-    Auth.onAuthProvidersChanged(_ => this.init())
+    onAuthProvidersChanged(_ => this.init())
     this.init();
   }
 
@@ -35,7 +34,7 @@ export class MyLogin {
   }
 
   private async init() {
-    this.provider = Auth.getAuthProvider();
+    this.provider = getAuthProvider();
     if (this.provider) {
       this.provider.onLoginChanged(_ => this.loadState());
       await this.loadState();

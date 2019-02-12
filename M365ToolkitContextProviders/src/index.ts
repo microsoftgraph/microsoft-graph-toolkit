@@ -1,6 +1,6 @@
 
 import { MSALProvider } from './MSALProvider';
-import { MSALConfig } from "./MSALConfig";
+import { MSALConfig } from "./MSALConfig.js";
 import { IAuthProvider, LoginType } from './IAuthProvider';
 import { EventDispatcher, EventHandler } from './EventHandler';
 import { WAMProvider } from './WAMProvider';
@@ -44,3 +44,10 @@ let _eventDispatcher = new EventDispatcher();
 export function onAuthProvidersChanged(event : EventHandler<any>) {
     _eventDispatcher.register(event)
 }
+
+export * from "./MSALConfig"
+export * from "./MSALProvider"
+export * from "./WAMProvider"
+export * from "./IAuthProvider"
+export * from "./GraphSDK"
+export * from "./EventHandler"
