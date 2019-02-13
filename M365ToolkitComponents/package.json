@@ -21,8 +21,8 @@
   },
   "devDependencies": {
     "@microsoft/microsoft-graph-types": "^1.5.0",
-    "@stencil/core": "^0.17.1",
-    "@types/jest": "23.3.13",
+    "@stencil/core": "^0.18.0",
+    "@types/jest": "23.3.14",
     "@types/puppeteer": "1.11.1",
     "@types/winrt-uwp": "0.0.19",
     "jest": "23.6.0",
