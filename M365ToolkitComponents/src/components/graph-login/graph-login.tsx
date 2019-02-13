@@ -11,8 +11,6 @@ import { toggleClass } from '../../global/helpers';
 })
 export class LoginComponent {
 
-  private provider : IAuthProvider;
-
   @Element() $rootElement : HTMLElement;
   private $menuElement : HTMLElement;
 
@@ -34,26 +32,30 @@ export class LoginComponent {
   }
 
   private async init() {
-    this.provider = Providers.getAvailable();
-    if (this.provider) {
-      this.provider.onLoginChanged(_ => this.loadState());
+    const provider = Providers.getAvailable();
+    if (provider) {
+      provider.onLoginChanged(_ => this.loadState());
       await this.loadState();
     }
   }
 
   private async loadState() {
-    if (this.provider && this.provider.isLoggedIn) {
-      this.user = await this.provider.graph.me();
-      this.profileImage = await this.provider.graph.myPhoto();
+    const provider = Providers.getAvailable();
+
+    if (provider && provider.isLoggedIn) {
+      this.user = await provider.graph.me();
+      this.profileImage = await provider.graph.myPhoto();
     }
   }
 
   @Method()
   async login()
   {
-    if (this.provider)
+    const provider = Providers.getAvailable();
+
+    if (provider)
     {
-      await this.provider.login();
+      await provider.login();
       await this.loadState();
     }
   }
@@ -61,9 +63,10 @@ export class LoginComponent {
   @Method()
   async logout()
   {
-    if (this.provider)
+    const provider = Providers.getAvailable();
+    if (provider)
     {
-      await this.provider.logout();
+      await provider.logout();
     }
   }
 
