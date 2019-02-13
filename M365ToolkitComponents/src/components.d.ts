@@ -12,8 +12,12 @@ import '@stencil/core';
 
 export namespace Components {
 
-  interface GraphAgenda {}
-  interface GraphAgendaAttributes extends StencilHTMLAttributes {}
+  interface GraphAgenda {
+    'eventTemplateFunction': (event: any) => string;
+  }
+  interface GraphAgendaAttributes extends StencilHTMLAttributes {
+    'eventTemplateFunction'?: (event: any) => string;
+  }
 
   interface GraphLogin {
     'login': () => Promise<void>;
