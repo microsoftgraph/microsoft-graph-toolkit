@@ -8,6 +8,9 @@
 import '@stencil/core';
 
 
+import {
+  GraphPersonaUser,
+} from './components/graph-persona/graph-persona';
 
 
 export namespace Components {
@@ -24,6 +27,17 @@ export namespace Components {
     'logout': () => Promise<void>;
   }
   interface GraphLoginAttributes extends StencilHTMLAttributes {}
+
+  interface GraphPersona {
+    'id': string;
+    'imageSize': number;
+    'persona': GraphPersonaUser;
+  }
+  interface GraphPersonaAttributes extends StencilHTMLAttributes {
+    'id'?: string;
+    'imageSize'?: number;
+    'persona'?: GraphPersonaUser;
+  }
 
   interface GraphTestAuth {}
   interface GraphTestAuthAttributes extends StencilHTMLAttributes {}
@@ -49,6 +63,7 @@ declare global {
   interface StencilElementInterfaces {
     'GraphAgenda': Components.GraphAgenda;
     'GraphLogin': Components.GraphLogin;
+    'GraphPersona': Components.GraphPersona;
     'GraphTestAuth': Components.GraphTestAuth;
     'GraphMsalProvider': Components.GraphMsalProvider;
     'GraphWamProvider': Components.GraphWamProvider;
@@ -57,6 +72,7 @@ declare global {
   interface StencilIntrinsicElements {
     'graph-agenda': Components.GraphAgendaAttributes;
     'graph-login': Components.GraphLoginAttributes;
+    'graph-persona': Components.GraphPersonaAttributes;
     'graph-test-auth': Components.GraphTestAuthAttributes;
     'graph-msal-provider': Components.GraphMsalProviderAttributes;
     'graph-wam-provider': Components.GraphWamProviderAttributes;
@@ -73,6 +89,12 @@ declare global {
   var HTMLGraphLoginElement: {
     prototype: HTMLGraphLoginElement;
     new (): HTMLGraphLoginElement;
+  };
+
+  interface HTMLGraphPersonaElement extends Components.GraphPersona, HTMLStencilElement {}
+  var HTMLGraphPersonaElement: {
+    prototype: HTMLGraphPersonaElement;
+    new (): HTMLGraphPersonaElement;
   };
 
   interface HTMLGraphTestAuthElement extends Components.GraphTestAuth, HTMLStencilElement {}
@@ -96,6 +118,7 @@ declare global {
   interface HTMLElementTagNameMap {
     'graph-agenda': HTMLGraphAgendaElement
     'graph-login': HTMLGraphLoginElement
+    'graph-persona': HTMLGraphPersonaElement
     'graph-test-auth': HTMLGraphTestAuthElement
     'graph-msal-provider': HTMLGraphMsalProviderElement
     'graph-wam-provider': HTMLGraphWamProviderElement
@@ -104,6 +127,7 @@ declare global {
   interface ElementTagNameMap {
     'graph-agenda': HTMLGraphAgendaElement;
     'graph-login': HTMLGraphLoginElement;
+    'graph-persona': HTMLGraphPersonaElement;
     'graph-test-auth': HTMLGraphTestAuthElement;
     'graph-msal-provider': HTMLGraphMsalProviderElement;
     'graph-wam-provider': HTMLGraphWamProviderElement;

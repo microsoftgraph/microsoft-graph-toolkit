@@ -33,6 +33,9 @@ export class TestAuthProvider implements IAuthProvider {
 }
 
 export class TestGraph implements IGraph {
+    findPerson(query: string): Promise<MicrosoftGraph.Person[]> {
+        throw new Error("Method not implemented.");
+    }
     calendar(startDateTime: Date, endDateTime: Date): Promise<MicrosoftGraph.Event[]> {
         let calendarData : MicrosoftGraph.Event[] = [
             {
@@ -54,8 +57,31 @@ export class TestGraph implements IGraph {
         return Promise.resolve(testUser);
     }
 
-    myPhoto(): Promise<Response> {
-        return fetch('https://pbs.twimg.com/profile_images/861791187019079684/_-blnGB8_400x400.jpg');
+    getUser(id: string) : Promise<MicrosoftGraph.User> {
+        let testUser : MicrosoftGraph.User =  {
+            displayName: 'Test User',
+            mail: id
+        }
+        return Promise.resolve(testUser);
+    }
+
+    async myPhoto(): Promise<string> {
+        let response = await fetch('https://pbs.twimg.com/profile_images/861791187019079684/_-blnGB8_400x400.jpg');
+
+        let blob = await response.blob();
+
+        return new Promise((resolve, reject) => {
+            const reader = new FileReader;
+            reader.onerror = reject;
+            reader.onload = _ => {
+                resolve(reader.result as string);
+            }
+            reader.readAsDataURL(blob);
+        });
+    }
+
+    async getUserPhoto(id: string) : Promise<string> {
+        return this.myPhoto();
     }
 
 }

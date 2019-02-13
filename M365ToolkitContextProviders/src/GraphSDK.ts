@@ -3,7 +3,10 @@ import { IAuthProvider } from "./IAuthProvider";
 
 export interface IGraph {
     me() : Promise<MicrosoftGraph.User>;
-    myPhoto() : Promise<Response>;
+    getUser(id: string) : Promise<MicrosoftGraph.User>;
+    findPerson(query: string) : Promise<MicrosoftGraph.Person[]>;
+    myPhoto() : Promise<string>;
+    getUserPhoto(id: string) : Promise<string>;
     calendar(startDateTime : Date, endDateTime : Date) : Promise<Array<MicrosoftGraph.Event>>
 }
 
@@ -25,6 +28,10 @@ export class Graph implements IGraph {
     }
 
     async get(resource: string, scopes?: string[]) : Promise<Response> {
+        if (!resource.startsWith('/')){
+            resource = "/" + resource;
+        }
+        
         let token : string;
         try {
             if (typeof scopes !== 'undefined') {
@@ -45,25 +52,68 @@ export class Graph implements IGraph {
         });
 
         if (response.status >= 400) {
+
+            // hit limit - need to wait and retry per:
+            // https://docs.microsoft.com/en-us/graph/throttling
+            if (response.status == 429) {
+                console.log('too many requests - wait ' + response.headers.get('Retry-After') + ' seconds');
+                return null;
+            }
+
             let error : any = response.json();
             if (error.error !== undefined) {
                 console.log(error);
             }
+            console.log(response);
             throw 'error accessing graph';
         }
 
         return response;
     }
 
-    async me() : Promise<MicrosoftGraph.User>
-    {
+    async me() : Promise<MicrosoftGraph.User> {
         let scopes = ['user.read'];
         return this.getJson('/me', scopes) as MicrosoftGraph.User;
     }
 
-    async myPhoto() : Promise<Response> {
+    async getUser(userPrincipleName: string) : Promise<MicrosoftGraph.User> {
         let scopes = ['user.read'];
-        return this.get('/me/photo/$value', scopes);
+        return this.getJson(`/users/${userPrincipleName}`, scopes) as MicrosoftGraph.User;
+    }
+
+    async findPerson(query: string) : Promise<MicrosoftGraph.Person[]>{
+        let scopes = ['user.readbasic.all'];
+        let result = await this.getJson(`/me/people/?$search="${query}"`, scopes);
+        return result.value as MicrosoftGraph.Person[];
+    }
+
+    myPhoto() : Promise<string> {
+        let scopes = ['user.readbasic.all'];
+        return this.getBase64('/me/photo/$value', scopes);
+    }
+
+    async getUserPhoto(id: string) : Promise<string> {
+        let scopes = ['user.read'];
+        return this.getBase64(`users/${id}/photo/$value`, scopes);
+    }
+
+    private async getBase64(resource: string, scopes: string[]) : Promise<string> {
+        try {
+            let response = await this.get(resource, scopes);
+            
+            let blob = await response.blob();
+            
+            return new Promise((resolve, reject) => {
+                const reader = new FileReader;
+                reader.onerror = reject;
+                reader.onload = _ => {
+                    resolve(reader.result as string);
+                }
+                reader.readAsDataURL(blob);
+            });
+        } catch {
+            return null;
+        }
     }
 
     async calendar(startDateTime : Date, endDateTime : Date) : Promise<Array<MicrosoftGraph.Event>> {
