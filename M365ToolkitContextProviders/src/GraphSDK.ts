@@ -24,7 +24,11 @@ export class Graph implements IGraph {
 
     async getJson(resource: string, scopes? : string[]) {
         let response = await this.get(resource, scopes);
-        return response.json();
+        if (response) {
+            return response.json();
+        }
+
+        return null;
     }
 
     async get(resource: string, scopes?: string[]) : Promise<Response> {
@@ -41,9 +45,12 @@ export class Graph implements IGraph {
             }
         } catch (error) {
             console.log(error);
-            throw 'Unable to retreive token for Graph';
+            return null;
         }
         
+        if (!token) {
+            return null;
+        }
 
         let response = await fetch(this.rootUrl + resource, {
             headers: {
@@ -77,30 +84,33 @@ export class Graph implements IGraph {
     }
 
     async getUser(userPrincipleName: string) : Promise<MicrosoftGraph.User> {
-        let scopes = ['user.read'];
+        let scopes = ['user.readbasic.all'];
         return this.getJson(`/users/${userPrincipleName}`, scopes) as MicrosoftGraph.User;
     }
 
     async findPerson(query: string) : Promise<MicrosoftGraph.Person[]>{
         let scopes = ['user.readbasic.all'];
         let result = await this.getJson(`/me/people/?$search="${query}"`, scopes);
-        return result.value as MicrosoftGraph.Person[];
+        return result ? result.value as MicrosoftGraph.Person[] : null;
     }
 
     myPhoto() : Promise<string> {
-        let scopes = ['user.readbasic.all'];
+        let scopes = ['user.read'];
         return this.getBase64('/me/photo/$value', scopes);
     }
 
     async getUserPhoto(id: string) : Promise<string> {
-        let scopes = ['user.read'];
+        let scopes = ['user.readbasic.all'];
         return this.getBase64(`users/${id}/photo/$value`, scopes);
     }
 
     private async getBase64(resource: string, scopes: string[]) : Promise<string> {
         try {
             let response = await this.get(resource, scopes);
-            
+            if (!response) {
+                return null;
+            }
+
             let blob = await response.blob();
             
             return new Promise((resolve, reject) => {
@@ -123,6 +133,6 @@ export class Graph implements IGraph {
         let edt = `enddatetime=${endDateTime.toISOString()}`
         let uri = `/me/calendarview?${sdt}&${edt}`;
         let calendar = await this.getJson(uri, scopes);
-        return calendar.value;
+        return calendar ? calendar.value : null;
     }
 }

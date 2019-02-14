@@ -83,6 +83,7 @@ export class MsalProvider implements IAuthProvider {
 
     async getAccessToken(scopes?: string[]): Promise<string> {
         let accessToken : string;
+        scopes = scopes || this.scopes;
         try {
             accessToken = await this.provider.acquireTokenSilent(scopes);
         } catch (e) {
