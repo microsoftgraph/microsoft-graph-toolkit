@@ -28,7 +28,6 @@ describe('graph-login', () => {
 
     await page.waitForChanges();
 
-    expect(await page.find('graph-agenda >>> ul')).toEqualHtml("<ul><li>event 1</li><li>event 2</li></ul>");
-    expect(await page.find('graph-agenda >>> div')).toBeNull();
+    expect(await page.find('graph-agenda >>> ul > li:nth-child(1) > div > div.event-details-container > div.event-subject')).toEqualText("event 1");
   });
 });

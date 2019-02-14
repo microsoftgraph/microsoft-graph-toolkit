@@ -33,16 +33,76 @@ export class TestAuthProvider implements IAuthProvider {
 }
 
 export class TestGraph implements IGraph {
-    findPerson(query: string): Promise<MicrosoftGraph.Person[]> {
-        throw new Error("Method not implemented.");
+    async findPerson(query: string): Promise<MicrosoftGraph.Person[]> {
+        return Promise.resolve([await this.getUser('me')]);
     }
     calendar(startDateTime: Date, endDateTime: Date): Promise<MicrosoftGraph.Event[]> {
         let calendarData : MicrosoftGraph.Event[] = [
             {
-                subject : 'event 1'
+                subject : 'event 1',
+                isAllDay: true,
+                start: { dateTime: '2019-02-04T00:00:00.0000000', timeZone:'UTC' },
+                end: { dateTime: '2019-02-04T00:00:00.0000000', timeZone:'UTC' },
+                attendees: [
+                    {
+                        type: "required",
+                        status: {
+                            response: "none",
+                            time: "0001-01-01T00:00:00Z"
+                        },
+                        emailAddress: {
+                            name: "Justin Liu",
+                            address: "me"
+                        }
+                    },
+                    {
+                        type: "required",
+                        status: {
+                            response: "none",
+                            time: "0001-01-01T00:00:00Z"
+                        },
+                        emailAddress: {
+                            name: "PAX Spark Scale and Incubation",
+                            address: "me"
+                        }
+                    }
+                ],
+                location: {
+                    displayName: "There"
+                }
             },
             {
-                subject : 'event 2'
+                subject : 'event 2',
+                isAllDay: false,
+                start: { dateTime: '2019-02-04T00:00:00.0000000', timeZone:'UTC' },
+                end: { dateTime: '2019-02-04T00:00:00.0000000', timeZone:'UTC' },
+                attendees: [
+                    {
+                        type: "required",
+                        status: {
+                            response: "none",
+                            time: "0001-01-01T00:00:00Z"
+                        },
+                        emailAddress: {
+                            name: "Justin Liu",
+                            address: "me"
+                        }
+                    },
+                    {
+                        type: "required",
+                        status: {
+                            response: "none",
+                            time: "0001-01-01T00:00:00Z"
+                        },
+                        emailAddress: {
+                            name: "PAX Spark Scale and Incubation",
+                            address: "me"
+                        }
+                    }
+                ],
+                location: {
+                    displayName: "There"
+                }
             }
         ]
 
