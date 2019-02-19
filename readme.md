@@ -14,7 +14,7 @@ Currently, there are two different NPM projects in this repo:
 
 * Toolkit Components - web components 
 
-To run the project you need to first need to build the providers:
+To run the project you need to first build the providers:
 
 ```bash
 cd M365ToolkitContextProviders
