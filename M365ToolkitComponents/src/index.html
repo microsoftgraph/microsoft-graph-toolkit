@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html dir="ltr" lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=5.0">
+  <title>Stencil Component Starter</title>
+  <script src="/build/toolkit.js"></script>
+  <link rel=stylesheet href="/build/toolkit.css"></link>
+  
+</head>
+<body>
+
+  <graph-wam-provider client-id="a974dfa0-9f57-49b9-95db-90f04ce2111a"></graph-wam-provider>
+  <graph-msal-provider client-id="6f668011-f616-4857-81a3-39d929681b1b"></graph-msal-provider>
+  <!-- <graph-msal-provider client-id="a974dfa0-9f57-49b9-95db-90f04ce2111a" login-type="popup"></graph-msal-provider> -->
+                    
+  <graph-login style="float: right;"></graph-login>
+
+  <graph-agenda id="myDay"></graph-agenda>
+
+  <!-- <template id="my-template">
+    <style>
+      .eventBtn {
+        background: green;
+      }
+    </style>
+    <button class="eventBtn">EVENT NAME GOES HERE</button>
+  </template>
+
+  <script>
+    let myDay = document.getElementById('myDay');
+    // myDay.eventTemplateFunction = (event) => {
+    //   return `<style>
+    //       .testbtn {
+    //         background: red;
+    //       }
+    //     </style>
+    //     <button class="testbtn">${event.subject}</button>`
+    // }
+
+    myDay.eventTemplateFunction = (event) => {
+      let template = document.getElementById("my-template");
+      let templateContent = template.content.cloneNode(true);
+      
+      let btn = templateContent.querySelector('.eventBtn');
+      btn.innerHTML = event.subject;
+      btn.onclick = function () {
+        console.log(`${event.subject} clicked`);
+      }
+
+      return templateContent;
+    };
+  </script> -->
+
+</body>
+</html>
