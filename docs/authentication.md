@@ -1,7 +1,7 @@
 # Authentication and Graph helpers
 
 ## Description
-The M365 Community Toolkit contains authentication and graph helpers and interfaces. This enables all controls to be aware of the current authentication state and initiate calls to the graph without the developer having to write the code themselves. 
+The Graph Toolkit contains authentication and graph helpers and interfaces. This enables all components to be aware of the current authentication state and initiate calls to the graph without the developer having to write the code themselves. 
 
 ## Authentication
 The authentication helpers can be used to provide global authentication context to all the controls. This allows the controls to be aware of the current state without explicitly having to write any code for each control.
@@ -10,47 +10,61 @@ If you do not already have an application registered with the Microsoft identity
 
 ### Examples
 
-These are examples of initializing an authentication provider in JavaScript. You can also initialize an authentication provider in HTML through the [my-login](./controls/login-control.md) control
+These are examples of initializing an authentication provider in JavaScript. 
 
 1. Initialize for MSAL
 
-    in JS:
     ```js
-    Auth.initMSALProvider("client-id");
+    GraphProviders.addMsalProvider({clientId: '<YOUR_CLIENT_ID>'});
     ```
 
-2. Initialize with existing MSAL instance
+2. Initialize for Progressive Web Apps on Windows
 
-    only in JS:
     ```js
-    Auth.initWithMSAL(MyUserAgentApplication)
+    GraphProviders.addWamProvider('<YOUR_CLIENT_ID>');
     ```
 
-3. Initialize for Progressive Web Apps on Windows
+3. Initialize for Teams
 
-    \\ TODO
+    \\\\ TODO
 
-4. Initialize for Teams
+4. Initialize for SharePoint
 
-    \\ TODO
+    \\\\ TODO
 
-5. Initialize for SharePoint
+5. Initialize for AddIns
 
-    \\ TODO
+    \\\\ TODO
 
-6. Initialize for AddIns
+### Examples (HTML)
 
-    \\ TODO
+Most providers also have a web component wrapper that allows you to initialize it all in HTML
+
+1. Use the `graph-msal-provider` for MSAL. See [docs](./components/providers/MsalProvider.md)
+
+    ```html
+    <graph-msal-provider client-id="<YOUR_CLIENT_ID>"></graph-msal-provider>
+    ```
+
+2. Use the 'graph-wam-provider' for authenticating with the Web Authentication Manager in Windows. See [docs](./components/providers/WamProvider.md)
+
+    ```html
+    <graph-wam-provider client-id="<YOUR_CLIENT_ID>"></graph-wam-provider>
+    ```
+
+## Get started
+
+You can initialize a provider at any time, but it's recomended to initialize them before using any of the components. You can also initialize multiple providers at the same time when you need to target multiple platforms. For example, if you initialize both the Wam and Msal providers (in that order), the components will chose the first provider available on the current runtime. When running in a progressive web app (PWA) on Windows, the Wam provider will be used since it is available and was initialized first. When running in the browser, Wam is not available, so the Msal provider will be used.
 
 ### API
 
-1. The `Auth` global variable exposes the following functions
-    * `function initMSALProvider(config : MSALConfig)`
+1. The `GraphProviders` global variable exposes the following functions
+    * `function addMsalProvider(config : MsalConfig)`
         
-        where `MSALConfig` defines the following interface:
+        where `MsalConfig` defines the following interface:
 
         ```ts
-        interface MSALConfig {
+        interface MsalConfig {
 
             clientId: string; // required
             scopes?: string[]; // optional - default = ['user.read']
@@ -64,65 +78,61 @@ These are examples of initializing an authentication provider in JavaScript. You
 
         In general, you will not need to specify the scope. Each control will automatically request access to the appropriate scopes needed for the control to function properly. Make sure to visit each control's documentation to know what scope to enable for your app in the Azure Portal
 
-    * `function initWithMSAL(application : UserAgentApplication)`
+    * `function addMsalProvider(application : UserAgentApplication)`
 
-        If you are already using MSAL.js in your application, just pass in the instance to the `initWithMSAL` method. No need to change how you configure your application
+        If you are already using MSAL.js in your application, just pass in the instance to the `addMsalProvider` method. No need to change how you configure your application
 
-    * `function initForWinPWA(clientId: string)`
+    * `function addWamProvider(clientId: string, authority?: string)`
 
         If your application will be running as a Progressive Web App (PWA) on Windows, you might want to take advantage of the native [Web Account Manager (WAM)](https://docs.microsoft.com/en-us/windows/uwp/security/web-account-manager) APIs. This will allow you to simplify the login process for your users by using the built in Windows identity provider.
 
-    * `function getAuthProvider() : IAuthProvider`
+    * `function add(provider : IAuthProvider)`
 
-        This function is intended to be used by each control to get a reference to the authentication provider once initialized. The provider defines the following interface:
+        Use the add function to initialize with a custom provider
 
-        ```ts
-        export interface IAuthProvider 
-        {
-            type : ProviderType;
-            readonly isLoggedIn : boolean;
+    * `function getAvailable() : IAuthProvider`
 
-            login() : Promise<void>;
-            logout() : Promise<void>;
-            getAccessToken(scopes?: string[]) : Promise<string>;
+        This function is intended to be used by each control to get a reference to the authentication provider once initialized. It returns the first provider that is available on the current runtime.
 
-            // get access to underlying provider (such as UserAgentApplication)
-            provider : any;
+    * `function onProvidersChanged(callbackFunction)`
 
-            // graph API - see documentation bellow
-            graph : Graph;
+        the `callbackFunction` function will be called when a new provider is initialized. Use `getAvailable()` to get the first available provider.
 
-            // calls the callback function when login state changes
-            onLoginChanged(eventHandler : EventHandler<LoginChangedEvent>)
-        }
-        ```
+## Implement your own provider
 
-    * `function onAuthProviderChanged(callbackFunction)`
+The provider defines the following interface:
 
-        the `callbackFunction` function will be called when a new provider is initialized. the new provider will be passed to the function.
+```ts
+export interface IAuthProvider 
+{
+    readonly isLoggedIn : boolean;
+    readonly isAvailable : boolean;
+
+    login() : Promise<void>;
+    logout() : Promise<void>;
+    getAccessToken() : Promise<string>;
+
+    // get access to underlying provider (such as UserAgentApplication)
+    provider : any;
+
+    // graph API - see documentation bellow
+    graph : Graph;
+
+    // calls the callback function when login state changes
+    onLoginChanged(eventHandler : EventHandler<LoginChangedEvent>)
+}
+```
 
 ## Microsoft Graph
 
 Each control is enabled with Graph access out of the box as long as the developer has initialized a provider (as described in the above section). To get a reference to the built in Microsoft Graph APIs, first get a reference to the global IAuthProvider and then use the `Graph` object:
 
 ```js
-let provider = Auth.getAuthProvider();
+let provider = GraphProviders.getAvailable();
 if (provider) {
     let graph = provider.Graph;
 }
 ```
 
-The Graph object defines several functions for accessing the Graph:
-
-* `get(resource: string, scopes?: string[]) : Promise<Response>`
-
-* `getJson(resource: string, scopes? : string[]) :Promise<any>`
-
-Use these two functions to get data from any graph resource (such as `'/me'`).
-
-If you do not pass in the scope (such as `['user.read']` for `'/me'`), the call will use the scopes you specified when creating the IAuthProvider (or default values).
-
-> NOTE: If you know all scopes your application will use, it might be easier to just initialize the `IAuthProvider` with those scopes once and not worry about what scopes to use for each call. See documentation above.
-
-The Graph object also provides common functions for resources needed by  controls. For example, `graph.me()` will get the `'/me'` resource. For list of all functions, see the API documentation (TODO);
+The graph object is an instance of the [GraphSDK](https://github.com/microsoftgraph/msgraph-sdk-javascript) and you can use it to make any calls to the Microsoft Graph. It is also used by all the components.
 
