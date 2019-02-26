@@ -40,13 +40,13 @@ These are examples of initializing an authentication provider in JavaScript.
 
 Most providers also have a web component wrapper that allows you to initialize it all in HTML
 
-1. Use the `graph-msal-provider` for MSAL. See [docs](./components/providers/MsalProvider.md)
+1. Use the `graph-msal-provider` for MSAL. See [docs](./components/providers/graph-msal-provider.md)
 
     ```html
     <graph-msal-provider client-id="<YOUR_CLIENT_ID>"></graph-msal-provider>
     ```
 
-2. Use the 'graph-wam-provider' for authenticating with the Web Authentication Manager in Windows. See [docs](./components/providers/WamProvider.md)
+2. Use the 'graph-wam-provider' for authenticating with the Web Authentication Manager in Windows. See [docs](./components/providers/graph-wam-provider.md)
 
     ```html
     <graph-wam-provider client-id="<YOUR_CLIENT_ID>"></graph-wam-provider>

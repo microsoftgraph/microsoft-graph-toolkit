@@ -7,9 +7,7 @@ A Login Control is a button and flyout control to facilitate login of a user to 
 
 ## Authentication
 
-The login control leverages the global authentication provider described in the [authentication documentation](./../authentication.md). Make sure you've initialized an authentication provider before the user can use the control
-
-Alternatively, you can initialize the authentication provider directly in HTML without having to set it up in code behind. This can be accomplished by setting the `client-id` directly in HTML.
+The login control leverages the global authentication provider described in the [authentication documentation](./../authentication.md). 
 
 ## Graph scopes
 
@@ -26,7 +24,7 @@ This control uses the following Microsoft Graph APIs and permissions:
 
 ### Add the control to the html page
 ```html
-<my-login></my-login>
+<graph-login></graph-login>
 ```
 
 ## Changing how the control looks
@@ -55,46 +53,16 @@ Use the `view` property to control how the control is layed out once the user is
 
 ### Example:
 ```html
-<my-login
+<graph-login
     view="pictureOnly"
     theme="fluent"
     custom-style='.login-root-button {background:red;}'>
-    </my-login>
-```
-
-## Using the control to initialize an authentication provider
-
-The following attributes are available to initialize an authentication provider. The `client-id` attribute must be set for the other properties to have an effect.
-
-| property  | Required  | Description |
-| --- | --- | --- |
-`client-id` | optional | minimum required property to initialize an authentication provider through the control
-`login-type` | optional | either `redirect` or `popup` - default is `redirect`
-`scopes` | optional | comma delimited scopes - default `user.read`
-`authority` | optional | default is `https://login.microsoftonline.com/common`
-`wam` | optional flag | use WAM when running as PWA on Windows
-
-### Example: Initialize an authentication provider
-```html
-<my-login 
-    client-id="client-id">
-    </my-login>
-```
-
-### Example: Initialize an authentication provider with more options
-```html
-<my-login 
-    client-id="client-id"
-    login-type="popup"
-    scopes="user.read, calendars.read"
-    authority="https://login.microsoftonline.com/contoso.onmicrosoft.com"
-    wam>
-    </my-login>
+    </graph-login>
 ```
 
 ## Using the control without an authentication provider
 
-If you do not want to use the built in authentication provider, you can use the following properties to set the logged in user's details.
+If you want provide your own logic and authentication, you can use the following properties to set the logged in user's details. 
 
 | property | Description |
 | --- | --- |
@@ -136,7 +104,7 @@ interface LoginDropdownCommand {
 
 ### Example:
 ```html
-<my-login id="myLoginControl"></my-login>
+<graph-login id="myLoginControl"></graph-login>
 ```
 
 ```js
@@ -164,16 +132,3 @@ The following events are fired from the control:
 | `loginCanceled` | The user canceled the login process |
 | `LogoutInitiated` | The user started to logout |
 | `LogoutCompleted` | the user logged out |
-
-
-## Anatomy
-```
-div.login-root
-|---button.login-root-button
-|   |---div.login-header
-|       |---div.login-header-user
-|       |---div.login-header-user-image-container
-|           |---img.login-user-image
-|---div.login-dropdown-root
-
-```
