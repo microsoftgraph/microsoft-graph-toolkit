@@ -1,5 +1,5 @@
 import { Component, Prop, Watch } from '@stencil/core';
-import { MsalProvider, MsalConfig, LoginType, Providers } from '@m365toolkit/providers';
+import { MsalProvider, MsalConfig, LoginType, Providers } from '@msgraphtoolkit/providers';
 
 @Component({
     tag: 'graph-msal-provider'

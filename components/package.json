@@ -1,5 +1,5 @@
 {
-  "name": "@m365toolkit/components",
+  "name": "@msgraphtoolkit/components",
   "version": "0.0.1",
   "description": "Microsoft 365 Toolkit",
   "module": "dist/esm/index.js",
@@ -12,15 +12,15 @@
   "scripts": {
     "build": "stencil build --docs",
     "start": "stencil build --dev --watch --serve",
-    "startes5": "stencil build --dev --watch --serve --es5",
+    "start:es5": "stencil build --dev --watch --serve --es5",
     "test": "stencil test --spec --e2e",
     "test.watch": "stencil test --spec --e2e --watchAll"
   },
   "dependencies": {
-    "@m365toolkit/providers": "file:../M365ToolkitContextProviders"
+    "@msgraphtoolkit/providers": "file:../providers"
   },
   "devDependencies": {
-    "@microsoft/microsoft-graph-types": "^1.5.0",
+    "@microsoft/microsoft-graph-types": "^1.6.0",
     "@stencil/core": "^0.18.0",
     "@types/jest": "23.3.14",
     "@types/puppeteer": "1.11.1",

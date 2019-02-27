@@ -1,6 +1,6 @@
-jest.mock('@m365toolkit/providers');
+jest.mock('@msgraphtoolkit/providers');
 
-import { MsalProvider, LoginType, Providers} from '@m365toolkit/providers'
+import { MsalProvider, LoginType, Providers} from '@msgraphtoolkit/providers'
 import {MsalProviderComponent} from "./graph-msal-provider"
 
 describe('MsalProviderComponent', () => {

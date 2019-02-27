@@ -1,5 +1,5 @@
 import { Component, Prop, Watch } from '@stencil/core';
-import { Providers, WamProvider } from '@m365toolkit/providers';
+import { Providers, WamProvider } from '@msgraphtoolkit/providers';
 
 @Component({
     tag: 'graph-wam-provider'

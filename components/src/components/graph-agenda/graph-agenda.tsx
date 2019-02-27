@@ -1,6 +1,6 @@
 import { Component, State, Prop, Element } from '@stencil/core';
 import * as MicrosoftGraph from '@microsoft/microsoft-graph-types';
-import { Providers, IAuthProvider } from '@m365toolkit/providers';
+import { Providers, IAuthProvider } from '@msgraphtoolkit/providers';
 
 @Component({
     tag: 'graph-agenda',

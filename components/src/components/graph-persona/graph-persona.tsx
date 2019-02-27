@@ -1,6 +1,6 @@
 import { Component, Prop, Watch, State } from "@stencil/core";
 import * as MicrosoftGraph from "@microsoft/microsoft-graph-types"
-import { IAuthProvider, Providers } from "@m365toolkit/providers";
+import { IAuthProvider, Providers } from "@msgraphtoolkit/providers";
 
 @Component({
     tag: 'graph-persona',

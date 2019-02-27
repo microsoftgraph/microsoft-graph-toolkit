@@ -6,7 +6,7 @@ import { WamProvider } from './WamProvider';
 
 declare global {
     interface Window {
-        _m365_providers : IAuthProvider[];
+        _msgraph_providers : IAuthProvider[];
     }
 }
 
@@ -46,11 +46,11 @@ export module Providers {
 
     // TODO - figure out a better way to have a global reference to all providers
     function getProviders() {
-        if (!window._m365_providers) {
-            window._m365_providers = [];
+        if (!window._msgraph_providers) {
+            window._msgraph_providers = [];
         }
 
-        return window._m365_providers;
+        return window._msgraph_providers;
     }
 }
 

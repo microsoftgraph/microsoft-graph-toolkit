@@ -11,15 +11,15 @@ var ForkTsCheckerWebpackPlugin = require('fork-ts-checker-webpack-plugin');
 module.exports = {
     mode: "production",
     entry: {
-        'm365providers': [PATHS.entryPoint],
-        'm365providers.min': [PATHS.entryPoint]
+        'msgraphproviders': [PATHS.entryPoint],
+        'msgraphproviders.min': [PATHS.entryPoint]
     },
     output: {
         path: PATHS.bundles,
         filename: '[name].js',
         chunkFilename: '[name].chunk.js',
         libraryTarget: 'umd',
-        library: 'm365',
+        library: 'msgraphtoolkit',
         umdNamedDefine: true
     },
     resolve: {

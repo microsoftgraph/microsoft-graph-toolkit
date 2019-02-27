@@ -1,7 +1,7 @@
 import { Component, State, Element, Method } from '@stencil/core';
 
 import * as MicrosoftGraph from "@microsoft/microsoft-graph-types"
-import { Providers, IAuthProvider} from '@m365toolkit/providers'
+import { Providers, IAuthProvider} from '@msgraphtoolkit/providers'
 import { toggleClass } from '../../global/helpers';
 
 @Component({

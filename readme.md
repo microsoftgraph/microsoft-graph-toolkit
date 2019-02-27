@@ -17,7 +17,7 @@ Currently, there are two different NPM projects in this repo:
 To run the project you need to first build the providers:
 
 ```bash
-cd M365ToolkitContextProviders
+cd providers
 npm install
 npm run build
 ```
@@ -25,7 +25,7 @@ npm run build
 You can then navigate to the components project and run
 
 ```bash
-cd M365ToolkitComponents
+cd components
 npm install
 npm start
 ```
