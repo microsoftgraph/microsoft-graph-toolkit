@@ -6,7 +6,8 @@ import { WamProvider } from './WamProvider';
 
 declare global {
     interface Window {
-        _msgraph_providers : IAuthProvider[];
+        _msgraph_providers : IAuthProvider[],
+        _msgraph_eventDispatcher : EventDispatcher<{}>
     }
 }
 
@@ -26,7 +27,7 @@ export module Providers {
 
         if (provider !== null) {
             providers.push(provider);
-            _eventDispatcher.fire( {} );
+            getEventDispatcher().fire( {} );
         }
     }
 
@@ -38,10 +39,8 @@ export module Providers {
         add(new MsalProvider(config));
     }
 
-    let _eventDispatcher = new EventDispatcher();
-
     export function onProvidersChanged(event : EventHandler<any>) {
-        _eventDispatcher.register(event)
+        getEventDispatcher().register(event)
     }
 
     // TODO - figure out a better way to have a global reference to all providers
@@ -51,6 +50,14 @@ export module Providers {
         }
 
         return window._msgraph_providers;
+    }
+
+    function getEventDispatcher() {
+        if (!window._msgraph_eventDispatcher) {
+            window._msgraph_eventDispatcher = new EventDispatcher();
+        }
+
+        return window._msgraph_eventDispatcher;
     }
 }
 
