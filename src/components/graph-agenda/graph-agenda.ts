@@ -90,14 +90,14 @@ export class AgendaComponent extends LitElement{
     private renderEventTemplate(event) {
         let content : any = this.eventTemplateFunction(event);
         if (typeof content === "string") {
-            return html`<div innerHTML=${this.eventTemplateFunction(event)}></div>`;
+            return html`<div>${this.eventTemplateFunction(event)}</div>`;
         } else {
             let div = document.createElement('div');
             div.slot = event.subject;
             div.appendChild(content);
 
             this.appendChild(div);
-            return html`<slot name={event.subject}></slot>`
+            return html`<slot name=${event.subject}></slot>`
         }
     }
 
