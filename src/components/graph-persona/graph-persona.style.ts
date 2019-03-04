@@ -1,3 +1,7 @@
+import {css} from 'lit-element'
+import {globalStyle} from '../../global/variables.style'
+
+export const style = [globalStyle, css`
 img, svg, .persona-initials-container {
     width: 100%;
     height: 100%;
@@ -29,4 +33,4 @@ img {
     top: 50%;
     left: 50%;
     transform: translate(-50%, -50%);
-}
+}`]

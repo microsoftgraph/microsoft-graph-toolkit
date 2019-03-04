@@ -1,3 +1,7 @@
+import {css} from 'lit-element'
+import {globalStyle} from '../../global/variables.style'
+
+export const style = [globalStyle, css`
 .login-root {
     position: relative;
     flex: 0 0 auto;
@@ -209,3 +213,4 @@
         opacity: 1;
     }
 }
+`];

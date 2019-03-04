@@ -1,0 +1,24 @@
+{
+  "name": "@msgraphtoolkit/components",
+  "version": "0.0.1",
+  "description": "Microsoft Graph Toolkit",
+  "main": "dist/index.js",
+  "scripts": {
+    "clean": "shx rm -rf dist",
+    "start": "npm run build && npm run serve",
+    "build": "npm run clean && tsc",
+    "serve": "owc-dev-server --open . --port 3333"
+  },
+  "author": "@metulev",
+  "license": "MIT",
+  "dependencies": {
+    "lit-element": "^2.0.1",
+    "msal": "^0.2.4"
+  },
+  "devDependencies": {
+    "@microsoft/microsoft-graph-types": "^1.6.0",
+    "owc-dev-server": "^0.2.0",
+    "shx": "^0.3.2",
+    "typescript": "^3.3.3333"
+  }
+}
