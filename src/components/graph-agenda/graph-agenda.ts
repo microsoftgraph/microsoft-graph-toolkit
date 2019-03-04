@@ -1,26 +1,29 @@
-import { Component, State, Prop, Element } from '@stencil/core';
+import { LitElement, html, customElement, property } from 'lit-element';
 import * as MicrosoftGraph from '@microsoft/microsoft-graph-types';
-import { Providers, IAuthProvider } from '@msgraphtoolkit/providers';
 
-@Component({
-    tag: 'graph-agenda',
-    styleUrl: 'graph-agenda.css',
-    shadow: true
-})
-export class AgendaComponent {
+import { Providers, IAuthProvider } from '../../providers';
+import { style } from './graph-agenda.style';
 
-    @State() _things : Array<MicrosoftGraph.Event> 
+import '../graph-persona/graph-persona.js'
 
-    @Prop() eventTemplateFunction : (event: any) => string;
+@customElement('graph-agenda')
+export class AgendaComponent extends LitElement{
+
+    @property({attribute: false}) _events : Array<MicrosoftGraph.Event> 
+    @property() eventTemplateFunction : (event: any) => string;
     
-    @Element() $rootElement : HTMLElement;
-
     private _provider: IAuthProvider;
 
-    async componentWillLoad()
+    static get styles() {
+        return style;
+    }
+    
+
+    constructor()
     {
-            Providers.onProvidersChanged(_ => this.init());
-            await this.init();
+        super();
+        Providers.onProvidersChanged(_ => this.init());
+        this.init();
     }
 
     private async init() {
@@ -36,64 +39,65 @@ export class AgendaComponent {
             let today = new Date();
             let tomorrow = new Date();
             tomorrow.setDate(today.getDate() + 2);
-            this._things = await this._provider.graph.calendar(today, tomorrow);
+            this._events = await this._provider.graph.calendar(today, tomorrow);
         }
     }
 
     render() {
-        if (this._things) {
+        if (this._events) {
 
             // remove slotted elements inserted initially
-            while (this.$rootElement.lastChild) {
-                this.$rootElement.removeChild(this.$rootElement.lastChild);
+            while (this.lastChild) {
+                this.removeChild(this.lastChild);
             }
 
-            return <ul class="agenda-list">
-            {this._things.map(event => 
-            
-                <li>{this.eventTemplateFunction ? 
+            return html`
+            <ul class="agenda-list">
+                ${this._events.map(event => 
+                    html`<li>${this.eventTemplateFunction ? 
                         this.renderEventTemplate(event) : 
-                        this.renderEvent(event)}</li>
+                        this.renderEvent(event)}</li>`
                 )} 
-        </ul>;
+            </ul>`
         } else {
-            return <div>no things</div>
+            return html`<div>no things</div>`
         }
     }
 
     private renderEvent(event: MicrosoftGraph.Event) {
-        return <div class='agenda-event'>
-            <div class='event-time-container'>
-                <div>{this.getStartingTime(event)}</div>
-                <div class='event-duration'>{this.getEventDuration(event)}</div>
-            </div>
-            <div class='event-details-container'>
-                <div class='event-subject'>{event.subject}</div>
-                <div class='event-attendies'>
-                    <ul class='event-attendie-list'>
-                        {event.attendees.slice(0, 5).map(at =>
-                            <li class="event-attendie">
-                                <graph-persona id={at.emailAddress.address} image-size="30"></graph-persona>
-                            </li>
-                        )}
-                    </ul>
+        return html`
+            <div class='agenda-event'>
+                <div class='event-time-container'>
+                    <div>${this.getStartingTime(event)}</div>
+                    <div class='event-duration'>${this.getEventDuration(event)}</div>
                 </div>
-                <div class='event-location'>{event.location.displayName}</div>
-            </div>
-        </div>;
+                <div class='event-details-container'>
+                    <div class='event-subject'>${event.subject}</div>
+                    <div class='event-attendies'>
+                        <ul class='event-attendie-list'>
+                            ${event.attendees.slice(0, 5).map(at =>
+                                html`<li class="event-attendie">
+                                    <graph-persona persona-id=${at.emailAddress.address} image-size="30"></graph-persona>
+                                </li>`
+                            )}
+                        </ul>
+                    </div>
+                    <div class='event-location'>${event.location.displayName}</div>
+                </div>
+            </div>`
     }
 
     private renderEventTemplate(event) {
         let content : any = this.eventTemplateFunction(event);
         if (typeof content === "string") {
-            return <div innerHTML={this.eventTemplateFunction(event)}></div>;
+            return html`<div innerHTML=${this.eventTemplateFunction(event)}></div>`;
         } else {
             let div = document.createElement('div');
             div.slot = event.subject;
             div.appendChild(content);
 
-            this.$rootElement.appendChild(div);
-            return <slot name={event.subject}></slot>;
+            this.appendChild(div);
+            return html`<slot name={event.subject}></slot>`
         }
     }
 

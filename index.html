@@ -6,12 +6,13 @@
     <title>Microsoft Graph Toolkit Test</title>
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <script type="module" src="./dist/components/graph-login/graph-login.js"></script>
-    <!-- <script type="module" src="./dist/components/graph-persona/graph-persona.js"></script> -->
+    <script type="module" src="./dist/components/graph-persona/graph-persona.js"></script>
+    <script type="module" src="./dist/components/graph-agenda/graph-agenda.js"></script>
     <script type="module" src="./dist/components/providers/graph-msal-provider/graph-msal-provider.js"></script>
 </head>
 <body>
     <graph-msal-provider test="test" client-id="a974dfa0-9f57-49b9-95db-90f04ce2111a"></graph-msal-provider>
     <graph-login style="float: right;"></graph-login>
-    Test
+    <graph-agenda></graph-agenda>
 </body>
 </html>

@@ -1,3 +1,7 @@
+import {css} from 'lit-element'
+import {globalStyle} from '../../global/variables.style'
+
+export const style = [globalStyle, css`
 .agenda-list{
     list-style-type: none;
     padding: 0;
@@ -48,4 +52,4 @@
 .event-attendie {
     display: inline-block;
     margin: 0px 6px 0px 0px;
-}
+}`]
