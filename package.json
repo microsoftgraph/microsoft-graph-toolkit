@@ -17,6 +17,7 @@
   },
   "devDependencies": {
     "@microsoft/microsoft-graph-types": "^1.6.0",
+    "@webcomponents/webcomponentsjs": "^2.2.7",
     "owc-dev-server": "^0.2.0",
     "shx": "^0.3.2",
     "typescript": "^3.3.3333"

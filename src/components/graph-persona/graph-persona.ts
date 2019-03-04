@@ -80,14 +80,12 @@ export class PersonaComponent extends LitElement {
 
 
     render() {
+        let style = `
+            height: ${this.imageSize.toString()}px;
+            width: ${this.imageSize.toString()}px;
+        `
         return html`
-            <style>
-                .persona-container {
-                    height: ${this.imageSize.toString()}px;
-                    width: ${this.imageSize.toString()}px;
-                }
-            </style>
-            <div class="persona-container">
+            <div class="persona-container" style=${style}>
                 ${this.renderImage()}
             </div>`
     }
