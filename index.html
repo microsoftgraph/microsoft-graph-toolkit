@@ -5,11 +5,19 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <title>Microsoft Graph Toolkit Test</title>
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <script src="node_modules/@webcomponents/webcomponentsjs/webcomponents-loader.js"></script>
-    <script type="module" src="./dist/components/graph-login/graph-login.js"></script>
-    <script type="module" src="./dist/components/graph-persona/graph-persona.js"></script>
-    <script type="module" src="./dist/components/graph-agenda/graph-agenda.js"></script>
-    <script type="module" src="./dist/components/providers/graph-msal-provider/graph-msal-provider.js"></script>
+    <script src="https://unpkg.com/@webcomponents/webcomponentsjs/webcomponents-bundle.js"></script>
+    
+    <script src="node_modules/@webcomponents/webcomponentsjs/custom-elements-es5-adapter.js"></script>
+    
+    <!-- <script type="module" src="./dist/es6/components/graph-login/graph-login.js"></script>
+    <script type="module" src="./dist/es6/components/graph-persona/graph-persona.js"></script>
+    <script type="module" src="./dist/es6/components/graph-agenda/graph-agenda.js"></script>
+    <script type="module" src="./dist/es6/components/providers/graph-msal-provider/graph-msal-provider.js"></script> -->
+
+    <script type="module" src="./dist/es6/index.js"></script>
+
+    <!-- <script src="./dist/es5/ms-graph-toolkit.js"></script> -->
+
 </head>
 <body>
     <graph-msal-provider test="test" client-id="a974dfa0-9f57-49b9-95db-90f04ce2111a"></graph-msal-provider>

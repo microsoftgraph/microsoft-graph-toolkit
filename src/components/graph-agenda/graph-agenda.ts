@@ -4,7 +4,7 @@ import * as MicrosoftGraph from '@microsoft/microsoft-graph-types';
 import { Providers, IAuthProvider } from '../../providers';
 import { style } from './graph-agenda.style';
 
-import '../graph-persona/graph-persona.js'
+import '../graph-persona/graph-persona'
 
 @customElement('graph-agenda')
 export class AgendaComponent extends LitElement{

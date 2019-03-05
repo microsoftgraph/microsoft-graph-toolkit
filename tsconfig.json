@@ -4,12 +4,12 @@
     "experimentalDecorators": true,
     "lib": [
       "dom",
-      "es2017"
+      "es2015"
     ],
-    "module": "esnext",
+    "module": "es6",
     "moduleResolution": "node",
-    "target": "ES2017",
-    "outDir": "dist",
+    "target": "es2015",
+    "outDir": "dist/es6",
     "declaration": true,
     "esModuleInterop": true,
     "sourceMap": true,

@@ -1,18 +1,15 @@
 var path = require("path");
-var webpack = require("webpack");
+var ForkTsCheckerWebpackPlugin = require('fork-ts-checker-webpack-plugin');
 
 var PATHS = {
-    entryPoint: path.resolve(__dirname, 'src/index.ts'),
+    entryPoint: path.resolve(__dirname, 'es5/index.ts'),
     bundles: path.resolve(__dirname, 'dist/es5'),
 }
-
-var ForkTsCheckerWebpackPlugin = require('fork-ts-checker-webpack-plugin');
 
 module.exports = {
     mode: "production",
     entry: {
-        'msgraphproviders': [PATHS.entryPoint],
-        'msgraphproviders.min': [PATHS.entryPoint]
+        'ms-graph-toolkit': [PATHS.entryPoint]
     },
     output: {
         path: PATHS.bundles,
@@ -23,7 +20,7 @@ module.exports = {
         umdNamedDefine: true
     },
     resolve: {
-        extensions: ['.ts', '.tsx', '.js']
+        extensions: ['.ts', '.js']
     },
     plugins: [
         new ForkTsCheckerWebpackPlugin()
@@ -35,6 +32,9 @@ module.exports = {
                 loader: 'ts-loader',
                 options: {
                     transpileOnly: true,
+                    compilerOptions : {
+                        target: "es5"
+                    }
                 }
             }
 

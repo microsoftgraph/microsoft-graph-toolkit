@@ -4,7 +4,7 @@ import * as MicrosoftGraph from "@microsoft/microsoft-graph-types";
 import { Providers} from '../../providers';
 import { style } from './graph-login.style';
 
-import '../graph-persona/graph-persona.js'
+import '../graph-persona/graph-persona'
 
 @customElement('graph-login')
 export class LoginComponent extends LitElement {
