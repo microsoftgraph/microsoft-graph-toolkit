@@ -16,7 +16,7 @@ module.exports = {
         filename: '[name].js',
         chunkFilename: '[name].chunk.js',
         libraryTarget: 'umd',
-        library: 'msgraphtoolkit',
+        library: 'msGraphToolkit',
         umdNamedDefine: true
     },
     resolve: {

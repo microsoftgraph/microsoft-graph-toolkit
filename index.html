@@ -7,22 +7,35 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <script src="https://unpkg.com/@webcomponents/webcomponentsjs/webcomponents-bundle.js"></script>
     
-    <script src="node_modules/@webcomponents/webcomponentsjs/custom-elements-es5-adapter.js"></script>
-    
     <!-- <script type="module" src="./dist/es6/components/graph-login/graph-login.js"></script>
     <script type="module" src="./dist/es6/components/graph-persona/graph-persona.js"></script>
     <script type="module" src="./dist/es6/components/graph-agenda/graph-agenda.js"></script>
     <script type="module" src="./dist/es6/components/providers/graph-msal-provider/graph-msal-provider.js"></script> -->
 
-    <script type="module" src="./dist/es6/index.js"></script>
+    <!-- <script type="module" src="./dist/es6/index.js"></script> -->
 
-    <!-- <script src="./dist/es5/ms-graph-toolkit.js"></script> -->
+    <script src="./dist/es5/ms-graph-toolkit.js"></script>
 
 </head>
 <body>
-    <graph-msal-provider test="test" client-id="a974dfa0-9f57-49b9-95db-90f04ce2111a"></graph-msal-provider>
+    <!-- <graph-msal-provider test="test" client-id="a974dfa0-9f57-49b9-95db-90f04ce2111a"></graph-msal-provider> -->
     <graph-login style="float: right;"></graph-login>
     <graph-agenda id='myDay'></graph-agenda>
+
+    <!-- <script type="module">
+        import {Providers} from './dist/es6/index.js'
+
+        Providers.addMsalProvider({
+            clientId: 'a974dfa0-9f57-49b9-95db-90f04ce2111a'
+        });
+    
+    </script> -->
+
+    <script>
+        msGraphToolkit.Providers.addMsalProvider({
+            clientId: 'a974dfa0-9f57-49b9-95db-90f04ce2111a'
+        });
+    </script>
 
     <!-- <template id="my-template">
         <style>
