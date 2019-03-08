@@ -5,9 +5,11 @@
   "main": "dist/es6/index.js",
   "scripts": {
     "clean": "shx rm -rf dist",
-    "start": "npm run build && npm run serve",
+    "start": "run-p build:watch serve watch",
     "build": "npm run clean && tsc && webpack",
-    "serve": "owc-dev-server --open . --port 3333"
+    "build:watch": "tsc --watch",
+    "serve": "owc-dev-server --open . --port 3333",
+    "watch": "browser-sync start --no-notify --proxy localhost:3333 --files 'dist/**/*.js, index.html'"
   },
   "author": "@metulev",
   "license": "MIT",
@@ -18,7 +20,9 @@
   "devDependencies": {
     "@microsoft/microsoft-graph-types": "^1.6.0",
     "@webcomponents/webcomponentsjs": "^2.2.7",
+    "browser-sync": "^2.26.3",
     "fork-ts-checker-webpack-plugin": "^0.5.2",
+    "npm-run-all": "^4.1.5",
     "owc-dev-server": "^0.2.0",
     "shx": "^0.3.2",
     "ts-loader": "^5.3.3",
