@@ -1,5 +1,5 @@
 {
-  "name": "@msgraphtoolkit/components",
+  "name": "microsoft-graph-toolkit",
   "version": "0.0.1",
   "description": "Microsoft Graph Toolkit",
   "main": "dist/es6/index.js",
