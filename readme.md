@@ -4,7 +4,7 @@
 
 The Graph Toolkit is a collection of UI components and helpers for the Microsoft Graph.
 
-Components are built as web components using Stencil
+Components are built as web components using lit-element
 
 ## Getting Started
 
