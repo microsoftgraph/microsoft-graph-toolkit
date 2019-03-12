@@ -18,7 +18,7 @@ You can then start using the components in your html page
 <graph-persona persona-id="nikola metulev"></graph-persona>
 ```
 
-All the components know how to talk to the graph as long as you provide an authentication context they can use.
+All the components know how to talk to the graph as long as you provide an [authentication context](./authentication.md) they can use.
 
 
 ## NPM

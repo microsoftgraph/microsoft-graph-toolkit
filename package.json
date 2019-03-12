@@ -5,10 +5,12 @@
   "main": "dist/es6/index.js",
   "scripts": {
     "clean": "shx rm -rf dist",
-    "start": "run-p build:watch serve watch",
-    "build": "npm run clean && tsc && webpack",
+    "start": "run-p sass:watch build:watch serve watch",
+    "build": "npm run clean && sass && tsc && webpack",
+    "sass": "gulp sass",
+    "sass:watch": "gulp watchSass",
     "build:watch": "tsc --watch",
-    "serve": "owc-dev-server --open . --port 3333",
+    "serve": "owc-dev-server --port 3333",
     "watch": "browser-sync start --no-notify --proxy localhost:3333 --files 'dist/**/*.js, index.html'"
   },
   "author": "@metulev",
@@ -28,6 +30,7 @@
     "gulp-sass": "^4.0.2",
     "npm-run-all": "^4.1.5",
     "owc-dev-server": "^0.2.0",
+    "sass": "^1.17.2",
     "shx": "^0.3.2",
     "ts-loader": "^5.3.3",
     "typescript": "^3.3.3333",
