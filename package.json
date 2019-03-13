@@ -6,7 +6,7 @@
   "scripts": {
     "clean": "shx rm -rf dist",
     "start": "run-p sass:watch build:watch serve watch",
-    "build": "npm run clean && sass && tsc && webpack",
+    "build": "npm run clean && gulp sass && tsc && webpack",
     "sass": "gulp sass",
     "sass:watch": "gulp watchSass",
     "build:watch": "tsc --watch",
