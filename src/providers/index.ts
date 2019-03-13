@@ -3,8 +3,7 @@ import { MsalConfig } from "./MsalConfig";
 import { IAuthProvider } from './IAuthProvider';
 import { EventDispatcher, EventHandler } from './EventHandler';
 import { WamProvider } from './WamProvider';
-import { SharepointProvider } from './SharepointProvider';
-import { WebPartContext } from '@microsoft/sp-webpart-base';
+import { SharepointProvider, WebPartContext } from './SharepointProvider';
 
 declare global {
     interface Window {

@@ -1,8 +1,14 @@
 import { IAuthProvider, LoginChangedEvent, LoginType } from "./IAuthProvider";
 import { IGraph, Graph } from './GraphSDK';
 import { EventHandler, EventDispatcher } from './EventHandler';
-import { WebPartContext } from "@microsoft/sp-webpart-base";
-import { AadTokenProvider, MSGraphClient } from "@microsoft/sp-http";
+
+declare interface AadTokenProvider{
+    getToken(x:string);
+}
+
+export declare interface WebPartContext{
+    aadTokenProviderFactory : any;
+}
 
 export class SharepointProvider implements IAuthProvider {
     
@@ -36,7 +42,6 @@ export class SharepointProvider implements IAuthProvider {
         this.context = context;
 
         context.aadTokenProviderFactory.getTokenProvider().then((tokenProvider: AadTokenProvider): void => {
-            // retrieve access token for the enterprise API secured with Azure AD
             this._provider = tokenProvider;
             this.graph = new Graph(this);
             this.login();
