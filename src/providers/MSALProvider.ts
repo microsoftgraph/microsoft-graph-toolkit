@@ -13,6 +13,9 @@ export class MsalProvider implements IAuthProvider {
     private _idToken : string;
 
     private _provider : UserAgentApplication;
+
+    private _resolveToken;
+    private _rejectToken;
     
     get provider() {
         return this._provider;
@@ -43,11 +46,11 @@ export class MsalProvider implements IAuthProvider {
         this._clientId = config.clientId;
         this.scopes = (typeof config.scopes !== 'undefined') ? config.scopes : ["user.read"];
         this.authority = (typeof config.authority !== 'undefined') ? config.authority : null;
-        let options = (typeof config.options != 'undefined') ? config.options : {};
+        let options = (typeof config.options != 'undefined') ? config.options : {cacheLocation: 'localStorage'};
         this._loginType = (typeof config.loginType !== 'undefined') ? config.loginType : LoginType.Redirect;
 
-        let callbackFunction = ((errorDesc : string, token: string, error: any, state: any) => {
-            this.tokenReceivedCallback(errorDesc, token, error, state);
+        let callbackFunction = ((errorDesc : string, token: string, error: any, tokenType: any, state: any) => {
+            this.tokenReceivedCallback(errorDesc, token, error, tokenType, state);
         }).bind(this);
 
         // import msal
@@ -81,19 +84,30 @@ export class MsalProvider implements IAuthProvider {
         }
     }
 
-    async getAccessToken(scopes?: string[]): Promise<string> {
+    addScope(...scopes : string[]) {
+        scopes.forEach((scope) => {
+            if (this.scopes.indexOf(scope) < 0) {
+                this.scopes.push(scope);
+            }
+        });
+    }
+
+    async getAccessToken(): Promise<string> {
         let accessToken : string;
-        scopes = scopes || this.scopes;
         try {
-            accessToken = await this.provider.acquireTokenSilent(scopes);
+            accessToken = await this.provider.acquireTokenSilent(this.scopes);
         } catch (e) {
             try {
                 // TODO - figure out for what error this logic is needed so we
                 // don't prompt the user to login unnecessarily
                 if (this._loginType == LoginType.Redirect) {
-                    await this.provider.acquireTokenRedirect(scopes);
+                    this.provider.acquireTokenRedirect(this.scopes);
+                    return new Promise((resolve, reject) => {
+                        this._resolveToken = resolve;
+                        this._rejectToken = reject;
+                    });
                 } else {
-                    accessToken = await this.provider.acquireTokenPopup(scopes);
+                    accessToken = await this.provider.acquireTokenPopup(this.scopes);
                 }
             } catch (e) {
                 // TODO - figure out how to expose this during dev to make it easy for the dev to figure out
@@ -114,13 +128,22 @@ export class MsalProvider implements IAuthProvider {
         this.scopes = scopes;
     }
 
-    tokenReceivedCallback(errorDesc : string, token: string, error: any, state: any)
+    tokenReceivedCallback(errorDesc : string, token: string, error: any, tokenType: any, state: any)
     {
         if (error) {
             console.log(errorDesc);
+            if (this._rejectToken) {
+                this._rejectToken(errorDesc);
+            }
         } else {
-            this._idToken = token;
-            this.fireLoginChangedEvent({});
+            if(tokenType == 'id_token') {
+                this._idToken = token;
+                this.fireLoginChangedEvent({});
+            } else {
+                if (this._resolveToken) {
+                    this._resolveToken(token);
+                }
+            }
         }
     }
 

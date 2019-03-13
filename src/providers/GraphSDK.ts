@@ -38,11 +38,11 @@ export class Graph implements IGraph {
         
         let token : string;
         try {
-            if (typeof scopes !== 'undefined') {
-                token = await this._provider.getAccessToken(scopes);
-            } else {
-                token = await this._provider.getAccessToken();
+            // for providers that support incremental consent 
+            if (this._provider.addScope) {
+                this._provider.addScope(...scopes);
             }
+            token = await this._provider.getAccessToken();
         } catch (error) {
             console.log(error);
             return null;
@@ -89,7 +89,7 @@ export class Graph implements IGraph {
     }
 
     async findPerson(query: string) : Promise<MicrosoftGraph.Person[]>{
-        let scopes = ['user.readbasic.all'];
+        let scopes = ['people.read'];
         let result = await this.getJson(`/me/people/?$search="${query}"`, scopes);
         return result ? result.value as MicrosoftGraph.Person[] : null;
     }
