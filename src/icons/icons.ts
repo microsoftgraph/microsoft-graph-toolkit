@@ -1,11 +1,7 @@
 import { css } from 'lit-element';
+import './icon-font';
 
 export const icons = css`
-  /* @font-face {
-    font-family: 'FabricMDL2Icons';
-    src: url('../fonts/fabric-icons.woff') format('woff');
-  } */
-
   .ms-Icon {
     -moz-osx-font-smoothing: grayscale;
     -webkit-font-smoothing: antialiased;
