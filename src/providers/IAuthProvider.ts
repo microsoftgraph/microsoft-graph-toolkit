@@ -8,8 +8,7 @@ export interface IAuthProvider
 
     login() : Promise<void>;
     logout() : Promise<void>;
-    getAccessToken() : Promise<string>;
-    addScope?(...scope: string[]);
+    getAccessToken(...scopes: string[]) : Promise<string>;
 
     // get access to underlying provider
     provider : any;

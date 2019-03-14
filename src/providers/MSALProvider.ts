@@ -43,6 +43,7 @@ export class MsalProvider implements IAuthProvider {
     }
 
     private initProvider(config: MsalConfig) {
+        console.log('initProvider');
         this._clientId = config.clientId;
         this.scopes = (typeof config.scopes !== 'undefined') ? config.scopes : ["user.read"];
         this.authority = (typeof config.authority !== 'undefined') ? config.authority : null;
@@ -57,12 +58,14 @@ export class MsalProvider implements IAuthProvider {
         // let msal = await import(/* webpackChunkName: "msal" */ "msal/lib-es6");
 
         this._provider = new UserAgentApplication(this._clientId, this.authority, callbackFunction, options);
+        console.log(this._provider);
         this.graph = new Graph(this);
 
         this.tryGetIdTokenSilent();
     }
     
     async login(): Promise<void> {
+        console.log('login');
         if (this._loginType == LoginType.Popup) {
             this._idToken = await this.provider.loginPopup(this.scopes);
             this.fireLoginChangedEvent({});
@@ -72,9 +75,11 @@ export class MsalProvider implements IAuthProvider {
     }
 
     async tryGetIdTokenSilent() : Promise<boolean> {
+        console.log('tryGetIdTokenSilent');
         try {
             this._idToken = await this.provider.acquireTokenSilent([this._clientId]);
             if (this._idToken) {
+                console.log('tryGetIdTokenSilent: got a token');
                 this.fireLoginChangedEvent({});
             }
             return this.isLoggedIn;
@@ -84,30 +89,34 @@ export class MsalProvider implements IAuthProvider {
         }
     }
 
-    addScope(...scopes : string[]) {
-        scopes.forEach((scope) => {
-            if (this.scopes.indexOf(scope) < 0) {
-                this.scopes.push(scope);
-            }
-        });
-    }
-
-    async getAccessToken(): Promise<string> {
+    private temp = 0;
+    async getAccessToken(...scopes: string[]): Promise<string> {
+        ++this.temp
+        let temp = this.temp;
+        scopes = scopes || this.scopes;
+        console.log('getaccesstoken' + ++temp + ': scopes' + scopes);
         let accessToken : string;
         try {
-            accessToken = await this.provider.acquireTokenSilent(this.scopes);
-        } catch (e) {
+            accessToken = await this.provider.acquireTokenSilent(scopes, this.authority);
+            console.log('getaccesstoken' + temp + ': got token');
+    } catch (e) {
             try {
+                console.log('getaccesstoken' + temp + ': catch ' + e);
                 // TODO - figure out for what error this logic is needed so we
                 // don't prompt the user to login unnecessarily
+                if (e.includes('multiple_matching_tokens_detected')) {
+                    console.log(e);
+                    return null;
+                }
+
                 if (this._loginType == LoginType.Redirect) {
-                    this.provider.acquireTokenRedirect(this.scopes);
+                    this.provider.acquireTokenRedirect(scopes);
                     return new Promise((resolve, reject) => {
                         this._resolveToken = resolve;
                         this._rejectToken = reject;
                     });
                 } else {
-                    accessToken = await this.provider.acquireTokenPopup(this.scopes);
+                    accessToken = await this.provider.acquireTokenPopup(scopes);
                 }
             } catch (e) {
                 // TODO - figure out how to expose this during dev to make it easy for the dev to figure out
@@ -130,8 +139,14 @@ export class MsalProvider implements IAuthProvider {
 
     tokenReceivedCallback(errorDesc : string, token: string, error: any, tokenType: any, state: any)
     {
+        debugger;
+        console.log('tokenReceivedCallback ' + errorDesc + ' | ' + tokenType);
+        if (this._provider) {
+            console.log(window.location.hash);
+            console.log("isCallback: " + this._provider.isCallback(window.location.hash));
+        }
         if (error) {
-            console.log(errorDesc);
+            console.log(error + " " + errorDesc);
             if (this._rejectToken) {
                 this._rejectToken(errorDesc);
             }
@@ -148,10 +163,12 @@ export class MsalProvider implements IAuthProvider {
     }
 
     onLoginChanged(eventHandler : EventHandler<LoginChangedEvent>) {
+        console.log('onloginChanged');
         this._loginChangedDispatcher.register(eventHandler);
     }
 
     private fireLoginChangedEvent(event : LoginChangedEvent) {
+        console.log('fireLoginChangedEvent');
         this._loginChangedDispatcher.fire(event);
     }
 }

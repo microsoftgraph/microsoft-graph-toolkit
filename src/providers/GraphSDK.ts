@@ -38,11 +38,7 @@ export class Graph implements IGraph {
         
         let token : string;
         try {
-            // for providers that support incremental consent 
-            if (this._provider.addScope) {
-                this._provider.addScope(...scopes);
-            }
-            token = await this._provider.getAccessToken();
+            token = await this._provider.getAccessToken(...scopes);
         } catch (error) {
             console.log(error);
             return null;

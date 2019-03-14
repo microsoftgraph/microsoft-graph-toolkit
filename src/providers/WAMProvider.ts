@@ -85,7 +85,7 @@ export class WamProvider implements IAuthProvider {
         throw new Error("Method not implemented.");
     }
 
-    getAccessToken(scopes?: string[]): Promise<string> {
+    getAccessToken(...scopes: string[]): Promise<string> {
         if (this.isLoggedIn) {
             return Promise.resolve(this.accessToken);
         }
