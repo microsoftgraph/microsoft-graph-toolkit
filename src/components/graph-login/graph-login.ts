@@ -80,7 +80,7 @@ export class LoginComponent extends LitElement {
         <div>
           <i class="ms-Icon ms-Icon--AddFriend"></i>
         </div>
-        <div class="login-signed-out-content">
+        <div class="login-signed-out-content ms-fontColor-themePrimary">
           Sign In
         </div>
       </div>

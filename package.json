@@ -18,7 +18,8 @@
   "dependencies": {
     "@webcomponents/webcomponentsjs": "^2.2.7",
     "lit-element": "^2.0.1",
-    "msal": "^0.2.4"
+    "msal": "^0.2.4",
+    "office-ui-fabric-core": "^9.6.1"
   },
   "devDependencies": {
     "@microsoft/microsoft-graph-types": "^1.6.0",
