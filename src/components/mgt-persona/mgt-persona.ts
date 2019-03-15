@@ -2,9 +2,9 @@ import { LitElement, html, customElement, property } from 'lit-element';
 import * as MicrosoftGraph from '@microsoft/microsoft-graph-types';
 
 import { Providers } from '../../providers';
-import { styles } from './graph-persona-styles';
+import { styles } from './mgt-persona-styles';
 
-@customElement('graph-persona')
+@customElement('mgt-persona')
 export class PersonaComponent extends LitElement {
   @property({
     attribute: 'image-size'

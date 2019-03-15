@@ -1,7 +1,7 @@
 import { LitElement, html, customElement, property } from 'lit-element';
 import { MsalProvider, MsalConfig, LoginType, Providers } from '../../../providers';
 
-@customElement('graph-msal-provider')
+@customElement('mgt-msal-provider')
 export class MsalProviderComponent extends LitElement{
 
     private _provider : MsalProvider;

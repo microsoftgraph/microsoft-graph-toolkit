@@ -1,7 +1,7 @@
 import { LitElement, html, customElement, property } from 'lit-element';
 import { WamProvider, Providers } from '../../../providers';
 
-@customElement('graph-wam-provider')
+@customElement('mgt-wam-provider')
 export class WamProviderComponent extends LitElement {
 
     private _provider : WamProvider;

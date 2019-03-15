@@ -2,11 +2,11 @@ import { LitElement, html, customElement, property } from 'lit-element';
 import * as MicrosoftGraph from '@microsoft/microsoft-graph-types';
 
 import { Providers } from '../../providers';
-import { styles } from './graph-login-styles';
+import { styles } from './mgt-login-styles';
 
-import '../graph-persona/graph-persona';
+import '../mgt-persona/mgt-persona';
 
-@customElement('graph-login')
+@customElement('mgt-login')
 export class LoginComponent extends LitElement {
   @property({ attribute: false }) private _user: MicrosoftGraph.User;
   @property({ attribute: false }) private _showMenu: boolean = false;
@@ -95,7 +95,7 @@ export class LoginComponent extends LitElement {
       <div>
         <div class="login-signed-in-root">
           <div class="login-signed-in-image">
-            <graph-persona persona-id="me" image-size="24" />
+            <mgt-persona persona-id="me" image-size="24" />
           </div>
           <div class="login-signed-in-content">
             ${this._user.displayName}
@@ -117,7 +117,7 @@ export class LoginComponent extends LitElement {
         <div class="login-menu-content">
           <div class="login-menu-user-profile">
             <div class="login-menu-user-image">
-              <graph-persona persona-id="me" image-size="65" />
+              <mgt-persona persona-id="me" image-size="65" />
             </div>
             <div class="login-menu-user-details">
               <div class="login-menu-user-display-name">

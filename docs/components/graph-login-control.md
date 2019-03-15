@@ -24,7 +24,7 @@ This control uses the following Microsoft Graph APIs and permissions:
 
 ### Add the control to the html page
 ```html
-<graph-login></graph-login>
+<mgt-login></mgt-login>
 ```
 
 ## Changing how the control looks
@@ -53,11 +53,11 @@ Use the `view` property to control how the control is layed out once the user is
 
 ### Example:
 ```html
-<graph-login
+<mgt-login
     view="pictureOnly"
     theme="fluent"
     custom-style='.login-root-button {background:red;}'>
-    </graph-login>
+    </mgt-login>
 ```
 
 ## Using the control without an authentication provider
@@ -104,7 +104,7 @@ interface LoginDropdownCommand {
 
 ### Example:
 ```html
-<graph-login id="myLoginControl"></graph-login>
+<mgt-login id="myLoginControl"></mgt-login>
 ```
 
 ```js

@@ -24,7 +24,7 @@ This control uses the following Microsoft Graph APIs and permissions:
 
 ### Add the control to the html page
 ```html
-<graph-persona person-query=""></graph-persona>
+<mgt-persona person-query=""></mgt-persona>
 ```
 
 ## Setting the persona details
