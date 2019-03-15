@@ -15,7 +15,7 @@ function runSass() {
         export const styles = [
           sharedStyles,
           css\`
-            @import 'styles/fabric-styles.css';
+            @import 'src/styles/fabric-styles.css';
         `
       )
     )
