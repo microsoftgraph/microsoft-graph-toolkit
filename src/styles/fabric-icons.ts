@@ -1,3 +1,4 @@
+import './fabric-icon-font';
 import { css } from 'lit-element';
 
 export const icons = css`

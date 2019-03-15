@@ -1,5 +1,3 @@
-import './fabric-styles';
-
 import { css } from 'lit-element';
 import { icons } from './fabric-icons';
 

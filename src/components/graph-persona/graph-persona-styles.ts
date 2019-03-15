@@ -3,7 +3,7 @@ import { css } from 'lit-element';
         export const styles = [
           sharedStyles,
           css`
-            @import 'src/styles/fabric-styles.css';
+            @import '../../../node_modules/office-ui-fabric-core/dist/css/fabric.min.css';
 img,
 svg,
 .persona-initials-container {
