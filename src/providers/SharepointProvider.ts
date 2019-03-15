@@ -45,7 +45,7 @@ export class SharepointProvider implements IAuthProvider {
             this._provider = tokenProvider;
             this.graph = new Graph(this);
             this.login();
-          });
+        });
         this.fireLoginChangedEvent({});
     }
     
