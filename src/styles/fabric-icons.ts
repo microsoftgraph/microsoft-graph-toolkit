@@ -1,14 +1,13 @@
 import { css } from 'lit-element';
-import './icon-font';
 
 export const icons = css`
   .ms-Icon {
-    -moz-osx-font-smoothing: grayscale;
-    -webkit-font-smoothing: antialiased;
     display: inline-block;
     font-family: 'FabricMDL2Icons';
     font-style: normal;
     font-weight: normal;
+    -moz-osx-font-smoothing: grayscale;
+    -webkit-font-smoothing: antialiased;
   }
 
   .ms-Icon--ChevronDown::before {

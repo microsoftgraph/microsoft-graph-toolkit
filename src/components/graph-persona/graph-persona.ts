@@ -2,7 +2,7 @@ import { LitElement, html, customElement, property } from 'lit-element';
 import * as MicrosoftGraph from '@microsoft/microsoft-graph-types';
 
 import { Providers } from '../../providers';
-import { style } from './graph-persona.style';
+import { styles } from './graph-persona-styles';
 
 @customElement('graph-persona')
 export class PersonaComponent extends LitElement {
@@ -30,7 +30,7 @@ export class PersonaComponent extends LitElement {
   }
 
   static get styles() {
-    return style;
+    return styles;
   }
 
   constructor() {
