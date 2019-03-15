@@ -2,7 +2,7 @@ import { LitElement, html, customElement, property } from 'lit-element';
 import { WamProvider, Providers } from '../../../providers';
 
 @customElement('mgt-wam-provider')
-export class WamProviderComponent extends LitElement {
+export class MgtWamProvider extends LitElement {
 
     private _provider : WamProvider;
 

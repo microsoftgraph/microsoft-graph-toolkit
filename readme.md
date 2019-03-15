@@ -30,7 +30,7 @@ You can then start using the components in your html page
 ```html
 <mgt-login></mgt-login>
 
-<mgt-persona persona-id="nikola metulev"></mgt-persona>
+<mgt-person person-id="nikola metulev"></mgt-person>
 ```
 
 All the components know how to talk to the graph as long as you provide an [authentication context](./docs/authentication.md) they can use.

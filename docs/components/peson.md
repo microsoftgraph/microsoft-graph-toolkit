@@ -1,7 +1,7 @@
-# Persona Control
+# Person Control
 
 ## Description
-The persona control is used to display a person or contact by using their photo, name, and/or email address. 
+The person control is used to display a person or contact by using their photo, name, and/or email address. 
 
 ## Authentication
 
@@ -24,24 +24,24 @@ This control uses the following Microsoft Graph APIs and permissions:
 
 ### Add the control to the html page
 ```html
-<mgt-persona person-query=""></mgt-persona>
+<mgt-person person-query=""></mgt-person>
 ```
 
-## Setting the persona details
+## Setting the person details
 
-The `persona-query` property is used to search the Microsoft Graph for a given person. It will chose the first person available and fetch the persona details. An email works best to ensure the right person is queried, but a name works as well.
+The `person-id` property is used to search the Microsoft Graph for a given person. It will chose the first person available and fetch the person details. An email works best to ensure the right person is queried, but a name works as well.
 
-Alternatively, the `personaDetails` property is used to set the persona details manually. 
+Alternatively, the `personDetails` property is used to set the person details manually. 
 
 | property | Description |
 | --- | --- |
-| `personaDetails` | set the user object that will be displayed on the control |
+| `personDetails` | set the user object that will be displayed on the control |
 
 Ex: 
 
 ```js
-let personaControl = document.getElementById('myPersonaControl');
-personaControl.personaDetails = {
+let personControl = document.getElementById('myPersonControl');
+personControl.personDetails = {
     displayName: 'Nikola Metulev',
     email: 'nikola@contoso.com',
     profileImage: 'url'

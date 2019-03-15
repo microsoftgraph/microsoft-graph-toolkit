@@ -4,10 +4,10 @@ import * as MicrosoftGraph from '@microsoft/microsoft-graph-types';
 import { Providers, IAuthProvider } from '../../providers';
 import { styles } from './mgt-agenda-styles';
 
-import '../mgt-persona/mgt-persona';
+import '../mgt-person/mgt-person';
 
 @customElement('mgt-agenda')
-export class AgendaComponent extends LitElement {
+export class MgtAgenda extends LitElement {
   @property({ attribute: false }) _events: Array<MicrosoftGraph.Event>;
   @property() eventTemplateFunction: (event: any) => string;
 
@@ -88,10 +88,10 @@ export class AgendaComponent extends LitElement {
                 at =>
                   html`
                     <li class="event-attendie">
-                      <mgt-persona
-                        persona-id=${at.emailAddress.address}
+                      <mgt-person
+                        person-id=${at.emailAddress.address}
                         image-size="30"
-                      ></mgt-persona>
+                      ></mgt-person>
                     </li>
                   `
               )}

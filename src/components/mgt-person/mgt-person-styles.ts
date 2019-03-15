@@ -5,7 +5,7 @@ import { css } from 'lit-element';
           css`
 img,
 svg,
-.persona-initials-container {
+.person-initials-container {
   width: 100%;
   height: 100%; }
 
@@ -13,7 +13,7 @@ img {
   border: 0;
   border-radius: 50%; }
 
-.persona-initials-container {
+.person-initials-container {
   height: 100%;
   width: 100%;
   background-color: brown;
@@ -27,7 +27,7 @@ img {
   position: relative;
   font-family: var(--default-font-family); }
 
-.persona-initials-container span {
+.person-initials-container span {
   vertical-align: baseline;
   position: absolute;
   top: 50%;

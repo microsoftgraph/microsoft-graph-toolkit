@@ -2,21 +2,21 @@ import { LitElement, html, customElement, property } from 'lit-element';
 import * as MicrosoftGraph from '@microsoft/microsoft-graph-types';
 
 import { Providers } from '../../providers';
-import { styles } from './mgt-persona-styles';
+import { styles } from './mgt-person-styles';
 
-@customElement('mgt-persona')
-export class PersonaComponent extends LitElement {
+@customElement('mgt-person')
+export class MgtPerson extends LitElement {
   @property({
     attribute: 'image-size'
   })
   imageSize: number = 24;
 
   @property({
-    attribute: 'persona-id'
+    attribute: 'person-id'
   })
-  personaId: string;
+  personId: string;
 
-  @property() persona: GraphPersonaUser;
+  @property() person: GraphPersonUser;
 
   @property({ attribute: false }) private user: MicrosoftGraph.User;
   @property({ attribute: false }) profileImage: string;
@@ -24,7 +24,7 @@ export class PersonaComponent extends LitElement {
   attributeChangedCallback(name, oldval, newval) {
     super.attributeChangedCallback(name, oldval, newval);
 
-    if (name == 'persona-id' && oldval !== newval) {
+    if (name == 'person-id' && oldval !== newval) {
       this.loadImage();
     }
   }
@@ -45,17 +45,17 @@ export class PersonaComponent extends LitElement {
   }
 
   private async loadImage() {
-    if (this.persona) {
-    } else if (this.personaId) {
+    if (this.person) {
+    } else if (this.personId) {
       let provider = Providers.getAvailable();
       if (provider) {
-        if (this.personaId == 'me') {
+        if (this.personId == 'me') {
           provider.graph.me().then(user => {
             this.user = user;
           });
           this.profileImage = await provider.graph.myPhoto();
         } else {
-          provider.graph.findPerson(this.personaId).then(people => {
+          provider.graph.findPerson(this.personId).then(people => {
             if (people && people.length > 0) {
               let person = people[0] as MicrosoftGraph.Person;
               this.user = person;
@@ -89,7 +89,7 @@ export class PersonaComponent extends LitElement {
         href="../../../node_modules/office-ui-fabric-core/dist/css/fabric.min.css"
       />
 
-      <div class="persona-container" style=${style}>
+      <div class="person-container" style=${style}>
         ${this.renderImage()}
       </div>
     `;
@@ -98,17 +98,17 @@ export class PersonaComponent extends LitElement {
   renderImage() {
     if (this.user) {
       if (this.profileImage) {
-        return html`<img class="persona-user-image" src=${this
+        return html`<img class="person-user-image" src=${this
           .profileImage as string}></img>`;
       } else {
         return html`
-          <div class="persona-initials-container">
+          <div class="person-initials-container">
             <style>
-              .persona-initials {
+              .person-initials {
                 font-size: ${this.imageSize * 0.45}px;
               }
             </style>
-            <span class="persona-initials">
+            <span class="person-initials">
               ${this.getInitials(this.user)}
             </span>
           </div>
@@ -170,7 +170,7 @@ export class PersonaComponent extends LitElement {
   }
 }
 
-export declare interface GraphPersonaUser {
+export declare interface GraphPersonUser {
   displayName: string;
   image?: string;
 }
