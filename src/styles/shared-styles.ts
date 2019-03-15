@@ -1,7 +1,9 @@
-import { css } from 'lit-element';
-import { icons } from '../icons/icons';
+import './fabric-styles';
 
-export const globalStyle = [
+import { css } from 'lit-element';
+import { icons } from './fabric-icons';
+
+export const sharedStyles = [
   icons,
   css`
     :host([hidden]) {

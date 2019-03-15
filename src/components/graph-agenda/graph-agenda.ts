@@ -2,7 +2,7 @@ import { LitElement, html, customElement, property } from 'lit-element';
 import * as MicrosoftGraph from '@microsoft/microsoft-graph-types';
 
 import { Providers, IAuthProvider } from '../../providers';
-import { style } from './graph-agenda.style';
+import { styles } from './graph-agenda-styles';
 
 import '../graph-persona/graph-persona';
 
@@ -14,7 +14,7 @@ export class AgendaComponent extends LitElement {
   private _provider: IAuthProvider;
 
   static get styles() {
-    return style;
+    return styles;
   }
 
   constructor() {

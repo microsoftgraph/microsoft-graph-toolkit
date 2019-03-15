@@ -2,7 +2,7 @@ import { LitElement, html, customElement, property } from 'lit-element';
 import * as MicrosoftGraph from '@microsoft/microsoft-graph-types';
 
 import { Providers } from '../../providers';
-import { style } from './graph-login.style';
+import { styles } from './graph-login-styles';
 
 import '../graph-persona/graph-persona';
 
@@ -12,7 +12,7 @@ export class LoginComponent extends LitElement {
   @property({ attribute: false }) private _showMenu: boolean = false;
 
   static get styles() {
-    return style;
+    return styles;
   }
 
   constructor() {
@@ -65,6 +65,8 @@ export class LoginComponent extends LitElement {
     let content = this._user ? this.renderLoggedIn() : this.renderLoggedOut();
 
     return html`
+      <link rel="stylesheet" href="src/styles/fabric-styles.css" />
+
       <div class="login-root">
         <button class="login-root-button" @click=${this.clicked}>
           ${content}
@@ -77,9 +79,7 @@ export class LoginComponent extends LitElement {
   renderLoggedOut() {
     return html`
       <div class="login-signed-out-root">
-        <div>
-          <i class="ms-Icon ms-Icon--AddFriend"></i>
-        </div>
+        <i class="ms-Icon ms-Icon--AddFriend"></i>
         <div class="login-signed-out-content ms-fontColor-themePrimary">
           Sign In
         </div>
