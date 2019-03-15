@@ -84,6 +84,11 @@ export class PersonaComponent extends LitElement {
             width: ${this.imageSize.toString()}px;
         `;
     return html`
+      <link
+        rel="stylesheet"
+        href="../../../node_modules/office-ui-fabric-core/dist/css/fabric.min.css"
+      />
+
       <div class="persona-container" style=${style}>
         ${this.renderImage()}
       </div>

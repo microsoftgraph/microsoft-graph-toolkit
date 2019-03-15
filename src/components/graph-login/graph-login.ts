@@ -65,7 +65,10 @@ export class LoginComponent extends LitElement {
     let content = this._user ? this.renderLoggedIn() : this.renderLoggedOut();
 
     return html`
-      <!-- <link rel="stylesheet" href="src/styles/fabric-styles.css" /> -->
+      <link
+        rel="stylesheet"
+        href="../../../node_modules/office-ui-fabric-core/dist/css/fabric.min.css"
+      />
 
       <div class="login-root">
         <button class="login-root-button" @click=${this.clicked}>
