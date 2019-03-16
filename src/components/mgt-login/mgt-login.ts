@@ -2,7 +2,7 @@ import { LitElement, html, customElement, property } from 'lit-element';
 import * as MicrosoftGraph from '@microsoft/microsoft-graph-types';
 
 import { Providers } from '../../providers';
-import { styles } from './mgt-login-styles';
+import { styles } from './mgt-login.scss';
 
 import '../mgt-person/mgt-person';
 
