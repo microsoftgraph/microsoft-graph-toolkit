@@ -10,7 +10,7 @@ export declare interface WebPartContext{
     aadTokenProviderFactory : any;
 }
 
-export class SharepointProvider implements IAuthProvider {
+export class SharePointProvider implements IAuthProvider {
     
     private _loginChangedDispatcher = new EventDispatcher<LoginChangedEvent>();
     
