@@ -3,8 +3,7 @@ const sass = require('gulp-sass');
 const gap = require('gulp-append-prepend');
 const rename = require('gulp-rename');
 
-
-scssFileHeader =`
+scssFileHeader = `
 // THIS FILE IS AUTO GENERATED
 // ANY CHANGES WILL BE LOST DURING BUILD
 // MODIFY THE .SCSS FILE INSTEAD
@@ -13,7 +12,7 @@ import { css } from 'lit-element';
 import { sharedStyles } from '../../styles/shared-styles';
 export const styles = [
   sharedStyles,
-  css\``
+  css\``;
 
 scssFileFooter = '`];';
 
@@ -23,7 +22,7 @@ function runSass() {
     .pipe(sass())
     .pipe(gap.prependText(scssFileHeader))
     .pipe(gap.appendText(scssFileFooter))
-    .pipe(rename({ extname: '.scss.ts' }))
+    .pipe(rename({ extname: '-css.ts' }))
     .pipe(gulp.dest('src/'));
 }
 
