@@ -48,11 +48,6 @@ export class MgtAgenda extends LitElement {
       }
 
       return html`
-        <link
-          rel="stylesheet"
-          href="../../../node_modules/office-ui-fabric-core/dist/css/fabric.min.css"
-        />
-
         <ul class="agenda-list">
           ${this._events.map(
             event =>

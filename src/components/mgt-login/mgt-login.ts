@@ -65,11 +65,6 @@ export class MgtLogin extends LitElement {
     let content = this._user ? this.renderLoggedIn() : this.renderLoggedOut();
 
     return html`
-      <link
-        rel="stylesheet"
-        href="../../../node_modules/office-ui-fabric-core/dist/css/fabric.min.css"
-      />
-
       <div class="login-root">
         <button class="login-root-button" @click=${this.clicked}>
           ${content}
@@ -83,7 +78,7 @@ export class MgtLogin extends LitElement {
     return html`
       <div class="login-signed-out-root">
         <i class="ms-Icon ms-Icon--AddFriend"></i>
-        <div class="login-signed-out-content ms-fontColor-themePrimary">
+        <div class="login-signed-out-content">
           Sign In
         </div>
       </div>
