@@ -1,50 +1,48 @@
 @import '../../../node_modules/office-ui-fabric-core/dist/sass/References';
-.login-root {
-  position: relative;
-  flex: 0 0 auto;
-  height: 40;
-  box-sizing: border-box;
-  z-index: 200;
+:host {
+  --font-size: #{$ms-font-size-m};
+  --font-weight: #{$ms-font-weight-semibold};
+  --height: '100%';
+  --margin: 0;
+  --padding: 12px 20px;
+  --color: #{$ms-color-neutralDark};
+  --background-color: transparent;
+  --background-color--hover: #{$ms-color-neutralLight};
+  --icon-margin: 2px 0 0 0;
+  --icon-text-gap: 6px;
 }
 
-.login-root-button {
-  border: none;
-  padding: 0;
-  margin: 0;
-  background: 0 0;
-  cursor: pointer;
-  display: flex;
+.root {
   position: relative;
-  height: 100%;
+}
+
+.sign-in-button {
+  display: flex;
   align-items: center;
-  color: #000000;
+  font-size: var(--font-size);
+  font-weight: var(--font-weight);
+  height: var(--height);
+  margin: var(--margin);
+  padding: var(--padding);
   font-family: var(--default-font-family);
-  font-style: normal;
-  font-weight: normal;
-  line-height: 20px;
-  font-size: 14px;
-}
-
-.login-root-button:hover {
-  color: var(--default-hover-color);
-}
-
-.login-root-button:focus {
-  outline: 0;
-}
-
-.login-signed-out-root {
-  display: flex;
-  align-items: center;
-  height: 40px;
-  padding-left: 8px;
-  padding-right: 8px;
-}
-
-.login-signed-out-content {
-  @include ms-fontColor-themePrimary;
+  color: var(--color);
+  background-color: var(--background-color);
+  border: none;
+  cursor: pointer;
+  transition: color 0.3s, background-color 0.3s;
   &:hover {
     color: var(--default-hover-color);
+    background-color: var(--background-color--hover);
+  }
+  &:focus {
+    outline: 0;
+  }
+}
+
+.sign-in-icon {
+  margin: var(--icon-margin);
+  &+span {
+    margin-left: var(--icon-text-gap);
   }
 }
 
