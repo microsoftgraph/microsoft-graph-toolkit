@@ -1,0 +1,75 @@
+# Your build pipeline references the ‘baseVersionNumber’ variable, which you’ve selected to be settable at queue time. Create or edit the build pipeline for this YAML file, define the variable on the Variables tab, and then select the option to make it settable at queue time. See https://go.microsoft.com/fwlink/?linkid=865971
+
+trigger:
+- master
+
+pool:
+  vmImage: Hosted
+  demands: npm
+
+steps:
+- task: NodeTool@0
+  displayName: 'Use Node 10.*'
+  inputs:
+    versionSpec: '10.*'
+
+- task: Npm@1
+  displayName: 'npm version'
+  inputs:
+    command: custom
+    verbose: false
+    customCommand: '--no-git-tag-version version $(baseVersionNumber).$(Build.BuildId)'
+
+- task: Npm@1
+  displayName: 'npm install'
+  inputs:
+   verbose: false
+
+- task: Npm@1
+  displayName: 'npm run build'
+  inputs:
+    command: custom
+    verbose: false
+    customCommand: 'run build'
+
+- task: Npm@1
+  displayName: 'npm test'
+  inputs:
+    command: custom
+    verbose: false
+    customCommand: test
+
+- task: PublishTestResults@2
+  displayName: 'Publish Test Results test/junit.xml'
+  inputs:
+    testResultsFiles: test/junit.xml
+  condition: succeededOrFailed()
+
+- task: PublishCodeCoverageResults@1
+  displayName: 'Publish code coverage from $(System.DefaultWorkingDirectory)\coverage\cobertura-coverage.xml'
+  inputs:
+    codeCoverageTool: Cobertura
+    summaryFileLocation: '$(System.DefaultWorkingDirectory)\coverage\cobertura-coverage.xml'
+    reportDirectory: '$(System.DefaultWorkingDirectory)\coverage'
+  condition: succeededOrFailed()
+
+- task: DeleteFiles@1
+  displayName: 'Delete files from $(System.DefaultWorkingDirectory)'
+  inputs:
+    SourceFolder: '$(System.DefaultWorkingDirectory)'
+    Contents: |
+     .git
+     node_modules
+     coverage
+     test
+     .gitignore
+
+- task: ArchiveFiles@2
+  displayName: 'Archive $(Build.BinariesDirectory)'
+  inputs:
+    rootFolderOrFile: '$(System.DefaultWorkingDirectory)'
+    includeRootFolder: false
+    archiveFile: '$(Build.ArtifactStagingDirectory)/M365Toolkit_$(baseVersionNumber).$(Build.BuildId).zip'
+
+- task: PublishBuildArtifacts@1
+  displayName: 'Publish Artifact: drop'
