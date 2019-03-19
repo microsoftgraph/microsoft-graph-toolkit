@@ -85,16 +85,12 @@ export class MgtLogin extends LitElement {
 
   renderLoggedIn() {
     return html`
-      <div>
-        <div class="login-signed-in-root">
-          <div class="login-signed-in-image">
-            <mgt-person person-id="me" image-size="24" />
-          </div>
-          <div class="login-signed-in-content">
-            ${this._user.displayName}
-          </div>
-        </div>
+      <div class="user-avatar">
+        <mgt-person person-id="me" />
       </div>
+      <span>
+        ${this._user.displayName}
+      </span>
     `;
   }
 

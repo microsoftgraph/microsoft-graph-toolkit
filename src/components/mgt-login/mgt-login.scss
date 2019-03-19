@@ -8,8 +8,6 @@
   --color: #{$ms-color-neutralDark};
   --background-color: transparent;
   --background-color--hover: #{$ms-color-neutralLight};
-  --icon-margin: 2px 0 0 0;
-  --icon-text-gap: 6px;
 }
 
 .root {
@@ -40,32 +38,14 @@
 }
 
 .sign-in-icon {
-  margin: var(--icon-margin);
+  margin-top: 2px;
   &+span {
-    margin-left: var(--icon-text-gap);
+    margin-left: 6px;
   }
 }
 
-.login-signed-in-root {
-  display: flex;
-  align-items: center;
-  height: 40px;
-}
-
-.login-signed-in-root:hover {
-  background-color: rgba(0, 0, 0, 0.1);
-}
-
-.login-signed-in-image {
-  height: 24px;
-  width: 24px;
-  margin-left: 8px;
-  margin-right: 4px;
-}
-
-.login-signed-in-content {
-  text-align: center;
-  margin-right: 8px;
+.user-avatar {
+  margin-right: 6px;
 }
 
 .login-header-user-image-container {
@@ -89,14 +69,11 @@
 .login-menu-root {
   display: none;
   position: absolute;
-  right: 0px;
+  right: 12px;
   animation-duration: 200ms;
   animation-name: slideout;
   color: #000000;
   font-family: var(--default-font-family);
-  font-style: normal;
-  font-weight: normal;
-  line-height: 20px;
   font-size: 14px;
   box-sizing: border-box;
   box-shadow: rgba(0, 0, 0, 0.133) 0px 6.4px 14.4px 0px, rgba(0, 0, 0, 0.11) 0px 1.2px 3.6px 0px;
@@ -105,11 +82,12 @@
   border-color: rgb(237, 235, 233);
   outline: transparent;
   border-radius: 2px;
+  min-width: 240px;
 }
 
 .login-menu-root.show-menu {
   display: block;
-  top: 50px;
+  top: 52px;
   animation-name: slidein;
 }
 
@@ -128,10 +106,10 @@
 
 .login-menu-beak-cover {
   position: absolute;
-  top: 0px;
-  right: 0px;
-  bottom: 0px;
-  left: 0px;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  left: 0;
   background-color: rgb(255, 255, 255);
   border-radius: 2px;
 }
@@ -166,6 +144,7 @@
   font-weight: 600;
   line-height: 20px;
   color: #000011;
+  white-space: nowrap;
 }
 
 .login-menu-user-email {
