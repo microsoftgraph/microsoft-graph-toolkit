@@ -4,7 +4,7 @@ trigger:
 - master
 
 pool:
-  vmImage: Hosted
+  vmImage: 'Ubuntu-16.04'
   demands: npm
 
 steps:
