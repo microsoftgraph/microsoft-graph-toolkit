@@ -1,4 +1,4 @@
-import { IAuthProvider, LoginChangedEvent, LoginType } from "./IAuthProvider";
+import { IAuthProvider, LoginChangedEvent } from "./IAuthProvider";
 import { IGraph, Graph } from './GraphSDK';
 import { EventHandler, EventDispatcher } from './EventHandler';
 
@@ -24,10 +24,6 @@ export class SharePointProvider implements IAuthProvider {
 
     get isLoggedIn() : boolean {
         return !!this._idToken;
-    };
-
-    get isAvailable(): boolean{
-        return true;
     };
 
     private context : WebPartContext;

@@ -16,6 +16,7 @@
   "author": "@metulev",
   "license": "MIT",
   "dependencies": {
+    "@microsoft/teams-js": "^1.4.1",
     "@webcomponents/webcomponentsjs": "^2.2.7",
     "lit-element": "^2.0.1",
     "msal": "^0.2.4",

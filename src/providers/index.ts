@@ -4,6 +4,7 @@ import { IAuthProvider } from './IAuthProvider';
 import { EventDispatcher, EventHandler } from './EventHandler';
 import { WamProvider } from './WamProvider';
 import { SharePointProvider, WebPartContext } from './SharePointProvider';
+import { TeamsProvider } from './TeamsProvider';
 
 declare global {
     interface Window {
@@ -17,31 +18,41 @@ export module Providers {
         const providers = getProviders();
 
         for (let provider of providers) {
-            if (provider.isAvailable)
-                return provider;
+            return provider;
         }
         return null;
     }
 
-    export function add(provider : IAuthProvider) {
+    export function addCustomProvider(provider : IAuthProvider): IAuthProvider {
         const providers = getProviders();
 
         if (provider !== null) {
             providers.push(provider);
             getEventDispatcher().fire( {} );
         }
+        return provider;
     }
 
     export function addWamProvider(clientId: string, authority?: string) {
-        add(new WamProvider(clientId, authority));
+        if(WamProvider.isAvailable()){
+            return <WamProvider>addCustomProvider(new WamProvider(clientId, authority));
+        }
+        return null;
     }
 
     export function addMsalProvider(config : MsalConfig) {
-        add(new MsalProvider(config));
+        return <MsalProvider>addCustomProvider(new MsalProvider(config));
     }
 
     export function addSharePointProvider(context : WebPartContext ) {
-        add(new SharePointProvider(context));
+        return <SharePointProvider>addCustomProvider(new SharePointProvider(context));
+    }
+
+    export async function addTeamsProvider(clientId: string, loginPopupUrl?: string, loginPopupEndUrl?: string) {
+        if(await TeamsProvider.isAvailable()){
+            return <TeamsProvider>addCustomProvider(new TeamsProvider(clientId, loginPopupUrl, loginPopupEndUrl));
+        }
+        return null;
     }
 
     export function onProvidersChanged(event : EventHandler<any>) {
@@ -70,6 +81,7 @@ export * from "./MsalConfig"
 export * from "./MsalProvider"
 export * from "./WamProvider"
 export * from "./SharePointProvider"
+export * from "./TeamsProvider"
 export * from "./IAuthProvider"
 export * from "./GraphSDK"
 export * from "./EventHandler"

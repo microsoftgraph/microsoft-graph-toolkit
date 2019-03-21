@@ -18,7 +18,7 @@ export class WamProvider implements IAuthProvider {
 
     private _loginChangedDispatcher = new EventDispatcher<LoginChangedEvent>();
 
-    public get isAvailable() : boolean {
+    public static isAvailable() : boolean {
         return !!(window.Windows);
     }
 
@@ -27,20 +27,17 @@ export class WamProvider implements IAuthProvider {
     }
 
     constructor(clientId: string, authority?: string) {
-        if (this.isAvailable) {
+        this.clientId = clientId;
+        this.authority = authority || 'https://login.microsoftonline.com/common';
 
-            this.clientId = clientId;
-            this.authority = authority || 'https://login.microsoftonline.com/common';
+        this.graph = new Graph(this);
 
-            this.graph = new Graph(this);
-
-            this.printRedirectUriToConsole();
-        }
+        this.printRedirectUriToConsole();
     }
 
     
     async login(): Promise<void> {
-        if (this.isAvailable) {
+        if (WamProvider.isAvailable()) {
 
             let webCore = window.Windows.Security.Authentication.Web.Core;
             let wap = await webCore.WebAuthenticationCoreManager.findAccountProviderAsync('https://login.microsoft.com', this.authority);
@@ -71,7 +68,7 @@ export class WamProvider implements IAuthProvider {
     }
 
     printRedirectUriToConsole() {
-        if (this.isAvailable) {
+        if (WamProvider.isAvailable()) {
             let web = window.Windows.Security.Authentication.Web;
             let redirectUri = `ms-appx-web://Microsoft.AAD.BrokerPlugIn/${(web.WebAuthenticationBroker.getCurrentApplicationCallbackUri().host as string).toUpperCase()}`;
             console.log("Use the following redirect URI in your AAD application:")

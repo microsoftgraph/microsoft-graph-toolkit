@@ -25,10 +25,6 @@ export class MsalProvider implements IAuthProvider {
         return !!this._idToken;
     };
 
-    get isAvailable(): boolean{
-        return true;
-    };
-
     scopes: string[];
     authority: string;
     

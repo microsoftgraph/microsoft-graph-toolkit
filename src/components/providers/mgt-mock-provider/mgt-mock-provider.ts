@@ -7,6 +7,6 @@ export class MgtMockProvider extends LitElement {
 
     constructor() {
         super();
-        Providers.add(new TestAuthProvider());
+        Providers.addCustomProvider(new TestAuthProvider());
     }
 }
