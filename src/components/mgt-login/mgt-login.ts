@@ -21,6 +21,14 @@ export class MgtLogin extends LitElement {
     this.init();
   }
 
+  firstUpdated() {
+    window.onclick = (event: any) => {
+      if (event.target !== this) {
+        this._showMenu = false;
+      }
+    };
+  }
+
   private async init() {
     const provider = Providers.getAvailable();
     if (provider) {
@@ -55,8 +63,10 @@ export class MgtLogin extends LitElement {
 
   private clicked() {
     if (this._user) {
+      console.log('clicked?', this._user);
       this._showMenu = !this._showMenu;
     } else {
+      console.log('clicked!');
       this.login();
     }
   }
@@ -66,7 +76,7 @@ export class MgtLogin extends LitElement {
 
     return html`
       <div class="root">
-        <button class="sign-in-button" @click=${this.clicked}>
+        <button class="login-button" @click=${this.clicked}>
           ${content}
         </button>
         ${this.renderMenu()}
@@ -76,7 +86,7 @@ export class MgtLogin extends LitElement {
 
   renderLoggedOut() {
     return html`
-      <i class="sign-in-icon ms-Icon ms-Icon--AddFriend"></i>
+      <i class="login-icon ms-Icon ms-Icon--AddFriend"></i>
       <span>
         Sign In
       </span>
@@ -100,9 +110,7 @@ export class MgtLogin extends LitElement {
     }
 
     return html`
-      <div class="login-menu-root ${this._showMenu ? 'show-menu' : ''}">
-        <div class="login-menu-beak"></div>
-        <div class="login-menu-beak-cover"></div>
+      <div class="login-popup ${this._showMenu ? 'show-menu' : ''}">
         <div class="login-menu-content">
           <div class="login-menu-user-profile">
             <div class="login-menu-user-image">
