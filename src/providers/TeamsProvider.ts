@@ -128,11 +128,6 @@ export class TeamsProvider implements IAuthProvider {
         });
     }
     
-    async logout(): Promise<void> {
-        //this.provider.logout();
-        this.fireLoginChangedEvent({});
-    }
-    
     updateScopes(scopes: string[]) {
         this.scopes = scopes;
     }

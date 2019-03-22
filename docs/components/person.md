@@ -29,7 +29,7 @@ This control uses the following Microsoft Graph APIs and permissions:
 
 ## Setting the person details
 
-The `person-id` property is used to search the Microsoft Graph for a given person. It will chose the first person available and fetch the person details. An email works best to ensure the right person is queried, but a name works as well.
+The `person-query` property is used to search the Microsoft Graph for a given person. It will chose the first person available and fetch the person details. An email works best to ensure the right person is queried, but a name works as well.
 
 Alternatively, the `personDetails` property is used to set the person details manually. 
 
@@ -44,7 +44,7 @@ let personControl = document.getElementById('myPersonControl');
 personControl.personDetails = {
     displayName: 'Nikola Metulev',
     email: 'nikola@contoso.com',
-    profileImage: 'url'
+    image: 'url'
 }
 ```
 
@@ -54,21 +54,11 @@ The following attributes are available to customize the behavior
 
 | property  | required  | description |
 | --- | --- | --- |
-| `view` | optional | enumeration for how the control is layed out - default is `PictureOnly` |
+| `showName` | optional | set flag to display person display name - default is `false` |
+| `showEmail` | optional | set flag to display person email - default is `false` |
 | `image-size` | optional | radius of control - default is 24 |
-| `theme` | optional | enumeration for what theme to use - default is `fluent` see [themes](..styling-controls.md#theme/) |
-| `custom-style` | optional | use this attribute/property to add additional styles to customize the control. see [styling controls](../styling-controls.md#custom-style/) |
 
 
 | [css custom properties](../styling-controls.md#css-custom-properties) |
 | - |
 | `--login-control-background` |
-
-Use the `view` property to control how the control is layed out once the user is logged in:
-* PictureOnly - Only show the photo of the user
-* EmailOnly - Only show the email of the user
-* NameOnly - Only show the display name of the user
-* LargeProfilePhotoLeft - show photo, display name, and email - photo on the left
-* LargeProfilePhotoRight - show photo, display name, and email - photo on the right
-* SmallProfilePhotoLeft - show photo and display name - photo on the left
-* SmallProfilePhotoRight - show photo and display name - photo on the right

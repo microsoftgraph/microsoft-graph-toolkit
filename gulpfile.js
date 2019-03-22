@@ -29,5 +29,6 @@ function runSass() {
 gulp.task('sass', runSass);
 
 gulp.task('watchSass', () => {
+  runSass();
   return gulp.watch('src/**/*.scss', gulp.series('sass'));
 });

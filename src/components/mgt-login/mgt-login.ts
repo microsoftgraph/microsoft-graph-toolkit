@@ -86,7 +86,7 @@ export class MgtLogin extends LitElement {
   renderLoggedIn() {
     return html`
       <div class="user-avatar">
-        <mgt-person person-id="me" />
+        <mgt-person person-query="me" />
       </div>
       <span>
         ${this._user.displayName}
@@ -106,7 +106,7 @@ export class MgtLogin extends LitElement {
         <div class="login-menu-content">
           <div class="login-menu-user-profile">
             <div class="login-menu-user-image">
-              <mgt-person person-id="me" image-size="65" />
+              <mgt-person person-query="me" image-size="65" />
             </div>
             <div class="login-menu-user-details">
               <div class="login-menu-user-display-name">

@@ -5,8 +5,8 @@ export interface IAuthProvider
 {
     readonly isLoggedIn : boolean;
     
-    login() : Promise<void>;
-    logout() : Promise<void>;
+    login?() : Promise<void>;
+    logout?() : Promise<void>;
     getAccessToken(...scopes: string[]) : Promise<string>;
 
     // get access to underlying provider

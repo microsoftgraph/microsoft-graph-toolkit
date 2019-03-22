@@ -40,12 +40,12 @@ export class SharePointProvider implements IAuthProvider {
         context.aadTokenProviderFactory.getTokenProvider().then((tokenProvider: AadTokenProvider): void => {
             this._provider = tokenProvider;
             this.graph = new Graph(this);
-            this.login();
+            this.internalLogin();
         });
         this.fireLoginChangedEvent({});
     }
     
-    async login(): Promise<void> {
+    private async internalLogin(): Promise<void> {
         this._idToken = await this.getAccessToken();
         if (this._idToken) {
             this.fireLoginChangedEvent({});
@@ -61,11 +61,6 @@ export class SharePointProvider implements IAuthProvider {
             throw e;
         }
         return accessToken;
-    }
-    
-    async logout(): Promise<void> {
-        //this.provider.logout();
-        this.fireLoginChangedEvent({});
     }
     
     updateScopes(scopes: string[]) {
