@@ -77,7 +77,7 @@ export class MsalProvider implements IAuthProvider {
     async tryGetIdTokenSilent() : Promise<boolean> {
         console.log('tryGetIdTokenSilent');
         try {
-            this._idToken = await this.provider.acquireTokenSilent([this._clientId]);
+            this._idToken = await this.provider.acquireTokenSilent([this._clientId], this.authority);
             if (this._idToken) {
                 console.log('tryGetIdTokenSilent: got a token');
                 this.fireLoginChangedEvent({});
@@ -99,13 +99,13 @@ export class MsalProvider implements IAuthProvider {
         try {
             accessToken = await this.provider.acquireTokenSilent(scopes, this.authority);
             console.log('getaccesstoken' + temp + ': got token');
-    } catch (e) {
+        } catch (e) {
             try {
                 console.log('getaccesstoken' + temp + ': catch ' + e);
                 // TODO - figure out for what error this logic is needed so we
                 // don't prompt the user to login unnecessarily
                 if (e.includes('multiple_matching_tokens_detected')) {
-                    console.log(e);
+                    console.log('getaccesstoken' + temp + " " + e);
                     return null;
                 }
 
@@ -121,7 +121,7 @@ export class MsalProvider implements IAuthProvider {
             } catch (e) {
                 // TODO - figure out how to expose this during dev to make it easy for the dev to figure out
                 // if error contains "'token' is not enabled", make sure to have implicit oAuth enabled in the AAD manifest
-                console.log(e);
+                console.log('getaccesstoken' + temp + "catch2: " + e);
                 throw e;
             }
         }

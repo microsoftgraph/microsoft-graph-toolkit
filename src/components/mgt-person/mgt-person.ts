@@ -45,30 +45,37 @@ export class MgtPerson extends LitElement {
 
   constructor() {
     super();
-    Providers.onProvidersChanged(_ => this.loadImage());
+    Providers.onProvidersChanged(_ => this.handleProviderChanged());
     this.loadImage();
   }
 
-  async componentWillLoad() {
-    Providers.onProvidersChanged(_ => this.loadImage());
-    this.loadImage();
+  private handleProviderChanged() {
+    let provider = Providers.getAvailable();
+    if (provider.isLoggedIn) {
+      this.loadImage();
+    }
+    provider.onLoginChanged(_ => this.loadImage());
   }
 
   private async loadImage() {
     if (!this.personDetails && this.personQuery) {
       let provider = Providers.getAvailable();
 
-      if (provider) {
+      if (provider && provider.isLoggedIn) {
         if (this.personQuery == 'me') {
           let person : MgtPersonDetails = {};
 
           await Promise.all([
             provider.graph.me().then(user => {
-              person.displayName = user.displayName;
-              person.email = user.mail;
+              if (user) {
+                person.displayName = user.displayName;
+                person.email = user.mail;
+              }
             }),
             provider.graph.myPhoto().then(photo => {
-              person.image = photo;
+              if (photo) {
+                person.image = photo;
+              }
             })
           ])
 
@@ -170,7 +177,7 @@ export class MgtPerson extends LitElement {
   }
 
   renderNameAndEmail() {
-    if (!this.showEmail && !this.showName){
+    if (!this.personDetails || (!this.showEmail && !this.showName)){
       return;
     }
 
