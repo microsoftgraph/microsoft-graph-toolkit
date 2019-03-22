@@ -1,174 +1,205 @@
-import { IAuthProvider, LoginChangedEvent, LoginType } from "./IAuthProvider";
+import { IAuthProvider, LoginChangedEvent, LoginType } from './IAuthProvider';
 import { Graph } from './GraphSDK';
 import { EventHandler, EventDispatcher } from './EventHandler';
 import { MsalConfig } from './MsalConfig';
-import {UserAgentApplication} from "msal/lib-es6";
+import { UserAgentApplication } from 'msal/lib-es6';
 
 export class MsalProvider implements IAuthProvider {
-    
-    private _loginChangedDispatcher = new EventDispatcher<LoginChangedEvent>();
-    private _loginType : LoginType;
-    private _clientId : string;
-    
-    private _idToken : string;
+  private _loginChangedDispatcher = new EventDispatcher<LoginChangedEvent>();
+  private _loginType: LoginType;
+  private _clientId: string;
 
-    private _provider : UserAgentApplication;
+  private _idToken: string;
 
-    private _resolveToken;
-    private _rejectToken;
-    
-    get provider() {
-        return this._provider;
-    };
+  private _provider: UserAgentApplication;
 
-    get isLoggedIn() : boolean {
-        return !!this._idToken;
-    };
+  private _resolveToken;
+  private _rejectToken;
 
-    get isAvailable(): boolean{
-        return true;
-    };
+  get provider() {
+    return this._provider;
+  }
 
-    scopes: string[];
-    authority: string;
-    
-    graph: Graph;
+  get isLoggedIn(): boolean {
+    return !!this._idToken;
+  }
 
-    constructor(config: MsalConfig) {
-        if (!config.clientId) {
-            throw "ClientID must be a valid string";
-        }
+  get isAvailable(): boolean {
+    return true;
+  }
 
-        this.initProvider(config);
+  scopes: string[];
+  authority: string;
+
+  graph: Graph;
+
+  constructor(config: MsalConfig) {
+    if (!config.clientId) {
+      throw 'ClientID must be a valid string';
     }
 
-    private initProvider(config: MsalConfig) {
-        console.log('initProvider');
-        this._clientId = config.clientId;
-        this.scopes = (typeof config.scopes !== 'undefined') ? config.scopes : ["user.read"];
-        this.authority = (typeof config.authority !== 'undefined') ? config.authority : null;
-        let options = (typeof config.options != 'undefined') ? config.options : {cacheLocation: 'localStorage'};
-        this._loginType = (typeof config.loginType !== 'undefined') ? config.loginType : LoginType.Redirect;
+    this.initProvider(config);
+  }
 
-        let callbackFunction = ((errorDesc : string, token: string, error: any, tokenType: any, state: any) => {
-            this.tokenReceivedCallback(errorDesc, token, error, tokenType, state);
-        }).bind(this);
+  private initProvider(config: MsalConfig) {
+    console.log('initProvider');
+    this._clientId = config.clientId;
+    this.scopes =
+      typeof config.scopes !== 'undefined' ? config.scopes : ['user.read'];
+    this.authority =
+      typeof config.authority !== 'undefined' ? config.authority : null;
+    let options =
+      typeof config.options != 'undefined'
+        ? config.options
+        : { cacheLocation: 'localStorage' };
+    this._loginType =
+      typeof config.loginType !== 'undefined'
+        ? config.loginType
+        : LoginType.Redirect;
 
-        // import msal
-        // let msal = await import(/* webpackChunkName: "msal" */ "msal/lib-es6");
+    let callbackFunction = ((
+      errorDesc: string,
+      token: string,
+      error: any,
+      tokenType: any,
+      state: any
+    ) => {
+      this.tokenReceivedCallback(errorDesc, token, error, tokenType, state);
+    }).bind(this);
 
-        this._provider = new UserAgentApplication(this._clientId, this.authority, callbackFunction, options);
-        console.log(this._provider);
-        this.graph = new Graph(this);
+    // import msal
+    // let msal = await import(/* webpackChunkName: "msal" */ "msal/lib-es6");
 
-        this.tryGetIdTokenSilent();
+    this._provider = new UserAgentApplication(
+      this._clientId,
+      this.authority,
+      callbackFunction,
+      options
+    );
+    console.log(this._provider);
+    this.graph = new Graph(this);
+
+    this.tryGetIdTokenSilent();
+  }
+
+  async login(): Promise<void> {
+    console.log('login');
+    if (this._loginType == LoginType.Popup) {
+      this._idToken = await this.provider.loginPopup(this.scopes);
+      this.fireLoginChangedEvent({});
+    } else {
+      this.provider.loginRedirect(this.scopes);
     }
-    
-    async login(): Promise<void> {
-        console.log('login');
-        if (this._loginType == LoginType.Popup) {
-            this._idToken = await this.provider.loginPopup(this.scopes);
-            this.fireLoginChangedEvent({});
-        } else {
-            this.provider.loginRedirect(this.scopes);
-        }
-    }
+  }
 
-    async tryGetIdTokenSilent() : Promise<boolean> {
-        console.log('tryGetIdTokenSilent');
-        try {
-            this._idToken = await this.provider.acquireTokenSilent([this._clientId], this.authority);
-            if (this._idToken) {
-                console.log('tryGetIdTokenSilent: got a token');
-                this.fireLoginChangedEvent({});
-            }
-            return this.isLoggedIn;
-        } catch (e) {
-            console.log(e);
-            return false;
-        }
-    }
-
-    private temp = 0;
-    async getAccessToken(...scopes: string[]): Promise<string> {
-        ++this.temp
-        let temp = this.temp;
-        scopes = scopes || this.scopes;
-        console.log('getaccesstoken' + ++temp + ': scopes' + scopes);
-        let accessToken : string;
-        try {
-            accessToken = await this.provider.acquireTokenSilent(scopes, this.authority);
-            console.log('getaccesstoken' + temp + ': got token');
-        } catch (e) {
-            try {
-                console.log('getaccesstoken' + temp + ': catch ' + e);
-                // TODO - figure out for what error this logic is needed so we
-                // don't prompt the user to login unnecessarily
-                if (e.includes('multiple_matching_tokens_detected')) {
-                    console.log('getaccesstoken' + temp + " " + e);
-                    return null;
-                }
-
-                if (this._loginType == LoginType.Redirect) {
-                    this.provider.acquireTokenRedirect(scopes);
-                    return new Promise((resolve, reject) => {
-                        this._resolveToken = resolve;
-                        this._rejectToken = reject;
-                    });
-                } else {
-                    accessToken = await this.provider.acquireTokenPopup(scopes);
-                }
-            } catch (e) {
-                // TODO - figure out how to expose this during dev to make it easy for the dev to figure out
-                // if error contains "'token' is not enabled", make sure to have implicit oAuth enabled in the AAD manifest
-                console.log('getaccesstoken' + temp + "catch2: " + e);
-                throw e;
-            }
-        }
-        return accessToken;
-    }
-    
-    async logout(): Promise<void> {
-        this.provider.logout();
+  async tryGetIdTokenSilent(): Promise<boolean> {
+    console.log('tryGetIdTokenSilent');
+    try {
+      this._idToken = await this.provider.acquireTokenSilent(
+        [this._clientId],
+        this.authority
+      );
+      if (this._idToken) {
+        console.log('tryGetIdTokenSilent: got a token');
         this.fireLoginChangedEvent({});
+      }
+      return this.isLoggedIn;
+    } catch (e) {
+      console.log(e);
+      return false;
     }
-    
-    updateScopes(scopes: string[]) {
-        this.scopes = scopes;
-    }
+  }
 
-    tokenReceivedCallback(errorDesc : string, token: string, error: any, tokenType: any, state: any)
-    {
-        debugger;
-        console.log('tokenReceivedCallback ' + errorDesc + ' | ' + tokenType);
-        if (this._provider) {
-            console.log(window.location.hash);
-            console.log("isCallback: " + this._provider.isCallback(window.location.hash));
+  private temp = 0;
+  async getAccessToken(...scopes: string[]): Promise<string> {
+    ++this.temp;
+    let temp = this.temp;
+    scopes = scopes || this.scopes;
+    console.log('getaccesstoken' + ++temp + ': scopes' + scopes);
+    let accessToken: string;
+    try {
+      accessToken = await this.provider.acquireTokenSilent(
+        scopes,
+        this.authority
+      );
+      console.log('getaccesstoken' + temp + ': got token');
+    } catch (e) {
+      try {
+        console.log('getaccesstoken' + temp + ': catch ' + e);
+        // TODO - figure out for what error this logic is needed so we
+        // don't prompt the user to login unnecessarily
+        if (e.includes('multiple_matching_tokens_detected')) {
+          console.log('getaccesstoken' + temp + ' ' + e);
+          return null;
         }
-        if (error) {
-            console.log(error + " " + errorDesc);
-            if (this._rejectToken) {
-                this._rejectToken(errorDesc);
-            }
+
+        if (this._loginType == LoginType.Redirect) {
+          this.provider.acquireTokenRedirect(scopes);
+          return new Promise((resolve, reject) => {
+            this._resolveToken = resolve;
+            this._rejectToken = reject;
+          });
         } else {
-            if(tokenType == 'id_token') {
-                this._idToken = token;
-                this.fireLoginChangedEvent({});
-            } else {
-                if (this._resolveToken) {
-                    this._resolveToken(token);
-                }
-            }
+          accessToken = await this.provider.acquireTokenPopup(scopes);
         }
+      } catch (e) {
+        // TODO - figure out how to expose this during dev to make it easy for the dev to figure out
+        // if error contains "'token' is not enabled", make sure to have implicit oAuth enabled in the AAD manifest
+        console.log('getaccesstoken' + temp + 'catch2: ' + e);
+        throw e;
+      }
     }
+    return accessToken;
+  }
 
-    onLoginChanged(eventHandler : EventHandler<LoginChangedEvent>) {
-        console.log('onloginChanged');
-        this._loginChangedDispatcher.register(eventHandler);
-    }
+  async logout(): Promise<void> {
+    this.provider.logout();
+    this.fireLoginChangedEvent({});
+  }
 
-    private fireLoginChangedEvent(event : LoginChangedEvent) {
-        console.log('fireLoginChangedEvent');
-        this._loginChangedDispatcher.fire(event);
+  updateScopes(scopes: string[]) {
+    this.scopes = scopes;
+  }
+
+  tokenReceivedCallback(
+    errorDesc: string,
+    token: string,
+    error: any,
+    tokenType: any,
+    state: any
+  ) {
+    // debugger;
+    console.log('tokenReceivedCallback ' + errorDesc + ' | ' + tokenType);
+    if (this._provider) {
+      console.log(window.location.hash);
+      console.log(
+        'isCallback: ' + this._provider.isCallback(window.location.hash)
+      );
     }
+    if (error) {
+      console.log(error + ' ' + errorDesc);
+      if (this._rejectToken) {
+        this._rejectToken(errorDesc);
+      }
+    } else {
+      if (tokenType == 'id_token') {
+        this._idToken = token;
+        this.fireLoginChangedEvent({});
+      } else {
+        if (this._resolveToken) {
+          this._resolveToken(token);
+        }
+      }
+    }
+  }
+
+  onLoginChanged(eventHandler: EventHandler<LoginChangedEvent>) {
+    console.log('onloginChanged');
+    this._loginChangedDispatcher.register(eventHandler);
+  }
+
+  private fireLoginChangedEvent(event: LoginChangedEvent) {
+    console.log('fireLoginChangedEvent');
+    this._loginChangedDispatcher.fire(event);
+  }
 }
