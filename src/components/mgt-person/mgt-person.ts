@@ -12,19 +12,29 @@ export class MgtPerson extends LitElement {
   imageSize: number = 24;
 
   @property({
-    attribute: 'person-id'
+    attribute: 'person-query'
   })
-  personId: string;
+  personQuery: string;
 
-  @property() person: GraphPersonUser;
+  @property({
+    attribute: 'show-name',
+    type: Boolean
+  })
+  showName: false;
 
-  @property({ attribute: false }) private user: MicrosoftGraph.User;
-  @property({ attribute: false }) profileImage: string;
+  @property({
+    attribute: 'show-email',
+    type: Boolean
+  })
+  showEmail: false;
+
+  @property() personDetails: MgtPersonDetails;
 
   attributeChangedCallback(name, oldval, newval) {
     super.attributeChangedCallback(name, oldval, newval);
 
-    if (name == 'person-id' && oldval !== newval) {
+    if (name == 'person-query' && oldval !== newval) {
+      this.personDetails = null;
       this.loadImage();
     }
   }
@@ -45,37 +55,51 @@ export class MgtPerson extends LitElement {
   }
 
   private async loadImage() {
-    if (this.person) {
-    } else if (this.personId) {
+    if (!this.personDetails && this.personQuery) {
       let provider = Providers.getAvailable();
+
       if (provider) {
-        if (this.personId == 'me') {
-          provider.graph.me().then(user => {
-            this.user = user;
-          });
-          this.profileImage = await provider.graph.myPhoto();
+        if (this.personQuery == 'me') {
+          let person : MgtPersonDetails = {};
+
+          await Promise.all([
+            provider.graph.me().then(user => {
+              person.displayName = user.displayName;
+              person.email = user.mail;
+            }),
+            provider.graph.myPhoto().then(photo => {
+              person.image = photo;
+            })
+          ])
+
+          this.personDetails = person;
         } else {
-          provider.graph.findPerson(this.personId).then(people => {
+          provider.graph.findPerson(this.personQuery).then(people => {
             if (people && people.length > 0) {
               let person = people[0] as MicrosoftGraph.Person;
-              this.user = person;
+              this.personDetails = person;
+
+              if (person.scoredEmailAddresses && person.scoredEmailAddresses.length) {
+                this.personDetails.email = person.scoredEmailAddresses[0].address;
+              } else if ((<any>person).emailAddresses && (<any>person).emailAddresses.length) {
+                // beta endpoind uses emailAddresses instead of scoredEmailAddresses
+                this.personDetails.email = (<any>person).emailAddresses[0].address
+              }
+
               if (person.userPrincipalName) {
                 let userPrincipalName = person.userPrincipalName;
                 provider.graph.getUserPhoto(userPrincipalName).then(photo => {
-                  this.profileImage = photo;
-                });
-                provider.graph.getUser(userPrincipalName).then(user => {
-                  this.user = user;
+                  this.personDetails.image = photo;
+                  this.requestUpdate();
                 });
               }
             }
           });
         }
       } else {
-        this.user = null;
+        this.personDetails = null;
       }
     }
-    return;
   }
 
   render() {
@@ -86,15 +110,15 @@ export class MgtPerson extends LitElement {
     return html`
       <div class="person-container" style=${style}>
         ${this.renderImage()}
+        ${this.renderNameAndEmail()}
       </div>
     `;
   }
 
   renderImage() {
-    if (this.user) {
-      if (this.profileImage) {
-        return html`<img class="person-user-image" src=${this
-          .profileImage as string}></img>`;
+    if (this.personDetails) {
+      if (this.personDetails.image) {
+        return html`<img class="person-user-image" src=${this.personDetails.image as string}></img>`;
       } else {
         return html`
           <div class="person-initials-container">
@@ -104,7 +128,7 @@ export class MgtPerson extends LitElement {
               }
             </style>
             <span class="person-initials">
-              ${this.getInitials(this.user)}
+              ${this.getInitials()}
             </span>
           </div>
         `;
@@ -145,17 +169,37 @@ export class MgtPerson extends LitElement {
     `;
   }
 
-  getInitials(user: MicrosoftGraph.User) {
-    let initials = '';
-    if (user.givenName) {
-      initials += this.user.givenName[0].toUpperCase();
-    }
-    if (user.surname) {
-      initials += this.user.surname[0].toUpperCase();
+  renderNameAndEmail() {
+    if (!this.showEmail && !this.showName){
+      return;
     }
 
-    if (!initials && user.displayName) {
-      let name = user.displayName.split(' ');
+    let nameView = this.showName ? html`<div>${this.personDetails.displayName}</div>` : null;
+    let emailView = this.showEmail ? html`<div>${this.personDetails.email}</div>` : null;
+
+    return html`
+    <div>
+      ${nameView}
+      ${emailView}
+    </div>
+    `
+  }
+
+  getInitials() {
+    if (!this.personDetails){
+      return '';
+    }
+
+    let initials = '';
+    if (this.personDetails.givenName) {
+      initials += this.personDetails.givenName[0].toUpperCase();
+    }
+    if (this.personDetails.surname) {
+      initials += this.personDetails.surname[0].toUpperCase();
+    }
+
+    if (!initials && this.personDetails.displayName) {
+      let name = this.personDetails.displayName.split(' ');
       for (let i = 0; i < 2 && i < name.length; i++) {
         initials += name[i][0].toUpperCase();
       }
@@ -165,7 +209,10 @@ export class MgtPerson extends LitElement {
   }
 }
 
-export declare interface GraphPersonUser {
-  displayName: string;
+export declare interface MgtPersonDetails {
+  displayName?: string;
+  email?: string;
   image?: string;
+  givenName? : string;
+  surname? : string;
 }

@@ -84,7 +84,7 @@ export class MgtAgenda extends LitElement {
                   html`
                     <li class="event-attendie">
                       <mgt-person
-                        person-id=${at.emailAddress.address}
+                        person-query=${at.emailAddress.address}
                         image-size="30"
                       ></mgt-person>
                     </li>

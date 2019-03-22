@@ -23,7 +23,7 @@ export default class HelloWorldWebPart extends BaseClientSideWebPart<IHelloWorld
 
   public render(): void {
     this.domElement.innerHTML = `
-      <mgt-person person-id="Tester"></mgt-person>
+      <mgt-person person-query="Tester"></mgt-person>
       <mgt-agenda></mgt-agenda>
       `;
   }
