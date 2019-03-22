@@ -7,8 +7,10 @@ export const icons = css`
     font-family: 'FabricMDL2Icons';
     font-style: normal;
     font-weight: normal;
+    font-size: 16px;
     -moz-osx-font-smoothing: grayscale;
     -webkit-font-smoothing: antialiased;
+    margin: 4px 0;
   }
 
   .ms-Icon--ChevronDown::before {

@@ -86,7 +86,7 @@ export class MgtLogin extends LitElement {
 
   renderLoggedOut() {
     return html`
-      <i class="login-icon ms-Icon ms-Icon--AddFriend"></i>
+      <i class="login-icon ms-Icon ms-Icon--Contact"></i>
       <span>
         Sign In
       </span>
