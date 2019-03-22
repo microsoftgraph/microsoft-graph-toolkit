@@ -3,6 +3,7 @@ import { MsalConfig } from "./MsalConfig";
 import { IAuthProvider } from './IAuthProvider';
 import { EventDispatcher, EventHandler } from './EventHandler';
 import { WamProvider } from './WamProvider';
+import { SharePointProvider, WebPartContext } from './SharePointProvider';
 
 declare global {
     interface Window {
@@ -39,6 +40,10 @@ export module Providers {
         add(new MsalProvider(config));
     }
 
+    export function addSharePointProvider(context : WebPartContext ) {
+        add(new SharePointProvider(context));
+    }
+
     export function onProvidersChanged(event : EventHandler<any>) {
         getEventDispatcher().register(event)
     }
@@ -64,6 +69,7 @@ export module Providers {
 export * from "./MsalConfig"
 export * from "./MsalProvider"
 export * from "./WamProvider"
+export * from "./SharePointProvider"
 export * from "./IAuthProvider"
 export * from "./GraphSDK"
 export * from "./EventHandler"

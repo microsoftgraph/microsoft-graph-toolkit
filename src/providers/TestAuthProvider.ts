@@ -20,7 +20,7 @@ export class TestAuthProvider implements IAuthProvider {
         this._loginChangedDispatcher.fire({});
         return Promise.resolve();
     }
-    getAccessToken(scopes?: string[]): Promise<string> {
+    getAccessToken(): Promise<string> {
         return Promise.resolve("");
     }
     provider: any;

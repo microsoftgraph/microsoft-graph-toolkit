@@ -7,32 +7,23 @@
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <script src="https://unpkg.com/@webcomponents/webcomponentsjs/webcomponents-bundle.js"></script>
 
-    <!-- <script type="module" src="./dist/es6/components/graph-login/graph-login.js"></script>
-    <script type="module" src="./dist/es6/components/graph-persona/graph-persona.js"></script>
-    <script type="module" src="./dist/es6/components/graph-agenda/graph-agenda.js"></script>
-    <script type="module" src="./dist/es6/components/providers/graph-msal-provider/graph-msal-provider.js"></script> -->
+    <!-- <script type="module" src="./dist/es6/components/mgt-login/mgt-login.js"></script>
+    <script type="module" src="./dist/es6/components/mgt-person/mgt-person.js"></script>
+    <script type="module" src="./dist/es6/components/mgt-agenda/mgt-agenda.js"></script>
+    <script type="module" src="./dist/es6/components/providers/mgt-msal-provider/mgt-msal-provider.js"></script> -->
 
     <script type="module" src="./dist/es6/index.js"></script>
 
     <!-- <script src="./dist/es5/ms-graph-toolkit.js"></script> -->
-
-    <style>
-      /* todo: @font-face doesn't work inside ShadowDom...
-         https://bugs.chromium.org/p/chromium/issues/detail?id=336876
-         Might just use svg directly. */
-      @font-face {
-        font-family: 'FabricMDL2Icons';
-        src: url('/src/fonts/fabric-icons.woff') format('woff');
-      }
-    </style>
+    <link href="index.css" rel="stylesheet" />
   </head>
   <body>
-    <graph-msal-provider
+    <mgt-msal-provider
       test="test"
       client-id="a974dfa0-9f57-49b9-95db-90f04ce2111a"
-    ></graph-msal-provider>
-    <graph-login style="float: right;"></graph-login>
-    <graph-agenda id="myDay"></graph-agenda>
+    ></mgt-msal-provider>
+    <mgt-login style="float: right;"></mgt-login>
+    <mgt-agenda id="myDay"></mgt-agenda>
 
     <!-- <script type="module">
         import {Providers} from './dist/es6/index.js'

@@ -1,0 +1,188 @@
+@import '../../../node_modules/office-ui-fabric-core/dist/sass/References';
+:host {
+  --font-size: #{$ms-font-size-m};
+  --font-weight: #{$ms-font-weight-semibold};
+  --height: '100%';
+  --margin: 0;
+  --padding: 12px 20px;
+  --color: #{$ms-color-neutralDark};
+  --background-color: transparent;
+  --background-color--hover: #{$ms-color-neutralLight};
+}
+
+.root {
+  position: relative;
+}
+
+.sign-in-button {
+  display: flex;
+  align-items: center;
+  font-size: var(--font-size);
+  font-weight: var(--font-weight);
+  height: var(--height);
+  margin: var(--margin);
+  padding: var(--padding);
+  font-family: var(--default-font-family);
+  color: var(--color);
+  background-color: var(--background-color);
+  border: none;
+  cursor: pointer;
+  transition: color 0.3s, background-color 0.3s;
+  &:hover {
+    color: var(--default-hover-color);
+    background-color: var(--background-color--hover);
+  }
+  &:focus {
+    outline: 0;
+  }
+}
+
+.sign-in-icon {
+  margin-top: 2px;
+  &+span {
+    margin-left: 6px;
+  }
+}
+
+.user-avatar {
+  margin-right: 6px;
+}
+
+.login-header-user-image-container {
+  height: 35px;
+  width: 35px;
+  flex: 0 0 auto;
+  padding-left: 11px;
+  padding-right: 5px;
+  box-sizing: content-box;
+}
+
+.login-user-image {
+  height: 24px;
+  width: 24px;
+  border: 0;
+  border-radius: 35px;
+}
+
+/* menu */
+
+.login-menu-root {
+  display: none;
+  position: absolute;
+  right: 12px;
+  animation-duration: 200ms;
+  animation-name: slideout;
+  color: #000000;
+  font-family: var(--default-font-family);
+  font-size: 14px;
+  box-sizing: border-box;
+  box-shadow: rgba(0, 0, 0, 0.133) 0px 6.4px 14.4px 0px, rgba(0, 0, 0, 0.11) 0px 1.2px 3.6px 0px;
+  border-width: 0px;
+  border-style: solid;
+  border-color: rgb(237, 235, 233);
+  outline: transparent;
+  border-radius: 2px;
+  min-width: 240px;
+}
+
+.login-menu-root.show-menu {
+  display: block;
+  top: 52px;
+  animation-name: slidein;
+}
+
+.login-menu-beak {
+  position: absolute;
+  background-color: rgb(255, 255, 255);
+  box-shadow: inherit;
+  box-sizing: border-box;
+  transform: rotate(45deg);
+  height: 16px;
+  width: 16px;
+  right: 20px;
+  top: -8px;
+  border: inherit;
+}
+
+.login-menu-beak-cover {
+  position: absolute;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  left: 0;
+  background-color: rgb(255, 255, 255);
+  border-radius: 2px;
+}
+
+.login-menu-content {
+  display: flex;
+  flex-direction: column;
+  background: white;
+  padding: 20px 20px 8px 20px;
+}
+
+.login-menu-user-image {
+  height: 65px;
+  width: 65px;
+}
+
+.login-menu-user-profile {
+  display: flex;
+  align-items: center;
+  margin-bottom: 16px;
+  z-index: 2;
+}
+
+.login-menu-user-details {
+  display: flex;
+  flex-direction: column;
+  margin-left: 14px;
+}
+
+.login-menu-user-display-name {
+  font-size: 18px;
+  font-weight: 600;
+  line-height: 20px;
+  color: #000011;
+  white-space: nowrap;
+}
+
+.login-menu-user-email {
+  font-size: 15px;
+  line-height: 20px;
+  color: #5e5e5e;
+}
+
+// .login-menu-commands {}
+.login-menu-commands ul {
+  list-style-type: none;
+  padding: 0;
+  margin: 0;
+}
+
+.login-menu-command {
+  border: none;
+  padding: 0;
+  margin: 0px 0px 8px 0px;
+  background: 0 0;
+  cursor: pointer;
+  display: flex;
+  position: relative;
+  height: 100%;
+  align-items: center;
+  color: #0078d7;
+  font-family: var(--default-font-family);
+  font-style: normal;
+  font-weight: normal;
+  line-height: 20px;
+  font-size: 13px;
+}
+
+@keyframes slidein {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}

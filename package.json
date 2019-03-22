@@ -17,7 +17,8 @@
   "license": "MIT",
   "dependencies": {
     "lit-element": "^2.0.1",
-    "msal": "^0.2.4"
+    "msal": "^0.2.4",
+    "office-ui-fabric-core": "^9.6.1"
   },
   "devDependencies": {
     "@webcomponents/webcomponentsjs": "^2.2.7",
