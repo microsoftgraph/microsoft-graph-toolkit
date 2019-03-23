@@ -9,7 +9,8 @@ import '../mgt-person/mgt-person';
 @customElement('mgt-login')
 export class MgtLogin extends LitElement {
   @property({ attribute: false }) private _user: MicrosoftGraph.User;
-  @property({ attribute: false }) private _showMenu: boolean = false;
+  @property({ attribute: false })
+  private _showMenu: boolean = false;
 
   static get styles() {
     return styles;
@@ -19,6 +20,10 @@ export class MgtLogin extends LitElement {
     super();
     Providers.onProvidersChanged(_ => this.init());
     this.init();
+  }
+
+  updated(changedProps) {
+    console.log(changedProps.get('_showMenu'));
   }
 
   firstUpdated() {
@@ -45,6 +50,18 @@ export class MgtLogin extends LitElement {
     }
   }
 
+  private clicked() {
+    if (this._user) {
+      this._showMenu = !this._showMenu;
+
+      // const loginButton = this.shadowRoot.querySelector('.login-button');
+      // const rect = loginButton.getBoundingClientRect();
+      // console.log('rect', rect);
+    } else {
+      this.login();
+    }
+  }
+
   public async login() {
     const provider = Providers.getAvailable();
 
@@ -61,18 +78,10 @@ export class MgtLogin extends LitElement {
     }
   }
 
-  private clicked() {
-    if (this._user) {
-      console.log('clicked?', this._user);
-      this._showMenu = !this._showMenu;
-    } else {
-      console.log('clicked!');
-      this.login();
-    }
-  }
-
   render() {
-    let content = this._user ? this.renderLoggedIn() : this.renderLoggedOut();
+    console.log('render!');
+
+    const content = this._user ? this.renderLoggedIn() : this.renderLoggedOut();
 
     return html`
       <div class="root">
@@ -95,12 +104,7 @@ export class MgtLogin extends LitElement {
 
   renderLoggedIn() {
     return html`
-      <div class="user-avatar">
-        <mgt-person person-query="me" />
-      </div>
-      <span>
-        ${this._user.displayName}
-      </span>
+      <mgt-person person-query="me" show-name />
     `;
   }
 
