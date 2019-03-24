@@ -28,7 +28,7 @@ UserInterfaceState.xcuserstate
 
 # testing
 coverage/
-m365toolkit-0.0.1.tgz
+*.tgz
 
 package-lock.json
 
