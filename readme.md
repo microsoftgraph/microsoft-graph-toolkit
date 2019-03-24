@@ -1,6 +1,6 @@
 # Microsoft Graph Toolkit (Preview)
 
-[![NPM](https://img.shields.io/npm/v/microsoft-graph-toolkit.svg)](https://www.npmjs.com/package/microsoft-graph-toolkit)[![Licence](https://img.shields.io/github/license/microsoftgraph/microsoft-graph-toolkit.svg)](https://github.com/microsoftgraph/msgraph-sdk-javascript) [![code style: prettier](https://img.shields.io/badge/code_style-prettier-ff69b4.svg)](https://github.com/microsoftgraph/msgraph-sdk-javascript) [![stackoverflow](https://img.shields.io/stackexchange/stackoverflow/t/microsoft-graph-toolkit.svg)](https://stackoverflow.com/questions/tagged/microsoft-graph-toolkit)
+[![NPM](https://img.shields.io/npm/v/microsoft-graph-toolkit.svg)](https://www.npmjs.com/package/microsoft-graph-toolkit) [![Licence](https://img.shields.io/github/license/microsoftgraph/microsoft-graph-toolkit.svg)](https://github.com/microsoftgraph/msgraph-sdk-javascript) [![code style: prettier](https://img.shields.io/badge/code_style-prettier-ff69b4.svg)](https://github.com/microsoftgraph/msgraph-sdk-javascript) [![stackoverflow](https://img.shields.io/stackexchange/stackoverflow/t/microsoft-graph-toolkit.svg)](https://stackoverflow.com/questions/tagged/microsoft-graph-toolkit)
 
 [TODO - add badges for azure pipelines]
 
@@ -22,7 +22,7 @@ You can install the components by referencing them through our CDN or installing
 
 ### Install via CDN:
 
-Download the minified code from [here] and reference in your html page. 
+[TODO] setup CDN
 
 ```html
 <script src="microsoft-graph-toolkit.js"></script>
@@ -65,11 +65,9 @@ Any components you add on this page will use the provider to connect to the Micr
 We enthusiastically welcome contributions and feedback. Please read the [contributing guide](CONTRIBUTING.md) before you begin.
 
 ## Feedback and Requests
-For general questions and support, please use [Stack Overflow](https://stackoverflow.com/questions/tagged/microsoft-graph-toolkit) where questions should be tagged with the the `microsoft-graph-toolkit`
+For general questions and support, please use [Stack Overflow](https://stackoverflow.com/questions/tagged/microsoft-graph-toolkit) where questions should be tagged with `microsoft-graph-toolkit`
 
-Please use [GitHub Issues](https://github.com/microsoftgraph/microsoft-graph-toolkit/issues?q=is%3Aissue+is%3Aopen+sort%3Aupdated-desc) for bug reports and feature request. 
-
-We highly recommend you browse existing issues first.
+Please use [GitHub Issues](https://github.com/microsoftgraph/microsoft-graph-toolkit/issues?q=is%3Aissue+is%3Aopen+sort%3Aupdated-desc) for bug reports and feature requests. We highly recommend you browse existing issues before opening new issues.
 
 ## License
 
