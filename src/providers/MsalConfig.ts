@@ -1,4 +1,4 @@
-import { LoginType } from "./IAuthProvider";
+import { LoginType } from "./IProvider";
 export interface MsalConfig {
     clientId: string;
     scopes?: string[];

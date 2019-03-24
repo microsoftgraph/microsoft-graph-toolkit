@@ -1,5 +1,5 @@
 import { LitElement, html, customElement, property } from 'lit-element';
-import { MsalProvider, MsalConfig, LoginType, Providers } from '../../../providers';
+import { MsalProvider, MsalConfig, LoginType, Providers } from '../../../providers/Providers';
 
 @customElement('mgt-msal-provider')
 export class MgtMsalProvider extends LitElement{

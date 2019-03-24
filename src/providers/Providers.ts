@@ -1,13 +1,13 @@
 import { MsalProvider as MsalProvider } from './MsalProvider';
 import { MsalConfig } from "./MsalConfig";
-import { IAuthProvider } from './IAuthProvider';
+import { IProvider } from './IProvider';
 import { EventDispatcher, EventHandler } from './EventHandler';
 import { WamProvider } from './WamProvider';
 import { SharePointProvider, WebPartContext } from './SharePointProvider';
 
 declare global {
     interface Window {
-        _msgraph_providers : IAuthProvider[],
+        _msgraph_providers : IProvider[],
         _msgraph_eventDispatcher : EventDispatcher<{}>
     }
 }
@@ -23,7 +23,7 @@ export module Providers {
         return null;
     }
 
-    export function add(provider : IAuthProvider) {
+    export function add(provider : IProvider) {
         const providers = getProviders();
 
         if (provider !== null) {
@@ -70,6 +70,6 @@ export * from "./MsalConfig"
 export * from "./MsalProvider"
 export * from "./WamProvider"
 export * from "./SharePointProvider"
-export * from "./IAuthProvider"
-export * from "./GraphSDK"
+export * from "./IProvider"
+export * from "./Graph"
 export * from "./EventHandler"

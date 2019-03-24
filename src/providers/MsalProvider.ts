@@ -1,17 +1,17 @@
-import { IAuthProvider, LoginChangedEvent, LoginType } from './IAuthProvider';
-import { Graph } from './GraphSDK';
+import { IProvider, LoginChangedEvent, LoginType } from './IProvider';
+import { Graph } from './Graph';
 import { EventHandler, EventDispatcher } from './EventHandler';
 import { MsalConfig } from './MsalConfig';
-import { UserAgentApplication } from 'msal/lib-es6';
+// import { UserAgentApplication } from 'msal/lib-es6';
 
-export class MsalProvider implements IAuthProvider {
+export class MsalProvider implements IProvider {
   private _loginChangedDispatcher = new EventDispatcher<LoginChangedEvent>();
   private _loginType: LoginType;
   private _clientId: string;
 
   private _idToken: string;
 
-  private _provider: UserAgentApplication;
+  private _provider: any;
 
   private _resolveToken;
   private _rejectToken;
@@ -41,7 +41,10 @@ export class MsalProvider implements IAuthProvider {
     this.initProvider(config);
   }
 
-  private initProvider(config: MsalConfig) {
+  private async initProvider(config: MsalConfig) {
+
+    let msal = await import(/* webpackChunkName: "msal" */ "msal/lib-es6")
+
     console.log('initProvider');
     this._clientId = config.clientId;
     this.scopes =
@@ -67,10 +70,7 @@ export class MsalProvider implements IAuthProvider {
       this.tokenReceivedCallback(errorDesc, token, error, tokenType, state);
     }).bind(this);
 
-    // import msal
-    // let msal = await import(/* webpackChunkName: "msal" */ "msal/lib-es6");
-
-    this._provider = new UserAgentApplication(
+    this._provider = new msal.UserAgentApplication(
       this._clientId,
       this.authority,
       callbackFunction,

@@ -1,7 +1,7 @@
 import { LitElement, html, customElement, property } from 'lit-element';
 import * as MicrosoftGraph from '@microsoft/microsoft-graph-types';
 
-import { Providers } from '../../providers';
+import { Providers } from '../../providers/Providers';
 import { styles } from './mgt-person-css';
 
 @customElement('mgt-person')
