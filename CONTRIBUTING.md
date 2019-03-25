@@ -33,6 +33,23 @@ npm install
 npm start
 ```
 
+## Testing the preview NPM package
+If you want to install the preview package just once, run this command:
+```bash
+npm install microsoft-graph-toolkit --registry https://pkgs.dev.azure.com/microsoft-graph-toolkit/_packaging/MGT/npm/registry/
+```
+If you want to be able to do it again later, by running ```npm install```, add the preview feed to your project's '.npmrc' file (create a '.npmrc' file if you don't have one already):
+```
+registry=https://pkgs.dev.azure.com/microsoft-graph-toolkit/_packaging/MGT/npm/registry/
+always-auth=true
+```
+Then just install the package:
+```bash
+npm install microsoft-graph-toolkit
+```
+
+[TODO: Make sure everybody can access this feed publicly.]
+
 ## Contributing
 
 ### Finding issues you can help with

@@ -3,6 +3,7 @@
   "version": "0.0.1",
   "description": "Microsoft Graph Toolkit",
   "main": "dist/es6/index.js",
+  "files":["dist"],
   "scripts": {
     "clean": "shx rm -rf dist",
     "start": "run-p sass:watch build:watch serve watch",
