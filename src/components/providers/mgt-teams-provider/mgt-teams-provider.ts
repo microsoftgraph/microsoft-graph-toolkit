@@ -16,12 +16,12 @@ export class MgtTeamsProvider extends LitElement {
     @property({
         type: String,
         attribute: 'login-popup-url'
-    }) loginPopupUrl;
+    }) loginPopupUrl = '';
 
     @property({
         type: String,
         attribute: 'login-popup-end-url'
-    }) loginPopupEndUrl;
+    }) loginPopupEndUrl = '';
 
     constructor(){
         super();
@@ -44,7 +44,7 @@ export class MgtTeamsProvider extends LitElement {
     }
 
     private validateAuthProps() {
-        if (this.clientId) {
+        if (this.clientId && this.loginPopupUrl && this.loginPopupEndUrl) {
             if(!this._provider){
                 this._provider = new TeamsProvider(this.clientId, this.loginPopupUrl, this.loginPopupEndUrl);
             }
