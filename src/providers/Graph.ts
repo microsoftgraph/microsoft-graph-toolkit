@@ -1,5 +1,5 @@
 import * as MicrosoftGraph from "@microsoft/microsoft-graph-types"
-import { IAuthProvider } from "./IAuthProvider";
+import { IProvider } from "./IProvider";
 
 export interface IGraph {
     me() : Promise<MicrosoftGraph.User>;
@@ -13,11 +13,11 @@ export interface IGraph {
 export class Graph implements IGraph {
 
     // private token: string;
-    private _provider : IAuthProvider;
+    private _provider : IProvider;
 
     private rootUrl: string = 'https://graph.microsoft.com/beta';
 
-    constructor(provider: IAuthProvider) {
+    constructor(provider: IProvider) {
         // this.token = token;
         this._provider = provider;
     }

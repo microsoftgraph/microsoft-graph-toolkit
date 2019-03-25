@@ -1,5 +1,5 @@
-import { IAuthProvider, LoginChangedEvent } from "./IAuthProvider";
-import { IGraph, Graph } from "./GraphSDK";
+import { IProvider, LoginChangedEvent } from "./IProvider";
+import { IGraph, Graph } from "./Graph";
 import { EventHandler, EventDispatcher } from "./EventHandler";
 
 declare interface Window {
@@ -8,7 +8,7 @@ declare interface Window {
 
 declare var window: Window;
 
-export class WamProvider implements IAuthProvider {
+export class WamProvider implements IProvider {
 
     private graphResource = 'https://graph.microsoft.com';
     private clientId : string;

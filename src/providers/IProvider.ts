@@ -1,7 +1,7 @@
-import { IGraph } from "./GraphSDK";
+import { IGraph } from "./Graph";
 import { EventHandler } from "./EventHandler";
 
-export interface IAuthProvider 
+export interface IProvider 
 {
     readonly isLoggedIn : boolean;
     

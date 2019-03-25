@@ -1,9 +1,9 @@
-import { IAuthProvider, LoginChangedEvent } from "./IAuthProvider";
-import { IGraph, Graph } from './GraphSDK';
+import { IProvider, LoginChangedEvent } from "./IProvider";
+import { IGraph, Graph } from './Graph';
 import { EventHandler, EventDispatcher } from './EventHandler';
 import * as microsoftTeams from "@microsoft/teams-js";
 
-export class TeamsProvider implements IAuthProvider {
+export class TeamsProvider implements IProvider {
     
     private _loginChangedDispatcher = new EventDispatcher<LoginChangedEvent>();
     

@@ -1,5 +1,5 @@
 import { LitElement, customElement, property } from 'lit-element';
-import { Providers } from '../../../providers';
+import { Providers } from '../../../providers/Providers';
 
 @customElement('mgt-wam-provider')
 export class MgtWamProvider extends LitElement {

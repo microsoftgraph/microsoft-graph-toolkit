@@ -1,7 +1,7 @@
 import { LitElement, html, customElement, property } from 'lit-element';
 import * as MicrosoftGraph from '@microsoft/microsoft-graph-types';
 
-import { Providers, IAuthProvider } from '../../providers';
+import { Providers, IProvider } from '../../providers/Providers';
 import { styles } from './mgt-agenda-css';
 
 import '../mgt-person/mgt-person';
@@ -11,7 +11,7 @@ export class MgtAgenda extends LitElement {
   @property({ attribute: false }) _events: Array<MicrosoftGraph.Event>;
   @property() eventTemplateFunction: (event: any) => string;
 
-  private _provider: IAuthProvider;
+  private _provider: IProvider;
 
   static get styles() {
     return styles;

@@ -3,6 +3,9 @@
   "version": "0.0.1",
   "description": "Microsoft Graph Toolkit",
   "main": "dist/es6/index.js",
+  "files": [
+    "dist"
+  ],
   "scripts": {
     "clean": "shx rm -rf dist",
     "start": "run-p sass:watch build:watch serve watch",
@@ -33,6 +36,7 @@
     "gulp-sass": "^4.0.2",
     "npm-run-all": "^4.1.5",
     "owc-dev-server": "^0.2.1",
+    "polymer-cli": "^1.9.7",
     "sass": "^1.17.3",
     "shx": "^0.3.2",
     "ts-loader": "^5.3.3",

@@ -17,7 +17,8 @@ module.exports = {
         chunkFilename: '[name].chunk.js',
         libraryTarget: 'umd',
         library: 'msGraphToolkit',
-        umdNamedDefine: true
+        umdNamedDefine: true,
+        publicPath: './dist/es5/' //this doesn't work outside of this sample - TODO
     },
     resolve: {
         extensions: ['.ts', '.js']

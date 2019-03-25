@@ -1,5 +1,5 @@
 import { LitElement, customElement, property } from 'lit-element';
-import { TeamsProvider, Providers } from '../../../providers';
+import { TeamsProvider, Providers } from '../../../providers/Providers';
 
 @customElement('mgt-teams-provider')
 export class MgtTeamsProvider extends LitElement {

@@ -1,7 +1,7 @@
 import { LitElement, html, customElement, property } from 'lit-element';
 import * as MicrosoftGraph from '@microsoft/microsoft-graph-types';
 
-import { Providers } from '../../providers';
+import { Providers } from '../../providers/Providers';
 import { styles } from './mgt-login-css';
 
 import '../mgt-person/mgt-person';
@@ -9,7 +9,8 @@ import '../mgt-person/mgt-person';
 @customElement('mgt-login')
 export class MgtLogin extends LitElement {
   @property({ attribute: false }) private _user: MicrosoftGraph.User;
-  @property({ attribute: false }) private _showMenu: boolean = false;
+  @property({ attribute: false })
+  private _showMenu: boolean = false;
 
   static get styles() {
     return styles;
@@ -19,6 +20,18 @@ export class MgtLogin extends LitElement {
     super();
     Providers.onProvidersChanged(_ => this.init());
     this.init();
+  }
+
+  updated(changedProps) {
+    console.log(changedProps.get('_showMenu'));
+  }
+
+  firstUpdated() {
+    window.onclick = (event: any) => {
+      if (event.target !== this) {
+        this._showMenu = false;
+      }
+    };
   }
 
   private async init() {
@@ -34,6 +47,18 @@ export class MgtLogin extends LitElement {
 
     if (provider && provider.isLoggedIn) {
       this._user = await provider.graph.me();
+    }
+  }
+
+  private clicked() {
+    if (this._user) {
+      this._showMenu = !this._showMenu;
+
+      // const loginButton = this.shadowRoot.querySelector('.login-button');
+      // const rect = loginButton.getBoundingClientRect();
+      // console.log('rect', rect);
+    } else {
+      this.login();
     }
   }
 
@@ -53,20 +78,14 @@ export class MgtLogin extends LitElement {
     }
   }
 
-  private clicked() {
-    if (this._user) {
-      this._showMenu = !this._showMenu;
-    } else {
-      this.login();
-    }
-  }
-
   render() {
-    let content = this._user ? this.renderLoggedIn() : this.renderLoggedOut();
+    console.log('render!');
+
+    const content = this._user ? this.renderLoggedIn() : this.renderLoggedOut();
 
     return html`
       <div class="root">
-        <button class="sign-in-button" @click=${this.clicked}>
+        <button class="login-button" @click=${this.clicked}>
           ${content}
         </button>
         ${this.renderMenu()}
@@ -76,7 +95,7 @@ export class MgtLogin extends LitElement {
 
   renderLoggedOut() {
     return html`
-      <i class="sign-in-icon ms-Icon ms-Icon--AddFriend"></i>
+      <i class="login-icon ms-Icon ms-Icon--Contact"></i>
       <span>
         Sign In
       </span>
@@ -85,12 +104,7 @@ export class MgtLogin extends LitElement {
 
   renderLoggedIn() {
     return html`
-      <div class="user-avatar">
-        <mgt-person person-query="me" />
-      </div>
-      <span>
-        ${this._user.displayName}
-      </span>
+      <mgt-person person-query="me" show-name />
     `;
   }
 
@@ -100,9 +114,7 @@ export class MgtLogin extends LitElement {
     }
 
     return html`
-      <div class="login-menu-root ${this._showMenu ? 'show-menu' : ''}">
-        <div class="login-menu-beak"></div>
-        <div class="login-menu-beak-cover"></div>
+      <div class="login-popup ${this._showMenu ? 'show-menu' : ''}">
         <div class="login-menu-content">
           <div class="login-menu-user-profile">
             <div class="login-menu-user-image">

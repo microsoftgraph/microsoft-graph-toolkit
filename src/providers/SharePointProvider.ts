@@ -1,5 +1,5 @@
-import { IAuthProvider, LoginChangedEvent } from "./IAuthProvider";
-import { IGraph, Graph } from './GraphSDK';
+import { IProvider, LoginChangedEvent } from "./IProvider";
+import { IGraph, Graph } from './Graph';
 import { EventHandler, EventDispatcher } from './EventHandler';
 
 declare interface AadTokenProvider{
@@ -10,7 +10,7 @@ export declare interface WebPartContext{
     aadTokenProviderFactory : any;
 }
 
-export class SharePointProvider implements IAuthProvider {
+export class SharePointProvider implements IProvider {
     
     private _loginChangedDispatcher = new EventDispatcher<LoginChangedEvent>();
     

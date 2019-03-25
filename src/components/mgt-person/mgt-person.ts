@@ -1,7 +1,7 @@
 import { LitElement, html, customElement, property } from 'lit-element';
 import * as MicrosoftGraph from '@microsoft/microsoft-graph-types';
 
-import { Providers } from '../../providers';
+import { Providers } from '../../providers/Providers';
 import { styles } from './mgt-person-css';
 
 @customElement('mgt-person')
@@ -63,7 +63,7 @@ export class MgtPerson extends LitElement {
 
       if (provider && provider.isLoggedIn) {
         if (this.personQuery == 'me') {
-          let person : MgtPersonDetails = {};
+          let person: MgtPersonDetails = {};
 
           await Promise.all([
             provider.graph.me().then(user => {
@@ -77,7 +77,7 @@ export class MgtPerson extends LitElement {
                 person.image = photo;
               }
             })
-          ])
+          ]);
 
           this.personDetails = person;
         } else {
@@ -86,11 +86,20 @@ export class MgtPerson extends LitElement {
               let person = people[0] as MicrosoftGraph.Person;
               this.personDetails = person;
 
-              if (person.scoredEmailAddresses && person.scoredEmailAddresses.length) {
-                this.personDetails.email = person.scoredEmailAddresses[0].address;
-              } else if ((<any>person).emailAddresses && (<any>person).emailAddresses.length) {
+              if (
+                person.scoredEmailAddresses &&
+                person.scoredEmailAddresses.length
+              ) {
+                this.personDetails.email =
+                  person.scoredEmailAddresses[0].address;
+              } else if (
+                (<any>person).emailAddresses &&
+                (<any>person).emailAddresses.length
+              ) {
                 // beta endpoind uses emailAddresses instead of scoredEmailAddresses
-                this.personDetails.email = (<any>person).emailAddresses[0].address
+                this.personDetails.email = (<any>(
+                  person
+                )).emailAddresses[0].address;
               }
 
               if (person.userPrincipalName) {
@@ -110,14 +119,9 @@ export class MgtPerson extends LitElement {
   }
 
   render() {
-    let style = `
-            height: ${this.imageSize.toString()}px;
-            width: ${this.imageSize.toString()}px;
-        `;
     return html`
-      <div class="person-container" style=${style}>
-        ${this.renderImage()}
-        ${this.renderNameAndEmail()}
+      <div class="root">
+        ${this.renderImage()} ${this.renderNameAndEmail()}
       </div>
     `;
   }
@@ -125,7 +129,9 @@ export class MgtPerson extends LitElement {
   renderImage() {
     if (this.personDetails) {
       if (this.personDetails.image) {
-        return html`<img class="person-user-image" src=${this.personDetails.image as string}></img>`;
+        return html`
+          <img class="user-avatar" src=${this.personDetails.image as string} />
+        `;
       } else {
         return html`
           <div class="person-initials-container">
@@ -177,23 +183,28 @@ export class MgtPerson extends LitElement {
   }
 
   renderNameAndEmail() {
-    if (!this.personDetails || (!this.showEmail && !this.showName)){
+    if (!this.personDetails || (!this.showEmail && !this.showName)) {
       return;
     }
 
-    let nameView = this.showName ? html`<div>${this.personDetails.displayName}</div>` : null;
-    let emailView = this.showEmail ? html`<div>${this.personDetails.email}</div>` : null;
+    const nameView = this.showName
+      ? html`
+          <div class="user-name">${this.personDetails.displayName}</div>
+        `
+      : null;
+    const emailView = this.showEmail
+      ? html`
+          <div>${this.personDetails.email}</div>
+        `
+      : null;
 
     return html`
-    <div>
-      ${nameView}
-      ${emailView}
-    </div>
-    `
+      ${nameView} ${emailView}
+    `;
   }
 
   getInitials() {
-    if (!this.personDetails){
+    if (!this.personDetails) {
       return '';
     }
 
@@ -206,7 +217,7 @@ export class MgtPerson extends LitElement {
     }
 
     if (!initials && this.personDetails.displayName) {
-      let name = this.personDetails.displayName.split(' ');
+      const name = this.personDetails.displayName.split(' ');
       for (let i = 0; i < 2 && i < name.length; i++) {
         initials += name[i][0].toUpperCase();
       }
@@ -220,6 +231,6 @@ export declare interface MgtPersonDetails {
   displayName?: string;
   email?: string;
   image?: string;
-  givenName? : string;
-  surname? : string;
+  givenName?: string;
+  surname?: string;
 }
