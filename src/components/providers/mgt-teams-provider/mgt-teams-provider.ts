@@ -18,11 +18,6 @@ export class MgtTeamsProvider extends LitElement {
         attribute: 'login-popup-url'
     }) loginPopupUrl = '';
 
-    @property({
-        type: String,
-        attribute: 'login-popup-end-url'
-    }) loginPopupEndUrl = '';
-
     constructor(){
         super();
         this.validateAuthProps();
@@ -44,13 +39,12 @@ export class MgtTeamsProvider extends LitElement {
     }
 
     private validateAuthProps() {
-        if (this.clientId && this.loginPopupUrl && this.loginPopupEndUrl) {
+        if (this.clientId && this.loginPopupUrl) {
             if(!this._provider){
-                this._provider = new TeamsProvider(this.clientId, this.loginPopupUrl, this.loginPopupEndUrl);
+                this._provider = new TeamsProvider(this.clientId, this.loginPopupUrl);
             }
             this._provider.clientId = this.clientId;
             this._provider.loginPopupUrl = this.loginPopupUrl;
-            this._provider.loginPopupEndUrl = this.loginPopupEndUrl;
         }
     }
 }

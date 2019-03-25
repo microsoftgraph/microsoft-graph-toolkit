@@ -48,9 +48,9 @@ export module Providers {
         return <SharePointProvider>addCustomProvider(new SharePointProvider(context));
     }
 
-    export async function addTeamsProvider(clientId: string, loginPopupUrl: string, loginPopupEndUrl: string) {
+    export async function addTeamsProvider(clientId: string, loginPopupUrl: string) {
         if(await TeamsProvider.isAvailable()){
-            return <TeamsProvider>addCustomProvider(new TeamsProvider(clientId, loginPopupUrl, loginPopupEndUrl));
+            return <TeamsProvider>addCustomProvider(new TeamsProvider(clientId, loginPopupUrl));
         }
         return null;
     }
