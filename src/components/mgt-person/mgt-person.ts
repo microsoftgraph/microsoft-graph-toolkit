@@ -130,7 +130,10 @@ export class MgtPerson extends LitElement {
     if (this.personDetails) {
       if (this.personDetails.image) {
         return html`
-          <img class="user-avatar" src=${this.personDetails.image as string} />
+          <img
+            class="user-avatar ${this.getImageRowSpan()}"
+            src=${this.personDetails.image as string}
+          />
         `;
       } else {
         return html`
@@ -224,6 +227,14 @@ export class MgtPerson extends LitElement {
     }
 
     return initials;
+  }
+
+  getImageRowSpan() {
+    if (this.showEmail && this.showName) {
+      return 'row-span-2';
+    }
+
+    return '';
   }
 }
 

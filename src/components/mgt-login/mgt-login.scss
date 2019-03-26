@@ -1,4 +1,5 @@
 @import '../../../node_modules/office-ui-fabric-core/dist/sass/References';
+
 :host {
   --font-size: #{$ms-font-size-m};
   --font-weight: #{$ms-font-weight-semibold};
@@ -8,6 +9,7 @@
   --color: #{$ms-color-neutralDark};
   --background-color: transparent;
   --background-color--hover: #{$ms-color-neutralLight};
+  --popup-command-font-size: #{$ms-font-size-s};
 }
 
 .root {
@@ -28,10 +30,12 @@
   border: none;
   cursor: pointer;
   transition: color 0.3s, background-color 0.3s;
+
   &:hover {
-    color: var(--default-hover-color);
+    color: var(--theme-primary-color);
     background-color: var(--background-color--hover);
   }
+
   &:focus {
     outline: 0;
   }
@@ -43,115 +47,56 @@
   }
 }
 
-.login-header-user-image-container {
-  height: 35px;
-  width: 35px;
-  flex: 0 0 auto;
-  padding-left: 11px;
-  padding-right: 5px;
-  box-sizing: content-box;
-}
-
-.login-user-image {
-  height: 24px;
-  width: 24px;
-  border: 0;
-  border-radius: 35px;
-}
-
-/* menu */
-
-.login-popup {
+.popup {
   display: none;
   position: absolute;
   top: 0;
   right: 0;
-  animation-duration: 200ms;
-  animation-name: slideout;
+  animation-duration: 300ms;
   font-family: var(--default-font-family);
-  font-size: 14px;
-  box-sizing: border-box;
   box-shadow: 0 12px 40px 2px rgba(0, 0, 0, 0.08);
-  border-width: 0;
-  border-style: solid;
-  border-color: rgb(237, 235, 233);
-  outline: transparent;
-  border-radius: 2px;
   min-width: 240px;
+
   &.show-menu {
     display: block;
-    animation-name: slidein;
+    animation-name: fade-in;
   }
 }
 
-.login-menu-content {
+.popup-content {
   display: flex;
   flex-direction: column;
   background: white;
   padding: 20px 20px 8px 20px;
 }
 
-.login-menu-user-image {
-  height: 65px;
-  width: 65px;
-}
-
-.login-menu-user-profile {
-  display: flex;
-  align-items: center;
-  margin-bottom: 16px;
-  z-index: 2;
-}
-
-.login-menu-user-details {
-  display: flex;
-  flex-direction: column;
-  margin-left: 14px;
-}
-
-.login-menu-user-display-name {
-  font-size: 18px;
-  font-weight: 600;
-  line-height: 20px;
-  color: #000011;
-  white-space: nowrap;
-}
-
-.login-menu-user-email {
-  font-size: 15px;
-  line-height: 20px;
-  color: #5e5e5e;
-}
-
-// .login-menu-commands {}
-.login-menu-commands ul {
+.popup-commands ul {
   list-style-type: none;
+  margin-top: 16px;
   padding: 0;
-  margin: 0;
 }
 
-.login-menu-command {
+.popup-command {
+  font-family: var(--default-font-family);
+  font-size: var(--popup-command-font-size);
+  font-weight: var(--font-weight);
+  color: var(--theme-primary-color);
+  background-color: transparent;
   border: none;
   padding: 0;
-  margin: 0px 0px 8px 0px;
-  background: 0 0;
   cursor: pointer;
-  display: flex;
-  position: relative;
-  height: 100%;
-  align-items: center;
-  color: #0078d7;
-  font-family: var(--default-font-family);
-  font-style: normal;
-  font-weight: normal;
-  line-height: 20px;
-  font-size: 13px;
+  transition: color 0.3s;
+
+  &:hover {
+    color: var(--theme-dark-color);
+  }
 }
 
-@keyframes slidein {
+@keyframes fade-in {
   from {
     opacity: 0;
   }
+
   to {
     opacity: 1;
   }
