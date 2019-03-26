@@ -8,10 +8,13 @@
   --email-color: #{$ms-color-neutralPrimary};
   --avatar-size--s: 24px;
   --avatar-size: 48px;
+  --avatar-font-size--s: 16px;
+  --avatar-font-size: 32px;
+  --initials-color: white;
+  --initials-background-color: #{$ms-color-magenta};
 }
 
-svg,
-.person-initials-container {
+svg {
   width: var(--avatar-size--s);
   height: var(--avatar-size--s);
 }
@@ -24,8 +27,8 @@ img {
 .root {
   position: relative;
   display: grid;
-  grid-auto-rows: minmax(0, auto);
   align-items: center;
+  grid-template-columns: auto 1fr;
   font-family: var(--default-font-family);
 }
 
@@ -35,10 +38,39 @@ img {
   height: var(--avatar-size);
   margin-right: 12px;
 
+  &.initials {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    color: var(--initials-color);
+    background-color: var(--initials-background-color);
+    border-radius: 50%;
+    font-weight: var(--font-weight);
+  }
+
   &.small {
     margin-right: 6px;
     width: var(--avatar-size--s);
     height: var(--avatar-size--s);
+  }
+
+  &.row-span-2 {
+    grid-row: 1 / 3;
+  }
+
+  &.row-span-3 {
+    grid-row: 1 / 4;
+  }
+}
+
+.avatar-icon {
+  grid-column: 1;
+  font-size: var(--avatar-font-size);
+  margin-right: 12px;
+
+  &.small {
+    margin-right: 6px;
+    font-size: var(--avatar-font-size--s);
   }
 
   &.row-span-2 {
@@ -62,27 +94,4 @@ img {
   font-size: var(--email-font-size);
   white-space: nowrap;
   grid-column: 2;
-}
-
-.person-initials-container {
-  height: 100%;
-  width: 100%;
-  background-color: brown;
-  border-radius: 50%;
-  font-size: 14px;
-  font-weight: 400;
-  color: white;
-  line-height: 46px;
-  vertical-align: baseline;
-  text-align: center;
-  position: relative;
-  font-family: var(--default-font-family);
-}
-
-.person-initials-container span {
-  vertical-align: baseline;
-  position: absolute;
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, -50%);
 }
