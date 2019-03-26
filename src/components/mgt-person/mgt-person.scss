@@ -28,6 +28,7 @@ img {
   position: relative;
   display: grid;
   align-items: center;
+  grid-template-columns: auto 1fr;
   font-family: var(--default-font-family);
 }
 
