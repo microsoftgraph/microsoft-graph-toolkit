@@ -8,10 +8,11 @@
   --email-color: #{$ms-color-neutralPrimary};
   --avatar-size--s: 24px;
   --avatar-size: 48px;
+  --initials-color: white;
+  --initials-background-color: #{$ms-color-magenta};
 }
 
-svg,
-.person-initials-container {
+svg {
   width: var(--avatar-size--s);
   height: var(--avatar-size--s);
 }
@@ -24,7 +25,6 @@ img {
 .root {
   position: relative;
   display: grid;
-  grid-auto-rows: minmax(0, auto);
   align-items: center;
   font-family: var(--default-font-family);
 }
@@ -34,6 +34,16 @@ img {
   width: var(--avatar-size);
   height: var(--avatar-size);
   margin-right: 12px;
+
+  &.initials {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    color: var(--initials-color);
+    background-color: var(--initials-background-color);
+    border-radius: 50%;
+    font-weight: var(--font-weight);
+  }
 
   &.small {
     margin-right: 6px;
@@ -62,27 +72,4 @@ img {
   font-size: var(--email-font-size);
   white-space: nowrap;
   grid-column: 2;
-}
-
-.person-initials-container {
-  height: 100%;
-  width: 100%;
-  background-color: brown;
-  border-radius: 50%;
-  font-size: 14px;
-  font-weight: 400;
-  color: white;
-  line-height: 46px;
-  vertical-align: baseline;
-  text-align: center;
-  position: relative;
-  font-family: var(--default-font-family);
-}
-
-.person-initials-container span {
-  vertical-align: baseline;
-  position: absolute;
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, -50%);
 }

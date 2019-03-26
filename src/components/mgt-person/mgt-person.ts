@@ -45,6 +45,7 @@ export class MgtPerson extends LitElement {
 
   constructor() {
     super();
+
     Providers.onProvidersChanged(_ => this.handleProviderChanged());
     this.loadImage();
   }
@@ -137,13 +138,15 @@ export class MgtPerson extends LitElement {
         `;
       } else {
         return html`
-          <div class="person-initials-container">
+          <div
+            class="user-avatar initials ${this.getImageRowSpanClass()} ${this.getImageSizeClass()}"
+          >
             <style>
-              .person-initials {
+              .initials-text {
                 font-size: ${this.imageSize * 0.45}px;
               }
             </style>
-            <span class="person-initials">
+            <span class="initials-text">
               ${this.getInitials()}
             </span>
           </div>
