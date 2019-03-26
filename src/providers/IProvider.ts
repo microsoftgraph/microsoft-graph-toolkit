@@ -4,10 +4,9 @@ import { EventHandler } from "./EventHandler";
 export interface IProvider 
 {
     readonly isLoggedIn : boolean;
-    readonly isAvailable : boolean;
-
-    login() : Promise<void>;
-    logout() : Promise<void>;
+    
+    login?() : Promise<void>;
+    logout?() : Promise<void>;
     getAccessToken(...scopes: string[]) : Promise<string>;
 
     // get access to underlying provider

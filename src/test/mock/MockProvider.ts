@@ -9,8 +9,6 @@ export class MockProvider implements IProvider {
         this.isLoggedIn = signedIn;
     }
     
-    isAvailable: boolean = true;
-
     isLoggedIn: boolean;
     private _loginChangedDispatcher = new EventDispatcher<LoginChangedEvent>();
 

@@ -20,6 +20,7 @@ log.txt
 .versions/
 node_modules/
 $RECYCLE.BIN/
+.cache/
 
 .DS_Store
 Thumbs.db

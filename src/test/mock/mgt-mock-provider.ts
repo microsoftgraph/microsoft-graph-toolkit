@@ -6,6 +6,6 @@ import {MockProvider} from './MockProvider'
 export class MgtMockProvider extends LitElement {
     constructor() {
         super();
-        Providers.add(new MockProvider(true));
+        Providers.addCustomProvider(new MockProvider(true));
     }
 }

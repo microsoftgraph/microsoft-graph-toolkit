@@ -1,0 +1,15 @@
+{
+  "name": "MGTTeamsSample",
+  "version": "1.0.0",
+  "main": "index.js",
+  "license": "MIT",
+  "scripts": {
+    "build": "parcel build ./*.html"
+  },
+  "dependencies": {
+    "microsoft-graph-toolkit": "file:../../"
+  },
+  "devDependencies": {
+    "cssnano": "^4.1.10"
+  }
+}

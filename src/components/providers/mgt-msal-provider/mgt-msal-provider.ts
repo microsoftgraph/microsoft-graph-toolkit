@@ -4,7 +4,6 @@ import { MsalProvider, MsalConfig, LoginType, Providers } from '../../../provide
 @customElement('mgt-msal-provider')
 export class MgtMsalProvider extends LitElement{
 
-    private _provider : MsalProvider;
     private _isInitialized : boolean = false;
 
     @property({
@@ -21,9 +20,7 @@ export class MgtMsalProvider extends LitElement{
 
     constructor(){
         super();
-        if (!this._provider){
-            this.validateAuthProps();
-        }
+        this.validateAuthProps();
     }
 
     attributeChangedCallback(name, oldval, newval) {
@@ -53,14 +50,12 @@ export class MgtMsalProvider extends LitElement{
                 let loginTypeEnum = LoginType[loginType];
                 config.loginType = loginTypeEnum;
             }
-
+            
             if (this.authority) {
                 config.authority = this.authority;
             }
-
-            this._provider = new MsalProvider(config);
-
-            Providers.add(this._provider);
+            
+            Providers.addMsalProvider(config);
         }
     }
 }

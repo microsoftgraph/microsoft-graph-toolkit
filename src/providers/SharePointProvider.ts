@@ -1,4 +1,4 @@
-import { IProvider, LoginChangedEvent, LoginType } from "./IProvider";
+import { IProvider, LoginChangedEvent } from "./IProvider";
 import { IGraph, Graph } from './Graph';
 import { EventHandler, EventDispatcher } from './EventHandler';
 
@@ -26,10 +26,6 @@ export class SharePointProvider implements IProvider {
         return !!this._idToken;
     };
 
-    get isAvailable(): boolean{
-        return true;
-    };
-
     private context : WebPartContext;
 
     scopes: string[];
@@ -44,12 +40,12 @@ export class SharePointProvider implements IProvider {
         context.aadTokenProviderFactory.getTokenProvider().then((tokenProvider: AadTokenProvider): void => {
             this._provider = tokenProvider;
             this.graph = new Graph(this);
-            this.login();
+            this.internalLogin();
         });
         this.fireLoginChangedEvent({});
     }
     
-    async login(): Promise<void> {
+    private async internalLogin(): Promise<void> {
         this._idToken = await this.getAccessToken();
         if (this._idToken) {
             this.fireLoginChangedEvent({});
@@ -65,11 +61,6 @@ export class SharePointProvider implements IProvider {
             throw e;
         }
         return accessToken;
-    }
-    
-    async logout(): Promise<void> {
-        //this.provider.logout();
-        this.fireLoginChangedEvent({});
     }
     
     updateScopes(scopes: string[]) {
