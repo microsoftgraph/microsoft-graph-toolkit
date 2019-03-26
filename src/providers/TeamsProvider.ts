@@ -265,7 +265,7 @@ export class TeamsProvider implements IProvider {
         if (this._idToken)
             return this._idToken;
         return new Promise((resolve, reject) => {
-            var url = new URL(this._loginPopupUrl);
+            var url = new URL(this._loginPopupUrl, new URL(window.location.href));
             url.searchParams.append('clientId', this._clientId);
 
             microsoftTeams.authentication.authenticate({
