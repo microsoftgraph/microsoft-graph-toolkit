@@ -18,7 +18,7 @@ If you are just getting started with Teams Apps, you can follow the getting star
 Once you have installed your app with a tab, and you are ready to use the components, you will need to make sure your app has the right permissions to access the graph. Follow this 3 steps to configure your app with the necessary permissions:
 1) https://docs.microsoft.com/en-us/azure/active-directory/identity-protection/graph-get-started#retrieve-your-domain-name
 2) https://docs.microsoft.com/en-us/azure/active-directory/identity-protection/graph-get-started#create-a-new-app-registration
-3) https://docs.microsoft.com/en-us/azure/active-directory/identity-protection/graph-get-started#create-a-new-app-registration
+3) https://docs.microsoft.com/en-us/azure/active-directory/identity-protection/graph-get-started#grant-your-application-permission-to-use-the-api
 
 It's important to add the right permission on the `Add API access page` as described in the links above. You will need an Administrator to add and approve the permissions, depending on which component you need.
 
