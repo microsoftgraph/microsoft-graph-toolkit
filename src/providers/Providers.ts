@@ -14,7 +14,7 @@ declare global {
 }
 
 export module Providers {
-    export function getAvailable() {
+    export function getAvailable() : IProvider {
         const providers = getProviders();
 
         for (let provider of providers) {
@@ -60,7 +60,7 @@ export module Providers {
     }
 
     // TODO - figure out a better way to have a global reference to all providers
-    function getProviders() {
+    function getProviders() : IProvider[] {
         if (!window._msgraph_providers) {
             window._msgraph_providers = [];
         }

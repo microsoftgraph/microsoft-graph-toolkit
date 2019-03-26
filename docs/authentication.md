@@ -26,11 +26,17 @@ These are examples of initializing an authentication provider in JavaScript.
 
 3. Initialize for Teams
 
-    \\\\ TODO
+    ```js
+    await Providers.addTeamsProvider('<YOUR_CLIENT_ID>', '<LOGIN_REDIRECT_URL>');
+    ```
+    For more see [Teams Provider docs](providers/Teams.md).
 
 4. Initialize for SharePoint
 
-    \\\\ TODO
+    ```js
+    Providers.addSharePointProvider(this.context); 
+    ```
+    For more see [Sharepoint Provider docs](providers/SharePoint.md).
 
 5. Initialize for AddIns
 
@@ -58,7 +64,7 @@ You can initialize a provider at any time, but it's recomended to initialize the
 
 ### API
 
-1. The `GraphProviders` global variable exposes the following functions
+1. The `Providers` global variable exposes the following functions
     * `function addMsalProvider(config : MsalConfig)`
         
         where `MsalConfig` defines the following interface:
@@ -78,19 +84,23 @@ You can initialize a provider at any time, but it's recomended to initialize the
 
         In general, you will not need to specify the scope. Each control will automatically request access to the appropriate scopes needed for the control to function properly. Make sure to visit each control's documentation to know what scope to enable for your app in the Azure Portal
 
-    * `function addMsalProvider(application : UserAgentApplication)`
-
-        If you are already using MSAL.js in your application, just pass in the instance to the `addMsalProvider` method. No need to change how you configure your application
-
-    * `function addWamProvider(clientId: string, authority?: string)`
+    * `function addWamProvider(clientId : string, authority? : string)`
 
         If your application will be running as a Progressive Web App (PWA) on Windows, you might want to take advantage of the native [Web Account Manager (WAM)](https://docs.microsoft.com/en-us/windows/uwp/security/web-account-manager) APIs. This will allow you to simplify the login process for your users by using the built in Windows identity provider.
 
-    * `function add(provider : IAuthProvider)`
+    * `function addSharePointProvider(context : WebPartContext)`
+
+        See [docs](providers/SharePoint.md)
+
+    * `async function addTeamsProvider(clientId : string, loginPopupUrl : string)`
+
+        TODO
+
+    * `function addCustomProvider(provider : IProvider)`
 
         Use the add function to initialize with a custom provider
 
-    * `function getAvailable() : IAuthProvider`
+    * `function getAvailable() : IProvider`
 
         This function is intended to be used by each control to get a reference to the authentication provider once initialized. It returns the first provider that is available on the current runtime.
 
@@ -103,14 +113,13 @@ You can initialize a provider at any time, but it's recomended to initialize the
 The provider defines the following interface:
 
 ```ts
-export interface IAuthProvider 
+export interface IProvider 
 {
     readonly isLoggedIn : boolean;
-    readonly isAvailable : boolean;
 
-    login() : Promise<void>;
-    logout() : Promise<void>;
-    getAccessToken() : Promise<string>;
+    login?() : Promise<void>;
+    logout?() : Promise<void>;
+    getAccessToken(...scopes: string[]) : Promise<string>;
 
     // get access to underlying provider (such as UserAgentApplication)
     provider : any;
@@ -125,7 +134,7 @@ export interface IAuthProvider
 
 ## Microsoft Graph
 
-Each control is enabled with Graph access out of the box as long as the developer has initialized a provider (as described in the above section). To get a reference to the built in Microsoft Graph APIs, first get a reference to the global IAuthProvider and then use the `Graph` object:
+Each control is enabled with Graph access out of the box as long as the developer has initialized a provider (as described in the above section). To get a reference to the built in Microsoft Graph APIs, first get a reference to the global IProvider and then use the `Graph` object:
 
 ```js
 let provider = GraphProviders.getAvailable();
