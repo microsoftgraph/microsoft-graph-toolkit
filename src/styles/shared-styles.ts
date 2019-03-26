@@ -12,7 +12,8 @@ export const sharedStyles = [
       --default-font-family: 'Segoe UI', 'Segoe UI Web (West European)',
         'Segoe UI', -apple-system, BlinkMacSystemFont, Roboto, 'Helvetica Neue',
         sans-serif;
-      --default-hover-color: #0078d7;
+      --theme-primary-color: #0078d7;
+      --theme-dark-color: #005a9e;
     }
   `
 ];

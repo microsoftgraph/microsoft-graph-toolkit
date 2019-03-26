@@ -114,23 +114,15 @@ export class MgtLogin extends LitElement {
     }
 
     return html`
-      <div class="login-popup ${this._showMenu ? 'show-menu' : ''}">
-        <div class="login-menu-content">
-          <div class="login-menu-user-profile">
-            <div class="login-menu-user-image">
-              <mgt-person person-query="me" image-size="65" />
-            </div>
-            <div class="login-menu-user-details">
-              <div class="login-menu-user-display-name">
-                ${this._user.displayName}
-              </div>
-              <div class="login-menu-user-email">${this._user.mail}</div>
-            </div>
+      <div class="popup ${this._showMenu ? 'show-menu' : ''}">
+        <div class="popup-content">
+          <div>
+            <mgt-person person-query="me" show-name show-email />
           </div>
-          <div class="login-menu-commands">
+          <div class="popup-commands">
             <ul>
               <li>
-                <button class="login-menu-command" @click=${this.logout}>
+                <button class="popup-command" @click=${this.logout}>
                   Sign Out
                 </button>
               </li>
