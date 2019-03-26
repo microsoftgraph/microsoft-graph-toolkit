@@ -1,15 +1,19 @@
 @import '../../../node_modules/office-ui-fabric-core/dist/sass/References';
+
 :host {
   --font-size: #{$ms-font-size-m};
   --font-weight: #{$ms-font-weight-semibold};
   --color: #{$ms-color-neutralDark};
+  --email-font-size: #{$ms-font-size-s};
+  --email-color: #{$ms-color-neutralPrimary};
+  --avatar-size--s: 24px;
+  --avatar-size: 48px;
 }
 
-img,
 svg,
 .person-initials-container {
-  width: 24px;
-  height: 24px;
+  width: var(--avatar-size--s);
+  height: var(--avatar-size--s);
 }
 
 img {
@@ -19,21 +23,45 @@ img {
 
 .root {
   position: relative;
-  display: flex;
+  display: grid;
+  grid-auto-rows: minmax(0, auto);
   align-items: center;
   font-family: var(--default-font-family);
 }
 
 .user-avatar {
-  width: 24px;
-  height: 24px;
-  margin-right: 6px;
+  grid-column: 1;
+  width: var(--avatar-size);
+  height: var(--avatar-size);
+  margin-right: 12px;
+
+  &.small {
+    margin-right: 6px;
+    width: var(--avatar-size--s);
+    height: var(--avatar-size--s);
+  }
+
+  &.row-span-2 {
+    grid-row: 1 / 3;
+  }
+
+  &.row-span-3 {
+    grid-row: 1 / 4;
+  }
 }
 
 .user-name {
   font-size: var(--font-size);
   font-weight: var(--font-weight);
   white-space: nowrap;
+  grid-column: 2;
+}
+
+.user-email {
+  color: var(--email-color);
+  font-size: var(--email-font-size);
+  white-space: nowrap;
+  grid-column: 2;
 }
 
 .person-initials-container {
