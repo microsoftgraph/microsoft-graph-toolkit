@@ -34,3 +34,7 @@ coverage/
 package-lock.json
 
 *-css.ts
+
+src/**/*.js
+src/**/*.map
+src/**/*.d.ts

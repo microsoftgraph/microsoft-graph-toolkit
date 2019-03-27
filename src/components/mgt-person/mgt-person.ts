@@ -1,29 +1,29 @@
-import { LitElement, html, customElement, property } from 'lit-element';
-import * as MicrosoftGraph from '@microsoft/microsoft-graph-types';
+import { LitElement, html, customElement, property } from "lit-element";
+import * as MicrosoftGraph from "@microsoft/microsoft-graph-types";
 
-import { Providers } from '../../providers/Providers';
-import { styles } from './mgt-person-css';
+import { Providers } from "../../providers/Providers";
+import styles from "./mgt-person.scss";
 
-@customElement('mgt-person')
+@customElement("mgt-person")
 export class MgtPerson extends LitElement {
   @property({
-    attribute: 'image-size'
+    attribute: "image-size"
   })
   imageSize: number = 24;
 
   @property({
-    attribute: 'person-query'
+    attribute: "person-query"
   })
   personQuery: string;
 
   @property({
-    attribute: 'show-name',
+    attribute: "show-name",
     type: Boolean
   })
   showName: false;
 
   @property({
-    attribute: 'show-email',
+    attribute: "show-email",
     type: Boolean
   })
   showEmail: false;
@@ -33,7 +33,7 @@ export class MgtPerson extends LitElement {
   attributeChangedCallback(name, oldval, newval) {
     super.attributeChangedCallback(name, oldval, newval);
 
-    if (name == 'person-query' && oldval !== newval) {
+    if (name == "person-query" && oldval !== newval) {
       this.personDetails = null;
       this.loadImage();
     }
@@ -63,7 +63,7 @@ export class MgtPerson extends LitElement {
       let provider = Providers.getAvailable();
 
       if (provider && provider.isLoggedIn) {
-        if (this.personQuery == 'me') {
+        if (this.personQuery == "me") {
           let person: MgtPersonDetails = {};
 
           await Promise.all([
@@ -188,10 +188,10 @@ export class MgtPerson extends LitElement {
 
   getInitials() {
     if (!this.personDetails) {
-      return '';
+      return "";
     }
 
-    let initials = '';
+    let initials = "";
     if (this.personDetails.givenName) {
       initials += this.personDetails.givenName[0].toUpperCase();
     }
@@ -200,7 +200,7 @@ export class MgtPerson extends LitElement {
     }
 
     if (!initials && this.personDetails.displayName) {
-      const name = this.personDetails.displayName.split(' ');
+      const name = this.personDetails.displayName.split(" ");
       for (let i = 0; i < 2 && i < name.length; i++) {
         initials += name[i][0].toUpperCase();
       }
@@ -211,18 +211,18 @@ export class MgtPerson extends LitElement {
 
   getImageRowSpanClass() {
     if (this.showEmail && this.showName) {
-      return 'row-span-2';
+      return "row-span-2";
     }
 
-    return '';
+    return "";
   }
 
   getImageSizeClass() {
     if (!this.showEmail || !this.showName) {
-      return 'small';
+      return "small";
     }
 
-    return '';
+    return "";
   }
 }
 

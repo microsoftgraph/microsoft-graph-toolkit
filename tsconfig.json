@@ -9,7 +9,6 @@
     "module": "esnext",
     "moduleResolution": "node",
     "target": "es2015",
-    "outDir": "dist/es6",
     "declaration": true,
     "esModuleInterop": true,
     "sourceMap": true,

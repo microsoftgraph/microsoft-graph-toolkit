@@ -2,7 +2,7 @@ import { LitElement, html, customElement, property } from 'lit-element';
 import * as MicrosoftGraph from '@microsoft/microsoft-graph-types';
 
 import { Providers, IProvider } from '../../providers/Providers';
-import { styles } from './mgt-agenda-css';
+import styles from './mgt-agenda.scss';
 
 import '../mgt-person/mgt-person';
 
