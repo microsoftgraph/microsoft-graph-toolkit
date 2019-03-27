@@ -11,6 +11,8 @@ export class MgtLogin extends LitElement {
   @property({ attribute: false }) private _user: MicrosoftGraph.User;
   @property({ attribute: false })
   private _showMenu: boolean = false;
+  private _loginButtonRect: ClientRect;
+  private _popupRect: ClientRect;
 
   static get styles() {
     return styles;
@@ -23,12 +25,85 @@ export class MgtLogin extends LitElement {
   }
 
   updated(changedProps) {
-    console.log(changedProps.get('_showMenu'));
+    if (changedProps.get('_showMenu') === false) {
+      // get popup bounds
+      const popup = this.shadowRoot.querySelector('.popup');
+      this._popupRect = popup.getBoundingClientRect();
+      // console.log('last', this._popupRect);
+
+      // invert variables
+      const deltaX = this._loginButtonRect.left - this._popupRect.left;
+      const deltaY = this._loginButtonRect.top - this._popupRect.top;
+      const deltaW = this._loginButtonRect.width / this._popupRect.width;
+      const deltaH = this._loginButtonRect.height / this._popupRect.height;
+
+      // play back
+      popup.animate(
+        [
+          {
+            transformOrigin: 'top left',
+            transform: `
+              translate(${deltaX}px, ${deltaY}px)
+              scale(${deltaW}, ${deltaH})
+            `,
+            backgroundColor: `#eaeaea`
+          },
+          {
+            transformOrigin: 'top left',
+            transform: 'none',
+            backgroundColor: `white`
+          }
+        ],
+        {
+          duration: 300,
+          easing: 'ease-in-out',
+          fill: 'both'
+        }
+      );
+    } else if (changedProps.get('_showMenu') === true) {
+      // get login button bounds
+      const loginButton = this.shadowRoot.querySelector('.login-button');
+      this._loginButtonRect = loginButton.getBoundingClientRect();
+      // console.log('last', this._loginButtonRect);
+
+      // invert variables
+      const deltaX = this._popupRect.left - this._loginButtonRect.left;
+      const deltaY = this._popupRect.top - this._loginButtonRect.top;
+      const deltaW = this._popupRect.width / this._loginButtonRect.width;
+      const deltaH = this._popupRect.height / this._loginButtonRect.height;
+
+      // play back
+      loginButton.animate(
+        [
+          {
+            transformOrigin: 'top left',
+            transform: `
+               translate(${deltaX}px, ${deltaY}px)
+               scale(${deltaW}, ${deltaH})
+             `
+          },
+          {
+            transformOrigin: 'top left',
+            transform: 'none'
+          }
+        ],
+        {
+          duration: 200,
+          easing: 'ease-out',
+          fill: 'both'
+        }
+      );
+    }
   }
 
   firstUpdated() {
     window.onclick = (event: any) => {
       if (event.target !== this) {
+        // get popup bounds
+        const popup = this.shadowRoot.querySelector('.popup');
+        this._popupRect = popup.getBoundingClientRect();
+        // console.log('first', this._popupRect);
+
         this._showMenu = false;
       }
     };
@@ -52,11 +127,12 @@ export class MgtLogin extends LitElement {
 
   private clicked() {
     if (this._user) {
-      this._showMenu = !this._showMenu;
+      // get login button bounds
+      const loginButton = this.shadowRoot.querySelector('.login-button');
+      this._loginButtonRect = loginButton.getBoundingClientRect();
+      // console.log('first', this._loginButtonRect);
 
-      // const loginButton = this.shadowRoot.querySelector('.login-button');
-      // const rect = loginButton.getBoundingClientRect();
-      // console.log('rect', rect);
+      this._showMenu = true;
     } else {
       this.login();
     }
@@ -79,8 +155,6 @@ export class MgtLogin extends LitElement {
   }
 
   render() {
-    console.log('render!');
-
     const content = this._user ? this.renderLoggedIn() : this.renderLoggedOut();
 
     return html`
