@@ -44,11 +44,11 @@ steps:
   condition: succeededOrFailed()
 
 - task: PublishCodeCoverageResults@1
-  displayName: 'Publish code coverage from $(System.DefaultWorkingDirectory)\coverage\cobertura-coverage.xml'
+  displayName: 'Publish code coverage from $(System.DefaultWorkingDirectory)/coverage/cobertura-coverage.xml'
   inputs:
     codeCoverageTool: Cobertura
-    summaryFileLocation: '$(System.DefaultWorkingDirectory)\coverage\cobertura-coverage.xml'
-    reportDirectory: '$(System.DefaultWorkingDirectory)\coverage'
+    summaryFileLocation: '$(System.DefaultWorkingDirectory)/coverage/cobertura-coverage.xml'
+    reportDirectory: '$(System.DefaultWorkingDirectory)/coverage'
   condition: succeededOrFailed()
 
 - task: DeleteFiles@1
