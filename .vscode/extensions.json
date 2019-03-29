@@ -4,6 +4,7 @@
 	"recommendations": [
 		"nicolasparada.innerhtml",
 		"bierner.lit-html",
-		"esbenp.prettier-vscode"
+		"esbenp.prettier-vscode",
+		"firsttris.vscode-jest-runner"
 	]
 }

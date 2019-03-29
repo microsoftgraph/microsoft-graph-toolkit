@@ -30,6 +30,7 @@ UserInterfaceState.xcuserstate
 # testing
 coverage/
 *.tgz
+testResults/junit.xml
 
 package-lock.json
 
