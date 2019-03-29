@@ -130,7 +130,7 @@ export class MgtLogin extends LitElement {
     }
   }
 
-  private clicked() {
+  private onClick() {
     if (this._user) {
       // get login button bounds
       const loginButton = this.shadowRoot.querySelector(".login-button");
@@ -160,11 +160,11 @@ export class MgtLogin extends LitElement {
   }
 
   render() {
-    const content = this._user ? this.renderLoggedIn() : this.renderLoggedOut();
+    const content = this._user ? this.renderLoggedIn() : this.renderLogIn();
 
     return html`
       <div class="root">
-        <button class="login-button" @click=${this.clicked}>
+        <button class="login-button" @click=${this.onClick}>
           ${content}
         </button>
         ${this.renderMenu()}
@@ -172,7 +172,7 @@ export class MgtLogin extends LitElement {
     `;
   }
 
-  renderLoggedOut() {
+  renderLogIn() {
     return html`
       <i class="login-icon ms-Icon ms-Icon--Contact"></i>
       <span>
