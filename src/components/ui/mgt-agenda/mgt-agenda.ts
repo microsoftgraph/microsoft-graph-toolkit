@@ -1,12 +1,17 @@
-import { LitElement, html, customElement, property } from 'lit-element';
-import * as MicrosoftGraph from '@microsoft/microsoft-graph-types';
+import {
+  LitElement,
+  html,
+  customElement,
+  property,
+  unsafeCSS
+} from "lit-element";
+import * as MicrosoftGraph from "@microsoft/microsoft-graph-types";
+import { Providers, IProvider } from "../../../library/Providers";
+import styles from "./mgt-agenda.scss";
 
-import { Providers, IProvider } from '../../providers/Providers';
-import { styles } from './mgt-agenda-css';
+import "../mgt-person/mgt-person";
 
-import '../mgt-person/mgt-person';
-
-@customElement('mgt-agenda')
+@customElement("mgt-agenda")
 export class MgtAgenda extends LitElement {
   @property({ attribute: false }) _events: Array<MicrosoftGraph.Event>;
   @property() eventTemplateFunction: (event: any) => string;
@@ -14,12 +19,12 @@ export class MgtAgenda extends LitElement {
   private _provider: IProvider;
 
   static get styles() {
-    return styles;
+    return unsafeCSS(styles);
   }
 
   constructor() {
     super();
-    Providers.onProvidersChanged(_ => this.init());
+    Providers.onProviderChange(() => this.init());
     this.init();
   }
 
@@ -100,12 +105,12 @@ export class MgtAgenda extends LitElement {
 
   private renderEventTemplate(event) {
     let content: any = this.eventTemplateFunction(event);
-    if (typeof content === 'string') {
+    if (typeof content === "string") {
       return html`
         <div>${this.eventTemplateFunction(event)}</div>
       `;
     } else {
-      let div = document.createElement('div');
+      let div = document.createElement("div");
       div.slot = event.subject;
       div.appendChild(content);
 
@@ -118,17 +123,17 @@ export class MgtAgenda extends LitElement {
 
   getStartingTime(event: MicrosoftGraph.Event) {
     if (event.isAllDay) {
-      return 'ALL DAY';
+      return "ALL DAY";
     }
 
     let dt = new Date(event.start.dateTime);
     dt.setMinutes(dt.getMinutes() - dt.getTimezoneOffset());
     let hours = dt.getHours();
     let minutes = dt.getMinutes();
-    let ampm = hours >= 12 ? 'PM' : 'AM';
+    let ampm = hours >= 12 ? "PM" : "AM";
     hours = hours % 12;
     hours = hours ? hours : 12;
-    let minutesStr = minutes < 10 ? '0' + minutes : minutes;
+    let minutesStr = minutes < 10 ? "0" + minutes : minutes;
     return `${hours}:${minutesStr} ${ampm}`;
   }
 
@@ -136,7 +141,7 @@ export class MgtAgenda extends LitElement {
     let dtStart = new Date(event.start.dateTime);
     let dtEnd = new Date(event.end.dateTime);
     let dtNow = new Date();
-    let result: string = '';
+    let result: string = "";
 
     if (dtNow > dtStart) {
       dtStart = dtNow;
@@ -146,15 +151,15 @@ export class MgtAgenda extends LitElement {
     var durationMinutes = Math.round(diff / 60000);
 
     if (durationMinutes > 1440 || event.isAllDay) {
-      result = Math.ceil(durationMinutes / 1440) + 'd';
+      result = Math.ceil(durationMinutes / 1440) + "d";
     } else if (durationMinutes > 60) {
-      result = Math.round(durationMinutes / 60) + 'h';
+      result = Math.round(durationMinutes / 60) + "h";
       let leftoverMinutes = durationMinutes % 60;
       if (leftoverMinutes) {
-        result += leftoverMinutes + 'm';
+        result += leftoverMinutes + "m";
       }
     } else {
-      result = durationMinutes + 'm';
+      result = durationMinutes + "m";
     }
 
     return result;

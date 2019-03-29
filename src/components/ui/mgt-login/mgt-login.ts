@@ -1,12 +1,17 @@
-import { LitElement, html, customElement, property } from 'lit-element';
-import * as MicrosoftGraph from '@microsoft/microsoft-graph-types';
-
-import { Providers } from '../../providers/Providers';
-import { styles } from './mgt-login-css';
+import {
+  LitElement,
+  html,
+  customElement,
+  property,
+  unsafeCSS
+} from "lit-element";
+import * as MicrosoftGraph from "@microsoft/microsoft-graph-types";
+import { Providers } from "../../../library/Providers";
+import styles from "./mgt-login.scss";
 
 import '../mgt-person/mgt-person';
 
-@customElement('mgt-login')
+@customElement("mgt-login")
 export class MgtLogin extends LitElement {
   @property({ attribute: false }) private _user: MicrosoftGraph.User;
   @property({ attribute: false })
@@ -15,19 +20,19 @@ export class MgtLogin extends LitElement {
   private _popupRect: ClientRect;
 
   static get styles() {
-    return styles;
+    return unsafeCSS(styles);
   }
 
   constructor() {
     super();
-    Providers.onProvidersChanged(_ => this.init());
+    Providers.onProviderChange(() => this.init());
     this.init();
   }
 
   updated(changedProps) {
-    if (changedProps.get('_showMenu') === false) {
+    if (changedProps.get("_showMenu") === false) {
       // get popup bounds
-      const popup = this.shadowRoot.querySelector('.popup');
+      const popup = this.shadowRoot.querySelector(".popup");
       this._popupRect = popup.getBoundingClientRect();
       // console.log('last', this._popupRect);
 
@@ -41,7 +46,7 @@ export class MgtLogin extends LitElement {
       popup.animate(
         [
           {
-            transformOrigin: 'top left',
+            transformOrigin: "top left",
             transform: `
               translate(${deltaX}px, ${deltaY}px)
               scale(${deltaW}, ${deltaH})
@@ -49,20 +54,20 @@ export class MgtLogin extends LitElement {
             backgroundColor: `#eaeaea`
           },
           {
-            transformOrigin: 'top left',
-            transform: 'none',
+            transformOrigin: "top left",
+            transform: "none",
             backgroundColor: `white`
           }
         ],
         {
           duration: 300,
-          easing: 'ease-in-out',
-          fill: 'both'
+          easing: "ease-in-out",
+          fill: "both"
         }
       );
-    } else if (changedProps.get('_showMenu') === true) {
+    } else if (changedProps.get("_showMenu") === true) {
       // get login button bounds
-      const loginButton = this.shadowRoot.querySelector('.login-button');
+      const loginButton = this.shadowRoot.querySelector(".login-button");
       this._loginButtonRect = loginButton.getBoundingClientRect();
       // console.log('last', this._loginButtonRect);
 
@@ -76,21 +81,21 @@ export class MgtLogin extends LitElement {
       loginButton.animate(
         [
           {
-            transformOrigin: 'top left',
+            transformOrigin: "top left",
             transform: `
                translate(${deltaX}px, ${deltaY}px)
                scale(${deltaW}, ${deltaH})
              `
           },
           {
-            transformOrigin: 'top left',
-            transform: 'none'
+            transformOrigin: "top left",
+            transform: "none"
           }
         ],
         {
           duration: 200,
-          easing: 'ease-out',
-          fill: 'both'
+          easing: "ease-out",
+          fill: "both"
         }
       );
     }
@@ -100,7 +105,7 @@ export class MgtLogin extends LitElement {
     window.onclick = (event: any) => {
       if (event.target !== this) {
         // get popup bounds
-        const popup = this.shadowRoot.querySelector('.popup');
+        const popup = this.shadowRoot.querySelector(".popup");
         this._popupRect = popup.getBoundingClientRect();
         // console.log('first', this._popupRect);
 
@@ -128,7 +133,7 @@ export class MgtLogin extends LitElement {
   private onClick() {
     if (this._user) {
       // get login button bounds
-      const loginButton = this.shadowRoot.querySelector('.login-button');
+      const loginButton = this.shadowRoot.querySelector(".login-button");
       this._loginButtonRect = loginButton.getBoundingClientRect();
       // console.log('first', this._loginButtonRect);
 
@@ -188,7 +193,7 @@ export class MgtLogin extends LitElement {
     }
 
     return html`
-      <div class="popup ${this._showMenu ? 'show-menu' : ''}">
+      <div class="popup ${this._showMenu ? "show-menu" : ""}">
         <div class="popup-content">
           <div>
             <mgt-person person-query="me" show-name show-email />

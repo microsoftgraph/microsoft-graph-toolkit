@@ -1,64 +1,65 @@
-import * as MicrosoftGraph from "@microsoft/microsoft-graph-types"
-import { IProvider, LoginChangedEvent } from "../../providers/IProvider";
-import { IGraph, Graph } from "../../providers/Graph";
-import { EventDispatcher } from "../../providers/EventHandler";
+import { EventHandler, EventDispatcher } from "../library/EventHandler";
+import { IProvider, LoginChangedEvent } from "../library/Providers";
+import { IGraph, Graph } from "../library/Graph";
 
 export class MockProvider implements IProvider {
+  constructor(signedIn: boolean = false) {
+    this._isLoggedIn = signedIn;
+  }
 
-    constructor(signedIn: boolean = false) {
-        this.isLoggedIn = signedIn;
-    }
-    
-    isLoggedIn: boolean;
-    private _loginChangedDispatcher = new EventDispatcher<LoginChangedEvent>();
+  private _loginChangedDispatcher = new EventDispatcher<LoginChangedEvent>();
 
-    async login(): Promise<void> {
-        await (new Promise(resolve => setTimeout(resolve, 1000)));
-        this.isLoggedIn = true;
-        this._loginChangedDispatcher.fire({});
-    }
-    async logout(): Promise<void> {
-        await (new Promise(resolve => setTimeout(resolve, 1000)));
-        this.isLoggedIn = false;
-        this._loginChangedDispatcher.fire({});
-        return Promise.resolve();
-    }
-    getAccessToken(): Promise<string> {
-        return Promise.resolve("");
-    }
-    provider: any;
+  public provider: any = null;
+  public graph: IGraph = new MockGraph();
 
-    graph: IGraph = new MockGraph();
+  private _isLoggedIn: boolean = false;
+  public get isLoggedIn() {
+    return this._isLoggedIn;
+  }
 
-    onLoginChanged(eventHandler: import('../../providers/EventHandler').EventHandler<import('../../providers/IProvider').LoginChangedEvent>) {
-        this._loginChangedDispatcher.register(eventHandler);
-    }
+  public get isAvailable() {
+    return true;
+  }
+
+  public async login() {}
+  public async logout() {}
+
+  public async getAccessToken(): Promise<string> {
+    return "";
+  }
+
+  public onLoginChanged(eventH: EventHandler<LoginChangedEvent>) {
+    this._loginChangedDispatcher.register(eventH);
+  }
 }
 
 export class MockGraph extends Graph {
+  private static baseUrl =
+    "https://proxy.apisandbox.msdn.microsoft.com/svc?url=";
+  private static rootGraphUrl: string = "https://graph.microsoft.com/beta";
 
-    private static baseUrl = "https://proxy.apisandbox.msdn.microsoft.com/svc?url=";
-    private static rootGraphUrl: string = 'https://graph.microsoft.com/beta';
+  constructor() {
+    super(null);
+  }
 
-    constructor() {
-        super(null);
+  async get(resource: string, scopes?: string[]): Promise<Response> {
+    if (!resource.startsWith("/")) {
+      resource = "/" + resource;
     }
 
-    async get(resource: string, scopes?: string[]) : Promise<Response> {
-        if (!resource.startsWith('/')){
-            resource = "/" + resource;
+    let response = await fetch(
+      MockGraph.baseUrl + escape(MockGraph.rootGraphUrl + resource),
+      {
+        headers: {
+          authorization: "Bearer {token:https://graph.microsoft.com/}"
         }
+      }
+    );
 
-        let response = await fetch(MockGraph.baseUrl + escape(MockGraph.rootGraphUrl + resource), {
-            headers: {
-                authorization: 'Bearer {token:https://graph.microsoft.com/}'
-            }
-        });
-
-        if (response.status >= 400) {
-            throw 'error accessing mock graph data';
-        }
-
-        return response;
+    if (response.status >= 400) {
+      throw "error accessing mock graph data";
     }
+
+    return response;
+  }
 }

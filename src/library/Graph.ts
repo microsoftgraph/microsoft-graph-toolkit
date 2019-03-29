@@ -1,13 +1,13 @@
-import * as MicrosoftGraph from "@microsoft/microsoft-graph-types"
-import { IProvider } from "./IProvider";
+import * as MSG from "@microsoft/microsoft-graph-types"
+import { IProvider } from "./Providers";
 
 export interface IGraph {
-    me() : Promise<MicrosoftGraph.User>;
-    getUser(id: string) : Promise<MicrosoftGraph.User>;
-    findPerson(query: string) : Promise<MicrosoftGraph.Person[]>;
+    me() : Promise<MSG.User>;
+    getUser(id: string) : Promise<MSG.User>;
+    findPerson(query: string) : Promise<MSG.Person[]>;
     myPhoto() : Promise<string>;
     getUserPhoto(id: string) : Promise<string>;
-    calendar(startDateTime : Date, endDateTime : Date) : Promise<Array<MicrosoftGraph.Event>>
+    calendar(startDateTime : Date, endDateTime : Date) : Promise<Array<MSG.Event>>
 }
 
 export class Graph implements IGraph {
@@ -74,20 +74,20 @@ export class Graph implements IGraph {
         return response;
     }
 
-    async me() : Promise<MicrosoftGraph.User> {
+    async me() : Promise<MSG.User> {
         let scopes = ['user.read'];
-        return this.getJson('/me', scopes) as MicrosoftGraph.User;
+        return this.getJson('/me', scopes) as MSG.User;
     }
 
-    async getUser(userPrincipleName: string) : Promise<MicrosoftGraph.User> {
+    async getUser(userPrincipleName: string) : Promise<MSG.User> {
         let scopes = ['user.readbasic.all'];
-        return this.getJson(`/users/${userPrincipleName}`, scopes) as MicrosoftGraph.User;
+        return this.getJson(`/users/${userPrincipleName}`, scopes) as MSG.User;
     }
 
-    async findPerson(query: string) : Promise<MicrosoftGraph.Person[]>{
+    async findPerson(query: string) : Promise<MSG.Person[]>{
         let scopes = ['people.read'];
         let result = await this.getJson(`/me/people/?$search="${query}"`, scopes);
-        return result ? result.value as MicrosoftGraph.Person[] : null;
+        return result ? result.value as MSG.Person[] : null;
     }
 
     myPhoto() : Promise<string> {
@@ -122,7 +122,7 @@ export class Graph implements IGraph {
         }
     }
 
-    async calendar(startDateTime : Date, endDateTime : Date) : Promise<Array<MicrosoftGraph.Event>> {
+    async calendar(startDateTime : Date, endDateTime : Date) : Promise<Array<MSG.Event>> {
         let scopes = ['calendars.read'];
 
         let sdt = `startdatetime=${startDateTime.toISOString()}`;

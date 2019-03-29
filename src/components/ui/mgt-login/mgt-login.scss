@@ -1,9 +1,10 @@
-@import '../../../node_modules/office-ui-fabric-core/dist/sass/References';
+@import "../shared/shared_style.scss";
+@import "../../../../node_modules/office-ui-fabric-core/dist/sass/References";
 
 :host {
   --font-size: #{$ms-font-size-m};
   --font-weight: #{$ms-font-weight-semibold};
-  --height: '100%';
+  --height: "100%";
   --margin: 0;
   --padding: 12px 20px;
   --color: #{$ms-color-neutralDark};
@@ -43,7 +44,7 @@
 }
 
 .login-icon {
-  &+span {
+  & + span {
     margin-left: 6px;
   }
 }

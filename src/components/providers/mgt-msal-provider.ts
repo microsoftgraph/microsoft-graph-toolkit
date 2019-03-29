@@ -1,61 +1,63 @@
-import { LitElement, html, customElement, property } from 'lit-element';
-import { MsalProvider, MsalConfig, LoginType, Providers } from '../../../providers/Providers';
+import { LitElement, customElement, property } from "lit-element";
+import { LoginType, Providers } from "../../library/Providers";
+import { MsalProvider, MsalConfig } from "../../providers/MsalProvider";
 
-@customElement('mgt-msal-provider')
-export class MgtMsalProvider extends LitElement{
+@customElement("mgt-msal-provider")
+export class MgtMsalProvider extends LitElement {
+  private _isInitialized: boolean = false;
 
-    private _isInitialized : boolean = false;
+  @property({
+    type: String,
+    attribute: "client-id"
+  })
+  clientId = "";
 
-    @property({
-        type: String,
-        attribute: 'client-id'
-    }) clientId = '';
+  @property({
+    type: String,
+    attribute: "login-type"
+  })
+  loginType;
 
-    @property({
-        type: String,
-        attribute: 'login-type'
-    }) loginType;
+  @property() authority;
 
-    @property() authority;
+  constructor() {
+    super();
+    this.validateAuthProps();
+  }
 
-    constructor(){
-        super();
-        this.validateAuthProps();
+  attributeChangedCallback(name, oldval, newval) {
+    super.attributeChangedCallback(name, oldval, newval);
+
+    if (this._isInitialized) {
+      this.validateAuthProps();
     }
+    // console.log("property changed " + name + " = " + newval);
+    this.validateAuthProps();
+  }
 
-    attributeChangedCallback(name, oldval, newval) {
-        super.attributeChangedCallback(name, oldval, newval);
+  firstUpdated(changedProperties) {
+    this._isInitialized = true;
+    this.validateAuthProps();
+  }
 
-        if (this._isInitialized){
-            this.validateAuthProps();
-        }
-        // console.log("property changed " + name + " = " + newval);
-        this.validateAuthProps();
+  private validateAuthProps() {
+    if (this.clientId) {
+      let config: MsalConfig = {
+        clientId: this.clientId
+      };
+
+      if (this.loginType && this.loginType.length > 1) {
+        let loginType: string = this.loginType.toLowerCase();
+        loginType = loginType[0].toUpperCase() + loginType.slice(1);
+        let loginTypeEnum = LoginType[loginType];
+        config.loginType = loginTypeEnum;
+      }
+
+      if (this.authority) {
+        config.authority = this.authority;
+      }
+
+      Providers.addCustomProvider(new MsalProvider(config));
     }
-
-    firstUpdated(changedProperties) {
-        this._isInitialized = true;
-        this.validateAuthProps();
-    }
-
-    private validateAuthProps() {
-        if (this.clientId) {
-            let config: MsalConfig = {
-                clientId: this.clientId,
-            };
-
-            if (this.loginType && this.loginType.length > 1) {
-                let loginType : string = this.loginType.toLowerCase();
-                loginType = loginType[0].toUpperCase() + loginType.slice(1);
-                let loginTypeEnum = LoginType[loginType];
-                config.loginType = loginTypeEnum;
-            }
-            
-            if (this.authority) {
-                config.authority = this.authority;
-            }
-            
-            Providers.addMsalProvider(config);
-        }
-    }
+  }
 }

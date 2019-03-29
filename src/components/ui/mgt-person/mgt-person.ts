@@ -1,61 +1,55 @@
-import { LitElement, html, customElement, property } from 'lit-element';
-import * as MicrosoftGraph from '@microsoft/microsoft-graph-types';
+import {
+  LitElement,
+  customElement,
+  html,
+  unsafeCSS,
+  property
+} from "lit-element";
+import * as MicrosoftGraph from "@microsoft/microsoft-graph-types";
+import { Providers } from "../../../library/Providers";
+import styles from "./mgt-person.scss";
 
-import { Providers } from '../../providers/Providers';
-import { styles } from './mgt-person-css';
+export interface MgtPersonDetails {
+  displayName?: string;
+  email?: string;
+  image?: string;
+  givenName?: string;
+  surname?: string;
+}
 
-@customElement('mgt-person')
+@customElement("mgt-person")
 export class MgtPerson extends LitElement {
-  @property({
-    attribute: 'image-size'
-  })
-  imageSize: number = 24;
+  @property({ attribute: "image-size" }) imageSize: number = 24;
+  @property({ attribute: "show-name", type: Boolean })
+  showName: boolean = false;
+  @property({ attribute: "show-email", type: Boolean })
+  showEmail: boolean = false;
+  @property({ attribute: "person-query" }) personQuery: string;
+  @property({ attribute: "person-details" }) personDetails: MgtPersonDetails;
 
-  @property({
-    attribute: 'person-query'
-  })
-  personQuery: string;
-
-  @property({
-    attribute: 'show-name',
-    type: Boolean
-  })
-  showName: false;
-
-  @property({
-    attribute: 'show-email',
-    type: Boolean
-  })
-  showEmail: false;
-
-  @property() personDetails: MgtPersonDetails;
-
-  attributeChangedCallback(name, oldval, newval) {
-    super.attributeChangedCallback(name, oldval, newval);
-
-    if (name == 'person-query' && oldval !== newval) {
-      this.personDetails = null;
-      this.loadImage();
-    }
+  public static get styles() {
+    return unsafeCSS(styles);
   }
 
-  static get styles() {
-    return styles;
-  }
-
-  constructor() {
+  public constructor() {
     super();
-
-    Providers.onProvidersChanged(_ => this.handleProviderChanged());
+    Providers.onProviderChange(() => this.onProviderChanged());
     this.loadImage();
   }
 
-  private handleProviderChanged() {
+  private onProviderChanged() {
     let provider = Providers.getAvailable();
-    if (provider.isLoggedIn) {
+    if (provider.isLoggedIn) this.loadImage();
+
+    provider.onLoginChanged(() => this.loadImage());
+  }
+
+  public attributeChangedCallback(name: string, oldVal: any, newVal: any) {
+    super.attributeChangedCallback(name, oldVal, newVal);
+    if (name === "person-query" && oldVal !== newVal) {
+      this.personDetails = null;
       this.loadImage();
     }
-    provider.onLoginChanged(_ => this.loadImage());
   }
 
   private async loadImage() {
@@ -63,7 +57,7 @@ export class MgtPerson extends LitElement {
       let provider = Providers.getAvailable();
 
       if (provider && provider.isLoggedIn) {
-        if (this.personQuery == 'me') {
+        if (this.personQuery == "me") {
           let person: MgtPersonDetails = {};
 
           await Promise.all([
@@ -119,7 +113,7 @@ export class MgtPerson extends LitElement {
     }
   }
 
-  render() {
+  public render() {
     return html`
       <div class="root">
         ${this.renderImage()} ${this.renderNameAndEmail()}
@@ -127,7 +121,7 @@ export class MgtPerson extends LitElement {
     `;
   }
 
-  renderImage() {
+  private renderImage() {
     if (this.personDetails) {
       if (this.personDetails.image) {
         return html`
@@ -153,31 +147,28 @@ export class MgtPerson extends LitElement {
         `;
       }
     }
-
-    return this.renderEmptyImage();
   }
-
-  renderEmptyImage() {
+  private renderEmptyImage() {
     return html`
       <i
         class="ms-Icon ms-Icon--Contact avatar-icon ${this.getImageRowSpanClass()} ${this.getImageSizeClass()}"
       ></i>
     `;
   }
+  private renderNameAndEmail() {
+    if (!this.personDetails || (!this.showName && !this.showEmail)) return;
 
-  renderNameAndEmail() {
-    if (!this.personDetails || (!this.showEmail && !this.showName)) {
-      return;
-    }
+    let pd = this.personDetails;
 
     const nameView = this.showName
       ? html`
-          <div class="user-name">${this.personDetails.displayName}</div>
+          <div class="user-name">${pd.displayName}</div>
         `
       : null;
+
     const emailView = this.showEmail
       ? html`
-          <div class="user-email">${this.personDetails.email}</div>
+          <div class="user-email">${pd.email}</div>
         `
       : null;
 
@@ -186,50 +177,26 @@ export class MgtPerson extends LitElement {
     `;
   }
 
-  getInitials() {
-    if (!this.personDetails) {
-      return '';
+  private getInitials() {
+    if (!this.personDetails) return "";
+
+    let pd = this.personDetails || {};
+    let ret = "";
+
+    if (pd.givenName) ret += pd.givenName[0].toUpperCase();
+    if (pd.surname) ret += pd.surname[0].toUpperCase();
+
+    if (!ret && pd.displayName) {
+      let name = pd.displayName.split(" ");
+      for (let subName of name) ret += subName[0].toUpperCase();
     }
 
-    let initials = '';
-    if (this.personDetails.givenName) {
-      initials += this.personDetails.givenName[0].toUpperCase();
-    }
-    if (this.personDetails.surname) {
-      initials += this.personDetails.surname[0].toUpperCase();
-    }
-
-    if (!initials && this.personDetails.displayName) {
-      const name = this.personDetails.displayName.split(' ');
-      for (let i = 0; i < 2 && i < name.length; i++) {
-        initials += name[i][0].toUpperCase();
-      }
-    }
-
-    return initials;
+    return ret;
   }
-
-  getImageRowSpanClass() {
-    if (this.showEmail && this.showName) {
-      return 'row-span-2';
-    }
-
-    return '';
+  private getImageRowSpanClass() {
+    return this.showName && this.showEmail ? "row-span-2" : "";
   }
-
-  getImageSizeClass() {
-    if (!this.showEmail || !this.showName) {
-      return 'small';
-    }
-
-    return '';
+  private getImageSizeClass() {
+    return this.showName && this.showEmail ? "small" : "";
   }
-}
-
-export declare interface MgtPersonDetails {
-  displayName?: string;
-  email?: string;
-  image?: string;
-  givenName?: string;
-  surname?: string;
 }
