@@ -2,10 +2,7 @@
   "compilerOptions": {
     "allowSyntheticDefaultImports": true,
     "experimentalDecorators": true,
-    "lib": [
-      "dom",
-      "es2015"
-    ],
+    "lib": ["dom", "es2015"],
     "module": "esnext",
     "moduleResolution": "node",
     "target": "es2015",
@@ -14,12 +11,6 @@
     "sourceMap": true,
     "rootDir": "src"
   },
-  "exclude": [
-    "node_modules"
-  ],
-  "include": [
-    "module_types.d.ts",
-    "src",
-    "src_redux"
-  ]
+  "exclude": ["node_modules"],
+  "include": ["module_types.d.ts", "src"]
 }

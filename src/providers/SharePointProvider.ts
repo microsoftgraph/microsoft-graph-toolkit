@@ -1,77 +1,81 @@
-import { IProvider, LoginChangedEvent } from "./IProvider";
-import { IGraph, Graph } from './Graph';
-import { EventHandler, EventDispatcher } from './EventHandler';
+import { IProvider, LoginChangedEvent, LoginType } from "../library/Providers";
+import { Graph, IGraph } from "../library/Graph";
+import { EventHandler, EventDispatcher } from "../library/EventHandler";
 
-declare interface AadTokenProvider{
-    getToken(x:string);
+declare interface AadTokenProvider {
+  getToken(x: string);
 }
 
-export declare interface WebPartContext{
-    aadTokenProviderFactory : any;
+export declare interface WebPartContext {
+  aadTokenProviderFactory: any;
 }
 
 export class SharePointProvider implements IProvider {
-    
-    private _loginChangedDispatcher = new EventDispatcher<LoginChangedEvent>();
-    
-    private _idToken : string;
+  private _loginChangedDispatcher = new EventDispatcher<LoginChangedEvent>();
 
-    private _provider : AadTokenProvider;
-    
-    get provider() {
-        return this._provider;
-    };
+  private _idToken: string;
 
-    get isLoggedIn() : boolean {
-        return !!this._idToken;
-    };
+  private _provider: AadTokenProvider;
 
-    private context : WebPartContext;
+  get provider() {
+    return this._provider;
+  }
 
-    scopes: string[];
-    authority: string;
-    
-    graph: IGraph;
+  get isLoggedIn(): boolean {
+    return !!this._idToken;
+  }
 
-    constructor(context : WebPartContext) {
+  public get isAvailable() {
+    return true;
+  }
 
-        this.context = context;
+  private context: WebPartContext;
 
-        context.aadTokenProviderFactory.getTokenProvider().then((tokenProvider: AadTokenProvider): void => {
-            this._provider = tokenProvider;
-            this.graph = new Graph(this);
-            this.internalLogin();
-        });
-        this.fireLoginChangedEvent({});
+  scopes: string[];
+  authority: string;
+
+  graph: IGraph;
+
+  constructor(context: WebPartContext) {
+    this.context = context;
+
+    context.aadTokenProviderFactory.getTokenProvider().then(
+      (tokenProvider: AadTokenProvider): void => {
+        this._provider = tokenProvider;
+        this.graph = new Graph(this);
+        this.internalLogin();
+      }
+    );
+    this.fireLoginChangedEvent({} as LoginChangedEvent);
+  }
+
+  private async internalLogin(): Promise<void> {
+    this._idToken = await this.getAccessToken();
+    if (this._idToken) {
+      this.fireLoginChangedEvent({} as LoginChangedEvent);
     }
-    
-    private async internalLogin(): Promise<void> {
-        this._idToken = await this.getAccessToken();
-        if (this._idToken) {
-            this.fireLoginChangedEvent({});
-        }
-    }
+  }
 
-    async getAccessToken(): Promise<string> {
-        let accessToken : string;
-        try {
-            accessToken = await this.provider.getToken("https://graph.microsoft.com");
-        } catch (e) {
-            console.log(e);
-            throw e;
-        }
-        return accessToken;
+  async getAccessToken(): Promise<string> {
+    let accessToken: string;
+    try {
+      accessToken = await this.provider.getToken("https://graph.microsoft.com");
+    } catch (e) {
+      console.log(e);
+      throw e;
     }
-    
-    updateScopes(scopes: string[]) {
-        this.scopes = scopes;
-    }
+    return accessToken;
+  }
 
-    onLoginChanged(eventHandler : EventHandler<LoginChangedEvent>) {
-        this._loginChangedDispatcher.register(eventHandler);
-    }
+  updateScopes(scopes: string[]) {
+    this.scopes = scopes;
+  }
 
-    private fireLoginChangedEvent(event : LoginChangedEvent) {
-        this._loginChangedDispatcher.fire(event);
-    }
+  onLoginChanged(eventHandler: EventHandler<LoginChangedEvent>) {
+    this._loginChangedDispatcher.register(eventHandler);
+  }
+
+  private fireLoginChangedEvent(event: LoginChangedEvent) {
+    this._loginChangedDispatcher.fire(event);
+  }
 }

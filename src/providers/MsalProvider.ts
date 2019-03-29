@@ -1,8 +1,15 @@
-import { IProvider, LoginChangedEvent, LoginType } from './IProvider';
-import { Graph } from './Graph';
-import { EventHandler, EventDispatcher } from './EventHandler';
-import { MsalConfig } from './MsalConfig';
-import { UserAgentApplication } from 'msal';
+import { IProvider, LoginChangedEvent, LoginType } from "../library/Providers";
+import { Graph } from "../library/Graph";
+import { EventHandler, EventDispatcher } from "../library/EventHandler";
+import { UserAgentApplication } from "msal";
+
+export interface MsalConfig {
+  clientId: string;
+  scopes?: string[];
+  authority?: string;
+  loginType?: LoginType;
+  options?: any;
+}
 
 export class MsalProvider implements IProvider {
   private _loginChangedDispatcher = new EventDispatcher<LoginChangedEvent>();
@@ -35,25 +42,25 @@ export class MsalProvider implements IProvider {
 
   constructor(config: MsalConfig) {
     if (!config.clientId) {
-      throw 'ClientID must be a valid string';
+      throw "ClientID must be a valid string";
     }
 
     this.initProvider(config);
   }
 
   private initProvider(config: MsalConfig) {
-    console.log('initProvider');
+    console.log("initProvider");
     this._clientId = config.clientId;
     this.scopes =
-      typeof config.scopes !== 'undefined' ? config.scopes : ['user.read'];
+      typeof config.scopes !== "undefined" ? config.scopes : ["user.read"];
     this.authority =
-      typeof config.authority !== 'undefined' ? config.authority : null;
+      typeof config.authority !== "undefined" ? config.authority : null;
     let options =
-      typeof config.options != 'undefined'
+      typeof config.options != "undefined"
         ? config.options
-        : { cacheLocation: 'localStorage' };
+        : { cacheLocation: "localStorage" };
     this._loginType =
-      typeof config.loginType !== 'undefined'
+      typeof config.loginType !== "undefined"
         ? config.loginType
         : LoginType.Redirect;
 
@@ -79,25 +86,25 @@ export class MsalProvider implements IProvider {
   }
 
   async login(): Promise<void> {
-    console.log('login');
+    console.log("login");
     if (this._loginType == LoginType.Popup) {
       this._idToken = await this.provider.loginPopup(this.scopes);
-      this.fireLoginChangedEvent({});
+      this.fireLoginChangedEvent({} as LoginChangedEvent);
     } else {
       this.provider.loginRedirect(this.scopes);
     }
   }
 
   async tryGetIdTokenSilent(): Promise<boolean> {
-    console.log('tryGetIdTokenSilent');
+    console.log("tryGetIdTokenSilent");
     try {
       this._idToken = await this.provider.acquireTokenSilent(
         [this._clientId],
         this.authority
       );
       if (this._idToken) {
-        console.log('tryGetIdTokenSilent: got a token');
-        this.fireLoginChangedEvent({});
+        console.log("tryGetIdTokenSilent: got a token");
+        this.fireLoginChangedEvent({} as LoginChangedEvent);
       }
       return this.isLoggedIn;
     } catch (e) {
@@ -111,21 +118,21 @@ export class MsalProvider implements IProvider {
     ++this.temp;
     let temp = this.temp;
     scopes = scopes || this.scopes;
-    console.log('getaccesstoken' + ++temp + ': scopes' + scopes);
+    console.log("getaccesstoken" + ++temp + ": scopes" + scopes);
     let accessToken: string;
     try {
       accessToken = await this.provider.acquireTokenSilent(
         scopes,
         this.authority
       );
-      console.log('getaccesstoken' + temp + ': got token');
+      console.log("getaccesstoken" + temp + ": got token");
     } catch (e) {
       try {
-        console.log('getaccesstoken' + temp + ': catch ' + e);
+        console.log("getaccesstoken" + temp + ": catch " + e);
         // TODO - figure out for what error this logic is needed so we
         // don't prompt the user to login unnecessarily
-        if (e.includes('multiple_matching_tokens_detected')) {
-          console.log('getaccesstoken' + temp + ' ' + e);
+        if (e.includes("multiple_matching_tokens_detected")) {
+          console.log("getaccesstoken" + temp + " " + e);
           return null;
         }
 
@@ -141,7 +148,7 @@ export class MsalProvider implements IProvider {
       } catch (e) {
         // TODO - figure out how to expose this during dev to make it easy for the dev to figure out
         // if error contains "'token' is not enabled", make sure to have implicit oAuth enabled in the AAD manifest
-        console.log('getaccesstoken' + temp + 'catch2: ' + e);
+        console.log("getaccesstoken" + temp + "catch2: " + e);
         throw e;
       }
     }
@@ -150,7 +157,7 @@ export class MsalProvider implements IProvider {
 
   async logout(): Promise<void> {
     this.provider.logout();
-    this.fireLoginChangedEvent({});
+    this.fireLoginChangedEvent({} as LoginChangedEvent);
   }
 
   updateScopes(scopes: string[]) {
@@ -165,22 +172,22 @@ export class MsalProvider implements IProvider {
     state: any
   ) {
     // debugger;
-    console.log('tokenReceivedCallback ' + errorDesc + ' | ' + tokenType);
+    console.log("tokenReceivedCallback " + errorDesc + " | " + tokenType);
     if (this._provider && window) {
       console.log(window.location.hash);
       console.log(
-        'isCallback: ' + this._provider.isCallback(window.location.hash)
+        "isCallback: " + this._provider.isCallback(window.location.hash)
       );
     }
     if (error) {
-      console.log(error + ' ' + errorDesc);
+      console.log(error + " " + errorDesc);
       if (this._rejectToken) {
         this._rejectToken(errorDesc);
       }
     } else {
-      if (tokenType == 'id_token') {
+      if (tokenType == "id_token") {
         this._idToken = token;
-        this.fireLoginChangedEvent({});
+        this.fireLoginChangedEvent({} as LoginChangedEvent);
       } else {
         if (this._resolveToken) {
           this._resolveToken(token);
@@ -190,12 +197,12 @@ export class MsalProvider implements IProvider {
   }
 
   onLoginChanged(eventHandler: EventHandler<LoginChangedEvent>) {
-    console.log('onloginChanged');
+    console.log("onloginChanged");
     this._loginChangedDispatcher.register(eventHandler);
   }
 
   private fireLoginChangedEvent(event: LoginChangedEvent) {
-    console.log('fireLoginChangedEvent');
+    console.log("fireLoginChangedEvent");
     this._loginChangedDispatcher.fire(event);
   }
 }

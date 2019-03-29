@@ -4,6 +4,9 @@ import typescript from "rollup-plugin-typescript";
 import postcss from "rollup-plugin-postcss";
 import { terser } from "rollup-plugin-terser";
 
+const src_root = "./src";
+const bin_root = "./bin";
+
 const core_opts = {
   plugins: [
     resolve({
@@ -34,28 +37,28 @@ export default [
   {
     ...core_opts,
     output: {
-      dir: "./bin/components",
+      dir: `${bin_root}/components`,
       entryFileNames: "[name].js",
       format: "esm"
     },
     input: [
-      "./src_redux/components/providers/mgt-mock-provider.ts",
-      "./src_redux/components/providers/mgt-msal-provider.ts",
-      "./src_redux/components/providers/mgt-teams-provider.ts",
-      "./src_redux/components/providers/mgt-wam-providers.ts",
+      `${src_root}/components/providers/mgt-mock-provider.ts`,
+      `${src_root}/components/providers/mgt-msal-provider.ts`,
+      `${src_root}/components/providers/mgt-teams-provider.ts`,
+      `${src_root}/components/providers/mgt-wam-providers.ts`,
 
-      "./src_redux/components/ui/mgt-agenda/mgt-agenda.ts",
-      "./src_redux/components/ui/mgt-person/mgt-person.ts",
-      "./src_redux/components/ui/mgt-login/mgt-login.ts"
+      `${src_root}/components/ui/mgt-agenda/mgt-agenda.ts`,
+      `${src_root}/components/ui/mgt-person/mgt-person.ts`,
+      `${src_root}/components/ui/mgt-login/mgt-login.ts`
     ]
   },
   {
     ...core_opts,
     output: {
-      dir: "./bin/bundle",
+      dir: `${bin_root}/bundle`,
       entryFileNames: "[name].js",
       format: "esm"
     },
-    input: "./src_redux/index.ts"
+    input: `${src_root}/index.ts`
   }
 ];
