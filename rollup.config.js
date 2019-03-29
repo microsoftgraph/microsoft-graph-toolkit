@@ -43,8 +43,9 @@ export default [
       "./src_redux/components/providers/mgt-msal-provider.ts",
       "./src_redux/components/providers/mgt-teams-provider.ts",
       "./src_redux/components/providers/mgt-wam-providers.ts",
-      "./src_redux/components/ui/mgt-person/mgt-person.ts",
+
       "./src_redux/components/ui/mgt-agenda/mgt-agenda.ts",
+      "./src_redux/components/ui/mgt-person/mgt-person.ts",
       "./src_redux/components/ui/mgt-login/mgt-login.ts"
     ]
   },

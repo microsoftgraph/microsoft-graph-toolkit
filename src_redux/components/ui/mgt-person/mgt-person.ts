@@ -5,8 +5,8 @@ import {
   unsafeCSS,
   property
 } from "lit-element";
+import * as MicrosoftGraph from "@microsoft/microsoft-graph-types";
 import { Providers } from "../../../library/Providers";
-import * as MSG from "@microsoft/microsoft-graph-types";
 import styles from "./mgt-person.scss";
 
 export interface MgtPersonDetails {
@@ -78,7 +78,7 @@ export class MgtPerson extends LitElement {
         } else {
           provider.graph.findPerson(this.personQuery).then(people => {
             if (people && people.length > 0) {
-              let person = people[0] as MSG.Person;
+              let person = people[0] as MicrosoftGraph.Person;
               this.personDetails = person;
 
               if (
