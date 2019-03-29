@@ -38,17 +38,17 @@ steps:
     customCommand: test
 
 - task: PublishTestResults@2
-  displayName: 'Publish Test Results test/junit.xml'
+  displayName: 'Publish Test Results testResults/junit.xml'
   inputs:
-    testResultsFiles: test/junit.xml
+    testResultsFiles: testResults/junit.xml
   condition: succeededOrFailed()
 
 - task: PublishCodeCoverageResults@1
-  displayName: 'Publish code coverage from $(System.DefaultWorkingDirectory)\coverage\cobertura-coverage.xml'
+  displayName: 'Publish code coverage from $(System.DefaultWorkingDirectory)/coverage/cobertura-coverage.xml'
   inputs:
     codeCoverageTool: Cobertura
-    summaryFileLocation: '$(System.DefaultWorkingDirectory)\coverage\cobertura-coverage.xml'
-    reportDirectory: '$(System.DefaultWorkingDirectory)\coverage'
+    summaryFileLocation: '$(System.DefaultWorkingDirectory)/coverage/cobertura-coverage.xml'
+    reportDirectory: '$(System.DefaultWorkingDirectory)/coverage'
   condition: succeededOrFailed()
 
 - task: DeleteFiles@1
@@ -59,7 +59,7 @@ steps:
      .git
      node_modules
      coverage
-     test
+     testResults
      .gitignore
 
 - task: ArchiveFiles@2
