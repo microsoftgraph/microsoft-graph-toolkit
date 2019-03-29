@@ -11,7 +11,7 @@ const core_opts = {
       jsnext: true
     }),
     commonJS(),
-    terser(),
+    // terser(),
     typescript({
       allowSyntheticDefaultImports: true,
       experimentalDecorators: true,
