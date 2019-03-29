@@ -5,7 +5,7 @@ import postcss from "rollup-plugin-postcss";
 import { terser } from "rollup-plugin-terser";
 
 const src_root = "./src";
-const bin_root = "./bin";
+const bin_root = "./dist";
 
 const core_opts = {
   plugins: [
