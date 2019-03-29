@@ -9,7 +9,7 @@ import { escape } from '@microsoft/sp-lodash-subset';
 import styles from './HelloWorldWebPart.module.scss';
 import * as strings from 'HelloWorldWebPartStrings';
 
-import {Providers} from 'microsoft-graph-toolkit';
+import {Providers, SharePointProvider} from 'microsoft-graph-toolkit';
 
 export interface IHelloWorldWebPartProps {
   description: string;
@@ -18,7 +18,7 @@ export interface IHelloWorldWebPartProps {
 export default class HelloWorldWebPart extends BaseClientSideWebPart<IHelloWorldWebPartProps> {
 
   protected async onInit() {
-    Providers.addSharePointProvider(this.context);
+    Providers.addCustomProvider( new SharePointProvider(this.context));
   }
 
   public render(): void {
