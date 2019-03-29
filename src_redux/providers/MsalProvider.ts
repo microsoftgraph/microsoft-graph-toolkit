@@ -1,7 +1,7 @@
 import { IProvider, LoginChangedEvent, LoginType } from "../library/Providers";
 import { Graph } from "../library/Graph";
 import { EventHandler, EventDispatcher } from "../library/EventHandler";
-// import { UserAgentApplication } from 'msal/lib-es6';
+import { UserAgentApplication } from "msal";
 
 export interface MsalConfig {
   clientId: string;
@@ -18,7 +18,7 @@ export class MsalProvider implements IProvider {
 
   private _idToken: string;
 
-  private _provider: any;
+  private _provider: UserAgentApplication;
 
   private _resolveToken;
   private _rejectToken;
@@ -48,9 +48,7 @@ export class MsalProvider implements IProvider {
     this.initProvider(config);
   }
 
-  private async initProvider(config: MsalConfig) {
-    let msal = await import(/* webpackChunkName: "msal" */ "msal/lib-es6");
-
+  private initProvider(config: MsalConfig) {
     console.log("initProvider");
     this._clientId = config.clientId;
     this.scopes =
@@ -76,13 +74,12 @@ export class MsalProvider implements IProvider {
       this.tokenReceivedCallback(errorDesc, token, error, tokenType, state);
     }).bind(this);
 
-    this._provider = new msal.UserAgentApplication(
+    this._provider = new UserAgentApplication(
       this._clientId,
       this.authority,
       callbackFunction,
       options
     );
-    console.log(this._provider);
     this.graph = new Graph(this);
 
     this.tryGetIdTokenSilent();
@@ -176,7 +173,7 @@ export class MsalProvider implements IProvider {
   ) {
     // debugger;
     console.log("tokenReceivedCallback " + errorDesc + " | " + tokenType);
-    if (this._provider) {
+    if (this._provider && window) {
       console.log(window.location.hash);
       console.log(
         "isCallback: " + this._provider.isCallback(window.location.hash)
