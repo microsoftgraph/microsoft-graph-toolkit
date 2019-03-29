@@ -9,6 +9,8 @@ import * as MicrosoftGraph from "@microsoft/microsoft-graph-types";
 import { Providers } from "../../../library/Providers";
 import styles from "./mgt-login.scss";
 
+import '../mgt-person/mgt-person';
+
 @customElement("mgt-login")
 export class MgtLogin extends LitElement {
   @property({ attribute: false }) private _user: MicrosoftGraph.User;

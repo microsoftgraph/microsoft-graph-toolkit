@@ -9,6 +9,8 @@ import * as MicrosoftGraph from "@microsoft/microsoft-graph-types";
 import { Providers, IProvider } from "../../../library/Providers";
 import styles from "./mgt-agenda.scss";
 
+import "../mgt-person/mgt-person";
+
 @customElement("mgt-agenda")
 export class MgtAgenda extends LitElement {
   @property({ attribute: false }) _events: Array<MicrosoftGraph.Event>;
