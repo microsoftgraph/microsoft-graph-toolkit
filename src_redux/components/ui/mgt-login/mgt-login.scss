@@ -1,0 +1,105 @@
+@import "../shared/shared_style.scss";
+@import "../../../../node_modules/office-ui-fabric-core/dist/sass/References";
+
+:host {
+  --font-size: #{$ms-font-size-m};
+  --font-weight: #{$ms-font-weight-semibold};
+  --height: "100%";
+  --margin: 0;
+  --padding: 12px 20px;
+  --color: #{$ms-color-neutralDark};
+  --background-color: transparent;
+  --background-color--hover: #{$ms-color-neutralLight};
+  --popup-content-background-color: white;
+  --popup-command-font-size: #{$ms-font-size-s};
+}
+
+.root {
+  position: relative;
+}
+
+.login-button {
+  display: flex;
+  align-items: center;
+  font-family: var(--default-font-family);
+  font-size: var(--font-size);
+  font-weight: var(--font-weight);
+  height: var(--height);
+  margin: var(--margin);
+  padding: var(--padding);
+  color: var(--color);
+  background-color: var(--background-color);
+  border: none;
+  cursor: pointer;
+  transition: color 0.3s, background-color 0.3s;
+
+  &:hover {
+    color: var(--theme-primary-color);
+    background-color: var(--background-color--hover);
+  }
+
+  &:focus {
+    outline: 0;
+  }
+}
+
+.login-icon {
+  & + span {
+    margin-left: 6px;
+  }
+}
+
+.popup {
+  display: none;
+  position: absolute;
+  top: 0;
+  right: 0;
+  animation-duration: 300ms;
+  font-family: var(--default-font-family);
+  background: var(--popup-content-background-color);
+  box-shadow: 0 12px 40px 2px rgba(0, 0, 0, 0.08);
+  min-width: 240px;
+
+  &.show-menu {
+    display: block;
+    animation-name: fade-in;
+  }
+}
+
+.popup-content {
+  display: flex;
+  flex-direction: column;
+  padding: 24px 48px 16px 24px;
+}
+
+.popup-commands ul {
+  list-style-type: none;
+  margin: 16px 0 0;
+  padding: 0;
+}
+
+.popup-command {
+  font-family: var(--default-font-family);
+  font-size: var(--popup-command-font-size);
+  font-weight: var(--font-weight);
+  color: var(--theme-primary-color);
+  background-color: transparent;
+  border: none;
+  padding: 0;
+  cursor: pointer;
+  transition: color 0.3s;
+
+  &:hover {
+    color: var(--theme-dark-color);
+  }
+}
+
+@keyframes fade-in {
+  from {
+    opacity: 0;
+  }
+
+  to {
+    opacity: 1;
+  }
+}

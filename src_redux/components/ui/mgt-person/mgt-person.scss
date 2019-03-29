@@ -1,0 +1,98 @@
+@import "../shared/shared_style.scss";
+@import "../../../../node_modules/office-ui-fabric-core/dist/sass/References";
+
+:host {
+  --font-size: #{$ms-font-size-m};
+  --font-weight: #{$ms-font-weight-semibold};
+  --color: #{$ms-color-neutralDark};
+  --email-font-size: #{$ms-font-size-s};
+  --email-color: #{$ms-color-neutralPrimary};
+  --avatar-size--s: 24px;
+  --avatar-size: 48px;
+  --avatar-font-size--s: 16px;
+  --avatar-font-size: 32px;
+  --initials-color: white;
+  --initials-background-color: #{$ms-color-magenta};
+}
+
+svg {
+  width: var(--avatar-size--s);
+  height: var(--avatar-size--s);
+}
+
+img {
+  border: 0;
+  border-radius: 50%;
+}
+
+.root {
+  position: relative;
+  display: grid;
+  align-items: center;
+  grid-template-columns: auto 1fr;
+  font-family: var(--default-font-family);
+}
+
+.user-avatar {
+  grid-column: 1;
+  width: var(--avatar-size);
+  height: var(--avatar-size);
+  margin-right: 12px;
+
+  &.initials {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    color: var(--initials-color);
+    background-color: var(--initials-background-color);
+    border-radius: 50%;
+    font-weight: var(--font-weight);
+  }
+
+  &.small {
+    margin-right: 6px;
+    width: var(--avatar-size--s);
+    height: var(--avatar-size--s);
+  }
+
+  &.row-span-2 {
+    grid-row: 1 / 3;
+  }
+
+  &.row-span-3 {
+    grid-row: 1 / 4;
+  }
+}
+
+.avatar-icon {
+  grid-column: 1;
+  font-size: var(--avatar-font-size);
+  margin-right: 12px;
+
+  &.small {
+    margin-right: 6px;
+    font-size: var(--avatar-font-size--s);
+  }
+
+  &.row-span-2 {
+    grid-row: 1 / 3;
+  }
+
+  &.row-span-3 {
+    grid-row: 1 / 4;
+  }
+}
+
+.user-name {
+  font-size: var(--font-size);
+  font-weight: var(--font-weight);
+  white-space: nowrap;
+  grid-column: 2;
+}
+
+.user-email {
+  color: var(--email-color);
+  font-size: var(--email-font-size);
+  white-space: nowrap;
+  grid-column: 2;
+}

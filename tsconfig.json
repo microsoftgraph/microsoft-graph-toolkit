@@ -18,6 +18,8 @@
     "node_modules"
   ],
   "include": [
-    "src"
+    "module_types.d.ts",
+    "src",
+    "src_redux"
   ]
 }
