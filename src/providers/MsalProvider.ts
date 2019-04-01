@@ -1,4 +1,4 @@
-import { IProvider, LoginChangedEvent, LoginType } from "../library/Providers";
+import { Providers, IProvider, LoginChangedEvent, LoginType } from "../library/Providers";
 import { Graph } from "../library/Graph";
 import { EventHandler, EventDispatcher } from "../library/EventHandler";
 import { UserAgentApplication } from "msal/lib-es6";
