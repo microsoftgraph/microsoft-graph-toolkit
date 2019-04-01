@@ -35,12 +35,6 @@ const core_opts = {
 
 export default [
   {
-    ...core_opts,
-    output: {
-      dir: `${bin_root}/components`,
-      entryFileNames: "[name].js",
-      format: "esm"
-    },
     input: [
       `${src_root}/components/providers/mgt-mock-provider.ts`,
       `${src_root}/components/providers/mgt-msal-provider.ts`,
@@ -50,15 +44,21 @@ export default [
       `${src_root}/components/ui/mgt-agenda/mgt-agenda.ts`,
       `${src_root}/components/ui/mgt-person/mgt-person.ts`,
       `${src_root}/components/ui/mgt-login/mgt-login.ts`
-    ]
+    ],
+    ...core_opts,
+    output: {
+      dir: `${bin_root}/components`,
+      entryFileNames: "[name].js",
+      format: "esm"
+    }
   },
   {
+    input: `${src_root}/index.ts`,
     ...core_opts,
     output: {
       dir: `${bin_root}/bundle`,
       entryFileNames: "[name].js",
       format: "esm"
-    },
-    input: `${src_root}/index.ts`
+    }
   }
 ];
