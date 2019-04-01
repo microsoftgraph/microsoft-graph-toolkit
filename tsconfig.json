@@ -1,18 +1,5 @@
 {
-  "compilerOptions": {
-    "target": "es2015",
-    "module": "esnext",
-    "moduleResolution": "node",
-    "lib": ["dom", "es2015"],
-    "rootDir": "src",
-    "declaration": true,
-    "declarationDir": "./dist/types/",
-    "outDir": "./dist/types",
-    "allowSyntheticDefaultImports": true,
-    "experimentalDecorators": true,
-    "esModuleInterop": true,
-    "sourceMap": true,
-  },
+  "compilerOptions": {},
   "exclude": ["node_modules"],
-  "include": ["module_types.d.ts", "src"]
+  "include": ["src"]
 }
