@@ -9,7 +9,8 @@
   "scripts": {
     "clean": "shx rm -rf dist",
     "start": "run-p build:watch serve watch",
-    "build": "rollup -c rollup.config.js",
+    "build": "npm run clean && npm run build:rollup",
+    "build:rollup": "rollup -c rollup.config.js",
     "build:watch": "rollup -w -c rollup.config.js",
     "serve": "owc-dev-server --port 3333",
     "watch": "browser-sync start --no-notify --proxy localhost:3333 --files 'dist/**/*.js, index.html'",
