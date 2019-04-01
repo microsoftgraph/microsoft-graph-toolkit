@@ -1,4 +1,4 @@
-import { IProvider, LoginChangedEvent, LoginType } from "../library/Providers";
+import { Providers, IProvider, LoginChangedEvent, LoginType } from "../library/Providers";
 import { Graph, IGraph } from "../library/Graph";
 import { EventHandler, EventDispatcher } from "../library/EventHandler";
 
@@ -35,6 +35,11 @@ export class SharePointProvider implements IProvider {
   authority: string;
 
   graph: IGraph;
+
+  
+  public static add(context: WebPartContext) {
+    Providers.addCustomProvider(new SharePointProvider(context));
+  }
 
   constructor(context: WebPartContext) {
     this.context = context;

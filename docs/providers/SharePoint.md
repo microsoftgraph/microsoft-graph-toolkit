@@ -9,11 +9,11 @@ Initialize the provider inside of your `onInit()` method of your web part.
 ```ts
 
 // import the providers at the top of the page
-import {Providers} from 'microsoft-graph-toolkit';
+import {SharePointProvider} from 'microsoft-graph-toolkit';
 
 // add the onInit() method if not already there in your web part class
 protected async onInit() {
-    Providers.addSharePointProvider(this.context);
+    SharePointProvider.add(this.context);
 }
 ```
 

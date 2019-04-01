@@ -1,4 +1,4 @@
-import { IProvider, LoginChangedEvent, LoginType } from "../library/Providers";
+import { Providers, IProvider, LoginChangedEvent, LoginType } from "../library/Providers";
 import { Graph } from "../library/Graph";
 import { EventHandler, EventDispatcher } from "../library/EventHandler";
 import { UserAgentApplication } from "msal/lib-es6";
@@ -39,6 +39,10 @@ export class MsalProvider implements IProvider {
   authority: string;
 
   graph: Graph;
+
+  public static add(config: MsalConfig) {
+    Providers.addCustomProvider(new MsalProvider(config));
+  }
 
   constructor(config: MsalConfig) {
     if (!config.clientId) {

@@ -1,8 +1,11 @@
 import { EventHandler, EventDispatcher } from "../library/EventHandler";
-import { IProvider, LoginChangedEvent } from "../library/Providers";
+import { Providers, IProvider, LoginChangedEvent } from "../library/Providers";
 import { IGraph, Graph } from "../library/Graph";
 
 export class MockProvider implements IProvider {
+  public static add(signedIn: boolean = false) {
+    Providers.addCustomProvider(new MockProvider(signedIn));
+  }
   constructor(signedIn: boolean = false) {
     this._isLoggedIn = signedIn;
   }

@@ -1,4 +1,4 @@
-import { IProvider, LoginChangedEvent, LoginType } from "../library/Providers";
+import { Providers, IProvider, LoginChangedEvent, LoginType } from "../library/Providers";
 import { Graph, IGraph } from "../library/Graph";
 import { EventHandler, EventDispatcher } from "../library/EventHandler";
 import * as microsoftTeams from "@microsoft/teams-js";
@@ -273,6 +273,10 @@ export class TeamsProvider implements IProvider {
   authority: string;
 
   graph: IGraph;
+
+  public static add(clientId: string, loginPopupUrl: string) {
+    Providers.addCustomProvider(new TeamsProvider(clientId, loginPopupUrl));
+  }
 
   constructor(clientId: string, loginPopupUrl: string) {
     this._clientId = clientId;

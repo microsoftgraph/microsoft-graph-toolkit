@@ -1,4 +1,4 @@
-import { IProvider, LoginChangedEvent, LoginType } from "../library/Providers";
+import { Providers, IProvider, LoginChangedEvent, LoginType } from "../library/Providers";
 import { Graph, IGraph } from "../library/Graph";
 import { EventHandler, EventDispatcher } from "../library/EventHandler";
 
@@ -23,6 +23,10 @@ export class WamProvider implements IProvider {
 
   get isLoggedIn(): boolean {
     return !!this.accessToken;
+  }
+
+  public static add(clientId: string, authority?: string) {
+    Providers.addCustomProvider(new WamProvider(clientId, authority));
   }
 
   constructor(clientId: string, authority?: string) {
