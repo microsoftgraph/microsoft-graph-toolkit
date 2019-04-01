@@ -4,6 +4,4 @@ export * from "./components/providers/mgt-msal-provider";
 export * from "./components/providers/mgt-teams-provider";
 export * from "./components/providers/mgt-wam-provider";
 
-export * from "./components/ui/mgt-person/mgt-person";
-export * from "./components/ui/mgt-agenda/mgt-agenda";
-export * from "./components/ui/mgt-person/mgt-person";
+export * from "./components/ui/ui";

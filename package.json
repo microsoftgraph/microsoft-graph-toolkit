@@ -2,7 +2,7 @@
   "name": "microsoft-graph-toolkit",
   "version": "0.0.1",
   "description": "Microsoft Graph Toolkit",
-  "main": "dist/bundle/index.js",
+  "main": "dist/es6/bundle/index.js",
   "files": [
     "dist"
   ],

@@ -7,58 +7,85 @@ import { terser } from "rollup-plugin-terser";
 const src_root = "./src";
 const bin_root = "./dist";
 
-const core_opts = {
-  plugins: [
-    resolve({
-      module: true,
-      jsnext: true
-    }),
-    commonJS(),
-    terser(),
-    typescript({
-      allowSyntheticDefaultImports: true,
-      experimentalDecorators: true,
-      lib: ["dom", "es2015"],
-      module: "es2015",
-      target: "es2015",
-      moduleResolution: "node",
-      declaration: true,
-      esModuleInterop: true,
-      sourceMap: true,
-      rootDir: "src"
-    }),
-    postcss({
-      inject: false
-    })
-  ]
+const bundle_inputs = `${src_root}/index.ts`;
+const ui_inputs = `${src_root}/components/ui/ui.ts`;
+const provider_inputs = [
+  `${src_root}/components/providers/mgt-mock-provider.ts`,
+  `${src_root}/components/providers/mgt-msal-provider.ts`,
+  `${src_root}/components/providers/mgt-teams-provider.ts`,
+  `${src_root}/components/providers/mgt-wam-provider.ts`
+];
+
+const typescript_es6 = {
+  target: "es2015",
+  module: "esnext",
+  moduleResolution: "node",
+  lib: ["dom", "es2015"],
+  allowSyntheticDefaultImports: true,
+  experimentalDecorators: true,
+  esModuleInterop: true
+};
+
+const typescript_es5 = {
+  target: "es5",
+  module: "esnext",
+  moduleResolution: "node",
+  lib: ["dom", "es2015"],
+  allowSyntheticDefaultImports: true,
+  experimentalDecorators: true,
+  esModuleInterop: true
+};
+
+const base_plugins = [
+  commonJS(),
+  resolve({ module: true, jsnext: true }),
+  postcss({ inject: false }),
+  terser({ keep_classnames: true, keep_fnames: true })
+];
+
+const es6_bundle_config = {
+  input: bundle_inputs,
+  plugins: [...base_plugins, typescript(typescript_es6)],
+  output: {
+    dir: `${bin_root}/es6/bundle`,
+    entryFileNames: "[name].js",
+    format: "esm"
+  }
+};
+
+const es6_components_config = {
+  input: [ui_inputs, ...provider_inputs],
+  plugins: [...base_plugins, typescript(typescript_es6)],
+  output: {
+    dir: `${bin_root}/es6/components`,
+    entryFileNames: "[name].js",
+    format: "esm"
+  }
+};
+
+const es5_bundle_config = {
+  input: bundle_inputs,
+  plugins: [...base_plugins, typescript(typescript_es5)],
+  output: {
+    dir: `${bin_root}/es5/bundle`,
+    name: `index`,
+    entryFileNames: "[name].js",
+    format: "iife"
+  }
+};
+const es5_components_config = {
+  input: [ui_inputs, ...provider_inputs],
+  plugins: [...base_plugins, typescript(typescript_es5)],
+  output: {
+    dir: `${bin_root}/es5/components`,
+    entryFileNames: "[name].js",
+    format: "iife"
+  }
 };
 
 export default [
-  {
-    input: [
-      `${src_root}/components/providers/mgt-mock-provider.ts`,
-      `${src_root}/components/providers/mgt-msal-provider.ts`,
-      `${src_root}/components/providers/mgt-teams-provider.ts`,
-      `${src_root}/components/providers/mgt-wam-provider.ts`,
-
-      `${src_root}/components/ui/mgt-agenda/mgt-agenda.ts`,
-      `${src_root}/components/ui/mgt-person/mgt-person.ts`,
-      `${src_root}/components/ui/mgt-login/mgt-login.ts`
-    ],
-    ...core_opts,
-    output: {
-      dir: `${bin_root}/components`,
-      entryFileNames: "[name].js",
-      format: "esm"
-    }
-  },
-  {
-    input: `${src_root}/index.ts`,
-    ...core_opts,
-    output: {
-      dir: `${bin_root}/bundle`,
-      entryFileNames: "[name].js",
-      format: "esm"
-    }
-  }
+  es6_bundle_config,
+  es6_components_config,
+  es5_bundle_config,
+  // es5_components_config
 ];
