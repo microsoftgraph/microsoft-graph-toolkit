@@ -86,8 +86,5 @@ export default [
   //     entryFileNames: "[name].js",
   //     format: "iife"
   //   }
-  // },
-  {
-    
-  }
+  // }
 ];
