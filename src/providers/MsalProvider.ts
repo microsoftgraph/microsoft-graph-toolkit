@@ -1,7 +1,7 @@
 import { IProvider, LoginChangedEvent, LoginType } from "../library/Providers";
 import { Graph } from "../library/Graph";
 import { EventHandler, EventDispatcher } from "../library/EventHandler";
-import { UserAgentApplication } from "msal";
+import { UserAgentApplication } from "msal/lib-es6";
 
 export interface MsalConfig {
   clientId: string;
