@@ -67,16 +67,16 @@ export default [
     }
   },
   // ES5 Bundle
-  {
-    input: es5_bundle_input,
-    plugins: [...base_plugins, typescript(typescript_es5)],
-    output: {
-      dir: `${bin_root}/es5/bundle`,
-      name: `index`,
-      entryFileNames: "[name].js",
-      format: "iife"
-    }
-  },
+  // {
+  //   input: es5_bundle_input,
+  //   plugins: [...base_plugins, typescript(typescript_es5)],
+  //   output: {
+  //     dir: `${bin_root}/es5/bundle`,
+  //     name: `index`,
+  //     entryFileNames: "[name].js",
+  //     format: "iife"
+  //   }
+  // },
   // ES5 Individual Components
   // {
   //   input: [ui_inputs, ...provider_inputs],

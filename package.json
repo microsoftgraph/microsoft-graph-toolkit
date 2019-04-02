@@ -9,9 +9,12 @@
   "scripts": {
     "clean": "shx rm -rf dist",
     "start": "run-p build:watch serve watch",
-    "build": "npm run clean && npm run build:rollup",
+    "build": "npm run clean && npm run build:rollup && npm run build:sass && npm run build:ts-raw",
     "build:sass": "gulp sass",
     "build:sass:watch": "gulp sass:watch",
+    "build:ts-raw-es5": "tsc -p es5.tsconfig.json",
+    "build:ts-raw-es6": "tsc -p es6.tsconfig.json",
+    "build:ts-raw": "npm run build:ts-raw-es6 && npm run build:ts-raw-es5",
     "build:rollup": "rollup -c rollup.config.js",
     "build:watch": "rollup -w -c rollup.config.js",
     "serve": "owc-dev-server --port 3333",

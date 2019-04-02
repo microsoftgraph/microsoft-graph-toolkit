@@ -12,7 +12,7 @@ function processSass() {
     .pipe(sass())
     .pipe(gap.prependText(header))
     .pipe(gap.appendText(footer))
-    .pipe(rename({ extname: ".ts" }))
+    .pipe(rename({ extname: ".scss.ts" }))
     .pipe(gulp.dest("src/"));
 }
 
