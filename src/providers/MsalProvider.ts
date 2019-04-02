@@ -1,4 +1,9 @@
-import { Providers, IProvider, LoginChangedEvent, LoginType } from "../library/Providers";
+import {
+  Providers,
+  IProvider,
+  LoginChangedEvent,
+  LoginType
+} from "../library/Providers";
 import { Graph } from "../library/Graph";
 import { EventHandler, EventDispatcher } from "../library/EventHandler";
 import { UserAgentApplication } from "msal/lib-es6";
@@ -19,6 +24,7 @@ export class MsalProvider implements IProvider {
   private _idToken: string;
 
   private _provider: UserAgentApplication;
+  private _UserAgentApplication: typeof UserAgentApplication;
 
   private _resolveToken;
   private _rejectToken;
@@ -49,7 +55,10 @@ export class MsalProvider implements IProvider {
       throw "ClientID must be a valid string";
     }
 
-    this.initProvider(config);
+    import("msal/lib-es6").then(({ UserAgentApplication }) => {
+      this._UserAgentApplication = UserAgentApplication;
+      this.initProvider(config);
+    });
   }
 
   private initProvider(config: MsalConfig) {
@@ -78,7 +87,7 @@ export class MsalProvider implements IProvider {
       this.tokenReceivedCallback(errorDesc, token, error, tokenType, state);
     }).bind(this);
 
-    this._provider = new UserAgentApplication(
+    this._provider = new this._UserAgentApplication(
       this._clientId,
       this.authority,
       callbackFunction,

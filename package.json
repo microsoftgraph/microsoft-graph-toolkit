@@ -10,6 +10,8 @@
     "clean": "shx rm -rf dist",
     "start": "run-p build:watch serve watch",
     "build": "npm run clean && npm run build:rollup",
+    "build:sass": "gulp sass",
+    "build:sass:watch": "gulp sass:watch",
     "build:rollup": "rollup -c rollup.config.js",
     "build:watch": "rollup -w -c rollup.config.js",
     "serve": "owc-dev-server --port 3333",
@@ -21,6 +23,10 @@
   "license": "MIT",
   "dependencies": {
     "@microsoft/teams-js": "^1.4.1",
+    "gulp": "^4.0.0",
+    "gulp-append-prepend": "^1.0.6",
+    "gulp-rename": "^1.4.0",
+    "gulp-sass": "^4.0.2",
     "lit-element": "^2.1.0",
     "msal": "^0.2.4",
     "office-ui-fabric-core": "^9.6.1"

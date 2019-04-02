@@ -1,0 +1,16 @@
+{
+  "compilerOptions": {
+    "outDir": "dist/es5/raw",
+    "target": "es5",
+    "module": "commonjs",
+    "moduleResolution": "node",
+    "lib": ["dom", "es2015"],
+    "allowSyntheticDefaultImports": true,
+    "experimentalDecorators": true,
+    "esModuleInterop": true,
+    "sourceMap": true,
+    "declaration": true
+  },
+  "exclude": ["node_modules"],
+  "include": ["src"]
+}

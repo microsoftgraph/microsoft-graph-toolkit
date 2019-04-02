@@ -1,7 +1,7 @@
 import { Providers, IProvider, LoginChangedEvent, LoginType } from "../library/Providers";
 import { Graph, IGraph } from "../library/Graph";
 import { EventHandler, EventDispatcher } from "../library/EventHandler";
-import * as microsoftTeams from "@microsoft/teams-js";
+import * as msTeams from "@microsoft/teams-js";
 
 declare global {
   interface Window {
@@ -18,6 +18,8 @@ export class TeamsProvider implements IProvider {
   private _loginPopupUrl: string;
 
   private _provider: any;
+
+  private msTeams: any;
 
   get provider() {
     return this._provider;
@@ -48,8 +50,8 @@ export class TeamsProvider implements IProvider {
     return Promise.race([
       new Promise<boolean>((resolve, reject) => {
         try {
-          microsoftTeams.initialize();
-          microsoftTeams.getContext(function(context) {
+          msTeams.initialize();
+          msTeams.getContext(function(context) {
             if (context) {
               resolve(true);
             } else {
@@ -70,11 +72,11 @@ export class TeamsProvider implements IProvider {
   }
 
   static auth() {
-    microsoftTeams.initialize(); // Get the tab context, and use the information to navigate to Azure AD login page
+    msTeams.initialize(); // Get the tab context, and use the information to navigate to Azure AD login page
 
     var url = new URL(window.location.href);
     if (url.searchParams.get("clientId")) {
-      microsoftTeams.getContext(function(context) {
+      msTeams.getContext(function(context) {
         // Generate random state string and store it, so we can verify it in the callback
         var state = _guid();
 
@@ -225,7 +227,7 @@ export class TeamsProvider implements IProvider {
       if (hashParams["error"]) {
         // Authentication/authorization failed
         localStorage.setItem("simple.error", JSON.stringify(hashParams));
-        microsoftTeams.authentication.notifyFailure(hashParams["error"]);
+        msTeams.authentication.notifyFailure(hashParams["error"]);
       } else if (hashParams["access_token"]) {
         // Get the stored state parameter and compare with incoming state
         // This validates that the data is coming from Azure AD
@@ -234,7 +236,7 @@ export class TeamsProvider implements IProvider {
         if (expectedState !== hashParams["state"]) {
           // State does not match, report error
           localStorage.setItem("simple.error", JSON.stringify(hashParams));
-          microsoftTeams.authentication.notifyFailure("StateDoesNotMatch");
+          msTeams.authentication.notifyFailure("StateDoesNotMatch");
         } else {
           // Success: return token information to the tab
           //microsoftTeams.authentication.notifySuccess({
@@ -243,14 +245,14 @@ export class TeamsProvider implements IProvider {
           //  tokenType: hashParams["token_type"],
           //  expiresIn: hashParams["expires_in"]
           //});
-          microsoftTeams.authentication.notifySuccess(
+          msTeams.authentication.notifySuccess(
             hashParams["access_token"]
           );
         }
       } else {
         // Unexpected condition: hash does not contain error or access_token parameter
         localStorage.setItem("simple.error", JSON.stringify(hashParams));
-        microsoftTeams.authentication.notifyFailure("UnexpectedFailure");
+        msTeams.authentication.notifyFailure("UnexpectedFailure");
       } // Parse hash parameters into key-value pairs
 
       function getHashParameters() {
@@ -299,7 +301,7 @@ export class TeamsProvider implements IProvider {
       var url = new URL(this._loginPopupUrl, new URL(window.location.href));
       url.searchParams.append("clientId", this._clientId);
 
-      microsoftTeams.authentication.authenticate({
+      msTeams.authentication.authenticate({
         url: url.href,
         width: 600,
         height: 535,
