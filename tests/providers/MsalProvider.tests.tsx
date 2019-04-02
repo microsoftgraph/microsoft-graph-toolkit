@@ -1,9 +1,9 @@
-jest.mock('msal');
-
-import { MsalProvider } from '../src/providers/MsalProvider';
-import { MsalConfig } from '../src/providers/MsalConfig';
-import { LoginType } from '../src/providers/IProvider';
+import { MsalProvider } from '../../src/providers/MsalProvider';
+import { MsalConfig } from '../../src/providers/MsalConfig';
+import { LoginType } from '../../src/providers/IProvider';
 import { UserAgentApplication } from 'msal';
+
+jest.mock('msal/lib-es6');
 
 describe('MSALProvider', () => {
 
