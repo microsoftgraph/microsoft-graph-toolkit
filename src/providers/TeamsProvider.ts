@@ -19,7 +19,14 @@ export class TeamsProvider implements IProvider {
 
   private _provider: any;
 
-  private msTeams: any;
+  private static msTeams: typeof msTeams;
+  private static async getTeamsObj(): Promise<typeof msTeams>
+  {
+    if(!this.msTeams)
+      this.msTeams = (await import('@microsoft/teams-js'));
+      
+    return this.msTeams;
+  }
 
   get provider() {
     return this._provider;
@@ -47,6 +54,8 @@ export class TeamsProvider implements IProvider {
 
   static async isAvailable(): Promise<boolean> {
     const ms = 500;
+    let msTeams = await this.getTeamsObj();
+
     return Promise.race([
       new Promise<boolean>((resolve, reject) => {
         try {
@@ -71,7 +80,9 @@ export class TeamsProvider implements IProvider {
     ]);
   }
 
-  static auth() {
+  static async auth() {
+    let msTeams = await this.getTeamsObj();
+
     msTeams.initialize(); // Get the tab context, and use the information to navigate to Azure AD login page
 
     var url = new URL(window.location.href);
@@ -305,10 +316,11 @@ export class TeamsProvider implements IProvider {
 
   async getAccessToken(): Promise<string> {
     if (this._idToken) return this._idToken;
-    return new Promise((resolve, reject) => {
+    return new Promise(async (resolve, reject) => {
       var url = new URL(this._loginPopupUrl, new URL(window.location.href));
       url.searchParams.append("clientId", this._clientId);
-
+      
+      let msTeams = await TeamsProvider.getTeamsObj();
       msTeams.authentication.authenticate({
         url: url.href,
         width: 600,
