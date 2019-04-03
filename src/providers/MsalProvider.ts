@@ -29,6 +29,8 @@ export class MsalProvider implements IProvider {
   private _resolveToken;
   private _rejectToken;
 
+  public msalLoadedPromise: Promise<any>;
+
   get provider() {
     return this._provider;
   }
@@ -55,10 +57,12 @@ export class MsalProvider implements IProvider {
       throw "ClientID must be a valid string";
     }
 
-    import("msal/lib-es6").then(({ UserAgentApplication }) => {
-      this._UserAgentApplication = UserAgentApplication;
-      this.initProvider(config);
-    });
+    this.msalLoadedPromise = import("msal/lib-es6").then(
+      ({ UserAgentApplication }) => {
+        this._UserAgentApplication = UserAgentApplication;
+        this.initProvider(config);
+      }
+    );
   }
 
   private initProvider(config: MsalConfig) {
