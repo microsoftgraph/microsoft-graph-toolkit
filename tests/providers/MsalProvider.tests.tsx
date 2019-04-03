@@ -25,6 +25,8 @@ describe('MSALProvider', () => {
             loginType: LoginType.Popup
         };
         const msalProvider = new MsalProvider(config);
+        await msalProvider.msalLoadedPromise;
+
         await msalProvider.login();
         expect(msalProvider.provider.loginPopup).toBeCalled();
     });
@@ -35,6 +37,8 @@ describe('MSALProvider', () => {
             loginType: LoginType.Redirect
         };
         const msalProvider = new MsalProvider(config);
+        await msalProvider.msalLoadedPromise;
+
         await msalProvider.login();
         expect(msalProvider.provider.loginRedirect).toBeCalled();
     });
@@ -45,6 +49,8 @@ describe('MSALProvider', () => {
             loginType: LoginType.Redirect
         };
         const msalProvider = new MsalProvider(config);
+        await msalProvider.msalLoadedPromise;
+
         const accessToken = await msalProvider.getAccessToken();
         expect(msalProvider.provider.acquireTokenSilent).toBeCalled();
     });
@@ -55,6 +61,8 @@ describe('MSALProvider', () => {
             loginType: LoginType.Redirect
         };
         const msalProvider = new MsalProvider(config);
+        await msalProvider.msalLoadedPromise;
+
         expect.assertions(1);
         msalProvider.onLoginChanged(()=>{
             expect(true).toBeTruthy();
@@ -68,6 +76,8 @@ describe('MSALProvider', () => {
             loginType: LoginType.Popup
         };
         const msalProvider = new MsalProvider(config);
+        await msalProvider.msalLoadedPromise;
+
         expect.assertions(1);
         msalProvider.onLoginChanged(()=>{
             expect(true).toBeTruthy();
@@ -86,6 +96,7 @@ describe('MSALProvider', () => {
         });
 
         const msalProvider = new MsalProvider(config);
+        await msalProvider.msalLoadedPromise;
      
         expect.assertions(1);
         msalProvider.onLoginChanged(()=>{
