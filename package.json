@@ -3,9 +3,10 @@
   "version": "0.0.1",
   "description": "Microsoft Graph Toolkit",
   "main": "dist/es5/raw/index.js",
+  "types": "dist/es6/raw/index.d.ts",
+  "browser": "dist/es5/bundle/mgt.js",
   "module": "dist/es6/raw/index.js",
   "jsnext:main": "dist/es6/raw/index.js",
-  "types": "dist/es6/raw/index.d.ts",
   "files": [
     "dist"
   ],
