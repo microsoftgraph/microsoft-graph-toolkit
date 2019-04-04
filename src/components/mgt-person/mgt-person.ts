@@ -28,7 +28,9 @@ export class MgtPerson extends LitElement {
   })
   showEmail: false;
 
-  @property() personDetails: MgtPersonDetails;
+  @property({
+    attribute: "person-details",
+    type: Object}) personDetails: MgtPersonDetails;
 
   attributeChangedCallback(name, oldval, newval) {
     super.attributeChangedCallback(name, oldval, newval);

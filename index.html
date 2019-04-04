@@ -29,6 +29,20 @@
     <mgt-mock-provider></mgt-mock-provider>
 
     <mgt-login></mgt-login>
+    
+    <!-- <script type="module">
+      let login = document.getElementsByTagName('mgt-login')[0];
+      
+      login.addEventListener('loginInitiated', (event) => {console.log('loginInitiated'); login.userDetails = {
+        displayName: "Nikola Metulev",
+        email: "nikola@contoso.com"
+      } /*event.preventDefault();*/});
+      login.addEventListener('loginCompleted', (event) => {console.log('loginCompleted')});
+      login.addEventListener('loginFailed', (event) => {console.log('loginFailed')});
+      login.addEventListener('logoutInitiated', (event) => {console.log('logoutInitiated')});
+      login.addEventListener('logoutCompleted', (event) => {console.log('logoutCompleted')});
+    </script> -->
+    
     <mgt-person person-query="me" show-name show-email></mgt-person>
     <mgt-agenda></mgt-agenda>
 

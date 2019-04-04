@@ -31,34 +31,12 @@ This control uses the following Microsoft Graph APIs and permissions:
 
 The following attributes are available to customize the behavior
 
-| property  | required  | description |
-| --- | --- | --- |
-| `view` | optional | enumeration for how the control is layed out - default is `SmallProfilePhotoRight` |
-| `theme` | optional | enumeration for what theme to use - default is `fluent` see [themes](..styling-controls.md#theme/) |
-| `custom-style` | optional | use this attribute/property to add additional styles to customize the control. see [styling controls](../styling-controls.md#custom-style/) |
-
+[TODO - add all custom properties]
 
 | [css custom properties](../styling-controls.md#css-custom-properties) |
 | - |
 | `--login-control-background` |
 
-Use the `view` property to control how the control is layed out once the user is logged in:
-* PictureOnly - Only show the photo of the user
-* EmailOnly - Only show the email of the user
-* NameOnly - Only show the display name of the user
-* LargeProfilePhotoLeft - show photo, display name, and email - photo on the left
-* LargeProfilePhotoRight - show photo, display name, and email - photo on the right
-* SmallProfilePhotoLeft - show photo and display name - photo on the left
-* SmallProfilePhotoRight - show photo and display name - photo on the right
-
-### Example:
-```html
-<mgt-login
-    view="pictureOnly"
-    theme="fluent"
-    custom-style='.login-root-button {background:red;}'>
-    </mgt-login>
-```
 
 ## Using the control without an authentication provider
 
@@ -79,47 +57,9 @@ loginControl.userDetails = {
 }
 ```
 
-Setting `userDetails` to `null` or `{}` will go to the logged out state.
+Setting `userDetails` to `null` will go to the logged out state.
 
 Use the `loginInitiated` and `logoutInitiated` events to handle logging in and out. 
-
-## Adding additional commands to dropdown
-
-In addition to the logout command in the dropdown, you can add custom commands that are rendered above the logout command in the dropdown.
-
-| property | Description |
-| --- | --- |
-| `commands` | `LoginDropdownCommand` object that describes each additional command |
-
-`LoginDropdownCommand` is defined as:
-
-```ts
-interface LoginDropdownCommand {
-
-    label: string;      // required - text to show
-    url?: string;       // optional - url to open in a new window when command is invoked
-    action? : function; // optional - callback called when command is invoked
-}
-```
-
-### Example:
-```html
-<mgt-login id="myLoginControl"></mgt-login>
-```
-
-```js
-let loginControl = document.getElementById('myLoginControl');
-loginControl.commands = [
-    {
-        label: 'go to profile page',
-        url: 'http://myprofilepagelink'
-    },
-    {
-        label: 'settings',
-        action: function() {...}
-    }
-]
-```
 
 ## Events
 
@@ -127,8 +67,8 @@ The following events are fired from the control:
 
 | Event | Description |
 | --- | --- |
-| `loginInitiated` | The user started the login process |
-| `loginCompleted` | The user completed the login process |
-| `loginCanceled` | The user canceled the login process |
-| `LogoutInitiated` | The user started to logout |
-| `LogoutCompleted` | the user logged out |
+| `loginInitiated` | The user clicked the sign in button to start the login process - cancelable|
+| `loginCompleted` | the login process was successful and the user is now signed in |
+| `loginFailed` | The user canceled the login process or was unable to log in |
+| `logoutInitiated` | The user started to logout - cancelable |
+| `logoutCompleted` | the user logged out |

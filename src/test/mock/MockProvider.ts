@@ -21,8 +21,8 @@ export class MockProvider implements IProvider {
         await (new Promise(resolve => setTimeout(resolve, 1000)));
         this.isLoggedIn = false;
         this._loginChangedDispatcher.fire({});
-        return Promise.resolve();
     }
+    
     getAccessToken(): Promise<string> {
         return Promise.resolve("");
     }
