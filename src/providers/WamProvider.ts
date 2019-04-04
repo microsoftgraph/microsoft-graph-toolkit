@@ -1,6 +1,6 @@
-import { Providers, IProvider, LoginChangedEvent, LoginType } from "../library/Providers";
-import { Graph, IGraph } from "../library/Graph";
-import { EventHandler, EventDispatcher } from "../library/EventHandler";
+import { Providers, IProvider, LoginChangedEvent, LoginType } from "../Providers";
+import { Graph, IGraph } from "../Graph";
+import { EventHandler, EventDispatcher } from "../EventHandler";
 
 declare interface Window {
   Windows: any;

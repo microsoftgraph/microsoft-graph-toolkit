@@ -1,6 +1,6 @@
-import { Providers, IProvider, LoginChangedEvent, LoginType } from "../library/Providers";
-import { Graph, IGraph } from "../library/Graph";
-import { EventHandler, EventDispatcher } from "../library/EventHandler";
+import { Providers, IProvider, LoginChangedEvent, LoginType } from "../Providers";
+import { Graph, IGraph } from "../Graph";
+import { EventHandler, EventDispatcher } from "../EventHandler";
 import * as msTeams from "@microsoft/teams-js";
 
 declare global {
@@ -22,10 +22,10 @@ export class TeamsProvider implements IProvider {
   private static msTeams: typeof msTeams;
   private static async getTeamsObj(): Promise<typeof msTeams>
   {
-    if(!this.msTeams)
-      this.msTeams = (await import('@microsoft/teams-js'));
+    // if(!this.msTeams)
+    //   this.msTeams = (await import('@microsoft/teams-js'));
       
-    return this.msTeams;
+    return msTeams;
   }
 
   get provider() {
@@ -295,7 +295,7 @@ export class TeamsProvider implements IProvider {
   }
   
 
-  public static add(clientId: string, loginPopupUrl: string) {
+  public static createAndAddToProviders(clientId: string, loginPopupUrl: string) {
     Providers.addCustomProvider(new TeamsProvider(clientId, loginPopupUrl));
   }
 

@@ -1,6 +1,6 @@
-import { Providers, IProvider, LoginChangedEvent, LoginType } from "../library/Providers";
-import { Graph, IGraph } from "../library/Graph";
-import { EventHandler, EventDispatcher } from "../library/EventHandler";
+import { Providers, IProvider, LoginChangedEvent, LoginType } from "../Providers";
+import { Graph, IGraph } from "../Graph";
+import { EventHandler, EventDispatcher } from "../EventHandler";
 
 declare interface AadTokenProvider {
   getToken(x: string);
@@ -37,7 +37,7 @@ export class SharePointProvider implements IProvider {
   graph: IGraph;
 
   
-  public static add(context: WebPartContext) {
+  public static createAndAddToProviders(context: WebPartContext) {
     Providers.addCustomProvider(new SharePointProvider(context));
   }
 

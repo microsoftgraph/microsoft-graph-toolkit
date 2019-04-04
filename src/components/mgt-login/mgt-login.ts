@@ -6,7 +6,7 @@ import {
   unsafeCSS
 } from "lit-element";
 import * as MicrosoftGraph from "@microsoft/microsoft-graph-types";
-import { Providers } from "../../../library/Providers";
+import { Providers } from "../../Providers";
 import styles from "./mgt-login.scss";
 
 import '../mgt-person/mgt-person';

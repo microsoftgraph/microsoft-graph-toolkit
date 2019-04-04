@@ -10,20 +10,20 @@
     "dist"
   ],
   "scripts": {
-    "clean": "shx rm -rf dist",
     "start": "run-p build:watch serve watch",
-    "build": "npm run clean && npm run build:rollup && npm run build:sass && npm run build:ts-raw",
-    "build:sass": "gulp sass",
-    "build:sass:watch": "gulp sass:watch",
-    "build:ts-raw-es5": "tsc -p es5.tsconfig.json",
-    "build:ts-raw-es6": "tsc -p es6.tsconfig.json",
-    "build:ts-raw": "npm run build:ts-raw-es6 && npm run build:ts-raw-es5",
-    "build:rollup": "rollup -c rollup.config.js",
-    "build:watch": "rollup -w -c rollup.config.js",
     "serve": "owc-dev-server --port 3333",
     "watch": "browser-sync start --no-notify --proxy localhost:3333 --files 'dist/**/*.js, index.html'",
     "test": "jest",
-    "test:watch": "jest --watch"
+    "test:watch": "jest --watch",
+
+    "clean": "shx rm -rf dist",
+    "build": "npm run clean && npm run build:bundle && npm run build:sass && npm run build:modules",
+    "build:sass": "gulp sass",
+    "build:es5": "tsc -p es5.tsconfig.json",
+    "build:es6": "tsc -p es6.tsconfig.json",
+    "build:modules": "npm run build:es6 && npm run build:es5",
+    "build:bundle": "rollup -c rollup.config.js",
+    "build:bundle-watch": "rollup -w -c rollup.config.js"
   },
   "author": "@metulev",
   "license": "MIT",

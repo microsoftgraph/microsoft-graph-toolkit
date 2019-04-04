@@ -18,7 +18,7 @@ export interface IHelloWorldWebPartProps {
 export default class HelloWorldWebPart extends BaseClientSideWebPart<IHelloWorldWebPartProps> {
 
   protected async onInit() {
-    SharePointProvider.add(this.context);
+    SharePointProvider.createAndAddToProviders(this.context);
   }
 
   public render(): void {

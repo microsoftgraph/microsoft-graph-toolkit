@@ -13,7 +13,7 @@ import {SharePointProvider} from 'microsoft-graph-toolkit';
 
 // add the onInit() method if not already there in your web part class
 protected async onInit() {
-    SharePointProvider.add(this.context);
+    SharePointProvider.createAndAddToProviders(this.context);
 }
 ```
 

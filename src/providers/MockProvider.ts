@@ -1,9 +1,9 @@
-import { EventHandler, EventDispatcher } from "../library/EventHandler";
-import { Providers, IProvider, LoginChangedEvent } from "../library/Providers";
-import { IGraph, Graph } from "../library/Graph";
+import { EventHandler, EventDispatcher } from "../EventHandler";
+import { Providers, IProvider, LoginChangedEvent } from "../Providers";
+import { IGraph, Graph } from "../Graph";
 
 export class MockProvider implements IProvider {
-  public static add(signedIn: boolean = false) {
+  public static createAndAddToProviders(signedIn: boolean = false) {
     Providers.addCustomProvider(new MockProvider(signedIn));
   }
   constructor(signedIn: boolean = false) {

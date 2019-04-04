@@ -6,7 +6,7 @@ import {
   unsafeCSS
 } from "lit-element";
 import * as MicrosoftGraph from "@microsoft/microsoft-graph-types";
-import { Providers, IProvider } from "../../../library/Providers";
+import { Providers, IProvider } from "../../Providers";
 import styles from "./mgt-agenda.scss";
 
 import "../mgt-person/mgt-person";

@@ -6,7 +6,7 @@ import {
   property
 } from "lit-element";
 import * as MicrosoftGraph from "@microsoft/microsoft-graph-types";
-import { Providers } from "../../../library/Providers";
+import { Providers } from "../../Providers";
 import styles from "./mgt-person.scss";
 
 export interface MgtPersonDetails {
