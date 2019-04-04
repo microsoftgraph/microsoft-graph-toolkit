@@ -20,47 +20,22 @@ const base_plugins = [
   terser({ keep_classnames: true, keep_fnames: true })
 ];
 
-const babel_es5 = {
-  extensions,
-  presets: ["@babel/env", "@babel/typescript"],
-  plugins: [
-    "@babel/proposal-class-properties",
-    "@babel/proposal-object-rest-spread",
-    [
-      "@babel/plugin-proposal-decorators",
-      { decoratorsBeforeExport: true, legacy: false }
-    ]
-  ],
-  include: [
-    "src/**/*",
-    "node_modules/lit-element/**/*"
-  ],
-  exclude: [
-    "node_modules/@webcomponents/webcomponentsjs/custom-elements-es5-adapter.js"
-  ]
-};
-
-const typescript_es6 = {
-  target: "es2015",
-  module: "esnext",
-  moduleResolution: "node",
-  lib: ["dom", "es2015"],
-  allowSyntheticDefaultImports: true,
-  experimentalDecorators: true,
-  esModuleInterop: true
-};
-
-const typescript_es5 = {
-  ...typescript_es6,
-  target: "es5",
-  module: "esnext"
-};
-
 export default [
   // ES6 Bundle
   {
     input: es6_bundle_inputs,
-    plugins: [typescript(typescript_es6), ...base_plugins],
+    plugins: [
+      typescript({
+        target: "es2015",
+        module: "esnext",
+        moduleResolution: "node",
+        lib: ["dom", "es2015"],
+        allowSyntheticDefaultImports: true,
+        experimentalDecorators: true,
+        esModuleInterop: true
+      }),
+      ...base_plugins
+    ],
     output: {
       dir: `${bin_root}/es6/bundle`,
       entryFileNames: "mgt.js",
@@ -70,7 +45,25 @@ export default [
   // ES5 Bundle
   {
     input: es5_bundle_input,
-    plugins: [babel(babel_es5), ...base_plugins],
+    plugins: [
+      babel({
+        extensions,
+        presets: ["@babel/env", "@babel/typescript"],
+        plugins: [
+          "@babel/proposal-class-properties",
+          "@babel/proposal-object-rest-spread",
+          [
+            "@babel/plugin-proposal-decorators",
+            { decoratorsBeforeExport: true, legacy: false }
+          ]
+        ],
+        include: ["src/**/*", "node_modules/lit-element/**/*"],
+        exclude: [
+          "node_modules/@webcomponents/webcomponentsjs/custom-elements-es5-adapter.js"
+        ]
+      }),
+      ...base_plugins
+    ],
     output: {
       dir: `${bin_root}/es5/bundle`,
       name: `index`,
