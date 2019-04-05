@@ -29,7 +29,7 @@
   "license": "MIT",
   "dependencies": {
     "@microsoft/teams-js": "^1.4.1",
-    "babel-polyfill": "^6.5.0",
+    "babel-polyfill": "6.5.0",
     "lit-element": "^2.1.0",
     "msal": "^0.2.4",
     "office-ui-fabric-core": "^9.6.1"

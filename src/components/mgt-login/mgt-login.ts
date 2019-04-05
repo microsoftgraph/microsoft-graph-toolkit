@@ -9,7 +9,7 @@ import * as MicrosoftGraph from "@microsoft/microsoft-graph-types";
 import { Providers } from "../../Providers";
 import styles from "./mgt-login.scss";
 
-import '../mgt-person/mgt-person';
+import "../mgt-person/mgt-person";
 
 @customElement("mgt-login")
 export class MgtLogin extends LitElement {
@@ -42,29 +42,31 @@ export class MgtLogin extends LitElement {
       const deltaW = this._loginButtonRect.width / this._popupRect.width;
       const deltaH = this._loginButtonRect.height / this._popupRect.height;
 
-      // play back
-      popup.animate(
-        [
-          {
-            transformOrigin: "top left",
-            transform: `
+      if (popup.animate) {
+        // play back
+        popup.animate(
+          [
+            {
+              transformOrigin: "top left",
+              transform: `
               translate(${deltaX}px, ${deltaY}px)
               scale(${deltaW}, ${deltaH})
-            `,
-            backgroundColor: `#eaeaea`
-          },
+              `,
+              backgroundColor: `#eaeaea`
+            },
+            {
+              transformOrigin: "top left",
+              transform: "none",
+              backgroundColor: `white`
+            }
+          ],
           {
-            transformOrigin: "top left",
-            transform: "none",
-            backgroundColor: `white`
+            duration: 300,
+            easing: "ease-in-out",
+            fill: "both"
           }
-        ],
-        {
-          duration: 300,
-          easing: "ease-in-out",
-          fill: "both"
-        }
-      );
+        );
+      }
     } else if (changedProps.get("_showMenu") === true) {
       // get login button bounds
       const loginButton = this.shadowRoot.querySelector(".login-button");
@@ -77,27 +79,29 @@ export class MgtLogin extends LitElement {
       const deltaW = this._popupRect.width / this._loginButtonRect.width;
       const deltaH = this._popupRect.height / this._loginButtonRect.height;
 
-      // play back
-      loginButton.animate(
-        [
+      if (loginButton.animate) {
+        // play back
+        loginButton.animate(
+          [
+            {
+              transformOrigin: "top left",
+              transform: `
+                translate(${deltaX}px, ${deltaY}px)
+                scale(${deltaW}, ${deltaH})
+              `
+            },
+            {
+              transformOrigin: "top left",
+              transform: "none"
+            }
+          ],
           {
-            transformOrigin: "top left",
-            transform: `
-               translate(${deltaX}px, ${deltaY}px)
-               scale(${deltaW}, ${deltaH})
-             `
-          },
-          {
-            transformOrigin: "top left",
-            transform: "none"
+            duration: 200,
+            easing: "ease-out",
+            fill: "both"
           }
-        ],
-        {
-          duration: 200,
-          easing: "ease-out",
-          fill: "both"
-        }
-      );
+        );
+      }
     }
   }
 
