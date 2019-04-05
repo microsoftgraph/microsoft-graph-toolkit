@@ -50,14 +50,18 @@ export default [
         extensions,
         presets: ["@babel/env", "@babel/typescript"],
         plugins: [
-          "@babel/proposal-class-properties",
-          "@babel/proposal-object-rest-spread",
           [
             "@babel/plugin-proposal-decorators",
             { decoratorsBeforeExport: true, legacy: false }
-          ]
+          ],
+          "@babel/proposal-class-properties",
+          "@babel/proposal-object-rest-spread"
         ],
-        include: ["src/**/*", "node_modules/lit-element/**/*"],
+        include: [
+          "src/**/*",
+          "node_modules/lit-element/**/*",
+          "node_modules/lit-html/**/*"
+        ],
         exclude: [
           "node_modules/@webcomponents/webcomponentsjs/custom-elements-es5-adapter.js"
         ]

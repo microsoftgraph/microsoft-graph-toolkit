@@ -16,7 +16,6 @@
     "watch": "browser-sync start --no-notify --proxy localhost:3333 --files 'dist/**/*.js, index.html'",
     "test": "jest",
     "test:watch": "jest --watch",
-
     "clean": "shx rm -rf dist",
     "build": "npm run clean && npm run build:bundle && npm run build:sass && npm run build:modules",
     "build:sass": "gulp sass",
@@ -30,6 +29,7 @@
   "license": "MIT",
   "dependencies": {
     "@microsoft/teams-js": "^1.4.1",
+    "babel-polyfill": "^6.5.0",
     "lit-element": "^2.1.0",
     "msal": "^0.2.4",
     "office-ui-fabric-core": "^9.6.1"
@@ -44,7 +44,6 @@
     "@microsoft/microsoft-graph-types": "^1.7.0",
     "@types/jest": "^24.0.11",
     "@webcomponents/webcomponentsjs": "^2.2.7",
-    "babel-polyfill": "^6.26.0",
     "browser-sync": "^2.26.3",
     "gulp": "^4.0.0",
     "gulp-append-prepend": "^1.0.6",
