@@ -2,10 +2,19 @@
   "name": "microsoft-graph-toolkit",
   "version": "0.0.1",
   "description": "UI for the Microsoft Graph",
-  "keywords": ["microsoft graph", "web components", "msal"],
+  "keywords": [
+    "microsoft graph",
+    "web components",
+    "msal"
+  ],
   "homepage": "https://github.com/microsoftgraph/microsoft-graph-toolkit",
-  "bugs": {"url" : "https://github.com/microsoftgraph/microsoft-graph-toolkit/issues"},
-  "repository": {"type": "git", "url": "https://github.com/microsoftgraph/microsoft-graph-toolkit"},
+  "bugs": {
+    "url": "https://github.com/microsoftgraph/microsoft-graph-toolkit/issues"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/microsoftgraph/microsoft-graph-toolkit"
+  },
   "author": "Microsoft",
   "license": "MIT",
   "main": "dist/es6/index.js",

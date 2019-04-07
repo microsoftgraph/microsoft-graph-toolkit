@@ -9,7 +9,10 @@ import { escape } from '@microsoft/sp-lodash-subset';
 import styles from './HelloWorldWebPart.module.scss';
 import * as strings from 'HelloWorldWebPartStrings';
 
-import {Providers} from 'microsoft-graph-toolkit';
+import 'microsoft-graph-toolkit/dist/es6/components/mgt-agenda/mgt-agenda.js'
+
+import {SharePointProvider} from 'microsoft-graph-toolkit/dist/es6/providers/SharePointProvider.js';
+import {Providers} from 'microsoft-graph-toolkit/dist/es6/Providers.js';
 
 export interface IHelloWorldWebPartProps {
   description: string;
@@ -18,12 +21,11 @@ export interface IHelloWorldWebPartProps {
 export default class HelloWorldWebPart extends BaseClientSideWebPart<IHelloWorldWebPartProps> {
 
   protected async onInit() {
-    Providers.addSharePointProvider(this.context);
+    Providers.GlobalProvider = new SharePointProvider(this.context);
   }
 
   public render(): void {
     this.domElement.innerHTML = `
-      <mgt-person person-query="Tester"></mgt-person>
       <mgt-agenda></mgt-agenda>
       `;
   }

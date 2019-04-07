@@ -1,6 +1,4 @@
-## sp-webpart
-
-This is where you include your WebPart documentation.
+## SharePoint webpart using Microsoft Graph Toolkit components
 
 ### Building the code
 
@@ -18,6 +16,8 @@ This package produces the following:
 * deploy/* - all resources which should be uploaded to a CDN.
 
 ### Build options
+
+gulp trust-dev-cert
 
 gulp clean - TODO
 gulp test - TODO

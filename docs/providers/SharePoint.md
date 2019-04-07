@@ -9,15 +9,31 @@ Initialize the provider inside of your `onInit()` method of your web part.
 ```ts
 
 // import the providers at the top of the page
-import {Providers} from 'microsoft-graph-toolkit';
+import {SharePointProvider} from 'microsoft-graph-toolkit/dist/es6/providers/SharePointProvider.js';
+import {Providers} from 'microsoft-graph-toolkit/dist/es6/Providers.js';
+
+// ...
 
 // add the onInit() method if not already there in your web part class
 protected async onInit() {
-    Providers.addSharePointProvider(this.context);
+    Providers.GlobalProviders = new SharePointProvider(this.context);
 }
 ```
 
-Now you can add any component in your `render()` method and it will use the SharePoint context to access the Microsoft Graph
+Now you can add any component in your `render()` method and it will use the SharePoint context to access the Microsoft Graph. 
+
+```ts
+// import the component at the top of the page
+import 'microsoft-graph-toolkit/dist/es6/components/mgt-agenda/mgt-agenda.js'
+
+// ...
+
+public render(): void {
+    this.domElement.innerHTML = `
+      <mgt-agenda></mgt-agenda>
+      `;
+  }
+```
 
 ## Testing in the workbench
 

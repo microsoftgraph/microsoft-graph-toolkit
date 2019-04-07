@@ -6,7 +6,7 @@
       "dom",
       "es2015"
     ],
-    "module": "esnext",
+    "module": "es6",
     "moduleResolution": "node",
     "target": "es2015",
     "outDir": "dist/es6",

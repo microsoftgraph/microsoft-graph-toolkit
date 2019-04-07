@@ -11,6 +11,7 @@
     addScript(rootPath + "wc/webcomponents-loader.js");
     addScript(rootPath + "mgt.es6.js");
   } else {
+    // es5 bundle already includes all the polyfills
     addScript(rootPath + "mgt.es5.js");
   }
 
