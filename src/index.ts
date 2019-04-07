@@ -1,2 +1,2 @@
-export * from './providers/Providers'
+export * from './Providers'
 export * from './components'

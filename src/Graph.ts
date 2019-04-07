@@ -1,5 +1,5 @@
 import * as MicrosoftGraph from "@microsoft/microsoft-graph-types"
-import { IProvider } from "./IProvider";
+import { IProvider } from "./providers/IProvider";
 
 export interface IGraph {
     me() : Promise<MicrosoftGraph.User>;

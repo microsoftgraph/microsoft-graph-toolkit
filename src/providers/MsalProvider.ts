@@ -1,8 +1,14 @@
-import { IProvider, LoginChangedEvent, LoginType } from './IProvider';
-import { Graph } from './Graph';
-import { EventHandler, EventDispatcher } from './EventHandler';
-import { MsalConfig } from './MsalConfig';
+import { IProvider, LoginChangedEvent, LoginType, EventDispatcher, EventHandler } from './IProvider';
+import { Graph } from '../Graph';
 import { UserAgentApplication } from 'msal/lib-es6';
+
+export interface MsalConfig {
+  clientId: string;
+  scopes?: string[];
+  authority?: string;
+  loginType?: LoginType;
+  options?: any;
+}
 
 export class MsalProvider implements IProvider {
   private _loginChangedDispatcher = new EventDispatcher<LoginChangedEvent>();
