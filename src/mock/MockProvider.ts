@@ -1,7 +1,5 @@
-import * as MicrosoftGraph from "@microsoft/microsoft-graph-types"
-import { IProvider, LoginChangedEvent } from "../../providers/IProvider";
-import { IGraph, Graph } from "../../providers/Graph";
-import { EventDispatcher } from "../../providers/EventHandler";
+import { IProvider, EventDispatcher, LoginChangedEvent, EventHandler } from "../providers/IProvider";
+import { IGraph, Graph } from "../Graph";
 
 export class MockProvider implements IProvider {
 
@@ -30,7 +28,7 @@ export class MockProvider implements IProvider {
 
     graph: IGraph = new MockGraph();
 
-    onLoginChanged(eventHandler: import('../../providers/EventHandler').EventHandler<import('../../providers/IProvider').LoginChangedEvent>) {
+    onLoginChanged(eventHandler: EventHandler<LoginChangedEvent>) {
         this._loginChangedDispatcher.register(eventHandler);
     }
 }

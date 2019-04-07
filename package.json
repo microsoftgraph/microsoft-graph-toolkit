@@ -1,25 +1,46 @@
 {
   "name": "microsoft-graph-toolkit",
   "version": "0.0.1",
-  "description": "Microsoft Graph Toolkit",
+  "description": "UI for the Microsoft Graph",
+  "keywords": [
+    "microsoft graph",
+    "web components",
+    "msal"
+  ],
+  "homepage": "https://github.com/microsoftgraph/microsoft-graph-toolkit",
+  "bugs": {
+    "url": "https://github.com/microsoftgraph/microsoft-graph-toolkit/issues"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/microsoftgraph/microsoft-graph-toolkit"
+  },
+  "author": "Microsoft",
+  "license": "MIT",
   "main": "dist/es6/index.js",
+  "types": "dist/es6/index.d.ts",
+  "browser": "dist/bundle/mgt-loader.js",
+  "module": "dist/es6/index.js",
+  "jsnext:main": "dist/es6/index.js",
   "files": [
     "dist"
   ],
   "scripts": {
     "clean": "shx rm -rf dist",
     "start": "run-p sass:watch build:watch serve watch",
-    "build": "npm run clean && gulp sass && tsc && webpack",
-    "sass": "gulp sass",
-    "sass:watch": "gulp watchSass",
-    "build:watch": "tsc --watch",
     "serve": "owc-dev-server --port 3333",
     "watch": "browser-sync start --no-notify --proxy localhost:3333 --files 'dist/**/*.js, index.html'",
+    "sass": "gulp sass",
+    "sass:watch": "gulp watchSass",
+    "build": "run-s clean sass build:esm build:bundle",
+    "build:esm": "tsc",
+    "build:watch": "tsc --watch",
+    "build:bundle": "npm run copy:loader && npm run copy:wc && npm run sass && rollup -c",
+    "copy:loader": "cpx src/bundle/mgt-loader.js dist/bundle",
+    "copy:wc": "cpx node_modules/@webcomponents/webcomponentsjs/bundles/**/* dist/bundle/wc/bundles && cpx node_modules/@webcomponents/webcomponentsjs/webcomponents-loader.js dist/bundle/wc",
     "test": "jest",
     "test:watch": "jest --watch"
   },
-  "author": "@metulev",
-  "license": "MIT",
   "dependencies": {
     "@microsoft/teams-js": "^1.4.1",
     "lit-element": "^2.1.0",
@@ -27,10 +48,19 @@
     "office-ui-fabric-core": "^9.6.1"
   },
   "devDependencies": {
+    "@babel/core": "^7.4.3",
+    "@babel/plugin-proposal-class-properties": "^7.4.0",
+    "@babel/plugin-proposal-decorators": "^7.4.0",
+    "@babel/plugin-proposal-object-rest-spread": "^7.4.3",
+    "@babel/preset-env": "^7.4.3",
+    "@babel/preset-typescript": "^7.3.3",
     "@microsoft/microsoft-graph-types": "^1.7.0",
     "@types/jest": "^24.0.11",
     "@webcomponents/webcomponentsjs": "^2.2.7",
+    "babel-polyfill": "6.5.0",
     "browser-sync": "^2.26.3",
+    "cpx": "^1.5.0",
+    "es6-promise": "^4.2.6",
     "fork-ts-checker-webpack-plugin": "^1.0.0",
     "gulp": "^4.0.0",
     "gulp-append-prepend": "^1.0.6",
@@ -40,14 +70,23 @@
     "jest-junit": "^6.3.0",
     "npm-run-all": "^4.1.5",
     "owc-dev-server": "^0.2.1",
-    "polymer-cli": "^1.9.7",
+    "regenerator-runtime": "^0.13.2",
+    "rollup": "^1.7.3",
+    "rollup-plugin-babel": "^4.3.2",
+    "rollup-plugin-babel-minify": "^8.0.0",
+    "rollup-plugin-commonjs": "^9.2.2",
+    "rollup-plugin-node-resolve": "^4.0.1",
+    "rollup-plugin-postcss": "^2.0.3",
+    "rollup-plugin-terser": "^4.0.4",
+    "rollup-plugin-typescript": "^1.0.1",
     "sass": "^1.17.3",
     "shx": "^0.3.2",
     "ts-jest": "^24.0.1",
     "ts-loader": "^5.3.3",
     "typescript": "^3.3.4000",
     "webpack": "^4.29.6",
-    "webpack-cli": "^3.3.0"
+    "webpack-cli": "^3.3.0",
+    "whatwg-fetch": "^3.0.0"
   },
   "jest-junit": {
     "suiteName": "jest tests",

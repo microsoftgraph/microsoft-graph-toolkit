@@ -9,16 +9,14 @@ scssFileHeader = `
 // MODIFY THE .SCSS FILE INSTEAD
 
 import { css } from 'lit-element';
-import { sharedStyles } from '../../styles/shared-styles';
 export const styles = [
-  sharedStyles,
   css\``;
 
 scssFileFooter = '`];';
 
 function runSass() {
   return gulp
-    .src('src/**/*.scss')
+    .src('src/**/!(shared-styles).scss')
     .pipe(sass())
     .pipe(gap.prependText(scssFileHeader))
     .pipe(gap.appendText(scssFileFooter))

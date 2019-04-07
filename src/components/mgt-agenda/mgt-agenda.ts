@@ -1,10 +1,12 @@
 import { LitElement, html, customElement, property } from 'lit-element';
 import * as MicrosoftGraph from '@microsoft/microsoft-graph-types';
 
-import { Providers, IProvider } from '../../providers/Providers';
+import { Providers } from '../../Providers';
 import { styles } from './mgt-agenda-css';
+import { IProvider } from '../../providers/IProvider';
 
 import '../mgt-person/mgt-person';
+import '../../styles/fabric-icon-font';
 
 @customElement('mgt-agenda')
 export class MgtAgenda extends LitElement {
@@ -24,7 +26,7 @@ export class MgtAgenda extends LitElement {
   }
 
   private async init() {
-    this._provider = Providers.getAvailable();
+    this._provider = Providers.GlobalProvider;
     if (this._provider) {
       this._provider.onLoginChanged(_ => this.loadData());
       await this.loadData();

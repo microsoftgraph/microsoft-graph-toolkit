@@ -1,6 +1,5 @@
-import { IProvider, LoginChangedEvent } from "./IProvider";
-import { IGraph, Graph } from './Graph';
-import { EventHandler, EventDispatcher } from './EventHandler';
+import { IProvider, LoginChangedEvent, EventDispatcher, EventHandler } from "./IProvider";
+import { IGraph, Graph } from '../Graph';
 
 declare interface AadTokenProvider{
     getToken(x:string);

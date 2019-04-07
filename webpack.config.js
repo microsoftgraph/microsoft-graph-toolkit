@@ -2,7 +2,7 @@ var path = require("path");
 var ForkTsCheckerWebpackPlugin = require('fork-ts-checker-webpack-plugin');
 
 var PATHS = {
-    entryPoint: path.resolve(__dirname, 'es5/index.ts'),
+    entryPoint: path.resolve(__dirname, 'src/bundle/index.es5.ts'),
     bundles: path.resolve(__dirname, 'dist/es5'),
 }
 

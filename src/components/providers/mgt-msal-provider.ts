@@ -1,5 +1,7 @@
-import { LitElement, html, customElement, property } from 'lit-element';
-import { MsalProvider, MsalConfig, LoginType, Providers } from '../../../providers/Providers';
+import { LitElement, customElement, property } from 'lit-element';
+import { MsalConfig, MsalProvider } from '../../providers/MsalProvider';
+import { LoginType } from '../../providers/IProvider';
+import { Providers } from '../../Providers';
 
 @customElement('mgt-msal-provider')
 export class MgtMsalProvider extends LitElement{
@@ -55,7 +57,7 @@ export class MgtMsalProvider extends LitElement{
                 config.authority = this.authority;
             }
             
-            Providers.addMsalProvider(config);
+            Providers.GlobalProvider = new MsalProvider(config);
         }
     }
 }

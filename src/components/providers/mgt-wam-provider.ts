@@ -1,5 +1,6 @@
 import { LitElement, customElement, property } from 'lit-element';
-import { Providers } from '../../../providers/Providers';
+import { Providers } from '../../Providers';
+import { WamProvider } from '../../providers/WamProvider';
 
 @customElement('mgt-wam-provider')
 export class MgtWamProvider extends LitElement {
@@ -20,7 +21,7 @@ export class MgtWamProvider extends LitElement {
 
     private validateAuthProps() {
         if (this.clientId !== undefined) {
-            Providers.addWamProvider(this.clientId, this.authority);
+            Providers.GlobalProvider = new WamProvider(this.clientId, this.authority);
         }
     }
 }

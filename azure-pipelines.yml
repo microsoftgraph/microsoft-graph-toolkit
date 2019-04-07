@@ -67,7 +67,7 @@ steps:
   inputs:
     rootFolderOrFile: '$(System.DefaultWorkingDirectory)'
     includeRootFolder: false
-    archiveFile: '$(Build.ArtifactStagingDirectory)/M365Toolkit_$(baseVersionNumber).$(Build.BuildId).zip'
+    archiveFile: '$(Build.ArtifactStagingDirectory)/mgt-$(baseVersionNumber).$(Build.BuildId).zip'
 
 - task: PublishBuildArtifacts@1
   displayName: 'Publish Artifact: drop'

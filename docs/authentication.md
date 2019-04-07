@@ -15,26 +15,26 @@ These are examples of initializing an authentication provider in JavaScript.
 1. Initialize for MSAL
 
     ```js
-    GraphProviders.addMsalProvider({clientId: '<YOUR_CLIENT_ID>'});
+    Providers.GlobalProvider = new MsalProvider({clientId: '<YOUR_CLIENT_ID>'});
     ```
 
 2. Initialize for Progressive Web Apps on Windows
 
     ```js
-    GraphProviders.addWamProvider('<YOUR_CLIENT_ID>');
+    Providers.GlobalProvider = new WamProvider('<YOUR_CLIENT_ID>');
     ```
 
 3. Initialize for Teams
 
     ```js
-    await Providers.addTeamsProvider('<YOUR_CLIENT_ID>', '<LOGIN_REDIRECT_URL>');
+    Providers.GlobalProvider = new TeamsProvider('<YOUR_CLIENT_ID>', '<LOGIN_REDIRECT_URL>');
     ```
     For more see [Teams Provider docs](providers/Teams.md).
 
 4. Initialize for SharePoint
 
     ```js
-    Providers.addSharePointProvider(this.context); 
+    Providers.GlobalProvider = new SharePointProvider(this.context); 
     ```
     For more see [Sharepoint Provider docs](providers/SharePoint.md).
 
@@ -52,7 +52,7 @@ Most providers also have a web component wrapper that allows you to initialize i
     <mgt-msal-provider client-id="<YOUR_CLIENT_ID>"></mgt-msal-provider>
     ```
 
-2. Use the 'mgt-wam-provider' for authenticating with the Web Authentication Manager in Windows. See [docs](./components/providers/mgt-wam-provider.md)
+2. Use the `mgt-wam-provider` for authenticating with the Web Authentication Manager in Windows. See [docs](./components/providers/mgt-wam-provider.md)
 
     ```html
     <mgt-wam-provider client-id="<YOUR_CLIENT_ID>"></mgt-wam-provider>
@@ -60,53 +60,18 @@ Most providers also have a web component wrapper that allows you to initialize i
 
 ## Get started
 
-You can initialize a provider at any time, but it's recomended to initialize them before using any of the components. You can also initialize multiple providers at the same time when you need to target multiple platforms. For example, if you initialize both the Wam and Msal providers (in that order), the components will chose the first provider available on the current runtime. When running in a progressive web app (PWA) on Windows, the Wam provider will be used since it is available and was initialized first. When running in the browser, Wam is not available, so the Msal provider will be used.
+You can initialize a provider at any time, but it's recommended to initialize them before using any of the components. 
 
 ### API
 
-1. The `Providers` global variable exposes the following functions
-    * `function addMsalProvider(config : MsalConfig)`
-        
-        where `MsalConfig` defines the following interface:
+1. The `Providers` global variable exposes the following properties and functions
+    * `GlobalProvider : IProvider`
 
-        ```ts
-        interface MsalConfig {
-
-            clientId: string; // required
-            scopes?: string[]; // optional - default = ['user.read']
-            authority?: string; // optional - default = null
-            loginType?: LoginType; // optional - default = Redirect
-            options?: any; // optional - default = null
-        }
-        ```
-
-        Visit the MSAL.js documentation for [authority](https://github.com/AzureAD/microsoft-authentication-library-for-js/wiki/MSAL-basics#initialization-of-msal) and [options](https://github.com/AzureAD/microsoft-authentication-library-for-js/wiki/MSAL-basics#configuration-options)
-
-        In general, you will not need to specify the scope. Each control will automatically request access to the appropriate scopes needed for the control to function properly. Make sure to visit each control's documentation to know what scope to enable for your app in the Azure Portal
-
-    * `function addWamProvider(clientId : string, authority? : string)`
-
-        If your application will be running as a Progressive Web App (PWA) on Windows, you might want to take advantage of the native [Web Account Manager (WAM)](https://docs.microsoft.com/en-us/windows/uwp/security/web-account-manager) APIs. This will allow you to simplify the login process for your users by using the built in Windows identity provider.
-
-    * `function addSharePointProvider(context : WebPartContext)`
-
-        See [docs](providers/SharePoint.md)
-
-    * `async function addTeamsProvider(clientId : string, loginPopupUrl : string)`
-
-        TODO
-
-    * `function addCustomProvider(provider : IProvider)`
-
-        Use the add function to initialize with a custom provider
-
-    * `function getAvailable() : IProvider`
-
-        This function is intended to be used by each control to get a reference to the authentication provider once initialized. It returns the first provider that is available on the current runtime.
+        set this property to a provider you want to use globally. All components use this property to get a reference to the provider. Setting this property will fire the onProvidersChanged event
 
     * `function onProvidersChanged(callbackFunction)`
 
-        the `callbackFunction` function will be called when a new provider is initialized. Use `getAvailable()` to get the first available provider.
+        the `callbackFunction` function will be called when a new provider is set. Check the `GlobalProvider` property to get the new provider.
 
 ## Implement your own provider
 
@@ -137,9 +102,11 @@ export interface IProvider
 Each control is enabled with Graph access out of the box as long as the developer has initialized a provider (as described in the above section). To get a reference to the built in Microsoft Graph APIs, first get a reference to the global IProvider and then use the `Graph` object:
 
 ```js
-let provider = GraphProviders.getAvailable();
+let provider = Providers.GlobalProvider;
 if (provider) {
     let graph = provider.Graph;
+
+    // TODO - update this when switched to GraphSDK
 }
 ```
 

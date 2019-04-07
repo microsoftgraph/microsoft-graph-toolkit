@@ -1,6 +1,5 @@
-import { IProvider, LoginChangedEvent } from "./IProvider";
-import { IGraph, Graph } from './Graph';
-import { EventHandler, EventDispatcher } from './EventHandler';
+import { IProvider, LoginChangedEvent, EventDispatcher, EventHandler } from "./IProvider";
+import { IGraph, Graph } from '../Graph';
 import * as microsoftTeams from "@microsoft/teams-js";
 
 declare global {
@@ -8,6 +7,7 @@ declare global {
         msCrypto : any
     }
 }
+
 
 export class TeamsProvider implements IProvider {
     

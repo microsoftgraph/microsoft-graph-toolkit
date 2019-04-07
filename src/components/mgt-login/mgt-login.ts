@@ -1,23 +1,26 @@
 import { LitElement, html, customElement, property } from "lit-element";
 import * as MicrosoftGraph from "@microsoft/microsoft-graph-types";
 
-import { Providers } from "../../providers/Providers";
+import { Providers } from "../../Providers";
 import { styles } from "./mgt-login-css";
 
 import { MgtPersonDetails } from "../mgt-person/mgt-person";
 import "../mgt-person/mgt-person";
+import '../../styles/fabric-icon-font';
 
 @customElement("mgt-login")
 export class MgtLogin extends LitElement {
   private _loginButtonRect: ClientRect;
   private _popupRect: ClientRect;
-  
+
   @property({ attribute: false }) private _showMenu: boolean = false;
   @property({ attribute: false }) private _user: MicrosoftGraph.User;
 
   @property({
     attribute: "user-details",
-    type: Object }) userDetails: MgtPersonDetails;
+    type: Object
+  })
+  userDetails: MgtPersonDetails;
 
   static get styles() {
     return styles;
@@ -41,71 +44,75 @@ export class MgtLogin extends LitElement {
     if (changedProps.get("_showMenu") === false) {
       // get popup bounds
       const popup = this.shadowRoot.querySelector(".popup");
-      this._popupRect = popup.getBoundingClientRect();
-      // console.log('last', this._popupRect);
+      if (popup) {
+        this._popupRect = popup.getBoundingClientRect();
+        // console.log('last', this._popupRect);
 
-      // invert variables
-      const deltaX = this._loginButtonRect.left - this._popupRect.left;
-      const deltaY = this._loginButtonRect.top - this._popupRect.top;
-      const deltaW = this._loginButtonRect.width / this._popupRect.width;
-      const deltaH = this._loginButtonRect.height / this._popupRect.height;
+        // invert variables
+        const deltaX = this._loginButtonRect.left - this._popupRect.left;
+        const deltaY = this._loginButtonRect.top - this._popupRect.top;
+        const deltaW = this._loginButtonRect.width / this._popupRect.width;
+        const deltaH = this._loginButtonRect.height / this._popupRect.height;
 
-      // play back
-      popup.animate(
-        [
-          {
-            transformOrigin: "top left",
-            transform: `
+        // play back
+        popup.animate(
+          [
+            {
+              transformOrigin: "top left",
+              transform: `
               translate(${deltaX}px, ${deltaY}px)
               scale(${deltaW}, ${deltaH})
             `,
-            backgroundColor: `#eaeaea`
-          },
+              backgroundColor: `#eaeaea`
+            },
+            {
+              transformOrigin: "top left",
+              transform: "none",
+              backgroundColor: `white`
+            }
+          ],
           {
-            transformOrigin: "top left",
-            transform: "none",
-            backgroundColor: `white`
+            duration: 300,
+            easing: "ease-in-out",
+            fill: "both"
           }
-        ],
-        {
-          duration: 300,
-          easing: "ease-in-out",
-          fill: "both"
-        }
-      );
+        );
+      }
     } else if (changedProps.get("_showMenu") === true) {
       // get login button bounds
       const loginButton = this.shadowRoot.querySelector(".login-button");
-      this._loginButtonRect = loginButton.getBoundingClientRect();
-      // console.log('last', this._loginButtonRect);
+      if (loginButton) {
+        this._loginButtonRect = loginButton.getBoundingClientRect();
+        // console.log('last', this._loginButtonRect);
 
-      // invert variables
-      const deltaX = this._popupRect.left - this._loginButtonRect.left;
-      const deltaY = this._popupRect.top - this._loginButtonRect.top;
-      const deltaW = this._popupRect.width / this._loginButtonRect.width;
-      const deltaH = this._popupRect.height / this._loginButtonRect.height;
+        // invert variables
+        const deltaX = this._popupRect.left - this._loginButtonRect.left;
+        const deltaY = this._popupRect.top - this._loginButtonRect.top;
+        const deltaW = this._popupRect.width / this._loginButtonRect.width;
+        const deltaH = this._popupRect.height / this._loginButtonRect.height;
 
-      // play back
-      loginButton.animate(
-        [
+        // play back
+        loginButton.animate(
+          [
+            {
+              transformOrigin: "top left",
+              transform: `
+              translate(${deltaX}px, ${deltaY}px)
+              scale(${deltaW}, ${deltaH})
+            `
+            },
+            {
+              transformOrigin: "top left",
+              transform: "none"
+            }
+          ],
           {
-            transformOrigin: "top left",
-            transform: `
-               translate(${deltaX}px, ${deltaY}px)
-               scale(${deltaW}, ${deltaH})
-             `
-          },
-          {
-            transformOrigin: "top left",
-            transform: "none"
+            duration: 200,
+            easing: "ease-out",
+            fill: "both"
           }
-        ],
-        {
-          duration: 200,
-          easing: "ease-out",
-          fill: "both"
-        }
-      );
+        );
+      }
     }
   }
 
@@ -114,16 +121,16 @@ export class MgtLogin extends LitElement {
       if (event.target !== this) {
         // get popup bounds
         const popup = this.shadowRoot.querySelector(".popup");
-        this._popupRect = popup.getBoundingClientRect();
-        // console.log('first', this._popupRect);
-
-        this._showMenu = false;
+        if (popup){
+          this._popupRect = popup.getBoundingClientRect();
+          this._showMenu = false;
+        }
       }
     };
   }
 
   private async init() {
-    const provider = Providers.getAvailable();
+    const provider = Providers.GlobalProvider;
     if (provider) {
       provider.onLoginChanged(_ => this.loadState());
       await this.loadState();
@@ -136,7 +143,7 @@ export class MgtLogin extends LitElement {
       return;
     }
 
-    const provider = Providers.getAvailable();
+    const provider = Providers.GlobalProvider;
 
     if (provider && provider.isLoggedIn) {
       this._user = await provider.graph.me();
@@ -149,9 +156,10 @@ export class MgtLogin extends LitElement {
     if (this._user || this.userDetails) {
       // get login button bounds
       const loginButton = this.shadowRoot.querySelector(".login-button");
-      this._loginButtonRect = loginButton.getBoundingClientRect();
-
-      this._showMenu = !this._showMenu;
+      if (loginButton) {
+        this._loginButtonRect = loginButton.getBoundingClientRect();
+        this._showMenu = !this._showMenu;
+      }
     } else {
       if (this.fireCustomEvent("loginInitiated")) {
         this.login();
@@ -164,7 +172,7 @@ export class MgtLogin extends LitElement {
       return;
     }
 
-    const provider = Providers.getAvailable();
+    const provider = Providers.GlobalProvider;
 
     if (provider && provider.login) {
       await provider.login();
@@ -189,7 +197,7 @@ export class MgtLogin extends LitElement {
       return;
     }
 
-    const provider = Providers.getAvailable();
+    const provider = Providers.GlobalProvider;
     if (provider && provider.logout) {
       await provider.logout();
       this.fireCustomEvent("logoutCompleted");
@@ -227,10 +235,13 @@ export class MgtLogin extends LitElement {
     if (this._user) {
       return html`
         <mgt-person person-query="me" show-name />
-        `;
+      `;
     } else if (this.userDetails) {
       return html`
-        <mgt-person person-details=${JSON.stringify(this.userDetails)} show-name />
+        <mgt-person
+          person-details=${JSON.stringify(this.userDetails)}
+          show-name
+        />
       `;
     } else {
       return this.renderLogIn();
@@ -242,9 +253,17 @@ export class MgtLogin extends LitElement {
       return;
     }
 
-    let personComponent = this._user ?
-      html`<mgt-person person-query="me" show-name show-email />` :
-      html`<mgt-person person-details=${JSON.stringify(this.userDetails)} show-name show-email />`;
+    let personComponent = this._user
+      ? html`
+          <mgt-person person-query="me" show-name show-email />
+        `
+      : html`
+          <mgt-person
+            person-details=${JSON.stringify(this.userDetails)}
+            show-name
+            show-email
+          />
+        `;
 
     return html`
       <div class="popup ${this._showMenu ? "show-menu" : ""}">

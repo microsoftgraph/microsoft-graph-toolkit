@@ -1,8 +1,9 @@
 import { LitElement, html, customElement, property } from 'lit-element';
 import * as MicrosoftGraph from '@microsoft/microsoft-graph-types';
 
-import { Providers } from '../../providers/Providers';
+import { Providers } from '../../Providers';
 import { styles } from './mgt-person-css';
+import '../../styles/fabric-icon-font';
 
 @customElement('mgt-person')
 export class MgtPerson extends LitElement {
@@ -53,8 +54,8 @@ export class MgtPerson extends LitElement {
   }
 
   private handleProviderChanged() {
-    let provider = Providers.getAvailable();
-    if (provider.isLoggedIn) {
+    let provider = Providers.GlobalProvider;
+    if (provider && provider.isLoggedIn) {
       this.loadImage();
     }
     provider.onLoginChanged(_ => this.loadImage());
@@ -62,7 +63,7 @@ export class MgtPerson extends LitElement {
 
   private async loadImage() {
     if (!this.personDetails && this.personQuery) {
-      let provider = Providers.getAvailable();
+      let provider = Providers.GlobalProvider;
 
       if (provider && provider.isLoggedIn) {
         if (this.personQuery == 'me') {
