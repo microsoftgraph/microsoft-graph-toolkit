@@ -9,9 +9,7 @@ scssFileHeader = `
 // MODIFY THE .SCSS FILE INSTEAD
 
 import { css } from 'lit-element';
-import { sharedStyles } from '../../styles/shared-styles';
 export const styles = [
-  sharedStyles,
   css\``;
 
 scssFileFooter = '`];';

@@ -3,19 +3,15 @@ import babel from 'rollup-plugin-babel';
 import typescript from "rollup-plugin-typescript";
 import commonJS from "rollup-plugin-commonjs";
 import postcss from "rollup-plugin-postcss";
-import minify from 'rollup-plugin-babel-minify';
+import { terser } from "rollup-plugin-terser";
 
 const extensions = [".js", ".ts"];
 
 const commonPlugins = [
     commonJS(),
     resolve({ module: true, jsnext: true, extensions }),
-    postcss()
-    // minify({
-    //     comments: false,
-    //     sourceMap: false
-    // })
-    // terser({ keep_classnames: true, keep_fnames: true })
+    postcss(),
+    terser({ keep_classnames: true, keep_fnames: true })
 ];
 
 const es6Bundle = {

@@ -6,6 +6,7 @@ import { styles } from "./mgt-login-css";
 
 import { MgtPersonDetails } from "../mgt-person/mgt-person";
 import "../mgt-person/mgt-person";
+import '../../styles/fabric-icon-font';
 
 @customElement("mgt-login")
 export class MgtLogin extends LitElement {

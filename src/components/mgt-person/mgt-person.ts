@@ -3,6 +3,7 @@ import * as MicrosoftGraph from '@microsoft/microsoft-graph-types';
 
 import { Providers } from '../../Providers';
 import { styles } from './mgt-person-css';
+import '../../styles/fabric-icon-font';
 
 @customElement('mgt-person')
 export class MgtPerson extends LitElement {

@@ -3,9 +3,10 @@ import * as MicrosoftGraph from '@microsoft/microsoft-graph-types';
 
 import { Providers } from '../../Providers';
 import { styles } from './mgt-agenda-css';
+import { IProvider } from '../../providers/IProvider';
 
 import '../mgt-person/mgt-person';
-import { IProvider } from '../../providers/IProvider';
+import '../../styles/fabric-icon-font';
 
 @customElement('mgt-agenda')
 export class MgtAgenda extends LitElement {

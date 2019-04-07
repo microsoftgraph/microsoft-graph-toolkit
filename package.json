@@ -15,7 +15,7 @@
     "sass:watch": "gulp watchSass",
     "build": "npm run clean && gulp sass && tsc && npm run build:bundle",
     "build:watch": "tsc --watch",
-    "build:bundle": "npm run copy:loader && npm run copy:wc && rollup -c",
+    "build:bundle": "npm run copy:loader && npm run copy:wc && npm run sass && rollup -c",
     "copy:loader": "cpx src/bundle/mgt-loader.js dist/bundle",
     "copy:wc": "cpx node_modules/@webcomponents/webcomponentsjs/bundles/* dist/bundle/wc/bundles && cpx node_modules/@webcomponents/webcomponentsjs/webcomponents-loader.js dist/bundle/wc",
     "test": "jest",
