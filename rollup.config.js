@@ -24,7 +24,7 @@ const es6Bundle = {
 		sourcemap: false
 	},
 	plugins: [
-        typescript(),
+        typescript({tsconfig: 'tsconfig.bundle.json'}),
         ...commonPlugins
     ]
 }

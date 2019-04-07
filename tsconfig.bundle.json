@@ -16,8 +16,7 @@
     "rootDir": "src"
   },
   "exclude": [
-    "node_modules",
-    "src/bundle"
+    "node_modules"
   ],
   "include": [
     "src"

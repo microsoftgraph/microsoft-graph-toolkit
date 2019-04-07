@@ -19,45 +19,79 @@ This project is in preview and can change at any time. This includes changes in 
 
 You can install the components by referencing them through our CDN or installing them through NPM
 
-### Install via CDN:
+### Use via CDN:
 
-[TODO] setup CDN
+[TODO] move to actual CDN with versioning
 
 ```html
-<script src="microsoft-graph-toolkit.js"></script>
+<script src="https://mgt.metulev.com/bundle/mgt-loader.js"></script>
 ```
 
-You can then start using the components in your html page
+You can then start using the components in your html page. Here is a full working example:
 
-### Install via NPM:
+```html
+<html>
+    <head>
+        <script src="https://mgt.metulev.com/bundle/mgt-loader.js"></script>
+    </head>
+    <body>
+        <mgt-msal-provider client-id="[CLIENT-ID]" ></mgt-msal-provider>
+        <mgt-login></mgt-login>
+
+        <!-- <script>
+            // alternatively, you can set the provider in code and provide more options
+        mgt.Providers.GlobalProvider = new mgt.MsalProvider({clientId: '[CLIENT-ID]'});
+        </script> -->
+    </body>
+</html>
+```
+
+> NOTE: MSAL requires the page to be hosted in a web server for the authentication redirects. If you are just getting started and want to play around, the quickest way is to use something like [live server](https://marketplace.visualstudio.com/items?itemName=ritwickdey.LiveServer) in vscode. 
+
+### Use via NPM:
+
+The benefits of using MGT through NPM is that you have full control of the bundling process and you can bundle only the code you need for your site. First, add the npm package:
 
 ```bash
 npm install microsoft-graph-toolkit
 ```
 
-Then reference `node_modules/microsoft-graph-toolkit/dist/es6/index.js` in the page where you are planning to use it
+Now you can reference all components at the page you are using:
 
 ```html
-<script src="node_modules/microsoft-graph-toolkit/dist/es6/index.js"></script>
+<script src="node_modules/microsoft-graph-toolkit/dist/es6/components.js"></script>
 ```
 
-### Usage
-
-The components work best when used with a [provider](./docs/authentication.md). Here is an example of using the [msal provider] (just add anywhere on the page):
+Or, just reference the component you need and avoid loading everything else:
 
 ```html
-<mgt-msal-provider client-id=[CLIENT-ID]></mgt-msal-provider>
+<script src="node_modules/microsoft-graph-toolkit/dist/es6/components/mgt-login/mgt-login.js"></script>
 ```
 
-The toolkit also contains providers for [SharePoint], [Teams], and [Office Add-ins]. You can also create your own providers by implementing the [IProvider] interface.
-
-Any components you add on this page will use the provider to connect to the Microsoft Graph
+Similarly, to add a provider, you can add it as a component:
 
 ```html
-<mgt-login></mgt-login>
+<script src="node_modules/microsoft-graph-toolkit/dist/es6/components/providers/mgt-msal-provider.js"></script>
 
-<mgt-person person-query="nikola metulev"></mgt-person>
+<mgt-msal-provider client-id="[CLIENT-ID]"></mgt-msal-provider>
 ```
+
+or, add it in your code:
+
+```html
+<script type="module">
+    import {MsalProvider} from 'microsoft-graph-toolkit/dist/es6/providers/MsalProvider.js';
+    import {Providers} from 'microsoft-graph-toolkit/dist/es6/Providers.js';
+
+    Providers.GlobalProvider = new MsalProvider({clientId: '[CLIENT-ID]'});
+</script>
+```
+## Providers
+
+The components work best when used with a [provider](./docs/authentication.md). The provider exposes authentication and graph apis used by the components to call into the Microsoft Graph.
+
+The toolkit contains providers for [MSAL], [SharePoint], [Teams], and [Office Add-ins]. You can also create your own providers by implementing the [IProvider] interface.
+
 
 ## Contribute
 

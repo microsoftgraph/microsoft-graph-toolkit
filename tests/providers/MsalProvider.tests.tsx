@@ -1,5 +1,4 @@
-import { MsalProvider } from '../../src/providers/MsalProvider';
-import { MsalConfig } from '../../src/providers/MsalConfig';
+import { MsalProvider, MsalConfig } from '../../src/providers/MsalProvider';
 import { LoginType } from '../../src/providers/IProvider';
 import { UserAgentApplication } from 'msal';
 

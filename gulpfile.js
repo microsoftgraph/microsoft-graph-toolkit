@@ -16,7 +16,7 @@ scssFileFooter = '`];';
 
 function runSass() {
   return gulp
-    .src('src/**/*.scss')
+    .src('src/**/!(shared-styles).scss')
     .pipe(sass())
     .pipe(gap.prependText(scssFileHeader))
     .pipe(gap.appendText(scssFileFooter))
