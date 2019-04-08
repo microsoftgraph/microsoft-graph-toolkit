@@ -5,11 +5,11 @@ export class Providers {
     private static _eventDispatcher: EventDispatcher<{}> = new EventDispatcher<{}>();
     private static _globalProvider: IProvider;
 
-    public static get GlobalProvider() : IProvider {
+    public static get globalProvider() : IProvider {
         return this._globalProvider;
     }
 
-    public static set GlobalProvider(provider: IProvider) {
+    public static set globalProvider(provider: IProvider) {
         if (provider !== this._globalProvider) {
             this._globalProvider = provider;
             this._eventDispatcher.fire( {} );

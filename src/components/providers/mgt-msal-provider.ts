@@ -57,7 +57,7 @@ export class MgtMsalProvider extends LitElement{
                 config.authority = this.authority;
             }
             
-            Providers.GlobalProvider = new MsalProvider(config);
+            Providers.globalProvider = new MsalProvider(config);
         }
     }
 }

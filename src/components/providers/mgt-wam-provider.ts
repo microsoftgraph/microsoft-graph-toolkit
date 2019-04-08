@@ -21,7 +21,7 @@ export class MgtWamProvider extends LitElement {
 
     private validateAuthProps() {
         if (this.clientId !== undefined) {
-            Providers.GlobalProvider = new WamProvider(this.clientId, this.authority);
+            Providers.globalProvider = new WamProvider(this.clientId, this.authority);
         }
     }
 }

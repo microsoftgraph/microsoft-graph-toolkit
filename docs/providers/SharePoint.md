@@ -16,7 +16,7 @@ import {Providers} from 'microsoft-graph-toolkit/dist/es6/Providers.js';
 
 // add the onInit() method if not already there in your web part class
 protected async onInit() {
-    Providers.GlobalProviders = new SharePointProvider(this.context);
+    Providers.globalProviders = new SharePointProvider(this.context);
 }
 ```
 

@@ -15,26 +15,26 @@ These are examples of initializing an authentication provider in JavaScript.
 1. Initialize for MSAL
 
     ```js
-    Providers.GlobalProvider = new MsalProvider({clientId: '<YOUR_CLIENT_ID>'});
+    Providers.globalProvider = new MsalProvider({clientId: '<YOUR_CLIENT_ID>'});
     ```
 
 2. Initialize for Progressive Web Apps on Windows
 
     ```js
-    Providers.GlobalProvider = new WamProvider('<YOUR_CLIENT_ID>');
+    Providers.globalProvider = new WamProvider('<YOUR_CLIENT_ID>');
     ```
 
 3. Initialize for Teams
 
     ```js
-    Providers.GlobalProvider = new TeamsProvider('<YOUR_CLIENT_ID>', '<LOGIN_REDIRECT_URL>');
+    Providers.globalProvider = new TeamsProvider('<YOUR_CLIENT_ID>', '<LOGIN_REDIRECT_URL>');
     ```
     For more see [Teams Provider docs](providers/Teams.md).
 
 4. Initialize for SharePoint
 
     ```js
-    Providers.GlobalProvider = new SharePointProvider(this.context); 
+    Providers.globalProvider = new SharePointProvider(this.context); 
     ```
     For more see [Sharepoint Provider docs](providers/SharePoint.md).
 
@@ -75,34 +75,26 @@ You can initialize a provider at any time, but it's recommended to initialize th
 
 ## Implement your own provider
 
-The provider defines the following interface:
+You will need to extend the `IProvider` abstract class to create your own provider.
 
-```ts
-export interface IProvider 
-{
-    readonly isLoggedIn : boolean;
+### State
+A provider must keep track of the authentication state and update the components when the state changes. The `IProvider` implements the `onStateChanged(eventHandler)` handler and the `state:ProviderState` property. Use the `setState(state:ProviderState)` method from your implementation to update the state. Updating the state will fire the stateChanged event and update all the components automatically.
 
-    login?() : Promise<void>;
-    logout?() : Promise<void>;
-    getAccessToken(...scopes: string[]) : Promise<string>;
+### Login/Logout
+If your provider provides login or logout functionality, implement the `login() : Promise<void>` and `logout() : Promise<void>` methods. These methods are optional.
 
-    // get access to underlying provider (such as UserAgentApplication)
-    provider : any;
+### Access Token
+You must implement the `getAccessToken(...scopes: string[]) : Promise<string>` method. This method is used to get a valid token before every call to the Microsoft Graph.
 
-    // graph API - see documentation bellow
-    graph : Graph;
-
-    // calls the callback function when login state changes
-    onLoginChanged(eventHandler : EventHandler<LoginChangedEvent>)
-}
-```
+### Graph
+The components use the Graph sdk from each provider. Make sure to set the `Graph` property in your initialization code by calling `this.graph = new Graph(this)`.
 
 ## Microsoft Graph
 
 Each control is enabled with Graph access out of the box as long as the developer has initialized a provider (as described in the above section). To get a reference to the built in Microsoft Graph APIs, first get a reference to the global IProvider and then use the `Graph` object:
 
 ```js
-let provider = Providers.GlobalProvider;
+let provider = Providers.globalProvider;
 if (provider) {
     let graph = provider.Graph;
 

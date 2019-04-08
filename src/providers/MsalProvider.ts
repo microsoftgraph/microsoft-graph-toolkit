@@ -1,4 +1,4 @@
-import { IProvider, LoginChangedEvent, LoginType, EventDispatcher, EventHandler } from './IProvider';
+import { IProvider, LoginChangedEvent, LoginType, EventDispatcher, EventHandler, ProviderState } from './IProvider';
 import { Graph } from '../Graph';
 import { UserAgentApplication } from 'msal/lib-es6';
 
@@ -10,8 +10,7 @@ export interface MsalConfig {
   options?: any;
 }
 
-export class MsalProvider implements IProvider {
-  private _loginChangedDispatcher = new EventDispatcher<LoginChangedEvent>();
+export class MsalProvider extends IProvider {
   private _loginType: LoginType;
   private _clientId: string;
 
@@ -26,20 +25,13 @@ export class MsalProvider implements IProvider {
     return this._provider;
   }
 
-  get isLoggedIn(): boolean {
-    return !!this._idToken;
-  }
-
-  get isAvailable(): boolean {
-    return true;
-  }
-
   scopes: string[];
   authority: string;
 
   graph: Graph;
 
   constructor(config: MsalConfig) {
+    super();
     if (!config.clientId) {
       throw 'ClientID must be a valid string';
     }
@@ -88,7 +80,6 @@ export class MsalProvider implements IProvider {
     console.log('login');
     if (this._loginType == LoginType.Popup) {
       this._idToken = await this.provider.loginPopup(this.scopes);
-      this.fireLoginChangedEvent({});
     } else {
       this.provider.loginRedirect(this.scopes);
     }
@@ -103,11 +94,12 @@ export class MsalProvider implements IProvider {
       );
       if (this._idToken) {
         console.log('tryGetIdTokenSilent: got a token');
-        this.fireLoginChangedEvent({});
       }
-      return this.isLoggedIn;
+      this.setState(this._idToken ? ProviderState.SignedIn : ProviderState.SignedOut);
+      return this._idToken !== null;
     } catch (e) {
       console.log(e);
+      this.setState(ProviderState.SignedOut);
       return false;
     }
   }
@@ -156,7 +148,7 @@ export class MsalProvider implements IProvider {
 
   async logout(): Promise<void> {
     this.provider.logout();
-    this.fireLoginChangedEvent({});
+    this.setState(ProviderState.SignedOut);
   }
 
   updateScopes(scopes: string[]) {
@@ -186,22 +178,12 @@ export class MsalProvider implements IProvider {
     } else {
       if (tokenType == 'id_token') {
         this._idToken = token;
-        this.fireLoginChangedEvent({});
+        this.setState(this._idToken ? ProviderState.SignedIn : ProviderState.SignedOut);
       } else {
         if (this._resolveToken) {
           this._resolveToken(token);
         }
       }
     }
-  }
-
-  onLoginChanged(eventHandler: EventHandler<LoginChangedEvent>) {
-    console.log('onloginChanged');
-    this._loginChangedDispatcher.register(eventHandler);
-  }
-
-  private fireLoginChangedEvent(event: LoginChangedEvent) {
-    console.log('fireLoginChangedEvent');
-    this._loginChangedDispatcher.fire(event);
   }
 }

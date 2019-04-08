@@ -3,7 +3,7 @@ import * as MicrosoftGraph from '@microsoft/microsoft-graph-types';
 
 import { Providers } from '../../Providers';
 import { styles } from './mgt-agenda-css';
-import { IProvider } from '../../providers/IProvider';
+import { IProvider, ProviderState } from '../../providers/IProvider';
 
 import '../mgt-person/mgt-person';
 import '../../styles/fabric-icon-font';
@@ -26,15 +26,15 @@ export class MgtAgenda extends LitElement {
   }
 
   private async init() {
-    this._provider = Providers.GlobalProvider;
+    this._provider = Providers.globalProvider;
     if (this._provider) {
-      this._provider.onLoginChanged(_ => this.loadData());
+      this._provider.onStateChanged(_ => this.loadData());
       await this.loadData();
     }
   }
 
   private async loadData() {
-    if (this._provider && this._provider.isLoggedIn) {
+    if (this._provider && this._provider.state === ProviderState.SignedIn) {
       let today = new Date();
       let tomorrow = new Date();
       tomorrow.setDate(today.getDate() + 2);

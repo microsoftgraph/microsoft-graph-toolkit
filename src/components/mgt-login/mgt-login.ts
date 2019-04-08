@@ -7,6 +7,7 @@ import { styles } from "./mgt-login-css";
 import { MgtPersonDetails } from "../mgt-person/mgt-person";
 import "../mgt-person/mgt-person";
 import '../../styles/fabric-icon-font';
+import { ProviderState } from "../..";
 
 @customElement("mgt-login")
 export class MgtLogin extends LitElement {
@@ -15,6 +16,7 @@ export class MgtLogin extends LitElement {
   private _openLeft: boolean = false;
 
   @property({ attribute: false }) private _showMenu: boolean = false;
+  @property({ attribute: false }) private _loading: boolean = true;
   @property({ attribute: false }) private _user: MicrosoftGraph.User;
 
   @property({
@@ -130,9 +132,9 @@ export class MgtLogin extends LitElement {
   }
 
   private async init() {
-    const provider = Providers.GlobalProvider;
+    const provider = Providers.globalProvider;
     if (provider) {
-      provider.onLoginChanged(_ => this.loadState());
+      provider.onStateChanged(_ => this.loadState());
       await this.loadState();
     }
   }
@@ -143,13 +145,21 @@ export class MgtLogin extends LitElement {
       return;
     }
 
-    const provider = Providers.GlobalProvider;
-
-    if (provider && provider.isLoggedIn) {
-      this._user = await provider.graph.me();
-    } else {
-      this._user = null;
+    const provider = Providers.globalProvider;
+    
+    if (provider) {
+      this._loading = true;
+      if (provider.state === ProviderState.SignedIn) {
+        this._loading = true;
+        this._user = await provider.graph.me();
+      } else if (provider.state === ProviderState.SignedOut) {
+        this._user = null;
+      } else {
+        return;
+      }
     }
+    
+    this._loading = false;
   }
 
   private onClick() {
@@ -177,12 +187,12 @@ export class MgtLogin extends LitElement {
       return;
     }
 
-    const provider = Providers.GlobalProvider;
+    const provider = Providers.globalProvider;
 
     if (provider && provider.login) {
       await provider.login();
 
-      if (provider.isLoggedIn) {
+      if (provider.state === ProviderState.SignedIn) {
         this.fireCustomEvent("loginCompleted");
       } else {
         this.fireCustomEvent("loginFailed");
@@ -202,7 +212,7 @@ export class MgtLogin extends LitElement {
       return;
     }
 
-    const provider = Providers.GlobalProvider;
+    const provider = Providers.globalProvider;
     if (provider && provider.logout) {
       await provider.logout();
       this.fireCustomEvent("logoutCompleted");
@@ -216,6 +226,10 @@ export class MgtLogin extends LitElement {
       this._user || this.userDetails
         ? this.renderLoggedIn()
         : this.renderLogIn();
+
+    if (this._loading) {
+      return;
+    }
 
     return html`
       <div class="root">

@@ -1,24 +1,21 @@
-import { IProvider, EventDispatcher, LoginChangedEvent, EventHandler } from "../providers/IProvider";
+import { IProvider, EventDispatcher, LoginChangedEvent, EventHandler, ProviderState } from "../providers/IProvider";
 import { IGraph, Graph } from "../Graph";
 
-export class MockProvider implements IProvider {
+export class MockProvider extends IProvider {
 
     constructor(signedIn: boolean = false) {
-        this.isLoggedIn = signedIn;
+        super();
+        this.setState(ProviderState.SignedIn);
     }
     
-    isLoggedIn: boolean;
-    private _loginChangedDispatcher = new EventDispatcher<LoginChangedEvent>();
-
     async login(): Promise<void> {
         await (new Promise(resolve => setTimeout(resolve, 1000)));
-        this.isLoggedIn = true;
-        this._loginChangedDispatcher.fire({});
+        this.setState(ProviderState.SignedIn);
     }
+    
     async logout(): Promise<void> {
         await (new Promise(resolve => setTimeout(resolve, 1000)));
-        this.isLoggedIn = false;
-        this._loginChangedDispatcher.fire({});
+        this.setState(ProviderState.SignedOut);
     }
     
     getAccessToken(): Promise<string> {
@@ -27,10 +24,6 @@ export class MockProvider implements IProvider {
     provider: any;
 
     graph: IGraph = new MockGraph();
-
-    onLoginChanged(eventHandler: EventHandler<LoginChangedEvent>) {
-        this._loginChangedDispatcher.register(eventHandler);
-    }
 }
 
 export class MockGraph extends Graph {

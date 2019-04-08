@@ -6,6 +6,6 @@ import { Providers } from '..';
 export class MgtMockProvider extends LitElement {
     constructor() {
         super();
-        Providers.GlobalProvider = new MockProvider(true);
+        Providers.globalProvider = new MockProvider(true);
     }
 }

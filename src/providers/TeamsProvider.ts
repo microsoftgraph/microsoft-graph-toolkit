@@ -1,4 +1,4 @@
-import { IProvider, LoginChangedEvent, EventDispatcher, EventHandler } from "./IProvider";
+import { IProvider, LoginChangedEvent, EventDispatcher, EventHandler, ProviderState } from "./IProvider";
 import { IGraph, Graph } from '../Graph';
 import * as microsoftTeams from "@microsoft/teams-js";
 
@@ -9,9 +9,7 @@ declare global {
 }
 
 
-export class TeamsProvider implements IProvider {
-    
-    private _loginChangedDispatcher = new EventDispatcher<LoginChangedEvent>();
+export class TeamsProvider extends IProvider {
     
     private _idToken : string;
 
@@ -246,7 +244,7 @@ export class TeamsProvider implements IProvider {
     graph: IGraph;
 
     constructor(clientId: string, loginPopupUrl: string) {
-
+        super();
         this._clientId = clientId;
         this._loginPopupUrl = loginPopupUrl;
         
@@ -257,7 +255,7 @@ export class TeamsProvider implements IProvider {
     async login(): Promise<void> {
         this._idToken = await this.getAccessToken();
         if (this._idToken) {
-            this.fireLoginChangedEvent({});
+            this.setState(this._idToken ? ProviderState.SignedIn : ProviderState.SignedOut);
         }
     }
 
@@ -285,13 +283,5 @@ export class TeamsProvider implements IProvider {
     
     updateScopes(scopes: string[]) {
         this.scopes = scopes;
-    }
-
-    onLoginChanged(eventHandler : EventHandler<LoginChangedEvent>) {
-        this._loginChangedDispatcher.register(eventHandler);
-    }
-
-    private fireLoginChangedEvent(event : LoginChangedEvent) {
-        this._loginChangedDispatcher.fire(event);
     }
 }

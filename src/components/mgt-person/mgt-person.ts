@@ -4,6 +4,7 @@ import * as MicrosoftGraph from '@microsoft/microsoft-graph-types';
 import { Providers } from '../../Providers';
 import { styles } from './mgt-person-css';
 import '../../styles/fabric-icon-font';
+import { ProviderState } from '../../providers/IProvider';
 
 @customElement('mgt-person')
 export class MgtPerson extends LitElement {
@@ -54,18 +55,18 @@ export class MgtPerson extends LitElement {
   }
 
   private handleProviderChanged() {
-    let provider = Providers.GlobalProvider;
-    if (provider && provider.isLoggedIn) {
+    let provider = Providers.globalProvider;
+    if (provider && provider.state === ProviderState.SignedIn) {
       this.loadImage();
     }
-    provider.onLoginChanged(_ => this.loadImage());
+    provider.onStateChanged(_ => this.loadImage());
   }
 
   private async loadImage() {
     if (!this.personDetails && this.personQuery) {
-      let provider = Providers.GlobalProvider;
+      let provider = Providers.globalProvider;
 
-      if (provider && provider.isLoggedIn) {
+      if (provider && provider.state === ProviderState.SignedIn) {
         if (this.personQuery == 'me') {
           let person: MgtPersonDetails = {};
 

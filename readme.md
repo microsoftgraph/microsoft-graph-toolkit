@@ -40,7 +40,7 @@ You can then start using the components in your html page. Here is a full workin
 
         <!-- <script>
             // alternatively, you can set the provider in code and provide more options
-        mgt.Providers.GlobalProvider = new mgt.MsalProvider({clientId: '[CLIENT-ID]'});
+        mgt.Providers.globalProvider = new mgt.MsalProvider({clientId: '[CLIENT-ID]'});
         </script> -->
     </body>
 </html>
@@ -83,7 +83,7 @@ or, add it in your code:
     import {MsalProvider} from 'microsoft-graph-toolkit/dist/es6/providers/MsalProvider.js';
     import {Providers} from 'microsoft-graph-toolkit/dist/es6/Providers.js';
 
-    Providers.GlobalProvider = new MsalProvider({clientId: '[CLIENT-ID]'});
+    Providers.globalProvider = new MsalProvider({clientId: '[CLIENT-ID]'});
 </script>
 ```
 ## Providers

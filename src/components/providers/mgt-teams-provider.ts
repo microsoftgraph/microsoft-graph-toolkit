@@ -35,7 +35,7 @@ export class MgtTeamsProvider extends LitElement {
         this._isInitialized = true;
         this.validateAuthProps();
         if(await TeamsProvider.isAvailable()){
-            Providers.GlobalProvider = this._provider;
+            Providers.globalProvider = this._provider;
         }
     }
 

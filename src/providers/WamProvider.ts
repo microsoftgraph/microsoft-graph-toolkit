@@ -1,4 +1,4 @@
-import { IProvider, LoginChangedEvent, EventDispatcher, EventHandler } from "./IProvider";
+import { IProvider, LoginChangedEvent, EventDispatcher, EventHandler, ProviderState } from "./IProvider";
 import { IGraph, Graph } from "../Graph";
 
 declare interface Window {
@@ -7,15 +7,13 @@ declare interface Window {
 
 declare var window: Window;
 
-export class WamProvider implements IProvider {
+export class WamProvider extends IProvider {
 
     private graphResource = 'https://graph.microsoft.com';
     private clientId : string;
     private authority : string;
 
     private accessToken : string;
-
-    private _loginChangedDispatcher = new EventDispatcher<LoginChangedEvent>();
 
     public static isAvailable() : boolean {
         return !!(window.Windows);
@@ -26,6 +24,7 @@ export class WamProvider implements IProvider {
     }
 
     constructor(clientId: string, authority?: string) {
+        super();
         this.clientId = clientId;
         this.authority = authority || 'https://login.microsoftonline.com/common';
 
@@ -53,7 +52,7 @@ export class WamProvider implements IProvider {
                 case webCore.WebTokenRequestStatus.success:
                     let account = wtrr.responseData[0].webAccount;
                     this.accessToken = wtrr.responseData[0].token;
-                    this.fireLoginChangedEvent({});
+                    this.setState(this.accessToken ? ProviderState.SignedIn : ProviderState.SignedOut);
                     break;
                 case webCore.WebTokenRequestStatus.userCancel:
                 case webCore.WebTokenRequestStatus.accountSwitch:
@@ -77,10 +76,6 @@ export class WamProvider implements IProvider {
         }
     }
 
-    logout(): Promise<void> {
-        throw new Error("Method not implemented.");
-    }
-
     getAccessToken(...scopes: string[]): Promise<string> {
         if (this.isLoggedIn) {
             return Promise.resolve(this.accessToken);
@@ -92,14 +87,5 @@ export class WamProvider implements IProvider {
     }
 
     provider: any;
-
     graph: IGraph;
-
-    onLoginChanged(eventHandler : EventHandler<LoginChangedEvent>) {
-        this._loginChangedDispatcher.register(eventHandler);
-    }
-
-    private fireLoginChangedEvent(event : LoginChangedEvent) {
-        this._loginChangedDispatcher.fire(event);
-    }
 }
