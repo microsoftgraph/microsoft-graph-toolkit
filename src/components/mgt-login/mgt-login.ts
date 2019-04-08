@@ -12,6 +12,7 @@ import '../../styles/fabric-icon-font';
 export class MgtLogin extends LitElement {
   private _loginButtonRect: ClientRect;
   private _popupRect: ClientRect;
+  private _openLeft: boolean = false;
 
   @property({ attribute: false }) private _showMenu: boolean = false;
   @property({ attribute: false }) private _user: MicrosoftGraph.User;
@@ -44,9 +45,8 @@ export class MgtLogin extends LitElement {
     if (changedProps.get("_showMenu") === false) {
       // get popup bounds
       const popup = this.shadowRoot.querySelector(".popup");
-      if (popup) {
+      if (popup && popup.animate) {
         this._popupRect = popup.getBoundingClientRect();
-        // console.log('last', this._popupRect);
 
         // invert variables
         const deltaX = this._loginButtonRect.left - this._popupRect.left;
@@ -72,48 +72,48 @@ export class MgtLogin extends LitElement {
             }
           ],
           {
-            duration: 300,
+            duration: 100,
             easing: "ease-in-out",
             fill: "both"
           }
         );
       }
-    } else if (changedProps.get("_showMenu") === true) {
-      // get login button bounds
-      const loginButton = this.shadowRoot.querySelector(".login-button");
-      if (loginButton) {
-        this._loginButtonRect = loginButton.getBoundingClientRect();
-        // console.log('last', this._loginButtonRect);
-
-        // invert variables
-        const deltaX = this._popupRect.left - this._loginButtonRect.left;
-        const deltaY = this._popupRect.top - this._loginButtonRect.top;
-        const deltaW = this._popupRect.width / this._loginButtonRect.width;
-        const deltaH = this._popupRect.height / this._loginButtonRect.height;
-
-        // play back
-        loginButton.animate(
-          [
-            {
-              transformOrigin: "top left",
-              transform: `
-              translate(${deltaX}px, ${deltaY}px)
-              scale(${deltaW}, ${deltaH})
-            `
-            },
-            {
-              transformOrigin: "top left",
-              transform: "none"
-            }
-          ],
-          {
-            duration: 200,
-            easing: "ease-out",
-            fill: "both"
-          }
-        );
-      }
     }
+    // else if (changedProps.get("_showMenu") === true) {
+    //   // get login button bounds
+    //   const loginButton = this.shadowRoot.querySelector(".login-button");
+    //   if (loginButton && loginButton.animate) {
+    //     this._loginButtonRect = loginButton.getBoundingClientRect();
+
+    //     // invert variables
+    //     const deltaX = this._popupRect.left - this._loginButtonRect.left;
+    //     const deltaY = this._popupRect.top - this._loginButtonRect.top;
+    //     const deltaW = this._popupRect.width / this._loginButtonRect.width;
+    //     const deltaH = this._popupRect.height / this._loginButtonRect.height;
+
+    //     // play back
+    //     loginButton.animate(
+    //       [
+    //         {
+    //           transformOrigin: "top left",
+    //           transform: `
+    //           translate(${deltaX}px, ${deltaY}px)
+    //           scale(${deltaW}, ${deltaH})
+    //         `
+    //         },
+    //         {
+    //           transformOrigin: "top left",
+    //           transform: "none"
+    //         }
+    //       ],
+    //       {
+    //         duration: 100,
+    //         easing: "ease-out",
+    //         fill: "both"
+    //       }
+    //     );
+    //   }
+    // }
   }
 
   firstUpdated() {
@@ -158,6 +158,11 @@ export class MgtLogin extends LitElement {
       const loginButton = this.shadowRoot.querySelector(".login-button");
       if (loginButton) {
         this._loginButtonRect = loginButton.getBoundingClientRect();
+
+        let leftEdge = this._loginButtonRect.left;
+        let rightEdge = (window.innerWidth || document.documentElement.clientWidth) - this._loginButtonRect.right;
+        this._openLeft = rightEdge < leftEdge;
+
         this._showMenu = !this._showMenu;
       }
     } else {
@@ -266,7 +271,7 @@ export class MgtLogin extends LitElement {
         `;
 
     return html`
-      <div class="popup ${this._showMenu ? "show-menu" : ""}">
+      <div class="popup ${this._openLeft ? "open-left" : ""} ${this._showMenu ? "show-menu" : ""}">
         <div class="popup-content">
           <div>
             ${personComponent}

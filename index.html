@@ -5,6 +5,7 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge" />
     <title>Microsoft Graph Toolkit Test</title>
     <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/normalize/8.0.1/normalize.min.css" rel="stylesheet" />
 
     <!-- <script type="module" src="./dist/es6/components/mgt-login/mgt-login.js"></script>
     <script type="module" src="./dist/es6/components/mgt-person/mgt-person.js"></script>
@@ -17,18 +18,15 @@
     
     <!-- <script type="module" src="./dist/es6/index.js"></script> -->
 
-    <!-- <script src="./dist/es5/ms-graph-toolkit.js"></script> -->
-
     <script type="module" src="./dist/es6/components/mgt-login/mgt-login.js"></script>
-
-    <link href="index.css" rel="stylesheet" />
+    <script type="module" src="./dist/es6/mock/mgt-mock-provider.js"></script>
   </head>
   <body>
     <!-- <mgt-msal-provider
       client-id="a974dfa0-9f57-49b9-95db-90f04ce2111a"
       ></mgt-msal-provider> -->
 
-    <!-- <mgt-mock-provider></mgt-mock-provider> -->
+    <mgt-mock-provider></mgt-mock-provider>
 
     <mgt-login></mgt-login>
     
