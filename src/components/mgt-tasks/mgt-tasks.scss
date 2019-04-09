@@ -1,0 +1,133 @@
+@import "../../styles/shared-styles.scss";
+@import "../../../node_modules/office-ui-fabric-core/dist/sass/References";
+
+:host {
+  display: block;
+  background: #f4f4f4;
+  font-family: "Segoe UI";
+}
+
+:host .TaskIcon {
+  font-family: "FabricMDL2Icons";
+
+  text-align: center;
+  justify-self: center;
+  align-content: center;
+  align-self: center;
+  vertical-align: middle;
+}
+
+.Header {
+  padding: 10px 70px 0 70px;
+}
+
+.Header .AddBar {
+  display: flex;
+}
+
+.Header .AddBar .AddBarItem {
+  flex: 1 1 auto;
+}
+
+.Header .AddBar .NewTaskButton {
+  width: 90px;
+  max-width: 90px;
+  min-width: 90px;
+  height: 32px;
+  line-height: 200%;
+  flex: 0 0 none;
+
+  text-align: center;
+  justify-self: center;
+  align-content: center;
+  align-self: center;
+  vertical-align: middle;
+
+  background: #0078d4;
+  color: #ffffff;
+}
+
+.NewTaskName {
+  margin: 0 130px 0 0;
+}
+
+.Task {
+  max-height: 94px;
+  margin: 10px 70px 0 70px;
+  background: #ffffff;
+  border: solid 2px rgba(0, 0, 0, 0);
+}
+
+.Task.Complete {
+  background: #f6f6f6;
+  border-color: #e2e2e2;
+}
+
+.Task.Complete .TaskHeader {
+  color: #959595;
+}
+
+.Task.Complete .TaskDetails {
+  color: #b0b0b0;
+}
+
+.Task.Complete .TaskDetails .TaskIcon {
+  color: #959595;
+}
+
+.Task .TaskHeader {
+  display: flex;
+  justify-content: center;
+  color: #333333;
+  margin: 0 0 0 10px;
+}
+
+.Task .TaskCheck {
+  font-family: "FabricMDL2Icons";
+  display: inline-block;
+  width: 22px;
+  height: 22px;
+  margin: 10px;
+  text-align: center;
+  border-radius: 50%;
+  border: solid 1px black;
+  flex: 0 0 none;
+  color: white;
+  cursor: pointer;
+  user-select: none;
+}
+
+.Task.Complete .TaskCheck,
+.Task.ReadOnly .TaskCheck {
+  cursor: default;
+}
+
+.Task .TaskCheck.Complete {
+  background: #00b294;
+  border-color: #00b294;
+}
+
+.Task .TaskTitle {
+  flex: 1 1 auto;
+  justify-self: center;
+  align-self: center;
+  align-content: center;
+}
+
+.Task .TaskDetails {
+  margin: 4px 0 10px 50px;
+  color: #767676;
+  font-size: 0.9em;
+}
+
+.Task .TaskDetails .TaskDetail {
+  margin: 0 20px 0 0;
+}
+
+.Task .TaskDetails .TaskIcon {
+  color: #333333;
+}
+
+.Task .TaskDetails mgt-person {
+  display: inline-block;
+}
