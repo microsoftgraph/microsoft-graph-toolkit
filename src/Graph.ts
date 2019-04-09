@@ -10,15 +10,15 @@ export interface IGraph {
     calendar(startDateTime : Date, endDateTime : Date) : Promise<Array<MicrosoftGraph.Event>>;
 
     getAllMyPlanners?(): Promise<MicrosoftGraph.PlannerPlan[]>;
-    getAllMyTasks?(): Promise<MicrosoftGraph.PlannerTask[]>;
     getPlanDetails?(): Promise<MicrosoftGraph.PlannerPlanDetails>;
-    getTaskDetails?(id: string): Promise<MicrosoftGraph.PlannerTaskDetails>;
-    setTaskDetails?(id: string, state: any): Promise<any>;
 
     getTasksForPlan?(id: string): Promise<MicrosoftGraph.PlannerTask[]>;
+    getTaskDetails?(id: string): Promise<MicrosoftGraph.PlannerTaskDetails>;
+    getAllMyTasks?(): Promise<MicrosoftGraph.PlannerTask[]>;
 
-    setTaskDetails?(id: string, newInfo: MicrosoftGraph.PlannerTask): Promise<any>;
-    setTaskComplete(id: string): Promise<any>;
+    setTaskDetails?(taskId: string, newInfo: MicrosoftGraph.PlannerTask): Promise<any>;
+    setTaskComplete?(taskId: string): Promise<any>;
+    addTask?(planId: string, newTask: MicrosoftGraph.PlannerTask): Promise<any>;
 }
 
 export class Graph implements IGraph {
@@ -87,6 +87,10 @@ export class Graph implements IGraph {
 
     async patch(resource: string, scopes: string[], data?: any): Promise<Response>
     {
+        if (!resource.startsWith('/')){
+            resource = "/" + resource;
+        }
+        
         let token = await this._provider.getAccessToken(...scopes).catch(err=>null);
         if(!token)
             return null;
@@ -100,7 +104,51 @@ export class Graph implements IGraph {
         } as RequestInfo,
         {
             headers: {
-            Authorization: `Bearer ${token}`
+            Authorization: `Bearer ${token}`,
+            "Content-Type": 'application/json'
+        }});
+
+        if (result.status >= 400) {
+
+            // hit limit - need to wait and retry per:
+            // https://docs.microsoft.com/en-us/graph/throttling
+            if (result.status == 429) {
+                console.log('too many requests - wait ' + result.headers.get('Retry-After') + ' seconds');
+                return null;
+            }
+
+            let error : any = result.json();
+            if (error.error !== undefined) {
+                console.log(error);
+            }
+            console.log(result);
+            throw 'error accessing graph';
+        }
+
+        return result;
+    }
+
+    async post(resource: string, scopes: string[], data: any)
+    {
+        if (!resource.startsWith('/')){
+            resource = "/" + resource;
+        }
+        
+        let token = await this._provider.getAccessToken(...scopes).catch(err=>null);
+        if(!token)
+            return null;
+
+        let body = !!data ? {body: data} : {};
+
+        let result = await fetch({
+            method: 'POST',
+            url: this.rootUrl + resource,
+            ...body
+        } as RequestInfo,
+        {
+            headers: {
+            Authorization: `Bearer ${token}`,
+            "Content-Type": 'application/json'
         }});
 
         if (result.status >= 400) {
@@ -181,28 +229,28 @@ export class Graph implements IGraph {
         return calendar ? calendar.value : null;
     }
 
-    async getAllMyPlanners(): Promise<MicrosoftGraph.Planner[]>
+    public async getAllMyPlanners(): Promise<MicrosoftGraph.Planner[]>
     {
         let scopes = ['planner.read'];
         let planners = await this.getJson('/me/planner/plans', scopes) as {value: MicrosoftGraph.PlannerPlan[]};
         return planners.value;
     }
 
-    async getTasksForPlan(id: string): Promise<MicrosoftGraph.PlannerTask[]>
+    public async getTasksForPlan(id: string): Promise<MicrosoftGraph.PlannerTask[]>
     {
         let scopes = ['planner.read'];
         let tasks = await this.getJson(`/planner/plans/${id}/tasks`, scopes) as {value: MicrosoftGraph.PlannerTask[]};
         return tasks.value;
     }
 
-    async getTaskDetails(id: string): Promise<MicrosoftGraph.PlannerTaskDetails>
+    public async getTaskDetails(id: string): Promise<MicrosoftGraph.PlannerTaskDetails>
     {
         let scopes = ['planner.read'];
         let taskDetails = await this.getJson(`/planner/tasks/${id}/details`, scopes) as {value: MicrosoftGraph.PlannerTaskDetails};
         return taskDetails.value;
     }
 
-    async setTaskDetails(id: string, newData: MicrosoftGraph.PlannerTask = null): Promise<any>
+    public async setTaskDetails(id: string, newData: MicrosoftGraph.PlannerTask = null): Promise<any>
     {
         let scopes = ['planner.write'];
         let result = await this.patch(`/planner/tasks/${id}`, scopes, newData);
@@ -210,10 +258,21 @@ export class Graph implements IGraph {
         return result;
     }
 
-    async setTaskComplete(id: string)
+    public async setTaskComplete(id: string)
     {
         return await this.setTaskDetails(id, {
             percentComplete: 100
         });
+    }
+
+    public async addTask(planId: string, newTask: MicrosoftGraph.PlannerTask)
+    {
+        let scopes = [];
+        let result = await this.post('/planner/tasks', scopes, {
+            ...newTask,
+            planId,
+        });
+
+        return result;
     }
 }

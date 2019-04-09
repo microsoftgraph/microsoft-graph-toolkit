@@ -32,6 +32,11 @@ export class MgtTasks extends LitElement {
   @property()
   private _currentTargetPlanner: string = null;
 
+  @property()
+  private _newTaskTitle: string = "";
+  @property()
+  private _newTaskDueDate: string = "";
+
   constructor() {
     super();
     Providers.onProvidersChanged(() => {
@@ -43,7 +48,7 @@ export class MgtTasks extends LitElement {
     });
   }
 
-  public async loadPlanners() {
+  private async loadPlanners() {
     let p = Providers.globalProvider;
 
     if (p && p.state === ProviderState.SignedIn) {
@@ -52,11 +57,29 @@ export class MgtTasks extends LitElement {
         planners.map(planner => p.graph.getTasksForPlan(planner.id))
       )).reduce((cur, ret) => [...cur, ...ret]);
 
-      this._planners = planners;
       this._plannerTasks = plans;
+      this._planners = planners;
 
-      this._currentTargetPlanner =
-        this.targetPlanner || (planners[0] && planners[0].id);
+      if (!this._currentTargetPlanner)
+        this._currentTargetPlanner =
+          this.targetPlanner || (planners[0] && planners[0].id);
+    }
+  }
+
+  private async addTask(title: string, dueDateTime: string, planId: string) {
+    let p = Providers.globalProvider;
+    if (p && p.state === ProviderState.SignedIn) {
+      p.graph
+        .addTask(planId, {
+          planId,
+          title,
+          dueDateTime
+        })
+        .then(() => {
+          this._newTaskDueDate = "";
+          this._newTaskTitle = "";
+        })
+        .then(() => this.loadPlanners());
     }
   }
 
@@ -73,11 +96,28 @@ export class MgtTasks extends LitElement {
         <div class="AddBar">
           <input
             class="AddBarItem NewTaskName"
+            value="${this._newTaskTitle}"
             type="text"
             placeholder="Task..."
+            @change="${e => (this._newTaskTitle = e.target.value)}"
           />
-          <input class="AddBarItem NewTaskDue" type="date" />
-          <span class="AddBarItem NewTaskButton">
+          <input
+            class="AddBarItem NewTaskDue"
+            value="${this._newTaskDueDate}"
+            type="date"
+            @change="${e => {
+              this._newTaskDueDate = e.target.value;
+            }}"
+          />
+          <span
+            class="AddBarItem NewTaskButton"
+            @click="${e =>
+              this.addTask(
+                this._newTaskTitle,
+                this._newTaskDueDate,
+                this._currentTargetPlanner
+              )}"
+          >
             <span class="TaskIcon">\uE710</span>
             <span>Add</span>
           </span>
@@ -116,7 +156,9 @@ export class MgtTasks extends LitElement {
     let p = Providers.globalProvider;
 
     if (p && p.state === ProviderState.SignedIn && task.percentComplete < 100) {
-      p.graph.setTaskComplete(task.id).then(() => this.loadPlanners());
+      p.graph.setTaskComplete(task.id).then(() => {
+        this.loadPlanners();
+      });
     }
   }
 

@@ -52,4 +52,60 @@ export class MockGraph extends Graph {
 
         return response;
     }
+
+    async patch(resource: string, scopes: string[], data: any = null ): Promise<Response>
+    {
+        if (!resource.startsWith('/')){
+            resource = "/" + resource;
+        }
+
+        let body = !!data ? {body: data}: {};
+        let req = {
+            url: MockGraph.baseUrl + escape(MockGraph.rootGraphUrl + resource),
+            method: "PATCH",
+            ...body,
+        } as RequestInfo;
+
+        console.log("Patch:", req);
+
+        let response = await fetch(req, {
+            headers: {
+                authorization: 'Bearer {token:https://graph.microsoft.com/}'
+            }
+        });
+
+        if (response.status >= 400) {
+            throw 'error accessing mock graph data';
+        }
+
+        return response;
+    }
+
+    public async post(resource: string, scopes: string[], data: any)
+    {
+        if (!resource.startsWith('/')){
+            resource = "/" + resource;
+        }
+
+        let body = !!data ? {body: data}: {};
+        let req = {
+            url: MockGraph.baseUrl + escape(MockGraph.rootGraphUrl + resource),
+            method: "PATCH",
+            ...body,
+        } as RequestInfo;
+
+        console.log("Post:", req);
+
+        let response = await fetch(req, {
+            headers: {
+                authorization: 'Bearer {token:https://graph.microsoft.com/}'
+            }
+        });
+
+        if (response.status >= 400) {
+            throw 'error accessing mock graph data';
+        }
+
+        return response;
+    }
 }
