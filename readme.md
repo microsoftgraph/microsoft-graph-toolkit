@@ -21,8 +21,6 @@ You can install the components by referencing them through our CDN or installing
 
 ### Use via CDN:
 
-[TODO] move to actual CDN with versioning
-
 ```html
 <script src="https://mgtlib.z5.web.core.windows.net/mgt/latest/mgt-loader.js"></script>
 ```
