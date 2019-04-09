@@ -2,12 +2,12 @@ import { LitElement, html, customElement, property } from "lit-element";
 import * as MicrosoftGraph from "@microsoft/microsoft-graph-types";
 
 import { Providers } from "../../Providers";
+import { ProviderState } from "../../providers/IProvider";
 import { styles } from "./mgt-login-css";
 
 import { MgtPersonDetails } from "../mgt-person/mgt-person";
 import "../mgt-person/mgt-person";
 import '../../styles/fabric-icon-font';
-import { ProviderState } from "../..";
 
 @customElement("mgt-login")
 export class MgtLogin extends LitElement {
