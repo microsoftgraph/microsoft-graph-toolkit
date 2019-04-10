@@ -2,12 +2,12 @@ import { LitElement, html, customElement, property } from "lit-element";
 import * as MicrosoftGraph from "@microsoft/microsoft-graph-types";
 
 import { Providers } from "../../Providers";
+import { ProviderState } from "../../providers/IProvider";
 import { styles } from "./mgt-login-css";
 
 import { MgtPersonDetails } from "../mgt-person/mgt-person";
 import "../mgt-person/mgt-person";
 import '../../styles/fabric-icon-font';
-import { ProviderState } from "../..";
 
 @customElement("mgt-login")
 export class MgtLogin extends LitElement {
@@ -31,8 +31,8 @@ export class MgtLogin extends LitElement {
 
   constructor() {
     super();
-    Providers.onProvidersChanged(_ => this.init());
-    this.init();
+    Providers.onProviderUpdated(() => this.loadState());
+    this.loadState();
   }
 
   private fireCustomEvent(eventName: string): boolean {
@@ -131,14 +131,6 @@ export class MgtLogin extends LitElement {
     };
   }
 
-  private async init() {
-    const provider = Providers.globalProvider;
-    if (provider) {
-      provider.onStateChanged(_ => this.loadState());
-      await this.loadState();
-    }
-  }
-
   private async loadState() {
     if (this.userDetails) {
       this._user = null;
@@ -150,7 +142,6 @@ export class MgtLogin extends LitElement {
     if (provider) {
       this._loading = true;
       if (provider.state === ProviderState.SignedIn) {
-        this._loading = true;
         this._user = await provider.graph.me();
       } else if (provider.state === ProviderState.SignedOut) {
         this._user = null;
@@ -227,13 +218,9 @@ export class MgtLogin extends LitElement {
         ? this.renderLoggedIn()
         : this.renderLogIn();
 
-    if (this._loading) {
-      return;
-    }
-
     return html`
       <div class="root">
-        <button class="login-button" @click=${this.onClick}>
+        <button ?disabled="${this._loading}" class="login-button" @click=${this.onClick}>
           ${content}
         </button>
         ${this.renderMenu()}

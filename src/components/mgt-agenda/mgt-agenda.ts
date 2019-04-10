@@ -2,8 +2,8 @@ import { LitElement, html, customElement, property } from 'lit-element';
 import * as MicrosoftGraph from '@microsoft/microsoft-graph-types';
 
 import { Providers } from '../../Providers';
+import { ProviderState } from '../../providers/IProvider';
 import { styles } from './mgt-agenda-css';
-import { IProvider, ProviderState } from '../../providers/IProvider';
 
 import '../mgt-person/mgt-person';
 import '../../styles/fabric-icon-font';
@@ -13,32 +13,23 @@ export class MgtAgenda extends LitElement {
   @property({ attribute: false }) _events: Array<MicrosoftGraph.Event>;
   @property() eventTemplateFunction: (event: any) => string;
 
-  private _provider: IProvider;
-
   static get styles() {
     return styles;
   }
 
   constructor() {
     super();
-    Providers.onProvidersChanged(_ => this.init());
-    this.init();
-  }
-
-  private async init() {
-    this._provider = Providers.globalProvider;
-    if (this._provider) {
-      this._provider.onStateChanged(_ => this.loadData());
-      await this.loadData();
-    }
+    Providers.onProviderUpdated(() => this.loadData());
+    this.loadData();
   }
 
   private async loadData() {
-    if (this._provider && this._provider.state === ProviderState.SignedIn) {
+    let provider = Providers.globalProvider;
+    if (provider && provider.state === ProviderState.SignedIn) {
       let today = new Date();
       let tomorrow = new Date();
       tomorrow.setDate(today.getDate() + 2);
-      this._events = await this._provider.graph.calendar(today, tomorrow);
+      this._events = await provider.graph.calendar(today, tomorrow);
     }
   }
 
