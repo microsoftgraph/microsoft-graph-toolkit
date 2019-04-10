@@ -21,29 +21,21 @@ You can install the components by referencing them through our CDN or installing
 
 ### Use via CDN:
 
-[TODO] move to actual CDN with versioning
-
 ```html
-<script src="https://mgt.metulev.com/bundle/mgt-loader.js"></script>
+<script src="https://mgtlib.z5.web.core.windows.net/mgt/latest/mgt-loader.js"></script>
 ```
 
-You can then start using the components in your html page. Here is a full working example:
+You can then start using the components in your html page. Here is a full working example with the MSAL provider:
 
 ```html
-<html>
-    <head>
-        <script src="https://mgt.metulev.com/bundle/mgt-loader.js"></script>
-    </head>
-    <body>
-        <mgt-msal-provider client-id="[CLIENT-ID]" ></mgt-msal-provider>
-        <mgt-login></mgt-login>
+<script src="https://mgtlib.z5.web.core.windows.net/mgt/latest/mgt-loader.js"></script>
+<mgt-msal-provider client-id="[CLIENT-ID]" ></mgt-msal-provider>
+<mgt-login></mgt-login>
 
-        <!-- <script>
-            // alternatively, you can set the provider in code and provide more options
-        mgt.Providers.globalProvider = new mgt.MsalProvider({clientId: '[CLIENT-ID]'});
-        </script> -->
-    </body>
-</html>
+<!-- <script>
+    // alternatively, you can set the provider in code and provide more options
+    mgt.Providers.globalProvider = new mgt.MsalProvider({clientId: '[CLIENT-ID]'});
+</script> -->
 ```
 
 > NOTE: MSAL requires the page to be hosted in a web server for the authentication redirects. If you are just getting started and want to play around, the quickest way is to use something like [live server](https://marketplace.visualstudio.com/items?itemName=ritwickdey.LiveServer) in vscode. 
