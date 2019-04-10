@@ -8,11 +8,10 @@ assignees: ''
 ---
 
 <!-- Please make sure you are posting an issue pertaining to the Microsoft Graph Toolkit. -->
-
 <!-- ISSUES MISSING IMPORTANT INFORMATION MAY BE CLOSED WITHOUT INVESTIGATION. -->
 
 **Describe the bug**
-A clear and concise description of what the bug is.
+A clear and concise description of the bug
 
 **To Reproduce**
 Steps to reproduce the behavior:
@@ -20,6 +19,7 @@ Steps to reproduce the behavior:
 2. Click on '....'
 3. Scroll down to '....'
 4. See error
+<!-- if possible, please link to a GitHub project that reproduces the issue -->
 
 **Expected behavior**
 A clear and concise description of what you expected to happen.
