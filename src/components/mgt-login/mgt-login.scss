@@ -42,6 +42,11 @@
   &:focus {
     outline: 0;
   }
+
+  &:disabled {
+    opacity: 0.4;
+    pointer-events: none;
+  }
 }
 
 .login-icon {

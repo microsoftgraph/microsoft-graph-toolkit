@@ -5,16 +5,22 @@ export class MockProvider extends IProvider {
 
     constructor(signedIn: boolean = false) {
         super();
-        this.setState(ProviderState.SignedIn);
+        if (signedIn) {
+            this.setState(ProviderState.SignedIn);
+        } else {
+            this.setState(ProviderState.SignedOut);
+        }
     }
     
     async login(): Promise<void> {
-        await (new Promise(resolve => setTimeout(resolve, 1000)));
+        this.setState(ProviderState.Loading);
+        await (new Promise(resolve => setTimeout(resolve, 3000)));
         this.setState(ProviderState.SignedIn);
     }
     
     async logout(): Promise<void> {
-        await (new Promise(resolve => setTimeout(resolve, 1000)));
+        this.setState(ProviderState.Loading);
+        await (new Promise(resolve => setTimeout(resolve, 3000)));
         this.setState(ProviderState.SignedOut);
     }
     

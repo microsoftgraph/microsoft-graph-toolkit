@@ -14,12 +14,15 @@ export abstract class IProvider
             this._state = state;
             this._loginChangedDispatcher.fire({});
         }
-        console.log("SetState: " + state.toString());
     }
 
     // events
     onStateChanged(eventHandler: EventHandler<LoginChangedEvent>) {
-        this._loginChangedDispatcher.register(eventHandler);
+        this._loginChangedDispatcher.add(eventHandler);
+    }
+
+    removeStateChangedHandler(eventHandler: EventHandler<LoginChangedEvent>) {
+        this._loginChangedDispatcher.remove(eventHandler);
     }
     
     constructor() {
@@ -40,13 +43,24 @@ export interface LoginChangedEvent { }
 
 export class EventDispatcher<E> {
     private eventHandlers: EventHandler<E>[] = [];
+    
     fire(event: E) {
         for (let handler of this.eventHandlers) {
             handler(event);
         }
     }
-    register(eventHandler: EventHandler<E>) {
+    
+    add(eventHandler: EventHandler<E>) {
         this.eventHandlers.push(eventHandler);
+    }
+
+    remove(eventHandler: EventHandler<E>) {
+        for (let i = 0; i < this.eventHandlers.length; i++) {
+            if (this.eventHandlers[i] === eventHandler){
+                this.eventHandlers.splice(i, i);
+                i--;
+            }
+        }
     }
 }
 

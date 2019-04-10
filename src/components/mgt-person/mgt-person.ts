@@ -49,17 +49,8 @@ export class MgtPerson extends LitElement {
 
   constructor() {
     super();
-
-    Providers.onProvidersChanged(_ => this.handleProviderChanged());
+    Providers.onProviderUpdated(() => this.loadImage());
     this.loadImage();
-  }
-
-  private handleProviderChanged() {
-    let provider = Providers.globalProvider;
-    if (provider && provider.state === ProviderState.SignedIn) {
-      this.loadImage();
-    }
-    provider.onStateChanged(_ => this.loadImage());
   }
 
   private async loadImage() {
