@@ -82,7 +82,7 @@ or, add it in your code:
 
 The components work best when used with a [provider](./docs/authentication.md). The provider exposes authentication and graph apis used by the components to call into the Microsoft Graph.
 
-The toolkit contains providers for [MSAL], [SharePoint], [Teams], and [Office Add-ins]. You can also create your own providers by implementing the [IProvider] interface.
+The toolkit contains providers for [MSAL](.\docs\providers\msal.md), [SharePoint](.\docs\providers\sharepoint.md), [Teams](.\docs\providers\teams.md), and Office Add-ins (coming soon). You can also create your own providers by implementing the [IProvider] interface.
 
 
 ## Contribute
