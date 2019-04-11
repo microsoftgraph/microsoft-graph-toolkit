@@ -19,7 +19,6 @@
 
 :host .Tasks {
   height: fit-content;
-  overflow-y: scroll;
 }
 
 :host .Header {
@@ -48,11 +47,16 @@
   align-self: center;
   vertical-align: middle;
 
+  border: solid 1px rgba(0,0,0,0);
   background: #0078d4;
   color: #ffffff;
 
-  cursor: pointer;
   user-select: none;
+  cursor: pointer;
+}
+
+.Header .AddBar .NewTaskButton:hover {
+  border-color: #8bcdff;
 }
 
 .Header .AddBar .NewTaskButton:active {

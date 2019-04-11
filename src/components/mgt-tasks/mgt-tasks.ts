@@ -47,17 +47,28 @@ export class MgtTasks extends LitElement {
     let p = Providers.globalProvider;
 
     if (p && p.state === ProviderState.SignedIn) {
-      let planners = await p.graph.getAllMyPlanners();
-      let plans = (await Promise.all(
-        planners.map(planner => p.graph.getTasksForPlan(planner.id))
-      )).reduce((cur, ret) => [...cur, ...ret]);
+      if (!this.targetPlanner) {
+        let planners = await p.graph.getAllMyPlans();
+        let plans = (await Promise.all(
+          planners.map(planner => p.graph.getTasksForPlan(planner.id))
+        )).reduce((cur, ret) => [...cur, ...ret]);
 
-      this._plannerTasks = plans;
-      this._planners = planners;
+        this._plannerTasks = plans;
+        this._planners = planners;
 
-      if (!this._currentTargetPlanner)
-        this._currentTargetPlanner =
-          this.targetPlanner || (planners[0] && planners[0].id);
+        console.log(this._planners);
+
+        if (!this._currentTargetPlanner)
+          this._currentTargetPlanner =
+            this.targetPlanner || (planners[0] && planners[0].id);
+      } else {
+        let plan = await p.graph.getSinglePlan(this.targetPlanner);
+        let planTasks = await p.graph.getTasksForPlan(plan.id);
+
+        this._planners = [plan];
+        this._plannerTasks = planTasks;
+        this._currentTargetPlanner = this.targetPlanner;
+      }
     }
   }
 
@@ -134,8 +145,13 @@ export class MgtTasks extends LitElement {
         </select>
       `;
     } else {
+      let plan = this._planners[0];
+
+      let planTitle = (plan && plan.title) || "Plan";
       return html`
-        <span class="PlanTitle"> </span>
+        <span class="PlanTitle">
+          ${planTitle}
+        </span>
       `;
     }
   }
@@ -214,11 +230,13 @@ export class MgtTasks extends LitElement {
         `;
 
     return html`
-      <div class="Task ${taskClass}">
+      <div class="Task ${taskClass} ${this.readOnly ? "ReadOnly" : ""}">
         <div class="TaskHeader">
           <span
             class="TaskCheck ${taskClass}"
-            @click="${e => this.completeTask(task)}"
+            @click="${e => {
+              if (!this.readOnly) this.completeTask(task);
+            }}"
           >
             <span class="TaskIcon">\uE73E</span>
           </span>

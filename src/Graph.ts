@@ -9,12 +9,14 @@ export interface IGraph {
     getUserPhoto(id: string) : Promise<string>;
     calendar(startDateTime : Date, endDateTime : Date) : Promise<Array<MicrosoftGraph.Event>>;
 
-    getAllMyPlanners?(): Promise<MicrosoftGraph.PlannerPlan[]>;
-    getPlanDetails?(): Promise<MicrosoftGraph.PlannerPlanDetails>;
+    // Planner Task Methods
+    getAllMyPlans?(): Promise<MicrosoftGraph.PlannerPlan[]>;
+    getSinglePlan?(planId: string): Promise<MicrosoftGraph.PlannerPlan>;
+    getPlanDetails?(planId: string): Promise<MicrosoftGraph.PlannerPlanDetails>;
 
-    getTasksForPlan?(id: string): Promise<MicrosoftGraph.PlannerTask[]>;
-    getTaskDetails?(id: string): Promise<MicrosoftGraph.PlannerTaskDetails>;
     getAllMyTasks?(): Promise<MicrosoftGraph.PlannerTask[]>;
+    getTasksForPlan?(taskId: string): Promise<MicrosoftGraph.PlannerTask[]>;
+    getTaskDetails?(taskId: string): Promise<MicrosoftGraph.PlannerTaskDetails>;
 
     setTaskDetails?(taskId: string, newInfo: MicrosoftGraph.PlannerTask): Promise<any>;
     setTaskComplete?(taskId: string): Promise<any>;
@@ -228,38 +230,47 @@ export class Graph implements IGraph {
         return calendar ? calendar.value : null;
     }
 
-    public async getAllMyPlanners(): Promise<MicrosoftGraph.Planner[]>
+
+    public async getAllMyPlans(): Promise<MicrosoftGraph.PlannerPlan[]>
     {
         let scopes = ['Group.ReadWrite.All'];
         let planners = await this.getJson('/me/planner/plans', scopes) as {value: MicrosoftGraph.PlannerPlan[]};
         return planners.value;
     }
 
-    public async getTasksForPlan(id: string): Promise<MicrosoftGraph.PlannerTask[]>
+    public async getSinglePlan(planId: string): Promise<MicrosoftGraph.PlannerPlan>
     {
         let scopes = ['Group.ReadWrite.All'];
-        let tasks = await this.getJson(`/planner/plans/${id}/tasks`, scopes) as {value: MicrosoftGraph.PlannerTask[]};
+        let plan = await this.getJson(`/planner/plans/${planId}`, scopes) as MicrosoftGraph.PlannerPlan;
+
+        return plan;
+    }
+
+    public async getTasksForPlan(planId: string): Promise<MicrosoftGraph.PlannerTask[]>
+    {
+        let scopes = ['Group.ReadWrite.All'];
+        let tasks = await this.getJson(`/planner/plans/${planId}/tasks`, scopes) as {value: MicrosoftGraph.PlannerTask[]};
         return tasks.value;
     }
 
-    public async getTaskDetails(id: string): Promise<MicrosoftGraph.PlannerTaskDetails>
+    public async getTaskDetails(taskId: string): Promise<MicrosoftGraph.PlannerTaskDetails>
     {
         let scopes = ['Group.ReadWrite.All'];
-        let taskDetails = await this.getJson(`/planner/tasks/${id}/details`, scopes) as {value: MicrosoftGraph.PlannerTaskDetails};
+        let taskDetails = await this.getJson(`/planner/tasks/${taskId}/details`, scopes) as {value: MicrosoftGraph.PlannerTaskDetails};
         return taskDetails.value;
     }
 
-    public async setTaskDetails(id: string, newData: MicrosoftGraph.PlannerTask = null): Promise<any>
+    public async setTaskDetails(taskId: string, newData: MicrosoftGraph.PlannerTask = null): Promise<any>
     {
         let scopes = ['Group.ReadWrite.All'];
-        let result = await this.patch(`/planner/tasks/${id}`, scopes, newData);
+        let result = await this.patch(`/planner/tasks/${taskId}`, scopes, newData);
 
         return result;
     }
 
-    public async setTaskComplete(id: string)
+    public async setTaskComplete(taskId: string)
     {
-        return await this.setTaskDetails(id, {
+        return await this.setTaskDetails(taskId, {
             percentComplete: 100
         });
     }
