@@ -56,8 +56,6 @@ export class MgtTasks extends LitElement {
         this._plannerTasks = plans;
         this._planners = planners;
 
-        console.log(this._planners);
-
         if (!this._currentTargetPlanner)
           this._currentTargetPlanner =
             this.targetPlanner || (planners[0] && planners[0].id);
@@ -176,12 +174,14 @@ export class MgtTasks extends LitElement {
             />
             <span
               class="AddBarItem NewTaskButton"
-              @click="${e =>
-                this.addTask(
-                  this._newTaskTitle,
-                  this._newTaskDueDate,
-                  this._currentTargetPlanner
-                )}"
+              @click="${e => {
+                if (this._newTaskTitle)
+                  this.addTask(
+                    this._newTaskTitle,
+                    this._newTaskDueDate,
+                    this._currentTargetPlanner
+                  );
+              }}"
             >
               <span class="TaskIcon">\uE710</span>
               <span>Add</span>
