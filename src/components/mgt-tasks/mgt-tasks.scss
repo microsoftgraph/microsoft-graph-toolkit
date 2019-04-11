@@ -131,3 +131,9 @@
 .Task .TaskDetails mgt-person {
   display: inline-block;
 }
+
+.Task .TaskDelete {
+  cursor: pointer;
+  user-select: none;
+  margin: 0 10px 0 0;
+}

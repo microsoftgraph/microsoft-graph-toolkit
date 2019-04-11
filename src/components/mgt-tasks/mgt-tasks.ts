@@ -39,7 +39,7 @@ export class MgtTasks extends LitElement {
 
   constructor() {
     super();
-    Providers.onProvidersChanged(() => {
+    Providers.onProviderUpdated(() => {
       let p = Providers.globalProvider;
       if (p) {
         p.onStateChanged(() => this.loadPlanners());
@@ -83,6 +83,14 @@ export class MgtTasks extends LitElement {
     }
   }
 
+  private async removeTask(id: string) {
+    let p = Providers.globalProvider;
+
+    if (p && p.state === ProviderState.SignedIn) {
+      p.graph.removeTask(id);
+    }
+  }
+
   public render() {
     let currentTasks = this._plannerTasks.filter(
       tasks => tasks.planId === this._currentTargetPlanner
@@ -105,9 +113,7 @@ export class MgtTasks extends LitElement {
             class="AddBarItem NewTaskDue"
             value="${this._newTaskDueDate}"
             type="date"
-            @change="${e => {
-              this._newTaskDueDate = e.target.value;
-            }}"
+            @change="${e => (this._newTaskDueDate = e.target.value)}"
           />
           <span
             class="AddBarItem NewTaskButton"
@@ -124,7 +130,7 @@ export class MgtTasks extends LitElement {
         </div>
       </div>
       <div class="Tasks">
-        ${currentTasks.map(task => this.getTask(task))}
+        ${currentTasks.map(task => this.getTaskHtml(task))}
       </div>
     `;
   }
@@ -152,7 +158,7 @@ export class MgtTasks extends LitElement {
     }
   }
 
-  private onTaskClick(task: PlannerTask) {
+  private onTaskCheckClick(task: PlannerTask) {
     let p = Providers.globalProvider;
 
     if (p && p.state === ProviderState.SignedIn && task.percentComplete < 100) {
@@ -162,7 +168,7 @@ export class MgtTasks extends LitElement {
     }
   }
 
-  private getTask(task: PlannerTask) {
+  private getTaskHtml(task: PlannerTask) {
     let {
       title = "Task",
       percentComplete = 0,
@@ -190,19 +196,32 @@ export class MgtTasks extends LitElement {
           <span class="TaskDetail TaskPeople">${people}</span>
         `;
 
+    let taskDelete = this.readOnly
+      ? null
+      : html`
+          <span
+            class="TaskIcon TaskDelete"
+            @click="${e => this.removeTask(task.id)}"
+          >
+            \uE711
+          </span>
+        `;
+
     return html`
       <div class="Task ${taskClass}">
         <div class="TaskHeader">
           <span
             class="TaskCheck ${taskClass}"
-            @click="${e => this.onTaskClick(task)}"
+            @click="${e => this.onTaskCheckClick(task)}"
           >
             <span class="TaskIcon">\uE73E</span>
           </span>
           <span class="TaskTitle">
             ${title}
           </span>
+          ${taskDelete}
         </div>
+
         <div class="TaskDetails">
           <span class="TaskDetail TaskAssignee">
             <span class="TaskIcon">\uF5DC</span>
