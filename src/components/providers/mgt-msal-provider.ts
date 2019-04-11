@@ -31,7 +31,6 @@ export class MgtMsalProvider extends LitElement{
         if (this._isInitialized){
             this.validateAuthProps();
         }
-        // console.log("property changed " + name + " = " + newval);
         this.validateAuthProps();
     }
 
