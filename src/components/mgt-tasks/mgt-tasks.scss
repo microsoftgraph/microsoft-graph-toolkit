@@ -2,14 +2,14 @@
 @import "../../../node_modules/office-ui-fabric-core/dist/sass/References";
 
 :host {
-  display: block;
   background: #f4f4f4;
   font-family: "Segoe UI";
+  display: flex;
+  flex-direction: column;
 }
 
 :host .TaskIcon {
   font-family: "FabricMDL2Icons";
-
   text-align: center;
   justify-self: center;
   align-content: center;
@@ -17,7 +17,12 @@
   vertical-align: middle;
 }
 
-.Header {
+:host .Tasks {
+  height: fit-content;
+  overflow-y: scroll;
+}
+
+:host .Header {
   padding: 10px 70px 0 70px;
 }
 

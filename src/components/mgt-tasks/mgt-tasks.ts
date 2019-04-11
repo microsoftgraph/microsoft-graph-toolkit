@@ -25,17 +25,12 @@ export class MgtTasks extends LitElement {
   @property({ attribute: "target-planner", type: String })
   public targetPlanner: string = null;
 
-  @property()
-  private _planners: PlannerPlan[] = [];
-  @property()
-  private _plannerTasks: PlannerTask[] = [];
-  @property()
-  private _currentTargetPlanner: string = null;
+  @property() private _planners: PlannerPlan[] = [];
+  @property() private _plannerTasks: PlannerTask[] = [];
+  @property() private _currentTargetPlanner: string = null;
 
-  @property()
-  private _newTaskTitle: string = "";
-  @property()
-  private _newTaskDueDate: string = "";
+  @property() private _newTaskTitle: string = "";
+  @property() private _newTaskDueDate: string = "";
 
   constructor() {
     super();
@@ -112,33 +107,7 @@ export class MgtTasks extends LitElement {
         <span class="PlannerTitle">
           ${this.getPlanHeader()}
         </span>
-        <div class="AddBar">
-          <input
-            class="AddBarItem NewTaskName"
-            value="${this._newTaskTitle}"
-            type="text"
-            placeholder="Task..."
-            @change="${e => (this._newTaskTitle = e.target.value)}"
-          />
-          <input
-            class="AddBarItem NewTaskDue"
-            value="${this._newTaskDueDate}"
-            type="date"
-            @change="${e => (this._newTaskDueDate = e.target.value)}"
-          />
-          <span
-            class="AddBarItem NewTaskButton"
-            @click="${e =>
-              this.addTask(
-                this._newTaskTitle,
-                this._newTaskDueDate,
-                this._currentTargetPlanner
-              )}"
-          >
-            <span class="TaskIcon">\uE710</span>
-            <span>Add</span>
-          </span>
-        </div>
+        ${this.getAddBar()}
       </div>
       <div class="Tasks">
         ${this._plannerTasks
@@ -169,6 +138,40 @@ export class MgtTasks extends LitElement {
         <span class="PlanTitle"> </span>
       `;
     }
+  }
+
+  private getAddBar() {
+    return this.readOnly
+      ? null
+      : html`
+          <div class="AddBar">
+            <input
+              class="AddBarItem NewTaskName"
+              .value="${this._newTaskTitle}"
+              type="text"
+              placeholder="Task..."
+              @change="${e => (this._newTaskTitle = e.target.value)}"
+            />
+            <input
+              class="AddBarItem NewTaskDue"
+              .value="${this._newTaskDueDate}"
+              type="date"
+              @change="${e => (this._newTaskDueDate = e.target.value)}"
+            />
+            <span
+              class="AddBarItem NewTaskButton"
+              @click="${e =>
+                this.addTask(
+                  this._newTaskTitle,
+                  this._newTaskDueDate,
+                  this._currentTargetPlanner
+                )}"
+            >
+              <span class="TaskIcon">\uE710</span>
+              <span>Add</span>
+            </span>
+          </div>
+        `;
   }
 
   private getTaskHtml(task: PlannerTask) {
