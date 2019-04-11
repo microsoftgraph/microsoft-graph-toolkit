@@ -79,7 +79,19 @@ export class MgtTasks extends LitElement {
           this._newTaskDueDate = "";
           this._newTaskTitle = "";
         })
-        .then(() => this.loadPlanners());
+        .then(() => this.loadPlanners())
+        .catch((error: Error) => {});
+    }
+  }
+
+  private async completeTask(task: PlannerTask) {
+    let p = Providers.globalProvider;
+
+    if (p && p.state === ProviderState.SignedIn && task.percentComplete < 100) {
+      p.graph
+        .setTaskComplete(task.id)
+        .then(() => this.loadPlanners())
+        .catch((error: Error) => {});
     }
   }
 
@@ -87,15 +99,14 @@ export class MgtTasks extends LitElement {
     let p = Providers.globalProvider;
 
     if (p && p.state === ProviderState.SignedIn) {
-      p.graph.removeTask(id);
+      p.graph
+        .removeTask(id)
+        .then(() => this.loadPlanners())
+        .catch((error: Error) => {});
     }
   }
 
   public render() {
-    let currentTasks = this._plannerTasks.filter(
-      tasks => tasks.planId === this._currentTargetPlanner
-    );
-
     return html`
       <div class="Header">
         <span class="PlannerTitle">
@@ -130,7 +141,9 @@ export class MgtTasks extends LitElement {
         </div>
       </div>
       <div class="Tasks">
-        ${currentTasks.map(task => this.getTaskHtml(task))}
+        ${this._plannerTasks
+          .filter(tasks => tasks.planId === this._currentTargetPlanner)
+          .map(task => this.getTaskHtml(task))}
       </div>
     `;
   }
@@ -155,16 +168,6 @@ export class MgtTasks extends LitElement {
       return html`
         <span class="PlanTitle"> </span>
       `;
-    }
-  }
-
-  private onTaskCheckClick(task: PlannerTask) {
-    let p = Providers.globalProvider;
-
-    if (p && p.state === ProviderState.SignedIn && task.percentComplete < 100) {
-      p.graph.setTaskComplete(task.id).then(() => {
-        this.loadPlanners();
-      });
     }
   }
 
@@ -212,7 +215,7 @@ export class MgtTasks extends LitElement {
         <div class="TaskHeader">
           <span
             class="TaskCheck ${taskClass}"
-            @click="${e => this.onTaskCheckClick(task)}"
+            @click="${e => this.completeTask(task)}"
           >
             <span class="TaskIcon">\uE73E</span>
           </span>

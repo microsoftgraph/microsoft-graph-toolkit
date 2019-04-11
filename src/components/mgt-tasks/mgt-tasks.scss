@@ -45,6 +45,13 @@
 
   background: #0078d4;
   color: #ffffff;
+
+  cursor: pointer;
+  user-select: none;
+}
+
+.Header .AddBar .NewTaskButton:active {
+  background: #00508d;
 }
 
 .NewTaskName {
