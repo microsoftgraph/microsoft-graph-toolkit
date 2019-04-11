@@ -73,12 +73,11 @@ export class MgtTasks extends LitElement {
   private async addTask(title: string, dueDateTime: string, planId: string) {
     let p = Providers.globalProvider;
     if (p && p.state === ProviderState.SignedIn) {
+      let newTask: any = { planId, title };
+      if (dueDateTime) newTask.dueDateTime = dueDateTime;
+
       p.graph
-        .addTask(planId, {
-          planId,
-          title,
-          dueDateTime
-        })
+        .addTask(planId, newTask)
         .then(() => {
           this._newTaskDueDate = "";
           this._newTaskTitle = "";
