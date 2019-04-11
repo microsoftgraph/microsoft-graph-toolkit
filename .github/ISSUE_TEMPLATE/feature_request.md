@@ -2,7 +2,7 @@
 name: Feature request
 about: Suggest an idea for this project
 title: ''
-labels: feature-request, triage
+labels: 'Needs: Triage :mag:, feature-request'
 assignees: ''
 
 ---
