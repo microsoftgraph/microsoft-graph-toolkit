@@ -23,6 +23,7 @@
 
 :host .Header {
   padding: 10px 70px 0 70px;
+  margin: 0 0 10px 0;
 }
 
 .Header .AddBar {
@@ -30,6 +31,14 @@
 }
 
 .Header .AddBar .AddBarItem {
+  flex: 1 1 auto;
+}
+
+.Header .AddBar .NewTaskDue {
+  display: flex;
+}
+
+.Header .AddBar .NewTaskDue input {
   flex: 1 1 auto;
 }
 
@@ -69,7 +78,7 @@
 
 .Task {
   max-height: 94px;
-  margin: 10px 70px 0 70px;
+  margin: 0 70px 10px 70px;
   background: #ffffff;
   border: solid 2px rgba(0, 0, 0, 0);
 }

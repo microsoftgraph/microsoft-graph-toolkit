@@ -31,6 +31,7 @@ export class MgtTasks extends LitElement {
 
   @property() private _newTaskTitle: string = "";
   @property() private _newTaskDueDate: string = "";
+  @property() private _newTaskDueTime: string = "";
 
   constructor() {
     super();
@@ -51,7 +52,7 @@ export class MgtTasks extends LitElement {
         let planners = await p.graph.getAllMyPlans();
         let plans = (await Promise.all(
           planners.map(planner => p.graph.getTasksForPlan(planner.id))
-        )).reduce((cur, ret) => [...cur, ...ret]);
+        )).reduce((cur, ret) => [...cur, ...ret], []);
 
         this._plannerTasks = plans;
         this._planners = planners;
@@ -74,12 +75,14 @@ export class MgtTasks extends LitElement {
     let p = Providers.globalProvider;
     if (p && p.state === ProviderState.SignedIn) {
       let newTask: any = { planId, title };
-      if (dueDateTime) newTask.dueDateTime = dueDateTime;
+
+      if (dueDateTime && dueDateTime !== 'T') newTask.dueDateTime = dueDateTime;
 
       p.graph
         .addTask(planId, newTask)
         .then(() => {
           this._newTaskDueDate = "";
+          this._newTaskDueTime = "";
           this._newTaskTitle = "";
         })
         .then(() => this.loadPlanners())
@@ -131,8 +134,7 @@ export class MgtTasks extends LitElement {
         <select
           value="${this._currentTargetPlanner}"
           class="PlanSelect"
-          @change="${(e: Event & { target: { value: string } }) =>
-            (this._currentTargetPlanner = e.target.value)}"
+          @change="${e => (this._currentTargetPlanner = e.target.value)}"
         >
           ${this._planners.map(
             plan => html`
@@ -143,7 +145,6 @@ export class MgtTasks extends LitElement {
       `;
     } else {
       let plan = this._planners[0];
-
       let planTitle = (plan && plan.title) || "Plan";
       return html`
         <span class="PlanTitle">
@@ -165,19 +166,27 @@ export class MgtTasks extends LitElement {
               placeholder="Task..."
               @change="${e => (this._newTaskTitle = e.target.value)}"
             />
-            <input
-              class="AddBarItem NewTaskDue"
-              .value="${this._newTaskDueDate}"
-              type="date"
-              @change="${e => (this._newTaskDueDate = e.target.value)}"
-            />
+            <div class="AddBarItem NewTaskDue">
+              <input
+                class="AddBarItem NewTaskDueDate"
+                .value="${this._newTaskDueDate}"
+                type="date"
+                @change="${e => (this._newTaskDueDate = e.target.value)}"
+              />
+              <input
+                class="AddBarItem NewTaskDueTime"
+                .value="${this._newTaskDueTime}"
+                type="time"
+                @change="${e => (this._newTaskDueTime = e.target.value)}"
+              />
+            </div>
             <span
               class="AddBarItem NewTaskButton"
               @click="${e => {
                 if (this._newTaskTitle)
                   this.addTask(
                     this._newTaskTitle,
-                    this._newTaskDueDate,
+                    this._newTaskDueDate + "T" + this._newTaskDueTime,
                     this._currentTargetPlanner
                   );
               }}"
