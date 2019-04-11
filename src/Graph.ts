@@ -18,10 +18,10 @@ export interface IGraph {
     getTasksForPlan?(taskId: string): Promise<MicrosoftGraph.PlannerTask[]>;
     getTaskDetails?(taskId: string): Promise<MicrosoftGraph.PlannerTaskDetails>;
 
-    setTaskDetails?(taskId: string, newInfo: MicrosoftGraph.PlannerTask): Promise<any>;
-    setTaskComplete?(taskId: string): Promise<any>;
+    setTaskDetails?(taskId: string, newInfo: MicrosoftGraph.PlannerTask, eTag: string): Promise<any>;
+    setTaskComplete?(taskId: string, eTag: string): Promise<any>;
     addTask?(planId: string, newTask: MicrosoftGraph.PlannerTask): Promise<any>;
-    removeTask?(taskId: string): Promise<any>;
+    removeTask?(taskId: string, eTag: string): Promise<any>;
 }
 
 export class Graph implements IGraph {
@@ -98,7 +98,7 @@ export class Graph implements IGraph {
         return response;
     }
 
-    async patch(resource: string, scopes: string[], data?: any): Promise<Response>
+    async patch(resource: string, scopes: string[], data?: any, eTag?: string): Promise<Response>
     {
         resource = this.checkResource(resource);
         
@@ -106,23 +106,29 @@ export class Graph implements IGraph {
         if(!token)
             return null;
 
-        let body = !!data ? {body: data} : {};
+        let body = !!data ? {body: JSON.stringify(data)} : {};
 
-        let result = await fetch({
+        console.log(resource, scopes, data);
+
+        let req = { 
             method: 'PATCH',
-            url: this.rootUrl + resource,
-            ...body
-        } as RequestInfo,
-        {
             headers: {
-            Authorization: `Bearer ${token}`,
-            "Content-Type": 'application/json'
-        }});
+                Authorization: `Bearer ${token}`,
+                "Content-Type": 'application/json',
+            },
+            ...body
+        };
+
+        if(eTag)
+            req.headers['If-Match'] = eTag;
+
+        let result = await fetch(this.rootUrl + resource, req);
         this.checkResponse(result);
+
         return result;
     }
 
-    async post(resource: string, scopes: string[], data: any)
+    async post(resource: string, scopes: string[], data: any, eTag?: string)
     {
         resource = this.checkResource(resource);
         
@@ -130,24 +136,25 @@ export class Graph implements IGraph {
         if(!token)
             return null;
 
-        let body = !!data ? {body: data} : {};
-
-        let result = await fetch({
+        let body = !!data ? {body: JSON.stringify(data)} : {};
+        let req = {
             method: 'POST',
-            url: this.rootUrl + resource,
-            ...body
-        } as RequestInfo,
-        {
             headers: {
-            Authorization: `Bearer ${token}`,
-            "Content-Type": 'application/json'
-        }});
+                Authorization: `Bearer ${token}`,
+                "Content-Type": 'application/json',
+            },
+            ...body
+        };
 
+        if(eTag)
+            req.headers['If-Match'] = eTag;
+
+        let result = await fetch(this.rootUrl + resource, req);
         this.checkResponse(result);
         return result;
     }
 
-    async delete(resource: string, scopes: string[], data: any = null)
+    async delete(resource: string, scopes: string[], data?: any, eTag?: string)
     {
         resource = this.checkResource(resource);
         
@@ -155,18 +162,23 @@ export class Graph implements IGraph {
         if(!token)
             return null;
 
-        let body = !!data ? {body: data} : {};
+        let body = !!data ? {body: JSON.stringify(data)} : {};
 
-        let result = await fetch({
+        console.log(resource);
+
+        let req = {
             method: 'DELETE',
-            url: this.rootUrl + resource,
-            ...body
-        } as RequestInfo,
-        {
             headers: {
-            Authorization: `Bearer ${token}`,
-            "Content-Type": 'application/json'
-        }});
+                Authorization: `Bearer ${token}`,
+                "Content-Type": 'application/json',
+            },
+            ...body,
+        };
+
+        if(eTag)
+            req.headers['If-Match'] = eTag;
+
+        let result = await fetch(this.rootUrl + resource, req);
 
         this.checkResponse(result);
         return result;
@@ -235,7 +247,7 @@ export class Graph implements IGraph {
     {
         let scopes = ['Group.ReadWrite.All'];
         let planners = await this.getJson('/me/planner/plans', scopes) as {value: MicrosoftGraph.PlannerPlan[]};
-        return planners.value;
+        return (planners && planners.value);
     }
 
     public async getSinglePlan(planId: string): Promise<MicrosoftGraph.PlannerPlan>
@@ -260,19 +272,22 @@ export class Graph implements IGraph {
         return taskDetails.value;
     }
 
-    public async setTaskDetails(taskId: string, newData: MicrosoftGraph.PlannerTask = null): Promise<any>
+
+    public async setTaskDetails(taskId: string, newData: MicrosoftGraph.PlannerTask = null, eTag: string): Promise<any>
     {
         let scopes = ['Group.ReadWrite.All'];
-        let result = await this.patch(`/planner/tasks/${taskId}`, scopes, newData);
+        let result = await this.patch(`/planner/tasks/${taskId}`, scopes, newData, eTag);
 
         return result;
     }
 
-    public async setTaskComplete(taskId: string)
+    public async setTaskComplete(taskId: string, eTag: string)
     {
         return await this.setTaskDetails(taskId, {
             percentComplete: 100
-        });
+            },
+            eTag
+        );
     }
 
     public async addTask(planId: string, newTask: MicrosoftGraph.PlannerTask)
@@ -286,9 +301,9 @@ export class Graph implements IGraph {
         return result;
     }
 
-    public async removeTask( taskId: string ){
+    public async removeTask( taskId: string, eTag: string ){
         let scopes = ['Group.ReadWrite.All'];
-        let result = await this.delete(`/planner/tasks/${taskId}`, scopes);
+        let result = await this.delete(`/planner/tasks/${taskId}`, scopes, void 0, eTag);
 
         return result;
     }

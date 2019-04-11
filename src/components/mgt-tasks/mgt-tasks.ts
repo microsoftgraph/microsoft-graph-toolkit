@@ -57,6 +57,8 @@ export class MgtTasks extends LitElement {
         this._plannerTasks = plans;
         this._planners = planners;
 
+        console.log(this._plannerTasks);
+
         if (!this._currentTargetPlanner)
           this._currentTargetPlanner =
             this.targetPlanner || (planners[0] && planners[0].id);
@@ -76,7 +78,7 @@ export class MgtTasks extends LitElement {
     if (p && p.state === ProviderState.SignedIn) {
       let newTask: any = { planId, title };
 
-      if (dueDateTime && dueDateTime !== 'T') newTask.dueDateTime = dueDateTime;
+      if (dueDateTime && dueDateTime !== 'T') newTask.dueDateTime = dueDateTime + "Z";
 
       p.graph
         .addTask(planId, newTask)
@@ -95,18 +97,18 @@ export class MgtTasks extends LitElement {
 
     if (p && p.state === ProviderState.SignedIn && task.percentComplete < 100) {
       p.graph
-        .setTaskComplete(task.id)
+        .setTaskComplete(task.id, task['@odata.etag'])
         .then(() => this.loadPlanners())
         .catch((error: Error) => {});
     }
   }
 
-  private async removeTask(id: string) {
+  private async removeTask(task: PlannerTask) {
     let p = Providers.globalProvider;
 
     if (p && p.state === ProviderState.SignedIn) {
       p.graph
-        .removeTask(id)
+        .removeTask(task.id, task['@odata.etag'])
         .then(() => this.loadPlanners())
         .catch((error: Error) => {});
     }
@@ -231,7 +233,7 @@ export class MgtTasks extends LitElement {
       : html`
           <span
             class="TaskIcon TaskDelete"
-            @click="${e => this.removeTask(task.id)}"
+            @click="${e => this.removeTask(task)}"
           >
             \uE711
           </span>
