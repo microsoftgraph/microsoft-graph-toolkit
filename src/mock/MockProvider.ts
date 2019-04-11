@@ -96,11 +96,39 @@ export class MockGraph extends Graph {
         let body = !!data ? {body: data}: {};
         let req = {
             url: MockGraph.baseUrl + escape(MockGraph.rootGraphUrl + resource),
-            method: "PATCH",
+            method: "POST",
             ...body,
         } as RequestInfo;
 
         console.log("Post:", req);
+
+        let response = await fetch(req, {
+            headers: {
+                authorization: 'Bearer {token:https://graph.microsoft.com/}'
+            }
+        });
+
+        if (response.status >= 400) {
+            throw 'error accessing mock graph data';
+        }
+
+        return response;
+    }
+
+    public async delete(resource: string, scopes: string[], data: any)
+    {
+        if (!resource.startsWith('/')){
+            resource = "/" + resource;
+        }
+
+        let body = !!data ? {body: data}: {};
+        let req = {
+            url: MockGraph.baseUrl + escape(MockGraph.rootGraphUrl + resource),
+            method: "DELETE",
+            ...body,
+        } as RequestInfo;
+
+        console.log("Delete:", req);
 
         let response = await fetch(req, {
             headers: {
