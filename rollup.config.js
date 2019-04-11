@@ -4,10 +4,12 @@ import typescript from "rollup-plugin-typescript";
 import commonJS from "rollup-plugin-commonjs";
 import postcss from "rollup-plugin-postcss";
 import { terser } from "rollup-plugin-terser";
+import json from 'rollup-plugin-json';
 
 const extensions = [".js", ".ts"];
 
 const commonPlugins = [
+    json(),
     commonJS(),
     resolve({ module: true, jsnext: true, extensions }),
     postcss(),

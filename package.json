@@ -42,6 +42,7 @@
     "test:watch": "jest --watch"
   },
   "dependencies": {
+    "@microsoft/microsoft-graph-client": "file:../msgraph-sdk-javascript/microsoft-microsoft-graph-client-1.5.2.tgz",
     "@microsoft/teams-js": "^1.4.1",
     "lit-element": "^2.1.0",
     "msal": "^0.2.4",
@@ -75,6 +76,7 @@
     "rollup-plugin-babel": "^4.3.2",
     "rollup-plugin-babel-minify": "^8.0.0",
     "rollup-plugin-commonjs": "^9.2.2",
+    "rollup-plugin-json": "^4.0.0",
     "rollup-plugin-node-resolve": "^4.0.1",
     "rollup-plugin-postcss": "^2.0.3",
     "rollup-plugin-terser": "^4.0.4",

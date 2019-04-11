@@ -1,5 +1,8 @@
 import * as MicrosoftGraph from "@microsoft/microsoft-graph-types"
+import { Client } from "@microsoft/microsoft-graph-client/lib/es/Client";
+import { ResponseType } from "@microsoft/microsoft-graph-client/lib/es/ResponseType";
 import { IProvider } from "./providers/IProvider";
+import { async } from "q";
 
 export interface IGraph {
     me() : Promise<MicrosoftGraph.User>;
@@ -12,6 +15,8 @@ export interface IGraph {
 
 export class Graph implements IGraph {
 
+    private client : Client;
+
     // private token: string;
     private _provider : IProvider;
 
@@ -20,115 +25,152 @@ export class Graph implements IGraph {
     constructor(provider: IProvider) {
         // this.token = token;
         this._provider = provider;
-    }
 
-    async getJson(resource: string, scopes? : string[]) {
-        let response = await this.get(resource, scopes);
-        if (response) {
-            return response.json();
-        }
-
-        return null;
-    }
-
-    async get(resource: string, scopes?: string[]) : Promise<Response> {
-        if (!resource.startsWith('/')){
-            resource = "/" + resource;
-        }
-        
-        let token : string;
-        try {
-            token = await this._provider.getAccessToken(...scopes);
-        } catch (error) {
-            console.log(error);
-            return null;
-        }
-        
-        if (!token) {
-            return null;
-        }
-
-        let response = await fetch(this.rootUrl + resource, {
-            headers: {
-                authorization: 'Bearer ' + token
+        this.client = Client.init({
+            authProvider: async (done) => {
+                done(null, await provider.getAccessToken());
             }
+        })
+    }
+
+    // async getJson(resource: string, scopes? : string[]) {
+    //     let response = await this.get(resource, scopes);
+    //     if (response) {
+    //         return response.json();
+    //     }
+
+    //     return null;
+    // }
+
+    // async get(resource: string, scopes?: string[]) : Promise<Response> {
+    //     if (!resource.startsWith('/')){
+    //         resource = "/" + resource;
+    //     }
+        
+    //     let token : string;
+    //     try {
+    //         token = await this._provider.getAccessToken(...scopes);
+    //     } catch (error) {
+    //         console.log(error);
+    //         return null;
+    //     }
+        
+    //     if (!token) {
+    //         return null;
+    //     }
+
+    //     let response = await fetch(this.rootUrl + resource, {
+    //         headers: {
+    //             authorization: 'Bearer ' + token
+    //         }
+    //     });
+
+    //     if (response.status >= 400) {
+
+    //         // hit limit - need to wait and retry per:
+    //         // https://docs.microsoft.com/en-us/graph/throttling
+    //         if (response.status == 429) {
+    //             console.log('too many requests - wait ' + response.headers.get('Retry-After') + ' seconds');
+    //             return null;
+    //         }
+
+    //         let error : any = response.json();
+    //         if (error.error !== undefined) {
+    //             console.log(error);
+    //         }
+    //         console.log(response);
+    //         throw 'error accessing graph';
+    //     }
+
+    //     return response;
+    // }
+
+    // private async getBase64(resource: string, scopes: string[]) : Promise<string> {
+    //     try {
+    //         let response = await this.get(resource, scopes);
+    //         if (!response) {
+    //             return null;
+    //         }
+
+    //         let blob = await response.blob();
+            
+    //         return new Promise((resolve, reject) => {
+    //             const reader = new FileReader;
+    //             reader.onerror = reject;
+    //             reader.onload = _ => {
+    //                 resolve(reader.result as string);
+    //             }
+    //             reader.readAsDataURL(blob);
+    //         });
+    //     } catch {
+    //         return null;
+    //     }
+    // }
+
+    private blobToBase64(blob: Blob) : Promise<string> {
+        return new Promise((resolve, reject) => {
+            const reader = new FileReader;
+            reader.onerror = reject;
+            reader.onload = _ => {
+                resolve(reader.result as string);
+            }
+            reader.readAsDataURL(blob);
         });
-
-        if (response.status >= 400) {
-
-            // hit limit - need to wait and retry per:
-            // https://docs.microsoft.com/en-us/graph/throttling
-            if (response.status == 429) {
-                console.log('too many requests - wait ' + response.headers.get('Retry-After') + ' seconds');
-                return null;
-            }
-
-            let error : any = response.json();
-            if (error.error !== undefined) {
-                console.log(error);
-            }
-            console.log(response);
-            throw 'error accessing graph';
-        }
-
-        return response;
     }
 
     async me() : Promise<MicrosoftGraph.User> {
-        let scopes = ['user.read'];
-        return this.getJson('/me', scopes) as MicrosoftGraph.User;
+        // let scopes = ['user.read'];
+        // return this.getJson('/me', scopes) as MicrosoftGraph.User;
+
+        return this.client.api('me').get();
     }
 
     async getUser(userPrincipleName: string) : Promise<MicrosoftGraph.User> {
-        let scopes = ['user.readbasic.all'];
-        return this.getJson(`/users/${userPrincipleName}`, scopes) as MicrosoftGraph.User;
+        // let scopes = ['user.readbasic.all'];
+        // return this.getJson(`/users/${userPrincipleName}`, scopes) as MicrosoftGraph.User;
+
+        return this.client.api(`/users/${userPrincipleName}`).get();
     }
 
     async findPerson(query: string) : Promise<MicrosoftGraph.Person[]>{
-        let scopes = ['people.read'];
-        let result = await this.getJson(`/me/people/?$search="${query}"`, scopes);
-        return result ? result.value as MicrosoftGraph.Person[] : null;
+        // let scopes = ['people.read'];
+        // let result = await this.getJson(`/me/people/?$search="${query}"`, scopes);
+        // return result ? result.value as MicrosoftGraph.Person[] : null;
+
+        let result = await this.client.api(`/me/people`).search('"' + query + '"').get();
+        return result ? result.value : null;
     }
 
-    myPhoto() : Promise<string> {
-        let scopes = ['user.read'];
-        return this.getBase64('/me/photo/$value', scopes);
+    async myPhoto() : Promise<string> {
+        // let scopes = ['user.read'];
+        // return this.getBase64('/me/photo/$value', scopes);
+
+        let blob = await this.client.api('/me/photo/$value').responseType(ResponseType.BLOB).get();
+        return await this.blobToBase64(blob);
     }
 
     async getUserPhoto(id: string) : Promise<string> {
-        let scopes = ['user.readbasic.all'];
-        return this.getBase64(`users/${id}/photo/$value`, scopes);
-    }
+        // let scopes = ['user.readbasic.all'];
+        // return this.getBase64(`users/${id}/photo/$value`, scopes);
 
-    private async getBase64(resource: string, scopes: string[]) : Promise<string> {
-        try {
-            let response = await this.get(resource, scopes);
-            if (!response) {
-                return null;
-            }
-
-            let blob = await response.blob();
-            
-            return new Promise((resolve, reject) => {
-                const reader = new FileReader;
-                reader.onerror = reject;
-                reader.onload = _ => {
-                    resolve(reader.result as string);
-                }
-                reader.readAsDataURL(blob);
-            });
-        } catch {
-            return null;
-        }
+        let blob = await this.client.api(`users/${id}/photo/$value`).responseType(ResponseType.BLOB).get();
+        return await this.blobToBase64(blob);
     }
 
     async calendar(startDateTime : Date, endDateTime : Date) : Promise<Array<MicrosoftGraph.Event>> {
-        let scopes = ['calendars.read'];
+        // let scopes = ['calendars.read'];
+
+        // let sdt = `startdatetime=${startDateTime.toISOString()}`;
+        // let edt = `enddatetime=${endDateTime.toISOString()}`
+        // let uri = `/me/calendarview?${sdt}&${edt}`;
+        // let calendar = await this.getJson(uri, scopes);
+        // return calendar ? calendar.value : null;
 
         let sdt = `startdatetime=${startDateTime.toISOString()}`;
         let edt = `enddatetime=${endDateTime.toISOString()}`
         let uri = `/me/calendarview?${sdt}&${edt}`;
-        let calendar = await this.getJson(uri, scopes);
-        return calendar ? calendar.value : null;
+
+        let calendarView = await this.client.api(uri).get();
+        return calendarView ? calendarView.value : null;
     }
 }
