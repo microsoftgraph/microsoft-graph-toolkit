@@ -35,41 +35,37 @@ export class MgtTasks extends LitElement {
 
   constructor() {
     super();
-    Providers.onProviderUpdated(() => {
-      let p = Providers.globalProvider;
-      if (p) {
-        p.onStateChanged(() => this.loadPlanners());
-        if (p.state === ProviderState.SignedIn) this.loadPlanners();
-      }
-    });
+    Providers.onProviderUpdated(() => this.loadPlanners());
+    this.loadPlanners();
   }
 
   private async loadPlanners() {
     let p = Providers.globalProvider;
+    if (!p && p.state !== ProviderState.SignedIn) {
+      return;
+    }
 
-    if (p && p.state === ProviderState.SignedIn) {
-      if (!this.targetPlanner) {
-        let planners = await p.graph.getAllMyPlans();
-        let plans = (await Promise.all(
-          planners.map(planner => p.graph.getTasksForPlan(planner.id))
-        )).reduce((cur, ret) => [...cur, ...ret], []);
+    if (!this.targetPlanner) {
+      let planners = await p.graph.getAllMyPlans();
+      let plans = (await Promise.all(
+        planners.map(planner => p.graph.getTasksForPlan(planner.id))
+      )).reduce((cur, ret) => [...cur, ...ret], []);
 
-        this._plannerTasks = plans;
-        this._planners = planners;
+      this._plannerTasks = plans;
+      this._planners = planners;
 
-        console.log(this._plannerTasks);
+      console.log(this._plannerTasks);
 
-        if (!this._currentTargetPlanner)
-          this._currentTargetPlanner =
-            this.targetPlanner || (planners[0] && planners[0].id);
-      } else {
-        let plan = await p.graph.getSinglePlan(this.targetPlanner);
-        let planTasks = await p.graph.getTasksForPlan(plan.id);
+      if (!this._currentTargetPlanner)
+        this._currentTargetPlanner =
+          this.targetPlanner || (planners[0] && planners[0].id);
+    } else {
+      let plan = await p.graph.getSinglePlan(this.targetPlanner);
+      let planTasks = await p.graph.getTasksForPlan(plan.id);
 
-        this._planners = [plan];
-        this._plannerTasks = planTasks;
-        this._currentTargetPlanner = this.targetPlanner;
-      }
+      this._planners = [plan];
+      this._plannerTasks = planTasks;
+      this._currentTargetPlanner = this.targetPlanner;
     }
   }
 
