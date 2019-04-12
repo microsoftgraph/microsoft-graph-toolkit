@@ -222,15 +222,11 @@ export class MgtTasks extends LitElement {
     let taskDelete = this.readOnly
       ? null
       : html`
-          <span class="TaskIcon TaskDelete">
-            <mgt-dot-options
-              .options=${{
-                "Delete Task": (e: MouseEvent) => console.log("Delete Clicked!"),
-                "Delete Task 2": (e: MouseEvent) => console.log("Delete Clicked!"),
-                "Delete Task 3": (e: MouseEvent) => console.log("Delete Clicked!"),
-              }}
-            >
-            </mgt-dot-options>
+          <span
+            class="TaskIcon TaskDelete"
+            @click="${() => this.removeTask(task)}"
+          >
+            \uE711
           </span>
         `;
 
@@ -264,7 +260,7 @@ export class MgtTasks extends LitElement {
 
   private getPeopleFromAssignments(assignments: PlannerAssignments) {
     let ret = [];
-    for (let id in assignments){
+    for (let id in assignments) {
       ret.push(html`
         <mgt-person user-id="${id}"></mgt-person>
       `);
