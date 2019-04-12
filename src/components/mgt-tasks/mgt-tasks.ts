@@ -264,10 +264,11 @@ export class MgtTasks extends LitElement {
 
   private getPeopleFromAssignments(assignments: PlannerAssignments) {
     let ret = [];
-    for (let id in assignments)
+    for (let id in assignments){
       ret.push(html`
-        <mgt-person person-query="${id}"></mgt-person>
+        <mgt-person user-id="${id}"></mgt-person>
       `);
+    }
 
     return ret;
   }
