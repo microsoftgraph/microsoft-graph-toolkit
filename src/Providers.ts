@@ -13,7 +13,7 @@ export class Providers {
         if (provider !== this._globalProvider) {
             if (this._globalProvider) {
                 this._globalProvider.removeStateChangedHandler(this.handleProviderStateChanged);
-            }
+    }
 
             if (provider) {
                 provider.onStateChanged(this.handleProviderStateChanged);
@@ -25,15 +25,15 @@ export class Providers {
     }
 
     public static onProviderUpdated(event : EventHandler<ProviderUpdate>) {
-        this._eventDispatcher.add(event)
+                this._eventDispatcher.add(event)
     }
 
     public static removeProviderUpdatedListener(event: EventHandler<ProviderUpdate>) {
-        this._eventDispatcher.remove(event);
+                this._eventDispatcher.remove(event);
     }
 
     private static handleProviderStateChanged(){
-        Providers._eventDispatcher.fire(ProviderUpdate.ProviderStateChanged);
+                Providers._eventDispatcher.fire(ProviderUpdate.ProviderStateChanged);
     }
 }
 
