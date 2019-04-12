@@ -170,12 +170,6 @@ export class MgtTasks extends LitElement {
                 type="date"
                 @change="${e => (this._newTaskDueDate = e.target.value)}"
               />
-              <input
-                class="AddBarItem NewTaskDueTime"
-                .value="${this._newTaskDueTime}"
-                type="time"
-                @change="${e => (this._newTaskDueTime = e.target.value)}"
-              />
             </div>
             <span
               class="AddBarItem NewTaskButton"
@@ -183,7 +177,7 @@ export class MgtTasks extends LitElement {
                 if (this._newTaskTitle)
                   this.addTask(
                     this._newTaskTitle,
-                    this._newTaskDueDate + "T" + this._newTaskDueTime,
+                    this._newTaskDueDate ? (this._newTaskDueDate + "T17:00") : null,
                     this._currentTargetPlanner
                   );
               }}"
