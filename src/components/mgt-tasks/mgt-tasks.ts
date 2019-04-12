@@ -16,6 +16,8 @@ import {
 
 @customElement("mgt-tasks")
 export class MgtTasks extends LitElement {
+  public static dueDateTime = "T17:00";
+
   public static get styles() {
     return styles;
   }
@@ -31,7 +33,6 @@ export class MgtTasks extends LitElement {
 
   @property() private _newTaskTitle: string = "";
   @property() private _newTaskDueDate: string = "";
-  @property() private _newTaskDueTime: string = "";
 
   constructor() {
     super();
@@ -41,7 +42,7 @@ export class MgtTasks extends LitElement {
 
   private async loadPlanners() {
     let p = Providers.globalProvider;
-    if (!p && p.state !== ProviderState.SignedIn) {
+    if (!p || p.state !== ProviderState.SignedIn) {
       return;
     }
 
@@ -79,7 +80,6 @@ export class MgtTasks extends LitElement {
         .addTask(planId, newTask)
         .then(() => {
           this._newTaskDueDate = "";
-          this._newTaskDueTime = "";
           this._newTaskTitle = "";
         })
         .then(() => this.loadPlanners())
@@ -177,7 +177,9 @@ export class MgtTasks extends LitElement {
                 if (this._newTaskTitle)
                   this.addTask(
                     this._newTaskTitle,
-                    this._newTaskDueDate ? (this._newTaskDueDate + "T17:00") : null,
+                    this._newTaskDueDate
+                      ? this._newTaskDueDate + MgtTasks.dueDateTime
+                      : null,
                     this._currentTargetPlanner
                   );
               }}"
@@ -220,11 +222,15 @@ export class MgtTasks extends LitElement {
     let taskDelete = this.readOnly
       ? null
       : html`
-          <span
-            class="TaskIcon TaskDelete"
-            @click="${e => this.removeTask(task)}"
-          >
-            \uE711
+          <span class="TaskIcon TaskDelete">
+            <mgt-dot-options
+              .options=${{
+                "Delete Task": (e: MouseEvent) => console.log("Delete Clicked!"),
+                "Delete Task 2": (e: MouseEvent) => console.log("Delete Clicked!"),
+                "Delete Task 3": (e: MouseEvent) => console.log("Delete Clicked!"),
+              }}
+            >
+            </mgt-dot-options>
           </span>
         `;
 
