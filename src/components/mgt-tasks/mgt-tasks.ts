@@ -54,8 +54,6 @@ export class MgtTasks extends LitElement {
       this._plannerTasks = plans;
       this._planners = planners;
 
-      console.log(this._plannerTasks);
-
       if (!this._currentTargetPlanner)
         this._currentTargetPlanner =
           this.targetPlanner || (planners[0] && planners[0].id);
@@ -74,7 +72,8 @@ export class MgtTasks extends LitElement {
     if (p && p.state === ProviderState.SignedIn) {
       let newTask: any = { planId, title };
 
-      if (dueDateTime && dueDateTime !== 'T') newTask.dueDateTime = dueDateTime + "Z";
+      if (dueDateTime && dueDateTime !== "T")
+        newTask.dueDateTime = this.getDateTimeOffset(dueDateTime + "Z");
 
       p.graph
         .addTask(planId, newTask)
@@ -93,7 +92,7 @@ export class MgtTasks extends LitElement {
 
     if (p && p.state === ProviderState.SignedIn && task.percentComplete < 100) {
       p.graph
-        .setTaskComplete(task.id, task['@odata.etag'])
+        .setTaskComplete(task.id, task["@odata.etag"])
         .then(() => this.loadPlanners())
         .catch((error: Error) => {});
     }
@@ -104,7 +103,7 @@ export class MgtTasks extends LitElement {
 
     if (p && p.state === ProviderState.SignedIn) {
       p.graph
-        .removeTask(task.id, task['@odata.etag'])
+        .removeTask(task.id, task["@odata.etag"])
         .then(() => this.loadPlanners())
         .catch((error: Error) => {});
     }
@@ -271,5 +270,13 @@ export class MgtTasks extends LitElement {
       `);
 
     return ret;
+  }
+
+  private getDateTimeOffset(dateTime: string) {
+    let offset = (new Date().getTimezoneOffset() / 60).toString();
+    if (offset.length < 2) offset = "0" + offset;
+
+    dateTime = dateTime.replace("Z", `-${offset}:00`);
+    return dateTime;
   }
 }
