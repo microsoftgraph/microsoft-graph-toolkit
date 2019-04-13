@@ -10,7 +10,7 @@
     "moduleResolution": "node",
     "target": "es2015",
     "outDir": "dist/es6",
-    "declaration": true,
+    "declaration": false,
     "esModuleInterop": true,
     "sourceMap": true,
     "rootDir": "src"

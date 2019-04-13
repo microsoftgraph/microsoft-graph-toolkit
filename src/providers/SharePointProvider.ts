@@ -43,9 +43,7 @@ export class SharePointProvider extends IProvider {
     
     private async internalLogin(): Promise<void> {
         this._idToken = await this.getAccessToken();
-        if (this._idToken) {
-            this.setState(this._idToken ? ProviderState.SignedIn : ProviderState.SignedOut);
-        }
+        this.setState(this._idToken ? ProviderState.SignedIn : ProviderState.SignedOut);
     }
 
     async getAccessToken(): Promise<string> {
