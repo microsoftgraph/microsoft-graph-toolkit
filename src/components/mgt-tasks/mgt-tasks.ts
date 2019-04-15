@@ -5,14 +5,16 @@ import {
   TemplateResult,
   property
 } from "lit-element";
-import { Providers } from "../../Providers";
-import { styles } from "./mgt-tasks-css";
-import { ProviderState } from "../../providers/IProvider";
 import {
   PlannerTask,
   PlannerPlan,
-  PlannerAssignments
+  PlannerAssignments,
+  User
 } from "@microsoft/microsoft-graph-types";
+import { Providers } from "../../Providers";
+import { ProviderState } from "../../providers/IProvider";
+import { getShortDateString } from "../../utils/utils";
+import { styles } from "./mgt-tasks-css";
 
 @customElement("mgt-tasks")
 export class MgtTasks extends LitElement {
@@ -34,6 +36,11 @@ export class MgtTasks extends LitElement {
   @property() private _newTaskTitle: string = "";
   @property() private _newTaskDueDate: string = "";
 
+  @property() private _hiddenTasks: string[] = [];
+  @property() private _loadingTasks: string[] = [];
+
+  private _me: User = null;
+
   constructor() {
     super();
     Providers.onProviderUpdated(() => this.loadPlanners());
@@ -45,6 +52,8 @@ export class MgtTasks extends LitElement {
     if (!p || p.state !== ProviderState.SignedIn) {
       return;
     }
+
+    this._me = await p.graph.me();
 
     if (!this.targetPlanner) {
       let planners = await p.graph.getAllMyPlans();
@@ -91,9 +100,16 @@ export class MgtTasks extends LitElement {
     let p = Providers.globalProvider;
 
     if (p && p.state === ProviderState.SignedIn && task.percentComplete < 100) {
+      this._loadingTasks = [...this._loadingTasks, task.id];
       p.graph
         .setTaskComplete(task.id, task["@odata.etag"])
         .then(() => this.loadPlanners())
+        .then(
+          () =>
+            (this._loadingTasks = this._loadingTasks.filter(
+              id => id !== task.id
+            ))
+        )
         .catch((error: Error) => {});
     }
   }
@@ -102,9 +118,15 @@ export class MgtTasks extends LitElement {
     let p = Providers.globalProvider;
 
     if (p && p.state === ProviderState.SignedIn) {
+      this._hiddenTasks = [...this._hiddenTasks, task.id];
+
       p.graph
         .removeTask(task.id, task["@odata.etag"])
         .then(() => this.loadPlanners())
+        .then(
+          () =>
+            (this._hiddenTasks = this._hiddenTasks.filter(id => id !== task.id))
+        )
         .catch((error: Error) => {});
     }
   }
@@ -119,13 +141,21 @@ export class MgtTasks extends LitElement {
       </div>
       <div class="Tasks">
         ${this._plannerTasks
-          .filter(tasks => tasks.planId === this._currentTargetPlanner)
+          .filter(task => task.planId === this._currentTargetPlanner)
+          .filter(task => !this._hiddenTasks.includes(task.id))
           .map(task => this.getTaskHtml(task))}
       </div>
     `;
   }
 
   private getPlanHeader() {
+    let p = Providers.globalProvider;
+
+    if (!p || p.state !== ProviderState.SignedIn)
+      return html`
+        Not Logged In
+      `;
+
     if (!this.targetPlanner) {
       return html`
         <select
@@ -152,6 +182,9 @@ export class MgtTasks extends LitElement {
   }
 
   private getAddBar() {
+    let p = Providers.globalProvider;
+    if (!p || p.state !== ProviderState.SignedIn) return "";
+
     return this.readOnly
       ? null
       : html`
@@ -199,34 +232,54 @@ export class MgtTasks extends LitElement {
       assignments
     } = task;
 
-    let assignee = "me";
     let dueDate = new Date(dueDateTime);
     let taskClass = percentComplete === 100 ? "Complete" : "Incomplete";
-    let people = this.getPeopleFromAssignments(assignments);
+    let people = Object.keys(assignments);
+
+    let taskCheck = this._loadingTasks.includes(task.id) 
+      ? ''
+      : percentComplete === 100 ? "Complete" : "Incomplete";
 
     let taskDue = !dueDateTime
       ? null
       : html`
           <span class="TaskDetail TaskDue">
             <span class="TaskIcon">\uE787</span>
-            <span>${dueDate.toLocaleString()}</span>
+            <span>${getShortDateString(dueDate)}</span>
           </span>
         `;
 
     let taskPeople = !people
       ? null
       : html`
-          <span class="TaskDetail TaskPeople">${people}</span>
+          <span class="TaskDetail TaskPeople">
+            ${people.map(
+              id =>
+                html`
+                  <mgt-person user-id="${id}"></mgt-person>
+                `
+            )}
+          </span>
         `;
 
     let taskDelete = this.readOnly
       ? null
       : html`
-          <span
-            class="TaskIcon TaskDelete"
-            @click="${() => this.removeTask(task)}"
-          >
-            \uE711
+          <span class="TaskIcon TaskDelete">
+            <mgt-dot-options
+              .options="${{
+                "Delete Task": () => this.removeTask(task)
+              }}"
+            ></mgt-dot-options>
+          </span>
+        `;
+
+    let taskAssigned = !this.isAssignedToMe(task)
+      ? null
+      : html`
+          <span class="TaskDetail TaskAssignee">
+            <span class="TaskIcon">\uF5DC</span>
+            <span>Assigned to Me</span>
           </span>
         `;
 
@@ -246,27 +299,17 @@ export class MgtTasks extends LitElement {
           </span>
           ${taskDelete}
         </div>
-
         <div class="TaskDetails">
-          <span class="TaskDetail TaskAssignee">
-            <span class="TaskIcon">\uF5DC</span>
-            <span>Assigned to ${assignee}</span>
-          </span>
-          ${taskDue} ${taskPeople}
+          ${taskAssigned} ${taskDue} ${taskPeople}
         </div>
       </div>
     `;
   }
 
-  private getPeopleFromAssignments(assignments: PlannerAssignments) {
-    let ret = [];
-    for (let id in assignments) {
-      ret.push(html`
-        <mgt-person user-id="${id}"></mgt-person>
-      `);
-    }
+  private isAssignedToMe(task: PlannerTask): boolean {
+    let keys = Object.keys(task.assignments);
 
-    return ret;
+    return keys.includes(this._me.id);
   }
 
   private getDateTimeOffset(dateTime: string) {

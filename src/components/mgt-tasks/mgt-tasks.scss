@@ -83,6 +83,15 @@
   border: solid 2px rgba(0, 0, 0, 0);
 }
 
+.Task .TaskDetails {
+  display: flex;
+  width: fit-content;
+  align-content: center;
+  align-items: center;
+  justify-content: center;
+  justify-items: center;
+}
+
 .Task.Complete {
   background: #f6f6f6;
   border-color: #e2e2e2;
