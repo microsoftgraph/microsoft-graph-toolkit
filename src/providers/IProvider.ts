@@ -57,7 +57,7 @@ export class EventDispatcher<E> {
     remove(eventHandler: EventHandler<E>) {
         for (let i = 0; i < this.eventHandlers.length; i++) {
             if (this.eventHandlers[i] === eventHandler){
-                this.eventHandlers.splice(i, i);
+                this.eventHandlers.splice(i, 1);
                 i--;
             }
         }

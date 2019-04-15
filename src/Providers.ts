@@ -2,7 +2,7 @@ import { IProvider, EventDispatcher, EventHandler } from './providers/IProvider'
 
 export class Providers {
 
-    private static _eventDispatcher: EventDispatcher<ProviderUpdate> = new EventDispatcher<ProviderUpdate>();
+    private static _eventDispatcher: EventDispatcher<ProvidersChangedState> = new EventDispatcher<ProvidersChangedState>();
     private static _globalProvider: IProvider;
 
     public static get globalProvider() : IProvider {
@@ -20,24 +20,24 @@ export class Providers {
             }
 
             this._globalProvider = provider;
-            this._eventDispatcher.fire(ProviderUpdate.ProviderChanged);
+            this._eventDispatcher.fire(ProvidersChangedState.ProviderChanged);
         }
     }
 
-    public static onProviderUpdated(event : EventHandler<ProviderUpdate>) {
+    public static onProviderUpdated(event : EventHandler<ProvidersChangedState>) {
         this._eventDispatcher.add(event)
     }
 
-    public static removeProviderUpdatedListener(event: EventHandler<ProviderUpdate>) {
+    public static removeProviderUpdatedListener(event: EventHandler<ProvidersChangedState>) {
         this._eventDispatcher.remove(event);
     }
 
     private static handleProviderStateChanged(){
-        Providers._eventDispatcher.fire(ProviderUpdate.ProviderStateChanged);
+        Providers._eventDispatcher.fire(ProvidersChangedState.ProviderStateChanged);
     }
 }
 
-export enum ProviderUpdate{
+export enum ProvidersChangedState{
     ProviderChanged,
     ProviderStateChanged
 }
