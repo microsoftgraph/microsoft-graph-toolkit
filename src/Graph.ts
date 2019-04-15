@@ -1,8 +1,6 @@
 import * as MicrosoftGraph from "@microsoft/microsoft-graph-types"
-import { Client } from "@microsoft/microsoft-graph-client/lib/es/Client";
-import { ResponseType } from "@microsoft/microsoft-graph-client/lib/es/ResponseType";
+import { Client, ResponseType } from "@microsoft/microsoft-graph-client/lib/es";
 import { IProvider } from "./providers/IProvider";
-import { async } from "q";
 
 export interface IGraph {
     me() : Promise<MicrosoftGraph.User>;
