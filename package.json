@@ -32,7 +32,7 @@
     "watch": "browser-sync start --no-notify --proxy localhost:3333 --files 'dist/**/*.js, index.html'",
     "sass": "gulp sass",
     "sass:watch": "gulp watchSass",
-    "build": "run-s clean sass build:esm build:dts build:bundle",
+    "build": "run-s clean sass build:esm build:bundle",
     "build:esm": "tsc",
     "build:watch": "tsc --watch",
     "build:dts": "tsc -d -m amd --outFile index.d.ts --emitDeclarationOnly",

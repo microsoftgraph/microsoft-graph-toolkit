@@ -1,6 +1,7 @@
 import * as MicrosoftGraph from "@microsoft/microsoft-graph-types"
-import { Client, ResponseType } from "@microsoft/microsoft-graph-client/lib/es";
+import { Client } from "@microsoft/microsoft-graph-client/lib/es/Client";
 import { IProvider } from "./providers/IProvider";
+import { ResponseType } from "@microsoft/microsoft-graph-client/lib/es/ResponseType";
 
 export interface IGraph {
     me() : Promise<MicrosoftGraph.User>;
@@ -24,10 +25,8 @@ export class Graph implements IGraph {
         // this.token = token;
         this._provider = provider;
 
-        this.client = Client.init({
-            authProvider: async (done) => {
-                done(null, await provider.getAccessToken());
-            }
+        this.client = Client.initWithMiddleware({
+            authProvider: provider
         })
     }
 
@@ -117,58 +116,41 @@ export class Graph implements IGraph {
     }
 
     async me() : Promise<MicrosoftGraph.User> {
-        // let scopes = ['user.read'];
-        // return this.getJson('/me', scopes) as MicrosoftGraph.User;
-
-        return this.client.api('me').get();
+        let scopes = ['user.read'];
+        return this.client.api('me').middlewareOptions([{scopes: scopes}]).get();
     }
 
     async getUser(userPrincipleName: string) : Promise<MicrosoftGraph.User> {
-        // let scopes = ['user.readbasic.all'];
-        // return this.getJson(`/users/${userPrincipleName}`, scopes) as MicrosoftGraph.User;
-
-        return this.client.api(`/users/${userPrincipleName}`).get();
+        let scopes = ['user.readbasic.all'];
+        return this.client.api(`/users/${userPrincipleName}`).middlewareOptions([{scopes: scopes}]).get();
     }
 
     async findPerson(query: string) : Promise<MicrosoftGraph.Person[]>{
-        // let scopes = ['people.read'];
-        // let result = await this.getJson(`/me/people/?$search="${query}"`, scopes);
-        // return result ? result.value as MicrosoftGraph.Person[] : null;
-
-        let result = await this.client.api(`/me/people`).search('"' + query + '"').get();
+        let scopes = ['people.read'];
+        let result = await this.client.api(`/me/people`).search('"' + query + '"').middlewareOptions([{scopes: scopes}]).get();
         return result ? result.value : null;
     }
 
     async myPhoto() : Promise<string> {
-        // let scopes = ['user.read'];
-        // return this.getBase64('/me/photo/$value', scopes);
-
-        let blob = await this.client.api('/me/photo/$value').responseType(ResponseType.BLOB).get();
+        let scopes = ['user.read'];
+        let blob = await this.client.api('/me/photo/$value').responseType(ResponseType.BLOB).middlewareOptions([{scopes: scopes}]).get();
         return await this.blobToBase64(blob);
     }
 
     async getUserPhoto(id: string) : Promise<string> {
-        // let scopes = ['user.readbasic.all'];
-        // return this.getBase64(`users/${id}/photo/$value`, scopes);
-
-        let blob = await this.client.api(`users/${id}/photo/$value`).responseType(ResponseType.BLOB).get();
+        let scopes = ['user.readbasic.all'];
+        let blob = await this.client.api(`users/${id}/photo/$value`).responseType(ResponseType.BLOB).middlewareOptions([{scopes: scopes}]).get();
         return await this.blobToBase64(blob);
     }
 
     async calendar(startDateTime : Date, endDateTime : Date) : Promise<Array<MicrosoftGraph.Event>> {
-        // let scopes = ['calendars.read'];
-
-        // let sdt = `startdatetime=${startDateTime.toISOString()}`;
-        // let edt = `enddatetime=${endDateTime.toISOString()}`
-        // let uri = `/me/calendarview?${sdt}&${edt}`;
-        // let calendar = await this.getJson(uri, scopes);
-        // return calendar ? calendar.value : null;
+        let scopes = ['calendars.read'];
 
         let sdt = `startdatetime=${startDateTime.toISOString()}`;
         let edt = `enddatetime=${endDateTime.toISOString()}`
         let uri = `/me/calendarview?${sdt}&${edt}`;
 
-        let calendarView = await this.client.api(uri).get();
+        let calendarView = await this.client.api(uri).middlewareOptions([{scopes: scopes}]).get();
         return calendarView ? calendarView.value : null;
     }
 }

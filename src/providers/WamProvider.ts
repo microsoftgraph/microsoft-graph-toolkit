@@ -1,5 +1,6 @@
 import { IProvider, LoginChangedEvent, EventDispatcher, EventHandler, ProviderState } from "./IProvider";
 import { IGraph, Graph } from "../Graph";
+import { AuthenticationProviderOptions } from "@microsoft/microsoft-graph-client/lib/es/IAuthenticationProviderOptions";
 
 declare interface Window {
     Windows: any;
@@ -76,7 +77,7 @@ export class WamProvider extends IProvider {
         }
     }
 
-    getAccessToken(...scopes: string[]): Promise<string> {
+    getAccessToken(options: AuthenticationProviderOptions): Promise<string> {
         if (this.isLoggedIn) {
             return Promise.resolve(this.accessToken);
         }

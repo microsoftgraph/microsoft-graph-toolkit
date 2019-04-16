@@ -1,6 +1,7 @@
+import { AuthenticationProviderOptions } from '@microsoft/microsoft-graph-client/lib/es/IAuthenticationProviderOptions';
+import { UserAgentApplication } from 'msal/lib-es6/UserAgentApplication';
 import { IProvider, LoginType, ProviderState } from './IProvider';
 import { Graph } from '../Graph';
-import { UserAgentApplication } from 'msal/lib-es6';
 
 export interface MsalConfig {
   clientId: string;
@@ -79,16 +80,16 @@ export class MsalProvider extends IProvider {
   async login(): Promise<void> {
     console.log('login');
     if (this._loginType == LoginType.Popup) {
-      this._idToken = await this.provider.loginPopup(this.scopes);
+      this._idToken = await this._provider.loginPopup(this.scopes);
     } else {
-      this.provider.loginRedirect(this.scopes);
+      this._provider.loginRedirect(this.scopes);
     }
   }
 
   async tryGetIdTokenSilent(): Promise<boolean> {
     console.log('tryGetIdTokenSilent');
     try {
-      this._idToken = await this.provider.acquireTokenSilent(
+      this._idToken = await this._provider.acquireTokenSilent(
         [this._clientId],
         this.authority
       );
@@ -105,14 +106,14 @@ export class MsalProvider extends IProvider {
   }
 
   private temp = 0;
-  async getAccessToken(...scopes: string[]): Promise<string> {
+  async getAccessToken(options: AuthenticationProviderOptions): Promise<string> {
     ++this.temp;
     let temp = this.temp;
-    scopes = scopes || this.scopes;
+    let scopes = options ? options.scopes || this.scopes : this.scopes;
     console.log('getaccesstoken' + ++temp + ': scopes' + scopes);
     let accessToken: string;
     try {
-      accessToken = await this.provider.acquireTokenSilent(
+      accessToken = await this._provider.acquireTokenSilent(
         scopes,
         this.authority
       );
@@ -128,13 +129,13 @@ export class MsalProvider extends IProvider {
         }
 
         if (this._loginType == LoginType.Redirect) {
-          this.provider.acquireTokenRedirect(scopes);
+          this._provider.acquireTokenRedirect(scopes);
           return new Promise((resolve, reject) => {
             this._resolveToken = resolve;
             this._rejectToken = reject;
           });
         } else {
-          accessToken = await this.provider.acquireTokenPopup(scopes);
+          accessToken = await this._provider.acquireTokenPopup(scopes);
         }
       } catch (e) {
         // TODO - figure out how to expose this during dev to make it easy for the dev to figure out
@@ -147,7 +148,7 @@ export class MsalProvider extends IProvider {
   }
 
   async logout(): Promise<void> {
-    this.provider.logout();
+    this._provider.logout();
     this.setState(ProviderState.SignedOut);
   }
 
