@@ -11,7 +11,7 @@ Initialize the provider inside your html using the `mgt-msal-provider` component
 
 ```html
 <mgt-msal-provider client-id="<YOUR_CLIENT_ID>"
-                   login-type="redirect"
+                   login-type="redirect/popup"
                    authority=""></mgt-teams-provider>
 ```
 >NOTE: `login-type` and `authority` are optional.
