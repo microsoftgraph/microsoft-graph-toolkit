@@ -1,6 +1,8 @@
 # Teams provider
 
-Use the Teams provider inside your Microsoft Teams App, inside a Tab, to power it with Graph access.
+Use the Teams provider inside your Microsoft Teams App, inside a Tab, to power it with Microsoft Graph access.
+
+Visit [the authentication docs](../providers.md) to learn more about the role of providers in the Microsoft Graph Toolkit
 
 ## Getting started
 

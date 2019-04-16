@@ -2,6 +2,8 @@
 
 Use the SharePoint provider inside your SharePoint web parts to power the components with Microsoft Graph access.
 
+Visit [the authentication docs](../providers.md) to learn more about the role of providers in the Microsoft Graph Toolkit
+
 ## Getting started
 
 Initialize the provider inside of your `onInit()` method of your web part.

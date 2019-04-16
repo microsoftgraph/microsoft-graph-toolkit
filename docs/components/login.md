@@ -7,7 +7,7 @@ A Login Control is a button and flyout control to facilitate login of a user to 
 
 ## Authentication
 
-The login control leverages the global authentication provider described in the [authentication documentation](./../authentication.md). 
+The login control leverages the global authentication provider described in the [authentication documentation](./../providers.md). 
 
 ## Graph scopes
 

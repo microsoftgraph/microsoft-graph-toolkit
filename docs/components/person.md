@@ -5,7 +5,7 @@ The person control is used to display a person or contact by using their photo, 
 
 ## Authentication
 
-The control leverages the global authentication provider described in the [authentication documentation](./../authentication.md) to fetch the required data.
+The control leverages the global authentication provider described in the [authentication documentation](./../providers.md) to fetch the required data.
 
 ## Graph scopes
 
