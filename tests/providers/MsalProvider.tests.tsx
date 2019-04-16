@@ -56,7 +56,7 @@ describe('MSALProvider', () => {
         };
         const msalProvider = new MsalProvider(config);
         expect.assertions(1);
-        msalProvider.onLoginChanged(()=>{
+        msalProvider.onStateChanged(()=>{
             expect(true).toBeTruthy();
         });
         await msalProvider.logout();
@@ -69,7 +69,7 @@ describe('MSALProvider', () => {
         };
         const msalProvider = new MsalProvider(config);
         expect.assertions(1);
-        msalProvider.onLoginChanged(()=>{
+        msalProvider.onStateChanged(()=>{
             expect(true).toBeTruthy();
         });
         await msalProvider.login();
@@ -88,7 +88,7 @@ describe('MSALProvider', () => {
         const msalProvider = new MsalProvider(config);
      
         expect.assertions(1);
-        msalProvider.onLoginChanged(()=>{
+        msalProvider.onStateChanged(()=>{
             expect(true).toBeTruthy();
         });
         await msalProvider.login();

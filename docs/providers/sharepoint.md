@@ -13,8 +13,8 @@ import {SharePointProvider} from 'microsoft-graph-toolkit/dist/es6/providers/Sha
 import {Providers} from 'microsoft-graph-toolkit/dist/es6/Providers.js';
 
 // add the onInit() method if not already there in your web part class
-protected onInit() {
-    Providers.globalProviders = new SharePointProvider(this.context);
+protected async onInit() {
+    Providers.globalProvider = new SharePointProvider(this.context);
 }
 ```
 

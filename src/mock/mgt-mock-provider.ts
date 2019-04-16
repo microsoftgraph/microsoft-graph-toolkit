@@ -1,6 +1,6 @@
 import { LitElement, customElement } from 'lit-element';
 import {MockProvider} from './MockProvider'
-import { Providers } from '..';
+import { Providers } from '../Providers';
 
 @customElement('mgt-mock-provider')
 export class MgtMockProvider extends LitElement {
