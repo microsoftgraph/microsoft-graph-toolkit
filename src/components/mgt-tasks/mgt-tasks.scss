@@ -15,6 +15,7 @@
   align-content: center;
   align-self: center;
   vertical-align: middle;
+  user-select: none;
 }
 
 :host .Tasks {
@@ -24,6 +25,15 @@
 :host .Header {
   padding: 10px 70px 0 70px;
   margin: 0 0 10px 0;
+}
+
+.Header .PlannerTitle {
+  display: block;
+  padding: 0px 0px 12px 0px;
+}
+
+.Header .PlanTitle {
+  font-size: 1.3em;
 }
 
 .Header .AddBar {
@@ -61,14 +71,22 @@
   color: #ffffff;
 
   user-select: none;
+  cursor: default;
+}
+
+.Header .AddBar.Disabled .NewTaskButton {
+  opacity: 0.5;
+}
+
+.Header .AddBar.Enabled .NewTaskButton {
   cursor: pointer;
 }
 
-.Header .AddBar .NewTaskButton:hover {
+.Header .AddBar.Enabled .NewTaskButton:hover {
   border-color: #8bcdff;
 }
 
-.Header .AddBar .NewTaskButton:active {
+.Header .AddBar.Enabled .NewTaskButton:active {
   background: #00508d;
 }
 
@@ -109,6 +127,18 @@
   color: #959595;
 }
 
+.Task .TaskDetail {
+  display: flex;
+  align-items: center;
+  align-content: center;
+  justify-items: center;
+  justify-content: center;
+}
+
+.Task .TaskDetail .TaskIcon {
+  margin: 0 8px 0 0;
+}
+
 .Task .TaskHeader {
   display: flex;
   justify-content: center;
@@ -116,7 +146,7 @@
   margin: 0 0 0 10px;
 }
 
-.Task .TaskCheck {
+.Task .TaskCheckCont {
   font-family: "FabricMDL2Icons";
   display: inline-block;
   width: 22px;
@@ -131,14 +161,18 @@
   user-select: none;
 }
 
-.Task.Complete .TaskCheck,
-.Task.ReadOnly .TaskCheck {
+.Task.Complete .TaskCheckCont,
+.Task.ReadOnly .TaskCheckCont {
   cursor: default;
 }
 
-.Task .TaskCheck.Complete {
+.Task .TaskCheckCont.Complete {
   background: #00b294;
   border-color: #00b294;
+}
+
+.Task .TaskCheck.Loading {
+  color: black;
 }
 
 .Task .TaskTitle {

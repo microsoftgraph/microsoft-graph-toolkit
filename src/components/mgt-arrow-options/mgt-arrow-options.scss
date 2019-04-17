@@ -1,0 +1,56 @@
+:host {
+  font-family: "Segoe UI";
+  margin: 0 0 12px 0;
+}
+
+.ArrowIcon {
+    font-family: "FabricMDL2Icons";
+    margin: 0 0 0 20px;
+    user-select: none;
+    cursor: pointer;
+}
+
+.CurrentValue {
+    font-size: 1.3em;
+}
+
+.Menu {
+    position: absolute;
+    box-shadow: rgba(0, 0, 0, 0.08) 0px 0px 40px 5px;
+    background: #ffffff;
+    z-index: 1;
+    display: none;
+    color: black;
+    white-space: nowrap;
+}
+
+.Menu.Open {
+    display: block;
+}
+
+.MenuOption {
+    padding: 20px;
+    cursor: pointer;
+    user-select: none;
+}
+
+.MenuOption:first {
+    padding: 12px 20px 20px 20px;
+}
+
+.MenuOption:hover {
+    background: #c0c0c0;
+}
+
+.MenuOption:active {
+    background: #d8d8d8;
+  }
+
+.MenuOptionCheck {
+    font-family: "FabricMDL2Icons";
+    color: rgba(0,0,0,0);
+}
+
+.MenuOptionCheck.CurrentValue {
+    color: #0078d4;
+}
