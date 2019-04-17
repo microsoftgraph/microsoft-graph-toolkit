@@ -1,13 +1,13 @@
 # Login Control
 
 ## Description
-A Login Control is a button and flyout control to facilitate login of a user to MSA or AAD. It provides two states:
+A Login Control is a button and flyout control to facilitate Microsoft Identity login. It provides two states:
 * When user is not logged in, the control is a simple button to initiate the login process
 * When user is logged in, the control displays the current logged in user name, profile image, and email. When clicked, a flyout is opened with a command to logout.
 
 ## Authentication
 
-The login control leverages the global authentication provider described in the [authentication documentation](./../authentication.md). 
+The login control leverages the global authentication provider described in the [authentication documentation](./../providers.md). 
 
 ## Graph scopes
 

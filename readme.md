@@ -13,7 +13,7 @@ This project is in preview and can change at any time. This includes changes in 
 
 ## Documentation
 
-[TODO]
+[View the documentation](./docs)
 
 ## Getting Started
 
@@ -25,7 +25,7 @@ You can install the components by referencing them through our CDN or installing
 <script src="https://mgtlib.z5.web.core.windows.net/mgt/latest/mgt-loader.js"></script>
 ```
 
-You can then start using the components in your html page. Here is a full working example with the MSAL provider:
+You can then start using the components in your html page. Here is a full working example with the Msal provider:
 
 ```html
 <script src="https://mgtlib.z5.web.core.windows.net/mgt/latest/mgt-loader.js"></script>
@@ -80,9 +80,9 @@ or, add it in your code:
 ```
 ## Providers
 
-The components work best when used with a [provider](./docs/authentication.md). The provider exposes authentication and graph apis used by the components to call into the Microsoft Graph.
+The components work best when used with a [provider](./docs/providers.md). The provider exposes authentication and Microsoft Graph apis used by the components to call into the Microsoft Graph.
 
-The toolkit contains providers for [MSAL], [SharePoint], [Teams], and [Office Add-ins]. You can also create your own providers by implementing the [IProvider] interface.
+The toolkit contains providers for [MSAL](./docs/providers/msal.md), [SharePoint](./docs/providers/sharepoint.md), [Teams](./docs/providers/teams.md), and Office Add-ins (coming soon). You can also create your own providers by extending the [IProvider] abstract class.
 
 
 ## Contribute

@@ -5,7 +5,7 @@ The person control is used to display a person or contact by using their photo, 
 
 ## Authentication
 
-The control leverages the global authentication provider described in the [authentication documentation](./../authentication.md) to fetch the required data.
+The control leverages the global authentication provider described in the [authentication documentation](./../providers.md) to fetch the required data.
 
 ## Graph scopes
 
@@ -29,24 +29,24 @@ This control uses the following Microsoft Graph APIs and permissions:
 
 ## Setting the person details
 
-The `person-query` property is used to search the Microsoft Graph for a given person. It will chose the first person available and fetch the person details. An email works best to ensure the right person is queried, but a name works as well.
+There are three properties that a developer can use to set the person details:
 
-Alternatively, the `personDetails` property is used to set the person details manually. 
+* Set the `user-id` attribute or `userId` property to fetch the user from the Microsoft Graph by using their id.  
 
-| property | Description |
-| --- | --- |
-| `personDetails` | set the user object that will be displayed on the control |
+* Set the `person-query` attribute or `personQuery` property to search the Microsoft Graph for a given person. It will chose the first person available and fetch the person details. An email works best to ensure the right person is queried, but a name works as well.
 
-Ex: 
+* Set the `person-details` attribute or `personDetails` property to manually set the person details. 
 
-```js
-let personControl = document.getElementById('myPersonControl');
-personControl.personDetails = {
-    displayName: 'Nikola Metulev',
-    email: 'nikola@contoso.com',
-    image: 'url'
-}
-```
+    Ex: 
+
+    ```js
+    let personControl = document.getElementById('myPersonControl');
+    personControl.personDetails = {
+        displayName: 'Nikola Metulev',
+        email: 'nikola@contoso.com',
+        image: 'url'
+    }
+    ```
 
 ## Changing how the control looks
 
@@ -56,9 +56,9 @@ The following attributes are available to customize the behavior
 | --- | --- | --- |
 | `showName` | optional | set flag to display person display name - default is `false` |
 | `showEmail` | optional | set flag to display person email - default is `false` |
-| `image-size` | optional | radius of control - default is 24 |
 
 
 | [css custom properties](../styling-controls.md#css-custom-properties) |
 | - |
-| `--login-control-background` |
+| `--login-control-background` | 
+| TODO

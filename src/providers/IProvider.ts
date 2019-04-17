@@ -33,8 +33,6 @@ export abstract class IProvider
     logout?() : Promise<void>;
     abstract getAccessToken(...scopes: string[]) : Promise<string>;
 
-    // get access to underlying provider
-    provider : any;
     graph : IGraph;
 }
 

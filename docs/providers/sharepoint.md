@@ -1,6 +1,8 @@
 # SharePoint provider
 
-Use the SharePoint provider inside your SharePoint web parts to power the components with Graph access.
+Use the SharePoint provider inside your SharePoint web parts to power the components with Microsoft Graph access.
+
+Visit [the authentication docs](../providers.md) to learn more about the role of providers in the Microsoft Graph Toolkit
 
 ## Getting started
 
@@ -11,8 +13,6 @@ Initialize the provider inside of your `onInit()` method of your web part.
 // import the providers at the top of the page
 import {SharePointProvider} from 'microsoft-graph-toolkit/dist/es6/providers/SharePointProvider.js';
 import {Providers} from 'microsoft-graph-toolkit/dist/es6/Providers.js';
-
-// ...
 
 // add the onInit() method if not already there in your web part class
 protected async onInit() {
