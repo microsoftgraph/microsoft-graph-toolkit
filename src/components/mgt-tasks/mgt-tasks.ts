@@ -167,20 +167,6 @@ export class MgtTasks extends LitElement {
       `;
 
     if (!this.targetPlannerId) {
-      // return html`
-      //   <select
-      //     value="${this._currentTargetPlanner}"
-      //     class="PlanSelect"
-      //     @change="${e => (this._currentTargetPlanner = e.target.value)}"
-      //   >
-      //     ${this._planners.map(
-      //       plan => html`
-      //         <option value="${plan.id}">${plan.title}</option>
-      //       `
-      //     )}
-      //   </select>
-      // `;
-
       let opts = {
         [MgtTasks.myTasksValue]: e =>
           (this._currentTargetPlanner = MgtTasks.myTasksValue)
@@ -194,7 +180,7 @@ export class MgtTasks extends LitElement {
           ? MgtTasks.myTasksValue
           : (
               this._planners.find(p => p.id === this._currentTargetPlanner) || {
-                title: "Missing Plan!"
+                title: "Plan not Found!"
               }
             ).title;
 

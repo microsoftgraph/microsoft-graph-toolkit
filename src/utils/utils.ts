@@ -2,48 +2,70 @@ export function getShortDateString(date: Date) {
   let month = date.getMonth();
   let day = date.getDate();
 
-  let ret = "";
+  return `${getMonthString(month)} ${day}`;
+}
 
+export function getMonthString(month: number): string {
   switch (month) {
     case 0:
-      ret += "January";
-      break;
+      return "January";
     case 1:
-      ret += "February";
-      break;
+      return "February";
     case 2:
-      ret += "March";
-      break;
+      return "March";
     case 3:
-      ret += "April";
-      break;
+      return "April";
     case 4:
-      ret += "May";
-      break;
+      return "May";
     case 5:
-      ret += "June";
-      break;
+      return "June";
     case 6:
-      ret += "July";
-      break;
+      return "July";
     case 7:
-      ret += "August";
-      break;
+      return "August";
     case 8:
-      ret += "September";
-      break;
+      return "September";
     case 9:
-      ret += "October";
-      break;
+      return "October";
     case 10:
-      ret += "November";
-      break;
+      return "November";
     case 11:
-      ret += "December";
-      break;
+      return "December";
+    default:
+      return "Month";
   }
-
-  ret += ` ${day}`;
-
-  return ret;
 }
+
+export function getDaysInMonth(monthNum: number): number {
+  switch (monthNum) {
+    case 1:
+      return 28;
+
+    case 3:
+    case 5:
+    case 8:
+    case 10:
+    default:
+      return 30;
+
+    case 0:
+    case 2:
+    case 4:
+    case 6:
+    case 7:
+    case 9:
+    case 11:
+      return 31;
+  }
+}
+
+export function getDateFromMonthYear(month: number, year: number) {
+  let monthStr = month + "",
+    yearStr = year + "";
+  if (monthStr.length < 2) monthStr = "0" + monthStr;
+
+  return new Date(
+    `${yearStr}-${monthStr}-1T12:00:00-${new Date().getTimezoneOffset() / 60}`
+  );
+}
+

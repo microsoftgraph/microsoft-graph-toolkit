@@ -1,0 +1,39 @@
+:host {
+}
+
+.Title {
+  flex: 1 1 auto;
+  font-family: "FabricMDL2Icons";
+  display: flex;
+  justify-content: center;
+  justify-items: center;
+  align-content: center;
+  align-items: center;
+
+  cursor: pointer;
+}
+
+.Title .TitleItem {
+  flex: 1 1 auto;
+  user-select: none;
+}
+
+.Picker {
+    position: absolute;
+    display: none;
+}
+
+.Picker.Open {
+    display: block;
+}
+
+.Calendar {
+  user-select: none;
+  box-shadow: rgba(0, 0, 0, 0.08) 0px 0px 40px 5px;
+  background: #ffffff;
+}
+
+.Calendar .Arrow {
+    font-family: "FabricMDL2Icons";
+    cursor: pointer;
+}
