@@ -7,6 +7,8 @@
     font-family: "FabricMDL2Icons";
     margin: 0 0 0 20px;
     user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
     cursor: pointer;
 }
 
@@ -32,6 +34,13 @@
     padding: 20px;
     cursor: pointer;
     user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    display: flex;
+    align-content: center;
+    align-items: center;
+    justify-content: center;
+    justify-items: center;
 }
 
 .MenuOption:first {
@@ -49,6 +58,7 @@
 .MenuOptionCheck {
     font-family: "FabricMDL2Icons";
     color: rgba(0,0,0,0);
+    margin: 5px;
 }
 
 .MenuOptionCheck.CurrentValue {

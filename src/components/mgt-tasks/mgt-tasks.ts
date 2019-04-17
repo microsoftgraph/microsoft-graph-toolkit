@@ -263,7 +263,9 @@ export class MgtTasks extends LitElement {
 
     let taskCheck = this._loadingTasks.includes(task.id)
       ? html`
-          <span class="TaskCheck TaskIcon Loading">\uF16A</span>
+          <span class="TaskCheck TaskIcon Loading">
+            \uF16A
+          </span>
         `
       : percentComplete === 100
       ? html`

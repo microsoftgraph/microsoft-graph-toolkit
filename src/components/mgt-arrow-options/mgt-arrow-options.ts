@@ -69,9 +69,11 @@ export class MgtArrowOptions extends LitElement {
             funcs[opt](e);
           }}"
         >
-          <span class="MenuOptionCheck ${this.value === opt ? "CurrentValue" : ""}"
-            >\uE73E</span
+          <span
+            class="MenuOptionCheck ${this.value === opt ? "CurrentValue" : ""}"
           >
+            \uE73E
+          </span>
           <span class="MenuOptionName">${opt}</span>
         </div>
       `

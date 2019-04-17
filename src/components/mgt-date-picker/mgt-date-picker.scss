@@ -16,24 +16,28 @@
 .Title .TitleItem {
   flex: 1 1 auto;
   user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
 }
 
 .Picker {
-    position: absolute;
-    display: none;
+  position: absolute;
+  display: none;
 }
 
 .Picker.Open {
-    display: block;
+  display: block;
 }
 
 .Calendar {
   user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
   box-shadow: rgba(0, 0, 0, 0.08) 0px 0px 40px 5px;
   background: #ffffff;
 }
 
 .Calendar .Arrow {
-    font-family: "FabricMDL2Icons";
-    cursor: pointer;
+  font-family: "FabricMDL2Icons";
+  cursor: pointer;
 }
