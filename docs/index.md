@@ -69,7 +69,7 @@ or, add it in your code:
 
 The components work best when used with a [provider](./providers.md). The provider exposes authentication and Microsoft Graph apis used by the components to call into the Microsoft Graph.
 
-The toolkit contains providers for [MSAL](./docs/providers/msal.md), [SharePoint](./docs/providers/sharepoint.md), [Teams](./docs/providers/teams.md), and Office Add-ins (coming soon). You can also create your own providers by extending the [IProvider] abstract class.
+The toolkit contains providers for [MSAL](./providers/msal.md), [SharePoint](./providers/sharepoint.md), [Teams](./providers/teams.md), and Office Add-ins (coming soon). You can also create your own providers by extending the [IProvider] abstract class.
 
 ## Using the components with React, Angular, and other frameworks
 
@@ -116,12 +116,11 @@ class App extends Component {
     });
   }
 }
-
 ```
 
 #### React, Typescript and TSX
 
-There is a known issue with using custom elements and React and Typescript where Typescript will throw an error when trying to use a component in tsx. The workaround is to define the custom element in your code:
+There is a known issue using custom elements with React and Typescript where Typescript will throw an error when trying to use a component in tsx. The workaround is to define the custom element in your code:
 
 ```ts
 declare global {
