@@ -596,12 +596,15 @@ export class MgtTasks extends LitElement {
             </span>
           `;
 
-    let taskBucket = html`
-      <span class="TaskDetail TaskBucket">
-        <span class="TaskIcon">\uF1B6</span>
-        <span>${this.getBucketName(task.bucketId)}</span>
-      </span>
-    `;
+    let taskBucket =
+      this._currentTargetBucket !== MgtTasks.BUCKETS_SELF_ASSIGNED
+        ? null
+        : html`
+            <span class="TaskDetail TaskBucket">
+              <span class="TaskIcon">\uF1B6</span>
+              <span>${this.getBucketName(task.bucketId)}</span>
+            </span>
+          `;
 
     let taskDue = !dueDateTime
       ? null
