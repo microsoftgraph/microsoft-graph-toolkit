@@ -9,6 +9,10 @@ import { ProviderState } from "../../providers/IProvider";
 import { getShortDateString } from "../../utils/utils";
 import { styles } from "./mgt-tasks-css";
 
+import '../mgt-person/mgt-person';
+import '../mgt-arrow-options/mgt-arrow-options';
+import '../mgt-dot-options/mgt-dot-options';
+
 @customElement("mgt-tasks")
 export class MgtTasks extends LitElement {
   public static dueDateTime = "T17:00";
