@@ -9,9 +9,9 @@ import { ProviderState } from "../../providers/IProvider";
 import { getShortDateString } from "../../utils/utils";
 import { styles } from "./mgt-tasks-css";
 
-import '../mgt-person/mgt-person';
-import '../mgt-arrow-options/mgt-arrow-options';
-import '../mgt-dot-options/mgt-dot-options';
+import "../mgt-person/mgt-person";
+import "../mgt-arrow-options/mgt-arrow-options";
+import "../mgt-dot-options/mgt-dot-options";
 
 @customElement("mgt-tasks")
 export class MgtTasks extends LitElement {
@@ -33,8 +33,12 @@ export class MgtTasks extends LitElement {
   @property() private _plannerTasks: PlannerTask[] = [];
   @property() private _currentTargetPlanner: string = MgtTasks.myTasksValue;
 
+  @property() private _showNewTask: boolean = false;
+  @property() private _newTaskLoading: boolean = false;
+  @property() private _newTaskSelfAssigned: boolean = true;
   @property() private _newTaskTitle: string = "";
   @property() private _newTaskDueDate: string = "";
+  @property() private _newTaskPlanId: string = "";
 
   @property() private _hiddenTasks: string[] = [];
   @property() private _loadingTasks: string[] = [];
@@ -63,10 +67,6 @@ export class MgtTasks extends LitElement {
 
       this._plannerTasks = plans;
       this._planners = planners;
-
-      if (!this._currentTargetPlanner)
-        this._currentTargetPlanner =
-          this.targetPlannerId || (planners[0] && planners[0].id);
     } else {
       let plan = await p.graph.getSinglePlan(this.targetPlannerId);
       let planTasks = await p.graph.getTasksForPlan(plan.id);
@@ -77,22 +77,32 @@ export class MgtTasks extends LitElement {
     }
   }
 
-  private async addTask(title: string, dueDateTime: string, planId: string) {
+  private async addTask(
+    title: string,
+    dueDateTime: string,
+    planId: string,
+    assignments: {
+      [id: string]: {
+        "@odata.type": "microsoft.graph.plannerAssignment";
+        orderHint: string;
+      };
+    } = {}
+  ) {
     let p = Providers.globalProvider;
     if (p && p.state === ProviderState.SignedIn) {
-      let newTask: any = { planId, title };
+      let newTask = { planId, title, assignments } as PlannerTask;
 
       if (dueDateTime && dueDateTime !== "T")
         newTask.dueDateTime = this.getDateTimeOffset(dueDateTime + "Z");
 
+      this._newTaskLoading = true;
+
       p.graph
         .addTask(planId, newTask)
-        .then(() => {
-          this._newTaskDueDate = "";
-          this._newTaskTitle = "";
-        })
         .then(() => this.loadPlanners())
-        .catch((error: Error) => {});
+        .then(() => this.closeNewTask(null))
+        .catch((error: Error) => {})
+        .then(() => (this._newTaskLoading = false));
     }
   }
 
@@ -103,6 +113,28 @@ export class MgtTasks extends LitElement {
       this._loadingTasks = [...this._loadingTasks, task.id];
       p.graph
         .setTaskComplete(task.id, task["@odata.etag"])
+        .then(() => this.loadPlanners())
+        .catch((error: Error) => {})
+        .then(
+          () =>
+            (this._loadingTasks = this._loadingTasks.filter(
+              id => id !== task.id
+            ))
+        );
+    }
+  }
+
+  private async uncompleteTask(task: PlannerTask) {
+    let p = Providers.globalProvider;
+
+    if (
+      p &&
+      p.state === ProviderState.SignedIn &&
+      task.percentComplete === 100
+    ) {
+      this._loadingTasks = [...this._loadingTasks, task.id];
+      p.graph
+        .setTaskIncomplete(task.id, task["@odata.etag"])
         .then(() => this.loadPlanners())
         .catch((error: Error) => {})
         .then(
@@ -131,6 +163,19 @@ export class MgtTasks extends LitElement {
     }
   }
 
+  public openNewTask(e: MouseEvent) {
+    this._showNewTask = true;
+  }
+
+  public closeNewTask(e: MouseEvent) {
+    this._showNewTask = false;
+
+    this._newTaskSelfAssigned = false;
+    this._newTaskDueDate = "";
+    this._newTaskTitle = "";
+    this._newTaskPlanId = "";
+  }
+
   public render() {
     if (
       this.initialPlannerId &&
@@ -144,11 +189,11 @@ export class MgtTasks extends LitElement {
     return html`
       <div class="Header">
         <span class="PlannerTitle">
-          ${this.getPlanHeader()}
+          ${this.getPlanOptions()}
         </span>
-        ${this.getAddBar()}
       </div>
       <div class="Tasks">
+        ${this._showNewTask ? this.getNewTaskHtml() : null}
         ${this._plannerTasks
           .filter(
             task =>
@@ -162,7 +207,7 @@ export class MgtTasks extends LitElement {
     `;
   }
 
-  private getPlanHeader() {
+  private getPlanOptions() {
     let p = Providers.globalProvider;
 
     if (!p || p.state !== ProviderState.SignedIn)
@@ -170,87 +215,183 @@ export class MgtTasks extends LitElement {
         Not Logged In
       `;
 
+    let addButton = this.readOnly
+      ? null
+      : html`
+          <span
+            class="AddBarItem NewTaskButton"
+            @click="${(e: MouseEvent) => {
+              if (!this._showNewTask) this.openNewTask(e);
+              else this.closeNewTask(e);
+            }}"
+          >
+            <span class="TaskIcon">\uE710</span>
+            <span>Add</span>
+          </span>
+        `;
+
     if (!this.targetPlannerId) {
       let opts = {
-        [MgtTasks.myTasksValue]: e =>
-          (this._currentTargetPlanner = MgtTasks.myTasksValue)
+        [MgtTasks.myTasksValue]: e => {
+          this._currentTargetPlanner = MgtTasks.myTasksValue;
+          this._newTaskSelfAssigned = true;
+        }
       };
 
       for (let plan of this._planners)
         opts[plan.title] = e => (this._currentTargetPlanner = plan.id);
 
-      let currentValue =
-        this._currentTargetPlanner === MgtTasks.myTasksValue
-          ? MgtTasks.myTasksValue
-          : (
-              this._planners.find(p => p.id === this._currentTargetPlanner) || {
-                title: "Plan not Found!"
-              }
-            ).title;
-
       return html`
         <mgt-arrow-options
           .options="${opts}"
-          value="${currentValue}"
+          value="${this.getPlanTitle(this._currentTargetPlanner)}"
         ></mgt-arrow-options>
+        ${addButton}
       `;
     } else {
       let plan = this._planners[0];
-      let planTitle = (plan && plan.title) || "Plan";
+      let planTitle = (plan && plan.title) || "Plan Not Found";
 
       return html`
         <span class="PlanTitle">
           ${planTitle}
         </span>
+        ${addButton}
       `;
     }
   }
 
-  private getAddBar() {
-    let p = Providers.globalProvider;
-    if (!p || p.state !== ProviderState.SignedIn) return "";
-
-    let disabled = this._currentTargetPlanner === MgtTasks.myTasksValue;
-
-    return this.readOnly
-      ? null
+  private getNewTaskHtml() {
+    let taskCheck = this._newTaskLoading
+      ? html`
+          <span class="TaskCheck TaskIcon Loading"> \uF16A </span>
+        `
       : html`
-          <div class="AddBar ${disabled ? "Disabled" : "Enabled"}">
-            <input
-              class="AddBarItem NewTaskName"
-              .value="${this._newTaskTitle}"
-              type="text"
-              placeholder="Task..."
-              @change="${e =>
-                !disabled && (this._newTaskTitle = e.target.value)}"
-            />
-            <div class="AddBarItem NewTaskDue">
-              <input
-                class="AddBarItem NewTaskDueDate"
-                .value="${this._newTaskDueDate}"
-                type="date"
-                @change="${e =>
-                  !disabled && (this._newTaskDueDate = e.target.value)}"
-              />
-            </div>
-            <span
-              class="AddBarItem NewTaskButton"
-              @click="${e => {
-                if (!disabled && this._newTaskTitle)
-                  this.addTask(
-                    this._newTaskTitle,
-                    this._newTaskDueDate
-                      ? this._newTaskDueDate + MgtTasks.dueDateTime
-                      : null,
-                    this._currentTargetPlanner
-                  );
-              }}"
-            >
-              <span class="TaskIcon">\uE710</span>
-              <span>Add</span>
-            </span>
-          </div>
+          <span class="TaskCheck TaskIcon Incomplete"></span>
         `;
+
+    let taskTitle = html`
+      <span class="TaskTitle">
+        <input
+          type="text"
+          placeholder="Task..."
+          .value="${this._newTaskTitle}"
+          @change="${(e: Event & { target: HTMLInputElement }) => {
+            this._newTaskTitle = e.target.value;
+          }}"
+        />
+      </span>
+    `;
+
+    let taskPlan =
+      this._currentTargetPlanner !== MgtTasks.myTasksValue
+        ? html`
+            <span class="TaskDetail TaskAssignee">
+              <span class="TaskIcon">\uF5DC</span>
+              <span>${this.getPlanTitle(this._currentTargetPlanner)}</span>
+            </span>
+          `
+        : html`
+            <span class="TaskDetail TaskAssignee">
+              <span class="TaskIcon">\uF5DC</span>
+              <select
+                @change="${(e: Event & { target: HTMLSelectElement }) => {
+                  this._newTaskPlanId = e.target.value;
+                }}"
+              >
+                <option value="">Unassigned</option>
+                ${this._planners.map(
+                  plan => html`
+                    <option value="${plan.id}">${plan.title}</option>
+                  `
+                )}
+              </select>
+            </span>
+          `;
+
+    let taskDue = html`
+      <span class="TaskDetail TaskDue">
+        <span class="TaskIcon">\uE787</span>
+        <input
+          type="date"
+          .value="${this._newTaskDueDate}"
+          @change="${(e: Event & { target: HTMLInputElement }) => {
+            this._newTaskDueDate = e.target.value;
+          }}"
+        />
+      </span>
+    `;
+
+    let taskPeople = html`
+      <span class="TaskDetail TaskPeople">
+        <label>
+          <span>Assign to Me</span>
+          <input
+            type="checkbox"
+            .checked="${this._newTaskSelfAssigned}"
+            @change="${(e: Event & { target: HTMLInputElement }) => {
+              this._newTaskSelfAssigned = e.target.checked;
+            }}"
+          />
+        </label>
+      </span>
+    `;
+
+    let taskAdd = html`
+      <span class="TaskIcon TaskDelete">
+        <div
+          class="TaskAdd"
+          @click="${(e: MouseEvent) => {
+            if (
+              this._newTaskTitle &&
+              (this._currentTargetPlanner !== MgtTasks.myTasksValue ||
+                this._newTaskPlanId)
+            )
+              this.addTask(
+                this._newTaskTitle,
+                this._newTaskDueDate
+                  ? this._newTaskDueDate + MgtTasks.dueDateTime
+                  : null,
+                this._currentTargetPlanner === MgtTasks.myTasksValue
+                  ? this._newTaskPlanId
+                  : this._currentTargetPlanner,
+                this._newTaskSelfAssigned
+                  ? {
+                      [this._me.id]: {
+                        "@odata.type": "microsoft.graph.plannerAssignment",
+                        orderHint: "string !"
+                      }
+                    }
+                  : void 0
+              );
+          }}"
+        >
+          \uE710
+        </div>
+        <div
+          class="TaskCancel"
+          @click="${(e: MouseEvent) => {
+            this.closeNewTask(e);
+          }}"
+        >
+          \uE711
+        </div>
+      </span>
+    `;
+
+    return html`
+      <div class="Task Incomplete">
+        <span class="TaskHeader">
+          <span class="TaskCheckCont Incomplete">
+            ${taskCheck}
+          </span>
+          ${taskTitle} ${taskAdd}
+        </span>
+        <span class="TaskDetails">
+          ${taskPlan} ${taskPeople} ${taskDue}
+        </span>
+      </div>
+    `;
   }
 
   private getTaskHtml(task: PlannerTask) {
@@ -279,6 +420,39 @@ export class MgtTasks extends LitElement {
           <span class="TaskCheck TaskIcon Incomplete"></span>
         `;
 
+    let taskPlan =
+      this._currentTargetPlanner !== MgtTasks.myTasksValue
+        ? null
+        : html`
+            <span class="TaskDetail TaskAssignee">
+              <span class="TaskIcon">\uF5DC</span>
+              <span>${this.getPlanTitle(task.planId)}</span>
+            </span>
+          `;
+
+    let taskDue = !dueDateTime
+      ? null
+      : html`
+          <span class="TaskDetail TaskDue">
+            <span class="TaskIcon">\uE787</span>
+            <span>${getShortDateString(dueDate)}</span>
+          </span>
+        `;
+
+    let taskPeople =
+      !people || people.length === 0
+        ? null
+        : html`
+            <span class="TaskDetail TaskPeople">
+              ${people.map(
+                id =>
+                  html`
+                    <mgt-person user-id="${id}"></mgt-person>
+                  `
+              )}
+            </span>
+          `;
+
     let taskDelete = this.readOnly
       ? null
       : html`
@@ -291,44 +465,17 @@ export class MgtTasks extends LitElement {
           </span>
         `;
 
-    let taskAssigned = !this.isAssignedToMe(task)
-      ? null
-      : html`
-          <span class="TaskDetail TaskAssignee">
-            <span class="TaskIcon">\uF5DC</span>
-            <span>Assigned to Me</span>
-          </span>
-        `;
-
-    let taskDue = !dueDateTime
-      ? null
-      : html`
-          <span class="TaskDetail TaskDue">
-            <span class="TaskIcon">\uE787</span>
-            <span>${getShortDateString(dueDate)}</span>
-          </span>
-        `;
-
-    let taskPeople = !people
-      ? null
-      : html`
-          <span class="TaskDetail TaskPeople">
-            ${people.map(
-              id =>
-                html`
-                  <mgt-person user-id="${id}"></mgt-person>
-                `
-            )}
-          </span>
-        `;
-
     return html`
       <div class="Task ${taskClass} ${this.readOnly ? "ReadOnly" : ""}">
         <div class="TaskHeader">
           <span
             class="TaskCheckCont ${taskClass}"
             @click="${e => {
-              if (!this.readOnly) this.completeTask(task);
+              if (!this.readOnly) {
+                console.log("Test!", task);
+                if (task.percentComplete < 100) this.completeTask(task);
+                else this.uncompleteTask(task);
+              }
             }}"
           >
             ${taskCheck}
@@ -339,7 +486,7 @@ export class MgtTasks extends LitElement {
           ${taskDelete}
         </div>
         <div class="TaskDetails">
-          ${taskAssigned} ${taskDue} ${taskPeople}
+          ${taskPlan} ${taskPeople} ${taskDue}
         </div>
       </div>
     `;
@@ -357,5 +504,15 @@ export class MgtTasks extends LitElement {
 
     dateTime = dateTime.replace("Z", `-${offset}:00`);
     return dateTime;
+  }
+
+  private getPlanTitle(planId: string): string {
+    if (planId === MgtTasks.myTasksValue) return MgtTasks.myTasksValue;
+    else
+      return (
+        this._planners.find(plan => plan.id === planId) || {
+          title: "Plan Not Found"
+        }
+      ).title;
   }
 }

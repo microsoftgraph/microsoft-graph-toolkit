@@ -46,21 +46,22 @@
   flex: 1 1 auto;
 }
 
-.Header .AddBar .NewTaskDue {
+.Header .NewTaskDue {
   display: flex;
 }
 
-.Header .AddBar .NewTaskDue input {
+.Header .NewTaskDue input {
   flex: 1 1 auto;
 }
 
-.Header .AddBar .NewTaskButton {
+.Header .NewTaskButton {
+  display: inline-block;
+  float: right;
   width: 90px;
   max-width: 90px;
   min-width: 90px;
   height: 32px;
   line-height: 200%;
-  flex: 0 0 none;
 
   text-align: center;
   justify-self: center;
@@ -76,22 +77,14 @@
   -moz-user-select: none;
   -ms-user-select: none;
 
-  cursor: default;
-}
-
-.Header .AddBar.Disabled .NewTaskButton {
-  opacity: 0.5;
-}
-
-.Header .AddBar.Enabled .NewTaskButton {
   cursor: pointer;
 }
 
-.Header .AddBar.Enabled .NewTaskButton:hover {
-  border-color: #8bcdff;
+.Header .NewTaskButton:hover {
+  background: #0091ff;
 }
 
-.Header .AddBar.Enabled .NewTaskButton:active {
+.Header .NewTaskButton:active {
   background: #00508d;
 }
 
@@ -134,7 +127,6 @@
 }
 
 .Task .TaskDetail {
-  display: flex;
   align-items: center;
   align-content: center;
   justify-items: center;
@@ -176,7 +168,6 @@
   -ms-user-select: none;
 }
 
-.Task.Complete .TaskCheckCont,
 .Task.ReadOnly .TaskCheckCont {
   cursor: default;
 }

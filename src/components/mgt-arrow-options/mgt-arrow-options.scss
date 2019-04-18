@@ -37,10 +37,9 @@
     -moz-user-select: none;
     -ms-user-select: none;
     display: flex;
-    align-content: center;
     align-items: center;
-    justify-content: center;
-    justify-items: center;
+    justify-content: stretch;
+    justify-items: stretch;
 }
 
 .MenuOption:first {
@@ -58,7 +57,7 @@
 .MenuOptionCheck {
     font-family: "FabricMDL2Icons";
     color: rgba(0,0,0,0);
-    margin: 5px;
+    margin-right: 10px;
 }
 
 .MenuOptionCheck.CurrentValue {

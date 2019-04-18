@@ -20,6 +20,7 @@ export interface IGraph {
 
     setTaskDetails?(taskId: string, newInfo: MicrosoftGraph.PlannerTask, eTag: string): Promise<any>;
     setTaskComplete?(taskId: string, eTag: string): Promise<any>;
+    setTaskIncomplete?(taskId: string, eTag: string): Promise<any>;
     addTask?(planId: string, newTask: MicrosoftGraph.PlannerTask): Promise<any>;
     removeTask?(taskId: string, eTag: string): Promise<any>;
 }
@@ -286,6 +287,15 @@ export class Graph implements IGraph {
         return await this.setTaskDetails(taskId, {
             percentComplete: 100
             },
+            eTag
+        );
+    }
+
+    public async setTaskIncomplete(taskId: string, eTag: string)
+    {
+        return await this.setTaskDetails( taskId, {
+            percentComplete: 0
+            }, 
             eTag
         );
     }
