@@ -14,14 +14,16 @@ export interface IGraph {
     getSinglePlan?(planId: string): Promise<MicrosoftGraph.PlannerPlan>;
     getPlanDetails?(planId: string): Promise<MicrosoftGraph.PlannerPlanDetails>;
 
+    getBucketsForPlan?(planId: string): Promise<MicrosoftGraph.PlannerBucket[]>;
+
     getAllMyTasks?(): Promise<MicrosoftGraph.PlannerTask[]>;
-    getTasksForPlan?(taskId: string): Promise<MicrosoftGraph.PlannerTask[]>;
+    getTasksForPlan?(planId: string): Promise<MicrosoftGraph.PlannerTask[]>;
     getTaskDetails?(taskId: string): Promise<MicrosoftGraph.PlannerTaskDetails>;
 
     setTaskDetails?(taskId: string, newInfo: MicrosoftGraph.PlannerTask, eTag: string): Promise<any>;
     setTaskComplete?(taskId: string, eTag: string): Promise<any>;
     setTaskIncomplete?(taskId: string, eTag: string): Promise<any>;
-    addTask?(planId: string, newTask: MicrosoftGraph.PlannerTask): Promise<any>;
+    addTask?(newTask: MicrosoftGraph.PlannerTask): Promise<any>;
     removeTask?(taskId: string, eTag: string): Promise<any>;
 }
 
@@ -259,6 +261,14 @@ export class Graph implements IGraph {
         return plan;
     }
 
+    public async getBucketsForPlan(planId: string): Promise<MicrosoftGraph.PlannerBucket[]> 
+    {
+        let scopes = ['Group.ReadWrite.All'];
+        let buckets = await this.getJson(`/planner/plans/${planId}/buckets`, scopes) as {value: MicrosoftGraph.PlannerBucket[]};
+
+        return (buckets && buckets.value);
+    }
+
     public async getTasksForPlan(planId: string): Promise<MicrosoftGraph.PlannerTask[]>
     {
         let scopes = ['Group.ReadWrite.All'];
@@ -300,13 +310,10 @@ export class Graph implements IGraph {
         );
     }
 
-    public async addTask(planId: string, newTask: MicrosoftGraph.PlannerTask)
+    public async addTask(newTask: MicrosoftGraph.PlannerTask)
     {
         let scopes = ['Group.ReadWrite.All'];
-        let result = await this.post('/planner/tasks', scopes, {
-            ...newTask,
-            planId,
-        });
+        let result = await this.post('/planner/tasks', scopes, newTask);
 
         return result;
     }

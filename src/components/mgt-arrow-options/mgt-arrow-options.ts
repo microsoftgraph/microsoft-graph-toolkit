@@ -43,7 +43,7 @@ export class MgtArrowOptions extends LitElement {
               \uE70D
             </span>
           `
-        : html``;
+        : null;
 
     return html`
       <span class="Header">
