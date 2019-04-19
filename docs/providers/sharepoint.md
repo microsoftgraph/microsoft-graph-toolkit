@@ -11,8 +11,7 @@ Initialize the provider inside of your `onInit()` method of your web part.
 ```ts
 
 // import the providers at the top of the page
-import {SharePointProvider} from 'microsoft-graph-toolkit/dist/es6/providers/SharePointProvider.js';
-import {Providers} from 'microsoft-graph-toolkit/dist/es6/Providers.js';
+import {Providers, SharePointProvider} from 'microsoft-graph-toolkit';
 
 // add the onInit() method if not already there in your web part class
 protected async onInit() {
@@ -23,10 +22,6 @@ protected async onInit() {
 Now you can add any component in your `render()` method and it will use the SharePoint context to access the Microsoft Graph. 
 
 ```ts
-// import the component at the top of the page
-import 'microsoft-graph-toolkit/dist/es6/components/mgt-agenda/mgt-agenda.js'
-
-// ...
 
 public render(): void {
     this.domElement.innerHTML = `
@@ -34,6 +29,8 @@ public render(): void {
       `;
   }
 ```
+
+> Note: The Microsoft Graph Toolkit requires Typescript 3.x. Make sure you are using a supported version of Typescript by [installing the right compiler](https://github.com/SharePoint/sp-dev-docs/wiki/SharePoint-Framework-v1.8-release-notes#support-for-typescript-27-29-and-3x).
 
 ## Testing in the workbench
 
