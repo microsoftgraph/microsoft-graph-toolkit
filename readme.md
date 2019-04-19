@@ -72,8 +72,7 @@ or, add it in your code:
 
 ```html
 <script type="module">
-    import {MsalProvider} from 'microsoft-graph-toolkit/dist/es6/providers/MsalProvider.js';
-    import {Providers} from 'microsoft-graph-toolkit/dist/es6/Providers.js';
+    import {Providers, MsalProvider} from 'microsoft-graph-toolkit';
 
     Providers.globalProvider = new MsalProvider({clientId: '[CLIENT-ID]'});
 </script>
