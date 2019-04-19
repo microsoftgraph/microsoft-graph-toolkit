@@ -303,52 +303,44 @@ export class MgtTasks extends LitElement {
       for (let plan of this._planners)
         planOpts[plan.title] = e => {
           this._currentTargetPlanner = plan.id;
-          this._currentTargetBucket = MgtTasks.BUCKETS_SELF_ASSIGNED;
-        };
-
-      let subPlanOpts = {
-        [MgtTasks.PLANS_SELF_ASSIGNED]: e => {
           this._currentSubTargetPlanner = MgtTasks.PLANS_SELF_ASSIGNED;
           this._currentTargetBucket = MgtTasks.BUCKETS_SELF_ASSIGNED;
-        }
-      };
-
-      for (let plan of this._planners)
-        subPlanOpts[plan.title] = e => {
-          this._currentSubTargetPlanner = plan.id;
-          this._currentTargetBucket = MgtTasks.BUCKETS_SELF_ASSIGNED;
         };
 
-      let bucketOpts = {
-        [MgtTasks.BUCKETS_SELF_ASSIGNED]: (e: MouseEvent) => {
-          this._currentTargetBucket = MgtTasks.BUCKETS_SELF_ASSIGNED;
-        }
-      };
+      // let subPlanOpts = {
+      //   [MgtTasks.PLANS_SELF_ASSIGNED]: e => {
+      //     this._currentSubTargetPlanner = MgtTasks.PLANS_SELF_ASSIGNED;
+      //     this._currentTargetBucket = MgtTasks.BUCKETS_SELF_ASSIGNED;
+      //   }
+      // };
 
-      if (this._currentSubTargetPlanner !== MgtTasks.BASE_SELF_ASSIGNED) {
-        let buckets = this._plannerBuckets.filter(
-          bucket => bucket.planId === this._currentSubTargetPlanner
-        );
-        for (let bucket of buckets)
-          bucketOpts[bucket.name] = (e: MouseEvent) => {
-            this._currentTargetBucket = bucket.id;
-          };
-      }
+      // for (let plan of this._planners)
+      //   subPlanOpts[plan.title] = e => {
+      //     this._currentSubTargetPlanner = plan.id;
+      //     this._currentTargetBucket = MgtTasks.BUCKETS_SELF_ASSIGNED;
+      //   };
+
+      // let bucketOpts = {
+      //   [MgtTasks.BUCKETS_SELF_ASSIGNED]: (e: MouseEvent) => {
+      //     this._currentTargetBucket = MgtTasks.BUCKETS_SELF_ASSIGNED;
+      //   }
+      // };
+
+      // if (this._currentSubTargetPlanner !== MgtTasks.BASE_SELF_ASSIGNED) {
+      //   let buckets = this._plannerBuckets.filter(
+      //     bucket => bucket.planId === this._currentSubTargetPlanner
+      //   );
+      //   for (let bucket of buckets)
+      //     bucketOpts[bucket.name] = (e: MouseEvent) => {
+      //       this._currentTargetBucket = bucket.id;
+      //     };
+      // }
 
       return html`
         <mgt-arrow-options
           .options="${planOpts}"
           .value="${this.getPlanTitle(this._currentTargetPlanner)}"
         ></mgt-arrow-options>
-        <mgt-arrow-options
-          .options="${subPlanOpts}"
-          .value="${this.getPlanTitle(this._currentSubTargetPlanner)}"
-        ></mgt-arrow-options>
-        <mgt-arrow-options
-          .options="${bucketOpts}"
-          .value="${this.getBucketName(this._currentTargetBucket)}"
-        ></mgt-arrow-options>
-        ${addButton}
       `;
     } else {
       let planOpts = {
