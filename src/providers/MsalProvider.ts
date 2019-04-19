@@ -32,43 +32,27 @@ export class MsalProvider extends IProvider {
   }
 
   private initProvider(config: MsalConfig) {
-    this.scopes =
-      typeof config.scopes !== 'undefined' ? config.scopes : ['user.read'];
-    this._loginType =
-      typeof config.loginType !== 'undefined'
-        ? config.loginType
-        : LoginType.Redirect;
+    this.scopes = typeof config.scopes !== 'undefined' ? config.scopes : ['user.read'];
+    this._loginType = typeof config.loginType !== 'undefined' ? config.loginType : LoginType.Redirect;
 
-    let callbackFunction = ((
-      errorDesc: string,
-      token: string,
-      error: any,
-      tokenType: any,
-      state: any
-    ) => {
+    let callbackFunction = ((errorDesc: string, token: string, error: any, tokenType: any, state: any) => {
       this.tokenReceivedCallback(errorDesc, token, error, tokenType, state);
     }).bind(this);
 
     if (config.userAgentApplication) {
       this._userAgentApplication = config.userAgentApplication;
     } else if (config.clientId) {
-      let authority =
-        typeof config.authority !== 'undefined' ? config.authority : null;
+      let authority = typeof config.authority !== 'undefined' ? config.authority : null;
       let options =
         typeof config.options != 'undefined'
-        ? config.options
-        : {storeAuthStateInCookie: true, cacheLocation: "localStorage"};
+          ? config.options
+          : { storeAuthStateInCookie: true, cacheLocation: 'localStorage' };
 
-    this._userAgentApplication = new UserAgentApplication(
-      config.clientId,
-      authority,
-      callbackFunction,
-      options
-    );
+      this._userAgentApplication = new UserAgentApplication(config.clientId, authority, callbackFunction, options);
     } else {
       throw 'clientId or userAgentApplication must be provided';
     }
-    
+
     this.graph = new Graph(this);
 
     this.tryGetIdTokenSilent();
@@ -109,10 +93,7 @@ export class MsalProvider extends IProvider {
 
     let accessToken: string;
     try {
-      accessToken = await this._userAgentApplication.acquireTokenSilent(
-        scopes,
-        this._userAgentApplication.authority
-      );
+      accessToken = await this._userAgentApplication.acquireTokenSilent(scopes, this._userAgentApplication.authority);
     } catch (e) {
       try {
         console.log('getaccesstoken: catch ' + e);
@@ -124,7 +105,7 @@ export class MsalProvider extends IProvider {
 
         // AADSTS65001: The user or administrator has not consented to use the application
         // Need to send an interaction request
-        if (e.includes('AADSTS65001')){
+        if (e.includes('AADSTS65001')) {
           if (this._loginType == LoginType.Redirect) {
             // check if the user denied the scope before
             if (!this.areScopesDenied(scopes)) {
@@ -149,25 +130,17 @@ export class MsalProvider extends IProvider {
     this.scopes = scopes;
   }
 
-  tokenReceivedCallback(
-    errorDesc: string,
-    token: string,
-    error: any,
-    tokenType: any,
-    state: any
-  ) {
+  tokenReceivedCallback(errorDesc: string, token: string, error: any, tokenType: any, state: any) {
     if (error) {
       let requestedScopes = this.getRequestedScopes();
       if (requestedScopes) {
         this.addDeniedScopes(requestedScopes);
       }
-      
     } else {
       if (tokenType == 'id_token') {
         this._idToken = token;
         this.setState(this._idToken ? ProviderState.SignedIn : ProviderState.SignedOut);
       } else {
-        
       }
     }
 
@@ -178,8 +151,8 @@ export class MsalProvider extends IProvider {
   private ss_requested_scopes_key = 'mgt-requested-scopes';
   private ss_denied_scopes_key = 'mgt-denied-scopes';
 
-  private setRequestedScopes(scopes: string[]){
-    if (scopes){
+  private setRequestedScopes(scopes: string[]) {
+    if (scopes) {
       sessionStorage.setItem(this.ss_requested_scopes_key, JSON.stringify(scopes));
     }
   }
@@ -193,9 +166,9 @@ export class MsalProvider extends IProvider {
     sessionStorage.removeItem(this.ss_requested_scopes_key);
   }
 
-  private addDeniedScopes(scopes: string[]){
-    if (scopes){
-      let deniedScopes : string[] = this.getDeniedScopes() || [];
+  private addDeniedScopes(scopes: string[]) {
+    if (scopes) {
+      let deniedScopes: string[] = this.getDeniedScopes() || [];
       deniedScopes = deniedScopes.concat(scopes);
       sessionStorage.setItem(this.ss_denied_scopes_key, JSON.stringify(deniedScopes));
     }
@@ -209,13 +182,11 @@ export class MsalProvider extends IProvider {
   private areScopesDenied(scopes: string[]) {
     if (scopes) {
       const deniedScopes = this.getDeniedScopes();
-      if (deniedScopes && 
-          deniedScopes.filter(s => -1 !== scopes.indexOf(s)).length > 0) {
+      if (deniedScopes && deniedScopes.filter(s => -1 !== scopes.indexOf(s)).length > 0) {
         return true;
       }
     }
 
     return false;
   }
-
 }

@@ -1,63 +1,64 @@
-import { IProvider, LoginChangedEvent, EventDispatcher, EventHandler, ProviderState } from "./IProvider";
+import { IProvider, LoginChangedEvent, EventDispatcher, EventHandler, ProviderState } from './IProvider';
 import { IGraph, Graph } from '../Graph';
 
-declare interface AadTokenProvider{
-    getToken(x:string);
+declare interface AadTokenProvider {
+  getToken(x: string);
 }
 
-export declare interface WebPartContext{
-    aadTokenProviderFactory : any;
+export declare interface WebPartContext {
+  aadTokenProviderFactory: any;
 }
 
 export class SharePointProvider extends IProvider {
-    
-    private _idToken : string;
+  private _idToken: string;
 
-    private _provider : AadTokenProvider;
-    
-    get provider() {
-        return this._provider;
-    };
+  private _provider: AadTokenProvider;
 
-    get isLoggedIn() : boolean {
-        return !!this._idToken;
-    };
+  get provider() {
+    return this._provider;
+  }
 
-    private context : WebPartContext;
+  get isLoggedIn(): boolean {
+    return !!this._idToken;
+  }
 
-    scopes: string[];
-    authority: string;
-    
-    graph: IGraph;
+  private context: WebPartContext;
 
-    constructor(context : WebPartContext) {
-        super();
-        this.context = context;
+  scopes: string[];
+  authority: string;
 
-        context.aadTokenProviderFactory.getTokenProvider().then((tokenProvider: AadTokenProvider): void => {
-            this._provider = tokenProvider;
-            this.graph = new Graph(this);
-            this.internalLogin();
-        });
+  graph: IGraph;
+
+  constructor(context: WebPartContext) {
+    super();
+    this.context = context;
+
+    context.aadTokenProviderFactory.getTokenProvider().then(
+      (tokenProvider: AadTokenProvider): void => {
+        this._provider = tokenProvider;
+        this.graph = new Graph(this);
+        this.internalLogin();
+      }
+    );
+  }
+
+  private async internalLogin(): Promise<void> {
+    this._idToken = await this.getAccessToken();
+    this.setState(this._idToken ? ProviderState.SignedIn : ProviderState.SignedOut);
+  }
+
+  async getAccessToken(): Promise<string> {
+    let accessToken: string;
+    try {
+      accessToken = await this.provider.getToken('https://graph.microsoft.com');
+    } catch (e) {
+      console.log(e);
+      throw e;
     }
-    
-    private async internalLogin(): Promise<void> {
-        this._idToken = await this.getAccessToken();
-        this.setState(this._idToken ? ProviderState.SignedIn : ProviderState.SignedOut);
-    }
+    return accessToken;
+  }
 
-    async getAccessToken(): Promise<string> {
-        let accessToken : string;
-        try {
-            accessToken = await this.provider.getToken("https://graph.microsoft.com");
-        } catch (e) {
-            console.log(e);
-            throw e;
-        }
-        return accessToken;
-    }
-    
-    updateScopes(scopes: string[]) {
-        this.scopes = scopes;
-    }
+  updateScopes(scopes: string[]) {
+    this.scopes = scopes;
+  }
 }
