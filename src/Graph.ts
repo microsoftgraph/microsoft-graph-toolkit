@@ -10,21 +10,36 @@ export interface IGraph {
     calendar(startDateTime : Date, endDateTime : Date) : Promise<Array<MicrosoftGraph.Event>>;
 
     // Planner Task Methods
-    getAllMyPlans?(): Promise<MicrosoftGraph.PlannerPlan[]>;
-    getSinglePlan?(planId: string): Promise<MicrosoftGraph.PlannerPlan>;
-    getPlanDetails?(planId: string): Promise<MicrosoftGraph.PlannerPlanDetails>;
+    planner_getAllMyPlans?(): Promise<MicrosoftGraph.PlannerPlan[]>;
+    planner_getSinglePlan?(planId: string): Promise<MicrosoftGraph.PlannerPlan>;
+    planner_getPlanDetails?(planId: string): Promise<MicrosoftGraph.PlannerPlanDetails>;
 
-    getBucketsForPlan?(planId: string): Promise<MicrosoftGraph.PlannerBucket[]>;
+    planner_getBucketsForPlan?(planId: string): Promise<MicrosoftGraph.PlannerBucket[]>;
 
-    getAllMyTasks?(): Promise<MicrosoftGraph.PlannerTask[]>;
-    getTasksForPlan?(planId: string): Promise<MicrosoftGraph.PlannerTask[]>;
-    getTaskDetails?(taskId: string): Promise<MicrosoftGraph.PlannerTaskDetails>;
+    planner_getAllMyTasks?(): Promise<MicrosoftGraph.PlannerTask[]>;
+    planner_getTasksForPlan?(planId: string): Promise<MicrosoftGraph.PlannerTask[]>;
+    planner_getTaskDetails?(taskId: string): Promise<MicrosoftGraph.PlannerTaskDetails>;
 
-    setTaskDetails?(taskId: string, newInfo: MicrosoftGraph.PlannerTask, eTag: string): Promise<any>;
-    setTaskComplete?(taskId: string, eTag: string): Promise<any>;
-    setTaskIncomplete?(taskId: string, eTag: string): Promise<any>;
-    addTask?(newTask: MicrosoftGraph.PlannerTask): Promise<any>;
-    removeTask?(taskId: string, eTag: string): Promise<any>;
+    planner_setTaskDetails?(taskId: string, newInfo: MicrosoftGraph.PlannerTask, eTag: string): Promise<any>;
+    planner_setTaskComplete?(taskId: string, eTag: string): Promise<any>;
+    planner_setTaskIncomplete?(taskId: string, eTag: string): Promise<any>;
+    planner_addTask?(newTask: MicrosoftGraph.PlannerTask): Promise<any>;
+    planner_removeTask?(taskId: string, eTag: string): Promise<any>;
+
+    //ToDo Task Methods
+    todo_getAllMyGroups?(): Promise<any>;
+    todo_getSingleGroup?(groupId: string): Promise<any>;
+
+    todo_getFoldersForGroup?(groupId: string): Promise<any>;
+
+    todo_getAllMyTasks?(): Promise<any>;
+    todo_getAllTasksForFolder?(folderId: string): Promise<any>;
+
+    todo_setTask?(taskId: string, task: any, eTag: string): Promise<any>;
+    todo_setTaskComplete?(taskId: string, dateTime: string, eTag: string): Promise<any>;
+    todo_setTaskIncomplete?(taskId: string, eTag: string): Promise<any>
+    todo_addTask?(newTask: any): Promise<any>;
+    todo_removeTask?(taskId: string, eTag: string): Promise<any>;
 }
 
 export class Graph implements IGraph {
@@ -246,14 +261,15 @@ export class Graph implements IGraph {
     }
 
 
-    public async getAllMyPlans(): Promise<MicrosoftGraph.PlannerPlan[]>
+    // Planner Task Methods
+    public async planner_getAllMyPlans(): Promise<MicrosoftGraph.PlannerPlan[]>
     {
         let scopes = ['Group.ReadWrite.All'];
         let planners = await this.getJson('/me/planner/plans', scopes) as {value: MicrosoftGraph.PlannerPlan[]};
         return (planners && planners.value);
     }
 
-    public async getSinglePlan(planId: string): Promise<MicrosoftGraph.PlannerPlan>
+    public async planner_getSinglePlan(planId: string): Promise<MicrosoftGraph.PlannerPlan>
     {
         let scopes = ['Group.ReadWrite.All'];
         let plan = await this.getJson(`/planner/plans/${planId}`, scopes) as MicrosoftGraph.PlannerPlan;
@@ -261,7 +277,7 @@ export class Graph implements IGraph {
         return plan;
     }
 
-    public async getBucketsForPlan(planId: string): Promise<MicrosoftGraph.PlannerBucket[]> 
+    public async planner_getBucketsForPlan(planId: string): Promise<MicrosoftGraph.PlannerBucket[]> 
     {
         let scopes = ['Group.ReadWrite.All'];
         let buckets = await this.getJson(`/planner/plans/${planId}/buckets`, scopes) as {value: MicrosoftGraph.PlannerBucket[]};
@@ -269,14 +285,14 @@ export class Graph implements IGraph {
         return (buckets && buckets.value);
     }
 
-    public async getTasksForPlan(planId: string): Promise<MicrosoftGraph.PlannerTask[]>
+    public async planner_getTasksForPlan(planId: string): Promise<MicrosoftGraph.PlannerTask[]>
     {
         let scopes = ['Group.ReadWrite.All'];
         let tasks = await this.getJson(`/planner/plans/${planId}/tasks`, scopes) as {value: MicrosoftGraph.PlannerTask[]};
         return tasks.value;
     }
 
-    public async getTaskDetails(taskId: string): Promise<MicrosoftGraph.PlannerTaskDetails>
+    public async planner_getTaskDetails(taskId: string): Promise<MicrosoftGraph.PlannerTaskDetails>
     {
         let scopes = ['Group.ReadWrite.All'];
         let taskDetails = await this.getJson(`/planner/tasks/${taskId}/details`, scopes) as {value: MicrosoftGraph.PlannerTaskDetails};
@@ -284,7 +300,7 @@ export class Graph implements IGraph {
     }
 
 
-    public async setTaskDetails(taskId: string, newData: MicrosoftGraph.PlannerTask = null, eTag: string): Promise<any>
+    public async planner_setTaskDetails(taskId: string, newData: MicrosoftGraph.PlannerTask = null, eTag: string): Promise<any>
     {
         let scopes = ['Group.ReadWrite.All'];
         let result = await this.patch(`/planner/tasks/${taskId}`, scopes, newData, eTag);
@@ -292,25 +308,25 @@ export class Graph implements IGraph {
         return result;
     }
 
-    public async setTaskComplete(taskId: string, eTag: string)
+    public async planner_setTaskComplete(taskId: string, eTag: string)
     {
-        return await this.setTaskDetails(taskId, {
+        return await this.planner_setTaskDetails(taskId, {
             percentComplete: 100
             },
             eTag
         );
     }
 
-    public async setTaskIncomplete(taskId: string, eTag: string)
+    public async planner_setTaskIncomplete(taskId: string, eTag: string)
     {
-        return await this.setTaskDetails( taskId, {
+        return await this.planner_setTaskDetails( taskId, {
             percentComplete: 0
             }, 
             eTag
         );
     }
 
-    public async addTask(newTask: MicrosoftGraph.PlannerTask)
+    public async planner_addTask(newTask: MicrosoftGraph.PlannerTask)
     {
         let scopes = ['Group.ReadWrite.All'];
         let result = await this.post('/planner/tasks', scopes, newTask);
@@ -318,10 +334,79 @@ export class Graph implements IGraph {
         return result;
     }
 
-    public async removeTask( taskId: string, eTag: string ){
+    public async planner_removeTask( taskId: string, eTag: string ){
         let scopes = ['Group.ReadWrite.All'];
         let result = await this.delete(`/planner/tasks/${taskId}`, scopes, void 0, eTag);
 
         return result;
+    }
+
+    // Todo Task Methods
+
+    public async todo_getAllMyGroups(){
+        let scopes = ["Tasks.ReadWrite"];
+        let ret = await this.getJson('/me/outlook/taskGroups', scopes) as {value: any[]};
+
+        return (ret && ret.value);
+    }
+    public async todo_getSingleGroup(groupId: string){
+        let scopes = ["Tasks.ReadWrite"];
+        let ret = await this.getJson(`/me/outlook/taskGroups/${groupId}`, scopes);
+
+        return (ret);
+    }
+
+    public async todo_getFoldersForGroup(groupId: string){
+        let scopes = ["Tasks.ReadWrite"];
+        let ret = await this.getJson(`/me/outlook/taskGroup/${groupId}/taskFolders`, scopes) as {value: any[]};
+
+        return (ret && ret.value);
+    }
+
+    public async todo_getAllMyTasks(){
+        let scopes = ["Tasks.ReadWrite"];
+        let ret = await this.getJson('/me/outlook/tasks', scopes) as {value: any[]};
+
+        return (ret && ret.value);
+    }
+    public async todo_getAllTasksForFolder(folderId: string){
+        let scopes = ["Tasks.ReadWrite"];
+        let ret = await this.getJson(`/me/outlook/taskFolders/${folderId}/tasks`, scopes) as {value: any[]};
+
+        return (ret && ret.value);
+    }
+
+    public async todo_setTask(taskId: string, task: any, eTag: string){
+        let scopes = ["Tasks.ReadWrite"];        
+        let ret = await this.patch(`/me/outlook/tasks/${taskId}`, scopes, task, eTag);
+
+        return (ret);
+    }
+    public async todo_setTaskComplete(taskId: string, dateTime: string, eTag: string){
+        let ret = this.todo_setTask(taskId, {
+            completedDateTime: {
+                dateTime,
+                timeZone: "UTC"
+            }
+        }, eTag);
+        return (ret);
+    }
+    public async todo_setTaskIncomplete(taskId: string, eTag: string){
+        let ret = this.todo_setTask(taskId, {
+            completedDateTime: null
+        }, eTag);
+        return (ret);
+    }
+    public async todo_addTask(newTask: any){
+        let scopes = ["Tasks.ReadWrite"];
+        let ret = await this.post('/me/outlook/tasks', scopes, newTask);
+
+        return (ret);
+    }
+    public async todo_removeTask(taskId: string, eTag: string){
+        let scopes = ["Tasks.ReadWrite"];
+        let ret = await this.delete(`/me/outlook/tasks/${taskId}`, scopes, void 0, eTag);
+
+        return (ret);
     }
 }
