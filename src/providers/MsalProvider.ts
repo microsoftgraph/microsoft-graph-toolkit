@@ -18,9 +18,6 @@ export class MsalProvider extends IProvider {
 
   private _userAgentApplication: UserAgentApplication;
 
-  private _resolveToken;
-  private _rejectToken;
-
   get provider() {
     return this._userAgentApplication;
   }
@@ -34,10 +31,7 @@ export class MsalProvider extends IProvider {
     this.initProvider(config);
   }
 
-
   private initProvider(config: MsalConfig) {
-    console.log('initProvider');
-
     this.scopes =
       typeof config.scopes !== 'undefined' ? config.scopes : ['user.read'];
     this._loginType =
@@ -63,7 +57,7 @@ export class MsalProvider extends IProvider {
       let options =
         typeof config.options != 'undefined'
         ? config.options
-        : { cacheLocation: 'localStorage' };
+        : {storeAuthStateInCookie: true, cacheLocation: "localStorage"};
 
     this._userAgentApplication = new UserAgentApplication(
       config.clientId,
@@ -81,7 +75,6 @@ export class MsalProvider extends IProvider {
   }
 
   async login(): Promise<void> {
-    console.log('login');
     if (this._loginType === LoginType.Popup) {
       this._idToken = await this._userAgentApplication.loginPopup(this.scopes);
     } else {
@@ -89,15 +82,18 @@ export class MsalProvider extends IProvider {
     }
   }
 
+  async logout(): Promise<void> {
+    this._userAgentApplication.logout();
+    this.setState(ProviderState.SignedOut);
+  }
+
   async tryGetIdTokenSilent(): Promise<boolean> {
-    console.log('tryGetIdTokenSilent');
     try {
       this._idToken = await this._userAgentApplication.acquireTokenSilent(
         [this._userAgentApplication.clientId],
         this._userAgentApplication.authority
       );
       if (this._idToken) {
-        console.log('tryGetIdTokenSilent: got a token');
       }
       this.setState(this._idToken ? ProviderState.SignedIn : ProviderState.SignedOut);
       return this._idToken !== null;
@@ -108,51 +104,45 @@ export class MsalProvider extends IProvider {
     }
   }
 
-  private temp = 0;
   async getAccessToken(...scopes: string[]): Promise<string> {
-    ++this.temp;
-    let temp = this.temp;
     scopes = scopes || this.scopes;
-    console.log('getaccesstoken' + ++temp + ': scopes' + scopes);
+
     let accessToken: string;
     try {
       accessToken = await this._userAgentApplication.acquireTokenSilent(
         scopes,
         this._userAgentApplication.authority
       );
-      console.log('getaccesstoken' + temp + ': got token');
     } catch (e) {
       try {
-        console.log('getaccesstoken' + temp + ': catch ' + e);
+        console.log('getaccesstoken: catch ' + e);
         // TODO - figure out for what error this logic is needed so we
         // don't prompt the user to login unnecessarily
         if (e.includes('multiple_matching_tokens_detected')) {
-          console.log('getaccesstoken' + temp + ' ' + e);
           return null;
         }
 
-        if (this._loginType == LoginType.Redirect) {
-          this._userAgentApplication.acquireTokenRedirect(scopes);
-          return new Promise((resolve, reject) => {
-            this._resolveToken = resolve;
-            this._rejectToken = reject;
-          });
-        } else {
-          accessToken = await this._userAgentApplication.acquireTokenPopup(scopes);
+        // AADSTS65001: The user or administrator has not consented to use the application
+        // Need to send an interaction request
+        if (e.includes('AADSTS65001')){
+          if (this._loginType == LoginType.Redirect) {
+            // check if the user denied the scope before
+            if (!this.areScopesDenied(scopes)) {
+              this.setRequestedScopes(scopes);
+              this._userAgentApplication.acquireTokenRedirect(scopes);
+            }
+          } else {
+            accessToken = await this._userAgentApplication.acquireTokenPopup(scopes);
+          }
         }
       } catch (e) {
         // TODO - figure out how to expose this during dev to make it easy for the dev to figure out
         // if error contains "'token' is not enabled", make sure to have implicit oAuth enabled in the AAD manifest
-        console.log('getaccesstoken' + temp + 'catch2: ' + e);
+        console.log('getaccesstoken catch2 : ' + e);
         throw e;
       }
     }
     return accessToken;
-  }
-
-  async logout(): Promise<void> {
-    this._userAgentApplication.logout();
-    this.setState(ProviderState.SignedOut);
   }
 
   updateScopes(scopes: string[]) {
@@ -166,28 +156,66 @@ export class MsalProvider extends IProvider {
     tokenType: any,
     state: any
   ) {
-    // debugger;
-    console.log('tokenReceivedCallback ' + errorDesc + ' | ' + tokenType);
-    if (this._userAgentApplication && window) {
-      console.log(window.location.hash);
-      console.log(
-        'isCallback: ' + this._userAgentApplication.isCallback(window.location.hash)
-      );
-    }
     if (error) {
-      console.log(error + ' ' + errorDesc);
-      if (this._rejectToken) {
-        this._rejectToken(errorDesc);
+      let requestedScopes = this.getRequestedScopes();
+      if (requestedScopes) {
+        this.addDeniedScopes(requestedScopes);
       }
+      
     } else {
       if (tokenType == 'id_token') {
         this._idToken = token;
         this.setState(this._idToken ? ProviderState.SignedIn : ProviderState.SignedOut);
       } else {
-        if (this._resolveToken) {
-          this._resolveToken(token);
-        }
+        
       }
     }
+
+    this.clearRequestedScopes();
   }
+
+  // session storage
+  private ss_requested_scopes_key = 'mgt-requested-scopes';
+  private ss_denied_scopes_key = 'mgt-denied-scopes';
+
+  private setRequestedScopes(scopes: string[]){
+    if (scopes){
+      sessionStorage.setItem(this.ss_requested_scopes_key, JSON.stringify(scopes));
+    }
+  }
+
+  private getRequestedScopes() {
+    let scopes_str = sessionStorage.getItem(this.ss_requested_scopes_key);
+    return scopes_str ? JSON.parse(scopes_str) : null;
+  }
+
+  private clearRequestedScopes() {
+    sessionStorage.removeItem(this.ss_requested_scopes_key);
+  }
+
+  private addDeniedScopes(scopes: string[]){
+    if (scopes){
+      let deniedScopes : string[] = this.getDeniedScopes() || [];
+      deniedScopes = deniedScopes.concat(scopes);
+      sessionStorage.setItem(this.ss_denied_scopes_key, JSON.stringify(deniedScopes));
+    }
+  }
+
+  private getDeniedScopes() {
+    let scopes_str = sessionStorage.getItem(this.ss_denied_scopes_key);
+    return scopes_str ? JSON.parse(scopes_str) : null;
+  }
+
+  private areScopesDenied(scopes: string[]) {
+    if (scopes) {
+      const deniedScopes = this.getDeniedScopes();
+      if (deniedScopes && 
+          deniedScopes.filter(s => -1 !== scopes.indexOf(s)).length > 0) {
+        return true;
+      }
+    }
+
+    return false;
+  }
+
 }
