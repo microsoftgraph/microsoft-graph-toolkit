@@ -8,6 +8,7 @@ export interface IGraph {
   myPhoto(): Promise<string>;
   getUserPhoto(id: string): Promise<string>;
   calendar(startDateTime: Date, endDateTime: Date): Promise<Array<MicrosoftGraph.Event>>;
+  contacts(): Promise<Array<MicrosoftGraph.Person>>;
 }
 
 export class Graph implements IGraph {
@@ -128,5 +129,13 @@ export class Graph implements IGraph {
     let uri = `/me/calendarview?${sdt}&${edt}`;
     let calendar = await this.getJson(uri, scopes);
     return calendar ? calendar.value : null;
+  }
+
+  async contacts(): Promise<Array<MicrosoftGraph.Person>> {
+    let scopes = ['people.read'];
+
+    let uri = `/me/people`;
+    let people = await this.getJson(uri, scopes);
+    return people ? people.value : null;
   }
 }

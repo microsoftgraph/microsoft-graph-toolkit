@@ -87,7 +87,7 @@ export class MgtPerson extends LitElement {
               if (person.scoredEmailAddresses && person.scoredEmailAddresses.length) {
                 this.personDetails.email = person.scoredEmailAddresses[0].address;
               } else if ((<any>person).emailAddresses && (<any>person).emailAddresses.length) {
-                // beta endpoind uses emailAddresses instead of scoredEmailAddresses
+                // beta endpoint uses emailAddresses instead of scoredEmailAddresses
                 this.personDetails.email = (<any>person).emailAddresses[0].address;
               }
 

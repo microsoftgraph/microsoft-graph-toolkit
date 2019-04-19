@@ -19,14 +19,33 @@
     <script type="module" src="./dist/es6/mock/mgt-mock-provider.js"></script>
   </head>
   <body>
-    <mgt-msal-provider
+    <!-- <mgt-msal-provider
       client-id="a974dfa0-9f57-49b9-95db-90f04ce2111a"
-      ></mgt-msal-provider>
+      ></mgt-msal-provider> -->
 
-    <!-- <mgt-mock-provider></mgt-mock-provider> -->
+    <mgt-mock-provider></mgt-mock-provider>
 
     <mgt-login></mgt-login>
     
+    <mgt-people></mgt-people>
+
+    <script type="module">
+      import { Providers } from './dist/es6/index.js';
+
+      async function getPeople() {
+        if (Providers.globalProvider) {
+          let client = Providers.globalProvider.graph; // .client
+
+          let people = document.getElementsByTagName('mgt-people')[0];
+
+          people.people = (await client.contacts()).slice(0, 4);
+        }
+      }
+
+      Providers.onProviderUpdated(() => getPeople());
+      getPeople();
+    </script>
+
     <!-- <script type="module">
       let login = document.getElementsByTagName('mgt-login')[0];
       
