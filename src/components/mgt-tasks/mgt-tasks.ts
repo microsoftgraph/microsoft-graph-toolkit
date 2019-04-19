@@ -3,7 +3,8 @@ import {
   PlannerTask,
   PlannerPlan,
   User,
-  PlannerBucket
+  PlannerBucket,
+  PlannerAssignments
 } from "@microsoft/microsoft-graph-types";
 import { Providers } from "../../Providers";
 import { ProviderState } from "../../providers/IProvider";
@@ -16,10 +17,10 @@ import "../mgt-dot-options/mgt-dot-options";
 
 @customElement("mgt-tasks")
 export class MgtTasks extends LitElement {
-  public static dueDateTime = "T17:00";
+  public static DUE_DATE_TIME = "T17:00";
   public static BASE_SELF_ASSIGNED = "Assigned to me";
-  public static PLANS_SELF_ASSIGNED = "All Plans";
-  public static BUCKETS_SELF_ASSIGNED = "All Buckets";
+  public static PLANS_SELF_ASSIGNED = "All Dressers";
+  public static BUCKETS_SELF_ASSIGNED = "All Drawers";
 
   public static get styles() {
     return styles;
@@ -27,6 +28,9 @@ export class MgtTasks extends LitElement {
 
   @property({ attribute: "read-only", type: Boolean })
   public readOnly: boolean = false;
+
+  @property({ attribute: "data-source", type: String })
+  public dataSource: "planner" | "todo" = "planner";
 
   @property({ attribute: "target-planner-id", type: String })
   public targetPlannerId: string = null;
@@ -77,23 +81,23 @@ export class MgtTasks extends LitElement {
     this._me = await p.graph.me();
 
     if (!this.targetPlannerId) {
-      let planners = await p.graph.getAllMyPlans();
+      let planners = await p.graph.planner_getAllMyPlans();
 
       let buckets = (await Promise.all(
-        planners.map(plan => p.graph.getBucketsForPlan(plan.id))
+        planners.map(plan => p.graph.planner_getBucketsForPlan(plan.id))
       )).reduce((cur, ret) => [...cur, ...ret], []);
 
       let tasks = (await Promise.all(
-        planners.map(planner => p.graph.getTasksForPlan(planner.id))
+        planners.map(planner => p.graph.planner_getTasksForPlan(planner.id))
       )).reduce((cur, ret) => [...cur, ...ret], []);
 
       this._plannerTasks = tasks;
       this._plannerBuckets = buckets;
       this._planners = planners;
     } else {
-      let plan = await p.graph.getSinglePlan(this.targetPlannerId);
-      let planTasks = await p.graph.getTasksForPlan(plan.id);
-      let planBuckets = await p.graph.getBucketsForPlan(plan.id);
+      let plan = await p.graph.planner_getSinglePlan(this.targetPlannerId);
+      let planTasks = await p.graph.planner_getTasksForPlan(plan.id);
+      let planBuckets = await p.graph.planner_getBucketsForPlan(plan.id);
 
       this._plannerTasks = planTasks;
       this._plannerBuckets = planBuckets;
@@ -129,7 +133,7 @@ export class MgtTasks extends LitElement {
       this._newTaskLoading = true;
 
       p.graph
-        .addTask(newTask)
+        .planner_addTask(newTask)
         .then(() => this.loadPlanners())
         .then(() => this.closeNewTask(null))
         .catch((error: Error) => {})
@@ -143,7 +147,7 @@ export class MgtTasks extends LitElement {
     if (p && p.state === ProviderState.SignedIn && task.percentComplete < 100) {
       this._loadingTasks = [...this._loadingTasks, task.id];
       p.graph
-        .setTaskComplete(task.id, task["@odata.etag"])
+        .planner_setTaskComplete(task.id, task["@odata.etag"])
         .then(() => this.loadPlanners())
         .catch((error: Error) => {})
         .then(
@@ -165,7 +169,7 @@ export class MgtTasks extends LitElement {
     ) {
       this._loadingTasks = [...this._loadingTasks, task.id];
       p.graph
-        .setTaskIncomplete(task.id, task["@odata.etag"])
+        .planner_setTaskIncomplete(task.id, task["@odata.etag"])
         .then(() => this.loadPlanners())
         .catch((error: Error) => {})
         .then(
@@ -184,7 +188,7 @@ export class MgtTasks extends LitElement {
       this._hiddenTasks = [...this._hiddenTasks, task.id];
 
       p.graph
-        .removeTask(task.id, task["@odata.etag"])
+        .planner_removeTask(task.id, task["@odata.etag"])
         .then(() => this.loadPlanners())
         .catch((error: Error) => {})
         .then(
@@ -341,6 +345,7 @@ export class MgtTasks extends LitElement {
           .options="${planOpts}"
           .value="${this.getPlanTitle(this._currentTargetPlanner)}"
         ></mgt-arrow-options>
+        ${addButton}
       `;
     } else {
       let planOpts = {
@@ -505,7 +510,7 @@ export class MgtTasks extends LitElement {
               this.addTask(
                 this._newTaskTitle,
                 this._newTaskDueDate
-                  ? this._newTaskDueDate + MgtTasks.dueDateTime
+                  ? this._newTaskDueDate + MgtTasks.DUE_DATE_TIME
                   : null,
                 this._currentTargetPlanner === MgtTasks.BASE_SELF_ASSIGNED
                   ? this._newTaskPlanId
@@ -695,4 +700,26 @@ export class MgtTasks extends LitElement {
       }
     ).name;
   }
+}
+
+export interface ITask {
+  id: string;
+  name: string;
+  dueDate: string;
+  completed: boolean;
+  topParentId: string;
+  immediateParentId: string;
+  assignments: PlannerAssignments;
+  eTag: string;
+}
+
+export interface IDrawer {
+  id: string;
+  name: string;
+  parentId: string;
+}
+
+export interface IDresser {
+  id: string;
+  title: string;
 }
