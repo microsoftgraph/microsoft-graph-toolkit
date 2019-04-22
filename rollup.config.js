@@ -1,17 +1,35 @@
 import resolve from 'rollup-plugin-node-resolve';
 import babel from 'rollup-plugin-babel';
-import typescript from "rollup-plugin-typescript";
 import commonJS from "rollup-plugin-commonjs";
 import postcss from "rollup-plugin-postcss";
 import { terser } from "rollup-plugin-terser";
+import json from 'rollup-plugin-json';
 
 const extensions = [".js", ".ts"];
 
 const commonPlugins = [
+    json(),
     commonJS(),
     resolve({ module: true, jsnext: true, extensions }),
     postcss(),
     terser({ keep_classnames: true, keep_fnames: true })
+];
+
+const babelPlugins = [
+    [
+        "@babel/plugin-proposal-decorators",
+        { decoratorsBeforeExport: true, legacy: false }
+    ],
+    "@babel/proposal-class-properties",
+    "@babel/proposal-object-rest-spread"
+];
+
+const babelInclude = [
+    "src/**/*",
+    "node_modules/lit-element/**/*",
+    "node_modules/lit-html/**/*",
+    "node_modules/@microsoft/microsoft-graph-client/lib/es/**/*",
+    "node_modules/msal/lib-es6/**/*"
 ];
 
 const es6Bundle = {
@@ -24,7 +42,18 @@ const es6Bundle = {
 		sourcemap: false
 	},
 	plugins: [
-        typescript({tsconfig: 'tsconfig.bundle.json'}),
+        babel({
+            extensions,
+            presets: [
+                [
+                    "@babel/preset-env", {
+                        "targets": ">25%"
+                    }
+                ], "@babel/typescript"
+            ],
+            plugins: babelPlugins,
+            include: babelInclude,
+        }),
         ...commonPlugins
     ]
 }
@@ -41,20 +70,15 @@ const es5Bundle = {
 	plugins: [
         babel({
             extensions,
-            presets: ["@babel/env", "@babel/typescript"],
-            plugins: [
+            presets: [
                 [
-                    "@babel/plugin-proposal-decorators",
-                    { decoratorsBeforeExport: true, legacy: false }
-                ],
-                "@babel/proposal-class-properties",
-                "@babel/proposal-object-rest-spread"
+                    "@babel/preset-env", {
+                        "targets": "last 2 versions"
+                    }
+                ], "@babel/typescript"
             ],
-            include: [
-                "src/**/*",
-                "node_modules/lit-element/**/*",
-                "node_modules/lit-html/**/*"
-            ],
+            plugins: babelPlugins,
+            include: babelInclude,
         }),
         ...commonPlugins
     ]

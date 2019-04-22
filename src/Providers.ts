@@ -1,43 +1,44 @@
 import { IProvider, EventDispatcher, EventHandler } from './providers/IProvider';
 
 export class Providers {
+  private static _eventDispatcher: EventDispatcher<ProvidersChangedState> = new EventDispatcher<
+    ProvidersChangedState
+  >();
+  private static _globalProvider: IProvider;
 
-    private static _eventDispatcher: EventDispatcher<ProviderUpdate> = new EventDispatcher<ProviderUpdate>();
-    private static _globalProvider: IProvider;
+  public static get globalProvider(): IProvider {
+    return this._globalProvider;
+  }
 
-    public static get globalProvider() : IProvider {
-        return this._globalProvider;
+  public static set globalProvider(provider: IProvider) {
+    if (provider !== this._globalProvider) {
+      if (this._globalProvider) {
+        this._globalProvider.removeStateChangedHandler(this.handleProviderStateChanged);
+      }
+
+      if (provider) {
+        provider.onStateChanged(this.handleProviderStateChanged);
+      }
+
+      this._globalProvider = provider;
+      this._eventDispatcher.fire(ProvidersChangedState.ProviderChanged);
     }
+  }
 
-    public static set globalProvider(provider: IProvider) {
-        if (provider !== this._globalProvider) {
-            if (this._globalProvider) {
-                this._globalProvider.removeStateChangedHandler(this.handleProviderStateChanged);
-    }
+  public static onProviderUpdated(event: EventHandler<ProvidersChangedState>) {
+    this._eventDispatcher.add(event);
+  }
 
-            if (provider) {
-                provider.onStateChanged(this.handleProviderStateChanged);
-            }
+  public static removeProviderUpdatedListener(event: EventHandler<ProvidersChangedState>) {
+    this._eventDispatcher.remove(event);
+  }
 
-            this._globalProvider = provider;
-            this._eventDispatcher.fire(ProviderUpdate.ProviderChanged);
-        }
-    }
-
-    public static onProviderUpdated(event : EventHandler<ProviderUpdate>) {
-                this._eventDispatcher.add(event)
-    }
-
-    public static removeProviderUpdatedListener(event: EventHandler<ProviderUpdate>) {
-                this._eventDispatcher.remove(event);
-    }
-
-    private static handleProviderStateChanged(){
-                Providers._eventDispatcher.fire(ProviderUpdate.ProviderStateChanged);
-    }
+  private static handleProviderStateChanged() {
+    Providers._eventDispatcher.fire(ProvidersChangedState.ProviderStateChanged);
+  }
 }
 
-export enum ProviderUpdate{
-    ProviderChanged,
-    ProviderStateChanged
+export enum ProvidersChangedState {
+  ProviderChanged,
+  ProviderStateChanged
 }
