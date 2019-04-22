@@ -11,6 +11,15 @@ import { ProviderState } from "../../providers/IProvider";
 import { getShortDateString } from "../../utils/utils";
 import { styles } from "./mgt-tasks-css";
 
+import {
+  ITaskSource,
+  PlannerTaskSource,
+  TodoTaskSource,
+  IDresser,
+  IDrawer,
+  ITask
+} from "./task-sources";
+
 import "../mgt-person/mgt-person";
 import "../mgt-arrow-options/mgt-arrow-options";
 import "../mgt-dot-options/mgt-dot-options";
@@ -664,6 +673,15 @@ export class MgtTasks extends LitElement {
     `;
   }
 
+  private getTaskSource(): ITaskSource {
+    let p = Providers.globalProvider;
+    if (!p || p.state !== ProviderState.SignedIn) return null;
+
+    if (this.dataSource === "planner") return new PlannerTaskSource(p.graph);
+    else if (this.dataSource === "todo") return new TodoTaskSource(p.graph);
+    else return null;
+  }
+
   private isAssignedToMe(task: PlannerTask): boolean {
     let keys = Object.keys(task.assignments);
 
@@ -700,26 +718,4 @@ export class MgtTasks extends LitElement {
       }
     ).name;
   }
-}
-
-export interface ITask {
-  id: string;
-  name: string;
-  dueDate: string;
-  completed: boolean;
-  topParentId: string;
-  immediateParentId: string;
-  assignments: PlannerAssignments;
-  eTag: string;
-}
-
-export interface IDrawer {
-  id: string;
-  name: string;
-  parentId: string;
-}
-
-export interface IDresser {
-  id: string;
-  title: string;
 }
