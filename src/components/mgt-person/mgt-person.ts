@@ -31,8 +31,10 @@ export class MgtPerson extends LitElement {
   showEmail: false;
 
   @property({
-    attribute: "person-details",
-    type: Object}) personDetails: MgtPersonDetails;
+    attribute: 'person-details',
+    type: Object
+  })
+  personDetails: MgtPersonDetails;
 
   attributeChangedCallback(name, oldval, newval) {
     super.attributeChangedCallback(name, oldval, newval);
@@ -82,20 +84,11 @@ export class MgtPerson extends LitElement {
               let person = people[0] as MicrosoftGraph.Person;
               this.personDetails = person;
 
-              if (
-                person.scoredEmailAddresses &&
-                person.scoredEmailAddresses.length
-              ) {
-                this.personDetails.email =
-                  person.scoredEmailAddresses[0].address;
-              } else if (
-                (<any>person).emailAddresses &&
-                (<any>person).emailAddresses.length
-              ) {
+              if (person.scoredEmailAddresses && person.scoredEmailAddresses.length) {
+                this.personDetails.email = person.scoredEmailAddresses[0].address;
+              } else if ((<any>person).emailAddresses && (<any>person).emailAddresses.length) {
                 // beta endpoind uses emailAddresses instead of scoredEmailAddresses
-                this.personDetails.email = (<any>(
-                  person
-                )).emailAddresses[0].address;
+                this.personDetails.email = (<any>person).emailAddresses[0].address;
               }
 
               if (person.userPrincipalName) {
@@ -133,9 +126,7 @@ export class MgtPerson extends LitElement {
         `;
       } else {
         return html`
-          <div
-            class="user-avatar initials ${this.getImageRowSpanClass()} ${this.getImageSizeClass()}"
-          >
+          <div class="user-avatar initials ${this.getImageRowSpanClass()} ${this.getImageSizeClass()}">
             <style>
               .initials-text {
                 font-size: ${this.imageSize * 0.45}px;
@@ -154,9 +145,7 @@ export class MgtPerson extends LitElement {
 
   renderEmptyImage() {
     return html`
-      <i
-        class="ms-Icon ms-Icon--Contact avatar-icon ${this.getImageRowSpanClass()} ${this.getImageSizeClass()}"
-      ></i>
+      <i class="ms-Icon ms-Icon--Contact avatar-icon ${this.getImageRowSpanClass()} ${this.getImageSizeClass()}"></i>
     `;
   }
 

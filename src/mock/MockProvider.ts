@@ -1,61 +1,59 @@
-import { IProvider, EventDispatcher, LoginChangedEvent, EventHandler, ProviderState } from "../providers/IProvider";
-import { IGraph, Graph } from "../Graph";
+import { IProvider, EventDispatcher, LoginChangedEvent, EventHandler, ProviderState } from '../providers/IProvider';
+import { IGraph, Graph } from '../Graph';
 
 export class MockProvider extends IProvider {
+  constructor(signedIn: boolean = false) {
+    super();
+    if (signedIn) {
+      this.setState(ProviderState.SignedIn);
+    } else {
+      this.setState(ProviderState.SignedOut);
+    }
+  }
 
-    constructor(signedIn: boolean = false) {
-        super();
-        if (signedIn) {
-            this.setState(ProviderState.SignedIn);
-        } else {
-            this.setState(ProviderState.SignedOut);
-        }
-    }
-    
-    async login(): Promise<void> {
-        this.setState(ProviderState.Loading);
-        await (new Promise(resolve => setTimeout(resolve, 3000)));
-        this.setState(ProviderState.SignedIn);
-    }
-    
-    async logout(): Promise<void> {
-        this.setState(ProviderState.Loading);
-        await (new Promise(resolve => setTimeout(resolve, 3000)));
-        this.setState(ProviderState.SignedOut);
-    }
-    
-    getAccessToken(): Promise<string> {
-        return Promise.resolve("");
-    }
-    provider: any;
+  async login(): Promise<void> {
+    this.setState(ProviderState.Loading);
+    await new Promise(resolve => setTimeout(resolve, 3000));
+    this.setState(ProviderState.SignedIn);
+  }
 
-    graph: IGraph = new MockGraph();
+  async logout(): Promise<void> {
+    this.setState(ProviderState.Loading);
+    await new Promise(resolve => setTimeout(resolve, 3000));
+    this.setState(ProviderState.SignedOut);
+  }
+
+  getAccessToken(): Promise<string> {
+    return Promise.resolve('');
+  }
+  provider: any;
+
+  graph: IGraph = new MockGraph();
 }
 
 export class MockGraph extends Graph {
+  private static baseUrl = 'https://proxy.apisandbox.msdn.microsoft.com/svc?url=';
+  private static rootGraphUrl: string = 'https://graph.microsoft.com/beta';
 
-    private static baseUrl = "https://proxy.apisandbox.msdn.microsoft.com/svc?url=";
-    private static rootGraphUrl: string = 'https://graph.microsoft.com/beta';
+  constructor() {
+    super(null);
+  }
 
-    constructor() {
-        super(null);
+  async get(resource: string, scopes?: string[]): Promise<Response> {
+    if (!resource.startsWith('/')) {
+      resource = '/' + resource;
     }
 
-    async get(resource: string, scopes?: string[]) : Promise<Response> {
-        if (!resource.startsWith('/')){
-            resource = "/" + resource;
-        }
+    let response = await fetch(MockGraph.baseUrl + escape(MockGraph.rootGraphUrl + resource), {
+      headers: {
+        authorization: 'Bearer {token:https://graph.microsoft.com/}'
+      }
+    });
 
-        let response = await fetch(MockGraph.baseUrl + escape(MockGraph.rootGraphUrl + resource), {
-            headers: {
-                authorization: 'Bearer {token:https://graph.microsoft.com/}'
-            }
-        });
-
-        if (response.status >= 400) {
-            throw 'error accessing mock graph data';
-        }
-
-        return response;
+    if (response.status >= 400) {
+      throw 'error accessing mock graph data';
     }
+
+    return response;
+  }
 }

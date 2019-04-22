@@ -1,38 +1,75 @@
 # The Microsoft Graph Toolkit
 
-...is a set of web components and helpers for accessing and working with the Microsoft Graph. The library is fully built in the open. 
+The Microsoft Graph Toolkit is a collection of framework agnostic web components and helpers for accessing and working with the Microsoft Graph. ALl components know how to access the Microsoft Graph out of the box.
 
-## Get Started
+## Getting Started
 
-Download the minified code from [here] and reference the toolkit.js in your html page. 
+You can install the components by referencing them through our CDN or installing them through NPM
+
+### Use via CDN:
 
 ```html
-<script src="./dist/es6/index.js"></script>
+<script src="https://mgtlib.z5.web.core.windows.net/mgt/latest/mgt-loader.js"></script>
 ```
 
-You can then start using the components in your html page
+You can then start using the components in your html page. Here is a full working example with the Msal provider:
 
 ```html
+<script src="https://mgtlib.z5.web.core.windows.net/mgt/latest/mgt-loader.js"></script>
+<mgt-msal-provider client-id="[CLIENT-ID]" ></mgt-msal-provider>
 <mgt-login></mgt-login>
 
-<mgt-person person-query="nikola metulev"></mgt-person>
+<!-- <script>
+    // alternatively, you can set the provider in code and provide more options
+    mgt.Providers.globalProvider = new mgt.MsalProvider({clientId: '[CLIENT-ID]'});
+</script> -->
 ```
 
-All the components know how to talk to the graph as long as you provide an [authentication context](./authentication.md) they can use.
+> NOTE: MSAL requires the page to be hosted in a web server for the authentication redirects. If you are just getting started and want to play around, the quickest way is to use something like [live server](https://marketplace.visualstudio.com/items?itemName=ritwickdey.LiveServer) in vscode. 
 
+### Use via NPM:
 
-## NPM
-Alternatively, you can install the components using npm
+The benefits of using MGT through NPM is that you have full control of the bundling process and you can bundle only the code you need for your site. First, add the npm package:
 
 ```bash
 npm install microsoft-graph-toolkit
 ```
 
-Then reference `node_modules/microsoft-graph-toolkit/dist/es6/index.js` in the page where you are planning to use it
+Now you can reference all components at the page you are using:
 
 ```html
-<script src="node_modules/microsoft-graph-toolkit/dist/es6/index.js"></script>
+<script src="node_modules/microsoft-graph-toolkit/dist/es6/components.js"></script>
 ```
+
+Or, just reference the component you need and avoid loading everything else:
+
+```html
+<script src="node_modules/microsoft-graph-toolkit/dist/es6/components/mgt-login/mgt-login.js"></script>
+```
+
+Similarly, to add a provider, you can add it as a component:
+
+```html
+<script src="node_modules/microsoft-graph-toolkit/dist/es6/components/providers/mgt-msal-provider.js"></script>
+
+<mgt-msal-provider client-id="[CLIENT-ID]"></mgt-msal-provider>
+```
+
+or, add it in your code:
+
+```html
+<script type="module">
+    import {MsalProvider} from 'microsoft-graph-toolkit/dist/es6/providers/MsalProvider.js';
+    import {Providers} from 'microsoft-graph-toolkit/dist/es6/Providers.js';
+
+    Providers.globalProvider = new MsalProvider({clientId: '[CLIENT-ID]'});
+</script>
+```
+## Providers
+
+The components work best when used with a [provider](./providers.md). The provider exposes authentication and Microsoft Graph apis used by the components to call into the Microsoft Graph.
+
+The toolkit contains providers for [MSAL](./providers/msal.md), [SharePoint](./providers/sharepoint.md), [Teams](./providers/teams.md), and Office Add-ins (coming soon). You can also create your own providers by extending the [IProvider] abstract class.
 
 ## Using the components with React, Angular, and other frameworks
 
@@ -79,8 +116,23 @@ class App extends Component {
     });
   }
 }
-
 ```
+
+#### React, Typescript and TSX
+
+There is a known issue using custom elements with React and Typescript where Typescript will throw an error when trying to use a component in tsx. The workaround is to define the custom element in your code:
+
+```ts
+declare global {
+  namespace JSX {
+    interface IntrinsicElements {
+      "mgt-login": any;
+    }
+  }
+}
+```
+
+You can then use it in your tsx as `<mgt-login></mgt-login>`
 
 ### Angular
 

@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>Microsoft Graph Toolkit Test</title>
+
+        <script nomodule src="https://secure.aadcdn.microsoftonline-p.com/lib/0.2.4/js/msal.min.js"></script>
+        <script nomodule src="../../../dist/bundle/mgt-loader.js"></script>
+        
+        <script type="module" src="../../../dist/es6/components/providers/mgt-msal-provider.js"></script>
+        <script type="module" src="../../../dist/es6/components/mgt-login/mgt-login.js"></script>
+        <script type="module" src="../../../dist/es6/mock/mgt-mock-provider.js"></script>
+    </head>
+    <body>
+        <mgt-login></mgt-login>
+
+        <script type="module">
+            import {Providers, MsalProvider} from '../../../dist/es6/index.js'
+            import {UserAgentApplication} from "../../../node_modules/msal/lib-es6/index.js";
+            let userAgentApplication = new UserAgentApplication("a974dfa0-9f57-49b9-95db-90f04ce2111a",
+                null,
+                callbackFunction);
+            
+            let provider = new MsalProvider({userAgentApplication: userAgentApplication});
+            
+            function callbackFunction(errorDesc, token, error, tokenType, state){
+                provider.tokenReceivedCallback(errorDesc, token, error, tokenType, state);
+            }
+
+            Providers.globalProvider = provider;
+        </script>
+
+        <script nomodule>
+            let userAgentApplication = new Msal.UserAgentApplication("a974dfa0-9f57-49b9-95db-90f04ce2111a",
+                null,
+                callbackFunction);
+            
+            let provider = new mgt.MsalProvider({userAgentApplication: userAgentApplication});
+            
+            function callbackFunction(errorDesc, token, error, tokenType, state){
+                provider.tokenReceivedCallback(errorDesc, token, error, tokenType, state);
+            }
+
+            mgt.Providers.globalProvider = provider;
+        </script>
+    </body>
+</html>

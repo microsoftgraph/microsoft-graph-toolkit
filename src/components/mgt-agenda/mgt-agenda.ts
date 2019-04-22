@@ -46,9 +46,7 @@ export class MgtAgenda extends LitElement {
             event =>
               html`
                 <li>
-                  ${this.eventTemplateFunction
-                    ? this.renderEventTemplate(event)
-                    : this.renderEvent(event)}
+                  ${this.eventTemplateFunction ? this.renderEventTemplate(event) : this.renderEvent(event)}
                 </li>
               `
           )}
@@ -76,10 +74,7 @@ export class MgtAgenda extends LitElement {
                 at =>
                   html`
                     <li class="event-attendie">
-                      <mgt-person
-                        person-query=${at.emailAddress.address}
-                        image-size="30"
-                      ></mgt-person>
+                      <mgt-person person-query=${at.emailAddress.address} image-size="30"></mgt-person>
                     </li>
                   `
               )}
