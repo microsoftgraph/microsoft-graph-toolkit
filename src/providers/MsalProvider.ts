@@ -25,8 +25,6 @@ export class MsalProvider extends IProvider {
 
   scopes: string[];
 
-  graph: Graph;
-
   constructor(config: MsalConfig) {
     super();
     this.initProvider(config);

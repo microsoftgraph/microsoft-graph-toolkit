@@ -1,6 +1,6 @@
-import { IGraph } from '../Graph';
 import { AuthenticationProvider } from '@microsoft/microsoft-graph-client/lib/es/IAuthenticationProvider';
 import { AuthenticationProviderOptions } from '@microsoft/microsoft-graph-client/lib/es/IAuthenticationProviderOptions';
+import { Graph } from '../Graph';
 
 export abstract class IProvider implements AuthenticationProvider {
   private _state: ProviderState;
@@ -37,7 +37,7 @@ export abstract class IProvider implements AuthenticationProvider {
   }
 
   abstract getAccessToken(options?: AuthenticationProviderOptions): Promise<string>;
-  graph: IGraph;
+  graph: Graph;
 }
 
 export type EventHandler<E> = (event: E) => void;

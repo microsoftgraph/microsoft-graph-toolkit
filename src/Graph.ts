@@ -3,104 +3,17 @@ import { Client } from '@microsoft/microsoft-graph-client/lib/es/Client';
 import { IProvider } from './providers/IProvider';
 import { ResponseType } from '@microsoft/microsoft-graph-client/lib/es/ResponseType';
 
-export interface IGraph {
-  me(): Promise<MicrosoftGraph.User>;
-  getUser(id: string): Promise<MicrosoftGraph.User>;
-  findPerson(query: string): Promise<MicrosoftGraph.Person[]>;
-  myPhoto(): Promise<string>;
-  getUserPhoto(id: string): Promise<string>;
-  calendar(startDateTime: Date, endDateTime: Date): Promise<Array<MicrosoftGraph.Event>>;
-}
-
-export class Graph implements IGraph {
-  private client: Client;
-
-  // private token: string;
-  private _provider: IProvider;
-  private rootUrl: string = 'https://graph.microsoft.com/beta';
+export class Graph {
+  public client: Client;
 
   constructor(provider: IProvider) {
     // this.token = token;
-    this._provider = provider;
-
-    this.client = Client.initWithMiddleware({
-      authProvider: provider
-    });
+    if (provider) {
+      this.client = Client.initWithMiddleware({
+        authProvider: provider
+      });
+    }
   }
-
-  // async getJson(resource: string, scopes? : string[]) {
-  //     let response = await this.get(resource, scopes);
-  //     if (response) {
-  //         return response.json();
-  //     }
-
-  //     return null;
-  // }
-
-  // async get(resource: string, scopes?: string[]) : Promise<Response> {
-  //     if (!resource.startsWith('/')){
-  //         resource = "/" + resource;
-  //     }
-
-  //     let token : string;
-  //     try {
-  //         token = await this._provider.getAccessToken(...scopes);
-  //     } catch (error) {
-  //         console.log(error);
-  //         return null;
-  //     }
-
-  //     if (!token) {
-  //         return null;
-  //     }
-
-  //     let response = await fetch(this.rootUrl + resource, {
-  //         headers: {
-  //             authorization: 'Bearer ' + token
-  //         }
-  //     });
-
-  //     if (response.status >= 400) {
-
-  //         // hit limit - need to wait and retry per:
-  //         // https://docs.microsoft.com/en-us/graph/throttling
-  //         if (response.status == 429) {
-  //             console.log('too many requests - wait ' + response.headers.get('Retry-After') + ' seconds');
-  //             return null;
-  //         }
-
-  //         let error : any = response.json();
-  //         if (error.error !== undefined) {
-  //             console.log(error);
-  //         }
-  //         console.log(response);
-  //         throw 'error accessing graph';
-  //     }
-
-  //     return response;
-  // }
-
-  // private async getBase64(resource: string, scopes: string[]) : Promise<string> {
-  //     try {
-  //         let response = await this.get(resource, scopes);
-  //         if (!response) {
-  //             return null;
-  //         }
-
-  //         let blob = await response.blob();
-
-  //         return new Promise((resolve, reject) => {
-  //             const reader = new FileReader;
-  //             reader.onerror = reject;
-  //             reader.onload = _ => {
-  //                 resolve(reader.result as string);
-  //             }
-  //             reader.readAsDataURL(blob);
-  //         });
-  //     } catch {
-  //         return null;
-  //     }
-  // }
 
   private blobToBase64(blob: Blob): Promise<string> {
     return new Promise((resolve, reject) => {

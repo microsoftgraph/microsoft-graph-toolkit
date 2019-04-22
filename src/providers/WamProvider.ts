@@ -1,5 +1,5 @@
 import { IProvider, LoginChangedEvent, EventDispatcher, EventHandler, ProviderState } from './IProvider';
-import { IGraph, Graph } from '../Graph';
+import { Graph } from '../Graph';
 import { AuthenticationProviderOptions } from '@microsoft/microsoft-graph-client/lib/es/IAuthenticationProviderOptions';
 
 declare interface Window {

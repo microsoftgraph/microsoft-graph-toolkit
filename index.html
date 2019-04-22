@@ -42,7 +42,7 @@
     </script> -->
     
     <!-- <mgt-person person-query="me" show-name show-email></mgt-person> -->
-    <mgt-agenda></mgt-agenda>
+    <!-- <mgt-agenda></mgt-agenda> -->
 
     <!-- <mgt-agenda id="myDay"></mgt-agenda> -->
 
@@ -80,6 +80,20 @@
         //     }
         //     return templateContent;
         // };
+    </script> -->
+
+    <!-- <script type="module">
+      import {Providers} from './dist/es6/index.js'
+      Providers.onProviderUpdated(handleProvider);
+      handleProvider();
+
+      async function handleProvider() {
+        var provider = Providers.globalProvider;
+        if (provider) {
+          let me = await provider.graph.client.api('me').get();
+          console.log(me);
+        }
+      }
     </script> -->
   </body>
 </html>
