@@ -17,7 +17,7 @@ export class MgtPerson extends LitElement {
     attribute: 'person-query'
   })
   personQuery: string;
-  
+
   @property({
     attribute: 'user-id'
   })
@@ -99,12 +99,12 @@ export class MgtPerson extends LitElement {
               this.requestUpdate();
             }
           }),
-          p.graph.myPhoto().then(photo => {
-            if (photo) {
-              person.image = photo;
-              this.requestUpdate();
-            }
-          })
+            p.graph.myPhoto().then(photo => {
+              if (photo) {
+                person.image = photo;
+                this.requestUpdate();
+              }
+            });
 
           this.personDetails = person;
         } else {
@@ -113,20 +113,11 @@ export class MgtPerson extends LitElement {
               let person = people[0] as MicrosoftGraph.Person;
               this.personDetails = person;
 
-              if (
-                person.scoredEmailAddresses &&
-                person.scoredEmailAddresses.length
-              ) {
-                this.personDetails.email =
-                  person.scoredEmailAddresses[0].address;
-              } else if (
-                (<any>person).emailAddresses &&
-                (<any>person).emailAddresses.length
-              ) {
+              if (person.scoredEmailAddresses && person.scoredEmailAddresses.length) {
+                this.personDetails.email = person.scoredEmailAddresses[0].address;
+              } else if ((<any>person).emailAddresses && (<any>person).emailAddresses.length) {
                 // beta endpoind uses emailAddresses instead of scoredEmailAddresses
-                this.personDetails.email = (<any>(
-                  person
-                )).emailAddresses[0].address;
+                this.personDetails.email = (<any>person).emailAddresses[0].address;
               }
 
               if (person.userPrincipalName) {
@@ -138,12 +129,9 @@ export class MgtPerson extends LitElement {
               }
             }
           });
+        }
       }
     }
-  }
-    
-    
-
 
     if (!this.personDetails && this.personQuery) {
       let provider = Providers.globalProvider;

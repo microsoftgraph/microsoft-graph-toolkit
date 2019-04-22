@@ -1,5 +1,5 @@
-import { PlannerAssignments } from "@microsoft/microsoft-graph-types";
-import { IGraph } from "../../Graph";
+import { PlannerAssignments, User } from '@microsoft/microsoft-graph-types';
+import { Graph } from '../../Graph';
 
 export interface ITask {
   id: string;
@@ -23,7 +23,53 @@ export interface IDresser {
   title: string;
 }
 
+interface TodoGroup {
+  id: string;
+  name: string;
+  changeKey: string;
+  isDefaultGroup: boolean;
+  groupKey: string;
+}
+
+interface TodoFolder {
+  id: string;
+  name: string;
+  changeKey: string;
+  isDefaultFolder: boolean;
+  parentGroupKey: string;
+}
+
+interface TodoTask {
+  '@odata.etag': string;
+  id: string;
+  createdDateTime: string;
+  lastModifiedDateTime: string;
+  changeKey: string;
+  categories: string[];
+  assignedTo: string;
+  hasAttachments: boolean;
+  isReminderOn: boolean;
+  owner: string;
+  parentFolderId: string;
+  sensitivity: string;
+  status: string;
+  subject: string;
+  completedDateTime: string;
+  dueDateTime: {
+    dueDate: string;
+    timeZone: string;
+  };
+  recurrence: string;
+  reminderDateTime: string;
+  startDateTime: string;
+  body: {
+    contentType: string;
+    content: string;
+  };
+}
+
 export interface ITaskSource {
+  me(): Promise<User>;
   getMyDressers(): Promise<IDresser[]>;
   getSingleDresser(id: string): Promise<IDresser>;
   getDrawersForDresser(id: string): Promise<IDrawer[]>;
@@ -33,12 +79,17 @@ export interface ITaskSource {
   setTaskIncomplete(id: string, eTag: string): Promise<any>;
 
   addTask(newTask: ITask): Promise<any>;
-  removeTask(id: string): Promise<any>;
+  removeTask(id: string, eTag: string): Promise<any>;
 }
 
-export class PlannerTaskSource implements ITaskSource {
-  constructor(public graph: IGraph) {}
+class TaskSourceBase {
+  constructor(public graph: Graph) {}
+  public async me(): Promise<User> {
+    return await this.graph.me();
+  }
+}
 
+export class PlannerTaskSource extends TaskSourceBase implements ITaskSource {
   public async getMyDressers(): Promise<IDresser[]> {
     let plans = await this.graph.planner_getAllMyPlans();
 
@@ -62,7 +113,7 @@ export class PlannerTaskSource implements ITaskSource {
     );
   }
   public async getAllTasksForDrawer(id: string): Promise<ITask[]> {
-    let tasks = await this.graph.planner_getTasksForPlan(id);
+    let tasks = await this.graph.planner_getTasksForBucket(id);
 
     return tasks.map(
       task =>
@@ -71,7 +122,7 @@ export class PlannerTaskSource implements ITaskSource {
           immediateParentId: task.bucketId,
           topParentId: task.planId,
           name: task.title,
-          eTag: task["@odata.etag"],
+          eTag: task['@odata.etag'],
           completed: task.percentComplete === 100,
           dueDate: task.dueDateTime,
           assignments: task.assignments
@@ -83,20 +134,28 @@ export class PlannerTaskSource implements ITaskSource {
     return await this.graph.planner_setTaskComplete(id, eTag);
   }
   public async setTaskIncomplete(id: string, eTag: string): Promise<any> {
-      return await this.graph.planner_setTaskIncomplete(id, eTag);
+    return await this.graph.planner_setTaskIncomplete(id, eTag);
   }
 
-  public async addTask(newTask: ITask): Promise<any> {}
-  public async removeTask(id: string): Promise<any> {}
+  public async addTask(newTask: ITask): Promise<any> {
+    return await this.graph.planner_addTask({
+      title: newTask.name,
+      bucketId: newTask.immediateParentId,
+      planId: newTask.topParentId,
+      dueDateTime: newTask.dueDate,
+      assignments: newTask.assignments
+    });
+  }
+  public async removeTask(id: string, eTag: string): Promise<any> {
+    return await this.graph.planner_removeTask(id, eTag);
+  }
 }
 
-export class TodoTaskSource implements ITaskSource {
-    constructor(public graph: IGraph) {}
-
+export class TodoTaskSource extends TaskSourceBase implements ITaskSource {
   public async getMyDressers(): Promise<IDresser[]> {
     let groups: TodoGroup[] = await this.graph.todo_getAllMyGroups();
 
-    return groups.map(group => ({ id: group.groupKey, title: group.name, } as IDresser));
+    return groups.map(group => ({ id: group.groupKey, title: group.name } as IDresser));
   }
   public async getSingleDresser(id: string): Promise<IDresser> {
     let group: TodoGroup = await this.graph.todo_getSingleGroup(id);
@@ -125,9 +184,9 @@ export class TodoTaskSource implements ITaskSource {
           immediateParentId: task.parentFolderId,
           topParentId: task.parentFolderId,
           name: task.subject,
-          eTag: task["@odata.etag"],
+          eTag: task['@odata.etag'],
           completed: !!task.completedDateTime,
-          dueDate: task.dueDateTime,
+          dueDate: task.dueDateTime.dueDate,
           assignments: {}
         } as ITask)
     );
@@ -137,52 +196,24 @@ export class TodoTaskSource implements ITaskSource {
     return await this.graph.todo_setTaskComplete(id, null, eTag);
   }
   public async setTaskIncomplete(id: string, eTag: string): Promise<any> {
-      return await this.graph.todo_setTaskIncomplete(id, eTag);
+    return await this.graph.todo_setTaskIncomplete(id, eTag);
   }
 
-  public async addTask(newTask: ITask): Promise<any> {}
-  public async removeTask(id: string): Promise<any> {}
+  public async addTask(newTask: ITask): Promise<any> {
+    return await this.graph.todo_addTask({
+      subject: newTask.name,
+      assignedTo: plannerAssignmentsToTodoAssign(newTask.assignments),
+      dueDateTime: {
+        dueDate: newTask.dueDate,
+        timeZone: 'UTC'
+      }
+    } as TodoTask);
+  }
+  public async removeTask(id: string, eTag: string): Promise<any> {
+    return await this.graph.todo_removeTask(id, eTag);
+  }
 }
 
-
-interface TodoGroup {
-    id: string;
-    name: string;
-    changeKey: string;
-    isDefaultGroup: boolean;
-    groupKey: string;
-}
-
-interface TodoFolder {
-    id: string;
-    name: string;
-    changeKey: string;
-    isDefaultFolder: boolean;
-    parentGroupKey: string;
-}
-
-interface TodoTask {
-    "@odata.etag": string;
-    id: string;
-    createdDateTime: string;
-    lastModifiedDateTime: string;
-    changeKey: string;
-    categories: string[];
-    assignedTo: string;
-    hasAttachments: boolean;
-    isReminderOn: boolean;
-    owner: string;
-    parentFolderId: string;
-    sensitivity: string;
-    status: string;
-    subject: string;
-    completedDateTime: string;
-    dueDateTime: string;
-    recurrence: string;
-    reminderDateTime: string;
-    startDateTime: string;
-    body: {
-        contentType: string,
-        content: string
-    }
+function plannerAssignmentsToTodoAssign(assignments: PlannerAssignments): string {
+  return 'John Doe';
 }

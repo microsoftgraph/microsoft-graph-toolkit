@@ -1,7 +1,7 @@
-import { LitElement, customElement, html, property } from "lit-element";
-import { styles } from "./mgt-dot-options-css";
+import { LitElement, customElement, html, property } from 'lit-element';
+import { styles } from './mgt-dot-options-css';
 
-@customElement("mgt-dot-options")
+@customElement('mgt-dot-options')
 export class MgtDotOptions extends LitElement {
   public static get styles() {
     return styles;
@@ -20,7 +20,7 @@ export class MgtDotOptions extends LitElement {
 
   public constructor() {
     super();
-    window.addEventListener("click", e => (this.menuOpen = false));
+    window.addEventListener('click', e => (this.menuOpen = false));
   }
 
   private onDotClick(e: MouseEvent) {
@@ -32,7 +32,7 @@ export class MgtDotOptions extends LitElement {
 
   public render() {
     return html`
-      <div class="DotMenu ${this.menuOpen ? "Open" : ""}">
+      <div class="DotMenu ${this.menuOpen ? 'Open' : ''}">
         <span class="DotIcon" @click=${e => this.onDotClick(e)}>
           \uE712
         </span>
@@ -49,8 +49,7 @@ export class MgtDotOptions extends LitElement {
 
   public getMenuOptions() {
     let ret = [];
-    for (let prop in this.options)
-      ret.push(this.getMenuOption(prop, this.options[prop]));
+    for (let prop in this.options) ret.push(this.getMenuOption(prop, this.options[prop]));
 
     return ret;
   }

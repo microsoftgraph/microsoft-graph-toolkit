@@ -1,7 +1,7 @@
-import { LitElement, customElement, html, property } from "lit-element";
-import { styles } from "./mgt-arrow-options-css";
+import { LitElement, customElement, html, property } from 'lit-element';
+import { styles } from './mgt-arrow-options-css';
 
-@customElement("mgt-arrow-options")
+@customElement('mgt-arrow-options')
 export class MgtArrowOptions extends LitElement {
   public static get styles() {
     return styles;
@@ -11,18 +11,18 @@ export class MgtArrowOptions extends LitElement {
   public open: boolean = false;
 
   @property({ type: String })
-  public value: string = "";
+  public value: string = '';
 
   @property({ type: Object })
   public options: { [name: string]: (e: MouseEvent) => any | void } = {};
 
-  @property({ attribute: "read-only", type: Boolean })
+  @property({ attribute: 'read-only', type: Boolean })
   public readOnly: boolean = false;
 
   public constructor() {
     super();
 
-    window.addEventListener("click", () => {
+    window.addEventListener('click', () => {
       this.open = false;
     });
   }
@@ -50,7 +50,7 @@ export class MgtArrowOptions extends LitElement {
         <span class="CurrentValue">${this.value}</span>
         ${arrowIcon}
       </span>
-      <div class="Menu ${this.open ? "Open" : "Closed"}">
+      <div class="Menu ${this.open ? 'Open' : 'Closed'}">
         ${opts}
       </div>
     `;
@@ -69,9 +69,7 @@ export class MgtArrowOptions extends LitElement {
             funcs[opt](e);
           }}"
         >
-          <span
-            class="MenuOptionCheck ${this.value === opt ? "CurrentValue" : ""}"
-          >
+          <span class="MenuOptionCheck ${this.value === opt ? 'CurrentValue' : ''}">
             \uE73E
           </span>
           <span class="MenuOptionName">${opt}</span>

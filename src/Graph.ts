@@ -85,4 +85,164 @@ export class Graph {
       .get();
     return calendarView ? calendarView.value : null;
   }
+
+  // Planner Methods
+  public async planner_getAllMyPlans(): Promise<MicrosoftGraph.PlannerPlan[]> {
+    let scopes = ['Group.Read.All'];
+
+    let plans = await this.client
+      .api('/me/planner/plans')
+      .middlewareOptions([{ scopes }])
+      .get();
+
+    return plans && plans.value;
+  }
+  public async planner_getSinglePlan(planId: string): Promise<MicrosoftGraph.PlannerPlan> {
+    let scopes = ['Group.Read.All'];
+
+    let plan = await this.client
+      .api(`/planner/plans/${planId}`)
+      .middlewareOptions([{ scopes }])
+      .get();
+
+    return plan;
+  }
+  public async planner_getBucketsForPlan(planId: string): Promise<MicrosoftGraph.PlannerBucket[]> {
+    let scopes = ['Group.Read.All'];
+
+    let buckets = await this.client
+      .api(`/planner/plans/${planId}/buckets`)
+      .middlewareOptions([{ scopes }])
+      .get();
+
+    return buckets && buckets.value;
+  }
+  public async planner_getTasksForBucket(bucketId: string): Promise<MicrosoftGraph.PlannerTask[]> {
+    let scopes = ['Group.Read.All'];
+
+    let tasks = await this.client
+      .api(`/planner/buckets/${bucketId}/tasks`)
+      .middlewareOptions([{ scopes }])
+      .get();
+
+    return tasks && tasks.value;
+  }
+  public async planner_setTaskDetails(taskId: string, details: MicrosoftGraph.PlannerTask, eTag: string): Promise<any> {
+    let scopes = ['Group.ReadWrite.All'];
+
+    return await this.client
+      .api(`/planner/tasks/${taskId}`)
+      .middlewareOptions([{ scopes }])
+      .header('If-Match', eTag)
+      .patch(JSON.stringify(details));
+  }
+  public async planner_setTaskComplete(taskId: string, eTag: string): Promise<any> {
+    return this.planner_setTaskDetails(
+      taskId,
+      {
+        percentComplete: 100
+      },
+      eTag
+    );
+  }
+  public async planner_setTaskIncomplete(taskId: string, eTag: string): Promise<any> {
+    return this.planner_setTaskDetails(
+      taskId,
+      {
+        percentComplete: 0
+      },
+      eTag
+    );
+  }
+  public async planner_addTask(newTask: MicrosoftGraph.PlannerTask): Promise<any> {
+    let scopes = ['Group.ReadWrite.All'];
+
+    return this.client
+      .api(`/planner/tasks`)
+      .middlewareOptions([{ scopes }])
+      .post(JSON.stringify(newTask));
+  }
+  public async planner_removeTask(taskId: string, eTag: string): Promise<any> {
+    let scopes = ['Group.ReadWrite.All'];
+
+    return this.client
+      .api(`/planner/tasks/${taskId}`)
+      .header('If-Match', eTag)
+      .middlewareOptions([{ scopes }])
+      .delete();
+  }
+
+  // Todo Methods
+  public async todo_getAllMyGroups(): Promise<any> {
+    let scopes = ['Tasks.Read'];
+
+    let groups = await this.client
+      .api('/me/outlook/taskGroups')
+      .middlewareOptions([{ scopes }])
+      .get();
+
+    return groups && groups.value;
+  }
+  public async todo_getSingleGroup(groupId: string): Promise<any> {
+    let scopes = ['Tasks.Read'];
+
+    let group = await this.client
+      .api(`/me/outlook/taskGroup/${groupId}`)
+      .middlewareOptions([{ scopes }])
+      .get();
+
+    return group;
+  }
+  public async todo_getFoldersForGroup(groupId: string): Promise<any> {
+    let scopes = ['Tasks.Read'];
+
+    let folders = await this.client
+      .api(`/me/outlook/taskGroup/${groupId}/taskFolders`)
+      .middlewareOptions([{ scopes }])
+      .get();
+
+    return folders && folders.value;
+  }
+  public async todo_getAllTasksForFolder(folderId: string): Promise<any> {
+    let scopes = ['Tasks.Read'];
+
+    let tasks = await this.client
+      .api(`/me/outlook/taskFolders/${folderId}/tasks`)
+      .middlewareOptions([{ scopes }])
+      .get();
+
+    return tasks && tasks.value;
+  }
+  public async todo_setTaskDetails(taskId: string, task: any, eTag: string): Promise<any> {
+    let scopes = ['Tasks.ReadWrite'];
+
+    return await this.client
+      .api(`/me/outlook/tasks/${taskId}`)
+      .header('If-Match', eTag)
+      .middlewareOptions([{ scopes }])
+      .patch(JSON.stringify(task));
+  }
+  public async todo_setTaskComplete(taskId: string, dateTime: string, eTag: string): Promise<any> {
+    return await this.todo_setTaskDetails(taskId, {}, eTag);
+  }
+  public async todo_setTaskIncomplete(taskId: string, eTag: string): Promise<any> {
+    return await this.todo_setTaskDetails(taskId, {}, eTag);
+  }
+  public async todo_addTask(newTask: any): Promise<any> {
+    let scopes = ['Tasks.ReadWrite'];
+
+    return await this.client
+      .api(`/me/outlook/tasks`)
+      .middlewareOptions([{ scopes }])
+      .post(JSON.stringify(newTask));
+  }
+  public async todo_removeTask(taskId: string, eTag: string): Promise<any> {
+    let scopes = ['Tasks.ReadWrite'];
+
+    return await this.client
+      .api(`/me/outlook/tasks/${taskId}`)
+      .header('If-Match', eTag)
+      .middlewareOptions([{ scopes }])
+      .delete();
+  }
 }
