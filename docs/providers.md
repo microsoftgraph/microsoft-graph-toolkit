@@ -38,7 +38,7 @@ You can create a provider at any time, but it's recommended to create it before 
 The toolkit provides two ways to create new providers:
 
 * Create a new `SimpleProvider` by passing in a function for getting an access token, or
-* Extending the `IProvider` abstract class
+* Extend the `IProvider` abstract class
 
 Read more about each one in the [custom providers](./providers/custom.md) documentation;
 
