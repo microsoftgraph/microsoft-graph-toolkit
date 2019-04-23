@@ -16,6 +16,7 @@
     
     <script type="module" src="./dist/es6/components/providers/mgt-msal-provider.js"></script>
     <script type="module" src="./dist/es6/components/mgt-login/mgt-login.js"></script>
+    <script type="module" src="./dist/es6/components/mgt-agenda/mgt-agenda.js"></script>
     <script type="module" src="./dist/es6/mock/mgt-mock-provider.js"></script>
   </head>
   <body>
@@ -98,6 +99,20 @@
         //     }
         //     return templateContent;
         // };
+    </script> -->
+
+    <!-- <script type="module">
+      import {Providers} from './dist/es6/index.js'
+      Providers.onProviderUpdated(handleProvider);
+      handleProvider();
+
+      async function handleProvider() {
+        var provider = Providers.globalProvider;
+        if (provider) {
+          let me = await provider.graph.client.api('me').get();
+          console.log(me);
+        }
+      }
     </script> -->
   </body>
 </html>

@@ -1,5 +1,5 @@
-import { IProvider, LoginChangedEvent, EventDispatcher, EventHandler, ProviderState } from './IProvider';
-import { IGraph, Graph } from '../Graph';
+import { IProvider, ProviderState } from './IProvider';
+import { Graph } from '../Graph';
 
 declare interface AadTokenProvider {
   getToken(x: string);
@@ -26,8 +26,6 @@ export class SharePointProvider extends IProvider {
 
   scopes: string[];
   authority: string;
-
-  graph: IGraph;
 
   constructor(context: WebPartContext) {
     super();

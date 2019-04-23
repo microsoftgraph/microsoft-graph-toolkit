@@ -1,5 +1,7 @@
-import { IProvider, EventDispatcher, LoginChangedEvent, EventHandler, ProviderState } from '../providers/IProvider';
-import { IGraph, Graph } from '../Graph';
+import * as MicrosoftGraph from '@microsoft/microsoft-graph-types';
+import { IProvider, ProviderState } from '../providers/IProvider';
+import { Graph } from '../Graph';
+import { Client } from '@microsoft/microsoft-graph-client/lib/es/Client';
 
 export class MockProvider extends IProvider {
   constructor(signedIn: boolean = false) {
@@ -24,36 +26,32 @@ export class MockProvider extends IProvider {
   }
 
   getAccessToken(): Promise<string> {
-    return Promise.resolve('');
+    return Promise.resolve('{token:https://graph.microsoft.com/}');
   }
   provider: any;
 
-  graph: IGraph = new MockGraph();
+  graph = new MockGraph(this);
 }
 
 export class MockGraph extends Graph {
-  private static baseUrl = 'https://proxy.apisandbox.msdn.microsoft.com/svc?url=';
-  private static rootGraphUrl: string = 'https://graph.microsoft.com/beta';
+  private baseUrl = 'https://proxy.apisandbox.msdn.microsoft.com/svc?url=';
+  private rootGraphUrl: string = 'https://graph.microsoft.com/';
 
-  constructor() {
+  constructor(provider: MockProvider) {
     super(null);
+
+    this.client = Client.initWithMiddleware({
+      baseUrl: this.baseUrl + escape(this.rootGraphUrl),
+      authProvider: provider
+    });
   }
 
-  async get(resource: string, scopes?: string[]): Promise<Response> {
-    if (!resource.startsWith('/')) {
-      resource = '/' + resource;
-    }
+  async calendar(startDateTime: Date, endDateTime: Date): Promise<Array<MicrosoftGraph.Event>> {
+    let sdt = `startdatetime=${startDateTime.toISOString()}`;
+    let edt = `enddatetime=${endDateTime.toISOString()}`;
+    let uri = `/me/calendarview?${sdt}&${edt}`;
 
-    let response = await fetch(MockGraph.baseUrl + escape(MockGraph.rootGraphUrl + resource), {
-      headers: {
-        authorization: 'Bearer {token:https://graph.microsoft.com/}'
-      }
-    });
-
-    if (response.status >= 400) {
-      throw 'error accessing mock graph data';
-    }
-
-    return response;
+    let calendarView = await this.client.api(escape(uri)).get();
+    return calendarView ? calendarView.value : null;
   }
 }

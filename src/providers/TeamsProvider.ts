@@ -1,5 +1,5 @@
-import { IProvider, LoginChangedEvent, EventDispatcher, EventHandler, ProviderState } from './IProvider';
-import { IGraph, Graph } from '../Graph';
+import { IProvider, ProviderState } from './IProvider';
+import { Graph } from '../Graph';
 import * as microsoftTeams from '@microsoft/teams-js';
 
 declare global {
@@ -263,8 +263,6 @@ export class TeamsProvider extends IProvider {
 
   scopes: string[];
   authority: string;
-
-  graph: IGraph;
 
   constructor(clientId: string, loginPopupUrl: string) {
     super();
