@@ -11,12 +11,45 @@ import '../mgt-person/mgt-person';
 import '../mgt-arrow-options/mgt-arrow-options';
 import '../mgt-dot-options/mgt-dot-options';
 
+const TASK_RES = {
+  todo: {
+    DUE_DATE_TIME: 'T17:00',
+    BASE_SELF_ASSIGNED: 'All Tasks',
+    PLANS_SELF_ASSIGNED: 'All groups',
+    BUCKETS_SELF_ASSIGNED: 'All Folders',
+    PLAN_NOT_FOUND: 'Group not found',
+    BUCKET_NOT_FOUND: 'Folder not found'
+  },
+  planner: {
+    DUE_DATE_TIME: 'T17:00',
+    BASE_SELF_ASSIGNED: 'Assigned to Me',
+    PLANS_SELF_ASSIGNED: 'All Plans',
+    BUCKETS_SELF_ASSIGNED: 'All Buckets',
+    PLAN_NOT_FOUND: 'Plan not found',
+    BUCKET_NOT_FOUND: 'Bucket not found'
+  },
+  generic: {
+    DUE_DATE_TIME: 'T17:00',
+    BASE_SELF_ASSIGNED: 'Base Option',
+    PLANS_SELF_ASSIGNED: 'All Top Level',
+    BUCKETS_SELF_ASSIGNED: 'All Medium Level',
+    PLAN_NOT_FOUND: 'Top not found',
+    BUCKET_NOT_FOUND: 'Medium not found'
+  }
+};
+
 @customElement('mgt-tasks')
 export class MgtTasks extends LitElement {
-  public static DUE_DATE_TIME = 'T17:00';
-  public static BASE_SELF_ASSIGNED = 'Assigned to me';
-  public static PLANS_SELF_ASSIGNED = 'All Dressers';
-  public static BUCKETS_SELF_ASSIGNED = 'All Drawers';
+  public get res() {
+    switch (this.dataSource) {
+      case 'todo':
+        return TASK_RES.todo;
+      case 'planner':
+        return TASK_RES.planner;
+      default:
+        return TASK_RES.generic;
+    }
+  }
 
   public static get styles() {
     return styles;
@@ -50,9 +83,9 @@ export class MgtTasks extends LitElement {
   @property() private _drawers: IDrawer[] = [];
   @property() private _tasks: ITask[] = [];
 
-  @property() private _currentTargetDresser: string = MgtTasks.BASE_SELF_ASSIGNED;
-  @property() private _currentSubTargetDresser: string = MgtTasks.PLANS_SELF_ASSIGNED;
-  @property() private _currentTargetDrawer: string = MgtTasks.BUCKETS_SELF_ASSIGNED;
+  @property() private _currentTargetDresser: string = this.res.BASE_SELF_ASSIGNED;
+  @property() private _currentSubTargetDresser: string = this.res.PLANS_SELF_ASSIGNED;
+  @property() private _currentTargetDrawer: string = this.res.BUCKETS_SELF_ASSIGNED;
 
   @property() private _hiddenTasks: string[] = [];
   @property() private _loadingTasks: string[] = [];
@@ -61,11 +94,11 @@ export class MgtTasks extends LitElement {
 
   constructor() {
     super();
-    Providers.onProviderUpdated(() => this.loadPlanners());
-    this.loadPlanners();
+    Providers.onProviderUpdated(() => this.loadTasks());
+    this.loadTasks();
   }
 
-  private async loadPlanners() {
+  private async loadTasks() {
     let ts = this.getTaskSource();
     if (!ts) return;
 
@@ -79,10 +112,9 @@ export class MgtTasks extends LitElement {
         []
       );
 
-      let tasks = (await Promise.all(drawers.map(drawer => ts.getAllTasksForDrawer(drawer.id)))).reduce(
-        (cur, ret) => [...cur, ...ret],
-        []
-      );
+      let tasks = (await Promise.all(
+        drawers.map(drawer => ts.getAllTasksForDrawer(drawer.id, drawer.parentId))
+      )).reduce((cur, ret) => [...cur, ...ret], []);
 
       this._tasks = tasks;
       this._drawers = drawers;
@@ -90,10 +122,9 @@ export class MgtTasks extends LitElement {
     } else {
       let dresser = await ts.getSingleDresser(this.targetPlannerId);
       let drawers = await ts.getDrawersForDresser(dresser.id);
-      let tasks = (await Promise.all(drawers.map(drawer => ts.getAllTasksForDrawer(drawer.id)))).reduce(
-        (cur, ret) => [...cur, ...ret],
-        []
-      );
+      let tasks = (await Promise.all(
+        drawers.map(drawer => ts.getAllTasksForDrawer(drawer.id, drawer.parentId))
+      )).reduce((cur, ret) => [...cur, ...ret], []);
 
       this._tasks = tasks;
       this._drawers = drawers;
@@ -123,7 +154,7 @@ export class MgtTasks extends LitElement {
 
     this._newTaskLoading = true;
     await ts.addTask(newTask);
-    await this.loadPlanners();
+    await this.loadTasks();
     this._newTaskLoading = false;
     this.closeNewTask(null);
   }
@@ -133,7 +164,7 @@ export class MgtTasks extends LitElement {
     if (!ts) return;
     this._loadingTasks = [...this._loadingTasks, task.id];
     await ts.setTaskComplete(task.id, task.eTag);
-    await this.loadPlanners();
+    await this.loadTasks();
     this._loadingTasks = this._loadingTasks.filter(id => id !== task.id);
   }
 
@@ -143,7 +174,7 @@ export class MgtTasks extends LitElement {
 
     this._loadingTasks = [...this._loadingTasks, task.id];
     await ts.setTaskIncomplete(task.id, task.eTag);
-    await this.loadPlanners();
+    await this.loadTasks();
     this._loadingTasks = this._loadingTasks.filter(id => id !== task.id);
   }
 
@@ -153,7 +184,7 @@ export class MgtTasks extends LitElement {
 
     this._hiddenTasks = [...this._hiddenTasks, task.id];
     await ts.removeTask(task.id, task.eTag);
-    await this.loadPlanners();
+    await this.loadTasks();
     this._hiddenTasks = this._hiddenTasks.filter(id => id !== task.id);
   }
 
@@ -173,29 +204,20 @@ export class MgtTasks extends LitElement {
   private taskPlanFilter(task: ITask) {
     return (
       task.topParentId === this._currentTargetDresser ||
-      (this._currentTargetDresser === MgtTasks.BASE_SELF_ASSIGNED && this.isAssignedToMe(task))
+      (this.isDefault(this._currentTargetDresser) && this.isAssignedToMe(task))
     );
   }
 
   private taskSubPlanFilter(task: ITask) {
-    return (
-      task.topParentId === this._currentSubTargetDresser ||
-      this._currentSubTargetDresser === MgtTasks.PLANS_SELF_ASSIGNED
-    );
+    return task.topParentId === this._currentSubTargetDresser || this.isDefault(this._currentSubTargetDresser);
   }
 
   private taskBucketPlanFilter(task: ITask) {
-    return (
-      task.immediateParentId === this._currentTargetDrawer ||
-      this._currentTargetDrawer === MgtTasks.BUCKETS_SELF_ASSIGNED
-    );
+    return task.immediateParentId === this._currentTargetDrawer || this.isDefault(this._currentTargetDrawer);
   }
 
   public render() {
-    if (
-      this.initialPlannerId &&
-      (!this._currentTargetDresser || this._currentTargetDresser === MgtTasks.BASE_SELF_ASSIGNED)
-    ) {
+    if (this.initialPlannerId && (!this._currentTargetDresser || this.isDefault(this._currentTargetDresser))) {
       this._currentTargetDresser = this.initialPlannerId;
       this.initialPlannerId = null;
     }
@@ -251,43 +273,43 @@ export class MgtTasks extends LitElement {
         </span>
         ${addButton}
       `;
-    } else if (this._currentTargetDresser === MgtTasks.BASE_SELF_ASSIGNED) {
-      let planOpts = {
-        [MgtTasks.BASE_SELF_ASSIGNED]: e => {
-          this._currentTargetDresser = MgtTasks.BASE_SELF_ASSIGNED;
-          this._currentSubTargetDresser = MgtTasks.PLANS_SELF_ASSIGNED;
-          this._currentTargetDrawer = MgtTasks.BUCKETS_SELF_ASSIGNED;
+    } else if (!this._currentTargetDresser || this.isDefault(this._currentTargetDresser)) {
+      let dresserOpts = {
+        [this.res.BASE_SELF_ASSIGNED]: e => {
+          this._currentTargetDresser = this.res.BASE_SELF_ASSIGNED;
+          this._currentSubTargetDresser = this.res.PLANS_SELF_ASSIGNED;
+          this._currentTargetDrawer = this.res.BUCKETS_SELF_ASSIGNED;
           this._newTaskSelfAssigned = true;
         }
       };
 
-      for (let plan of this._dressers)
-        planOpts[plan.title] = e => {
-          this._currentTargetDresser = plan.id;
-          this._currentSubTargetDresser = MgtTasks.PLANS_SELF_ASSIGNED;
-          this._currentTargetDrawer = MgtTasks.BUCKETS_SELF_ASSIGNED;
+      for (let dresser of this._dressers)
+        dresserOpts[dresser.title] = e => {
+          this._currentTargetDresser = dresser.id;
+          this._currentSubTargetDresser = this.res.PLANS_SELF_ASSIGNED;
+          this._currentTargetDrawer = this.res.BUCKETS_SELF_ASSIGNED;
         };
 
       // let subPlanOpts = {
-      //   [MgtTasks.PLANS_SELF_ASSIGNED]: e => {
-      //     this._currentSubTargetPlanner = MgtTasks.PLANS_SELF_ASSIGNED;
-      //     this._currentTargetBucket = MgtTasks.BUCKETS_SELF_ASSIGNED;
+      //   [this.res.PLANS_SELF_ASSIGNED]: e => {
+      //     this._currentSubTargetPlanner = this.res.PLANS_SELF_ASSIGNED;
+      //     this._currentTargetBucket = this.res.BUCKETS_SELF_ASSIGNED;
       //   }
       // };
 
       // for (let plan of this._planners)
       //   subPlanOpts[plan.title] = e => {
       //     this._currentSubTargetPlanner = plan.id;
-      //     this._currentTargetBucket = MgtTasks.BUCKETS_SELF_ASSIGNED;
+      //     this._currentTargetBucket = this.res.BUCKETS_SELF_ASSIGNED;
       //   };
 
       // let bucketOpts = {
-      //   [MgtTasks.BUCKETS_SELF_ASSIGNED]: (e: MouseEvent) => {
-      //     this._currentTargetBucket = MgtTasks.BUCKETS_SELF_ASSIGNED;
+      //   [this.res.BUCKETS_SELF_ASSIGNED]: (e: MouseEvent) => {
+      //     this._currentTargetBucket = this.res.BUCKETS_SELF_ASSIGNED;
       //   }
       // };
 
-      // if (this._currentSubTargetPlanner !== MgtTasks.BASE_SELF_ASSIGNED) {
+      // if (this._currentSubTargetPlanner !== this.res.BASE_SELF_ASSIGNED) {
       //   let buckets = this._plannerBuckets.filter(
       //     bucket => bucket.planId === this._currentSubTargetPlanner
       //   );
@@ -299,49 +321,49 @@ export class MgtTasks extends LitElement {
 
       return html`
         <mgt-arrow-options
-          .options="${planOpts}"
-          .value="${this.getPlanTitle(this._currentTargetDresser)}"
+          .options="${dresserOpts}"
+          .value="${this.getPlanTitle(this._currentTargetDresser || this.res.BASE_SELF_ASSIGNED)}"
         ></mgt-arrow-options>
         ${addButton}
       `;
     } else {
-      let planOpts = {
-        [MgtTasks.BASE_SELF_ASSIGNED]: e => {
-          this._currentTargetDresser = MgtTasks.BASE_SELF_ASSIGNED;
-          this._currentSubTargetDresser = MgtTasks.PLANS_SELF_ASSIGNED;
-          this._currentTargetDrawer = MgtTasks.BUCKETS_SELF_ASSIGNED;
+      let dresserOpts = {
+        [this.res.BASE_SELF_ASSIGNED]: e => {
+          this._currentTargetDresser = this.res.BASE_SELF_ASSIGNED;
+          this._currentSubTargetDresser = this.res.PLANS_SELF_ASSIGNED;
+          this._currentTargetDrawer = this.res.BUCKETS_SELF_ASSIGNED;
           this._newTaskSelfAssigned = true;
         }
       };
 
-      for (let plan of this._dressers)
-        planOpts[plan.title] = e => {
-          this._currentTargetDresser = plan.id;
-          this._currentTargetDrawer = MgtTasks.BUCKETS_SELF_ASSIGNED;
+      for (let dresser of this._dressers)
+        dresserOpts[dresser.title] = e => {
+          this._currentTargetDresser = dresser.id;
+          this._currentTargetDrawer = this.res.BUCKETS_SELF_ASSIGNED;
         };
 
-      let bucketOpts = {
-        [MgtTasks.BUCKETS_SELF_ASSIGNED]: (e: MouseEvent) => {
-          this._currentTargetDrawer = MgtTasks.BUCKETS_SELF_ASSIGNED;
+      let drawerOpts = {
+        [this.res.BUCKETS_SELF_ASSIGNED]: (e: MouseEvent) => {
+          this._currentTargetDrawer = this.res.BUCKETS_SELF_ASSIGNED;
         }
       };
 
-      if (this._currentTargetDresser !== MgtTasks.BASE_SELF_ASSIGNED) {
-        let buckets = this._drawers.filter(bucket => bucket.parentId === this._currentTargetDresser);
-        for (let bucket of buckets)
-          bucketOpts[bucket.name] = (e: MouseEvent) => {
-            this._currentTargetDrawer = bucket.id;
+      if (!this.isDefault(this._currentTargetDresser)) {
+        let drawers = this._drawers.filter(drawer => drawer.parentId === this._currentTargetDresser);
+        for (let drawer of drawers)
+          drawerOpts[drawer.name] = (e: MouseEvent) => {
+            this._currentTargetDrawer = drawer.id;
           };
       }
 
       return html`
         <mgt-arrow-options
-          .options="${planOpts}"
-          .value="${this.getPlanTitle(this._currentTargetDresser)}"
+          .options="${dresserOpts}"
+          .value="${this.getPlanTitle(this._currentTargetDresser || this.res.BASE_SELF_ASSIGNED)}"
         ></mgt-arrow-options>
         <mgt-arrow-options
-          .options="${bucketOpts}"
-          .value="${this.getDrawerName(this._currentTargetDrawer)}"
+          .options="${drawerOpts}"
+          .value="${this.getDrawerName(this._currentTargetDrawer || this.res.BUCKETS_SELF_ASSIGNED)}"
         ></mgt-arrow-options>
         ${addButton}
       `;
@@ -370,59 +392,57 @@ export class MgtTasks extends LitElement {
       </span>
     `;
 
-    let taskPlan =
-      this._currentTargetDresser !== MgtTasks.BASE_SELF_ASSIGNED
-        ? html`
-            <span class="TaskDetail TaskAssignee">
-              <span class="TaskIcon">\uF5DC</span>
-              <span>${this.getPlanTitle(this._currentTargetDresser)}</span>
-            </span>
-          `
-        : html`
-            <span class="TaskDetail TaskAssignee">
-              <span class="TaskIcon">\uF5DC</span>
-              <select
-                @change="${(e: Event & { target: HTMLSelectElement }) => {
-                  this._newTaskDresserId = e.target.value;
-                }}"
-              >
-                <option value="">Unassigned</option>
-                ${this._dressers.map(
-                  plan => html`
-                    <option value="${plan.id}">${plan.title}</option>
+    let taskPlan = !this.isDefault(this._currentTargetDresser)
+      ? html`
+          <span class="TaskDetail TaskAssignee">
+            <span class="TaskIcon">\uF5DC</span>
+            <span>${this.getPlanTitle(this._currentTargetDresser)}</span>
+          </span>
+        `
+      : html`
+          <span class="TaskDetail TaskAssignee">
+            <span class="TaskIcon">\uF5DC</span>
+            <select
+              @change="${(e: Event & { target: HTMLSelectElement }) => {
+                this._newTaskDresserId = e.target.value;
+              }}"
+            >
+              <option value="">Unassigned</option>
+              ${this._dressers.map(
+                plan => html`
+                  <option value="${plan.id}">${plan.title}</option>
+                `
+              )}
+            </select>
+          </span>
+        `;
+
+    let taskBucket = !this.isDefault(this._currentTargetDrawer)
+      ? html`
+          <span class="TaskDetail TaskBucket">
+            <span class="TaskIcon">\uF1B6</span>
+            <span>${this.getDrawerName(this._currentTargetDrawer)}</span>
+          </span>
+        `
+      : html`
+          <span class="TaskDetail TaskBucket">
+            <span class="TaskIcon">\uF1B6</span>
+            <select
+              @change="${(e: Event & { target: HTMLSelectElement }) => {
+                this._newTaskDrawerId = e.target.value;
+              }}"
+            >
+              <option value="">Unassigned</option>
+              ${this._drawers
+                .filter(drawer => drawer.parentId === this._newTaskDresserId)
+                .map(
+                  drawer => html`
+                    <option value="${drawer.id}">${drawer.name}</option>
                   `
                 )}
-              </select>
-            </span>
-          `;
-
-    let taskBucket =
-      this._currentTargetDrawer !== MgtTasks.BUCKETS_SELF_ASSIGNED
-        ? html`
-            <span class="TaskDetail TaskBucket">
-              <span class="TaskIcon">\uF1B6</span>
-              <span>${this.getDrawerName(this._currentTargetDrawer)}</span>
-            </span>
-          `
-        : html`
-            <span class="TaskDetail TaskBucket">
-              <span class="TaskIcon">\uF1B6</span>
-              <select
-                @change="${(e: Event & { target: HTMLSelectElement }) => {
-                  this._newTaskDrawerId = e.target.value;
-                }}"
-              >
-                <option value="">Unassigned</option>
-                ${this._drawers
-                  .filter(drawer => drawer.parentId === this._newTaskDresserId)
-                  .map(
-                    drawer => html`
-                      <option value="${drawer.id}">${drawer.name}</option>
-                    `
-                  )}
-              </select>
-            </span>
-          `;
+            </select>
+          </span>
+        `;
 
     let taskDue = html`
       <span class="TaskDetail TaskDue">
@@ -460,17 +480,13 @@ export class MgtTasks extends LitElement {
             if (
               !this._newTaskLoading &&
               this._newTaskName &&
-              (this._currentTargetDresser !== MgtTasks.BASE_SELF_ASSIGNED || this._newTaskDresserId)
+              (!this.isDefault(this._currentTargetDresser) || this._newTaskDresserId)
             )
               this.addTask(
                 this._newTaskName,
-                this._newTaskDueDate ? this._newTaskDueDate + MgtTasks.DUE_DATE_TIME : null,
-                this._currentTargetDresser === MgtTasks.BASE_SELF_ASSIGNED
-                  ? this._newTaskDresserId
-                  : this._currentTargetDresser,
-                this._currentTargetDrawer === MgtTasks.BUCKETS_SELF_ASSIGNED
-                  ? this._newTaskDrawerId
-                  : this._currentTargetDrawer,
+                this._newTaskDueDate ? this._newTaskDueDate + this.res.DUE_DATE_TIME : null,
+                this.isDefault(this._currentTargetDresser) ? this._newTaskDresserId : this._currentTargetDresser,
+                this.isDefault(this._currentTargetDrawer) ? this._newTaskDrawerId : this._currentTargetDrawer,
                 this._newTaskSelfAssigned
                   ? {
                       [this._me.id]: {
@@ -531,25 +547,23 @@ export class MgtTasks extends LitElement {
           <span class="TaskCheck TaskIcon Incomplete"></span>
         `;
 
-    let taskPlan =
-      this._currentTargetDresser !== MgtTasks.BASE_SELF_ASSIGNED
-        ? null
-        : html`
-            <span class="TaskDetail TaskAssignee">
-              <span class="TaskIcon">\uF5DC</span>
-              <span>${this.getPlanTitle(task.topParentId)}</span>
-            </span>
-          `;
+    let taskPlan = !this.isDefault(this._currentTargetDresser)
+      ? null
+      : html`
+          <span class="TaskDetail TaskAssignee">
+            <span class="TaskIcon">\uF5DC</span>
+            <span>${this.getPlanTitle(task.topParentId)}</span>
+          </span>
+        `;
 
-    let taskBucket =
-      this._currentTargetDrawer !== MgtTasks.BUCKETS_SELF_ASSIGNED
-        ? null
-        : html`
-            <span class="TaskDetail TaskBucket">
-              <span class="TaskIcon">\uF1B6</span>
-              <span>${this.getDrawerName(task.immediateParentId)}</span>
-            </span>
-          `;
+    let taskBucket = !this.isDefault(this._currentTargetDrawer)
+      ? null
+      : html`
+          <span class="TaskDetail TaskBucket">
+            <span class="TaskIcon">\uF1B6</span>
+            <span>${this.getDrawerName(task.immediateParentId)}</span>
+          </span>
+        `;
 
     let taskDue = !dueDate
       ? null
@@ -622,8 +636,9 @@ export class MgtTasks extends LitElement {
   }
 
   private isAssignedToMe(task: ITask): boolean {
-    let keys = Object.keys(task.assignments);
+    if (this.dataSource === 'todo') return true;
 
+    let keys = Object.keys(task.assignments);
     return keys.includes(this._me.id);
   }
 
@@ -636,22 +651,30 @@ export class MgtTasks extends LitElement {
   }
 
   private getPlanTitle(planId: string): string {
-    if (planId === MgtTasks.BASE_SELF_ASSIGNED) return MgtTasks.BASE_SELF_ASSIGNED;
-    else if (planId === MgtTasks.PLANS_SELF_ASSIGNED) return MgtTasks.PLANS_SELF_ASSIGNED;
+    if (this.isDefault(planId)) return this.res.BASE_SELF_ASSIGNED;
+    else if (planId === this.res.PLANS_SELF_ASSIGNED) return this.res.PLANS_SELF_ASSIGNED;
     else
       return (
         this._dressers.find(plan => plan.id === planId) || {
-          title: 'Plan Not Found'
+          title: this.res.PLAN_NOT_FOUND
         }
       ).title;
   }
 
   private getDrawerName(bucketId: string): string {
-    if (bucketId === MgtTasks.BUCKETS_SELF_ASSIGNED) return MgtTasks.BUCKETS_SELF_ASSIGNED;
+    if (this.isDefault(bucketId)) return this.res.BUCKETS_SELF_ASSIGNED;
     return (
       this._drawers.find(buck => buck.id === bucketId) || {
-        name: 'Bucket not Found'
+        name: this.res.BUCKET_NOT_FOUND
       }
     ).name;
+  }
+
+  private isDefault(id: string) {
+    for (let res in TASK_RES) {
+      for (let prop in TASK_RES[res]) if (id === TASK_RES[res][prop]) return true;
+    }
+
+    return false;
   }
 }

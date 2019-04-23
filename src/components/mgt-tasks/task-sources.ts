@@ -20,6 +20,7 @@ export interface IDrawer {
 
 export interface IDresser {
   id: string;
+  secondaryId?: string;
   title: string;
 }
 
@@ -56,7 +57,7 @@ interface TodoTask {
   subject: string;
   completedDateTime: string;
   dueDateTime: {
-    dueDate: string;
+    dateTime: string;
     timeZone: string;
   };
   recurrence: string;
@@ -73,7 +74,7 @@ export interface ITaskSource {
   getMyDressers(): Promise<IDresser[]>;
   getSingleDresser(id: string): Promise<IDresser>;
   getDrawersForDresser(id: string): Promise<IDrawer[]>;
-  getAllTasksForDrawer(id: string): Promise<ITask[]>;
+  getAllTasksForDrawer(id: string, parId: string): Promise<ITask[]>;
 
   setTaskComplete(id: string, eTag: string): Promise<any>;
   setTaskIncomplete(id: string, eTag: string): Promise<any>;
@@ -153,47 +154,52 @@ export class PlannerTaskSource extends TaskSourceBase implements ITaskSource {
 
 export class TodoTaskSource extends TaskSourceBase implements ITaskSource {
   public async getMyDressers(): Promise<IDresser[]> {
+    console.log('Getting My Dressers!');
+
     let groups: TodoGroup[] = await this.graph.todo_getAllMyGroups();
 
-    return groups.map(group => ({ id: group.groupKey, title: group.name } as IDresser));
+    return groups.map(group => ({ id: group.id, secondaryId: group.groupKey, title: group.name } as IDresser));
   }
   public async getSingleDresser(id: string): Promise<IDresser> {
     let group: TodoGroup = await this.graph.todo_getSingleGroup(id);
 
-    return { id: group.groupKey, title: group.name };
+    return { id: group.id, secondaryId: group.groupKey, title: group.name };
   }
   public async getDrawersForDresser(id: string): Promise<IDrawer[]> {
+    console.log('Getting Drawers for Dresser: ', id);
+
     let folders: TodoFolder[] = await this.graph.todo_getFoldersForGroup(id);
 
     return folders.map(
       folder =>
         ({
           id: folder.id,
-          parentId: folder.parentGroupKey,
+          parentId: id,
           name: folder.name
         } as IDrawer)
     );
   }
-  public async getAllTasksForDrawer(id: string): Promise<ITask[]> {
+  public async getAllTasksForDrawer(id: string, parId: string): Promise<ITask[]> {
+    console.log('Getting Tasks for Drawer: ', id);
     let tasks: TodoTask[] = await this.graph.todo_getAllTasksForFolder(id);
 
     return tasks.map(
       task =>
         ({
           id: task.id,
-          immediateParentId: task.parentFolderId,
-          topParentId: task.parentFolderId,
+          immediateParentId: id,
+          topParentId: parId,
           name: task.subject,
           eTag: task['@odata.etag'],
           completed: !!task.completedDateTime,
-          dueDate: task.dueDateTime.dueDate,
+          dueDate: task.dueDateTime && task.dueDateTime.dateTime,
           assignments: {}
         } as ITask)
     );
   }
 
   public async setTaskComplete(id: string, eTag: string): Promise<any> {
-    return await this.graph.todo_setTaskComplete(id, null, eTag);
+    return await this.graph.todo_setTaskComplete(id, eTag);
   }
   public async setTaskIncomplete(id: string, eTag: string): Promise<any> {
     return await this.graph.todo_setTaskIncomplete(id, eTag);
@@ -203,8 +209,9 @@ export class TodoTaskSource extends TaskSourceBase implements ITaskSource {
     return await this.graph.todo_addTask({
       subject: newTask.name,
       assignedTo: plannerAssignmentsToTodoAssign(newTask.assignments),
+      parentFolderId: newTask.immediateParentId,
       dueDateTime: {
-        dueDate: newTask.dueDate,
+        dateTime: newTask.dueDate,
         timeZone: 'UTC'
       }
     } as TodoTask);

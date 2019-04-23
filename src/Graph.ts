@@ -2,6 +2,14 @@ import * as MicrosoftGraph from '@microsoft/microsoft-graph-types';
 import { Client } from '@microsoft/microsoft-graph-client/lib/es/Client';
 import { IProvider } from './providers/IProvider';
 import { ResponseType } from '@microsoft/microsoft-graph-client/lib/es/ResponseType';
+import { AuthenticationHandlerOptions } from '@microsoft/microsoft-graph-client/lib/es/middleware/options/AuthenticationHandlerOptions';
+
+export function prepScopes(...scopes: string[]) {
+  const authProviderOptions = {
+    scopes: scopes
+  };
+  return [new AuthenticationHandlerOptions(undefined, authProviderOptions)];
+}
 
 export class Graph {
   public client: Client;
@@ -160,7 +168,7 @@ export class Graph {
     return this.client
       .api(`/planner/tasks`)
       .middlewareOptions([{ scopes }])
-      .post(JSON.stringify(newTask));
+      .post(newTask);
   }
   public async planner_removeTask(taskId: string, eTag: string): Promise<any> {
     let scopes = ['Group.ReadWrite.All'];
@@ -174,75 +182,82 @@ export class Graph {
 
   // Todo Methods
   public async todo_getAllMyGroups(): Promise<any> {
-    let scopes = ['Tasks.Read'];
-
     let groups = await this.client
       .api('/me/outlook/taskGroups')
-      .middlewareOptions([{ scopes }])
+      .version('beta')
+      .middlewareOptions(prepScopes('Tasks.ReadWrite'))
       .get();
 
     return groups && groups.value;
   }
   public async todo_getSingleGroup(groupId: string): Promise<any> {
-    let scopes = ['Tasks.Read'];
-
     let group = await this.client
-      .api(`/me/outlook/taskGroup/${groupId}`)
-      .middlewareOptions([{ scopes }])
+      .api(`/me/outlook/taskGroups/${groupId}`)
+      .version('beta')
+      .middlewareOptions(prepScopes('Tasks.ReadWrite'))
       .get();
 
     return group;
   }
   public async todo_getFoldersForGroup(groupId: string): Promise<any> {
-    let scopes = ['Tasks.Read'];
-
     let folders = await this.client
-      .api(`/me/outlook/taskGroup/${groupId}/taskFolders`)
-      .middlewareOptions([{ scopes }])
+      .api(`/me/outlook/taskGroups/${groupId}/taskFolders`)
+      .version('beta')
+      .middlewareOptions(prepScopes('Tasks.ReadWrite'))
       .get();
 
     return folders && folders.value;
   }
   public async todo_getAllTasksForFolder(folderId: string): Promise<any> {
-    let scopes = ['Tasks.Read'];
-
     let tasks = await this.client
       .api(`/me/outlook/taskFolders/${folderId}/tasks`)
-      .middlewareOptions([{ scopes }])
+      .version('beta')
+      .middlewareOptions(prepScopes('Tasks.ReadWrite'))
       .get();
 
     return tasks && tasks.value;
   }
   public async todo_setTaskDetails(taskId: string, task: any, eTag: string): Promise<any> {
-    let scopes = ['Tasks.ReadWrite'];
-
     return await this.client
       .api(`/me/outlook/tasks/${taskId}`)
+      .version('beta')
       .header('If-Match', eTag)
-      .middlewareOptions([{ scopes }])
-      .patch(JSON.stringify(task));
+      .middlewareOptions(prepScopes('Tasks.ReadWrite'))
+      .patch(task);
   }
-  public async todo_setTaskComplete(taskId: string, dateTime: string, eTag: string): Promise<any> {
-    return await this.todo_setTaskDetails(taskId, {}, eTag);
+  public async todo_setTaskComplete(taskId: string, eTag: string): Promise<any> {
+    return await this.todo_setTaskDetails(
+      taskId,
+      {
+        status: 'completed',
+        isReminderOn: false
+      },
+      eTag
+    );
   }
   public async todo_setTaskIncomplete(taskId: string, eTag: string): Promise<any> {
-    return await this.todo_setTaskDetails(taskId, {}, eTag);
+    return await this.todo_setTaskDetails(
+      taskId,
+      {
+        status: 'notStarted',
+        isReminderOn: true
+      },
+      eTag
+    );
   }
   public async todo_addTask(newTask: any): Promise<any> {
-    let scopes = ['Tasks.ReadWrite'];
-
     return await this.client
       .api(`/me/outlook/tasks`)
-      .middlewareOptions([{ scopes }])
-      .post(JSON.stringify(newTask));
+      .version('beta')
+      .middlewareOptions(prepScopes('Tasks.ReadWrite'))
+      .post(newTask);
   }
   public async todo_removeTask(taskId: string, eTag: string): Promise<any> {
-    let scopes = ['Tasks.ReadWrite'];
-
     return await this.client
       .api(`/me/outlook/tasks/${taskId}`)
+      .version('beta')
       .header('If-Match', eTag)
-      .middlewareOptions([{ scopes }])
+      .middlewareOptions(prepScopes('Tasks.ReadWrite'))
       .delete();
   }
 }
