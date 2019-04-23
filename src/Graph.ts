@@ -2,12 +2,19 @@ import * as MicrosoftGraph from '@microsoft/microsoft-graph-types';
 import { Client } from '@microsoft/microsoft-graph-client/lib/es/Client';
 import { IProvider } from './providers/IProvider';
 import { ResponseType } from '@microsoft/microsoft-graph-client/lib/es/ResponseType';
+import { AuthenticationHandlerOptions } from '@microsoft/microsoft-graph-client/lib/es/middleware/options/AuthenticationHandlerOptions';
+
+export function prepScopes(...scopes: string[]) {
+  const authProviderOptions = {
+    scopes: scopes
+  };
+  return [new AuthenticationHandlerOptions(undefined, authProviderOptions)];
+}
 
 export class Graph {
   public client: Client;
 
   constructor(provider: IProvider) {
-    // this.token = token;
     if (provider) {
       this.client = Client.initWithMiddleware({
         authProvider: provider
@@ -27,18 +34,17 @@ export class Graph {
   }
 
   async me(): Promise<MicrosoftGraph.User> {
-    let scopes = ['user.read'];
     return this.client
       .api('me')
-      .middlewareOptions([{ scopes: scopes }])
+      .middlewareOptions(prepScopes('user.read'))
       .get();
   }
 
   async getUser(userPrincipleName: string): Promise<MicrosoftGraph.User> {
-    let scopes = ['user.readbasic.all'];
+    let scopes = 'user.readbasic.all';
     return this.client
       .api(`/users/${userPrincipleName}`)
-      .middlewareOptions([{ scopes: scopes }])
+      .middlewareOptions(prepScopes(scopes))
       .get();
   }
 
@@ -53,27 +59,27 @@ export class Graph {
   }
 
   async myPhoto(): Promise<string> {
-    let scopes = ['user.read'];
+    let scopes = 'user.read';
     let blob = await this.client
       .api('/me/photo/$value')
       .responseType(ResponseType.BLOB)
-      .middlewareOptions([{ scopes: scopes }])
+      .middlewareOptions(prepScopes(scopes))
       .get();
     return await this.blobToBase64(blob);
   }
 
   async getUserPhoto(id: string): Promise<string> {
-    let scopes = ['user.readbasic.all'];
+    let scopes = 'user.readbasic.all';
     let blob = await this.client
       .api(`users/${id}/photo/$value`)
       .responseType(ResponseType.BLOB)
-      .middlewareOptions([{ scopes: scopes }])
+      .middlewareOptions(prepScopes(scopes))
       .get();
     return await this.blobToBase64(blob);
   }
 
   async calendar(startDateTime: Date, endDateTime: Date): Promise<Array<MicrosoftGraph.Event>> {
-    let scopes = ['calendars.read'];
+    let scopes = 'calendars.read';
 
     let sdt = `startdatetime=${startDateTime.toISOString()}`;
     let edt = `enddatetime=${endDateTime.toISOString()}`;
@@ -82,6 +88,7 @@ export class Graph {
     let calendarView = await this.client
       .api(uri)
       .middlewareOptions([{ scopes: scopes }])
+      .middlewareOptions(prepScopes(scopes))
       .get();
     return calendarView ? calendarView.value : null;
   }
