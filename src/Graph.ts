@@ -244,13 +244,24 @@ export class Graph {
       eTag
     );
   }
+
   public async todo_addTask(newTask: any): Promise<any> {
-    return await this.client
-      .api(`/me/outlook/tasks`)
-      .version('beta')
-      .middlewareOptions(prepScopes('Tasks.ReadWrite'))
-      .post(newTask);
+    let { parentFolderId = null } = newTask;
+
+    if (parentFolderId)
+      return await this.client
+        .api(`/me/outlook/taskFolders/${parentFolderId}/tasks`)
+        .version('beta')
+        .middlewareOptions(prepScopes('Tasks.ReadWrite'))
+        .post(newTask);
+    else
+      return await this.client
+        .api(`/me/outlook/tasks`)
+        .version('beta')
+        .middlewareOptions(prepScopes('Tasks.ReadWrite'))
+        .post(newTask);
   }
+
   public async todo_removeTask(taskId: string, eTag: string): Promise<any> {
     return await this.client
       .api(`/me/outlook/tasks/${taskId}`)
