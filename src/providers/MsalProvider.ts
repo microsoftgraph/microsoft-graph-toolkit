@@ -3,7 +3,6 @@ import { IProvider, LoginType, ProviderState } from './IProvider';
 import { Graph } from '../Graph';
 
 import { UserAgentApplication, AuthenticationParameters, AuthResponse, AuthError, Configuration } from 'msal';
-import { IdToken } from 'msal/lib-es6/IdToken';
 
 export interface MsalConfig {
   clientId: string;
@@ -108,10 +107,10 @@ export class MsalProvider extends IProvider {
       if (this.requiresInteraction(e)) {
         if (this._loginType == LoginType.Redirect) {
           // check if the user denied the scope before
-          //if (!this.areScopesDenied(scopes)) {
-          //this.setRequestedScopes(scopes);
-          this._userAgentApplication.acquireTokenRedirect(accessTokenRequest);
-          //}
+          if (!this.areScopesDenied(scopes)) {
+            this.setRequestedScopes(scopes);
+            this._userAgentApplication.acquireTokenRedirect(accessTokenRequest);
+          }
         } else {
           try {
             let response = await this._userAgentApplication.acquireTokenPopup(accessTokenRequest);
@@ -142,63 +141,62 @@ export class MsalProvider extends IProvider {
 
   private tokenReceivedCallback(response: AuthResponse) {
     if (response.tokenType == 'id_token') {
-      // this._idToken = response.idToken;
       this.setState(ProviderState.SignedIn);
     }
 
-    //this.clearRequestedScopes();
+    this.clearRequestedScopes();
   }
 
   private errorReceivedCallback(authError: AuthError, accountState: string) {
     console.log('authError: ' + authError + ' accountState ' + accountState);
-    // let requestedScopes = this.getRequestedScopes();
-    // if (requestedScopes) {
-    //   this.addDeniedScopes(requestedScopes);
-    // }
+    let requestedScopes = this.getRequestedScopes();
+    if (requestedScopes) {
+      this.addDeniedScopes(requestedScopes);
+    }
 
-    // this.clearRequestedScopes();
+    this.clearRequestedScopes();
   }
 
-  // session storage
-  // private ss_requested_scopes_key = 'mgt-requested-scopes';
-  // private ss_denied_scopes_key = 'mgt-denied-scopes';
+  //session storage
+  private ss_requested_scopes_key = 'mgt-requested-scopes';
+  private ss_denied_scopes_key = 'mgt-denied-scopes';
 
-  // private setRequestedScopes(scopes: string[]) {
-  //   if (scopes) {
-  //     sessionStorage.setItem(this.ss_requested_scopes_key, JSON.stringify(scopes));
-  //   }
-  // }
+  private setRequestedScopes(scopes: string[]) {
+    if (scopes) {
+      sessionStorage.setItem(this.ss_requested_scopes_key, JSON.stringify(scopes));
+    }
+  }
 
-  // private getRequestedScopes() {
-  //   let scopes_str = sessionStorage.getItem(this.ss_requested_scopes_key);
-  //   return scopes_str ? JSON.parse(scopes_str) : null;
-  // }
+  private getRequestedScopes() {
+    let scopes_str = sessionStorage.getItem(this.ss_requested_scopes_key);
+    return scopes_str ? JSON.parse(scopes_str) : null;
+  }
 
-  // private clearRequestedScopes() {
-  //   sessionStorage.removeItem(this.ss_requested_scopes_key);
-  // }
+  private clearRequestedScopes() {
+    sessionStorage.removeItem(this.ss_requested_scopes_key);
+  }
 
-  // private addDeniedScopes(scopes: string[]) {
-  //   if (scopes) {
-  //     let deniedScopes: string[] = this.getDeniedScopes() || [];
-  //     deniedScopes = deniedScopes.concat(scopes);
-  //     sessionStorage.setItem(this.ss_denied_scopes_key, JSON.stringify(deniedScopes));
-  //   }
-  // }
+  private addDeniedScopes(scopes: string[]) {
+    if (scopes) {
+      let deniedScopes: string[] = this.getDeniedScopes() || [];
+      deniedScopes = deniedScopes.concat(scopes);
+      sessionStorage.setItem(this.ss_denied_scopes_key, JSON.stringify(deniedScopes));
+    }
+  }
 
-  // private getDeniedScopes() {
-  //   let scopes_str = sessionStorage.getItem(this.ss_denied_scopes_key);
-  //   return scopes_str ? JSON.parse(scopes_str) : null;
-  // }
+  private getDeniedScopes() {
+    let scopes_str = sessionStorage.getItem(this.ss_denied_scopes_key);
+    return scopes_str ? JSON.parse(scopes_str) : null;
+  }
 
-  // private areScopesDenied(scopes: string[]) {
-  //   if (scopes) {
-  //     const deniedScopes = this.getDeniedScopes();
-  //     if (deniedScopes && deniedScopes.filter(s => -1 !== scopes.indexOf(s)).length > 0) {
-  //       return true;
-  //     }
-  //   }
+  private areScopesDenied(scopes: string[]) {
+    if (scopes) {
+      const deniedScopes = this.getDeniedScopes();
+      if (deniedScopes && deniedScopes.filter(s => -1 !== scopes.indexOf(s)).length > 0) {
+        return true;
+      }
+    }
 
-  //   return false;
-  // }
+    return false;
+  }
 }
