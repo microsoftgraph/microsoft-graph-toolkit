@@ -1,6 +1,7 @@
+import { AuthenticationProviderOptions } from '@microsoft/microsoft-graph-client/lib/es/IAuthenticationProviderOptions';
+import { UserAgentApplication } from 'msal/lib-es6/UserAgentApplication';
 import { IProvider, LoginType, ProviderState } from './IProvider';
 import { Graph } from '../Graph';
-import { UserAgentApplication } from 'msal/lib-es6';
 
 export interface MsalConfig {
   userAgentApplication?: UserAgentApplication;
@@ -23,8 +24,6 @@ export class MsalProvider extends IProvider {
   }
 
   scopes: string[];
-
-  graph: Graph;
 
   constructor(config: MsalConfig) {
     super();
@@ -88,15 +87,13 @@ export class MsalProvider extends IProvider {
     }
   }
 
-  async getAccessToken(...scopes: string[]): Promise<string> {
-    scopes = scopes || this.scopes;
-
+  async getAccessToken(options: AuthenticationProviderOptions): Promise<string> {
+    let scopes = options ? options.scopes || this.scopes : this.scopes;
     let accessToken: string;
     try {
       accessToken = await this._userAgentApplication.acquireTokenSilent(scopes, this._userAgentApplication.authority);
     } catch (e) {
       try {
-        console.log('getaccesstoken: catch ' + e);
         // TODO - figure out for what error this logic is needed so we
         // don't prompt the user to login unnecessarily
         if (e.includes('multiple_matching_tokens_detected')) {

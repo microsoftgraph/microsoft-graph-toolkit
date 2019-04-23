@@ -1,6 +1,8 @@
-import { IGraph } from '../Graph';
+import { AuthenticationProvider } from '@microsoft/microsoft-graph-client/lib/es/IAuthenticationProvider';
+import { AuthenticationProviderOptions } from '@microsoft/microsoft-graph-client/lib/es/IAuthenticationProviderOptions';
+import { Graph } from '../Graph';
 
-export abstract class IProvider {
+export abstract class IProvider implements AuthenticationProvider {
   private _state: ProviderState;
   private _loginChangedDispatcher = new EventDispatcher<LoginChangedEvent>();
 
@@ -30,9 +32,12 @@ export abstract class IProvider {
 
   login?(): Promise<void>;
   logout?(): Promise<void>;
-  abstract getAccessToken(...scopes: string[]): Promise<string>;
+  getAccessTokenForScopes(...scopes: string[]): Promise<string> {
+    return this.getAccessToken({ scopes: scopes });
+  }
 
-  graph: IGraph;
+  abstract getAccessToken(options?: AuthenticationProviderOptions): Promise<string>;
+  graph: Graph;
 }
 
 export type EventHandler<E> = (event: E) => void;
