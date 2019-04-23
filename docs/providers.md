@@ -35,25 +35,12 @@ You can create a provider at any time, but it's recommended to create it before 
 
 ## Implement your own provider
 
-You can extend the `IProvider` abstract class to create your own provider.
+The toolkit provides two ways to create new providers:
 
-### State
-A provider must keep track of the authentication state and update the components when the state changes. The `IProvider` class already implements the `onStateChanged(eventHandler)` handler and the `state: ProviderState` property. You as a developer just need to use the `setState(state:ProviderState)` method in your implementation to update the state when it changes. Updating the state will fire the stateChanged event and update all the components automatically.
+* Create a new `SimpleProvider` by passing in a function for getting an access token, or
+* Extending the `IProvider` abstract class
 
-### Login/Logout
-If your provider provides login or logout functionality, implement the `login(): Promise<void>` and `logout(): Promise<void>` methods. These methods are optional.
-
-### Access Token
-You must implement the `getAccessToken({'scopes': scopes}) : Promise<string>` method (`scopes` is a string array of scopes). This method is used to get a valid token before every call to the Microsoft Graph.
-
-### Graph
-The components use the Microsoft Graph Javascript SDK for all calls to the Microsoft Graph. Your provider must make the sdk available through the `graph` property. In you constructor, create a new Graph instance through 
-
-```js
-this.graph = new Graph(this)
-```
-
-The `Graph` class is a light wrapper on top of the Microsoft Graph sdk.
+Read more about each one in the [custom providers](./providers/custom.md) documentation;
 
 ## Making your own calls to the Microsoft Graph
 
