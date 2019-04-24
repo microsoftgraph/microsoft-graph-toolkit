@@ -6,8 +6,6 @@ import { TeamsProvider } from '../../providers/TeamsProvider';
 export class MgtTeamsProvider extends LitElement {
   private _provider: TeamsProvider;
 
-  private _isInitialized: boolean = false;
-
   @property({
     type: String,
     attribute: 'client-id'
@@ -20,20 +18,7 @@ export class MgtTeamsProvider extends LitElement {
   })
   loginPopupUrl = '';
 
-  constructor() {
-    super();
-    this.validateAuthProps();
-  }
-
-  attributeChangedCallback(name, oldval, newval) {
-    super.attributeChangedCallback(name, oldval, newval);
-    if (this._isInitialized) {
-      this.validateAuthProps();
-    }
-  }
-
   async firstUpdated(changedProperties) {
-    this._isInitialized = true;
     this.validateAuthProps();
     if (await TeamsProvider.isAvailable()) {
       Providers.globalProvider = this._provider;

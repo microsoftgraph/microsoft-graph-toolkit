@@ -21,27 +21,18 @@ export class MgtMsalProvider extends LitElement {
 
   @property() authority;
 
-  constructor() {
-    super();
-    this.validateAuthProps();
-  }
-
-  attributeChangedCallback(name, oldval, newval) {
-    super.attributeChangedCallback(name, oldval, newval);
-
-    if (this._isInitialized) {
-      this.validateAuthProps();
-    }
-    this.validateAuthProps();
-  }
-
   firstUpdated(changedProperties) {
-    this._isInitialized = true;
     this.validateAuthProps();
   }
 
   private validateAuthProps() {
+    if (this._isInitialized) {
+      return;
+    }
+
     if (this.clientId) {
+      this._isInitialized = true;
+
       let config: MsalConfig = {
         clientId: this.clientId
       };

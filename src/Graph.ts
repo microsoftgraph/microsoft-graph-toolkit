@@ -50,11 +50,11 @@ export class Graph {
   }
 
   async findPerson(query: string): Promise<MicrosoftGraph.Person[]> {
-    let scopes = ['people.read'];
+    let scopes = 'people.read';
     let result = await this.client
       .api(`/me/people`)
       .search('"' + query + '"')
-      .middlewareOptions([{ scopes: scopes }])
+      .middlewareOptions(prepScopes(scopes))
       .get();
     return result ? result.value : null;
   }
@@ -63,6 +63,7 @@ export class Graph {
     let scopes = 'user.read';
     let blob = await this.client
       .api('/me/photo/$value')
+      .version('beta')
       .responseType(ResponseType.BLOB)
       .middlewareOptions(prepScopes(scopes))
       .get();
@@ -73,6 +74,7 @@ export class Graph {
     let scopes = 'user.readbasic.all';
     let blob = await this.client
       .api(`users/${id}/photo/$value`)
+      .version('beta')
       .responseType(ResponseType.BLOB)
       .middlewareOptions(prepScopes(scopes))
       .get();
@@ -88,7 +90,6 @@ export class Graph {
 
     let calendarView = await this.client
       .api(uri)
-      .middlewareOptions([{ scopes: scopes }])
       .middlewareOptions(prepScopes(scopes))
       .get();
     return calendarView ? calendarView.value : null;
