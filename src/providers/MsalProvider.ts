@@ -119,6 +119,9 @@ export class MsalProvider extends IProvider {
             console.log('getaccesstoken catch2 : ' + e);
           }
         }
+      } else {
+        // if we don't know what the error is, just ask the user to sign in again
+        this.setState(ProviderState.SignedOut);
       }
     }
     return accessToken;
