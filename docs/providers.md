@@ -8,7 +8,7 @@ Example of using the MsalProvider:
 
 ```js
 Providers.globalProvider = new MsalProvider({
-  clientId: "[CLIENT_ID]"
+  clientId: '[CLIENT_ID]'
 });
 ```
 
@@ -37,52 +37,35 @@ You can create a provider at any time, but it's recommended to create it before 
 
 ## Implement your own provider
 
-You can extend the `IProvider` abstract class to create your own provider.
+The toolkit provides two ways to create new providers:
 
-### State
+- Create a new `SimpleProvider` by passing in a function for getting an access token, or
+- Extend the `IProvider` abstract class
 
-A provider must keep track of the authentication state and update the components when the state changes. The `IProvider` class already implements the `onStateChanged(eventHandler)` handler and the `state: ProviderState` property. You as a developer just need to use the `setState(state:ProviderState)` method in your implementation to update the state when it changes. Updating the state will fire the stateChanged event and update all the components automatically.
-
-### Login/Logout
-
-If your provider provides login or logout functionality, implement the `login(): Promise<void>` and `logout(): Promise<void>` methods. These methods are optional.
-
-### Access Token
-
-You must implement the `getAccessToken({'scopes': scopes}) : Promise<string>` method (`scopes` is a string array of scopes). This method is used to get a valid token before every call to the Microsoft Graph.
-
-### Graph
-
-The components use the Microsoft Graph Javascript SDK for all calls to the Microsoft Graph. Your provider must make the sdk available through the `graph` property. In you constructor, create a new Graph instance through
-
-```js
-this.graph = new Graph(this);
-```
-
-The `Graph` class is a light wrapper on top of the Microsoft Graph sdk.
+Read more about each one in the [custom providers](./providers/custom.md) documentation;
 
 ## Making your own calls to the Microsoft Graph
 
 All components can access the Microsoft Graph out of the box as long as the developer has initialized a provider (as described in the above section). To get a reference to the same Microsoft Graph SDK used by the components, first get a reference to the global IProvider and then use the `Graph` object:
 
 ```js
-import { Providers } from "microsoft-graph-toolkit";
+import { Providers } from 'microsoft-graph-toolkit';
 
 let provider = Providers.globalProvider;
 if (provider) {
   let graphClient = provider.graph.client;
-  let userDetails = await graphClient.api("me").get();
+  let userDetails = await graphClient.api('me').get();
 }
 ```
 
 There might be cases were you will need to pass additional scopes depending on the api you are calling:
 
 ```js
-import { prepScopes } from "microsoft-graph-toolkit";
+import { prepScopes } from 'microsoft-graph-toolkit';
 
 graphClient
-  .api("me")
-  .middlewareOptions(prepScopes("user.read", "calendar.read"))
+  .api('me')
+  .middlewareOptions(prepScopes('user.read', 'calendar.read'))
   .get();
 ```
 
