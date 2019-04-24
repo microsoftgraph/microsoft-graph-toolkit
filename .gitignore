@@ -16,6 +16,7 @@ log.txt
 .idea/
 .vscode/
 !.vscode/extensions.json
+!.vscode/settings.json
 .sass-cache/
 .versions/
 node_modules/
