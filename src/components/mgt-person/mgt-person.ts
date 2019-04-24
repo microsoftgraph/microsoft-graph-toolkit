@@ -5,9 +5,10 @@ import { Providers } from '../../Providers';
 import { styles } from './mgt-person-css';
 import '../../styles/fabric-icon-font';
 import { ProviderState } from '../../providers/IProvider';
+import { MgtBaseComponent } from '../baseComponent';
 
 @customElement('mgt-person')
-export class MgtPerson extends LitElement {
+export class MgtPerson extends MgtBaseComponent {
   @property({
     attribute: 'image-size'
   })
@@ -108,6 +109,19 @@ export class MgtPerson extends LitElement {
   }
 
   render() {
+    let templates = this.getTemplates();
+    this.removeSlottedElements();
+
+    if (templates['default']) {
+      return this.renderTemplate(
+        templates['default'],
+        {
+          person: this.personDetails
+        },
+        'default'
+      );
+    }
+
     return html`
       <div class="root">
         ${this.renderImage()} ${this.renderNameAndEmail()}
