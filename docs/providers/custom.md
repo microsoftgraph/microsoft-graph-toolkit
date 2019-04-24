@@ -3,7 +3,7 @@
 If you already have authentication code in your application, there are two ways to integrate it with the Providers in the toolkit.
 
 * Create a new `SimpleProvider` by passing in a function for getting an access token, or
-* Extending the `IProvider` abstract class
+* Extend the `IProvider` abstract class
 
 Let's take a look at each one in more details
 
