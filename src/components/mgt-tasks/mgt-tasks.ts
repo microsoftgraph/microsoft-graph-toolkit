@@ -72,7 +72,7 @@ export class MgtTasks extends LitElement {
   public initialBucketId: string = null;
 
   @property() private _showNewTask: boolean = false;
-  @property() private _newTaskLoading: boolean = false;
+  @property() private _newTaskBeingAdded: boolean = false;
   @property() private _newTaskSelfAssigned: boolean = true;
   @property() private _newTaskName: string = '';
   @property() private _newTaskDueDate: string = '';
@@ -152,10 +152,10 @@ export class MgtTasks extends LitElement {
 
     if (dueDateTime && dueDateTime !== 'T') newTask.dueDate = this.getDateTimeOffset(dueDateTime + 'Z');
 
-    this._newTaskLoading = true;
+    this._newTaskBeingAdded = true;
     await ts.addTask(newTask);
     await this.loadTasks();
-    this._newTaskLoading = false;
+    this._newTaskBeingAdded = false;
     this.closeNewTask(null);
   }
 
@@ -240,6 +240,28 @@ export class MgtTasks extends LitElement {
     `;
   }
 
+  private onAddTaskClick(e: MouseEvent) {
+    if (
+      !this._newTaskBeingAdded &&
+      this._newTaskName &&
+      (!this.isDefault(this._currentTargetDresser) || this._newTaskDresserId)
+    )
+      this.addTask(
+        this._newTaskName,
+        this._newTaskDueDate ? this._newTaskDueDate + this.res.DUE_DATE_TIME : null,
+        this.isDefault(this._currentTargetDresser) ? this._newTaskDresserId : this._currentTargetDresser,
+        this.isDefault(this._currentTargetDrawer) ? this._newTaskDrawerId : this._currentTargetDrawer,
+        this._newTaskSelfAssigned
+          ? {
+              [this._me.id]: {
+                '@odata.type': 'microsoft.graph.plannerAssignment',
+                orderHint: 'string !'
+              }
+            }
+          : void 0
+      );
+  }
+
   private getPlanOptions() {
     let p = Providers.globalProvider;
 
@@ -248,20 +270,21 @@ export class MgtTasks extends LitElement {
         Not Logged In
       `;
 
-    let addButton = this.readOnly
-      ? null
-      : html`
-          <span
-            class="AddBarItem NewTaskButton"
-            @click="${(e: MouseEvent) => {
-              if (!this._showNewTask) this.openNewTask(e);
-              else this.closeNewTask(e);
-            }}"
-          >
-            <span class="TaskIcon">\uE710</span>
-            <span>Add</span>
-          </span>
-        `;
+    let addButton =
+      this.readOnly || this._showNewTask
+        ? null
+        : html`
+            <span
+              class="AddBarItem NewTaskButton"
+              @click="${(e: MouseEvent) => {
+                if (!this._showNewTask) this.openNewTask(e);
+                else this.closeNewTask(e);
+              }}"
+            >
+              <span class="TaskIcon">\uE710</span>
+              <span>Add</span>
+            </span>
+          `;
 
     if (this.targetPlannerId) {
       let plan = this._dressers[0];
@@ -371,7 +394,7 @@ export class MgtTasks extends LitElement {
   }
 
   private getNewTaskHtml() {
-    let taskCheck = this._newTaskLoading
+    let taskCheck = this._newTaskBeingAdded
       ? html`
           <span class="TaskCheck TaskIcon Loading"> \uF16A </span>
         `
@@ -472,56 +495,33 @@ export class MgtTasks extends LitElement {
       </span>
     `;
 
-    let taskAdd = html`
-      <span class="TaskIcon TaskDelete">
-        <div
-          class="TaskAdd"
-          @click="${(e: MouseEvent) => {
-            if (
-              !this._newTaskLoading &&
-              this._newTaskName &&
-              (!this.isDefault(this._currentTargetDresser) || this._newTaskDresserId)
-            )
-              this.addTask(
-                this._newTaskName,
-                this._newTaskDueDate ? this._newTaskDueDate + this.res.DUE_DATE_TIME : null,
-                this.isDefault(this._currentTargetDresser) ? this._newTaskDresserId : this._currentTargetDresser,
-                this.isDefault(this._currentTargetDrawer) ? this._newTaskDrawerId : this._currentTargetDrawer,
-                this._newTaskSelfAssigned
-                  ? {
-                      [this._me.id]: {
-                        '@odata.type': 'microsoft.graph.plannerAssignment',
-                        orderHint: 'string !'
-                      }
-                    }
-                  : void 0
-              );
-          }}"
-        >
-          \uE710
-        </div>
-        <div
-          class="TaskCancel"
-          @click="${(e: MouseEvent) => {
-            this.closeNewTask(e);
-          }}"
-        >
-          \uE711
-        </div>
-      </span>
-    `;
+    let taskAdd = this._newTaskBeingAdded
+      ? null
+      : html`
+          <div class="TaskAddCont">
+            <div class="TaskIcon TaskCancel" @click="${this.closeNewTask}">
+              <span>\uE711</span>
+            </div>
+            <div class="TaskIcon TaskAdd" @click="${this.onAddTaskClick}">
+              <span>\uE710</span>
+            </div>
+          </div>
+        `;
 
     return html`
-      <div class="Task Incomplete">
-        <span class="TaskHeader">
-          <span class="TaskCheckCont Incomplete">
-            ${taskCheck}
+      <div class="Task NewTask Incomplete">
+        <div class="InnerTask">
+          <span class="TaskHeader">
+            <span class="TaskCheckCont Incomplete">
+              ${taskCheck}
+            </span>
+            ${taskTitle}
           </span>
-          ${taskTitle} ${taskAdd}
-        </span>
-        <span class="TaskDetails">
-          ${taskPlan} ${taskBucket} ${taskPeople} ${taskDue}
-        </span>
+          <span class="TaskDetails">
+            ${taskPlan} ${taskBucket} ${taskPeople} ${taskDue}
+          </span>
+        </div>
+        ${taskAdd}
       </div>
     `;
   }

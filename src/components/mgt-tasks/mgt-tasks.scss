@@ -99,6 +99,46 @@
   border: solid 2px rgba(0, 0, 0, 0);
 }
 
+.Task.NewTask {
+  display: flex;
+}
+
+.Task.NewTask .InnerTask {
+  flex: 1 1 auto;
+}
+
+.Task.NewTask .TaskAddCont {
+  flex: 0 0 auto;
+  display: flex;
+  flex-direction: row;
+  align-content: stretch;
+  align-items: stretch;
+  justify-content: stretch;
+  justify-items: stretch;
+}
+
+.Task.NewTask .TaskAddCont .TaskAdd,
+.Task.NewTask .TaskAddCont .TaskCancel {
+  height: 100%;
+  max-width: 50px;
+  min-width: 50px;
+  flex: 1 1 auto;
+  justify-content: center;
+  align-items: center;
+  display: flex;
+  cursor: pointer;
+  margin-right: 5px;
+  color: white;
+}
+
+.Task.NewTask .TaskAddCont .TaskAdd {
+  background: #0078D4;
+}
+.Task.NewTask .TaskAddCont .TaskCancel {
+  background: red;
+}
+
+
 .Task .TaskDetails {
   display: flex;
   width: fit-content;
