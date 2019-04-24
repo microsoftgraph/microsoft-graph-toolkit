@@ -73,6 +73,7 @@ export class Graph {
     let scopes = 'user.readbasic.all';
     let blob = await this.client
       .api(`users/${id}/photo/$value`)
+      .version('beta')
       .responseType(ResponseType.BLOB)
       .middlewareOptions(prepScopes(scopes))
       .get();
