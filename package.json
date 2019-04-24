@@ -48,7 +48,7 @@
     "@microsoft/microsoft-graph-types": "^1.8.0",
     "@microsoft/teams-js": "^1.4.1",
     "lit-element": "^2.1.0",
-    "msal": "file:../microsoft-authentication-library-for-js/lib/msal-core/msal-1.0.0-preview.2.tgz",
+    "msal": "^1.0.0-preview.3",
     "office-ui-fabric-core": "10.0.0"
   },
   "devDependencies": {
