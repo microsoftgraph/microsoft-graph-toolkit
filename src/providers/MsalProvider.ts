@@ -1,21 +1,19 @@
 import { AuthenticationProviderOptions } from '@microsoft/microsoft-graph-client/lib/es/IAuthenticationProviderOptions';
-import { UserAgentApplication } from 'msal/lib-es6/UserAgentApplication';
 import { IProvider, LoginType, ProviderState } from './IProvider';
 import { Graph } from '../Graph';
 
+import { UserAgentApplication, AuthenticationParameters, AuthResponse, AuthError, Configuration } from 'msal';
+
 export interface MsalConfig {
-  userAgentApplication?: UserAgentApplication;
-  clientId?: string;
+  clientId: string;
   scopes?: string[];
   authority?: string;
   loginType?: LoginType;
-  options?: any;
+  options?: Configuration;
 }
 
 export class MsalProvider extends IProvider {
   private _loginType: LoginType;
-
-  private _idToken: string;
 
   private _userAgentApplication: UserAgentApplication;
 
@@ -24,6 +22,7 @@ export class MsalProvider extends IProvider {
   }
 
   scopes: string[];
+  clientId: string;
 
   constructor(config: MsalConfig) {
     super();
@@ -34,34 +33,58 @@ export class MsalProvider extends IProvider {
     this.scopes = typeof config.scopes !== 'undefined' ? config.scopes : ['user.read'];
     this._loginType = typeof config.loginType !== 'undefined' ? config.loginType : LoginType.Redirect;
 
-    let callbackFunction = ((errorDesc: string, token: string, error: any, tokenType: any, state: any) => {
-      this.tokenReceivedCallback(errorDesc, token, error, tokenType, state);
+    let tokenReceivedCallbackFunction = ((response: AuthResponse) => {
+      this.tokenReceivedCallback(response);
     }).bind(this);
 
-    if (config.userAgentApplication) {
-      this._userAgentApplication = config.userAgentApplication;
-    } else if (config.clientId) {
-      let authority = typeof config.authority !== 'undefined' ? config.authority : null;
-      let options =
-        typeof config.options != 'undefined'
-          ? config.options
-          : { storeAuthStateInCookie: true, cacheLocation: 'localStorage' };
+    let errorReceivedCallbackFunction = ((authError: AuthError, accountState: string) => {
+      this.errorReceivedCallback(authError, status);
+    }).bind(this);
 
-      this._userAgentApplication = new UserAgentApplication(config.clientId, authority, callbackFunction, options);
+    if (config.clientId) {
+      let msalConfig: Configuration = config.options || { auth: { clientId: config.clientId } };
+
+      msalConfig.auth.clientId = config.clientId;
+      msalConfig.cache = msalConfig.cache || {};
+      msalConfig.cache.cacheLocation = msalConfig.cache.cacheLocation || 'localStorage';
+      msalConfig.cache.storeAuthStateInCookie = msalConfig.cache.storeAuthStateInCookie || true;
+
+      if (config.authority) {
+        msalConfig.auth.authority = config.authority;
+      }
+
+      this.clientId = config.clientId;
+
+      this._userAgentApplication = new UserAgentApplication(msalConfig);
+      this._userAgentApplication.handleRedirectCallbacks(tokenReceivedCallbackFunction, errorReceivedCallbackFunction);
     } else {
-      throw 'clientId or userAgentApplication must be provided';
+      throw 'clientId must be provided';
     }
 
     this.graph = new Graph(this);
 
-    this.tryGetIdTokenSilent();
+    this.trySilentSignIn();
+  }
+
+  async trySilentSignIn() {
+    if (this._userAgentApplication.getAccount() && !this._userAgentApplication.isCallback(window.location.hash)) {
+      this.setState(ProviderState.SignedIn);
+    } else {
+      this.setState(ProviderState.SignedOut);
+    }
   }
 
   async login(): Promise<void> {
+    let loginRequest: AuthenticationParameters = {
+      scopes: this.scopes,
+      prompt: 'select_account'
+    };
+
     if (this._loginType === LoginType.Popup) {
-      this._idToken = await this._userAgentApplication.loginPopup(this.scopes);
+      let response = await this._userAgentApplication.loginPopup(loginRequest);
+      this.setState(response.account ? ProviderState.SignedIn : ProviderState.SignedOut);
     } else {
-      this._userAgentApplication.loginRedirect(this.scopes);
+      this._userAgentApplication.loginRedirect(loginRequest);
     }
   }
 
@@ -70,54 +93,32 @@ export class MsalProvider extends IProvider {
     this.setState(ProviderState.SignedOut);
   }
 
-  async tryGetIdTokenSilent(): Promise<boolean> {
-    try {
-      this._idToken = await this._userAgentApplication.acquireTokenSilent(
-        [this._userAgentApplication.clientId],
-        this._userAgentApplication.authority
-      );
-      if (this._idToken) {
-      }
-      this.setState(this._idToken ? ProviderState.SignedIn : ProviderState.SignedOut);
-      return this._idToken !== null;
-    } catch (e) {
-      console.log(e);
-      this.setState(ProviderState.SignedOut);
-      return false;
-    }
-  }
-
   async getAccessToken(options: AuthenticationProviderOptions): Promise<string> {
     let scopes = options ? options.scopes || this.scopes : this.scopes;
     let accessToken: string;
+    let accessTokenRequest: AuthenticationParameters = {
+      scopes: scopes
+    };
     try {
-      accessToken = await this._userAgentApplication.acquireTokenSilent(scopes, this._userAgentApplication.authority);
+      let response = await this._userAgentApplication.acquireTokenSilent(accessTokenRequest);
+      accessToken = response.accessToken;
     } catch (e) {
-      try {
-        // TODO - figure out for what error this logic is needed so we
-        // don't prompt the user to login unnecessarily
-        if (e.includes('multiple_matching_tokens_detected')) {
-          return null;
-        }
-
-        // AADSTS65001: The user or administrator has not consented to use the application
-        // Need to send an interaction request
-        if (e.includes('AADSTS65001')) {
-          if (this._loginType == LoginType.Redirect) {
-            // check if the user denied the scope before
-            if (!this.areScopesDenied(scopes)) {
-              this.setRequestedScopes(scopes);
-              this._userAgentApplication.acquireTokenRedirect(scopes);
-            }
-          } else {
-            accessToken = await this._userAgentApplication.acquireTokenPopup(scopes);
+      console.log(e);
+      if (this.requiresInteraction(e)) {
+        if (this._loginType == LoginType.Redirect) {
+          // check if the user denied the scope before
+          if (!this.areScopesDenied(scopes)) {
+            this.setRequestedScopes(scopes);
+            this._userAgentApplication.acquireTokenRedirect(accessTokenRequest);
+          }
+        } else {
+          try {
+            let response = await this._userAgentApplication.acquireTokenPopup(accessTokenRequest);
+            accessToken = response.accessToken;
+          } catch (e) {
+            console.log('getaccesstoken catch2 : ' + e);
           }
         }
-      } catch (e) {
-        // TODO - figure out how to expose this during dev to make it easy for the dev to figure out
-        // if error contains "'token' is not enabled", make sure to have implicit oAuth enabled in the AAD manifest
-        console.log('getaccesstoken catch2 : ' + e);
-        throw e;
       }
     }
     return accessToken;
@@ -127,24 +128,36 @@ export class MsalProvider extends IProvider {
     this.scopes = scopes;
   }
 
-  tokenReceivedCallback(errorDesc: string, token: string, error: any, tokenType: any, state: any) {
-    if (error) {
-      let requestedScopes = this.getRequestedScopes();
-      if (requestedScopes) {
-        this.addDeniedScopes(requestedScopes);
-      }
-    } else {
-      if (tokenType == 'id_token') {
-        this._idToken = token;
-        this.setState(this._idToken ? ProviderState.SignedIn : ProviderState.SignedOut);
-      } else {
-      }
+  private requiresInteraction(error) {
+    if (!error || !error.errorCode) {
+      return false;
+    }
+    return (
+      error.errorCode.indexOf('consent_required') !== -1 ||
+      error.errorCode.indexOf('interaction_required') !== -1 ||
+      error.errorCode.indexOf('login_required') !== -1
+    );
+  }
+
+  private tokenReceivedCallback(response: AuthResponse) {
+    if (response.tokenType == 'id_token') {
+      this.setState(ProviderState.SignedIn);
     }
 
     this.clearRequestedScopes();
   }
 
-  // session storage
+  private errorReceivedCallback(authError: AuthError, accountState: string) {
+    console.log('authError: ' + authError + ' accountState ' + accountState);
+    let requestedScopes = this.getRequestedScopes();
+    if (requestedScopes) {
+      this.addDeniedScopes(requestedScopes);
+    }
+
+    this.clearRequestedScopes();
+  }
+
+  //session storage
   private ss_requested_scopes_key = 'mgt-requested-scopes';
   private ss_denied_scopes_key = 'mgt-denied-scopes';
 
@@ -167,6 +180,16 @@ export class MsalProvider extends IProvider {
     if (scopes) {
       let deniedScopes: string[] = this.getDeniedScopes() || [];
       deniedScopes = deniedScopes.concat(scopes);
+
+      var index = deniedScopes.indexOf('openid');
+      if (index !== -1) {
+        deniedScopes.splice(index, 1);
+      }
+
+      index = deniedScopes.indexOf('profile');
+      if (index !== -1) {
+        deniedScopes.splice(index, 1);
+      }
       sessionStorage.setItem(this.ss_denied_scopes_key, JSON.stringify(deniedScopes));
     }
   }

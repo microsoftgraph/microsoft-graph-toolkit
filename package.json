@@ -1,6 +1,6 @@
 {
   "name": "microsoft-graph-toolkit",
-  "version": "0.0.1",
+  "version": "0.1.0-preview.1",
   "description": "UI for the Microsoft Graph",
   "keywords": [
     "microsoft graph",
@@ -39,7 +39,7 @@
     "test": "jest",
     "test:watch": "jest --watch",
     "prepack": "npm run build",
-    "prettier:base": "prettier --parser typescript --single-quote --print-width 120",
+    "prettier:base": "prettier --parser typescript",
     "prettier:check": "npm run prettier:base -- --list-different \"src/**/*.{ts,tsx}\"",
     "prettier:write": "npm run prettier:base -- --write \"src/**/*.{ts,tsx}\""
   },
@@ -48,7 +48,7 @@
     "@microsoft/microsoft-graph-types": "^1.8.0",
     "@microsoft/teams-js": "^1.4.1",
     "lit-element": "^2.1.0",
-    "msal": "^0.2.4",
+    "msal": "^1.0.0-preview.3",
     "office-ui-fabric-core": "10.0.0"
   },
   "devDependencies": {
@@ -106,5 +106,9 @@
     "hooks": {
       "pre-commit": "npm run build"
     }
+  },
+  "prettier": {
+    "printWidth": 120,
+    "singleQuote": true
   }
 }

@@ -13,21 +13,19 @@
     <script type="module" src="./dist/es6/components/providers/mgt-msal-provider/mgt-msal-provider.js"></script> -->
 
     <!-- <script src="./dist/bundle/mgt-loader.js"></script> -->
-    
+
     <script type="module" src="./dist/es6/components/providers/mgt-msal-provider.js"></script>
     <script type="module" src="./dist/es6/components/mgt-login/mgt-login.js"></script>
     <script type="module" src="./dist/es6/components/mgt-agenda/mgt-agenda.js"></script>
     <script type="module" src="./dist/es6/mock/mgt-mock-provider.js"></script>
   </head>
   <body>
-    <mgt-msal-provider
-      client-id="a974dfa0-9f57-49b9-95db-90f04ce2111a"
-      ></mgt-msal-provider>
+    <mgt-msal-provider client-id="a974dfa0-9f57-49b9-95db-90f04ce2111a"></mgt-msal-provider>
 
     <!-- <mgt-mock-provider></mgt-mock-provider> -->
 
     <mgt-login></mgt-login>
-    
+
     <!-- <script type="module">
       let login = document.getElementsByTagName('mgt-login')[0];
       
@@ -40,7 +38,7 @@
       login.addEventListener('logoutInitiated', (event) => {console.log('logoutInitiated')});
       login.addEventListener('logoutCompleted', (event) => {console.log('logoutCompleted')});
     </script> -->
-    
+
     <!-- <mgt-person person-query="me" show-name show-email></mgt-person> -->
     <!-- <mgt-agenda></mgt-agenda> -->
 
@@ -58,28 +56,28 @@
       }
     </script> -->
 
-    <mgt-agenda id='myDay'>
+    <mgt-agenda id="myDay">
       <template>
         <style>
           .attendee-host {
             display: flex;
-          } 
+          }
           .person-image {
             height: 50px;
-          } 
+          }
         </style>
         <ul>
           <li data-for="event in events">
-            <div class="event-subject">{{event.subject}}</div>
-            <div class='attendee-host'>
-              <div data-for='attendee in event.attendees'>
-                <mgt-person person-query="{{attendee.emailAddress.name}}">
+            <div class="event-subject">{{ event.subject }}</div>
+            <div class="attendee-host">
+              <div data-for="attendee in event.attendees">
+                <mgt-person person-query="{{ attendee.emailAddress.name }}">
                   <template>
                     <div data-if="person.image">
-                      <img class="person-image" src="{{person.image}}" />
+                      <img class="person-image" src="{{ person.image }}" />
                     </div>
                     <div data-else>
-                      {{person.displayName}}
+                      {{ person.displayName }}
                     </div>
                   </template>
                 </mgt-person>
@@ -90,14 +88,14 @@
       </template>
       <template data-type="event">
         <style>
-          .event-subject{
+          .event-subject {
             font-size: 30px;
           }
         </style>
         <button class="eventButton">
-          <div class="event-subject">{{event.subject}}</div>
-          <div data-for='attendee in event.attendees'>
-            <mgt-person person-query="{{attendee.emailAddress.name}}" show-name show-email></mgt-person>
+          <div class="event-subject">{{ event.subject }}</div>
+          <div data-for="attendee in event.attendees">
+            <mgt-person person-query="{{ attendee.emailAddress.name }}" show-name show-email></mgt-person>
           </div>
         </button>
       </template>
@@ -110,18 +108,17 @@
     </mgt-agenda>
 
     <script type="module">
-        let myDay = document.getElementById('myDay');
-        myDay.addEventListener('templateRendered', (e) => {
-          if (e.detail && e.detail.context){
-            let button = e.detail.element.querySelector('.eventButton');
-            if (button) {
-              button.addEventListener('click', () => {
-                console.log('clicked ' + e.detail.context.event.subject)
-              });
-            }
+      let myDay = document.getElementById('myDay');
+      myDay.addEventListener('templateRendered', e => {
+        if (e.detail && e.detail.context) {
+          let button = e.detail.element.querySelector('.eventButton');
+          if (button) {
+            button.addEventListener('click', () => {
+              console.log('clicked ' + e.detail.context.event.subject);
+            });
           }
-            
-        });
+        }
+      });
     </script>
   </body>
 </html>
