@@ -457,7 +457,11 @@ export class MgtTasks extends LitElement {
             >
               <option value="">Unassigned</option>
               ${this._drawers
-                .filter(drawer => drawer.parentId === this._newTaskDresserId)
+                .filter(
+                  drawer =>
+                    drawer.parentId === this._newTaskDresserId ||
+                    (!this.isDefault(this._currentTargetDresser) && drawer.parentId === this._currentTargetDresser)
+                )
                 .map(
                   drawer => html`
                     <option value="${drawer.id}">${drawer.name}</option>

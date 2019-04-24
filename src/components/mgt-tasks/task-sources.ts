@@ -110,8 +110,6 @@ export class PlannerTaskSource extends TaskSourceBase implements ITaskSource {
 
 export class TodoTaskSource extends TaskSourceBase implements ITaskSource {
   public async getMyDressers(): Promise<IDresser[]> {
-    console.log('Getting My Dressers!');
-
     let groups: OutlookTaskGroup[] = await this.graph.todo_getAllMyGroups();
 
     return groups.map(
@@ -129,8 +127,6 @@ export class TodoTaskSource extends TaskSourceBase implements ITaskSource {
     return { id: group.id, secondaryId: group.groupKey, title: group.name };
   }
   public async getDrawersForDresser(id: string): Promise<IDrawer[]> {
-    console.log('Getting Drawers for Dresser: ', id);
-
     let folders: OutlookTaskFolder[] = await this.graph.todo_getFoldersForGroup(id);
 
     return folders.map(
@@ -143,7 +139,6 @@ export class TodoTaskSource extends TaskSourceBase implements ITaskSource {
     );
   }
   public async getAllTasksForDrawer(id: string, parId: string): Promise<ITask[]> {
-    console.log('Getting Tasks for Drawer: ', id);
     let tasks: OutlookTask[] = await this.graph.todo_getAllTasksForFolder(id);
 
     return tasks.map(

@@ -97,51 +97,41 @@ export class Graph {
 
   // Planner Methods
   public async planner_getAllMyPlans(): Promise<MicrosoftGraph.PlannerPlan[]> {
-    let scopes = ['Group.Read.All'];
-
     let plans = await this.client
       .api('/me/planner/plans')
-      .middlewareOptions([{ scopes }])
+      .middlewareOptions(prepScopes('Group.Read.All'))
       .get();
 
     return plans && plans.value;
   }
   public async planner_getSinglePlan(planId: string): Promise<MicrosoftGraph.PlannerPlan> {
-    let scopes = ['Group.Read.All'];
-
     let plan = await this.client
       .api(`/planner/plans/${planId}`)
-      .middlewareOptions([{ scopes }])
+      .middlewareOptions(prepScopes('Group.Read.All'))
       .get();
 
     return plan;
   }
   public async planner_getBucketsForPlan(planId: string): Promise<MicrosoftGraph.PlannerBucket[]> {
-    let scopes = ['Group.Read.All'];
-
     let buckets = await this.client
       .api(`/planner/plans/${planId}/buckets`)
-      .middlewareOptions([{ scopes }])
+      .middlewareOptions(prepScopes('Group.Read.All'))
       .get();
 
     return buckets && buckets.value;
   }
   public async planner_getTasksForBucket(bucketId: string): Promise<MicrosoftGraph.PlannerTask[]> {
-    let scopes = ['Group.Read.All'];
-
     let tasks = await this.client
       .api(`/planner/buckets/${bucketId}/tasks`)
-      .middlewareOptions([{ scopes }])
+      .middlewareOptions(prepScopes('Group.Read.All'))
       .get();
 
     return tasks && tasks.value;
   }
   public async planner_setTaskDetails(taskId: string, details: MicrosoftGraph.PlannerTask, eTag: string): Promise<any> {
-    let scopes = ['Group.ReadWrite.All'];
-
     return await this.client
       .api(`/planner/tasks/${taskId}`)
-      .middlewareOptions([{ scopes }])
+      .middlewareOptions(prepScopes('Group.ReadWrite.All'))
       .header('If-Match', eTag)
       .patch(JSON.stringify(details));
   }
@@ -164,20 +154,16 @@ export class Graph {
     );
   }
   public async planner_addTask(newTask: MicrosoftGraph.PlannerTask): Promise<any> {
-    let scopes = ['Group.ReadWrite.All'];
-
     return this.client
       .api(`/planner/tasks`)
-      .middlewareOptions([{ scopes }])
+      .middlewareOptions(prepScopes('Group.ReadWrite.All'))
       .post(newTask);
   }
   public async planner_removeTask(taskId: string, eTag: string): Promise<any> {
-    let scopes = ['Group.ReadWrite.All'];
-
     return this.client
       .api(`/planner/tasks/${taskId}`)
       .header('If-Match', eTag)
-      .middlewareOptions([{ scopes }])
+      .middlewareOptions(prepScopes('Group.ReadWrite.All'))
       .delete();
   }
 
