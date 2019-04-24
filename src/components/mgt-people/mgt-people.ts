@@ -58,7 +58,7 @@ export class MgtPeople extends LitElement {
   private renderPerson(person: MicrosoftGraph.Person) {
     return html`
       <div class="people-person">
-        <mgt-person person-details=${JSON.stringify(person)} show-name></mgt-person>
+        <mgt-person person-details=${JSON.stringify(person)}></mgt-person>
       </div>
     `;
   }
