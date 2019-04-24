@@ -180,6 +180,16 @@ export class MsalProvider extends IProvider {
     if (scopes) {
       let deniedScopes: string[] = this.getDeniedScopes() || [];
       deniedScopes = deniedScopes.concat(scopes);
+
+      var index = deniedScopes.indexOf('openid');
+      if (index !== -1) {
+        deniedScopes.splice(index, 1);
+      }
+
+      index = deniedScopes.indexOf('profile');
+      if (index !== -1) {
+        deniedScopes.splice(index, 1);
+      }
       sessionStorage.setItem(this.ss_denied_scopes_key, JSON.stringify(deniedScopes));
     }
   }
