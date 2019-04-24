@@ -1,4 +1,5 @@
 import { PlannerAssignments, User } from '@microsoft/microsoft-graph-types';
+import { OutlookTaskGroup, OutlookTaskFolder, OutlookTask } from '@microsoft/microsoft-graph-types-beta';
 import { Graph } from '../../Graph';
 
 export interface ITask {
@@ -22,51 +23,6 @@ export interface IDresser {
   id: string;
   secondaryId?: string;
   title: string;
-}
-
-interface TodoGroup {
-  id: string;
-  name: string;
-  changeKey: string;
-  isDefaultGroup: boolean;
-  groupKey: string;
-}
-
-interface TodoFolder {
-  id: string;
-  name: string;
-  changeKey: string;
-  isDefaultFolder: boolean;
-  parentGroupKey: string;
-}
-
-interface TodoTask {
-  '@odata.etag': string;
-  id: string;
-  createdDateTime: string;
-  lastModifiedDateTime: string;
-  changeKey: string;
-  categories: string[];
-  assignedTo: string;
-  hasAttachments: boolean;
-  isReminderOn: boolean;
-  owner: string;
-  parentFolderId: string;
-  sensitivity: string;
-  status: string;
-  subject: string;
-  completedDateTime: string;
-  dueDateTime: {
-    dateTime: string;
-    timeZone: string;
-  };
-  recurrence: string;
-  reminderDateTime: string;
-  startDateTime: string;
-  body: {
-    contentType: string;
-    content: string;
-  };
 }
 
 export interface ITaskSource {
@@ -156,19 +112,26 @@ export class TodoTaskSource extends TaskSourceBase implements ITaskSource {
   public async getMyDressers(): Promise<IDresser[]> {
     console.log('Getting My Dressers!');
 
-    let groups: TodoGroup[] = await this.graph.todo_getAllMyGroups();
+    let groups: OutlookTaskGroup[] = await this.graph.todo_getAllMyGroups();
 
-    return groups.map(group => ({ id: group.id, secondaryId: group.groupKey, title: group.name } as IDresser));
+    return groups.map(
+      group =>
+        ({
+          id: group.id,
+          secondaryId: group.groupKey,
+          title: group.name
+        } as IDresser)
+    );
   }
   public async getSingleDresser(id: string): Promise<IDresser> {
-    let group: TodoGroup = await this.graph.todo_getSingleGroup(id);
+    let group: OutlookTaskGroup = await this.graph.todo_getSingleGroup(id);
 
     return { id: group.id, secondaryId: group.groupKey, title: group.name };
   }
   public async getDrawersForDresser(id: string): Promise<IDrawer[]> {
     console.log('Getting Drawers for Dresser: ', id);
 
-    let folders: TodoFolder[] = await this.graph.todo_getFoldersForGroup(id);
+    let folders: OutlookTaskFolder[] = await this.graph.todo_getFoldersForGroup(id);
 
     return folders.map(
       folder =>
@@ -181,7 +144,7 @@ export class TodoTaskSource extends TaskSourceBase implements ITaskSource {
   }
   public async getAllTasksForDrawer(id: string, parId: string): Promise<ITask[]> {
     console.log('Getting Tasks for Drawer: ', id);
-    let tasks: TodoTask[] = await this.graph.todo_getAllTasksForFolder(id);
+    let tasks: OutlookTask[] = await this.graph.todo_getAllTasksForFolder(id);
 
     return tasks.map(
       task =>
@@ -214,7 +177,7 @@ export class TodoTaskSource extends TaskSourceBase implements ITaskSource {
         dateTime: newTask.dueDate,
         timeZone: 'UTC'
       }
-    } as TodoTask);
+    } as OutlookTask);
   }
   public async removeTask(id: string, eTag: string): Promise<any> {
     return await this.graph.todo_removeTask(id, eTag);

@@ -1,4 +1,5 @@
 import * as MicrosoftGraph from '@microsoft/microsoft-graph-types';
+import * as MSGB from '@microsoft/microsoft-graph-types-beta';
 import { Client } from '@microsoft/microsoft-graph-client/lib/es/Client';
 import { IProvider } from './providers/IProvider';
 import { ResponseType } from '@microsoft/microsoft-graph-client/lib/es/ResponseType';
@@ -180,7 +181,7 @@ export class Graph {
   }
 
   // Todo Methods
-  public async todo_getAllMyGroups(): Promise<any> {
+  public async todo_getAllMyGroups(): Promise<MSGB.OutlookTaskGroup[]> {
     let groups = await this.client
       .api('/me/outlook/taskGroups')
       .version('beta')
@@ -189,7 +190,7 @@ export class Graph {
 
     return groups && groups.value;
   }
-  public async todo_getSingleGroup(groupId: string): Promise<any> {
+  public async todo_getSingleGroup(groupId: string): Promise<MSGB.OutlookTaskGroup> {
     let group = await this.client
       .api(`/me/outlook/taskGroups/${groupId}`)
       .version('beta')
@@ -198,7 +199,7 @@ export class Graph {
 
     return group;
   }
-  public async todo_getFoldersForGroup(groupId: string): Promise<any> {
+  public async todo_getFoldersForGroup(groupId: string): Promise<MSGB.OutlookTaskFolder[]> {
     let folders = await this.client
       .api(`/me/outlook/taskGroups/${groupId}/taskFolders`)
       .version('beta')
@@ -207,7 +208,7 @@ export class Graph {
 
     return folders && folders.value;
   }
-  public async todo_getAllTasksForFolder(folderId: string): Promise<any> {
+  public async todo_getAllTasksForFolder(folderId: string): Promise<MSGB.OutlookTask[]> {
     let tasks = await this.client
       .api(`/me/outlook/taskFolders/${folderId}/tasks`)
       .version('beta')
@@ -216,7 +217,7 @@ export class Graph {
 
     return tasks && tasks.value;
   }
-  public async todo_setTaskDetails(taskId: string, task: any, eTag: string): Promise<any> {
+  public async todo_setTaskDetails(taskId: string, task: any, eTag: string): Promise<MSGB.OutlookTask> {
     return await this.client
       .api(`/me/outlook/tasks/${taskId}`)
       .version('beta')
@@ -224,7 +225,7 @@ export class Graph {
       .middlewareOptions(prepScopes('Tasks.ReadWrite'))
       .patch(task);
   }
-  public async todo_setTaskComplete(taskId: string, eTag: string): Promise<any> {
+  public async todo_setTaskComplete(taskId: string, eTag: string): Promise<MSGB.OutlookTask> {
     return await this.todo_setTaskDetails(
       taskId,
       {
@@ -234,7 +235,7 @@ export class Graph {
       eTag
     );
   }
-  public async todo_setTaskIncomplete(taskId: string, eTag: string): Promise<any> {
+  public async todo_setTaskIncomplete(taskId: string, eTag: string): Promise<MSGB.OutlookTask> {
     return await this.todo_setTaskDetails(
       taskId,
       {
@@ -245,7 +246,7 @@ export class Graph {
     );
   }
 
-  public async todo_addTask(newTask: any): Promise<any> {
+  public async todo_addTask(newTask: any): Promise<MSGB.OutlookTask> {
     let { parentFolderId = null } = newTask;
 
     if (parentFolderId)
