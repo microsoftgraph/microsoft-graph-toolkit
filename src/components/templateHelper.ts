@@ -12,7 +12,7 @@ export class TemplateHelper {
    * @param key the key of the value we need (ex: 'a.b.c')
    */
   private static getValueFromObject(obj: object, key: string) {
-    let keys = key.split('.');
+    let keys = key.trim().split('.');
     let value = obj;
     for (let i = 0; i < keys.length; i++) {
       let currentKey = keys[i];
@@ -29,7 +29,7 @@ export class TemplateHelper {
     return str.replace(this._expression, match => {
       let key = match.substring(2, match.length - 2);
       let value = this.getValueFromObject(context, key);
-      return value ? value.toString() : match;
+      return value ? value.toString() : '';
     });
   }
 
