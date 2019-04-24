@@ -49,11 +49,11 @@ export class Graph {
   }
 
   async findPerson(query: string): Promise<MicrosoftGraph.Person[]> {
-    let scopes = ['people.read'];
+    let scopes = 'people.read';
     let result = await this.client
       .api(`/me/people`)
       .search('"' + query + '"')
-      .middlewareOptions([{ scopes: scopes }])
+      .middlewareOptions(prepScopes(scopes))
       .get();
     return result ? result.value : null;
   }
@@ -87,7 +87,6 @@ export class Graph {
 
     let calendarView = await this.client
       .api(uri)
-      .middlewareOptions([{ scopes: scopes }])
       .middlewareOptions(prepScopes(scopes))
       .get();
     return calendarView ? calendarView.value : null;
