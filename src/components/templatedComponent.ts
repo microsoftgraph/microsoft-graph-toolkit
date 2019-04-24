@@ -1,16 +1,8 @@
-import { LitElement, html } from 'lit-element';
+import { html } from 'lit-element';
 import { TemplateHelper } from './templateHelper';
+import { MgtBaseComponent } from './baseComponent';
 
-export abstract class MgtTemplatedComponent extends LitElement {
-  private fireCustomEvent(eventName: string, detail?: any): boolean {
-    let event = new CustomEvent(eventName, {
-      cancelable: true,
-      bubbles: false,
-      detail: detail
-    });
-    return this.dispatchEvent(event);
-  }
-
+export abstract class MgtTemplatedComponent extends MgtBaseComponent {
   getTemplates() {
     let templates = {};
 
