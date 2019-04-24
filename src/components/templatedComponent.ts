@@ -1,7 +1,7 @@
 import { LitElement, html } from 'lit-element';
 import { TemplateHelper } from './templateHelper';
 
-export abstract class MgtBaseComponent extends LitElement {
+export abstract class MgtTemplatedComponent extends LitElement {
   private fireCustomEvent(eventName: string, detail?: any): boolean {
     let event = new CustomEvent(eventName, {
       cancelable: true,
