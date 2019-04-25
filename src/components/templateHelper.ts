@@ -33,7 +33,7 @@ export class TemplateHelper {
         if (typeof value == 'object') {
           return JSON.stringify(value);
         } else {
-          return value;
+          return (<any>value).toString();
         }
       }
       return '';
