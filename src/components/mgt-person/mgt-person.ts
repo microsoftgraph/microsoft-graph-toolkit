@@ -5,10 +5,10 @@ import { Providers } from '../../Providers';
 import { styles } from './mgt-person-css';
 import '../../styles/fabric-icon-font';
 import { ProviderState } from '../../providers/IProvider';
-import { MgtBaseComponent } from '../baseComponent';
+import { MgtTemplatedComponent } from '../templatedComponent';
 
 @customElement('mgt-person')
-export class MgtPerson extends MgtBaseComponent {
+export class MgtPerson extends MgtTemplatedComponent {
   @property({
     attribute: 'image-size'
   })
