@@ -56,7 +56,7 @@ export class MgtMsalProvider extends LitElement {
       }
 
       if (this.scopes) {
-        let scope = this.scopes.split(",");
+        let scope = this.scopes.split(',');
         if (scope && scope.length > 0) {
           config.scopes = scope;
         }
