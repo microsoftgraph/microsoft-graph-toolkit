@@ -92,12 +92,27 @@ export class MgtPerson extends MgtTemplatedComponent {
                 this.personDetails.email = (<any>person).emailAddresses[0].address;
               }
 
-              if (person.userPrincipalName) {
-                let userPrincipalName = person.userPrincipalName;
-                provider.graph.getUserPhoto(userPrincipalName).then(photo => {
-                  this.personDetails.image = photo;
-                  this.requestUpdate();
-                });
+              // https://developer.microsoft.com/en-us/office/blogs/people-api-available-in-microsoft-graph-v1/
+              if (person.personType.class == 'Person') {
+                if (person.userPrincipalName) {
+                  let userPrincipalName = person.userPrincipalName;
+                  provider.graph.getUserPhoto(userPrincipalName).then(photo => {
+                    this.personDetails.image = photo;
+                    this.requestUpdate();
+                  });
+                } else if (this.personDetails.email) {
+                  // try to find a contact
+                  provider.graph.findContactByEmail(this.personDetails.email).then(contacts => {
+                    if (contacts && contacts.length) {
+                      const contactId = contacts[0].id;
+                      provider.graph.getContactPhoto(contactId).then(photo => {
+                        this.personDetails.image = photo;
+                        this.requestUpdate();
+                      });
+                    }
+                  });
+                }
+              } else {
               }
             }
           });
