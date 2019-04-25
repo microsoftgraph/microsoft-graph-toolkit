@@ -98,7 +98,7 @@ export class Graph {
     let scopes = 'calendars.read';
 
     let sdt = `startdatetime=${startDateTime.toISOString()}`;
-    let edt = `enddatetime=${endDateTime.toISOString()}`;
+    let edt = `enddatetime=${endDateTime.toISOString()}&$orderby=start/dateTime`;
     let uri = `/me/calendarview?${sdt}&${edt}`;
 
     let calendarView = await this.client
