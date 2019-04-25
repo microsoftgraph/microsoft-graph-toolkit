@@ -7,11 +7,11 @@ import { styles } from './mgt-agenda-css';
 
 import '../mgt-person/mgt-person';
 import '../../styles/fabric-icon-font';
+import { MgtTemplatedComponent } from '../templatedComponent';
 
 @customElement('mgt-agenda')
-export class MgtAgenda extends LitElement {
+export class MgtAgenda extends MgtTemplatedComponent {
   @property({ attribute: false }) _events: Array<MicrosoftGraph.Event>;
-  @property() eventTemplateFunction: (event: any) => string;
 
   static get styles() {
     return styles;
@@ -34,28 +34,30 @@ export class MgtAgenda extends LitElement {
   }
 
   render() {
-    if (this._events) {
-      // remove slotted elements inserted initially
-      while (this.lastChild) {
-        this.removeChild(this.lastChild);
-      }
+    let templates = this.getTemplates();
+    this.removeSlottedElements();
 
-      return html`
-        <ul class="agenda-list">
-          ${this._events.map(
-            event =>
-              html`
-                <li>
-                  ${this.eventTemplateFunction ? this.renderEventTemplate(event) : this.renderEvent(event)}
-                </li>
-              `
-          )}
-        </ul>
-      `;
+    if (this._events) {
+      if (templates['default']) {
+        return this.renderTemplate(templates['default'], { events: this._events }, 'global');
+      } else {
+        return html`
+          <ul class="agenda-list">
+            ${this._events.map(
+              event =>
+                html`
+                  <li>
+                    ${templates['event']
+                      ? this.renderTemplate(templates['event'], { event: event }, event.id)
+                      : this.renderEvent(event)}
+                  </li>
+                `
+            )}
+          </ul>
+        `;
+      }
     } else {
-      return html`
-        <div>no things</div>
-      `;
+      return templates['no-data'] ? this.renderTemplate(templates['no-data'], null, 'no-data') : html``;
     }
   }
 
@@ -68,12 +70,12 @@ export class MgtAgenda extends LitElement {
         </div>
         <div class="event-details-container">
           <div class="event-subject">${event.subject}</div>
-          <div class="event-attendies">
-            <ul class="event-attendie-list">
+          <div class="event-attendees">
+            <ul class="event-attendee-list">
               ${event.attendees.slice(0, 5).map(
                 at =>
                   html`
-                    <li class="event-attendie">
+                    <li class="event-attendee">
                       <mgt-person person-query=${at.emailAddress.address} image-size="30"></mgt-person>
                     </li>
                   `
@@ -84,24 +86,6 @@ export class MgtAgenda extends LitElement {
         </div>
       </div>
     `;
-  }
-
-  private renderEventTemplate(event) {
-    let content: any = this.eventTemplateFunction(event);
-    if (typeof content === 'string') {
-      return html`
-        <div>${this.eventTemplateFunction(event)}</div>
-      `;
-    } else {
-      let div = document.createElement('div');
-      div.slot = event.subject;
-      div.appendChild(content);
-
-      this.appendChild(div);
-      return html`
-        <slot name=${event.subject}></slot>
-      `;
-    }
   }
 
   getStartingTime(event: MicrosoftGraph.Event) {

@@ -8,13 +8,7 @@ export class MgtWamProvider extends LitElement {
 
   @property({ attribute: 'authority' }) authority?: string;
 
-  constructor() {
-    super();
-    this.validateAuthProps();
-  }
-
-  attributeChangedCallback(name, oldval, newval) {
-    super.attributeChangedCallback(name, oldval, newval);
+  firstUpdated(changedProperties) {
     this.validateAuthProps();
   }
 

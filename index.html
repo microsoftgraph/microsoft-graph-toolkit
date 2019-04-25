@@ -1,53 +1,56 @@
 <!DOCTYPE html>
 <html>
-  <head>
-    <meta charset="utf-8" />
-    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
-    <title>Microsoft Graph Toolkit Test</title>
-    <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <link href="https://cdnjs.cloudflare.com/ajax/libs/normalize/8.0.1/normalize.min.css" rel="stylesheet" />
 
-    <!-- <script type="module" src="./dist/es6/components/mgt-login/mgt-login.js"></script>
+<head>
+  <meta charset="utf-8" />
+  <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+  <title>Microsoft Graph Toolkit Test</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/normalize/8.0.1/normalize.min.css" rel="stylesheet" />
+
+  <!-- <script type="module" src="./dist/es6/components/mgt-login/mgt-login.js"></script>
     <script type="module" src="./dist/es6/components/mgt-person/mgt-person.js"></script>
     <script type="module" src="./dist/es6/components/mgt-agenda/mgt-agenda.js"></script>
     <script type="module" src="./dist/es6/components/providers/mgt-msal-provider/mgt-msal-provider.js"></script> -->
 
-    <!-- <script src="./dist/bundle/mgt-loader.js"></script> -->
-    
-    <script type="module" src="./dist/es6/components/providers/mgt-msal-provider.js"></script>
-    <script type="module" src="./dist/es6/components/mgt-login/mgt-login.js"></script>
-    <script type="module" src="./dist/es6/components/mgt-agenda/mgt-agenda.js"></script>
-    <script type="module" src="./dist/es6/mock/mgt-mock-provider.js"></script>
-  </head>
-  <body>
-    <!-- <mgt-msal-provider
+  <!-- <script src="./dist/bundle/mgt-loader.js"></script> -->
+
+  <script type="module" src="./dist/es6/components/providers/mgt-msal-provider.js"></script>
+  <script type="module" src="./dist/es6/components/mgt-login/mgt-login.js"></script>
+  <script type="module" src="./dist/es6/components/mgt-agenda/mgt-agenda.js"></script>
+  <script type="module" src="./dist/es6/mock/mgt-mock-provider.js"></script>
+</head>
+
+<body>
+  <!-- <mgt-msal-provider
       client-id="a974dfa0-9f57-49b9-95db-90f04ce2111a"
+      scopes="user.read,people.read,user.readbasic.all,contacts.read,calendars.read"
       ></mgt-msal-provider> -->
 
-    <mgt-mock-provider></mgt-mock-provider>
+  <mgt-mock-provider></mgt-mock-provider>
 
-    <mgt-login></mgt-login>
-    
-    <mgt-people></mgt-people>
+  <mgt-login></mgt-login>
 
-    <script type="module">
-      import { Providers } from './dist/es6/index.js';
+  <mgt-people></mgt-people>
 
-      async function getPeople() {
-        if (Providers.globalProvider) {
-          let client = Providers.globalProvider.graph; // .client
+  <script type="module">
+    import { Providers } from './dist/es6/index.js';
 
-          let people = document.getElementsByTagName('mgt-people')[0];
+    async function getPeople() {
+      if (Providers.globalProvider) {
+        let client = Providers.globalProvider.graph; // .client
 
-          people.people = (await client.contacts()).slice(0, 4);
-        }
+        let people = document.getElementsByTagName('mgt-people')[0];
+
+        people.people = (await client.contacts()).slice(0, 4);
       }
+    }
 
-      Providers.onProviderUpdated(() => getPeople());
-      getPeople();
-    </script>
+    Providers.onProviderUpdated(() => getPeople());
+    getPeople();
+  </script>
 
-    <!-- <script type="module">
+  <!-- <script type="module">
       let login = document.getElementsByTagName('mgt-login')[0];
       
       login.addEventListener('loginInitiated', (event) => {console.log('loginInitiated'); login.userDetails = {
@@ -59,49 +62,11 @@
       login.addEventListener('logoutInitiated', (event) => {console.log('logoutInitiated')});
       login.addEventListener('logoutCompleted', (event) => {console.log('logoutCompleted')});
     </script> -->
-    
-    <!-- <mgt-person person-query="me" show-name show-email></mgt-person> -->
-    <!-- <mgt-agenda></mgt-agenda> -->
 
-    <!-- <mgt-agenda id="myDay"></mgt-agenda> -->
+  <!-- <mgt-person person-query="me" show-name show-email></mgt-person> -->
+  <!-- <mgt-agenda></mgt-agenda> -->
 
-    <!-- authority="https://login.microsofonline.com/nikolame.onmicrosoft.com" -->
-
-    <!-- <template id="my-template">
-        <style>
-            .eventBtn {
-            background: green;
-            }
-        </style>
-        <button class="eventBtn">EVENT NAME GOES HERE</button>
-    </template>
-
-    <script type="module">
-        let myDay = document.getElementById('myDay');
-
-        // myDay.eventTemplateFunction = (event) => {
-        //   return html`<style>
-        //       .testbtn {
-        //         background: red;
-        //       }
-        //     </style>
-        //     <button class="testbtn">${event.subject}</button>`
-        // }
-
-        // myDay.eventTemplateFunction = (event) => {
-        //     let template = document.getElementById("my-template");
-        //     let templateContent = template.content.cloneNode(true);
-
-        //     let btn = templateContent.querySelector('.eventBtn');
-        //     btn.innerHTML = event.subject;
-        //     btn.onclick = function () {
-        //     console.log(`${event.subject} clicked`);
-        //     }
-        //     return templateContent;
-        // };
-    </script> -->
-
-    <!-- <script type="module">
+  <!-- <script type="module">
       import {Providers} from './dist/es6/index.js'
       Providers.onProviderUpdated(handleProvider);
       handleProvider();
@@ -114,5 +79,72 @@
         }
       }
     </script> -->
-  </body>
+
+  <mgt-agenda id="myDay">
+    <template>
+      <style>
+        .attendee-host {
+          display: flex;
+        }
+
+        .person-image {
+          height: 50px;
+        }
+      </style>
+      <ul>
+        <li data-for="event in events">
+          <div class="event-subject">{{ event.subject }}</div>
+          <div class="attendee-host">
+            <div data-for="attendee in event.attendees">
+              <mgt-person person-query="{{ attendee.emailAddress.name }}">
+                <template>
+                  <div data-if="person.image">
+                    <img class="person-image" src="{{ person.image }}" />
+                  </div>
+                  <div data-else>
+                    {{ person.displayName }}
+                  </div>
+                </template>
+              </mgt-person>
+            </div>
+          </div>
+        </li>
+      </ul>
+    </template>
+    <template data-type="event">
+      <style>
+        .event-subject {
+          font-size: 30px;
+        }
+      </style>
+      <button class="eventButton">
+        <div class="event-subject">{{ event.subject }}</div>
+        <div data-for="attendee in event.attendees">
+          <mgt-person person-query="{{ attendee.emailAddress.name }}" show-name show-email></mgt-person>
+        </div>
+      </button>
+    </template>
+    <template data-type="no-data">
+      Where is the data
+    </template>
+    <template data-type="loading">
+      Loading
+    </template>
+  </mgt-agenda>
+
+  <script type="module">
+    let myDay = document.getElementById('myDay');
+    myDay.addEventListener('templateRendered', e => {
+      if (e.detail && e.detail.context) {
+        let button = e.detail.element.querySelector('.eventButton');
+        if (button) {
+          button.addEventListener('click', () => {
+            console.log('clicked ' + e.detail.context.event.subject);
+          });
+        }
+      }
+    });
+  </script>
+</body>
+
 </html>

@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Microsoft Graph Toolkit Test</title>
+
+    <script type="module" src="../../../dist/es6/index.js"></script>
+  </head>
+  <body>
+    <mgt-agenda id="myDay">
+      <template>
+        <style>
+          .attendee-host {
+            display: flex;
+          }
+          .person-image {
+            height: 50px;
+          }
+        </style>
+        <ul>
+          <li data-for="event in events">
+            <div class="event-subject">{{ event.subject }}</div>
+            <div class="attendee-host">
+              <div data-for="attendee in event.attendees">
+                <mgt-person person-query="{{ attendee.emailAddress.name }}">
+                  <template>
+                    <div data-if="person.image">
+                      <img class="person-image" src="{{ person.image }}" />
+                    </div>
+                    <div data-else>
+                      {{ person.displayName }}
+                    </div>
+                  </template>
+                </mgt-person>
+              </div>
+            </div>
+          </li>
+        </ul>
+      </template>
+      <template data-type="event">
+        <style>
+          .event-subject {
+            font-size: 30px;
+          }
+        </style>
+        <button class="eventButton">
+          <div class="event-subject">{{ event.subject }}</div>
+          <div data-for="attendee in event.attendees">
+            <mgt-person person-query="{{ attendee.emailAddress.name }}" show-name show-email></mgt-person>
+          </div>
+        </button>
+      </template>
+      <template data-type="no-data">
+        Where is the data
+      </template>
+      <template data-type="loading">
+        Loading
+      </template>
+    </mgt-agenda>
+
+    <script type="module">
+      let myDay = document.getElementById('myDay');
+      myDay.addEventListener('templateRendered', e => {
+        if (e.detail && e.detail.context) {
+          let button = e.detail.element.querySelector('.eventButton');
+          if (button) {
+            button.addEventListener('click', () => {
+              console.log('clicked ' + e.detail.context.event.subject);
+            });
+          }
+        }
+      });
+    </script>
+  </body>
+</html>

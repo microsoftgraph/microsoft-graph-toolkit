@@ -21,27 +21,25 @@ export class MgtMsalProvider extends LitElement {
 
   @property() authority;
 
-  constructor() {
-    super();
-    this.validateAuthProps();
-  }
-
-  attributeChangedCallback(name, oldval, newval) {
-    super.attributeChangedCallback(name, oldval, newval);
-
-    if (this._isInitialized) {
-      this.validateAuthProps();
-    }
-    this.validateAuthProps();
-  }
+  /* Comma separated list of scopes. */
+  @property({
+    type: String,
+    attribute: 'scopes'
+  })
+  scopes;
 
   firstUpdated(changedProperties) {
-    this._isInitialized = true;
     this.validateAuthProps();
   }
 
   private validateAuthProps() {
+    if (this._isInitialized) {
+      return;
+    }
+
     if (this.clientId) {
+      this._isInitialized = true;
+
       let config: MsalConfig = {
         clientId: this.clientId
       };
@@ -55,6 +53,13 @@ export class MgtMsalProvider extends LitElement {
 
       if (this.authority) {
         config.authority = this.authority;
+      }
+
+      if (this.scopes) {
+        let scope = this.scopes.split(',');
+        if (scope && scope.length > 0) {
+          config.scopes = scope;
+        }
       }
 
       Providers.globalProvider = new MsalProvider(config);

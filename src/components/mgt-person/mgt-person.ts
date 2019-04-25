@@ -5,9 +5,10 @@ import { Providers } from '../../Providers';
 import { styles } from './mgt-person-css';
 import '../../styles/fabric-icon-font';
 import { ProviderState } from '../../providers/IProvider';
+import { MgtTemplatedComponent } from '../templatedComponent';
 
 @customElement('mgt-person')
-export class MgtPerson extends LitElement {
+export class MgtPerson extends MgtTemplatedComponent {
   @property({
     attribute: 'image-size'
   })
@@ -91,12 +92,27 @@ export class MgtPerson extends LitElement {
                 this.personDetails.email = (<any>person).emailAddresses[0].address;
               }
 
-              if (person.userPrincipalName) {
-                let userPrincipalName = person.userPrincipalName;
-                provider.graph.getUserPhoto(userPrincipalName).then(photo => {
-                  this.personDetails.image = photo;
-                  this.requestUpdate();
-                });
+              // https://developer.microsoft.com/en-us/office/blogs/people-api-available-in-microsoft-graph-v1/
+              if (person.personType.class == 'Person') {
+                if (person.userPrincipalName) {
+                  let userPrincipalName = person.userPrincipalName;
+                  provider.graph.getUserPhoto(userPrincipalName).then(photo => {
+                    this.personDetails.image = photo;
+                    this.requestUpdate();
+                  });
+                } else if (this.personDetails.email) {
+                  // try to find a contact
+                  provider.graph.findContactByEmail(this.personDetails.email).then(contacts => {
+                    if (contacts && contacts.length) {
+                      const contactId = contacts[0].id;
+                      provider.graph.getContactPhoto(contactId).then(photo => {
+                        this.personDetails.image = photo;
+                        this.requestUpdate();
+                      });
+                    }
+                  });
+                }
+              } else {
               }
             }
           });
@@ -108,6 +124,19 @@ export class MgtPerson extends LitElement {
   }
 
   render() {
+    let templates = this.getTemplates();
+    this.removeSlottedElements();
+
+    if (templates['default']) {
+      return this.renderTemplate(
+        templates['default'],
+        {
+          person: this.personDetails
+        },
+        'default'
+      );
+    }
+
     return html`
       <div class="root">
         ${this.renderImage()} ${this.renderNameAndEmail()}
