@@ -31,7 +31,26 @@
 
   <mgt-login></mgt-login>
 
-  <mgt-people></mgt-people>
+  <mgt-people>
+    <template>
+      <style>
+        .people-list {
+          list-style-type: none;
+        }
+
+        .people-person {
+          margin: 0px 0px 8px 0px;
+        }
+      </style>
+      <ul class="people-list">
+        <li data-for="person in people">
+          <div class="people-person">
+            <mgt-person person-query="{{ person.displayName }}" show-name></mgt-person>
+          </div>
+        </li>
+      </ul>
+    </template>
+  </mgt-people>
 
   <script type="module">
     import { Providers } from './dist/es6/index.js';
