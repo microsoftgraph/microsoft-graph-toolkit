@@ -8,9 +8,10 @@ import { styles } from './mgt-tasks-css';
 import { ITaskSource, PlannerTaskSource, TodoTaskSource, IDresser, IDrawer, ITask } from './task-sources';
 
 import '../mgt-person/mgt-person';
-import '../mgt-arrow-options/mgt-arrow-options';
-import '../mgt-dot-options/mgt-dot-options';
+import '../sub-components/mgt-arrow-options/mgt-arrow-options';
+import '../sub-components/mgt-dot-options/mgt-dot-options';
 
+// Strings and Resources for different task contexts
 const TASK_RES = {
   todo: {
     DUE_DATE_TIME: 'T17:00',
@@ -27,14 +28,6 @@ const TASK_RES = {
     BUCKETS_SELF_ASSIGNED: 'All Buckets',
     PLAN_NOT_FOUND: 'Plan not found',
     BUCKET_NOT_FOUND: 'Bucket not found'
-  },
-  generic: {
-    DUE_DATE_TIME: 'T17:00',
-    BASE_SELF_ASSIGNED: 'Base Option',
-    PLANS_SELF_ASSIGNED: 'All Top Level',
-    BUCKETS_SELF_ASSIGNED: 'All Medium Level',
-    PLAN_NOT_FOUND: 'Top not found',
-    BUCKET_NOT_FOUND: 'Medium not found'
   }
 };
 
@@ -45,9 +38,8 @@ export class MgtTasks extends LitElement {
       case 'todo':
         return TASK_RES.todo;
       case 'planner':
-        return TASK_RES.planner;
       default:
-        return TASK_RES.generic;
+        return TASK_RES.planner;
     }
   }
 
@@ -92,10 +84,18 @@ export class MgtTasks extends LitElement {
 
   private _me: User = null;
 
+  protected firstUpdated() {
+    this.loadTasks();
+  }
+
+  public attributeChangedCallback(name: string, oldVal: string, newVal: string) {
+    super.attributeChangedCallback(name, oldVal, newVal);
+    if (name === 'data-source') this.loadTasks();
+  }
+
   constructor() {
     super();
     Providers.onProviderUpdated(() => this.loadTasks());
-    this.loadTasks();
   }
 
   private async loadTasks() {
@@ -216,7 +216,7 @@ export class MgtTasks extends LitElement {
     return task.immediateParentId === this._currentTargetDrawer || this.isDefault(this._currentTargetDrawer);
   }
 
-  public render() {
+  protected render() {
     if (this.initialPlannerId && (!this._currentTargetDresser || this.isDefault(this._currentTargetDresser))) {
       this._currentTargetDresser = this.initialPlannerId;
       this.initialPlannerId = null;
@@ -225,17 +225,17 @@ export class MgtTasks extends LitElement {
     return html`
       <div class="Header">
         <span class="PlannerTitle">
-          ${this.getPlanOptions()}
+          ${this.renderPlanOptions()}
         </span>
       </div>
       <div class="Tasks">
-        ${this._showNewTask ? this.getNewTaskHtml() : null}
+        ${this._showNewTask ? this.renderNewTaskHtml() : null}
         ${this._tasks
           .filter(task => this.taskPlanFilter(task))
           .filter(task => this.taskSubPlanFilter(task))
           .filter(task => this.taskBucketPlanFilter(task))
           .filter(task => !this._hiddenTasks.includes(task.id))
-          .map(task => this.getTaskHtml(task))}
+          .map(task => this.renderTaskHtml(task))}
       </div>
     `;
   }
@@ -262,7 +262,7 @@ export class MgtTasks extends LitElement {
       );
   }
 
-  private getPlanOptions() {
+  private renderPlanOptions() {
     let p = Providers.globalProvider;
 
     if (!p || p.state !== ProviderState.SignedIn)
@@ -393,7 +393,7 @@ export class MgtTasks extends LitElement {
     }
   }
 
-  private getNewTaskHtml() {
+  private renderNewTaskHtml() {
     let taskCheck = this._newTaskBeingAdded
       ? html`
           <span class="TaskCheck TaskIcon Loading"> \uF16A </span>
@@ -415,7 +415,7 @@ export class MgtTasks extends LitElement {
       </span>
     `;
 
-    let taskPlan = !this.isDefault(this._currentTargetDresser)
+    let taskDresser = !this.isDefault(this._currentTargetDresser)
       ? html`
           <span class="TaskDetail TaskAssignee">
             <span class="TaskIcon">\uF5DC</span>
@@ -440,7 +440,17 @@ export class MgtTasks extends LitElement {
           </span>
         `;
 
-    let taskBucket = !this.isDefault(this._currentTargetDrawer)
+    let drawers = this._drawers.filter(
+      drawer =>
+        drawer.parentId === this._newTaskDresserId ||
+        (!this.isDefault(this._currentTargetDresser) && drawer.parentId === this._currentTargetDresser)
+    );
+
+    if (drawers.length > 0) {
+      this._newTaskDrawerId = drawers[0].id;
+    }
+
+    let taskDrawer = !this.isDefault(this._currentTargetDrawer)
       ? html`
           <span class="TaskDetail TaskBucket">
             <span class="TaskIcon">\uF1B6</span>
@@ -451,22 +461,16 @@ export class MgtTasks extends LitElement {
           <span class="TaskDetail TaskBucket">
             <span class="TaskIcon">\uF1B6</span>
             <select
+              .value="${this._newTaskDrawerId}"
               @change="${(e: Event & { target: HTMLSelectElement }) => {
                 this._newTaskDrawerId = e.target.value;
               }}"
             >
-              <option value="">Unassigned</option>
-              ${this._drawers
-                .filter(
-                  drawer =>
-                    drawer.parentId === this._newTaskDresserId ||
-                    (!this.isDefault(this._currentTargetDresser) && drawer.parentId === this._currentTargetDresser)
-                )
-                .map(
-                  drawer => html`
-                    <option value="${drawer.id}">${drawer.name}</option>
-                  `
-                )}
+              ${drawers.map(
+                drawer => html`
+                  <option value="${drawer.id}">${drawer.name}</option>
+                `
+              )}
             </select>
           </span>
         `;
@@ -522,7 +526,7 @@ export class MgtTasks extends LitElement {
             ${taskTitle}
           </span>
           <span class="TaskDetails">
-            ${taskPlan} ${taskBucket} ${taskPeople} ${taskDue}
+            ${taskDresser} ${taskDrawer} ${taskPeople} ${taskDue}
           </span>
         </div>
         ${taskAdd}
@@ -530,7 +534,7 @@ export class MgtTasks extends LitElement {
     `;
   }
 
-  private getTaskHtml(task: ITask) {
+  private renderTaskHtml(task: ITask) {
     let { name = 'Task', completed = false, dueDate, assignments } = task;
 
     let dueDateString = new Date(dueDate);
@@ -551,7 +555,7 @@ export class MgtTasks extends LitElement {
           <span class="TaskCheck TaskIcon Incomplete"></span>
         `;
 
-    let taskPlan = !this.isDefault(this._currentTargetDresser)
+    let taskDresser = !this.isDefault(this._currentTargetDresser)
       ? null
       : html`
           <span class="TaskDetail TaskAssignee">
@@ -560,7 +564,7 @@ export class MgtTasks extends LitElement {
           </span>
         `;
 
-    let taskBucket = !this.isDefault(this._currentTargetDrawer)
+    let taskDrawer = !this.isDefault(this._currentTargetDrawer)
       ? null
       : html`
           <span class="TaskDetail TaskBucket">
@@ -624,7 +628,7 @@ export class MgtTasks extends LitElement {
           ${taskDelete}
         </div>
         <div class="TaskDetails">
-          ${taskPlan} ${taskBucket} ${taskPeople} ${taskDue}
+          ${taskDresser} ${taskDrawer} ${taskPeople} ${taskDue}
         </div>
       </div>
     `;
