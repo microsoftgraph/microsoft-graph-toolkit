@@ -15,7 +15,13 @@ export class MgtPeople extends MgtTemplatedComponent {
     attribute: 'people',
     type: Array
   })
-  people: Array<MicrosoftGraph.Person> = [];
+  people: Array<MicrosoftGraph.Person> = null;
+
+  @property({
+    attribute: 'show-max',
+    type: Number
+  })
+  showMax: number = 3;
 
   /* TODO: Do we want a query property for loading groups from calls? */
 
@@ -25,6 +31,20 @@ export class MgtPeople extends MgtTemplatedComponent {
 
   constructor() {
     super();
+    Providers.onProviderUpdated(() => this.loadPeople());
+    this.loadPeople();
+  }
+
+  private async loadPeople() {
+    if (!this.people) {
+      let provider = Providers.globalProvider;
+
+      if (provider && provider.state === ProviderState.SignedIn) {
+        let client = Providers.globalProvider.graph;
+
+        this.people = (await client.contacts()).slice(0, this.showMax);
+      }
+    }
   }
 
   render() {
