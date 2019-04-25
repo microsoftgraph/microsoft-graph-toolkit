@@ -29,7 +29,14 @@ export class TemplateHelper {
     return str.replace(this._expression, match => {
       let key = match.substring(2, match.length - 2);
       let value = this.getValueFromObject(context, key);
-      return value ? value.toString() : '';
+      if (value) {
+        if (typeof value == 'object') {
+          return JSON.stringify(value);
+        } else {
+          return value;
+        }
+      }
+      return '';
     });
   }
 
