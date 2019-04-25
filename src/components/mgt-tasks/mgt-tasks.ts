@@ -414,7 +414,10 @@ export class MgtTasks extends LitElement {
         />
       </span>
     `;
-
+    let dressers = this._dressers;
+    if (dressers.length > 0 && !this._newTaskDresserId) {
+      this._newTaskDresserId = dressers[0].id;
+    }
     let taskDresser = !this.isDefault(this._currentTargetDresser)
       ? html`
           <span class="TaskDetail TaskAssignee">
@@ -426,11 +429,11 @@ export class MgtTasks extends LitElement {
           <span class="TaskDetail TaskAssignee">
             <span class="TaskIcon">\uF5DC</span>
             <select
+              .value="${this._newTaskDresserId}"
               @change="${(e: Event & { target: HTMLSelectElement }) => {
                 this._newTaskDresserId = e.target.value;
               }}"
             >
-              <option value="">Unassigned</option>
               ${this._dressers.map(
                 plan => html`
                   <option value="${plan.id}">${plan.title}</option>
@@ -446,7 +449,7 @@ export class MgtTasks extends LitElement {
         (!this.isDefault(this._currentTargetDresser) && drawer.parentId === this._currentTargetDresser)
     );
 
-    if (drawers.length > 0) {
+    if (drawers.length > 0 && !this._newTaskDrawerId) {
       this._newTaskDrawerId = drawers[0].id;
     }
 
