@@ -6,7 +6,10 @@
 }
 
 .DotIcon {
+  display: inline-block;
   font-family: "FabricMDL2Icons";
+  min-width: 30px;
+  min-height: 30px;
 }
 
 .Menu {

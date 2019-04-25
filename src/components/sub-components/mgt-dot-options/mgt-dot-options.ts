@@ -32,17 +32,13 @@ export class MgtDotOptions extends LitElement {
 
   public render() {
     return html`
-      <div class="DotMenu ${this.menuOpen ? 'Open' : ''}">
-        <span class="DotIcon" @click=${e => this.onDotClick(e)}>
+      <div class="DotMenu ${this.menuOpen ? 'Open' : ''}" @click=${e => this.onDotClick(e)}>
+        <span class="DotIcon">
           \uE712
         </span>
-        ${!this.menuOpen
-          ? null
-          : html`
-              <div class="Menu">
-                ${this.getMenuOptions()}
-              </div>
-            `}
+        <div class="Menu">
+          ${this.getMenuOptions()}
+        </div>
       </div>
     `;
   }

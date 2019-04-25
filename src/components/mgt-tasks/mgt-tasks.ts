@@ -85,6 +85,11 @@ export class MgtTasks extends LitElement {
   private _me: User = null;
 
   protected firstUpdated() {
+    if (this.initialPlannerId && (!this._currentTargetDresser || this.isDefault(this._currentTargetDresser))) {
+      this._currentTargetDresser = this.initialPlannerId;
+      this.initialPlannerId = null;
+    }
+
     this.loadTasks();
   }
 
@@ -217,11 +222,6 @@ export class MgtTasks extends LitElement {
   }
 
   protected render() {
-    if (this.initialPlannerId && (!this._currentTargetDresser || this.isDefault(this._currentTargetDresser))) {
-      this._currentTargetDresser = this.initialPlannerId;
-      this.initialPlannerId = null;
-    }
-
     return html`
       <div class="Header">
         <span class="PlannerTitle">
@@ -546,9 +546,7 @@ export class MgtTasks extends LitElement {
 
     let taskCheck = this._loadingTasks.includes(task.id)
       ? html`
-          <span class="TaskCheck TaskIcon Loading">
-            \uF16A
-          </span>
+          <span class="TaskCheck TaskIcon Loading">\uF16A</span>
         `
       : completed
       ? html`
