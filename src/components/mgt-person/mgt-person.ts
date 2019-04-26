@@ -68,7 +68,7 @@ export class MgtPerson extends MgtTemplatedComponent {
             provider.graph.me().then(user => {
               if (user) {
                 person.displayName = user.displayName;
-                person.email = user.mail;
+                person.email = user.mail || user.userPrincipalName;
               }
             }),
             provider.graph.myPhoto().then(photo => {
