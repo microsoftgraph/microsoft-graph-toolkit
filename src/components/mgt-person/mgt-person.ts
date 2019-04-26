@@ -139,7 +139,10 @@ export class MgtPerson extends MgtTemplatedComponent {
 
     return html`
       <div class="root">
-        ${this.renderImage()} ${this.renderNameAndEmail()}
+        ${this.renderImage()}
+        <span class="Details">
+          ${this.renderNameAndEmail()}
+        </span>
       </div>
     `;
   }
