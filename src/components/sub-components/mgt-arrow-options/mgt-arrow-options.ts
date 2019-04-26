@@ -28,25 +28,29 @@ export class MgtArrowOptions extends LitElement {
   }
 
   public onHeaderClick(e: MouseEvent) {
-    e.preventDefault();
-    e.stopPropagation();
-    this.open = !this.open;
+    let keys = Object.keys(this.options);
+    if (keys.length > 1) {
+      e.preventDefault();
+      e.stopPropagation();
+      this.open = !this.open;
+    }
   }
 
   public render() {
     let opts = this.getMenuOptions();
+    let keys = Object.keys(this.options);
 
     let arrowIcon =
-      Object.keys(this.options).length > 1
+      keys.length > 1
         ? html`
-            <span class="ArrowIcon" @click=${e => this.onHeaderClick(e)}>
+            <span class="ArrowIcon">
               \uE70D
             </span>
           `
         : null;
 
     return html`
-      <span class="Header">
+      <span class="Header" @click=${e => this.onHeaderClick(e)}>
         <span class="CurrentValue">${this.value}</span>
         ${arrowIcon}
       </span>

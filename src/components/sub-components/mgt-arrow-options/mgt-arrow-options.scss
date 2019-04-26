@@ -10,11 +10,14 @@
   user-select: none;
   -moz-user-select: none;
   -ms-user-select: none;
-  cursor: pointer;
 }
 
 .CurrentValue {
   font-size: 1.3em;
+}
+
+.Header {
+  cursor: pointer;
 }
 
 .Menu {

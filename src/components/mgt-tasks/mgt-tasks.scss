@@ -187,12 +187,11 @@
 .Task .TaskCheckCont {
   font-family: "FabricMDL2Icons";
   display: inline-block;
-  width: 22px;
-  height: 22px;
-  margin: 10px;
+  width: 35px;
+  height: 35px;
+  margin: 5px;
   text-align: center;
   border-radius: 50%;
-  border: solid 1px black;
   flex: 0 0 none;
   color: white;
   cursor: pointer;
@@ -212,13 +211,38 @@
   cursor: default;
 }
 
-.Task .TaskCheckCont.Complete {
+.Task .TaskCheckCont.Complete .TaskCheck {
   background: #00b294;
   border-color: #00b294;
+  display: flex;
+  align-items: center;
+  align-content: center;
+  justify-items: center;
+  justify-content: center;
 }
 
 .Task .TaskCheck {
   flex: 1 1 auto;
+  font-family: "FabricMDL2Icons";
+  display: inline-block;
+  max-width: 22px;
+  height: 22px;
+  text-align: center;
+  border-radius: 50%;
+  border: solid 1px black;
+  flex: 0 0 none;
+  color: white;
+  cursor: pointer;
+
+  display: flex;
+  align-items: center;
+  align-content: center;
+  justify-items: center;
+  justify-content: center;
+
+  user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
 }
 
 .Task .TaskCheck.Loading {
