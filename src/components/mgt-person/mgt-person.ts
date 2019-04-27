@@ -5,10 +5,10 @@ import { Providers } from '../../Providers';
 import { styles } from './mgt-person-css';
 import '../../styles/fabric-icon-font';
 import { ProviderState } from '../../providers/IProvider';
-import { MgtBaseComponent } from '../baseComponent';
+import { MgtTemplatedComponent } from '../templatedComponent';
 
 @customElement('mgt-person')
-export class MgtPerson extends MgtBaseComponent {
+export class MgtPerson extends MgtTemplatedComponent {
   @property({
     attribute: 'image-size'
   })
@@ -145,7 +145,7 @@ export class MgtPerson extends MgtBaseComponent {
             provider.graph.me().then(user => {
               if (user) {
                 person.displayName = user.displayName;
-                person.email = user.mail;
+                person.email = user.mail || user.userPrincipalName;
               }
             }),
             provider.graph.myPhoto().then(photo => {
@@ -169,12 +169,27 @@ export class MgtPerson extends MgtBaseComponent {
                 this.personDetails.email = (<any>person).emailAddresses[0].address;
               }
 
-              if (person.userPrincipalName) {
-                let userPrincipalName = person.userPrincipalName;
-                provider.graph.getUserPhoto(userPrincipalName).then(photo => {
-                  this.personDetails.image = photo;
-                  this.requestUpdate();
-                });
+              // https://developer.microsoft.com/en-us/office/blogs/people-api-available-in-microsoft-graph-v1/
+              if (person.personType.class == 'Person') {
+                if (person.userPrincipalName) {
+                  let userPrincipalName = person.userPrincipalName;
+                  provider.graph.getUserPhoto(userPrincipalName).then(photo => {
+                    this.personDetails.image = photo;
+                    this.requestUpdate();
+                  });
+                } else if (this.personDetails.email) {
+                  // try to find a contact
+                  provider.graph.findContactByEmail(this.personDetails.email).then(contacts => {
+                    if (contacts && contacts.length) {
+                      const contactId = contacts[0].id;
+                      provider.graph.getContactPhoto(contactId).then(photo => {
+                        this.personDetails.image = photo;
+                        this.requestUpdate();
+                      });
+                    }
+                  });
+                }
+              } else {
               }
             }
           });
@@ -201,7 +216,10 @@ export class MgtPerson extends MgtBaseComponent {
 
     return html`
       <div class="root">
-        ${this.renderImage()} ${this.renderNameAndEmail()}
+        ${this.renderImage()}
+        <span class="Details">
+          ${this.renderNameAndEmail()}
+        </span>
       </div>
     `;
   }

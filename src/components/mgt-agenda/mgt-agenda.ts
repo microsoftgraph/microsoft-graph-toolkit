@@ -7,10 +7,10 @@ import { styles } from './mgt-agenda-css';
 
 import '../mgt-person/mgt-person';
 import '../../styles/fabric-icon-font';
-import { MgtBaseComponent } from '../baseComponent';
+import { MgtTemplatedComponent } from '../templatedComponent';
 
 @customElement('mgt-agenda')
-export class MgtAgenda extends MgtBaseComponent {
+export class MgtAgenda extends MgtTemplatedComponent {
   @property({ attribute: false }) _events: Array<MicrosoftGraph.Event>;
 
   static get styles() {
