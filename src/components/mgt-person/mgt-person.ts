@@ -1,4 +1,4 @@
-import { LitElement, html, customElement, property } from 'lit-element';
+import { html, customElement, property } from 'lit-element';
 import * as MicrosoftGraph from '@microsoft/microsoft-graph-types';
 
 import { Providers } from '../../Providers';
@@ -124,27 +124,17 @@ export class MgtPerson extends MgtTemplatedComponent {
   }
 
   render() {
-    let templates = this.getTemplates();
-    this.removeSlottedElements();
-
-    if (templates['default']) {
-      return this.renderTemplate(
-        templates['default'],
-        {
-          person: this.personDetails
-        },
-        'default'
-      );
-    }
-
-    return html`
-      <div class="root">
-        ${this.renderImage()}
-        <span class="Details">
-          ${this.renderNameAndEmail()}
-        </span>
-      </div>
-    `;
+    return (
+      this.renderTemplate('default', { person: this.personDetails }) ||
+      html`
+        <div class="root">
+          ${this.renderImage()}
+          <span class="Details">
+            ${this.renderNameAndEmail()}
+          </span>
+        </div>
+      `
+    );
   }
 
   renderImage() {
