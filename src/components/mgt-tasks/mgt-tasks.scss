@@ -2,7 +2,6 @@
 @import "../../../node_modules/office-ui-fabric-core/dist/sass/References";
 
 :host {
-  background: #f4f4f4;
   font-family: "Segoe UI";
   display: flex;
   flex-direction: column;
@@ -34,8 +33,15 @@
   padding: 0px 0px 12px 0px;
 }
 
-.Header .PlanTitle {
-  font-size: 1.3em;
+.Header .PlannerTitle select {
+  font-size: 1.1em;
+  font-family: "Segoe UI";
+  border: none;
+}
+
+.Header .PlannerTitle .PlanTitle {
+  font-size: 1.1em;
+  font-family: "Segoe UI";
 }
 
 .Header .AddBar {
@@ -93,28 +99,61 @@
 }
 
 .Task {
+  display: block;
   max-height: 94px;
   margin: 0 70px 10px 70px;
   background: #ffffff;
   border: solid 2px rgba(0, 0, 0, 0);
+  box-shadow: 0px 2px 8px rgba(0, 0, 0, 0.092);
 }
 
 .Task.NewTask {
+  margin: 0 50px 10px 50px;
   display: flex;
+  min-height: 90px;
 }
 
 .Task.NewTask .InnerTask {
   flex: 1 1 auto;
+  align-content: center;
+  vertical-align: middle;
+}
+.Task.NewTask .TaskTitle {
+  display: flex;
+}
+.Task.NewTask .TaskTitle input {
+  font-family: "Segoe UI";
+  flex: 1 1 auto;
+  margin: 6px;
+  padding: 7px;
+  font-size: 1.2em;
+  border: none;
+}
+.Task.NewTask .TaskTitle input:active {
+  border: none;
+}
+
+.Task.NewTask hr {
+  margin: 0 15px 0 15px;
+  border-top: solid 2px #D8D8D8;
+}
+
+.Task.NewTask .TaskDetails {
+  flex: 0 0 auto;
+  margin: 10px;
+}
+
+.Task.NewTask .TaskDetails select,
+.Task.NewTask .TaskDetails input {
+  border: none;
+  font-family: "Segoe UI";
 }
 
 .Task.NewTask .TaskAddCont {
   flex: 0 0 auto;
   display: flex;
-  flex-direction: row;
-  align-content: stretch;
-  align-items: stretch;
-  justify-content: stretch;
-  justify-items: stretch;
+  align-content: center;
+  align-items: center;
 }
 
 .Task.NewTask .TaskAddCont .TaskAdd,
@@ -135,18 +174,16 @@
   background: #0078D4;
 }
 .Task.NewTask .TaskAddCont .TaskCancel {
-  background: red;
+  color: gray;
+  font-family: "Segoe UI"
 }
 
 
 .Task .TaskDetails {
   display: flex;
-  width: fit-content;
-  width: -moz-fit-content;
   align-content: center;
   align-items: center;
-  justify-content: center;
-  justify-items: center;
+  justify-content: flex-start;
 }
 
 .Task.Complete {
@@ -192,10 +229,9 @@
   margin: 5px;
   text-align: center;
   border-radius: 50%;
-  flex: 0 0 none;
+  flex: 0 0 auto;
   color: white;
   cursor: pointer;
-
   display: flex;
   align-items: center;
   align-content: center;
@@ -225,15 +261,14 @@
   flex: 1 1 auto;
   font-family: "FabricMDL2Icons";
   display: inline-block;
-  max-width: 22px;
+  width: 22px;
   height: 22px;
   text-align: center;
   border-radius: 50%;
   border: solid 1px black;
-  flex: 0 0 none;
+  flex: 0 0 auto;
   color: white;
   cursor: pointer;
-
   display: flex;
   align-items: center;
   align-content: center;
