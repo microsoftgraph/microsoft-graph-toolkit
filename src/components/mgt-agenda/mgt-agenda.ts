@@ -1,4 +1,4 @@
-import { LitElement, html, customElement, property } from 'lit-element';
+import { html, customElement, property } from 'lit-element';
 import * as MicrosoftGraph from '@microsoft/microsoft-graph-types';
 
 import { Providers } from '../../Providers';
@@ -34,30 +34,24 @@ export class MgtAgenda extends MgtTemplatedComponent {
   }
 
   render() {
-    let templates = this.getTemplates();
-    this.removeSlottedElements();
-
     if (this._events) {
-      if (templates['default']) {
-        return this.renderTemplate(templates['default'], { events: this._events }, 'global');
-      } else {
-        return html`
+      return (
+        this.renderTemplate('default', { events: this._events }) ||
+        html`
           <ul class="agenda-list">
             ${this._events.map(
               event =>
                 html`
                   <li>
-                    ${templates['event']
-                      ? this.renderTemplate(templates['event'], { event: event }, event.id)
-                      : this.renderEvent(event)}
+                    ${this.renderTemplate('event', { event: event }, event.id) || this.renderEvent(event)}
                   </li>
                 `
             )}
           </ul>
-        `;
-      }
+        `
+      );
     } else {
-      return templates['no-data'] ? this.renderTemplate(templates['no-data'], null, 'no-data') : html``;
+      return this.renderTemplate('no-data', null) || html``;
     }
   }
 
@@ -84,6 +78,13 @@ export class MgtAgenda extends MgtTemplatedComponent {
           </div>
           <div class="event-location">${event.location.displayName}</div>
         </div>
+        ${this.templates['event-other']
+          ? html`
+              <div class="event-other-container">
+                ${this.renderTemplate('event-other', { event: event }, event.id + '-other')}
+              </div>
+            `
+          : ''}
       </div>
     `;
   }
