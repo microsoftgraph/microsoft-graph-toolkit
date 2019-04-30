@@ -1,17 +1,21 @@
 # Microsoft Graph Toolkit (Preview)
 
-<img align="left" height="170" src="assets/graff.png?raw=true" title="Graff the Giraffe">
+<img align="left" height="140" src="assets/graff.png?raw=true" title="Graff the Giraffe">
+
+<br />
 
 [![NPM](https://img.shields.io/npm/v/microsoft-graph-toolkit.svg)](https://www.npmjs.com/package/microsoft-graph-toolkit) [![Licence](https://img.shields.io/github/license/microsoftgraph/microsoft-graph-toolkit.svg)](https://github.com/microsoftgraph/msgraph-sdk-javascript) [![code style: prettier](https://img.shields.io/badge/code_style-prettier-ff69b4.svg)](https://github.com/microsoftgraph/msgraph-sdk-javascript) [![stackoverflow](https://img.shields.io/stackexchange/stackoverflow/t/microsoft-graph-toolkit.svg)](https://stackoverflow.com/questions/tagged/microsoft-graph-toolkit)
 [![Build Status](https://dev.azure.com/microsoft-graph-toolkit/microsoft-graph-toolkit/_apis/build/status/microsoftgraph.microsoft-graph-toolkit?branchName=master)](https://dev.azure.com/microsoft-graph-toolkit/microsoft-graph-toolkit/_build/latest?definitionId=1&branchName=master)
 
-The Graph Toolkit is a collection of UI components and helpers for the Microsoft Graph.
+The Microsoft Graph Toolkit is a collection of web components powered by the Microsoft Graph. 
 
-Components are built as web components and work with any web framework
+- Components are functional and work automaticly with the Microsoft Graph
+
+- Components work with any web framework and on all all modern browsers. IE 11 is also supported
 
 ## This library is in Preview
 
-This project is in preview and can change at any time. This includes changes in apis, design, and architecture. Based on feedback, the project is expected to evolve and stabilize over time.
+This library is in preview and is in early development. Based on feedback from the community, all components and APIs are expected to change and improve. 
 
 ## Documentation
 
