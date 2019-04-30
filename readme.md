@@ -1,6 +1,8 @@
 # Microsoft Graph Toolkit (Preview)
 
-[![NPM](https://img.shields.io/npm/v/microsoft-graph-toolkit.svg)](https://www.npmjs.com/package/microsoft-graph-toolkit) [![Licence](https://img.shields.io/github/license/microsoftgraph/microsoft-graph-toolkit.svg)](https://github.com/microsoftgraph/msgraph-sdk-javascript) [![code style: prettier](https://img.shields.io/badge/code_style-prettier-ff69b4.svg)](https://github.com/microsoftgraph/msgraph-sdk-javascript) [![stackoverflow](https://img.shields.io/stackexchange/stackoverflow/t/microsoft-graph-toolkit.svg)](https://stackoverflow.com/questions/tagged/microsoft-graph-toolkit) 
+<img align="left" height="170" src="assets/graff.png?raw=true" title="Graff the Giraffe">
+
+[![NPM](https://img.shields.io/npm/v/microsoft-graph-toolkit.svg)](https://www.npmjs.com/package/microsoft-graph-toolkit) [![Licence](https://img.shields.io/github/license/microsoftgraph/microsoft-graph-toolkit.svg)](https://github.com/microsoftgraph/msgraph-sdk-javascript) [![code style: prettier](https://img.shields.io/badge/code_style-prettier-ff69b4.svg)](https://github.com/microsoftgraph/msgraph-sdk-javascript) [![stackoverflow](https://img.shields.io/stackexchange/stackoverflow/t/microsoft-graph-toolkit.svg)](https://stackoverflow.com/questions/tagged/microsoft-graph-toolkit)
 [![Build Status](https://dev.azure.com/microsoft-graph-toolkit/microsoft-graph-toolkit/_apis/build/status/microsoftgraph.microsoft-graph-toolkit?branchName=master)](https://dev.azure.com/microsoft-graph-toolkit/microsoft-graph-toolkit/_build/latest?definitionId=1&branchName=master)
 
 The Graph Toolkit is a collection of UI components and helpers for the Microsoft Graph.
@@ -29,7 +31,7 @@ You can then start using the components in your html page. Here is a full workin
 
 ```html
 <script src="https://mgtlib.z5.web.core.windows.net/mgt/latest/mgt-loader.js"></script>
-<mgt-msal-provider client-id="[CLIENT-ID]" ></mgt-msal-provider>
+<mgt-msal-provider client-id="[CLIENT-ID]"></mgt-msal-provider>
 <mgt-login></mgt-login>
 
 <!-- <script>
@@ -38,7 +40,7 @@ You can then start using the components in your html page. Here is a full workin
 </script> -->
 ```
 
-> NOTE: MSAL requires the page to be hosted in a web server for the authentication redirects. If you are just getting started and want to play around, the quickest way is to use something like [live server](https://marketplace.visualstudio.com/items?itemName=ritwickdey.LiveServer) in vscode. 
+> NOTE: MSAL requires the page to be hosted in a web server for the authentication redirects. If you are just getting started and want to play around, the quickest way is to use something like [live server](https://marketplace.visualstudio.com/items?itemName=ritwickdey.LiveServer) in vscode.
 
 ### Use via NPM:
 
@@ -72,23 +74,24 @@ or, add it in your code:
 
 ```html
 <script type="module">
-    import {Providers, MsalProvider} from 'microsoft-graph-toolkit';
+  import { Providers, MsalProvider } from 'microsoft-graph-toolkit';
 
-    Providers.globalProvider = new MsalProvider({clientId: '[CLIENT-ID]'});
+  Providers.globalProvider = new MsalProvider({ clientId: '[CLIENT-ID]' });
 </script>
 ```
+
 ## Providers
 
 The components work best when used with a [provider](./docs/providers.md). The provider exposes authentication and Microsoft Graph apis used by the components to call into the Microsoft Graph.
 
 The toolkit contains providers for [MSAL](./docs/providers/msal.md), [SharePoint](./docs/providers/sharepoint.md), [Teams](./docs/providers/teams.md), and Office Add-ins (coming soon). You can also create your own providers by extending the [IProvider] abstract class.
 
-
 ## Contribute
 
 We enthusiastically welcome contributions and feedback. Please read the [contributing guide](CONTRIBUTING.md) before you begin.
 
 ## Feedback and Requests
+
 For general questions and support, please use [Stack Overflow](https://stackoverflow.com/questions/tagged/microsoft-graph-toolkit) where questions should be tagged with `microsoft-graph-toolkit`
 
 Please use [GitHub Issues](https://github.com/microsoftgraph/microsoft-graph-toolkit/issues?q=is%3Aissue+is%3Aopen+sort%3Aupdated-desc) for bug reports and feature requests. We highly recommend you browse existing issues before opening new issues.
@@ -101,3 +104,6 @@ Copyright (c) Microsoft and Contributors. All right reserved. Licensed under the
 
 This project has adopted the [Microsoft Open Source Code of Conduct](https://opensource.microsoft.com/codeofconduct/). For more information see the [Code of Conduct FAQ](https://opensource.microsoft.com/codeofconduct/faq/) or contact [opencode@microsoft.com](mailto:opencode@microsoft.com) with any additional questions or comments.
 
+<p align="center">
+<img height="70" src="assets/graff.png?raw=true" title="Graff the Giraffe">
+</p>
