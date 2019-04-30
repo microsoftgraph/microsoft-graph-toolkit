@@ -1,6 +1,6 @@
 # Microsoft Graph Toolkit (Preview)
 
-<img align="left" height="140" src="assets/graff.png?raw=true" title="Graff the Giraffe">
+<img align="left" height="160" src="assets/graff.png?raw=true" title="Graff the Giraffe">
 
 <br />
 
@@ -9,9 +9,9 @@
 
 The Microsoft Graph Toolkit is a collection of web components powered by the Microsoft Graph. 
 
-- Components are functional and work automaticly with the Microsoft Graph
+Components are functional and work automaticly with the Microsoft Graph
 
-- Components work with any web framework and on all all modern browsers. IE 11 is also supported
+Components work with any web framework and on all all modern browsers. IE 11 is also supported
 
 ## This library is in Preview
 
