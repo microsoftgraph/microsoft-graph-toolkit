@@ -13,6 +13,12 @@ import { MgtTemplatedComponent } from '../templatedComponent';
 export class MgtAgenda extends MgtTemplatedComponent {
   @property({ attribute: false }) _events: Array<MicrosoftGraph.Event>;
 
+  @property({
+    attribute: 'group-by-day',
+    type: Boolean
+  })
+  groupByDay = false;
+
   static get styles() {
     return styles;
   }
@@ -35,48 +41,64 @@ export class MgtAgenda extends MgtTemplatedComponent {
 
   render() {
     if (this._events) {
-      return (
-        this.renderTemplate('default', { events: this._events }) ||
-        html`
-          <ul class="agenda-list">
-            ${this._events.map(
-              event =>
+      let renderedTemplate = this.renderTemplate('default', { events: this._events });
+      if (renderedTemplate) {
+        return renderedTemplate;
+      }
+
+      if (this.groupByDay) {
+        let grouped = {};
+        for (let i = 0; i < this._events.length; i++) {
+          let header = this.getDateHeaderFromDateTimeString(this._events[i].start.dateTime);
+          grouped[header] = grouped[header] || [];
+          grouped[header].push(this._events[i]);
+        }
+
+        return html`
+          <div>
+            ${Object.keys(grouped).map(
+              header =>
                 html`
-                  <li>
-                    ${this.renderTemplate('event', { event: event }, event.id) || this.renderEvent(event)}
-                  </li>
+                  <div>
+                    <div class="header">${header}</div>
+                    ${this.renderListOfEvents(grouped[header])}
+                  </div>
                 `
             )}
-          </ul>
-        `
-      );
+          </div>
+        `;
+      }
+
+      return this.renderListOfEvents(this._events);
     } else {
       return this.renderTemplate('no-data', null) || html``;
     }
   }
 
+  private renderListOfEvents(events: MicrosoftGraph.Event[]) {
+    return html`
+      <ul class="agenda-list">
+        ${events.map(
+          event =>
+            html`
+              <li>
+                ${this.renderTemplate('event', { event: event }, event.id) || this.renderEvent(event)}
+              </li>
+            `
+        )}
+      </ul>
+    `;
+  }
+
   private renderEvent(event: MicrosoftGraph.Event) {
     return html`
-      <div class="agenda-event">
+      <div class="event">
         <div class="event-time-container">
-          <div>${this.getStartingTime(event)}</div>
-          <div class="event-duration">${this.getEventDuration(event)}</div>
+          <div class="event-time">${this.getEventTimeString(event)}</div>
         </div>
         <div class="event-details-container">
           <div class="event-subject">${event.subject}</div>
-          <div class="event-attendees">
-            <ul class="event-attendee-list">
-              ${event.attendees.slice(0, 5).map(
-                at =>
-                  html`
-                    <li class="event-attendee">
-                      <mgt-person person-query=${at.emailAddress.address} image-size="30"></mgt-person>
-                    </li>
-                  `
-              )}
-            </ul>
-          </div>
-          <div class="event-location">${event.location.displayName}</div>
+          ${this.renderLocation(event)} ${this.renderAttendies(event)}
         </div>
         ${this.templates['event-other']
           ? html`
@@ -87,17 +109,75 @@ export class MgtAgenda extends MgtTemplatedComponent {
           : ''}
       </div>
     `;
+    // <div class="event-duration">${this.getEventDuration(event)}</div>
   }
 
-  getStartingTime(event: MicrosoftGraph.Event) {
+  private renderLocation(event: MicrosoftGraph.Event) {
+    if (!event.location.displayName) {
+      return null;
+    }
+
+    return html`
+      <div class="event-location-container">
+        <svg width="10" height="13" viewBox="0 0 10 13" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <path
+            fill-rule="evenodd"
+            clip-rule="evenodd"
+            d="M4.99989 6.49989C4.15159 6.49989 3.46143 5.81458 3.46143 4.97224C3.46143 4.12965 4.15159 3.44434 4.99989 3.44434C5.84845 3.44434 6.53835 4.12965 6.53835 4.97224C6.53835 5.81458 5.84845 6.49989 4.99989 6.49989Z"
+            stroke="black"
+          />
+          <path
+            fill-rule="evenodd"
+            clip-rule="evenodd"
+            d="M8.1897 7.57436L5.00029 12L1.80577 7.56765C0.5971 6.01895 0.770299 3.47507 2.17681 2.12383C2.93098 1.39918 3.93367 1 5.00029 1C6.06692 1 7.06961 1.39918 7.82401 2.12383C9.23075 3.47507 9.40372 6.01895 8.1897 7.57436Z"
+            stroke="black"
+          />
+        </svg>
+        <div class="event-location">${event.location.displayName}</div>
+      </div>
+    `;
+  }
+
+  private renderAttendies(event: MicrosoftGraph.Event) {
+    if (!event.attendees.length) {
+      return null;
+    }
+    return html`
+      <div class="event-attendees">
+        <ul class="event-attendee-list">
+          ${event.attendees.slice(0, 3).map(
+            at =>
+              html`
+                <li class="event-attendee">
+                  <mgt-person person-query=${at.emailAddress.address}></mgt-person>
+                </li>
+              `
+          )}
+          ${event.attendees.length > 3
+            ? html`
+                <li>+${event.attendees.length - 3}</li>
+              `
+            : null}
+        </ul>
+      </div>
+    `;
+  }
+
+  private getEventTimeString(event: MicrosoftGraph.Event) {
     if (event.isAllDay) {
       return 'ALL DAY';
     }
 
-    let dt = new Date(event.start.dateTime);
-    dt.setMinutes(dt.getMinutes() - dt.getTimezoneOffset());
-    let hours = dt.getHours();
-    let minutes = dt.getMinutes();
+    let start = this.prettyPrintTimeFromDateTime(new Date(event.start.dateTime));
+    let end = this.prettyPrintTimeFromDateTime(new Date(event.end.dateTime));
+
+    return `${start} - ${end}`;
+  }
+
+  private prettyPrintTimeFromDateTime(date: Date) {
+    date.setMinutes(date.getMinutes() - date.getTimezoneOffset());
+    let hours = date.getHours();
+    let minutes = date.getMinutes();
     let ampm = hours >= 12 ? 'PM' : 'AM';
     hours = hours % 12;
     hours = hours ? hours : 12;
@@ -105,7 +185,34 @@ export class MgtAgenda extends MgtTemplatedComponent {
     return `${hours}:${minutesStr} ${ampm}`;
   }
 
-  getEventDuration(event: MicrosoftGraph.Event) {
+  private getDateHeaderFromDateTimeString(dateTimeString: string) {
+    let date = new Date(dateTimeString);
+    let monthNames = [
+      'January',
+      'February',
+      'March',
+      'April',
+      'May',
+      'June',
+      'July',
+      'August',
+      'September',
+      'October',
+      'November',
+      'December'
+    ];
+
+    var dayNames = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
+
+    let dayIndex = date.getDay();
+    let monthIndex = date.getMonth();
+    let day = date.getDate();
+    let year = date.getFullYear();
+
+    return `${dayNames[dayIndex]}, ${monthNames[monthIndex]} ${day}, ${year}`;
+  }
+
+  private getEventDuration(event: MicrosoftGraph.Event) {
     let dtStart = new Date(event.start.dateTime);
     let dtEnd = new Date(event.end.dateTime);
     let dtNow = new Date();
