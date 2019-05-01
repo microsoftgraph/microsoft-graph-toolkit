@@ -16,7 +16,7 @@ You can then start using the components in your html page. Here is a full workin
 
 ```html
 <script src="https://mgtlib.z5.web.core.windows.net/mgt/latest/mgt-loader.js"></script>
-<mgt-msal-provider client-id="[CLIENT-ID]" ></mgt-msal-provider>
+<mgt-msal-provider client-id="[CLIENT-ID]"></mgt-msal-provider>
 <mgt-login></mgt-login>
 
 <!-- <script>
@@ -25,32 +25,32 @@ You can then start using the components in your html page. Here is a full workin
 </script> -->
 ```
 
-> NOTE: MSAL requires the page to be hosted in a web server for the authentication redirects. If you are just getting started and want to play around, the quickest way is to use something like [live server](https://marketplace.visualstudio.com/items?itemName=ritwickdey.LiveServer) in vscode. 
+> NOTE: MSAL requires the page to be hosted in a web server for the authentication redirects. If you are just getting started and want to play around, the quickest way is to use something like [live server](https://marketplace.visualstudio.com/items?itemName=ritwickdey.LiveServer) in vscode.
 
 ### Use via NPM:
 
 The benefits of using MGT through NPM is that you have full control of the bundling process and you can bundle only the code you need for your site. First, add the npm package:
 
 ```bash
-npm install microsoft-graph-toolkit
+npm install @microsoft/mgt
 ```
 
 Now you can reference all components at the page you are using:
 
 ```html
-<script src="node_modules/microsoft-graph-toolkit/dist/es6/components.js"></script>
+<script src="node_modules/@microsoft/mgt/dist/es6/components.js"></script>
 ```
 
 Or, just reference the component you need and avoid loading everything else:
 
 ```html
-<script src="node_modules/microsoft-graph-toolkit/dist/es6/components/mgt-login/mgt-login.js"></script>
+<script src="node_modules/@microsoft/mgt/dist/es6/components/mgt-login/mgt-login.js"></script>
 ```
 
 Similarly, to add a provider, you can add it as a component:
 
 ```html
-<script src="node_modules/microsoft-graph-toolkit/dist/es6/components/providers/mgt-msal-provider.js"></script>
+<script src="node_modules/@microsoft/mgt/dist/es6/components/providers/mgt-msal-provider.js"></script>
 
 <mgt-msal-provider client-id="[CLIENT-ID]"></mgt-msal-provider>
 ```
@@ -59,12 +59,13 @@ or, add it in your code:
 
 ```html
 <script type="module">
-    import {MsalProvider} from 'microsoft-graph-toolkit/dist/es6/providers/MsalProvider.js';
-    import {Providers} from 'microsoft-graph-toolkit/dist/es6/Providers.js';
+  import { MsalProvider } from '@microsoft/mgt/dist/es6/providers/MsalProvider.js';
+  import { Providers } from '@microsoft/mgt/dist/es6/Providers.js';
 
-    Providers.globalProvider = new MsalProvider({clientId: '[CLIENT-ID]'});
+  Providers.globalProvider = new MsalProvider({ clientId: '[CLIENT-ID]' });
 </script>
 ```
+
 ## Providers
 
 The components work best when used with a [provider](./providers.md). The provider exposes authentication and Microsoft Graph apis used by the components to call into the Microsoft Graph.
@@ -85,34 +86,31 @@ Ex:
 
 ```jsx
 // import all the components
-import "microsoft-graph-toolkit";
+import '@microsoft/mgt';
 
 class App extends Component {
-    render() {
-        return (
-            <mgt-person show-name ref={el => el.personDetails = {displayName: 'Nikola Metulev'}}></mgt-person>
-        );
-    }
+  render() {
+    return <mgt-person show-name ref={el => (el.personDetails = { displayName: 'Nikola Metulev' })} />;
+  }
 }
 ```
 
 2. Because React implements its own synthetic event system, it cannot listen for DOM events coming from Custom Elements without the use of a workaround. Developers will need to reference the toolkit components using a ref and manually attach event listeners with addEventListener.
 
 Ex:
+
 ```jsx
 // you can just import a single component
-import "microsoft-graph-toolkit/dist/es6/components/mgt-login/mgt-login.js";
+import '@microsoft/mgt/dist/es6/components/mgt-login/mgt-login.js';
 
 class App extends Component {
   render() {
-    return (
-        <mgt-login ref="loginComponent"></mgt-login>
-    );
+    return <mgt-login ref="loginComponent" />;
   }
 
   componentDidMount() {
     this.refs.loginComponent.addEventListener('loginCompleted', e => {
-        // handle event
+      // handle event
     });
   }
 }
@@ -126,7 +124,7 @@ There is a known issue using custom elements with React and Typescript where Typ
 declare global {
   namespace JSX {
     interface IntrinsicElements {
-      "mgt-login": any;
+      'mgt-login': any;
     }
   }
 }
@@ -149,26 +147,20 @@ import { NgModule, CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
 import { AppComponent } from './app.component';
 
 @NgModule({
-  declarations: [
-    AppComponent
-  ],
-  imports: [
-    BrowserModule
-  ],
+  declarations: [AppComponent],
+  imports: [BrowserModule],
   schemas: [CUSTOM_ELEMENTS_SCHEMA],
   providers: [],
   bootstrap: [AppComponent]
 })
-export class AppModule {
-}
-
+export class AppModule {}
 ```
 
-You can then import the component you'd like to use in your component *.ts file:
+You can then import the component you'd like to use in your component \*.ts file:
 
 ```ts
 import { Component } from '@angular/core';
-import 'microsoft-graph-toolkit/dist/es6/components/mgt-person/mgt-person';
+import '@microsoft/mgt/dist/es6/components/mgt-person/mgt-person';
 
 @Component({
   selector: 'app-root',
@@ -177,7 +169,7 @@ import 'microsoft-graph-toolkit/dist/es6/components/mgt-person/mgt-person';
 })
 export class AppComponent {
   person = {
-    displayName: "Nikola Metulev"
+    displayName: 'Nikola Metulev'
   };
 }
 ```
@@ -187,4 +179,3 @@ And finally, use the component as you normally would in your template
 ```html
 <mgt-person [personDetails]="person" show-name></mgt-person>
 ```
-
