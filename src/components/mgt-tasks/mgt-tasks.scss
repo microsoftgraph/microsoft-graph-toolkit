@@ -29,14 +29,24 @@
 }
 
 .Header .PlannerTitle {
-  display: block;
   padding: 0px 0px 12px 0px;
+  display: flex;
+  align-items: center;
+  align-content: center;
 }
 
-.Header .PlannerTitle select {
+:host select {
   font-size: 1.1em;
   font-family: "Segoe UI";
   border: none;
+  padding: 5px;
+  -moz-appearance: none;
+  -webkit-appearance: none;
+  cursor: pointer;
+}
+
+:host select::-ms-expand {
+  display: none;
 }
 
 .Header .PlannerTitle .PlanTitle {
@@ -60,9 +70,13 @@
   flex: 1 1 auto;
 }
 
+.Header .TitleCont {
+  flex: 1 1 auto;
+}
+
 .Header .NewTaskButton {
+  flex: 0 0 auto;
   display: inline-block;
-  float: right;
   width: 90px;
   max-width: 90px;
   min-width: 90px;
@@ -70,10 +84,10 @@
   line-height: 200%;
 
   text-align: center;
-  justify-self: center;
   align-content: center;
   align-self: center;
   vertical-align: middle;
+  justify-self: flex-end;
 
   border: solid 1px rgba(0, 0, 0, 0);
   background: #0078d4;
@@ -166,7 +180,6 @@
   align-items: center;
   display: flex;
   cursor: pointer;
-  margin-right: 5px;
   color: white;
 }
 

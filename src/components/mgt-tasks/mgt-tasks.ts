@@ -303,10 +303,10 @@ export class MgtTasks extends LitElement {
       </select>
     `;
 
-    let divider = (this.isDefault(this._currentTargetDresser))
+    let divider = this.isDefault(this._currentTargetDresser)
       ? null
       : html`
-          <span>/</span>
+          <span class="TaskIcon">\uE76C</span>
         `;
 
     let drawerSelect = html`
@@ -328,7 +328,10 @@ export class MgtTasks extends LitElement {
     `;
 
     return html`
-      ${dresserSelect} ${divider} ${this.isDefault(this._currentTargetDresser) ? null : drawerSelect} ${addButton}
+      <span class="TitleCont">
+        ${dresserSelect} ${divider} ${this.isDefault(this._currentTargetDresser) ? null : drawerSelect}
+      </span>
+      ${addButton}
     `;
 
     if (this.targetPlannerId) {
