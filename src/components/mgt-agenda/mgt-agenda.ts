@@ -13,6 +13,8 @@ import { MgtTemplatedComponent } from '../templatedComponent';
 export class MgtAgenda extends MgtTemplatedComponent {
   @property({ attribute: false }) _events: Array<MicrosoftGraph.Event>;
 
+  @property({ attribute: false }) _isNarrow: boolean;
+
   @property({
     attribute: 'group-by-day',
     type: Boolean
@@ -27,6 +29,23 @@ export class MgtAgenda extends MgtTemplatedComponent {
     super();
     Providers.onProviderUpdated(() => this.loadData());
     this.loadData();
+
+    this.onResize = this.onResize.bind(this);
+  }
+
+  connectedCallback() {
+    this._isNarrow = this.offsetWidth < 600;
+    super.connectedCallback();
+    window.addEventListener('resize', this.onResize);
+  }
+
+  disconnectedCallback() {
+    window.removeEventListener('resize', this.onResize);
+    super.disconnectedCallback();
+  }
+
+  private onResize() {
+    this._isNarrow = this.offsetWidth < 600;
   }
 
   private async loadData() {
@@ -55,11 +74,11 @@ export class MgtAgenda extends MgtTemplatedComponent {
         }
 
         return html`
-          <div>
+          <div class="agenda grouped ${this._isNarrow ? 'narrow' : ''}">
             ${Object.keys(grouped).map(
               header =>
                 html`
-                  <div>
+                  <div class="group">
                     <div class="header">${header}</div>
                     ${this.renderListOfEvents(grouped[header])}
                   </div>
@@ -69,7 +88,9 @@ export class MgtAgenda extends MgtTemplatedComponent {
         `;
       }
 
-      return this.renderListOfEvents(this._events);
+      return html`
+        <div class="agenda ${this._isNarrow ? 'narrow' : ''}">${this.renderListOfEvents(this._events)}</div>
+      `;
     } else {
       return this.renderTemplate('no-data', null) || html``;
     }

@@ -2,11 +2,14 @@
 @import '../../styles/shared-styles.scss';
 
 .header {
-  margin: 40px 10px 14px 10px;
+  margin: var(--agenda-header-margin, 40px 10px 14px 10px);
   font-family: var(--default-font-family);
   font-size: 24px;
-  line-height: 28px;
   color: #333333;
+}
+
+.grouped > .group:first-child > .header {
+  margin-top: 0;
 }
 
 .agenda-list {
@@ -28,6 +31,10 @@
   display: flex;
 }
 
+.narrow .event {
+  flex-direction: column;
+}
+
 .event-time-container {
   display: flex;
   flex-direction: column;
@@ -35,10 +42,13 @@
   width: 120px;
 }
 
+.narrow .event-time-container {
+  margin: 14px 18px 8px 18px;
+}
+
 .event-time {
   font-size: 12px;
   color: #000000;
-  line-height: 16px;
   font-weight: 600;
 }
 
@@ -50,10 +60,13 @@
   margin: 14px 18px 14px 0px;
 }
 
+.narrow .event-details-container {
+  margin: 0px 18px 14px 18px;
+}
+
 .event-subject {
   margin: 0px 18px 0px 0px;
   font-size: 19px;
-  line-height: 22px;
   color: #333333;
 }
 
@@ -64,7 +77,6 @@
 
 .event-location {
   font-size: 12px;
-  line-height: 16px; /* identical to box height */
   color: #000000;
   margin: 0px 0px 0px 4px;
 }
