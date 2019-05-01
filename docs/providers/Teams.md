@@ -40,9 +40,9 @@ In order to login with your Teams credentials, you need to provide a URL that th
 ```html
 <html>
   <head>
-    <script src="./node_modules/microsoft-graph-toolkit/dist/es6/index.js"></script>
+    <script src="./node_modules/@microsoft/mgt/dist/es6/index.js"></script>
     <script>
-      var teamsProvider = parcelRequire('node_modules/microsoft-graph-toolkit/dist/es6/index.js');
+      var teamsProvider = parcelRequire('node_modules/@microsoft/mgt/dist/es6/index.js');
       teamsProvider.TeamsProvider.handleAuth();
     </script>
   </head>
