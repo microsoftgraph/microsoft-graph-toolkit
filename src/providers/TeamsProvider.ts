@@ -2,7 +2,7 @@ import { AuthenticationProviderOptions } from '@microsoft/microsoft-graph-client
 import { MsalProvider } from './MsalProvider';
 import * as microsoftTeams from '@microsoft/teams-js';
 import { LoginType, ProviderState } from './IProvider';
-import { Configuration } from 'msal';
+import { Configuration, UserAgentApplication } from 'msal';
 
 export interface TeamsConfig {
   clientId: string;
@@ -17,6 +17,7 @@ export class TeamsProvider extends MsalProvider {
   private _accessToken: string;
 
   private _sessionStorageTokenKey = 'mgt-teamsprovider-accesstoken';
+  private static _sessionStorageClientIdKey = 'msg-teamsprovider-clientId';
 
   private set accessToken(value: string) {
     this._accessToken = value;
@@ -24,22 +25,22 @@ export class TeamsProvider extends MsalProvider {
     this.setState(value ? ProviderState.SignedIn : ProviderState.SignedOut);
   }
 
+  private get accessToken() {
+    return this._accessToken;
+  }
+
   static async isAvailable(): Promise<boolean> {
-    const ms = 500;
+    const ms = 1000;
     return Promise.race([
       new Promise<boolean>((resolve, reject) => {
-        try {
-          microsoftTeams.initialize();
-          microsoftTeams.getContext(function(context) {
-            if (context) {
-              resolve(true);
-            } else {
-              resolve(false);
-            }
-          });
-        } catch (reason) {
-          resolve(false);
-        }
+        microsoftTeams.initialize();
+        microsoftTeams.getContext(function(context) {
+          if (context) {
+            resolve(true);
+          } else {
+            resolve(false);
+          }
+        });
       }),
       new Promise<boolean>((resolve, reject) => {
         let id = setTimeout(() => {
@@ -52,12 +53,24 @@ export class TeamsProvider extends MsalProvider {
 
   static handleAuth() {
     // we are in popup world now - authenticate and handle it
+
     var url = new URL(window.location.href);
+
+    if (UserAgentApplication.prototype.isCallback(window.location.hash)) {
+      new MsalProvider({
+        clientId: sessionStorage.getItem(this._sessionStorageClientIdKey)
+      });
+      return;
+    }
+
     const clientId = url.searchParams.get('clientId');
     if (!clientId) {
       microsoftTeams.authentication.notifyFailure('no clientId provided');
       return;
     }
+
+    // save clientId to use during redirect
+    sessionStorage.setItem(this._sessionStorageClientIdKey, clientId);
 
     let provider = new MsalProvider({
       clientId: clientId // need to add scopes
@@ -96,6 +109,7 @@ export class TeamsProvider extends MsalProvider {
   }
 
   async login(): Promise<void> {
+    this.setState(ProviderState.Loading);
     return new Promise((resolve, reject) => {
       microsoftTeams.getContext(context => {
         let url = new URL(this._authPopupUrl, new URL(window.location.href));
