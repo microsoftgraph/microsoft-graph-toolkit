@@ -1,5 +1,5 @@
 @import '../../../node_modules/office-ui-fabric-core/dist/sass/References';
-@import "../../styles/shared-styles.scss";
+@import '../../styles/shared-styles.scss';
 
 .agenda-list {
   list-style-type: none;
@@ -52,4 +52,9 @@
 
 .event-attendee {
   margin: 0 6px 12px 0;
+}
+
+.event-other-container {
+  margin: 2px 16px 4px 16px;
+  margin-left: auto;
 }

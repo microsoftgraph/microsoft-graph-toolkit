@@ -21,6 +21,13 @@ export class MgtMsalProvider extends LitElement {
 
   @property() authority;
 
+  /* Comma separated list of scopes. */
+  @property({
+    type: String,
+    attribute: 'scopes'
+  })
+  scopes;
+
   firstUpdated(changedProperties) {
     this.validateAuthProps();
   }
@@ -46,6 +53,13 @@ export class MgtMsalProvider extends LitElement {
 
       if (this.authority) {
         config.authority = this.authority;
+      }
+
+      if (this.scopes) {
+        let scope = this.scopes.split(',');
+        if (scope && scope.length > 0) {
+          config.scopes = scope;
+        }
       }
 
       Providers.globalProvider = new MsalProvider(config);

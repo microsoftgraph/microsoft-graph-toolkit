@@ -286,6 +286,54 @@ export class MgtTasks extends LitElement {
             </span>
           `;
 
+    let dresserSelect = html`
+      <select
+        .value="${this._currentTargetDresser}"
+        @change="${(e: Event & { target: HTMLSelectElement }) => {
+          this._currentTargetDresser = e.target.value;
+          this._currentTargetDrawer = this.res.BUCKETS_SELF_ASSIGNED;
+        }}"
+      >
+        <option value="${this.res.BASE_SELF_ASSIGNED}">${this.res.BASE_SELF_ASSIGNED}</option>
+        ${this._dressers.map(
+          dresser => html`
+            <option value="${dresser.id}">${dresser.title}</option>
+          `
+        )}
+      </select>
+    `;
+
+    let divider = this.isDefault(this._currentTargetDresser)
+      ? null
+      : html`
+          <span class="TaskIcon">\uE76C</span>
+        `;
+
+    let drawerSelect = html`
+      <select
+        .value="${this._currentTargetDrawer}"
+        @change="${(e: Event & { target: HTMLSelectElement }) => {
+          this._currentTargetDrawer = e.target.value;
+        }}"
+      >
+        <option value="${this.res.BUCKETS_SELF_ASSIGNED}">${this.res.BUCKETS_SELF_ASSIGNED}</option>
+        ${this._drawers
+          .filter(drawer => drawer.parentId === this._currentTargetDresser)
+          .map(
+            drawer => html`
+              <option value="${drawer.id}">${drawer.name}</option>
+            `
+          )}
+      </select>
+    `;
+
+    return html`
+      <span class="TitleCont">
+        ${dresserSelect} ${divider} ${this.isDefault(this._currentTargetDresser) ? null : drawerSelect}
+      </span>
+      ${addButton}
+    `;
+
     if (this.targetPlannerId) {
       let plan = this._dressers[0];
       let planTitle = (plan && plan.title) || 'Plan Not Found';
@@ -312,35 +360,6 @@ export class MgtTasks extends LitElement {
           this._currentSubTargetDresser = this.res.PLANS_SELF_ASSIGNED;
           this._currentTargetDrawer = this.res.BUCKETS_SELF_ASSIGNED;
         };
-
-      // let subPlanOpts = {
-      //   [this.res.PLANS_SELF_ASSIGNED]: e => {
-      //     this._currentSubTargetPlanner = this.res.PLANS_SELF_ASSIGNED;
-      //     this._currentTargetBucket = this.res.BUCKETS_SELF_ASSIGNED;
-      //   }
-      // };
-
-      // for (let plan of this._planners)
-      //   subPlanOpts[plan.title] = e => {
-      //     this._currentSubTargetPlanner = plan.id;
-      //     this._currentTargetBucket = this.res.BUCKETS_SELF_ASSIGNED;
-      //   };
-
-      // let bucketOpts = {
-      //   [this.res.BUCKETS_SELF_ASSIGNED]: (e: MouseEvent) => {
-      //     this._currentTargetBucket = this.res.BUCKETS_SELF_ASSIGNED;
-      //   }
-      // };
-
-      // if (this._currentSubTargetPlanner !== this.res.BASE_SELF_ASSIGNED) {
-      //   let buckets = this._plannerBuckets.filter(
-      //     bucket => bucket.planId === this._currentSubTargetPlanner
-      //   );
-      //   for (let bucket of buckets)
-      //     bucketOpts[bucket.name] = (e: MouseEvent) => {
-      //       this._currentTargetBucket = bucket.id;
-      //     };
-      // }
 
       return html`
         <mgt-arrow-options
@@ -394,14 +413,6 @@ export class MgtTasks extends LitElement {
   }
 
   private renderNewTaskHtml() {
-    let taskCheck = this._newTaskBeingAdded
-      ? html`
-          <span class="TaskCheck TaskIcon Loading"> \uF16A </span>
-        `
-      : html`
-          <span class="TaskCheck TaskIcon Incomplete"></span>
-        `;
-
     let taskTitle = html`
       <span class="TaskTitle">
         <input
@@ -414,6 +425,7 @@ export class MgtTasks extends LitElement {
         />
       </span>
     `;
+
     let dressers = this._dressers;
     if (dressers.length > 0 && !this._newTaskDresserId) {
       this._newTaskDresserId = dressers[0].id;
@@ -444,15 +456,11 @@ export class MgtTasks extends LitElement {
         `;
 
     let drawers = this._drawers.filter(
-      drawer =>
-        drawer.parentId === this._newTaskDresserId ||
-        (!this.isDefault(this._currentTargetDresser) && drawer.parentId === this._currentTargetDresser)
+      drawer => drawer.parentId === this._currentTargetDresser || drawer.parentId === this._newTaskDresserId
     );
-
     if (drawers.length > 0 && !this._newTaskDrawerId) {
       this._newTaskDrawerId = drawers[0].id;
     }
-
     let taskDrawer = !this.isDefault(this._currentTargetDrawer)
       ? html`
           <span class="TaskDetail TaskBucket">
@@ -511,7 +519,7 @@ export class MgtTasks extends LitElement {
       : html`
           <div class="TaskAddCont">
             <div class="TaskIcon TaskCancel" @click="${this.closeNewTask}">
-              <span>\uE711</span>
+              <span>Cancel</span>
             </div>
             <div class="TaskIcon TaskAdd" @click="${this.onAddTaskClick}">
               <span>\uE710</span>
@@ -523,13 +531,11 @@ export class MgtTasks extends LitElement {
       <div class="Task NewTask Incomplete">
         <div class="InnerTask">
           <span class="TaskHeader">
-            <span class="TaskCheckCont Incomplete">
-              ${taskCheck}
-            </span>
             ${taskTitle}
           </span>
+          <hr />
           <span class="TaskDetails">
-            ${taskDresser} ${taskDrawer} ${taskPeople} ${taskDue}
+            ${taskDresser} ${taskDrawer} ${taskDue} ${taskPeople}
           </span>
         </div>
         ${taskAdd}
@@ -629,7 +635,7 @@ export class MgtTasks extends LitElement {
           ${taskDelete}
         </div>
         <div class="TaskDetails">
-          ${taskDresser} ${taskDrawer} ${taskPeople} ${taskDue}
+          ${taskDresser} ${taskDrawer} ${taskDue} ${taskPeople}
         </div>
       </div>
     `;

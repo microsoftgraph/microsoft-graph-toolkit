@@ -29,7 +29,14 @@ export class TemplateHelper {
     return str.replace(this._expression, match => {
       let key = match.substring(2, match.length - 2);
       let value = this.getValueFromObject(context, key);
-      return value ? value.toString() : '';
+      if (value) {
+        if (typeof value == 'object') {
+          return JSON.stringify(value);
+        } else {
+          return (<any>value).toString();
+        }
+      }
+      return '';
     });
   }
 
@@ -158,7 +165,15 @@ export class TemplateHelper {
    * @param context the data context to be applied
    */
   public static renderTemplate(template: HTMLTemplateElement, context: object) {
-    let templateContent = template.content.cloneNode(true);
-    return this.renderNode(templateContent, context);
+    if (template.content && template.content.childNodes.length) {
+      let templateContent = template.content.cloneNode(true);
+      return this.renderNode(templateContent, context);
+    } else if (template.childNodes.length) {
+      let div = document.createElement('div');
+      for (let i = 0; i < template.childNodes.length; i++) {
+        div.appendChild(template.childNodes[i].cloneNode(true));
+      }
+      return this.renderNode(div, context);
+    }
   }
 }

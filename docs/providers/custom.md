@@ -2,8 +2,8 @@
 
 If you already have authentication code in your application, there are two ways to integrate it with the Providers in the toolkit.
 
-* Create a new `SimpleProvider` by passing in a function for getting an access token, or
-* Extend the `IProvider` abstract class
+- Create a new `SimpleProvider` by passing in a function for getting an access token, or
+- Extend the `IProvider` abstract class
 
 Let's take a look at each one in more details
 
@@ -13,23 +13,23 @@ The SimpleProvider class can be instantiated by passing in a function that will 
 
 ```ts
 let provider = new SimpleProvider((scopes: string[]) => {
-    // return a promise with accessToken
-})
+  // return a promise with accessToken
+});
 ```
 
 In addition, you can also provide an optional `login` and `logout` functions that can handle the login and logout calls from the [Login](../components/login.md) component
 
 ```ts
-function getAccessToken(scopes: string[]){
-    // return a promise with accessToken string
+function getAccessToken(scopes: string[]) {
+  // return a promise with accessToken string
 }
 
 function login() {
-    // login code
+  // login code
 }
 
 function logout() {
-    // logout code
+  // logout code
 }
 
 let provider = new SimpleProvider(getAccessToken, login, logout);
@@ -37,7 +37,7 @@ let provider = new SimpleProvider(getAccessToken, login, logout);
 
 ### Manage state
 
-In order for the components to be aware of the state of the provider, you will need to call the `provider.setState(state: ProviderState)` method whenever the state changes. For example, when the user has logged in, call `provider.setState(ProviderState.SignedIn)`. The `ProviderState` enum defines three states: 
+In order for the components to be aware of the state of the provider, you will need to call the `provider.setState(state: ProviderState)` method whenever the state changes. For example, when the user has logged in, call `provider.setState(ProviderState.SignedIn)`. The `ProviderState` enum defines three states:
 
 ```ts
 export enum ProviderState {
@@ -52,19 +52,23 @@ export enum ProviderState {
 You can extend the `IProvider` abstract class to create your own provider.
 
 ### State
+
 A provider must keep track of the authentication state and update the components when the state changes. The `IProvider` class already implements the `onStateChanged(eventHandler)` handler and the `state: ProviderState` property. You as a developer just need to use the `setState(state:ProviderState)` method in your implementation to update the state when it changes. Updating the state will fire the stateChanged event and update all the components automatically.
 
 ### Login/Logout
+
 If your provider provides login or logout functionality, implement the `login(): Promise<void>` and `logout(): Promise<void>` methods. These methods are optional.
 
 ### Access Token
+
 You must implement the `getAccessToken({'scopes': scopes[]}) : Promise<string>` method. This method is used to get a valid token before every call to the Microsoft Graph.
 
 ### Graph
-The components use the Microsoft Graph Javascript SDK for all calls to the Microsoft Graph. Your provider must make the sdk available through the `graph` property. In you constructor, create a new Graph instance through 
+
+The components use the Microsoft Graph Javascript SDK for all calls to the Microsoft Graph. Your provider must make the sdk available through the `graph` property. In you constructor, create a new Graph instance through
 
 ```js
-this.graph = new Graph(this)
+this.graph = new Graph(this);
 ```
 
 The `Graph` class is a light wrapper on top of the Microsoft Graph sdk.
@@ -78,7 +82,7 @@ All the providers extend the `IProvider` abstract class. Take a look at any of t
 Components use the `Providers.globalProvider` property to access a Provider. Once you have created your own provider, make sure to set this property to your provider:
 
 ```ts
-import {Providers} from 'microsoft-graph-toolkit'
+import { Providers } from '@microsoft/mgt';
 
 Providers.globalProvider = myProvider;
 ```

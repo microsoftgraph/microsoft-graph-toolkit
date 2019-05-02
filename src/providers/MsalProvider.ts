@@ -15,14 +15,14 @@ export interface MsalConfig {
 export class MsalProvider extends IProvider {
   private _loginType: LoginType;
 
-  private _userAgentApplication: UserAgentApplication;
+  protected _userAgentApplication: UserAgentApplication;
 
   get provider() {
     return this._userAgentApplication;
   }
 
   scopes: string[];
-  clientId: string;
+  protected clientId: string;
 
   constructor(config: MsalConfig) {
     super();
@@ -67,7 +67,10 @@ export class MsalProvider extends IProvider {
   }
 
   async trySilentSignIn() {
-    if (this._userAgentApplication.getAccount() && !this._userAgentApplication.isCallback(window.location.hash)) {
+    if (this._userAgentApplication.isCallback(window.location.hash)) {
+      return;
+    }
+    if (this._userAgentApplication.getAccount()) {
       this.setState(ProviderState.SignedIn);
     } else {
       this.setState(ProviderState.SignedOut);

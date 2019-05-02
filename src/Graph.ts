@@ -59,33 +59,47 @@ export class Graph {
     return result ? result.value : null;
   }
 
-  async myPhoto(): Promise<string> {
-    let scopes = 'user.read';
-    let blob = await this.client
-      .api('/me/photo/$value')
-      .version('beta')
-      .responseType(ResponseType.BLOB)
+  async findContactByEmail(email: string): Promise<MicrosoftGraph.Contact[]> {
+    let scopes = 'contacts.read';
+    let result = await this.client
+      .api(`/me/contacts`)
+      .filter(`emailAddresses/any(a:a/address eq '${email}')`)
       .middlewareOptions(prepScopes(scopes))
       .get();
-    return await this.blobToBase64(blob);
+    return result ? result.value : null;
   }
 
-  async getUserPhoto(id: string): Promise<string> {
-    let scopes = 'user.readbasic.all';
-    let blob = await this.client
-      .api(`users/${id}/photo/$value`)
-      .version('beta')
-      .responseType(ResponseType.BLOB)
-      .middlewareOptions(prepScopes(scopes))
-      .get();
-    return await this.blobToBase64(blob);
+  private async getPhotoForResource(resource: string, scopes: string[]): Promise<string> {
+    try {
+      let blob = await this.client
+        .api(`${resource}/photo/$value`)
+        .version('beta')
+        .responseType(ResponseType.BLOB)
+        .middlewareOptions(prepScopes(...scopes))
+        .get();
+      return await this.blobToBase64(blob);
+    } catch (e) {
+      return null;
+    }
+  }
+
+  async myPhoto(): Promise<string> {
+    return this.getPhotoForResource('me', ['user.read']);
+  }
+
+  async getUserPhoto(userId: string): Promise<string> {
+    return this.getPhotoForResource(`users/${userId}`, ['user.readbasic.all']);
+  }
+
+  async getContactPhoto(contactId: string): Promise<string> {
+    return this.getPhotoForResource(`me/contacts/${contactId}`, ['contacts.read']);
   }
 
   async calendar(startDateTime: Date, endDateTime: Date): Promise<Array<MicrosoftGraph.Event>> {
     let scopes = 'calendars.read';
 
     let sdt = `startdatetime=${startDateTime.toISOString()}`;
-    let edt = `enddatetime=${endDateTime.toISOString()}`;
+    let edt = `enddatetime=${endDateTime.toISOString()}&$orderby=start/dateTime`;
     let uri = `/me/calendarview?${sdt}&${edt}`;
 
     let calendarView = await this.client

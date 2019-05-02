@@ -1,4 +1,4 @@
-import { LitElement, html, customElement, property } from 'lit-element';
+import { html, customElement, property } from 'lit-element';
 import * as MicrosoftGraph from '@microsoft/microsoft-graph-types';
 
 import { Providers } from '../../Providers';
@@ -7,10 +7,10 @@ import { styles } from './mgt-agenda-css';
 
 import '../mgt-person/mgt-person';
 import '../../styles/fabric-icon-font';
-import { MgtBaseComponent } from '../baseComponent';
+import { MgtTemplatedComponent } from '../templatedComponent';
 
 @customElement('mgt-agenda')
-export class MgtAgenda extends MgtBaseComponent {
+export class MgtAgenda extends MgtTemplatedComponent {
   @property({ attribute: false }) _events: Array<MicrosoftGraph.Event>;
 
   static get styles() {
@@ -34,30 +34,24 @@ export class MgtAgenda extends MgtBaseComponent {
   }
 
   render() {
-    let templates = this.getTemplates();
-    this.removeSlottedElements();
-
     if (this._events) {
-      if (templates['default']) {
-        return this.renderTemplate(templates['default'], { events: this._events }, 'global');
-      } else {
-        return html`
+      return (
+        this.renderTemplate('default', { events: this._events }) ||
+        html`
           <ul class="agenda-list">
             ${this._events.map(
               event =>
                 html`
                   <li>
-                    ${templates['event']
-                      ? this.renderTemplate(templates['event'], { event: event }, event.id)
-                      : this.renderEvent(event)}
+                    ${this.renderTemplate('event', { event: event }, event.id) || this.renderEvent(event)}
                   </li>
                 `
             )}
           </ul>
-        `;
-      }
+        `
+      );
     } else {
-      return templates['no-data'] ? this.renderTemplate(templates['no-data'], null, 'no-data') : html``;
+      return this.renderTemplate('no-data', null) || html``;
     }
   }
 
@@ -84,6 +78,13 @@ export class MgtAgenda extends MgtBaseComponent {
           </div>
           <div class="event-location">${event.location.displayName}</div>
         </div>
+        ${this.templates['event-other']
+          ? html`
+              <div class="event-other-container">
+                ${this.renderTemplate('event-other', { event: event }, event.id + '-other')}
+              </div>
+            `
+          : ''}
       </div>
     `;
   }
