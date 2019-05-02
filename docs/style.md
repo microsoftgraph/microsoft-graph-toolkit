@@ -9,7 +9,7 @@ Let's take a look at each one.
 
 ## Styles
 
-It is not possible to style the components as you'd normally would because the component children are hosted in a [shadow dom](https://developer.mozilla.org/en-US/docs/Web/Web_Components/Using_shadow_DOM). Instead, each component documents a set of [CSS custom properties](https://developer.mozilla.org/en-US/docs/Web/CSS/Using_CSS_custom_properties) that can be used to change the look and feel of certain elements.
+It is not possible to style components as you would normally because the component children are hosted in a [shadow dom](https://developer.mozilla.org/en-US/docs/Web/Web_Components/Using_shadow_DOM). Instead, each component documents a set of [CSS custom properties](https://developer.mozilla.org/en-US/docs/Web/CSS/Using_CSS_custom_properties) that can be used to change the look and feel of certain elements.
 
 ex:
 

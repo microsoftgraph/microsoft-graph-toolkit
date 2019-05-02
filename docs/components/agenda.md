@@ -7,7 +7,7 @@ The `mgt-agenda` web component can be used to represent events in a user or grou
 ## Example
 
 ```html
-<mgt-login group-by-day></mgt-login>
+<mgt-agenda group-by-day></mgt-agenda>
 ```
 
 ![mgt-agenda](./images/mgt-agenda.png)
