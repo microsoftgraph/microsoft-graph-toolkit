@@ -4,18 +4,18 @@ The Microsoft Graph Toolkit is a collection of framework agnostic web components
 
 ## Getting Started
 
-You can install the components by referencing them through our CDN or installing them through NPM
+You can use the components by referencing the loader directly (via unpkg), or installing the npm package
 
-### Use via CDN:
+### Use via mgt-loader:
 
 ```html
-<script src="https://mgtlib.z5.web.core.windows.net/mgt/latest/mgt-loader.js"></script>
+<script src="https://unpkg.com/@microsoft/mgt/dist/bundle/mgt-loader.js"></script>
 ```
 
 You can then start using the components in your html page. Here is a full working example with the Msal provider:
 
 ```html
-<script src="https://mgtlib.z5.web.core.windows.net/mgt/latest/mgt-loader.js"></script>
+<script src="https://unpkg.com/@microsoft/mgt/dist/bundle/mgt-loader.js"></script>
 <mgt-msal-provider client-id="[CLIENT-ID]"></mgt-msal-provider>
 <mgt-login></mgt-login>
 
