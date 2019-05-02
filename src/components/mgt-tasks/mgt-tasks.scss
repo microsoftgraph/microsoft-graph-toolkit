@@ -36,10 +36,8 @@
 }
 
 :host select {
-  font-size: 1.1em;
   font-family: "Segoe UI";
   border: none;
-  padding: 5px;
   -moz-appearance: none;
   -webkit-appearance: none;
   cursor: pointer;
@@ -47,6 +45,11 @@
 
 :host select::-ms-expand {
   display: none;
+}
+
+:host .PlannerTitle select {
+  font-size: 1.1em;
+  padding: 5px;  
 }
 
 .Header .PlannerTitle .PlanTitle {
@@ -115,7 +118,7 @@
 .Task {
   display: block;
   max-height: 94px;
-  margin: 0 70px 10px 70px;
+  margin: 0 50px 10px 50px;
   background: #ffffff;
   border: solid 2px rgba(0, 0, 0, 0);
   box-shadow: 0px 2px 8px rgba(0, 0, 0, 0.092);
@@ -186,9 +189,15 @@
 .Task.NewTask .TaskAddCont .TaskAdd {
   background: #0078D4;
 }
+
 .Task.NewTask .TaskAddCont .TaskCancel {
   color: gray;
   font-family: "Segoe UI"
+}
+
+.Task.NewTask .TaskAddCont.Disabled .TaskAdd {
+  background: gray;
+  cursor: default;
 }
 
 
@@ -219,8 +228,6 @@
 .Task .TaskDetail {
   align-items: center;
   align-content: center;
-  justify-items: center;
-  justify-content: center;
 }
 
 .Task .TaskDetail .TaskIcon {
