@@ -12,8 +12,8 @@ import { MgtTemplatedComponent } from '../templatedComponent';
 @customElement('mgt-agenda')
 export class MgtAgenda extends MgtTemplatedComponent {
   @property({ attribute: false }) _events: Array<MicrosoftGraph.Event>;
-
   @property({ attribute: false }) _isNarrow: boolean;
+  @property({ attribute: false }) private _loading: boolean = true;
 
   @property({
     attribute: 'group-by-day',
@@ -51,14 +51,30 @@ export class MgtAgenda extends MgtTemplatedComponent {
   private async loadData() {
     let provider = Providers.globalProvider;
     if (provider && provider.state === ProviderState.SignedIn) {
+      this._loading = true;
       let today = new Date();
       let tomorrow = new Date();
       tomorrow.setDate(today.getDate() + 2);
       this._events = await provider.graph.calendar(today, tomorrow);
+      this._loading = false;
+    } else if (provider && provider.state === ProviderState.Loading) {
+      this._loading = true;
     }
   }
 
   render() {
+    return html`
+      <div class="agenda ${this._isNarrow ? 'narrow' : ''}">
+        ${this.renderAgenda()}
+      </div>
+    `;
+  }
+
+  private renderAgenda() {
+    if (this._loading) {
+      return this.renderLoading();
+    }
+
     if (this._events) {
       let renderedTemplate = this.renderTemplate('default', { events: this._events });
       if (renderedTemplate) {
@@ -88,9 +104,7 @@ export class MgtAgenda extends MgtTemplatedComponent {
         `;
       }
 
-      return html`
-        <div class="agenda ${this._isNarrow ? 'narrow' : ''}">${this.renderListOfEvents(this._events)}</div>
-      `;
+      return this.renderListOfEvents(this._events);
     } else {
       return this.renderTemplate('no-data', null) || html``;
     }
@@ -108,6 +122,28 @@ export class MgtAgenda extends MgtTemplatedComponent {
             `
         )}
       </ul>
+    `;
+  }
+
+  private renderLoading() {
+    return html`
+      <div class="event">
+        <div class="event-time-container">
+          <div class="event-time-loading loading-element"></div>
+        </div>
+        <div class="event-details-container">
+          <div class="event-subject-loading loading-element"></div>
+          <div class="event-location-container">
+            <div class="event-location-icon-loading loading-element"></div>
+            <div class="event-location-loading loading-element"></div>
+          </div>
+          <div class="event-location-container">
+            <div class="event-attendee-loading loading-element"></div>
+            <div class="event-attendee-loading loading-element"></div>
+            <div class="event-attendee-loading loading-element"></div>
+          </div>
+        </div>
+      </div>
     `;
   }
 

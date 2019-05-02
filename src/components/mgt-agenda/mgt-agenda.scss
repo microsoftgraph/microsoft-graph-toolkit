@@ -8,7 +8,7 @@
   color: #333333;
 }
 
-.grouped > .group:first-child > .header {
+.agenda > .group:first-child > .header {
   margin-top: 0;
 }
 
@@ -96,4 +96,39 @@
 .event-other-container {
   margin: 2px 16px 4px 16px;
   margin-left: auto;
+}
+
+// loading style
+
+.loading-element {
+  background: #f2f2f2;
+  border-radius: 1px;
+}
+
+.event-time-loading {
+  width: 100px;
+  height: 10px;
+}
+
+.event-subject-loading {
+  width: 263px;
+  height: 16px;
+}
+
+.event-location-icon-loading {
+  width: 14px;
+  height: 14px;
+}
+
+.event-location-loading {
+  width: 90px;
+  height: 10px;
+  margin: 2px 0px 0px 4px;
+}
+
+.event-attendee-loading {
+  width: 20px;
+  height: 20px;
+  border-radius: 10px;
+  margin: 0 2px 0 0;
 }
