@@ -21,7 +21,7 @@ By default, the `mgt-agenda` component fetches events from the `/me/calendarview
 | `group-by-day` | a boolean value to group events by day - by default events are not grouped |
 | `date` | a string representing the start date of the events to fetch from the Microsoft Graph. Value should be in a format that can be parsed by the [Date constructor](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Date) - value has no effect if `event-query` attribute is set |
 | `days` | a number of days to fetch from the Microsoft Graph - default is 2 - value has no effect if `event-query` attribute is set. |
-| `event-query` | a string representing an alternative query to be used when fetching events from the Microsoft Graph (ex: `"/groups/{id}/calendar/calendarView"`) |
+| `event-query` | a string representing an alternative query to be used when fetching events from the Microsoft Graph. Optionally, add the delegated scope at the end of the string by delimiting it with `|` (ex: `"/groups/{id}/calendar/calendarView | group.read.all"`) |
 
 Ex:
 
@@ -126,7 +126,7 @@ This component uses the following Microsoft Graph APIs and permissions:
 | - | - |
 | [/me/calendarview](https://docs.microsoft.com/en-us/graph/api/calendar-list-calendarview?view=graph-rest-1.0) | `Calendars.Read` |
 
-The component allows you to specify a different Microsoft Graph endpoint to call (such as `/groups/{id}/calendar/calendarView`). In this case, you will need to ensure the user has consented to the appropriate scopes
+The component allows you to specify a different Microsoft Graph query to call (such as `/groups/{id}/calendar/calendarView`). In this case, append the scope at the end of the string, delimited by `|`
 
 ## Authentication
 

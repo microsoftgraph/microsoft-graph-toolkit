@@ -8,6 +8,7 @@ import { styles } from './mgt-agenda-css';
 import '../mgt-person/mgt-person';
 import '../../styles/fabric-icon-font';
 import { MgtTemplatedComponent } from '../templatedComponent';
+import { prepScopes } from '../../Graph';
 
 @customElement('mgt-agenda')
 export class MgtAgenda extends MgtTemplatedComponent {
@@ -100,7 +101,23 @@ export class MgtAgenda extends MgtTemplatedComponent {
 
       if (this.eventQuery) {
         try {
-          let results = await p.graph.client.api(this.eventQuery).get();
+          let tokens = this.eventQuery.split('|');
+          let scope, query;
+          if (tokens.length > 1) {
+            query = tokens[0].trim();
+            scope = tokens[1].trim();
+          } else {
+            query = this.eventQuery;
+          }
+
+          let request = await p.graph.client.api(query);
+
+          if (scope) {
+            request = request.middlewareOptions(prepScopes(scope));
+          }
+
+          let results = await request.get();
+
           if (results && results.value) {
             this.events = results.value;
           }
