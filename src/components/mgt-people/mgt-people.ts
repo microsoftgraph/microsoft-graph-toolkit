@@ -48,37 +48,31 @@ export class MgtPeople extends MgtTemplatedComponent {
   }
 
   render() {
-    let templates = this.getTemplates();
-    this.removeSlottedElements();
-
     if (this.people) {
-      if (templates['default']) {
-        return this.renderTemplate(templates['default'], { people: this.people }, 'global');
-      } else {
-        return html`
+      return (
+        this.renderTemplate('default', { people: this.people }) ||
+        html`
           <ul class="people-list">
             ${this.people.map(
               person =>
                 html`
                   <li>
-                    ${templates['person']
-                      ? this.renderTemplate(templates['person'], { person: person }, person.id)
-                      : this.renderPerson(person)}
+                    ${this.renderTemplate('person', { person: person }, person.id) || this.renderPerson(person)}
                   </li>
                 `
             )}
           </ul>
-        `;
-      }
+        `
+      );
     } else {
-      return templates['no-data'] ? this.renderTemplate(templates['no-data'], null, 'no-data') : html``;
+      return this.renderTemplate('no-data', null) || html``;
     }
   }
 
   private renderPerson(person: MicrosoftGraph.Person) {
     return html`
       <div class="people-person">
-        <mgt-person person-details=${JSON.stringify(person)}></mgt-person>
+        <mgt-person person-query=${person.userPrincipalName}></mgt-person>
       </div>
     `;
   }

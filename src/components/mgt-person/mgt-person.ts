@@ -147,12 +147,16 @@ export class MgtPerson extends MgtTemplatedComponent {
         return html`
           <img
             class="user-avatar ${this.getImageRowSpanClass()} ${this.getImageSizeClass()}"
+            title=${this.personDetails.displayName}
             src=${this.personDetails.image as string}
           />
         `;
       } else {
         return html`
-          <div class="user-avatar initials ${this.getImageRowSpanClass()} ${this.getImageSizeClass()}">
+          <div
+            class="user-avatar initials ${this.getImageRowSpanClass()} ${this.getImageSizeClass()}"
+            title=${this.personDetails.displayName}
+          >
             <span class="initials-text">
               ${this.getInitials()}
             </span>

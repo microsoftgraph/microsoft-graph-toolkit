@@ -116,6 +116,7 @@ export class Graph {
     let people = await this.client
       .api(uri)
       .middlewareOptions(prepScopes(scopes))
+      .filter("personType/class eq 'Person'")
       .get();
     return people ? people.value : null;
   }
