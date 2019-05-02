@@ -165,7 +165,15 @@ export class TemplateHelper {
    * @param context the data context to be applied
    */
   public static renderTemplate(template: HTMLTemplateElement, context: object) {
-    let templateContent = template.content.cloneNode(true);
-    return this.renderNode(templateContent, context);
+    if (template.content && template.content.childNodes.length) {
+      let templateContent = template.content.cloneNode(true);
+      return this.renderNode(templateContent, context);
+    } else if (template.childNodes.length) {
+      let div = document.createElement('div');
+      for (let i = 0; i < template.childNodes.length; i++) {
+        div.appendChild(template.childNodes[i].cloneNode(true));
+      }
+      return this.renderNode(div, context);
+    }
   }
 }

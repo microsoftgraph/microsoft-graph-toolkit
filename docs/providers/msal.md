@@ -25,7 +25,7 @@ Initializing the Msal provider in HTML is the simplest method to create a new pr
 Initializing the provider in JavaScript allows you to provide more options`.
 
 ```ts
-import {Providers, MsalProvider} from 'microsoft-graph-toolkit'
+import {Providers, MsalProvider} from '@microsoft/mgt'
 import {UserAgentApplication} from "msal";
 
 Providers.globalProvider = new MsalProvider(config: MsalConfig);

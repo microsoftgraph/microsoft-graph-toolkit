@@ -1,4 +1,4 @@
-import { LitElement, html, customElement, property } from 'lit-element';
+import { html, customElement, property } from 'lit-element';
 import * as MicrosoftGraph from '@microsoft/microsoft-graph-types';
 
 import { Providers } from '../../Providers';
@@ -9,11 +9,6 @@ import { MgtTemplatedComponent } from '../templatedComponent';
 
 @customElement('mgt-person')
 export class MgtPerson extends MgtTemplatedComponent {
-  @property({
-    attribute: 'image-size'
-  })
-  imageSize: number = 24;
-
   @property({
     attribute: 'person-query'
   })
@@ -68,7 +63,7 @@ export class MgtPerson extends MgtTemplatedComponent {
             provider.graph.me().then(user => {
               if (user) {
                 person.displayName = user.displayName;
-                person.email = user.mail;
+                person.email = user.mail || user.userPrincipalName;
               }
             }),
             provider.graph.myPhoto().then(photo => {
@@ -124,24 +119,26 @@ export class MgtPerson extends MgtTemplatedComponent {
   }
 
   render() {
-    let templates = this.getTemplates();
-    this.removeSlottedElements();
+    return (
+      this.renderTemplate('default', { person: this.personDetails }) ||
+      html`
+        <div class="root">
+          ${this.renderImage()} ${this.renderDetails()}
+        </div>
+      `
+    );
+  }
 
-    if (templates['default']) {
-      return this.renderTemplate(
-        templates['default'],
-        {
-          person: this.personDetails
-        },
-        'default'
-      );
+  renderDetails() {
+    if (this.showEmail || this.showName) {
+      return html`
+        <span class="Details ${this.getImageSizeClass()}">
+          ${this.renderNameAndEmail()}
+        </span>
+      `;
     }
 
-    return html`
-      <div class="root">
-        ${this.renderImage()} ${this.renderNameAndEmail()}
-      </div>
-    `;
+    return null;
   }
 
   renderImage() {
@@ -156,11 +153,6 @@ export class MgtPerson extends MgtTemplatedComponent {
       } else {
         return html`
           <div class="user-avatar initials ${this.getImageRowSpanClass()} ${this.getImageSizeClass()}">
-            <style>
-              .initials-text {
-                font-size: ${this.imageSize * 0.45}px;
-              }
-            </style>
             <span class="initials-text">
               ${this.getInitials()}
             </span>
