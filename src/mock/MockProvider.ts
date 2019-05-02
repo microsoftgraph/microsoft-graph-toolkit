@@ -46,7 +46,7 @@ export class MockGraph extends Graph {
     });
   }
 
-  async calendar(startDateTime: Date, endDateTime: Date): Promise<Array<MicrosoftGraph.Event>> {
+  async getEvents(startDateTime: Date, endDateTime: Date): Promise<Array<MicrosoftGraph.Event>> {
     let sdt = `startdatetime=${startDateTime.toISOString()}`;
     let edt = `enddatetime=${endDateTime.toISOString()}`;
     let uri = `/me/calendarview?${sdt}&${edt}`;

@@ -11,15 +11,41 @@ import { MgtTemplatedComponent } from '../templatedComponent';
 
 @customElement('mgt-agenda')
 export class MgtAgenda extends MgtTemplatedComponent {
-  @property({ attribute: false }) _events: Array<MicrosoftGraph.Event>;
-  @property({ attribute: false }) _isNarrow: boolean;
+  private _firstUpdated = false;
+  @property({ attribute: false }) private _isNarrow: boolean;
   @property({ attribute: false }) private _loading: boolean = true;
 
   @property({
+    attribute: 'events'
+  })
+  events: Array<MicrosoftGraph.Event>;
+
+  @property({
     attribute: 'group-by-day',
-    type: Boolean
+    type: Boolean,
+    reflect: true
   })
   groupByDay = false;
+
+  @property({
+    attribute: 'date',
+    type: String,
+    reflect: true
+  })
+  date: string;
+
+  @property({
+    attribute: 'days',
+    type: Number,
+    reflect: true
+  })
+  days: number = 2;
+
+  @property({
+    attribute: 'event-query',
+    type: String
+  })
+  eventQuery: string;
 
   static get styles() {
     return styles;
@@ -27,10 +53,13 @@ export class MgtAgenda extends MgtTemplatedComponent {
 
   constructor() {
     super();
+    this.onResize = this.onResize.bind(this);
+  }
+
+  firstUpdated() {
+    this._firstUpdated = true;
     Providers.onProviderUpdated(() => this.loadData());
     this.loadData();
-
-    this.onResize = this.onResize.bind(this);
   }
 
   connectedCallback() {
@@ -44,25 +73,54 @@ export class MgtAgenda extends MgtTemplatedComponent {
     super.disconnectedCallback();
   }
 
+  attributeChangedCallback(name, oldValue, newValue) {
+    if (name === 'date' || name === 'days') {
+      this.events = null;
+      this.loadData();
+    }
+    super.attributeChangedCallback(name, oldValue, newValue);
+  }
+
   private onResize() {
     this._isNarrow = this.offsetWidth < 600;
   }
 
   private async loadData() {
-    let provider = Providers.globalProvider;
-    if (provider && provider.state === ProviderState.SignedIn) {
+    if (this.events) {
+      return;
+    }
+
+    if (!this._firstUpdated) {
+      return;
+    }
+
+    let p = Providers.globalProvider;
+    if (p && p.state === ProviderState.SignedIn) {
       this._loading = true;
-      let today = new Date();
-      let tomorrow = new Date();
-      tomorrow.setDate(today.getDate() + 2);
-      this._events = await provider.graph.calendar(today, tomorrow);
+
+      if (this.eventQuery) {
+        try {
+          let results = await p.graph.client.api(this.eventQuery).get();
+          if (results && results.value) {
+            this.events = results.value;
+          }
+        } catch {}
+      } else {
+        let start = this.date ? new Date(this.date) : new Date();
+        let end = new Date();
+        end.setDate(start.getDate() + this.days - 1);
+        this.events = await p.graph.getEvents(start, end);
+      }
       this._loading = false;
-    } else if (provider && provider.state === ProviderState.Loading) {
+    } else if (p && p.state === ProviderState.Loading) {
       this._loading = true;
+    } else {
+      this._loading = false;
     }
   }
 
   render() {
+    this._isNarrow = this.offsetWidth < 600;
     return html`
       <div class="agenda ${this._isNarrow ? 'narrow' : ''}">
         ${this.renderAgenda()}
@@ -72,21 +130,21 @@ export class MgtAgenda extends MgtTemplatedComponent {
 
   private renderAgenda() {
     if (this._loading) {
-      return this.renderLoading();
+      return this.renderTemplate('loading', null) || this.renderLoading();
     }
 
-    if (this._events) {
-      let renderedTemplate = this.renderTemplate('default', { events: this._events });
+    if (this.events) {
+      let renderedTemplate = this.renderTemplate('default', { events: this.events });
       if (renderedTemplate) {
         return renderedTemplate;
       }
 
       if (this.groupByDay) {
         let grouped = {};
-        for (let i = 0; i < this._events.length; i++) {
-          let header = this.getDateHeaderFromDateTimeString(this._events[i].start.dateTime);
+        for (let i = 0; i < this.events.length; i++) {
+          let header = this.getDateHeaderFromDateTimeString(this.events[i].start.dateTime);
           grouped[header] = grouped[header] || [];
-          grouped[header].push(this._events[i]);
+          grouped[header].push(this.events[i]);
         }
 
         return html`
@@ -104,7 +162,7 @@ export class MgtAgenda extends MgtTemplatedComponent {
         `;
       }
 
-      return this.renderListOfEvents(this._events);
+      return this.renderListOfEvents(this.events);
     } else {
       return this.renderTemplate('no-data', null) || html``;
     }
@@ -244,6 +302,7 @@ export class MgtAgenda extends MgtTemplatedComponent {
 
   private getDateHeaderFromDateTimeString(dateTimeString: string) {
     let date = new Date(dateTimeString);
+    date.setMinutes(date.getMinutes() - date.getTimezoneOffset());
     let monthNames = [
       'January',
       'February',

@@ -123,18 +123,19 @@ export class MgtPerson extends MgtTemplatedComponent {
       this.renderTemplate('default', { person: this.personDetails }) ||
       html`
         <div class="root">
-          ${this.renderImage()}
-          ${this.renderDetails()}
+          ${this.renderImage()} ${this.renderDetails()}
         </div>
       `
     );
   }
 
   renderDetails() {
-    if (this.showEmail || this.showName){
-      return html`<span class="Details ${this.getImageSizeClass()}">
-        ${this.renderNameAndEmail()}
-      </span>`;
+    if (this.showEmail || this.showName) {
+      return html`
+        <span class="Details ${this.getImageSizeClass()}">
+          ${this.renderNameAndEmail()}
+        </span>
+      `;
     }
 
     return null;
