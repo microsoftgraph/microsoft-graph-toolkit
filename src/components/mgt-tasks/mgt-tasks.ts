@@ -415,7 +415,7 @@ export class MgtTasks extends LitElement {
           type="text"
           placeholder="Task..."
           .value="${this._newTaskName}"
-          @change="${(e: Event & { target: HTMLInputElement }) => {
+          @input="${(e: Event & { target: HTMLInputElement }) => {
             this._newTaskName = e.target.value;
           }}"
         />
@@ -518,7 +518,7 @@ export class MgtTasks extends LitElement {
           <div class="TaskAddCont"></div>
         `
       : html`
-          <div class="TaskAddCont ${this._newTaskName.length <= 0 ? 'Disabled' : ''}">
+          <div class="TaskAddCont ${this._newTaskName === '' ? 'Disabled' : ''}">
             <div class="TaskIcon TaskCancel" @click="${this.closeNewTask}">
               <span>Cancel</span>
             </div>

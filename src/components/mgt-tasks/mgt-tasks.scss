@@ -180,7 +180,7 @@
 }
 
 .Task.NewTask .TaskAddCont .TaskAdd {
-  background: var(--task-new-add-button-background#0078D4);
+  background: var(--task-new-add-button-background, #0078D4);
 }
 
 .Task.NewTask .TaskAddCont .TaskCancel {

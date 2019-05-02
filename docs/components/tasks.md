@@ -46,7 +46,6 @@ The Tasks Control enables the user to view, add, remove, complete, or edit tasks
 - --task-new-add-button-disabled-background
 - --task-new-cancel-button-color
 
-
 - --task-complete-background
 - --task-complete-border
 - --task-complete-header-color
