@@ -1,19 +1,19 @@
 # Microsoft Graph Toolkit (Preview)
 
-<img align="left" height="150" src="assets/graff.png?raw=true" title="Graff the Giraffe">
+<img align="left" height="150" src="https://github.com/microsoftgraph/microsoft-graph-toolkit/raw/master/assets/graff.png" title="Graff the Giraffe">
 
-[![NPM](https://img.shields.io/npm/v/microsoft-graph-toolkit.svg)](https://www.npmjs.com/package/microsoft-graph-toolkit) [![Licence](https://img.shields.io/github/license/microsoftgraph/microsoft-graph-toolkit.svg)](https://github.com/microsoftgraph/msgraph-sdk-javascript) [![code style: prettier](https://img.shields.io/badge/code_style-prettier-ff69b4.svg)](https://github.com/microsoftgraph/msgraph-sdk-javascript) [![stackoverflow](https://img.shields.io/stackexchange/stackoverflow/t/microsoft-graph-toolkit.svg)](https://stackoverflow.com/questions/tagged/microsoft-graph-toolkit)
+[![NPM](https://img.shields.io/npm/v/@microsoft/mgt.svg)](https://www.npmjs.com/package/@microsoft/mgt) [![Licence](https://img.shields.io/github/license/microsoftgraph/microsoft-graph-toolkit.svg)](https://github.com/microsoftgraph/msgraph-sdk-javascript) [![code style: prettier](https://img.shields.io/badge/code_style-prettier-ff69b4.svg)](https://github.com/microsoftgraph/msgraph-sdk-javascript) [![stackoverflow](https://img.shields.io/stackexchange/stackoverflow/t/microsoft-graph-toolkit.svg)](https://stackoverflow.com/questions/tagged/microsoft-graph-toolkit)
 [![Build Status](https://dev.azure.com/microsoft-graph-toolkit/microsoft-graph-toolkit/_apis/build/status/microsoftgraph.microsoft-graph-toolkit?branchName=master)](https://dev.azure.com/microsoft-graph-toolkit/microsoft-graph-toolkit/_build/latest?definitionId=1&branchName=master)
 
-The Microsoft Graph Toolkit is a collection of web components powered by the Microsoft Graph. 
+The Microsoft Graph Toolkit is a collection of web components powered by the Microsoft Graph.
 
-Components are functional and work automaticly with the Microsoft Graph
+Components are functional and work automatically with the Microsoft Graph
 
 Components work with any web framework and on all all modern browsers. IE 11 is also supported
 
 ## This library is in Preview
 
-This library is in preview and is in early development. Based on feedback from the community, all components and APIs are expected to change and improve. 
+This library is in preview and is in early development. Based on feedback from the community, all components and APIs are expected to change and improve.
 
 ## Documentation
 
@@ -21,18 +21,18 @@ This library is in preview and is in early development. Based on feedback from t
 
 ## Getting Started
 
-You can install the components by referencing them through our CDN or installing them through NPM
+You can use the components by referencing the loader directly (via unpkg), or installing the npm package
 
-### Use via CDN:
+### Use via mgt-loader:
 
 ```html
-<script src="https://mgtlib.z5.web.core.windows.net/mgt/latest/mgt-loader.js"></script>
+<script src="https://unpkg.com/@microsoft/mgt/dist/bundle/mgt-loader.js"></script>
 ```
 
 You can then start using the components in your html page. Here is a full working example with the Msal provider:
 
 ```html
-<script src="https://mgtlib.z5.web.core.windows.net/mgt/latest/mgt-loader.js"></script>
+<script src="https://unpkg.com/@microsoft/mgt/dist/bundle/mgt-loader.js"></script>
 <mgt-msal-provider client-id="[CLIENT-ID]"></mgt-msal-provider>
 <mgt-login></mgt-login>
 
@@ -49,25 +49,25 @@ You can then start using the components in your html page. Here is a full workin
 The benefits of using MGT through NPM is that you have full control of the bundling process and you can bundle only the code you need for your site. First, add the npm package:
 
 ```bash
-npm install microsoft-graph-toolkit
+npm install @microsoft/mgt
 ```
 
 Now you can reference all components at the page you are using:
 
 ```html
-<script src="node_modules/microsoft-graph-toolkit/dist/es6/components.js"></script>
+<script src="node_modules/@microsoft/mgt/dist/es6/components.js"></script>
 ```
 
 Or, just reference the component you need and avoid loading everything else:
 
 ```html
-<script src="node_modules/microsoft-graph-toolkit/dist/es6/components/mgt-login/mgt-login.js"></script>
+<script src="node_modules/@microsoft/mgt/dist/es6/components/mgt-login/mgt-login.js"></script>
 ```
 
 Similarly, to add a provider, you can add it as a component:
 
 ```html
-<script src="node_modules/microsoft-graph-toolkit/dist/es6/components/providers/mgt-msal-provider.js"></script>
+<script src="node_modules/@microsoft/mgt/dist/es6/components/providers/mgt-msal-provider.js"></script>
 
 <mgt-msal-provider client-id="[CLIENT-ID]"></mgt-msal-provider>
 ```
@@ -76,7 +76,7 @@ or, add it in your code:
 
 ```html
 <script type="module">
-  import { Providers, MsalProvider } from 'microsoft-graph-toolkit';
+  import { Providers, MsalProvider } from '@microsoft/mgt';
 
   Providers.globalProvider = new MsalProvider({ clientId: '[CLIENT-ID]' });
 </script>

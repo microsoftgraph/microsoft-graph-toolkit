@@ -40,19 +40,9 @@ export class MgtArrowOptions extends LitElement {
     let opts = this.getMenuOptions();
     let keys = Object.keys(this.options);
 
-    let arrowIcon =
-      keys.length > 1
-        ? html`
-            <span class="ArrowIcon">
-              \uE70D
-            </span>
-          `
-        : null;
-
     return html`
       <span class="Header" @click=${e => this.onHeaderClick(e)}>
         <span class="CurrentValue">${this.value}</span>
-        ${arrowIcon}
       </span>
       <div class="Menu ${this.open ? 'Open' : 'Closed'}">
         ${opts}
