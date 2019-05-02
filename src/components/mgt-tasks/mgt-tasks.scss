@@ -233,6 +233,10 @@
   margin: var(--task-header-margin, 0 0 0 10px);
 }
 
+.Task.ReadOnly .TaskCheckCont {
+  cursor: default;
+}
+
 .Task .TaskCheckCont {
   font-family: "FabricMDL2Icons";
   display: inline-block;
@@ -253,10 +257,6 @@
   user-select: none;
   -moz-user-select: none;
   -ms-user-select: none;
-}
-
-.Task.ReadOnly .TaskCheckCont {
-  cursor: default;
 }
 
 .Task .TaskCheckCont.Complete .TaskCheck {
@@ -280,7 +280,6 @@
   border: solid 1px black;
   flex: 0 0 auto;
   color: white;
-  cursor: pointer;
   display: flex;
   align-items: center;
   align-content: center;
