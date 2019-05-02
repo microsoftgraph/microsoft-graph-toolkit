@@ -2,7 +2,7 @@
 @import "../../../node_modules/office-ui-fabric-core/dist/sass/References";
 
 :host {
-  font-family: "Segoe UI";
+  font-family: var(--default-font-family, "Segoe UI");
   display: flex;
   flex-direction: column;
 }
@@ -19,24 +19,20 @@
   -ms-user-select: none;
 }
 
-:host .Tasks {
-  height: fit-content;
-}
-
-:host .Header {
-  padding: 10px 70px 0 70px;
-  margin: 0 0 10px 0;
+.Header {
+  padding: var(--tasks-header-padding, 10px 70px 0 70px);
+  margin: var(--tasks-header-margin, 0 0 10px 0);
 }
 
 .Header .PlannerTitle {
-  padding: 0px 0px 12px 0px;
+  padding: var(--tasks-title-padding, 0px 0px 12px 0px);
   display: flex;
   align-items: center;
   align-content: center;
 }
 
 :host select {
-  font-family: "Segoe UI";
+  font-family: var(--default-font-family, "Segoe UI");
   border: none;
   -moz-appearance: none;
   -webkit-appearance: none;
@@ -47,14 +43,11 @@
   display: none;
 }
 
-:host .PlannerTitle select {
-  font-size: 1.1em;
-  padding: 5px;  
-}
-
+:host .PlannerTitle select, 
 .Header .PlannerTitle .PlanTitle {
-  font-size: 1.1em;
-  font-family: "Segoe UI";
+  font-family: var(--default-font-family, "Segoe UI");
+  font-size: var(--tasks-plan-title-font-size, 1.1em);
+  padding: var(--tasks-plan-title-padding, 5px);  
 }
 
 .Header .AddBar {
@@ -80,10 +73,10 @@
 .Header .NewTaskButton {
   flex: 0 0 auto;
   display: inline-block;
-  width: 90px;
+  width: var(--task-new-button-width, 90px);
+  height: var(--tasks-new-button-height, 32px);
   max-width: 90px;
   min-width: 90px;
-  height: 32px;
   line-height: 200%;
 
   text-align: center;
@@ -92,9 +85,9 @@
   vertical-align: middle;
   justify-self: flex-end;
 
-  border: solid 1px rgba(0, 0, 0, 0);
-  background: #0078d4;
-  color: #ffffff;
+  background: var(--tasks-new-button-background, #0078d4);
+  border: var(--tasks-new-button-border, solid 1px rgba(0, 0, 0, 0));
+  color: var(--tasks-new-button-color, #ffffff);
 
   user-select: none;
   -moz-user-select: none;
@@ -104,30 +97,30 @@
 }
 
 .Header .NewTaskButton:hover {
-  background: #0091ff;
+  background: var(--tasks-new-button-hover-background, #0091ff);
 }
 
 .Header .NewTaskButton:active {
-  background: #00508d;
+  background: var(--tasks-new-button-active-background, #00508d);
 }
 
 .NewTaskName {
-  margin: 0 130px 0 0;
+  margin: var(--task-new-name-margin, 0 130px 0 0);
 }
 
 .Task {
   display: block;
   max-height: 94px;
-  margin: 0 50px 10px 50px;
-  background: #ffffff;
-  border: solid 2px rgba(0, 0, 0, 0);
-  box-shadow: 0px 2px 8px rgba(0, 0, 0, 0.092);
+  margin: var(--task-margin, 0 50px 10px 50px);
+  box-shadow: var(--task-box-shadow, 0px 2px 8px rgba(0, 0, 0, 0.092));
+  background: var(--task-background, #ffffff);
+  border: var(--task-border, solid 2px rgba(0, 0, 0, 0));
 }
 
 .Task.NewTask {
-  margin: 0 50px 10px 50px;
   display: flex;
   min-height: 90px;
+  margin: var(--task-new-margin, 0 50px 10px 50px);
 }
 
 .Task.NewTask .InnerTask {
@@ -139,20 +132,20 @@
   display: flex;
 }
 .Task.NewTask .TaskTitle input {
-  font-family: "Segoe UI";
   flex: 1 1 auto;
-  margin: 6px;
-  padding: 7px;
-  font-size: 1.2em;
-  border: none;
+  font-family: var(--default-font-family, "Segoe UI");
+  margin: var(--task-new-input-margin, 6px);
+  padding: var(--task-new-input-padding, 7px);
+  font-size: var(--task-new-input-font-size, 1.2em);
+  border: var(--task-new-border, none);
 }
 .Task.NewTask .TaskTitle input:active {
-  border: none;
+  border: var(--task-new-input-active-border, none);
 }
 
 .Task.NewTask hr {
-  margin: 0 15px 0 15px;
-  border-top: solid 2px #D8D8D8;
+  margin: var(--task-new-line-margin, 0 15px 0 15px);
+  border-top: var(--task-new-line-border, solid 2px #D8D8D8);
 }
 
 .Task.NewTask .TaskDetails {
@@ -162,15 +155,15 @@
 
 .Task.NewTask .TaskDetails select,
 .Task.NewTask .TaskDetails input {
-  border: none;
-  font-family: "Segoe UI";
+  font-family: var(--default-font-family, "Segoe UI");
+  border: var(--task-new-select-border, none);
 }
 
 .Task.NewTask .TaskAddCont {
   flex: 0 0 auto;
   display: flex;
   align-content: center;
-  align-items: center;
+  align-items: center; 
 }
 
 .Task.NewTask .TaskAddCont .TaskAdd,
@@ -187,19 +180,18 @@
 }
 
 .Task.NewTask .TaskAddCont .TaskAdd {
-  background: #0078D4;
+  background: var(--task-new-add-button-background#0078D4);
 }
 
 .Task.NewTask .TaskAddCont .TaskCancel {
-  color: gray;
-  font-family: "Segoe UI"
+  font-family: "Segoe UI";
+  color: var(--task-new-cancel-button-color, gray);
 }
 
 .Task.NewTask .TaskAddCont.Disabled .TaskAdd {
-  background: gray;
+  background: var(--task-new-add-button-disabled-background, gray);
   cursor: default;
 }
-
 
 .Task .TaskDetails {
   display: flex;
@@ -209,20 +201,20 @@
 }
 
 .Task.Complete {
-  background: #f6f6f6;
-  border-color: #e2e2e2;
+  background: var(--task-complete-background, #f6f6f6);
+  border-color: var(--task-complete-border, #e2e2e2);
 }
 
 .Task.Complete .TaskHeader {
-  color: #959595;
+  color: var(--task-complete-header-color, #959595);
 }
 
 .Task.Complete .TaskDetails {
-  color: #b0b0b0;
+  color: var(--task-complete-detail-color #b0b0b0);
 }
 
 .Task.Complete .TaskDetails .TaskIcon {
-  color: #959595;
+  color: var(--task-compete-detail-icon-color, #959595);
 }
 
 .Task .TaskDetail {
@@ -231,14 +223,14 @@
 }
 
 .Task .TaskDetail .TaskIcon {
-  margin: 0 8px 0 0;
+  margin: var(--task-detail-icon-margin 0 8px 0 0);
 }
 
 .Task .TaskHeader {
   display: flex;
   justify-content: center;
-  color: #333333;
-  margin: 0 0 0 10px;
+  color: var(--task-header-color, #333333);
+  margin: var(--task-header-margin, 0 0 0 10px);
 }
 
 .Task .TaskCheckCont {
