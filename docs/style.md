@@ -9,9 +9,15 @@ Let's take a look at each one.
 
 ## Styles
 
-It is not possible to style the components as you'd normaly would because the component children are hosted in a [shadow dom](https://developer.mozilla.org/en-US/docs/Web/Web_Components/Using_shadow_DOM). Instead, each component documents a set of [CSS custom properties](https://developer.mozilla.org/en-US/docs/Web/CSS/Using_CSS_custom_properties) that can be used to change the look and feel of certain elements.
+It is not possible to style the components as you'd normally would because the component children are hosted in a [shadow dom](https://developer.mozilla.org/en-US/docs/Web/Web_Components/Using_shadow_DOM). Instead, each component documents a set of [CSS custom properties](https://developer.mozilla.org/en-US/docs/Web/CSS/Using_CSS_custom_properties) that can be used to change the look and feel of certain elements.
 
-<!-- TODO For example: -->
+ex:
+
+```css
+mgt-person {
+  --avatar-size: 34px;
+}
+```
 
 ## Templates
 
@@ -50,6 +56,6 @@ Here you'll notice several template features we support:
 - Use the `data-for` to repeat an element
 - Use the `data-type` to specify what part of the component to template. Not specifying the type will template the entire component
 
-Each component documents the supported `data-type` values and what objects are passed down to each template.
+Each component documents the supported `data-type` values and what data context is passed down to each template.
 
-The templates can be styled normaly as they are rendered outside of the shadow dom.
+The templates can be styled normally as they are rendered outside of the shadow dom.
