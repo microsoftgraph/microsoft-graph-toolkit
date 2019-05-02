@@ -10,11 +10,6 @@ import { MgtTemplatedComponent } from '../templatedComponent';
 @customElement('mgt-person')
 export class MgtPerson extends MgtTemplatedComponent {
   @property({
-    attribute: 'image-size'
-  })
-  imageSize: number = 24;
-
-  @property({
     attribute: 'person-query'
   })
   personQuery: string;
@@ -205,13 +200,22 @@ export class MgtPerson extends MgtTemplatedComponent {
       this.renderTemplate('default', { person: this.personDetails }) ||
       html`
         <div class="root">
-          ${this.renderImage()}
-          <span class="Details">
-            ${this.renderNameAndEmail()}
-          </span>
+          ${this.renderImage()} ${this.renderDetails()}
         </div>
       `
     );
+  }
+
+  renderDetails() {
+    if (this.showEmail || this.showName) {
+      return html`
+        <span class="Details ${this.getImageSizeClass()}">
+          ${this.renderNameAndEmail()}
+        </span>
+      `;
+    }
+
+    return null;
   }
 
   renderImage() {
@@ -226,11 +230,6 @@ export class MgtPerson extends MgtTemplatedComponent {
       } else {
         return html`
           <div class="user-avatar initials ${this.getImageRowSpanClass()} ${this.getImageSizeClass()}">
-            <style>
-              .initials-text {
-                font-size: ${this.imageSize * 0.45}px;
-              }
-            </style>
             <span class="initials-text">
               ${this.getInitials()}
             </span>
