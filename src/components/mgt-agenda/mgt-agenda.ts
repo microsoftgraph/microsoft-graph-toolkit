@@ -121,7 +121,7 @@ export class MgtAgenda extends MgtTemplatedComponent {
           if (results && results.value) {
             this.events = results.value;
           }
-        } catch {}
+        } catch (e) {}
       } else {
         let start = this.date ? new Date(this.date) : new Date();
         let end = new Date();
