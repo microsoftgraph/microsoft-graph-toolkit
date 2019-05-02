@@ -112,7 +112,7 @@ export class MgtTasks extends LitElement {
   private async loadTasks() {
     let ts = this.getTaskSource();
     if (!ts) return;
-
+    
     this._me = await ts.me();
 
     if (this.targetId) {
@@ -312,6 +312,21 @@ export class MgtTasks extends LitElement {
           `;
 
     if (this.dataSource === 'planner') {
+      let currentDresser = this._dressers.find(d => d.id === this._currentTargetDresser) || {
+        title: this.res.BASE_SELF_ASSIGNED
+      };
+      let dresserOpts = {
+        [this.res.BASE_SELF_ASSIGNED]: e => {
+          this._currentTargetDresser = this.res.BASE_SELF_ASSIGNED;
+          this._currentTargetDrawer = this.res.BUCKETS_SELF_ASSIGNED;
+        }
+      };
+      for (let dresser of this._dressers) {
+        dresserOpts[dresser.title] = e => {
+          this._currentTargetDresser = dresser.id;
+          this._currentTargetDrawer = this.res.BUCKETS_SELF_ASSIGNED;
+        };
+      }
       let dresserSelect = this.targetId
         ? html`
             <span class="PlanTitle">
@@ -319,29 +334,47 @@ export class MgtTasks extends LitElement {
             </span>
           `
         : html`
-            <select
-              .value="${this._currentTargetDresser}"
-              @change=${(e: Event & { target: HTMLSelectElement }) => {
-                this._currentTargetDresser = e.target.value;
-                this._currentTargetDrawer = this.res.BUCKETS_SELF_ASSIGNED;
-              }}
-            >
-              <option value="${this.res.BASE_SELF_ASSIGNED}">${this.res.BASE_SELF_ASSIGNED}</option>
-              ${this._dressers.map(
-                dresser => html`
-                  <option ?selected=${dresser.id === this._currentTargetDresser} value="${dresser.id}"
-                    >${dresser.title}</option
-                  >
-                `
-              )}
-            </select>
+            <mgt-arrow-options .options="${dresserOpts}" .value="${currentDresser.title}"></mgt-arrow-options>
           `;
+      // : html`
+      //     <select
+      //       .value="${this._currentTargetDresser}"
+      //       @change=${(e: Event & { target: HTMLSelectElement }) => {
+      //         this._currentTargetDresser = e.target.value;
+      //         this._currentTargetDrawer = this.res.BUCKETS_SELF_ASSIGNED;
+      //       }}
+      //     >
+      //       <option value="${this.res.BASE_SELF_ASSIGNED}">${this.res.BASE_SELF_ASSIGNED}</option>
+      //       ${this._dressers.map(
+      //         dresser => html`
+      //           <option ?selected=${dresser.id === this._currentTargetDresser} value="${dresser.id}"
+      //             >${dresser.title}</option
+      //           >
+      //         `
+      //       )}
+      //     </select>
+      //   `;
 
       let divider = this.isDefault(this._currentTargetDresser)
         ? null
         : html`
             <span class="TaskIcon">\uE76C</span>
           `;
+
+      let currentDrawer = this._drawers.find(d => d.id === this._currentTargetDrawer) || {
+        name: this.res.BUCKETS_SELF_ASSIGNED
+      };
+      let drawerOpts = {
+        [this.res.BUCKETS_SELF_ASSIGNED]: e => {
+          this._currentTargetDrawer = this.res.BUCKETS_SELF_ASSIGNED;
+        }
+      };
+
+      for (let drawer of this._drawers.filter(d => d.parentId === this._currentTargetDresser)) {
+        drawerOpts[drawer.name] = e => {
+          this._currentTargetDrawer = drawer.id;
+        };
+      }
 
       let drawerSelect = this.targetBucketId
         ? html`
@@ -350,24 +383,27 @@ export class MgtTasks extends LitElement {
             </span>
           `
         : html`
-            <select
-              .value="${this._currentTargetDrawer}"
-              @change=${(e: Event & { target: HTMLSelectElement }) => {
-                this._currentTargetDrawer = e.target.value;
-              }}
-            >
-              <option value="${this.res.BUCKETS_SELF_ASSIGNED}">${this.res.BUCKETS_SELF_ASSIGNED}</option>
-              ${this._drawers
-                .filter(drawer => drawer.parentId === this._currentTargetDresser)
-                .map(
-                  drawer => html`
-                    <option selected="${drawer.id === this._currentTargetDrawer}" value="${drawer.id}"
-                      >${drawer.name}</option
-                    >
-                  `
-                )}
-            </select>
+            <mgt-arrow-options .options="${drawerOpts}" .value="${currentDrawer.name}"></mgt-arrow-options>
           `;
+      // : html`
+      //     <select
+      //       .value="${this._currentTargetDrawer}"
+      //       @change=${(e: Event & { target: HTMLSelectElement }) => {
+      //         this._currentTargetDrawer = e.target.value;
+      //       }}
+      //     >
+      //       <option value="${this.res.BUCKETS_SELF_ASSIGNED}">${this.res.BUCKETS_SELF_ASSIGNED}</option>
+      //       ${this._drawers
+      //         .filter(drawer => drawer.parentId === this._currentTargetDresser)
+      //         .map(
+      //           drawer => html`
+      //             <option selected="${drawer.id === this._currentTargetDrawer}" value="${drawer.id}"
+      //               >${drawer.name}</option
+      //             >
+      //           `
+      //         )}
+      //     </select>
+      //   `;
 
       return html`
         <span class="TitleCont">
