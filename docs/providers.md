@@ -49,7 +49,7 @@ Read more about each one in the [custom providers](./providers/custom.md) docume
 All components can access the Microsoft Graph out of the box as long as the developer has initialized a provider (as described in the above section). To get a reference to the same Microsoft Graph SDK used by the components, first get a reference to the global IProvider and then use the `Graph` object:
 
 ```js
-import { Providers } from 'microsoft-graph-toolkit';
+import { Providers } from '@microsoft/mgt';
 
 let provider = Providers.globalProvider;
 if (provider) {
@@ -61,7 +61,7 @@ if (provider) {
 There might be cases were you will need to pass additional scopes depending on the api you are calling:
 
 ```js
-import { prepScopes } from 'microsoft-graph-toolkit';
+import { prepScopes } from '@microsoft/mgt';
 
 graphClient
   .api('me')

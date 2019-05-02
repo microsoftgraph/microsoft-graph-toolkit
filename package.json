@@ -1,7 +1,7 @@
 {
-  "name": "microsoft-graph-toolkit",
-  "version": "0.1.0-preview.1",
-  "description": "UI for the Microsoft Graph",
+  "name": "@microsoft/mgt",
+  "version": "0.1.0-preview.3",
+  "description": "The Microsoft Graph Toolkit",
   "keywords": [
     "microsoft graph",
     "web components",
