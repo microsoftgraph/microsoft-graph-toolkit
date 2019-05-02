@@ -95,16 +95,17 @@ export class Graph {
     return this.getPhotoForResource(`me/contacts/${contactId}`, ['contacts.read']);
   }
 
-  async calendar(startDateTime: Date, endDateTime: Date): Promise<Array<MicrosoftGraph.Event>> {
+  async getEvents(startDateTime: Date, endDateTime: Date): Promise<Array<MicrosoftGraph.Event>> {
     let scopes = 'calendars.read';
 
     let sdt = `startdatetime=${startDateTime.toISOString()}`;
-    let edt = `enddatetime=${endDateTime.toISOString()}&$orderby=start/dateTime`;
+    let edt = `enddatetime=${endDateTime.toISOString()}`;
     let uri = `/me/calendarview?${sdt}&${edt}`;
 
     let calendarView = await this.client
       .api(uri)
       .middlewareOptions(prepScopes(scopes))
+      .orderby('start/dateTime')
       .get();
     return calendarView ? calendarView.value : null;
   }
