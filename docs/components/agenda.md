@@ -20,8 +20,9 @@ By default, the `mgt-agenda` component fetches events from the `/me/calendarview
 | --- | --- |
 | `group-by-day` | a boolean value to group events by day - by default events are not grouped |
 | `date` | a string representing the start date of the events to fetch from the Microsoft Graph. Value should be in a format that can be parsed by the [Date constructor](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Date) - value has no effect if `event-query` attribute is set |
-| `days` | a number of days to fetch from the Microsoft Graph - default is 2 - value has no effect if `event-query` attribute is set. |
-| `event-query` | a string representing an alternative query to be used when fetching events from the Microsoft Graph. Optionally, add the delegated scope at the end of the string by delimiting it with `|` (ex: `"/groups/{id}/calendar/calendarView | group.read.all"`) |
+| `days` | a number of days to fetch from the Microsoft Graph - default is 3 - value has no effect if `event-query` attribute is set. |
+| `event-query` | a string representing an alternative query to be used when fetching events from the Microsoft Graph. Optionally, add the delegated scope at the end of the string by delimiting it with `|` (ex: `"/groups/GROUP-ID-GUID/calendar/calendarView | group.read.all"`) |
+| `events` | an array of events to get or set the list of events rendered by the component - use this property to access the events loaded by the component. Set this value to load your own events - if value is set by developer, the `date`, `days`, or `event-query` attributes have no effect |
 
 Ex:
 
@@ -33,16 +34,6 @@ Ex:
   event-query="/me/events?orderby=start/dateTime"
   ></mgt-agenda>
 ```
-
-## Using the component with existing data
-
-If you already have a list of events, you can use the `events` property to set the events for the component to render. 
-
-| property | Description |
-| --- | --- |
-| `events` | get or set the list of events rendered by the component |
-
-The `events` property can also be used to access the events loaded from the Microsoft Graph.
 
 ## Custom properties
 
@@ -91,6 +82,10 @@ The template used when data is loading. No data context is passed
 ### `event`
 
 The template used to render each event. The `event` is passed to the template as data context
+
+### `header`
+
+The template used to render the header for each day. The `header` is passed to the template as data context
 
 ### `other`
 

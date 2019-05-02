@@ -40,7 +40,7 @@ export class MgtAgenda extends MgtTemplatedComponent {
     type: Number,
     reflect: true
   })
-  days: number = 2;
+  days: number = 3;
 
   @property({
     attribute: 'event-query',
@@ -124,8 +124,10 @@ export class MgtAgenda extends MgtTemplatedComponent {
         } catch (e) {}
       } else {
         let start = this.date ? new Date(this.date) : new Date();
+        start.setHours(0, 0, 0, 0);
         let end = new Date();
-        end.setDate(start.getDate() + this.days - 1);
+        end.setHours(0, 0, 0, 0);
+        end.setDate(start.getDate() + this.days);
         this.events = await p.graph.getEvents(start, end);
       }
       this._loading = false;
@@ -170,7 +172,10 @@ export class MgtAgenda extends MgtTemplatedComponent {
               header =>
                 html`
                   <div class="group">
-                    <div class="header">${header}</div>
+                    ${this.renderTemplate('header', { header: header }, 'header-' + header) ||
+                      html`
+                        <div class="header">${header}</div>
+                      `}
                     ${this.renderListOfEvents(grouped[header])}
                   </div>
                 `
