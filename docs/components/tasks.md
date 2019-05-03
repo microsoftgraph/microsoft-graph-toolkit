@@ -30,7 +30,6 @@ ex:
 
 ````css
 mgt-tasks {
-    
 --tasks-header-padding
 --tasks-header-margin 
 
@@ -82,9 +81,9 @@ mgt-tasks {
 
 ## Graph Scopes
 
-For the O365 Planner Data-Source, the `'Groups.ReadWrite.All'` permission is universally required.
+For the O365 Planner Data-Source, fetching and reading tasks requires the `'Groups.Read.All'` permission, and for adding / updating / removing tasks, the `'Groups.ReadWrite.All'` permission is required.
 
-For the Microsoft Todo Data-Source, the `'Tasks.ReadWrite'` is universally required.
+For the Microsoft Todo Data-Source, the `'Tasks.Read'` permission is required for fetching and reading tasks, while for adding / updating / removing tasks, the `'Tasks.ReadWrite'` permission is required.
 
 ## Authentication
 

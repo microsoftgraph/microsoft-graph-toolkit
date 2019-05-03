@@ -195,7 +195,7 @@ export class Graph {
       .api('/me/outlook/taskGroups')
       .header('Cache-Control', 'no-store')
       .version('beta')
-      .middlewareOptions(prepScopes('Tasks.ReadWrite'))
+      .middlewareOptions(prepScopes('Tasks.Read'))
       .get();
 
     return groups && groups.value;
@@ -205,7 +205,7 @@ export class Graph {
       .api(`/me/outlook/taskGroups/${groupId}`)
       .header('Cache-Control', 'no-store')
       .version('beta')
-      .middlewareOptions(prepScopes('Tasks.ReadWrite'))
+      .middlewareOptions(prepScopes('Tasks.Read'))
       .get();
 
     return group;
@@ -215,7 +215,7 @@ export class Graph {
       .api(`/me/outlook/taskGroups/${groupId}/taskFolders`)
       .header('Cache-Control', 'no-store')
       .version('beta')
-      .middlewareOptions(prepScopes('Tasks.ReadWrite'))
+      .middlewareOptions(prepScopes('Tasks.Read'))
       .get();
 
     return folders && folders.value;
@@ -225,7 +225,7 @@ export class Graph {
       .api(`/me/outlook/taskFolders/${folderId}/tasks`)
       .header('Cache-Control', 'no-store')
       .version('beta')
-      .middlewareOptions(prepScopes('Tasks.ReadWrite'))
+      .middlewareOptions(prepScopes('Tasks.Read'))
       .get();
 
     return tasks && tasks.value;
