@@ -524,14 +524,16 @@ export class MgtTasks extends LitElement {
         : html`
             <span class="TaskDetail TaskPeople">
               <label>
-                <span>Assign to Me</span>
                 <input
+                  class="SelfAssign"
                   type="checkbox"
                   .checked="${this._newTaskSelfAssigned}"
                   @change="${(e: Event & { target: HTMLInputElement }) => {
                     this._newTaskSelfAssigned = e.target.checked;
                   }}"
                 />
+                <span class="FakeCheckBox"></span>
+                <span>Assign to Me</span>
               </label>
             </span>
           `;
@@ -559,7 +561,7 @@ export class MgtTasks extends LitElement {
           </span>
           <hr />
           <span class="TaskDetails">
-            ${taskDresser} ${taskDrawer} ${taskDue} ${taskPeople}
+            ${taskDresser} ${taskDrawer} ${taskPeople} ${taskDue} 
           </span>
         </div>
         ${taskAdd}
@@ -660,7 +662,7 @@ export class MgtTasks extends LitElement {
           ${taskDelete}
         </div>
         <div class="TaskDetails">
-          ${taskDresser} ${taskDrawer} ${taskDue} ${taskPeople}
+          ${taskDresser} ${taskDrawer} ${taskPeople} ${taskDue}
         </div>
       </div>
     `;

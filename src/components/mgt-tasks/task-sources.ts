@@ -105,7 +105,7 @@ export class PlannerTaskSource extends TaskSourceBase implements ITaskSource {
       bucketId: newTask.immediateParentId,
       planId: newTask.topParentId,
       dueDateTime: newTask.dueDate,
-      assignments: newTask.assignments,
+      assignments: newTask.assignments
     });
   }
   public async removeTask(id: string, eTag: string): Promise<any> {
@@ -123,14 +123,14 @@ export class TodoTaskSource extends TaskSourceBase implements ITaskSource {
           id: group.id,
           secondaryId: group.groupKey,
           title: group.name,
-          _raw: group,
+          _raw: group
         } as IDresser)
     );
   }
   public async getSingleDresser(id: string): Promise<IDresser> {
     let group: OutlookTaskGroup = await this.graph.todo_getSingleGroup(id);
 
-    return { id: group.id, secondaryId: group.groupKey, title: group.name, _raw: group};
+    return { id: group.id, secondaryId: group.groupKey, title: group.name, _raw: group };
   }
   public async getDrawersForDresser(id: string): Promise<IDrawer[]> {
     let folders: OutlookTaskFolder[] = await this.graph.todo_getFoldersForGroup(id);

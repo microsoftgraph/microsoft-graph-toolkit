@@ -213,9 +213,36 @@
   cursor: default;
 }
 
+.Task.NewTask .SelfAssign {
+  display: none;
+}
+
+.Task.NewTask .FakeCheckBox {
+  width: 15px;
+  height: 15px;
+  cursor: pointer;
+  margin: 0 5px 0 5px;
+}
+
+.Task.NewTask .FakeCheckBox::after {
+  font-family: "FabricMDL2Icons";
+  content: "\uE739";
+}
+
+.Task.NewTask input:checked ~ .FakeCheckBox::after {
+  font-family: "FabricMDL2Icons";
+  content: "\uE73A";
+}
+
 .Task .TaskDetails {
   display: flex;
   margin: 0 0 16px 50px;
+  color: #767676;
+  font-size: 0.9em;
+}
+
+.Task .TaskDetails input,
+.Task .TaskDetails select {
   color: #767676;
   font-size: 0.9em;
 }
