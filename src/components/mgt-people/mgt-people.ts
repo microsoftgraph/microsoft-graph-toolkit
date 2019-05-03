@@ -8,16 +8,17 @@ import { styles } from './mgt-people-css';
 import '../mgt-person/mgt-person';
 import '../../styles/fabric-icon-font';
 import { MgtTemplatedComponent } from '../templatedComponent';
+import { MgtPersonDetails } from '../mgt-person/mgt-person';
 
 @customElement('mgt-people')
 export class MgtPeople extends MgtTemplatedComponent {
-  private _peopleData: Array<MicrosoftGraph.Person> = null;
+  private _firstUpdated = false;
 
   @property({
     attribute: 'people',
-    type: Array
+    type: Object
   })
-  people: Array<MicrosoftGraph.Person> = null;
+  people: Array<MgtPersonDetails> = null;
 
   @property({
     attribute: 'show-max',
@@ -33,28 +34,27 @@ export class MgtPeople extends MgtTemplatedComponent {
 
   constructor() {
     super();
+  }
+
+  firstUpdated() {
+    this._firstUpdated = true;
     Providers.onProviderUpdated(() => this.loadPeople());
     this.loadPeople();
   }
 
   private async loadPeople() {
+    if (!this._firstUpdated) {
+      return;
+    }
+
     if (!this.people) {
       let provider = Providers.globalProvider;
 
       if (provider && provider.state === ProviderState.SignedIn) {
         let client = Providers.globalProvider.graph;
 
-        this._peopleData = await client.getPeople();
-        this.people = this._peopleData.slice(0, this.showMax);
+        this.people = (await client.getPeople()).slice(0, this.showMax);
       }
-    }
-  }
-
-  attributeChangedCallback(name, oldValue, newValue) {
-    super.attributeChangedCallback(name, oldValue, newValue);
-
-    if (this._peopleData && name === 'show-max') {
-      this.people = this._peopleData.slice(0, this.showMax);
     }
   }
 
@@ -64,14 +64,25 @@ export class MgtPeople extends MgtTemplatedComponent {
         this.renderTemplate('default', { people: this.people }) ||
         html`
           <ul class="people-list">
-            ${this.people.map(
+            ${this.people.slice(0, this.showMax).map(
               person =>
                 html`
-                  <li>
-                    ${this.renderTemplate('person', { person: person }, person.id) || this.renderPerson(person)}
+                  <li class="people-person">
+                    ${this.renderTemplate('person', { person: person }, person.displayName) ||
+                      this.renderPerson(person)}
                   </li>
                 `
             )}
+            ${this.people.length > this.showMax
+              ? this.renderTemplate('overflow', {
+                  people: this.people,
+                  max: this.showMax,
+                  extra: this.people.length - this.showMax
+                }) ||
+                html`
+                  <li>+${this.people.length - this.showMax}</li>
+                `
+              : null}
           </ul>
         `
       );
@@ -82,9 +93,7 @@ export class MgtPeople extends MgtTemplatedComponent {
 
   private renderPerson(person: MicrosoftGraph.Person) {
     return html`
-      <div class="people-person">
-        <mgt-person person-query=${person.userPrincipalName}></mgt-person>
-      </div>
+      <mgt-person person-details=${JSON.stringify(person)}></mgt-person>
     `;
   }
 }

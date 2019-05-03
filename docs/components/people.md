@@ -59,6 +59,10 @@ The template used when no people are available. No data context is passed
 
 The template used to render each person. The `person` object is passed to the template as data context
 
+### `overflow`
+
+The template used to render the number beyond the max to the right of the list of people. The `people` array, the `max` number of people currently shown, and the `extra` people beyond are passed to the template as data context
+
 Ex:
 
 ```html
