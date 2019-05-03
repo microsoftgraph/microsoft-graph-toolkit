@@ -15,6 +15,11 @@ export class MgtPerson extends MgtTemplatedComponent {
   personQuery: string;
 
   @property({
+    attribute: 'user-id'
+  })
+  userId: string;
+
+  @property({
     attribute: 'show-name',
     type: Boolean
   })
@@ -35,9 +40,9 @@ export class MgtPerson extends MgtTemplatedComponent {
   attributeChangedCallback(name, oldval, newval) {
     super.attributeChangedCallback(name, oldval, newval);
 
-    if (name == 'person-query' && oldval !== newval) {
+    if ((name == 'person-query' || name == 'user-id') && oldval !== newval) {
       this.personDetails = null;
-      this.loadImage();
+      this.loadData();
     }
   }
 
@@ -47,11 +52,83 @@ export class MgtPerson extends MgtTemplatedComponent {
 
   constructor() {
     super();
-    Providers.onProviderUpdated(() => this.loadImage());
-    this.loadImage();
+    Providers.onProviderUpdated(() => this.loadData());
+    this.loadData();
   }
 
-  private async loadImage() {
+  private async loadData() {
+    if (this.personDetails) {
+      return;
+    } else {
+      let p = Providers.globalProvider;
+      if (!p || p.state !== ProviderState.SignedIn) {
+        this.personDetails = null;
+        return;
+      }
+
+      if (this.userId) {
+        let person: MgtPersonDetails = {};
+
+        p.graph.getUser(this.userId).then(user => {
+          if (user) {
+            person.displayName = user.displayName;
+            person.email = user.mail;
+            this.requestUpdate();
+          }
+        });
+        p.graph.getUserPhoto(this.userId).then(photo => {
+          if (photo) {
+            person.image = photo;
+            this.requestUpdate();
+          }
+        });
+
+        this.personDetails = person;
+      } else if (this.personQuery) {
+        if (this.personQuery == 'me') {
+          let person: MgtPersonDetails = {};
+
+          p.graph.me().then(user => {
+            if (user) {
+              person.displayName = user.displayName;
+              person.email = user.mail;
+              this.requestUpdate();
+            }
+          }),
+            p.graph.myPhoto().then(photo => {
+              if (photo) {
+                person.image = photo;
+                this.requestUpdate();
+              }
+            });
+
+          this.personDetails = person;
+        } else {
+          p.graph.findPerson(this.personQuery).then(people => {
+            if (people && people.length > 0) {
+              let person = people[0] as MicrosoftGraph.Person;
+              this.personDetails = person;
+
+              if (person.scoredEmailAddresses && person.scoredEmailAddresses.length) {
+                this.personDetails.email = person.scoredEmailAddresses[0].address;
+              } else if ((<any>person).emailAddresses && (<any>person).emailAddresses.length) {
+                // beta endpoind uses emailAddresses instead of scoredEmailAddresses
+                this.personDetails.email = (<any>person).emailAddresses[0].address;
+              }
+
+              if (person.userPrincipalName) {
+                let userPrincipalName = person.userPrincipalName;
+                p.graph.getUserPhoto(userPrincipalName).then(photo => {
+                  this.personDetails.image = photo;
+                  this.requestUpdate();
+                });
+              }
+            }
+          });
+        }
+      }
+    }
+
     if (!this.personDetails && this.personQuery) {
       let provider = Providers.globalProvider;
 
