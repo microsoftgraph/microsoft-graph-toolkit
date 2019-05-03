@@ -1,66 +1,91 @@
 # People Control
 
 ## Description
-The people control is used to display a group of people or contacts by using their photos, names, and/or email addresses. 
 
-It utilizes multiple [mgt-person](person.md) controls, but is able to be bound to a set of people descriptors.
+The `mgt-people` web component can be used to display a group of people or contacts by using their photos or initials. By default, it will display the most frequent contacts for the signed in user.
 
-## Authentication
-
-The control leverages the global authentication provider described in the [authentication documentation](./../providers.md) to fetch the required data.
-
-## Graph scopes
-
-This control uses the following Microsoft Graph APIs and permissions:
-
-| resource | permission/scope |
-| - | - |
-| [/me](https://docs.microsoft.com/en-us/graph/api/user-get?view=graph-rest-1.0) | `User.Read` |
-| [/me/photo/$value](https://docs.microsoft.com/en-us/graph/api/profilephoto-get?view=graph-rest-beta) | `User.Read` |
-| [/me/people/?$search=](https://docs.microsoft.com/en-us/graph/api/user-list-people?view=graph-rest-1.0) | `People.Read` |
-| [/users/{id}/photo/$value](https://docs.microsoft.com/en-us/graph/api/user-list-people?view=graph-rest-1.0) | `User.ReadBasic.All` |
-
-> Note: to access the `/me/photo' resource for personal Microsoft Accounts, the beta Graph endpoint is used for all requests
+It utilizes multiple [mgt-person](person.md) controls, but is able to be bound to a set of people descriptors. If there are more people to display than the `show-max` value, a number will be added to indicate the number of additional contacts.
 
 ## Example
 
-### Add the control to the html page
 ```html
-<mgt-people person-query=""></mgt-people>
+<mgt-people></mgt-people>
 ```
 
-## Setting the person details
+![mgt-people](./images/mgt-people.png)
 
-There are three properties that a developer can use to set the person details:
+## Properties
 
-* Set the `user-id` attribute or `userId` property to fetch the user from the Microsoft Graph by using their id.  
+By default, the `mgt-people` component fetches events from the `/me/people` endpoint with the `personType/class eq 'Person'` filter to display frequently contacted users. Use the following attributes to change this behavior:
 
-* Set the `person-query` attribute or `personQuery` property to search the Microsoft Graph for a given person. It will chose the first person available and fetch the person details. An email works best to ensure the right person is queried, but a name works as well.
+| attribute | Description |
+| --- | --- |
+| `show-max` | an integer value to indicate the maximum number of people to show - default is 3. |
+| `people` | an array of people to get or set the list of people rendered by the component - use this property to access the people loaded by the component. Set this value to load your own people |
 
-* Set the `person-details` attribute or `personDetails` property to manually set the person details. 
+Ex:
 
-    Ex: 
+```html
+<mgt-people
+  show-max="4">
+</mgt-people>
+```
 
-    ```js
-    let personControl = document.getElementById('myPersonControl');
-    personControl.personDetails = {
-        displayName: 'Nikola Metulev',
-        email: 'nikola@contoso.com',
-        image: 'url'
-    }
-    ```
+## Custom properties
 
-## Changing how the control looks
+The `mgt-people` component defines these custom properties
 
-The following attributes are available to customize the behavior
+```css
+mgt-people {
+  --list-margin: 8px 4px 8px 8px; /* Margin for component */
+  --avatar-margin: 0 4px 0 0; /* Margin for each person */
+}
+```
 
-| property  | required  | description |
-| --- | --- | --- |
-| `showName` | optional | set flag to display person display name - default is `false` |
-| `showEmail` | optional | set flag to display person email - default is `false` |
+## Templates
+
+The `mgt-people` supports several [templates](../style.md) that allow you to replace certain parts of the component. To specify a template, simply include a `<template>` element inside of a component and set the `data-type` value to one of the following:
 
 
-| [css custom properties](../styling-controls.md#css-custom-properties) |
-| - |
-| `--login-control-background` | 
-| TODO
+### `default` (or when no value is provided)
+
+The default template replaces the entire component with your own. The `people` are passed to the templates as data context
+
+### `no-data`
+
+The template used when no events are available. No data context is passed
+
+### `person`
+
+The template used to render each event. The `person` is passed to the template as data context
+
+Ex:
+
+```html
+<mgt-people>
+  <template data-type="person">
+    <mgt-people>
+      <template>
+        <ul><li data-for="person in people">
+          <mgt-person person-query="{{ person.userPrincipalName }}"></mgt-person>
+          <h3>{{ person.displayName }}</h3>
+          <p>{{ person.jobTitle }}</p>
+          <p>{{ person.department }}</p>
+        </li></ul>
+      </template>
+    </mgt-people>
+  </template>
+</mgt-people>
+```
+
+## Graph scopes
+
+This component uses the following Microsoft Graph APIs and permissions:
+
+| resource | permission/scope |
+| - | - |
+| [/me/people](https://docs.microsoft.com/en-us/graph/api/user-list-people?view=graph-rest-1.0) | `People.Read` |
+
+## Authentication
+
+The control leverages the global authentication provider described in the [authentication documentation](./../providers.md).

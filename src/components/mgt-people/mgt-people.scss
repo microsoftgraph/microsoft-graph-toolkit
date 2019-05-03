@@ -2,7 +2,7 @@
 @import '../../styles/shared-styles.scss';
 
 $list-margin: var(--list-margin, 8px 4px 8px 8px);
-$avatar-spacing: var(--avatar-spacing, 0 4px 0 0);
+$avatar-margin: var(--avatar-margin, 0 4px 0 0);
 
 .people-list {
   list-style-type: none;
@@ -15,6 +15,6 @@ $avatar-spacing: var(--avatar-spacing, 0 4px 0 0);
 }
 
 .people-person {
-  margin: $avatar-spacing;
+  margin: $avatar-margin;
   display: flex;
 }
