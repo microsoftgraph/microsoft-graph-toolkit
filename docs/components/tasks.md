@@ -2,7 +2,7 @@
 
 ## Description
 
-The Tasks Control enables the user to view, add, remove, complete, or edit tasks. It can works with any tasks in Microsoft Planner and/or Microsoft To-Do.
+The Tasks Control enables the user to view, add, remove, complete, or edit tasks. It works with any tasks in Microsoft Planner or Microsoft To-Do.
 
 ## Example
 
@@ -14,7 +14,7 @@ The Tasks Control enables the user to view, add, remove, complete, or edit tasks
 
 | Attribute | Description |
 | -- | -- |
-| `data-source="todo|planner"` | Sets the Data source for tasks, either Microsoft Todo, or Office 365 Planner |
+| `data-source="todo|planner"` | Sets the Data source for tasks, either Microsoft To-Do, or Microsoft Planner |
 | `read-only` | Sets the task interface to be read only (no adding or removing tasks) |
 | `initial-id="planner_id/folder_id"` | Sets the initially displayed planner or folder to the provided ID |
 | `initial-bucket-id="bucket_id"` | Sets the initially displayed bucket (Planner Data-Source Only) to the provided ID |
@@ -82,9 +82,9 @@ mgt-tasks {
 
 ## Graph Scopes
 
-For the O365 Planner Data-Source, the `'Groups.ReadWrite.All'` permission is universally required.
+For the Microsoft Planner Data-Source, the `'Groups.ReadWrite.All'` permission is universally required.
 
-For the Microsoft Todo Data-Source, the `'Tasks.ReadWrite'` is universally required.
+For the Microsoft To-Do Data-Source, the `'Tasks.ReadWrite'` is universally required.
 
 ## Authentication
 

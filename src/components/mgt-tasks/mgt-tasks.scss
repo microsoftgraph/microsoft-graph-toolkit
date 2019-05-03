@@ -26,6 +26,8 @@
 
 .TaskIcon.Divider {
   vertical-align: initial;
+  margin: 0 12px;
+  font-size: 16px;
 }
 
 .Header .PlannerTitle {
@@ -114,17 +116,17 @@
 }
 
 .Task {
-  display: block;
+  display: flex;
+  flex-direction: column;
   margin: var(--task-margin, 0 10px 10px 10px);
-  padding: var(--task-padding, 0 0 8px 0);
+  padding: var(--task-padding, 0 0 0 0);
   box-shadow: var(--task-box-shadow, 0px 2px 8px rgba(0, 0, 0, 0.092));
   background: var(--task-background, #ffffff);
   // border: var(--task-border, solid 2px rgba(0, 0, 0, 0));
 }
 
 .Task.NewTask {
-  display: flex;
-  min-height: 90px;
+  flex-direction: row;
   margin: var(--task-new-margin, var(--task-margin, 0 10px 10px 10px));
 }
 
@@ -132,14 +134,20 @@
   flex: 1 1 auto;
   align-content: center;
   vertical-align: middle;
+  margin: 0 0 0 12px;
 }
 .Task.NewTask .TaskTitle {
   display: flex;
 }
+
+.Task.NewTask .TaskHeader {
+  margin: 0;
+}
+
 .Task.NewTask .TaskTitle input {
   flex: 1 1 auto;
   font-family: var(--default-font-family, 'Segoe UI');
-  margin: var(--task-new-input-margin, 6px);
+  margin: var(--task-new-input-margin, 16px 0 0 0);
   padding: var(--task-new-input-padding, 7px);
   font-size: var(--task-new-input-font-size, 1.2em);
   border: var(--task-new-border, none);
@@ -149,13 +157,13 @@
 }
 
 .Task.NewTask hr {
-  margin: var(--task-new-line-margin, 0 15px 0 15px);
-  border-top: var(--task-new-line-border, solid 2px #d8d8d8);
+  border: var(--task-new-line-border, solid 1px #d8d8d8);
+  margin: 0;
 }
 
 .Task.NewTask .TaskDetails {
   flex: 0 0 auto;
-  margin: 10px;
+  margin: 14px 0 14px 4px;
 }
 
 .Task.NewTask .TaskDetails select,
@@ -191,7 +199,7 @@
 .Task.NewTask .TaskAddCont .TaskCancel {
   font-family: 'Segoe UI';
   color: var(--task-new-cancel-button-color, gray);
-  margin: 0px 8px 0px 0px;
+  margin: 0px 20px 0px 32px;
 }
 
 .Task.NewTask .TaskAddCont.Disabled .TaskAdd {
@@ -201,6 +209,9 @@
 
 .Task .TaskDetails {
   display: flex;
+  margin: 0 0 16px 50px;
+  color: #767676;
+  font-size: 0.9em;
 }
 
 .Task.Complete {
@@ -223,6 +234,16 @@
 .Task .TaskDetail {
   align-items: center;
   align-content: center;
+  display: flex;
+}
+
+.Task .TaskDetail svg,
+.Task .TaskDetail span {
+  vertical-align: middle;
+}
+
+.Task .TaskDetail svg {
+  margin-right: 4px;
 }
 
 .Task .TaskDetail .TaskIcon {
@@ -305,12 +326,6 @@
   align-self: center;
   align-content: center;
   color: #333333;
-}
-
-.Task .TaskDetails {
-  margin: 4px 0 0 50px;
-  color: #767676;
-  font-size: 0.9em;
 }
 
 .Task .TaskDetails .TaskDetail {

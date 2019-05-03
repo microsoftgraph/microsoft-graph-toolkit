@@ -358,7 +358,7 @@ export class MgtTasks extends LitElement {
       let divider = this.isDefault(this._currentTargetDresser)
         ? null
         : html`
-            <span class="TaskIcon Divider">\uE76C</span>
+            <span class="TaskIcon Divider">/</span>
           `;
 
       let currentDrawer = this._drawers.find(d => d.id === this._currentTargetDrawer) || {
@@ -466,13 +466,13 @@ export class MgtTasks extends LitElement {
       this.dataSource === 'todo' || !this.isDefault(this._currentTargetDresser)
         ? html`
             <span class="TaskDetail TaskAssignee">
-              <span class="TaskIcon">\uF5DC</span>
+              ${this.renderPlannerIcon()}
               <span>${this.getPlanTitle(this._currentTargetDresser)}</span>
             </span>
           `
         : html`
             <span class="TaskDetail TaskAssignee">
-              <span class="TaskIcon">\uF5DC</span>
+              ${this.renderPlannerIcon()}
               <select
                 .value="${this._newTaskDresserId}"
                 @change="${(e: Event & { target: HTMLSelectElement }) => {
@@ -499,13 +499,13 @@ export class MgtTasks extends LitElement {
     let taskDrawer = !this.isDefault(this._currentTargetDrawer)
       ? html`
           <span class="TaskDetail TaskBucket">
-            <span class="TaskIcon">\uF1B6</span>
+            ${this.renderBucketIcon()}
             <span>${this.getDrawerName(this._currentTargetDrawer)}</span>
           </span>
         `
       : html`
           <span class="TaskDetail TaskBucket">
-            <span class="TaskIcon">\uF1B6</span>
+            ${this.renderBucketIcon()}
             <select
               .value="${this._newTaskDrawerId}"
               @change="${(e: Event & { target: HTMLSelectElement }) => {
@@ -523,7 +523,7 @@ export class MgtTasks extends LitElement {
 
     let taskDue = html`
       <span class="TaskDetail TaskDue">
-        <span class="TaskIcon">\uE787</span>
+        ${this.renderCalendarIcon()}
         <input
           type="date"
           .value="${this._newTaskDueDate}"
@@ -604,7 +604,7 @@ export class MgtTasks extends LitElement {
         ? null
         : html`
             <span class="TaskDetail TaskAssignee">
-              <span class="TaskIcon">\uF5DC</span>
+              ${this.renderPlannerIcon()}
               <span>${this.getPlanTitle(task.topParentId)}</span>
             </span>
           `;
@@ -613,7 +613,7 @@ export class MgtTasks extends LitElement {
       ? null
       : html`
           <span class="TaskDetail TaskBucket">
-            <span class="TaskIcon">\uF1B6</span>
+            ${this.renderBucketIcon()}
             <span>${this.getDrawerName(task.immediateParentId)}</span>
           </span>
         `;
@@ -622,7 +622,7 @@ export class MgtTasks extends LitElement {
       ? null
       : html`
           <span class="TaskDetail TaskDue">
-            <span class="TaskIcon">\uE787</span>
+            ${this.renderCalendarIcon()}
             <span>${getShortDateString(dueDateString)}</span>
           </span>
         `;
@@ -676,6 +676,57 @@ export class MgtTasks extends LitElement {
           ${taskDresser} ${taskDrawer} ${taskDue} ${taskPeople}
         </div>
       </div>
+    `;
+  }
+
+  private renderPlannerIcon() {
+    return html`
+      <svg width="16" height="18" viewBox="0 0 16 18" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <path
+          fill-rule="evenodd"
+          clip-rule="evenodd"
+          d="M7.223 1.156C6.98 1.26 6.769 1.404 6.586 1.586C6.403 1.768 6.261 1.98 6.157 2.223C6.052 2.465 6 2.724 6 3H2V17H14V3H10C10 2.724 9.948 2.465 9.844 2.223C9.74 1.98 9.596 1.768 9.414 1.586C9.231 1.404 9.02 1.26 8.777 1.156C8.535 1.053 8.276 1 8 1C7.723 1 7.465 1.053 7.223 1.156ZM5 4H7V3C7 2.86 7.026 2.729 7.078 2.609C7.13 2.49 7.202 2.385 7.293 2.293C7.384 2.202 7.49 2.131 7.609 2.079C7.73 2.026 7.859 2 8 2C8.14 2 8.271 2.026 8.39 2.079C8.511 2.131 8.616 2.202 8.707 2.293C8.798 2.385 8.87 2.49 8.922 2.609C8.974 2.729 9 2.86 9 3V4H11V5H5V4ZM12 6V4H13V16H3V4H4V6H12Z"
+          fill="#3C3C3C"
+        />
+        <path
+          fill-rule="evenodd"
+          clip-rule="evenodd"
+          d="M7.35156 12.3517L5.49956 14.2037L4.14856 12.8517L4.85156 12.1487L5.49956 12.7967L6.64856 11.6487L7.35156 12.3517Z"
+          fill="#3C3C3C"
+        />
+        <path
+          fill-rule="evenodd"
+          clip-rule="evenodd"
+          d="M7.35156 8.35168L5.49956 10.2037L4.14856 8.85168L4.85156 8.14868L5.49956 8.79668L6.64856 7.64868L7.35156 8.35168Z"
+          fill="#3C3C3C"
+        />
+        <path fill-rule="evenodd" clip-rule="evenodd" d="M8 14H12.001V13H8V14Z" fill="#3C3C3C" />
+        <path fill-rule="evenodd" clip-rule="evenodd" d="M8 10H12.001V9H8V10Z" fill="#3C3C3C" />
+      </svg>
+    `;
+  }
+
+  private renderBucketIcon() {
+    return html`
+      <svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <path
+          fill-rule="evenodd"
+          clip-rule="evenodd"
+          d="M14 2H2V4H3H5H6H10H11H13H14V2ZM10 5H6V6H10V5ZM5 5H3V14H13V5H11V6C11 6.55228 10.5523 7 10 7H6C5.44772 7 5 6.55228 5 6V5ZM1 5H2V14V15H3H13H14V14V5H15V4V2V1H14H2H1V2V4V5Z"
+          fill="#3C3C3C"
+        />
+      </svg>
+    `;
+  }
+
+  private renderCalendarIcon() {
+    return html`
+      <svg width="20" height="18" viewBox="0 0 20 18" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <path
+          d="M12 7H11V8H12V7ZM9 13H8V14H9V13ZM6 7H5V8H6V7ZM9 7H8V8H9V7ZM12 9H11V10H12V9ZM15 9H14V10H15V9ZM6 9H5V10H6V9ZM9 9H8V10H9V9ZM12 11H11V12H12V11ZM15 11H14V12H15V11ZM6 11H5V12H6V11ZM9 11H8V12H9V11ZM12 13H11V14H12V13ZM15 13H14V14H15V13ZM2 2V16H18V2H15V1H14V2H6V1H5V2H2ZM17 3V5H3V3H5V4H6V3H14V4H15V3H17ZM3 15V6H17V15H3Z"
+          fill="#3C3C3C"
+        />
+      </svg>
     `;
   }
 
