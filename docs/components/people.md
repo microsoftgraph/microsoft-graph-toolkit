@@ -53,7 +53,7 @@ The default template replaces the entire component with your own. The `people` a
 
 ### `no-data`
 
-The template used when no events are available. No data context is passed
+The template used when no people are available. No data context is passed
 
 ### `person`
 
