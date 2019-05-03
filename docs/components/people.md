@@ -57,7 +57,7 @@ The template used when no people are available. No data context is passed
 
 ### `person`
 
-The template used to render each event. The `person` is passed to the template as data context
+The template used to render each person. The `person` object is passed to the template as data context
 
 Ex:
 
