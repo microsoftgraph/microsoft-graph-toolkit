@@ -6,9 +6,12 @@ import { styles } from './mgt-person-css';
 import '../../styles/fabric-icon-font';
 import { ProviderState } from '../../providers/IProvider';
 import { MgtTemplatedComponent } from '../templatedComponent';
+import { isUnaryExpression } from '@babel/types';
 
 @customElement('mgt-person')
 export class MgtPerson extends MgtTemplatedComponent {
+  private _firstUpdated = false;
+
   @property({
     attribute: 'person-query'
   })
@@ -37,7 +40,7 @@ export class MgtPerson extends MgtTemplatedComponent {
 
     if (name == 'person-query' && oldval !== newval) {
       this.personDetails = null;
-      this.loadImage();
+      this.loadData();
     }
   }
 
@@ -47,15 +50,24 @@ export class MgtPerson extends MgtTemplatedComponent {
 
   constructor() {
     super();
-    Providers.onProviderUpdated(() => this.loadImage());
-    this.loadImage();
   }
 
-  private async loadImage() {
-    if (!this.personDetails && this.personQuery) {
-      let provider = Providers.globalProvider;
+  firstUpdated() {
+    this._firstUpdated = true;
+    Providers.onProviderUpdated(() => this.loadData());
+    this.loadData();
+  }
 
-      if (provider && provider.state === ProviderState.SignedIn) {
+  private async loadData() {
+    let provider = Providers.globalProvider;
+
+    if (provider && provider.state === ProviderState.SignedIn) {
+      if (!this.personQuery && this.personDetails) {
+        // Check if we have details needed.
+        if (!this.personDetails.image) {
+          await this.loadImage(this.personDetails);
+        }
+      } else if (!this.personDetails && this.personQuery) {
         if (this.personQuery == 'me') {
           let person: MgtPersonDetails = {};
 
@@ -89,32 +101,46 @@ export class MgtPerson extends MgtTemplatedComponent {
 
               // https://developer.microsoft.com/en-us/office/blogs/people-api-available-in-microsoft-graph-v1/
               if (person.personType.class == 'Person') {
-                if (person.userPrincipalName) {
-                  let userPrincipalName = person.userPrincipalName;
-                  provider.graph.getUserPhoto(userPrincipalName).then(photo => {
-                    this.personDetails.image = photo;
-                    this.requestUpdate();
-                  });
-                } else if (this.personDetails.email) {
-                  // try to find a contact
-                  provider.graph.findContactByEmail(this.personDetails.email).then(contacts => {
-                    if (contacts && contacts.length) {
-                      const contactId = contacts[0].id;
-                      provider.graph.getContactPhoto(contactId).then(photo => {
-                        this.personDetails.image = photo;
-                        this.requestUpdate();
-                      });
-                    }
-                  });
-                }
-              } else {
+                this.loadImage(person);
               }
             }
           });
         }
       } else {
-        this.personDetails = null;
+        this.personDetails = null; // Should we throw here or re-load the query as now we do nothing if both specified?
       }
+    }
+  }
+
+  private async loadImage(person: any) {
+    let provider = Providers.globalProvider;
+
+    if (person.userPrincipalName) {
+      let userPrincipalName = person.userPrincipalName;
+      provider.graph.getUserPhoto(userPrincipalName).then(photo => {
+        this.personDetails.image = photo;
+        this.requestUpdate();
+      });
+    } else if (this.personDetails.email) {
+      // try to find a user by e-mail
+      provider.graph.findUserByEmail(this.personDetails.email).then(users => {
+        if (users && users.length) {
+          const contactId = users[0].id;
+          if ((<any>users[0]).personType && (<any>users[0]).personType.subclass == 'OrganizationUser') {
+            provider.graph
+              .getUserPhoto((<MicrosoftGraph.Person>users[0]).scoredEmailAddresses[0].address)
+              .then(photo => {
+                this.personDetails.image = photo;
+                this.requestUpdate();
+              });
+          } else {
+            provider.graph.getContactPhoto(contactId).then(photo => {
+              this.personDetails.image = photo;
+              this.requestUpdate();
+            });
+          }
+        }
+      });
     }
   }
 

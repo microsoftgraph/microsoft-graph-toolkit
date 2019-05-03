@@ -68,6 +68,12 @@ export class Graph {
     return result ? result.value : null;
   }
 
+  async findUserByEmail(email: string): Promise<(MicrosoftGraph.Person | MicrosoftGraph.Contact)[]> {
+    return Promise.all([this.findPerson(email), this.findContactByEmail(email)]).then(([people, contacts]) => {
+      return (people || []).concat(contacts || []);
+    });
+  }
+
   private async getPhotoForResource(resource: string, scopes: string[]): Promise<string> {
     try {
       let blob = await this.client
