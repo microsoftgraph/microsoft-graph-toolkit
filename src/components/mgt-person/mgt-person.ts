@@ -18,6 +18,11 @@ export class MgtPerson extends MgtTemplatedComponent {
   personQuery: string;
 
   @property({
+    attribute: 'user-id'
+  })
+  userId: string;
+
+  @property({
     attribute: 'show-name',
     type: Boolean
   })
@@ -38,7 +43,7 @@ export class MgtPerson extends MgtTemplatedComponent {
   attributeChangedCallback(name, oldval, newval) {
     super.attributeChangedCallback(name, oldval, newval);
 
-    if (name == 'person-query' && oldval !== newval) {
+    if ((name == 'person-query' || name == 'user-id') && oldval !== newval) {
       this.personDetails = null;
       this.loadData();
     }
@@ -61,54 +66,74 @@ export class MgtPerson extends MgtTemplatedComponent {
   private async loadData() {
     let provider = Providers.globalProvider;
 
-    if (provider && provider.state === ProviderState.SignedIn) {
-      if (!this.personQuery && this.personDetails) {
-        // Check if we have details needed.
-        if (!this.personDetails.image) {
-          await this.loadImage(this.personDetails);
-        }
-      } else if (!this.personDetails && this.personQuery) {
-        if (this.personQuery == 'me') {
-          let person: MgtPersonDetails = {};
+    if (!provider || provider.state !== ProviderState.SignedIn) {
+      return;
+    }
 
-          await Promise.all([
-            provider.graph.me().then(user => {
-              if (user) {
-                person.displayName = user.displayName;
-                person.email = user.mail || user.userPrincipalName;
-              }
-            }),
-            provider.graph.myPhoto().then(photo => {
-              if (photo) {
-                person.image = photo;
-              }
-            })
-          ]);
+    // If we only have a user-id then use that to get data.
+    if (this.userId) {
+      let person: MgtPersonDetails = {};
 
-          this.personDetails = person;
-        } else {
-          provider.graph.findPerson(this.personQuery).then(people => {
-            if (people && people.length > 0) {
-              let person = people[0] as MicrosoftGraph.Person;
-              this.personDetails = person;
+      await Promise.all([
+        provider.graph.getUser(this.userId).then(user => {
+          if (user) {
+            person.displayName = user.displayName;
+            person.email = user.mail;
+            this.requestUpdate();
+          }
+        }),
+        provider.graph.getUserPhoto(this.userId).then(photo => {
+          if (photo) {
+            person.image = photo;
+            this.requestUpdate();
+          }
+        })
+      ]);
 
-              if (person.scoredEmailAddresses && person.scoredEmailAddresses.length) {
-                this.personDetails.email = person.scoredEmailAddresses[0].address;
-              } else if ((<any>person).emailAddresses && (<any>person).emailAddresses.length) {
-                // beta endpoint uses emailAddresses instead of scoredEmailAddresses
-                this.personDetails.email = (<any>person).emailAddresses[0].address;
-              }
-
-              // https://developer.microsoft.com/en-us/office/blogs/people-api-available-in-microsoft-graph-v1/
-              if (person.personType.class == 'Person') {
-                this.loadImage(person);
-              }
-            }
-          });
-        }
-      } else {
-        this.personDetails = null; // Should we throw here or re-load the query as now we do nothing if both specified?
+      this.personDetails = person;
+    } else if (!this.personQuery && this.personDetails) {
+      // Check if we have details needed.
+      if (!this.personDetails.image) {
+        await this.loadImage(this.personDetails);
       }
+    } else if (!this.personDetails && this.personQuery) {
+      if (this.personQuery == 'me') {
+        let person: MgtPersonDetails = {};
+
+        await Promise.all([
+          provider.graph.me().then(user => {
+            if (user) {
+              person.displayName = user.displayName;
+              person.email = user.mail || user.userPrincipalName;
+            }
+          }),
+          provider.graph.myPhoto().then(photo => {
+            if (photo) {
+              person.image = photo;
+            }
+          })
+        ]);
+
+        this.personDetails = person;
+      } else {
+        provider.graph.findPerson(this.personQuery).then(people => {
+          if (people && people.length > 0) {
+            let person = people[0] as MicrosoftGraph.Person;
+            this.personDetails = person;
+
+            if (person.scoredEmailAddresses && person.scoredEmailAddresses.length) {
+              this.personDetails.email = person.scoredEmailAddresses[0].address;
+            } else if ((<any>person).emailAddresses && (<any>person).emailAddresses.length) {
+              // beta endpoint uses emailAddresses instead of scoredEmailAddresses
+              this.personDetails.email = (<any>person).emailAddresses[0].address;
+            }
+
+            this.loadImage(person);
+          }
+        });
+      }
+    } else {
+      this.personDetails = null; // Should we throw here or re-load the query as now we do nothing if both specified?
     }
   }
 

@@ -1,4 +1,5 @@
 import * as MicrosoftGraph from '@microsoft/microsoft-graph-types';
+import * as MicrosoftGraphBeta from '@microsoft/microsoft-graph-types-beta';
 import { Client } from '@microsoft/microsoft-graph-client/lib/es/Client';
 import { IProvider } from './providers/IProvider';
 import { ResponseType } from '@microsoft/microsoft-graph-client/lib/es/ResponseType';
@@ -125,5 +126,184 @@ export class Graph {
       .filter("personType/class eq 'Person'")
       .get();
     return people ? people.value : null;
+  }
+
+  // Planner Methods
+  public async planner_getAllMyPlans(): Promise<MicrosoftGraph.PlannerPlan[]> {
+    let plans = await this.client
+      .api('/me/planner/plans')
+      .header('Cache-Control', 'no-store')
+      .middlewareOptions(prepScopes('Group.Read.All'))
+      .get();
+
+    return plans && plans.value;
+  }
+  public async planner_getSinglePlan(planId: string): Promise<MicrosoftGraph.PlannerPlan> {
+    let plan = await this.client
+      .api(`/planner/plans/${planId}`)
+      .header('Cache-Control', 'no-store')
+      .middlewareOptions(prepScopes('Group.Read.All'))
+      .get();
+
+    return plan;
+  }
+  public async planner_getBucketsForPlan(planId: string): Promise<MicrosoftGraph.PlannerBucket[]> {
+    let buckets = await this.client
+      .api(`/planner/plans/${planId}/buckets`)
+      .header('Cache-Control', 'no-store')
+      .middlewareOptions(prepScopes('Group.Read.All'))
+      .get();
+
+    return buckets && buckets.value;
+  }
+  public async planner_getTasksForBucket(bucketId: string): Promise<MicrosoftGraph.PlannerTask[]> {
+    let tasks = await this.client
+      .api(`/planner/buckets/${bucketId}/tasks`)
+      .header('Cache-Control', 'no-store')
+      .middlewareOptions(prepScopes('Group.Read.All'))
+      .get();
+
+    return tasks && tasks.value;
+  }
+  public async planner_setTaskDetails(taskId: string, details: MicrosoftGraph.PlannerTask, eTag: string): Promise<any> {
+    return await this.client
+      .api(`/planner/tasks/${taskId}`)
+      .header('Cache-Control', 'no-store')
+      .middlewareOptions(prepScopes('Group.ReadWrite.All'))
+      .header('If-Match', eTag)
+      .patch(JSON.stringify(details));
+  }
+  public async planner_setTaskComplete(taskId: string, eTag: string): Promise<any> {
+    return this.planner_setTaskDetails(
+      taskId,
+      {
+        percentComplete: 100
+      },
+      eTag
+    );
+  }
+  public async planner_setTaskIncomplete(taskId: string, eTag: string): Promise<any> {
+    return this.planner_setTaskDetails(
+      taskId,
+      {
+        percentComplete: 0
+      },
+      eTag
+    );
+  }
+  public async planner_addTask(newTask: MicrosoftGraph.PlannerTask): Promise<any> {
+    return this.client
+      .api(`/planner/tasks`)
+      .header('Cache-Control', 'no-store')
+      .middlewareOptions(prepScopes('Group.ReadWrite.All'))
+      .post(newTask);
+  }
+  public async planner_removeTask(taskId: string, eTag: string): Promise<any> {
+    return this.client
+      .api(`/planner/tasks/${taskId}`)
+      .header('Cache-Control', 'no-store')
+      .header('If-Match', eTag)
+      .middlewareOptions(prepScopes('Group.ReadWrite.All'))
+      .delete();
+  }
+
+  // Todo Methods
+  public async todo_getAllMyGroups(): Promise<MicrosoftGraphBeta.OutlookTaskGroup[]> {
+    let groups = await this.client
+      .api('/me/outlook/taskGroups')
+      .header('Cache-Control', 'no-store')
+      .version('beta')
+      .middlewareOptions(prepScopes('Tasks.Read'))
+      .get();
+
+    return groups && groups.value;
+  }
+  public async todo_getSingleGroup(groupId: string): Promise<MicrosoftGraphBeta.OutlookTaskGroup> {
+    let group = await this.client
+      .api(`/me/outlook/taskGroups/${groupId}`)
+      .header('Cache-Control', 'no-store')
+      .version('beta')
+      .middlewareOptions(prepScopes('Tasks.Read'))
+      .get();
+
+    return group;
+  }
+  public async todo_getFoldersForGroup(groupId: string): Promise<MicrosoftGraphBeta.OutlookTaskFolder[]> {
+    let folders = await this.client
+      .api(`/me/outlook/taskGroups/${groupId}/taskFolders`)
+      .header('Cache-Control', 'no-store')
+      .version('beta')
+      .middlewareOptions(prepScopes('Tasks.Read'))
+      .get();
+
+    return folders && folders.value;
+  }
+  public async todo_getAllTasksForFolder(folderId: string): Promise<MicrosoftGraphBeta.OutlookTask[]> {
+    let tasks = await this.client
+      .api(`/me/outlook/taskFolders/${folderId}/tasks`)
+      .header('Cache-Control', 'no-store')
+      .version('beta')
+      .middlewareOptions(prepScopes('Tasks.Read'))
+      .get();
+
+    return tasks && tasks.value;
+  }
+  public async todo_setTaskDetails(taskId: string, task: any, eTag: string): Promise<MicrosoftGraphBeta.OutlookTask> {
+    return await this.client
+      .api(`/me/outlook/tasks/${taskId}`)
+      .header('Cache-Control', 'no-store')
+      .version('beta')
+      .header('If-Match', eTag)
+      .middlewareOptions(prepScopes('Tasks.ReadWrite'))
+      .patch(task);
+  }
+  public async todo_setTaskComplete(taskId: string, eTag: string): Promise<MicrosoftGraphBeta.OutlookTask> {
+    return await this.todo_setTaskDetails(
+      taskId,
+      {
+        status: 'completed',
+        isReminderOn: false
+      },
+      eTag
+    );
+  }
+  public async todo_setTaskIncomplete(taskId: string, eTag: string): Promise<MicrosoftGraphBeta.OutlookTask> {
+    return await this.todo_setTaskDetails(
+      taskId,
+      {
+        status: 'notStarted',
+        isReminderOn: true
+      },
+      eTag
+    );
+  }
+
+  public async todo_addTask(newTask: any): Promise<MicrosoftGraphBeta.OutlookTask> {
+    let { parentFolderId = null } = newTask;
+
+    if (parentFolderId)
+      return await this.client
+        .api(`/me/outlook/taskFolders/${parentFolderId}/tasks`)
+        .header('Cache-Control', 'no-store')
+        .version('beta')
+        .middlewareOptions(prepScopes('Tasks.ReadWrite'))
+        .post(newTask);
+    else
+      return await this.client
+        .api(`/me/outlook/tasks`)
+        .header('Cache-Control', 'no-store')
+        .version('beta')
+        .middlewareOptions(prepScopes('Tasks.ReadWrite'))
+        .post(newTask);
+  }
+
+  public async todo_removeTask(taskId: string, eTag: string): Promise<any> {
+    return await this.client
+      .api(`/me/outlook/tasks/${taskId}`)
+      .header('Cache-Control', 'no-store')
+      .version('beta')
+      .header('If-Match', eTag)
+      .middlewareOptions(prepScopes('Tasks.ReadWrite'))
+      .delete();
   }
 }
