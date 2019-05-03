@@ -11,18 +11,21 @@ export interface ITask {
   immediateParentId: string;
   assignments: PlannerAssignments;
   eTag: string;
+  _raw?: any;
 }
 
 export interface IDrawer {
   id: string;
   name: string;
   parentId: string;
+  _raw?: any;
 }
 
 export interface IDresser {
   id: string;
   secondaryId?: string;
   title: string;
+  _raw?: any;
 }
 
 export interface ITaskSource {
@@ -55,7 +58,7 @@ export class PlannerTaskSource extends TaskSourceBase implements ITaskSource {
   public async getSingleDresser(id: string): Promise<IDresser> {
     let plan = await this.graph.planner_getSinglePlan(id);
 
-    return { id: plan.id, title: plan.title };
+    return { id: plan.id, title: plan.title, _raw: plan };
   }
   public async getDrawersForDresser(id: string): Promise<IDrawer[]> {
     let buckets = await this.graph.planner_getBucketsForPlan(id);
@@ -65,7 +68,8 @@ export class PlannerTaskSource extends TaskSourceBase implements ITaskSource {
         ({
           id: bucket.id,
           parentId: bucket.planId,
-          name: bucket.name
+          name: bucket.name,
+          _raw: bucket
         } as IDrawer)
     );
   }
@@ -82,7 +86,8 @@ export class PlannerTaskSource extends TaskSourceBase implements ITaskSource {
           eTag: task['@odata.etag'],
           completed: task.percentComplete === 100,
           dueDate: task.dueDateTime,
-          assignments: task.assignments
+          assignments: task.assignments,
+          _raw: task
         } as ITask)
     );
   }
@@ -100,7 +105,7 @@ export class PlannerTaskSource extends TaskSourceBase implements ITaskSource {
       bucketId: newTask.immediateParentId,
       planId: newTask.topParentId,
       dueDateTime: newTask.dueDate,
-      assignments: newTask.assignments
+      assignments: newTask.assignments,
     });
   }
   public async removeTask(id: string, eTag: string): Promise<any> {
@@ -117,14 +122,15 @@ export class TodoTaskSource extends TaskSourceBase implements ITaskSource {
         ({
           id: group.id,
           secondaryId: group.groupKey,
-          title: group.name
+          title: group.name,
+          _raw: group,
         } as IDresser)
     );
   }
   public async getSingleDresser(id: string): Promise<IDresser> {
     let group: OutlookTaskGroup = await this.graph.todo_getSingleGroup(id);
 
-    return { id: group.id, secondaryId: group.groupKey, title: group.name };
+    return { id: group.id, secondaryId: group.groupKey, title: group.name, _raw: group};
   }
   public async getDrawersForDresser(id: string): Promise<IDrawer[]> {
     let folders: OutlookTaskFolder[] = await this.graph.todo_getFoldersForGroup(id);
@@ -134,7 +140,8 @@ export class TodoTaskSource extends TaskSourceBase implements ITaskSource {
         ({
           id: folder.id,
           parentId: id,
-          name: folder.name
+          name: folder.name,
+          _raw: folder
         } as IDrawer)
     );
   }
@@ -151,7 +158,8 @@ export class TodoTaskSource extends TaskSourceBase implements ITaskSource {
           eTag: task['@odata.etag'],
           completed: !!task.completedDateTime,
           dueDate: task.dueDateTime && task.dueDateTime.dateTime,
-          assignments: {}
+          assignments: {},
+          _raw: task
         } as ITask)
     );
   }

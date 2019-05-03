@@ -1,5 +1,6 @@
 import { LitElement, customElement, html, property } from 'lit-element';
 import { User, PlannerAssignments } from '@microsoft/microsoft-graph-types';
+import { OutlookTaskFolder } from '@microsoft/microsoft-graph-types-beta';
 import { Providers } from '../../Providers';
 import { ProviderState } from '../../providers/IProvider';
 import { getShortDateString } from '../../utils/utils';
@@ -10,7 +11,6 @@ import { ITaskSource, PlannerTaskSource, TodoTaskSource, IDresser, IDrawer, ITas
 import '../mgt-person/mgt-person';
 import '../sub-components/mgt-arrow-options/mgt-arrow-options';
 import '../sub-components/mgt-dot-options/mgt-dot-options';
-import { promised } from 'q';
 
 // Strings and Resources for different task contexts
 const TASK_RES = {
@@ -101,7 +101,20 @@ export class MgtTasks extends LitElement {
 
   public attributeChangedCallback(name: string, oldVal: string, newVal: string) {
     super.attributeChangedCallback(name, oldVal, newVal);
-    if (name === 'data-source') this.loadTasks();
+    if (name === 'data-source') {
+      this._currentTargetDresser = this.res.BASE_SELF_ASSIGNED;
+      this._currentTargetDrawer = this.res.BUCKETS_SELF_ASSIGNED;
+      this._newTaskSelfAssigned = false;
+      this._newTaskDrawerId = '';
+      this._newTaskDresserId = '';
+      this._newTaskDueDate = '';
+      this._newTaskName = '';
+      this._newTaskBeingAdded = false;
+      this._tasks = [];
+      this._drawers = [];
+      this._dressers = [];
+      this.loadTasks();
+    }
   }
 
   constructor() {
@@ -152,6 +165,9 @@ export class MgtTasks extends LitElement {
         (cur, ret) => [...cur, ...ret],
         []
       );
+
+      let defaultDrawer = drawers.find(d => (d._raw as OutlookTaskFolder).isDefaultFolder);
+      if (defaultDrawer) this._currentTargetDrawer = defaultDrawer.id;
 
       let tasks = (await Promise.all(
         drawers.map(drawer => ts.getAllTasksForDrawer(drawer.id, drawer.parentId))
@@ -336,24 +352,6 @@ export class MgtTasks extends LitElement {
         : html`
             <mgt-arrow-options .options="${dresserOpts}" .value="${currentDresser.title}"></mgt-arrow-options>
           `;
-      // : html`
-      //     <select
-      //       .value="${this._currentTargetDresser}"
-      //       @change=${(e: Event & { target: HTMLSelectElement }) => {
-      //         this._currentTargetDresser = e.target.value;
-      //         this._currentTargetDrawer = this.res.BUCKETS_SELF_ASSIGNED;
-      //       }}
-      //     >
-      //       <option value="${this.res.BASE_SELF_ASSIGNED}">${this.res.BASE_SELF_ASSIGNED}</option>
-      //       ${this._dressers.map(
-      //         dresser => html`
-      //           <option ?selected=${dresser.id === this._currentTargetDresser} value="${dresser.id}"
-      //             >${dresser.title}</option
-      //           >
-      //         `
-      //       )}
-      //     </select>
-      //   `;
 
       let divider = this.isDefault(this._currentTargetDresser)
         ? null
@@ -385,25 +383,6 @@ export class MgtTasks extends LitElement {
         : html`
             <mgt-arrow-options .options="${drawerOpts}" .value="${currentDrawer.name}"></mgt-arrow-options>
           `;
-      // : html`
-      //     <select
-      //       .value="${this._currentTargetDrawer}"
-      //       @change=${(e: Event & { target: HTMLSelectElement }) => {
-      //         this._currentTargetDrawer = e.target.value;
-      //       }}
-      //     >
-      //       <option value="${this.res.BUCKETS_SELF_ASSIGNED}">${this.res.BUCKETS_SELF_ASSIGNED}</option>
-      //       ${this._drawers
-      //         .filter(drawer => drawer.parentId === this._currentTargetDresser)
-      //         .map(
-      //           drawer => html`
-      //             <option selected="${drawer.id === this._currentTargetDrawer}" value="${drawer.id}"
-      //               >${drawer.name}</option
-      //             >
-      //           `
-      //         )}
-      //     </select>
-      //   `;
 
       return html`
         <span class="TitleCont">
@@ -412,7 +391,22 @@ export class MgtTasks extends LitElement {
         ${addButton}
       `;
     } else {
-      let drawer = this._drawers.find(d => d.id === this.targetId) || { name: 'Tasks' };
+      let drawer = this._drawers.find(d => d.id === this.targetId) || { name: this.res.BUCKETS_SELF_ASSIGNED };
+      let currentDrawer = this._drawers.find(d => d.id === this._currentTargetDrawer) || {
+        name: this.res.BUCKETS_SELF_ASSIGNED
+      };
+
+      let drawerOpts = {};
+
+      for (let drawer of this._drawers)
+        drawerOpts[drawer.name] = e => {
+          this._currentTargetDrawer = drawer.id;
+        };
+
+      drawerOpts[this.res.BUCKETS_SELF_ASSIGNED] = e => {
+        this._currentTargetDrawer = this.res.BUCKETS_SELF_ASSIGNED;
+      };
+
       let drawerSelect = this.targetId
         ? html`
             <span class="PlanTitle">
@@ -420,19 +414,7 @@ export class MgtTasks extends LitElement {
             </span>
           `
         : html`
-            <select
-              .value="${this._currentTargetDrawer}"
-              @change="${(e: Event & { target: HTMLSelectElement }) => {
-                this._currentTargetDrawer = e.target.value;
-              }}"
-            >
-              <option value="${this.res.BUCKETS_SELF_ASSIGNED}">${this.res.BUCKETS_SELF_ASSIGNED}</option>
-              ${this._drawers.map(
-                drawer => html`
-                  <option value="${drawer.id}">${drawer.name}</option>
-                `
-              )}
-            </select>
+            <mgt-arrow-options .value="${currentDrawer.name}" .options="${drawerOpts}"></mgt-arrow-options>
           `;
 
       return html`
@@ -463,7 +445,9 @@ export class MgtTasks extends LitElement {
       this._newTaskDresserId = dressers[0].id;
     }
     let taskDresser =
-      this.dataSource === 'todo' || !this.isDefault(this._currentTargetDresser)
+      this.dataSource === 'todo'
+        ? null
+        : !this.isDefault(this._currentTargetDresser)
         ? html`
             <span class="TaskDetail TaskAssignee">
               ${this.renderPlannerIcon()}
@@ -534,20 +518,23 @@ export class MgtTasks extends LitElement {
       </span>
     `;
 
-    let taskPeople = html`
-      <span class="TaskDetail TaskPeople">
-        <label>
-          <span>Assign to Me</span>
-          <input
-            type="checkbox"
-            .checked="${this._newTaskSelfAssigned}"
-            @change="${(e: Event & { target: HTMLInputElement }) => {
-              this._newTaskSelfAssigned = e.target.checked;
-            }}"
-          />
-        </label>
-      </span>
-    `;
+    let taskPeople =
+      this.dataSource === 'todo'
+        ? null
+        : html`
+            <span class="TaskDetail TaskPeople">
+              <label>
+                <span>Assign to Me</span>
+                <input
+                  type="checkbox"
+                  .checked="${this._newTaskSelfAssigned}"
+                  @change="${(e: Event & { target: HTMLInputElement }) => {
+                    this._newTaskSelfAssigned = e.target.checked;
+                  }}"
+                />
+              </label>
+            </span>
+          `;
 
     let taskAdd = this._newTaskBeingAdded
       ? html`

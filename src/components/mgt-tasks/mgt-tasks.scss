@@ -166,6 +166,12 @@
   margin: 14px 0 14px 4px;
 }
 
+.Task.NewTask .TaskDetails .TaskPeople label {
+  display: flex;
+  align-content: center;
+  align-items: center;
+}
+
 .Task.NewTask .TaskDetails select,
 .Task.NewTask .TaskDetails input {
   font-family: var(--default-font-family, 'Segoe UI');
