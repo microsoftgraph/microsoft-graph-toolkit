@@ -49,7 +49,7 @@ The `mgt-people` supports several [templates](../style.md) that allow you to rep
 
 ### `default` (or when no value is provided)
 
-The default template replaces the entire component with your own. The `people` are passed to the templates as data context
+The default template replaces the entire component with your own. The `people` array is passed to the template as data context
 
 ### `no-data`
 
