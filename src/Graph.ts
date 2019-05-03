@@ -114,7 +114,7 @@ export class Graph {
   public async planner_getAllMyPlans(): Promise<MicrosoftGraph.PlannerPlan[]> {
     let plans = await this.client
       .api('/me/planner/plans')
-      .header("Cache-Control", "no-store")
+      .header('Cache-Control', 'no-store')
       .middlewareOptions(prepScopes('Group.Read.All'))
       .get();
 
@@ -123,7 +123,7 @@ export class Graph {
   public async planner_getSinglePlan(planId: string): Promise<MicrosoftGraph.PlannerPlan> {
     let plan = await this.client
       .api(`/planner/plans/${planId}`)
-      .header("Cache-Control", "no-store")
+      .header('Cache-Control', 'no-store')
       .middlewareOptions(prepScopes('Group.Read.All'))
       .get();
 
@@ -132,7 +132,7 @@ export class Graph {
   public async planner_getBucketsForPlan(planId: string): Promise<MicrosoftGraph.PlannerBucket[]> {
     let buckets = await this.client
       .api(`/planner/plans/${planId}/buckets`)
-      .header("Cache-Control", "no-store")
+      .header('Cache-Control', 'no-store')
       .middlewareOptions(prepScopes('Group.Read.All'))
       .get();
 
@@ -141,7 +141,7 @@ export class Graph {
   public async planner_getTasksForBucket(bucketId: string): Promise<MicrosoftGraph.PlannerTask[]> {
     let tasks = await this.client
       .api(`/planner/buckets/${bucketId}/tasks`)
-      .header("Cache-Control", "no-store")
+      .header('Cache-Control', 'no-store')
       .middlewareOptions(prepScopes('Group.Read.All'))
       .get();
 
@@ -150,7 +150,7 @@ export class Graph {
   public async planner_setTaskDetails(taskId: string, details: MicrosoftGraph.PlannerTask, eTag: string): Promise<any> {
     return await this.client
       .api(`/planner/tasks/${taskId}`)
-      .header("Cache-Control", "no-store")
+      .header('Cache-Control', 'no-store')
       .middlewareOptions(prepScopes('Group.ReadWrite.All'))
       .header('If-Match', eTag)
       .patch(JSON.stringify(details));
@@ -176,14 +176,14 @@ export class Graph {
   public async planner_addTask(newTask: MicrosoftGraph.PlannerTask): Promise<any> {
     return this.client
       .api(`/planner/tasks`)
-      .header("Cache-Control", "no-store")
+      .header('Cache-Control', 'no-store')
       .middlewareOptions(prepScopes('Group.ReadWrite.All'))
       .post(newTask);
   }
   public async planner_removeTask(taskId: string, eTag: string): Promise<any> {
     return this.client
       .api(`/planner/tasks/${taskId}`)
-      .header("Cache-Control", "no-store")
+      .header('Cache-Control', 'no-store')
       .header('If-Match', eTag)
       .middlewareOptions(prepScopes('Group.ReadWrite.All'))
       .delete();
@@ -193,7 +193,7 @@ export class Graph {
   public async todo_getAllMyGroups(): Promise<MicrosoftGraphBeta.OutlookTaskGroup[]> {
     let groups = await this.client
       .api('/me/outlook/taskGroups')
-      .header("Cache-Control", "no-store")
+      .header('Cache-Control', 'no-store')
       .version('beta')
       .middlewareOptions(prepScopes('Tasks.ReadWrite'))
       .get();
@@ -203,7 +203,7 @@ export class Graph {
   public async todo_getSingleGroup(groupId: string): Promise<MicrosoftGraphBeta.OutlookTaskGroup> {
     let group = await this.client
       .api(`/me/outlook/taskGroups/${groupId}`)
-      .header("Cache-Control", "no-store")
+      .header('Cache-Control', 'no-store')
       .version('beta')
       .middlewareOptions(prepScopes('Tasks.ReadWrite'))
       .get();
@@ -213,7 +213,7 @@ export class Graph {
   public async todo_getFoldersForGroup(groupId: string): Promise<MicrosoftGraphBeta.OutlookTaskFolder[]> {
     let folders = await this.client
       .api(`/me/outlook/taskGroups/${groupId}/taskFolders`)
-      .header("Cache-Control", "no-store")
+      .header('Cache-Control', 'no-store')
       .version('beta')
       .middlewareOptions(prepScopes('Tasks.ReadWrite'))
       .get();
@@ -223,7 +223,7 @@ export class Graph {
   public async todo_getAllTasksForFolder(folderId: string): Promise<MicrosoftGraphBeta.OutlookTask[]> {
     let tasks = await this.client
       .api(`/me/outlook/taskFolders/${folderId}/tasks`)
-      .header("Cache-Control", "no-store")
+      .header('Cache-Control', 'no-store')
       .version('beta')
       .middlewareOptions(prepScopes('Tasks.ReadWrite'))
       .get();
@@ -233,7 +233,7 @@ export class Graph {
   public async todo_setTaskDetails(taskId: string, task: any, eTag: string): Promise<MicrosoftGraphBeta.OutlookTask> {
     return await this.client
       .api(`/me/outlook/tasks/${taskId}`)
-      .header("Cache-Control", "no-store")
+      .header('Cache-Control', 'no-store')
       .version('beta')
       .header('If-Match', eTag)
       .middlewareOptions(prepScopes('Tasks.ReadWrite'))
@@ -266,14 +266,14 @@ export class Graph {
     if (parentFolderId)
       return await this.client
         .api(`/me/outlook/taskFolders/${parentFolderId}/tasks`)
-        .header("Cache-Control", "no-store")
+        .header('Cache-Control', 'no-store')
         .version('beta')
         .middlewareOptions(prepScopes('Tasks.ReadWrite'))
         .post(newTask);
     else
       return await this.client
         .api(`/me/outlook/tasks`)
-        .header("Cache-Control", "no-store")
+        .header('Cache-Control', 'no-store')
         .version('beta')
         .middlewareOptions(prepScopes('Tasks.ReadWrite'))
         .post(newTask);
@@ -282,7 +282,7 @@ export class Graph {
   public async todo_removeTask(taskId: string, eTag: string): Promise<any> {
     return await this.client
       .api(`/me/outlook/tasks/${taskId}`)
-      .header("Cache-Control", "no-store")
+      .header('Cache-Control', 'no-store')
       .version('beta')
       .header('If-Match', eTag)
       .middlewareOptions(prepScopes('Tasks.ReadWrite'))
