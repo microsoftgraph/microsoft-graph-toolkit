@@ -4,7 +4,7 @@
 
 The `mgt-people` web component can be used to display a group of people or contacts by using their photos or initials. By default, it will display the most frequent contacts for the signed in user.
 
-It utilizes multiple [mgt-person](person.md) controls, but is able to be bound to a set of people descriptors. If there are more people to display than the `show-max` value, a number will be added to indicate the number of additional contacts.
+It utilizes multiple [mgt-person](./person.md) controls, but is able to be bound to a set of people descriptors. If there are more people to display than the `show-max` value, a number will be added to indicate the number of additional contacts.
 
 ## Example
 
