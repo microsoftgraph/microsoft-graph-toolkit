@@ -112,7 +112,7 @@ export class MgtTasks extends LitElement {
   private async loadTasks() {
     let ts = this.getTaskSource();
     if (!ts) return;
-    
+
     this._me = await ts.me();
 
     if (this.targetId) {
@@ -358,7 +358,7 @@ export class MgtTasks extends LitElement {
       let divider = this.isDefault(this._currentTargetDresser)
         ? null
         : html`
-            <span class="TaskIcon">\uE76C</span>
+            <span class="TaskIcon Divider">\uE76C</span>
           `;
 
       let currentDrawer = this._drawers.find(d => d.id === this._currentTargetDrawer) || {

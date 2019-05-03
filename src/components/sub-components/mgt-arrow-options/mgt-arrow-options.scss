@@ -1,11 +1,11 @@
 :host {
   position: relative;
-  font-family: "Segoe UI";
+  font-family: 'Segoe UI';
   margin: 0 0 12px 0;
 }
 
 .ArrowIcon {
-  font-family: "FabricMDL2Icons";
+  font-family: 'FabricMDL2Icons';
   margin: 0 0 0 20px;
   user-select: none;
   -moz-user-select: none;
@@ -18,6 +18,11 @@
 
 .Header {
   cursor: pointer;
+}
+
+.Header:hover {
+  color: var(--theme-primary-color);
+  background-color: var(--background-color--hover);
 }
 
 .Menu {
@@ -60,7 +65,7 @@
 }
 
 .MenuOptionCheck {
-  font-family: "FabricMDL2Icons";
+  font-family: 'FabricMDL2Icons';
   color: rgba(0, 0, 0, 0);
   margin-right: 10px;
 }

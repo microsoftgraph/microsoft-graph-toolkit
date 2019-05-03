@@ -1,14 +1,14 @@
-@import "../../styles/shared-styles.scss";
-@import "../../../node_modules/office-ui-fabric-core/dist/sass/References";
+@import '../../styles/shared-styles.scss';
+@import '../../../node_modules/office-ui-fabric-core/dist/sass/References';
 
 :host {
-  font-family: var(--default-font-family, "Segoe UI");
+  font-family: var(--default-font-family, 'Segoe UI');
   display: flex;
   flex-direction: column;
 }
 
 :host .TaskIcon {
-  font-family: "FabricMDL2Icons";
+  font-family: 'FabricMDL2Icons';
   text-align: center;
   justify-self: center;
   align-content: center;
@@ -20,19 +20,23 @@
 }
 
 .Header {
-  padding: var(--tasks-header-padding, 10px 70px 0 70px);
+  padding: var(--tasks-header-padding, 0px 10px 0 10px);
   margin: var(--tasks-header-margin, 0 0 10px 0);
 }
 
+.TaskIcon.Divider {
+  vertical-align: initial;
+}
+
 .Header .PlannerTitle {
-  padding: var(--tasks-title-padding, 0px 0px 12px 0px);
+  padding: var(--tasks-title-padding, 0px 0px 0px 0px);
   display: flex;
   align-items: center;
   align-content: center;
 }
 
 :host select {
-  font-family: var(--default-font-family, "Segoe UI");
+  font-family: var(--default-font-family, 'Segoe UI');
   border: none;
   -moz-appearance: none;
   -webkit-appearance: none;
@@ -43,11 +47,11 @@
   display: none;
 }
 
-:host .PlannerTitle select, 
+:host .PlannerTitle select,
 .Header .PlannerTitle .PlanTitle {
-  font-family: var(--default-font-family, "Segoe UI");
+  font-family: var(--default-font-family, 'Segoe UI');
   font-size: var(--tasks-plan-title-font-size, 1.1em);
-  padding: var(--tasks-plan-title-padding, 5px);  
+  padding: var(--tasks-plan-title-padding, 5px);
 }
 
 .Header .AddBar {
@@ -68,6 +72,7 @@
 
 .Header .TitleCont {
   flex: 1 1 auto;
+  height: var(--tasks-new-button-height, 34px);
 }
 
 .Header .NewTaskButton {
@@ -110,17 +115,17 @@
 
 .Task {
   display: block;
-  max-height: 94px;
-  margin: var(--task-margin, 0 50px 10px 50px);
+  margin: var(--task-margin, 0 10px 10px 10px);
+  padding: var(--task-padding, 0 0 8px 0);
   box-shadow: var(--task-box-shadow, 0px 2px 8px rgba(0, 0, 0, 0.092));
   background: var(--task-background, #ffffff);
-  border: var(--task-border, solid 2px rgba(0, 0, 0, 0));
+  // border: var(--task-border, solid 2px rgba(0, 0, 0, 0));
 }
 
 .Task.NewTask {
   display: flex;
   min-height: 90px;
-  margin: var(--task-new-margin, 0 50px 10px 50px);
+  margin: var(--task-new-margin, var(--task-margin, 0 10px 10px 10px));
 }
 
 .Task.NewTask .InnerTask {
@@ -133,7 +138,7 @@
 }
 .Task.NewTask .TaskTitle input {
   flex: 1 1 auto;
-  font-family: var(--default-font-family, "Segoe UI");
+  font-family: var(--default-font-family, 'Segoe UI');
   margin: var(--task-new-input-margin, 6px);
   padding: var(--task-new-input-padding, 7px);
   font-size: var(--task-new-input-font-size, 1.2em);
@@ -145,7 +150,7 @@
 
 .Task.NewTask hr {
   margin: var(--task-new-line-margin, 0 15px 0 15px);
-  border-top: var(--task-new-line-border, solid 2px #D8D8D8);
+  border-top: var(--task-new-line-border, solid 2px #d8d8d8);
 }
 
 .Task.NewTask .TaskDetails {
@@ -155,7 +160,7 @@
 
 .Task.NewTask .TaskDetails select,
 .Task.NewTask .TaskDetails input {
-  font-family: var(--default-font-family, "Segoe UI");
+  font-family: var(--default-font-family, 'Segoe UI');
   border: var(--task-new-select-border, none);
 }
 
@@ -163,7 +168,7 @@
   flex: 0 0 auto;
   display: flex;
   align-content: center;
-  align-items: center; 
+  align-items: center;
 }
 
 .Task.NewTask .TaskAddCont .TaskAdd,
@@ -180,24 +185,22 @@
 }
 
 .Task.NewTask .TaskAddCont .TaskAdd {
-  background: var(--task-new-add-button-background, #0078D4);
+  background: var(--task-new-add-button-background, #0078d4);
 }
 
 .Task.NewTask .TaskAddCont .TaskCancel {
-  font-family: "Segoe UI";
+  font-family: 'Segoe UI';
   color: var(--task-new-cancel-button-color, gray);
+  margin: 0px 8px 0px 0px;
 }
 
 .Task.NewTask .TaskAddCont.Disabled .TaskAdd {
-  background: var(--task-new-add-button-disabled-background, gray);
+  background: var(--task-new-add-button-disabled-background, #eaeaea);
   cursor: default;
 }
 
 .Task .TaskDetails {
   display: flex;
-  align-content: center;
-  align-items: center;
-  justify-content: flex-start;
 }
 
 .Task.Complete {
@@ -238,7 +241,7 @@
 }
 
 .Task .TaskCheckCont {
-  font-family: "FabricMDL2Icons";
+  font-family: 'FabricMDL2Icons';
   display: inline-block;
   width: 35px;
   height: 35px;
@@ -271,13 +274,13 @@
 
 .Task .TaskCheck {
   flex: 1 1 auto;
-  font-family: "FabricMDL2Icons";
+  font-family: 'FabricMDL2Icons';
   display: inline-block;
   width: 22px;
   height: 22px;
   text-align: center;
   border-radius: 50%;
-  border: solid 1px black;
+  border: solid 1px #666666;
   flex: 0 0 auto;
   color: white;
   display: flex;
@@ -301,10 +304,11 @@
   justify-self: center;
   align-self: center;
   align-content: center;
+  color: #333333;
 }
 
 .Task .TaskDetails {
-  margin: 4px 0 10px 50px;
+  margin: 4px 0 0 50px;
   color: #767676;
   font-size: 0.9em;
 }
