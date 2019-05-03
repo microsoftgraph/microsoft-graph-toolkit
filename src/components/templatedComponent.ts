@@ -4,17 +4,17 @@ import { MgtBaseComponent } from './baseComponent';
 
 export abstract class MgtTemplatedComponent extends MgtBaseComponent {
   private _renderedSlots = false;
+  private _slotNamesAddedDuringRender = [];
   protected templates = {};
 
-  constructor() {
-    super();
+  protected update(changedProperties) {
     this.templates = this.getTemplates();
+    this._slotNamesAddedDuringRender = [];
+    super.update(changedProperties);
   }
 
-  protected update(changedProperties) {
-    // remove slots we added so they are not duplicated
-    this.removeSlottedElements();
-    super.update(changedProperties);
+  protected updated() {
+    this.removeUnusedSlottedElements();
   }
 
   private getTemplates() {
@@ -35,11 +35,11 @@ export abstract class MgtTemplatedComponent extends MgtBaseComponent {
     return templates;
   }
 
-  private removeSlottedElements() {
+  private removeUnusedSlottedElements() {
     if (this._renderedSlots) {
       for (let i = 0; i < this.children.length; i++) {
         let child = <HTMLElement>this.children[i];
-        if (child.dataset && child.dataset.generated) {
+        if (child.dataset && child.dataset.generated && !this._slotNamesAddedDuringRender.includes(child.slot)) {
           this.removeChild(child);
           i--;
         }
@@ -60,8 +60,19 @@ export abstract class MgtTemplatedComponent extends MgtBaseComponent {
       return null;
     }
 
-    let templateContent = TemplateHelper.renderTemplate(this.templates[templateType], context);
     slotName = slotName || templateType;
+    this._slotNamesAddedDuringRender.push(slotName);
+    this._renderedSlots = true;
+
+    for (let i = 0; i < this.children.length; i++) {
+      if (this.children[i].slot == slotName) {
+        return html`
+          <slot name=${slotName}></slot>
+        `;
+      }
+    }
+
+    let templateContent = TemplateHelper.renderTemplate(this.templates[templateType], context);
 
     let div = document.createElement('div');
     div.slot = slotName;
@@ -69,7 +80,6 @@ export abstract class MgtTemplatedComponent extends MgtBaseComponent {
     div.appendChild(templateContent);
 
     this.appendChild(div);
-    this._renderedSlots = true;
 
     this.fireCustomEvent('templateRendered', { templateType: templateType, context: context, element: div });
 
