@@ -64,16 +64,12 @@ Ex:
 ```html
 <mgt-people>
   <template data-type="person">
-    <mgt-people>
-      <template>
-        <ul><li data-for="person in people">
-          <mgt-person person-query="{{ person.userPrincipalName }}"></mgt-person>
-          <h3>{{ person.displayName }}</h3>
-          <p>{{ person.jobTitle }}</p>
-          <p>{{ person.department }}</p>
-        </li></ul>
-      </template>
-    </mgt-people>
+    <ul><li data-for="person in people">
+      <mgt-person person-query="{{ person.userPrincipalName }}"></mgt-person>
+      <h3>{{ person.displayName }}</h3>
+      <p>{{ person.jobTitle }}</p>
+      <p>{{ person.department }}</p>
+    </li></ul>
   </template>
 </mgt-people>
 ```

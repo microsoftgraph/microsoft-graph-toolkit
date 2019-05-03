@@ -11,6 +11,8 @@ import { MgtTemplatedComponent } from '../templatedComponent';
 
 @customElement('mgt-people')
 export class MgtPeople extends MgtTemplatedComponent {
+  private _peopleData: Array<MicrosoftGraph.Person> = null;
+
   @property({
     attribute: 'people',
     type: Array
@@ -42,8 +44,17 @@ export class MgtPeople extends MgtTemplatedComponent {
       if (provider && provider.state === ProviderState.SignedIn) {
         let client = Providers.globalProvider.graph;
 
-        this.people = (await client.contacts()).slice(0, this.showMax);
+        this._peopleData = await client.getPeople();
+        this.people = this._peopleData.slice(0, this.showMax);
       }
+    }
+  }
+
+  attributeChangedCallback(name, oldValue, newValue) {
+    super.attributeChangedCallback(name, oldValue, newValue);
+
+    if (this._peopleData && name === 'show-max') {
+      this.people = this._peopleData.slice(0, this.showMax);
     }
   }
 

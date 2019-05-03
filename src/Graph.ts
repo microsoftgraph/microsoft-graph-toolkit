@@ -109,7 +109,7 @@ export class Graph {
     return calendarView ? calendarView.value : null;
   }
 
-  async contacts(): Promise<Array<MicrosoftGraph.Person>> {
+  async getPeople(): Promise<Array<MicrosoftGraph.Person>> {
     let scopes = 'people.read';
 
     let uri = `/me/people`;
