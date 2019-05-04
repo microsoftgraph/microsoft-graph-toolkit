@@ -1,7 +1,7 @@
 import { MsalProvider, MsalConfig } from '../../src/providers/MsalProvider';
 import { LoginType } from '../../src/providers/IProvider';
 import { AuthenticationProviderOptions } from '@microsoft/microsoft-graph-client/lib/es/IAuthenticationProviderOptions';
-import { UserAgentApplication } from 'msal/lib-commonjs';
+import { UserAgentApplication } from 'msal';
 
 jest.mock('@microsoft/microsoft-graph-client/lib/es/Client');
 jest.mock('msal/lib-commonjs');
