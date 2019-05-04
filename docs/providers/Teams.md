@@ -1,4 +1,11 @@
-# Teams provider
+---
+title: "Microsoft Teams Provider"
+description: "Use the Microsoft Teams provider to enable authentication and graph access for the Microsoft Graph Toolkit components"
+localization_priority: Normal
+author: nmetulev
+---
+
+# Microsoft Teams provider
 
 Use the Teams provider inside your Microsoft Teams App, inside a Tab, to power it with Microsoft Graph access.
 

@@ -1,4 +1,11 @@
-# People Control
+---
+title: "People Component"
+description: "The mgt-people web component can be used to display a group of people or contacts by using their photos or initials."
+localization_priority: Normal
+author: nmetulev
+---
+
+# People Component
 
 ## Description
 

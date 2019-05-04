@@ -1,3 +1,10 @@
+---
+title: "SharePoint Provider"
+description: "Use the SharePoint provider to enable authentication and graph access for the Microsoft Graph Toolkit components"
+localization_priority: Normal
+author: nmetulev
+---
+
 # SharePoint provider
 
 Use the SharePoint provider inside your SharePoint web parts to power the components with Microsoft Graph access.

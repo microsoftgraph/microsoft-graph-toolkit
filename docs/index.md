@@ -1,6 +1,17 @@
-# The Microsoft Graph Toolkit
+---
+title: "The Microsoft Graph Toolkit"
+description: "The Microsoft Graph Toolkit is a collection of framework agnostic web components and helpers for accessing and working with the Microsoft Graph."
+localization_priority: Normal
+author: nmetulev
+---
+
+# The Microsoft Graph Toolkit (Preview)
 
 The Microsoft Graph Toolkit is a collection of framework agnostic web components and helpers for accessing and working with the Microsoft Graph. ALl components know how to access the Microsoft Graph out of the box.
+
+## This library is in Preview
+
+This library is in preview and is in early development. Based on feedback from the community, all components and APIs are expected to change and improve.
 
 ## Getting Started
 
@@ -59,8 +70,7 @@ or, add it in your code:
 
 ```html
 <script type="module">
-  import { MsalProvider } from '@microsoft/mgt/dist/es6/providers/MsalProvider.js';
-  import { Providers } from '@microsoft/mgt/dist/es6/Providers.js';
+  import { Providers, MsalProvider } from '@microsoft/mgt';
 
   Providers.globalProvider = new MsalProvider({ clientId: '[CLIENT-ID]' });
 </script>

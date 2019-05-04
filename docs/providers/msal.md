@@ -1,3 +1,10 @@
+---
+title: "MSAL Provider"
+description: "Use msal.js to enable authentication and graph access for the Microsoft Graph Toolkit components"
+localization_priority: Normal
+author: nmetulev
+---
+
 # MSAL provider
 
 The MSAL Provider uses [MSAL.js](https://github.com/AzureAD/microsoft-authentication-library-for-js) to sign in users and acquire tokens to use with the Microsoft Graph.

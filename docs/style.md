@@ -1,3 +1,10 @@
+---
+title: "Styling the Microsoft Graph Toolkit"
+description: "Use CSS Custom Properties or Custom Templates to modify the component styles"
+localization_priority: Normal
+author: nmetulev
+---
+
 # Style and Templating
 
 The look and feel of components can be customized in two ways.
@@ -24,35 +31,29 @@ mgt-person {
 All web components support templates based on the `<template>` element. For example, to override the template of a component, simply add a `<template>` element inside of a component.
 
 ```html
-<mgt-person person-query="Nikola">
-  <template>
-    <div data-if="person.image">
-      <img src="{{person.image}}" />
-    </div>
-    <div data-else>
-      {{person.displayName}}
-    </div>
-  </template>
-</mgt-person>
-```
-
-```html
 <mgt-agenda>
-    <template data-type="event">
-        <div>{{event.subject}}</div>
-        <div data-for="event in events">
-            <div data-for='attendee in event.attendees'>
-                <mgt-person person-query="{{attendee.emailAddress.name}}">
-            </div>
-        </div>
-    </template>
+  <template data-type="event">
+      <div>{{event.subject}}</div>
+      <div data-for='attendee in event.attendees'>
+          <mgt-person person-query="{{attendee.emailAddress.name}}">
+            <template>
+              <div data-if="person.image">
+                <img src="{{person.image}}" />
+              </div>
+              <div data-else>
+                {{person.displayName}}
+              </div>
+            </template>
+          </mgt-person>
+      </div>
+  </template>
 </mgt-agenda>
 ```
 
 Here you'll notice several template features we support:
 
 - Use the double curly brackets (`{{expression}}`) to expand an expression. In the example above, the `<mgt-person>` passes a `person` object that you can use in the template.
-- Use the `data-if` and `data-else` attributes for conditional rendering
+- Use the `data-if` and `data-else` attributes for conditional rendering.
 - Use the `data-for` to repeat an element
 - Use the `data-type` to specify what part of the component to template. Not specifying the type will template the entire component
 

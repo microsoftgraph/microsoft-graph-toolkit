@@ -1,8 +1,15 @@
-# Agenda Control
+---
+title: "Agenda Component"
+description: "The mgt-agenda web component is used to represent events in a user or group calendar."
+localization_priority: Normal
+author: nmetulev
+---
+
+# Agenda Component
 
 ## Description
 
-The `mgt-agenda` web component can be used to represent events in a user or group calendar. By default, the calendar displays the current logged in user events for the current day. The component can also use any endpoint that returns events from the Microsoft Graph. 
+The `mgt-agenda` web component is used to represent events in a user or group calendar. By default, the calendar displays the current logged in user events for the current day. The component can also use any endpoint that returns events from the Microsoft Graph. 
 
 ## Example
 

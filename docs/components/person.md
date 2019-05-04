@@ -1,4 +1,11 @@
-# Person Control
+---
+title: "Person Component"
+description: "The mgt-person web component is used to display a user or contact using their photos or initials."
+localization_priority: Normal
+author: nmetulev
+---
+
+# Person Component
 
 ## Description
 The person control is used to display a person or contact by using their photo, name, and/or email address. 
@@ -60,7 +67,7 @@ The following attributes are available to customize the behavior
 | `showEmail` | optional | set flag to display person email - default is `false` |
 
 
-| [css custom properties](../styling-controls.md#css-custom-properties) |
+| [css custom properties](../style.md) |
 | - |
 | `--login-control-background` | 
 | TODO

@@ -1,7 +1,14 @@
-# Login Control
+---
+title: "Login Component"
+description: "mgt-login displays current signed in user. "
+localization_priority: Normal
+author: nmetulev
+---
+
+# Login Component
 
 ## Description
-A Login Control is a button and flyout control to facilitate Microsoft Identity login. It provides two states:
+A Login Component is a button and flyout control to facilitate Microsoft Identity login. It provides two states:
 * When user is not logged in, the control is a simple button to initiate the login process
 * When user is logged in, the control displays the current logged in user name, profile image, and email. When clicked, a flyout is opened with a command to logout.
 
@@ -33,7 +40,7 @@ The following attributes are available to customize the behavior
 
 [TODO - add all custom properties]
 
-| [css custom properties](../styling-controls.md#css-custom-properties) |
+| [css custom properties](../style.md) |
 | - |
 | `--login-control-background` |
 
