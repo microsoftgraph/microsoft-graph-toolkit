@@ -6,12 +6,9 @@ import { styles } from './mgt-person-css';
 import '../../styles/fabric-icon-font';
 import { ProviderState } from '../../providers/IProvider';
 import { MgtTemplatedComponent } from '../templatedComponent';
-import { isUnaryExpression } from '@babel/types';
 
 @customElement('mgt-person')
 export class MgtPerson extends MgtTemplatedComponent {
-  private _firstUpdated = false;
-
   @property({
     attribute: 'person-query'
   })
@@ -53,12 +50,7 @@ export class MgtPerson extends MgtTemplatedComponent {
     return styles;
   }
 
-  constructor() {
-    super();
-  }
-
   firstUpdated() {
-    this._firstUpdated = true;
     Providers.onProviderUpdated(() => this.loadData());
     this.loadData();
   }
