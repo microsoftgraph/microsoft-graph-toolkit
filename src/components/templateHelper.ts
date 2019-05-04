@@ -74,7 +74,7 @@ export class TemplateHelper {
 
         if (childElement.dataset.if) {
           let expression = childElement.dataset.if;
-          if (!this.getValueFromObject(context, expression)) {
+          if (!this.evalInContext(expression, context)) {
             removeChildren.push(childElement);
             childWillBeRemoved = true;
           } else {
@@ -146,6 +146,10 @@ export class TemplateHelper {
     }
 
     return node;
+  }
+
+  static evalInContext(expression, context) {
+    return new Function('with(this) { return !!(' + expression + ')}').call(context);
   }
 
   /**
