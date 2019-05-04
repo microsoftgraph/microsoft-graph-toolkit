@@ -561,7 +561,7 @@ export class MgtTasks extends LitElement {
           </span>
           <hr />
           <span class="TaskDetails">
-            ${taskDresser} ${taskDrawer} ${taskPeople} ${taskDue} 
+            ${taskDresser} ${taskDrawer} ${taskPeople} ${taskDue}
           </span>
         </div>
         ${taskAdd}

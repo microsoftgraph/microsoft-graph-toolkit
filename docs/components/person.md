@@ -29,13 +29,13 @@ This control uses the following Microsoft Graph APIs and permissions:
 
 ## Setting the person details
 
-There are three properties that a developer can use to set the person details:
+There are three properties that a developer can use to set the person details, use only one of them per instance:
 
 * Set the `user-id` attribute or `userId` property to fetch the user from the Microsoft Graph by using their id.  
 
 * Set the `person-query` attribute or `personQuery` property to search the Microsoft Graph for a given person. It will chose the first person available and fetch the person details. An email works best to ensure the right person is queried, but a name works as well.
 
-* Set the `person-details` attribute or `personDetails` property to manually set the person details. 
+* Set the `person-details` attribute or `personDetails` property to manually set the person details.
 
     Ex: 
 
@@ -47,6 +47,8 @@ There are three properties that a developer can use to set the person details:
         image: 'url'
     }
     ```
+
+  If no image is provided, one will be fetched (if available).
 
 ## Changing how the control looks
 

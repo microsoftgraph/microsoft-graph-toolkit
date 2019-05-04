@@ -80,15 +80,8 @@
   margin: 0px 0px 0px 4px;
 }
 
-.event-attendee-list {
-  display: flex;
-  list-style-type: none;
-  padding: 0;
-  margin: 8px 0 0 0;
-}
-
-.event-attendee {
-  margin: 0px 4px 0px 0px;
+.event-attendees {
+  --list-margin: 8px 0 0 0;
   --avatar-size-s: 20px;
 }
 

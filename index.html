@@ -14,6 +14,7 @@
 
     <script type="module" src="./dist/es6/components/mgt-login/mgt-login.js"></script>
     <script type="module" src="./dist/es6/components/mgt-agenda/mgt-agenda.js"></script>
+    <script type="module" src="./dist/es6/components/mgt-people/mgt-people.js"></script>
     <script type="module" src="./dist/es6/mock/mgt-mock-provider.js"></script>
     <script type="module" src="./dist/es6/components/providers/mgt-msal-provider.js"></script>
     <script type="module" src="./dist/es6/components/mgt-tasks/mgt-tasks.js"></script>
@@ -29,6 +30,27 @@
 
     <mgt-login></mgt-login>
     <mgt-tasks></mgt-tasks>
+
+    <mgt-people>
+      <!-- <template>
+        <style>
+          .people-list {
+            list-style-type: none;
+          }
+
+          .people-person {
+            margin: 0px 0px 8px 0px;
+          }
+        </style>
+        <ul class="people-list">
+          <li data-for="person in people">
+            <div class="people-person">
+              <mgt-person person-query="{{ person.displayName }}" show-name></mgt-person>
+            </div>
+          </li>
+        </ul>
+      </template> -->
+    </mgt-people>
 
     <!-- <script type="module">
       let login = document.getElementsByTagName('mgt-login')[0];

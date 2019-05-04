@@ -1,10 +1,11 @@
 @import '../../../node_modules/office-ui-fabric-core/dist/sass/References';
-@import "../../styles/shared-styles.scss";
-  
+@import '../../styles/shared-styles.scss';
+
 $avatar-size-s: var(--avatar-size-s, 24px);
 $avatar-size: var(--avatar-size, 48px);
 $avatar-font-size-s: var(--avatar-font-size--s, 16px);
 $avatar-font-size: var(--avatar-font-size, 32px);
+$avatar-border: var(--avatar-border, 0);
 $initials-color: var(--initials-color, white);
 $initials-background-color: var(--initials-background-color, #{$ms-color-magenta});
 $font-size: var(--font-size, #{$ms-font-size-m});
@@ -19,7 +20,7 @@ svg {
 }
 
 img {
-  border: 0;
+  border: var(--avatar-border);
   border-radius: 50%;
 }
 
@@ -107,5 +108,6 @@ img {
   white-space: nowrap;
   grid-column: 2;
   -ms-grid-column: 2;
-  -ms-grid-row: 2
+  grid-row: 2;
+  -ms-grid-row: 2;
 }
