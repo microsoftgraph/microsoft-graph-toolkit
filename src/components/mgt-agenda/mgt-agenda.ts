@@ -9,6 +9,7 @@ import '../mgt-person/mgt-person';
 import '../../styles/fabric-icon-font';
 import { MgtTemplatedComponent } from '../templatedComponent';
 import { prepScopes } from '../../Graph';
+import { MgtPersonDetails } from '../mgt-person/mgt-person';
 
 @customElement('mgt-agenda')
 export class MgtAgenda extends MgtTemplatedComponent {
@@ -280,23 +281,18 @@ export class MgtAgenda extends MgtTemplatedComponent {
       return null;
     }
     return html`
-      <div class="event-attendees">
-        <ul class="event-attendee-list">
-          ${event.attendees.slice(0, 3).map(
-            at =>
-              html`
-                <li class="event-attendee">
-                  <mgt-person person-query=${at.emailAddress.address}></mgt-person>
-                </li>
-              `
-          )}
-          ${event.attendees.length > 3
-            ? html`
-                <li>+${event.attendees.length - 3}</li>
-              `
-            : null}
-        </ul>
-      </div>
+      <mgt-people
+        class="event-attendees"
+        people=${JSON.stringify(
+          event.attendees.map(
+            attendee =>
+              <MgtPersonDetails>{
+                displayName: attendee.emailAddress.name,
+                email: attendee.emailAddress.address
+              }
+          )
+        )}
+      ></mgt-people>
     `;
   }
 

@@ -50,148 +50,114 @@ export class MgtPerson extends MgtTemplatedComponent {
     return styles;
   }
 
-  constructor() {
-    super();
+  firstUpdated() {
     Providers.onProviderUpdated(() => this.loadData());
     this.loadData();
   }
 
   private async loadData() {
-    if (this.personDetails) {
+    let provider = Providers.globalProvider;
+
+    if (!provider || provider.state !== ProviderState.SignedIn) {
       return;
-    } else {
-      let p = Providers.globalProvider;
-      if (!p || p.state !== ProviderState.SignedIn) {
-        this.personDetails = null;
-        return;
-      }
+    }
 
-      if (this.userId) {
-        let person: MgtPersonDetails = {};
+    // If we only have a user-id then use that to get data.
+    if (this.userId) {
+      let person: MgtPersonDetails = {};
 
-        p.graph.getUser(this.userId).then(user => {
+      await Promise.all([
+        provider.graph.getUser(this.userId).then(user => {
           if (user) {
             person.displayName = user.displayName;
             person.email = user.mail;
             this.requestUpdate();
           }
-        });
-        p.graph.getUserPhoto(this.userId).then(photo => {
+        }),
+        provider.graph.getUserPhoto(this.userId).then(photo => {
           if (photo) {
             person.image = photo;
             this.requestUpdate();
           }
-        });
+        })
+      ]);
 
-        this.personDetails = person;
-      } else if (this.personQuery) {
-        if (this.personQuery == 'me') {
-          let person: MgtPersonDetails = {};
+      this.personDetails = person;
+    } else if (!this.personQuery && this.personDetails) {
+      // Check if we have details needed.
+      if (!this.personDetails.image) {
+        await this.loadImage(this.personDetails);
+      }
+    } else if (!this.personDetails && this.personQuery) {
+      if (this.personQuery == 'me') {
+        let person: MgtPersonDetails = {};
 
-          p.graph.me().then(user => {
+        await Promise.all([
+          provider.graph.me().then(user => {
             if (user) {
               person.displayName = user.displayName;
-              person.email = user.mail;
-              this.requestUpdate();
+              person.email = user.mail || user.userPrincipalName;
             }
           }),
-            p.graph.myPhoto().then(photo => {
-              if (photo) {
-                person.image = photo;
-                this.requestUpdate();
-              }
-            });
-
-          this.personDetails = person;
-        } else {
-          p.graph.findPerson(this.personQuery).then(people => {
-            if (people && people.length > 0) {
-              let person = people[0] as MicrosoftGraph.Person;
-              this.personDetails = person;
-
-              if (person.scoredEmailAddresses && person.scoredEmailAddresses.length) {
-                this.personDetails.email = person.scoredEmailAddresses[0].address;
-              } else if ((<any>person).emailAddresses && (<any>person).emailAddresses.length) {
-                // beta endpoind uses emailAddresses instead of scoredEmailAddresses
-                this.personDetails.email = (<any>person).emailAddresses[0].address;
-              }
-
-              if (person.userPrincipalName) {
-                let userPrincipalName = person.userPrincipalName;
-                p.graph.getUserPhoto(userPrincipalName).then(photo => {
-                  this.personDetails.image = photo;
-                  this.requestUpdate();
-                });
-              }
+          provider.graph.myPhoto().then(photo => {
+            if (photo) {
+              person.image = photo;
             }
-          });
-        }
-      }
-    }
+          })
+        ]);
 
-    if (!this.personDetails && this.personQuery) {
-      let provider = Providers.globalProvider;
-
-      if (provider && provider.state === ProviderState.SignedIn) {
-        if (this.personQuery == 'me') {
-          let person: MgtPersonDetails = {};
-
-          await Promise.all([
-            provider.graph.me().then(user => {
-              if (user) {
-                person.displayName = user.displayName;
-                person.email = user.mail || user.userPrincipalName;
-              }
-            }),
-            provider.graph.myPhoto().then(photo => {
-              if (photo) {
-                person.image = photo;
-              }
-            })
-          ]);
-
-          this.personDetails = person;
-        } else {
-          provider.graph.findPerson(this.personQuery).then(people => {
-            if (people && people.length > 0) {
-              let person = people[0] as MicrosoftGraph.Person;
-              this.personDetails = person;
-
-              if (person.scoredEmailAddresses && person.scoredEmailAddresses.length) {
-                this.personDetails.email = person.scoredEmailAddresses[0].address;
-              } else if ((<any>person).emailAddresses && (<any>person).emailAddresses.length) {
-                // beta endpoind uses emailAddresses instead of scoredEmailAddresses
-                this.personDetails.email = (<any>person).emailAddresses[0].address;
-              }
-
-              // https://developer.microsoft.com/en-us/office/blogs/people-api-available-in-microsoft-graph-v1/
-              if (person.personType.class == 'Person') {
-                if (person.userPrincipalName) {
-                  let userPrincipalName = person.userPrincipalName;
-                  provider.graph.getUserPhoto(userPrincipalName).then(photo => {
-                    this.personDetails.image = photo;
-                    this.requestUpdate();
-                  });
-                } else if (this.personDetails.email) {
-                  // try to find a contact
-                  provider.graph.findContactByEmail(this.personDetails.email).then(contacts => {
-                    if (contacts && contacts.length) {
-                      const contactId = contacts[0].id;
-                      provider.graph.getContactPhoto(contactId).then(photo => {
-                        this.personDetails.image = photo;
-                        this.requestUpdate();
-                      });
-                    }
-                  });
-                }
-              } else {
-              }
-            }
-          });
-        }
+        this.personDetails = person;
       } else {
-        this.personDetails = null;
+        provider.graph.findPerson(this.personQuery).then(people => {
+          if (people && people.length > 0) {
+            let person = people[0] as MicrosoftGraph.Person;
+            this.personDetails = person;
+
+            if (person.scoredEmailAddresses && person.scoredEmailAddresses.length) {
+              this.personDetails.email = person.scoredEmailAddresses[0].address;
+            } else if ((<any>person).emailAddresses && (<any>person).emailAddresses.length) {
+              // beta endpoint uses emailAddresses instead of scoredEmailAddresses
+              this.personDetails.email = (<any>person).emailAddresses[0].address;
+            }
+
+            this.loadImage(person);
+          }
+        });
       }
+    } else {
+      this.personDetails = null; // Should we throw here or re-load the query as now we do nothing if both specified?
+    }
+  }
+
+  private async loadImage(person: any) {
+    let provider = Providers.globalProvider;
+
+    if (person.userPrincipalName) {
+      let userPrincipalName = person.userPrincipalName;
+      provider.graph.getUserPhoto(userPrincipalName).then(photo => {
+        this.personDetails.image = photo;
+        this.requestUpdate();
+      });
+    } else if (this.personDetails.email) {
+      // try to find a user by e-mail
+      provider.graph.findUserByEmail(this.personDetails.email).then(users => {
+        if (users && users.length) {
+          const contactId = users[0].id;
+          if ((<any>users[0]).personType && (<any>users[0]).personType.subclass == 'OrganizationUser') {
+            provider.graph
+              .getUserPhoto((<MicrosoftGraph.Person>users[0]).scoredEmailAddresses[0].address)
+              .then(photo => {
+                this.personDetails.image = photo;
+                this.requestUpdate();
+              });
+          } else {
+            provider.graph.getContactPhoto(contactId).then(photo => {
+              this.personDetails.image = photo;
+              this.requestUpdate();
+            });
+          }
+        }
+      });
     }
   }
 
@@ -224,12 +190,16 @@ export class MgtPerson extends MgtTemplatedComponent {
         return html`
           <img
             class="user-avatar ${this.getImageRowSpanClass()} ${this.getImageSizeClass()}"
+            title=${this.personDetails.displayName}
             src=${this.personDetails.image as string}
           />
         `;
       } else {
         return html`
-          <div class="user-avatar initials ${this.getImageRowSpanClass()} ${this.getImageSizeClass()}">
+          <div
+            class="user-avatar initials ${this.getImageRowSpanClass()} ${this.getImageSizeClass()}"
+            title=${this.personDetails.displayName}
+          >
             <span class="initials-text">
               ${this.getInitials()}
             </span>
@@ -284,7 +254,10 @@ export class MgtPerson extends MgtTemplatedComponent {
     if (!initials && this.personDetails.displayName) {
       const name = this.personDetails.displayName.split(' ');
       for (let i = 0; i < 2 && i < name.length; i++) {
-        initials += name[i][0].toUpperCase();
+        if (name[i][0].match(/[a-z]/i)) {
+          // check if letter
+          initials += name[i][0].toUpperCase();
+        }
       }
     }
 
