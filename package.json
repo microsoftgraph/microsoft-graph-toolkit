@@ -51,7 +51,7 @@
     "@microsoft/microsoft-graph-types-beta": "microsoftgraph/msgraph-typescript-typings#beta",
     "@microsoft/teams-js": "^1.4.1",
     "lit-element": "^2.1.0",
-    "msal": "^1.0.0-preview.3",
+    "msal": "^1.0.0",
     "office-ui-fabric-core": "10.0.0"
   },
   "devDependencies": {

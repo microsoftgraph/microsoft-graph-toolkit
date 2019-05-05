@@ -63,7 +63,7 @@ export class MsalProvider extends IProvider {
       this.clientId = config.clientId;
 
       this._userAgentApplication = new UserAgentApplication(msalConfig);
-      this._userAgentApplication.handleRedirectCallbacks(tokenReceivedCallbackFunction, errorReceivedCallbackFunction);
+      this._userAgentApplication.handleRedirectCallback(tokenReceivedCallbackFunction, errorReceivedCallbackFunction);
     } else {
       throw 'clientId must be provided';
     }
