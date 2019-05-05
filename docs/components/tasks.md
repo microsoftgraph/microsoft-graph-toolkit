@@ -9,9 +9,11 @@ author: nmetulev
 
 ## Description
 
-The Tasks Component enables the user to view, add, remove, complete, or edit tasks. It works with any tasks in Microsoft Planner or Microsoft To-Do.
+The Tasks Component enables the user to view, add, remove, complete, or edit tasks. It works with tasks in Microsoft Planner or Microsoft To-Do.
 
 ## Example
+
+[jsfiddle example](https://jsfiddle.net/metulev/qhg68m31/)
 
 ````html
     <mgt-tasks></mgt-tasks>
@@ -19,14 +21,14 @@ The Tasks Component enables the user to view, add, remove, complete, or edit tas
 
 ## Properties
 
-| Attribute | Description |
-| -- | -- |
-| `data-source="todo|planner"` | Sets the Data source for tasks, either Microsoft To-Do, or Microsoft Planner |
-| `read-only` | Sets the task interface to be read only (no adding or removing tasks) |
-| `initial-id="planner_id/folder_id"` | Sets the initially displayed planner or folder to the provided ID |
-| `initial-bucket-id="bucket_id"` | Sets the initially displayed bucket (Planner Data-Source Only) to the provided ID |
-| `target-id="planner_id/folder_id"` | Locks the tasks interface to the provided planner or folder ID |
-| `target-bucket-id="bucket_id"` | Locks the tasks interface to the provided bucket id (Planner Data-Source Only) |
+| Property | Attribute | Description |
+| -- | -- | -- |
+| `dataSource` | `data-source="todo|planner"` | Sets the Data source for tasks, either Microsoft To-Do, or Microsoft Planner. Default is `planner` |
+| `readOnly` | `read-only` | Sets the task interface to be read only (no adding or removing tasks). Default is `false` |
+| `initialId` | `initial-id="planner_id/folder_id"` | Sets the initially displayed planner or folder to the provided ID |
+| `initialBucketId` | `initial-bucket-id="bucket_id"` | Sets the initially displayed bucket (Planner Data-Source Only) to the provided ID |
+| `targetId` | `target-id="planner_id/folder_id"` | Locks the tasks interface to the provided planner or folder ID |
+| `targetBucketId` | `target-bucket-id="bucket_id"` | Locks the tasks interface to the provided bucket id (Planner Data-Source Only) |
 
 ex: 
 ````html
@@ -88,9 +90,20 @@ mgt-tasks {
 
 ## Graph Scopes
 
-For the O365 Planner Data-Source, fetching and reading tasks requires the `'Groups.Read.All'` permission, and for adding / updating / removing tasks, the `'Groups.ReadWrite.All'` permission is required.
+This control uses the following Microsoft Graph APIs and permissions:
 
-For the Microsoft Todo Data-Source, the `'Tasks.Read'` permission is required for fetching and reading tasks, while for adding / updating / removing tasks, the `'Tasks.ReadWrite'` permission is required.
+| resource | permission/scope |
+| - | - |
+| /me/planner/plans | `Group.Read.All` |
+| /planner/plans/${id} | `Group.Read.All`, `Group.ReadWrite.All` |
+| /planner/tasks | `Group.ReadWrite.All` |
+| /me/outlook/taskGroups | `Tasks.Read` |
+| /me/outlook/taskFolders | `Tasks.Read`, `Tasks.ReadWrite` |
+| /me/outlook/tasks | `Tasks.ReadWrite` |
+
+For Microsoft Planner data-source, fetching and reading tasks requires the `'Groups.Read.All'` permission, and for adding / updating / removing tasks, the `'Groups.ReadWrite.All'` permission is required.
+
+For the Microsoft Todo data-source, the `'Tasks.Read'` permission is required for fetching and reading tasks, while for adding / updating / removing tasks, the `'Tasks.ReadWrite'` permission is required.
 
 ## Authentication
 

@@ -86,7 +86,7 @@ export class Graph {
     });
   }
 
-  async me(): Promise<MicrosoftGraph.User> {
+  async getMe(): Promise<MicrosoftGraph.User> {
     return this.client
       .api('me')
       .middlewareOptions(prepScopes('user.read'))

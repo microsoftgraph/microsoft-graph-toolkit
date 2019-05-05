@@ -149,7 +149,7 @@ export class MgtLogin extends LitElement {
     if (provider) {
       this._loading = true;
       if (provider.state === ProviderState.SignedIn) {
-        this._user = await provider.graph.me();
+        this._user = await provider.graph.getMe();
       } else if (provider.state === ProviderState.SignedOut) {
         this._user = null;
       } else {

@@ -100,7 +100,7 @@ export class MgtPerson extends MgtTemplatedComponent {
         let person: MgtPersonDetails = {};
 
         await Promise.all([
-          provider.graph.me().then(user => {
+          provider.graph.getMe().then(user => {
             if (user) {
               person.displayName = user.displayName;
               person.email = user.mail || user.userPrincipalName;

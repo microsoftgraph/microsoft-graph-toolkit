@@ -52,7 +52,7 @@ export interface ITaskSource {
 class TaskSourceBase {
   constructor(public graph: Graph) {}
   public async me(): Promise<User> {
-    return await this.graph.me();
+    return await this.graph.getMe();
   }
 }
 

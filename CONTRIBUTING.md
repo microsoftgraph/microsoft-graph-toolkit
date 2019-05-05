@@ -35,7 +35,7 @@ npm install
 npm start
 ```
 
-## Testing the preview NPM package
+<!-- ## Testing the preview NPM package
 
 If you want to install the preview package just once, run this command:
 
@@ -56,7 +56,7 @@ Then just install the package:
 npm install @microsoft/mgt
 ```
 
-[TODO: Make sure everybody can access this feed publicly.]
+[TODO: Make sure everybody can access this feed publicly.] -->
 
 ## Contributing
 
@@ -102,11 +102,11 @@ We encourage developers to follow the following guidance when submitting new fea
 1. Update the [documentation] when necessary
 1. Follow the [accessibility guidance](https://developer.mozilla.org/en-US/docs/Web/Accessibility) for web development
 
-### Testing
+<!-- ### Testing
 
 Your changes should include tests to verify new functionality wherever possible.
 
-[[TODO - how to add and run tests]]
+[[TODO - how to add and run tests]] -->
 
 ## Code of Conduct
 

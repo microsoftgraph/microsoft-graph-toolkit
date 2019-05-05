@@ -6,7 +6,7 @@
  */
 
 @import '../../../node_modules/office-ui-fabric-core/dist/sass/References';
-@import "../../styles/shared-styles.scss";
+@import '../../styles/shared-styles.scss';
 
 :host {
   --font-size: #{$ms-font-size-m};
@@ -57,7 +57,7 @@
 }
 
 .login-icon {
-  &+span {
+  & + span {
     margin-left: 6px;
   }
 }
