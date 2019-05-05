@@ -3,11 +3,8 @@
     "allowJs": true,
     "allowSyntheticDefaultImports": true,
     "experimentalDecorators": true,
-    "lib": [
-      "dom",
-      "es2015"
-    ],
-    "module": "esnext",
+    "lib": ["dom", "es2015"],
+    "module": "es6",
     "moduleResolution": "node",
     "target": "es2015",
     "outDir": "dist/es6",
@@ -16,10 +13,6 @@
     "sourceMap": true,
     "rootDir": "src"
   },
-  "exclude": [
-    "node_modules"
-  ],
-  "include": [
-    "src"
-  ]
+  "exclude": ["node_modules", "src/bundle"],
+  "include": ["src"]
 }
