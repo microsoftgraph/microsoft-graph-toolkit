@@ -42,8 +42,8 @@
     "test:watch": "jest --watch",
     "prepack": "npm run build",
     "prettier:base": "prettier --parser typescript",
-    "prettier:check": "npm run prettier:base -- --list-different \"src/**/*.{ts,tsx}\"",
-    "prettier:write": "npm run prettier:base -- --write \"src/**/*.{ts,tsx}\""
+    "prettier:check": "npm run prettier:base -- --list-different \"{src,tests}/**/*.{ts,tsx}\"",
+    "prettier:write": "npm run prettier:base -- --write \"{src,tests}/**/*.{ts,tsx}\""
   },
   "dependencies": {
     "@microsoft/microsoft-graph-client": "^1.7.0-Preview.1",
