@@ -1,6 +1,6 @@
 {
   "name": "@microsoft/mgt",
-  "version": "0.1.0-preview.5",
+  "version": "0.1.0-preview.7",
   "description": "The Microsoft Graph Toolkit",
   "keywords": [
     "microsoft graph",
@@ -30,7 +30,8 @@
     "watch": "browser-sync start --no-notify --proxy localhost:3333 --files 'dist/**/*.js, index.html'",
     "sass": "gulp sass",
     "sass:watch": "gulp watchSass",
-    "build": "run-s prettier:check clean sass build:esm build:bundle",
+    "setVersion": "gulp setVersion",
+    "build": "run-s prettier:check setVersion clean sass build:esm build:bundle",
     "build:esm": "tsc",
     "build:watch": "tsc --watch",
     "build:bundle": "npm run copy:loader && npm run copy:wc && npm run sass && rollup -c",
@@ -44,7 +45,7 @@
     "prettier:write": "npm run prettier:base -- --write \"src/**/*.{ts,tsx}\""
   },
   "dependencies": {
-    "@microsoft/microsoft-graph-client": "^1.6.0",
+    "@microsoft/microsoft-graph-client": "^1.7.0-Preview.1",
     "@microsoft/microsoft-graph-types": "^1.8.0",
     "@microsoft/microsoft-graph-types-beta": "microsoftgraph/msgraph-typescript-typings#beta",
     "@microsoft/teams-js": "^1.4.1",
