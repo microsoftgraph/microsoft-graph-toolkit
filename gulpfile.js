@@ -2,6 +2,7 @@ const gulp = require('gulp');
 const sass = require('gulp-sass');
 const gap = require('gulp-append-prepend');
 const rename = require('gulp-rename');
+var license = require('gulp-header-license');
 
 scssFileHeader = `
 // THIS FILE IS AUTO GENERATED
@@ -14,13 +15,15 @@ export const styles = [
 
 scssFileFooter = '`];';
 
-versionFile = `/**
+licenseStr = `/**
  * -------------------------------------------------------------------------------------------
  * Copyright (c) Microsoft Corporation.  All Rights Reserved.  Licensed under the MIT License.
  * See License in the project root for license information.
  * -------------------------------------------------------------------------------------------
  */
+`;
 
+versionFile = `${licenseStr}
 // THIS FILE IS AUTO GENERATED
 // ANY CHANGES WILL BE LOST DURING BUILD
 
@@ -37,6 +40,13 @@ function runSass() {
     .pipe(gulp.dest('src/'));
 }
 
+function setLicense() {
+  return gulp
+    .src(['src/**/*.{ts,js,scss}', 'tests/**/*.{ts,js,scss}'])
+    .pipe(license(licenseStr))
+    .pipe(gulp.dest('src/'));
+}
+
 function setVersion() {
   var pkg = require('./package.json');
   var fs = require('fs');
@@ -44,6 +54,7 @@ function setVersion() {
 }
 
 gulp.task('sass', runSass);
+gulp.task('setLicense', setLicense);
 gulp.task('setVersion', async () => setVersion());
 
 gulp.task('watchSass', () => {
