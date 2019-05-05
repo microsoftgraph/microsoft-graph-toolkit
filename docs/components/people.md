@@ -15,6 +15,8 @@ It utilizes multiple [mgt-person](./person.md) controls, but is able to be bound
 
 ## Example
 
+[jsfiddle example](https://jsfiddle.net/metulev/az6pqy2r/)
+
 ```html
 <mgt-people></mgt-people>
 ```
@@ -25,10 +27,10 @@ It utilizes multiple [mgt-person](./person.md) controls, but is able to be bound
 
 By default, the `mgt-people` component fetches events from the `/me/people` endpoint with the `personType/class eq 'Person'` filter to display frequently contacted users. Use the following attributes to change this behavior:
 
-| attribute | Description |
-| --- | --- |
-| `show-max` | an integer value to indicate the maximum number of people to show - default is 3. |
-| `people` | an array of people to get or set the list of people rendered by the component - use this property to access the people loaded by the component. Set this value to load your own people |
+| property | attribute | Description |
+| --- | --- | --- |
+| `showMax` | `show-max` | an integer value to indicate the maximum number of people to show - default is 3. |
+| `people` | `people` | an array of people to get or set the list of people rendered by the component - use this property to access the people loaded by the component. Set this value to load your own people |
 
 Ex:
 
@@ -38,9 +40,9 @@ Ex:
 </mgt-people>
 ```
 
-## Custom properties
+## CSS Custom properties
 
-The `mgt-people` component defines these custom properties
+The `mgt-people` component defines these css custom properties
 
 ```css
 mgt-people {
@@ -51,7 +53,7 @@ mgt-people {
 
 ## Templates
 
-The `mgt-people` supports several [templates](../style.md) that allow you to replace certain parts of the component. To specify a template, simply include a `<template>` element inside of a component and set the `data-type` value to one of the following:
+The `mgt-people` supports several [templates](../templates.md) that allow you to replace certain parts of the component. To specify a template, simply include a `<template>` element inside of a component and set the `data-type` value to one of the following:
 
 
 ### `default` (or when no value is provided)

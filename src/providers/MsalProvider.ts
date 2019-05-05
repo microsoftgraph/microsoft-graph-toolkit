@@ -1,3 +1,10 @@
+/**
+ * -------------------------------------------------------------------------------------------
+ * Copyright (c) Microsoft Corporation.  All Rights Reserved.  Licensed under the MIT License.
+ * See License in the project root for license information.
+ * -------------------------------------------------------------------------------------------
+ */
+
 import { AuthenticationProviderOptions } from '@microsoft/microsoft-graph-client/lib/es/IAuthenticationProviderOptions';
 import { IProvider, LoginType, ProviderState } from './IProvider';
 import { Graph } from '../Graph';
@@ -56,7 +63,7 @@ export class MsalProvider extends IProvider {
       this.clientId = config.clientId;
 
       this._userAgentApplication = new UserAgentApplication(msalConfig);
-      this._userAgentApplication.handleRedirectCallbacks(tokenReceivedCallbackFunction, errorReceivedCallbackFunction);
+      this._userAgentApplication.handleRedirectCallback(tokenReceivedCallbackFunction, errorReceivedCallbackFunction);
     } else {
       throw 'clientId must be provided';
     }

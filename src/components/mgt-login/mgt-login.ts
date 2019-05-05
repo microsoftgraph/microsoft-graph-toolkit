@@ -1,3 +1,10 @@
+/**
+ * -------------------------------------------------------------------------------------------
+ * Copyright (c) Microsoft Corporation.  All Rights Reserved.  Licensed under the MIT License.
+ * See License in the project root for license information.
+ * -------------------------------------------------------------------------------------------
+ */
+
 import { LitElement, html, customElement, property } from 'lit-element';
 import * as MicrosoftGraph from '@microsoft/microsoft-graph-types';
 
@@ -142,7 +149,7 @@ export class MgtLogin extends LitElement {
     if (provider) {
       this._loading = true;
       if (provider.state === ProviderState.SignedIn) {
-        this._user = await provider.graph.me();
+        this._user = await provider.graph.getMe();
       } else if (provider.state === ProviderState.SignedOut) {
         this._user = null;
       } else {

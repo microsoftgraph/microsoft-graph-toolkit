@@ -1,9 +1,25 @@
+/**
+ * -------------------------------------------------------------------------------------------
+ * Copyright (c) Microsoft Corporation.  All Rights Reserved.  Licensed under the MIT License.
+ * See License in the project root for license information.
+ * -------------------------------------------------------------------------------------------
+ */
+
 import * as MicrosoftGraph from '@microsoft/microsoft-graph-types';
 import * as MicrosoftGraphBeta from '@microsoft/microsoft-graph-types-beta';
 import { Client } from '@microsoft/microsoft-graph-client/lib/es/Client';
-import { IProvider } from './providers/IProvider';
+import { Context } from '@microsoft/microsoft-graph-client/lib/es/IContext';
+import { Middleware } from '@microsoft/microsoft-graph-client/lib/es/middleware/IMiddleware';
+import { getRequestHeader, setRequestHeader } from '@microsoft/microsoft-graph-client/lib/es/middleware/MiddlewareUtil';
 import { ResponseType } from '@microsoft/microsoft-graph-client/lib/es/ResponseType';
 import { AuthenticationHandlerOptions } from '@microsoft/microsoft-graph-client/lib/es/middleware/options/AuthenticationHandlerOptions';
+import { AuthenticationHandler } from '@microsoft/microsoft-graph-client/lib/es/middleware/AuthenticationHandler';
+import { RetryHandler } from '@microsoft/microsoft-graph-client/lib/es/middleware/RetryHandler';
+import { RetryHandlerOptions } from '@microsoft/microsoft-graph-client/lib/es/middleware/options/RetryHandlerOptions';
+import { TelemetryHandler } from '@microsoft/microsoft-graph-client/lib/es/middleware/TelemetryHandler';
+import { HTTPMessageHandler } from '@microsoft/microsoft-graph-client/lib/es/middleware/HTTPMessageHandler';
+import { IProvider } from './providers/IProvider';
+import { PACKAGE_VERSION } from './utils/version';
 
 export function prepScopes(...scopes: string[]) {
   const authProviderOptions = {
@@ -12,13 +28,49 @@ export function prepScopes(...scopes: string[]) {
   return [new AuthenticationHandlerOptions(undefined, authProviderOptions)];
 }
 
+class SdkVersionMiddleware implements Middleware {
+  /**
+   * @private
+   * A member to hold next middleware in the middleware chain
+   */
+  private nextMiddleware: Middleware;
+
+  public async execute(context: Context): Promise<void> {
+    try {
+      let sdkVersionValue: string = `mgt/${PACKAGE_VERSION}`; // todo - add real version
+
+      sdkVersionValue += ', ' + getRequestHeader(context.request, context.options, 'SdkVersion');
+
+      setRequestHeader(context.request, context.options, 'SdkVersion', sdkVersionValue);
+      return await this.nextMiddleware.execute(context);
+    } catch (error) {
+      throw error;
+    }
+  }
+
+  public setNext(next: Middleware): void {
+    this.nextMiddleware = next;
+  }
+}
+
 export class Graph {
   public client: Client;
 
   constructor(provider: IProvider) {
     if (provider) {
+      let authenticationHandler = new AuthenticationHandler(provider);
+      const retryHandler = new RetryHandler(new RetryHandlerOptions());
+      const telemetryHandler = new TelemetryHandler();
+      const sdkVersionMiddleware = new SdkVersionMiddleware();
+      const httpMessageHandler = new HTTPMessageHandler();
+
+      authenticationHandler.setNext(retryHandler);
+      retryHandler.setNext(telemetryHandler);
+      telemetryHandler.setNext(sdkVersionMiddleware);
+      sdkVersionMiddleware.setNext(httpMessageHandler);
+
       this.client = Client.initWithMiddleware({
-        authProvider: provider
+        middleware: authenticationHandler
       });
     }
   }
@@ -34,7 +86,7 @@ export class Graph {
     });
   }
 
-  async me(): Promise<MicrosoftGraph.User> {
+  async getMe(): Promise<MicrosoftGraph.User> {
     return this.client
       .api('me')
       .middlewareOptions(prepScopes('user.read'))

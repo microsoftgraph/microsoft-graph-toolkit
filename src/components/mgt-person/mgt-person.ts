@@ -1,3 +1,10 @@
+/**
+ * -------------------------------------------------------------------------------------------
+ * Copyright (c) Microsoft Corporation.  All Rights Reserved.  Licensed under the MIT License.
+ * See License in the project root for license information.
+ * -------------------------------------------------------------------------------------------
+ */
+
 import { html, customElement, property } from 'lit-element';
 import * as MicrosoftGraph from '@microsoft/microsoft-graph-types';
 
@@ -93,7 +100,7 @@ export class MgtPerson extends MgtTemplatedComponent {
         let person: MgtPersonDetails = {};
 
         await Promise.all([
-          provider.graph.me().then(user => {
+          provider.graph.getMe().then(user => {
             if (user) {
               person.displayName = user.displayName;
               person.email = user.mail || user.userPrincipalName;

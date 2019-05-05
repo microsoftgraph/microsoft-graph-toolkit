@@ -8,26 +8,11 @@ author: nmetulev
 # Person Component
 
 ## Description
-The person control is used to display a person or contact by using their photo, name, and/or email address. 
-
-## Authentication
-
-The control leverages the global authentication provider described in the [authentication documentation](./../providers.md) to fetch the required data.
-
-## Graph scopes
-
-This control uses the following Microsoft Graph APIs and permissions:
-
-| resource | permission/scope |
-| - | - |
-| [/me](https://docs.microsoft.com/en-us/graph/api/user-get?view=graph-rest-1.0) | `User.Read` |
-| [/me/photo/$value](https://docs.microsoft.com/en-us/graph/api/profilephoto-get?view=graph-rest-beta) | `User.Read` |
-| [/me/people/?$search=](https://docs.microsoft.com/en-us/graph/api/user-list-people?view=graph-rest-1.0) | `People.Read` |
-| [/users/{id}/photo/$value](https://docs.microsoft.com/en-us/graph/api/user-list-people?view=graph-rest-1.0) | `User.ReadBasic.All` |
-
-> Note: to access the `/me/photo' resource for personal Microsoft Accounts, the beta Graph endpoint is used for all requests
+The person component is used to display a person or contact by using their photo, name, and/or email address. 
 
 ## Example
+
+[jsfiddle example](https://jsfiddle.net/metulev/0jkzfr42/)
 
 ### Add the control to the html page
 ```html
@@ -61,13 +46,72 @@ There are three properties that a developer can use to set the person details, u
 
 The following attributes are available to customize the behavior
 
-| property  | required  | description |
+| property  | attribute  | description |
 | --- | --- | --- |
-| `showName` | optional | set flag to display person display name - default is `false` |
-| `showEmail` | optional | set flag to display person email - default is `false` |
+| `showName` | `show-name` | set flag to display person display name - default is `false` |
+| `showEmail` | `show-email` | set flag to display person email - default is `false` |
+
+## CSS Custom properties
+
+The `mgt-person` component defines these CSS custom properties
+
+```css
+mgt-person {
+  --avatar-size-s: 24px;
+  --avatar-size: 48px; // avatar size when both name and email are shown
+  --avatar-font-size--s: 16px;
+  --avatar-font-size: 32px; // font-size when both name and email are shown
+  --avatar-border: 0;
+  --initials-color: white;
+  --initials-background-color: magenta;
+  --font-size: 12px;
+  --font-weight: 500;
+  --color: black;
+  --email-font-size: 12px;
+  --email-color: black;
+}
+```
+
+[Learn more about styling components](../style.md) 
+
+## Templates
+
+The `mgt-person` component supports several [templates](../templates.md) that allow you to replace certain parts of the component. To specify a template, simply include a `<template>` element inside of a component and set the `data-type` value to one of the following:
 
 
-| [css custom properties](../style.md) |
-| - |
-| `--login-control-background` | 
-| TODO
+### `default` (or when no value is provided)
+
+The default template replaces the entire component with your own. The `person` object is passed to the template as data context
+
+Ex:
+
+```html
+<mgt-person>
+  <template>
+    <div data-if="person.image">
+      <img src="{{person.image}}" />
+    </div>
+    <div data-else>
+      {{person.displayName}}
+    </div>
+  </template>
+</mgt-person>
+```
+
+## Graph scopes
+
+This control uses the following Microsoft Graph APIs and permissions:
+
+| resource | permission/scope |
+| - | - |
+| [/me](https://docs.microsoft.com/en-us/graph/api/user-get?view=graph-rest-1.0) | `User.Read` |
+| [/me/photo/$value](https://docs.microsoft.com/en-us/graph/api/profilephoto-get?view=graph-rest-beta) | `User.Read` |
+| [/me/people/?$search=](https://docs.microsoft.com/en-us/graph/api/user-list-people?view=graph-rest-1.0) | `People.Read` |
+| [/me/contacts/*](https://docs.microsoft.com/en-us/graph/api/user-list-contacts?view=graph-rest-1.0&tabs=cs) | `Contacts.Read` |
+| [/users/{id}/photo/$value](https://docs.microsoft.com/en-us/graph/api/user-list-people?view=graph-rest-1.0) | `User.ReadBasic.All` |
+
+> Note: to access the `*/photo/$value' resources for personal Microsoft Accounts, the beta Graph endpoint is used
+
+## Authentication
+
+The control leverages the global authentication provider described in the [authentication documentation](./../providers.md) to fetch the required data.

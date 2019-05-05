@@ -5,7 +5,7 @@
  * -------------------------------------------------------------------------------------------
  */
 
-export * from '../index';
-export * from '../components/providers/providers';
-export * from '../providers/providers';
-export * from '../mock/mgt-mock-provider';
+// THIS FILE IS AUTO GENERATED
+// ANY CHANGES WILL BE LOST DURING BUILD
+
+export const PACKAGE_VERSION = '0.1.0-preview.7';
