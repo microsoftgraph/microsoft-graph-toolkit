@@ -23,6 +23,8 @@ This library is in preview and is in early development. Based on feedback from t
 
 ## Getting Started
 
+[![Watch the Getting Started Video](https://img.youtube.com/vi/oZCGb2MMxa0/2.jpg)](https://www.youtube.com/watch?v=oZCGb2MMxa0)
+
 You can use the components by referencing the loader directly (via unpkg), or installing the npm package
 
 ### Use via mgt-loader:
