@@ -11,6 +11,8 @@ Components are functional and work automatically with the Microsoft Graph
 
 Components work with any web framework and on all all modern browsers. IE 11 is also supported
 
+[Here is a quick jsfiddle](https://jsfiddle.net/metulev/9phqxLd5/)
+
 ## This library is in Preview
 
 This library is in preview and is in early development. Based on feedback from the community, all components and APIs are expected to change and improve.
