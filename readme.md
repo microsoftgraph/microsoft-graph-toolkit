@@ -17,9 +17,24 @@ Components work with any web framework and on all all modern browsers. IE 11 is 
 
 This library is in preview and is in early development. Based on feedback from the community, all components and APIs are expected to change and improve.
 
-## Documentation
+## Components & Documentation
 
-[View the documentation](./docs)
+The toolkit currently includes the following components:
+
+* [mgt-agenda](./docs/components/agenda.md)
+* [mgt-login](./docs/components/login.md)
+* [mgt-people](./docs/components/people.md)
+* [mgt-person](./docs/components/person.md)
+* [mgt-tasks](./docs/components/tasks.md)
+
+And the following providers:
+
+* [mgt-msal-provider](./docs/providers/msal.md)
+* [SharePointProvider](./docs/providers/SharePoint.md)
+* [SimpleProvider](./docs/providers/custom.md)
+* [mgt-teams-provider](./docs/providers/Teams.md)
+
+[View the full documentation](./docs)
 
 ## Getting Started
 
