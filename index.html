@@ -31,56 +31,6 @@
     <mgt-login></mgt-login>
     <mgt-tasks data-source="todo"></mgt-tasks>
     <mgt-agenda group-by-day></mgt-agenda>
-
-    <mgt-people>
-      <!-- <template>
-        <style>
-          .people-list {
-            list-style-type: none;
-          }
-
-          .people-person {
-            margin: 0px 0px 8px 0px;
-          }
-        </style>
-        <ul class="people-list">
-          <li data-for="person in people">
-            <div class="people-person">
-              <mgt-person person-query="{{ person.displayName }}" show-name></mgt-person>
-            </div>
-          </li>
-        </ul>
-      </template> -->
-    </mgt-people>
-
-    <!-- <script type="module">
-      let login = document.getElementsByTagName('mgt-login')[0];
-      
-      login.addEventListener('loginInitiated', (event) => {console.log('loginInitiated'); login.userDetails = {
-        displayName: "Nikola Metulev",
-        email: "nikola@contoso.com"
-      } /*event.preventDefault();*/});
-      login.addEventListener('loginCompleted', (event) => {console.log('loginCompleted')});
-      login.addEventListener('loginFailed', (event) => {console.log('loginFailed')});
-      login.addEventListener('logoutInitiated', (event) => {console.log('logoutInitiated')});
-      login.addEventListener('logoutCompleted', (event) => {console.log('logoutCompleted')});
-    </script> -->
-
-    <!-- <mgt-person person-query="me" show-name show-email></mgt-person> -->
-    <!-- <mgt-agenda></mgt-agenda> -->
-
-    <!-- <script type="module">
-      import {Providers} from './dist/es6/index.js'
-      Providers.onProviderUpdated(handleProvider);
-      handleProvider();
-
-      async function handleProvider() {
-        var provider = Providers.globalProvider;
-        if (provider) {
-          let me = await provider.graph.client.api('me').get();
-          console.log(me);
-        }
-      }
-    </script> -->
+    <mgt-people></mgt-people>
   </body>
 </html>
