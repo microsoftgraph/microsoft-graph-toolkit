@@ -3,10 +3,10 @@
   "version": "0.1.0",
   "private": true,
   "dependencies": {
-    "microsoft-graph-toolkit": "file:../microsoft-graph-toolkit/microsoft-graph-toolkit-0.0.1.tgz",
+    "@microsoft/mgt": "0.1.0-preview.8",
     "react": "^16.8.5",
     "react-dom": "^16.8.5",
-    "react-scripts": "2.1.8"
+    "react-scripts": "^3.0.0"
   },
   "scripts": {
     "start": "react-scripts start",
