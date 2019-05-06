@@ -15,9 +15,13 @@ This library is in preview and is in early development. Based on feedback from t
 
 ## Getting Started
 
+[Watch the Getting Started Video](https://www.youtube.com/watch?v=oZCGb2MMxa0)
+
 You can use the components by referencing the loader directly (via unpkg), or installing the npm package
 
 ### Use via mgt-loader:
+
+[Here is a quick jsfiddle](https://jsfiddle.net/metulev/9phqxLd5/)
 
 ```html
 <script src="https://unpkg.com/@microsoft/mgt/dist/bundle/mgt-loader.js"></script>
@@ -38,9 +42,9 @@ You can then start using the components in your html page. Here is a full workin
 
 > NOTE: MSAL requires the page to be hosted in a web server for the authentication redirects. If you are just getting started and want to play around, the quickest way is to use something like [live server](https://marketplace.visualstudio.com/items?itemName=ritwickdey.LiveServer) in vscode.
 
-### Use via NPM:
+### Use via NPM (es6 modules):
 
-The benefits of using MGT through NPM is that you have full control of the bundling process and you can bundle only the code you need for your site. First, add the npm package:
+By using the es6 modules, you have full control of the bundling process and you can bundle only the code you need for your site. First, add the npm package:
 
 ```bash
 npm install @microsoft/mgt
@@ -81,6 +85,13 @@ or, add it in your code:
 The components work best when used with a [provider](./providers.md). The provider exposes authentication and Microsoft Graph apis used by the components to call into the Microsoft Graph.
 
 The toolkit contains providers for [MSAL](./providers/msal.md), [SharePoint](./providers/sharepoint.md), [Teams](./providers/teams.md), and Office Add-ins (coming soon). You can also create your own providers by extending the [IProvider] abstract class.
+
+## Polyfills
+
+If you are using the es6 modules from the npm package, make sure to include polyfills in your project as they are not included out of the box. [Learn more about polyfills](https://www.webcomponents.org/polyfills)
+
+If you are using the mgt-loader.js script from the bundle on unpkg, the polyfills are already included.
+
 
 ## Using the components with React, Angular, and other frameworks
 
