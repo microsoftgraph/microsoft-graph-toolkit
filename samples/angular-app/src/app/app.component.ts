@@ -1,6 +1,5 @@
 import { Component } from '@angular/core';
-import {MgtPersonDetails} from 'microsoft-graph-toolkit';
-import 'microsoft-graph-toolkit/dist/es6/components/mgt-person/mgt-person';
+import {MgtPersonDetails} from '@microsoft/mgt';
 
 @Component({
   selector: 'app-root',
@@ -11,4 +10,8 @@ export class AppComponent {
   person : MgtPersonDetails = {
     displayName: "Nikola Metulev"
   };
+
+  loginCompleted = e => {
+    console.log('loginCompleted');
+  }
 }
