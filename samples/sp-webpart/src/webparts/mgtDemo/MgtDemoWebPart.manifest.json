@@ -1,7 +1,7 @@
 {
   "$schema": "https://developer.microsoft.com/json-schemas/spfx/client-side-web-part-manifest.schema.json",
-  "id": "f4fd7077-04c1-4d9f-9b89-30322541d391",
-  "alias": "HelloWorldWebPart",
+  "id": "ed945361-a707-418e-ae56-c0a09a2aa442",
+  "alias": "MgtDemoWebPart",
   "componentType": "WebPart",
 
   // The "*" signifies that the version should be taken from the package.json
@@ -17,11 +17,11 @@
   "preconfiguredEntries": [{
     "groupId": "5c03119e-3074-46fd-976b-c60198311f70", // Other
     "group": { "default": "Other" },
-    "title": { "default": "HelloWorld" },
-    "description": { "default": "HelloWorld description" },
+    "title": { "default": "mgt-demo" },
+    "description": { "default": "demo of the Microsoft Graph Toolkit running in SharePoint" },
     "officeFabricIconFontName": "Page",
     "properties": {
-      "description": "HelloWorld"
+      "description": "mgt-demo"
     }
   }]
 }

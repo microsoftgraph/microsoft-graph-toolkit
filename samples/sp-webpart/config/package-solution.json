@@ -1,11 +1,12 @@
 {
   "$schema": "https://developer.microsoft.com/json-schemas/spfx-build/package-solution.schema.json",
   "solution": {
-    "name": "Microsoft-graph-toolkit-sample",
-    "id": "ec5d7704-a014-425e-a9f0-01434914e080",
-    "version": "0.0.0.1",
+    "name": "mgt-demo-client-side-solution",
+    "id": "b0ed193e-b333-4796-b249-e34916ef7a85",
+    "version": "1.0.0.0",
     "includeClientSideAssets": true,
     "skipFeatureDeployment": true,
+    "isDomainIsolated": false,
     "webApiPermissionRequests": [
       {
         "resource": "Microsoft Graph",
@@ -26,6 +27,6 @@
     ]
   },
   "paths": {
-    "zippedPackage": "solution/sp-webpart.sppkg"
+    "zippedPackage": "solution/mgt-demo.sppkg"
   }
 }

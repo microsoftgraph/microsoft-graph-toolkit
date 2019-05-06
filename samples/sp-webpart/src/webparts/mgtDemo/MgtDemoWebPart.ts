@@ -1,33 +1,43 @@
+import * as React from 'react';
+import * as ReactDom from 'react-dom';
 import { Version } from '@microsoft/sp-core-library';
 import { BaseClientSideWebPart } from '@microsoft/sp-webpart-base';
 import {
   IPropertyPaneConfiguration,
   PropertyPaneTextField
 } from '@microsoft/sp-property-pane';
-import { escape } from '@microsoft/sp-lodash-subset';
 
-import styles from './HelloWorldWebPart.module.scss';
-import * as strings from 'HelloWorldWebPartStrings';
+import * as strings from 'MgtDemoWebPartStrings';
+import MgtDemo from './components/MgtDemo';
+import { IMgtDemoProps } from './components/IMgtDemoProps';
 
-import 'microsoft-graph-toolkit/dist/es6/components/mgt-agenda/mgt-agenda.js'
+// import the providers at the top of the page
+import {Providers, SharePointProvider} from '@microsoft/mgt';
 
-import {SharePointProvider} from 'microsoft-graph-toolkit/dist/es6/providers/SharePointProvider.js';
-import {Providers} from 'microsoft-graph-toolkit/dist/es6/Providers.js';
-
-export interface IHelloWorldWebPartProps {
+export interface IMgtDemoWebPartProps {
   description: string;
 }
 
-export default class HelloWorldWebPart extends BaseClientSideWebPart<IHelloWorldWebPartProps> {
+export default class MgtDemoWebPart extends BaseClientSideWebPart<IMgtDemoWebPartProps> {
 
+  // set the global provider
   protected async onInit() {
-    Providers.globalProvider = new SharePointProvider(this.context);
+      Providers.globalProvider = new SharePointProvider(this.context);
   }
 
   public render(): void {
-    this.domElement.innerHTML = `
-      <mgt-agenda></mgt-agenda>
-      `;
+    const element: React.ReactElement<IMgtDemoProps > = React.createElement(
+      MgtDemo,
+      {
+        description: this.properties.description
+      }
+    );
+
+    ReactDom.render(element, this.domElement);
+  }
+
+  protected onDispose(): void {
+    ReactDom.unmountComponentAtNode(this.domElement);
   }
 
   protected get dataVersion(): Version {

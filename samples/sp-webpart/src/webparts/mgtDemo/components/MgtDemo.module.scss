@@ -1,6 +1,6 @@
 @import '~@microsoft/sp-office-ui-fabric-core/dist/sass/SPFabricCore.scss';
 
-.helloWorld {
+.mgtDemo {
   .container {
     max-width: 700px;
     margin: 0px auto;
@@ -10,7 +10,7 @@
   .row {
     @include ms-Grid-row;
     @include ms-fontColor-white;
-    background-color: $ms-color-themeDark;
+    background-color: $ms-color-themeLight;
     padding: 20px;
   }
 

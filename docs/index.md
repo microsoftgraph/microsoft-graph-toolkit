@@ -86,7 +86,7 @@ The toolkit contains providers for [MSAL](./providers/msal.md), [SharePoint](./p
 
 Web Components are based on several web standards and can be used with any framework you are already using. However, not all frameworks handle web components the same, and there might be some consideration you should know depending on your framework. The [Custom Elements Everywhere](https://custom-elements-everywhere.com/) project is a great resource for this.
 
-Below is a quick overview of using the microsoft-graph-toolkit components with React and Angular
+Below is a quick overview of using the Microsoft Graph-Toolkit components with React and Angular
 
 ### React
 
