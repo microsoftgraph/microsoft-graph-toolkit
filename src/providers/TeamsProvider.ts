@@ -63,21 +63,28 @@ export class TeamsProvider extends MsalProvider {
 
     var url = new URL(window.location.href);
 
+    let clientId = sessionStorage.getItem(this._sessionStorageClientIdKey);
+
     if (UserAgentApplication.prototype.isCallback(window.location.hash)) {
       new MsalProvider({
-        clientId: sessionStorage.getItem(this._sessionStorageClientIdKey)
+        clientId: clientId
       });
       return;
     }
 
-    const clientId = url.searchParams.get('clientId');
+    microsoftTeams.initialize();
+
+    if (!clientId) {
+      clientId = url.searchParams.get('clientId');
+
+      // save clientId to use during redirect
+      sessionStorage.setItem(this._sessionStorageClientIdKey, clientId);
+    }
+
     if (!clientId) {
       microsoftTeams.authentication.notifyFailure('no clientId provided');
       return;
     }
-
-    // save clientId to use during redirect
-    sessionStorage.setItem(this._sessionStorageClientIdKey, clientId);
 
     let provider = new MsalProvider({
       clientId: clientId // need to add scopes
@@ -138,6 +145,6 @@ export class TeamsProvider extends MsalProvider {
   }
 
   async getAccessToken(options: AuthenticationProviderOptions): Promise<string> {
-    return this._accessToken;
+    return this.accessToken;
   }
 }
