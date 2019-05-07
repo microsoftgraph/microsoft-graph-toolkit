@@ -90,6 +90,8 @@ export class MgtTasks extends LitElement {
   @property() private _hiddenTasks: string[] = [];
   @property() private _loadingTasks: string[] = [];
 
+  @property() private _inTaskLoad: boolean = false;
+
   private _me: User = null;
 
   protected firstUpdated() {
@@ -147,6 +149,8 @@ export class MgtTasks extends LitElement {
     let ts = this.getTaskSource();
     if (!ts) return;
 
+    this._inTaskLoad = true;
+
     this._me = await ts.me();
 
     if (this.targetId) {
@@ -200,6 +204,8 @@ export class MgtTasks extends LitElement {
       this._drawers = drawers;
       this._dressers = dressers;
     }
+
+    this._inTaskLoad = false;
   }
 
   private async addTask(
@@ -286,6 +292,8 @@ export class MgtTasks extends LitElement {
   }
 
   protected render() {
+    if (this._inTaskLoad) return null;
+
     return html`
       <div class="Header">
         <span class="PlannerTitle">
