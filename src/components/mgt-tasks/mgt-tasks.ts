@@ -94,13 +94,19 @@ export class MgtTasks extends LitElement {
 
   protected firstUpdated() {
     if (this.initialId && (!this._currentTargetDresser || this.isDefault(this._currentTargetDresser))) {
-      this._currentTargetDresser = this.initialId;
-      this.initialId = null;
+      if (this.dataSource === 'planner') {
+        this._currentTargetDresser = this.initialId;
+      } else if (this.dataSource === 'todo') {
+        this._currentTargetDrawer = this.initialId;
+      }
     }
 
-    if (this.initialBucketId && (!this._currentTargetDrawer || this.isDefault(this._currentTargetDrawer))) {
+    if (
+      this.dataSource === 'planner' &&
+      this.initialBucketId &&
+      (!this._currentTargetDrawer || this.isDefault(this._currentTargetDrawer))
+    ) {
       this._currentTargetDrawer = this.initialBucketId;
-      this.initialBucketId = null;
     }
 
     this.loadTasks();
@@ -109,17 +115,25 @@ export class MgtTasks extends LitElement {
   public attributeChangedCallback(name: string, oldVal: string, newVal: string) {
     super.attributeChangedCallback(name, oldVal, newVal);
     if (name === 'data-source') {
-      this._currentTargetDresser = this.res.BASE_SELF_ASSIGNED;
-      this._currentTargetDrawer = this.res.BUCKETS_SELF_ASSIGNED;
+      if (this.dataSource === 'planner') {
+        this._currentTargetDresser = this.initialId || this.res.BASE_SELF_ASSIGNED;
+        this._currentTargetDrawer = this.initialBucketId || this.res.BUCKETS_SELF_ASSIGNED;
+      } else if (this.dataSource === 'todo') {
+        this._currentTargetDresser = this.res.BASE_SELF_ASSIGNED;
+        this._currentTargetDrawer = this.initialId || this.res.BUCKETS_SELF_ASSIGNED;
+      }
+
       this._newTaskSelfAssigned = false;
       this._newTaskDrawerId = '';
       this._newTaskDresserId = '';
       this._newTaskDueDate = '';
       this._newTaskName = '';
       this._newTaskBeingAdded = false;
+
       this._tasks = [];
       this._drawers = [];
       this._dressers = [];
+
       this.loadTasks();
     }
   }
@@ -129,7 +143,7 @@ export class MgtTasks extends LitElement {
     Providers.onProviderUpdated(() => this.loadTasks());
   }
 
-  private async loadTasks() {
+  public async loadTasks() {
     let ts = this.getTaskSource();
     if (!ts) return;
 
@@ -150,7 +164,7 @@ export class MgtTasks extends LitElement {
         this._drawers = drawers;
         this._dressers = dressers;
 
-        this._currentTargetDresser = drawers[0].id;
+        this._currentTargetDresser = this.res.BASE_SELF_ASSIGNED;
         this._currentTargetDrawer = this.targetId;
       } else {
         let dresser = await ts.getSingleDresser(this.targetId);
@@ -173,8 +187,10 @@ export class MgtTasks extends LitElement {
         []
       );
 
-      let defaultDrawer = drawers.find(d => (d._raw as OutlookTaskFolder).isDefaultFolder);
-      if (defaultDrawer) this._currentTargetDrawer = defaultDrawer.id;
+      if (!this.initialId) {
+        let defaultDrawer = drawers.find(d => (d._raw as OutlookTaskFolder).isDefaultFolder);
+        if (defaultDrawer) this._currentTargetDrawer = defaultDrawer.id;
+      }
 
       let tasks = (await Promise.all(
         drawers.map(drawer => ts.getAllTasksForDrawer(drawer.id, drawer.parentId))
@@ -270,6 +286,8 @@ export class MgtTasks extends LitElement {
   }
 
   protected render() {
+    console.log(this._currentTargetDresser);
+    console.log(this._currentTargetDrawer);
     return html`
       <div class="Header">
         <span class="PlannerTitle">
