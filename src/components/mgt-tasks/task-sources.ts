@@ -179,15 +179,13 @@ export class TodoTaskSource extends TaskSourceBase implements ITaskSource {
   }
 
   public async addTask(newTask: ITask): Promise<any> {
-    return await this.graph.todo_addTask({
+    let task = {
       subject: newTask.name,
       assignedTo: plannerAssignmentsToTodoAssign(newTask.assignments),
-      parentFolderId: newTask.immediateParentId,
-      dueDateTime: {
-        dateTime: newTask.dueDate,
-        timeZone: 'UTC'
-      }
-    } as OutlookTask);
+      parentFolderId: newTask.immediateParentId
+    } as OutlookTask;
+    if (newTask.dueDate) task.dueDateTime = { dateTime: newTask.dueDate, timeZone: 'UTC' };
+    return await this.graph.todo_addTask(task);
   }
   public async removeTask(id: string, eTag: string): Promise<any> {
     return await this.graph.todo_removeTask(id, eTag);
