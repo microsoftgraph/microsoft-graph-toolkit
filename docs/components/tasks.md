@@ -2,7 +2,7 @@
 title: "Tasks Component"
 description: "The Tasks Component enables the user to view, add, remove, complete, or edit tasks. It works with any tasks in Microsoft Planner or Microsoft To-Do."
 localization_priority: Normal
-author: v-bemcl/benotter
+author: benotter
 ---
 
 # Tasks Component
