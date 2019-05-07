@@ -286,8 +286,6 @@ export class MgtTasks extends LitElement {
   }
 
   protected render() {
-    console.log(this._currentTargetDresser);
-    console.log(this._currentTargetDrawer);
     return html`
       <div class="Header">
         <span class="PlannerTitle">
