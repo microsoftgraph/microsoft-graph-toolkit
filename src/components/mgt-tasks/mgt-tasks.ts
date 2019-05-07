@@ -90,7 +90,7 @@ export class MgtTasks extends LitElement {
   @property() private _hiddenTasks: string[] = [];
   @property() private _loadingTasks: string[] = [];
 
-  @property() private _inTaskLoad: boolean = false;
+  @property() private _inTaskLoad: boolean = true;
 
   private _me: User = null;
 
