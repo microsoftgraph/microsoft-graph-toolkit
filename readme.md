@@ -2,7 +2,7 @@
 
 <img align="left" height="150" src="https://github.com/microsoftgraph/microsoft-graph-toolkit/raw/master/assets/graff.png" title="Graff the Giraffe">
 
-[![NPM](https://img.shields.io/npm/v/@microsoft/mgt.svg)](https://www.npmjs.com/package/@microsoft/mgt) [![Licence](https://img.shields.io/github/license/microsoftgraph/microsoft-graph-toolkit.svg)](https://github.com/microsoftgraph/msgraph-sdk-javascript) [![code style: prettier](https://img.shields.io/badge/code_style-prettier-ff69b4.svg)](https://github.com/microsoftgraph/msgraph-sdk-javascript) [![stackoverflow](https://img.shields.io/stackexchange/stackoverflow/t/microsoft-graph-toolkit.svg)](https://stackoverflow.com/questions/tagged/microsoft-graph-toolkit)
+[![NPM](https://img.shields.io/npm/v/@microsoft/mgt.svg)](https://www.npmjs.com/package/@microsoft/mgt) [![Licence](https://img.shields.io/github/license/microsoftgraph/microsoft-graph-toolkit.svg)](https://github.com/microsoftgraph/microsoft-graph-toolkit) [![code style: prettier](https://img.shields.io/badge/code_style-prettier-ff69b4.svg)](https://github.com/microsoftgraph/msgraph-sdk-javascript) [![stackoverflow](https://img.shields.io/stackexchange/stackoverflow/t/microsoft-graph-toolkit.svg)](https://stackoverflow.com/questions/tagged/microsoft-graph-toolkit)
 [![Build Status](https://dev.azure.com/microsoft-graph-toolkit/microsoft-graph-toolkit/_apis/build/status/microsoftgraph.microsoft-graph-toolkit?branchName=master)](https://dev.azure.com/microsoft-graph-toolkit/microsoft-graph-toolkit/_build/latest?definitionId=1&branchName=master)
 
 The Microsoft Graph Toolkit is a collection of web components powered by the Microsoft Graph.
@@ -17,9 +17,24 @@ Components work with any web framework and on all all modern browsers. IE 11 is 
 
 This library is in preview and is in early development. Based on feedback from the community, all components and APIs are expected to change and improve.
 
-## Documentation
+## Components & Documentation
 
-[View the documentation](./docs)
+The toolkit currently includes the following components:
+
+* [mgt-agenda](./docs/components/agenda.md)
+* [mgt-login](./docs/components/login.md)
+* [mgt-people](./docs/components/people.md)
+* [mgt-person](./docs/components/person.md)
+* [mgt-tasks](./docs/components/tasks.md)
+
+And the following providers:
+
+* [mgt-msal-provider](./docs/providers/msal.md)
+* [SharePointProvider](./docs/providers/SharePoint.md)
+* [SimpleProvider](./docs/providers/custom.md)
+* [mgt-teams-provider](./docs/providers/Teams.md)
+
+[View the full documentation](./docs)
 
 ## Getting Started
 
