@@ -5,7 +5,7 @@
  * -------------------------------------------------------------------------------------------
  */
 
-import { LitElement, customElement, html, property } from 'lit-element';
+import { customElement, html, property } from 'lit-element';
 import { repeat } from 'lit-html/directives/repeat';
 import { classMap } from 'lit-html/directives/class-map';
 import { User, PlannerAssignments } from '@microsoft/microsoft-graph-types';
@@ -92,7 +92,7 @@ export class MgtTasks extends MgtBaseComponent {
   @property() private _hiddenTasks: string[] = [];
   @property() private _loadingTasks: string[] = [];
 
-  @property() private _inTaskLoad: boolean = true;
+  @property() private _inTaskLoad: boolean = false;
 
   private _me: User = null;
   private _providerUpdateCallback: () => void | any;
@@ -305,13 +305,12 @@ export class MgtTasks extends MgtBaseComponent {
   }
 
   protected render() {
-    if (this._inTaskLoad) return null;
-
     let tasks = this._tasks
       .filter(task => this.taskPlanFilter(task))
-      .filter(task => this.taskSubPlanFilter(task))
       .filter(task => this.taskBucketPlanFilter(task))
       .filter(task => !this._hiddenTasks.includes(task.id));
+
+    let loadingTask = this._inTaskLoad ? this.renderLoadingTask() : null;
 
     return html`
       <div class="Header">
@@ -320,7 +319,7 @@ export class MgtTasks extends MgtBaseComponent {
         </span>
       </div>
       <div class="Tasks">
-        ${this._showNewTask ? this.renderNewTaskHtml() : null}
+        ${this._showNewTask ? this.renderNewTaskHtml() : null} ${loadingTask}
         ${repeat(tasks, task => task.id, task => this.renderTaskHtml(task))}
       </div>
     `;
@@ -351,9 +350,11 @@ export class MgtTasks extends MgtBaseComponent {
   private renderPlanOptions() {
     let p = Providers.globalProvider;
 
-    if (!p || p.state !== ProviderState.SignedIn)
+    if (!p || p.state !== ProviderState.SignedIn) return null;
+
+    if (this._inTaskLoad)
       return html`
-        Not Logged In
+        <span class="LoadingHeader"></span>
       `;
 
     let addButton =
@@ -718,6 +719,37 @@ export class MgtTasks extends MgtBaseComponent {
         </div>
         <div class="TaskDetails">
           ${taskDresser} ${taskDrawer} ${taskPeople} ${taskDue}
+        </div>
+      </div>
+    `;
+  }
+
+  private renderLoadingTask() {
+    return html`
+      <div class="Task LoadingTask">
+        <div class="TaskHeader">
+          <div class="TaskCheckCont">
+            <div class="TaskCheck"></div>
+          </div>
+          <div class="TaskTitle"></div>
+        </div>
+        <div class="TaskDetails">
+          <div class="TaskDetail">
+            <div class="TaskDetailIcon"></div>
+            <div class="TaskDetailName"></div>
+          </div>
+          <div class="TaskDetail">
+            <div class="TaskDetailIcon"></div>
+            <div class="TaskDetailName"></div>
+          </div>
+          <div class="TaskDetail">
+            <div class="TaskDetailIcon"></div>
+            <div class="TaskDetailName"></div>
+          </div>
+          <div class="TaskDetail">
+            <div class="TaskDetailIcon"></div>
+            <div class="TaskDetailName"></div>
+          </div>
         </div>
       </div>
     `;
