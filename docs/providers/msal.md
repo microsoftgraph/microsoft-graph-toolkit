@@ -22,7 +22,7 @@ Initializing the Msal provider in HTML is the simplest method to create a new pr
 ```html
 <mgt-msal-provider client-id="<YOUR_CLIENT_ID>"
                    login-type="redirect/popup"
-                   authority=""></mgt-teams-provider>
+                   authority=""></mgt-msal-provider>
 ```
 
 > NOTE: `login-type` and `authority` are optional.
