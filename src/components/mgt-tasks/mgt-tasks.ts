@@ -5,15 +5,17 @@
  * -------------------------------------------------------------------------------------------
  */
 
-import { LitElement, customElement, html, property } from 'lit-element';
+import { customElement, html, property } from 'lit-element';
+import { repeat } from 'lit-html/directives/repeat';
+import { classMap } from 'lit-html/directives/class-map';
 import { User, PlannerAssignments } from '@microsoft/microsoft-graph-types';
 import { OutlookTaskFolder } from '@microsoft/microsoft-graph-types-beta';
+import { MgtBaseComponent } from '../baseComponent';
 import { Providers } from '../../Providers';
 import { ProviderState } from '../../providers/IProvider';
 import { getShortDateString } from '../../utils/utils';
-import { styles } from './mgt-tasks-css';
-
 import { ITaskSource, PlannerTaskSource, TodoTaskSource, IDresser, IDrawer, ITask } from './task-sources';
+import { styles } from './mgt-tasks-css';
 
 import '../mgt-person/mgt-person';
 import '../sub-components/mgt-arrow-options/mgt-arrow-options';
@@ -40,7 +42,7 @@ const TASK_RES = {
 };
 
 @customElement('mgt-tasks')
-export class MgtTasks extends LitElement {
+export class MgtTasks extends MgtBaseComponent {
   public get res() {
     switch (this.dataSource) {
       case 'todo':
@@ -90,9 +92,25 @@ export class MgtTasks extends LitElement {
   @property() private _hiddenTasks: string[] = [];
   @property() private _loadingTasks: string[] = [];
 
-  @property() private _inTaskLoad: boolean = true;
+  @property() private _inTaskLoad: boolean = false;
 
   private _me: User = null;
+  private _providerUpdateCallback: () => void | any;
+
+  constructor() {
+    super();
+    this._providerUpdateCallback = () => this.loadTasks();
+  }
+
+  public connectedCallback() {
+    super.connectedCallback();
+    Providers.onProviderUpdated(this._providerUpdateCallback);
+  }
+
+  public disconnectedCallback() {
+    Providers.removeProviderUpdatedListener(this._providerUpdateCallback);
+    super.disconnectedCallback();
+  }
 
   protected firstUpdated() {
     if (this.initialId && (!this._currentTargetDresser || this.isDefault(this._currentTargetDresser))) {
@@ -140,11 +158,6 @@ export class MgtTasks extends LitElement {
     }
   }
 
-  constructor() {
-    super();
-    Providers.onProviderUpdated(() => this.loadTasks());
-  }
-
   public async loadTasks() {
     let ts = this.getTaskSource();
     if (!ts) return;
@@ -155,57 +168,72 @@ export class MgtTasks extends LitElement {
 
     if (this.targetId) {
       if (this.dataSource === 'todo') {
-        let dressers = await ts.getMyDressers();
-        let drawers = (await Promise.all(dressers.map(dresser => ts.getDrawersForDresser(dresser.id)))).reduce(
-          (cur, ret) => [...cur, ...ret],
-          []
-        );
-        let tasks = (await Promise.all(
-          drawers.map(drawer => ts.getAllTasksForDrawer(drawer.id, drawer.parentId))
-        )).reduce((cur, ret) => [...cur, ...ret], []);
-
-        this._tasks = tasks;
-        this._drawers = drawers;
-        this._dressers = dressers;
-
-        this._currentTargetDresser = this.res.BASE_SELF_ASSIGNED;
-        this._currentTargetDrawer = this.targetId;
+        await this._loadTargetTodoTasks(ts);
       } else {
-        let dresser = await ts.getSingleDresser(this.targetId);
-        let drawers = await ts.getDrawersForDresser(dresser.id);
-        let tasks = (await Promise.all(
-          drawers.map(drawer => ts.getAllTasksForDrawer(drawer.id, drawer.parentId))
-        )).reduce((cur, ret) => [...cur, ...ret], []);
-
-        this._tasks = tasks;
-        this._drawers = drawers;
-        this._dressers = [dresser];
-
-        this._currentTargetDresser = this.targetId;
-        if (this.targetBucketId) this._currentTargetDrawer = this.targetBucketId;
+        await this._loadTargetPlannerTasks(ts);
       }
     } else {
-      let dressers = await ts.getMyDressers();
-      let drawers = (await Promise.all(dressers.map(dresser => ts.getDrawersForDresser(dresser.id)))).reduce(
-        (cur, ret) => [...cur, ...ret],
-        []
-      );
-
-      if (!this.initialId) {
-        let defaultDrawer = drawers.find(d => (d._raw as OutlookTaskFolder).isDefaultFolder);
-        if (defaultDrawer) this._currentTargetDrawer = defaultDrawer.id;
-      }
-
-      let tasks = (await Promise.all(
-        drawers.map(drawer => ts.getAllTasksForDrawer(drawer.id, drawer.parentId))
-      )).reduce((cur, ret) => [...cur, ...ret], []);
-
-      this._tasks = tasks;
-      this._drawers = drawers;
-      this._dressers = dressers;
+      await this._loadAllTasks(ts);
     }
 
     this._inTaskLoad = false;
+  }
+
+  private async _loadTargetTodoTasks(ts: ITaskSource) {
+    let dressers = await ts.getMyDressers();
+    let drawers = (await Promise.all(dressers.map(dresser => ts.getDrawersForDresser(dresser.id)))).reduce(
+      (cur, ret) => [...cur, ...ret],
+      []
+    );
+    let tasks = (await Promise.all(drawers.map(drawer => ts.getAllTasksForDrawer(drawer.id, drawer.parentId)))).reduce(
+      (cur, ret) => [...cur, ...ret],
+      []
+    );
+
+    this._tasks = tasks;
+    this._drawers = drawers;
+    this._dressers = dressers;
+
+    this._currentTargetDresser = this.res.BASE_SELF_ASSIGNED;
+    this._currentTargetDrawer = this.targetId;
+  }
+
+  private async _loadTargetPlannerTasks(ts: ITaskSource) {
+    let dresser = await ts.getSingleDresser(this.targetId);
+    let drawers = await ts.getDrawersForDresser(dresser.id);
+    let tasks = (await Promise.all(drawers.map(drawer => ts.getAllTasksForDrawer(drawer.id, drawer.parentId)))).reduce(
+      (cur, ret) => [...cur, ...ret],
+      []
+    );
+
+    this._tasks = tasks;
+    this._drawers = drawers;
+    this._dressers = [dresser];
+
+    this._currentTargetDresser = this.targetId;
+    if (this.targetBucketId) this._currentTargetDrawer = this.targetBucketId;
+  }
+
+  private async _loadAllTasks(ts: ITaskSource) {
+    let dressers = await ts.getMyDressers();
+    let drawers = (await Promise.all(dressers.map(dresser => ts.getDrawersForDresser(dresser.id)))).reduce(
+      (cur, ret) => [...cur, ...ret],
+      []
+    );
+
+    if (!this.initialId) {
+      let defaultDrawer = drawers.find(d => (d._raw as OutlookTaskFolder).isDefaultFolder);
+      if (defaultDrawer) this._currentTargetDrawer = defaultDrawer.id;
+    }
+
+    let tasks = (await Promise.all(drawers.map(drawer => ts.getAllTasksForDrawer(drawer.id, drawer.parentId)))).reduce(
+      (cur, ret) => [...cur, ...ret],
+      []
+    );
+
+    this._tasks = tasks;
+    this._drawers = drawers;
+    this._dressers = dressers;
   }
 
   private async addTask(
@@ -276,23 +304,13 @@ export class MgtTasks extends LitElement {
     this._newTaskDresserId = '';
   }
 
-  private taskPlanFilter(task: ITask) {
-    return (
-      task.topParentId === this._currentTargetDresser ||
-      (this.isDefault(this._currentTargetDresser) && this.isAssignedToMe(task))
-    );
-  }
-
-  private taskSubPlanFilter(task: ITask) {
-    return task.topParentId === this._currentSubTargetDresser || this.isDefault(this._currentSubTargetDresser);
-  }
-
-  private taskBucketPlanFilter(task: ITask) {
-    return task.immediateParentId === this._currentTargetDrawer || this.isDefault(this._currentTargetDrawer);
-  }
-
   protected render() {
-    if (this._inTaskLoad) return null;
+    let tasks = this._tasks
+      .filter(task => this.taskPlanFilter(task))
+      .filter(task => this.taskBucketPlanFilter(task))
+      .filter(task => !this._hiddenTasks.includes(task.id));
+
+    let loadingTask = this._inTaskLoad ? this.renderLoadingTask() : null;
 
     return html`
       <div class="Header">
@@ -301,13 +319,8 @@ export class MgtTasks extends LitElement {
         </span>
       </div>
       <div class="Tasks">
-        ${this._showNewTask ? this.renderNewTaskHtml() : null}
-        ${this._tasks
-          .filter(task => this.taskPlanFilter(task))
-          .filter(task => this.taskSubPlanFilter(task))
-          .filter(task => this.taskBucketPlanFilter(task))
-          .filter(task => !this._hiddenTasks.includes(task.id))
-          .map(task => this.renderTaskHtml(task))}
+        ${this._showNewTask ? this.renderNewTaskHtml() : null} ${loadingTask}
+        ${repeat(tasks, task => task.id, task => this.renderTaskHtml(task))}
       </div>
     `;
   }
@@ -337,9 +350,11 @@ export class MgtTasks extends LitElement {
   private renderPlanOptions() {
     let p = Providers.globalProvider;
 
-    if (!p || p.state !== ProviderState.SignedIn)
+    if (!p || p.state !== ProviderState.SignedIn) return null;
+
+    if (this._inTaskLoad)
       return html`
-        Not Logged In
+        <span class="LoadingHeader"></span>
       `;
 
     let addButton =
@@ -605,7 +620,6 @@ export class MgtTasks extends LitElement {
 
     let dueDateString = new Date(dueDate);
     let people = Object.keys(assignments);
-    let taskClass = completed ? 'Complete' : 'Incomplete';
 
     let taskCheck = this._loadingTasks.includes(task.id)
       ? html`
@@ -674,10 +688,21 @@ export class MgtTasks extends LitElement {
         `;
 
     return html`
-      <div class="Task ${taskClass} ${this.readOnly ? 'ReadOnly' : ''}">
+      <div
+        class=${classMap({
+          Task: true,
+          Complete: completed,
+          Incomplete: !completed,
+          ReadOnly: this.readOnly
+        })}
+      >
         <div class="TaskHeader">
           <span
-            class="TaskCheckCont ${taskClass}"
+            class=${classMap({
+              TaskCheckCont: true,
+              Complete: completed,
+              Incomplete: !completed
+            })}
             @click="${e => {
               if (!this.readOnly) {
                 if (!task.completed) this.completeTask(task);
@@ -694,6 +719,37 @@ export class MgtTasks extends LitElement {
         </div>
         <div class="TaskDetails">
           ${taskDresser} ${taskDrawer} ${taskPeople} ${taskDue}
+        </div>
+      </div>
+    `;
+  }
+
+  private renderLoadingTask() {
+    return html`
+      <div class="Task LoadingTask">
+        <div class="TaskHeader">
+          <div class="TaskCheckCont">
+            <div class="TaskCheck"></div>
+          </div>
+          <div class="TaskTitle"></div>
+        </div>
+        <div class="TaskDetails">
+          <div class="TaskDetail">
+            <div class="TaskDetailIcon"></div>
+            <div class="TaskDetailName"></div>
+          </div>
+          <div class="TaskDetail">
+            <div class="TaskDetailIcon"></div>
+            <div class="TaskDetailName"></div>
+          </div>
+          <div class="TaskDetail">
+            <div class="TaskDetailIcon"></div>
+            <div class="TaskDetailName"></div>
+          </div>
+          <div class="TaskDetail">
+            <div class="TaskDetailIcon"></div>
+            <div class="TaskDetailName"></div>
+          </div>
         </div>
       </div>
     `;
@@ -800,5 +856,20 @@ export class MgtTasks extends LitElement {
     }
 
     return false;
+  }
+
+  private taskPlanFilter(task: ITask) {
+    return (
+      task.topParentId === this._currentTargetDresser ||
+      (this.isDefault(this._currentTargetDresser) && this.isAssignedToMe(task))
+    );
+  }
+
+  private taskSubPlanFilter(task: ITask) {
+    return task.topParentId === this._currentSubTargetDresser || this.isDefault(this._currentSubTargetDresser);
+  }
+
+  private taskBucketPlanFilter(task: ITask) {
+    return task.immediateParentId === this._currentTargetDrawer || this.isDefault(this._currentTargetDrawer);
   }
 }
