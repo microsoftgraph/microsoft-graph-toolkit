@@ -22,8 +22,8 @@ Providers.globalProvider = new MsalProvider({
 The toolkit implements several providers:
 
 - [MsalProvider](./providers/msal.md)
-- [SharePointProvider](./providers/sharepoint.md)
-- [TeamsProvider](./providers/teams.md)
+- [SharePointProvider](./providers/SharePoint.md)
+- [TeamsProvider](./providers/Teams.md)
 - Office Add-ins provider (coming soon)
 
 ## Get started
