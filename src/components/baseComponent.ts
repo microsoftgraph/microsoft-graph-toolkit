@@ -16,4 +16,25 @@ export abstract class MgtBaseComponent extends LitElement {
     });
     return this.dispatchEvent(event);
   }
+
+  private static _useShadowRoot: boolean = true;
+  public static get useShadowRoot() {
+    return this._useShadowRoot;
+  }
+  public static set useShadowRoot(value: boolean) {
+    this._useShadowRoot = value;
+  }
+
+  constructor() {
+    super();
+    if (this.isShadowRootDisabled()) this['_needsShimAdoptedStyleSheets'] = true;
+  }
+
+  protected createRenderRoot() {
+    return this.isShadowRootDisabled() ? this : super.createRenderRoot();
+  }
+
+  public isShadowRootDisabled() {
+    return !MgtBaseComponent._useShadowRoot || !(this.constructor as typeof MgtBaseComponent)._useShadowRoot;
+  }
 }
