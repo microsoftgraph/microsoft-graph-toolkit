@@ -93,6 +93,7 @@ export class MgtTasks extends MgtBaseComponent {
   @property() private _loadingTasks: string[] = [];
 
   @property() private _inTaskLoad: boolean = false;
+  @property() private _hasDoneInitialLoad: boolean = false;
 
   private _me: User = null;
   private _providerUpdateCallback: () => void | any;
@@ -154,6 +155,9 @@ export class MgtTasks extends MgtBaseComponent {
       this._drawers = [];
       this._dressers = [];
 
+      this._hasDoneInitialLoad = false;
+      this._inTaskLoad = false;
+
       this.loadTasks();
     }
   }
@@ -177,6 +181,8 @@ export class MgtTasks extends MgtBaseComponent {
     }
 
     this._inTaskLoad = false;
+
+    if (!this._hasDoneInitialLoad) this._hasDoneInitialLoad = true;
   }
 
   private async _loadTargetTodoTasks(ts: ITaskSource) {
@@ -310,7 +316,7 @@ export class MgtTasks extends MgtBaseComponent {
       .filter(task => this.taskBucketPlanFilter(task))
       .filter(task => !this._hiddenTasks.includes(task.id));
 
-    let loadingTask = this._inTaskLoad ? this.renderLoadingTask() : null;
+    let loadingTask = this._inTaskLoad && !this._hasDoneInitialLoad ? this.renderLoadingTask() : null;
 
     return html`
       <div class="Header">
@@ -352,7 +358,7 @@ export class MgtTasks extends MgtBaseComponent {
 
     if (!p || p.state !== ProviderState.SignedIn) return null;
 
-    if (this._inTaskLoad)
+    if (this._inTaskLoad && !this._hasDoneInitialLoad)
       return html`
         <span class="LoadingHeader"></span>
       `;
