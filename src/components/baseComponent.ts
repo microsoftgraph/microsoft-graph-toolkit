@@ -32,7 +32,10 @@ export abstract class MgtBaseComponent extends LitElement {
   }
 
   protected createRenderRoot() {
-    return (this.constructor as (typeof MgtBaseComponent))._disableAllShadowRoots ? this : super.createRenderRoot();
+    return MgtBaseComponent._disableAllShadowRoots ||
+      (this.constructor as (typeof MgtBaseComponent))._disableAllShadowRoots
+      ? this
+      : super.createRenderRoot();
   }
 }
 
