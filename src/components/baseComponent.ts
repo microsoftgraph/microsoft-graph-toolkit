@@ -17,26 +17,24 @@ export abstract class MgtBaseComponent extends LitElement {
     return this.dispatchEvent(event);
   }
 
-  private static _disableAllShadowRoots: boolean = false;
-  public static get disableAllShadowRoots() {
-    return this._disableAllShadowRoots;
+  private static _useShadowRoot: boolean = true;
+  public static get useShadowRoot() {
+    return this._useShadowRoot;
   }
-  public static set disableAllShadowRoots(value: boolean) {
-    this._disableAllShadowRoots = value;
+  public static set useShadowRoot(value: boolean) {
+    this._useShadowRoot = value;
   }
 
   constructor() {
     super();
-    if ((this.constructor as typeof MgtBaseComponent)._disableAllShadowRoots)
-      this['_needsShimAdoptedStyleSheets'] = true;
+    if (this.isShadowRootDisabled()) this['_needsShimAdoptedStyleSheets'] = true;
   }
 
   protected createRenderRoot() {
-    return MgtBaseComponent._disableAllShadowRoots ||
-      (this.constructor as (typeof MgtBaseComponent))._disableAllShadowRoots
-      ? this
-      : super.createRenderRoot();
+    return this.isShadowRootDisabled() ? this : super.createRenderRoot();
+  }
+
+  public isShadowRootDisabled() {
+    return !MgtBaseComponent._useShadowRoot || !(this.constructor as typeof MgtBaseComponent)._useShadowRoot;
   }
 }
-
-if (window && !window[MgtBaseComponent.name]) window[MgtBaseComponent.name] = MgtBaseComponent;

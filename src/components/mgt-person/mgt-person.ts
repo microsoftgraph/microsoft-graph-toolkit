@@ -295,5 +295,3 @@ export declare interface MgtPersonDetails {
   givenName?: string;
   surname?: string;
 }
-
-if (window && !window[MgtPerson.name]) window[MgtPerson.name] = MgtPerson;

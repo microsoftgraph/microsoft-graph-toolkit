@@ -119,7 +119,7 @@ export class MgtLogin extends MgtBaseComponent {
   }
 
   firstUpdated() {
-    window.onclick = (event: any) => {
+    window.addEventListener('click', (event: MouseEvent) => {
       if (event.target !== this) {
         // get popup bounds
         const popup = this.renderRoot.querySelector('.popup');
@@ -128,7 +128,7 @@ export class MgtLogin extends MgtBaseComponent {
           this._showMenu = false;
         }
       }
-    };
+    });
   }
 
   private async loadState() {
@@ -153,7 +153,8 @@ export class MgtLogin extends MgtBaseComponent {
     this._loading = false;
   }
 
-  private onClick() {
+  private onClick(e: MouseEvent) {
+    e.stopPropagation();
     if (this._user || this.userDetails) {
       // get login button bounds
       const loginButton = this.renderRoot.querySelector('.login-button');
@@ -281,5 +282,3 @@ export class MgtLogin extends MgtBaseComponent {
     `;
   }
 }
-
-if (window && !window[MgtLogin.name]) window[MgtLogin.name] = MgtLogin;

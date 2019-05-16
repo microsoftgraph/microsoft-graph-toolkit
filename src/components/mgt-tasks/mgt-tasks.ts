@@ -882,5 +882,3 @@ export class MgtTasks extends MgtBaseComponent {
     return task.immediateParentId === this._currentTargetDrawer || this.isDefault(this._currentTargetDrawer);
   }
 }
-
-if (window && !window[MgtTasks.name]) window[MgtTasks.name] = MgtTasks;
