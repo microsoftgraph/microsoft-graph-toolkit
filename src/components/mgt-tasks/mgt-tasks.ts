@@ -94,6 +94,7 @@ export class MgtTasks extends MgtBaseComponent {
 
   @property() private _inTaskLoad: boolean = false;
   @property() private _hasDoneInitialLoad: boolean = false;
+  @property() private _todoDefaultSet: boolean = false;
 
   private _me: User = null;
   private _providerUpdateCallback: () => void | any;
@@ -157,6 +158,7 @@ export class MgtTasks extends MgtBaseComponent {
 
       this._hasDoneInitialLoad = false;
       this._inTaskLoad = false;
+      this._todoDefaultSet = false;
 
       this.loadTasks();
     }
@@ -227,7 +229,8 @@ export class MgtTasks extends MgtBaseComponent {
       []
     );
 
-    if (!this.initialId) {
+    if (!this.initialId && this.dataSource === 'todo' && !this._todoDefaultSet) {
+      this._todoDefaultSet = true;
       let defaultDrawer = drawers.find(d => (d._raw as OutlookTaskFolder).isDefaultFolder);
       if (defaultDrawer) this._currentTargetDrawer = defaultDrawer.id;
     }
