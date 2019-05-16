@@ -5,12 +5,13 @@
  * -------------------------------------------------------------------------------------------
  */
 
-import { LitElement, customElement, html, property } from 'lit-element';
+import { customElement, html, property } from 'lit-element';
 import { classMap } from 'lit-html/directives/class-map';
+import { MgtBaseComponent } from '../../baseComponent';
 import { styles } from './mgt-dot-options-css';
 
 @customElement('mgt-dot-options')
-export class MgtDotOptions extends LitElement {
+export class MgtDotOptions extends MgtBaseComponent {
   public static get styles() {
     return styles;
   }

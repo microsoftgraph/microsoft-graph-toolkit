@@ -381,3 +381,5 @@ export class MgtAgenda extends MgtTemplatedComponent {
     return result;
   }
 }
+
+if (window && window[MgtAgenda.name]) window[MgtAgenda.name] = MgtAgenda;

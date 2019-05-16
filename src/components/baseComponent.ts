@@ -16,4 +16,24 @@ export abstract class MgtBaseComponent extends LitElement {
     });
     return this.dispatchEvent(event);
   }
+
+  private static _disableAllShadowRoots: boolean = false;
+  public static get disableAllShadowRoots() {
+    return this._disableAllShadowRoots;
+  }
+  public static set disableAllShadowRoots(value: boolean) {
+    this._disableAllShadowRoots = value;
+  }
+
+  constructor() {
+    super();
+    if ((this.constructor as typeof MgtBaseComponent)._disableAllShadowRoots)
+      this['_needsShimAdoptedStyleSheets'] = true;
+  }
+
+  protected createRenderRoot() {
+    return (this.constructor as (typeof MgtBaseComponent))._disableAllShadowRoots ? this : super.createRenderRoot();
+  }
 }
+
+if (window && !window[MgtBaseComponent.name]) window[MgtBaseComponent.name] = MgtBaseComponent;

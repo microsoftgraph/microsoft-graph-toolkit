@@ -5,8 +5,9 @@
  * -------------------------------------------------------------------------------------------
  */
 
-import { LitElement, customElement, html, property } from 'lit-element';
+import { customElement, html, property } from 'lit-element';
 import { classMap } from 'lit-html/directives/class-map';
+import { MgtBaseComponent } from '../../baseComponent';
 import { styles } from './mgt-arrow-options-css';
 
 /*
@@ -17,7 +18,7 @@ import { styles } from './mgt-arrow-options-css';
   - benotter
  */
 @customElement('mgt-arrow-options')
-export class MgtArrowOptions extends LitElement {
+export class MgtArrowOptions extends MgtBaseComponent {
   public static get styles() {
     return styles;
   }

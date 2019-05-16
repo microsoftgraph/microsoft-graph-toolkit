@@ -104,3 +104,5 @@ export class MgtPeople extends MgtTemplatedComponent {
     `;
   }
 }
+
+if (window && !window[MgtPeople.name]) window[MgtPeople.name] = MgtPeople;
