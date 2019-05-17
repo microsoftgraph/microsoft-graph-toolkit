@@ -21,24 +21,28 @@ $color: var(--color, #{$ms-color-neutralDark});
 $email-font-size: var(--email-font-size, #{$ms-font-size-s});
 $email-color: var(--email-color, #{$ms-color-neutralPrimary});
 
-svg {
+:host svg,
+mgt-person svg {
   width: $avatar-size-s;
   height: $avatar-size-s;
 }
 
-img {
+:host img,
+mgt-person img {
   border: var(--avatar-border);
   border-radius: 50%;
 }
 
-.root {
+:host .root,
+mgt-person .root {
   position: relative;
   display: flex;
   align-items: center;
-  font-family: var(--default-font-family);
+  font-family: var(--default-font-family, "Segoe UI");
 }
 
-.Details {
+:host .Details,
+mgt-person .Details {
   flex: 1 1 auto;
   display: flex;
   flex-direction: column;
@@ -49,7 +53,8 @@ img {
   }
 }
 
-.user-avatar {
+:host .user-avatar,
+mgt-person .user-avatar {
   width: $avatar-size;
   height: $avatar-size;
 
@@ -80,7 +85,8 @@ img {
   }
 }
 
-.avatar-icon {
+:host .avatar-icon,
+mgt-person .avatar-icon {
   flex: 1 1 auto;
   font-size: $avatar-font-size;
 
@@ -101,7 +107,8 @@ img {
   }
 }
 
-.user-name {
+:host .user-name,
+mgt-person .user-name {
   font-size: $font-size;
   font-weight: $font-weight;
   white-space: nowrap;
@@ -109,7 +116,8 @@ img {
   -ms-grid-column: 2;
 }
 
-.user-email {
+:host .user-email,
+mgt-person .user-email {
   color: $email-color;
   font-size: $email-font-size;
   white-space: nowrap;

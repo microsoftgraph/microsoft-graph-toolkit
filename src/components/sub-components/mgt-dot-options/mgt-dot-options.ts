@@ -5,57 +5,55 @@
  * -------------------------------------------------------------------------------------------
  */
 
-import { LitElement, customElement, html, property } from 'lit-element';
+import { customElement, html, property } from 'lit-element';
+import { classMap } from 'lit-html/directives/class-map';
+import { MgtBaseComponent } from '../../baseComponent';
 import { styles } from './mgt-dot-options-css';
 
 @customElement('mgt-dot-options')
-export class MgtDotOptions extends LitElement {
+export class MgtDotOptions extends MgtBaseComponent {
   public static get styles() {
     return styles;
   }
 
-  @property({ type: Function })
-  public options: () => {
-    [option: string]: (e: MouseEvent) => void | any;
-  } = null;
+  @property({ type: Boolean }) public open: boolean = false;
+  @property({ type: Object }) public options: { [option: string]: (e: MouseEvent) => void | any } = null;
 
-  @property({ type: Array })
-  public disabled: string[] = [];
-
-  @property({ type: Boolean })
-  public menuOpen: boolean = false;
+  private _clickHandler: (e: MouseEvent) => void | any = null;
 
   public constructor() {
     super();
-    window.addEventListener('click', e => (this.menuOpen = false));
+    this._clickHandler = (e: MouseEvent) => (this.open = false);
+  }
+
+  public connectedCallback() {
+    super.connectedCallback();
+    window.addEventListener('click', this._clickHandler);
+  }
+
+  public disconnectedCallback() {
+    window.removeEventListener('click', this._clickHandler);
+    super.disconnectedCallback();
   }
 
   private onDotClick(e: MouseEvent) {
     e.preventDefault();
     e.stopPropagation();
 
-    this.menuOpen = !this.menuOpen;
+    this.open = !this.open;
   }
 
   public render() {
     return html`
-      <div class="DotMenu ${this.menuOpen ? 'Open' : ''}" @click=${e => this.onDotClick(e)}>
-        <span class="DotIcon">
-          \uE712
-        </span>
+      <div class=${classMap({ DotMenu: true, Open: this.open })} @click=${e => this.onDotClick(e)}>
+        <span class="DotIcon">\uE712</span>
         <div class="Menu">
-          ${this.getMenuOptions()}
+          ${Object.keys(this.options).map(prop => this.getMenuOption(prop, this.options[prop]))}
         </div>
       </div>
     `;
   }
 
-  public getMenuOptions() {
-    let ret = [];
-    for (let prop in this.options) ret.push(this.getMenuOption(prop, this.options[prop]));
-
-    return ret;
-  }
   public getMenuOption(name: string, click: (e: MouseEvent) => void | any) {
     return html`
       <div
@@ -64,7 +62,7 @@ export class MgtDotOptions extends LitElement {
           e.preventDefault();
           e.stopPropagation();
           click(e);
-          this.menuOpen = false;
+          this.open = false;
         }}"
       >
         <span class="DotItemName">

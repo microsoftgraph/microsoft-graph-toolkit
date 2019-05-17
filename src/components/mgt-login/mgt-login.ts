@@ -5,11 +5,12 @@
  * -------------------------------------------------------------------------------------------
  */
 
-import { LitElement, html, customElement, property } from 'lit-element';
+import { html, customElement, property } from 'lit-element';
 import * as MicrosoftGraph from '@microsoft/microsoft-graph-types';
 
 import { Providers } from '../../Providers';
 import { ProviderState } from '../../providers/IProvider';
+import { MgtBaseComponent } from '../baseComponent';
 import { styles } from './mgt-login-css';
 
 import { MgtPersonDetails } from '../mgt-person/mgt-person';
@@ -17,7 +18,7 @@ import '../mgt-person/mgt-person';
 import '../../styles/fabric-icon-font';
 
 @customElement('mgt-login')
-export class MgtLogin extends LitElement {
+export class MgtLogin extends MgtBaseComponent {
   private _loginButtonRect: ClientRect;
   private _popupRect: ClientRect;
   private _openLeft: boolean = false;
@@ -42,18 +43,10 @@ export class MgtLogin extends LitElement {
     this.loadState();
   }
 
-  private fireCustomEvent(eventName: string): boolean {
-    let event = new CustomEvent(eventName, {
-      cancelable: true,
-      bubbles: false
-    });
-    return this.dispatchEvent(event);
-  }
-
   updated(changedProps) {
     if (changedProps.get('_showMenu') === false) {
       // get popup bounds
-      const popup = this.shadowRoot.querySelector('.popup');
+      const popup = this.renderRoot.querySelector('.popup');
       if (popup && popup.animate) {
         this._popupRect = popup.getBoundingClientRect();
 
@@ -126,16 +119,16 @@ export class MgtLogin extends LitElement {
   }
 
   firstUpdated() {
-    window.onclick = (event: any) => {
+    window.addEventListener('click', (event: MouseEvent) => {
       if (event.target !== this) {
         // get popup bounds
-        const popup = this.shadowRoot.querySelector('.popup');
+        const popup = this.renderRoot.querySelector('.popup');
         if (popup) {
           this._popupRect = popup.getBoundingClientRect();
           this._showMenu = false;
         }
       }
-    };
+    });
   }
 
   private async loadState() {
@@ -160,10 +153,11 @@ export class MgtLogin extends LitElement {
     this._loading = false;
   }
 
-  private onClick() {
+  private onClick(e: MouseEvent) {
+    e.stopPropagation();
     if (this._user || this.userDetails) {
       // get login button bounds
-      const loginButton = this.shadowRoot.querySelector('.login-button');
+      const loginButton = this.renderRoot.querySelector('.login-button');
       if (loginButton) {
         this._loginButtonRect = loginButton.getBoundingClientRect();
 
