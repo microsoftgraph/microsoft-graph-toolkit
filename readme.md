@@ -68,7 +68,7 @@ You can then start using the components in your html page. Here is a full workin
 The benefits of using MGT through NPM is that you have full control of the bundling process and you can bundle only the code you need for your site. First, add the npm package:
 
 ```bash
-npm install @microsoft/mgt
+npm install @microsoft/mgt --save
 ```
 
 Now you can reference all components at the page you are using:
