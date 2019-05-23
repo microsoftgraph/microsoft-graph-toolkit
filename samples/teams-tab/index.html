@@ -1,14 +1,11 @@
 <html>
+  <head>
+    <script src="https://unpkg.com/@microsoft/teams-js/dist/MicrosoftTeams.min.js" crossorigin="anonymous"></script>
+    <script src="https://unpkg.com/@microsoft/mgt/dist/bundle/mgt-loader.js"></script>
+  </head>
   <body>
-    <head>
-      <script src="./node_modules/@microsoft/mgt/dist/es6/index.js"></script>
-    </head>
-    <mgt-teams-provider
-      client-id="ded74c58-5126-42b0-be48-c3971d8c8e98"
-      login-popup-url="https://mgtsampleapps.z5.web.core.windows.net/auth.html"
-    ></mgt-teams-provider>
-    <mgt-login style="float: right;"></mgt-login>
-    <mgt-person person-id="alex"></mgt-person>
-    <mgt-agenda id="myDay"></mgt-agenda>
+    <mgt-teams-provider client-id="<CLIENT-ID>" auth-popup-url="auth.html"></mgt-teams-provider>
+    <mgt-login></mgt-login>
+    <mgt-agenda group-by-day></mgt-agenda>
   </body>
 </html>
