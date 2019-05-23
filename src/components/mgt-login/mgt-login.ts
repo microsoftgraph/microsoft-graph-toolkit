@@ -33,6 +33,18 @@ export class MgtLogin extends MgtBaseComponent {
   })
   userDetails: MgtPersonDetails;
 
+  @property({
+    attribute: 'sign-in-text',
+    type: String
+  })
+  signInText = 'Sign In';
+
+  @property({
+    attribute: 'sign-out-text',
+    type: String
+  })
+  signOutText = 'Sign Out';
+
   static get styles() {
     return styles;
   }
@@ -120,13 +132,11 @@ export class MgtLogin extends MgtBaseComponent {
 
   firstUpdated() {
     window.addEventListener('click', (event: MouseEvent) => {
-      if (event.target !== this) {
-        // get popup bounds
-        const popup = this.renderRoot.querySelector('.popup');
-        if (popup) {
-          this._popupRect = popup.getBoundingClientRect();
-          this._showMenu = false;
-        }
+      // get popup bounds
+      const popup = this.renderRoot.querySelector('.popup');
+      if (popup) {
+        this._popupRect = popup.getBoundingClientRect();
+        this._showMenu = false;
       }
     });
   }
@@ -153,8 +163,8 @@ export class MgtLogin extends MgtBaseComponent {
     this._loading = false;
   }
 
-  private onClick(e: MouseEvent) {
-    e.stopPropagation();
+  private onClick(event: MouseEvent) {
+    event.stopPropagation();
     if (this._user || this.userDetails) {
       // get login button bounds
       const loginButton = this.renderRoot.querySelector('.login-button');
