@@ -4,6 +4,7 @@
   "private": true,
   "dependencies": {
     "@microsoft/mgt": "0.1.0-preview.8",
+    "@webcomponents/webcomponentsjs": "2.2.10",
     "react": "^16.8.5",
     "react-dom": "^16.8.5",
     "react-scripts": "^3.0.0"
