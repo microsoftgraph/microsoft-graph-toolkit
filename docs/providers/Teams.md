@@ -7,20 +7,57 @@ author: nmetulev
 
 # Microsoft Teams provider
 
-Use the Teams provider inside your Microsoft Teams App, inside a Tab, to power it with Microsoft Graph access.
+Use the Teams provider inside your Microsoft Teams Tab to facilitate authentication and Microsoft Graph access to all components.
 
-Visit [the authentication docs](../providers.md) to learn more about the role of providers in the Microsoft Graph Toolkit
+Visit [the authentication docs](../providers.md) to learn more about the role of providers in the Microsoft Graph Toolkit.
 
 ## Getting started
 
-Initialize the provider inside your html using the `mgt-teams-provider` component.
+Before using the Teams provider, you will need to make sure you have referenced the [Microsoft Teams SDK](https://docs.microsoft.com/en-us/javascript/api/overview/msteams-client?view=msteams-client-js-latest#using-the-sdk) in your page.
+
+Here is an example using the provider in HTML (via CDN):
 
 ```html
-<mgt-teams-provider
-  client-id="<YOUR_CLIENT_ID>"
-  auth-popup-url="https://<YOUR-DOMAIN>.com/AUTH-PATH"
-></mgt-teams-provider>
+  <!-- Microsoft Teams sdk must be referenced before the toolkit -->
+  <script src="https://unpkg.com/@microsoft/teams-js/dist/MicrosoftTeams.min.js" crossorigin="anonymous"></script>
+  <script src="https://unpkg.com/@microsoft/mgt/dist/bundle/mgt-loader.js"></script>
+
+  <mgt-teams-provider
+    client-id="<YOUR_CLIENT_ID>"
+    auth-popup-url="https://<YOUR-DOMAIN>.com/AUTH-PATH"
+  ></mgt-teams-provider>
+
 ```
+
+Here is an example using the provider in JS modules (via NPM):
+
+Make sure to install both the toolkit and the Microsoft Teams sdk
+
+```bash
+npm install @microsoft/mgt @microsoft/teams-js
+```
+
+Then import and use the provider
+
+```ts
+import '@microsoft/teams-js';
+import {Providers, TeamsProvider} from '@microsoft/mgt'; 
+
+Providers.globalProvider = new TeamsProvider(config);
+```
+
+where `config` is
+
+```ts
+export interface TeamsConfig {
+  clientId: string;
+  authPopupUrl: string;
+  scopes?: string[];
+  msalOptions?: Configuration;
+}
+```
+
+See [sample](https://github.com/microsoftgraph/microsoft-graph-toolkit/tree/master/samples/teams-tab) for full example
 
 ## Configuring your Teams App
 
@@ -42,20 +79,14 @@ Make sure to enable Implicit Grant Flow as this is a requirement for web apps re
 
 ### Create the popup page
 
-In order to login with your Teams credentials, you need to provide a URL that the Teams App with open in a popup, which will follow the authentication flow. This URL needs to be in your domain, and it needs to call the `TeamsProvider.handleAuth();` method. That's the only thing that this page needs to do. For example (if you are using parcel to bundle your app) - `auth.html`:
+In order to login with your Teams credentials, you need to provide a URL that the Teams App with open in a popup, which will follow the authentication flow. This URL needs to be in your domain, and it needs to call the `TeamsProvider.handleAuth();` method. That's the only thing that this page needs to do. For example:
 
 ```html
-<html>
-  <head>
-    <script src="./node_modules/@microsoft/mgt/dist/es6/index.js"></script>
-    <script>
-      var teamsProvider = parcelRequire('node_modules/@microsoft/mgt/dist/es6/index.js');
-      teamsProvider.TeamsProvider.handleAuth();
-    </script>
-  </head>
-</html>
+<script src="https://unpkg.com/@microsoft/teams-js/dist/MicrosoftTeams.min.js" crossorigin="anonymous"></script>
+<script src="https://unpkg.com/@microsoft/mgt/dist/bundle/mgt-loader.js">
+</script>
+    mgt.TeamsProvider.handleAuth();
+</script>
 ```
 
-### Configure Redirect URIs
-
-After you publish this page in your website, you need to get it's URL and use it in the `auth-popup-url` property. This URL also needs to be configured as a valid redirect URI at your app configuration, at the AAD portal.
+After you publish this page in your website, you need to get it's URL and use it in the `auth-popup-url/authPopupUrl` property. This URL also needs to be configured as a valid redirect URI at your app configuration, at the AAD portal.

@@ -7,9 +7,10 @@
 
 import { AuthenticationProviderOptions } from '@microsoft/microsoft-graph-client/lib/es/IAuthenticationProviderOptions';
 import { MsalProvider } from './MsalProvider';
-import * as microsoftTeams from '@microsoft/teams-js';
 import { LoginType, ProviderState } from './IProvider';
 import { Configuration, UserAgentApplication } from 'msal';
+
+declare var microsoftTeams: any;
 
 export interface TeamsConfig {
   clientId: string;
@@ -36,29 +37,16 @@ export class TeamsProvider extends MsalProvider {
     return this._accessToken;
   }
 
-  static async isAvailable(): Promise<boolean> {
-    const ms = 1000;
-    return Promise.race([
-      new Promise<boolean>((resolve, reject) => {
-        microsoftTeams.initialize();
-        microsoftTeams.getContext(function(context) {
-          if (context) {
-            resolve(true);
-          } else {
-            resolve(false);
-          }
-        });
-      }),
-      new Promise<boolean>((resolve, reject) => {
-        let id = setTimeout(() => {
-          clearTimeout(id);
-          resolve(false);
-        }, ms);
-      })
-    ]);
+  static async isAvailable() {
+    return !!microsoftTeams;
   }
 
   static handleAuth() {
+    if (!this.isAvailable) {
+      console.error('Make sure you have referenced the Microsoft Teams sdk before using the TeamsProvider');
+      return;
+    }
+
     // we are in popup world now - authenticate and handle it
 
     var url = new URL(window.location.href);
@@ -116,6 +104,11 @@ export class TeamsProvider extends MsalProvider {
       scopes: config.scopes,
       options: config.msalOptions
     });
+
+    if (!TeamsProvider.isAvailable) {
+      console.error('Make sure you have referenced the Microsoft Teams sdk before using the TeamsProvider');
+      return;
+    }
 
     this._authPopupUrl = config.authPopupUrl;
     microsoftTeams.initialize();
