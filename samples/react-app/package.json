@@ -6,6 +6,7 @@
     "@microsoft/mgt": "0.1.0-preview.8",
     "@webcomponents/webcomponentsjs": "2.2.10",
     "react": "^16.8.5",
+    "react-app-polyfill": "1.0.1",
     "react-dom": "^16.8.5",
     "react-scripts": "^3.0.0"
   },

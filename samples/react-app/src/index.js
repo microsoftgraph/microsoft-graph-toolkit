@@ -1,3 +1,5 @@
+import 'react-app-polyfill/ie11';
+import 'react-app-polyfill/stable';
 // in theory, we should be able to add this to index.html
 //  <script>
 //    window.WebComponents = window.WebComponents || {};
