@@ -1,16 +1,13 @@
 <template>
   <div id="mainPage">
     <div id="sidePanel" v-if="showPanel">
-      <mgt-login v-pre>
-        <template data-type="signed-in">
-          <mgt-person person-query="me"></mgt-person>
-          <h3>{{ details.displayName }}</h3>
-          <p>{{ details.jobTitle }}</p>
-          <span>&hellip;</span>
-        </template>
-        <template data-type="menu-content"><div></div></template>
-        <template data-type="sign-out"><div class="menu"><img src="/exit.svg"/><div>{{ signOutText }}</div></div></template>
-      </mgt-login>
+      <div id="profile" @click="logout">
+        <mgt-person person-query="me" ref="user"></mgt-person>
+        <h3>{{ details.displayName }}</h3>
+        <span>&hellip;</span>
+        <!-- 
+        <template data-type="sign-out"><div class="menu"><img src="/exit.svg"/><div>{{ signOutText }}</div></div></template> -->
+      </div>
 
       <mgt-people v-pre>
         <template>
@@ -37,7 +34,7 @@
 
 <script lang="ts">
 import { Component, Prop, Vue } from 'vue-property-decorator';
-import { MgtPerson, MgtAgenda, MgtPeople, MgtTasks } from '@microsoft/mgt';
+import { MgtPerson, MgtAgenda, MgtPeople, MgtTasks, MgtPersonDetails, Providers } from '@microsoft/mgt';
 import RecentFileList from './RecentFileList.vue';
 
 @Component({
@@ -47,6 +44,23 @@ import RecentFileList from './RecentFileList.vue';
 })
 export default class LoggedInPage extends Vue {
   private showPanel = true;
+  private details: MgtPersonDetails = {};
+
+  private async mounted() {
+    // TODO: Fire event in person when data loaded from query.
+    setTimeout(this.setDetails, 1000);
+  }
+
+  private setDetails() {
+    this.details = (this.$refs.user as MgtPerson).personDetails;
+  }
+
+  private logout() {
+    const provider = Providers.globalProvider;
+    if (provider) {
+      provider.logout();
+    }
+  }
 }
 </script>
 
@@ -75,20 +89,19 @@ export default class LoggedInPage extends Vue {
 
   box-shadow: 8px 4px 14px rgba(21, 21, 21, 0.05);
 
-  mgt-login {
-    --color: #00188F;
-    --background-color: white;
+  #profile {
+    color: #00188F;
+    background-color: white;
 
     width: 408px;
-    --width: 408px;
-    --height: 136px;
-    --menu-padding: 8px;
-    --menu-command-margin: 0px;
+    height: 136px;
+
+    cursor: pointer;
 
     box-shadow: 0px 3.4386px 10.3158px rgba(0, 0, 0, 0.11);
 
     mgt-person {
-      position: absolute;
+      position: relative;
       top: 20px;
       left: 20px;
 
@@ -99,8 +112,8 @@ export default class LoggedInPage extends Vue {
     h3 {
       margin: 0;
 
-      position: absolute;
-      top: 24px;
+      position: relative;
+      top: -48px;
       left: 137px;
 
       font-style: normal;

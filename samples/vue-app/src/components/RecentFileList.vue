@@ -58,11 +58,12 @@ export default class RecentFileList extends Vue {
       .get();
 
     if (fileView && fileView.value) {
-      let files = fileView.value;
-      ////files.sort((f1: MicrosoftGraph.DriveItem, f2: MicrosoftGraph.DriveItem) => f1.name.localeCompare(f2.name));
+      const files = fileView.value;
+      //// files.sort((f1: MicrosoftGraph.DriveItem, f2: MicrosoftGraph.DriveItem) => f1.name.localeCompare(f2.name));
 
       for (const file of files) {
-        const turi = `/drives/${file.remoteItem.parentReference.driveId}/items/${file.remoteItem.id}/thumbnails/0/medium`;
+        const turi =
+          `/drives/${file.remoteItem.parentReference.driveId}/items/${file.remoteItem.id}/thumbnails/0/medium`;
 
         try {
           const thumbnail = await client
@@ -74,7 +75,7 @@ export default class RecentFileList extends Vue {
         } catch (err) {
           file.imageUrl = null; // TODO
         }
-      }      
+      }
 
       return files;
     }

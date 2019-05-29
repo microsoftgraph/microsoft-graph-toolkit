@@ -27,7 +27,7 @@ import LoggedInPage from './components/LoggedInPage.vue';
 
 @Component({
   components: {
-    LoggedInPage
+    LoggedInPage,
   },
 })
 export default class App extends Vue {
@@ -35,24 +35,23 @@ export default class App extends Vue {
   private browserOpen = false;
 
   private async created() {
-    let provider = Providers.globalProvider;
+    const provider = Providers.globalProvider;
     if (provider) {
       this.loggedIn(provider.state);
       provider.onStateChanged(this.loggedIn);
     }
 
     Providers.onProviderUpdated(() => {
-      let provider = Providers.globalProvider;
-      if (provider) {
-        this.loggedIn(provider.state);
-        provider.onStateChanged(this.loggedIn);
+      const provider2 = Providers.globalProvider;
+      if (provider2) {
+        this.loggedIn(provider2.state);
+        provider2.onStateChanged(this.loggedIn);
       }
     });
   }
 
   private loggedIn(state: any) {
-    if (state == ProviderState.SignedIn)
-    {
+    if (state === ProviderState.SignedIn) {
       this.signedIn = true;
     }
   }
