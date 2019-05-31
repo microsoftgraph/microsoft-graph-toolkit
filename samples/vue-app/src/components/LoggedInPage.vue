@@ -4,6 +4,7 @@
       <div id="profile" @click="logout">
         <mgt-person person-query="me" ref="user"></mgt-person>
         <h3>{{ details.displayName }}</h3>
+        <!-- TODO: Add more details here based on Issue #100 -->
         <span>&hellip;</span>
         <!-- 
         <template data-type="sign-out"><div class="menu"><img src="/exit.svg"/><div>{{ signOutText }}</div></div></template> -->
@@ -47,7 +48,7 @@ export default class LoggedInPage extends Vue {
   private details: MgtPersonDetails = {};
 
   private async mounted() {
-    // TODO: Fire event in person when data loaded from query.
+    // TODO: Fire event in person when data loaded from query. See Issue #99.
     setTimeout(this.setDetails, 1000);
   }
 
@@ -57,7 +58,7 @@ export default class LoggedInPage extends Vue {
 
   private logout() {
     const provider = Providers.globalProvider;
-    if (provider) {
+    if (provider && provider.logout) {
       provider.logout();
     }
   }
