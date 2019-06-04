@@ -1,3 +1,15 @@
+import 'react-app-polyfill/ie11';
+import 'react-app-polyfill/stable';
+// in theory, we should be able to add this to index.html
+//  <script>
+//    window.WebComponents = window.WebComponents || {};
+//    window.WebComponents.root = '../node_modules/@webcomponents/webcomponentsjs/';
+//  </script>
+// and then
+// import '../node_modules/@webcomponents/webcomponentsjs/webcomponents-loader.js';
+// but for some reason it doesn't on edge
+// because of this, we'll just load the whole bundle.
+import '../node_modules/@webcomponents/webcomponentsjs/webcomponents-bundle.js';
 import React from 'react';
 import ReactDOM from 'react-dom';
 import App from './App';
