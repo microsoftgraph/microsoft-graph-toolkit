@@ -19,10 +19,10 @@ mgt-login {
   --color: #{$ms-color-neutralDark};
   --background-color: transparent;
   --background-color--hover: #{$ms-color-neutralLight};
-  --menu-content-background-color: white;
-  --menu-command-font-size: #{$ms-font-size-s};
-  --menu-command-margin: 16px 0 0;
-  --menu-padding: 24px 48px 16px 24px;
+  --popup-content-background-color: white;
+  --popup-command-font-size: #{$ms-font-size-s};
+  --popup-command-margin: 16px 0 0;
+  --popup-padding: 24px 48px 16px 24px;
 }
 
 :host .root,
@@ -76,7 +76,7 @@ mgt-login .popup {
   position: absolute;
   animation-duration: 300ms;
   font-family: var(--default-font-family);
-  background: var(--menu-content-background-color);
+  background: var(--popup-content-background-color);
   box-shadow: 0 12px 40px 2px rgba(0, 0, 0, 0.08);
   min-width: 240px;
   z-index: 1;
@@ -95,20 +95,20 @@ mgt-login .popup {
 mgt-login .popup-content {
   display: flex;
   flex-direction: column;
-  padding: var(--menu-padding);
+  padding: var(--popup-padding);
 }
 
 :host .popup-commands ul,
 mgt-login .popup-commands ul {
   list-style-type: none;
-  margin: var(--menu-command-margin);
+  margin: var(--popup-command-margin);
   padding: 0;
 }
 
 :host .popup-command,
 mgt-login .popup-command {
   font-family: var(--default-font-family);
-  font-size: var(--menu-command-font-size);
+  font-size: var(--popup-command-font-size);
   font-weight: var(--font-weight);
   color: var(--theme-primary-color);
   background-color: transparent;

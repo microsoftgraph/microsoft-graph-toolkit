@@ -33,18 +33,6 @@ export class MgtLogin extends MgtBaseComponent {
   })
   userDetails: MgtPersonDetails;
 
-  @property({
-    attribute: 'sign-in-text',
-    type: String
-  })
-  signInText = 'Sign In';
-
-  @property({
-    attribute: 'sign-out-text',
-    type: String
-  })
-  signOutText = 'Sign Out';
-
   static get styles() {
     return styles;
   }
