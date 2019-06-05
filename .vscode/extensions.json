@@ -1,5 +1,10 @@
 {
   // See https://go.microsoft.com/fwlink/?LinkId=827846
   // for the documentation about the extensions.json format
-  "recommendations": ["nicolasparada.innerhtml", "bierner.lit-html", "esbenp.prettier-vscode"]
+  "recommendations": [
+    "nicolasparada.innerhtml",
+    "bierner.lit-html",
+    "esbenp.prettier-vscode",
+    "rebornix.project-snippets"
+  ]
 }
