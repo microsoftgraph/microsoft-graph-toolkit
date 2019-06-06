@@ -35,6 +35,26 @@ npm install
 npm start
 ```
 
+## Creating a new component (quick start)
+
+The best way to get started with a new component is to use our snippets for scaffolding:
+
+> Note: The steps below assume you are using Visual Studio Code and you've installed all the recommended extensions.
+
+1. Chose a name for your component. The component must be prefixed with `mgt`. For example `mgt-component`
+
+1. Create a new folder for your new component under `src` \ `components` and name it with the name of your component.
+
+1. Create a new typescript file in your new folder with the same name. Ex: `mgt-component.ts`
+
+1. Open the file and use the `mgtnew` snippet to scaffold the new component.
+
+    > To use a snippet, start typing the name of the snippet (`mgtnew`) and press `tab`
+
+1. Tab through the generated code to set the name of your component. 
+
+1. Add your code!
+
 <!-- ## Testing the preview NPM package
 
 If you want to install the preview package just once, run this command:
