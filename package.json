@@ -1,6 +1,6 @@
 {
   "name": "@microsoft/mgt",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "description": "The Microsoft Graph Toolkit",
   "keywords": [
     "microsoft graph",
@@ -50,7 +50,7 @@
     "@microsoft/microsoft-graph-types": "^1.8.0",
     "@microsoft/microsoft-graph-types-beta": "microsoftgraph/msgraph-typescript-typings#beta",
     "lit-element": "^2.1.0",
-    "msal": "^1.0.0",
+    "msal": "1.0.0",
     "office-ui-fabric-core": "10.0.0"
   },
   "devDependencies": {

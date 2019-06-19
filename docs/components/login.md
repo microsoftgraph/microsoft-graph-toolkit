@@ -51,6 +51,7 @@ The `mgt-login` component defines these CSS custom properties
 mgt-login {
   --font-size: 14px;
   --font-weight: 600;
+  --width: '100%';
   --height: '100%';
   --margin: 0;
   --padding: 12px 20px;
@@ -58,7 +59,9 @@ mgt-login {
   --background-color: transparent;
   --background-color--hover: #edebe9;
   --popup-content-background-color: white;
-  --popup-command-font-size: 12px; }
+  --popup-command-font-size: 12px;
+  --popup-command-margin: 0;
+  --popup-padding: 16px;
 }
 ```
 

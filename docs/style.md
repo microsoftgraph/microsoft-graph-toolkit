@@ -33,7 +33,7 @@ Example:
 <script type="module">
   import { MgtBaseComponent } from './dist/es6/components/baseComponent.js';
 
-  MgtBaseComponent.useShadowDom = false;
+  MgtBaseComponent.useShadowRoot = false;
 </script>
 
 <script type="module" src="./dist/es6/components/mgt-tasks/mgt-tasks.js"></script>
