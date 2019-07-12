@@ -21,7 +21,8 @@
   "types": "./dist/es6/index.d.ts",
   "module": "./dist/es6/index.js",
   "files": [
-    "dist"
+    "dist",
+    "src"
   ],
   "scripts": {
     "clean": "shx rm -rf dist",
