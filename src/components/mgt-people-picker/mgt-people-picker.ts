@@ -37,7 +37,7 @@ export class MgtPicker extends MgtTemplatedComponent {
   @property() private _userInput: string = '';
   @property() private _previousSearch: any;
 
-  @property() private arrowSelectionCount: number = 0;
+  @property() private arrowSelectionCount: number = -1;
   /* TODO: Do we want a query property for loading groups from calls? */
 
   static get styles() {
@@ -70,24 +70,36 @@ export class MgtPicker extends MgtTemplatedComponent {
 
   private onUserKeyDown(event: any) {
     if (event.code == 'Tab') {
-      this.addPerson(this.people[0], event);
+      this.addPerson(this.people[this.arrowSelectionCount], event);
     }
   }
 
   private handleArrowSelection(event: any) {
     let peoples: any = this.people;
-    console.log('arrow selection count', this.arrowSelectionCount);
+
+    //update arrow count
+    if (event.keyCode == 38) {
+      //up arrow
+      this.arrowSelectionCount--;
+    }
+    if (event.keyCode == 40) {
+      //down arrow
+      this.arrowSelectionCount++;
+    }
+    //update person in list selected
     for (let i = 0; i < peoples.length; i++) {
       peoples[i].isSelected = '';
     }
-    if (peoples[this.arrowSelectionCount]) {
+    if (this.arrowSelectionCount <= peoples.slice(0, this.showMax).length - 1 && this.arrowSelectionCount > 0) {
       peoples[this.arrowSelectionCount].isSelected = 'fill';
+    } else if (this.arrowSelectionCount < 0) {
+      //up arrow when there are no more selections
+      this.arrowSelectionCount = 0;
     } else {
+      //down arrow when there are no more selections
       peoples[0].isSelected = 'fill';
       this.arrowSelectionCount = 0;
     }
-    this.renderPersons(peoples);
-    this.arrowSelectionCount++;
   }
 
   private addPerson(person: MgtPersonDetails, event: any) {
@@ -315,12 +327,11 @@ export class MgtPicker extends MgtTemplatedComponent {
     }
   }
   private renderPersons(peoples: any) {
-    console.log('render persns is called', peoples);
     return peoples.slice(0, this.showMax).map(
       person =>
         html`
           <li
-            class="${peoples.isSelected == 'fill' ? 'people-person-list-fill' : 'people-person-list'}"
+            class="${person.isSelected == 'fill' ? 'people-person-list-fill' : 'people-person-list'}"
             @click="${(event: any) => this.addPerson(person, event)}"
           >
             ${this.renderTemplate('person', { person: person }, person.displayName) || this.renderPerson(person)}
