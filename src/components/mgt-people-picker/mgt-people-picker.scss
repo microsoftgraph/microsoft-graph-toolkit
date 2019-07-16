@@ -20,6 +20,9 @@ mgt-people-picker .people-list {
   list-style-type: none;
   margin: $list-margin;
   padding: 0;
+  margin: 0;
+  margin-left: 1%;
+  margin-right: 1%;
   font-family: Segoe UI;
   font-style: normal;
   font-weight: normal;
@@ -70,7 +73,7 @@ mgt-people-picker .SearchIcon {
 
 :host .people-person,
 mgt-people-picker .people-person {
-  margin: 4px 0 0 0;
+  margin: 4px 5px 0 0;
   display: flex;
   align-items: center;
   background-color: rgba(196, 196, 196, 0.24);
@@ -81,31 +84,26 @@ mgt-people-picker .people-person {
 :host .people-person-list,
 mgt-people-picker .people-person-list {
   display: flex;
+  flex-direction: row;
+  flex-wrap: wrap;
   align-items: center;
-  max-height: 24px;
-  margin-bottom: 15px;
+  padding: 12px;
   font-family: Segoe UI;
   font-style: normal;
   font-weight: 600;
   font-size: 14px;
-}
-
-:host .people-person-text-area,
-mgt-people-picker .people-person-text-area {
-  margin-left: 5px;
 }
 
 :host .people-person-list-fill,
 mgt-people-picker .people-person-list-fill {
   display: flex;
   align-items: center;
-  max-height: 24px;
-  margin-bottom: 15px;
+  padding: 12px;
   font-family: Segoe UI;
   font-style: normal;
   font-weight: 600;
   font-size: 14px;
-  background-color: gray;
+  background-color: #f1f1f1;
 }
 
 :host .people-person-text,
@@ -179,36 +177,13 @@ mgt-people-picker .person-display-name {
   color: #000000;
 }
 
-:host .user-avatar,
-mgt-people-picker .user-avatar {
-  width: $avatar-size;
-  height: $avatar-size;
-
-  &.initials {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    color: $initials-color;
-    background-color: $initials-background-color;
-    border-radius: 50%;
-    font-weight: 400;
-    font-size: 60%;
-  }
-
-  &.small {
-    width: $avatar-size-s;
-    height: $avatar-size-s;
-  }
-
-  &.row-span-2 {
-    width: $avatar-size;
-    height: $avatar-size;
-  }
-
-  &.row-span-3 {
-    width: $avatar-size;
-    height: $avatar-size;
-  }
+mgt-person {
+  --avatar-size-s: 32px;
+  margin-left: 12px;
+}
+.chosen-person {
+  --avatar-size-s: 24px;
+  margin-left: 0px;
 }
 
 :host .search-error-text,
@@ -240,4 +215,18 @@ mgt-people-picker .error-message-parent {
 :host .highlight-search-text,
 mgt-people-picker .highlight-search-text {
   font-weight: bold;
+}
+:host .people-person-job-title,
+mgt-people-picker .people-person-job-title {
+  flex: 100%;
+  order: 3;
+  font-weight: normal;
+  font-size: 12px;
+  text-transform: uppercase;
+}
+:host .people-person-text-area,
+mgt-people-picker .people-person-text-area {
+  margin-left: 13px;
+  flex: 1 1 0;
+  max-height: 40px;
 }
