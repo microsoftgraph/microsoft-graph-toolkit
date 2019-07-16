@@ -71,34 +71,37 @@ export class MgtPicker extends MgtTemplatedComponent {
   private onUserKeyDown(event: any) {
     if (event.code == 'Tab') {
       this.addPerson(this.people[this.arrowSelectionCount], event);
+      event.target.value = '';
     }
   }
 
   private handleArrowSelection(event: any) {
-    let peoples: any = this.people;
+    if (this.people) {
+      let peoples: any = this.people;
 
-    //update arrow count
-    if (event.keyCode == 38) {
-      //up arrow
-      this.arrowSelectionCount--;
-    }
-    if (event.keyCode == 40) {
-      //down arrow
-      this.arrowSelectionCount++;
-    }
-    //update person in list selected
-    for (let i = 0; i < peoples.length; i++) {
-      peoples[i].isSelected = '';
-    }
-    if (this.arrowSelectionCount <= peoples.slice(0, this.showMax).length - 1 && this.arrowSelectionCount > 0) {
-      peoples[this.arrowSelectionCount].isSelected = 'fill';
-    } else if (this.arrowSelectionCount < 0) {
-      //up arrow when there are no more selections
-      this.arrowSelectionCount = 0;
-    } else {
-      //down arrow when there are no more selections
-      peoples[0].isSelected = 'fill';
-      this.arrowSelectionCount = 0;
+      //update arrow count
+      if (event.keyCode == 38) {
+        //up arrow
+        this.arrowSelectionCount--;
+      }
+      if (event.keyCode == 40) {
+        //down arrow
+        this.arrowSelectionCount++;
+      }
+      //update person in list selected
+      for (let i = 0; i < peoples.length; i++) {
+        peoples[i].isSelected = '';
+      }
+      if (this.arrowSelectionCount <= peoples.slice(0, this.showMax).length - 1 && this.arrowSelectionCount > 0) {
+        peoples[this.arrowSelectionCount].isSelected = 'fill';
+      } else if (this.arrowSelectionCount < 0) {
+        //up arrow when there are no more selections
+        this.arrowSelectionCount = 0;
+      } else {
+        //down arrow when there are no more selections
+        peoples[0].isSelected = 'fill';
+        this.arrowSelectionCount = 0;
+      }
     }
   }
 
@@ -124,6 +127,7 @@ export class MgtPicker extends MgtTemplatedComponent {
         this.people = [];
         this._userInput = '';
         this._personName = '';
+        this.arrowSelectionCount = -1;
       }
     }
   }
@@ -182,13 +186,11 @@ export class MgtPicker extends MgtTemplatedComponent {
             provider.graph.getUser(peoples[i].id).then(user => {
               if (user) {
                 peoples[i].displayName = user.displayName;
-                this.requestUpdate();
               }
             }),
             provider.graph.getUserPhoto(peoples[i].id).then(photo => {
               if (photo) {
                 peoples[i].image = photo;
-                this.requestUpdate();
               }
             })
           ]);
@@ -217,6 +219,9 @@ export class MgtPicker extends MgtTemplatedComponent {
       }
     }
   }
+  private trackMouseFocus() {
+    console.log('lost focus');
+  }
 
   private renderChosenPeople() {
     if (this._selectedPeople.length > 0) {
@@ -228,7 +233,8 @@ export class MgtPicker extends MgtTemplatedComponent {
                 <li
                   class="${person.id == this._duplicatePersonId ? 'people-person duplicate-person' : 'people-person'}"
                 >
-                  ${this.renderTemplate('person', { person: person }, person.displayName) || this.renderPerson(person)}
+                  ${this.renderTemplate('person', { person: person }, person.displayName) ||
+                    this.renderChosenPerson(person)}
                   <p class="person-display-name">${person.displayName}</p>
                   <div class="CloseIcon" @click="${() => this.removePerson(person)}">\uE711</div>
                 </li>
@@ -241,6 +247,7 @@ export class MgtPicker extends MgtTemplatedComponent {
               type="text"
               placeholder="Start typing a name"
               .value="${this._personName}"
+              onblur="${this.trackMouseFocus()}"
               @keydown="${(e: KeyboardEvent & { target: HTMLInputElement }) => {
                 this.onUserKeyDown(e);
               }}"
@@ -260,6 +267,7 @@ export class MgtPicker extends MgtTemplatedComponent {
             type="text"
             placeholder="Start typing a name"
             .value="${this._personName}"
+            onblur="${this.trackMouseFocus()}"
             @keydown="${(e: KeyboardEvent & { target: HTMLInputElement }) => {
               this.onUserKeyDown(e);
             }}"
@@ -308,11 +316,11 @@ export class MgtPicker extends MgtTemplatedComponent {
     }
 
     return html`
-      <p>
+      <div>
         <span class="people-person-text">${peoples.first}</span
         ><span class="people-person-text highlight-search-text">${peoples.highlight}</span
         ><span class="people-person-text">${peoples.last}</span>
-      </p>
+      </div>
     `;
   }
 
@@ -327,6 +335,7 @@ export class MgtPicker extends MgtTemplatedComponent {
     }
   }
   private renderPersons(peoples: any) {
+    console.log(peoples);
     return peoples.slice(0, this.showMax).map(
       person =>
         html`
@@ -335,9 +344,10 @@ export class MgtPicker extends MgtTemplatedComponent {
             @click="${(event: any) => this.addPerson(person, event)}"
           >
             ${this.renderTemplate('person', { person: person }, person.displayName) || this.renderPerson(person)}
-            <p class="people-person-text-area" id="${person.displayName}">
+            <div class="people-person-text-area" id="${person.displayName}">
               ${this.renderHighlightText(person)}
-            </p>
+              <span class="people-person-job-title">${person.jobTitle}</span>
+            </div>
           </li>
         `
     );
@@ -364,6 +374,11 @@ export class MgtPicker extends MgtTemplatedComponent {
   private renderPerson(person: MicrosoftGraph.Person) {
     return html`
       <mgt-person person-details=${JSON.stringify(person)}></mgt-person>
+    `;
+  }
+  private renderChosenPerson(person: MicrosoftGraph.Person) {
+    return html`
+      <mgt-person class="chosen-person" person-details=${JSON.stringify(person)}></mgt-person>
     `;
   }
 }
