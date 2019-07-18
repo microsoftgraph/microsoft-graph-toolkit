@@ -72,11 +72,13 @@ export class MgtPicker extends MgtTemplatedComponent {
     if (event.code == 'Tab') {
       this.addPerson(this.people[this.arrowSelectionCount], event);
       event.target.value = '';
+      event.preventDefault();
+      event.stopPropagation();
     }
   }
 
   private handleArrowSelection(event: any) {
-    if (this.people) {
+    if (this.people.length) {
       let peoples: any = this.people;
 
       //update arrow count
@@ -210,7 +212,7 @@ export class MgtPicker extends MgtTemplatedComponent {
 
   private renderErrorMessage() {
     if (this.people) {
-      if (this.people.length == 0 && this._userInput.length > 0) {
+      if (this.people.length === 0 && this._userInput.length > 0) {
         return html`
           <div class="error-message-parent">
             <div class="search-error-text">We didn't find any matches.</div>
@@ -219,8 +221,11 @@ export class MgtPicker extends MgtTemplatedComponent {
       }
     }
   }
-  private trackMouseFocus() {
-    console.log('lost focus');
+  private trackMouseFocus(e) {
+    console.log(e);
+    if (e.target.id !== 'people-picker-input') {
+      console.log('tracking');
+    }
   }
 
   private renderChosenPeople() {
@@ -247,7 +252,6 @@ export class MgtPicker extends MgtTemplatedComponent {
               type="text"
               placeholder="Start typing a name"
               .value="${this._personName}"
-              onblur="${this.trackMouseFocus()}"
               @keydown="${(e: KeyboardEvent & { target: HTMLInputElement }) => {
                 this.onUserKeyDown(e);
               }}"
@@ -267,7 +271,6 @@ export class MgtPicker extends MgtTemplatedComponent {
             type="text"
             placeholder="Start typing a name"
             .value="${this._personName}"
-            onblur="${this.trackMouseFocus()}"
             @keydown="${(e: KeyboardEvent & { target: HTMLInputElement }) => {
               this.onUserKeyDown(e);
             }}"
@@ -335,7 +338,6 @@ export class MgtPicker extends MgtTemplatedComponent {
     }
   }
   private renderPersons(peoples: any) {
-    console.log(peoples);
     return peoples.slice(0, this.showMax).map(
       person =>
         html`
@@ -354,6 +356,7 @@ export class MgtPicker extends MgtTemplatedComponent {
   }
 
   render() {
+    document.addEventListener('mousedown', this.trackMouseFocus, false);
     return (
       this.renderTemplate('default', { people: this.people }) ||
       html`
