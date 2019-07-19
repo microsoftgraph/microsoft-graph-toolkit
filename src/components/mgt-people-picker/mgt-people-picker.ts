@@ -49,7 +49,6 @@ export class MgtPicker extends MgtTemplatedComponent {
   }
 
   private onUserTypeSearch(event: any) {
-    console.log(event.code);
     if (event.code == 'Escape') {
       event.target.value = '';
       this._userInput = '';
@@ -61,6 +60,13 @@ export class MgtPicker extends MgtTemplatedComponent {
       this._userInput = '';
       //remove last person in selected list
       this._selectedPeople = this._selectedPeople.splice(0, this._selectedPeople.length - 1);
+      //fire selected people changed event
+      let newEvent = new CustomEvent('selectionChanged', {
+        bubbles: true,
+        cancelable: false,
+        detail: this._selectedPeople
+      });
+      this.dispatchEvent(newEvent);
       return;
     }
     this._userInput = event.target.value;
@@ -127,7 +133,7 @@ export class MgtPicker extends MgtTemplatedComponent {
         this._duplicatePersonId = chosenPerson.id;
       } else {
         this._selectedPeople.push(person);
-        let event = new CustomEvent('selectedPeople', {
+        let event = new CustomEvent('selectionChanged', {
           bubbles: true,
           cancelable: false,
           detail: this._selectedPeople
@@ -217,6 +223,12 @@ export class MgtPicker extends MgtTemplatedComponent {
       return person.id !== chosenPerson.id;
     });
     this._selectedPeople = filteredPersonArr;
+    let event = new CustomEvent('selectionChanged', {
+      bubbles: true,
+      cancelable: false,
+      detail: this._selectedPeople
+    });
+    this.dispatchEvent(event);
     this.renderChosenPeople();
   }
 
