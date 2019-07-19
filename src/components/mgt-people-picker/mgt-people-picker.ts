@@ -168,7 +168,11 @@ export class MgtPicker extends MgtTemplatedComponent {
   private filterPeople(peoples: any) {
     //check if people need to be updated
     if (this.people) {
-      if (this.people.length > 0) this._previousSearch = this.people;
+      if (this.people.length > 0) {
+        this._previousSearch = this.people;
+      } else {
+        this._previousSearch = [''];
+      }
       //find ids from previous search
       let id_filter = peoples.map(function(el) {
         return el.id;
