@@ -38,6 +38,8 @@ export class MgtPicker extends MgtTemplatedComponent {
   @property() private _previousSearch: any;
 
   @property() private arrowSelectionCount: number = 0;
+
+  @property() public isUserFocused: boolean = false;
   /* TODO: Do we want a query property for loading groups from calls? */
 
   static get styles() {
@@ -46,6 +48,7 @@ export class MgtPicker extends MgtTemplatedComponent {
 
   constructor() {
     super();
+    this.trackMouseFocus = this.trackMouseFocus.bind(this);
   }
 
   private onUserTypeSearch(event: any) {
@@ -244,9 +247,12 @@ export class MgtPicker extends MgtTemplatedComponent {
     }
   }
   private trackMouseFocus(e) {
-    console.log(e);
-    if (e.target.id !== 'people-picker-input') {
-      console.log('tracking');
+    if (e.target.localName === 'mgt-people-picker') {
+      //Mouse is focused on input
+      this.isUserFocused = true;
+    } else {
+      //reset if not clicked in focus
+      this.isUserFocused = false;
     }
   }
 
@@ -387,7 +393,7 @@ export class MgtPicker extends MgtTemplatedComponent {
             ${this.renderChosenPeople()}
           </div>
           <div class="people-list-separator"></div>
-          ${this.renderPeopleList()}
+          ${this.isUserFocused ? this.renderPeopleList() : null}
           <div class="error-message-holder">
             ${this._userInput.length !== 0 ? this.renderErrorMessage() : null}
           </div>
