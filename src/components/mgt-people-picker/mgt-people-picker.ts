@@ -37,7 +37,7 @@ export class MgtPicker extends MgtTemplatedComponent {
   @property() private _userInput: string = '';
   @property() private _previousSearch: any;
 
-  @property() private arrowSelectionCount: number = -1;
+  @property() private arrowSelectionCount: number = 0;
   /* TODO: Do we want a query property for loading groups from calls? */
 
   static get styles() {
@@ -49,10 +49,18 @@ export class MgtPicker extends MgtTemplatedComponent {
   }
 
   private onUserTypeSearch(event: any) {
+    console.log(event.code);
     if (event.code == 'Escape') {
       event.target.value = '';
       this._userInput = '';
       this.people = [];
+      return;
+    }
+    if (event.code == 'Backspace' && this._userInput.length == 0 && this._selectedPeople.length > 0) {
+      event.target.value = '';
+      this._userInput = '';
+      //remove last person in selected list
+      this._selectedPeople = this._selectedPeople.splice(0, this._selectedPeople.length - 1);
       return;
     }
     this._userInput = event.target.value;
@@ -129,7 +137,7 @@ export class MgtPicker extends MgtTemplatedComponent {
         this.people = [];
         this._userInput = '';
         this._personName = '';
-        this.arrowSelectionCount = -1;
+        this.arrowSelectionCount = 0;
       }
     }
   }
@@ -141,8 +149,10 @@ export class MgtPicker extends MgtTemplatedComponent {
       let client = Providers.globalProvider.graph;
 
       let peoples: any = await client.findPerson(name);
-
-      this.filterPeople(peoples);
+      if (peoples.length) {
+        peoples[0].isSelected = 'fill';
+        this.filterPeople(peoples);
+      }
     }
   }
 
