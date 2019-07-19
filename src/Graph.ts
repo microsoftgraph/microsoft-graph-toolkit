@@ -7,17 +7,19 @@
 
 import * as MicrosoftGraph from '@microsoft/microsoft-graph-types';
 import * as MicrosoftGraphBeta from '@microsoft/microsoft-graph-types-beta';
-import { Client } from '@microsoft/microsoft-graph-client/lib/es/Client';
-import { Context } from '@microsoft/microsoft-graph-client/lib/es/IContext';
-import { Middleware } from '@microsoft/microsoft-graph-client/lib/es/middleware/IMiddleware';
+import {
+  Client,
+  AuthenticationHandlerOptions,
+  Middleware,
+  Context,
+  AuthenticationHandler,
+  RetryHandler,
+  TelemetryHandler,
+  RetryHandlerOptions,
+  HTTPMessageHandler,
+  ResponseType
+} from '@microsoft/microsoft-graph-client';
 import { getRequestHeader, setRequestHeader } from '@microsoft/microsoft-graph-client/lib/es/middleware/MiddlewareUtil';
-import { ResponseType } from '@microsoft/microsoft-graph-client/lib/es/ResponseType';
-import { AuthenticationHandlerOptions } from '@microsoft/microsoft-graph-client/lib/es/middleware/options/AuthenticationHandlerOptions';
-import { AuthenticationHandler } from '@microsoft/microsoft-graph-client/lib/es/middleware/AuthenticationHandler';
-import { RetryHandler } from '@microsoft/microsoft-graph-client/lib/es/middleware/RetryHandler';
-import { RetryHandlerOptions } from '@microsoft/microsoft-graph-client/lib/es/middleware/options/RetryHandlerOptions';
-import { TelemetryHandler } from '@microsoft/microsoft-graph-client/lib/es/middleware/TelemetryHandler';
-import { HTTPMessageHandler } from '@microsoft/microsoft-graph-client/lib/es/middleware/HTTPMessageHandler';
 import { IProvider } from './providers/IProvider';
 import { PACKAGE_VERSION } from './utils/version';
 
