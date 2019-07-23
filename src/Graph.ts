@@ -17,7 +17,8 @@ import {
   TelemetryHandler,
   RetryHandlerOptions,
   HTTPMessageHandler,
-  ResponseType
+  ResponseType,
+  BatchRequestContent
 } from '@microsoft/microsoft-graph-client';
 import { getRequestHeader, setRequestHeader } from '@microsoft/microsoft-graph-client/lib/es/middleware/MiddlewareUtil';
 import { IProvider } from './providers/IProvider';
@@ -55,6 +56,74 @@ class SdkVersionMiddleware implements Middleware {
   }
 }
 
+class BatchRequest {
+  public resource: string;
+  public method: string;
+
+  public constructor(resource: string, method: string) {
+    this.resource = resource;
+    this.method = method;
+  }
+}
+
+export class Batch {
+  private requests: Map<string, BatchRequest> = new Map<string, BatchRequest>();
+  private scopes: string[] = [];
+  private client: Client;
+
+  constructor(client: Client) {
+    this.client = client;
+  }
+
+  public get(id: string, resource: string, scopes?: string[]) {
+    const request = new BatchRequest(resource, 'GET');
+    this.requests.set(id, request);
+
+    if (scopes) {
+      this.scopes = this.scopes.concat(scopes);
+    }
+  }
+
+  public async execute(): Promise<any> {
+    const responses = {};
+
+    if (!this.requests.size) {
+      return responses;
+    }
+
+    let batchRequestContent = new BatchRequestContent();
+
+    for (let request of this.requests) {
+      batchRequestContent.addRequest({
+        id: request[0],
+        request: new Request(request[1].resource, {
+          method: request[1].method
+        })
+      });
+    }
+
+    let batchRequest = this.client.api('$batch').version('beta');
+
+    if (this.scopes.length) {
+      batchRequest = batchRequest.middlewareOptions(prepScopes(...this.scopes));
+    }
+
+    let batchResponse = await batchRequest.post(await batchRequestContent.getContent());
+
+    for (let response of batchResponse.responses) {
+      if (response.status !== 200) {
+        response[response.id] = null;
+      } else if (response.headers['Content-Type'].includes('image/jpeg')) {
+        responses[response.id] = 'data:image/jpeg;base64,' + response.body;
+      } else {
+        responses[response.id] = response.body;
+      }
+    }
+
+    return responses;
+  }
+}
+
 export class Graph {
   public client: Client;
 
@@ -86,6 +155,10 @@ export class Graph {
       };
       reader.readAsDataURL(blob);
     });
+  }
+
+  public createBatch() {
+    return new Batch(this.client);
   }
 
   async getMe(): Promise<MicrosoftGraph.User> {
@@ -123,7 +196,21 @@ export class Graph {
     return result ? result.value : null;
   }
 
-  async findUserByEmail(email: string): Promise<(MicrosoftGraph.Person | MicrosoftGraph.Contact)[]> {
+  async findUserByEmail(
+    email: string
+  ): Promise<(MicrosoftGraph.User | MicrosoftGraph.Person | MicrosoftGraph.Contact)[]> {
+    let batch = this.createBatch();
+
+    batch.get('user', `users/${email}`);
+    batch.get('people', `/me/people?$search="email"`);
+    batch.get('contacts', `/me/contacts?$filter=emailAddresses/any(a:a/address eq '${email}')`);
+
+    let response = await batch.execute();
+
+    return (response.user ? [response.user] : [])
+      .concat(response.people.value || [])
+      .concat(response.contacts.value || []);
+
     return Promise.all([this.findPerson(email), this.findContactByEmail(email)]).then(([people, contacts]) => {
       return (people || []).concat(contacts || []);
     });

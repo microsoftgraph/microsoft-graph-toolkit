@@ -295,7 +295,8 @@ export class MgtAgenda extends MgtTemplatedComponent {
             attendee =>
               <MgtPersonDetails>{
                 displayName: attendee.emailAddress.name,
-                email: attendee.emailAddress.address
+                email: attendee.emailAddress.address,
+                image: '@'
               }
           )
         )}
