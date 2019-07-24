@@ -196,21 +196,7 @@ export class Graph {
     return result ? result.value : null;
   }
 
-  async findUserByEmail(
-    email: string
-  ): Promise<(MicrosoftGraph.User | MicrosoftGraph.Person | MicrosoftGraph.Contact)[]> {
-    let batch = this.createBatch();
-
-    batch.get('user', `users/${email}`);
-    batch.get('people', `/me/people?$search="email"`);
-    batch.get('contacts', `/me/contacts?$filter=emailAddresses/any(a:a/address eq '${email}')`);
-
-    let response = await batch.execute();
-
-    return (response.user ? [response.user] : [])
-      .concat(response.people.value || [])
-      .concat(response.contacts.value || []);
-
+  async findUserByEmail(email: string): Promise<(MicrosoftGraph.Person | MicrosoftGraph.Contact)[]> {
     return Promise.all([this.findPerson(email), this.findContactByEmail(email)]).then(([people, contacts]) => {
       return (people || []).concat(contacts || []);
     });
