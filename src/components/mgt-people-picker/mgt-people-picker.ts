@@ -39,7 +39,7 @@ export class MgtPicker extends MgtTemplatedComponent {
 
   @property() private arrowSelectionCount: number = 0;
 
-  @property() public isUserFocused: boolean = false;
+  @property() private isUserFocused: boolean = false;
   /* TODO: Do we want a query property for loading groups from calls? */
 
   static get styles() {
@@ -52,6 +52,10 @@ export class MgtPicker extends MgtTemplatedComponent {
   }
 
   private onUserTypeSearch(event: any) {
+    if (event.keyCode == 40 || event.keyCode == 38) {
+      this.handleArrowSelection(event);
+      return;
+    }
     if (event.code == 'Escape') {
       event.target.value = '';
       this._userInput = '';
@@ -79,9 +83,6 @@ export class MgtPicker extends MgtTemplatedComponent {
       event.target.value = '';
       this._userInput = '';
       this.people = [];
-    }
-    if (event.keyCode == 40 || event.keyCode == 38) {
-      this.handleArrowSelection(event);
     }
   }
 
@@ -152,14 +153,15 @@ export class MgtPicker extends MgtTemplatedComponent {
   }
 
   private async loadPersonSearch(name: string) {
+    console.log('this happens too');
     let provider = Providers.globalProvider;
 
     if (provider && provider.state === ProviderState.SignedIn) {
       let client = Providers.globalProvider.graph;
-
-      let peoples: any = await client.findPerson(name);
+      let peoples: any = await client.findPerson(name).catch(function() {
+        return;
+      });
       if (peoples.length) {
-        peoples[0].isSelected = 'fill';
         this.filterPeople(peoples);
       }
     }
@@ -173,27 +175,25 @@ export class MgtPicker extends MgtTemplatedComponent {
       } else {
         this._previousSearch = [''];
       }
-      //find ids from previous search
-      let id_filter = peoples.map(function(el) {
+      //find ids from selected people
+      let id_filter = this._selectedPeople.map(function(el) {
         return el.id;
       });
-      var filtered = this._previousSearch.filter(function(person) {
+      //filter id's
+      let filtered = peoples.filter(function(person) {
         return id_filter.indexOf(person.id) === -1;
       });
       if (filtered.length == 0 && this._userInput.length > 0) {
         return;
       } else {
-        this.people = peoples;
+        filtered[0].isSelected = 'fill';
+        this.arrowSelectionCount = 0;
+        this.people = filtered;
       }
     } else {
+      peoples[0].isSelected = 'fill';
+      this.arrowSelectionCount = 0;
       this.people = peoples;
-    }
-    //filter already selected people
-    let selected = this._selectedPeople;
-    for (let i = 0; i < selected.length; i++) {
-      this.people = peoples.filter(function(person: any) {
-        return person.id !== selected[i].id;
-      });
     }
     for (var i = 0; i < this.people.length; i++) {
       if (peoples[i].image == undefined) {
@@ -203,25 +203,27 @@ export class MgtPicker extends MgtTemplatedComponent {
   }
 
   private async updateProfile(peoples: any) {
-    let provider = Providers.globalProvider;
-    if (this.people) {
-      for (var i = 0; i < peoples.length; i++) {
-        if (peoples[i].id && peoples[i].image == undefined) {
-          await Promise.all([
-            provider.graph.getUser(peoples[i].id).then(user => {
-              if (user) {
-                peoples[i].displayName = user.displayName;
-              }
-            }),
-            provider.graph.getUserPhoto(peoples[i].id).then(photo => {
-              if (photo) {
-                peoples[i].image = photo;
-              }
-            })
-          ]);
-        }
-      }
-    }
+    // let provider = Providers.globalProvider;
+    // if (this.people) {
+    //   for (var i = 0; i < peoples.length; i++) {
+    //     if (peoples[i].id && peoples[i].image == undefined) {
+    //       await Promise.all([
+    //         provider.graph.getUser(peoples[i].id).then(user => {
+    //           if (user) {
+    //             peoples[i].displayName = user.displayName;
+    //           }
+    //         }),
+    //         provider.graph.getUserPhoto(peoples[i].id).then(photo => {
+    //           if (photo) {
+    //             peoples[i].image = photo;
+    //           }
+    //         })
+    //       ]).catch(function() {
+    //         return;
+    //       });
+    //     }
+    //   }
+    // }
   }
 
   private removePerson(person: MgtPersonDetails) {
