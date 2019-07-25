@@ -180,6 +180,17 @@ export class Graph {
     return people ? people.value : null;
   }
 
+  async getPeopleFromGroup(groupId: string): Promise<Array<MicrosoftGraph.Person>> {
+    let scopes = 'people.read';
+
+    let uri = `/groups/${groupId}/members`;
+    let people = await this.client
+      .api(uri)
+      .middlewareOptions(prepScopes(scopes))
+      .get();
+    return people ? people.value : null;
+  }
+
   // Planner Methods
   public async planner_getAllMyPlans(): Promise<MicrosoftGraph.PlannerPlan[]> {
     let plans = await this.client
