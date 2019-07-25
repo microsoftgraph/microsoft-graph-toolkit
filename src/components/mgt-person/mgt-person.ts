@@ -140,14 +140,20 @@ export class MgtPerson extends MgtTemplatedComponent {
   }
 
   render() {
-    return (
+    let person =
       this.renderTemplate('default', { person: this.personDetails }) ||
       html`
         <div class="root">
           ${this.renderImage()} ${this.renderDetails()}
         </div>
-      `
-    );
+      `;
+
+    return html`
+      <div>
+        ${person}
+        <mgt-person-card></mgt-person-card>
+      </div>
+    `;
   }
 
   renderDetails() {

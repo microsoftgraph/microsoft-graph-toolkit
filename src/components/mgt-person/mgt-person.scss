@@ -38,7 +38,15 @@ mgt-person .root {
   position: relative;
   display: flex;
   align-items: center;
-  font-family: var(--default-font-family, "Segoe UI");
+  font-family: var(--default-font-family, 'Segoe UI');
+}
+
+:host mgt-person-card {
+  display: none;
+}
+
+.root:hover + mgt-person-card {
+  display: block;
 }
 
 :host .Details,
