@@ -61,6 +61,9 @@ class BatchRequest {
   public method: string;
 
   public constructor(resource: string, method: string) {
+    if (resource.charAt(0) !== '/') {
+      resource = '/' + resource;
+    }
     this.resource = resource;
     this.method = method;
   }
@@ -70,6 +73,10 @@ export class Batch {
   private requests: Map<string, BatchRequest> = new Map<string, BatchRequest>();
   private scopes: string[] = [];
   private client: Client;
+
+  // this doesn't really mater what it is as long as it's a root base url
+  // otherwise a Request assumes the current path and that could change the relative path
+  private static baseUrl = 'https://graph.microsoft.com';
 
   constructor(client: Client) {
     this.client = client;
@@ -96,7 +103,7 @@ export class Batch {
     for (let request of this.requests) {
       batchRequestContent.addRequest({
         id: request[0],
-        request: new Request(request[1].resource, {
+        request: new Request(Batch.baseUrl + request[1].resource, {
           method: request[1].method
         })
       });
