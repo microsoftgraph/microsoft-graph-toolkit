@@ -31,14 +31,19 @@ export class MgtPicker extends MgtTemplatedComponent {
   })
   showMax: number = 6;
 
+  @property() private arrowSelectionCount: number = 0;
+
+  @property({
+    attribute: 'group',
+    type: String
+  })
+  group: string;
+
   @property() private _personName: string = '';
   @property() private _selectedPeople: Array<any> = [];
   @property() private _duplicatePersonId: string = '';
   @property() private _userInput: string = '';
   @property() private _previousSearch: any;
-
-  @property() private arrowSelectionCount: number = 0;
-
   @property() private isUserFocused: boolean = false;
   /* TODO: Do we want a query property for loading groups from calls? */
 
@@ -91,7 +96,6 @@ export class MgtPicker extends MgtTemplatedComponent {
       this.addPerson(this.people[this.arrowSelectionCount], event);
       event.target.value = '';
       event.preventDefault();
-      event.stopPropagation();
     }
   }
 
@@ -153,14 +157,21 @@ export class MgtPicker extends MgtTemplatedComponent {
   }
 
   private async loadPersonSearch(name: string) {
-    console.log('this happens too');
     let provider = Providers.globalProvider;
-
+    let peoples: any;
     if (provider && provider.state === ProviderState.SignedIn) {
       let client = Providers.globalProvider.graph;
-      let peoples: any = await client.findPerson(name).catch(function() {
-        return;
-      });
+      //determine if group property is requested
+
+      if (this.group) {
+        peoples = await client.getPeopleFromGroup(this.group).catch(function() {
+          return;
+        });
+      } else {
+        peoples = await client.findPerson(name).catch(function() {
+          return;
+        });
+      }
       if (peoples.length) {
         this.filterPeople(peoples);
       }
@@ -186,9 +197,11 @@ export class MgtPicker extends MgtTemplatedComponent {
       if (filtered.length == 0 && this._userInput.length > 0) {
         return;
       } else {
-        filtered[0].isSelected = 'fill';
-        this.arrowSelectionCount = 0;
-        this.people = filtered;
+        if (filtered.length) {
+          filtered[0].isSelected = 'fill';
+          this.arrowSelectionCount = 0;
+          this.people = filtered;
+        }
       }
     } else {
       peoples[0].isSelected = 'fill';
@@ -256,9 +269,13 @@ export class MgtPicker extends MgtTemplatedComponent {
     if (e.target.localName === 'mgt-people-picker') {
       //Mouse is focused on input
       this.isUserFocused = true;
+      if (this._userInput) {
+        this.loadPersonSearch(this._userInput);
+      }
     } else {
       //reset if not clicked in focus
       this.isUserFocused = false;
+      this.people = [];
     }
   }
 
@@ -401,7 +418,7 @@ export class MgtPicker extends MgtTemplatedComponent {
           <div class="people-list-separator"></div>
           ${this.isUserFocused ? this.renderPeopleList() : null}
           <div class="error-message-holder">
-            ${this._userInput.length !== 0 ? this.renderErrorMessage() : null}
+            ${this._userInput.length !== 0 && this.isUserFocused ? this.renderErrorMessage() : null}
           </div>
         </div>
       `
