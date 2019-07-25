@@ -45,7 +45,6 @@ export class MgtPicker extends MgtTemplatedComponent {
   @property() private _userInput: string = '';
   @property() private _previousSearch: any;
   @property() private isUserFocused: boolean = false;
-  /* TODO: Do we want a query property for loading groups from calls? */
 
   static get styles() {
     return styles;
@@ -174,6 +173,8 @@ export class MgtPicker extends MgtTemplatedComponent {
       }
       if (peoples.length) {
         this.filterPeople(peoples);
+      } else {
+        this.people = [];
       }
     }
   }
