@@ -60,6 +60,7 @@ export class MgtPicker extends MgtTemplatedComponent {
       this.handleArrowSelection(event);
       return;
     }
+    console.log('not returned');
     if (event.code == 'Escape') {
       event.target.value = '';
       this._userInput = '';
@@ -282,41 +283,25 @@ export class MgtPicker extends MgtTemplatedComponent {
   }
 
   private renderChosenPeople() {
+    let peopleList;
     if (this._selectedPeople.length > 0) {
-      return html`
-        <ul class="people-chosen-list">
-          ${this._selectedPeople.slice(0, this._selectedPeople.length).map(
-            person =>
-              html`
-                <li
-                  class="${person.id == this._duplicatePersonId ? 'people-person duplicate-person' : 'people-person'}"
-                >
-                  ${this.renderTemplate('person', { person: person }, person.displayName) ||
-                    this.renderChosenPerson(person)}
-                  <p class="person-display-name">${person.displayName}</p>
-                  <div class="CloseIcon" @click="${() => this.removePerson(person)}">\uE711</div>
-                </li>
-              `
-          )}
-          <div class="input-search-start">
-            <input
-              id="people-picker-input"
-              class="people-chosen-input"
-              type="text"
-              placeholder="Start typing a name"
-              .value="${this._personName}"
-              @keydown="${(e: KeyboardEvent & { target: HTMLInputElement }) => {
-                this.onUserKeyDown(e);
-              }}"
-              @keyup="${(e: KeyboardEvent & { target: HTMLInputElement }) => {
-                this.onUserTypeSearch(e);
-              }}"
-            />
-          </div>
-        </ul>
+      peopleList = html`
+        ${this._selectedPeople.slice(0, this._selectedPeople.length).map(
+          person =>
+            html`
+              <li class="${person.id == this._duplicatePersonId ? 'people-person duplicate-person' : 'people-person'}">
+                ${this.renderTemplate('person', { person: person }, person.displayName) ||
+                  this.renderChosenPerson(person)}
+                <p class="person-display-name">${person.displayName}</p>
+                <div class="CloseIcon" @click="${() => this.removePerson(person)}">\uE711</div>
+              </li>
+            `
+        )}
       `;
-    } else {
-      return html`
+    }
+    return html`
+      <ul class="people-chosen-list">
+        ${peopleList}
         <div class="input-search-start">
           <input
             id="people-picker-input"
@@ -332,8 +317,8 @@ export class MgtPicker extends MgtTemplatedComponent {
             }}"
           />
         </div>
-      `;
-    }
+      </ul>
+    `;
   }
 
   private renderHighlightText(person: MgtPersonDetails) {
