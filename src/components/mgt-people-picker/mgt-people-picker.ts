@@ -195,6 +195,7 @@ export class MgtPicker extends MgtTemplatedComponent {
         return id_filter.indexOf(person.id) === -1;
       });
       if (filtered.length == 0 && this._userInput.length > 0) {
+        this.people = [];
         return;
       } else {
         if (filtered.length) {
