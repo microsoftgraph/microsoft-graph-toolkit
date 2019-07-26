@@ -31,7 +31,7 @@ export class MgtPicker extends MgtTemplatedComponent {
   })
   showMax: number = 6;
 
-  @property() private arrowSelectionCount: number = 0;
+  private arrowSelectionCount: number = 0;
 
   @property({
     attribute: 'group',
@@ -60,7 +60,6 @@ export class MgtPicker extends MgtTemplatedComponent {
       this.handleArrowSelection(event);
       return;
     }
-    console.log('not returned');
     if (event.code == 'Escape') {
       event.target.value = '';
       this._userInput = '';
@@ -101,31 +100,31 @@ export class MgtPicker extends MgtTemplatedComponent {
 
   private handleArrowSelection(event: any) {
     if (this.people.length) {
-      let peoples: any = this.people;
-
       //update arrow count
       if (event.keyCode == 38) {
         //up arrow
-        this.arrowSelectionCount--;
+        if (this.arrowSelectionCount > 0) {
+          this.arrowSelectionCount--;
+        } else {
+          this.arrowSelectionCount = 0;
+        }
       }
       if (event.keyCode == 40) {
         //down arrow
-        this.arrowSelectionCount++;
+        if (this.arrowSelectionCount <= this.people.length - this.showMax) {
+          this.arrowSelectionCount++;
+        } else {
+          this.arrowSelectionCount = 0;
+        }
       }
-      //update person in list selected
-      for (let i = 0; i < peoples.length; i++) {
-        peoples[i].isSelected = '';
+
+      const peopleList = this.renderRoot.querySelector('.people-list');
+      //reset background color
+      for (let i = 0; i < peopleList.children.length; i++) {
+        peopleList.children[i].setAttribute('style', 'background-color: transparent ');
       }
-      if (this.arrowSelectionCount <= peoples.slice(0, this.showMax).length - 1 && this.arrowSelectionCount > 0) {
-        peoples[this.arrowSelectionCount].isSelected = 'fill';
-      } else if (this.arrowSelectionCount < 0) {
-        //up arrow when there are no more selections
-        this.arrowSelectionCount = 0;
-      } else {
-        //down arrow when there are no more selections
-        peoples[0].isSelected = 'fill';
-        this.arrowSelectionCount = 0;
-      }
+      //set selected background
+      peopleList.children[this.arrowSelectionCount].setAttribute('style', 'background-color: #f1f1f1;');
     }
   }
 
@@ -211,35 +210,6 @@ export class MgtPicker extends MgtTemplatedComponent {
       this.arrowSelectionCount = 0;
       this.people = peoples;
     }
-    for (var i = 0; i < this.people.length; i++) {
-      if (peoples[i].image == undefined) {
-        this.updateProfile(this.people);
-      }
-    }
-  }
-
-  private async updateProfile(peoples: any) {
-    // let provider = Providers.globalProvider;
-    // if (this.people) {
-    //   for (var i = 0; i < peoples.length; i++) {
-    //     if (peoples[i].id && peoples[i].image == undefined) {
-    //       await Promise.all([
-    //         provider.graph.getUser(peoples[i].id).then(user => {
-    //           if (user) {
-    //             peoples[i].displayName = user.displayName;
-    //           }
-    //         }),
-    //         provider.graph.getUserPhoto(peoples[i].id).then(photo => {
-    //           if (photo) {
-    //             peoples[i].image = photo;
-    //           }
-    //         })
-    //       ]).catch(function() {
-    //         return;
-    //       });
-    //     }
-    //   }
-    // }
   }
 
   private removePerson(person: MgtPersonDetails) {
