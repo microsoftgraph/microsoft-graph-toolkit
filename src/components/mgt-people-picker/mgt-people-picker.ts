@@ -93,6 +93,8 @@ export class MgtPicker extends MgtTemplatedComponent {
   }
 
   private handleArrowSelection(event: any) {
+    console.log(this.people.length);
+    console.log(this.arrowSelectionCount);
     if (this.people.length) {
       //update arrow count
       if (event.keyCode == 38) {
@@ -105,7 +107,7 @@ export class MgtPicker extends MgtTemplatedComponent {
       }
       if (event.keyCode == 40) {
         //down arrow
-        if (this.arrowSelectionCount <= this.people.length - this.showMax) {
+        if (this.arrowSelectionCount + 1 !== this.people.length && this.arrowSelectionCount + 1 < this.showMax) {
           this.arrowSelectionCount++;
         } else {
           this.arrowSelectionCount = 0;
@@ -117,6 +119,8 @@ export class MgtPicker extends MgtTemplatedComponent {
       for (let i = 0; i < peopleList.children.length; i++) {
         peopleList.children[i].setAttribute('style', 'background-color: transparent ');
       }
+      console.log('arrow in people list', this.arrowSelectionCount);
+      console.log(peopleList.children[this.arrowSelectionCount]);
       //set selected background
       peopleList.children[this.arrowSelectionCount].setAttribute('style', 'background-color: #f1f1f1;');
     }
@@ -175,6 +179,11 @@ export class MgtPicker extends MgtTemplatedComponent {
         this._previousSearch = this.people;
       } else {
         this._previousSearch = [''];
+      }
+      //ensuring people list is displayed
+      const peopleList = this.renderRoot.querySelector('.people-list');
+      if (peopleList) {
+        peopleList.setAttribute('style', 'display:block');
       }
       //find ids from selected people
       let id_filter = this._selectedPeople.map(function(el) {
