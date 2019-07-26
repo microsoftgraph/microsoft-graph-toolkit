@@ -71,12 +71,7 @@ export class MgtPicker extends MgtTemplatedComponent {
       //remove last person in selected list
       this._selectedPeople = this._selectedPeople.splice(0, this._selectedPeople.length - 1);
       //fire selected people changed event
-      let newEvent = new CustomEvent('selectionChanged', {
-        bubbles: true,
-        cancelable: false,
-        detail: this._selectedPeople
-      });
-      this.dispatchEvent(newEvent);
+      this.fireCustomEvent('selectionChanged', this._selectedPeople);
       return;
     }
     this._userInput = event.target.value;
@@ -139,12 +134,7 @@ export class MgtPicker extends MgtTemplatedComponent {
         this._duplicatePersonId = chosenPerson.id;
       } else {
         this._selectedPeople.push(person);
-        let event = new CustomEvent('selectionChanged', {
-          bubbles: true,
-          cancelable: false,
-          detail: this._selectedPeople
-        });
-        this.dispatchEvent(event);
+        this.fireCustomEvent('selectionChanged', this._selectedPeople);
 
         this.people = [];
         this._userInput = '';
@@ -217,12 +207,7 @@ export class MgtPicker extends MgtTemplatedComponent {
       return person.id !== chosenPerson.id;
     });
     this._selectedPeople = filteredPersonArr;
-    let event = new CustomEvent('selectionChanged', {
-      bubbles: true,
-      cancelable: false,
-      detail: this._selectedPeople
-    });
-    this.dispatchEvent(event);
+    this.fireCustomEvent('selectionChanged', this._selectedPeople);
     this.renderChosenPeople();
   }
 
@@ -240,7 +225,7 @@ export class MgtPicker extends MgtTemplatedComponent {
   private trackMouseFocus(e) {
     const peopleList = this.renderRoot.querySelector('.people-list');
     if (peopleList) {
-      if (e.type === 'focusin') {
+      if (e.target.localName === 'mgt-people-picker') {
         //Mouse is focused on input
         peopleList.setAttribute('style', 'display:block');
       } else {
@@ -362,8 +347,7 @@ export class MgtPicker extends MgtTemplatedComponent {
   }
 
   render() {
-    document.addEventListener('focusin', this.trackMouseFocus, true);
-    document.addEventListener('focusout', this.trackMouseFocus, true);
+    document.addEventListener('mousedown', this.trackMouseFocus, false);
     return (
       this.renderTemplate('default', { people: this.people }) ||
       html`
