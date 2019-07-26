@@ -93,8 +93,6 @@ export class MgtPicker extends MgtTemplatedComponent {
   }
 
   private handleArrowSelection(event: any) {
-    console.log(this.people.length);
-    console.log(this.arrowSelectionCount);
     if (this.people.length) {
       //update arrow count
       if (event.keyCode == 38) {
@@ -119,8 +117,6 @@ export class MgtPicker extends MgtTemplatedComponent {
       for (let i = 0; i < peopleList.children.length; i++) {
         peopleList.children[i].setAttribute('style', 'background-color: transparent ');
       }
-      console.log('arrow in people list', this.arrowSelectionCount);
-      console.log(peopleList.children[this.arrowSelectionCount]);
       //set selected background
       peopleList.children[this.arrowSelectionCount].setAttribute('style', 'background-color: #f1f1f1;');
     }
@@ -158,6 +154,10 @@ export class MgtPicker extends MgtTemplatedComponent {
       if (this.group) {
         peoples = await client.getPeopleFromGroup(this.group).catch(function() {
           return;
+        });
+        //filter people in group against search term
+        peoples = peoples.filter(function(person) {
+          return person.displayName.toLowerCase().indexOf(name) !== -1;
         });
       } else {
         peoples = await client.findPerson(name).catch(function() {
