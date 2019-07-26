@@ -44,7 +44,6 @@ export class MgtPicker extends MgtTemplatedComponent {
   @property() private _duplicatePersonId: string = '';
   @property() private _userInput: string = '';
   @property() private _previousSearch: any;
-  @property() private isUserFocused: boolean = false;
 
   static get styles() {
     return styles;
@@ -239,16 +238,15 @@ export class MgtPicker extends MgtTemplatedComponent {
     }
   }
   private trackMouseFocus(e) {
-    if (e.target.localName === 'mgt-people-picker') {
-      //Mouse is focused on input
-      this.isUserFocused = true;
-      if (this._userInput) {
-        this.loadPersonSearch(this._userInput);
+    const peopleList = this.renderRoot.querySelector('.people-list');
+    if (peopleList) {
+      if (e.type === 'focusin') {
+        //Mouse is focused on input
+        peopleList.setAttribute('style', 'display:block');
+      } else {
+        //reset if not clicked in focus
+        peopleList.setAttribute('style', 'display:none');
       }
-    } else {
-      //reset if not clicked in focus
-      this.isUserFocused = false;
-      this.people = [];
     }
   }
 
@@ -364,7 +362,8 @@ export class MgtPicker extends MgtTemplatedComponent {
   }
 
   render() {
-    document.addEventListener('mousedown', this.trackMouseFocus, false);
+    document.addEventListener('focusin', this.trackMouseFocus, true);
+    document.addEventListener('focusout', this.trackMouseFocus, true);
     return (
       this.renderTemplate('default', { people: this.people }) ||
       html`
@@ -373,9 +372,9 @@ export class MgtPicker extends MgtTemplatedComponent {
             ${this.renderChosenPeople()}
           </div>
           <div class="people-list-separator"></div>
-          ${this.isUserFocused ? this.renderPeopleList() : null}
+          ${this.renderPeopleList()}
           <div class="error-message-holder">
-            ${this._userInput.length !== 0 && this.isUserFocused ? this.renderErrorMessage() : null}
+            ${this._userInput.length !== 0 ? this.renderErrorMessage() : null}
           </div>
         </div>
       `
