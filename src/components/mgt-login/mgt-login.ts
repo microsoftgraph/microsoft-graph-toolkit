@@ -208,7 +208,7 @@ export class MgtLogin extends MgtBaseComponent {
   renderLoggedIn() {
     if (this.userDetails) {
       return html`
-        <mgt-person person-details=${JSON.stringify(this.userDetails)} show-name />
+        <mgt-person .personDetails=${this.userDetails} show-name />
       `;
     } else {
       return this.renderLogIn();
@@ -221,7 +221,7 @@ export class MgtLogin extends MgtBaseComponent {
     }
 
     let personComponent = html`
-      <mgt-person person-details=${JSON.stringify(this.userDetails)} show-name show-email />
+      <mgt-person .personDetails=${this.userDetails} show-name show-email />
     `;
 
     return html`

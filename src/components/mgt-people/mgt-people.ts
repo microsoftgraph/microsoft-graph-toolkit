@@ -105,7 +105,7 @@ export class MgtPeople extends MgtTemplatedComponent {
 
   private renderPerson(person: MicrosoftGraph.Person) {
     return html`
-      <mgt-person person-details=${JSON.stringify(person)}></mgt-person>
+      <mgt-person .personDetails=${person}></mgt-person>
     `;
   }
 }
