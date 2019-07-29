@@ -233,9 +233,16 @@ export class MgtPicker extends MgtTemplatedComponent {
   }
   private trackMouseFocus(e) {
     const peopleList = this.renderRoot.querySelector('.people-list');
+    if (e.target.localName === 'mgt-people-picker') {
+      console.log('this happens');
+      const peopleInput = <HTMLInputElement>this.renderRoot.querySelector('.people-chosen-input');
+      peopleInput.focus();
+      peopleInput.select();
+    }
     if (peopleList) {
       if (e.target.localName === 'mgt-people-picker') {
         //Mouse is focused on input
+
         peopleList.setAttribute('style', 'display:block');
       } else {
         //reset if not clicked in focus
@@ -356,7 +363,7 @@ export class MgtPicker extends MgtTemplatedComponent {
   }
 
   render() {
-    document.addEventListener('mousedown', this.trackMouseFocus, false);
+    document.addEventListener('mouseup', this.trackMouseFocus, false);
     return (
       this.renderTemplate('default', { people: this.people }) ||
       html`
