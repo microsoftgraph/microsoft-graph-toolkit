@@ -75,7 +75,9 @@ export class MgtPicker extends MgtTemplatedComponent {
     }
     this._userInput = event.target.value;
     if (event.target.value) {
-      this.loadPersonSearch(this._userInput);
+      window.setTimeout(() => {
+        this.loadPersonSearch(this._userInput);
+      }, 300);
     } else {
       event.target.value = '';
       this._userInput = '';
@@ -167,7 +169,7 @@ export class MgtPicker extends MgtTemplatedComponent {
           return;
         });
       }
-      if (peoples.length) {
+      if (peoples) {
         this.filterPeople(peoples);
       } else {
         this.people = [];
@@ -207,9 +209,11 @@ export class MgtPicker extends MgtTemplatedComponent {
         }
       }
     } else {
-      peoples[0].isSelected = 'fill';
-      this.arrowSelectionCount = 0;
-      this.people = peoples;
+      if (peoples) {
+        peoples[0].isSelected = 'fill';
+        this.arrowSelectionCount = 0;
+        this.people = peoples;
+      }
     }
   }
 
