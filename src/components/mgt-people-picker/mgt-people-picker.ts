@@ -85,7 +85,7 @@ export class MgtPicker extends MgtTemplatedComponent {
   }
 
   private onUserKeyDown(event: any) {
-    if (event.code == 'Tab') {
+    if (event.code == 'Tab' || event.code == 'Enter') {
       this.addPerson(this.people[this.arrowSelectionCount], event);
       event.target.value = '';
       event.preventDefault();
@@ -234,7 +234,6 @@ export class MgtPicker extends MgtTemplatedComponent {
   private trackMouseFocus(e) {
     const peopleList = this.renderRoot.querySelector('.people-list');
     if (e.target.localName === 'mgt-people-picker') {
-      console.log('this happens');
       const peopleInput = <HTMLInputElement>this.renderRoot.querySelector('.people-chosen-input');
       peopleInput.focus();
       peopleInput.select();
@@ -242,7 +241,6 @@ export class MgtPicker extends MgtTemplatedComponent {
     if (peopleList) {
       if (e.target.localName === 'mgt-people-picker') {
         //Mouse is focused on input
-
         peopleList.setAttribute('style', 'display:block');
       } else {
         //reset if not clicked in focus
