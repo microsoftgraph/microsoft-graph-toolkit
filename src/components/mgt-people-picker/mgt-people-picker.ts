@@ -56,7 +56,6 @@ export class MgtPicker extends MgtTemplatedComponent {
 
   private onUserTypeSearch(event: any) {
     if (event.keyCode == 40 || event.keyCode == 38) {
-      this.handleArrowSelection(event);
       return;
     }
     if (event.code == 'Escape') {
@@ -85,6 +84,10 @@ export class MgtPicker extends MgtTemplatedComponent {
   }
 
   private onUserKeyDown(event: any) {
+    if (event.keyCode == 40 || event.keyCode == 38) {
+      this.handleArrowSelection(event);
+      event.preventDefault();
+    }
     if (event.code == 'Tab' || event.code == 'Enter') {
       this.addPerson(this.people[this.arrowSelectionCount], event);
       event.target.value = '';
