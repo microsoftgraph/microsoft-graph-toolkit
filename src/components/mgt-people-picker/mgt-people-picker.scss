@@ -15,6 +15,26 @@ $avatar-size: var(--avatar-size, 48px);
 $initials-color: var(--initials-color, white);
 $initials-background-color: var(--initials-background-color, #{$ms-color-magenta});
 
+:host {
+  width: 100%;
+  max-width: inherit;
+}
+mgt-people-picker {
+  width: 100%;
+  max-width: inherit;
+}
+
+:host .people-picker,
+mgt-people-picker .people-picker {
+  max-width: inherit;
+  width: 100%;
+  display: block;
+  position: absolute; /* Stay in place */
+  z-index: 1; /* Sit on top */
+  margin: 7px 0 0 0;
+  background-color: white;
+}
+
 :host .people-list,
 mgt-people-picker .people-list {
   list-style-type: none;
@@ -26,16 +46,12 @@ mgt-people-picker .people-list {
   font-family: Segoe UI;
   font-style: normal;
   font-weight: normal;
-}
-:host .people-picker,
-mgt-people-picker .people-picker {
-  margin: 7px 0 0 0;
+  box-shadow: rgba(0, 0, 0, 0.08) 0px 12px 40px 2px;
 }
 
 :host .people-chosen-input,
 mgt-people-picker .people-chosen-input {
   border: none;
-  background: transparent;
   line-height: normal;
   outline: none;
   font-family: Segoe UI;
@@ -129,6 +145,7 @@ mgt-people-picker .input-search-start {
 
 :host .people-picker-input,
 mgt-people-picker .people-picker-input {
+  background-color: white;
   margin: $avatar-margin;
   font-size: 14px;
   line-height: 19px;
@@ -160,7 +177,7 @@ mgt-people-picker .people-list-separator {
   border-bottom: 2px solid #0078d4;
   margin-left: 1%;
   margin-right: 1%;
-  padding-top: 5px;
+  margin-top: 5px;
 
   text-align: center;
 }
