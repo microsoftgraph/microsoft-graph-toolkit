@@ -18,6 +18,7 @@ $initials-background-color: var(--initials-background-color, #{$ms-color-magenta
 :host {
   width: 100%;
   max-width: inherit;
+  box-shadow: 0px 10.6312px 13.289px rgba(180, 180, 180, 0.182), 0px 1.3289px 2.65781px rgba(68, 68, 68, 0.3);
 }
 mgt-people-picker {
   width: 100%;
@@ -33,6 +34,7 @@ mgt-people-picker .people-picker {
   z-index: 1; /* Sit on top */
   margin: 7px 0 0 0;
   background-color: white;
+  padding-bottom: 8px;
 }
 
 :host .people-list,
@@ -41,12 +43,11 @@ mgt-people-picker .people-list {
   margin: $list-margin;
   padding: 0;
   margin: 0;
-  margin-left: 1%;
-  margin-right: 1%;
+  padding-left: 1%;
+  padding-right: 1%;
   font-family: Segoe UI;
   font-style: normal;
   font-weight: normal;
-  box-shadow: rgba(0, 0, 0, 0.08) 0px 12px 40px 2px;
 }
 
 :host .people-chosen-input,
