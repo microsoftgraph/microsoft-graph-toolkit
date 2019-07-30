@@ -19,6 +19,12 @@ import { MgtPersonDetails, MgtPerson } from '../mgt-person/mgt-person';
 
 @customElement('mgt-people-picker')
 export class MgtPicker extends MgtTemplatedComponent {
+  private _firstUpdated = false;
+  private groupPeople;
+  private _loginButtonRect: ClientRect;
+  private _popupRect: ClientRect;
+  private _openLeft: boolean = false;
+
   @property({
     attribute: 'people',
     type: Object
@@ -52,6 +58,21 @@ export class MgtPicker extends MgtTemplatedComponent {
   constructor() {
     super();
     this.trackMouseFocus = this.trackMouseFocus.bind(this);
+  }
+
+  firstUpdated() {
+    if (this.group) {
+      Providers.onProviderUpdated(() => this.findGroup());
+      this.findGroup();
+    }
+  }
+
+  private async findGroup() {
+    let provider = Providers.globalProvider;
+    if (provider && provider.state === ProviderState.SignedIn) {
+      let client = Providers.globalProvider.graph;
+      this.groupPeople = await client.getPeopleFromGroup(this.group);
+    }
   }
 
   private onUserTypeSearch(event: any) {
@@ -154,65 +175,59 @@ export class MgtPicker extends MgtTemplatedComponent {
     let peoples: any;
     if (provider && provider.state === ProviderState.SignedIn) {
       let client = Providers.globalProvider.graph;
-      //determine if group property is requested
-
-      if (this.group) {
-        peoples = await client.getPeopleFromGroup(this.group).catch(function() {
-          return;
-        });
+      //determine if group property is requested && if different group than previously requested
+      if (this.group && this.group != this.groupPeople) {
+        //peoples = await client.getPeopleFromGroup(this.group).catch(function(e) {});
         //filter people in group against search term
+        peoples = await client.getPeopleFromGroup(this.group);
+
         peoples = peoples.filter(function(person) {
           return person.displayName.toLowerCase().indexOf(name) !== -1;
         });
+        // console.log('finding group', this.findGroup());
+        if (peoples) {
+          this.filterPeople(peoples);
+          this.groupPeople = this.group;
+        } else {
+          this.people = [];
+        }
       } else {
-        peoples = await client.findPerson(name).catch(function() {
-          return;
-        });
-      }
-      if (peoples) {
-        this.filterPeople(peoples);
-      } else {
-        this.people = [];
+        if (this.group) {
+          let oldPeople: any = this.people;
+          peoples = oldPeople.filter(function(person) {
+            return person.displayName.toLowerCase().indexOf(name) !== -1;
+          });
+          this.filterPeople(peoples);
+        }
+        peoples = await client.findPerson(name);
+        if (peoples) {
+          this.filterPeople(peoples);
+        } else {
+          this.people = [];
+        }
       }
     }
   }
 
   private filterPeople(peoples: any) {
     //check if people need to be updated
-    if (this.people) {
-      if (this.people.length > 0) {
-        this._previousSearch = this.people;
-      } else {
-        this._previousSearch = [''];
-      }
-      //ensuring people list is displayed
-      const peopleList = this.renderRoot.querySelector('.people-list');
-      if (peopleList) {
-        peopleList.setAttribute('style', 'display:block');
-      }
-      //find ids from selected people
-      let id_filter = this._selectedPeople.map(function(el) {
-        return el.id;
-      });
-      //filter id's
-      let filtered = peoples.filter(function(person) {
-        return id_filter.indexOf(person.id) === -1;
-      });
-      if (filtered.length == 0 && this._userInput.length > 0) {
-        this.people = [];
-        return;
-      } else {
-        if (filtered.length) {
-          filtered[0].isSelected = 'fill';
-          this.arrowSelectionCount = 0;
-          this.people = filtered;
-        }
-      }
+    //ensuring people list is displayed
+    //find ids from selected people
+    let id_filter = this._selectedPeople.map(function(el) {
+      return el.id;
+    });
+    //filter id's
+    let filtered = peoples.filter(function(person) {
+      return id_filter.indexOf(person.id) === -1;
+    });
+    if (filtered.length == 0 && this._userInput.length > 0) {
+      this.people = [];
+      return;
     } else {
-      if (peoples) {
-        peoples[0].isSelected = 'fill';
+      if (filtered.length) {
+        filtered[0].isSelected = 'fill';
         this.arrowSelectionCount = 0;
-        this.people = peoples;
+        this.people = filtered;
       }
     }
   }
@@ -341,6 +356,7 @@ export class MgtPicker extends MgtTemplatedComponent {
 
   private renderPeopleList() {
     let peoples: any = this.people;
+
     if (peoples) {
       return html`
         <ul class="people-list">
@@ -349,6 +365,7 @@ export class MgtPicker extends MgtTemplatedComponent {
       `;
     }
   }
+
   private renderPersons(peoples: any) {
     return peoples.slice(0, this.showMax).map(
       person =>
@@ -376,11 +393,8 @@ export class MgtPicker extends MgtTemplatedComponent {
           <div class="people-picker-input">
             ${this.renderChosenPeople()}
           </div>
-          <div class="people-list-separator"></div>
-          ${this.renderPeopleList()}
-          <div class="error-message-holder">
-            ${this._userInput.length !== 0 ? this.renderErrorMessage() : null}
-          </div>
+          <div class="people-list-separator">${this.renderPeopleList()}</div>
+          <div class="error-message-holder"></div>
         </div>
       `
     );
