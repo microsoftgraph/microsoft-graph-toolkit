@@ -16,22 +16,15 @@ $initials-color: var(--initials-color, white);
 $initials-background-color: var(--initials-background-color, #{$ms-color-magenta});
 
 :host {
-  width: 100%;
-  max-width: inherit;
   box-shadow: 0px 10.6312px 13.289px rgba(180, 180, 180, 0.182), 0px 1.3289px 2.65781px rgba(68, 68, 68, 0.3);
 }
-mgt-people-picker {
-  width: 100%;
-  max-width: inherit;
+:host .root,
+mgt-people-picker .root {
+  display: block;
 }
 
 :host .people-picker,
 mgt-people-picker .people-picker {
-  max-width: inherit;
-  width: 100%;
-  display: block;
-  position: absolute; /* Stay in place */
-  z-index: 1; /* Sit on top */
   margin: 7px 0 0 0;
   background-color: white;
   padding-bottom: 8px;
@@ -39,15 +32,27 @@ mgt-people-picker .people-picker {
 
 :host .people-list,
 mgt-people-picker .people-list {
+  position: absolute;
+  background-color: white;
+  z-index: 1; /* Sit on top */
   list-style-type: none;
   margin: $list-margin;
   padding: 0;
-  margin: 0;
-  padding-left: 1%;
-  padding-right: 1%;
   font-family: Segoe UI;
   font-style: normal;
   font-weight: normal;
+  margin-top: 7px;
+  margin-left: 0px;
+  width: 100%;
+  text-align: left;
+}
+:host .people-list-separator,
+mgt-people-picker .people-list-separator {
+  text-decoration: none;
+  border-bottom: 2px solid #0078d4;
+  margin-top: 5px;
+  text-align: center;
+  position: relative;
 }
 
 :host .people-chosen-input,
@@ -170,17 +175,6 @@ mgt-people-picker .remove-person-button {
 mgt-people-picker .remove-person-button-secondary {
   background: #767676;
   transform: matrix(0.71, -0.71, 0.71, 0.71, 0, 0);
-}
-
-:host .people-list-separator,
-mgt-people-picker .people-list-separator {
-  text-decoration: none;
-  border-bottom: 2px solid #0078d4;
-  margin-left: 1%;
-  margin-right: 1%;
-  margin-top: 5px;
-
-  text-align: center;
 }
 
 :host .person-display-name,
