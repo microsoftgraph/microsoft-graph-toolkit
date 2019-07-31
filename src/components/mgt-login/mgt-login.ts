@@ -25,7 +25,6 @@ export class MgtLogin extends MgtBaseComponent {
 
   @property({ attribute: false }) private _showMenu: boolean = false;
   @property({ attribute: false }) private _loading: boolean = true;
-  @property({ attribute: false }) private _user: MicrosoftGraph.User;
 
   @property({
     attribute: 'user-details',
@@ -81,41 +80,6 @@ export class MgtLogin extends MgtBaseComponent {
         );
       }
     }
-    // else if (changedProps.get("_showMenu") === true) {
-    //   // get login button bounds
-    //   const loginButton = this.shadowRoot.querySelector(".login-button");
-    //   if (loginButton && loginButton.animate) {
-    //     this._loginButtonRect = loginButton.getBoundingClientRect();
-
-    //     // invert variables
-    //     const deltaX = this._popupRect.left - this._loginButtonRect.left;
-    //     const deltaY = this._popupRect.top - this._loginButtonRect.top;
-    //     const deltaW = this._popupRect.width / this._loginButtonRect.width;
-    //     const deltaH = this._popupRect.height / this._loginButtonRect.height;
-
-    //     // play back
-    //     loginButton.animate(
-    //       [
-    //         {
-    //           transformOrigin: "top left",
-    //           transform: `
-    //           translate(${deltaX}px, ${deltaY}px)
-    //           scale(${deltaW}, ${deltaH})
-    //         `
-    //         },
-    //         {
-    //           transformOrigin: "top left",
-    //           transform: "none"
-    //         }
-    //       ],
-    //       {
-    //         duration: 100,
-    //         easing: "ease-out",
-    //         fill: "both"
-    //       }
-    //     );
-    //   }
-    // }
   }
 
   firstUpdated() {
@@ -131,7 +95,6 @@ export class MgtLogin extends MgtBaseComponent {
 
   private async loadState() {
     if (this.userDetails) {
-      this._user = null;
       return;
     }
 
@@ -140,9 +103,18 @@ export class MgtLogin extends MgtBaseComponent {
     if (provider) {
       this._loading = true;
       if (provider.state === ProviderState.SignedIn) {
-        this._user = await provider.graph.getMe();
+        let batch = provider.graph.createBatch();
+        batch.get('me', 'me', ['user.read']);
+        batch.get('photo', 'me/photo/$value', ['user.read']);
+        let response = await batch.execute();
+
+        this.userDetails = {
+          displayName: response.me.displayName,
+          email: response.me.mail || response.me.userPrincipalName,
+          image: response.photo
+        };
       } else if (provider.state === ProviderState.SignedOut) {
-        this._user = null;
+        this.userDetails = null;
       } else {
         return;
       }
@@ -153,7 +125,7 @@ export class MgtLogin extends MgtBaseComponent {
 
   private onClick(event: MouseEvent) {
     event.stopPropagation();
-    if (this._user || this.userDetails) {
+    if (this.userDetails) {
       // get login button bounds
       const loginButton = this.renderRoot.querySelector('.login-button');
       if (loginButton) {
@@ -212,7 +184,7 @@ export class MgtLogin extends MgtBaseComponent {
   }
 
   render() {
-    const content = this._user || this.userDetails ? this.renderLoggedIn() : this.renderLogIn();
+    const content = this.userDetails ? this.renderLoggedIn() : this.renderLogIn();
 
     return html`
       <div class="root">
@@ -234,13 +206,9 @@ export class MgtLogin extends MgtBaseComponent {
   }
 
   renderLoggedIn() {
-    if (this._user) {
+    if (this.userDetails) {
       return html`
-        <mgt-person person-query="me" show-name />
-      `;
-    } else if (this.userDetails) {
-      return html`
-        <mgt-person person-details=${JSON.stringify(this.userDetails)} show-name />
+        <mgt-person .personDetails=${this.userDetails} show-name />
       `;
     } else {
       return this.renderLogIn();
@@ -248,17 +216,13 @@ export class MgtLogin extends MgtBaseComponent {
   }
 
   renderMenu() {
-    if (!this._user && !this.userDetails) {
+    if (!this.userDetails) {
       return;
     }
 
-    let personComponent = this._user
-      ? html`
-          <mgt-person person-query="me" show-name show-email />
-        `
-      : html`
-          <mgt-person person-details=${JSON.stringify(this.userDetails)} show-name show-email />
-        `;
+    let personComponent = html`
+      <mgt-person .personDetails=${this.userDetails} show-name show-email />
+    `;
 
     return html`
       <div class="popup ${this._openLeft ? 'open-left' : ''} ${this._showMenu ? 'show-menu' : ''}">

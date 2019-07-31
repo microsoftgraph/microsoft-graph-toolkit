@@ -7,17 +7,20 @@
 
 import * as MicrosoftGraph from '@microsoft/microsoft-graph-types';
 import * as MicrosoftGraphBeta from '@microsoft/microsoft-graph-types-beta';
-import { Client } from '@microsoft/microsoft-graph-client/lib/es/Client';
-import { Context } from '@microsoft/microsoft-graph-client/lib/es/IContext';
-import { Middleware } from '@microsoft/microsoft-graph-client/lib/es/middleware/IMiddleware';
+import {
+  Client,
+  AuthenticationHandlerOptions,
+  Middleware,
+  Context,
+  AuthenticationHandler,
+  RetryHandler,
+  TelemetryHandler,
+  RetryHandlerOptions,
+  HTTPMessageHandler,
+  ResponseType,
+  BatchRequestContent
+} from '@microsoft/microsoft-graph-client';
 import { getRequestHeader, setRequestHeader } from '@microsoft/microsoft-graph-client/lib/es/middleware/MiddlewareUtil';
-import { ResponseType } from '@microsoft/microsoft-graph-client/lib/es/ResponseType';
-import { AuthenticationHandlerOptions } from '@microsoft/microsoft-graph-client/lib/es/middleware/options/AuthenticationHandlerOptions';
-import { AuthenticationHandler } from '@microsoft/microsoft-graph-client/lib/es/middleware/AuthenticationHandler';
-import { RetryHandler } from '@microsoft/microsoft-graph-client/lib/es/middleware/RetryHandler';
-import { RetryHandlerOptions } from '@microsoft/microsoft-graph-client/lib/es/middleware/options/RetryHandlerOptions';
-import { TelemetryHandler } from '@microsoft/microsoft-graph-client/lib/es/middleware/TelemetryHandler';
-import { HTTPMessageHandler } from '@microsoft/microsoft-graph-client/lib/es/middleware/HTTPMessageHandler';
 import { IProvider } from './providers/IProvider';
 import { PACKAGE_VERSION } from './utils/version';
 
@@ -53,6 +56,81 @@ class SdkVersionMiddleware implements Middleware {
   }
 }
 
+class BatchRequest {
+  public resource: string;
+  public method: string;
+
+  public constructor(resource: string, method: string) {
+    if (resource.charAt(0) !== '/') {
+      resource = '/' + resource;
+    }
+    this.resource = resource;
+    this.method = method;
+  }
+}
+
+export class Batch {
+  private requests: Map<string, BatchRequest> = new Map<string, BatchRequest>();
+  private scopes: string[] = [];
+  private client: Client;
+
+  // this doesn't really mater what it is as long as it's a root base url
+  // otherwise a Request assumes the current path and that could change the relative path
+  private static baseUrl = 'https://graph.microsoft.com';
+
+  constructor(client: Client) {
+    this.client = client;
+  }
+
+  public get(id: string, resource: string, scopes?: string[]) {
+    const request = new BatchRequest(resource, 'GET');
+    this.requests.set(id, request);
+
+    if (scopes) {
+      this.scopes = this.scopes.concat(scopes);
+    }
+  }
+
+  public async execute(): Promise<any> {
+    const responses = {};
+
+    if (!this.requests.size) {
+      return responses;
+    }
+
+    let batchRequestContent = new BatchRequestContent();
+
+    for (let request of this.requests) {
+      batchRequestContent.addRequest({
+        id: request[0],
+        request: new Request(Batch.baseUrl + request[1].resource, {
+          method: request[1].method
+        })
+      });
+    }
+
+    let batchRequest = this.client.api('$batch').version('beta');
+
+    if (this.scopes.length) {
+      batchRequest = batchRequest.middlewareOptions(prepScopes(...this.scopes));
+    }
+
+    let batchResponse = await batchRequest.post(await batchRequestContent.getContent());
+
+    for (let response of batchResponse.responses) {
+      if (response.status !== 200) {
+        response[response.id] = null;
+      } else if (response.headers['Content-Type'].includes('image/jpeg')) {
+        responses[response.id] = 'data:image/jpeg;base64,' + response.body;
+      } else {
+        responses[response.id] = response.body;
+      }
+    }
+
+    return responses;
+  }
+}
+
 export class Graph {
   public client: Client;
 
@@ -84,6 +162,10 @@ export class Graph {
       };
       reader.readAsDataURL(blob);
     });
+  }
+
+  public createBatch() {
+    return new Batch(this.client);
   }
 
   async getMe(): Promise<MicrosoftGraph.User> {
