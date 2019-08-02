@@ -21,9 +21,7 @@ import { MgtPersonDetails, MgtPerson } from '../mgt-person/mgt-person';
 export class MgtPicker extends MgtTemplatedComponent {
   private _firstUpdated = false;
   private groupPeople;
-  private _loginButtonRect: ClientRect;
-  private _popupRect: ClientRect;
-  private _openLeft: boolean = false;
+  private isLoading = false;
 
   @property({
     attribute: 'people',
@@ -49,7 +47,6 @@ export class MgtPicker extends MgtTemplatedComponent {
   @property() private _selectedPeople: Array<any> = [];
   @property() private _duplicatePersonId: string = '';
   @property() private _userInput: string = '';
-  @property() private _previousSearch: any;
 
   static get styles() {
     return styles;
@@ -171,39 +168,45 @@ export class MgtPicker extends MgtTemplatedComponent {
   }
 
   private async loadPersonSearch(name: string) {
-    let provider = Providers.globalProvider;
-    let peoples: any;
-    if (provider && provider.state === ProviderState.SignedIn) {
-      let client = Providers.globalProvider.graph;
-      //determine if group property is requested && if different group than previously requested
-      if (this.group && this.group != this.groupPeople) {
-        //peoples = await client.getPeopleFromGroup(this.group).catch(function(e) {});
-        //filter people in group against search term
-        peoples = await client.getPeopleFromGroup(this.group);
+    this.isLoading = true;
+    if (name.length) {
+      let provider = Providers.globalProvider;
+      let peoples: any;
+      if (provider && provider.state === ProviderState.SignedIn) {
+        let client = Providers.globalProvider.graph;
+        //determine if group property is requested && if different group than previously requested
+        if (this.group && this.group != this.groupPeople) {
+          //filter people in group against search term
+          peoples = await client.getPeopleFromGroup(this.group);
 
-        peoples = peoples.filter(function(person) {
-          return person.displayName.toLowerCase().indexOf(name) !== -1;
-        });
-        // console.log('finding group', this.findGroup());
-        if (peoples) {
-          this.filterPeople(peoples);
-          this.groupPeople = this.group;
-        } else {
-          this.people = [];
-        }
-      } else {
-        if (this.group) {
-          let oldPeople: any = this.people;
-          peoples = oldPeople.filter(function(person) {
+          peoples = peoples.filter(function(person) {
             return person.displayName.toLowerCase().indexOf(name) !== -1;
           });
-          this.filterPeople(peoples);
-        }
-        peoples = await client.findPerson(name);
-        if (peoples) {
-          this.filterPeople(peoples);
+          if (peoples) {
+            this.filterPeople(peoples);
+            this.groupPeople = this.group;
+          } else {
+            this.people = [];
+            this.filterPeople(peoples);
+          }
         } else {
-          this.people = [];
+          if (this.group) {
+            let oldPeople: any = this.people;
+            peoples = oldPeople.filter(function(person) {
+              return person.displayName.toLowerCase().indexOf(name) !== -1;
+            });
+            this.filterPeople(peoples);
+          }
+          peoples = await client.findPerson(name);
+          if (peoples) {
+            peoples = peoples.filter(function(person) {
+              return person.displayName.toLowerCase().indexOf(name) !== -1;
+            });
+            this.filterPeople(peoples);
+          } else {
+            this.people = [];
+            this.filterPeople(peoples);
+          }
         }
       }
     }
@@ -213,23 +216,26 @@ export class MgtPicker extends MgtTemplatedComponent {
     //check if people need to be updated
     //ensuring people list is displayed
     //find ids from selected people
-    let id_filter = this._selectedPeople.map(function(el) {
-      return el.id;
-    });
-    //filter id's
-    let filtered = peoples.filter(function(person) {
-      return id_filter.indexOf(person.id) === -1;
-    });
-    if (filtered.length == 0 && this._userInput.length > 0) {
-      this.people = [];
-      return;
-    } else {
-      if (filtered.length) {
-        filtered[0].isSelected = 'fill';
-        this.arrowSelectionCount = 0;
-        this.people = filtered;
+    if (peoples) {
+      let id_filter = this._selectedPeople.map(function(el) {
+        return el.id;
+      });
+      //filter id's
+      let filtered = peoples.filter(function(person) {
+        return id_filter.indexOf(person.id) === -1;
+      });
+      if (filtered.length == 0 && this._userInput.length > 0) {
+        this.people = [];
+        return;
+      } else {
+        if (filtered.length) {
+          filtered[0].isSelected = 'fill';
+          this.arrowSelectionCount = 0;
+          this.people = filtered;
+        }
       }
     }
+    this.isLoading = false;
   }
 
   private removePerson(person: MgtPersonDetails) {
@@ -334,8 +340,6 @@ export class MgtPicker extends MgtTemplatedComponent {
     } else {
       if (/\s/g.test(this._userInput) == true) {
         //if highlight is not found due to space character
-        let search = this._userInput.replace(/\s/g, '');
-        this._userInput = search;
       } else {
         peoples.first = peoples.displayName;
       }
@@ -352,17 +356,16 @@ export class MgtPicker extends MgtTemplatedComponent {
 
   private renderPeopleList() {
     let peoples: any = this.people;
-
     if (peoples) {
-      if (peoples.length > 0 && this._userInput.length > 0) {
+      if (peoples.length == 0 && this._userInput.length > 0 && this.isLoading!) {
+        return html`
+          <span class="error-message-holder">${this.renderErrorMessage()}</span>
+        `;
+      } else {
         return html`
           <ul class="people-list">
             ${this.renderPersons(peoples)}
           </ul>
-        `;
-      } else {
-        return html`
-          <span class="error-message-holder">${this.renderErrorMessage()}</span>
         `;
       }
     }
@@ -395,9 +398,8 @@ export class MgtPicker extends MgtTemplatedComponent {
           <div class="people-picker-input">
             ${this.renderChosenPeople()}
           </div>
-          <div class="people-list-separator">
-            ${this.renderPeopleList()}
-          </div>
+          <div class="people-list-separator"></div>
+          ${this.renderPeopleList()}
         </div>
       `
     );
