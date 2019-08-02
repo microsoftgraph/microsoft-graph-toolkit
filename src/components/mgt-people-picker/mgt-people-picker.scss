@@ -28,6 +28,7 @@ mgt-people-picker .people-picker {
   margin: 7px 0 0 0;
   background-color: white;
   padding-bottom: 8px;
+  position: relative;
 }
 
 :host .people-list,
@@ -49,14 +50,16 @@ mgt-people-picker .people-list {
 :host .people-list-separator,
 mgt-people-picker .people-list-separator {
   text-decoration: none;
-  border-bottom: 2px solid #0078d4;
+  border-top: 2px solid #0078d4;
   margin-top: 5px;
   text-align: center;
-  position: relative;
+  margin-left: 5px;
+  margin-right: 5px;
 }
 
 :host .people-chosen-input,
 mgt-people-picker .people-chosen-input {
+  position: relative;
   border: none;
   line-height: normal;
   outline: none;
