@@ -243,15 +243,11 @@ export class MgtPicker extends MgtTemplatedComponent {
   }
 
   private renderErrorMessage() {
-    if (this.people) {
-      if (this.people.length === 0 && this._userInput.length > 0) {
-        return html`
-          <div class="error-message-parent">
-            <div class="search-error-text">We didn't find any matches.</div>
-          </div>
-        `;
-      }
-    }
+    return html`
+      <div class="error-message-parent">
+        <div class="search-error-text">We didn't find any matches.</div>
+      </div>
+    `;
   }
   private trackMouseFocus(e) {
     const peopleList = this.renderRoot.querySelector('.people-list');
@@ -358,11 +354,17 @@ export class MgtPicker extends MgtTemplatedComponent {
     let peoples: any = this.people;
 
     if (peoples) {
-      return html`
-        <ul class="people-list">
-          ${this.renderPersons(peoples)}
-        </ul>
-      `;
+      if (peoples.length > 0) {
+        return html`
+          <ul class="people-list">
+            ${this.renderPersons(peoples)}
+          </ul>
+        `;
+      } else {
+        return html`
+          <span class="error-message-holder">${this.renderErrorMessage()}</span>
+        `;
+      }
     }
   }
 
@@ -393,8 +395,9 @@ export class MgtPicker extends MgtTemplatedComponent {
           <div class="people-picker-input">
             ${this.renderChosenPeople()}
           </div>
-          <div class="people-list-separator">${this.renderPeopleList()}</div>
-          <div class="error-message-holder"></div>
+          <div class="people-list-separator">
+            ${this.renderPeopleList()}
+          </div>
         </div>
       `
     );
