@@ -179,6 +179,11 @@ export class MgtPicker extends MgtTemplatedComponent {
         if (this.group && this.group != this.groupPeople) {
           //filter people in group against search term
           peoples = await client.getPeopleFromGroup(this.group);
+          for (let person of peoples) {
+            // set image to @ to flag the mgt-person component to
+            // query the image from the graph
+            person.image = '@';
+          }
 
           peoples = peoples.filter(function(person) {
             return person.displayName.toLowerCase().indexOf(name) !== -1;
@@ -196,9 +201,19 @@ export class MgtPicker extends MgtTemplatedComponent {
             peoples = oldPeople.filter(function(person) {
               return person.displayName.toLowerCase().indexOf(name) !== -1;
             });
+            for (let person of peoples) {
+              // set image to @ to flag the mgt-person component to
+              // query the image from the graph
+              person.image = '@';
+            }
             this.filterPeople(peoples);
           }
           peoples = await client.findPerson(name);
+          for (let person of peoples) {
+            // set image to @ to flag the mgt-person component to
+            // query the image from the graph
+            person.image = '@';
+          }
           if (peoples) {
             peoples = peoples.filter(function(person) {
               return person.displayName.toLowerCase().indexOf(name) !== -1;
@@ -402,12 +417,12 @@ export class MgtPicker extends MgtTemplatedComponent {
 
   private renderPerson(person: MicrosoftGraph.Person) {
     return html`
-      <mgt-person person-details=${JSON.stringify(person)}></mgt-person>
+      <mgt-person .personDetails=${person}></mgt-person>
     `;
   }
   private renderChosenPerson(person: MicrosoftGraph.Person) {
     return html`
-      <mgt-person class="chosen-person" person-details=${JSON.stringify(person)}></mgt-person>
+      <mgt-person class="chosen-person" .personDetails=${person}></mgt-person>
     `;
   }
 }
