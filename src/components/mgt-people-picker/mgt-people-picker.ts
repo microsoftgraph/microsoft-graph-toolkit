@@ -170,6 +170,7 @@ export class MgtPicker extends MgtTemplatedComponent {
   private async loadPersonSearch(name: string) {
     this.isLoading = true;
     if (name.length) {
+      name = name.toLowerCase();
       let provider = Providers.globalProvider;
       let peoples: any;
       if (provider && provider.state === ProviderState.SignedIn) {
@@ -336,12 +337,6 @@ export class MgtPicker extends MgtTemplatedComponent {
           highlightLocation + this._userInput.length,
           peoples.displayName.length
         );
-      }
-    } else {
-      if (/\s/g.test(this._userInput) == true) {
-        //if highlight is not found due to space character
-      } else {
-        peoples.first = peoples.displayName;
       }
     }
 
