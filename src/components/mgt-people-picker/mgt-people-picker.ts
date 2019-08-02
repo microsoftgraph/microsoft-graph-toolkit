@@ -354,7 +354,7 @@ export class MgtPicker extends MgtTemplatedComponent {
     let peoples: any = this.people;
 
     if (peoples) {
-      if (peoples.length > 0) {
+      if (peoples.length > 0 && this._userInput.length > 0) {
         return html`
           <ul class="people-list">
             ${this.renderPersons(peoples)}
