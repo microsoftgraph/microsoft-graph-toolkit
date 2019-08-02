@@ -69,70 +69,49 @@ export class MgtPerson extends MgtTemplatedComponent {
       return;
     }
 
-    // If we only have a user-id then use that to get data.
-    if (this.userId) {
-      let person: MgtPersonDetails = {};
-
-      await Promise.all([
-        provider.graph.getUser(this.userId).then(user => {
-          if (user) {
-            person.displayName = user.displayName;
-            person.email = user.mail;
-            this.requestUpdate();
-          }
-        }),
-        provider.graph.getUserPhoto(this.userId).then(photo => {
-          if (photo) {
-            person.image = photo;
-            this.requestUpdate();
-          }
-        })
-      ]);
-
-      this.personDetails = person;
-    } else if (!this.personQuery && this.personDetails) {
-      // Check if we have details needed.
-      if (!this.personDetails.image) {
-        await this.loadImage(this.personDetails);
+    if (this.personDetails) {
+      // in some cases we might only have name or email, but need to find the image
+      // use @ for the image value to search for an image
+      if (this.personDetails.image && this.personDetails.image === '@') {
+        this.personDetails.image = null;
+        this.loadImage(this.personDetails);
       }
-    } else if (!this.personDetails && this.personQuery) {
-      if (this.personQuery == 'me') {
-        let person: MgtPersonDetails = {};
+      return;
+    }
 
-        await Promise.all([
-          provider.graph.getMe().then(user => {
-            if (user) {
-              person.displayName = user.displayName;
-              person.email = user.mail || user.userPrincipalName;
-            }
-          }),
-          provider.graph.myPhoto().then(photo => {
-            if (photo) {
-              person.image = photo;
-            }
-          })
-        ]);
+    if (this.userId || (this.personQuery && this.personQuery == 'me')) {
+      let batch = provider.graph.createBatch();
 
-        this.personDetails = person;
+      if (this.userId) {
+        batch.get('user', `/users/${this.userId}`, ['user.readbasic.all']);
+        batch.get('photo', `users/${this.userId}/photo/$value`, ['user.readbasic.all']);
       } else {
-        provider.graph.findPerson(this.personQuery).then(people => {
-          if (people && people.length > 0) {
-            let person = people[0] as MicrosoftGraph.Person;
-            this.personDetails = person;
-
-            if (person.scoredEmailAddresses && person.scoredEmailAddresses.length) {
-              this.personDetails.email = person.scoredEmailAddresses[0].address;
-            } else if ((<any>person).emailAddresses && (<any>person).emailAddresses.length) {
-              // beta endpoint uses emailAddresses instead of scoredEmailAddresses
-              this.personDetails.email = (<any>person).emailAddresses[0].address;
-            }
-
-            this.loadImage(person);
-          }
-        });
+        batch.get('user', 'me', ['user.read']);
+        batch.get('photo', 'me/photo/$value', ['user.read']);
       }
-    } else {
-      this.personDetails = null; // Should we throw here or re-load the query as now we do nothing if both specified?
+
+      let response = await batch.execute();
+
+      this.personDetails = {
+        displayName: response.user.displayName,
+        email: response.user.mail || response.user.userPrincipalName,
+        image: response.photo
+      };
+    } else if (!this.personDetails && this.personQuery) {
+      let people = await provider.graph.findPerson(this.personQuery);
+      if (people && people.length > 0) {
+        let person = people[0] as MicrosoftGraph.Person;
+        this.personDetails = person;
+
+        if (person.scoredEmailAddresses && person.scoredEmailAddresses.length) {
+          this.personDetails.email = person.scoredEmailAddresses[0].address;
+        } else if ((<any>person).emailAddresses && (<any>person).emailAddresses.length) {
+          // beta endpoint uses emailAddresses instead of scoredEmailAddresses
+          this.personDetails.email = (<any>person).emailAddresses[0].address;
+        }
+
+        this.loadImage(person);
+      }
     }
   }
 
@@ -141,31 +120,23 @@ export class MgtPerson extends MgtTemplatedComponent {
 
     if (person.userPrincipalName) {
       let userPrincipalName = person.userPrincipalName;
-      provider.graph.getUserPhoto(userPrincipalName).then(photo => {
-        this.personDetails.image = photo;
-        this.requestUpdate();
-      });
+      this.personDetails.image = await provider.graph.getUserPhoto(userPrincipalName);
     } else if (this.personDetails.email) {
       // try to find a user by e-mail
-      provider.graph.findUserByEmail(this.personDetails.email).then(users => {
-        if (users && users.length) {
+      let users = await provider.graph.findUserByEmail(this.personDetails.email);
+
+      if (users && users.length) {
+        if ((<any>users[0]).personType && (<any>users[0]).personType.subclass == 'OrganizationUser') {
+          this.personDetails.image = await provider.graph.getUserPhoto(
+            (<MicrosoftGraph.Person>users[0]).scoredEmailAddresses[0].address
+          );
+        } else {
           const contactId = users[0].id;
-          if ((<any>users[0]).personType && (<any>users[0]).personType.subclass == 'OrganizationUser') {
-            provider.graph
-              .getUserPhoto((<MicrosoftGraph.Person>users[0]).scoredEmailAddresses[0].address)
-              .then(photo => {
-                this.personDetails.image = photo;
-                this.requestUpdate();
-              });
-          } else {
-            provider.graph.getContactPhoto(contactId).then(photo => {
-              this.personDetails.image = photo;
-              this.requestUpdate();
-            });
-          }
+          this.personDetails.image = await provider.graph.getContactPhoto(contactId);
         }
-      });
+      }
     }
+    this.requestUpdate();
   }
 
   render() {
@@ -193,7 +164,7 @@ export class MgtPerson extends MgtTemplatedComponent {
 
   renderImage() {
     if (this.personDetails) {
-      if (this.personDetails.image) {
+      if (this.personDetails.image && this.personDetails.image !== '@') {
         return html`
           <img
             class="user-avatar ${this.getImageRowSpanClass()} ${this.getImageSizeClass()}"

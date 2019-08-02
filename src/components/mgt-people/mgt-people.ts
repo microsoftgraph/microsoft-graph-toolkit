@@ -61,6 +61,11 @@ export class MgtPeople extends MgtTemplatedComponent {
         let client = Providers.globalProvider.graph;
 
         this.people = (await client.getPeople()).slice(0, this.showMax);
+        for (let person of this.people) {
+          // set image to @ to flag the mgt-person component to
+          // query the image from the graph
+          person.image = '@';
+        }
       }
     }
   }
@@ -100,7 +105,7 @@ export class MgtPeople extends MgtTemplatedComponent {
 
   private renderPerson(person: MicrosoftGraph.Person) {
     return html`
-      <mgt-person person-details=${JSON.stringify(person)}></mgt-person>
+      <mgt-person .personDetails=${person}></mgt-person>
     `;
   }
 }

@@ -21,11 +21,12 @@
   "types": "./dist/es6/index.d.ts",
   "module": "./dist/es6/index.js",
   "files": [
-    "dist"
+    "dist",
+    "src"
   ],
   "scripts": {
     "clean": "shx rm -rf dist",
-    "start": "run-p sass:watch build:watch serve watch",
+    "start": "npm run sass && run-p sass:watch build:watch serve watch",
     "serve": "owc-dev-server --port 3333",
     "watch": "browser-sync start --no-notify --proxy localhost:3333 --files 'dist/**/*.js, index.html'",
     "sass": "gulp sass",
@@ -46,12 +47,12 @@
     "prettier:write": "npm run prettier:base -- --write \"{src,tests}/**/*.{ts,tsx}\""
   },
   "dependencies": {
-    "@microsoft/microsoft-graph-client": "^1.7.0-Preview.1",
-    "@microsoft/microsoft-graph-types": "^1.8.0",
+    "@microsoft/microsoft-graph-client": "^2.0.0-Preview.4",
+    "@microsoft/microsoft-graph-types": "^1.10.0",
     "@microsoft/microsoft-graph-types-beta": "microsoftgraph/msgraph-typescript-typings#beta",
-    "lit-element": "^2.1.0",
+    "lit-element": "^2.2.0",
     "msal": "1.0.0",
-    "office-ui-fabric-core": "10.0.0"
+    "office-ui-fabric-core": "10.1.0"
   },
   "devDependencies": {
     "@babel/core": "^7.4.3",
@@ -61,9 +62,9 @@
     "@babel/preset-env": "^7.4.3",
     "@babel/preset-typescript": "^7.3.3",
     "@types/jest": "^24.0.11",
-    "@webcomponents/webcomponentsjs": "^2.2.7",
-    "babel-polyfill": "6.5.0",
-    "browser-sync": "^2.26.5",
+    "@webcomponents/webcomponentsjs": "^2.2.10",
+    "babel-polyfill": "6.26.0",
+    "browser-sync": "^2.26.7",
     "cpx": "^1.5.0",
     "gulp": "^4.0.0",
     "gulp-append-prepend": "^1.0.6",

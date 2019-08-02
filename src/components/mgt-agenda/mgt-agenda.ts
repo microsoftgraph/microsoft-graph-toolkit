@@ -290,14 +290,13 @@ export class MgtAgenda extends MgtTemplatedComponent {
     return html`
       <mgt-people
         class="event-attendees"
-        people=${JSON.stringify(
-          event.attendees.map(
-            attendee =>
-              <MgtPersonDetails>{
-                displayName: attendee.emailAddress.name,
-                email: attendee.emailAddress.address
-              }
-          )
+        .people=${event.attendees.map(
+          attendee =>
+            <MgtPersonDetails>{
+              displayName: attendee.emailAddress.name,
+              email: attendee.emailAddress.address,
+              image: '@'
+            }
         )}
       ></mgt-people>
     `;
