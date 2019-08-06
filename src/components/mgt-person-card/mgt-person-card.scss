@@ -23,29 +23,49 @@ $email-color: var(--email-color, #{$ms-color-neutralPrimary});
 
 .root {
   position: relative;
-  display: inline-block;
-  padding: 20px;
+  width: 340px;
   background: #ffffff;
   box-shadow: 0px 0px 4.55172px rgba(0, 0, 0, 0.16);
   font-family: var(--default-font-family);
 
-  .displayname {
-    font-size: 27.3103px;
-    line-height: 36px;
-    color: #333333;
-    mix-blend-mode: normal;
-    opacity: 0.9;
-    margin-bottom: 10px;
+  .default-view {
+    display: flex;
+    padding: 18px 14px;
+
+    mgt-person {
+      --avatar-size-s: 75px;
+    }
+
+    .details {
+      margin-left: 14px;
+
+      .displayname {
+        font-size: 27.3103px;
+        // line-height: 36px;
+        color: #333333dd;
+      }
+
+      .job-title {
+        font-size: 18.2069px;
+        // line-height: 31px;
+        color: #767676;
+      }
+
+      .department {
+        font-size: 15.1724px;
+        // line-height: 31px;
+        color: #767676;
+      }
+
+      .icons {
+        margin-top: 14px;
+      }
+    }
   }
 
-  .email {
-    font-size: 18.2069px;
-    line-height: 31px;
-    color: #767676;
-  }
-
-  .phone {
-    font-size: 15.1724px;
-    color: #767676;
+  .additional-details {
+    height: 28px;
+    background: rgba(196, 196, 196, 0.1);
+    text-align: center;
   }
 }

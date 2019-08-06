@@ -5,6 +5,16 @@
  * -------------------------------------------------------------------------------------------
  */
 
+/**
+ * returns a promise that resolves after specified time
+ * @param time in milliseconds
+ */
+export function delay(ms: number): Promise<void> {
+  return new Promise(function(resolve) {
+    setTimeout(resolve, ms);
+  });
+}
+
 export function getShortDateString(date: Date) {
   let month = date.getMonth();
   let day = date.getDate();

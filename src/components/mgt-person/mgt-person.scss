@@ -21,6 +21,10 @@ $color: var(--color, #{$ms-color-neutralDark});
 $email-font-size: var(--email-font-size, #{$ms-font-size-s});
 $email-color: var(--email-color, #{$ms-color-neutralPrimary});
 
+:host .root {
+  display: inline-block;
+}
+
 :host svg,
 mgt-person svg {
   width: $avatar-size-s;
@@ -33,20 +37,12 @@ mgt-person img {
   border-radius: 50%;
 }
 
-:host .root,
-mgt-person .root {
+:host .person-root,
+mgt-person .person-root {
   position: relative;
   display: flex;
   align-items: center;
   font-family: var(--default-font-family, 'Segoe UI');
-}
-
-:host mgt-person-card {
-  display: none;
-}
-
-.root:hover + mgt-person-card {
-  display: block;
 }
 
 :host .Details,
@@ -133,4 +129,19 @@ mgt-person .user-email {
   -ms-grid-column: 2;
   grid-row: 2;
   -ms-grid-row: 2;
+}
+
+.root .flyout {
+  display: inline-block;
+  position: absolute;
+  opacity: 0;
+  transition-property: opacity;
+  transition-duration: 0.2s;
+  // animation-delay: 1s;
+  // animation-name: fadeOut;
+  // animation-duration: 0.3s;
+}
+
+.root .flyout.visible {
+  opacity: 1;
 }

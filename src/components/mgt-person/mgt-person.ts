@@ -13,6 +13,8 @@ import { styles } from './mgt-person-css';
 import '../../styles/fabric-icon-font';
 import { ProviderState } from '../../providers/IProvider';
 import { MgtTemplatedComponent } from '../templatedComponent';
+import { classMap } from 'lit-html/directives/class-map';
+import { delay } from '../../utils/utils';
 
 @customElement('mgt-person')
 export class MgtPerson extends MgtTemplatedComponent {
@@ -43,6 +45,15 @@ export class MgtPerson extends MgtTemplatedComponent {
     type: Object
   })
   personDetails: MgtPersonDetails;
+
+  @property({
+    attribute: 'show-card',
+    type: Boolean
+  })
+  showCard: false;
+
+  @property({ attribute: false }) private _isPersonCardVisible: boolean = false;
+  @property({ attribute: false }) private _personCardHasRendered: boolean = false;
 
   attributeChangedCallback(name, oldval, newval) {
     super.attributeChangedCallback(name, oldval, newval);
@@ -139,24 +150,67 @@ export class MgtPerson extends MgtTemplatedComponent {
     this.requestUpdate();
   }
 
+  private _mouseLeaveTimeout;
+  private _mouseEnterTimeout;
+
+  // todo remove
+  private _handleMouseEnter(e: MouseEvent) {
+    clearTimeout(this._mouseEnterTimeout);
+    clearTimeout(this._mouseLeaveTimeout);
+    this._mouseEnterTimeout = setTimeout(this._showPersonCard.bind(this), 1000, e);
+  }
+
+  private _handleMouseLeave(e: MouseEvent) {
+    clearTimeout(this._mouseEnterTimeout);
+    clearTimeout(this._mouseLeaveTimeout);
+    this._mouseLeaveTimeout = setTimeout(this._hidePersonCard.bind(this), 1000, e);
+  }
+
+  private async _showPersonCard(e: MouseEvent) {
+    if (!this._personCardHasRendered) {
+      // give the person-card a chance to render so transitions work
+      this._personCardHasRendered = true;
+      await delay(200);
+    }
+
+    this._isPersonCardVisible = true;
+  }
+
+  private _hidePersonCard(e: MouseEvent) {
+    this._isPersonCardVisible = false;
+  }
+
   render() {
     let person =
       this.renderTemplate('default', { person: this.personDetails }) ||
       html`
-        <div class="root">
+        <div class="person-root">
           ${this.renderImage()} ${this.renderDetails()}
         </div>
       `;
 
     return html`
-      <div>
-        ${person}
+      <div class="root" @mouseenter=${this._handleMouseEnter} @mouseleave=${this._handleMouseLeave}>
+        ${person} ${this.renderPersonCard()}
+      </div>
+    `;
+  }
+
+  private renderPersonCard() {
+    // ensure person card is only rendered when needed
+    if (!this.showCard || !this._personCardHasRendered) {
+      return;
+    }
+
+    let flyoutClasses = { flyout: true, visible: this._isPersonCardVisible };
+    return html`
+      <div class=${classMap(flyoutClasses)}>
         <mgt-person-card></mgt-person-card>
       </div>
     `;
   }
 
-  renderDetails() {
+  private renderDetails() {
     if (this.showEmail || this.showName) {
       return html`
         <span class="Details ${this.getImageSizeClass()}">
@@ -168,22 +222,21 @@ export class MgtPerson extends MgtTemplatedComponent {
     return null;
   }
 
-  renderImage() {
+  private renderImage() {
     if (this.personDetails) {
+      let title = !this.showCard ? this.personDetails.displayName : '';
+
       if (this.personDetails.image && this.personDetails.image !== '@') {
         return html`
           <img
             class="user-avatar ${this.getImageRowSpanClass()} ${this.getImageSizeClass()}"
-            title=${this.personDetails.displayName}
+            title=${title}
             src=${this.personDetails.image as string}
           />
         `;
       } else {
         return html`
-          <div
-            class="user-avatar initials ${this.getImageRowSpanClass()} ${this.getImageSizeClass()}"
-            title=${this.personDetails.displayName}
-          >
+          <div class="user-avatar initials ${this.getImageRowSpanClass()} ${this.getImageSizeClass()}" title=${title}>
             <span class="initials-text">
               ${this.getInitials()}
             </span>
@@ -195,13 +248,13 @@ export class MgtPerson extends MgtTemplatedComponent {
     return this.renderEmptyImage();
   }
 
-  renderEmptyImage() {
+  private renderEmptyImage() {
     return html`
       <i class="ms-Icon ms-Icon--Contact avatar-icon ${this.getImageRowSpanClass()} ${this.getImageSizeClass()}"></i>
     `;
   }
 
-  renderNameAndEmail() {
+  private renderNameAndEmail() {
     if (!this.personDetails || (!this.showEmail && !this.showName)) {
       return;
     }
@@ -222,7 +275,7 @@ export class MgtPerson extends MgtTemplatedComponent {
     `;
   }
 
-  getInitials() {
+  private getInitials() {
     if (!this.personDetails) {
       return '';
     }
@@ -248,7 +301,7 @@ export class MgtPerson extends MgtTemplatedComponent {
     return initials;
   }
 
-  getImageRowSpanClass() {
+  private getImageRowSpanClass() {
     if (this.showEmail && this.showName) {
       return 'row-span-2';
     }
@@ -256,7 +309,7 @@ export class MgtPerson extends MgtTemplatedComponent {
     return '';
   }
 
-  getImageSizeClass() {
+  private getImageSizeClass() {
     if (!this.showEmail || !this.showName) {
       return 'small';
     }
