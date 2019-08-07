@@ -48,6 +48,14 @@ export class MgtPicker extends MgtTemplatedComponent {
   @property() private _duplicatePersonId: string = '';
   @property() private _userInput: string = '';
 
+  attributeChangedCallback(att, oldval, newval) {
+    super.attributeChangedCallback(att, oldval, newval);
+
+    if (att == 'group' && oldval !== newval) {
+      this.findGroup();
+    }
+  }
+
   static get styles() {
     return styles;
   }
@@ -175,54 +183,33 @@ export class MgtPicker extends MgtTemplatedComponent {
       let peoples: any;
       if (provider && provider.state === ProviderState.SignedIn) {
         let client = Providers.globalProvider.graph;
-        //determine if group property is requested && if different group than previously requested
-        if (this.group && this.group != this.groupPeople) {
-          //filter people in group against search term
-          peoples = await client.getPeopleFromGroup(this.group);
+        //filtering groups
+        if (this.group) {
+          peoples = this.groupPeople.filter(function(person) {
+            return person.displayName.toLowerCase().indexOf(name) !== -1;
+          });
           for (let person of peoples) {
             // set image to @ to flag the mgt-person component to
             // query the image from the graph
             person.image = '@';
           }
-
+          this.filterPeople(peoples);
+          return;
+        }
+        peoples = await client.findPerson(name);
+        for (let person of peoples) {
+          // set image to @ to flag the mgt-person component to
+          // query the image from the graph
+          person.image = '@';
+        }
+        if (peoples) {
           peoples = peoples.filter(function(person) {
             return person.displayName.toLowerCase().indexOf(name) !== -1;
           });
-          if (peoples) {
-            this.filterPeople(peoples);
-            this.groupPeople = this.group;
-          } else {
-            this.people = [];
-            this.filterPeople(peoples);
-          }
+          this.filterPeople(peoples);
         } else {
-          if (this.group) {
-            let oldPeople: any = this.people;
-            peoples = oldPeople.filter(function(person) {
-              return person.displayName.toLowerCase().indexOf(name) !== -1;
-            });
-            for (let person of peoples) {
-              // set image to @ to flag the mgt-person component to
-              // query the image from the graph
-              person.image = '@';
-            }
-            this.filterPeople(peoples);
-          }
-          peoples = await client.findPerson(name);
-          for (let person of peoples) {
-            // set image to @ to flag the mgt-person component to
-            // query the image from the graph
-            person.image = '@';
-          }
-          if (peoples) {
-            peoples = peoples.filter(function(person) {
-              return person.displayName.toLowerCase().indexOf(name) !== -1;
-            });
-            this.filterPeople(peoples);
-          } else {
-            this.people = [];
-            this.filterPeople(peoples);
-          }
+          this.people = [];
+          this.filterPeople(peoples);
         }
       }
     }
