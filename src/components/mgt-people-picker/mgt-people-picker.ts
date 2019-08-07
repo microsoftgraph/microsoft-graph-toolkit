@@ -16,6 +16,7 @@ import '../mgt-person/mgt-person';
 import '../../styles/fabric-icon-font';
 import { MgtTemplatedComponent } from '../templatedComponent';
 import { MgtPersonDetails, MgtPerson } from '../mgt-person/mgt-person';
+import { debounce } from '../../utils/utils';
 
 @customElement('mgt-people-picker')
 export class MgtPicker extends MgtTemplatedComponent {
@@ -41,7 +42,7 @@ export class MgtPicker extends MgtTemplatedComponent {
   group: string;
 
   //User selected people
-  @property() private _selectedPeople: Array<any> = [];
+  @property() public _selectedPeople: Array<any> = [];
   //single matching id for filtering against people list
   @property() private _duplicatePersonId: string = '';
   //User input in search
@@ -109,9 +110,13 @@ export class MgtPicker extends MgtTemplatedComponent {
     }
     this._userInput = event.target.value;
     if (event.target.value) {
-      window.setTimeout(() => {
-        this.loadPersonSearch(this._userInput);
-      }, 300);
+      this.loadPersonSearch(this._userInput);
+      window.addEventListener(
+        'keyup',
+        debounce(e => {
+          //this.loadPersonSearch(this._userInput);
+        }, 300)
+      );
     } else {
       event.target.value = '';
       this._userInput = '';
