@@ -55,6 +55,14 @@ export class MgtPicker extends MgtTemplatedComponent {
   //if search is still loading don't load "people not found" state
   private isLoading = false;
 
+  //handing debounce on user search
+  private debounceHandle = window.addEventListener(
+    'keyup',
+    debounce(() => {
+      this.loadPersonSearch(this._userInput);
+    }, 300)
+  );
+
   attributeChangedCallback(att, oldval, newval) {
     super.attributeChangedCallback(att, oldval, newval);
 
@@ -110,13 +118,7 @@ export class MgtPicker extends MgtTemplatedComponent {
     }
     this._userInput = event.target.value;
     if (event.target.value) {
-      this.loadPersonSearch(this._userInput);
-      window.addEventListener(
-        'keyup',
-        debounce(() => {
-          this.loadPersonSearch(this._userInput);
-        }, 300)
-      );
+      this.debounceHandle;
     } else {
       event.target.value = '';
       this._userInput = '';
@@ -190,6 +192,7 @@ export class MgtPicker extends MgtTemplatedComponent {
 
   private async loadPersonSearch(name: string) {
     this.isLoading = true;
+    console.log(name);
     if (name.length) {
       name = name.toLowerCase();
       let provider = Providers.globalProvider;
@@ -261,7 +264,6 @@ export class MgtPicker extends MgtTemplatedComponent {
     });
     this._selectedPeople = filteredPersonArr;
     this.fireCustomEvent('selectionChanged', this._selectedPeople);
-    this.renderChosenPeople();
   }
 
   private renderErrorMessage() {
@@ -363,6 +365,8 @@ export class MgtPicker extends MgtTemplatedComponent {
       </div>
     `;
   }
+
+  private getNameSlice(name, section) {}
 
   private renderPeopleList() {
     let peoples: any = this.people;
