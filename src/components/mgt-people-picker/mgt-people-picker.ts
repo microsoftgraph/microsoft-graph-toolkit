@@ -372,7 +372,9 @@ export class MgtPicker extends MgtTemplatedComponent {
     if (peoples) {
       if (peoples.length == 0 && this._userInput.length > 0 && this.isLoading!) {
         return html`
-          <span class="error-message-holder">${this.renderErrorMessage()}</span>
+          <ul class="people-list">
+            ${this.renderErrorMessage()}
+          </ul>
         `;
       } else {
         return html`
