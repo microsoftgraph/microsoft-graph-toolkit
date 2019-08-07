@@ -192,7 +192,6 @@ export class MgtPicker extends MgtTemplatedComponent {
 
   private async loadPersonSearch(name: string) {
     this.isLoading = true;
-    console.log(name);
     if (name.length) {
       name = name.toLowerCase();
       let provider = Providers.globalProvider;
@@ -293,7 +292,9 @@ export class MgtPicker extends MgtTemplatedComponent {
 
   private renderChosenPeople() {
     let peopleList;
+    let inputClass = 'input-search-start';
     if (this._selectedPeople.length > 0) {
+      inputClass = 'input-search';
       peopleList = html`
         ${this._selectedPeople.slice(0, this._selectedPeople.length).map(
           person =>
@@ -311,7 +312,7 @@ export class MgtPicker extends MgtTemplatedComponent {
     return html`
       <ul class="people-chosen-list">
         ${peopleList}
-        <div class="input-search-start">
+        <div class="${inputClass}">
           <input
             id="people-picker-input"
             class="people-chosen-input"
@@ -365,8 +366,6 @@ export class MgtPicker extends MgtTemplatedComponent {
       </div>
     `;
   }
-
-  private getNameSlice(name, section) {}
 
   private renderPeopleList() {
     let peoples: any = this.people;
