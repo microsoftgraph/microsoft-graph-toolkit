@@ -88,6 +88,8 @@ export class MgtPicker extends MgtTemplatedComponent {
 
   private onUserTypeSearch(event: any) {
     if (event.keyCode == 40 || event.keyCode == 38) {
+      //keyCodes capture: down arrow (40) and up arrow (38)
+      //logic is in onUserKeyDown
       return;
     }
     if (event.code == 'Escape') {
@@ -119,6 +121,7 @@ export class MgtPicker extends MgtTemplatedComponent {
 
   private onUserKeyDown(event: any) {
     if (event.keyCode == 40 || event.keyCode == 38) {
+      //keyCodes capture: down arrow (40) and up arrow (38)
       this.handleArrowSelection(event);
       event.preventDefault();
     }
