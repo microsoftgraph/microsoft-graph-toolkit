@@ -113,8 +113,8 @@ export class MgtPicker extends MgtTemplatedComponent {
       this.loadPersonSearch(this._userInput);
       window.addEventListener(
         'keyup',
-        debounce(e => {
-          //this.loadPersonSearch(this._userInput);
+        debounce(() => {
+          this.loadPersonSearch(this._userInput);
         }, 300)
       );
     } else {
