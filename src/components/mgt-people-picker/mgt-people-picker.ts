@@ -19,34 +19,40 @@ import { MgtPersonDetails, MgtPerson } from '../mgt-person/mgt-person';
 
 @customElement('mgt-people-picker')
 export class MgtPicker extends MgtTemplatedComponent {
-  private _firstUpdated = false;
-  private groupPeople;
-  private isLoading = false;
-
+  //people in current search list
   @property({
     attribute: 'people',
     type: Object
   })
   people: Array<MgtPersonDetails> = null;
 
+  //maximum shown people in search
   @property({
     attribute: 'show-max',
     type: Number
   })
   showMax: number = 6;
 
-  private arrowSelectionCount: number = 0;
-
+  //group attribute selection
   @property({
     attribute: 'group',
     type: String
   })
   group: string;
 
-  @property() private _personName: string = '';
+  //User selected people
   @property() private _selectedPeople: Array<any> = [];
+  //single matching id for filtering against people list
   @property() private _duplicatePersonId: string = '';
+  //User input in search
   @property() private _userInput: string = '';
+
+  //tracking of user arrow key input for selection
+  private arrowSelectionCount: number = 0;
+  //List of people requested if group property is provided
+  private groupPeople: any[];
+  //if search is still loading don't load "people not found" state
+  private isLoading = false;
 
   attributeChangedCallback(att, oldval, newval) {
     super.attributeChangedCallback(att, oldval, newval);
@@ -155,7 +161,7 @@ export class MgtPicker extends MgtTemplatedComponent {
 
   private addPerson(person: MgtPersonDetails, event: any) {
     if (person) {
-      this._personName = '';
+      this._userInput = '';
       this._duplicatePersonId = '';
       let chosenPerson: any = person;
       let filteredPersonArr = this._selectedPeople.filter(function(person) {
@@ -169,7 +175,6 @@ export class MgtPicker extends MgtTemplatedComponent {
 
         this.people = [];
         this._userInput = '';
-        this._personName = '';
         this.arrowSelectionCount = 0;
       }
     }
@@ -302,7 +307,7 @@ export class MgtPicker extends MgtTemplatedComponent {
             class="people-chosen-input"
             type="text"
             placeholder="Start typing a name"
-            .value="${this._personName}"
+            .value="${this._userInput}"
             @keydown="${(e: KeyboardEvent & { target: HTMLInputElement }) => {
               this.onUserKeyDown(e);
             }}"
