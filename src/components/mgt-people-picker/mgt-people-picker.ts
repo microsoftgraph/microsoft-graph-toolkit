@@ -142,18 +142,14 @@ export class MgtPicker extends MgtTemplatedComponent {
         if (this.arrowSelectionCount > 0) {
           this.arrowSelectionCount--;
         } else {
-          console.log('reset');
           this.arrowSelectionCount = 0;
         }
       }
       if (event.keyCode == 40) {
-        console.log('arrowselectionCount', this.arrowSelectionCount);
         //down arrow
         if (this.arrowSelectionCount + 1 !== this.people.length && this.arrowSelectionCount + 1 < this.showMax) {
           this.arrowSelectionCount++;
-          console.log('arrowSelectionCount in addition', this.arrowSelectionCount);
         } else {
-          console.log('reset');
           this.arrowSelectionCount = 0;
         }
       }
@@ -193,39 +189,40 @@ export class MgtPicker extends MgtTemplatedComponent {
     if (name.length) {
       name = name.toLowerCase();
       let provider = Providers.globalProvider;
-      let peoples: any;
+      let people: any;
       if (provider && provider.state === ProviderState.SignedIn) {
         this.isLoading = true;
         let client = Providers.globalProvider.graph;
         //filtering groups
         if (this.group) {
-          peoples = this.groupPeople.filter(function(person) {
+          people = this.groupPeople.filter(function(person) {
             return person.displayName.toLowerCase().indexOf(name) !== -1;
           });
-          for (let person of peoples) {
+          for (let person of people) {
             // set image to @ to flag the mgt-person component to
             // query the image from the graph
             person.image = '@';
           }
-          this.filterPeople(peoples);
+          this.filterPeople(people);
           return;
         }
-        peoples = await client.findPerson(name);
 
-        for (let person of peoples) {
+        people = await client.findPerson(name);
+
+        for (let person of people) {
           // set image to @ to flag the mgt-person component to
           // query the image from the graph
           person.image = '@';
         }
-        if (peoples) {
-          peoples = peoples.filter(function(person) {
+        if (people) {
+          people = people.filter(function(person) {
             return person.displayName.toLowerCase().indexOf(name) !== -1;
           });
-          this.filterPeople(peoples);
+          this.filterPeople(people);
           this.isLoading = false;
         } else {
           this.people = [];
-          this.filterPeople(peoples);
+          this.filterPeople(people);
           this.isLoading = false;
         }
       }
