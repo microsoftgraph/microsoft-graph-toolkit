@@ -96,11 +96,6 @@ export class MgtPicker extends MgtTemplatedComponent {
   }
 
   private onUserTypeSearch(event: any) {
-    if (event.keyCode == 40 || event.keyCode == 38) {
-      //keyCodes capture: down arrow (40) and up arrow (38)
-      //logic is in onUserKeyDown
-      return;
-    }
     if (event.code == 'Escape') {
       event.target.value = '';
       this._userInput = '';
@@ -147,14 +142,18 @@ export class MgtPicker extends MgtTemplatedComponent {
         if (this.arrowSelectionCount > 0) {
           this.arrowSelectionCount--;
         } else {
+          console.log('reset');
           this.arrowSelectionCount = 0;
         }
       }
       if (event.keyCode == 40) {
+        console.log('arrowselectionCount', this.arrowSelectionCount);
         //down arrow
         if (this.arrowSelectionCount + 1 !== this.people.length && this.arrowSelectionCount + 1 < this.showMax) {
           this.arrowSelectionCount++;
+          console.log('arrowSelectionCount in addition', this.arrowSelectionCount);
         } else {
+          console.log('reset');
           this.arrowSelectionCount = 0;
         }
       }
@@ -251,7 +250,6 @@ export class MgtPicker extends MgtTemplatedComponent {
       } else {
         if (filtered.length) {
           filtered[0].isSelected = 'fill';
-          this.arrowSelectionCount = 0;
           this.people = filtered;
         }
       }
