@@ -73,3 +73,14 @@ export function getDateFromMonthYear(month: number, year: number) {
 
   return new Date(`${yearStr}-${monthStr}-1T12:00:00-${new Date().getTimezoneOffset() / 60}`);
 }
+
+export function debounce(func, time) {
+  let timeout;
+
+  return function() {
+    const functionCall = () => func.apply(this, arguments);
+
+    clearTimeout(timeout);
+    timeout = setTimeout(functionCall, time);
+  };
+}
