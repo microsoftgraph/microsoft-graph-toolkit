@@ -162,10 +162,10 @@ export class MgtPicker extends MgtTemplatedComponent {
       const peopleList = this.renderRoot.querySelector('.people-list');
       //reset background color
       for (let i = 0; i < peopleList.children.length; i++) {
-        peopleList.children[i].setAttribute('style', 'background-color: transparent ');
+        peopleList.children[i].setAttribute('class', 'people-person-list');
       }
       //set selected background
-      peopleList.children[this.arrowSelectionCount].setAttribute('style', 'background-color: #f1f1f1;');
+      peopleList.children[this.arrowSelectionCount].setAttribute('class', 'people-person-list-fill');
     }
   }
 
@@ -191,12 +191,12 @@ export class MgtPicker extends MgtTemplatedComponent {
   }
 
   private async loadPersonSearch(name: string) {
-    this.isLoading = true;
     if (name.length) {
       name = name.toLowerCase();
       let provider = Providers.globalProvider;
       let peoples: any;
       if (provider && provider.state === ProviderState.SignedIn) {
+        this.isLoading = true;
         let client = Providers.globalProvider.graph;
         //filtering groups
         if (this.group) {
@@ -212,6 +212,7 @@ export class MgtPicker extends MgtTemplatedComponent {
           return;
         }
         peoples = await client.findPerson(name);
+
         for (let person of peoples) {
           // set image to @ to flag the mgt-person component to
           // query the image from the graph
@@ -222,9 +223,11 @@ export class MgtPicker extends MgtTemplatedComponent {
             return person.displayName.toLowerCase().indexOf(name) !== -1;
           });
           this.filterPeople(peoples);
+          this.isLoading = false;
         } else {
           this.people = [];
           this.filterPeople(peoples);
+          this.isLoading = false;
         }
       }
     }
@@ -253,7 +256,6 @@ export class MgtPicker extends MgtTemplatedComponent {
         }
       }
     }
-    this.isLoading = false;
   }
 
   private removePerson(person: MgtPersonDetails) {
@@ -370,7 +372,7 @@ export class MgtPicker extends MgtTemplatedComponent {
   private renderPeopleList() {
     let peoples: any = this.people;
     if (peoples) {
-      if (peoples.length == 0 && this._userInput.length > 0 && this.isLoading!) {
+      if (peoples.length == 0 && this._userInput.length > 0 && this.isLoading == false) {
         return html`
           <ul class="people-list">
             ${this.renderErrorMessage()}
