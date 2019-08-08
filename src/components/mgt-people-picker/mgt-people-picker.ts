@@ -186,70 +186,56 @@ export class MgtPicker extends MgtTemplatedComponent {
   }
 
   private async loadPersonSearch(name: string) {
+    console.log('here');
     if (name.length) {
       name = name.toLowerCase();
       let provider = Providers.globalProvider;
       let people: any;
+
       if (provider && provider.state === ProviderState.SignedIn) {
         this.isLoading = true;
         let client = Providers.globalProvider.graph;
+
         //filtering groups
         if (this.group) {
-          people = this.groupPeople.filter(function(person) {
-            return person.displayName.toLowerCase().indexOf(name) !== -1;
-          });
-          for (let person of people) {
-            // set image to @ to flag the mgt-person component to
-            // query the image from the graph
-            person.image = '@';
-          }
-          this.filterPeople(people);
-          return;
+          people = this.groupPeople;
+        } else {
+          people = await client.findPerson(name);
         }
 
-        people = await client.findPerson(name);
+        if (people) {
+          people = people.filter(function(person) {
+            return person.displayName.toLowerCase().indexOf(name) !== -1;
+          });
+        }
 
         for (let person of people) {
           // set image to @ to flag the mgt-person component to
           // query the image from the graph
           person.image = '@';
         }
-        if (people) {
-          people = people.filter(function(person) {
-            return person.displayName.toLowerCase().indexOf(name) !== -1;
-          });
-          this.filterPeople(people);
-          this.isLoading = false;
-        } else {
-          this.people = [];
-          this.filterPeople(people);
-          this.isLoading = false;
-        }
+
+        this.people = this.filterPeople(people);
+        this.isLoading = false;
       }
     }
   }
 
-  private filterPeople(peoples: any) {
+  private filterPeople(people: any) {
     //check if people need to be updated
     //ensuring people list is displayed
     //find ids from selected people
-    if (peoples) {
+    if (people) {
       let id_filter = this._selectedPeople.map(function(el) {
         return el.id;
       });
+
       //filter id's
-      let filtered = peoples.filter(function(person) {
+      let filtered = people.filter(function(person) {
         return id_filter.indexOf(person.id) === -1;
       });
-      if (filtered.length == 0 && this._userInput.length > 0) {
-        this.people = [];
-        return;
-      } else {
-        if (filtered.length) {
-          filtered[0].isSelected = 'fill';
-          this.people = filtered;
-        }
-      }
+
+      return filtered;
     }
   }
 
@@ -365,9 +351,9 @@ export class MgtPicker extends MgtTemplatedComponent {
   }
 
   private renderPeopleList() {
-    let peoples: any = this.people;
-    if (peoples) {
-      if (peoples.length == 0 && this._userInput.length > 0 && this.isLoading == false) {
+    let people = this.people;
+    if (people) {
+      if (people.length == 0 && this._userInput.length > 0 && this.isLoading == false) {
         return html`
           <ul class="people-list">
             ${this.renderErrorMessage()}
@@ -376,15 +362,15 @@ export class MgtPicker extends MgtTemplatedComponent {
       } else {
         return html`
           <ul class="people-list">
-            ${this.renderPersons(peoples)}
+            ${this.renderPersons(people)}
           </ul>
         `;
       }
     }
   }
 
-  private renderPersons(peoples: any) {
-    return peoples.slice(0, this.showMax).map(
+  private renderPersons(people: Array<any>) {
+    return people.slice(0, this.showMax).map(
       person =>
         html`
           <li
