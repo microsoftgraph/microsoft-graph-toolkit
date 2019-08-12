@@ -186,7 +186,6 @@ export class MgtPicker extends MgtTemplatedComponent {
   }
 
   private async loadPersonSearch(name: string) {
-    console.log('here');
     if (name.length) {
       name = name.toLowerCase();
       let provider = Providers.globalProvider;
