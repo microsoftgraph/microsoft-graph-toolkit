@@ -58,8 +58,14 @@ export class MgtPicker extends MgtTemplatedComponent {
   //handing debounce on user search
   private debounceHandle = window.addEventListener(
     'keyup',
-    debounce(() => {
-      this.loadPersonSearch(this._userInput);
+    debounce(e => {
+      if (e.keyCode == 40 || e.keyCode == 38) {
+        //keyCodes capture: down arrow (40) and up arrow (38)
+        return;
+      } else {
+        this.arrowSelectionCount = 0;
+        this.loadPersonSearch(this._userInput);
+      }
     }, 300)
   );
 
@@ -315,7 +321,6 @@ export class MgtPicker extends MgtTemplatedComponent {
 
   private renderHighlightText(person: MgtPersonDetails) {
     let peoples: any = person;
-
     let highlightLocation = peoples.displayName.toLowerCase().indexOf(this._userInput.toLowerCase());
     if (highlightLocation !== -1) {
       //no location
@@ -350,7 +355,7 @@ export class MgtPicker extends MgtTemplatedComponent {
   }
 
   private renderPeopleList() {
-    let people = this.people;
+    let people: any = this.people;
     if (people) {
       if (people.length == 0 && this._userInput.length > 0 && this.isLoading == false) {
         return html`
@@ -359,6 +364,9 @@ export class MgtPicker extends MgtTemplatedComponent {
           </ul>
         `;
       } else {
+        if (people[0]) {
+          people[0].isSelected = 'fill';
+        }
         return html`
           <ul class="people-list">
             ${this.renderPersons(people)}
