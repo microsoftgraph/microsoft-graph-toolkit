@@ -235,12 +235,21 @@ export class Graph {
     return this.getPhotoForResource(`me/contacts/${contactId}`, ['contacts.read']);
   }
 
-  async getEvents(startDateTime: Date, endDateTime: Date): Promise<Array<MicrosoftGraph.Event>> {
+  async getEvents(startDateTime: Date, endDateTime: Date, groupId?: string): Promise<Array<MicrosoftGraph.Event>> {
     let scopes = 'calendars.read';
 
     let sdt = `startdatetime=${startDateTime.toISOString()}`;
     let edt = `enddatetime=${endDateTime.toISOString()}`;
-    let uri = `/me/calendarview?${sdt}&${edt}`;
+
+    let uri: string;
+
+    if (groupId) {
+      uri = `groups/${groupId}/calendar`;
+    } else {
+      uri = `me`;
+    }
+
+    uri += `/calendarview?${sdt}&${edt}`;
 
     let calendarView = await this.client
       .api(uri)
