@@ -73,6 +73,9 @@ export class MgtTasks extends MgtBaseComponent {
   @property({ attribute: 'initial-bucket-id', type: String })
   public initialBucketId: string = null;
 
+  @property({ attribute: 'hide-header', type: Boolean })
+  public hideHeader: boolean = false;
+
   @property() private _showNewTask: boolean = false;
   @property() private _newTaskBeingAdded: boolean = false;
   @property() private _newTaskSelfAssigned: boolean = true;
@@ -321,12 +324,20 @@ export class MgtTasks extends MgtBaseComponent {
 
     let loadingTask = this._inTaskLoad && !this._hasDoneInitialLoad ? this.renderLoadingTask() : null;
 
+    let header;
+
+    if (!this.hideHeader) {
+      header = html`
+        <div class="Header">
+          <span class="PlannerTitle">
+            ${this.renderPlanOptions()}
+          </span>
+        </div>
+      `;
+    }
+
     return html`
-      <div class="Header">
-        <span class="PlannerTitle">
-          ${this.renderPlanOptions()}
-        </span>
-      </div>
+      ${header}
       <div class="Tasks">
         ${this._showNewTask ? this.renderNewTaskHtml() : null} ${loadingTask}
         ${repeat(tasks, task => task.id, task => this.renderTaskHtml(task))}

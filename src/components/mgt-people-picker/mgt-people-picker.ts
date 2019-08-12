@@ -5,7 +5,7 @@
  * -------------------------------------------------------------------------------------------
  */
 
-import { LitElement, html, customElement, property } from 'lit-element';
+import { html, customElement, property } from 'lit-element';
 import * as MicrosoftGraph from '@microsoft/microsoft-graph-types';
 
 import { Providers } from '../../Providers';
@@ -36,10 +36,10 @@ export class MgtPicker extends MgtTemplatedComponent {
 
   //group attribute selection
   @property({
-    attribute: 'group',
+    attribute: 'group-id',
     type: String
   })
-  group: string;
+  groupId: string;
 
   //User selected people
   @property() public _selectedPeople: Array<any> = [];
@@ -66,7 +66,7 @@ export class MgtPicker extends MgtTemplatedComponent {
   attributeChangedCallback(att, oldval, newval) {
     super.attributeChangedCallback(att, oldval, newval);
 
-    if (att == 'group' && oldval !== newval) {
+    if (att == 'group-id' && oldval !== newval) {
       this.findGroup();
     }
   }
@@ -81,7 +81,7 @@ export class MgtPicker extends MgtTemplatedComponent {
   }
 
   firstUpdated() {
-    if (this.group) {
+    if (this.groupId) {
       Providers.onProviderUpdated(() => this.findGroup());
       this.findGroup();
     }
@@ -91,7 +91,7 @@ export class MgtPicker extends MgtTemplatedComponent {
     let provider = Providers.globalProvider;
     if (provider && provider.state === ProviderState.SignedIn) {
       let client = Providers.globalProvider.graph;
-      this.groupPeople = await client.getPeopleFromGroup(this.group);
+      this.groupPeople = await client.getPeopleFromGroup(this.groupId);
     }
   }
 
@@ -197,7 +197,7 @@ export class MgtPicker extends MgtTemplatedComponent {
         let client = Providers.globalProvider.graph;
 
         //filtering groups
-        if (this.group) {
+        if (this.groupId) {
           people = this.groupPeople;
         } else {
           people = await client.findPerson(name);
