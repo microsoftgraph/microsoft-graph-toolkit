@@ -7,6 +7,7 @@
 
 export class TemplateHelper {
   private static _expression = /{{\s*[\w\.]+\s*}}/g;
+  private static _converterExpression = /{{{\s*[\w\.()]+\s*}}}/g;
 
   /**
    * Gets the value of an expanded key in an object
@@ -32,24 +33,31 @@ export class TemplateHelper {
     return value;
   }
 
-  private static replaceExpression(str: string, context: object) {
-    return str.replace(this._expression, match => {
-      let key = match.substring(2, match.length - 2);
-      let value = this.getValueFromObject(context, key);
-      if (value) {
-        if (typeof value == 'object') {
-          return JSON.stringify(value);
-        } else {
-          return (<any>value).toString();
+  private static replaceExpression(str: string, context: object, converters: object) {
+    return str
+      .replace(this._converterExpression, match => {
+        if (!converters) {
+          return '';
         }
-      }
-      return '';
-    });
+        return this.evalInContext(match.substring(3, match.length - 3).trim(), { ...converters, ...context });
+      })
+      .replace(this._expression, match => {
+        let key = match.substring(2, match.length - 2);
+        let value = this.getValueFromObject(context, key);
+        if (value) {
+          if (typeof value == 'object') {
+            return JSON.stringify(value);
+          } else {
+            return (<any>value).toString();
+          }
+        }
+        return '';
+      });
   }
 
-  private static renderNode(node: Node, context: object) {
+  private static renderNode(node: Node, context: object, converters: object) {
     if (node.nodeName === '#text') {
-      node.textContent = this.replaceExpression(node.textContent, context);
+      node.textContent = this.replaceExpression(node.textContent, context, converters);
       return node;
     }
 
@@ -59,7 +67,7 @@ export class TemplateHelper {
     if (nodeElement.attributes) {
       for (let i = 0; i < nodeElement.attributes.length; i++) {
         let attribute = nodeElement.attributes[i];
-        nodeElement.setAttribute(attribute.name, this.replaceExpression(attribute.value, context));
+        nodeElement.setAttribute(attribute.name, this.replaceExpression(attribute.value, context, converters));
       }
     }
 
@@ -81,7 +89,7 @@ export class TemplateHelper {
 
         if (childElement.dataset.if) {
           let expression = childElement.dataset.if;
-          if (!this.evalInContext(expression, context)) {
+          if (!this.evalBoolInContext(expression, context)) {
             removeChildren.push(childElement);
             childWillBeRemoved = true;
           } else {
@@ -101,10 +109,10 @@ export class TemplateHelper {
         if (childElement.dataset.for && !childWillBeRemoved) {
           loopChildren.push(childElement);
         } else if (!childWillBeRemoved) {
-          this.renderNode(childNode, context);
+          this.renderNode(childNode, context, converters);
         }
       } else {
-        this.renderNode(childNode, context);
+        this.renderNode(childNode, context, converters);
       }
 
       // clear the flag if the current node wasn't data-if
@@ -145,7 +153,7 @@ export class TemplateHelper {
             newContext['index'] = j;
 
             let clone = childElement.cloneNode(true);
-            this.renderNode(clone, newContext);
+            this.renderNode(clone, newContext, converters);
             nodeElement.appendChild(clone);
           }
         }
@@ -155,8 +163,19 @@ export class TemplateHelper {
     return node;
   }
 
-  static evalInContext(expression, context) {
+  private static evalBoolInContext(expression, context) {
     return new Function('with(this) { return !!(' + expression + ')}').call(context);
+  }
+
+  private static evalInContext(expression, context) {
+    let func = new Function('with(this) { return ' + expression + ';}');
+    let result;
+    try {
+      result = func.call(context);
+    } catch (e) {
+      console.log(e);
+    }
+    return result;
   }
 
   /**
@@ -174,17 +193,18 @@ export class TemplateHelper {
    *
    * @param template the template to render
    * @param context the data context to be applied
+   * @param converters the converter functions used to transform the data
    */
-  public static renderTemplate(template: HTMLTemplateElement, context: object) {
+  public static renderTemplate(template: HTMLTemplateElement, context: object, converters?: object) {
     if (template.content && template.content.childNodes.length) {
       let templateContent = template.content.cloneNode(true);
-      return this.renderNode(templateContent, context);
+      return this.renderNode(templateContent, context, converters);
     } else if (template.childNodes.length) {
       let div = document.createElement('div');
       for (let i = 0; i < template.childNodes.length; i++) {
         div.appendChild(template.childNodes[i].cloneNode(true));
       }
-      return this.renderNode(div, context);
+      return this.renderNode(div, context, converters);
     }
   }
 }
