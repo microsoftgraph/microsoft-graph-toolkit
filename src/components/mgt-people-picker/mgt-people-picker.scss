@@ -16,6 +16,8 @@ $initials-color: var(--initials-color, white);
 $initials-background-color: var(--initials-background-color, #{$ms-color-magenta});
 $accent-color: var(--accent-color, #0078d4);
 
+$people-list-background-color: var(--people-list-background-color, white);
+
 :host {
   border-radius: 2px;
 }
@@ -39,7 +41,7 @@ mgt-people-picker .people-list {
   padding: 0;
   box-shadow: 0px 1.3289px 2.65781px rgba(180, 180, 180, 0.182), 0px 1.3289px 2.65781px rgba(68, 68, 68, 0.3);
   border-radius: 2px;
-  background-color: white;
+  background-color: $people-list-background-color;
   z-index: 1; /* Sit on top */
   width: 100%;
   text-align: left;
