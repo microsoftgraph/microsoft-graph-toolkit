@@ -46,7 +46,7 @@ Ex:
 The `mgt-people` component defines these css custom properties
 
 ```css
-mgt-people {
+mgt-people-picker {
   --people-list-background-color: blue; /* Background-color for people under search */
   --accent-color: green; /* Color for separator of search input box and people */
 }
