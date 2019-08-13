@@ -21,7 +21,7 @@ If there are more people to display than the `show-max` value, the search list w
 <mgt-people-picker></mgt-people-picker>
 ```
 
-![mgt-people](./images/mgt-people-picker.png)
+![mgt-people-picker](./images/mgt-people-picker-image.png)
 
 ## Properties
 
