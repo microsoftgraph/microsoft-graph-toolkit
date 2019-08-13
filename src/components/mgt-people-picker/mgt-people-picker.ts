@@ -19,7 +19,7 @@ import { MgtPersonDetails, MgtPerson } from '../mgt-person/mgt-person';
 import { debounce } from '../../utils/utils';
 
 @customElement('mgt-people-picker')
-export class MgtPicker extends MgtTemplatedComponent {
+export class MgtPeoplePicker extends MgtTemplatedComponent {
   //people in current search list
   @property({
     attribute: 'people',
