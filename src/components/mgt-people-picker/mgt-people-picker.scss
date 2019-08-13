@@ -104,7 +104,8 @@ mgt-people-picker .people-person {
   align-items: center;
   background-color: rgba(196, 196, 196, 0.24);
   border-radius: 15px;
-  max-height: 24px;
+  height: 24px;
+  white-space: nowrap;
 }
 
 :host .people-person-list,
