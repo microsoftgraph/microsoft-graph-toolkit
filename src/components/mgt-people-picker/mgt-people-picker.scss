@@ -106,6 +106,8 @@ mgt-people-picker .people-person {
   border-radius: 15px;
   height: 24px;
   white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 
 :host .people-person-list,
@@ -183,6 +185,10 @@ mgt-people-picker .remove-person-button-secondary {
 
 :host .person-display-name,
 mgt-people-picker .person-display-name {
+  max-width: 100px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
   margin-left: 8px;
   font-family: Segoe UI;
   font-style: normal;
