@@ -26,6 +26,7 @@ The toolkit currently includes the following components:
 * [mgt-people](./docs/components/people.md)
 * [mgt-person](./docs/components/person.md)
 * [mgt-tasks](./docs/components/tasks.md)
+* [mgt-people-picker](https://github.com/microsoftgraph/microsoft-graph-docs/pull/5453)
 
 And the following providers:
 
