@@ -21,21 +21,21 @@ This library is in preview and is in early development. Based on feedback from t
 
 The toolkit currently includes the following components:
 
-* [mgt-agenda](./docs/components/agenda.md)
-* [mgt-login](./docs/components/login.md)
-* [mgt-people](./docs/components/people.md)
-* [mgt-person](./docs/components/person.md)
-* [mgt-tasks](./docs/components/tasks.md)
+* [mgt-login](https://docs.microsoft.com/graph/toolkit/components/login)
+* [mgt-person](https://docs.microsoft.com/graph/toolkit/components/person)
+* [mgt-people](https://docs.microsoft.com/graph/toolkit/components/people)
 * [mgt-people-picker](https://github.com/microsoftgraph/microsoft-graph-docs/pull/5453)
+* [mgt-agenda](https://docs.microsoft.com/graph/toolkit/components/agenda)
+* [mgt-tasks](https://docs.microsoft.com/graph/toolkit/components/tasks)
 
 And the following providers:
 
-* [mgt-msal-provider](./docs/providers/msal.md)
-* [SharePointProvider](./docs/providers/SharePoint.md)
-* [SimpleProvider](./docs/providers/custom.md)
-* [mgt-teams-provider](./docs/providers/Teams.md)
+* [Msal Provider](https://docs.microsoft.com/graph/toolkit/providers/msal)
+* [SharePoint Provider](https://docs.microsoft.com/graph/toolkit/providers/sharepoint)
+* [Teams Provider](https://docs.microsoft.com/graph/toolkit/providers/teams)
+* [Simple Provider](https://docs.microsoft.com/graph/toolkit/providers/custom)
 
-[View the full documentation](./docs)
+[View the full documentation](https://docs.microsoft.com/graph/toolkit/overview)
 
 ## Getting Started
 
@@ -104,9 +104,9 @@ or, add it in your code:
 
 ## Providers
 
-The components work best when used with a [provider](./docs/providers.md). The provider exposes authentication and Microsoft Graph apis used by the components to call into the Microsoft Graph.
+The components work best when used with a [provider](https://docs.microsoft.com/graph/toolkit/providers). The provider exposes authentication and Microsoft Graph apis used by the components to call into the Microsoft Graph.
 
-The toolkit contains providers for [MSAL](./docs/providers/msal.md), [SharePoint](./docs/providers/sharepoint.md), [Teams](./docs/providers/teams.md), and Office Add-ins (coming soon). You can also create your own providers by extending the [IProvider] abstract class.
+The toolkit contains providers for [MSAL](https://docs.microsoft.com/graph/toolkit/providers/msal), [SharePoint](https://docs.microsoft.com/graph/toolkit/providers/sharepoint), and [Teams](https://docs.microsoft.com/graph/toolkit/providers/teams). You can also create your own providers by extending the [IProvider](https://docs.microsoft.com/graph/toolkit/providers/custom) abstract class.
 
 ## Contribute
 
