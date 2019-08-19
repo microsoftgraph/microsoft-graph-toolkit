@@ -105,7 +105,7 @@ Writing a good description for your pull request is crucial to help reviewers an
 - [Link the issue you're addressing in the pull request](https://github.com/blog/957-introducing-issue-mentions). Each pull request must be linked to an issue.
 - Describe _why_ the change is being made and _why_ you've chosen a particular solution.
 - Describe any manual testing you performed to validate your change.
-- Ensure the appropriate tests and documentation have been added
+- Ensure the appropriate tests and [documentation](https://github.com/microsoftgraph/microsoft-graph-docs/tree/master/concepts/toolkit) have been added
 
 Please submit one pull request per issue. Large pull requests which have unrelated changes can be difficult to review.
 
@@ -119,7 +119,7 @@ We encourage developers to follow the following guidance when submitting new fea
 
 1. Ensure the appropriate tests have been added in the `src\test` folder. Run the tests and make sure they all pass.
 1. Ensure the code is properly documented following the [tsdoc](https://github.com/Microsoft/tsdoc) syntax
-1. Update the [documentation] when necessary
+1. Update the [documentation](https://github.com/microsoftgraph/microsoft-graph-docs/tree/master/concepts/toolkit) when necessary
 1. Follow the [accessibility guidance](https://developer.mozilla.org/en-US/docs/Web/Accessibility) for web development
 
 <!-- ### Testing

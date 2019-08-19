@@ -19,7 +19,7 @@ Closes # <!-- REQUIRED: Add the issue number (ex: #12) so the issue is automatic
 ### PR checklist
 - [ ] Added tests and all passed
 - [ ] All public classes and methods have been documented
-- [ ] Added appropriate documentation
+- [ ] Added appropriate [documentation](https://github.com/microsoftgraph/microsoft-graph-docs/tree/master/concepts/toolkit)
 - [ ] License header has been added to all new source files
 - [ ] Contains **NO** breaking changes
 
