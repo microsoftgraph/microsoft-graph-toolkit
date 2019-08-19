@@ -20,13 +20,20 @@ import { MgtPersonDetails } from '../mgt-person/mgt-person';
 @customElement('mgt-people')
 export class MgtPeople extends MgtTemplatedComponent {
   private _firstUpdated = false;
-
+  /**
+   * people property, containing array of people used in the component.
+   * @type {Array<MgtPersonDetails>}
+   */
   @property({
     attribute: 'people',
     type: Object
   })
   people: Array<MgtPersonDetails> = null;
 
+  /**
+   * show-max property, developer determined max people shown in component
+   * @type {number}
+   */
   @property({
     attribute: 'show-max',
     type: Number

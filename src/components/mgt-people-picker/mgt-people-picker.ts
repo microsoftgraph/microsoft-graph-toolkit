@@ -20,42 +20,76 @@ import { debounce } from '../../utils/utils';
 
 @customElement('mgt-people-picker')
 export class MgtPicker extends MgtTemplatedComponent {
-  //people in current search list
+  /**
+   * people property, containing object of MgtPersonDetails.
+   * @type {MgtPersonDetails}
+   */
   @property({
     attribute: 'people',
     type: Object
   })
   people: Array<MgtPersonDetails> = null;
 
-  //maximum shown people in search
+  /**
+   * show-max property, determining how many people to show in list.
+   * @type {number}
+   */
   @property({
     attribute: 'show-max',
     type: Number
   })
   showMax: number = 6;
 
-  //group attribute selection
+  /**
+   * group-id property, value determining if search is filtered to a group.
+   * @type {string}
+   */
   @property({
     attribute: 'group-id',
     type: String
   })
   groupId: string;
 
-  //User selected people
+  /**
+   * _selectedPeople property, array of user picked people.
+   * @type {Array<any>}
+   */
   @property() public _selectedPeople: Array<any> = [];
-  //single matching id for filtering against people list
+
+  /**
+   * _duplicatePersonId property, value checking if user has already selected person's id.
+   * @type {string}
+   */
   @property() private _duplicatePersonId: string = '';
-  //User input in search
+
+  /**
+   * _userInput property, containing the current input value of search box.
+   * @type {string}
+   */
   @property() private _userInput: string = '';
 
-  //tracking of user arrow key input for selection
+  /**
+   * arrowSelectionCount property, current highlighted value of person in search area.
+   * @type {number}
+   */
   private arrowSelectionCount: number = 0;
-  //List of people requested if group property is provided
-  private groupPeople: any[];
-  //if search is still loading don't load "people not found" state
-  private isLoading = false;
 
-  //handing debounce on user search
+  /**
+   * groupPeople property, contains people in specific group
+   * @type {any[]}
+   */
+  private groupPeople: any[];
+
+  /**
+   * isLoading property, determines if search is still loading people details
+   * @type {boolean}
+   */
+  private isLoading: boolean = false;
+
+  /**
+   * Adds debounce method for set delay on user input
+   * @returns userinput
+   */
   private debounceHandle = window.addEventListener(
     'keyup',
     debounce(() => {
@@ -86,7 +120,10 @@ export class MgtPicker extends MgtTemplatedComponent {
       this.findGroup();
     }
   }
-
+  /**
+   * Async query to Graph for members of group if determined by developer.
+   * set's `this.groupPeople` to those members.
+   */
   private async findGroup() {
     let provider = Providers.globalProvider;
     if (provider && provider.state === ProviderState.SignedIn) {
@@ -94,7 +131,10 @@ export class MgtPicker extends MgtTemplatedComponent {
       this.groupPeople = await client.getPeopleFromGroup(this.groupId);
     }
   }
-
+  /**
+   * Tracks event on user input in search
+   * @param event - event tracked when user input is detected (keyup)
+   */
   private onUserTypeSearch(event: any) {
     if (event.code == 'Escape') {
       event.target.value = '';
@@ -121,6 +161,10 @@ export class MgtPicker extends MgtTemplatedComponent {
     }
   }
 
+  /**
+   * Tracks event on user search (keydown)
+   * @param event - event tracked on user input (keydown)
+   */
   private onUserKeyDown(event: any) {
     if (event.keyCode == 40 || event.keyCode == 38) {
       //keyCodes capture: down arrow (40) and up arrow (38)
@@ -134,6 +178,10 @@ export class MgtPicker extends MgtTemplatedComponent {
     }
   }
 
+  /**
+   * Tracks user key selection for arrow key selection of people
+   * @param event - tracks user key selection
+   */
   private handleArrowSelection(event: any) {
     if (this.people.length) {
       //update arrow count
@@ -164,6 +212,11 @@ export class MgtPicker extends MgtTemplatedComponent {
     }
   }
 
+  /**
+   * Tracks when user selects person from picker
+   * @param person - contains details pertaining to selected user
+   * @param event - tracks user event
+   */
   private addPerson(person: MgtPersonDetails, event: any) {
     if (person) {
       this._userInput = '';
@@ -185,6 +238,10 @@ export class MgtPicker extends MgtTemplatedComponent {
     }
   }
 
+  /**
+   * Async method which query's the Graph with user input
+   * @param name - user input or name of person searched
+   */
   private async loadPersonSearch(name: string) {
     console.log('here');
     if (name.length) {
@@ -220,7 +277,10 @@ export class MgtPicker extends MgtTemplatedComponent {
       }
     }
   }
-
+  /**
+   * Filters people searched from already selected people
+   * @param people - array of people returned from query to Graph
+   */
   private filterPeople(people: any) {
     //check if people need to be updated
     //ensuring people list is displayed
@@ -239,6 +299,10 @@ export class MgtPicker extends MgtTemplatedComponent {
     }
   }
 
+  /**
+   * Removes person from selected people
+   * @param person - person and details pertaining to user selected
+   */
   private removePerson(person: MgtPersonDetails) {
     let chosenPerson: any = person;
     let filteredPersonArr = this._selectedPeople.filter(function(person) {

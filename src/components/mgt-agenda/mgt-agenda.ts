@@ -21,14 +21,31 @@ import { MgtPersonDetails } from '../mgt-person/mgt-person';
 @customElement('mgt-agenda')
 export class MgtAgenda extends MgtTemplatedComponent {
   private _firstUpdated = false;
+  /**
+   * _isNarrow property, determines width available for agenda component.
+   * @type {boolean}
+   */
   @property({ attribute: false }) private _isNarrow: boolean;
+
+  /**
+   * _loading property, determines if agenda component is still loading details.
+   * @type {boolean}
+   */
   @property({ attribute: false }) private _loading: boolean = true;
 
+  /**
+   * events property, array containg events from user agenda.
+   * @type {Array<MicrosoftGraph.Event>}
+   */
   @property({
     attribute: 'events'
   })
   events: Array<MicrosoftGraph.Event>;
 
+  /**
+   * group-by-day property, allows developer to define agenda to group events by day.
+   * @type {Boolean}
+   */
   @property({
     attribute: 'group-by-day',
     type: Boolean,
@@ -36,6 +53,10 @@ export class MgtAgenda extends MgtTemplatedComponent {
   })
   groupByDay = false;
 
+  /**
+   * date property, stores current date for intial calender selection in events.
+   * @type {string}
+   */
   @property({
     attribute: 'date',
     type: String,
@@ -43,6 +64,10 @@ export class MgtAgenda extends MgtTemplatedComponent {
   })
   date: string;
 
+  /**
+   * days property, sets number of days until endate, 3 is the default
+   * @type {number}
+   */
   @property({
     attribute: 'days',
     type: Number,
@@ -50,18 +75,29 @@ export class MgtAgenda extends MgtTemplatedComponent {
   })
   days: number = 3;
 
+  /**
+   * event-query property, allows developer to define specific event
+   * @type {string}
+   */
   @property({
     attribute: 'event-query',
     type: String
   })
   eventQuery: string;
 
+  /**
+   * show-max property, allows developer to define max number of events shown
+   * @type {number}
+   */
   @property({
     attribute: 'show-max',
     type: Number
   })
   showMax: number;
-
+  /**
+   * group-id property, determines if agenda events come from specific group
+   * @type {string}
+   */
   @property({
     attribute: 'group-id',
     type: String

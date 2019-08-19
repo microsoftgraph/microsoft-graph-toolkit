@@ -16,28 +16,48 @@ import { MgtTemplatedComponent } from '../templatedComponent';
 
 @customElement('mgt-person')
 export class MgtPerson extends MgtTemplatedComponent {
+  /**
+   * person-query property, allows developer to define name of person for component
+   * @type {string}
+   */
   @property({
     attribute: 'person-query'
   })
   personQuery: string;
 
+  /**
+   * user-id property, allows developer to use id value to determine person
+   * @type {string}
+   */
   @property({
     attribute: 'user-id'
   })
   userId: string;
 
+  /**
+   * show-name property, determines if person component renders user-name
+   * @type {boolean}
+   */
   @property({
     attribute: 'show-name',
     type: Boolean
   })
   showName: false;
 
+  /**
+   * show-email property, determines if person component renders email
+   * @type {boolean}
+   */
   @property({
     attribute: 'show-email',
     type: Boolean
   })
   showEmail: false;
 
+  /**
+   * person-details property, object containing Graph details on person
+   * @type {MgtPersonDetails}
+   */
   @property({
     attribute: 'person-details',
     type: Object

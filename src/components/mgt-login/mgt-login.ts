@@ -23,9 +23,22 @@ export class MgtLogin extends MgtBaseComponent {
   private _popupRect: ClientRect;
   private _openLeft: boolean = false;
 
+  /**
+   * _showMenu property, determines if login menu popup should be showing
+   * @type {boolean}
+   */
   @property({ attribute: false }) private _showMenu: boolean = false;
+
+  /**
+   * loading property, determines if login component is in loading state
+   * @type {boolean}
+   */
   @property({ attribute: false }) private _loading: boolean = true;
 
+  /**
+   * user-details property, allows developer to use specific user details for login
+   * @type {MgtPersonDetails}
+   */
   @property({
     attribute: 'user-details',
     type: Object
