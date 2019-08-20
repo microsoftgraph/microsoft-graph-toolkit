@@ -6,9 +6,9 @@
  */
 
 import { AuthenticationProviderOptions } from '@microsoft/microsoft-graph-client/lib/es/IAuthenticationProviderOptions';
-import { Configuration, UserAgentApplication } from 'msal';
-import { LoginType, ProviderState } from './IProvider';
 import { MsalProvider } from './MsalProvider';
+import { LoginType, ProviderState } from './IProvider';
+import { Configuration, UserAgentApplication } from 'msal';
 
 declare var microsoftTeams: any;
 
@@ -20,6 +20,14 @@ export interface TeamsConfig {
 }
 
 export class TeamsProvider extends MsalProvider {
+  scopes: string[];
+  private _authPopupUrl: string;
+  private _accessToken: string;
+  public static microsoftTeamsLib;
+
+  private _sessionStorageTokenKey = 'mgt-teamsprovider-accesstoken';
+  private static _sessionStorageClientIdKey = 'msg-teamsprovider-clientId';
+
   private set accessToken(value: string) {
     this._accessToken = value;
     sessionStorage.setItem(this._sessionStorageTokenKey, value);
@@ -30,11 +38,11 @@ export class TeamsProvider extends MsalProvider {
     return this._accessToken;
   }
 
-  public static async isAvailable() {
-    return !!microsoftTeams;
+  static async isAvailable() {
+    return !!(TeamsProvider.microsoftTeamsLib || microsoftTeams);
   }
 
-  public static handleAuth() {
+  static handleAuth() {
     if (!this.isAvailable) {
       console.error('Make sure you have referenced the Microsoft Teams sdk before using the TeamsProvider');
       return;
@@ -42,18 +50,19 @@ export class TeamsProvider extends MsalProvider {
 
     // we are in popup world now - authenticate and handle it
 
-    const url = new URL(window.location.href);
+    var url = new URL(window.location.href);
 
     let clientId = sessionStorage.getItem(this._sessionStorageClientIdKey);
 
     if (UserAgentApplication.prototype.isCallback(window.location.hash)) {
       new MsalProvider({
-        clientId
+        clientId: clientId
       });
       return;
     }
 
-    microsoftTeams.initialize();
+    const teams = TeamsProvider.microsoftTeamsLib || microsoftTeams;
+    teams.initialize();
 
     if (!clientId) {
       clientId = url.searchParams.get('clientId');
@@ -63,12 +72,12 @@ export class TeamsProvider extends MsalProvider {
     }
 
     if (!clientId) {
-      microsoftTeams.authentication.notifyFailure('no clientId provided');
+      teams.authentication.notifyFailure('no clientId provided');
       return;
     }
 
-    const provider = new MsalProvider({
-      clientId // need to add scopes
+    let provider = new MsalProvider({
+      clientId: clientId // need to add scopes
     });
 
     const handleProviderState = async () => {
@@ -78,10 +87,10 @@ export class TeamsProvider extends MsalProvider {
         provider.login();
       } else if (provider.state === ProviderState.SignedIn) {
         try {
-          const accessToken = await provider.getAccessTokenForScopes(...provider.scopes);
-          microsoftTeams.authentication.notifySuccess(accessToken);
+          let accessToken = await provider.getAccessTokenForScopes(...provider.scopes);
+          teams.authentication.notifySuccess(accessToken);
         } catch (e) {
-          microsoftTeams.authentication.notifyFailure(e);
+          teams.authentication.notifyFailure(e);
         }
       }
     };
@@ -89,12 +98,6 @@ export class TeamsProvider extends MsalProvider {
     provider.onStateChanged(handleProviderState);
     handleProviderState();
   }
-  private static _sessionStorageClientIdKey = 'msg-teamsprovider-clientId';
-  public scopes: string[];
-  private _authPopupUrl: string;
-  private _accessToken: string;
-
-  private _sessionStorageTokenKey = 'mgt-teamsprovider-accesstoken';
 
   constructor(config: TeamsConfig) {
     super({
@@ -108,20 +111,23 @@ export class TeamsProvider extends MsalProvider {
       console.error('Make sure you have referenced the Microsoft Teams sdk before using the TeamsProvider');
       return;
     }
+    const teams = TeamsProvider.microsoftTeamsLib || microsoftTeams;
 
     this._authPopupUrl = config.authPopupUrl;
-    microsoftTeams.initialize();
+    teams.initialize();
     this.accessToken = sessionStorage.getItem(this._sessionStorageTokenKey);
   }
 
-  public async login(): Promise<void> {
+  async login(): Promise<void> {
     this.setState(ProviderState.Loading);
+    const teams = TeamsProvider.microsoftTeamsLib || microsoftTeams;
+
     return new Promise((resolve, reject) => {
-      microsoftTeams.getContext(context => {
-        const url = new URL(this._authPopupUrl, new URL(window.location.href));
+      teams.getContext(context => {
+        let url = new URL(this._authPopupUrl, new URL(window.location.href));
         url.searchParams.append('clientId', this.clientId);
 
-        microsoftTeams.authentication.authenticate({
+        teams.authentication.authenticate({
           url: url.href,
           successCallback: result => {
             this.accessToken = result;
@@ -136,7 +142,7 @@ export class TeamsProvider extends MsalProvider {
     });
   }
 
-  public async getAccessToken(options: AuthenticationProviderOptions): Promise<string> {
+  async getAccessToken(options: AuthenticationProviderOptions): Promise<string> {
     return this.accessToken;
   }
 }
