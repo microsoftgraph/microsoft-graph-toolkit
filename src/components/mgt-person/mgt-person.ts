@@ -169,6 +169,7 @@ export class MgtPerson extends MgtTemplatedComponent {
           <img
             class="user-avatar ${this.getImageRowSpanClass()} ${this.getImageSizeClass()}"
             title=${this.personDetails.displayName}
+            aria-label=${this.personDetails.displayName}
             src=${this.personDetails.image as string}
           />
         `;
@@ -177,6 +178,7 @@ export class MgtPerson extends MgtTemplatedComponent {
           <div
             class="user-avatar initials ${this.getImageRowSpanClass()} ${this.getImageSizeClass()}"
             title=${this.personDetails.displayName}
+            aria-label=${this.personDetails.displayName}
           >
             <span class="initials-text">
               ${this.getInitials()}

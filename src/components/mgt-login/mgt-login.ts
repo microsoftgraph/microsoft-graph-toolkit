@@ -188,7 +188,7 @@ export class MgtLogin extends MgtBaseComponent {
 
     return html`
       <div class="root">
-        <button ?disabled="${this._loading}" class="login-button" @click=${this.onClick}>
+        <button ?disabled="${this._loading}" class="login-button" @click=${this.onClick} role="button">
           ${content}
         </button>
         ${this.renderMenu()}
