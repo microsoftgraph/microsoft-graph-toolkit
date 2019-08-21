@@ -6,6 +6,7 @@
     "bierner.lit-html",
     "esbenp.prettier-vscode",
     "rebornix.project-snippets",
-    "ms-vscode.vscode-typescript-tslint-plugin"
+    "ms-vscode.vscode-typescript-tslint-plugin",
+    "joelday.docthis"
   ]
 }
