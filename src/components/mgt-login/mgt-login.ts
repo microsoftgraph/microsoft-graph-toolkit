@@ -5,20 +5,28 @@
  * -------------------------------------------------------------------------------------------
  */
 
-import { html, customElement, property } from 'lit-element';
-import * as MicrosoftGraph from '@microsoft/microsoft-graph-types';
-
+import { User } from '@microsoft/microsoft-graph-types';
+import { customElement, html, property } from 'lit-element';
 import { Providers } from '../../Providers';
 import { ProviderState } from '../../providers/IProvider';
-import { MgtBaseComponent } from '../baseComponent';
-import { styles } from './mgt-login-css';
-
-import { MgtPersonDetails } from '../mgt-person/mgt-person';
-import '../mgt-person/mgt-person';
 import '../../styles/fabric-icon-font';
+import { MgtBaseComponent } from '../baseComponent';
+import '../mgt-person/mgt-person';
+import { styles } from './mgt-login-css';
 
 @customElement('mgt-login')
 export class MgtLogin extends MgtBaseComponent {
+  static get styles() {
+    return styles;
+  }
+
+  @property({
+    attribute: 'user-details',
+    type: Object
+  })
+  public userDetails: User;
+
+  private _image: string;
   private _loginButtonRect: ClientRect;
   private _popupRect: ClientRect;
   private _openLeft: boolean = false;
@@ -26,23 +34,13 @@ export class MgtLogin extends MgtBaseComponent {
   @property({ attribute: false }) private _showMenu: boolean = false;
   @property({ attribute: false }) private _loading: boolean = true;
 
-  @property({
-    attribute: 'user-details',
-    type: Object
-  })
-  userDetails: MgtPersonDetails;
-
-  static get styles() {
-    return styles;
-  }
-
   constructor() {
     super();
     Providers.onProviderUpdated(() => this.loadState());
     this.loadState();
   }
 
-  updated(changedProps) {
+  public updated(changedProps) {
     if (changedProps.get('_showMenu') === false) {
       // get popup bounds
       const popup = this.renderRoot.querySelector('.popup');
@@ -64,12 +62,12 @@ export class MgtLogin extends MgtBaseComponent {
               translate(${deltaX}px, ${deltaY}px)
               scale(${deltaW}, ${deltaH})
             `,
-              backgroundColor: `#eaeaea`
+              backgroundColor: '#eaeaea'
             },
             {
               transformOrigin: 'top left',
               transform: 'none',
-              backgroundColor: `white`
+              backgroundColor: 'white'
             }
           ],
           {
@@ -82,7 +80,7 @@ export class MgtLogin extends MgtBaseComponent {
     }
   }
 
-  firstUpdated() {
+  public firstUpdated() {
     window.addEventListener('click', (event: MouseEvent) => {
       // get popup bounds
       const popup = this.renderRoot.querySelector('.popup');
@@ -91,57 +89,6 @@ export class MgtLogin extends MgtBaseComponent {
         this._showMenu = false;
       }
     });
-  }
-
-  private async loadState() {
-    if (this.userDetails) {
-      return;
-    }
-
-    const provider = Providers.globalProvider;
-
-    if (provider) {
-      this._loading = true;
-      if (provider.state === ProviderState.SignedIn) {
-        let batch = provider.graph.createBatch();
-        batch.get('me', 'me', ['user.read']);
-        batch.get('photo', 'me/photo/$value', ['user.read']);
-        let response = await batch.execute();
-
-        this.userDetails = {
-          displayName: response.me.displayName,
-          email: response.me.mail || response.me.userPrincipalName,
-          image: response.photo
-        };
-      } else if (provider.state === ProviderState.SignedOut) {
-        this.userDetails = null;
-      } else {
-        return;
-      }
-    }
-
-    this._loading = false;
-  }
-
-  private onClick(event: MouseEvent) {
-    event.stopPropagation();
-    if (this.userDetails) {
-      // get login button bounds
-      const loginButton = this.renderRoot.querySelector('.login-button');
-      if (loginButton) {
-        this._loginButtonRect = loginButton.getBoundingClientRect();
-
-        let leftEdge = this._loginButtonRect.left;
-        let rightEdge = (window.innerWidth || document.documentElement.clientWidth) - this._loginButtonRect.right;
-        this._openLeft = rightEdge < leftEdge;
-
-        this._showMenu = !this._showMenu;
-      }
-    } else {
-      if (this.fireCustomEvent('loginInitiated')) {
-        this.login();
-      }
-    }
   }
 
   public async login() {
@@ -183,7 +130,7 @@ export class MgtLogin extends MgtBaseComponent {
     this._showMenu = false;
   }
 
-  render() {
+  public render() {
     const content = this.userDetails ? this.renderLoggedIn() : this.renderLogIn();
 
     return html`
@@ -196,7 +143,7 @@ export class MgtLogin extends MgtBaseComponent {
     `;
   }
 
-  renderLogIn() {
+  public renderLogIn() {
     return html`
       <i class="login-icon ms-Icon ms-Icon--Contact"></i>
       <span>
@@ -205,23 +152,23 @@ export class MgtLogin extends MgtBaseComponent {
     `;
   }
 
-  renderLoggedIn() {
+  public renderLoggedIn() {
     if (this.userDetails) {
       return html`
-        <mgt-person .personDetails=${this.userDetails} show-name />
+        <mgt-person .personDetails=${this.userDetails} .personImage=${this._image} show-name />
       `;
     } else {
       return this.renderLogIn();
     }
   }
 
-  renderMenu() {
+  public renderMenu() {
     if (!this.userDetails) {
       return;
     }
 
-    let personComponent = html`
-      <mgt-person .personDetails=${this.userDetails} show-name show-email />
+    const personComponent = html`
+      <mgt-person .personDetails=${this.userDetails} .personImage=${this._image} show-name show-email />
     `;
 
     return html`
@@ -242,5 +189,53 @@ export class MgtLogin extends MgtBaseComponent {
         </div>
       </div>
     `;
+  }
+
+  private async loadState() {
+    if (this.userDetails) {
+      return;
+    }
+
+    const provider = Providers.globalProvider;
+
+    if (provider) {
+      this._loading = true;
+      if (provider.state === ProviderState.SignedIn) {
+        const batch = provider.graph.createBatch();
+        batch.get('me', 'me', ['user.read']);
+        batch.get('photo', 'me/photo/$value', ['user.read']);
+        const response = await batch.execute();
+
+        this._image = response.photo;
+        this.userDetails = response.me;
+      } else if (provider.state === ProviderState.SignedOut) {
+        this.userDetails = null;
+      } else {
+        return;
+      }
+    }
+
+    this._loading = false;
+  }
+
+  private onClick(event: MouseEvent) {
+    event.stopPropagation();
+    if (this.userDetails) {
+      // get login button bounds
+      const loginButton = this.renderRoot.querySelector('.login-button');
+      if (loginButton) {
+        this._loginButtonRect = loginButton.getBoundingClientRect();
+
+        const leftEdge = this._loginButtonRect.left;
+        const rightEdge = (window.innerWidth || document.documentElement.clientWidth) - this._loginButtonRect.right;
+        this._openLeft = rightEdge < leftEdge;
+
+        this._showMenu = !this._showMenu;
+      }
+    } else {
+      if (this.fireCustomEvent('loginInitiated')) {
+        this.login();
+      }
+    }
   }
 }

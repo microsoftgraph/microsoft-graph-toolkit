@@ -134,12 +134,11 @@ mgt-person .user-email {
 .root .flyout {
   display: inline-block;
   position: absolute;
+  z-index: 1;
   opacity: 0;
   transition-property: opacity;
-  transition-duration: 0.2s;
-  // animation-delay: 1s;
-  // animation-name: fadeOut;
-  // animation-duration: 0.3s;
+  transition-duration: 0.1s;
+  padding: 8px;
 }
 
 .root .flyout.visible {

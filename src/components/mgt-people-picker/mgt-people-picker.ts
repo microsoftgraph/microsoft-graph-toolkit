@@ -5,57 +5,59 @@
  * -------------------------------------------------------------------------------------------
  */
 
-import { html, customElement, property } from 'lit-element';
 import * as MicrosoftGraph from '@microsoft/microsoft-graph-types';
+import { customElement, html, property } from 'lit-element';
 
 import { Providers } from '../../Providers';
 import { ProviderState } from '../../providers/IProvider';
 import { styles } from './mgt-people-picker-css';
 
-import '../mgt-person/mgt-person';
 import '../../styles/fabric-icon-font';
-import { MgtTemplatedComponent } from '../templatedComponent';
-import { MgtPersonDetails, MgtPerson } from '../mgt-person/mgt-person';
 import { debounce } from '../../utils/utils';
+import '../mgt-person/mgt-person';
+import { MgtTemplatedComponent } from '../templatedComponent';
 
 @customElement('mgt-people-picker')
 export class MgtPicker extends MgtTemplatedComponent {
-  //people in current search list
+  static get styles() {
+    return styles;
+  }
+  // people in current search list
   @property({
     attribute: 'people',
     type: Object
   })
-  people: Array<MgtPersonDetails> = null;
+  public people: Array<MicrosoftGraph.User | MicrosoftGraph.Person | MicrosoftGraph.Contact> = null;
 
-  //maximum shown people in search
+  // maximum shown people in search
   @property({
     attribute: 'show-max',
     type: Number
   })
-  showMax: number = 6;
+  public showMax: number = 6;
 
-  //group attribute selection
+  // group attribute selection
   @property({
     attribute: 'group-id',
     type: String
   })
-  groupId: string;
+  public groupId: string;
 
-  //User selected people
-  @property() public _selectedPeople: Array<any> = [];
-  //single matching id for filtering against people list
+  // User selected people
+  @property() public _selectedPeople: any[] = [];
+  // single matching id for filtering against people list
   @property() private _duplicatePersonId: string = '';
-  //User input in search
+  // User input in search
   @property() private _userInput: string = '';
 
-  //tracking of user arrow key input for selection
+  // tracking of user arrow key input for selection
   private arrowSelectionCount: number = 0;
-  //List of people requested if group property is provided
+  // List of people requested if group property is provided
   private groupPeople: any[];
-  //if search is still loading don't load "people not found" state
+  // if search is still loading don't load "people not found" state
   private isLoading = false;
 
-  //handing debounce on user search
+  // handing debounce on user search
   private debounceHandle = window.addEventListener(
     'keyup',
     debounce(() => {
@@ -63,7 +65,12 @@ export class MgtPicker extends MgtTemplatedComponent {
     }, 300)
   );
 
-  attributeChangedCallback(att, oldval, newval) {
+  constructor() {
+    super();
+    this.trackMouseFocus = this.trackMouseFocus.bind(this);
+  }
+
+  public attributeChangedCallback(att, oldval, newval) {
     super.attributeChangedCallback(att, oldval, newval);
 
     if (att == 'group-id' && oldval !== newval) {
@@ -71,26 +78,33 @@ export class MgtPicker extends MgtTemplatedComponent {
     }
   }
 
-  static get styles() {
-    return styles;
-  }
-
-  constructor() {
-    super();
-    this.trackMouseFocus = this.trackMouseFocus.bind(this);
-  }
-
-  firstUpdated() {
+  public firstUpdated() {
     if (this.groupId) {
       Providers.onProviderUpdated(() => this.findGroup());
       this.findGroup();
     }
   }
 
+  public render() {
+    document.addEventListener('mouseup', this.trackMouseFocus, false);
+    return (
+      this.renderTemplate('default', { people: this.people }) ||
+      html`
+        <div class="people-picker">
+          <div class="people-picker-input">
+            ${this.renderChosenPeople()}
+          </div>
+          <div class="people-list-separator"></div>
+          ${this.renderPeopleList()}
+        </div>
+      `
+    );
+  }
+
   private async findGroup() {
-    let provider = Providers.globalProvider;
+    const provider = Providers.globalProvider;
     if (provider && provider.state === ProviderState.SignedIn) {
-      let client = Providers.globalProvider.graph;
+      const client = Providers.globalProvider.graph;
       this.groupPeople = await client.getPeopleFromGroup(this.groupId);
     }
   }
@@ -105,9 +119,9 @@ export class MgtPicker extends MgtTemplatedComponent {
     if (event.code == 'Backspace' && this._userInput.length == 0 && this._selectedPeople.length > 0) {
       event.target.value = '';
       this._userInput = '';
-      //remove last person in selected list
+      // remove last person in selected list
       this._selectedPeople = this._selectedPeople.splice(0, this._selectedPeople.length - 1);
-      //fire selected people changed event
+      // fire selected people changed event
       this.fireCustomEvent('selectionChanged', this._selectedPeople);
       return;
     }
@@ -123,7 +137,7 @@ export class MgtPicker extends MgtTemplatedComponent {
 
   private onUserKeyDown(event: any) {
     if (event.keyCode == 40 || event.keyCode == 38) {
-      //keyCodes capture: down arrow (40) and up arrow (38)
+      // keyCodes capture: down arrow (40) and up arrow (38)
       this.handleArrowSelection(event);
       event.preventDefault();
     }
@@ -136,9 +150,9 @@ export class MgtPicker extends MgtTemplatedComponent {
 
   private handleArrowSelection(event: any) {
     if (this.people.length) {
-      //update arrow count
+      // update arrow count
       if (event.keyCode == 38) {
-        //up arrow
+        // up arrow
         if (this.arrowSelectionCount > 0) {
           this.arrowSelectionCount--;
         } else {
@@ -146,7 +160,7 @@ export class MgtPicker extends MgtTemplatedComponent {
         }
       }
       if (event.keyCode == 40) {
-        //down arrow
+        // down arrow
         if (this.arrowSelectionCount + 1 !== this.people.length && this.arrowSelectionCount + 1 < this.showMax) {
           this.arrowSelectionCount++;
         } else {
@@ -155,21 +169,21 @@ export class MgtPicker extends MgtTemplatedComponent {
       }
 
       const peopleList = this.renderRoot.querySelector('.people-list');
-      //reset background color
+      // reset background color
       for (let i = 0; i < peopleList.children.length; i++) {
         peopleList.children[i].setAttribute('class', 'people-person-list');
       }
-      //set selected background
+      // set selected background
       peopleList.children[this.arrowSelectionCount].setAttribute('class', 'people-person-list-fill');
     }
   }
 
-  private addPerson(person: MgtPersonDetails, event: any) {
+  private addPerson(person: MicrosoftGraph.User | MicrosoftGraph.Person | MicrosoftGraph.Contact, event: any) {
     if (person) {
       this._userInput = '';
       this._duplicatePersonId = '';
-      let chosenPerson: any = person;
-      let filteredPersonArr = this._selectedPeople.filter(function(person) {
+      const chosenPerson: any = person;
+      const filteredPersonArr = this._selectedPeople.filter(function(person) {
         return person.id == chosenPerson.id;
       });
       if (this._selectedPeople.length && filteredPersonArr.length) {
@@ -189,14 +203,14 @@ export class MgtPicker extends MgtTemplatedComponent {
     console.log('here');
     if (name.length) {
       name = name.toLowerCase();
-      let provider = Providers.globalProvider;
+      const provider = Providers.globalProvider;
       let people: any;
 
       if (provider && provider.state === ProviderState.SignedIn) {
         this.isLoading = true;
-        let client = Providers.globalProvider.graph;
+        const client = Providers.globalProvider.graph;
 
-        //filtering groups
+        // filtering groups
         if (this.groupId) {
           people = this.groupPeople;
         } else {
@@ -209,12 +223,6 @@ export class MgtPicker extends MgtTemplatedComponent {
           });
         }
 
-        for (let person of people) {
-          // set image to @ to flag the mgt-person component to
-          // query the image from the graph
-          person.image = '@';
-        }
-
         this.people = this.filterPeople(people);
         this.isLoading = false;
       }
@@ -222,16 +230,16 @@ export class MgtPicker extends MgtTemplatedComponent {
   }
 
   private filterPeople(people: any) {
-    //check if people need to be updated
-    //ensuring people list is displayed
-    //find ids from selected people
+    // check if people need to be updated
+    // ensuring people list is displayed
+    // find ids from selected people
     if (people) {
       let id_filter = this._selectedPeople.map(function(el) {
         return el.id;
       });
 
-      //filter id's
-      let filtered = people.filter(function(person) {
+      // filter id's
+      const filtered = people.filter(function(person) {
         return id_filter.indexOf(person.id) === -1;
       });
 
@@ -239,9 +247,9 @@ export class MgtPicker extends MgtTemplatedComponent {
     }
   }
 
-  private removePerson(person: MgtPersonDetails) {
-    let chosenPerson: any = person;
-    let filteredPersonArr = this._selectedPeople.filter(function(person) {
+  private removePerson(person: MicrosoftGraph.User | MicrosoftGraph.Person | MicrosoftGraph.Contact) {
+    const chosenPerson: any = person;
+    const filteredPersonArr = this._selectedPeople.filter(function(person) {
       return person.id !== chosenPerson.id;
     });
     this._selectedPeople = filteredPersonArr;
@@ -258,16 +266,16 @@ export class MgtPicker extends MgtTemplatedComponent {
   private trackMouseFocus(e) {
     const peopleList = this.renderRoot.querySelector('.people-list');
     if (e.target.localName === 'mgt-people-picker') {
-      const peopleInput = <HTMLInputElement>this.renderRoot.querySelector('.people-chosen-input');
+      const peopleInput = this.renderRoot.querySelector('.people-chosen-input') as HTMLInputElement;
       peopleInput.focus();
       peopleInput.select();
     }
     if (peopleList) {
       if (e.target.localName === 'mgt-people-picker') {
-        //Mouse is focused on input
+        // Mouse is focused on input
         peopleList.setAttribute('style', 'display:block');
       } else {
-        //reset if not clicked in focus
+        // reset if not clicked in focus
         peopleList.setAttribute('style', 'display:none');
       }
     }
@@ -283,8 +291,7 @@ export class MgtPicker extends MgtTemplatedComponent {
           person =>
             html`
               <li class="${person.id == this._duplicatePersonId ? 'people-person duplicate-person' : 'people-person'}">
-                ${this.renderTemplate('person', { person: person }, person.displayName) ||
-                  this.renderChosenPerson(person)}
+                ${this.renderTemplate('person', { person }, person.displayName) || this.renderChosenPerson(person)}
                 <p class="person-display-name">${person.displayName}</p>
                 <div class="CloseIcon" @click="${() => this.removePerson(person)}">\uE711</div>
               </li>
@@ -314,24 +321,24 @@ export class MgtPicker extends MgtTemplatedComponent {
     `;
   }
 
-  private renderHighlightText(person: MgtPersonDetails) {
-    let peoples: any = person;
+  private renderHighlightText(person: MicrosoftGraph.User | MicrosoftGraph.Person | MicrosoftGraph.Contact) {
+    const peoples: any = person;
 
-    let highlightLocation = peoples.displayName.toLowerCase().indexOf(this._userInput.toLowerCase());
+    const highlightLocation = peoples.displayName.toLowerCase().indexOf(this._userInput.toLowerCase());
     if (highlightLocation !== -1) {
-      //no location
+      // no location
       if (highlightLocation == 0) {
-        //highlight is at the beginning of sentence
+        // highlight is at the beginning of sentence
         peoples.first = '';
         peoples.highlight = peoples.displayName.slice(0, this._userInput.length);
         peoples.last = peoples.displayName.slice(this._userInput.length, peoples.displayName.length);
       } else if (highlightLocation == peoples.displayName.length) {
-        //highlight is at end of the sentence
+        // highlight is at end of the sentence
         peoples.first = peoples.displayName.slice(0, highlightLocation);
         peoples.highlight = peoples.displayName.slice(highlightLocation, peoples.displayName.length);
         peoples.last = '';
       } else {
-        //highlight is in middle of sentence
+        // highlight is in middle of sentence
         peoples.first = peoples.displayName.slice(0, highlightLocation);
         peoples.highlight = peoples.displayName.slice(highlightLocation, highlightLocation + this._userInput.length);
         peoples.last = peoples.displayName.slice(
@@ -351,7 +358,7 @@ export class MgtPicker extends MgtTemplatedComponent {
   }
 
   private renderPeopleList() {
-    let people = this.people;
+    const people = this.people;
     if (people) {
       if (people.length == 0 && this._userInput.length > 0 && this.isLoading == false) {
         return html`
@@ -369,7 +376,7 @@ export class MgtPicker extends MgtTemplatedComponent {
     }
   }
 
-  private renderPersons(people: Array<any>) {
+  private renderPersons(people: any[]) {
     return people.slice(0, this.showMax).map(
       person =>
         html`
@@ -377,7 +384,7 @@ export class MgtPicker extends MgtTemplatedComponent {
             class="${person.isSelected == 'fill' ? 'people-person-list-fill' : 'people-person-list'}"
             @click="${(event: any) => this.addPerson(person, event)}"
           >
-            ${this.renderTemplate('person', { person: person }, person.displayName) || this.renderPerson(person)}
+            ${this.renderTemplate('person', { person }, person.displayName) || this.renderPerson(person)}
             <div class="people-person-text-area" id="${person.displayName}">
               ${this.renderHighlightText(person)}
               <span class="people-person-job-title">${person.jobTitle}</span>
@@ -387,30 +394,14 @@ export class MgtPicker extends MgtTemplatedComponent {
     );
   }
 
-  render() {
-    document.addEventListener('mouseup', this.trackMouseFocus, false);
-    return (
-      this.renderTemplate('default', { people: this.people }) ||
-      html`
-        <div class="people-picker">
-          <div class="people-picker-input">
-            ${this.renderChosenPeople()}
-          </div>
-          <div class="people-list-separator"></div>
-          ${this.renderPeopleList()}
-        </div>
-      `
-    );
-  }
-
   private renderPerson(person: MicrosoftGraph.Person) {
     return html`
-      <mgt-person .personDetails=${person}></mgt-person>
+      <mgt-person .personDetails=${person} .personImage=${'@'}></mgt-person>
     `;
   }
   private renderChosenPerson(person: MicrosoftGraph.Person) {
     return html`
-      <mgt-person class="chosen-person" .personDetails=${person}></mgt-person>
+      <mgt-person class="chosen-person" .personDetails=${person} .personImage=${'@'}></mgt-person>
     `;
   }
 }

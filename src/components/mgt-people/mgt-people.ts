@@ -5,72 +5,47 @@
  * -------------------------------------------------------------------------------------------
  */
 
-import { LitElement, html, customElement, property } from 'lit-element';
 import * as MicrosoftGraph from '@microsoft/microsoft-graph-types';
-
+import { customElement, html, LitElement, property } from 'lit-element';
 import { Providers } from '../../Providers';
 import { ProviderState } from '../../providers/IProvider';
-import { styles } from './mgt-people-css';
-
-import '../mgt-person/mgt-person';
 import '../../styles/fabric-icon-font';
+import '../mgt-person/mgt-person';
 import { MgtTemplatedComponent } from '../templatedComponent';
-import { MgtPersonDetails } from '../mgt-person/mgt-person';
+import { styles } from './mgt-people-css';
 
 @customElement('mgt-people')
 export class MgtPeople extends MgtTemplatedComponent {
-  private _firstUpdated = false;
-
-  @property({
-    attribute: 'people',
-    type: Object
-  })
-  people: Array<MgtPersonDetails> = null;
-
-  @property({
-    attribute: 'show-max',
-    type: Number
-  })
-  showMax: number = 3;
-
   /* TODO: Do we want a query property for loading groups from calls? */
 
   static get styles() {
     return styles;
   }
 
+  @property({
+    attribute: 'people',
+    type: Object
+  })
+  public people: Array<MicrosoftGraph.User | MicrosoftGraph.Person | MicrosoftGraph.Contact> = null;
+
+  @property({
+    attribute: 'show-max',
+    type: Number
+  })
+  public showMax: number = 3;
+  private _firstUpdated = false;
+
   constructor() {
     super();
   }
 
-  firstUpdated() {
+  public firstUpdated() {
     this._firstUpdated = true;
     Providers.onProviderUpdated(() => this.loadPeople());
     this.loadPeople();
   }
 
-  private async loadPeople() {
-    if (!this._firstUpdated) {
-      return;
-    }
-
-    if (!this.people) {
-      let provider = Providers.globalProvider;
-
-      if (provider && provider.state === ProviderState.SignedIn) {
-        let client = Providers.globalProvider.graph;
-
-        this.people = (await client.getPeople()).slice(0, this.showMax);
-        for (let person of this.people) {
-          // set image to @ to flag the mgt-person component to
-          // query the image from the graph
-          person.image = '@';
-        }
-      }
-    }
-  }
-
-  render() {
+  public render() {
     if (this.people) {
       return (
         this.renderTemplate('default', { people: this.people }) ||
@@ -80,8 +55,7 @@ export class MgtPeople extends MgtTemplatedComponent {
               person =>
                 html`
                   <li class="people-person">
-                    ${this.renderTemplate('person', { person: person }, person.displayName) ||
-                      this.renderPerson(person)}
+                    ${this.renderTemplate('person', { person }, person.displayName) || this.renderPerson(person)}
                   </li>
                 `
             )}
@@ -103,9 +77,27 @@ export class MgtPeople extends MgtTemplatedComponent {
     }
   }
 
+  private async loadPeople() {
+    if (!this._firstUpdated) {
+      return;
+    }
+
+    if (!this.people) {
+      const provider = Providers.globalProvider;
+
+      if (provider && provider.state === ProviderState.SignedIn) {
+        const client = Providers.globalProvider.graph;
+
+        this.people = (await client.getPeople()).slice(0, this.showMax);
+      }
+    }
+  }
+
   private renderPerson(person: MicrosoftGraph.Person) {
+    // set image to @ to flag the mgt-person component to
+    // query the image from the graph
     return html`
-      <mgt-person .personDetails=${person}></mgt-person>
+      <mgt-person .personDetails=${person} .personImage=${'@'}></mgt-person>
     `;
   }
 }

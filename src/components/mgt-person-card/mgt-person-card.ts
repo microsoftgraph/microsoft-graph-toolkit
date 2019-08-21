@@ -23,8 +23,18 @@ export class MgtPersonCard extends MgtTemplatedComponent {
     return styles;
   }
 
-  // assignment to this property will re-render the component
-  @property({ attribute: false }) private _me: MicrosoftGraph.User;
+  /**
+   * Set the person details to render
+   *
+   * @type {(MicrosoftGraph.User
+   *     | MicrosoftGraph.Person
+   *     | MicrosoftGraph.Contact)}
+   * @memberof MgtPersonCard
+   */
+  @property({ attribute: 'person' }) public person:
+    | MicrosoftGraph.User
+    | MicrosoftGraph.Person
+    | MicrosoftGraph.Contact;
 
   /**
    * Synchronizes property values when attributes change.
@@ -65,15 +75,15 @@ export class MgtPersonCard extends MgtTemplatedComponent {
    * trigger the element to update.
    */
   protected render() {
-    if (this._me) {
-      const user = this._me;
+    if (this.person) {
+      const user = this.person;
 
       // tslint:disable-next-line: one-variable-per-declaration
       let phone, department, jobTitle, email, location;
 
-      if (user.businessPhones && user.businessPhones.length > 0) {
+      if ((user as MicrosoftGraph.User).businessPhones && (user as MicrosoftGraph.User).businessPhones.length > 0) {
         phone = html`
-          <div class="phone subtitle">${user.businessPhones[0]}</div>
+          <div class="phone subtitle">${(user as MicrosoftGraph.User).businessPhones[0]}</div>
         `;
       }
 
@@ -89,9 +99,9 @@ export class MgtPersonCard extends MgtTemplatedComponent {
         `;
       }
 
-      if (user.mail) {
+      if ((user as MicrosoftGraph.User).mail) {
         email = html`
-          <div class="email subtitle">${user.mail}</div>
+          <div class="email subtitle">${(user as MicrosoftGraph.User).mail}</div>
         `;
       }
 
@@ -136,6 +146,10 @@ export class MgtPersonCard extends MgtTemplatedComponent {
   }
 
   private async loadData() {
+    if (this.person) {
+      return;
+    }
+
     const provider = Providers.globalProvider;
 
     if (!provider || provider.state !== ProviderState.SignedIn) {
@@ -143,10 +157,9 @@ export class MgtPersonCard extends MgtTemplatedComponent {
     }
 
     // TODO: load data from the graph
-    this._me = await provider.graph.client
+    this.person = await provider.graph.client
       .api('/me')
       .version('beta')
       .get();
-    console.log(this._me);
   }
 }

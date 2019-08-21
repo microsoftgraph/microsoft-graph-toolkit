@@ -5,183 +5,85 @@
  * -------------------------------------------------------------------------------------------
  */
 
-import { html, customElement, property } from 'lit-element';
 import * as MicrosoftGraph from '@microsoft/microsoft-graph-types';
+import { customElement, html, property } from 'lit-element';
 
-import { Providers } from '../../Providers';
-import { styles } from './mgt-person-css';
-import '../../styles/fabric-icon-font';
-import { ProviderState } from '../../providers/IProvider';
-import { MgtTemplatedComponent } from '../templatedComponent';
 import { classMap } from 'lit-html/directives/class-map';
+import { Providers } from '../../Providers';
+import { ProviderState } from '../../providers/IProvider';
+import '../../styles/fabric-icon-font';
+import { getEmailFromGraphEntity } from '../../utils/graphHelpers';
 import { delay } from '../../utils/utils';
+import { MgtTemplatedComponent } from '../templatedComponent';
+import { styles } from './mgt-person-css';
 
 @customElement('mgt-person')
 export class MgtPerson extends MgtTemplatedComponent {
+  static get styles() {
+    return styles;
+  }
   @property({
     attribute: 'person-query'
   })
-  personQuery: string;
+  public personQuery: string;
 
   @property({
     attribute: 'user-id'
   })
-  userId: string;
+  public userId: string;
 
   @property({
     attribute: 'show-name',
     type: Boolean
   })
-  showName: false;
+  public showName: false;
 
   @property({
     attribute: 'show-email',
     type: Boolean
   })
-  showEmail: false;
+  public showEmail: false;
 
   @property({
     attribute: 'person-details',
     type: Object
   })
-  personDetails: MgtPersonDetails;
+  public personDetails: MicrosoftGraph.User | MicrosoftGraph.Person | MicrosoftGraph.Contact;
+
+  @property({
+    attribute: 'person-image',
+    type: String
+  })
+  public personImage: string;
 
   @property({
     attribute: 'show-card',
     type: Boolean
   })
-  showCard: false;
+  public showCard: false;
 
   @property({ attribute: false }) private _isPersonCardVisible: boolean = false;
-  @property({ attribute: false }) private _personCardHasRendered: boolean = false;
+  @property({ attribute: false }) private _personCardShouldRender: boolean = false;
 
-  attributeChangedCallback(name, oldval, newval) {
+  private _mouseLeaveTimeout;
+  private _mouseEnterTimeout;
+
+  public attributeChangedCallback(name, oldval, newval) {
     super.attributeChangedCallback(name, oldval, newval);
 
-    if ((name == 'person-query' || name == 'user-id') && oldval !== newval) {
+    if ((name === 'person-query' || name === 'user-id') && oldval !== newval) {
       this.personDetails = null;
       this.loadData();
     }
   }
 
-  static get styles() {
-    return styles;
-  }
-
-  firstUpdated() {
+  public firstUpdated() {
     Providers.onProviderUpdated(() => this.loadData());
     this.loadData();
   }
 
-  private async loadData() {
-    let provider = Providers.globalProvider;
-
-    if (!provider || provider.state !== ProviderState.SignedIn) {
-      return;
-    }
-
-    if (this.personDetails) {
-      // in some cases we might only have name or email, but need to find the image
-      // use @ for the image value to search for an image
-      if (this.personDetails.image && this.personDetails.image === '@') {
-        this.personDetails.image = null;
-        this.loadImage(this.personDetails);
-      }
-      return;
-    }
-
-    if (this.userId || (this.personQuery && this.personQuery == 'me')) {
-      let batch = provider.graph.createBatch();
-
-      if (this.userId) {
-        batch.get('user', `/users/${this.userId}`, ['user.readbasic.all']);
-        batch.get('photo', `users/${this.userId}/photo/$value`, ['user.readbasic.all']);
-      } else {
-        batch.get('user', 'me', ['user.read']);
-        batch.get('photo', 'me/photo/$value', ['user.read']);
-      }
-
-      let response = await batch.execute();
-
-      this.personDetails = {
-        displayName: response.user.displayName,
-        email: response.user.mail || response.user.userPrincipalName,
-        image: response.photo
-      };
-    } else if (!this.personDetails && this.personQuery) {
-      let people = await provider.graph.findPerson(this.personQuery);
-      if (people && people.length > 0) {
-        let person = people[0] as MicrosoftGraph.Person;
-        this.personDetails = person;
-
-        if (person.scoredEmailAddresses && person.scoredEmailAddresses.length) {
-          this.personDetails.email = person.scoredEmailAddresses[0].address;
-        } else if ((<any>person).emailAddresses && (<any>person).emailAddresses.length) {
-          // beta endpoint uses emailAddresses instead of scoredEmailAddresses
-          this.personDetails.email = (<any>person).emailAddresses[0].address;
-        }
-
-        this.loadImage(person);
-      }
-    }
-  }
-
-  private async loadImage(person: any) {
-    let provider = Providers.globalProvider;
-
-    if (person.userPrincipalName) {
-      let userPrincipalName = person.userPrincipalName;
-      this.personDetails.image = await provider.graph.getUserPhoto(userPrincipalName);
-    } else if (this.personDetails.email) {
-      // try to find a user by e-mail
-      let users = await provider.graph.findUserByEmail(this.personDetails.email);
-
-      if (users && users.length) {
-        if ((<any>users[0]).personType && (<any>users[0]).personType.subclass == 'OrganizationUser') {
-          this.personDetails.image = await provider.graph.getUserPhoto(
-            (<MicrosoftGraph.Person>users[0]).scoredEmailAddresses[0].address
-          );
-        } else {
-          const contactId = users[0].id;
-          this.personDetails.image = await provider.graph.getContactPhoto(contactId);
-        }
-      }
-    }
-    this.requestUpdate();
-  }
-
-  private _mouseLeaveTimeout;
-  private _mouseEnterTimeout;
-
-  // todo remove
-  private _handleMouseEnter(e: MouseEvent) {
-    clearTimeout(this._mouseEnterTimeout);
-    clearTimeout(this._mouseLeaveTimeout);
-    this._mouseEnterTimeout = setTimeout(this._showPersonCard.bind(this), 1000, e);
-  }
-
-  private _handleMouseLeave(e: MouseEvent) {
-    clearTimeout(this._mouseEnterTimeout);
-    clearTimeout(this._mouseLeaveTimeout);
-    this._mouseLeaveTimeout = setTimeout(this._hidePersonCard.bind(this), 1000, e);
-  }
-
-  private async _showPersonCard(e: MouseEvent) {
-    if (!this._personCardHasRendered) {
-      // give the person-card a chance to render so transitions work
-      this._personCardHasRendered = true;
-      await delay(200);
-    }
-
-    this._isPersonCardVisible = true;
-  }
-
-  private _hidePersonCard(e: MouseEvent) {
-    this._isPersonCardVisible = false;
-  }
-
-  render() {
-    let person =
+  public render() {
+    const person =
       this.renderTemplate('default', { person: this.personDetails }) ||
       html`
         <div class="person-root">
@@ -196,16 +98,116 @@ export class MgtPerson extends MgtTemplatedComponent {
     `;
   }
 
-  private renderPersonCard() {
-    // ensure person card is only rendered when needed
-    if (!this.showCard || !this._personCardHasRendered) {
+  private async loadData() {
+    const provider = Providers.globalProvider;
+
+    if (!provider || provider.state !== ProviderState.SignedIn) {
       return;
     }
 
-    let flyoutClasses = { flyout: true, visible: this._isPersonCardVisible };
+    if (this.personDetails) {
+      // in some cases we might only have name or email, but need to find the image
+      // use @ for the image value to search for an image
+      if (this.personImage && this.personImage === '@') {
+        this.personImage = null;
+        this.loadImage();
+      }
+      return;
+    }
+
+    if (this.userId || (this.personQuery && this.personQuery === 'me')) {
+      const batch = provider.graph.createBatch();
+
+      if (this.userId) {
+        batch.get('user', `/users/${this.userId}`, ['user.readbasic.all']);
+        batch.get('photo', `users/${this.userId}/photo/$value`, ['user.readbasic.all']);
+      } else {
+        batch.get('user', 'me', ['user.read']);
+        batch.get('photo', 'me/photo/$value', ['user.read']);
+      }
+
+      const response = await batch.execute();
+
+      this.personImage = response.photo;
+      this.personDetails = response.user;
+    } else if (!this.personDetails && this.personQuery) {
+      const people = await provider.graph.findPerson(this.personQuery);
+      if (people && people.length > 0) {
+        const person = people[0] as MicrosoftGraph.Person;
+        this.personDetails = person;
+
+        this.loadImage();
+      }
+    }
+  }
+
+  private async loadImage() {
+    const provider = Providers.globalProvider;
+
+    const person = this.personDetails;
+
+    if ((person as MicrosoftGraph.Person).userPrincipalName) {
+      const userPrincipalName = (person as MicrosoftGraph.Person).userPrincipalName;
+      this.personImage = await provider.graph.getUserPhoto(userPrincipalName);
+    } else {
+      const email = getEmailFromGraphEntity(person);
+      if (email) {
+        // try to find a user by e-mail
+        const users = await provider.graph.findUserByEmail(email);
+
+        if (users && users.length) {
+          if ((users[0] as any).personType && (users[0] as any).personType.subclass === 'OrganizationUser') {
+            this.personImage = await provider.graph.getUserPhoto(
+              (users[0] as MicrosoftGraph.Person).scoredEmailAddresses[0].address
+            );
+          } else {
+            const contactId = users[0].id;
+            this.personImage = await provider.graph.getContactPhoto(contactId);
+          }
+        }
+      }
+    }
+    this.requestUpdate();
+  }
+
+  // todo remove
+  private _handleMouseEnter(e: MouseEvent) {
+    clearTimeout(this._mouseEnterTimeout);
+    clearTimeout(this._mouseLeaveTimeout);
+    this._mouseEnterTimeout = setTimeout(this._showPersonCard.bind(this), 300, e);
+  }
+
+  private _handleMouseLeave(e: MouseEvent) {
+    clearTimeout(this._mouseEnterTimeout);
+    clearTimeout(this._mouseLeaveTimeout);
+    this._mouseLeaveTimeout = setTimeout(this._hidePersonCard.bind(this), 500, e);
+  }
+
+  private async _showPersonCard(e: MouseEvent) {
+    if (!this._personCardShouldRender) {
+      this._personCardShouldRender = true;
+    }
+
+    // give the person-card a chance to render so transitions work
+    await delay(200);
+
+    this._isPersonCardVisible = true;
+  }
+
+  private _hidePersonCard(e: MouseEvent) {
+    this._isPersonCardVisible = false;
+  }
+
+  private renderPersonCard() {
+    // ensure person card is only rendered when needed
+    if (!this.showCard || !this._personCardShouldRender) {
+      return;
+    }
+
+    const flyoutClasses = { flyout: true, visible: this._isPersonCardVisible };
     return html`
       <div class=${classMap(flyoutClasses)}>
-        <mgt-person-card></mgt-person-card>
+        <mgt-person-card .person=></mgt-person-card>
       </div>
     `;
   }
@@ -224,14 +226,14 @@ export class MgtPerson extends MgtTemplatedComponent {
 
   private renderImage() {
     if (this.personDetails) {
-      let title = !this.showCard ? this.personDetails.displayName : '';
+      const title = !this.showCard ? this.personDetails.displayName : '';
 
-      if (this.personDetails.image && this.personDetails.image !== '@') {
+      if (this.personImage && this.personImage !== '@') {
         return html`
           <img
             class="user-avatar ${this.getImageRowSpanClass()} ${this.getImageSizeClass()}"
             title=${title}
-            src=${this.personDetails.image as string}
+            src=${this.personImage as string}
           />
         `;
       } else {
@@ -266,7 +268,7 @@ export class MgtPerson extends MgtTemplatedComponent {
       : null;
     const emailView = this.showEmail
       ? html`
-          <div class="user-email">${this.personDetails.email}</div>
+          <div class="user-email">${getEmailFromGraphEntity(this.personDetails)}</div>
         `
       : null;
 
@@ -316,12 +318,4 @@ export class MgtPerson extends MgtTemplatedComponent {
 
     return '';
   }
-}
-
-export declare interface MgtPersonDetails {
-  displayName?: string;
-  email?: string;
-  image?: string;
-  givenName?: string;
-  surname?: string;
 }
