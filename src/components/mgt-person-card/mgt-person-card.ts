@@ -1,60 +1,74 @@
-import { html, css, customElement, property } from 'lit-element';
 import * as MicrosoftGraph from '@microsoft/microsoft-graph-types';
-import { MgtTemplatedComponent } from '../templatedComponent';
+import { customElement, html, property } from 'lit-element';
 import { Providers } from '../../Providers';
 import { ProviderState } from '../../providers/IProvider';
+import { MgtTemplatedComponent } from '../templatedComponent';
 import { styles } from './mgt-person-card-css';
 
+/**
+ * Web Component used to show detailed data for a person in the
+ * Microsoft Graph
+ *
+ * @export
+ * @class MgtPersonCard
+ * @extends {MgtTemplatedComponent}
+ */
 @customElement('mgt-person-card')
 export class MgtPersonCard extends MgtTemplatedComponent {
-  @property({
-    attribute: 'my-title',
-    type: String
-  })
-  myTitle: string = 'My First Component';
-
-  // assignment to this property will re-render the component
-  @property({ attribute: false }) private _me: MicrosoftGraph.User;
-
-  attributeChangedCallback(name, oldval, newval) {
-    super.attributeChangedCallback(name, oldval, newval);
-
-    // TODO: handle when an attribute changes.
-    //
-    // Ex: load data when the name attribute changes
-    // if (name === 'person-id' && oldval !== newval){
-    //  this.loadData();
-    // }
-  }
-
-  firstUpdated() {
-    Providers.onProviderUpdated(() => this.loadData());
-    this.loadData();
-  }
-
-  private async loadData() {
-    let provider = Providers.globalProvider;
-
-    if (!provider || provider.state !== ProviderState.SignedIn) {
-      return;
-    }
-
-    // TODO: load data from the graph
-    this._me = await provider.graph.client
-      .api('/me')
-      .version('beta')
-      .get();
-    console.log(this._me);
-  }
-
+  /**
+   * Array of styles to apply to the element. The styles should be defined
+   * using the `css` tag function.
+   */
   static get styles() {
     return styles;
   }
 
-  render() {
+  // assignment to this property will re-render the component
+  @property({ attribute: false }) private _me: MicrosoftGraph.User;
+
+  /**
+   * Synchronizes property values when attributes change.
+   *
+   * @param {*} name
+   * @param {*} oldValue
+   * @param {*} newValue
+   * @memberof MgtPersonCard
+   */
+  public attributeChangedCallback(name, oldValue, newValue) {
+    super.attributeChangedCallback(name, oldValue, newValue);
+
+    // TODO: handle when an attribute changes.
+    //
+    // Ex: load data when the name attribute changes
+    // if (name === 'person-id' && oldValue !== newValue){
+    //  this.loadData();
+    // }
+  }
+
+  /**
+   * Invoked when the element is first updated. Implement to perform one time
+   * work on the element after update.
+   *
+   * Setting properties inside this method will trigger the element to update
+   * again after this update cycle completes.
+   *
+   * * @param _changedProperties Map of changed properties with old values
+   */
+  public firstUpdated() {
+    Providers.onProviderUpdated(() => this.loadData());
+    this.loadData();
+  }
+
+  /**
+   * Invoked on each update to perform rendering tasks. This method must return
+   * a lit-html TemplateResult. Setting properties inside this method will *not*
+   * trigger the element to update.
+   */
+  protected render() {
     if (this._me) {
       const user = this._me;
 
+      // tslint:disable-next-line: one-variable-per-declaration
       let phone, department, jobTitle, email, location;
 
       if (user.businessPhones && user.businessPhones.length > 0) {
@@ -92,7 +106,7 @@ export class MgtPersonCard extends MgtTemplatedComponent {
           <div class="default-view">
             <mgt-person person-query="me"></mgt-person>
             <div class="details">
-              <div class="displayname">${user.displayName}</div>
+              <div class="display-name">${user.displayName}</div>
               ${jobTitle} ${department}
               <div class="icons">
                 <svg width="25" height="16" viewBox="0 0 25 16" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -119,5 +133,20 @@ export class MgtPersonCard extends MgtTemplatedComponent {
         </div>
       `;
     }
+  }
+
+  private async loadData() {
+    const provider = Providers.globalProvider;
+
+    if (!provider || provider.state !== ProviderState.SignedIn) {
+      return;
+    }
+
+    // TODO: load data from the graph
+    this._me = await provider.graph.client
+      .api('/me')
+      .version('beta')
+      .get();
+    console.log(this._me);
   }
 }

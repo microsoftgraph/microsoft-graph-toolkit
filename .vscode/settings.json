@@ -3,5 +3,10 @@
   "editor.defaultFormatter": "esbenp.prettier-vscode",
   "editor.codeActionsOnSave": {
     "source.fixAll.tslint": true
-  }
+  },
+  "cSpell.words": [
+    "Templated",
+    "semibold",
+    "xmlns"
+  ]
 }
