@@ -10,8 +10,6 @@
 
 $avatar-size-s: var(--avatar-size-s, 24px);
 $avatar-size: var(--avatar-size, 48px);
-$avatar-font-size-s: var(--avatar-font-size--s, 16px);
-$avatar-font-size: var(--avatar-font-size, 32px);
 $avatar-border: var(--avatar-border, 0);
 $initials-color: var(--initials-color, white);
 $initials-background-color: var(--initials-background-color, #{$ms-color-magenta});
@@ -38,7 +36,7 @@ mgt-person .root {
   position: relative;
   display: flex;
   align-items: center;
-  font-family: var(--default-font-family, "Segoe UI");
+  font-family: var(--default-font-family, 'Segoe UI');
 }
 
 :host .Details,
@@ -88,10 +86,12 @@ mgt-person .user-avatar {
 :host .avatar-icon,
 mgt-person .avatar-icon {
   flex: 1 1 auto;
-  font-size: $avatar-font-size;
+  line-height: 1;
+  margin: 0;
+  font-size: $avatar-size;
 
   &.small {
-    font-size: $avatar-font-size-s;
+    font-size: $avatar-size-s;
   }
 
   &.row-span-2 {
