@@ -122,6 +122,22 @@ We encourage developers to follow the following guidance when submitting new fea
 1. Update the [documentation](https://github.com/microsoftgraph/microsoft-graph-docs/tree/master/concepts/toolkit) when necessary
 1. Follow the [accessibility guidance](https://developer.mozilla.org/en-US/docs/Web/Accessibility) for web development
 
+
+### Accessibility Guidelines
+
+New features and components should folow the following accessibility implementation guidelines:
+
+(for ease of use)
+1. Visit the following location: https://accessibilityinsights.io/en/
+2. Install the extension, and test
+
+**required**:
+- [ ] `aria-label`- meaningful text should have identifiable labels for screen readers
+- [ ] `label`- appropriate labels for custom elements (e.g. people-picker's label is input)
+- [ ] `tab-index/focus`- components that are interactive or display information should be **visibilly** navigatable by `tab` key control. Additional information in the aria label should be displayed when this feature is used.
+- [ ] `alt`- any `<img>` tag should contain `alt` text as well
+
+
 <!-- ### Testing
 
 Your changes should include tests to verify new functionality wherever possible.
