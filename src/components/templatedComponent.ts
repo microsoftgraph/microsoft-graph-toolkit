@@ -14,6 +14,15 @@ export abstract class MgtTemplatedComponent extends MgtBaseComponent {
   private _slotNamesAddedDuringRender = [];
   protected templates = {};
 
+  public templateConverters: any = {};
+
+  constructor() {
+    super();
+
+    this.templateConverters.lower = (str: string) => str.toLowerCase();
+    this.templateConverters.upper = (str: string) => str.toUpperCase();
+  }
+
   protected update(changedProperties) {
     this.templates = this.getTemplates();
     this._slotNamesAddedDuringRender = [];
@@ -79,7 +88,7 @@ export abstract class MgtTemplatedComponent extends MgtBaseComponent {
       }
     }
 
-    let templateContent = TemplateHelper.renderTemplate(this.templates[templateType], context);
+    let templateContent = TemplateHelper.renderTemplate(this.templates[templateType], context, this.templateConverters);
 
     let div = document.createElement('div');
     div.slot = slotName;
