@@ -236,7 +236,7 @@ export class MgtAgenda extends MgtTemplatedComponent {
                   <div class="group">
                     ${this.renderTemplate('header', { header: header }, 'header-' + header) ||
                       html`
-                        <div class="header">${header}</div>
+                        <div class="header" aria-label="${header}">${header}</div>
                       `}
                     ${this.renderListOfEvents(grouped[header])}
                   </div>
@@ -293,7 +293,7 @@ export class MgtAgenda extends MgtTemplatedComponent {
     return html`
       <div class="event">
         <div class="event-time-container">
-          <div class="event-time">${this.getEventTimeString(event)}</div>
+          <div class="event-time" aria-label="${this.getEventTimeString(event)}">${this.getEventTimeString(event)}</div>
         </div>
         <div class="event-details-container">
           <div class="event-subject">${event.subject}</div>
@@ -332,7 +332,7 @@ export class MgtAgenda extends MgtTemplatedComponent {
             stroke="black"
           />
         </svg>
-        <div class="event-location">${event.location.displayName}</div>
+        <div class="event-location" aria-label="${event.location.displayName}">${event.location.displayName}</div>
       </div>
     `;
   }

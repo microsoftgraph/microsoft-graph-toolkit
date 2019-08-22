@@ -189,6 +189,8 @@ export class MgtPerson extends MgtTemplatedComponent {
           <img
             class="user-avatar ${this.getImageRowSpanClass()} ${this.getImageSizeClass()}"
             title=${this.personDetails.displayName}
+            aria-label=${this.personDetails.displayName}
+            alt=${this.personDetails.displayName}
             src=${this.personDetails.image as string}
           />
         `;
@@ -197,8 +199,9 @@ export class MgtPerson extends MgtTemplatedComponent {
           <div
             class="user-avatar initials ${this.getImageRowSpanClass()} ${this.getImageSizeClass()}"
             title=${this.personDetails.displayName}
+            aria-label=${this.personDetails.displayName}
           >
-            <span class="initials-text">
+            <span class="initials-text" aria-label="${this.getInitials()}">
               ${this.getInitials()}
             </span>
           </div>
@@ -222,12 +225,12 @@ export class MgtPerson extends MgtTemplatedComponent {
 
     const nameView = this.showName
       ? html`
-          <div class="user-name">${this.personDetails.displayName}</div>
+          <div class="user-name" aria-label="${this.personDetails.displayName}">${this.personDetails.displayName}</div>
         `
       : null;
     const emailView = this.showEmail
       ? html`
-          <div class="user-email">${this.personDetails.email}</div>
+          <div class="user-email" aria-label="${this.personDetails.email}">${this.personDetails.email}</div>
         `
       : null;
 

@@ -169,12 +169,16 @@ export class MgtPicker extends MgtTemplatedComponent {
     if (event.keyCode == 40 || event.keyCode == 38) {
       //keyCodes capture: down arrow (40) and up arrow (38)
       this.handleArrowSelection(event);
-      event.preventDefault();
+      if (this._userInput.length > 0) {
+        event.preventDefault();
+      }
     }
     if (event.code == 'Tab' || event.code == 'Enter') {
+      if (this.people.length) {
+        event.preventDefault();
+      }
       this.addPerson(this.people[this.arrowSelectionCount], event);
       event.target.value = '';
-      event.preventDefault();
     }
   }
 
@@ -243,7 +247,6 @@ export class MgtPicker extends MgtTemplatedComponent {
    * @param name - user input or name of person searched
    */
   private async loadPersonSearch(name: string) {
-    console.log('here');
     if (name.length) {
       name = name.toLowerCase();
       let provider = Providers.globalProvider;
@@ -315,7 +318,9 @@ export class MgtPicker extends MgtTemplatedComponent {
   private renderErrorMessage() {
     return html`
       <div class="error-message-parent">
-        <div class="search-error-text">We didn't find any matches.</div>
+        <div label="search-error-text" aria-label="We didn't find any matches." class="search-error-text">
+          We didn't find any matches.
+        </div>
       </div>
     `;
   }
@@ -357,7 +362,7 @@ export class MgtPicker extends MgtTemplatedComponent {
       `;
     }
     return html`
-      <ul class="people-chosen-list">
+      <div class="people-chosen-list">
         ${peopleList}
         <div class="${inputClass}">
           <input
@@ -365,6 +370,9 @@ export class MgtPicker extends MgtTemplatedComponent {
             class="people-chosen-input"
             type="text"
             placeholder="Start typing a name"
+            label="people-picker-input"
+            aria-label="people-picker-input"
+            role="input"
             .value="${this._userInput}"
             @keydown="${(e: KeyboardEvent & { target: HTMLInputElement }) => {
               this.onUserKeyDown(e);
@@ -374,7 +382,7 @@ export class MgtPicker extends MgtTemplatedComponent {
             }}"
           />
         </div>
-      </ul>
+      </div>
     `;
   }
 
@@ -419,15 +427,15 @@ export class MgtPicker extends MgtTemplatedComponent {
     if (people) {
       if (people.length == 0 && this._userInput.length > 0 && this.isLoading == false) {
         return html`
-          <ul class="people-list">
+          <div class="people-list">
             ${this.renderErrorMessage()}
-          </ul>
+          </div>
         `;
       } else {
         return html`
-          <ul class="people-list">
+          <div class="people-list">
             ${this.renderPersons(people)}
-          </ul>
+          </div>
         `;
       }
     }

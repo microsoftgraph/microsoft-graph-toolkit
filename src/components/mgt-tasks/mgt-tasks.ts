@@ -561,6 +561,9 @@ export class MgtTasks extends MgtBaseComponent {
           type="text"
           placeholder="Task..."
           .value="${this._newTaskName}"
+          label="new-taskName-input"
+          aria-label="new-taskName-input"
+          role="input"
           @input="${(e: Event & { target: HTMLInputElement }) => {
             this._newTaskName = e.target.value;
           }}"
@@ -638,6 +641,9 @@ export class MgtTasks extends MgtBaseComponent {
         ${this.renderCalendarIcon()}
         <input
           type="date"
+          label="new-taskDate-input"
+          aria-label="new-taskDate-input"
+          role="input"
           .value="${this._newTaskDueDate}"
           @change="${(e: Event & { target: HTMLInputElement }) => {
             this._newTaskDueDate = e.target.value;
@@ -655,6 +661,8 @@ export class MgtTasks extends MgtBaseComponent {
                 <input
                   class="SelfAssign"
                   type="checkbox"
+                  label="self-assign-input"
+                  aria-label="self-assign-input"
                   .checked="${this._newTaskSelfAssigned}"
                   @change="${(e: Event & { target: HTMLInputElement }) => {
                     this._newTaskSelfAssigned = e.target.checked;
