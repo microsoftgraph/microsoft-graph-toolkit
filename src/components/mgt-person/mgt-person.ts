@@ -17,6 +17,30 @@ import { delay } from '../../utils/utils';
 import { MgtTemplatedComponent } from '../templatedComponent';
 import { styles } from './mgt-person-css';
 
+/**
+ * Defines how a person card is shown when a user interacts with
+ * a person component
+ *
+ * @export
+ * @enum {number}
+ */
+export enum PersonCardInteraction {
+  /**
+   * Don't show person card
+   */
+  none,
+
+  /**
+   * Show person card on hover
+   */
+  hover,
+
+  /**
+   * Show person card on click
+   */
+  click
+}
+
 @customElement('mgt-person')
 export class MgtPerson extends MgtTemplatedComponent {
   static get styles() {
@@ -57,10 +81,13 @@ export class MgtPerson extends MgtTemplatedComponent {
   public personImage: string;
 
   @property({
-    attribute: 'show-card',
-    type: Boolean
+    attribute: 'person-card',
+    converter: (value, type) => {
+      value = value.toLowerCase();
+      return PersonCardInteraction[value] || PersonCardInteraction.none;
+    }
   })
-  public showCard: false;
+  public personCardInteraction: PersonCardInteraction = PersonCardInteraction.none;
 
   @property({ attribute: false }) private _isPersonCardVisible: boolean = false;
   @property({ attribute: false }) private _personCardShouldRender: boolean = false;
@@ -92,7 +119,12 @@ export class MgtPerson extends MgtTemplatedComponent {
       `;
 
     return html`
-      <div class="root" @mouseenter=${this._handleMouseEnter} @mouseleave=${this._handleMouseLeave}>
+      <div
+        class="root"
+        @mouseenter=${this._handleMouseEnter}
+        @mouseleave=${this._handleMouseLeave}
+        @click=${this._handleMouseClick}
+      >
         ${person} ${this.renderPersonCard()}
       </div>
     `;
@@ -170,44 +202,57 @@ export class MgtPerson extends MgtTemplatedComponent {
     this.requestUpdate();
   }
 
-  // todo remove
+  private _handleMouseClick() {
+    if (this.personCardInteraction === PersonCardInteraction.click) {
+      if (!this._isPersonCardVisible) {
+        this._showPersonCard();
+      } else {
+        this._hidePersonCard();
+      }
+    }
+  }
+
   private _handleMouseEnter(e: MouseEvent) {
+    if (this.personCardInteraction !== PersonCardInteraction.hover) {
+      return;
+    }
+
     clearTimeout(this._mouseEnterTimeout);
     clearTimeout(this._mouseLeaveTimeout);
-    this._mouseEnterTimeout = setTimeout(this._showPersonCard.bind(this), 300, e);
+    this._mouseEnterTimeout = setTimeout(this._showPersonCard.bind(this), 500);
   }
 
   private _handleMouseLeave(e: MouseEvent) {
     clearTimeout(this._mouseEnterTimeout);
     clearTimeout(this._mouseLeaveTimeout);
-    this._mouseLeaveTimeout = setTimeout(this._hidePersonCard.bind(this), 500, e);
+    this._mouseLeaveTimeout = setTimeout(this._hidePersonCard.bind(this), 500);
   }
 
-  private async _showPersonCard(e: MouseEvent) {
+  private _showPersonCard() {
     if (!this._personCardShouldRender) {
       this._personCardShouldRender = true;
     }
 
     // give the person-card a chance to render so transitions work
-    await delay(200);
+    // await delay(200);
 
     this._isPersonCardVisible = true;
   }
 
-  private _hidePersonCard(e: MouseEvent) {
+  private _hidePersonCard() {
     this._isPersonCardVisible = false;
   }
 
   private renderPersonCard() {
     // ensure person card is only rendered when needed
-    if (!this.showCard || !this._personCardShouldRender) {
+    if (this.personCardInteraction === PersonCardInteraction.none || !this._personCardShouldRender) {
       return;
     }
 
     const flyoutClasses = { flyout: true, visible: this._isPersonCardVisible };
     return html`
       <div class=${classMap(flyoutClasses)}>
-        <mgt-person-card .person=></mgt-person-card>
+        <mgt-person-card .person=${this.personDetails}></mgt-person-card>
       </div>
     `;
   }
@@ -226,7 +271,7 @@ export class MgtPerson extends MgtTemplatedComponent {
 
   private renderImage() {
     if (this.personDetails) {
-      const title = !this.showCard ? this.personDetails.displayName : '';
+      const title = this.personCardInteraction === PersonCardInteraction.none ? this.personDetails.displayName : '';
 
       if (this.personImage && this.personImage !== '@') {
         return html`

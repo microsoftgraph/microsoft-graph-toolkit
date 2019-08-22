@@ -132,7 +132,7 @@ mgt-person .user-email {
 }
 
 .root .flyout {
-  display: inline-block;
+  display: none;
   position: absolute;
   z-index: 1;
   opacity: 0;
@@ -142,5 +142,6 @@ mgt-person .user-email {
 }
 
 .root .flyout.visible {
+  display: inline-block;
   opacity: 1;
 }
