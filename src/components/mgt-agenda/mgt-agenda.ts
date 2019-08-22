@@ -56,6 +56,18 @@ export class MgtAgenda extends MgtTemplatedComponent {
   })
   eventQuery: string;
 
+  @property({
+    attribute: 'show-max',
+    type: Number
+  })
+  showMax: number;
+
+  @property({
+    attribute: 'group-id',
+    type: String
+  })
+  groupId: string;
+
   static get styles() {
     return styles;
   }
@@ -83,7 +95,7 @@ export class MgtAgenda extends MgtTemplatedComponent {
   }
 
   attributeChangedCallback(name, oldValue, newValue) {
-    if (name === 'date' || name === 'days') {
+    if (oldValue !== newValue && (name === 'date' || name === 'days' || name === 'group-id')) {
       this.events = null;
       this.loadData();
     }
@@ -136,7 +148,11 @@ export class MgtAgenda extends MgtTemplatedComponent {
         let end = new Date();
         end.setHours(0, 0, 0, 0);
         end.setDate(start.getDate() + this.days);
-        this.events = await p.graph.getEvents(start, end);
+        try {
+          this.events = await p.graph.getEvents(start, end, this.groupId);
+        } catch (error) {
+          // noop - possible error with graph
+        }
       }
       this._loading = false;
     } else if (p && p.state === ProviderState.Loading) {
@@ -161,17 +177,19 @@ export class MgtAgenda extends MgtTemplatedComponent {
     }
 
     if (this.events) {
-      let renderedTemplate = this.renderTemplate('default', { events: this.events });
+      let events = this.showMax && this.showMax > 0 ? this.events.slice(0, this.showMax) : this.events;
+
+      let renderedTemplate = this.renderTemplate('default', { events: events });
       if (renderedTemplate) {
         return renderedTemplate;
       }
 
       if (this.groupByDay) {
         let grouped = {};
-        for (let i = 0; i < this.events.length; i++) {
-          let header = this.getDateHeaderFromDateTimeString(this.events[i].start.dateTime);
+        for (let i = 0; i < events.length; i++) {
+          let header = this.getDateHeaderFromDateTimeString(events[i].start.dateTime);
           grouped[header] = grouped[header] || [];
-          grouped[header].push(this.events[i]);
+          grouped[header].push(events[i]);
         }
 
         return html`
@@ -182,7 +200,7 @@ export class MgtAgenda extends MgtTemplatedComponent {
                   <div class="group">
                     ${this.renderTemplate('header', { header: header }, 'header-' + header) ||
                       html`
-                        <div class="header">${header}</div>
+                        <div class="header" aria-label="${header}">${header}</div>
                       `}
                     ${this.renderListOfEvents(grouped[header])}
                   </div>
@@ -192,7 +210,7 @@ export class MgtAgenda extends MgtTemplatedComponent {
         `;
       }
 
-      return this.renderListOfEvents(this.events);
+      return this.renderListOfEvents(events);
     } else {
       return this.renderTemplate('no-data', null) || html``;
     }
@@ -239,7 +257,7 @@ export class MgtAgenda extends MgtTemplatedComponent {
     return html`
       <div class="event">
         <div class="event-time-container">
-          <div class="event-time">${this.getEventTimeString(event)}</div>
+          <div class="event-time" aria-label="${this.getEventTimeString(event)}">${this.getEventTimeString(event)}</div>
         </div>
         <div class="event-details-container">
           <div class="event-subject">${event.subject}</div>
@@ -278,7 +296,7 @@ export class MgtAgenda extends MgtTemplatedComponent {
             stroke="black"
           />
         </svg>
-        <div class="event-location">${event.location.displayName}</div>
+        <div class="event-location" aria-label="${event.location.displayName}">${event.location.displayName}</div>
       </div>
     `;
   }
@@ -290,14 +308,13 @@ export class MgtAgenda extends MgtTemplatedComponent {
     return html`
       <mgt-people
         class="event-attendees"
-        people=${JSON.stringify(
-          event.attendees.map(
-            attendee =>
-              <MgtPersonDetails>{
-                displayName: attendee.emailAddress.name,
-                email: attendee.emailAddress.address
-              }
-          )
+        .people=${event.attendees.map(
+          attendee =>
+            <MgtPersonDetails>{
+              displayName: attendee.emailAddress.name,
+              email: attendee.emailAddress.address,
+              image: '@'
+            }
         )}
       ></mgt-people>
     `;

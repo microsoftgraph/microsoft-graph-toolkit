@@ -105,36 +105,37 @@ export class MsalProvider extends IProvider {
 
   async getAccessToken(options: AuthenticationProviderOptions): Promise<string> {
     let scopes = options ? options.scopes || this.scopes : this.scopes;
-    let accessToken: string;
     let accessTokenRequest: AuthenticationParameters = {
       scopes: scopes
     };
     try {
       let response = await this._userAgentApplication.acquireTokenSilent(accessTokenRequest);
-      accessToken = response.accessToken;
+      return response.accessToken;
     } catch (e) {
-      console.log(e);
       if (this.requiresInteraction(e)) {
         if (this._loginType == LoginType.Redirect) {
           // check if the user denied the scope before
           if (!this.areScopesDenied(scopes)) {
             this.setRequestedScopes(scopes);
             this._userAgentApplication.acquireTokenRedirect(accessTokenRequest);
+          } else {
+            throw e;
           }
         } else {
           try {
             let response = await this._userAgentApplication.acquireTokenPopup(accessTokenRequest);
-            accessToken = response.accessToken;
+            return response.accessToken;
           } catch (e) {
-            console.log('getaccesstoken catch2 : ' + e);
+            throw e;
           }
         }
       } else {
         // if we don't know what the error is, just ask the user to sign in again
         this.setState(ProviderState.SignedOut);
+        throw e;
       }
     }
-    return accessToken;
+    throw null;
   }
 
   updateScopes(scopes: string[]) {
@@ -161,7 +162,7 @@ export class MsalProvider extends IProvider {
   }
 
   private errorReceivedCallback(authError: AuthError, accountState: string) {
-    console.log('authError: ' + authError + ' accountState ' + accountState);
+    // console.log('authError: ' + authError + ' accountState ' + accountState);
     let requestedScopes = this.getRequestedScopes();
     if (requestedScopes) {
       this.addDeniedScopes(requestedScopes);

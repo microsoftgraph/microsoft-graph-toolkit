@@ -8,7 +8,7 @@
 import * as MicrosoftGraph from '@microsoft/microsoft-graph-types';
 import { IProvider, ProviderState } from '../providers/IProvider';
 import { Graph } from '../Graph';
-import { Client } from '@microsoft/microsoft-graph-client/lib/es/Client';
+import { Client } from '@microsoft/microsoft-graph-client';
 
 export class MockProvider extends IProvider {
   constructor(signedIn: boolean = false) {
