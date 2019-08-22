@@ -132,10 +132,44 @@ New features and components should folow the following accessibility implementat
 2. Install the extension, and test
 
 **required**:
-- [ ] `aria-label`- meaningful text should have identifiable labels for screen readers
-- [ ] `label`- appropriate labels for custom elements (e.g. people-picker's label is input)
-- [ ] `tab-index/focus`- components that are interactive or display information should be **visibilly** navigatable by `tab` key control. Additional information in the aria label should be displayed when this feature is used.
-- [ ] `alt`- any `<img>` tag should contain `alt` text as well
+- [ ] `aria-label` | *string*: "Login Button", "Megan Bowen" | - meaningful text should have identifiable labels for screen readers
+  
+*example (mgt-login):*
+
+```html
+    <button 
+        class="popup-command"
+        @click=${this.logout} 
+        aria-label="Sign Out">       
+        Sign Out
+    </button>
+```
+
+- [ ] `tab-index/focus` | *string*: "0", "-1" | - components that are interactive or display information should be **visibilly** navigatable by `tab` key control. Additional information in the aria label should be displayed when this feature is used.
+
+*example (mgt-people):*
+
+```html
+<mgt-person tabindex="0" ></mgt-person>
+```
+```css
+mgt-person:focus{
+    border-color: blue;
+}
+```
+
+- [ ] `alt` | *string*: "person icon" | - any `<img>` tag should contain `alt` text as well
+
+*example (mgt-person):*
+
+```html
+    <img
+        title=${this.personDetails.displayName}
+        aria-label=${this.personDetails.displayName}
+        alt=${this.personDetails.displayName}
+        src=${this.personDetails.image as string}
+    />
+```
 
 
 <!-- ### Testing
