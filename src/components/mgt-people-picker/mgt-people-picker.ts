@@ -6,6 +6,7 @@
  */
 
 import { LitElement, html, customElement, property } from 'lit-element';
+import { repeat } from 'lit-html/directives/repeat';
 import * as MicrosoftGraph from '@microsoft/microsoft-graph-types';
 
 import { Providers } from '../../Providers';
@@ -214,12 +215,6 @@ export class MgtPeoplePicker extends MgtTemplatedComponent {
           });
         }
 
-        for (let person of people) {
-          // set image to @ to flag the mgt-person component to
-          // query the image from the graph
-          person.image = '@';
-        }
-
         this.people = this.filterPeople(people);
         this.isLoading = false;
       }
@@ -356,7 +351,21 @@ export class MgtPeoplePicker extends MgtTemplatedComponent {
 
   private renderPeopleList() {
     let people: any = this.people;
+
     if (people) {
+      for (let person of people) {
+        //discover if localstorage has image for person already
+        if (person.image !== '@' && person.image !== undefined && person.image !== null) {
+          window.localStorage.setItem(person.id, person.image);
+        }
+        if (person.image === undefined) {
+          person.image = window.localStorage.getItem(person.id);
+        } else {
+          // set image to @ to flag the mgt-person component to
+          // query the image from the graph
+          person.image = '@';
+        }
+      }
       if (people.length == 0 && this._userInput.length > 0 && this.isLoading == false) {
         return html`
           <ul class="people-list">
@@ -377,9 +386,11 @@ export class MgtPeoplePicker extends MgtTemplatedComponent {
   }
 
   private renderPersons(people: Array<any>) {
-    return people.slice(0, this.showMax).map(
-      person =>
-        html`
+    return html`
+      ${repeat(
+        people,
+        person => person.id,
+        person => html`
           <li
             class="${person.isSelected == 'fill' ? 'people-person-list-fill' : 'people-person-list'}"
             @click="${(event: any) => this.addPerson(person, event)}"
@@ -391,7 +402,8 @@ export class MgtPeoplePicker extends MgtTemplatedComponent {
             </div>
           </li>
         `
-    );
+      )}
+    `;
   }
 
   render() {
