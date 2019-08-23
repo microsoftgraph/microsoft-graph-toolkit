@@ -226,7 +226,7 @@ export class MgtLogin extends MgtBaseComponent {
 
     return html`
       <div class="root">
-        <button ?disabled="${this._loading}" class="login-button" @click=${this.onClick}>
+        <button ?disabled="${this._loading}" class="login-button" @click=${this.onClick} role="button">
           ${content}
         </button>
         ${this.renderMenu()}
@@ -237,7 +237,7 @@ export class MgtLogin extends MgtBaseComponent {
   renderLogIn() {
     return html`
       <i class="login-icon ms-Icon ms-Icon--Contact"></i>
-      <span>
+      <span aria-label="Sign In">
         Sign In
       </span>
     `;
@@ -271,7 +271,7 @@ export class MgtLogin extends MgtBaseComponent {
           <div class="popup-commands">
             <ul>
               <li>
-                <button class="popup-command" @click=${this.logout}>
+                <button class="popup-command" @click=${this.logout} aria-label="Sign Out">
                   Sign Out
                 </button>
               </li>
