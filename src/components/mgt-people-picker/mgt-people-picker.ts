@@ -17,11 +17,17 @@ import '../../styles/fabric-icon-font';
 import { MgtTemplatedComponent } from '../templatedComponent';
 import { MgtPersonDetails, MgtPerson } from '../mgt-person/mgt-person';
 import { debounce } from '../../utils/utils';
-
+/**
+ * Web component used to search for people from the Microsoft Graph
+ *
+ * @export
+ * @class MgtPicker
+ * @extends {MgtTemplatedComponent}
+ */
 @customElement('mgt-people-picker')
 export class MgtPicker extends MgtTemplatedComponent {
   /**
-   * people property, containing object of MgtPersonDetails.
+   * containing object of MgtPersonDetails.
    * @type {MgtPersonDetails}
    */
   @property({
@@ -31,7 +37,7 @@ export class MgtPicker extends MgtTemplatedComponent {
   people: Array<MgtPersonDetails> = null;
 
   /**
-   * show-max property, determining how many people to show in list.
+   * determining how many people to show in list.
    * @type {number}
    */
   @property({
@@ -41,7 +47,7 @@ export class MgtPicker extends MgtTemplatedComponent {
   showMax: number = 6;
 
   /**
-   * group-id property, value determining if search is filtered to a group.
+   * value determining if search is filtered to a group.
    * @type {string}
    */
   @property({
@@ -51,39 +57,16 @@ export class MgtPicker extends MgtTemplatedComponent {
   groupId: string;
 
   /**
-   * _selectedPeople property, array of user picked people.
+   *  array of user picked people.
    * @type {Array<any>}
    */
   @property() public _selectedPeople: Array<any> = [];
 
-  /**
-   * _duplicatePersonId property, value checking if user has already selected person's id.
-   * @type {string}
-   */
   @property() private _duplicatePersonId: string = '';
 
-  /**
-   * _userInput property, containing the current input value of search box.
-   * @type {string}
-   */
   @property() private _userInput: string = '';
-
-  /**
-   * arrowSelectionCount property, current highlighted value of person in search area.
-   * @type {number}
-   */
   private arrowSelectionCount: number = 0;
-
-  /**
-   * groupPeople property, contains people in specific group
-   * @type {any[]}
-   */
   private groupPeople: any[];
-
-  /**
-   * isLoading property, determines if search is still loading people details
-   * @type {boolean}
-   */
   private isLoading: boolean = false;
 
   /**
@@ -96,6 +79,15 @@ export class MgtPicker extends MgtTemplatedComponent {
       this.loadPersonSearch(this._userInput);
     }, 300)
   );
+
+  /**
+   * Synchronizes property values when attributes change.
+   *
+   * @param {*} name
+   * @param {*} oldValue
+   * @param {*} newValue
+   * @memberof MgtPersonCard
+   */
 
   attributeChangedCallback(att, oldval, newval) {
     super.attributeChangedCallback(att, oldval, newval);
