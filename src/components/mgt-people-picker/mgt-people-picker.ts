@@ -357,19 +357,6 @@ export class MgtPeoplePicker extends MgtTemplatedComponent {
     let people: any = this.people;
 
     if (people) {
-      for (let person of people) {
-        //discover if localstorage has image for person already
-        if (person.image !== '@' && person.image !== undefined && person.image !== null) {
-          window.localStorage.setItem(person.id, person.image);
-        }
-        if (person.image === undefined) {
-          person.image = window.localStorage.getItem(person.id);
-        } else {
-          // set image to @ to flag the mgt-person component to
-          // query the image from the graph
-          person.image = '@';
-        }
-      }
       if (people.length == 0 && this._userInput.length > 0 && this.isLoading == false) {
         return html`
           <ul class="people-list">
@@ -390,6 +377,22 @@ export class MgtPeoplePicker extends MgtTemplatedComponent {
   }
 
   private renderPersons(people: Array<any>) {
+    for (let person of people) {
+      //discover if localstorage has image for person already
+      if (window.localStorage) {
+        if (person.image !== '@' && person.image !== undefined && person.image !== null) {
+          window.localStorage.setItem(person.id, person.image);
+        }
+        if (person.image === null || person.image === undefined) {
+          person.image = window.localStorage.getItem(person.id);
+        }
+        if (window.localStorage.getItem(person.id) === null || window.localStorage.getItem(person.id) === undefined) {
+          person.image = '@';
+        }
+      } else {
+        person.image = '@';
+      }
+    }
     return html`
       ${repeat(
         people,
