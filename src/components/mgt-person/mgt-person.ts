@@ -13,11 +13,17 @@ import { styles } from './mgt-person-css';
 import '../../styles/fabric-icon-font';
 import { ProviderState } from '../../providers/IProvider';
 import { MgtTemplatedComponent } from '../templatedComponent';
-
+/**
+ * The person component is used to display a person or contact by using their photo, name, and/or email address.
+ *
+ * @export
+ * @class MgtPerson
+ * @extends {MgtTemplatedComponent}
+ */
 @customElement('mgt-person')
 export class MgtPerson extends MgtTemplatedComponent {
   /**
-   * person-query property, allows developer to define name of person for component
+   * allows developer to define name of person for component
    * @type {string}
    */
   @property({
@@ -26,7 +32,7 @@ export class MgtPerson extends MgtTemplatedComponent {
   personQuery: string;
 
   /**
-   * user-id property, allows developer to use id value to determine person
+   * user-id property allows developer to use id value to determine person
    * @type {string}
    */
   @property({
@@ -35,7 +41,7 @@ export class MgtPerson extends MgtTemplatedComponent {
   userId: string;
 
   /**
-   * show-name property, determines if person component renders user-name
+   * determines if person component renders user-name
    * @type {boolean}
    */
   @property({
@@ -45,7 +51,7 @@ export class MgtPerson extends MgtTemplatedComponent {
   showName: false;
 
   /**
-   * show-email property, determines if person component renders email
+   * determines if person component renders email
    * @type {boolean}
    */
   @property({
@@ -55,7 +61,7 @@ export class MgtPerson extends MgtTemplatedComponent {
   showEmail: false;
 
   /**
-   * person-details property, object containing Graph details on person
+   * object containing Graph details on person
    * @type {MgtPersonDetails}
    */
   @property({
@@ -64,6 +70,14 @@ export class MgtPerson extends MgtTemplatedComponent {
   })
   personDetails: MgtPersonDetails;
 
+  /**
+   * Synchronizes property values when attributes change.
+   *
+   * @param {*} name
+   * @param {*} oldValue
+   * @param {*} newValue
+   * @memberof MgtPerson
+   */
   attributeChangedCallback(name, oldval, newval) {
     super.attributeChangedCallback(name, oldval, newval);
 
@@ -73,9 +87,23 @@ export class MgtPerson extends MgtTemplatedComponent {
     }
   }
 
+  /**
+   * Array of styles to apply to the element. The styles should be defined
+   * user the `css` tag function.
+   */
   static get styles() {
     return styles;
   }
+
+  /**
+   * Invoked when the element is first updated. Implement to perform one time
+   * work on the element after update.
+   *
+   * Setting properties inside this method will trigger the element to update
+   * again after this update cycle completes.
+   *
+   * * @param _changedProperties Map of changed properties with old values
+   */
 
   firstUpdated() {
     Providers.onProviderUpdated(() => this.loadData());
@@ -158,6 +186,16 @@ export class MgtPerson extends MgtTemplatedComponent {
     }
     this.requestUpdate();
   }
+
+  /**
+   * Invoked when the element is first updated. Implement to perform one time
+   * work on the element after update.
+   *
+   * Setting properties inside this method will trigger the element to update
+   * again after this update cycle completes.
+   *
+   * * @param _changedProperties Map of changed properties with old values
+   */
 
   render() {
     return (
