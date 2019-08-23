@@ -36,30 +36,38 @@ export class TeamsProvider extends MsalProvider {
     return !!(TeamsProvider.microsoftTeamsLib || microsoftTeams);
   }
 
-  public static handleAuth() {
+  public static async handleAuth() {
+    // we are in popup world now - authenticate and handle it
     if (!this.isAvailable) {
       console.error('Make sure you have referenced the Microsoft Teams sdk before using the TeamsProvider');
       return;
     }
 
-    microsoftTeams.initialize();
+    const teams = TeamsProvider.microsoftTeamsLib || microsoftTeams;
+    teams.initialize();
 
-    // we are in popup world now - authenticate and handle it
+    // msal checks for the window.opener.msal to check if this is a popup authentication
+    // and gets a false positive since teams opens a popup for the authentication.
+    // in reality, we are doing a redirect authentication and need to act as if this is the
+    // window initiating the authentication
+    if (window.opener) {
+      window.opener.msal = null;
+    }
 
     const url = new URL(window.location.href);
 
     let clientId = sessionStorage.getItem(this._sessionStorageClientIdKey);
     let scopesStr = sessionStorage.getItem(this._sessionStorageScopesKey);
-
-    const teams = TeamsProvider.microsoftTeamsLib || microsoftTeams;
-    teams.initialize();
+    let loginHint = sessionStorage.getItem(this._sessionStorageLoginHint);
 
     if (!clientId) {
       clientId = url.searchParams.get('clientId');
       scopesStr = url.searchParams.get('scopes');
+      loginHint = url.searchParams.get('loginHint');
 
       sessionStorage.setItem(this._sessionStorageClientIdKey, clientId);
       sessionStorage.setItem(this._sessionStorageScopesKey, scopesStr);
+      sessionStorage.setItem(this._sessionStorageLoginHint, loginHint);
     }
 
     if (!clientId) {
@@ -67,18 +75,23 @@ export class TeamsProvider extends MsalProvider {
       return;
     }
 
+    const scopes = scopesStr ? scopesStr.split(',') : null;
+
     const provider = new MsalProvider({
       clientId,
-      scopes: scopesStr ? scopesStr.split(',') : null,
+      scopes,
       options: {
         auth: {
           clientId,
           redirectUri: url.protocol + '//' + url.host + url.pathname
+        },
+        system: {
+          loadFrameTimeout: 10000
         }
       }
     });
 
-    if (UserAgentApplication.prototype.isCallback(window.location.hash)) {
+    if ((UserAgentApplication.prototype as any).urlContainsHash(window.location.hash)) {
       // the page should redirect again
       return;
     }
@@ -87,16 +100,21 @@ export class TeamsProvider extends MsalProvider {
       // how do we handle when user can't sign in
       // change to promise and return status
       if (provider.state === ProviderState.SignedOut) {
-        provider.login();
+        provider.login({
+          loginHint,
+          scopes: scopes || provider.scopes
+        });
       } else if (provider.state === ProviderState.SignedIn) {
         try {
           const accessToken = await provider.getAccessTokenForScopes(...provider.scopes);
           sessionStorage.removeItem(this._sessionStorageClientIdKey);
           sessionStorage.removeItem(this._sessionStorageScopesKey);
+          sessionStorage.removeItem(this._sessionStorageLoginHint);
           teams.authentication.notifySuccess(accessToken);
         } catch (e) {
           sessionStorage.removeItem(this._sessionStorageClientIdKey);
           sessionStorage.removeItem(this._sessionStorageScopesKey);
+          sessionStorage.removeItem(this._sessionStorageLoginHint);
           teams.authentication.notifyFailure(e);
         }
       }
@@ -109,6 +127,7 @@ export class TeamsProvider extends MsalProvider {
   private static _sessionStorageTokenKey = 'mgt-teamsprovider-accesstoken';
   private static _sessionStorageClientIdKey = 'msg-teamsprovider-clientId';
   private static _sessionStorageScopesKey = 'msg-teamsprovider-scopesstr';
+  private static _sessionStorageLoginHint = 'msg-teamsprovider-loginHint';
   private static _sessionStorageGrantedScopes = 'msg=teamsprovider-approved-scopes';
   private _authPopupUrl: string;
   private _accessToken: string;
@@ -141,6 +160,10 @@ export class TeamsProvider extends MsalProvider {
       teams.getContext(context => {
         const url = new URL(this._authPopupUrl, new URL(window.location.href));
         url.searchParams.append('clientId', this.clientId);
+
+        if (context.loginHint) {
+          url.searchParams.append('loginHint', context.loginHint);
+        }
 
         if (this.scopes) {
           url.searchParams.append('scopes', this.scopes.join(','));
