@@ -12,6 +12,12 @@ import { MsalConfig, MsalProvider } from './MsalProvider';
 
 declare var microsoftTeams: any;
 
+declare global {
+  interface Window {
+    nativeInterface: any;
+  }
+}
+
 export interface TeamsConfig {
   clientId: string;
   authPopupUrl: string;
@@ -22,8 +28,13 @@ export interface TeamsConfig {
 export class TeamsProvider extends MsalProvider {
   private set accessToken(value: string) {
     this._accessToken = value;
-    sessionStorage.setItem(TeamsProvider._sessionStorageTokenKey, value);
-    this.setState(value ? ProviderState.SignedIn : ProviderState.SignedOut);
+    if (value) {
+      sessionStorage.setItem(TeamsProvider._sessionStorageTokenKey, value);
+      this.setState(ProviderState.SignedIn);
+    } else {
+      sessionStorage.removeItem(TeamsProvider._sessionStorageTokenKey);
+      this.setState(ProviderState.SignedOut);
+    }
   }
 
   private get accessToken() {
@@ -32,9 +43,43 @@ export class TeamsProvider extends MsalProvider {
 
   public static microsoftTeamsLib;
 
-  public static async isAvailable() {
-    return !!(TeamsProvider.microsoftTeamsLib || microsoftTeams);
+  public static async isAvailable(): Promise<boolean> {
+    return new Promise((resolve, reject) => {
+      if (window.parent === window.self && window.nativeInterface) {
+        // In Teams mobile client
+        resolve(true);
+      } else if (window.name === 'embedded-page-container' || window.name === 'extension-tab-frame') {
+        // In Teams web/desktop client
+        resolve(true);
+      } else {
+        // Last ditch effort to see if parent responds to initialize
+        const t = setTimeout(() => {
+          resolve(false);
+        }, 1000);
+        const teams = TeamsProvider.microsoftTeamsLib || microsoftTeams;
+        if (teams) {
+          teams.initialize(() => {
+            clearTimeout(t);
+            resolve(true);
+          });
+        } else {
+          resolve(false);
+        }
+      }
+    });
   }
+
+  // public static isAvailable() {
+  //   if (window.parent === window.self && window.nativeInterface) {
+  //     // In Teams mobile client
+  //     return true;
+  //   } else if (window.name === 'embedded-page-container' || window.name === 'extension-tab-frame') {
+  //     // In Teams web/desktop client
+  //     return true;
+  //   } else {
+  //     return false;
+  //   }
+  // }
 
   public static async handleAuth() {
     // we are in popup world now - authenticate and handle it
@@ -141,10 +186,6 @@ export class TeamsProvider extends MsalProvider {
       options: config.msalOptions
     });
 
-    if (!TeamsProvider.isAvailable) {
-      console.error('Make sure you have referenced the Microsoft Teams sdk before using the TeamsProvider');
-      return;
-    }
     const teams = TeamsProvider.microsoftTeamsLib || microsoftTeams;
 
     this._authPopupUrl = config.authPopupUrl;
@@ -185,6 +226,10 @@ export class TeamsProvider extends MsalProvider {
   }
 
   public async getAccessToken(options: AuthenticationProviderOptions): Promise<string> {
-    return this.accessToken;
+    if (!this.accessToken) {
+      throw null;
+    } else {
+      return this.accessToken;
+    }
   }
 }
