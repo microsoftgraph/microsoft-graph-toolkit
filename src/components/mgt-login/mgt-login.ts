@@ -16,27 +16,41 @@ import { styles } from './mgt-login-css';
 import { MgtPersonDetails } from '../mgt-person/mgt-person';
 import '../mgt-person/mgt-person';
 import '../../styles/fabric-icon-font';
-
+/**
+ *
+ *
+ * @export
+ * @class MgtLogin
+ * @extends {MgtBaseComponent}
+ */
 @customElement('mgt-login')
 export class MgtLogin extends MgtBaseComponent {
+  /**
+   * Array of styles to apply to the element. The styles should be defined
+   * using the `css` tag function.
+   */
+  static get styles() {
+    return styles;
+  }
+
   private _loginButtonRect: ClientRect;
   private _popupRect: ClientRect;
   private _openLeft: boolean = false;
 
   /**
-   * _showMenu property, determines if login menu popup should be showing
+   * determines if login menu popup should be showing
    * @type {boolean}
    */
   @property({ attribute: false }) private _showMenu: boolean = false;
 
   /**
-   * loading property, determines if login component is in loading state
+   * determines if login component is in loading state
    * @type {boolean}
    */
   @property({ attribute: false }) private _loading: boolean = true;
 
   /**
-   * user-details property, allows developer to use specific user details for login
+   * allows developer to use specific user details for login
    * @type {MgtPersonDetails}
    */
   @property({
@@ -44,10 +58,6 @@ export class MgtLogin extends MgtBaseComponent {
     type: Object
   })
   userDetails: MgtPersonDetails;
-
-  static get styles() {
-    return styles;
-  }
 
   constructor() {
     super();
@@ -94,6 +104,16 @@ export class MgtLogin extends MgtBaseComponent {
       }
     }
   }
+
+  /**
+   * Invoked when the element is first updated. Implement to perform one time
+   * work on the element after update.
+   *
+   * Setting properties inside this method will trigger the element to update
+   * again after this update cycle completes.
+   *
+   * * @param _changedProperties Map of changed properties with old values
+   */
 
   firstUpdated() {
     window.addEventListener('click', (event: MouseEvent) => {
@@ -196,6 +216,11 @@ export class MgtLogin extends MgtBaseComponent {
     this._showMenu = false;
   }
 
+  /**
+   * Invoked on each update to perform rendering tasks. This method must return
+   * a lit-html TemplateResult. Setting properties inside this method will *not*
+   * trigger the element to update.
+   */
   render() {
     const content = this.userDetails ? this.renderLoggedIn() : this.renderLogIn();
 
