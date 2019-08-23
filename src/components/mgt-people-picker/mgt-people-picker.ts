@@ -199,7 +199,11 @@ export class MgtPeoplePicker extends MgtTemplatedComponent {
       let people: any;
 
       if (provider && provider.state === ProviderState.SignedIn) {
-        this.isLoading = true;
+        let that = this;
+        setTimeout(function() {
+          that.isLoading = true;
+        }, 400);
+
         let client = Providers.globalProvider.graph;
 
         //filtering groups
