@@ -83,7 +83,7 @@ export class MsalProvider extends IProvider {
       return response.accessToken;
     } catch (e) {
       if (this.requiresInteraction(e)) {
-        if (this._loginType == LoginType.Redirect) {
+        if (this._loginType === LoginType.Redirect) {
           // check if the user denied the scope before
           if (!this.areScopesDenied(scopes)) {
             this.setRequestedScopes(scopes);

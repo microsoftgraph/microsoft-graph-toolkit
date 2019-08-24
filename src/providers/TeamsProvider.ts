@@ -52,19 +52,19 @@ export class TeamsProvider extends MsalProvider {
         // In Teams web/desktop client
         resolve(true);
       } else {
-        // Last ditch effort to see if parent responds to initialize
-        const t = setTimeout(() => {
-          resolve(false);
-        }, 1000);
-        const teams = TeamsProvider.microsoftTeamsLib || microsoftTeams;
-        if (teams) {
-          teams.initialize(() => {
-            clearTimeout(t);
-            resolve(true);
-          });
-        } else {
-          resolve(false);
-        }
+        // // Last ditch effort to see if parent responds to initialize
+        // const t = setTimeout(() => {
+        //   resolve(false);
+        // }, 1000);
+        // const teams = TeamsProvider.microsoftTeamsLib || microsoftTeams;
+        // if (teams) {
+        //   teams.initialize(() => {
+        //     clearTimeout(t);
+        //     resolve(true);
+        //   });
+        // } else {
+        resolve(false);
+        // }
       }
     });
   }
