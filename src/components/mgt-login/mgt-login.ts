@@ -17,7 +17,7 @@ import { MgtPersonDetails } from '../mgt-person/mgt-person';
 import '../mgt-person/mgt-person';
 import '../../styles/fabric-icon-font';
 /**
- *
+ * Web component button and flyout control to facilitate Microsoft identity platform authentication
  *
  * @export
  * @class MgtLogin
