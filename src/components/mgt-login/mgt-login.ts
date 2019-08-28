@@ -14,24 +14,48 @@ import { MgtBaseComponent } from '../baseComponent';
 import '../mgt-person/mgt-person';
 import { styles } from './mgt-login-css';
 
+/**
+ * Web component button and flyout control to facilitate Microsoft identity platform authentication
+ *
+ * @export
+ * @class MgtLogin
+ * @extends {MgtBaseComponent}
+ */
 @customElement('mgt-login')
 export class MgtLogin extends MgtBaseComponent {
+  /**
+   * Array of styles to apply to the element. The styles should be defined
+   * using the `css` tag function.
+   */
   static get styles() {
     return styles;
   }
 
+  /**
+   * allows developer to use specific user details for login
+   * @type {MgtPersonDetails}
+   */
   @property({
     attribute: 'user-details',
     type: Object
   })
   public userDetails: User;
 
-  private _image: string;
   private _loginButtonRect: ClientRect;
   private _popupRect: ClientRect;
   private _openLeft: boolean = false;
+  private _image: string;
 
+  /**
+   * determines if login menu popup should be showing
+   * @type {boolean}
+   */
   @property({ attribute: false }) private _showMenu: boolean = false;
+
+  /**
+   * determines if login component is in loading state
+   * @type {boolean}
+   */
   @property({ attribute: false }) private _loading: boolean = true;
 
   constructor() {
@@ -80,17 +104,6 @@ export class MgtLogin extends MgtBaseComponent {
     }
   }
 
-  public firstUpdated() {
-    window.addEventListener('click', (event: MouseEvent) => {
-      // get popup bounds
-      const popup = this.renderRoot.querySelector('.popup');
-      if (popup) {
-        this._popupRect = popup.getBoundingClientRect();
-        this._showMenu = false;
-      }
-    });
-  }
-
   public async login() {
     if (this.userDetails) {
       return;
@@ -130,12 +143,37 @@ export class MgtLogin extends MgtBaseComponent {
     this._showMenu = false;
   }
 
-  public render() {
+  /**
+   * Invoked when the element is first updated. Implement to perform one time
+   * work on the element after update.
+   *
+   * Setting properties inside this method will trigger the element to update
+   * again after this update cycle completes.
+   *
+   * * @param _changedProperties Map of changed properties with old values
+   */
+  protected firstUpdated() {
+    window.addEventListener('click', (event: MouseEvent) => {
+      // get popup bounds
+      const popup = this.renderRoot.querySelector('.popup');
+      if (popup) {
+        this._popupRect = popup.getBoundingClientRect();
+        this._showMenu = false;
+      }
+    });
+  }
+
+  /**
+   * Invoked on each update to perform rendering tasks. This method must return
+   * a lit-html TemplateResult. Setting properties inside this method will *not*
+   * trigger the element to update.
+   */
+  protected render() {
     const content = this.userDetails ? this.renderLoggedIn() : this.renderLogIn();
 
     return html`
       <div class="root">
-        <button ?disabled="${this._loading}" class="login-button" @click=${this.onClick}>
+        <button ?disabled="${this._loading}" class="login-button" @click=${this.onClick} role="button">
           ${content}
         </button>
         ${this.renderMenu()}
@@ -143,16 +181,16 @@ export class MgtLogin extends MgtBaseComponent {
     `;
   }
 
-  public renderLogIn() {
+  private renderLogIn() {
     return html`
       <i class="login-icon ms-Icon ms-Icon--Contact"></i>
-      <span>
+      <span aria-label="Sign In">
         Sign In
       </span>
     `;
   }
 
-  public renderLoggedIn() {
+  private renderLoggedIn() {
     if (this.userDetails) {
       return html`
         <mgt-person .personDetails=${this.userDetails} .personImage=${this._image} show-name />
@@ -162,7 +200,7 @@ export class MgtLogin extends MgtBaseComponent {
     }
   }
 
-  public renderMenu() {
+  private renderMenu() {
     if (!this.userDetails) {
       return;
     }
@@ -180,7 +218,7 @@ export class MgtLogin extends MgtBaseComponent {
           <div class="popup-commands">
             <ul>
               <li>
-                <button class="popup-command" @click=${this.logout}>
+                <button class="popup-command" @click=${this.logout} aria-label="Sign Out">
                   Sign Out
                 </button>
               </li>

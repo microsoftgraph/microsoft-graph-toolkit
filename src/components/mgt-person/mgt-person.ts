@@ -7,7 +7,6 @@
 
 import * as MicrosoftGraph from '@microsoft/microsoft-graph-types';
 import { customElement, html, property } from 'lit-element';
-
 import { classMap } from 'lit-html/directives/class-map';
 import { Providers } from '../../Providers';
 import { ProviderState } from '../../providers/IProvider';
@@ -41,33 +40,57 @@ export enum PersonCardInteraction {
   click
 }
 
+/**
+ * The person component is used to display a person or contact by using their photo, name, and/or email address.
+ *
+ * @export
+ * @class MgtPerson
+ * @extends {MgtTemplatedComponent}
+ */
 @customElement('mgt-person')
 export class MgtPerson extends MgtTemplatedComponent {
-  static get styles() {
-    return styles;
-  }
+  /**
+   * allows developer to define name of person for component
+   * @type {string}
+   */
   @property({
     attribute: 'person-query'
   })
   public personQuery: string;
 
+  /**
+   * user-id property allows developer to use id value to determine person
+   * @type {string}
+   */
   @property({
     attribute: 'user-id'
   })
   public userId: string;
 
+  /**
+   * determines if person component renders user-name
+   * @type {boolean}
+   */
   @property({
     attribute: 'show-name',
     type: Boolean
   })
   public showName: false;
 
+  /**
+   * determines if person component renders email
+   * @type {boolean}
+   */
   @property({
     attribute: 'show-email',
     type: Boolean
   })
   public showEmail: false;
 
+  /**
+   * object containing Graph details on person
+   * @type {MgtPersonDetails}
+   */
   @property({
     attribute: 'person-details',
     type: Object
@@ -95,6 +118,14 @@ export class MgtPerson extends MgtTemplatedComponent {
   private _mouseLeaveTimeout;
   private _mouseEnterTimeout;
 
+  /**
+   * Synchronizes property values when attributes change.
+   *
+   * @param {*} name
+   * @param {*} oldValue
+   * @param {*} newValue
+   * @memberof MgtPerson
+   */
   public attributeChangedCallback(name, oldval, newval) {
     super.attributeChangedCallback(name, oldval, newval);
 
@@ -104,11 +135,38 @@ export class MgtPerson extends MgtTemplatedComponent {
     }
   }
 
+  /**
+   * Array of styles to apply to the element. The styles should be defined
+   * user the `css` tag function.
+   */
+  static get styles() {
+    return styles;
+  }
+
+  /**
+   * Invoked when the element is first updated. Implement to perform one time
+   * work on the element after update.
+   *
+   * Setting properties inside this method will trigger the element to update
+   * again after this update cycle completes.
+   *
+   * * @param _changedProperties Map of changed properties with old values
+   */
+
   public firstUpdated() {
     Providers.onProviderUpdated(() => this.loadData());
     this.loadData();
   }
 
+  /**
+   * Invoked when the element is first updated. Implement to perform one time
+   * work on the element after update.
+   *
+   * Setting properties inside this method will trigger the element to update
+   * again after this update cycle completes.
+   *
+   * * @param _changedProperties Map of changed properties with old values
+   */
   public render() {
     const person =
       this.renderTemplate('default', { person: this.personDetails }) ||
@@ -278,13 +336,19 @@ export class MgtPerson extends MgtTemplatedComponent {
           <img
             class="user-avatar ${this.getImageRowSpanClass()} ${this.getImageSizeClass()}"
             title=${title}
+            aria-label=${title}
+            alt=${title}
             src=${this.personImage as string}
           />
         `;
       } else {
         return html`
-          <div class="user-avatar initials ${this.getImageRowSpanClass()} ${this.getImageSizeClass()}" title=${title}>
-            <span class="initials-text">
+          <div
+            class="user-avatar initials ${this.getImageRowSpanClass()} ${this.getImageSizeClass()}"
+            title=${title}
+            aria-label=${title}
+          >
+            <span class="initials-text" aria-label="${this.getInitials()}">
               ${this.getInitials()}
             </span>
           </div>
@@ -308,14 +372,17 @@ export class MgtPerson extends MgtTemplatedComponent {
 
     const nameView = this.showName
       ? html`
-          <div class="user-name">${this.personDetails.displayName}</div>
+          <div class="user-name" aria-label="${this.personDetails.displayName}">${this.personDetails.displayName}</div>
         `
       : null;
-    const emailView = this.showEmail
-      ? html`
-          <div class="user-email">${getEmailFromGraphEntity(this.personDetails)}</div>
-        `
-      : null;
+
+    let emailView;
+    if (this.showEmail) {
+      const email = getEmailFromGraphEntity(this.personDetails);
+      emailView = html`
+        <div class="user-email" aria-label="${email}">${email}</div>
+      `;
+    }
 
     return html`
       ${nameView} ${emailView}

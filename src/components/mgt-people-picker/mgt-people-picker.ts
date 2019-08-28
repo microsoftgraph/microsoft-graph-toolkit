@@ -7,46 +7,70 @@
 
 import * as MicrosoftGraph from '@microsoft/microsoft-graph-types';
 import { customElement, html, property } from 'lit-element';
-
 import { Providers } from '../../Providers';
 import { ProviderState } from '../../providers/IProvider';
-import { styles } from './mgt-people-picker-css';
-
 import '../../styles/fabric-icon-font';
 import { debounce } from '../../utils/utils';
 import '../mgt-person/mgt-person';
 import { MgtTemplatedComponent } from '../templatedComponent';
+import { styles } from './mgt-people-picker-css';
 
+/**
+ * Web component used to search for people from the Microsoft Graph
+ *
+ * @export
+ * @class MgtPicker
+ * @extends {MgtTemplatedComponent}
+ */
 @customElement('mgt-people-picker')
 export class MgtPicker extends MgtTemplatedComponent {
+  /**
+   * Array of styles to apply to the element. The styles should be defined
+   * user the `css` tag function.
+   */
   static get styles() {
     return styles;
   }
-  // people in current search list
+
+  /**
+   * containing object of MgtPersonDetails.
+   * @type {MgtPersonDetails}
+   */
   @property({
     attribute: 'people',
     type: Object
   })
   public people: Array<MicrosoftGraph.User | MicrosoftGraph.Person | MicrosoftGraph.Contact> = null;
 
-  // maximum shown people in search
+  /**
+   * determining how many people to show in list.
+   * @type {number}
+   */
   @property({
     attribute: 'show-max',
     type: Number
   })
   public showMax: number = 6;
 
-  // group attribute selection
+  /**
+   * value determining if search is filtered to a group.
+   * @type {string}
+   */
   @property({
     attribute: 'group-id',
     type: String
   })
   public groupId: string;
 
-  // User selected people
+  /**
+   *  array of user picked people.
+   * @type {Array<any>}
+   */
   @property() public _selectedPeople: any[] = [];
+
   // single matching id for filtering against people list
   @property() private _duplicatePersonId: string = '';
+
   // User input in search
   @property() private _userInput: string = '';
 
@@ -58,6 +82,11 @@ export class MgtPicker extends MgtTemplatedComponent {
   private isLoading = false;
 
   // handing debounce on user search
+
+  /**
+   * Adds debounce method for set delay on user input
+   * @returns userinput
+   */
   private debounceHandle = window.addEventListener(
     'keyup',
     debounce(() => {
@@ -70,6 +99,14 @@ export class MgtPicker extends MgtTemplatedComponent {
     this.trackMouseFocus = this.trackMouseFocus.bind(this);
   }
 
+  /**
+   * Synchronizes property values when attributes change.
+   *
+   * @param {*} name
+   * @param {*} oldValue
+   * @param {*} newValue
+   * @memberof MgtPersonCard
+   */
   public attributeChangedCallback(att, oldval, newval) {
     super.attributeChangedCallback(att, oldval, newval);
 
@@ -85,7 +122,7 @@ export class MgtPicker extends MgtTemplatedComponent {
     }
   }
 
-  public render() {
+  protected render() {
     document.addEventListener('mouseup', this.trackMouseFocus, false);
     return (
       this.renderTemplate('default', { people: this.people }) ||
@@ -101,6 +138,10 @@ export class MgtPicker extends MgtTemplatedComponent {
     );
   }
 
+  /**
+   * Async query to Graph for members of group if determined by developer.
+   * set's `this.groupPeople` to those members.
+   */
   private async findGroup() {
     const provider = Providers.globalProvider;
     if (provider && provider.state === ProviderState.SignedIn) {
@@ -108,7 +149,10 @@ export class MgtPicker extends MgtTemplatedComponent {
       this.groupPeople = await client.getPeopleFromGroup(this.groupId);
     }
   }
-
+  /**
+   * Tracks event on user input in search
+   * @param event - event tracked when user input is detected (keyup)
+   */
   private onUserTypeSearch(event: any) {
     if (event.code == 'Escape') {
       event.target.value = '';
@@ -135,19 +179,31 @@ export class MgtPicker extends MgtTemplatedComponent {
     }
   }
 
+  /**
+   * Tracks event on user search (keydown)
+   * @param event - event tracked on user input (keydown)
+   */
   private onUserKeyDown(event: any) {
     if (event.keyCode == 40 || event.keyCode == 38) {
       // keyCodes capture: down arrow (40) and up arrow (38)
       this.handleArrowSelection(event);
-      event.preventDefault();
+      if (this._userInput.length > 0) {
+        event.preventDefault();
+      }
     }
     if (event.code == 'Tab' || event.code == 'Enter') {
+      if (this.people.length) {
+        event.preventDefault();
+      }
       this.addPerson(this.people[this.arrowSelectionCount], event);
       event.target.value = '';
-      event.preventDefault();
     }
   }
 
+  /**
+   * Tracks user key selection for arrow key selection of people
+   * @param event - tracks user key selection
+   */
   private handleArrowSelection(event: any) {
     if (this.people.length) {
       // update arrow count
@@ -178,6 +234,11 @@ export class MgtPicker extends MgtTemplatedComponent {
     }
   }
 
+  /**
+   * Tracks when user selects person from picker
+   * @param person - contains details pertaining to selected user
+   * @param event - tracks user event
+   */
   private addPerson(person: MicrosoftGraph.User | MicrosoftGraph.Person | MicrosoftGraph.Contact, event: any) {
     if (person) {
       this._userInput = '';
@@ -199,8 +260,11 @@ export class MgtPicker extends MgtTemplatedComponent {
     }
   }
 
+  /**
+   * Async method which query's the Graph with user input
+   * @param name - user input or name of person searched
+   */
   private async loadPersonSearch(name: string) {
-    console.log('here');
     if (name.length) {
       name = name.toLowerCase();
       const provider = Providers.globalProvider;
@@ -228,7 +292,10 @@ export class MgtPicker extends MgtTemplatedComponent {
       }
     }
   }
-
+  /**
+   * Filters people searched from already selected people
+   * @param people - array of people returned from query to Graph
+   */
   private filterPeople(people: any) {
     // check if people need to be updated
     // ensuring people list is displayed
@@ -247,6 +314,10 @@ export class MgtPicker extends MgtTemplatedComponent {
     }
   }
 
+  /**
+   * Removes person from selected people
+   * @param person - person and details pertaining to user selected
+   */
   private removePerson(person: MicrosoftGraph.User | MicrosoftGraph.Person | MicrosoftGraph.Contact) {
     const chosenPerson: any = person;
     const filteredPersonArr = this._selectedPeople.filter(function(person) {
@@ -259,7 +330,9 @@ export class MgtPicker extends MgtTemplatedComponent {
   private renderErrorMessage() {
     return html`
       <div class="error-message-parent">
-        <div class="search-error-text">We didn't find any matches.</div>
+        <div label="search-error-text" aria-label="We didn't find any matches." class="search-error-text">
+          We didn't find any matches.
+        </div>
       </div>
     `;
   }
@@ -300,7 +373,7 @@ export class MgtPicker extends MgtTemplatedComponent {
       `;
     }
     return html`
-      <ul class="people-chosen-list">
+      <div class="people-chosen-list">
         ${peopleList}
         <div class="${inputClass}">
           <input
@@ -308,6 +381,9 @@ export class MgtPicker extends MgtTemplatedComponent {
             class="people-chosen-input"
             type="text"
             placeholder="Start typing a name"
+            label="people-picker-input"
+            aria-label="people-picker-input"
+            role="input"
             .value="${this._userInput}"
             @keydown="${(e: KeyboardEvent & { target: HTMLInputElement }) => {
               this.onUserKeyDown(e);
@@ -317,7 +393,7 @@ export class MgtPicker extends MgtTemplatedComponent {
             }}"
           />
         </div>
-      </ul>
+      </div>
     `;
   }
 
@@ -362,15 +438,15 @@ export class MgtPicker extends MgtTemplatedComponent {
     if (people) {
       if (people.length == 0 && this._userInput.length > 0 && this.isLoading == false) {
         return html`
-          <ul class="people-list">
+          <div class="people-list">
             ${this.renderErrorMessage()}
-          </ul>
+          </div>
         `;
       } else {
         return html`
-          <ul class="people-list">
+          <div class="people-list">
             ${this.renderPersons(people)}
-          </ul>
+          </div>
         `;
       }
     }
