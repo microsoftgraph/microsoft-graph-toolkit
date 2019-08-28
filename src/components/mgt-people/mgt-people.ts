@@ -16,17 +16,30 @@ import '../mgt-person/mgt-person';
 import '../../styles/fabric-icon-font';
 import { MgtTemplatedComponent } from '../templatedComponent';
 import { MgtPersonDetails } from '../mgt-person/mgt-person';
-
+/**
+ * web component to display a group of people or contacts by using their photos or initials.
+ *
+ * @export
+ * @class MgtPeople
+ * @extends {MgtTemplatedComponent}
+ */
 @customElement('mgt-people')
 export class MgtPeople extends MgtTemplatedComponent {
   private _firstUpdated = false;
-
+  /**
+   * containing array of people used in the component.
+   * @type {Array<MgtPersonDetails>}
+   */
   @property({
     attribute: 'people',
     type: Object
   })
   people: Array<MgtPersonDetails> = null;
 
+  /**
+   * developer determined max people shown in component
+   * @type {number}
+   */
   @property({
     attribute: 'show-max',
     type: Number
@@ -35,6 +48,10 @@ export class MgtPeople extends MgtTemplatedComponent {
 
   /* TODO: Do we want a query property for loading groups from calls? */
 
+  /**
+   * Array of styles to apply to the element. The styles should be defined
+   * using the `css` tag function.
+   */
   static get styles() {
     return styles;
   }
@@ -43,6 +60,15 @@ export class MgtPeople extends MgtTemplatedComponent {
     super();
   }
 
+  /**
+   * Invoked when the element is first updated. Implement to perform one time
+   * work on the element after update.
+   *
+   * Setting properties inside this method will trigger the element to update
+   * again after this update cycle completes.
+   *
+   * * @param _changedProperties Map of changed properties with old values
+   */
   firstUpdated() {
     this._firstUpdated = true;
     Providers.onProviderUpdated(() => this.loadPeople());
@@ -69,6 +95,12 @@ export class MgtPeople extends MgtTemplatedComponent {
       }
     }
   }
+
+  /**
+   * Invoked on each update to perform rendering tasks. This method must return
+   * a lit-html TemplateResult. Setting properties inside this method will *not*
+   * trigger the element to update.
+   */
 
   render() {
     if (this.people) {
