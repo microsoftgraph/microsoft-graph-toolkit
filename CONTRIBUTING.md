@@ -105,7 +105,7 @@ Writing a good description for your pull request is crucial to help reviewers an
 - [Link the issue you're addressing in the pull request](https://github.com/blog/957-introducing-issue-mentions). Each pull request must be linked to an issue.
 - Describe _why_ the change is being made and _why_ you've chosen a particular solution.
 - Describe any manual testing you performed to validate your change.
-- Ensure the appropriate tests and documentation have been added
+- Ensure the appropriate tests and [documentation](https://github.com/microsoftgraph/microsoft-graph-docs/tree/master/concepts/toolkit) have been added
 
 Please submit one pull request per issue. Large pull requests which have unrelated changes can be difficult to review.
 
@@ -119,8 +119,58 @@ We encourage developers to follow the following guidance when submitting new fea
 
 1. Ensure the appropriate tests have been added in the `src\test` folder. Run the tests and make sure they all pass.
 1. Ensure the code is properly documented following the [tsdoc](https://github.com/Microsoft/tsdoc) syntax
-1. Update the [documentation] when necessary
+1. Update the [documentation](https://github.com/microsoftgraph/microsoft-graph-docs/tree/master/concepts/toolkit) when necessary
 1. Follow the [accessibility guidance](https://developer.mozilla.org/en-US/docs/Web/Accessibility) for web development
+
+
+### Accessibility Guidelines
+
+New features and components should folow the following accessibility implementation guidelines:
+
+(for ease of use)
+1. Visit the following location: https://accessibilityinsights.io/en/
+2. Install the extension, and test
+
+**required**:
+- [ ] `aria-label` | *string*: "Login Button", "Megan Bowen" | - meaningful text should have identifiable labels for screen readers
+  
+*example (mgt-login):*
+
+```html
+    <button 
+        class="popup-command"
+        @click=${this.logout} 
+        aria-label="Sign Out">       
+        Sign Out
+    </button>
+```
+
+- [ ] `tab-index/focus` | *string*: "0", "-1" | - components that are interactive or display information should be **visibilly** navigatable by `tab` key control. Additional information in the aria label should be displayed when this feature is used.
+
+*example (mgt-people):*
+
+```html
+<mgt-person tabindex="0" ></mgt-person>
+```
+```css
+mgt-person:focus{
+    border-color: blue;
+}
+```
+
+- [ ] `alt` | *string*: "person icon" | - any `<img>` tag should contain `alt` text as well
+
+*example (mgt-person):*
+
+```html
+    <img
+        title=${this.personDetails.displayName}
+        aria-label=${this.personDetails.displayName}
+        alt=${this.personDetails.displayName}
+        src=${this.personDetails.image as string}
+    />
+```
+
 
 <!-- ### Testing
 

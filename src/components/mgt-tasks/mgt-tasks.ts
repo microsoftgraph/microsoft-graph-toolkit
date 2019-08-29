@@ -40,7 +40,13 @@ const TASK_RES = {
     BUCKET_NOT_FOUND: 'Bucket not found'
   }
 };
-
+/**
+ * component enables the user to view, add, remove, complete, or edit tasks. It works with tasks in Microsoft Planner or Microsoft To-Do.
+ *
+ * @export
+ * @class MgtTasks
+ * @extends {MgtBaseComponent}
+ */
 @customElement('mgt-tasks')
 export class MgtTasks extends MgtBaseComponent {
   public get res() {
@@ -53,18 +59,40 @@ export class MgtTasks extends MgtBaseComponent {
     }
   }
 
+  /**
+   * Array of styles to apply to the element. The styles should be defined
+   * using the `css` tag function.
+   */
+
   public static get styles() {
     return styles;
   }
 
+  /**
+   * determines if tasks are un-editable
+   * @type {boolean}
+   */
   @property({ attribute: 'read-only', type: Boolean })
   public readOnly: boolean = false;
 
+  /**
+   * determines which task source is loaded, either planner or todo
+   * @type {string}
+   */
   @property({ attribute: 'data-source', type: String })
   public dataSource: 'planner' | 'todo' = 'planner';
 
+  /**
+   * allows developer to define location of task component
+   * @type {string}
+   */
   @property({ attribute: 'target-id', type: String })
   public targetId: string = null;
+
+  /**
+   * allows developer to define specific bucket id
+   * @type {string}
+   */
   @property({ attribute: 'target-bucket-id', type: String })
   public targetBucketId: string = null;
 
@@ -73,23 +101,71 @@ export class MgtTasks extends MgtBaseComponent {
   @property({ attribute: 'initial-bucket-id', type: String })
   public initialBucketId: string = null;
 
+  @property({ attribute: 'hide-header', type: Boolean })
+  public hideHeader: boolean = false;
+
+  /**
+   * determines if tasks needs to show new task
+   * @type {boolean}
+   */
   @property() private _showNewTask: boolean = false;
+  /**
+   * determines that new task is currently being added
+   * @type {boolean}
+   */
   @property() private _newTaskBeingAdded: boolean = false;
+
+  /**
+   * determines if user assigned task to themselves
+   * @type {boolean}
+   */
   @property() private _newTaskSelfAssigned: boolean = true;
+
+  /**
+   * contains new user created task name
+   * @type {string}
+   */
   @property() private _newTaskName: string = '';
+
+  /**
+   * contains user chosen date for new task due date
+   * @type {string}
+   */
   @property() private _newTaskDueDate: string = '';
+
+  /**
+   * contains id for new user created task??
+   * @type {string}
+   */
   @property() private _newTaskDresserId: string = '';
+  /**
+   * determines if tasks needs to render new task
+   * @type {string}
+   */
   @property() private _newTaskDrawerId: string = '';
 
   @property() private _dressers: IDresser[] = [];
   @property() private _drawers: IDrawer[] = [];
+
+  /**
+   * contains all user tasks
+   * @type {string}
+   */
   @property() private _tasks: ITask[] = [];
 
   @property() private _currentTargetDresser: string = this.res.BASE_SELF_ASSIGNED;
   @property() private _currentSubTargetDresser: string = this.res.PLANS_SELF_ASSIGNED;
   @property() private _currentTargetDrawer: string = this.res.BUCKETS_SELF_ASSIGNED;
 
+  /**
+   * used for filter if task has been deleted
+   * @type {string[]}
+   */
   @property() private _hiddenTasks: string[] = [];
+  /**
+   * determines if tasks are in loading state
+   * @type {string[]}
+   */
   @property() private _loadingTasks: string[] = [];
 
   @property() private _inTaskLoad: boolean = false;
@@ -114,6 +190,15 @@ export class MgtTasks extends MgtBaseComponent {
     super.disconnectedCallback();
   }
 
+  /**
+   * Invoked when the element is first updated. Implement to perform one time
+   * work on the element after update.
+   *
+   * Setting properties inside this method will trigger the element to update
+   * again after this update cycle completes.
+   *
+   * * @param _changedProperties Map of changed properties with old values
+   */
   protected firstUpdated() {
     if (this.initialId && (!this._currentTargetDresser || this.isDefault(this._currentTargetDresser))) {
       if (this.dataSource === 'planner') {
@@ -134,6 +219,14 @@ export class MgtTasks extends MgtBaseComponent {
     this.loadTasks();
   }
 
+  /**
+   * Synchronizes property values when attributes change.
+   *
+   * @param {*} name
+   * @param {*} oldValue
+   * @param {*} newValue
+   * @memberof MgtTasks
+   */
   public attributeChangedCallback(name: string, oldVal: string, newVal: string) {
     super.attributeChangedCallback(name, oldVal, newVal);
     if (name === 'data-source') {
@@ -313,6 +406,12 @@ export class MgtTasks extends MgtBaseComponent {
     this._newTaskDresserId = '';
   }
 
+  /**
+   * Invoked on each update to perform rendering tasks. This method must return
+   * a lit-html TemplateResult. Setting properties inside this method will *not*
+   * trigger the element to update.
+   */
+
   protected render() {
     let tasks = this._tasks
       .filter(task => this.taskPlanFilter(task))
@@ -321,12 +420,20 @@ export class MgtTasks extends MgtBaseComponent {
 
     let loadingTask = this._inTaskLoad && !this._hasDoneInitialLoad ? this.renderLoadingTask() : null;
 
+    let header;
+
+    if (!this.hideHeader) {
+      header = html`
+        <div class="Header">
+          <span class="PlannerTitle">
+            ${this.renderPlanOptions()}
+          </span>
+        </div>
+      `;
+    }
+
     return html`
-      <div class="Header">
-        <span class="PlannerTitle">
-          ${this.renderPlanOptions()}
-        </span>
-      </div>
+      ${header}
       <div class="Tasks">
         ${this._showNewTask ? this.renderNewTaskHtml() : null} ${loadingTask}
         ${repeat(tasks, task => task.id, task => this.renderTaskHtml(task))}
@@ -488,6 +595,9 @@ export class MgtTasks extends MgtBaseComponent {
           type="text"
           placeholder="Task..."
           .value="${this._newTaskName}"
+          label="new-taskName-input"
+          aria-label="new-taskName-input"
+          role="input"
           @input="${(e: Event & { target: HTMLInputElement }) => {
             this._newTaskName = e.target.value;
           }}"
@@ -565,6 +675,9 @@ export class MgtTasks extends MgtBaseComponent {
         ${this.renderCalendarIcon()}
         <input
           type="date"
+          label="new-taskDate-input"
+          aria-label="new-taskDate-input"
+          role="input"
           .value="${this._newTaskDueDate}"
           @change="${(e: Event & { target: HTMLInputElement }) => {
             this._newTaskDueDate = e.target.value;
@@ -582,6 +695,8 @@ export class MgtTasks extends MgtBaseComponent {
                 <input
                   class="SelfAssign"
                   type="checkbox"
+                  label="self-assign-input"
+                  aria-label="self-assign-input"
                   .checked="${this._newTaskSelfAssigned}"
                   @change="${(e: Event & { target: HTMLInputElement }) => {
                     this._newTaskSelfAssigned = e.target.checked;

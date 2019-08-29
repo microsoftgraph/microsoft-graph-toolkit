@@ -17,18 +17,41 @@ import '../../styles/fabric-icon-font';
 import { MgtTemplatedComponent } from '../templatedComponent';
 import { prepScopes } from '../../Graph';
 import { MgtPersonDetails } from '../mgt-person/mgt-person';
-
+/**
+ * Web Component which represents events in a user or group calendar.
+ *
+ * @export
+ * @class MgtAgenda
+ * @extends {MgtTemplatedComponent}
+ */
 @customElement('mgt-agenda')
 export class MgtAgenda extends MgtTemplatedComponent {
   private _firstUpdated = false;
+  /**
+   * determines width available for agenda component.
+   * @type {boolean}
+   */
   @property({ attribute: false }) private _isNarrow: boolean;
+
+  /**
+   * determines if agenda component is still loading details.
+   * @type {boolean}
+   */
   @property({ attribute: false }) private _loading: boolean = true;
 
+  /**
+   * array containg events from user agenda.
+   * @type {Array<MicrosoftGraph.Event>}
+   */
   @property({
     attribute: 'events'
   })
   events: Array<MicrosoftGraph.Event>;
 
+  /**
+   * allows developer to define agenda to group events by day.
+   * @type {Boolean}
+   */
   @property({
     attribute: 'group-by-day',
     type: Boolean,
@@ -36,6 +59,10 @@ export class MgtAgenda extends MgtTemplatedComponent {
   })
   groupByDay = false;
 
+  /**
+   * stores current date for intial calender selection in events.
+   * @type {string}
+   */
   @property({
     attribute: 'date',
     type: String,
@@ -43,6 +70,10 @@ export class MgtAgenda extends MgtTemplatedComponent {
   })
   date: string;
 
+  /**
+   * sets number of days until endate, 3 is the default
+   * @type {number}
+   */
   @property({
     attribute: 'days',
     type: Number,
@@ -50,11 +81,34 @@ export class MgtAgenda extends MgtTemplatedComponent {
   })
   days: number = 3;
 
+  /**
+   * allows developer to specify a different graph query that retrieves events
+   * @type {string}
+   */
   @property({
     attribute: 'event-query',
     type: String
   })
   eventQuery: string;
+
+  /**
+   * allows developer to define max number of events shown
+   * @type {number}
+   */
+  @property({
+    attribute: 'show-max',
+    type: Number
+  })
+  showMax: number;
+  /**
+   * determines if agenda events come from specific group
+   * @type {string}
+   */
+  @property({
+    attribute: 'group-id',
+    type: String
+  })
+  groupId: string;
 
   static get styles() {
     return styles;
@@ -65,7 +119,17 @@ export class MgtAgenda extends MgtTemplatedComponent {
     this.onResize = this.onResize.bind(this);
   }
 
-  firstUpdated() {
+  /**
+   * Invoked when the element is first updated. Implement to perform one time
+   * work on the element after update.
+   *
+   * Setting properties inside this method will trigger the element to update
+   * again after this update cycle completes.
+   *
+   * * @param _changedProperties Map of changed properties with old values
+   */
+
+  public firstUpdated() {
     this._firstUpdated = true;
     Providers.onProviderUpdated(() => this.loadData());
     this.loadData();
@@ -82,8 +146,17 @@ export class MgtAgenda extends MgtTemplatedComponent {
     super.disconnectedCallback();
   }
 
-  attributeChangedCallback(name, oldValue, newValue) {
-    if (name === 'date' || name === 'days') {
+  /**
+   * Synchronizes property values when attributes change.
+   *
+   * @param {*} name
+   * @param {*} oldValue
+   * @param {*} newValue
+   * @memberof MgtAgenda
+   */
+
+  public attributeChangedCallback(name, oldValue, newValue) {
+    if (oldValue !== newValue && (name === 'date' || name === 'days' || name === 'group-id')) {
       this.events = null;
       this.loadData();
     }
@@ -136,7 +209,11 @@ export class MgtAgenda extends MgtTemplatedComponent {
         let end = new Date();
         end.setHours(0, 0, 0, 0);
         end.setDate(start.getDate() + this.days);
-        this.events = await p.graph.getEvents(start, end);
+        try {
+          this.events = await p.graph.getEvents(start, end, this.groupId);
+        } catch (error) {
+          // noop - possible error with graph
+        }
       }
       this._loading = false;
     } else if (p && p.state === ProviderState.Loading) {
@@ -161,17 +238,19 @@ export class MgtAgenda extends MgtTemplatedComponent {
     }
 
     if (this.events) {
-      let renderedTemplate = this.renderTemplate('default', { events: this.events });
+      let events = this.showMax && this.showMax > 0 ? this.events.slice(0, this.showMax) : this.events;
+
+      let renderedTemplate = this.renderTemplate('default', { events: events });
       if (renderedTemplate) {
         return renderedTemplate;
       }
 
       if (this.groupByDay) {
         let grouped = {};
-        for (let i = 0; i < this.events.length; i++) {
-          let header = this.getDateHeaderFromDateTimeString(this.events[i].start.dateTime);
+        for (let i = 0; i < events.length; i++) {
+          let header = this.getDateHeaderFromDateTimeString(events[i].start.dateTime);
           grouped[header] = grouped[header] || [];
-          grouped[header].push(this.events[i]);
+          grouped[header].push(events[i]);
         }
 
         return html`
@@ -182,7 +261,7 @@ export class MgtAgenda extends MgtTemplatedComponent {
                   <div class="group">
                     ${this.renderTemplate('header', { header: header }, 'header-' + header) ||
                       html`
-                        <div class="header">${header}</div>
+                        <div class="header" aria-label="${header}">${header}</div>
                       `}
                     ${this.renderListOfEvents(grouped[header])}
                   </div>
@@ -192,7 +271,7 @@ export class MgtAgenda extends MgtTemplatedComponent {
         `;
       }
 
-      return this.renderListOfEvents(this.events);
+      return this.renderListOfEvents(events);
     } else {
       return this.renderTemplate('no-data', null) || html``;
     }
@@ -239,7 +318,7 @@ export class MgtAgenda extends MgtTemplatedComponent {
     return html`
       <div class="event">
         <div class="event-time-container">
-          <div class="event-time">${this.getEventTimeString(event)}</div>
+          <div class="event-time" aria-label="${this.getEventTimeString(event)}">${this.getEventTimeString(event)}</div>
         </div>
         <div class="event-details-container">
           <div class="event-subject">${event.subject}</div>
@@ -278,7 +357,7 @@ export class MgtAgenda extends MgtTemplatedComponent {
             stroke="black"
           />
         </svg>
-        <div class="event-location">${event.location.displayName}</div>
+        <div class="event-location" aria-label="${event.location.displayName}">${event.location.displayName}</div>
       </div>
     `;
   }

@@ -4,8 +4,11 @@
     <title>Microsoft Graph Toolkit Test</title>
 
     <script type="module" src="../../../dist/es6/index.js"></script>
+    <script type="module" src="../../../dist/es6/mock/mgt-mock-provider.js"></script>
   </head>
   <body>
+    <mgt-mock-provider></mgt-mock-provider>
+
     <mgt-agenda id="myDay">
       <template>
         <style>
@@ -43,7 +46,7 @@
           }
         </style>
         <button class="eventButton">
-          <div class="event-subject">{{ event.subject }}</div>
+          <div class="event-subject">{{{ testFunction(event.subject.toLowerCase()) }}}</div>
           <div data-for="attendee in event.attendees">
             <mgt-person person-query="{{ attendee.emailAddress.name }}" show-name show-email></mgt-person>
           </div>
@@ -59,6 +62,9 @@
 
     <script type="module">
       let myDay = document.getElementById('myDay');
+
+      myDay.templateConverters.testFunction = str => str.length;
+
       myDay.addEventListener('templateRendered', e => {
         if (e.detail && e.detail.context) {
           let button = e.detail.element.querySelector('.eventButton');
