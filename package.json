@@ -48,7 +48,7 @@
     "prettier:write": "npm run prettier:base -- --write \"{src,tests}/**/*.{ts,tsx}\""
   },
   "dependencies": {
-    "@microsoft/microsoft-graph-client": "^2.0.0-Preview.5",
+    "@microsoft/microsoft-graph-client": "^2.0.0",
     "@microsoft/microsoft-graph-types": "^1.10.0",
     "@microsoft/microsoft-graph-types-beta": "microsoftgraph/msgraph-typescript-typings#beta",
     "lit-element": "^2.2.1",
