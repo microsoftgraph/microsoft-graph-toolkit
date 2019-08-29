@@ -16,6 +16,8 @@ $initials-color: var(--initials-color, white);
 $initials-background-color: var(--initials-background-color, #{$ms-color-magenta});
 $accent-color: var(--accent-color, #0078d4);
 
+$people-list-background-color: var(--people-list-background-color, white);
+
 :host {
   border-radius: 2px;
 }
@@ -39,7 +41,7 @@ mgt-people-picker .people-list {
   padding: 0;
   box-shadow: 0px 1.3289px 2.65781px rgba(180, 180, 180, 0.182), 0px 1.3289px 2.65781px rgba(68, 68, 68, 0.3);
   border-radius: 2px;
-  background-color: white;
+  background-color: $people-list-background-color;
   z-index: 1; /* Sit on top */
   width: 100%;
   text-align: left;
@@ -87,7 +89,7 @@ mgt-people-picker .CloseIcon {
   font-family: 'FabricMDL2Icons';
   padding-right: 8px;
   padding-left: 4px;
-  margin-top: 3px;
+  margin-top: 0px;
 }
 :host .SearchIcon,
 mgt-people-picker .SearchIcon {
@@ -102,7 +104,10 @@ mgt-people-picker .people-person {
   align-items: center;
   background-color: rgba(196, 196, 196, 0.24);
   border-radius: 15px;
-  max-height: 24px;
+  height: 24px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 
 :host .people-person-list,
@@ -180,6 +185,10 @@ mgt-people-picker .remove-person-button-secondary {
 
 :host .person-display-name,
 mgt-people-picker .person-display-name {
+  max-width: 100px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
   margin-left: 8px;
   font-family: Segoe UI;
   font-style: normal;
