@@ -97,12 +97,26 @@ export class MgtPerson extends MgtTemplatedComponent {
   })
   public personDetails: MicrosoftGraph.User | MicrosoftGraph.Person | MicrosoftGraph.Contact;
 
+  /**
+   * Set the image of the person
+   * Set to '@' to look up image from the graph
+   *
+   * @type {string}
+   * @memberof MgtPersonCard
+   */
   @property({
     attribute: 'person-image',
     type: String
   })
   public personImage: string;
 
+  /**
+   * Sets how the person-card is invoked
+   * Set to PersonCardInteraction.none to not show the card
+   *
+   * @type {PersonCardInteraction}
+   * @memberof MgtPerson
+   */
   @property({
     attribute: 'person-card',
     converter: (value, type) => {
@@ -310,7 +324,7 @@ export class MgtPerson extends MgtTemplatedComponent {
     const flyoutClasses = { flyout: true, visible: this._isPersonCardVisible };
     return html`
       <div class=${classMap(flyoutClasses)}>
-        <mgt-person-card .person=${this.personDetails}></mgt-person-card>
+        <mgt-person-card .personDetails=${this.personDetails} .personImage=${this.personImage}></mgt-person-card>
       </div>
     `;
   }

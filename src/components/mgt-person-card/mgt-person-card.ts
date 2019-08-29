@@ -31,10 +31,23 @@ export class MgtPersonCard extends MgtTemplatedComponent {
    *     | MicrosoftGraph.Contact)}
    * @memberof MgtPersonCard
    */
-  @property({ attribute: 'person' }) public person:
+  @property({ attribute: 'person-details' }) public personDetails:
     | MicrosoftGraph.User
     | MicrosoftGraph.Person
     | MicrosoftGraph.Contact;
+
+  /**
+   * Set the image of the person
+   * Set to '@' to look up image from the graph
+   *
+   * @type {string}
+   * @memberof MgtPersonCard
+   */
+  @property({
+    attribute: 'person-image',
+    type: String
+  })
+  public personImage: string;
 
   /**
    * Synchronizes property values when attributes change.
@@ -75,8 +88,8 @@ export class MgtPersonCard extends MgtTemplatedComponent {
    * trigger the element to update.
    */
   protected render() {
-    if (this.person) {
-      const user = this.person;
+    if (this.personDetails) {
+      const user = this.personDetails;
 
       // tslint:disable-next-line: one-variable-per-declaration
       let phone, department, jobTitle, email, location;
@@ -114,7 +127,7 @@ export class MgtPersonCard extends MgtTemplatedComponent {
       return html`
         <div class="root">
           <div class="default-view">
-            <mgt-person person-query="me"></mgt-person>
+            <mgt-person .personDetails=${this.personDetails} .personImage=${this.personImage}></mgt-person>
             <div class="details">
               <div class="display-name">${user.displayName}</div>
               ${jobTitle} ${department}
@@ -146,7 +159,7 @@ export class MgtPersonCard extends MgtTemplatedComponent {
   }
 
   private async loadData() {
-    if (this.person) {
+    if (this.personDetails) {
       return;
     }
 
@@ -157,9 +170,7 @@ export class MgtPersonCard extends MgtTemplatedComponent {
     }
 
     // TODO: load data from the graph
-    this.person = await provider.graph.client
-      .api('/me')
-      .version('beta')
-      .get();
+    // need to add person-query and user-id properties and
+    // factor out methods from mgt-person to use in both
   }
 }
