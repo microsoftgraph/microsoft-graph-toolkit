@@ -8,23 +8,97 @@
 import { AuthenticationProviderOptions } from '@microsoft/microsoft-graph-client/lib/es/IAuthenticationProviderOptions';
 import { Configuration, UserAgentApplication } from 'msal';
 import { LoginType, ProviderState } from './IProvider';
-import { MsalConfig, MsalProvider } from './MsalProvider';
+import { MsalProvider } from './MsalProvider';
 
+// tslint:disable-next-line: completed-docs
 declare var microsoftTeams: any;
 
+// tslint:disable-next-line: completed-docs
 declare global {
+  // tslint:disable-next-line: completed-docs
   interface Window {
+    // tslint:disable-next-line: completed-docs
     nativeInterface: any;
   }
 }
 
+/**
+ * Interface used to store authentication parameters in session storage
+ * between redirects
+ *
+ * @interface AuthParams
+ */
+interface AuthParams {
+  /**
+   * The app clientId
+   *
+   * @type {string}
+   * @memberof AuthParams
+   */
+  clientId?: string;
+
+  /**
+   * The comma separated scopes
+   *
+   * @type {string}
+   * @memberof AuthParams
+   */
+  scopes?: string;
+
+  /**
+   * The login hint to be used for authentication
+   *
+   * @type {string}
+   * @memberof AuthParams
+   */
+  loginHint?: string;
+}
+
+/**
+ * Interface to define the configuration when creating a TeamsProvider
+ *
+ * @export
+ * @interface TeamsConfig
+ */
 export interface TeamsConfig {
+  /**
+   * The app clientId
+   *
+   * @type {string}
+   * @memberof TeamsConfig
+   */
   clientId: string;
+  /**
+   * The relative or absolute path of the html page that will handle the authentication
+   *
+   * @type {string}
+   * @memberof TeamsConfig
+   */
   authPopupUrl: string;
+  /**
+   * The scopes to use when authenticating the user
+   *
+   * @type {string[]}
+   * @memberof TeamsConfig
+   */
   scopes?: string[];
+  /**
+   * Additional Msal configurations options to use
+   * See Msal.js documentation for more details
+   *
+   * @type {Configuration}
+   * @memberof TeamsConfig
+   */
   msalOptions?: Configuration;
 }
 
+/**
+ * Enables authentication of Single page apps inside of a Microsoft Teams tab
+ *
+ * @export
+ * @class TeamsProvider
+ * @extends {MsalProvider}
+ */
 export class TeamsProvider extends MsalProvider {
   private set accessToken(value: string) {
     this._accessToken = value;
@@ -41,8 +115,14 @@ export class TeamsProvider extends MsalProvider {
     return this._accessToken;
   }
 
-  public static microsoftTeamsLib;
-
+  /**
+   * Gets whether the Teams provider can be used in the current context
+   * (Whether the app is running in Microsoft Teams)
+   *
+   * @readonly
+   * @static
+   * @memberof TeamsProvider
+   */
   public static get isAvailable() {
     if (window.parent === window.self && window.nativeInterface) {
       // In Teams mobile client
@@ -55,14 +135,36 @@ export class TeamsProvider extends MsalProvider {
     }
   }
 
+  /**
+   * Optional entry point to the teams library
+   * If this value is not set, the provider will attempt to use
+   * the microsoftTeams global variable.
+   *
+   * @static
+   * @memberof TeamsProvider
+   */
+  public static microsoftTeamsLib;
+
+  /**
+   * Handle all authentication redirects in the authentication page and authenticates the user
+   *
+   * @static
+   * @returns
+   * @memberof TeamsProvider
+   */
   public static async handleAuth() {
     // we are in popup world now - authenticate and handle it
-    if (!this.isAvailable) {
+    const teams = TeamsProvider.microsoftTeamsLib || microsoftTeams;
+    if (!teams) {
+      // tslint:disable-next-line: no-console
       console.error('Make sure you have referenced the Microsoft Teams sdk before using the TeamsProvider');
       return;
     }
 
-    const teams = TeamsProvider.microsoftTeamsLib || microsoftTeams;
+    if (!this.isAvailable) {
+      return;
+    }
+
     teams.initialize();
 
     // msal checks for the window.opener.msal to check if this is a popup authentication
@@ -75,39 +177,42 @@ export class TeamsProvider extends MsalProvider {
 
     const url = new URL(window.location.href);
 
-    let clientId = sessionStorage.getItem(this._sessionStorageClientIdKey);
-    let scopesStr = sessionStorage.getItem(this._sessionStorageScopesKey);
-    let loginHint = sessionStorage.getItem(this._sessionStorageLoginHint);
+    const paramsString = sessionStorage.getItem(this._sessionStorageParametersKey);
+    let authParams: AuthParams;
 
-    if (!clientId) {
-      clientId = url.searchParams.get('clientId');
-      scopesStr = url.searchParams.get('scopes');
-      loginHint = url.searchParams.get('loginHint');
-
-      sessionStorage.setItem(this._sessionStorageClientIdKey, clientId);
-      sessionStorage.setItem(this._sessionStorageScopesKey, scopesStr);
-      sessionStorage.setItem(this._sessionStorageLoginHint, loginHint);
+    if (paramsString) {
+      authParams = JSON.parse(paramsString);
+    } else {
+      authParams = {};
     }
 
-    if (!clientId) {
+    if (!authParams.clientId) {
+      authParams.clientId = url.searchParams.get('clientId');
+      authParams.scopes = url.searchParams.get('scopes');
+      authParams.loginHint = url.searchParams.get('loginHint');
+
+      sessionStorage.setItem(this._sessionStorageParametersKey, JSON.stringify(authParams));
+    }
+
+    if (!authParams.clientId) {
       teams.authentication.notifyFailure('no clientId provided');
       return;
     }
 
-    const scopes = scopesStr ? scopesStr.split(',') : null;
+    const scopes = authParams.scopes ? authParams.scopes.split(',') : null;
 
     const provider = new MsalProvider({
-      clientId,
-      scopes,
+      clientId: authParams.clientId,
       options: {
         auth: {
-          clientId,
+          clientId: authParams.clientId,
           redirectUri: url.protocol + '//' + url.host + url.pathname
         },
         system: {
           loadFrameTimeout: 10000
         }
-      }
+      },
+      scopes
     });
 
     if ((UserAgentApplication.prototype as any).urlContainsHash(window.location.hash)) {
@@ -120,20 +225,16 @@ export class TeamsProvider extends MsalProvider {
       // change to promise and return status
       if (provider.state === ProviderState.SignedOut) {
         provider.login({
-          loginHint,
+          loginHint: authParams.loginHint,
           scopes: scopes || provider.scopes
         });
       } else if (provider.state === ProviderState.SignedIn) {
         try {
           const accessToken = await provider.getAccessTokenForScopes(...provider.scopes);
-          sessionStorage.removeItem(this._sessionStorageClientIdKey);
-          sessionStorage.removeItem(this._sessionStorageScopesKey);
-          sessionStorage.removeItem(this._sessionStorageLoginHint);
+          sessionStorage.removeItem(this._sessionStorageParametersKey);
           teams.authentication.notifySuccess(accessToken);
         } catch (e) {
-          sessionStorage.removeItem(this._sessionStorageClientIdKey);
-          sessionStorage.removeItem(this._sessionStorageScopesKey);
-          sessionStorage.removeItem(this._sessionStorageLoginHint);
+          sessionStorage.removeItem(this._sessionStorageParametersKey);
           teams.authentication.notifyFailure(e);
         }
       }
@@ -144,20 +245,24 @@ export class TeamsProvider extends MsalProvider {
   }
 
   private static _sessionStorageTokenKey = 'mgt-teamsprovider-accesstoken';
-  private static _sessionStorageClientIdKey = 'msg-teamsprovider-clientId';
-  private static _sessionStorageScopesKey = 'msg-teamsprovider-scopesstr';
-  private static _sessionStorageLoginHint = 'msg-teamsprovider-loginHint';
-  private static _sessionStorageGrantedScopes = 'msg=teamsprovider-approved-scopes';
+  private static _sessionStorageParametersKey = 'msg-teamsprovider-auth-parameters';
+
+  /**
+   * Scopes used for authentication
+   *
+   * @type {string[]}
+   * @memberof TeamsProvider
+   */
+  public scopes: string[];
   private _authPopupUrl: string;
   private _accessToken: string;
-  public scopes: string[];
 
   constructor(config: TeamsConfig) {
     super({
       clientId: config.clientId,
       loginType: LoginType.Redirect,
-      scopes: config.scopes,
-      options: config.msalOptions
+      options: config.msalOptions,
+      scopes: config.scopes
     });
 
     const teams = TeamsProvider.microsoftTeamsLib || microsoftTeams;
@@ -167,6 +272,12 @@ export class TeamsProvider extends MsalProvider {
     this.accessToken = sessionStorage.getItem(TeamsProvider._sessionStorageTokenKey);
   }
 
+  /**
+   * Opens the teams authentication popup to the authentication page
+   *
+   * @returns {Promise<void>}
+   * @memberof TeamsProvider
+   */
   public async login(): Promise<void> {
     this.setState(ProviderState.Loading);
     const teams = TeamsProvider.microsoftTeamsLib || microsoftTeams;
@@ -185,20 +296,27 @@ export class TeamsProvider extends MsalProvider {
         }
 
         teams.authentication.authenticate({
-          url: url.href,
+          failureCallback: reason => {
+            this.accessToken = null;
+            reject();
+          },
           successCallback: result => {
             this.accessToken = result;
             resolve();
           },
-          failureCallback: reason => {
-            this.accessToken = null;
-            reject();
-          }
+          url: url.href
         });
       });
     });
   }
 
+  /**
+   * Returns an access token that can be used for making calls to the Microsoft Graph
+   *
+   * @param {AuthenticationProviderOptions} options
+   * @returns {Promise<string>}
+   * @memberof TeamsProvider
+   */
   public async getAccessToken(options: AuthenticationProviderOptions): Promise<string> {
     if (!this.accessToken) {
       throw null;
