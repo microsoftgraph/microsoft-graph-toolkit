@@ -6,11 +6,24 @@
  */
 
 import { property } from 'lit-element';
-import { IProvider } from '../..';
+import { IProvider } from '../../providers/IProvider';
 import { MgtBaseComponent } from '../baseComponent';
 
+/**
+ * Abstract implementation for provider component
+ *
+ * @export
+ * @abstract
+ * @class MgtBaseProvider
+ * @extends {MgtBaseComponent}
+ */
 export abstract class MgtBaseProvider extends MgtBaseComponent {
-  public get provider() {
+  /**
+   * The IProvider created by this component
+   *
+   * @memberof MgtBaseProvider
+   */
+  public get provider(): IProvider {
     return this._provider;
   }
 
@@ -24,19 +37,45 @@ export abstract class MgtBaseProvider extends MgtBaseComponent {
     }
   }
 
-  public abstract get isAvailable(): boolean;
+  /**
+   * Gets weather this provider can be used in this environment
+   *
+   * @readonly
+   * @type {boolean}
+   * @memberof MgtBaseProvider
+   */
+  public get isAvailable(): boolean {
+    return true;
+  }
 
+  /**
+   * Higher priority provider that should be initialized before attempting
+   * to initialize this provider. This provider will only be initialized
+   * if all higher priority providers are not available.
+   *
+   * @type {MgtBaseProvider}
+   * @memberof MgtBaseProvider
+   */
   @property({
     attribute: 'depends-on',
-    type: String,
     converter: newValue => {
       return document.querySelector(newValue);
-    }
+    },
+    type: String
   })
   public dependsOn: MgtBaseProvider;
 
   private _provider: IProvider;
 
+  /**
+   * Invoked when the element is first updated. Implement to perform one time
+   * work on the element after update.
+   *
+   * Setting properties inside this method will trigger the element to update
+   * again after this update cycle completes.
+   *
+   * * @param _changedProperties Map of changed properties with old values
+   */
   protected firstUpdated(changedProperties) {
     super.firstUpdated(changedProperties);
 
@@ -57,7 +96,15 @@ export abstract class MgtBaseProvider extends MgtBaseComponent {
     }
   }
 
-  protected abstract initializeProvider();
+  /**
+   * method called to initialize the provider. Each derived class should provide
+   * their own implementation
+   *
+   * @protected
+   * @memberof MgtBaseProvider
+   */
+  // tslint:disable-next-line: no-empty
+  protected initializeProvider() {}
 
   private stateChangedHandler() {
     this.fireCustomEvent('onStateChanged', this.provider.state);
