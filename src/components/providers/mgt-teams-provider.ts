@@ -31,8 +31,8 @@ export class MgtTeamsProvider extends MgtBaseProvider {
   })
   public scopes;
 
-  public isAvailable() {
-    return TeamsProvider.isAvailable();
+  public get isAvailable() {
+    return TeamsProvider.isAvailable;
   }
 
   protected initializeProvider() {

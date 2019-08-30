@@ -34,7 +34,7 @@ export class MgtMsalProvider extends MgtBaseProvider {
   })
   public scopes;
 
-  public async isAvailable() {
+  public get isAvailable() {
     return true;
   }
 

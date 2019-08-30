@@ -5,9 +5,9 @@
  * -------------------------------------------------------------------------------------------
  */
 
-import { IProvider, LoginChangedEvent, EventDispatcher, EventHandler, ProviderState } from './IProvider';
-import { Graph } from '../Graph';
 import { AuthenticationProviderOptions } from '@microsoft/microsoft-graph-client/lib/es/IAuthenticationProviderOptions';
+import { Graph } from '../Graph';
+import { IProvider, ProviderState } from './IProvider';
 
 declare interface Window {
   Windows: any;
@@ -22,7 +22,7 @@ export class WamProvider extends IProvider {
 
   private accessToken: string;
 
-  public static isAvailable(): boolean {
+  public static get isAvailable(): boolean {
     return !!window.Windows;
   }
 
@@ -40,10 +40,10 @@ export class WamProvider extends IProvider {
     this.printRedirectUriToConsole();
   }
 
-  async login(): Promise<void> {
-    if (WamProvider.isAvailable()) {
-      let webCore = window.Windows.Security.Authentication.Web.Core;
-      let wap = await webCore.WebAuthenticationCoreManager.findAccountProviderAsync(
+  public async login(): Promise<void> {
+    if (WamProvider.isAvailable) {
+      const webCore = window.Windows.Security.Authentication.Web.Core;
+      const wap = await webCore.WebAuthenticationCoreManager.findAccountProviderAsync(
         'https://login.microsoft.com',
         this.authority
       );
@@ -52,13 +52,13 @@ export class WamProvider extends IProvider {
         return;
       }
 
-      let wtr = new webCore.WebTokenRequest(wap, '', this.clientId);
+      const wtr = new webCore.WebTokenRequest(wap, '', this.clientId);
       wtr.properties.insert('resource', this.graphResource);
 
-      let wtrr = await webCore.WebAuthenticationCoreManager.requestTokenAsync(wtr);
+      const wtrr = await webCore.WebAuthenticationCoreManager.requestTokenAsync(wtr);
       switch (wtrr.responseStatus) {
         case webCore.WebTokenRequestStatus.success:
-          let account = wtrr.responseData[0].webAccount;
+          const account = wtrr.responseData[0].webAccount;
           this.accessToken = wtrr.responseData[0].token;
           this.setState(this.accessToken ? ProviderState.SignedIn : ProviderState.SignedOut);
           break;
@@ -77,10 +77,10 @@ export class WamProvider extends IProvider {
     }
   }
 
-  printRedirectUriToConsole() {
-    if (WamProvider.isAvailable()) {
-      let web = window.Windows.Security.Authentication.Web;
-      let redirectUri = `ms-appx-web://Microsoft.AAD.BrokerPlugIn/${(web.WebAuthenticationBroker.getCurrentApplicationCallbackUri()
+  public printRedirectUriToConsole() {
+    if (WamProvider.isAvailable) {
+      const web = window.Windows.Security.Authentication.Web;
+      const redirectUri = `ms-appx-web://Microsoft.AAD.BrokerPlugIn/${(web.WebAuthenticationBroker.getCurrentApplicationCallbackUri()
         .host as string).toUpperCase()}`;
       console.log('Use the following redirect URI in your AAD application:');
       console.log(redirectUri);
@@ -89,11 +89,11 @@ export class WamProvider extends IProvider {
     }
   }
 
-  getAccessToken(options: AuthenticationProviderOptions): Promise<string> {
+  public getAccessToken(options: AuthenticationProviderOptions): Promise<string> {
     if (this.isLoggedIn) {
       return Promise.resolve(this.accessToken);
     } else {
-      throw 'Not logged in';
+      throw new Error('Not logged in');
     }
   }
 }

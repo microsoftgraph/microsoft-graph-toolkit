@@ -43,43 +43,17 @@ export class TeamsProvider extends MsalProvider {
 
   public static microsoftTeamsLib;
 
-  public static async isAvailable(): Promise<boolean> {
-    return new Promise((resolve, reject) => {
-      if (window.parent === window.self && window.nativeInterface) {
-        // In Teams mobile client
-        resolve(true);
-      } else if (window.name === 'embedded-page-container' || window.name === 'extension-tab-frame') {
-        // In Teams web/desktop client
-        resolve(true);
-      } else {
-        // // Last ditch effort to see if parent responds to initialize
-        // const t = setTimeout(() => {
-        //   resolve(false);
-        // }, 1000);
-        // const teams = TeamsProvider.microsoftTeamsLib || microsoftTeams;
-        // if (teams) {
-        //   teams.initialize(() => {
-        //     clearTimeout(t);
-        //     resolve(true);
-        //   });
-        // } else {
-        resolve(false);
-        // }
-      }
-    });
+  public static get isAvailable() {
+    if (window.parent === window.self && window.nativeInterface) {
+      // In Teams mobile client
+      return true;
+    } else if (window.name === 'embedded-page-container' || window.name === 'extension-tab-frame') {
+      // In Teams web/desktop client
+      return true;
+    } else {
+      return false;
+    }
   }
-
-  // public static isAvailable() {
-  //   if (window.parent === window.self && window.nativeInterface) {
-  //     // In Teams mobile client
-  //     return true;
-  //   } else if (window.name === 'embedded-page-container' || window.name === 'extension-tab-frame') {
-  //     // In Teams web/desktop client
-  //     return true;
-  //   } else {
-  //     return false;
-  //   }
-  // }
 
   public static async handleAuth() {
     // we are in popup world now - authenticate and handle it

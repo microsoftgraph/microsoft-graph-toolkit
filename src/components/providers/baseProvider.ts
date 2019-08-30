@@ -24,6 +24,8 @@ export abstract class MgtBaseProvider extends MgtBaseComponent {
     }
   }
 
+  public abstract get isAvailable(): boolean;
+
   @property({
     attribute: 'depends-on',
     type: String,
@@ -33,14 +35,16 @@ export abstract class MgtBaseProvider extends MgtBaseComponent {
   })
   public dependsOn: MgtBaseProvider;
 
-  protected async firstUpdated(changedProperties) {
+  private _provider: IProvider;
+
+  protected firstUpdated(changedProperties) {
     super.firstUpdated(changedProperties);
 
     let higherPriority = false;
     if (this.dependsOn) {
       let higherPriorityProvider = this.dependsOn;
       while (higherPriorityProvider) {
-        if (await higherPriorityProvider.isAvailable()) {
+        if (higherPriorityProvider.isAvailable) {
           higherPriority = true;
           break;
         }
@@ -48,16 +52,12 @@ export abstract class MgtBaseProvider extends MgtBaseComponent {
       }
     }
 
-    if (!higherPriority && (await this.isAvailable())) {
+    if (!higherPriority && this.isAvailable) {
       this.initializeProvider();
     }
   }
 
   protected abstract initializeProvider();
-
-  private _provider: IProvider;
-
-  public abstract isAvailable(): Promise<boolean>;
 
   private stateChangedHandler() {
     this.fireCustomEvent('onStateChanged', this.provider.state);
