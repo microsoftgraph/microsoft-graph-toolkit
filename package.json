@@ -32,7 +32,7 @@
     "sass": "gulp sass",
     "sass:watch": "gulp watchSass",
     "setVersion": "gulp setVersion",
-    "setHeader": "gulp setHeader",
+    "setLicense": "gulp setLicense",
     "build": "run-s prettier:check setVersion clean sass build:esm build:bundle",
     "build:esm": "tsc",
     "build:watch": "tsc --watch",
