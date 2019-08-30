@@ -6,7 +6,7 @@
  */
 
 import { AuthenticationProviderOptions } from '@microsoft/microsoft-graph-client/lib/es/IAuthenticationProviderOptions';
-import { Configuration, UserAgentApplication } from 'msal';
+import { AuthenticationParameters, Configuration, UserAgentApplication } from 'msal';
 import { LoginType, ProviderState } from './IProvider';
 import { MsalProvider } from './MsalProvider';
 
@@ -100,21 +100,6 @@ export interface TeamsConfig {
  * @extends {MsalProvider}
  */
 export class TeamsProvider extends MsalProvider {
-  private set accessToken(value: string) {
-    this._accessToken = value;
-    if (value) {
-      sessionStorage.setItem(TeamsProvider._sessionStorageTokenKey, value);
-      this.setState(ProviderState.SignedIn);
-    } else {
-      sessionStorage.removeItem(TeamsProvider._sessionStorageTokenKey);
-      this.setState(ProviderState.SignedOut);
-    }
-  }
-
-  private get accessToken() {
-    return this._accessToken;
-  }
-
   /**
    * Gets whether the Teams provider can be used in the current context
    * (Whether the app is running in Microsoft Teams)
@@ -158,10 +143,6 @@ export class TeamsProvider extends MsalProvider {
     if (!teams) {
       // tslint:disable-next-line: no-console
       console.error('Make sure you have referenced the Microsoft Teams sdk before using the TeamsProvider');
-      return;
-    }
-
-    if (!this.isAvailable) {
       return;
     }
 
@@ -244,7 +225,6 @@ export class TeamsProvider extends MsalProvider {
     handleProviderState();
   }
 
-  private static _sessionStorageTokenKey = 'mgt-teamsprovider-accesstoken';
   private static _sessionStorageParametersKey = 'msg-teamsprovider-auth-parameters';
 
   /**
@@ -254,8 +234,9 @@ export class TeamsProvider extends MsalProvider {
    * @memberof TeamsProvider
    */
   public scopes: string[];
+
+  private teamsContext;
   private _authPopupUrl: string;
-  private _accessToken: string;
 
   constructor(config: TeamsConfig) {
     super({
@@ -269,7 +250,6 @@ export class TeamsProvider extends MsalProvider {
 
     this._authPopupUrl = config.authPopupUrl;
     teams.initialize();
-    this.accessToken = sessionStorage.getItem(TeamsProvider._sessionStorageTokenKey);
   }
 
   /**
@@ -284,6 +264,8 @@ export class TeamsProvider extends MsalProvider {
 
     return new Promise((resolve, reject) => {
       teams.getContext(context => {
+        this.teamsContext = context;
+
         const url = new URL(this._authPopupUrl, new URL(window.location.href));
         url.searchParams.append('clientId', this.clientId);
 
@@ -297,11 +279,11 @@ export class TeamsProvider extends MsalProvider {
 
         teams.authentication.authenticate({
           failureCallback: reason => {
-            this.accessToken = null;
+            this.setState(ProviderState.SignedOut);
             reject();
           },
           successCallback: result => {
-            this.accessToken = result;
+            this.setState(ProviderState.SignedIn);
             resolve();
           },
           url: url.href
@@ -318,10 +300,37 @@ export class TeamsProvider extends MsalProvider {
    * @memberof TeamsProvider
    */
   public async getAccessToken(options: AuthenticationProviderOptions): Promise<string> {
-    if (!this.accessToken) {
-      throw null;
-    } else {
-      return this.accessToken;
+    if (!this.teamsContext) {
+      const teams = TeamsProvider.microsoftTeamsLib || microsoftTeams;
+      this.teamsContext = await teams.getContext();
+    }
+
+    const scopes = options ? options.scopes || this.scopes : this.scopes;
+    const accessTokenRequest: AuthenticationParameters = {
+      scopes
+    };
+
+    if (this.teamsContext && this.teamsContext.loginHint) {
+      accessTokenRequest.loginHint = this.teamsContext.loginHint;
+    }
+
+    const currentParent = window.parent;
+    if (document.referrer.startsWith('https://teams.microsoft.com/')) {
+      (window as any).parent = window;
+    }
+
+    try {
+      const response = await this._userAgentApplication.acquireTokenSilent(accessTokenRequest);
+      (window as any).parent = currentParent;
+      return response.accessToken;
+    } catch (e) {
+      (window as any).parent = currentParent;
+      if (this.requiresInteraction(e)) {
+        // nothing we can do now until we can do incremental consent
+        return null;
+      } else {
+        throw e;
+      }
     }
   }
 }

@@ -112,6 +112,66 @@ export class MsalProvider extends IProvider {
     this.scopes = scopes;
   }
 
+  protected requiresInteraction(error) {
+    if (!error || !error.errorCode) {
+      return false;
+    }
+    return (
+      error.errorCode.indexOf('consent_required') !== -1 ||
+      error.errorCode.indexOf('interaction_required') !== -1 ||
+      error.errorCode.indexOf('login_required') !== -1
+    );
+  }
+
+  protected setRequestedScopes(scopes: string[]) {
+    if (scopes) {
+      sessionStorage.setItem(this.ss_requested_scopes_key, JSON.stringify(scopes));
+    }
+  }
+
+  protected getRequestedScopes() {
+    let scopes_str = sessionStorage.getItem(this.ss_requested_scopes_key);
+    return scopes_str ? JSON.parse(scopes_str) : null;
+  }
+
+  protected clearRequestedScopes() {
+    sessionStorage.removeItem(this.ss_requested_scopes_key);
+  }
+
+  protected addDeniedScopes(scopes: string[]) {
+    if (scopes) {
+      let deniedScopes: string[] = this.getDeniedScopes() || [];
+      deniedScopes = deniedScopes.concat(scopes);
+
+      let index = deniedScopes.indexOf('openid');
+      if (index !== -1) {
+        deniedScopes.splice(index, 1);
+      }
+
+      index = deniedScopes.indexOf('profile');
+      if (index !== -1) {
+        deniedScopes.splice(index, 1);
+      }
+      sessionStorage.setItem(this.ss_denied_scopes_key, JSON.stringify(deniedScopes));
+    }
+  }
+
+  protected getDeniedScopes() {
+    let scopes_str = sessionStorage.getItem(this.ss_denied_scopes_key);
+    return scopes_str ? JSON.parse(scopes_str) : null;
+  }
+
+  protected areScopesDenied(scopes: string[]) {
+    if (scopes) {
+      const deniedScopes = this.getDeniedScopes();
+      if (deniedScopes && deniedScopes.filter(s => -1 !== scopes.indexOf(s)).length > 0) {
+        return true;
+      }
+    }
+
+    return false;
+  }
+
   private initProvider(config: MsalConfig) {
     this.scopes = typeof config.scopes !== 'undefined' ? config.scopes : ['user.read'];
     this._loginType = typeof config.loginType !== 'undefined' ? config.loginType : LoginType.Redirect;
@@ -150,17 +210,6 @@ export class MsalProvider extends IProvider {
     this.trySilentSignIn();
   }
 
-  private requiresInteraction(error) {
-    if (!error || !error.errorCode) {
-      return false;
-    }
-    return (
-      error.errorCode.indexOf('consent_required') !== -1 ||
-      error.errorCode.indexOf('interaction_required') !== -1 ||
-      error.errorCode.indexOf('login_required') !== -1
-    );
-  }
-
   private tokenReceivedCallback(response: AuthResponse) {
     if (response.tokenType === 'id_token') {
       this.setState(ProviderState.SignedIn);
@@ -176,54 +225,5 @@ export class MsalProvider extends IProvider {
     }
 
     this.clearRequestedScopes();
-  }
-
-  private setRequestedScopes(scopes: string[]) {
-    if (scopes) {
-      sessionStorage.setItem(this.ss_requested_scopes_key, JSON.stringify(scopes));
-    }
-  }
-
-  private getRequestedScopes() {
-    let scopes_str = sessionStorage.getItem(this.ss_requested_scopes_key);
-    return scopes_str ? JSON.parse(scopes_str) : null;
-  }
-
-  private clearRequestedScopes() {
-    sessionStorage.removeItem(this.ss_requested_scopes_key);
-  }
-
-  private addDeniedScopes(scopes: string[]) {
-    if (scopes) {
-      let deniedScopes: string[] = this.getDeniedScopes() || [];
-      deniedScopes = deniedScopes.concat(scopes);
-
-      let index = deniedScopes.indexOf('openid');
-      if (index !== -1) {
-        deniedScopes.splice(index, 1);
-      }
-
-      index = deniedScopes.indexOf('profile');
-      if (index !== -1) {
-        deniedScopes.splice(index, 1);
-      }
-      sessionStorage.setItem(this.ss_denied_scopes_key, JSON.stringify(deniedScopes));
-    }
-  }
-
-  private getDeniedScopes() {
-    let scopes_str = sessionStorage.getItem(this.ss_denied_scopes_key);
-    return scopes_str ? JSON.parse(scopes_str) : null;
-  }
-
-  private areScopesDenied(scopes: string[]) {
-    if (scopes) {
-      const deniedScopes = this.getDeniedScopes();
-      if (deniedScopes && deniedScopes.filter(s => -1 !== scopes.indexOf(s)).length > 0) {
-        return true;
-      }
-    }
-
-    return false;
   }
 }
