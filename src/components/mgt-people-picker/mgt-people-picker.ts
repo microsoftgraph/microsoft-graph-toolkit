@@ -366,8 +366,8 @@ export class MgtPeoplePicker extends MgtTemplatedComponent {
             aria-label="people-picker-input"
             role="input"
             .value="${this._userInput}"
-            @blur=${this.lostFocus}
-            @click=${this.gainedFocus}
+            @blur=${this.lostFocus()}
+            @click=${this.gainedFocus()}
             @keydown="${(e: KeyboardEvent & { target: HTMLInputElement }) => {
               this.onUserKeyDown(e);
             }}"
@@ -393,7 +393,9 @@ export class MgtPeoplePicker extends MgtTemplatedComponent {
   private lostFocus() {
     const peopleList = this.renderRoot.querySelector('.people-list');
     if (peopleList) {
-      peopleList.setAttribute('style', 'display:none');
+      setTimeout(() => {
+        peopleList.setAttribute('style', 'display:none');
+      }, 300);
     }
   }
 
