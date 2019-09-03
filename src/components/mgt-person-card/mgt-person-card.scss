@@ -63,9 +63,17 @@ $email-color: var(--email-color, #{$ms-color-neutralPrimary});
     }
   }
 
-  .additional-details {
-    height: 28px;
-    background: rgba(196, 196, 196, 0.1);
-    text-align: center;
+  .additional-details-container {
+    .additional-details-button {
+      height: 28px;
+      background: rgba(196, 196, 196, 0.1);
+      text-align: center;
+      position: relative;
+      .additional-details-svg {
+        width: 100%;
+        bottom: 0;
+        top: 100%;
+      }
+    }
   }
 }

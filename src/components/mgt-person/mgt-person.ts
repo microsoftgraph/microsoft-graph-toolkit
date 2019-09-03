@@ -322,11 +322,23 @@ export class MgtPerson extends MgtTemplatedComponent {
     }
 
     const flyoutClasses = { flyout: true, visible: this._isPersonCardVisible };
-    return html`
-      <div class=${classMap(flyoutClasses)}>
-        <mgt-person-card .personDetails=${this.personDetails} .personImage=${this.personImage}></mgt-person-card>
-      </div>
-    `;
+    if (this._isPersonCardVisible) {
+      return html`
+        <div class=${classMap(flyoutClasses)}>
+          <mgt-person-card .personDetails=${this.personDetails} .personImage=${this.personImage}></mgt-person-card>
+        </div>
+      `;
+    } else {
+      return html`
+        <div class=${classMap(flyoutClasses)}>
+          <mgt-person-card
+            .showadditionaldetails=${'false'}
+            .personDetails=${this.personDetails}
+            .personImage=${this.personImage}
+          ></mgt-person-card>
+        </div>
+      `;
+    }
   }
 
   private renderDetails() {
