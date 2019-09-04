@@ -42,13 +42,14 @@ $email-color: var(--email-color, #{$ms-color-neutralPrimary});
       .display-name {
         font-size: 27.3103px;
         // line-height: 36px;
-        color: #333333dd;
+        color: #333333;
       }
 
       .job-title {
         font-size: 18.2069px;
         // line-height: 31px;
         color: #767676;
+        font-weight: 600;
       }
 
       .department {
@@ -57,8 +58,14 @@ $email-color: var(--email-color, #{$ms-color-neutralPrimary});
         color: #767676;
       }
 
-      .icons {
+      .base-icons {
         margin-top: 14px;
+        display: flex;
+        -webkit-align-items: center;
+        align-items: center;
+        .second-icon {
+          margin-left: 20px;
+        }
       }
     }
   }
@@ -70,9 +77,47 @@ $email-color: var(--email-color, #{$ms-color-neutralPrimary});
       text-align: center;
       position: relative;
       .additional-details-svg {
-        width: 100%;
+        width: 50%;
         bottom: 0;
         top: 100%;
+      }
+    }
+    .additional-details-info {
+      margin: 0 0 0 20px;
+      .contact-text {
+        margin: 0 0 24px 0;
+        font-weight: 600;
+        font-size: 14px;
+        color: #000000;
+      }
+      .additional-details-row {
+        display: flex;
+        .additional-details-item {
+          line-height: normal;
+          font-style: normal;
+          font-weight: normal;
+          font-size: 15px;
+          .icons {
+            text-align: center;
+            .details-icon {
+              margin: 0 0 10px 0;
+            }
+          }
+          .data {
+            display: block;
+            margin: 0 0 9px 10px;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            width: 280px;
+          }
+          .normal-subtitle {
+            padding-top: 2px;
+          }
+          .link-subtitle {
+            color: #3078cd;
+          }
+        }
       }
     }
   }
