@@ -133,7 +133,7 @@ export class MgtPersonCard extends MgtTemplatedComponent {
               </div>
             </div>
           </div>
-          <div class="additional-details-container" @click=${() => this._showAdditionalDetails()}>
+          <div class="additional-details-container" @click=${this._showAdditionalDetails}>
             ${this.renderAdditionalDetails()}
           </div>
         </div>
@@ -251,7 +251,9 @@ export class MgtPersonCard extends MgtTemplatedComponent {
     }
   }
 
-  private _showAdditionalDetails() {
+  private _showAdditionalDetails(e: Event) {
+    // handles clicking when parent is also activated by click
+    e.stopPropagation();
     const root = this.renderRoot.querySelector('.root');
     if (root && root.animate) {
       // play back
