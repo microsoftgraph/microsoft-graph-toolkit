@@ -5,56 +5,49 @@
  * -------------------------------------------------------------------------------------------
  */
 
-import { LitElement, customElement, property } from 'lit-element';
-import { MsalConfig, MsalProvider } from '../../providers/MsalProvider';
-import { LoginType } from '../../providers/IProvider';
+import { customElement, LitElement, property } from 'lit-element';
 import { Providers } from '../../Providers';
+import { LoginType } from '../../providers/IProvider';
+import { MsalConfig, MsalProvider } from '../../providers/MsalProvider';
+import { MgtBaseProvider } from './baseProvider';
 
 @customElement('mgt-msal-provider')
-export class MgtMsalProvider extends LitElement {
-  private _isInitialized: boolean = false;
-
+export class MgtMsalProvider extends MgtBaseProvider {
   @property({
     type: String,
     attribute: 'client-id'
   })
-  clientId = '';
+  public clientId = '';
 
   @property({
     type: String,
     attribute: 'login-type'
   })
-  loginType;
+  public loginType;
 
-  @property() authority;
+  @property() public authority;
 
   /* Comma separated list of scopes. */
   @property({
     type: String,
     attribute: 'scopes'
   })
-  scopes;
+  public scopes;
 
-  firstUpdated(changedProperties) {
-    this.validateAuthProps();
+  public get isAvailable() {
+    return true;
   }
 
-  private validateAuthProps() {
-    if (this._isInitialized) {
-      return;
-    }
-
+  protected initializeProvider() {
     if (this.clientId) {
-      this._isInitialized = true;
-
-      let config: MsalConfig = {
+      const config: MsalConfig = {
         clientId: this.clientId
       };
 
       if (this.loginType && this.loginType.length > 1) {
         let loginType: string = this.loginType.toLowerCase();
         loginType = loginType[0].toUpperCase() + loginType.slice(1);
-        let loginTypeEnum = LoginType[loginType];
+        const loginTypeEnum = LoginType[loginType];
         config.loginType = loginTypeEnum;
       }
 
@@ -63,13 +56,14 @@ export class MgtMsalProvider extends LitElement {
       }
 
       if (this.scopes) {
-        let scope = this.scopes.split(',');
+        const scope = this.scopes.split(',');
         if (scope && scope.length > 0) {
           config.scopes = scope;
         }
       }
 
-      Providers.globalProvider = new MsalProvider(config);
+      this.provider = new MsalProvider(config);
+      Providers.globalProvider = this.provider;
     }
   }
 }

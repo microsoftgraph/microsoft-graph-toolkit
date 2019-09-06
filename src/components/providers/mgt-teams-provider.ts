@@ -5,41 +5,52 @@
  * -------------------------------------------------------------------------------------------
  */
 
-import { LitElement, customElement, property } from 'lit-element';
+import { customElement, LitElement, property } from 'lit-element';
 import { Providers } from '../../Providers';
-import { TeamsProvider } from '../../providers/TeamsProvider';
+import { TeamsConfig, TeamsProvider } from '../../providers/TeamsProvider';
+import { MgtBaseProvider } from './baseProvider';
 
 @customElement('mgt-teams-provider')
-export class MgtTeamsProvider extends LitElement {
-  private _provider: TeamsProvider;
-
+export class MgtTeamsProvider extends MgtBaseProvider {
   @property({
     type: String,
     attribute: 'client-id'
   })
-  clientId = '';
+  public clientId = '';
 
   @property({
     type: String,
     attribute: 'auth-popup-url'
   })
-  authPopupUrl = '';
+  public authPopupUrl = '';
 
-  async firstUpdated(changedProperties) {
-    this.validateAuthProps();
-    if (await TeamsProvider.isAvailable()) {
-      Providers.globalProvider = this._provider;
-    }
+  /* Comma separated list of scopes. */
+  @property({
+    type: String,
+    attribute: 'scopes'
+  })
+  public scopes;
+
+  public get isAvailable() {
+    return TeamsProvider.isAvailable;
   }
 
-  private validateAuthProps() {
+  protected initializeProvider() {
     if (this.clientId && this.authPopupUrl) {
-      if (!this._provider) {
-        this._provider = new TeamsProvider({
-          clientId: this.clientId,
-          authPopupUrl: this.authPopupUrl
-        });
+      const config: TeamsConfig = {
+        authPopupUrl: this.authPopupUrl,
+        clientId: this.clientId
+      };
+
+      if (this.scopes) {
+        const scope = this.scopes.split(',');
+        if (scope && scope.length > 0) {
+          config.scopes = scope;
+        }
       }
+
+      this.provider = new TeamsProvider(config);
+      Providers.globalProvider = this.provider;
     }
   }
 }
