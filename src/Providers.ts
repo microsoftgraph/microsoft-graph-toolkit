@@ -5,14 +5,9 @@
  * -------------------------------------------------------------------------------------------
  */
 
-import { IProvider, EventDispatcher, EventHandler } from './providers/IProvider';
+import { EventDispatcher, EventHandler, IProvider } from './providers/IProvider';
 
 export class Providers {
-  private static _eventDispatcher: EventDispatcher<ProvidersChangedState> = new EventDispatcher<
-    ProvidersChangedState
-  >();
-  private static _globalProvider: IProvider;
-
   public static get globalProvider(): IProvider {
     return this._globalProvider;
   }
@@ -39,6 +34,10 @@ export class Providers {
   public static removeProviderUpdatedListener(event: EventHandler<ProvidersChangedState>) {
     this._eventDispatcher.remove(event);
   }
+  private static _eventDispatcher: EventDispatcher<ProvidersChangedState> = new EventDispatcher<
+    ProvidersChangedState
+  >();
+  private static _globalProvider: IProvider;
 
   private static handleProviderStateChanged() {
     Providers._eventDispatcher.fire(ProvidersChangedState.ProviderStateChanged);
