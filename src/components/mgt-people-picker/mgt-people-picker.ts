@@ -366,8 +366,8 @@ export class MgtPeoplePicker extends MgtTemplatedComponent {
             aria-label="people-picker-input"
             role="input"
             .value="${this._userInput}"
-            @blur=${this.lostFocus()}
-            @click=${this.gainedFocus()}
+            @blur=${this.lostFocus}
+            @click=${this.gainedFocus}
             @keydown="${(e: KeyboardEvent & { target: HTMLInputElement }) => {
               this.onUserKeyDown(e);
             }}"
