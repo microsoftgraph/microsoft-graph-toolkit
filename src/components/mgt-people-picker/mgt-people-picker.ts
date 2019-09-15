@@ -435,9 +435,9 @@ export class MgtPeoplePicker extends MgtTemplatedComponent {
   }
 
   private renderPeopleList() {
-    const people: any = this.people;
-
+    let people: any = this.people;
     if (people) {
+      people = people.slice(0, this.showMax);
       if (people.length == 0 && this._userInput.length > 0 && this.isLoading == false) {
         return html`
           <div class="people-list">
