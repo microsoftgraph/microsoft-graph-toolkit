@@ -325,7 +325,10 @@ export class MgtPerson extends MgtTemplatedComponent {
     if (this._isPersonCardVisible) {
       return html`
         <div class=${classMap(flyoutClasses)}>
-          <mgt-person-card .personDetails=${this.personDetails} .personImage=${this.personImage}></mgt-person-card>
+          ${this.renderTemplate('person-card', { person: this.personDetails }) ||
+            html`
+              <mgt-person-card .personDetails=${this.personDetails} .personImage=${this.personImage}> </mgt-person-card>
+            `}
         </div>
       `;
     } else {
