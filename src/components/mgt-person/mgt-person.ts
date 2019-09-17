@@ -205,7 +205,13 @@ export class MgtPerson extends MgtTemplatedComponent {
   private async loadData() {
     const provider = Providers.globalProvider;
 
-    if (!provider || provider.state !== ProviderState.SignedIn) {
+    if (!provider || provider.state === ProviderState.Loading) {
+      return;
+    }
+
+    if (provider.state === ProviderState.SignedOut) {
+      this.personDetails = null;
+      this.personImage = null;
       return;
     }
 

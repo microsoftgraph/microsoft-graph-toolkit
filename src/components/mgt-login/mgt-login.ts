@@ -64,47 +64,13 @@ export class MgtLogin extends MgtBaseComponent {
     this.loadState();
   }
 
-  public updated(changedProps) {
-    if (changedProps.get('_showMenu') === false) {
-      // get popup bounds
-      const popup = this.renderRoot.querySelector('.popup');
-      if (popup && popup.animate) {
-        this._popupRect = popup.getBoundingClientRect();
-
-        // invert variables
-        const deltaX = this._loginButtonRect.left - this._popupRect.left;
-        const deltaY = this._loginButtonRect.top - this._popupRect.top;
-        const deltaW = this._loginButtonRect.width / this._popupRect.width;
-        const deltaH = this._loginButtonRect.height / this._popupRect.height;
-
-        // play back
-        popup.animate(
-          [
-            {
-              transformOrigin: 'top left',
-              transform: `
-              translate(${deltaX}px, ${deltaY}px)
-              scale(${deltaW}, ${deltaH})
-            `,
-              backgroundColor: '#eaeaea'
-            },
-            {
-              transformOrigin: 'top left',
-              transform: 'none',
-              backgroundColor: 'white'
-            }
-          ],
-          {
-            duration: 100,
-            easing: 'ease-in-out',
-            fill: 'both'
-          }
-        );
-      }
-    }
-  }
-
-  public async login() {
+  /**
+   * Initiate login
+   *
+   * @returns {Promise<void>}
+   * @memberof MgtLogin
+   */
+  public async login(): Promise<void> {
     if (this.userDetails) {
       return;
     }
@@ -124,13 +90,14 @@ export class MgtLogin extends MgtBaseComponent {
     }
   }
 
-  public async logout() {
+  /**
+   *
+   * Initiate logout
+   * @returns {Promise<void>}
+   * @memberof MgtLogin
+   */
+  public async logout(): Promise<void> {
     if (!this.fireCustomEvent('logoutInitiated')) {
-      return;
-    }
-
-    if (this.userDetails) {
-      this.userDetails = null;
       return;
     }
 
@@ -140,7 +107,57 @@ export class MgtLogin extends MgtBaseComponent {
       this.fireCustomEvent('logoutCompleted');
     }
 
+    this.userDetails = null;
     this._showMenu = false;
+  }
+
+  /**
+   * Invoked whenever the element is updated. Implement to perform
+   * post-updating tasks via DOM APIs, for example, focusing an element.
+   *
+   * Setting properties inside this method will trigger the element to update
+   * again after this update cycle completes.
+   *
+   * * @param _changedProperties Map of changed properties with old values
+   */
+  protected updated(changedProps) {
+    if (changedProps.get('_showMenu') === false) {
+      // get popup bounds
+      const popup = this.renderRoot.querySelector('.popup');
+      if (popup && popup.animate) {
+        this._popupRect = popup.getBoundingClientRect();
+
+        // invert variables
+        const deltaX = this._loginButtonRect.left - this._popupRect.left;
+        const deltaY = this._loginButtonRect.top - this._popupRect.top;
+        const deltaW = this._loginButtonRect.width / this._popupRect.width;
+        const deltaH = this._loginButtonRect.height / this._popupRect.height;
+
+        // play back
+        popup.animate(
+          [
+            {
+              backgroundColor: '#eaeaea',
+              transform: `
+              translate(${deltaX}px, ${deltaY}px)
+              scale(${deltaW}, ${deltaH})
+              `,
+              transformOrigin: 'top left'
+            },
+            {
+              backgroundColor: 'white',
+              transform: 'none',
+              transformOrigin: 'top left'
+            }
+          ],
+          {
+            duration: 100,
+            easing: 'ease-in-out',
+            fill: 'both'
+          }
+        );
+      }
+    }
   }
 
   /**
@@ -230,12 +247,7 @@ export class MgtLogin extends MgtBaseComponent {
   }
 
   private async loadState() {
-    if (this.userDetails) {
-      return;
-    }
-
     const provider = Providers.globalProvider;
-
     if (provider) {
       this._loading = true;
       if (provider.state === ProviderState.SignedIn) {
@@ -249,6 +261,8 @@ export class MgtLogin extends MgtBaseComponent {
       } else if (provider.state === ProviderState.SignedOut) {
         this.userDetails = null;
       } else {
+        // Loading
+        this._showMenu = false;
         return;
       }
     }

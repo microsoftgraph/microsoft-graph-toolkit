@@ -103,7 +103,6 @@ export class MgtPeoplePicker extends MgtTemplatedComponent {
 
   constructor() {
     super();
-    this.trackMouseFocus = this.trackMouseFocus.bind(this);
   }
 
   /**
@@ -129,8 +128,7 @@ export class MgtPeoplePicker extends MgtTemplatedComponent {
     }
   }
 
-  protected render() {
-    document.addEventListener('mouseup', this.trackMouseFocus, false);
+  public render() {
     return (
       this.renderTemplate('default', { people: this.people }) ||
       html`
@@ -348,23 +346,6 @@ export class MgtPeoplePicker extends MgtTemplatedComponent {
       </div>
     `;
   }
-  private trackMouseFocus(e) {
-    const peopleList = this.renderRoot.querySelector('.people-list');
-    if (e.target.localName === 'mgt-people-picker') {
-      const peopleInput = this.renderRoot.querySelector('.people-chosen-input') as HTMLInputElement;
-      peopleInput.focus();
-      peopleInput.select();
-    }
-    if (peopleList) {
-      if (e.target.localName === 'mgt-people-picker') {
-        // Mouse is focused on input
-        peopleList.setAttribute('style', 'display:block');
-      } else {
-        // reset if not clicked in focus
-        peopleList.setAttribute('style', 'display:none');
-      }
-    }
-  }
 
   private renderChosenPeople() {
     let peopleList;
@@ -397,6 +378,8 @@ export class MgtPeoplePicker extends MgtTemplatedComponent {
             aria-label="people-picker-input"
             role="input"
             .value="${this._userInput}"
+            @blur=${this.lostFocus}
+            @click=${this.gainedFocus}
             @keydown="${(e: KeyboardEvent & { target: HTMLInputElement }) => {
               this.onUserKeyDown(e);
             }}"
@@ -407,6 +390,25 @@ export class MgtPeoplePicker extends MgtTemplatedComponent {
         </div>
       </div>
     `;
+  }
+
+  private gainedFocus() {
+    const peopleList = this.renderRoot.querySelector('.people-list');
+    const peopleInput = this.renderRoot.querySelector('.people-chosen-input') as HTMLInputElement;
+    peopleInput.focus();
+    peopleInput.select();
+    if (peopleList) {
+      // Mouse is focused on input
+      peopleList.setAttribute('style', 'display:block');
+    }
+  }
+  private lostFocus() {
+    const peopleList = this.renderRoot.querySelector('.people-list');
+    if (peopleList) {
+      setTimeout(() => {
+        peopleList.setAttribute('style', 'display:none');
+      }, 300);
+    }
   }
 
   private renderHighlightText(person: MicrosoftGraph.User | MicrosoftGraph.Person | MicrosoftGraph.Contact) {
@@ -446,9 +448,10 @@ export class MgtPeoplePicker extends MgtTemplatedComponent {
   }
 
   private renderPeopleList() {
-    const people = this.people;
+    let people: any = this.people;
     if (people) {
-      if (people.length === 0 && this._userInput.length > 0 && this.isLoading === false) {
+      people = people.slice(0, this.showMax);
+      if (people.length == 0 && this._userInput.length > 0 && this.isLoading == false) {
         return html`
           <div class="people-list">
             ${this.renderErrorMessage()}
