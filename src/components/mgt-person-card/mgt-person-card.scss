@@ -98,14 +98,17 @@ $email-color: var(--email-color, #{$ms-color-neutralPrimary});
           font-weight: normal;
           font-size: 15px;
           .icons {
-            text-align: center;
+            text-align: left;
             .details-icon {
               margin: 0 0 10px 0;
+              display: flex;
+              flex-direction: row;
+              align-items: center;
             }
           }
           .data {
             display: block;
-            margin: 0 0 9px 10px;
+            margin: 0 0 0px 10px;
             white-space: nowrap;
             overflow: hidden;
             text-overflow: ellipsis;
@@ -118,6 +121,13 @@ $email-color: var(--email-color, #{$ms-color-neutralPrimary});
             color: #3078cd;
           }
         }
+      }
+      .section-divider {
+        width: 96%;
+        height: 1px;
+        background: #eaeaea;
+      }
+      .custom-section {
       }
     }
   }

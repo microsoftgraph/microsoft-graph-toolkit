@@ -32,11 +32,11 @@ export class MgtPersonCard extends MgtTemplatedComponent {
    *     | MicrosoftGraph.Contact)}
    * @memberof MgtPersonCard
    */
-  @property({ attribute: 'person-details' }) public personDetails:
-    | MicrosoftGraph.User
-    | MicrosoftGraph.Person
-    | MicrosoftGraph.Contact;
-
+  @property({
+    attribute: 'person-details',
+    type: Object
+  })
+  public personDetails: MicrosoftGraph.User | MicrosoftGraph.Person | MicrosoftGraph.Contact;
   /**
    * Set the image of the person
    * Set to '@' to look up image from the graph
@@ -124,14 +124,17 @@ export class MgtPersonCard extends MgtTemplatedComponent {
       return html`
         <div class="root">
           <div class="default-view">
-            <mgt-person .personDetails=${this.personDetails} .personImage=${this.personImage}></mgt-person>
-            <div class="details">
-              <div class="display-name">${user.displayName}</div>
-              ${jobTitle} ${department}
-              <div class="base-icons">
-                ${this.renderIcons()}
-              </div>
-            </div>
+            ${this.renderTemplate('default', { person: this.personDetails }) ||
+              html`
+                <mgt-person .personDetails=${this.personDetails} .personImage=${this.personImage}></mgt-person>
+                <div class="details">
+                  <div class="display-name">${user.displayName}</div>
+                  ${jobTitle} ${department}
+                  <div class="base-icons">
+                    ${this.renderIcons()}
+                  </div>
+                </div>
+              `}
           </div>
           <div class="additional-details-container" @click=${this._showAdditionalDetails}>
             ${this.renderAdditionalDetails()}
@@ -280,14 +283,15 @@ export class MgtPersonCard extends MgtTemplatedComponent {
           <div class="additional-details-row">
             <div class="additional-details-item">
               <div class="icons">
-                <div class="details-icon">${chatSVG}</div>
-                <div class="details-icon">${emailSVG}</div>
-                <div class="details-icon">${phoneSVG}</div>
-                <div class="details-icon">${locationSVG}</div>
+                <div class="details-icon">${chatSVG}${chat}</div>
+                <div class="details-icon">${emailSVG}${email}</div>
+                <div class="details-icon">${phoneSVG}${phone}</div>
+                <div class="details-icon">${locationSVG}${location}</div>
               </div>
-            </div>
-            <div class="additional-details-item">
-              ${chat} ${email} ${phone} ${location}
+              <div class="section-divider"></div>
+              <div class="custom-section">
+                ${this.renderTemplate('additional-details', null) || html``}
+              </div>
             </div>
           </div>
         </div>
