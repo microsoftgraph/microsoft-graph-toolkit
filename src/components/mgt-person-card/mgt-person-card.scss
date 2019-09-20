@@ -66,6 +66,9 @@ $email-color: var(--email-color, #{$ms-color-neutralPrimary});
         .second-icon {
           margin-left: 20px;
         }
+        .hover-state {
+          opacity: 0.6;
+        }
       }
     }
   }

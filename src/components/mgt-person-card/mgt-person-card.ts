@@ -203,9 +203,15 @@ export class MgtPersonCard extends MgtTemplatedComponent {
       return html``;
     } else {
       return html`
-        <div @click=${this._chatUser}>${chat}</div>
-        <div @click=${this._emailUser}>${email}</div>
-        <div @click=${this._callUser}>${phone}</div>
+        <div @mouseout=${this._unsetMouseOverState} @mouseover=${this._setMouseOverState} @click=${this._chatUser}>
+          ${chat}
+        </div>
+        <div @mouseout=${this._unsetMouseOverState} @mouseover=${this._setMouseOverState} @click=${this._emailUser}>
+          ${email}
+        </div>
+        <div @mouseout=${this._unsetMouseOverState} @mouseover=${this._setMouseOverState} @click=${this._callUser}>
+          ${phone}
+        </div>
       `;
     }
   }
@@ -218,7 +224,9 @@ export class MgtPersonCard extends MgtTemplatedComponent {
 
     if ((user as MicrosoftGraph.User).businessPhones && (user as MicrosoftGraph.User).businessPhones.length > 0) {
       phone = html`
-        <span class="link-subtitle data">${(user as MicrosoftGraph.User).businessPhones[0]}</span>
+        <span class="link-subtitle data" @mouseout=${this._unsetMouseOverState} @mouseover=${this._setMouseOverState}
+          >${(user as MicrosoftGraph.User).businessPhones[0]}</span
+        >
       `;
       phoneSVG = html`
         <svg xmlns="http://www.w3.org/2000/svg" width="17" height="17" viewBox="0 0 17 17" fill="none">
@@ -232,7 +240,9 @@ export class MgtPersonCard extends MgtTemplatedComponent {
 
     if ((user as MicrosoftGraph.User).mail) {
       email = html`
-        <span class="link-subtitle data">${(user as MicrosoftGraph.User).mail}</span>
+        <span class="link-subtitle data" @mouseout=${this._unsetMouseOverState} @mouseover=${this._setMouseOverState}
+          >${(user as MicrosoftGraph.User).mail}</span
+        >
       `;
       emailSVG = html`
         <svg width="17" height="11" viewBox="0 0 17 11" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -246,7 +256,9 @@ export class MgtPersonCard extends MgtTemplatedComponent {
 
     if ((user as MicrosoftGraph.User).mailNickname) {
       chat = html`
-        <span class="link-subtitle data">${(user as MicrosoftGraph.User).mailNickname}</span>
+        <span class="link-subtitle data" @mouseout=${this._unsetMouseOverState} @mouseover=${this._setMouseOverState}
+          >${(user as MicrosoftGraph.User).mailNickname}</span
+        >
       `;
       chatSVG = html`
         <svg xmlns="http://www.w3.org/2000/svg" width="17" height="17" viewBox="0 0 17 17" fill="none">
@@ -264,7 +276,7 @@ export class MgtPersonCard extends MgtTemplatedComponent {
 
     if (user.officeLocation) {
       location = html`
-        <span class="normal-subtitle data">${user.officeLocation}</div>
+        <span class="normal-subtitle data">${user.officeLocation}</span>
       `;
       locationSVG = html`
         <svg xmlns="http://www.w3.org/2000/svg" width="13" height="20" viewBox="0 0 13 20" fill="none">
@@ -391,5 +403,12 @@ export class MgtPersonCard extends MgtTemplatedComponent {
     // TODO: load data from the graph
     // need to add person-query and user-id properties and
     // factor out methods from mgt-person to use in both
+  }
+
+  private _setMouseOverState(el) {
+    el.target.classList.add('hover-state');
+  }
+  private _unsetMouseOverState(el) {
+    el.target.classList.remove('hover-state');
   }
 }
