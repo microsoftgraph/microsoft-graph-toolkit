@@ -144,4 +144,7 @@ mgt-person .user-email {
 .root .flyout.visible {
   display: inline-block;
   opacity: 1;
+  &.openLeft {
+    right: 0;
+  }
 }

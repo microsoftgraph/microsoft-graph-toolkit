@@ -131,6 +131,7 @@ export class MgtPerson extends MgtTemplatedComponent {
 
   private _mouseLeaveTimeout;
   private _mouseEnterTimeout;
+  private _openLeft: boolean = false;
 
   /**
    * Synchronizes property values when attributes change.
@@ -327,7 +328,12 @@ export class MgtPerson extends MgtTemplatedComponent {
       return;
     }
 
-    const flyoutClasses = { flyout: true, visible: this._isPersonCardVisible };
+    const personRect = this.renderRoot.querySelector('.root').getBoundingClientRect();
+    const leftEdge = personRect.left;
+    const rightEdge = (window.innerWidth || document.documentElement.clientWidth) - personRect.right;
+    this._openLeft = rightEdge < leftEdge;
+
+    const flyoutClasses = { flyout: true, visible: this._isPersonCardVisible, openLeft: this._openLeft };
     if (this._isPersonCardVisible) {
       return html`
         <div class=${classMap(flyoutClasses)}>
