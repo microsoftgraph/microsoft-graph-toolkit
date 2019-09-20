@@ -123,6 +123,9 @@ $email-color: var(--email-color, #{$ms-color-neutralPrimary});
           .link-subtitle {
             color: #3078cd;
           }
+          .hover-state {
+            opacity: 0.6;
+          }
         }
       }
       .section-divider {
