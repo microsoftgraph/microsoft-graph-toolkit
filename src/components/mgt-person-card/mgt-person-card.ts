@@ -283,9 +283,9 @@ export class MgtPersonCard extends MgtTemplatedComponent {
           <div class="additional-details-row">
             <div class="additional-details-item">
               <div class="icons">
-                <div class="details-icon">${chatSVG}${chat}</div>
-                <div class="details-icon">${emailSVG}${email}</div>
-                <div class="details-icon">${phoneSVG}${phone}</div>
+                <div class="details-icon" @click=${this._chatUser}>${chatSVG}${chat}</div>
+                <div class="details-icon" @click=${this._emailUser}>${emailSVG}${email}</div>
+                <div class="details-icon" @click=${this._callUser}>${phoneSVG}${phone}</div>
                 <div class="details-icon">${locationSVG}${location}</div>
               </div>
               <div class="section-divider"></div>
