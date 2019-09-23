@@ -123,7 +123,7 @@ export class MgtPersonCard extends MgtTemplatedComponent {
         `;
       }
       return html`
-        <div class="root">
+        <div class="root" @click=${this.handleClose}>
           <div class="default-view">
             ${this.renderTemplate('default', { person: this.personDetails }) ||
               html`
@@ -411,5 +411,9 @@ export class MgtPersonCard extends MgtTemplatedComponent {
   }
   private _unsetMouseOverState(el) {
     el.target.classList.remove('hover-state');
+  }
+
+  private handleClose(e: Event) {
+    e.stopPropagation();
   }
 }
