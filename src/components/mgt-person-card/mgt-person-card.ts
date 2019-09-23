@@ -79,6 +79,7 @@ export class MgtPersonCard extends MgtTemplatedComponent {
     // if (name === 'person-id' && oldValue !== newValue){
     //  this.loadData();
     // }
+
     if (name === 'showadditionaldetails' && oldValue !== newValue) {
       this.showadditionaldetails = 'false';
     }
@@ -302,7 +303,7 @@ export class MgtPersonCard extends MgtTemplatedComponent {
               </div>
               <div class="section-divider"></div>
               <div class="custom-section">
-                ${this.renderTemplate('additional-details', null) || html``}
+                ${this.renderTemplate('additional-details', null)}
               </div>
             </div>
           </div>
