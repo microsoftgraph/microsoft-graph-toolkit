@@ -147,4 +147,8 @@ mgt-person .user-email {
   &.openLeft {
     right: 0;
   }
+  &.openUp {
+    bottom: 0;
+    padding-bottom: 60px;
+  }
 }

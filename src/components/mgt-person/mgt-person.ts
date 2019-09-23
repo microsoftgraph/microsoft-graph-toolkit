@@ -132,6 +132,7 @@ export class MgtPerson extends MgtTemplatedComponent {
   private _mouseLeaveTimeout;
   private _mouseEnterTimeout;
   private _openLeft: boolean = false;
+  private _openUp: boolean = false;
 
   /**
    * Synchronizes property values when attributes change.
@@ -327,13 +328,22 @@ export class MgtPerson extends MgtTemplatedComponent {
     if (this.personCardInteraction === PersonCardInteraction.none || !this._personCardShouldRender) {
       return;
     }
-
+    // logic for rendering left if there is no space
     const personRect = this.renderRoot.querySelector('.root').getBoundingClientRect();
     const leftEdge = personRect.left;
     const rightEdge = (window.innerWidth || document.documentElement.clientWidth) - personRect.right;
     this._openLeft = rightEdge < leftEdge;
 
-    const flyoutClasses = { flyout: true, visible: this._isPersonCardVisible, openLeft: this._openLeft };
+    // logic for rendering up
+    const bottomEdge = (window.innerHeight || document.documentElement.clientHeight) - personRect.bottom;
+    this._openUp = bottomEdge < 175;
+
+    const flyoutClasses = {
+      flyout: true,
+      visible: this._isPersonCardVisible,
+      openLeft: this._openLeft,
+      openUp: this._openUp
+    };
     if (this._isPersonCardVisible) {
       return html`
         <div class=${classMap(flyoutClasses)}>
