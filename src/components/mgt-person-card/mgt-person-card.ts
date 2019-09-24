@@ -2,6 +2,7 @@ import * as MicrosoftGraph from '@microsoft/microsoft-graph-types';
 import { customElement, html, property } from 'lit-element';
 import { Providers } from '../../Providers';
 import { ProviderState } from '../../providers/IProvider';
+import { getEmailFromGraphEntity } from '../../utils/graphHelpers';
 import * as svgHelper from '../../utils/svgHelper';
 import { PersonCardInteraction } from '../mgt-person/mgt-person';
 import { MgtTemplatedComponent } from '../templatedComponent';
@@ -155,7 +156,7 @@ export class MgtPersonCard extends MgtTemplatedComponent {
         ${svgHelper.getSVG('chat', '#666666')}
       `;
     }
-    if ((user as MicrosoftGraph.User).mail) {
+    if (getEmailFromGraphEntity(user)) {
       email = html`
         ${svgHelper.getSVG('email', '#666666')}
       `;
@@ -201,12 +202,12 @@ export class MgtPersonCard extends MgtTemplatedComponent {
       `;
     }
 
-    if ((user as MicrosoftGraph.User).mail) {
+    if (getEmailFromGraphEntity(user)) {
       email = html`
         <div class="details-icon" @click=${this._emailUser}>
           ${svgHelper.getSVG('email-small', '#666666')}
           <span class="link-subtitle data" @mouseout=${this._unsetMouseOverState} @mouseover=${this._setMouseOverState}
-            >${(user as MicrosoftGraph.User).mail}</span
+            >${getEmailFromGraphEntity(user)}</span
           >
         </div>
       `;
@@ -312,8 +313,8 @@ export class MgtPersonCard extends MgtTemplatedComponent {
     const user = this.personDetails;
     let email;
 
-    if ((user as MicrosoftGraph.User).mail) {
-      email = (user as MicrosoftGraph.User).mail;
+    if (getEmailFromGraphEntity(user)) {
+      email = getEmailFromGraphEntity(user);
     }
     e.stopPropagation();
     window.location.assign('mailto:' + email);
