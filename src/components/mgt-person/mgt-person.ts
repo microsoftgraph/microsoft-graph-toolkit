@@ -318,6 +318,7 @@ export class MgtPerson extends MgtTemplatedComponent {
 
   private _hidePersonCard() {
     this._isPersonCardVisible = false;
+    this.querySelector('mgt-person-card').setAttribute('is-extended', 'false');
   }
 
   private renderPersonCard() {
@@ -354,16 +355,6 @@ export class MgtPerson extends MgtTemplatedComponent {
             html`
               <mgt-person-card .personDetails=${this.personDetails} .personImage=${this.personImage}> </mgt-person-card>
             `}
-        </div>
-      `;
-    } else {
-      return html`
-        <div class=${classMap(flyoutClasses)}>
-          <mgt-person-card
-            .isExtended=${false}
-            .personDetails=${this.personDetails}
-            .personImage=${this.personImage}
-          ></mgt-person-card>
         </div>
       `;
     }
