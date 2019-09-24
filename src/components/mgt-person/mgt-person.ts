@@ -313,9 +313,6 @@ export class MgtPerson extends MgtTemplatedComponent {
       this._personCardShouldRender = true;
     }
 
-    // give the person-card a chance to render so transitions work
-    // await delay(200);
-
     this._isPersonCardVisible = true;
   }
 

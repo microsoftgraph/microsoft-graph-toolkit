@@ -342,10 +342,6 @@ export class MgtPersonCard extends MgtTemplatedComponent {
     if (!provider || provider.state !== ProviderState.SignedIn) {
       return;
     }
-
-    // TODO: load data from the graph
-    // need to add person-query and user-id properties and
-    // factor out methods from mgt-person to use in both
   }
 
   private _setMouseOverState(el) {
