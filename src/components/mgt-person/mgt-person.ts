@@ -318,7 +318,9 @@ export class MgtPerson extends MgtTemplatedComponent {
 
   private _hidePersonCard() {
     this._isPersonCardVisible = false;
-    this.querySelector('mgt-person-card').setAttribute('is-extended', 'false');
+    if (this.querySelector('mgt-person-card')) {
+      this.querySelector('mgt-person-card').setAttribute('is-extended', 'false');
+    }
   }
 
   private renderPersonCard() {
