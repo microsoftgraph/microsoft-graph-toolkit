@@ -218,8 +218,7 @@ export class MgtAgenda extends MgtTemplatedComponent {
       } else {
         const start = this.date ? new Date(this.date) : new Date();
         start.setHours(0, 0, 0, 0);
-        const end = new Date();
-        end.setHours(0, 0, 0, 0);
+        const end = new Date(start.getTime());
         end.setDate(start.getDate() + this.days);
         try {
           this.events = await p.graph.getEvents(start, end, this.groupId);
