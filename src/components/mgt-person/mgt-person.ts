@@ -338,6 +338,12 @@ export class MgtPerson extends MgtTemplatedComponent {
     const bottomEdge = (window.innerHeight || document.documentElement.clientHeight) - personRect.bottom;
     this._openUp = bottomEdge < 175;
 
+    // find postion to renderup to
+    let personPosition;
+    if (this._openUp) {
+      personPosition = this.getBoundingClientRect().top + window.scrollY - 160;
+    }
+
     const flyoutClasses = {
       flyout: true,
       visible: this._isPersonCardVisible,
@@ -346,7 +352,7 @@ export class MgtPerson extends MgtTemplatedComponent {
     };
     if (this._isPersonCardVisible) {
       return html`
-        <div class=${classMap(flyoutClasses)}>
+        <div style="top: ${personPosition}px" class=${classMap(flyoutClasses)}>
           ${this.renderTemplate('person-card', { person: this.personDetails, personImage: this.personImage }) ||
             html`
               <mgt-person-card .personDetails=${this.personDetails} .personImage=${this.personImage}> </mgt-person-card>
