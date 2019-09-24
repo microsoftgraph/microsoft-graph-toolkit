@@ -30,12 +30,12 @@ steps:
     verbose: false
     customCommand: 'run build'
 
-- task: Npm@1
-  displayName: 'npm test'
-  inputs:
-    command: custom
-    verbose: false
-    customCommand: test
+#- task: Npm@1
+#  displayName: 'npm test'
+#  inputs:
+#    command: custom
+#    verbose: false
+#    customCommand: test
 
 - task: PublishTestResults@2
   displayName: 'Publish Test Results testResults/junit.xml'
