@@ -59,10 +59,10 @@ export class MgtPersonCard extends MgtTemplatedComponent {
    * @memberof MgtPersonCard
    */
   @property({
-    attribute: 'showadditionaldetails',
-    type: String
+    attribute: 'is-extended',
+    type: Boolean
   })
-  public showadditionaldetails: string = 'false';
+  private isExtended: boolean = false;
 
   /**
    * Synchronizes property values when attributes change.
@@ -75,15 +75,8 @@ export class MgtPersonCard extends MgtTemplatedComponent {
   public attributeChangedCallback(name, oldValue, newValue) {
     super.attributeChangedCallback(name, oldValue, newValue);
 
-    // TODO: handle when an attribute changes.
-    //
-    // Ex: load data when the name attribute changes
-    // if (name === 'person-id' && oldValue !== newValue){
-    //  this.loadData();
-    // }
-
-    if (name === 'showadditionaldetails' && oldValue !== newValue) {
-      this.showadditionaldetails = 'false';
+    if (name === 'is-extended' && oldValue !== newValue) {
+      this.isExtended = false;
     }
   }
 
@@ -168,7 +161,7 @@ export class MgtPersonCard extends MgtTemplatedComponent {
       `;
     }
 
-    if (this.showadditionaldetails === 'true') {
+    if (this.isExtended === true) {
       return html``;
     } else {
       return html`
@@ -234,7 +227,7 @@ export class MgtPersonCard extends MgtTemplatedComponent {
       `;
     }
 
-    if (this.showadditionaldetails === 'true') {
+    if (this.isExtended === true) {
       return html`
         <div class="additional-details-info">
           <div class="contact-text">Contact</div>
@@ -293,7 +286,7 @@ export class MgtPersonCard extends MgtTemplatedComponent {
         }
       );
 
-      this.showadditionaldetails = 'true';
+      this.isExtended = true;
     }
   }
 

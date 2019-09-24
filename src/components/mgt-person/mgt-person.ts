@@ -360,7 +360,7 @@ export class MgtPerson extends MgtTemplatedComponent {
       return html`
         <div class=${classMap(flyoutClasses)}>
           <mgt-person-card
-            .showadditionaldetails=${'false'}
+            .isExtended=${false}
             .personDetails=${this.personDetails}
             .personImage=${this.personImage}
           ></mgt-person-card>
