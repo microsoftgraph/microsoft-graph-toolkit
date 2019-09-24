@@ -67,7 +67,7 @@ export class MgtPeoplePicker extends MgtTemplatedComponent {
    *  array of user picked people.
    * @type {Array<any>}
    */
-  @property() public _selectedPeople: any[] = [];
+  @property() public selectedPeople: Array<MicrosoftGraph.User | MicrosoftGraph.Person | MicrosoftGraph.Contact> = [];
 
   // single matching id for filtering against people list
   @property() private _duplicatePersonId: string = '';
@@ -166,13 +166,13 @@ export class MgtPeoplePicker extends MgtTemplatedComponent {
       this.people = [];
       return;
     }
-    if (event.code === 'Backspace' && this._userInput.length === 0 && this._selectedPeople.length > 0) {
+    if (event.code === 'Backspace' && this._userInput.length === 0 && this.selectedPeople.length > 0) {
       event.target.value = '';
       this._userInput = '';
       // remove last person in selected list
-      this._selectedPeople = this._selectedPeople.splice(0, this._selectedPeople.length - 1);
+      this.selectedPeople = this.selectedPeople.splice(0, this.selectedPeople.length - 1);
       // fire selected people changed event
-      this.fireCustomEvent('selectionChanged', this._selectedPeople);
+      this.fireCustomEvent('selectionChanged', this.selectedPeople);
       return;
     }
     this._userInput = event.target.value;
@@ -250,14 +250,14 @@ export class MgtPeoplePicker extends MgtTemplatedComponent {
       this._userInput = '';
       this._duplicatePersonId = '';
       const chosenPerson: any = person;
-      const filteredPersonArr = this._selectedPeople.filter(person => {
+      const filteredPersonArr = this.selectedPeople.filter(person => {
         return person.id === chosenPerson.id;
       });
-      if (this._selectedPeople.length && filteredPersonArr.length) {
+      if (this.selectedPeople.length && filteredPersonArr.length) {
         this._duplicatePersonId = chosenPerson.id;
       } else {
-        this._selectedPeople.push(person);
-        this.fireCustomEvent('selectionChanged', this._selectedPeople);
+        this.selectedPeople.push(person);
+        this.fireCustomEvent('selectionChanged', this.selectedPeople);
 
         this.people = [];
         this._userInput = '';
@@ -311,7 +311,7 @@ export class MgtPeoplePicker extends MgtTemplatedComponent {
     // ensuring people list is displayed
     // find ids from selected people
     if (people) {
-      const idFilter = this._selectedPeople.map(el => {
+      const idFilter = this.selectedPeople.map(el => {
         return el.id;
       });
 
@@ -330,11 +330,11 @@ export class MgtPeoplePicker extends MgtTemplatedComponent {
    */
   private removePerson(person: MicrosoftGraph.User | MicrosoftGraph.Person | MicrosoftGraph.Contact) {
     const chosenPerson: any = person;
-    const filteredPersonArr = this._selectedPeople.filter(person => {
+    const filteredPersonArr = this.selectedPeople.filter(person => {
       return person.id !== chosenPerson.id;
     });
-    this._selectedPeople = filteredPersonArr;
-    this.fireCustomEvent('selectionChanged', this._selectedPeople);
+    this.selectedPeople = filteredPersonArr;
+    this.fireCustomEvent('selectionChanged', this.selectedPeople);
   }
 
   private renderErrorMessage() {
@@ -350,10 +350,10 @@ export class MgtPeoplePicker extends MgtTemplatedComponent {
   private renderChosenPeople() {
     let peopleList;
     let inputClass = 'input-search-start';
-    if (this._selectedPeople.length > 0) {
+    if (this.selectedPeople.length > 0) {
       inputClass = 'input-search';
       peopleList = html`
-        ${this._selectedPeople.slice(0, this._selectedPeople.length).map(
+        ${this.selectedPeople.slice(0, this.selectedPeople.length).map(
           person =>
             html`
               <li class="${person.id === this._duplicatePersonId ? 'people-person duplicate-person' : 'people-person'}">
@@ -451,7 +451,7 @@ export class MgtPeoplePicker extends MgtTemplatedComponent {
     let people: any = this.people;
     if (people) {
       people = people.slice(0, this.showMax);
-      if (people.length == 0 && this._userInput.length > 0 && this.isLoading == false) {
+      if (people.length === 0 && this._userInput.length > 0 && this.isLoading === false) {
         return html`
           <div class="people-list">
             ${this.renderErrorMessage()}
