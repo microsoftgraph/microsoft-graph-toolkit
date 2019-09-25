@@ -320,7 +320,7 @@ export class MgtPerson extends MgtTemplatedComponent {
     this._isPersonCardVisible = false;
     const personCard = this.querySelector('mgt-person-card') as MgtPersonCard;
     if (personCard) {
-      personCard.isExtended = false;
+      personCard.isExpanded = false;
     }
   }
 

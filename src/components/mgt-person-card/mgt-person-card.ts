@@ -62,7 +62,7 @@ export class MgtPersonCard extends MgtTemplatedComponent {
     attribute: 'is-extended',
     type: Boolean
   })
-  public isExtended: boolean = false;
+  public isExpanded: boolean = false;
 
   /**
    * Synchronizes property values when attributes change.
@@ -76,7 +76,7 @@ export class MgtPersonCard extends MgtTemplatedComponent {
     super.attributeChangedCallback(name, oldValue, newValue);
 
     if (name === 'is-extended' && oldValue !== newValue) {
-      this.isExtended = false;
+      this.isExpanded = false;
     }
   }
 
@@ -141,7 +141,7 @@ export class MgtPersonCard extends MgtTemplatedComponent {
   }
 
   private renderIcons() {
-    if (this.isExtended === true) {
+    if (this.isExpanded === true) {
       return html``;
     } else {
       const user = this.personDetails;
@@ -217,7 +217,7 @@ export class MgtPersonCard extends MgtTemplatedComponent {
       `;
     }
 
-    if (this.isExtended === true) {
+    if (this.isExpanded === true) {
       return html`
         <div class="additional-details-info">
           <div class="contact-text">Contact</div>
@@ -276,7 +276,7 @@ export class MgtPersonCard extends MgtTemplatedComponent {
         }
       );
 
-      this.isExtended = true;
+      this.isExpanded = true;
     }
   }
 
