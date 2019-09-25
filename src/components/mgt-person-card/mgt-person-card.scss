@@ -73,6 +73,9 @@ $color: var(--color, #{$ms-color-neutralDark});
         top: 100%;
       }
     }
+    .additional-details-button:hover {
+      background-color: rgba(0, 0, 0, 0.068);
+    }
     .additional-details-info {
       margin: 0 0 0 20px;
       .contact-text {
