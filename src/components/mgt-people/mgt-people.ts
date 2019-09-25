@@ -51,6 +51,17 @@ export class MgtPeople extends MgtTemplatedComponent {
     type: Number
   })
   public showMax: number = 3;
+
+  /**
+   * determines if agenda events come from specific group
+   * @type {string}
+   */
+  @property({
+    attribute: 'group-id',
+    type: String
+  })
+  public groupId: string;
+
   private _firstUpdated = false;
 
   /**
@@ -90,9 +101,9 @@ export class MgtPeople extends MgtTemplatedComponent {
             )}
             ${this.people.length > this.showMax
               ? this.renderTemplate('overflow', {
-                  people: this.people,
+                  extra: this.people.length - this.showMax,
                   max: this.showMax,
-                  extra: this.people.length - this.showMax
+                  people: this.people
                 }) ||
                 html`
                   <li>+${this.people.length - this.showMax}</li>
@@ -117,7 +128,11 @@ export class MgtPeople extends MgtTemplatedComponent {
       if (provider && provider.state === ProviderState.SignedIn) {
         const client = Providers.globalProvider.graph;
 
-        this.people = (await client.getPeople()).slice(0, this.showMax);
+        if (this.groupId) {
+          this.people = await client.getPeopleFromGroup(this.groupId);
+        } else {
+          this.people = await client.getPeople();
+        }
       }
     }
   }
