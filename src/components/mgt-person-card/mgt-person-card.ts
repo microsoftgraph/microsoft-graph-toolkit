@@ -146,18 +146,24 @@ export class MgtPersonCard extends MgtTemplatedComponent {
     let chat, email, phone;
     if ((user as MicrosoftGraph.User).mailNickname) {
       chat = html`
-        ${svgHelper.getSVG('chat', '#666666')}
+        <div @mouseout=${this._unsetMouseOverState} @mouseover=${this._setMouseOverState} @click=${this._chatUser}>
+          ${svgHelper.getSVG('chat', '#666666')}
+        </div>
       `;
     }
     if (getEmailFromGraphEntity(user)) {
       email = html`
-        ${svgHelper.getSVG('email', '#666666')}
+        <div @mouseout=${this._unsetMouseOverState} @mouseover=${this._setMouseOverState} @click=${this._emailUser}>
+          ${svgHelper.getSVG('email', '#666666')}
+        </div>
       `;
     }
 
     if ((user as MicrosoftGraph.User).businessPhones && (user as MicrosoftGraph.User).businessPhones.length > 0) {
       phone = html`
-        ${svgHelper.getSVG('phone', '#666666')}
+        <div @mouseout=${this._unsetMouseOverState} @mouseover=${this._setMouseOverState} @click=${this._callUser}>
+          ${svgHelper.getSVG('phone', '#666666')}
+        </div>
       `;
     }
 
@@ -165,15 +171,7 @@ export class MgtPersonCard extends MgtTemplatedComponent {
       return html``;
     } else {
       return html`
-        <div @mouseout=${this._unsetMouseOverState} @mouseover=${this._setMouseOverState} @click=${this._chatUser}>
-          ${chat}
-        </div>
-        <div @mouseout=${this._unsetMouseOverState} @mouseover=${this._setMouseOverState} @click=${this._emailUser}>
-          ${email}
-        </div>
-        <div @mouseout=${this._unsetMouseOverState} @mouseover=${this._setMouseOverState} @click=${this._callUser}>
-          ${phone}
-        </div>
+        ${chat} ${email} ${phone}
       `;
     }
   }

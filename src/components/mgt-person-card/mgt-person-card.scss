@@ -63,9 +63,8 @@ $email-color: var(--email-color, #{$ms-color-neutralPrimary});
         display: flex;
         -webkit-align-items: center;
         align-items: center;
-        .second-icon {
-          margin-left: 20px;
-        }
+        max-width: 120px;
+        justify-content: space-between;
         .hover-state {
           opacity: 0.6;
         }

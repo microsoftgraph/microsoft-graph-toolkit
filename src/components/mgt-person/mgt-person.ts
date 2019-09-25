@@ -317,7 +317,7 @@ export class MgtPerson extends MgtTemplatedComponent {
   }
 
   private _hidePersonCard() {
-    this._isPersonCardVisible = false;
+    // this._isPersonCardVisible = false;
     if (this.querySelector('mgt-person-card')) {
       this.querySelector('mgt-person-card').setAttribute('is-extended', 'false');
     }
@@ -339,8 +339,9 @@ export class MgtPerson extends MgtTemplatedComponent {
     this._openUp = bottomEdge < 175;
 
     // find postion to renderup to
-    let personPosition;
+    let personPosition, personSize;
     if (this._openUp) {
+      // personSize = this.getBoundingClientRect().bottom - this.getBoundingClientRect().top;
       personPosition = this.getBoundingClientRect().top + window.scrollY - 160;
     }
 
