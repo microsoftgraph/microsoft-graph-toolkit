@@ -56,7 +56,7 @@ import { html } from 'lit-element';
  */
 export function getSvg(svgIcon: SvgIcon, color: string) {
   switch (svgIcon) {
-    case 0:
+    case SvgIcon.Phone:
       return html`
         <svg width="23" height="23" viewBox="0 0 23 23" fill="none" xmlns="http://www.w3.org/2000/svg">
           <path
@@ -66,7 +66,7 @@ export function getSvg(svgIcon: SvgIcon, color: string) {
           />
         </svg>
       `;
-    case 1:
+    case SvgIcon.Email:
       return html`
         <svg width="25" height="16" viewBox="0 0 25 16" fill="none" xmlns="http://www.w3.org/2000/svg">
           <path
@@ -75,7 +75,7 @@ export function getSvg(svgIcon: SvgIcon, color: string) {
           />
         </svg>
       `;
-    case 2:
+    case SvgIcon.Chat:
       return html`
         <svg xmlns="http://www.w3.org/2000/svg" width="21" height="22" viewBox="0 0 21 22" fill="none">
           <path d="M15.173 6.20106H4.83114V4.69376H15.173V6.20106Z" fill="#3078CD" />
@@ -88,7 +88,7 @@ export function getSvg(svgIcon: SvgIcon, color: string) {
           />
         </svg>
       `;
-    case 3:
+    case SvgIcon.SmallPhone:
       return html`
         <svg xmlns="http://www.w3.org/2000/svg" width="17" height="17" viewBox="0 0 17 17" fill="none">
           <path
@@ -97,7 +97,7 @@ export function getSvg(svgIcon: SvgIcon, color: string) {
           />
         </svg>
       `;
-    case 4:
+    case SvgIcon.SmallEmail:
       return html`
         <svg width="17" height="11" viewBox="0 0 17 11" fill="none" xmlns="http://www.w3.org/2000/svg">
           <path
@@ -106,7 +106,7 @@ export function getSvg(svgIcon: SvgIcon, color: string) {
           />
         </svg>
       `;
-    case 5:
+    case SvgIcon.SmallChat:
       return html`
         <svg xmlns="http://www.w3.org/2000/svg" width="17" height="17" viewBox="0 0 17 17" fill="none">
           <path d="M12.3072 4.72225H4.27469V3.53616H12.3072V4.72225Z" fill="#666666" />
@@ -119,7 +119,7 @@ export function getSvg(svgIcon: SvgIcon, color: string) {
           />
         </svg>
       `;
-    case 6:
+    case SvgIcon.SmallLocation:
       return html`
         <svg xmlns="http://www.w3.org/2000/svg" width="13" height="20" viewBox="0 0 13 20" fill="none">
           <path

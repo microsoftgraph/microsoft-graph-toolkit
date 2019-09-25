@@ -58,7 +58,7 @@ export class MgtPersonCard extends MgtTemplatedComponent {
    * @memberof MgtPersonCard
    */
   @property({
-    attribute: 'is-extended',
+    attribute: 'is-expanded',
     type: Boolean
   })
   public isExpanded: boolean = false;
@@ -74,7 +74,7 @@ export class MgtPersonCard extends MgtTemplatedComponent {
   public attributeChangedCallback(name, oldValue, newValue) {
     super.attributeChangedCallback(name, oldValue, newValue);
 
-    if (name === 'is-extended' && oldValue !== newValue) {
+    if (name === 'is-expanded' && oldValue !== newValue) {
       this.isExpanded = false;
     }
   }
