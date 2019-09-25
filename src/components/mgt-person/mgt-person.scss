@@ -19,6 +19,11 @@ $color: var(--color, #{$ms-color-neutralDark});
 $email-font-size: var(--email-font-size, #{$ms-font-size-s});
 $email-color: var(--email-color, #{$ms-color-neutralPrimary});
 
+:host .root {
+  display: inline-block;
+  position: relative;
+}
+
 :host svg,
 mgt-person svg {
   width: $avatar-size-s;
@@ -31,8 +36,8 @@ mgt-person img {
   border-radius: 50%;
 }
 
-:host .root,
-mgt-person .root {
+:host .person-root,
+mgt-person .person-root {
   position: relative;
   display: flex;
   align-items: center;
@@ -125,4 +130,22 @@ mgt-person .user-email {
   -ms-grid-column: 2;
   grid-row: 2;
   -ms-grid-row: 2;
+}
+
+.root .flyout {
+  display: none;
+  position: absolute;
+  z-index: 1;
+  opacity: 0;
+  transition-property: opacity;
+  transition-duration: 0.1s;
+  padding: 8px;
+}
+
+.root .flyout.visible {
+  display: inline-block;
+  opacity: 1;
+  &.openLeft {
+    right: 0;
+  }
 }

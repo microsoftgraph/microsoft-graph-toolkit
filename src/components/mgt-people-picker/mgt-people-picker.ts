@@ -6,18 +6,16 @@
  */
 
 import * as MicrosoftGraph from '@microsoft/microsoft-graph-types';
-import { customElement, html, LitElement, property } from 'lit-element';
+import { customElement, html, property } from 'lit-element';
 import { repeat } from 'lit-html/directives/repeat';
-
 import { Providers } from '../../Providers';
 import { ProviderState } from '../../providers/IProvider';
-import { styles } from './mgt-people-picker-css';
-
 import '../../styles/fabric-icon-font';
 import { debounce } from '../../utils/utils';
 import '../mgt-person/mgt-person';
-import { MgtPerson, MgtPersonDetails } from '../mgt-person/mgt-person';
 import { MgtTemplatedComponent } from '../templatedComponent';
+import { styles } from './mgt-people-picker-css';
+
 /**
  * Web component used to search for people from the Microsoft Graph
  *
@@ -27,9 +25,14 @@ import { MgtTemplatedComponent } from '../templatedComponent';
  */
 @customElement('mgt-people-picker')
 export class MgtPeoplePicker extends MgtTemplatedComponent {
+  /**
+   * Array of styles to apply to the element. The styles should be defined
+   * user the `css` tag function.
+   */
   static get styles() {
     return styles;
   }
+
   /**
    * containing object of MgtPersonDetails.
    * @type {MgtPersonDetails}
@@ -38,7 +41,7 @@ export class MgtPeoplePicker extends MgtTemplatedComponent {
     attribute: 'people',
     type: Object
   })
-  public people: MgtPersonDetails[] = null;
+  public people: Array<MicrosoftGraph.User | MicrosoftGraph.Person | MicrosoftGraph.Contact> = null;
 
   /**
    * determining how many people to show in list.
@@ -64,14 +67,22 @@ export class MgtPeoplePicker extends MgtTemplatedComponent {
    *  array of user picked people.
    * @type {Array<any>}
    */
-  @property() public _selectedPeople: any[] = [];
+  @property() public selectedPeople: Array<MicrosoftGraph.User | MicrosoftGraph.Person | MicrosoftGraph.Contact> = [];
 
+  // single matching id for filtering against people list
   @property() private _duplicatePersonId: string = '';
 
+  // User input in search
   @property() private _userInput: string = '';
+
+  // tracking of user arrow key input for selection
   private arrowSelectionCount: number = 0;
+  // List of people requested if group property is provided
   private groupPeople: any[];
-  private isLoading: boolean = false;
+  // if search is still loading don't load "people not found" state
+  private isLoading = false;
+
+  // handing debounce on user search
 
   /**
    * Adds debounce method for set delay on user input
@@ -80,7 +91,7 @@ export class MgtPeoplePicker extends MgtTemplatedComponent {
   private debounceHandle = window.addEventListener(
     'keyup',
     debounce(e => {
-      if (e.keyCode == 40 || e.keyCode == 38) {
+      if (e.keyCode === 40 || e.keyCode === 38) {
         // keyCodes capture: down arrow (40) and up arrow (38)
         return;
       } else {
@@ -102,11 +113,10 @@ export class MgtPeoplePicker extends MgtTemplatedComponent {
    * @param {*} newValue
    * @memberof MgtPersonCard
    */
-
   public attributeChangedCallback(att, oldval, newval) {
     super.attributeChangedCallback(att, oldval, newval);
 
-    if (att == 'group-id' && oldval !== newval) {
+    if (att === 'group-id' && oldval !== newval) {
       this.findGroup();
     }
   }
@@ -132,6 +142,7 @@ export class MgtPeoplePicker extends MgtTemplatedComponent {
       `
     );
   }
+
   /**
    * Async query to Graph for members of group if determined by developer.
    * set's `this.groupPeople` to those members.
@@ -143,24 +154,25 @@ export class MgtPeoplePicker extends MgtTemplatedComponent {
       this.groupPeople = await client.getPeopleFromGroup(this.groupId);
     }
   }
+
   /**
    * Tracks event on user input in search
    * @param event - event tracked when user input is detected (keyup)
    */
   private onUserTypeSearch(event: any) {
-    if (event.code == 'Escape') {
+    if (event.code === 'Escape') {
       event.target.value = '';
       this._userInput = '';
       this.people = [];
       return;
     }
-    if (event.code == 'Backspace' && this._userInput.length == 0 && this._selectedPeople.length > 0) {
+    if (event.code === 'Backspace' && this._userInput.length === 0 && this.selectedPeople.length > 0) {
       event.target.value = '';
       this._userInput = '';
       // remove last person in selected list
-      this._selectedPeople = this._selectedPeople.splice(0, this._selectedPeople.length - 1);
+      this.selectedPeople = this.selectedPeople.splice(0, this.selectedPeople.length - 1);
       // fire selected people changed event
-      this.fireCustomEvent('selectionChanged', this._selectedPeople);
+      this.fireCustomEvent('selectionChanged', this.selectedPeople);
       return;
     }
     this._userInput = event.target.value;
@@ -178,14 +190,14 @@ export class MgtPeoplePicker extends MgtTemplatedComponent {
    * @param event - event tracked on user input (keydown)
    */
   private onUserKeyDown(event: any) {
-    if (event.keyCode == 40 || event.keyCode == 38) {
+    if (event.keyCode === 40 || event.keyCode === 38) {
       // keyCodes capture: down arrow (40) and up arrow (38)
       this.handleArrowSelection(event);
       if (this._userInput.length > 0) {
         event.preventDefault();
       }
     }
-    if (event.code == 'Tab' || event.code == 'Enter') {
+    if (event.code === 'Tab' || event.code === 'Enter') {
       if (this.people.length) {
         event.preventDefault();
       }
@@ -201,7 +213,7 @@ export class MgtPeoplePicker extends MgtTemplatedComponent {
   private handleArrowSelection(event: any) {
     if (this.people.length) {
       // update arrow count
-      if (event.keyCode == 38) {
+      if (event.keyCode === 38) {
         // up arrow
         if (this.arrowSelectionCount > 0) {
           this.arrowSelectionCount--;
@@ -209,7 +221,7 @@ export class MgtPeoplePicker extends MgtTemplatedComponent {
           this.arrowSelectionCount = 0;
         }
       }
-      if (event.keyCode == 40) {
+      if (event.keyCode === 40) {
         // down arrow
         if (this.arrowSelectionCount + 1 !== this.people.length && this.arrowSelectionCount + 1 < this.showMax) {
           this.arrowSelectionCount++;
@@ -233,19 +245,19 @@ export class MgtPeoplePicker extends MgtTemplatedComponent {
    * @param person - contains details pertaining to selected user
    * @param event - tracks user event
    */
-  private addPerson(person: MgtPersonDetails, event: any) {
+  private addPerson(person: MicrosoftGraph.User | MicrosoftGraph.Person | MicrosoftGraph.Contact, event: any) {
     if (person) {
       this._userInput = '';
       this._duplicatePersonId = '';
       const chosenPerson: any = person;
-      const filteredPersonArr = this._selectedPeople.filter(function(person) {
-        return person.id == chosenPerson.id;
+      const filteredPersonArr = this.selectedPeople.filter(person => {
+        return person.id === chosenPerson.id;
       });
-      if (this._selectedPeople.length && filteredPersonArr.length) {
+      if (this.selectedPeople.length && filteredPersonArr.length) {
         this._duplicatePersonId = chosenPerson.id;
       } else {
-        this._selectedPeople.push(person);
-        this.fireCustomEvent('selectionChanged', this._selectedPeople);
+        this.selectedPeople.push(person);
+        this.fireCustomEvent('selectionChanged', this.selectedPeople);
 
         this.people = [];
         this._userInput = '';
@@ -266,7 +278,7 @@ export class MgtPeoplePicker extends MgtTemplatedComponent {
 
       if (provider && provider.state === ProviderState.SignedIn) {
         const that = this;
-        setTimeout(function() {
+        setTimeout(() => {
           that.isLoading = true;
         }, 400);
 
@@ -280,7 +292,7 @@ export class MgtPeoplePicker extends MgtTemplatedComponent {
         }
 
         if (people) {
-          people = people.filter(function(person) {
+          people = people.filter(person => {
             return person.displayName.toLowerCase().indexOf(name) !== -1;
           });
         }
@@ -299,13 +311,13 @@ export class MgtPeoplePicker extends MgtTemplatedComponent {
     // ensuring people list is displayed
     // find ids from selected people
     if (people) {
-      let id_filter = this._selectedPeople.map(function(el) {
+      const idFilter = this.selectedPeople.map(el => {
         return el.id;
       });
 
       // filter id's
-      const filtered = people.filter(function(person) {
-        return id_filter.indexOf(person.id) === -1;
+      const filtered = people.filter(person => {
+        return idFilter.indexOf(person.id) === -1;
       });
 
       return filtered;
@@ -316,13 +328,13 @@ export class MgtPeoplePicker extends MgtTemplatedComponent {
    * Removes person from selected people
    * @param person - person and details pertaining to user selected
    */
-  private removePerson(person: MgtPersonDetails) {
+  private removePerson(person: MicrosoftGraph.User | MicrosoftGraph.Person | MicrosoftGraph.Contact) {
     const chosenPerson: any = person;
-    const filteredPersonArr = this._selectedPeople.filter(function(person) {
+    const filteredPersonArr = this.selectedPeople.filter(person => {
       return person.id !== chosenPerson.id;
     });
-    this._selectedPeople = filteredPersonArr;
-    this.fireCustomEvent('selectionChanged', this._selectedPeople);
+    this.selectedPeople = filteredPersonArr;
+    this.fireCustomEvent('selectionChanged', this.selectedPeople);
   }
 
   private renderErrorMessage() {
@@ -338,13 +350,13 @@ export class MgtPeoplePicker extends MgtTemplatedComponent {
   private renderChosenPeople() {
     let peopleList;
     let inputClass = 'input-search-start';
-    if (this._selectedPeople.length > 0) {
+    if (this.selectedPeople.length > 0) {
       inputClass = 'input-search';
       peopleList = html`
-        ${this._selectedPeople.slice(0, this._selectedPeople.length).map(
+        ${this.selectedPeople.slice(0, this.selectedPeople.length).map(
           person =>
             html`
-              <li class="${person.id == this._duplicatePersonId ? 'people-person duplicate-person' : 'people-person'}">
+              <li class="${person.id === this._duplicatePersonId ? 'people-person duplicate-person' : 'people-person'}">
                 ${this.renderTemplate('person', { person }, person.displayName) || this.renderChosenPerson(person)}
                 <p class="person-display-name">${person.displayName}</p>
                 <div class="CloseIcon" @click="${() => this.removePerson(person)}">\uE711</div>
@@ -399,17 +411,18 @@ export class MgtPeoplePicker extends MgtTemplatedComponent {
     }
   }
 
-  private renderHighlightText(person: MgtPersonDetails) {
+  private renderHighlightText(person: MicrosoftGraph.User | MicrosoftGraph.Person | MicrosoftGraph.Contact) {
     const peoples: any = person;
+
     const highlightLocation = peoples.displayName.toLowerCase().indexOf(this._userInput.toLowerCase());
     if (highlightLocation !== -1) {
       // no location
-      if (highlightLocation == 0) {
+      if (highlightLocation === 0) {
         // highlight is at the beginning of sentence
         peoples.first = '';
         peoples.highlight = peoples.displayName.slice(0, this._userInput.length);
         peoples.last = peoples.displayName.slice(this._userInput.length, peoples.displayName.length);
-      } else if (highlightLocation == peoples.displayName.length) {
+      } else if (highlightLocation === peoples.displayName.length) {
         // highlight is at end of the sentence
         peoples.first = peoples.displayName.slice(0, highlightLocation);
         peoples.highlight = peoples.displayName.slice(highlightLocation, peoples.displayName.length);
@@ -438,7 +451,7 @@ export class MgtPeoplePicker extends MgtTemplatedComponent {
     let people: any = this.people;
     if (people) {
       people = people.slice(0, this.showMax);
-      if (people.length == 0 && this._userInput.length > 0 && this.isLoading == false) {
+      if (people.length === 0 && this._userInput.length > 0 && this.isLoading === false) {
         return html`
           <div class="people-list">
             ${this.renderErrorMessage()}
@@ -446,7 +459,7 @@ export class MgtPeoplePicker extends MgtTemplatedComponent {
         `;
       } else {
         if (people[0]) {
-          people[0].isSelected = 'fill';
+          (people[0] as any).isSelected = 'fill';
         }
         return html`
           <div class="people-list">
@@ -458,16 +471,13 @@ export class MgtPeoplePicker extends MgtTemplatedComponent {
   }
 
   private renderPersons(people: any[]) {
-    for (const person of people) {
-      person.image = '@';
-    }
     return html`
       ${repeat(
         people,
         person => person.id,
         person => html`
           <li
-            class="${person.isSelected == 'fill' ? 'people-person-list-fill' : 'people-person-list'}"
+            class="${person.isSelected === 'fill' ? 'people-person-list-fill' : 'people-person-list'}"
             @click="${(event: any) => this.addPerson(person, event)}"
           >
             ${this.renderTemplate('person', { person }, person.displayName) || this.renderPerson(person)}
@@ -483,12 +493,12 @@ export class MgtPeoplePicker extends MgtTemplatedComponent {
 
   private renderPerson(person: MicrosoftGraph.Person) {
     return html`
-      <mgt-person .personDetails=${person}></mgt-person>
+      <mgt-person .personDetails=${person} .personImage=${'@'}></mgt-person>
     `;
   }
   private renderChosenPerson(person: MicrosoftGraph.Person) {
     return html`
-      <mgt-person class="chosen-person" .personDetails=${person}></mgt-person>
+      <mgt-person class="chosen-person" .personDetails=${person} .personImage=${'@'}></mgt-person>
     `;
   }
 }

@@ -5,18 +5,18 @@
  * -------------------------------------------------------------------------------------------
  */
 
-import { html, customElement, property } from 'lit-element';
 import * as MicrosoftGraph from '@microsoft/microsoft-graph-types';
+import { customElement, html, property } from 'lit-element';
 
 import { Providers } from '../../Providers';
 import { ProviderState } from '../../providers/IProvider';
 import { styles } from './mgt-agenda-css';
 
-import '../mgt-person/mgt-person';
-import '../../styles/fabric-icon-font';
-import { MgtTemplatedComponent } from '../templatedComponent';
 import { prepScopes } from '../../Graph';
-import { MgtPersonDetails } from '../mgt-person/mgt-person';
+import '../../styles/fabric-icon-font';
+import '../mgt-person/mgt-person';
+import { MgtTemplatedComponent } from '../templatedComponent';
+
 /**
  * Web Component which represents events in a user or group calendar.
  *
@@ -26,6 +26,86 @@ import { MgtPersonDetails } from '../mgt-person/mgt-person';
  */
 @customElement('mgt-agenda')
 export class MgtAgenda extends MgtTemplatedComponent {
+  /**
+   * Array of styles to apply to the element. The styles should be defined
+   * using the `css` tag function.
+   */
+  static get styles() {
+    return styles;
+  }
+
+  /**
+   * array containg events from user agenda.
+   * @type {Array<MicrosoftGraph.Event>}
+   */
+  @property({
+    attribute: 'events'
+  })
+  public events: MicrosoftGraph.Event[];
+
+  /**
+   * allows developer to define agenda to group events by day.
+   * @type {Boolean}
+   */
+  @property({
+    attribute: 'group-by-day',
+    reflect: true,
+    type: Boolean
+  })
+  public groupByDay = false;
+
+  /**
+   * stores current date for intial calender selection in events.
+   * @type {string}
+   */
+  @property({
+    attribute: 'date',
+    reflect: true,
+    type: String
+  })
+  public date: string;
+
+  /**
+   * sets number of days until endate, 3 is the default
+   * @type {number}
+   */
+  @property({
+    attribute: 'days',
+    reflect: true,
+    type: Number
+  })
+  public days: number = 3;
+
+  /**
+   * allows developer to specify a different graph query that retrieves events
+   * @type {string}
+   */
+  @property({
+    attribute: 'event-query',
+    type: String
+  })
+  public eventQuery: string;
+
+  /**
+   * allows developer to define max number of events shown
+   * @type {number}
+   */
+  @property({
+    attribute: 'show-max',
+    type: Number
+  })
+  public showMax: number;
+
+  /**
+   * determines if agenda events come from specific group
+   * @type {string}
+   */
+  @property({
+    attribute: 'group-id',
+    type: String
+  })
+  public groupId: string;
+
   private _firstUpdated = false;
   /**
    * determines width available for agenda component.
@@ -38,81 +118,6 @@ export class MgtAgenda extends MgtTemplatedComponent {
    * @type {boolean}
    */
   @property({ attribute: false }) private _loading: boolean = true;
-
-  /**
-   * array containg events from user agenda.
-   * @type {Array<MicrosoftGraph.Event>}
-   */
-  @property({
-    attribute: 'events'
-  })
-  events: Array<MicrosoftGraph.Event>;
-
-  /**
-   * allows developer to define agenda to group events by day.
-   * @type {Boolean}
-   */
-  @property({
-    attribute: 'group-by-day',
-    type: Boolean,
-    reflect: true
-  })
-  groupByDay = false;
-
-  /**
-   * stores current date for intial calender selection in events.
-   * @type {string}
-   */
-  @property({
-    attribute: 'date',
-    type: String,
-    reflect: true
-  })
-  date: string;
-
-  /**
-   * sets number of days until endate, 3 is the default
-   * @type {number}
-   */
-  @property({
-    attribute: 'days',
-    type: Number,
-    reflect: true
-  })
-  days: number = 3;
-
-  /**
-   * allows developer to specify a different graph query that retrieves events
-   * @type {string}
-   */
-  @property({
-    attribute: 'event-query',
-    type: String
-  })
-  eventQuery: string;
-
-  /**
-   * allows developer to define max number of events shown
-   * @type {number}
-   */
-  @property({
-    attribute: 'show-max',
-    type: Number
-  })
-  showMax: number;
-  /**
-   * determines if agenda events come from specific group
-   * @type {string}
-   */
-  @property({
-    attribute: 'group-id',
-    type: String
-  })
-  groupId: string;
-
-  static get styles() {
-    return styles;
-  }
 
   constructor() {
     super();
@@ -128,20 +133,19 @@ export class MgtAgenda extends MgtTemplatedComponent {
    *
    * * @param _changedProperties Map of changed properties with old values
    */
-
   public firstUpdated() {
     this._firstUpdated = true;
     Providers.onProviderUpdated(() => this.loadData());
     this.loadData();
   }
 
-  connectedCallback() {
+  public connectedCallback() {
     this._isNarrow = this.offsetWidth < 600;
     super.connectedCallback();
     window.addEventListener('resize', this.onResize);
   }
 
-  disconnectedCallback() {
+  public disconnectedCallback() {
     window.removeEventListener('resize', this.onResize);
     super.disconnectedCallback();
   }
@@ -154,13 +158,21 @@ export class MgtAgenda extends MgtTemplatedComponent {
    * @param {*} newValue
    * @memberof MgtAgenda
    */
-
   public attributeChangedCallback(name, oldValue, newValue) {
     if (oldValue !== newValue && (name === 'date' || name === 'days' || name === 'group-id')) {
       this.events = null;
       this.loadData();
     }
     super.attributeChangedCallback(name, oldValue, newValue);
+  }
+
+  public render() {
+    this._isNarrow = this.offsetWidth < 600;
+    return html`
+      <div class="agenda ${this._isNarrow ? 'narrow' : ''}">
+        ${this.renderAgenda()}
+      </div>
+    `;
   }
 
   private onResize() {
@@ -176,13 +188,13 @@ export class MgtAgenda extends MgtTemplatedComponent {
       return;
     }
 
-    let p = Providers.globalProvider;
+    const p = Providers.globalProvider;
     if (p && p.state === ProviderState.SignedIn) {
       this._loading = true;
 
       if (this.eventQuery) {
         try {
-          let tokens = this.eventQuery.split('|');
+          const tokens = this.eventQuery.split('|');
           let scope, query;
           if (tokens.length > 1) {
             query = tokens[0].trim();
@@ -197,16 +209,16 @@ export class MgtAgenda extends MgtTemplatedComponent {
             request = request.middlewareOptions(prepScopes(scope));
           }
 
-          let results = await request.get();
+          const results = await request.get();
 
           if (results && results.value) {
             this.events = results.value;
           }
         } catch (e) {}
       } else {
-        let start = this.date ? new Date(this.date) : new Date();
+        const start = this.date ? new Date(this.date) : new Date();
         start.setHours(0, 0, 0, 0);
-        let end = new Date(start.getTime());
+        const end = new Date(start.getTime());
         end.setDate(start.getDate() + this.days);
         try {
           this.events = await p.graph.getEvents(start, end, this.groupId);
@@ -222,32 +234,23 @@ export class MgtAgenda extends MgtTemplatedComponent {
     }
   }
 
-  render() {
-    this._isNarrow = this.offsetWidth < 600;
-    return html`
-      <div class="agenda ${this._isNarrow ? 'narrow' : ''}">
-        ${this.renderAgenda()}
-      </div>
-    `;
-  }
-
   private renderAgenda() {
     if (this._loading) {
       return this.renderTemplate('loading', null) || this.renderLoading();
     }
 
     if (this.events) {
-      let events = this.showMax && this.showMax > 0 ? this.events.slice(0, this.showMax) : this.events;
+      const events = this.showMax && this.showMax > 0 ? this.events.slice(0, this.showMax) : this.events;
 
-      let renderedTemplate = this.renderTemplate('default', { events: events });
+      const renderedTemplate = this.renderTemplate('default', { events });
       if (renderedTemplate) {
         return renderedTemplate;
       }
 
       if (this.groupByDay) {
-        let grouped = {};
+        const grouped = {};
         for (let i = 0; i < events.length; i++) {
-          let header = this.getDateHeaderFromDateTimeString(events[i].start.dateTime);
+          const header = this.getDateHeaderFromDateTimeString(events[i].start.dateTime);
           grouped[header] = grouped[header] || [];
           grouped[header].push(events[i]);
         }
@@ -258,7 +261,7 @@ export class MgtAgenda extends MgtTemplatedComponent {
               header =>
                 html`
                   <div class="group">
-                    ${this.renderTemplate('header', { header: header }, 'header-' + header) ||
+                    ${this.renderTemplate('header', { header }, 'header-' + header) ||
                       html`
                         <div class="header" aria-label="${header}">${header}</div>
                       `}
@@ -283,7 +286,7 @@ export class MgtAgenda extends MgtTemplatedComponent {
           event =>
             html`
               <li>
-                ${this.renderTemplate('event', { event: event }, event.id) || this.renderEvent(event)}
+                ${this.renderTemplate('event', { event }, event.id) || this.renderEvent(event)}
               </li>
             `
         )}
@@ -326,7 +329,7 @@ export class MgtAgenda extends MgtTemplatedComponent {
         ${this.templates['event-other']
           ? html`
               <div class="event-other-container">
-                ${this.renderTemplate('event-other', { event: event }, event.id + '-other')}
+                ${this.renderTemplate('event-other', { event }, event.id + '-other')}
               </div>
             `
           : ''}
@@ -370,11 +373,10 @@ export class MgtAgenda extends MgtTemplatedComponent {
         class="event-attendees"
         .people=${event.attendees.map(
           attendee =>
-            <MgtPersonDetails>{
+            ({
               displayName: attendee.emailAddress.name,
-              email: attendee.emailAddress.address,
-              image: '@'
-            }
+              emailAddresses: [attendee.emailAddress]
+            } as MicrosoftGraph.Contact)
         )}
       ></mgt-people>
     `;
@@ -385,8 +387,8 @@ export class MgtAgenda extends MgtTemplatedComponent {
       return 'ALL DAY';
     }
 
-    let start = this.prettyPrintTimeFromDateTime(new Date(event.start.dateTime));
-    let end = this.prettyPrintTimeFromDateTime(new Date(event.end.dateTime));
+    const start = this.prettyPrintTimeFromDateTime(new Date(event.start.dateTime));
+    const end = this.prettyPrintTimeFromDateTime(new Date(event.end.dateTime));
 
     return `${start} - ${end}`;
   }
@@ -394,18 +396,18 @@ export class MgtAgenda extends MgtTemplatedComponent {
   private prettyPrintTimeFromDateTime(date: Date) {
     date.setMinutes(date.getMinutes() - date.getTimezoneOffset());
     let hours = date.getHours();
-    let minutes = date.getMinutes();
-    let ampm = hours >= 12 ? 'PM' : 'AM';
+    const minutes = date.getMinutes();
+    const ampm = hours >= 12 ? 'PM' : 'AM';
     hours = hours % 12;
     hours = hours ? hours : 12;
-    let minutesStr = minutes < 10 ? '0' + minutes : minutes;
+    const minutesStr = minutes < 10 ? '0' + minutes : minutes;
     return `${hours}:${minutesStr} ${ampm}`;
   }
 
   private getDateHeaderFromDateTimeString(dateTimeString: string) {
-    let date = new Date(dateTimeString);
+    const date = new Date(dateTimeString);
     date.setMinutes(date.getMinutes() - date.getTimezoneOffset());
-    let monthNames = [
+    const monthNames = [
       'January',
       'February',
       'March',
@@ -420,34 +422,34 @@ export class MgtAgenda extends MgtTemplatedComponent {
       'December'
     ];
 
-    var dayNames = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
+    const dayNames = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
 
-    let dayIndex = date.getDay();
-    let monthIndex = date.getMonth();
-    let day = date.getDate();
-    let year = date.getFullYear();
+    const dayIndex = date.getDay();
+    const monthIndex = date.getMonth();
+    const day = date.getDate();
+    const year = date.getFullYear();
 
     return `${dayNames[dayIndex]}, ${monthNames[monthIndex]} ${day}, ${year}`;
   }
 
   private getEventDuration(event: MicrosoftGraph.Event) {
     let dtStart = new Date(event.start.dateTime);
-    let dtEnd = new Date(event.end.dateTime);
-    let dtNow = new Date();
+    const dtEnd = new Date(event.end.dateTime);
+    const dtNow = new Date();
     let result: string = '';
 
     if (dtNow > dtStart) {
       dtStart = dtNow;
     }
 
-    let diff = dtEnd.getTime() - dtStart.getTime();
-    var durationMinutes = Math.round(diff / 60000);
+    const diff = dtEnd.getTime() - dtStart.getTime();
+    const durationMinutes = Math.round(diff / 60000);
 
     if (durationMinutes > 1440 || event.isAllDay) {
       result = Math.ceil(durationMinutes / 1440) + 'd';
     } else if (durationMinutes > 60) {
       result = Math.round(durationMinutes / 60) + 'h';
-      let leftoverMinutes = durationMinutes % 60;
+      const leftoverMinutes = durationMinutes % 60;
       if (leftoverMinutes) {
         result += leftoverMinutes + 'm';
       }
