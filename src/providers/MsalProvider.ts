@@ -42,12 +42,16 @@ export class MsalProvider extends IProvider {
   }
 
   public async trySilentSignIn() {
-    if (this._userAgentApplication.isCallback(window.location.hash)) {
-      return;
-    }
-    if (this._userAgentApplication.getAccount() && (await this.getAccessToken(null))) {
-      this.setState(ProviderState.SignedIn);
-    } else {
+    try {
+      if (this._userAgentApplication.isCallback(window.location.hash)) {
+        return;
+      }
+      if (this._userAgentApplication.getAccount() && (await this.getAccessToken(null))) {
+        this.setState(ProviderState.SignedIn);
+      } else {
+        this.setState(ProviderState.SignedOut);
+      }
+    } catch (e) {
       this.setState(ProviderState.SignedOut);
     }
   }
