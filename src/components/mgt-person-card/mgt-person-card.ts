@@ -141,35 +141,34 @@ export class MgtPersonCard extends MgtTemplatedComponent {
   }
 
   private renderIcons() {
-    const user = this.personDetails;
-    // tslint:disable-next-line: one-variable-per-declaration
-    let chat, email, phone;
-    if ((user as MicrosoftGraph.User).mailNickname) {
-      chat = html`
-        <div @mouseout=${this._unsetMouseOverState} @mouseover=${this._setMouseOverState} @click=${this._chatUser}>
-          ${svgHelper.getSVG('chat', '#666666')}
-        </div>
-      `;
-    }
-    if (getEmailFromGraphEntity(user)) {
-      email = html`
-        <div @mouseout=${this._unsetMouseOverState} @mouseover=${this._setMouseOverState} @click=${this._emailUser}>
-          ${svgHelper.getSVG('email', '#666666')}
-        </div>
-      `;
-    }
-
-    if ((user as MicrosoftGraph.User).businessPhones && (user as MicrosoftGraph.User).businessPhones.length > 0) {
-      phone = html`
-        <div @mouseout=${this._unsetMouseOverState} @mouseover=${this._setMouseOverState} @click=${this._callUser}>
-          ${svgHelper.getSVG('phone', '#666666')}
-        </div>
-      `;
-    }
-
     if (this.isExtended === true) {
       return html``;
     } else {
+      const user = this.personDetails;
+      // tslint:disable-next-line: one-variable-per-declaration
+      let chat, email, phone;
+      if ((user as MicrosoftGraph.User).mailNickname) {
+        chat = html`
+          <div @mouseout=${this._unsetMouseOverState} @mouseover=${this._setMouseOverState} @click=${this._chatUser}>
+            ${svgHelper.getSVG('chat', '#666666')}
+          </div>
+        `;
+      }
+      if (getEmailFromGraphEntity(user)) {
+        email = html`
+          <div @mouseout=${this._unsetMouseOverState} @mouseover=${this._setMouseOverState} @click=${this._emailUser}>
+            ${svgHelper.getSVG('email', '#666666')}
+          </div>
+        `;
+      }
+  
+      if ((user as MicrosoftGraph.User).businessPhones && (user as MicrosoftGraph.User).businessPhones.length > 0) {
+        phone = html`
+          <div @mouseout=${this._unsetMouseOverState} @mouseover=${this._setMouseOverState} @click=${this._callUser}>
+            ${svgHelper.getSVG('phone', '#666666')}
+          </div>
+        `;
+      }
       return html`
         ${chat} ${email} ${phone}
       `;
