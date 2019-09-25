@@ -271,9 +271,8 @@ export class MgtPersonCard extends MgtTemplatedComponent {
           fill: 'both'
         }
       );
-
-      this.isExpanded = true;
     }
+    this.isExpanded = true;
   }
 
   private _callUser(e: Event) {
