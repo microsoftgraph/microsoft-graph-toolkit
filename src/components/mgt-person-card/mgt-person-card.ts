@@ -149,22 +149,21 @@ export class MgtPersonCard extends MgtTemplatedComponent {
       let chat, email, phone;
       if ((user as MicrosoftGraph.User).mailNickname) {
         chat = html`
-          <div @mouseout=${this._unsetMouseOverState} @mouseover=${this._setMouseOverState} @click=${this._chatUser}>
+          <div class="icon" @click=${this._chatUser}>
             ${svgHelper.getSVG('chat', '#666666')}
           </div>
         `;
       }
       if (getEmailFromGraphEntity(user)) {
         email = html`
-          <div @mouseout=${this._unsetMouseOverState} @mouseover=${this._setMouseOverState} @click=${this._emailUser}>
+          <div class="icon" @click=${this._emailUser}>
             ${svgHelper.getSVG('email', '#666666')}
           </div>
         `;
       }
-  
       if ((user as MicrosoftGraph.User).businessPhones && (user as MicrosoftGraph.User).businessPhones.length > 0) {
         phone = html`
-          <div @mouseout=${this._unsetMouseOverState} @mouseover=${this._setMouseOverState} @click=${this._callUser}>
+          <div class="icon" @click=${this._callUser}>
             ${svgHelper.getSVG('phone', '#666666')}
           </div>
         `;
@@ -185,9 +184,7 @@ export class MgtPersonCard extends MgtTemplatedComponent {
       phone = html`
         <div class="details-icon" @click=${this._callUser}>
           ${svgHelper.getSVG('phone-small', '#666666')}
-          <span class="link-subtitle data" @mouseout=${this._unsetMouseOverState} @mouseover=${this._setMouseOverState}
-            >${(user as MicrosoftGraph.User).businessPhones[0]}</span
-          >
+          <span class="link-subtitle data">${(user as MicrosoftGraph.User).businessPhones[0]}</span>
         </div>
       `;
     }
@@ -196,9 +193,7 @@ export class MgtPersonCard extends MgtTemplatedComponent {
       email = html`
         <div class="details-icon" @click=${this._emailUser}>
           ${svgHelper.getSVG('email-small', '#666666')}
-          <span class="link-subtitle data" @mouseout=${this._unsetMouseOverState} @mouseover=${this._setMouseOverState}
-            >${getEmailFromGraphEntity(user)}</span
-          >
+          <span class="link-subtitle data">${getEmailFromGraphEntity(user)}</span>
         </div>
       `;
     }
@@ -207,9 +202,7 @@ export class MgtPersonCard extends MgtTemplatedComponent {
       chat = html`
         <div class="details-icon" @click=${this._chatUser}>
           ${svgHelper.getSVG('chat-small', '#666666')}
-          <span class="link-subtitle data" @mouseout=${this._unsetMouseOverState} @mouseover=${this._setMouseOverState}
-            >${(user as MicrosoftGraph.User).mailNickname}</span
-          >
+          <span class="link-subtitle data">${(user as MicrosoftGraph.User).mailNickname}</span>
         </div>
       `;
     }
@@ -332,13 +325,6 @@ export class MgtPersonCard extends MgtTemplatedComponent {
     if (!provider || provider.state !== ProviderState.SignedIn) {
       return;
     }
-  }
-
-  private _setMouseOverState(el) {
-    el.target.classList.add('hover-state');
-  }
-  private _unsetMouseOverState(el) {
-    el.target.classList.remove('hover-state');
   }
 
   private handleClose(e: Event) {

@@ -4,6 +4,7 @@
  * See License in the project root for license information.
  * -------------------------------------------------------------------------------------------
  */
+@import '../../../node_modules/office-ui-fabric-core/dist/sass/References';
 
 $font-size: var(--font-size, #{$ms-font-size-m});
 $font-weight: var(--font-weight, #{$ms-font-weight-semibold});
@@ -53,7 +54,7 @@ $color: var(--color, #{$ms-color-neutralDark});
         align-items: center;
         max-width: 120px;
         justify-content: space-between;
-        .hover-state {
+        .icon:hover {
           opacity: 0.6;
         }
       }
@@ -110,7 +111,7 @@ $color: var(--color, #{$ms-color-neutralDark});
           .link-subtitle {
             color: #3078cd;
           }
-          .hover-state {
+          .link-subtitle:hover {
             opacity: 0.6;
           }
         }
