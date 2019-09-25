@@ -21,6 +21,7 @@ $email-color: var(--email-color, #{$ms-color-neutralPrimary});
 
 :host .root {
   display: inline-block;
+  position: relative;
 }
 
 :host svg,
@@ -146,7 +147,5 @@ mgt-person .user-email {
   opacity: 1;
   &.openLeft {
     right: 0;
-  }
-  &.openUp {
   }
 }

@@ -53,7 +53,7 @@ export class MgtPersonCard extends MgtTemplatedComponent {
   public personImage: string;
 
   /**
-   * Renders additional details section on initial show, false or true
+   * Gets or sets whether additional details section is rendered
    *
    * @type {string}
    * @memberof MgtPersonCard
@@ -62,7 +62,7 @@ export class MgtPersonCard extends MgtTemplatedComponent {
     attribute: 'is-extended',
     type: Boolean
   })
-  private isExtended: boolean = false;
+  public isExtended: boolean = false;
 
   /**
    * Synchronizes property values when attributes change.
@@ -269,12 +269,12 @@ export class MgtPersonCard extends MgtTemplatedComponent {
       root.animate(
         [
           {
-            transformOrigin: 'top left',
-            height: 'auto'
+            height: 'auto',
+            transformOrigin: 'top left'
           },
           {
-            transformOrigin: 'top left',
-            height: 'auto'
+            height: 'auto',
+            transformOrigin: 'top left'
           }
         ],
         {

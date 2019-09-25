@@ -12,7 +12,7 @@ import { Providers } from '../../Providers';
 import { ProviderState } from '../../providers/IProvider';
 import '../../styles/fabric-icon-font';
 import { getEmailFromGraphEntity } from '../../utils/graphHelpers';
-import { delay } from '../../utils/utils';
+import { MgtPersonCard } from '../mgt-person-card/mgt-person-card';
 import { MgtTemplatedComponent } from '../templatedComponent';
 import { styles } from './mgt-person-css';
 
@@ -317,9 +317,10 @@ export class MgtPerson extends MgtTemplatedComponent {
   }
 
   private _hidePersonCard() {
-    // this._isPersonCardVisible = false;
-    if (this.querySelector('mgt-person-card')) {
-      this.querySelector('mgt-person-card').setAttribute('is-extended', 'false');
+    this._isPersonCardVisible = false;
+    const personCard = this.querySelector('mgt-person-card') as MgtPersonCard;
+    if (personCard) {
+      personCard.isExtended = false;
     }
   }
 
@@ -338,22 +339,22 @@ export class MgtPerson extends MgtTemplatedComponent {
     const bottomEdge = (window.innerHeight || document.documentElement.clientHeight) - personRect.bottom;
     this._openUp = bottomEdge < 175;
 
-    // find postion to renderup to
-    let personPosition, personSize;
+    // find position to renderup to
+    let customStyle = null;
     if (this._openUp) {
-      // personSize = this.getBoundingClientRect().bottom - this.getBoundingClientRect().top;
-      personPosition = this.getBoundingClientRect().top + window.scrollY - 160;
+      const personSize = this.getBoundingClientRect().bottom - this.getBoundingClientRect().top;
+      customStyle = `bottom: ${personSize / 2 + 8}px`;
     }
 
     const flyoutClasses = {
       flyout: true,
-      visible: this._isPersonCardVisible,
       openLeft: this._openLeft,
-      openUp: this._openUp
+      openUp: this._openUp,
+      visible: this._isPersonCardVisible
     };
     if (this._isPersonCardVisible) {
       return html`
-        <div style="top: ${personPosition}px" class=${classMap(flyoutClasses)}>
+        <div style="${customStyle}" class=${classMap(flyoutClasses)}>
           ${this.renderTemplate('person-card', { person: this.personDetails, personImage: this.personImage }) ||
             html`
               <mgt-person-card .personDetails=${this.personDetails} .personImage=${this.personImage}> </mgt-person-card>
