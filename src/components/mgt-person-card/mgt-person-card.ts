@@ -132,7 +132,7 @@ export class MgtPersonCard extends MgtTemplatedComponent {
                 </div>
               `}
           </div>
-          <div class="additional-details-container" @click=${this._showAdditionalDetails}>
+          <div class="additional-details-container">
             ${this.renderAdditionalDetails()}
           </div>
         </div>
@@ -175,49 +175,48 @@ export class MgtPersonCard extends MgtTemplatedComponent {
   }
 
   private renderAdditionalDetails() {
-    const user = this.personDetails;
-
-    // tslint:disable-next-line: one-variable-per-declaration
-    let phone, email, location, chat;
-
-    if ((user as MicrosoftGraph.User).businessPhones && (user as MicrosoftGraph.User).businessPhones.length > 0) {
-      phone = html`
-        <div class="details-icon" @click=${this._callUser}>
-          ${svgHelper.getSVG('phone-small', '#666666')}
-          <span class="link-subtitle data">${(user as MicrosoftGraph.User).businessPhones[0]}</span>
-        </div>
-      `;
-    }
-
-    if (getEmailFromGraphEntity(user)) {
-      email = html`
-        <div class="details-icon" @click=${this._emailUser}>
-          ${svgHelper.getSVG('email-small', '#666666')}
-          <span class="link-subtitle data">${getEmailFromGraphEntity(user)}</span>
-        </div>
-      `;
-    }
-
-    if ((user as MicrosoftGraph.User).mailNickname) {
-      chat = html`
-        <div class="details-icon" @click=${this._chatUser}>
-          ${svgHelper.getSVG('chat-small', '#666666')}
-          <span class="link-subtitle data">${(user as MicrosoftGraph.User).mailNickname}</span>
-        </div>
-      `;
-    }
-
-    if (user.officeLocation) {
-      location = html`
-        <div class="details-icon">
-          ${svgHelper.getSVG('location-small', '#666666')}<span class="normal-subtitle data"
-            >${user.officeLocation}</span
-          >
-        </div>
-      `;
-    }
-
     if (this.isExpanded === true) {
+      const user = this.personDetails;
+
+      // tslint:disable-next-line: one-variable-per-declaration
+      let phone, email, location, chat;
+
+      if ((user as MicrosoftGraph.User).businessPhones && (user as MicrosoftGraph.User).businessPhones.length > 0) {
+        phone = html`
+          <div class="details-icon" @click=${this._callUser}>
+            ${svgHelper.getSVG('phone-small', '#666666')}
+            <span class="link-subtitle data">${(user as MicrosoftGraph.User).businessPhones[0]}</span>
+          </div>
+        `;
+      }
+
+      if (getEmailFromGraphEntity(user)) {
+        email = html`
+          <div class="details-icon" @click=${this._emailUser}>
+            ${svgHelper.getSVG('email-small', '#666666')}
+            <span class="link-subtitle data">${getEmailFromGraphEntity(user)}</span>
+          </div>
+        `;
+      }
+
+      if ((user as MicrosoftGraph.User).mailNickname) {
+        chat = html`
+          <div class="details-icon" @click=${this._chatUser}>
+            ${svgHelper.getSVG('chat-small', '#666666')}
+            <span class="link-subtitle data">${(user as MicrosoftGraph.User).mailNickname}</span>
+          </div>
+        `;
+      }
+
+      if (user.officeLocation) {
+        location = html`
+          <div class="details-icon">
+            ${svgHelper.getSVG('location-small', '#666666')}<span class="normal-subtitle data"
+              >${user.officeLocation}</span
+            >
+          </div>
+        `;
+      }
       return html`
         <div class="additional-details-info">
           <div class="contact-text">Contact</div>
@@ -236,7 +235,7 @@ export class MgtPersonCard extends MgtTemplatedComponent {
       `;
     } else {
       return html`
-        <div class="additional-details-button">
+        <div class="additional-details-button" @click=${this._showAdditionalDetails}>
           <svg
             class="additional-details-svg"
             width="16"
