@@ -3,54 +3,10 @@ import { customElement, html, property } from 'lit-element';
 import { Providers } from '../../Providers';
 import { ProviderState } from '../../providers/IProvider';
 import { getEmailFromGraphEntity } from '../../utils/graphHelpers';
-import * as svgHelper from '../../utils/svgHelper';
+import { getSvg, SvgIcon } from '../../utils/svgHelper';
 import { PersonCardInteraction } from '../mgt-person/mgt-person';
 import { MgtTemplatedComponent } from '../templatedComponent';
 import { styles } from './mgt-person-card-css';
-
-/**
- * Defines icon used by svgHelper
- *
- * @export
- * @enum {number}
- */
-export enum SvgIcon {
-  /**
-   * Phone Icon
-   */
-  Phone,
-
-  /**
-   * Email Icon
-   */
-  Email,
-
-  /**
-   * Chat Icon
-   */
-  Chat,
-
-  /**
-   * Small Phone Icon
-   */
-  SmallPhone,
-
-  /**
-   * Small Email Icon
-   */
-  SmallEmail,
-
-  /**
-   * Small Chat Icon
-   */
-  SmallChat,
-
-  /**
-   * Small Location Icon
-   */
-  SmallLocation
-}
-
 /**
  * Web Component used to show detailed data for a person in the
  * Microsoft Graph
@@ -193,21 +149,21 @@ export class MgtPersonCard extends MgtTemplatedComponent {
       if ((user as MicrosoftGraph.User).mailNickname) {
         chat = html`
           <div class="icon" @click=${this._chatUser}>
-            ${svgHelper.getSvg(SvgIcon.Chat, '#666666')}
+            ${getSvg(SvgIcon.Chat, '#666666')}
           </div>
         `;
       }
       if (getEmailFromGraphEntity(user)) {
         email = html`
           <div class="icon" @click=${this._emailUser}>
-            ${svgHelper.getSvg(SvgIcon.Email, '#666666')}
+            ${getSvg(SvgIcon.Email, '#666666')}
           </div>
         `;
       }
       if ((user as MicrosoftGraph.User).businessPhones && (user as MicrosoftGraph.User).businessPhones.length > 0) {
         phone = html`
           <div class="icon" @click=${this._callUser}>
-            ${svgHelper.getSvg(SvgIcon.Phone, '#666666')}
+            ${getSvg(SvgIcon.Phone, '#666666')}
           </div>
         `;
       }
@@ -227,7 +183,7 @@ export class MgtPersonCard extends MgtTemplatedComponent {
       if ((user as MicrosoftGraph.User).businessPhones && (user as MicrosoftGraph.User).businessPhones.length > 0) {
         phone = html`
           <div class="details-icon" @click=${this._callUser}>
-            ${svgHelper.getSvg(SvgIcon.SmallPhone, '#666666')}
+            ${getSvg(SvgIcon.SmallPhone, '#666666')}
             <span class="link-subtitle data">${(user as MicrosoftGraph.User).businessPhones[0]}</span>
           </div>
         `;
@@ -236,7 +192,7 @@ export class MgtPersonCard extends MgtTemplatedComponent {
       if (getEmailFromGraphEntity(user)) {
         email = html`
           <div class="details-icon" @click=${this._emailUser}>
-            ${svgHelper.getSvg(SvgIcon.SmallEmail, '#666666')}
+            ${getSvg(SvgIcon.SmallEmail, '#666666')}
             <span class="link-subtitle data">${getEmailFromGraphEntity(user)}</span>
           </div>
         `;
@@ -245,7 +201,7 @@ export class MgtPersonCard extends MgtTemplatedComponent {
       if ((user as MicrosoftGraph.User).mailNickname) {
         chat = html`
           <div class="details-icon" @click=${this._chatUser}>
-            ${svgHelper.getSvg(SvgIcon.SmallChat, '#666666')}
+            ${getSvg(SvgIcon.SmallChat, '#666666')}
             <span class="link-subtitle data">${(user as MicrosoftGraph.User).mailNickname}</span>
           </div>
         `;
@@ -254,9 +210,7 @@ export class MgtPersonCard extends MgtTemplatedComponent {
       if (user.officeLocation) {
         location = html`
           <div class="details-icon">
-            ${svgHelper.getSvg(SvgIcon.SmallLocation, '#666666')}<span class="normal-subtitle data"
-              >${user.officeLocation}</span
-            >
+            ${getSvg(SvgIcon.SmallLocation, '#666666')}<span class="normal-subtitle data">${user.officeLocation}</span>
           </div>
         `;
       }

@@ -4,10 +4,51 @@
  * See License in the project root for license information.
  * -------------------------------------------------------------------------------------------
  */
+
+/**
+ * Defines icon used by svgHelper
+ *
+ * @export
+ * @enum {number}
+ */
+export enum SvgIcon {
+  /**
+   * Phone Icon
+   */
+  Phone,
+
+  /**
+   * Email Icon
+   */
+  Email,
+
+  /**
+   * Chat Icon
+   */
+  Chat,
+
+  /**
+   * Small Phone Icon
+   */
+  SmallPhone,
+
+  /**
+   * Small Email Icon
+   */
+  SmallEmail,
+
+  /**
+   * Small Chat Icon
+   */
+  SmallChat,
+
+  /**
+   * Small Location Icon
+   */
+  SmallLocation
+}
+
 import { html } from 'lit-element';
-
-import { SvgIcon } from '../components/mgt-person-card/mgt-person-card';
-
 /**
  * returns an svg
  * @param svgIcon defined by name
