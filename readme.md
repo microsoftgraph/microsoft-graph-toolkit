@@ -1,4 +1,4 @@
-# Microsoft Graph Toolkit (Preview)
+# Microsoft Graph Toolkit
 
 <img align="left" height="150" src="https://github.com/microsoftgraph/microsoft-graph-toolkit/raw/master/assets/graff.png" title="Graff the Giraffe">
 
@@ -9,13 +9,9 @@ The Microsoft Graph Toolkit is a collection of web components powered by the Mic
 
 Components are functional and work automatically with the Microsoft Graph
 
-Components work with any web framework and on all all modern browsers. IE 11 is also supported
+Components work with any web framework and on all modern browsers. IE 11 is also supported
 
 [Here is a quick jsfiddle](https://jsfiddle.net/metulev/9phqxLd5/)
-
-## This library is in Preview
-
-This library is in preview and is in early development. Based on feedback from the community, all components and APIs are expected to change and improve.
 
 ## Components & Documentation
 
@@ -23,6 +19,7 @@ The toolkit currently includes the following components:
 
 * [mgt-login](https://docs.microsoft.com/graph/toolkit/components/login)
 * [mgt-person](https://docs.microsoft.com/graph/toolkit/components/person)
+* [mgt-person-card](https://docs.microsoft.com/graph/toolkit/components/person-card)
 * [mgt-people](https://docs.microsoft.com/graph/toolkit/components/people)
 * [mgt-people-picker](https://docs.microsoft.com/graph/toolkit/components/people-picker)
 * [mgt-agenda](https://docs.microsoft.com/graph/toolkit/components/agenda)
