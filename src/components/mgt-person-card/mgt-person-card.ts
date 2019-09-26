@@ -121,7 +121,11 @@ export class MgtPersonCard extends MgtTemplatedComponent {
           <div class="default-view">
             ${this.renderTemplate('default', { person: this.personDetails }) ||
               html`
-                <mgt-person .personDetails=${this.personDetails} .personImage=${this.personImage}></mgt-person>
+                <mgt-person
+                  class="person-image"
+                  .personDetails=${this.personDetails}
+                  .personImage=${this.personImage}
+                ></mgt-person>
                 <div class="details">
                   <div class="display-name">${user.displayName}</div>
                   ${jobTitle} ${department}
@@ -214,6 +218,8 @@ export class MgtPersonCard extends MgtTemplatedComponent {
           </div>
         `;
       }
+      const renderAdditionalSection: boolean = this.templates && this.templates['additional-details'];
+
       return html`
         <div class="additional-details-info">
           <div class="contact-text">Contact</div>
@@ -222,10 +228,14 @@ export class MgtPersonCard extends MgtTemplatedComponent {
               <div class="icons">
                 ${chat} ${email} ${phone} ${location}
               </div>
-              <div class="section-divider"></div>
-              <div class="custom-section">
-                ${this.renderTemplate('additional-details', null)}
-              </div>
+              ${renderAdditionalSection
+                ? html`
+                    <div class="section-divider"></div>
+                    <div class="custom-section">
+                      ${this.renderTemplate('additional-details', null)}
+                    </div>
+                  `
+                : null}
             </div>
           </div>
         </div>
@@ -271,9 +281,8 @@ export class MgtPersonCard extends MgtTemplatedComponent {
           fill: 'both'
         }
       );
-
-      this.isExpanded = true;
     }
+    this.isExpanded = true;
   }
 
   private _callUser(e: Event) {

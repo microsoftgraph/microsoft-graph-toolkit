@@ -64,7 +64,7 @@
     "@babel/preset-typescript": "^7.3.3",
     "@types/jest": "^24.0.11",
     "@webcomponents/webcomponentsjs": "^2.2.10",
-    "babel-polyfill": "6.26.0",
+    "babel-polyfill": "^6.5.0",
     "browser-sync": "^2.26.7",
     "cpx": "^1.5.0",
     "gulp": "^4.0.0",

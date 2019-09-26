@@ -10,7 +10,7 @@ $font-size: var(--font-size, #{$ms-font-size-m});
 $font-weight: var(--font-weight, #{$ms-font-weight-semibold});
 $color: var(--color, #{$ms-color-neutralDark});
 
-.root {
+:host .root {
   position: relative;
   width: 340px;
   background: #ffffff;
@@ -21,7 +21,7 @@ $color: var(--color, #{$ms-color-neutralDark});
     display: flex;
     padding: 18px 14px;
 
-    mgt-person {
+    mgt-person.person-image {
       --avatar-size-s: 75px;
     }
 
@@ -53,7 +53,10 @@ $color: var(--color, #{$ms-color-neutralDark});
         -webkit-align-items: center;
         align-items: center;
         max-width: 120px;
-        justify-content: space-between;
+
+        .icon {
+          margin: 0 22px 0 0;
+        }
         .icon:hover {
           opacity: 0.6;
         }
@@ -78,6 +81,8 @@ $color: var(--color, #{$ms-color-neutralDark});
     }
     .additional-details-info {
       margin: 0 0 0 20px;
+      padding-bottom: 18px;
+
       .contact-text {
         margin: 0 0 24px 0;
         font-weight: 600;
