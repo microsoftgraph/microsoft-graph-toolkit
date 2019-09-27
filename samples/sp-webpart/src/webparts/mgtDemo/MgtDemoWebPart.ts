@@ -12,7 +12,7 @@ import MgtDemo from './components/MgtDemo';
 import { IMgtDemoProps } from './components/IMgtDemoProps';
 
 // import the providers at the top of the page
-import {Providers, SharePointProvider} from '@microsoft/mgt';
+import { Providers, SharePointProvider } from '@microsoft/mgt/dist/commonjs';
 
 export interface IMgtDemoWebPartProps {
   description: string;
