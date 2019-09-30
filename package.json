@@ -1,6 +1,6 @@
 {
   "name": "@microsoft/mgt",
-  "version": "0.2.2",
+  "version": "1.0.0",
   "description": "The Microsoft Graph Toolkit",
   "keywords": [
     "microsoft graph",
