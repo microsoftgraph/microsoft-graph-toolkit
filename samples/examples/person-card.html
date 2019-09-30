@@ -33,13 +33,13 @@
 
     <mgt-person person-query="me" show-name show-email person-card="hover">
       <template data-type="person-card">
-        <mgt-person-card person-details="{{ person }}" person-image="{{ personImage }}"></mgt-person-card>
+        <mgt-person-card inherit-details></mgt-person-card>
       </template>
     </mgt-person>
 
     <mgt-person person-query="me" show-name show-email person-card="click">
       <template data-type="person-card">
-        <mgt-person-card person-details="{{ person }}" person-image="{{ personImage }}">
+        <mgt-person-card inherit-details>
           <template data-type="additional-details">
             <div class="details">
               Here is some additional content here
