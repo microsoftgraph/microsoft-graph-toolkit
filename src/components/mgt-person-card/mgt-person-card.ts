@@ -4,7 +4,7 @@ import { Providers } from '../../Providers';
 import { ProviderState } from '../../providers/IProvider';
 import { getEmailFromGraphEntity } from '../../utils/graphHelpers';
 import { getSvg, SvgIcon } from '../../utils/svgHelper';
-import { PersonCardInteraction } from '../mgt-person/mgt-person';
+import { MgtPerson, PersonCardInteraction } from '../mgt-person/mgt-person';
 import { MgtTemplatedComponent } from '../templatedComponent';
 import { styles } from './mgt-person-card-css';
 /**
@@ -38,6 +38,7 @@ export class MgtPersonCard extends MgtTemplatedComponent {
     type: Object
   })
   public personDetails: MicrosoftGraph.User | MicrosoftGraph.Person | MicrosoftGraph.Contact;
+
   /**
    * Set the image of the person
    * Set to '@' to look up image from the graph
@@ -54,7 +55,7 @@ export class MgtPersonCard extends MgtTemplatedComponent {
   /**
    * Gets or sets whether additional details section is rendered
    *
-   * @type {string}
+   * @type {boolean}
    * @memberof MgtPersonCard
    */
   @property({
@@ -62,6 +63,19 @@ export class MgtPersonCard extends MgtTemplatedComponent {
     type: Boolean
   })
   public isExpanded: boolean = false;
+
+  /**
+   * Gets or sets whether additional details should be inherited from an mgt-person parent
+   * Useful when used as template in an mgt-person component
+   *
+   * @type {boolean}
+   * @memberof MgtPersonCard
+   */
+  @property({
+    attribute: 'inherit-details',
+    type: Boolean
+  })
+  public inheritDetails: boolean = false;
 
   /**
    * Synchronizes property values when attributes change.
@@ -321,6 +335,18 @@ export class MgtPersonCard extends MgtTemplatedComponent {
   }
 
   private async loadData() {
+    if (this.inheritDetails) {
+      let parent = this.parentElement;
+      while (parent && parent.tagName !== 'MGT-PERSON') {
+        parent = parent.parentElement;
+      }
+
+      if (parent && (parent as MgtPerson).personDetails) {
+        this.personDetails = (parent as MgtPerson).personDetails;
+        this.personImage = (parent as MgtPerson).personImage;
+      }
+    }
+
     if (this.personDetails) {
       return;
     }
