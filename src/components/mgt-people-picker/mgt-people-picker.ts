@@ -68,6 +68,13 @@ export class MgtPeoplePicker extends MgtTemplatedComponent {
    * @type {Array<any>}
    */
   @property() public selectedPeople: Array<MicrosoftGraph.User | MicrosoftGraph.Person | MicrosoftGraph.Contact> = [];
+  /**
+   * accessibile property for user defined selected people
+   *
+   * @type {[string]}
+   * @memberof MgtPeoplePicker
+   */
+  @property() public choosePeople: [];
 
   // single matching id for filtering against people list
   @property() private _duplicatePersonId: string = '';
@@ -118,6 +125,13 @@ export class MgtPeoplePicker extends MgtTemplatedComponent {
 
     if (att === 'group-id' && oldval !== newval) {
       this.findGroup();
+    }
+  }
+
+  public updated() {
+    if (this.choosePeople && this.choosePeople.length) {
+      this.choosePeopleManual(this.choosePeople);
+      this.choosePeople = [];
     }
   }
 
@@ -201,7 +215,7 @@ export class MgtPeoplePicker extends MgtTemplatedComponent {
       if (this.people.length) {
         event.preventDefault();
       }
-      this.addPerson(this.people[this.arrowSelectionCount], event);
+      this.addPerson(this.people[this.arrowSelectionCount]);
       event.target.value = '';
     }
   }
@@ -245,7 +259,7 @@ export class MgtPeoplePicker extends MgtTemplatedComponent {
    * @param person - contains details pertaining to selected user
    * @param event - tracks user event
    */
-  private addPerson(person: MicrosoftGraph.User | MicrosoftGraph.Person | MicrosoftGraph.Contact, event: any) {
+  private addPerson(person: MicrosoftGraph.User | MicrosoftGraph.Person | MicrosoftGraph.Contact) {
     if (person) {
       this._userInput = '';
       this._duplicatePersonId = '';
@@ -262,6 +276,32 @@ export class MgtPeoplePicker extends MgtTemplatedComponent {
         this.people = [];
         this._userInput = '';
         this.arrowSelectionCount = 0;
+      }
+    }
+  }
+
+  private async choosePeopleManual(people) {
+    const provider = Providers.globalProvider;
+    if (provider && provider.state === ProviderState.SignedIn) {
+      const client = Providers.globalProvider.graph;
+      const peopleDetails = [];
+      const name = [];
+      const peopleArr = [];
+      if (people) {
+        for (let i = 0; i < people.length; i++) {
+          // first find valid UserName
+          peopleDetails.push(await client.getUser(people[i]));
+        }
+        for (let i = 0; i < peopleDetails.length; i++) {
+          // get people details to push
+          name.push(peopleDetails[i].displayName);
+        }
+        for (let i = 0; i < name.length; i++) {
+          peopleArr.push(await client.findPerson(name[i]));
+        }
+        for (let i = 0; i < peopleArr.length; i++) {
+          this.addPerson(peopleArr[i][0]);
+        }
       }
     }
   }
@@ -478,7 +518,7 @@ export class MgtPeoplePicker extends MgtTemplatedComponent {
         person => html`
           <li
             class="${person.isSelected === 'fill' ? 'people-person-list-fill' : 'people-person-list'}"
-            @click="${(event: any) => this.addPerson(person, event)}"
+            @click="${() => this.addPerson(person)}"
           >
             ${this.renderTemplate('person', { person }, person.displayName) || this.renderPerson(person)}
             <div class="people-person-text-area" id="${person.displayName}">
