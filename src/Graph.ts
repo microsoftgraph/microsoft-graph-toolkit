@@ -38,7 +38,7 @@ export function prepScopes(...scopes: string[]) {
 }
 
 /**
- * Implements MGT sdkVersion 
+ * Implements MGT sdkVersion
  *
  * @class SdkVersionMiddleware
  * @implements {Middleware}
@@ -50,9 +50,8 @@ class SdkVersionMiddleware implements Middleware {
    */
   private nextMiddleware: Middleware;
 
-
-// tslint:disable-next-line: completed-docs
-public async execute(context: Context): Promise<void> {
+  // tslint:disable-next-line: completed-docs
+  public async execute(context: Context): Promise<void> {
     try {
       let sdkVersionValue: string = `mgt/${PACKAGE_VERSION}`; // todo - add real version
 
@@ -64,13 +63,13 @@ public async execute(context: Context): Promise<void> {
       throw error;
     }
   }
-/**
- * Handles setting of next middleware 
- *
- * @param {Middleware} next
- * @memberof SdkVersionMiddleware
- */
-public setNext(next: Middleware): void {
+  /**
+   * Handles setting of next middleware
+   *
+   * @param {Middleware} next
+   * @memberof SdkVersionMiddleware
+   */
+  public setNext(next: Middleware): void {
     this.nextMiddleware = next;
   }
 }
@@ -102,7 +101,6 @@ class BatchRequest {
  */
 // tslint:disable-next-line: max-classes-per-file
 export class Batch {
-
   // this doesn't really mater what it is as long as it's a root base url
   // otherwise a Request assumes the current path and that could change the relative path
   private static baseUrl = 'https://graph.microsoft.com';
@@ -113,15 +111,15 @@ export class Batch {
   constructor(client: Client) {
     this.client = client;
   }
-/**
- * sets new request and scopes
- *
- * @param {string} id
- * @param {string} resource
- * @param {string[]} [scopes]
- * @memberof Batch
- */
-public get(id: string, resource: string, scopes?: string[]) {
+  /**
+   * sets new request and scopes
+   *
+   * @param {string} id
+   * @param {string} resource
+   * @param {string[]} [scopes]
+   * @memberof Batch
+   */
+  public get(id: string, resource: string, scopes?: string[]) {
     const request = new BatchRequest(resource, 'GET');
     this.requests.set(id, request);
 
@@ -130,13 +128,13 @@ public get(id: string, resource: string, scopes?: string[]) {
     }
   }
 
-/**
- * Promise to handle Graph request response 
- *
- * @returns {Promise<any>}
- * @memberof Batch
- */
-public async execute(): Promise<any> {
+  /**
+   * Promise to handle Graph request response
+   *
+   * @returns {Promise<any>}
+   * @memberof Batch
+   */
+  public async execute(): Promise<any> {
     const responses = {};
 
     if (!this.requests.size) {
@@ -206,52 +204,52 @@ export class Graph {
     }
   }
 
-/**
- * creates batch request
- *
- * @returns
- * @memberof Graph
- */
-public createBatch() {
+  /**
+   * creates batch request
+   *
+   * @returns
+   * @memberof Graph
+   */
+  public createBatch() {
     return new Batch(this.client);
   }
 
-/**
- *  async promise, returns Graph User data relating to the user logged in
- *
- * @returns {Promise<MicrosoftGraph.User>}
- * @memberof Graph
- */
-public async getMe(): Promise<MicrosoftGraph.User> {
+  /**
+   *  async promise, returns Graph User data relating to the user logged in
+   *
+   * @returns {Promise<MicrosoftGraph.User>}
+   * @memberof Graph
+   */
+  public async getMe(): Promise<MicrosoftGraph.User> {
     return this.client
       .api('me')
       .middlewareOptions(prepScopes('user.read'))
       .get();
   }
 
-/**
- * async promise, returns all Graph users associated with the userPrincipleName provided
- *
- * @param {string} userPrincipleName
- * @returns {Promise<MicrosoftGraph.User>}
- * @memberof Graph
- */
-public async getUser(userPrincipleName: string): Promise<MicrosoftGraph.User> {
+  /**
+   * async promise, returns all Graph users associated with the userPrincipleName provided
+   *
+   * @param {string} userPrincipleName
+   * @returns {Promise<MicrosoftGraph.User>}
+   * @memberof Graph
+   */
+  public async getUser(userPrincipleName: string): Promise<MicrosoftGraph.User> {
     const scopes = 'user.readbasic.all';
     return this.client
       .api(`/users/${userPrincipleName}`)
       .middlewareOptions(prepScopes(scopes))
       .get();
   }
-  
-/**
- * async promise, returns all Graph people who are most relevant contacts to the signed in user.
- *
- * @param {string} query
- * @returns {Promise<MicrosoftGraph.Person[]>}
- * @memberof Graph
- */
-public async findPerson(query: string): Promise<MicrosoftGraph.Person[]> {
+
+  /**
+   * async promise, returns all Graph people who are most relevant contacts to the signed in user.
+   *
+   * @param {string} query
+   * @returns {Promise<MicrosoftGraph.Person[]>}
+   * @memberof Graph
+   */
+  public async findPerson(query: string): Promise<MicrosoftGraph.Person[]> {
     const scopes = 'people.read';
     const result = await this.client
       .api('/me/people')
@@ -261,14 +259,14 @@ public async findPerson(query: string): Promise<MicrosoftGraph.Person[]> {
     return result ? result.value : null;
   }
 
-/**
- * async promise, returns a Graph contact associated with the email provided
- *
- * @param {string} email
- * @returns {Promise<MicrosoftGraph.Contact[]>}
- * @memberof Graph
- */
-public async findContactByEmail(email: string): Promise<MicrosoftGraph.Contact[]> {
+  /**
+   * async promise, returns a Graph contact associated with the email provided
+   *
+   * @param {string} email
+   * @returns {Promise<MicrosoftGraph.Contact[]>}
+   * @memberof Graph
+   */
+  public async findContactByEmail(email: string): Promise<MicrosoftGraph.Contact[]> {
     const scopes = 'contacts.read';
     const result = await this.client
       .api('/me/contacts')
@@ -278,62 +276,62 @@ public async findContactByEmail(email: string): Promise<MicrosoftGraph.Contact[]
     return result ? result.value : null;
   }
 
-/**
- * async promise, returns Graph contact and/or Person associated with the email provided
- * Uses: Graph.findPerson(email) and Graph.findContactByEmail(email)
- *
- * @param {string} email
- * @returns {(Promise<Array<MicrosoftGraph.Person | MicrosoftGraph.Contact>>)}
- * @memberof Graph
- */
-public async findUserByEmail(email: string): Promise<Array<MicrosoftGraph.Person | MicrosoftGraph.Contact>> {
+  /**
+   * async promise, returns Graph contact and/or Person associated with the email provided
+   * Uses: Graph.findPerson(email) and Graph.findContactByEmail(email)
+   *
+   * @param {string} email
+   * @returns {(Promise<Array<MicrosoftGraph.Person | MicrosoftGraph.Contact>>)}
+   * @memberof Graph
+   */
+  public async findUserByEmail(email: string): Promise<Array<MicrosoftGraph.Person | MicrosoftGraph.Contact>> {
     return Promise.all([this.findPerson(email), this.findContactByEmail(email)]).then(([people, contacts]) => {
       return (people || []).concat(contacts || []);
     });
   }
 
-/**
- * async promise, returns Graph photo associated with the logged in user
- *
- * @returns {Promise<string>}
- * @memberof Graph
- */
-public async myPhoto(): Promise<string> {
+  /**
+   * async promise, returns Graph photo associated with the logged in user
+   *
+   * @returns {Promise<string>}
+   * @memberof Graph
+   */
+  public async myPhoto(): Promise<string> {
     return this.getPhotoForResource('me', ['user.read']);
   }
 
-/**
- * async promise, returns Graph photo associated with provided userId
- *
- * @param {string} userId
- * @returns {Promise<string>}
- * @memberof Graph
- */
-public async getUserPhoto(userId: string): Promise<string> {
+  /**
+   * async promise, returns Graph photo associated with provided userId
+   *
+   * @param {string} userId
+   * @returns {Promise<string>}
+   * @memberof Graph
+   */
+  public async getUserPhoto(userId: string): Promise<string> {
     return this.getPhotoForResource(`users/${userId}`, ['user.readbasic.all']);
   }
 
-/**
- * async promise, returns Graph photos associated with contacts of the logged in user
- *
- * @param {string} contactId
- * @returns {Promise<string>}
- * @memberof Graph
- */
-public async getContactPhoto(contactId: string): Promise<string> {
+  /**
+   * async promise, returns Graph photos associated with contacts of the logged in user
+   *
+   * @param {string} contactId
+   * @returns {Promise<string>}
+   * @memberof Graph
+   */
+  public async getContactPhoto(contactId: string): Promise<string> {
     return this.getPhotoForResource(`me/contacts/${contactId}`, ['contacts.read']);
   }
 
-/**
- * async promise, returns Calender events associated with either the logged in user or a specific groupId 
- *
- * @param {Date} startDateTime
- * @param {Date} endDateTime
- * @param {string} [groupId]
- * @returns {Promise<MicrosoftGraph.Event[]>}
- * @memberof Graph
- */
-public async getEvents(startDateTime: Date, endDateTime: Date, groupId?: string): Promise<MicrosoftGraph.Event[]> {
+  /**
+   * async promise, returns Calender events associated with either the logged in user or a specific groupId
+   *
+   * @param {Date} startDateTime
+   * @param {Date} endDateTime
+   * @param {string} [groupId]
+   * @returns {Promise<MicrosoftGraph.Event[]>}
+   * @memberof Graph
+   */
+  public async getEvents(startDateTime: Date, endDateTime: Date, groupId?: string): Promise<MicrosoftGraph.Event[]> {
     const scopes = 'calendars.read';
 
     const sdt = `startdatetime=${startDateTime.toISOString()}`;
@@ -357,13 +355,13 @@ public async getEvents(startDateTime: Date, endDateTime: Date, groupId?: string)
     return calendarView ? calendarView.value : null;
   }
 
-/**
- * async promise to the Graph for People, by default, it will request the most frequent contacts for the signed in user.
- *
- * @returns {Promise<MicrosoftGraph.Person[]>}
- * @memberof Graph
- */
-public async getPeople(): Promise<MicrosoftGraph.Person[]> {
+  /**
+   * async promise to the Graph for People, by default, it will request the most frequent contacts for the signed in user.
+   *
+   * @returns {Promise<MicrosoftGraph.Person[]>}
+   * @memberof Graph
+   */
+  public async getPeople(): Promise<MicrosoftGraph.Person[]> {
     const scopes = 'people.read';
 
     const uri = '/me/people';
@@ -375,14 +373,14 @@ public async getPeople(): Promise<MicrosoftGraph.Person[]> {
     return people ? people.value : null;
   }
 
-/**
- * async promise to the Graph for People, defined by a group id
- *
- * @param {string} groupId
- * @returns {Promise<MicrosoftGraph.Person[]>}
- * @memberof Graph
- */
-public async getPeopleFromGroup(groupId: string): Promise<MicrosoftGraph.Person[]> {
+  /**
+   * async promise to the Graph for People, defined by a group id
+   *
+   * @param {string} groupId
+   * @returns {Promise<MicrosoftGraph.Person[]>}
+   * @memberof Graph
+   */
+  public async getPeopleFromGroup(groupId: string): Promise<MicrosoftGraph.Person[]> {
     const scopes = 'people.read';
 
     const uri = `/groups/${groupId}/members`;
@@ -428,7 +426,7 @@ public async getPeopleFromGroup(groupId: string): Promise<MicrosoftGraph.Person[
 
   /**
    * async promise, returns bucket (for tasks) associated with a planId
-   * 
+   *
    * @param {string} planId
    * @returns {Promise<MicrosoftGraph.PlannerBucket[]>}
    * @memberof Graph
@@ -497,7 +495,7 @@ public async getPeopleFromGroup(groupId: string): Promise<MicrosoftGraph.Person[
   }
 
   /**
-   * async promise, allows developer to set a task to incomplete, associated with taskId 
+   * async promise, allows developer to set a task to incomplete, associated with taskId
    *
    * @param {string} taskId
    * @param {string} eTag
@@ -515,7 +513,7 @@ public async getPeopleFromGroup(groupId: string): Promise<MicrosoftGraph.Person[
   }
 
   /**
-   * async promise, allows developer to create new Planner task 
+   * async promise, allows developer to create new Planner task
    *
    * @param {MicrosoftGraph.PlannerTask} newTask
    * @returns {Promise<any>}
@@ -676,14 +674,14 @@ public async getPeopleFromGroup(groupId: string): Promise<MicrosoftGraph.Person[
     );
   }
 
-/**
- * async promise, allows developer to add new to-do task
- *
- * @param {*} newTask
- * @returns {Promise<MicrosoftGraphBeta.OutlookTask>}
- * @memberof Graph
- */
-public async todo_addTask(newTask: any): Promise<MicrosoftGraphBeta.OutlookTask> {
+  /**
+   * async promise, allows developer to add new to-do task
+   *
+   * @param {*} newTask
+   * @returns {Promise<MicrosoftGraphBeta.OutlookTask>}
+   * @memberof Graph
+   */
+  public async todo_addTask(newTask: any): Promise<MicrosoftGraphBeta.OutlookTask> {
     const { parentFolderId = null } = newTask;
 
     if (parentFolderId) {
@@ -693,8 +691,7 @@ public async todo_addTask(newTask: any): Promise<MicrosoftGraphBeta.OutlookTask>
         .version('beta')
         .middlewareOptions(prepScopes('Tasks.ReadWrite'))
         .post(newTask);
-    }
-    else {
+    } else {
       return await this.client
         .api('/me/outlook/tasks')
         .header('Cache-Control', 'no-store')
@@ -704,15 +701,15 @@ public async todo_addTask(newTask: any): Promise<MicrosoftGraphBeta.OutlookTask>
     }
   }
 
-/**
- * async promise, allows developer to remove task based on taskId
- *
- * @param {string} taskId
- * @param {string} eTag
- * @returns {Promise<any>}
- * @memberof Graph
- */
-public async todo_removeTask(taskId: string, eTag: string): Promise<any> {
+  /**
+   * async promise, allows developer to remove task based on taskId
+   *
+   * @param {string} taskId
+   * @param {string} eTag
+   * @returns {Promise<any>}
+   * @memberof Graph
+   */
+  public async todo_removeTask(taskId: string, eTag: string): Promise<any> {
     return await this.client
       .api(`/me/outlook/tasks/${taskId}`)
       .header('Cache-Control', 'no-store')
