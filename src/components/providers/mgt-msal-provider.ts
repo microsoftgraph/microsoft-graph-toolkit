@@ -25,8 +25,8 @@ export class MgtMsalProvider extends MgtBaseProvider {
    * @memberof MgtMsalProvider
    */
   @property({
-    type: String,
-    attribute: 'client-id'
+    attribute: 'client-id',
+    type: String
   })
   public clientId = '';
   /**
@@ -35,8 +35,8 @@ export class MgtMsalProvider extends MgtBaseProvider {
    * @memberof MgtMsalProvider
    */
   @property({
-    type: String,
-    attribute: 'login-type'
+    attribute: 'login-type',
+    type: String
   })
   public loginType;
 
@@ -49,8 +49,8 @@ export class MgtMsalProvider extends MgtBaseProvider {
    * @memberof MgtMsalProvider
    */
   @property({
-    type: String,
-    attribute: 'scopes'
+    attribute: 'scopes',
+    type: String
   })
   public scopes;
   /**
