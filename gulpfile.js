@@ -10,6 +10,10 @@ scssFileHeader = `
 // MODIFY THE .SCSS FILE INSTEAD
 
 import { css } from 'lit-element';
+/**
+ * exports lit-element css
+ * @export styles
+ */
 export const styles = [
   css\``;
 
