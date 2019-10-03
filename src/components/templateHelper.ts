@@ -6,7 +6,6 @@
  */
 
 export class TemplateHelper {
-
   /**
    * Render a template into a HTMLElement with the appropriate data context
    *
