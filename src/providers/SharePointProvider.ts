@@ -5,34 +5,84 @@
  * -------------------------------------------------------------------------------------------
  */
 
-import { IProvider, ProviderState } from './IProvider';
 import { Graph } from '../Graph';
+import { IProvider, ProviderState } from './IProvider';
 
+/**
+ * AadTokenProvider
+ *
+ * @interface AadTokenProvider
+ */
 declare interface AadTokenProvider {
+  /**
+   * get token with x
+   *
+   * @param {string} x
+   * @memberof AadTokenProvider
+   */
   getToken(x: string);
 }
 
+/**
+ * contains the contextual services available to a web part
+ *
+ * @export
+ * @interface WebPartContext
+ */
 export declare interface WebPartContext {
+  // tslint:disable-next-line: completed-docs
   aadTokenProviderFactory: any;
 }
 
+/**
+ * SharePoint Provider handler
+ *
+ * @export
+ * @class SharePointProvider
+ * @extends {IProvider}
+ */
 export class SharePointProvider extends IProvider {
-  private _idToken: string;
-
-  private _provider: AadTokenProvider;
-
+  /**
+   * returns _provider
+   *
+   * @readonly
+   * @memberof SharePointProvider
+   */
   get provider() {
     return this._provider;
   }
 
+  /**
+   * returns _idToken
+   *
+   * @readonly
+   * @type {boolean}
+   * @memberof SharePointProvider
+   */
   get isLoggedIn(): boolean {
     return !!this._idToken;
   }
 
-  private context: WebPartContext;
+  /**
+   * privilege level for authenication
+   *
+   * @type {string[]}
+   * @memberof SharePointProvider
+   */
+  public scopes: string[];
 
-  scopes: string[];
-  authority: string;
+  /**
+   * authority
+   *
+   * @type {string}
+   * @memberof SharePointProvider
+   */
+  public authority: string;
+  private _idToken: string;
+
+  private _provider: AadTokenProvider;
+
+  private context: WebPartContext;
 
   constructor(context: WebPartContext) {
     super();
@@ -47,23 +97,35 @@ export class SharePointProvider extends IProvider {
     );
   }
 
-  private async internalLogin(): Promise<void> {
-    this._idToken = await this.getAccessToken();
-    this.setState(this._idToken ? ProviderState.SignedIn : ProviderState.SignedOut);
-  }
-
-  async getAccessToken(): Promise<string> {
+  /**
+   * uses provider to recieve access token via SharePoint Provider
+   *
+   * @returns {Promise<string>}
+   * @memberof SharePointProvider
+   */
+  public async getAccessToken(): Promise<string> {
     let accessToken: string;
     try {
       accessToken = await this.provider.getToken('https://graph.microsoft.com');
     } catch (e) {
+      // tslint:disable-next-line: no-console
       console.log(e);
       throw e;
     }
     return accessToken;
   }
-
-  updateScopes(scopes: string[]) {
+  /**
+   * update scopes
+   *
+   * @param {string[]} scopes
+   * @memberof SharePointProvider
+   */
+  public updateScopes(scopes: string[]) {
     this.scopes = scopes;
+  }
+
+  private async internalLogin(): Promise<void> {
+    this._idToken = await this.getAccessToken();
+    this.setState(this._idToken ? ProviderState.SignedIn : ProviderState.SignedOut);
   }
 }
