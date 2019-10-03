@@ -138,13 +138,21 @@ export class MgtAgenda extends MgtTemplatedComponent {
     Providers.onProviderUpdated(() => this.loadData());
     this.loadData();
   }
-
+  /**
+   * Determines width available if resize is necessary, adds onResize event listener to window
+   *
+   * @memberof MgtAgenda
+   */
   public connectedCallback() {
     this._isNarrow = this.offsetWidth < 600;
     super.connectedCallback();
     window.addEventListener('resize', this.onResize);
   }
-
+  /**
+   * Removes onResize event listener from window
+   *
+   * @memberof MgtAgenda
+   */
   public disconnectedCallback() {
     window.removeEventListener('resize', this.onResize);
     super.disconnectedCallback();
@@ -165,7 +173,13 @@ export class MgtAgenda extends MgtTemplatedComponent {
     }
     super.attributeChangedCallback(name, oldValue, newValue);
   }
-
+  /**
+   * Invoked on each update to perform rendering tasks. This method must return a lit-html TemplateResult.
+   * Setting properties inside this method will not trigger the element to update
+   *
+   * @returns
+   * @memberof MgtAgenda
+   */
   public render() {
     this._isNarrow = this.offsetWidth < 600;
     return html`
@@ -195,6 +209,7 @@ export class MgtAgenda extends MgtTemplatedComponent {
       if (this.eventQuery) {
         try {
           const tokens = this.eventQuery.split('|');
+          // tslint:disable-next-line: one-variable-per-declaration
           let scope, query;
           if (tokens.length > 1) {
             query = tokens[0].trim();
@@ -214,6 +229,7 @@ export class MgtAgenda extends MgtTemplatedComponent {
           if (results && results.value) {
             this.events = results.value;
           }
+          // tslint:disable-next-line: no-empty
         } catch (e) {}
       } else {
         const start = this.date ? new Date(this.date) : new Date();
@@ -249,6 +265,7 @@ export class MgtAgenda extends MgtTemplatedComponent {
 
       if (this.groupByDay) {
         const grouped = {};
+        // tslint:disable-next-line: prefer-for-of
         for (let i = 0; i < events.length; i++) {
           const header = this.getDateHeaderFromDateTimeString(events[i].start.dateTime);
           grouped[header] = grouped[header] || [];
