@@ -120,7 +120,11 @@ export class MgtPeoplePicker extends MgtTemplatedComponent {
       this.findGroup();
     }
   }
-
+  /**
+   * Invoked when the element is first updated. Implement to perform one time work on the element after update.
+   * Checks if group-id is present
+   * @memberof MgtPeoplePicker
+   */
   public firstUpdated() {
     if (this.groupId) {
       Providers.onProviderUpdated(() => this.findGroup());
@@ -128,6 +132,12 @@ export class MgtPeoplePicker extends MgtTemplatedComponent {
     }
   }
 
+  /**
+   * Invoked on each update to perform rendering tasks. This method must return a lit-html TemplateResult.
+   * Setting properties inside this method will not trigger the element to update.
+   * @returns
+   * @memberof MgtPeoplePicker
+   */
   public render() {
     return (
       this.renderTemplate('default', { people: this.people }) ||
@@ -177,6 +187,7 @@ export class MgtPeoplePicker extends MgtTemplatedComponent {
     }
     this._userInput = event.target.value;
     if (event.target.value) {
+      // tslint:disable-next-line: no-unused-expression
       this.debounceHandle;
     } else {
       event.target.value = '';
@@ -232,6 +243,7 @@ export class MgtPeoplePicker extends MgtTemplatedComponent {
 
       const peopleList = this.renderRoot.querySelector('.people-list');
       // reset background color
+      // tslint:disable-next-line: prefer-for-of
       for (let i = 0; i < peopleList.children.length; i++) {
         peopleList.children[i].setAttribute('class', 'people-person-list');
       }
@@ -250,6 +262,7 @@ export class MgtPeoplePicker extends MgtTemplatedComponent {
       this._userInput = '';
       this._duplicatePersonId = '';
       const chosenPerson: any = person;
+      // tslint:disable-next-line: no-shadowed-variable
       const filteredPersonArr = this.selectedPeople.filter(person => {
         return person.id === chosenPerson.id;
       });
@@ -330,6 +343,7 @@ export class MgtPeoplePicker extends MgtTemplatedComponent {
    */
   private removePerson(person: MicrosoftGraph.User | MicrosoftGraph.Person | MicrosoftGraph.Contact) {
     const chosenPerson: any = person;
+    // tslint:disable-next-line: no-shadowed-variable
     const filteredPersonArr = this.selectedPeople.filter(person => {
       return person.id !== chosenPerson.id;
     });
@@ -365,6 +379,7 @@ export class MgtPeoplePicker extends MgtTemplatedComponent {
         )}
       `;
     }
+    // tslint:disable
     return html`
       <div class="people-chosen-list">
         ${peopleList}
@@ -391,6 +406,7 @@ export class MgtPeoplePicker extends MgtTemplatedComponent {
       </div>
     `;
   }
+  // tslint:enable
 
   private gainedFocus() {
     const peopleList = this.renderRoot.querySelector('.people-list');
