@@ -88,15 +88,15 @@ export class MockGraph extends Graph {
       baseUrl: this.baseUrl + escape(this.rootGraphUrl)
     });
   }
-/**
- * get events for Calendar
- *
- * @param {Date} startDateTime
- * @param {Date} endDateTime
- * @returns {Promise<MicrosoftGraph.Event[]>}
- * @memberof MockGraph
- */
-public async getEvents(startDateTime: Date, endDateTime: Date): Promise<MicrosoftGraph.Event[]> {
+  /**
+   * get events for Calendar
+   *
+   * @param {Date} startDateTime
+   * @param {Date} endDateTime
+   * @returns {Promise<MicrosoftGraph.Event[]>}
+   * @memberof MockGraph
+   */
+  public async getEvents(startDateTime: Date, endDateTime: Date): Promise<MicrosoftGraph.Event[]> {
     const sdt = `startdatetime=${startDateTime.toISOString()}`;
     const edt = `enddatetime=${endDateTime.toISOString()}`;
     const uri = `/me/calendarview?${sdt}&${edt}`;
