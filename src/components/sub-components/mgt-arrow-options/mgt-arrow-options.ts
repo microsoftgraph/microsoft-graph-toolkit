@@ -27,7 +27,6 @@ import { styles } from './mgt-arrow-options-css';
  */
 @customElement('mgt-arrow-options')
 export class MgtArrowOptions extends MgtBaseComponent {
-
   /**
    * Array of styles to apply to the element. The styles should be defined
    * user the `css` tag function.
@@ -36,29 +35,29 @@ export class MgtArrowOptions extends MgtBaseComponent {
     return styles;
   }
 
-/**
- * Determines if header menu is rendered or hidden.
- *
- * @type {boolean}
- * @memberof MgtArrowOptions
- */
-@property({ type: Boolean }) public open: boolean = false;
+  /**
+   * Determines if header menu is rendered or hidden.
+   *
+   * @type {boolean}
+   * @memberof MgtArrowOptions
+   */
+  @property({ type: Boolean }) public open: boolean = false;
 
-/**
- * Title of chosen dresser.
- *
- * @type {string}
- * @memberof MgtArrowOptions
- */
-@property({ type: String }) public value: string = '';
+  /**
+   * Title of chosen dresser.
+   *
+   * @type {string}
+   * @memberof MgtArrowOptions
+   */
+  @property({ type: String }) public value: string = '';
 
-/**
- * Menu options to be rendered with an attached MouseEvent handler for expansion of details
- *
- * @type {object}
- * @memberof MgtArrowOptions
- */
-@property({ type: Object }) public options: { [name: string]: (e: MouseEvent) => any | void } = {};
+  /**
+   * Menu options to be rendered with an attached MouseEvent handler for expansion of details
+   *
+   * @type {object}
+   * @memberof MgtArrowOptions
+   */
+  @property({ type: Object }) public options: { [name: string]: (e: MouseEvent) => any | void } = {};
 
   private _clickHandler: (e: MouseEvent) => void | any;
 
@@ -79,13 +78,13 @@ export class MgtArrowOptions extends MgtBaseComponent {
     super.disconnectedCallback();
   }
 
-/**
- * Handles clicking for header menu, utilizing boolean switch open
- *
- * @param {MouseEvent} e attaches to Header to open menu
- * @memberof MgtArrowOptions
- */
-public onHeaderClick(e: MouseEvent) {
+  /**
+   * Handles clicking for header menu, utilizing boolean switch open
+   *
+   * @param {MouseEvent} e attaches to Header to open menu
+   * @memberof MgtArrowOptions
+   */
+  public onHeaderClick(e: MouseEvent) {
     const keys = Object.keys(this.options);
     if (keys.length > 1) {
       e.preventDefault();
@@ -94,12 +93,11 @@ public onHeaderClick(e: MouseEvent) {
     }
   }
 
-
-/**
- * Invoked on each update to perform rendering tasks. This method must return
- * a lit-html TemplateResult. Setting properties inside this method will *not*
- * trigger the element to update.
- */
+  /**
+   * Invoked on each update to perform rendering tasks. This method must return
+   * a lit-html TemplateResult. Setting properties inside this method will *not*
+   * trigger the element to update.
+   */
   public render() {
     return html`
       <span class="Header" @click=${e => this.onHeaderClick(e)}>
