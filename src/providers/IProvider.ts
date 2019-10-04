@@ -77,7 +77,7 @@ export abstract class IProvider implements AuthenticationProvider {
   public login?(): Promise<void>;
 
   /**
-   * logout
+   * optional implementation that can be called to sign out user (required for mgt-login to work)
    *
    * @returns {Promise<void>}
    * @memberof IProvider
