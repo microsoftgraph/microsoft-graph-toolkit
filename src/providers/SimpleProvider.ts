@@ -36,7 +36,7 @@ export class SimpleProvider extends IProvider {
   }
 
   /**
-   * returns the Access Token
+   * Invokes the getAccessToken function
    *
    * @param {AuthenticationProviderOptions} [options]
    * @returns {Promise<string>}
