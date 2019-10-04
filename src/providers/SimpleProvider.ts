@@ -57,7 +57,7 @@ export class SimpleProvider extends IProvider {
   }
 
   /**
-   * returns logoutHandler
+   * Invokes logout function
    *
    * @returns {Promise<void>}
    * @memberof SimpleProvider
