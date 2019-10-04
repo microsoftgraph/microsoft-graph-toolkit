@@ -47,7 +47,7 @@ export class SimpleProvider extends IProvider {
   }
 
   /**
-   * retunrs loginHandler
+   * Invokes login function
    *
    * @returns {Promise<void>}
    * @memberof SimpleProvider
