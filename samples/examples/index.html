@@ -1,21 +1,9 @@
 <html>
 <head>
     <script src="https://unpkg.com/@microsoft/mgt/dist/bundle/mgt-loader.js"></script>
-
-    <style>
-        mgt-agenda {
-            --event-subject-color: pink;
-        }
-    </style>
 </head>
 <body>
     <mgt-msal-provider client-id="a974dfa0-9f57-49b9-95db-90f04ce2111a"></mgt-msal-provider>
     <mgt-login></mgt-login>
-
-    <mgt-agenda days="30">
-        <template data-type="event">
-            <div>{{event.subject}}</div>
-        </template>
-    </mgt-agenda>
 </body>
 </html>
