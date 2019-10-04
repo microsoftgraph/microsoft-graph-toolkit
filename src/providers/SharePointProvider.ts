@@ -108,8 +108,6 @@ export class SharePointProvider extends IProvider {
     try {
       accessToken = await this.provider.getToken('https://graph.microsoft.com');
     } catch (e) {
-      // tslint:disable-next-line: no-console
-      console.log(e);
       throw e;
     }
     return accessToken;
