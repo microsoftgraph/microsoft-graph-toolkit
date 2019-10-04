@@ -82,25 +82,6 @@ export class MgtPeoplePicker extends MgtTemplatedComponent {
   // if search is still loading don't load "people not found" state
   private isLoading = false;
 
-  // handing debounce on user search
-
-  /**
-   * Adds debounce method for set delay on user input
-   * @returns userinput
-   */
-  private debounceHandle = window.addEventListener(
-    'keyup',
-    debounce(e => {
-      if (e.keyCode === 40 || e.keyCode === 38) {
-        // keyCodes capture: down arrow (40) and up arrow (38)
-        return;
-      } else {
-        this.arrowSelectionCount = 0;
-        this.loadPersonSearch(this._userInput);
-      }
-    }, 300)
-  );
-
   constructor() {
     super();
   }
@@ -154,6 +135,42 @@ export class MgtPeoplePicker extends MgtTemplatedComponent {
   }
 
   /**
+   * Adds debounce method for set delay on user input
+   * @returns userinput
+   */
+  private debounceHandle(event: any) {
+    if (event.keyCode === 40 || event.keyCode === 38) {
+      // keyCodes capture: down arrow (40) and up arrow (38)
+      return;
+    }
+
+    const input = event.target;
+
+    if (event.code === 'Escape') {
+      input.value = '';
+      this._userInput = '';
+      this.people = [];
+      return;
+    }
+    if (event.code === 'Backspace' && this._userInput.length === 0 && this.selectedPeople.length > 0) {
+      input.value = '';
+      this._userInput = '';
+      // remove last person in selected list
+      this.selectedPeople = this.selectedPeople.splice(0, this.selectedPeople.length - 1);
+      // fire selected people changed event
+      this.fireCustomEvent('selectionChanged', this.selectedPeople);
+      return;
+    }
+
+    this.addEventListener(
+      'keyup',
+      debounce(() => {
+        this.onUserTypeSearch(event, input);
+      }, 300)
+    );
+  }
+
+  /**
    * Async query to Graph for members of group if determined by developer.
    * set's `this.groupPeople` to those members.
    */
@@ -169,30 +186,11 @@ export class MgtPeoplePicker extends MgtTemplatedComponent {
    * Tracks event on user input in search
    * @param event - event tracked when user input is detected (keyup)
    */
-  private onUserTypeSearch(event: any) {
-    if (event.code === 'Escape') {
-      event.target.value = '';
-      this._userInput = '';
-      this.people = [];
-      return;
-    }
-    if (event.code === 'Backspace' && this._userInput.length === 0 && this.selectedPeople.length > 0) {
-      event.target.value = '';
-      this._userInput = '';
-      // remove last person in selected list
-      this.selectedPeople = this.selectedPeople.splice(0, this.selectedPeople.length - 1);
-      // fire selected people changed event
-      this.fireCustomEvent('selectionChanged', this.selectedPeople);
-      return;
-    }
-    this._userInput = event.target.value;
-    if (event.target.value) {
-      // tslint:disable-next-line: no-unused-expression
-      this.debounceHandle;
-    } else {
-      event.target.value = '';
-      this._userInput = '';
-      this.people = [];
+  private onUserTypeSearch(event: any, input: any) {
+    if (input.value && this._userInput !== input.value) {
+      this._userInput = input.value;
+      this.loadPersonSearch(this._userInput);
+      this.arrowSelectionCount = 0;
     }
   }
 
@@ -399,7 +397,7 @@ export class MgtPeoplePicker extends MgtTemplatedComponent {
               this.onUserKeyDown(e);
             }}"
             @keyup="${(e: KeyboardEvent & { target: HTMLInputElement }) => {
-              this.onUserTypeSearch(e);
+              this.debounceHandle(e);
             }}"
           />
         </div>
