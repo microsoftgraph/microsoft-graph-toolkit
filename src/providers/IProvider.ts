@@ -96,7 +96,7 @@ export abstract class IProvider implements AuthenticationProvider {
   }
 
   /**
-   * Promise to recieve access token using Provider options
+   * Promise to receive access token using Provider options
    *
    * @abstract
    * @param {AuthenticationProviderOptions} [options]
