@@ -8,6 +8,7 @@
 import { AuthenticationProvider } from '@microsoft/microsoft-graph-client/lib/es/IAuthenticationProvider';
 import { AuthenticationProviderOptions } from '@microsoft/microsoft-graph-client/lib/es/IAuthenticationProviderOptions';
 import { Graph } from '../Graph';
+import { EventDispatcher } from './EventDispatcher';
 /**
  * Provider Type to be extended for implmenting new providers
  *
@@ -118,55 +119,6 @@ export type EventHandler<E> = (event: E) => void;
  */
 // tslint:disable-next-line: no-empty-interface
 export interface LoginChangedEvent {}
-
-/**
- * Provider EventDispatcher
- *
- * @export
- * @class EventDispatcher
- * @template E
- */
-// tslint:disable-next-line: max-classes-per-file
-export class EventDispatcher<E> {
-  private eventHandlers: Array<EventHandler<E>> = [];
-
-  /**
-   * fires event handler
-   *
-   * @param {E} event
-   * @memberof EventDispatcher
-   */
-  public fire(event: E) {
-    for (const handler of this.eventHandlers) {
-      handler(event);
-    }
-  }
-
-  /**
-   * adds eventHandler
-   *
-   * @param {EventHandler<E>} eventHandler
-   * @memberof EventDispatcher
-   */
-  public add(eventHandler: EventHandler<E>) {
-    this.eventHandlers.push(eventHandler);
-  }
-
-  /**
-   * removes eventHandler
-   *
-   * @param {EventHandler<E>} eventHandler
-   * @memberof EventDispatcher
-   */
-  public remove(eventHandler: EventHandler<E>) {
-    for (let i = 0; i < this.eventHandlers.length; i++) {
-      if (this.eventHandlers[i] === eventHandler) {
-        this.eventHandlers.splice(i, 1);
-        i--;
-      }
-    }
-  }
-}
 
 /**
  * LoginType
