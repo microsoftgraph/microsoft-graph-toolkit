@@ -69,7 +69,7 @@ export abstract class IProvider implements AuthenticationProvider {
   }
 
   /**
-   * login
+   * option implementation that can be called to sign in user (required for mgt-login to work)
    *
    * @returns {Promise<void>}
    * @memberof IProvider
