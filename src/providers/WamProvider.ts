@@ -83,8 +83,6 @@ export class WamProvider extends IProvider {
         this.authority
       );
       if (!wap) {
-        // tslint:disable-next-line: no-console
-        console.log('no account provider');
         return;
       }
 
@@ -103,12 +101,6 @@ export class WamProvider extends IProvider {
         case webCore.WebTokenRequestStatus.userInteractionRequired:
         case webCore.WebTokenRequestStatus.accountProviderNotAvailable:
         case webCore.WebTokenRequestStatus.providerError:
-          // tslint:disable-next-line: no-console
-          console.log(
-            `status ${wtrr.responseStatus}: error code ${wtrr.responseError} | error message ${
-              wtrr.responseError.errorMessage
-            }`
-          );
           break;
       }
     }
@@ -124,13 +116,6 @@ export class WamProvider extends IProvider {
       const web = window.Windows.Security.Authentication.Web;
       const redirectUri = `ms-appx-web://Microsoft.AAD.BrokerPlugIn/${(web.WebAuthenticationBroker.getCurrentApplicationCallbackUri()
         .host as string).toUpperCase()}`;
-      // tslint:disable-next-line: no-console
-      console.log('Use the following redirect URI in your AAD application:');
-      // tslint:disable-next-line: no-console
-      console.log(redirectUri);
-    } else {
-      // tslint:disable-next-line: no-console
-      console.log('WAM not supported on this platform');
     }
   }
 
