@@ -5,7 +5,8 @@
  * -------------------------------------------------------------------------------------------
  */
 
-import '@webcomponents/webcomponentsjs/webcomponents-bundle.js';
 import 'babel-polyfill';
 import 'whatwg-fetch';
+// tslint:disable-next-line: ordered-imports
+import '@webcomponents/webcomponentsjs/webcomponents-bundle.js';
 export * from './index.es6';
