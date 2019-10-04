@@ -1,10 +1,7 @@
 <!DOCTYPE html>
 <html>
   <head>
-    <title>Microsoft Graph Toolkit Test</title>
-
-    <script type="module" src="../../../dist/es6/index.js"></script>
-    <script type="module" src="../../../dist/es6/mock/mgt-mock-provider.js"></script>
+    <script src="https://unpkg.com/@microsoft/mgt/dist/bundle/mgt-loader.js"></script>
   </head>
   <body>
     <mgt-mock-provider></mgt-mock-provider>
@@ -60,7 +57,7 @@
       </template>
     </mgt-agenda>
 
-    <script type="module">
+    <script>
       let myDay = document.getElementById('myDay');
 
       myDay.templateConverters.testFunction = str => str.length;

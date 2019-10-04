@@ -1,0 +1,18 @@
+<html>
+<head>
+    <script src="https://unpkg.com/@microsoft/teams-js/dist/MicrosoftTeams.min.js" crossorigin="anonymous"></script>
+    <script src="https://unpkg.com/@microsoft/mgt/dist/bundle/mgt-loader.js"></script>
+</head>
+<body>
+    <mgt-teams-provider
+        client-id="a974dfa0-9f57-49b9-95db-90f04ce2111a"
+        auth-popup-url="teams-auth.html"
+    ></mgt-teams-provider>
+    <mgt-msal-provider 
+        client-id="a974dfa0-9f57-49b9-95db-90f04ce2111a"
+        depends-on="mgt-teams-provider"
+    ></mgt-msal-provider>
+    
+    <mgt-login></mgt-login>
+</body>
+</html>
