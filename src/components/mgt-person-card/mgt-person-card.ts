@@ -1,9 +1,16 @@
+/**
+ * -------------------------------------------------------------------------------------------
+ * Copyright (c) Microsoft Corporation.  All Rights Reserved.  Licensed under the MIT License.
+ * See License in the project root for license information.
+ * -------------------------------------------------------------------------------------------
+ */
+
 import * as MicrosoftGraph from '@microsoft/microsoft-graph-types';
-import { customElement, html, property } from 'lit-element';
+import { customElement, html, property, TemplateResult } from 'lit-element';
 import { Providers } from '../../Providers';
 import { ProviderState } from '../../providers/IProvider';
-import { getEmailFromGraphEntity } from '../../utils/graphHelpers';
-import { getSvg, SvgIcon } from '../../utils/svgHelper';
+import { getEmailFromGraphEntity } from '../../utils/GraphHelpers';
+import { getSvg, SvgIcon } from '../../utils/SvgHelper';
 import { MgtPerson, PersonCardInteraction } from '../mgt-person/mgt-person';
 import { MgtTemplatedComponent } from '../templatedComponent';
 import { styles } from './mgt-person-card-css';
@@ -116,8 +123,8 @@ export class MgtPersonCard extends MgtTemplatedComponent {
     if (this.personDetails) {
       const user = this.personDetails;
 
-      // tslint:disable-next-line: one-variable-per-declaration
-      let department, jobTitle;
+      let department: TemplateResult;
+      let jobTitle: TemplateResult;
 
       if (user.department) {
         department = html`
@@ -162,8 +169,10 @@ export class MgtPersonCard extends MgtTemplatedComponent {
       return html``;
     } else {
       const user = this.personDetails;
-      // tslint:disable-next-line: one-variable-per-declaration
-      let chat, email, phone;
+      let chat: TemplateResult;
+      let email: TemplateResult;
+      let phone: TemplateResult;
+
       if ((user as MicrosoftGraph.User).mailNickname) {
         chat = html`
           <div class="icon" @click=${this._chatUser}>
@@ -195,8 +204,10 @@ export class MgtPersonCard extends MgtTemplatedComponent {
     if (this.isExpanded === true) {
       const user = this.personDetails;
 
-      // tslint:disable-next-line: one-variable-per-declaration
-      let phone, email, location, chat;
+      let phone: TemplateResult;
+      let email: TemplateResult;
+      let location: TemplateResult;
+      let chat: TemplateResult;
 
       if ((user as MicrosoftGraph.User).businessPhones && (user as MicrosoftGraph.User).businessPhones.length > 0) {
         phone = html`
@@ -301,8 +312,7 @@ export class MgtPersonCard extends MgtTemplatedComponent {
 
   private _callUser(e: Event) {
     const user = this.personDetails;
-    // tslint:disable-next-line: one-variable-per-declaration
-    let phone;
+    let phone: string;
 
     if ((user as MicrosoftGraph.User).businessPhones && (user as MicrosoftGraph.User).businessPhones.length > 0) {
       phone = (user as MicrosoftGraph.User).businessPhones[0];
@@ -324,8 +334,7 @@ export class MgtPersonCard extends MgtTemplatedComponent {
 
   private _chatUser(e: Event) {
     const user = this.personDetails;
-    // tslint:disable-next-line: one-variable-per-declaration
-    let chat;
+    let chat: string;
 
     if ((user as MicrosoftGraph.User).mailNickname) {
       chat = (user as MicrosoftGraph.User).mailNickname;

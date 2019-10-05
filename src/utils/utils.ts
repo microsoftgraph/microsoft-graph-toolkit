@@ -111,10 +111,9 @@ export function getDaysInMonth(monthNum: number): number {
  * @returns
  */
 export function getDateFromMonthYear(month: number, year: number) {
-  // tslint:disable-next-line: one-variable-per-declaration
-  let monthStr = month + '',
-    // tslint:disable-next-line: prefer-const
-    yearStr = year + '';
+  const yearStr = year + '';
+
+  let monthStr = month + '';
   if (monthStr.length < 2) {
     monthStr = '0' + monthStr;
   }

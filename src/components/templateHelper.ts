@@ -183,10 +183,10 @@ export class TemplateHelper {
           childElement.removeAttribute('data-for');
 
           for (let j = 0; j < list.length; j++) {
-            const newContext = {};
+            const newContext: any = {};
             newContext[itemName] = list[j];
             // tslint:disable-next-line: no-string-literal
-            newContext['index'] = j;
+            newContext.index = j;
 
             const clone = childElement.cloneNode(true);
             this.renderNode(clone, newContext, converters);
@@ -208,10 +208,8 @@ export class TemplateHelper {
     let result;
     try {
       result = func.call(context);
-    } catch (e) {
-      // tslint:disable-next-line: no-console
-      console.log(e);
-    }
+      // tslint:disable-next-line: no-empty
+    } catch (e) {}
     return result;
   }
 }

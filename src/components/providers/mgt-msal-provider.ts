@@ -30,7 +30,7 @@ export class MgtMsalProvider extends MgtBaseProvider {
   })
   public clientId = '';
   /**
-   * login provided for config of MsalProvider
+   * The login type that should be used: popup or redirect
    *
    * @memberof MgtMsalProvider
    */
@@ -40,7 +40,11 @@ export class MgtMsalProvider extends MgtBaseProvider {
   })
   public loginType;
 
-  // tslint:disable-next-line: completed-docs
+  /**
+   * The authority to use.
+   *
+   * @memberof MgtMsalProvider
+   */
   @property() public authority;
 
   /**

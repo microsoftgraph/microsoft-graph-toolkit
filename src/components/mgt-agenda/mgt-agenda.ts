@@ -12,8 +12,8 @@ import { Providers } from '../../Providers';
 import { ProviderState } from '../../providers/IProvider';
 import { styles } from './mgt-agenda-css';
 
-import { prepScopes } from '../../Graph';
 import '../../styles/fabric-icon-font';
+import { prepScopes } from '../../utils/GraphHelpers';
 import '../mgt-person/mgt-person';
 import { MgtTemplatedComponent } from '../templatedComponent';
 
@@ -209,8 +209,8 @@ export class MgtAgenda extends MgtTemplatedComponent {
       if (this.eventQuery) {
         try {
           const tokens = this.eventQuery.split('|');
-          // tslint:disable-next-line: one-variable-per-declaration
-          let scope, query;
+          let scope: string;
+          let query: string;
           if (tokens.length > 1) {
             query = tokens[0].trim();
             scope = tokens[1].trim();

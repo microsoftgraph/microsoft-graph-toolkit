@@ -29,7 +29,7 @@ declare interface AadTokenProvider {
  * @export
  * @interface WebPartContext
  */
-export declare interface WebPartContext {
+declare interface WebPartContext {
   // tslint:disable-next-line: completed-docs
   aadTokenProviderFactory: any;
 }
@@ -82,11 +82,8 @@ export class SharePointProvider extends IProvider {
 
   private _provider: AadTokenProvider;
 
-  private context: WebPartContext;
-
   constructor(context: WebPartContext) {
     super();
-    this.context = context;
 
     context.aadTokenProviderFactory.getTokenProvider().then(
       (tokenProvider: AadTokenProvider): void => {
@@ -98,7 +95,7 @@ export class SharePointProvider extends IProvider {
   }
 
   /**
-   * uses provider to recieve access token via SharePoint Provider
+   * uses provider to receive access token via SharePoint Provider
    *
    * @returns {Promise<string>}
    * @memberof SharePointProvider

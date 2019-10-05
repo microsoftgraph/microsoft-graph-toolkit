@@ -11,7 +11,7 @@ import { classMap } from 'lit-html/directives/class-map';
 import { Providers } from '../../Providers';
 import { ProviderState } from '../../providers/IProvider';
 import '../../styles/fabric-icon-font';
-import { getEmailFromGraphEntity } from '../../utils/graphHelpers';
+import { getEmailFromGraphEntity } from '../../utils/GraphHelpers';
 import { MgtPersonCard } from '../mgt-person-card/mgt-person-card';
 import { MgtTemplatedComponent } from '../templatedComponent';
 import { styles } from './mgt-person-css';

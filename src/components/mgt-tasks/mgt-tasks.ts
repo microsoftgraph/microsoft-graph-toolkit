@@ -12,7 +12,7 @@ import { classMap } from 'lit-html/directives/class-map';
 import { repeat } from 'lit-html/directives/repeat';
 import { Providers } from '../../Providers';
 import { ProviderState } from '../../providers/IProvider';
-import { getShortDateString } from '../../utils/utils';
+import { getShortDateString } from '../../utils/Utils';
 import { MgtBaseComponent } from '../baseComponent';
 import { styles } from './mgt-tasks-css';
 import { IDrawer, IDresser, ITask, ITaskSource, PlannerTaskSource, TodoTaskSource } from './task-sources';
@@ -638,10 +638,9 @@ export class MgtTasks extends MgtBaseComponent {
 
       const drawerOpts = {};
 
-      // tslint:disable-next-line: no-shadowed-variable
-      for (const drawer of this._drawers) {
-        drawerOpts[drawer.name] = e => {
-          this._currentTargetDrawer = drawer.id;
+      for (const d of this._drawers) {
+        drawerOpts[d.name] = () => {
+          this._currentTargetDrawer = d.id;
         };
       }
 
@@ -667,7 +666,6 @@ export class MgtTasks extends MgtBaseComponent {
       `;
     }
   }
-  // tslint:disable
   private renderNewTaskHtml() {
     const taskTitle = html`
       <span class="TaskTitle">
@@ -678,8 +676,8 @@ export class MgtTasks extends MgtBaseComponent {
           label="new-taskName-input"
           aria-label="new-taskName-input"
           role="input"
-          @input="${(e: Event & { target: HTMLInputElement }) => {
-            this._newTaskName = e.target.value;
+          @input="${(e: Event) => {
+            this._newTaskName = (e.target as HTMLInputElement).value;
           }}"
         />
       </span>
@@ -703,8 +701,8 @@ export class MgtTasks extends MgtBaseComponent {
               ${this.renderPlannerIcon()}
               <select
                 .value="${this._newTaskDresserId}"
-                @change="${(e: Event & { target: HTMLSelectElement }) => {
-                  this._newTaskDresserId = e.target.value;
+                @change="${(e: Event) => {
+                  this._newTaskDresserId = (e.target as HTMLInputElement).value;
                 }}"
               >
                 ${this._dressers.map(
@@ -736,8 +734,8 @@ export class MgtTasks extends MgtBaseComponent {
             ${this.renderBucketIcon()}
             <select
               .value="${this._newTaskDrawerId}"
-              @change="${(e: Event & { target: HTMLSelectElement }) => {
-                this._newTaskDrawerId = e.target.value;
+              @change="${(e: Event) => {
+                this._newTaskDrawerId = (e.target as HTMLInputElement).value;
               }}"
             >
               ${drawers.map(
@@ -758,8 +756,8 @@ export class MgtTasks extends MgtBaseComponent {
           aria-label="new-taskDate-input"
           role="input"
           .value="${this._newTaskDueDate}"
-          @change="${(e: Event & { target: HTMLInputElement }) => {
-            this._newTaskDueDate = e.target.value;
+          @change="${(e: Event) => {
+            this._newTaskDueDate = (e.target as HTMLInputElement).value;
           }}"
         />
       </span>
@@ -777,8 +775,8 @@ export class MgtTasks extends MgtBaseComponent {
                   label="self-assign-input"
                   aria-label="self-assign-input"
                   .checked="${this._newTaskSelfAssigned}"
-                  @change="${(e: Event & { target: HTMLInputElement }) => {
-                    this._newTaskSelfAssigned = e.target.checked;
+                  @change="${(e: Event) => {
+                    this._newTaskSelfAssigned = (e.target as HTMLInputElement).checked;
                   }}"
                 />
                 <span class="FakeCheckBox"></span>
@@ -787,7 +785,6 @@ export class MgtTasks extends MgtBaseComponent {
             </span>
           `;
 
-    // tslint:enable
     const taskAdd = this._newTaskBeingAdded
       ? html`
           <div class="TaskAddCont"></div>
@@ -1073,11 +1070,12 @@ export class MgtTasks extends MgtBaseComponent {
   }
 
   private isDefault(id: string) {
-    // tslint:disable-next-line: forin
     for (const res in TASK_RES) {
-      for (const prop in TASK_RES[res]) {
-        if (id === TASK_RES[res][prop]) {
-          return true;
+      if (TASK_RES.hasOwnProperty(res)) {
+        for (const prop in TASK_RES[res]) {
+          if (id === TASK_RES[res][prop]) {
+            return true;
+          }
         }
       }
     }

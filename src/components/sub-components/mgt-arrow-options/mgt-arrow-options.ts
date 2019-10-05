@@ -110,10 +110,8 @@ export class MgtArrowOptions extends MgtBaseComponent {
   }
 
   private getMenuOptions() {
-    // tslint:disable-next-line: prefer-const
-    let keys = Object.keys(this.options);
-    // tslint:disable-next-line: prefer-const
-    let funcs = this.options;
+    const keys = Object.keys(this.options);
+    const funcs = this.options;
 
     return keys.map(
       opt => html`

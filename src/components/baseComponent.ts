@@ -5,7 +5,7 @@
  * -------------------------------------------------------------------------------------------
  */
 
-import { html, LitElement } from 'lit-element';
+import { LitElement } from 'lit-element';
 /**
  * BaseComponent extends LitElement including ShadowRoot toggle and fireCustomEvent features
  *
@@ -40,8 +40,7 @@ export abstract class MgtBaseComponent extends LitElement {
   constructor() {
     super();
     if (this.isShadowRootDisabled()) {
-      // tslint:disable-next-line: no-string-literal
-      this['_needsShimAdoptedStyleSheets'] = true;
+      (this as any)._needsShimAdoptedStyleSheets = true;
     }
   }
 

@@ -1,4 +1,12 @@
+/**
+ * -------------------------------------------------------------------------------------------
+ * Copyright (c) Microsoft Corporation.  All Rights Reserved.  Licensed under the MIT License.
+ * See License in the project root for license information.
+ * -------------------------------------------------------------------------------------------
+ */
+
 import { EventHandler } from './IProvider';
+
 /**
  * Provider EventDispatcher
  *
@@ -14,11 +22,13 @@ export class EventDispatcher<E> {
    * @param {E} event
    * @memberof EventDispatcher
    */
+
   public fire(event: E) {
     for (const handler of this.eventHandlers) {
       handler(event);
     }
   }
+
   /**
    * adds eventHandler
    *
@@ -28,6 +38,7 @@ export class EventDispatcher<E> {
   public add(eventHandler: EventHandler<E>) {
     this.eventHandlers.push(eventHandler);
   }
+
   /**
    * removes eventHandler
    *

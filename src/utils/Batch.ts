@@ -1,6 +1,14 @@
+/**
+ * -------------------------------------------------------------------------------------------
+ * Copyright (c) Microsoft Corporation.  All Rights Reserved.  Licensed under the MIT License.
+ * See License in the project root for license information.
+ * -------------------------------------------------------------------------------------------
+ */
+
 import { BatchRequestContent, Client } from '@microsoft/microsoft-graph-client';
-import { prepScopes } from './Graph';
-import { BatchRequest } from './utils/BatchRequest';
+import { BatchRequest } from './BatchRequest';
+import { prepScopes } from './GraphHelpers';
+
 /**
  * Method to reduce repetitive requests to the Graph
  *
@@ -17,6 +25,7 @@ export class Batch {
   constructor(client: Client) {
     this.client = client;
   }
+
   /**
    * sets new request and scopes
    *
@@ -32,6 +41,7 @@ export class Batch {
       this.scopes = this.scopes.concat(scopes);
     }
   }
+
   /**
    * Promise to handle Graph request response
    *

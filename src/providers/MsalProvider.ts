@@ -12,14 +12,14 @@ import { IProvider, LoginType, ProviderState } from './IProvider';
 import { AuthenticationParameters, AuthError, AuthResponse, Configuration, UserAgentApplication } from 'msal';
 
 /**
- * config for MSAL authication
+ * config for MSAL authentication
  *
  * @export
  * @interface MsalConfig
  */
 export interface MsalConfig {
   /**
-   * clientId alpanumeric code
+   * clientId alphanumeric code
    *
    * @type {string}
    * @memberof MsalConfig
@@ -33,7 +33,7 @@ export interface MsalConfig {
    */
   scopes?: string[];
   /**
-   * config autority
+   * config authority
    *
    * @type {string}
    * @memberof MsalConfig
@@ -70,17 +70,14 @@ export interface MsalConfig {
  * @extends {IProvider}
  */
 export class MsalProvider extends IProvider {
-  // tslint:disable-next-line: completed-docs
-  get provider() {
-    return this._userAgentApplication;
-  }
   /**
-   * authetication parameter
+   * authentication parameter
    *
    * @type {string[]}
    * @memberof MsalProvider
    */
   public scopes: string[];
+
   /**
    * Determines application
    *
@@ -89,6 +86,7 @@ export class MsalProvider extends IProvider {
    * @memberof MsalProvider
    */
   protected _userAgentApplication: UserAgentApplication;
+
   /**
    * client-id authentication
    *
@@ -101,10 +99,8 @@ export class MsalProvider extends IProvider {
   private _loginHint: string;
 
   // session storage
-  // tslint:disable-next-line: variable-name
-  private ss_requested_scopes_key = 'mgt-requested-scopes';
-  // tslint:disable-next-line: variable-name
-  private ss_denied_scopes_key = 'mgt-denied-scopes';
+  private sessionStorageRequestedScopesKey = 'mgt-requested-scopes';
+  private sessionStorageDeniedScopesKey = 'mgt-denied-scopes';
 
   constructor(config: MsalConfig) {
     super();
@@ -244,7 +240,7 @@ export class MsalProvider extends IProvider {
    */
   protected setRequestedScopes(scopes: string[]) {
     if (scopes) {
-      sessionStorage.setItem(this.ss_requested_scopes_key, JSON.stringify(scopes));
+      sessionStorage.setItem(this.sessionStorageRequestedScopesKey, JSON.stringify(scopes));
     }
   }
 
@@ -256,9 +252,8 @@ export class MsalProvider extends IProvider {
    * @memberof MsalProvider
    */
   protected getRequestedScopes() {
-    // tslint:disable-next-line: variable-name
-    const scopes_str = sessionStorage.getItem(this.ss_requested_scopes_key);
-    return scopes_str ? JSON.parse(scopes_str) : null;
+    const scopesStr = sessionStorage.getItem(this.sessionStorageRequestedScopesKey);
+    return scopesStr ? JSON.parse(scopesStr) : null;
   }
   /**
    * clears requested scopes from sessionStorage
@@ -267,7 +262,7 @@ export class MsalProvider extends IProvider {
    * @memberof MsalProvider
    */
   protected clearRequestedScopes() {
-    sessionStorage.removeItem(this.ss_requested_scopes_key);
+    sessionStorage.removeItem(this.sessionStorageRequestedScopesKey);
   }
   /**
    * sets Denied scopes to sessionStoage
@@ -290,7 +285,7 @@ export class MsalProvider extends IProvider {
       if (index !== -1) {
         deniedScopes.splice(index, 1);
       }
-      sessionStorage.setItem(this.ss_denied_scopes_key, JSON.stringify(deniedScopes));
+      sessionStorage.setItem(this.sessionStorageDeniedScopesKey, JSON.stringify(deniedScopes));
     }
   }
   /**
@@ -301,9 +296,8 @@ export class MsalProvider extends IProvider {
    * @memberof MsalProvider
    */
   protected getDeniedScopes() {
-    // tslint:disable-next-line: variable-name
-    const scopes_str = sessionStorage.getItem(this.ss_denied_scopes_key);
-    return scopes_str ? JSON.parse(scopes_str) : null;
+    const scopesStr = sessionStorage.getItem(this.sessionStorageDeniedScopesKey);
+    return scopesStr ? JSON.parse(scopesStr) : null;
   }
   /**
    * if scopes are denied

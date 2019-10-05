@@ -18,7 +18,12 @@ import { EventDispatcher } from './EventDispatcher';
  * @implements {AuthenticationProvider}
  */
 export abstract class IProvider implements AuthenticationProvider {
-  // tslint:disable-next-line: completed-docs
+  /**
+   * The Graph object that contains the Graph client sdk
+   *
+   * @type {Graph}
+   * @memberof IProvider
+   */
   public graph: Graph;
   private _state: ProviderState;
   private _loginChangedDispatcher = new EventDispatcher<LoginChangedEvent>();
@@ -60,7 +65,7 @@ export abstract class IProvider implements AuthenticationProvider {
     this._loginChangedDispatcher.add(eventHandler);
   }
   /**
-   * removes event andler for when login changes
+   * removes event handler for when login changes
    *
    * @param {EventHandler<LoginChangedEvent>} eventHandler
    * @memberof IProvider
@@ -105,10 +110,11 @@ export abstract class IProvider implements AuthenticationProvider {
    * @memberof IProvider
    */
   public abstract getAccessToken(options?: AuthenticationProviderOptions): Promise<string>;
-  // tslint:disable-next-line: completed-docs
 }
 
-// tslint:disable-next-line: completed-docs
+/**
+ * An EventHandler for custom events
+ */
 export type EventHandler<E> = (event: E) => void;
 
 /**

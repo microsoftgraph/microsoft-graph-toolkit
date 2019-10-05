@@ -7,79 +7,26 @@
 
 import {
   AuthenticationHandler,
-  AuthenticationHandlerOptions,
   Client,
-  Context,
   HTTPMessageHandler,
-  Middleware,
   ResponseType,
   RetryHandler,
   RetryHandlerOptions,
   TelemetryHandler
 } from '@microsoft/microsoft-graph-client';
-import { getRequestHeader, setRequestHeader } from '@microsoft/microsoft-graph-client/lib/es/middleware/MiddlewareUtil';
 import * as MicrosoftGraph from '@microsoft/microsoft-graph-types';
 import * as MicrosoftGraphBeta from '@microsoft/microsoft-graph-types-beta';
-import { Batch } from './Batch';
 import { IProvider } from './providers/IProvider';
-import { PACKAGE_VERSION } from './utils/version';
-/**
- * declares authentification method via Provider
- *
- * @export
- * @param {...string[]} scopes
- * @returns
- */
-export function prepScopes(...scopes: string[]) {
-  const authProviderOptions = {
-    scopes
-  };
-  return [new AuthenticationHandlerOptions(undefined, authProviderOptions)];
-}
+import { Batch } from './utils/Batch';
+import { prepScopes } from './utils/GraphHelpers';
+import { SdkVersionMiddleware } from './utils/SdkVersionMiddleware';
 
-/**
- * Implements MGT sdkVersion
- *
- * @class SdkVersionMiddleware
- * @implements {Middleware}
- */
-class SdkVersionMiddleware implements Middleware {
-  /**
-   * @private
-   * A member to hold next middleware in the middleware chain
-   */
-  private nextMiddleware: Middleware;
-
-  // tslint:disable-next-line: completed-docs
-  public async execute(context: Context): Promise<void> {
-    try {
-      let sdkVersionValue: string = `mgt/${PACKAGE_VERSION}`; // todo - add real version
-
-      sdkVersionValue += ', ' + getRequestHeader(context.request, context.options, 'SdkVersion');
-
-      setRequestHeader(context.request, context.options, 'SdkVersion', sdkVersionValue);
-      return await this.nextMiddleware.execute(context);
-    } catch (error) {
-      throw error;
-    }
-  }
-  /**
-   * Handles setting of next middleware
-   *
-   * @param {Middleware} next
-   * @memberof SdkVersionMiddleware
-   */
-  public setNext(next: Middleware): void {
-    this.nextMiddleware = next;
-  }
-}
 /**
  * Creates async methods for requesting data from the Graph
  *
  * @export
  * @class Graph
  */
-// tslint:disable-next-line: max-classes-per-file
 export class Graph {
   /**
    * middleware authentication handler
