@@ -6,6 +6,36 @@
  */
 
 export class TemplateHelper {
+  /**
+   * Render a template into a HTMLElement with the appropriate data context
+   *
+   * Ex:
+   * ```
+   * <template>
+   *  <div>{{myObj.someStr}}</div>
+   *  <div data-for="key in myObj.list">
+   *    <div>{{key.anotherStr}}</div>
+   *  </div>
+   * </template>
+   * ```
+   *
+   * @param template the template to render
+   * @param context the data context to be applied
+   * @param converters the converter functions used to transform the data
+   */
+  public static renderTemplate(template: HTMLTemplateElement, context: object, converters?: object) {
+    if (template.content && template.content.childNodes.length) {
+      const templateContent = template.content.cloneNode(true);
+      return this.renderNode(templateContent, context, converters);
+    } else if (template.childNodes.length) {
+      const div = document.createElement('div');
+      // tslint:disable-next-line: prefer-for-of
+      for (let i = 0; i < template.childNodes.length; i++) {
+        div.appendChild(template.childNodes[i].cloneNode(true));
+      }
+      return this.renderNode(div, context, converters);
+    }
+  }
   private static _expression = /{{\s*[\w\.]+\s*}}/g;
   private static _converterExpression = /{{{\s*[\w\.()]+\s*}}}/g;
 
@@ -20,10 +50,11 @@ export class TemplateHelper {
    * @param key the key of the value we need (ex: 'a.b.c')
    */
   private static getValueFromObject(obj: object, key: string) {
-    let keys = key.trim().split('.');
+    const keys = key.trim().split('.');
     let value = obj;
+    // tslint:disable-next-line: prefer-for-of
     for (let i = 0; i < keys.length; i++) {
-      let currentKey = keys[i];
+      const currentKey = keys[i];
       value = value[currentKey];
       if (!value) {
         return null;
@@ -42,13 +73,13 @@ export class TemplateHelper {
         return this.evalInContext(match.substring(3, match.length - 3).trim(), { ...converters, ...context });
       })
       .replace(this._expression, match => {
-        let key = match.substring(2, match.length - 2);
-        let value = this.getValueFromObject(context, key);
+        const key = match.substring(2, match.length - 2);
+        const value = this.getValueFromObject(context, key);
         if (value) {
-          if (typeof value == 'object') {
+          if (typeof value === 'object') {
             return JSON.stringify(value);
           } else {
-            return (<any>value).toString();
+            return (value as any).toString();
           }
         }
         return '';
@@ -61,34 +92,37 @@ export class TemplateHelper {
       return node;
     }
 
-    let nodeElement = <HTMLElement>node;
+    // tslint:disable-next-line: prefer-const
+    let nodeElement = node as HTMLElement;
 
     // replace attribute values
     if (nodeElement.attributes) {
+      // tslint:disable-next-line: prefer-for-of
       for (let i = 0; i < nodeElement.attributes.length; i++) {
-        let attribute = nodeElement.attributes[i];
+        const attribute = nodeElement.attributes[i];
         nodeElement.setAttribute(attribute.name, this.replaceExpression(attribute.value, context, converters));
       }
     }
 
     // don't process nodes that will loop yet, but
     // keep a reference of them
-    let loopChildren = [];
+    const loopChildren = [];
 
     // list of children to remove (ex, when data-if == false)
-    let removeChildren = [];
+    const removeChildren = [];
     let previousChildWasIfAndTrue = false;
 
+    // tslint:disable-next-line: prefer-for-of
     for (let i = 0; i < node.childNodes.length; i++) {
-      let childNode = node.childNodes[i];
-      let childElement = <HTMLElement>childNode;
+      const childNode = node.childNodes[i];
+      const childElement = childNode as HTMLElement;
       let previousChildWasIfAndTrueSet = false;
 
       if (childElement.dataset) {
         let childWillBeRemoved = false;
 
         if (childElement.dataset.if) {
-          let expression = childElement.dataset.if;
+          const expression = childElement.dataset.if;
           if (!this.evalBoolInContext(expression, context)) {
             removeChildren.push(childElement);
             childWillBeRemoved = true;
@@ -97,7 +131,7 @@ export class TemplateHelper {
             previousChildWasIfAndTrue = true;
             previousChildWasIfAndTrueSet = true;
           }
-        } else if (typeof childElement.dataset.else != 'undefined') {
+        } else if (typeof childElement.dataset.else !== 'undefined') {
           if (previousChildWasIfAndTrue) {
             removeChildren.push(childElement);
             childWillBeRemoved = true;
@@ -123,23 +157,24 @@ export class TemplateHelper {
     }
 
     // now handle nodes that need to be removed
-    for (let i = 0; i < removeChildren.length; i++) {
-      nodeElement.removeChild(removeChildren[i]);
+    for (const child of removeChildren) {
+      nodeElement.removeChild(child);
     }
 
     // now handle nodes that should loop
+    // tslint:disable-next-line: prefer-for-of
     for (let i = 0; i < loopChildren.length; i++) {
-      let childElement = <HTMLElement>loopChildren[i];
+      const childElement = loopChildren[i] as HTMLElement;
 
-      let loopExpression = childElement.dataset.for;
-      let loopTokens = loopExpression.split(' ');
+      const loopExpression = childElement.dataset.for;
+      const loopTokens = loopExpression.split(' ');
 
       if (loopTokens.length > 1) {
         // don't really care what's in the middle at this point
-        let itemName = loopTokens[0];
-        let listKey = loopTokens[loopTokens.length - 1];
+        const itemName = loopTokens[0];
+        const listKey = loopTokens[loopTokens.length - 1];
 
-        let list = this.getValueFromObject(context, listKey);
+        const list = this.getValueFromObject(context, listKey);
         if (Array.isArray(list)) {
           // first remove the child
           // we will need to make copy of the child for
@@ -148,11 +183,12 @@ export class TemplateHelper {
           childElement.removeAttribute('data-for');
 
           for (let j = 0; j < list.length; j++) {
-            let newContext = {};
+            const newContext: any = {};
             newContext[itemName] = list[j];
-            newContext['index'] = j;
+            // tslint:disable-next-line: no-string-literal
+            newContext.index = j;
 
-            let clone = childElement.cloneNode(true);
+            const clone = childElement.cloneNode(true);
             this.renderNode(clone, newContext, converters);
             nodeElement.appendChild(clone);
           }
@@ -168,43 +204,12 @@ export class TemplateHelper {
   }
 
   private static evalInContext(expression, context) {
-    let func = new Function('with(this) { return ' + expression + ';}');
+    const func = new Function('with(this) { return ' + expression + ';}');
     let result;
     try {
       result = func.call(context);
-    } catch (e) {
-      console.log(e);
-    }
+      // tslint:disable-next-line: no-empty
+    } catch (e) {}
     return result;
-  }
-
-  /**
-   * Render a template into a HTMLElement with the appropriate data context
-   *
-   * Ex:
-   * ```
-   * <template>
-   *  <div>{{myObj.someStr}}</div>
-   *  <div data-for="key in myObj.list">
-   *    <div>{{key.anotherStr}}</div>
-   *  </div>
-   * </template>
-   * ```
-   *
-   * @param template the template to render
-   * @param context the data context to be applied
-   * @param converters the converter functions used to transform the data
-   */
-  public static renderTemplate(template: HTMLTemplateElement, context: object, converters?: object) {
-    if (template.content && template.content.childNodes.length) {
-      let templateContent = template.content.cloneNode(true);
-      return this.renderNode(templateContent, context, converters);
-    } else if (template.childNodes.length) {
-      let div = document.createElement('div');
-      for (let i = 0; i < template.childNodes.length; i++) {
-        div.appendChild(template.childNodes[i].cloneNode(true));
-      }
-      return this.renderNode(div, context, converters);
-    }
   }
 }

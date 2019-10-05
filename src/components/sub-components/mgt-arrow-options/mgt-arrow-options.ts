@@ -17,14 +17,46 @@ import { styles } from './mgt-arrow-options-css';
   So the arrow was removed, but the name was already set everywhere.
   - benotter
  */
+
+/**
+ * Custom Component used to handle an arrow rendering for dressers utilized in the task component.
+ *
+ * @export MgtArrowOptions
+ * @class MgtArrowOptions
+ * @extends {MgtBaseComponent}
+ */
 @customElement('mgt-arrow-options')
 export class MgtArrowOptions extends MgtBaseComponent {
+  /**
+   * Array of styles to apply to the element. The styles should be defined
+   * user the `css` tag function.
+   */
   public static get styles() {
     return styles;
   }
 
+  /**
+   * Determines if header menu is rendered or hidden.
+   *
+   * @type {boolean}
+   * @memberof MgtArrowOptions
+   */
   @property({ type: Boolean }) public open: boolean = false;
+
+  /**
+   * Title of chosen dresser.
+   *
+   * @type {string}
+   * @memberof MgtArrowOptions
+   */
   @property({ type: String }) public value: string = '';
+
+  /**
+   * Menu options to be rendered with an attached MouseEvent handler for expansion of details
+   *
+   * @type {object}
+   * @memberof MgtArrowOptions
+   */
   @property({ type: Object }) public options: { [name: string]: (e: MouseEvent) => any | void } = {};
 
   private _clickHandler: (e: MouseEvent) => void | any;
@@ -34,18 +66,26 @@ export class MgtArrowOptions extends MgtBaseComponent {
     this._clickHandler = (e: MouseEvent) => (this.open = false);
   }
 
+  // tslint:disable-next-line: completed-docs
   public connectedCallback() {
     super.connectedCallback();
     window.addEventListener('click', this._clickHandler);
   }
 
+  // tslint:disable-next-line: completed-docs
   public disconnectedCallback() {
     window.removeEventListener('click', this._clickHandler);
     super.disconnectedCallback();
   }
 
+  /**
+   * Handles clicking for header menu, utilizing boolean switch open
+   *
+   * @param {MouseEvent} e attaches to Header to open menu
+   * @memberof MgtArrowOptions
+   */
   public onHeaderClick(e: MouseEvent) {
-    let keys = Object.keys(this.options);
+    const keys = Object.keys(this.options);
     if (keys.length > 1) {
       e.preventDefault();
       e.stopPropagation();
@@ -53,6 +93,11 @@ export class MgtArrowOptions extends MgtBaseComponent {
     }
   }
 
+  /**
+   * Invoked on each update to perform rendering tasks. This method must return
+   * a lit-html TemplateResult. Setting properties inside this method will *not*
+   * trigger the element to update.
+   */
   public render() {
     return html`
       <span class="Header" @click=${e => this.onHeaderClick(e)}>
@@ -65,8 +110,8 @@ export class MgtArrowOptions extends MgtBaseComponent {
   }
 
   private getMenuOptions() {
-    let keys = Object.keys(this.options);
-    let funcs = this.options;
+    const keys = Object.keys(this.options);
+    const funcs = this.options;
 
     return keys.map(
       opt => html`

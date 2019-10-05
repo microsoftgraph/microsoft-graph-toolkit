@@ -10,34 +10,69 @@ import { Providers } from '../../Providers';
 import { LoginType } from '../../providers/IProvider';
 import { MsalConfig, MsalProvider } from '../../providers/MsalProvider';
 import { MgtBaseProvider } from './baseProvider';
-
+/**
+ * Authentication Library Provider for Microsoft personal accounts
+ *
+ * @export
+ * @class MgtMsalProvider
+ * @extends {MgtBaseProvider}
+ */
 @customElement('mgt-msal-provider')
 export class MgtMsalProvider extends MgtBaseProvider {
+  /**
+   * String alphanumerical value relation to a specific user
+   *
+   * @memberof MgtMsalProvider
+   */
   @property({
-    type: String,
-    attribute: 'client-id'
+    attribute: 'client-id',
+    type: String
   })
   public clientId = '';
-
+  /**
+   * The login type that should be used: popup or redirect
+   *
+   * @memberof MgtMsalProvider
+   */
   @property({
-    type: String,
-    attribute: 'login-type'
+    attribute: 'login-type',
+    type: String
   })
   public loginType;
 
+  /**
+   * The authority to use.
+   *
+   * @memberof MgtMsalProvider
+   */
   @property() public authority;
 
-  /* Comma separated list of scopes. */
+  /**
+   * Comma separated list of scopes
+   *
+   * @memberof MgtMsalProvider
+   */
   @property({
-    type: String,
-    attribute: 'scopes'
+    attribute: 'scopes',
+    type: String
   })
   public scopes;
-
+  /**
+   * Gets weather this provider can be used in this environment
+   *
+   * @readonly
+   * @memberof MgtMsalProvider
+   */
   public get isAvailable() {
     return true;
   }
 
+  /**
+   * method called to initialize the provider. Each derived class should provide their own implementation.
+   *
+   * @protected
+   * @memberof MgtMsalProvider
+   */
   protected initializeProvider() {
     if (this.clientId) {
       const config: MsalConfig = {
