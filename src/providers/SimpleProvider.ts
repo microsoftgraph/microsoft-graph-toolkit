@@ -5,10 +5,17 @@
  * -------------------------------------------------------------------------------------------
  */
 
-import { IProvider } from './IProvider';
 import { AuthenticationProviderOptions } from '@microsoft/microsoft-graph-client/lib/es/IAuthenticationProviderOptions';
 import { Graph } from '../Graph';
+import { IProvider } from './IProvider';
 
+/**
+ * Facilitates create of new custom provider
+ *
+ * @export
+ * @class SimpleProvider
+ * @extends {IProvider}
+ */
 export class SimpleProvider extends IProvider {
   private _getAccessTokenHandler: (scopes: string[]) => Promise<string>;
   private _loginHandler: () => Promise<void>;
@@ -28,15 +35,34 @@ export class SimpleProvider extends IProvider {
     this.graph = new Graph(this);
   }
 
-  getAccessToken(options?: AuthenticationProviderOptions): Promise<string> {
+  /**
+   * Invokes the getAccessToken function
+   *
+   * @param {AuthenticationProviderOptions} [options]
+   * @returns {Promise<string>}
+   * @memberof SimpleProvider
+   */
+  public getAccessToken(options?: AuthenticationProviderOptions): Promise<string> {
     return this._getAccessTokenHandler(options.scopes);
   }
 
-  login(): Promise<void> {
+  /**
+   * Invokes login function
+   *
+   * @returns {Promise<void>}
+   * @memberof SimpleProvider
+   */
+  public login(): Promise<void> {
     return this._loginHandler();
   }
 
-  logout(): Promise<void> {
+  /**
+   * Invokes logout function
+   *
+   * @returns {Promise<void>}
+   * @memberof SimpleProvider
+   */
+  public logout(): Promise<void> {
     return this._logoutHandler();
   }
 }

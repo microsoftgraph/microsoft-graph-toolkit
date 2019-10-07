@@ -9,12 +9,26 @@ import { AuthenticationProviderOptions } from '@microsoft/microsoft-graph-client
 import { Graph } from '../Graph';
 import { IProvider, ProviderState } from './IProvider';
 
+/**
+ * Windows auth
+ *
+ * @interface Window
+ */
 declare interface Window {
+  // tslint:disable-next-line: completed-docs
   Windows: any;
 }
 
+// tslint:disable-next-line: completed-docs
 declare var window: Window;
 
+/**
+ * Wam provider authentication
+ *
+ * @export
+ * @class WamProvider
+ * @extends {IProvider}
+ */
 export class WamProvider extends IProvider {
   private graphResource = 'https://graph.microsoft.com';
   private clientId: string;
@@ -22,10 +36,25 @@ export class WamProvider extends IProvider {
 
   private accessToken: string;
 
+  /**
+   * returns if Windows is the OS based on window
+   *
+   * @readonly
+   * @static
+   * @type {boolean}
+   * @memberof WamProvider
+   */
   public static get isAvailable(): boolean {
     return !!window.Windows;
   }
 
+  /**
+   * returns accessToken
+   *
+   * @readonly
+   * @type {boolean}
+   * @memberof WamProvider
+   */
   get isLoggedIn(): boolean {
     return !!this.accessToken;
   }
@@ -40,6 +69,12 @@ export class WamProvider extends IProvider {
     this.printRedirectUriToConsole();
   }
 
+  /**
+   * login promise for the WamProvider
+   *
+   * @returns {Promise<void>}
+   * @memberof WamProvider
+   */
   public async login(): Promise<void> {
     if (WamProvider.isAvailable) {
       const webCore = window.Windows.Security.Authentication.Web.Core;
@@ -48,7 +83,6 @@ export class WamProvider extends IProvider {
         this.authority
       );
       if (!wap) {
-        console.log('no account provider');
         return;
       }
 
@@ -67,28 +101,31 @@ export class WamProvider extends IProvider {
         case webCore.WebTokenRequestStatus.userInteractionRequired:
         case webCore.WebTokenRequestStatus.accountProviderNotAvailable:
         case webCore.WebTokenRequestStatus.providerError:
-          console.log(
-            `status ${wtrr.responseStatus}: error code ${wtrr.responseError} | error message ${
-              wtrr.responseError.errorMessage
-            }`
-          );
           break;
       }
     }
   }
 
+  /**
+   * console logs the redirect url for auth
+   *
+   * @memberof WamProvider
+   */
   public printRedirectUriToConsole() {
     if (WamProvider.isAvailable) {
       const web = window.Windows.Security.Authentication.Web;
       const redirectUri = `ms-appx-web://Microsoft.AAD.BrokerPlugIn/${(web.WebAuthenticationBroker.getCurrentApplicationCallbackUri()
         .host as string).toUpperCase()}`;
-      console.log('Use the following redirect URI in your AAD application:');
-      console.log(redirectUri);
-    } else {
-      console.log('WAM not supported on this platform');
     }
   }
 
+  /**
+   * returns access token Promise
+   *
+   * @param {AuthenticationProviderOptions} options
+   * @returns {Promise<string>}
+   * @memberof WamProvider
+   */
   public getAccessToken(options: AuthenticationProviderOptions): Promise<string> {
     if (this.isLoggedIn) {
       return Promise.resolve(this.accessToken);

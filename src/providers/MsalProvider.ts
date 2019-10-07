@@ -11,36 +11,108 @@ import { IProvider, LoginType, ProviderState } from './IProvider';
 
 import { AuthenticationParameters, AuthError, AuthResponse, Configuration, UserAgentApplication } from 'msal';
 
+/**
+ * config for MSAL authentication
+ *
+ * @export
+ * @interface MsalConfig
+ */
 export interface MsalConfig {
+  /**
+   * clientId alphanumeric code
+   *
+   * @type {string}
+   * @memberof MsalConfig
+   */
   clientId: string;
+  /**
+   * scopes
+   *
+   * @type {string[]}
+   * @memberof MsalConfig
+   */
   scopes?: string[];
+  /**
+   * config authority
+   *
+   * @type {string}
+   * @memberof MsalConfig
+   */
   authority?: string;
+  /**
+   * loginType if login uses popup
+   *
+   * @type {LoginType}
+   * @memberof MsalConfig
+   */
   loginType?: LoginType;
+  /**
+   * options
+   *
+   * @type {Configuration}
+   * @memberof MsalConfig
+   */
   options?: Configuration;
+  /**
+   * login hint value
+   *
+   * @type {string}
+   * @memberof MsalConfig
+   */
   loginHint?: string;
 }
 
+/**
+ * Msal Provider using MSAL.js to aquire tokens for authentication
+ *
+ * @export
+ * @class MsalProvider
+ * @extends {IProvider}
+ */
 export class MsalProvider extends IProvider {
-  get provider() {
-    return this._userAgentApplication;
-  }
-
+  /**
+   * authentication parameter
+   *
+   * @type {string[]}
+   * @memberof MsalProvider
+   */
   public scopes: string[];
 
+  /**
+   * Determines application
+   *
+   * @protected
+   * @type {UserAgentApplication}
+   * @memberof MsalProvider
+   */
   protected _userAgentApplication: UserAgentApplication;
+
+  /**
+   * client-id authentication
+   *
+   * @protected
+   * @type {string}
+   * @memberof MsalProvider
+   */
   protected clientId: string;
   private _loginType: LoginType;
   private _loginHint: string;
 
   // session storage
-  private ss_requested_scopes_key = 'mgt-requested-scopes';
-  private ss_denied_scopes_key = 'mgt-denied-scopes';
+  private sessionStorageRequestedScopesKey = 'mgt-requested-scopes';
+  private sessionStorageDeniedScopesKey = 'mgt-denied-scopes';
 
   constructor(config: MsalConfig) {
     super();
     this.initProvider(config);
   }
 
+  /**
+   * simplified form of single sign-on (SSO)
+   *
+   * @returns
+   * @memberof MsalProvider
+   */
   public async trySilentSignIn() {
     try {
       if (this._userAgentApplication.isCallback(window.location.hash)) {
@@ -56,6 +128,13 @@ export class MsalProvider extends IProvider {
     }
   }
 
+  /**
+   * login auth Promise, Redirects request, and sets Provider state to SignedIn if response is recieved
+   *
+   * @param {AuthenticationParameters} [authenticationParameters]
+   * @returns {Promise<void>}
+   * @memberof MsalProvider
+   */
   public async login(authenticationParameters?: AuthenticationParameters): Promise<void> {
     const loginRequest: AuthenticationParameters = authenticationParameters || {
       loginHint: this._loginHint,
@@ -71,11 +150,23 @@ export class MsalProvider extends IProvider {
     }
   }
 
+  /**
+   * logout auth Promise, sets Provider state to SignedOut
+   *
+   * @returns {Promise<void>}
+   * @memberof MsalProvider
+   */
   public async logout(): Promise<void> {
     this._userAgentApplication.logout();
     this.setState(ProviderState.SignedOut);
   }
-
+  /**
+   * recieves acess token Promise
+   *
+   * @param {AuthenticationProviderOptions} options
+   * @returns {Promise<string>}
+   * @memberof MsalProvider
+   */
   public async getAccessToken(options: AuthenticationProviderOptions): Promise<string> {
     const scopes = options ? options.scopes || this.scopes : this.scopes;
     const accessTokenRequest: AuthenticationParameters = {
@@ -111,11 +202,24 @@ export class MsalProvider extends IProvider {
     }
     throw null;
   }
-
+  /**
+   * sets scopes
+   *
+   * @param {string[]} scopes
+   * @memberof MsalProvider
+   */
   public updateScopes(scopes: string[]) {
     this.scopes = scopes;
   }
 
+  /**
+   * if login runs into error, require user interaction
+   *
+   * @protected
+   * @param {*} error
+   * @returns
+   * @memberof MsalProvider
+   */
   protected requiresInteraction(error) {
     if (!error || !error.errorCode) {
       return false;
@@ -127,21 +231,46 @@ export class MsalProvider extends IProvider {
     );
   }
 
+  /**
+   * setting scopes in sessionStorage
+   *
+   * @protected
+   * @param {string[]} scopes
+   * @memberof MsalProvider
+   */
   protected setRequestedScopes(scopes: string[]) {
     if (scopes) {
-      sessionStorage.setItem(this.ss_requested_scopes_key, JSON.stringify(scopes));
+      sessionStorage.setItem(this.sessionStorageRequestedScopesKey, JSON.stringify(scopes));
     }
   }
 
+  /**
+   * getting scopes from sessionStorage if they exist
+   *
+   * @protected
+   * @returns
+   * @memberof MsalProvider
+   */
   protected getRequestedScopes() {
-    let scopes_str = sessionStorage.getItem(this.ss_requested_scopes_key);
-    return scopes_str ? JSON.parse(scopes_str) : null;
+    const scopesStr = sessionStorage.getItem(this.sessionStorageRequestedScopesKey);
+    return scopesStr ? JSON.parse(scopesStr) : null;
   }
-
+  /**
+   * clears requested scopes from sessionStorage
+   *
+   * @protected
+   * @memberof MsalProvider
+   */
   protected clearRequestedScopes() {
-    sessionStorage.removeItem(this.ss_requested_scopes_key);
+    sessionStorage.removeItem(this.sessionStorageRequestedScopesKey);
   }
-
+  /**
+   * sets Denied scopes to sessionStoage
+   *
+   * @protected
+   * @param {string[]} scopes
+   * @memberof MsalProvider
+   */
   protected addDeniedScopes(scopes: string[]) {
     if (scopes) {
       let deniedScopes: string[] = this.getDeniedScopes() || [];
@@ -156,15 +285,28 @@ export class MsalProvider extends IProvider {
       if (index !== -1) {
         deniedScopes.splice(index, 1);
       }
-      sessionStorage.setItem(this.ss_denied_scopes_key, JSON.stringify(deniedScopes));
+      sessionStorage.setItem(this.sessionStorageDeniedScopesKey, JSON.stringify(deniedScopes));
     }
   }
-
+  /**
+   * gets deniedScopes from sessionStorage
+   *
+   * @protected
+   * @returns
+   * @memberof MsalProvider
+   */
   protected getDeniedScopes() {
-    let scopes_str = sessionStorage.getItem(this.ss_denied_scopes_key);
-    return scopes_str ? JSON.parse(scopes_str) : null;
+    const scopesStr = sessionStorage.getItem(this.sessionStorageDeniedScopesKey);
+    return scopesStr ? JSON.parse(scopesStr) : null;
   }
-
+  /**
+   * if scopes are denied
+   *
+   * @protected
+   * @param {string[]} scopes
+   * @returns
+   * @memberof MsalProvider
+   */
   protected areScopesDenied(scopes: string[]) {
     if (scopes) {
       const deniedScopes = this.getDeniedScopes();
