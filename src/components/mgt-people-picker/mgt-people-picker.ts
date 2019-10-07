@@ -67,7 +67,11 @@ export class MgtPeoplePicker extends MgtTemplatedComponent {
    *  array of user picked people.
    * @type {Array<any>}
    */
-  @property() public selectedPeople: Array<MicrosoftGraph.User | MicrosoftGraph.Person | MicrosoftGraph.Contact> = [];
+  @property({
+    attribute: 'selected-people',
+    type: Array
+  })
+  public selectedPeople: Array<MicrosoftGraph.User | MicrosoftGraph.Person | MicrosoftGraph.Contact> = [];
   /**
    * accessibile property for user defined selected people
    *
@@ -137,6 +141,42 @@ export class MgtPeoplePicker extends MgtTemplatedComponent {
         </div>
       `
     );
+  }
+  /**
+   * Allows developer to define array of MicrosoftGraph.Person for selectedPeople
+   *
+   * @param {[MicrosoftGraph.UserIdentity]} [id]
+   * @returns {[MicrosoftGraph.Person]}
+   * @memberof MgtPeoplePicker
+   */
+  public async selectUsersById(people) {
+    const provider = Providers.globalProvider;
+    if (provider && provider.state === ProviderState.SignedIn) {
+      const client = Providers.globalProvider.graph;
+      const peopleDetails = [];
+      const name = [];
+      const peopleArr = [];
+      if (people) {
+        // tslint:disable-next-line: prefer-for-of
+        for (let i = 0; i < people.length; i++) {
+          // first find valid UserName
+          peopleDetails.push(await client.getUser(people[i]));
+        }
+        // tslint:disable-next-line: prefer-for-of
+        for (let i = 0; i < peopleDetails.length; i++) {
+          // get people details to push
+          name.push(peopleDetails[i].displayName);
+        }
+        // tslint:disable-next-line: prefer-for-of
+        for (let i = 0; i < name.length; i++) {
+          peopleArr.push(await client.findPerson(name[i]));
+        }
+        // tslint:disable-next-line: prefer-for-of
+        for (let i = 0; i < peopleArr.length; i++) {
+          this.addPerson(peopleArr[i][0]);
+        }
+      }
+    }
   }
 
   /**
@@ -277,32 +317,6 @@ export class MgtPeoplePicker extends MgtTemplatedComponent {
       }
     }
     this.gainedFocus();
-  }
-
-  private async choosePeopleManual(people) {
-    const provider = Providers.globalProvider;
-    if (provider && provider.state === ProviderState.SignedIn) {
-      const client = Providers.globalProvider.graph;
-      const peopleDetails = [];
-      const name = [];
-      const peopleArr = [];
-      if (people) {
-        for (let i = 0; i < people.length; i++) {
-          // first find valid UserName
-          peopleDetails.push(await client.getUser(people[i]));
-        }
-        for (let i = 0; i < peopleDetails.length; i++) {
-          // get people details to push
-          name.push(peopleDetails[i].displayName);
-        }
-        for (let i = 0; i < name.length; i++) {
-          peopleArr.push(await client.findPerson(name[i]));
-        }
-        for (let i = 0; i < peopleArr.length; i++) {
-          this.addPerson(peopleArr[i][0]);
-        }
-      }
-    }
   }
 
   /**
@@ -534,7 +548,7 @@ export class MgtPeoplePicker extends MgtTemplatedComponent {
         person => html`
           <li
             class="list-person ${person.isSelected === 'fill' ? 'people-person-list-fill' : 'people-person-list'}"
-            @click="${(event: any) => this.addPerson(person, event)}"
+            @click="${() => this.addPerson(person)}"
           >
             ${this.renderTemplate('person', { person }, person.displayName) || this.renderPerson(person)}
             <div class="people-person-text-area" id="${person.displayName}">
