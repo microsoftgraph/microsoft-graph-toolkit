@@ -21,6 +21,7 @@ $email-color: var(--email-color, #{$ms-color-neutralPrimary});
 
 :host .root {
   display: inline-block;
+  color: $color;
   position: relative;
 }
 
