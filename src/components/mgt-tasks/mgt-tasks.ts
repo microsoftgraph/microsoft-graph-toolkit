@@ -29,7 +29,6 @@ const TASK_RES = {
     BASE_SELF_ASSIGNED: 'All Tasks',
     BUCKETS_SELF_ASSIGNED: 'All Folders',
     BUCKET_NOT_FOUND: 'Folder not found',
-    DUE_DATE_TIME: 'T17:00',
     PLANS_SELF_ASSIGNED: 'All groups',
     PLAN_NOT_FOUND: 'Group not found'
   },
@@ -38,7 +37,6 @@ const TASK_RES = {
     BASE_SELF_ASSIGNED: 'Assigned to Me',
     BUCKETS_SELF_ASSIGNED: 'All Buckets',
     BUCKET_NOT_FOUND: 'Bucket not found',
-    DUE_DATE_TIME: 'T17:00',
     PLANS_SELF_ASSIGNED: 'All Plans',
     PLAN_NOT_FOUND: 'Plan not found'
   }
@@ -159,7 +157,7 @@ export class MgtTasks extends MgtBaseComponent {
    * contains user chosen date for new task due date
    * @type {string}
    */
-  @property() private _newTaskDueDate: string = '';
+  @property() private _newTaskDueDate: Date = null;
 
   /**
    * contains id for new user created task??
@@ -250,7 +248,7 @@ export class MgtTasks extends MgtBaseComponent {
       this._newTaskSelfAssigned = false;
       this._newTaskDrawerId = '';
       this._newTaskDresserId = '';
-      this._newTaskDueDate = '';
+      this._newTaskDueDate = null;
       this._newTaskName = '';
       this._newTaskBeingAdded = false;
 
@@ -278,9 +276,16 @@ export class MgtTasks extends MgtBaseComponent {
       return;
     }
 
-    this._inTaskLoad = true;
+    const provider = Providers.globalProvider;
+    if (!provider || provider.state !== ProviderState.SignedIn) {
+      return;
+    }
 
-    this._me = await ts.me();
+    this._inTaskLoad = true;
+    let meTask;
+    if (!this._me) {
+      meTask = provider.graph.getMe();
+    }
 
     if (this.targetId) {
       if (this.dataSource === 'todo') {
@@ -292,11 +297,12 @@ export class MgtTasks extends MgtBaseComponent {
       await this._loadAllTasks(ts);
     }
 
-    this._inTaskLoad = false;
-
-    if (!this._hasDoneInitialLoad) {
-      this._hasDoneInitialLoad = true;
+    if (meTask) {
+      this._me = await meTask;
     }
+
+    this._inTaskLoad = false;
+    this._hasDoneInitialLoad = true;
   }
 
   /**
@@ -319,7 +325,7 @@ export class MgtTasks extends MgtBaseComponent {
     this._showNewTask = false;
 
     this._newTaskSelfAssigned = false;
-    this._newTaskDueDate = '';
+    this._newTaskDueDate = null;
     this._newTaskName = '';
     this._newTaskDresserId = '';
   }
@@ -449,7 +455,7 @@ export class MgtTasks extends MgtBaseComponent {
 
   private async addTask(
     name: string,
-    dueDateTime: string,
+    dueDate: Date,
     topParentId: string,
     immediateParentId: string,
     assignments: PlannerAssignments = {}
@@ -461,14 +467,11 @@ export class MgtTasks extends MgtBaseComponent {
 
     const newTask = {
       assignments,
+      dueDate,
       immediateParentId,
       name,
       topParentId
     } as ITask;
-
-    if (dueDateTime && dueDateTime !== 'T') {
-      newTask.dueDate = this.getDateTimeOffset(dueDateTime + 'Z');
-    }
 
     this._newTaskBeingAdded = true;
     await ts.addTask(newTask);
@@ -520,7 +523,7 @@ export class MgtTasks extends MgtBaseComponent {
     ) {
       this.addTask(
         this._newTaskName,
-        this._newTaskDueDate ? this._newTaskDueDate + this.res.DUE_DATE_TIME : null,
+        this._newTaskDueDate,
         this.isDefault(this._currentTargetDresser) ? this._newTaskDresserId : this._currentTargetDresser,
         this.isDefault(this._currentTargetDrawer) ? this._newTaskDrawerId : this._currentTargetDrawer,
         this._newTaskSelfAssigned
@@ -755,9 +758,14 @@ export class MgtTasks extends MgtBaseComponent {
           label="new-taskDate-input"
           aria-label="new-taskDate-input"
           role="input"
-          .value="${this._newTaskDueDate}"
+          .value="${this.dateToInputValue(this._newTaskDueDate)}"
           @change="${(e: Event) => {
-            this._newTaskDueDate = (e.target as HTMLInputElement).value;
+            const value = (e.target as HTMLInputElement).value;
+            if (value) {
+              this._newTaskDueDate = new Date(value + 'T17:00');
+            } else {
+              this._newTaskDueDate = null;
+            }
           }}"
         />
       </span>
@@ -819,7 +827,6 @@ export class MgtTasks extends MgtBaseComponent {
   private renderTaskHtml(task: ITask) {
     const { name = 'Task', completed = false, dueDate, assignments } = task;
 
-    const dueDateString = new Date(dueDate);
     const people = Object.keys(assignments);
 
     const taskCheck = this._loadingTasks.includes(task.id)
@@ -858,7 +865,7 @@ export class MgtTasks extends MgtBaseComponent {
       : html`
           <span class="TaskDetail TaskDue">
             ${this.renderCalendarIcon()}
-            <span>${getShortDateString(dueDateString)}</span>
+            <span>${getShortDateString(dueDate)}</span>
           </span>
         `;
 
@@ -1034,16 +1041,6 @@ export class MgtTasks extends MgtBaseComponent {
     return keys.includes(this._me.id);
   }
 
-  private getDateTimeOffset(dateTime: string) {
-    let offset = (new Date().getTimezoneOffset() / 60).toString();
-    if (offset.length < 2) {
-      offset = '0' + offset;
-    }
-
-    dateTime = dateTime.replace('Z', `-${offset}:00`);
-    return dateTime;
-  }
-
   private getPlanTitle(planId: string): string {
     if (this.isDefault(planId)) {
       return this.res.BASE_SELF_ASSIGNED;
@@ -1090,11 +1087,15 @@ export class MgtTasks extends MgtBaseComponent {
     );
   }
 
-  private taskSubPlanFilter(task: ITask) {
-    return task.topParentId === this._currentSubTargetDresser || this.isDefault(this._currentSubTargetDresser);
-  }
-
   private taskBucketPlanFilter(task: ITask) {
     return task.immediateParentId === this._currentTargetDrawer || this.isDefault(this._currentTargetDrawer);
+  }
+
+  private dateToInputValue(date: Date) {
+    if (date) {
+      return new Date(date.getTime() - date.getTimezoneOffset() * 60000).toISOString().split('T')[0];
+    }
+
+    return null;
   }
 }
