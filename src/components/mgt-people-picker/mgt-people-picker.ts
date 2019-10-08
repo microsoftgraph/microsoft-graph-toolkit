@@ -72,13 +72,6 @@ export class MgtPeoplePicker extends MgtTemplatedComponent {
     type: Array
   })
   public selectedPeople: Array<MicrosoftGraph.User | MicrosoftGraph.Person | MicrosoftGraph.Contact> = [];
-  /**
-   * accessibile property for user defined selected people
-   *
-   * @type {[string]}
-   * @memberof MgtPeoplePicker
-   */
-  @property() public choosePeople: [];
 
   // User input in search
   @property() private _userInput: string = '';
