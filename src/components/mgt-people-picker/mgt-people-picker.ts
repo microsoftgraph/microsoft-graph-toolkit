@@ -143,7 +143,7 @@ export class MgtPeoplePicker extends MgtTemplatedComponent {
     );
   }
   /**
-   * Allows developer to define array of MicrosoftGraph.Person for selectedPeople
+   * Queries the microsoft graph for a user based on the user id and adds them to the selectedPeople array
    *
    * @param {[MicrosoftGraph.User]} an array of user ids to add to selectedPeople
    * @returns {[MicrosoftGraph.Person]}
