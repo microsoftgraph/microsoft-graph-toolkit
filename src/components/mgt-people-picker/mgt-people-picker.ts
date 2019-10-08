@@ -139,7 +139,7 @@ export class MgtPeoplePicker extends MgtTemplatedComponent {
    * Queries the microsoft graph for a user based on the user id and adds them to the selectedPeople array
    *
    * @param {[MicrosoftGraph.User]} an array of user ids to add to selectedPeople
-   * @returns {[MicrosoftGraph.Person]}
+   * @returns {Promise<MicrosoftGraph.User>}
    * @memberof MgtPeoplePicker
    */
   public async selectUsersById(people) {
