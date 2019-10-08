@@ -144,30 +144,12 @@ export class MgtPeoplePicker extends MgtTemplatedComponent {
    */
   public async selectUsersById(people) {
     const provider = Providers.globalProvider;
+    const client = Providers.globalProvider.graph;
     if (provider && provider.state === ProviderState.SignedIn) {
-      const client = Providers.globalProvider.graph;
-      const peopleDetails = [];
-      const name = [];
-      const peopleArr = [];
-      if (people) {
-        // tslint:disable-next-line: prefer-for-of
-        for (let i = 0; i < people.length; i++) {
-          // first find valid UserName
-          peopleDetails.push(await client.getUser(people[i]));
-        }
-        // tslint:disable-next-line: prefer-for-of
-        for (let i = 0; i < peopleDetails.length; i++) {
-          // get people details to push
-          name.push(peopleDetails[i].displayName);
-        }
-        // tslint:disable-next-line: prefer-for-of
-        for (let i = 0; i < name.length; i++) {
-          peopleArr.push(await client.findPerson(name[i]));
-        }
-        // tslint:disable-next-line: prefer-for-of
-        for (let i = 0; i < peopleArr.length; i++) {
-          this.addPerson(peopleArr[i][0]);
-        }
+      // tslint:disable-next-line: forin
+      for (const person in people) {
+        const peopleDetails = await client.getUser(people[person]);
+        this.addPerson(peopleDetails);
       }
     }
   }
@@ -305,8 +287,6 @@ export class MgtPeoplePicker extends MgtTemplatedComponent {
         this.fireCustomEvent('selectionChanged', this.selectedPeople);
 
         this.people = [];
-        this._userInput = '';
-        this.arrowSelectionCount = 0;
       }
     }
     this.gainedFocus();
