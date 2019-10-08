@@ -5,7 +5,7 @@
  * -------------------------------------------------------------------------------------------
  */
 
-import { PlannerAssignments, User } from '@microsoft/microsoft-graph-types';
+import { PlannerAssignments } from '@microsoft/microsoft-graph-types';
 import { OutlookTask, OutlookTaskFolder, OutlookTaskGroup } from '@microsoft/microsoft-graph-types-beta';
 import { Graph } from '../../Graph';
 /**
@@ -32,10 +32,10 @@ export interface ITask {
   /**
    * task dueDate
    *
-   * @type {string}
+   * @type {Date}
    * @memberof ITask
    */
-  dueDate: string;
+  dueDate: Date;
   /**
    * is task completed
    *
@@ -153,25 +153,86 @@ export interface IDresser {
   _raw?: any;
 }
 /**
- * ItaskSource
+ * A common interface for both planner and todo tasks
  *
  * @export
  * @interface ITaskSource
  */
 export interface ITaskSource {
-  // tslint:disable
-  me(): Promise<User>;
+  /**
+   * Promise that returns task collections for the signed in user
+   *
+   * @returns {Promise<IDresser[]>}
+   * @memberof ITaskSource
+   */
   getMyDressers(): Promise<IDresser[]>;
+
+  /**
+   * Promise that returns a single task collection by collection id
+   *
+   * @param {string} id
+   * @returns {Promise<IDresser>}
+   * @memberof ITaskSource
+   */
   getSingleDresser(id: string): Promise<IDresser>;
+
+  /**
+   * Promise that returns all task groups in task collection
+   *
+   * @param {string} id
+   * @returns {Promise<IDrawer[]>}
+   * @memberof ITaskSource
+   */
   getDrawersForDresser(id: string): Promise<IDrawer[]>;
+
+  /**
+   * Promise that returns all tasks in task group
+   *
+   * @param {string} id
+   * @param {string} parId
+   * @returns {Promise<ITask[]>}
+   * @memberof ITaskSource
+   */
   getAllTasksForDrawer(id: string, parId: string): Promise<ITask[]>;
 
+  /**
+   * Promise that completes a single task
+   *
+   * @param {string} id
+   * @param {string} eTag
+   * @returns {Promise<any>}
+   * @memberof ITaskSource
+   */
   setTaskComplete(id: string, eTag: string): Promise<any>;
+
+  /**
+   * Promise that sets a task to incomplete
+   *
+   * @param {string} id
+   * @param {string} eTag
+   * @returns {Promise<any>}
+   * @memberof ITaskSource
+   */
   setTaskIncomplete(id: string, eTag: string): Promise<any>;
 
+  /**
+   * Promise to add a new task
+   *
+   * @param {ITask} newTask
+   * @returns {Promise<any>}
+   * @memberof ITaskSource
+   */
   addTask(newTask: ITask): Promise<any>;
+
+  /**
+   * Promise to delete a task by id
+   *
+   * @param {string} id
+   * @param {string} eTag
+   * @returns {Promise<any>}
+   * @memberof ITaskSource
+   */
   removeTask(id: string, eTag: string): Promise<any>;
-  // tslint:enable
 }
 /**
  * async method to get user details
@@ -180,15 +241,6 @@ export interface ITaskSource {
  */
 class TaskSourceBase {
   constructor(public graph: Graph) {}
-  /**
-   * returns Promise with logged in user details
-   *
-   * @returns {Promise<User>}
-   * @memberof TaskSourceBase
-   */
-  public async me(): Promise<User> {
-    return await this.graph.getMe();
-  }
 }
 
 /**
@@ -212,6 +264,7 @@ export class PlannerTaskSource extends TaskSourceBase implements ITaskSource {
 
     return plans.map(plan => ({ id: plan.id, title: plan.title } as IDresser));
   }
+
   /**
    * returns promise single dresser or plan from plan.id
    *
@@ -224,6 +277,7 @@ export class PlannerTaskSource extends TaskSourceBase implements ITaskSource {
 
     return { id: plan.id, title: plan.title, _raw: plan };
   }
+
   /**
    * returns promise with Bucket for a plan from bucket.id
    *
@@ -261,7 +315,7 @@ export class PlannerTaskSource extends TaskSourceBase implements ITaskSource {
           _raw: task,
           assignments: task.assignments,
           completed: task.percentComplete === 100,
-          dueDate: task.dueDateTime,
+          dueDate: task.dueDateTime && new Date(task.dueDateTime),
           eTag: task['@odata.etag'],
           id: task.id,
           immediateParentId: task.bucketId,
@@ -306,7 +360,7 @@ export class PlannerTaskSource extends TaskSourceBase implements ITaskSource {
     return await this.graph.planner_addTask({
       assignments: newTask.assignments,
       bucketId: newTask.immediateParentId,
-      dueDateTime: newTask.dueDate,
+      dueDateTime: newTask.dueDate && newTask.dueDate.toISOString(),
       planId: newTask.topParentId,
       title: newTask.name
     });
@@ -403,7 +457,7 @@ export class TodoTaskSource extends TaskSourceBase implements ITaskSource {
           _raw: task,
           assignments: {},
           completed: !!task.completedDateTime,
-          dueDate: task.dueDateTime && task.dueDateTime.dateTime,
+          dueDate: task.dueDateTime && new Date(task.dueDateTime.dateTime + 'Z'),
           eTag: task['@odata.etag'],
           id: task.id,
           immediateParentId: id,
@@ -444,12 +498,14 @@ export class TodoTaskSource extends TaskSourceBase implements ITaskSource {
    */
   public async addTask(newTask: ITask): Promise<any> {
     const task = {
-      assignedTo: plannerAssignmentsToTodoAssign(newTask.assignments),
       parentFolderId: newTask.immediateParentId,
       subject: newTask.name
     } as OutlookTask;
     if (newTask.dueDate) {
-      task.dueDateTime = { dateTime: newTask.dueDate, timeZone: 'UTC' };
+      task.dueDateTime = {
+        dateTime: newTask.dueDate.toISOString(),
+        timeZone: 'UTC'
+      };
     }
     return await this.graph.todo_addTask(task);
   }
@@ -464,13 +520,4 @@ export class TodoTaskSource extends TaskSourceBase implements ITaskSource {
   public async removeTask(id: string, eTag: string): Promise<any> {
     return await this.graph.todo_removeTask(id, eTag);
   }
-}
-/**
- * Assignment method for user to task
- *
- * @param {PlannerAssignments} assignments
- * @returns {string}
- */
-function plannerAssignmentsToTodoAssign(assignments: PlannerAssignments): string {
-  return 'John Doe';
 }
