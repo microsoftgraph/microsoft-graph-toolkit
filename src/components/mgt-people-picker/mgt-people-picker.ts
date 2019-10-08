@@ -138,18 +138,21 @@ export class MgtPeoplePicker extends MgtTemplatedComponent {
   /**
    * Queries the microsoft graph for a user based on the user id and adds them to the selectedPeople array
    *
-   * @param {[MicrosoftGraph.User]} an array of user ids to add to selectedPeople
-   * @returns {Promise<MicrosoftGraph.User>}
+   * @param {[string]} an array of user ids to add to selectedPeople
+   * @returns {Promise<void>}
    * @memberof MgtPeoplePicker
    */
-  public async selectUsersById(people) {
+  public async selectUsersById(userIds: [string]): Promise<void> {
     const provider = Providers.globalProvider;
     const client = Providers.globalProvider.graph;
     if (provider && provider.state === ProviderState.SignedIn) {
       // tslint:disable-next-line: forin
-      for (const person in people) {
-        const peopleDetails = await client.getUser(people[person]);
-        this.addPerson(peopleDetails);
+      for (const id in userIds) {
+        try {
+          const personDetails = await client.getUser(userIds[id]);
+          this.addPerson(personDetails);
+          // tslint:disable-next-line: no-empty
+        } catch (e) {}
       }
     }
   }
