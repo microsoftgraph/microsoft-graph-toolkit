@@ -67,7 +67,11 @@ export class MgtPeoplePicker extends MgtTemplatedComponent {
    *  array of user picked people.
    * @type {Array<any>}
    */
-  @property() public selectedPeople: Array<MicrosoftGraph.User | MicrosoftGraph.Person | MicrosoftGraph.Contact> = [];
+  @property({
+    attribute: 'selected-people',
+    type: Array
+  })
+  public selectedPeople: Array<MicrosoftGraph.User | MicrosoftGraph.Person | MicrosoftGraph.Contact> = [];
 
   // User input in search
   @property() private _userInput: string = '';
@@ -130,6 +134,27 @@ export class MgtPeoplePicker extends MgtTemplatedComponent {
         </div>
       `
     );
+  }
+  /**
+   * Queries the microsoft graph for a user based on the user id and adds them to the selectedPeople array
+   *
+   * @param {[string]} an array of user ids to add to selectedPeople
+   * @returns {Promise<void>}
+   * @memberof MgtPeoplePicker
+   */
+  public async selectUsersById(userIds: [string]): Promise<void> {
+    const provider = Providers.globalProvider;
+    const client = Providers.globalProvider.graph;
+    if (provider && provider.state === ProviderState.SignedIn) {
+      // tslint:disable-next-line: forin
+      for (const id in userIds) {
+        try {
+          const personDetails = await client.getUser(userIds[id]);
+          this.addPerson(personDetails);
+          // tslint:disable-next-line: no-empty
+        } catch (e) {}
+      }
+    }
   }
 
   /**
@@ -208,7 +233,7 @@ export class MgtPeoplePicker extends MgtTemplatedComponent {
       if (this.people.length) {
         event.preventDefault();
       }
-      this.addPerson(this.people[this.arrowSelectionCount], event);
+      this.addPerson(this.people[this.arrowSelectionCount]);
       event.target.value = '';
     }
   }
@@ -253,7 +278,7 @@ export class MgtPeoplePicker extends MgtTemplatedComponent {
    * @param person - contains details pertaining to selected user
    * @param event - tracks user event
    */
-  private addPerson(person: MicrosoftGraph.User | MicrosoftGraph.Person | MicrosoftGraph.Contact, event: any) {
+  private addPerson(person: MicrosoftGraph.User | MicrosoftGraph.Person | MicrosoftGraph.Contact) {
     if (person) {
       this._userInput = '';
       const duplicatePeople = this.selectedPeople.filter(p => {
@@ -265,8 +290,6 @@ export class MgtPeoplePicker extends MgtTemplatedComponent {
         this.fireCustomEvent('selectionChanged', this.selectedPeople);
 
         this.people = [];
-        this._userInput = '';
-        this.arrowSelectionCount = 0;
       }
     }
     this.gainedFocus();
@@ -501,7 +524,7 @@ export class MgtPeoplePicker extends MgtTemplatedComponent {
         person => html`
           <li
             class="list-person ${person.isSelected === 'fill' ? 'people-person-list-fill' : 'people-person-list'}"
-            @click="${(event: any) => this.addPerson(person, event)}"
+            @click="${() => this.addPerson(person)}"
           >
             ${this.renderTemplate('person', { person }, person.displayName) || this.renderPerson(person)}
             <div class="people-person-text-area" id="${person.displayName}">
