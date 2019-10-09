@@ -10,8 +10,6 @@
 
 $avatar-size-s: var(--avatar-size-s, 24px);
 $avatar-size: var(--avatar-size, 48px);
-$avatar-font-size-s: var(--avatar-font-size--s, 16px);
-$avatar-font-size: var(--avatar-font-size, 32px);
 $avatar-border: var(--avatar-border, 0);
 $initials-color: var(--initials-color, white);
 $initials-background-color: var(--initials-background-color, #{$ms-color-magenta});
@@ -20,6 +18,12 @@ $font-weight: var(--font-weight, #{$ms-font-weight-semibold});
 $color: var(--color, #{$ms-color-neutralDark});
 $email-font-size: var(--email-font-size, #{$ms-font-size-s});
 $email-color: var(--email-color, #{$ms-color-neutralPrimary});
+
+:host .root {
+  display: inline-block;
+  color: $color;
+  position: relative;
+}
 
 :host svg,
 mgt-person svg {
@@ -33,12 +37,12 @@ mgt-person img {
   border-radius: 50%;
 }
 
-:host .root,
-mgt-person .root {
+:host .person-root,
+mgt-person .person-root {
   position: relative;
   display: flex;
   align-items: center;
-  font-family: var(--default-font-family, "Segoe UI");
+  font-family: var(--default-font-family, 'Segoe UI');
 }
 
 :host .Details,
@@ -88,10 +92,12 @@ mgt-person .user-avatar {
 :host .avatar-icon,
 mgt-person .avatar-icon {
   flex: 1 1 auto;
-  font-size: $avatar-font-size;
+  line-height: 1;
+  margin: 0;
+  font-size: $avatar-size;
 
   &.small {
-    font-size: $avatar-font-size-s;
+    font-size: $avatar-size-s;
   }
 
   &.row-span-2 {
@@ -125,4 +131,22 @@ mgt-person .user-email {
   -ms-grid-column: 2;
   grid-row: 2;
   -ms-grid-row: 2;
+}
+
+.root .flyout {
+  display: none;
+  position: absolute;
+  z-index: 1;
+  opacity: 0;
+  transition-property: opacity;
+  transition-duration: 0.1s;
+  padding: 8px;
+}
+
+.root .flyout.visible {
+  display: inline-block;
+  opacity: 1;
+  &.openLeft {
+    right: 0;
+  }
 }

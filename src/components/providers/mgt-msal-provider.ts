@@ -5,56 +5,84 @@
  * -------------------------------------------------------------------------------------------
  */
 
-import { LitElement, customElement, property } from 'lit-element';
-import { MsalConfig, MsalProvider } from '../../providers/MsalProvider';
-import { LoginType } from '../../providers/IProvider';
+import { customElement, LitElement, property } from 'lit-element';
 import { Providers } from '../../Providers';
-
+import { LoginType } from '../../providers/IProvider';
+import { MsalConfig, MsalProvider } from '../../providers/MsalProvider';
+import { MgtBaseProvider } from './baseProvider';
+/**
+ * Authentication Library Provider for Microsoft personal accounts
+ *
+ * @export
+ * @class MgtMsalProvider
+ * @extends {MgtBaseProvider}
+ */
 @customElement('mgt-msal-provider')
-export class MgtMsalProvider extends LitElement {
-  private _isInitialized: boolean = false;
-
+export class MgtMsalProvider extends MgtBaseProvider {
+  /**
+   * String alphanumerical value relation to a specific user
+   *
+   * @memberof MgtMsalProvider
+   */
   @property({
-    type: String,
-    attribute: 'client-id'
+    attribute: 'client-id',
+    type: String
   })
-  clientId = '';
-
+  public clientId = '';
+  /**
+   * The login type that should be used: popup or redirect
+   *
+   * @memberof MgtMsalProvider
+   */
   @property({
-    type: String,
-    attribute: 'login-type'
+    attribute: 'login-type',
+    type: String
   })
-  loginType;
+  public loginType;
 
-  @property() authority;
+  /**
+   * The authority to use.
+   *
+   * @memberof MgtMsalProvider
+   */
+  @property() public authority;
 
-  /* Comma separated list of scopes. */
+  /**
+   * Comma separated list of scopes
+   *
+   * @memberof MgtMsalProvider
+   */
   @property({
-    type: String,
-    attribute: 'scopes'
+    attribute: 'scopes',
+    type: String
   })
-  scopes;
-
-  firstUpdated(changedProperties) {
-    this.validateAuthProps();
+  public scopes;
+  /**
+   * Gets weather this provider can be used in this environment
+   *
+   * @readonly
+   * @memberof MgtMsalProvider
+   */
+  public get isAvailable() {
+    return true;
   }
 
-  private validateAuthProps() {
-    if (this._isInitialized) {
-      return;
-    }
-
+  /**
+   * method called to initialize the provider. Each derived class should provide their own implementation.
+   *
+   * @protected
+   * @memberof MgtMsalProvider
+   */
+  protected initializeProvider() {
     if (this.clientId) {
-      this._isInitialized = true;
-
-      let config: MsalConfig = {
+      const config: MsalConfig = {
         clientId: this.clientId
       };
 
       if (this.loginType && this.loginType.length > 1) {
         let loginType: string = this.loginType.toLowerCase();
         loginType = loginType[0].toUpperCase() + loginType.slice(1);
-        let loginTypeEnum = LoginType[loginType];
+        const loginTypeEnum = LoginType[loginType];
         config.loginType = loginTypeEnum;
       }
 
@@ -63,13 +91,14 @@ export class MgtMsalProvider extends LitElement {
       }
 
       if (this.scopes) {
-        let scope = this.scopes.split(',');
+        const scope = this.scopes.split(',');
         if (scope && scope.length > 0) {
           config.scopes = scope;
         }
       }
 
-      Providers.globalProvider = new MsalProvider(config);
+      this.provider = new MsalProvider(config);
+      Providers.globalProvider = this.provider;
     }
   }
 }

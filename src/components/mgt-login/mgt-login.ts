@@ -5,37 +5,58 @@
  * -------------------------------------------------------------------------------------------
  */
 
-import { html, customElement, property } from 'lit-element';
-import * as MicrosoftGraph from '@microsoft/microsoft-graph-types';
-
+import { User } from '@microsoft/microsoft-graph-types';
+import { customElement, html, property } from 'lit-element';
 import { Providers } from '../../Providers';
 import { ProviderState } from '../../providers/IProvider';
+import '../../styles/fabric-icon-font';
 import { MgtBaseComponent } from '../baseComponent';
+import '../mgt-person/mgt-person';
 import { styles } from './mgt-login-css';
 
-import { MgtPersonDetails } from '../mgt-person/mgt-person';
-import '../mgt-person/mgt-person';
-import '../../styles/fabric-icon-font';
-
+/**
+ * Web component button and flyout control to facilitate Microsoft identity platform authentication
+ *
+ * @export
+ * @class MgtLogin
+ * @extends {MgtBaseComponent}
+ */
 @customElement('mgt-login')
 export class MgtLogin extends MgtBaseComponent {
-  private _loginButtonRect: ClientRect;
-  private _popupRect: ClientRect;
-  private _openLeft: boolean = false;
+  /**
+   * Array of styles to apply to the element. The styles should be defined
+   * using the `css` tag function.
+   */
+  static get styles() {
+    return styles;
+  }
 
-  @property({ attribute: false }) private _showMenu: boolean = false;
-  @property({ attribute: false }) private _loading: boolean = true;
-  @property({ attribute: false }) private _user: MicrosoftGraph.User;
-
+  /**
+   * allows developer to use specific user details for login
+   * @type {MgtPersonDetails}
+   */
   @property({
     attribute: 'user-details',
     type: Object
   })
-  userDetails: MgtPersonDetails;
+  public userDetails: User;
 
-  static get styles() {
-    return styles;
-  }
+  private _loginButtonRect: ClientRect;
+  private _popupRect: ClientRect;
+  private _openLeft: boolean = false;
+  private _image: string;
+
+  /**
+   * determines if login menu popup should be showing
+   * @type {boolean}
+   */
+  @property({ attribute: false }) private _showMenu: boolean = false;
+
+  /**
+   * determines if login component is in loading state
+   * @type {boolean}
+   */
+  @property({ attribute: false }) private _loading: boolean = true;
 
   constructor() {
     super();
@@ -43,136 +64,13 @@ export class MgtLogin extends MgtBaseComponent {
     this.loadState();
   }
 
-  updated(changedProps) {
-    if (changedProps.get('_showMenu') === false) {
-      // get popup bounds
-      const popup = this.renderRoot.querySelector('.popup');
-      if (popup && popup.animate) {
-        this._popupRect = popup.getBoundingClientRect();
-
-        // invert variables
-        const deltaX = this._loginButtonRect.left - this._popupRect.left;
-        const deltaY = this._loginButtonRect.top - this._popupRect.top;
-        const deltaW = this._loginButtonRect.width / this._popupRect.width;
-        const deltaH = this._loginButtonRect.height / this._popupRect.height;
-
-        // play back
-        popup.animate(
-          [
-            {
-              transformOrigin: 'top left',
-              transform: `
-              translate(${deltaX}px, ${deltaY}px)
-              scale(${deltaW}, ${deltaH})
-            `,
-              backgroundColor: `#eaeaea`
-            },
-            {
-              transformOrigin: 'top left',
-              transform: 'none',
-              backgroundColor: `white`
-            }
-          ],
-          {
-            duration: 100,
-            easing: 'ease-in-out',
-            fill: 'both'
-          }
-        );
-      }
-    }
-    // else if (changedProps.get("_showMenu") === true) {
-    //   // get login button bounds
-    //   const loginButton = this.shadowRoot.querySelector(".login-button");
-    //   if (loginButton && loginButton.animate) {
-    //     this._loginButtonRect = loginButton.getBoundingClientRect();
-
-    //     // invert variables
-    //     const deltaX = this._popupRect.left - this._loginButtonRect.left;
-    //     const deltaY = this._popupRect.top - this._loginButtonRect.top;
-    //     const deltaW = this._popupRect.width / this._loginButtonRect.width;
-    //     const deltaH = this._popupRect.height / this._loginButtonRect.height;
-
-    //     // play back
-    //     loginButton.animate(
-    //       [
-    //         {
-    //           transformOrigin: "top left",
-    //           transform: `
-    //           translate(${deltaX}px, ${deltaY}px)
-    //           scale(${deltaW}, ${deltaH})
-    //         `
-    //         },
-    //         {
-    //           transformOrigin: "top left",
-    //           transform: "none"
-    //         }
-    //       ],
-    //       {
-    //         duration: 100,
-    //         easing: "ease-out",
-    //         fill: "both"
-    //       }
-    //     );
-    //   }
-    // }
-  }
-
-  firstUpdated() {
-    window.addEventListener('click', (event: MouseEvent) => {
-      // get popup bounds
-      const popup = this.renderRoot.querySelector('.popup');
-      if (popup) {
-        this._popupRect = popup.getBoundingClientRect();
-        this._showMenu = false;
-      }
-    });
-  }
-
-  private async loadState() {
-    if (this.userDetails) {
-      this._user = null;
-      return;
-    }
-
-    const provider = Providers.globalProvider;
-
-    if (provider) {
-      this._loading = true;
-      if (provider.state === ProviderState.SignedIn) {
-        this._user = await provider.graph.getMe();
-      } else if (provider.state === ProviderState.SignedOut) {
-        this._user = null;
-      } else {
-        return;
-      }
-    }
-
-    this._loading = false;
-  }
-
-  private onClick(event: MouseEvent) {
-    event.stopPropagation();
-    if (this._user || this.userDetails) {
-      // get login button bounds
-      const loginButton = this.renderRoot.querySelector('.login-button');
-      if (loginButton) {
-        this._loginButtonRect = loginButton.getBoundingClientRect();
-
-        let leftEdge = this._loginButtonRect.left;
-        let rightEdge = (window.innerWidth || document.documentElement.clientWidth) - this._loginButtonRect.right;
-        this._openLeft = rightEdge < leftEdge;
-
-        this._showMenu = !this._showMenu;
-      }
-    } else {
-      if (this.fireCustomEvent('loginInitiated')) {
-        this.login();
-      }
-    }
-  }
-
-  public async login() {
+  /**
+   * Initiate login
+   *
+   * @returns {Promise<void>}
+   * @memberof MgtLogin
+   */
+  public async login(): Promise<void> {
     if (this.userDetails) {
       return;
     }
@@ -192,13 +90,14 @@ export class MgtLogin extends MgtBaseComponent {
     }
   }
 
-  public async logout() {
+  /**
+   *
+   * Initiate logout
+   * @returns {Promise<void>}
+   * @memberof MgtLogin
+   */
+  public async logout(): Promise<void> {
     if (!this.fireCustomEvent('logoutInitiated')) {
-      return;
-    }
-
-    if (this.userDetails) {
-      this.userDetails = null;
       return;
     }
 
@@ -208,15 +107,90 @@ export class MgtLogin extends MgtBaseComponent {
       this.fireCustomEvent('logoutCompleted');
     }
 
+    this.userDetails = null;
     this._showMenu = false;
   }
 
-  render() {
-    const content = this._user || this.userDetails ? this.renderLoggedIn() : this.renderLogIn();
+  /**
+   * Invoked whenever the element is updated. Implement to perform
+   * post-updating tasks via DOM APIs, for example, focusing an element.
+   *
+   * Setting properties inside this method will trigger the element to update
+   * again after this update cycle completes.
+   *
+   * * @param _changedProperties Map of changed properties with old values
+   */
+  protected updated(changedProps) {
+    if (changedProps.get('_showMenu') === false) {
+      // get popup bounds
+      const popup = this.renderRoot.querySelector('.popup');
+      if (popup && popup.animate) {
+        this._popupRect = popup.getBoundingClientRect();
+
+        // invert variables
+        const deltaX = this._loginButtonRect.left - this._popupRect.left;
+        const deltaY = this._loginButtonRect.top - this._popupRect.top;
+        const deltaW = this._loginButtonRect.width / this._popupRect.width;
+        const deltaH = this._loginButtonRect.height / this._popupRect.height;
+
+        // play back
+        popup.animate(
+          [
+            {
+              backgroundColor: '#eaeaea',
+              transform: `
+              translate(${deltaX}px, ${deltaY}px)
+              scale(${deltaW}, ${deltaH})
+              `,
+              transformOrigin: 'top left'
+            },
+            {
+              backgroundColor: 'white',
+              transform: 'none',
+              transformOrigin: 'top left'
+            }
+          ],
+          {
+            duration: 100,
+            easing: 'ease-in-out',
+            fill: 'both'
+          }
+        );
+      }
+    }
+  }
+
+  /**
+   * Invoked when the element is first updated. Implement to perform one time
+   * work on the element after update.
+   *
+   * Setting properties inside this method will trigger the element to update
+   * again after this update cycle completes.
+   *
+   * * @param _changedProperties Map of changed properties with old values
+   */
+  protected firstUpdated() {
+    window.addEventListener('click', (event: MouseEvent) => {
+      // get popup bounds
+      const popup = this.renderRoot.querySelector('.popup');
+      if (popup) {
+        this._popupRect = popup.getBoundingClientRect();
+        this._showMenu = false;
+      }
+    });
+  }
+
+  /**
+   * Invoked on each update to perform rendering tasks. This method must return
+   * a lit-html TemplateResult. Setting properties inside this method will *not*
+   * trigger the element to update.
+   */
+  protected render() {
+    const content = this.userDetails ? this.renderLoggedIn() : this.renderLogIn();
 
     return html`
       <div class="root">
-        <button ?disabled="${this._loading}" class="login-button" @click=${this.onClick}>
+        <button ?disabled="${this._loading}" class="login-button" @click=${this.onClick} role="button">
           ${content}
         </button>
         ${this.renderMenu()}
@@ -224,41 +198,33 @@ export class MgtLogin extends MgtBaseComponent {
     `;
   }
 
-  renderLogIn() {
+  private renderLogIn() {
     return html`
       <i class="login-icon ms-Icon ms-Icon--Contact"></i>
-      <span>
+      <span aria-label="Sign In">
         Sign In
       </span>
     `;
   }
 
-  renderLoggedIn() {
-    if (this._user) {
+  private renderLoggedIn() {
+    if (this.userDetails) {
       return html`
-        <mgt-person person-query="me" show-name />
-      `;
-    } else if (this.userDetails) {
-      return html`
-        <mgt-person person-details=${JSON.stringify(this.userDetails)} show-name />
+        <mgt-person .personDetails=${this.userDetails} .personImage=${this._image} show-name />
       `;
     } else {
       return this.renderLogIn();
     }
   }
 
-  renderMenu() {
-    if (!this._user && !this.userDetails) {
+  private renderMenu() {
+    if (!this.userDetails) {
       return;
     }
 
-    let personComponent = this._user
-      ? html`
-          <mgt-person person-query="me" show-name show-email />
-        `
-      : html`
-          <mgt-person person-details=${JSON.stringify(this.userDetails)} show-name show-email />
-        `;
+    const personComponent = html`
+      <mgt-person .personDetails=${this.userDetails} .personImage=${this._image} show-name show-email />
+    `;
 
     return html`
       <div class="popup ${this._openLeft ? 'open-left' : ''} ${this._showMenu ? 'show-menu' : ''}">
@@ -269,7 +235,7 @@ export class MgtLogin extends MgtBaseComponent {
           <div class="popup-commands">
             <ul>
               <li>
-                <button class="popup-command" @click=${this.logout}>
+                <button class="popup-command" @click=${this.logout} aria-label="Sign Out">
                   Sign Out
                 </button>
               </li>
@@ -278,5 +244,50 @@ export class MgtLogin extends MgtBaseComponent {
         </div>
       </div>
     `;
+  }
+
+  private async loadState() {
+    const provider = Providers.globalProvider;
+    if (provider) {
+      this._loading = true;
+      if (provider.state === ProviderState.SignedIn) {
+        const batch = provider.graph.createBatch();
+        batch.get('me', 'me', ['user.read']);
+        batch.get('photo', 'me/photo/$value', ['user.read']);
+        const response = await batch.execute();
+
+        this._image = response.photo;
+        this.userDetails = response.me;
+      } else if (provider.state === ProviderState.SignedOut) {
+        this.userDetails = null;
+      } else {
+        // Loading
+        this._showMenu = false;
+        return;
+      }
+    }
+
+    this._loading = false;
+  }
+
+  private onClick(event: MouseEvent) {
+    event.stopPropagation();
+    if (this.userDetails) {
+      // get login button bounds
+      const loginButton = this.renderRoot.querySelector('.login-button');
+      if (loginButton) {
+        this._loginButtonRect = loginButton.getBoundingClientRect();
+
+        const leftEdge = this._loginButtonRect.left;
+        const rightEdge = (window.innerWidth || document.documentElement.clientWidth) - this._loginButtonRect.right;
+        this._openLeft = rightEdge < leftEdge;
+
+        this._showMenu = !this._showMenu;
+      }
+    } else {
+      if (this.fireCustomEvent('loginInitiated')) {
+        this.login();
+      }
+    }
   }
 }

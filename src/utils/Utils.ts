@@ -5,13 +5,44 @@
  * -------------------------------------------------------------------------------------------
  */
 
+/**
+ * returns a promise that resolves after specified time
+ * @param time in milliseconds
+ */
+export function delay(ms: number): Promise<void> {
+  return new Promise(resolve => {
+    setTimeout(resolve, ms);
+  });
+}
+/**
+ * returns month and day
+ *
+ * @export
+ * @param {Date} date
+ * @returns
+ */
+
 export function getShortDateString(date: Date) {
-  let month = date.getMonth();
-  let day = date.getDate();
+  const month = date.getMonth();
+  const day = date.getDate();
 
   return `${getMonthString(month)} ${day}`;
 }
+/**
+ *
+ *
+ * @export
+ * @param {number} month
+ * @returns {string}
+ */
 
+/**
+ * returns month string based on number
+ *
+ * @export
+ * @param {number} month
+ * @returns {string}
+ */
 export function getMonthString(month: number): string {
   switch (month) {
     case 0:
@@ -42,7 +73,13 @@ export function getMonthString(month: number): string {
       return 'Month';
   }
 }
-
+/**
+ * retrieve the days in the month provided by number
+ *
+ * @export
+ * @param {number} monthNum
+ * @returns {number}
+ */
 export function getDaysInMonth(monthNum: number): number {
   switch (monthNum) {
     case 1:
@@ -65,11 +102,39 @@ export function getDaysInMonth(monthNum: number): number {
       return 31;
   }
 }
-
+/**
+ * returns serialized date from month number and year number
+ *
+ * @export
+ * @param {number} month
+ * @param {number} year
+ * @returns
+ */
 export function getDateFromMonthYear(month: number, year: number) {
-  let monthStr = month + '',
-    yearStr = year + '';
-  if (monthStr.length < 2) monthStr = '0' + monthStr;
+  const yearStr = year + '';
+
+  let monthStr = month + '';
+  if (monthStr.length < 2) {
+    monthStr = '0' + monthStr;
+  }
 
   return new Date(`${yearStr}-${monthStr}-1T12:00:00-${new Date().getTimezoneOffset() / 60}`);
+}
+/**
+ * ensures one call at a time
+ *
+ * @export
+ * @param {*} func
+ * @param {*} time
+ * @returns
+ */
+export function debounce(func, time) {
+  let timeout;
+
+  return function() {
+    const functionCall = () => func.apply(this, arguments);
+
+    clearTimeout(timeout);
+    timeout = setTimeout(functionCall, time);
+  };
 }

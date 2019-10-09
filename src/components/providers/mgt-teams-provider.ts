@@ -5,41 +5,83 @@
  * -------------------------------------------------------------------------------------------
  */
 
-import { LitElement, customElement, property } from 'lit-element';
+import { customElement, LitElement, property } from 'lit-element';
 import { Providers } from '../../Providers';
-import { TeamsProvider } from '../../providers/TeamsProvider';
+import { TeamsConfig, TeamsProvider } from '../../providers/TeamsProvider';
+import { MgtBaseProvider } from './baseProvider';
 
+/**
+ * Authentication Library Provider for Microsoft Teams accounts
+ *
+ * @export
+ * @class MgtTeamsProvider
+ * @extends {MgtBaseProvider}
+ */
 @customElement('mgt-teams-provider')
-export class MgtTeamsProvider extends LitElement {
-  private _provider: TeamsProvider;
-
+export class MgtTeamsProvider extends MgtBaseProvider {
+  /**
+   * String alphanumerical value relation to a specific user
+   *
+   * @memberof MgtTeamsProvider
+   */
   @property({
-    type: String,
-    attribute: 'client-id'
+    attribute: 'client-id',
+    type: String
   })
-  clientId = '';
+  public clientId = '';
 
+  /**
+   * The relative or absolute path of the html page that will handle the authentication
+   *
+   * @memberof MgtTeamsProvider
+   */
   @property({
-    type: String,
-    attribute: 'auth-popup-url'
+    attribute: 'auth-popup-url',
+    type: String
   })
-  authPopupUrl = '';
+  public authPopupUrl = '';
 
-  async firstUpdated(changedProperties) {
-    this.validateAuthProps();
-    if (await TeamsProvider.isAvailable()) {
-      Providers.globalProvider = this._provider;
-    }
+  /**
+   * Comma separated list of scopes.
+   *
+   * @memberof MgtTeamsProvider
+   */
+  @property({
+    attribute: 'scopes',
+    type: String
+  })
+  public scopes;
+  /**
+   * Gets whether this provider can be used in this environment
+   *
+   * @readonly
+   * @memberof MgtTeamsProvider
+   */
+  public get isAvailable() {
+    return TeamsProvider.isAvailable;
   }
-
-  private validateAuthProps() {
+  /**
+   * method called to initialize the provider. Each derived class should provide their own implementation
+   *
+   * @protected
+   * @memberof MgtTeamsProvider
+   */
+  protected initializeProvider() {
     if (this.clientId && this.authPopupUrl) {
-      if (!this._provider) {
-        this._provider = new TeamsProvider({
-          clientId: this.clientId,
-          authPopupUrl: this.authPopupUrl
-        });
+      const config: TeamsConfig = {
+        authPopupUrl: this.authPopupUrl,
+        clientId: this.clientId
+      };
+
+      if (this.scopes) {
+        const scope = this.scopes.split(',');
+        if (scope && scope.length > 0) {
+          config.scopes = scope;
+        }
       }
+
+      this.provider = new TeamsProvider(config);
+      Providers.globalProvider = this.provider;
     }
   }
 }

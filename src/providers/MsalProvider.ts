@@ -6,50 +6,333 @@
  */
 
 import { AuthenticationProviderOptions } from '@microsoft/microsoft-graph-client/lib/es/IAuthenticationProviderOptions';
-import { IProvider, LoginType, ProviderState } from './IProvider';
 import { Graph } from '../Graph';
+import { IProvider, LoginType, ProviderState } from './IProvider';
 
-import { UserAgentApplication, AuthenticationParameters, AuthResponse, AuthError, Configuration } from 'msal';
+import { AuthenticationParameters, AuthError, AuthResponse, Configuration, UserAgentApplication } from 'msal';
 
+/**
+ * config for MSAL authentication
+ *
+ * @export
+ * @interface MsalConfig
+ */
 export interface MsalConfig {
+  /**
+   * clientId alphanumeric code
+   *
+   * @type {string}
+   * @memberof MsalConfig
+   */
   clientId: string;
+  /**
+   * scopes
+   *
+   * @type {string[]}
+   * @memberof MsalConfig
+   */
   scopes?: string[];
+  /**
+   * config authority
+   *
+   * @type {string}
+   * @memberof MsalConfig
+   */
   authority?: string;
+  /**
+   * loginType if login uses popup
+   *
+   * @type {LoginType}
+   * @memberof MsalConfig
+   */
   loginType?: LoginType;
+  /**
+   * options
+   *
+   * @type {Configuration}
+   * @memberof MsalConfig
+   */
   options?: Configuration;
+  /**
+   * login hint value
+   *
+   * @type {string}
+   * @memberof MsalConfig
+   */
+  loginHint?: string;
 }
 
+/**
+ * Msal Provider using MSAL.js to aquire tokens for authentication
+ *
+ * @export
+ * @class MsalProvider
+ * @extends {IProvider}
+ */
 export class MsalProvider extends IProvider {
-  private _loginType: LoginType;
+  /**
+   * authentication parameter
+   *
+   * @type {string[]}
+   * @memberof MsalProvider
+   */
+  public scopes: string[];
 
+  /**
+   * Determines application
+   *
+   * @protected
+   * @type {UserAgentApplication}
+   * @memberof MsalProvider
+   */
   protected _userAgentApplication: UserAgentApplication;
 
-  get provider() {
-    return this._userAgentApplication;
-  }
-
-  scopes: string[];
+  /**
+   * client-id authentication
+   *
+   * @protected
+   * @type {string}
+   * @memberof MsalProvider
+   */
   protected clientId: string;
+  private _loginType: LoginType;
+  private _loginHint: string;
+
+  // session storage
+  private sessionStorageRequestedScopesKey = 'mgt-requested-scopes';
+  private sessionStorageDeniedScopesKey = 'mgt-denied-scopes';
 
   constructor(config: MsalConfig) {
     super();
     this.initProvider(config);
   }
 
+  /**
+   * simplified form of single sign-on (SSO)
+   *
+   * @returns
+   * @memberof MsalProvider
+   */
+  public async trySilentSignIn() {
+    try {
+      if (this._userAgentApplication.isCallback(window.location.hash)) {
+        return;
+      }
+      if (this._userAgentApplication.getAccount() && (await this.getAccessToken(null))) {
+        this.setState(ProviderState.SignedIn);
+      } else {
+        this.setState(ProviderState.SignedOut);
+      }
+    } catch (e) {
+      this.setState(ProviderState.SignedOut);
+    }
+  }
+
+  /**
+   * login auth Promise, Redirects request, and sets Provider state to SignedIn if response is recieved
+   *
+   * @param {AuthenticationParameters} [authenticationParameters]
+   * @returns {Promise<void>}
+   * @memberof MsalProvider
+   */
+  public async login(authenticationParameters?: AuthenticationParameters): Promise<void> {
+    const loginRequest: AuthenticationParameters = authenticationParameters || {
+      loginHint: this._loginHint,
+      prompt: 'select_account',
+      scopes: this.scopes
+    };
+
+    if (this._loginType === LoginType.Popup) {
+      const response = await this._userAgentApplication.loginPopup(loginRequest);
+      this.setState(response.account ? ProviderState.SignedIn : ProviderState.SignedOut);
+    } else {
+      this._userAgentApplication.loginRedirect(loginRequest);
+    }
+  }
+
+  /**
+   * logout auth Promise, sets Provider state to SignedOut
+   *
+   * @returns {Promise<void>}
+   * @memberof MsalProvider
+   */
+  public async logout(): Promise<void> {
+    this._userAgentApplication.logout();
+    this.setState(ProviderState.SignedOut);
+  }
+  /**
+   * recieves acess token Promise
+   *
+   * @param {AuthenticationProviderOptions} options
+   * @returns {Promise<string>}
+   * @memberof MsalProvider
+   */
+  public async getAccessToken(options: AuthenticationProviderOptions): Promise<string> {
+    const scopes = options ? options.scopes || this.scopes : this.scopes;
+    const accessTokenRequest: AuthenticationParameters = {
+      loginHint: this._loginHint,
+      scopes
+    };
+    try {
+      const response = await this._userAgentApplication.acquireTokenSilent(accessTokenRequest);
+      return response.accessToken;
+    } catch (e) {
+      if (this.requiresInteraction(e)) {
+        if (this._loginType === LoginType.Redirect) {
+          // check if the user denied the scope before
+          if (!this.areScopesDenied(scopes)) {
+            this.setRequestedScopes(scopes);
+            this._userAgentApplication.acquireTokenRedirect(accessTokenRequest);
+          } else {
+            throw e;
+          }
+        } else {
+          try {
+            const response = await this._userAgentApplication.acquireTokenPopup(accessTokenRequest);
+            return response.accessToken;
+          } catch (e) {
+            throw e;
+          }
+        }
+      } else {
+        // if we don't know what the error is, just ask the user to sign in again
+        this.setState(ProviderState.SignedOut);
+        throw e;
+      }
+    }
+    throw null;
+  }
+  /**
+   * sets scopes
+   *
+   * @param {string[]} scopes
+   * @memberof MsalProvider
+   */
+  public updateScopes(scopes: string[]) {
+    this.scopes = scopes;
+  }
+
+  /**
+   * if login runs into error, require user interaction
+   *
+   * @protected
+   * @param {*} error
+   * @returns
+   * @memberof MsalProvider
+   */
+  protected requiresInteraction(error) {
+    if (!error || !error.errorCode) {
+      return false;
+    }
+    return (
+      error.errorCode.indexOf('consent_required') !== -1 ||
+      error.errorCode.indexOf('interaction_required') !== -1 ||
+      error.errorCode.indexOf('login_required') !== -1
+    );
+  }
+
+  /**
+   * setting scopes in sessionStorage
+   *
+   * @protected
+   * @param {string[]} scopes
+   * @memberof MsalProvider
+   */
+  protected setRequestedScopes(scopes: string[]) {
+    if (scopes) {
+      sessionStorage.setItem(this.sessionStorageRequestedScopesKey, JSON.stringify(scopes));
+    }
+  }
+
+  /**
+   * getting scopes from sessionStorage if they exist
+   *
+   * @protected
+   * @returns
+   * @memberof MsalProvider
+   */
+  protected getRequestedScopes() {
+    const scopesStr = sessionStorage.getItem(this.sessionStorageRequestedScopesKey);
+    return scopesStr ? JSON.parse(scopesStr) : null;
+  }
+  /**
+   * clears requested scopes from sessionStorage
+   *
+   * @protected
+   * @memberof MsalProvider
+   */
+  protected clearRequestedScopes() {
+    sessionStorage.removeItem(this.sessionStorageRequestedScopesKey);
+  }
+  /**
+   * sets Denied scopes to sessionStoage
+   *
+   * @protected
+   * @param {string[]} scopes
+   * @memberof MsalProvider
+   */
+  protected addDeniedScopes(scopes: string[]) {
+    if (scopes) {
+      let deniedScopes: string[] = this.getDeniedScopes() || [];
+      deniedScopes = deniedScopes.concat(scopes);
+
+      let index = deniedScopes.indexOf('openid');
+      if (index !== -1) {
+        deniedScopes.splice(index, 1);
+      }
+
+      index = deniedScopes.indexOf('profile');
+      if (index !== -1) {
+        deniedScopes.splice(index, 1);
+      }
+      sessionStorage.setItem(this.sessionStorageDeniedScopesKey, JSON.stringify(deniedScopes));
+    }
+  }
+  /**
+   * gets deniedScopes from sessionStorage
+   *
+   * @protected
+   * @returns
+   * @memberof MsalProvider
+   */
+  protected getDeniedScopes() {
+    const scopesStr = sessionStorage.getItem(this.sessionStorageDeniedScopesKey);
+    return scopesStr ? JSON.parse(scopesStr) : null;
+  }
+  /**
+   * if scopes are denied
+   *
+   * @protected
+   * @param {string[]} scopes
+   * @returns
+   * @memberof MsalProvider
+   */
+  protected areScopesDenied(scopes: string[]) {
+    if (scopes) {
+      const deniedScopes = this.getDeniedScopes();
+      if (deniedScopes && deniedScopes.filter(s => -1 !== scopes.indexOf(s)).length > 0) {
+        return true;
+      }
+    }
+
+    return false;
+  }
+
   private initProvider(config: MsalConfig) {
     this.scopes = typeof config.scopes !== 'undefined' ? config.scopes : ['user.read'];
     this._loginType = typeof config.loginType !== 'undefined' ? config.loginType : LoginType.Redirect;
+    this._loginHint = config.loginHint;
 
-    let tokenReceivedCallbackFunction = ((response: AuthResponse) => {
+    const tokenReceivedCallbackFunction = ((response: AuthResponse) => {
       this.tokenReceivedCallback(response);
     }).bind(this);
 
-    let errorReceivedCallbackFunction = ((authError: AuthError, accountState: string) => {
+    const errorReceivedCallbackFunction = ((authError: AuthError, accountState: string) => {
       this.errorReceivedCallback(authError, status);
     }).bind(this);
 
     if (config.clientId) {
-      let msalConfig: Configuration = config.options || { auth: { clientId: config.clientId } };
+      const msalConfig: Configuration = config.options || { auth: { clientId: config.clientId } };
 
       msalConfig.auth.clientId = config.clientId;
       msalConfig.cache = msalConfig.cache || {};
@@ -65,7 +348,7 @@ export class MsalProvider extends IProvider {
       this._userAgentApplication = new UserAgentApplication(msalConfig);
       this._userAgentApplication.handleRedirectCallback(tokenReceivedCallbackFunction, errorReceivedCallbackFunction);
     } else {
-      throw 'clientId must be provided';
+      throw new Error('clientId must be provided');
     }
 
     this.graph = new Graph(this);
@@ -73,87 +356,8 @@ export class MsalProvider extends IProvider {
     this.trySilentSignIn();
   }
 
-  async trySilentSignIn() {
-    if (this._userAgentApplication.isCallback(window.location.hash)) {
-      return;
-    }
-    if (this._userAgentApplication.getAccount() && (await this.getAccessToken(null))) {
-      this.setState(ProviderState.SignedIn);
-    } else {
-      this.setState(ProviderState.SignedOut);
-    }
-  }
-
-  async login(): Promise<void> {
-    let loginRequest: AuthenticationParameters = {
-      scopes: this.scopes,
-      prompt: 'select_account'
-    };
-
-    if (this._loginType === LoginType.Popup) {
-      let response = await this._userAgentApplication.loginPopup(loginRequest);
-      this.setState(response.account ? ProviderState.SignedIn : ProviderState.SignedOut);
-    } else {
-      this._userAgentApplication.loginRedirect(loginRequest);
-    }
-  }
-
-  async logout(): Promise<void> {
-    this._userAgentApplication.logout();
-    this.setState(ProviderState.SignedOut);
-  }
-
-  async getAccessToken(options: AuthenticationProviderOptions): Promise<string> {
-    let scopes = options ? options.scopes || this.scopes : this.scopes;
-    let accessToken: string;
-    let accessTokenRequest: AuthenticationParameters = {
-      scopes: scopes
-    };
-    try {
-      let response = await this._userAgentApplication.acquireTokenSilent(accessTokenRequest);
-      accessToken = response.accessToken;
-    } catch (e) {
-      console.log(e);
-      if (this.requiresInteraction(e)) {
-        if (this._loginType == LoginType.Redirect) {
-          // check if the user denied the scope before
-          if (!this.areScopesDenied(scopes)) {
-            this.setRequestedScopes(scopes);
-            this._userAgentApplication.acquireTokenRedirect(accessTokenRequest);
-          }
-        } else {
-          try {
-            let response = await this._userAgentApplication.acquireTokenPopup(accessTokenRequest);
-            accessToken = response.accessToken;
-          } catch (e) {
-            console.log('getaccesstoken catch2 : ' + e);
-          }
-        }
-      } else {
-        // if we don't know what the error is, just ask the user to sign in again
-        this.setState(ProviderState.SignedOut);
-      }
-    }
-    return accessToken;
-  }
-
-  updateScopes(scopes: string[]) {
-    this.scopes = scopes;
-  }
-
-  private requiresInteraction(error) {
-    if (!error || !error.errorCode) {
-      return false;
-    }
-    return (
-      error.errorCode.indexOf('consent_required') !== -1 ||
-      error.errorCode.indexOf('interaction_required') !== -1 ||
-      error.errorCode.indexOf('login_required') !== -1
-    );
-  }
-
   private tokenReceivedCallback(response: AuthResponse) {
-    if (response.tokenType == 'id_token') {
+    if (response.tokenType === 'id_token') {
       this.setState(ProviderState.SignedIn);
     }
 
@@ -161,65 +365,11 @@ export class MsalProvider extends IProvider {
   }
 
   private errorReceivedCallback(authError: AuthError, accountState: string) {
-    console.log('authError: ' + authError + ' accountState ' + accountState);
-    let requestedScopes = this.getRequestedScopes();
+    const requestedScopes = this.getRequestedScopes();
     if (requestedScopes) {
       this.addDeniedScopes(requestedScopes);
     }
 
     this.clearRequestedScopes();
-  }
-
-  //session storage
-  private ss_requested_scopes_key = 'mgt-requested-scopes';
-  private ss_denied_scopes_key = 'mgt-denied-scopes';
-
-  private setRequestedScopes(scopes: string[]) {
-    if (scopes) {
-      sessionStorage.setItem(this.ss_requested_scopes_key, JSON.stringify(scopes));
-    }
-  }
-
-  private getRequestedScopes() {
-    let scopes_str = sessionStorage.getItem(this.ss_requested_scopes_key);
-    return scopes_str ? JSON.parse(scopes_str) : null;
-  }
-
-  private clearRequestedScopes() {
-    sessionStorage.removeItem(this.ss_requested_scopes_key);
-  }
-
-  private addDeniedScopes(scopes: string[]) {
-    if (scopes) {
-      let deniedScopes: string[] = this.getDeniedScopes() || [];
-      deniedScopes = deniedScopes.concat(scopes);
-
-      var index = deniedScopes.indexOf('openid');
-      if (index !== -1) {
-        deniedScopes.splice(index, 1);
-      }
-
-      index = deniedScopes.indexOf('profile');
-      if (index !== -1) {
-        deniedScopes.splice(index, 1);
-      }
-      sessionStorage.setItem(this.ss_denied_scopes_key, JSON.stringify(deniedScopes));
-    }
-  }
-
-  private getDeniedScopes() {
-    let scopes_str = sessionStorage.getItem(this.ss_denied_scopes_key);
-    return scopes_str ? JSON.parse(scopes_str) : null;
-  }
-
-  private areScopesDenied(scopes: string[]) {
-    if (scopes) {
-      const deniedScopes = this.getDeniedScopes();
-      if (deniedScopes && deniedScopes.filter(s => -1 !== scopes.indexOf(s)).length > 0) {
-        return true;
-      }
-    }
-
-    return false;
   }
 }

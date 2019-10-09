@@ -5,181 +5,366 @@
  * -------------------------------------------------------------------------------------------
  */
 
-import { html, customElement, property } from 'lit-element';
 import * as MicrosoftGraph from '@microsoft/microsoft-graph-types';
-
+import { customElement, html, property } from 'lit-element';
+import { classMap } from 'lit-html/directives/class-map';
 import { Providers } from '../../Providers';
-import { styles } from './mgt-person-css';
-import '../../styles/fabric-icon-font';
 import { ProviderState } from '../../providers/IProvider';
+import '../../styles/fabric-icon-font';
+import { getEmailFromGraphEntity } from '../../utils/GraphHelpers';
+import { MgtPersonCard } from '../mgt-person-card/mgt-person-card';
 import { MgtTemplatedComponent } from '../templatedComponent';
+import { styles } from './mgt-person-css';
 
+/**
+ * Defines how a person card is shown when a user interacts with
+ * a person component
+ *
+ * @export
+ * @enum {number}
+ */
+export enum PersonCardInteraction {
+  /**
+   * Don't show person card
+   */
+  none,
+
+  /**
+   * Show person card on hover
+   */
+  hover,
+
+  /**
+   * Show person card on click
+   */
+  click
+}
+
+/**
+ * The person component is used to display a person or contact by using their photo, name, and/or email address.
+ *
+ * @export
+ * @class MgtPerson
+ * @extends {MgtTemplatedComponent}
+ */
 @customElement('mgt-person')
 export class MgtPerson extends MgtTemplatedComponent {
+  /**
+   * allows developer to define name of person for component
+   * @type {string}
+   */
   @property({
     attribute: 'person-query'
   })
-  personQuery: string;
+  public personQuery: string;
 
+  /**
+   * user-id property allows developer to use id value to determine person
+   * @type {string}
+   */
   @property({
     attribute: 'user-id'
   })
-  userId: string;
+  public userId: string;
 
+  /**
+   * determines if person component renders user-name
+   * @type {boolean}
+   */
   @property({
     attribute: 'show-name',
     type: Boolean
   })
-  showName: false;
+  public showName: false;
 
+  /**
+   * determines if person component renders email
+   * @type {boolean}
+   */
   @property({
     attribute: 'show-email',
     type: Boolean
   })
-  showEmail: false;
+  public showEmail: false;
 
+  /**
+   * object containing Graph details on person
+   * @type {MgtPersonDetails}
+   */
   @property({
     attribute: 'person-details',
     type: Object
   })
-  personDetails: MgtPersonDetails;
+  public personDetails: MicrosoftGraph.User | MicrosoftGraph.Person | MicrosoftGraph.Contact;
 
-  attributeChangedCallback(name, oldval, newval) {
+  /**
+   * Set the image of the person
+   * Set to '@' to look up image from the graph
+   *
+   * @type {string}
+   * @memberof MgtPersonCard
+   */
+  @property({
+    attribute: 'person-image',
+    type: String
+  })
+  public personImage: string;
+
+  /**
+   * Sets how the person-card is invoked
+   * Set to PersonCardInteraction.none to not show the card
+   *
+   * @type {PersonCardInteraction}
+   * @memberof MgtPerson
+   */
+  @property({
+    attribute: 'person-card',
+    converter: (value, type) => {
+      value = value.toLowerCase();
+      return PersonCardInteraction[value] || PersonCardInteraction.none;
+    }
+  })
+  public personCardInteraction: PersonCardInteraction = PersonCardInteraction.none;
+
+  @property({ attribute: false }) private _isPersonCardVisible: boolean = false;
+  @property({ attribute: false }) private _personCardShouldRender: boolean = false;
+
+  private _mouseLeaveTimeout;
+  private _mouseEnterTimeout;
+  private _openLeft: boolean = false;
+  private _openUp: boolean = false;
+
+  /**
+   * Synchronizes property values when attributes change.
+   *
+   * @param {*} name
+   * @param {*} oldValue
+   * @param {*} newValue
+   * @memberof MgtPerson
+   */
+  public attributeChangedCallback(name, oldval, newval) {
     super.attributeChangedCallback(name, oldval, newval);
 
-    if ((name == 'person-query' || name == 'user-id') && oldval !== newval) {
+    if ((name === 'person-query' || name === 'user-id') && oldval !== newval) {
       this.personDetails = null;
       this.loadData();
     }
   }
 
+  /**
+   * Array of styles to apply to the element. The styles should be defined
+   * user the `css` tag function.
+   */
   static get styles() {
     return styles;
   }
 
-  firstUpdated() {
+  /**
+   * Invoked when the element is first updated. Implement to perform one time
+   * work on the element after update.
+   *
+   * Setting properties inside this method will trigger the element to update
+   * again after this update cycle completes.
+   *
+   * * @param _changedProperties Map of changed properties with old values
+   */
+
+  public firstUpdated() {
     Providers.onProviderUpdated(() => this.loadData());
     this.loadData();
   }
 
-  private async loadData() {
-    let provider = Providers.globalProvider;
+  /**
+   * Invoked when the element is first updated. Implement to perform one time
+   * work on the element after update.
+   *
+   * Setting properties inside this method will trigger the element to update
+   * again after this update cycle completes.
+   *
+   * * @param _changedProperties Map of changed properties with old values
+   */
+  public render() {
+    const person =
+      this.renderTemplate('default', { person: this.personDetails }) ||
+      html`
+        <div class="person-root">
+          ${this.renderImage()} ${this.renderDetails()}
+        </div>
+      `;
 
-    if (!provider || provider.state !== ProviderState.SignedIn) {
+    return html`
+      <div
+        class="root"
+        @mouseenter=${this._handleMouseEnter}
+        @mouseleave=${this._handleMouseLeave}
+        @click=${this._handleMouseClick}
+      >
+        ${person} ${this.renderPersonCard()}
+      </div>
+    `;
+  }
+
+  private async loadData() {
+    const provider = Providers.globalProvider;
+
+    if (!provider || provider.state === ProviderState.Loading) {
       return;
     }
 
-    // If we only have a user-id then use that to get data.
-    if (this.userId) {
-      let person: MgtPersonDetails = {};
+    if (provider.state === ProviderState.SignedOut) {
+      this.personDetails = null;
+      this.personImage = null;
+      return;
+    }
 
-      await Promise.all([
-        provider.graph.getUser(this.userId).then(user => {
-          if (user) {
-            person.displayName = user.displayName;
-            person.email = user.mail;
-            this.requestUpdate();
-          }
-        }),
-        provider.graph.getUserPhoto(this.userId).then(photo => {
-          if (photo) {
-            person.image = photo;
-            this.requestUpdate();
-          }
-        })
-      ]);
-
-      this.personDetails = person;
-    } else if (!this.personQuery && this.personDetails) {
-      // Check if we have details needed.
-      if (!this.personDetails.image) {
-        await this.loadImage(this.personDetails);
+    if (this.personDetails) {
+      // in some cases we might only have name or email, but need to find the image
+      // use @ for the image value to search for an image
+      if (this.personImage && this.personImage === '@') {
+        this.personImage = null;
+        this.loadImage();
       }
-    } else if (!this.personDetails && this.personQuery) {
-      if (this.personQuery == 'me') {
-        let person: MgtPersonDetails = {};
+      return;
+    }
 
-        await Promise.all([
-          provider.graph.getMe().then(user => {
-            if (user) {
-              person.displayName = user.displayName;
-              person.email = user.mail || user.userPrincipalName;
-            }
-          }),
-          provider.graph.myPhoto().then(photo => {
-            if (photo) {
-              person.image = photo;
-            }
-          })
-        ]);
+    if (this.userId || (this.personQuery && this.personQuery === 'me')) {
+      const batch = provider.graph.createBatch();
 
-        this.personDetails = person;
+      if (this.userId) {
+        batch.get('user', `/users/${this.userId}`, ['user.readbasic.all']);
+        batch.get('photo', `users/${this.userId}/photo/$value`, ['user.readbasic.all']);
       } else {
-        provider.graph.findPerson(this.personQuery).then(people => {
-          if (people && people.length > 0) {
-            let person = people[0] as MicrosoftGraph.Person;
-            this.personDetails = person;
-
-            if (person.scoredEmailAddresses && person.scoredEmailAddresses.length) {
-              this.personDetails.email = person.scoredEmailAddresses[0].address;
-            } else if ((<any>person).emailAddresses && (<any>person).emailAddresses.length) {
-              // beta endpoint uses emailAddresses instead of scoredEmailAddresses
-              this.personDetails.email = (<any>person).emailAddresses[0].address;
-            }
-
-            this.loadImage(person);
-          }
-        });
+        batch.get('user', 'me', ['user.read']);
+        batch.get('photo', 'me/photo/$value', ['user.read']);
       }
-    } else {
-      this.personDetails = null; // Should we throw here or re-load the query as now we do nothing if both specified?
+
+      const response = await batch.execute();
+
+      this.personImage = response.photo;
+      this.personDetails = response.user;
+    } else if (!this.personDetails && this.personQuery) {
+      const people = await provider.graph.findPerson(this.personQuery);
+      if (people && people.length > 0) {
+        const person = people[0] as MicrosoftGraph.Person;
+        this.personDetails = person;
+
+        this.loadImage();
+      }
     }
   }
 
-  private async loadImage(person: any) {
-    let provider = Providers.globalProvider;
+  private async loadImage() {
+    const provider = Providers.globalProvider;
 
-    if (person.userPrincipalName) {
-      let userPrincipalName = person.userPrincipalName;
-      provider.graph.getUserPhoto(userPrincipalName).then(photo => {
-        this.personDetails.image = photo;
-        this.requestUpdate();
-      });
-    } else if (this.personDetails.email) {
-      // try to find a user by e-mail
-      provider.graph.findUserByEmail(this.personDetails.email).then(users => {
+    const person = this.personDetails;
+
+    if ((person as MicrosoftGraph.Person).userPrincipalName) {
+      const userPrincipalName = (person as MicrosoftGraph.Person).userPrincipalName;
+      this.personImage = await provider.graph.getUserPhoto(userPrincipalName);
+    } else {
+      const email = getEmailFromGraphEntity(person);
+      if (email) {
+        // try to find a user by e-mail
+        const users = await provider.graph.findUserByEmail(email);
+
         if (users && users.length) {
-          const contactId = users[0].id;
-          if ((<any>users[0]).personType && (<any>users[0]).personType.subclass == 'OrganizationUser') {
-            provider.graph
-              .getUserPhoto((<MicrosoftGraph.Person>users[0]).scoredEmailAddresses[0].address)
-              .then(photo => {
-                this.personDetails.image = photo;
-                this.requestUpdate();
-              });
+          if ((users[0] as any).personType && (users[0] as any).personType.subclass === 'OrganizationUser') {
+            this.personImage = await provider.graph.getUserPhoto(
+              (users[0] as MicrosoftGraph.Person).scoredEmailAddresses[0].address
+            );
           } else {
-            provider.graph.getContactPhoto(contactId).then(photo => {
-              this.personDetails.image = photo;
-              this.requestUpdate();
-            });
+            const contactId = users[0].id;
+            this.personImage = await provider.graph.getContactPhoto(contactId);
           }
         }
-      });
+      }
+    }
+    this.requestUpdate();
+  }
+
+  private _handleMouseClick() {
+    if (this.personCardInteraction === PersonCardInteraction.click) {
+      if (!this._isPersonCardVisible) {
+        this._showPersonCard();
+      } else {
+        this._hidePersonCard();
+      }
     }
   }
 
-  render() {
-    return (
-      this.renderTemplate('default', { person: this.personDetails }) ||
-      html`
-        <div class="root">
-          ${this.renderImage()} ${this.renderDetails()}
-        </div>
-      `
-    );
+  private _handleMouseEnter(e: MouseEvent) {
+    if (this.personCardInteraction !== PersonCardInteraction.hover) {
+      return;
+    }
+
+    clearTimeout(this._mouseEnterTimeout);
+    clearTimeout(this._mouseLeaveTimeout);
+    this._mouseEnterTimeout = setTimeout(this._showPersonCard.bind(this), 500);
   }
 
-  renderDetails() {
+  private _handleMouseLeave(e: MouseEvent) {
+    clearTimeout(this._mouseEnterTimeout);
+    clearTimeout(this._mouseLeaveTimeout);
+    this._mouseLeaveTimeout = setTimeout(this._hidePersonCard.bind(this), 500);
+  }
+
+  private _showPersonCard() {
+    if (!this._personCardShouldRender) {
+      this._personCardShouldRender = true;
+    }
+
+    this._isPersonCardVisible = true;
+  }
+
+  private _hidePersonCard() {
+    this._isPersonCardVisible = false;
+    const personCard = this.querySelector('mgt-person-card') as MgtPersonCard;
+    if (personCard) {
+      personCard.isExpanded = false;
+    }
+  }
+
+  private renderPersonCard() {
+    // ensure person card is only rendered when needed
+    if (this.personCardInteraction === PersonCardInteraction.none || !this._personCardShouldRender) {
+      return;
+    }
+    // logic for rendering left if there is no space
+    const personRect = this.renderRoot.querySelector('.root').getBoundingClientRect();
+    const leftEdge = personRect.left;
+    const rightEdge = (window.innerWidth || document.documentElement.clientWidth) - personRect.right;
+    this._openLeft = rightEdge < leftEdge;
+
+    // logic for rendering up
+    const bottomEdge = (window.innerHeight || document.documentElement.clientHeight) - personRect.bottom;
+    this._openUp = bottomEdge < 175;
+
+    // find position to renderup to
+    let customStyle = null;
+    if (this._openUp) {
+      const personSize = this.getBoundingClientRect().bottom - this.getBoundingClientRect().top;
+      customStyle = `bottom: ${personSize / 2 + 8}px`;
+    }
+
+    const flyoutClasses = {
+      flyout: true,
+      openLeft: this._openLeft,
+      openUp: this._openUp,
+      visible: this._isPersonCardVisible
+    };
+    if (this._isPersonCardVisible) {
+      return html`
+        <div style="${customStyle}" class=${classMap(flyoutClasses)}>
+          ${this.renderTemplate('person-card', { person: this.personDetails, personImage: this.personImage }) ||
+            html`
+              <mgt-person-card .personDetails=${this.personDetails} .personImage=${this.personImage}> </mgt-person-card>
+            `}
+        </div>
+      `;
+    }
+  }
+
+  private renderDetails() {
     if (this.showEmail || this.showName) {
       return html`
         <span class="Details ${this.getImageSizeClass()}">
@@ -191,23 +376,28 @@ export class MgtPerson extends MgtTemplatedComponent {
     return null;
   }
 
-  renderImage() {
+  private renderImage() {
     if (this.personDetails) {
-      if (this.personDetails.image) {
+      const title = this.personCardInteraction === PersonCardInteraction.none ? this.personDetails.displayName : '';
+
+      if (this.personImage && this.personImage !== '@') {
         return html`
           <img
             class="user-avatar ${this.getImageRowSpanClass()} ${this.getImageSizeClass()}"
-            title=${this.personDetails.displayName}
-            src=${this.personDetails.image as string}
+            title=${title}
+            aria-label=${title}
+            alt=${title}
+            src=${this.personImage as string}
           />
         `;
       } else {
         return html`
           <div
             class="user-avatar initials ${this.getImageRowSpanClass()} ${this.getImageSizeClass()}"
-            title=${this.personDetails.displayName}
+            title=${title}
+            aria-label=${title}
           >
-            <span class="initials-text">
+            <span class="initials-text" aria-label="${this.getInitials()}">
               ${this.getInitials()}
             </span>
           </div>
@@ -218,34 +408,37 @@ export class MgtPerson extends MgtTemplatedComponent {
     return this.renderEmptyImage();
   }
 
-  renderEmptyImage() {
+  private renderEmptyImage() {
     return html`
       <i class="ms-Icon ms-Icon--Contact avatar-icon ${this.getImageRowSpanClass()} ${this.getImageSizeClass()}"></i>
     `;
   }
 
-  renderNameAndEmail() {
+  private renderNameAndEmail() {
     if (!this.personDetails || (!this.showEmail && !this.showName)) {
       return;
     }
 
     const nameView = this.showName
       ? html`
-          <div class="user-name">${this.personDetails.displayName}</div>
+          <div class="user-name" aria-label="${this.personDetails.displayName}">${this.personDetails.displayName}</div>
         `
       : null;
-    const emailView = this.showEmail
-      ? html`
-          <div class="user-email">${this.personDetails.email}</div>
-        `
-      : null;
+
+    let emailView;
+    if (this.showEmail) {
+      const email = getEmailFromGraphEntity(this.personDetails);
+      emailView = html`
+        <div class="user-email" aria-label="${email}">${email}</div>
+      `;
+    }
 
     return html`
       ${nameView} ${emailView}
     `;
   }
 
-  getInitials() {
+  private getInitials() {
     if (!this.personDetails) {
       return '';
     }
@@ -271,7 +464,7 @@ export class MgtPerson extends MgtTemplatedComponent {
     return initials;
   }
 
-  getImageRowSpanClass() {
+  private getImageRowSpanClass() {
     if (this.showEmail && this.showName) {
       return 'row-span-2';
     }
@@ -279,19 +472,11 @@ export class MgtPerson extends MgtTemplatedComponent {
     return '';
   }
 
-  getImageSizeClass() {
+  private getImageSizeClass() {
     if (!this.showEmail || !this.showName) {
       return 'small';
     }
 
     return '';
   }
-}
-
-export declare interface MgtPersonDetails {
-  displayName?: string;
-  email?: string;
-  image?: string;
-  givenName?: string;
-  surname?: string;
 }

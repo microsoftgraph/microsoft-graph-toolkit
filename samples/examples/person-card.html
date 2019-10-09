@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html>
+  <head>
+
+    <script src="https://unpkg.com/@microsoft/mgt/dist/bundle/mgt-loader.js"></script>
+
+    <style>
+      mgt-person {
+        margin: 20px;
+      }
+
+      .details {
+        margin: 10px 0;
+      }
+    </style>
+  </head>
+
+  <body>
+    <mgt-msal-provider client-id="a974dfa0-9f57-49b9-95db-90f04ce2111a"></mgt-msal-provider>
+
+    <!-- <mgt-login></mgt-login> -->
+    <mgt-person person-query="alex" person-card="hover"> </mgt-person>
+
+    <mgt-person person-query="me" show-name show-email person-card="hover">
+      <template data-type="person-card">
+        <mgt-person-card inherit-details></mgt-person-card>
+      </template>
+    </mgt-person>
+
+    <mgt-person person-query="me" show-name show-email person-card="click">
+      <template data-type="person-card">
+        <mgt-person-card inherit-details>
+          <template data-type="additional-details">
+            <div class="details">
+              Here is some additional content here
+            </div>
+          </template>
+        </mgt-person-card>
+      </template>
+    </mgt-person>
+  </body>
+</html>

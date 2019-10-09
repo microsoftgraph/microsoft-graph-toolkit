@@ -1,6 +1,6 @@
 {
   "name": "@microsoft/mgt",
-  "version": "0.1.1",
+  "version": "1.0.0",
   "description": "The Microsoft Graph Toolkit",
   "keywords": [
     "microsoft graph",
@@ -26,17 +26,18 @@
   ],
   "scripts": {
     "clean": "shx rm -rf dist",
-    "start": "run-p sass:watch build:watch serve watch",
+    "start": "npm run sass && run-p sass:watch build:watch serve watch",
     "serve": "owc-dev-server --port 3333",
     "watch": "browser-sync start --no-notify --proxy localhost:3333 --files 'dist/**/*.js, index.html'",
     "sass": "gulp sass",
     "sass:watch": "gulp watchSass",
     "setVersion": "gulp setVersion",
-    "setHeader": "gulp setHeader",
-    "build": "run-s prettier:check setVersion clean sass build:esm build:bundle",
+    "setLicense": "gulp setLicense",
+    "build": "run-s prettier:check lint setVersion clean sass build:esm build:bundle",
     "build:esm": "tsc",
     "build:watch": "tsc --watch",
     "build:bundle": "npm run copy:loader && npm run copy:wc && npm run sass && rollup -c",
+    "lint": "tslint -c tslint.json 'src/**/*.ts'",
     "copy:loader": "cpx src/bundle/mgt-loader.js dist/bundle",
     "copy:wc": "cpx node_modules/@webcomponents/webcomponentsjs/bundles/**/* dist/bundle/wc/bundles && cpx node_modules/@webcomponents/webcomponentsjs/webcomponents-loader.js dist/bundle/wc",
     "test": "jest",
@@ -47,13 +48,13 @@
     "prettier:write": "npm run prettier:base -- --write \"{src,tests}/**/*.{ts,tsx}\""
   },
   "dependencies": {
-    "@microsoft/microsoft-graph-client": "^1.7.0-Preview.1",
-    "@microsoft/microsoft-graph-types": "^1.8.0",
+    "@microsoft/microsoft-graph-client": "^2.0.0",
+    "@microsoft/microsoft-graph-types": "^1.10.0",
     "@microsoft/microsoft-graph-types-beta": "microsoftgraph/msgraph-typescript-typings#beta",
-    "adaptivecards": "^1.2.0",
-    "lit-element": "^2.1.0",
-    "msal": "1.0.0",
-    "office-ui-fabric-core": "10.0.0"
+    "adaptivecards": "^1.2.3",
+    "lit-element": "^2.2.1",
+    "msal": "1.1.3",
+    "office-ui-fabric-core": "10.1.0"
   },
   "devDependencies": {
     "@babel/core": "^7.4.3",
@@ -63,9 +64,9 @@
     "@babel/preset-env": "^7.4.3",
     "@babel/preset-typescript": "^7.3.3",
     "@types/jest": "^24.0.11",
-    "@webcomponents/webcomponentsjs": "^2.2.7",
+    "@webcomponents/webcomponentsjs": "^2.2.10",
     "babel-polyfill": "6.5.0",
-    "browser-sync": "^2.26.5",
+    "browser-sync": "^2.26.7",
     "cpx": "^1.5.0",
     "gulp": "^4.0.0",
     "gulp-append-prepend": "^1.0.6",
@@ -91,6 +92,8 @@
     "sass": "^1.17.3",
     "shx": "^0.3.2",
     "ts-jest": "^24.0.1",
+    "tslint": "^5.18.0",
+    "tslint-config-prettier": "^1.18.0",
     "typescript": "^3.4.4",
     "whatwg-fetch": "^3.0.0"
   },

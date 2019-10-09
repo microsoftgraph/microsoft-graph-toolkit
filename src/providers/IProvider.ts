@@ -8,78 +8,158 @@
 import { AuthenticationProvider } from '@microsoft/microsoft-graph-client/lib/es/IAuthenticationProvider';
 import { AuthenticationProviderOptions } from '@microsoft/microsoft-graph-client/lib/es/IAuthenticationProviderOptions';
 import { Graph } from '../Graph';
-
+import { EventDispatcher } from './EventDispatcher';
+/**
+ * Provider Type to be extended for implmenting new providers
+ *
+ * @export
+ * @abstract
+ * @class IProvider
+ * @implements {AuthenticationProvider}
+ */
 export abstract class IProvider implements AuthenticationProvider {
+  /**
+   * The Graph object that contains the Graph client sdk
+   *
+   * @type {Graph}
+   * @memberof IProvider
+   */
+  public graph: Graph;
   private _state: ProviderState;
   private _loginChangedDispatcher = new EventDispatcher<LoginChangedEvent>();
-
-  get state(): ProviderState {
+  /**
+   * returns state of Provider
+   *
+   * @readonly
+   * @type {ProviderState}
+   * @memberof IProvider
+   */
+  public get state(): ProviderState {
     return this._state;
-  }
-
-  setState(state: ProviderState) {
-    if (state != this._state) {
-      this._state = state;
-      this._loginChangedDispatcher.fire({});
-    }
-  }
-
-  // events
-  onStateChanged(eventHandler: EventHandler<LoginChangedEvent>) {
-    this._loginChangedDispatcher.add(eventHandler);
-  }
-
-  removeStateChangedHandler(eventHandler: EventHandler<LoginChangedEvent>) {
-    this._loginChangedDispatcher.remove(eventHandler);
   }
 
   constructor() {
     this._state = ProviderState.Loading;
   }
 
-  login?(): Promise<void>;
-  logout?(): Promise<void>;
-  getAccessTokenForScopes(...scopes: string[]): Promise<string> {
-    return this.getAccessToken({ scopes: scopes });
+  /**
+   * sets state of Provider and fires loginchangedDispatcher
+   *
+   * @param {ProviderState} state
+   * @memberof IProvider
+   */
+  public setState(state: ProviderState) {
+    if (state !== this._state) {
+      this._state = state;
+      this._loginChangedDispatcher.fire({});
+    }
   }
 
-  abstract getAccessToken(options?: AuthenticationProviderOptions): Promise<string>;
-  graph: Graph;
+  /**
+   * event handler when login changes
+   *
+   * @param {EventHandler<LoginChangedEvent>} eventHandler
+   * @memberof IProvider
+   */
+  public onStateChanged(eventHandler: EventHandler<LoginChangedEvent>) {
+    this._loginChangedDispatcher.add(eventHandler);
+  }
+  /**
+   * removes event handler for when login changes
+   *
+   * @param {EventHandler<LoginChangedEvent>} eventHandler
+   * @memberof IProvider
+   */
+  public removeStateChangedHandler(eventHandler: EventHandler<LoginChangedEvent>) {
+    this._loginChangedDispatcher.remove(eventHandler);
+  }
+
+  /**
+   * option implementation that can be called to sign in user (required for mgt-login to work)
+   *
+   * @returns {Promise<void>}
+   * @memberof IProvider
+   */
+  public login?(): Promise<void>;
+
+  /**
+   * optional implementation that can be called to sign out user (required for mgt-login to work)
+   *
+   * @returns {Promise<void>}
+   * @memberof IProvider
+   */
+  public logout?(): Promise<void>;
+
+  /**
+   * uses scopes to recieve access token
+   *
+   * @param {...string[]} scopes
+   * @returns {Promise<string>}
+   * @memberof IProvider
+   */
+  public getAccessTokenForScopes(...scopes: string[]): Promise<string> {
+    return this.getAccessToken({ scopes });
+  }
+
+  /**
+   * Promise to receive access token using Provider options
+   *
+   * @abstract
+   * @param {AuthenticationProviderOptions} [options]
+   * @returns {Promise<string>}
+   * @memberof IProvider
+   */
+  public abstract getAccessToken(options?: AuthenticationProviderOptions): Promise<string>;
 }
 
+/**
+ * An EventHandler for custom events
+ */
 export type EventHandler<E> = (event: E) => void;
+
+/**
+ * loginChangedEvent
+ *
+ * @export
+ * @interface LoginChangedEvent
+ */
+// tslint:disable-next-line: no-empty-interface
 export interface LoginChangedEvent {}
 
-export class EventDispatcher<E> {
-  private eventHandlers: EventHandler<E>[] = [];
-
-  fire(event: E) {
-    for (let handler of this.eventHandlers) {
-      handler(event);
-    }
-  }
-
-  add(eventHandler: EventHandler<E>) {
-    this.eventHandlers.push(eventHandler);
-  }
-
-  remove(eventHandler: EventHandler<E>) {
-    for (let i = 0; i < this.eventHandlers.length; i++) {
-      if (this.eventHandlers[i] === eventHandler) {
-        this.eventHandlers.splice(i, 1);
-        i--;
-      }
-    }
-  }
-}
-
+/**
+ * LoginType
+ *
+ * @export
+ * @enum {number}
+ */
 export enum LoginType {
+  /**
+   * Popup = 0
+   */
   Popup,
+  /**
+   * Redirect = 1
+   */
   Redirect
 }
 
+/**
+ * ProviderState
+ *
+ * @export
+ * @enum {number}
+ */
 export enum ProviderState {
+  /**
+   * Loading = 0
+   */
   Loading,
+  /**
+   * SignedOut = 1
+   */
   SignedOut,
+  /**
+   * SignedIn = 1
+   */
   SignedIn
 }

@@ -1,24 +1,31 @@
-import { html, css, customElement, property } from 'lit-element';
-import * as MicrosoftGraph from '@microsoft/microsoft-graph-types';
-import { MgtTemplatedComponent } from '../templatedComponent';
+import { css, customElement, property } from 'lit-element';
 import { Providers } from '../../Providers';
 import { ProviderState } from '../../providers/IProvider';
+import { MgtTemplatedComponent } from '../templatedComponent';
+
 import 'adaptivecards/dist/adaptivecards';
 
 declare var AdaptiveCards: any;
 
 @customElement('mgt-card')
 export class MgtCard extends MgtTemplatedComponent {
-  private _card: any; // need to add typing;
+  static get styles() {
+    return css`
+      .title {
+        color: red;
+      }
+    `;
+  }
 
-  @property() content: string;
+  @property() public content: string;
 
   // assignment to this property will re-render the component
-  @property() hostConfig: any = new AdaptiveCards.HostConfig({
+  @property() public hostConfig: any = new AdaptiveCards.HostConfig({
     fontFamily: 'Segoe UI, Helvetica Neue, sans-serif'
   });
 
-  @property() query: string;
+  @property() public query: string;
+  private _card: any; // need to add typing;
 
   private _lastQueryRendered: string;
 
@@ -31,7 +38,7 @@ export class MgtCard extends MgtTemplatedComponent {
     this._card.onExecuteAction = action => this.onExecuteAction(action);
   }
 
-  attributeChangedCallback(name, oldval, newval) {
+  public attributeChangedCallback(name, oldval, newval) {
     super.attributeChangedCallback(name, oldval, newval);
 
     // TODO: handle when an attribute changes.
@@ -42,10 +49,34 @@ export class MgtCard extends MgtTemplatedComponent {
     }
   }
 
+  public firstUpdated() {
+    Providers.onProviderUpdated(() => this.loadData());
+    this.loadData();
+  }
+
+  public render() {
+    const root = this.renderRoot;
+
+    while (root.firstChild) {
+      root.removeChild(root.firstChild);
+    }
+
+    if (!this.content) {
+      return null;
+    }
+
+    this._card.hostConfig = this.hostConfig;
+
+    this._card.parse(this.content);
+    const renderedCard = this._card.render();
+
+    root.appendChild(renderedCard);
+  }
+
   private async loadData() {
     const provider = Providers.globalProvider;
 
-    if (this.query == null || this.query == '' || !provider || provider.state !== ProviderState.SignedIn) {
+    if (!this.query || !provider || provider.state !== ProviderState.SignedIn) {
       return;
     }
 
@@ -56,19 +87,19 @@ export class MgtCard extends MgtTemplatedComponent {
     this._lastQueryRendered = this.query;
 
     const client = provider.graph.client;
-    let result = await client.api(this.query).get();
+    const result = await client.api(this.query).get();
 
     if (result) {
-      let response = await fetch('https://templates.adaptivecards.io/find', {
-        method: 'post',
-        body: JSON.stringify(result)
+      const response = await fetch('https://templates.adaptivecards.io/find', {
+        body: JSON.stringify(result),
+        method: 'post'
       });
-      let template = await response.json();
-      let templateUri = template[0].templateUrl;
+      const template = await response.json();
+      const templateUri = template[0].templateUrl;
 
-      let contentResponse = await fetch('https://templates.adaptivecards.io/' + templateUri, {
-        method: 'post',
-        body: JSON.stringify(result)
+      const contentResponse = await fetch('https://templates.adaptivecards.io/' + templateUri, {
+        body: JSON.stringify(result),
+        method: 'post'
       });
 
       this.content = await contentResponse.json();
@@ -77,33 +108,5 @@ export class MgtCard extends MgtTemplatedComponent {
 
   private onExecuteAction(action) {
     this.fireCustomEvent('action', action);
-  }
-
-  firstUpdated() {
-    Providers.onProviderUpdated(() => this.loadData());
-    this.loadData();
-  }
-
-  static get styles() {
-    return css`
-      .title {
-        color: red;
-      }
-    `;
-  }
-
-  render() {
-    this._card.hostConfig = this.hostConfig;
-
-    this._card.parse(this.content);
-    let renderedCard = this._card.render();
-
-    let root = this.renderRoot;
-
-    while (root.firstChild) {
-      root.removeChild(root.firstChild);
-    }
-
-    root.appendChild(renderedCard);
   }
 }

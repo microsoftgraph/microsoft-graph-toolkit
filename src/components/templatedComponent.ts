@@ -6,53 +6,69 @@
  */
 
 import { html } from 'lit-element';
-import { TemplateHelper } from './templateHelper';
 import { MgtBaseComponent } from './baseComponent';
+import { TemplateHelper } from './templateHelper';
 
+/**
+ * An abstract class that defines a templatable web component
+ *
+ * @export
+ * @abstract
+ * @class MgtTemplatedComponent
+ * @extends {MgtBaseComponent}
+ */
 export abstract class MgtTemplatedComponent extends MgtBaseComponent {
-  private _renderedSlots = false;
-  private _slotNamesAddedDuringRender = [];
+  /**
+   * Collection of functions to be used in template binding
+   *
+   * @type {*}
+   * @memberof MgtTemplatedComponent
+   */
+  public templateConverters: any = {};
+
+  /**
+   * Holds all templates defined by developer
+   *
+   * @protected
+   * @memberof MgtTemplatedComponent
+   */
   protected templates = {};
 
+  private _renderedSlots = false;
+  private _slotNamesAddedDuringRender = [];
+
+  constructor() {
+    super();
+
+    this.templateConverters.lower = (str: string) => str.toLowerCase();
+    this.templateConverters.upper = (str: string) => str.toUpperCase();
+  }
+
+  /**
+   * Updates the element. This method reflects property values to attributes.
+   * It can be overridden to render and keep updated element DOM.
+   * Setting properties inside this method will *not* trigger
+   * another update.
+   *
+   * * @param _changedProperties Map of changed properties with old values
+   */
   protected update(changedProperties) {
     this.templates = this.getTemplates();
     this._slotNamesAddedDuringRender = [];
     super.update(changedProperties);
   }
 
+  /**
+   * Invoked whenever the element is updated. Implement to perform
+   * post-updating tasks via DOM APIs, for example, focusing an element.
+   *
+   * Setting properties inside this method will trigger the element to update
+   * again after this update cycle completes.
+   *
+   * * @param _changedProperties Map of changed properties with old values
+   */
   protected updated() {
     this.removeUnusedSlottedElements();
-  }
-
-  private getTemplates() {
-    let templates = {};
-
-    for (let i = 0; i < this.children.length; i++) {
-      let child = this.children[i];
-      if (child.nodeName == 'TEMPLATE') {
-        let template = <HTMLElement>child;
-        if (template.dataset.type) {
-          templates[template.dataset.type] = template;
-        } else {
-          templates['default'] = template;
-        }
-      }
-    }
-
-    return templates;
-  }
-
-  private removeUnusedSlottedElements() {
-    if (this._renderedSlots) {
-      for (let i = 0; i < this.children.length; i++) {
-        let child = <HTMLElement>this.children[i];
-        if (child.dataset && child.dataset.generated && !this._slotNamesAddedDuringRender.includes(child.slot)) {
-          this.removeChild(child);
-          i--;
-        }
-      }
-      this._renderedSlots = false;
-    }
   }
 
   /**
@@ -71,27 +87,67 @@ export abstract class MgtTemplatedComponent extends MgtBaseComponent {
     this._slotNamesAddedDuringRender.push(slotName);
     this._renderedSlots = true;
 
+    // tslint:disable-next-line: prefer-for-of
     for (let i = 0; i < this.children.length; i++) {
-      if (this.children[i].slot == slotName) {
+      if (this.children[i].slot === slotName) {
         return html`
           <slot name=${slotName}></slot>
         `;
       }
     }
 
-    let templateContent = TemplateHelper.renderTemplate(this.templates[templateType], context);
+    const templateContent = TemplateHelper.renderTemplate(
+      this.templates[templateType],
+      context,
+      this.templateConverters
+    );
 
-    let div = document.createElement('div');
+    const div = document.createElement('div');
     div.slot = slotName;
     div.dataset.generated = 'template';
-    div.appendChild(templateContent);
+
+    if (templateContent) {
+      div.appendChild(templateContent);
+    }
 
     this.appendChild(div);
 
-    this.fireCustomEvent('templateRendered', { templateType: templateType, context: context, element: div });
+    this.fireCustomEvent('templateRendered', { templateType, context, element: div });
 
     return html`
       <slot name=${slotName}></slot>
     `;
+  }
+
+  private getTemplates() {
+    const templates: any = {};
+
+    // tslint:disable-next-line: prefer-for-of
+    for (let i = 0; i < this.children.length; i++) {
+      const child = this.children[i];
+      if (child.nodeName === 'TEMPLATE') {
+        const template = child as HTMLElement;
+        if (template.dataset.type) {
+          templates[template.dataset.type] = template;
+        } else {
+          templates.default = template;
+        }
+      }
+    }
+
+    return templates;
+  }
+
+  private removeUnusedSlottedElements() {
+    if (this._renderedSlots) {
+      for (let i = 0; i < this.children.length; i++) {
+        const child = this.children[i] as HTMLElement;
+        if (child.dataset && child.dataset.generated && !this._slotNamesAddedDuringRender.includes(child.slot)) {
+          this.removeChild(child);
+          i--;
+        }
+      }
+      this._renderedSlots = false;
+    }
   }
 }
