@@ -1,42 +1,68 @@
-<!DOCTYPE html>
-<html lang="en">
+<html>
   <head>
-    <meta charset="utf-8" />
-    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
-    <title>Microsoft Graph Toolkit Test</title>
-    <meta name="viewport" content="width=device-width, initial-scale=1" />
-
-    <link href="https://cdnjs.cloudflare.com/ajax/libs/normalize/8.0.1/normalize.min.css" rel="stylesheet" />
-    <!-- <script src="./node_modules/@webcomponents/webcomponentsjs/webcomponents-loader.js"></script> -->
-
-    <script src="https://unpkg.com/@microsoft/teams-js/dist/MicrosoftTeams.min.js" crossorigin="anonymous"></script>
-
-    <!-- <script src="./dist/bundle/mgt-loader.js"></script> -->
-
-    <script type="module" src="dist/es6/index.js"></script>
-    <script type="module" src="./dist/es6/mock/mgt-mock-provider.js"></script>
+    <script src="https://unpkg.com/@microsoft/mgt/dist/bundle/mgt-loader.js"></script>
   </head>
-
   <body>
-    <mgt-teams-provider
-      client-id="a974dfa0-9f57-49b9-95db-90f04ce2111a"
-      auth-popup-url="auth.html"
-    ></mgt-teams-provider>
-
-    <mgt-msal-provider
-      client-id="a974dfa0-9f57-49b9-95db-90f04ce2111a"
-      scopes="user.read,people.read,user.readbasic.all,contacts.read,calendars.read"
-      depends-on="mgt-teams-provider"
-    ></mgt-msal-provider>
-
-    <!-- <mgt-mock-provider></mgt-mock-provider> -->
-
+    <mgt-msal-provider client-id="a974dfa0-9f57-49b9-95db-90f04ce2111a"></mgt-msal-provider>
     <mgt-login></mgt-login>
-    <mgt-person person-query="me" show-name show-email person-card="hover"></mgt-person>
-    <mgt-people-picker></mgt-people-picker>
-    <mgt-tasks data-source="todo"></mgt-tasks>
-    <mgt-agenda group-by-day></mgt-agenda>
-    <mgt-people></mgt-people>
+
     <mgt-card id="myCard" query="me"></mgt-card>
+
+    <script>
+      // let card = document.getElementById('myCard');
+
+      // card.addEventListener('action', e => {
+      //   console.log(e.detail);
+      // });
+
+      // card.content = {
+      //   type: 'AdaptiveCard',
+      //   body: [
+      //     {
+      //       type: 'TextBlock',
+      //       size: 'Medium',
+      //       weight: 'Bolder',
+      //       text: 'Megan Bowen'
+      //     },
+      //     {
+      //       type: 'FactSet',
+      //       facts: [
+      //         {
+      //           title: 'Given name',
+      //           value: 'Megan'
+      //         },
+      //         {
+      //           title: 'Surname',
+      //           value: 'Bowen'
+      //         },
+      //         {
+      //           title: 'Job title',
+      //           value: 'Auditor'
+      //         },
+      //         {
+      //           title: 'Office location',
+      //           value: '12/1110'
+      //         },
+      //         {
+      //           title: 'Email',
+      //           value: 'MeganB@M365x214355.onmicrosoft.com'
+      //         }
+      //       ]
+      //     },
+      //     {
+      //       type: 'TextBlock',
+      //       text: 'Business phones',
+      //       weight: 'Bolder'
+      //     },
+      //     {
+      //       type: 'TextBlock',
+      //       text: '+1 412 555 0109',
+      //       spacing: 'None'
+      //     }
+      //   ],
+      //   $schema: 'http://adaptivecards.io/schemas/adaptive-card.json',
+      //   version: '1.0'
+      // };
+    </script>
   </body>
 </html>
