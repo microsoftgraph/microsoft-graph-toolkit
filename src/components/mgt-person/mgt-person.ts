@@ -379,11 +379,13 @@ export class MgtPerson extends MgtTemplatedComponent {
   private renderImage() {
     if (this.personDetails) {
       const title = this.personCardInteraction === PersonCardInteraction.none ? this.personDetails.displayName : '';
+      // polyfill for person-card ie 11
+      const isPersonCard = this.classList[0] === 'person-image' ? 'card' : '';
 
       if (this.personImage && this.personImage !== '@') {
         return html`
           <img
-            class="user-avatar ${this.getImageRowSpanClass()} ${this.getImageSizeClass()}"
+            class="user-avatar ${this.getImageRowSpanClass()} ${this.getImageSizeClass()} ${isPersonCard}"
             title=${title}
             aria-label=${title}
             alt=${title}
@@ -393,7 +395,7 @@ export class MgtPerson extends MgtTemplatedComponent {
       } else {
         return html`
           <div
-            class="user-avatar initials ${this.getImageRowSpanClass()} ${this.getImageSizeClass()}"
+            class="user-avatar initials ${this.getImageRowSpanClass()} ${this.getImageSizeClass()} ${isPersonCard}"
             title=${title}
             aria-label=${title}
           >
