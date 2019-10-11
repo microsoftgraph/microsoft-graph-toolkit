@@ -19,6 +19,10 @@ $color: var(--color, #{$ms-color-neutralDark});
 $email-font-size: var(--email-font-size, #{$ms-font-size-s});
 $email-color: var(--email-color, #{$ms-color-neutralPrimary});
 
+:host {
+  display: inherit;
+}
+
 :host .root {
   display: inline-block;
   color: $color;
