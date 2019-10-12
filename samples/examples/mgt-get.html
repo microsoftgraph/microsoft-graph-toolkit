@@ -1,0 +1,36 @@
+<html>
+<head>
+    <!-- <script src="https://unpkg.com/@microsoft/mgt/dist/bundle/mgt-loader.js"></script> -->
+    <script type="module" src="../../dist/es6/index.js"></script>
+</head>
+<body>
+    <mgt-msal-provider client-id="a974dfa0-9f57-49b9-95db-90f04ce2111a"></mgt-msal-provider>
+    <mgt-login></mgt-login>
+
+    <mgt-get resource="/me/messages" version="beta" scopes="mail.read" max-pages="3">
+        <template>
+          emails: {{value.length}}
+          <ol>
+            <li data-for="email in value">
+              <h2>{{ email.subject }}</h2>
+              <mgt-person
+                person-query="{{ email.sender.emailAddress.address }}"
+                show-name
+                show-email
+                person-card="hover"
+              ></mgt-person>
+              {{ email.bodyPreview }}
+            </li>
+          </ul>
+        </template>
+  
+        <template data-type="error">
+          {{ this }}
+        </template>
+  
+        <template data-type="loading">
+          loading
+        </template>
+      </mgt-get>
+</body>
+</html>
