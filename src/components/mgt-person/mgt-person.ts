@@ -185,7 +185,7 @@ export class MgtPerson extends MgtTemplatedComponent {
    */
   public render() {
     const person =
-      this.renderTemplate('default', { person: this.personDetails }) ||
+      this.renderTemplate('default', { person: this.personDetails, personImage: this.personImage }) ||
       html`
         <div class="person-root">
           ${this.renderImage()} ${this.renderDetails()}
