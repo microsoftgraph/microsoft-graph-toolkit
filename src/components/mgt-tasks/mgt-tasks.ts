@@ -535,28 +535,21 @@ export class MgtTasks extends MgtBaseComponent {
     // tslint:disable-next-line: prefer-const
     let pickerSelectedPeople: any = picker.selectedPeople;
 
-    // TODO: filter
-
     if (picker) {
-      // // build personObj
-      // for (const id of peopleFilter) {
-      //   // tslint:disable-next-line: prefer-for-of
-      //   for (let i = 0; i < savedSelectedPeople.length; i++) {
-      //     if (id === peopleFilter[i].id) {
-      //       peopleObj[id] = { '@odata.type': 'microsoft.graph.plannerAssignment', orderHint: 'string !' };
-      //       break;
-      //     } else {
-      //       peopleObj[id] = null;
-      //     }
-      //   }
-      // }
-
       // tslint:disable-next-line: prefer-for-of
       for (let i = 0; i < savedSelectedPeople.length; i++) {
-        peopleObj[savedSelectedPeople[i]] = {
-          '@odata.type': 'microsoft.graph.plannerAssignment',
-          orderHint: 'string !'
-        };
+        // tslint:disable-next-line: prefer-for-of
+        for (let j = 0; j < pickerSelectedPeople.length; j++) {
+          if (savedSelectedPeople[i] !== pickerSelectedPeople[j].id) {
+            peopleObj[savedSelectedPeople[i]] = null;
+            break;
+          } else {
+            peopleObj[savedSelectedPeople[i]] = {
+              '@odata.type': 'microsoft.graph.plannerAssignment',
+              orderHint: 'string !'
+            };
+          }
+        }
       }
 
       // tslint:disable-next-line: prefer-for-of
@@ -567,8 +560,6 @@ export class MgtTasks extends MgtBaseComponent {
         };
       }
     }
-
-    console.log('final people: ', peopleObj);
 
     this._loadingTasks = [...this._loadingTasks, task.id];
     await ts.assignPersonToTask(task.id, task.eTag, peopleObj);
