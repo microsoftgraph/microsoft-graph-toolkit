@@ -302,7 +302,7 @@ export class MgtAgenda extends MgtTemplatedComponent {
         ${events.map(
           event =>
             html`
-              <li>
+              <li @click=${() => this.eventClicked(event)}>
                 ${this.renderTemplate('event', { event }, event.id) || this.renderEvent(event)}
               </li>
             `
@@ -397,6 +397,10 @@ export class MgtAgenda extends MgtTemplatedComponent {
         )}
       ></mgt-people>
     `;
+  }
+
+  private eventClicked(event: MicrosoftGraph.Event) {
+    this.fireCustomEvent('eventClick', { event });
   }
 
   private getEventTimeString(event: MicrosoftGraph.Event) {
