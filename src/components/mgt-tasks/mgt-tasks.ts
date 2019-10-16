@@ -847,7 +847,7 @@ export class MgtTasks extends MgtBaseComponent {
         ? null
         : html`
             <span class="TaskDetail TaskPeople">
-              <span @click=${() => this._showPeoplePicker('')}>
+              <span @click=${() => this._showPeoplePicker}>
                 <i class="login-icon ms-Icon ms-Icon--Contact"></i>
                 <div class="Picker ${isHidden}"><mgt-people-picker @click=${this.handleClick}></mgt-people-picker></div>
               </span>
@@ -958,7 +958,14 @@ export class MgtTasks extends MgtBaseComponent {
 
     const taskPeople =
       !people || people.length === 0
-        ? null
+        ? html`
+            <span @click=${() => this._showPeoplePicker(task)}>
+              <i class="login-icon ms-Icon ms-Icon--Contact"></i>
+              <div class="Picker Hidden">
+                <mgt-people-picker id="${task.id}" @click=${this.handleClick}></mgt-people-picker>
+              </div>
+            </span>
+          `
         : html`
             <span class="TaskDetail TaskPeople">
               <span @click=${() => this._showPeoplePicker(task)}>
