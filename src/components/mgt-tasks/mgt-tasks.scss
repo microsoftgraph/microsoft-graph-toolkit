@@ -319,6 +319,8 @@ mgt-tasks .Task .Picker.Show,
   -moz-background-clip: padding-box;
   background-clip: padding-box;
   width: 450px;
+  color: var(--task-detail-color, black);
+  z-index: 1;
 }
 
 mgt-tasks .Task .TaskDetails,
