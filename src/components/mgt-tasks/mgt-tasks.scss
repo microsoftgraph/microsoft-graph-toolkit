@@ -261,6 +261,29 @@ mgt-tasks .Task.NewTask .SelfAssign,
   display: none;
 }
 
+mgt-tasks .Task.NewTask .Picker.Hidden,
+:host .Task.NewTask .Picker.Hidden {
+  display: none;
+}
+
+mgt-tasks .Task.NewTask .Picker.Show,
+:host .Task.NewTask .Picker.Show {
+  background-color: white;
+  display: block;
+  position: absolute;
+  box-shadow: 0 3px 7px rgba(0, 0, 0, 0.3);
+  -webkit-background-clip: padding-box;
+  -moz-background-clip: padding-box;
+  background-clip: padding-box;
+  width: 450px;
+}
+
+mgt-tasks .Task.NewTask .AssignTo,
+:host .Task.NewTask .AssignTo {
+  border: 0;
+  background: none;
+}
+
 mgt-tasks .Task.NewTask .FakeCheckBox,
 :host .Task.NewTask .FakeCheckBox {
   width: 15px;
@@ -279,6 +302,23 @@ mgt-tasks .Task.NewTask input:checked,
 :host .Task.NewTask input:checked ~ .FakeCheckBox::after {
   font-family: 'FabricMDL2Icons';
   content: '\uE73A';
+}
+
+mgt-tasks .Task .Picker.Hidden,
+:host .Task .Picker.Hidden {
+  display: none;
+}
+
+mgt-tasks .Task .Picker.Show,
+:host .Task .Picker.Show {
+  background-color: white;
+  display: block;
+  position: absolute;
+  box-shadow: 0 3px 7px rgba(0, 0, 0, 0.3);
+  -webkit-background-clip: padding-box;
+  -moz-background-clip: padding-box;
+  background-clip: padding-box;
+  width: 450px;
 }
 
 mgt-tasks .Task .TaskDetails,

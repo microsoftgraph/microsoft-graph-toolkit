@@ -225,6 +225,17 @@ export interface ITaskSource {
   addTask(newTask: ITask): Promise<any>;
 
   /**
+   * assign id's to task
+   *
+   * @param {string} id
+   * @param {string} eTag
+   * @param {*} people
+   * @returns {Promise<any>}
+   * @memberof ITaskSource
+   */
+  assignPersonToTask(id: string, eTag: string, people: any): Promise<any>;
+
+  /**
    * Promise to delete a task by id
    *
    * @param {string} id
@@ -364,6 +375,19 @@ export class PlannerTaskSource extends TaskSourceBase implements ITaskSource {
       planId: newTask.topParentId,
       title: newTask.name
     });
+  }
+
+  /**
+   * Assigns people to task
+   *
+   * @param {string} id
+   * @param {string} eTag
+   * @param {*} people
+   * @returns {Promise<any>}
+   * @memberof PlannerTaskSource
+   */
+  public async assignPersonToTask(id: string, eTag: string, people: any): Promise<any> {
+    return await this.graph.planner_assignPeopleToTask(id, eTag, people);
   }
 
   /**

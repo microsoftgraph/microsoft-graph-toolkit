@@ -14,6 +14,7 @@ import { Providers } from '../../Providers';
 import { ProviderState } from '../../providers/IProvider';
 import { getShortDateString } from '../../utils/Utils';
 import { MgtBaseComponent } from '../baseComponent';
+import { MgtPeoplePicker } from '../mgt-people-picker/mgt-people-picker';
 import { styles } from './mgt-tasks-css';
 import { IDrawer, IDresser, ITask, ITaskSource, PlannerTaskSource, TodoTaskSource } from './task-sources';
 
@@ -145,7 +146,7 @@ export class MgtTasks extends MgtBaseComponent {
    * determines if user assigned task to themselves
    * @type {boolean}
    */
-  @property() private _newTaskSelfAssigned: boolean = true;
+  @property() private _newTaskSelfAssigned: boolean = false;
 
   /**
    * contains new user created task name
@@ -197,6 +198,8 @@ export class MgtTasks extends MgtBaseComponent {
   @property() private _inTaskLoad: boolean = false;
   @property() private _hasDoneInitialLoad: boolean = false;
   @property() private _todoDefaultSet: boolean = false;
+
+  @property() private showPeoplePicker: boolean = false;
 
   private _me: User = null;
   private _providerUpdateCallback: () => void | any;
@@ -515,7 +518,73 @@ export class MgtTasks extends MgtBaseComponent {
     this._hiddenTasks = this._hiddenTasks.filter(id => id !== task.id);
   }
 
+  private async assignPerson(task: ITask) {
+    const ts = this.getTaskSource();
+    if (!ts) {
+      return;
+    }
+
+    const picker = this.shadowRoot.querySelector('[id="' + task.id + '"]') as MgtPeoplePicker;
+    // tslint:disable-next-line: prefer-const
+    let peopleObj: any = {};
+
+    // create previously selected people Object
+    const savedSelectedPeople = Object.keys(task.assignments);
+
+    // new people from people picker
+    // tslint:disable-next-line: prefer-const
+    let pickerSelectedPeople: any = picker.selectedPeople;
+
+    // TODO: filter
+
+    if (picker) {
+      // // build personObj
+      // for (const id of peopleFilter) {
+      //   // tslint:disable-next-line: prefer-for-of
+      //   for (let i = 0; i < savedSelectedPeople.length; i++) {
+      //     if (id === peopleFilter[i].id) {
+      //       peopleObj[id] = { '@odata.type': 'microsoft.graph.plannerAssignment', orderHint: 'string !' };
+      //       break;
+      //     } else {
+      //       peopleObj[id] = null;
+      //     }
+      //   }
+      // }
+
+      // tslint:disable-next-line: prefer-for-of
+      for (let i = 0; i < savedSelectedPeople.length; i++) {
+        peopleObj[savedSelectedPeople[i]] = {
+          '@odata.type': 'microsoft.graph.plannerAssignment',
+          orderHint: 'string !'
+        };
+      }
+
+      // tslint:disable-next-line: prefer-for-of
+      for (let i = 0; i < pickerSelectedPeople.length; i++) {
+        peopleObj[pickerSelectedPeople[i].id] = {
+          '@odata.type': 'microsoft.graph.plannerAssignment',
+          orderHint: 'string !'
+        };
+      }
+    }
+
+    console.log('final people: ', peopleObj);
+
+    this._loadingTasks = [...this._loadingTasks, task.id];
+    await ts.assignPersonToTask(task.id, task.eTag, peopleObj);
+    await this.loadTasks();
+    this._loadingTasks = this._loadingTasks.filter(id => id !== task.id);
+  }
+
   private onAddTaskClick(e: MouseEvent) {
+    const picker = this.shadowRoot.querySelector('mgt-people-picker') as MgtPeoplePicker;
+
+    const peopleObj: any = {};
+
+    for (const person of picker.selectedPeople) {
+      peopleObj[person.id] = { '@odata.type': 'microsoft.graph.plannerAssignment', orderHint: 'string !' };
+    }
+
     if (
       !this._newTaskBeingAdded &&
       this._newTaskName &&
@@ -533,7 +602,7 @@ export class MgtTasks extends MgtBaseComponent {
                 orderHint: 'string !'
               }
             }
-          : void 0
+          : peopleObj
       );
     }
   }
@@ -771,25 +840,17 @@ export class MgtTasks extends MgtBaseComponent {
       </span>
     `;
 
+    const isHidden = this.showPeoplePicker ? 'Show' : 'Hidden';
+
     const taskPeople =
       this.dataSource === 'todo'
         ? null
         : html`
             <span class="TaskDetail TaskPeople">
-              <label>
-                <input
-                  class="SelfAssign"
-                  type="checkbox"
-                  label="self-assign-input"
-                  aria-label="self-assign-input"
-                  .checked="${this._newTaskSelfAssigned}"
-                  @change="${(e: Event) => {
-                    this._newTaskSelfAssigned = (e.target as HTMLInputElement).checked;
-                  }}"
-                />
-                <span class="FakeCheckBox"></span>
-                <span>Assign to Me</span>
-              </label>
+              <span @click=${() => this._showPeoplePicker('')}>
+                <i class="login-icon ms-Icon ms-Icon--Contact"></i>
+                <div class="Picker ${isHidden}"><mgt-people-picker @click=${this.handleClick}></mgt-people-picker></div>
+              </span>
             </span>
           `;
 
@@ -822,6 +883,32 @@ export class MgtTasks extends MgtBaseComponent {
         ${taskAdd}
       </div>
     `;
+  }
+
+  private _showPeoplePicker(task: ITask) {
+    this.showPeoplePicker = !this.showPeoplePicker;
+
+    // logic for already created tasks
+    if (this.shadowRoot) {
+      // if shadowroot exists search for the task's assigned People and push to picker
+      if (this.showPeoplePicker === true) {
+        const picker = this.shadowRoot.querySelector('[id="' + task.id + '"]') as MgtPeoplePicker;
+
+        if (picker) {
+          picker.parentElement.className += ' Show';
+
+          const assignedPeople: any = Object.keys(task.assignments);
+
+          picker.selectUsersById(assignedPeople);
+        }
+      } else {
+        const picker = this.shadowRoot.querySelector('[id="' + task.id + '"]') as MgtPeoplePicker;
+
+        if (picker) {
+          picker.parentElement.className = 'Picker Hidden';
+        }
+      }
+    }
   }
 
   private renderTaskHtml(task: ITask) {
@@ -874,12 +961,17 @@ export class MgtTasks extends MgtBaseComponent {
         ? null
         : html`
             <span class="TaskDetail TaskPeople">
-              ${people.map(
-                id =>
-                  html`
-                    <mgt-person user-id="${id}"></mgt-person>
-                  `
-              )}
+              <span @click=${() => this._showPeoplePicker(task)}>
+                ${people.map(
+                  id =>
+                    html`
+                      <mgt-person user-id="${id}"></mgt-person>
+                    `
+                )}
+                <div class="Picker Hidden">
+                  <mgt-people-picker id="${task.id}" @click=${this.handleClick}></mgt-people-picker>
+                </div>
+              </span>
             </span>
           `;
 
@@ -889,7 +981,8 @@ export class MgtTasks extends MgtBaseComponent {
           <span class="TaskIcon TaskDelete">
             <mgt-dot-options
               .options="${{
-                'Delete Task': () => this.removeTask(task)
+                'Delete Task': () => this.removeTask(task),
+                save: () => this.assignPerson(task)
               }}"
             ></mgt-dot-options>
           </span>
@@ -933,6 +1026,10 @@ export class MgtTasks extends MgtBaseComponent {
         </div>
       </div>
     `;
+  }
+
+  private handleClick(event) {
+    event.stopPropagation();
   }
 
   private renderLoadingTask() {
