@@ -502,6 +502,19 @@ export class TodoTaskSource extends TaskSourceBase implements ITaskSource {
   public async setTaskComplete(id: string, eTag: string): Promise<any> {
     return await this.graph.todo_setTaskComplete(id, eTag);
   }
+
+  /**
+   * Assigns people to task
+   *
+   * @param {string} id
+   * @param {string} eTag
+   * @param {*} people
+   * @returns {Promise<any>}
+   * @memberof PlannerTaskSource
+   */
+  public async assignPersonToTask(id: string, eTag: string, people: any): Promise<any> {
+    return await this.graph.planner_assignPeopleToTask(id, eTag, people);
+  }
   /**
    * set task in planner to incomplete state by id
    *
