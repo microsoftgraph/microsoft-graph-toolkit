@@ -586,15 +586,9 @@ export class MgtTasks extends MgtBaseComponent {
           this._currentTargetDrawer = this.res.BUCKETS_SELF_ASSIGNED;
         };
       }
-      const dresserSelect = this.targetId
-        ? html`
-            <span class="PlanTitle">
-              ${this._dressers[0] && this._dressers[0].title}
-            </span>
-          `
-        : html`
-            <mgt-arrow-options .options="${dresserOpts}" .value="${currentDresser.title}"></mgt-arrow-options>
-          `;
+      const dresserSelect = html`
+        <mgt-arrow-options .options="${dresserOpts}" .value="${currentDresser.title}"></mgt-arrow-options>
+      `;
 
       const divider = this.isDefault(this._currentTargetDresser)
         ? null
