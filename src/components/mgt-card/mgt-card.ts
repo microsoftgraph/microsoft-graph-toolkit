@@ -3,9 +3,11 @@ import { Providers } from '../../Providers';
 import { ProviderState } from '../../providers/IProvider';
 import { MgtTemplatedComponent } from '../templatedComponent';
 
+import 'adaptivecards-templating/dist/adaptivecards-templating';
 import 'adaptivecards/dist/adaptivecards';
 
 declare var AdaptiveCards: any;
+declare var ACData: any;
 
 @customElement('mgt-card')
 export class MgtCard extends MgtTemplatedComponent {
@@ -87,22 +89,30 @@ export class MgtCard extends MgtTemplatedComponent {
     this._lastQueryRendered = this.query;
 
     const client = provider.graph.client;
-    const result = await client.api(this.query).get();
+    const result = await client
+      .api(this.query)
+      .header('accept', 'application/json;odata.metadata=full')
+      .get();
 
     if (result) {
-      const response = await fetch('https://templates.adaptivecards.io/find', {
-        body: JSON.stringify(result),
-        method: 'post'
-      });
+      const response = await fetch(
+        `https://templates.adaptivecards.io/find?odata.type=${escape(result['@odata.type'])}`,
+        {
+          method: 'get'
+        }
+      );
       const template = await response.json();
-      const templateUri = template[0].templateUrl;
+      const templateUri = template[1].templateUrl;
 
       const contentResponse = await fetch('https://templates.adaptivecards.io/' + templateUri, {
-        body: JSON.stringify(result),
-        method: 'post'
+        method: 'get'
       });
 
-      this.content = await contentResponse.json();
+      const t = new ACData.Template(await contentResponse.json());
+      const context = new ACData.EvaluationContext();
+      context.$root = result;
+
+      this.content = t.expand(context);
     }
   }
 
