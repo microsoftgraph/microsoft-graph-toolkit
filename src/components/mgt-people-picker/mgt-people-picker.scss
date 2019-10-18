@@ -15,6 +15,7 @@ $avatar-size: var(--avatar-size, 48px);
 $initials-color: var(--initials-color, white);
 $initials-background-color: var(--initials-background-color, #{$ms-color-magenta});
 $accent-color: var(--accent-color, #0078d4);
+$separator-margin: var(--separator-margin, 0px 0px 0px 0px);
 
 $people-list-background-color: var(--people-list-background-color, white);
 
@@ -56,6 +57,7 @@ mgt-people-picker .people-list {
 }
 :host .people-list-separator,
 mgt-people-picker .people-list-separator {
+  margin: $separator-margin;
   height: 2px;
   background: $accent-color;
   margin-top: 5px;
@@ -105,7 +107,7 @@ mgt-people-picker .SearchIcon {
 :host .people-person,
 mgt-people-picker .people-person {
   display: flex;
-  margin: 4px 5px 0 0;
+  margin: 4px 5px 0px 0;
   align-items: center;
   background-color: rgba(196, 196, 196, 0.24);
   border-radius: 15px;

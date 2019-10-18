@@ -323,7 +323,6 @@ mgt-tasks .Task.NewTask .Picker.Hidden,
 
 mgt-tasks .Task.NewTask .Picker.Show,
 :host .Task.NewTask .Picker.Show {
-  background-color: white;
   display: block;
   position: absolute;
   box-shadow: 0 3px 7px rgba(0, 0, 0, 0.3);
@@ -331,6 +330,9 @@ mgt-tasks .Task.NewTask .Picker.Show,
   -moz-background-clip: padding-box;
   background-clip: padding-box;
   width: 450px;
+  mgt-people-picker {
+    --separator-margin: 0px 10px 0px 10px;
+  }
 }
 
 mgt-tasks .Task.NewTask .AssignTo,
@@ -376,6 +378,9 @@ mgt-tasks .Task .Picker.Show,
   width: 450px;
   color: var(--task-detail-color, black);
   z-index: 1;
+  mgt-people-picker {
+    --separator-margin: 0px 10px 0px 10px;
+  }
 }
 
 mgt-tasks .Task.Complete,
