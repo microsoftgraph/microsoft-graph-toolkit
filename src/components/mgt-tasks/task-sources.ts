@@ -117,7 +117,7 @@ export interface ITaskFolder {
 }
 
 /**
- * container for drawers
+ * container for folders
  *
  * @export
  * @interface ITaskGroup
