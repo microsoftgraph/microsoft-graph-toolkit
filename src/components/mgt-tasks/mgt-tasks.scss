@@ -135,125 +135,180 @@ mgt-tasks .Header .NewTaskButton:active,
   background: var(--tasks-new-button-active-background, #00508d);
 }
 
-mgt-tasks .NewTaskName,
-:host .NewTaskName {
-  margin: var(--task-new-name-margin, 0 130px 0 0);
-}
+mgt-tasks,
+:host {
+  .Task {
+    margin: var(--task-margin, 0 10px 10px 10px);
+    padding: var(--task-padding, 0 0 0 0);
+    box-shadow: var(--task-box-shadow, 0px 2px 8px rgba(0, 0, 0, 0.092));
+    background: var(--task-background, #ffffff);
+    position: relative;
 
-mgt-tasks .Task,
-:host .Task {
-  display: flex;
-  flex-direction: column;
-  margin: var(--task-margin, 0 10px 10px 10px);
-  padding: var(--task-padding, 0 0 0 0);
-  box-shadow: var(--task-box-shadow, 0px 2px 8px rgba(0, 0, 0, 0.092));
-  background: var(--task-background, #ffffff);
-  // border: var(--task-border, solid 2px rgba(0, 0, 0, 0));
-}
+    .TaskContent {
+      display: flex;
+      flex-direction: row;
 
-mgt-tasks .Task.NewTask,
-:host .Task.NewTask {
-  flex-direction: row;
-  margin: var(--task-new-margin, var(--task-margin, 0 10px 10px 10px));
-}
+      .TaskDetailsContainer {
+        color: var(--task-detail-color, #767676);
+        margin: 20px 0 18px 0;
+        display: flex;
+        flex-direction: column;
+        flex: 1 1 auto;
 
-mgt-tasks .Task.NewTask .InnerTask,
-:host .Task.NewTask .InnerTask {
-  flex: 1 1 auto;
-  align-content: center;
-  vertical-align: middle;
-  margin: 0 0 0 12px;
-}
-mgt-tasks .Task.NewTask .TaskTitle,
-:host .Task.NewTask .TaskTitle {
-  display: flex;
-}
+        .TaskTitle {
+          flex: 1 0 auto;
+          color: #333333;
+          max-width: 370px;
+          width: 100%;
+          font-size: 20px;
+          font-weight: 300;
+        }
 
-mgt-tasks .Task.NewTask .TaskHeader,
-:host .Task.NewTask .TaskHeader {
-  margin: 0;
-}
+        .TaskDetails {
+          display: flex;
+          margin: 10px 0 0 0;
+          font-size: 12px;
+          font-weight: 400;
+          align-items: center;
+          flex-wrap: wrap;
 
-mgt-tasks .Task.NewTask .TaskTitle input,
-:host .Task.NewTask .TaskTitle input {
-  flex: 1 1 auto;
-  font-family: var(--default-font-family, 'Segoe UI');
-  margin: var(--task-new-input-margin, 16px 0 0 0);
-  padding: var(--task-new-input-padding, 7px);
-  font-size: var(--task-new-input-font-size, 1.2em);
-  border: var(--task-new-border, none);
-}
-mgt-tasks .Task.NewTask .TaskTitle input:active,
-:host .Task.NewTask .TaskTitle input:active {
-  border: var(--task-new-input-active-border, none);
-}
+          .TaskDetail {
+            margin: 0 20px 0 0;
+          }
 
-mgt-tasks .Task.NewTask hr,
-:host .Task.NewTask hr {
-  border: var(--task-new-line-border, solid 1px #d8d8d8);
-  margin: 0;
-}
+          .TaskIcon {
+            color: #333333;
+          }
 
-mgt-tasks .Task.NewTask .TaskDetails,
-:host .Task.NewTask .TaskDetails {
-  flex: 0 0 auto;
-  margin: 14px 0 14px 4px;
-}
+          mgt-person {
+            display: inline-block;
+          }
 
-mgt-tasks .Task.NewTask .TaskDetails .TaskPeople label,
-:host .Task.NewTask .TaskDetails .TaskPeople label {
-  display: flex;
-  align-content: center;
-  align-items: center;
-}
+          input,
+          select {
+            color: var(--task-detail-color, #767676);
+            font-size: 0.9em;
+          }
+        }
+      }
+    }
 
-mgt-tasks .Task.NewTask .TaskDetails select,
-:host .Task.NewTask .TaskDetails select,
-mgt-tasks .Task.NewTask .TaskDetails input,
-:host .Task.NewTask .TaskDetails input {
-  font-family: var(--default-font-family, 'Segoe UI');
-  border: var(--task-new-select-border, none);
-}
+    &.Complete {
+      .TaskDetails {
+        color: var(--task-complete-detail-color #b0b0b0);
 
-mgt-tasks .Task.NewTask .TaskAddCont,
-:host .Task.NewTask .TaskAddCont {
-  flex: 0 0 auto;
-  display: flex;
-  align-content: center;
-  align-items: center;
-}
+        .TaskIcon {
+          color: var(--task-compete-detail-icon-color, #959595);
+        }
+      }
+    }
 
-mgt-tasks .Task.NewTask .TaskAddCont .TaskAdd,
-:host .Task.NewTask .TaskAddCont .TaskAdd,
-mgt-tasks .Task.NewTask .TaskAddCont .TaskCancel,
-:host .Task.NewTask .TaskAddCont .TaskCancel {
-  height: 100%;
-  max-width: 50px;
-  min-width: 50px;
-  flex: 1 1 auto;
-  justify-content: center;
-  align-items: center;
-  display: flex;
-  cursor: pointer;
-  color: white;
-}
+    &.NewTask {
+      margin: var(--task-new-margin, var(--task-margin, 0 10px 10px 10px));
+      display: flex;
+      flex-direction: row;
 
-mgt-tasks .Task.NewTask .TaskAddCont .TaskAdd,
-:host .Task.NewTask .TaskAddCont .TaskAdd {
-  background: var(--task-new-add-button-background, #0078d4);
-}
+      .TaskContent {
+        flex: 1 1 auto;
+        align-content: center;
+        vertical-align: middle;
+        margin: 0 0 0 12px;
 
-mgt-tasks .Task.NewTask .TaskAddCont .TaskCancel,
-:host .Task.NewTask .TaskAddCont .TaskCancel {
-  font-family: 'Segoe UI';
-  color: var(--task-new-cancel-button-color, gray);
-  margin: 0px 20px 0px 32px;
-}
+        .TaskDetailsContainer {
+          margin: 0;
 
-mgt-tasks .Task.NewTask .TaskAddCont.Disabled .TaskAdd,
-:host .Task.NewTask .TaskAddCont.Disabled .TaskAdd {
-  background: var(--task-new-add-button-disabled-background, #eaeaea);
-  cursor: default;
+          .TaskTitle {
+            max-width: none;
+            input {
+              flex: 1 0 auto;
+              font-family: var(--default-font-family, 'Segoe UI');
+              margin: var(--task-new-input-margin, 16px 0 0 0);
+              padding: var(--task-new-input-padding, 7px);
+              font-size: var(--task-new-input-font-size, 1em);
+              border: var(--task-new-border, none);
+              width: 100%;
+            }
+
+            input:active {
+              border: var(--task-new-input-active-border, none);
+            }
+          }
+
+          hr {
+            border: var(--task-new-line-border, solid 1px #d8d8d8);
+            margin: 0;
+          }
+
+          .TaskDetails {
+            flex: 1 0 auto;
+            margin: 14px 0 14px 4px;
+
+            .TaskDetail {
+              display: flex;
+            }
+
+            .TaskPeople label {
+              display: flex;
+              align-content: center;
+              align-items: center;
+            }
+
+            select,
+            input {
+              font-family: var(--default-font-family, 'Segoe UI');
+              border: var(--task-new-select-border, none);
+              padding: 0 10px;
+            }
+          }
+        }
+      }
+
+      .TaskAddButtonContainer {
+        flex: 0 0 auto;
+        display: flex;
+        align-content: center;
+        align-items: center;
+
+        .TaskAdd,
+        .TaskCancel {
+          height: 100%;
+          max-width: 50px;
+          min-width: 50px;
+          flex: 1 1 auto;
+          justify-content: center;
+          align-items: center;
+          display: flex;
+          cursor: pointer;
+          color: white;
+        }
+
+        .TaskAdd {
+          background: var(--task-new-add-button-background, #0078d4);
+        }
+
+        .TaskCancel {
+          font-family: var(--default-font-family, 'Segoe UI');
+          color: var(--task-new-cancel-button-color, gray);
+          margin: 0px 20px 0px 32px;
+        }
+
+        &.Disabled .TaskAdd {
+          background: var(--task-new-add-button-disabled-background, #eaeaea);
+          cursor: default;
+        }
+      }
+    }
+
+    .TaskOptions {
+      cursor: pointer;
+      user-select: none;
+      -moz-user-select: none;
+      -ms-user-select: none;
+      position: absolute;
+      top: 0;
+      right: 0;
+    }
+  }
 }
 
 mgt-tasks .Task.NewTask .SelfAssign,
@@ -323,27 +378,6 @@ mgt-tasks .Task .Picker.Show,
   z-index: 1;
 }
 
-mgt-tasks .Task .TaskDetails,
-:host .Task .TaskDetails {
-  margin: 0 0 16px 20px;
-  color: var(--task-detail-color, #767676);
-  font-size: 0.9em;
-  display: flex;
-  flex-wrap: wrap;
-  justify-content: flex-start;
-  justify-items: flex-start;
-  align-content: stretch;
-  align-items: stretch;
-}
-
-mgt-tasks .Task .TaskDetails input,
-:host .Task .TaskDetails input,
-mgt-tasks .Task .TaskDetails select,
-:host .Task .TaskDetails select {
-  color: var(--task-detail-color, #767676);
-  font-size: 0.9em;
-}
-
 mgt-tasks .Task.Complete,
 :host .Task.Complete {
   background: var(--task-complete-background, #f6f6f6);
@@ -353,23 +387,6 @@ mgt-tasks .Task.Complete,
 mgt-tasks .Task.Complete .TaskHeader,
 :host .Task.Complete .TaskHeader {
   color: var(--task-complete-header-color, #959595);
-}
-
-mgt-tasks .Task.Complete .TaskDetails,
-:host .Task.Complete .TaskDetails {
-  color: var(--task-complete-detail-color #b0b0b0);
-}
-
-mgt-tasks .Task.Complete .TaskDetails .TaskIcon,
-:host .Task.Complete .TaskDetails .TaskIcon {
-  color: var(--task-compete-detail-icon-color, #959595);
-}
-
-mgt-tasks .Task .TaskDetail,
-:host .Task .TaskDetail {
-  align-items: center;
-  align-content: center;
-  display: flex;
 }
 
 mgt-tasks .Task .TaskDetail svg,
@@ -397,18 +414,17 @@ mgt-tasks .Task .TaskHeader,
   margin: var(--task-header-margin, 0 0 0 10px);
 }
 
-mgt-tasks .Task.ReadOnly .TaskCheckCont,
-:host .Task.ReadOnly .TaskCheckCont {
+mgt-tasks .Task.ReadOnly .TaskCheckContainer,
+:host .Task.ReadOnly .TaskCheckContainer {
   cursor: default;
 }
 
-mgt-tasks .Task .TaskCheckCont,
-:host .Task .TaskCheckCont {
+mgt-tasks .Task .TaskCheckContainer,
+:host .Task .TaskCheckContainer {
   font-family: 'FabricMDL2Icons';
   display: inline-block;
-  width: 35px;
-  height: 35px;
-  margin: 5px;
+  width: 24px;
+  height: 24px;
   text-align: center;
   border-radius: 50%;
   flex: 0 0 auto;
@@ -419,14 +435,15 @@ mgt-tasks .Task .TaskCheckCont,
   align-content: center;
   justify-items: center;
   justify-content: center;
+  margin: 20px 10px 20px 20px;
 
   user-select: none;
   -moz-user-select: none;
   -ms-user-select: none;
 }
 
-mgt-tasks .Task .TaskCheckCont.Complete .TaskCheck,
-:host .Task .TaskCheckCont.Complete .TaskCheck {
+mgt-tasks .Task .TaskCheckContainer.Complete .TaskCheck,
+:host .Task .TaskCheckContainer.Complete .TaskCheck {
   background: #00b294;
   border-color: #00b294;
   display: flex;
@@ -438,7 +455,6 @@ mgt-tasks .Task .TaskCheckCont.Complete .TaskCheck,
 
 mgt-tasks .Task .TaskCheck,
 :host .Task .TaskCheck {
-  flex: 1 1 auto;
   font-family: 'FabricMDL2Icons';
   display: inline-block;
   width: 22px;
@@ -465,39 +481,6 @@ mgt-tasks .Task .TaskCheck.Loading,
   animation: rotateIcon 2s infinite linear;
 }
 
-mgt-tasks .Task .TaskTitle,
-:host .Task .TaskTitle {
-  flex: 1 1 auto;
-  justify-self: center;
-  align-self: center;
-  align-content: center;
-  color: #333333;
-}
-
-mgt-tasks .Task .TaskDetails .TaskDetail,
-:host .Task .TaskDetails .TaskDetail {
-  margin: 0 20px 0 0;
-}
-
-mgt-tasks .Task .TaskDetails .TaskIcon,
-:host .Task .TaskDetails .TaskIcon {
-  color: #333333;
-}
-
-mgt-tasks .Task .TaskDetails mgt-person,
-:host .Task .TaskDetails mgt-person {
-  display: inline-block;
-}
-
-mgt-tasks .Task .TaskDelete,
-:host .Task .TaskDelete {
-  cursor: pointer;
-  user-select: none;
-  -moz-user-select: none;
-  -ms-user-select: none;
-  margin: 0 10px 0 0;
-}
-
 @keyframes rotateIcon {
   from {
     transform: rotate(0deg);
@@ -515,8 +498,8 @@ mgt-tasks .LoadingHeader,
   background: #f2f2f2;
 }
 
-mgt-tasks .Task.LoadingTask .TaskCheckCont,
-:host .Task.LoadingTask .TaskCheckCont {
+mgt-tasks .Task.LoadingTask .TaskCheckContainer,
+:host .Task.LoadingTask .TaskCheckContainer {
   cursor: default;
 }
 mgt-tasks .Task.LoadingTask .TaskCheck,
@@ -532,10 +515,8 @@ mgt-tasks .Task.LoadingTask .TaskHeader,
 }
 mgt-tasks .Task.LoadingTask .TaskTitle,
 :host .Task.LoadingTask .TaskTitle {
-  max-width: 370px;
-  width: 100%;
-  height: 20px;
   background: #f2f2f2;
+  height: 20px;
 }
 mgt-tasks .Task.LoadingTask .TaskDetailIcon,
 :host .Task.LoadingTask .TaskDetailIcon {
@@ -547,6 +528,9 @@ mgt-tasks .Task.LoadingTask .TaskDetailIcon,
 mgt-tasks .Task.LoadingTask .TaskDetail,
 :host .Task.LoadingTask .TaskDetail {
   margin-right: 8px;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
 }
 mgt-tasks .Task.LoadingTask .TaskDetailName,
 :host .Task.LoadingTask .TaskDetailName {

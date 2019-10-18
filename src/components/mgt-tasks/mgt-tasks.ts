@@ -13,11 +13,12 @@ import { repeat } from 'lit-html/directives/repeat';
 import { Providers } from '../../Providers';
 import { ProviderState } from '../../providers/IProvider';
 import { getShortDateString } from '../../utils/Utils';
-import { MgtBaseComponent } from '../baseComponent';
 import { MgtPeoplePicker } from '../mgt-people-picker/mgt-people-picker';
+import { MgtTemplatedComponent } from '../templatedComponent';
 import { styles } from './mgt-tasks-css';
 import { ITask, ITaskFolder, ITaskGroup, ITaskSource, PlannerTaskSource, TodoTaskSource } from './task-sources';
 
+import { relative } from 'path';
 import '../mgt-person/mgt-person';
 import '../sub-components/mgt-arrow-options/mgt-arrow-options';
 import '../sub-components/mgt-dot-options/mgt-dot-options';
@@ -68,7 +69,7 @@ const TASK_RES = {
  * @extends {MgtBaseComponent}
  */
 @customElement('mgt-tasks')
-export class MgtTasks extends MgtBaseComponent {
+export class MgtTasks extends MgtTemplatedComponent {
   /**
    * determines whether todo, or planner functionality for task component
    *
@@ -294,7 +295,7 @@ export class MgtTasks extends MgtBaseComponent {
     return html`
       ${header}
       <div class="Tasks">
-        ${this._showNewTask ? this.renderNewTaskHtml() : null} ${loadingTask}
+        ${this._showNewTask ? this.renderNewTask() : null} ${loadingTask}
         ${repeat(tasks, task => task.id, task => this.renderTask(task))}
       </div>
     `;
@@ -675,21 +676,19 @@ export class MgtTasks extends MgtBaseComponent {
       `;
     }
   }
-  private renderNewTaskHtml() {
+  private renderNewTask() {
     const taskTitle = html`
-      <span class="TaskTitle">
-        <input
-          type="text"
-          placeholder="Task..."
-          .value="${this._newTaskName}"
-          label="new-taskName-input"
-          aria-label="new-taskName-input"
-          role="input"
-          @input="${(e: Event) => {
-            this._newTaskName = (e.target as HTMLInputElement).value;
-          }}"
-        />
-      </span>
+      <input
+        type="text"
+        placeholder="Task..."
+        .value="${this._newTaskName}"
+        label="new-taskName-input"
+        aria-label="new-taskName-input"
+        role="input"
+        @input="${(e: Event) => {
+          this._newTaskName = (e.target as HTMLInputElement).value;
+        }}"
+      />
     `;
     const groups = this._groups;
     if (groups.length > 0 && !this._newTaskGroupId) {
@@ -793,10 +792,10 @@ export class MgtTasks extends MgtBaseComponent {
 
     const taskAdd = this._newTaskBeingAdded
       ? html`
-          <div class="TaskAddCont"></div>
+          <div class="TaskAddButtonContainer"></div>
         `
       : html`
-          <div class="TaskAddCont ${this._newTaskName === '' ? 'Disabled' : ''}">
+          <div class="TaskAddButtonContainer ${this._newTaskName === '' ? 'Disabled' : ''}">
             <div class="TaskIcon TaskCancel" @click="${this.closeNewTask}">
               <span>Cancel</span>
             </div>
@@ -808,14 +807,16 @@ export class MgtTasks extends MgtBaseComponent {
 
     return html`
       <div class="Task NewTask Incomplete">
-        <div class="InnerTask">
-          <span class="TaskHeader">
-            ${taskTitle}
-          </span>
-          <hr />
-          <span class="TaskDetails">
-            ${group} ${taskFolder} ${taskPeople} ${taskDue}
-          </span>
+        <div class="TaskContent">
+          <div class="TaskDetailsContainer">
+            <div class="TaskTitle">
+              ${taskTitle}
+            </div>
+            <hr />
+            <div class="TaskDetails">
+              ${group} ${taskFolder} ${taskPeople} ${taskDue}
+            </div>
+          </div>
         </div>
         ${taskAdd}
       </div>
@@ -853,83 +854,116 @@ export class MgtTasks extends MgtBaseComponent {
 
     const people = Object.keys(assignments);
 
-    const taskCheck = this._loadingTasks.includes(task.id)
+    const isLoading = this._loadingTasks.includes(task.id);
+
+    const taskCheckClasses = {
+      Complete: !isLoading && completed,
+      Loading: isLoading,
+      TaskCheck: true,
+      TaskIcon: true
+    };
+
+    const taskCheckContent = isLoading
       ? html`
-          <span class="TaskCheck TaskIcon Loading">\uF16A</span>
+          \uF16A
         `
       : completed
       ? html`
-          <span class="TaskCheck TaskIcon Complete">\uE73E</span>
+          \uE73E
         `
-      : html`
-          <span class="TaskCheck TaskIcon Incomplete"></span>
-        `;
+      : null;
 
-    const group =
-      this.dataSource === TasksSource.todo || this._currentGroup
+    const taskCheck = html`
+      <span class=${classMap(taskCheckClasses)}>${taskCheckContent}</span>
+    `;
+
+    const groupTitle = this._currentGroup ? null : this.getPlanTitle(task.topParentId);
+    const folderTitle = this._currentFolder ? null : this.getFolderName(task.immediateParentId);
+
+    const context = { task: { ...task, groupTitle, folderTitle } };
+    const taskTemplate = this.renderTemplate('task', context, task.id);
+    if (taskTemplate) {
+      return taskTemplate;
+    }
+
+    let taskDetails = this.renderTemplate('task-details', context, `task-details-${task.id}`);
+
+    if (!taskDetails) {
+      const group =
+        this.dataSource === TasksSource.todo || this._currentGroup
+          ? null
+          : html`
+              <span class="TaskDetail TaskAssignee">
+                ${this.renderPlannerIcon()}
+                <span>${this.getPlanTitle(task.topParentId)}</span>
+              </span>
+            `;
+
+      const folder = this._currentFolder
         ? null
         : html`
-            <span class="TaskDetail TaskAssignee">
-              ${this.renderPlannerIcon()}
-              <span>${this.getPlanTitle(task.topParentId)}</span>
+            <span class="TaskDetail TaskBucket">
+              ${this.renderBucketIcon()}
+              <span>${this.getFolderName(task.immediateParentId)}</span>
             </span>
           `;
 
-    const folder = this._currentFolder
-      ? null
-      : html`
-          <span class="TaskDetail TaskBucket">
-            ${this.renderBucketIcon()}
-            <span>${this.getFolderName(task.immediateParentId)}</span>
-          </span>
-        `;
-
-    const taskDue = !dueDate
-      ? null
-      : html`
-          <span class="TaskDetail TaskDue">
-            ${this.renderCalendarIcon()}
-            <span>${getShortDateString(dueDate)}</span>
-          </span>
-        `;
-
-    const taskPeople =
-      !people || people.length === 0
-        ? html`
-            <span @click=${() => this._showPeoplePicker(task)}>
-              <i class="login-icon ms-Icon ms-Icon--Contact"></i>
-              <div class="Picker Hidden">
-                <mgt-people-picker id="${task.id}" @click=${this.handleClick}></mgt-people-picker>
-              </div>
-            </span>
-          `
+      const taskDue = !dueDate
+        ? null
         : html`
-            <span class="TaskDetail TaskPeople">
+            <span class="TaskDetail TaskDue">
+              ${this.renderCalendarIcon()}
+              <span>${getShortDateString(dueDate)}</span>
+            </span>
+          `;
+
+      const taskPeople =
+        !people || people.length === 0
+          ? html`
               <span @click=${() => this._showPeoplePicker(task)}>
-                ${people.map(
-                  id =>
-                    html`
-                      <mgt-person user-id="${id}"></mgt-person>
-                    `
-                )}
+                <i class="login-icon ms-Icon ms-Icon--Contact"></i>
                 <div class="Picker Hidden">
                   <mgt-people-picker id="${task.id}" @click=${this.handleClick}></mgt-people-picker>
                 </div>
               </span>
-            </span>
-          `;
+            `
+          : html`
+              <span class="TaskDetail TaskPeople">
+                <span @click=${() => this._showPeoplePicker(task)}>
+                  ${people.map(
+                    id =>
+                      html`
+                        <mgt-person user-id="${id}"></mgt-person>
+                      `
+                  )}
+                  <div class="Picker Hidden">
+                    <mgt-people-picker id="${task.id}" @click=${this.handleClick}></mgt-people-picker>
+                  </div>
+                </span>
+              </span>
+            `;
 
-    const taskDelete = this.readOnly
+      taskDetails = html`
+        <div class="TaskTitle">
+          ${name}
+        </div>
+        <div class="TaskDetails">
+          ${group} ${folder} ${taskPeople} ${taskDue}
+        </div>
+      `;
+    }
+
+    const taskOptions = this.readOnly
       ? null
       : html`
-          <span class="TaskIcon TaskDelete">
+          <div class="TaskOptions">
             <mgt-dot-options
               .options="${{
                 'Delete Task': () => this.removeTask(task),
                 save: () => this.assignPerson(task)
               }}"
             ></mgt-dot-options>
-          </span>
+          </div>
         `;
 
     return html`
@@ -941,12 +975,12 @@ export class MgtTasks extends MgtBaseComponent {
           Task: true
         })}
       >
-        <div class="TaskHeader">
+        <div class="TaskContent">
           <span
             class=${classMap({
               Complete: completed,
               Incomplete: !completed,
-              TaskCheckCont: true
+              TaskCheckContainer: true
             })}
             @click="${e => {
               if (!this.readOnly) {
@@ -960,14 +994,11 @@ export class MgtTasks extends MgtBaseComponent {
           >
             ${taskCheck}
           </span>
-          <span class="TaskTitle">
-            ${name}
-          </span>
-          ${taskDelete}
+          <div class="TaskDetailsContainer">
+            ${taskDetails}
+          </div>
         </div>
-        <div class="TaskDetails">
-          ${group} ${folder} ${taskPeople} ${taskDue}
-        </div>
+        ${taskOptions}
       </div>
     `;
   }
@@ -979,28 +1010,30 @@ export class MgtTasks extends MgtBaseComponent {
   private renderLoadingTask() {
     return html`
       <div class="Task LoadingTask">
-        <div class="TaskHeader">
-          <div class="TaskCheckCont">
+        <div class="TaskContent">
+          <div class="TaskCheckContainer">
             <div class="TaskCheck"></div>
           </div>
-          <div class="TaskTitle"></div>
-        </div>
-        <div class="TaskDetails">
-          <div class="TaskDetail">
-            <div class="TaskDetailIcon"></div>
-            <div class="TaskDetailName"></div>
-          </div>
-          <div class="TaskDetail">
-            <div class="TaskDetailIcon"></div>
-            <div class="TaskDetailName"></div>
-          </div>
-          <div class="TaskDetail">
-            <div class="TaskDetailIcon"></div>
-            <div class="TaskDetailName"></div>
-          </div>
-          <div class="TaskDetail">
-            <div class="TaskDetailIcon"></div>
-            <div class="TaskDetailName"></div>
+          <div class="TaskDetailsContainer">
+            <div class="TaskTitle"></div>
+            <div class="TaskDetails">
+              <span class="TaskDetail">
+                <div class="TaskDetailIcon"></div>
+                <div class="TaskDetailName"></div>
+              </span>
+              <span class="TaskDetail">
+                <div class="TaskDetailIcon"></div>
+                <div class="TaskDetailName"></div>
+              </span>
+              <span class="TaskDetail">
+                <div class="TaskDetailIcon"></div>
+                <div class="TaskDetailName"></div>
+              </span>
+              <span class="TaskDetail">
+                <div class="TaskDetailIcon"></div>
+                <div class="TaskDetailName"></div>
+              </span>
+            </div>
           </div>
         </div>
       </div>
