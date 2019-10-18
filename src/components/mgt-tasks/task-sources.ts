@@ -83,35 +83,35 @@ export interface ITask {
  * container for tasks
  *
  * @export
- * @interface IDrawer
+ * @interface ITaskFolder
  */
-export interface IDrawer {
+export interface ITaskFolder {
   /**
    * id
    *
    * @type {string}
-   * @memberof IDrawer
+   * @memberof ITaskFolder
    */
   id: string;
   /**
    * name
    *
    * @type {string}
-   * @memberof IDrawer
+   * @memberof ITaskFolder
    */
   name: string;
   /**
    * parentId
    *
    * @type {string}
-   * @memberof IDrawer
+   * @memberof ITaskFolder
    */
   parentId: string;
   /**
    * raw
    *
    * @type {*}
-   * @memberof IDrawer
+   * @memberof ITaskFolder
    */
   _raw?: any;
 }
@@ -120,35 +120,35 @@ export interface IDrawer {
  * container for drawers
  *
  * @export
- * @interface IDresser
+ * @interface ITaskGroup
  */
-export interface IDresser {
+export interface ITaskGroup {
   /**
    * string
    *
    * @type {string}
-   * @memberof IDresser
+   * @memberof ITaskGroup
    */
   id: string;
   /**
    * secondaryId
    *
    * @type {string}
-   * @memberof IDresser
+   * @memberof ITaskGroup
    */
   secondaryId?: string;
   /**
    * title
    *
    * @type {string}
-   * @memberof IDresser
+   * @memberof ITaskGroup
    */
   title: string;
   /**
    * raw
    *
    * @type {*}
-   * @memberof IDresser
+   * @memberof ITaskGroup
    */
   _raw?: any;
 }
@@ -162,28 +162,28 @@ export interface ITaskSource {
   /**
    * Promise that returns task collections for the signed in user
    *
-   * @returns {Promise<IDresser[]>}
+   * @returns {Promise<ITaskGroup[]>}
    * @memberof ITaskSource
    */
-  getMyDressers(): Promise<IDresser[]>;
+  getTaskGroups(): Promise<ITaskGroup[]>;
 
   /**
    * Promise that returns a single task collection by collection id
    *
    * @param {string} id
-   * @returns {Promise<IDresser>}
+   * @returns {Promise<ITaskGroup>}
    * @memberof ITaskSource
    */
-  getSingleDresser(id: string): Promise<IDresser>;
+  getTaskGroup(id: string): Promise<ITaskGroup>;
 
   /**
    * Promise that returns all task groups in task collection
    *
    * @param {string} id
-   * @returns {Promise<IDrawer[]>}
+   * @returns {Promise<ITaskFolder[]>}
    * @memberof ITaskSource
    */
-  getDrawersForDresser(id: string): Promise<IDrawer[]>;
+  getTaskFoldersForTaskGroup(id: string): Promise<ITaskFolder[]>;
 
   /**
    * Promise that returns all tasks in task group
@@ -193,7 +193,7 @@ export interface ITaskSource {
    * @returns {Promise<ITask[]>}
    * @memberof ITaskSource
    */
-  getAllTasksForDrawer(id: string, parId: string): Promise<ITask[]>;
+  getTasksForTaskFolder(id: string, parId: string): Promise<ITask[]>;
 
   /**
    * Promise that completes a single task
@@ -244,6 +244,8 @@ export interface ITaskSource {
    * @memberof ITaskSource
    */
   removeTask(id: string, eTag: string): Promise<any>;
+
+  isAssignedToMe(task: ITask, myId: string): Boolean;
 }
 /**
  * async method to get user details
@@ -267,23 +269,23 @@ export class PlannerTaskSource extends TaskSourceBase implements ITaskSource {
   /**
    * returns promise with all of users plans
    *
-   * @returns {Promise<IDresser[]>}
+   * @returns {Promise<ITaskGroup[]>}
    * @memberof PlannerTaskSource
    */
-  public async getMyDressers(): Promise<IDresser[]> {
+  public async getTaskGroups(): Promise<ITaskGroup[]> {
     const plans = await this.graph.planner_getAllMyPlans();
 
-    return plans.map(plan => ({ id: plan.id, title: plan.title } as IDresser));
+    return plans.map(plan => ({ id: plan.id, title: plan.title } as ITaskGroup));
   }
 
   /**
-   * returns promise single dresser or plan from plan.id
+   * returns promise single TaskGroup or plan from plan.id
    *
    * @param {string} id
-   * @returns {Promise<IDresser>}
+   * @returns {Promise<ITaskGroup>}
    * @memberof PlannerTaskSource
    */
-  public async getSingleDresser(id: string): Promise<IDresser> {
+  public async getTaskGroup(id: string): Promise<ITaskGroup> {
     const plan = await this.graph.planner_getSinglePlan(id);
 
     return { id: plan.id, title: plan.title, _raw: plan };
@@ -293,10 +295,10 @@ export class PlannerTaskSource extends TaskSourceBase implements ITaskSource {
    * returns promise with Bucket for a plan from bucket.id
    *
    * @param {string} id
-   * @returns {Promise<IDrawer[]>}
+   * @returns {Promise<ITaskFolder[]>}
    * @memberof PlannerTaskSource
    */
-  public async getDrawersForDresser(id: string): Promise<IDrawer[]> {
+  public async getTaskFoldersForTaskGroup(id: string): Promise<ITaskFolder[]> {
     const buckets = await this.graph.planner_getBucketsForPlan(id);
 
     return buckets.map(
@@ -306,7 +308,7 @@ export class PlannerTaskSource extends TaskSourceBase implements ITaskSource {
           id: bucket.id,
           name: bucket.name,
           parentId: bucket.planId
-        } as IDrawer)
+        } as ITaskFolder)
     );
   }
 
@@ -317,7 +319,7 @@ export class PlannerTaskSource extends TaskSourceBase implements ITaskSource {
    * @returns {Promise<ITask[]>}
    * @memberof PlannerTaskSource
    */
-  public async getAllTasksForDrawer(id: string): Promise<ITask[]> {
+  public async getTasksForTaskFolder(id: string): Promise<ITask[]> {
     const tasks = await this.graph.planner_getTasksForBucket(id);
 
     return tasks.map(
@@ -401,6 +403,11 @@ export class PlannerTaskSource extends TaskSourceBase implements ITaskSource {
   public async removeTask(id: string, eTag: string): Promise<any> {
     return await this.graph.planner_removeTask(id, eTag);
   }
+
+  public isAssignedToMe(task: ITask, myId: string): boolean {
+    const keys = Object.keys(task.assignments);
+    return keys.includes(myId);
+  }
 }
 
 /**
@@ -416,10 +423,10 @@ export class TodoTaskSource extends TaskSourceBase implements ITaskSource {
   /**
    * get all Outlook task groups
    *
-   * @returns {Promise<IDresser[]>}
+   * @returns {Promise<ITaskGroup[]>}
    * @memberof TodoTaskSource
    */
-  public async getMyDressers(): Promise<IDresser[]> {
+  public async getTaskGroups(): Promise<ITaskGroup[]> {
     const groups: OutlookTaskGroup[] = await this.graph.todo_getAllMyGroups();
 
     return groups.map(
@@ -429,17 +436,17 @@ export class TodoTaskSource extends TaskSourceBase implements ITaskSource {
           id: group.id,
           secondaryId: group.groupKey,
           title: group.name
-        } as IDresser)
+        } as ITaskGroup)
     );
   }
   /**
    * get a single OutlookTaskGroup from id
    *
    * @param {string} id
-   * @returns {Promise<IDresser>}
+   * @returns {Promise<ITaskGroup>}
    * @memberof TodoTaskSource
    */
-  public async getSingleDresser(id: string): Promise<IDresser> {
+  public async getTaskGroup(id: string): Promise<ITaskGroup> {
     const group: OutlookTaskGroup = await this.graph.todo_getSingleGroup(id);
 
     return { id: group.id, secondaryId: group.groupKey, title: group.name, _raw: group };
@@ -448,10 +455,10 @@ export class TodoTaskSource extends TaskSourceBase implements ITaskSource {
    * get all OutlookTaskFolder for group by id
    *
    * @param {string} id
-   * @returns {Promise<IDrawer[]>}
+   * @returns {Promise<ITaskFolder[]>}
    * @memberof TodoTaskSource
    */
-  public async getDrawersForDresser(id: string): Promise<IDrawer[]> {
+  public async getTaskFoldersForTaskGroup(id: string): Promise<ITaskFolder[]> {
     const folders: OutlookTaskFolder[] = await this.graph.todo_getFoldersForGroup(id);
 
     return folders.map(
@@ -461,7 +468,7 @@ export class TodoTaskSource extends TaskSourceBase implements ITaskSource {
           id: folder.id,
           name: folder.name,
           parentId: id
-        } as IDrawer)
+        } as ITaskFolder)
     );
   }
   /**
@@ -472,7 +479,7 @@ export class TodoTaskSource extends TaskSourceBase implements ITaskSource {
    * @returns {Promise<ITask[]>}
    * @memberof TodoTaskSource
    */
-  public async getAllTasksForDrawer(id: string, parId: string): Promise<ITask[]> {
+  public async getTasksForTaskFolder(id: string, parId: string): Promise<ITask[]> {
     const tasks: OutlookTask[] = await this.graph.todo_getAllTasksForFolder(id);
 
     return tasks.map(
@@ -556,5 +563,9 @@ export class TodoTaskSource extends TaskSourceBase implements ITaskSource {
    */
   public async removeTask(id: string, eTag: string): Promise<any> {
     return await this.graph.todo_removeTask(id, eTag);
+  }
+
+  public isAssignedToMe(task: ITask, myId: string): boolean {
+    return true;
   }
 }
