@@ -17,8 +17,10 @@ mgt-dot-options {
 mgt-dot-options .DotIcon {
   display: inline-block;
   font-family: 'FabricMDL2Icons';
-  min-width: 30px;
+  min-width: 40px;
   min-height: 30px;
+  text-align: center;
+  line-height: 30px;
 }
 
 :host .Menu,
