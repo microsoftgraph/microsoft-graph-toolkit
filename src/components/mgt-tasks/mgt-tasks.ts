@@ -523,9 +523,9 @@ export class MgtTasks extends MgtTemplatedComponent {
 
     // new people from people picker
     // tslint:disable-next-line: prefer-const
-    let pickerSelectedPeople: any = picker.selectedPeople;
 
     if (picker) {
+      let pickerSelectedPeople: any = picker.selectedPeople;
       // tslint:disable-next-line: prefer-for-of
       for (let i = 0; i < savedSelectedPeople.length; i++) {
         // tslint:disable-next-line: prefer-for-of
