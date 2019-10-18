@@ -54,6 +54,7 @@ export class MgtGet extends MgtTemplatedComponent {
   /**
    * Maximum number of pages to get for the resource
    * default = 3
+   * if <= 0, all pages will be fetched
    *
    * @type {boolean}
    * @memberof MgtGet
@@ -64,9 +65,24 @@ export class MgtGet extends MgtTemplatedComponent {
   })
   public maxPages: number = 3;
 
-  @property({ attribute: false }) private response: any;
-  @property({ attribute: false }) private error: any;
+  /**
+   * Gets or sets the response of the request
+   *
+   * @type {*}
+   * @memberof MgtGet
+   */
+  @property({ attribute: false }) public response: any;
+
+  /**
+   *
+   * Gets or sets the error (if any) of the request
+   * @type {*}
+   * @memberof MgtGet
+   */
+  @property({ attribute: false }) public error: any;
+
   @property({ attribute: false }) private loading: boolean = false;
+  private _firstUpdated: boolean = false;
 
   /**
    * Synchronizes property values when attributes change.
@@ -79,12 +95,9 @@ export class MgtGet extends MgtTemplatedComponent {
   public attributeChangedCallback(name, oldval, newval) {
     super.attributeChangedCallback(name, oldval, newval);
 
-    // TODO: handle when an attribute changes.
-    //
-    // Ex: load data when the name attribute changes
-    // if (name === 'person-id' && oldval !== newval){
-    //  this.loadData();
-    // }
+    if (this._firstUpdated) {
+      this.loadData();
+    }
   }
 
   /**
@@ -99,6 +112,7 @@ export class MgtGet extends MgtTemplatedComponent {
   public firstUpdated() {
     Providers.onProviderUpdated(() => this.loadData());
     this.loadData();
+    this._firstUpdated = true;
   }
 
   /**
@@ -123,6 +137,9 @@ export class MgtGet extends MgtTemplatedComponent {
       return;
     }
 
+    this.response = null;
+    this.error = null;
+
     if (this.resource) {
       this.loading = true;
 
@@ -135,11 +152,11 @@ export class MgtGet extends MgtTemplatedComponent {
         }
 
         response = await request.get();
-        if (response && response.value && response.value.length && response['@odata.nextLink'] && this.maxPages) {
+        if (response && response.value && response.value.length && response['@odata.nextLink']) {
           let pageCount = 1;
           let page = response;
 
-          while (pageCount < this.maxPages && page && page['@odata.nextLink']) {
+          while ((pageCount < this.maxPages || this.maxPages <= 0) && page && page['@odata.nextLink']) {
             pageCount++;
             const nextResource = page['@odata.nextLink'].split(this.version)[1];
             page = await provider.graph.client
@@ -163,5 +180,6 @@ export class MgtGet extends MgtTemplatedComponent {
     }
 
     this.loading = false;
+    this.fireCustomEvent('dataChange', { response: this.response, error: this.error });
   }
 }

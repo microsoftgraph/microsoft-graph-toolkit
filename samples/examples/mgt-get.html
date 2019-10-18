@@ -7,19 +7,23 @@
     <mgt-msal-provider client-id="a974dfa0-9f57-49b9-95db-90f04ce2111a"></mgt-msal-provider>
     <mgt-login></mgt-login>
 
-    <mgt-get resource="/me/messages" version="beta" scopes="mail.read" max-pages="3">
+    <mgt-get resource="/me/messages" version="beta" scopes="mail.read" max-pages="2">
         <template>
           emails: {{value.length}}
           <ol>
             <li data-for="email in value">
-              <h2>{{ email.subject }}</h2>
-              <mgt-person
-                person-query="{{ email.sender.emailAddress.address }}"
-                show-name
-                show-email
-                person-card="hover"
-              ></mgt-person>
-              {{ email.bodyPreview }}
+              <div>
+                <h2>{{ email.subject }}</h2>
+                <div>
+                  From: <mgt-person
+                  person-query="{{ email.sender.emailAddress.address }}"
+                  show-name
+                  person-card="hover"
+                  ></mgt-person>
+                </div>
+                <br />
+                Subject: {{ email.bodyPreview }}
+              </div>
             </li>
           </ul>
         </template>
@@ -32,5 +36,14 @@
           loading
         </template>
       </mgt-get>
+
+      <script>
+        let get = document.querySelector('mgt-get');
+        get.addEventListener('dataChange', e => {
+          console.log('data changed');
+          console.log('response ', get.response);
+          console.log('error ', get.error);
+        })
+      </script>
 </body>
 </html>
