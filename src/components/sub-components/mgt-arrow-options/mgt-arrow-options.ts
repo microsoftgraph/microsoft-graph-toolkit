@@ -19,7 +19,7 @@ import { styles } from './mgt-arrow-options-css';
  */
 
 /**
- * Custom Component used to handle an arrow rendering for dressers utilized in the task component.
+ * Custom Component used to handle an arrow rendering for TaskGroups utilized in the task component.
  *
  * @export MgtArrowOptions
  * @class MgtArrowOptions
@@ -44,7 +44,7 @@ export class MgtArrowOptions extends MgtBaseComponent {
   @property({ type: Boolean }) public open: boolean = false;
 
   /**
-   * Title of chosen dresser.
+   * Title of chosen TaskGroup.
    *
    * @type {string}
    * @memberof MgtArrowOptions

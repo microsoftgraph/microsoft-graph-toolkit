@@ -15,7 +15,7 @@ import { ProviderState } from '../../providers/IProvider';
 import { getShortDateString } from '../../utils/Utils';
 import { MgtBaseComponent } from '../baseComponent';
 import { styles } from './mgt-tasks-css';
-import { IDrawer, IDresser, ITask, ITaskSource, PlannerTaskSource, TodoTaskSource } from './task-sources';
+import { ITask, ITaskFolder, ITaskGroup, ITaskSource, PlannerTaskSource, TodoTaskSource } from './task-sources';
 
 import '../mgt-person/mgt-person';
 import '../sub-components/mgt-arrow-options/mgt-arrow-options';
@@ -104,7 +104,7 @@ export class MgtTasks extends MgtBaseComponent {
   public targetBucketId: string = null;
 
   /**
-   * current stored dresser id
+   * current stored group id
    *
    * @type {string}
    * @memberof MgtTasks
@@ -163,15 +163,15 @@ export class MgtTasks extends MgtBaseComponent {
    * contains id for new user created task??
    * @type {string}
    */
-  @property() private _newTaskDresserId: string = '';
+  @property() private _newTaskGroupId: string = '';
   /**
    * determines if tasks needs to render new task
    * @type {string}
    */
-  @property() private _newTaskDrawerId: string = '';
+  @property() private _newTaskFolderId: string = '';
 
-  @property() private _dressers: IDresser[] = [];
-  @property() private _drawers: IDrawer[] = [];
+  @property() private _groups: ITaskGroup[] = [];
+  @property() private _folders: ITaskFolder[] = [];
 
   /**
    * contains all user tasks
@@ -179,9 +179,8 @@ export class MgtTasks extends MgtBaseComponent {
    */
   @property() private _tasks: ITask[] = [];
 
-  @property() private _currentTargetDresser: string = this.res.BASE_SELF_ASSIGNED;
-  @property() private _currentSubTargetDresser: string = this.res.PLANS_SELF_ASSIGNED;
-  @property() private _currentTargetDrawer: string = this.res.BUCKETS_SELF_ASSIGNED;
+  @property() private _currentTargetGroup: string = this.res.BASE_SELF_ASSIGNED;
+  @property() private _currentTargetFolder: string = this.res.BUCKETS_SELF_ASSIGNED;
 
   /**
    * used for filter if task has been deleted
@@ -238,23 +237,23 @@ export class MgtTasks extends MgtBaseComponent {
     super.attributeChangedCallback(name, oldVal, newVal);
     if (name === 'data-source') {
       if (this.dataSource === 'planner') {
-        this._currentTargetDresser = this.initialId || this.res.BASE_SELF_ASSIGNED;
-        this._currentTargetDrawer = this.initialBucketId || this.res.BUCKETS_SELF_ASSIGNED;
+        this._currentTargetGroup = this.initialId || this.res.BASE_SELF_ASSIGNED;
+        this._currentTargetFolder = this.initialBucketId || this.res.BUCKETS_SELF_ASSIGNED;
       } else if (this.dataSource === 'todo') {
-        this._currentTargetDresser = this.res.BASE_SELF_ASSIGNED;
-        this._currentTargetDrawer = this.initialId || this.res.BUCKETS_SELF_ASSIGNED;
+        this._currentTargetGroup = this.res.BASE_SELF_ASSIGNED;
+        this._currentTargetFolder = this.initialId || this.res.BUCKETS_SELF_ASSIGNED;
       }
 
       this._newTaskSelfAssigned = false;
-      this._newTaskDrawerId = '';
-      this._newTaskDresserId = '';
+      this._newTaskFolderId = '';
+      this._newTaskGroupId = '';
       this._newTaskDueDate = null;
       this._newTaskName = '';
       this._newTaskBeingAdded = false;
 
       this._tasks = [];
-      this._drawers = [];
-      this._dressers = [];
+      this._folders = [];
+      this._groups = [];
 
       this._hasDoneInitialLoad = false;
       this._inTaskLoad = false;
@@ -327,7 +326,7 @@ export class MgtTasks extends MgtBaseComponent {
     this._newTaskSelfAssigned = false;
     this._newTaskDueDate = null;
     this._newTaskName = '';
-    this._newTaskDresserId = '';
+    this._newTaskGroupId = '';
   }
 
   /**
@@ -340,20 +339,20 @@ export class MgtTasks extends MgtBaseComponent {
    * * @param _changedProperties Map of changed properties with old values
    */
   protected firstUpdated() {
-    if (this.initialId && (!this._currentTargetDresser || this.isDefault(this._currentTargetDresser))) {
+    if (this.initialId && (!this._currentTargetGroup || this.isDefault(this._currentTargetGroup))) {
       if (this.dataSource === 'planner') {
-        this._currentTargetDresser = this.initialId;
+        this._currentTargetGroup = this.initialId;
       } else if (this.dataSource === 'todo') {
-        this._currentTargetDrawer = this.initialId;
+        this._currentTargetFolder = this.initialId;
       }
     }
 
     if (
       this.dataSource === 'planner' &&
       this.initialBucketId &&
-      (!this._currentTargetDrawer || this.isDefault(this._currentTargetDrawer))
+      (!this._currentTargetFolder || this.isDefault(this._currentTargetFolder))
     ) {
-      this._currentTargetDrawer = this.initialBucketId;
+      this._currentTargetFolder = this.initialBucketId;
     }
 
     this.loadTasks();
@@ -395,62 +394,62 @@ export class MgtTasks extends MgtBaseComponent {
   }
 
   private async _loadTargetTodoTasks(ts: ITaskSource) {
-    const dressers = await ts.getMyDressers();
-    const drawers = (await Promise.all(dressers.map(dresser => ts.getDrawersForDresser(dresser.id)))).reduce(
+    const groups = await ts.getTaskGroups();
+    const folders = (await Promise.all(groups.map(group => ts.getTaskFoldersForTaskGroup(group.id)))).reduce(
       (cur, ret) => [...cur, ...ret],
       []
     );
     const tasks = (await Promise.all(
-      drawers.map(drawer => ts.getAllTasksForDrawer(drawer.id, drawer.parentId))
+      folders.map(folder => ts.getTasksForTaskFolder(folder.id, folder.parentId))
     )).reduce((cur, ret) => [...cur, ...ret], []);
 
     this._tasks = tasks;
-    this._drawers = drawers;
-    this._dressers = dressers;
+    this._folders = folders;
+    this._groups = groups;
 
-    this._currentTargetDresser = this.res.BASE_SELF_ASSIGNED;
-    this._currentTargetDrawer = this.targetId;
+    this._currentTargetGroup = this.res.BASE_SELF_ASSIGNED;
+    this._currentTargetFolder = this.targetId;
   }
 
   private async _loadTargetPlannerTasks(ts: ITaskSource) {
-    const dresser = await ts.getSingleDresser(this.targetId);
-    const drawers = await ts.getDrawersForDresser(dresser.id);
+    const group = await ts.getTaskGroup(this.targetId);
+    const folders = await ts.getTaskFoldersForTaskGroup(group.id);
     const tasks = (await Promise.all(
-      drawers.map(drawer => ts.getAllTasksForDrawer(drawer.id, drawer.parentId))
+      folders.map(folder => ts.getTasksForTaskFolder(folder.id, folder.parentId))
     )).reduce((cur, ret) => [...cur, ...ret], []);
 
     this._tasks = tasks;
-    this._drawers = drawers;
-    this._dressers = [dresser];
+    this._folders = folders;
+    this._groups = [group];
 
-    this._currentTargetDresser = this.targetId;
+    this._currentTargetGroup = this.targetId;
     if (this.targetBucketId) {
-      this._currentTargetDrawer = this.targetBucketId;
+      this._currentTargetFolder = this.targetBucketId;
     }
   }
 
   private async _loadAllTasks(ts: ITaskSource) {
-    const dressers = await ts.getMyDressers();
-    const drawers = (await Promise.all(dressers.map(dresser => ts.getDrawersForDresser(dresser.id)))).reduce(
+    const groups = await ts.getTaskGroups();
+    const folders = (await Promise.all(groups.map(group => ts.getTaskFoldersForTaskGroup(group.id)))).reduce(
       (cur, ret) => [...cur, ...ret],
       []
     );
 
     if (!this.initialId && this.dataSource === 'todo' && !this._todoDefaultSet) {
       this._todoDefaultSet = true;
-      const defaultDrawer = drawers.find(d => (d._raw as OutlookTaskFolder).isDefaultFolder);
-      if (defaultDrawer) {
-        this._currentTargetDrawer = defaultDrawer.id;
+      const defaultFolder = folders.find(d => (d._raw as OutlookTaskFolder).isDefaultFolder);
+      if (defaultFolder) {
+        this._currentTargetFolder = defaultFolder.id;
       }
     }
 
     const tasks = (await Promise.all(
-      drawers.map(drawer => ts.getAllTasksForDrawer(drawer.id, drawer.parentId))
+      folders.map(folder => ts.getTasksForTaskFolder(folder.id, folder.parentId))
     )).reduce((cur, ret) => [...cur, ...ret], []);
 
     this._tasks = tasks;
-    this._drawers = drawers;
-    this._dressers = dressers;
+    this._folders = folders;
+    this._groups = groups;
   }
 
   private async addTask(
@@ -519,13 +518,13 @@ export class MgtTasks extends MgtBaseComponent {
     if (
       !this._newTaskBeingAdded &&
       this._newTaskName &&
-      (!this.isDefault(this._currentTargetDresser) || this._newTaskDresserId)
+      (!this.isDefault(this._currentTargetGroup) || this._newTaskGroupId)
     ) {
       this.addTask(
         this._newTaskName,
         this._newTaskDueDate,
-        this.isDefault(this._currentTargetDresser) ? this._newTaskDresserId : this._currentTargetDresser,
-        this.isDefault(this._currentTargetDrawer) ? this._newTaskDrawerId : this._currentTargetDrawer,
+        this.isDefault(this._currentTargetGroup) ? this._newTaskGroupId : this._currentTargetGroup,
+        this.isDefault(this._currentTargetFolder) ? this._newTaskFolderId : this._currentTargetFolder,
         this._newTaskSelfAssigned
           ? {
               [this._me.id]: {
@@ -571,93 +570,93 @@ export class MgtTasks extends MgtBaseComponent {
           `;
 
     if (this.dataSource === 'planner') {
-      const currentDresser = this._dressers.find(d => d.id === this._currentTargetDresser) || {
+      const currentGroup = this._groups.find(d => d.id === this._currentTargetGroup) || {
         title: this.res.BASE_SELF_ASSIGNED
       };
-      const dresserOpts = {
+      const groupOptions = {
         [this.res.BASE_SELF_ASSIGNED]: e => {
-          this._currentTargetDresser = this.res.BASE_SELF_ASSIGNED;
-          this._currentTargetDrawer = this.res.BUCKETS_SELF_ASSIGNED;
+          this._currentTargetGroup = this.res.BASE_SELF_ASSIGNED;
+          this._currentTargetFolder = this.res.BUCKETS_SELF_ASSIGNED;
         }
       };
-      for (const dresser of this._dressers) {
-        dresserOpts[dresser.title] = e => {
-          this._currentTargetDresser = dresser.id;
-          this._currentTargetDrawer = this.res.BUCKETS_SELF_ASSIGNED;
+      for (const group of this._groups) {
+        groupOptions[group.title] = e => {
+          this._currentTargetGroup = group.id;
+          this._currentTargetFolder = this.res.BUCKETS_SELF_ASSIGNED;
         };
       }
-      const dresserSelect = html`
-        <mgt-arrow-options .options="${dresserOpts}" .value="${currentDresser.title}"></mgt-arrow-options>
+      const groupSelect = html`
+        <mgt-arrow-options .options="${groupOptions}" .value="${currentGroup.title}"></mgt-arrow-options>
       `;
 
-      const divider = this.isDefault(this._currentTargetDresser)
+      const divider = this.isDefault(this._currentTargetGroup)
         ? null
         : html`
             <span class="TaskIcon Divider">/</span>
           `;
 
-      const currentDrawer = this._drawers.find(d => d.id === this._currentTargetDrawer) || {
+      const currentFolder = this._folders.find(d => d.id === this._currentTargetFolder) || {
         name: this.res.BUCKETS_SELF_ASSIGNED
       };
-      const drawerOpts = {
+      const folderOptions = {
         [this.res.BUCKETS_SELF_ASSIGNED]: e => {
-          this._currentTargetDrawer = this.res.BUCKETS_SELF_ASSIGNED;
+          this._currentTargetFolder = this.res.BUCKETS_SELF_ASSIGNED;
         }
       };
 
-      for (const drawer of this._drawers.filter(d => d.parentId === this._currentTargetDresser)) {
-        drawerOpts[drawer.name] = e => {
-          this._currentTargetDrawer = drawer.id;
+      for (const folder of this._folders.filter(d => d.parentId === this._currentTargetGroup)) {
+        folderOptions[folder.name] = e => {
+          this._currentTargetFolder = folder.id;
         };
       }
 
-      const drawerSelect = this.targetBucketId
+      const folderSelect = this.targetBucketId
         ? html`
             <span class="PlanTitle">
-              ${this._drawers[0] && this._drawers[0].name}
+              ${this._folders[0] && this._folders[0].name}
             </span>
           `
         : html`
-            <mgt-arrow-options .options="${drawerOpts}" .value="${currentDrawer.name}"></mgt-arrow-options>
+            <mgt-arrow-options .options="${folderOptions}" .value="${currentFolder.name}"></mgt-arrow-options>
           `;
 
       return html`
         <span class="TitleCont">
-          ${dresserSelect} ${divider} ${this.isDefault(this._currentTargetDresser) ? null : drawerSelect}
+          ${groupSelect} ${divider} ${this.isDefault(this._currentTargetGroup) ? null : folderSelect}
         </span>
         ${addButton}
       `;
     } else {
-      const drawer = this._drawers.find(d => d.id === this.targetId) || { name: this.res.BUCKETS_SELF_ASSIGNED };
-      const currentDrawer = this._drawers.find(d => d.id === this._currentTargetDrawer) || {
+      const folder = this._folders.find(d => d.id === this.targetId) || { name: this.res.BUCKETS_SELF_ASSIGNED };
+      const currentFolder = this._folders.find(d => d.id === this._currentTargetFolder) || {
         name: this.res.BUCKETS_SELF_ASSIGNED
       };
 
-      const drawerOpts = {};
+      const folderOptions = {};
 
-      for (const d of this._drawers) {
-        drawerOpts[d.name] = () => {
-          this._currentTargetDrawer = d.id;
+      for (const d of this._folders) {
+        folderOptions[d.name] = () => {
+          this._currentTargetFolder = d.id;
         };
       }
 
-      drawerOpts[this.res.BUCKETS_SELF_ASSIGNED] = e => {
-        this._currentTargetDrawer = this.res.BUCKETS_SELF_ASSIGNED;
+      folderOptions[this.res.BUCKETS_SELF_ASSIGNED] = e => {
+        this._currentTargetFolder = this.res.BUCKETS_SELF_ASSIGNED;
       };
 
-      const drawerSelect = this.targetId
+      const folderSelect = this.targetId
         ? html`
             <span class="PlanTitle">
-              ${drawer.name}
+              ${folder.name}
             </span>
           `
         : html`
-            <mgt-arrow-options .value="${currentDrawer.name}" .options="${drawerOpts}"></mgt-arrow-options>
+            <mgt-arrow-options .value="${currentFolder.name}" .options="${folderOptions}"></mgt-arrow-options>
           `;
 
       return html`
         <span class="TitleCont">
-          ${drawerSelect}
+          ${folderSelect}
         </span>
         ${addButton}
       `;
@@ -679,30 +678,30 @@ export class MgtTasks extends MgtBaseComponent {
         />
       </span>
     `;
-    const dressers = this._dressers;
-    if (dressers.length > 0 && !this._newTaskDresserId) {
-      this._newTaskDresserId = dressers[0].id;
+    const groups = this._groups;
+    if (groups.length > 0 && !this._newTaskGroupId) {
+      this._newTaskGroupId = groups[0].id;
     }
-    const taskDresser =
+    const group =
       this.dataSource === 'todo'
         ? null
-        : !this.isDefault(this._currentTargetDresser)
+        : !this.isDefault(this._currentTargetGroup)
         ? html`
             <span class="TaskDetail TaskAssignee">
               ${this.renderPlannerIcon()}
-              <span>${this.getPlanTitle(this._currentTargetDresser)}</span>
+              <span>${this.getPlanTitle(this._currentTargetGroup)}</span>
             </span>
           `
         : html`
             <span class="TaskDetail TaskAssignee">
               ${this.renderPlannerIcon()}
               <select
-                .value="${this._newTaskDresserId}"
+                .value="${this._newTaskGroupId}"
                 @change="${(e: Event) => {
-                  this._newTaskDresserId = (e.target as HTMLInputElement).value;
+                  this._newTaskGroupId = (e.target as HTMLInputElement).value;
                 }}"
               >
-                ${this._dressers.map(
+                ${this._groups.map(
                   plan => html`
                     <option value="${plan.id}">${plan.title}</option>
                   `
@@ -711,33 +710,33 @@ export class MgtTasks extends MgtBaseComponent {
             </span>
           `;
 
-    const drawers = this._drawers.filter(
-      drawer =>
-        (!this.isDefault(this._currentTargetDresser) && drawer.parentId === this._currentTargetDresser) ||
-        (this.isDefault(this._currentTargetDresser) && drawer.parentId === this._newTaskDresserId)
+    const folders = this._folders.filter(
+      folder =>
+        (!this.isDefault(this._currentTargetGroup) && folder.parentId === this._currentTargetGroup) ||
+        (this.isDefault(this._currentTargetGroup) && folder.parentId === this._newTaskGroupId)
     );
-    if (drawers.length > 0 && !this._newTaskDrawerId) {
-      this._newTaskDrawerId = drawers[0].id;
+    if (folders.length > 0 && !this._newTaskFolderId) {
+      this._newTaskFolderId = folders[0].id;
     }
-    const taskDrawer = !this.isDefault(this._currentTargetDrawer)
+    const taskFolder = !this.isDefault(this._currentTargetFolder)
       ? html`
           <span class="TaskDetail TaskBucket">
             ${this.renderBucketIcon()}
-            <span>${this.getDrawerName(this._currentTargetDrawer)}</span>
+            <span>${this.getFolderName(this._currentTargetFolder)}</span>
           </span>
         `
       : html`
           <span class="TaskDetail TaskBucket">
             ${this.renderBucketIcon()}
             <select
-              .value="${this._newTaskDrawerId}"
+              .value="${this._newTaskFolderId}"
               @change="${(e: Event) => {
-                this._newTaskDrawerId = (e.target as HTMLInputElement).value;
+                this._newTaskFolderId = (e.target as HTMLInputElement).value;
               }}"
             >
-              ${drawers.map(
-                drawer => html`
-                  <option value="${drawer.id}">${drawer.name}</option>
+              ${folders.map(
+                folder => html`
+                  <option value="${folder.id}">${folder.name}</option>
                 `
               )}
             </select>
@@ -810,7 +809,7 @@ export class MgtTasks extends MgtBaseComponent {
           </span>
           <hr />
           <span class="TaskDetails">
-            ${taskDresser} ${taskDrawer} ${taskPeople} ${taskDue}
+            ${group} ${taskFolder} ${taskPeople} ${taskDue}
           </span>
         </div>
         ${taskAdd}
@@ -835,8 +834,8 @@ export class MgtTasks extends MgtBaseComponent {
           <span class="TaskCheck TaskIcon Incomplete"></span>
         `;
 
-    const taskDresser =
-      this.dataSource === 'todo' || !this.isDefault(this._currentTargetDresser)
+    const group =
+      this.dataSource === 'todo' || !this.isDefault(this._currentTargetGroup)
         ? null
         : html`
             <span class="TaskDetail TaskAssignee">
@@ -845,12 +844,12 @@ export class MgtTasks extends MgtBaseComponent {
             </span>
           `;
 
-    const taskDrawer = !this.isDefault(this._currentTargetDrawer)
+    const folder = !this.isDefault(this._currentTargetFolder)
       ? null
       : html`
           <span class="TaskDetail TaskBucket">
             ${this.renderBucketIcon()}
-            <span>${this.getDrawerName(task.immediateParentId)}</span>
+            <span>${this.getFolderName(task.immediateParentId)}</span>
           </span>
         `;
 
@@ -923,7 +922,7 @@ export class MgtTasks extends MgtBaseComponent {
           ${taskDelete}
         </div>
         <div class="TaskDetails">
-          ${taskDresser} ${taskDrawer} ${taskPeople} ${taskDue}
+          ${group} ${folder} ${taskPeople} ${taskDue}
         </div>
       </div>
     `;
@@ -1026,15 +1025,6 @@ export class MgtTasks extends MgtBaseComponent {
     }
   }
 
-  private isAssignedToMe(task: ITask): boolean {
-    if (this.dataSource === 'todo') {
-      return true;
-    }
-
-    const keys = Object.keys(task.assignments);
-    return keys.includes(this._me.id);
-  }
-
   private getPlanTitle(planId: string): string {
     if (this.isDefault(planId)) {
       return this.res.BASE_SELF_ASSIGNED;
@@ -1042,19 +1032,19 @@ export class MgtTasks extends MgtBaseComponent {
       return this.res.PLANS_SELF_ASSIGNED;
     } else {
       return (
-        this._dressers.find(plan => plan.id === planId) || {
+        this._groups.find(plan => plan.id === planId) || {
           title: this.res.PLAN_NOT_FOUND
         }
       ).title;
     }
   }
 
-  private getDrawerName(bucketId: string): string {
+  private getFolderName(bucketId: string): string {
     if (this.isDefault(bucketId)) {
       return this.res.BUCKETS_SELF_ASSIGNED;
     }
     return (
-      this._drawers.find(buck => buck.id === bucketId) || {
+      this._folders.find(buck => buck.id === bucketId) || {
         name: this.res.BUCKET_NOT_FOUND
       }
     ).name;
@@ -1076,13 +1066,13 @@ export class MgtTasks extends MgtBaseComponent {
 
   private taskPlanFilter(task: ITask) {
     return (
-      task.topParentId === this._currentTargetDresser ||
-      (this.isDefault(this._currentTargetDresser) && this.isAssignedToMe(task))
+      task.topParentId === this._currentTargetGroup ||
+      (this.isDefault(this._currentTargetGroup) && this.getTaskSource().isAssignedToMe(task, this._me.id))
     );
   }
 
   private taskBucketPlanFilter(task: ITask) {
-    return task.immediateParentId === this._currentTargetDrawer || this.isDefault(this._currentTargetDrawer);
+    return task.immediateParentId === this._currentTargetFolder || this.isDefault(this._currentTargetFolder);
   }
 
   private dateToInputValue(date: Date) {
