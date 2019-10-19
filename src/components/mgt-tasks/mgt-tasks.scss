@@ -172,16 +172,42 @@ mgt-tasks,
           align-items: center;
           flex-wrap: wrap;
 
+          svg {
+            vertical-align: middle;
+            margin-right: 4px;
+          }
+          span {
+            vertical-align: middle;
+          }
           .TaskDetail {
             margin: 0 20px 0 0;
           }
 
           .TaskIcon {
             color: #333333;
+            margin: var(--task-detail-icon-margin 0 8px 0 0);
           }
 
           mgt-person {
             display: inline-block;
+          }
+          .Picker {
+            background-color: white;
+            display: block;
+            position: absolute;
+            box-shadow: 0 3px 7px rgba(0, 0, 0, 0.3);
+            -webkit-background-clip: padding-box;
+            -moz-background-clip: padding-box;
+            background-clip: padding-box;
+            width: 450px;
+            color: var(--task-detail-color, black);
+            z-index: 1;
+            mgt-people-picker {
+              --separator-margin: 0px 10px 0px 10px;
+            }
+            &.Hidden {
+              display: none;
+            }
           }
 
           input,
@@ -192,8 +218,25 @@ mgt-tasks,
         }
       }
     }
+    .TaskHeader {
+      display: flex;
+      justify-content: center;
+      color: var(--task-header-color, #333333);
+      margin: var(--task-header-margin, 0 0 0 10px);
+    }
+
+    &.ReadOnly {
+      .TaskCheckContainer {
+        cursor: default;
+      }
+    }
 
     &.Complete {
+      background: var(--task-complete-background, #f6f6f6);
+      border-color: var(--task-complete-border, #e2e2e2);
+      .TaskHeader {
+        color: var(--task-complete-header-color, #959595);
+      }
       .TaskDetails {
         color: var(--task-complete-detail-color #b0b0b0);
 
@@ -207,7 +250,27 @@ mgt-tasks,
       margin: var(--task-new-margin, var(--task-margin, 0 10px 10px 10px));
       display: flex;
       flex-direction: row;
-
+      .SelfAssign {
+        display: none;
+      }
+      .AssignTo {
+        border: 0;
+        background: none;
+      }
+      .FakeCheckBox {
+        width: 15px;
+        height: 15px;
+        cursor: pointer;
+        margin: 0 5px 0 5px;
+        &::after {
+          font-family: 'FabricMDL2Icons';
+          content: '\uE739';
+        }
+        & ~ :checked {
+          font-family: 'FabricMDL2Icons';
+          content: '\uE73A';
+        }
+      }
       .TaskContent {
         flex: 1 1 auto;
         align-content: center;
@@ -299,6 +362,100 @@ mgt-tasks,
       }
     }
 
+    .TaskCheckContainer {
+      font-family: 'FabricMDL2Icons';
+      display: inline-block;
+      width: 24px;
+      height: 24px;
+      text-align: center;
+      border-radius: 50%;
+      flex: 0 0 auto;
+      color: white;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      align-content: center;
+      justify-items: center;
+      justify-content: center;
+      margin: 20px 10px 20px 20px;
+
+      user-select: none;
+      -moz-user-select: none;
+      -ms-user-select: none;
+      &.Complete {
+        .TaskCheck {
+          background: #00b294;
+          border-color: #00b294;
+          display: flex;
+          align-items: center;
+          align-content: center;
+          justify-items: center;
+          justify-content: center;
+        }
+      }
+    }
+
+    .TaskCheck {
+      font-family: 'FabricMDL2Icons';
+      display: inline-block;
+      width: 22px;
+      height: 22px;
+      text-align: center;
+      border-radius: 50%;
+      border: solid 1px #666666;
+      flex: 0 0 auto;
+      color: white;
+      display: flex;
+      align-items: center;
+      align-content: center;
+      justify-items: center;
+      justify-content: center;
+
+      user-select: none;
+      -moz-user-select: none;
+      -ms-user-select: none;
+      &.Loading {
+        color: black;
+        animation: rotateIcon 2s infinite linear;
+      }
+    }
+
+    &.LoadingTask {
+      .TaskCheckContainer {
+        cursor: default;
+      }
+      .TaskCheck {
+        background: #f2f2f2;
+        border-color: #f2f2f2;
+        cursor: default;
+      }
+      .TaskHeader {
+        justify-content: flex-start;
+        justify-items: flex-start;
+      }
+      .TaskDetailIcon {
+        width: 16px;
+        height: 16px;
+        margin: 5px;
+        background: #f2f2f2;
+      }
+      .TaskTitle {
+        background: #f2f2f2;
+        height: 20px;
+      }
+      .TaskDetail {
+        margin-right: 8px;
+        display: flex;
+        flex-direction: row;
+        align-items: center;
+      }
+      .TaskDetailName {
+        width: 81px;
+        height: 10px;
+        background: #f2f2f2;
+      }
+    }
+
     .TaskOptions {
       cursor: pointer;
       user-select: none;
@@ -309,181 +466,12 @@ mgt-tasks,
       right: 0;
     }
   }
-}
-
-mgt-tasks .Task.NewTask .SelfAssign,
-:host .Task.NewTask .SelfAssign {
-  display: none;
-}
-
-mgt-tasks .Task.NewTask .Picker.Hidden,
-:host .Task.NewTask .Picker.Hidden {
-  display: none;
-}
-
-mgt-tasks .Task.NewTask .Picker.Show,
-:host .Task.NewTask .Picker.Show {
-  display: block;
-  position: absolute;
-  box-shadow: 0 3px 7px rgba(0, 0, 0, 0.3);
-  -webkit-background-clip: padding-box;
-  -moz-background-clip: padding-box;
-  background-clip: padding-box;
-  width: 450px;
-  mgt-people-picker {
-    --separator-margin: 0px 10px 0px 10px;
+  .LoadingHeader {
+    max-width: 90px;
+    width: 100%;
+    height: 20px;
+    background: #f2f2f2;
   }
-}
-
-mgt-tasks .Task.NewTask .AssignTo,
-:host .Task.NewTask .AssignTo {
-  border: 0;
-  background: none;
-}
-
-mgt-tasks .Task.NewTask .FakeCheckBox,
-:host .Task.NewTask .FakeCheckBox {
-  width: 15px;
-  height: 15px;
-  cursor: pointer;
-  margin: 0 5px 0 5px;
-}
-
-mgt-tasks .Task.NewTask .FakeCheckBox::after,
-:host .Task.NewTask .FakeCheckBox::after {
-  font-family: 'FabricMDL2Icons';
-  content: '\uE739';
-}
-
-mgt-tasks .Task.NewTask input:checked,
-:host .Task.NewTask input:checked ~ .FakeCheckBox::after {
-  font-family: 'FabricMDL2Icons';
-  content: '\uE73A';
-}
-
-mgt-tasks .Task .Picker.Hidden,
-:host .Task .Picker.Hidden {
-  display: none;
-}
-
-mgt-tasks .Task .Picker.Show,
-:host .Task .Picker.Show {
-  background-color: white;
-  display: block;
-  position: absolute;
-  box-shadow: 0 3px 7px rgba(0, 0, 0, 0.3);
-  -webkit-background-clip: padding-box;
-  -moz-background-clip: padding-box;
-  background-clip: padding-box;
-  width: 450px;
-  color: var(--task-detail-color, black);
-  z-index: 1;
-  mgt-people-picker {
-    --separator-margin: 0px 10px 0px 10px;
-  }
-}
-
-mgt-tasks .Task.Complete,
-:host .Task.Complete {
-  background: var(--task-complete-background, #f6f6f6);
-  border-color: var(--task-complete-border, #e2e2e2);
-}
-
-mgt-tasks .Task.Complete .TaskHeader,
-:host .Task.Complete .TaskHeader {
-  color: var(--task-complete-header-color, #959595);
-}
-
-mgt-tasks .Task .TaskDetail svg,
-:host .Task .TaskDetail svg,
-mgt-tasks .Task .TaskDetail span,
-:host .Task .TaskDetail span {
-  vertical-align: middle;
-}
-
-mgt-tasks .Task .TaskDetail svg,
-:host .Task .TaskDetail svg {
-  margin-right: 4px;
-}
-
-mgt-tasks .Task .TaskDetail .TaskIcon,
-:host .Task .TaskDetail .TaskIcon {
-  margin: var(--task-detail-icon-margin 0 8px 0 0);
-}
-
-mgt-tasks .Task .TaskHeader,
-:host .Task .TaskHeader {
-  display: flex;
-  justify-content: center;
-  color: var(--task-header-color, #333333);
-  margin: var(--task-header-margin, 0 0 0 10px);
-}
-
-mgt-tasks .Task.ReadOnly .TaskCheckContainer,
-:host .Task.ReadOnly .TaskCheckContainer {
-  cursor: default;
-}
-
-mgt-tasks .Task .TaskCheckContainer,
-:host .Task .TaskCheckContainer {
-  font-family: 'FabricMDL2Icons';
-  display: inline-block;
-  width: 24px;
-  height: 24px;
-  text-align: center;
-  border-radius: 50%;
-  flex: 0 0 auto;
-  color: white;
-  cursor: pointer;
-  display: flex;
-  align-items: center;
-  align-content: center;
-  justify-items: center;
-  justify-content: center;
-  margin: 20px 10px 20px 20px;
-
-  user-select: none;
-  -moz-user-select: none;
-  -ms-user-select: none;
-}
-
-mgt-tasks .Task .TaskCheckContainer.Complete .TaskCheck,
-:host .Task .TaskCheckContainer.Complete .TaskCheck {
-  background: #00b294;
-  border-color: #00b294;
-  display: flex;
-  align-items: center;
-  align-content: center;
-  justify-items: center;
-  justify-content: center;
-}
-
-mgt-tasks .Task .TaskCheck,
-:host .Task .TaskCheck {
-  font-family: 'FabricMDL2Icons';
-  display: inline-block;
-  width: 22px;
-  height: 22px;
-  text-align: center;
-  border-radius: 50%;
-  border: solid 1px #666666;
-  flex: 0 0 auto;
-  color: white;
-  display: flex;
-  align-items: center;
-  align-content: center;
-  justify-items: center;
-  justify-content: center;
-
-  user-select: none;
-  -moz-user-select: none;
-  -ms-user-select: none;
-}
-
-mgt-tasks .Task .TaskCheck.Loading,
-:host .Task .TaskCheck.Loading {
-  color: black;
-  animation: rotateIcon 2s infinite linear;
 }
 
 @keyframes rotateIcon {
@@ -493,53 +481,4 @@ mgt-tasks .Task .TaskCheck.Loading,
   to {
     transform: rotate(360deg);
   }
-}
-
-mgt-tasks .LoadingHeader,
-:host .LoadingHeader {
-  max-width: 90px;
-  width: 100%;
-  height: 20px;
-  background: #f2f2f2;
-}
-
-mgt-tasks .Task.LoadingTask .TaskCheckContainer,
-:host .Task.LoadingTask .TaskCheckContainer {
-  cursor: default;
-}
-mgt-tasks .Task.LoadingTask .TaskCheck,
-:host .Task.LoadingTask .TaskCheck {
-  background: #f2f2f2;
-  border-color: #f2f2f2;
-  cursor: default;
-}
-mgt-tasks .Task.LoadingTask .TaskHeader,
-:host .Task.LoadingTask .TaskHeader {
-  justify-content: flex-start;
-  justify-items: flex-start;
-}
-mgt-tasks .Task.LoadingTask .TaskTitle,
-:host .Task.LoadingTask .TaskTitle {
-  background: #f2f2f2;
-  height: 20px;
-}
-mgt-tasks .Task.LoadingTask .TaskDetailIcon,
-:host .Task.LoadingTask .TaskDetailIcon {
-  width: 16px;
-  height: 16px;
-  margin: 5px;
-  background: #f2f2f2;
-}
-mgt-tasks .Task.LoadingTask .TaskDetail,
-:host .Task.LoadingTask .TaskDetail {
-  margin-right: 8px;
-  display: flex;
-  flex-direction: row;
-  align-items: center;
-}
-mgt-tasks .Task.LoadingTask .TaskDetailName,
-:host .Task.LoadingTask .TaskDetailName {
-  width: 81px;
-  height: 10px;
-  background: #f2f2f2;
 }

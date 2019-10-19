@@ -181,7 +181,7 @@ export class MgtTasks extends MgtTemplatedComponent {
   private _providerUpdateCallback: () => void | any;
 
   private _mouseHasLeft = false;
-  private _currentTask;
+  @property() private _currentTask: ITask;
 
   constructor() {
     super();
@@ -256,19 +256,8 @@ export class MgtTasks extends MgtTemplatedComponent {
    */
   protected firstUpdated() {
     window.addEventListener('click', (event: MouseEvent) => {
-      let picker;
-      if (this.shadowRoot.querySelector('mgt-people-picker')) {
-        picker = this.shadowRoot.querySelector('mgt-people-picker');
-      } else {
-        picker = this.shadowRoot.querySelector('[id="' + this._currentTask.id + '"]') as MgtPeoplePicker;
-      }
       // set mgt-people-picker to invisible
-
-      if (picker) {
-        if (this._mouseHasLeft) {
-          this.hidePeoplePicker();
-        }
-      }
+      this.hidePeoplePicker();
     });
     if (this.initialId && !this._currentGroup) {
       if (this.dataSource === TasksSource.planner) {
@@ -319,18 +308,6 @@ export class MgtTasks extends MgtTemplatedComponent {
     `;
   }
 
-  private hidePeoplePicker() {
-    let picker;
-    if (this.shadowRoot.querySelector('mgt-people-picker').parentElement.classList.contains('Show')) {
-      picker = this.shadowRoot.querySelector('mgt-people-picker');
-    } else {
-      picker = this.shadowRoot.querySelector('[id="' + this._currentTask.id + '"]') as MgtPeoplePicker;
-      this.assignPerson(this._currentTask);
-    }
-    picker.parentElement.classList.add('Hidden');
-    picker.parentElement.classList.remove('Show');
-    this.showPeoplePicker = false;
-  }
   private closeNewTask(e: MouseEvent) {
     this._showNewTask = false;
 
@@ -505,13 +482,11 @@ export class MgtTasks extends MgtTemplatedComponent {
     this._hiddenTasks = this._hiddenTasks.filter(id => id !== task.id);
   }
 
-  private async assignPerson(task: ITask) {
+  private async assignPeople(task: ITask, people: any) {
     const ts = this.getTaskSource();
     if (!ts) {
       return;
     }
-
-    const picker = this.shadowRoot.querySelector('[id="' + task.id + '"]') as MgtPeoplePicker;
     // tslint:disable-next-line: prefer-const
     let peopleObj: any = {};
 
@@ -524,13 +499,12 @@ export class MgtTasks extends MgtTemplatedComponent {
     // new people from people picker
     // tslint:disable-next-line: prefer-const
 
-    if (picker) {
-      let pickerSelectedPeople: any = picker.selectedPeople;
+    if (people) {
       // tslint:disable-next-line: prefer-for-of
       for (let i = 0; i < savedSelectedPeople.length; i++) {
         // tslint:disable-next-line: prefer-for-of
-        for (let j = 0; j < pickerSelectedPeople.length; j++) {
-          if (savedSelectedPeople[i] !== pickerSelectedPeople[j].id) {
+        for (let j = 0; j < people.length; j++) {
+          if (savedSelectedPeople[i] !== people[j].id) {
             peopleObj[savedSelectedPeople[i]] = null;
             break;
           } else {
@@ -543,8 +517,8 @@ export class MgtTasks extends MgtTemplatedComponent {
       }
 
       // tslint:disable-next-line: prefer-for-of
-      for (let i = 0; i < pickerSelectedPeople.length; i++) {
-        peopleObj[pickerSelectedPeople[i].id] = {
+      for (let i = 0; i < people.length; i++) {
+        peopleObj[people[i].id] = {
           '@odata.type': 'microsoft.graph.plannerAssignment',
           orderHint: 'string !'
         };
@@ -558,7 +532,7 @@ export class MgtTasks extends MgtTemplatedComponent {
   }
 
   private onAddTaskClick(e: MouseEvent) {
-    const picker = this.shadowRoot.querySelector('mgt-people-picker') as MgtPeoplePicker;
+    const picker = this.getPeoplePicker(null);
 
     const peopleObj: any = {};
 
@@ -809,20 +783,21 @@ export class MgtTasks extends MgtTemplatedComponent {
       </span>
     `;
 
-    const task = 'new';
+    const task = null;
 
     const taskPeople =
       this.dataSource === TasksSource.todo
         ? null
         : html`
-            <span
-              class="TaskDetail TaskPeople"
-              @mouseleave=${this._handleMouseLeave}
-              @mouseenter=${e => this._handleMouseEnter(e, task)}
-            >
-              <span @click="${() => this._showPeoplePicker(task)}">
+            <span class="TaskDetail TaskPeople">
+              <span
+                @click=${(e: MouseEvent) => {
+                  this.handleClick(e);
+                  this._showPeoplePicker(task);
+                }}
+              >
                 <i class="login-icon ms-Icon ms-Icon--Contact"></i>
-                <div class="Picker Hidden">
+                <div class=${classMap({ Picker: true, Hidden: !this.showPeoplePicker || task !== this._currentTask })}>
                   <mgt-people-picker id="newTask" @click=${this.handleClick}></mgt-people-picker>
                 </div>
               </span>
@@ -862,42 +837,45 @@ export class MgtTasks extends MgtTemplatedComponent {
     `;
   }
 
-  private _showPeoplePicker(task: any) {
-    this.showPeoplePicker = !this.showPeoplePicker;
-
-    if (task === 'new') {
-      // logic for new task
-      const picker = this.shadowRoot.querySelector('mgt-people-picker');
-      if (this.showPeoplePicker === true) {
-        picker.parentElement.className += ' Show';
-      } else {
-        picker.parentElement.classList.remove('Show');
-        this.assignPerson(task);
-      }
-    } else {
-      // logic for already created tasks
-      if (this.shadowRoot) {
-        // if shadowroot exists search for the task's assigned People and push to picker
-        if (this.showPeoplePicker === true) {
-          const picker = this.shadowRoot.querySelector('[id="' + task.id + '"]') as MgtPeoplePicker;
-
-          if (picker) {
-            picker.parentElement.className = 'Picker Show';
-
-            const assignedPeople: any = Object.keys(task.assignments);
-
-            picker.selectUsersById(assignedPeople);
-          }
-        } else {
-          const picker = this.shadowRoot.querySelector('[id="' + task.id + '"]') as MgtPeoplePicker;
-
-          if (picker) {
-            picker.parentElement.className = 'Picker Hidden';
-            this.assignPerson(task);
-          }
-        }
+  private _showPeoplePicker(task: ITask) {
+    if (this.showPeoplePicker) {
+      const isCurrentTask = task === this._currentTask;
+      this.hidePeoplePicker();
+      if (isCurrentTask) {
+        return;
       }
     }
+    this._currentTask = task;
+    this.showPeoplePicker = true;
+
+    // logic for already created tasks
+    if (this.renderRoot) {
+      // if shadowroot exists search for the task's assigned People and push to picker
+      const picker = this.getPeoplePicker(task);
+
+      if (picker) {
+        const assignedPeople: any = Object.keys(task.assignments);
+
+        picker.selectUsersById(assignedPeople);
+      }
+    }
+  }
+
+  private hidePeoplePicker() {
+    let picker;
+    picker = this.getPeoplePicker(this._currentTask);
+    if (picker) {
+      this.assignPeople(this._currentTask, picker.selectedPeople);
+    }
+    this.showPeoplePicker = false;
+    this._currentTask = null;
+  }
+
+  private getPeoplePicker(task: ITask): MgtPeoplePicker {
+    const taskId = task ? task.id : 'newTask';
+    const picker = this.renderRoot.querySelector(`.picker-${taskId}`) as MgtPeoplePicker;
+
+    return picker;
   }
 
   private renderTask(task: ITask) {
@@ -968,40 +946,37 @@ export class MgtTasks extends MgtTemplatedComponent {
             </span>
           `;
 
-      const taskPeople =
-        !people || people.length === 0
-          ? html`
-              <span
-                @click=${() => this._showPeoplePicker(task)}
-                @mouseleave=${this._handleMouseLeave}
-                @mouseenter=${e => this._handleMouseEnter(e, task)}
-              >
-                <i class="login-icon ms-Icon ms-Icon--Contact"></i>
-                <div class="Picker Hidden">
-                  <mgt-people-picker id="${task.id}" @click=${this.handleClick}></mgt-people-picker>
-                </div>
-              </span>
-            `
-          : html`
-              <span
-                class="TaskDetail TaskPeople"
-                @mouseleave=${this._handleMouseLeave}
-                @mouseenter=${e => this._handleMouseEnter(e, task)}
-              >
-                <span @click=${() => this._showPeoplePicker(task)}>
-                  ${people.map(
-                    id =>
-                      html`
-                        <mgt-person user-id="${id}"></mgt-person>
-                      `
-                  )}
-                  <div class="Picker Hidden">
-                    <mgt-people-picker id="${task.id}" @click=${this.handleClick}></mgt-people-picker>
-                  </div>
-                </span>
-              </span>
-            `;
+      let taskPeople = null;
 
+      if (this.dataSource !== TasksSource.todo) {
+        let assignedPeople = null;
+
+        if (!people || people.length === 0) {
+          assignedPeople = html`
+            <i class="login-icon ms-Icon ms-Icon--Contact"></i>
+          `;
+        } else {
+          assignedPeople = people.map(
+            id =>
+              html`
+                <mgt-person user-id="${id}"></mgt-person>
+              `
+          );
+        }
+        taskPeople = html`
+          <span
+            @click=${(e: MouseEvent) => {
+              this.handleClick(e);
+              this._showPeoplePicker(task);
+            }}
+          >
+            ${assignedPeople}
+            <div class=${classMap({ Picker: true, Hidden: !this.showPeoplePicker || task !== this._currentTask })}>
+              <mgt-people-picker class="picker-${task.id}"></mgt-people-picker>
+            </div>
+          </span>
+        `;
+      }
       taskDetails = html`
         <div class="TaskTitle">
           ${name}
