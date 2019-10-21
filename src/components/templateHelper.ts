@@ -50,7 +50,12 @@ export class TemplateHelper {
    * @param key the key of the value we need (ex: 'a.b.c')
    */
   private static getValueFromObject(obj: object, key: string) {
-    const keys = key.trim().split('.');
+    key = key.trim();
+    if (key === 'this') {
+      return obj;
+    }
+
+    const keys = key.split('.');
     let value = obj;
     // tslint:disable-next-line: prefer-for-of
     for (let i = 0; i < keys.length; i++) {
