@@ -245,7 +245,15 @@ export interface ITaskSource {
    */
   removeTask(id: string, eTag: string): Promise<any>;
 
-  isAssignedToMe(task: ITask, myId: string): Boolean;
+  /**
+   * assigns task to the current signed in user
+   *
+   * @param {ITask} task
+   * @param {string} myId
+   * @returns {Boolean}
+   * @memberof ITaskSource
+   */
+  isAssignedToMe(task: ITask, myId: string): boolean;
 }
 /**
  * async method to get user details
@@ -404,6 +412,14 @@ export class PlannerTaskSource extends TaskSourceBase implements ITaskSource {
     return await this.graph.planner_removeTask(id, eTag);
   }
 
+  /**
+   * assigns task to the signed in user
+   *
+   * @param {ITask} task
+   * @param {string} myId
+   * @returns {boolean}
+   * @memberof PlannerTaskSource
+   */
   public isAssignedToMe(task: ITask, myId: string): boolean {
     const keys = Object.keys(task.assignments);
     return keys.includes(myId);
@@ -565,6 +581,14 @@ export class TodoTaskSource extends TaskSourceBase implements ITaskSource {
     return await this.graph.todo_removeTask(id, eTag);
   }
 
+  /**
+   * if task is assigned in to user logged in
+   *
+   * @param {ITask} task
+   * @param {string} myId
+   * @returns {boolean}
+   * @memberof TodoTaskSource
+   */
   public isAssignedToMe(task: ITask, myId: string): boolean {
     return true;
   }
