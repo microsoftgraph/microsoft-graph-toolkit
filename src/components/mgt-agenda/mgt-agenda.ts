@@ -14,6 +14,7 @@ import { styles } from './mgt-agenda-css';
 
 import '../../styles/fabric-icon-font';
 import { prepScopes } from '../../utils/GraphHelpers';
+import { getDayOfWeekString, getMonthString } from '../../utils/Utils';
 import '../mgt-person/mgt-person';
 import { MgtTemplatedComponent } from '../templatedComponent';
 
@@ -428,29 +429,13 @@ export class MgtAgenda extends MgtTemplatedComponent {
   private getDateHeaderFromDateTimeString(dateTimeString: string) {
     const date = new Date(dateTimeString);
     date.setMinutes(date.getMinutes() - date.getTimezoneOffset());
-    const monthNames = [
-      'January',
-      'February',
-      'March',
-      'April',
-      'May',
-      'June',
-      'July',
-      'August',
-      'September',
-      'October',
-      'November',
-      'December'
-    ];
-
-    const dayNames = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
 
     const dayIndex = date.getDay();
     const monthIndex = date.getMonth();
     const day = date.getDate();
     const year = date.getFullYear();
 
-    return `${dayNames[dayIndex]}, ${monthNames[monthIndex]} ${day}, ${year}`;
+    return `${getDayOfWeekString(dayIndex)}, ${getMonthString(monthIndex)} ${day}, ${year}`;
   }
 
   private getEventDuration(event: MicrosoftGraph.Event) {

@@ -364,6 +364,25 @@ export class Graph {
   }
 
   /**
+   * async promise, allows developer to assign people to task
+   *
+   * @param {string} taskId
+   * @param {string} eTag
+   * @param {*} people
+   * @returns {Promise<any>}
+   * @memberof Graph
+   */
+  public async planner_assignPeopleToTask(taskId: string, eTag: string, people: any): Promise<any> {
+    return this.planner_setTaskDetails(
+      taskId,
+      {
+        assignments: people
+      },
+      eTag
+    );
+  }
+
+  /**
    * async promise, allows developer to create new Planner task
    *
    * @param {MicrosoftGraph.PlannerTask} newTask
