@@ -243,6 +243,25 @@ export class Graph {
   }
 
   /**
+   * async promise, returns all planner plans associated with the group id
+   *
+   * @param {string} groupId
+   * @returns {Promise<MicrosoftGraph.PlannerPlan[]>}
+   * @memberof Graph
+   */
+  public async getPlansForGroup(groupId: string): Promise<MicrosoftGraph.PlannerPlan[]> {
+    const scopes = 'people.read';
+
+    const uri = `/groups/${groupId}/planner/plans`;
+    const plans = await this.client
+      .api(uri)
+      .header('Cache-Control', 'no-store')
+      .middlewareOptions(prepScopes(scopes))
+      .get();
+    return plans ? plans.value : null;
+  }
+
+  /**
    *  async promise, returns all planner plans associated with the user logged in
    *
    * @returns {Promise<MicrosoftGraph.PlannerPlan[]>}

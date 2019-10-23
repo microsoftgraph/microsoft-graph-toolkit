@@ -131,6 +131,12 @@ export class MgtTasks extends MgtBaseComponent {
   public hideHeader: boolean = false;
 
   /**
+   * allows developer to define specific group id
+   */
+  @property({ attribute: 'group-id', type: String })
+  public groupId: string = null;
+
+  /**
    * determines if tasks needs to show new task
    * @type {boolean}
    */
@@ -287,7 +293,9 @@ export class MgtTasks extends MgtBaseComponent {
       meTask = provider.graph.getMe();
     }
 
-    if (this.targetId) {
+    if (this.groupId && this.dataSource === 'planner') {
+      await this._loadTasksForGroup(ts);
+    } else if (this.targetId) {
       if (this.dataSource === 'todo') {
         await this._loadTargetTodoTasks(ts);
       } else {
@@ -453,6 +461,25 @@ export class MgtTasks extends MgtBaseComponent {
     this._dressers = dressers;
   }
 
+  private async _loadTasksForGroup(ts: ITaskSource) {
+
+    const dressers = await ts.getDressersForGroup(this.groupId);
+    const drawers = (await Promise.all(
+      dressers.map(
+        dresser => ts.getDrawersForDresser(dresser.id))))
+      .reduce(
+        (cur, ret) => [...cur, ...ret],
+        []
+      );
+
+    const tasks = (await Promise.all(
+      drawers.map(drawer => ts.getAllTasksForDrawer(drawer.id, drawer.parentId))
+    )).reduce((cur, ret) => [...cur, ...ret], []);
+
+    this._tasks = tasks;
+    this._drawers = drawers;
+    this._dressers = dressers;
+  }
   private async addTask(
     name: string,
     dueDate: Date,
