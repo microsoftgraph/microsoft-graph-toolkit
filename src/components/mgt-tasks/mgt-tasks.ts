@@ -462,15 +462,11 @@ export class MgtTasks extends MgtBaseComponent {
   }
 
   private async _loadTasksForGroup(ts: ITaskSource) {
-
     const dressers = await ts.getDressersForGroup(this.groupId);
-    const drawers = (await Promise.all(
-      dressers.map(
-        dresser => ts.getDrawersForDresser(dresser.id))))
-      .reduce(
-        (cur, ret) => [...cur, ...ret],
-        []
-      );
+    const drawers = (await Promise.all(dressers.map(dresser => ts.getDrawersForDresser(dresser.id)))).reduce(
+      (cur, ret) => [...cur, ...ret],
+      []
+    );
 
     const tasks = (await Promise.all(
       drawers.map(drawer => ts.getAllTasksForDrawer(drawer.id, drawer.parentId))
