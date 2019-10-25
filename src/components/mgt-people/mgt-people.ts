@@ -62,6 +62,19 @@ export class MgtPeople extends MgtTemplatedComponent {
   })
   public groupId: string;
 
+  /**
+   * user id array
+   *
+   * @memberof MgtPeople
+   */
+  @property({
+    attribute: 'user-ids',
+    converter: (value, type) => {
+      return value.split(',');
+    }
+  })
+  public userIds: string[];
+
   private _firstUpdated = false;
 
   /**
@@ -130,6 +143,13 @@ export class MgtPeople extends MgtTemplatedComponent {
 
         if (this.groupId) {
           this.people = await client.getPeopleFromGroup(this.groupId);
+        } else if (this.userIds) {
+          const users = [];
+          // tslint:disable-next-line: prefer-for-of
+          for (let i = 0; i < this.userIds.length; i++) {
+            users.push(await client.getUser(this.userIds[i]));
+          }
+          this.people = users;
         } else {
           this.people = await client.getPeople();
         }

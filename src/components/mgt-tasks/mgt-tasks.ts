@@ -20,6 +20,7 @@ import { ITask, ITaskFolder, ITaskGroup, ITaskSource, PlannerTaskSource, TodoTas
 
 import { relative } from 'path';
 import '../mgt-people/mgt-people';
+import { MgtPeople } from '../mgt-people/mgt-people';
 import '../mgt-person/mgt-person';
 import '../sub-components/mgt-arrow-options/mgt-arrow-options';
 import '../sub-components/mgt-dot-options/mgt-dot-options';
@@ -861,6 +862,7 @@ export class MgtTasks extends MgtTemplatedComponent {
     if (this.renderRoot) {
       // if shadowroot exists search for the task's assigned People and push to picker
       const picker = this.getPeoplePicker(task);
+      const people = this.getMgtPeople(task);
 
       if (picker) {
         let assignedPeople: any = [];
@@ -888,6 +890,13 @@ export class MgtTasks extends MgtTemplatedComponent {
     const picker = this.renderRoot.querySelector(`.picker-${taskId}`) as MgtPeoplePicker;
 
     return picker;
+  }
+
+  private getMgtPeople(task: ITask): MgtPeople {
+    const taskId = task ? task.id : 'newTask';
+    const mgtPeople = this.renderRoot.querySelector(`.people-${taskId}`) as MgtPeople;
+
+    return mgtPeople;
   }
 
   private renderTask(task: ITask) {
@@ -959,21 +968,21 @@ export class MgtTasks extends MgtTemplatedComponent {
           `;
 
       let taskPeople = null;
+      let assignedPeopleHTML = null;
+
+      const assignedPeople = Object.keys(assignments).map(key => {
+        return key;
+      });
 
       if (this.dataSource !== TasksSource.todo) {
-        let assignedPeople = null;
-
         if (!people || people.length === 0) {
-          assignedPeople = html`
+          assignedPeopleHTML = html`
             <i class="login-icon ms-Icon ms-Icon--Contact"></i>
           `;
         } else {
-          assignedPeople = people.map(
-            id =>
-              html`
-                <mgt-person user-id="${id}"></mgt-person>
-              `
-          );
+          assignedPeopleHTML = html`
+                <mgt-people class="people-${task.id}" .userIds="${assignedPeople}"></mgt-person>
+              `;
         }
         taskPeople = html`
           <span
@@ -982,7 +991,7 @@ export class MgtTasks extends MgtTemplatedComponent {
               this._showPeoplePicker(task);
             }}
           >
-            ${assignedPeople}
+            ${assignedPeopleHTML}
             <div class=${classMap({ Picker: true, Hidden: !this.showPeoplePicker || task !== this._currentTask })}>
               <mgt-people-picker class="picker-${task.id}"></mgt-people-picker>
             </div>
