@@ -536,8 +536,12 @@ export class MgtTasks extends MgtTemplatedComponent {
 
     const peopleObj: any = {};
 
-    for (const person of picker.selectedPeople) {
-      peopleObj[person.id] = { '@odata.type': 'microsoft.graph.plannerAssignment', orderHint: 'string !' };
+    if (picker) {
+      for (const person of picker.selectedPeople) {
+        peopleObj[person.id] = { '@odata.type': 'microsoft.graph.plannerAssignment', orderHint: 'string !' };
+      }
+    } else {
+      this._newTaskSelfAssigned = true;
     }
 
     if (!this._newTaskBeingAdded && this._newTaskName && (this._currentGroup || this._newTaskGroupId)) {
