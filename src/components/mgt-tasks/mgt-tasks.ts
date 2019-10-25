@@ -19,6 +19,7 @@ import { styles } from './mgt-tasks-css';
 import { ITask, ITaskFolder, ITaskGroup, ITaskSource, PlannerTaskSource, TodoTaskSource } from './task-sources';
 
 import { relative } from 'path';
+import '../mgt-people/mgt-people';
 import '../mgt-person/mgt-person';
 import '../sub-components/mgt-arrow-options/mgt-arrow-options';
 import '../sub-components/mgt-dot-options/mgt-dot-options';
@@ -491,9 +492,11 @@ export class MgtTasks extends MgtTemplatedComponent {
     let peopleObj: any = {};
 
     // create previously selected people Object
-    let savedSelectedPeople;
-    if (task.assignments) {
-      savedSelectedPeople = Object.keys(task.assignments);
+    let savedSelectedPeople = [];
+    if (task) {
+      if (task.assignments) {
+        savedSelectedPeople = Object.keys(task.assignments);
+      }
     }
 
     // new people from people picker
@@ -525,10 +528,12 @@ export class MgtTasks extends MgtTemplatedComponent {
       }
     }
 
-    this._loadingTasks = [...this._loadingTasks, task.id];
-    await ts.assignPersonToTask(task.id, task.eTag, peopleObj);
-    await this.loadTasks();
-    this._loadingTasks = this._loadingTasks.filter(id => id !== task.id);
+    if (task) {
+      this._loadingTasks = [...this._loadingTasks, task.id];
+      await ts.assignPersonToTask(task.id, task.eTag, peopleObj);
+      await this.loadTasks();
+      this._loadingTasks = this._loadingTasks.filter(id => id !== task.id);
+    }
   }
 
   private onAddTaskClick(e: MouseEvent) {
@@ -538,10 +543,10 @@ export class MgtTasks extends MgtTemplatedComponent {
 
     if (picker) {
       for (const person of picker.selectedPeople) {
-        peopleObj[person.id] = { '@odata.type': 'microsoft.graph.plannerAssignment', orderHint: 'string !' };
+        if (picker.selectedPeople.length) {
+          peopleObj[person.id] = { '@odata.type': 'microsoft.graph.plannerAssignment', orderHint: 'string !' };
+        }
       }
-    } else {
-      this._newTaskSelfAssigned = true;
     }
 
     if (!this._newTaskBeingAdded && this._newTaskName && (this._currentGroup || this._newTaskGroupId)) {
@@ -802,7 +807,7 @@ export class MgtTasks extends MgtTemplatedComponent {
               >
                 <i class="login-icon ms-Icon ms-Icon--Contact"></i>
                 <div class=${classMap({ Picker: true, Hidden: !this.showPeoplePicker || task !== this._currentTask })}>
-                  <mgt-people-picker id="newTask" @click=${this.handleClick}></mgt-people-picker>
+                  <mgt-people-picker class="picker-newTask" @click=${this.handleClick}></mgt-people-picker>
                 </div>
               </span>
             </span>
@@ -858,7 +863,10 @@ export class MgtTasks extends MgtTemplatedComponent {
       const picker = this.getPeoplePicker(task);
 
       if (picker) {
-        const assignedPeople: any = Object.keys(task.assignments);
+        let assignedPeople: any = [];
+        if (task) {
+          assignedPeople = Object.keys(task.assignments);
+        }
 
         picker.selectUsersById(assignedPeople);
       }
