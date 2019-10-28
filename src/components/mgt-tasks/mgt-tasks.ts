@@ -158,6 +158,12 @@ export class MgtTasks extends MgtTemplatedComponent {
   @property({ attribute: 'hide-header', type: Boolean })
   public hideHeader: boolean = false;
 
+  /**
+   * allows developer to define specific group id
+   */
+  @property({ attribute: 'group-id', type: String })
+  public groupId: string = null;
+
   @property() private _showNewTask: boolean = false;
   @property() private _newTaskBeingAdded: boolean = false;
   @property() private _newTaskSelfAssigned: boolean = false;
@@ -346,7 +352,9 @@ export class MgtTasks extends MgtTemplatedComponent {
       meTask = provider.graph.getMe();
     }
 
-    if (this.targetId) {
+    if (this.groupId && this.dataSource === TasksSource.planner) {
+      await this._loadTasksForGroup(ts);
+    } else if (this.targetId) {
       if (this.dataSource === TasksSource.todo) {
         await this._loadTargetTodoTasks(ts);
       } else {
@@ -412,6 +420,22 @@ export class MgtTasks extends MgtTemplatedComponent {
         this._currentFolder = defaultFolder.id;
       }
     }
+
+    const tasks = (await Promise.all(
+      folders.map(folder => ts.getTasksForTaskFolder(folder.id, folder.parentId))
+    )).reduce((cur, ret) => [...cur, ...ret], []);
+
+    this._tasks = tasks;
+    this._folders = folders;
+    this._groups = groups;
+  }
+
+  private async _loadTasksForGroup(ts: ITaskSource) {
+    const groups = await ts.getTaskGroupsForGroup(this.groupId);
+    const folders = (await Promise.all(groups.map(group => ts.getTaskFoldersForTaskGroup(group.id)))).reduce(
+      (cur, ret) => [...cur, ...ret],
+      []
+    );
 
     const tasks = (await Promise.all(
       folders.map(folder => ts.getTasksForTaskFolder(folder.id, folder.parentId))
