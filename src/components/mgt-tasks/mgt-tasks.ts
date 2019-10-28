@@ -819,6 +819,10 @@ export class MgtTasks extends MgtTemplatedComponent {
 
     const task = null;
 
+    const assignedPeopleHTML = html`
+      <mgt-people class="people-newTask" .userIds="${[]}"> </mgt-people>
+    `;
+
     const taskPeople =
       this.dataSource === TasksSource.todo
         ? null
@@ -830,7 +834,7 @@ export class MgtTasks extends MgtTemplatedComponent {
                   this._showPeoplePicker(task);
                 }}
               >
-                <i class="login-icon ms-Icon ms-Icon--Contact"></i>
+                ${assignedPeopleHTML}
                 <div class=${classMap({ Picker: true, Hidden: !this.showPeoplePicker || task !== this._currentTask })}>
                   <mgt-people-picker class="picker-newTask" @click=${this.handleClick}></mgt-people-picker>
                 </div>
@@ -886,23 +890,24 @@ export class MgtTasks extends MgtTemplatedComponent {
     if (this.renderRoot) {
       // if shadowroot exists search for the task's assigned People and push to picker
       const picker = this.getPeoplePicker(task);
-      const people = this.getMgtPeople(task);
+      const mgtPeople = this.getMgtPeople(task) as MgtPeople;
+
+      const assignedPeople: any = mgtPeople.people.map(person => {
+        return person.id;
+      });
 
       if (picker) {
-        let assignedPeople: any = [];
-        if (task) {
-          assignedPeople = Object.keys(task.assignments);
-        }
-
         picker.selectUsersById(assignedPeople);
       }
     }
   }
 
   private hidePeoplePicker() {
-    let picker;
-    picker = this.getPeoplePicker(this._currentTask);
+    const picker = this.getPeoplePicker(this._currentTask);
+    const mgtPeople = this.getMgtPeople(this._currentTask) as MgtPeople;
+
     if (picker) {
+      mgtPeople.people = picker.selectedPeople;
       this.assignPeople(this._currentTask, picker.selectedPeople);
     }
     this.showPeoplePicker = false;
@@ -999,15 +1004,9 @@ export class MgtTasks extends MgtTemplatedComponent {
       });
 
       if (this.dataSource !== TasksSource.todo) {
-        if (!people || people.length === 0) {
-          assignedPeopleHTML = html`
-            <i class="login-icon ms-Icon ms-Icon--Contact"></i>
-          `;
-        } else {
-          assignedPeopleHTML = html`
-                <mgt-people class="people-${task.id}" .userIds="${assignedPeople}"></mgt-person>
-              `;
-        }
+        assignedPeopleHTML = html`
+          <mgt-people class="people-${task.id}" .userIds="${assignedPeople}"></mgt-people>
+        `;
         taskPeople = html`
           <span
             @click=${(e: MouseEvent) => {
