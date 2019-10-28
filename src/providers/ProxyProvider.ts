@@ -5,10 +5,19 @@
  * -------------------------------------------------------------------------------------------
  */
 
-import { Client } from '@microsoft/microsoft-graph-client';
-import * as MicrosoftGraph from '@microsoft/microsoft-graph-types';
+import {
+  Client,
+  Context,
+  HTTPMessageHandler,
+  Middleware,
+  RetryHandler,
+  RetryHandlerOptions,
+  TelemetryHandler
+} from '@microsoft/microsoft-graph-client';
+import { setRequestHeader } from '@microsoft/microsoft-graph-client/lib/es/middleware/MiddlewareUtil';
 import { Graph } from '../Graph';
 import { IProvider, ProviderState } from '../providers/IProvider';
+import { SdkVersionMiddleware } from '../utils/SdkVersionMiddleware';
 /**
  * Proxy Provider access token for Microsoft Graph APIs
  *
@@ -17,18 +26,15 @@ import { IProvider, ProviderState } from '../providers/IProvider';
  * @extends {IProvider}
  */
 export class ProxyProvider extends IProvider {
-  // tslint:disable-next-line: completed-docs
-  public provider: any;
-
   /**
    * new instance of proxy graph provider
    *
    * @memberof ProxyProvider
    */
   public graph: Graph;
-  constructor(graphProxyUrl: string) {
+  constructor(graphProxyUrl: string, getCustomHeaders: () => Promise<object> = null) {
     super();
-    this.graph = new ProxyGraph(graphProxyUrl, this);
+    this.graph = new ProxyGraph(graphProxyUrl, getCustomHeaders);
     this.graph.getMe().then(
       user => {
         if (user != null) {
@@ -44,33 +50,13 @@ export class ProxyProvider extends IProvider {
   }
 
   /**
-   * sets Provider state to SignedIn
-   *
-   * @returns {Promise<void>}
-   * @memberof ProxyProvider
-   */
-  public async login(): Promise<void> {
-    this.setState(ProviderState.SignedIn);
-  }
-  /**
-   * sets Provider state to signed out
-   *
-   * @returns {Promise<void>}
-   * @memberof ProxyProvider
-   */
-  public async logout(): Promise<void> {
-    this.setState(ProviderState.Loading);
-    await new Promise(resolve => setTimeout(resolve, 3000));
-    this.setState(ProviderState.SignedOut);
-  }
-  /**
-   * Promise returning token from graph.microsoft.com
+   * Promise returning token
    *
    * @returns {Promise<string>}
    * @memberof ProxyProvider
    */
   public getAccessToken(): Promise<string> {
-    return Promise.resolve('{token:https://graph.microsoft.com/}');
+    return null;
   }
 }
 
@@ -83,16 +69,69 @@ export class ProxyProvider extends IProvider {
  */
 // tslint:disable-next-line: max-classes-per-file
 export class ProxyGraph extends Graph {
-  private readonly baseUrl: string;
-
-  constructor(baseUrl: string, provider: ProxyProvider) {
+  constructor(baseUrl: string, getCustomHeaders: () => Promise<object>) {
     super(null);
 
-    this.baseUrl = baseUrl;
+    const retryHandler = new RetryHandler(new RetryHandlerOptions());
+    const telemetryHandler = new TelemetryHandler();
+    const sdkVersionMiddleware = new SdkVersionMiddleware();
+    const customHeaderMiddleware = new CustomHeaderMiddleware(getCustomHeaders);
+    const httpMessageHandler = new HTTPMessageHandler();
+
+    retryHandler.setNext(telemetryHandler);
+    telemetryHandler.setNext(sdkVersionMiddleware);
+    sdkVersionMiddleware.setNext(customHeaderMiddleware);
+    customHeaderMiddleware.setNext(httpMessageHandler);
 
     this.client = Client.initWithMiddleware({
-      authProvider: provider,
-      baseUrl: this.baseUrl
+      baseUrl,
+      middleware: retryHandler
     });
+  }
+}
+
+/**
+ * Custom Middleware to add custom headers when making calls
+ * through the proxy provider
+ *
+ * @class CustomHeaderMiddleware
+ * @implements {Middleware}
+ */
+// tslint:disable-next-line: max-classes-per-file
+class CustomHeaderMiddleware implements Middleware {
+  private nextMiddleware: Middleware;
+  private _getCustomHeaders: () => Promise<object>;
+
+  public constructor(getCustomHeaders: () => Promise<object>) {
+    this._getCustomHeaders = getCustomHeaders;
+  }
+
+  /**
+   * Execute the current middleware
+   *
+   * @param {Context} context
+   * @returns {Promise<void>}
+   * @memberof CustomHeaderMiddleware
+   */
+  public async execute(context: Context): Promise<void> {
+    if (this._getCustomHeaders) {
+      const headers = await this._getCustomHeaders();
+      for (const key in headers) {
+        if (headers.hasOwnProperty(key)) {
+          setRequestHeader(context.request, context.options, key, headers[key]);
+        }
+      }
+    }
+    return await this.nextMiddleware.execute(context);
+  }
+
+  /**
+   * Handles setting of next middleware
+   *
+   * @param {Middleware} next
+   * @memberof SdkVersionMiddleware
+   */
+  public setNext(next: Middleware): void {
+    this.nextMiddleware = next;
   }
 }

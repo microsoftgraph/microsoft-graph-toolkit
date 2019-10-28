@@ -26,7 +26,7 @@ export class SdkVersionMiddleware implements Middleware {
   // tslint:disable-next-line: completed-docs
   public async execute(context: Context): Promise<void> {
     try {
-      let sdkVersionValue: string = `mgt/${PACKAGE_VERSION}`; // todo - add real version
+      let sdkVersionValue: string = `mgt/${PACKAGE_VERSION}`;
 
       sdkVersionValue += ', ' + getRequestHeader(context.request, context.options, 'SdkVersion');
 
