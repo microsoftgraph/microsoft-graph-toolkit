@@ -138,31 +138,40 @@ export class MgtPeople extends MgtTemplatedComponent {
 
   protected render() {
     if (this.people) {
-      return (
-        this.renderTemplate('default', { people: this.people }) ||
-        html`
-          <ul class="people-list">
-            ${this.people.slice(0, this.showMax).map(
-              person =>
-                html`
-                  <li class="people-person">
-                    ${this.renderTemplate('person', { person }, person.displayName) || this.renderPerson(person)}
-                  </li>
-                `
-            )}
-            ${this.people.length > this.showMax
-              ? this.renderTemplate('overflow', {
-                  extra: this.people.length - this.showMax,
-                  max: this.showMax,
-                  people: this.people
-                }) ||
-                html`
-                  <li>+${this.people.length - this.showMax}</li>
-                `
-              : null}
-          </ul>
-        `
-      );
+      if (this.people.length) {
+        return (
+          this.renderTemplate('default', { people: this.people }) ||
+          html`
+            <ul class="people-list">
+              ${this.people.slice(0, this.showMax).map(
+                person =>
+                  html`
+                    <li class="people-person">
+                      ${this.renderTemplate('person', { person }, person.displayName) || this.renderPerson(person)}
+                    </li>
+                  `
+              )}
+              ${this.people.length > this.showMax
+                ? this.renderTemplate('overflow', {
+                    extra: this.people.length - this.showMax,
+                    max: this.showMax,
+                    people: this.people
+                  }) ||
+                  html`
+                    <li>+${this.people.length - this.showMax}</li>
+                  `
+                : null}
+            </ul>
+          `
+        );
+      } else {
+        return (
+          this.renderTemplate('no-people', null) ||
+          html`
+            <i class="login-icon ms-Icon ms-Icon--Contact"></i>
+          `
+        );
+      }
     } else {
       return this.renderTemplate('no-data', null) || html``;
     }
