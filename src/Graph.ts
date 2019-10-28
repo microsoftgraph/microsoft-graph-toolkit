@@ -250,7 +250,7 @@ export class Graph {
    * @memberof Graph
    */
   public async getPlansForGroup(groupId: string): Promise<MicrosoftGraph.PlannerPlan[]> {
-    const scopes = 'people.read';
+    const scopes = 'Group.Read.All';
 
     const uri = `/groups/${groupId}/planner/plans`;
     const plans = await this.client
