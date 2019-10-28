@@ -11,10 +11,32 @@ import { Providers } from '../../Providers';
 import { ProviderState } from '../../providers/IProvider';
 import '../../styles/fabric-icon-font';
 import '../mgt-person/mgt-person';
-import { PersonCardInteraction } from '../mgt-person/mgt-person';
 import { MgtTemplatedComponent } from '../templatedComponent';
 import { styles } from './mgt-people-css';
 
+/**
+ * Defines how a person card is shown when a user interacts with
+ * a person component
+ *
+ * @export
+ * @enum {number}
+ */
+export enum PersonCardInteraction {
+  /**
+   * Don't show person card
+   */
+  none,
+
+  /**
+   * Show person card on hover
+   */
+  hover,
+
+  /**
+   * Show person card on click
+   */
+  click
+}
 /**
  * web component to display a group of people or contacts by using their photos or initials.
  *
@@ -74,6 +96,22 @@ export class MgtPeople extends MgtTemplatedComponent {
     }
   })
   public userIds: string[];
+
+  /**
+   * Sets how the person-card is invoked
+   * Set to PersonCardInteraction.none to not show the card
+   *
+   * @type {PersonCardInteraction}
+   * @memberof MgtPerson
+   */
+  @property({
+    attribute: 'person-card',
+    converter: (value, type) => {
+      value = value.toLowerCase();
+      return PersonCardInteraction[value] || PersonCardInteraction.none;
+    }
+  })
+  public personCardInteraction: PersonCardInteraction = PersonCardInteraction.none;
 
   private _firstUpdated = false;
 
@@ -164,7 +202,7 @@ export class MgtPeople extends MgtTemplatedComponent {
       <mgt-person
         .personDetails=${person}
         .personImage=${'@'}
-        .personCardInteraction=${PersonCardInteraction.hover}
+        .personCardInteraction=${PersonCardInteraction}
       ></mgt-person>
     `;
   }
