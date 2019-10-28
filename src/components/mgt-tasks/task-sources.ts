@@ -168,6 +168,14 @@ export interface ITaskSource {
   getTaskGroups(): Promise<ITaskGroup[]>;
 
   /**
+   * Promise that returns task collections for group id
+   *
+   * @returns {Promise<ITaskGroup[]>}
+   * @memberof ITaskSource
+   */
+  getTaskGroupsForGroup(id: string): Promise<ITaskGroup[]>;
+
+  /**
    * Promise that returns a single task collection by collection id
    *
    * @param {string} id
@@ -282,6 +290,19 @@ export class PlannerTaskSource extends TaskSourceBase implements ITaskSource {
    */
   public async getTaskGroups(): Promise<ITaskGroup[]> {
     const plans = await this.graph.planner_getAllMyPlans();
+
+    return plans.map(plan => ({ id: plan.id, title: plan.title } as ITaskGroup));
+  }
+
+  /**
+   * returns promise with all of plans for group id
+   *
+   * @param {string} id
+   * @returns {Promise<ITaskGroup[]>}
+   * @memberof PlannerTaskSource
+   */
+  public async getTaskGroupsForGroup(id: string): Promise<ITaskGroup[]> {
+    const plans = await this.graph.getPlansForGroup(id);
 
     return plans.map(plan => ({ id: plan.id, title: plan.title } as ITaskGroup));
   }
@@ -591,5 +612,16 @@ export class TodoTaskSource extends TaskSourceBase implements ITaskSource {
    */
   public isAssignedToMe(task: ITask, myId: string): boolean {
     return true;
+  }
+
+  /**
+   * returns promise with all of plans for group id
+   *
+   * @param {string} id
+   * @returns {Promise<ITaskGroup[]>}
+   * @memberof PlannerTaskSource
+   */
+  public async getTaskGroupsForGroup(id: string): Promise<ITaskGroup[]> {
+    return undefined;
   }
 }
