@@ -19,8 +19,6 @@ import { PersonCardInteraction } from './../PersonCardInteraction';
 import { styles } from './mgt-tasks-css';
 import { ITask, ITaskFolder, ITaskGroup, ITaskSource, PlannerTaskSource, TodoTaskSource } from './task-sources';
 
-import { relative } from 'path';
-import '../mgt-people/mgt-people';
 import { MgtPeople } from '../mgt-people/mgt-people';
 import '../mgt-person/mgt-person';
 import '../sub-components/mgt-arrow-options/mgt-arrow-options';
@@ -184,7 +182,7 @@ export class MgtTasks extends MgtTemplatedComponent {
   @property() private _currentGroup: string;
   @property() private _currentFolder: string;
 
-  @property() private showPeoplePicker: boolean = false;
+  @property() private _showPeoplePicker: boolean = false;
 
   private _me: User = null;
   private _providerUpdateCallback: () => void | any;
@@ -832,11 +830,11 @@ export class MgtTasks extends MgtTemplatedComponent {
               <span
                 @click=${(e: MouseEvent) => {
                   this.handleClick(e);
-                  this._showPeoplePicker(task);
+                  this.showPeoplePicker(task);
                 }}
               >
                 ${assignedPeopleHTML}
-                <div class=${classMap({ Picker: true, Hidden: !this.showPeoplePicker || task !== this._currentTask })}>
+                <div class=${classMap({ Picker: true, Hidden: !this._showPeoplePicker || task !== this._currentTask })}>
                   <mgt-people-picker class="picker-newTask" @click=${this.handleClick}></mgt-people-picker>
                 </div>
               </span>
@@ -876,8 +874,8 @@ export class MgtTasks extends MgtTemplatedComponent {
     `;
   }
 
-  private _showPeoplePicker(task: ITask) {
-    if (this.showPeoplePicker) {
+  private showPeoplePicker(task: ITask) {
+    if (this._showPeoplePicker) {
       const isCurrentTask = task === this._currentTask;
       this.hidePeoplePicker();
       if (isCurrentTask) {
@@ -885,7 +883,7 @@ export class MgtTasks extends MgtTemplatedComponent {
       }
     }
     this._currentTask = task;
-    this.showPeoplePicker = true;
+    this._showPeoplePicker = true;
 
     // logic for already created tasks
     if (this.renderRoot) {
@@ -911,7 +909,7 @@ export class MgtTasks extends MgtTemplatedComponent {
       mgtPeople.people = picker.selectedPeople;
       this.assignPeople(this._currentTask, picker.selectedPeople);
     }
-    this.showPeoplePicker = false;
+    this._showPeoplePicker = false;
     this._currentTask = null;
   }
 
@@ -1016,7 +1014,7 @@ export class MgtTasks extends MgtTemplatedComponent {
           <span
             @click=${(e: MouseEvent) => {
               this.handleClick(e);
-              this._showPeoplePicker(task);
+              this.showPeoplePicker(task);
             }}
           >
             ${assignedPeopleHTML}
@@ -1230,14 +1228,5 @@ export class MgtTasks extends MgtTemplatedComponent {
     }
 
     return null;
-  }
-  private _handleMouseEnter(e: MouseEvent, task) {
-    if (task) {
-      this._currentTask = task;
-    }
-    this._mouseHasLeft = false;
-  }
-  private _handleMouseLeave(e: MouseEvent) {
-    this._mouseHasLeft = true;
   }
 }
