@@ -14,31 +14,8 @@ import '../../styles/fabric-icon-font';
 import { getEmailFromGraphEntity } from '../../utils/GraphHelpers';
 import { MgtPersonCard } from '../mgt-person-card/mgt-person-card';
 import { MgtTemplatedComponent } from '../templatedComponent';
+import { PersonCardInteraction } from './../PersonCardInteraction';
 import { styles } from './mgt-person-css';
-
-/**
- * Defines how a person card is shown when a user interacts with
- * a person component
- *
- * @export
- * @enum {number}
- */
-export enum PersonCardInteraction {
-  /**
-   * Don't show person card
-   */
-  none,
-
-  /**
-   * Show person card on hover
-   */
-  hover,
-
-  /**
-   * Show person card on click
-   */
-  click
-}
 
 /**
  * The person component is used to display a person or contact by using their photo, name, and/or email address.

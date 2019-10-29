@@ -15,6 +15,7 @@ import { ProviderState } from '../../providers/IProvider';
 import { getShortDateString } from '../../utils/Utils';
 import { MgtPeoplePicker } from '../mgt-people-picker/mgt-people-picker';
 import { MgtTemplatedComponent } from '../templatedComponent';
+import { PersonCardInteraction } from './../PersonCardInteraction';
 import { styles } from './mgt-tasks-css';
 import { ITask, ITaskFolder, ITaskGroup, ITaskSource, PlannerTaskSource, TodoTaskSource } from './task-sources';
 
@@ -1005,7 +1006,11 @@ export class MgtTasks extends MgtTemplatedComponent {
 
       if (this.dataSource !== TasksSource.todo) {
         assignedPeopleHTML = html`
-          <mgt-people class="people-${task.id}" .userIds="${assignedPeople}"></mgt-people>
+          <mgt-people
+            class="people-${task.id}"
+            .userIds="${assignedPeople}"
+            .personCardInteraction=${PersonCardInteraction.none}
+          ></mgt-people>
         `;
         taskPeople = html`
           <span
