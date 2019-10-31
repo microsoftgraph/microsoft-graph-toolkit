@@ -169,12 +169,11 @@ export class MgtPeople extends MgtTemplatedComponent {
         if (this.groupId) {
           this.people = await client.getPeopleFromGroup(this.groupId);
         } else if (this.userIds) {
-          const users = [];
-          // tslint:disable-next-line: prefer-for-of
-          for (let i = 0; i < this.userIds.length; i++) {
-            users.push(await client.getUser(this.userIds[i]));
-          }
-          this.people = users;
+          this.people = await Promise.all(
+            this.userIds.map(async userId => {
+              return await client.getUser(userId);
+            })
+          );
         } else {
           this.people = await client.getPeople();
         }
