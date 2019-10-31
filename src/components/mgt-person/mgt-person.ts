@@ -98,7 +98,11 @@ export class MgtPerson extends MgtTemplatedComponent {
     attribute: 'person-card',
     converter: (value, type) => {
       value = value.toLowerCase();
-      return PersonCardInteraction[value] || PersonCardInteraction.none;
+      if (typeof PersonCardInteraction[value] === 'undefined') {
+        return PersonCardInteraction.none;
+      } else {
+        return PersonCardInteraction[value];
+      }
     }
   })
   public personCardInteraction: PersonCardInteraction = PersonCardInteraction.none;
