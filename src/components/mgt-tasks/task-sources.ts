@@ -168,6 +168,14 @@ export interface ITaskSource {
   getMyDressers(): Promise<IDresser[]>;
 
   /**
+   * Promise that returns task collections for group id
+   *
+   * @returns {Promise<IDresser[]>}
+   * @memberof ITaskSource
+   */
+  getDressersForGroup(id: string): Promise<IDresser[]>;
+
+  /**
    * Promise that returns a single task collection by collection id
    *
    * @param {string} id
@@ -261,6 +269,19 @@ export class PlannerTaskSource extends TaskSourceBase implements ITaskSource {
    */
   public async getMyDressers(): Promise<IDresser[]> {
     const plans = await this.graph.planner_getAllMyPlans();
+
+    return plans.map(plan => ({ id: plan.id, title: plan.title } as IDresser));
+  }
+
+  /**
+   * returns promise with all of plans for group id
+   *
+   * @param {string} id
+   * @returns {Promise<IDresser[]>}
+   * @memberof PlannerTaskSource
+   */
+  public async getDressersForGroup(id: string): Promise<IDresser[]> {
+    const plans = await this.graph.getPlansForGroup(id);
 
     return plans.map(plan => ({ id: plan.id, title: plan.title } as IDresser));
   }
@@ -519,5 +540,16 @@ export class TodoTaskSource extends TaskSourceBase implements ITaskSource {
    */
   public async removeTask(id: string, eTag: string): Promise<any> {
     return await this.graph.todo_removeTask(id, eTag);
+  }
+
+  /**
+   * returns promise with all of plans for group id
+   *
+   * @param {string} id
+   * @returns {Promise<IDresser[]>}
+   * @memberof PlannerTaskSource
+   */
+  public async getDressersForGroup(id: string): Promise<IDresser[]> {
+    return undefined;
   }
 }
