@@ -526,6 +526,13 @@ export class MgtTasks extends MgtTemplatedComponent {
     // new people from people picker
     // tslint:disable-next-line: prefer-const
 
+    if (people.length === 0) {
+      // tslint:disable-next-line: prefer-for-of
+      for (let i = 0; i < savedSelectedPeople.length; i++) {
+        peopleObj[savedSelectedPeople[i]] = null;
+      }
+    }
+
     if (people) {
       // tslint:disable-next-line: prefer-for-of
       for (let i = 0; i < savedSelectedPeople.length; i++) {
@@ -819,7 +826,11 @@ export class MgtTasks extends MgtTemplatedComponent {
     const task = null;
 
     const assignedPeopleHTML = html`
-      <mgt-people class="people-newTask" .userIds="${[]}"> </mgt-people>
+      <mgt-people class="people-newTask" .userIds="${[]}">
+        <template data-type="no-people">
+          <i class="login-icon ms-Icon ms-Icon--Contact"></i>
+        </template>
+      </mgt-people>
     `;
 
     const taskPeople =
@@ -877,9 +888,10 @@ export class MgtTasks extends MgtTemplatedComponent {
   private showPeoplePicker(task: ITask) {
     if (this._showPeoplePicker) {
       const isCurrentTask = task === this._currentTask;
-      this.hidePeoplePicker();
       if (isCurrentTask) {
         return;
+      } else {
+        this.hidePeoplePicker();
       }
     }
     this._currentTask = task;
@@ -1002,13 +1014,23 @@ export class MgtTasks extends MgtTemplatedComponent {
         return key;
       });
 
+      let peopleExist = null;
+      if (assignedPeople.length === 0) {
+        peopleExist = html`
+          <template data-type="no-people">
+            <i class="login-icon ms-Icon ms-Icon--Contact"></i>
+          </template>
+        `;
+      }
+
       if (this.dataSource !== TasksSource.todo) {
         assignedPeopleHTML = html`
           <mgt-people
             class="people-${task.id}"
             .userIds="${assignedPeople}"
             .personCardInteraction=${PersonCardInteraction.none}
-          ></mgt-people>
+            >${peopleExist}
+          </mgt-people>
         `;
         taskPeople = html`
           <span
@@ -1085,6 +1107,7 @@ export class MgtTasks extends MgtTemplatedComponent {
 
   private handleClick(event) {
     event.stopPropagation();
+    event.preventDefault();
   }
 
   private renderLoadingTask() {

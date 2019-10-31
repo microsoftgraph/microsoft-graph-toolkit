@@ -143,12 +143,7 @@ export class MgtPeople extends MgtTemplatedComponent {
           `
         );
       } else {
-        return (
-          this.renderTemplate('no-people', null) ||
-          html`
-            <i class="login-icon ms-Icon ms-Icon--Contact"></i>
-          `
-        );
+        return this.renderTemplate('no-people', null) || html``;
       }
     } else {
       return this.renderTemplate('no-data', null) || html``;
