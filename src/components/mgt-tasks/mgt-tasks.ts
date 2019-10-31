@@ -840,7 +840,7 @@ export class MgtTasks extends MgtTemplatedComponent {
             <span class="TaskDetail TaskPeople">
               <span
                 @click=${(e: MouseEvent) => {
-                  this.handleClick(e);
+                  this.handleClick(e, task);
                   this.showPeoplePicker(task);
                 }}
               >
@@ -1035,7 +1035,7 @@ export class MgtTasks extends MgtTemplatedComponent {
         taskPeople = html`
           <span
             @click=${(e: MouseEvent) => {
-              this.handleClick(e);
+              this.handleClick(e, task);
               this.showPeoplePicker(task);
             }}
           >
@@ -1105,7 +1105,8 @@ export class MgtTasks extends MgtTemplatedComponent {
     `;
   }
 
-  private handleClick(event) {
+  private handleClick(event, task: ITask) {
+    this.fireCustomEvent('taskClick', { task });
     event.stopPropagation();
     event.preventDefault();
   }
