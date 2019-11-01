@@ -5,8 +5,8 @@
  * -------------------------------------------------------------------------------------------
  */
 
-import { PlannerAssignments, User } from '@microsoft/microsoft-graph-types';
-import { OutlookTaskFolder } from '@microsoft/microsoft-graph-types-beta';
+import { Person, PlannerAssignments, User } from '@microsoft/microsoft-graph-types';
+import { Contact, OutlookTaskFolder } from '@microsoft/microsoft-graph-types-beta';
 import { customElement, html, property } from 'lit-element';
 import { classMap } from 'lit-html/directives/class-map';
 import { repeat } from 'lit-html/directives/repeat';
@@ -516,7 +516,7 @@ export class MgtTasks extends MgtTemplatedComponent {
     this._hiddenTasks = this._hiddenTasks.filter(id => id !== task.id);
   }
 
-  private async assignPeople(task: ITask, people: any) {
+  private async assignPeople(task: ITask, people: Array<User | Person | Contact>) {
     const ts = this.getTaskSource();
     if (!ts) {
       return;
@@ -526,7 +526,7 @@ export class MgtTasks extends MgtTemplatedComponent {
     let savedSelectedPeople = [];
     if (task) {
       if (task.assignments) {
-        savedSelectedPeople = Object.keys(task.assignments);
+        savedSelectedPeople = Object.keys(task.assignments).sort();
       }
     }
 
@@ -535,11 +535,10 @@ export class MgtTasks extends MgtTemplatedComponent {
     });
 
     // new people from people picker
-    // tslint:disable-next-line: prefer-const
     const isEqual =
       newPeopleIds.length === savedSelectedPeople.length &&
       newPeopleIds.sort().every((value, index) => {
-        return value === savedSelectedPeople.sort()[index];
+        return value === savedSelectedPeople[index];
       });
 
     if (isEqual) {
