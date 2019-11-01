@@ -533,8 +533,21 @@ export class MgtTasks extends MgtTemplatedComponent {
       }
     }
 
+    const newPeopleIds = people.map(person => {
+      return person.id;
+    });
+
     // new people from people picker
     // tslint:disable-next-line: prefer-const
+    const isEqual =
+      newPeopleIds.length === savedSelectedPeople.length &&
+      newPeopleIds.sort().every((value, index) => {
+        return value === savedSelectedPeople.sort()[index];
+      });
+
+    if (isEqual) {
+      return;
+    }
 
     if (people.length === 0) {
       // tslint:disable-next-line: prefer-for-of
