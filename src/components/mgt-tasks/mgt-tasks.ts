@@ -180,7 +180,6 @@ export class MgtTasks extends MgtTemplatedComponent {
   public set isNewTaskVisible(value: boolean) {
     this._showNewTask = value;
     if (!value) {
-      this._newTaskSelfAssigned = false;
       this._newTaskDueDate = null;
       this._newTaskName = '';
       this._newTaskGroupId = '';
@@ -189,7 +188,6 @@ export class MgtTasks extends MgtTemplatedComponent {
 
   @property() private _showNewTask: boolean = false;
   @property() private _newTaskBeingAdded: boolean = false;
-  @property() private _newTaskSelfAssigned: boolean = false;
   @property() private _newTaskName: string = '';
   @property() private _newTaskDueDate: Date = null;
   @property() private _newTaskGroupId: string = '';
@@ -609,14 +607,7 @@ export class MgtTasks extends MgtTemplatedComponent {
         this._newTaskDueDate,
         !this._currentGroup ? this._newTaskGroupId : this._currentGroup,
         !this._currentFolder ? this._newTaskFolderId : this._currentFolder,
-        this._newTaskSelfAssigned
-          ? {
-              [this._me.id]: {
-                '@odata.type': 'microsoft.graph.plannerAssignment',
-                orderHint: 'string !'
-              }
-            }
-          : peopleObj
+        peopleObj
       );
     }
   }
@@ -921,24 +912,18 @@ export class MgtTasks extends MgtTemplatedComponent {
     this._showPeoplePicker = true;
 
     // logic for already created tasks
-    if (this.renderRoot) {
-      // if shadowroot exists search for the task's assigned People and push to picker
-      const picker = this.getPeoplePicker(task);
-      const mgtPeople = this.getMgtPeople(task) as MgtPeople;
+    // if shadowroot exists search for the task's assigned People and push to picker
+    const picker = this.getPeoplePicker(task);
+    const mgtPeople = this.getMgtPeople(task);
 
-      const assignedPeople: any = mgtPeople.people.map(person => {
-        return person.id;
-      });
-
-      if (picker) {
-        picker.selectUsersById(assignedPeople);
-      }
+    if (picker && mgtPeople) {
+      picker.selectedPeople = mgtPeople.people;
     }
   }
 
   private hidePeoplePicker() {
     const picker = this.getPeoplePicker(this._currentTask);
-    const mgtPeople = this.getMgtPeople(this._currentTask) as MgtPeople;
+    const mgtPeople = this.getMgtPeople(this._currentTask);
 
     if (picker) {
       mgtPeople.people = picker.selectedPeople;
