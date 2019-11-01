@@ -832,7 +832,7 @@ export class MgtTasks extends MgtTemplatedComponent {
     const task = null;
 
     const assignedPeopleHTML = html`
-      <mgt-people class="people-newTask" .userIds="${[]}">
+      <mgt-people class="people-newTask" .userIds="${[]}" .personCardInteraction=${PersonCardInteraction.none}>
         <template data-type="no-people">
           <i class="login-icon ms-Icon ms-Icon--Contact"></i>
         </template>
