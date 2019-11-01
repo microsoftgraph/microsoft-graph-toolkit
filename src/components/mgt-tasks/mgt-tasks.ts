@@ -163,6 +163,30 @@ export class MgtTasks extends MgtTemplatedComponent {
   @property({ attribute: 'group-id', type: String })
   public groupId: string = null;
 
+  /**
+   * Get whether new task view is visible
+   *
+   * @memberof MgtTasks
+   */
+  public get isNewTaskVisible() {
+    return this._showNewTask;
+  }
+
+  /**
+   * Set whether new task is visible
+   *
+   * @memberof MgtTasks
+   */
+  public set isNewTaskVisible(value: boolean) {
+    this._showNewTask = value;
+    if (!value) {
+      this._newTaskSelfAssigned = false;
+      this._newTaskDueDate = null;
+      this._newTaskName = '';
+      this._newTaskGroupId = '';
+    }
+  }
+
   @property() private _showNewTask: boolean = false;
   @property() private _newTaskBeingAdded: boolean = false;
   @property() private _newTaskSelfAssigned: boolean = false;
@@ -187,7 +211,6 @@ export class MgtTasks extends MgtTemplatedComponent {
   private _me: User = null;
   private _providerUpdateCallback: () => void | any;
 
-  private _mouseHasLeft = false;
   @property() private _currentTask: ITask;
 
   constructor() {
@@ -313,19 +336,6 @@ export class MgtTasks extends MgtTemplatedComponent {
         ${repeat(tasks, task => task.id, task => this.renderTask(task))}
       </div>
     `;
-  }
-
-  private closeNewTask(e: MouseEvent) {
-    this._showNewTask = false;
-
-    this._newTaskSelfAssigned = false;
-    this._newTaskDueDate = null;
-    this._newTaskName = '';
-    this._newTaskGroupId = '';
-  }
-
-  private openNewTask(e: MouseEvent) {
-    this._showNewTask = true;
   }
 
   /**
@@ -469,7 +479,7 @@ export class MgtTasks extends MgtTemplatedComponent {
     await ts.addTask(newTask);
     await this.loadTasks();
     this._newTaskBeingAdded = false;
-    this.closeNewTask(null);
+    this.isNewTaskVisible = false;
   }
 
   private async completeTask(task: ITask) {
@@ -617,12 +627,8 @@ export class MgtTasks extends MgtTemplatedComponent {
         : html`
             <span
               class="AddBarItem NewTaskButton"
-              @click="${(e: MouseEvent) => {
-                if (!this._showNewTask) {
-                  this.openNewTask(e);
-                } else {
-                  this.closeNewTask(e);
-                }
+              @click="${() => {
+                this.isNewTaskVisible = !this.isNewTaskVisible;
               }}"
             >
               <span class="TaskIcon">\uE710</span>
@@ -858,7 +864,7 @@ export class MgtTasks extends MgtTemplatedComponent {
         `
       : html`
           <div class="TaskAddButtonContainer ${this._newTaskName === '' ? 'Disabled' : ''}">
-            <div class="TaskIcon TaskCancel" @click="${this.closeNewTask}">
+            <div class="TaskIcon TaskCancel" @click="${() => (this.isNewTaskVisible = false)}">
               <span>Cancel</span>
             </div>
             <div class="TaskIcon TaskAdd" @click="${this.onAddTaskClick}">
