@@ -208,6 +208,7 @@ export class MgtTasks extends MgtTemplatedComponent {
 
   private _me: User = null;
   private _providerUpdateCallback: () => void | any;
+  private _peopleObj: object = {};
 
   @property() private _currentTask: ITask;
 
@@ -520,8 +521,6 @@ export class MgtTasks extends MgtTemplatedComponent {
     if (!ts) {
       return;
     }
-    // tslint:disable-next-line: prefer-const
-    let peopleObj: any = {};
 
     // create previously selected people Object
     let savedSelectedPeople = [];
@@ -550,7 +549,7 @@ export class MgtTasks extends MgtTemplatedComponent {
     if (people.length === 0) {
       // tslint:disable-next-line: prefer-for-of
       for (let i = 0; i < savedSelectedPeople.length; i++) {
-        peopleObj[savedSelectedPeople[i]] = null;
+        this._peopleObj[savedSelectedPeople[i]] = null;
       }
     }
 
@@ -560,10 +559,10 @@ export class MgtTasks extends MgtTemplatedComponent {
         // tslint:disable-next-line: prefer-for-of
         for (let j = 0; j < people.length; j++) {
           if (savedSelectedPeople[i] !== people[j].id) {
-            peopleObj[savedSelectedPeople[i]] = null;
+            this._peopleObj[savedSelectedPeople[i]] = null;
             break;
           } else {
-            peopleObj[savedSelectedPeople[i]] = {
+            this._peopleObj[savedSelectedPeople[i]] = {
               '@odata.type': 'microsoft.graph.plannerAssignment',
               orderHint: 'string !'
             };
@@ -573,7 +572,7 @@ export class MgtTasks extends MgtTemplatedComponent {
 
       // tslint:disable-next-line: prefer-for-of
       for (let i = 0; i < people.length; i++) {
-        peopleObj[people[i].id] = {
+        this._peopleObj[people[i].id] = {
           '@odata.type': 'microsoft.graph.plannerAssignment',
           orderHint: 'string !'
         };
@@ -582,7 +581,7 @@ export class MgtTasks extends MgtTemplatedComponent {
 
     if (task) {
       this._loadingTasks = [...this._loadingTasks, task.id];
-      await ts.assignPeopleToTask(task.id, task.eTag, peopleObj);
+      await ts.assignPeopleToTask(task.id, this._peopleObj, task.eTag);
       await this.loadTasks();
       this._loadingTasks = this._loadingTasks.filter(id => id !== task.id);
     }
