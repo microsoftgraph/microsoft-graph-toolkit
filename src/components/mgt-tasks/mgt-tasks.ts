@@ -859,13 +859,13 @@ export class MgtTasks extends MgtTemplatedComponent {
             <span class="TaskDetail TaskPeople">
               <span
                 @click=${(e: MouseEvent) => {
-                  this.handleClick(e, task);
+                  this.handleTaskClick(e, task);
                   this.showPeoplePicker(task);
                 }}
               >
                 ${assignedPeopleHTML}
                 <div class=${classMap({ Picker: true, Hidden: !this._showPeoplePicker || task !== this._currentTask })}>
-                  <mgt-people-picker class="picker-newTask" @click=${this.handleClick}></mgt-people-picker>
+                  <mgt-people-picker class="picker-newTask" @click=${this.handleTaskClick}></mgt-people-picker>
                 </div>
               </span>
             </span>
@@ -1033,14 +1033,11 @@ export class MgtTasks extends MgtTemplatedComponent {
         return key;
       });
 
-      let peopleExist = null;
-      if (assignedPeople.length === 0) {
-        peopleExist = html`
-          <template data-type="no-people">
-            <i class="login-icon ms-Icon ms-Icon--Contact"></i>
-          </template>
-        `;
-      }
+      const noPeopleTemplate = html`
+        <template data-type="no-people">
+          <i class="login-icon ms-Icon ms-Icon--Contact"></i>
+        </template>
+      `;
 
       if (this.dataSource !== TasksSource.todo) {
         assignedPeopleHTML = html`
@@ -1048,14 +1045,14 @@ export class MgtTasks extends MgtTemplatedComponent {
             class="people-${task.id}"
             .userIds="${assignedPeople}"
             .personCardInteraction=${PersonCardInteraction.none}
-            >${peopleExist}
+            >${noPeopleTemplate}
           </mgt-people>
         `;
         taskPeople = html`
           <span
             class="TaskDetail TaskBucket"
             @click=${(e: MouseEvent) => {
-              this.handleClick(e, task);
+              this.handleTaskClick(e, task);
               this.showPeoplePicker(task);
             }}
           >
@@ -1125,7 +1122,7 @@ export class MgtTasks extends MgtTemplatedComponent {
     `;
   }
 
-  private handleClick(event, task: ITask) {
+  private handleTaskClick(event, task: ITask) {
     this.fireCustomEvent('taskClick', { task });
     event.stopPropagation();
     event.preventDefault();
