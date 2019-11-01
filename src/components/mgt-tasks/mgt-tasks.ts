@@ -845,7 +845,11 @@ export class MgtTasks extends MgtTemplatedComponent {
     const task = null;
 
     const assignedPeopleHTML = html`
-      <mgt-people class="people-newTask" .userIds="${[]}" .personCardInteraction=${PersonCardInteraction.none}>
+      <mgt-people
+        class="people-newTask"
+        .userIds="${[]}"
+        .personCardInteraction=${this._showPeoplePicker ? PersonCardInteraction.none : PersonCardInteraction.hover}
+      >
         <template data-type="no-people">
           <i class="login-icon ms-Icon ms-Icon--Contact"></i>
         </template>
@@ -1044,7 +1048,7 @@ export class MgtTasks extends MgtTemplatedComponent {
           <mgt-people
             class="people-${task.id}"
             .userIds="${assignedPeople}"
-            .personCardInteraction=${PersonCardInteraction.none}
+            .personCardInteraction=${this._showPeoplePicker ? PersonCardInteraction.none : PersonCardInteraction.hover}
             >${noPeopleTemplate}
           </mgt-people>
         `;
