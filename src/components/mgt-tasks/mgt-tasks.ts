@@ -1040,6 +1040,7 @@ export class MgtTasks extends MgtTemplatedComponent {
         `;
         taskPeople = html`
           <span
+            class="TaskDetail TaskBucket"
             @click=${(e: MouseEvent) => {
               this.handleClick(e, task);
               this.showPeoplePicker(task);

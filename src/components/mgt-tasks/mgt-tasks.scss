@@ -188,6 +188,10 @@ mgt-tasks,
             color: #333333;
             margin: var(--task-detail-icon-margin 0 8px 0 0);
           }
+          mgt-people {
+            color: var(--task-detail-color, black);
+            font-size: 16px;
+          }
 
           mgt-person {
             display: inline-block;
