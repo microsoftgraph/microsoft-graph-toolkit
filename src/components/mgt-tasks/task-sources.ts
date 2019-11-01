@@ -236,12 +236,12 @@ export interface ITaskSource {
    * assign id's to task
    *
    * @param {string} id
-   * @param {string} eTag
    * @param {*} people
+   * @param {string} eTag
    * @returns {Promise<any>}
    * @memberof ITaskSource
    */
-  assignPersonToTask(id: string, eTag: string, people: any): Promise<any>;
+  assignPeopleToTask(id: string, people: any, eTag: string): Promise<any>;
 
   /**
    * Promise to delete a task by id
@@ -417,7 +417,7 @@ export class PlannerTaskSource extends TaskSourceBase implements ITaskSource {
    * @returns {Promise<any>}
    * @memberof PlannerTaskSource
    */
-  public async assignPersonToTask(id: string, eTag: string, people: any): Promise<any> {
+  public async assignPeopleToTask(id: string, eTag: string, people: any): Promise<any> {
     return await this.graph.planner_assignPeopleToTask(id, eTag, people);
   }
 
@@ -556,7 +556,7 @@ export class TodoTaskSource extends TaskSourceBase implements ITaskSource {
    * @returns {Promise<any>}
    * @memberof PlannerTaskSource
    */
-  public async assignPersonToTask(id: string, eTag: string, people: any): Promise<any> {
+  public async assignPeopleToTask(id: string, eTag: string, people: any): Promise<any> {
     return await this.graph.planner_assignPeopleToTask(id, eTag, people);
   }
   /**

@@ -584,7 +584,7 @@ export class MgtTasks extends MgtTemplatedComponent {
 
     if (task) {
       this._loadingTasks = [...this._loadingTasks, task.id];
-      await ts.assignPersonToTask(task.id, task.eTag, peopleObj);
+      await ts.assignPeopleToTask(task.id, task.eTag, peopleObj);
       await this.loadTasks();
       this._loadingTasks = this._loadingTasks.filter(id => id !== task.id);
     }
