@@ -858,7 +858,10 @@ export class MgtTasks extends MgtTemplatedComponent {
               >
                 ${assignedPeopleHTML}
                 <div class=${classMap({ Picker: true, Hidden: !this._showPeoplePicker || task !== this._currentTask })}>
-                  <mgt-people-picker class="picker-newTask" @click=${this.handleTaskClick}></mgt-people-picker>
+                  <mgt-people-picker
+                    class="picker-newTask"
+                    @click=${this.handleTaskClick((e: MouseEvent) => e, null)}
+                  ></mgt-people-picker>
                 </div>
               </span>
             </span>
@@ -901,9 +904,8 @@ export class MgtTasks extends MgtTemplatedComponent {
     if (this._showPeoplePicker) {
       const isCurrentTask = task === this._currentTask;
       if (isCurrentTask) {
-        return;
-      } else {
         this.hidePeoplePicker();
+        return;
       }
     }
     this._currentTask = task;
@@ -1045,7 +1047,7 @@ export class MgtTasks extends MgtTemplatedComponent {
           >
             ${assignedPeopleHTML}
             <div class=${classMap({ Picker: true, Hidden: !this.showPeoplePicker || task !== this._currentTask })}>
-              <mgt-people-picker class="picker-${task.id}"></mgt-people-picker>
+              <mgt-people-picker class="picker-${task.id}" @click=${this.handleTaskClick}></mgt-people-picker>
             </div>
           </span>
         `;
@@ -1115,10 +1117,11 @@ export class MgtTasks extends MgtTemplatedComponent {
   }
 
   private handleTaskClick(event, task: ITask) {
-    event.stopPropagation();
-    event.preventDefault();
     if (task) {
       this.fireCustomEvent('taskClick', { task });
+    } else {
+      event.stopPropagation();
+      event.preventDefault();
     }
   }
 
