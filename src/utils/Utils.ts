@@ -14,6 +14,7 @@ export function delay(ms: number): Promise<void> {
     setTimeout(resolve, ms);
   });
 }
+
 /**
  * returns month and day
  *
@@ -21,20 +22,12 @@ export function delay(ms: number): Promise<void> {
  * @param {Date} date
  * @returns
  */
-
 export function getShortDateString(date: Date) {
   const month = date.getMonth();
   const day = date.getDate();
 
   return `${getMonthString(month)} ${day}`;
 }
-/**
- *
- *
- * @export
- * @param {number} month
- * @returns {string}
- */
 
 /**
  * returns month string based on number
@@ -71,6 +64,35 @@ export function getMonthString(month: number): string {
       return 'December';
     default:
       return 'Month';
+  }
+}
+
+/**
+ * returns day of week string based on number
+ * where 0 === Sunday
+ *
+ * @export
+ * @param {number} day
+ * @returns {string}
+ */
+export function getDayOfWeekString(day: number): string {
+  switch (day) {
+    case 0:
+      return 'Sunday';
+    case 1:
+      return 'Monday';
+    case 2:
+      return 'Tuesday';
+    case 3:
+      return 'Wednesday';
+    case 4:
+      return 'Thursday';
+    case 5:
+      return 'Friday';
+    case 6:
+      return 'Saturday';
+    default:
+      return 'Day';
   }
 }
 /**

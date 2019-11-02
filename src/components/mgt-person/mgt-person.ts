@@ -14,31 +14,8 @@ import '../../styles/fabric-icon-font';
 import { getEmailFromGraphEntity } from '../../utils/GraphHelpers';
 import { MgtPersonCard } from '../mgt-person-card/mgt-person-card';
 import { MgtTemplatedComponent } from '../templatedComponent';
+import { PersonCardInteraction } from './../PersonCardInteraction';
 import { styles } from './mgt-person-css';
-
-/**
- * Defines how a person card is shown when a user interacts with
- * a person component
- *
- * @export
- * @enum {number}
- */
-export enum PersonCardInteraction {
-  /**
-   * Don't show person card
-   */
-  none,
-
-  /**
-   * Show person card on hover
-   */
-  hover,
-
-  /**
-   * Show person card on click
-   */
-  click
-}
 
 /**
  * The person component is used to display a person or contact by using their photo, name, and/or email address.
@@ -121,7 +98,11 @@ export class MgtPerson extends MgtTemplatedComponent {
     attribute: 'person-card',
     converter: (value, type) => {
       value = value.toLowerCase();
-      return PersonCardInteraction[value] || PersonCardInteraction.none;
+      if (typeof PersonCardInteraction[value] === 'undefined') {
+        return PersonCardInteraction.none;
+      } else {
+        return PersonCardInteraction[value];
+      }
     }
   })
   public personCardInteraction: PersonCardInteraction = PersonCardInteraction.none;
@@ -175,17 +156,13 @@ export class MgtPerson extends MgtTemplatedComponent {
   }
 
   /**
-   * Invoked when the element is first updated. Implement to perform one time
-   * work on the element after update.
-   *
-   * Setting properties inside this method will trigger the element to update
-   * again after this update cycle completes.
-   *
-   * * @param _changedProperties Map of changed properties with old values
+   * Invoked on each update to perform rendering tasks. This method must return
+   * a lit-html TemplateResult. Setting properties inside this method will *not*
+   * trigger the element to update.
    */
   public render() {
     const person =
-      this.renderTemplate('default', { person: this.personDetails, personImage: this.personImage }) ||
+      this.renderTemplate('default', { person: this.personDetails, personImage: this.getImage() }) ||
       html`
         <div class="person-root">
           ${this.renderImage()} ${this.renderDetails()}
@@ -213,15 +190,15 @@ export class MgtPerson extends MgtTemplatedComponent {
 
     if (provider.state === ProviderState.SignedOut) {
       this.personDetails = null;
-      this.personImage = null;
       return;
     }
 
+    // personDetails.personImage is a toolkit injected property to pass image between components
+    // an optimization to avoid fetching the image when unnecessary
     if (this.personDetails) {
       // in some cases we might only have name or email, but need to find the image
       // use @ for the image value to search for an image
-      if (this.personImage && this.personImage === '@') {
-        this.personImage = null;
+      if (this.personImage && this.personImage === '@' && !(this.personDetails as any).personImage) {
         this.loadImage();
       }
       return;
@@ -240,8 +217,8 @@ export class MgtPerson extends MgtTemplatedComponent {
 
       const response = await batch.execute();
 
-      this.personImage = response.photo;
       this.personDetails = response.user;
+      (this.personDetails as any).personImage = response.photo;
     } else if (!this.personDetails && this.personQuery) {
       const people = await provider.graph.findPerson(this.personQuery);
       if (people && people.length > 0) {
@@ -257,10 +234,11 @@ export class MgtPerson extends MgtTemplatedComponent {
     const provider = Providers.globalProvider;
 
     const person = this.personDetails;
+    let image: string;
 
     if ((person as MicrosoftGraph.Person).userPrincipalName) {
       const userPrincipalName = (person as MicrosoftGraph.Person).userPrincipalName;
-      this.personImage = await provider.graph.getUserPhoto(userPrincipalName);
+      image = await provider.graph.getUserPhoto(userPrincipalName);
     } else {
       const email = getEmailFromGraphEntity(person);
       if (email) {
@@ -269,26 +247,28 @@ export class MgtPerson extends MgtTemplatedComponent {
 
         if (users && users.length) {
           if ((users[0] as any).personType && (users[0] as any).personType.subclass === 'OrganizationUser') {
-            this.personImage = await provider.graph.getUserPhoto(
+            image = await provider.graph.getUserPhoto(
               (users[0] as MicrosoftGraph.Person).scoredEmailAddresses[0].address
             );
           } else {
             const contactId = users[0].id;
-            this.personImage = await provider.graph.getContactPhoto(contactId);
+            image = await provider.graph.getContactPhoto(contactId);
           }
         }
       }
     }
+    if (image) {
+      (this.personDetails as any).personImage = image;
+    }
+
     this.requestUpdate();
   }
 
   private _handleMouseClick() {
-    if (this.personCardInteraction === PersonCardInteraction.click) {
-      if (!this._isPersonCardVisible) {
-        this._showPersonCard();
-      } else {
-        this._hidePersonCard();
-      }
+    if (this.personCardInteraction === PersonCardInteraction.click && !this._isPersonCardVisible) {
+      this._showPersonCard();
+    } else {
+      this._hidePersonCard();
     }
   }
 
@@ -324,6 +304,15 @@ export class MgtPerson extends MgtTemplatedComponent {
     }
   }
 
+  private getImage(): string {
+    if (this.personImage && this.personImage !== '@') {
+      return this.personImage;
+    } else if (this.personDetails && (this.personDetails as any).personImage) {
+      return (this.personDetails as any).personImage;
+    }
+    return null;
+  }
+
   private renderPersonCard() {
     // ensure person card is only rendered when needed
     if (this.personCardInteraction === PersonCardInteraction.none || !this._personCardShouldRender) {
@@ -353,11 +342,13 @@ export class MgtPerson extends MgtTemplatedComponent {
       visible: this._isPersonCardVisible
     };
     if (this._isPersonCardVisible) {
+      const image = this.getImage();
+
       return html`
         <div style="${customStyle}" class=${classMap(flyoutClasses)}>
-          ${this.renderTemplate('person-card', { person: this.personDetails, personImage: this.personImage }) ||
+          ${this.renderTemplate('person-card', { person: this.personDetails, personImage: image }) ||
             html`
-              <mgt-person-card .personDetails=${this.personDetails} .personImage=${this.personImage}> </mgt-person-card>
+              <mgt-person-card .personDetails=${this.personDetails} .personImage=${image}> </mgt-person-card>
             `}
         </div>
       `;
@@ -380,14 +371,16 @@ export class MgtPerson extends MgtTemplatedComponent {
     if (this.personDetails) {
       const title = this.personCardInteraction === PersonCardInteraction.none ? this.personDetails.displayName : '';
 
-      if (this.personImage && this.personImage !== '@') {
+      const image = this.getImage();
+
+      if (image) {
         return html`
           <img
             class="user-avatar ${this.getImageRowSpanClass()} ${this.getImageSizeClass()}"
             title=${title}
             aria-label=${title}
             alt=${title}
-            src=${this.personImage as string}
+            src=${image}
           />
         `;
       } else {
