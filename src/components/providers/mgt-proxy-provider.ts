@@ -8,35 +8,45 @@
 import { customElement, LitElement, property } from 'lit-element';
 import { Providers } from '../../Providers';
 import { ProxyProvider } from '../../providers/ProxyProvider';
+import { MgtBaseProvider } from './baseProvider';
+
 /**
- * Authentication Library Provider for Proxy Auth thru an api server
+ * Authentication component for ProxyProvider
  *
  * @export
  * @class MgtProxyProvider
  * @extends {LitElement}
  */
 @customElement('mgt-proxy-provider')
-export class MgtProxyProvider extends LitElement {
+export class MgtProxyProvider extends MgtBaseProvider {
   /**
-   * String alphanumerical value relation to a specific user
+   * The base url to the proxy api
    *
    * @type {string}
    * @memberof MgtProxyProvider
    */
   @property({ attribute: 'graph-proxy-url' }) public graphProxyUrl: string;
+
   /**
-   * Invoked when the element is first updated and performs validation
+   * Gets whether this provider can be used in this environment
    *
-   * @param {*} changedProperties
-   * @memberof MgtProxyProvider
+   * @readonly
+   * @memberof MgtMsalProvider
    */
-  public firstUpdated(changedProperties) {
-    this.validateAuthProps();
+  public get isAvailable() {
+    return true;
   }
 
-  private validateAuthProps() {
+  /**
+   * method called to initialize the provider. Each derived class should provide their own implementation.
+   *
+   * @protected
+   * @memberof MgtProxyProvider
+   */
+  protected initializeProvider() {
     if (this.graphProxyUrl !== undefined) {
-      Providers.globalProvider = new ProxyProvider(this.graphProxyUrl);
+      this.provider = new ProxyProvider(this.graphProxyUrl);
+      Providers.globalProvider = this.provider;
     }
   }
 }

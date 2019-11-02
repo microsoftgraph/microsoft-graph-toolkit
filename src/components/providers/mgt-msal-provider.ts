@@ -29,6 +29,7 @@ export class MgtMsalProvider extends MgtBaseProvider {
     type: String
   })
   public clientId = '';
+
   /**
    * The login type that should be used: popup or redirect
    *
@@ -57,8 +58,9 @@ export class MgtMsalProvider extends MgtBaseProvider {
     type: String
   })
   public scopes;
+
   /**
-   * Gets weather this provider can be used in this environment
+   * Gets whether this provider can be used in this environment
    *
    * @readonly
    * @memberof MgtMsalProvider
