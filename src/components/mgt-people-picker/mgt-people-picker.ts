@@ -135,6 +135,20 @@ export class MgtPeoplePicker extends MgtTemplatedComponent {
       `
     );
   }
+
+  /**
+   * Focuses the input element when focus is called
+   *
+   * @param {FocusOptions} [options]
+   * @memberof MgtPeoplePicker
+   */
+  public focus(options?: FocusOptions) {
+    const peopleInput = this.renderRoot.querySelector('.people-chosen-input') as HTMLInputElement;
+    if (peopleInput) {
+      peopleInput.focus(options);
+    }
+  }
+
   /**
    * Queries the microsoft graph for a user based on the user id and adds them to the selectedPeople array
    *

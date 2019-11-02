@@ -11,7 +11,7 @@ import { Providers } from '../../Providers';
 import { ProviderState } from '../../providers/IProvider';
 import { getEmailFromGraphEntity } from '../../utils/GraphHelpers';
 import { getSvg, SvgIcon } from '../../utils/SvgHelper';
-import { MgtPerson, PersonCardInteraction } from '../mgt-person/mgt-person';
+import { MgtPerson } from '../mgt-person/mgt-person';
 import { MgtTemplatedComponent } from '../templatedComponent';
 import { styles } from './mgt-person-card-css';
 /**
