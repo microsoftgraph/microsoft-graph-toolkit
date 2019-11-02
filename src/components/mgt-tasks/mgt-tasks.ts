@@ -852,7 +852,7 @@ export class MgtTasks extends MgtTemplatedComponent {
             <span class="TaskDetail TaskPeople">
               <span
                 @click=${(e: MouseEvent) => {
-                  this.handleTaskClick(e, task);
+                  this.handleTaskClick(e, null);
                   this.showPeoplePicker(task);
                 }}
               >
@@ -1039,7 +1039,7 @@ export class MgtTasks extends MgtTemplatedComponent {
           <span
             class="TaskDetail TaskBucket"
             @click=${(e: MouseEvent) => {
-              this.handleTaskClick(e, task);
+              this.handleTaskClick(e, null);
               this.showPeoplePicker(task);
             }}
           >
@@ -1081,7 +1081,12 @@ export class MgtTasks extends MgtTemplatedComponent {
           Task: true
         })}
       >
-        <div class="TaskContent">
+        <div
+          class="TaskContent"
+          @click=${(e: MouseEvent) => {
+            this.handleTaskClick(e, task);
+          }}
+        >
           <span
             class=${classMap({
               Complete: completed,
@@ -1110,9 +1115,11 @@ export class MgtTasks extends MgtTemplatedComponent {
   }
 
   private handleTaskClick(event, task: ITask) {
-    this.fireCustomEvent('taskClick', { task });
     event.stopPropagation();
     event.preventDefault();
+    if (task) {
+      this.fireCustomEvent('taskClick', { task });
+    }
   }
 
   private renderLoadingTask() {
