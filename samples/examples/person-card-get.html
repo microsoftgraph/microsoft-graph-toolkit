@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <script src="https://unpkg.com/@microsoft/mgt/dist/bundle/mgt-loader.js"></script>
+  </head>
+
+  <body>
+    <mgt-mock-provider></mgt-mock-provider>
+
+    <mgt-person person-query="Isaiah" show-name show-email person-card="hover">
+      <template data-type="person-card">
+        <mgt-person-card inherit-details>
+          <template data-type="additional-details">
+            <mgt-get resource="/users/{{ person.id }}/profile" version="beta">
+              <template>
+                <div>
+                  <div data-if="positions && positions.length">
+                    <h2>Work history</h2>
+                    <div data-for="position in positions">
+                      <b>{{ position.detail.jobTitle }}</b> ({{ position.detail.company.department }})
+                    </div>
+                    <hr />
+                  </div>
+                  <div data-if="projects && projects.length">
+                    <h2>Project history</h2>
+                    <div data-for="project in projects">
+                      <b>{{ project.displayName }}</b>
+                    </div>
+                    <hr />
+                  </div>
+                  <div data-if="educationalActivities && educationalActivities.length">
+                    <h2>Educational Activities</h2>
+                    <div data-for="edu in educationalActivities">
+                      <div data-if="edu.program.displayName"><b>program:</b> {{ edu.program.displayName }}</div>
+                      <div data-if="edu.institution.displayName">
+                        <b>Institution:</b> {{ edu.institution.displayName }}
+                      </div>
+                    </div>
+                    <hr />
+                  </div>
+                  <div data-if="interests && interests.length">
+                    <h2>Interests</h2>
+                    <span data-for="interest in interests"> {{ interest.displayName }}, </span>
+                    <hr />
+                  </div>
+                  <div data-if="languages && languages.length">
+                    <h2>Languages</h2>
+                    <span data-for="language in languages"> {{ language.displayName }}, </span>
+                  </div>
+                </div>
+              </template>
+            </mgt-get>
+          </template>
+        </mgt-person-card>
+      </template>
+    </mgt-person>
+  </body>
+</html>
