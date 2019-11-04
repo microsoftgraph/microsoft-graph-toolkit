@@ -184,7 +184,6 @@ export class TemplateHelper {
           // first remove the child
           // we will need to make copy of the child for
           // each element in the list
-          nodeElement.removeChild(childElement);
           childElement.removeAttribute('data-for');
 
           for (let j = 0; j < list.length; j++) {
@@ -195,8 +194,10 @@ export class TemplateHelper {
 
             const clone = childElement.cloneNode(true);
             this.renderNode(clone, newContext, converters);
-            nodeElement.appendChild(clone);
+            nodeElement.insertBefore(clone, childElement);
           }
+
+          nodeElement.removeChild(childElement);
         }
       }
     }

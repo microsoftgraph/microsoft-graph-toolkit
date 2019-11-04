@@ -140,7 +140,7 @@ export class MgtPersonCard extends MgtTemplatedComponent {
       return html`
         <div class="root" @click=${this.handleClose}>
           <div class="default-view">
-            ${this.renderTemplate('default', { person: this.personDetails }) ||
+            ${this.renderTemplate('default', { person: this.personDetails, personImage: this.personImage }) ||
               html`
                 <mgt-person
                   class="person-image"
@@ -257,7 +257,10 @@ export class MgtPersonCard extends MgtTemplatedComponent {
                 ? html`
                     <div class="section-divider"></div>
                     <div class="custom-section">
-                      ${this.renderTemplate('additional-details', null)}
+                      ${this.renderTemplate('additional-details', {
+                        person: this.personDetails,
+                        personImage: this.personImage
+                      })}
                     </div>
                   `
                 : null}
