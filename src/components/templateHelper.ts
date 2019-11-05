@@ -24,6 +24,11 @@ export class TemplateHelper {
    * @param converters the converter functions used to transform the data
    */
   public static renderTemplate(template: HTMLTemplateElement, context: object, converters?: object) {
+    // inherit context from parent template
+    if ((template as any).$parentTemplateContext) {
+      context = { ...context, $parent: (template as any).$parentTemplateContext };
+    }
+
     if (template.content && template.content.childNodes.length) {
       const templateContent = template.content.cloneNode(true);
       return this.renderNode(templateContent, context, converters);
@@ -36,8 +41,8 @@ export class TemplateHelper {
       return this.renderNode(div, context, converters);
     }
   }
-  private static _expression = /{{\s*[\w\.]+\s*}}/g;
-  private static _converterExpression = /{{{\s*[\w\.()]+\s*}}}/g;
+  private static _expression = /{{\s*([$\w]+)(\.[$\w]+)*\s*}}/g;
+  private static _converterExpression = /{{{\s*[$\w\.()]+\s*}}}/g;
 
   /**
    * Gets the value of an expanded key in an object
@@ -94,6 +99,9 @@ export class TemplateHelper {
   private static renderNode(node: Node, context: object, converters: object) {
     if (node.nodeName === '#text') {
       node.textContent = this.replaceExpression(node.textContent, context, converters);
+      return node;
+    } else if (node.nodeName === 'TEMPLATE') {
+      (node as any).$parentTemplateContext = context;
       return node;
     }
 
@@ -187,10 +195,11 @@ export class TemplateHelper {
           childElement.removeAttribute('data-for');
 
           for (let j = 0; j < list.length; j++) {
-            const newContext: any = {};
+            const newContext = {
+              $index: j,
+              ...context
+            };
             newContext[itemName] = list[j];
-            // tslint:disable-next-line: no-string-literal
-            newContext.index = j;
 
             const clone = childElement.cloneNode(true);
             this.renderNode(clone, newContext, converters);

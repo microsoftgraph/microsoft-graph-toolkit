@@ -137,15 +137,18 @@ export class MgtPersonCard extends MgtTemplatedComponent {
           <div class="job-title">${user.jobTitle}</div>
         `;
       }
+
+      const image = this.getImage();
+
       return html`
         <div class="root" @click=${this.handleClose}>
           <div class="default-view">
-            ${this.renderTemplate('default', { person: this.personDetails, personImage: this.personImage }) ||
+            ${this.renderTemplate('default', { person: this.personDetails, personImage: image }) ||
               html`
                 <mgt-person
                   class="person-image"
                   .personDetails=${this.personDetails}
-                  .personImage=${this.personImage}
+                  .personImage=${image}
                 ></mgt-person>
                 <div class="details">
                   <div class="display-name">${user.displayName}</div>
@@ -259,7 +262,7 @@ export class MgtPersonCard extends MgtTemplatedComponent {
                     <div class="custom-section">
                       ${this.renderTemplate('additional-details', {
                         person: this.personDetails,
-                        personImage: this.personImage
+                        personImage: this.getImage()
                       })}
                     </div>
                   `
@@ -372,5 +375,14 @@ export class MgtPersonCard extends MgtTemplatedComponent {
 
   private handleClose(e: Event) {
     e.stopPropagation();
+  }
+
+  private getImage(): string {
+    if (this.personImage && this.personImage !== '@') {
+      return this.personImage;
+    } else if (this.personDetails && (this.personDetails as any).personImage) {
+      return (this.personDetails as any).personImage;
+    }
+    return null;
   }
 }

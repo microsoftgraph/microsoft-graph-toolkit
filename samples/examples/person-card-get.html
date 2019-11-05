@@ -1,7 +1,9 @@
 <!DOCTYPE html>
 <html>
   <head>
-    <script src="https://unpkg.com/@microsoft/mgt/dist/bundle/mgt-loader.js"></script>
+    <!-- <script src="https://unpkg.com/@microsoft/mgt/dist/bundle/mgt-loader.js"></script> -->
+    <script type="module" src="../../dist/es6/index.js"></script>
+    <script type="module" src="../../dist/es6/mock/mgt-mock-provider.js"></script>
   </head>
 
   <body>
@@ -13,8 +15,9 @@
           <template data-type="additional-details">
             <mgt-get resource="/users/{{ person.id }}/profile" version="beta">
               <template>
+                {{{ console.log(this) }}}
                 <div>
-                  <div data-if="positions && positions.length">
+                  <!-- <div data-if="positions && positions.length">
                     <h2>Work history</h2>
                     <div data-for="position in positions">
                       <b>{{ position.detail.jobTitle }}</b> ({{ position.detail.company.department }})
@@ -37,16 +40,18 @@
                       </div>
                     </div>
                     <hr />
-                  </div>
-                  <div data-if="interests && interests.length">
+                  </div> -->
+                  <div>
                     <h2>Interests</h2>
-                    <span data-for="interest in interests"> {{ interest.displayName }}, </span>
+                    <span data-for="interest in interests">
+                      {{ interest.displayName }}<span data-if="$index < interests.length - 1">, </span></span
+                    >
                     <hr />
                   </div>
-                  <div data-if="languages && languages.length">
+                  <!-- <div data-if="languages && languages.length">
                     <h2>Languages</h2>
                     <span data-for="language in languages"> {{ language.displayName }}, </span>
-                  </div>
+                  </div> -->
                 </div>
               </template>
             </mgt-get>
