@@ -5,7 +5,7 @@
  * -------------------------------------------------------------------------------------------
  */
 
-import { html } from 'lit-element';
+import { html, PropertyValues } from 'lit-element';
 import { equals } from '../utils/Utils';
 import { MgtBaseComponent } from './baseComponent';
 import { TemplateHelper } from './templateHelper';
@@ -83,9 +83,10 @@ export abstract class MgtTemplatedComponent extends MgtBaseComponent {
    * Setting properties inside this method will trigger the element to update
    * again after this update cycle completes.
    *
-   * * @param _changedProperties Map of changed properties with old values
+   * * @param changedProperties Map of changed properties with old values
    */
-  protected updated() {
+  protected updated(changedProperties: PropertyValues) {
+    super.updated(changedProperties);
     this.removeUnusedSlottedElements();
   }
 
