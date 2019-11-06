@@ -25,7 +25,7 @@ export class BatchRequest {
    * @memberof BatchRequest
    */
   public method: string;
-  public constructor(resource: string, method: string) {
+  constructor(resource: string, method: string) {
     if (resource.charAt(0) !== '/') {
       resource = '/' + resource;
     }

@@ -61,7 +61,7 @@ export class MgtArrowOptions extends MgtBaseComponent {
 
   private _clickHandler: (e: MouseEvent) => void | any;
 
-  public constructor() {
+  constructor() {
     super();
     this._clickHandler = (e: MouseEvent) => (this.open = false);
   }
