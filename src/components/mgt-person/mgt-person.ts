@@ -6,7 +6,7 @@
  */
 
 import * as MicrosoftGraph from '@microsoft/microsoft-graph-types';
-import { customElement, html, property } from 'lit-element';
+import { customElement, html, property, PropertyValues } from 'lit-element';
 import { classMap } from 'lit-html/directives/class-map';
 import { Providers } from '../../Providers';
 import { ProviderState } from '../../providers/IProvider';
@@ -26,6 +26,14 @@ import { styles } from './mgt-person-css';
  */
 @customElement('mgt-person')
 export class MgtPerson extends MgtTemplatedComponent {
+  /**
+   * Array of styles to apply to the element. The styles should be defined
+   * user the `css` tag function.
+   */
+  static get styles() {
+    return styles;
+  }
+
   /**
    * allows developer to define name of person for component
    * @type {string}
@@ -133,14 +141,6 @@ export class MgtPerson extends MgtTemplatedComponent {
   }
 
   /**
-   * Array of styles to apply to the element. The styles should be defined
-   * user the `css` tag function.
-   */
-  static get styles() {
-    return styles;
-  }
-
-  /**
    * Invoked when the element is first updated. Implement to perform one time
    * work on the element after update.
    *
@@ -179,6 +179,26 @@ export class MgtPerson extends MgtTemplatedComponent {
         ${person} ${this.renderPersonCard()}
       </div>
     `;
+  }
+
+  /**
+   * Invoked whenever the element is updated. Implement to perform
+   * post-updating tasks via DOM APIs, for example, focusing an element.
+   *
+   * Setting properties inside this method will trigger the element to update
+   * again after this update cycle completes.
+   *
+   * * @param changedProperties Map of changed properties with old values
+   */
+  protected updated(changedProps: PropertyValues) {
+    super.updated(changedProps);
+
+    const initials = this.renderRoot.querySelector('.initials-text') as HTMLElement;
+    if (initials && initials.parentNode && (initials.parentNode as HTMLElement).getBoundingClientRect) {
+      const parent = initials.parentNode as HTMLElement;
+      const height = parent.getBoundingClientRect().height;
+      initials.style.fontSize = `${height * 0.5}px`;
+    }
   }
 
   private async loadData() {
@@ -357,8 +377,15 @@ export class MgtPerson extends MgtTemplatedComponent {
 
   private renderDetails() {
     if (this.showEmail || this.showName) {
+      const isLarge = this.showEmail && this.showName;
+
+      const detailsClasses = {
+        Details: true,
+        small: !isLarge
+      };
+
       return html`
-        <span class="Details ${this.getImageSizeClass()}">
+        <span class="${classMap(detailsClasses)}">
           ${this.renderNameAndEmail()}
         </span>
       `;
@@ -370,40 +397,55 @@ export class MgtPerson extends MgtTemplatedComponent {
   private renderImage() {
     if (this.personDetails) {
       const title = this.personCardInteraction === PersonCardInteraction.none ? this.personDetails.displayName : '';
-
       const image = this.getImage();
+      const isLarge = this.showEmail && this.showName;
+      const imageClasses = {
+        initials: !image,
+        'row-span-2': isLarge,
+        small: !isLarge,
+        'user-avatar': true
+      };
+
+      let imageHtml;
 
       if (image) {
-        return html`
-          <img
-            class="user-avatar ${this.getImageRowSpanClass()} ${this.getImageSizeClass()}"
-            title=${title}
-            aria-label=${title}
-            alt=${title}
-            src=${image}
-          />
+        imageHtml = html`
+          <img alt=${title} src=${image} />
         `;
       } else {
-        return html`
-          <div
-            class="user-avatar initials ${this.getImageRowSpanClass()} ${this.getImageSizeClass()}"
-            title=${title}
-            aria-label=${title}
-          >
-            <span class="initials-text" aria-label="${this.getInitials()}">
-              ${this.getInitials()}
-            </span>
-          </div>
+        const initials = this.getInitials();
+
+        imageHtml = html`
+          <img />
+          <span class="initials-text" aria-label="${initials}">
+            ${initials}
+          </span>
         `;
       }
+
+      return html`
+        <div class=${classMap(imageClasses)} title=${title} aria-label=${title}>
+          ${imageHtml}
+        </div>
+      `;
     }
 
     return this.renderEmptyImage();
   }
 
   private renderEmptyImage() {
+    const isLarge = this.showEmail && this.showName;
+
+    const imageClasses = {
+      'avatar-icon': true,
+      'ms-Icon': true,
+      'ms-Icon--Contact': true,
+      'row-span-2': isLarge,
+      small: !isLarge
+    };
+
     return html`
-      <i class="ms-Icon ms-Icon--Contact avatar-icon ${this.getImageRowSpanClass()} ${this.getImageSizeClass()}"></i>
+      <i class=${classMap(imageClasses)}></i>
     `;
   }
 
@@ -455,21 +497,5 @@ export class MgtPerson extends MgtTemplatedComponent {
     }
 
     return initials;
-  }
-
-  private getImageRowSpanClass() {
-    if (this.showEmail && this.showName) {
-      return 'row-span-2';
-    }
-
-    return '';
-  }
-
-  private getImageSizeClass() {
-    if (!this.showEmail || !this.showName) {
-      return 'small';
-    }
-
-    return '';
   }
 }

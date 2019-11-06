@@ -87,9 +87,9 @@ mgt-person .user-avatar {
     height: $avatar-size;
   }
 
-  &.row-span-3 {
-    width: $avatar-size;
-    height: $avatar-size;
+  img {
+    height: 100%;
+    width: 100%;
   }
 }
 
