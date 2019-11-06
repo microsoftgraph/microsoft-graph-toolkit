@@ -324,7 +324,7 @@ export class MgtPersonCard extends MgtTemplatedComponent {
       phone = (user as MicrosoftGraph.User).businessPhones[0];
     }
     e.stopPropagation();
-    window.location.assign('tel:' + phone);
+    window.open('tel:' + phone, '_blank');
   }
 
   private _emailUser(e: Event) {
@@ -335,7 +335,7 @@ export class MgtPersonCard extends MgtTemplatedComponent {
       email = getEmailFromGraphEntity(user);
     }
     e.stopPropagation();
-    window.location.assign('mailto:' + email);
+    window.open('mailto:' + email, '_blank');
   }
 
   private _chatUser(e: Event) {
@@ -346,7 +346,7 @@ export class MgtPersonCard extends MgtTemplatedComponent {
       chat = (user as MicrosoftGraph.User).mailNickname;
     }
     e.stopPropagation();
-    window.location.assign('sip:' + chat);
+    window.open('sip:' + chat, '_blank');
   }
 
   private async loadData() {
