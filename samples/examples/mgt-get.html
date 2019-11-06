@@ -1,7 +1,6 @@
 <html>
 <head>
-    <!-- <script src="https://unpkg.com/@microsoft/mgt/dist/bundle/mgt-loader.js"></script> -->
-    <script type="module" src="../../dist/es6/index.js"></script>
+    <script src="https://unpkg.com/@microsoft/mgt/dist/bundle/mgt-loader.js"></script>
 </head>
 <body>
     <mgt-msal-provider client-id="a974dfa0-9f57-49b9-95db-90f04ce2111a"></mgt-msal-provider>
@@ -14,15 +13,15 @@
           <li data-for="email in value">
             <div>
               <h2>{{ email.subject }}</h2>
-              <div>
-                From: <mgt-person
+              <span>
+                <b>From:</b> <mgt-person
                 person-query="{{ email.sender.emailAddress.address }}"
                 show-name
                 person-card="hover"
                 ></mgt-person>
-              </div>
+              </span>
               <br />
-              Subject: {{ email.bodyPreview }}
+              <b>Preview:</b> {{ email.bodyPreview }}
             </div>
           </li>
         </ul>
