@@ -42,7 +42,7 @@ export class MgtDotOptions extends MgtBaseComponent {
 
   private _clickHandler: (e: MouseEvent) => void | any = null;
 
-  public constructor() {
+  constructor() {
     super();
     this._clickHandler = (e: MouseEvent) => (this.open = false);
   }
