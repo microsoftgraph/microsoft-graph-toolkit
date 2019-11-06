@@ -20,7 +20,7 @@ export class CustomHeaderMiddleware implements Middleware {
   private nextMiddleware: Middleware;
   private _getCustomHeaders: () => Promise<object>;
 
-  public constructor(getCustomHeaders: () => Promise<object>) {
+  constructor(getCustomHeaders: () => Promise<object>) {
     this._getCustomHeaders = getCustomHeaders;
   }
 

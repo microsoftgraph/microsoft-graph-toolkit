@@ -1,7 +1,9 @@
 <!DOCTYPE html>
 <html>
   <head>
-    <script src="https://unpkg.com/@microsoft/mgt/dist/bundle/mgt-loader.js"></script>
+    <!-- <script src="https://unpkg.com/@microsoft/mgt/dist/bundle/mgt-loader.js"></script> -->
+    <script type="module" src="../../dist/es6/index.js"></script>
+    <script type="module" src="../../dist/es6/mock/mgt-mock-provider.js"></script>
   </head>
 
   <body>
@@ -38,14 +40,18 @@
                     </div>
                     <hr />
                   </div>
-                  <div data-if="interests && interests.length">
+                  <div>
                     <h2>Interests</h2>
-                    <span data-for="interest in interests"> {{ interest.displayName }}, </span>
+                    <span data-for="interest in interests">
+                      {{ interest.displayName }}<span data-if="$index < interests.length - 1">, </span>
+                    </span>
                     <hr />
                   </div>
                   <div data-if="languages && languages.length">
                     <h2>Languages</h2>
-                    <span data-for="language in languages"> {{ language.displayName }}, </span>
+                    <span data-for="language in languages">
+                      {{ language.displayName }}<span data-if="$index < languages.length - 1">, </span>
+                    </span>
                   </div>
                 </div>
               </template>
