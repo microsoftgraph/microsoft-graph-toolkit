@@ -8,4 +8,4 @@
 // THIS FILE IS AUTO GENERATED
 // ANY CHANGES WILL BE LOST DURING BUILD
 
-export const PACKAGE_VERSION = '1.1.0-preview.1';
+export const PACKAGE_VERSION = '1.1.0-preview.2';

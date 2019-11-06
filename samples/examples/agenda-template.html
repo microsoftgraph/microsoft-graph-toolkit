@@ -12,10 +12,10 @@
         .time-container {
             width: 200px;
             margin-top: 10px;
+            margin-right: 10px;
             display: flex;
             flex-direction: column;
             align-items: flex-end;
-            min-width: 150px;
         }
         
         .date {
@@ -31,7 +31,7 @@
         }
         
         .location {
-            font-size: 14px;
+            font-size: 12px;
         }
         
         .details {
@@ -40,6 +40,7 @@
             font-size: 18px;
             min-width: 180px;
             padding-left: 5px;
+            width: 400px;
         }
         
         .separator {
@@ -86,6 +87,7 @@
         
         .online-meeting {
             font-size: 10px;
+            margin-top: 8px;
         }
         
         .online-meeting-icon {
@@ -97,9 +99,22 @@
             text-decoration: none;
             color: #3063B2;
         }
+
+        .attendees {
+            margin-top:8px;
+        }
+
+        .attendee {
+            display: inline-block;
+        }
         
         mgt-agenda {
             margin: 20px;
+        }
+
+        mgt-person {
+            --avatar-size-s: 16px;
+            margin-right: 4px;
         }
     </style>
 </head>
@@ -107,7 +122,7 @@
     <mgt-msal-provider client-id="a974dfa0-9f57-49b9-95db-90f04ce2111a"></mgt-msal-provider>
     <mgt-login></mgt-login>
 
-    <mgt-agenda days=60 show-max=7 group-id="9dee49d5-6d84-4035-8da8-953a2957d87b">
+    <mgt-agenda show-max=7 days=10>
         <template data-type="event">
             <div class="root">
                 <div class="time-container">
@@ -118,7 +133,7 @@
                 <div class="separator">
                     <div class="vertical-line top"></div>
                     <div class="circle">
-                        <div data-if="!event.onlineMeetingUrl" class="inner-circle"></div>
+                        <div data-if="!event.bodyPreview.includes('Join Microsoft Teams Meeting')" class="inner-circle"></div>
                     </div>
                     <div class="vertical-line bottom"></div>
                 </div>
@@ -126,7 +141,12 @@
                 <div class="details">
                     <div class="subject">{{ event.subject }}</div>
                     <div class="location" data-if="event.location.displayName">
-                        at <b>{{ event.location.displayName }}</b>
+                        at <a href="https://bing.com/maps/default.aspx?where1={{event.location.displayName}}" target="_blank"><b>{{ event.location.displayName }}</b></a>
+                    </div>
+                    <div class="attendees" data-if="event.attendees.length">
+                        <span class="attendee" data-for="attendee in event.attendees">
+                            <mgt-person person-query="{{attendee.emailAddress.name}}"></mgt-person>
+                        </span>
                     </div>
                     <div class="online-meeting" data-if="event.bodyPreview.includes('Join Microsoft Teams Meeting')">
                         <img class="online-meeting-icon" src="https://img.icons8.com/color/48/000000/microsoft-teams.png" />

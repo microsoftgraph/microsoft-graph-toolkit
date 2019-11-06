@@ -1,9 +1,7 @@
 <!DOCTYPE html>
 <html>
   <head>
-    <!-- <script src="https://unpkg.com/@microsoft/mgt/dist/bundle/mgt-loader.js"></script> -->
-    <script type="module" src="../../dist/es6/index.js"></script>
-    <script type="module" src="../../dist/es6/mock/mgt-mock-provider.js"></script>
+    <script src="https://unpkg.com/@microsoft/mgt/dist/bundle/mgt-loader.js"></script>
   </head>
 
   <body>
@@ -17,21 +15,21 @@
               <template>
                 <div>
                   <div data-if="positions && positions.length">
-                    <h2>Work history</h2>
+                    <h4>Work history</h4>
                     <div data-for="position in positions">
                       <b>{{ position.detail.jobTitle }}</b> ({{ position.detail.company.department }})
                     </div>
                     <hr />
                   </div>
                   <div data-if="projects && projects.length">
-                    <h2>Project history</h2>
+                    <h4>Project history</h4>
                     <div data-for="project in projects">
                       <b>{{ project.displayName }}</b>
                     </div>
                     <hr />
                   </div>
                   <div data-if="educationalActivities && educationalActivities.length">
-                    <h2>Educational Activities</h2>
+                    <h4>Educational Activities</h4>
                     <div data-for="edu in educationalActivities">
                       <div data-if="edu.program.displayName"><b>program:</b> {{ edu.program.displayName }}</div>
                       <div data-if="edu.institution.displayName">
@@ -41,14 +39,14 @@
                     <hr />
                   </div>
                   <div>
-                    <h2>Interests</h2>
+                    <h4>Interests</h4>
                     <span data-for="interest in interests">
                       {{ interest.displayName }}<span data-if="$index < interests.length - 1">, </span>
                     </span>
                     <hr />
                   </div>
                   <div data-if="languages && languages.length">
-                    <h2>Languages</h2>
+                    <h4>Languages</h4>
                     <span data-for="language in languages">
                       {{ language.displayName }}<span data-if="$index < languages.length - 1">, </span>
                     </span>

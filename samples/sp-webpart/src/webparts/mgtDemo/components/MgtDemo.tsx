@@ -5,8 +5,12 @@ import { IMgtDemoProps } from './IMgtDemoProps';
 declare global {
   namespace JSX {
     interface IntrinsicElements {
-      "mgt-person": any;
-      "mgt-agenda": any;
+      'mgt-person': any;
+      'mgt-people': any;
+      'mgt-people-picker': any;
+      'mgt-agenda': any;
+      'mgt-tasks': any;
+      template: any;
     }
   }
 }
@@ -14,14 +18,10 @@ declare global {
 export default class MgtDemo extends React.Component<IMgtDemoProps, {}> {
   public render(): React.ReactElement<IMgtDemoProps> {
     return (
-      <div className={ styles.mgtDemo }>
-        <div className={ styles.container }>
-          <div className={ styles.row }>
-
-            <mgt-person person-query="me" show-name person-card="hover"></mgt-person>
-            {/* <mgt-agenda group-by-day days="10"></mgt-agenda> */}
-            
-          </div>
+      <div className={styles.mgtDemo}>
+        <div className={styles.container}>
+          <mgt-person person-query="me" show-name person-card="hover" />
+          <mgt-agenda />
         </div>
       </div>
     );
