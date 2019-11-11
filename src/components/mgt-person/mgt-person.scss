@@ -27,6 +27,7 @@ $email-color: var(--email-color, #{$ms-color-neutralPrimary});
   display: inline-block;
   color: $color;
   position: relative;
+  vertical-align: top;
 }
 
 :host svg,
@@ -65,11 +66,11 @@ mgt-person .Details {
 mgt-person .user-avatar {
   width: $avatar-size;
   height: $avatar-size;
+  display: flex;
+  justify-content: center;
+  align-items: center;
 
   &.initials {
-    display: flex;
-    justify-content: center;
-    align-items: center;
     color: $initials-color;
     background-color: $initials-background-color;
     border-radius: 50%;
