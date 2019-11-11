@@ -140,7 +140,7 @@ export class MgtPeople extends MgtTemplatedComponent {
                     people: this.people
                   }) ||
                   html`
-                    <li>+${this.people.length - this.showMax}</li>
+                    <li class="overflow"><span>+${this.people.length - this.showMax}<span></li>
                   `
                 : null}
             </ul>
