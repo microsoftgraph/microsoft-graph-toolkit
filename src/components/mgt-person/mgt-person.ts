@@ -294,7 +294,9 @@ export class MgtPerson extends MgtTemplatedComponent {
 
   private _handleMouseEnter(e: MouseEvent) {
     if (this.personCardInteraction !== PersonCardInteraction.hover) {
-      return;
+      if (!PersonCardInteraction.click) {
+        return;
+      }
     }
 
     clearTimeout(this._mouseEnterTimeout);
