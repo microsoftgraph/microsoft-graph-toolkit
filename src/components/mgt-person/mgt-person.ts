@@ -355,6 +355,15 @@ export class MgtPerson extends MgtTemplatedComponent {
       customStyle = `bottom: ${personSize / 2 + 8}px`;
     }
 
+    // right edge vs width of person-card
+    let rightSpace = rightEdge - 340;
+
+    // determines if there is space to render on right side
+    if (rightSpace < 0 && (window.innerWidth || document.documentElement.clientWidth) > 340) {
+      rightSpace = rightEdge - 340;
+      customStyle = customStyle + `; transform: translate(${rightSpace}px)`;
+    }
+
     const flyoutClasses = {
       flyout: true,
       openLeft: this._openLeft,
