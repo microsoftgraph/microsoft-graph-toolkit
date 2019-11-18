@@ -293,14 +293,11 @@ export class MgtPerson extends MgtTemplatedComponent {
   }
 
   private _handleMouseEnter(e: MouseEvent) {
-    if (this.personCardInteraction !== PersonCardInteraction.hover) {
-      if (!PersonCardInteraction.click) {
-        return;
-      }
-    }
-
     clearTimeout(this._mouseEnterTimeout);
     clearTimeout(this._mouseLeaveTimeout);
+    if (this.personCardInteraction !== PersonCardInteraction.hover) {
+      return;
+    }
     this._mouseEnterTimeout = setTimeout(this._showPersonCard.bind(this), 500);
   }
 
