@@ -415,7 +415,6 @@ export class MgtPerson extends MgtTemplatedComponent {
         const initials = this.getInitials();
 
         imageHtml = html`
-          <img />
           <span class="initials-text" aria-label="${initials}">
             ${initials}
           </span>
