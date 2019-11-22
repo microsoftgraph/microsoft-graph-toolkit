@@ -5,8 +5,8 @@
  * -------------------------------------------------------------------------------------------
  */
 
-import { Person, PlannerAssignments, User } from '@microsoft/microsoft-graph-types';
-import { Contact, OutlookTaskFolder } from '@microsoft/microsoft-graph-types-beta';
+import { Person, PlannerAssignments, PlannerTask, User } from '@microsoft/microsoft-graph-types';
+import { Contact, OutlookTask, OutlookTaskFolder } from '@microsoft/microsoft-graph-types-beta';
 import { customElement, html, property } from 'lit-element';
 import { classMap } from 'lit-html/directives/class-map';
 import { repeat } from 'lit-html/directives/repeat';
@@ -192,6 +192,13 @@ export class MgtTasks extends MgtTemplatedComponent {
   @property({ attribute: 'group-id', type: String })
   public groupId: string = null;
 
+  /**
+   * Optional filter function when rendering tasks
+   *
+   * @memberof MgtTasks
+   */
+  public taskFilter: (task: PlannerTask | OutlookTask) => boolean;
+
   @property() private _isNewTaskVisible: boolean = false;
   @property() private _newTaskBeingAdded: boolean = false;
   @property() private _newTaskName: string = '';
@@ -313,10 +320,14 @@ export class MgtTasks extends MgtTemplatedComponent {
    * trigger the element to update.
    */
   protected render() {
-    const tasks = this._tasks
+    let tasks = this._tasks
       .filter(task => this.isTaskInSelectedGroupFilter(task))
       .filter(task => this.isTaskInSelectedFolderFilter(task))
       .filter(task => !this._hiddenTasks.includes(task.id));
+
+    if (this.taskFilter) {
+      tasks = tasks.filter(task => this.taskFilter(task._raw));
+    }
 
     const loadingTask = this._inTaskLoad && !this._hasDoneInitialLoad ? this.renderLoadingTask() : null;
 
