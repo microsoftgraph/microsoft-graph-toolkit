@@ -8,6 +8,7 @@
 import * as MicrosoftGraph from '@microsoft/microsoft-graph-types';
 import { customElement, html, property, PropertyValues } from 'lit-element';
 import { classMap } from 'lit-html/directives/class-map';
+import { styleMap } from 'lit-html/directives/style-map';
 import { Providers } from '../../Providers';
 import { ProviderState } from '../../providers/IProvider';
 import '../../styles/fabric-icon-font';
@@ -342,26 +343,24 @@ export class MgtPerson extends MgtTemplatedComponent {
     const personRect = this.renderRoot.querySelector('.root').getBoundingClientRect();
     const leftEdge = personRect.left;
     const rightEdge = (window.innerWidth || document.documentElement.clientWidth) - personRect.right;
-    this._openLeft = rightEdge < leftEdge;
+    // this._openLeft = rightEdge < leftEdge;
 
     // logic for rendering up
     const bottomEdge = (window.innerHeight || document.documentElement.clientHeight) - personRect.bottom;
     this._openUp = bottomEdge < 175;
 
     // find position to renderup to
-    let customStyle = null;
+    const customStyle: any = {};
     if (this._openUp) {
       const personSize = this.getBoundingClientRect().bottom - this.getBoundingClientRect().top;
-      customStyle = `bottom: ${personSize / 2 + 8}px`;
+      customStyle.bottom = `${personSize / 2 + 8}px`;
     }
 
-    // right edge vs width of person-card
-    let rightSpace = rightEdge - 340;
-
     // determines if there is space to render on right side
-    if (rightSpace < 0 && (window.innerWidth || document.documentElement.clientWidth) > 340) {
-      rightSpace = rightEdge - 340;
-      customStyle = customStyle + `; transform: translate(${rightSpace}px)`;
+    if (rightEdge < 340) {
+      customStyle.left = `${rightEdge - 350}px`;
+    } else if (leftEdge > 20) {
+      customStyle.left = '-20px';
     }
 
     const flyoutClasses = {
@@ -374,7 +373,7 @@ export class MgtPerson extends MgtTemplatedComponent {
       const image = this.getImage();
 
       return html`
-        <div style="${customStyle}" class=${classMap(flyoutClasses)}>
+        <div style=${styleMap(customStyle)} class=${classMap(flyoutClasses)}>
           ${this.renderTemplate('person-card', { person: this.personDetails, personImage: image }) ||
             html`
               <mgt-person-card .personDetails=${this.personDetails} .personImage=${image}> </mgt-person-card>
