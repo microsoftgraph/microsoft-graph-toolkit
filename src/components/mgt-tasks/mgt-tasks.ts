@@ -982,7 +982,7 @@ export class MgtTasks extends MgtTemplatedComponent {
     const groupTitle = this._currentGroup ? null : this.getPlanTitle(task.topParentId);
     const folderTitle = this._currentFolder ? null : this.getFolderName(task.immediateParentId);
 
-    const context = { task: { ...task, groupTitle, folderTitle } };
+    const context = { task: { ...task._raw, groupTitle, folderTitle } };
     const taskTemplate = this.renderTemplate('task', context, task.id);
     if (taskTemplate) {
       return taskTemplate;
