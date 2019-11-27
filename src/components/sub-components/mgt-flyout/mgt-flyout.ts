@@ -8,13 +8,7 @@
 import { customElement, html, LitElement, property, PropertyValues } from 'lit-element';
 import { classMap } from 'lit-html/directives/class-map';
 import { styles } from './mgt-flyout-css';
-/**
- *
- *
- * @export
- * @class mgt-flyout
- * @extends {MgtTemplatedComponent}
- */
+
 /**
  * A component to create flyout anchored to an element
  *
