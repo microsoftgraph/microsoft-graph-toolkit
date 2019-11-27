@@ -14,7 +14,6 @@
     <!-- <script src="./dist/bundle/mgt-loader.js"></script> -->
 
     <script type="module" src="dist/es6/index.js"></script>
-    <script type="module" src="dist/es6/components/sub-components/mgt-flyout/mgt-flyout.js"></script>
     <script type="module" src="./dist/es6/mock/mgt-mock-provider.js"></script>
   </head>
 
@@ -33,7 +32,10 @@
     <!-- <mgt-mock-provider></mgt-mock-provider> -->
 
     <mgt-login></mgt-login>
-    <mgt-person person-query="me" person-card="click"></mgt-person>
-    <mgt-tasks></mgt-tasks>
+    <mgt-person person-query="me" show-name show-email person-card="hover"></mgt-person>
+    <mgt-people-picker></mgt-people-picker>
+    <mgt-tasks data-source="todo"></mgt-tasks>
+    <mgt-agenda group-by-day></mgt-agenda>
+    <mgt-people></mgt-people>
   </body>
 </html>

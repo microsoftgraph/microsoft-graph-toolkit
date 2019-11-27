@@ -109,6 +109,7 @@ export class MgtFlyout extends LitElement {
     if (flyout && anchor) {
       let left: number;
       let bottom: number;
+      let top: number;
 
       if (this.isOpen) {
         const flyoutRect = flyout.getBoundingClientRect();
@@ -152,13 +153,16 @@ export class MgtFlyout extends LitElement {
           }
         }
 
-        if (windowHeight < flyoutBottom) {
+        if (flyoutRect.height > windowHeight || (windowHeight < flyoutBottom && anchorRect.top < flyoutRect.height)) {
+          top = -flyoutTop + anchorRect.height;
+        } else if (windowHeight < flyoutBottom) {
           bottom = anchorRect.height;
         }
       }
 
       flyout.style.left = typeof left !== 'undefined' ? `${left}px` : '';
       flyout.style.bottom = typeof bottom !== 'undefined' ? `${bottom}px` : '';
+      flyout.style.top = typeof top !== 'undefined' ? `${top}px` : '';
     }
   }
 }
