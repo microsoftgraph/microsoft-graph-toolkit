@@ -129,7 +129,7 @@ export class MgtPeoplePicker extends MgtTemplatedComponent {
       html`
         <div class="people-picker" @blur=${this.lostFocus}>
           <div class="people-picker-input" @click=${this.gainedFocus}>
-            ${this.renderChosenPeople()}
+            ${this.renderSelectedPeople()}
           </div>
           <div class="people-list-separator"></div>
           ${this.renderPeopleList()}
@@ -145,7 +145,7 @@ export class MgtPeoplePicker extends MgtTemplatedComponent {
    * @memberof MgtPeoplePicker
    */
   public focus(options?: FocusOptions) {
-    const peopleInput = this.renderRoot.querySelector('.people-chosen-input') as HTMLInputElement;
+    const peopleInput = this.renderRoot.querySelector('.people-selected-input') as HTMLInputElement;
     if (peopleInput) {
       peopleInput.focus(options);
     }
@@ -378,9 +378,8 @@ export class MgtPeoplePicker extends MgtTemplatedComponent {
    * @param person - person and details pertaining to user selected
    */
   private removePerson(person: MicrosoftGraph.User | MicrosoftGraph.Person | MicrosoftGraph.Contact) {
-    const chosenPerson: any = person;
     const filteredPersonArr = this.selectedPeople.filter(p => {
-      return p.id !== chosenPerson.id;
+      return p.id !== person.id;
     });
     this.selectedPeople = filteredPersonArr;
     this.fireCustomEvent('selectionChanged', this.selectedPeople);
@@ -406,7 +405,7 @@ export class MgtPeoplePicker extends MgtTemplatedComponent {
     `;
   }
 
-  private renderChosenPeople() {
+  private renderSelectedPeople() {
     let peopleList;
     let inputClass = 'input-search-start';
     if (this.selectedPeople.length > 0) {
@@ -417,7 +416,8 @@ export class MgtPeoplePicker extends MgtTemplatedComponent {
           person =>
             html`
               <li class="people-person">
-                ${this.renderTemplate('person', { person }, person.displayName) || this.renderChosenPerson(person)}
+                ${this.renderTemplate('selected-person', { person }, `selected-${person.id}`) ||
+                  this.renderSelectedPerson(person)}
                 <div class="CloseIcon" @click="${() => this.removePerson(person)}">\uE711</div>
               </li>
             `
@@ -428,12 +428,12 @@ export class MgtPeoplePicker extends MgtTemplatedComponent {
     }
     // tslint:disable
     return html`
-      <div class="people-chosen-list">
+      <div class="people-selected-list">
         ${peopleList}
         <div class="${inputClass}">
           <input
             id="people-picker-input"
-            class="people-chosen-input"
+            class="people-selected-input"
             type="text"
             placeholder="Start typing a name"
             label="people-picker-input"
@@ -451,7 +451,7 @@ export class MgtPeoplePicker extends MgtTemplatedComponent {
 
   private gainedFocus() {
     const peopleList = this.renderRoot.querySelector('.people-list');
-    const peopleInput = this.renderRoot.querySelector('.people-chosen-input') as HTMLInputElement;
+    const peopleInput = this.renderRoot.querySelector('.people-selected-input') as HTMLInputElement;
     peopleInput.focus();
     peopleInput.select();
     if (peopleList) {
@@ -504,13 +504,12 @@ export class MgtPeoplePicker extends MgtTemplatedComponent {
   }
 
   private renderPeopleList() {
-    let people: any = this.people;
     let content: TemplateResult;
 
     if (this.showLoading) {
       content = this.renderTemplate('loading', null, 'loading') || this.renderLoadingMessage();
-    } else if (people) {
-      people = people.slice(0, this.showMax);
+    } else if (this.people) {
+      const people = this.people.slice(0, this.showMax);
 
       if (!this.isLoading && people.length === 0 && this._userInput.length > 0) {
         content = this.renderTemplate('error', null, 'error') || this.renderErrorMessage();
@@ -539,11 +538,7 @@ export class MgtPeoplePicker extends MgtTemplatedComponent {
             class="list-person ${person.isSelected === 'fill' ? 'people-person-list-fill' : 'people-person-list'}"
             @click="${() => this.addPerson(person)}"
           >
-            ${this.renderTemplate('person', { person }, person.displayName) || this.renderPerson(person)}
-            <div class="people-person-text-area" id="${person.displayName}">
-              ${this.renderHighlightText(person)}
-              <span class="people-person-job-title">${person.jobTitle}</span>
-            </div>
+            ${this.renderTemplate('person', { person }, person.id) || this.renderPerson(person)}
           </li>
         `
       )}
@@ -553,11 +548,21 @@ export class MgtPeoplePicker extends MgtTemplatedComponent {
   private renderPerson(person: MicrosoftGraph.Person) {
     return html`
       <mgt-person .personDetails=${person} .personImage=${'@'}></mgt-person>
+      <div class="people-person-text-area" id="${person.displayName}">
+        ${this.renderHighlightText(person)}
+        <span class="people-person-job-title">${person.jobTitle}</span>
+      </div>
     `;
   }
-  private renderChosenPerson(person: MicrosoftGraph.Person) {
+  private renderSelectedPerson(person: MicrosoftGraph.Person) {
     return html`
-      <mgt-person class="chosen-person" .personDetails=${person} .personImage=${'@'} show-name></mgt-person>
+      <mgt-person
+        class="selected-person"
+        .personDetails=${person}
+        .personImage=${'@'}
+        show-name
+        person-card="hover"
+      ></mgt-person>
     `;
   }
 }

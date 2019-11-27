@@ -64,8 +64,8 @@ mgt-people-picker .people-list-separator {
   text-align: center;
 }
 
-:host .people-chosen-input,
-mgt-people-picker .people-chosen-input {
+:host .people-selected-input,
+mgt-people-picker .people-selected-input {
   position: relative;
   border: none;
   line-height: normal;
@@ -77,8 +77,8 @@ mgt-people-picker .people-chosen-input {
   line-height: 19px;
 }
 
-:host .people-chosen-list,
-mgt-people-picker .people-chosen-list {
+:host .people-selected-list,
+mgt-people-picker .people-selected-list {
   display: flex;
   flex-wrap: wrap;
   vertical-align: middle;
@@ -208,7 +208,7 @@ mgt-person {
   --avatar-size-s: 32px;
   margin-left: 12px;
 }
-.chosen-person {
+.selected-person {
   --avatar-size-s: 24px;
   margin-left: 0px;
 }

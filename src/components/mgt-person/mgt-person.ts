@@ -91,6 +91,7 @@ export class MgtPerson extends MgtTemplatedComponent {
    */
   @property({
     attribute: 'person-image',
+    reflect: true,
     type: String
   })
   public personImage: string;
@@ -161,11 +162,12 @@ export class MgtPerson extends MgtTemplatedComponent {
    * trigger the element to update.
    */
   public render() {
+    const image = this.getImage();
     const person =
-      this.renderTemplate('default', { person: this.personDetails, personImage: this.getImage() }) ||
+      this.renderTemplate('default', { person: this.personDetails, personImage: image }) ||
       html`
         <div class="person-root">
-          ${this.renderImage()} ${this.renderDetails()}
+          ${this.renderImage(image)} ${this.renderDetails()}
         </div>
       `;
 
@@ -176,7 +178,7 @@ export class MgtPerson extends MgtTemplatedComponent {
         @mouseleave=${this._handleMouseLeave}
         @click=${this._handleMouseClick}
       >
-        ${person} ${this.renderPersonCard()}
+        ${person} ${this.renderPersonCard(image)}
       </div>
     `;
   }
@@ -238,6 +240,7 @@ export class MgtPerson extends MgtTemplatedComponent {
       const response = await batch.execute();
 
       this.personDetails = response.user;
+      this.personImage = response.photo;
       (this.personDetails as any).personImage = response.photo;
     } else if (!this.personDetails && this.personQuery) {
       const people = await provider.graph.findPerson(this.personQuery);
@@ -278,6 +281,7 @@ export class MgtPerson extends MgtTemplatedComponent {
       }
     }
     if (image) {
+      this.personImage = image;
       (this.personDetails as any).personImage = image;
     }
 
@@ -332,7 +336,7 @@ export class MgtPerson extends MgtTemplatedComponent {
     return null;
   }
 
-  private renderPersonCard() {
+  private renderPersonCard(image: string) {
     // ensure person card is only rendered when needed
     if (this.personCardInteraction === PersonCardInteraction.none || !this._personCardShouldRender) {
       return;
@@ -361,8 +365,6 @@ export class MgtPerson extends MgtTemplatedComponent {
       visible: this._isPersonCardVisible
     };
     if (this._isPersonCardVisible) {
-      const image = this.getImage();
-
       return html`
         <div style="${customStyle}" class=${classMap(flyoutClasses)}>
           ${this.renderTemplate('person-card', { person: this.personDetails, personImage: image }) ||
@@ -393,10 +395,9 @@ export class MgtPerson extends MgtTemplatedComponent {
     return null;
   }
 
-  private renderImage() {
+  private renderImage(image: string) {
     if (this.personDetails) {
       const title = this.personCardInteraction === PersonCardInteraction.none ? this.personDetails.displayName : '';
-      const image = this.getImage();
       const isLarge = this.showEmail && this.showName;
       const imageClasses = {
         initials: !image,
