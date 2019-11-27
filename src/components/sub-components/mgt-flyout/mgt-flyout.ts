@@ -1,3 +1,10 @@
+/**
+ * -------------------------------------------------------------------------------------------
+ * Copyright (c) Microsoft Corporation.  All Rights Reserved.  Licensed under the MIT License.
+ * See License in the project root for license information.
+ * -------------------------------------------------------------------------------------------
+ */
+
 import { customElement, html, LitElement, property, PropertyValues } from 'lit-element';
 import { classMap } from 'lit-html/directives/class-map';
 import { styles } from './mgt-flyout-css';
