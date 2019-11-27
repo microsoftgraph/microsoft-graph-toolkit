@@ -76,12 +76,14 @@ export class MgtPeoplePicker extends MgtTemplatedComponent {
   // User input in search
   @property() private _userInput: string = '';
 
+  // if search is still loading don't load "people not found" state
+  @property() private showLoading = false;
+  @property() private isLoading = false;
+
   // tracking of user arrow key input for selection
   private arrowSelectionCount: number = 0;
   // List of people requested if group property is provided
   private groupPeople: any[];
-  // if search is still loading don't load "people not found" state
-  private isLoading = false;
   private debouncedSearch;
 
   constructor() {
@@ -320,13 +322,10 @@ export class MgtPeoplePicker extends MgtTemplatedComponent {
       let people: any;
 
       if (provider && provider.state === ProviderState.SignedIn) {
-        const that = this;
-        let loading = true;
+        this.isLoading = true;
 
         setTimeout(() => {
-          if (loading) {
-            that.isLoading = true;
-          }
+          this.showLoading = this.isLoading;
         }, 400);
 
         const client = Providers.globalProvider.graph;
@@ -345,8 +344,8 @@ export class MgtPeoplePicker extends MgtTemplatedComponent {
         }
 
         this.people = this.filterPeople(people);
-        loading = false;
         this.isLoading = false;
+        this.showLoading = false;
       }
     } else {
       this.people = [];
@@ -508,12 +507,12 @@ export class MgtPeoplePicker extends MgtTemplatedComponent {
     let people: any = this.people;
     let content: TemplateResult;
 
-    if (people) {
+    if (this.showLoading) {
+      content = this.renderTemplate('loading', null, 'loading') || this.renderLoadingMessage();
+    } else if (people) {
       people = people.slice(0, this.showMax);
 
-      if (this.isLoading) {
-        content = this.renderTemplate('loading', null, 'loading') || this.renderLoadingMessage();
-      } else if (people.length === 0 && this._userInput.length > 0) {
+      if (!this.isLoading && people.length === 0 && this._userInput.length > 0) {
         content = this.renderTemplate('error', null, 'error') || this.renderErrorMessage();
       } else {
         if (people[0]) {
