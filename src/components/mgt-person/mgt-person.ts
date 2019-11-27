@@ -319,12 +319,11 @@ export class MgtPerson extends MgtTemplatedComponent {
   }
 
   private _handleMouseEnter(e: MouseEvent) {
+    clearTimeout(this._mouseEnterTimeout);
+    clearTimeout(this._mouseLeaveTimeout);
     if (this.personCardInteraction !== PersonCardInteraction.hover) {
       return;
     }
-
-    clearTimeout(this._mouseEnterTimeout);
-    clearTimeout(this._mouseLeaveTimeout);
     this._mouseEnterTimeout = setTimeout(this._showPersonCard.bind(this), 500);
   }
 
@@ -450,7 +449,6 @@ export class MgtPerson extends MgtTemplatedComponent {
         const initials = this.getInitials();
 
         imageHtml = html`
-          <img />
           <span class="initials-text" aria-label="${initials}">
             ${initials}
           </span>
