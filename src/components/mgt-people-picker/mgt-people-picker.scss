@@ -113,7 +113,6 @@ mgt-people-picker .people-person {
   border-radius: 15px;
   height: 24px;
   white-space: nowrap;
-  overflow: hidden;
   text-overflow: ellipsis;
 }
 
@@ -192,7 +191,6 @@ mgt-people-picker .remove-person-button-secondary {
 mgt-people-picker .person-display-name {
   max-width: 100px;
   white-space: nowrap;
-  overflow: hidden;
   text-overflow: ellipsis;
   margin-left: 8px;
   font-family: Segoe UI;
@@ -207,6 +205,7 @@ mgt-people-picker .person-display-name {
 mgt-person {
   --avatar-size-s: 32px;
   margin-left: 12px;
+  cursor: default;
 }
 .selected-person {
   --avatar-size-s: 24px;

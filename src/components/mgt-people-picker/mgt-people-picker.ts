@@ -415,11 +415,11 @@ export class MgtPeoplePicker extends MgtTemplatedComponent {
         ${this.selectedPeople.slice(0, this.selectedPeople.length).map(
           person =>
             html`
-              <li class="people-person">
+              <div class="people-person">
                 ${this.renderTemplate('selected-person', { person }, `selected-${person.id}`) ||
                   this.renderSelectedPerson(person)}
                 <div class="CloseIcon" @click="${() => this.removePerson(person)}">\uE711</div>
-              </li>
+              </div>
             `
         )}
       `;
@@ -561,7 +561,7 @@ export class MgtPeoplePicker extends MgtTemplatedComponent {
         .personDetails=${person}
         .personImage=${'@'}
         show-name
-        person-card="hover"
+        person-card="click"
       ></mgt-person>
     `;
   }
