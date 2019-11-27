@@ -195,9 +195,6 @@ export class MgtPerson extends MgtTemplatedComponent {
   protected updated(changedProps: PropertyValues) {
     super.updated(changedProps);
 
-    const flyout = this.renderRoot.querySelector('.flyout') as HTMLElement;
-    // const rect = flyout.getBoundingClientRect();
-
     const initials = this.renderRoot.querySelector('.initials-text') as HTMLElement;
     if (initials && initials.parentNode && (initials.parentNode as HTMLElement).getBoundingClientRect) {
       const parent = initials.parentNode as HTMLElement;
