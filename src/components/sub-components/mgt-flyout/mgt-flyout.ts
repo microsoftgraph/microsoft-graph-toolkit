@@ -1,6 +1,6 @@
-import { css, customElement, html, LitElement, property } from 'lit-element';
-import { PersonCardInteraction } from '../../PersonCardInteraction';
-
+import { css, customElement, html, LitElement, property, PropertyValues } from 'lit-element';
+import { classMap } from 'lit-html/directives/class-map';
+import { styles } from './mgt-flyout-css';
 /**
  *
  *
@@ -15,26 +15,8 @@ export class MgtFlyout extends LitElement {
    * using the `css` tag function.
    */
   static get styles() {
-    return css`
-      .title {
-        color: red;
-      }
-    `;
+    return styles;
   }
-
-  // TODO: create new type
-  @property({
-    attribute: 'person-card',
-    converter: (value, type) => {
-      value = value.toLowerCase();
-      if (typeof PersonCardInteraction[value] === 'undefined') {
-        return PersonCardInteraction.none;
-      } else {
-        return PersonCardInteraction[value];
-      }
-    }
-  })
-  public personCardInteraction: PersonCardInteraction = PersonCardInteraction.hover;
 
   /**
    *
@@ -43,14 +25,13 @@ export class MgtFlyout extends LitElement {
    * @memberof MgtComponent
    */
   @property({
-    attribute: 'my-title',
-    type: String
+    attribute: 'isOpen',
+    type: Boolean
   })
-  public myTitle: string = 'My First Component';
-  private _mouseLeaveTimeout;
-  private _mouseEnterTimeout;
-  private _openLeft: boolean = false;
-  private _openUp: boolean = false;
+  public isOpen: boolean = false;
+
+  private renderedOnce = false;
+
   @property({ attribute: false }) private _isPersonCardVisible: boolean = false;
   @property({ attribute: false }) private _personCardShouldRender: boolean = false;
 
@@ -85,46 +66,83 @@ export class MgtFlyout extends LitElement {
   public firstUpdated() {}
 
   /**
+   * Invoked whenever the element is updated. Implement to perform
+   * post-updating tasks via DOM APIs, for example, focusing an element.
+   *
+   * Setting properties inside this method will trigger the element to update
+   * again after this update cycle completes.
+   *
+   * * @param changedProperties Map of changed properties with old values
+   */
+  protected updated(changedProps: PropertyValues) {
+    super.updated(changedProps);
+
+    const anchor = this.renderRoot.querySelector('.anchor');
+    const flyout = this.renderRoot.querySelector('.flyout') as HTMLElement;
+    if (flyout && anchor) {
+      const flyoutRect = flyout.getBoundingClientRect();
+      const anchorRect = anchor.getBoundingClientRect();
+
+      const windowWidth = window.innerWidth || document.documentElement.clientWidth;
+      const windowHeight = window.innerHeight || document.documentElement.clientHeight;
+
+      let left: number;
+      let right: number;
+      let top: number;
+      let bottom: number;
+
+      if (anchorRect.width >= flyoutRect.width) {
+        left = 0;
+      } else {
+        const centerOffset = flyoutRect.width / 2 - anchorRect.width / 2;
+
+        if (anchorRect.left - centerOffset < 0) {
+          left = -anchorRect.left;
+        } else {
+          left = -centerOffset;
+        } // todo check if offscreen to the right and move left
+      }
+
+      flyout.style.left = left ? `${left}px` : '';
+      flyout.style.right = right ? `${right}px` : '';
+      flyout.style.top = top ? `${top}px` : '';
+      flyout.style.bottom = bottom ? `${bottom}px` : '';
+    }
+  }
+
+  /**
    * Invoked on each update to perform rendering tasks. This method must return
    * a lit-html TemplateResult. Setting properties inside this method will *not*
    * trigger the element to update.
    */
   protected render() {
     return html`
-      <div
-        class="root"
-        @mouseenter=${this._handleMouseEnter}
-        @mouseleave=${this._handleMouseLeave}
-        @click=${this._handleMouseClick}
-      >
-        <slot></slot>
-        <slot name="flyout"></slot>
+      <div class="root">
+        <div class="anchor">
+          <slot></slot>
+        </div>
+        ${this.renderFlyout()}
       </div>
     `;
   }
 
-  private _handleMouseClick() {
-    if (this.personCardInteraction === PersonCardInteraction.click && !this._isPersonCardVisible) {
-      this._showPersonCard();
-    } else {
-      this._hidePersonCard();
-    }
-  }
-
-  private _handleMouseEnter(e: MouseEvent) {
-    if (this.personCardInteraction !== PersonCardInteraction.hover) {
+  private renderFlyout() {
+    if (!this.isOpen && !this.renderedOnce) {
       return;
     }
 
-    clearTimeout(this._mouseEnterTimeout);
-    clearTimeout(this._mouseLeaveTimeout);
-    this._mouseEnterTimeout = setTimeout(this._showPersonCard.bind(this), 500);
-  }
+    this.renderedOnce = true;
 
-  private _handleMouseLeave(e: MouseEvent) {
-    clearTimeout(this._mouseEnterTimeout);
-    clearTimeout(this._mouseLeaveTimeout);
-    this._mouseLeaveTimeout = setTimeout(this._hidePersonCard.bind(this), 500);
+    const classes = {
+      flyout: true,
+      visible: this.isOpen
+    };
+
+    return html`
+      <div class=${classMap(classes)}>
+        <slot name="flyout"></slot>
+      </div>
+    `;
   }
 
   private _showPersonCard() {

@@ -33,12 +33,19 @@
     <!-- <mgt-mock-provider></mgt-mock-provider> -->
 
     <mgt-login></mgt-login>
-    <!-- <mgt-person person-query="me" show-name show-email person-card="click"></mgt-person>
-    <mgt-tasks></mgt-tasks> -->
+    <mgt-person person-query="me" person-card="click"></mgt-person>
+    <mgt-agenda></mgt-agenda>
 
     <mgt-flyout>
       <div>hello</div>
       <div slot="flyout">you</div>
     </mgt-flyout>
+
+    <script>
+      let flyout = document.querySelector('mgt-flyout');
+      flyout.addEventListener('click', () => {
+        flyout.isOpen = !flyout.isOpen;
+      });
+    </script>
   </body>
 </html>

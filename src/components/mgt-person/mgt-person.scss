@@ -137,20 +137,24 @@ mgt-person .user-email {
   -ms-grid-row: 2;
 }
 
-.root .flyout {
-  display: none;
-  position: absolute;
-  z-index: 1;
-  opacity: 0;
-  transition-property: opacity;
-  transition-duration: 0.1s;
+.flyout {
   padding: 8px;
 }
 
-.root .flyout.visible {
-  display: inline-block;
-  opacity: 1;
-  &.openLeft {
-    right: 0;
-  }
-}
+// .root .flyout {
+//   display: none;
+//   position: absolute;
+//   z-index: 1;
+//   opacity: 0;
+//   transition-property: opacity;
+//   transition-duration: 0.1s;
+//   padding: 8px;
+// }
+
+// .root .flyout.visible {
+//   display: inline-block;
+//   opacity: 1;
+//   &.openLeft {
+//     right: 0;
+//   }
+// }

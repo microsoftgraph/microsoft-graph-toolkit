@@ -6,7 +6,7 @@
  */
 
 import * as MicrosoftGraph from '@microsoft/microsoft-graph-types';
-import { customElement, html, property, PropertyValues } from 'lit-element';
+import { customElement, html, property, PropertyValues, TemplateResult } from 'lit-element';
 import { classMap } from 'lit-html/directives/class-map';
 import { styleMap } from 'lit-html/directives/style-map';
 import { Providers } from '../../Providers';
@@ -14,6 +14,7 @@ import { ProviderState } from '../../providers/IProvider';
 import '../../styles/fabric-icon-font';
 import { getEmailFromGraphEntity } from '../../utils/GraphHelpers';
 import { MgtPersonCard } from '../mgt-person-card/mgt-person-card';
+import '../sub-components/mgt-flyout/mgt-flyout';
 import { MgtTemplatedComponent } from '../templatedComponent';
 import { PersonCardInteraction } from './../PersonCardInteraction';
 import { styles } from './mgt-person-css';
@@ -170,6 +171,8 @@ export class MgtPerson extends MgtTemplatedComponent {
         </div>
       `;
 
+    const image = this.getImage();
+
     return html`
       <div
         class="root"
@@ -177,8 +180,30 @@ export class MgtPerson extends MgtTemplatedComponent {
         @mouseleave=${this._handleMouseLeave}
         @click=${this._handleMouseClick}
       >
-        ${person} ${this.renderPersonCard()}
+        ${this.renderFlyout(person)}
       </div>
+    `;
+
+    // ${person} ${this.renderPersonCard()}
+  }
+
+  public renderFlyout(anchor: TemplateResult) {
+    if (this.personCardInteraction === PersonCardInteraction.none) {
+      return anchor;
+    }
+
+    const image = this.getImage();
+
+    return html`
+      <mgt-flyout .isOpen=${this._isPersonCardVisible}>
+        ${anchor}
+        <div slot="flyout" class="flyout">
+          ${this.renderTemplate('person-card', { person: this.personDetails, personImage: image }) ||
+            html`
+              <mgt-person-card .personDetails=${this.personDetails} .personImage=${image}> </mgt-person-card>
+            `}
+        </div>
+      </mgt-flyout>
     `;
   }
 
@@ -319,7 +344,8 @@ export class MgtPerson extends MgtTemplatedComponent {
 
   private _hidePersonCard() {
     this._isPersonCardVisible = false;
-    const personCard = this.querySelector('mgt-person-card') as MgtPersonCard;
+    const personCard = (this.querySelector('mgt-person-card') ||
+      this.renderRoot.querySelector('mgt-person-card')) as MgtPersonCard;
     if (personCard) {
       personCard.isExpanded = false;
     }
