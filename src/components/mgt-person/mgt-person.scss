@@ -83,6 +83,11 @@ mgt-person .user-avatar {
     height: $avatar-size-s;
   }
 
+  &.card {
+    width: 75px;
+    height: 75px;
+  }
+
   &.row-span-2 {
     width: $avatar-size;
     height: $avatar-size;

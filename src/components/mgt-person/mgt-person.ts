@@ -398,7 +398,12 @@ export class MgtPerson extends MgtTemplatedComponent {
       const title = this.personCardInteraction === PersonCardInteraction.none ? this.personDetails.displayName : '';
       const image = this.getImage();
       const isLarge = this.showEmail && this.showName;
+
+      // polyfill for person-card image size ie 11
+      const isPersonCard = this.classList[0] === 'person-image' ? 'card' : '';
+
       const imageClasses = {
+        card: isPersonCard,
         initials: !image,
         'row-span-2': isLarge,
         small: !isLarge,
