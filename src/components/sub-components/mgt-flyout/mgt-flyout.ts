@@ -80,33 +80,55 @@ export class MgtFlyout extends LitElement {
     const anchor = this.renderRoot.querySelector('.anchor');
     const flyout = this.renderRoot.querySelector('.flyout') as HTMLElement;
     if (flyout && anchor) {
-      const flyoutRect = flyout.getBoundingClientRect();
-      const anchorRect = anchor.getBoundingClientRect();
-
-      const windowWidth = window.innerWidth || document.documentElement.clientWidth;
-      const windowHeight = window.innerHeight || document.documentElement.clientHeight;
-
       let left: number;
       let right: number;
       let top: number;
       let bottom: number;
 
-      if (anchorRect.width >= flyoutRect.width) {
-        left = 0;
-      } else {
-        const centerOffset = flyoutRect.width / 2 - anchorRect.width / 2;
+      if (this.isOpen) {
+        const flyoutRect = flyout.getBoundingClientRect();
+        const anchorRect = anchor.getBoundingClientRect();
 
-        if (anchorRect.left - centerOffset < 0) {
-          left = -anchorRect.left;
+        const windowWidth =
+          window.innerWidth && document.documentElement.clientWidth
+            ? Math.min(window.innerWidth, document.documentElement.clientWidth)
+            : window.innerWidth || document.documentElement.clientWidth;
+
+        const windowHeight =
+          window.innerHeight && document.documentElement.clientHeight
+            ? Math.min(window.innerHeight, document.documentElement.clientHeight)
+            : window.innerHeight || document.documentElement.clientHeight;
+
+        if (flyoutRect.width > windowWidth) {
+          // page width is smaller than flyout, render all the way to the left
+          left = -flyoutRect.left;
+        } else if (anchorRect.width >= flyoutRect.width) {
+          // anchor is large than flyout, render aligned to anchor
+          left = 0;
         } else {
-          left = -centerOffset;
-        } // todo check if offscreen to the right and move left
+          const centerOffset = flyoutRect.width / 2 - anchorRect.width / 2;
+
+          if (flyoutRect.left - centerOffset < 0) {
+            // centered flyout is off screen to the left, render on the left edge
+            left = -flyoutRect.left;
+          } else if (flyoutRect.right - centerOffset > windowWidth) {
+            // centered flyout is off screen to the right, render on the right edge
+            left = -(flyoutRect.right - windowWidth);
+          } else {
+            // render centered
+            left = -centerOffset;
+          }
+        }
+
+        if (windowHeight < flyoutRect.bottom) {
+          bottom = anchorRect.height;
+        }
       }
 
-      flyout.style.left = left ? `${left}px` : '';
-      flyout.style.right = right ? `${right}px` : '';
-      flyout.style.top = top ? `${top}px` : '';
-      flyout.style.bottom = bottom ? `${bottom}px` : '';
+      flyout.style.left = typeof left !== 'undefined' ? `${left}px` : '';
+      flyout.style.right = typeof right !== 'undefined' ? `${right}px` : '';
+      flyout.style.top = typeof top !== 'undefined' ? `${top}px` : '';
+      flyout.style.bottom = typeof bottom !== 'undefined' ? `${bottom}px` : '';
     }
   }
 
