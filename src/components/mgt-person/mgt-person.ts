@@ -6,13 +6,15 @@
  */
 
 import * as MicrosoftGraph from '@microsoft/microsoft-graph-types';
-import { customElement, html, property, PropertyValues } from 'lit-element';
+import { customElement, html, property, PropertyValues, TemplateResult } from 'lit-element';
 import { classMap } from 'lit-html/directives/class-map';
+import { styleMap } from 'lit-html/directives/style-map';
 import { Providers } from '../../Providers';
 import { ProviderState } from '../../providers/IProvider';
 import '../../styles/fabric-icon-font';
 import { getEmailFromGraphEntity } from '../../utils/GraphHelpers';
 import { MgtPersonCard } from '../mgt-person-card/mgt-person-card';
+import '../sub-components/mgt-flyout/mgt-flyout';
 import { MgtTemplatedComponent } from '../templatedComponent';
 import { PersonCardInteraction } from './../PersonCardInteraction';
 import { styles } from './mgt-person-css';
@@ -115,8 +117,8 @@ export class MgtPerson extends MgtTemplatedComponent {
   })
   public personCardInteraction: PersonCardInteraction = PersonCardInteraction.none;
 
-  @property({ attribute: false }) private _isPersonCardVisible: boolean = false;
-  @property({ attribute: false }) private _personCardShouldRender: boolean = false;
+  @property({ attribute: false }) private isPersonCardVisible: boolean = false;
+  @property({ attribute: false }) private personCardShouldRender: boolean = false;
 
   private _mouseLeaveTimeout;
   private _mouseEnterTimeout;
@@ -172,11 +174,11 @@ export class MgtPerson extends MgtTemplatedComponent {
     return html`
       <div
         class="root"
-        @mouseenter=${this._handleMouseEnter}
-        @mouseleave=${this._handleMouseLeave}
-        @click=${this._handleMouseClick}
+        @mouseenter=${this.handleMouseEnter}
+        @mouseleave=${this.handleMouseLeave}
+        @click=${this.handleMouseClick}
       >
-        ${person} ${this.renderPersonCard()}
+        ${this.renderFlyout(person)}
       </div>
     `;
   }
@@ -284,40 +286,41 @@ export class MgtPerson extends MgtTemplatedComponent {
     this.requestUpdate();
   }
 
-  private _handleMouseClick() {
-    if (this.personCardInteraction === PersonCardInteraction.click && !this._isPersonCardVisible) {
-      this._showPersonCard();
+  private handleMouseClick() {
+    if (this.personCardInteraction === PersonCardInteraction.click && !this.isPersonCardVisible) {
+      this.showPersonCard();
     } else {
-      this._hidePersonCard();
+      this.hidePersonCard();
     }
   }
 
-  private _handleMouseEnter(e: MouseEvent) {
+  private handleMouseEnter(e: MouseEvent) {
     clearTimeout(this._mouseEnterTimeout);
     clearTimeout(this._mouseLeaveTimeout);
     if (this.personCardInteraction !== PersonCardInteraction.hover) {
       return;
     }
-    this._mouseEnterTimeout = setTimeout(this._showPersonCard.bind(this), 500);
+    this._mouseEnterTimeout = setTimeout(this.showPersonCard.bind(this), 500);
   }
 
-  private _handleMouseLeave(e: MouseEvent) {
+  private handleMouseLeave(e: MouseEvent) {
     clearTimeout(this._mouseEnterTimeout);
     clearTimeout(this._mouseLeaveTimeout);
-    this._mouseLeaveTimeout = setTimeout(this._hidePersonCard.bind(this), 500);
+    this._mouseLeaveTimeout = setTimeout(this.hidePersonCard.bind(this), 500);
   }
 
-  private _showPersonCard() {
-    if (!this._personCardShouldRender) {
-      this._personCardShouldRender = true;
+  private showPersonCard() {
+    if (!this.personCardShouldRender) {
+      this.personCardShouldRender = true;
     }
 
-    this._isPersonCardVisible = true;
+    this.isPersonCardVisible = true;
   }
 
-  private _hidePersonCard() {
-    this._isPersonCardVisible = false;
-    const personCard = this.querySelector('mgt-person-card') as MgtPersonCard;
+  private hidePersonCard() {
+    this.isPersonCardVisible = false;
+    const personCard = (this.querySelector('mgt-person-card') ||
+      this.renderRoot.querySelector('mgt-person-card')) as MgtPersonCard;
     if (personCard) {
       personCard.isExpanded = false;
     }
@@ -332,46 +335,28 @@ export class MgtPerson extends MgtTemplatedComponent {
     return null;
   }
 
-  private renderPersonCard() {
-    // ensure person card is only rendered when needed
-    if (this.personCardInteraction === PersonCardInteraction.none || !this._personCardShouldRender) {
-      return;
-    }
-    // logic for rendering left if there is no space
-    const personRect = this.renderRoot.querySelector('.root').getBoundingClientRect();
-    const leftEdge = personRect.left;
-    const rightEdge = (window.innerWidth || document.documentElement.clientWidth) - personRect.right;
-    this._openLeft = rightEdge < leftEdge;
-
-    // logic for rendering up
-    const bottomEdge = (window.innerHeight || document.documentElement.clientHeight) - personRect.bottom;
-    this._openUp = bottomEdge < 175;
-
-    // find position to renderup to
-    let customStyle = null;
-    if (this._openUp) {
-      const personSize = this.getBoundingClientRect().bottom - this.getBoundingClientRect().top;
-      customStyle = `bottom: ${personSize / 2 + 8}px`;
+  private renderFlyout(anchor: TemplateResult) {
+    if (this.personCardInteraction === PersonCardInteraction.none) {
+      return anchor;
     }
 
-    const flyoutClasses = {
-      flyout: true,
-      openLeft: this._openLeft,
-      openUp: this._openUp,
-      visible: this._isPersonCardVisible
-    };
-    if (this._isPersonCardVisible) {
-      const image = this.getImage();
+    const image = this.getImage();
+    const flyout = this.personCardShouldRender
+      ? html`
+          <div slot="flyout" class="flyout">
+            ${this.renderTemplate('person-card', { person: this.personDetails, personImage: image }) ||
+              html`
+                <mgt-person-card .personDetails=${this.personDetails} .personImage=${image}> </mgt-person-card>
+              `}
+          </div>
+        `
+      : null;
 
-      return html`
-        <div style="${customStyle}" class=${classMap(flyoutClasses)}>
-          ${this.renderTemplate('person-card', { person: this.personDetails, personImage: image }) ||
-            html`
-              <mgt-person-card .personDetails=${this.personDetails} .personImage=${image}> </mgt-person-card>
-            `}
-        </div>
-      `;
-    }
+    return html`
+      <mgt-flyout .isOpen=${this.isPersonCardVisible}>
+        ${anchor} ${flyout}
+      </mgt-flyout>
+    `;
   }
 
   private renderDetails() {
