@@ -1,4 +1,4 @@
-import { css, customElement, html, LitElement, property, PropertyValues } from 'lit-element';
+import { customElement, html, LitElement, property, PropertyValues } from 'lit-element';
 import { classMap } from 'lit-html/directives/class-map';
 import { styles } from './mgt-flyout-css';
 /**
@@ -7,6 +7,13 @@ import { styles } from './mgt-flyout-css';
  * @export
  * @class mgt-flyout
  * @extends {MgtTemplatedComponent}
+ */
+/**
+ * A component to create flyout anchored to an element
+ *
+ * @export
+ * @class MgtFlyout
+ * @extends {LitElement}
  */
 @customElement('mgt-flyout')
 export class MgtFlyout extends LitElement {
@@ -19,7 +26,7 @@ export class MgtFlyout extends LitElement {
   }
 
   /**
-   *
+   * Gets or sets whether the flyout is visible
    *
    * @type {string}
    * @memberof MgtComponent
@@ -32,28 +39,6 @@ export class MgtFlyout extends LitElement {
 
   private renderedOnce = false;
 
-  @property({ attribute: false }) private _isPersonCardVisible: boolean = false;
-  @property({ attribute: false }) private _personCardShouldRender: boolean = false;
-
-  /**
-   * Synchronizes property values when attributes change.
-   *
-   * @param {*} name
-   * @param {*} oldValue
-   * @param {*} newValue
-   * @memberof MgtPersonCard
-   */
-  public attributeChangedCallback(name, oldval, newval) {
-    super.attributeChangedCallback(name, oldval, newval);
-
-    // TODO: handle when an attribute changes.
-    //
-    // Ex: load data when the name attribute changes
-    // if (name === 'person-id' && oldval !== newval){
-    //  this.loadData();
-    // }
-  }
-
   /**
    * Invoked when the element is first updated. Implement to perform one time
    * work on the element after update.
@@ -63,7 +48,11 @@ export class MgtFlyout extends LitElement {
    *
    * * @param _changedProperties Map of changed properties with old values
    */
-  public firstUpdated() {}
+  public firstUpdated() {
+    this.addEventListener('updated', e => {
+      this.updateFlyout();
+    });
+  }
 
   /**
    * Invoked whenever the element is updated. Implement to perform
@@ -76,60 +65,7 @@ export class MgtFlyout extends LitElement {
    */
   protected updated(changedProps: PropertyValues) {
     super.updated(changedProps);
-
-    const anchor = this.renderRoot.querySelector('.anchor');
-    const flyout = this.renderRoot.querySelector('.flyout') as HTMLElement;
-    if (flyout && anchor) {
-      let left: number;
-      let right: number;
-      let top: number;
-      let bottom: number;
-
-      if (this.isOpen) {
-        const flyoutRect = flyout.getBoundingClientRect();
-        const anchorRect = anchor.getBoundingClientRect();
-
-        const windowWidth =
-          window.innerWidth && document.documentElement.clientWidth
-            ? Math.min(window.innerWidth, document.documentElement.clientWidth)
-            : window.innerWidth || document.documentElement.clientWidth;
-
-        const windowHeight =
-          window.innerHeight && document.documentElement.clientHeight
-            ? Math.min(window.innerHeight, document.documentElement.clientHeight)
-            : window.innerHeight || document.documentElement.clientHeight;
-
-        if (flyoutRect.width > windowWidth) {
-          // page width is smaller than flyout, render all the way to the left
-          left = -flyoutRect.left;
-        } else if (anchorRect.width >= flyoutRect.width) {
-          // anchor is large than flyout, render aligned to anchor
-          left = 0;
-        } else {
-          const centerOffset = flyoutRect.width / 2 - anchorRect.width / 2;
-
-          if (flyoutRect.left - centerOffset < 0) {
-            // centered flyout is off screen to the left, render on the left edge
-            left = -flyoutRect.left;
-          } else if (flyoutRect.right - centerOffset > windowWidth) {
-            // centered flyout is off screen to the right, render on the right edge
-            left = -(flyoutRect.right - windowWidth);
-          } else {
-            // render centered
-            left = -centerOffset;
-          }
-        }
-
-        if (windowHeight < flyoutRect.bottom) {
-          bottom = anchorRect.height;
-        }
-      }
-
-      flyout.style.left = typeof left !== 'undefined' ? `${left}px` : '';
-      flyout.style.right = typeof right !== 'undefined' ? `${right}px` : '';
-      flyout.style.top = typeof top !== 'undefined' ? `${top}px` : '';
-      flyout.style.bottom = typeof bottom !== 'undefined' ? `${bottom}px` : '';
-    }
+    this.updateFlyout();
   }
 
   /**
@@ -167,21 +103,62 @@ export class MgtFlyout extends LitElement {
     `;
   }
 
-  private _showPersonCard() {
-    if (!this._personCardShouldRender) {
-      this._personCardShouldRender = true;
+  private updateFlyout() {
+    const anchor = this.renderRoot.querySelector('.anchor');
+    const flyout = this.renderRoot.querySelector('.flyout') as HTMLElement;
+    if (flyout && anchor) {
+      let left: number;
+      let bottom: number;
+
+      if (this.isOpen) {
+        const flyoutRect = flyout.getBoundingClientRect();
+        const anchorRect = anchor.getBoundingClientRect();
+
+        // normalize flyoutrect since we could have moved it before
+        // need to know where would it render, not where it renders
+        const flyoutTop = anchorRect.bottom;
+        const flyoutLeft = anchorRect.left;
+        const flyoutRight = flyoutLeft + flyoutRect.width;
+        const flyoutBottom = flyoutTop + flyoutRect.height;
+
+        const windowWidth =
+          window.innerWidth && document.documentElement.clientWidth
+            ? Math.min(window.innerWidth, document.documentElement.clientWidth)
+            : window.innerWidth || document.documentElement.clientWidth;
+
+        const windowHeight =
+          window.innerHeight && document.documentElement.clientHeight
+            ? Math.min(window.innerHeight, document.documentElement.clientHeight)
+            : window.innerHeight || document.documentElement.clientHeight;
+
+        if (flyoutRect.width > windowWidth) {
+          // page width is smaller than flyout, render all the way to the left
+          left = -flyoutLeft;
+        } else if (anchorRect.width >= flyoutRect.width) {
+          // anchor is large than flyout, render aligned to anchor
+          left = 0;
+        } else {
+          const centerOffset = flyoutRect.width / 2 - anchorRect.width / 2;
+
+          if (flyoutLeft - centerOffset < 0) {
+            // centered flyout is off screen to the left, render on the left edge
+            left = -flyoutLeft;
+          } else if (flyoutRight - centerOffset > windowWidth) {
+            // centered flyout is off screen to the right, render on the right edge
+            left = -(flyoutRight - windowWidth);
+          } else {
+            // render centered
+            left = -centerOffset;
+          }
+        }
+
+        if (windowHeight < flyoutBottom) {
+          bottom = anchorRect.height;
+        }
+      }
+
+      flyout.style.left = typeof left !== 'undefined' ? `${left}px` : '';
+      flyout.style.bottom = typeof bottom !== 'undefined' ? `${bottom}px` : '';
     }
-
-    this._isPersonCardVisible = true;
-  }
-
-  private _hidePersonCard() {
-    this._isPersonCardVisible = false;
-
-    // TODO expose an event to do this outside of the component
-    // const personCard = this.querySelector('mgt-person-card') as MgtPersonCard;
-    // if (personCard) {
-    //   personCard.isExpanded = false;
-    // }
   }
 }
