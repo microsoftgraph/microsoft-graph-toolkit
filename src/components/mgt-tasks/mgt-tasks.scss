@@ -13,25 +13,23 @@ mgt-tasks,
   font-family: var(--default-font-family, 'Segoe UI');
   display: flex;
   flex-direction: column;
+  background-color: var(--tasks-background-color, #f8f8f8);
+  padding: var(--tasks-padding, 12px);
 }
 
 mgt-tasks .TaskIcon,
 :host .TaskIcon {
   font-family: 'FabricMDL2Icons';
-  text-align: center;
-  justify-self: center;
-  align-content: center;
-  align-self: center;
-  vertical-align: middle;
   user-select: none;
   -moz-user-select: none;
   -ms-user-select: none;
+  margin-right: 8px;
 }
 
 mgt-tasks .Header,
 :host .Header {
-  padding: var(--tasks-header-padding, 0px 10px 0 10px);
-  margin: var(--tasks-header-margin, 0 0 10px 0);
+  padding: var(--tasks-header-padding, 0);
+  margin: var(--tasks-header-margin, 0 0 12px 0);
 }
 
 mgt-tasks .TaskIcon.Divider,
@@ -41,12 +39,11 @@ mgt-tasks .TaskIcon.Divider,
   font-size: 16px;
 }
 
-mgt-tasks .Header .PlannerTitle,
-:host .Header .PlannerTitle {
-  padding: var(--tasks-title-padding, 0px 0px 0px 0px);
+mgt-tasks .Header,
+:host .Header {
+  padding: var(--tasks-title-padding, 0);
   display: flex;
   align-items: center;
-  align-content: center;
 }
 
 mgt-tasks select,
@@ -63,10 +60,10 @@ mgt-tasks select::-ms-expand,
   display: none;
 }
 
-mgt-tasks .PlannerTitle select,
-:host .PlannerTitle select,
-mgt-tasks .Header .PlannerTitle .PlanTitle,
-:host .Header .PlannerTitle .PlanTitle {
+mgt-tasks select,
+:host select,
+mgt-tasks .Header .PlanTitle,
+:host .Header .PlanTitle {
   font-family: var(--default-font-family, 'Segoe UI');
   font-size: var(--tasks-plan-title-font-size, 1.1em);
   padding: var(--tasks-plan-title-padding, 5px);
@@ -95,26 +92,24 @@ mgt-tasks .Header .NewTaskDue input,
 mgt-tasks .Header .TitleCont,
 :host .Header .TitleCont {
   flex: 1 1 auto;
+  display: flex;
+  align-items: center;
   height: var(--tasks-new-button-height, 34px);
 }
 
 mgt-tasks .Header .NewTaskButton,
 :host .Header .NewTaskButton {
   flex: 0 0 auto;
-  display: inline-block;
-  width: var(--task-new-button-width, 90px);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+
+  // width: var(--task-new-button-width, 90px);
   height: var(--tasks-new-button-height, 32px);
-  max-width: 90px;
-  min-width: 90px;
-  line-height: 200%;
+  border-radius: 2px;
+  padding: 0 20px;
 
-  text-align: center;
-  align-content: center;
-  align-self: center;
-  vertical-align: middle;
-  justify-self: flex-end;
-
-  background: var(--tasks-new-button-background, #0078d4);
+  background: var(--tasks-new-button-background, $ms-color-communicationPrimary);
   border: var(--tasks-new-button-border, solid 1px rgba(0, 0, 0, 0));
   color: var(--tasks-new-button-color, #ffffff);
 
@@ -123,103 +118,238 @@ mgt-tasks .Header .NewTaskButton,
   -ms-user-select: none;
 
   cursor: pointer;
+
+  span {
+    font-size: 14px;
+    font-weight: 600;
+    letter-spacing: 0.1px;
+    line-height: 14px;
+  }
 }
 
 mgt-tasks .Header .NewTaskButton:hover,
 :host .Header .NewTaskButton:hover {
-  background: var(--tasks-new-button-hover-background, #0091ff);
+  background: var(--tasks-new-button-hover-background, $ms-color-communicationShade10);
 }
 
 mgt-tasks .Header .NewTaskButton:active,
 :host .Header .NewTaskButton:active {
-  background: var(--tasks-new-button-active-background, #00508d);
+  background: var(--tasks-new-button-active-background, $ms-color-communicationShade20);
 }
 
 mgt-tasks,
 :host {
   .Task {
-    margin: var(--task-margin, 0 10px 10px 10px);
-    padding: var(--task-padding, 0 0 0 0);
-    box-shadow: var(--task-box-shadow, 0px 2px 8px rgba(0, 0, 0, 0.092));
-    background: var(--task-background, #ffffff);
     position: relative;
+    margin: var(--task-margin, 0 0 18px 0);
+    padding: var(--task-padding, 0 0 0 0);
+    background-color: var(--task-background, white);
+    // box-shadow: var(--task-box-shadow, 0 0 0 1px rgba(0, 0, 0, 0.08));
 
     .TaskContent {
       display: flex;
-      flex-direction: row;
+
+      .Divider {
+        position: absolute;
+        height: 2px;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background-color: $ms-color-gray30;
+      }
 
       .TaskDetailsContainer {
-        color: var(--task-detail-color, #767676);
-        margin: 20px 0 18px 0;
-        display: flex;
-        flex-direction: column;
-        flex: 1 1 auto;
+        flex: 1;
+        display: grid;
+        grid-template-columns: auto 1fr;
+        grid-template-rows: auto auto auto auto;
+        row-gap: 8px;
+        column-gap: 24px;
+        justify-content: space-between;
+        align-items: center;
 
-        .TaskTitle {
-          flex: 1 0 auto;
-          color: #333333;
-          max-width: 370px;
+        color: var(--task-detail-color, $ms-color-gray130);
+        font-size: 12px;
+        font-weight: 600;
+        white-space: nowrap;
+        margin: 10px 0;
+
+        .TaskDetail {
           width: 100%;
-          font-size: 20px;
-          font-weight: 300;
+          height: 100%;
+          margin: auto;
+
+          display: flex;
+          justify-content: flex-start;
+          align-items: center;
         }
 
-        .TaskDetails {
-          display: flex;
-          margin: 10px 0 0 0;
-          font-size: 12px;
-          font-weight: 400;
-          align-items: center;
-          flex-wrap: wrap;
+        .TaskTitle {
+          color: var(--task-title-color, $ms-color-gray160);
+          font-size: 14px;
+          font-weight: 600;
+          width: 240px;
+          padding: 12.5px 0 0 0;
+          grid-row: 1;
+          grid-column: 1 / 3;
+        }
 
-          svg {
-            vertical-align: middle;
-            margin-right: 4px;
-          }
-          span,
-          select {
-            vertical-align: middle;
-          }
-          .TaskDetail {
-            margin: 0 20px 0 0;
-          }
+        .TaskGroup {
+          min-height: 24px;
 
-          .TaskIcon {
-            color: #333333;
-            margin: var(--task-detail-icon-margin 0 8px 0 0);
-          }
+          grid-row: 2;
+          grid-column: 1;
+        }
+
+        .TaskBucket {
+          min-height: 24px;
+
+          grid-row: 2;
+          grid-column: 2;
+        }
+
+        .TaskAssignee {
+          grid-row: 3;
+          grid-column: 1;
+
           mgt-people {
-            color: var(--task-detail-color, black);
-            font-size: 16px;
+            --list-margin: 0;
+          }
+        }
+
+        .TaskDue {
+          justify-content: flex-end;
+          align-items: flex-start;
+
+          grid-row: 4;
+          grid-column: 1 / 3;
+          margin-bottom: 10px;
+        }
+
+        @media (min-width: 768px) {
+          grid-template-columns: 1fr 0.5fr 1fr 0.5fr;
+          grid-template-rows: auto auto;
+
+          .TaskTitle {
+            grid-row: 1;
+            grid-column: 1 / 5;
           }
 
-          mgt-person {
-            display: inline-block;
-          }
-          .Picker {
-            background-color: white;
-            display: block;
-            position: absolute;
-            box-shadow: 0 3px 7px rgba(0, 0, 0, 0.3);
-            -webkit-background-clip: padding-box;
-            -moz-background-clip: padding-box;
-            background-clip: padding-box;
-            width: 450px;
-            color: var(--task-detail-color, black);
-            z-index: 1;
-            mgt-people-picker {
-              --separator-margin: 0px 10px 0px 10px;
-            }
-            &.Hidden {
-              display: none;
-            }
+          .TaskGroup {
+            grid-row: 2;
+            grid-column: 1;
           }
 
-          input,
-          select {
-            color: var(--task-detail-color, #767676);
-            font-size: 0.9em;
+          .TaskBucket {
+            grid-row: 2;
+            grid-column: 2;
           }
+
+          .TaskAssignee {
+            grid-row: 2;
+            grid-column: 3;
+          }
+
+          .TaskDue {
+            justify-content: flex-start;
+            align-items: center;
+
+            grid-row: 2;
+            grid-column: 4;
+          }
+        }
+
+        @media (min-width: 1200px) {
+          grid-template-columns: 2fr 1fr 0.5fr 1fr 0.5fr;
+          grid-template-rows: auto;
+
+          .TaskTitle {
+            padding: 0;
+
+            grid-row: 1;
+            grid-column: 1;
+          }
+
+          .TaskGroup {
+            grid-row: 1;
+            grid-column: 2;
+          }
+
+          .TaskBucket {
+            grid-row: 1;
+            grid-column: 3;
+          }
+
+          .TaskAssignee {
+            grid-row: 1;
+            grid-column: 4;
+          }
+
+          .TaskDue {
+            justify-content: flex-start;
+            align-items: center;
+
+            grid-row: 1;
+            grid-column: 5;
+          }
+        }
+
+        svg {
+          vertical-align: middle;
+          margin-right: 4px;
+        }
+        span,
+        select {
+          vertical-align: middle;
+        }
+
+        .TaskIcon {
+          color: $ms-color-gray120;
+          margin: var(--task-detail-icon-margin 0 8px 0 0);
+        }
+        mgt-people {
+          color: var(--task-detail-color, black);
+          font-size: 16px;
+        }
+
+        mgt-person {
+          display: inline-block;
+        }
+        .Picker {
+          background-color: white;
+          display: block;
+          position: absolute;
+          box-shadow: 0 3px 7px rgba(0, 0, 0, 0.3);
+          -webkit-background-clip: padding-box;
+          -moz-background-clip: padding-box;
+          background-clip: padding-box;
+          width: 450px;
+          color: var(--task-detail-color, black);
+          z-index: 1;
+          mgt-people-picker {
+            --separator-margin: 0px 10px 0px 10px;
+          }
+          &.Hidden {
+            display: none;
+          }
+        }
+
+        input,
+        select {
+          color: var(--task-detail-color, #767676);
+          font-size: 0.9em;
+        }
+      }
+
+      @media (min-width: 768px) {
+        .TaskDetailsContainer {
+          margin: 10px 0 20px 0;
+        }
+      }
+
+      @media (min-width: 1200px) {
+        .TaskDetailsContainer {
+          margin: 10px 0;
         }
       }
     }
@@ -237,18 +367,18 @@ mgt-tasks,
     }
 
     &.Complete {
-      background: var(--task-complete-background, #f6f6f6);
-      border-color: var(--task-complete-border, #e2e2e2);
-      .TaskHeader {
-        color: var(--task-complete-header-color, #959595);
-      }
-      .TaskDetails {
-        color: var(--task-complete-detail-color #b0b0b0);
+      background: var(--task-complete-background, $ms-color-gray30);
+      // border-color: var(--task-complete-border, #e2e2e2);
+      // .TaskHeader {
+      //   color: var(--task-complete-header-color, #959595);
+      // }
+      // .TaskDetails {
+      //   color: var(--task-complete-detail-color #b0b0b0);
 
-        .TaskIcon {
-          color: var(--task-compete-detail-icon-color, #959595);
-        }
-      }
+      //   .TaskIcon {
+      //     color: var(--task-compete-detail-icon-color, #959595);
+      //   }
+      // }
     }
 
     &.NewTask {
@@ -366,51 +496,36 @@ mgt-tasks,
     .TaskCheckContainer {
       font-family: 'FabricMDL2Icons';
       display: inline-block;
-      width: 24px;
-      height: 24px;
-      text-align: center;
       border-radius: 50%;
-      flex: 0 0 auto;
       color: white;
       cursor: pointer;
       display: flex;
-      align-items: center;
-      align-content: center;
-      justify-items: center;
-      justify-content: center;
-      margin: 20px 10px 20px 20px;
+      align-items: flex-start;
+      margin: 21px 10px 20px 20px;
 
       user-select: none;
       -moz-user-select: none;
       -ms-user-select: none;
       &.Complete {
         .TaskCheck {
-          background: #00b294;
-          border-color: #00b294;
-          display: flex;
-          align-items: center;
-          align-content: center;
-          justify-items: center;
-          justify-content: center;
+          background-color: $ms-color-sharedGreenCyan10;
+          border: solid 1px white;
         }
       }
     }
 
     .TaskCheck {
       font-family: 'FabricMDL2Icons';
+      font-size: 12px;
       display: inline-block;
-      width: 22px;
-      height: 22px;
-      text-align: center;
+      width: 18px;
+      height: 18px;
       border-radius: 50%;
-      border: solid 1px #666666;
-      flex: 0 0 auto;
+      border: solid 1px $ms-color-gray120;
       color: white;
       display: flex;
-      align-items: center;
-      align-content: center;
-      justify-items: center;
       justify-content: center;
+      align-items: center;
 
       user-select: none;
       -moz-user-select: none;
@@ -445,7 +560,7 @@ mgt-tasks,
         height: 20px;
       }
       .TaskDetail {
-        margin-right: 8px;
+        margin-right: 12px;
         display: flex;
         flex-direction: row;
         align-items: center;
@@ -462,9 +577,7 @@ mgt-tasks,
       user-select: none;
       -moz-user-select: none;
       -ms-user-select: none;
-      position: absolute;
-      top: 0;
-      right: 0;
+      margin: 12px 8px 0 0;
     }
   }
   .LoadingHeader {

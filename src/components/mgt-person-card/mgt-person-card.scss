@@ -66,14 +66,18 @@ $color: var(--color, #{$ms-color-neutralDark});
 
   .additional-details-container {
     .additional-details-button {
+      display: flex;
+      justify-content: center;
+      align-items: center;
       height: 28px;
       background: rgba(196, 196, 196, 0.1);
-      text-align: center;
-      position: relative;
+      // text-align: center;
+      // position: relative;
       .additional-details-svg {
-        width: 50%;
-        bottom: 0;
-        top: 100%;
+        // width: 50%;
+        // bottom: 0;
+        // top: 100%;
+        margin-bottom: 3px;
       }
     }
     .additional-details-button:hover {

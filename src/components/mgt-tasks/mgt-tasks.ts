@@ -325,9 +325,7 @@ export class MgtTasks extends MgtTemplatedComponent {
     if (!this.hideHeader) {
       header = html`
         <div class="Header">
-          <span class="PlannerTitle">
-            ${this.renderPlanOptions()}
-          </span>
+          ${this.renderPlanOptions()}
         </div>
       `;
     }
@@ -627,7 +625,7 @@ export class MgtTasks extends MgtTemplatedComponent {
       this.readOnly || this._isNewTaskVisible
         ? null
         : html`
-            <span
+            <div
               class="AddBarItem NewTaskButton"
               @click="${() => {
                 this.isNewTaskVisible = !this.isNewTaskVisible;
@@ -635,7 +633,7 @@ export class MgtTasks extends MgtTemplatedComponent {
             >
               <span class="TaskIcon">\uE710</span>
               <span>Add</span>
-            </span>
+            </div>
           `;
 
     if (this.dataSource === TasksSource.planner) {
@@ -690,9 +688,9 @@ export class MgtTasks extends MgtTemplatedComponent {
           `;
 
       return html`
-        <span class="TitleCont">
+        <div class="TitleCont">
           ${groupSelect} ${divider} ${!this._currentGroup ? null : folderSelect}
-        </span>
+        </div>
         ${addButton}
       `;
     } else {
@@ -754,13 +752,13 @@ export class MgtTasks extends MgtTemplatedComponent {
         ? null
         : this._currentGroup
         ? html`
-            <span class="TaskDetail TaskAssignee">
+            <span class="TaskDetail TaskGroup">
               ${this.renderPlannerIcon()}
               <span>${this.getPlanTitle(this._currentGroup)}</span>
             </span>
           `
         : html`
-            <span class="TaskDetail TaskAssignee">
+            <span class="TaskDetail TaskGroup">
               ${this.renderPlannerIcon()}
               <select
                 .value="${this._newTaskGroupId}"
@@ -995,7 +993,7 @@ export class MgtTasks extends MgtTemplatedComponent {
         this.dataSource === TasksSource.todo || this._currentGroup
           ? null
           : html`
-              <span class="TaskDetail TaskAssignee">
+              <span class="TaskDetail TaskGroup">
                 ${this.renderPlannerIcon()}
                 <span>${this.getPlanTitle(task.topParentId)}</span>
               </span>
@@ -1014,8 +1012,8 @@ export class MgtTasks extends MgtTemplatedComponent {
         ? null
         : html`
             <span class="TaskDetail TaskDue">
-              ${this.renderCalendarIcon()}
-              <span>${getShortDateString(dueDate)}</span>
+              <!-- ${this.renderCalendarIcon()} -->
+              <span>Due ${getShortDateString(dueDate)}</span>
             </span>
           `;
 
@@ -1045,7 +1043,7 @@ export class MgtTasks extends MgtTemplatedComponent {
         `;
         taskPeople = html`
           <span
-            class="TaskDetail TaskBucket"
+            class="TaskDetail TaskAssignee"
             @click=${(e: MouseEvent) => {
               this.showPeoplePicker(task);
               e.stopPropagation();
@@ -1065,9 +1063,9 @@ export class MgtTasks extends MgtTemplatedComponent {
         <div class="TaskTitle">
           ${name}
         </div>
-        <div class="TaskDetails">
-          ${group} ${folder} ${taskPeople} ${taskDue}
-        </div>
+        <!-- <div class="TaskDetails"> -->
+        ${group} ${folder} ${taskPeople} ${taskDue}
+        <!-- </div> -->
       `;
     }
 
@@ -1122,8 +1120,10 @@ export class MgtTasks extends MgtTemplatedComponent {
           <div class="TaskDetailsContainer">
             ${taskDetails}
           </div>
+          ${taskOptions}
+
+          <div class="Divider"></div>
         </div>
-        ${taskOptions}
       </div>
     `;
   }
