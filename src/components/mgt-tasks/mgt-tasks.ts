@@ -5,8 +5,8 @@
  * -------------------------------------------------------------------------------------------
  */
 
-import { Person, PlannerAssignments, User } from '@microsoft/microsoft-graph-types';
-import { Contact, OutlookTaskFolder } from '@microsoft/microsoft-graph-types-beta';
+import { Person, PlannerAssignments, PlannerTask, User } from '@microsoft/microsoft-graph-types';
+import { Contact, OutlookTask, OutlookTaskFolder } from '@microsoft/microsoft-graph-types-beta';
 import { customElement, html, property } from 'lit-element';
 import { classMap } from 'lit-html/directives/class-map';
 import { repeat } from 'lit-html/directives/repeat';
@@ -23,6 +23,7 @@ import { MgtPeople } from '../mgt-people/mgt-people';
 import '../mgt-person/mgt-person';
 import '../sub-components/mgt-arrow-options/mgt-arrow-options';
 import '../sub-components/mgt-dot-options/mgt-dot-options';
+import '../sub-components/mgt-flyout/mgt-flyout';
 
 /**
  * Defines how a person card is shown when a user interacts with
@@ -192,6 +193,13 @@ export class MgtTasks extends MgtTemplatedComponent {
   @property({ attribute: 'group-id', type: String })
   public groupId: string = null;
 
+  /**
+   * Optional filter function when rendering tasks
+   *
+   * @memberof MgtTasks
+   */
+  public taskFilter: (task: PlannerTask | OutlookTask) => boolean;
+
   @property() private _isNewTaskVisible: boolean = false;
   @property() private _newTaskBeingAdded: boolean = false;
   @property() private _newTaskName: string = '';
@@ -313,10 +321,14 @@ export class MgtTasks extends MgtTemplatedComponent {
    * trigger the element to update.
    */
   protected render() {
-    const tasks = this._tasks
+    let tasks = this._tasks
       .filter(task => this.isTaskInSelectedGroupFilter(task))
       .filter(task => this.isTaskInSelectedFolderFilter(task))
       .filter(task => !this._hiddenTasks.includes(task.id));
+
+    if (this.taskFilter) {
+      tasks = tasks.filter(task => this.taskFilter(task._raw));
+    }
 
     const loadingTask = this._inTaskLoad && !this._hasDoneInitialLoad ? this.renderLoadingTask() : null;
 
@@ -829,44 +841,7 @@ export class MgtTasks extends MgtTemplatedComponent {
       </span>
     `;
 
-    const task = null;
-
-    const assignedPeopleHTML = html`
-      <mgt-people
-        class="people-newTask"
-        .userIds="${[]}"
-        .personCardInteraction=${this.isPeoplePickerVisible ? PersonCardInteraction.none : PersonCardInteraction.hover}
-      >
-        <template data-type="no-people">
-          <i class="login-icon ms-Icon ms-Icon--Contact"></i>
-        </template>
-      </mgt-people>
-    `;
-
-    const taskPeople =
-      this.dataSource === TasksSource.todo
-        ? null
-        : html`
-            <span class="TaskDetail TaskPeople">
-              <span
-                @click=${(e: MouseEvent) => {
-                  e.stopPropagation();
-                  this.showPeoplePicker(task);
-                }}
-              >
-                ${assignedPeopleHTML}
-                <div
-                  class=${classMap({ Picker: true, Hidden: !this.isPeoplePickerVisible || task !== this._currentTask })}
-                >
-                  <mgt-people-picker
-                    class="picker-newTask"
-                    @click=${(e: MouseEvent) => e.stopPropagation()}
-                  ></mgt-people-picker>
-                </div>
-              </span>
-            </span>
-          `;
-
+    const taskPeople = this.dataSource === TasksSource.todo ? null : this.renderAssignedPeople(null);
     const taskAdd = this._newTaskBeingAdded
       ? html`
           <div class="TaskAddButtonContainer"></div>
@@ -950,9 +925,7 @@ export class MgtTasks extends MgtTemplatedComponent {
   }
 
   private renderTask(task: ITask) {
-    const { name = 'Task', completed = false, dueDate, assignments } = task;
-
-    const people = Object.keys(assignments);
+    const { name = 'Task', completed = false, dueDate } = task;
 
     const isLoading = this._loadingTasks.includes(task.id);
 
@@ -980,7 +953,7 @@ export class MgtTasks extends MgtTemplatedComponent {
     const groupTitle = this._currentGroup ? null : this.getPlanTitle(task.topParentId);
     const folderTitle = this._currentFolder ? null : this.getFolderName(task.immediateParentId);
 
-    const context = { task: { ...task, groupTitle, folderTitle } };
+    const context = { task: { ...task._raw, groupTitle, folderTitle } };
     const taskTemplate = this.renderTemplate('task', context, task.id);
     if (taskTemplate) {
       return taskTemplate;
@@ -1017,48 +990,8 @@ export class MgtTasks extends MgtTemplatedComponent {
             </span>
           `;
 
-      let taskPeople = null;
-      let assignedPeopleHTML = null;
+      const taskPeople = this.dataSource !== TasksSource.todo ? this.renderAssignedPeople(task) : null;
 
-      const assignedPeople = Object.keys(assignments).map(key => {
-        return key;
-      });
-
-      const noPeopleTemplate = html`
-        <template data-type="no-people">
-          <i class="login-icon ms-Icon ms-Icon--Contact"></i>
-        </template>
-      `;
-
-      if (this.dataSource !== TasksSource.todo) {
-        assignedPeopleHTML = html`
-          <mgt-people
-            class="people-${task.id}"
-            .userIds="${assignedPeople}"
-            .personCardInteraction=${this.isPeoplePickerVisible
-              ? PersonCardInteraction.none
-              : PersonCardInteraction.hover}
-            >${noPeopleTemplate}
-          </mgt-people>
-        `;
-        taskPeople = html`
-          <span
-            class="TaskDetail TaskAssignee"
-            @click=${(e: MouseEvent) => {
-              this.showPeoplePicker(task);
-              e.stopPropagation();
-            }}
-          >
-            ${assignedPeopleHTML}
-            <div class=${classMap({ Picker: true, Hidden: !this.showPeoplePicker || task !== this._currentTask })}>
-              <mgt-people-picker
-                class="picker-${task.id}"
-                @click=${(e: MouseEvent) => e.stopPropagation()}
-              ></mgt-people-picker>
-            </div>
-          </span>
-        `;
-      }
       taskDetails = html`
         <div class="TaskTitle">
           ${name}
@@ -1125,6 +1058,52 @@ export class MgtTasks extends MgtTemplatedComponent {
           <div class="Divider"></div>
         </div>
       </div>
+    `;
+  }
+
+  private renderAssignedPeople(task: ITask) {
+    let assignedPeopleHTML = null;
+
+    const assignedPeople = task
+      ? Object.keys(task.assignments).map(key => {
+          return key;
+        })
+      : [];
+
+    const noPeopleTemplate = html`
+      <template data-type="no-people">
+        <i class="login-icon ms-Icon ms-Icon--Contact"></i>
+      </template>
+    `;
+
+    const taskId = task ? task.id : 'newTask';
+
+    assignedPeopleHTML = html`
+      <mgt-people
+        class="people-${taskId}"
+        .userIds="${assignedPeople}"
+        .personCardInteraction=${this.isPeoplePickerVisible ? PersonCardInteraction.none : PersonCardInteraction.hover}
+        >${noPeopleTemplate}
+      </mgt-people>
+    `;
+
+    return html`
+      <mgt-flyout
+        class="TaskDetail TaskAssignee"
+        @click=${(e: MouseEvent) => {
+          this.showPeoplePicker(task);
+          e.stopPropagation();
+        }}
+        .isOpen=${this.isPeoplePickerVisible && task === this._currentTask}
+      >
+        ${assignedPeopleHTML}
+        <div slot="flyout" class=${classMap({ Picker: true })}>
+          <mgt-people-picker
+            class="picker-${taskId}"
+            @click=${(e: MouseEvent) => e.stopPropagation()}
+          ></mgt-people-picker>
+        </div>
+      </mgt-flyout>
     `;
   }
 

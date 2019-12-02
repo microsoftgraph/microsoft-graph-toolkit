@@ -1,0 +1,27 @@
+/**
+ * -------------------------------------------------------------------------------------------
+ * Copyright (c) Microsoft Corporation.  All Rights Reserved.  Licensed under the MIT License.
+ * See License in the project root for license information.
+ * -------------------------------------------------------------------------------------------
+ */
+
+.root {
+  position: relative;
+}
+
+.root .flyout {
+  display: none;
+  position: absolute;
+  z-index: 1;
+  opacity: 0;
+  transition-property: opacity;
+  transition-duration: 0.1s;
+}
+
+.root .flyout.visible {
+  display: inline-block;
+  opacity: 1;
+  &.openLeft {
+    right: 0;
+  }
+}

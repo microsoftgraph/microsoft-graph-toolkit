@@ -27,6 +27,7 @@ $color: var(--color, #{$ms-color-neutralDark});
 
     .details {
       margin-left: 14px;
+      line-height: 1.15;
 
       .display-name {
         font-size: 27.3103px;
@@ -56,6 +57,7 @@ $color: var(--color, #{$ms-color-neutralDark});
 
         .icon {
           margin: 0 22px 0 0;
+          cursor: pointer;
         }
         .icon:hover {
           opacity: 0.6;
@@ -122,6 +124,7 @@ $color: var(--color, #{$ms-color-neutralDark});
           }
           .link-subtitle {
             color: #3078cd;
+            cursor: pointer;
           }
           .link-subtitle:hover {
             opacity: 0.6;
