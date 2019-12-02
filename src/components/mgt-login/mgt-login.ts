@@ -104,11 +104,10 @@ export class MgtLogin extends MgtBaseComponent {
     const provider = Providers.globalProvider;
     if (provider && provider.logout) {
       await provider.logout();
+      this.userDetails = null;
+      this._showMenu = false;
       this.fireCustomEvent('logoutCompleted');
     }
-
-    this.userDetails = null;
-    this._showMenu = false;
   }
 
   /**
