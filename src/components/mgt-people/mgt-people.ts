@@ -119,36 +119,32 @@ export class MgtPeople extends MgtTemplatedComponent {
    */
 
   protected render() {
-    if (this.people) {
-      if (this.people.length) {
-        return (
-          this.renderTemplate('default', { people: this.people }) ||
-          html`
-            <ul class="people-list">
-              ${this.people.slice(0, this.showMax).map(
-                person =>
-                  html`
-                    <li class="people-person">
-                      ${this.renderTemplate('person', { person }, person.displayName) || this.renderPerson(person)}
-                    </li>
-                  `
-              )}
-              ${this.people.length > this.showMax
-                ? this.renderTemplate('overflow', {
-                    extra: this.people.length - this.showMax,
-                    max: this.showMax,
-                    people: this.people
-                  }) ||
-                  html`
+    if (this.people && this.people.length) {
+      return (
+        this.renderTemplate('default', { people: this.people }) ||
+        html`
+          <ul class="people-list">
+            ${this.people.slice(0, this.showMax).map(
+              person =>
+                html`
+                  <li class="people-person">
+                    ${this.renderTemplate('person', { person }, person.displayName) || this.renderPerson(person)}
+                  </li>
+                `
+            )}
+            ${this.people.length > this.showMax
+              ? this.renderTemplate('overflow', {
+                  extra: this.people.length - this.showMax,
+                  max: this.showMax,
+                  people: this.people
+                }) ||
+                html`
                     <li class="overflow"><span>+${this.people.length - this.showMax}<span></li>
                   `
-                : null}
-            </ul>
-          `
-        );
-      } else {
-        return this.renderTemplate('no-people', null) || html``;
-      }
+              : null}
+          </ul>
+        `
+      );
     } else {
       return this.renderTemplate('no-data', null) || html``;
     }
