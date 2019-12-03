@@ -23,7 +23,6 @@ mgt-tasks .TaskIcon,
   user-select: none;
   -moz-user-select: none;
   -ms-user-select: none;
-  margin-right: 8px;
 }
 
 mgt-tasks .Header,
@@ -100,7 +99,9 @@ mgt-tasks .Header .TitleCont,
 mgt-tasks .Header .NewTaskButton,
 :host .Header .NewTaskButton {
   flex: 0 0 auto;
-  display: flex;
+  display: grid;
+  grid-template-columns: auto auto;
+  column-gap: 8px;
   justify-content: center;
   align-items: center;
 
@@ -335,6 +336,7 @@ mgt-tasks,
         }
       }
     }
+
     .TaskHeader {
       display: flex;
       justify-content: center;
@@ -353,7 +355,7 @@ mgt-tasks,
     }
 
     &.NewTask {
-      margin: var(--task-new-margin, var(--task-margin, 0 10px 10px 10px));
+      margin: var(--task-new-margin, var(--task-margin, 0 0 24px 0));
       display: flex;
       flex-direction: row;
       .SelfAssign {
@@ -384,33 +386,63 @@ mgt-tasks,
         margin: 0 0 0 12px;
 
         .TaskDetailsContainer {
+          display: flex;
+          flex-direction: column;
+          align-items: stretch;
           margin: 0;
 
           .TaskTitle {
-            max-width: none;
+            display: flex;
+
             input {
-              flex: 1 0 auto;
+              flex: 1;
               font-family: var(--default-font-family, 'Segoe UI');
-              margin: var(--task-new-input-margin, 16px 0 0 0);
-              padding: var(--task-new-input-padding, 7px);
-              font-size: var(--task-new-input-font-size, 1em);
+              margin: var(--task-new-input-margin, 0 24px 0 16px);
+              padding: var(--task-new-input-padding, 6px);
+              font-size: var(--task-new-input-font-size, 14px);
+              font-weight: 600;
               border: var(--task-new-border, none);
-              width: 100%;
+              border-bottom: 1px solid $ms-color-gray40;
+              outline: none;
+              border-radius: 0;
+            }
+
+            input:hover {
+              border-bottom: 1px solid $ms-color-communicationShade10;
             }
 
             input:active {
-              border: var(--task-new-input-active-border, none);
+              border-bottom: 1px solid $ms-color-communicationShade20;
+            }
+
+            input:focus {
+              border-bottom: 1px solid $ms-color-communicationPrimary;
             }
           }
 
-          hr {
-            border: var(--task-new-line-border, solid 1px #d8d8d8);
-            margin: 0;
-          }
-
           .TaskDetails {
-            flex: 1 0 auto;
+            display: flex;
+            justify-content: stretch;
+            align-items: center;
+            flex-wrap: wrap;
             margin: 14px 0 14px 4px;
+
+            .NewTaskGroup {
+              margin: 8px 16px;
+            }
+
+            .NewTaskBucket {
+              margin: 8px 16px;
+            }
+
+            .NewTaskDue {
+              margin: 8px 16px;
+            }
+
+            .NewTaskAssignee {
+              margin: 8px 16px;
+              min-width: 80px;
+            }
 
             .TaskPeople label {
               display: flex;
@@ -421,8 +453,25 @@ mgt-tasks,
             select,
             input {
               font-family: var(--default-font-family, 'Segoe UI');
+              font-size: 12px;
+              font-weight: 600;
               border: var(--task-new-select-border, none);
-              padding: 0 10px;
+              border-bottom: 1px solid $ms-color-gray40;
+              outline: none;
+              border-radius: 0;
+              padding: 4px;
+
+              &:hover {
+                border-bottom: 1px solid $ms-color-communicationShade10;
+              }
+
+              &:active {
+                border-bottom: 1px solid $ms-color-communicationShade20;
+              }
+
+              &:focus {
+                border-bottom: 1px solid $ms-color-communicationPrimary;
+              }
             }
           }
         }
@@ -444,17 +493,19 @@ mgt-tasks,
           align-items: center;
           display: flex;
           cursor: pointer;
-          color: white;
         }
 
         .TaskAdd {
-          background: var(--task-new-add-button-background, #0078d4);
+          color: white;
+          background: var(--task-new-add-button-background, $ms-color-communicationPrimary);
         }
 
         .TaskCancel {
           font-family: var(--default-font-family, 'Segoe UI');
-          color: var(--task-new-cancel-button-color, gray);
-          margin: 0px 20px 0px 32px;
+          font-size: 14px;
+          font-weight: 600;
+          color: var(--task-new-cancel-button-color, $ms-color-gray210);
+          margin: 0 12px 0 32px;
         }
 
         &.Disabled .TaskAdd {

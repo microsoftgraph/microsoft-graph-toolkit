@@ -799,13 +799,13 @@ export class MgtTasks extends MgtTemplatedComponent {
         ? null
         : this._currentGroup
         ? html`
-            <span class="TaskDetail TaskGroup">
+            <span class="NewTaskGroup">
               ${this.renderPlannerIcon()}
               <span>${this.getPlanTitle(this._currentGroup)}</span>
             </span>
           `
         : html`
-            <span class="TaskDetail TaskGroup">
+            <span class="NewTaskGroup">
               ${this.renderPlannerIcon()}
               <select
                 .value="${this._newTaskGroupId}"
@@ -832,13 +832,13 @@ export class MgtTasks extends MgtTemplatedComponent {
     }
     const taskFolder = this._currentFolder
       ? html`
-          <span class="TaskDetail TaskBucket">
+          <span class="NewTaskBucket">
             ${this.renderBucketIcon()}
             <span>${this.getFolderName(this._currentFolder)}</span>
           </span>
         `
       : html`
-          <span class="TaskDetail TaskBucket">
+          <span class="NewTaskBucket">
             ${this.renderBucketIcon()}
             <select
               .value="${this._newTaskFolderId}"
@@ -856,8 +856,7 @@ export class MgtTasks extends MgtTemplatedComponent {
         `;
 
     const taskDue = html`
-      <span class="TaskDetail TaskDue">
-        ${this.renderCalendarIcon()}
+      <span class="NewTaskDue">
         <input
           type="date"
           label="new-taskDate-input"
@@ -876,7 +875,8 @@ export class MgtTasks extends MgtTemplatedComponent {
       </span>
     `;
 
-    const taskPeople = this.dataSource === TasksSource.todo ? null : this.renderAssignedPeople(null);
+    const taskPeople = this.dataSource === TasksSource.todo ? null : this.renderAssignedPeople(null, 'NewTaskAssignee');
+  
     const taskAdd = this._newTaskBeingAdded
       ? html`
           <div class="TaskAddButtonContainer"></div>
@@ -895,13 +895,12 @@ export class MgtTasks extends MgtTemplatedComponent {
     return html`
       <div class="Task NewTask Incomplete">
         <div class="TaskContent">
-          <div class="TaskDetailsContainer ${this._mediaQuery}">
+          <div class="TaskDetailsContainer">
             <div class="TaskTitle">
               ${taskTitle}
             </div>
-            <hr />
             <div class="TaskDetails">
-              ${group} ${taskFolder} ${taskPeople} ${taskDue}
+              ${group} ${taskFolder} ${taskDue} ${taskPeople}
             </div>
           </div>
         </div>
@@ -1093,7 +1092,7 @@ export class MgtTasks extends MgtTemplatedComponent {
     `;
   }
 
-  private renderAssignedPeople(task: ITask) {
+  private renderAssignedPeople(task: ITask, style: string = 'TaskDetail TaskAssignee') {
     let assignedPeopleHTML = null;
 
     const assignedPeople = task
@@ -1121,7 +1120,7 @@ export class MgtTasks extends MgtTemplatedComponent {
 
     return html`
       <mgt-flyout
-        class="TaskDetail TaskAssignee"
+        class=${style}
         @click=${(e: MouseEvent) => {
           this.showPeoplePicker(task);
           e.stopPropagation();
