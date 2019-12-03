@@ -16,13 +16,15 @@ mgt-login {
   --height: '100%';
   --margin: 0;
   --padding: 12px 20px;
-  --color: #{$ms-color-neutralDark};
+  --color: #{$ms-color-neutralPrimary};
+  --color-hover: var(--theme-primary-color);
   --background-color: transparent;
   --background-color--hover: #{$ms-color-neutralLight};
   --popup-content-background-color: white;
   --popup-command-font-size: #{$ms-font-size-s};
   --popup-command-margin: 16px 0 0;
   --popup-padding: 24px 48px 16px 24px;
+  --popup-color: #{$ms-color-neutralPrimary};
 }
 
 :host .root,
@@ -49,7 +51,8 @@ mgt-login .login-button {
   transition: color 0.3s, background-color 0.3s;
 
   &:hover {
-    color: var(--theme-primary-color);
+    color: var(--color-hover);
+    --color: var(--color-hover);
     background-color: var(--background-color--hover);
   }
 
@@ -80,6 +83,8 @@ mgt-login .popup {
   box-shadow: 0 12px 40px 2px rgba(0, 0, 0, 0.08);
   min-width: 240px;
   z-index: 1;
+  color: var(--popup-color);
+  --color: var(--popup-color);
 
   &.show-menu {
     display: inline-block;
