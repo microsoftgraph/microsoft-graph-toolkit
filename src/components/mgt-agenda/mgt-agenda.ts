@@ -256,7 +256,7 @@ export class MgtAgenda extends MgtTemplatedComponent {
       return this.renderTemplate('loading', null) || this.renderLoading();
     }
 
-    if (this.events) {
+    if (this.events && this.events.length) {
       const events = this.showMax && this.showMax > 0 ? this.events.slice(0, this.showMax) : this.events;
 
       const renderedTemplate = this.renderTemplate('default', { events });
