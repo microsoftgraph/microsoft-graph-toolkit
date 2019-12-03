@@ -44,6 +44,29 @@ export enum TasksSource {
   todo
 }
 
+/**
+ * Defines media query based on component width
+ *
+ * @export
+ * @enum {string}
+ */
+export enum ComponentMediaQuery {
+  /**
+   * devices with width < 768
+   */
+  mobile = '',
+
+  /**
+   * devies with width < 1200
+   */
+  tablet = 'tablet',
+
+  /**
+   * devices with width > 1200
+   */
+  desktop = 'desktop'
+}
+
 // Strings and Resources for different task contexts
 // tslint:disable-next-line: completed-docs
 const TASK_RES = {
@@ -221,12 +244,15 @@ export class MgtTasks extends MgtTemplatedComponent {
 
   @property() private isPeoplePickerVisible: boolean = false;
 
+  @property({ attribute: false }) private _mediaQuery: ComponentMediaQuery;
+
   private _me: User = null;
   private providerUpdateCallback: () => void | any;
   private handleWindowClick: (event: MouseEvent) => void;
 
   constructor() {
     super();
+    this.onResize = this.onResize.bind(this);
     this.providerUpdateCallback = () => this.loadTasks();
     this.handleWindowClick = () => this.hidePeoplePicker();
   }
@@ -237,8 +263,10 @@ export class MgtTasks extends MgtTemplatedComponent {
    * @memberof MgtTasks
    */
   public connectedCallback() {
+    this._mediaQuery = this.calculateMediaQuery();
     super.connectedCallback();
     Providers.onProviderUpdated(this.providerUpdateCallback);
+    window.addEventListener('resize', this.onResize);
     window.addEventListener('click', this.handleWindowClick);
   }
 
@@ -249,6 +277,7 @@ export class MgtTasks extends MgtTemplatedComponent {
    */
   public disconnectedCallback() {
     Providers.removeProviderUpdatedListener(this.providerUpdateCallback);
+    window.removeEventListener('resize', this.onResize);
     window.removeEventListener('click', this.handleWindowClick);
     super.disconnectedCallback();
   }
@@ -321,6 +350,8 @@ export class MgtTasks extends MgtTemplatedComponent {
    * trigger the element to update.
    */
   protected render() {
+    this._mediaQuery = this.calculateMediaQuery();
+
     let tasks = this._tasks
       .filter(task => this.isTaskInSelectedGroupFilter(task))
       .filter(task => this.isTaskInSelectedFolderFilter(task))
@@ -349,6 +380,10 @@ export class MgtTasks extends MgtTemplatedComponent {
         ${repeat(tasks, task => task.id, task => this.renderTask(task))}
       </div>
     `;
+  }
+
+  private onResize() {
+    this._mediaQuery = this.calculateMediaQuery();
   }
 
   /**
@@ -860,7 +895,7 @@ export class MgtTasks extends MgtTemplatedComponent {
     return html`
       <div class="Task NewTask Incomplete">
         <div class="TaskContent">
-          <div class="TaskDetailsContainer">
+          <div class="TaskDetailsContainer ${this._mediaQuery}">
             <div class="TaskTitle">
               ${taskTitle}
             </div>
@@ -985,7 +1020,6 @@ export class MgtTasks extends MgtTemplatedComponent {
         ? null
         : html`
             <span class="TaskDetail TaskDue">
-              <!-- ${this.renderCalendarIcon()} -->
               <span>Due ${getShortDateString(dueDate)}</span>
             </span>
           `;
@@ -996,9 +1030,7 @@ export class MgtTasks extends MgtTemplatedComponent {
         <div class="TaskTitle">
           ${name}
         </div>
-        <!-- <div class="TaskDetails"> -->
         ${group} ${folder} ${taskPeople} ${taskDue}
-        <!-- </div> -->
       `;
     }
 
@@ -1050,7 +1082,7 @@ export class MgtTasks extends MgtTemplatedComponent {
           >
             ${taskCheck}
           </span>
-          <div class="TaskDetailsContainer">
+          <div class="TaskDetailsContainer ${this._mediaQuery}">
             ${taskDetails}
           </div>
           ${taskOptions}
@@ -1254,5 +1286,15 @@ export class MgtTasks extends MgtTemplatedComponent {
     }
 
     return null;
+  }
+
+  private calculateMediaQuery() {
+    if (this.offsetWidth < 768) {
+      return ComponentMediaQuery.mobile;
+    } else if (this.offsetWidth < 1200) {
+      return ComponentMediaQuery.tablet;
+    } else {
+      return ComponentMediaQuery.desktop;
+    }
   }
 }

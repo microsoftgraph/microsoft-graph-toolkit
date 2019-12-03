@@ -104,7 +104,7 @@ mgt-tasks .Header .NewTaskButton,
   justify-content: center;
   align-items: center;
 
-  // width: var(--task-new-button-width, 90px);
+  width: var(--task-new-button-width, auto);
   height: var(--tasks-new-button-height, 32px);
   border-radius: 2px;
   padding: 0 20px;
@@ -144,7 +144,6 @@ mgt-tasks,
     margin: var(--task-margin, 0 0 18px 0);
     padding: var(--task-padding, 0 0 0 0);
     background-color: var(--task-background, white);
-    // box-shadow: var(--task-box-shadow, 0 0 0 1px rgba(0, 0, 0, 0.08));
 
     .TaskContent {
       display: flex;
@@ -163,7 +162,6 @@ mgt-tasks,
         display: grid;
         grid-template-columns: auto 1fr;
         grid-template-rows: auto auto auto auto;
-        row-gap: 8px;
         column-gap: 24px;
         justify-content: space-between;
         align-items: center;
@@ -172,12 +170,12 @@ mgt-tasks,
         font-size: 12px;
         font-weight: 600;
         white-space: nowrap;
-        margin: 10px 0;
+        margin: 6px 0 12px 0;
 
         .TaskDetail {
           width: 100%;
           height: 100%;
-          margin: auto;
+          margin: 4px auto;
 
           display: flex;
           justify-content: flex-start;
@@ -188,10 +186,10 @@ mgt-tasks,
           color: var(--task-title-color, $ms-color-gray160);
           font-size: 14px;
           font-weight: 600;
-          width: 240px;
           padding: 12.5px 0 0 0;
           grid-row: 1;
           grid-column: 1 / 3;
+          margin: 4px 0;
         }
 
         .TaskGroup {
@@ -223,12 +221,12 @@ mgt-tasks,
 
           grid-row: 4;
           grid-column: 1 / 3;
-          margin-bottom: 10px;
         }
 
-        @media (min-width: 768px) {
+        &.tablet {
           grid-template-columns: 1fr 0.5fr 1fr 0.5fr;
           grid-template-rows: auto auto;
+          margin: 6px 0 12px 0;
 
           .TaskTitle {
             grid-row: 1;
@@ -259,9 +257,10 @@ mgt-tasks,
           }
         }
 
-        @media (min-width: 1200px) {
+        &.desktop {
           grid-template-columns: 2fr 1fr 0.5fr 1fr 0.5fr;
           grid-template-rows: auto;
+          margin: 0;
 
           .TaskTitle {
             padding: 0;
@@ -335,18 +334,6 @@ mgt-tasks,
           font-size: 0.9em;
         }
       }
-
-      @media (min-width: 768px) {
-        .TaskDetailsContainer {
-          margin: 10px 0 20px 0;
-        }
-      }
-
-      @media (min-width: 1200px) {
-        .TaskDetailsContainer {
-          margin: 10px 0;
-        }
-      }
     }
     .TaskHeader {
       display: flex;
@@ -363,17 +350,6 @@ mgt-tasks,
 
     &.Complete {
       background: var(--task-complete-background, $ms-color-gray30);
-      // border-color: var(--task-complete-border, #e2e2e2);
-      // .TaskHeader {
-      //   color: var(--task-complete-header-color, #959595);
-      // }
-      // .TaskDetails {
-      //   color: var(--task-complete-detail-color #b0b0b0);
-
-      //   .TaskIcon {
-      //     color: var(--task-compete-detail-icon-color, #959595);
-      //   }
-      // }
     }
 
     &.NewTask {
@@ -572,7 +548,7 @@ mgt-tasks,
       user-select: none;
       -moz-user-select: none;
       -ms-user-select: none;
-      margin: 12px 8px 0 0;
+      margin: 16px 8px 0 0;
     }
   }
   .LoadingHeader {
