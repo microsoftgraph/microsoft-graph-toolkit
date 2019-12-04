@@ -124,6 +124,11 @@ export class MgtPerson extends MgtTemplatedComponent {
   private _mouseLeaveTimeout;
   private _mouseEnterTimeout;
 
+  constructor() {
+    super();
+    this.handleTouch = this.handleTouch.bind(this);
+  }
+
   /**
    * Synchronizes property values when attributes change.
    *
@@ -154,6 +159,25 @@ export class MgtPerson extends MgtTemplatedComponent {
   public firstUpdated() {
     Providers.onProviderUpdated(() => this.loadData());
     this.loadData();
+  }
+
+  /**
+   * Determines if touch was made
+   *
+   * @memberof MgtPerson
+   */
+  public connectedCallback() {
+    super.connectedCallback();
+    window.addEventListener('touchstart', this.handleTouch);
+  }
+  /**
+   * Removes touch event from window
+   *
+   * @memberof MgtPerson
+   */
+  public disconnectedCallback() {
+    window.removeEventListener('touchstart', this.handleTouch);
+    super.disconnectedCallback();
   }
 
   /**
@@ -200,6 +224,12 @@ export class MgtPerson extends MgtTemplatedComponent {
       const parent = initials.parentNode as HTMLElement;
       const height = parent.getBoundingClientRect().height;
       initials.style.fontSize = `${height * 0.5}px`;
+    }
+  }
+
+  private handleTouch(e: TouchEvent) {
+    if (this.isPersonCardVisible && e.target !== this) {
+      this.hidePersonCard();
     }
   }
 
