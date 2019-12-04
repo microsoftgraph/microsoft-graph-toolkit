@@ -226,6 +226,9 @@ export class MgtPerson extends MgtTemplatedComponent {
   }
 
   private handleClick(e: MouseEvent) {
+    if (this.personCardInteraction === PersonCardInteraction.click && !this.isPersonCardVisible) {
+      this.showPersonCard();
+    }
     if (this.isPersonCardVisible && e.target !== this) {
       this.hidePersonCard();
     }
