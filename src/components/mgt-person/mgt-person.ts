@@ -126,6 +126,7 @@ export class MgtPerson extends MgtTemplatedComponent {
 
   constructor() {
     super();
+    this.handleClick = this.handleClick.bind(this);
     this.handleTouch = this.handleTouch.bind(this);
   }
 
@@ -168,7 +169,8 @@ export class MgtPerson extends MgtTemplatedComponent {
    */
   public connectedCallback() {
     super.connectedCallback();
-    window.addEventListener('touchstart', this.handleTouch);
+    window.addEventListener('click', this.handleClick);
+    this.addEventListener('touchstart', this.handleTouch);
   }
   /**
    * Removes touch event from window
@@ -176,7 +178,8 @@ export class MgtPerson extends MgtTemplatedComponent {
    * @memberof MgtPerson
    */
   public disconnectedCallback() {
-    window.removeEventListener('touchstart', this.handleTouch);
+    window.removeEventListener('click', this.handleClick);
+    this.removeEventListener('touchstart', this.handleTouch);
     super.disconnectedCallback();
   }
 
@@ -196,12 +199,7 @@ export class MgtPerson extends MgtTemplatedComponent {
       `;
 
     return html`
-      <div
-        class="root"
-        @mouseenter=${this.handleMouseEnter}
-        @mouseleave=${this.handleMouseLeave}
-        @click=${this.handleMouseClick}
-      >
+      <div class="root" @mouseenter=${this.handleMouseEnter} @mouseleave=${this.handleMouseLeave}>
         ${this.renderFlyout(person)}
       </div>
     `;
@@ -227,9 +225,15 @@ export class MgtPerson extends MgtTemplatedComponent {
     }
   }
 
-  private handleTouch(e: TouchEvent) {
+  private handleClick(e: MouseEvent) {
     if (this.isPersonCardVisible && e.target !== this) {
       this.hidePersonCard();
+    }
+  }
+
+  private handleTouch(e: TouchEvent) {
+    if (!this.isPersonCardVisible && e.target === this) {
+      this.showPersonCard();
     }
   }
 
@@ -316,14 +320,6 @@ export class MgtPerson extends MgtTemplatedComponent {
     }
 
     this.requestUpdate();
-  }
-
-  private handleMouseClick() {
-    if (this.personCardInteraction === PersonCardInteraction.click && !this.isPersonCardVisible) {
-      this.showPersonCard();
-    } else {
-      this.hidePersonCard();
-    }
   }
 
   private handleMouseEnter(e: MouseEvent) {
