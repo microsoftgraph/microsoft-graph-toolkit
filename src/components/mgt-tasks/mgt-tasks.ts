@@ -19,6 +19,7 @@ import { PersonCardInteraction } from './../PersonCardInteraction';
 import { styles } from './mgt-tasks-css';
 import { ITask, ITaskFolder, ITaskGroup, ITaskSource, PlannerTaskSource, TodoTaskSource } from './task-sources';
 
+import { ComponentMediaQuery } from '../baseComponent';
 import { MgtPeople } from '../mgt-people/mgt-people';
 import '../mgt-person/mgt-person';
 import '../sub-components/mgt-arrow-options/mgt-arrow-options';
@@ -42,29 +43,6 @@ export enum TasksSource {
    * Use Microsoft To-Do
    */
   todo
-}
-
-/**
- * Defines media query based on component width
- *
- * @export
- * @enum {string}
- */
-export enum ComponentMediaQuery {
-  /**
-   * devices with width < 768
-   */
-  mobile = '',
-
-  /**
-   * devies with width < 1200
-   */
-  tablet = 'tablet',
-
-  /**
-   * devices with width > 1200
-   */
-  desktop = 'desktop'
 }
 
 // Strings and Resources for different task contexts
@@ -244,14 +222,14 @@ export class MgtTasks extends MgtTemplatedComponent {
 
   @property() private isPeoplePickerVisible: boolean = false;
 
-  @property({ attribute: false }) private _mediaQuery: ComponentMediaQuery;
-
   private _me: User = null;
   private providerUpdateCallback: () => void | any;
   private handleWindowClick: (event: MouseEvent) => void;
+  private previousMediaQuery: ComponentMediaQuery;
 
   constructor() {
     super();
+    this.previousMediaQuery = this.mediaQuery;
     this.onResize = this.onResize.bind(this);
     this.providerUpdateCallback = () => this.loadTasks();
     this.handleWindowClick = () => this.hidePeoplePicker();
@@ -263,7 +241,6 @@ export class MgtTasks extends MgtTemplatedComponent {
    * @memberof MgtTasks
    */
   public connectedCallback() {
-    this._mediaQuery = this.calculateMediaQuery();
     super.connectedCallback();
     Providers.onProviderUpdated(this.providerUpdateCallback);
     window.addEventListener('resize', this.onResize);
@@ -350,8 +327,6 @@ export class MgtTasks extends MgtTemplatedComponent {
    * trigger the element to update.
    */
   protected render() {
-    this._mediaQuery = this.calculateMediaQuery();
-
     let tasks = this._tasks
       .filter(task => this.isTaskInSelectedGroupFilter(task))
       .filter(task => this.isTaskInSelectedFolderFilter(task))
@@ -383,7 +358,10 @@ export class MgtTasks extends MgtTemplatedComponent {
   }
 
   private onResize() {
-    this._mediaQuery = this.calculateMediaQuery();
+    if (this.mediaQuery !== this.previousMediaQuery) {
+      this.previousMediaQuery = this.mediaQuery;
+      this.requestUpdate();
+    }
   }
 
   /**
@@ -876,7 +854,7 @@ export class MgtTasks extends MgtTemplatedComponent {
     `;
 
     const taskPeople = this.dataSource === TasksSource.todo ? null : this.renderAssignedPeople(null);
-  
+
     const taskAdd = this._newTaskBeingAdded
       ? html`
           <div class="TaskAddButtonContainer"></div>
@@ -1081,7 +1059,7 @@ export class MgtTasks extends MgtTemplatedComponent {
           >
             ${taskCheck}
           </span>
-          <div class="TaskDetailsContainer ${this._mediaQuery}">
+          <div class="TaskDetailsContainer ${this.mediaQuery}">
             ${taskDetails}
           </div>
           ${taskOptions}
@@ -1223,17 +1201,6 @@ export class MgtTasks extends MgtTemplatedComponent {
     `;
   }
 
-  private renderCalendarIcon() {
-    return html`
-      <svg width="20" height="18" viewBox="0 0 20 18" fill="none" xmlns="http://www.w3.org/2000/svg">
-        <path
-          d="M12 7H11V8H12V7ZM9 13H8V14H9V13ZM6 7H5V8H6V7ZM9 7H8V8H9V7ZM12 9H11V10H12V9ZM15 9H14V10H15V9ZM6 9H5V10H6V9ZM9 9H8V10H9V9ZM12 11H11V12H12V11ZM15 11H14V12H15V11ZM6 11H5V12H6V11ZM9 11H8V12H9V11ZM12 13H11V14H12V13ZM15 13H14V14H15V13ZM2 2V16H18V2H15V1H14V2H6V1H5V2H2ZM17 3V5H3V3H5V4H6V3H14V4H15V3H17ZM3 15V6H17V15H3Z"
-          fill="#3C3C3C"
-        />
-      </svg>
-    `;
-  }
-
   private getTaskSource(): ITaskSource {
     const p = Providers.globalProvider;
     if (!p || p.state !== ProviderState.SignedIn) {
@@ -1291,15 +1258,5 @@ export class MgtTasks extends MgtTemplatedComponent {
     }
 
     return null;
-  }
-
-  private calculateMediaQuery() {
-    if (this.offsetWidth < 768) {
-      return ComponentMediaQuery.mobile;
-    } else if (this.offsetWidth < 1200) {
-      return ComponentMediaQuery.tablet;
-    } else {
-      return ComponentMediaQuery.desktop;
-    }
   }
 }
