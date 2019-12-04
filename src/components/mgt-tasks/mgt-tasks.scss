@@ -165,13 +165,13 @@ mgt-tasks,
         grid-template-rows: auto auto auto auto;
         column-gap: 24px;
         justify-content: space-between;
-        align-items: center;
+        align-items: start;
 
         color: var(--task-detail-color, $ms-color-gray130);
         font-size: 12px;
         font-weight: 600;
         white-space: nowrap;
-        margin: 6px 0 12px 0;
+        margin-bottom: 12px;
 
         .TaskDetail {
           width: 100%;
@@ -187,10 +187,9 @@ mgt-tasks,
           color: var(--task-title-color, $ms-color-gray160);
           font-size: 14px;
           font-weight: 600;
-          padding: 12.5px 0 0 0;
           grid-row: 1;
           grid-column: 1 / 3;
-          margin: 4px 0;
+          margin: 22px 0 4px;
         }
 
         .TaskGroup {
@@ -227,7 +226,6 @@ mgt-tasks,
         &.tablet {
           grid-template-columns: 1fr 0.5fr 1fr 0.5fr;
           grid-template-rows: auto auto;
-          margin: 6px 0 12px 0;
 
           .TaskTitle {
             grid-row: 1;
