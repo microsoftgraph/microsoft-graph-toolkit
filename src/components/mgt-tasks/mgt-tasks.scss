@@ -163,9 +163,8 @@ mgt-tasks,
         display: grid;
         grid-template-columns: auto 1fr;
         grid-template-rows: auto auto auto auto;
-        column-gap: 24px;
         justify-content: space-between;
-        align-items: start;
+        align-items: flex-start;
 
         color: var(--task-detail-color, $ms-color-gray130);
         font-size: 12px;
@@ -176,7 +175,7 @@ mgt-tasks,
         .TaskDetail {
           width: 100%;
           height: 100%;
-          margin: 4px auto;
+          margin: 4px 24px 6px 0;
 
           display: flex;
           justify-content: flex-start;
@@ -208,7 +207,7 @@ mgt-tasks,
 
         .TaskAssignee {
           grid-row: 3;
-          grid-column: 1;
+          grid-column: 1 / 3;
 
           mgt-people {
             --list-margin: 0;
@@ -226,6 +225,14 @@ mgt-tasks,
         &.tablet {
           grid-template-columns: 1fr 0.5fr 1fr 0.5fr;
           grid-template-rows: auto auto;
+
+          &.NoPlan {
+            grid-template-columns: 0 1fr 1fr 1fr;
+          }
+
+          .TaskDetail {
+            margin: 4px 24px 6px 0;
+          }
 
           .TaskTitle {
             grid-row: 1;
@@ -260,6 +267,14 @@ mgt-tasks,
           grid-template-columns: 2fr 1fr 0.5fr 1fr 0.5fr;
           grid-template-rows: auto;
           margin: 0;
+
+          &.NoPlan {
+            grid-template-columns: 0 1fr 1fr 1fr;
+          }
+
+          .TaskDetail {
+            margin: 0 24px 0 0;
+          }
 
           .TaskTitle {
             padding: 0;

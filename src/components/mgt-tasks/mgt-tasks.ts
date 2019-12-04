@@ -1059,7 +1059,7 @@ export class MgtTasks extends MgtTemplatedComponent {
           >
             ${taskCheck}
           </span>
-          <div class="TaskDetailsContainer ${this.mediaQuery}">
+          <div class="TaskDetailsContainer ${this.mediaQuery} ${this._currentGroup ? 'NoPlan' : ''}">
             ${taskDetails}
           </div>
           ${taskOptions}
