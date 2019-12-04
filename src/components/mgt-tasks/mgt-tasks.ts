@@ -875,7 +875,7 @@ export class MgtTasks extends MgtTemplatedComponent {
       </span>
     `;
 
-    const taskPeople = this.dataSource === TasksSource.todo ? null : this.renderAssignedPeople(null, 'NewTaskAssignee');
+    const taskPeople = this.dataSource === TasksSource.todo ? null : this.renderAssignedPeople(null, true);
   
     const taskAdd = this._newTaskBeingAdded
       ? html`
@@ -1092,8 +1092,14 @@ export class MgtTasks extends MgtTemplatedComponent {
     `;
   }
 
-  private renderAssignedPeople(task: ITask, style: string = 'TaskDetail TaskAssignee') {
+  private renderAssignedPeople(task: ITask, isNewTask: boolean = false) {
     let assignedPeopleHTML = null;
+
+    const taskAssigneeClasses = {
+      NewTaskAssignee: isNewTask,
+      TaskAssignee: !isNewTask,
+      TaskDetail: !isNewTask
+    };
 
     const assignedPeople = task
       ? Object.keys(task.assignments).map(key => {
@@ -1120,7 +1126,7 @@ export class MgtTasks extends MgtTemplatedComponent {
 
     return html`
       <mgt-flyout
-        class=${style}
+        class=${classMap(taskAssigneeClasses)}
         @click=${(e: MouseEvent) => {
           this.showPeoplePicker(task);
           e.stopPropagation();
