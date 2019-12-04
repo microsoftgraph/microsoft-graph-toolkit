@@ -875,7 +875,7 @@ export class MgtTasks extends MgtTemplatedComponent {
       </span>
     `;
 
-    const taskPeople = this.dataSource === TasksSource.todo ? null : this.renderAssignedPeople(null, true);
+    const taskPeople = this.dataSource === TasksSource.todo ? null : this.renderAssignedPeople(null);
   
     const taskAdd = this._newTaskBeingAdded
       ? html`
@@ -1092,13 +1092,13 @@ export class MgtTasks extends MgtTemplatedComponent {
     `;
   }
 
-  private renderAssignedPeople(task: ITask, isNewTask: boolean = false) {
+  private renderAssignedPeople(task: ITask) {
     let assignedPeopleHTML = null;
 
     const taskAssigneeClasses = {
-      NewTaskAssignee: isNewTask,
-      TaskAssignee: !isNewTask,
-      TaskDetail: !isNewTask
+      NewTaskAssignee: task === null,
+      TaskAssignee: task !== null,
+      TaskDetail: task !== null
     };
 
     const assignedPeople = task
