@@ -199,7 +199,12 @@ export class MgtPerson extends MgtTemplatedComponent {
       `;
 
     return html`
-      <div class="root" @mouseenter=${this.handleMouseEnter} @mouseleave=${this.handleMouseLeave}>
+      <div
+        class="root"
+        @click=${this.handleMouseClick}
+        @mouseenter=${this.handleMouseEnter}
+        @mouseleave=${this.handleMouseLeave}
+      >
         ${this.renderFlyout(person)}
       </div>
     `;
@@ -226,9 +231,6 @@ export class MgtPerson extends MgtTemplatedComponent {
   }
 
   private handleClick(e: MouseEvent) {
-    if (this.personCardInteraction === PersonCardInteraction.click && !this.isPersonCardVisible) {
-      this.showPersonCard();
-    }
     if (this.isPersonCardVisible && e.target !== this) {
       this.hidePersonCard();
     }
@@ -323,6 +325,13 @@ export class MgtPerson extends MgtTemplatedComponent {
     }
 
     this.requestUpdate();
+  }
+  private handleMouseClick() {
+    if (this.personCardInteraction === PersonCardInteraction.click && !this.isPersonCardVisible) {
+      this.showPersonCard();
+    } else {
+      this.hidePersonCard();
+    }
   }
 
   private handleMouseEnter(e: MouseEvent) {
