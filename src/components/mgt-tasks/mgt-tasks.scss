@@ -269,7 +269,7 @@ mgt-tasks,
           margin: 0;
 
           &.NoPlan {
-            grid-template-columns: 0 1fr 1fr 1fr;
+            grid-template-columns: 2fr 0 1fr 1fr 1fr;
           }
 
           .TaskDetail {
