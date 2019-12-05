@@ -121,7 +121,7 @@ export class MgtPerson extends MgtTemplatedComponent {
   @property({ attribute: false }) private isPersonCardVisible: boolean = false;
   @property({ attribute: false }) private personCardShouldRender: boolean = false;
 
-  @property({}) private isTouch = false;
+  private isTouch = false;
 
   private _mouseLeaveTimeout;
   private _mouseEnterTimeout;
@@ -240,7 +240,7 @@ export class MgtPerson extends MgtTemplatedComponent {
       if (this.isTouch) {
         this.isTouch = false;
       }
-    }, 50);
+    }, 400);
   }
 
   private handleTouch(e: TouchEvent) {
@@ -345,7 +345,7 @@ export class MgtPerson extends MgtTemplatedComponent {
   private handleMouseEnter(e: MouseEvent) {
     clearTimeout(this._mouseEnterTimeout);
     clearTimeout(this._mouseLeaveTimeout);
-    if (this.personCardInteraction !== PersonCardInteraction.hover || this.isTouch) {
+    if (this.personCardInteraction !== PersonCardInteraction.hover || !this.isTouch) {
       return;
     }
     this._mouseEnterTimeout = setTimeout(this.showPersonCard.bind(this), 500);
