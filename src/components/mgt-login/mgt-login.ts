@@ -62,6 +62,27 @@ export class MgtLogin extends MgtBaseComponent {
     super();
     Providers.onProviderUpdated(() => this.loadState());
     this.loadState();
+    this.handleWindowClick = this.handleWindowClick.bind(this);
+  }
+
+  /**
+   * Invoked each time the custom element is appended into a document-connected element
+   *
+   * @memberof MgtLogin
+   */
+  public connectedCallback() {
+    super.connectedCallback();
+    window.addEventListener('click', this.handleWindowClick);
+  }
+
+  /**
+   * Invoked each time the custom element is disconnected from the document's DOM
+   *
+   * @memberof MgtLogin
+   */
+  public disconnectedCallback() {
+    window.removeEventListener('click', this.handleWindowClick);
+    super.disconnectedCallback();
   }
 
   /**
@@ -104,11 +125,10 @@ export class MgtLogin extends MgtBaseComponent {
     const provider = Providers.globalProvider;
     if (provider && provider.logout) {
       await provider.logout();
+      this.userDetails = null;
+      this._showMenu = false;
       this.fireCustomEvent('logoutCompleted');
     }
-
-    this.userDetails = null;
-    this._showMenu = false;
   }
 
   /**
@@ -161,26 +181,6 @@ export class MgtLogin extends MgtBaseComponent {
   }
 
   /**
-   * Invoked when the element is first updated. Implement to perform one time
-   * work on the element after update.
-   *
-   * Setting properties inside this method will trigger the element to update
-   * again after this update cycle completes.
-   *
-   * * @param _changedProperties Map of changed properties with old values
-   */
-  protected firstUpdated() {
-    window.addEventListener('click', (event: MouseEvent) => {
-      // get popup bounds
-      const popup = this.renderRoot.querySelector('.popup');
-      if (popup) {
-        this._popupRect = popup.getBoundingClientRect();
-        this._showMenu = false;
-      }
-    });
-  }
-
-  /**
    * Invoked on each update to perform rendering tasks. This method must return
    * a lit-html TemplateResult. Setting properties inside this method will *not*
    * trigger the element to update.
@@ -196,6 +196,19 @@ export class MgtLogin extends MgtBaseComponent {
         ${this.renderMenu()}
       </div>
     `;
+  }
+
+  private handleWindowClick(e: MouseEvent) {
+    if (e.target === this) {
+      return;
+    }
+
+    // get popup bounds
+    const popup = this.renderRoot.querySelector('.popup');
+    if (popup) {
+      this._popupRect = popup.getBoundingClientRect();
+      this._showMenu = false;
+    }
   }
 
   private renderLogIn() {
@@ -271,7 +284,6 @@ export class MgtLogin extends MgtBaseComponent {
   }
 
   private onClick(event: MouseEvent) {
-    event.stopPropagation();
     if (this.userDetails) {
       // get login button bounds
       const loginButton = this.renderRoot.querySelector('.login-button');
