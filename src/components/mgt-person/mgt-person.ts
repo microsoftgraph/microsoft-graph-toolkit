@@ -125,7 +125,7 @@ export class MgtPerson extends MgtTemplatedComponent {
 
   constructor() {
     super();
-    this.handleClick = this.handleClick.bind(this);
+    this.handleWindowClick = this.handleWindowClick.bind(this);
   }
 
   /**
@@ -167,7 +167,7 @@ export class MgtPerson extends MgtTemplatedComponent {
    */
   public connectedCallback() {
     super.connectedCallback();
-    window.addEventListener('click', this.handleClick);
+    window.addEventListener('click', this.handleWindowClick);
   }
 
   /**
@@ -176,7 +176,7 @@ export class MgtPerson extends MgtTemplatedComponent {
    * @memberof MgtPerson
    */
   public disconnectedCallback() {
-    window.removeEventListener('click', this.handleClick);
+    window.removeEventListener('click', this.handleWindowClick);
     super.disconnectedCallback();
   }
 
@@ -227,7 +227,7 @@ export class MgtPerson extends MgtTemplatedComponent {
     }
   }
 
-  private handleClick(e: MouseEvent) {
+  private handleWindowClick(e: MouseEvent) {
     if (this.isPersonCardVisible && e.target !== this) {
       this.hidePersonCard();
     }

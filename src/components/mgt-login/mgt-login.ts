@@ -62,25 +62,26 @@ export class MgtLogin extends MgtBaseComponent {
     super();
     Providers.onProviderUpdated(() => this.loadState());
     this.loadState();
-    this.handleClick = this.handleClick.bind(this);
+    this.handleWindowClick = this.handleWindowClick.bind(this);
   }
 
   /**
-   * Determines if click was made
+   * Invoked each time the custom element is appended into a document-connected element
    *
    * @memberof MgtLogin
    */
   public connectedCallback() {
     super.connectedCallback();
-    window.addEventListener('click', this.handleClick);
+    window.addEventListener('click', this.handleWindowClick);
   }
+
   /**
-   * Removes click event from window
+   * Invoked each time the custom element is disconnected from the document's DOM
    *
    * @memberof MgtLogin
    */
   public disconnectedCallback() {
-    window.removeEventListener('click', this.handleClick);
+    window.removeEventListener('click', this.handleWindowClick);
     super.disconnectedCallback();
   }
 
@@ -197,7 +198,7 @@ export class MgtLogin extends MgtBaseComponent {
     `;
   }
 
-  private handleClick(e: MouseEvent) {
+  private handleWindowClick(e: MouseEvent) {
     if (e.target === this) {
       return;
     }
