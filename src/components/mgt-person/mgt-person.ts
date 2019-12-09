@@ -8,7 +8,6 @@
 import * as MicrosoftGraph from '@microsoft/microsoft-graph-types';
 import { customElement, html, property, PropertyValues, TemplateResult } from 'lit-element';
 import { classMap } from 'lit-html/directives/class-map';
-import { styleMap } from 'lit-html/directives/style-map';
 import { Providers } from '../../Providers';
 import { ProviderState } from '../../providers/IProvider';
 import '../../styles/fabric-icon-font';
@@ -121,15 +120,12 @@ export class MgtPerson extends MgtTemplatedComponent {
   @property({ attribute: false }) private isPersonCardVisible: boolean = false;
   @property({ attribute: false }) private personCardShouldRender: boolean = false;
 
-  private isTouch = false;
-
   private _mouseLeaveTimeout;
   private _mouseEnterTimeout;
 
   constructor() {
     super();
     this.handleClick = this.handleClick.bind(this);
-    this.handleTouch = this.handleTouch.bind(this);
   }
 
   /**
@@ -165,23 +161,22 @@ export class MgtPerson extends MgtTemplatedComponent {
   }
 
   /**
-   * Determines if touch was made
+   * Invoked each time the custom element is appended into a document-connected element
    *
    * @memberof MgtPerson
    */
   public connectedCallback() {
     super.connectedCallback();
     window.addEventListener('click', this.handleClick);
-    this.addEventListener('touchstart', this.handleTouch);
   }
+
   /**
-   * Removes touch event from window
+   * Invoked each time the custom element is disconnected from the document's DOM
    *
    * @memberof MgtPerson
    */
   public disconnectedCallback() {
     window.removeEventListener('click', this.handleClick);
-    this.removeEventListener('touchstart', this.handleTouch);
     super.disconnectedCallback();
   }
 
@@ -235,18 +230,6 @@ export class MgtPerson extends MgtTemplatedComponent {
   private handleClick(e: MouseEvent) {
     if (this.isPersonCardVisible && e.target !== this) {
       this.hidePersonCard();
-    }
-    window.setTimeout(() => {
-      if (this.isTouch) {
-        this.isTouch = false;
-      }
-    }, 400);
-  }
-
-  private handleTouch(e: TouchEvent) {
-    if (!this.isPersonCardVisible && e.target === this) {
-      this.isTouch = true;
-      this.showPersonCard();
     }
   }
 
@@ -334,18 +317,17 @@ export class MgtPerson extends MgtTemplatedComponent {
 
     this.requestUpdate();
   }
+
   private handleMouseClick(e: MouseEvent) {
-    if (this.personCardInteraction === PersonCardInteraction.click && !this.isPersonCardVisible) {
+    if (this.personCardInteraction !== PersonCardInteraction.none && !this.isPersonCardVisible) {
       this.showPersonCard();
-    } else if (!this.isTouch) {
-      this.hidePersonCard();
     }
   }
 
   private handleMouseEnter(e: MouseEvent) {
     clearTimeout(this._mouseEnterTimeout);
     clearTimeout(this._mouseLeaveTimeout);
-    if (this.personCardInteraction !== PersonCardInteraction.hover || !this.isTouch) {
+    if (this.personCardInteraction !== PersonCardInteraction.hover) {
       return;
     }
     this._mouseEnterTimeout = setTimeout(this.showPersonCard.bind(this), 500);

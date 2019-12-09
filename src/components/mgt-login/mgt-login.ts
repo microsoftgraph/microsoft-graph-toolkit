@@ -198,6 +198,10 @@ export class MgtLogin extends MgtBaseComponent {
   }
 
   private handleClick(e: MouseEvent) {
+    if (e.target === this) {
+      return;
+    }
+
     // get popup bounds
     const popup = this.renderRoot.querySelector('.popup');
     if (popup) {
@@ -279,7 +283,6 @@ export class MgtLogin extends MgtBaseComponent {
   }
 
   private onClick(event: MouseEvent) {
-    event.stopPropagation();
     if (this.userDetails) {
       // get login button bounds
       const loginButton = this.renderRoot.querySelector('.login-button');
