@@ -8,6 +8,7 @@
 import { customElement, LitElement, property } from 'lit-element';
 import { Providers } from '../Providers';
 import { MockProvider } from './MockProvider';
+import { MgtBaseProvider } from '../components/providers/baseProvider';
 /**
  * Sets global provider to a mock Provider
  *
@@ -16,26 +17,26 @@ import { MockProvider } from './MockProvider';
  * @extends {LitElement}
  */
 @customElement('mgt-mock-provider')
-export class MgtMockProvider extends LitElement {
+export class MgtMockProvider extends MgtBaseProvider {
   /**
    * A property to allow the developer to start the sample logged out if they desired.
    *
    * @memberof MgtMockProvider
    */
   @property({
-    attribute: 'signed-in',
+    attribute: 'signed-out',
     type: Boolean
   })
-  public signedIn;
+  public signedOut;
 
-  constructor() {
-    super();
-
-    // Access the 'signed-in' attribute directly.
-    // LitElement doesn't parse attributes early enough for us enact on them from the constructor.
-    const signedInVal = (<any>this).getAttribute('signed-in');
-    this.signedIn = signedInVal !== 'false' && signedInVal !== null;
-
-    Providers.globalProvider = new MockProvider(this.signedIn);
+  /**
+   * method called to initialize the provider. Each derived class should provide
+   * their own implementation
+   *
+   * @protected
+   * @memberof MgtBaseProvider
+   */
+  protected initializeProvider() {
+    Providers.globalProvider = new MockProvider(!this.signedOut);
   }
 }
