@@ -650,7 +650,7 @@ export class MgtTasks extends MgtTemplatedComponent {
       this.readOnly || this._isNewTaskVisible
         ? null
         : html`
-            <div
+            <button
               class="AddBarItem NewTaskButton"
               @click="${() => {
                 this.isNewTaskVisible = !this.isNewTaskVisible;
@@ -658,7 +658,7 @@ export class MgtTasks extends MgtTemplatedComponent {
             >
               <span class="TaskIcon">\uE710</span>
               <span>Add</span>
-            </div>
+            </button>
           `;
 
     if (this.dataSource === TasksSource.planner) {
@@ -978,27 +978,27 @@ export class MgtTasks extends MgtTemplatedComponent {
         this.dataSource === TasksSource.todo || this._currentGroup
           ? null
           : html`
-              <span class="TaskDetail TaskGroup">
+              <div class="TaskDetail TaskGroup">
                 ${this.renderPlannerIcon()}
                 <span>${this.getPlanTitle(task.topParentId)}</span>
-              </span>
+              </div>
             `;
 
       const folder = this._currentFolder
         ? null
         : html`
-            <span class="TaskDetail TaskBucket">
+            <div class="TaskDetail TaskBucket">
               ${this.renderBucketIcon()}
               <span>${this.getFolderName(task.immediateParentId)}</span>
-            </span>
+            </div>
           `;
 
       const taskDue = !dueDate
         ? null
         : html`
-            <span class="TaskDetail TaskDue">
+            <div class="TaskDetail TaskDue">
               <span>Due ${getShortDateString(dueDate)}</span>
-            </span>
+            </div>
           `;
 
       const taskPeople = this.dataSource !== TasksSource.todo ? this.renderAssignedPeople(task) : null;
@@ -1138,14 +1138,6 @@ export class MgtTasks extends MgtTemplatedComponent {
           <div class="TaskDetailsContainer">
             <div class="TaskTitle"></div>
             <div class="TaskDetails">
-              <span class="TaskDetail">
-                <div class="TaskDetailIcon"></div>
-                <div class="TaskDetailName"></div>
-              </span>
-              <span class="TaskDetail">
-                <div class="TaskDetailIcon"></div>
-                <div class="TaskDetailName"></div>
-              </span>
               <span class="TaskDetail">
                 <div class="TaskDetailIcon"></div>
                 <div class="TaskDetailName"></div>
