@@ -99,11 +99,7 @@ mgt-tasks .Header .TitleCont,
 mgt-tasks .Header .NewTaskButton,
 :host .Header .NewTaskButton {
   flex: 0 0 auto;
-  display: grid;
-  display: -ms-grid;
-  grid-template-columns: auto auto;
-  -ms-grid-columns: auto auto;
-  column-gap: 8px;
+  display: flex;
   justify-content: center;
   align-items: center;
 
@@ -127,6 +123,10 @@ mgt-tasks .Header .NewTaskButton,
     font-weight: 600;
     letter-spacing: 0.1px;
     line-height: 14px;
+  }
+
+  .TaskIcon {
+    margin-right: 8px;
   }
 }
 
@@ -364,7 +364,7 @@ mgt-tasks,
 
         .TaskIcon {
           color: $ms-color-gray120;
-          margin: var(--task-detail-icon-margin 0 8px 0 0);
+          margin-right: 8px;
         }
         mgt-people {
           color: var(--task-detail-color, black);
