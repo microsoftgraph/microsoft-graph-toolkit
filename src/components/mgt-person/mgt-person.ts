@@ -8,7 +8,6 @@
 import * as MicrosoftGraph from '@microsoft/microsoft-graph-types';
 import { customElement, html, property, PropertyValues, TemplateResult } from 'lit-element';
 import { classMap } from 'lit-html/directives/class-map';
-import { styleMap } from 'lit-html/directives/style-map';
 import { Providers } from '../../Providers';
 import { ProviderState } from '../../providers/IProvider';
 import '../../styles/fabric-icon-font';
@@ -124,6 +123,11 @@ export class MgtPerson extends MgtTemplatedComponent {
   private _mouseLeaveTimeout;
   private _mouseEnterTimeout;
 
+  constructor() {
+    super();
+    this.handleWindowClick = this.handleWindowClick.bind(this);
+  }
+
   /**
    * Synchronizes property values when attributes change.
    *
@@ -157,6 +161,26 @@ export class MgtPerson extends MgtTemplatedComponent {
   }
 
   /**
+   * Invoked each time the custom element is appended into a document-connected element
+   *
+   * @memberof MgtPerson
+   */
+  public connectedCallback() {
+    super.connectedCallback();
+    window.addEventListener('click', this.handleWindowClick);
+  }
+
+  /**
+   * Invoked each time the custom element is disconnected from the document's DOM
+   *
+   * @memberof MgtPerson
+   */
+  public disconnectedCallback() {
+    window.removeEventListener('click', this.handleWindowClick);
+    super.disconnectedCallback();
+  }
+
+  /**
    * Invoked on each update to perform rendering tasks. This method must return
    * a lit-html TemplateResult. Setting properties inside this method will *not*
    * trigger the element to update.
@@ -174,9 +198,9 @@ export class MgtPerson extends MgtTemplatedComponent {
     return html`
       <div
         class="root"
+        @click=${this.handleMouseClick}
         @mouseenter=${this.handleMouseEnter}
         @mouseleave=${this.handleMouseLeave}
-        @click=${this.handleMouseClick}
       >
         ${this.renderFlyout(person)}
       </div>
@@ -200,6 +224,12 @@ export class MgtPerson extends MgtTemplatedComponent {
       const parent = initials.parentNode as HTMLElement;
       const height = parent.getBoundingClientRect().height;
       initials.style.fontSize = `${height * 0.5}px`;
+    }
+  }
+
+  private handleWindowClick(e: MouseEvent) {
+    if (this.isPersonCardVisible && e.target !== this) {
+      this.hidePersonCard();
     }
   }
 
@@ -288,11 +318,9 @@ export class MgtPerson extends MgtTemplatedComponent {
     this.requestUpdate();
   }
 
-  private handleMouseClick() {
-    if (this.personCardInteraction === PersonCardInteraction.click && !this.isPersonCardVisible) {
+  private handleMouseClick(e: MouseEvent) {
+    if (this.personCardInteraction !== PersonCardInteraction.none && !this.isPersonCardVisible) {
       this.showPersonCard();
-    } else {
-      this.hidePersonCard();
     }
   }
 

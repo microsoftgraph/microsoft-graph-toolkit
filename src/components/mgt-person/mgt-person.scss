@@ -20,7 +20,7 @@ $email-font-size: var(--email-font-size, #{$ms-font-size-s});
 $email-color: var(--email-color, #{$ms-color-neutralPrimary});
 
 :host {
-  display: inherit;
+  display: inline-block;
 }
 
 :host .root {
