@@ -24,12 +24,14 @@ The toolkit currently includes the following components:
 * [mgt-people-picker](https://docs.microsoft.com/graph/toolkit/components/people-picker)
 * [mgt-agenda](https://docs.microsoft.com/graph/toolkit/components/agenda)
 * [mgt-tasks](https://docs.microsoft.com/graph/toolkit/components/tasks)
+* [mgt-get](https://docs.microsoft.com/graph/toolkit/components/get)
 
 And the following providers:
 
 * [Msal Provider](https://docs.microsoft.com/graph/toolkit/providers/msal)
 * [SharePoint Provider](https://docs.microsoft.com/graph/toolkit/providers/sharepoint)
 * [Teams Provider](https://docs.microsoft.com/graph/toolkit/providers/teams)
+* [Proxy Provider](https://docs.microsoft.com/graph/toolkit/providers/proxy)
 * [Simple Provider](https://docs.microsoft.com/graph/toolkit/providers/custom)
 
 [View the full documentation](https://docs.microsoft.com/graph/toolkit/overview)
