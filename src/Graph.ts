@@ -51,13 +51,13 @@ export class Graph {
       telemetryHandler.setNext(sdkVersionMiddleware);
 
       if (component) {
-        const componentMiddleware = new CustomHeaderMiddleware(function(): Promise<object> {
-          return new Promise((resolve, reject) => {
-            if (this._forComponent) {
+        const componentMiddleware = new CustomHeaderMiddleware(
+          (): Promise<object> => {
+            return new Promise((resolve, reject) => {
               resolve({ component: component.tagName });
-            }
-          });
-        });
+            });
+          }
+        );
         sdkVersionMiddleware.setNext(componentMiddleware);
         componentMiddleware.setNext(httpMessageHandler);
       } else {
