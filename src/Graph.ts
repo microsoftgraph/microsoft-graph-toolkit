@@ -16,8 +16,10 @@ import {
 } from '@microsoft/microsoft-graph-client';
 import * as MicrosoftGraph from '@microsoft/microsoft-graph-types';
 import * as MicrosoftGraphBeta from '@microsoft/microsoft-graph-types-beta';
+import { MgtBaseComponent } from './components/baseComponent';
 import { IProvider } from './providers/IProvider';
 import { Batch } from './utils/Batch';
+import { CustomHeaderMiddleware } from './utils/CustomHeaderMiddleware';
 import { prepScopes } from './utils/GraphHelpers';
 import { SdkVersionMiddleware } from './utils/SdkVersionMiddleware';
 
@@ -36,7 +38,7 @@ export class Graph {
    */
   public client: Client;
 
-  constructor(provider: IProvider) {
+  constructor(provider: IProvider, component?: MgtBaseComponent) {
     if (provider) {
       const authenticationHandler = new AuthenticationHandler(provider);
       const retryHandler = new RetryHandler(new RetryHandlerOptions());
@@ -47,7 +49,20 @@ export class Graph {
       authenticationHandler.setNext(retryHandler);
       retryHandler.setNext(telemetryHandler);
       telemetryHandler.setNext(sdkVersionMiddleware);
-      sdkVersionMiddleware.setNext(httpMessageHandler);
+
+      if (component) {
+        const componentMiddleware = new CustomHeaderMiddleware(function(): Promise<object> {
+          return new Promise((resolve, reject) => {
+            if (this._forComponent) {
+              resolve({ component: component.tagName });
+            }
+          });
+        });
+        sdkVersionMiddleware.setNext(componentMiddleware);
+        componentMiddleware.setNext(httpMessageHandler);
+      } else {
+        sdkVersionMiddleware.setNext(httpMessageHandler);
+      }
 
       this.client = Client.initWithMiddleware({
         middleware: authenticationHandler

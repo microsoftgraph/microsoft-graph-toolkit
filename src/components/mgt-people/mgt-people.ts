@@ -7,6 +7,7 @@
 
 import * as MicrosoftGraph from '@microsoft/microsoft-graph-types';
 import { customElement, html, property } from 'lit-element';
+import { Graph } from '../../Graph';
 import { Providers } from '../../Providers';
 import { ProviderState } from '../../providers/IProvider';
 import '../../styles/fabric-icon-font';
@@ -159,7 +160,7 @@ export class MgtPeople extends MgtTemplatedComponent {
       const provider = Providers.globalProvider;
 
       if (provider && provider.state === ProviderState.SignedIn) {
-        const client = Providers.globalProvider.graph;
+        const client = new Graph(provider, this);
 
         if (this.groupId) {
           this.people = await client.getPeopleFromGroup(this.groupId);
