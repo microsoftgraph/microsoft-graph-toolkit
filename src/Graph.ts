@@ -40,7 +40,7 @@ export class Graph {
    */
   public client: Client;
 
-  private _provider?: IProvider;
+  private _provider: IProvider;
   private _component?: MgtBaseComponent;
 
   constructor(provider: IProvider, component?: MgtBaseComponent) {
@@ -632,11 +632,11 @@ export class Graph {
       .delete();
   }
 
-  private chainMiddleware(...middlewares: Middleware[]): Middleware {
-    const rootMiddleware = middlewares[0];
+  private chainMiddleware(...middleware: Middleware[]): Middleware {
+    const rootMiddleware = middleware[0];
     let current = rootMiddleware;
-    for (let i = 1; i < middlewares.length; ++i) {
-      const next = middlewares[i];
+    for (let i = 1; i < middleware.length; ++i) {
+      const next = middleware[i];
       if (current.setNext) {
         current.setNext(next);
       }
