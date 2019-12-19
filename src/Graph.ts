@@ -9,6 +9,7 @@ import {
   AuthenticationHandler,
   Client,
   HTTPMessageHandler,
+  Middleware,
   ResponseType,
   RetryHandler,
   RetryHandlerOptions,
@@ -39,38 +40,29 @@ export class Graph {
    */
   public client: Client;
 
-  private _provider: IProvider;
+  private _provider?: IProvider;
+  private _component?: MgtBaseComponent;
 
   constructor(provider: IProvider, component?: MgtBaseComponent) {
     if (provider) {
       this._provider = provider;
 
-      const authenticationHandler = new AuthenticationHandler(provider);
-      const retryHandler = new RetryHandler(new RetryHandlerOptions());
-      const telemetryHandler = new TelemetryHandler();
-      const sdkVersionMiddleware = new SdkVersionMiddleware();
-      const httpMessageHandler = new HTTPMessageHandler();
-
-      authenticationHandler.setNext(retryHandler);
-      retryHandler.setNext(telemetryHandler);
-      telemetryHandler.setNext(sdkVersionMiddleware);
+      const middleware: Middleware[] = [
+        new AuthenticationHandler(provider),
+        new RetryHandler(new RetryHandlerOptions()),
+        new TelemetryHandler(),
+        new SdkVersionMiddleware()
+      ];
 
       if (component) {
-        const componentMiddleware = new CustomHeaderMiddleware(
-          (): Promise<object> => {
-            return new Promise((resolve, reject) => {
-              resolve({ component: component.tagName });
-            });
-          }
-        );
-        sdkVersionMiddleware.setNext(componentMiddleware);
-        componentMiddleware.setNext(httpMessageHandler);
-      } else {
-        sdkVersionMiddleware.setNext(httpMessageHandler);
+        this._component = component;
+        middleware.push(new CustomHeaderMiddleware(this.addComponentHeader.bind(this)));
       }
 
+      middleware.push(new HTTPMessageHandler());
+
       this.client = Client.initWithMiddleware({
-        middleware: authenticationHandler
+        middleware: this.chainMiddleware(...middleware)
       });
     }
   }
@@ -638,6 +630,25 @@ export class Graph {
       .header('If-Match', eTag)
       .middlewareOptions(prepScopes('Tasks.ReadWrite'))
       .delete();
+  }
+
+  private chainMiddleware(...middlewares: Middleware[]): Middleware {
+    const rootMiddleware = middlewares[0];
+    let current = rootMiddleware;
+    for (let i = 1; i < middlewares.length; ++i) {
+      const next = middlewares[i];
+      if (current.setNext) {
+        current.setNext(next);
+      }
+      current = next;
+    }
+    return rootMiddleware;
+  }
+
+  private addComponentHeader(): Promise<object> {
+    return new Promise((resolve, reject) => {
+      resolve(this._component ? { component: this._component.tagName } : null);
+    });
   }
 
   private blobToBase64(blob: Blob): Promise<string> {
