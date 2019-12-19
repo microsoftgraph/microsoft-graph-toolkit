@@ -1,0 +1,1351 @@
+{
+  "version": 2,
+  "tags": [
+    {
+      "name": "mgt-person",
+      "description": "The person component is used to display a person or contact by using their photo, name, and/or email address.",
+      "jsDoc": "/**\n * The person component is used to display a person or contact by using their photo, name, and/or email address.\n *\n * @export\n * @class MgtPerson\n * @extends {MgtTemplatedComponent}\n */",
+      "attributes": [
+        {
+          "name": "person-query",
+          "description": "allows developer to define name of person for component",
+          "jsDoc": "/**\n   * allows developer to define name of person for component\n   * @type {string}\n   */",
+          "type": "string"
+        },
+        {
+          "name": "user-id",
+          "description": "user-id property allows developer to use id value to determine person",
+          "jsDoc": "/**\n   * user-id property allows developer to use id value to determine person\n   * @type {string}\n   */",
+          "type": "string"
+        },
+        {
+          "name": "show-name",
+          "description": "determines if person component renders user-name",
+          "jsDoc": "/**\n   * determines if person component renders user-name\n   * @type {boolean}\n   */",
+          "type": "false"
+        },
+        {
+          "name": "show-email",
+          "description": "determines if person component renders email",
+          "jsDoc": "/**\n   * determines if person component renders email\n   * @type {boolean}\n   */",
+          "type": "false"
+        },
+        {
+          "name": "person-details",
+          "description": "object containing Graph details on person",
+          "jsDoc": "/**\n   * object containing Graph details on person\n   * @type {MgtPersonDetails}\n   */",
+          "type": "User | Person | Contact"
+        },
+        {
+          "name": "person-image",
+          "description": "Set the image of the person\nSet to '@' to look up image from the graph",
+          "jsDoc": "/**\n   * Set the image of the person\n   * Set to '@' to look up image from the graph\n   *\n   * @type {string}\n   * @memberof MgtPersonCard\n   */",
+          "type": "string"
+        },
+        {
+          "name": "person-card",
+          "description": "Sets how the person-card is invoked\nSet to PersonCardInteraction.none to not show the card",
+          "jsDoc": "/**\n   * Sets how the person-card is invoked\n   * Set to PersonCardInteraction.none to not show the card\n   *\n   * @type {PersonCardInteraction}\n   * @memberof MgtPerson\n   */",
+          "type": "PersonCardInteraction"
+        }
+      ],
+      "properties": [
+        {
+          "name": "templateConverters",
+          "description": "Collection of functions to be used in template binding",
+          "jsDoc": "/**\n   * Collection of functions to be used in template binding\n   *\n   * @type {*}\n   * @memberof MgtTemplatedComponent\n   */",
+          "type": "any"
+        },
+        {
+          "name": "personQuery",
+          "description": "allows developer to define name of person for component",
+          "jsDoc": "/**\n   * allows developer to define name of person for component\n   * @type {string}\n   */",
+          "type": "string"
+        },
+        {
+          "name": "userId",
+          "description": "user-id property allows developer to use id value to determine person",
+          "jsDoc": "/**\n   * user-id property allows developer to use id value to determine person\n   * @type {string}\n   */",
+          "type": "string"
+        },
+        {
+          "name": "showName",
+          "description": "determines if person component renders user-name",
+          "jsDoc": "/**\n   * determines if person component renders user-name\n   * @type {boolean}\n   */",
+          "type": "false"
+        },
+        {
+          "name": "showEmail",
+          "description": "determines if person component renders email",
+          "jsDoc": "/**\n   * determines if person component renders email\n   * @type {boolean}\n   */",
+          "type": "false"
+        },
+        {
+          "name": "personDetails",
+          "description": "object containing Graph details on person",
+          "jsDoc": "/**\n   * object containing Graph details on person\n   * @type {MgtPersonDetails}\n   */",
+          "type": "User | Person | Contact"
+        },
+        {
+          "name": "personImage",
+          "description": "Set the image of the person\nSet to '@' to look up image from the graph",
+          "jsDoc": "/**\n   * Set the image of the person\n   * Set to '@' to look up image from the graph\n   *\n   * @type {string}\n   * @memberof MgtPersonCard\n   */",
+          "type": "string"
+        },
+        {
+          "name": "personCardInteraction",
+          "description": "Sets how the person-card is invoked\nSet to PersonCardInteraction.none to not show the card",
+          "jsDoc": "/**\n   * Sets how the person-card is invoked\n   * Set to PersonCardInteraction.none to not show the card\n   *\n   * @type {PersonCardInteraction}\n   * @memberof MgtPerson\n   */",
+          "type": "PersonCardInteraction"
+        }
+      ],
+      "cssProperties": [
+        {
+          "name": "--avatar-size-s",
+          "description": "Avatar size",
+          "type": "Length"
+        },
+        {
+          "name": "--avatar-size",
+          "description": "Avatar size when both name and email are shown",
+          "type": "Length"
+        },
+        {
+          "name": "--avatar-font-size--s",
+          "description": "Avatar font size",
+          "type": "Length"
+        },
+        {
+          "name": "--avatar-font-size",
+          "description": "Avatar font-size when both name and email are shown",
+          "type": "Length"
+        },
+        {
+          "name": "--avatar-border",
+          "description": "Avatar border",
+          "type": "String"
+        },
+        {
+          "name": "--initials-color",
+          "description": "Initials color",
+          "type": "Color"
+        },
+        {
+          "name": "--initials-background-color",
+          "description": "Initials background color",
+          "type": "Color"
+        },
+        {
+          "name": "--font-size",
+          "description": "Font size",
+          "type": "Length"
+        },
+        {
+          "name": "--font-weight",
+          "description": "Font weight",
+          "type": "Length"
+        },
+        {
+          "name": "--color",
+          "description": "Color",
+          "type": "Color"
+        },
+        {
+          "name": "--email-font-size",
+          "description": "Email font size",
+          "type": "Length"
+        },
+        {
+          "name": "--email-color",
+          "description": "Email color",
+          "type": "Color"
+        }
+      ]
+    },
+    {
+      "name": "mgt-agenda",
+      "description": "Web Component which represents events in a user or group calendar.",
+      "jsDoc": "/**\n * Web Component which represents events in a user or group calendar.\n *\n * @export\n * @class MgtAgenda\n * @extends {MgtTemplatedComponent}\n */",
+      "attributes": [
+        {
+          "name": "events",
+          "description": "array containg events from user agenda.",
+          "jsDoc": "/**\n   * array containg events from user agenda.\n   * @type {Array<MicrosoftGraph.Event>}\n   */",
+          "type": "Event[]"
+        },
+        {
+          "name": "group-by-day",
+          "description": "allows developer to define agenda to group events by day.",
+          "jsDoc": "/**\n   * allows developer to define agenda to group events by day.\n   * @type {Boolean}\n   */",
+          "type": "boolean"
+        },
+        {
+          "name": "date",
+          "description": "stores current date for intial calender selection in events.",
+          "jsDoc": "/**\n   * stores current date for intial calender selection in events.\n   * @type {string}\n   */",
+          "type": "string"
+        },
+        {
+          "name": "days",
+          "description": "sets number of days until endate, 3 is the default",
+          "jsDoc": "/**\n   * sets number of days until endate, 3 is the default\n   * @type {number}\n   */",
+          "type": "number"
+        },
+        {
+          "name": "event-query",
+          "description": "allows developer to specify a different graph query that retrieves events",
+          "jsDoc": "/**\n   * allows developer to specify a different graph query that retrieves events\n   * @type {string}\n   */",
+          "type": "string"
+        },
+        {
+          "name": "show-max",
+          "description": "allows developer to define max number of events shown",
+          "jsDoc": "/**\n   * allows developer to define max number of events shown\n   * @type {number}\n   */",
+          "type": "number"
+        },
+        {
+          "name": "group-id",
+          "description": "determines if agenda events come from specific group",
+          "jsDoc": "/**\n   * determines if agenda events come from specific group\n   * @type {string}\n   */",
+          "type": "string"
+        }
+      ],
+      "properties": [
+        {
+          "name": "templateConverters",
+          "description": "Collection of functions to be used in template binding",
+          "jsDoc": "/**\n   * Collection of functions to be used in template binding\n   *\n   * @type {*}\n   * @memberof MgtTemplatedComponent\n   */",
+          "type": "any"
+        },
+        {
+          "name": "events",
+          "description": "array containg events from user agenda.",
+          "jsDoc": "/**\n   * array containg events from user agenda.\n   * @type {Array<MicrosoftGraph.Event>}\n   */",
+          "type": "Event[]"
+        },
+        {
+          "name": "groupByDay",
+          "description": "allows developer to define agenda to group events by day.",
+          "jsDoc": "/**\n   * allows developer to define agenda to group events by day.\n   * @type {Boolean}\n   */",
+          "type": "boolean"
+        },
+        {
+          "name": "date",
+          "description": "stores current date for intial calender selection in events.",
+          "jsDoc": "/**\n   * stores current date for intial calender selection in events.\n   * @type {string}\n   */",
+          "type": "string"
+        },
+        {
+          "name": "days",
+          "description": "sets number of days until endate, 3 is the default",
+          "jsDoc": "/**\n   * sets number of days until endate, 3 is the default\n   * @type {number}\n   */",
+          "type": "number"
+        },
+        {
+          "name": "eventQuery",
+          "description": "allows developer to specify a different graph query that retrieves events",
+          "jsDoc": "/**\n   * allows developer to specify a different graph query that retrieves events\n   * @type {string}\n   */",
+          "type": "string"
+        },
+        {
+          "name": "showMax",
+          "description": "allows developer to define max number of events shown",
+          "jsDoc": "/**\n   * allows developer to define max number of events shown\n   * @type {number}\n   */",
+          "type": "number"
+        },
+        {
+          "name": "groupId",
+          "description": "determines if agenda events come from specific group",
+          "jsDoc": "/**\n   * determines if agenda events come from specific group\n   * @type {string}\n   */",
+          "type": "string"
+        },
+        {
+          "name": "onResize",
+          "type": "any"
+        },
+        {
+          "name": "hours",
+          "type": "number"
+        }
+      ],
+      "cssProperties": [
+        {
+          "name": "--event-box-shadow",
+          "description": "Event box shadow color and size",
+          "type": "String"
+        },
+        {
+          "name": "--event-margin",
+          "description": "Event margin",
+          "type": "String"
+        },
+        {
+          "name": "--event-padding",
+          "description": "Event padding",
+          "type": "String"
+        },
+        {
+          "name": "--event-background",
+          "description": "Event background color",
+          "type": "Color"
+        },
+        {
+          "name": "--event-border",
+          "description": "Event border color",
+          "type": "String"
+        },
+        {
+          "name": "--agenda-header-margin",
+          "description": "Agenda header margin size",
+          "type": "String"
+        },
+        {
+          "name": "--agenda-header-font-size",
+          "description": "Agenda header font size",
+          "type": "Length"
+        },
+        {
+          "name": "--agenda-header-color",
+          "description": "Agenda header color",
+          "type": "Color"
+        },
+        {
+          "name": "--event-time-font-size",
+          "description": "Event time font size",
+          "type": "Length"
+        },
+        {
+          "name": "--event-time-color",
+          "description": "Event time color",
+          "type": "Color"
+        },
+        {
+          "name": "--event-subject-font-size",
+          "description": "Event subject font size",
+          "type": "Length"
+        },
+        {
+          "name": "--event-subject-color",
+          "description": "Event subject color",
+          "type": "Color"
+        },
+        {
+          "name": "--event-location-font-size",
+          "description": "Event location font size",
+          "type": "Length"
+        },
+        {
+          "name": "--event-location-color",
+          "description": "Event location color",
+          "type": "Color"
+        }
+      ]
+    },
+    {
+      "name": "mgt-get",
+      "description": "Custom element for making Microsoft Graph get queries",
+      "jsDoc": "/**\n * Custom element for making Microsoft Graph get queries\n *\n * @export\n * @class mgt-get\n * @extends {MgtTemplatedComponent}\n */",
+      "attributes": [
+        {
+          "name": "resource",
+          "description": "The resource to get",
+          "jsDoc": "/**\n   * The resource to get\n   *\n   * @type {string}\n   * @memberof MgtGet\n   */",
+          "type": "string"
+        },
+        {
+          "name": "scopes",
+          "description": "The resource to get",
+          "jsDoc": "/**\n   * The resource to get\n   *\n   * @type {string[]}\n   * @memberof MgtGet\n   */",
+          "type": "string[]"
+        },
+        {
+          "name": "version",
+          "description": "Api version to use for request",
+          "jsDoc": "/**\n   * Api version to use for request\n   *\n   * @type {string}\n   * @memberof MgtGet\n   */",
+          "type": "string"
+        },
+        {
+          "name": "max-pages",
+          "description": "Maximum number of pages to get for the resource\ndefault = 3\nif <= 0, all pages will be fetched",
+          "jsDoc": "/**\n   * Maximum number of pages to get for the resource\n   * default = 3\n   * if <= 0, all pages will be fetched\n   *\n   * @type {boolean}\n   * @memberof MgtGet\n   */",
+          "type": "number"
+        }
+      ],
+      "properties": [
+        {
+          "name": "templateConverters",
+          "description": "Collection of functions to be used in template binding",
+          "jsDoc": "/**\n   * Collection of functions to be used in template binding\n   *\n   * @type {*}\n   * @memberof MgtTemplatedComponent\n   */",
+          "type": "any"
+        },
+        {
+          "name": "resource",
+          "description": "The resource to get",
+          "jsDoc": "/**\n   * The resource to get\n   *\n   * @type {string}\n   * @memberof MgtGet\n   */",
+          "type": "string"
+        },
+        {
+          "name": "scopes",
+          "description": "The resource to get",
+          "jsDoc": "/**\n   * The resource to get\n   *\n   * @type {string[]}\n   * @memberof MgtGet\n   */",
+          "type": "string[]"
+        },
+        {
+          "name": "version",
+          "description": "Api version to use for request",
+          "jsDoc": "/**\n   * Api version to use for request\n   *\n   * @type {string}\n   * @memberof MgtGet\n   */",
+          "type": "string"
+        },
+        {
+          "name": "maxPages",
+          "description": "Maximum number of pages to get for the resource\ndefault = 3\nif <= 0, all pages will be fetched",
+          "jsDoc": "/**\n   * Maximum number of pages to get for the resource\n   * default = 3\n   * if <= 0, all pages will be fetched\n   *\n   * @type {boolean}\n   * @memberof MgtGet\n   */",
+          "type": "number"
+        },
+        {
+          "name": "response",
+          "description": "Gets or sets the response of the request",
+          "jsDoc": "/**\n   * Gets or sets the response of the request\n   *\n   * @type {*}\n   * @memberof MgtGet\n   */",
+          "type": "any"
+        },
+        {
+          "name": "error",
+          "description": "Gets or sets the error (if any) of the request",
+          "jsDoc": "/**\n   *\n   * Gets or sets the error (if any) of the request\n   * @type {*}\n   * @memberof MgtGet\n   */",
+          "type": "any"
+        }
+      ]
+    },
+    {
+      "name": "mgt-login",
+      "description": "Web component button and flyout control to facilitate Microsoft identity platform authentication",
+      "jsDoc": "/**\n * Web component button and flyout control to facilitate Microsoft identity platform authentication\n *\n * @export\n * @class MgtLogin\n * @extends {MgtBaseComponent}\n */",
+      "attributes": [
+        {
+          "name": "user-details",
+          "description": "allows developer to use specific user details for login",
+          "jsDoc": "/**\n   * allows developer to use specific user details for login\n   * @type {MgtPersonDetails}\n   */",
+          "type": "User"
+        }
+      ],
+      "properties": [
+        {
+          "name": "userDetails",
+          "description": "allows developer to use specific user details for login",
+          "jsDoc": "/**\n   * allows developer to use specific user details for login\n   * @type {MgtPersonDetails}\n   */",
+          "type": "User"
+        }
+      ],
+      "cssProperties": [
+        {
+          "name": "--font-size",
+          "description": "Login font size",
+          "type": "Length"
+        },
+        {
+          "name": "--font-weight",
+          "description": "Login font weight",
+          "type": "Length"
+        },
+        {
+          "name": "--height",
+          "description": "Login height percentage",
+          "type": "String"
+        },
+        {
+          "name": "--margin",
+          "description": "Margin size",
+          "type": "String"
+        },
+        {
+          "name": "--padding",
+          "description": "Padding size",
+          "type": "String"
+        },
+        {
+          "name": "--color",
+          "description": "Login font color",
+          "type": "Color"
+        },
+        {
+          "name": "--background-color",
+          "description": "Login background color",
+          "type": "Color"
+        },
+        {
+          "name": "--background-color--hover",
+          "description": "Login background hover color",
+          "type": "Color"
+        },
+        {
+          "name": "--popup-content-background-color",
+          "description": "Popup content background color",
+          "type": "Color"
+        },
+        {
+          "name": "--popup-command-font-size",
+          "description": "Popup command font size",
+          "type": "Length"
+        }
+      ]
+    },
+    {
+      "name": "mgt-people-picker",
+      "description": "Web component used to search for people from the Microsoft Graph",
+      "jsDoc": "/**\n * Web component used to search for people from the Microsoft Graph\n *\n * @export\n * @class MgtPicker\n * @extends {MgtTemplatedComponent}\n */",
+      "attributes": [
+        {
+          "name": "people",
+          "description": "containing object of MgtPersonDetails.",
+          "jsDoc": "/**\n   * containing object of MgtPersonDetails.\n   * @type {MgtPersonDetails}\n   */",
+          "type": "(User | Person | Contact)[]"
+        },
+        {
+          "name": "show-max",
+          "description": "determining how many people to show in list.",
+          "jsDoc": "/**\n   * determining how many people to show in list.\n   * @type {number}\n   */",
+          "type": "number"
+        },
+        {
+          "name": "group-id",
+          "description": "value determining if search is filtered to a group.",
+          "jsDoc": "/**\n   * value determining if search is filtered to a group.\n   * @type {string}\n   */",
+          "type": "string"
+        },
+        {
+          "name": "selected-people",
+          "description": "array of user picked people.",
+          "jsDoc": "/**\n   *  array of user picked people.\n   * @type {Array<any>}\n   */",
+          "type": "(User | Person | Contact)[]"
+        }
+      ],
+      "properties": [
+        {
+          "name": "templateConverters",
+          "description": "Collection of functions to be used in template binding",
+          "jsDoc": "/**\n   * Collection of functions to be used in template binding\n   *\n   * @type {*}\n   * @memberof MgtTemplatedComponent\n   */",
+          "type": "any"
+        },
+        {
+          "name": "people",
+          "description": "containing object of MgtPersonDetails.",
+          "jsDoc": "/**\n   * containing object of MgtPersonDetails.\n   * @type {MgtPersonDetails}\n   */",
+          "type": "(User | Person | Contact)[]"
+        },
+        {
+          "name": "showMax",
+          "description": "determining how many people to show in list.",
+          "jsDoc": "/**\n   * determining how many people to show in list.\n   * @type {number}\n   */",
+          "type": "number"
+        },
+        {
+          "name": "groupId",
+          "description": "value determining if search is filtered to a group.",
+          "jsDoc": "/**\n   * value determining if search is filtered to a group.\n   * @type {string}\n   */",
+          "type": "string"
+        },
+        {
+          "name": "selectedPeople",
+          "description": "array of user picked people.",
+          "jsDoc": "/**\n   *  array of user picked people.\n   * @type {Array<any>}\n   */",
+          "type": "(User | Person | Contact)[]"
+        }
+      ],
+      "cssProperties": [
+        {
+          "name": "--people-list-background-color",
+          "description": "People list background color",
+          "type": "Color"
+        },
+        {
+          "name": "--accent-color",
+          "description": "Accent color",
+          "type": "Color"
+        }
+      ]
+    },
+    {
+      "name": "mgt-people",
+      "description": "web component to display a group of people or contacts by using their photos or initials.",
+      "jsDoc": "/**\n * web component to display a group of people or contacts by using their photos or initials.\n *\n * @export\n * @class MgtPeople\n * @extends {MgtTemplatedComponent}\n */",
+      "attributes": [
+        {
+          "name": "people",
+          "description": "containing array of people used in the component.",
+          "jsDoc": "/**\n   * containing array of people used in the component.\n   * @type {Array<MgtPersonDetails>}\n   */",
+          "type": "(User | Person | Contact)[]"
+        },
+        {
+          "name": "show-max",
+          "description": "developer determined max people shown in component",
+          "jsDoc": "/**\n   * developer determined max people shown in component\n   * @type {number}\n   */",
+          "type": "number"
+        },
+        {
+          "name": "group-id",
+          "description": "determines if agenda events come from specific group",
+          "jsDoc": "/**\n   * determines if agenda events come from specific group\n   * @type {string}\n   */",
+          "type": "string"
+        },
+        {
+          "name": "user-ids",
+          "description": "user id array",
+          "jsDoc": "/**\n   * user id array\n   *\n   * @memberof MgtPeople\n   */",
+          "type": "string[]"
+        },
+        {
+          "name": "person-card",
+          "description": "Sets how the person-card is invoked\nSet to PersonCardInteraction.none to not show the card",
+          "jsDoc": "/**\n   * Sets how the person-card is invoked\n   * Set to PersonCardInteraction.none to not show the card\n   *\n   * @type {PersonCardInteraction}\n   * @memberof MgtPerson\n   */",
+          "type": "PersonCardInteraction"
+        }
+      ],
+      "properties": [
+        {
+          "name": "templateConverters",
+          "description": "Collection of functions to be used in template binding",
+          "jsDoc": "/**\n   * Collection of functions to be used in template binding\n   *\n   * @type {*}\n   * @memberof MgtTemplatedComponent\n   */",
+          "type": "any"
+        },
+        {
+          "name": "people",
+          "description": "containing array of people used in the component.",
+          "jsDoc": "/**\n   * containing array of people used in the component.\n   * @type {Array<MgtPersonDetails>}\n   */",
+          "type": "(User | Person | Contact)[]"
+        },
+        {
+          "name": "showMax",
+          "description": "developer determined max people shown in component",
+          "jsDoc": "/**\n   * developer determined max people shown in component\n   * @type {number}\n   */",
+          "type": "number"
+        },
+        {
+          "name": "groupId",
+          "description": "determines if agenda events come from specific group",
+          "jsDoc": "/**\n   * determines if agenda events come from specific group\n   * @type {string}\n   */",
+          "type": "string"
+        },
+        {
+          "name": "userIds",
+          "description": "user id array",
+          "jsDoc": "/**\n   * user id array\n   *\n   * @memberof MgtPeople\n   */",
+          "type": "string[]"
+        },
+        {
+          "name": "personCardInteraction",
+          "description": "Sets how the person-card is invoked\nSet to PersonCardInteraction.none to not show the card",
+          "jsDoc": "/**\n   * Sets how the person-card is invoked\n   * Set to PersonCardInteraction.none to not show the card\n   *\n   * @type {PersonCardInteraction}\n   * @memberof MgtPerson\n   */",
+          "type": "PersonCardInteraction"
+        }
+      ],
+      "cssProperties": [
+        {
+          "name": "--list-margin",
+          "description": "List margin for component",
+          "type": "String"
+        },
+        {
+          "name": "--avatar-margin",
+          "description": "Margin for each person",
+          "type": "String"
+        }
+      ]
+    },
+    {
+      "name": "mgt-person-card",
+      "description": "Web Component used to show detailed data for a person in the\nMicrosoft Graph",
+      "jsDoc": "/**\n * Web Component used to show detailed data for a person in the\n * Microsoft Graph\n *\n * @export\n * @class MgtPersonCard\n * @extends {MgtTemplatedComponent}\n */",
+      "attributes": [
+        {
+          "name": "person-details",
+          "description": "Set the person details to render",
+          "jsDoc": "/**\n   * Set the person details to render\n   *\n   * @type {(MicrosoftGraph.User\n   *     | MicrosoftGraph.Person\n   *     | MicrosoftGraph.Contact)}\n   * @memberof MgtPersonCard\n   */",
+          "type": "User | Person | Contact"
+        },
+        {
+          "name": "person-image",
+          "description": "Set the image of the person\nSet to '@' to look up image from the graph",
+          "jsDoc": "/**\n   * Set the image of the person\n   * Set to '@' to look up image from the graph\n   *\n   * @type {string}\n   * @memberof MgtPersonCard\n   */",
+          "type": "string"
+        },
+        {
+          "name": "is-expanded",
+          "description": "Gets or sets whether additional details section is rendered",
+          "jsDoc": "/**\n   * Gets or sets whether additional details section is rendered\n   *\n   * @type {boolean}\n   * @memberof MgtPersonCard\n   */",
+          "type": "boolean"
+        },
+        {
+          "name": "inherit-details",
+          "description": "Gets or sets whether additional details should be inherited from an mgt-person parent\nUseful when used as template in an mgt-person component",
+          "jsDoc": "/**\n   * Gets or sets whether additional details should be inherited from an mgt-person parent\n   * Useful when used as template in an mgt-person component\n   *\n   * @type {boolean}\n   * @memberof MgtPersonCard\n   */",
+          "type": "boolean"
+        }
+      ],
+      "properties": [
+        {
+          "name": "templateConverters",
+          "description": "Collection of functions to be used in template binding",
+          "jsDoc": "/**\n   * Collection of functions to be used in template binding\n   *\n   * @type {*}\n   * @memberof MgtTemplatedComponent\n   */",
+          "type": "any"
+        },
+        {
+          "name": "personDetails",
+          "description": "Set the person details to render",
+          "jsDoc": "/**\n   * Set the person details to render\n   *\n   * @type {(MicrosoftGraph.User\n   *     | MicrosoftGraph.Person\n   *     | MicrosoftGraph.Contact)}\n   * @memberof MgtPersonCard\n   */",
+          "type": "User | Person | Contact"
+        },
+        {
+          "name": "personImage",
+          "description": "Set the image of the person\nSet to '@' to look up image from the graph",
+          "jsDoc": "/**\n   * Set the image of the person\n   * Set to '@' to look up image from the graph\n   *\n   * @type {string}\n   * @memberof MgtPersonCard\n   */",
+          "type": "string"
+        },
+        {
+          "name": "isExpanded",
+          "description": "Gets or sets whether additional details section is rendered",
+          "jsDoc": "/**\n   * Gets or sets whether additional details section is rendered\n   *\n   * @type {boolean}\n   * @memberof MgtPersonCard\n   */",
+          "type": "boolean"
+        },
+        {
+          "name": "inheritDetails",
+          "description": "Gets or sets whether additional details should be inherited from an mgt-person parent\nUseful when used as template in an mgt-person component",
+          "jsDoc": "/**\n   * Gets or sets whether additional details should be inherited from an mgt-person parent\n   * Useful when used as template in an mgt-person component\n   *\n   * @type {boolean}\n   * @memberof MgtPersonCard\n   */",
+          "type": "boolean"
+        },
+        {
+          "name": "renderAdditionalSection",
+          "type": "TemplateResult | null"
+        }
+      ],
+      "cssProperties": [
+        {
+          "name": "--font-size",
+          "description": "Font size",
+          "type": "Length"
+        },
+        {
+          "name": "--font-weight",
+          "description": "Font weight",
+          "type": "Length"
+        },
+        {
+          "name": "--height",
+          "description": "Height",
+          "type": "String"
+        },
+        {
+          "name": "--background-color",
+          "description": "Background color",
+          "type": "Color"
+        }
+      ]
+    },
+    {
+      "name": "mgt-arrow-options",
+      "description": "Custom Component used to handle an arrow rendering for TaskGroups utilized in the task component.",
+      "jsDoc": "/**\n * Custom Component used to handle an arrow rendering for TaskGroups utilized in the task component.\n *\n * @export MgtArrowOptions\n * @class MgtArrowOptions\n * @extends {MgtBaseComponent}\n */",
+      "attributes": [
+        {
+          "name": "open",
+          "description": "Determines if header menu is rendered or hidden.",
+          "jsDoc": "/**\n   * Determines if header menu is rendered or hidden.\n   *\n   * @type {boolean}\n   * @memberof MgtArrowOptions\n   */",
+          "type": "boolean"
+        },
+        {
+          "name": "value",
+          "description": "Title of chosen TaskGroup.",
+          "jsDoc": "/**\n   * Title of chosen TaskGroup.\n   *\n   * @type {string}\n   * @memberof MgtArrowOptions\n   */",
+          "type": "string"
+        },
+        {
+          "name": "options",
+          "description": "Menu options to be rendered with an attached MouseEvent handler for expansion of details",
+          "jsDoc": "/**\n   * Menu options to be rendered with an attached MouseEvent handler for expansion of details\n   *\n   * @type {object}\n   * @memberof MgtArrowOptions\n   */",
+          "type": "{ [name: string]: (e: MouseEvent) => any; }"
+        }
+      ],
+      "properties": [
+        {
+          "name": "open",
+          "description": "Determines if header menu is rendered or hidden.",
+          "jsDoc": "/**\n   * Determines if header menu is rendered or hidden.\n   *\n   * @type {boolean}\n   * @memberof MgtArrowOptions\n   */",
+          "type": "boolean"
+        },
+        {
+          "name": "value",
+          "description": "Title of chosen TaskGroup.",
+          "jsDoc": "/**\n   * Title of chosen TaskGroup.\n   *\n   * @type {string}\n   * @memberof MgtArrowOptions\n   */",
+          "type": "string"
+        },
+        {
+          "name": "options",
+          "description": "Menu options to be rendered with an attached MouseEvent handler for expansion of details",
+          "jsDoc": "/**\n   * Menu options to be rendered with an attached MouseEvent handler for expansion of details\n   *\n   * @type {object}\n   * @memberof MgtArrowOptions\n   */",
+          "type": "{ [name: string]: (e: MouseEvent) => any; }"
+        }
+      ]
+    },
+    {
+      "name": "mgt-dot-options",
+      "description": "Custom Component used to handle an arrow rendering for TaskGroups utilized in the task component.",
+      "jsDoc": "/**\n * Custom Component used to handle an arrow rendering for TaskGroups utilized in the task component.\n *\n * @export MgtDotOptions\n * @class MgtDotOptions\n * @extends {MgtBaseComponent}\n */",
+      "attributes": [
+        {
+          "name": "open",
+          "description": "Determines if header menu is rendered or hidden.",
+          "jsDoc": "/**\n   * Determines if header menu is rendered or hidden.\n   *\n   * @type {boolean}\n   * @memberof MgtDotOptions\n   */",
+          "type": "boolean"
+        },
+        {
+          "name": "options",
+          "description": "Menu options to be rendered with an attached MouseEvent handler for expansion of details",
+          "jsDoc": "/**\n   * Menu options to be rendered with an attached MouseEvent handler for expansion of details\n   *\n   * @memberof MgtDotOptions\n   */",
+          "type": "{ [option: string]: (e: MouseEvent) => any; }"
+        }
+      ],
+      "properties": [
+        {
+          "name": "open",
+          "description": "Determines if header menu is rendered or hidden.",
+          "jsDoc": "/**\n   * Determines if header menu is rendered or hidden.\n   *\n   * @type {boolean}\n   * @memberof MgtDotOptions\n   */",
+          "type": "boolean"
+        },
+        {
+          "name": "options",
+          "description": "Menu options to be rendered with an attached MouseEvent handler for expansion of details",
+          "jsDoc": "/**\n   * Menu options to be rendered with an attached MouseEvent handler for expansion of details\n   *\n   * @memberof MgtDotOptions\n   */",
+          "type": "{ [option: string]: (e: MouseEvent) => any; }"
+        }
+      ]
+    },
+    {
+      "name": "mgt-tasks",
+      "description": "component enables the user to view, add, remove, complete, or edit tasks. It works with tasks in Microsoft Planner or Microsoft To-Do.",
+      "jsDoc": "/**\n * component enables the user to view, add, remove, complete, or edit tasks. It works with tasks in Microsoft Planner or Microsoft To-Do.\n *\n * @export\n * @class MgtTasks\n * @extends {MgtBaseComponent}\n */",
+      "attributes": [
+        {
+          "name": "read-only",
+          "description": "determines if tasks are un-editable",
+          "jsDoc": "/**\n   * determines if tasks are un-editable\n   * @type {boolean}\n   */",
+          "type": "boolean"
+        },
+        {
+          "name": "data-source",
+          "description": "determines which task source is loaded, either planner or todo",
+          "jsDoc": "/**\n   * determines which task source is loaded, either planner or todo\n   * @type {string}\n   */",
+          "type": "TasksSource"
+        },
+        {
+          "name": "target-id",
+          "description": "if set, the component will only show tasks from either this plan or group",
+          "jsDoc": "/**\n   * if set, the component will only show tasks from either this plan or group\n   * @type {string}\n   */",
+          "type": "string"
+        },
+        {
+          "name": "target-bucket-id",
+          "description": "if set, the component will only show tasks from this bucket or folder",
+          "jsDoc": "/**\n   * if set, the component will only show tasks from this bucket or folder\n   * @type {string}\n   */",
+          "type": "string"
+        },
+        {
+          "name": "initial-id",
+          "description": "if set, the component will first show tasks from this plan or group",
+          "jsDoc": "/**\n   * if set, the component will first show tasks from this plan or group\n   *\n   * @type {string}\n   * @memberof MgtTasks\n   */",
+          "type": "string"
+        },
+        {
+          "name": "initial-bucket-id",
+          "description": "if set, the component will first show tasks from this bucket or folder",
+          "jsDoc": "/**\n   * if set, the component will first show tasks from this bucket or folder\n   *\n   * @type {string}\n   * @memberof MgtTasks\n   */",
+          "type": "string"
+        },
+        {
+          "name": "hide-header",
+          "description": "sets whether the header is rendered",
+          "jsDoc": "/**\n   * sets whether the header is rendered\n   *\n   * @type {boolean}\n   * @memberof MgtTasks\n   */",
+          "type": "boolean"
+        },
+        {
+          "name": "group-id",
+          "description": "allows developer to define specific group id",
+          "jsDoc": "/**\n   * allows developer to define specific group id\n   */",
+          "type": "string"
+        }
+      ],
+      "properties": [
+        {
+          "name": "templateConverters",
+          "description": "Collection of functions to be used in template binding",
+          "jsDoc": "/**\n   * Collection of functions to be used in template binding\n   *\n   * @type {*}\n   * @memberof MgtTemplatedComponent\n   */",
+          "type": "any"
+        },
+        {
+          "name": "isNewTaskVisible",
+          "description": "Set whether new task is visible",
+          "jsDoc": "/**\n   * Set whether new task is visible\n   *\n   * @memberof MgtTasks\n   */",
+          "type": "boolean"
+        },
+        {
+          "name": "readOnly",
+          "description": "determines if tasks are un-editable",
+          "jsDoc": "/**\n   * determines if tasks are un-editable\n   * @type {boolean}\n   */",
+          "type": "boolean"
+        },
+        {
+          "name": "dataSource",
+          "description": "determines which task source is loaded, either planner or todo",
+          "jsDoc": "/**\n   * determines which task source is loaded, either planner or todo\n   * @type {string}\n   */",
+          "type": "TasksSource"
+        },
+        {
+          "name": "targetId",
+          "description": "if set, the component will only show tasks from either this plan or group",
+          "jsDoc": "/**\n   * if set, the component will only show tasks from either this plan or group\n   * @type {string}\n   */",
+          "type": "string"
+        },
+        {
+          "name": "targetBucketId",
+          "description": "if set, the component will only show tasks from this bucket or folder",
+          "jsDoc": "/**\n   * if set, the component will only show tasks from this bucket or folder\n   * @type {string}\n   */",
+          "type": "string"
+        },
+        {
+          "name": "initialId",
+          "description": "if set, the component will first show tasks from this plan or group",
+          "jsDoc": "/**\n   * if set, the component will first show tasks from this plan or group\n   *\n   * @type {string}\n   * @memberof MgtTasks\n   */",
+          "type": "string"
+        },
+        {
+          "name": "initialBucketId",
+          "description": "if set, the component will first show tasks from this bucket or folder",
+          "jsDoc": "/**\n   * if set, the component will first show tasks from this bucket or folder\n   *\n   * @type {string}\n   * @memberof MgtTasks\n   */",
+          "type": "string"
+        },
+        {
+          "name": "hideHeader",
+          "description": "sets whether the header is rendered",
+          "jsDoc": "/**\n   * sets whether the header is rendered\n   *\n   * @type {boolean}\n   * @memberof MgtTasks\n   */",
+          "type": "boolean"
+        },
+        {
+          "name": "groupId",
+          "description": "allows developer to define specific group id",
+          "jsDoc": "/**\n   * allows developer to define specific group id\n   */",
+          "type": "string"
+        },
+        {
+          "name": "providerUpdateCallback",
+          "type": "any"
+        },
+        {
+          "name": "handleWindowClick",
+          "type": "any"
+        },
+        {
+          "name": "task",
+          "type": "string"
+        },
+        {
+          "name": "isLoading",
+          "type": "TemplateResult | null"
+        }
+      ],
+      "cssProperties": [
+        {
+          "name": "--tasks-header-padding",
+          "description": "Tasks header padding",
+          "type": "String"
+        },
+        {
+          "name": "--tasks-header-margin",
+          "description": "Tasks header margin",
+          "type": "String"
+        },
+        {
+          "name": "--tasks-title-padding",
+          "description": "Tasks title padding",
+          "type": "String"
+        },
+        {
+          "name": "--tasks-plan-title-font-size",
+          "description": "Tasks plan title font size",
+          "type": "Length"
+        },
+        {
+          "name": "--tasks-plan-title-padding",
+          "description": "Tasks plan title padding",
+          "type": "String"
+        },
+        {
+          "name": "--tasks-new-button-width",
+          "description": "Tasks new button width",
+          "type": "String"
+        },
+        {
+          "name": "--tasks-new-button-height",
+          "description": "Tasks new button height",
+          "type": "Length"
+        },
+        {
+          "name": "--tasks-new-button-color",
+          "description": "Tasks new button color",
+          "type": "Color"
+        },
+        {
+          "name": "--tasks-new-button-background",
+          "description": "Tasks new button background",
+          "type": "String"
+        },
+        {
+          "name": "--tasks-new-button-border",
+          "description": "Tasks new button border",
+          "type": "String"
+        },
+        {
+          "name": "--tasks-new-button-hover-background",
+          "description": "Tasks new button hover background",
+          "type": "Color"
+        },
+        {
+          "name": "--tasks-new-button-active-background",
+          "description": "Tasks new button active background",
+          "type": "Color"
+        },
+        {
+          "name": "--tasks-new-task-name-margin",
+          "description": "Tasks new task name margin",
+          "type": "String"
+        },
+        {
+          "name": "--task-margin",
+          "description": "Task margin",
+          "type": "String"
+        },
+        {
+          "name": "--task-box-shadow",
+          "description": "Task box shadow",
+          "type": "String"
+        },
+        {
+          "name": "--task-background",
+          "description": "Task background",
+          "type": "Color"
+        },
+        {
+          "name": "--task-border",
+          "description": "Task border",
+          "type": "String"
+        },
+        {
+          "name": "--task-header-color",
+          "description": "Task header color",
+          "type": "Color"
+        },
+        {
+          "name": "--task-header-margin",
+          "description": "Task header margin",
+          "type": "String"
+        },
+        {
+          "name": "--task-detail-icon-margin",
+          "description": "Task detail icon margin",
+          "type": "String"
+        },
+        {
+          "name": "--task-new-margin",
+          "description": "Task new margin",
+          "type": "String"
+        },
+        {
+          "name": "--task-new-border",
+          "description": "Task new border",
+          "type": "String"
+        },
+        {
+          "name": "--task-new-line-margin",
+          "description": "Task new line margin",
+          "type": "String"
+        },
+        {
+          "name": "--tasks-new-line-border",
+          "description": "Tasks new line border",
+          "type": "String"
+        },
+        {
+          "name": "--task-new-input-margin",
+          "description": "Task new input margin",
+          "type": "String"
+        },
+        {
+          "name": "--task-new-input-padding",
+          "description": "Task new input padding",
+          "type": "String"
+        },
+        {
+          "name": "--task-new-input-font-size",
+          "description": "Task new input font size",
+          "type": "Length"
+        },
+        {
+          "name": "--task-new-input-active-border",
+          "description": "Task new input active border",
+          "type": "String"
+        },
+        {
+          "name": "--task-new-select-border",
+          "description": "Task new select border",
+          "type": "String"
+        },
+        {
+          "name": "--task-new-add-button-background",
+          "description": "Task new add button background",
+          "type": "Color"
+        },
+        {
+          "name": "--task-new-add-button-disabled-background",
+          "description": "Task new add button disabled background",
+          "type": "Color"
+        },
+        {
+          "name": "--task-new-cancel-button-color",
+          "description": "Task new cancel button color",
+          "type": "Color"
+        },
+        {
+          "name": "--task-complete-background",
+          "description": "Task complete background",
+          "type": "Color"
+        },
+        {
+          "name": "--task-complete-border",
+          "description": "Task complete border",
+          "type": "String"
+        },
+        {
+          "name": "--task-complete-header-color",
+          "description": "Task complete header color",
+          "type": "Color"
+        },
+        {
+          "name": "--task-complete-detail-color",
+          "description": "Task complete detail color",
+          "type": "Color"
+        },
+        {
+          "name": "--task-complete-detail-icon-color",
+          "description": "Task complete detail icon color",
+          "type": "Color"
+        }
+      ]
+    },
+    {
+      "name": "mgt-msal-provider",
+      "description": "Authentication Library Provider for Microsoft personal accounts",
+      "jsDoc": "/**\n * Authentication Library Provider for Microsoft personal accounts\n *\n * @export\n * @class MgtMsalProvider\n * @extends {MgtBaseProvider}\n */",
+      "attributes": [
+        {
+          "name": "depends-on",
+          "description": "Higher priority provider that should be initialized before attempting\nto initialize this provider. This provider will only be initialized\nif all higher priority providers are not available.",
+          "jsDoc": "/**\n   * Higher priority provider that should be initialized before attempting\n   * to initialize this provider. This provider will only be initialized\n   * if all higher priority providers are not available.\n   *\n   * @type {MgtBaseProvider}\n   * @memberof MgtBaseProvider\n   */",
+          "type": "MgtBaseProvider"
+        },
+        {
+          "name": "client-id",
+          "description": "String alphanumerical value relation to a specific user",
+          "jsDoc": "/**\n   * String alphanumerical value relation to a specific user\n   *\n   * @memberof MgtMsalProvider\n   */",
+          "type": "string"
+        },
+        {
+          "name": "login-type",
+          "description": "The login type that should be used: popup or redirect",
+          "jsDoc": "/**\n   * The login type that should be used: popup or redirect\n   *\n   * @memberof MgtMsalProvider\n   */",
+          "type": "any"
+        },
+        {
+          "name": "authority",
+          "description": "The authority to use.",
+          "jsDoc": "/**\n   * The authority to use.\n   *\n   * @memberof MgtMsalProvider\n   */",
+          "type": "any"
+        },
+        {
+          "name": "scopes",
+          "description": "Comma separated list of scopes",
+          "jsDoc": "/**\n   * Comma separated list of scopes\n   *\n   * @memberof MgtMsalProvider\n   */",
+          "type": "any"
+        }
+      ],
+      "properties": [
+        {
+          "name": "provider",
+          "type": "IProvider"
+        },
+        {
+          "name": "dependsOn",
+          "description": "Higher priority provider that should be initialized before attempting\nto initialize this provider. This provider will only be initialized\nif all higher priority providers are not available.",
+          "jsDoc": "/**\n   * Higher priority provider that should be initialized before attempting\n   * to initialize this provider. This provider will only be initialized\n   * if all higher priority providers are not available.\n   *\n   * @type {MgtBaseProvider}\n   * @memberof MgtBaseProvider\n   */",
+          "type": "MgtBaseProvider"
+        },
+        {
+          "name": "clientId",
+          "description": "String alphanumerical value relation to a specific user",
+          "jsDoc": "/**\n   * String alphanumerical value relation to a specific user\n   *\n   * @memberof MgtMsalProvider\n   */",
+          "type": "string"
+        },
+        {
+          "name": "loginType",
+          "description": "The login type that should be used: popup or redirect",
+          "jsDoc": "/**\n   * The login type that should be used: popup or redirect\n   *\n   * @memberof MgtMsalProvider\n   */",
+          "type": "any"
+        },
+        {
+          "name": "authority",
+          "description": "The authority to use.",
+          "jsDoc": "/**\n   * The authority to use.\n   *\n   * @memberof MgtMsalProvider\n   */",
+          "type": "any"
+        },
+        {
+          "name": "scopes",
+          "description": "Comma separated list of scopes",
+          "jsDoc": "/**\n   * Comma separated list of scopes\n   *\n   * @memberof MgtMsalProvider\n   */",
+          "type": "any"
+        }
+      ]
+    },
+    {
+      "name": "mgt-teams-provider",
+      "description": "Authentication Library Provider for Microsoft Teams accounts",
+      "jsDoc": "/**\n * Authentication Library Provider for Microsoft Teams accounts\n *\n * @export\n * @class MgtTeamsProvider\n * @extends {MgtBaseProvider}\n */",
+      "attributes": [
+        {
+          "name": "depends-on",
+          "description": "Higher priority provider that should be initialized before attempting\nto initialize this provider. This provider will only be initialized\nif all higher priority providers are not available.",
+          "jsDoc": "/**\n   * Higher priority provider that should be initialized before attempting\n   * to initialize this provider. This provider will only be initialized\n   * if all higher priority providers are not available.\n   *\n   * @type {MgtBaseProvider}\n   * @memberof MgtBaseProvider\n   */",
+          "type": "MgtBaseProvider"
+        },
+        {
+          "name": "client-id",
+          "description": "String alphanumerical value relation to a specific user",
+          "jsDoc": "/**\n   * String alphanumerical value relation to a specific user\n   *\n   * @memberof MgtTeamsProvider\n   */",
+          "type": "string"
+        },
+        {
+          "name": "auth-popup-url",
+          "description": "The relative or absolute path of the html page that will handle the authentication",
+          "jsDoc": "/**\n   * The relative or absolute path of the html page that will handle the authentication\n   *\n   * @memberof MgtTeamsProvider\n   */",
+          "type": "string"
+        },
+        {
+          "name": "scopes",
+          "description": "Comma separated list of scopes.",
+          "jsDoc": "/**\n   * Comma separated list of scopes.\n   *\n   * @memberof MgtTeamsProvider\n   */",
+          "type": "any"
+        }
+      ],
+      "properties": [
+        {
+          "name": "provider",
+          "type": "IProvider"
+        },
+        {
+          "name": "dependsOn",
+          "description": "Higher priority provider that should be initialized before attempting\nto initialize this provider. This provider will only be initialized\nif all higher priority providers are not available.",
+          "jsDoc": "/**\n   * Higher priority provider that should be initialized before attempting\n   * to initialize this provider. This provider will only be initialized\n   * if all higher priority providers are not available.\n   *\n   * @type {MgtBaseProvider}\n   * @memberof MgtBaseProvider\n   */",
+          "type": "MgtBaseProvider"
+        },
+        {
+          "name": "clientId",
+          "description": "String alphanumerical value relation to a specific user",
+          "jsDoc": "/**\n   * String alphanumerical value relation to a specific user\n   *\n   * @memberof MgtTeamsProvider\n   */",
+          "type": "string"
+        },
+        {
+          "name": "authPopupUrl",
+          "description": "The relative or absolute path of the html page that will handle the authentication",
+          "jsDoc": "/**\n   * The relative or absolute path of the html page that will handle the authentication\n   *\n   * @memberof MgtTeamsProvider\n   */",
+          "type": "string"
+        },
+        {
+          "name": "scopes",
+          "description": "Comma separated list of scopes.",
+          "jsDoc": "/**\n   * Comma separated list of scopes.\n   *\n   * @memberof MgtTeamsProvider\n   */",
+          "type": "any"
+        }
+      ]
+    },
+    {
+      "name": "mgt-wam-provider",
+      "description": "Authentication Library Provider for Web Account Manager (UWP apps)",
+      "jsDoc": "/**\n * Authentication Library Provider for Web Account Manager (UWP apps)\n *\n * @export\n * @class MgtWamProvider\n * @extends {LitElement}\n */",
+      "attributes": [
+        {
+          "name": "client-id",
+          "description": "String alphanumerical value relation to a specific user",
+          "jsDoc": "/**\n   * String alphanumerical value relation to a specific user\n   *\n   * @type {string}\n   * @memberof MgtWamProvider\n   */",
+          "type": "string"
+        },
+        {
+          "name": "authority",
+          "description": "Url used for login",
+          "jsDoc": "/**\n   * Url used for login\n   *\n   * @type {string}\n   * @memberof MgtWamProvider\n   */",
+          "type": "string | undefined"
+        }
+      ],
+      "properties": [
+        {
+          "name": "clientId",
+          "description": "String alphanumerical value relation to a specific user",
+          "jsDoc": "/**\n   * String alphanumerical value relation to a specific user\n   *\n   * @type {string}\n   * @memberof MgtWamProvider\n   */",
+          "type": "string"
+        },
+        {
+          "name": "authority",
+          "description": "Url used for login",
+          "jsDoc": "/**\n   * Url used for login\n   *\n   * @type {string}\n   * @memberof MgtWamProvider\n   */",
+          "type": "string | undefined"
+        }
+      ]
+    },
+    {
+      "name": "mgt-proxy-provider",
+      "description": "Authentication component for ProxyProvider",
+      "jsDoc": "/**\n * Authentication component for ProxyProvider\n *\n * @export\n * @class MgtProxyProvider\n * @extends {LitElement}\n */",
+      "attributes": [
+        {
+          "name": "depends-on",
+          "description": "Higher priority provider that should be initialized before attempting\nto initialize this provider. This provider will only be initialized\nif all higher priority providers are not available.",
+          "jsDoc": "/**\n   * Higher priority provider that should be initialized before attempting\n   * to initialize this provider. This provider will only be initialized\n   * if all higher priority providers are not available.\n   *\n   * @type {MgtBaseProvider}\n   * @memberof MgtBaseProvider\n   */",
+          "type": "MgtBaseProvider"
+        },
+        {
+          "name": "graph-proxy-url",
+          "description": "The base url to the proxy api",
+          "jsDoc": "/**\n   * The base url to the proxy api\n   *\n   * @type {string}\n   * @memberof MgtProxyProvider\n   */",
+          "type": "string"
+        }
+      ],
+      "properties": [
+        {
+          "name": "provider",
+          "type": "IProvider"
+        },
+        {
+          "name": "dependsOn",
+          "description": "Higher priority provider that should be initialized before attempting\nto initialize this provider. This provider will only be initialized\nif all higher priority providers are not available.",
+          "jsDoc": "/**\n   * Higher priority provider that should be initialized before attempting\n   * to initialize this provider. This provider will only be initialized\n   * if all higher priority providers are not available.\n   *\n   * @type {MgtBaseProvider}\n   * @memberof MgtBaseProvider\n   */",
+          "type": "MgtBaseProvider"
+        },
+        {
+          "name": "graphProxyUrl",
+          "description": "The base url to the proxy api",
+          "jsDoc": "/**\n   * The base url to the proxy api\n   *\n   * @type {string}\n   * @memberof MgtProxyProvider\n   */",
+          "type": "string"
+        }
+      ]
+    },
+    {
+      "name": "mgt-mock-provider",
+      "description": "Sets global provider to a mock Provider",
+      "jsDoc": "/**\n * Sets global provider to a mock Provider\n *\n * @export\n * @class MgtMockProvider\n * @extends {LitElement}\n */"
+    }
+  ]
+}
