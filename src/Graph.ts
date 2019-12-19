@@ -17,6 +17,7 @@ import {
 import * as MicrosoftGraph from '@microsoft/microsoft-graph-types';
 import * as MicrosoftGraphBeta from '@microsoft/microsoft-graph-types-beta';
 import { MgtBaseComponent } from './components/baseComponent';
+import { Providers } from './Providers';
 import { IProvider } from './providers/IProvider';
 import { Batch } from './utils/Batch';
 import { CustomHeaderMiddleware } from './utils/CustomHeaderMiddleware';
@@ -38,8 +39,12 @@ export class Graph {
    */
   public client: Client;
 
+  private _provider: IProvider;
+
   constructor(provider: IProvider, component?: MgtBaseComponent) {
     if (provider) {
+      this._provider = provider;
+
       const authenticationHandler = new AuthenticationHandler(provider);
       const retryHandler = new RetryHandler(new RetryHandlerOptions());
       const telemetryHandler = new TelemetryHandler();
@@ -68,6 +73,18 @@ export class Graph {
         middleware: authenticationHandler
       });
     }
+  }
+
+  /**
+   * Returns a new instance of the Graph using the same
+   * provider and the provided component.
+   *
+   * @param {MgtBaseComponent} component
+   * @returns
+   * @memberof Graph
+   */
+  public forComponent(component: MgtBaseComponent): Graph {
+    return new Graph(this._provider, component);
   }
 
   /**
