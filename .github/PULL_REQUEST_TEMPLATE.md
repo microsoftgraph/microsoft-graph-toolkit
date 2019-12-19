@@ -17,10 +17,10 @@ Closes # <!-- REQUIRED: Add the issue number (ex: #12) so the issue is automatic
 ### Description of the changes
 
 ### PR checklist
-- [ ] Added tests and all passed
+- [ ] Project builds (`npm run build`) and changes have been tested in supported browsers (including IE11)
 - [ ] All public classes and methods have been documented
 - [ ] Added appropriate [documentation](https://github.com/microsoftgraph/microsoft-graph-docs/tree/master/concepts/toolkit)
-- [ ] License header has been added to all new source files
+- [ ] License header has been added to all new source files (`npm run setLicense`)
 - [ ] Contains **NO** breaking changes
 
 ### Other information

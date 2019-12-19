@@ -6,6 +6,30 @@
  */
 
 import { LitElement, PropertyValues } from 'lit-element';
+
+/**
+ * Defines media query based on component width
+ *
+ * @export
+ * @enum {string}
+ */
+export enum ComponentMediaQuery {
+  /**
+   * devices with width < 768
+   */
+  mobile = '',
+
+  /**
+   * devies with width < 1200
+   */
+  tablet = 'tablet',
+
+  /**
+   * devices with width > 1200
+   */
+  desktop = 'desktop'
+}
+
 /**
  * BaseComponent extends LitElement including ShadowRoot toggle and fireCustomEvent features
  *
@@ -33,6 +57,23 @@ export abstract class MgtBaseComponent extends LitElement {
    */
   public static set useShadowRoot(value: boolean) {
     this._useShadowRoot = value;
+  }
+
+  /**
+   * Gets the ComponentMediaQuery of the component
+   *
+   * @readonly
+   * @type {ComponentMediaQuery}
+   * @memberof MgtBaseComponent
+   */
+  public get mediaQuery(): ComponentMediaQuery {
+    if (this.offsetWidth < 768) {
+      return ComponentMediaQuery.mobile;
+    } else if (this.offsetWidth < 1200) {
+      return ComponentMediaQuery.tablet;
+    } else {
+      return ComponentMediaQuery.desktop;
+    }
   }
 
   private static _useShadowRoot: boolean = true;
@@ -71,6 +112,7 @@ export abstract class MgtBaseComponent extends LitElement {
     });
     return this.dispatchEvent(event);
   }
+
   /**
    * method to create ShadowRoot if disabled flag isn't present
    *
