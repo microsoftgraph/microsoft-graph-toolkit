@@ -3,6 +3,7 @@ import { Providers } from '../dist/es6/Providers';
 import { ProviderState } from '../dist/es6/providers/IProvider';
 import { MsalProvider } from '../dist/es6/providers/MsalProvider';
 import { MockProvider } from '../dist/es6/mock/MockProvider';
+import { CLIENTID, SETPROVIDER_EVENT, GETPROVIDER_EVENT } from './env';
 
 export const withSignIn = makeDecorator({
   name: `withSignIn`,
@@ -13,23 +14,20 @@ export const withSignIn = makeDecorator({
 
     const channel = addons.getChannel();
 
-    channel.on('mgt/setProvider', params => {
-      console.log('setProvider', params);
+    channel.on(SETPROVIDER_EVENT, params => {
       const currentProvider = Providers.globalProvider;
       if (params.state === ProviderState.SignedIn && (!currentProvider || currentProvider === mockProvider)) {
         Providers.globalProvider = new MsalProvider({
-          clientId: 'a974dfa0-9f57-49b9-95db-90f04ce2111a'
+          clientId: CLIENTID
         });
-        console.log('setting msal');
       } else if (params.state !== ProviderState.SignedIn && currentProvider !== mockProvider) {
         Providers.globalProvider = mockProvider;
-        console.log('setting mock');
       }
     });
 
     // Our simple API above simply sets the notes parameter to a string,
     // which we send to the channel
-    channel.emit('mgt/getProvider', { type: 'getProvider' });
+    channel.emit(GETPROVIDER_EVENT, { type: 'getProvider' });
     // we can also add subscriptions here using channel.on('eventName', callback);
 
     return getStory(context);

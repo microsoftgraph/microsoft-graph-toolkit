@@ -11,11 +11,12 @@ import { STORIES_CONFIGURED, STORY_MISSING } from '@storybook/core-events';
 import { AddonPanel } from '@storybook/components';
 import { useParameter, useChannel } from '@storybook/api';
 import { Providers, MsalProvider, LoginType, ProviderState } from '../dist/commonjs';
+import { CLIENTID, GETPROVIDER_EVENT, SETPROVIDER_EVENT } from './env';
 
 const PARAM_KEY = 'signInAddon';
 
 const msalProvider = new MsalProvider({
-  clientId: 'a974dfa0-9f57-49b9-95db-90f04ce2111a',
+  clientId: CLIENTID,
   loginType: LoginType.Popup
 });
 
@@ -30,13 +31,13 @@ const SignInPanel = () => {
     STORY_RENDERED: id => {
       console.log('storyRendered', id);
     },
-    'mgt/getProvider': params => {
+    [GETPROVIDER_EVENT]: params => {
       emitProvider(state);
     }
   });
 
   const emitProvider = loginState => {
-    emit('mgt/setProvider', { state: loginState });
+    emit(SETPROVIDER_EVENT, { state: loginState });
   };
 
   Providers.onProviderUpdated(() => {
