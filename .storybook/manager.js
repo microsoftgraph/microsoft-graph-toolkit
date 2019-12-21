@@ -5,10 +5,59 @@
  * -------------------------------------------------------------------------------------------
  */
 
-import addonAPI from '@storybook/addons';
+import React, { useState } from 'react';
+import { addons, types } from '@storybook/addons';
 import { STORIES_CONFIGURED, STORY_MISSING } from '@storybook/core-events';
+import { AddonPanel } from '@storybook/components';
+import { useParameter, useChannel } from '@storybook/api';
+import { Providers, MsalProvider, LoginType, ProviderState } from '../dist/commonjs';
 
-addonAPI.register('microsoft/graph-toolkit', storybookAPI => {
+const PARAM_KEY = 'signInAddon';
+
+const msalProvider = new MsalProvider({
+  clientId: 'a974dfa0-9f57-49b9-95db-90f04ce2111a',
+  loginType: LoginType.Popup
+});
+
+Providers.globalProvider = msalProvider;
+
+const SignInPanel = () => {
+  const value = useParameter(PARAM_KEY, null);
+
+  const [state, setState] = useState(Providers.globalProvider.state);
+
+  const emit = useChannel({
+    STORY_RENDERED: id => {
+      console.log('storyRendered', id);
+    },
+    'mgt/getProvider': params => {
+      emitProvider(state);
+    }
+  });
+
+  const emitProvider = loginState => {
+    emit('mgt/setProvider', { state: loginState });
+  };
+
+  Providers.onProviderUpdated(() => {
+    setState(Providers.globalProvider.state);
+    emitProvider(Providers.globalProvider.state);
+  });
+
+  emitProvider(state);
+
+  return (
+    <div>
+      {state === ProviderState.SignedIn
+        ? 'You are Signed In and all components are using real data'
+        : 'All components are using mock data - sign in to use real data'}
+      <mgt-login />
+      {/* {JSON.stringify(value)} */}
+    </div>
+  );
+};
+
+addons.register('microsoft/graph-toolkit', storybookAPI => {
   storybookAPI.on(STORIES_CONFIGURED, (kind, story) => {
     if (storybookAPI.getUrlState().path === '/story/*') {
       storybookAPI.selectStory('mgt-login', 'login');
@@ -16,5 +65,18 @@ addonAPI.register('microsoft/graph-toolkit', storybookAPI => {
   });
   storybookAPI.on(STORY_MISSING, (kind, story) => {
     storybookAPI.selectStory('mgt-login', 'login');
+  });
+
+  const render = ({ active, key }) => (
+    <AddonPanel active={active} key={key}>
+      <SignInPanel />
+    </AddonPanel>
+  );
+
+  addons.add('mgt/sign-in', {
+    type: types.PANEL,
+    title: 'Sign In',
+    render,
+    paramKey: PARAM_KEY
   });
 });

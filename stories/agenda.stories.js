@@ -9,6 +9,7 @@ import { html } from 'lit-element';
 import { withA11y } from '@storybook/addon-a11y';
 import { withKnobs } from '@storybook/addon-knobs';
 import { withWebComponentsKnobs } from 'storybook-addon-web-components-knobs';
+import { withSignIn } from '../.storybook/signInAddon';
 import '../dist/es6/components/mgt-agenda/mgt-agenda';
 import '../dist/es6/mock/mgt-mock-provider';
 import '../dist/es6/mock/MockProvider';
@@ -16,27 +17,23 @@ import '../dist/es6/mock/MockProvider';
 export default {
   title: 'mgt-agenda',
   component: 'mgt-agenda',
-  decorators: [withA11y, withKnobs, withWebComponentsKnobs],
+  decorators: [withA11y, withKnobs, withWebComponentsKnobs, withSignIn],
   parameters: { options: { selectedPanel: 'storybookjs/knobs/panel' } }
 };
 
 export const simple = () => html`
-  <mgt-mock-provider></mgt-mock-provider>
   <mgt-agenda></mgt-agenda>
 `;
 
 export const getByEventQuery = () => html`
-  <mgt-mock-provider></mgt-mock-provider>
   <mgt-agenda event-query="/me/events?orderby=start/dateTime"></mgt-agenda>
 `;
 
 export const getByDate = () => html`
-  <mgt-mock-provider></mgt-mock-provider>
   <mgt-agenda group-by-day date="May 7, 2019" days="3"></mgt-agenda>
 `;
 
 export const getByEventTemplate = () => html`
-  <mgt-mock-provider></mgt-mock-provider>
   <mgt-agenda>
     <template data-type="event">
       <button class="eventButton">
