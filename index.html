@@ -11,14 +11,14 @@
 
     <script src="https://unpkg.com/@microsoft/teams-js/dist/MicrosoftTeams.min.js" crossorigin="anonymous"></script>
 
-    <!-- <script src="./dist/bundle/mgt-loader.js"></script> -->
+    <script src="./dist/bundle/mgt.es5.js"></script>
 
-    <script type="module" src="dist/es6/index.js"></script>
-    <script type="module" src="./dist/es6/mock/mgt-mock-provider.js"></script>
+    <!-- <script type="module" src="dist/es6/index.js"></script> -->
+    <!-- <script type="module" src="./dist/es6/mock/mgt-mock-provider.js"></script> -->
   </head>
 
   <body>
-    <mgt-teams-provider
+    <!-- <mgt-teams-provider
       client-id="a974dfa0-9f57-49b9-95db-90f04ce2111a"
       auth-popup-url="auth.html"
     ></mgt-teams-provider>
@@ -27,14 +27,14 @@
       client-id="a974dfa0-9f57-49b9-95db-90f04ce2111a"
       scopes="user.read,people.read,user.readbasic.all,contacts.read,calendars.read"
       depends-on="mgt-teams-provider"
-    ></mgt-msal-provider>
+    ></mgt-msal-provider> -->
 
-    <!-- <mgt-mock-provider></mgt-mock-provider> -->
+    <mgt-mock-provider></mgt-mock-provider>
 
     <mgt-login></mgt-login>
     <mgt-person person-query="me" show-name show-email person-card="hover"></mgt-person>
     <mgt-people-picker></mgt-people-picker>
-    <mgt-tasks data-source="todo"></mgt-tasks>
+    <mgt-tasks></mgt-tasks>
     <mgt-agenda group-by-day></mgt-agenda>
     <mgt-people></mgt-people>
   </body>

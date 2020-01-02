@@ -15,19 +15,21 @@ const commonPlugins = [
   terser({ keep_classnames: true, keep_fnames: true })
 ];
 
-const babelPlugins = [
-  ['@babel/plugin-proposal-decorators', { decoratorsBeforeExport: true, legacy: false }],
-  '@babel/proposal-class-properties',
-  '@babel/proposal-object-rest-spread'
-];
-
-const babelInclude = [
-  'src/**/*',
-  'node_modules/lit-element/**/*',
-  'node_modules/lit-html/**/*',
-  'node_modules/@microsoft/microsoft-graph-client/lib/es/**/*',
-  'node_modules/msal/lib-es6/**/*'
-];
+const babelConfig = {
+  plugins: [
+    ['@babel/plugin-proposal-decorators', { decoratorsBeforeExport: true, legacy: false }],
+    '@babel/proposal-class-properties',
+    '@babel/proposal-object-rest-spread'
+  ],
+  include: [
+    'src/**/*',
+    'node_modules/lit-element/**/*',
+    'node_modules/lit-html/**/*',
+    'node_modules/@microsoft/microsoft-graph-client/lib/es/**/*',
+    'node_modules/msal/lib-es6/**/*'
+  ],
+  exclude: [/core-js/]
+};
 
 const es6Bundle = {
   input: ['src/bundle/index.es6.ts'],
@@ -50,8 +52,7 @@ const es6Bundle = {
         ],
         '@babel/typescript'
       ],
-      plugins: babelPlugins,
-      include: babelInclude
+      ...babelConfig
     }),
     ...commonPlugins
   ]
@@ -73,13 +74,14 @@ const es5Bundle = {
         [
           '@babel/preset-env',
           {
-            targets: 'last 2 versions'
+            targets: 'last 2 versions',
+            useBuiltIns: 'entry', // or "usage"
+            corejs: 3
           }
         ],
         '@babel/typescript'
       ],
-      plugins: babelPlugins,
-      include: babelInclude
+      ...babelConfig
     }),
     ...commonPlugins
   ]
@@ -105,8 +107,7 @@ const cjsBundle = {
         ],
         '@babel/typescript'
       ],
-      plugins: babelPlugins,
-      include: babelInclude
+      ...babelConfig
     }),
     ...commonPlugins
   ]
