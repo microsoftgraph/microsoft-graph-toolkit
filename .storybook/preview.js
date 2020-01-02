@@ -9,6 +9,7 @@
 
 import { configure, addParameters, setCustomElements } from '@storybook/web-components';
 import customElements from '../custom-elements.json';
+import '../node_modules/@webcomponents/webcomponentsjs/webcomponents-bundle.js';
 import theme from './theme';
 import '../dist/es6/components/mgt-login/mgt-login.js';
 
