@@ -9,12 +9,19 @@
 
 import { configure, addParameters, setCustomElements } from '@storybook/web-components';
 import customElements from '../custom-elements.json';
+import theme from './theme';
+import '../dist/es6/components/mgt-login/mgt-login.js';
 
 setCustomElements(customElements);
 
 addParameters({
   docs: {
     iframeHeight: '200px'
+  },
+  options: {
+    // disable keyboard shortcuts because they interfere with the stories
+    enableShortcuts: false,
+    theme
   }
 });
 
