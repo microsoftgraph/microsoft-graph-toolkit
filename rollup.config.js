@@ -17,8 +17,8 @@ const commonPlugins = [
 
 const babelConfig = {
   plugins: [
-    ['@babel/plugin-proposal-decorators', { decoratorsBeforeExport: true, legacy: false }],
-    '@babel/proposal-class-properties',
+    ['@babel/plugin-proposal-decorators', { legacy: true }],
+    ['@babel/proposal-class-properties', { loose: true }],
     '@babel/proposal-object-rest-spread'
   ],
   include: [
