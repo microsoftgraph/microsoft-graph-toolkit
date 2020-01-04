@@ -7,6 +7,23 @@ import json from 'rollup-plugin-json';
 
 const extensions = ['.js', '.ts'];
 
+const getBabelConfig = isEs5 => {
+  return {
+    plugins: [
+      ['@babel/plugin-proposal-decorators', isEs5 ? { legacy: true } : { decoratorsBeforeExport: true, legacy: false }],
+      ['@babel/proposal-class-properties', { loose: isEs5 }],
+      '@babel/proposal-object-rest-spread'
+    ],
+    include: [
+      'src/**/*',
+      'node_modules/lit-element/**/*',
+      'node_modules/lit-html/**/*',
+      'node_modules/@microsoft/microsoft-graph-client/lib/es/**/*',
+      'node_modules/msal/lib-es6/**/*'
+    ]
+  };
+};
+
 const commonPlugins = [
   json(),
   commonJS(),
@@ -14,22 +31,6 @@ const commonPlugins = [
   postcss(),
   terser({ keep_classnames: true, keep_fnames: true })
 ];
-
-const babelConfig = {
-  plugins: [
-    ['@babel/plugin-proposal-decorators', { legacy: true }],
-    ['@babel/proposal-class-properties', { loose: true }],
-    '@babel/proposal-object-rest-spread'
-  ],
-  include: [
-    'src/**/*',
-    'node_modules/lit-element/**/*',
-    'node_modules/lit-html/**/*',
-    'node_modules/@microsoft/microsoft-graph-client/lib/es/**/*',
-    'node_modules/msal/lib-es6/**/*'
-  ],
-  exclude: [/core-js/]
-};
 
 const es6Bundle = {
   input: ['src/bundle/index.es6.ts'],
@@ -52,7 +53,7 @@ const es6Bundle = {
         ],
         '@babel/typescript'
       ],
-      ...babelConfig
+      ...getBabelConfig(false)
     }),
     ...commonPlugins
   ]
@@ -75,13 +76,13 @@ const es5Bundle = {
           '@babel/preset-env',
           {
             targets: 'last 2 versions',
-            useBuiltIns: 'entry', // or "usage"
+            useBuiltIns: 'entry',
             corejs: 3
           }
         ],
         '@babel/typescript'
       ],
-      ...babelConfig
+      ...getBabelConfig(true)
     }),
     ...commonPlugins
   ]
@@ -107,7 +108,7 @@ const cjsBundle = {
         ],
         '@babel/typescript'
       ],
-      ...babelConfig
+      ...getBabelConfig(true)
     }),
     ...commonPlugins
   ]
