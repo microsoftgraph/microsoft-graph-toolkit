@@ -18,10 +18,8 @@ import {
 import * as MicrosoftGraph from '@microsoft/microsoft-graph-types';
 import * as MicrosoftGraphBeta from '@microsoft/microsoft-graph-types-beta';
 import { MgtBaseComponent } from './components/baseComponent';
-import { Providers } from './Providers';
 import { IProvider } from './providers/IProvider';
 import { Batch } from './utils/Batch';
-import { CustomHeaderMiddleware } from './utils/CustomHeaderMiddleware';
 import { prepScopes } from './utils/GraphHelpers';
 import { SdkVersionMiddleware } from './utils/SdkVersionMiddleware';
 
@@ -41,7 +39,6 @@ export class Graph {
   public client: Client;
 
   private _provider: IProvider;
-  private _component?: MgtBaseComponent;
 
   constructor(provider: IProvider, component?: MgtBaseComponent) {
     if (provider) {
@@ -51,15 +48,9 @@ export class Graph {
         new AuthenticationHandler(provider),
         new RetryHandler(new RetryHandlerOptions()),
         new TelemetryHandler(),
-        new SdkVersionMiddleware()
+        new SdkVersionMiddleware(component),
+        new HTTPMessageHandler()
       ];
-
-      if (component) {
-        this._component = component;
-        middleware.push(new CustomHeaderMiddleware(this.addComponentHeader.bind(this)));
-      }
-
-      middleware.push(new HTTPMessageHandler());
 
       this.client = Client.initWithMiddleware({
         middleware: this.chainMiddleware(...middleware)
@@ -643,12 +634,6 @@ export class Graph {
       current = next;
     }
     return rootMiddleware;
-  }
-
-  private addComponentHeader(): Promise<object> {
-    return new Promise((resolve, reject) => {
-      resolve(this._component ? { component: this._component.tagName } : null);
-    });
   }
 
   private blobToBase64(blob: Blob): Promise<string> {

@@ -78,6 +78,14 @@ export abstract class MgtBaseComponent extends LitElement {
 
   private static _useShadowRoot: boolean = true;
 
+  /**
+   * Get the version value for this component.
+   *
+   * @returns {string}
+   * @memberof MgtBaseComponent
+   */
+  public version: string = '1.0.0';
+
   constructor() {
     super();
     if (this.isShadowRootDisabled()) {

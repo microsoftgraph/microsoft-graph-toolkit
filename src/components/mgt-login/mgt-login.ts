@@ -7,7 +7,6 @@
 
 import { User } from '@microsoft/microsoft-graph-types';
 import { customElement, html, property } from 'lit-element';
-import { Graph } from '../../Graph';
 import { Providers } from '../../Providers';
 import { ProviderState } from '../../providers/IProvider';
 import '../../styles/fabric-icon-font';
@@ -31,6 +30,14 @@ export class MgtLogin extends MgtBaseComponent {
   static get styles() {
     return styles;
   }
+
+  /**
+   * Get the version value for this component.
+   *
+   * @returns {string}
+   * @memberof MgtBaseComponent
+   */
+  public version: string = '1.1.0';
 
   /**
    * allows developer to use specific user details for login
