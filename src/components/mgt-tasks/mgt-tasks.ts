@@ -384,7 +384,8 @@ export class MgtTasks extends MgtTemplatedComponent {
     this._inTaskLoad = true;
     let meTask;
     if (!this._me) {
-      meTask = provider.graph.getMe();
+      const client = provider.graph.forComponent(this);
+      meTask = client.getMe();
     }
 
     if (this.groupId && this.dataSource === TasksSource.planner) {

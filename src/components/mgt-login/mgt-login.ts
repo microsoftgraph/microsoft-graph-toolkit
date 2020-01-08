@@ -32,14 +32,6 @@ export class MgtLogin extends MgtBaseComponent {
   }
 
   /**
-   * Get the version value for this component.
-   *
-   * @returns {string}
-   * @memberof MgtBaseComponent
-   */
-  public version: string = '1.1.0';
-
-  /**
    * allows developer to use specific user details for login
    * @type {MgtPersonDetails}
    */

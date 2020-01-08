@@ -32,12 +32,14 @@ export class SdkVersionMiddleware implements Middleware {
   // tslint:disable-next-line: completed-docs
   public async execute(context: Context): Promise<void> {
     try {
+      // Header parts must follow the format: 'name/version'
       const headerParts: string[] = [];
 
       // Component version
       if (this._component) {
-        const componentVersion: string = `${this._component.tagName}/${this._component.version}`;
-        headerParts.push(componentVersion.toLowerCase());
+        const componentTagName = this._component.tagName.toLowerCase();
+        const componentVersion: string = `${componentTagName}/${PACKAGE_VERSION}`;
+        headerParts.push(componentVersion);
       }
 
       // Package version
@@ -48,7 +50,9 @@ export class SdkVersionMiddleware implements Middleware {
       headerParts.push(getRequestHeader(context.request, context.options, 'SdkVersion'));
 
       // Join the header parts together and update the SdkVersion request header value
-      setRequestHeader(context.request, context.options, 'SdkVersion', headerParts.join(', '));
+      const sdkVersionHeaderValue = headerParts.join(', ');
+      setRequestHeader(context.request, context.options, 'SdkVersion', sdkVersionHeaderValue);
+
       return await this._nextMiddleware.execute(context);
     } catch (error) {
       throw error;

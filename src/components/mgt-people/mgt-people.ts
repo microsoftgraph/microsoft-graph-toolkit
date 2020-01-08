@@ -25,14 +25,6 @@ import { styles } from './mgt-people-css';
 @customElement('mgt-people')
 export class MgtPeople extends MgtTemplatedComponent {
   /**
-   * Get the version value for this component.
-   *
-   * @type {string}
-   * @memberof MgtPeople
-   */
-  public version: string = '1.1.0';
-
-  /**
    * Array of styles to apply to the element. The styles should be defined
    * using the `css` tag function.
    */
