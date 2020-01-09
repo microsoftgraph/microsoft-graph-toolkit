@@ -14,6 +14,7 @@ import { Providers, MsalProvider, LoginType, ProviderState } from '../dist/commo
 import { CLIENTID, GETPROVIDER_EVENT, SETPROVIDER_EVENT } from './env';
 
 const PARAM_KEY = 'signInAddon';
+const _allow_signin = false;
 
 const msalProvider = new MsalProvider({
   clientId: CLIENTID,
@@ -49,11 +50,11 @@ const SignInPanel = () => {
 
   return (
     <div>
-      {state === ProviderState.SignedIn
-        ? 'You are Signed In and all components are using real data'
-        : 'All components are using mock data - sign in to use real data'}
-      <mgt-login />
-      {/* {JSON.stringify(value)} */}
+      {_allow_signin ? (
+        <mgt-login />
+      ) : (
+        'All components are using mock data - sign in function will be available in a future release'
+      )}
     </div>
   );
 };

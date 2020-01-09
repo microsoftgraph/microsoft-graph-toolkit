@@ -5,6 +5,8 @@ import { MsalProvider } from '../dist/es6/providers/MsalProvider';
 import { MockProvider } from '../dist/es6/mock/MockProvider';
 import { CLIENTID, SETPROVIDER_EVENT, GETPROVIDER_EVENT } from './env';
 
+const _allow_signin = false;
+
 export const withSignIn = makeDecorator({
   name: `withSignIn`,
   parameterName: 'myParameter',
@@ -15,12 +17,16 @@ export const withSignIn = makeDecorator({
     const channel = addons.getChannel();
 
     channel.on(SETPROVIDER_EVENT, params => {
-      const currentProvider = Providers.globalProvider;
-      if (params.state === ProviderState.SignedIn && (!currentProvider || currentProvider === mockProvider)) {
-        Providers.globalProvider = new MsalProvider({
-          clientId: CLIENTID
-        });
-      } else if (params.state !== ProviderState.SignedIn && currentProvider !== mockProvider) {
+      if (_allow_signin) {
+        const currentProvider = Providers.globalProvider;
+        if (params.state === ProviderState.SignedIn && (!currentProvider || currentProvider === mockProvider)) {
+          Providers.globalProvider = new MsalProvider({
+            clientId: CLIENTID
+          });
+        } else if (params.state !== ProviderState.SignedIn && currentProvider !== mockProvider) {
+          Providers.globalProvider = mockProvider;
+        }
+      } else {
         Providers.globalProvider = mockProvider;
       }
     });
