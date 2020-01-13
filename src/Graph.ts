@@ -9,6 +9,7 @@ import {
   AuthenticationHandler,
   Client,
   HTTPMessageHandler,
+  Middleware,
   ResponseType,
   RetryHandler,
   RetryHandlerOptions,
@@ -16,6 +17,7 @@ import {
 } from '@microsoft/microsoft-graph-client';
 import * as MicrosoftGraph from '@microsoft/microsoft-graph-types';
 import * as MicrosoftGraphBeta from '@microsoft/microsoft-graph-types-beta';
+import { MgtBaseComponent } from './components/baseComponent';
 import { IProvider } from './providers/IProvider';
 import { Batch } from './utils/Batch';
 import { prepScopes } from './utils/GraphHelpers';
@@ -36,23 +38,36 @@ export class Graph {
    */
   public client: Client;
 
-  constructor(provider: IProvider) {
-    if (provider) {
-      const authenticationHandler = new AuthenticationHandler(provider);
-      const retryHandler = new RetryHandler(new RetryHandlerOptions());
-      const telemetryHandler = new TelemetryHandler();
-      const sdkVersionMiddleware = new SdkVersionMiddleware();
-      const httpMessageHandler = new HTTPMessageHandler();
+  private _provider: IProvider;
 
-      authenticationHandler.setNext(retryHandler);
-      retryHandler.setNext(telemetryHandler);
-      telemetryHandler.setNext(sdkVersionMiddleware);
-      sdkVersionMiddleware.setNext(httpMessageHandler);
+  constructor(provider: IProvider, component?: MgtBaseComponent) {
+    if (provider) {
+      this._provider = provider;
+
+      const middleware: Middleware[] = [
+        new AuthenticationHandler(provider),
+        new RetryHandler(new RetryHandlerOptions()),
+        new TelemetryHandler(),
+        new SdkVersionMiddleware(component),
+        new HTTPMessageHandler()
+      ];
 
       this.client = Client.initWithMiddleware({
-        middleware: authenticationHandler
+        middleware: this.chainMiddleware(...middleware)
       });
     }
+  }
+
+  /**
+   * Returns a new instance of the Graph using the same
+   * provider and the provided component.
+   *
+   * @param {MgtBaseComponent} component
+   * @returns
+   * @memberof Graph
+   */
+  public forComponent(component: MgtBaseComponent): Graph {
+    return new Graph(this._provider, component);
   }
 
   /**
@@ -606,6 +621,19 @@ export class Graph {
       .header('If-Match', eTag)
       .middlewareOptions(prepScopes('Tasks.ReadWrite'))
       .delete();
+  }
+
+  private chainMiddleware(...middleware: Middleware[]): Middleware {
+    const rootMiddleware = middleware[0];
+    let current = rootMiddleware;
+    for (let i = 1; i < middleware.length; ++i) {
+      const next = middleware[i];
+      if (current.setNext) {
+        current.setNext(next);
+      }
+      current = next;
+    }
+    return rootMiddleware;
   }
 
   private blobToBase64(blob: Blob): Promise<string> {

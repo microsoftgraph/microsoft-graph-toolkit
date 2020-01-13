@@ -219,7 +219,8 @@ export class MgtAgenda extends MgtTemplatedComponent {
             query = this.eventQuery;
           }
 
-          let request = await p.graph.client.api(query);
+          const graph = p.graph.forComponent(this);
+          let request = await graph.client.api(query);
 
           if (scope) {
             request = request.middlewareOptions(prepScopes(scope));

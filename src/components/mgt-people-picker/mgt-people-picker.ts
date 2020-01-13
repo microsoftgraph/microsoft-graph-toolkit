@@ -210,8 +210,8 @@ export class MgtPeoplePicker extends MgtTemplatedComponent {
   private async findGroup() {
     const provider = Providers.globalProvider;
     if (provider && provider.state === ProviderState.SignedIn) {
-      const client = Providers.globalProvider.graph;
-      this.groupPeople = await client.getPeopleFromGroup(this.groupId);
+      const graph = provider.graph.forComponent(this);
+      this.groupPeople = await graph.getPeopleFromGroup(this.groupId);
     }
   }
 
@@ -328,13 +328,13 @@ export class MgtPeoplePicker extends MgtTemplatedComponent {
           this.showLoading = this.isLoading;
         }, 400);
 
-        const client = Providers.globalProvider.graph;
+        const graph = provider.graph.forComponent(this);
 
         // filtering groups
         if (this.groupId) {
           people = this.groupPeople;
         } else {
-          people = await client.findPerson(name);
+          people = await graph.findPerson(name);
         }
 
         if (people) {

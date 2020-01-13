@@ -384,7 +384,8 @@ export class MgtTasks extends MgtTemplatedComponent {
     this._inTaskLoad = true;
     let meTask;
     if (!this._me) {
-      meTask = provider.graph.getMe();
+      const graph = provider.graph.forComponent(this);
+      meTask = graph.getMe();
     }
 
     if (this.groupId && this.dataSource === TasksSource.planner) {
@@ -1199,10 +1200,11 @@ export class MgtTasks extends MgtTemplatedComponent {
       return null;
     }
 
+    const graph = p.graph.forComponent(this);
     if (this.dataSource === TasksSource.planner) {
-      return new PlannerTaskSource(p.graph);
+      return new PlannerTaskSource(graph);
     } else if (this.dataSource === TasksSource.todo) {
-      return new TodoTaskSource(p.graph);
+      return new TodoTaskSource(graph);
     } else {
       return null;
     }

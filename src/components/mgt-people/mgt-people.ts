@@ -159,18 +159,18 @@ export class MgtPeople extends MgtTemplatedComponent {
       const provider = Providers.globalProvider;
 
       if (provider && provider.state === ProviderState.SignedIn) {
-        const client = Providers.globalProvider.graph;
+        const graph = provider.graph.forComponent(this);
 
         if (this.groupId) {
-          this.people = await client.getPeopleFromGroup(this.groupId);
+          this.people = await graph.getPeopleFromGroup(this.groupId);
         } else if (this.userIds) {
           this.people = await Promise.all(
             this.userIds.map(async userId => {
-              return await client.getUser(userId);
+              return await graph.getUser(userId);
             })
           );
         } else {
-          this.people = await client.getPeople();
+          this.people = await graph.getPeople();
         }
       }
     }

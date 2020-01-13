@@ -152,7 +152,8 @@ export class MgtGet extends MgtTemplatedComponent {
 
       let response = null;
       try {
-        let request = provider.graph.client.api(this.resource).version(this.version);
+        const graph = provider.graph.forComponent(this);
+        let request = graph.client.api(this.resource).version(this.version);
 
         if (this.scopes && this.scopes.length) {
           request = request.middlewareOptions(prepScopes(...this.scopes));
@@ -166,7 +167,7 @@ export class MgtGet extends MgtTemplatedComponent {
           while ((pageCount < this.maxPages || this.maxPages <= 0) && page && page['@odata.nextLink']) {
             pageCount++;
             const nextResource = page['@odata.nextLink'].split(this.version)[1];
-            page = await provider.graph.client
+            page = await graph.client
               .api(nextResource)
               .version(this.version)
               .get();

@@ -264,7 +264,8 @@ export class MgtLogin extends MgtBaseComponent {
     if (provider) {
       this._loading = true;
       if (provider.state === ProviderState.SignedIn) {
-        const batch = provider.graph.createBatch();
+        const graph = provider.graph.forComponent(this);
+        const batch = graph.createBatch();
         batch.get('me', 'me', ['user.read']);
         batch.get('photo', 'me/photo/$value', ['user.read']);
         const response = await batch.execute();
