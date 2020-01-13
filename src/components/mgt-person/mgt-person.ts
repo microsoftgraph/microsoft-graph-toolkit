@@ -257,8 +257,8 @@ export class MgtPerson extends MgtTemplatedComponent {
     }
 
     if (this.userId || (this.personQuery && this.personQuery === 'me')) {
-      const client = provider.graph.forComponent(this);
-      const batch = client.createBatch();
+      const graph = provider.graph.forComponent(this);
+      const batch = graph.createBatch();
 
       if (this.userId) {
         batch.get('user', `/users/${this.userId}`, ['user.readbasic.all']);
@@ -274,8 +274,8 @@ export class MgtPerson extends MgtTemplatedComponent {
       this.personImage = response.photo;
       (this.personDetails as any).personImage = response.photo;
     } else if (!this.personDetails && this.personQuery) {
-      const client = provider.graph.forComponent(this);
-      const people = await client.findPerson(this.personQuery);
+      const graph = provider.graph.forComponent(this);
+      const people = await graph.findPerson(this.personQuery);
       if (people && people.length > 0) {
         const person = people[0] as MicrosoftGraph.Person;
         this.personDetails = person;
@@ -287,26 +287,26 @@ export class MgtPerson extends MgtTemplatedComponent {
 
   private async loadImage() {
     const provider = Providers.globalProvider;
-    const client = provider.graph.forComponent(this);
+    const graph = provider.graph.forComponent(this);
 
     const person = this.personDetails;
     let image: string;
 
     if ((person as MicrosoftGraph.Person).userPrincipalName) {
       const userPrincipalName = (person as MicrosoftGraph.Person).userPrincipalName;
-      image = await client.getUserPhoto(userPrincipalName);
+      image = await graph.getUserPhoto(userPrincipalName);
     } else {
       const email = getEmailFromGraphEntity(person);
       if (email) {
         // try to find a user by e-mail
-        const users = await client.findUserByEmail(email);
+        const users = await graph.findUserByEmail(email);
 
         if (users && users.length) {
           if ((users[0] as any).personType && (users[0] as any).personType.subclass === 'OrganizationUser') {
-            image = await client.getUserPhoto((users[0] as MicrosoftGraph.Person).scoredEmailAddresses[0].address);
+            image = await graph.getUserPhoto((users[0] as MicrosoftGraph.Person).scoredEmailAddresses[0].address);
           } else {
             const contactId = users[0].id;
-            image = await client.getContactPhoto(contactId);
+            image = await graph.getContactPhoto(contactId);
           }
         }
       }
