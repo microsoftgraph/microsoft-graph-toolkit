@@ -7,6 +7,7 @@
 
 import { PlannerAssignments } from '@microsoft/microsoft-graph-types';
 import { OutlookTask, OutlookTaskFolder, OutlookTaskGroup } from '@microsoft/microsoft-graph-types-beta';
+import { IGraph } from '../../BaseGraph';
 import { Graph } from '../../Graph';
 /**
  * Itask
@@ -269,7 +270,7 @@ export interface ITaskSource {
  * @class TaskSourceBase
  */
 class TaskSourceBase {
-  constructor(public graph: Graph) {}
+  constructor(public graph: IGraph) {}
 }
 
 /**
