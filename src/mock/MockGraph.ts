@@ -12,7 +12,7 @@ import { MockProvider } from './MockProvider';
  * @extends {Graph}
  */
 // tslint:disable-next-line: max-classes-per-file
-export class MockGraph extends BaseGraph {
+export class MockGraph extends BaseGraph implements IGraph {
   private static readonly BASE_URL = 'https://proxy.apisandbox.msdn.microsoft.com/svc?url=';
   private static readonly ROOT_GRAPH_URL: string = 'https://graph.microsoft.com/';
 

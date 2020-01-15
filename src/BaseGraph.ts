@@ -16,7 +16,7 @@ export interface IGraph {
    * middleware authentication handler
    *
    * @type {Client}
-   * @memberof Graph
+   * @memberof IGraph
    */
   client: Client;
 
@@ -25,7 +25,7 @@ export interface IGraph {
    * context of the provided component.
    *
    * @param {MgtBaseComponent} component
-   * @returns {BaseGraph}
+   * @returns {IGraph}
    * @memberof IGraph
    */
   forComponent(component: MgtBaseComponent): IGraph;
@@ -34,7 +34,7 @@ export interface IGraph {
    * creates batch request
    *
    * @returns
-   * @memberof Graph
+   * @memberof IGraph
    */
   createBatch();
 
@@ -42,7 +42,7 @@ export interface IGraph {
    *  async promise, returns Graph User data relating to the user logged in
    *
    * @returns {Promise<MicrosoftGraph.User>}
-   * @memberof Graph
+   * @memberof IGraph
    */
   getMe(): Promise<MicrosoftGraph.User>;
 
@@ -51,7 +51,7 @@ export interface IGraph {
    *
    * @param {string} userPrincipleName
    * @returns {Promise<MicrosoftGraph.User>}
-   * @memberof Graph
+   * @memberof IGraph
    */
   getUser(userPrincipleName: string): Promise<MicrosoftGraph.User>;
 
@@ -60,7 +60,7 @@ export interface IGraph {
    *
    * @param {string} query
    * @returns {Promise<MicrosoftGraph.Person[]>}
-   * @memberof Graph
+   * @memberof IGraph
    */
   findPerson(query: string): Promise<MicrosoftGraph.Person[]>;
 
@@ -69,7 +69,7 @@ export interface IGraph {
    *
    * @param {string} email
    * @returns {Promise<MicrosoftGraph.Contact[]>}
-   * @memberof Graph
+   * @memberof IGraph
    */
   findContactByEmail(email: string): Promise<MicrosoftGraph.Contact[]>;
 
@@ -79,7 +79,7 @@ export interface IGraph {
    *
    * @param {string} email
    * @returns {(Promise<Array<MicrosoftGraph.Person | MicrosoftGraph.Contact>>)}
-   * @memberof Graph
+   * @memberof IGraph
    */
   findUserByEmail(email: string): Promise<Array<MicrosoftGraph.Person | MicrosoftGraph.Contact>>;
 
@@ -87,7 +87,7 @@ export interface IGraph {
    * async promise, returns Graph photo associated with the logged in user
    *
    * @returns {Promise<string>}
-   * @memberof Graph
+   * @memberof IGraph
    */
   myPhoto(): Promise<string>;
 
@@ -96,7 +96,7 @@ export interface IGraph {
    *
    * @param {string} userId
    * @returns {Promise<string>}
-   * @memberof Graph
+   * @memberof IGraph
    */
   getUserPhoto(userId: string): Promise<string>;
 
@@ -105,7 +105,7 @@ export interface IGraph {
    *
    * @param {string} contactId
    * @returns {Promise<string>}
-   * @memberof Graph
+   * @memberof IGraph
    */
   getContactPhoto(contactId: string): Promise<string>;
 
@@ -116,7 +116,7 @@ export interface IGraph {
    * @param {Date} endDateTime
    * @param {string} [groupId]
    * @returns {Promise<MicrosoftGraph.Event[]>}
-   * @memberof Graph
+   * @memberof IGraph
    */
   getEvents(startDateTime: Date, endDateTime: Date, groupId?: string): Promise<MicrosoftGraph.Event[]>;
 
@@ -124,7 +124,7 @@ export interface IGraph {
    * async promise to the Graph for People, by default, it will request the most frequent contacts for the signed in user.
    *
    * @returns {Promise<MicrosoftGraph.Person[]>}
-   * @memberof Graph
+   * @memberof IGraph
    */
   getPeople(): Promise<MicrosoftGraph.Person[]>;
 
@@ -133,7 +133,7 @@ export interface IGraph {
    *
    * @param {string} groupId
    * @returns {Promise<MicrosoftGraph.Person[]>}
-   * @memberof Graph
+   * @memberof IGraph
    */
   getPeopleFromGroup(groupId: string): Promise<MicrosoftGraph.Person[]>;
 
@@ -142,7 +142,7 @@ export interface IGraph {
    *
    * @param {string} groupId
    * @returns {Promise<MicrosoftGraph.PlannerPlan[]>}
-   * @memberof Graph
+   * @memberof IGraph
    */
   getPlansForGroup(groupId: string): Promise<MicrosoftGraph.PlannerPlan[]>;
 
@@ -150,7 +150,7 @@ export interface IGraph {
    *  async promise, returns all planner plans associated with the user logged in
    *
    * @returns {Promise<MicrosoftGraph.PlannerPlan[]>}
-   * @memberof Graph
+   * @memberof IGraph
    */
   planner_getAllMyPlans(): Promise<MicrosoftGraph.PlannerPlan[]>;
 
@@ -159,7 +159,7 @@ export interface IGraph {
    *
    * @param {string} planId
    * @returns {Promise<MicrosoftGraph.PlannerPlan>}
-   * @memberof Graph
+   * @memberof IGraph
    */
   planner_getSinglePlan(planId: string): Promise<MicrosoftGraph.PlannerPlan>;
 
@@ -168,7 +168,7 @@ export interface IGraph {
    *
    * @param {string} planId
    * @returns {Promise<MicrosoftGraph.PlannerBucket[]>}
-   * @memberof Graph
+   * @memberof IGraph
    */
   planner_getBucketsForPlan(planId: string): Promise<MicrosoftGraph.PlannerBucket[]>;
 
@@ -177,7 +177,7 @@ export interface IGraph {
    *
    * @param {string} bucketId
    * @returns {Promise<MicrosoftGraph.PlannerTask[]>}
-   * @memberof Graph
+   * @memberof IGraph
    */
   planner_getTasksForBucket(bucketId: string): Promise<MicrosoftGraph.PlannerTask[]>;
 
@@ -188,7 +188,7 @@ export interface IGraph {
    * @param {MicrosoftGraph.PlannerTask} details
    * @param {string} eTag
    * @returns {Promise<any>}
-   * @memberof Graph
+   * @memberof IGraph
    */
   planner_setTaskDetails(taskId: string, details: MicrosoftGraph.PlannerTask, eTag: string): Promise<any>;
 
@@ -198,7 +198,7 @@ export interface IGraph {
    * @param {string} taskId
    * @param {string} eTag
    * @returns {Promise<any>}
-   * @memberof Graph
+   * @memberof IGraph
    */
   planner_setTaskComplete(taskId: string, eTag: string): Promise<any>;
 
@@ -208,7 +208,7 @@ export interface IGraph {
    * @param {string} taskId
    * @param {string} eTag
    * @returns {Promise<any>}
-   * @memberof Graph
+   * @memberof IGraph
    */
   planner_setTaskIncomplete(taskId: string, eTag: string): Promise<any>;
 
@@ -219,7 +219,7 @@ export interface IGraph {
    * @param {*} people
    * @param {string} eTag
    * @returns {Promise<any>}
-   * @memberof Graph
+   * @memberof IGraph
    */
   planner_assignPeopleToTask(taskId: string, people: any, eTag: string): Promise<any>;
 
@@ -228,7 +228,7 @@ export interface IGraph {
    *
    * @param {MicrosoftGraph.PlannerTask} newTask
    * @returns {Promise<any>}
-   * @memberof Graph
+   * @memberof IGraph
    */
   planner_addTask(newTask: MicrosoftGraph.PlannerTask): Promise<any>;
 
@@ -238,7 +238,7 @@ export interface IGraph {
    * @param {string} taskId
    * @param {string} eTag
    * @returns {Promise<any>}
-   * @memberof Graph
+   * @memberof IGraph
    */
   planner_removeTask(taskId: string, eTag: string): Promise<any>;
 
@@ -248,7 +248,7 @@ export interface IGraph {
    * async promise, returns all Outlook taskGroups associated with the logged in user
    *
    * @returns {Promise<MicrosoftGraphBeta.OutlookTaskGroup[]>}
-   * @memberof Graph
+   * @memberof IGraph
    */
   todo_getAllMyGroups(): Promise<MicrosoftGraphBeta.OutlookTaskGroup[]>;
 
@@ -257,7 +257,7 @@ export interface IGraph {
    *
    * @param {string} groupId
    * @returns {Promise<MicrosoftGraphBeta.OutlookTaskGroup>}
-   * @memberof Graph
+   * @memberof IGraph
    */
   todo_getSingleGroup(groupId: string): Promise<MicrosoftGraphBeta.OutlookTaskGroup>;
 
@@ -266,7 +266,7 @@ export interface IGraph {
    *
    * @param {string} groupId
    * @returns {Promise<MicrosoftGraphBeta.OutlookTaskFolder[]>}
-   * @memberof Graph
+   * @memberof IGraph
    */
   todo_getFoldersForGroup(groupId: string): Promise<MicrosoftGraphBeta.OutlookTaskFolder[]>;
 
@@ -275,7 +275,7 @@ export interface IGraph {
    *
    * @param {string} folderId
    * @returns {Promise<MicrosoftGraphBeta.OutlookTask[]>}
-   * @memberof Graph
+   * @memberof IGraph
    */
   todo_getAllTasksForFolder(folderId: string): Promise<MicrosoftGraphBeta.OutlookTask[]>;
 
@@ -286,7 +286,7 @@ export interface IGraph {
    * @param {*} task
    * @param {string} eTag
    * @returns {Promise<MicrosoftGraphBeta.OutlookTask>}
-   * @memberof Graph
+   * @memberof IGraph
    */
   todo_setTaskDetails(taskId: string, task: any, eTag: string): Promise<MicrosoftGraphBeta.OutlookTask>;
 
@@ -296,7 +296,7 @@ export interface IGraph {
    * @param {string} taskId
    * @param {string} eTag
    * @returns {Promise<MicrosoftGraphBeta.OutlookTask>}
-   * @memberof Graph
+   * @memberof IGraph
    */
   todo_setTaskComplete(taskId: string, eTag: string): Promise<MicrosoftGraphBeta.OutlookTask>;
 
@@ -306,7 +306,7 @@ export interface IGraph {
    * @param {string} taskId
    * @param {string} eTag
    * @returns {Promise<MicrosoftGraphBeta.OutlookTask>}
-   * @memberof Graph
+   * @memberof IGraph
    */
   todo_setTaskIncomplete(taskId: string, eTag: string): Promise<MicrosoftGraphBeta.OutlookTask>;
 
@@ -315,7 +315,7 @@ export interface IGraph {
    *
    * @param {*} newTask
    * @returns {Promise<MicrosoftGraphBeta.OutlookTask>}
-   * @memberof Graph
+   * @memberof IGraph
    */
   todo_addTask(newTask: any): Promise<MicrosoftGraphBeta.OutlookTask>;
 
@@ -325,7 +325,7 @@ export interface IGraph {
    * @param {string} taskId
    * @param {string} eTag
    * @returns {Promise<any>}
-   * @memberof Graph
+   * @memberof IGraph
    */
   todo_removeTask(taskId: string, eTag: string): Promise<any>;
 }
@@ -342,7 +342,7 @@ export abstract class BaseGraph implements IGraph {
    * middleware authentication handler
    *
    * @type {Client}
-   * @memberof Graph
+   * @memberof BaseGraph
    */
   public client: Client;
 
@@ -365,7 +365,7 @@ export abstract class BaseGraph implements IGraph {
    *
    * @param {MgtBaseComponent} component
    * @returns
-   * @memberof Graph
+   * @memberof BaseGraph
    */
   public abstract forComponent(component: MgtBaseComponent): IGraph;
 
@@ -373,7 +373,7 @@ export abstract class BaseGraph implements IGraph {
    * creates batch request
    *
    * @returns
-   * @memberof Graph
+   * @memberof BaseGraph
    */
   public createBatch() {
     return new Batch(this.client);
@@ -383,7 +383,7 @@ export abstract class BaseGraph implements IGraph {
    *  async promise, returns Graph User data relating to the user logged in
    *
    * @returns {Promise<MicrosoftGraph.User>}
-   * @memberof Graph
+   * @memberof BaseGraph
    */
   public async getMe(): Promise<MicrosoftGraph.User> {
     return this.client
@@ -397,7 +397,7 @@ export abstract class BaseGraph implements IGraph {
    *
    * @param {string} userPrincipleName
    * @returns {Promise<MicrosoftGraph.User>}
-   * @memberof Graph
+   * @memberof BaseGraph
    */
   public async getUser(userPrincipleName: string): Promise<MicrosoftGraph.User> {
     const scopes = 'user.readbasic.all';
@@ -412,7 +412,7 @@ export abstract class BaseGraph implements IGraph {
    *
    * @param {string} query
    * @returns {Promise<MicrosoftGraph.Person[]>}
-   * @memberof Graph
+   * @memberof BaseGraph
    */
   public async findPerson(query: string): Promise<MicrosoftGraph.Person[]> {
     const scopes = 'people.read';
@@ -429,7 +429,7 @@ export abstract class BaseGraph implements IGraph {
    *
    * @param {string} email
    * @returns {Promise<MicrosoftGraph.Contact[]>}
-   * @memberof Graph
+   * @memberof BaseGraph
    */
   public async findContactByEmail(email: string): Promise<MicrosoftGraph.Contact[]> {
     const scopes = 'contacts.read';
@@ -447,7 +447,7 @@ export abstract class BaseGraph implements IGraph {
    *
    * @param {string} email
    * @returns {(Promise<Array<MicrosoftGraph.Person | MicrosoftGraph.Contact>>)}
-   * @memberof Graph
+   * @memberof BaseGraph
    */
   public async findUserByEmail(email: string): Promise<Array<MicrosoftGraph.Person | MicrosoftGraph.Contact>> {
     return Promise.all([this.findPerson(email), this.findContactByEmail(email)]).then(([people, contacts]) => {
@@ -459,7 +459,7 @@ export abstract class BaseGraph implements IGraph {
    * async promise, returns Graph photo associated with the logged in user
    *
    * @returns {Promise<string>}
-   * @memberof Graph
+   * @memberof BaseGraph
    */
   public async myPhoto(): Promise<string> {
     return this.getPhotoForResource('me', ['user.read']);
@@ -470,7 +470,7 @@ export abstract class BaseGraph implements IGraph {
    *
    * @param {string} userId
    * @returns {Promise<string>}
-   * @memberof Graph
+   * @memberof BaseGraph
    */
   public async getUserPhoto(userId: string): Promise<string> {
     return this.getPhotoForResource(`users/${userId}`, ['user.readbasic.all']);
@@ -481,7 +481,7 @@ export abstract class BaseGraph implements IGraph {
    *
    * @param {string} contactId
    * @returns {Promise<string>}
-   * @memberof Graph
+   * @memberof BaseGraph
    */
   public async getContactPhoto(contactId: string): Promise<string> {
     return this.getPhotoForResource(`me/contacts/${contactId}`, ['contacts.read']);
@@ -494,7 +494,7 @@ export abstract class BaseGraph implements IGraph {
    * @param {Date} endDateTime
    * @param {string} [groupId]
    * @returns {Promise<MicrosoftGraph.Event[]>}
-   * @memberof Graph
+   * @memberof BaseGraph
    */
   public async getEvents(startDateTime: Date, endDateTime: Date, groupId?: string): Promise<MicrosoftGraph.Event[]> {
     const scopes = 'calendars.read';
@@ -524,7 +524,7 @@ export abstract class BaseGraph implements IGraph {
    * async promise to the Graph for People, by default, it will request the most frequent contacts for the signed in user.
    *
    * @returns {Promise<MicrosoftGraph.Person[]>}
-   * @memberof Graph
+   * @memberof BaseGraph
    */
   public async getPeople(): Promise<MicrosoftGraph.Person[]> {
     const scopes = 'people.read';
@@ -543,7 +543,7 @@ export abstract class BaseGraph implements IGraph {
    *
    * @param {string} groupId
    * @returns {Promise<MicrosoftGraph.Person[]>}
-   * @memberof Graph
+   * @memberof BaseGraph
    */
   public async getPeopleFromGroup(groupId: string): Promise<MicrosoftGraph.Person[]> {
     const scopes = 'people.read';
@@ -561,7 +561,7 @@ export abstract class BaseGraph implements IGraph {
    *
    * @param {string} groupId
    * @returns {Promise<MicrosoftGraph.PlannerPlan[]>}
-   * @memberof Graph
+   * @memberof BaseGraph
    */
   public async getPlansForGroup(groupId: string): Promise<MicrosoftGraph.PlannerPlan[]> {
     const scopes = 'Group.Read.All';
@@ -579,7 +579,7 @@ export abstract class BaseGraph implements IGraph {
    *  async promise, returns all planner plans associated with the user logged in
    *
    * @returns {Promise<MicrosoftGraph.PlannerPlan[]>}
-   * @memberof Graph
+   * @memberof BaseGraph
    */
   public async planner_getAllMyPlans(): Promise<MicrosoftGraph.PlannerPlan[]> {
     const plans = await this.client
@@ -596,7 +596,7 @@ export abstract class BaseGraph implements IGraph {
    *
    * @param {string} planId
    * @returns {Promise<MicrosoftGraph.PlannerPlan>}
-   * @memberof Graph
+   * @memberof BaseGraph
    */
   public async planner_getSinglePlan(planId: string): Promise<MicrosoftGraph.PlannerPlan> {
     const plan = await this.client
@@ -613,7 +613,7 @@ export abstract class BaseGraph implements IGraph {
    *
    * @param {string} planId
    * @returns {Promise<MicrosoftGraph.PlannerBucket[]>}
-   * @memberof Graph
+   * @memberof BaseGraph
    */
   public async planner_getBucketsForPlan(planId: string): Promise<MicrosoftGraph.PlannerBucket[]> {
     const buckets = await this.client
@@ -630,7 +630,7 @@ export abstract class BaseGraph implements IGraph {
    *
    * @param {string} bucketId
    * @returns {Promise<MicrosoftGraph.PlannerTask[]>}
-   * @memberof Graph
+   * @memberof BaseGraph
    */
   public async planner_getTasksForBucket(bucketId: string): Promise<MicrosoftGraph.PlannerTask[]> {
     const tasks = await this.client
@@ -649,7 +649,7 @@ export abstract class BaseGraph implements IGraph {
    * @param {MicrosoftGraph.PlannerTask} details
    * @param {string} eTag
    * @returns {Promise<any>}
-   * @memberof Graph
+   * @memberof BaseGraph
    */
   public async planner_setTaskDetails(taskId: string, details: MicrosoftGraph.PlannerTask, eTag: string): Promise<any> {
     return await this.client
@@ -666,7 +666,7 @@ export abstract class BaseGraph implements IGraph {
    * @param {string} taskId
    * @param {string} eTag
    * @returns {Promise<any>}
-   * @memberof Graph
+   * @memberof BaseGraph
    */
   public async planner_setTaskComplete(taskId: string, eTag: string): Promise<any> {
     return this.planner_setTaskDetails(
@@ -684,7 +684,7 @@ export abstract class BaseGraph implements IGraph {
    * @param {string} taskId
    * @param {string} eTag
    * @returns {Promise<any>}
-   * @memberof Graph
+   * @memberof BaseGraph
    */
   public async planner_setTaskIncomplete(taskId: string, eTag: string): Promise<any> {
     return this.planner_setTaskDetails(
@@ -703,7 +703,7 @@ export abstract class BaseGraph implements IGraph {
    * @param {*} people
    * @param {string} eTag
    * @returns {Promise<any>}
-   * @memberof Graph
+   * @memberof BaseGraph
    */
   public async planner_assignPeopleToTask(taskId: string, people: any, eTag: string): Promise<any> {
     return this.planner_setTaskDetails(
@@ -720,7 +720,7 @@ export abstract class BaseGraph implements IGraph {
    *
    * @param {MicrosoftGraph.PlannerTask} newTask
    * @returns {Promise<any>}
-   * @memberof Graph
+   * @memberof BaseGraph
    */
   public async planner_addTask(newTask: MicrosoftGraph.PlannerTask): Promise<any> {
     return this.client
@@ -736,7 +736,7 @@ export abstract class BaseGraph implements IGraph {
    * @param {string} taskId
    * @param {string} eTag
    * @returns {Promise<any>}
-   * @memberof Graph
+   * @memberof BaseGraph
    */
   public async planner_removeTask(taskId: string, eTag: string): Promise<any> {
     return this.client
@@ -753,7 +753,7 @@ export abstract class BaseGraph implements IGraph {
    * async promise, returns all Outlook taskGroups associated with the logged in user
    *
    * @returns {Promise<MicrosoftGraphBeta.OutlookTaskGroup[]>}
-   * @memberof Graph
+   * @memberof BaseGraph
    */
   public async todo_getAllMyGroups(): Promise<MicrosoftGraphBeta.OutlookTaskGroup[]> {
     const groups = await this.client
@@ -771,7 +771,7 @@ export abstract class BaseGraph implements IGraph {
    *
    * @param {string} groupId
    * @returns {Promise<MicrosoftGraphBeta.OutlookTaskGroup>}
-   * @memberof Graph
+   * @memberof BaseGraph
    */
   public async todo_getSingleGroup(groupId: string): Promise<MicrosoftGraphBeta.OutlookTaskGroup> {
     const group = await this.client
@@ -789,7 +789,7 @@ export abstract class BaseGraph implements IGraph {
    *
    * @param {string} groupId
    * @returns {Promise<MicrosoftGraphBeta.OutlookTaskFolder[]>}
-   * @memberof Graph
+   * @memberof BaseGraph
    */
   public async todo_getFoldersForGroup(groupId: string): Promise<MicrosoftGraphBeta.OutlookTaskFolder[]> {
     const folders = await this.client
@@ -807,7 +807,7 @@ export abstract class BaseGraph implements IGraph {
    *
    * @param {string} folderId
    * @returns {Promise<MicrosoftGraphBeta.OutlookTask[]>}
-   * @memberof Graph
+   * @memberof BaseGraph
    */
   public async todo_getAllTasksForFolder(folderId: string): Promise<MicrosoftGraphBeta.OutlookTask[]> {
     const tasks = await this.client
@@ -827,7 +827,7 @@ export abstract class BaseGraph implements IGraph {
    * @param {*} task
    * @param {string} eTag
    * @returns {Promise<MicrosoftGraphBeta.OutlookTask>}
-   * @memberof Graph
+   * @memberof BaseGraph
    */
   public async todo_setTaskDetails(taskId: string, task: any, eTag: string): Promise<MicrosoftGraphBeta.OutlookTask> {
     return await this.client
@@ -845,7 +845,7 @@ export abstract class BaseGraph implements IGraph {
    * @param {string} taskId
    * @param {string} eTag
    * @returns {Promise<MicrosoftGraphBeta.OutlookTask>}
-   * @memberof Graph
+   * @memberof BaseGraph
    */
   public async todo_setTaskComplete(taskId: string, eTag: string): Promise<MicrosoftGraphBeta.OutlookTask> {
     return await this.todo_setTaskDetails(
@@ -864,7 +864,7 @@ export abstract class BaseGraph implements IGraph {
    * @param {string} taskId
    * @param {string} eTag
    * @returns {Promise<MicrosoftGraphBeta.OutlookTask>}
-   * @memberof Graph
+   * @memberof BaseGraph
    */
   public async todo_setTaskIncomplete(taskId: string, eTag: string): Promise<MicrosoftGraphBeta.OutlookTask> {
     return await this.todo_setTaskDetails(
@@ -882,7 +882,7 @@ export abstract class BaseGraph implements IGraph {
    *
    * @param {*} newTask
    * @returns {Promise<MicrosoftGraphBeta.OutlookTask>}
-   * @memberof Graph
+   * @memberof BaseGraph
    */
   public async todo_addTask(newTask: any): Promise<MicrosoftGraphBeta.OutlookTask> {
     const { parentFolderId = null } = newTask;
@@ -910,7 +910,7 @@ export abstract class BaseGraph implements IGraph {
    * @param {string} taskId
    * @param {string} eTag
    * @returns {Promise<any>}
-   * @memberof Graph
+   * @memberof BaseGraph
    */
   public async todo_removeTask(taskId: string, eTag: string): Promise<any> {
     return await this.client
