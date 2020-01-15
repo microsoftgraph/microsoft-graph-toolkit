@@ -13,338 +13,13 @@ import { MgtBaseComponent } from './components/baseComponent';
 import { Batch } from './utils/Batch';
 
 /**
- * The interface for making graph calls
- *
- * @export
- * @interface IGraph
- */
-export interface IGraph {
-  /**
-   * middleware authentication handler
-   *
-   * @type {Client}
-   * @memberof IGraph
-   */
-  client: Client;
-
-  /**
-   * Returna an instance of the Graph that sends web requests in the
-   * context of the provided component.
-   *
-   * @param {MgtBaseComponent} component
-   * @returns {IGraph}
-   * @memberof IGraph
-   */
-  forComponent(component: MgtBaseComponent): IGraph;
-
-  /**
-   * creates batch request
-   *
-   * @returns
-   * @memberof IGraph
-   */
-  createBatch();
-
-  /**
-   *  async promise, returns Graph User data relating to the user logged in
-   *
-   * @returns {Promise<MicrosoftGraph.User>}
-   * @memberof IGraph
-   */
-  getMe(): Promise<MicrosoftGraph.User>;
-
-  /**
-   * async promise, returns all Graph users associated with the userPrincipleName provided
-   *
-   * @param {string} userPrincipleName
-   * @returns {Promise<MicrosoftGraph.User>}
-   * @memberof IGraph
-   */
-  getUser(userPrincipleName: string): Promise<MicrosoftGraph.User>;
-
-  /**
-   * async promise, returns all Graph people who are most relevant contacts to the signed in user.
-   *
-   * @param {string} query
-   * @returns {Promise<MicrosoftGraph.Person[]>}
-   * @memberof IGraph
-   */
-  findPerson(query: string): Promise<MicrosoftGraph.Person[]>;
-
-  /**
-   * async promise, returns a Graph contact associated with the email provided
-   *
-   * @param {string} email
-   * @returns {Promise<MicrosoftGraph.Contact[]>}
-   * @memberof IGraph
-   */
-  findContactByEmail(email: string): Promise<MicrosoftGraph.Contact[]>;
-
-  /**
-   * async promise, returns Graph contact and/or Person associated with the email provided
-   * Uses: Graph.findPerson(email) and Graph.findContactByEmail(email)
-   *
-   * @param {string} email
-   * @returns {(Promise<Array<MicrosoftGraph.Person | MicrosoftGraph.Contact>>)}
-   * @memberof IGraph
-   */
-  findUserByEmail(email: string): Promise<Array<MicrosoftGraph.Person | MicrosoftGraph.Contact>>;
-
-  /**
-   * async promise, returns Graph photo associated with the logged in user
-   *
-   * @returns {Promise<string>}
-   * @memberof IGraph
-   */
-  myPhoto(): Promise<string>;
-
-  /**
-   * async promise, returns Graph photo associated with provided userId
-   *
-   * @param {string} userId
-   * @returns {Promise<string>}
-   * @memberof IGraph
-   */
-  getUserPhoto(userId: string): Promise<string>;
-
-  /**
-   * async promise, returns Graph photos associated with contacts of the logged in user
-   *
-   * @param {string} contactId
-   * @returns {Promise<string>}
-   * @memberof IGraph
-   */
-  getContactPhoto(contactId: string): Promise<string>;
-
-  /**
-   * async promise, returns Calender events associated with either the logged in user or a specific groupId
-   *
-   * @param {Date} startDateTime
-   * @param {Date} endDateTime
-   * @param {string} [groupId]
-   * @returns {Promise<MicrosoftGraph.Event[]>}
-   * @memberof IGraph
-   */
-  getEvents(startDateTime: Date, endDateTime: Date, groupId?: string): Promise<MicrosoftGraph.Event[]>;
-
-  /**
-   * async promise to the Graph for People, by default, it will request the most frequent contacts for the signed in user.
-   *
-   * @returns {Promise<MicrosoftGraph.Person[]>}
-   * @memberof IGraph
-   */
-  getPeople(): Promise<MicrosoftGraph.Person[]>;
-
-  /**
-   * async promise to the Graph for People, defined by a group id
-   *
-   * @param {string} groupId
-   * @returns {Promise<MicrosoftGraph.Person[]>}
-   * @memberof IGraph
-   */
-  getPeopleFromGroup(groupId: string): Promise<MicrosoftGraph.Person[]>;
-
-  /**
-   * async promise, returns all planner plans associated with the group id
-   *
-   * @param {string} groupId
-   * @returns {Promise<MicrosoftGraph.PlannerPlan[]>}
-   * @memberof IGraph
-   */
-  getPlansForGroup(groupId: string): Promise<MicrosoftGraph.PlannerPlan[]>;
-
-  /**
-   *  async promise, returns all planner plans associated with the user logged in
-   *
-   * @returns {Promise<MicrosoftGraph.PlannerPlan[]>}
-   * @memberof IGraph
-   */
-  planner_getAllMyPlans(): Promise<MicrosoftGraph.PlannerPlan[]>;
-
-  /**
-   * async promise, returns a single plan from the Graph associated with the planId
-   *
-   * @param {string} planId
-   * @returns {Promise<MicrosoftGraph.PlannerPlan>}
-   * @memberof IGraph
-   */
-  planner_getSinglePlan(planId: string): Promise<MicrosoftGraph.PlannerPlan>;
-
-  /**
-   * async promise, returns bucket (for tasks) associated with a planId
-   *
-   * @param {string} planId
-   * @returns {Promise<MicrosoftGraph.PlannerBucket[]>}
-   * @memberof IGraph
-   */
-  planner_getBucketsForPlan(planId: string): Promise<MicrosoftGraph.PlannerBucket[]>;
-
-  /**
-   * async promise, returns all tasks from planner associated with a bucketId
-   *
-   * @param {string} bucketId
-   * @returns {Promise<MicrosoftGraph.PlannerTask[]>}
-   * @memberof IGraph
-   */
-  planner_getTasksForBucket(bucketId: string): Promise<MicrosoftGraph.PlannerTask[]>;
-
-  /**
-   * async promise, allows developer to set details of planner task associated with a taskId
-   *
-   * @param {string} taskId
-   * @param {MicrosoftGraph.PlannerTask} details
-   * @param {string} eTag
-   * @returns {Promise<any>}
-   * @memberof IGraph
-   */
-  planner_setTaskDetails(taskId: string, details: MicrosoftGraph.PlannerTask, eTag: string): Promise<any>;
-
-  /**
-   * async promise, allows developer to set a task to complete, associated with taskId
-   *
-   * @param {string} taskId
-   * @param {string} eTag
-   * @returns {Promise<any>}
-   * @memberof IGraph
-   */
-  planner_setTaskComplete(taskId: string, eTag: string): Promise<any>;
-
-  /**
-   * async promise, allows developer to set a task to incomplete, associated with taskId
-   *
-   * @param {string} taskId
-   * @param {string} eTag
-   * @returns {Promise<any>}
-   * @memberof IGraph
-   */
-  planner_setTaskIncomplete(taskId: string, eTag: string): Promise<any>;
-
-  /**
-   * async promise, allows developer to assign people to task
-   *
-   * @param {string} taskId
-   * @param {*} people
-   * @param {string} eTag
-   * @returns {Promise<any>}
-   * @memberof IGraph
-   */
-  planner_assignPeopleToTask(taskId: string, people: any, eTag: string): Promise<any>;
-
-  /**
-   * async promise, allows developer to create new Planner task
-   *
-   * @param {MicrosoftGraph.PlannerTask} newTask
-   * @returns {Promise<any>}
-   * @memberof IGraph
-   */
-  planner_addTask(newTask: MicrosoftGraph.PlannerTask): Promise<any>;
-
-  /**
-   * async promise, allows developer to remove Planner task associated with taskId
-   *
-   * @param {string} taskId
-   * @param {string} eTag
-   * @returns {Promise<any>}
-   * @memberof IGraph
-   */
-  planner_removeTask(taskId: string, eTag: string): Promise<any>;
-
-  // Todo Methods
-
-  /**
-   * async promise, returns all Outlook taskGroups associated with the logged in user
-   *
-   * @returns {Promise<MicrosoftGraphBeta.OutlookTaskGroup[]>}
-   * @memberof IGraph
-   */
-  todo_getAllMyGroups(): Promise<MicrosoftGraphBeta.OutlookTaskGroup[]>;
-
-  /**
-   * async promise, returns to-do tasks from Outlook groups associated with a groupId
-   *
-   * @param {string} groupId
-   * @returns {Promise<MicrosoftGraphBeta.OutlookTaskGroup>}
-   * @memberof IGraph
-   */
-  todo_getSingleGroup(groupId: string): Promise<MicrosoftGraphBeta.OutlookTaskGroup>;
-
-  /**
-   * async promise, returns all Outlook taskFolders associated with groupId
-   *
-   * @param {string} groupId
-   * @returns {Promise<MicrosoftGraphBeta.OutlookTaskFolder[]>}
-   * @memberof IGraph
-   */
-  todo_getFoldersForGroup(groupId: string): Promise<MicrosoftGraphBeta.OutlookTaskFolder[]>;
-
-  /**
-   * async promise, returns all Outlook tasks associated with a taskFolder with folderId
-   *
-   * @param {string} folderId
-   * @returns {Promise<MicrosoftGraphBeta.OutlookTask[]>}
-   * @memberof IGraph
-   */
-  todo_getAllTasksForFolder(folderId: string): Promise<MicrosoftGraphBeta.OutlookTask[]>;
-
-  /**
-   * async promise, allows developer to redefine to-do Task details associated with a taskId
-   *
-   * @param {string} taskId
-   * @param {*} task
-   * @param {string} eTag
-   * @returns {Promise<MicrosoftGraphBeta.OutlookTask>}
-   * @memberof IGraph
-   */
-  todo_setTaskDetails(taskId: string, task: any, eTag: string): Promise<MicrosoftGraphBeta.OutlookTask>;
-
-  /**
-   * async promise, allows developer to set to-do task to completed state
-   *
-   * @param {string} taskId
-   * @param {string} eTag
-   * @returns {Promise<MicrosoftGraphBeta.OutlookTask>}
-   * @memberof IGraph
-   */
-  todo_setTaskComplete(taskId: string, eTag: string): Promise<MicrosoftGraphBeta.OutlookTask>;
-
-  /**
-   * async promise, allows developer to set to-do task to incomplete state
-   *
-   * @param {string} taskId
-   * @param {string} eTag
-   * @returns {Promise<MicrosoftGraphBeta.OutlookTask>}
-   * @memberof IGraph
-   */
-  todo_setTaskIncomplete(taskId: string, eTag: string): Promise<MicrosoftGraphBeta.OutlookTask>;
-
-  /**
-   * async promise, allows developer to add new to-do task
-   *
-   * @param {*} newTask
-   * @returns {Promise<MicrosoftGraphBeta.OutlookTask>}
-   * @memberof IGraph
-   */
-  todo_addTask(newTask: any): Promise<MicrosoftGraphBeta.OutlookTask>;
-
-  /**
-   * async promise, allows developer to remove task based on taskId
-   *
-   * @param {string} taskId
-   * @param {string} eTag
-   * @returns {Promise<any>}
-   * @memberof IGraph
-   */
-  todo_removeTask(taskId: string, eTag: string): Promise<any>;
-}
-
-/**
  * The base Graph implementation.
  *
  * @export
  * @abstract
  * @class BaseGraph
  */
-export abstract class BaseGraph implements IGraph {
+export abstract class BaseGraph {
   /**
    * middleware authentication handler
    *
@@ -374,7 +49,7 @@ export abstract class BaseGraph implements IGraph {
    * @returns
    * @memberof BaseGraph
    */
-  public abstract forComponent(component: MgtBaseComponent): IGraph;
+  public abstract forComponent(component: MgtBaseComponent): BaseGraph;
 
   /**
    * creates batch request
@@ -588,7 +263,7 @@ export abstract class BaseGraph implements IGraph {
    * @returns {Promise<MicrosoftGraph.PlannerPlan[]>}
    * @memberof BaseGraph
    */
-  public async planner_getAllMyPlans(): Promise<MicrosoftGraph.PlannerPlan[]> {
+  public async getAllMyPlannerPlans(): Promise<MicrosoftGraph.PlannerPlan[]> {
     const plans = await this.client
       .api('/me/planner/plans')
       .header('Cache-Control', 'no-store')
@@ -605,7 +280,7 @@ export abstract class BaseGraph implements IGraph {
    * @returns {Promise<MicrosoftGraph.PlannerPlan>}
    * @memberof BaseGraph
    */
-  public async planner_getSinglePlan(planId: string): Promise<MicrosoftGraph.PlannerPlan> {
+  public async getSinglePlannerPlan(planId: string): Promise<MicrosoftGraph.PlannerPlan> {
     const plan = await this.client
       .api(`/planner/plans/${planId}`)
       .header('Cache-Control', 'no-store')
@@ -622,7 +297,7 @@ export abstract class BaseGraph implements IGraph {
    * @returns {Promise<MicrosoftGraph.PlannerBucket[]>}
    * @memberof BaseGraph
    */
-  public async planner_getBucketsForPlan(planId: string): Promise<MicrosoftGraph.PlannerBucket[]> {
+  public async getBucketsForPlannerPlan(planId: string): Promise<MicrosoftGraph.PlannerBucket[]> {
     const buckets = await this.client
       .api(`/planner/plans/${planId}/buckets`)
       .header('Cache-Control', 'no-store')
@@ -639,7 +314,7 @@ export abstract class BaseGraph implements IGraph {
    * @returns {Promise<MicrosoftGraph.PlannerTask[]>}
    * @memberof BaseGraph
    */
-  public async planner_getTasksForBucket(bucketId: string): Promise<MicrosoftGraph.PlannerTask[]> {
+  public async getTasksForPlannerBucket(bucketId: string): Promise<MicrosoftGraph.PlannerTask[]> {
     const tasks = await this.client
       .api(`/planner/buckets/${bucketId}/tasks`)
       .header('Cache-Control', 'no-store')
@@ -658,7 +333,7 @@ export abstract class BaseGraph implements IGraph {
    * @returns {Promise<any>}
    * @memberof BaseGraph
    */
-  public async planner_setTaskDetails(taskId: string, details: MicrosoftGraph.PlannerTask, eTag: string): Promise<any> {
+  public async setPlannerTaskDetails(taskId: string, details: MicrosoftGraph.PlannerTask, eTag: string): Promise<any> {
     return await this.client
       .api(`/planner/tasks/${taskId}`)
       .header('Cache-Control', 'no-store')
@@ -675,8 +350,8 @@ export abstract class BaseGraph implements IGraph {
    * @returns {Promise<any>}
    * @memberof BaseGraph
    */
-  public async planner_setTaskComplete(taskId: string, eTag: string): Promise<any> {
-    return this.planner_setTaskDetails(
+  public async setPlannerTaskComplete(taskId: string, eTag: string): Promise<any> {
+    return this.setPlannerTaskDetails(
       taskId,
       {
         percentComplete: 100
@@ -693,8 +368,8 @@ export abstract class BaseGraph implements IGraph {
    * @returns {Promise<any>}
    * @memberof BaseGraph
    */
-  public async planner_setTaskIncomplete(taskId: string, eTag: string): Promise<any> {
-    return this.planner_setTaskDetails(
+  public async setPlannerTaskIncomplete(taskId: string, eTag: string): Promise<any> {
+    return this.setPlannerTaskDetails(
       taskId,
       {
         percentComplete: 0
@@ -712,8 +387,8 @@ export abstract class BaseGraph implements IGraph {
    * @returns {Promise<any>}
    * @memberof BaseGraph
    */
-  public async planner_assignPeopleToTask(taskId: string, people: any, eTag: string): Promise<any> {
-    return this.planner_setTaskDetails(
+  public async assignPeopleToPlannerTask(taskId: string, people: any, eTag: string): Promise<any> {
+    return this.setPlannerTaskDetails(
       taskId,
       {
         assignments: people
@@ -729,7 +404,7 @@ export abstract class BaseGraph implements IGraph {
    * @returns {Promise<any>}
    * @memberof BaseGraph
    */
-  public async planner_addTask(newTask: MicrosoftGraph.PlannerTask): Promise<any> {
+  public async addPlannerTask(newTask: MicrosoftGraph.PlannerTask): Promise<any> {
     return this.client
       .api('/planner/tasks')
       .header('Cache-Control', 'no-store')
@@ -745,7 +420,7 @@ export abstract class BaseGraph implements IGraph {
    * @returns {Promise<any>}
    * @memberof BaseGraph
    */
-  public async planner_removeTask(taskId: string, eTag: string): Promise<any> {
+  public async removePlannerTask(taskId: string, eTag: string): Promise<any> {
     return this.client
       .api(`/planner/tasks/${taskId}`)
       .header('Cache-Control', 'no-store')
@@ -762,7 +437,7 @@ export abstract class BaseGraph implements IGraph {
    * @returns {Promise<MicrosoftGraphBeta.OutlookTaskGroup[]>}
    * @memberof BaseGraph
    */
-  public async todo_getAllMyGroups(): Promise<MicrosoftGraphBeta.OutlookTaskGroup[]> {
+  public async getAllMyTodoGroups(): Promise<MicrosoftGraphBeta.OutlookTaskGroup[]> {
     const groups = await this.client
       .api('/me/outlook/taskGroups')
       .header('Cache-Control', 'no-store')
@@ -780,7 +455,7 @@ export abstract class BaseGraph implements IGraph {
    * @returns {Promise<MicrosoftGraphBeta.OutlookTaskGroup>}
    * @memberof BaseGraph
    */
-  public async todo_getSingleGroup(groupId: string): Promise<MicrosoftGraphBeta.OutlookTaskGroup> {
+  public async getSingleTodoGroup(groupId: string): Promise<MicrosoftGraphBeta.OutlookTaskGroup> {
     const group = await this.client
       .api(`/me/outlook/taskGroups/${groupId}`)
       .header('Cache-Control', 'no-store')
@@ -798,7 +473,7 @@ export abstract class BaseGraph implements IGraph {
    * @returns {Promise<MicrosoftGraphBeta.OutlookTaskFolder[]>}
    * @memberof BaseGraph
    */
-  public async todo_getFoldersForGroup(groupId: string): Promise<MicrosoftGraphBeta.OutlookTaskFolder[]> {
+  public async getFoldersForTodoGroup(groupId: string): Promise<MicrosoftGraphBeta.OutlookTaskFolder[]> {
     const folders = await this.client
       .api(`/me/outlook/taskGroups/${groupId}/taskFolders`)
       .header('Cache-Control', 'no-store')
@@ -816,7 +491,7 @@ export abstract class BaseGraph implements IGraph {
    * @returns {Promise<MicrosoftGraphBeta.OutlookTask[]>}
    * @memberof BaseGraph
    */
-  public async todo_getAllTasksForFolder(folderId: string): Promise<MicrosoftGraphBeta.OutlookTask[]> {
+  public async getAllTodoTasksForFolder(folderId: string): Promise<MicrosoftGraphBeta.OutlookTask[]> {
     const tasks = await this.client
       .api(`/me/outlook/taskFolders/${folderId}/tasks`)
       .header('Cache-Control', 'no-store')
@@ -836,7 +511,7 @@ export abstract class BaseGraph implements IGraph {
    * @returns {Promise<MicrosoftGraphBeta.OutlookTask>}
    * @memberof BaseGraph
    */
-  public async todo_setTaskDetails(taskId: string, task: any, eTag: string): Promise<MicrosoftGraphBeta.OutlookTask> {
+  public async setTodoTaskDetails(taskId: string, task: any, eTag: string): Promise<MicrosoftGraphBeta.OutlookTask> {
     return await this.client
       .api(`/me/outlook/tasks/${taskId}`)
       .header('Cache-Control', 'no-store')
@@ -854,8 +529,8 @@ export abstract class BaseGraph implements IGraph {
    * @returns {Promise<MicrosoftGraphBeta.OutlookTask>}
    * @memberof BaseGraph
    */
-  public async todo_setTaskComplete(taskId: string, eTag: string): Promise<MicrosoftGraphBeta.OutlookTask> {
-    return await this.todo_setTaskDetails(
+  public async setTodoTaskComplete(taskId: string, eTag: string): Promise<MicrosoftGraphBeta.OutlookTask> {
+    return await this.setTodoTaskDetails(
       taskId,
       {
         isReminderOn: false,
@@ -873,8 +548,8 @@ export abstract class BaseGraph implements IGraph {
    * @returns {Promise<MicrosoftGraphBeta.OutlookTask>}
    * @memberof BaseGraph
    */
-  public async todo_setTaskIncomplete(taskId: string, eTag: string): Promise<MicrosoftGraphBeta.OutlookTask> {
-    return await this.todo_setTaskDetails(
+  public async setTodoTaskIncomplete(taskId: string, eTag: string): Promise<MicrosoftGraphBeta.OutlookTask> {
+    return await this.setTodoTaskDetails(
       taskId,
       {
         isReminderOn: true,
@@ -891,7 +566,7 @@ export abstract class BaseGraph implements IGraph {
    * @returns {Promise<MicrosoftGraphBeta.OutlookTask>}
    * @memberof BaseGraph
    */
-  public async todo_addTask(newTask: any): Promise<MicrosoftGraphBeta.OutlookTask> {
+  public async addTodoTask(newTask: any): Promise<MicrosoftGraphBeta.OutlookTask> {
     const { parentFolderId = null } = newTask;
 
     if (parentFolderId) {
@@ -919,7 +594,7 @@ export abstract class BaseGraph implements IGraph {
    * @returns {Promise<any>}
    * @memberof BaseGraph
    */
-  public async todo_removeTask(taskId: string, eTag: string): Promise<any> {
+  public async removeTodoTask(taskId: string, eTag: string): Promise<any> {
     return await this.client
       .api(`/me/outlook/tasks/${taskId}`)
       .header('Cache-Control', 'no-store')

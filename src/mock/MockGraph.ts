@@ -7,7 +7,7 @@
 
 import { Client } from '@microsoft/microsoft-graph-client';
 import * as MicrosoftGraph from '@microsoft/microsoft-graph-types';
-import { BaseGraph, IGraph } from '../BaseGraph';
+import { BaseGraph } from '../BaseGraph';
 import { MgtBaseComponent } from '../components/baseComponent';
 import { MockProvider } from './MockProvider';
 
@@ -19,7 +19,7 @@ import { MockProvider } from './MockProvider';
  * @extends {Graph}
  */
 // tslint:disable-next-line: max-classes-per-file
-export class MockGraph extends BaseGraph implements IGraph {
+export class MockGraph extends BaseGraph {
   private static readonly BASE_URL = 'https://proxy.apisandbox.msdn.microsoft.com/svc?url=';
   private static readonly ROOT_GRAPH_URL: string = 'https://graph.microsoft.com/';
 
@@ -33,16 +33,15 @@ export class MockGraph extends BaseGraph implements IGraph {
   }
 
   /**
-   * Returns a new instance of the Graph using the same
-   * provider and the provided component.
+   * Returns an instance of the Graph in the context of the provided component.
    *
    * @param {MgtBaseComponent} component
    * @returns
    * @memberof Graph
    */
-  public forComponent(component: MgtBaseComponent): IGraph {
-    // The purpose of the forComponent pattern is to update the headers of any outgoing web requests.
-    // The MockGraph isn't making real web requests, so we can simply no-op and return the same instance.
+  public forComponent(component: MgtBaseComponent): MockGraph {
+    // The purpose of the forComponent pattern is to update the headers of any outgoing Graph requests.
+    // The MockGraph isn't making real Graph requests, so we can simply no-op and return the same instance.
     return this;
   }
 

@@ -14,7 +14,7 @@ import {
   RetryHandlerOptions,
   TelemetryHandler
 } from '@microsoft/microsoft-graph-client';
-import { BaseGraph, IGraph } from './BaseGraph';
+import { BaseGraph } from './BaseGraph';
 import { MgtBaseComponent } from './components/baseComponent';
 import { IProvider } from './providers/IProvider';
 import { SdkVersionMiddleware } from './utils/SdkVersionMiddleware';
@@ -25,7 +25,7 @@ import { SdkVersionMiddleware } from './utils/SdkVersionMiddleware';
  * @export
  * @class Graph
  */
-export class Graph extends BaseGraph implements IGraph {
+export class Graph extends BaseGraph {
   constructor(provider: IProvider, component?: MgtBaseComponent) {
     super(provider);
 
@@ -45,8 +45,7 @@ export class Graph extends BaseGraph implements IGraph {
   }
 
   /**
-   * Returns a new instance of the Graph using the same
-   * provider and the provided component.
+   * Returns an instance of the Graph in the context of the provided component.
    *
    * @param {MgtBaseComponent} component
    * @returns
