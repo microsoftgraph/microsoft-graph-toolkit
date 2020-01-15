@@ -19,26 +19,33 @@ export class TemplateHelper {
    * </template>
    * ```
    *
+   * @param root the root element to parent the rendered content
    * @param template the template to render
    * @param context the data context to be applied
    * @param converters the converter functions used to transform the data
    */
-  public static renderTemplate(template: HTMLTemplateElement, context: object, converters?: object) {
+  public static renderTemplate(root: HTMLElement, template: HTMLTemplateElement, context: object, converters?: object) {
     // inherit context from parent template
     if ((template as any).$parentTemplateContext) {
       context = { ...context, $parent: (template as any).$parentTemplateContext };
     }
 
+    let rendered: Node;
+
     if (template.content && template.content.childNodes.length) {
       const templateContent = template.content.cloneNode(true);
-      return this.renderNode(templateContent, context, converters);
+      rendered = this.renderNode(templateContent, root, context, converters);
     } else if (template.childNodes.length) {
       const div = document.createElement('div');
       // tslint:disable-next-line: prefer-for-of
       for (let i = 0; i < template.childNodes.length; i++) {
         div.appendChild(template.childNodes[i].cloneNode(true));
       }
-      return this.renderNode(div, context, converters);
+      rendered = this.renderNode(div, root, context, converters);
+    }
+
+    if (rendered) {
+      root.appendChild(rendered);
     }
   }
   private static _expression = /{{\s*([$\w]+)(\.[$\w]+)*\s*}}/g;
@@ -96,7 +103,7 @@ export class TemplateHelper {
       });
   }
 
-  private static renderNode(node: Node, context: object, converters: object) {
+  private static renderNode(node: Node, root: HTMLElement, context: object, converters: object) {
     if (node.nodeName === '#text') {
       node.textContent = this.replaceExpression(node.textContent, context, converters);
       return node;
@@ -113,7 +120,17 @@ export class TemplateHelper {
       // tslint:disable-next-line: prefer-for-of
       for (let i = 0; i < nodeElement.attributes.length; i++) {
         const attribute = nodeElement.attributes[i];
-        nodeElement.setAttribute(attribute.name, this.replaceExpression(attribute.value, context, converters));
+
+        // add event listeners - attributes that start with @
+        if (attribute.name.length && attribute.name[0] === '@') {
+          if (converters) {
+            nodeElement.addEventListener(attribute.name.substring(1), e =>
+              converters[attribute.value](e, context, root)
+            );
+          }
+        } else {
+          nodeElement.setAttribute(attribute.name, this.replaceExpression(attribute.value, context, converters));
+        }
       }
     }
 
@@ -156,10 +173,10 @@ export class TemplateHelper {
         if (childElement.dataset.for && !childWillBeRemoved) {
           loopChildren.push(childElement);
         } else if (!childWillBeRemoved) {
-          this.renderNode(childNode, context, converters);
+          this.renderNode(childNode, root, context, converters);
         }
       } else {
-        this.renderNode(childNode, context, converters);
+        this.renderNode(childNode, root, context, converters);
       }
 
       // clear the flag if the current node wasn't data-if
@@ -202,7 +219,7 @@ export class TemplateHelper {
             newContext[itemName] = list[j];
 
             const clone = childElement.cloneNode(true);
-            this.renderNode(clone, newContext, converters);
+            this.renderNode(clone, root, newContext, converters);
             nodeElement.insertBefore(clone, childElement);
           }
 
