@@ -123,7 +123,7 @@ export class TemplateHelper {
 
         // add event listeners - attributes that start with @
         if (attribute.name.length && attribute.name[0] === '@') {
-          if (converters) {
+          if (converters && converters[attribute.value]) {
             nodeElement.addEventListener(attribute.name.substring(1), e =>
               converters[attribute.value](e, context, root)
             );

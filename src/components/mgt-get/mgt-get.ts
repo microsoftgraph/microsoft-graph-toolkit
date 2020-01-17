@@ -9,6 +9,7 @@ import { customElement, html, property } from 'lit-element';
 import { Providers } from '../../Providers';
 import { ProviderState } from '../../providers/IProvider';
 import { prepScopes } from '../../utils/GraphHelpers';
+import { equals } from '../../utils/Utils';
 import { MgtTemplatedComponent } from '../templatedComponent';
 
 /**
@@ -123,8 +124,7 @@ export class MgtGet extends MgtTemplatedComponent {
     super.attributeChangedCallback(name, oldval, newval);
 
     if (this.hasFirstUpdated) {
-      this.response = null;
-      this.loadData();
+      this.loadData(true);
     }
   }
 
@@ -139,8 +139,20 @@ export class MgtGet extends MgtTemplatedComponent {
    */
   public firstUpdated() {
     Providers.onProviderUpdated(() => this.loadData());
-    this.loadData();
+    this.loadData(true);
     this.hasFirstUpdated = true;
+  }
+
+  /**
+   * Refresh the data
+   *
+   * @param {boolean} [hardRefresh=false]
+   * if false (default), the component will only update if the data changed
+   * if true, the data will be first cleared and reloaded completely
+   * @memberof MgtGet
+   */
+  public refresh(hardRefresh = false) {
+    this.loadData(hardRefresh);
   }
 
   /**
@@ -171,7 +183,7 @@ export class MgtGet extends MgtTemplatedComponent {
     }
   }
 
-  private async loadData() {
+  private async loadData(hardRefresh = false) {
     const provider = Providers.globalProvider;
 
     this.error = null;
@@ -181,14 +193,23 @@ export class MgtGet extends MgtTemplatedComponent {
     }
 
     if (this.resource) {
-      this.loading = true;
+      if (hardRefresh) {
+        this.response = null;
+        this.loading = true;
+      }
 
       try {
         const graph = provider.graph.forComponent(this);
 
+        let uri = this.resource;
+        let delta = false;
+
         // if we had a response earlier with a delta link, use it instead
-        const uri =
-          this.response && this.response['@odata.deltaLink'] ? this.response['@odata.deltaLink'] : this.resource;
+        if (this.response && this.response['@odata.deltaLink']) {
+          uri = this.response['@odata.deltaLink'];
+          delta = true;
+        }
+
         let request = graph.client.api(uri).version(this.version);
 
         if (this.scopes && this.scopes.length) {
@@ -197,11 +218,13 @@ export class MgtGet extends MgtTemplatedComponent {
 
         const response = await request.get();
 
-        if (this.response && Array.isArray(this.response.value) && Array.isArray(response.value)) {
+        if (delta && this.response && Array.isArray(this.response.value) && Array.isArray(response.value)) {
           response.value = this.response.value.concat(response.value);
         }
 
-        this.response = response;
+        if (!equals(this.response, response)) {
+          this.response = response;
+        }
 
         // get more pages if there are available
         if (this.response && Array.isArray(this.response.value) && this.response['@odata.nextLink']) {
