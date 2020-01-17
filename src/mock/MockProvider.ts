@@ -5,10 +5,10 @@
  * -------------------------------------------------------------------------------------------
  */
 
-import { Client } from '@microsoft/microsoft-graph-client';
-import * as MicrosoftGraph from '@microsoft/microsoft-graph-types';
-import { Graph } from '../Graph';
+import { BaseGraph } from '../BaseGraph';
 import { IProvider, ProviderState } from '../providers/IProvider';
+import { MockGraph } from './MockGraph';
+
 /**
  * Mock Provider access token for Microsoft Graph APIs
  *
@@ -65,43 +65,5 @@ export class MockProvider extends IProvider {
    */
   public getAccessToken(): Promise<string> {
     return Promise.resolve('{token:https://graph.microsoft.com/}');
-  }
-}
-
-/**
- * MockGraph Instance
- *
- * @export
- * @class MockGraph
- * @extends {Graph}
- */
-// tslint:disable-next-line: max-classes-per-file
-export class MockGraph extends Graph {
-  private baseUrl = 'https://proxy.apisandbox.msdn.microsoft.com/svc?url=';
-  private rootGraphUrl: string = 'https://graph.microsoft.com/';
-
-  constructor(provider: MockProvider) {
-    super(null);
-
-    this.client = Client.initWithMiddleware({
-      authProvider: provider,
-      baseUrl: this.baseUrl + escape(this.rootGraphUrl)
-    });
-  }
-  /**
-   * get events for Calendar
-   *
-   * @param {Date} startDateTime
-   * @param {Date} endDateTime
-   * @returns {Promise<MicrosoftGraph.Event[]>}
-   * @memberof MockGraph
-   */
-  public async getEvents(startDateTime: Date, endDateTime: Date): Promise<MicrosoftGraph.Event[]> {
-    const sdt = `startdatetime=${startDateTime.toISOString()}`;
-    const edt = `enddatetime=${endDateTime.toISOString()}`;
-    const uri = `/me/calendarview?${sdt}&${edt}`;
-
-    const calendarView = await this.client.api(escape(uri)).get();
-    return calendarView ? calendarView.value : null;
   }
 }
