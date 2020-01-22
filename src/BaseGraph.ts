@@ -5,7 +5,7 @@
  * -------------------------------------------------------------------------------------------
  */
 
-import { Client, GraphRequest, MiddlewareOptions, ResponseType } from '@microsoft/microsoft-graph-client';
+import { Client, GraphRequest, Middleware, MiddlewareOptions, ResponseType } from '@microsoft/microsoft-graph-client';
 import * as MicrosoftGraph from '@microsoft/microsoft-graph-types';
 import * as MicrosoftGraphBeta from '@microsoft/microsoft-graph-types-beta';
 import { MgtBaseComponent } from './components/baseComponent';
@@ -598,6 +598,27 @@ export abstract class BaseGraph {
       .header('If-Match', eTag)
       .middlewareOptions(prepScopes('Tasks.ReadWrite'))
       .delete();
+  }
+
+  /**
+   * Helper method to chain Middleware when instantiating new Client
+   *
+   * @protected
+   * @param {...Middleware[]} middleware
+   * @returns {Middleware}
+   * @memberof BaseGraph
+   */
+  protected chainMiddleware(...middleware: Middleware[]): Middleware {
+    const rootMiddleware = middleware[0];
+    let current = rootMiddleware;
+    for (let i = 1; i < middleware.length; ++i) {
+      const next = middleware[i];
+      if (current.setNext) {
+        current.setNext(next);
+      }
+      current = next;
+    }
+    return rootMiddleware;
   }
 
   private blobToBase64(blob: Blob): Promise<string> {

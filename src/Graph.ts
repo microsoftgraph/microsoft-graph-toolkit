@@ -62,17 +62,4 @@ export class Graph extends BaseGraph {
     graph.componentName = component.tagName.toLowerCase();
     return graph;
   }
-
-  private chainMiddleware(...middleware: Middleware[]): Middleware {
-    const rootMiddleware = middleware[0];
-    let current = rootMiddleware;
-    for (let i = 1; i < middleware.length; ++i) {
-      const next = middleware[i];
-      if (current.setNext) {
-        current.setNext(next);
-      }
-      current = next;
-    }
-    return rootMiddleware;
-  }
 }

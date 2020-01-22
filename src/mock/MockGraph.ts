@@ -5,11 +5,29 @@
  * -------------------------------------------------------------------------------------------
  */
 
-import { Client } from '@microsoft/microsoft-graph-client';
-import * as MicrosoftGraph from '@microsoft/microsoft-graph-types';
+import {
+  AuthenticationHandler,
+  Client,
+  Context,
+  HTTPMessageHandler,
+  Middleware,
+  RetryHandler,
+  RetryHandlerOptions,
+  TelemetryHandler
+} from '@microsoft/microsoft-graph-client';
 import { BaseGraph } from '../BaseGraph';
 import { MgtBaseComponent } from '../components/baseComponent';
 import { MockProvider } from './MockProvider';
+
+/**
+ * The base URL for the mock endpoint
+ */
+const BASE_URL = 'https://proxy.apisandbox.msdn.microsoft.com/svc?url=';
+
+/**
+ * The base URL for the graph
+ */
+const ROOT_GRAPH_URL = 'https://graph.microsoft.com/';
 
 /**
  * MockGraph Instance
@@ -20,15 +38,20 @@ import { MockProvider } from './MockProvider';
  */
 // tslint:disable-next-line: max-classes-per-file
 export class MockGraph extends BaseGraph {
-  private static readonly BASE_URL = 'https://proxy.apisandbox.msdn.microsoft.com/svc?url=';
-  private static readonly ROOT_GRAPH_URL: string = 'https://graph.microsoft.com/';
-
   constructor(mockProvider: MockProvider) {
     super();
 
+    const middleware: Middleware[] = [
+      new AuthenticationHandler(mockProvider),
+      new RetryHandler(new RetryHandlerOptions()),
+      new TelemetryHandler(),
+      new MockMiddleware(),
+      new HTTPMessageHandler()
+    ];
+
     this.client = Client.initWithMiddleware({
-      authProvider: mockProvider,
-      baseUrl: MockGraph.BASE_URL + escape(MockGraph.ROOT_GRAPH_URL)
+      baseUrl: BASE_URL + ROOT_GRAPH_URL,
+      middleware: this.chainMiddleware(...middleware)
     });
   }
 
@@ -44,21 +67,42 @@ export class MockGraph extends BaseGraph {
     // The MockGraph isn't making real Graph requests, so we can simply no-op and return the same instance.
     return this;
   }
+}
 
+/**
+ * Implements Middleware for the Mock Client to escape
+ * the graph url from the request
+ *
+ * @class MockMiddleware
+ * @implements {Middleware}
+ */
+// tslint:disable-next-line: max-classes-per-file
+class MockMiddleware implements Middleware {
   /**
-   * get events for Calendar
-   *
-   * @param {Date} startDateTime
-   * @param {Date} endDateTime
-   * @returns {Promise<MicrosoftGraph.Event[]>}
-   * @memberof MockGraph
+   * @private
+   * A member to hold next middleware in the middleware chain
    */
-  public async getEvents(startDateTime: Date, endDateTime: Date): Promise<MicrosoftGraph.Event[]> {
-    const sdt = `startdatetime=${startDateTime.toISOString()}`;
-    const edt = `enddatetime=${endDateTime.toISOString()}`;
-    const uri = `/me/calendarview?${sdt}&${edt}`;
+  private _nextMiddleware: Middleware;
 
-    const calendarView = await this.client.api(escape(uri)).get();
-    return calendarView ? calendarView.value : null;
+  // tslint:disable-next-line: completed-docs
+  public async execute(context: Context): Promise<void> {
+    try {
+      const url = context.request as string;
+      const baseLength = BASE_URL.length;
+      context.request = url.substring(0, baseLength) + escape(url.substring(baseLength));
+
+      return await this._nextMiddleware.execute(context);
+    } catch (error) {
+      throw error;
+    }
+  }
+  /**
+   * Handles setting of next middleware
+   *
+   * @param {Middleware} next
+   * @memberof SdkVersionMiddleware
+   */
+  public setNext(next: Middleware): void {
+    this._nextMiddleware = next;
   }
 }
