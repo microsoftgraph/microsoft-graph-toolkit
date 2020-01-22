@@ -239,6 +239,36 @@ export abstract class BaseGraph {
   }
 
   /**
+   * async promise, returns all channels associated with the user logged in
+   *
+   * @returns {Promise<MicrosoftGraph.Channel[]>}
+   * @memberof Graph
+   */
+  public async picker_GetAllMyTeams(): Promise<any> {
+    const teams = await this.client
+      .api('/me/joinedTeams')
+      .middlewareOptions(prepScopes('User.Read.All'))
+      .get();
+
+    return teams ? teams.value : null;
+  }
+
+  /**
+   * async promise, returns all channels associated with the user logged in
+   *
+   * @returns {Promise<MicrosoftGraph.Channel[]>}
+   * @memberof Graph
+   */
+  public async picker_GetChannelsFromTeam(teamId: string): Promise<any> {
+    const channels = await this.client
+      .api(`teams/${teamId}/channels`)
+      .middlewareOptions(prepScopes('User.Read.All'))
+      .get();
+
+    return channels ? channels.value : null;
+  }
+
+  /**
    * async promise, returns all planner plans associated with the group id
    *
    * @param {string} groupId

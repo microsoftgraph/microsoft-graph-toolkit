@@ -1,0 +1,290 @@
+/**
+ * -------------------------------------------------------------------------------------------
+ * Copyright (c) Microsoft Corporation.  All Rights Reserved.  Licensed under the MIT License.
+ * See License in the project root for license information.
+ * -------------------------------------------------------------------------------------------
+ */
+
+@import '../../../node_modules/office-ui-fabric-core/dist/sass/References';
+@import '../../styles/shared-styles.scss';
+
+$list-margin: var(--list-margin, 20px 4px 8px 8px);
+$avatar-margin: var(--avatar-margin, 0 4px 0 0);
+$avatar-size-s: var(--avatar-size-s, 24px);
+$avatar-size: var(--avatar-size, 48px);
+$initials-color: var(--initials-color, white);
+$initials-background-color: var(--initials-background-color, #{$ms-color-magenta});
+$accent-color: var(--accent-color, #0078d4);
+
+$people-list-background-color: var(--people-list-background-color, white);
+
+:host {
+  border-radius: 2px;
+}
+:host .root,
+mgt-people-picker .root {
+  display: block;
+}
+
+:host .people-picker,
+mgt-people-picker .people-picker {
+  position: relative;
+  margin: 7px 0 0 0;
+  background-color: white;
+  padding-bottom: 8px;
+}
+
+:host .people-list,
+mgt-people-picker .people-list {
+  position: absolute;
+  margin: 7px 0px 0px 0px;
+  padding: 0;
+  box-shadow: 0px 1.3289px 2.65781px rgba(180, 180, 180, 0.182), 0px 1.3289px 2.65781px rgba(68, 68, 68, 0.3);
+  border-radius: 2px;
+  background-color: $people-list-background-color;
+  z-index: 1; /* Sit on top */
+  width: 100%;
+  text-align: left;
+  list-style-type: none;
+  font-family: Segoe UI;
+  font-style: normal;
+  font-weight: normal;
+
+  li {
+    cursor: pointer;
+  }
+}
+:host .people-list-separator,
+mgt-people-picker .people-list-separator {
+  height: 2px;
+  background: $accent-color;
+  margin-top: 5px;
+  text-align: center;
+}
+
+:host .people-chosen-input,
+mgt-people-picker .people-chosen-input {
+  position: relative;
+  border: none;
+  line-height: normal;
+  outline: none;
+  font-family: Segoe UI;
+  font-style: normal;
+  font-weight: normal;
+  font-size: 14px;
+  line-height: 19px;
+  &.hide {
+    display: none;
+  }
+}
+
+:host .people-chosen-list,
+mgt-people-picker .people-chosen-list {
+  display: flex;
+  flex-wrap: wrap;
+  vertical-align: middle;
+  margin: 0 0 0 0;
+  list-style-type: none;
+  padding-left: 10px;
+  font-family: Segoe UI;
+  font-style: normal;
+  font-weight: normal;
+}
+.CloseIcon,
+mgt-people-picker .CloseIcon {
+  line-height: normal;
+  font-family: 'FabricMDL2Icons';
+  padding-right: 8px;
+  padding-left: 4px;
+  margin-top: 0px;
+  cursor: pointer;
+}
+:host .SearchIcon,
+mgt-people-picker .SearchIcon {
+  font-family: 'FabricMDL2Icons';
+  color: $accent-color;
+}
+
+:host .people-person,
+mgt-people-picker .people-person {
+  display: flex;
+  margin: 4px 5px 0 0;
+  align-items: center;
+  background-color: rgba(196, 196, 196, 0.24);
+  border-radius: 15px;
+  height: 24px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+:host .list-person,
+mgt-people-picker .list-person {
+  display: flex;
+  flex-direction: row;
+  flex-wrap: wrap;
+  align-items: center;
+  padding: 12px;
+  font-family: Segoe UI;
+  font-style: normal;
+  font-weight: 600;
+  font-size: 14px;
+  &.hide-team {
+    display: none;
+  }
+
+  &:hover {
+    background-color: #f1f1f1dd;
+  }
+}
+
+:host .people-person-list-fill,
+mgt-people-picker .people-person-list-fill {
+  background-color: #f1f1f1;
+}
+
+:host .channel-display,
+mgt-people-picker .channel-display {
+  padding-left: 10px;
+  &:hover {
+    background-color: #f1f1f1dd;
+  }
+  .channel-input {
+    // -webkit-appearance: none;
+    // -moz-appearance: none;
+    // appearance: none;
+  }
+}
+:host .render-channels,
+mgt-people-picker .render-channels {
+  padding-left: 24px;
+  padding-right: 20px;
+}
+
+:host .hide-channels,
+mgt-people-picker .hide-channels {
+  display: none;
+}
+
+:host .people-person-text,
+mgt-people-picker .people-person-text {
+  font-size: 14px;
+  font-weight: normal;
+  margin: 0;
+  padding: 0;
+}
+
+:host .input-search,
+mgt-people-picker .input-search {
+  margin: 7px 2px 0px 3px;
+}
+:host .input-search-start,
+mgt-people-picker .input-search-start {
+  margin: 7px 0px 0px 0px;
+  line-height: normal;
+  margin-inline-start: 0px;
+  margin-inline-end: 0px;
+}
+
+:host .people-picker-input,
+mgt-people-picker .people-picker-input {
+  display: flex;
+  order: 2;
+  background-color: white;
+  margin: $avatar-margin;
+  font-size: 14px;
+  line-height: 19px;
+  cursor: text;
+}
+
+:host .duplicate-person,
+mgt-people-picker .duplicate-person {
+  text-decoration: none;
+  border-bottom: 1px solid red;
+}
+
+:host .remove-person-button,
+mgt-people-picker .remove-person-button {
+  background: #767676;
+  transform: matrix(-0.71, -0.71, 0.71, -0.71, 0, 0);
+}
+
+:host .remove-person-button-secondary,
+mgt-people-picker .remove-person-button-secondary {
+  background: #767676;
+  transform: matrix(0.71, -0.71, 0.71, 0.71, 0, 0);
+}
+
+:host .person-display-name,
+mgt-people-picker .person-display-name {
+  max-width: 100px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  margin-left: 8px;
+  font-family: Segoe UI;
+  font-style: normal;
+  font-weight: 600;
+  font-size: 14px;
+  line-height: 19px;
+  text-align: center;
+  color: #000000;
+}
+
+mgt-person {
+  --avatar-size-s: 32px;
+  margin-left: 12px;
+}
+.chosen-person {
+  --avatar-size-s: 24px;
+  margin-left: 0px;
+}
+
+:host .search-error-text,
+:host .loading-text,
+mgt-people-picker .search-error-text,
+mgt-people-picker .loading-text {
+  font-family: Segoe UI;
+  font-style: normal;
+  font-weight: 600;
+  font-size: 14px;
+  line-height: 19px;
+  text-align: center;
+  color: #232222;
+}
+
+:host .SearchErrorIcon,
+mgt-people-picker .SearchErrorIcon {
+  display: inline-block;
+  font-family: 'FabricMDL2Icons';
+  color: #cf0000;
+}
+
+:host .message-parent,
+mgt-people-picker .message-parent {
+  margin-top: 30px;
+  margin-bottom: 30px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  vertical-align: middle;
+}
+
+:host .highlight-search-text,
+mgt-people-picker .highlight-search-text {
+  font-weight: bold;
+}
+:host .people-person-job-title,
+mgt-people-picker .people-person-job-title {
+  flex: 100%;
+  order: 3;
+  font-weight: normal;
+  font-size: 12px;
+  text-transform: uppercase;
+}
+:host .people-person-text-area,
+mgt-people-picker .people-person-text-area {
+  margin-left: 13px;
+  flex: 1 1 0;
+  max-height: 40px;
+}
