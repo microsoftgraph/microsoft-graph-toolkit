@@ -206,6 +206,7 @@ export class MgtAgenda extends MgtTemplatedComponent {
     const p = Providers.globalProvider;
     if (p && p.state === ProviderState.SignedIn) {
       this._loading = true;
+      const graph = p.graph.forComponent(this);
 
       if (this.eventQuery) {
         try {
@@ -219,8 +220,7 @@ export class MgtAgenda extends MgtTemplatedComponent {
             query = this.eventQuery;
           }
 
-          const graph = p.graph.forComponent(this);
-          let request = await graph.client.api(query);
+          let request = await graph.api(query);
 
           if (scope) {
             request = request.middlewareOptions(prepScopes(scope));
@@ -239,7 +239,7 @@ export class MgtAgenda extends MgtTemplatedComponent {
         const end = new Date(start.getTime());
         end.setDate(start.getDate() + this.days);
         try {
-          this.events = await p.graph.getEvents(start, end, this.groupId);
+          this.events = await graph.getEvents(start, end, this.groupId);
         } catch (error) {
           // noop - possible error with graph
         }

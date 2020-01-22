@@ -24,7 +24,7 @@ export class MockGraph extends BaseGraph {
   private static readonly ROOT_GRAPH_URL: string = 'https://graph.microsoft.com/';
 
   constructor(mockProvider: MockProvider) {
-    super(mockProvider);
+    super();
 
     this.client = Client.initWithMiddleware({
       authProvider: mockProvider,

@@ -26,15 +26,20 @@ import { SdkVersionMiddleware } from './utils/SdkVersionMiddleware';
  * @class Graph
  */
 export class Graph extends BaseGraph {
-  constructor(provider: IProvider, component?: MgtBaseComponent) {
-    super(provider);
+  constructor(providerOrClient: IProvider | Client) {
+    super();
 
-    if (provider) {
+    const client = providerOrClient as Client;
+    const provider = providerOrClient as IProvider;
+
+    if (client.api) {
+      this.client = client;
+    } else if (provider) {
       const middleware: Middleware[] = [
         new AuthenticationHandler(provider),
         new RetryHandler(new RetryHandlerOptions()),
         new TelemetryHandler(),
-        new SdkVersionMiddleware(component),
+        new SdkVersionMiddleware(),
         new HTTPMessageHandler()
       ];
 
@@ -45,14 +50,17 @@ export class Graph extends BaseGraph {
   }
 
   /**
-   * Returns an instance of the Graph in the context of the provided component.
+   * Returns a new instance of the Graph using the same
+   * client within the context of the provider.
    *
    * @param {MgtBaseComponent} component
    * @returns
-   * @memberof Graph
+   * @memberof BaseGraph
    */
   public forComponent(component: MgtBaseComponent): Graph {
-    return new Graph(this._provider, component);
+    const graph = new Graph(this.client);
+    graph.componentName = component.tagName.toLowerCase();
+    return graph;
   }
 
   private chainMiddleware(...middleware: Middleware[]): Middleware {
