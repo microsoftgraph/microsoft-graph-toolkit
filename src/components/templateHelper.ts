@@ -5,6 +5,12 @@
  * -------------------------------------------------------------------------------------------
  */
 
+/**
+ * Helper class for Template Instantiation
+ *
+ * @export
+ * @class TemplateHelper
+ */
 export class TemplateHelper {
   /**
    * Render a template into a HTMLElement with the appropriate data context

@@ -162,6 +162,8 @@ export abstract class MgtTemplatedComponent extends MgtBaseComponent {
         } else {
           templates.default = template;
         }
+
+        (template as any).templateOrder = i;
       }
     }
 

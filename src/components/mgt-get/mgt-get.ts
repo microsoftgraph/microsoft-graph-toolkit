@@ -164,17 +164,32 @@ export class MgtGet extends MgtTemplatedComponent {
     if (this.error) {
       return this.renderTemplate('error', this.error);
       // tslint:disable-next-line: no-string-literal
-    } else if (this.templates['value'] && this.response && this.response.value) {
+    } else if (this.templates['value'] && this.templates['default'] && this.response) {
+      let valueContent;
+
       if (Array.isArray(this.response.value)) {
         let loading = null;
         if (this.loading && !this.isPolling) {
           loading = this.renderTemplate('loading', null);
         }
-        return html`
+        valueContent = html`
           ${this.response.value.map(v => this.renderTemplate('value', v, v.id))} ${loading}
         `;
       } else {
-        return this.renderTemplate('value', this.response);
+        valueContent = this.renderTemplate('value', this.response);
+      }
+
+      const defaultContent = this.renderTemplate('default', this.response);
+
+      // tslint:disable-next-line: no-string-literal
+      if ((this.templates['value'] as any).templateOrder > (this.templates['default'] as any).templateOrder) {
+        return html`
+          ${defaultContent}${valueContent}
+        `;
+      } else {
+        return html`
+          ${valueContent}${defaultContent}
+        `;
       }
     } else if (this.response) {
       return this.renderTemplate('default', this.response);
