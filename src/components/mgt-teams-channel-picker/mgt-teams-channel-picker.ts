@@ -57,12 +57,24 @@ export class MgtTeamsChannelPicker extends MgtTemplatedComponent {
     return styles;
   }
 
+  /**
+   * user's Microsoft joinedTeams
+   *
+   * @type {Team[]}
+   * @memberof MgtTeamsChannelPicker
+   */
   @property({
     attribute: 'teams',
     type: Object
   })
-  public teams: Team[] = null;
+  public teams: Team[] = [];
 
+  /**
+   * user selected teams
+   *
+   * @type {any[]}
+   * @memberof MgtTeamsChannelPicker
+   */
   @property({
     attribute: 'selected-teams'
   })
@@ -79,7 +91,7 @@ export class MgtTeamsChannelPicker extends MgtTemplatedComponent {
 
   // tracking of user arrow key input for selection
   private arrowSelectionCount: number = 0;
-  // if search is still loading don't load "people not found" state
+  // determines loading state
   @property() private isLoading = false;
   private debouncedSearch;
 
@@ -108,11 +120,11 @@ export class MgtTeamsChannelPicker extends MgtTemplatedComponent {
     return (
       this.renderTemplate('default', { teams: this.teams }) ||
       html`
-        <div class="people-picker" @blur=${this.lostFocus}>
-          <div class="people-picker-input" @click=${this.gainedFocus}>
+        <div class="teams-channel-picker" @blur=${this.lostFocus}>
+          <div class="teams-channel-picker-input" @click=${this.gainedFocus}>
             ${this.renderChosenTeam()}
           </div>
-          <div class="people-list-separator"></div>
+          <div class="teams-list-separator"></div>
           ${this.renderChannelList()}
         </div>
       `
@@ -211,14 +223,14 @@ export class MgtTeamsChannelPicker extends MgtTemplatedComponent {
         }
       }
 
-      const channelList = this.renderRoot.querySelector('.people-list');
+      const channelList = this.renderRoot.querySelector('.team-list');
       // reset background color
       // tslint:disable-next-line: prefer-for-of
       for (let i = 0; i < channelList.children.length; i++) {
-        channelList.children[i].setAttribute('class', 'list-person people-person-list');
+        channelList.children[i].setAttribute('class', 'list-team teams-channel-list');
       }
       // set selected background
-      channelList.children[this.arrowSelectionCount].setAttribute('class', 'list-person people-person-list-fill');
+      channelList.children[this.arrowSelectionCount].setAttribute('class', 'list-team teams-channel-list-fill');
     }
   }
 
@@ -257,10 +269,10 @@ export class MgtTeamsChannelPicker extends MgtTemplatedComponent {
     }
 
     const foundMatch = [];
-    for (let i = 0; i < this.teams.length; i++) {
-      for (let j = 0; j < this.teams[i].channels.length; j++) {
-        if (this.teams[i].channels[j].displayName.toLowerCase().indexOf(name) !== -1) {
-          foundMatch.push(this.teams[i].displayName);
+    for (const team of this.teams) {
+      for (const channel of team.channels) {
+        if (channel.displayName.toLowerCase().indexOf(name) !== -1) {
+          foundMatch.push(team.displayName);
         }
       }
     }
@@ -336,12 +348,12 @@ export class MgtTeamsChannelPicker extends MgtTemplatedComponent {
         ${peopleList}
         <div class="${inputClass}">
           <input
-            id="people-picker-input"
+            id="teams-channel-picker-input"
             class="people-chosen-input ${this.selectedTeams.length > 0 ? 'hide' : ''}"
             type="text"
             placeholder="Select a channel: "
-            label="people-picker-input"
-            aria-label="people-picker-input"
+            label="teams-channel-picker-input"
+            aria-label="teams-channel-picker-input"
             role="input"
             .value="${this._userInput}"
             @keydown="${this.onUserKeyDown}"
@@ -354,7 +366,7 @@ export class MgtTeamsChannelPicker extends MgtTemplatedComponent {
   // tslint:enable
 
   private gainedFocus() {
-    const peopleList = this.renderRoot.querySelector('.people-list');
+    const peopleList = this.renderRoot.querySelector('.team-list');
     const peopleInput = this.renderRoot.querySelector('.people-chosen-input') as HTMLInputElement;
     peopleInput.focus();
     peopleInput.select();
@@ -366,7 +378,7 @@ export class MgtTeamsChannelPicker extends MgtTemplatedComponent {
   }
 
   private lostFocus() {
-    const peopleList = this.renderRoot.querySelector('.people-list');
+    const peopleList = this.renderRoot.querySelector('.team-list');
     if (peopleList) {
       peopleList.setAttribute('style', 'display:none');
     }
@@ -389,7 +401,7 @@ export class MgtTeamsChannelPicker extends MgtTemplatedComponent {
     }
 
     return html`
-      <div class="people-list">
+      <div class="team-list">
         ${content}
       </div>
     `;
@@ -477,7 +489,7 @@ export class MgtTeamsChannelPicker extends MgtTemplatedComponent {
         teamData => teamData,
         teamData => html`
           <li
-            class="list-person people-person-list team-list-${teamData.id}"
+            class="list-team teams-channel-list team-list-${teamData.id}"
             @click="${() => this._clickTeam(teamData.id)}"
           >
             ${getSvg(SvgIcon.ArrowRight, '#252424')} ${teamData.displayName}
