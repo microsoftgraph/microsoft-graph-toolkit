@@ -1,10 +1,11 @@
 <!DOCTYPE html>
 <html>
   <head>
-    <script src="https://unpkg.com/@microsoft/mgt/dist/bundle/mgt-loader.js"></script>
+    <!-- <script src="https://unpkg.com/@microsoft/mgt/dist/bundle/mgt-loader.js"></script> -->
+    <script type="module" src="../../../dist/es6/index.js"></script>
   </head>
   <body>
-    <mgt-mock-provider></mgt-mock-provider>
+    <mgt-msal-provider client-id="a974dfa0-9f57-49b9-95db-90f04ce2111a"></mgt-msal-provider>
 
     <mgt-agenda id="myDay">
       <template>
@@ -23,8 +24,8 @@
               <div data-for="attendee in event.attendees">
                 <mgt-person person-query="{{ attendee.emailAddress.name }}">
                   <template>
-                    <div data-if="person.image">
-                      <img class="person-image" src="{{ person.image }}" />
+                    <div data-if="person.personImage">
+                      <img class="person-image" src="{{ person.personImage }}" />
                     </div>
                     <div data-else>
                       {{ person.displayName }}
@@ -60,7 +61,8 @@
     <script>
       let myDay = document.getElementById('myDay');
 
-      myDay.templateConverters.testFunction = str => str.length;
+      myDay.templateContext = myDay.templateContext || {};
+      myDay.templateContext.testFunction = str => str.length;
 
       myDay.addEventListener('templateRendered', e => {
         if (e.detail && e.detail.context) {

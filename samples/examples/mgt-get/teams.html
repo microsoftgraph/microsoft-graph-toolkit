@@ -1,6 +1,6 @@
 <html>
   <head>
-    <script type="module" src="../../dist/es6/index.js"></script>
+    <script type="module" src="../../../dist/es6/index.js"></script>
     <!-- <script src="https://unpkg.com/@microsoft/mgt/dist/bundle/mgt-loader.js"></script> -->
   </head>
   <body>
@@ -11,16 +11,10 @@
       <template>
         Team:
         <select @change="teamChange">
-          <option data-for="team in value" value="{{team.id}}">{{team.displayName}}</option>
+          <option data-for="{{team in value}}" value="{{team.id}}">{{team.displayName}}</option>
         </select>
       </template>
     </mgt-get>
-
-    <!-- <mgt-get resource="/me/presence" version="beta" scopes="Presence.Read" polling-rate="2000">
-      <template>
-        {{availability}}
-      </template>
-    </mgt-get> -->
 
     <mgt-get id="channelsGet">
       <template>
@@ -52,7 +46,7 @@
     </div>
 
     <script type="module">
-      import { Providers } from '../../dist/es6/index.js';
+      import { Providers } from '../../../dist/es6/index.js';
 
       const teamsGet = document.getElementById('teamsGet');
       const channelsGet = document.getElementById('channelsGet');
