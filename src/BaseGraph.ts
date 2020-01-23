@@ -244,10 +244,11 @@ export abstract class BaseGraph {
    * @returns {Promise<MicrosoftGraph.Channel[]>}
    * @memberof Graph
    */
-  public async picker_GetAllMyTeams(): Promise<any> {
+  public async getAllMyTeams(): Promise<any> {
     const teams = await this.client
       .api('/me/joinedTeams')
       .middlewareOptions(prepScopes('User.Read.All'))
+      .select(['displayName', 'id'])
       .get();
 
     return teams ? teams.value : null;
@@ -259,7 +260,7 @@ export abstract class BaseGraph {
    * @returns {Promise<MicrosoftGraph.Channel[]>}
    * @memberof Graph
    */
-  public async picker_GetChannelsFromTeam(teamId: string): Promise<any> {
+  public async getChannelsFromTeam(teamId: string): Promise<any> {
     const channels = await this.client
       .api(`teams/${teamId}/channels`)
       .middlewareOptions(prepScopes('User.Read.All'))

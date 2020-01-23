@@ -20,6 +20,27 @@ import { MgtTemplatedComponent } from '../templatedComponent';
 import { styles } from './mgt-teams-channel-picker-css';
 
 /**
+ * Establishes Microsoft Teams channels for use in Microsoft.Graph.Team type
+ * @type MicrosoftGraph.Team
+ *
+ */
+
+type Team = MicrosoftGraph.Team & {
+  /**
+   * Display name Of Team
+   *
+   * @type {string}
+   */
+  displayName: string;
+  /**
+   * Microsoft Graph Channel
+   *
+   * @type {MicrosoftGraph.Channel[]}
+   */
+  channels: MicrosoftGraph.Channel[];
+};
+
+/**
  * Web component used to select channels from a User's Microsoft Teams profile
  *
  *
@@ -40,7 +61,7 @@ export class MgtTeamsChannelPicker extends MgtTemplatedComponent {
     attribute: 'teams',
     type: Object
   })
-  public teams: any = null;
+  public teams: Team[] = null;
 
   @property({
     attribute: 'selected-teams'
@@ -59,7 +80,7 @@ export class MgtTeamsChannelPicker extends MgtTemplatedComponent {
   // tracking of user arrow key input for selection
   private arrowSelectionCount: number = 0;
   // if search is still loading don't load "people not found" state
-  private isLoading = false;
+  @property() private isLoading = false;
   private debouncedSearch;
 
   constructor() {
@@ -85,11 +106,11 @@ export class MgtTeamsChannelPicker extends MgtTemplatedComponent {
    */
   public render() {
     return (
-      this.renderTemplate('default', { channels: this._teamChannels }) ||
+      this.renderTemplate('default', { teams: this.teams }) ||
       html`
         <div class="people-picker" @blur=${this.lostFocus}>
           <div class="people-picker-input" @click=${this.gainedFocus}>
-            ${this.renderChosenPeople()}
+            ${this.renderChosenTeam()}
           </div>
           <div class="people-list-separator"></div>
           ${this.renderChannelList()}
@@ -205,22 +226,23 @@ export class MgtTeamsChannelPicker extends MgtTemplatedComponent {
     const provider = Providers.globalProvider;
     const client = Providers.globalProvider.graph;
 
-    this.teams = await client.picker_GetAllMyTeams();
-
-    console.log('teams', this.teams);
+    this.teams = await client.getAllMyTeams();
 
     if (provider) {
       if (provider.state === ProviderState.SignedIn) {
+        this.isLoading = true;
         const batch = provider.graph.createBatch();
 
         for (const [i, team] of this.teams.entries()) {
           batch.get(`${i}`, `teams/${team.id}/channels`, ['user.read.all']);
         }
         const response = await batch.execute();
-        this._teamChannels = this.teams.map((team, index) => [team, response[index].value]);
+        for (const [i, team] of this.teams.entries()) {
+          team.channels = response[i].value;
+        }
       }
     }
-    console.log('teamChannels', this._teamChannels);
+    this.isLoading = false;
   }
 
   /**
@@ -233,15 +255,22 @@ export class MgtTeamsChannelPicker extends MgtTemplatedComponent {
     } else {
       this.hideChannels = true;
     }
-    for (let i = 0; i < this._teamChannels.length; i++) {
-      for (let j = 0; j < this._teamChannels[i][1].length; j++) {
-        if (this._teamChannels[i][1][j] && this._teamChannels[i][1][j].displayName.toLowerCase().indexOf(name) !== -1) {
-          this._teamChannels[i][1][j].isShowing = true;
-        } else if (
-          this._teamChannels[i][1][j] &&
-          this._teamChannels[i][1][j].displayName.toLowerCase().indexOf(name) === -1
-        ) {
-          this._teamChannels[i][1][j].isShowing = false;
+
+    const foundMatch = [];
+    for (let i = 0; i < this.teams.length; i++) {
+      for (let j = 0; j < this.teams[i].channels.length; j++) {
+        if (this.teams[i].channels[j].displayName.toLowerCase().indexOf(name) !== -1) {
+          foundMatch.push(this.teams[i].displayName);
+        }
+      }
+    }
+
+    if (foundMatch.length) {
+      for (const team of this.teams) {
+        const teamDiv = this.renderRoot.querySelector('.team-list-' + team.id);
+        teamDiv.classList.remove('hide-team');
+        if (foundMatch.indexOf(team.displayName) === -1) {
+          teamDiv.classList.add('hide-team');
         }
       }
     }
@@ -280,7 +309,7 @@ export class MgtTeamsChannelPicker extends MgtTemplatedComponent {
     `;
   }
 
-  private renderChosenPeople() {
+  private renderChosenTeam() {
     let peopleList;
     let inputClass = 'input-search-start';
 
@@ -343,29 +372,72 @@ export class MgtTeamsChannelPicker extends MgtTemplatedComponent {
     }
   }
 
-  private renderHighlightText(channel: any) {
-    const channels: any = channel;
+  private renderChannelList() {
+    let content: TemplateResult;
 
-    const highlightLocation = channels.displayName.toLowerCase().indexOf(this._userInput.toLowerCase());
+    if (this.teams) {
+      content = this.renderTeams(this.teams);
+      if (this.isLoading) {
+        content = this.renderTemplate('loading', null, 'loading') || this.renderLoadingMessage();
+      } else if (this.teams.length === 0 && this._userInput.length > 0) {
+        content = this.renderTemplate('error', null, 'error') || this.renderErrorMessage();
+      } else {
+        if (this.teams[0]) {
+          (this.teams[0] as any).isSelected = 'fill';
+        }
+      }
+    }
+
+    return html`
+      <div class="people-list">
+        ${content}
+      </div>
+    `;
+  }
+
+  private renderChannels(channelData: MicrosoftGraph.Channel[]) {
+    let channelView;
+    if (channelData) {
+      channelView = html`
+        ${repeat(
+          channelData,
+          channel => channel,
+          channel => html`
+            <div class="channel-display">
+              ${this.renderHighlightText(channel)}
+            </div>
+          `
+        )}
+      `;
+    }
+
+    return channelView;
+  }
+
+  private renderHighlightText(channel: MicrosoftGraph.Channel) {
+    // tslint:disable-next-line: prefer-const
+    let channels: any = {};
+
+    const highlightLocation = channel.displayName.toLowerCase().indexOf(this._userInput.toLowerCase());
     if (highlightLocation !== -1) {
       // no location
       if (highlightLocation === 0) {
         // highlight is at the beginning of sentence
         channels.first = '';
-        channels.highlight = channels.displayName.slice(0, this._userInput.length);
-        channels.last = channels.displayName.slice(this._userInput.length, channels.displayName.length);
-      } else if (highlightLocation === channels.displayName.length) {
+        channels.highlight = channel.displayName.slice(0, this._userInput.length);
+        channels.last = channel.displayName.slice(this._userInput.length, channel.displayName.length);
+      } else if (highlightLocation === channel.displayName.length) {
         // highlight is at end of the sentence
-        channels.first = channels.displayName.slice(0, highlightLocation);
-        channels.highlight = channels.displayName.slice(highlightLocation, channels.displayName.length);
+        channels.first = channel.displayName.slice(0, highlightLocation);
+        channels.highlight = channel.displayName.slice(highlightLocation, channel.displayName.length);
         channels.last = '';
       } else {
         // highlight is in middle of sentence
-        channels.first = channels.displayName.slice(0, highlightLocation);
-        channels.highlight = channels.displayName.slice(highlightLocation, highlightLocation + this._userInput.length);
-        channels.last = channels.displayName.slice(
+        channels.first = channel.displayName.slice(0, highlightLocation);
+        channels.highlight = channel.displayName.slice(highlightLocation, highlightLocation + this._userInput.length);
+        channels.last = channel.displayName.slice(
           highlightLocation + this._userInput.length,
-          channels.displayName.length
+          channel.displayName.length
         );
       }
     }
@@ -379,50 +451,6 @@ export class MgtTeamsChannelPicker extends MgtTemplatedComponent {
     `;
   }
 
-  private renderChannelList() {
-    let content: TemplateResult;
-
-    if (this._teamChannels) {
-      content = this.renderTeams(this._teamChannels);
-
-      if (this.isLoading) {
-        content = this.renderTemplate('loading', null, 'loading') || this.renderLoadingMessage();
-      } else if (this._teamChannels.length === 0 && this._userInput.length > 0) {
-        content = this.renderTemplate('error', null, 'error') || this.renderErrorMessage();
-      } else {
-        if (this._teamChannels[0]) {
-          (this._teamChannels[0] as any).isSelected = 'fill';
-        }
-      }
-    }
-
-    return html`
-      <div class="people-list">
-        ${content}
-      </div>
-    `;
-  }
-
-  private async loadChannels(team: any) {
-    this._showChannel.push(team.id);
-  }
-  private renderChannels(team: any[], channels: any[]) {
-    let channelView;
-    channelView = html`
-      ${repeat(
-        channels,
-        channel => channel,
-        channel => html`
-          <div class="channel-display" @click=${() => this.addChannel(team, channel)}>
-            ${channel.isShowing !== false ? this.renderHighlightText(channel) : null}
-          </div>
-        `
-      )}
-    `;
-
-    return channelView;
-  }
-
   private addChannel(team, channel) {
     this.selectedTeams.push([team, channel]);
     this.lostFocus();
@@ -430,61 +458,32 @@ export class MgtTeamsChannelPicker extends MgtTemplatedComponent {
     this.requestUpdate();
   }
 
-  private _clickTeam(channel: any) {
-    const team = this.renderRoot.querySelector('.team-' + channel.id);
+  private _clickTeam(id: string) {
+    const team = this.renderRoot.querySelector('.team-' + id);
 
-    if (team.classList[2] === 'hide-channels') {
-      team.classList.remove('hide-channels');
-    } else {
-      team.classList.add('hide-channels');
+    if (team) {
+      if (team.classList[2] === 'hide-channels') {
+        team.classList.remove('hide-channels');
+      } else {
+        team.classList.add('hide-channels');
+      }
     }
   }
 
-  private renderTeam(team) {
-    window.setTimeout(() => {
-      const channelsDiv = this.renderRoot.querySelector('.team-' + team.id);
-      let noChannelsDisplayed = true;
-      if (channelsDiv) {
-        for (let i = 0; i < channelsDiv.children.length; i++) {
-          if (channelsDiv.children[i].children.length > 0) {
-            noChannelsDisplayed = false;
-          }
-        }
-      }
-
-      const teamDiv = this.renderRoot.querySelector('.teamName-' + team.displayName.replace(/\s/g, ''));
-      if (teamDiv) {
-        teamDiv.parentElement.classList.remove('hide-team');
-        if (noChannelsDisplayed && this._userInput.length) {
-          teamDiv.parentElement.classList.add('hide-team');
-        } else {
-          teamDiv.parentElement.classList.remove('hide-team');
-        }
-      }
-    });
-  }
-
-  private renderTeams(teamChannels: any[]) {
+  private renderTeams(teams: Team[]) {
     return html`
       ${repeat(
-        teamChannels,
-        teamData => teamData[0].id,
+        teams,
+        teamData => teamData,
         teamData => html`
-          <li class="list-person people-person-list" @click="${() => this.loadChannels(teamData)}">
-            ${this._showChannel[0] === teamData[0].id
-              ? getSvg(SvgIcon.ArrowDown, '#252424')
-              : getSvg(SvgIcon.ArrowRight, '#252424')}
-            ${this.renderTeam(teamData[0])}
-            <div
-              class=${'people-person-text-area teamName-' + teamData[0].displayName.replace(/\s/g, '')}
-              id="${teamData[0].displayName.replace(/\s/g, '')}"
-              @click=${() => this._clickTeam(teamData[0])}
-            >
-              ${teamData[0].displayName}
-            </div>
+          <li
+            class="list-person people-person-list team-list-${teamData.id}"
+            @click="${() => this._clickTeam(teamData.id)}"
+          >
+            ${getSvg(SvgIcon.ArrowRight, '#252424')} ${teamData.displayName}
           </li>
-          <div class="render-channels team-${teamData[0].id} ${this.hideChannels ? 'hide-channels' : ''}">
-            ${this.renderChannels(teamData[0], teamData[1])}
+          <div class="render-channels team-${teamData.id} ${this.hideChannels ? 'hide-channels' : ''}">
+            ${this.renderChannels(teamData.channels)}
           </div>
         `
       )}
