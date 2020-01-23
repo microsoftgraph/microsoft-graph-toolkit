@@ -14,6 +14,8 @@ export const withSignIn = makeDecorator({
   wrapper: (getStory, context, { parameters }) => {
     const mockProvider = new MockProvider(true);
 
+    Providers.globalProvider = mockProvider;
+
     const channel = addons.getChannel();
 
     channel.on(SETPROVIDER_EVENT, params => {
@@ -26,8 +28,6 @@ export const withSignIn = makeDecorator({
         } else if (params.state !== ProviderState.SignedIn && currentProvider !== mockProvider) {
           Providers.globalProvider = mockProvider;
         }
-      } else {
-        Providers.globalProvider = mockProvider;
       }
     });
 
