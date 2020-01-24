@@ -1,0 +1,47 @@
+<html>
+  <head>
+    <!-- <script src="https://unpkg.com/@microsoft/mgt/dist/bundle/mgt-loader.js"></script> -->
+    <script type="module" src="../../../dist/es6/index.js"></script>
+  </head>
+  <body>
+    <mgt-msal-provider client-id="a974dfa0-9f57-49b9-95db-90f04ce2111a"></mgt-msal-provider>
+    <mgt-login></mgt-login>
+
+    <mgt-get resource="/me/messages" scopes="mail.read" max-pages="2">
+      <template>
+        <div>
+          <div data-for="group in groupMail(value)">
+            <mgt-person person-query="{{ group[0] }}" show-name person-card="hover"></mgt-person>
+            <div data-for="message in group[1]">
+              <h2>{{ message.subject }}</h2>
+              <b>Preview:</b> {{ message.bodyPreview }}
+            </div>
+          </div>
+        </div>
+      </template>
+    </mgt-get>
+
+    <script>
+      const get = document.querySelector('mgt-get');
+      get.templateContext = get.templateContext || {};
+      get.templateContext.groupMail = messages => {
+        let groupBy = (list, keyGetter) => {
+          const map = new Map();
+          list.forEach(item => {
+            const key = keyGetter(item);
+            const collection = map.get(key);
+            if (!collection) {
+              map.set(key, [item]);
+            } else {
+              collection.push(item);
+            }
+          });
+          return map;
+        };
+
+        let grouped = groupBy(messages, m => m.sender.emailAddress.address);
+        return [...grouped];
+      };
+    </script>
+  </body>
+</html>
