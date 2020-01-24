@@ -7,7 +7,7 @@
 
 import { Context, Middleware } from '@microsoft/microsoft-graph-client';
 import { getRequestHeader, setRequestHeader } from '@microsoft/microsoft-graph-client/lib/es/middleware/MiddlewareUtil';
-import { MgtBaseComponent } from '../components/baseComponent';
+import { ComponentMiddlewareOptions } from './ComponentMiddlewareOptions';
 import { PACKAGE_VERSION } from './version';
 
 /**
@@ -23,11 +23,6 @@ export class SdkVersionMiddleware implements Middleware {
    * A member to hold next middleware in the middleware chain
    */
   private _nextMiddleware: Middleware;
-  private _component?: MgtBaseComponent;
-
-  constructor(component?: MgtBaseComponent) {
-    this._component = component;
-  }
 
   // tslint:disable-next-line: completed-docs
   public async execute(context: Context): Promise<void> {
@@ -35,10 +30,12 @@ export class SdkVersionMiddleware implements Middleware {
       // Header parts must follow the format: 'name/version'
       const headerParts: string[] = [];
 
-      // Component version
-      if (this._component) {
-        const componentTagName = this._component.tagName.toLowerCase();
-        const componentVersion: string = `${componentTagName}/${PACKAGE_VERSION}`;
+      const componentOptions = context.middlewareControl.getMiddlewareOptions(
+        ComponentMiddlewareOptions
+      ) as ComponentMiddlewareOptions;
+
+      if (componentOptions) {
+        const componentVersion: string = `${componentOptions.componentName}/${PACKAGE_VERSION}`;
         headerParts.push(componentVersion);
       }
 
@@ -52,11 +49,10 @@ export class SdkVersionMiddleware implements Middleware {
       // Join the header parts together and update the SdkVersion request header value
       const sdkVersionHeaderValue = headerParts.join(', ');
       setRequestHeader(context.request, context.options, 'SdkVersion', sdkVersionHeaderValue);
-
-      return await this._nextMiddleware.execute(context);
     } catch (error) {
-      throw error;
+      // ignore error
     }
+    return await this._nextMiddleware.execute(context);
   }
   /**
    * Handles setting of next middleware

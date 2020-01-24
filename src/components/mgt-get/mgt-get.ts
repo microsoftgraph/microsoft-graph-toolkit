@@ -214,8 +214,6 @@ export class MgtGet extends MgtTemplatedComponent {
       }
 
       try {
-        const graph = provider.graph.forComponent(this);
-
         let uri = this.resource;
         let delta = false;
 
@@ -225,7 +223,8 @@ export class MgtGet extends MgtTemplatedComponent {
           delta = true;
         }
 
-        let request = graph.client.api(uri).version(this.version);
+        const graph = provider.graph.forComponent(this);
+        let request = graph.api(this.resource).version(this.version);
 
         if (this.scopes && this.scopes.length) {
           request = request.middlewareOptions(prepScopes(...this.scopes));

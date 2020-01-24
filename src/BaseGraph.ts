@@ -5,12 +5,13 @@
  * -------------------------------------------------------------------------------------------
  */
 
-import { Client, ResponseType } from '@microsoft/microsoft-graph-client';
+import { Client, GraphRequest, Middleware, MiddlewareOptions, ResponseType } from '@microsoft/microsoft-graph-client';
 import * as MicrosoftGraph from '@microsoft/microsoft-graph-types';
 import * as MicrosoftGraphBeta from '@microsoft/microsoft-graph-types-beta';
-import { IProvider, prepScopes } from '.';
 import { MgtBaseComponent } from './components/baseComponent';
 import { Batch } from './utils/Batch';
+import { ComponentMiddlewareOptions } from './utils/ComponentMiddlewareOptions';
+import { prepScopes } from './utils/GraphHelpers';
 
 /**
  * The base Graph implementation.
@@ -29,21 +30,17 @@ export abstract class BaseGraph {
   public client: Client;
 
   /**
-   * a provider used for making calls
+   * name of a component for analytics
    *
    * @protected
-   * @type {IProvider}
+   * @type {string}
    * @memberof BaseGraph
    */
-  protected _provider: IProvider;
-
-  constructor(provider: IProvider) {
-    this._provider = provider;
-  }
+  protected componentName: string;
 
   /**
    * Returns a new instance of the Graph using the same
-   * provider and the provided component.
+   * client within the context of the provider.
    *
    * @param {MgtBaseComponent} component
    * @returns
@@ -52,13 +49,35 @@ export abstract class BaseGraph {
   public abstract forComponent(component: MgtBaseComponent): BaseGraph;
 
   /**
+   * Returns a new graph request for a specific component
+   * Used internally for analytics purposes
+   *
+   * @param {string} path
+   * @param {MgtBaseComponent} [component=null]
+   * @memberof Graph
+   */
+  public api(path: string): GraphRequest {
+    let request = this.client.api(path);
+    if (this.componentName) {
+      request.middlewareOptions = (options: MiddlewareOptions[]): GraphRequest => {
+        const requestObj = request as any;
+        requestObj._middlewareOptions = requestObj._middlewareOptions.concat(options);
+        return request;
+      };
+      request = request.middlewareOptions([new ComponentMiddlewareOptions(this.componentName)]);
+    }
+
+    return request;
+  }
+
+  /**
    * creates batch request
    *
    * @returns
    * @memberof BaseGraph
    */
   public createBatch() {
-    return new Batch(this.client);
+    return new Batch(this.client, this.componentName);
   }
 
   /**
@@ -68,8 +87,7 @@ export abstract class BaseGraph {
    * @memberof BaseGraph
    */
   public async getMe(): Promise<MicrosoftGraph.User> {
-    return this.client
-      .api('me')
+    return this.api('me')
       .middlewareOptions(prepScopes('user.read'))
       .get();
   }
@@ -83,8 +101,7 @@ export abstract class BaseGraph {
    */
   public async getUser(userPrincipleName: string): Promise<MicrosoftGraph.User> {
     const scopes = 'user.readbasic.all';
-    return this.client
-      .api(`/users/${userPrincipleName}`)
+    return this.api(`/users/${userPrincipleName}`)
       .middlewareOptions(prepScopes(scopes))
       .get();
   }
@@ -98,8 +115,7 @@ export abstract class BaseGraph {
    */
   public async findPerson(query: string): Promise<MicrosoftGraph.Person[]> {
     const scopes = 'people.read';
-    const result = await this.client
-      .api('/me/people')
+    const result = await this.api('/me/people')
       .search('"' + query + '"')
       .middlewareOptions(prepScopes(scopes))
       .get();
@@ -115,8 +131,7 @@ export abstract class BaseGraph {
    */
   public async findContactByEmail(email: string): Promise<MicrosoftGraph.Contact[]> {
     const scopes = 'contacts.read';
-    const result = await this.client
-      .api('/me/contacts')
+    const result = await this.api('/me/contacts')
       .filter(`emailAddresses/any(a:a/address eq '${email}')`)
       .middlewareOptions(prepScopes(scopes))
       .get();
@@ -194,8 +209,7 @@ export abstract class BaseGraph {
 
     uri += `/calendarview?${sdt}&${edt}`;
 
-    const calendarView = await this.client
-      .api(uri)
+    const calendarView = await this.api(uri)
       .middlewareOptions(prepScopes(scopes))
       .orderby('start/dateTime')
       .get();
@@ -212,8 +226,7 @@ export abstract class BaseGraph {
     const scopes = 'people.read';
 
     const uri = '/me/people';
-    const people = await this.client
-      .api(uri)
+    const people = await this.api(uri)
       .middlewareOptions(prepScopes(scopes))
       .filter("personType/class eq 'Person'")
       .get();
@@ -231,8 +244,7 @@ export abstract class BaseGraph {
     const scopes = 'people.read';
 
     const uri = `/groups/${groupId}/members`;
-    const people = await this.client
-      .api(uri)
+    const people = await this.api(uri)
       .middlewareOptions(prepScopes(scopes))
       .get();
     return people ? people.value : null;
@@ -249,8 +261,7 @@ export abstract class BaseGraph {
     const scopes = 'Group.Read.All';
 
     const uri = `/groups/${groupId}/planner/plans`;
-    const plans = await this.client
-      .api(uri)
+    const plans = await this.api(uri)
       .header('Cache-Control', 'no-store')
       .middlewareOptions(prepScopes(scopes))
       .get();
@@ -264,8 +275,7 @@ export abstract class BaseGraph {
    * @memberof BaseGraph
    */
   public async getAllMyPlannerPlans(): Promise<MicrosoftGraph.PlannerPlan[]> {
-    const plans = await this.client
-      .api('/me/planner/plans')
+    const plans = await this.api('/me/planner/plans')
       .header('Cache-Control', 'no-store')
       .middlewareOptions(prepScopes('Group.Read.All'))
       .get();
@@ -281,8 +291,7 @@ export abstract class BaseGraph {
    * @memberof BaseGraph
    */
   public async getSinglePlannerPlan(planId: string): Promise<MicrosoftGraph.PlannerPlan> {
-    const plan = await this.client
-      .api(`/planner/plans/${planId}`)
+    const plan = await this.api(`/planner/plans/${planId}`)
       .header('Cache-Control', 'no-store')
       .middlewareOptions(prepScopes('Group.Read.All'))
       .get();
@@ -298,8 +307,7 @@ export abstract class BaseGraph {
    * @memberof BaseGraph
    */
   public async getBucketsForPlannerPlan(planId: string): Promise<MicrosoftGraph.PlannerBucket[]> {
-    const buckets = await this.client
-      .api(`/planner/plans/${planId}/buckets`)
+    const buckets = await this.api(`/planner/plans/${planId}/buckets`)
       .header('Cache-Control', 'no-store')
       .middlewareOptions(prepScopes('Group.Read.All'))
       .get();
@@ -315,8 +323,7 @@ export abstract class BaseGraph {
    * @memberof BaseGraph
    */
   public async getTasksForPlannerBucket(bucketId: string): Promise<MicrosoftGraph.PlannerTask[]> {
-    const tasks = await this.client
-      .api(`/planner/buckets/${bucketId}/tasks`)
+    const tasks = await this.api(`/planner/buckets/${bucketId}/tasks`)
       .header('Cache-Control', 'no-store')
       .middlewareOptions(prepScopes('Group.Read.All'))
       .get();
@@ -334,8 +341,7 @@ export abstract class BaseGraph {
    * @memberof BaseGraph
    */
   public async setPlannerTaskDetails(taskId: string, details: MicrosoftGraph.PlannerTask, eTag: string): Promise<any> {
-    return await this.client
-      .api(`/planner/tasks/${taskId}`)
+    return await this.api(`/planner/tasks/${taskId}`)
       .header('Cache-Control', 'no-store')
       .middlewareOptions(prepScopes('Group.ReadWrite.All'))
       .header('If-Match', eTag)
@@ -405,8 +411,7 @@ export abstract class BaseGraph {
    * @memberof BaseGraph
    */
   public async addPlannerTask(newTask: MicrosoftGraph.PlannerTask): Promise<any> {
-    return this.client
-      .api('/planner/tasks')
+    return this.api('/planner/tasks')
       .header('Cache-Control', 'no-store')
       .middlewareOptions(prepScopes('Group.ReadWrite.All'))
       .post(newTask);
@@ -421,8 +426,7 @@ export abstract class BaseGraph {
    * @memberof BaseGraph
    */
   public async removePlannerTask(taskId: string, eTag: string): Promise<any> {
-    return this.client
-      .api(`/planner/tasks/${taskId}`)
+    return this.api(`/planner/tasks/${taskId}`)
       .header('Cache-Control', 'no-store')
       .header('If-Match', eTag)
       .middlewareOptions(prepScopes('Group.ReadWrite.All'))
@@ -438,8 +442,7 @@ export abstract class BaseGraph {
    * @memberof BaseGraph
    */
   public async getAllMyTodoGroups(): Promise<MicrosoftGraphBeta.OutlookTaskGroup[]> {
-    const groups = await this.client
-      .api('/me/outlook/taskGroups')
+    const groups = await this.api('/me/outlook/taskGroups')
       .header('Cache-Control', 'no-store')
       .version('beta')
       .middlewareOptions(prepScopes('Tasks.Read'))
@@ -456,8 +459,7 @@ export abstract class BaseGraph {
    * @memberof BaseGraph
    */
   public async getSingleTodoGroup(groupId: string): Promise<MicrosoftGraphBeta.OutlookTaskGroup> {
-    const group = await this.client
-      .api(`/me/outlook/taskGroups/${groupId}`)
+    const group = await this.api(`/me/outlook/taskGroups/${groupId}`)
       .header('Cache-Control', 'no-store')
       .version('beta')
       .middlewareOptions(prepScopes('Tasks.Read'))
@@ -474,8 +476,7 @@ export abstract class BaseGraph {
    * @memberof BaseGraph
    */
   public async getFoldersForTodoGroup(groupId: string): Promise<MicrosoftGraphBeta.OutlookTaskFolder[]> {
-    const folders = await this.client
-      .api(`/me/outlook/taskGroups/${groupId}/taskFolders`)
+    const folders = await this.api(`/me/outlook/taskGroups/${groupId}/taskFolders`)
       .header('Cache-Control', 'no-store')
       .version('beta')
       .middlewareOptions(prepScopes('Tasks.Read'))
@@ -492,8 +493,7 @@ export abstract class BaseGraph {
    * @memberof BaseGraph
    */
   public async getAllTodoTasksForFolder(folderId: string): Promise<MicrosoftGraphBeta.OutlookTask[]> {
-    const tasks = await this.client
-      .api(`/me/outlook/taskFolders/${folderId}/tasks`)
+    const tasks = await this.api(`/me/outlook/taskFolders/${folderId}/tasks`)
       .header('Cache-Control', 'no-store')
       .version('beta')
       .middlewareOptions(prepScopes('Tasks.Read'))
@@ -512,8 +512,7 @@ export abstract class BaseGraph {
    * @memberof BaseGraph
    */
   public async setTodoTaskDetails(taskId: string, task: any, eTag: string): Promise<MicrosoftGraphBeta.OutlookTask> {
-    return await this.client
-      .api(`/me/outlook/tasks/${taskId}`)
+    return await this.api(`/me/outlook/tasks/${taskId}`)
       .header('Cache-Control', 'no-store')
       .version('beta')
       .header('If-Match', eTag)
@@ -570,15 +569,13 @@ export abstract class BaseGraph {
     const { parentFolderId = null } = newTask;
 
     if (parentFolderId) {
-      return await this.client
-        .api(`/me/outlook/taskFolders/${parentFolderId}/tasks`)
+      return await this.api(`/me/outlook/taskFolders/${parentFolderId}/tasks`)
         .header('Cache-Control', 'no-store')
         .version('beta')
         .middlewareOptions(prepScopes('Tasks.ReadWrite'))
         .post(newTask);
     } else {
-      return await this.client
-        .api('/me/outlook/tasks')
+      return await this.api('/me/outlook/tasks')
         .header('Cache-Control', 'no-store')
         .version('beta')
         .middlewareOptions(prepScopes('Tasks.ReadWrite'))
@@ -595,13 +592,33 @@ export abstract class BaseGraph {
    * @memberof BaseGraph
    */
   public async removeTodoTask(taskId: string, eTag: string): Promise<any> {
-    return await this.client
-      .api(`/me/outlook/tasks/${taskId}`)
+    return await this.api(`/me/outlook/tasks/${taskId}`)
       .header('Cache-Control', 'no-store')
       .version('beta')
       .header('If-Match', eTag)
       .middlewareOptions(prepScopes('Tasks.ReadWrite'))
       .delete();
+  }
+
+  /**
+   * Helper method to chain Middleware when instantiating new Client
+   *
+   * @protected
+   * @param {...Middleware[]} middleware
+   * @returns {Middleware}
+   * @memberof BaseGraph
+   */
+  protected chainMiddleware(...middleware: Middleware[]): Middleware {
+    const rootMiddleware = middleware[0];
+    let current = rootMiddleware;
+    for (let i = 1; i < middleware.length; ++i) {
+      const next = middleware[i];
+      if (current.setNext) {
+        current.setNext(next);
+      }
+      current = next;
+    }
+    return rootMiddleware;
   }
 
   private blobToBase64(blob: Blob): Promise<string> {
@@ -617,8 +634,7 @@ export abstract class BaseGraph {
 
   private async getPhotoForResource(resource: string, scopes: string[]): Promise<string> {
     try {
-      const blob = await this.client
-        .api(`${resource}/photo/$value`)
+      const blob = await this.api(`${resource}/photo/$value`)
         .version('beta')
         .responseType(ResponseType.BLOB)
         .middlewareOptions(prepScopes(...scopes))
