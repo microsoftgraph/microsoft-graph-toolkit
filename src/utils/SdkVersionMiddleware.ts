@@ -49,11 +49,10 @@ export class SdkVersionMiddleware implements Middleware {
       // Join the header parts together and update the SdkVersion request header value
       const sdkVersionHeaderValue = headerParts.join(', ');
       setRequestHeader(context.request, context.options, 'SdkVersion', sdkVersionHeaderValue);
-
-      return await this._nextMiddleware.execute(context);
     } catch (error) {
-      throw error;
+      // ignore error
     }
+    return await this._nextMiddleware.execute(context);
   }
   /**
    * Handles setting of next middleware

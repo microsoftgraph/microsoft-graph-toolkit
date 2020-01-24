@@ -90,11 +90,10 @@ class MockMiddleware implements Middleware {
       const url = context.request as string;
       const baseLength = BASE_URL.length;
       context.request = url.substring(0, baseLength) + escape(url.substring(baseLength));
-
-      return await this._nextMiddleware.execute(context);
     } catch (error) {
-      throw error;
+      // ignore error
     }
+    return await this._nextMiddleware.execute(context);
   }
   /**
    * Handles setting of next middleware
