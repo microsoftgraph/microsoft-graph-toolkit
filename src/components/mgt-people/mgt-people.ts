@@ -40,7 +40,7 @@ export class MgtPeople extends MgtTemplatedComponent {
     attribute: 'people',
     type: Object
   })
-  public people: Array<MicrosoftGraph.User | MicrosoftGraph.Person | MicrosoftGraph.Contact> = null;
+  public people: Array<MicrosoftGraph.User | MicrosoftGraph.Person | MicrosoftGraph.Contact>;
 
   /**
    * developer determined max people shown in component
@@ -50,7 +50,7 @@ export class MgtPeople extends MgtTemplatedComponent {
     attribute: 'show-max',
     type: Number
   })
-  public showMax: number = 3;
+  public showMax: number;
 
   /**
    * determines if agenda events come from specific group
@@ -96,6 +96,12 @@ export class MgtPeople extends MgtTemplatedComponent {
   public personCardInteraction: PersonCardInteraction = PersonCardInteraction.hover;
 
   private _firstUpdated = false;
+
+  constructor() {
+    super();
+
+    this.showMax = 3;
+  }
 
   /**
    * Invoked when the element is first updated. Implement to perform one time
@@ -159,18 +165,18 @@ export class MgtPeople extends MgtTemplatedComponent {
       const provider = Providers.globalProvider;
 
       if (provider && provider.state === ProviderState.SignedIn) {
-        const client = Providers.globalProvider.graph;
+        const graph = provider.graph.forComponent(this);
 
         if (this.groupId) {
-          this.people = await client.getPeopleFromGroup(this.groupId);
+          this.people = await graph.getPeopleFromGroup(this.groupId);
         } else if (this.userIds) {
           this.people = await Promise.all(
             this.userIds.map(async userId => {
-              return await client.getUser(userId);
+              return await graph.getUser(userId);
             })
           );
         } else {
-          this.people = await client.getPeople();
+          this.people = await graph.getPeople();
         }
       }
     }

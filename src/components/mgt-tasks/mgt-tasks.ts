@@ -132,7 +132,7 @@ export class MgtTasks extends MgtTemplatedComponent {
    * @type {boolean}
    */
   @property({ attribute: 'read-only', type: Boolean })
-  public readOnly: boolean = false;
+  public readOnly: boolean;
 
   /**
    * determines which task source is loaded, either planner or todo
@@ -152,14 +152,14 @@ export class MgtTasks extends MgtTemplatedComponent {
    * @type {string}
    */
   @property({ attribute: 'target-id', type: String })
-  public targetId: string = null;
+  public targetId: string;
 
   /**
    * if set, the component will only show tasks from this bucket or folder
    * @type {string}
    */
   @property({ attribute: 'target-bucket-id', type: String })
-  public targetBucketId: string = null;
+  public targetBucketId: string;
 
   /**
    * if set, the component will first show tasks from this plan or group
@@ -168,7 +168,7 @@ export class MgtTasks extends MgtTemplatedComponent {
    * @memberof MgtTasks
    */
   @property({ attribute: 'initial-id', type: String })
-  public initialId: string = null;
+  public initialId: string;
 
   /**
    * if set, the component will first show tasks from this bucket or folder
@@ -177,7 +177,7 @@ export class MgtTasks extends MgtTemplatedComponent {
    * @memberof MgtTasks
    */
   @property({ attribute: 'initial-bucket-id', type: String })
-  public initialBucketId: string = null;
+  public initialBucketId: string;
 
   /**
    * sets whether the header is rendered
@@ -186,13 +186,13 @@ export class MgtTasks extends MgtTemplatedComponent {
    * @memberof MgtTasks
    */
   @property({ attribute: 'hide-header', type: Boolean })
-  public hideHeader: boolean = false;
+  public hideHeader: boolean;
 
   /**
    * allows developer to define specific group id
    */
   @property({ attribute: 'group-id', type: String })
-  public groupId: string = null;
+  public groupId: string;
 
   /**
    * Optional filter function when rendering tasks
@@ -201,26 +201,26 @@ export class MgtTasks extends MgtTemplatedComponent {
    */
   public taskFilter: (task: PlannerTask | OutlookTask) => boolean;
 
-  @property() private _isNewTaskVisible: boolean = false;
-  @property() private _newTaskBeingAdded: boolean = false;
-  @property() private _newTaskName: string = '';
-  @property() private _newTaskDueDate: Date = null;
-  @property() private _newTaskGroupId: string = '';
-  @property() private _newTaskFolderId: string = '';
-  @property() private _groups: ITaskGroup[] = [];
-  @property() private _folders: ITaskFolder[] = [];
-  @property() private _tasks: ITask[] = [];
-  @property() private _hiddenTasks: string[] = [];
-  @property() private _loadingTasks: string[] = [];
-  @property() private _inTaskLoad: boolean = false;
-  @property() private _hasDoneInitialLoad: boolean = false;
-  @property() private _todoDefaultSet: boolean = false;
+  @property() private _isNewTaskVisible: boolean;
+  @property() private _newTaskBeingAdded: boolean;
+  @property() private _newTaskName: string;
+  @property() private _newTaskDueDate: Date;
+  @property() private _newTaskGroupId: string;
+  @property() private _newTaskFolderId: string;
+  @property() private _groups: ITaskGroup[];
+  @property() private _folders: ITaskFolder[];
+  @property() private _tasks: ITask[];
+  @property() private _hiddenTasks: string[];
+  @property() private _loadingTasks: string[];
+  @property() private _inTaskLoad: boolean;
+  @property() private _hasDoneInitialLoad: boolean;
+  @property() private _todoDefaultSet: boolean;
 
   @property() private _currentGroup: string;
   @property() private _currentFolder: string;
   @property() private _currentTask: ITask;
 
-  @property() private isPeoplePickerVisible: boolean = false;
+  @property() private isPeoplePickerVisible: boolean;
 
   private _me: User = null;
   private providerUpdateCallback: () => void | any;
@@ -229,6 +229,16 @@ export class MgtTasks extends MgtTemplatedComponent {
 
   constructor() {
     super();
+    this._newTaskName = '';
+    this._newTaskDueDate = null;
+    this._newTaskGroupId = '';
+    this._newTaskFolderId = '';
+    this._groups = [];
+    this._folders = [];
+    this._tasks = [];
+    this._hiddenTasks = [];
+    this._loadingTasks = [];
+
     this.previousMediaQuery = this.mediaQuery;
     this.onResize = this.onResize.bind(this);
     this.providerUpdateCallback = () => this.loadTasks();
@@ -384,7 +394,8 @@ export class MgtTasks extends MgtTemplatedComponent {
     this._inTaskLoad = true;
     let meTask;
     if (!this._me) {
-      meTask = provider.graph.getMe();
+      const graph = provider.graph.forComponent(this);
+      meTask = graph.getMe();
     }
 
     if (this.groupId && this.dataSource === TasksSource.planner) {
@@ -1199,10 +1210,11 @@ export class MgtTasks extends MgtTemplatedComponent {
       return null;
     }
 
+    const graph = p.graph.forComponent(this);
     if (this.dataSource === TasksSource.planner) {
-      return new PlannerTaskSource(p.graph);
+      return new PlannerTaskSource(graph);
     } else if (this.dataSource === TasksSource.todo) {
-      return new TodoTaskSource(p.graph);
+      return new TodoTaskSource(graph);
     } else {
       return null;
     }

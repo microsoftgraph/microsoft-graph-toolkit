@@ -7,6 +7,7 @@
 
 import { Context, Middleware } from '@microsoft/microsoft-graph-client';
 import { getRequestHeader, setRequestHeader } from '@microsoft/microsoft-graph-client/lib/es/middleware/MiddlewareUtil';
+import { MgtBaseComponent } from '../components/baseComponent';
 import { PACKAGE_VERSION } from './version';
 
 /**
@@ -21,17 +22,38 @@ export class SdkVersionMiddleware implements Middleware {
    * @private
    * A member to hold next middleware in the middleware chain
    */
-  private nextMiddleware: Middleware;
+  private _nextMiddleware: Middleware;
+  private _component?: MgtBaseComponent;
+
+  constructor(component?: MgtBaseComponent) {
+    this._component = component;
+  }
 
   // tslint:disable-next-line: completed-docs
   public async execute(context: Context): Promise<void> {
     try {
-      let sdkVersionValue: string = `mgt/${PACKAGE_VERSION}`;
+      // Header parts must follow the format: 'name/version'
+      const headerParts: string[] = [];
 
-      sdkVersionValue += ', ' + getRequestHeader(context.request, context.options, 'SdkVersion');
+      // Component version
+      if (this._component) {
+        const componentTagName = this._component.tagName.toLowerCase();
+        const componentVersion: string = `${componentTagName}/${PACKAGE_VERSION}`;
+        headerParts.push(componentVersion);
+      }
 
-      setRequestHeader(context.request, context.options, 'SdkVersion', sdkVersionValue);
-      return await this.nextMiddleware.execute(context);
+      // Package version
+      const packageVersion: string = `mgt/${PACKAGE_VERSION}`;
+      headerParts.push(packageVersion);
+
+      // Existing SdkVersion header value
+      headerParts.push(getRequestHeader(context.request, context.options, 'SdkVersion'));
+
+      // Join the header parts together and update the SdkVersion request header value
+      const sdkVersionHeaderValue = headerParts.join(', ');
+      setRequestHeader(context.request, context.options, 'SdkVersion', sdkVersionHeaderValue);
+
+      return await this._nextMiddleware.execute(context);
     } catch (error) {
       throw error;
     }
@@ -43,6 +65,6 @@ export class SdkVersionMiddleware implements Middleware {
    * @memberof SdkVersionMiddleware
    */
   public setNext(next: Middleware): void {
-    this.nextMiddleware = next;
+    this._nextMiddleware = next;
   }
 }
