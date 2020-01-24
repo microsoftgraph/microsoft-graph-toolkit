@@ -59,7 +59,7 @@ export class TemplateHelper {
       root.appendChild(rendered);
     }
   }
-  private static _expression = /{{+\s*[$\w\.()]+\s*}}+/g;
+  private static _expression = /{{+\s*[$\w\.()\[\]]+\s*}}+/g;
 
   private static replaceExpression(str: string, context: object, additionalContext: object) {
     return str.replace(this._expression, match => {
@@ -124,7 +124,7 @@ export class TemplateHelper {
 
         if (childElement.dataset.if) {
           const expression = childElement.dataset.if;
-          if (!this.evalBoolInContext(this.trimExpression(expression), context)) {
+          if (!this.evalBoolInContext(this.trimExpression(expression), { ...context, ...additionalContext })) {
             removeChildren.push(childElement);
             childWillBeRemoved = true;
           } else {
@@ -168,14 +168,14 @@ export class TemplateHelper {
       const childElement = loopChildren[i] as HTMLElement;
 
       const loopExpression = childElement.dataset.for;
-      const loopTokens = this.trimExpression(loopExpression).split(' ');
+      const loopTokens = this.trimExpression(loopExpression).split(/\s+(in|of)\s+/i);
 
-      if (loopTokens.length > 1) {
+      if (loopTokens.length === 3) {
         // don't really care what's in the middle at this point
         const itemName = loopTokens[0];
-        const listKey = loopTokens[loopTokens.length - 1];
+        const listKey = loopTokens[2];
 
-        const list = this.evalInContext(listKey, context);
+        const list = this.evalInContext(listKey, { ...context, ...additionalContext });
         if (Array.isArray(list)) {
           // first remove the child
           // we will need to make copy of the child for
@@ -193,9 +193,8 @@ export class TemplateHelper {
             this.renderNode(clone, root, newContext, additionalContext);
             nodeElement.insertBefore(clone, childElement);
           }
-
-          nodeElement.removeChild(childElement);
         }
+        nodeElement.removeChild(childElement);
       }
     }
 

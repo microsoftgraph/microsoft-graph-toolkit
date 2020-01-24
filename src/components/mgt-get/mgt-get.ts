@@ -164,7 +164,7 @@ export class MgtGet extends MgtTemplatedComponent {
     if (this.error) {
       return this.renderTemplate('error', this.error);
       // tslint:disable-next-line: no-string-literal
-    } else if (this.templates['value'] && this.templates['default'] && this.response) {
+    } else if (this.templates['value'] && this.response && this.response.value) {
       let valueContent;
 
       if (Array.isArray(this.response.value)) {
@@ -179,22 +179,29 @@ export class MgtGet extends MgtTemplatedComponent {
         valueContent = this.renderTemplate('value', this.response);
       }
 
-      const defaultContent = this.renderTemplate('default', this.response);
-
       // tslint:disable-next-line: no-string-literal
-      if ((this.templates['value'] as any).templateOrder > (this.templates['default'] as any).templateOrder) {
-        return html`
-          ${defaultContent}${valueContent}
-        `;
+      if (this.templates['default']) {
+        const defaultContent = this.renderTemplate('default', this.response);
+
+        // tslint:disable-next-line: no-string-literal
+        if ((this.templates['value'] as any).templateOrder > (this.templates['default'] as any).templateOrder) {
+          return html`
+            ${defaultContent}${valueContent}
+          `;
+        } else {
+          return html`
+            ${valueContent}${defaultContent}
+          `;
+        }
       } else {
-        return html`
-          ${valueContent}${defaultContent}
-        `;
+        return valueContent;
       }
     } else if (this.response) {
-      return this.renderTemplate('default', this.response);
+      return this.renderTemplate('default', this.response) || html``;
     } else if (this.loading) {
-      return this.renderTemplate('loading', null);
+      return this.renderTemplate('loading', null) || html``;
+    } else {
+      return html``;
     }
   }
 
