@@ -153,7 +153,7 @@ export class MgtGet extends MgtTemplatedComponent {
       let response = null;
       try {
         const graph = provider.graph.forComponent(this);
-        let request = graph.client.api(this.resource).version(this.version);
+        let request = graph.api(this.resource).version(this.version);
 
         if (this.scopes && this.scopes.length) {
           request = request.middlewareOptions(prepScopes(...this.scopes));
