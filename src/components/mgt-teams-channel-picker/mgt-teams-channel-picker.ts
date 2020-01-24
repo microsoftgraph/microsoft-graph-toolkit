@@ -415,7 +415,7 @@ export class MgtTeamsChannelPicker extends MgtTemplatedComponent {
           channelData,
           channel => channel,
           channel => html`
-            <div class="channel-display">
+            <div class="channel-display" @click=${e => this.addChannel(e, channel)}>
               ${this.renderHighlightText(channel)}
             </div>
           `
@@ -463,9 +463,18 @@ export class MgtTeamsChannelPicker extends MgtTemplatedComponent {
     `;
   }
 
-  private addChannel(team, channel) {
-    this.selectedTeams.push([team, channel]);
-    this.lostFocus();
+  private addChannel(event, channel) {
+    const teamDiv =
+      event.target.parentNode.parentNode.classList[1] || event.target.parentNode.parentNode.parentNode.classList[1];
+    if (teamDiv) {
+      const teamId = teamDiv.slice(5, teamDiv.length);
+      for (const team of this.teams) {
+        if (team.id === teamId) {
+          this.selectedTeams.push([team, channel]);
+          this.lostFocus();
+        }
+      }
+    }
 
     this.requestUpdate();
   }
