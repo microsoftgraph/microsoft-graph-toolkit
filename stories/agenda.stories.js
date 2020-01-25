@@ -13,11 +13,12 @@ import { withSignIn } from '../.storybook/signInAddon';
 import '../dist/es6/components/mgt-agenda/mgt-agenda';
 import '../dist/es6/mock/mgt-mock-provider';
 import '../dist/es6/mock/MockProvider';
+import { withCode } from '../.storybook/codeAddon';
 
 export default {
   title: 'mgt-agenda',
   component: 'mgt-agenda',
-  decorators: [withA11y, withKnobs, withWebComponentsKnobs, withSignIn],
+  decorators: [withA11y, withKnobs, withWebComponentsKnobs, withSignIn, withCode],
   parameters: { options: { selectedPanel: 'storybookjs/knobs/panel' } }
 };
 
