@@ -1,7 +1,8 @@
 import addons, { makeDecorator } from '@storybook/addons';
-import * as monaco from 'monaco-editor/esm/vs/editor/editor.api';
+import './components/tab';
+import { TabElement } from './components/tab';
 
-function debounce(func, wait, immediate) {
+let debounce = (func, wait, immediate) => {
   var timeout;
   return function() {
     var context = this,
@@ -15,55 +16,43 @@ function debounce(func, wait, immediate) {
     timeout = setTimeout(later, wait);
     if (callNow) func.apply(context, args);
   };
-}
+};
 
-export const withCode = makeDecorator({
-  name: `withCode`,
+let scriptRegex = /<script\b[^>]*>([\s\S]*?)<\/script>/gm;
+let styleRegex = /<style\b[^>]*>([\s\S]*?)<\/style>/gm;
+
+export const withCodeEditor = makeDecorator({
+  name: `withCodeEditor`,
   parameterName: 'myParameter',
   skipIfNoParametersOrOptions: false,
   wrapper: (getStory, context, { parameters }) => {
     let story = getStory(context);
+    let storyHtml = story.innerHTML;
 
-    let editorRoot = document.createElement('div');
-    editorRoot.style.height = '200px';
-    editorRoot.style.width = '100%;';
-    editorRoot.style.flexBasis = '200px';
-    editorRoot.style.flexShrink = '0';
+    let scriptMatches = scriptRegex.exec(storyHtml);
+    let scriptCode = scriptMatches.length > 1 ? scriptMatches[1].trim() : null;
 
-    let editor = monaco.editor.create(editorRoot, {
-      value: story.innerHTML.replace(/\n?<!---->\n?/g, ''),
-      language: 'html',
-      theme: 'vs-dark',
-      scrollBeyondLastLine: false,
-      minimap: {
-        enabled: false
-      }
+    let styleMatches = styleRegex.exec(storyHtml);
+    let styleCode = styleMatches.length > 1 ? styleMatches[1].trim() : null;
+
+    storyHtml = storyHtml
+      .replace(styleRegex, '')
+      .replace(scriptRegex, '')
+      .replace(/\n?<!---->\n?/g, '')
+      .trim();
+
+    let editor = new TabElement();
+
+    editor.files = {
+      html: storyHtml,
+      js: scriptCode,
+      css: styleCode
+    };
+
+    editor.addEventListener('fileUpdated', () => {
+      story.innerHTML = editor.files.html + `<style>${editor.files.css}</style>`;
+      eval(editor.files.js);
     });
-
-    editor.changeViewZones(changeAccessor => {
-      const domNode = document.createElement('div');
-      const viewZoneId = changeAccessor.addZone({
-        afterLineNumber: 0,
-        heightInLines: 1,
-        domNode: domNode
-      });
-    });
-
-    const updateStory = debounce(() => {
-      story.innerHTML = editor.getValue();
-    }, 500);
-
-    editor.getModel().onDidChangeContent(event => {
-      updateStory();
-    });
-
-    window.addEventListener('resize', () => {
-      editor.layout();
-    });
-
-    setTimeout(_ => {
-      editor.layout();
-    }, 2);
 
     const root = document.createElement('div');
     root.style.height = '100vh';
@@ -74,7 +63,7 @@ export const withCode = makeDecorator({
     story.style.overflow = 'auto';
 
     root.appendChild(story);
-    root.appendChild(editorRoot);
+    root.appendChild(editor);
 
     let css = `
     body 
