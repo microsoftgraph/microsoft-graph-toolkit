@@ -38,6 +38,12 @@ type Team = MicrosoftGraph.Team & {
    * @type {MicrosoftGraph.Channel[]}
    */
   channels: MicrosoftGraph.Channel[];
+  /**
+   * Determines whether Team displays channels
+   *
+   * @type {Boolean}
+   */
+  visible: boolean;
 };
 
 /**
@@ -78,12 +84,10 @@ export class MgtTeamsChannelPicker extends MgtTemplatedComponent {
   @property({
     attribute: 'selected-teams'
   })
-  public selectedTeams: any[] = [];
+  public selectedTeams: [Team[], MicrosoftGraph.Channel[]] = [[], []];
 
   // User input in search
   @property() private _userInput: string = '';
-
-  @property() private _showChannel: any[] = [];
 
   @property() private _teamChannels: any[];
 
@@ -151,7 +155,7 @@ export class MgtTeamsChannelPicker extends MgtTemplatedComponent {
       input.value = '';
       this._userInput = '';
       // remove last channel in selected list
-      this.selectedTeams = this.selectedTeams.splice(0, this.selectedTeams.length - 1);
+      this.selectedTeams = [[], []];
       // fire selected teams changed event
       this.fireCustomEvent('selectionChanged', this.selectedTeams);
       return;
@@ -292,12 +296,8 @@ export class MgtTeamsChannelPicker extends MgtTemplatedComponent {
    * Removes person from selected people
    * @param person - person and details pertaining to user selected
    */
-  private removePerson(person: MicrosoftGraph.User | MicrosoftGraph.Person | MicrosoftGraph.Contact) {
-    const chosenPerson: any = person;
-    const filteredPersonArr = this.selectedTeams.filter(p => {
-      return p.id !== chosenPerson.id;
-    });
-    this.selectedTeams = filteredPersonArr;
+  private removePerson(team: MicrosoftGraph.Team[], pickedChannel: MicrosoftGraph.Channel[]) {
+    this.selectedTeams = [[], []];
     this.fireCustomEvent('selectionChanged', this.selectedTeams);
   }
 
@@ -325,31 +325,29 @@ export class MgtTeamsChannelPicker extends MgtTemplatedComponent {
     let peopleList;
     let inputClass = 'input-search-start';
 
-    if (this.selectedTeams.length > 0) {
-      inputClass = 'input-search';
+    if (this.selectedTeams[0]) {
+      if (this.selectedTeams[0].length) {
+        inputClass = 'input-search';
 
-      peopleList = html`
-        ${this.selectedTeams.slice(0, this.selectedTeams.length).map(
-          team =>
-            html`
-              <li class="people-person">
-                ${team[0].displayName + ':' + team[1].displayName}
-                <div class="CloseIcon" @click="${() => this.removePerson(team)}"></div>
-              </li>
-            `
-        )}
-      `;
+        peopleList = html`
+          <li class="people-person">
+            ${this.selectedTeams[0][0].displayName + ':' + this.selectedTeams[1][0].displayName}
+            <div class="CloseIcon" @click="${() => this.removePerson(this.selectedTeams[0], this.selectedTeams[1])}">
+              
+            </div>
+          </li>
+        `;
+      }
     } else {
       peopleList = null;
     }
-    // tslint:disable
     return html`
       <div class="people-chosen-list">
         ${peopleList}
         <div class="${inputClass}">
           <input
             id="teams-channel-picker-input"
-            class="people-chosen-input ${this.selectedTeams.length > 0 ? 'hide' : ''}"
+            class="people-chosen-input ${this.selectedTeams[0].length > 0 ? 'hide' : ''}"
             type="text"
             placeholder="Select a channel: "
             label="teams-channel-picker-input"
@@ -463,14 +461,14 @@ export class MgtTeamsChannelPicker extends MgtTemplatedComponent {
     `;
   }
 
-  private addChannel(event, channel) {
+  private addChannel(event, pickedChannel: any) {
     const teamDiv =
       event.target.parentNode.parentNode.classList[1] || event.target.parentNode.parentNode.parentNode.classList[1];
     if (teamDiv) {
       const teamId = teamDiv.slice(5, teamDiv.length);
       for (const team of this.teams) {
         if (team.id === teamId) {
-          this.selectedTeams.push([team, channel]);
+          this.selectedTeams = [[team], [pickedChannel]];
           this.lostFocus();
         }
       }
@@ -482,6 +480,12 @@ export class MgtTeamsChannelPicker extends MgtTemplatedComponent {
   private _clickTeam(id: string) {
     const team = this.renderRoot.querySelector('.team-' + id);
 
+    for (const teams of this.teams) {
+      if (teams.id === id) {
+        teams.visible = !teams.visible;
+      }
+    }
+
     if (team) {
       if (team.classList[2] === 'hide-channels') {
         team.classList.remove('hide-channels');
@@ -489,6 +493,7 @@ export class MgtTeamsChannelPicker extends MgtTemplatedComponent {
         team.classList.add('hide-channels');
       }
     }
+    this.requestUpdate();
   }
 
   private renderTeams(teams: Team[]) {
@@ -501,7 +506,8 @@ export class MgtTeamsChannelPicker extends MgtTemplatedComponent {
             class="list-team teams-channel-list team-list-${teamData.id}"
             @click="${() => this._clickTeam(teamData.id)}"
           >
-            ${getSvg(SvgIcon.ArrowRight, '#252424')} ${teamData.displayName}
+            ${teamData.visible ? getSvg(SvgIcon.ArrowDown, '#252424') : getSvg(SvgIcon.ArrowRight, '#252424')}
+            ${teamData.displayName}
           </li>
           <div class="render-channels team-${teamData.id} ${this.hideChannels ? 'hide-channels' : ''}">
             ${this.renderChannels(teamData.channels)}
