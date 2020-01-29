@@ -17,7 +17,7 @@ let debounce = (func, wait, immediate) => {
   };
 };
 
-export class TabElement extends LitElement {
+export class EditorElement extends LitElement {
   static get styles() {
     return css`
       :host {
@@ -70,7 +70,7 @@ export class TabElement extends LitElement {
     this.internalFiles = value;
 
     for (let type of this.fileTypes) {
-      this.editorState[type].model.setValue(this.files[type]);
+      this.editorState[type].model.setValue(this.files[type] + '\n');
     }
 
     this.showTab(this.currentType);
@@ -86,9 +86,9 @@ export class TabElement extends LitElement {
     this.internalFiles = [];
     this.fileTypes = ['html', 'js', 'css'];
 
-    let editorRoot = document.createElement('div');
-    editorRoot.setAttribute('slot', 'editor');
-    editorRoot.style.height = '100%';
+    this.editorRoot = document.createElement('div');
+    this.editorRoot.setAttribute('slot', 'editor');
+    this.editorRoot.style.height = '100%';
 
     this.updateCurrentFile = debounce(() => {
       this.files[this.currentType] = this.editor.getValue();
@@ -96,11 +96,11 @@ export class TabElement extends LitElement {
       this.dispatchEvent(event);
     }, 500);
 
-    this.setupEditor(editorRoot);
-    this.appendChild(editorRoot);
+    this.setupEditor(this.editorRoot);
+    this.appendChild(this.editorRoot);
 
     this.handleResize = this.handleResize.bind(this);
-    this.showTab(0);
+    this.showTab(this.fileTypes[0]);
   }
 
   setupEditor(htmlElement) {
@@ -130,21 +130,30 @@ export class TabElement extends LitElement {
       }
     });
 
-    this.editor.changeViewZones(changeAccessor => {
-      const domNode = document.createElement('div');
-      changeAccessor.addZone({
-        afterLineNumber: 0,
-        heightInLines: 1,
-        domNode: domNode
+    const changeViewZones = () => {
+      this.editor.changeViewZones(changeAccessor => {
+        const domNode = document.createElement('div');
+        changeAccessor.addZone({
+          afterLineNumber: 0,
+          heightInLines: 1,
+          domNode: domNode
+        });
       });
-    });
+    };
+    this.editor.onDidChangeModel(changeViewZones);
+    changeViewZones();
 
     this.editor.onDidChangeModelContent(() => {
       this.updateCurrentFile();
     });
   }
 
+  layout() {
+    this.editor.layout();
+  }
+
   handleResize() {
+    this.editorRoot.style.height = `${this.clientHeight - 38}px`;
     this.editor.layout();
   }
 
@@ -164,13 +173,13 @@ export class TabElement extends LitElement {
   }
 
   showTab(type) {
-    if (this.files && this.files[type]) {
+    this.currentType = type;
+    if (this.files && typeof this.files[type] !== 'undefined') {
       this.currentEditorState.state = this.editor.saveViewState();
 
       this.currentEditorState = this.editorState[type];
       this.editor.setModel(this.currentEditorState.model);
       this.editor.restoreViewState(this.currentEditorState.state);
-      this.currentType = type;
     }
   }
 
@@ -198,4 +207,4 @@ export class TabElement extends LitElement {
   }
 }
 
-customElements.define('mgt-sb-tab', TabElement);
+customElements.define('mgt-sb-editor', EditorElement);

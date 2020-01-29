@@ -10,14 +10,13 @@ import { withA11y } from '@storybook/addon-a11y';
 import { withKnobs } from '@storybook/addon-knobs';
 import { withWebComponentsKnobs } from 'storybook-addon-web-components-knobs';
 import { withSignIn } from '../.storybook/signInAddon';
+import { withCodeEditor } from '../.storybook/codeAddon';
 import '../dist/es6/components/mgt-login/mgt-login';
-import '../dist/es6/mock/mgt-mock-provider';
-import '../dist/es6/mock/MockProvider';
 
 export default {
   title: 'mgt-login',
   component: 'mgt-login',
-  decorators: [withA11y, withKnobs, withWebComponentsKnobs, withSignIn],
+  decorators: [withA11y, withKnobs, withWebComponentsKnobs, withSignIn, withCodeEditor],
   parameters: {
     options: { selectedPanel: 'mgt/sign-in' },
     signInAddon: {
