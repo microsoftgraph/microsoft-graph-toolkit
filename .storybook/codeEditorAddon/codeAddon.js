@@ -68,7 +68,6 @@ export const withCodeEditor = makeDecorator({
     let styleMatches = styleRegex.exec(storyHtml);
     let styleCode = styleMatches && styleMatches.length > 1 ? styleMatches[1].trim() : '';
 
-    console.log(story);
     storyHtml = storyHtml
       .replace(styleRegex, '')
       .replace(scriptRegex, '')
@@ -76,14 +75,11 @@ export const withCodeEditor = makeDecorator({
       .trim();
 
     let editor = new EditorElement();
-
     editor.files = {
       html: storyHtml,
       js: scriptCode,
       css: styleCode
     };
-
-    console.log(editor.files);
 
     editor.addEventListener('fileUpdated', () => {
       story.innerHTML = editor.files.html + `<style>${editor.files.css}</style>`;
