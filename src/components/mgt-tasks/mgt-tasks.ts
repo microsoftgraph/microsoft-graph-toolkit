@@ -960,7 +960,7 @@ export class MgtTasks extends MgtTemplatedComponent {
       : null;
 
     const taskCheck = html`
-      <span class=${classMap(taskCheckClasses)}>${taskCheckContent}</span>
+      <span class=${classMap(taskCheckClasses)}><span class="TaskCheckContent">${taskCheckContent}</span></span>
     `;
 
     const groupTitle = this._currentGroup ? null : this.getPlanTitle(task.topParentId);

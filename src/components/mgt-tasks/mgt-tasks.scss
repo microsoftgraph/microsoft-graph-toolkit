@@ -16,8 +16,8 @@ $task-icon-background: var(--task-icon-background, transparent);
 $task-icon-border-completed: var(--task-icon-border-completed, solid 1px white);
 $task-icon-border: var(--task-icon-border, solid 1px $ms-color-gray120);
 
-$task-icon-color: var(--task-icon-color, white);
-$task-icon-color-completed: var(--task-icon-color-completed, $task-icon-color);
+$task-icon-color: var(--task-icon-color, black);
+$task-icon-color-completed: var(--task-icon-color-completed, white);
 
 $task-icon-border-radius: var(--task-icon-border-radius, 50%);
 
@@ -624,8 +624,7 @@ mgt-tasks,
       user-select: none;
       -moz-user-select: none;
       -ms-user-select: none;
-      &.Loading {
-        color: black;
+      &.Loading .TaskCheckContent {
         animation: rotateIcon 2s infinite linear;
       }
     }
