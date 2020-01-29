@@ -6,7 +6,6 @@ body,
 }
 
 body {
-  overflow: hidden;
   margin: 0px;
 }
 
@@ -29,6 +28,7 @@ body {
   height: 100%;
   position: relative;
   float: left;
+  overflow: hidden;
 }
 
 .story-mgt-separator {
