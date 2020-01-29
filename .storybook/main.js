@@ -10,7 +10,7 @@ const MonacoWebpackPlugin = require('monaco-editor-webpack-plugin');
 module.exports = {
   presets: [
     {
-      name: '@storybook/addon-docs/react/preset',
+      name: '@storybook/addon-docs/preset',
       options: {
         sourceLoaderOptions: null
       }
