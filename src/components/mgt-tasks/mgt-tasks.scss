@@ -8,12 +8,25 @@
 @import '../../styles/shared-styles.scss';
 @import '../../../node_modules/office-ui-fabric-core/dist/sass/References';
 
+$tasks-background-color: var(--tasks-background-color, #f8f8f8);
+
+$task-icon-background-completed: var(--task-icon-background-completed, $ms-color-sharedGreenCyan10);
+$task-icon-background: var(--task-icon-background, transparent);
+
+$task-icon-border-completed: var(--task-icon-border-completed, solid 1px white);
+$task-icon-border: var(--task-icon-border, solid 1px $ms-color-gray120);
+
+$task-icon-color: var(--task-icon-color, white);
+$task-icon-color-completed: var(--task-icon-color-completed, $task-icon-color);
+
+$task-icon-border-radius: var(--task-icon-border-radius, 50%);
+
 mgt-tasks,
 :host {
   font-family: var(--default-font-family, 'Segoe UI');
   display: flex;
   flex-direction: column;
-  background-color: var(--tasks-background-color, #f8f8f8);
+  background-color: $tasks-background-color;
   padding: var(--tasks-padding, 12px);
 }
 
@@ -587,8 +600,9 @@ mgt-tasks,
       -ms-user-select: none;
       &.Complete {
         .TaskCheck {
-          background-color: $ms-color-sharedGreenCyan10;
-          border: solid 1px white;
+          background-color: $task-icon-background-completed;
+          border: $task-icon-border-completed;
+          color: $task-icon-color-completed;
         }
       }
     }
@@ -599,12 +613,13 @@ mgt-tasks,
       display: inline-block;
       width: 18px;
       height: 18px;
-      border-radius: 50%;
-      border: solid 1px $ms-color-gray120;
-      color: white;
+      border-radius: $task-icon-border-radius;
+      border: $task-icon-border;
+      color: $task-icon-color;
       display: flex;
       justify-content: center;
       align-items: center;
+      background-color: $task-icon-background;
 
       user-select: none;
       -moz-user-select: none;
