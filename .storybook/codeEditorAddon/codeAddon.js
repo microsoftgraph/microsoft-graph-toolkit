@@ -1,6 +1,6 @@
-import addons, { makeDecorator } from '@storybook/addons';
-import './components/editor';
-import { EditorElement } from './components/editor';
+import { makeDecorator } from '@storybook/addons';
+import { EditorElement } from './editor';
+import './style.css';
 
 // function is used for dragging and moving
 const setupDrag = (first, separator, last, dragComplete) => {
@@ -36,19 +36,17 @@ const setupDrag = (first, separator, last, dragComplete) => {
     if (window.innerWidth > 800) {
       // Horizontal
       // prevent negative-sized elements
-      delta.x = Math.min(Math.max(delta.x, -md.firstWidth), md.lastWidth);
+      delta.x = Math.min(Math.max(delta.x, -md.firstWidth + 200), md.lastWidth - 200);
 
-      separator.style.left = md.offsetLeft + delta.x + 'px';
-      first.style.width = md.firstWidth + delta.x + 'px';
-      last.style.width = md.lastWidth - delta.x + 'px';
+      first.style.width = md.firstWidth + delta.x - 0.5 + 'px';
+      last.style.width = md.lastWidth - delta.x - 0.5 + 'px';
     } else {
       // Vertical
       // prevent negative-sized elements
-      delta.y = Math.min(Math.max(delta.y, -md.firstHeight), md.lastHeight);
+      delta.y = Math.min(Math.max(delta.y, -md.firstHeight + 150), md.lastHeight - 150);
 
-      separator.style.top = md.offsetTop + delta.y + 'px';
-      first.style.height = md.firstHeight + delta.y + 'px';
-      last.style.height = md.lastHeight - delta.y + 'px';
+      first.style.height = md.firstHeight + delta.y - 0.5 + 'px';
+      last.style.height = md.lastHeight - delta.y - 0.5 + 'px';
     }
   }
 };
@@ -93,105 +91,25 @@ export const withCodeEditor = makeDecorator({
     });
 
     const root = document.createElement('div');
-    //const separator = document.createElement('div');
+    const separator = document.createElement('div');
 
-    //setupDrag(story, separator, editor, () => editor.layout());
+    setupDrag(story, separator, editor, () => editor.layout());
 
     root.className = 'story-mgt-root';
     story.className = 'story-mgt-preview';
-    //separator.className = 'story-mgt-separator';
+    separator.className = 'story-mgt-separator';
     editor.className = 'story-mgt-editor';
 
     root.appendChild(story);
-    //root.appendChild(separator);
+    root.appendChild(separator);
     root.appendChild(editor);
 
-    let css = `
-
-html,
-body,
-.story-mgt-root,
-#root {
-  height: 100%;
-  width: 100%;
-}
-
-body 
-{ 
-  overflow: hidden;
-  margin: 0px;
-}
-
-.story-mgt-root
-{
-  display: flex;
-  flex-direction: row;
-}
-
-.story-mgt-preview
-{
-  width: 50%;
-  overflow: auto;
-  min-width: 200px;
-  min-height: 150px;
-}
-
-.story-mgt-editor {
-  width: 50%;
-  min-width: 200px;
-  min-height: 150px;
-}
-
-.story-mgt-separator {
-  cursor: col-resize;
-  background-color: #aaa;
-  background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='10' height='30'><path d='M2 0 v30 M5 0 v30 M8 0 v30' fill='none' stroke='black'/></svg>");
-  background-repeat: no-repeat;
-  background-position: center;
-  width: 10px;
-  height: 100%;
-
-  /* prevent browser's built-in drag from interfering */
-  -moz-user-select: none;
-  -ms-user-select: none;
-  user-select: none;
-}
-
-@media (max-width: 800px) {
-  .story-mgt-root
-  {
-    display: flex;
-    flex-direction: column;
-  }
-  
-  .story-mgt-preview
-  {
-    height: 50%;
-    width: unset;
-  }
-  
-  .story-mgt-editor {
-    height: 50%;
-    width: unset;
-  }
-
-  .story-mgt-separator {
-    cursor: row-resize;
-  // background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='10' height='30'><path d='M2 0 v30 M5 0 v30 M8 0 v30' fill='none' stroke='black'/></svg>");
-    background-repeat: no-repeat;
-    background-position: center;
-    width: 100%;
-    height: 10px;
-  }
-}
-    `;
-
-    let style = document.createElement('style');
-    style.type = 'text/css';
-    style.appendChild(document.createTextNode(css));
-
-    let head = document.head || document.getElementsByTagName('head')[0];
-    head.appendChild(style);
+    window.addEventListener('resize', () => {
+      story.style.height = '';
+      story.style.width = '';
+      editor.style.height = '';
+      editor.style.width = '';
+    });
 
     return root;
   }

@@ -149,6 +149,7 @@ export class EditorElement extends LitElement {
   }
 
   layout() {
+    this.editorRoot.style.height = `calc(${this.style.height} - 38px)`;
     this.editor.layout();
   }
 

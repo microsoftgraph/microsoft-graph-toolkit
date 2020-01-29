@@ -10,7 +10,7 @@ import { withA11y } from '@storybook/addon-a11y';
 import { withKnobs } from '@storybook/addon-knobs';
 import { withWebComponentsKnobs } from 'storybook-addon-web-components-knobs';
 import { withSignIn } from '../.storybook/signInAddon';
-import { withCodeEditor } from '../.storybook/codeAddon';
+import { withCodeEditor } from '../.storybook/codeEditorAddon/codeAddon';
 import '../dist/es6/components/mgt-people-picker/mgt-people-picker';
 
 export default {
