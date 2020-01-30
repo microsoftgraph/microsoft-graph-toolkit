@@ -514,7 +514,9 @@ export class MgtTeamsChannelPicker extends MgtTemplatedComponent {
             class="list-team teams-channel-list team-list-${teamData.id}"
             @click="${() => this._clickTeam(teamData.id)}"
           >
-            ${teamData.visible ? getSvg(SvgIcon.ArrowDown, '#252424') : getSvg(SvgIcon.ArrowRight, '#252424')}
+            <div class="arrow">
+              ${teamData.visible ? getSvg(SvgIcon.ArrowDown, '#252424') : getSvg(SvgIcon.ArrowRight, '#252424')}
+            </div>
             ${teamData.displayName}
           </li>
           <div class="render-channels team-${teamData.id} ${this.hideChannels ? 'hide-channels' : ''}">

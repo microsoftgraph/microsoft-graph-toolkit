@@ -141,11 +141,7 @@ export function getSvg(svgIcon: SvgIcon, color: string) {
     case SvgIcon.ArrowRight:
       return html`
         <svg width="8" height="9" viewBox="0 0 8 9" fill="none" xmlns="http://www.w3.org/2000/svg">
-          <path
-            opacity="0.3"
-            d="M7.70703 4.63428L3.85347 8.48784L3.85347 4.63428L3.85347 0.780716L7.70703 4.63428Z"
-            fill=${color}
-          />
+          <path d="M7.70703 4.63428L3.85347 8.48784L3.85347 4.63428L3.85347 0.780716L7.70703 4.63428Z" fill=${color} />
         </svg>
       `;
 

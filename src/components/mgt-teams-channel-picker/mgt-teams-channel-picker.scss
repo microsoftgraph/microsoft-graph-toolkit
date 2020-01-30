@@ -52,6 +52,10 @@ mgt-teams-channel-picker .team-list {
 
   li {
     cursor: pointer;
+    .arrow {
+      margin-right: 10px;
+      margin-bottom: 1px;
+    }
   }
 }
 :host .teams-list-separator,
