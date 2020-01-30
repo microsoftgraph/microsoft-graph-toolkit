@@ -270,6 +270,10 @@ export class MgtTeamsChannelPicker extends MgtTemplatedComponent {
       this.hideChannels = false;
     } else {
       this.hideChannels = true;
+      for (const team of this.teams) {
+        team.visible = false;
+      }
+      return;
     }
 
     const foundMatch = [];
@@ -285,8 +289,10 @@ export class MgtTeamsChannelPicker extends MgtTemplatedComponent {
       for (const team of this.teams) {
         const teamDiv = this.renderRoot.querySelector('.team-list-' + team.id);
         teamDiv.classList.remove('hide-team');
+        team.visible = true;
         if (foundMatch.indexOf(team.displayName) === -1) {
           teamDiv.classList.add('hide-team');
+          team.visible = false;
         }
       }
     }
@@ -331,7 +337,9 @@ export class MgtTeamsChannelPicker extends MgtTemplatedComponent {
 
         peopleList = html`
           <li class="people-person">
-            ${this.selectedTeams[0][0].displayName + ':' + this.selectedTeams[1][0].displayName}
+            <b>${this.selectedTeams[0][0].displayName}</b>
+            <div class="arrow">${getSvg(SvgIcon.ArrowRight, '#252424')}</div>
+            ${this.selectedTeams[1][0].displayName}
             <div class="CloseIcon" @click="${() => this.removePerson(this.selectedTeams[0], this.selectedTeams[1])}">
               
             </div>
@@ -349,7 +357,7 @@ export class MgtTeamsChannelPicker extends MgtTemplatedComponent {
             id="teams-channel-picker-input"
             class="people-chosen-input ${this.selectedTeams[0].length > 0 ? 'hide' : ''}"
             type="text"
-            placeholder="Select a channel: "
+            placeholder="Select a channel "
             label="teams-channel-picker-input"
             aria-label="teams-channel-picker-input"
             role="input"

@@ -95,8 +95,8 @@ mgt-teams-channel-picker .CloseIcon {
   line-height: normal;
   font-family: 'FabricMDL2Icons';
   padding-right: 8px;
-  padding-left: 4px;
-  margin-top: 0px;
+  padding-left: 10px;
+  margin-top: 3px;
   cursor: pointer;
 }
 :host .SearchIcon,
@@ -110,12 +110,16 @@ mgt-teams-channel-picker .people-person {
   display: flex;
   margin: 4px 5px 0 0;
   align-items: center;
-  background-color: rgba(196, 196, 196, 0.24);
+  //background-color: rgba(196, 196, 196, 0.24);
   border-radius: 15px;
   height: 24px;
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
+  .arrow {
+    margin-left: 8px;
+    margin-right: 8px;
+  }
 }
 
 :host .list-team,
