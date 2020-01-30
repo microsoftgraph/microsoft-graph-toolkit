@@ -49,7 +49,7 @@ mgt-teams-channel-picker .team-list {
   font-family: Segoe UI;
   font-style: normal;
   font-weight: normal;
-
+  display: none;
   li {
     cursor: pointer;
     .arrow {
@@ -66,8 +66,8 @@ mgt-teams-channel-picker .teams-list-separator {
   text-align: center;
 }
 
-:host .people-chosen-input,
-mgt-teams-channel-picker .people-chosen-input {
+:host .team-chosen-input,
+mgt-teams-channel-picker .team-chosen-input {
   position: relative;
   border: none;
   line-height: normal;
