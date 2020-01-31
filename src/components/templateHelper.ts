@@ -75,6 +75,7 @@ export class TemplateHelper {
       return '';
     });
   }
+
   private static renderNode(node: Node, root: HTMLElement, context: object, additionalContext: object) {
     if (node.nodeName === '#text') {
       node.textContent = this.expandExpressionsAsString(node.textContent, context, additionalContext);
