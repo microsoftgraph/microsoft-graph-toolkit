@@ -96,6 +96,8 @@ mgt-teams-channel-picker .people-chosen-list {
 }
 .CloseIcon,
 mgt-teams-channel-picker .CloseIcon {
+  position: absolute;
+  right: 0;
   line-height: normal;
   font-family: 'FabricMDL2Icons';
   padding-right: 8px;

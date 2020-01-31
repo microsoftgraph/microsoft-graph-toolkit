@@ -91,7 +91,7 @@ export class MgtTeamsChannelPicker extends MgtTemplatedComponent {
 
   @property() private _teamChannels: any[];
 
-  private hideChannels: boolean = true;
+  private noMatchesFound: boolean = false;
 
   // tracking of user arrow key input for selection
   private arrowSelectionCount: number = 0;
@@ -288,15 +288,22 @@ export class MgtTeamsChannelPicker extends MgtTemplatedComponent {
     this.isLoading = false;
   }
 
+  private resetTeams() {
+    for (const team of this.teams) {
+      const teamdiv = this.renderRoot.querySelector(`.team-list-${team.id}`);
+      teamdiv.classList.remove('hide-team');
+      team.showChannels = false;
+    }
+  }
+
   /**
    * Async method which query's the Graph with user input
    * @param name - user input or name of person searched
    */
   private loadChannelSearch(name: string) {
+    this.noMatchesFound = false;
     if (name === '') {
-      for (const team of this.teams) {
-        team.showChannels = false;
-      }
+      this.resetTeams();
       return;
     }
     const foundMatch = [];
@@ -311,13 +318,17 @@ export class MgtTeamsChannelPicker extends MgtTemplatedComponent {
     if (foundMatch.length) {
       for (const team of this.teams) {
         const teamdiv = this.renderRoot.querySelector(`.team-list-${team.id}`);
-        teamdiv.classList.remove('hide-team');
-        team.showChannels = true;
-        if (foundMatch.indexOf(team.displayName) === -1) {
-          team.showChannels = false;
-          teamdiv.classList.add('hide-team');
+        if (teamdiv) {
+          teamdiv.classList.remove('hide-team');
+          team.showChannels = true;
+          if (foundMatch.indexOf(team.displayName) === -1) {
+            team.showChannels = false;
+            teamdiv.classList.add('hide-team');
+          }
         }
       }
+    } else {
+      this.noMatchesFound = true;
     }
   }
 
@@ -328,6 +339,8 @@ export class MgtTeamsChannelPicker extends MgtTemplatedComponent {
   private removePerson(team: MicrosoftGraph.Team[], pickedChannel: MicrosoftGraph.Channel[]) {
     this.selectedTeams = [[], []];
     this._userInput = '';
+
+    this.resetTeams();
     this.fireCustomEvent('selectionChanged', this.selectedTeams);
   }
 
@@ -401,7 +414,7 @@ export class MgtTeamsChannelPicker extends MgtTemplatedComponent {
     teamInput.focus();
     teamInput.select();
 
-    if (teamList) {
+    if (teamList && this.selectedTeams[0].length === 0) {
       // Mouse is focused on input
       teamList.setAttribute('style', 'display:block');
     }
@@ -421,7 +434,7 @@ export class MgtTeamsChannelPicker extends MgtTemplatedComponent {
       content = this.renderTeams(this.teams);
       if (this.isLoading) {
         content = this.renderTemplate('loading', null, 'loading') || this.renderLoadingMessage();
-      } else if (this.teams.length === 0 && this._userInput.length > 0) {
+      } else if (this.noMatchesFound && this._userInput.length > 0) {
         content = this.renderTemplate('error', null, 'error') || this.renderErrorMessage();
       } else {
         if (this.teams[0]) {
