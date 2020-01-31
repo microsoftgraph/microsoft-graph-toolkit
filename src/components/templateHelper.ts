@@ -59,9 +59,10 @@ export class TemplateHelper {
       root.appendChild(rendered);
     }
   }
+
   private static _expression = /{{+\s*[$\w\.()\[\]]+\s*}}+/g;
 
-  private static replaceExpression(str: string, context: object, additionalContext: object) {
+  private static expandExpressionsAsString(str: string, context: object, additionalContext: object) {
     return str.replace(this._expression, match => {
       const value = this.evalInContext(this.trimExpression(match), { ...context, ...additionalContext });
       if (value) {
@@ -74,10 +75,9 @@ export class TemplateHelper {
       return '';
     });
   }
-
   private static renderNode(node: Node, root: HTMLElement, context: object, additionalContext: object) {
     if (node.nodeName === '#text') {
-      node.textContent = this.replaceExpression(node.textContent, context, additionalContext);
+      node.textContent = this.expandExpressionsAsString(node.textContent, context, additionalContext);
       return node;
     } else if (node.nodeName === 'TEMPLATE') {
       (node as any).$parentTemplateContext = context;
@@ -93,14 +93,29 @@ export class TemplateHelper {
       for (let i = 0; i < nodeElement.attributes.length; i++) {
         const attribute = nodeElement.attributes[i];
 
-        // add event listeners - attributes that start with @
-        if (attribute.name.length && attribute.name[0] === '@') {
-          const value = this.trimExpression(attribute.value);
-          if (additionalContext && additionalContext[value]) {
-            nodeElement.addEventListener(attribute.name.substring(1), e => additionalContext[value](e, context, root));
+        if (attribute.name === 'data-props') {
+          const propsValue = this.trimExpression(attribute.value);
+          for (const prop of propsValue.split(',')) {
+            const keyValue = prop.trim().split(':');
+            if (keyValue.length === 2) {
+              const key = keyValue[0].trim();
+              const value = this.evalInContext(keyValue[1].trim(), { ...context, ...additionalContext });
+
+              if (key.startsWith('@')) {
+                // event
+                if (typeof value === 'function') {
+                  nodeElement.addEventListener(key.substring(1), e => value(e, context, root));
+                }
+              } else {
+                nodeElement[key] = value;
+              }
+            }
           }
         } else {
-          nodeElement.setAttribute(attribute.name, this.replaceExpression(attribute.value, context, additionalContext));
+          nodeElement.setAttribute(
+            attribute.name,
+            this.expandExpressionsAsString(attribute.value, context, additionalContext)
+          );
         }
       }
     }

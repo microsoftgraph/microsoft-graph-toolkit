@@ -10,7 +10,7 @@
     <mgt-get resource="/me/joinedTeams" id="teamsGet">
       <template>
         Team:
-        <select @change="teamChange">
+        <select data-props="{{@change: teamChange}}">
           <option data-for="{{team in value}}" value="{{team.id}}">{{team.displayName}}</option>
         </select>
       </template>
@@ -19,7 +19,7 @@
     <mgt-get id="channelsGet">
       <template>
         Channel:
-        <select @change="channelChange">
+        <select data-props="{{@change: channelChange}}">
           <option data-for="channel in value" value="{{channel.id}}">{{channel.displayName}}</option>
         </select>
       </template>
