@@ -161,6 +161,8 @@ mgt-teams-channel-picker .teams-list-fill {
 :host .channel-display,
 mgt-teams-channel-picker .channel-display {
   padding-left: 10px;
+  padding-top: 4px;
+  padding-bottom: 4px;
   &:hover {
     background-color: #f1f1f1dd;
   }

@@ -233,7 +233,15 @@ export class MgtTeamsChannelPicker extends MgtTemplatedComponent {
         // selected Team (opens channels)
         this._clickTeam(this.teams[this.arrowSelectionCount / 2].id);
       } else {
-        // selected Channel
+        let count = 0;
+        if (this.arrowSelectionCount > 1) {
+          count = (this.arrowSelectionCount - 1) / 2;
+        }
+
+        const teamDiv = this.renderRoot.querySelector('.team-list');
+
+        const teamId = teamDiv.children[this.arrowSelectionCount].classList[1].slice(5);
+        this.addChannel(event, teamId);
       }
     }
   }
@@ -243,31 +251,33 @@ export class MgtTeamsChannelPicker extends MgtTemplatedComponent {
    * @param event - tracks user key selection
    */
   private handleArrowSelection(event: any) {
+    // resets highlight
+    const teamList = this.renderRoot.querySelector('.team-list');
+    for (let i = 0; i < teamList.children.length; i++) {
+      teamList.children[i].classList.remove('teams-channel-list-fill');
+    }
     let direction;
     if (this.teams.length) {
       // update arrow count
       if (event.keyCode === 38) {
         // up arrow
-        if (this.arrowSelectionCount > -1) {
+        if (this.arrowSelectionCount >= 1) {
           direction = 'up';
           if (this.channelLength === 0) {
-            this.arrowSelectionCount = this.arrowSelectionCount - 2;
+            this.arrowSelectionCount--;
           }
+        } else {
+          return;
         }
       }
       if (event.keyCode === 40) {
+        // down arrow
         direction = 'down';
         if (this.channelLength === 0) {
-          // down arrow
           this.arrowSelectionCount++;
         }
       }
-
       this.channelLength = 0;
-      const teamList = this.renderRoot.querySelector('.team-list');
-      for (let i = 0; i < teamList.children.length; i++) {
-        teamList.children[i].classList.remove('teams-channel-list-fill');
-      }
 
       // determines channels or team are hidden or filtered, otherwise fill next team
       if (
@@ -359,7 +369,13 @@ export class MgtTeamsChannelPicker extends MgtTemplatedComponent {
         return;
       } else {
         if (direction === 'down') {
-          this.arrowSelectionCount++;
+          if (this.arrowSelectionCount < 1) {
+            this.arrowSelectionCount = this.arrowSelectionCount + 2;
+          } else {
+            this.arrowSelectionCount++;
+          }
+        } else {
+          this.arrowSelectionCount--;
         }
         teamList.children[this.arrowSelectionCount].setAttribute(
           'class',
@@ -496,9 +512,9 @@ export class MgtTeamsChannelPicker extends MgtTemplatedComponent {
         <div class="${inputClass}">
           <input
             id="teams-channel-picker-input"
-            class="team-chosen-input ${this.selectedTeams[0].length > 0 ? 'hide' : ''}"
+            class="team-chosen-input"
             type="text"
-            placeholder="Select a channel "
+            placeholder="${this.selectedTeams[0].length > 0 ? '' : 'Select a channel'} "
             label="teams-channel-picker-input"
             aria-label="teams-channel-picker-input"
             role="input"
@@ -517,7 +533,7 @@ export class MgtTeamsChannelPicker extends MgtTemplatedComponent {
     teamInput.focus();
     teamInput.select();
 
-    if (teamList && this.selectedTeams[0].length === 0) {
+    if (teamList) {
       // Mouse is focused on input
       teamList.setAttribute('style', 'display:block');
     }
@@ -610,14 +626,23 @@ export class MgtTeamsChannelPicker extends MgtTemplatedComponent {
   }
 
   private addChannel(event, pickedChannel: any) {
-    const teamDiv =
-      event.target.parentNode.parentNode.classList[1] || event.target.parentNode.parentNode.parentNode.classList[1];
-    if (teamDiv) {
-      const teamId = teamDiv.slice(5, teamDiv.length);
+    if (event.key === 'Tab') {
       for (const team of this.teams) {
-        if (team.id === teamId) {
-          this.selectedTeams = [[team], [pickedChannel]];
+        if (team.id === pickedChannel) {
+          this.selectedTeams = [[team], [team.channels[this.channelCounter - 1]]];
           this.lostFocus();
+        }
+      }
+    } else {
+      const teamDiv =
+        event.target.parentNode.parentNode.classList[1] || event.target.parentNode.parentNode.parentNode.classList[1];
+      if (teamDiv) {
+        const teamId = teamDiv.slice(5, teamDiv.length);
+        for (const team of this.teams) {
+          if (team.id === teamId) {
+            this.selectedTeams = [[team], [pickedChannel]];
+            this.lostFocus();
+          }
         }
       }
     }
