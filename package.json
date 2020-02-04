@@ -46,8 +46,8 @@
     "prettier:check": "npm run prettier:base -- --list-different \"{src,tests}/**/*.{ts,tsx}\"",
     "prettier:write": "npm run prettier:base -- --write \"{src,tests}/**/*.{ts,tsx}\"",
     "storybook": "start-storybook -p 6006",
-    "storybook:build": "build-storybook",
-    "storybook:deploy": "storybook-to-ghpages"
+    "storybook:build": "build-storybook && cpx .storybook/CNAME storybook-static",
+    "storybook:deploy": "npm run storybook:build && storybook-to-ghpages -e storybook-static"
   },
   "storybook-deployer": {
     "gitUsername": "@microsoft/mgt",
