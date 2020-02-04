@@ -5,7 +5,7 @@
  * -------------------------------------------------------------------------------------------
  */
 
-import { templateElement } from '@babel/types';
+import { forStatement, templateElement } from '@babel/types';
 import * as MicrosoftGraph from '@microsoft/microsoft-graph-types';
 import { customElement, html, property, TemplateResult } from 'lit-element';
 import { isTemplatePartActive } from 'lit-html';
@@ -94,7 +94,11 @@ export class MgtTeamsChannelPicker extends MgtTemplatedComponent {
   private noMatchesFound: boolean = false;
 
   // tracking of user arrow key input for selection
-  private arrowSelectionCount: number = 0;
+  private arrowSelectionCount: number = -1;
+
+  private channelLength: number = 0;
+
+  private channelCounter: number = 0;
   // determines loading state
   @property() private isLoading = false;
   private debouncedSearch;
@@ -201,7 +205,7 @@ export class MgtTeamsChannelPicker extends MgtTemplatedComponent {
         if (this._userInput !== input.value) {
           this._userInput = input.value;
           this.loadChannelSearch(this._userInput);
-          this.arrowSelectionCount = 0;
+          this.arrowSelectionCount = -1;
         }
       }, 200);
     }
@@ -222,11 +226,15 @@ export class MgtTeamsChannelPicker extends MgtTemplatedComponent {
       }
     }
     if (event.code === 'Tab' || event.code === 'Enter') {
-      if (this._teamChannels.length) {
+      if (this.teams) {
         event.preventDefault();
       }
-
-      event.target.value = '';
+      if (this.channelLength === 0) {
+        // selected Team (opens channels)
+        this._clickTeam(this.teams[this.arrowSelectionCount / 2].id);
+      } else {
+        // selected Channel
+      }
     }
   }
 
@@ -235,33 +243,129 @@ export class MgtTeamsChannelPicker extends MgtTemplatedComponent {
    * @param event - tracks user key selection
    */
   private handleArrowSelection(event: any) {
-    if (this._teamChannels.length) {
+    let direction;
+    if (this.teams.length) {
       // update arrow count
       if (event.keyCode === 38) {
         // up arrow
-        if (this.arrowSelectionCount > 0) {
-          this.arrowSelectionCount--;
-        } else {
-          this.arrowSelectionCount = 0;
+        if (this.arrowSelectionCount > -1) {
+          direction = 'up';
+          if (this.channelLength === 0) {
+            this.arrowSelectionCount = this.arrowSelectionCount - 2;
+          }
         }
       }
       if (event.keyCode === 40) {
-        // down arrow
-        if (this.arrowSelectionCount + 1 !== this._teamChannels.length && this.arrowSelectionCount + 1) {
+        direction = 'down';
+        if (this.channelLength === 0) {
+          // down arrow
           this.arrowSelectionCount++;
-        } else {
-          this.arrowSelectionCount = 0;
         }
       }
 
-      const channelList = this.renderRoot.querySelector('.team-list');
-      // reset background color
-      // tslint:disable-next-line: prefer-for-of
-      for (let i = 0; i < channelList.children.length; i++) {
-        channelList.children[i].setAttribute('class', 'list-team teams-channel-list');
+      this.channelLength = 0;
+      const teamList = this.renderRoot.querySelector('.team-list');
+      for (let i = 0; i < teamList.children.length; i++) {
+        teamList.children[i].classList.remove('teams-channel-list-fill');
       }
-      // set selected background
-      channelList.children[this.arrowSelectionCount].setAttribute('class', 'list-team teams-channel-list-fill');
+
+      // determines channels or team are hidden or filtered, otherwise fill next team
+      if (
+        teamList.children[this.arrowSelectionCount].classList.value.indexOf('hide-channels') === -1 &&
+        teamList.children[this.arrowSelectionCount].classList.value.indexOf('hide-team') === -1
+      ) {
+        // checks if selection is a channel or team
+        if (teamList.children[this.arrowSelectionCount].classList.value.indexOf('render-channels') !== -1) {
+          // resets all channel fills and determines how many channels are rendered
+          for (let i = 0; i < teamList.children[this.arrowSelectionCount].children.length; i++) {
+            if (teamList.children[this.arrowSelectionCount].children[i].clientHeight > 0) {
+              this.channelLength++;
+            }
+            teamList.children[this.arrowSelectionCount].children[i].classList.remove('teams-channel-list-fill');
+          }
+
+          // if channel is visible (not filtered), add fill
+          if (this.channelCounter < this.channelLength) {
+            if (teamList.children[this.arrowSelectionCount].children[this.channelCounter].clientHeight > 0) {
+              if (direction === 'down') {
+                teamList.children[this.arrowSelectionCount].children[this.channelCounter].setAttribute(
+                  'class',
+                  `${
+                    teamList.children[this.arrowSelectionCount].children[this.channelCounter].classList.value
+                  } teams-channel-list-fill`
+                );
+                this.channelCounter++;
+              } else {
+                // resets all channel fills and adds fill to previous channel
+                if (this.channelCounter > 1) {
+                  // as long as not first selection channel
+                  this.channelCounter--;
+                  teamList.children[this.arrowSelectionCount].children[this.channelCounter - 1].setAttribute(
+                    'class',
+                    `${
+                      teamList.children[this.arrowSelectionCount].children[this.channelCounter - 1].classList.value
+                    } teams-channel-list-fill`
+                  );
+                } else {
+                  this.arrowSelectionCount--;
+                  this.channelCounter = 0;
+                  teamList.children[this.arrowSelectionCount].setAttribute(
+                    'class',
+                    `${teamList.children[this.arrowSelectionCount].classList.value} teams-channel-list-fill`
+                  );
+                }
+              }
+            } else {
+              // find next visible channel
+              for (let i = this.channelCounter; i < teamList.children[this.arrowSelectionCount].children.length; i++) {
+                if (teamList.children[this.arrowSelectionCount].children[i].clientHeight > 0) {
+                  teamList.children[this.arrowSelectionCount].children[i].setAttribute(
+                    'class',
+                    `${teamList.children[this.arrowSelectionCount].children[i].classList.value} teams-channel-list-fill`
+                  );
+                  if (direction === 'down') {
+                    this.channelCounter++;
+                  }
+                }
+              }
+            }
+          } else {
+            // otherwise must be team selection, move to next team available
+            if (direction === 'down') {
+              this.channelLength = 0;
+              this.channelCounter = 0;
+              this.arrowSelectionCount++;
+              teamList.children[this.arrowSelectionCount].setAttribute(
+                'class',
+                `${teamList.children[this.arrowSelectionCount].classList.value} teams-channel-list-fill`
+              );
+            }
+          }
+        } else {
+          if (direction === 'down') {
+            teamList.children[this.arrowSelectionCount].setAttribute(
+              'class',
+              `${teamList.children[this.arrowSelectionCount].classList.value} teams-channel-list-fill`
+            );
+          } else {
+            teamList.children[this.arrowSelectionCount / 2 - 1].setAttribute(
+              'class',
+              `${teamList.children[this.arrowSelectionCount / 2 - 1].classList.value} teams-channel-list-fill`
+            );
+            this.channelLength = 0;
+            this.arrowSelectionCount = this.arrowSelectionCount / 2 - 1;
+          }
+        }
+        return;
+      } else {
+        if (direction === 'down') {
+          this.arrowSelectionCount++;
+        }
+        teamList.children[this.arrowSelectionCount].setAttribute(
+          'class',
+          `${teamList.children[this.arrowSelectionCount].classList.value} teams-channel-list-fill`
+        );
+      }
     }
   }
 
@@ -406,7 +510,6 @@ export class MgtTeamsChannelPicker extends MgtTemplatedComponent {
       </div>
     `;
   }
-  // tslint:enable
 
   private gainedFocus() {
     const teamList = this.renderRoot.querySelector('.team-list');

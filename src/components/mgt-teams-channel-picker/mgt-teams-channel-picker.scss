@@ -153,6 +153,11 @@ mgt-teams-channel-picker .teams-channel-list-fill {
   background-color: #f1f1f1;
 }
 
+:host .teams-list-fill,
+mgt-teams-channel-picker .teams-list-fill {
+  background-color: #f1f1f1;
+}
+
 :host .channel-display,
 mgt-teams-channel-picker .channel-display {
   padding-left: 10px;
