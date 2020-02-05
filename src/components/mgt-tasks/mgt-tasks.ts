@@ -189,7 +189,7 @@ export class MgtTasks extends MgtTemplatedComponent {
   public hideHeader: boolean = false;
 
   /**
-   * sets whether the options rendered
+   * sets whether the options are rendered
    *
    * @type {boolean}
    * @memberof MgtTasks
