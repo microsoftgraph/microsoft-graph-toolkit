@@ -138,7 +138,7 @@ mgt-teams-channel-picker .list-team {
   font-family: Segoe UI;
   font-style: normal;
   font-weight: 600;
-  font-size: 14px;
+  font-size: 16px;
   &.hide-team {
     display: none;
   }
@@ -160,9 +160,14 @@ mgt-teams-channel-picker .teams-list-fill {
 
 :host .channel-display,
 mgt-teams-channel-picker .channel-display {
-  padding-left: 10px;
-  padding-top: 4px;
-  padding-bottom: 4px;
+  .showing {
+    padding-left: 10px;
+    padding-top: 4px;
+    padding-bottom: 4px;
+  }
+  .blue-highlight {
+    background-color: #deecf9;
+  }
   &:hover {
     background-color: #f1f1f1dd;
   }
