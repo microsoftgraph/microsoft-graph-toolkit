@@ -55,7 +55,12 @@ export enum SvgIcon {
   /**
    * Arrow Icon pointing down
    */
-  ArrowDown
+  ArrowDown,
+
+  /**
+   * Icon separates team from channel in selection
+   */
+  TeamSeparator
 }
 
 import { html } from 'lit-element';
@@ -149,6 +154,18 @@ export function getSvg(svgIcon: SvgIcon, color: string) {
       return html`
         <svg width="8" height="9" viewBox="0 0 8 9" fill="none" xmlns="http://www.w3.org/2000/svg">
           <path d="M3.85352 8.48779L-4.5184e-05 4.63423H3.85352H7.70708L3.85352 8.48779Z" fill=${color} />
+        </svg>
+      `;
+
+    case SvgIcon.TeamSeparator:
+      return html`
+        <svg width="6" height="10" viewBox="0 0 6 10" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <path
+            fill-rule="evenodd"
+            clip-rule="evenodd"
+            d="M5.70711 5L1.49999 9.20711L0.792886 8.50001L4.29289 5L0.792887 1.49999L1.49999 0.792885L5.70711 5Z"
+            fill=${color}
+          />
         </svg>
       `;
   }

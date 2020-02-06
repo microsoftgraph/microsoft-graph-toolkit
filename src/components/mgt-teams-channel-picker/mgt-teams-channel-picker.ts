@@ -202,6 +202,7 @@ export class MgtTeamsChannelPicker extends MgtTemplatedComponent {
         if (this._userInput !== input.value) {
           this._userInput = input.value;
           this.loadChannelSearch(this._userInput);
+          this.gainedFocus();
           this.arrowSelectionCount = -1;
         }
       }, 200);
@@ -471,13 +472,13 @@ export class MgtTeamsChannelPicker extends MgtTemplatedComponent {
     let inputClass = 'input-search-start';
 
     if (this.selectedTeams[0]) {
-      if (this.selectedTeams[0].length) {
+      if (this.selectedTeams[0].length && this._userInput.length === 0) {
         inputClass = 'input-search';
 
         peopleList = html`
           <li class="people-person">
             <b>${this.selectedTeams[0][0].displayName}</b>
-            <div class="arrow">${getSvg(SvgIcon.ArrowRight, '#252424')}</div>
+            <div class="arrow">${getSvg(SvgIcon.TeamSeparator, '#B3B0AD')}</div>
             ${this.selectedTeams[1][0].displayName}
             <div class="CloseIcon" @click="${() => this.removePerson(this.selectedTeams[0], this.selectedTeams[1])}">
               
@@ -513,7 +514,6 @@ export class MgtTeamsChannelPicker extends MgtTemplatedComponent {
     const teamList = this.renderRoot.querySelector('.team-list');
     const teamInput = this.renderRoot.querySelector('.team-chosen-input') as HTMLInputElement;
     teamInput.focus();
-    teamInput.select();
 
     if (teamList) {
       // Mouse is focused on input
@@ -522,6 +522,8 @@ export class MgtTeamsChannelPicker extends MgtTemplatedComponent {
   }
 
   private lostFocus() {
+    this._userInput = '';
+    this.resetTeams();
     const teamList = this.renderRoot.querySelector('.team-list');
     if (teamList) {
       teamList.setAttribute('style', 'display:none');
@@ -625,10 +627,26 @@ export class MgtTeamsChannelPicker extends MgtTemplatedComponent {
     if (event.key === 'Tab') {
       for (const team of this.teams) {
         if (team.id === pickedChannel) {
-          this.selectedTeams = [[team], [team.channels[this.channelCounter]]];
           const selection = team.channels[this.channelCounter].id.replace(/[^a-zA-Z ]/g, '');
           const channelDiv = this.renderRoot.querySelector(`.channel-${selection}`);
+
+          const shownIds = [];
+
+          // check if channels are filtered
+          for (let i = 0; i < channelDiv.parentElement.parentElement.children.length; i++) {
+            if (channelDiv.parentElement.parentElement.children[i].children[0].classList.contains('showing')) {
+              shownIds.push(channelDiv.parentElement.parentElement.children[i].children[0].classList[1].slice(8));
+            }
+          }
+
+          for (const channel of team.channels) {
+            if (channel.id.replace(/[^a-zA-Z ]/g, '') === shownIds[this.channelCounter]) {
+              this.selectedTeams = [[team], [channel]];
+            }
+          }
+
           channelDiv.classList.add('blue-highlight');
+          this.arrowSelectionCount = -1;
           this.lostFocus();
         }
       }
