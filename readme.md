@@ -119,7 +119,7 @@ Please use [GitHub Issues](https://github.com/microsoftgraph/microsoft-graph-too
 
 ## License
 
-Copyright (c) Microsoft and Contributors. All right reserved. Licensed under the MIT License
+All files in this GitHub repository are subject to the [MIT license](https://github.com/OfficeDev/office-ui-fabric-core/blob/master/LICENSE). This project also references fonts and icons from a CDN, which are subject to a separate [asset license](https://static2.sharepointonline.com/files/fabric/assets/license.txt).
 
 ## Code of Conduct
 
