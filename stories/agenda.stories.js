@@ -16,7 +16,7 @@ import '../dist/es6/components/mgt-agenda/mgt-agenda';
 export default {
   title: 'mgt-agenda',
   component: 'mgt-agenda',
-  decorators: [withA11y, withKnobs, withWebComponentsKnobs, withSignIn, withCodeEditor],
+  decorators: [withA11y, withSignIn, withCodeEditor],
   parameters: { options: { selectedPanel: 'storybookjs/knobs/panel' } }
 };
 

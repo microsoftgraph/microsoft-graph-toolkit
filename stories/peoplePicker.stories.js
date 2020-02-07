@@ -16,7 +16,7 @@ import '../dist/es6/components/mgt-people-picker/mgt-people-picker';
 export default {
   title: 'mgt-people-picker',
   component: 'mgt-people-picker',
-  decorators: [withA11y, withKnobs, withWebComponentsKnobs, withSignIn, withCodeEditor],
+  decorators: [withA11y, withSignIn, withCodeEditor],
   parameters: { options: { selectedPanel: 'storybookjs/knobs/panel' } }
 };
 

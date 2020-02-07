@@ -3,7 +3,7 @@ import { EditorElement } from './editor';
 import './style.css';
 
 // function is used for dragging and moving
-const setupDrag = (first, separator, last, dragComplete) => {
+const setupEditorResize = (first, separator, last, dragComplete) => {
   var md; // remember mouse down info
 
   separator.onmousedown = onMouseDown;
@@ -60,7 +60,18 @@ export const withCodeEditor = makeDecorator({
   skipIfNoParametersOrOptions: false,
   wrapper: (getStory, context, { parameters }) => {
     let story = getStory(context);
-    let storyHtml = story.innerHTML;
+
+    let storyHtml;
+    const root = document.createElement('div');
+    let storyElement;
+
+    if (story.strings) {
+      storyHtml = story.strings[0];
+      storyElement = document.createElement('div');
+    } else {
+      storyHtml = story.innerHTML;
+      storyElement = story;
+    }
 
     let scriptMatches = scriptRegex.exec(storyHtml);
     let scriptCode = scriptMatches && scriptMatches.length > 1 ? scriptMatches[1].trim() : '';
@@ -82,27 +93,26 @@ export const withCodeEditor = makeDecorator({
     };
 
     editor.addEventListener('fileUpdated', () => {
-      story.innerHTML = editor.files.html + `<style>${editor.files.css}</style>`;
+      storyElement.innerHTML = editor.files.html + `<style>${editor.files.css}</style>`;
       eval(editor.files.js);
     });
 
-    const root = document.createElement('div');
     const separator = document.createElement('div');
 
-    setupDrag(story, separator, editor, () => editor.layout());
+    setupEditorResize(storyElement, separator, editor, () => editor.layout());
 
     root.className = 'story-mgt-root';
-    story.className = 'story-mgt-preview';
+    storyElement.className = 'story-mgt-preview';
     separator.className = 'story-mgt-separator';
     editor.className = 'story-mgt-editor';
 
-    root.appendChild(story);
+    root.appendChild(storyElement);
     root.appendChild(separator);
     root.appendChild(editor);
 
     window.addEventListener('resize', () => {
-      story.style.height = '';
-      story.style.width = '';
+      storyElement.style.height = '';
+      storyElement.style.width = '';
       editor.style.height = '';
       editor.style.width = '';
     });

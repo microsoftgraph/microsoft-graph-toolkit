@@ -16,7 +16,7 @@ import '../dist/es6/components/mgt-login/mgt-login';
 export default {
   title: 'mgt-login',
   component: 'mgt-login',
-  decorators: [withA11y, withKnobs, withWebComponentsKnobs, withSignIn, withCodeEditor],
+  decorators: [withA11y, withSignIn, withCodeEditor],
   parameters: {
     options: { selectedPanel: 'mgt/sign-in' },
     signInAddon: {
