@@ -86,6 +86,16 @@ export class MgtTeamsChannelPicker extends MgtTemplatedComponent {
   })
   public selectedTeams: [Team[], MicrosoftGraph.Channel[]] = [[], []];
 
+  /**
+   *  array of user picked people.
+   * @type {Array<any>}
+   */
+  @property({
+    attribute: 'selected-channel',
+    type: Array
+  })
+  public selectedChannel: MicrosoftGraph.Channel[] = [];
+
   // User input in search
   @property() private _userInput: string = '';
 
@@ -131,6 +141,30 @@ export class MgtTeamsChannelPicker extends MgtTemplatedComponent {
   public disconnectedCallback() {
     window.removeEventListener('click', this.handleWindowClick);
     super.disconnectedCallback();
+  }
+
+  /**
+   * Queries the microsoft graph for a user based on the user id and adds them to the selectedPeople array
+   *
+   * @param {[string]} an array of user ids to add to selectedPeople
+   * @returns {Promise<void>}
+   * @memberof MgtPeoplePicker
+   */
+  public async selectChannelsById(channelIds: [string]): Promise<void> {
+    const provider = Providers.globalProvider;
+    const client = Providers.globalProvider.graph;
+    if (provider && provider.state === ProviderState.SignedIn) {
+      for (const team of this.teams) {
+        for (const channel of team.channels) {
+          if (channel.id === channelIds[0]) {
+            try {
+              this.selectedTeams = [[team], [channel]];
+              // tslint:disable-next-line: no-empty
+            } catch (e) {}
+          }
+        }
+      }
+    }
   }
 
   /**
