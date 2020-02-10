@@ -99,6 +99,11 @@ export class MgtTeamsChannelPicker extends MgtTemplatedComponent {
   private channelLength: number = 0;
 
   private channelCounter: number = -1;
+
+  @property() private isHovered = false;
+
+  @property() private isFocused = false;
+
   // determines loading state
   @property() private isLoading = false;
   private debouncedSearch;
@@ -138,21 +143,33 @@ export class MgtTeamsChannelPicker extends MgtTemplatedComponent {
     return (
       this.renderTemplate('default', { teams: this.teams }) ||
       html`
-        <div class="teams-channel-picker" @mouseover=${this.handleHover} @blur=${this.lostFocus}>
+        <div
+          class="teams-channel-picker"
+          @mouseover=${this.handleHover}
+          @blur=${this.lostFocus}
+          @mouseout=${this.mouseLeft}
+        >
           <div class="teams-channel-picker-input" @click=${this.gainedFocus}>
             ${this.renderChosenTeam()}
           </div>
-          <div class="teams-list-separator"></div>
+          <div class="teams-list-separator ${this.isHovered ? 'hovered' : ''} ${this.isFocused ? 'focused' : ''}"></div>
           ${this.renderChannelList()}
         </div>
       `
     );
   }
 
+  private mouseLeft() {
+    if (this._userInput.length === 0) {
+      this.isHovered = false;
+    }
+  }
+
   private handleHover() {
     if (this.teams.length === 0) {
       this.loadTeams();
     }
+    this.isHovered = true;
   }
 
   private handleWindowClick(e: MouseEvent) {
@@ -204,6 +221,7 @@ export class MgtTeamsChannelPicker extends MgtTemplatedComponent {
           this.loadChannelSearch(this._userInput);
           this.gainedFocus();
           this.arrowSelectionCount = -1;
+          this.channelLength = -1;
         }
       }, 200);
     }
@@ -472,7 +490,7 @@ export class MgtTeamsChannelPicker extends MgtTemplatedComponent {
     let inputClass = 'input-search-start';
 
     if (this.selectedTeams[0]) {
-      if (this.selectedTeams[0].length && this._userInput.length === 0) {
+      if (this.selectedTeams[0].length) {
         inputClass = 'input-search';
 
         peopleList = html`
@@ -495,7 +513,7 @@ export class MgtTeamsChannelPicker extends MgtTemplatedComponent {
         <div class="${inputClass}">
           <input
             id="teams-channel-picker-input"
-            class="team-chosen-input"
+            class="team-chosen-input ${this.isFocused || this.isHovered ? 'focused' : ''}"
             type="text"
             placeholder="${this.selectedTeams[0].length > 0 ? '' : 'Select a channel '} "
             label="teams-channel-picker-input"
@@ -511,6 +529,7 @@ export class MgtTeamsChannelPicker extends MgtTemplatedComponent {
   }
 
   private gainedFocus() {
+    this.isFocused = true;
     const teamList = this.renderRoot.querySelector('.team-list');
     const teamInput = this.renderRoot.querySelector('.team-chosen-input') as HTMLInputElement;
     teamInput.focus();
@@ -522,6 +541,7 @@ export class MgtTeamsChannelPicker extends MgtTemplatedComponent {
   }
 
   private lostFocus() {
+    this.isFocused = false;
     this._userInput = '';
     this.resetTeams();
     const teamList = this.renderRoot.querySelector('.team-list');

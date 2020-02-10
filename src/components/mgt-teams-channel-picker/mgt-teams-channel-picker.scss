@@ -61,9 +61,15 @@ mgt-teams-channel-picker .team-list {
 :host .teams-list-separator,
 mgt-teams-channel-picker .teams-list-separator {
   height: 2px;
-  background: $accent-color;
+  background: #b3b0ad;
   margin-top: 5px;
   text-align: center;
+  &.hovered {
+    background: #323130;
+  }
+  &.focused {
+    background: #0078d4;
+  }
 }
 
 :host .team-chosen-input,
@@ -77,6 +83,9 @@ mgt-teams-channel-picker .team-chosen-input {
   font-weight: normal;
   font-size: 14px;
   line-height: 19px;
+  &.focused::placeholder {
+    color: #323130;
+  }
   &.hide {
     display: none;
   }
