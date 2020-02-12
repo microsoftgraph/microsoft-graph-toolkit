@@ -5,8 +5,9 @@
  * -------------------------------------------------------------------------------------------
  */
 
-import { BatchRequestContent, Client } from '@microsoft/microsoft-graph-client';
+import { BatchRequestContent, Client, MiddlewareOptions } from '@microsoft/microsoft-graph-client';
 import { BatchRequest } from './BatchRequest';
+import { ComponentMiddlewareOptions } from './ComponentMiddlewareOptions';
 import { prepScopes } from './GraphHelpers';
 
 /**
@@ -22,8 +23,11 @@ export class Batch {
   private requests: Map<string, BatchRequest> = new Map<string, BatchRequest>();
   private scopes: string[] = [];
   private client: Client;
-  constructor(client: Client) {
+  private componentName: string;
+
+  constructor(client: Client, componentName: string = null) {
     this.client = client;
+    this.componentName = componentName;
   }
 
   /**
@@ -63,9 +67,13 @@ export class Batch {
       });
     }
     let batchRequest = this.client.api('$batch').version('beta');
-    if (this.scopes.length) {
-      batchRequest = batchRequest.middlewareOptions(prepScopes(...this.scopes));
+
+    let middlewareOptions: MiddlewareOptions[] = this.scopes.length ? prepScopes(...this.scopes) : [];
+    if (this.componentName) {
+      middlewareOptions = [new ComponentMiddlewareOptions(this.componentName), ...middlewareOptions];
     }
+    batchRequest = batchRequest.middlewareOptions(middlewareOptions);
+
     const batchResponse = await batchRequest.post(await batchRequestContent.getContent());
     for (const response of batchResponse.responses) {
       if (response.status !== 200) {

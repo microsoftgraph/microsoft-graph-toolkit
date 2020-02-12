@@ -50,16 +50,17 @@ export class MgtLogin extends MgtBaseComponent {
    * determines if login menu popup should be showing
    * @type {boolean}
    */
-  @property({ attribute: false }) private _showMenu: boolean = false;
+  @property({ attribute: false }) private _showMenu: boolean;
 
   /**
    * determines if login component is in loading state
    * @type {boolean}
    */
-  @property({ attribute: false }) private _loading: boolean = true;
+  @property({ attribute: false }) private _loading: boolean;
 
   constructor() {
     super();
+    this._loading = true;
     Providers.onProviderUpdated(() => this.loadState());
     this.loadState();
     this.handleWindowClick = this.handleWindowClick.bind(this);
@@ -72,6 +73,7 @@ export class MgtLogin extends MgtBaseComponent {
    */
   public connectedCallback() {
     super.connectedCallback();
+    this.addEventListener('click', e => e.stopPropagation());
     window.addEventListener('click', this.handleWindowClick);
   }
 
@@ -199,16 +201,7 @@ export class MgtLogin extends MgtBaseComponent {
   }
 
   private handleWindowClick(e: MouseEvent) {
-    if (e.target === this) {
-      return;
-    }
-
-    // get popup bounds
-    const popup = this.renderRoot.querySelector('.popup');
-    if (popup) {
-      this._popupRect = popup.getBoundingClientRect();
-      this._showMenu = false;
-    }
+    this._showMenu = false;
   }
 
   private renderLogIn() {
@@ -264,8 +257,7 @@ export class MgtLogin extends MgtBaseComponent {
     if (provider) {
       this._loading = true;
       if (provider.state === ProviderState.SignedIn) {
-        const graph = provider.graph.forComponent(this);
-        const batch = graph.createBatch();
+        const batch = provider.graph.forComponent(this).createBatch();
         batch.get('me', 'me', ['user.read']);
         batch.get('photo', 'me/photo/$value', ['user.read']);
         const response = await batch.execute();
