@@ -1135,6 +1135,51 @@
           "name": "--task-complete-detail-icon-color",
           "description": "Task complete detail icon color",
           "type": "Color"
+        },
+        {
+          "name": "--tasks-background-color",
+          "description": "Task background color",
+          "type": "Color"
+        },
+        {
+          "name": "--task-icon-alignment",
+          "description": "Task icon alignment",
+          "type": "String"
+        },
+        {
+          "name": "--task-icon-background",
+          "description": "Task icon color",
+          "type": "Color"
+        },
+        {
+          "name": "--task-icon-background-completed",
+          "description": "Task icon background color when completed",
+          "type": "Color"
+        },
+        {
+          "name": "--task-icon-border",
+          "description": "Task icon border styles",
+          "type": "String"
+        },
+        {
+          "name": "--task-icon-border-completed",
+          "description": "Task icon border style when task is completed",
+          "type": "String"
+        },
+        {
+          "name": "--task-icon-border-radius",
+          "description": "Task icon border radius",
+          "type": "String"
+        },
+        {
+          "name": "--task-icon-color",
+          "description": "Task icon color",
+          "type": "Color"
+        },
+        {
+          "name": "--task-icon-color-completed",
+          "description": "Task icon color when completed",
+          "type": "Color"
         }
       ]
     },

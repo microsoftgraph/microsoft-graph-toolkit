@@ -159,7 +159,7 @@ export enum ProviderState {
    */
   SignedOut,
   /**
-   * SignedIn = 1
+   * SignedIn = 2
    */
   SignedIn
 }

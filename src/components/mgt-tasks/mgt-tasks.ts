@@ -189,6 +189,15 @@ export class MgtTasks extends MgtTemplatedComponent {
   public hideHeader: boolean;
 
   /**
+   * sets whether the options are rendered
+   *
+   * @type {boolean}
+   * @memberof MgtTasks
+   */
+  @property({ attribute: 'hide-options', type: Boolean })
+  public hideOptions: boolean;
+
+  /**
    * allows developer to define specific group id
    */
   @property({ attribute: 'group-id', type: String })
@@ -970,7 +979,7 @@ export class MgtTasks extends MgtTemplatedComponent {
       : null;
 
     const taskCheck = html`
-      <span class=${classMap(taskCheckClasses)}>${taskCheckContent}</span>
+      <span class=${classMap(taskCheckClasses)}><span class="TaskCheckContent">${taskCheckContent}</span></span>
     `;
 
     const groupTitle = this._currentGroup ? null : this.getPlanTitle(task.topParentId);
@@ -1022,17 +1031,18 @@ export class MgtTasks extends MgtTemplatedComponent {
       `;
     }
 
-    const taskOptions = this.readOnly
-      ? null
-      : html`
-          <div class="TaskOptions">
-            <mgt-dot-options
-              .options="${{
-                'Delete Task': () => this.removeTask(task)
-              }}"
-            ></mgt-dot-options>
-          </div>
-        `;
+    const taskOptions =
+      this.readOnly || this.hideOptions
+        ? null
+        : html`
+            <div class="TaskOptions">
+              <mgt-dot-options
+                .options="${{
+                  'Delete Task': () => this.removeTask(task)
+                }}"
+              ></mgt-dot-options>
+            </div>
+          `;
 
     return html`
       <div

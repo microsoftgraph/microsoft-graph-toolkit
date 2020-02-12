@@ -73,6 +73,7 @@ export class MgtLogin extends MgtBaseComponent {
    */
   public connectedCallback() {
     super.connectedCallback();
+    this.addEventListener('click', e => e.stopPropagation());
     window.addEventListener('click', this.handleWindowClick);
   }
 
@@ -200,16 +201,7 @@ export class MgtLogin extends MgtBaseComponent {
   }
 
   private handleWindowClick(e: MouseEvent) {
-    if (e.target === this) {
-      return;
-    }
-
-    // get popup bounds
-    const popup = this.renderRoot.querySelector('.popup');
-    if (popup) {
-      this._popupRect = popup.getBoundingClientRect();
-      this._showMenu = false;
-    }
+    this._showMenu = false;
   }
 
   private renderLogIn() {
