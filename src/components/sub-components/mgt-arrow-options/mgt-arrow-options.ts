@@ -41,7 +41,7 @@ export class MgtArrowOptions extends MgtBaseComponent {
    * @type {boolean}
    * @memberof MgtArrowOptions
    */
-  @property({ type: Boolean }) public open: boolean = false;
+  @property({ type: Boolean }) public open: boolean;
 
   /**
    * Title of chosen TaskGroup.
@@ -49,7 +49,7 @@ export class MgtArrowOptions extends MgtBaseComponent {
    * @type {string}
    * @memberof MgtArrowOptions
    */
-  @property({ type: String }) public value: string = '';
+  @property({ type: String }) public value: string;
 
   /**
    * Menu options to be rendered with an attached MouseEvent handler for expansion of details
@@ -57,12 +57,14 @@ export class MgtArrowOptions extends MgtBaseComponent {
    * @type {object}
    * @memberof MgtArrowOptions
    */
-  @property({ type: Object }) public options: { [name: string]: (e: MouseEvent) => any | void } = {};
+  @property({ type: Object }) public options: { [name: string]: (e: MouseEvent) => any | void };
 
   private _clickHandler: (e: MouseEvent) => void | any;
 
   constructor() {
     super();
+    this.value = '';
+    this.options = {};
     this._clickHandler = (e: MouseEvent) => (this.open = false);
   }
 

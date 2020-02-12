@@ -69,7 +69,7 @@ export class MgtPersonCard extends MgtTemplatedComponent {
     attribute: 'is-expanded',
     type: Boolean
   })
-  public isExpanded: boolean = false;
+  public isExpanded: boolean;
 
   /**
    * Gets or sets whether additional details should be inherited from an mgt-person parent
@@ -82,7 +82,7 @@ export class MgtPersonCard extends MgtTemplatedComponent {
     attribute: 'inherit-details',
     type: Boolean
   })
-  public inheritDetails: boolean = false;
+  public inheritDetails: boolean;
 
   /**
    * Synchronizes property values when attributes change.
