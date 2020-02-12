@@ -1,11 +1,11 @@
 import addons, { makeDecorator } from '@storybook/addons';
 import { Providers } from '../../../dist/es6/Providers';
 import { ProviderState } from '../../../dist/es6/providers/IProvider';
-import { MsalProvider } from '../../../dist/es6/providers/MsalProvider';
+import { MsalProvider } from './msal1.2';
 import { MockProvider } from '../../../dist/es6/mock/MockProvider';
 import { CLIENTID, SETPROVIDER_EVENT, GETPROVIDER_EVENT } from '../../env';
 
-const _allow_signin = false;
+const _allow_signin = true;
 
 export const withSignIn = makeDecorator({
   name: `withSignIn`,

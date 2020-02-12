@@ -14,7 +14,7 @@ import { Providers, MsalProvider, LoginType } from '../dist/es6';
 import { CLIENTID, GETPROVIDER_EVENT, SETPROVIDER_EVENT } from './env';
 
 const PARAM_KEY = 'signInAddon';
-const _allow_signin = false;
+const _allow_signin = true;
 
 const msalProvider = new MsalProvider({
   clientId: CLIENTID,
