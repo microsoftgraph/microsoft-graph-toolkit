@@ -101,7 +101,9 @@ export class MgtTeamsChannelPicker extends MgtTemplatedComponent {
 
   @property() private _teamChannels: any[];
 
-  private noMatchesFound: boolean = false;
+  private noChannelsFound: boolean = false;
+
+  private noListShown: boolean = false;
 
   // tracking of user arrow key input for selection
   private arrowSelectionCount: number = -1;
@@ -456,7 +458,7 @@ export class MgtTeamsChannelPicker extends MgtTemplatedComponent {
    * @param name - user input or name of person searched
    */
   private loadChannelSearch(name: string) {
-    this.noMatchesFound = false;
+    this.noChannelsFound = false;
     if (name === '') {
       this.resetTeams();
       return;
@@ -483,7 +485,7 @@ export class MgtTeamsChannelPicker extends MgtTemplatedComponent {
         }
       }
     } else {
-      this.noMatchesFound = true;
+      this.noChannelsFound = true;
     }
   }
 
@@ -587,11 +589,15 @@ export class MgtTeamsChannelPicker extends MgtTemplatedComponent {
   private renderChannelList() {
     let content: TemplateResult;
 
+    console.log('rerender', this.noListShown);
     if (this.teams) {
       content = this.renderTeams(this.teams);
       if (this.isLoading) {
         content = this.renderTemplate('loading', null, 'loading') || this.renderLoadingMessage();
-      } else if (this.noMatchesFound && this._userInput.length > 0) {
+      } else if (this.noChannelsFound && this._userInput.length > 0 && !this.noListShown) {
+        content = this.renderTeams(this.teams);
+        // content = this.renderTemplate('error', null, 'error') || this.renderErrorMessage();
+      } else if (this.noChannelsFound && this._userInput.length > 0 && this.noListShown) {
         content = this.renderTemplate('error', null, 'error') || this.renderErrorMessage();
       } else {
         if (this.teams[0]) {
@@ -609,7 +615,7 @@ export class MgtTeamsChannelPicker extends MgtTemplatedComponent {
 
   private renderChannels(channelData: MicrosoftGraph.Channel[]) {
     let channelView;
-    if (channelData) {
+    if (channelData && !this.noChannelsFound) {
       channelView = html`
         ${repeat(
           channelData,
@@ -621,6 +627,50 @@ export class MgtTeamsChannelPicker extends MgtTemplatedComponent {
           `
         )}
       `;
+    } else {
+      if (channelData) {
+        const channelids = [];
+
+        for (const team of this.teams) {
+          const teamDiv = this.renderRoot.querySelector(`.team-list-${team.id}`);
+          const channelDiv = this.renderRoot.querySelector(`.team-${team.id}`);
+          teamDiv.classList.add('hide-team');
+          if (team.displayName.toLowerCase().indexOf(this._userInput.toLowerCase()) > -1) {
+            teamDiv.classList.remove('hide-team');
+            channelDiv.classList.remove('hide-channels');
+            team.showChannels = true;
+
+            for (const channel of team.channels) {
+              channelids.push(channel.id);
+            }
+          }
+        }
+
+        console.log(channelids.length);
+        // if (channelids.length === 0) {
+        //   this.noListShown = true;
+        //   this.requestUpdate();
+        //   return;
+        // }
+        channelView = html`
+          ${repeat(
+            channelData,
+            channel => channel,
+            channel => html`
+              <div class="channel-display" @click=${e => this.addChannel(e, channel)}>
+                <div
+                  class="${channelids.indexOf(channel.id) > -1 ? 'showing' : 'hiding'} channel-${channel.id.replace(
+                    /[^a-zA-Z ]/g,
+                    ''
+                  )}"
+                >
+                  <span class="people-person-text">${channel.displayName}</span>
+                </div>
+              </div>
+            `
+          )}
+        `;
+      }
     }
 
     return channelView;
