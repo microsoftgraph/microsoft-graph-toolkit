@@ -5,7 +5,7 @@ import { MsalProvider } from './msal1.2';
 import { MockProvider } from '../../../dist/es6/mock/MockProvider';
 import { CLIENTID, SETPROVIDER_EVENT, GETPROVIDER_EVENT } from '../../env';
 
-const _allow_signin = true;
+const _allow_signin = false;
 
 export const withSignIn = makeDecorator({
   name: `withSignIn`,

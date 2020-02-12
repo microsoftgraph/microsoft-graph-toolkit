@@ -10,11 +10,11 @@ import { addons, types } from '@storybook/addons';
 import { STORIES_CONFIGURED, STORY_MISSING } from '@storybook/core-events';
 import { AddonPanel } from '@storybook/components';
 import { useParameter, useChannel } from '@storybook/api';
-import { Providers, MsalProvider, LoginType } from '../dist/es6';
+import { Providers, MsalProvider, LoginType } from '../dist/commonjs';
 import { CLIENTID, GETPROVIDER_EVENT, SETPROVIDER_EVENT } from './env';
 
 const PARAM_KEY = 'signInAddon';
-const _allow_signin = true;
+const _allow_signin = false;
 
 const msalProvider = new MsalProvider({
   clientId: CLIENTID,
