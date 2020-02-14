@@ -53,7 +53,7 @@ export class MgtAgenda extends MgtTemplatedComponent {
     reflect: true,
     type: Boolean
   })
-  public groupByDay = false;
+  public groupByDay: boolean;
 
   /**
    * stores current date for intial calender selection in events.
@@ -75,7 +75,7 @@ export class MgtAgenda extends MgtTemplatedComponent {
     reflect: true,
     type: Number
   })
-  public days: number = 3;
+  public days: number;
 
   /**
    * allows developer to specify a different graph query that retrieves events
@@ -118,10 +118,14 @@ export class MgtAgenda extends MgtTemplatedComponent {
    * determines if agenda component is still loading details.
    * @type {boolean}
    */
-  @property({ attribute: false }) private _loading: boolean = true;
+  @property({ attribute: false }) private _loading: boolean;
 
   constructor() {
     super();
+
+    this._loading = true;
+    this.days = 3;
+
     this.onResize = this.onResize.bind(this);
   }
 
