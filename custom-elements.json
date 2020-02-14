@@ -169,8 +169,8 @@
       "attributes": [
         {
           "name": "events",
-          "description": "array containg events from user agenda.",
-          "jsDoc": "/**\n   * array containg events from user agenda.\n   * @type {Array<MicrosoftGraph.Event>}\n   */",
+          "description": "array containing events from user agenda.",
+          "jsDoc": "/**\n   * array containing events from user agenda.\n   * @type {Array<MicrosoftGraph.Event>}\n   */",
           "type": "Event[]"
         },
         {
@@ -181,14 +181,14 @@
         },
         {
           "name": "date",
-          "description": "stores current date for intial calender selection in events.",
-          "jsDoc": "/**\n   * stores current date for intial calender selection in events.\n   * @type {string}\n   */",
+          "description": "stores current date for initial calender selection in events.",
+          "jsDoc": "/**\n   * stores current date for initial calender selection in events.\n   * @type {string}\n   */",
           "type": "string"
         },
         {
           "name": "days",
-          "description": "sets number of days until endate, 3 is the default",
-          "jsDoc": "/**\n   * sets number of days until endate, 3 is the default\n   * @type {number}\n   */",
+          "description": "sets number of days until end date, 3 is the default",
+          "jsDoc": "/**\n   * sets number of days until end date, 3 is the default\n   * @type {number}\n   */",
           "type": "number"
         },
         {
@@ -219,8 +219,8 @@
         },
         {
           "name": "events",
-          "description": "array containg events from user agenda.",
-          "jsDoc": "/**\n   * array containg events from user agenda.\n   * @type {Array<MicrosoftGraph.Event>}\n   */",
+          "description": "array containing events from user agenda.",
+          "jsDoc": "/**\n   * array containing events from user agenda.\n   * @type {Array<MicrosoftGraph.Event>}\n   */",
           "type": "Event[]"
         },
         {
@@ -231,14 +231,14 @@
         },
         {
           "name": "date",
-          "description": "stores current date for intial calender selection in events.",
-          "jsDoc": "/**\n   * stores current date for intial calender selection in events.\n   * @type {string}\n   */",
+          "description": "stores current date for initial calender selection in events.",
+          "jsDoc": "/**\n   * stores current date for initial calender selection in events.\n   * @type {string}\n   */",
           "type": "string"
         },
         {
           "name": "days",
-          "description": "sets number of days until endate, 3 is the default",
-          "jsDoc": "/**\n   * sets number of days until endate, 3 is the default\n   * @type {number}\n   */",
+          "description": "sets number of days until end date, 3 is the default",
+          "jsDoc": "/**\n   * sets number of days until end date, 3 is the default\n   * @type {number}\n   */",
           "type": "number"
         },
         {
