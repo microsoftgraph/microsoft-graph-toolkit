@@ -5,10 +5,10 @@
  * -------------------------------------------------------------------------------------------
  */
 
-import { Client, GraphRequest, MiddlewareOptions } from '@microsoft/microsoft-graph-client';
+import { Client, GraphRequest, MiddlewareOptions, ResponseType } from '@microsoft/microsoft-graph-client';
 import * as GraphTypes from '@microsoft/microsoft-graph-types';
 import * as BetaTypes from '@microsoft/microsoft-graph-types-beta';
-import { Batch, ComponentMiddlewareOptions, getPhotoForResource, IGraph, prepScopes } from '.';
+import { Batch, blobToBase64, ComponentMiddlewareOptions, getPhotoForResource, IGraph, prepScopes } from '.';
 
 /**
  * The base Graph implementation.
@@ -566,4 +566,23 @@ export abstract class BaseGraph implements IGraph {
    * @memberof BaseGraph
    */
   public abstract setTodoTaskDetails(taskId: string, task: any, eTag: string): Promise<BetaTypes.OutlookTask>;
+
+  /**
+   * retrieves a photo for the specified resource.
+   *
+   * @param {string} resource
+   * @param {string[]} scopes
+   * @returns {Promise<string>}
+   */
+  protected async getPhotoForResource(resource: string, scopes: string[]): Promise<string> {
+    try {
+      const blob = await this.api(`${resource}/photo/$value`)
+        .responseType(ResponseType.BLOB)
+        .middlewareOptions(prepScopes(...scopes))
+        .get();
+      return await blobToBase64(blob);
+    } catch (e) {
+      return null;
+    }
+  }
 }

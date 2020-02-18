@@ -82,22 +82,3 @@ export function blobToBase64(blob: Blob): Promise<string> {
     reader.readAsDataURL(blob);
   });
 }
-
-/**
- * retrieves a photo for the specified resource.
- *
- * @param {string} resource
- * @param {string[]} scopes
- * @returns {Promise<string>}
- */
-export async function getPhotoForResource(resource: string, scopes: string[]): Promise<string> {
-  try {
-    const blob = await this.api(`${resource}/photo/$value`)
-      .responseType(ResponseType.BLOB)
-      .middlewareOptions(prepScopes(...scopes))
-      .get();
-    return await this.blobToBase64(blob);
-  } catch (e) {
-    return null;
-  }
-}
