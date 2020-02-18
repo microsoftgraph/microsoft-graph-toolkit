@@ -5,6 +5,8 @@
  * -------------------------------------------------------------------------------------------
  */
 
-export * from '../mgt/index';
-export * from '../mgt-core/components/baseComponent';
-export * from '../mgt/mock/mgt-mock-provider';
+export * from './MsalProvider';
+export * from './SharePointProvider';
+export * from './TeamsProvider';
+export * from './SimpleProvider';
+export * from './ProxyProvider';

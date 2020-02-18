@@ -1,0 +1,135 @@
+/**
+ * -------------------------------------------------------------------------------------------
+ * Copyright (c) Microsoft Corporation.  All Rights Reserved.  Licensed under the MIT License.
+ * See License in the project root for license information.
+ * -------------------------------------------------------------------------------------------
+ */
+@import '../../../../node_modules/office-ui-fabric-core/dist/sass/References';
+
+$font-size: var(--font-size, #{$ms-font-size-m});
+$font-weight: var(--font-weight, #{$ms-font-weight-semibold});
+$color: var(--color, #{$ms-color-neutralDark});
+
+:host .root {
+  position: relative;
+  width: 340px;
+  background: #ffffff;
+  box-shadow: 0px 0px 4.55172px rgba(0, 0, 0, 0.16);
+  font-family: var(--default-font-family);
+
+  .default-view {
+    display: flex;
+    padding: 18px 14px;
+
+    mgt-person.person-image {
+      --avatar-size-s: 75px;
+    }
+
+    .details {
+      margin-left: 14px;
+      line-height: 1.15;
+
+      .display-name {
+        font-size: 27.3103px;
+        color: #333333;
+      }
+
+      .job-title {
+        font-size: 18.2069px;
+        color: #767676;
+        font-weight: 600;
+      }
+
+      .department {
+        font-size: 15.1724px;
+        color: #767676;
+      }
+
+      .base-icons {
+        margin-top: 14px;
+        display: flex;
+        -webkit-align-items: center;
+        align-items: center;
+        max-width: 120px;
+
+        .icon {
+          margin: 0 22px 0 0;
+          cursor: pointer;
+        }
+        .icon:hover {
+          opacity: 0.6;
+        }
+      }
+    }
+  }
+
+  .additional-details-container {
+    .additional-details-button {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 28px;
+      background: rgba(196, 196, 196, 0.1);
+      .additional-details-svg {
+        margin-bottom: 3px;
+      }
+    }
+    .additional-details-button:hover {
+      background-color: rgba(0, 0, 0, 0.068);
+    }
+    .additional-details-info {
+      margin: 0 0 0 20px;
+      padding-bottom: 18px;
+
+      .contact-text {
+        margin: 0 0 24px 0;
+        font-weight: 600;
+        font-size: 14px;
+        color: #000000;
+      }
+      .additional-details-row {
+        display: flex;
+        .additional-details-item {
+          line-height: normal;
+          font-style: normal;
+          font-weight: normal;
+          font-size: 15px;
+          .icons {
+            text-align: left;
+            .details-icon {
+              margin: 0 0 10px 0;
+              display: flex;
+              flex-direction: row;
+              align-items: center;
+            }
+          }
+          .data {
+            display: block;
+            margin: 0 0 0px 10px;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            width: 280px;
+          }
+          .normal-subtitle {
+            padding-top: 2px;
+          }
+          .link-subtitle {
+            color: #3078cd;
+            cursor: pointer;
+          }
+          .link-subtitle:hover {
+            opacity: 0.6;
+          }
+        }
+      }
+      .section-divider {
+        width: 96%;
+        height: 1px;
+        background: #eaeaea;
+      }
+      .custom-section {
+      }
+    }
+  }
+}

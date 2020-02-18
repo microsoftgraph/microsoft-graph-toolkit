@@ -5,6 +5,7 @@
  * -------------------------------------------------------------------------------------------
  */
 
-export * from '../mgt/index';
-export * from '../mgt-core/components/baseComponent';
-export * from '../mgt/mock/mgt-mock-provider';
+export * from './components/components';
+export * from './components/providers/providers';
+export * from './Providers';
+export * from './providers/providers';
