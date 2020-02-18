@@ -31,14 +31,14 @@ export class MgtDotOptions extends MgtBaseComponent {
    * @type {boolean}
    * @memberof MgtDotOptions
    */
-  @property({ type: Boolean }) public open: boolean = false;
+  @property({ type: Boolean }) public open: boolean;
 
   /**
    * Menu options to be rendered with an attached MouseEvent handler for expansion of details
    *
    * @memberof MgtDotOptions
    */
-  @property({ type: Object }) public options: { [option: string]: (e: MouseEvent) => void | any } = null;
+  @property({ type: Object }) public options: { [option: string]: (e: MouseEvent) => void | any };
 
   private _clickHandler: (e: MouseEvent) => void | any = null;
 

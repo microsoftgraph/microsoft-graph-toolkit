@@ -7,26 +7,29 @@ import json from 'rollup-plugin-json';
 
 const extensions = ['.js', '.ts'];
 
+const getBabelConfig = isEs5 => {
+  return {
+    plugins: [
+      ['@babel/plugin-proposal-decorators', isEs5 ? { legacy: true } : { decoratorsBeforeExport: true, legacy: false }],
+      ['@babel/proposal-class-properties', { loose: isEs5 }],
+      '@babel/proposal-object-rest-spread'
+    ],
+    include: [
+      'src/**/*',
+      'node_modules/lit-element/**/*',
+      'node_modules/lit-html/**/*',
+      'node_modules/@microsoft/microsoft-graph-client/lib/es/**/*',
+      'node_modules/msal/lib-es6/**/*'
+    ]
+  };
+};
+
 const commonPlugins = [
   json(),
   commonJS(),
   resolve({ module: true, jsnext: true, extensions }),
   postcss(),
   terser({ keep_classnames: true, keep_fnames: true })
-];
-
-const babelPlugins = [
-  ['@babel/plugin-proposal-decorators', { decoratorsBeforeExport: true, legacy: false }],
-  '@babel/proposal-class-properties',
-  '@babel/proposal-object-rest-spread'
-];
-
-const babelInclude = [
-  'src/**/*',
-  'node_modules/lit-element/**/*',
-  'node_modules/lit-html/**/*',
-  'node_modules/@microsoft/microsoft-graph-client/lib/es/**/*',
-  'node_modules/msal/lib-es6/**/*'
 ];
 
 const es6Bundle = {
@@ -50,8 +53,7 @@ const es6Bundle = {
         ],
         '@babel/typescript'
       ],
-      plugins: babelPlugins,
-      include: babelInclude
+      ...getBabelConfig(false)
     }),
     ...commonPlugins
   ]
@@ -73,13 +75,14 @@ const es5Bundle = {
         [
           '@babel/preset-env',
           {
-            targets: 'last 2 versions'
+            targets: 'last 2 versions',
+            useBuiltIns: 'entry',
+            corejs: 3
           }
         ],
         '@babel/typescript'
       ],
-      plugins: babelPlugins,
-      include: babelInclude
+      ...getBabelConfig(true)
     }),
     ...commonPlugins
   ]
@@ -105,8 +108,7 @@ const cjsBundle = {
         ],
         '@babel/typescript'
       ],
-      plugins: babelPlugins,
-      include: babelInclude
+      ...getBabelConfig(true)
     }),
     ...commonPlugins
   ]

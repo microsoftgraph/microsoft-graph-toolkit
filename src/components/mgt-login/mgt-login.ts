@@ -50,16 +50,17 @@ export class MgtLogin extends MgtBaseComponent {
    * determines if login menu popup should be showing
    * @type {boolean}
    */
-  @property({ attribute: false }) private _showMenu: boolean = false;
+  @property({ attribute: false }) private _showMenu: boolean;
 
   /**
    * determines if login component is in loading state
    * @type {boolean}
    */
-  @property({ attribute: false }) private _loading: boolean = true;
+  @property({ attribute: false }) private _loading: boolean;
 
   constructor() {
     super();
+    this._loading = true;
     Providers.onProviderUpdated(() => this.loadState());
     this.loadState();
     this.handleWindowClick = this.handleWindowClick.bind(this);
