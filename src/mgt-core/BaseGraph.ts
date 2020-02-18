@@ -8,7 +8,7 @@
 import { Client, GraphRequest, MiddlewareOptions, ResponseType } from '@microsoft/microsoft-graph-client';
 import * as GraphTypes from '@microsoft/microsoft-graph-types';
 import * as BetaTypes from '@microsoft/microsoft-graph-types-beta';
-import { Batch, blobToBase64, ComponentMiddlewareOptions, getPhotoForResource, IGraph, prepScopes } from '.';
+import { Batch, blobToBase64, ComponentMiddlewareOptions, IGraph, prepScopes } from '.';
 
 /**
  * The base Graph implementation.
@@ -133,7 +133,7 @@ export abstract class BaseGraph implements IGraph {
    * @memberof BaseGraph
    */
   public getContactPhoto(contactId: string): Promise<string> {
-    return getPhotoForResource(`me/contacts/${contactId}`, ['contacts.read']);
+    return this.getPhotoForResource(`me/contacts/${contactId}`, ['contacts.read']);
   }
 
   /**
@@ -143,7 +143,7 @@ export abstract class BaseGraph implements IGraph {
    * @memberof BaseGraph
    */
   public getUserPhoto(userId: string): Promise<string> {
-    return getPhotoForResource(`users/${userId}`, ['user.readbasic.all']);
+    return this.getPhotoForResource(`users/${userId}`, ['user.readbasic.all']);
   }
 
   /**
@@ -152,7 +152,7 @@ export abstract class BaseGraph implements IGraph {
    * @memberof BaseGraph
    */
   public myPhoto(): Promise<string> {
-    return getPhotoForResource('me', ['user.read']);
+    return this.getPhotoForResource('me', ['user.read']);
   }
 
   ///
