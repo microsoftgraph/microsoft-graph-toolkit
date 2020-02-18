@@ -17,7 +17,8 @@ setCustomElements(customElements);
 
 addParameters({
   docs: {
-    iframeHeight: '200px'
+    iframeHeight: '400px',
+    inlineStories: false
   },
   options: {
     // disable keyboard shortcuts because they interfere with the stories
