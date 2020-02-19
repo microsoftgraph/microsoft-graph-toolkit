@@ -18,7 +18,7 @@ import {
   Providers,
   ProviderState
 } from '../../../mgt-core';
-import { styles } from './mgt-tasks-css';
+import { styles } from './mgt-tasks-beta-css';
 import { ITask, ITaskFolder, ITaskGroup, ITaskSource, PlannerTaskSource, TodoTaskSource } from './task-sources';
 
 /**
