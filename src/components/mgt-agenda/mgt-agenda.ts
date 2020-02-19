@@ -36,7 +36,7 @@ export class MgtAgenda extends MgtTemplatedComponent {
   }
 
   /**
-   * array containg events from user agenda.
+   * array containing events from user agenda.
    * @type {Array<MicrosoftGraph.Event>}
    */
   @property({
@@ -56,7 +56,7 @@ export class MgtAgenda extends MgtTemplatedComponent {
   public groupByDay: boolean;
 
   /**
-   * stores current date for intial calender selection in events.
+   * stores current date for initial calender selection in events.
    * @type {string}
    */
   @property({
@@ -67,7 +67,7 @@ export class MgtAgenda extends MgtTemplatedComponent {
   public date: string;
 
   /**
-   * sets number of days until endate, 3 is the default
+   * sets number of days until end date, 3 is the default
    * @type {number}
    */
   @property({
@@ -347,7 +347,7 @@ export class MgtAgenda extends MgtTemplatedComponent {
         </div>
         <div class="event-details-container">
           <div class="event-subject">${event.subject}</div>
-          ${this.renderLocation(event)} ${this.renderAttendies(event)}
+          ${this.renderLocation(event)} ${this.renderAttendees(event)}
         </div>
         ${this.templates['event-other']
           ? html`
@@ -387,7 +387,7 @@ export class MgtAgenda extends MgtTemplatedComponent {
     `;
   }
 
-  private renderAttendies(event: MicrosoftGraph.Event) {
+  private renderAttendees(event: MicrosoftGraph.Event) {
     if (!event.attendees.length) {
       return null;
     }
