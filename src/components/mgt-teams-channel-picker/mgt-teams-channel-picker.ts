@@ -185,10 +185,12 @@ export class MgtTeamsChannelPicker extends MgtTemplatedComponent {
           @blur=${this.lostFocus}
           @mouseout=${this.mouseLeft}
         >
-          <div class="teams-channel-picker-input" @click=${this.gainedFocus}>
+          <div
+            class="teams-channel-picker-input ${this.isHovered ? 'hovered' : ''} ${this.isFocused ? 'focused' : ''}"
+            @click=${this.gainedFocus}
+          >
             ${this.renderChosenTeam()}
           </div>
-          <div class="teams-list-separator ${this.isHovered ? 'hovered' : ''} ${this.isFocused ? 'focused' : ''}"></div>
           ${this.renderChannelList()}
         </div>
       `
@@ -724,7 +726,7 @@ export class MgtTeamsChannelPicker extends MgtTemplatedComponent {
       for (let i = 0; i < team.channels.length; i++) {
         const selection = team.channels[i].id.replace(/[^a-zA-Z ]/g, '');
         const channelDiv = this.renderRoot.querySelector(`.channel-${selection}`);
-        channelDiv.classList.remove('blue-highlight');
+        channelDiv.parentElement.classList.remove('blue-highlight');
       }
     }
 
@@ -749,7 +751,7 @@ export class MgtTeamsChannelPicker extends MgtTemplatedComponent {
             }
           }
 
-          channelDiv.classList.add('blue-highlight');
+          channelDiv.parentElement.classList.add('blue-highlight');
           this.arrowSelectionCount = -1;
           this.lostFocus();
         }
@@ -764,7 +766,7 @@ export class MgtTeamsChannelPicker extends MgtTemplatedComponent {
             this.selectedTeams = [[team], [pickedChannel]];
             const selection = pickedChannel.id.replace(/[^a-zA-Z ]/g, '');
             const channelDiv = this.renderRoot.querySelector(`.channel-${selection}`);
-            channelDiv.classList.add('blue-highlight');
+            channelDiv.parentElement.classList.add('blue-highlight');
             this.lostFocus();
           }
         }

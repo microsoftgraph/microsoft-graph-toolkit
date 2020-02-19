@@ -16,7 +16,23 @@ $initials-color: var(--initials-color, white);
 $initials-background-color: var(--initials-background-color, #{$ms-color-magenta});
 $accent-color: var(--accent-color, #0078d4);
 
-$team-list-background-color: var(--team-list-background-color, white);
+$font-color: var(--font-color, #323130);
+$placeholder-default-color: var (--placeholder-default-color, #605e5c);
+$placeholder-focus-color: var (--placeholder-focus-color, #323130);
+$arrow-fill: var(--arrow-fill, #252424);
+
+$input-bottom-border: var(--input-bottom-border, 2px solid #b3b0ad);
+$input-right-border: var(--input-right-border, none);
+$input-left-border: var(--input-left-border, none);
+$input-top-border: var(--input-top-border, none);
+
+$input-hover-color: var(--input-hover-color, #323130);
+$input-focus-color: var(--input-focus-color, #0078d4);
+
+$selection-hover-color: var(--selection-hover-color, #f1f1f1dd);
+
+$selection-background-color: var(--selection-background-color, white);
+$input-background-color: var(--input-background-color, white);
 
 :host {
   border-radius: 2px;
@@ -29,18 +45,15 @@ mgt-teams-channel-picker .root {
 :host .teams-channel-picker,
 mgt-teams-channel-picker .teams-channel-picker {
   position: relative;
-  background-color: white;
-  padding-bottom: 8px;
 }
 
 :host .team-list,
 mgt-teams-channel-picker .team-list {
   position: absolute;
-  margin: 7px 0px 0px 0px;
-  padding: 0;
+  padding: 0 0 14px 0;
   box-shadow: 0px 1.3289px 2.65781px rgba(180, 180, 180, 0.182), 0px 1.3289px 2.65781px rgba(68, 68, 68, 0.3);
   border-radius: 2px;
-  background-color: $team-list-background-color;
+  background-color: $selection-background-color;
   z-index: 1; /* Sit on top */
   width: 100%;
   text-align: left;
@@ -48,26 +61,17 @@ mgt-teams-channel-picker .team-list {
   font-family: Segoe UI;
   font-style: normal;
   font-weight: normal;
+  color: $font-color;
   display: none;
   li {
     cursor: pointer;
     .arrow {
       margin-right: 10px;
       margin-bottom: 1px;
+      svg path {
+        fill: $arrow-fill;
+      }
     }
-  }
-}
-:host .teams-list-separator,
-mgt-teams-channel-picker .teams-list-separator {
-  height: 2px;
-  background: #b3b0ad;
-  margin-top: 5px;
-  text-align: center;
-  &.hovered {
-    background: #323130;
-  }
-  &.focused {
-    background: #0078d4;
   }
 }
 
@@ -82,8 +86,12 @@ mgt-teams-channel-picker .team-chosen-input {
   font-weight: normal;
   font-size: 14px;
   line-height: 19px;
+  background-color: $input-background-color;
+  ::placeholder {
+    color: green;
+  }
   &.focused::placeholder {
-    color: #323130;
+    color: $placeholder-focus-color;
   }
   &.hide {
     display: none;
@@ -101,6 +109,10 @@ mgt-teams-channel-picker .people-chosen-list {
   font-family: Segoe UI;
   font-style: normal;
   font-weight: normal;
+  color: $font-color;
+  .people-person {
+    padding-top: 1px;
+  }
 }
 .CloseIcon,
 mgt-teams-channel-picker .CloseIcon {
@@ -110,7 +122,8 @@ mgt-teams-channel-picker .CloseIcon {
   font-family: 'FabricMDL2Icons';
   padding-right: 8px;
   padding-left: 10px;
-  margin-top: 3px;
+  margin-bottom: 1px;
+  margin-top: 1px;
   cursor: pointer;
 }
 :host .SearchIcon,
@@ -142,17 +155,18 @@ mgt-teams-channel-picker .list-team {
   flex-direction: row;
   flex-wrap: wrap;
   align-items: center;
-  padding: 12px;
+  padding: 12px 12px 8px 12px;
   font-family: Segoe UI;
   font-style: normal;
   font-weight: 600;
   font-size: 16px;
+  color: $font-color;
   &.hide-team {
     display: none;
   }
 
   &:hover {
-    background-color: #f1f1f1dd;
+    background-color: $selection-hover-color;
   }
 }
 
@@ -168,6 +182,8 @@ mgt-teams-channel-picker .teams-list-fill {
 
 :host .channel-display,
 mgt-teams-channel-picker .channel-display {
+  padding-left: 24px;
+  padding-right: 20px;
   .showing {
     padding-left: 10px;
     padding-top: 4px;
@@ -176,11 +192,14 @@ mgt-teams-channel-picker .channel-display {
   .hiding {
     display: none;
   }
-  .blue-highlight {
+  &.blue-highlight {
     background-color: #deecf9;
+    &:hover {
+      background-color: #d2e4f5;
+    }
   }
   &:hover {
-    background-color: #f1f1f1dd;
+    background-color: $selection-hover-color;
   }
   .channel-input {
     // -webkit-appearance: none;
@@ -190,8 +209,7 @@ mgt-teams-channel-picker .channel-display {
 }
 :host .render-channels,
 mgt-teams-channel-picker .render-channels {
-  padding-left: 24px;
-  padding-right: 20px;
+  padding-bottom: 5px;
 }
 
 :host .hide-channels,
@@ -203,6 +221,7 @@ mgt-teams-channel-picker .hide-channels {
 mgt-teams-channel-picker .people-person-text {
   font-size: 14px;
   font-weight: normal;
+  color: $font-color;
   margin: 0;
   padding: 0;
 }
@@ -223,11 +242,23 @@ mgt-teams-channel-picker .input-search-start {
 mgt-teams-channel-picker .teams-channel-picker-input {
   display: flex;
   order: 2;
-  background-color: white;
-  margin: $avatar-margin;
+  background-color: $input-background-color;
   font-size: 14px;
+  color: $font-color;
   line-height: 19px;
   cursor: text;
+
+  padding-bottom: 5px;
+  border-bottom: $input-bottom-border;
+  border-left: $input-left-border;
+  border-top: $input-top-border;
+  border-right: $input-right-border;
+  &.hovered {
+    border-color: $input-hover-color;
+  }
+  &.focused {
+    border-color: $input-focus-color;
+  }
 }
 
 :host .duplicate-person,
@@ -259,9 +290,9 @@ mgt-teams-channel-picker .person-display-name {
   font-style: normal;
   font-weight: 600;
   font-size: 14px;
+  color: $font-color;
   line-height: 19px;
   text-align: center;
-  color: #000000;
 }
 
 mgt-person {
@@ -281,6 +312,7 @@ mgt-teams-channel-picker .loading-text {
   font-style: normal;
   font-weight: 600;
   font-size: 14px;
+  color: $font-color;
   line-height: 19px;
   text-align: center;
   color: #232222;
