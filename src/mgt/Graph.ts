@@ -29,7 +29,7 @@ import { PACKAGE_VERSION } from '../version';
 /**
  * The version of the Graph to use for making requests.
  */
-const GRAPH_VERSION = '1.0';
+const GRAPH_VERSION = 'v1.0';
 
 /**
  * Creates async methods for requesting data from the Graph
