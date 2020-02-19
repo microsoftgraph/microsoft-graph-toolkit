@@ -61,7 +61,7 @@ export class MgtPerson extends MgtTemplatedComponent {
     attribute: 'show-name',
     type: Boolean
   })
-  public showName: false;
+  public showName: boolean;
 
   /**
    * determines if person component renders email
@@ -71,7 +71,7 @@ export class MgtPerson extends MgtTemplatedComponent {
     attribute: 'show-email',
     type: Boolean
   })
-  public showEmail: false;
+  public showEmail: boolean;
 
   /**
    * object containing Graph details on person
@@ -115,10 +115,10 @@ export class MgtPerson extends MgtTemplatedComponent {
       }
     }
   })
-  public personCardInteraction: PersonCardInteraction = PersonCardInteraction.none;
+  public personCardInteraction: PersonCardInteraction;
 
-  @property({ attribute: false }) private isPersonCardVisible: boolean = false;
-  @property({ attribute: false }) private personCardShouldRender: boolean = false;
+  @property({ attribute: false }) private isPersonCardVisible: boolean;
+  @property({ attribute: false }) private personCardShouldRender: boolean;
 
   private _mouseLeaveTimeout;
   private _mouseEnterTimeout;
@@ -126,6 +126,7 @@ export class MgtPerson extends MgtTemplatedComponent {
   constructor() {
     super();
     this.handleWindowClick = this.handleWindowClick.bind(this);
+    this.personCardInteraction = PersonCardInteraction.none;
   }
 
   /**

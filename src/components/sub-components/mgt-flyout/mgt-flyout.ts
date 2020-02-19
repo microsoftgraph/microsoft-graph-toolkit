@@ -36,7 +36,7 @@ export class MgtFlyout extends LitElement {
     attribute: 'isOpen',
     type: Boolean
   })
-  public isOpen: boolean = false;
+  public isOpen: boolean;
 
   private renderedOnce = false;
 

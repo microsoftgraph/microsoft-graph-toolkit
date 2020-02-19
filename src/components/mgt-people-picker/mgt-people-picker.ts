@@ -41,7 +41,7 @@ export class MgtPeoplePicker extends MgtTemplatedComponent {
     attribute: 'people',
     type: Object
   })
-  public people: Array<MicrosoftGraph.User | MicrosoftGraph.Person | MicrosoftGraph.Contact> = null;
+  public people: Array<MicrosoftGraph.User | MicrosoftGraph.Person | MicrosoftGraph.Contact>;
 
   /**
    * determining how many people to show in list.
@@ -51,7 +51,7 @@ export class MgtPeoplePicker extends MgtTemplatedComponent {
     attribute: 'show-max',
     type: Number
   })
-  public showMax: number = 6;
+  public showMax: number;
 
   /**
    * value determining if search is filtered to a group.
@@ -71,14 +71,14 @@ export class MgtPeoplePicker extends MgtTemplatedComponent {
     attribute: 'selected-people',
     type: Array
   })
-  public selectedPeople: Array<MicrosoftGraph.User | MicrosoftGraph.Person | MicrosoftGraph.Contact> = [];
+  public selectedPeople: Array<MicrosoftGraph.User | MicrosoftGraph.Person | MicrosoftGraph.Contact>;
 
   // User input in search
-  @property() private _userInput: string = '';
+  @property() private _userInput: string;
 
   // if search is still loading don't load "people not found" state
-  @property() private showLoading = false;
-  @property() private isLoading = false;
+  @property() private showLoading;
+  @property() private isLoading;
 
   // tracking of user arrow key input for selection
   private arrowSelectionCount: number = 0;
@@ -88,6 +88,10 @@ export class MgtPeoplePicker extends MgtTemplatedComponent {
 
   constructor() {
     super();
+
+    this._userInput = '';
+    this.showMax = 6;
+    this.selectedPeople = [];
   }
 
   /**
