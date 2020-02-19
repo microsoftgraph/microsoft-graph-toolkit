@@ -16,8 +16,11 @@ import {
   TelemetryHandler
 } from '@microsoft/microsoft-graph-client';
 import * as MicrosoftGraph from '@microsoft/microsoft-graph-types';
-import { Graph, IGraph, IProvider, SdkVersionMiddleware } from '..';
 import { PACKAGE_VERSION } from '../../version';
+import { Graph } from '../Graph';
+import { IGraph } from '../IGraph';
+import { IProvider } from '../providers/IProvider';
+import { SdkVersionMiddleware } from './SdkVersionMiddleware';
 
 /**
  * returns a promise that resolves after specified time

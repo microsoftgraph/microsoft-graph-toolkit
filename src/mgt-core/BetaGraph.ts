@@ -1,22 +1,8 @@
-import {
-  AuthenticationHandler,
-  Client,
-  HTTPMessageHandler,
-  Middleware,
-  RetryHandler,
-  RetryHandlerOptions,
-  TelemetryHandler
-} from '@microsoft/microsoft-graph-client';
-import {
-  Contact,
-  OutlookTask,
-  OutlookTaskFolder,
-  OutlookTaskGroup,
-  Person,
-  User
-} from '@microsoft/microsoft-graph-types-beta';
-import { chainMiddleware, Graph, IGraph, IProvider, prepScopes, SdkVersionMiddleware } from '.';
-import { PACKAGE_VERSION } from '../version';
+import { Client } from '@microsoft/microsoft-graph-client';
+import { OutlookTask, OutlookTaskFolder, OutlookTaskGroup } from '@microsoft/microsoft-graph-types-beta';
+import { Graph } from './Graph';
+import { IBetaGraph } from './IBetaGraph';
+import { prepScopes } from './utils/GraphHelpers';
 
 /**
  * The version of the Graph to use for making requests.
@@ -30,7 +16,7 @@ const GRAPH_VERSION = 'beta';
  * @class BetaGraph
  * @extends {BaseGraph}
  */
-export class BetaGraph extends Graph {
+export class BetaGraph extends Graph implements IBetaGraph {
   constructor(client: Client, version: string = GRAPH_VERSION) {
     super(client, version);
   }
@@ -40,7 +26,7 @@ export class BetaGraph extends Graph {
    * client within the context of the provider.
    *
    * @param {Element} component
-   * @returns {IGraph}
+   * @returns {BetaGraph}
    * @memberof BetaGraph
    */
   public forComponent(component: Element): BetaGraph {

@@ -15,8 +15,11 @@ import {
   PlannerTask,
   User
 } from '@microsoft/microsoft-graph-types';
-import { Batch, blobToBase64, ComponentMiddlewareOptions, IGraph, prepScopes } from '.';
 import { BetaGraph } from './BetaGraph';
+import { IGraph } from './IGraph';
+import { Batch } from './utils/Batch';
+import { ComponentMiddlewareOptions } from './utils/ComponentMiddlewareOptions';
+import { blobToBase64, prepScopes } from './utils/GraphHelpers';
 
 /**
  * The version of the Graph to use for making requests.

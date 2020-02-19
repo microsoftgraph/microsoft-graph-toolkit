@@ -1,5 +1,6 @@
 export * from './BetaGraph';
 export * from './Graph';
+export * from './IBetaGraph';
 export * from './IGraph';
 export * from './components/baseComponent';
 export * from './components/providers/baseProvider';
