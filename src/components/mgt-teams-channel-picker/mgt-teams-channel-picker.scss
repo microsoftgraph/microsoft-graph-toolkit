@@ -17,8 +17,8 @@ $initials-background-color: var(--initials-background-color, #{$ms-color-magenta
 $accent-color: var(--accent-color, #0078d4);
 
 $font-color: var(--font-color, #323130);
-$placeholder-default-color: var (--placeholder-default-color, #605e5c);
-$placeholder-focus-color: var (--placeholder-focus-color, #323130);
+$placeholder-default-color: var(--placeholder-default-color, #605e5c);
+$placeholder-focus-color: var(--placeholder-focus-color, #323130);
 $arrow-fill: var(--arrow-fill, #252424);
 
 $input-bottom-border: var(--input-bottom-border, 2px solid #b3b0ad);
@@ -87,8 +87,9 @@ mgt-teams-channel-picker .team-chosen-input {
   font-size: 14px;
   line-height: 19px;
   background-color: $input-background-color;
-  ::placeholder {
-    color: green;
+  color: $font-color;
+  &::placeholder {
+    color: $placeholder-default-color;
   }
   &.focused::placeholder {
     color: $placeholder-focus-color;
@@ -247,7 +248,6 @@ mgt-teams-channel-picker .teams-channel-picker-input {
   color: $font-color;
   line-height: 19px;
   cursor: text;
-
   padding-bottom: 5px;
   border-bottom: $input-bottom-border;
   border-left: $input-left-border;
