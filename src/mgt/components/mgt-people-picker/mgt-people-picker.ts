@@ -8,12 +8,9 @@
 import * as MicrosoftGraph from '@microsoft/microsoft-graph-types';
 import { customElement, html, property, TemplateResult } from 'lit-element';
 import { repeat } from 'lit-html/directives/repeat';
-import { ProviderState } from '../../../mgt-core';
-import { Providers } from '../../Providers';
+import { debounce, MgtTemplatedComponent, Providers, ProviderState } from '../../../mgt-core';
 import '../../styles/fabric-icon-font';
-import { debounce } from '../../utils/Utils';
 import '../mgt-person/mgt-person';
-import { MgtTemplatedComponent } from '../templatedComponent';
 import { styles } from './mgt-people-picker-css';
 
 /**

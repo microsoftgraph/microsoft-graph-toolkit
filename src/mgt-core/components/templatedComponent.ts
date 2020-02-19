@@ -6,7 +6,7 @@
  */
 
 import { html, PropertyValues } from 'lit-element';
-import { MgtBaseComponent } from '../../mgt-core';
+import { MgtBaseComponent } from '..';
 import { equals } from '../utils/Utils';
 import { TemplateHelper } from './templateHelper';
 

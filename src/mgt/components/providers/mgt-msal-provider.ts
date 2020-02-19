@@ -6,8 +6,7 @@
  */
 
 import { customElement, property } from 'lit-element';
-import { LoginType, MgtBaseProvider } from '../../../mgt-core';
-import { Providers } from '../../Providers';
+import { LoginType, MgtBaseProvider, Providers } from '../../../mgt-core';
 import { MsalConfig, MsalProvider } from '../../providers/MsalProvider';
 /**
  * Authentication Library Provider for Microsoft personal accounts

@@ -8,13 +8,11 @@
 import * as MicrosoftGraph from '@microsoft/microsoft-graph-types';
 import { customElement, html, property, PropertyValues, TemplateResult } from 'lit-element';
 import { classMap } from 'lit-html/directives/class-map';
-import { getEmailFromGraphEntity, ProviderState } from '../../../mgt-core';
-import { Providers } from '../../Providers';
+import { getEmailFromGraphEntity, MgtTemplatedComponent, Providers, ProviderState } from '../../../mgt-core';
 import '../../styles/fabric-icon-font';
 import { MgtPersonCard } from '../mgt-person-card/mgt-person-card';
 import { PersonCardInteraction } from '../PersonCardInteraction';
 import '../sub-components/mgt-flyout/mgt-flyout';
-import { MgtTemplatedComponent } from '../templatedComponent';
 import { styles } from './mgt-person-css';
 
 /**

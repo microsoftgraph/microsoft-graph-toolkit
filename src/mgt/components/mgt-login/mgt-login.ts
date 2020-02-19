@@ -7,8 +7,7 @@
 
 import { User } from '@microsoft/microsoft-graph-types';
 import { customElement, html, property } from 'lit-element';
-import { MgtBaseComponent, ProviderState } from '../../../mgt-core';
-import { Providers } from '../../Providers';
+import { MgtBaseComponent, Providers, ProviderState } from '../../../mgt-core';
 import '../../styles/fabric-icon-font';
 import '../mgt-person/mgt-person';
 import { styles } from './mgt-login-css';

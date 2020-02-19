@@ -7,11 +7,9 @@
 
 import * as MicrosoftGraph from '@microsoft/microsoft-graph-types';
 import { customElement, html, property, TemplateResult } from 'lit-element';
-import { getEmailFromGraphEntity, ProviderState } from '../../../mgt-core';
-import { Providers } from '../../Providers';
+import { getEmailFromGraphEntity, MgtTemplatedComponent, Providers, ProviderState } from '../../../mgt-core';
 import { getSvg, SvgIcon } from '../../utils/SvgHelper';
 import { MgtPerson } from '../mgt-person/mgt-person';
-import { MgtTemplatedComponent } from '../templatedComponent';
 import { styles } from './mgt-person-card-css';
 /**
  * Web Component used to show detailed data for a person in the

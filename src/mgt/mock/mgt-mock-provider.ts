@@ -6,8 +6,7 @@
  */
 
 import { customElement, property } from 'lit-element';
-import { MgtBaseProvider } from '../../mgt-core';
-import { Providers } from '../Providers';
+import { MgtBaseProvider, Providers } from '../../mgt-core';
 import { MockProvider } from './MockProvider';
 /**
  * Sets global provider to a mock Provider

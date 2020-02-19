@@ -41,7 +41,7 @@ function runSass() {
     .pipe(gap.prependText(scssFileHeader))
     .pipe(gap.appendText(scssFileFooter))
     .pipe(rename({ extname: '-css.ts' }))
-    .pipe(gulp.dest('src/mgt')); // Components live in the mgt folder
+    .pipe(gulp.dest('src/'));
 }
 
 function setLicense() {

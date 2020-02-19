@@ -5,6 +5,4 @@
  * -------------------------------------------------------------------------------------------
  */
 
-export * from '../mgt-core';
-export * from '../mgt';
-export * from '../mgt-beta';
+export * from './mgt-tasks-beta/mgt-tasks-beta';

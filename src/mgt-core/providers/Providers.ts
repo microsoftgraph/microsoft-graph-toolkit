@@ -5,7 +5,7 @@
  * -------------------------------------------------------------------------------------------
  */
 
-import { EventDispatcher, EventHandler, IProvider } from '../mgt-core';
+import { EventDispatcher, EventHandler, IProvider } from '..';
 
 /**
  * Provides implementation for acquiring the necessary access token for calling the Microsoft Graph APIs.

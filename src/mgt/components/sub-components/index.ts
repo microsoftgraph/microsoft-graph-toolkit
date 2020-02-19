@@ -5,6 +5,6 @@
  * -------------------------------------------------------------------------------------------
  */
 
-export * from '../mgt-core';
-export * from '../mgt';
-export * from '../mgt-beta';
+export * from './mgt-arrow-options/mgt-arrow-options';
+export * from './mgt-dot-options/mgt-dot-options';
+export * from './mgt-flyout/mgt-flyout';

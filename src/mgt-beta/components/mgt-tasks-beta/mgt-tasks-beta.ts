@@ -10,6 +10,7 @@ import { Contact, OutlookTask, OutlookTaskFolder } from '@microsoft/microsoft-gr
 import { customElement, html, property } from 'lit-element';
 import { classMap } from 'lit-html/directives/class-map';
 import { repeat } from 'lit-html/directives/repeat';
+import { MgtPeople, MgtPeoplePicker, PersonCardInteraction } from '../../../mgt';
 import {
   ComponentMediaQuery,
   getShortDateString,
@@ -17,15 +18,8 @@ import {
   Providers,
   ProviderState
 } from '../../../mgt-core';
-import { MgtPeoplePicker } from '../mgt-people-picker/mgt-people-picker';
-import { MgtPeople } from '../mgt-people/mgt-people';
-import '../mgt-person/mgt-person';
-import { PersonCardInteraction } from '../PersonCardInteraction';
-import '../sub-components/mgt-arrow-options/mgt-arrow-options';
-import '../sub-components/mgt-dot-options/mgt-dot-options';
-import '../sub-components/mgt-flyout/mgt-flyout';
 import { styles } from './mgt-tasks-css';
-import { ITask, ITaskFolder, ITaskGroup, ITaskSource, PlannerTaskSource } from './task-sources';
+import { ITask, ITaskFolder, ITaskGroup, ITaskSource, PlannerTaskSource, TodoTaskSource } from './task-sources';
 
 /**
  * Defines how a person card is shown when a user interacts with
@@ -34,16 +28,28 @@ import { ITask, ITaskFolder, ITaskGroup, ITaskSource, PlannerTaskSource } from '
  * @export
  * @enum {number}
  */
-export enum TasksSource {
+export enum BetaTasksSource {
   /**
    * Use Microsoft Planner
    */
-  planner
+  planner,
+
+  /**
+   * Use Microsoft To-Do
+   */
+  todo
 }
 
 // Strings and Resources for different task contexts
 // tslint:disable-next-line: completed-docs
 const TASK_RES = {
+  todo: {
+    BASE_SELF_ASSIGNED: 'All Tasks',
+    BUCKETS_SELF_ASSIGNED: 'All Tasks',
+    BUCKET_NOT_FOUND: 'Folder not found',
+    PLANS_SELF_ASSIGNED: 'All groups',
+    PLAN_NOT_FOUND: 'Group not found'
+  },
   // tslint:disable-next-line: object-literal-sort-keys
   planner: {
     BASE_SELF_ASSIGNED: 'Assigned to Me',
@@ -63,20 +69,22 @@ const plannerAssignment = {
  * component enables the user to view, add, remove, complete, or edit tasks. It works with tasks in Microsoft Planner or Microsoft To-Do.
  *
  * @export
- * @class MgtTasks
+ * @class MgtTasksBeta
  * @extends {MgtBaseComponent}
  */
-@customElement('mgt-tasks')
-export class MgtTasks extends MgtTemplatedComponent {
+@customElement('mgt-tasks-beta')
+export class MgtTasksBeta extends MgtTemplatedComponent {
   /**
-   * determines planner functionality for task component
+   * determines whether todo, or planner functionality for task component
    *
    * @readonly
-   * @memberof MgtTasks
+   * @memberof MgtTasksBeta
    */
   public get res() {
     switch (this.dataSource) {
-      case TasksSource.planner:
+      case BetaTasksSource.todo:
+        return TASK_RES.todo;
+      case BetaTasksSource.planner:
       default:
         return TASK_RES.planner;
     }
@@ -94,7 +102,7 @@ export class MgtTasks extends MgtTemplatedComponent {
   /**
    * Get whether new task view is visible
    *
-   * @memberof MgtTasks
+   * @memberof MgtTasksBeta
    */
   public get isNewTaskVisible() {
     return this._isNewTaskVisible;
@@ -103,7 +111,7 @@ export class MgtTasks extends MgtTemplatedComponent {
   /**
    * Set whether new task is visible
    *
-   * @memberof MgtTasks
+   * @memberof MgtTasksBeta
    */
   public set isNewTaskVisible(value: boolean) {
     this._isNewTaskVisible = value;
@@ -122,17 +130,17 @@ export class MgtTasks extends MgtTemplatedComponent {
   public readOnly: boolean = false;
 
   /**
-   * determines which task source is loaded
+   * determines which task source is loaded, either planner or todo
    * @type {string}
    */
   @property({
     attribute: 'data-source',
     converter: (value, type) => {
       value = value.toLowerCase();
-      return TasksSource[value] || TasksSource.planner;
+      return BetaTasksSource[value] || BetaTasksSource.planner;
     }
   })
-  public dataSource: TasksSource = TasksSource.planner;
+  public dataSource: BetaTasksSource = BetaTasksSource.planner;
 
   /**
    * if set, the component will only show tasks from either this plan or group
@@ -152,7 +160,7 @@ export class MgtTasks extends MgtTemplatedComponent {
    * if set, the component will first show tasks from this plan or group
    *
    * @type {string}
-   * @memberof MgtTasks
+   * @memberof MgtTasksBeta
    */
   @property({ attribute: 'initial-id', type: String })
   public initialId: string = null;
@@ -161,7 +169,7 @@ export class MgtTasks extends MgtTemplatedComponent {
    * if set, the component will first show tasks from this bucket or folder
    *
    * @type {string}
-   * @memberof MgtTasks
+   * @memberof MgtTasksBeta
    */
   @property({ attribute: 'initial-bucket-id', type: String })
   public initialBucketId: string = null;
@@ -170,7 +178,7 @@ export class MgtTasks extends MgtTemplatedComponent {
    * sets whether the header is rendered
    *
    * @type {boolean}
-   * @memberof MgtTasks
+   * @memberof MgtTasksBeta
    */
   @property({ attribute: 'hide-header', type: Boolean })
   public hideHeader: boolean = false;
@@ -179,7 +187,7 @@ export class MgtTasks extends MgtTemplatedComponent {
    * sets whether the options are rendered
    *
    * @type {boolean}
-   * @memberof MgtTasks
+   * @memberof MgtTasksBeta
    */
   @property({ attribute: 'hide-options', type: Boolean })
   public hideOptions: boolean;
@@ -193,7 +201,7 @@ export class MgtTasks extends MgtTemplatedComponent {
   /**
    * Optional filter function when rendering tasks
    *
-   * @memberof MgtTasks
+   * @memberof MgtTasksBeta
    */
   public taskFilter: (task: PlannerTask | OutlookTask) => boolean;
 
@@ -210,6 +218,7 @@ export class MgtTasks extends MgtTemplatedComponent {
   @property() private _loadingTasks: string[] = [];
   @property() private _inTaskLoad: boolean = false;
   @property() private _hasDoneInitialLoad: boolean = false;
+  @property() private _todoDefaultSet: boolean = false;
 
   @property() private _currentGroup: string;
   @property() private _currentFolder: string;
@@ -233,7 +242,7 @@ export class MgtTasks extends MgtTemplatedComponent {
   /**
    * updates provider state
    *
-   * @memberof MgtTasks
+   * @memberof MgtTasksBeta
    */
   public connectedCallback() {
     super.connectedCallback();
@@ -245,7 +254,7 @@ export class MgtTasks extends MgtTemplatedComponent {
   /**
    * removes updates on provider state
    *
-   * @memberof MgtTasks
+   * @memberof MgtTasksBeta
    */
   public disconnectedCallback() {
     Providers.removeProviderUpdatedListener(this.providerUpdateCallback);
@@ -260,14 +269,17 @@ export class MgtTasks extends MgtTemplatedComponent {
    * @param {*} name
    * @param {*} oldValue
    * @param {*} newValue
-   * @memberof MgtTasks
+   * @memberof MgtTasksBeta
    */
   public attributeChangedCallback(name: string, oldVal: string, newVal: string) {
     super.attributeChangedCallback(name, oldVal, newVal);
     if (name === 'data-source') {
-      if (this.dataSource === TasksSource.planner) {
+      if (this.dataSource === BetaTasksSource.planner) {
         this._currentGroup = this.initialId;
         this._currentFolder = this.initialBucketId;
+      } else if (this.dataSource === BetaTasksSource.todo) {
+        this._currentGroup = null;
+        this._currentFolder = this.initialId;
       }
 
       this._newTaskFolderId = '';
@@ -282,6 +294,7 @@ export class MgtTasks extends MgtTemplatedComponent {
 
       this._hasDoneInitialLoad = false;
       this._inTaskLoad = false;
+      this._todoDefaultSet = false;
 
       this.loadTasks();
     }
@@ -298,12 +311,14 @@ export class MgtTasks extends MgtTemplatedComponent {
    */
   protected firstUpdated() {
     if (this.initialId && !this._currentGroup) {
-      if (this.dataSource === TasksSource.planner) {
+      if (this.dataSource === BetaTasksSource.planner) {
         this._currentGroup = this.initialId;
+      } else if (this.dataSource === BetaTasksSource.todo) {
+        this._currentFolder = this.initialId;
       }
     }
 
-    if (this.dataSource === TasksSource.planner && this.initialBucketId && !this._currentFolder) {
+    if (this.dataSource === BetaTasksSource.planner && this.initialBucketId && !this._currentFolder) {
       this._currentFolder = this.initialBucketId;
     }
 
@@ -357,7 +372,7 @@ export class MgtTasks extends MgtTemplatedComponent {
    * loads tasks from dataSource
    *
    * @returns
-   * @memberof MgtTasks
+   * @memberof MgtTasksBeta
    */
   private async loadTasks() {
     const ts = this.getTaskSource();
@@ -377,10 +392,12 @@ export class MgtTasks extends MgtTemplatedComponent {
       meTask = graph.getMe();
     }
 
-    if (this.groupId && this.dataSource === TasksSource.planner) {
+    if (this.groupId && this.dataSource === BetaTasksSource.planner) {
       await this._loadTasksForGroup(ts);
     } else if (this.targetId) {
-      if (this.dataSource === TasksSource.planner) {
+      if (this.dataSource === BetaTasksSource.todo) {
+        await this._loadTargetTodoTasks(ts);
+      } else {
         await this._loadTargetPlannerTasks(ts);
       }
     } else {
@@ -393,6 +410,23 @@ export class MgtTasks extends MgtTemplatedComponent {
 
     this._inTaskLoad = false;
     this._hasDoneInitialLoad = true;
+  }
+
+  private async _loadTargetTodoTasks(ts: ITaskSource) {
+    const groups = await ts.getTaskGroups();
+    const folders = (await Promise.all(groups.map(group => ts.getTaskFoldersForTaskGroup(group.id)))).reduce(
+      (cur, ret) => [...cur, ...ret],
+      []
+    );
+    const tasks = (await Promise.all(
+      folders.map(folder => ts.getTasksForTaskFolder(folder.id, folder.parentId))
+    )).reduce((cur, ret) => [...cur, ...ret], []);
+
+    this._tasks = tasks;
+    this._folders = folders;
+    this._groups = groups;
+
+    this._currentGroup = null;
   }
 
   private async _loadTargetPlannerTasks(ts: ITaskSource) {
@@ -418,6 +452,14 @@ export class MgtTasks extends MgtTemplatedComponent {
       (cur, ret) => [...cur, ...ret],
       []
     );
+
+    if (!this.initialId && this.dataSource === BetaTasksSource.todo && !this._todoDefaultSet) {
+      this._todoDefaultSet = true;
+      const defaultFolder = folders.find(d => (d._raw as OutlookTaskFolder).isDefaultFolder);
+      if (defaultFolder) {
+        this._currentFolder = defaultFolder.id;
+      }
+    }
 
     const tasks = (await Promise.all(
       folders.map(folder => ts.getTasksForTaskFolder(folder.id, folder.parentId))
@@ -624,7 +666,7 @@ export class MgtTasks extends MgtTemplatedComponent {
             </button>
           `;
 
-    if (this.dataSource === TasksSource.planner) {
+    if (this.dataSource === BetaTasksSource.planner) {
       const currentGroup = this._groups.find(d => d.id === this._currentGroup) || {
         title: this.res.BASE_SELF_ASSIGNED
       };
@@ -735,30 +777,33 @@ export class MgtTasks extends MgtTemplatedComponent {
     if (groups.length > 0 && !this._newTaskGroupId) {
       this._newTaskGroupId = groups[0].id;
     }
-    const group = this._currentGroup
-      ? html`
-          <span class="NewTaskGroup">
-            ${this.renderPlannerIcon()}
-            <span>${this.getPlanTitle(this._currentGroup)}</span>
-          </span>
-        `
-      : html`
-          <span class="NewTaskGroup">
-            ${this.renderPlannerIcon()}
-            <select
-              .value="${this._newTaskGroupId}"
-              @change="${(e: Event) => {
-                this._newTaskGroupId = (e.target as HTMLInputElement).value;
-              }}"
-            >
-              ${this._groups.map(
-                plan => html`
-                  <option value="${plan.id}">${plan.title}</option>
-                `
-              )}
-            </select>
-          </span>
-        `;
+    const group =
+      this.dataSource === BetaTasksSource.todo
+        ? null
+        : this._currentGroup
+        ? html`
+            <span class="NewTaskGroup">
+              ${this.renderPlannerIcon()}
+              <span>${this.getPlanTitle(this._currentGroup)}</span>
+            </span>
+          `
+        : html`
+            <span class="NewTaskGroup">
+              ${this.renderPlannerIcon()}
+              <select
+                .value="${this._newTaskGroupId}"
+                @change="${(e: Event) => {
+                  this._newTaskGroupId = (e.target as HTMLInputElement).value;
+                }}"
+              >
+                ${this._groups.map(
+                  plan => html`
+                    <option value="${plan.id}">${plan.title}</option>
+                  `
+                )}
+              </select>
+            </span>
+          `;
 
     const folders = this._folders.filter(
       folder =>
@@ -813,7 +858,7 @@ export class MgtTasks extends MgtTemplatedComponent {
       </span>
     `;
 
-    const taskPeople = this.renderAssignedPeople(null);
+    const taskPeople = this.dataSource === BetaTasksSource.todo ? null : this.renderAssignedPeople(null);
 
     const taskAdd = this._newTaskBeingAdded
       ? html`
@@ -934,14 +979,15 @@ export class MgtTasks extends MgtTemplatedComponent {
     let taskDetails = this.renderTemplate('task-details', context, `task-details-${task.id}`);
 
     if (!taskDetails) {
-      const group = this._currentGroup
-        ? null
-        : html`
-            <div class="TaskDetail TaskGroup">
-              ${this.renderPlannerIcon()}
-              <span>${this.getPlanTitle(task.topParentId)}</span>
-            </div>
-          `;
+      const group =
+        this.dataSource === BetaTasksSource.todo || this._currentGroup
+          ? null
+          : html`
+              <div class="TaskDetail TaskGroup">
+                ${this.renderPlannerIcon()}
+                <span>${this.getPlanTitle(task.topParentId)}</span>
+              </div>
+            `;
 
       const folder = this._currentFolder
         ? null
@@ -960,7 +1006,7 @@ export class MgtTasks extends MgtTemplatedComponent {
             </div>
           `;
 
-      const taskPeople = this.renderAssignedPeople(task);
+      const taskPeople = this.dataSource !== BetaTasksSource.todo ? this.renderAssignedPeople(task) : null;
 
       taskDetails = html`
         <div class="TaskTitle">
@@ -1160,12 +1206,12 @@ export class MgtTasks extends MgtTemplatedComponent {
     }
 
     const graph = p.graph.forComponent(this);
-
-    switch (this.dataSource) {
-      case TasksSource.planner:
-        return new PlannerTaskSource(graph);
-      default:
-        return null;
+    if (this.dataSource === BetaTasksSource.planner) {
+      return new PlannerTaskSource(graph);
+    } else if (this.dataSource === BetaTasksSource.todo) {
+      return new TodoTaskSource(graph);
+    } else {
+      return null;
     }
   }
 
