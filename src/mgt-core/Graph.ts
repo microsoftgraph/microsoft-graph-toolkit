@@ -24,7 +24,7 @@ import { blobToBase64, prepScopes } from './utils/GraphHelpers';
 /**
  * The version of the Graph to use for making requests.
  */
-const GRAPH_VERSION = '1.0';
+const GRAPH_VERSION = 'v1.0';
 
 /**
  * The base Graph implementation.
