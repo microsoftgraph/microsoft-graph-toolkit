@@ -13,9 +13,8 @@ import {
   RetryHandlerOptions,
   TelemetryHandler
 } from '@microsoft/microsoft-graph-client';
-import { BaseGraph, chainMiddleware, SdkVersionMiddleware } from '../../mgt-core';
+import { chainMiddleware, Graph, SdkVersionMiddleware } from '../../mgt-core';
 import { PACKAGE_VERSION } from '../../version';
-import { Graph } from '../Graph';
 import { CustomHeaderMiddleware } from './CustomHeaderMiddleware';
 
 /**

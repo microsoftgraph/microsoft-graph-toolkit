@@ -6,8 +6,7 @@
  */
 
 import { AuthenticationProviderOptions } from '@microsoft/microsoft-graph-client/lib/es/IAuthenticationProviderOptions';
-import { IProvider } from '../../mgt-core';
-import { Graph } from '../Graph';
+import { createFromProvider, IProvider } from '../../mgt-core';
 
 /**
  * Facilitates create of new custom provider
@@ -32,7 +31,7 @@ export class SimpleProvider extends IProvider {
     this._loginHandler = loginHandler;
     this._logoutHandler = logoutHandler;
 
-    this.graph = new Graph(this);
+    this.graph = createFromProvider(this);
   }
 
   /**

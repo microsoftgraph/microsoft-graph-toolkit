@@ -5,8 +5,19 @@
  * -------------------------------------------------------------------------------------------
  */
 
-import { AuthenticationHandlerOptions, Middleware, ResponseType } from '@microsoft/microsoft-graph-client';
+import {
+  AuthenticationHandler,
+  AuthenticationHandlerOptions,
+  Client,
+  HTTPMessageHandler,
+  Middleware,
+  RetryHandler,
+  RetryHandlerOptions,
+  TelemetryHandler
+} from '@microsoft/microsoft-graph-client';
 import * as MicrosoftGraph from '@microsoft/microsoft-graph-types';
+import { Graph, IGraph, IProvider, SdkVersionMiddleware } from '..';
+import { PACKAGE_VERSION } from '../../version';
 
 /**
  * returns a promise that resolves after specified time
@@ -81,4 +92,29 @@ export function blobToBase64(blob: Blob): Promise<string> {
     };
     reader.readAsDataURL(blob);
   });
+}
+
+/**
+ * create a new Graph instance using the specified provider.
+ *
+ * @static
+ * @param {IProvider} provider
+ * @returns {Graph}
+ * @memberof Graph
+ */
+export function createFromProvider(provider: IProvider, version?: string, component?: Element): IGraph {
+  const middleware: Middleware[] = [
+    new AuthenticationHandler(provider),
+    new RetryHandler(new RetryHandlerOptions()),
+    new TelemetryHandler(),
+    new SdkVersionMiddleware(PACKAGE_VERSION),
+    new HTTPMessageHandler()
+  ];
+
+  const client = Client.initWithMiddleware({
+    middleware: chainMiddleware(...middleware)
+  });
+
+  const graph = new Graph(client, version);
+  return component ? graph.forComponent(component) : graph;
 }

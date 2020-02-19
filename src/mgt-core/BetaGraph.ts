@@ -15,7 +15,7 @@ import {
   Person,
   User
 } from '@microsoft/microsoft-graph-types-beta';
-import { BaseGraph, chainMiddleware, IGraph, IProvider, prepScopes, SdkVersionMiddleware } from '../mgt-core';
+import { chainMiddleware, Graph, IGraph, IProvider, prepScopes, SdkVersionMiddleware } from '.';
 import { PACKAGE_VERSION } from '../version';
 
 /**
@@ -30,29 +30,9 @@ const GRAPH_VERSION = 'beta';
  * @class BetaGraph
  * @extends {BaseGraph}
  */
-export class BetaGraph extends BaseGraph {
-  constructor(providerOrClient: IProvider | Client) {
-    const client = providerOrClient as Client;
-    const provider = providerOrClient as IProvider;
-
-    if (client.api) {
-      super(client, GRAPH_VERSION);
-    } else if (provider) {
-      const middleware: Middleware[] = [
-        new AuthenticationHandler(provider),
-        new RetryHandler(new RetryHandlerOptions()),
-        new TelemetryHandler(),
-        new SdkVersionMiddleware(PACKAGE_VERSION),
-        new HTTPMessageHandler()
-      ];
-
-      super(
-        Client.initWithMiddleware({
-          middleware: chainMiddleware(...middleware)
-        }),
-        GRAPH_VERSION
-      );
-    }
+export class BetaGraph extends Graph {
+  constructor(client: Client, version: string = GRAPH_VERSION) {
+    super(client, version);
   }
 
   /**
@@ -63,98 +43,10 @@ export class BetaGraph extends BaseGraph {
    * @returns {IGraph}
    * @memberof BetaGraph
    */
-  public forComponent(component: Element): IGraph {
+  public forComponent(component: Element): BetaGraph {
     const graph = new BetaGraph(this.client);
-    this.componentName = component.tagName.toLowerCase();
+    this.setComponent(component);
     return graph;
-  }
-
-  ///
-  /// USER
-  ///
-
-  /**
-   *  async promise, returns Graph User data relating to the user logged in
-   *
-   * @returns {Promise<User>}
-   * @memberof BetaGraph
-   */
-  public getMe(): Promise<User> {
-    return super.getMe() as Promise<User>;
-  }
-
-  /**
-   * async promise, returns all Graph users associated with the userPrincipleName provided
-   *
-   * @param {string} userPrincipleName
-   * @returns {Promise<User>}
-   * @memberof BetaGraph
-   */
-  public getUser(userPrincipleName: string): Promise<User> {
-    return super.getUser(userPrincipleName) as Promise<User>;
-  }
-
-  ///
-  /// PERSON
-  ///
-
-  /**
-   * async promise, returns all Graph people who are most relevant contacts to the signed in user.
-   *
-   * @param {string} query
-   * @returns {Promise<Person[]>}
-   * @memberof BetaGraph
-   */
-  public findPerson(query: string): Promise<Person[]> {
-    return super.findPerson(query) as Promise<Person[]>;
-  }
-
-  /**
-   * async promise to the Graph for People, by default, it will request the most frequent contacts for the signed in user.
-   *
-   * @returns {Promise<Person[]>}
-   * @memberof BetaGraph
-   */
-  public async getPeople(): Promise<Person[]> {
-    return super.getPeople() as Promise<Person[]>;
-  }
-
-  /**
-   * async promise to the Graph for People, defined by a group id
-   *
-   * @param {string} groupId
-   * @returns {Promise<Person[]>}
-   * @memberof BetaGraph
-   */
-  public async getPeopleFromGroup(groupId: string): Promise<Person[]> {
-    return super.getPeopleFromGroup(groupId) as Promise<Person[]>;
-  }
-
-  ///
-  /// CONTACTS
-  ///
-
-  /**
-   * async promise, returns a Graph contact associated with the email provided
-   *
-   * @param {string} email
-   * @returns {Promise<Contact[]>}
-   * @memberof BetaGraph
-   */
-  public findContactByEmail(email: string): Promise<Contact[]> {
-    return super.findContactByEmail(email) as Promise<Contact[]>;
-  }
-
-  /**
-   * async promise, returns Graph contact and/or Person associated with the email provided
-   * Uses: Graph.findPerson(email) and Graph.findContactByEmail(email)
-   *
-   * @param {string} email
-   * @returns {(Promise<Array<Person | Contact>>)}
-   * @memberof BetaGraph
-   */
-  public findUserByEmail(email: string): Promise<Array<Person | Contact>> {
-    return super.findUserByEmail(email) as Promise<Array<Person | Contact>>;
   }
 
   ///

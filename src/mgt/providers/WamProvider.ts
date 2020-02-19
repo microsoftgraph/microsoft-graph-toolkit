@@ -6,8 +6,7 @@
  */
 
 import { AuthenticationProviderOptions } from '@microsoft/microsoft-graph-client/lib/es/IAuthenticationProviderOptions';
-import { IProvider, ProviderState } from '../../mgt-core';
-import { Graph } from '../Graph';
+import { createFromProvider, IProvider, ProviderState } from '../../mgt-core';
 
 /**
  * Windows auth
@@ -64,7 +63,7 @@ export class WamProvider extends IProvider {
     this.clientId = clientId;
     this.authority = authority || 'https://login.microsoftonline.com/common';
 
-    this.graph = new Graph(this);
+    this.graph = createFromProvider(this);
 
     this.printRedirectUriToConsole();
   }

@@ -5,8 +5,7 @@
  * -------------------------------------------------------------------------------------------
  */
 
-import { IProvider, ProviderState } from '../../mgt-core';
-import { Graph } from '../Graph';
+import { Graph, IProvider, ProviderState } from '../../mgt-core';
 import { ProxyGraph } from '../utils/ProxyGraph';
 
 /**

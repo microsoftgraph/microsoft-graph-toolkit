@@ -6,8 +6,7 @@
  */
 
 import { AuthenticationProviderOptions } from '@microsoft/microsoft-graph-client/lib/es/IAuthenticationProviderOptions';
-import { IProvider, LoginType, ProviderState } from '../../mgt-core';
-import { Graph } from '../Graph';
+import { createFromProvider, IProvider, LoginType, ProviderState } from '../../mgt-core';
 
 import { AuthenticationParameters, AuthError, AuthResponse, Configuration, UserAgentApplication } from 'msal';
 
@@ -351,7 +350,7 @@ export class MsalProvider extends IProvider {
       throw new Error('clientId must be provided');
     }
 
-    this.graph = new Graph(this);
+    this.graph = createFromProvider(this);
 
     this.trySilentSignIn();
   }

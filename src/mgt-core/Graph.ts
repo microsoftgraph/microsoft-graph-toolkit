@@ -6,9 +6,22 @@
  */
 
 import { Client, GraphRequest, MiddlewareOptions, ResponseType } from '@microsoft/microsoft-graph-client';
-import * as GraphTypes from '@microsoft/microsoft-graph-types';
-import * as BetaTypes from '@microsoft/microsoft-graph-types-beta';
-import { Batch, blobToBase64, ComponentMiddlewareOptions, getPhotoForResource, IGraph, prepScopes } from '.';
+import {
+  Contact,
+  Event,
+  Person,
+  PlannerBucket,
+  PlannerPlan,
+  PlannerTask,
+  User
+} from '@microsoft/microsoft-graph-types';
+import { Batch, blobToBase64, ComponentMiddlewareOptions, IGraph, prepScopes } from '.';
+import { BetaGraph } from './BetaGraph';
+
+/**
+ * The version of the Graph to use for making requests.
+ */
+const GRAPH_VERSION = '1.0';
 
 /**
  * The base Graph implementation.
@@ -17,16 +30,7 @@ import { Batch, blobToBase64, ComponentMiddlewareOptions, getPhotoForResource, I
  * @abstract
  * @class BaseGraph
  */
-export abstract class BaseGraph implements IGraph {
-  /**
-   * The name of the component making the request
-   *
-   * @protected
-   * @type {string}
-   * @memberof BaseGraph
-   */
-  protected componentName: string;
-
+export class Graph implements IGraph {
   /**
    * the internal client used to make graph calls
    *
@@ -38,12 +42,38 @@ export abstract class BaseGraph implements IGraph {
   protected get client(): Client {
     return this._client;
   }
+
+  /**
+   * the version of the graph to query
+   *
+   * @readonly
+   * @protected
+   * @type {string}
+   * @memberof Graph
+   */
+  protected get version(): string {
+    return this._version;
+  }
+
   private _client: Client;
   private _version: string;
+  private _componentName: string;
 
-  constructor(client: Client, version: string) {
+  constructor(client: Client, version: string = GRAPH_VERSION) {
     this._client = client;
     this._version = version;
+  }
+
+  /**
+   * create a BetaGraph instance based on this Graph instance.
+   *
+   * @returns {BetaGraph}
+   * @memberof Graph
+   */
+  public beta(): BetaGraph {
+    const graph = new BetaGraph(this._client);
+    graph._componentName = this._componentName;
+    return graph;
   }
 
   /**
@@ -54,7 +84,11 @@ export abstract class BaseGraph implements IGraph {
    * @returns {IGraph}
    * @memberof BaseGraph
    */
-  public abstract forComponent(component: Element): IGraph;
+  public forComponent(component: Element): Graph {
+    const graph = new Graph(this._client, this._version);
+    this.setComponent(component);
+    return graph;
+  }
 
   /**
    * Returns a new graph request for a specific component
@@ -66,13 +100,13 @@ export abstract class BaseGraph implements IGraph {
   public api(path: string): GraphRequest {
     let request = this._client.api(path).version(this._version);
 
-    if (this.componentName) {
+    if (this._componentName) {
       request.middlewareOptions = (options: MiddlewareOptions[]): GraphRequest => {
         const requestObj = request as any;
         requestObj._middlewareOptions = requestObj._middlewareOptions.concat(options);
         return request;
       };
-      request = request.middlewareOptions([new ComponentMiddlewareOptions(this.componentName)]);
+      request = request.middlewareOptions([new ComponentMiddlewareOptions(this._componentName)]);
     }
 
     return request;
@@ -99,10 +133,10 @@ export abstract class BaseGraph implements IGraph {
   /**
    * async promise, returns Graph User data relating to the user logged in
    *
-   * @returns {(Promise<GraphTypes.User | BetaTypes.User>)}
+   * @returns {(Promise<User>)}
    * @memberof BaseGraph
    */
-  public getMe(): Promise<GraphTypes.User | BetaTypes.User> {
+  public getMe(): Promise<User> {
     return this.api('me')
       .middlewareOptions(prepScopes('user.read'))
       .get();
@@ -112,10 +146,10 @@ export abstract class BaseGraph implements IGraph {
    * async promise, returns all Graph users associated with the userPrincipleName provided
    *
    * @param {string} userPrincipleName
-   * @returns {(Promise<GraphTypes.User | BetaTypes.User>)}
+   * @returns {(Promise<User>)}
    * @memberof BaseGraph
    */
-  public getUser(userPrincipleName: string): Promise<GraphTypes.User | BetaTypes.User> {
+  public getUser(userPrincipleName: string): Promise<User> {
     const scopes = 'user.readbasic.all';
     return this.api(`/users/${userPrincipleName}`)
       .middlewareOptions(prepScopes(scopes))
@@ -133,7 +167,7 @@ export abstract class BaseGraph implements IGraph {
    * @memberof BaseGraph
    */
   public getContactPhoto(contactId: string): Promise<string> {
-    return getPhotoForResource(`me/contacts/${contactId}`, ['contacts.read']);
+    return this.getPhotoForResource(`me/contacts/${contactId}`, ['contacts.read']);
   }
 
   /**
@@ -143,7 +177,7 @@ export abstract class BaseGraph implements IGraph {
    * @memberof BaseGraph
    */
   public getUserPhoto(userId: string): Promise<string> {
-    return getPhotoForResource(`users/${userId}`, ['user.readbasic.all']);
+    return this.getPhotoForResource(`users/${userId}`, ['user.readbasic.all']);
   }
 
   /**
@@ -152,7 +186,7 @@ export abstract class BaseGraph implements IGraph {
    * @memberof BaseGraph
    */
   public myPhoto(): Promise<string> {
-    return getPhotoForResource('me', ['user.read']);
+    return this.getPhotoForResource('me', ['user.read']);
   }
 
   ///
@@ -163,10 +197,10 @@ export abstract class BaseGraph implements IGraph {
    * async promise, returns all Graph people who are most relevant contacts to the signed in user.
    *
    * @param {string} query
-   * @returns {(Promise<GraphTypes.Person[] | BetaTypes.Person[]>)}
+   * @returns {(Promise<Person[]>)}
    * @memberof BaseGraph
    */
-  public async findPerson(query: string): Promise<GraphTypes.Person[] | BetaTypes.Person[]> {
+  public async findPerson(query: string): Promise<Person[]> {
     const scopes = 'people.read';
     const result = await this.api('/me/people')
       .search('"' + query + '"')
@@ -178,10 +212,10 @@ export abstract class BaseGraph implements IGraph {
   /**
    * async promise to the Graph for People, by default, it will request the most frequent contacts for the signed in user.
    *
-   * @returns {(Promise<GraphTypes.Person[] | BetaTypes.Person[]>)}
+   * @returns {(Promise<Person[]>)}
    * @memberof BaseGraph
    */
-  public async getPeople(): Promise<GraphTypes.Person[] | BetaTypes.Person[]> {
+  public async getPeople(): Promise<Person[]> {
     const scopes = 'people.read';
 
     const uri = '/me/people';
@@ -196,10 +230,10 @@ export abstract class BaseGraph implements IGraph {
    * async promise to the Graph for People, defined by a group id
    *
    * @param {string} groupId
-   * @returns {(Promise<GraphTypes.Person[] | BetaTypes.Person[]>)}
+   * @returns {(Promise<Person[]>)}
    * @memberof BaseGraph
    */
-  public async getPeopleFromGroup(groupId: string): Promise<GraphTypes.Person[] | BetaTypes.Person[]> {
+  public async getPeopleFromGroup(groupId: string): Promise<Person[]> {
     const scopes = 'people.read';
 
     const uri = `/groups/${groupId}/members`;
@@ -217,10 +251,10 @@ export abstract class BaseGraph implements IGraph {
    * async promise, returns a Graph contact associated with the email provided
    *
    * @param {string} email
-   * @returns {(Promise<GraphTypes.Contact[] | BetaTypes.Contact[]>)}
+   * @returns {(Promise<Contact[]>)}
    * @memberof BaseGraph
    */
-  public async findContactByEmail(email: string): Promise<GraphTypes.Contact[] | BetaTypes.Contact[]> {
+  public async findContactByEmail(email: string): Promise<Contact[]> {
     const scopes = 'contacts.read';
     const result = await this.api('/me/contacts')
       .filter(`emailAddresses/any(a:a/address eq '${email}')`)
@@ -234,12 +268,10 @@ export abstract class BaseGraph implements IGraph {
    * Uses: Graph.findPerson(email) and Graph.findContactByEmail(email)
    *
    * @param {string} email
-   * @returns {(Promise<Array<GraphTypes.Person | GraphTypes.Contact> | Array<BetaTypes.Person | BetaTypes.Contact>>)}
+   * @returns {(Promise<Array<Person | Contact>>)}
    * @memberof BaseGraph
    */
-  public findUserByEmail(
-    email: string
-  ): Promise<Array<GraphTypes.Person | GraphTypes.Contact> | Array<BetaTypes.Person | BetaTypes.Contact>> {
+  public findUserByEmail(email: string): Promise<Array<Person | Contact>> {
     return Promise.all([this.findPerson(email), this.findContactByEmail(email)]).then(([people, contacts]) => {
       return ((people as any[]) || []).concat(contacts || []);
     });
@@ -255,14 +287,10 @@ export abstract class BaseGraph implements IGraph {
    * @param {Date} startDateTime
    * @param {Date} endDateTime
    * @param {string} [groupId]
-   * @returns {(Promise<GraphTypes.Event[] | BetaTypes.Event[]>)}
+   * @returns {(Promise<Event[]>)}
    * @memberof BaseGraph
    */
-  public async getEvents(
-    startDateTime: Date,
-    endDateTime: Date,
-    groupId?: string
-  ): Promise<GraphTypes.Event[] | BetaTypes.Event[]> {
+  public async getEvents(startDateTime: Date, endDateTime: Date, groupId?: string): Promise<Event[]> {
     const scopes = 'calendars.read';
 
     const sdt = `startdatetime=${startDateTime.toISOString()}`;
@@ -292,11 +320,11 @@ export abstract class BaseGraph implements IGraph {
   /**
    * async promise, allows developer to create new Planner task
    *
-   * @param {(GraphTypes.PlannerTask | BetaTypes.PlannerTask)} newTask
+   * @param {(PlannerTask)} newTask
    * @returns {Promise<any>}
    * @memberof BaseGraph
    */
-  public addPlannerTask(newTask: GraphTypes.PlannerTask | BetaTypes.PlannerTask): Promise<any> {
+  public addPlannerTask(newTask: PlannerTask): Promise<any> {
     return this.api('/planner/tasks')
       .header('Cache-Control', 'no-store')
       .middlewareOptions(prepScopes('Group.ReadWrite.All'))
@@ -325,10 +353,10 @@ export abstract class BaseGraph implements IGraph {
   /**
    * async promise, returns all planner plans associated with the user logged in
    *
-   * @returns {(Promise<GraphTypes.PlannerPlan[] | BetaTypes.PlannerPlan[]>)}
+   * @returns {(Promise<PlannerPlan[]>)}
    * @memberof BaseGraph
    */
-  public async getAllMyPlannerPlans(): Promise<GraphTypes.PlannerPlan[] | BetaTypes.PlannerPlan[]> {
+  public async getAllMyPlannerPlans(): Promise<PlannerPlan[]> {
     const plans = await this.api('/me/planner/plans')
       .header('Cache-Control', 'no-store')
       .middlewareOptions(prepScopes('Group.Read.All'))
@@ -341,12 +369,10 @@ export abstract class BaseGraph implements IGraph {
    * async promise, returns bucket (for tasks) associated with a planId
    *
    * @param {string} planId
-   * @returns {(Promise<GraphTypes.PlannerBucket[] | BetaTypes.PlannerBucket[]>)}
+   * @returns {(Promise<PlannerBucket[]>)}
    * @memberof BaseGraph
    */
-  public async getBucketsForPlannerPlan(
-    planId: string
-  ): Promise<GraphTypes.PlannerBucket[] | BetaTypes.PlannerBucket[]> {
+  public async getBucketsForPlannerPlan(planId: string): Promise<PlannerBucket[]> {
     const buckets = await this.api(`/planner/plans/${planId}/buckets`)
       .header('Cache-Control', 'no-store')
       .middlewareOptions(prepScopes('Group.Read.All'))
@@ -359,10 +385,10 @@ export abstract class BaseGraph implements IGraph {
    * async promise, returns all planner plans associated with the group id
    *
    * @param {string} groupId
-   * @returns {(Promise<GraphTypes.PlannerPlan[] | BetaTypes.PlannerPlan[]>)}
+   * @returns {(Promise<PlannerPlan[]>)}
    * @memberof BaseGraph
    */
-  public async getPlansForGroup(groupId: string): Promise<GraphTypes.PlannerPlan[] | BetaTypes.PlannerPlan[]> {
+  public async getPlansForGroup(groupId: string): Promise<PlannerPlan[]> {
     const scopes = 'Group.Read.All';
 
     const uri = `/groups/${groupId}/planner/plans`;
@@ -377,10 +403,10 @@ export abstract class BaseGraph implements IGraph {
    * async promise, returns a single plan from the Graph associated with the planId
    *
    * @param {string} planId
-   * @returns {(Promise<GraphTypes.PlannerPlan | BetaTypes.PlannerPlan>)}
+   * @returns {(Promise<PlannerPlan>)}
    * @memberof BaseGraph
    */
-  public async getSinglePlannerPlan(planId: string): Promise<GraphTypes.PlannerPlan | BetaTypes.PlannerPlan> {
+  public async getSinglePlannerPlan(planId: string): Promise<PlannerPlan> {
     const plan = await this.api(`/planner/plans/${planId}`)
       .header('Cache-Control', 'no-store')
       .middlewareOptions(prepScopes('Group.Read.All'))
@@ -393,10 +419,10 @@ export abstract class BaseGraph implements IGraph {
    * async promise, returns all tasks from planner associated with a bucketId
    *
    * @param {string} bucketId
-   * @returns {(Promise<GraphTypes.PlannerTask[] | BetaTypes.PlannerTask[]>)}
+   * @returns {(Promise<PlannerTask[][]>)}
    * @memberof BaseGraph
    */
-  public async getTasksForPlannerBucket(bucketId: string): Promise<GraphTypes.PlannerTask[] | BetaTypes.PlannerTask[]> {
+  public async getTasksForPlannerBucket(bucketId: string): Promise<PlannerTask[][]> {
     const tasks = await this.api(`/planner/buckets/${bucketId}/tasks`)
       .header('Cache-Control', 'no-store')
       .middlewareOptions(prepScopes('Group.Read.All'))
@@ -461,16 +487,12 @@ export abstract class BaseGraph implements IGraph {
    * async promise, allows developer to set details of planner task associated with a taskId
    *
    * @param {string} taskId
-   * @param {(GraphTypes.PlannerTask | BetaTypes.PlannerTask)} details
+   * @param {(PlannerTask)} details
    * @param {string} eTag
    * @returns {Promise<any>}
    * @memberof BaseGraph
    */
-  public async setPlannerTaskDetails(
-    taskId: string,
-    details: GraphTypes.PlannerTask | BetaTypes.PlannerTask,
-    eTag: string
-  ): Promise<any> {
+  public async setPlannerTaskDetails(taskId: string, details: PlannerTask, eTag: string): Promise<any> {
     return await this.api(`/planner/tasks/${taskId}`)
       .header('Cache-Control', 'no-store')
       .middlewareOptions(prepScopes('Group.ReadWrite.All'))
@@ -478,94 +500,16 @@ export abstract class BaseGraph implements IGraph {
       .patch(JSON.stringify(details));
   }
 
-  ///
-  /// TO-DO
-  ///
-
   /**
-   * async promise, allows developer to add new to-do task
+   * sets the component name used in request headers.
    *
-   * @param {*} newTask
-   * @returns {Promise<BetaTypes.OutlookTask>}
-   * @memberof BaseGraph
+   * @protected
+   * @param {Element} component
+   * @memberof Graph
    */
-  public abstract addTodoTask(newTask: any): Promise<BetaTypes.OutlookTask>;
-
-  /**
-   * async promise, returns all Outlook taskGroups associated with the logged in user
-   *
-   * @returns {Promise<BetaTypes.OutlookTaskGroup[]>}
-   * @memberof BaseGraph
-   */
-  public abstract getAllMyTodoGroups(): Promise<BetaTypes.OutlookTaskGroup[]>;
-
-  /**
-   * async promise, returns all Outlook tasks associated with a taskFolder with folderId
-   *
-   * @param {string} folderId
-   * @returns {Promise<BetaTypes.OutlookTask[]>}
-   * @memberof BaseGraph
-   */
-  public abstract getAllTodoTasksForFolder(folderId: string): Promise<BetaTypes.OutlookTask[]>;
-
-  /**
-   * async promise, returns all Outlook taskFolders associated with groupId
-   *
-   * @param {string} groupId
-   * @returns {Promise<BetaTypes.OutlookTaskFolder[]>}
-   * @memberof BaseGraph
-   */
-  public abstract getFoldersForTodoGroup(groupId: string): Promise<BetaTypes.OutlookTaskFolder[]>;
-
-  /**
-   * async promise, returns to-do tasks from Outlook groups associated with a groupId
-   *
-   * @param {string} groupId
-   * @returns {Promise<BetaTypes.OutlookTaskGroup>}
-   * @memberof BaseGraph
-   */
-  public abstract getSingleTodoGroup(groupId: string): Promise<BetaTypes.OutlookTaskGroup>;
-
-  /**
-   * async promise, allows developer to remove task based on taskId
-   *
-   * @param {string} taskId
-   * @param {string} eTag
-   * @returns {Promise<any>}
-   * @memberof BaseGraph
-   */
-  public abstract removeTodoTask(taskId: string, eTag: string): Promise<any>;
-
-  /**
-   * async promise, allows developer to set to-do task to completed state
-   *
-   * @param {string} taskId
-   * @param {string} eTag
-   * @returns {Promise<BetaTypes.OutlookTask>}
-   * @memberof BaseGraph
-   */
-  public abstract setTodoTaskComplete(taskId: string, eTag: string): Promise<BetaTypes.OutlookTask>;
-
-  /**
-   * async promise, allows developer to set to-do task to incomplete state
-   *
-   * @param {string} taskId
-   * @param {string} eTag
-   * @returns {Promise<BetaTypes.OutlookTask>}
-   * @memberof BaseGraph
-   */
-  public abstract setTodoTaskIncomplete(taskId: string, eTag: string): Promise<BetaTypes.OutlookTask>;
-
-  /**
-   * async promise, allows developer to redefine to-do Task details associated with a taskId
-   *
-   * @param {string} taskId
-   * @param {*} task
-   * @param {string} eTag
-   * @returns {Promise<BetaTypes.OutlookTask>}
-   * @memberof BaseGraph
-   */
-  public abstract setTodoTaskDetails(taskId: string, task: any, eTag: string): Promise<BetaTypes.OutlookTask>;
+  protected setComponent(component: Element): void {
+    this._componentName = component.tagName;
+  }
 
   /**
    * retrieves a photo for the specified resource.

@@ -465,7 +465,7 @@ export class TodoTaskSource extends TaskSourceBase implements ITaskSource {
    * @memberof TodoTaskSource
    */
   public async getTaskGroups(): Promise<ITaskGroup[]> {
-    const groups: OutlookTaskGroup[] = await this.graph.getAllMyTodoGroups();
+    const groups: OutlookTaskGroup[] = await this.graph.beta().getAllMyTodoGroups();
 
     return groups.map(
       group =>
@@ -485,7 +485,7 @@ export class TodoTaskSource extends TaskSourceBase implements ITaskSource {
    * @memberof TodoTaskSource
    */
   public async getTaskGroup(id: string): Promise<ITaskGroup> {
-    const group: OutlookTaskGroup = await this.graph.getSingleTodoGroup(id);
+    const group: OutlookTaskGroup = await this.graph.beta().getSingleTodoGroup(id);
 
     return { id: group.id, secondaryId: group.groupKey, title: group.name, _raw: group };
   }
@@ -497,7 +497,7 @@ export class TodoTaskSource extends TaskSourceBase implements ITaskSource {
    * @memberof TodoTaskSource
    */
   public async getTaskFoldersForTaskGroup(id: string): Promise<ITaskFolder[]> {
-    const folders: OutlookTaskFolder[] = await this.graph.getFoldersForTodoGroup(id);
+    const folders: OutlookTaskFolder[] = await this.graph.beta().getFoldersForTodoGroup(id);
 
     return folders.map(
       folder =>
@@ -518,7 +518,7 @@ export class TodoTaskSource extends TaskSourceBase implements ITaskSource {
    * @memberof TodoTaskSource
    */
   public async getTasksForTaskFolder(id: string, parId: string): Promise<ITask[]> {
-    const tasks: OutlookTask[] = await this.graph.getAllTodoTasksForFolder(id);
+    const tasks: OutlookTask[] = await this.graph.beta().getAllTodoTasksForFolder(id);
 
     return tasks.map(
       task =>
@@ -545,7 +545,7 @@ export class TodoTaskSource extends TaskSourceBase implements ITaskSource {
    * @memberof TodoTaskSource
    */
   public async setTaskComplete(id: string, eTag: string): Promise<any> {
-    return await this.graph.setTodoTaskComplete(id, eTag);
+    return await this.graph.beta().setTodoTaskComplete(id, eTag);
   }
 
   /**
@@ -558,7 +558,7 @@ export class TodoTaskSource extends TaskSourceBase implements ITaskSource {
    * @memberof PlannerTaskSource
    */
   public async assignPeopleToTask(id: string, eTag: string, people: any): Promise<any> {
-    return await this.graph.assignPeopleToPlannerTask(id, eTag, people);
+    return await this.graph.beta().assignPeopleToPlannerTask(id, eTag, people);
   }
   /**
    * set task in planner to incomplete state by id
@@ -569,7 +569,7 @@ export class TodoTaskSource extends TaskSourceBase implements ITaskSource {
    * @memberof TodoTaskSource
    */
   public async setTaskIncomplete(id: string, eTag: string): Promise<any> {
-    return await this.graph.setTodoTaskIncomplete(id, eTag);
+    return await this.graph.beta().setTodoTaskIncomplete(id, eTag);
   }
   /**
    * add new task to planner
@@ -589,7 +589,7 @@ export class TodoTaskSource extends TaskSourceBase implements ITaskSource {
         timeZone: 'UTC'
       };
     }
-    return await this.graph.addTodoTask(task);
+    return await this.graph.beta().addTodoTask(task);
   }
   /**
    * remove task from planner by id
@@ -600,7 +600,7 @@ export class TodoTaskSource extends TaskSourceBase implements ITaskSource {
    * @memberof TodoTaskSource
    */
   public async removeTask(id: string, eTag: string): Promise<any> {
-    return await this.graph.removeTodoTask(id, eTag);
+    return await this.graph.beta().removeTodoTask(id, eTag);
   }
 
   /**

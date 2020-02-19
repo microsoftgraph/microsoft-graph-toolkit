@@ -1,7 +1,14 @@
 import { GraphRequest } from '@microsoft/microsoft-graph-client';
-import * as GraphTypes from '@microsoft/microsoft-graph-types';
-import * as BetaTypes from '@microsoft/microsoft-graph-types-beta';
-import { Batch } from '.';
+import {
+  Contact,
+  Event,
+  Person,
+  PlannerBucket,
+  PlannerPlan,
+  PlannerTask,
+  User
+} from '@microsoft/microsoft-graph-types';
+import { Batch, BetaGraph } from '.';
 
 /**
  * The common functions of the Graph
@@ -10,6 +17,14 @@ import { Batch } from '.';
  * @interface IGraph
  */
 export interface IGraph {
+  /**
+   * create a BetaGraph instance based on this Graph instance.
+   *
+   * @returns {BetaGraph}
+   * @memberof Graph
+   */
+  beta(): BetaGraph;
+
   /**
    * returns a new instance of the Graph using the same
    * client within the context of the provider.
@@ -48,19 +63,19 @@ export interface IGraph {
   /**
    * async promise, returns Graph User data relating to the user logged in
    *
-   * @returns {(Promise<GraphTypes.User | BetaTypes.User>)}
+   * @returns {Promise<User>}
    * @memberof IGraph
    */
-  getMe(): Promise<GraphTypes.User | BetaTypes.User>;
+  getMe(): Promise<User>;
 
   /**
    * async promise, returns all Graph users associated with the userPrincipleName provided
    *
    * @param {string} userPrincipleName
-   * @returns {(Promise<GraphTypes.User | BetaTypes.User>)}
+   * @returns {Promise<User>}
    * @memberof IGraph
    */
-  getUser(userPrincipleName: string): Promise<GraphTypes.User | BetaTypes.User>;
+  getUser(userPrincipleName: string): Promise<User>;
 
   ///
   /// PHOTO
@@ -91,27 +106,27 @@ export interface IGraph {
    * async promise, returns all Graph people who are most relevant contacts to the signed in user.
    *
    * @param {string} query
-   * @returns {(Promise<GraphTypes.Person[] | BetaTypes.Person[]>)}
+   * @returns {Promise<Person[]>}
    * @memberof IGraph
    */
-  findPerson(query: string): Promise<GraphTypes.Person[] | BetaTypes.Person[]>;
+  findPerson(query: string): Promise<Person[]>;
 
   /**
    * async promise to the Graph for People, by default, it will request the most frequent contacts for the signed in user.
    *
-   * @returns {(Promise<GraphTypes.Person[] | BetaTypes.Person[]>)}
+   * @returns {(Promise<Person[]>)}
    * @memberof IGraph
    */
-  getPeople(): Promise<GraphTypes.Person[] | BetaTypes.Person[]>;
+  getPeople(): Promise<Person[]>;
 
   /**
    * async promise to the Graph for People, defined by a group id
    *
    * @param {string} groupId
-   * @returns {(Promise<GraphTypes.Person[] | BetaTypes.Person[]>)}
+   * @returns {(Promise<Person[]>)}
    * @memberof IGraph
    */
-  getPeopleFromGroup(groupId: string): Promise<GraphTypes.Person[] | BetaTypes.Person[]>;
+  getPeopleFromGroup(groupId: string): Promise<Person[]>;
 
   ///
   /// CONTACTS
@@ -121,22 +136,20 @@ export interface IGraph {
    * async promise, returns a Graph contact associated with the email provided
    *
    * @param {string} email
-   * @returns {(Promise<GraphTypes.Contact[] | BetaTypes.Contact[]>)}
+   * @returns {(Promise<Contact[]>)}
    * @memberof IGraph
    */
-  findContactByEmail(email: string): Promise<GraphTypes.Contact[] | BetaTypes.Contact[]>;
+  findContactByEmail(email: string): Promise<Contact[]>;
 
   /**
    * async promise, returns Graph contact and/or Person associated with the email provided
    * Uses: Graph.findPerson(email) and Graph.findContactByEmail(email)
    *
    * @param {string} email
-   * @returns {(Promise<Array<GraphTypes.Person | GraphTypes.Contact> | Array<BetaTypes.Person | BetaTypes.Contact>>)}
+   * @returns {(Promise<Array<Person | Contact>)}
    * @memberof IGraph
    */
-  findUserByEmail(
-    email: string
-  ): Promise<Array<GraphTypes.Person | GraphTypes.Contact> | Array<BetaTypes.Person | BetaTypes.Contact>>;
+  findUserByEmail(email: string): Promise<Array<Person | Contact>>;
 
   ///
   /// EVENTS
@@ -148,10 +161,10 @@ export interface IGraph {
    * @param {Date} startDateTime
    * @param {Date} endDateTime
    * @param {string} [groupId]
-   * @returns {(Promise<GraphTypes.Event[] | BetaTypes.Event[]>)}
+   * @returns {Promise<Event[]}
    * @memberof IGraph
    */
-  getEvents(startDateTime: Date, endDateTime: Date, groupId?: string): Promise<GraphTypes.Event[] | BetaTypes.Event[]>;
+  getEvents(startDateTime: Date, endDateTime: Date, groupId?: string): Promise<Event[]>;
 
   ///
   /// PLANNER
@@ -160,11 +173,11 @@ export interface IGraph {
   /**
    * async promise, allows developer to create new Planner task
    *
-   * @param {(GraphTypes.PlannerTask | BetaTypes.PlannerTask)} newTask
+   * @param {PlannerTask} newTask
    * @returns {Promise<any>}
    * @memberof IGraph
    */
-  addPlannerTask(newTask: GraphTypes.PlannerTask | BetaTypes.PlannerTask): Promise<any>;
+  addPlannerTask(newTask: PlannerTask): Promise<any>;
 
   /**
    * async promise, allows developer to assign people to task
@@ -180,28 +193,28 @@ export interface IGraph {
   /**
    * async promise, returns all planner plans associated with the user logged in
    *
-   * @returns {(Promise<GraphTypes.PlannerPlan[] | BetaTypes.PlannerPlan[]>)}
+   * @returns {Promise<PlannerPlan[]>}
    * @memberof IGraph
    */
-  getAllMyPlannerPlans(): Promise<GraphTypes.PlannerPlan[] | BetaTypes.PlannerPlan[]>;
+  getAllMyPlannerPlans(): Promise<PlannerPlan[]>;
 
   /**
    * async promise, returns bucket (for tasks) associated with a planId
    *
    * @param {string} planId
-   * @returns {(Promise<GraphTypes.PlannerBucket[] | BetaTypes.PlannerBucket[]>)}
+   * @returns {Promise<PlannerBucket[]>}
    * @memberof IGraph
    */
-  getBucketsForPlannerPlan(planId: string): Promise<GraphTypes.PlannerBucket[] | BetaTypes.PlannerBucket[]>;
+  getBucketsForPlannerPlan(planId: string): Promise<PlannerBucket[]>;
 
   /**
    * async promise, returns all planner plans associated with the group id
    *
    * @param {string} groupId
-   * @returns {(Promise<GraphTypes.PlannerPlan[] | BetaTypes.PlannerPlan[]>)}
+   * @returns {(Promise<PlannerPlan[]>)}
    * @memberof IGraph
    */
-  getPlansForGroup(groupId: string): Promise<GraphTypes.PlannerPlan[] | BetaTypes.PlannerPlan[]>;
+  getPlansForGroup(groupId: string): Promise<PlannerPlan[]>;
 
   /**
    * async promise, returns a single plan from the Graph associated with the planId
@@ -210,16 +223,16 @@ export interface IGraph {
    * @returns {Promise<PlannerPlan>}
    * @memberof BaseGraph
    */
-  getSinglePlannerPlan(planId: string): Promise<GraphTypes.PlannerPlan | BetaTypes.PlannerPlan>;
+  getSinglePlannerPlan(planId: string): Promise<PlannerPlan>;
 
   /**
    * async promise, returns all tasks from planner associated with a bucketId
    *
    * @param {string} bucketId
-   * @returns {(Promise<GraphTypes.PlannerTask[] | BetaTypes.PlannerTask[]>)}
+   * @returns {(Promise<PlannerTask[][]>)}
    * @memberof IGraph
    */
-  getTasksForPlannerBucket(bucketId: string): Promise<GraphTypes.PlannerTask[] | BetaTypes.PlannerTask[]>;
+  getTasksForPlannerBucket(bucketId: string): Promise<PlannerTask[][]>;
 
   /**
    * async promise, allows developer to remove Planner task associated with taskId
@@ -255,103 +268,10 @@ export interface IGraph {
    * async promise, allows developer to set details of planner task associated with a taskId
    *
    * @param {string} taskId
-   * @param {(GraphTypes.PlannerTask | BetaTypes.PlannerTask)} details
+   * @param {(PlannerTask)} details
    * @param {string} eTag
    * @returns {Promise<any>}
    * @memberof IGraph
    */
-  setPlannerTaskDetails(
-    taskId: string,
-    details: GraphTypes.PlannerTask | BetaTypes.PlannerTask,
-    eTag: string
-  ): Promise<any>;
-
-  ///
-  /// TO-DO
-  ///
-
-  /**
-   * async promise, allows developer to add new to-do task
-   *
-   * @param {*} newTask
-   * @returns {Promise<BetaTypes.OutlookTask>}
-   * @memberof IGraph
-   */
-  addTodoTask(newTask: any): Promise<BetaTypes.OutlookTask>;
-
-  /**
-   * async promise, returns all Outlook taskGroups associated with the logged in user
-   *
-   * @returns {Promise<BetaTypes.OutlookTaskGroup[]>}
-   * @memberof IGraph
-   */
-  getAllMyTodoGroups(): Promise<BetaTypes.OutlookTaskGroup[]>;
-
-  /**
-   * async promise, returns all Outlook tasks associated with a taskFolder with folderId
-   *
-   * @param {string} folderId
-   * @returns {Promise<BetaTypes.OutlookTask[]>}
-   * @memberof IGraph
-   */
-  getAllTodoTasksForFolder(folderId: string): Promise<BetaTypes.OutlookTask[]>;
-
-  /**
-   * async promise, returns all Outlook taskFolders associated with groupId
-   *
-   * @param {string} groupId
-   * @returns {Promise<BetaTypes.OutlookTaskFolder[]>}
-   * @memberof IGraph
-   */
-  getFoldersForTodoGroup(groupId: string): Promise<BetaTypes.OutlookTaskFolder[]>;
-
-  /**
-   * async promise, returns to-do tasks from Outlook groups associated with a groupId
-   *
-   * @param {string} groupId
-   * @returns {Promise<BetaTypes.OutlookTaskGroup>}
-   * @memberof IGraph
-   */
-  getSingleTodoGroup(groupId: string): Promise<BetaTypes.OutlookTaskGroup>;
-
-  /**
-   * async promise, allows developer to remove task based on taskId
-   *
-   * @param {string} taskId
-   * @param {string} eTag
-   * @returns {Promise<any>}
-   * @memberof IGraph
-   */
-  removeTodoTask(taskId: string, eTag: string): Promise<any>;
-
-  /**
-   * async promise, allows developer to set to-do task to completed state
-   *
-   * @param {string} taskId
-   * @param {string} eTag
-   * @returns {Promise<BetaTypes.OutlookTask>}
-   * @memberof IGraph
-   */
-  setTodoTaskComplete(taskId: string, eTag: string): Promise<BetaTypes.OutlookTask>;
-
-  /**
-   * async promise, allows developer to set to-do task to incomplete state
-   *
-   * @param {string} taskId
-   * @param {string} eTag
-   * @returns {Promise<BetaTypes.OutlookTask>}
-   * @memberof IGraph
-   */
-  setTodoTaskIncomplete(taskId: string, eTag: string): Promise<BetaTypes.OutlookTask>;
-
-  /**
-   * async promise, allows developer to redefine to-do Task details associated with a taskId
-   *
-   * @param {string} taskId
-   * @param {*} task
-   * @param {string} eTag
-   * @returns {Promise<BetaTypes.OutlookTask>}
-   * @memberof IGraph
-   */
-  setTodoTaskDetails(taskId: string, task: any, eTag: string): Promise<BetaTypes.OutlookTask>;
+  setPlannerTaskDetails(taskId: string, details: PlannerTask, eTag: string): Promise<any>;
 }
