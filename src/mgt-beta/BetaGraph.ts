@@ -7,9 +7,8 @@
 
 import { Client } from '@microsoft/microsoft-graph-client';
 import { OutlookTask, OutlookTaskFolder, OutlookTaskGroup } from '@microsoft/microsoft-graph-types-beta';
-import { Graph } from './Graph';
+import { Graph, IGraph, prepScopes } from '../mgt-core';
 import { IBetaGraph } from './IBetaGraph';
-import { prepScopes } from './utils/GraphHelpers';
 
 /**
  * The version of the Graph to use for making requests.
@@ -24,6 +23,20 @@ const GRAPH_VERSION = 'beta';
  * @extends {BaseGraph}
  */
 export class BetaGraph extends Graph implements IBetaGraph {
+  /**
+   * get a BetaGraph instance based on an existing IGraph implementation.
+   *
+   * @static
+   * @param {Graph} graph
+   * @returns {BetaGraph}
+   * @memberof BetaGraph
+   */
+  public static fromGraph(graph: IGraph): BetaGraph {
+    const betaGraph = new BetaGraph(graph.client);
+    betaGraph.setComponent(graph.componentName);
+    return betaGraph;
+  }
+
   constructor(client: Client, version: string = GRAPH_VERSION) {
     super(client, version);
   }
@@ -36,7 +49,7 @@ export class BetaGraph extends Graph implements IBetaGraph {
    * @returns {BetaGraph}
    * @memberof BetaGraph
    */
-  public forComponent(component: Element): BetaGraph {
+  public forComponent(component: Element | string): BetaGraph {
     const graph = new BetaGraph(this.client);
     this.setComponent(component);
     return graph;

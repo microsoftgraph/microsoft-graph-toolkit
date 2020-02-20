@@ -5,8 +5,7 @@
  * -------------------------------------------------------------------------------------------
  */
 
-import { Person, PlannerAssignments, PlannerTask, User } from '@microsoft/microsoft-graph-types';
-import { Contact, OutlookTask, OutlookTaskFolder } from '@microsoft/microsoft-graph-types-beta';
+import { Contact, Person, PlannerAssignments, PlannerTask, User } from '@microsoft/microsoft-graph-types';
 import { customElement, html, property } from 'lit-element';
 import { classMap } from 'lit-html/directives/class-map';
 import { repeat } from 'lit-html/directives/repeat';
@@ -195,7 +194,7 @@ export class MgtTasks extends MgtTemplatedComponent {
    *
    * @memberof MgtTasks
    */
-  public taskFilter: (task: PlannerTask | OutlookTask) => boolean;
+  public taskFilter: (task: PlannerTask) => boolean;
 
   @property() private _isNewTaskVisible: boolean = false;
   @property() private _newTaskBeingAdded: boolean = false;

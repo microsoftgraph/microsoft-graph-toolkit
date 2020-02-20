@@ -15,7 +15,6 @@ import {
   PlannerTask,
   User
 } from '@microsoft/microsoft-graph-types';
-import { BetaGraph } from './BetaGraph';
 import { IGraph } from './IGraph';
 import { Batch } from './utils/Batch';
 import { ComponentMiddlewareOptions } from './utils/ComponentMiddlewareOptions';
@@ -38,45 +37,42 @@ export class Graph implements IGraph {
    * the internal client used to make graph calls
    *
    * @readonly
-   * @protected
    * @type {Client}
    * @memberof BaseGraph
    */
-  protected get client(): Client {
+  public get client(): Client {
     return this._client;
+  }
+
+  /**
+   * the component name appended to Graph request headers
+   *
+   * @readonly
+   * @type {string}
+   * @memberof Graph
+   */
+  public get componentName(): string {
+    return this._componentName;
   }
 
   /**
    * the version of the graph to query
    *
    * @readonly
-   * @protected
    * @type {string}
    * @memberof Graph
    */
-  protected get version(): string {
+  public get version(): string {
     return this._version;
   }
 
   private _client: Client;
-  private _version: string;
   private _componentName: string;
+  private _version: string;
 
   constructor(client: Client, version: string = GRAPH_VERSION) {
     this._client = client;
     this._version = version;
-  }
-
-  /**
-   * create a BetaGraph instance based on this Graph instance.
-   *
-   * @returns {BetaGraph}
-   * @memberof Graph
-   */
-  public beta(): BetaGraph {
-    const graph = new BetaGraph(this._client);
-    graph._componentName = this._componentName;
-    return graph;
   }
 
   /**
@@ -87,7 +83,7 @@ export class Graph implements IGraph {
    * @returns {IGraph}
    * @memberof BaseGraph
    */
-  public forComponent(component: Element): Graph {
+  public forComponent(component: Element | string): Graph {
     const graph = new Graph(this._client, this._version);
     this.setComponent(component);
     return graph;
@@ -510,8 +506,8 @@ export class Graph implements IGraph {
    * @param {Element} component
    * @memberof Graph
    */
-  protected setComponent(component: Element): void {
-    this._componentName = component.tagName;
+  protected setComponent(component: Element | string): void {
+    this._componentName = component instanceof Element ? component.tagName : component;
   }
 
   /**

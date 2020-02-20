@@ -5,7 +5,7 @@
  * -------------------------------------------------------------------------------------------
  */
 
-import { GraphRequest } from '@microsoft/microsoft-graph-client';
+import { Client, GraphRequest } from '@microsoft/microsoft-graph-client';
 import {
   Contact,
   Event,
@@ -15,7 +15,7 @@ import {
   PlannerTask,
   User
 } from '@microsoft/microsoft-graph-types';
-import { Batch, BetaGraph } from '.';
+import { Batch } from '.';
 
 /**
  * The common functions of the Graph
@@ -25,12 +25,28 @@ import { Batch, BetaGraph } from '.';
  */
 export interface IGraph {
   /**
-   * create a BetaGraph instance based on this Graph instance.
+   * the internal client used to make graph calls
    *
-   * @returns {BetaGraph}
-   * @memberof Graph
+   * @type {Client}
+   * @memberof IGraph
    */
-  beta(): BetaGraph;
+  readonly client: Client;
+
+  /**
+   * the component name appended to Graph request headers
+   *
+   * @type {string.}
+   * @memberof IGraph
+   */
+  readonly componentName: string;
+
+  /**
+   * the version of the graph to query
+   *
+   * @type {string}
+   * @memberof IGraph
+   */
+  readonly version: string;
 
   /**
    * returns a new instance of the Graph using the same

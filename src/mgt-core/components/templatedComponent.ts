@@ -7,8 +7,8 @@
 
 import { html, PropertyValues } from 'lit-element';
 import { MgtBaseComponent } from '..';
+import { TemplateHelper } from '../utils/TemplateHelper';
 import { equals } from '../utils/Utils';
-import { TemplateHelper } from './templateHelper';
 
 /**
  * Lookup for rendered component templates and contexts by slot name.
