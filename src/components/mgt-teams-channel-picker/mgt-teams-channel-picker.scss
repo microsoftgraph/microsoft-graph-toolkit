@@ -21,10 +21,11 @@ $placeholder-default-color: var(--placeholder-default-color, #605e5c);
 $placeholder-focus-color: var(--placeholder-focus-color, #323130);
 $arrow-fill: var(--arrow-fill, #252424);
 
-$input-bottom-border: var(--input-bottom-border, 2px solid #b3b0ad);
-$input-right-border: var(--input-right-border, none);
-$input-left-border: var(--input-left-border, none);
-$input-top-border: var(--input-top-border, none);
+$input-border: var(--input-border, 2px solid #b3b0ad);
+$input-border-bottom: var(--input-border-bottom, $input-border);
+$input-border-right: var(--input-border-right, $input-border);
+$input-border-left: var(--input-border-left, $input-border);
+$input-border-top: var(--input-border-top, $input-border);
 
 $input-hover-color: var(--input-hover-color, #323130);
 $input-focus-color: var(--input-focus-color, #0078d4);
@@ -50,7 +51,6 @@ mgt-teams-channel-picker .teams-channel-picker {
 :host .team-list,
 mgt-teams-channel-picker .team-list {
   position: absolute;
-  padding: 0 0 14px 0;
   box-shadow: 0px 1.3289px 2.65781px rgba(180, 180, 180, 0.182), 0px 1.3289px 2.65781px rgba(68, 68, 68, 0.3);
   border-radius: 2px;
   background-color: $selection-background-color;
@@ -208,9 +208,9 @@ mgt-teams-channel-picker .channel-display {
     // appearance: none;
   }
 }
-:host .render-channels,
-mgt-teams-channel-picker .render-channels {
-  padding-bottom: 5px;
+:host .render-channels:last-child,
+mgt-teams-channel-picker .render-channels:last-child {
+  padding-bottom: 17px;
 }
 
 :host .hide-channels,
@@ -249,10 +249,11 @@ mgt-teams-channel-picker .teams-channel-picker-input {
   line-height: 19px;
   cursor: text;
   padding-bottom: 5px;
-  border-bottom: $input-bottom-border;
-  border-left: $input-left-border;
-  border-top: $input-top-border;
-  border-right: $input-right-border;
+  border: $input-border;
+  border-bottom: $input-border-bottom;
+  border-left: $input-border-left;
+  border-top: $input-border-top;
+  border-right: $input-border-right;
   &.hovered {
     border-color: $input-hover-color;
   }
