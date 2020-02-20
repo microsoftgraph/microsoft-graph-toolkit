@@ -541,9 +541,19 @@ export class MgtTeamsChannelPicker extends MgtTemplatedComponent {
             </div>
           </li>
         `;
+      } else {
+        peopleList = html`
+          <div
+            class="InputArrowIcon"
+            @click="${e => {
+              e.stopPropagation();
+              this.isFocused ? this.lostFocus() : this.gainedFocus();
+            }}"
+          >
+            ${this.isFocused ? getSvg(SvgIcon.UpCarrot, '#605E5C') : getSvg(SvgIcon.DownCarrot, '#605E5')}
+          </div>
+        `;
       }
-    } else {
-      peopleList = null;
     }
     return html`
       <div class="people-chosen-list">
@@ -586,6 +596,7 @@ export class MgtTeamsChannelPicker extends MgtTemplatedComponent {
     if (teamList) {
       teamList.setAttribute('style', 'display:none');
     }
+    console.log(teamList);
   }
 
   private renderChannelList() {

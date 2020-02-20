@@ -60,7 +60,17 @@ export enum SvgIcon {
   /**
    * Icon separates team from channel in selection
    */
-  TeamSeparator
+  TeamSeparator,
+
+  /**
+   * Used for channel picker visual indicator
+   */
+  DownCarrot,
+
+  /**
+   * Used for channel picker visual indicator
+   */
+  UpCarrot
 }
 
 import { html } from 'lit-element';
@@ -165,6 +175,25 @@ export function getSvg(svgIcon: SvgIcon, color: string) {
             clip-rule="evenodd"
             d="M5.70711 5L1.49999 9.20711L0.792886 8.50001L4.29289 5L0.792887 1.49999L1.49999 0.792885L5.70711 5Z"
             fill=${color}
+          />
+        </svg>
+      `;
+    case SvgIcon.DownCarrot:
+      return html`
+        <svg width="12" height="7" viewBox="0 0 12 7" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <path
+            d="M6 6.70898L0.146484 0.855469L0.855469 0.146484L6 5.29102L11.1445 0.146484L11.8535 0.855469L6 6.70898Z"
+            fill="#605E5C"
+          />
+        </svg>
+      `;
+
+    case SvgIcon.UpCarrot:
+      return html`
+        <svg width="12" height="7" viewBox="0 0 12 7" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <path
+            d="M6 0.291016L11.8535 6.14453L11.1445 6.85352L6 1.70898L0.855468 6.85352L0.146484 6.14453L6 0.291016Z"
+            fill="#605E5C"
           />
         </svg>
       `;

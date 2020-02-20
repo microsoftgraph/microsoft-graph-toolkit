@@ -127,6 +127,19 @@ mgt-teams-channel-picker .CloseIcon {
   margin-top: 1px;
   cursor: pointer;
 }
+
+.InputArrowIcon,
+mgt-teams-channel-picker .InputArrowIcon {
+  padding-top: 8px;
+  position: absolute;
+  right: 0;
+  line-height: normal;
+  font-family: 'FabricMDL2Icons';
+  padding-right: 8px;
+  padding-left: 10px;
+  cursor: pointer;
+}
+
 :host .SearchIcon,
 mgt-teams-channel-picker .SearchIcon {
   font-family: 'FabricMDL2Icons';
