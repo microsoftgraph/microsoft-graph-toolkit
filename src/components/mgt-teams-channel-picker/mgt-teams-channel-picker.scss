@@ -50,6 +50,8 @@ mgt-teams-channel-picker .teams-channel-picker {
 
 :host .team-list,
 mgt-teams-channel-picker .team-list {
+  padding-top: 5px;
+  padding-bottom: 11px;
   position: absolute;
   box-shadow: 0px 1.3289px 2.65781px rgba(180, 180, 180, 0.182), 0px 1.3289px 2.65781px rgba(68, 68, 68, 0.3);
   border-radius: 2px;
@@ -66,7 +68,7 @@ mgt-teams-channel-picker .team-list {
   li {
     cursor: pointer;
     .arrow {
-      margin-right: 10px;
+      margin-right: 5px;
       margin-bottom: 1px;
       svg path {
         fill: $arrow-fill;
@@ -169,7 +171,8 @@ mgt-teams-channel-picker .list-team {
   flex-direction: row;
   flex-wrap: wrap;
   align-items: center;
-  padding: 12px 12px 8px 12px;
+  padding: 5px 12px 6px 14px;
+  margin-top: 6px;
   font-family: Segoe UI;
   font-style: normal;
   font-weight: 600;
@@ -196,7 +199,7 @@ mgt-teams-channel-picker .teams-list-fill {
 
 :host .channel-display,
 mgt-teams-channel-picker .channel-display {
-  padding-left: 24px;
+  padding-left: 21px;
   padding-right: 20px;
   .showing {
     padding-left: 10px;
@@ -221,11 +224,11 @@ mgt-teams-channel-picker .channel-display {
     // appearance: none;
   }
 }
-:host .render-channels:last-child,
-mgt-teams-channel-picker .render-channels:last-child {
-  padding-bottom: 17px;
-}
 
+:host .channel-display:last-child,
+mgt-teams-channel-picker .channel-display:last-child {
+  margin-bottom: 4px;
+}
 :host .hide-channels,
 mgt-teams-channel-picker .hide-channels {
   display: none;

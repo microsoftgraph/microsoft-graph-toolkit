@@ -596,7 +596,6 @@ export class MgtTeamsChannelPicker extends MgtTemplatedComponent {
     if (teamList) {
       teamList.setAttribute('style', 'display:none');
     }
-    console.log(teamList);
   }
 
   private renderChannelList() {
