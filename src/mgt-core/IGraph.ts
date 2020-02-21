@@ -35,7 +35,7 @@ export interface IGraph {
   /**
    * the component name appended to Graph request headers
    *
-   * @type {string.}
+   * @type {string}
    * @memberof IGraph
    */
   readonly componentName: string;

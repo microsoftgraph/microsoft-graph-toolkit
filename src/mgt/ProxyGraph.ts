@@ -13,11 +13,9 @@ import {
   RetryHandlerOptions,
   TelemetryHandler
 } from '@microsoft/microsoft-graph-client';
+import { chainMiddleware, CustomHeaderMiddleware, SdkVersionMiddleware } from '../mgt-core';
 import { PACKAGE_VERSION } from '../version';
 import { Graph } from './Graph';
-import { CustomHeaderMiddleware } from './utils/CustomHeaderMiddleware';
-import { chainMiddleware } from './utils/GraphHelpers';
-import { SdkVersionMiddleware } from './utils/SdkVersionMiddleware';
 
 /**
  * ProxyGraph Instance

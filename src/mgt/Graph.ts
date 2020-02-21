@@ -5,7 +5,18 @@
  * -------------------------------------------------------------------------------------------
  */
 
-import { Client, GraphRequest, MiddlewareOptions, ResponseType } from '@microsoft/microsoft-graph-client';
+import {
+  AuthenticationHandler,
+  Client,
+  GraphRequest,
+  HTTPMessageHandler,
+  Middleware,
+  MiddlewareOptions,
+  ResponseType,
+  RetryHandler,
+  RetryHandlerOptions,
+  TelemetryHandler
+} from '@microsoft/microsoft-graph-client';
 import {
   Contact,
   Event,
@@ -15,10 +26,17 @@ import {
   PlannerTask,
   User
 } from '@microsoft/microsoft-graph-types';
-import { IGraph } from './IGraph';
-import { Batch } from './utils/Batch';
-import { ComponentMiddlewareOptions } from './utils/ComponentMiddlewareOptions';
-import { blobToBase64, prepScopes } from './utils/GraphHelpers';
+import {
+  Batch,
+  blobToBase64,
+  chainMiddleware,
+  ComponentMiddlewareOptions,
+  IGraph,
+  IProvider,
+  prepScopes,
+  SdkVersionMiddleware
+} from '../mgt-core';
+import { PACKAGE_VERSION } from '../version';
 
 /**
  * The version of the Graph to use for making requests.
@@ -528,4 +546,29 @@ export class Graph implements IGraph {
       return null;
     }
   }
+}
+
+/**
+ * create a new Graph instance using the specified provider.
+ *
+ * @static
+ * @param {IProvider} provider
+ * @returns {Graph}
+ * @memberof Graph
+ */
+export function createFromProvider(provider: IProvider, version?: string, component?: Element): Graph {
+  const middleware: Middleware[] = [
+    new AuthenticationHandler(provider),
+    new RetryHandler(new RetryHandlerOptions()),
+    new TelemetryHandler(),
+    new SdkVersionMiddleware(PACKAGE_VERSION),
+    new HTTPMessageHandler()
+  ];
+
+  const client = Client.initWithMiddleware({
+    middleware: chainMiddleware(...middleware)
+  });
+
+  const graph = new Graph(client, version);
+  return component ? graph.forComponent(component) : graph;
 }

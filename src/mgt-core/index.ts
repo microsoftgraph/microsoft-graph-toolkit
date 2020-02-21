@@ -5,10 +5,6 @@
  * -------------------------------------------------------------------------------------------
  */
 
-export * from './Graph';
-export * from './IGraph';
-export * from './Providers';
-export * from './ProxyGraph';
 export * from './components/baseComponent';
 export * from './components/templatedComponent';
 export * from './components/providers/baseProvider';
@@ -22,3 +18,5 @@ export * from './utils/SdkVersionMiddleware';
 export * from './utils/SvgHelper';
 export * from './utils/TemplateHelper';
 export * from './utils/Utils';
+export * from './IGraph';
+export * from './Providers';

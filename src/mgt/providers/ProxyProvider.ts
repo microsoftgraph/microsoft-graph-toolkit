@@ -5,7 +5,8 @@
  * -------------------------------------------------------------------------------------------
  */
 
-import { Graph, IProvider, ProviderState, ProxyGraph } from '../../mgt-core';
+import { IGraph, IProvider, ProviderState } from '../../mgt-core';
+import { ProxyGraph } from '../ProxyGraph';
 
 /**
  * Proxy Provider access token for Microsoft Graph APIs
@@ -20,7 +21,7 @@ export class ProxyProvider extends IProvider {
    *
    * @memberof ProxyProvider
    */
-  public graph: Graph;
+  public graph: IGraph;
   constructor(graphProxyUrl: string, getCustomHeaders: () => Promise<object> = null) {
     super();
     this.graph = new ProxyGraph(graphProxyUrl, getCustomHeaders);

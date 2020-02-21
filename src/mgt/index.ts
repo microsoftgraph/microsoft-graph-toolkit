@@ -8,3 +8,5 @@
 export * from './components';
 export * from './mock';
 export * from './providers';
+export * from './Graph';
+export * from './ProxyGraph';

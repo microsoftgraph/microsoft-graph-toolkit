@@ -7,7 +7,8 @@
 
 import { Client } from '@microsoft/microsoft-graph-client';
 import { OutlookTask, OutlookTaskFolder, OutlookTaskGroup } from '@microsoft/microsoft-graph-types-beta';
-import { Graph, IGraph, prepScopes } from '../mgt-core';
+import { Graph } from '../mgt';
+import { IGraph, prepScopes } from '../mgt-core';
 import { IBetaGraph } from './IBetaGraph';
 
 /**

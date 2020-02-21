@@ -6,7 +6,8 @@
  */
 
 import { AuthenticationProviderOptions } from '@microsoft/microsoft-graph-client/lib/es/IAuthenticationProviderOptions';
-import { createFromProvider, IProvider } from '../../mgt-core';
+import { IProvider } from '../../mgt-core';
+import { createFromProvider } from '../Graph';
 
 /**
  * Facilitates create of new custom provider

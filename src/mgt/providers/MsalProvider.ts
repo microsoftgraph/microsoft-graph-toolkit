@@ -6,9 +6,10 @@
  */
 
 import { AuthenticationProviderOptions } from '@microsoft/microsoft-graph-client/lib/es/IAuthenticationProviderOptions';
-import { createFromProvider, IProvider, LoginType, ProviderState } from '../../mgt-core';
+import { IProvider, LoginType, ProviderState } from '../../mgt-core';
 
 import { AuthenticationParameters, AuthError, AuthResponse, Configuration, UserAgentApplication } from 'msal';
+import { createFromProvider } from '../Graph';
 
 /**
  * config for MSAL authentication

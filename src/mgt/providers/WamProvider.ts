@@ -6,7 +6,8 @@
  */
 
 import { AuthenticationProviderOptions } from '@microsoft/microsoft-graph-client/lib/es/IAuthenticationProviderOptions';
-import { createFromProvider, IProvider, ProviderState } from '../../mgt-core';
+import { IProvider, ProviderState } from '../../mgt-core';
+import { createFromProvider } from '../Graph';
 
 /**
  * Windows auth
