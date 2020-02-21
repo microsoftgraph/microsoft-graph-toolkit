@@ -24,6 +24,21 @@ import { MgtTemplatedComponent } from '../templatedComponent';
  * @export
  * @class MgtAgenda
  * @extends {MgtTemplatedComponent}
+ *
+ * @cssprop --event-box-shadow - {String} Event box shadow color and size
+ * @cssprop --event-margin - {String} Event margin
+ * @cssprop --event-padding - {String} Event padding
+ * @cssprop --event-background - {Color} Event background color
+ * @cssprop --event-border - {String} Event border color
+ * @cssprop --agenda-header-margin - {String} Agenda header margin size
+ * @cssprop --agenda-header-font-size - {Length} Agenda header font size
+ * @cssprop --agenda-header-color - {Color} Agenda header color
+ * @cssprop --event-time-font-size - {Length} Event time font size
+ * @cssprop --event-time-color - {Color} Event time color
+ * @cssprop --event-subject-font-size - {Length} Event subject font size
+ * @cssprop --event-subject-color - {Color} Event subject color
+ * @cssprop --event-location-font-size - {Length} Event location font size
+ * @cssprop --event-location-color - {Color} Event location color
  */
 @customElement('mgt-agenda')
 export class MgtAgenda extends MgtTemplatedComponent {
