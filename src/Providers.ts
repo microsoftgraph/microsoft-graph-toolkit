@@ -5,8 +5,8 @@
  * -------------------------------------------------------------------------------------------
  */
 
-import { EventDispatcher, EventHandler } from './providers/EventDispatcher';
 import { IProvider } from './providers/IProvider';
+import { EventDispatcher, EventHandler } from './utils/EventDispatcher';
 /**
  * Provides implementation for acquiring the necessary access token for calling the Microsoft Graph APIs.
  *
