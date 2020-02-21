@@ -7,7 +7,7 @@
 
 import { Graph } from '../Graph';
 import { IProvider, ProviderState } from '../providers/IProvider';
-import { ProxyGraph } from '../utils/ProxyGraph';
+import { ProxyGraph } from '../ProxyGraph';
 
 /**
  * Proxy Provider access token for Microsoft Graph APIs

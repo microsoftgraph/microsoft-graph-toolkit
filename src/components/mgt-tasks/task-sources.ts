@@ -5,9 +5,11 @@
  * -------------------------------------------------------------------------------------------
  */
 
-import { PlannerAssignments } from '@microsoft/microsoft-graph-types';
+import { PlannerAssignments, PlannerTask } from '@microsoft/microsoft-graph-types';
 import { OutlookTask, OutlookTaskFolder, OutlookTaskGroup } from '@microsoft/microsoft-graph-types-beta';
-import { BaseGraph } from '../../BaseGraph';
+import { BetaGraph } from '../../BetaGraph';
+import { IBetaGraph } from '../../IBetaGraph';
+import { IGraph } from '../../IGraph';
 
 /**
  * Itask
@@ -270,7 +272,17 @@ export interface ITaskSource {
  * @class TaskSourceBase
  */
 class TaskSourceBase {
-  constructor(public graph: BaseGraph) {}
+  /**
+   * the IBetaGraph instance to use for making Graph requests
+   *
+   * @type {IBetaGraph}
+   * @memberof TaskSourceBase
+   */
+  public graph: IBetaGraph;
+
+  constructor(graph: IGraph) {
+    this.graph = BetaGraph.fromGraph(graph);
+  }
 }
 
 /**
@@ -350,7 +362,7 @@ export class PlannerTaskSource extends TaskSourceBase implements ITaskSource {
    * @memberof PlannerTaskSource
    */
   public async getTasksForTaskFolder(id: string): Promise<ITask[]> {
-    const tasks = await this.graph.getTasksForPlannerBucket(id);
+    const tasks = (await this.graph.getTasksForPlannerBucket(id)) as PlannerTask[];
 
     return tasks.map(
       task =>
