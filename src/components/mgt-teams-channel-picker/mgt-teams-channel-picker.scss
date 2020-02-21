@@ -199,6 +199,7 @@ mgt-teams-channel-picker .teams-list-fill {
 
 :host .channel-display,
 mgt-teams-channel-picker .channel-display {
+  cursor: pointer;
   padding-left: 21px;
   padding-right: 20px;
   .showing {
@@ -347,9 +348,29 @@ mgt-teams-channel-picker .message-parent {
   margin-top: 30px;
   margin-bottom: 30px;
   display: flex;
+  flex-direction: column;
   align-items: center;
   justify-content: center;
   vertical-align: middle;
+  .spinner {
+    border: 2px solid #f3f3f3; /* Light grey */
+    border-top: 2px solid #3498db; /* Blue */
+    border-radius: 50%;
+    width: 20px;
+    height: 20px;
+    animation: spin 2s linear infinite;
+  }
+  .loading-text {
+  }
+}
+
+@keyframes spin {
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(360deg);
+  }
 }
 
 :host .highlight-search-text,

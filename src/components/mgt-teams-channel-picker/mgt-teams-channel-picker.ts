@@ -516,8 +516,9 @@ export class MgtTeamsChannelPicker extends MgtTemplatedComponent {
   private renderLoadingMessage() {
     return html`
       <div class="message-parent">
-        <div label="search-error-text" aria-label="loading" class="loading-text">
-          ......
+        <div class="spinner"></div>
+        <div label="loading-text" aria-label="loading" class="loading-text">
+          Loading...
         </div>
       </div>
     `;
