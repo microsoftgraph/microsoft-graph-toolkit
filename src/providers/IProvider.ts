@@ -113,11 +113,6 @@ export abstract class IProvider implements AuthenticationProvider {
 }
 
 /**
- * An EventHandler for custom events
- */
-export type EventHandler<E> = (event: E) => void;
-
-/**
  * loginChangedEvent
  *
  * @export
