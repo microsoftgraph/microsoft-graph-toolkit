@@ -15,7 +15,6 @@ export * from './mgt-person/mgt-person';
 export * from './mgt-tasks/mgt-tasks';
 export * from './providers';
 export * from './sub-components';
-export * from './PersonCardInteraction';
 
 // Sub-Components, not for export!
 // export * from './sub-components/mgt-dot-options/mgt-dot-options';

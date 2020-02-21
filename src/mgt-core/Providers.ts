@@ -1,11 +1,12 @@
+import { IProvider } from './providers/IProvider';
+import { EventDispatcher, EventHandler } from './utils/EventDispatcher';
+
 /**
  * -------------------------------------------------------------------------------------------
  * Copyright (c) Microsoft Corporation.  All Rights Reserved.  Licensed under the MIT License.
  * See License in the project root for license information.
  * -------------------------------------------------------------------------------------------
  */
-
-import { EventDispatcher, EventHandler, IProvider } from '..';
 
 /**
  * Provides implementation for acquiring the necessary access token for calling the Microsoft Graph APIs.

@@ -15,7 +15,7 @@ import {
   PlannerTask,
   User
 } from '@microsoft/microsoft-graph-types';
-import { Batch } from '.';
+import { Batch } from './utils/Batch';
 
 /**
  * The common functions of the Graph

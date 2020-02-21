@@ -18,8 +18,7 @@ import {
 } from '../../../mgt-core';
 import { MgtPeoplePicker } from '../mgt-people-picker/mgt-people-picker';
 import { MgtPeople } from '../mgt-people/mgt-people';
-import '../mgt-person/mgt-person';
-import { PersonCardInteraction } from '../PersonCardInteraction';
+import { PersonCardInteraction } from '../mgt-person/mgt-person';
 import '../sub-components/mgt-arrow-options/mgt-arrow-options';
 import '../sub-components/mgt-dot-options/mgt-dot-options';
 import '../sub-components/mgt-flyout/mgt-flyout';

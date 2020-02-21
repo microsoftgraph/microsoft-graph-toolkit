@@ -9,8 +9,7 @@ import * as MicrosoftGraph from '@microsoft/microsoft-graph-types';
 import { customElement, html, property } from 'lit-element';
 import { MgtTemplatedComponent, Providers, ProviderState } from '../../../mgt-core';
 import '../../styles/fabric-icon-font';
-import '../mgt-person/mgt-person';
-import { PersonCardInteraction } from '../PersonCardInteraction';
+import { PersonCardInteraction } from '../mgt-person/mgt-person';
 import { styles } from './mgt-people-css';
 
 /**

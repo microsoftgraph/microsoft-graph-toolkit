@@ -6,7 +6,7 @@
  */
 
 import { BatchRequestContent } from '@microsoft/microsoft-graph-client';
-import { IGraph } from '..';
+import { IGraph } from '../IGraph';
 
 /**
  * Method to reduce repetitive requests to the Graph utilized in Batch

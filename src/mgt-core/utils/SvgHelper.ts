@@ -5,6 +5,8 @@
  * -------------------------------------------------------------------------------------------
  */
 
+import { html } from 'lit-element';
+
 /**
  * Defines icon used by svgHelper
  *
@@ -48,7 +50,6 @@ export enum SvgIcon {
   SmallLocation
 }
 
-import { html } from 'lit-element';
 /**
  * returns an svg
  * @param svgIcon defined by name

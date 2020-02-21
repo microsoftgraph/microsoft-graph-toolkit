@@ -5,8 +5,7 @@
  * -------------------------------------------------------------------------------------------
  */
 
-import { Graph, IProvider, ProviderState } from '../../mgt-core';
-import { ProxyGraph } from '../utils/ProxyGraph';
+import { Graph, IProvider, ProviderState, ProxyGraph } from '../../mgt-core';
 
 /**
  * Proxy Provider access token for Microsoft Graph APIs
