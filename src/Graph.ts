@@ -18,6 +18,7 @@ import { BaseGraph } from './BaseGraph';
 import { MgtBaseComponent } from './components/baseComponent';
 import { IProvider } from './providers/IProvider';
 import { SdkVersionMiddleware } from './utils/SdkVersionMiddleware';
+import { PACKAGE_VERSION } from './utils/version';
 
 /**
  * Creates async methods for requesting data from the Graph
@@ -39,7 +40,7 @@ export class Graph extends BaseGraph {
         new AuthenticationHandler(provider),
         new RetryHandler(new RetryHandlerOptions()),
         new TelemetryHandler(),
-        new SdkVersionMiddleware(),
+        new SdkVersionMiddleware(PACKAGE_VERSION),
         new HTTPMessageHandler()
       ];
 

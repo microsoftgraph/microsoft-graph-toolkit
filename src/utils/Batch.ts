@@ -6,9 +6,37 @@
  */
 
 import { BatchRequestContent, Client, MiddlewareOptions } from '@microsoft/microsoft-graph-client';
-import { BatchRequest } from './BatchRequest';
 import { ComponentMiddlewareOptions } from './ComponentMiddlewareOptions';
 import { prepScopes } from './GraphHelpers';
+
+/**
+ * Method to reduce repetitive requests to the Graph utilized in Batch
+ *
+ * @class BatchRequest
+ */
+class BatchRequest {
+  /**
+   * url used in request
+   *
+   * @type {string}
+   * @memberof BatchRequest
+   */
+  public resource: string;
+  /**
+   * method passed to be requested
+   *
+   * @type {string}
+   * @memberof BatchRequest
+   */
+  public method: string;
+  constructor(resource: string, method: string) {
+    if (resource.charAt(0) !== '/') {
+      resource = '/' + resource;
+    }
+    this.resource = resource;
+    this.method = method;
+  }
+}
 
 /**
  * Method to reduce repetitive requests to the Graph
@@ -16,6 +44,7 @@ import { prepScopes } from './GraphHelpers';
  * @export
  * @class Batch
  */
+// tslint:disable-next-line: max-classes-per-file
 export class Batch {
   // this doesn't really mater what it is as long as it's a root base url
   // otherwise a Request assumes the current path and that could change the relative path
