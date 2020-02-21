@@ -8,7 +8,6 @@
 import { PlannerAssignments } from '@microsoft/microsoft-graph-types';
 import { OutlookTask, OutlookTaskFolder, OutlookTaskGroup } from '@microsoft/microsoft-graph-types-beta';
 import { BetaGraph } from '../../BetaGraph';
-import { IBetaGraph } from '../../IBetaGraph';
 import { IGraph } from '../../IGraph';
 
 /**
@@ -275,10 +274,10 @@ class TaskSourceBase {
   /**
    * the IBetaGraph instance to use for making Graph requests
    *
-   * @type {IBetaGraph}
+   * @type {BetaGraph}
    * @memberof TaskSourceBase
    */
-  public graph: IBetaGraph;
+  public graph: BetaGraph;
 
   constructor(graph: IGraph) {
     this.graph = BetaGraph.fromGraph(graph);

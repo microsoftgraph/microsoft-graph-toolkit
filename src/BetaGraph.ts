@@ -33,7 +33,7 @@ export class BetaGraph extends Graph implements IBetaGraph {
    * @returns {BetaGraph}
    * @memberof BetaGraph
    */
-  public static fromGraph(graph: IGraph): IBetaGraph {
+  public static fromGraph(graph: IGraph): BetaGraph {
     const betaGraph = new BetaGraph(graph.client);
     betaGraph.setComponent(graph.componentName);
     return betaGraph;
