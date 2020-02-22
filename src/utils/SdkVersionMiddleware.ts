@@ -8,7 +8,6 @@
 import { Context, Middleware } from '@microsoft/microsoft-graph-client';
 import { getRequestHeader, setRequestHeader } from '@microsoft/microsoft-graph-client/lib/es/middleware/MiddlewareUtil';
 import { ComponentMiddlewareOptions } from './ComponentMiddlewareOptions';
-import { PACKAGE_VERSION } from './version';
 
 /**
  * Implements Middleware for the Graph sdk to inject
@@ -23,6 +22,11 @@ export class SdkVersionMiddleware implements Middleware {
    * A member to hold next middleware in the middleware chain
    */
   private _nextMiddleware: Middleware;
+  private _packageVersion: string;
+
+  constructor(packageVersion: string) {
+    this._packageVersion = packageVersion;
+  }
 
   // tslint:disable-next-line: completed-docs
   public async execute(context: Context): Promise<void> {
@@ -35,12 +39,12 @@ export class SdkVersionMiddleware implements Middleware {
       ) as ComponentMiddlewareOptions;
 
       if (componentOptions) {
-        const componentVersion: string = `${componentOptions.componentName}/${PACKAGE_VERSION}`;
+        const componentVersion: string = `${componentOptions.componentName}/${this._packageVersion}`;
         headerParts.push(componentVersion);
       }
 
       // Package version
-      const packageVersion: string = `mgt/${PACKAGE_VERSION}`;
+      const packageVersion: string = `mgt/${this._packageVersion}`;
       headerParts.push(packageVersion);
 
       // Existing SdkVersion header value
@@ -54,6 +58,7 @@ export class SdkVersionMiddleware implements Middleware {
     }
     return await this._nextMiddleware.execute(context);
   }
+
   /**
    * Handles setting of next middleware
    *

@@ -8,7 +8,7 @@
 import { AuthenticationProvider } from '@microsoft/microsoft-graph-client/lib/es/IAuthenticationProvider';
 import { AuthenticationProviderOptions } from '@microsoft/microsoft-graph-client/lib/es/IAuthenticationProviderOptions';
 import { BaseGraph } from '../BaseGraph';
-import { EventDispatcher } from './EventDispatcher';
+import { EventDispatcher, EventHandler } from '../utils/EventDispatcher';
 /**
  * Provider Type to be extended for implmenting new providers
  *
@@ -111,11 +111,6 @@ export abstract class IProvider implements AuthenticationProvider {
    */
   public abstract getAccessToken(options?: AuthenticationProviderOptions): Promise<string>;
 }
-
-/**
- * An EventHandler for custom events
- */
-export type EventHandler<E> = (event: E) => void;
 
 /**
  * loginChangedEvent
