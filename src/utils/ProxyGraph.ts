@@ -27,8 +27,6 @@ import { PACKAGE_VERSION } from './version';
 // tslint:disable-next-line: max-classes-per-file
 export class ProxyGraph extends Graph {
   constructor(baseUrl: string, getCustomHeaders: () => Promise<object>) {
-    super(null);
-
     const retryHandler = new RetryHandler(new RetryHandlerOptions());
     const telemetryHandler = new TelemetryHandler();
     const sdkVersionMiddleware = new SdkVersionMiddleware(PACKAGE_VERSION);
@@ -40,9 +38,10 @@ export class ProxyGraph extends Graph {
     sdkVersionMiddleware.setNext(customHeaderMiddleware);
     customHeaderMiddleware.setNext(httpMessageHandler);
 
-    this.client = Client.initWithMiddleware({
+    const client = Client.initWithMiddleware({
       baseUrl,
       middleware: retryHandler
     });
+    super(client);
   }
 }
