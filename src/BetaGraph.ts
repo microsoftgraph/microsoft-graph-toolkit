@@ -23,7 +23,7 @@ const GRAPH_VERSION = 'beta';
  */
 export class BetaGraph extends Graph {
   /**
-   * get an IBetaGraph instance based on an existing IGraph implementation.
+   * get a BetaGraph instance based on an existing IGraph implementation.
    *
    * @static
    * @param {Graph} graph
