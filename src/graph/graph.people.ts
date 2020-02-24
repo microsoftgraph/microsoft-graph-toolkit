@@ -5,7 +5,7 @@
  * -------------------------------------------------------------------------------------------
  */
 
-import { Person, User } from '@microsoft/microsoft-graph-types';
+import { Person } from '@microsoft/microsoft-graph-types';
 import { IGraph } from '../IGraph';
 import { prepScopes } from '../utils/GraphHelpers';
 
@@ -60,19 +60,4 @@ export async function getPeopleFromGroup(graph: IGraph, groupId: string): Promis
     .middlewareOptions(prepScopes(scopes))
     .get();
   return people ? people.value : null;
-}
-
-/**
- * async promise, returns all Graph users associated with the userPrincipleName provided
- *
- * @param {string} userPrincipleName
- * @returns {(Promise<User>)}
- * @memberof Graph
- */
-export function getUser(graph: IGraph, userPrincipleName: string): Promise<User> {
-  const scopes = 'user.readbasic.all';
-  return graph
-    .api(`/users/${userPrincipleName}`)
-    .middlewareOptions(prepScopes(scopes))
-    .get();
 }

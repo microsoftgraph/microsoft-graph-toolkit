@@ -8,7 +8,6 @@
 import * as MicrosoftGraph from '@microsoft/microsoft-graph-types';
 import { customElement, html, property, PropertyValues, TemplateResult } from 'lit-element';
 import { classMap } from 'lit-html/directives/class-map';
-import { findContactByEmail } from '../../graph/graph.contacts';
 import { findPerson } from '../../graph/graph.people';
 import { getContactPhoto, getUserPhoto } from '../../graph/graph.photos';
 import { IGraph } from '../../IGraph';
@@ -21,6 +20,7 @@ import '../sub-components/mgt-flyout/mgt-flyout';
 import { MgtTemplatedComponent } from '../templatedComponent';
 import { PersonCardInteraction } from './../PersonCardInteraction';
 import { styles } from './mgt-person-css';
+import { findContactByEmail } from './mgt-person.graph';
 
 /**
  * The person component is used to display a person or contact by using their photo, name, and/or email address.

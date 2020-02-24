@@ -8,6 +8,7 @@
 import { PlannerAssignments } from '@microsoft/microsoft-graph-types';
 import { OutlookTask, OutlookTaskFolder, OutlookTaskGroup } from '@microsoft/microsoft-graph-types-beta';
 import { BetaGraph } from '../../BetaGraph';
+import { IGraph } from '../../IGraph';
 import {
   addPlannerTask,
   assignPeopleToPlannerTask,
@@ -19,7 +20,7 @@ import {
   removePlannerTask,
   setPlannerTaskComplete,
   setPlannerTaskIncomplete
-} from '../../graph/graph.planner';
+} from './mgt-tasks.graph.planner';
 import {
   addTodoTask,
   getAllMyTodoGroups,
@@ -29,8 +30,7 @@ import {
   removeTodoTask,
   setTodoTaskComplete,
   setTodoTaskIncomplete
-} from '../../graph/graph.todo';
-import { IGraph } from '../../IGraph';
+} from './mgt-tasks.graph.todo';
 
 /**
  * Itask
@@ -294,14 +294,15 @@ export interface ITaskSource {
  */
 class TaskSourceBase {
   /**
-   * the IBetaGraph instance to use for making Graph requests
+   * the IGraph instance to use for making Graph requests
    *
-   * @type {BetaGraph}
+   * @type {IGraph}
    * @memberof TaskSourceBase
    */
   public graph: IGraph;
 
   constructor(graph: IGraph) {
+    // Use an instance of BetaGraph since we know we need to call beta apis.
     this.graph = BetaGraph.fromGraph(graph);
   }
 }

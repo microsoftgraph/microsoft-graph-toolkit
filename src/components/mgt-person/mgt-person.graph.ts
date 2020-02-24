@@ -1,6 +1,6 @@
 import { Contact } from '@microsoft/microsoft-graph-types';
-import { IGraph } from '../IGraph';
-import { prepScopes } from '../utils/GraphHelpers';
+import { IGraph } from '../../IGraph';
+import { prepScopes } from '../../utils/GraphHelpers';
 
 /**
  * async promise, returns a Graph contact associated with the email provided

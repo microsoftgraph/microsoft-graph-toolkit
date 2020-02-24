@@ -6,8 +6,8 @@
  */
 
 import * as MicrosoftGraph from '@microsoft/microsoft-graph-types';
-import { IGraph } from '../IGraph';
-import { prepScopes } from '../utils/GraphHelpers';
+import { IGraph } from '../../IGraph';
+import { prepScopes } from '../../utils/GraphHelpers';
 
 /**
  * async promise, returns Calender events associated with either the logged in user or a specific groupId

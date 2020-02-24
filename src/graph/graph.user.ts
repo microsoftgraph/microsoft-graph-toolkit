@@ -14,3 +14,18 @@ export function getMe(graph: IGraph): Promise<User> {
     .middlewareOptions(prepScopes('user.read'))
     .get();
 }
+
+/**
+ * async promise, returns all Graph users associated with the userPrincipleName provided
+ *
+ * @param {string} userPrincipleName
+ * @returns {(Promise<User>)}
+ * @memberof Graph
+ */
+export function getUser(graph: IGraph, userPrincipleName: string): Promise<User> {
+  const scopes = 'user.readbasic.all';
+  return graph
+    .api(`/users/${userPrincipleName}`)
+    .middlewareOptions(prepScopes(scopes))
+    .get();
+}

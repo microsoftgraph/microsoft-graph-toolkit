@@ -7,7 +7,6 @@
 
 import * as MicrosoftGraph from '@microsoft/microsoft-graph-types';
 import { customElement, html, property } from 'lit-element';
-import { getEvents } from '../../graph/graph.events';
 import { Providers } from '../../Providers';
 import { ProviderState } from '../../providers/IProvider';
 import '../../styles/fabric-icon-font';
@@ -16,6 +15,7 @@ import { getDayOfWeekString, getMonthString } from '../../utils/Utils';
 import '../mgt-person/mgt-person';
 import { MgtTemplatedComponent } from '../templatedComponent';
 import { styles } from './mgt-agenda-css';
+import { getEvents } from './mgt-agenda.graph';
 
 /**
  * Web Component which represents events in a user or group calendar.

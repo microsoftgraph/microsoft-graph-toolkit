@@ -8,7 +8,8 @@
 import * as MicrosoftGraph from '@microsoft/microsoft-graph-types';
 import { customElement, html, property, TemplateResult } from 'lit-element';
 import { repeat } from 'lit-html/directives/repeat';
-import { findPerson, getPeopleFromGroup, getUser } from '../../graph/graph.people';
+import { findPerson, getPeopleFromGroup } from '../../graph/graph.people';
+import { getUser } from '../../graph/graph.user';
 import { Providers } from '../../Providers';
 import { ProviderState } from '../../providers/IProvider';
 import '../../styles/fabric-icon-font';
