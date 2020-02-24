@@ -439,7 +439,7 @@ export class Graph implements IGraph {
    * @returns {(Promise<PlannerTask[][]>)}
    * @memberof BaseGraph
    */
-  public async getTasksForPlannerBucket(bucketId: string): Promise<PlannerTask[][]> {
+  public async getTasksForPlannerBucket(bucketId: string): Promise<PlannerTask[]> {
     const tasks = await this.api(`/planner/buckets/${bucketId}/tasks`)
       .header('Cache-Control', 'no-store')
       .middlewareOptions(prepScopes('Group.Read.All'))

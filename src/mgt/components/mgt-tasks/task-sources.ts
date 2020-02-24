@@ -5,7 +5,7 @@
  * -------------------------------------------------------------------------------------------
  */
 
-import { PlannerAssignments, PlannerBucket, PlannerPlan, PlannerTask } from '@microsoft/microsoft-graph-types';
+import { PlannerAssignments, PlannerBucket, PlannerPlan } from '@microsoft/microsoft-graph-types';
 import { IGraph } from '../../../mgt-core';
 
 /**
@@ -349,7 +349,7 @@ export class PlannerTaskSource extends TaskSourceBase implements ITaskSource {
    * @memberof PlannerTaskSource
    */
   public async getTasksForTaskFolder(id: string): Promise<ITask[]> {
-    const tasks = (await this.graph.getTasksForPlannerBucket(id)) as PlannerTask[];
+    const tasks = await this.graph.getTasksForPlannerBucket(id);
 
     return tasks.map(
       task =>

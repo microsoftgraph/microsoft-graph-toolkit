@@ -255,7 +255,7 @@ export interface IGraph {
    * @returns {(Promise<PlannerTask[][]>)}
    * @memberof IGraph
    */
-  getTasksForPlannerBucket(bucketId: string): Promise<PlannerTask[][]>;
+  getTasksForPlannerBucket(bucketId: string): Promise<PlannerTask[]>;
 
   /**
    * async promise, allows developer to remove Planner task associated with taskId
