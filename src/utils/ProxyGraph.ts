@@ -24,7 +24,6 @@ import { PACKAGE_VERSION } from './version';
  * @class ProxyGraph
  * @extends {Graph}
  */
-// tslint:disable-next-line: max-classes-per-file
 export class ProxyGraph extends Graph {
   constructor(baseUrl: string, getCustomHeaders: () => Promise<object>) {
     const retryHandler = new RetryHandler(new RetryHandlerOptions());
