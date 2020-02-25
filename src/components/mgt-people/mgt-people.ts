@@ -98,27 +98,10 @@ export class MgtPeople extends MgtTemplatedComponent {
   })
   public personCardInteraction: PersonCardInteraction = PersonCardInteraction.hover;
 
-  private _firstUpdated = false;
-
   constructor() {
     super();
 
     this.showMax = 3;
-  }
-
-  /**
-   * Invoked when the element is first updated. Implement to perform one time
-   * work on the element after update.
-   *
-   * Setting properties inside this method will trigger the element to update
-   * again after this update cycle completes.
-   *
-   * * @param _changedProperties Map of changed properties with old values
-   */
-  protected firstUpdated() {
-    this._firstUpdated = true;
-    Providers.onProviderUpdated(() => this.loadPeople());
-    this.loadPeople();
   }
 
   /**
@@ -159,11 +142,14 @@ export class MgtPeople extends MgtTemplatedComponent {
     }
   }
 
-  private async loadPeople() {
-    if (!this._firstUpdated) {
-      return;
-    }
-
+  /**
+   * load state into the component.
+   *
+   * @protected
+   * @returns
+   * @memberof MgtPeople
+   */
+  protected async load() {
     if (!this.people) {
       const provider = Providers.globalProvider;
 
