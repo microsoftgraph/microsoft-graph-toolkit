@@ -88,9 +88,6 @@ export class MgtGet extends MgtTemplatedComponent {
    */
   @property({ attribute: false }) public error: any;
 
-  @property({ attribute: false }) private loading: boolean = false;
-  private _firstUpdated: boolean = false;
-
   /**
    * Synchronizes property values when attributes change.
    *
@@ -101,25 +98,7 @@ export class MgtGet extends MgtTemplatedComponent {
    */
   public attributeChangedCallback(name, oldval, newval) {
     super.attributeChangedCallback(name, oldval, newval);
-
-    if (this._firstUpdated) {
-      this.loadData();
-    }
-  }
-
-  /**
-   * Invoked when the element is first updated. Implement to perform one time
-   * work on the element after update.
-   *
-   * Setting properties inside this method will trigger the element to update
-   * again after this update cycle completes.
-   *
-   * * @param _changedProperties Map of changed properties with old values
-   */
-  public firstUpdated() {
-    Providers.onProviderUpdated(() => this.loadData());
-    this.loadData();
-    this._firstUpdated = true;
+    this.load();
   }
 
   /**
@@ -137,7 +116,14 @@ export class MgtGet extends MgtTemplatedComponent {
     }
   }
 
-  private async loadData() {
+  /**
+   * load state into the component.
+   *
+   * @protected
+   * @returns
+   * @memberof MgtGet
+   */
+  protected async load() {
     const provider = Providers.globalProvider;
 
     if (!provider || provider.state !== ProviderState.SignedIn) {
@@ -148,8 +134,6 @@ export class MgtGet extends MgtTemplatedComponent {
     this.error = null;
 
     if (this.resource) {
-      this.loading = true;
-
       let response = null;
       try {
         const graph = provider.graph.forComponent(this);
@@ -187,7 +171,6 @@ export class MgtGet extends MgtTemplatedComponent {
       }
     }
 
-    this.loading = false;
     this.fireCustomEvent('dataChange', { response: this.response, error: this.error });
   }
 }

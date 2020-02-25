@@ -129,7 +129,7 @@ export abstract class MgtBaseComponent extends LitElement {
   }
 
   /**
-   * load data into the component.
+   * load state into the component.
    * Override this function to provide additional loading logic.
    */
   protected load(): Promise<void> {
