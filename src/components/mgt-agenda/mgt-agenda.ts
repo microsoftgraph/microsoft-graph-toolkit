@@ -24,6 +24,21 @@ import { MgtTemplatedComponent } from '../templatedComponent';
  * @export
  * @class MgtAgenda
  * @extends {MgtTemplatedComponent}
+ *
+ * @cssprop --event-box-shadow - {String} Event box shadow color and size
+ * @cssprop --event-margin - {String} Event margin
+ * @cssprop --event-padding - {String} Event padding
+ * @cssprop --event-background - {Color} Event background color
+ * @cssprop --event-border - {String} Event border color
+ * @cssprop --agenda-header-margin - {String} Agenda header margin size
+ * @cssprop --agenda-header-font-size - {Length} Agenda header font size
+ * @cssprop --agenda-header-color - {Color} Agenda header color
+ * @cssprop --event-time-font-size - {Length} Event time font size
+ * @cssprop --event-time-color - {Color} Event time color
+ * @cssprop --event-subject-font-size - {Length} Event subject font size
+ * @cssprop --event-subject-color - {Color} Event subject color
+ * @cssprop --event-location-font-size - {Length} Event location font size
+ * @cssprop --event-location-color - {Color} Event location color
  */
 @customElement('mgt-agenda')
 export class MgtAgenda extends MgtTemplatedComponent {
@@ -36,7 +51,7 @@ export class MgtAgenda extends MgtTemplatedComponent {
   }
 
   /**
-   * array containg events from user agenda.
+   * array containing events from user agenda.
    * @type {Array<MicrosoftGraph.Event>}
    */
   @property({
@@ -53,10 +68,10 @@ export class MgtAgenda extends MgtTemplatedComponent {
     reflect: true,
     type: Boolean
   })
-  public groupByDay = false;
+  public groupByDay: boolean;
 
   /**
-   * stores current date for intial calender selection in events.
+   * stores current date for initial calender selection in events.
    * @type {string}
    */
   @property({
@@ -67,7 +82,7 @@ export class MgtAgenda extends MgtTemplatedComponent {
   public date: string;
 
   /**
-   * sets number of days until endate, 3 is the default
+   * sets number of days until end date, 3 is the default
    * @type {number}
    */
   @property({
@@ -75,7 +90,7 @@ export class MgtAgenda extends MgtTemplatedComponent {
     reflect: true,
     type: Number
   })
-  public days: number = 3;
+  public days: number;
 
   /**
    * allows developer to specify a different graph query that retrieves events
@@ -118,10 +133,14 @@ export class MgtAgenda extends MgtTemplatedComponent {
    * determines if agenda component is still loading details.
    * @type {boolean}
    */
-  @property({ attribute: false }) private _loading: boolean = true;
+  @property({ attribute: false }) private _loading: boolean;
 
   constructor() {
     super();
+
+    this._loading = true;
+    this.days = 3;
+
     this.onResize = this.onResize.bind(this);
   }
 
@@ -343,7 +362,7 @@ export class MgtAgenda extends MgtTemplatedComponent {
         </div>
         <div class="event-details-container">
           <div class="event-subject">${event.subject}</div>
-          ${this.renderLocation(event)} ${this.renderAttendies(event)}
+          ${this.renderLocation(event)} ${this.renderAttendees(event)}
         </div>
         ${this.templates['event-other']
           ? html`
@@ -383,7 +402,7 @@ export class MgtAgenda extends MgtTemplatedComponent {
     `;
   }
 
-  private renderAttendies(event: MicrosoftGraph.Event) {
+  private renderAttendees(event: MicrosoftGraph.Event) {
     if (!event.attendees.length) {
       return null;
     }

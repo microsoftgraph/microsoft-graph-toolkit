@@ -24,6 +24,19 @@ import { styles } from './mgt-person-css';
  * @export
  * @class MgtPerson
  * @extends {MgtTemplatedComponent}
+ *
+ * @cssprop --avatar-size-s - {Length} Avatar size
+ * @cssprop --avatar-size - {Length} Avatar size when both name and email are shown
+ * @cssprop --avatar-font-size--s - {Length} Avatar font size
+ * @cssprop --avatar-font-size - {Length} Avatar font-size when both name and email are shown
+ * @cssprop --avatar-border - {String} Avatar border
+ * @cssprop --initials-color - {Color} Initials color
+ * @cssprop --initials-background-color - {Color} Initials background color
+ * @cssprop --font-size - {Length} Font size
+ * @cssprop --font-weight - {Length} Font weight
+ * @cssprop --color - {Color} Color
+ * @cssprop --email-font-size - {Length} Email font size
+ * @cssprop --email-color - {Color} Email color
  */
 @customElement('mgt-person')
 export class MgtPerson extends MgtTemplatedComponent {
@@ -61,7 +74,7 @@ export class MgtPerson extends MgtTemplatedComponent {
     attribute: 'show-name',
     type: Boolean
   })
-  public showName: false;
+  public showName: boolean;
 
   /**
    * determines if person component renders email
@@ -71,7 +84,7 @@ export class MgtPerson extends MgtTemplatedComponent {
     attribute: 'show-email',
     type: Boolean
   })
-  public showEmail: false;
+  public showEmail: boolean;
 
   /**
    * object containing Graph details on person
@@ -115,10 +128,10 @@ export class MgtPerson extends MgtTemplatedComponent {
       }
     }
   })
-  public personCardInteraction: PersonCardInteraction = PersonCardInteraction.none;
+  public personCardInteraction: PersonCardInteraction;
 
-  @property({ attribute: false }) private isPersonCardVisible: boolean = false;
-  @property({ attribute: false }) private personCardShouldRender: boolean = false;
+  @property({ attribute: false }) private isPersonCardVisible: boolean;
+  @property({ attribute: false }) private personCardShouldRender: boolean;
 
   private _mouseLeaveTimeout;
   private _mouseEnterTimeout;
@@ -126,6 +139,7 @@ export class MgtPerson extends MgtTemplatedComponent {
   constructor() {
     super();
     this.handleWindowClick = this.handleWindowClick.bind(this);
+    this.personCardInteraction = PersonCardInteraction.none;
   }
 
   /**

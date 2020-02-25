@@ -21,6 +21,11 @@ import { styles } from './mgt-person-card-css';
  * @export
  * @class MgtPersonCard
  * @extends {MgtTemplatedComponent}
+ *
+ * @cssprop --font-size - {Length} Font size
+ * @cssprop --font-weight - {Length} Font weight
+ * @cssprop --height - {String} Height
+ * @cssprop --background-color - {Color} Background color
  */
 @customElement('mgt-person-card')
 export class MgtPersonCard extends MgtTemplatedComponent {
@@ -69,7 +74,7 @@ export class MgtPersonCard extends MgtTemplatedComponent {
     attribute: 'is-expanded',
     type: Boolean
   })
-  public isExpanded: boolean = false;
+  public isExpanded: boolean;
 
   /**
    * Gets or sets whether additional details should be inherited from an mgt-person parent
@@ -82,7 +87,7 @@ export class MgtPersonCard extends MgtTemplatedComponent {
     attribute: 'inherit-details',
     type: Boolean
   })
-  public inheritDetails: boolean = false;
+  public inheritDetails: boolean;
 
   /**
    * Synchronizes property values when attributes change.

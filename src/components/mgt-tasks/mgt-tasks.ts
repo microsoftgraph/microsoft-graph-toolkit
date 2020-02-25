@@ -32,6 +32,53 @@ import '../sub-components/mgt-flyout/mgt-flyout';
  *
  * @export
  * @enum {number}
+ *
+ * @cssprop --tasks-header-padding - {String} Tasks header padding
+ * @cssprop --tasks-header-margin - {String} Tasks header margin
+ * @cssprop --tasks-title-padding - {String} Tasks title padding
+ * @cssprop --tasks-plan-title-font-size - {Length} Tasks plan title font size
+ * @cssprop --tasks-plan-title-padding - {String} Tasks plan title padding
+ * @cssprop --tasks-new-button-width - {String} Tasks new button width
+ * @cssprop --tasks-new-button-height - {String} Tasks new button height
+ * @cssprop --tasks-new-button-color - {Color} Tasks new button color
+ * @cssprop --tasks-new-button-background - {String} Tasks new button background
+ * @cssprop --tasks-new-button-border - {String} Tasks new button border
+ * @cssprop --tasks-new-button-hover-background - {Color} Tasks new button hover background
+ * @cssprop --tasks-new-button-active-background - {Color} Tasks new button active background
+ * @cssprop --tasks-new-task-name-margin - {String} Tasks new task name margin
+ * @cssprop --task-margin - {String} Task margin
+ * @cssprop --task-box-shadow - {String} Task box shadow
+ * @cssprop --task-background - {Color} Task background
+ * @cssprop --task-border - {String} Task border
+ * @cssprop --task-header-color - {Color} Task header color
+ * @cssprop --task-header-margin - {String} Task header margin
+ * @cssprop --task-detail-icon-margin -{String}  Task detail icon margin
+ * @cssprop --task-new-margin - {String} Task new margin
+ * @cssprop --task-new-border - {String} Task new border
+ * @cssprop --task-new-line-margin - {String} Task new line margin
+ * @cssprop --tasks-new-line-border - {String} Tasks new line border
+ * @cssprop --task-new-input-margin - {String} Task new input margin
+ * @cssprop --task-new-input-padding - {String} Task new input padding
+ * @cssprop --task-new-input-font-size - {Length} Task new input font size
+ * @cssprop --task-new-input-active-border - {String} Task new input active border
+ * @cssprop --task-new-select-border - {String} Task new select border
+ * @cssprop --task-new-add-button-background - {Color} Task new add button background
+ * @cssprop --task-new-add-button-disabled-background - {Color} Task new add button disabled background
+ * @cssprop --task-new-cancel-button-color - {Color} Task new cancel button color
+ * @cssprop --task-complete-background - {Color} Task complete background
+ * @cssprop --task-complete-border - {String} Task complete border
+ * @cssprop --task-complete-header-color - {Color} Task complete header color
+ * @cssprop --task-complete-detail-color - {Color} Task complete detail color
+ * @cssprop --task-complete-detail-icon-color - {Color} Task complete detail icon color
+ * @cssprop --tasks-background-color - {Color} Task background color
+ * @cssprop --task-icon-alignment - {String} Task icon alignment
+ * @cssprop --task-icon-background - {Color} Task icon color
+ * @cssprop --task-icon-background-completed - {Color} Task icon background color when completed
+ * @cssprop --task-icon-border - {String} Task icon border styles
+ * @cssprop --task-icon-border-completed - {String} Task icon border style when task is completed
+ * @cssprop --task-icon-border-radius - {String} Task icon border radius
+ * @cssprop --task-icon-color - {Color} Task icon color
+ * @cssprop --task-icon-color-completed - {Color} Task icon color when completed
  */
 export enum TasksSource {
   /**
@@ -132,7 +179,7 @@ export class MgtTasks extends MgtTemplatedComponent {
    * @type {boolean}
    */
   @property({ attribute: 'read-only', type: Boolean })
-  public readOnly: boolean = false;
+  public readOnly: boolean;
 
   /**
    * determines which task source is loaded, either planner or todo
@@ -152,14 +199,14 @@ export class MgtTasks extends MgtTemplatedComponent {
    * @type {string}
    */
   @property({ attribute: 'target-id', type: String })
-  public targetId: string = null;
+  public targetId: string;
 
   /**
    * if set, the component will only show tasks from this bucket or folder
    * @type {string}
    */
   @property({ attribute: 'target-bucket-id', type: String })
-  public targetBucketId: string = null;
+  public targetBucketId: string;
 
   /**
    * if set, the component will first show tasks from this plan or group
@@ -168,7 +215,7 @@ export class MgtTasks extends MgtTemplatedComponent {
    * @memberof MgtTasks
    */
   @property({ attribute: 'initial-id', type: String })
-  public initialId: string = null;
+  public initialId: string;
 
   /**
    * if set, the component will first show tasks from this bucket or folder
@@ -177,7 +224,7 @@ export class MgtTasks extends MgtTemplatedComponent {
    * @memberof MgtTasks
    */
   @property({ attribute: 'initial-bucket-id', type: String })
-  public initialBucketId: string = null;
+  public initialBucketId: string;
 
   /**
    * sets whether the header is rendered
@@ -186,7 +233,7 @@ export class MgtTasks extends MgtTemplatedComponent {
    * @memberof MgtTasks
    */
   @property({ attribute: 'hide-header', type: Boolean })
-  public hideHeader: boolean = false;
+  public hideHeader: boolean;
 
   /**
    * sets whether the options are rendered
@@ -201,7 +248,7 @@ export class MgtTasks extends MgtTemplatedComponent {
    * allows developer to define specific group id
    */
   @property({ attribute: 'group-id', type: String })
-  public groupId: string = null;
+  public groupId: string;
 
   /**
    * Optional filter function when rendering tasks
@@ -210,26 +257,26 @@ export class MgtTasks extends MgtTemplatedComponent {
    */
   public taskFilter: (task: PlannerTask | OutlookTask) => boolean;
 
-  @property() private _isNewTaskVisible: boolean = false;
-  @property() private _newTaskBeingAdded: boolean = false;
-  @property() private _newTaskName: string = '';
-  @property() private _newTaskDueDate: Date = null;
-  @property() private _newTaskGroupId: string = '';
-  @property() private _newTaskFolderId: string = '';
-  @property() private _groups: ITaskGroup[] = [];
-  @property() private _folders: ITaskFolder[] = [];
-  @property() private _tasks: ITask[] = [];
-  @property() private _hiddenTasks: string[] = [];
-  @property() private _loadingTasks: string[] = [];
-  @property() private _inTaskLoad: boolean = false;
-  @property() private _hasDoneInitialLoad: boolean = false;
-  @property() private _todoDefaultSet: boolean = false;
+  @property() private _isNewTaskVisible: boolean;
+  @property() private _newTaskBeingAdded: boolean;
+  @property() private _newTaskName: string;
+  @property() private _newTaskDueDate: Date;
+  @property() private _newTaskGroupId: string;
+  @property() private _newTaskFolderId: string;
+  @property() private _groups: ITaskGroup[];
+  @property() private _folders: ITaskFolder[];
+  @property() private _tasks: ITask[];
+  @property() private _hiddenTasks: string[];
+  @property() private _loadingTasks: string[];
+  @property() private _inTaskLoad: boolean;
+  @property() private _hasDoneInitialLoad: boolean;
+  @property() private _todoDefaultSet: boolean;
 
   @property() private _currentGroup: string;
   @property() private _currentFolder: string;
   @property() private _currentTask: ITask;
 
-  @property() private isPeoplePickerVisible: boolean = false;
+  @property() private isPeoplePickerVisible: boolean;
 
   private _me: User = null;
   private providerUpdateCallback: () => void | any;
@@ -238,6 +285,16 @@ export class MgtTasks extends MgtTemplatedComponent {
 
   constructor() {
     super();
+    this._newTaskName = '';
+    this._newTaskDueDate = null;
+    this._newTaskGroupId = '';
+    this._newTaskFolderId = '';
+    this._groups = [];
+    this._folders = [];
+    this._tasks = [];
+    this._hiddenTasks = [];
+    this._loadingTasks = [];
+
     this.previousMediaQuery = this.mediaQuery;
     this.onResize = this.onResize.bind(this);
     this.providerUpdateCallback = () => this.loadTasks();

@@ -10,7 +10,7 @@ import { addons, types } from '@storybook/addons';
 import { STORIES_CONFIGURED, STORY_MISSING } from '@storybook/core-events';
 import { AddonPanel } from '@storybook/components';
 import { useParameter, useChannel } from '@storybook/api';
-import { Providers, MsalProvider, LoginType, ProviderState } from '../dist/commonjs';
+import { Providers, MsalProvider, LoginType } from '../dist/commonjs';
 import { CLIENTID, GETPROVIDER_EVENT, SETPROVIDER_EVENT } from './env';
 
 const PARAM_KEY = 'signInAddon';

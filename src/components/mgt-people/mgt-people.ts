@@ -21,6 +21,9 @@ import { styles } from './mgt-people-css';
  * @export
  * @class MgtPeople
  * @extends {MgtTemplatedComponent}
+ *
+ * @cssprop --list-margin - {String} List margin for component
+ * @cssprop --avatar-margin - {String} Margin for each person
  */
 @customElement('mgt-people')
 export class MgtPeople extends MgtTemplatedComponent {
@@ -40,7 +43,7 @@ export class MgtPeople extends MgtTemplatedComponent {
     attribute: 'people',
     type: Object
   })
-  public people: Array<MicrosoftGraph.User | MicrosoftGraph.Person | MicrosoftGraph.Contact> = null;
+  public people: Array<MicrosoftGraph.User | MicrosoftGraph.Person | MicrosoftGraph.Contact>;
 
   /**
    * developer determined max people shown in component
@@ -50,7 +53,7 @@ export class MgtPeople extends MgtTemplatedComponent {
     attribute: 'show-max',
     type: Number
   })
-  public showMax: number = 3;
+  public showMax: number;
 
   /**
    * determines if agenda events come from specific group
@@ -96,6 +99,12 @@ export class MgtPeople extends MgtTemplatedComponent {
   public personCardInteraction: PersonCardInteraction = PersonCardInteraction.hover;
 
   private _firstUpdated = false;
+
+  constructor() {
+    super();
+
+    this.showMax = 3;
+  }
 
   /**
    * Invoked when the element is first updated. Implement to perform one time

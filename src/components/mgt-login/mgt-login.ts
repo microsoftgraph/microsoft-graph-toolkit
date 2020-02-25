@@ -20,6 +20,17 @@ import { styles } from './mgt-login-css';
  * @export
  * @class MgtLogin
  * @extends {MgtBaseComponent}
+ *
+ * @cssprop --font-size - {Length} Login font size
+ * @cssprop --font-weight - {Length} Login font weight
+ * @cssprop --height - {String} Login height percentage
+ * @cssprop --margin - {String} Margin size
+ * @cssprop --padding - {String} Padding size
+ * @cssprop --color - {Color} Login font color
+ * @cssprop --background-color - {Color} Login background color
+ * @cssprop --background-color--hover - {Color} Login background hover color
+ * @cssprop --popup-content-background-color - {Color} Popup content background color
+ * @cssprop --popup-command-font-size - {Length} Popup command font size
  */
 @customElement('mgt-login')
 export class MgtLogin extends MgtBaseComponent {
@@ -50,16 +61,17 @@ export class MgtLogin extends MgtBaseComponent {
    * determines if login menu popup should be showing
    * @type {boolean}
    */
-  @property({ attribute: false }) private _showMenu: boolean = false;
+  @property({ attribute: false }) private _showMenu: boolean;
 
   /**
    * determines if login component is in loading state
    * @type {boolean}
    */
-  @property({ attribute: false }) private _loading: boolean = true;
+  @property({ attribute: false }) private _loading: boolean;
 
   constructor() {
     super();
+    this._loading = true;
     Providers.onProviderUpdated(() => this.loadState());
     this.loadState();
     this.handleWindowClick = this.handleWindowClick.bind(this);
