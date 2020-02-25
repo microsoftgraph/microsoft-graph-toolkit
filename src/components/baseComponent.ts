@@ -6,6 +6,7 @@
  */
 
 import { LitElement, PropertyValues } from 'lit-element';
+import { Providers } from '../Providers';
 
 /**
  * Defines media query based on component width
@@ -78,6 +79,17 @@ export abstract class MgtBaseComponent extends LitElement {
 
   private static _useShadowRoot: boolean = true;
 
+  /**
+   * A flag to check if the component's firstUpdated method has fired.
+   *
+   * @protected
+   * @memberof MgtBaseComponent
+   */
+  protected get loading() {
+    return this._loading;
+  }
+  private _loading: boolean = false;
+
   constructor() {
     super();
     if (this.isShadowRootDisabled()) {
@@ -93,6 +105,29 @@ export abstract class MgtBaseComponent extends LitElement {
    */
   public isShadowRootDisabled() {
     return !MgtBaseComponent._useShadowRoot || !(this.constructor as typeof MgtBaseComponent)._useShadowRoot;
+  }
+
+  /**
+   * Invoked when the element is first updated. Implement to perform one time
+   * work on the element after update.
+   *
+   * Setting properties inside this method will trigger the element to update
+   * again after this update cycle completes.
+   *
+   * @param _changedProperties Map of changed properties with old values
+   */
+  protected firstUpdated(changedProperties): void {
+    super.firstUpdated(changedProperties);
+    Providers.onProviderUpdated(() => this.reload());
+    this.reload();
+  }
+
+  /**
+   * load data into the component.
+   * Override this function to provide additional loading logic.
+   */
+  protected load(): Promise<void> {
+    return Promise.resolve();
   }
 
   /**
@@ -140,5 +175,14 @@ export abstract class MgtBaseComponent extends LitElement {
       cancelable: true
     });
     this.dispatchEvent(event);
+  }
+
+  private async reload(): Promise<void> {
+    if (this._loading) {
+      return;
+    }
+    this._loading = true;
+    await this.load();
+    this._loading = false;
   }
 }
