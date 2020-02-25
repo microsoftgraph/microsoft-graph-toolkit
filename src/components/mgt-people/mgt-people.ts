@@ -21,6 +21,9 @@ import { styles } from './mgt-people-css';
  * @export
  * @class MgtPeople
  * @extends {MgtTemplatedComponent}
+ *
+ * @cssprop --list-margin - {String} List margin for component
+ * @cssprop --avatar-margin - {String} Margin for each person
  */
 @customElement('mgt-people')
 export class MgtPeople extends MgtTemplatedComponent {

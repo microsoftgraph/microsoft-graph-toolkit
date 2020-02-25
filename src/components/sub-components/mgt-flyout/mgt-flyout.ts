@@ -39,6 +39,7 @@ export class MgtFlyout extends LitElement {
   public isOpen: boolean;
 
   private renderedOnce = false;
+  private openLeft: boolean = false;
 
   /**
    * Invoked when the element is first updated. Implement to perform one time
@@ -113,15 +114,16 @@ export class MgtFlyout extends LitElement {
       let top: number;
 
       if (this.isOpen) {
-        const flyoutRect = flyout.getBoundingClientRect();
         const anchorRect = anchor.getBoundingClientRect();
 
         // normalize flyoutrect since we could have moved it before
         // need to know where would it render, not where it renders
+        const flyoutWidth = flyout.scrollWidth;
+        const flyoutHeight = flyout.scrollHeight;
         const flyoutTop = anchorRect.bottom;
         const flyoutLeft = anchorRect.left;
-        const flyoutRight = flyoutLeft + flyoutRect.width;
-        const flyoutBottom = flyoutTop + flyoutRect.height;
+        const flyoutRight = flyoutLeft + flyoutWidth;
+        const flyoutBottom = flyoutTop + flyoutHeight;
 
         const windowWidth =
           window.innerWidth && document.documentElement.clientWidth
@@ -133,14 +135,14 @@ export class MgtFlyout extends LitElement {
             ? Math.min(window.innerHeight, document.documentElement.clientHeight)
             : window.innerHeight || document.documentElement.clientHeight;
 
-        if (flyoutRect.width > windowWidth) {
+        if (flyoutWidth > windowWidth) {
           // page width is smaller than flyout, render all the way to the left
           left = -flyoutLeft;
-        } else if (anchorRect.width >= flyoutRect.width) {
+        } else if (anchorRect.width >= flyoutWidth) {
           // anchor is large than flyout, render aligned to anchor
           left = 0;
         } else {
-          const centerOffset = flyoutRect.width / 2 - anchorRect.width / 2;
+          const centerOffset = flyoutWidth / 2 - anchorRect.width / 2;
 
           if (flyoutLeft - centerOffset < 0) {
             // centered flyout is off screen to the left, render on the left edge
@@ -154,7 +156,7 @@ export class MgtFlyout extends LitElement {
           }
         }
 
-        if (flyoutRect.height > windowHeight || (windowHeight < flyoutBottom && anchorRect.top < flyoutRect.height)) {
+        if (flyoutHeight > windowHeight || (windowHeight < flyoutBottom && anchorRect.top < flyoutHeight)) {
           top = -flyoutTop + anchorRect.height;
         } else if (windowHeight < flyoutBottom) {
           bottom = anchorRect.height;

@@ -15,6 +15,7 @@ import {
 import { Graph } from '../Graph';
 import { CustomHeaderMiddleware } from './CustomHeaderMiddleware';
 import { SdkVersionMiddleware } from './SdkVersionMiddleware';
+import { PACKAGE_VERSION } from './version';
 
 /**
  * ProxyGraph Instance
@@ -30,7 +31,7 @@ export class ProxyGraph extends Graph {
 
     const retryHandler = new RetryHandler(new RetryHandlerOptions());
     const telemetryHandler = new TelemetryHandler();
-    const sdkVersionMiddleware = new SdkVersionMiddleware();
+    const sdkVersionMiddleware = new SdkVersionMiddleware(PACKAGE_VERSION);
     const customHeaderMiddleware = new CustomHeaderMiddleware(getCustomHeaders);
     const httpMessageHandler = new HTTPMessageHandler();
 

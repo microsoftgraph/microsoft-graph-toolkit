@@ -22,6 +22,9 @@ import { styles } from './mgt-people-picker-css';
  * @export
  * @class MgtPicker
  * @extends {MgtTemplatedComponent}
+ *
+ * @cssprop --people-list-background-color - {Color} People list background color
+ * @cssprop --accent-color - {Color} Accent color
  */
 @customElement('mgt-people-picker')
 export class MgtPeoplePicker extends MgtTemplatedComponent {

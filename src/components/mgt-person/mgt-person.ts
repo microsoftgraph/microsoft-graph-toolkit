@@ -24,6 +24,19 @@ import { styles } from './mgt-person-css';
  * @export
  * @class MgtPerson
  * @extends {MgtTemplatedComponent}
+ *
+ * @cssprop --avatar-size-s - {Length} Avatar size
+ * @cssprop --avatar-size - {Length} Avatar size when both name and email are shown
+ * @cssprop --avatar-font-size--s - {Length} Avatar font size
+ * @cssprop --avatar-font-size - {Length} Avatar font-size when both name and email are shown
+ * @cssprop --avatar-border - {String} Avatar border
+ * @cssprop --initials-color - {Color} Initials color
+ * @cssprop --initials-background-color - {Color} Initials background color
+ * @cssprop --font-size - {Length} Font size
+ * @cssprop --font-weight - {Length} Font weight
+ * @cssprop --color - {Color} Color
+ * @cssprop --email-font-size - {Length} Email font size
+ * @cssprop --email-color - {Color} Email color
  */
 @customElement('mgt-person')
 export class MgtPerson extends MgtTemplatedComponent {
