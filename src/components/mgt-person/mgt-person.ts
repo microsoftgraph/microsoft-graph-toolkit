@@ -20,7 +20,7 @@ import '../sub-components/mgt-flyout/mgt-flyout';
 import { MgtTemplatedComponent } from '../templatedComponent';
 import { PersonCardInteraction } from './../PersonCardInteraction';
 import { styles } from './mgt-person-css';
-import { findContactByEmail } from './mgt-person.graph';
+import { findContactByEmail, findUserByEmail } from './mgt-person.graph';
 
 /**
  * The person component is used to display a person or contact by using their photo, name, and/or email address.
@@ -317,7 +317,7 @@ export class MgtPerson extends MgtTemplatedComponent {
       const email = getEmailFromGraphEntity(person);
       if (email) {
         // try to find a user by e-mail
-        const users = await this.findUserByEmail(graph, email);
+        const users = await findUserByEmail(graph, email);
 
         if (users && users.length) {
           if ((users[0] as any).personType && (users[0] as any).personType.subclass === 'OrganizationUser') {
@@ -335,23 +335,6 @@ export class MgtPerson extends MgtTemplatedComponent {
     }
 
     this.requestUpdate();
-  }
-
-  /**
-   * async promise, returns Graph contact and/or Person associated with the email provided
-   * Uses: Graph.findPerson(email) and Graph.findContactByEmail(email)
-   *
-   * @param {string} email
-   * @returns {(Promise<Array<Person | Contact>>)}
-   * @memberof Graph
-   */
-  private findUserByEmail(
-    graph: IGraph,
-    email: string
-  ): Promise<Array<MicrosoftGraph.Person | MicrosoftGraph.Contact>> {
-    return Promise.all([findPerson(graph, email), findContactByEmail(graph, email)]).then(([people, contacts]) => {
-      return ((people as any[]) || []).concat(contacts || []);
-    });
   }
 
   private handleMouseClick(e: MouseEvent) {

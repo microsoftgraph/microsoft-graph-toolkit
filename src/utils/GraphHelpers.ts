@@ -63,20 +63,3 @@ export function chainMiddleware(...middleware: Middleware[]): Middleware {
   }
   return rootMiddleware;
 }
-
-/**
- * converts a blob to base64 encoding
- *
- * @param {Blob} blob
- * @returns {Promise<string>}
- */
-export function blobToBase64(blob: Blob): Promise<string> {
-  return new Promise((resolve, reject) => {
-    const reader = new FileReader();
-    reader.onerror = reject;
-    reader.onload = _ => {
-      resolve(reader.result as string);
-    };
-    reader.readAsDataURL(blob);
-  });
-}
