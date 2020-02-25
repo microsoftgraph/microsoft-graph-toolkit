@@ -814,7 +814,9 @@ export class MgtTeamsChannelPicker extends MgtTemplatedComponent {
             <div class="arrow">
               ${teamData.showChannels ? getSvg(SvgIcon.ArrowDown, '#252424') : getSvg(SvgIcon.ArrowRight, '#252424')}
             </div>
-            ${teamData.displayName}
+            <div class="team-name">
+              ${teamData.displayName}
+            </div>
           </li>
           <div class="render-channels team-${teamData.id} ${teamData.showChannels ? '' : 'hide-channels'}">
             ${this.renderChannels(teamData.channels)}

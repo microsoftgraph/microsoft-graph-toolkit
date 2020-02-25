@@ -124,8 +124,7 @@ mgt-teams-channel-picker .CloseIcon {
   right: 0;
   line-height: normal;
   font-family: 'FabricMDL2Icons';
-  padding-right: 10px;
-  padding-left: 10px;
+  padding: 8px 10px 10px 8px;
   margin-bottom: 1px;
   cursor: pointer;
   color: #605e5c;
@@ -178,7 +177,6 @@ mgt-teams-channel-picker .list-team {
   -o-user-select: none;
   display: flex;
   flex-direction: row;
-  flex-wrap: wrap;
   align-items: center;
   padding: 5px 12px 6px 14px;
   margin-top: 6px;
@@ -193,6 +191,48 @@ mgt-teams-channel-picker .list-team {
 
   &:hover {
     background-color: $selection-hover-color;
+    .team-name {
+      flex-flow: nowrap;
+      position: relative;
+      overflow: hidden;
+      white-space: nowrap;
+      background-color: transparent;
+      padding-right: 20px;
+      &:after {
+        content: '';
+        position: absolute;
+        width: 10px;
+        height: 100%;
+        top: 0;
+        right: 0;
+        background-image: -webkit-linear-gradient(right, $selection-hover-color, rgba(255, 255, 255, 0));
+        background-image: -moz-linear-gradient(right, $selection-hover-color, rgba(255, 255, 255, 0));
+        background-image: -ms-linear-gradient(right, $selection-hover-color, rgba(255, 255, 255, 0));
+        background-image: -o-linear-gradient(right, $selection-hover-color, rgba(255, 255, 255, 0));
+        background-image: linear-gradient(to left, $selection-hover-color, rgba(255, 255, 255, 0));
+      }
+    }
+  }
+  .team-name {
+    flex-flow: nowrap;
+    position: relative;
+    overflow: hidden;
+    white-space: nowrap;
+    background-color: transparent;
+    padding-right: 20px;
+    &:after {
+      content: '';
+      position: absolute;
+      width: 10px;
+      height: 100%;
+      top: 0;
+      right: 0;
+      background-image: -webkit-linear-gradient(right, rgba(255, 255, 255, 1), rgba(255, 255, 255, 0));
+      background-image: -moz-linear-gradient(right, rgba(255, 255, 255, 1), rgba(255, 255, 255, 0));
+      background-image: -ms-linear-gradient(right, rgba(255, 255, 255, 1), rgba(255, 255, 255, 0));
+      background-image: -o-linear-gradient(right, rgba(255, 255, 255, 1), rgba(255, 255, 255, 0));
+      background-image: linear-gradient(to left, rgba(255, 255, 255, 1), rgba(255, 255, 255, 0));
+    }
   }
 }
 
@@ -216,6 +256,32 @@ mgt-teams-channel-picker .channel-display {
   cursor: pointer;
   padding-left: 21px;
   padding-right: 20px;
+
+  & .showing:last-child {
+    flex-flow: nowrap;
+    position: relative;
+    overflow: hidden;
+    white-space: nowrap;
+    background-color: transparent;
+    &:after {
+      content: '';
+      position: absolute;
+      width: 20px;
+      height: 100%;
+      top: 0;
+      right: 0;
+      background-image: -webkit-linear-gradient(
+        right,
+        rgba(255, 255, 255, 1) rgba(255, 255, 255, 1),
+        rgba(255, 255, 255, 0)
+      );
+      background-image: -moz-linear-gradient(right, rgba(255, 255, 255, 1), rgba(255, 255, 255, 0));
+      background-image: -ms-linear-gradient(right, rgba(255, 255, 255, 1), rgba(255, 255, 255, 0));
+      background-image: -o-linear-gradient(right, rgba(255, 255, 255, 1), rgba(255, 255, 255, 0));
+      background-image: linear-gradient(to left, rgba(255, 255, 255, 1), rgba(255, 255, 255, 0));
+    }
+  }
+
   .showing {
     padding-left: 10px;
     padding-top: 4px;
@@ -232,6 +298,26 @@ mgt-teams-channel-picker .channel-display {
   }
   &:hover {
     background-color: $selection-hover-color;
+    .showing:last-child {
+      flex-flow: nowrap;
+      position: relative;
+      overflow: hidden;
+      white-space: nowrap;
+      background-color: transparent;
+      &:after {
+        content: '';
+        position: absolute;
+        width: 20px;
+        height: 100%;
+        top: 0;
+        right: 0;
+        background-image: -webkit-linear-gradient(right, $selection-hover-color, rgba(255, 255, 255, 0));
+        background-image: -moz-linear-gradient(right, $selection-hover-color, rgba(255, 255, 255, 0));
+        background-image: -ms-linear-gradient(right, $selection-hover-color, rgba(255, 255, 255, 0));
+        background-image: -o-linear-gradient(right, $selection-hover-color, rgba(255, 255, 255, 0));
+        background-image: linear-gradient(to left, $selection-hover-color, rgba(255, 255, 255, 0));
+      }
+    }
   }
   .channel-input {
     // -webkit-appearance: none;
