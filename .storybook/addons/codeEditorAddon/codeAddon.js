@@ -1,6 +1,5 @@
 import { makeDecorator } from '@storybook/addons';
 import { EditorElement } from './editor';
-import './style.css';
 
 // function is used for dragging and moving
 const setupEditorResize = (first, separator, last, dragComplete) => {
