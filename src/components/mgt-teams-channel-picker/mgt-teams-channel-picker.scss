@@ -116,6 +116,7 @@ mgt-teams-channel-picker .people-chosen-list {
   color: $font-color;
   .people-person {
     padding-top: 1px;
+    padding-right: 6px;
   }
 }
 .CloseIcon,
@@ -192,16 +193,17 @@ mgt-teams-channel-picker .list-team {
   &:hover {
     background-color: $selection-hover-color;
     .team-name {
+      width: 100%;
       flex-flow: nowrap;
       position: relative;
       overflow: hidden;
       white-space: nowrap;
       background-color: transparent;
-      padding-right: 20px;
+      padding-right: 10px;
       &:after {
         content: '';
         position: absolute;
-        width: 10px;
+        width: 36px;
         height: 100%;
         top: 0;
         right: 0;
@@ -214,16 +216,17 @@ mgt-teams-channel-picker .list-team {
     }
   }
   .team-name {
+    width: 100%;
     flex-flow: nowrap;
     position: relative;
     overflow: hidden;
     white-space: nowrap;
     background-color: transparent;
-    padding-right: 20px;
+    padding-right: 10px;
     &:after {
       content: '';
       position: absolute;
-      width: 10px;
+      width: 36px;
       height: 100%;
       top: 0;
       right: 0;
@@ -255,7 +258,7 @@ mgt-teams-channel-picker .channel-display {
   -o-user-select: none;
   cursor: pointer;
   padding-left: 21px;
-  padding-right: 20px;
+  padding-right: 10px;
 
   & .showing:last-child {
     flex-flow: nowrap;
@@ -266,7 +269,7 @@ mgt-teams-channel-picker .channel-display {
     &:after {
       content: '';
       position: absolute;
-      width: 20px;
+      width: 36px;
       height: 100%;
       top: 0;
       right: 0;
@@ -307,7 +310,7 @@ mgt-teams-channel-picker .channel-display {
       &:after {
         content: '';
         position: absolute;
-        width: 20px;
+        width: 36px;
         height: 100%;
         top: 0;
         right: 0;
@@ -346,11 +349,11 @@ mgt-teams-channel-picker .people-person-text {
 
 :host .input-search,
 mgt-teams-channel-picker .input-search {
-  margin: 7px 2px 0px 3px;
+  margin: 7px 2px 0px 0px;
 }
 :host .input-search-start,
 mgt-teams-channel-picker .input-search-start {
-  margin: 7px 0px 0px 0px;
+  margin: 7px 3px 0px 0px;
   line-height: normal;
   margin-inline-start: 0px;
   margin-inline-end: 0px;
