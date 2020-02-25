@@ -52,9 +52,6 @@ export class MgtLogin extends MgtBaseComponent {
   })
   public userDetails: User;
 
-  private _loginButtonRect: ClientRect;
-  private _popupRect: ClientRect;
-  private _openLeft: boolean = false;
   private _image: string;
 
   /**
@@ -145,55 +142,6 @@ export class MgtLogin extends MgtBaseComponent {
   }
 
   /**
-   * Invoked whenever the element is updated. Implement to perform
-   * post-updating tasks via DOM APIs, for example, focusing an element.
-   *
-   * Setting properties inside this method will trigger the element to update
-   * again after this update cycle completes.
-   *
-   * * @param _changedProperties Map of changed properties with old values
-   */
-  protected updated(changedProps) {
-    if (changedProps.get('_showMenu') === false) {
-      // get popup bounds
-      const popup = this.renderRoot.querySelector('.popup');
-      if (popup && popup.animate) {
-        this._popupRect = popup.getBoundingClientRect();
-
-        // invert variables
-        const deltaX = this._loginButtonRect.left - this._popupRect.left;
-        const deltaY = this._loginButtonRect.top - this._popupRect.top;
-        const deltaW = this._loginButtonRect.width / this._popupRect.width;
-        const deltaH = this._loginButtonRect.height / this._popupRect.height;
-
-        // play back
-        popup.animate(
-          [
-            {
-              backgroundColor: '#eaeaea',
-              transform: `
-              translate(${deltaX}px, ${deltaY}px)
-              scale(${deltaW}, ${deltaH})
-              `,
-              transformOrigin: 'top left'
-            },
-            {
-              backgroundColor: 'white',
-              transform: 'none',
-              transformOrigin: 'top left'
-            }
-          ],
-          {
-            duration: 100,
-            easing: 'ease-in-out',
-            fill: 'both'
-          }
-        );
-      }
-    }
-  }
-
-  /**
    * Invoked on each update to perform rendering tasks. This method must return
    * a lit-html TemplateResult. Setting properties inside this method will *not*
    * trigger the element to update.
@@ -244,22 +192,26 @@ export class MgtLogin extends MgtBaseComponent {
     `;
 
     return html`
-      <div class="popup ${this._openLeft ? 'open-left' : ''} ${this._showMenu ? 'show-menu' : ''}">
-        <div class="popup-content">
-          <div>
-            ${personComponent}
-          </div>
-          <div class="popup-commands">
-            <ul>
-              <li>
-                <button class="popup-command" @click=${this.logout} aria-label="Sign Out">
-                  Sign Out
-                </button>
-              </li>
-            </ul>
+      <mgt-flyout .isOpen=${this._showMenu}>
+        <div slot="flyout" class="flyout">
+          <div class="popup">
+            <div class="popup-content">
+              <div>
+                ${personComponent}
+              </div>
+              <div class="popup-commands">
+                <ul>
+                  <li>
+                    <button class="popup-command" @click=${this.logout} aria-label="Sign Out">
+                      Sign Out
+                    </button>
+                  </li>
+                </ul>
+              </div>
+            </div>
           </div>
         </div>
-      </div>
+      </mgt-flyout>
     `;
   }
 
@@ -289,17 +241,7 @@ export class MgtLogin extends MgtBaseComponent {
 
   private onClick(event: MouseEvent) {
     if (this.userDetails) {
-      // get login button bounds
-      const loginButton = this.renderRoot.querySelector('.login-button');
-      if (loginButton) {
-        this._loginButtonRect = loginButton.getBoundingClientRect();
-
-        const leftEdge = this._loginButtonRect.left;
-        const rightEdge = (window.innerWidth || document.documentElement.clientWidth) - this._loginButtonRect.right;
-        this._openLeft = rightEdge < leftEdge;
-
-        this._showMenu = !this._showMenu;
-      }
+      this._showMenu = !this._showMenu;
     } else {
       if (this.fireCustomEvent('loginInitiated')) {
         this.login();
