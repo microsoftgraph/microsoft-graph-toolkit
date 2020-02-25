@@ -15,8 +15,9 @@ import {
   RetryHandlerOptions,
   TelemetryHandler
 } from '@microsoft/microsoft-graph-client';
-import { BaseGraph } from '../BaseGraph';
 import { MgtBaseComponent } from '../components/baseComponent';
+import { Graph } from '../Graph';
+import { chainMiddleware } from '../utils/GraphHelpers';
 import { MockProvider } from './MockProvider';
 
 /**
@@ -37,10 +38,8 @@ const ROOT_GRAPH_URL = 'https://graph.microsoft.com/';
  * @extends {Graph}
  */
 // tslint:disable-next-line: max-classes-per-file
-export class MockGraph extends BaseGraph {
+export class MockGraph extends Graph {
   constructor(mockProvider: MockProvider) {
-    super();
-
     const middleware: Middleware[] = [
       new AuthenticationHandler(mockProvider),
       new RetryHandler(new RetryHandlerOptions()),
@@ -49,10 +48,12 @@ export class MockGraph extends BaseGraph {
       new HTTPMessageHandler()
     ];
 
-    this.client = Client.initWithMiddleware({
-      baseUrl: BASE_URL + ROOT_GRAPH_URL,
-      middleware: this.chainMiddleware(...middleware)
-    });
+    super(
+      Client.initWithMiddleware({
+        baseUrl: BASE_URL + ROOT_GRAPH_URL,
+        middleware: chainMiddleware(...middleware)
+      })
+    );
   }
 
   /**

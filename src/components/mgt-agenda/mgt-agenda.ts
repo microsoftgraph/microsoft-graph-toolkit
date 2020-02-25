@@ -7,16 +7,15 @@
 
 import * as MicrosoftGraph from '@microsoft/microsoft-graph-types';
 import { customElement, html, property } from 'lit-element';
-
 import { Providers } from '../../Providers';
 import { ProviderState } from '../../providers/IProvider';
-import { styles } from './mgt-agenda-css';
-
 import '../../styles/fabric-icon-font';
 import { prepScopes } from '../../utils/GraphHelpers';
 import { getDayOfWeekString, getMonthString } from '../../utils/Utils';
 import '../mgt-person/mgt-person';
 import { MgtTemplatedComponent } from '../templatedComponent';
+import { styles } from './mgt-agenda-css';
+import { getEvents } from './mgt-agenda.graph';
 
 /**
  * Web Component which represents events in a user or group calendar.
@@ -232,7 +231,7 @@ export class MgtAgenda extends MgtTemplatedComponent {
         const end = new Date(start.getTime());
         end.setDate(start.getDate() + this.days);
         try {
-          this.events = await graph.getEvents(start, end, this.groupId);
+          this.events = await getEvents(graph, start, end, this.groupId);
         } catch (error) {
           // noop - possible error with graph
         }
