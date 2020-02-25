@@ -5,7 +5,7 @@
  * -------------------------------------------------------------------------------------------
  */
 
-import { AuthenticationHandlerOptions } from '@microsoft/microsoft-graph-client';
+import { AuthenticationHandlerOptions, Middleware } from '@microsoft/microsoft-graph-client';
 import * as MicrosoftGraph from '@microsoft/microsoft-graph-types';
 
 /**
@@ -43,4 +43,23 @@ export function prepScopes(...scopes: string[]) {
     scopes
   };
   return [new AuthenticationHandlerOptions(undefined, authProviderOptions)];
+}
+
+/**
+ * Helper method to chain Middleware when instantiating new Client
+ *
+ * @param {...Middleware[]} middleware
+ * @returns {Middleware}
+ */
+export function chainMiddleware(...middleware: Middleware[]): Middleware {
+  const rootMiddleware = middleware[0];
+  let current = rootMiddleware;
+  for (let i = 1; i < middleware.length; ++i) {
+    const next = middleware[i];
+    if (current.setNext) {
+      current.setNext(next);
+    }
+    current = next;
+  }
+  return rootMiddleware;
 }

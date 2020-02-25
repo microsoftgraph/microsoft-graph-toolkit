@@ -5,7 +5,7 @@
  * -------------------------------------------------------------------------------------------
  */
 
-import { Graph } from '../Graph';
+import { createFromProvider, Graph } from '../Graph';
 import { IProvider, ProviderState } from './IProvider';
 
 /**
@@ -88,7 +88,7 @@ export class SharePointProvider extends IProvider {
     context.aadTokenProviderFactory.getTokenProvider().then(
       (tokenProvider: AadTokenProvider): void => {
         this._provider = tokenProvider;
-        this.graph = new Graph(this);
+        this.graph = createFromProvider(this);
         this.internalLogin();
       }
     );
