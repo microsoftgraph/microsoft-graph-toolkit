@@ -60,17 +60,8 @@ export class MgtLogin extends MgtBaseComponent {
    */
   @property({ attribute: false }) private _showMenu: boolean;
 
-  /**
-   * determines if login component is in loading state
-   * @type {boolean}
-   */
-  @property({ attribute: false }) private _loading: boolean;
-
   constructor() {
     super();
-    this._loading = true;
-    Providers.onProviderUpdated(() => this.loadState());
-    this.loadState();
     this.handleWindowClick = this.handleWindowClick.bind(this);
   }
 
@@ -116,8 +107,6 @@ export class MgtLogin extends MgtBaseComponent {
       } else {
         this.fireCustomEvent('loginFailed');
       }
-
-      await this.loadState();
     }
   }
 
@@ -151,12 +140,40 @@ export class MgtLogin extends MgtBaseComponent {
 
     return html`
       <div class="root">
-        <button ?disabled="${this._loading}" class="login-button" @click=${this.onClick} role="button">
+        <button ?disabled="${this.loading}" class="login-button" @click=${this.onClick} role="button">
           ${content}
         </button>
         ${this.renderMenu()}
       </div>
     `;
+  }
+
+  /**
+   * Load state into the component.
+   *
+   * @protected
+   * @returns
+   * @memberof MgtLogin
+   */
+  protected async load() {
+    const provider = Providers.globalProvider;
+    if (provider) {
+      if (provider.state === ProviderState.SignedIn) {
+        const batch = provider.graph.forComponent(this).createBatch();
+        batch.get('me', 'me', ['user.read']);
+        batch.get('photo', 'me/photo/$value', ['user.read']);
+        const response = await batch.execute();
+
+        this._image = response.photo;
+        this.userDetails = response.me;
+      } else if (provider.state === ProviderState.SignedOut) {
+        this.userDetails = null;
+      } else {
+        // Loading
+        this._showMenu = false;
+        return;
+      }
+    }
   }
 
   private handleWindowClick(e: MouseEvent) {
@@ -213,30 +230,6 @@ export class MgtLogin extends MgtBaseComponent {
         </div>
       </mgt-flyout>
     `;
-  }
-
-  private async loadState() {
-    const provider = Providers.globalProvider;
-    if (provider) {
-      this._loading = true;
-      if (provider.state === ProviderState.SignedIn) {
-        const batch = provider.graph.forComponent(this).createBatch();
-        batch.get('me', 'me', ['user.read']);
-        batch.get('photo', 'me/photo/$value', ['user.read']);
-        const response = await batch.execute();
-
-        this._image = response.photo;
-        this.userDetails = response.me;
-      } else if (provider.state === ProviderState.SignedOut) {
-        this.userDetails = null;
-      } else {
-        // Loading
-        this._showMenu = false;
-        return;
-      }
-    }
-
-    this._loading = false;
   }
 
   private onClick(event: MouseEvent) {

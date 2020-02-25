@@ -5,7 +5,7 @@
  * -------------------------------------------------------------------------------------------
  */
 
-import { LitElement, PropertyValues } from 'lit-element';
+import { LitElement, property, PropertyValues } from 'lit-element';
 import { Providers } from '../Providers';
 
 /**
@@ -85,9 +85,15 @@ export abstract class MgtBaseComponent extends LitElement {
    * @protected
    * @memberof MgtBaseComponent
    */
-  protected get loading() {
+  protected get loading(): boolean {
     return this._loading;
   }
+
+  /**
+   * determines if login component is in loading state
+   * @type {boolean}
+   */
+  @property({ attribute: false })
   private _loading: boolean = false;
 
   constructor() {
@@ -181,8 +187,13 @@ export abstract class MgtBaseComponent extends LitElement {
     if (this._loading) {
       return;
     }
+
     this._loading = true;
+    this.fireCustomEvent('loadingInitiated');
+
     await this.load();
+
     this._loading = false;
+    this.fireCustomEvent('loadingCompleted');
   }
 }
