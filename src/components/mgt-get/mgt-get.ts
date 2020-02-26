@@ -98,7 +98,7 @@ export class MgtGet extends MgtTemplatedComponent {
    */
   public attributeChangedCallback(name, oldval, newval) {
     super.attributeChangedCallback(name, oldval, newval);
-    this.load();
+    this.reload();
   }
 
   /**

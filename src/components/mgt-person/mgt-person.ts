@@ -159,7 +159,7 @@ export class MgtPerson extends MgtTemplatedComponent {
 
     if ((name === 'person-query' || name === 'user-id') && oldval !== newval) {
       this.personDetails = null;
-      this.load();
+      this.reload();
     }
   }
 

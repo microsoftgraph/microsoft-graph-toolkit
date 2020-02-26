@@ -183,7 +183,15 @@ export abstract class MgtBaseComponent extends LitElement {
     this.dispatchEvent(event);
   }
 
-  private async reload(): Promise<void> {
+  /**
+   * Force reload the state.
+   * Use reload instead of load to ensure loading events are fired.
+   *
+   * @protected
+   * @returns {Promise<void>}
+   * @memberof MgtBaseComponent
+   */
+  protected async reload(): Promise<void> {
     if (this._loading) {
       return;
     }
