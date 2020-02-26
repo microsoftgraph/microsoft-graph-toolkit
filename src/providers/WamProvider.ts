@@ -6,7 +6,7 @@
  */
 
 import { AuthenticationProviderOptions } from '@microsoft/microsoft-graph-client/lib/es/IAuthenticationProviderOptions';
-import { Graph } from '../Graph';
+import { createFromProvider, Graph } from '../Graph';
 import { IProvider, ProviderState } from './IProvider';
 
 /**
@@ -64,7 +64,7 @@ export class WamProvider extends IProvider {
     this.clientId = clientId;
     this.authority = authority || 'https://login.microsoftonline.com/common';
 
-    this.graph = new Graph(this);
+    this.graph = createFromProvider(this);
 
     this.printRedirectUriToConsole();
   }

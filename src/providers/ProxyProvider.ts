@@ -6,8 +6,9 @@
  */
 
 import { Graph } from '../Graph';
+import { getMe } from '../graph/graph.user';
 import { IProvider, ProviderState } from '../providers/IProvider';
-import { ProxyGraph } from '../utils/ProxyGraph';
+import { ProxyGraph } from '../ProxyGraph';
 
 /**
  * Proxy Provider access token for Microsoft Graph APIs
@@ -26,7 +27,7 @@ export class ProxyProvider extends IProvider {
   constructor(graphProxyUrl: string, getCustomHeaders: () => Promise<object> = null) {
     super();
     this.graph = new ProxyGraph(graphProxyUrl, getCustomHeaders);
-    this.graph.getMe().then(
+    getMe(this.graph).then(
       user => {
         if (user != null) {
           this.setState(ProviderState.SignedIn);
