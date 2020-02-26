@@ -6,7 +6,6 @@
  */
 
 import { html } from 'lit-element';
-import { withA11y } from '@storybook/addon-a11y';
 import { withSignIn } from '../.storybook/addons/signInAddon/signInAddon';
 import { withCodeEditor } from '../.storybook/addons/codeEditorAddon/codeAddon';
 import '../dist/es6/components/mgt-get/mgt-get';
@@ -14,7 +13,7 @@ import '../dist/es6/components/mgt-get/mgt-get';
 export default {
   title: 'Samples | mgt-get',
   component: 'mgt-get',
-  decorators: [withA11y, withSignIn, withCodeEditor],
+  decorators: [withSignIn, withCodeEditor],
   parameters: {
     signInAddon: {
       test: 'test'
