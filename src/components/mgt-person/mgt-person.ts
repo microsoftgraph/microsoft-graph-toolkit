@@ -159,23 +159,8 @@ export class MgtPerson extends MgtTemplatedComponent {
 
     if ((name === 'person-query' || name === 'user-id') && oldval !== newval) {
       this.personDetails = null;
-      this.loadData();
+      this.load();
     }
-  }
-
-  /**
-   * Invoked when the element is first updated. Implement to perform one time
-   * work on the element after update.
-   *
-   * Setting properties inside this method will trigger the element to update
-   * again after this update cycle completes.
-   *
-   * * @param _changedProperties Map of changed properties with old values
-   */
-
-  public firstUpdated() {
-    Providers.onProviderUpdated(() => this.loadData());
-    this.loadData();
   }
 
   /**
@@ -245,13 +230,14 @@ export class MgtPerson extends MgtTemplatedComponent {
     }
   }
 
-  private handleWindowClick(e: MouseEvent) {
-    if (this.isPersonCardVisible && e.target !== this) {
-      this.hidePersonCard();
-    }
-  }
-
-  private async loadData() {
+  /**
+   * load state into the component.
+   *
+   * @protected
+   * @returns
+   * @memberof MgtPerson
+   */
+  protected async load() {
     const provider = Providers.globalProvider;
 
     if (!provider || provider.state === ProviderState.Loading) {
@@ -300,6 +286,12 @@ export class MgtPerson extends MgtTemplatedComponent {
 
         this.loadImage();
       }
+    }
+  }
+
+  private handleWindowClick(e: MouseEvent) {
+    if (this.isPersonCardVisible && e.target !== this) {
+      this.hidePersonCard();
     }
   }
 
