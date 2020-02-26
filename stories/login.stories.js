@@ -14,7 +14,7 @@ import { withCodeEditor } from '../.storybook/addons/codeEditorAddon/codeAddon';
 import '../dist/es6/components/mgt-login/mgt-login';
 
 export default {
-  title: 'mgt-login',
+  title: 'Components | mgt-login',
   component: 'mgt-login',
   decorators: [withA11y, withSignIn, withCodeEditor],
   parameters: {

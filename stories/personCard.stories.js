@@ -15,7 +15,7 @@ import '../dist/es6/components/mgt-person-card/mgt-person-card';
 import '../dist/es6/components/mgt-person/mgt-person';
 
 export default {
-  title: 'mgt-person-card',
+  title: 'Components | mgt-person-card',
   component: 'mgt-person',
   decorators: [withA11y, withSignIn, withCodeEditor],
   parameters: { options: { selectedPanel: 'storybookjs/knobs/panel' } }
