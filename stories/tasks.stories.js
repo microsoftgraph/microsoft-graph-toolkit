@@ -14,7 +14,7 @@ import { withCodeEditor } from '../.storybook/addons/codeEditorAddon/codeAddon';
 import '../dist/es6/components/mgt-tasks/mgt-tasks';
 
 export default {
-  title: 'mgt-tasks',
+  title: 'Components | mgt-tasks',
   component: 'mgt-tasks',
   decorators: [withA11y, withSignIn, withCodeEditor],
   parameters: { options: { selectedPanel: 'storybookjs/knobs/panel' } }

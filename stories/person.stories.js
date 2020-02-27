@@ -14,7 +14,7 @@ import { withCodeEditor } from '../.storybook/addons/codeEditorAddon/codeAddon';
 import '../dist/es6/components/mgt-person/mgt-person';
 
 export default {
-  title: 'mgt-person',
+  title: 'Components | mgt-person',
   component: 'mgt-person',
   decorators: [withA11y, withSignIn, withCodeEditor],
   parameters: { options: { selectedPanel: 'storybookjs/knobs/panel' } }
