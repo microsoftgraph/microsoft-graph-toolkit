@@ -8,6 +8,9 @@
 import * as MicrosoftGraph from '@microsoft/microsoft-graph-types';
 import { customElement, html, property, PropertyValues, TemplateResult } from 'lit-element';
 import { classMap } from 'lit-html/directives/class-map';
+import { findPerson } from '../../graph/graph.people';
+import { getContactPhoto, getUserPhoto } from '../../graph/graph.photos';
+import { IGraph } from '../../IGraph';
 import { Providers } from '../../Providers';
 import { ProviderState } from '../../providers/IProvider';
 import '../../styles/fabric-icon-font';
@@ -17,6 +20,7 @@ import '../sub-components/mgt-flyout/mgt-flyout';
 import { MgtTemplatedComponent } from '../templatedComponent';
 import { PersonCardInteraction } from './../PersonCardInteraction';
 import { styles } from './mgt-person-css';
+import { findContactByEmail, findUserByEmail } from './mgt-person.graph';
 
 /**
  * The person component is used to display a person or contact by using their photo, name, and/or email address.
@@ -289,7 +293,7 @@ export class MgtPerson extends MgtTemplatedComponent {
       (this.personDetails as any).personImage = response.photo;
     } else if (!this.personDetails && this.personQuery) {
       const graph = provider.graph.forComponent(this);
-      const people = await graph.findPerson(this.personQuery);
+      const people = await findPerson(graph, this.personQuery);
       if (people && people.length > 0) {
         const person = people[0] as MicrosoftGraph.Person;
         this.personDetails = person;
@@ -308,19 +312,19 @@ export class MgtPerson extends MgtTemplatedComponent {
 
     if ((person as MicrosoftGraph.Person).userPrincipalName) {
       const userPrincipalName = (person as MicrosoftGraph.Person).userPrincipalName;
-      image = await graph.getUserPhoto(userPrincipalName);
+      image = await getUserPhoto(graph, userPrincipalName);
     } else {
       const email = getEmailFromGraphEntity(person);
       if (email) {
         // try to find a user by e-mail
-        const users = await graph.findUserByEmail(email);
+        const users = await findUserByEmail(graph, email);
 
         if (users && users.length) {
           if ((users[0] as any).personType && (users[0] as any).personType.subclass === 'OrganizationUser') {
-            image = await graph.getUserPhoto((users[0] as MicrosoftGraph.Person).scoredEmailAddresses[0].address);
+            image = await getUserPhoto(graph, (users[0] as MicrosoftGraph.Person).scoredEmailAddresses[0].address);
           } else {
             const contactId = users[0].id;
-            image = await graph.getContactPhoto(contactId);
+            image = await getContactPhoto(graph, contactId);
           }
         }
       }
