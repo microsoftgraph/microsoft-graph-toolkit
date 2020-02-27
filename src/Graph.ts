@@ -90,7 +90,7 @@ export class Graph implements IGraph {
    */
   public forComponent(component: Element | string): Graph {
     const graph = new Graph(this._client, this._version);
-    this.setComponent(component);
+    graph.setComponent(component);
     return graph;
   }
 
@@ -123,7 +123,7 @@ export class Graph implements IGraph {
    * @memberof Graph
    */
   public createBatch(): Batch {
-    return new Batch(this.client);
+    return new Batch(this);
   }
 
   /**
