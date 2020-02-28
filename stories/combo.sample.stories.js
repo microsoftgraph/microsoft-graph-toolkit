@@ -14,6 +14,9 @@ export default {
   component: 'mgt-combo',
   decorators: [withSignIn, withCodeEditor],
   parameters: {
+    a11y: {
+      disabled: true
+    },
     signInAddon: {
       test: 'test'
     }
