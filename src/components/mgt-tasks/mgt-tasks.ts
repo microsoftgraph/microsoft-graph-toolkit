@@ -1155,7 +1155,7 @@ export class MgtTasks extends MgtTemplatedComponent {
       : [];
 
     const noPeopleTemplate = html`
-      <template data-type="no-data">
+      <template data-type="error">
         <i class="login-icon ms-Icon ms-Icon--Contact"></i>
       </template>
     `;

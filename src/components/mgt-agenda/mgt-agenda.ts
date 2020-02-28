@@ -211,7 +211,7 @@ export class MgtAgenda extends MgtTemplatedComponent {
 
     // No data
     if (!this.events || this.events.length === 0) {
-      return this.renderTemplate('no-data', null) || html``;
+      return this.renderError(null);
     }
 
     // Prep data
@@ -228,67 +228,9 @@ export class MgtAgenda extends MgtTemplatedComponent {
 
     // Render list
     return html`
-      <div class="agenda ${this._isNarrow ? 'narrow' : ''} ${this.groupByDay ? 'grouped' : ''}">
+      <div class="agenda${this._isNarrow ? ' narrow' : ''}${this.groupByDay ? ' grouped' : ''}">
         ${this.groupByDay ? this.renderGroups(events) : this.renderEvents(events)}
       </div>
-    `;
-  }
-
-  /**
-   * Render the header for a group.
-   * Only relevant for grouped Events.
-   *
-   * @protected
-   * @param {Date} date
-   * @returns
-   * @memberof MgtAgenda
-   */
-  protected renderHeader(header: string): TemplateResult {
-    return (
-      this.renderTemplate('header', { header }, 'header-' + header) ||
-      html`
-        <div class="header" aria-label="${header}">${header}</div>
-      `
-    );
-  }
-
-  /**
-   * Render the title field of an Event
-   *
-   * @protected
-   * @param {MicrosoftGraph.Event} event
-   * @returns
-   * @memberof MgtAgenda
-   */
-  protected renderTitle(event: MicrosoftGraph.Event): TemplateResult {
-    return html`
-      <div class="event-subject">${event.subject}</div>
-    `;
-  }
-
-  /**
-   * Render the attendees field of an Event
-   *
-   * @protected
-   * @param {MicrosoftGraph.Event} event
-   * @returns
-   * @memberof MgtAgenda
-   */
-  protected renderAttendees(event: MicrosoftGraph.Event): TemplateResult {
-    if (!event.attendees.length) {
-      return null;
-    }
-    return html`
-      <mgt-people
-        class="event-attendees"
-        .people=${event.attendees.map(
-          attendee =>
-            ({
-              displayName: attendee.emailAddress.name,
-              emailAddresses: [attendee.emailAddress]
-            } as MicrosoftGraph.Contact)
-        )}
-      ></mgt-people>
     `;
   }
 
@@ -322,6 +264,75 @@ export class MgtAgenda extends MgtTemplatedComponent {
         </div>
       `
     );
+  }
+
+  /**
+   * Render the error state.
+   *
+   * @protected
+   * @param {object} errorContext
+   * @returns {TemplateResult}
+   * @memberof MgtAgenda
+   */
+  protected renderError(errorContext: object): TemplateResult {
+    return this.renderTemplate('error', errorContext) || html``;
+  }
+
+  /**
+   * Render an individual Event.
+   *
+   * @protected
+   * @param {MicrosoftGraph.Event} event
+   * @returns
+   * @memberof MgtAgenda
+   */
+  protected renderEvent(event: MicrosoftGraph.Event): TemplateResult {
+    return html`
+      <div class="event">
+        <div class="event-time-container">
+          <div class="event-time" aria-label="${this.getEventTimeString(event)}">${this.getEventTimeString(event)}</div>
+        </div>
+        <div class="event-details-container">
+          ${this.renderTitle(event)} ${this.renderLocation(event)} ${this.renderAttendees(event)}
+        </div>
+        <div class="event-other-container">
+          ${this.renderOther(event)}
+        </div>
+      </div>
+    `;
+    // <div class="event-duration">${this.getEventDuration(event)}</div>
+  }
+
+  /**
+   * Render the header for a group.
+   * Only relevant for grouped Events.
+   *
+   * @protected
+   * @param {Date} date
+   * @returns
+   * @memberof MgtAgenda
+   */
+  protected renderHeader(header: string): TemplateResult {
+    return (
+      this.renderTemplate('header', { header }, 'header-' + header) ||
+      html`
+        <div class="header" aria-label="${header}">${header}</div>
+      `
+    );
+  }
+
+  /**
+   * Render the title field of an Event
+   *
+   * @protected
+   * @param {MicrosoftGraph.Event} event
+   * @returns
+   * @memberof MgtAgenda
+   */
+  protected renderTitle(event: MicrosoftGraph.Event): TemplateResult {
+    return html`
+      <div class="event-subject">${event.subject}</div>
+    `;
   }
 
   /**
@@ -359,6 +370,32 @@ export class MgtAgenda extends MgtTemplatedComponent {
   }
 
   /**
+   * Render the attendees field of an Event
+   *
+   * @protected
+   * @param {MicrosoftGraph.Event} event
+   * @returns
+   * @memberof MgtAgenda
+   */
+  protected renderAttendees(event: MicrosoftGraph.Event): TemplateResult {
+    if (!event.attendees.length) {
+      return null;
+    }
+    return html`
+      <mgt-people
+        class="event-attendees"
+        .people=${event.attendees.map(
+          attendee =>
+            ({
+              displayName: attendee.emailAddress.name,
+              emailAddresses: [attendee.emailAddress]
+            } as MicrosoftGraph.Contact)
+        )}
+      ></mgt-people>
+    `;
+  }
+
+  /**
    * Render the event other field of an Event
    *
    * @protected
@@ -369,34 +406,9 @@ export class MgtAgenda extends MgtTemplatedComponent {
   protected renderOther(event: MicrosoftGraph.Event): TemplateResult {
     return this.templates['event-other']
       ? html`
-          <div class="event-other-container">
-            ${this.renderTemplate('event-other', { event }, event.id + '-other')}
-          </div>
+          ${this.renderTemplate('event-other', { event }, event.id + '-other')}
         `
       : null;
-  }
-
-  /**
-   * Render an individual Event.
-   *
-   * @protected
-   * @param {MicrosoftGraph.Event} event
-   * @returns
-   * @memberof MgtAgenda
-   */
-  protected renderEvent(event: MicrosoftGraph.Event): TemplateResult {
-    return html`
-      <div class="event">
-        <div class="event-time-container">
-          <div class="event-time" aria-label="${this.getEventTimeString(event)}">${this.getEventTimeString(event)}</div>
-        </div>
-        <div class="event-details-container">
-          ${this.renderTitle(event)} ${this.renderLocation(event)} ${this.renderAttendees(event)}
-        </div>
-        ${this.renderOther(event)}
-      </div>
-    `;
-    // <div class="event-duration">${this.getEventDuration(event)}</div>
   }
 
   private renderGroups(events: MicrosoftGraph.Event[]): TemplateResult {
@@ -410,16 +422,14 @@ export class MgtAgenda extends MgtTemplatedComponent {
     });
 
     return html`
-      <div class="agenda grouped ${this._isNarrow ? 'narrow' : ''}">
-        ${Object.keys(grouped).map(
-          header =>
-            html`
-              <div class="group">
-                ${this.renderHeader(header)} ${this.renderEvents(grouped[header])}
-              </div>
-            `
-        )}
-      </div>
+      ${Object.keys(grouped).map(
+        header =>
+          html`
+            <div class="group">
+              ${this.renderHeader(header)} ${this.renderEvents(grouped[header])}
+            </div>
+          `
+      )}
     `;
   }
 
