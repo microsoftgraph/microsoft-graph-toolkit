@@ -195,6 +195,7 @@ export class MgtAgenda extends MgtTemplatedComponent {
     }
     super.attributeChangedCallback(name, oldValue, newValue);
   }
+
   /**
    * Invoked on each update to perform rendering tasks. This method must return a lit-html TemplateResult.
    * Setting properties inside this method will not trigger the element to update
@@ -205,7 +206,7 @@ export class MgtAgenda extends MgtTemplatedComponent {
   public render(): TemplateResult {
     // Loading
     if (this._loading) {
-      return this.renderTemplate('loading', null) || this.renderLoading();
+      return this.renderLoading();
     }
 
     // No data
@@ -234,7 +235,8 @@ export class MgtAgenda extends MgtTemplatedComponent {
   }
 
   /**
-   * foo
+   * Render the header for a group.
+   * Only relevant for grouped Events.
    *
    * @protected
    * @param {Date} date
@@ -251,7 +253,7 @@ export class MgtAgenda extends MgtTemplatedComponent {
   }
 
   /**
-   * foo
+   * Render the title field of an Event
    *
    * @protected
    * @param {MicrosoftGraph.Event} event
@@ -265,7 +267,7 @@ export class MgtAgenda extends MgtTemplatedComponent {
   }
 
   /**
-   * foo
+   * Render the attendees field of an Event
    *
    * @protected
    * @param {MicrosoftGraph.Event} event
@@ -298,29 +300,32 @@ export class MgtAgenda extends MgtTemplatedComponent {
    * @memberof MgtAgenda
    */
   protected renderLoading(): TemplateResult {
-    return html`
-      <div class="event">
-        <div class="event-time-container">
-          <div class="event-time-loading loading-element"></div>
-        </div>
-        <div class="event-details-container">
-          <div class="event-subject-loading loading-element"></div>
-          <div class="event-location-container">
-            <div class="event-location-icon-loading loading-element"></div>
-            <div class="event-location-loading loading-element"></div>
+    return (
+      this.renderTemplate('loading', null) ||
+      html`
+        <div class="event">
+          <div class="event-time-container">
+            <div class="event-time-loading loading-element"></div>
           </div>
-          <div class="event-location-container">
-            <div class="event-attendee-loading loading-element"></div>
-            <div class="event-attendee-loading loading-element"></div>
-            <div class="event-attendee-loading loading-element"></div>
+          <div class="event-details-container">
+            <div class="event-subject-loading loading-element"></div>
+            <div class="event-location-container">
+              <div class="event-location-icon-loading loading-element"></div>
+              <div class="event-location-loading loading-element"></div>
+            </div>
+            <div class="event-location-container">
+              <div class="event-attendee-loading loading-element"></div>
+              <div class="event-attendee-loading loading-element"></div>
+              <div class="event-attendee-loading loading-element"></div>
+            </div>
           </div>
         </div>
-      </div>
-    `;
+      `
+    );
   }
 
   /**
-   * Render the location field for an event
+   * Render the location field of an Event
    *
    * @protected
    * @param {MicrosoftGraph.Event} event
@@ -354,7 +359,7 @@ export class MgtAgenda extends MgtTemplatedComponent {
   }
 
   /**
-   * Render the event other field
+   * Render the event other field of an Event
    *
    * @protected
    * @param {MicrosoftGraph.Event} event
@@ -372,7 +377,7 @@ export class MgtAgenda extends MgtTemplatedComponent {
   }
 
   /**
-   * foo
+   * Render an individual Event.
    *
    * @protected
    * @param {MicrosoftGraph.Event} event
