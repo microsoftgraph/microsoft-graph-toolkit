@@ -5,10 +5,11 @@
  * -------------------------------------------------------------------------------------------
  */
 
-import { customElement, property } from 'lit-element';
+import { customElement, html, property } from 'lit-element';
 import { Providers } from '../../Providers';
 import { ProviderState } from '../../providers/IProvider';
 import { prepScopes } from '../../utils/GraphHelpers';
+import { equals } from '../../utils/Utils';
 import { MgtTemplatedComponent } from '../templatedComponent';
 
 /**
@@ -28,6 +29,7 @@ export class MgtGet extends MgtTemplatedComponent {
    */
   @property({
     attribute: 'resource',
+    reflect: true,
     type: String
   })
   public resource: string;
@@ -42,7 +44,8 @@ export class MgtGet extends MgtTemplatedComponent {
     attribute: 'scopes',
     converter: (value, type) => {
       return value ? value.toLowerCase().split(',') : null;
-    }
+    },
+    reflect: true
   })
   public scopes: string[] = [];
 
@@ -54,6 +57,7 @@ export class MgtGet extends MgtTemplatedComponent {
    */
   @property({
     attribute: 'version',
+    reflect: true,
     type: String
   })
   public version: string = 'v1.0';
@@ -63,14 +67,29 @@ export class MgtGet extends MgtTemplatedComponent {
    * default = 3
    * if <= 0, all pages will be fetched
    *
-   * @type {boolean}
+   * @type {number}
    * @memberof MgtGet
    */
   @property({
     attribute: 'max-pages',
+    reflect: true,
     type: Number
   })
   public maxPages: number = 3;
+
+  /**
+   * Number of milliseconds to poll the delta API and
+   * update the response. Set to positive value to enable
+   *
+   * @type {number}
+   * @memberof MgtGet
+   */
+  @property({
+    attribute: 'polling-rate',
+    reflect: true,
+    type: Number
+  })
+  public pollingRate: number = 0;
 
   /**
    * Gets or sets the response of the request
@@ -89,7 +108,9 @@ export class MgtGet extends MgtTemplatedComponent {
   @property({ attribute: false }) public error: any;
 
   @property({ attribute: false }) private loading: boolean = false;
-  private _firstUpdated: boolean = false;
+
+  private hasFirstUpdated: boolean = false;
+  private isPolling: boolean = false;
 
   /**
    * Synchronizes property values when attributes change.
@@ -102,8 +123,8 @@ export class MgtGet extends MgtTemplatedComponent {
   public attributeChangedCallback(name, oldval, newval) {
     super.attributeChangedCallback(name, oldval, newval);
 
-    if (this._firstUpdated) {
-      this.loadData();
+    if (this.hasFirstUpdated) {
+      this.loadData(true);
     }
   }
 
@@ -118,8 +139,20 @@ export class MgtGet extends MgtTemplatedComponent {
    */
   public firstUpdated() {
     Providers.onProviderUpdated(() => this.loadData());
-    this.loadData();
-    this._firstUpdated = true;
+    this.loadData(true);
+    this.hasFirstUpdated = true;
+  }
+
+  /**
+   * Refresh the data
+   *
+   * @param {boolean} [hardRefresh=false]
+   * if false (default), the component will only update if the data changed
+   * if true, the data will be first cleared and reloaded completely
+   * @memberof MgtGet
+   */
+  public refresh(hardRefresh = false) {
+    this.loadData(hardRefresh);
   }
 
   /**
@@ -128,43 +161,102 @@ export class MgtGet extends MgtTemplatedComponent {
    * trigger the element to update.
    */
   protected render() {
-    if (this.loading) {
-      return this.renderTemplate('loading', null);
-    } else if (this.error) {
+    if (this.error) {
       return this.renderTemplate('error', this.error);
+      // tslint:disable-next-line: no-string-literal
+    } else if (this.templates['value'] && this.response && this.response.value) {
+      let valueContent;
+
+      if (Array.isArray(this.response.value)) {
+        let loading = null;
+        if (this.loading && !this.isPolling) {
+          loading = this.renderTemplate('loading', null);
+        }
+        valueContent = html`
+          ${this.response.value.map(v => this.renderTemplate('value', v, v.id))} ${loading}
+        `;
+      } else {
+        valueContent = this.renderTemplate('value', this.response);
+      }
+
+      // tslint:disable-next-line: no-string-literal
+      if (this.templates['default']) {
+        const defaultContent = this.renderTemplate('default', this.response);
+
+        // tslint:disable-next-line: no-string-literal
+        if ((this.templates['value'] as any).templateOrder > (this.templates['default'] as any).templateOrder) {
+          return html`
+            ${defaultContent}${valueContent}
+          `;
+        } else {
+          return html`
+            ${valueContent}${defaultContent}
+          `;
+        }
+      } else {
+        return valueContent;
+      }
     } else if (this.response) {
-      return this.renderTemplate('default', this.response);
+      return this.renderTemplate('default', this.response) || html``;
+    } else if (this.loading) {
+      return this.renderTemplate('loading', null) || html``;
+    } else {
+      return html``;
     }
   }
 
-  private async loadData() {
+  private async loadData(hardRefresh = false) {
     const provider = Providers.globalProvider;
+
+    this.error = null;
 
     if (!provider || provider.state !== ProviderState.SignedIn) {
       return;
     }
 
-    this.response = null;
-    this.error = null;
-
     if (this.resource) {
-      this.loading = true;
+      if (hardRefresh) {
+        this.response = null;
+        this.loading = true;
+      }
 
-      let response = null;
       try {
+        let uri = this.resource;
+        let delta = false;
+
+        // if we had a response earlier with a delta link, use it instead
+        if (this.response && this.response['@odata.deltaLink']) {
+          uri = this.response['@odata.deltaLink'];
+          delta = true;
+        }
+
         const graph = provider.graph.forComponent(this);
-        let request = graph.api(this.resource).version(this.version);
+        let request = graph.api(uri).version(this.version);
 
         if (this.scopes && this.scopes.length) {
           request = request.middlewareOptions(prepScopes(...this.scopes));
         }
 
-        response = await request.get();
-        if (response && response.value && response.value.length && response['@odata.nextLink']) {
-          let pageCount = 1;
-          let page = response;
+        const response = await request.get();
 
-          while ((pageCount < this.maxPages || this.maxPages <= 0) && page && page['@odata.nextLink']) {
+        if (delta && this.response && Array.isArray(this.response.value) && Array.isArray(response.value)) {
+          response.value = this.response.value.concat(response.value);
+        }
+
+        if (!equals(this.response, response)) {
+          this.response = response;
+        }
+
+        // get more pages if there are available
+        if (this.response && Array.isArray(this.response.value) && this.response['@odata.nextLink']) {
+          let pageCount = 1;
+          let page = this.response;
+
+          while (
+            (pageCount < this.maxPages || this.maxPages <= 0 || this.pollingRate) &&
+            page &&
+            page['@odata.nextLink']
+          ) {
             pageCount++;
             const nextResource = page['@odata.nextLink'].split(this.version)[1];
             page = await graph.client
@@ -172,8 +264,8 @@ export class MgtGet extends MgtTemplatedComponent {
               .version(this.version)
               .get();
             if (page && page.value && page.value.length) {
-              page.value = response.value.concat(page.value);
-              response = page;
+              page.value = this.response.value.concat(page.value);
+              this.response = page;
             }
           }
         }
@@ -181,13 +273,22 @@ export class MgtGet extends MgtTemplatedComponent {
         this.error = e;
       }
 
-      if (response) {
-        this.response = response;
+      if (this.response) {
         this.error = null;
+
+        if (this.pollingRate) {
+          setTimeout(async () => {
+            this.isPolling = true;
+            await this.loadData();
+            this.isPolling = false;
+          }, this.pollingRate);
+        }
       }
+      this.loading = false;
+    } else {
+      this.response = null;
     }
 
-    this.loading = false;
     this.fireCustomEvent('dataChange', { response: this.response, error: this.error });
   }
 }
