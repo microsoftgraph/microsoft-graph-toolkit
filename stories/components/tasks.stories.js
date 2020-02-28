@@ -9,17 +9,17 @@ import { html } from 'lit-element';
 import { withA11y } from '@storybook/addon-a11y';
 import { withKnobs } from '@storybook/addon-knobs';
 import { withWebComponentsKnobs } from 'storybook-addon-web-components-knobs';
-import { withSignIn } from '../.storybook/addons/signInAddon/signInAddon';
-import { withCodeEditor } from '../.storybook/addons/codeEditorAddon/codeAddon';
-import '../dist/es6/components/mgt-people-picker/mgt-people-picker';
+import { withSignIn } from '../../.storybook/addons/signInAddon/signInAddon';
+import { withCodeEditor } from '../../.storybook/addons/codeEditorAddon/codeAddon';
+import '../../dist/es6/components/mgt-tasks/mgt-tasks';
 
 export default {
-  title: 'Components | mgt-people-picker',
-  component: 'mgt-people-picker',
+  title: 'Components | mgt-tasks',
+  component: 'mgt-tasks',
   decorators: [withA11y, withSignIn, withCodeEditor],
   parameters: { options: { selectedPanel: 'storybookjs/knobs/panel' } }
 };
 
-export const peoplePicker = () => html`
-  <mgt-people-picker></mgt-people-picker>
+export const tasks = () => html`
+  <mgt-tasks></mgt-tasks>
 `;
