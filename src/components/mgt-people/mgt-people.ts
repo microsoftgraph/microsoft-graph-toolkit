@@ -7,6 +7,8 @@
 
 import * as MicrosoftGraph from '@microsoft/microsoft-graph-types';
 import { customElement, html, property } from 'lit-element';
+import { getPeople, getPeopleFromGroup } from '../../graph/graph.people';
+import { getUser } from '../../graph/graph.user';
 import { Providers } from '../../Providers';
 import { ProviderState } from '../../providers/IProvider';
 import '../../styles/fabric-icon-font';
@@ -171,15 +173,15 @@ export class MgtPeople extends MgtTemplatedComponent {
         const graph = provider.graph.forComponent(this);
 
         if (this.groupId) {
-          this.people = await graph.getPeopleFromGroup(this.groupId);
+          this.people = await getPeopleFromGroup(graph, this.groupId);
         } else if (this.userIds) {
           this.people = await Promise.all(
             this.userIds.map(async userId => {
-              return await graph.getUser(userId);
+              return await getUser(graph, userId);
             })
           );
         } else {
-          this.people = await graph.getPeople();
+          this.people = await getPeople(graph);
         }
       }
     }

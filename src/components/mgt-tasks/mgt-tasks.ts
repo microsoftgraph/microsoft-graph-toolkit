@@ -19,6 +19,7 @@ import { PersonCardInteraction } from './../PersonCardInteraction';
 import { styles } from './mgt-tasks-css';
 import { ITask, ITaskFolder, ITaskGroup, ITaskSource, PlannerTaskSource, TodoTaskSource } from './task-sources';
 
+import { getMe } from '../../graph/graph.user';
 import { ComponentMediaQuery } from '../baseComponent';
 import { MgtPeople } from '../mgt-people/mgt-people';
 import '../mgt-person/mgt-person';
@@ -451,7 +452,7 @@ export class MgtTasks extends MgtTemplatedComponent {
     let meTask;
     if (!this._me) {
       const graph = provider.graph.forComponent(this);
-      meTask = graph.getMe();
+      meTask = getMe(graph);
     }
 
     if (this.groupId && this.dataSource === TasksSource.planner) {

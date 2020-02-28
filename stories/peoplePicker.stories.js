@@ -14,7 +14,7 @@ import { withCodeEditor } from '../.storybook/addons/codeEditorAddon/codeAddon';
 import '../dist/es6/components/mgt-people-picker/mgt-people-picker';
 
 export default {
-  title: 'mgt-people-picker',
+  title: 'Components | mgt-people-picker',
   component: 'mgt-people-picker',
   decorators: [withA11y, withSignIn, withCodeEditor],
   parameters: { options: { selectedPanel: 'storybookjs/knobs/panel' } }

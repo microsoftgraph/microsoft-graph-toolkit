@@ -5,7 +5,6 @@
  * -------------------------------------------------------------------------------------------
  */
 
-import { BaseGraph } from '../BaseGraph';
 import { IProvider, ProviderState } from '../providers/IProvider';
 import { MockGraph } from './MockGraph';
 
