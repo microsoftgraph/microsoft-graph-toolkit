@@ -9,17 +9,25 @@ import { html } from 'lit-element';
 import { withA11y } from '@storybook/addon-a11y';
 import { withKnobs } from '@storybook/addon-knobs';
 import { withWebComponentsKnobs } from 'storybook-addon-web-components-knobs';
-import { withSignIn } from '../.storybook/addons/signInAddon/signInAddon';
-import { withCodeEditor } from '../.storybook/addons/codeEditorAddon/codeAddon';
-import '../dist/es6/components/mgt-people-picker/mgt-people-picker';
+import { withSignIn } from '../../.storybook/addons/signInAddon/signInAddon';
+import { withCodeEditor } from '../../.storybook/addons/codeEditorAddon/codeAddon';
+import '../../dist/es6/components/mgt-agenda/mgt-agenda';
 
 export default {
-  title: 'Components | mgt-people-picker',
-  component: 'mgt-people-picker',
+  title: 'Components | mgt-agenda',
+  component: 'mgt-agenda',
   decorators: [withA11y, withSignIn, withCodeEditor],
   parameters: { options: { selectedPanel: 'storybookjs/knobs/panel' } }
 };
 
-export const peoplePicker = () => html`
-  <mgt-people-picker></mgt-people-picker>
+export const simple = () => html`
+  <mgt-agenda></mgt-agenda>
+`;
+
+export const getByEventQuery = () => html`
+  <mgt-agenda event-query="/me/events?orderby=start/dateTime"></mgt-agenda>
+`;
+
+export const getByDate = () => html`
+  <mgt-agenda group-by-day date="May 7, 2019" days="3"></mgt-agenda>
 `;
