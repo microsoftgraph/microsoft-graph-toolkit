@@ -3,7 +3,7 @@
   "tags": [
     {
       "name": "mgt-person-card",
-      "path": "./src/components/mgt-person-card/mgt-person-card.ts",
+      "path": "./src\\components\\mgt-person-card\\mgt-person-card.ts",
       "description": "Web Component used to show detailed data for a person in the\nMicrosoft Graph",
       "attributes": [
         {
@@ -53,10 +53,15 @@
           "type": "boolean"
         },
         {
+          "name": "templateContext",
+          "description": "Additional data context to be used in template binding\nUse this to add event listeners or value converters",
+          "type": "*"
+        },
+        {
           "name": "templateConverters",
           "description": "Collection of functions to be used in template binding",
           "type": "*",
-          "default": "{}"
+          "deprecatedMessage": "since 1.2 - use templateContext instead"
         },
         {
           "name": "mediaQuery",
@@ -90,7 +95,7 @@
     },
     {
       "name": "mgt-flyout",
-      "path": "./src/components/sub-components/mgt-flyout/mgt-flyout.ts",
+      "path": "./src\\components\\sub-components\\mgt-flyout\\mgt-flyout.ts",
       "description": "A component to create flyout anchored to an element",
       "attributes": [
         {
@@ -110,7 +115,7 @@
     },
     {
       "name": "mgt-person",
-      "path": "./src/components/mgt-person/mgt-person.ts",
+      "path": "./src\\components\\mgt-person\\mgt-person.ts",
       "description": "The person component is used to display a person or contact by using their photo, name, and/or email address.",
       "attributes": [
         {
@@ -198,10 +203,15 @@
           "default": "\"PersonCardInteraction.none\""
         },
         {
+          "name": "templateContext",
+          "description": "Additional data context to be used in template binding\nUse this to add event listeners or value converters",
+          "type": "*"
+        },
+        {
           "name": "templateConverters",
           "description": "Collection of functions to be used in template binding",
           "type": "*",
-          "default": "{}"
+          "deprecatedMessage": "since 1.2 - use templateContext instead"
         },
         {
           "name": "mediaQuery",
@@ -267,7 +277,7 @@
     },
     {
       "name": "mgt-agenda",
-      "path": "./src/components/mgt-agenda/mgt-agenda.ts",
+      "path": "./src\\components\\mgt-agenda\\mgt-agenda.ts",
       "description": "Web Component which represents events in a user or group calendar.",
       "attributes": [
         {
@@ -355,10 +365,15 @@
           "name": "onResize"
         },
         {
+          "name": "templateContext",
+          "description": "Additional data context to be used in template binding\nUse this to add event listeners or value converters",
+          "type": "*"
+        },
+        {
           "name": "templateConverters",
           "description": "Collection of functions to be used in template binding",
           "type": "*",
-          "default": "{}"
+          "deprecatedMessage": "since 1.2 - use templateContext instead"
         },
         {
           "name": "mediaQuery",
@@ -432,7 +447,7 @@
     },
     {
       "name": "mgt-get",
-      "path": "./src/components/mgt-get/mgt-get.ts",
+      "path": "./src\\components\\mgt-get\\mgt-get.ts",
       "description": "Custom element for making Microsoft Graph get queries",
       "attributes": [
         {
@@ -455,8 +470,14 @@
         {
           "name": "max-pages",
           "description": "Maximum number of pages to get for the resource\ndefault = 3\nif <= 0, all pages will be fetched",
-          "type": "boolean",
+          "type": "number",
           "default": "3"
+        },
+        {
+          "name": "polling-rate",
+          "description": "Number of milliseconds to poll the delta API and\nupdate the response. Set to positive value to enable",
+          "type": "number",
+          "default": "0"
         }
       ],
       "properties": [
@@ -484,8 +505,15 @@
           "name": "maxPages",
           "attribute": "max-pages",
           "description": "Maximum number of pages to get for the resource\ndefault = 3\nif <= 0, all pages will be fetched",
-          "type": "boolean",
+          "type": "number",
           "default": "3"
+        },
+        {
+          "name": "pollingRate",
+          "attribute": "polling-rate",
+          "description": "Number of milliseconds to poll the delta API and\nupdate the response. Set to positive value to enable",
+          "type": "number",
+          "default": "0"
         },
         {
           "name": "response",
@@ -498,10 +526,15 @@
           "type": "*"
         },
         {
+          "name": "templateContext",
+          "description": "Additional data context to be used in template binding\nUse this to add event listeners or value converters",
+          "type": "*"
+        },
+        {
           "name": "templateConverters",
           "description": "Collection of functions to be used in template binding",
           "type": "*",
-          "default": "{}"
+          "deprecatedMessage": "since 1.2 - use templateContext instead"
         },
         {
           "name": "mediaQuery",
@@ -517,7 +550,7 @@
     },
     {
       "name": "mgt-login",
-      "path": "./src/components/mgt-login/mgt-login.ts",
+      "path": "./src\\components\\mgt-login\\mgt-login.ts",
       "description": "Web component button and flyout control to facilitate Microsoft identity platform authentication",
       "attributes": [
         {
@@ -592,7 +625,7 @@
     },
     {
       "name": "mgt-people-picker",
-      "path": "./src/components/mgt-people-picker/mgt-people-picker.ts",
+      "path": "./src\\components\\mgt-people-picker\\mgt-people-picker.ts",
       "description": "Web component used to search for people from the Microsoft Graph",
       "attributes": [
         {
@@ -646,10 +679,15 @@
           "default": "[]"
         },
         {
+          "name": "templateContext",
+          "description": "Additional data context to be used in template binding\nUse this to add event listeners or value converters",
+          "type": "*"
+        },
+        {
           "name": "templateConverters",
           "description": "Collection of functions to be used in template binding",
           "type": "*",
-          "default": "{}"
+          "deprecatedMessage": "since 1.2 - use templateContext instead"
         },
         {
           "name": "mediaQuery",
@@ -675,7 +713,7 @@
     },
     {
       "name": "mgt-people",
-      "path": "./src/components/mgt-people/mgt-people.ts",
+      "path": "./src\\components\\mgt-people\\mgt-people.ts",
       "description": "web component to display a group of people or contacts by using their photos or initials.",
       "attributes": [
         {
@@ -740,10 +778,15 @@
           "default": "3"
         },
         {
+          "name": "templateContext",
+          "description": "Additional data context to be used in template binding\nUse this to add event listeners or value converters",
+          "type": "*"
+        },
+        {
           "name": "templateConverters",
           "description": "Collection of functions to be used in template binding",
           "type": "*",
-          "default": "{}"
+          "deprecatedMessage": "since 1.2 - use templateContext instead"
         },
         {
           "name": "mediaQuery",
@@ -769,7 +812,7 @@
     },
     {
       "name": "mgt-arrow-options",
-      "path": "./src/components/sub-components/mgt-arrow-options/mgt-arrow-options.ts",
+      "path": "./src\\components\\sub-components\\mgt-arrow-options\\mgt-arrow-options.ts",
       "description": "Custom Component used to handle an arrow rendering for TaskGroups utilized in the task component.",
       "attributes": [
         {
@@ -825,7 +868,7 @@
     },
     {
       "name": "mgt-dot-options",
-      "path": "./src/components/sub-components/mgt-dot-options/mgt-dot-options.ts",
+      "path": "./src\\components\\sub-components\\mgt-dot-options\\mgt-dot-options.ts",
       "description": "Custom Component used to handle an arrow rendering for TaskGroups utilized in the task component.",
       "attributes": [
         {
@@ -866,7 +909,7 @@
     },
     {
       "name": "mgt-tasks",
-      "path": "./src/components/mgt-tasks/mgt-tasks.ts",
+      "path": "./src\\components\\mgt-tasks\\mgt-tasks.ts",
       "description": "component enables the user to view, add, remove, complete, or edit tasks. It works with tasks in Microsoft Planner or Microsoft To-Do.",
       "attributes": [
         {
@@ -991,10 +1034,15 @@
           "name": "onResize"
         },
         {
+          "name": "templateContext",
+          "description": "Additional data context to be used in template binding\nUse this to add event listeners or value converters",
+          "type": "*"
+        },
+        {
           "name": "templateConverters",
           "description": "Collection of functions to be used in template binding",
           "type": "*",
-          "default": "{}"
+          "deprecatedMessage": "since 1.2 - use templateContext instead"
         },
         {
           "name": "mediaQuery",
@@ -1010,7 +1058,7 @@
     },
     {
       "name": "mgt-msal-provider",
-      "path": "./src/components/providers/mgt-msal-provider.ts",
+      "path": "./src\\components\\providers\\mgt-msal-provider.ts",
       "description": "Authentication Library Provider for Microsoft personal accounts",
       "attributes": [
         {
@@ -1090,7 +1138,7 @@
     },
     {
       "name": "mgt-teams-provider",
-      "path": "./src/components/providers/mgt-teams-provider.ts",
+      "path": "./src\\components\\providers\\mgt-teams-provider.ts",
       "description": "Authentication Library Provider for Microsoft Teams accounts",
       "attributes": [
         {
@@ -1165,7 +1213,7 @@
     },
     {
       "name": "mgt-wam-provider",
-      "path": "./src/components/providers/mgt-wam-provider.ts",
+      "path": "./src\\components\\providers\\mgt-wam-provider.ts",
       "description": "Authentication Library Provider for Web Account Manager (UWP apps)",
       "attributes": [
         {
@@ -1196,7 +1244,7 @@
     },
     {
       "name": "mgt-proxy-provider",
-      "path": "./src/components/providers/mgt-proxy-provider.ts",
+      "path": "./src\\components\\providers\\mgt-proxy-provider.ts",
       "description": "Authentication component for ProxyProvider",
       "attributes": [
         {
@@ -1247,7 +1295,7 @@
     },
     {
       "name": "mgt-mock-provider",
-      "path": "./src/mock/mgt-mock-provider.ts",
+      "path": "./src\\mock\\mgt-mock-provider.ts",
       "description": "Sets global provider to a mock Provider",
       "attributes": [
         {
