@@ -6,25 +6,89 @@
  */
 
 import { html } from 'lit-element';
-import { withSignIn } from '../.storybook/addons/signInAddon/signInAddon';
-import { withCodeEditor } from '../.storybook/addons/codeEditorAddon/codeAddon';
-import '../dist/es6/components/mgt-get/mgt-get';
+import { withA11y } from '@storybook/addon-a11y';
+import { withKnobs } from '@storybook/addon-knobs';
+import { withWebComponentsKnobs } from 'storybook-addon-web-components-knobs';
+import { withSignIn } from '../../.storybook/addons/signInAddon/signInAddon';
+import { withCodeEditor } from '../../.storybook/addons/codeEditorAddon/codeAddon';
+import '../../dist/es6/components/mgt-get/mgt-get';
 
 export default {
-  title: 'Samples | mgt-get',
+  title: 'Components | mgt-get',
   component: 'mgt-get',
-  decorators: [withSignIn, withCodeEditor],
+  decorators: [withA11y, withSignIn, withCodeEditor],
   parameters: {
-    a11y: {
-      disabled: true
-    },
+    options: { selectedPanel: 'mgt/sign-in' },
     signInAddon: {
       test: 'test'
     }
   }
 };
 
-export const DetailedPersonCard = () => html`
+export const GetEmail = () => html`
+  <mgt-get resource="/me/messages" version="beta" scopes="mail.read" max-pages="2">
+    <template>
+      <div class="email" data-for="email in value">
+        <h4>
+          <mgt-person person-query="{{email.sender.emailAddress.address}}" show-name person-card="hover"></mgt-person>
+        </h4>
+        <h3>{{ email.subject }}</h3>
+        <div data-if="email.bodyPreview" class="preview" innerHtml>{{email.bodyPreview}}</div>
+        <div data-else class="preview">
+          email body is empty
+        </div>
+      </div>
+    </template>
+    <template data-type="loading">
+      loading
+    </template>
+    <template data-type="error">
+      {{ this }}
+    </template>
+  </mgt-get>
+
+  <style>
+    .email {
+      box-shadow: 0 3px 7px rgba(0, 0, 0, 0.3);
+      padding: 10px;
+      margin: 8px 4px;
+      font-family: Segoe UI, Frutiger, Frutiger Linotype, Dejavu Sans, Helvetica Neue, Arial, sans-serif;
+    }
+
+    .email:hover {
+      box-shadow: 0 3px 14px rgba(0, 0, 0, 0.3);
+      padding: 10px;
+      margin: 8px 4px;
+    }
+
+    .email h3 {
+      font-size: 12px;
+      margin-top: 4px;
+    }
+
+    .email h4 {
+      font-size: 10px;
+      margin-top: 0px;
+      margin-bottom: 0px;
+    }
+
+    .email mgt-person {
+      --font-size: 10px;
+      --avatar-size-s: 12px;
+    }
+
+    .email .preview {
+      font-size: 13px;
+      text-overflow: ellipsis;
+      word-wrap: break-word;
+      overflow: hidden;
+      max-height: 2.8em;
+      line-height: 1.4em;
+    }
+  </style>
+`;
+
+export const ExtendingPersonCard = () => html`
   <mgt-person person-query="Isaiah" show-name show-email person-card="hover">
     <template data-type="person-card">
       <mgt-person-card inherit-details>
@@ -76,36 +140,4 @@ export const DetailedPersonCard = () => html`
       </mgt-person-card>
     </template>
   </mgt-person>
-`;
-
-export const GetEmails = () => html`
-	<mgt-get resource="/me/messages" version="beta" scopes="mail.read" max-pages="2">
-		<template>
-			Emails: {{value.length}}
-			<ol>
-				<li data-for="email in value">
-					<div>
-						<h2>{{ email.subject }}</h2>
-						<span>
-							<b>From:</b> <mgt-person
-							person-query="{{ email.sender.emailAddress.address }}"
-							show-name
-							person-card="hover"
-							></mgt-person>
-						</span>
-						<br />
-						<b>Preview:</b> {{ email.bodyPreview }}
-					</div>
-				</li>
-			</ul>
-		</template>
-
-		<template data-type="error">
-			{{ this }}
-		</template>
-
-		<template data-type="loading">
-			loading...
-		</template>
-	</mgt-get>
 `;

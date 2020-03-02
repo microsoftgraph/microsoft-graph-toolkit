@@ -40,8 +40,18 @@ export abstract class MgtTemplatedComponent extends MgtBaseComponent {
    *
    * @type {*}
    * @memberof MgtTemplatedComponent
+   * @deprecated since 1.2 - use templateContext instead
    */
-  public templateConverters: any = {};
+  public templateConverters: any;
+
+  /**
+   * Additional data context to be used in template binding
+   * Use this to add event listeners or value converters
+   *
+   * @type {*}
+   * @memberof MgtTemplatedComponent
+   */
+  public templateContext: any;
 
   /**
    * Holds all templates defined by developer
@@ -58,8 +68,11 @@ export abstract class MgtTemplatedComponent extends MgtBaseComponent {
   constructor() {
     super();
 
-    this.templateConverters.lower = (str: string) => str.toLowerCase();
-    this.templateConverters.upper = (str: string) => str.toUpperCase();
+    this.templateContext = this.templateContext || {};
+    this.templateConverters = this.templateConverters || {};
+
+    this.templateContext.lower = (str: string) => str.toLowerCase();
+    this.templateContext.upper = (str: string) => str.toUpperCase();
   }
 
   /**
@@ -118,19 +131,14 @@ export abstract class MgtTemplatedComponent extends MgtBaseComponent {
       this.removeChild(slot);
     }
 
-    const templateContent = TemplateHelper.renderTemplate(
-      this.templates[templateType],
-      context,
-      this.templateConverters
-    );
-
     const div = document.createElement('div');
     div.slot = slotName;
     div.dataset.generated = 'template';
 
-    if (templateContent) {
-      div.appendChild(templateContent);
-    }
+    TemplateHelper.renderTemplate(div, this.templates[templateType], context, {
+      ...this.templateConverters,
+      ...this.templateContext
+    });
 
     this.appendChild(div);
 
@@ -154,6 +162,8 @@ export abstract class MgtTemplatedComponent extends MgtBaseComponent {
         } else {
           templates.default = template;
         }
+
+        (template as any).templateOrder = i;
       }
     }
 
