@@ -122,8 +122,8 @@ export class MgtLogin extends MgtBaseComponent {
   }
 
   /**
-   *
    * Initiate logout
+   *
    * @returns {Promise<void>}
    * @memberof MgtLogin
    */
@@ -147,75 +147,21 @@ export class MgtLogin extends MgtBaseComponent {
    * trigger the element to update.
    */
   protected render() {
-    const content = this.userDetails ? this.renderLoggedIn() : this.renderLogIn();
-
     return html`
       <div class="root">
-        <button ?disabled="${this._loading}" class="login-button" @click=${this.onClick} role="button">
-          ${content}
-        </button>
-        ${this.renderMenu()}
+        ${this.renderButton()} ${this.renderFlyout()}
       </div>
     `;
   }
 
-  private handleWindowClick(e: MouseEvent) {
-    this._showMenu = false;
-  }
-
-  private renderLogIn() {
-    return html`
-      <i class="login-icon ms-Icon ms-Icon--Contact"></i>
-      <span aria-label="Sign In">
-        Sign In
-      </span>
-    `;
-  }
-
-  private renderLoggedIn() {
-    if (this.userDetails) {
-      return html`
-        <mgt-person .personDetails=${this.userDetails} .personImage=${this._image} show-name />
-      `;
-    } else {
-      return this.renderLogIn();
-    }
-  }
-
-  private renderMenu() {
-    if (!this.userDetails) {
-      return;
-    }
-
-    const personComponent = html`
-      <mgt-person .personDetails=${this.userDetails} .personImage=${this._image} show-name show-email />
-    `;
-
-    return html`
-      <mgt-flyout .isOpen=${this._showMenu}>
-        <div slot="flyout" class="flyout">
-          <div class="popup">
-            <div class="popup-content">
-              <div>
-                ${personComponent}
-              </div>
-              <div class="popup-commands">
-                <ul>
-                  <li>
-                    <button class="popup-command" @click=${this.logout} aria-label="Sign Out">
-                      Sign Out
-                    </button>
-                  </li>
-                </ul>
-              </div>
-            </div>
-          </div>
-        </div>
-      </mgt-flyout>
-    `;
-  }
-
-  private async loadState() {
+  /**
+   * Load state into the component.
+   *
+   * @protected
+   * @returns
+   * @memberof MgtLogin
+   */
+  protected async loadState() {
     const provider = Providers.globalProvider;
     if (provider) {
       this._loading = true;
@@ -237,6 +183,105 @@ export class MgtLogin extends MgtBaseComponent {
     }
 
     this._loading = false;
+  }
+
+  /**
+   * Render the button.
+   *
+   * @protected
+   * @memberof MgtLogin
+   */
+  protected renderButton() {
+    return html`
+      <button ?disabled="${this._loading}" class="login-button" @click=${this.onClick} role="button">
+        ${this.userDetails ? this.renderLoggedIn() : this.renderLoggedOut()}
+      </button>
+    `;
+  }
+
+  /**
+   * Render the details flyout.
+   *
+   * @protected
+   * @memberof MgtLogin
+   */
+  protected renderFlyout() {
+    return html`
+      <mgt-flyout .isOpen=${this._showMenu}>
+        ${this.renderMenu()}
+      </mgt-flyout>
+    `;
+  }
+
+  /**
+   * Render the flyout menu content.
+   *
+   * @protected
+   * @returns
+   * @memberof MgtLogin
+   */
+  protected renderMenu() {
+    if (!this.userDetails) {
+      return;
+    }
+
+    return html`
+      <div slot="flyout" class="flyout">
+        <div class="popup">
+          <div class="popup-content">
+            <div>
+              <mgt-person .personDetails=${this.userDetails} .personImage=${this._image} show-name show-email />
+            </div>
+            <div class="popup-commands">
+              <ul>
+                <li>
+                  <button class="popup-command" @click=${this.logout} aria-label="Sign Out">
+                    Sign Out
+                  </button>
+                </li>
+              </ul>
+            </div>
+          </div>
+        </div>
+      </div>
+    `;
+  }
+
+  /**
+   * Render the login button.
+   *
+   * @protected
+   * @returns
+   * @memberof MgtLogin
+   */
+  protected renderLoggedOut() {
+    return html`
+      <i class="login-icon ms-Icon ms-Icon--Contact"></i>
+      <span aria-label="Sign In">
+        Sign In
+      </span>
+    `;
+  }
+
+  /**
+   * Render the logged in state
+   *
+   * @protected
+   * @returns
+   * @memberof MgtLogin
+   */
+  protected renderLoggedIn() {
+    if (!this.userDetails) {
+      return;
+    }
+
+    return html`
+      <mgt-person .personDetails=${this.userDetails} .personImage=${this._image} show-name />
+    `;
+  }
+
+  private handleWindowClick(e: MouseEvent) {
+    this._showMenu = false;
   }
 
   private onClick(event: MouseEvent) {
