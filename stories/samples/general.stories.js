@@ -6,14 +6,17 @@
  */
 
 import { html } from 'lit-element';
-import { withSignIn } from '../.storybook/addons/signInAddon/signInAddon';
-import { withCodeEditor } from '../.storybook/addons/codeEditorAddon/codeAddon';
+import { withSignIn } from '../../.storybook/addons/signInAddon/signInAddon';
+import { withCodeEditor } from '../../.storybook/addons/codeEditorAddon/codeAddon';
 
 export default {
-  title: 'Samples | Simple',
+  title: 'Samples | General',
   component: 'mgt-combo',
   decorators: [withSignIn, withCodeEditor],
   parameters: {
+    a11y: {
+      disabled: true
+    },
     signInAddon: {
       test: 'test'
     }

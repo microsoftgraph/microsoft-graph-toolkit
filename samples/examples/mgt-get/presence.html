@@ -1,0 +1,16 @@
+<html>
+  <head>
+    <script type="module" src="../../../dist/es6/index.js"></script>
+    <!-- <script src="https://unpkg.com/@microsoft/mgt/dist/bundle/mgt-loader.js"></script> -->
+  </head>
+  <body>
+    <mgt-msal-provider client-id="a974dfa0-9f57-49b9-95db-90f04ce2111a"></mgt-msal-provider>
+    <mgt-login></mgt-login>
+
+    <mgt-get resource="/me/presence" version="beta" scopes="Presence.Read" polling-rate="2000">
+      <template>
+        {{availability}}
+      </template>
+    </mgt-get>
+  </body>
+</html>

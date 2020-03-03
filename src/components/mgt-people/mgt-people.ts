@@ -7,8 +7,9 @@
 
 import * as MicrosoftGraph from '@microsoft/microsoft-graph-types';
 import { customElement, html, property } from 'lit-element';
+import { repeat } from 'lit-html/directives/repeat';
 import { getPeople, getPeopleFromGroup } from '../../graph/graph.people';
-import { getUser } from '../../graph/graph.user';
+import { getUsersForUserIds } from '../../graph/graph.user';
 import { Providers } from '../../Providers';
 import { ProviderState } from '../../providers/IProvider';
 import '../../styles/fabric-icon-font';
@@ -78,7 +79,15 @@ export class MgtPeople extends MgtTemplatedComponent {
       return value.split(',');
     }
   })
-  public userIds: string[];
+  public get userIds(): string[] {
+    return this.privateUserIds;
+  }
+  public set userIds(value: string[]) {
+    const oldValue = this.userIds;
+    this.privateUserIds = value;
+    this.updateUserIds(value);
+    this.requestUpdate('userIds', oldValue);
+  }
 
   /**
    * Sets how the person-card is invoked
@@ -118,13 +127,14 @@ export class MgtPeople extends MgtTemplatedComponent {
         this.renderTemplate('default', { people: this.people }) ||
         html`
           <ul class="people-list">
-            ${this.people.slice(0, this.showMax).map(
-              person =>
-                html`
-                  <li class="people-person">
-                    ${this.renderTemplate('person', { person }, person.displayName) || this.renderPerson(person)}
-                  </li>
-                `
+            ${repeat(
+              this.people.slice(0, this.showMax),
+              p => p.id,
+              p => html`
+                <li class="people-person">
+                  ${this.renderTemplate('person', { person: p }, p.id) || this.renderPerson(p)}
+                </li>
+              `
             )}
             ${this.people.length > this.showMax
               ? this.renderTemplate('overflow', {
@@ -161,15 +171,43 @@ export class MgtPeople extends MgtTemplatedComponent {
         if (this.groupId) {
           this.people = await getPeopleFromGroup(graph, this.groupId);
         } else if (this.userIds) {
-          this.people = await Promise.all(
-            this.userIds.map(async userId => {
-              return await getUser(graph, userId);
-            })
-          );
+          this.people = await getUsersForUserIds(graph, this.userIds);
         } else {
           this.people = await getPeople(graph);
         }
       }
+    }
+
+    this.hasLoaded = true;
+  }
+
+  private async updateUserIds(newIds: string[]) {
+    if (!this.hasLoaded) {
+      return;
+    }
+
+    const newIdsSet = new Set(newIds);
+    this.people = this.people.filter(p => newIdsSet.has(p.id));
+    const oldIdsSet = new Set(this.people ? this.people.map(p => p.id) : []);
+
+    const newToLoad = [];
+
+    for (const id of newIds) {
+      if (!oldIdsSet.has(id)) {
+        newToLoad.push(id);
+      }
+    }
+
+    if (newToLoad && newToLoad.length > 0) {
+      const provider = Providers.globalProvider;
+      if (!provider || provider.state !== ProviderState.SignedIn) {
+        return;
+      }
+
+      const graph = provider.graph.forComponent(this);
+
+      const newPeople = await getUsersForUserIds(graph, newToLoad);
+      this.people = (this.people || []).concat(newPeople);
     }
   }
 
