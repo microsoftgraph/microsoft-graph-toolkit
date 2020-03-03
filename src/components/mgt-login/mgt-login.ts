@@ -140,7 +140,7 @@ export class MgtLogin extends MgtBaseComponent {
 
     return html`
       <div class="root">
-        <button ?disabled="${this.loading}" class="login-button" @click=${this.onClick} role="button">
+        <button ?disabled="${this.isLoadingState}" class="login-button" @click=${this.onClick} role="button">
           ${content}
         </button>
         ${this.renderMenu()}
@@ -155,7 +155,7 @@ export class MgtLogin extends MgtBaseComponent {
    * @returns
    * @memberof MgtLogin
    */
-  protected async load() {
+  protected async loadState() {
     const provider = Providers.globalProvider;
     if (provider) {
       if (provider.state === ProviderState.SignedIn) {

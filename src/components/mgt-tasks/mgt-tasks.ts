@@ -355,7 +355,7 @@ export class MgtTasks extends MgtTemplatedComponent {
       this._inTaskLoad = false;
       this._todoDefaultSet = false;
 
-      this.reload();
+      this.reloadState();
     }
   }
 
@@ -426,7 +426,7 @@ export class MgtTasks extends MgtTemplatedComponent {
    * @returns
    * @memberof MgtTasks
    */
-  protected async load() {
+  protected async loadState() {
     const ts = this.getTaskSource();
     if (!ts) {
       return;
@@ -567,7 +567,7 @@ export class MgtTasks extends MgtTemplatedComponent {
 
     this._newTaskBeingAdded = true;
     await ts.addTask(newTask);
-    await this.reload();
+    await this.reloadState();
     this._newTaskBeingAdded = false;
     this.isNewTaskVisible = false;
   }
@@ -579,7 +579,7 @@ export class MgtTasks extends MgtTemplatedComponent {
     }
     this._loadingTasks = [...this._loadingTasks, task.id];
     await ts.setTaskComplete(task.id, task.eTag);
-    await this.reload();
+    await this.reloadState();
     this._loadingTasks = this._loadingTasks.filter(id => id !== task.id);
   }
 
@@ -591,7 +591,7 @@ export class MgtTasks extends MgtTemplatedComponent {
 
     this._loadingTasks = [...this._loadingTasks, task.id];
     await ts.setTaskIncomplete(task.id, task.eTag);
-    await this.reload();
+    await this.reloadState();
     this._loadingTasks = this._loadingTasks.filter(id => id !== task.id);
   }
 
@@ -603,7 +603,7 @@ export class MgtTasks extends MgtTemplatedComponent {
 
     this._hiddenTasks = [...this._hiddenTasks, task.id];
     await ts.removeTask(task.id, task.eTag);
-    await this.reload();
+    await this.reloadState();
     this._hiddenTasks = this._hiddenTasks.filter(id => id !== task.id);
   }
 
@@ -668,7 +668,7 @@ export class MgtTasks extends MgtTemplatedComponent {
     if (task) {
       this._loadingTasks = [...this._loadingTasks, task.id];
       await ts.assignPeopleToTask(task.id, peopleObj, task.eTag);
-      await this.reload();
+      await this.reloadState();
       this._loadingTasks = this._loadingTasks.filter(id => id !== task.id);
     }
   }

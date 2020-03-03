@@ -165,7 +165,7 @@ export class MgtPersonCard extends MgtTemplatedComponent {
    * @returns
    * @memberof MgtPersonCard
    */
-  protected async load() {
+  protected async loadState() {
     if (this.inheritDetails) {
       let parent = this.parentElement;
       while (parent && parent.tagName !== 'MGT-PERSON') {

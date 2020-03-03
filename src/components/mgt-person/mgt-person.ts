@@ -159,7 +159,7 @@ export class MgtPerson extends MgtTemplatedComponent {
 
     if ((name === 'person-query' || name === 'user-id') && oldval !== newval) {
       this.personDetails = null;
-      this.reload();
+      this.reloadState();
     }
   }
 
@@ -237,7 +237,7 @@ export class MgtPerson extends MgtTemplatedComponent {
    * @returns
    * @memberof MgtPerson
    */
-  protected async load() {
+  protected async loadState() {
     const provider = Providers.globalProvider;
 
     if (!provider || provider.state === ProviderState.Loading) {

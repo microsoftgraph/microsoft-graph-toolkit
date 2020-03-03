@@ -111,7 +111,7 @@ export class MgtPeoplePicker extends MgtTemplatedComponent {
     super.attributeChangedCallback(att, oldval, newval);
 
     if (att === 'group-id' && oldval !== newval) {
-      this.reload();
+      this.reloadState();
     }
   }
 
@@ -175,7 +175,7 @@ export class MgtPeoplePicker extends MgtTemplatedComponent {
    * Async query to Graph for members of group if determined by developer.
    * set's `this.groupPeople` to those members.
    */
-  protected async load() {
+  protected async loadState() {
     const provider = Providers.globalProvider;
     if (provider && provider.state === ProviderState.SignedIn) {
       const graph = provider.graph.forComponent(this);

@@ -98,7 +98,7 @@ export class MgtGet extends MgtTemplatedComponent {
    */
   public attributeChangedCallback(name, oldval, newval) {
     super.attributeChangedCallback(name, oldval, newval);
-    this.reload();
+    this.reloadState();
   }
 
   /**
@@ -107,7 +107,7 @@ export class MgtGet extends MgtTemplatedComponent {
    * trigger the element to update.
    */
   protected render() {
-    if (this.loading) {
+    if (this.isLoadingState) {
       return this.renderTemplate('loading', null);
     } else if (this.error) {
       return this.renderTemplate('error', this.error);
@@ -123,7 +123,7 @@ export class MgtGet extends MgtTemplatedComponent {
    * @returns
    * @memberof MgtGet
    */
-  protected async load() {
+  protected async loadState() {
     const provider = Providers.globalProvider;
 
     if (!provider || provider.state !== ProviderState.SignedIn) {

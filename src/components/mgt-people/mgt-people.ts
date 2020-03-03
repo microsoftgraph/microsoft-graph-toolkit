@@ -151,7 +151,7 @@ export class MgtPeople extends MgtTemplatedComponent {
    * @returns
    * @memberof MgtPeople
    */
-  protected async load() {
+  protected async loadState() {
     if (!this.people) {
       const provider = Providers.globalProvider;
 

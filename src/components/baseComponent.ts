@@ -85,8 +85,8 @@ export abstract class MgtBaseComponent extends LitElement {
    * @protected
    * @memberof MgtBaseComponent
    */
-  protected get loading(): boolean {
-    return this._loading;
+  protected get isLoadingState(): boolean {
+    return this._isLoadingState;
   }
 
   /**
@@ -94,7 +94,7 @@ export abstract class MgtBaseComponent extends LitElement {
    * @type {boolean}
    */
   @property({ attribute: false })
-  private _loading: boolean = false;
+  private _isLoadingState: boolean = false;
 
   constructor() {
     super();
@@ -124,15 +124,15 @@ export abstract class MgtBaseComponent extends LitElement {
    */
   protected firstUpdated(changedProperties): void {
     super.firstUpdated(changedProperties);
-    Providers.onProviderUpdated(() => this.reload());
-    this.reload();
+    Providers.onProviderUpdated(() => this.reloadState());
+    this.reloadState();
   }
 
   /**
    * load state into the component.
    * Override this function to provide additional loading logic.
    */
-  protected load(): Promise<void> {
+  protected loadState(): Promise<void> {
     return Promise.resolve();
   }
 
@@ -191,17 +191,17 @@ export abstract class MgtBaseComponent extends LitElement {
    * @returns {Promise<void>}
    * @memberof MgtBaseComponent
    */
-  protected async reload(): Promise<void> {
-    if (this._loading) {
+  protected async reloadState(): Promise<void> {
+    if (this._isLoadingState) {
       return;
     }
 
-    this._loading = true;
+    this._isLoadingState = true;
     this.fireCustomEvent('loadingInitiated');
 
-    await this.load();
+    await this.loadState();
 
-    this._loading = false;
+    this._isLoadingState = false;
     this.fireCustomEvent('loadingCompleted');
   }
 }

@@ -164,7 +164,7 @@ export class MgtAgenda extends MgtTemplatedComponent {
   public attributeChangedCallback(name, oldValue, newValue) {
     if (oldValue !== newValue && (name === 'date' || name === 'days' || name === 'group-id')) {
       this.events = null;
-      this.reload();
+      this.reloadState();
     }
     super.attributeChangedCallback(name, oldValue, newValue);
   }
@@ -191,7 +191,7 @@ export class MgtAgenda extends MgtTemplatedComponent {
    * @returns
    * @memberof MgtAgenda
    */
-  protected async load() {
+  protected async loadState() {
     if (this.events) {
       return;
     }
@@ -244,7 +244,7 @@ export class MgtAgenda extends MgtTemplatedComponent {
   }
 
   private renderAgenda() {
-    if (this.loading) {
+    if (this.isLoadingState) {
       return this.renderTemplate('loading', null) || this.renderLoading();
     }
 
