@@ -47,7 +47,7 @@
     "prettier:write": "npm run prettier:base -- --write \"{src,tests}/**/*.{ts,tsx}\"",
     "storybook": "start-storybook -p 6006 -s assets",
     "storybook:dev": "npm run build && wca analyze src --format json --outFile custom-elements.json",
-    "storybook:build": "build-storybook && cpx .storybook/CNAME storybook-static",
+    "storybook:build": "build-storybook -s assets && cpx .storybook/CNAME storybook-static",
     "storybook:deploy": "npm run storybook:build && storybook-to-ghpages -e storybook-static"
   },
   "storybook-deployer": {
