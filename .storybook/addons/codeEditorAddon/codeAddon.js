@@ -93,6 +93,19 @@ export const withCodeEditor = makeDecorator({
 
     editor.addEventListener('fileUpdated', () => {
       storyElement.innerHTML = editor.files.html + `<style>${editor.files.css}</style>`;
+
+      // kill all timers in current window before rerunning new possibly edited js
+      var id = window.setTimeout(() => {}, 0);
+      while (id--) {
+        window.clearTimeout(id); // will do nothing if no timeout with id is present
+      }
+
+      // kill all intervals in current window before rerunning new possibly edited js
+      var id = window.setInterval(() => {}, 0);
+      while (id--) {
+        window.clearInterval(id); // will do nothing if no timeout with id is present
+      }
+
       eval(editor.files.js);
     });
 
