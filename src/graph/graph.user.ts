@@ -36,3 +36,47 @@ export function getUser(graph: IGraph, userPrincipleName: string): Promise<User>
     .middlewareOptions(prepScopes(scopes))
     .get();
 }
+
+/**
+ * Returns a Promise of Graph Users array associated with the user ids arrau
+ *
+ * @export
+ * @param {IGraph} graph
+ * @param {string[]} userIds, an array of string ids
+ * @returns {Promise<User[]>}
+ */
+export async function getUsersForUserIds(graph: IGraph, userIds: string[]): Promise<User[]> {
+  if (!userIds || userIds.length === 0) {
+    return [];
+  }
+
+  const batch = graph.createBatch();
+
+  for (const id of userIds) {
+    if (id !== '') {
+      batch.get(id, `/users/${id}`, ['user.readbasic.all']);
+    }
+  }
+
+  try {
+    const response = await batch.execute();
+    const people = [];
+
+    // iterate over userIds to ensure the order of ids
+    for (const id of userIds) {
+      const person = response[id];
+      if (person && person.id) {
+        people.push(person);
+      }
+    }
+
+    return people;
+  } catch {
+    // fallback to making the request one by one
+    try {
+      return Promise.all(userIds.filter(id => id && id !== '').map(id => getUser(graph, id)));
+    } catch {
+      return [];
+    }
+  }
+}
