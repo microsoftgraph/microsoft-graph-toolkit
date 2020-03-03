@@ -311,7 +311,7 @@ export class MgtPeoplePicker extends MgtTemplatedComponent {
       });
 
       if (duplicatePeople.length === 0) {
-        this.selectedPeople.push(person);
+        this.selectedPeople = [...this.selectedPeople, person];
         this.fireCustomEvent('selectionChanged', this.selectedPeople);
 
         this.people = [];
