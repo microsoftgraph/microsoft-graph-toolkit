@@ -70,7 +70,12 @@ export enum SvgIcon {
   /**
    * Used for channel picker visual indicator
    */
-  UpCarrot
+  UpCarrot,
+
+  /*
+   * search icon
+   */
+  Search
 }
 
 import { html } from 'lit-element';
@@ -195,6 +200,24 @@ export function getSvg(svgIcon: SvgIcon, color: string) {
             d="M6 0.291016L11.8535 6.14453L11.1445 6.85352L6 1.70898L0.855468 6.85352L0.146484 6.14453L6 0.291016Z"
             fill="#605E5C"
           />
+        </svg>
+      `;
+
+    case SvgIcon.Search:
+      return html`
+        <svg width="14" height="14" viewBox="0 0 14 14" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <g clip-path="url(#clip0)">
+            <circle cx="5.36377" cy="5.36396" r="4" transform="rotate(45 5.36377 5.36396)" stroke="#B3B0AD" />
+            <path
+              d="M8.19189 7.48529L12.7881 12.0815C12.9834 12.2767 12.9834 12.5933 12.7881 12.7886V12.7886C12.5928 12.9839 12.2762 12.9839 12.081 12.7886L7.48479 8.1924L8.19189 7.48529Z"
+              fill="#B3B0AD"
+            />
+          </g>
+          <defs>
+            <clipPath id="clip0">
+              <rect width="14" height="14" fill="white" />
+            </clipPath>
+          </defs>
         </svg>
       `;
   }

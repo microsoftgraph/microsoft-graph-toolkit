@@ -90,6 +90,7 @@ mgt-teams-channel-picker .team-chosen-input {
   line-height: 19px;
   background-color: $input-background-color;
   color: $font-color;
+  padding-left: 5px;
   &::placeholder {
     color: $placeholder-default-color;
   }
@@ -109,7 +110,7 @@ mgt-teams-channel-picker .people-chosen-list {
   vertical-align: middle;
   margin: 0 0 0 0;
   list-style-type: none;
-  padding-left: 10px;
+  padding-left: 5px;
   font-family: Segoe UI;
   font-style: normal;
   font-weight: normal;
@@ -132,6 +133,12 @@ mgt-teams-channel-picker .CloseIcon {
   &:hover {
     color: #000000;
   }
+}
+
+.SearchIcon,
+mgt-teams-channel-picker .SearchIcon {
+  padding-top: 9px;
+  padding-left: 5px;
 }
 
 .InputArrowIcon,
@@ -295,8 +302,48 @@ mgt-teams-channel-picker .channel-display {
   }
   &.blue-highlight {
     background-color: #deecf9;
+    & .showing:last-child {
+      flex-flow: nowrap;
+      position: relative;
+      overflow: hidden;
+      white-space: nowrap;
+      &:after {
+        content: '';
+        position: absolute;
+        width: 36px;
+        height: 100%;
+        top: 0;
+        right: 0;
+        position: absolute;
+        background-image: -webkit-linear-gradient(right, #deecf9, rgba(255, 255, 255, 0));
+        background-image: -moz-linear-gradient(right, #deecf9, rgba(255, 255, 255, 0));
+        background-image: -ms-linear-gradient(right, #deecf9, rgba(255, 255, 255, 0));
+        background-image: -o-linear-gradient(right, #deecf9, rgba(255, 255, 255, 0));
+        background-image: linear-gradient(to left, #deecf9, rgba(255, 255, 255, 0));
+      }
+    }
     &:hover {
       background-color: #d2e4f5;
+      & .showing:last-child {
+        flex-flow: nowrap;
+        position: relative;
+        overflow: hidden;
+        white-space: nowrap;
+        &:after {
+          content: '';
+          position: absolute;
+          width: 36px;
+          height: 100%;
+          top: 0;
+          right: 0;
+          position: absolute;
+          background-image: -webkit-linear-gradient(right, #d2e4f5, rgba(255, 255, 255, 0));
+          background-image: -moz-linear-gradient(right, #d2e4f5, rgba(255, 255, 255, 0));
+          background-image: -ms-linear-gradient(right, #d2e4f5, rgba(255, 255, 255, 0));
+          background-image: -o-linear-gradient(right, #d2e4f5, rgba(255, 255, 255, 0));
+          background-image: linear-gradient(to left, #d2e4f5, rgba(255, 255, 255, 0));
+        }
+      }
     }
   }
   &:hover {
@@ -361,6 +408,10 @@ mgt-teams-channel-picker .input-search-start {
 
 :host .teams-channel-picker-input,
 mgt-teams-channel-picker .teams-channel-picker-input {
+  .search-icon {
+    padding-top: 9px;
+    padding-left: 9px;
+  }
   display: flex;
   order: 2;
   background-color: $input-background-color;

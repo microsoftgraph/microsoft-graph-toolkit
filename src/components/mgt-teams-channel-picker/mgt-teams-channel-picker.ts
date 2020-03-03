@@ -189,6 +189,9 @@ export class MgtTeamsChannelPicker extends MgtTemplatedComponent {
             class="teams-channel-picker-input ${this.isHovered ? 'hovered' : ''} ${this.isFocused ? 'focused' : ''}"
             @click=${this.gainedFocus}
           >
+            <div class="search-icon ${this.isFocused && this.selectedTeams[0].length === 0 ? 'focused' : ''}">
+              ${this.isFocused && this.selectedTeams[0].length === 0 ? getSvg(SvgIcon.Search, '#252424') : ''}
+            </div>
             ${this.renderChosenTeam()}
           </div>
           ${this.renderChannelList()}
@@ -541,6 +544,9 @@ export class MgtTeamsChannelPicker extends MgtTemplatedComponent {
               
             </div>
           </li>
+          <div class="SearchIcon">
+            ${this.isFocused ? getSvg(SvgIcon.Search, '#252424') : ''}
+          </div>
         `;
       } else {
         peopleList = html`
