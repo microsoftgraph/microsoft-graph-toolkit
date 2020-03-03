@@ -7,7 +7,7 @@
 
 import { customElement, html, LitElement, property, PropertyValues } from 'lit-element';
 import { classMap } from 'lit-html/directives/class-map';
-import { getSegmentAwareWindow, isWindowSegmentAware, IWindowSegment } from '../../../utils/DualScreenHelpers';
+import { getSegmentAwareWindow, isWindowSegmentAware, IWindowSegment } from '../../../utils/WindowSegmentHelpers';
 import { styles } from './mgt-flyout-css';
 
 /**
