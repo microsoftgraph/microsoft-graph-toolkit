@@ -211,7 +211,7 @@ export class MgtAgenda extends MgtTemplatedComponent {
 
     // No data
     if (!this.events || this.events.length === 0) {
-      return this.renderError(null);
+      return this.renderNoData();
     }
 
     // Prep data
@@ -267,15 +267,14 @@ export class MgtAgenda extends MgtTemplatedComponent {
   }
 
   /**
-   * Render the error state.
+   * Render the no-data state.
    *
    * @protected
-   * @param {object} errorContext
    * @returns {TemplateResult}
    * @memberof MgtAgenda
    */
-  protected renderError(errorContext: object): TemplateResult {
-    return this.renderTemplate('error', errorContext) || html``;
+  protected renderNoData(): TemplateResult {
+    return this.renderTemplate('no-data', null) || html``;
   }
 
   /**
