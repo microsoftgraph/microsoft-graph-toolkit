@@ -109,6 +109,9 @@ export class MgtPeople extends MgtTemplatedComponent {
   })
   public personCardInteraction: PersonCardInteraction = PersonCardInteraction.hover;
 
+  private hasLoaded = false;
+  private privateUserIds: string[];
+
   constructor() {
     super();
 

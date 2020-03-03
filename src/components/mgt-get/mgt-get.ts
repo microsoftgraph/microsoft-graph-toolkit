@@ -107,6 +107,8 @@ export class MgtGet extends MgtTemplatedComponent {
    */
   @property({ attribute: false }) public error: any;
 
+  private isPolling: boolean = false;
+
   /**
    * Synchronizes property values when attributes change.
    *
@@ -148,7 +150,7 @@ export class MgtGet extends MgtTemplatedComponent {
 
       if (Array.isArray(this.response.value)) {
         let loading = null;
-        if (this.loading && !this.isPolling) {
+        if (this.isLoadingState && !this.isPolling) {
           loading = this.renderTemplate('loading', null);
         }
         valueContent = html`
@@ -177,7 +179,7 @@ export class MgtGet extends MgtTemplatedComponent {
       }
     } else if (this.response) {
       return this.renderTemplate('default', this.response) || html``;
-    } else if (this.loading) {
+    } else if (this.isLoadingState) {
       return this.renderTemplate('loading', null) || html``;
     } else {
       return html``;
@@ -201,7 +203,6 @@ export class MgtGet extends MgtTemplatedComponent {
     }
 
     if (this.resource) {
-      let response = null;
       try {
         let uri = this.resource;
         let delta = false;
@@ -261,12 +262,11 @@ export class MgtGet extends MgtTemplatedComponent {
         if (this.pollingRate) {
           setTimeout(async () => {
             this.isPolling = true;
-            await this.loadData();
+            await this.loadState();
             this.isPolling = false;
           }, this.pollingRate);
         }
       }
-      this.loading = false;
     } else {
       this.response = null;
     }

@@ -184,16 +184,17 @@ export abstract class MgtBaseComponent extends LitElement {
   }
 
   /**
-   * Force reload the state.
+   * Reload the state.
+   * Returns false if already loading, unless forced.
    * Use reload instead of load to ensure loading events are fired.
    *
    * @protected
    * @returns {Promise<void>}
    * @memberof MgtBaseComponent
    */
-  protected async reloadState(): Promise<void> {
-    if (this._isLoadingState) {
-      return;
+  protected async reloadState(force: boolean = false): Promise<boolean> {
+    if (!force && this._isLoadingState) {
+      return false;
     }
 
     this._isLoadingState = true;
@@ -203,5 +204,7 @@ export abstract class MgtBaseComponent extends LitElement {
 
     this._isLoadingState = false;
     this.fireCustomEvent('loadingCompleted');
+
+    return true;
   }
 }
