@@ -27,7 +27,9 @@
   "scripts": {
     "clean": "shx rm -rf dist",
     "start": "npm run sass && run-p sass:watch build:watch serve",
+    "start:https": "npm run sass && run-p sass:watch build:watch serve:https",
     "serve": "es-dev-server --port 3000 --node-resolve --open --watch --compatibility none --app-index index.html",
+    "serve:https": "es-dev-server --http2 --port 3000 --node-resolve --open --watch --compatibility none --app-index index.html",
     "sass": "gulp sass",
     "sass:watch": "gulp watchSass",
     "setVersion": "gulp setVersion",
