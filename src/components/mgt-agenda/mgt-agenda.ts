@@ -410,7 +410,15 @@ export class MgtAgenda extends MgtTemplatedComponent {
       : null;
   }
 
-  private renderGroups(events: MicrosoftGraph.Event[]): TemplateResult {
+  /**
+   * Render the events in groups, each with a header.
+   *
+   * @protected
+   * @param {MicrosoftGraph.Event[]} events
+   * @returns {TemplateResult}
+   * @memberof MgtAgenda
+   */
+  protected renderGroups(events: MicrosoftGraph.Event[]): TemplateResult {
     // Render list, grouped by day
     const grouped = {};
 
@@ -432,7 +440,15 @@ export class MgtAgenda extends MgtTemplatedComponent {
     `;
   }
 
-  private renderEvents(events: MicrosoftGraph.Event[]): TemplateResult {
+  /**
+   * Render a list of events.
+   *
+   * @protected
+   * @param {MicrosoftGraph.Event[]} events
+   * @returns {TemplateResult}
+   * @memberof MgtAgenda
+   */
+  protected renderEvents(events: MicrosoftGraph.Event[]): TemplateResult {
     return html`
       <ul class="agenda-list">
         ${events.map(
