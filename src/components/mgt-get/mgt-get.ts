@@ -119,7 +119,7 @@ export class MgtGet extends MgtTemplatedComponent {
    */
   public attributeChangedCallback(name, oldval, newval) {
     super.attributeChangedCallback(name, oldval, newval);
-    this.reloadState();
+    this.requestStateUpdate();
   }
 
   /**
@@ -131,7 +131,7 @@ export class MgtGet extends MgtTemplatedComponent {
    * @memberof MgtGet
    */
   public refresh(hardRefresh = false) {
-    this.reloadState(hardRefresh);
+    this.requestStateUpdate(hardRefresh);
   }
 
   /**

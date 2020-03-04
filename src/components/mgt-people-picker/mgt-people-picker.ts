@@ -111,7 +111,7 @@ export class MgtPeoplePicker extends MgtTemplatedComponent {
     super.attributeChangedCallback(att, oldval, newval);
 
     if (att === 'group-id' && oldval !== newval) {
-      this.reloadState();
+      this.requestStateUpdate();
     }
   }
 

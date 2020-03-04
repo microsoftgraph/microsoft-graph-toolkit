@@ -164,7 +164,7 @@ export class MgtAgenda extends MgtTemplatedComponent {
   public attributeChangedCallback(name, oldValue, newValue) {
     if (oldValue !== newValue && (name === 'date' || name === 'days' || name === 'group-id')) {
       this.events = null;
-      this.reloadState();
+      this.requestStateUpdate();
     }
     super.attributeChangedCallback(name, oldValue, newValue);
   }

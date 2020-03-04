@@ -96,7 +96,8 @@ export abstract class MgtBaseComponent extends LitElement {
   @property({ attribute: false })
   private _isLoadingState: boolean = false;
 
-  private _cts: CancellationTokenSource;
+  private _loadStateCancellationToken: CancellationToken;
+  private _currentLoadStatePromise: Promise<unknown>;
 
   constructor() {
     super();
@@ -126,8 +127,8 @@ export abstract class MgtBaseComponent extends LitElement {
    */
   protected firstUpdated(changedProperties): void {
     super.firstUpdated(changedProperties);
-    Providers.onProviderUpdated(() => this.reloadState());
-    this.reloadState();
+    Providers.onProviderUpdated(() => this.requestStateUpdate());
+    this.requestStateUpdate();
   }
 
   /**
@@ -186,138 +187,105 @@ export abstract class MgtBaseComponent extends LitElement {
   }
 
   /**
-   * Reload the state.
+   * Request to reload the state.
    * Returns false if already loading, unless forced.
    * Use reload instead of load to ensure loading events are fired.
    *
    * @protected
-   * @returns {Promise<void>}
    * @memberof MgtBaseComponent
    */
-  protected async reloadState(force: boolean = false): Promise<boolean> {
-    if (!force && this._isLoadingState) {
-      return false;
+  protected async requestStateUpdate(force: boolean = false): Promise<unknown> {
+    if (force && this._loadStateCancellationToken) {
+      this._loadStateCancellationToken.cancel();
     }
 
-    if (this._cts) {
-      this._cts.cancel();
-    }
-    this._cts = new CancellationTokenSource();
+    const loadStatePromise = new Promise(async (resolve, reject) => {
+      try {
+        this._isLoadingState = true;
+        this.fireCustomEvent('loadingInitiated');
 
-    try {
-      this._isLoadingState = true;
-      this.fireCustomEvent('loadingInitiated');
+        const token = new CancellationToken();
+        this._loadStateCancellationToken = token;
+        await this.loadState(token);
 
-      await this.loadState(this._cts.token);
-      this.fireCustomEvent('loadingCompleted');
-    } catch (e) {
-      if (e instanceof OperationCancelledException) {
-        this.fireCustomEvent('loadingCancelled');
-        return false;
-      } else {
-        throw e;
+        token.throwIfCancelled();
+
+        this.fireCustomEvent('loadingCompleted');
+        resolve();
+      } catch (e) {
+        if (e instanceof OperationCancelledException) {
+          this.fireCustomEvent('loadingCancelled');
+          resolve();
+        } else {
+          reject(e);
+        }
+      } finally {
+        this._isLoadingState = false;
+        this._currentLoadStatePromise = null;
+        this._loadStateCancellationToken = null;
       }
-    } finally {
-      this._isLoadingState = false;
+    });
+
+    if (this._currentLoadStatePromise) {
+      // Chain the promises together.
+      // This also allows existing promises to process any cancellation before invoking loadState next.
+      this._currentLoadStatePromise = this._currentLoadStatePromise.then(() => loadStatePromise);
+    } else {
+      this._currentLoadStatePromise = loadStatePromise;
     }
 
-    return true;
+    return this._currentLoadStatePromise;
   }
 }
 
 /**
- * Manages a CancellationToken and provides a mechanism for cancelling a function.
- *
- * @export
- * @class CancellationTokenSource
- */
-// tslint:disable-next-line: max-classes-per-file
-export class CancellationTokenSource {
-  private _token: CancellationToken;
-
-  /**
-   * is the token in a cancelled state?
-   *
-   * @readonly
-   * @type {boolean}
-   * @memberof CancellationTokenSource
-   */
-  public get isCancellationRequested(): boolean {
-    return this._token.isCancellationRequested;
-  }
-
-  /**
-   * Lazily retrieve a CancellationToken instance.
-   *
-   * @readonly
-   * @type {CancellationToken}
-   * @memberof CancellationTokenSource
-   */
-  public get token(): CancellationToken {
-    if (!this._token) {
-      this._token = new CancellationToken();
-    }
-    return this._token;
-  }
-
-  /**
-   * set the token to a cancelled state.
-   *
-   * @memberof CancellationTokenSource
-   */
-  public cancel(): void {
-    this._token.requestCancellation();
-  }
-}
-
-/**
- * A CancellationToken is used in conjunction with a CancellationTokenSource to support a method
- * of interupting process flow upon request.
+ * A token used to cancel the loadState function.
+ * Implementers should consider using token.throwIfCancelled() in the
+ * loadState function wherever cancellation logic makes sense.
  *
  * @export
  * @class CancellationToken
  */
 // tslint:disable-next-line: max-classes-per-file
 export class CancellationToken {
-  private _isCancellationRequested: boolean;
+  private _isCancelled: boolean = false;
 
   /**
-   * is the token in a cancelled state?
+   * the cancellation state of the token
    *
    * @readonly
    * @type {boolean}
    * @memberof CancellationToken
    */
-  public get isCancellationRequested(): boolean {
-    return this._isCancellationRequested;
+  public get isCancelled(): boolean {
+    return this._isCancelled;
   }
 
   /**
-   * sets the token to a cancelled state.
+   * Cancel this token
    *
    * @memberof CancellationToken
    */
-  public requestCancellation(): void {
-    this._isCancellationRequested = true;
+  public cancel(): void {
+    this._isCancelled = true;
   }
 
   /**
-   * interupts the current process if cancellation has been requested.
+   * throw an OperationCancelledException if in a cancelled state.
    *
    * @memberof CancellationToken
    */
-  public throwIfCancellationRequested(): void {
-    if (this._isCancellationRequested) {
+  public throwIfCancelled() {
+    if (this.isCancelled) {
       throw new OperationCancelledException();
     }
   }
 }
 
 /**
- * A dummy type used to detect when a thrown exception is caused by a token cancellation.
+ * A dummy type used to determine when an error has been thrown due to cancellation.
  *
- * @export
  * @class OperationCancelledException
  */
 // tslint:disable-next-line: max-classes-per-file
-export class OperationCancelledException {}
+class OperationCancelledException {}
