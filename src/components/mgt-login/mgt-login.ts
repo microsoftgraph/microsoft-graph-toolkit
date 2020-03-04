@@ -149,7 +149,10 @@ export class MgtLogin extends MgtBaseComponent {
   protected render() {
     return html`
       <div class="root">
-        ${this.renderButton()} ${this.renderFlyout()}
+        <div @click=${this.onClick}>
+          ${this.renderButton()}
+        </div>
+        ${this.renderFlyout()}
       </div>
     `;
   }
@@ -193,8 +196,8 @@ export class MgtLogin extends MgtBaseComponent {
    */
   protected renderButton() {
     return html`
-      <button ?disabled="${this._loading}" class="login-button" @click=${this.onClick} role="button">
-        ${this.userDetails ? this.renderLoggedIn() : this.renderLoggedOut()}
+      <button ?disabled="${this._loading}" class="login-button" role="button">
+        ${this.renderButtonContent()}
       </button>
     `;
   }
@@ -208,7 +211,7 @@ export class MgtLogin extends MgtBaseComponent {
   protected renderFlyout() {
     return html`
       <mgt-flyout .isOpen=${this._showMenu}>
-        ${this.renderMenu()}
+        ${this.renderFlyoutContent()}
       </mgt-flyout>
     `;
   }
@@ -220,7 +223,7 @@ export class MgtLogin extends MgtBaseComponent {
    * @returns
    * @memberof MgtLogin
    */
-  protected renderMenu() {
+  protected renderFlyoutContent() {
     if (!this.userDetails) {
       return;
     }
@@ -248,36 +251,25 @@ export class MgtLogin extends MgtBaseComponent {
   }
 
   /**
-   * Render the login button.
+   * Render the button content.
    *
    * @protected
    * @returns
    * @memberof MgtLogin
    */
-  protected renderLoggedOut() {
-    return html`
-      <i class="login-icon ms-Icon ms-Icon--Contact"></i>
-      <span aria-label="Sign In">
-        Sign In
-      </span>
-    `;
-  }
-
-  /**
-   * Render the logged in state
-   *
-   * @protected
-   * @returns
-   * @memberof MgtLogin
-   */
-  protected renderLoggedIn() {
-    if (!this.userDetails) {
-      return;
+  protected renderButtonContent() {
+    if (this.userDetails) {
+      return html`
+        <mgt-person .personDetails=${this.userDetails} .personImage=${this._image} show-name />
+      `;
+    } else {
+      return html`
+        <i class="login-icon ms-Icon ms-Icon--Contact"></i>
+        <span aria-label="Sign In">
+          Sign In
+        </span>
+      `;
     }
-
-    return html`
-      <mgt-person .personDetails=${this.userDetails} .personImage=${this._image} show-name />
-    `;
   }
 
   private handleWindowClick(e: MouseEvent) {
