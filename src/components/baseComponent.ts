@@ -77,8 +77,6 @@ export abstract class MgtBaseComponent extends LitElement {
     }
   }
 
-  private static _useShadowRoot: boolean = true;
-
   /**
    * A flag to check if the component's firstUpdated method has fired.
    *
@@ -89,12 +87,16 @@ export abstract class MgtBaseComponent extends LitElement {
     return this._isLoadingState;
   }
 
+  private static _useShadowRoot: boolean = true;
+
   /**
    * determines if login component is in loading state
    * @type {boolean}
    */
   @property({ attribute: false })
   private _isLoadingState: boolean = false;
+
+  private _cts: CancellationTokenSource;
 
   constructor() {
     super();
@@ -132,7 +134,7 @@ export abstract class MgtBaseComponent extends LitElement {
    * load state into the component.
    * Override this function to provide additional loading logic.
    */
-  protected loadState(): Promise<void> {
+  protected loadState(cancellationToken?: CancellationToken): Promise<void> {
     return Promise.resolve();
   }
 
@@ -197,14 +199,125 @@ export abstract class MgtBaseComponent extends LitElement {
       return false;
     }
 
-    this._isLoadingState = true;
-    this.fireCustomEvent('loadingInitiated');
+    if (this._cts) {
+      this._cts.cancel();
+    }
+    this._cts = new CancellationTokenSource();
 
-    await this.loadState();
+    try {
+      this._isLoadingState = true;
+      this.fireCustomEvent('loadingInitiated');
 
-    this._isLoadingState = false;
-    this.fireCustomEvent('loadingCompleted');
+      await this.loadState(this._cts.token);
+      this.fireCustomEvent('loadingCompleted');
+    } catch (e) {
+      if (e instanceof OperationCancelledException) {
+        this.fireCustomEvent('loadingCancelled');
+        return false;
+      } else {
+        throw e;
+      }
+    } finally {
+      this._isLoadingState = false;
+    }
 
     return true;
   }
 }
+
+/**
+ * Manages a CancellationToken and provides a mechanism for cancelling a function.
+ *
+ * @export
+ * @class CancellationTokenSource
+ */
+// tslint:disable-next-line: max-classes-per-file
+export class CancellationTokenSource {
+  private _token: CancellationToken;
+
+  /**
+   * is the token in a cancelled state?
+   *
+   * @readonly
+   * @type {boolean}
+   * @memberof CancellationTokenSource
+   */
+  public get isCancellationRequested(): boolean {
+    return this._token.isCancellationRequested;
+  }
+
+  /**
+   * Lazily retrieve a CancellationToken instance.
+   *
+   * @readonly
+   * @type {CancellationToken}
+   * @memberof CancellationTokenSource
+   */
+  public get token(): CancellationToken {
+    if (!this._token) {
+      this._token = new CancellationToken();
+    }
+    return this._token;
+  }
+
+  /**
+   * set the token to a cancelled state.
+   *
+   * @memberof CancellationTokenSource
+   */
+  public cancel(): void {
+    this._token.requestCancellation();
+  }
+}
+
+/**
+ * A CancellationToken is used in conjunction with a CancellationTokenSource to support a method
+ * of interupting process flow upon request.
+ *
+ * @export
+ * @class CancellationToken
+ */
+// tslint:disable-next-line: max-classes-per-file
+export class CancellationToken {
+  private _isCancellationRequested: boolean;
+
+  /**
+   * is the token in a cancelled state?
+   *
+   * @readonly
+   * @type {boolean}
+   * @memberof CancellationToken
+   */
+  public get isCancellationRequested(): boolean {
+    return this._isCancellationRequested;
+  }
+
+  /**
+   * sets the token to a cancelled state.
+   *
+   * @memberof CancellationToken
+   */
+  public requestCancellation(): void {
+    this._isCancellationRequested = true;
+  }
+
+  /**
+   * interupts the current process if cancellation has been requested.
+   *
+   * @memberof CancellationToken
+   */
+  public throwIfCancellationRequested(): void {
+    if (this._isCancellationRequested) {
+      throw new OperationCancelledException();
+    }
+  }
+}
+
+/**
+ * A dummy type used to detect when a thrown exception is caused by a token cancellation.
+ *
+ * @export
+ * @class OperationCancelledException
+ */
+// tslint:disable-next-line: max-classes-per-file
+export class OperationCancelledException {}
