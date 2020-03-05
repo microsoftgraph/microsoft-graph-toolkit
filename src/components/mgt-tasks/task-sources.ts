@@ -8,7 +8,7 @@
 import { PlannerAssignments } from '@microsoft/microsoft-graph-types';
 import { OutlookTask, OutlookTaskFolder, OutlookTaskGroup } from '@microsoft/microsoft-graph-types-beta';
 import { BetaGraph } from '../../BetaGraph';
-import { IGraph } from '../../IGraph';
+import { IGraph } from '../../mgt-core';
 import {
   addPlannerTask,
   assignPeopleToPlannerTask,

@@ -5,10 +5,9 @@
  * -------------------------------------------------------------------------------------------
  */
 
-import { customElement, LitElement, property } from 'lit-element';
-import { Providers } from '../../Providers';
+import { customElement, property } from 'lit-element';
+import { MgtBaseProvider, Providers } from '../../mgt-core';
 import { TeamsConfig, TeamsProvider } from '../../providers/TeamsProvider';
-import { MgtBaseProvider } from './baseProvider';
 
 /**
  * Authentication Library Provider for Microsoft Teams accounts

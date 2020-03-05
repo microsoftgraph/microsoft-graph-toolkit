@@ -6,7 +6,7 @@
  */
 
 import { Client, GraphRequest } from '@microsoft/microsoft-graph-client';
-import { Batch } from './utils/Batch';
+import { IBatch } from './utils/IBatch';
 
 /**
  * The common functions of the Graph
@@ -61,8 +61,8 @@ export interface IGraph {
   /**
    * creates a new batch request
    *
-   * @returns {Batch}
+   * @returns {IBatch}
    * @memberof IGraph
    */
-  createBatch(): Batch;
+  createBatch(): IBatch;
 }

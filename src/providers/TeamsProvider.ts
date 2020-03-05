@@ -7,7 +7,7 @@
 
 import { AuthenticationProviderOptions } from '@microsoft/microsoft-graph-client/lib/es/IAuthenticationProviderOptions';
 import { AuthenticationParameters, Configuration, UserAgentApplication } from 'msal';
-import { LoginType, ProviderState } from './IProvider';
+import { LoginType, ProviderState } from '../mgt-core';
 import { MsalProvider } from './MsalProvider';
 
 // tslint:disable-next-line: completed-docs

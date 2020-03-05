@@ -6,7 +6,7 @@
  */
 
 import { OutlookTask, OutlookTaskFolder, OutlookTaskGroup } from '@microsoft/microsoft-graph-types-beta';
-import { IGraph } from '../../IGraph';
+import { IGraph } from '../../mgt-core';
 import { prepScopes } from '../../utils/GraphHelpers';
 
 /**

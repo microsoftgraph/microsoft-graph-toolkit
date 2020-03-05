@@ -6,8 +6,8 @@
  */
 
 import { AuthenticationProviderOptions } from '@microsoft/microsoft-graph-client/lib/es/IAuthenticationProviderOptions';
-import { createFromProvider, Graph } from '../Graph';
-import { IProvider, LoginType, ProviderState } from './IProvider';
+import { createFromProvider } from '../Graph';
+import { IProvider, LoginType, ProviderState } from '../mgt-core';
 
 import { AuthenticationParameters, AuthError, AuthResponse, Configuration, UserAgentApplication } from 'msal';
 
