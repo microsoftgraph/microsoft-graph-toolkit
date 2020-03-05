@@ -58,7 +58,7 @@ export class MgtLogin extends MgtBaseComponent {
    * determines if login menu popup should be showing
    * @type {boolean}
    */
-  @property({ attribute: false }) private _showMenu: boolean;
+  @property({ attribute: false }) private _showFlyout: boolean;
 
   /**
    * determines if login component is in loading state
@@ -71,7 +71,6 @@ export class MgtLogin extends MgtBaseComponent {
     this._loading = true;
     Providers.onProviderUpdated(() => this.loadState());
     this.loadState();
-    this.handleWindowClick = this.handleWindowClick.bind(this);
   }
 
   /**
@@ -82,7 +81,7 @@ export class MgtLogin extends MgtBaseComponent {
   public connectedCallback() {
     super.connectedCallback();
     this.addEventListener('click', e => e.stopPropagation());
-    window.addEventListener('click', this.handleWindowClick);
+    window.addEventListener('click', e => this.handleWindowClick(e));
   }
 
   /**
@@ -91,7 +90,7 @@ export class MgtLogin extends MgtBaseComponent {
    * @memberof MgtLogin
    */
   public disconnectedCallback() {
-    window.removeEventListener('click', this.handleWindowClick);
+    window.removeEventListener('click', e => this.handleWindowClick(e));
     super.disconnectedCallback();
   }
 
@@ -102,7 +101,7 @@ export class MgtLogin extends MgtBaseComponent {
    * @memberof MgtLogin
    */
   public async login(): Promise<void> {
-    if (this.userDetails) {
+    if (this.userDetails || !this.fireCustomEvent('loginInitiated')) {
       return;
     }
 
@@ -136,7 +135,7 @@ export class MgtLogin extends MgtBaseComponent {
     if (provider && provider.logout) {
       await provider.logout();
       this.userDetails = null;
-      this._showMenu = false;
+      this.hideFlyout();
       this.fireCustomEvent('logoutCompleted');
     }
   }
@@ -149,7 +148,7 @@ export class MgtLogin extends MgtBaseComponent {
   protected render() {
     return html`
       <div class="root">
-        <div @click=${this.onClick}>
+        <div>
           ${this.renderButton()}
         </div>
         ${this.renderFlyout()}
@@ -180,7 +179,7 @@ export class MgtLogin extends MgtBaseComponent {
         this.userDetails = null;
       } else {
         // Loading
-        this._showMenu = false;
+        this.hideFlyout();
         return;
       }
     }
@@ -196,7 +195,7 @@ export class MgtLogin extends MgtBaseComponent {
    */
   protected renderButton() {
     return html`
-      <button ?disabled="${this._loading}" class="login-button" role="button">
+      <button ?disabled="${this._loading}" @click=${this.onClick} class="login-button" role="button">
         ${this.renderButtonContent()}
       </button>
     `;
@@ -210,7 +209,7 @@ export class MgtLogin extends MgtBaseComponent {
    */
   protected renderFlyout() {
     return html`
-      <mgt-flyout .isOpen=${this._showMenu}>
+      <mgt-flyout .isOpen=${this._showFlyout}>
         ${this.renderFlyoutContent()}
       </mgt-flyout>
     `;
@@ -249,7 +248,6 @@ export class MgtLogin extends MgtBaseComponent {
       </div>
     `;
   }
-
   /**
    * Render the button content.
    *
@@ -272,17 +270,45 @@ export class MgtLogin extends MgtBaseComponent {
     }
   }
 
+  /**
+   * Show the flyout and its content.
+   *
+   * @protected
+   * @memberof MgtLogin
+   */
+  protected showFlyout(): void {
+    this._showFlyout = true;
+  }
+
+  /**
+   * Dismiss the flyout.
+   *
+   * @protected
+   * @memberof MgtLogin
+   */
+  protected hideFlyout(): void {
+    this._showFlyout = false;
+  }
+
+  /**
+   * Toggle the state of the flyout.
+   *
+   * @protected
+   * @memberof MgtLogin
+   */
+  protected toggleFlyout(): void {
+    this._showFlyout = !this._showFlyout;
+  }
+
   private handleWindowClick(e: MouseEvent) {
-    this._showMenu = false;
+    this.hideFlyout();
   }
 
   private onClick(event: MouseEvent) {
     if (this.userDetails) {
-      this._showMenu = !this._showMenu;
+      this.toggleFlyout();
     } else {
-      if (this.fireCustomEvent('loginInitiated')) {
-        this.login();
-      }
+      this.login();
     }
   }
 }
