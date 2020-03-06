@@ -271,6 +271,27 @@ mgt-teams-channel-picker .teams-channel-list-fill {
       background-image: linear-gradient(to left, $selection-hover-color, rgba(255, 255, 255, 0));
     }
   }
+
+  .showing:last-child {
+    flex-flow: nowrap;
+    position: relative;
+    overflow: hidden;
+    white-space: nowrap;
+    background-color: transparent;
+    &:after {
+      content: '';
+      position: absolute;
+      width: 36px;
+      height: 100%;
+      top: 0;
+      right: 0;
+      background-image: -webkit-linear-gradient(right, $selection-hover-color, rgba(255, 255, 255, 0) !important);
+      background-image: -moz-linear-gradient(right, $selection-hover-color, rgba(255, 255, 255, 0) !important);
+      background-image: -ms-linear-gradient(right, $selection-hover-color, rgba(255, 255, 255, 0) !important);
+      background-image: -o-linear-gradient(right, $selection-hover-color, rgba(255, 255, 255, 0) !important);
+      background-image: linear-gradient(to left, $selection-hover-color, rgba(255, 255, 255, 0)) !important;
+    }
+  }
 }
 
 :host .teams-list-fill,
