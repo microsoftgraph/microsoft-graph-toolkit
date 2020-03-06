@@ -210,9 +210,11 @@ export abstract class MgtBaseComponent extends LitElement {
 
         token.throwIfCancelled();
 
+        this._isLoadingState = false;
         this.fireCustomEvent('loadingCompleted');
         resolve();
       } catch (e) {
+        this._isLoadingState = false;
         if (e instanceof OperationCancelledException) {
           this.fireCustomEvent('loadingCancelled');
           resolve();
@@ -220,7 +222,6 @@ export abstract class MgtBaseComponent extends LitElement {
           reject(e);
         }
       } finally {
-        this._isLoadingState = false;
         this._currentLoadStatePromise = null;
         this._loadStateCancellationToken = null;
       }
