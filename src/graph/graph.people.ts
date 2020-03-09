@@ -5,7 +5,7 @@
  * -------------------------------------------------------------------------------------------
  */
 
-import { Person } from '@microsoft/microsoft-graph-types';
+import { Contact, Person, User } from '@microsoft/microsoft-graph-types';
 import { IGraph } from '../IGraph';
 import { prepScopes } from '../utils/GraphHelpers';
 
@@ -60,4 +60,24 @@ export async function getPeopleFromGroup(graph: IGraph, groupId: string): Promis
     .middlewareOptions(prepScopes(scopes))
     .get();
   return people ? people.value : null;
+}
+
+/**
+ * returns a promise that resolves after specified time
+ * @param time in milliseconds
+ */
+export function getEmailFromGraphEntity(entity: User | Person | Contact): string {
+  const person = entity as Person;
+  const user = entity as User;
+  const contact = entity as Contact;
+
+  if (user.mail) {
+    return user.mail;
+  } else if (person.scoredEmailAddresses && person.scoredEmailAddresses.length) {
+    return person.scoredEmailAddresses[0].address;
+  } else if (contact.emailAddresses && contact.emailAddresses.length) {
+    return contact.emailAddresses[0].address;
+  }
+
+  return null;
 }

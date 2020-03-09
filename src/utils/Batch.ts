@@ -5,8 +5,8 @@
  * -------------------------------------------------------------------------------------------
  */
 
-import { BatchRequestContent, Client, MiddlewareOptions } from '@microsoft/microsoft-graph-client';
-import { ComponentMiddlewareOptions } from './ComponentMiddlewareOptions';
+import { BatchRequestContent, MiddlewareOptions } from '@microsoft/microsoft-graph-client';
+import { IGraph } from '../IGraph';
 import { prepScopes } from './GraphHelpers';
 
 /**
@@ -14,7 +14,7 @@ import { prepScopes } from './GraphHelpers';
  *
  * @class BatchRequest
  */
-class BatchRequest {
+export class BatchRequest {
   /**
    * url used in request
    *
@@ -51,12 +51,10 @@ export class Batch {
   private static baseUrl = 'https://graph.microsoft.com';
   private requests: Map<string, BatchRequest> = new Map<string, BatchRequest>();
   private scopes: string[] = [];
-  private client: Client;
-  private componentName: string;
+  private graph: IGraph;
 
-  constructor(client: Client, componentName: string = null) {
-    this.client = client;
-    this.componentName = componentName;
+  constructor(graph: IGraph) {
+    this.graph = graph;
   }
 
   /**
@@ -86,6 +84,7 @@ export class Batch {
     if (!this.requests.size) {
       return responses;
     }
+
     const batchRequestContent = new BatchRequestContent();
     for (const request of this.requests) {
       batchRequestContent.addRequest({
@@ -95,15 +94,13 @@ export class Batch {
         })
       });
     }
-    let batchRequest = this.client.api('$batch').version('beta');
 
-    let middlewareOptions: MiddlewareOptions[] = this.scopes.length ? prepScopes(...this.scopes) : [];
-    if (this.componentName) {
-      middlewareOptions = [new ComponentMiddlewareOptions(this.componentName), ...middlewareOptions];
-    }
-    batchRequest = batchRequest.middlewareOptions(middlewareOptions);
+    const middlewareOptions: MiddlewareOptions[] = this.scopes.length ? prepScopes(...this.scopes) : [];
+    const batchRequest = this.graph.api('$batch').middlewareOptions(middlewareOptions);
 
-    const batchResponse = await batchRequest.post(await batchRequestContent.getContent());
+    const batchRequestBody = await batchRequestContent.getContent();
+    const batchResponse = await batchRequest.post(batchRequestBody);
+
     for (const response of batchResponse.responses) {
       if (response.status !== 200) {
         response[response.id] = null;
@@ -113,6 +110,7 @@ export class Batch {
         responses[response.id] = response.body;
       }
     }
+
     return responses;
   }
 }
