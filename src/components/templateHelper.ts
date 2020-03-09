@@ -5,6 +5,12 @@
  * -------------------------------------------------------------------------------------------
  */
 
+/**
+ * Helper class for Template Instantiation
+ *
+ * @export
+ * @class TemplateHelper
+ */
 export class TemplateHelper {
   /**
    * Render a template into a HTMLElement with the appropriate data context
@@ -19,86 +25,60 @@ export class TemplateHelper {
    * </template>
    * ```
    *
+   * @param root the root element to parent the rendered content
    * @param template the template to render
    * @param context the data context to be applied
-   * @param converters the converter functions used to transform the data
+   * @param additionalContext additional context that could contain functions to transform the data
    */
-  public static renderTemplate(template: HTMLTemplateElement, context: object, converters?: object) {
+  public static renderTemplate(
+    root: HTMLElement,
+    template: HTMLTemplateElement,
+    context: object,
+    additionalContext?: object
+  ) {
     // inherit context from parent template
     if ((template as any).$parentTemplateContext) {
       context = { ...context, $parent: (template as any).$parentTemplateContext };
     }
 
+    let rendered: Node;
+
     if (template.content && template.content.childNodes.length) {
       const templateContent = template.content.cloneNode(true);
-      return this.renderNode(templateContent, context, converters);
+      rendered = this.renderNode(templateContent, root, context, additionalContext);
     } else if (template.childNodes.length) {
       const div = document.createElement('div');
       // tslint:disable-next-line: prefer-for-of
       for (let i = 0; i < template.childNodes.length; i++) {
         div.appendChild(template.childNodes[i].cloneNode(true));
       }
-      return this.renderNode(div, context, converters);
+      rendered = this.renderNode(div, root, context, additionalContext);
+    }
+
+    if (rendered) {
+      root.appendChild(rendered);
     }
   }
-  private static _expression = /{{\s*([$\w]+)(\.[$\w]+)*\s*}}/g;
-  private static _converterExpression = /{{{\s*[$\w\.()]+\s*}}}/g;
 
-  /**
-   * Gets the value of an expanded key in an object
-   *
-   * Ex:
-   * ```
-   * let value = getValueFromObject({d: 3, a: {b: {c: 5}}}, 'a.b.c')
-   * ```
-   * @param obj the object holding the value (ex: {d: 3, a: {b: {c: 5}}})
-   * @param key the key of the value we need (ex: 'a.b.c')
-   */
-  private static getValueFromObject(obj: object, key: string) {
-    key = key.trim();
-    if (key === 'this') {
-      return obj;
-    }
+  private static _expression = /{{+\s*[$\w\.()\[\]]+\s*}}+/g;
 
-    const keys = key.split('.');
-    let value = obj;
-    // tslint:disable-next-line: prefer-for-of
-    for (let i = 0; i < keys.length; i++) {
-      const currentKey = keys[i];
-      value = value[currentKey];
-      if (!value) {
-        return null;
+  private static expandExpressionsAsString(str: string, context: object, additionalContext: object) {
+    return str.replace(this._expression, match => {
+      const value = this.evalInContext(this.trimExpression(match), { ...context, ...additionalContext });
+      if (value) {
+        if (typeof value === 'object') {
+          return JSON.stringify(value);
+        } else {
+          return (value as any).toString();
+        }
       }
-    }
-
-    return value;
+      return '';
+    });
   }
 
-  private static replaceExpression(str: string, context: object, converters: object) {
-    return str
-      .replace(this._converterExpression, match => {
-        if (!converters) {
-          return '';
-        }
-        return this.evalInContext(match.substring(3, match.length - 3).trim(), { ...converters, ...context });
-      })
-      .replace(this._expression, match => {
-        const key = match.substring(2, match.length - 2);
-        const value = this.getValueFromObject(context, key);
-        if (value) {
-          if (typeof value === 'object') {
-            return JSON.stringify(value);
-          } else {
-            return (value as any).toString();
-          }
-        }
-        return '';
-      });
-  }
-
-  private static renderNode(node: Node, context: object, converters: object) {
+  private static renderNode(node: Node, root: HTMLElement, context: object, additionalContext: object) {
     if (node.nodeName === '#text') {
-      node.textContent = this.replaceExpression(node.textContent, context, converters);
+      node.textContent = this.expandExpressionsAsString(node.textContent, context, additionalContext);
       return node;
     } else if (node.nodeName === 'TEMPLATE') {
       (node as any).$parentTemplateContext = context;
@@ -113,7 +93,31 @@ export class TemplateHelper {
       // tslint:disable-next-line: prefer-for-of
       for (let i = 0; i < nodeElement.attributes.length; i++) {
         const attribute = nodeElement.attributes[i];
-        nodeElement.setAttribute(attribute.name, this.replaceExpression(attribute.value, context, converters));
+
+        if (attribute.name === 'data-props') {
+          const propsValue = this.trimExpression(attribute.value);
+          for (const prop of propsValue.split(',')) {
+            const keyValue = prop.trim().split(':');
+            if (keyValue.length === 2) {
+              const key = keyValue[0].trim();
+              const value = this.evalInContext(keyValue[1].trim(), { ...context, ...additionalContext });
+
+              if (key.startsWith('@')) {
+                // event
+                if (typeof value === 'function') {
+                  nodeElement.addEventListener(key.substring(1), e => value(e, context, root));
+                }
+              } else {
+                nodeElement[key] = value;
+              }
+            }
+          }
+        } else {
+          nodeElement.setAttribute(
+            attribute.name,
+            this.expandExpressionsAsString(attribute.value, context, additionalContext)
+          );
+        }
       }
     }
 
@@ -136,7 +140,7 @@ export class TemplateHelper {
 
         if (childElement.dataset.if) {
           const expression = childElement.dataset.if;
-          if (!this.evalBoolInContext(expression, context)) {
+          if (!this.evalBoolInContext(this.trimExpression(expression), { ...context, ...additionalContext })) {
             removeChildren.push(childElement);
             childWillBeRemoved = true;
           } else {
@@ -156,10 +160,10 @@ export class TemplateHelper {
         if (childElement.dataset.for && !childWillBeRemoved) {
           loopChildren.push(childElement);
         } else if (!childWillBeRemoved) {
-          this.renderNode(childNode, context, converters);
+          this.renderNode(childNode, root, context, additionalContext);
         }
       } else {
-        this.renderNode(childNode, context, converters);
+        this.renderNode(childNode, root, context, additionalContext);
       }
 
       // clear the flag if the current node wasn't data-if
@@ -180,14 +184,14 @@ export class TemplateHelper {
       const childElement = loopChildren[i] as HTMLElement;
 
       const loopExpression = childElement.dataset.for;
-      const loopTokens = loopExpression.split(' ');
+      const loopTokens = this.trimExpression(loopExpression).split(/\s+(in|of)\s+/i);
 
-      if (loopTokens.length > 1) {
+      if (loopTokens.length === 3) {
         // don't really care what's in the middle at this point
         const itemName = loopTokens[0];
-        const listKey = loopTokens[loopTokens.length - 1];
+        const listKey = loopTokens[2];
 
-        const list = this.getValueFromObject(context, listKey);
+        const list = this.evalInContext(listKey, { ...context, ...additionalContext });
         if (Array.isArray(list)) {
           // first remove the child
           // we will need to make copy of the child for
@@ -202,12 +206,11 @@ export class TemplateHelper {
             newContext[itemName] = list[j];
 
             const clone = childElement.cloneNode(true);
-            this.renderNode(clone, newContext, converters);
+            this.renderNode(clone, root, newContext, additionalContext);
             nodeElement.insertBefore(clone, childElement);
           }
-
-          nodeElement.removeChild(childElement);
         }
+        nodeElement.removeChild(childElement);
       }
     }
 
@@ -226,5 +229,20 @@ export class TemplateHelper {
       // tslint:disable-next-line: no-empty
     } catch (e) {}
     return result;
+  }
+
+  private static trimExpression(expression: string) {
+    let start = 0;
+    let end = expression.length - 1;
+
+    while (expression[start] === '{' && start < end) {
+      start++;
+    }
+
+    while (expression[end] === '}' && start <= end) {
+      end--;
+    }
+
+    return expression.substring(start, end + 1).trim();
   }
 }

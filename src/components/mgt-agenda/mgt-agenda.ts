@@ -6,17 +6,16 @@
  */
 
 import * as MicrosoftGraph from '@microsoft/microsoft-graph-types';
-import { customElement, html, property } from 'lit-element';
-
+import { customElement, html, property, TemplateResult } from 'lit-element';
 import { Providers } from '../../Providers';
 import { ProviderState } from '../../providers/IProvider';
-import { styles } from './mgt-agenda-css';
-
 import '../../styles/fabric-icon-font';
 import { prepScopes } from '../../utils/GraphHelpers';
 import { getDayOfWeekString, getMonthString } from '../../utils/Utils';
 import '../mgt-person/mgt-person';
 import { MgtTemplatedComponent } from '../templatedComponent';
+import { styles } from './mgt-agenda-css';
+import { getEvents } from './mgt-agenda.graph';
 
 /**
  * Web Component which represents events in a user or group calendar.
@@ -24,6 +23,21 @@ import { MgtTemplatedComponent } from '../templatedComponent';
  * @export
  * @class MgtAgenda
  * @extends {MgtTemplatedComponent}
+ *
+ * @cssprop --event-box-shadow - {String} Event box shadow color and size
+ * @cssprop --event-margin - {String} Event margin
+ * @cssprop --event-padding - {String} Event padding
+ * @cssprop --event-background - {Color} Event background color
+ * @cssprop --event-border - {String} Event border color
+ * @cssprop --agenda-header-margin - {String} Agenda header margin size
+ * @cssprop --agenda-header-font-size - {Length} Agenda header font size
+ * @cssprop --agenda-header-color - {Color} Agenda header color
+ * @cssprop --event-time-font-size - {Length} Event time font size
+ * @cssprop --event-time-color - {Color} Event time color
+ * @cssprop --event-subject-font-size - {Length} Event subject font size
+ * @cssprop --event-subject-color - {Color} Event subject color
+ * @cssprop --event-location-font-size - {Length} Event location font size
+ * @cssprop --event-location-color - {Color} Event location color
  */
 @customElement('mgt-agenda')
 export class MgtAgenda extends MgtTemplatedComponent {
@@ -36,7 +50,7 @@ export class MgtAgenda extends MgtTemplatedComponent {
   }
 
   /**
-   * array containg events from user agenda.
+   * array containing events from user agenda.
    * @type {Array<MicrosoftGraph.Event>}
    */
   @property({
@@ -56,7 +70,7 @@ export class MgtAgenda extends MgtTemplatedComponent {
   public groupByDay: boolean;
 
   /**
-   * stores current date for intial calender selection in events.
+   * stores current date for initial calender selection in events.
    * @type {string}
    */
   @property({
@@ -67,7 +81,7 @@ export class MgtAgenda extends MgtTemplatedComponent {
   public date: string;
 
   /**
-   * sets number of days until endate, 3 is the default
+   * sets number of days until end date, 3 is the default
    * @type {number}
    */
   @property({
@@ -108,6 +122,7 @@ export class MgtAgenda extends MgtTemplatedComponent {
   public groupId: string;
 
   private _firstUpdated = false;
+
   /**
    * determines width available for agenda component.
    * @type {boolean}
@@ -143,6 +158,7 @@ export class MgtAgenda extends MgtTemplatedComponent {
     Providers.onProviderUpdated(() => this.loadData());
     this.loadData();
   }
+
   /**
    * Determines width available if resize is necessary, adds onResize event listener to window
    *
@@ -153,6 +169,7 @@ export class MgtAgenda extends MgtTemplatedComponent {
     super.connectedCallback();
     window.addEventListener('resize', this.onResize);
   }
+
   /**
    * Removes onResize event listener from window
    *
@@ -178,6 +195,7 @@ export class MgtAgenda extends MgtTemplatedComponent {
     }
     super.attributeChangedCallback(name, oldValue, newValue);
   }
+
   /**
    * Invoked on each update to perform rendering tasks. This method must return a lit-html TemplateResult.
    * Setting properties inside this method will not trigger the element to update
@@ -185,12 +203,263 @@ export class MgtAgenda extends MgtTemplatedComponent {
    * @returns
    * @memberof MgtAgenda
    */
-  public render() {
+  public render(): TemplateResult {
+    // Loading
+    if (this._loading) {
+      return this.renderLoading();
+    }
+
+    // No data
+    if (!this.events || this.events.length === 0) {
+      return this.renderNoData();
+    }
+
+    // Prep data
+    const events = this.showMax && this.showMax > 0 ? this.events.slice(0, this.showMax) : this.events;
+
+    // Default template
+    const renderedTemplate = this.renderTemplate('default', { events });
+    if (renderedTemplate) {
+      return renderedTemplate;
+    }
+
+    // Update narrow state
     this._isNarrow = this.offsetWidth < 600;
+
+    // Render list
     return html`
-      <div class="agenda ${this._isNarrow ? 'narrow' : ''}">
-        ${this.renderAgenda()}
+      <div class="agenda${this._isNarrow ? ' narrow' : ''}${this.groupByDay ? ' grouped' : ''}">
+        ${this.groupByDay ? this.renderGroups(events) : this.renderEvents(events)}
       </div>
+    `;
+  }
+
+  /**
+   * Render the loading state
+   *
+   * @protected
+   * @returns
+   * @memberof MgtAgenda
+   */
+  protected renderLoading(): TemplateResult {
+    return (
+      this.renderTemplate('loading', null) ||
+      html`
+        <div class="event">
+          <div class="event-time-container">
+            <div class="event-time-loading loading-element"></div>
+          </div>
+          <div class="event-details-container">
+            <div class="event-subject-loading loading-element"></div>
+            <div class="event-location-container">
+              <div class="event-location-icon-loading loading-element"></div>
+              <div class="event-location-loading loading-element"></div>
+            </div>
+            <div class="event-location-container">
+              <div class="event-attendee-loading loading-element"></div>
+              <div class="event-attendee-loading loading-element"></div>
+              <div class="event-attendee-loading loading-element"></div>
+            </div>
+          </div>
+        </div>
+      `
+    );
+  }
+
+  /**
+   * Render the no-data state.
+   *
+   * @protected
+   * @returns {TemplateResult}
+   * @memberof MgtAgenda
+   */
+  protected renderNoData(): TemplateResult {
+    return this.renderTemplate('no-data', null) || html``;
+  }
+
+  /**
+   * Render an individual Event.
+   *
+   * @protected
+   * @param {MicrosoftGraph.Event} event
+   * @returns
+   * @memberof MgtAgenda
+   */
+  protected renderEvent(event: MicrosoftGraph.Event): TemplateResult {
+    return html`
+      <div class="event">
+        <div class="event-time-container">
+          <div class="event-time" aria-label="${this.getEventTimeString(event)}">${this.getEventTimeString(event)}</div>
+        </div>
+        <div class="event-details-container">
+          ${this.renderTitle(event)} ${this.renderLocation(event)} ${this.renderAttendees(event)}
+        </div>
+        <div class="event-other-container">
+          ${this.renderOther(event)}
+        </div>
+      </div>
+    `;
+    // <div class="event-duration">${this.getEventDuration(event)}</div>
+  }
+
+  /**
+   * Render the header for a group.
+   * Only relevant for grouped Events.
+   *
+   * @protected
+   * @param {Date} date
+   * @returns
+   * @memberof MgtAgenda
+   */
+  protected renderHeader(header: string): TemplateResult {
+    return (
+      this.renderTemplate('header', { header }, 'header-' + header) ||
+      html`
+        <div class="header" aria-label="${header}">${header}</div>
+      `
+    );
+  }
+
+  /**
+   * Render the title field of an Event
+   *
+   * @protected
+   * @param {MicrosoftGraph.Event} event
+   * @returns
+   * @memberof MgtAgenda
+   */
+  protected renderTitle(event: MicrosoftGraph.Event): TemplateResult {
+    return html`
+      <div class="event-subject">${event.subject}</div>
+    `;
+  }
+
+  /**
+   * Render the location field of an Event
+   *
+   * @protected
+   * @param {MicrosoftGraph.Event} event
+   * @returns
+   * @memberof MgtAgenda
+   */
+  protected renderLocation(event: MicrosoftGraph.Event): TemplateResult {
+    if (!event.location.displayName) {
+      return null;
+    }
+
+    return html`
+      <div class="event-location-container">
+        <svg width="10" height="13" viewBox="0 0 10 13" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <path
+            fill-rule="evenodd"
+            clip-rule="evenodd"
+            d="M4.99989 6.49989C4.15159 6.49989 3.46143 5.81458 3.46143 4.97224C3.46143 4.12965 4.15159 3.44434 4.99989 3.44434C5.84845 3.44434 6.53835 4.12965 6.53835 4.97224C6.53835 5.81458 5.84845 6.49989 4.99989 6.49989Z"
+            stroke="black"
+          />
+          <path
+            fill-rule="evenodd"
+            clip-rule="evenodd"
+            d="M8.1897 7.57436L5.00029 12L1.80577 7.56765C0.5971 6.01895 0.770299 3.47507 2.17681 2.12383C2.93098 1.39918 3.93367 1 5.00029 1C6.06692 1 7.06961 1.39918 7.82401 2.12383C9.23075 3.47507 9.40372 6.01895 8.1897 7.57436Z"
+            stroke="black"
+          />
+        </svg>
+        <div class="event-location" aria-label="${event.location.displayName}">${event.location.displayName}</div>
+      </div>
+    `;
+  }
+
+  /**
+   * Render the attendees field of an Event
+   *
+   * @protected
+   * @param {MicrosoftGraph.Event} event
+   * @returns
+   * @memberof MgtAgenda
+   */
+  protected renderAttendees(event: MicrosoftGraph.Event): TemplateResult {
+    if (!event.attendees.length) {
+      return null;
+    }
+    return html`
+      <mgt-people
+        class="event-attendees"
+        .people=${event.attendees.map(
+          attendee =>
+            ({
+              displayName: attendee.emailAddress.name,
+              emailAddresses: [attendee.emailAddress]
+            } as MicrosoftGraph.Contact)
+        )}
+      ></mgt-people>
+    `;
+  }
+
+  /**
+   * Render the event other field of an Event
+   *
+   * @protected
+   * @param {MicrosoftGraph.Event} event
+   * @returns
+   * @memberof MgtAgenda
+   */
+  protected renderOther(event: MicrosoftGraph.Event): TemplateResult {
+    return this.templates['event-other']
+      ? html`
+          ${this.renderTemplate('event-other', { event }, event.id + '-other')}
+        `
+      : null;
+  }
+
+  /**
+   * Render the events in groups, each with a header.
+   *
+   * @protected
+   * @param {MicrosoftGraph.Event[]} events
+   * @returns {TemplateResult}
+   * @memberof MgtAgenda
+   */
+  protected renderGroups(events: MicrosoftGraph.Event[]): TemplateResult {
+    // Render list, grouped by day
+    const grouped = {};
+
+    events.forEach(event => {
+      const header = this.getDateHeaderFromDateTimeString(event.start.dateTime);
+      grouped[header] = grouped[header] || [];
+      grouped[header].push(event);
+    });
+
+    return html`
+      ${Object.keys(grouped).map(
+        header =>
+          html`
+            <div class="group">
+              ${this.renderHeader(header)} ${this.renderEvents(grouped[header])}
+            </div>
+          `
+      )}
+    `;
+  }
+
+  /**
+   * Render a list of events.
+   *
+   * @protected
+   * @param {MicrosoftGraph.Event[]} events
+   * @returns {TemplateResult}
+   * @memberof MgtAgenda
+   */
+  protected renderEvents(events: MicrosoftGraph.Event[]): TemplateResult {
+    return html`
+      <ul class="agenda-list">
+        ${events.map(
+          event =>
+            html`
+              <li @click=${() => this.eventClicked(event)}>
+                ${this.renderTemplate('event', { event }, event.id) || this.renderEvent(event)}
+              </li>
+            `
+        )}
+      </ul>
     `;
   }
 
@@ -243,7 +512,7 @@ export class MgtAgenda extends MgtTemplatedComponent {
         const end = new Date(start.getTime());
         end.setDate(start.getDate() + this.days);
         try {
-          this.events = await graph.getEvents(start, end, this.groupId);
+          this.events = await getEvents(graph, start, end, this.groupId);
         } catch (error) {
           // noop - possible error with graph
         }
@@ -254,155 +523,6 @@ export class MgtAgenda extends MgtTemplatedComponent {
     } else {
       this._loading = false;
     }
-  }
-
-  private renderAgenda() {
-    if (this._loading) {
-      return this.renderTemplate('loading', null) || this.renderLoading();
-    }
-
-    if (this.events && this.events.length) {
-      const events = this.showMax && this.showMax > 0 ? this.events.slice(0, this.showMax) : this.events;
-
-      const renderedTemplate = this.renderTemplate('default', { events });
-      if (renderedTemplate) {
-        return renderedTemplate;
-      }
-
-      if (this.groupByDay) {
-        const grouped = {};
-        // tslint:disable-next-line: prefer-for-of
-        for (let i = 0; i < events.length; i++) {
-          const header = this.getDateHeaderFromDateTimeString(events[i].start.dateTime);
-          grouped[header] = grouped[header] || [];
-          grouped[header].push(events[i]);
-        }
-
-        return html`
-          <div class="agenda grouped ${this._isNarrow ? 'narrow' : ''}">
-            ${Object.keys(grouped).map(
-              header =>
-                html`
-                  <div class="group">
-                    ${this.renderTemplate('header', { header }, 'header-' + header) ||
-                      html`
-                        <div class="header" aria-label="${header}">${header}</div>
-                      `}
-                    ${this.renderListOfEvents(grouped[header])}
-                  </div>
-                `
-            )}
-          </div>
-        `;
-      }
-
-      return this.renderListOfEvents(events);
-    } else {
-      return this.renderTemplate('no-data', null) || html``;
-    }
-  }
-
-  private renderListOfEvents(events: MicrosoftGraph.Event[]) {
-    return html`
-      <ul class="agenda-list">
-        ${events.map(
-          event =>
-            html`
-              <li @click=${() => this.eventClicked(event)}>
-                ${this.renderTemplate('event', { event }, event.id) || this.renderEvent(event)}
-              </li>
-            `
-        )}
-      </ul>
-    `;
-  }
-
-  private renderLoading() {
-    return html`
-      <div class="event">
-        <div class="event-time-container">
-          <div class="event-time-loading loading-element"></div>
-        </div>
-        <div class="event-details-container">
-          <div class="event-subject-loading loading-element"></div>
-          <div class="event-location-container">
-            <div class="event-location-icon-loading loading-element"></div>
-            <div class="event-location-loading loading-element"></div>
-          </div>
-          <div class="event-location-container">
-            <div class="event-attendee-loading loading-element"></div>
-            <div class="event-attendee-loading loading-element"></div>
-            <div class="event-attendee-loading loading-element"></div>
-          </div>
-        </div>
-      </div>
-    `;
-  }
-
-  private renderEvent(event: MicrosoftGraph.Event) {
-    return html`
-      <div class="event">
-        <div class="event-time-container">
-          <div class="event-time" aria-label="${this.getEventTimeString(event)}">${this.getEventTimeString(event)}</div>
-        </div>
-        <div class="event-details-container">
-          <div class="event-subject">${event.subject}</div>
-          ${this.renderLocation(event)} ${this.renderAttendies(event)}
-        </div>
-        ${this.templates['event-other']
-          ? html`
-              <div class="event-other-container">
-                ${this.renderTemplate('event-other', { event }, event.id + '-other')}
-              </div>
-            `
-          : ''}
-      </div>
-    `;
-    // <div class="event-duration">${this.getEventDuration(event)}</div>
-  }
-
-  private renderLocation(event: MicrosoftGraph.Event) {
-    if (!event.location.displayName) {
-      return null;
-    }
-
-    return html`
-      <div class="event-location-container">
-        <svg width="10" height="13" viewBox="0 0 10 13" fill="none" xmlns="http://www.w3.org/2000/svg">
-          <path
-            fill-rule="evenodd"
-            clip-rule="evenodd"
-            d="M4.99989 6.49989C4.15159 6.49989 3.46143 5.81458 3.46143 4.97224C3.46143 4.12965 4.15159 3.44434 4.99989 3.44434C5.84845 3.44434 6.53835 4.12965 6.53835 4.97224C6.53835 5.81458 5.84845 6.49989 4.99989 6.49989Z"
-            stroke="black"
-          />
-          <path
-            fill-rule="evenodd"
-            clip-rule="evenodd"
-            d="M8.1897 7.57436L5.00029 12L1.80577 7.56765C0.5971 6.01895 0.770299 3.47507 2.17681 2.12383C2.93098 1.39918 3.93367 1 5.00029 1C6.06692 1 7.06961 1.39918 7.82401 2.12383C9.23075 3.47507 9.40372 6.01895 8.1897 7.57436Z"
-            stroke="black"
-          />
-        </svg>
-        <div class="event-location" aria-label="${event.location.displayName}">${event.location.displayName}</div>
-      </div>
-    `;
-  }
-
-  private renderAttendies(event: MicrosoftGraph.Event) {
-    if (!event.attendees.length) {
-      return null;
-    }
-    return html`
-      <mgt-people
-        class="event-attendees"
-        .people=${event.attendees.map(
-          attendee =>
-            ({
-              displayName: attendee.emailAddress.name,
-              emailAddresses: [attendee.emailAddress]
-            } as MicrosoftGraph.Contact)
-        )}
-      ></mgt-people>
-    `;
   }
 
   private eventClicked(event: MicrosoftGraph.Event) {

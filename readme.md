@@ -3,7 +3,7 @@
 <img align="left" height="150" src="https://github.com/microsoftgraph/microsoft-graph-toolkit/raw/master/assets/graff.png" title="Graff the Giraffe">
 
 [![NPM](https://img.shields.io/npm/v/@microsoft/mgt.svg)](https://www.npmjs.com/package/@microsoft/mgt) [![Licence](https://img.shields.io/github/license/microsoftgraph/microsoft-graph-toolkit.svg)](https://github.com/microsoftgraph/microsoft-graph-toolkit) [![code style: prettier](https://img.shields.io/badge/code_style-prettier-ff69b4.svg)](https://github.com/microsoftgraph/msgraph-sdk-javascript) [![stackoverflow](https://img.shields.io/stackexchange/stackoverflow/t/microsoft-graph-toolkit.svg)](https://stackoverflow.com/questions/tagged/microsoft-graph-toolkit)
-[![Build Status](https://dev.azure.com/microsoft-graph-toolkit/microsoft-graph-toolkit/_apis/build/status/microsoftgraph.microsoft-graph-toolkit?branchName=master)](https://dev.azure.com/microsoft-graph-toolkit/microsoft-graph-toolkit/_build/latest?definitionId=1&branchName=master) [![Published on webcomponents.org](https://img.shields.io/badge/webcomponents.org-published-blue.svg)](https://www.webcomponents.org/element/@microsoft/mgt)
+[![Build Status](https://dev.azure.com/microsoft-graph-toolkit/microsoft-graph-toolkit/_apis/build/status/microsoftgraph.microsoft-graph-toolkit?branchName=master)](https://dev.azure.com/microsoft-graph-toolkit/microsoft-graph-toolkit/_build/latest?definitionId=1&branchName=master) [![Published on webcomponents.org](https://img.shields.io/badge/webcomponents.org-published-blue.svg)](https://www.webcomponents.org/element/@microsoft/mgt) [![Storybook](https://raw.githubusercontent.com/storybooks/brand/master/badge/badge-storybook.svg?sanitize=true)](https://mgt.dev)
 
 The Microsoft Graph Toolkit is a collection of web components powered by the Microsoft Graph.
 
@@ -35,6 +35,8 @@ And the following providers:
 * [Simple Provider](https://docs.microsoft.com/graph/toolkit/providers/custom)
 
 [View the full documentation](https://docs.microsoft.com/graph/toolkit/overview)
+
+You can now explore components and samples with the [playground](https://mgt.dev) powered by storybook.
 
 ## Getting Started
 

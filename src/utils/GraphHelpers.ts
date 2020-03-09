@@ -5,30 +5,7 @@
  * -------------------------------------------------------------------------------------------
  */
 
-import { AuthenticationHandlerOptions } from '@microsoft/microsoft-graph-client';
-import * as MicrosoftGraph from '@microsoft/microsoft-graph-types';
-
-/**
- * returns a promise that resolves after specified time
- * @param time in milliseconds
- */
-export function getEmailFromGraphEntity(
-  entity: MicrosoftGraph.User | MicrosoftGraph.Person | MicrosoftGraph.Contact
-): string {
-  const person = entity as MicrosoftGraph.Person;
-  const user = entity as MicrosoftGraph.User;
-  const contact = entity as MicrosoftGraph.Contact;
-
-  if (user.mail) {
-    return user.mail;
-  } else if (person.scoredEmailAddresses && person.scoredEmailAddresses.length) {
-    return person.scoredEmailAddresses[0].address;
-  } else if (contact.emailAddresses && contact.emailAddresses.length) {
-    return contact.emailAddresses[0].address;
-  }
-
-  return null;
-}
+import { AuthenticationHandlerOptions, Middleware } from '@microsoft/microsoft-graph-client';
 
 /**
  * creates an AuthenticationHandlerOptions from scopes array that
@@ -43,4 +20,23 @@ export function prepScopes(...scopes: string[]) {
     scopes
   };
   return [new AuthenticationHandlerOptions(undefined, authProviderOptions)];
+}
+
+/**
+ * Helper method to chain Middleware when instantiating new Client
+ *
+ * @param {...Middleware[]} middleware
+ * @returns {Middleware}
+ */
+export function chainMiddleware(...middleware: Middleware[]): Middleware {
+  const rootMiddleware = middleware[0];
+  let current = rootMiddleware;
+  for (let i = 1; i < middleware.length; ++i) {
+    const next = middleware[i];
+    if (current.setNext) {
+      current.setNext(next);
+    }
+    current = next;
+  }
+  return rootMiddleware;
 }

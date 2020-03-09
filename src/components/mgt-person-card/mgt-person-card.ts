@@ -7,9 +7,9 @@
 
 import * as MicrosoftGraph from '@microsoft/microsoft-graph-types';
 import { customElement, html, property, TemplateResult } from 'lit-element';
+import { getEmailFromGraphEntity } from '../../graph/graph.people';
 import { Providers } from '../../Providers';
 import { ProviderState } from '../../providers/IProvider';
-import { getEmailFromGraphEntity } from '../../utils/GraphHelpers';
 import { getSvg, SvgIcon } from '../../utils/SvgHelper';
 import { MgtPerson } from '../mgt-person/mgt-person';
 import { MgtTemplatedComponent } from '../templatedComponent';
@@ -21,6 +21,11 @@ import { styles } from './mgt-person-card-css';
  * @export
  * @class MgtPersonCard
  * @extends {MgtTemplatedComponent}
+ *
+ * @cssprop --font-size - {Length} Font size
+ * @cssprop --font-weight - {Length} Font weight
+ * @cssprop --height - {String} Height
+ * @cssprop --background-color - {Color} Background color
  */
 @customElement('mgt-person-card')
 export class MgtPersonCard extends MgtTemplatedComponent {

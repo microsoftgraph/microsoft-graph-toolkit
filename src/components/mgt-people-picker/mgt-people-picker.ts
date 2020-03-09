@@ -8,6 +8,8 @@
 import * as MicrosoftGraph from '@microsoft/microsoft-graph-types';
 import { customElement, html, property, TemplateResult } from 'lit-element';
 import { repeat } from 'lit-html/directives/repeat';
+import { findPerson, getPeopleFromGroup } from '../../graph/graph.people';
+import { getUser } from '../../graph/graph.user';
 import { Providers } from '../../Providers';
 import { ProviderState } from '../../providers/IProvider';
 import '../../styles/fabric-icon-font';
@@ -22,6 +24,9 @@ import { styles } from './mgt-people-picker-css';
  * @export
  * @class MgtPicker
  * @extends {MgtTemplatedComponent}
+ *
+ * @cssprop --people-list-background-color - {Color} People list background color
+ * @cssprop --accent-color - {Color} Accent color
  */
 @customElement('mgt-people-picker')
 export class MgtPeoplePicker extends MgtTemplatedComponent {
@@ -164,12 +169,12 @@ export class MgtPeoplePicker extends MgtTemplatedComponent {
    */
   public async selectUsersById(userIds: [string]): Promise<void> {
     const provider = Providers.globalProvider;
-    const client = Providers.globalProvider.graph;
+    const graph = Providers.globalProvider.graph;
     if (provider && provider.state === ProviderState.SignedIn) {
       // tslint:disable-next-line: forin
       for (const id in userIds) {
         try {
-          const personDetails = await client.getUser(userIds[id]);
+          const personDetails = await getUser(graph, userIds[id]);
           this.addPerson(personDetails);
           // tslint:disable-next-line: no-empty
         } catch (e) {}
@@ -215,7 +220,7 @@ export class MgtPeoplePicker extends MgtTemplatedComponent {
     const provider = Providers.globalProvider;
     if (provider && provider.state === ProviderState.SignedIn) {
       const graph = provider.graph.forComponent(this);
-      this.groupPeople = await graph.getPeopleFromGroup(this.groupId);
+      this.groupPeople = await getPeopleFromGroup(graph, this.groupId);
     }
   }
 
@@ -306,7 +311,7 @@ export class MgtPeoplePicker extends MgtTemplatedComponent {
       });
 
       if (duplicatePeople.length === 0) {
-        this.selectedPeople.push(person);
+        this.selectedPeople = [...this.selectedPeople, person];
         this.fireCustomEvent('selectionChanged', this.selectedPeople);
 
         this.people = [];
@@ -338,7 +343,7 @@ export class MgtPeoplePicker extends MgtTemplatedComponent {
         if (this.groupId) {
           people = this.groupPeople;
         } else {
-          people = await graph.findPerson(name);
+          people = await findPerson(graph, name);
         }
 
         if (people) {

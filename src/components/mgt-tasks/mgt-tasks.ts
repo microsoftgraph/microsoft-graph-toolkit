@@ -19,6 +19,7 @@ import { PersonCardInteraction } from './../PersonCardInteraction';
 import { styles } from './mgt-tasks-css';
 import { ITask, ITaskFolder, ITaskGroup, ITaskSource, PlannerTaskSource, TodoTaskSource } from './task-sources';
 
+import { getMe } from '../../graph/graph.user';
 import { ComponentMediaQuery } from '../baseComponent';
 import { MgtPeople } from '../mgt-people/mgt-people';
 import '../mgt-person/mgt-person';
@@ -32,6 +33,53 @@ import '../sub-components/mgt-flyout/mgt-flyout';
  *
  * @export
  * @enum {number}
+ *
+ * @cssprop --tasks-header-padding - {String} Tasks header padding
+ * @cssprop --tasks-header-margin - {String} Tasks header margin
+ * @cssprop --tasks-title-padding - {String} Tasks title padding
+ * @cssprop --tasks-plan-title-font-size - {Length} Tasks plan title font size
+ * @cssprop --tasks-plan-title-padding - {String} Tasks plan title padding
+ * @cssprop --tasks-new-button-width - {String} Tasks new button width
+ * @cssprop --tasks-new-button-height - {String} Tasks new button height
+ * @cssprop --tasks-new-button-color - {Color} Tasks new button color
+ * @cssprop --tasks-new-button-background - {String} Tasks new button background
+ * @cssprop --tasks-new-button-border - {String} Tasks new button border
+ * @cssprop --tasks-new-button-hover-background - {Color} Tasks new button hover background
+ * @cssprop --tasks-new-button-active-background - {Color} Tasks new button active background
+ * @cssprop --tasks-new-task-name-margin - {String} Tasks new task name margin
+ * @cssprop --task-margin - {String} Task margin
+ * @cssprop --task-box-shadow - {String} Task box shadow
+ * @cssprop --task-background - {Color} Task background
+ * @cssprop --task-border - {String} Task border
+ * @cssprop --task-header-color - {Color} Task header color
+ * @cssprop --task-header-margin - {String} Task header margin
+ * @cssprop --task-detail-icon-margin -{String}  Task detail icon margin
+ * @cssprop --task-new-margin - {String} Task new margin
+ * @cssprop --task-new-border - {String} Task new border
+ * @cssprop --task-new-line-margin - {String} Task new line margin
+ * @cssprop --tasks-new-line-border - {String} Tasks new line border
+ * @cssprop --task-new-input-margin - {String} Task new input margin
+ * @cssprop --task-new-input-padding - {String} Task new input padding
+ * @cssprop --task-new-input-font-size - {Length} Task new input font size
+ * @cssprop --task-new-input-active-border - {String} Task new input active border
+ * @cssprop --task-new-select-border - {String} Task new select border
+ * @cssprop --task-new-add-button-background - {Color} Task new add button background
+ * @cssprop --task-new-add-button-disabled-background - {Color} Task new add button disabled background
+ * @cssprop --task-new-cancel-button-color - {Color} Task new cancel button color
+ * @cssprop --task-complete-background - {Color} Task complete background
+ * @cssprop --task-complete-border - {String} Task complete border
+ * @cssprop --task-complete-header-color - {Color} Task complete header color
+ * @cssprop --task-complete-detail-color - {Color} Task complete detail color
+ * @cssprop --task-complete-detail-icon-color - {Color} Task complete detail icon color
+ * @cssprop --tasks-background-color - {Color} Task background color
+ * @cssprop --task-icon-alignment - {String} Task icon alignment
+ * @cssprop --task-icon-background - {Color} Task icon color
+ * @cssprop --task-icon-background-completed - {Color} Task icon background color when completed
+ * @cssprop --task-icon-border - {String} Task icon border styles
+ * @cssprop --task-icon-border-completed - {String} Task icon border style when task is completed
+ * @cssprop --task-icon-border-radius - {String} Task icon border radius
+ * @cssprop --task-icon-color - {Color} Task icon color
+ * @cssprop --task-icon-color-completed - {Color} Task icon color when completed
  */
 export enum TasksSource {
   /**
@@ -404,7 +452,7 @@ export class MgtTasks extends MgtTemplatedComponent {
     let meTask;
     if (!this._me) {
       const graph = provider.graph.forComponent(this);
-      meTask = graph.getMe();
+      meTask = getMe(graph);
     }
 
     if (this.groupId && this.dataSource === TasksSource.planner) {

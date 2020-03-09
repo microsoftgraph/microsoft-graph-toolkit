@@ -8,15 +8,17 @@
 import * as MicrosoftGraph from '@microsoft/microsoft-graph-types';
 import { customElement, html, property, PropertyValues, TemplateResult } from 'lit-element';
 import { classMap } from 'lit-html/directives/class-map';
+import { findPerson, getEmailFromGraphEntity } from '../../graph/graph.people';
+import { getContactPhoto, getUserPhoto } from '../../graph/graph.photos';
 import { Providers } from '../../Providers';
 import { ProviderState } from '../../providers/IProvider';
 import '../../styles/fabric-icon-font';
-import { getEmailFromGraphEntity } from '../../utils/GraphHelpers';
 import { MgtPersonCard } from '../mgt-person-card/mgt-person-card';
 import '../sub-components/mgt-flyout/mgt-flyout';
 import { MgtTemplatedComponent } from '../templatedComponent';
 import { PersonCardInteraction } from './../PersonCardInteraction';
 import { styles } from './mgt-person-css';
+import { findUserByEmail } from './mgt-person.graph';
 
 /**
  * The person component is used to display a person or contact by using their photo, name, and/or email address.
@@ -24,6 +26,19 @@ import { styles } from './mgt-person-css';
  * @export
  * @class MgtPerson
  * @extends {MgtTemplatedComponent}
+ *
+ * @cssprop --avatar-size-s - {Length} Avatar size
+ * @cssprop --avatar-size - {Length} Avatar size when both name and email are shown
+ * @cssprop --avatar-font-size--s - {Length} Avatar font size
+ * @cssprop --avatar-font-size - {Length} Avatar font-size when both name and email are shown
+ * @cssprop --avatar-border - {String} Avatar border
+ * @cssprop --initials-color - {Color} Initials color
+ * @cssprop --initials-background-color - {Color} Initials background color
+ * @cssprop --font-size - {Length} Font size
+ * @cssprop --font-weight - {Length} Font weight
+ * @cssprop --color - {Color} Color
+ * @cssprop --email-font-size - {Length} Email font size
+ * @cssprop --email-color - {Color} Email color
  */
 @customElement('mgt-person')
 export class MgtPerson extends MgtTemplatedComponent {
@@ -276,7 +291,7 @@ export class MgtPerson extends MgtTemplatedComponent {
       (this.personDetails as any).personImage = response.photo;
     } else if (!this.personDetails && this.personQuery) {
       const graph = provider.graph.forComponent(this);
-      const people = await graph.findPerson(this.personQuery);
+      const people = await findPerson(graph, this.personQuery);
       if (people && people.length > 0) {
         const person = people[0] as MicrosoftGraph.Person;
         this.personDetails = person;
@@ -295,19 +310,19 @@ export class MgtPerson extends MgtTemplatedComponent {
 
     if ((person as MicrosoftGraph.Person).userPrincipalName) {
       const userPrincipalName = (person as MicrosoftGraph.Person).userPrincipalName;
-      image = await graph.getUserPhoto(userPrincipalName);
+      image = await getUserPhoto(graph, userPrincipalName);
     } else {
       const email = getEmailFromGraphEntity(person);
       if (email) {
         // try to find a user by e-mail
-        const users = await graph.findUserByEmail(email);
+        const users = await findUserByEmail(graph, email);
 
         if (users && users.length) {
           if ((users[0] as any).personType && (users[0] as any).personType.subclass === 'OrganizationUser') {
-            image = await graph.getUserPhoto((users[0] as MicrosoftGraph.Person).scoredEmailAddresses[0].address);
+            image = await getUserPhoto(graph, (users[0] as MicrosoftGraph.Person).scoredEmailAddresses[0].address);
           } else {
             const contactId = users[0].id;
-            image = await graph.getContactPhoto(contactId);
+            image = await getContactPhoto(graph, contactId);
           }
         }
       }

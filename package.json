@@ -27,13 +27,15 @@
   "scripts": {
     "clean": "shx rm -rf dist",
     "start": "npm run sass && run-p sass:watch build:watch serve",
+    "start:https": "npm run sass && run-p sass:watch build:watch serve:https",
     "serve": "es-dev-server --port 3000 --node-resolve --open --watch --compatibility none --app-index index.html",
+    "serve:https": "es-dev-server --http2 --port 3000 --node-resolve --open --watch --compatibility none --app-index index.html",
     "sass": "gulp sass",
     "sass:watch": "gulp watchSass",
     "setVersion": "gulp setVersion",
     "setLicense": "gulp setLicense",
-    "build": "run-s prettier:check lint setVersion clean sass build:esm build:bundle",
-    "build:esm": "tsc",
+    "build": "run-s prettier:check lint setVersion clean build:esm build:bundle",
+    "build:esm": "npm run sass && tsc",
     "build:watch": "tsc --watch",
     "build:bundle": "npm run copy:loader && npm run copy:wc && npm run sass && rollup -c",
     "lint": "tslint -c tslint.json 'src/**/*.ts'",
@@ -45,8 +47,9 @@
     "prettier:base": "prettier --parser typescript",
     "prettier:check": "npm run prettier:base -- --list-different \"{src,tests}/**/*.{ts,tsx}\"",
     "prettier:write": "npm run prettier:base -- --write \"{src,tests}/**/*.{ts,tsx}\"",
-    "storybook": "start-storybook -p 6006",
-    "storybook:build": "build-storybook && cpx .storybook/CNAME storybook-static",
+    "storybook": "start-storybook -p 6006 -s assets",
+    "storybook:dev": "npm run build && wca analyze src --format json --outFile custom-elements.json",
+    "storybook:build": "build-storybook -s assets && cpx .storybook/CNAME storybook-static",
     "storybook:deploy": "npm run storybook:build && storybook-to-ghpages -e storybook-static"
   },
   "storybook-deployer": {
@@ -94,6 +97,8 @@
     "husky": "^3.1.0",
     "jest": "^24.5.0",
     "jest-junit": "^6.3.0",
+    "monaco-editor": "^0.19.3",
+    "monaco-editor-webpack-plugin": "^1.8.2",
     "npm-run-all": "^4.1.5",
     "prettier": "1.17.0",
     "regenerator-runtime": "^0.13.3",
@@ -113,6 +118,7 @@
     "tslint": "^5.20.1",
     "tslint-config-prettier": "^1.18.0",
     "typescript": "^3.7.5",
+    "web-component-analyzer": "1.0.3",
     "whatwg-fetch": "^3.0.0"
   },
   "jest-junit": {
