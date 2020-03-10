@@ -96,7 +96,6 @@ export abstract class MgtBaseComponent extends LitElement {
   @property({ attribute: false })
   private _isLoadingState: boolean = false;
 
-  private _loadStateCancellationToken: CancellationToken;
   private _currentLoadStatePromise: Promise<unknown>;
 
   constructor() {
@@ -135,7 +134,7 @@ export abstract class MgtBaseComponent extends LitElement {
    * load state into the component.
    * Override this function to provide additional loading logic.
    */
-  protected loadState(cancellationToken?: CancellationToken): Promise<void> {
+  protected loadState(): Promise<void> {
     return Promise.resolve();
   }
 
@@ -188,105 +187,33 @@ export abstract class MgtBaseComponent extends LitElement {
 
   /**
    * Request to reload the state.
-   * Returns false if already loading, unless forced.
    * Use reload instead of load to ensure loading events are fired.
    *
    * @protected
    * @memberof MgtBaseComponent
    */
-  protected async requestStateUpdate(force: boolean = false): Promise<unknown> {
-    if (force && this._loadStateCancellationToken) {
-      this._loadStateCancellationToken.cancel();
+  protected async requestStateUpdate(): Promise<unknown> {
+    if (this._isLoadingState) {
+      await this._currentLoadStatePromise;
     }
 
-    const loadStatePromise = new Promise(async (resolve, reject) => {
+    this._currentLoadStatePromise = new Promise(async (resolve, reject) => {
       try {
         this._isLoadingState = true;
         this.fireCustomEvent('loadingInitiated');
 
-        const token = new CancellationToken();
-        this._loadStateCancellationToken = token;
-        await this.loadState(token);
-
-        token.throwIfCancelled();
+        await this.loadState();
 
         this._isLoadingState = false;
         this.fireCustomEvent('loadingCompleted');
         resolve();
       } catch (e) {
         this._isLoadingState = false;
-        if (e instanceof OperationCancelledException) {
-          this.fireCustomEvent('loadingCancelled');
-          resolve();
-        } else {
-          reject(e);
-        }
-      } finally {
-        this._currentLoadStatePromise = null;
-        this._loadStateCancellationToken = null;
+        this.fireCustomEvent('loadingFailed');
+        reject(e);
       }
     });
-
-    if (this._currentLoadStatePromise) {
-      // Chain the promises together.
-      // This also allows existing promises to process any cancellation before invoking loadState next.
-      this._currentLoadStatePromise = this._currentLoadStatePromise.then(() => loadStatePromise);
-    } else {
-      this._currentLoadStatePromise = loadStatePromise;
-    }
 
     return this._currentLoadStatePromise;
   }
 }
-
-/**
- * A token used to cancel the loadState function.
- * Implementers should consider using token.throwIfCancelled() in the
- * loadState function wherever cancellation logic makes sense.
- *
- * @export
- * @class CancellationToken
- */
-// tslint:disable-next-line: max-classes-per-file
-export class CancellationToken {
-  private _isCancelled: boolean = false;
-
-  /**
-   * the cancellation state of the token
-   *
-   * @readonly
-   * @type {boolean}
-   * @memberof CancellationToken
-   */
-  public get isCancelled(): boolean {
-    return this._isCancelled;
-  }
-
-  /**
-   * Cancel this token
-   *
-   * @memberof CancellationToken
-   */
-  public cancel(): void {
-    this._isCancelled = true;
-  }
-
-  /**
-   * throw an OperationCancelledException if in a cancelled state.
-   *
-   * @memberof CancellationToken
-   */
-  public throwIfCancelled() {
-    if (this.isCancelled) {
-      throw new OperationCancelledException();
-    }
-  }
-}
-
-/**
- * A dummy type used to determine when an error has been thrown due to cancellation.
- *
- * @class OperationCancelledException
- */
-// tslint:disable-next-line: max-classes-per-file
-class OperationCancelledException {}
