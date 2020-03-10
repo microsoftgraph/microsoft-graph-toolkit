@@ -58,12 +58,7 @@ export class MgtLogin extends MgtBaseComponent {
    * determines if login menu popup should be showing
    * @type {boolean}
    */
-  @property({ attribute: false }) private _showMenu: boolean;
-
-  constructor() {
-    super();
-    this.handleWindowClick = this.handleWindowClick.bind(this);
-  }
+  @property({ attribute: false }) private _showFlyout: boolean;
 
   /**
    * Invoked each time the custom element is appended into a document-connected element
@@ -73,7 +68,7 @@ export class MgtLogin extends MgtBaseComponent {
   public connectedCallback() {
     super.connectedCallback();
     this.addEventListener('click', e => e.stopPropagation());
-    window.addEventListener('click', this.handleWindowClick);
+    window.addEventListener('click', e => this.handleWindowClick(e));
   }
 
   /**
@@ -82,7 +77,7 @@ export class MgtLogin extends MgtBaseComponent {
    * @memberof MgtLogin
    */
   public disconnectedCallback() {
-    window.removeEventListener('click', this.handleWindowClick);
+    window.removeEventListener('click', e => this.handleWindowClick(e));
     super.disconnectedCallback();
   }
 
@@ -93,7 +88,7 @@ export class MgtLogin extends MgtBaseComponent {
    * @memberof MgtLogin
    */
   public async login(): Promise<void> {
-    if (this.userDetails) {
+    if (this.userDetails || !this.fireCustomEvent('loginInitiated')) {
       return;
     }
 
@@ -111,8 +106,8 @@ export class MgtLogin extends MgtBaseComponent {
   }
 
   /**
-   *
    * Initiate logout
+   *
    * @returns {Promise<void>}
    * @memberof MgtLogin
    */
@@ -125,7 +120,7 @@ export class MgtLogin extends MgtBaseComponent {
     if (provider && provider.logout) {
       await provider.logout();
       this.userDetails = null;
-      this._showMenu = false;
+      this.hideFlyout();
       this.fireCustomEvent('logoutCompleted');
     }
   }
@@ -136,14 +131,12 @@ export class MgtLogin extends MgtBaseComponent {
    * trigger the element to update.
    */
   protected render() {
-    const content = this.userDetails ? this.renderLoggedIn() : this.renderLogIn();
-
     return html`
       <div class="root">
-        <button ?disabled="${this.isLoadingState}" class="login-button" @click=${this.onClick} role="button">
-          ${content}
-        </button>
-        ${this.renderMenu()}
+        <div>
+          ${this.renderButton()}
+        </div>
+        ${this.renderFlyout()}
       </div>
     `;
   }
@@ -166,79 +159,134 @@ export class MgtLogin extends MgtBaseComponent {
 
         this._image = response.photo;
         this.userDetails = response.me;
-      } else if (provider.state === ProviderState.SignedOut) {
-        this.userDetails = null;
       } else {
-        // Loading
-        this._showMenu = false;
-        return;
+        this.userDetails = null;
       }
     }
   }
 
-  private handleWindowClick(e: MouseEvent) {
-    this._showMenu = false;
-  }
-
-  private renderLogIn() {
+  /**
+   * Render the button.
+   *
+   * @protected
+   * @memberof MgtLogin
+   */
+  protected renderButton() {
     return html`
-      <i class="login-icon ms-Icon ms-Icon--Contact"></i>
-      <span aria-label="Sign In">
-        Sign In
-      </span>
+      <button ?disabled="${this.isLoadingState}" @click=${this.onClick} class="login-button" role="button">
+        ${this.renderButtonContent()}
+      </button>
     `;
   }
 
-  private renderLoggedIn() {
+  /**
+   * Render the details flyout.
+   *
+   * @protected
+   * @memberof MgtLogin
+   */
+  protected renderFlyout() {
+    return html`
+      <mgt-flyout .isOpen=${this._showFlyout}>
+        ${this.renderFlyoutContent()}
+      </mgt-flyout>
+    `;
+  }
+
+  /**
+   * Render the flyout menu content.
+   *
+   * @protected
+   * @returns
+   * @memberof MgtLogin
+   */
+  protected renderFlyoutContent() {
+    if (!this.userDetails) {
+      return;
+    }
+
+    return html`
+      <div slot="flyout" class="flyout">
+        <div class="popup">
+          <div class="popup-content">
+            <div>
+              <mgt-person .personDetails=${this.userDetails} .personImage=${this._image} show-name show-email />
+            </div>
+            <div class="popup-commands">
+              <ul>
+                <li>
+                  <button class="popup-command" @click=${this.logout} aria-label="Sign Out">
+                    Sign Out
+                  </button>
+                </li>
+              </ul>
+            </div>
+          </div>
+        </div>
+      </div>
+    `;
+  }
+  /**
+   * Render the button content.
+   *
+   * @protected
+   * @returns
+   * @memberof MgtLogin
+   */
+  protected renderButtonContent() {
     if (this.userDetails) {
       return html`
         <mgt-person .personDetails=${this.userDetails} .personImage=${this._image} show-name />
       `;
     } else {
-      return this.renderLogIn();
+      return html`
+        <i class="login-icon ms-Icon ms-Icon--Contact"></i>
+        <span aria-label="Sign In">
+          Sign In
+        </span>
+      `;
     }
   }
 
-  private renderMenu() {
-    if (!this.userDetails) {
-      return;
-    }
+  /**
+   * Show the flyout and its content.
+   *
+   * @protected
+   * @memberof MgtLogin
+   */
+  protected showFlyout(): void {
+    this._showFlyout = true;
+  }
 
-    const personComponent = html`
-      <mgt-person .personDetails=${this.userDetails} .personImage=${this._image} show-name show-email />
-    `;
+  /**
+   * Dismiss the flyout.
+   *
+   * @protected
+   * @memberof MgtLogin
+   */
+  protected hideFlyout(): void {
+    this._showFlyout = false;
+  }
 
-    return html`
-      <mgt-flyout .isOpen=${this._showMenu}>
-        <div slot="flyout" class="flyout">
-          <div class="popup">
-            <div class="popup-content">
-              <div>
-                ${personComponent}
-              </div>
-              <div class="popup-commands">
-                <ul>
-                  <li>
-                    <button class="popup-command" @click=${this.logout} aria-label="Sign Out">
-                      Sign Out
-                    </button>
-                  </li>
-                </ul>
-              </div>
-            </div>
-          </div>
-        </div>
-      </mgt-flyout>
-    `;
+  /**
+   * Toggle the state of the flyout.
+   *
+   * @protected
+   * @memberof MgtLogin
+   */
+  protected toggleFlyout(): void {
+    this._showFlyout = !this._showFlyout;
+  }
+
+  private handleWindowClick(e: MouseEvent) {
+    this.hideFlyout();
   }
 
   private onClick(event: MouseEvent) {
     if (this.userDetails) {
-      this._showMenu = !this._showMenu;
+      this.toggleFlyout();
     } else {
-      if (this.fireCustomEvent('loginInitiated')) {
-        this.login();
-      }
+      this.login();
     }
   }
 }

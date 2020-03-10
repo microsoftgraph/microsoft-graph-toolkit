@@ -192,12 +192,13 @@ export abstract class MgtBaseComponent extends LitElement {
    * @protected
    * @memberof MgtBaseComponent
    */
-  protected async requestStateUpdate(): Promise<unknown> {
-    if (this._isLoadingState) {
+  protected async requestStateUpdate(force: boolean = false): Promise<unknown> {
+    // Wait for the current load promise to complete (unless forced).
+    if (this._isLoadingState && !force) {
       await this._currentLoadStatePromise;
     }
 
-    this._currentLoadStatePromise = new Promise(async (resolve, reject) => {
+    const loadStatePromise = new Promise(async (resolve, reject) => {
       try {
         this._isLoadingState = true;
         this.fireCustomEvent('loadingInitiated');
@@ -214,6 +215,9 @@ export abstract class MgtBaseComponent extends LitElement {
       }
     });
 
-    return this._currentLoadStatePromise;
+    // Return the load state promise.
+    // If loading + forced, chain the promises.
+    return (this._currentLoadStatePromise =
+      this._isLoadingState && force ? this._currentLoadStatePromise.then(() => loadStatePromise) : loadStatePromise);
   }
 }
