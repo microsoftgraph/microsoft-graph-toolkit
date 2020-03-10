@@ -33,7 +33,6 @@ import { findUserByEmail } from './mgt-person.graph';
  * @cssprop --avatar-font-size - {Length} Avatar font-size when both name and email are shown
  * @cssprop --avatar-border - {String} Avatar border
  * @cssprop --initials-color - {Color} Initials color
- * @cssprop --initials-background-color - {Color} Initials background color
  * @cssprop --font-size - {Length} Font size
  * @cssprop --font-weight - {Length} Font weight
  * @cssprop --color - {Color} Color
@@ -239,7 +238,7 @@ export class MgtPerson extends MgtTemplatedComponent {
     if (initials && initials.parentNode && (initials.parentNode as HTMLElement).getBoundingClientRect) {
       const parent = initials.parentNode as HTMLElement;
       const height = parent.getBoundingClientRect().height;
-      initials.style.fontSize = `${height * 0.5}px`;
+      initials.style.fontSize = `${height * 0.4}px`;
     }
   }
 
@@ -445,6 +444,35 @@ export class MgtPerson extends MgtTemplatedComponent {
       } else {
         const initials = this.getInitials();
 
+        // work around to import fabric ui core colors without creating .d.ts file
+        const colors = [
+          'pinkRed10',
+          'red20',
+          'red10',
+          'orange20',
+          'orangeYellow20',
+          'green10',
+          'green20',
+          'cyan20',
+          'cyan30',
+          'cyanBlue10',
+          'cyanBlue20',
+          'blue10',
+          'blueMagenta30',
+          'blueMagenta20',
+          'magenta20',
+          'magenta10',
+          'magentaPink10',
+          'orange30',
+          'gray30',
+          'gray20'
+        ];
+        const initialsList = this.renderRoot.querySelectorAll('.initials') as NodeListOf<HTMLElement>;
+
+        initialsList.forEach(i => {
+          i.classList.add(colors[this.numberFromInitials(initials) % colors.length]);
+        });
+
         imageHtml = html`
           <span class="initials-text" aria-label="${initials}">
             ${initials}
@@ -526,5 +554,13 @@ export class MgtPerson extends MgtTemplatedComponent {
     }
 
     return initials;
+  }
+
+  private numberFromInitials(initials) {
+    const charCodes = initials
+      .split('')
+      .map(char => char.charCodeAt(0))
+      .join('');
+    return parseInt(charCodes, 10);
   }
 }
