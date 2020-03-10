@@ -18,6 +18,7 @@ import { debounce } from '../../utils/Utils';
 import '../mgt-person/mgt-person';
 import { MgtTemplatedComponent } from '../templatedComponent';
 import { styles } from './mgt-teams-channel-picker-css';
+import { getAllMyTeams } from '../../graph/graph.teams';
 
 /**
  * Establishes Microsoft Teams channels for use in Microsoft.Graph.Team type
@@ -429,12 +430,13 @@ export class MgtTeamsChannelPicker extends MgtTemplatedComponent {
 
   private async loadTeams() {
     const provider = Providers.globalProvider;
-    const client = Providers.globalProvider.graph;
-
-    this.teams = await client.getAllMyTeams();
-
     if (provider) {
       if (provider.state === ProviderState.SignedIn) {
+        const graph = provider.graph.forComponent(this);
+    
+        this.teams = await getAllMyTeams(graph);
+
+        
         this.isLoading = true;
         const batch = provider.graph.createBatch();
 
