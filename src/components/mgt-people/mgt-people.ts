@@ -109,9 +109,6 @@ export class MgtPeople extends MgtTemplatedComponent {
   })
   public personCardInteraction: PersonCardInteraction = PersonCardInteraction.hover;
 
-  @property()
-  private hasLoaded = false;
-  private hasFirstUpdated = false;
   private privateUserIds: string[];
 
   constructor() {
@@ -121,27 +118,12 @@ export class MgtPeople extends MgtTemplatedComponent {
   }
 
   /**
-   * Invoked when the element is first updated. Implement to perform one time
-   * work on the element after update.
-   *
-   * Setting properties inside this method will trigger the element to update
-   * again after this update cycle completes.
-   *
-   * * @param _changedProperties Map of changed properties with old values
-   */
-  protected firstUpdated() {
-    this.hasFirstUpdated = true;
-    Providers.onProviderUpdated(() => this.loadPeople());
-    this.loadPeople();
-  }
-
-  /**
    * Invoked on each update to perform rendering tasks. This method must return
    * a lit-html TemplateResult. Setting properties inside this method will *not*
    * trigger the element to update.
    */
   protected render() {
-    if (!this.hasLoaded) {
+    if (this.isLoadingState) {
       return this.renderLoading();
     }
 
@@ -244,11 +226,14 @@ export class MgtPeople extends MgtTemplatedComponent {
     return this.renderTemplate('no-data', null) || html``;
   }
 
-  private async loadPeople() {
-    if (!this.hasFirstUpdated) {
-      return;
-    }
-
+  /**
+   * load state into the component.
+   *
+   * @protected
+   * @returns
+   * @memberof MgtPeople
+   */
+  protected async loadState() {
     if (!this.people) {
       const provider = Providers.globalProvider;
 
@@ -264,12 +249,10 @@ export class MgtPeople extends MgtTemplatedComponent {
         }
       }
     }
-
-    this.hasLoaded = true;
   }
 
   private async updateUserIds(newIds: string[]) {
-    if (!this.hasLoaded) {
+    if (this.isLoadingState) {
       return;
     }
 
