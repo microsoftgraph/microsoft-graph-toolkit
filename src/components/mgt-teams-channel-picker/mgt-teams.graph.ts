@@ -5,8 +5,8 @@
  * -------------------------------------------------------------------------------------------
  */
 
-import { IGraph } from '../IGraph';
-import { prepScopes } from '../utils/GraphHelpers';
+import { IGraph } from '../../IGraph';
+import { prepScopes } from '../../utils/GraphHelpers';
 
   /**
    * async promise, returns all Teams associated with the user logged in

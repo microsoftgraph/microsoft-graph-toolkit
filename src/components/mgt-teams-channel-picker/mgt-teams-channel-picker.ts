@@ -18,7 +18,7 @@ import { debounce } from '../../utils/Utils';
 import '../mgt-person/mgt-person';
 import { MgtTemplatedComponent } from '../templatedComponent';
 import { styles } from './mgt-teams-channel-picker-css';
-import { getAllMyTeams } from '../../graph/graph.teams';
+import { getAllMyTeams } from './mgt-teams.graph';
 
 /**
  * Establishes Microsoft Teams channels for use in Microsoft.Graph.Team type
