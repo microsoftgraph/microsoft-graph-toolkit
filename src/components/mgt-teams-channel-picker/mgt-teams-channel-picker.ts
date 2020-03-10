@@ -538,8 +538,8 @@ export class MgtTeamsChannelPicker extends MgtTemplatedComponent {
         inputClass = 'input-search';
 
         peopleList = html`
-          <li class="people-person">
-            <b>${this.selectedTeams[0][0].displayName}</b>
+          <li class="selected-team">
+          <div class="selected-team-name">${this.selectedTeams[0][0].displayName}</div>
             <div class="arrow">${getSvg(SvgIcon.TeamSeparator, '#B3B0AD')}</div>
             ${this.selectedTeams[1][0].displayName}
             <div class="CloseIcon" @click="${() => this.removePerson(this.selectedTeams[0], this.selectedTeams[1])}">
@@ -609,8 +609,6 @@ export class MgtTeamsChannelPicker extends MgtTemplatedComponent {
 
   private renderChannelList() {
     let content: TemplateResult;
-
-    console.log('rerender', this.noListShown);
     if (this.teams) {
       content = this.renderTeams(this.teams);
       if (this.isLoading) {
@@ -642,7 +640,7 @@ export class MgtTeamsChannelPicker extends MgtTemplatedComponent {
           channelData,
           channel => channel,
           channel => html`
-            <div class="channel-display" @click=${e => this.addChannel(e, channel)}>
+            <div class="channel-display" @click=${e => this.addChannel(e, channel)} title="${channel.displayName}">
               ${this.renderHighlightText(channel)}
             </div>
           `
@@ -667,12 +665,6 @@ export class MgtTeamsChannelPicker extends MgtTemplatedComponent {
           }
         }
 
-        console.log(channelids.length);
-        // if (channelids.length === 0) {
-        //   this.noListShown = true;
-        //   this.requestUpdate();
-        //   return;
-        // }
         channelView = html`
           ${repeat(
             channelData,
@@ -822,7 +814,7 @@ export class MgtTeamsChannelPicker extends MgtTemplatedComponent {
             <div class="arrow">
               ${teamData.showChannels ? getSvg(SvgIcon.ArrowDown, '#252424') : getSvg(SvgIcon.ArrowRight, '#252424')}
             </div>
-            <div class="team-name">
+            <div class="team-name" title="${teamData.displayName}">
               ${teamData.displayName}
             </div>
           </li>

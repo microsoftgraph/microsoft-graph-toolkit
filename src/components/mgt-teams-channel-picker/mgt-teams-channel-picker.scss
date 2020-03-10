@@ -115,9 +115,12 @@ mgt-teams-channel-picker .people-chosen-list {
   font-style: normal;
   font-weight: normal;
   color: $font-color;
-  .people-person {
+  .selected-team {
     padding-top: 1px;
     padding-right: 6px;
+    .selected-team-name{
+      font-weight: bold;
+    }
   }
 }
 .CloseIcon,
@@ -160,8 +163,8 @@ mgt-teams-channel-picker .SearchIcon {
   color: $accent-color;
 }
 
-:host .people-person,
-mgt-teams-channel-picker .people-person {
+:host .selected-team,
+mgt-teams-channel-picker .selected-team {
   border: none;
   display: flex;
   margin: 4px 5px 0 0;
@@ -572,18 +575,4 @@ mgt-teams-channel-picker .message-parent {
 :host .highlight-search-text,
 mgt-teams-channel-picker .highlight-search-text {
   font-weight: bold;
-}
-:host .people-person-job-title,
-mgt-teams-channel-picker .people-person-job-title {
-  flex: 100%;
-  order: 3;
-  font-weight: normal;
-  font-size: 12px;
-  text-transform: uppercase;
-}
-:host .people-person-text-area,
-mgt-teams-channel-picker .people-person-text-area {
-  margin-left: 13px;
-  flex: 1 1 0;
-  max-height: 40px;
 }
