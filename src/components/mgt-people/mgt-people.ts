@@ -6,7 +6,7 @@
  */
 
 import * as MicrosoftGraph from '@microsoft/microsoft-graph-types';
-import { customElement, html, property } from 'lit-element';
+import { customElement, html, property, TemplateResult } from 'lit-element';
 import { repeat } from 'lit-html/directives/repeat';
 import { getPeople, getPeopleFromGroup } from '../../graph/graph.people';
 import { getUsersForUserIds } from '../../graph/graph.user';
@@ -109,7 +109,6 @@ export class MgtPeople extends MgtTemplatedComponent {
   })
   public personCardInteraction: PersonCardInteraction = PersonCardInteraction.hover;
 
-  private hasLoaded = false;
   private privateUserIds: string[];
 
   constructor() {
@@ -123,38 +122,108 @@ export class MgtPeople extends MgtTemplatedComponent {
    * a lit-html TemplateResult. Setting properties inside this method will *not*
    * trigger the element to update.
    */
-
   protected render() {
-    if (this.people && this.people.length) {
-      return (
-        this.renderTemplate('default', { people: this.people }) ||
-        html`
-          <ul class="people-list">
-            ${repeat(
-              this.people.slice(0, this.showMax),
-              p => p.id,
-              p => html`
-                <li class="people-person">
-                  ${this.renderTemplate('person', { person: p }, p.id) || this.renderPerson(p)}
-                </li>
-              `
-            )}
-            ${this.people.length > this.showMax
-              ? this.renderTemplate('overflow', {
-                  extra: this.people.length - this.showMax,
-                  max: this.showMax,
-                  people: this.people
-                }) ||
-                html`
-                    <li class="overflow"><span>+${this.people.length - this.showMax}<span></li>
-                  `
-              : null}
-          </ul>
-        `
-      );
-    } else {
-      return this.renderTemplate('no-data', null) || html``;
+    if (this.isLoadingState) {
+      return this.renderLoading();
     }
+
+    if (!this.people || this.people.length === 0) {
+      return this.renderNoData();
+    }
+
+    return this.renderTemplate('default', { people: this.people, max: this.showMax }) || this.renderPeople();
+  }
+
+  /**
+   * Render the loading state.
+   *
+   * @protected
+   * @returns
+   * @memberof MgtPeople
+   */
+  protected renderLoading() {
+    return this.renderTemplate('loading', null) || html``;
+  }
+
+  /**
+   * Render the list of people.
+   *
+   * @protected
+   * @param {*} people
+   * @returns {TemplateResult}
+   * @memberof MgtPeople
+   */
+  protected renderPeople(): TemplateResult {
+    const maxPeople = this.people.slice(0, this.showMax);
+
+    return html`
+      <ul class="people-list">
+        ${repeat(
+          maxPeople,
+          p => p.id,
+          p => html`
+            <li class="people-person">
+              ${this.renderPerson(p)}
+            </li>
+          `
+        )}
+        ${this.people.length > this.showMax ? this.renderOverflow() : null}
+      </ul>
+    `;
+  }
+
+  /**
+   * Render the overflow content to represent any extra people, beyond the max.
+   *
+   * @protected
+   * @returns {TemplateResult}
+   * @memberof MgtPeople
+   */
+  protected renderOverflow(): TemplateResult {
+    const extra = this.people.length - this.showMax;
+    return (
+      this.renderTemplate('overflow', {
+        extra,
+        max: this.showMax,
+        people: this.people
+      }) ||
+      html`
+        <li class="overflow"><span>+${extra}<span></li>
+      `
+    );
+  }
+
+  /**
+   * Render an individual person.
+   *
+   * @protected
+   * @returns {TemplateResult}
+   * @memberof MgtPeople
+   */
+  protected renderPerson(person: MicrosoftGraph.User | MicrosoftGraph.Person | MicrosoftGraph.Contact): TemplateResult {
+    return (
+      this.renderTemplate('person', { person }, person.id) ||
+      // set image to @ to flag the mgt-person component to
+      // query the image from the graph
+      html`
+        <mgt-person
+          .personDetails=${person}
+          .personImage=${'@'}
+          .personCardInteraction=${this.personCardInteraction}
+        ></mgt-person>
+      `
+    );
+  }
+
+  /**
+   * render the no data state.
+   *
+   * @protected
+   * @returns {TemplateResult}
+   * @memberof MgtPeople
+   */
+  protected renderNoData(): TemplateResult {
+    return this.renderTemplate('no-data', null) || html``;
   }
 
   /**
@@ -180,12 +249,10 @@ export class MgtPeople extends MgtTemplatedComponent {
         }
       }
     }
-
-    this.hasLoaded = true;
   }
 
   private async updateUserIds(newIds: string[]) {
-    if (!this.hasLoaded) {
+    if (this.isLoadingState) {
       return;
     }
 
@@ -212,17 +279,5 @@ export class MgtPeople extends MgtTemplatedComponent {
       const newPeople = await getUsersForUserIds(graph, newToLoad);
       this.people = (this.people || []).concat(newPeople);
     }
-  }
-
-  private renderPerson(person: MicrosoftGraph.Person) {
-    // set image to @ to flag the mgt-person component to
-    // query the image from the graph
-    return html`
-      <mgt-person
-        .personDetails=${person}
-        .personImage=${'@'}
-        .personCardInteraction=${this.personCardInteraction}
-      ></mgt-person>
-    `;
   }
 }
