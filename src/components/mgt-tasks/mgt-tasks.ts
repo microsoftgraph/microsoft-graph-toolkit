@@ -281,7 +281,6 @@ export class MgtTasks extends MgtTemplatedComponent {
   @property() private isPeoplePickerVisible: boolean;
 
   private _me: User = null;
-  private providerUpdateCallback: () => void | any;
   private handleWindowClick: (event: MouseEvent) => void;
   private previousMediaQuery: ComponentMediaQuery;
 
@@ -299,7 +298,6 @@ export class MgtTasks extends MgtTemplatedComponent {
 
     this.previousMediaQuery = this.mediaQuery;
     this.onResize = this.onResize.bind(this);
-    this.providerUpdateCallback = () => this.loadTasks();
     this.handleWindowClick = () => this.hidePeoplePicker();
   }
 
@@ -310,7 +308,6 @@ export class MgtTasks extends MgtTemplatedComponent {
    */
   public connectedCallback() {
     super.connectedCallback();
-    Providers.onProviderUpdated(this.providerUpdateCallback);
     window.addEventListener('resize', this.onResize);
     window.addEventListener('click', this.handleWindowClick);
   }
@@ -321,7 +318,6 @@ export class MgtTasks extends MgtTemplatedComponent {
    * @memberof MgtTasks
    */
   public disconnectedCallback() {
-    Providers.removeProviderUpdatedListener(this.providerUpdateCallback);
     window.removeEventListener('resize', this.onResize);
     window.removeEventListener('click', this.handleWindowClick);
     super.disconnectedCallback();
@@ -360,7 +356,7 @@ export class MgtTasks extends MgtTemplatedComponent {
       this._inTaskLoad = false;
       this._todoDefaultSet = false;
 
-      this.loadTasks();
+      this.requestStateUpdate();
     }
   }
 
@@ -371,9 +367,11 @@ export class MgtTasks extends MgtTemplatedComponent {
    * Setting properties inside this method will trigger the element to update
    * again after this update cycle completes.
    *
-   * * @param _changedProperties Map of changed properties with old values
+   * @param _changedProperties Map of changed properties with old values
    */
-  protected firstUpdated() {
+  protected firstUpdated(changedProperties) {
+    super.firstUpdated(changedProperties);
+
     if (this.initialId && !this._currentGroup) {
       if (this.dataSource === TasksSource.planner) {
         this._currentGroup = this.initialId;
@@ -385,8 +383,6 @@ export class MgtTasks extends MgtTemplatedComponent {
     if (this.dataSource === TasksSource.planner && this.initialBucketId && !this._currentFolder) {
       this._currentFolder = this.initialBucketId;
     }
-
-    this.loadTasks();
   }
 
   /**
@@ -425,20 +421,13 @@ export class MgtTasks extends MgtTemplatedComponent {
     `;
   }
 
-  private onResize() {
-    if (this.mediaQuery !== this.previousMediaQuery) {
-      this.previousMediaQuery = this.mediaQuery;
-      this.requestUpdate();
-    }
-  }
-
   /**
    * loads tasks from dataSource
    *
    * @returns
    * @memberof MgtTasks
    */
-  private async loadTasks() {
+  protected async loadState() {
     const ts = this.getTaskSource();
     if (!ts) {
       return;
@@ -474,6 +463,13 @@ export class MgtTasks extends MgtTemplatedComponent {
 
     this._inTaskLoad = false;
     this._hasDoneInitialLoad = true;
+  }
+
+  private onResize() {
+    if (this.mediaQuery !== this.previousMediaQuery) {
+      this.previousMediaQuery = this.mediaQuery;
+      this.requestUpdate();
+    }
   }
 
   private async _loadTargetTodoTasks(ts: ITaskSource) {
@@ -572,7 +568,7 @@ export class MgtTasks extends MgtTemplatedComponent {
 
     this._newTaskBeingAdded = true;
     await ts.addTask(newTask);
-    await this.loadTasks();
+    await this.requestStateUpdate();
     this._newTaskBeingAdded = false;
     this.isNewTaskVisible = false;
   }
@@ -584,7 +580,7 @@ export class MgtTasks extends MgtTemplatedComponent {
     }
     this._loadingTasks = [...this._loadingTasks, task.id];
     await ts.setTaskComplete(task.id, task.eTag);
-    await this.loadTasks();
+    await this.requestStateUpdate();
     this._loadingTasks = this._loadingTasks.filter(id => id !== task.id);
   }
 
@@ -596,7 +592,7 @@ export class MgtTasks extends MgtTemplatedComponent {
 
     this._loadingTasks = [...this._loadingTasks, task.id];
     await ts.setTaskIncomplete(task.id, task.eTag);
-    await this.loadTasks();
+    await this.requestStateUpdate();
     this._loadingTasks = this._loadingTasks.filter(id => id !== task.id);
   }
 
@@ -608,7 +604,7 @@ export class MgtTasks extends MgtTemplatedComponent {
 
     this._hiddenTasks = [...this._hiddenTasks, task.id];
     await ts.removeTask(task.id, task.eTag);
-    await this.loadTasks();
+    await this.requestStateUpdate();
     this._hiddenTasks = this._hiddenTasks.filter(id => id !== task.id);
   }
 
@@ -673,7 +669,7 @@ export class MgtTasks extends MgtTemplatedComponent {
     if (task) {
       this._loadingTasks = [...this._loadingTasks, task.id];
       await ts.assignPeopleToTask(task.id, peopleObj, task.eTag);
-      await this.loadTasks();
+      await this.requestStateUpdate();
       this._loadingTasks = this._loadingTasks.filter(id => id !== task.id);
     }
   }

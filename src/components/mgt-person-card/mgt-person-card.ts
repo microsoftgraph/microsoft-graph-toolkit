@@ -105,20 +105,6 @@ export class MgtPersonCard extends MgtTemplatedComponent {
   }
 
   /**
-   * Invoked when the element is first updated. Implement to perform one time
-   * work on the element after update.
-   *
-   * Setting properties inside this method will trigger the element to update
-   * again after this update cycle completes.
-   *
-   * * @param _changedProperties Map of changed properties with old values
-   */
-  public firstUpdated() {
-    Providers.onProviderUpdated(() => this.loadData());
-    this.loadData();
-  }
-
-  /**
    * Invoked on each update to perform rendering tasks. This method must return
    * a lit-html TemplateResult. Setting properties inside this method will *not*
    * trigger the element to update.
@@ -168,6 +154,36 @@ export class MgtPersonCard extends MgtTemplatedComponent {
           </div>
         </div>
       `;
+    }
+  }
+
+  /**
+   * load state into the component
+   *
+   * @protected
+   * @returns
+   * @memberof MgtPersonCard
+   */
+  protected async loadState() {
+    if (this.inheritDetails) {
+      let parent = this.parentElement;
+      while (parent && parent.tagName !== 'MGT-PERSON') {
+        parent = parent.parentElement;
+      }
+
+      if (parent && (parent as MgtPerson).personDetails) {
+        this.personDetails = (parent as MgtPerson).personDetails;
+        this.personImage = (parent as MgtPerson).personImage;
+      }
+    }
+
+    if (this.personDetails) {
+      return;
+    }
+
+    const provider = Providers.globalProvider;
+    if (!provider || provider.state !== ProviderState.SignedIn) {
+      return;
     }
   }
 
@@ -351,30 +367,6 @@ export class MgtPersonCard extends MgtTemplatedComponent {
     }
     e.stopPropagation();
     window.open('sip:' + chat, '_blank');
-  }
-
-  private async loadData() {
-    if (this.inheritDetails) {
-      let parent = this.parentElement;
-      while (parent && parent.tagName !== 'MGT-PERSON') {
-        parent = parent.parentElement;
-      }
-
-      if (parent && (parent as MgtPerson).personDetails) {
-        this.personDetails = (parent as MgtPerson).personDetails;
-        this.personImage = (parent as MgtPerson).personImage;
-      }
-    }
-
-    if (this.personDetails) {
-      return;
-    }
-
-    const provider = Providers.globalProvider;
-
-    if (!provider || provider.state !== ProviderState.SignedIn) {
-      return;
-    }
   }
 
   private handleClose(e: Event) {
