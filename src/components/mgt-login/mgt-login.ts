@@ -61,19 +61,6 @@ export class MgtLogin extends MgtBaseComponent {
   @property({ attribute: false }) private _showFlyout: boolean;
 
   /**
-   * determines if login component is in loading state
-   * @type {boolean}
-   */
-  @property({ attribute: false }) private _loading: boolean;
-
-  constructor() {
-    super();
-    this._loading = true;
-    Providers.onProviderUpdated(() => this.loadState());
-    this.loadState();
-  }
-
-  /**
    * Invoked each time the custom element is appended into a document-connected element
    *
    * @memberof MgtLogin
@@ -115,8 +102,6 @@ export class MgtLogin extends MgtBaseComponent {
       } else {
         this.fireCustomEvent('loginFailed');
       }
-
-      await this.loadState();
     }
   }
 
@@ -166,7 +151,6 @@ export class MgtLogin extends MgtBaseComponent {
   protected async loadState() {
     const provider = Providers.globalProvider;
     if (provider) {
-      this._loading = true;
       if (provider.state === ProviderState.SignedIn) {
         const batch = provider.graph.forComponent(this).createBatch();
         batch.get('me', 'me', ['user.read']);
@@ -175,16 +159,10 @@ export class MgtLogin extends MgtBaseComponent {
 
         this._image = response.photo;
         this.userDetails = response.me;
-      } else if (provider.state === ProviderState.SignedOut) {
-        this.userDetails = null;
       } else {
-        // Loading
-        this.hideFlyout();
-        return;
+        this.userDetails = null;
       }
     }
-
-    this._loading = false;
   }
 
   /**
@@ -195,7 +173,7 @@ export class MgtLogin extends MgtBaseComponent {
    */
   protected renderButton() {
     return html`
-      <button ?disabled="${this._loading}" @click=${this.onClick} class="login-button" role="button">
+      <button ?disabled="${this.isLoadingState}" @click=${this.onClick} class="login-button" role="button">
         ${this.renderButtonContent()}
       </button>
     `;
