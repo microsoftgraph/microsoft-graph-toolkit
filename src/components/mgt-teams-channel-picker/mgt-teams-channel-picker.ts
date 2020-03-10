@@ -53,6 +53,23 @@ type Team = MicrosoftGraph.Team & {
  *
  * @class MgtTeamsChannelPicker
  * @extends {MgtTemplatedComponent}
+ * 
+ * @cssprop --font-color - {font} Default font color
+ * 
+ * @cssprop --input-border - {String} Input section entire border
+ * @cssprop --input-border-top - {String} Input section border top only
+ * @cssprop --input-border-right - {String} Input section border right only
+ * @cssprop --input-border-bottom - {String} Input section border bottom only
+ * @cssprop --input-border-left - {String} Input section border left only
+ * @cssprop --input-background-color - {Color} Input section background color
+ * @cssprop --input-hover-color - {Color} Input text hover color
+ * 
+ * @cssprop --selection-background-color - {Color} Highlight of selected channel color
+ * @cssprop --selection-hover-color - {Color} Highlight of selected channel color during hover state
+ * 
+ * @cssprop --arrow-fill - {Color} Color of arrow svg
+ * @cssprop --placeholder-focus-color - {Color} Highlight of placeholder text during focus state
+ * 
  */
 @customElement('mgt-teams-channel-picker')
 export class MgtTeamsChannelPicker extends MgtTemplatedComponent {
