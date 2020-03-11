@@ -18,7 +18,7 @@ import { debounce } from '../../utils/Utils';
 import '../mgt-person/mgt-person';
 import { MgtTemplatedComponent } from '../templatedComponent';
 import { styles } from './mgt-teams-channel-picker-css';
-import { getAllMyTeams } from './mgt-teams.graph';
+import { getAllMyTeams } from './mgt-teams-channel-picker.graph';
 
 /**
  * Establishes Microsoft Teams channels for use in Microsoft.Graph.Team type
@@ -130,9 +130,9 @@ export class MgtTeamsChannelPicker extends MgtTemplatedComponent {
 
   private channelCounter: number = -1;
 
-  @property() private isHovered = false;
+  private isHovered = false;
 
-  @property() private isFocused = false;
+  private isFocused = false;
 
   // determines loading state
   @property() private isLoading = false;
@@ -221,6 +221,7 @@ export class MgtTeamsChannelPicker extends MgtTemplatedComponent {
   private mouseLeft() {
     if (this._userInput.length === 0) {
       this.isHovered = false;
+      this.requestUpdate();
     }
   }
 
@@ -229,6 +230,7 @@ export class MgtTeamsChannelPicker extends MgtTemplatedComponent {
       this.loadTeams();
     }
     this.isHovered = true;
+    this.requestUpdate();
   }
 
   private handleWindowClick(e: MouseEvent) {
@@ -318,10 +320,19 @@ export class MgtTeamsChannelPicker extends MgtTemplatedComponent {
     }
   }
 
-  private handleChannelHighlight(channels: any) {
+/**
+ * Tracks user input when inside team, in order to traverse channels
+ *
+ * @private
+ * @param {*} channels
+ * @memberof MgtTeamsChannelPicker
+ */
+private handleChannelHighlight(channels: any) {
+  // moves counter once for user input
     const htmlCount = this.channelCounter + 1;
     const displayedChannels = [];
 
+  // if channel is not filtered by search (showing)
     for (let i = 0; i < channels.length; i++) {
       if (channels[i].children[0].classList.contains('showing')) {
         displayedChannels.push(channels[i]);
@@ -612,6 +623,7 @@ export class MgtTeamsChannelPicker extends MgtTemplatedComponent {
       // Mouse is focused on input
       teamList.setAttribute('style', 'display:block');
     }
+    this.requestUpdate();
   }
 
   private lostFocus() {
@@ -622,6 +634,7 @@ export class MgtTeamsChannelPicker extends MgtTemplatedComponent {
     if (teamList) {
       teamList.setAttribute('style', 'display:none');
     }
+    this.requestUpdate();
   }
 
   private renderChannelList() {
