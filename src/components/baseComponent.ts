@@ -5,7 +5,8 @@
  * -------------------------------------------------------------------------------------------
  */
 
-import { LitElement, PropertyValues } from 'lit-element';
+import { LitElement, property, PropertyValues } from 'lit-element';
+import { Providers } from '../Providers';
 
 /**
  * Defines media query based on component width
@@ -76,7 +77,26 @@ export abstract class MgtBaseComponent extends LitElement {
     }
   }
 
+  /**
+   * A flag to check if the component's firstUpdated method has fired.
+   *
+   * @protected
+   * @memberof MgtBaseComponent
+   */
+  protected get isLoadingState(): boolean {
+    return this._isLoadingState;
+  }
+
   private static _useShadowRoot: boolean = true;
+
+  /**
+   * determines if login component is in loading state
+   * @type {boolean}
+   */
+  @property({ attribute: false })
+  private _isLoadingState: boolean = false;
+
+  private _currentLoadStatePromise: Promise<unknown>;
 
   constructor() {
     super();
@@ -93,6 +113,29 @@ export abstract class MgtBaseComponent extends LitElement {
    */
   public isShadowRootDisabled() {
     return !MgtBaseComponent._useShadowRoot || !(this.constructor as typeof MgtBaseComponent)._useShadowRoot;
+  }
+
+  /**
+   * Invoked when the element is first updated. Implement to perform one time
+   * work on the element after update.
+   *
+   * Setting properties inside this method will trigger the element to update
+   * again after this update cycle completes.
+   *
+   * @param _changedProperties Map of changed properties with old values
+   */
+  protected firstUpdated(changedProperties): void {
+    super.firstUpdated(changedProperties);
+    Providers.onProviderUpdated(() => this.requestStateUpdate());
+    this.requestStateUpdate();
+  }
+
+  /**
+   * load state into the component.
+   * Override this function to provide additional loading logic.
+   */
+  protected loadState(): Promise<void> {
+    return Promise.resolve();
   }
 
   /**
@@ -140,5 +183,41 @@ export abstract class MgtBaseComponent extends LitElement {
       cancelable: true
     });
     this.dispatchEvent(event);
+  }
+
+  /**
+   * Request to reload the state.
+   * Use reload instead of load to ensure loading events are fired.
+   *
+   * @protected
+   * @memberof MgtBaseComponent
+   */
+  protected async requestStateUpdate(force: boolean = false): Promise<unknown> {
+    // Wait for the current load promise to complete (unless forced).
+    if (this._isLoadingState && !force) {
+      await this._currentLoadStatePromise;
+    }
+
+    const loadStatePromise = new Promise(async (resolve, reject) => {
+      try {
+        this._isLoadingState = true;
+        this.fireCustomEvent('loadingInitiated');
+
+        await this.loadState();
+
+        this._isLoadingState = false;
+        this.fireCustomEvent('loadingCompleted');
+        resolve();
+      } catch (e) {
+        this._isLoadingState = false;
+        this.fireCustomEvent('loadingFailed');
+        reject(e);
+      }
+    });
+
+    // Return the load state promise.
+    // If loading + forced, chain the promises.
+    return (this._currentLoadStatePromise =
+      this._isLoadingState && force ? this._currentLoadStatePromise.then(() => loadStatePromise) : loadStatePromise);
   }
 }

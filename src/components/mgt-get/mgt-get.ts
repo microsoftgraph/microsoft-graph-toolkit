@@ -107,9 +107,6 @@ export class MgtGet extends MgtTemplatedComponent {
    */
   @property({ attribute: false }) public error: any;
 
-  @property({ attribute: false }) private loading: boolean = false;
-
-  private hasFirstUpdated: boolean = false;
   private isPolling: boolean = false;
 
   /**
@@ -122,25 +119,7 @@ export class MgtGet extends MgtTemplatedComponent {
    */
   public attributeChangedCallback(name, oldval, newval) {
     super.attributeChangedCallback(name, oldval, newval);
-
-    if (this.hasFirstUpdated) {
-      this.loadData(true);
-    }
-  }
-
-  /**
-   * Invoked when the element is first updated. Implement to perform one time
-   * work on the element after update.
-   *
-   * Setting properties inside this method will trigger the element to update
-   * again after this update cycle completes.
-   *
-   * * @param _changedProperties Map of changed properties with old values
-   */
-  public firstUpdated() {
-    Providers.onProviderUpdated(() => this.loadData());
-    this.loadData(true);
-    this.hasFirstUpdated = true;
+    this.requestStateUpdate();
   }
 
   /**
@@ -152,7 +131,7 @@ export class MgtGet extends MgtTemplatedComponent {
    * @memberof MgtGet
    */
   public refresh(hardRefresh = false) {
-    this.loadData(hardRefresh);
+    this.requestStateUpdate(hardRefresh);
   }
 
   /**
@@ -161,7 +140,9 @@ export class MgtGet extends MgtTemplatedComponent {
    * trigger the element to update.
    */
   protected render() {
-    if (this.error) {
+    if (this.isLoadingState) {
+      return this.renderTemplate('loading', null);
+    } else if (this.error) {
       return this.renderTemplate('error', this.error);
       // tslint:disable-next-line: no-string-literal
     } else if (this.templates['value'] && this.response && this.response.value) {
@@ -169,7 +150,7 @@ export class MgtGet extends MgtTemplatedComponent {
 
       if (Array.isArray(this.response.value)) {
         let loading = null;
-        if (this.loading && !this.isPolling) {
+        if (this.isLoadingState && !this.isPolling) {
           loading = this.renderTemplate('loading', null);
         }
         valueContent = html`
@@ -198,14 +179,21 @@ export class MgtGet extends MgtTemplatedComponent {
       }
     } else if (this.response) {
       return this.renderTemplate('default', this.response) || html``;
-    } else if (this.loading) {
+    } else if (this.isLoadingState) {
       return this.renderTemplate('loading', null) || html``;
     } else {
       return html``;
     }
   }
 
-  private async loadData(hardRefresh = false) {
+  /**
+   * load state into the component.
+   *
+   * @protected
+   * @returns
+   * @memberof MgtGet
+   */
+  protected async loadState() {
     const provider = Providers.globalProvider;
 
     this.error = null;
@@ -215,11 +203,6 @@ export class MgtGet extends MgtTemplatedComponent {
     }
 
     if (this.resource) {
-      if (hardRefresh) {
-        this.response = null;
-        this.loading = true;
-      }
-
       try {
         let uri = this.resource;
         let delta = false;
@@ -279,12 +262,11 @@ export class MgtGet extends MgtTemplatedComponent {
         if (this.pollingRate) {
           setTimeout(async () => {
             this.isPolling = true;
-            await this.loadData();
+            await this.loadState();
             this.isPolling = false;
           }, this.pollingRate);
         }
       }
-      this.loading = false;
     } else {
       this.response = null;
     }

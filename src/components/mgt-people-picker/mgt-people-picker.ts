@@ -111,18 +111,7 @@ export class MgtPeoplePicker extends MgtTemplatedComponent {
     super.attributeChangedCallback(att, oldval, newval);
 
     if (att === 'group-id' && oldval !== newval) {
-      this.findGroup();
-    }
-  }
-  /**
-   * Invoked when the element is first updated. Implement to perform one time work on the element after update.
-   * Checks if group-id is present
-   * @memberof MgtPeoplePicker
-   */
-  public firstUpdated() {
-    if (this.groupId) {
-      Providers.onProviderUpdated(() => this.findGroup());
-      this.findGroup();
+      this.requestStateUpdate();
     }
   }
 
@@ -183,6 +172,18 @@ export class MgtPeoplePicker extends MgtTemplatedComponent {
   }
 
   /**
+   * Async query to Graph for members of group if determined by developer.
+   * set's `this.groupPeople` to those members.
+   */
+  protected async loadState() {
+    const provider = Providers.globalProvider;
+    if (provider && provider.state === ProviderState.SignedIn) {
+      const graph = provider.graph.forComponent(this);
+      this.groupPeople = await getPeopleFromGroup(graph, this.groupId);
+    }
+  }
+
+  /**
    * Adds debounce method for set delay on user input
    */
   private onUserKeyUp(event: any) {
@@ -210,18 +211,6 @@ export class MgtPeoplePicker extends MgtTemplatedComponent {
     }
 
     this.handleUserSearch(input);
-  }
-
-  /**
-   * Async query to Graph for members of group if determined by developer.
-   * set's `this.groupPeople` to those members.
-   */
-  private async findGroup() {
-    const provider = Providers.globalProvider;
-    if (provider && provider.state === ProviderState.SignedIn) {
-      const graph = provider.graph.forComponent(this);
-      this.groupPeople = await getPeopleFromGroup(graph, this.groupId);
-    }
   }
 
   /**
