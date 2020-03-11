@@ -112,6 +112,18 @@ export class MgtPerson extends MgtTemplatedComponent {
   public personImage: string;
 
   /**
+   * Set the background color of the person avatar
+   *
+   * @type {string}
+   * @memberof MgtPersonCard
+   */
+  @property({
+    attribute: 'person-avatar-bg',
+    type: String
+  })
+  public personAvatarBg: string;
+
+  /**
    * Sets how the person-card is invoked
    * Set to PersonCardInteraction.none to not show the card
    *
@@ -265,6 +277,7 @@ export class MgtPerson extends MgtTemplatedComponent {
     if (this.personDetails) {
       // in some cases we might only have name or email, but need to find the image
       // use @ for the image value to search for an image
+      this.personAvatarBg = this.getColorFromName(this.personDetails.displayName);
       if (this.personImage && this.personImage === '@' && !(this.personDetails as any).personImage) {
         this.loadImage();
       }
@@ -288,12 +301,14 @@ export class MgtPerson extends MgtTemplatedComponent {
       this.personDetails = response.user;
       this.personImage = response.photo;
       (this.personDetails as any).personImage = response.photo;
+      this.personAvatarBg = this.getColorFromName(response.user.displayName);
     } else if (!this.personDetails && this.personQuery) {
       const graph = provider.graph.forComponent(this);
       const people = await findPerson(graph, this.personQuery);
       if (people && people.length > 0) {
         const person = people[0] as MicrosoftGraph.Person;
         this.personDetails = person;
+        this.personAvatarBg = this.getColorFromName(person.displayName);
 
         this.loadImage();
       }
@@ -444,34 +459,10 @@ export class MgtPerson extends MgtTemplatedComponent {
       } else {
         const initials = this.getInitials();
 
-        // work around to import fabric ui core colors without creating .d.ts file
-        const colors = [
-          'pinkRed10',
-          'red20',
-          'red10',
-          'orange20',
-          'orangeYellow20',
-          'green10',
-          'green20',
-          'cyan20',
-          'cyan30',
-          'cyanBlue10',
-          'cyanBlue20',
-          'blue10',
-          'blueMagenta30',
-          'blueMagenta20',
-          'magenta20',
-          'magenta10',
-          'magentaPink10',
-          'orange30',
-          'gray30',
-          'gray20'
-        ];
-        const initialsList = this.renderRoot.querySelectorAll('.initials') as NodeListOf<HTMLElement>;
-
-        initialsList.forEach(i => {
-          i.classList.add(colors[this.numberFromInitials(initials) % colors.length]);
-        });
+        if (!this.personAvatarBg) {
+          this.personAvatarBg = 'gray20';
+        }
+        imageClasses[this.personAvatarBg] = true;
 
         imageHtml = html`
           <span class="initials-text" aria-label="${initials}">
@@ -556,11 +547,34 @@ export class MgtPerson extends MgtTemplatedComponent {
     return initials;
   }
 
-  private numberFromInitials(initials) {
-    const charCodes = initials
+  private getColorFromName(name) {
+    const charCodes = name
       .split('')
       .map(char => char.charCodeAt(0))
       .join('');
-    return parseInt(charCodes, 10);
+    const nameInt = parseInt(charCodes, 10);
+    const colors = [
+      'pinkRed10',
+      'red20',
+      'red10',
+      'orange20',
+      'orangeYellow20',
+      'green10',
+      'green20',
+      'cyan20',
+      'cyan30',
+      'cyanBlue10',
+      'cyanBlue20',
+      'blue10',
+      'blueMagenta30',
+      'blueMagenta20',
+      'magenta20',
+      'magenta10',
+      'magentaPink10',
+      'orange30',
+      'gray30',
+      'gray20'
+    ];
+    return colors[nameInt % colors.length];
   }
 }
