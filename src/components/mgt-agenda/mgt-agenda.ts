@@ -121,42 +121,16 @@ export class MgtAgenda extends MgtTemplatedComponent {
   })
   public groupId: string;
 
-  private _firstUpdated = false;
-
   /**
    * determines width available for agenda component.
    * @type {boolean}
    */
   @property({ attribute: false }) private _isNarrow: boolean;
 
-  /**
-   * determines if agenda component is still loading details.
-   * @type {boolean}
-   */
-  @property({ attribute: false }) private _loading: boolean;
-
   constructor() {
     super();
-
-    this._loading = true;
     this.days = 3;
-
     this.onResize = this.onResize.bind(this);
-  }
-
-  /**
-   * Invoked when the element is first updated. Implement to perform one time
-   * work on the element after update.
-   *
-   * Setting properties inside this method will trigger the element to update
-   * again after this update cycle completes.
-   *
-   * * @param _changedProperties Map of changed properties with old values
-   */
-  public firstUpdated() {
-    this._firstUpdated = true;
-    Providers.onProviderUpdated(() => this.loadData());
-    this.loadData();
   }
 
   /**
@@ -191,7 +165,7 @@ export class MgtAgenda extends MgtTemplatedComponent {
   public attributeChangedCallback(name, oldValue, newValue) {
     if (oldValue !== newValue && (name === 'date' || name === 'days' || name === 'group-id')) {
       this.events = null;
-      this.loadData();
+      this.requestStateUpdate();
     }
     super.attributeChangedCallback(name, oldValue, newValue);
   }
@@ -205,7 +179,7 @@ export class MgtAgenda extends MgtTemplatedComponent {
    */
   public render(): TemplateResult {
     // Loading
-    if (this._loading) {
+    if (this.isLoadingState) {
       return this.renderLoading();
     }
 
@@ -463,22 +437,20 @@ export class MgtAgenda extends MgtTemplatedComponent {
     `;
   }
 
-  private onResize() {
-    this._isNarrow = this.offsetWidth < 600;
-  }
-
-  private async loadData() {
+  /**
+   * Load state into the component
+   *
+   * @protected
+   * @returns
+   * @memberof MgtAgenda
+   */
+  protected async loadState() {
     if (this.events) {
-      return;
-    }
-
-    if (!this._firstUpdated) {
       return;
     }
 
     const p = Providers.globalProvider;
     if (p && p.state === ProviderState.SignedIn) {
-      this._loading = true;
       const graph = p.graph.forComponent(this);
 
       if (this.eventQuery) {
@@ -517,12 +489,11 @@ export class MgtAgenda extends MgtTemplatedComponent {
           // noop - possible error with graph
         }
       }
-      this._loading = false;
-    } else if (p && p.state === ProviderState.Loading) {
-      this._loading = true;
-    } else {
-      this._loading = false;
     }
+  }
+
+  private onResize() {
+    this._isNarrow = this.offsetWidth < 600;
   }
 
   private eventClicked(event: MicrosoftGraph.Event) {
