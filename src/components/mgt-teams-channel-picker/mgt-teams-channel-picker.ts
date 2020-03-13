@@ -526,6 +526,8 @@ private handleChannelHighlight(channels: any) {
     const displayedChannels = [];
 
   // if channel is not filtered by search (showing)
+
+  // tslint:disable-next-line: prefer-for-of
     for (let i = 0; i < channels.length; i++) {
       if (channels[i].children[0].classList.contains('showing')) {
         displayedChannels.push(channels[i]);
@@ -547,6 +549,7 @@ private handleChannelHighlight(channels: any) {
   private handleArrowSelection(event: any) {
     // resets highlight
     const teamList = this.renderRoot.querySelector('.team-list');
+    // tslint:disable-next-line: prefer-for-of
     for (let i = 0; i < teamList.children.length; i++) {
       teamList.children[i].classList.remove('teams-channel-list-fill');
     }
@@ -555,12 +558,13 @@ private handleChannelHighlight(channels: any) {
 
     const showingDivs = [];
 
+    
+    // tslint:disable-next-line: prefer-for-of
     for (let i = 0; i < teamDivs.length; i++) {
       const elems = teamDivs[i];
-      if (elems.classList.contains('hide-channels') || elems.classList.contains('hide-team')) {
-      } else {
+      if (!elems.classList.contains('hide-channels') || !elems.classList.contains('hide-team')) {
         showingDivs.push(elems);
-      }
+      } 
     }
 
     let teamLength = 0;
@@ -610,6 +614,7 @@ private handleChannelHighlight(channels: any) {
         if (channelSection.classList.contains('render-channels')) {
           this.channelLength = -1;
 
+          // tslint:disable-next-line: prefer-for-of
           for (let i = 0; i < channelSection.children.length; i++) {
             channelSection.children[i].classList.remove('teams-channel-list-fill');
             if (channelSection.children[i].clientHeight > 0) {
@@ -821,6 +826,7 @@ private handleChannelHighlight(channels: any) {
     // reset blue highlight
 
     for (const team of this.teams) {
+      // tslint:disable-next-line: prefer-for-of
       for (let i = 0; i < team.channels.length; i++) {
         const selection = team.channels[i].id.replace(/[^a-zA-Z ]/g, '');
         const channelDiv = this.renderRoot.querySelector(`.channel-${selection}`);
@@ -837,6 +843,7 @@ private handleChannelHighlight(channels: any) {
           const shownIds = [];
 
           // check if channels are filtered
+          // tslint:disable-next-line: prefer-for-of
           for (let i = 0; i < channelDiv.parentElement.parentElement.children.length; i++) {
             if (channelDiv.parentElement.parentElement.children[i].children[0].classList.contains('showing')) {
               shownIds.push(channelDiv.parentElement.parentElement.children[i].children[0].classList[1].slice(8));
