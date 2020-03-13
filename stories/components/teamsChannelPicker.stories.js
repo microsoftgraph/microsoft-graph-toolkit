@@ -22,22 +22,23 @@ export const teamsChannelPicker = () => html`
   <mgt-teams-channel-picker></mgt-teams-channel-picker>
 `;
 
-const darkStyle = `
---input-border: 2px rgba(255, 255, 255, 0.5) solid;
---input-border-bottom: 2px rgba(255, 255, 255, 0.5) solid;
---input-border-right: 2px rgba(255, 255, 255, 0.5) solid;
---input-border-left: 2px rgba(255, 255, 255, 0.5) solid;
---input-border-top: 2px rgba(255, 255, 255, 0.5) solid;
---input-background-color: #1f1f1f;
---selection-background-color: #1f1f1f;
---input-hover-color: #008394;
---input-focus-color: #0f78d4;
---selection-hover-color: #333d47;
---font-color: white;
---arrow-fill: #ffffff;
---placeholder-focus-color: rgba(255, 255, 255, 0.8); 
-`;
-
 export const DarkMode = () => html`
-  <mgt-teams-channel-picker style=${darkStyle}></mgt-teams-channel-picker>
+  <mgt-teams-channel-picker></mgt-teams-channel-picker>
+  <style>
+    mgt-teams-channel-picker {
+      --input-border: 2px rgba(255, 255, 255, 0.5) solid;
+      --input-border-bottom: 2px rgba(255, 255, 255, 0.5) solid;
+      --input-border-right: 2px rgba(255, 255, 255, 0.5) solid;
+      --input-border-left: 2px rgba(255, 255, 255, 0.5) solid;
+      --input-border-top: 2px rgba(255, 255, 255, 0.5) solid;
+      --input-background-color: #1f1f1f;
+      --selection-background-color: #1f1f1f;
+      --input-hover-color: #008394;
+      --input-focus-color: #0f78d4;
+      --selection-hover-color: #333d47;
+      --font-color: white;
+      --arrow-fill: #ffffff;
+      --placeholder-focus-color: rgba(255, 255, 255, 0.8);
+    }
+  </style>
 `;
