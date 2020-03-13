@@ -72,8 +72,8 @@ export enum SvgIcon {
    */
   UpCarrot,
 
-  /*
-   * search icon
+  /**
+   * Search icon
    */
   Search
 }

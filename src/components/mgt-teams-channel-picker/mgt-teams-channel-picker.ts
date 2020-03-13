@@ -53,9 +53,9 @@ type Team = MicrosoftGraph.Team & {
  *
  * @class MgtTeamsChannelPicker
  * @extends {MgtTemplatedComponent}
- * 
+ *
  * @cssprop --font-color - {font} Default font color
- * 
+ *
  * @cssprop --input-border - {String} Input section entire border
  * @cssprop --input-border-top - {String} Input section border top only
  * @cssprop --input-border-right - {String} Input section border right only
@@ -63,13 +63,13 @@ type Team = MicrosoftGraph.Team & {
  * @cssprop --input-border-left - {String} Input section border left only
  * @cssprop --input-background-color - {Color} Input section background color
  * @cssprop --input-hover-color - {Color} Input text hover color
- * 
+ *
  * @cssprop --selection-background-color - {Color} Highlight of selected channel color
  * @cssprop --selection-hover-color - {Color} Highlight of selected channel color during hover state
- * 
+ *
  * @cssprop --arrow-fill - {Color} Color of arrow svg
  * @cssprop --placeholder-focus-color - {Color} Highlight of placeholder text during focus state
- * 
+ *
  */
 @customElement('mgt-teams-channel-picker')
 export class MgtTeamsChannelPicker extends MgtTemplatedComponent {
@@ -218,198 +218,197 @@ export class MgtTeamsChannelPicker extends MgtTemplatedComponent {
     );
   }
 
-/**
- * Renders a Team 
- *
- * @protected
- * @param {Team[]} teams
- * @returns
- * @memberof MgtTeamsChannelPicker
- */
-protected  renderTeams(teams: Team[]) {
-  return html`
-    ${repeat(
-      teams,
-      teamData => teamData,
-      teamData => html`
-        <li
-          class="list-team teams-channel-list team-list-${teamData.id}"
-          @click="${() => this._clickTeam(teamData.id)}"
-        >
-          <div class="arrow">
-            ${teamData.showChannels ? getSvg(SvgIcon.ArrowDown, '#252424') : getSvg(SvgIcon.ArrowRight, '#252424')}
-          </div>
-          <div class="team-name" title="${teamData.displayName}">
-            ${teamData.displayName}
-          </div>
-        </li>
-        <div class="render-channels team-${teamData.id} ${teamData.showChannels ? '' : 'hide-channels'}">
-          ${this.renderChannels(teamData.channels)}
-        </div>
-      `
-    )}
-  `;
-}
-
-
-/**
- * Renders channels 
- *
- * @protected
- * @param {MicrosoftGraph.Channel[]} channelData
- * @returns
- * @memberof MgtTeamsChannelPicker
- */
-protected renderChannels(channelData: MicrosoftGraph.Channel[]) {
-  let channelView;
-  if (channelData && !this.noChannelsFound) {
-    channelView = html`
+  /**
+   * Renders a Team
+   *
+   * @protected
+   * @param {Team[]} teams
+   * @returns
+   * @memberof MgtTeamsChannelPicker
+   */
+  protected renderTeams(teams: Team[]) {
+    return html`
       ${repeat(
-        channelData,
-        channel => channel,
-        channel => html`
-          <div class="channel-display" @click=${e => this.addChannel(e, channel)} title="${channel.displayName}">
-            ${this.renderHighlightText(channel)}
+        teams,
+        teamData => teamData,
+        teamData => html`
+          <li
+            class="list-team teams-channel-list team-list-${teamData.id}"
+            @click="${() => this._clickTeam(teamData.id)}"
+          >
+            <div class="arrow">
+              ${teamData.showChannels ? getSvg(SvgIcon.ArrowDown, '#252424') : getSvg(SvgIcon.ArrowRight, '#252424')}
+            </div>
+            <div class="team-name" title="${teamData.displayName}">
+              ${teamData.displayName}
+            </div>
+          </li>
+          <div class="render-channels team-${teamData.id} ${teamData.showChannels ? '' : 'hide-channels'}">
+            ${this.renderChannels(teamData.channels)}
           </div>
         `
       )}
     `;
-  } else {
-    if (channelData) {
-      const channelids = [];
+  }
 
-      for (const team of this.teams) {
-        const teamDiv = this.renderRoot.querySelector(`.team-list-${team.id}`);
-        const channelDiv = this.renderRoot.querySelector(`.team-${team.id}`);
-        teamDiv.classList.add('hide-team');
-        if (team.displayName.toLowerCase().indexOf(this._userInput.toLowerCase()) > -1) {
-          teamDiv.classList.remove('hide-team');
-          channelDiv.classList.remove('hide-channels');
-          team.showChannels = true;
-
-          for (const channel of team.channels) {
-            channelids.push(channel.id);
-          }
-        }
-      }
-
+  /**
+   * Renders channels
+   *
+   * @protected
+   * @param {MicrosoftGraph.Channel[]} channelData
+   * @returns
+   * @memberof MgtTeamsChannelPicker
+   */
+  protected renderChannels(channelData: MicrosoftGraph.Channel[]) {
+    let channelView;
+    if (channelData && !this.noChannelsFound) {
       channelView = html`
         ${repeat(
           channelData,
           channel => channel,
           channel => html`
-            <div class="channel-display" @click=${e => this.addChannel(e, channel)}>
-              <div
-                class="${channelids.indexOf(channel.id) > -1 ? 'showing' : 'hiding'} channel-${channel.id.replace(
-                  /[^a-zA-Z ]/g,
-                  ''
-                )}"
-              >
-                <span class="people-person-text">${channel.displayName}</span>
-              </div>
+            <div class="channel-display" @click=${e => this.addChannel(e, channel)} title="${channel.displayName}">
+              ${this.renderHighlightText(channel)}
             </div>
           `
         )}
       `;
-    }
-  }
-
-  return channelView;
-}
-
-/**
- * Renders selection area of Teams and Channels
- *
- * @protected
- * @returns
- * @memberof MgtTeamsChannelPicker
- */
-protected renderTeamList() {
-  let content: TemplateResult;
-  if (this.teams) {
-    content = this.renderTeams(this.teams);
-    if (this.isLoading) {
-      content = this.renderTemplate('loading', null, 'loading') || this.renderLoadingMessage();
-    } else if (this.noChannelsFound && this._userInput.length > 0 && !this.noListShown) {
-      content = this.renderTeams(this.teams);
-    } else if (this.noChannelsFound && this._userInput.length > 0 && this.noListShown) {
-      content = this.renderTemplate('error', null, 'error') || this.renderErrorMessage();
     } else {
-      if (this.teams[0]) {
-        (this.teams[0] as any).isSelected = 'fill';
+      if (channelData) {
+        const channelids = [];
+
+        for (const team of this.teams) {
+          const teamDiv = this.renderRoot.querySelector(`.team-list-${team.id}`);
+          const channelDiv = this.renderRoot.querySelector(`.team-${team.id}`);
+          teamDiv.classList.add('hide-team');
+          if (team.displayName.toLowerCase().indexOf(this._userInput.toLowerCase()) > -1) {
+            teamDiv.classList.remove('hide-team');
+            channelDiv.classList.remove('hide-channels');
+            team.showChannels = true;
+
+            for (const channel of team.channels) {
+              channelids.push(channel.id);
+            }
+          }
+        }
+
+        channelView = html`
+          ${repeat(
+            channelData,
+            channel => channel,
+            channel => html`
+              <div class="channel-display" @click=${e => this.addChannel(e, channel)}>
+                <div
+                  class="${channelids.indexOf(channel.id) > -1 ? 'showing' : 'hiding'} channel-${channel.id.replace(
+                    /[^a-zA-Z ]/g,
+                    ''
+                  )}"
+                >
+                  <span class="people-person-text">${channel.displayName}</span>
+                </div>
+              </div>
+            `
+          )}
+        `;
       }
     }
+
+    return channelView;
   }
 
-  return html`
-    <div class="team-list">
-      ${content}
-    </div>
-  `;
-}
-
-/**
- * Renders selected Team
- *
- * @protected
- * @returns
- * @memberof MgtTeamsChannelPicker
- */
-protected renderChosenTeam() {
-  let peopleList;
-  let inputClass = 'input-search-start';
-
-  if (this.selectedTeams[0]) {
-    if (this.selectedTeams[0].length) {
-      inputClass = 'input-search';
-
-      peopleList = html`
-        <li class="selected-team">
-        <div class="selected-team-name">${this.selectedTeams[0][0].displayName}</div>
-          <div class="arrow">${getSvg(SvgIcon.TeamSeparator, '#B3B0AD')}</div>
-          ${this.selectedTeams[1][0].displayName}
-          <div class="CloseIcon" @click="${() => this.removePerson(this.selectedTeams[0], this.selectedTeams[1])}">
-            
-          </div>
-        </li>
-        <div class="SearchIcon">
-          ${this.isFocused ? getSvg(SvgIcon.Search, '#252424') : ''}
-        </div>
-      `;
-    } else {
-      peopleList = html`
-        <div
-          class="InputArrowIcon"
-          @click="${e => {
-            e.stopPropagation();
-            this.isFocused ? this.lostFocus() : this.gainedFocus();
-          }}"
-        >
-          ${this.isFocused ? getSvg(SvgIcon.UpCarrot, '#605E5C') : getSvg(SvgIcon.DownCarrot, '#605E5')}
-        </div>
-      `;
+  /**
+   * Renders selection area of Teams and Channels
+   *
+   * @protected
+   * @returns
+   * @memberof MgtTeamsChannelPicker
+   */
+  protected renderTeamList() {
+    let content: TemplateResult;
+    if (this.teams) {
+      content = this.renderTeams(this.teams);
+      if (this.isLoading) {
+        content = this.renderTemplate('loading', null, 'loading') || this.renderLoadingMessage();
+      } else if (this.noChannelsFound && this._userInput.length > 0 && !this.noListShown) {
+        content = this.renderTeams(this.teams);
+      } else if (this.noChannelsFound && this._userInput.length > 0 && this.noListShown) {
+        content = this.renderTemplate('error', null, 'error') || this.renderErrorMessage();
+      } else {
+        if (this.teams[0]) {
+          (this.teams[0] as any).isSelected = 'fill';
+        }
+      }
     }
-  }
-  return html`
-    <div class="people-chosen-list">
-      ${peopleList}
-      <div class="${inputClass}">
-        <input
-          id="teams-channel-picker-input"
-          class="team-chosen-input ${this.isFocused || this.isHovered ? 'focused' : ''}"
-          type="text"
-          placeholder="${this.selectedTeams[0].length > 0 ? '' : 'Select a channel '} "
-          label="teams-channel-picker-input"
-          aria-label="teams-channel-picker-input"
-          role="input"
-          .value="${this._userInput}"
-          @keydown="${this.onUserKeyDown}"
-          @keyup="${this.onUserKeyUp}"
-        />
+
+    return html`
+      <div class="team-list">
+        ${content}
       </div>
-    </div>
-  `;
-}
+    `;
+  }
+
+  /**
+   * Renders selected Team
+   *
+   * @protected
+   * @returns
+   * @memberof MgtTeamsChannelPicker
+   */
+  protected renderChosenTeam() {
+    let peopleList;
+    let inputClass = 'input-search-start';
+
+    if (this.selectedTeams[0]) {
+      if (this.selectedTeams[0].length) {
+        inputClass = 'input-search';
+
+        peopleList = html`
+          <li class="selected-team">
+            <div class="selected-team-name">${this.selectedTeams[0][0].displayName}</div>
+            <div class="arrow">${getSvg(SvgIcon.TeamSeparator, '#B3B0AD')}</div>
+            ${this.selectedTeams[1][0].displayName}
+            <div class="CloseIcon" @click="${() => this.removePerson(this.selectedTeams[0], this.selectedTeams[1])}">
+              
+            </div>
+          </li>
+          <div class="SearchIcon">
+            ${this.isFocused ? getSvg(SvgIcon.Search, '#252424') : ''}
+          </div>
+        `;
+      } else {
+        peopleList = html`
+          <div
+            class="InputArrowIcon"
+            @click="${e => {
+              e.stopPropagation();
+              this.isFocused ? this.lostFocus() : this.gainedFocus();
+            }}"
+          >
+            ${this.isFocused ? getSvg(SvgIcon.UpCarrot, '#605E5C') : getSvg(SvgIcon.DownCarrot, '#605E5')}
+          </div>
+        `;
+      }
+    }
+    return html`
+      <div class="people-chosen-list">
+        ${peopleList}
+        <div class="${inputClass}">
+          <input
+            id="teams-channel-picker-input"
+            class="team-chosen-input ${this.isFocused || this.isHovered ? 'focused' : ''}"
+            type="text"
+            placeholder="${this.selectedTeams[0].length > 0 ? '' : 'Select a channel '} "
+            label="teams-channel-picker-input"
+            aria-label="teams-channel-picker-input"
+            role="input"
+            .value="${this._userInput}"
+            @keydown="${this.onUserKeyDown}"
+            @keyup="${this.onUserKeyUp}"
+          />
+        </div>
+      </div>
+    `;
+  }
 
   private mouseLeft() {
     if (this._userInput.length === 0) {
@@ -513,21 +512,21 @@ protected renderChosenTeam() {
     }
   }
 
-/**
- * Tracks user input when inside team, in order to traverse channels
- *
- * @private
- * @param {*} channels
- * @memberof MgtTeamsChannelPicker
- */
-private handleChannelHighlight(channels: any) {
-  // moves counter once for user input
+  /**
+   * Tracks user input when inside team, in order to traverse channels
+   *
+   * @private
+   * @param {*} channels
+   * @memberof MgtTeamsChannelPicker
+   */
+  private handleChannelHighlight(channels: any) {
+    // moves counter once for user input
     const htmlCount = this.channelCounter + 1;
     const displayedChannels = [];
 
-  // if channel is not filtered by search (showing)
+    // if channel is not filtered by search (showing)
 
-  // tslint:disable-next-line: prefer-for-of
+    // tslint:disable-next-line: prefer-for-of
     for (let i = 0; i < channels.length; i++) {
       if (channels[i].children[0].classList.contains('showing')) {
         displayedChannels.push(channels[i]);
@@ -558,13 +557,12 @@ private handleChannelHighlight(channels: any) {
 
     const showingDivs = [];
 
-    
     // tslint:disable-next-line: prefer-for-of
     for (let i = 0; i < teamDivs.length; i++) {
       const elems = teamDivs[i];
       if (!elems.classList.contains('hide-channels') || !elems.classList.contains('hide-team')) {
         showingDivs.push(elems);
-      } 
+      }
     }
 
     let teamLength = 0;
@@ -659,10 +657,9 @@ private handleChannelHighlight(channels: any) {
     if (provider) {
       if (provider.state === ProviderState.SignedIn) {
         const graph = provider.graph.forComponent(this);
-    
+
         this.teams = await getAllMyTeams(graph);
 
-        
         this.isLoading = true;
         const batch = provider.graph.createBatch();
 
@@ -754,8 +751,6 @@ private handleChannelHighlight(channels: any) {
       </div>
     `;
   }
-
-
 
   private gainedFocus() {
     this.isFocused = true;
