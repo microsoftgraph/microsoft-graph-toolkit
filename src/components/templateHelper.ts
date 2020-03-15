@@ -62,6 +62,14 @@ export class TemplateHelper {
 
   private static _expression = /{{+\s*[$\w\.()\[\]]+\s*}}+/g;
 
+  /**
+ * Overrides the expression used in template binding.
+ * @param expression regular expression to be used in template binding
+ */
+  public static set templateBindingExpression(expression: RegExp | string) {
+    this._expression = typeof (expression) === "string" ? new RegExp(expression) : expression;
+  }
+
   private static expandExpressionsAsString(str: string, context: object, additionalContext: object) {
     return str.replace(this._expression, match => {
       const value = this.evalInContext(this.trimExpression(match), { ...context, ...additionalContext });
@@ -227,7 +235,7 @@ export class TemplateHelper {
     try {
       result = func.call(context);
       // tslint:disable-next-line: no-empty
-    } catch (e) {}
+    } catch (e) { }
     return result;
   }
 
