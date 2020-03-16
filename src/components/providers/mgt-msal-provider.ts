@@ -5,11 +5,10 @@
  * -------------------------------------------------------------------------------------------
  */
 
-import { customElement, LitElement, property } from 'lit-element';
-import { Providers } from '../../Providers';
-import { LoginType } from '../../providers/IProvider';
+import { customElement, property } from 'lit-element';
+import { LoginType, MgtBaseProvider, Providers } from '../../mgt-core';
 import { MsalConfig, MsalProvider } from '../../providers/MsalProvider';
-import { MgtBaseProvider } from './baseProvider';
+
 /**
  * Authentication Library Provider for Microsoft personal accounts
  *

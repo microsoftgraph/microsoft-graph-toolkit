@@ -6,7 +6,7 @@
  */
 
 import { BatchRequestContent, MiddlewareOptions } from '@microsoft/microsoft-graph-client';
-import { IGraph } from '../IGraph';
+import { IBatch, IGraph } from '../mgt-core';
 import { prepScopes } from './GraphHelpers';
 
 /**
@@ -14,7 +14,7 @@ import { prepScopes } from './GraphHelpers';
  *
  * @class BatchRequest
  */
-export class BatchRequest {
+class BatchRequest {
   /**
    * url used in request
    *
@@ -45,7 +45,7 @@ export class BatchRequest {
  * @class Batch
  */
 // tslint:disable-next-line: max-classes-per-file
-export class Batch {
+export class Batch implements IBatch {
   // this doesn't really mater what it is as long as it's a root base url
   // otherwise a Request assumes the current path and that could change the relative path
   private static baseUrl = 'https://graph.microsoft.com';

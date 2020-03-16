@@ -7,7 +7,7 @@
 
 import { customElement, html, property } from 'lit-element';
 import { classMap } from 'lit-html/directives/class-map';
-import { MgtBaseComponent } from '../../baseComponent';
+import { MgtBaseComponent } from '../../../mgt-core';
 import { styles } from './mgt-arrow-options-css';
 
 /*

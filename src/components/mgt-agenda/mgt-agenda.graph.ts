@@ -6,7 +6,7 @@
  */
 
 import * as MicrosoftGraph from '@microsoft/microsoft-graph-types';
-import { IGraph } from '../../IGraph';
+import { IGraph } from '../../mgt-core';
 import { prepScopes } from '../../utils/GraphHelpers';
 
 /**

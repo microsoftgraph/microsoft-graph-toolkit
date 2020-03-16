@@ -5,16 +5,16 @@
  * -------------------------------------------------------------------------------------------
  */
 
-import { customElement, LitElement, property } from 'lit-element';
-import { MgtBaseProvider } from '../components/providers/baseProvider';
-import { Providers } from '../Providers';
+import { customElement, property } from 'lit-element';
+import { MgtBaseProvider, Providers } from '../mgt-core';
 import { MockProvider } from './MockProvider';
+
 /**
  * Sets global provider to a mock Provider
  *
  * @export
  * @class MgtMockProvider
- * @extends {LitElement}
+ * @extends {MgtBaseProvider}
  */
 @customElement('mgt-mock-provider')
 export class MgtMockProvider extends MgtBaseProvider {

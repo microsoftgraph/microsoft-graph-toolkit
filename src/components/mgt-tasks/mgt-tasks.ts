@@ -10,22 +10,23 @@ import { Contact, OutlookTask, OutlookTaskFolder } from '@microsoft/microsoft-gr
 import { customElement, html, property } from 'lit-element';
 import { classMap } from 'lit-html/directives/class-map';
 import { repeat } from 'lit-html/directives/repeat';
-import { Providers } from '../../Providers';
-import { ProviderState } from '../../providers/IProvider';
-import { getShortDateString } from '../../utils/Utils';
-import { MgtPeoplePicker } from '../mgt-people-picker/mgt-people-picker';
-import { MgtTemplatedComponent } from '../templatedComponent';
-import { PersonCardInteraction } from './../PersonCardInteraction';
-import { styles } from './mgt-tasks-css';
-import { ITask, ITaskFolder, ITaskGroup, ITaskSource, PlannerTaskSource, TodoTaskSource } from './task-sources';
-
 import { getMe } from '../../graph/graph.user';
-import { ComponentMediaQuery } from '../baseComponent';
+import {
+  ComponentMediaQuery,
+  getShortDateString,
+  MgtTemplatedComponent,
+  Providers,
+  ProviderState
+} from '../../mgt-core';
+import { MgtPeoplePicker } from '../mgt-people-picker/mgt-people-picker';
 import { MgtPeople } from '../mgt-people/mgt-people';
 import '../mgt-person/mgt-person';
 import '../sub-components/mgt-arrow-options/mgt-arrow-options';
 import '../sub-components/mgt-dot-options/mgt-dot-options';
 import '../sub-components/mgt-flyout/mgt-flyout';
+import { PersonCardInteraction } from './../PersonCardInteraction';
+import { styles } from './mgt-tasks-css';
+import { ITask, ITaskFolder, ITaskGroup, ITaskSource, PlannerTaskSource, TodoTaskSource } from './task-sources';
 
 /**
  * Defines how a person card is shown when a user interacts with
