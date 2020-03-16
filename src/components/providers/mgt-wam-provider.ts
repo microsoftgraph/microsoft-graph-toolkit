@@ -6,7 +6,7 @@
  */
 
 import { customElement, LitElement, property } from 'lit-element';
-import { Providers } from '../../mgt-core';
+import { Providers } from '../../Providers';
 import { WamProvider } from '../../providers/WamProvider';
 /**
  * Authentication Library Provider for Web Account Manager (UWP apps)

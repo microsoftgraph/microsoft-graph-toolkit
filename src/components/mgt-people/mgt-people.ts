@@ -10,9 +10,11 @@ import { customElement, html, property, TemplateResult } from 'lit-element';
 import { repeat } from 'lit-html/directives/repeat';
 import { getPeople, getPeopleFromGroup } from '../../graph/graph.people';
 import { getUsersForUserIds } from '../../graph/graph.user';
-import { MgtTemplatedComponent, Providers, ProviderState } from '../../mgt-core';
+import { Providers } from '../../Providers';
+import { ProviderState } from '../../providers/IProvider';
 import '../../styles/fabric-icon-font';
 import '../mgt-person/mgt-person';
+import { MgtTemplatedComponent } from '../templatedComponent';
 import { PersonCardInteraction } from './../PersonCardInteraction';
 import { styles } from './mgt-people-css';
 

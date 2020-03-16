@@ -7,7 +7,7 @@
 
 import { Client } from '@microsoft/microsoft-graph-client';
 import { Graph } from './Graph';
-import { IGraph } from './mgt-core';
+import { IGraph } from './IGraph';
 
 /**
  * The version of the Graph to use for making requests.

@@ -7,9 +7,8 @@
 
 import { AuthenticationProvider } from '@microsoft/microsoft-graph-client/lib/es/IAuthenticationProvider';
 import { AuthenticationProviderOptions } from '@microsoft/microsoft-graph-client/lib/es/IAuthenticationProviderOptions';
-import { IGraph } from '../IGraph';
+import { Graph } from '../Graph';
 import { EventDispatcher, EventHandler } from '../utils/EventDispatcher';
-
 /**
  * Provider Type to be extended for implmenting new providers
  *
@@ -20,12 +19,12 @@ import { EventDispatcher, EventHandler } from '../utils/EventDispatcher';
  */
 export abstract class IProvider implements AuthenticationProvider {
   /**
-   * The IGraph object that contains the Graph client sdk
+   * The Graph object that contains the Graph client sdk
    *
-   * @type {IGraph}
+   * @type {Graph}
    * @memberof IProvider
    */
-  public graph: IGraph;
+  public graph: Graph;
   private _state: ProviderState;
   private _loginChangedDispatcher = new EventDispatcher<LoginChangedEvent>();
   /**

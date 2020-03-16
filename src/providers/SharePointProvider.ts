@@ -5,8 +5,8 @@
  * -------------------------------------------------------------------------------------------
  */
 
-import { createFromProvider } from '../Graph';
-import { IProvider, ProviderState } from '../mgt-core';
+import { createFromProvider, Graph } from '../Graph';
+import { IProvider, ProviderState } from './IProvider';
 
 /**
  * AadTokenProvider
