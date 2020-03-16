@@ -7,7 +7,7 @@
 
 import { Graph } from '../Graph';
 import { getMe } from '../graph/graph.user';
-import { IProvider, ProviderState } from '../providers/IProvider';
+import { IProvider, ProviderState } from '../mgt-core';
 import { ProxyGraph } from '../ProxyGraph';
 
 /**

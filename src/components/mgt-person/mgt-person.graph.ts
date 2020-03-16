@@ -7,7 +7,7 @@
 
 import { Contact, Person } from '@microsoft/microsoft-graph-types';
 import { findPerson } from '../../graph/graph.people';
-import { IGraph } from '../../IGraph';
+import { IGraph } from '../../mgt-core';
 import { prepScopes } from '../../utils/GraphHelpers';
 
 /**
