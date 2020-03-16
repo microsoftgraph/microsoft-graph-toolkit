@@ -10,10 +10,12 @@ import { customElement, html, property, PropertyValues, TemplateResult } from 'l
 import { classMap } from 'lit-html/directives/class-map';
 import { findPerson, getEmailFromGraphEntity } from '../../graph/graph.people';
 import { getContactPhoto, getUserPhoto } from '../../graph/graph.photos';
-import { MgtTemplatedComponent, Providers, ProviderState } from '../../mgt-core';
+import { Providers } from '../../Providers';
+import { ProviderState } from '../../providers/IProvider';
 import '../../styles/fabric-icon-font';
 import { MgtPersonCard } from '../mgt-person-card/mgt-person-card';
 import '../sub-components/mgt-flyout/mgt-flyout';
+import { MgtTemplatedComponent } from '../templatedComponent';
 import { PersonCardInteraction } from './../PersonCardInteraction';
 import { styles } from './mgt-person-css';
 import { findUserByEmail } from './mgt-person.graph';

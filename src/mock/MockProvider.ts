@@ -5,7 +5,7 @@
  * -------------------------------------------------------------------------------------------
  */
 
-import { IProvider, ProviderState } from '../mgt-core';
+import { IProvider, ProviderState } from '../providers/IProvider';
 import { MockGraph } from './MockGraph';
 
 /**
