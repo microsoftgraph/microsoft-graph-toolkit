@@ -161,12 +161,14 @@ export class MgtPerson extends MgtTemplatedComponent {
     return this._isPersonCardVisible;
   }
   private _isPersonCardVisible: boolean;
+  private _personCardShouldRender: boolean;
 
   private _mouseLeaveTimeout;
   private _mouseEnterTimeout;
 
   constructor() {
     super();
+    this.handleWindowClick = this.handleWindowClick.bind(this);
     this.personCardInteraction = PersonCardInteraction.none;
   }
 
@@ -201,7 +203,7 @@ export class MgtPerson extends MgtTemplatedComponent {
    */
   public connectedCallback() {
     super.connectedCallback();
-    window.addEventListener('click', e => this.handleWindowClick(e));
+    window.addEventListener('click', this.handleWindowClick);
   }
 
   /**
@@ -210,7 +212,7 @@ export class MgtPerson extends MgtTemplatedComponent {
    * @memberof MgtPerson
    */
   public disconnectedCallback() {
-    window.removeEventListener('click', e => this.handleWindowClick(e));
+    window.removeEventListener('click', this.handleWindowClick);
     super.disconnectedCallback();
   }
 
@@ -243,7 +245,9 @@ export class MgtPerson extends MgtTemplatedComponent {
 
     // Flyout template
     const flyoutTemplate: TemplateResult =
-      this.personCardInteraction !== PersonCardInteraction.none ? this.renderFlyout() : html``;
+      this.personCardInteraction !== PersonCardInteraction.none && this._personCardShouldRender
+        ? this.renderFlyout()
+        : html``;
 
     return html`
       <div
@@ -643,6 +647,10 @@ export class MgtPerson extends MgtTemplatedComponent {
   }
 
   private showPersonCard() {
+    if (!this._personCardShouldRender) {
+      this._personCardShouldRender = true;
+    }
+
     this._isPersonCardVisible = true;
     this.requestUpdate();
   }
