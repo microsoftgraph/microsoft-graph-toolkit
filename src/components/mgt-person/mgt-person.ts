@@ -335,6 +335,11 @@ export class MgtPerson extends MgtTemplatedComponent {
     } else if (this.personDetails) {
       // render the initials
       const initials = this.getInitials(this.personDetails);
+      // add avatar background color
+      if (!this._personAvatarBg) {
+        this._personAvatarBg = 'gray20';
+      }
+      imageClasses[this._personAvatarBg] = true;
       imageHtml = html`
         <span class="initials-text" aria-label="${initials}">
           ${initials}
@@ -492,10 +497,10 @@ export class MgtPerson extends MgtTemplatedComponent {
     }
 
     if (this.personDetails) {
-      // in some cases we might only have name or email, but need to find the image
-      // use @ for the image value to search for an image
       this._personAvatarBg = this.getColorFromName(this.personDetails.displayName);
 
+      // in some cases we might only have name or email, but need to find the image
+      // use @ for the image value to search for an image
       if (this.personImage === '@' && !this.personDetails.personImage) {
         this.loadImage();
       }
