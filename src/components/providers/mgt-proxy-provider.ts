@@ -5,9 +5,10 @@
  * -------------------------------------------------------------------------------------------
  */
 
-import { customElement, property } from 'lit-element';
-import { MgtBaseProvider, Providers } from '../../mgt-core';
+import { customElement, LitElement, property } from 'lit-element';
+import { Providers } from '../../Providers';
 import { ProxyProvider } from '../../providers/ProxyProvider';
+import { MgtBaseProvider } from './baseProvider';
 
 /**
  * Authentication component for ProxyProvider

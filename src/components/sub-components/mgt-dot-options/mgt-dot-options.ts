@@ -7,9 +7,8 @@
 
 import { customElement, html, property } from 'lit-element';
 import { classMap } from 'lit-html/directives/class-map';
-import { MgtBaseComponent } from '../../../mgt-core';
+import { MgtBaseComponent } from '../../baseComponent';
 import { styles } from './mgt-dot-options-css';
-
 /**
  * Custom Component used to handle an arrow rendering for TaskGroups utilized in the task component.
  *

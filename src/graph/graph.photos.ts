@@ -6,8 +6,9 @@
  */
 
 import { ResponseType } from '@microsoft/microsoft-graph-client';
-import { blobToBase64, IGraph } from '../mgt-core';
+import { IGraph } from '../IGraph';
 import { prepScopes } from '../utils/GraphHelpers';
+import { blobToBase64 } from '../utils/Utils';
 
 /**
  * retrieves a photo for the specified resource.

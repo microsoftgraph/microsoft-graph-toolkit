@@ -6,12 +6,12 @@
  */
 
 import { html, PropertyValues } from 'lit-element';
-import { renderTemplate } from '../utils/TemplateHelpers';
 import { equals } from '../utils/Utils';
 import { MgtBaseComponent } from './baseComponent';
+import { TemplateHelper } from './templateHelper';
 
 /**
- * Lookup for rendered component templates { and } contexts by slot name.
+ * Lookup for rendered component templates and contexts by slot name.
  */
 interface RenderedTemplates {
   [name: string]: {
@@ -135,7 +135,7 @@ export abstract class MgtTemplatedComponent extends MgtBaseComponent {
     div.slot = slotName;
     div.dataset.generated = 'template';
 
-    renderTemplate(div, this.templates[templateType], context, {
+    TemplateHelper.renderTemplate(div, this.templates[templateType], context, {
       ...this.templateConverters,
       ...this.templateContext
     });

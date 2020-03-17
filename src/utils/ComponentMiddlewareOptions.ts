@@ -6,7 +6,7 @@
  */
 
 import { MiddlewareOptions } from '@microsoft/microsoft-graph-client';
-import { MgtBaseComponent } from '../mgt-core';
+import { MgtBaseComponent } from '../components/baseComponent';
 
 /**
  * Middleware Options used for component telemetry
