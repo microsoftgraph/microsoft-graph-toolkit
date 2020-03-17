@@ -12,6 +12,13 @@
  * @class TemplateHelper
  */
 export class TemplateHelper {
+  private static get expression() {
+    if (!this._expression) {
+      this.setBindingExpression('{{', '}}');
+    }
+
+    return this._expression;
+  }
   /**
    * Render a template into a HTMLElement with the appropriate data context
    *
@@ -60,11 +67,23 @@ export class TemplateHelper {
     }
   }
 
-  private static _expression = /{{+\s*[$\w\.()\[\]]+\s*}}+/g;
+  public static setBindingExpression(startStr: string, endStr: string) {
+    this._startExpression = startStr;
+    this._endExpression = endStr;
+    this._expression = new RegExp(`${this._startExpression}\\s*\([$\\w\\.()\\[\\]]+\)\\s*${this._endExpression}`, 'g');
+  }
+
+  // tslint:disable-next-line: completed-docs
+  private static _startExpression;
+  // tslint:disable-next-line: completed-docs
+  private static _endExpression;
+  // tslint:disable-next-line: completed-docs
+  private static _expression;
 
   private static expandExpressionsAsString(str: string, context: object, additionalContext: object) {
-    return str.replace(this._expression, match => {
-      const value = this.evalInContext(this.trimExpression(match), { ...context, ...additionalContext });
+    return str.replace(this.expression, (match, p1) => {
+      console.log(p1);
+      const value = this.evalInContext(p1 || this.trimExpression(match), { ...context, ...additionalContext });
       if (value) {
         if (typeof value === 'object') {
           return JSON.stringify(value);
@@ -232,17 +251,25 @@ export class TemplateHelper {
   }
 
   private static trimExpression(expression: string) {
-    let start = 0;
-    let end = expression.length - 1;
+    const start = 0;
+    let end = expression.length;
 
-    while (expression[start] === '{' && start < end) {
-      start++;
+    expression = expression.trim();
+
+    for (let i = 0; i < this._startExpression.length; i++) {
+      if (expression[i] !== this._startExpression[i]) {
+        return expression;
+      }
     }
 
-    while (expression[end] === '}' && start <= end) {
-      end--;
+    if (
+      expression.substring(expression.length - this._endExpression.length, expression.length) !== this._endExpression
+    ) {
+      return expression;
     }
 
-    return expression.substring(start, end + 1).trim();
+    end = end - start;
+
+    return expression.substring(start, end).trim();
   }
 }
