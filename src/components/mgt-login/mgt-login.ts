@@ -188,7 +188,9 @@ export class MgtLogin extends MgtBaseComponent {
   protected renderFlyout() {
     return html`
       <mgt-flyout .isOpen=${this._showFlyout}>
-        ${this.renderFlyoutContent()}
+        <div slot="flyout" class="flyout">
+          ${this.renderFlyoutContent()}
+        </div>
       </mgt-flyout>
     `;
   }
@@ -206,21 +208,19 @@ export class MgtLogin extends MgtBaseComponent {
     }
 
     return html`
-      <div slot="flyout" class="flyout">
-        <div class="popup">
-          <div class="popup-content">
-            <div>
-              <mgt-person .personDetails=${this.userDetails} .personImage=${this._image} show-name show-email />
-            </div>
-            <div class="popup-commands">
-              <ul>
-                <li>
-                  <button class="popup-command" @click=${this.logout} aria-label="Sign Out">
-                    Sign Out
-                  </button>
-                </li>
-              </ul>
-            </div>
+      <div class="popup">
+        <div class="popup-content">
+          <div>
+            <mgt-person .personDetails=${this.userDetails} .personImage=${this._image} show-name show-email />
+          </div>
+          <div class="popup-commands">
+            <ul>
+              <li>
+                <button class="popup-command" @click=${this.logout} aria-label="Sign Out">
+                  Sign Out
+                </button>
+              </li>
+            </ul>
           </div>
         </div>
       </div>
