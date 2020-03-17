@@ -33,6 +33,7 @@ import { findUserByEmail } from './mgt-person.graph';
  * @cssprop --avatar-font-size - {Length} Avatar font-size when both name and email are shown
  * @cssprop --avatar-border - {String} Avatar border
  * @cssprop --initials-color - {Color} Initials color
+ * @cssprop --initials-background-color - {Color} Initials background color
  * @cssprop --font-size - {Length} Font size
  * @cssprop --font-weight - {Length} Font weight
  * @cssprop --color - {Color} Color
@@ -112,18 +113,6 @@ export class MgtPerson extends MgtTemplatedComponent {
   public personImage: string;
 
   /**
-   * Set the background color of the person avatar
-   *
-   * @type {string}
-   * @memberof MgtPersonCard
-   */
-  @property({
-    attribute: 'person-avatar-bg',
-    type: String
-  })
-  public personAvatarBg: string;
-
-  /**
    * Sets how the person-card is invoked
    * Set to PersonCardInteraction.none to not show the card
    *
@@ -145,6 +134,7 @@ export class MgtPerson extends MgtTemplatedComponent {
 
   @property({ attribute: false }) private isPersonCardVisible: boolean;
   @property({ attribute: false }) private personCardShouldRender: boolean;
+  @property({ attribute: false }) private personAvatarBg: string;
 
   private _mouseLeaveTimeout;
   private _mouseEnterTimeout;
