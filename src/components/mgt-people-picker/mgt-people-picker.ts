@@ -341,7 +341,8 @@ export class MgtPeoplePicker extends MgtTemplatedComponent {
    */
   protected renderNoData(): TemplateResult {
     return (
-      this.renderTemplate('no-data', null, 'no-data') ||
+      this.renderTemplate('error', null) ||
+      this.renderTemplate('no-data', null) ||
       html`
         <div class="message-parent">
           <div label="search-error-text" aria-label="We didn't find any matches." class="search-error-text">
