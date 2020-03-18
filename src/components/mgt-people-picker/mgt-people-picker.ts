@@ -159,7 +159,11 @@ export class MgtPeoplePicker extends MgtTemplatedComponent {
     peopleInput.select();
 
     // Mouse is focused on input
-    this._showFlyout = !!peopleInput.value;
+    if (!peopleInput.value) {
+      this.hideFlyout();
+    } else {
+      this.showFlyout();
+    }
   }
 
   /**
