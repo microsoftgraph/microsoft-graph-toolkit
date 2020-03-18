@@ -12,7 +12,6 @@ $avatar-size-s: var(--avatar-size-s, 24px);
 $avatar-size: var(--avatar-size, 48px);
 $avatar-border: var(--avatar-border, 0);
 $initials-color: var(--initials-color, white);
-$initials-background-color: var(--initials-background-color, #{$ms-color-magenta});
 $font-size: var(--font-size, #{$ms-font-size-m});
 $font-weight: var(--font-weight, #{$ms-font-weight-semibold});
 $color: var(--color, #{$ms-color-neutralDark});
@@ -72,10 +71,9 @@ mgt-person .user-avatar {
 
   &.initials {
     color: $initials-color;
-    background-color: $initials-background-color;
     border-radius: 50%;
     font-weight: 400;
-    font-size: 60%;
+    font-size: 40%;
   }
 
   &.small {
@@ -90,6 +88,86 @@ mgt-person .user-avatar {
 
   img {
     height: 100%;
+  }
+
+  &.pinkRed10 {
+    background-color: var(--initials-background-color, $ms-color-sharedPinkRed10);
+  }
+
+  &.red20 {
+    background-color: var(--initials-background-color, $ms-color-sharedRed20);
+  }
+
+  &.red10 {
+    background-color: var(--initials-background-color, $ms-color-sharedRed10);
+  }
+
+  &.orange20 {
+    background-color: var(--initials-background-color, $ms-color-sharedOrange20);
+  }
+
+  &.orangeYellow20 {
+    background-color: var(--initials-background-color, $ms-color-sharedOrangeYellow20);
+  }
+
+  &.green10 {
+    background-color: var(--initials-background-color, $ms-color-sharedGreen10);
+  }
+
+  &.green20 {
+    background-color: var(--initials-background-color, $ms-color-sharedGreen20);
+  }
+
+  &.cyan20 {
+    background-color: var(--initials-background-color, $ms-color-sharedCyan20);
+  }
+
+  &.cyan30 {
+    background-color: var(--initials-background-color, $ms-color-sharedCyan30);
+  }
+
+  &.cyanBlue10 {
+    background-color: var(--initials-background-color, $ms-color-sharedCyanBlue10);
+  }
+
+  &.cyanBlue20 {
+    background-color: var(--initials-background-color, $ms-color-sharedCyanBlue20);
+  }
+
+  &.blue10 {
+    background-color: var(--initials-background-color, $ms-color-sharedBlue10);
+  }
+
+  &.blueMagenta30 {
+    background-color: var(--initials-background-color, $ms-color-sharedBlueMagenta30);
+  }
+
+  &.blueMagenta20 {
+    background-color: var(--initials-background-color, $ms-color-sharedBlueMagenta20);
+  }
+
+  &.magenta20 {
+    background-color: var(--initials-background-color, $ms-color-sharedMagenta20);
+  }
+
+  &.magenta10 {
+    background-color: var(--initials-background-color, $ms-color-sharedMagenta10);
+  }
+
+  &.magentaPink10 {
+    background-color: var(--initials-background-color, $ms-color-sharedMagentaPink10);
+  }
+
+  &.orange30 {
+    background-color: var(--initials-background-color, $ms-color-sharedOrange30);
+  }
+
+  &.gray30 {
+    background-color: var(--initials-background-color, $ms-color-sharedGray30);
+  }
+
+  &.gray20 {
+    background-color: var(--initials-background-color, $ms-color-sharedGray20);
   }
 }
 
