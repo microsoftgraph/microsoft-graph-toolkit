@@ -113,7 +113,23 @@ export class MgtPerson extends MgtTemplatedComponent {
     attribute: 'person-details',
     type: Object
   })
-  public personDetails: IDynamicPerson;
+  public get personDetails(): IDynamicPerson {
+    return this._personDetails;
+  }
+
+  public set personDetails(value: IDynamicPerson) {
+    if (this._personDetails === value) {
+      return;
+    }
+
+    this._personDetails = value;
+    if (!value) {
+      this._personAvatarBg = 'gray20';
+    } else {
+      this._personAvatarBg = this.getColorFromName(value.displayName);
+    }
+    this.requestUpdate('personDetails');
+  }
 
   /**
    * Set the image of the person
@@ -162,6 +178,8 @@ export class MgtPerson extends MgtTemplatedComponent {
   }
   private _isPersonCardVisible: boolean;
   private _personCardShouldRender: boolean;
+  private _personDetails: IDynamicPerson;
+  private _personAvatarBg: string;
 
   private _mouseLeaveTimeout;
   private _mouseEnterTimeout;
@@ -334,6 +352,8 @@ export class MgtPerson extends MgtTemplatedComponent {
     } else if (this.personDetails) {
       // render the initials
       const initials = this.getInitials(this.personDetails);
+      // add avatar background color
+      imageClasses[this._personAvatarBg] = true;
       imageHtml = html`
         <span class="initials-text" aria-label="${initials}">
           ${initials}
@@ -467,7 +487,7 @@ export class MgtPerson extends MgtTemplatedComponent {
     if (initials && initials.parentNode && (initials.parentNode as HTMLElement).getBoundingClientRect) {
       const parent = initials.parentNode as HTMLElement;
       const height = parent.getBoundingClientRect().height;
-      initials.style.fontSize = `${height * 0.5}px`;
+      initials.style.fontSize = `${height * 0.4}px`;
     }
   }
 
@@ -653,5 +673,36 @@ export class MgtPerson extends MgtTemplatedComponent {
 
     this._isPersonCardVisible = true;
     this.requestUpdate();
+  }
+
+  private getColorFromName(name) {
+    const charCodes = name
+      .split('')
+      .map(char => char.charCodeAt(0))
+      .join('');
+    const nameInt = parseInt(charCodes, 10);
+    const colors = [
+      'pinkRed10',
+      'red20',
+      'red10',
+      'orange20',
+      'orangeYellow20',
+      'green10',
+      'green20',
+      'cyan20',
+      'cyan30',
+      'cyanBlue10',
+      'cyanBlue20',
+      'blue10',
+      'blueMagenta30',
+      'blueMagenta20',
+      'magenta20',
+      'magenta10',
+      'magentaPink10',
+      'orange30',
+      'gray30',
+      'gray20'
+    ];
+    return colors[nameInt % colors.length];
   }
 }
