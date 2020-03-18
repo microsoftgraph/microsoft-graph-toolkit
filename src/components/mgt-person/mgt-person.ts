@@ -113,7 +113,23 @@ export class MgtPerson extends MgtTemplatedComponent {
     attribute: 'person-details',
     type: Object
   })
-  public personDetails: IDynamicPerson;
+  public get personDetails(): IDynamicPerson {
+    return this._personDetails;
+  }
+
+  public set personDetails(value: IDynamicPerson) {
+    if (this._personDetails === value) {
+      return;
+    }
+
+    this._personDetails = value;
+    if (!value) {
+      this._personAvatarBg = 'gray20';
+    } else {
+      this._personAvatarBg = this.getColorFromName(value.displayName);
+    }
+    this.requestUpdate('personDetails');
+  }
 
   /**
    * Set the image of the person
@@ -162,6 +178,7 @@ export class MgtPerson extends MgtTemplatedComponent {
   }
   private _isPersonCardVisible: boolean;
   private _personCardShouldRender: boolean;
+  private _personDetails: IDynamicPerson;
   private _personAvatarBg: string;
 
   private _mouseLeaveTimeout;
@@ -336,9 +353,6 @@ export class MgtPerson extends MgtTemplatedComponent {
       // render the initials
       const initials = this.getInitials(this.personDetails);
       // add avatar background color
-      if (!this._personAvatarBg) {
-        this._personAvatarBg = 'gray20';
-      }
       imageClasses[this._personAvatarBg] = true;
       imageHtml = html`
         <span class="initials-text" aria-label="${initials}">
@@ -497,8 +511,6 @@ export class MgtPerson extends MgtTemplatedComponent {
     }
 
     if (this.personDetails) {
-      this._personAvatarBg = this.getColorFromName(this.personDetails.displayName);
-
       // in some cases we might only have name or email, but need to find the image
       // use @ for the image value to search for an image
       if (this.personImage === '@' && !this.personDetails.personImage) {
@@ -523,7 +535,6 @@ export class MgtPerson extends MgtTemplatedComponent {
       const response = await batch.execute();
       this.personDetails = response.user;
       this.personDetails.personImage = response.photo;
-      this._personAvatarBg = this.getColorFromName(response.user.displayName);
 
       this.personImage = this.getImage();
       return;
@@ -536,7 +547,6 @@ export class MgtPerson extends MgtTemplatedComponent {
 
       if (people && people.length) {
         this.personDetails = people[0];
-        this._personAvatarBg = this.getColorFromName(people[0].displayName);
 
         if (this.personImage === '@') {
           this.loadImage();
