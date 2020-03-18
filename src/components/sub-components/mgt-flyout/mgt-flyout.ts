@@ -40,7 +40,6 @@ export class MgtFlyout extends LitElement {
   public isOpen: boolean;
 
   private renderedOnce = false;
-  private openLeft: boolean = false;
 
   /**
    * Invoked when the element is first updated. Implement to perform one time

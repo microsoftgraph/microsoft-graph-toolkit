@@ -35,16 +35,15 @@ mgt-people-picker .people-picker {
   padding-bottom: 8px;
 }
 
-:host .people-list,
-mgt-people-picker .people-list {
-  position: absolute;
+:host .flyout .flyout-root,
+mgt-people-picker .flyout .flyout-root {
   margin: 7px 0px 0px 0px;
   padding: 0;
   box-shadow: 0px 1.3289px 2.65781px rgba(180, 180, 180, 0.182), 0px 1.3289px 2.65781px rgba(68, 68, 68, 0.3);
   border-radius: 2px;
   background-color: $people-list-background-color;
-  z-index: 1; /* Sit on top */
   width: 100%;
+  overflow-y: auto;
   text-align: left;
   list-style-type: none;
   font-family: var(--default-font-family, 'Segoe UI');
