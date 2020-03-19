@@ -216,7 +216,7 @@ export class MgtTeamsChannelPicker extends MgtTemplatedComponent {
   public selectedChannel: Channel[] = [];
 
   // User input in search
-  @property() private _userInput: string = '';
+  private _userInput: string = '';
 
   // tracking of user arrow key input for selection
   private arrowSelectionCount: number = -1;
@@ -414,10 +414,18 @@ export class MgtTeamsChannelPicker extends MgtTemplatedComponent {
    * @memberof MgtTeamsChannelPicker
    */
   public handleInputChanged(e) {
-    this._treeViewState = this.generateTreeViewState(this.items, e.target.value);
-    this._focusedIndex = -1;
-    this.resetFocusState();
-    this.handleChannelSearch(e.target);
+    if (this._userInput !== e.target.value) {
+      this._userInput = e.target.value;
+    }
+    if (!this.debouncedSearch) {
+      this.debouncedSearch = debounce(() => {
+        this._treeViewState = this.generateTreeViewState(this.items, this._userInput);
+        this._focusedIndex = -1;
+        this.resetFocusState();
+      }, 800);
+    }
+
+    this.debouncedSearch();
   }
 
   /**
@@ -558,26 +566,6 @@ export class MgtTeamsChannelPicker extends MgtTemplatedComponent {
     if (e.target !== this) {
       this.lostFocus();
     }
-  }
-
-  /**
-   * Tracks event on user input in search
-   * @param input - input text
-   */
-  private handleChannelSearch(input: any) {
-    if (!this.debouncedSearch) {
-      this.debouncedSearch = debounce(() => {
-        if (this._userInput !== input.value) {
-          this._userInput = input.value;
-          this.loadChannelSearch(this._userInput);
-          this.gainedFocus();
-          this.arrowSelectionCount = -1;
-          this.channelLength = -1;
-        }
-      }, 200);
-    }
-
-    this.debouncedSearch();
   }
 
   /**
