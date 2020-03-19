@@ -311,7 +311,7 @@ export class MgtPeoplePicker extends MgtTemplatedComponent {
   protected renderFlyout(): TemplateResult {
     return html`
       <mgt-flyout .isOpen=${this._showFlyout}>
-        <div slot="flyout" class="flyout">
+        <div slot="flyout">
           <div class="flyout-root">
             ${this.renderFlyoutContent()}
           </div>
