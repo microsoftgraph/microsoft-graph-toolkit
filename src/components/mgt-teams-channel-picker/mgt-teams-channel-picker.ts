@@ -417,6 +417,7 @@ export class MgtTeamsChannelPicker extends MgtTemplatedComponent {
     this._treeViewState = this.generateTreeViewState(this.items, e.target.value);
     this._focusedIndex = -1;
     this.resetFocusState();
+    this.handleChannelSearch(e.target);
   }
 
   /**
@@ -475,7 +476,7 @@ export class MgtTeamsChannelPicker extends MgtTemplatedComponent {
             role="input"
             .value="${this._userInput}"
             @keydown="${this.onUserKeyDown}"
-            @keyup="${this.onUserKeyUp}"
+            @input=${e => this.handleInputChanged(e)}
           />
         </div>
       </div>
@@ -525,8 +526,8 @@ export class MgtTeamsChannelPicker extends MgtTemplatedComponent {
 
     for (const item of items) {
       array.push(item);
-      if (item.children && item.isExpanded) {
-        array = [...array, ...this.generateFocusList(item.children)];
+      if (item.channels && item.isExpanded) {
+        array = [...array, ...this.generateFocusList(item.channels)];
       }
     }
 
@@ -557,38 +558,6 @@ export class MgtTeamsChannelPicker extends MgtTemplatedComponent {
     if (e.target !== this) {
       this.lostFocus();
     }
-  }
-
-  /**
-   * Adds debounce method for set delay on user input
-   */
-  private onUserKeyUp(event: any) {
-    if (event.keyCode === 40 || event.keyCode === 38) {
-      // keyCodes capture: down arrow (40) and up arrow (38)
-      return;
-    }
-
-    const input = event.target;
-
-    if (event.code === 'Escape') {
-      input.value = '';
-      this._userInput = '';
-      return;
-    }
-    if (event.code === 'Backspace' && this._userInput.length === 0 && this.selectedTeams.length > 0) {
-      input.value = '';
-      this._userInput = '';
-      // remove last channel in selected list
-      this.selectedTeams = [[], []];
-      // fire selected teams changed event
-      this.fireCustomEvent('selectionChanged', this.selectedTeams);
-      this.handleChannelSearch('');
-      this.requestUpdate();
-      return;
-    }
-
-    this.handleChannelSearch(input);
-    this.handleInputChanged(event);
   }
 
   /**
@@ -642,14 +611,14 @@ export class MgtTeamsChannelPicker extends MgtTemplatedComponent {
         event.preventDefault();
         break;
       case 39: // right
-        if (currentFocusedItem && currentFocusedItem.children && !currentFocusedItem.isExpanded) {
+        if (currentFocusedItem && currentFocusedItem.channels && !currentFocusedItem.isExpanded) {
           currentFocusedItem.isExpanded = true;
           this.resetFocusState();
           event.preventDefault();
         }
         break;
       case 37: // left
-        if (currentFocusedItem && currentFocusedItem.children && currentFocusedItem.isExpanded) {
+        if (currentFocusedItem && currentFocusedItem.channels && currentFocusedItem.isExpanded) {
           currentFocusedItem.isExpanded = false;
           this.resetFocusState();
           event.preventDefault();
