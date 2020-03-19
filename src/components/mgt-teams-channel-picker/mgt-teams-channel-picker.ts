@@ -218,8 +218,6 @@ export class MgtTeamsChannelPicker extends MgtTemplatedComponent {
   // User input in search
   @property() private _userInput: string = '';
 
-  private noChannelsFound: boolean = false;
-
   // tracking of user arrow key input for selection
   private arrowSelectionCount: number = -1;
 
@@ -315,7 +313,7 @@ export class MgtTeamsChannelPicker extends MgtTemplatedComponent {
             @click=${this.gainedFocus}
           >
             <div class="search-icon ${this.isFocused && this.selectedTeams[0].length === 0 ? 'focused' : ''}">
-              ${this.isFocused && this.selectedTeams[0].length === 0 ? getSvg(SvgIcon.Search, '#252424') : ''}
+              ${getSvg(SvgIcon.Search, '#252424')}
             </div>
             ${this.renderChosenTeam()}
           </div>
@@ -335,28 +333,21 @@ export class MgtTeamsChannelPicker extends MgtTemplatedComponent {
    */
   public renderDropdown(items: DropdownItemState[], level: number = 0) {
     let content: any;
-    // if (this.teams) {
-    //   if (this.isLoading) {
-    //     content = this.renderTemplate('loading', null, 'loading') || this.renderLoadingMessage();
-    //   } else if (this.noChannelsFound && this._userInput.length > 0 && !this.noListShown) {
-    //     content = this.renderTeams(this.teams);
-    //   } else if (this.noChannelsFound && this._userInput.length > 0 && this.noListShown) {
-    //     content = this.renderTemplate('error', null, 'error') || this.renderErrorMessage();
-    //   } else {
-    //     if (this.teams[0]) {
-    //       (this.teams[0] as any).isSelected = 'fill';
-    //     }
-    //   }
-    // }
+    if (this.teams) {
+      if (this.isLoading) {
+        content = this.renderTemplate('loading', null, 'loading') || this.renderLoadingMessage();
+      } else {
+        content = items.map((treeItem, index) => {
+          const isLeaf = !treeItem.channels;
+          const renderChildren = !isLeaf && treeItem.isExpanded;
 
-    content = items.map((treeItem, index) => {
-      const isLeaf = !treeItem.channels;
-      const renderChildren = !isLeaf && treeItem.isExpanded;
-
-      return html`
-        ${this.renderItem(treeItem)} ${renderChildren ? this.renderDropdown(treeItem.channels, level + 1) : html``}
-      `;
-    });
+          return html`
+            ${this.renderItem(treeItem)} ${renderChildren ? this.renderDropdown(treeItem.channels, level + 1) : html``}
+          `;
+        });
+        this.requestUpdate();
+      }
+    }
 
     return html`
       <div>
@@ -429,71 +420,6 @@ export class MgtTeamsChannelPicker extends MgtTemplatedComponent {
   }
 
   /**
-   * Renders channels
-   *
-   * @protected
-   * @param {MicrosoftGraph.Channel[]} channelData
-   * @returns
-   * @memberof MgtTeamsChannelPicker
-   */
-  protected renderChannels(channelData: MicrosoftGraph.Channel[]) {
-    let channelView;
-    if (channelData && !this.noChannelsFound) {
-      channelView = html`
-        ${repeat(
-          channelData,
-          channel => channel,
-          channel => html`
-            <div class="channel-display" @click=${e => this.addChannel(e, channel)} title="${channel.displayName}">
-              ${this.renderHighlightText(channel)}
-            </div>
-          `
-        )}
-      `;
-    } else {
-      if (channelData) {
-        const channelids = [];
-
-        for (const team of this.teams) {
-          const teamDiv = this.renderRoot.querySelector(`.team-list-${team.id}`);
-          const channelDiv = this.renderRoot.querySelector(`.team-${team.id}`);
-          teamDiv.classList.add('hide-team');
-          if (team.displayName.toLowerCase().indexOf(this._userInput.toLowerCase()) > -1) {
-            teamDiv.classList.remove('hide-team');
-            channelDiv.classList.remove('hide-channels');
-            team.showChannels = true;
-
-            for (const channel of team.channels) {
-              channelids.push(channel.id);
-            }
-          }
-        }
-
-        channelView = html`
-          ${repeat(
-            channelData,
-            channel => channel,
-            channel => html`
-              <div class="channel-display" @click=${e => this.addChannel(e, channel)}>
-                <div
-                  class="${channelids.indexOf(channel.id) > -1 ? 'showing' : 'hiding'} channel-${channel.id.replace(
-                    /[^a-zA-Z ]/g,
-                    ''
-                  )}"
-                >
-                  <span class="people-person-text">${channel.displayName}</span>
-                </div>
-              </div>
-            `
-          )}
-        `;
-      }
-    }
-
-    return channelView;
-  }
-
-  /**
    * Renders selected Team
    *
    * @protected
@@ -501,14 +427,14 @@ export class MgtTeamsChannelPicker extends MgtTemplatedComponent {
    * @memberof MgtTeamsChannelPicker
    */
   protected renderChosenTeam() {
-    let peopleList;
+    let channelList;
     let inputClass = 'input-search-start';
 
     if (this.selectedTeams[0]) {
       if (this.selectedTeams[0].length) {
         inputClass = 'input-search';
 
-        peopleList = html`
+        channelList = html`
           <li class="selected-team">
             <div class="selected-team-name">${this.selectedTeams[0][0].displayName}</div>
             <div class="arrow">${getSvg(SvgIcon.TeamSeparator, '#B3B0AD')}</div>
@@ -518,11 +444,11 @@ export class MgtTeamsChannelPicker extends MgtTemplatedComponent {
             </div>
           </li>
           <div class="SearchIcon">
-            ${this.isFocused ? getSvg(SvgIcon.Search, '#252424') : ''}
+            ${getSvg(SvgIcon.Search, '#252424')}
           </div>
         `;
       } else {
-        peopleList = html`
+        channelList = html`
           <div
             class="InputArrowIcon"
             @click="${e => {
@@ -537,7 +463,7 @@ export class MgtTeamsChannelPicker extends MgtTemplatedComponent {
     }
     return html`
       <div class="people-chosen-list">
-        ${peopleList}
+        ${channelList}
         <div class="${inputClass}">
           <input
             id="teams-channel-picker-input"
@@ -690,28 +616,45 @@ export class MgtTeamsChannelPicker extends MgtTemplatedComponent {
    * @param event - event tracked on user input (keydown)
    */
   private onUserKeyDown(event: any) {
-    if (event.keyCode === 40 || event.keyCode === 38) {
-      // keyCodes capture: down arrow (40) and up arrow (38)
-      this.handleArrowSelection(event);
-      if (this._userInput.length > 0) {
-        event.preventDefault();
-      }
+    if (this._treeViewState.length === 0) {
+      return;
     }
-    if (event.code === 'Tab' || event.code === 'Enter') {
-      if (this.teams) {
-        event.preventDefault();
-      }
 
-      const selectedDiv = this.renderRoot.querySelector('.teams-channel-list-fill');
-      if (selectedDiv.classList.contains('list-team')) {
-        // clicked team
-        if (selectedDiv.classList[2]) {
-          this._clickTeam(selectedDiv.classList[2].slice(10));
+    const currentFocusedItem = this._focusList[this._focusedIndex];
+
+    switch (event.keyCode) {
+      case 40: // up
+        this._focusedIndex = (this._focusedIndex + 1) % this._focusList.length;
+        if (typeof this._focusedIndex !== 'number') {
+          this._focusedIndex = -1;
         }
-      } else {
-        // clicked channel
-        this.addChannel(event, selectedDiv.parentElement.classList[1].slice(5));
-      }
+
+        this.requestUpdate();
+        event.preventDefault();
+        break;
+      case 38: // down
+        this._focusedIndex = (this._focusedIndex - 1 + this._focusList.length) % this._focusList.length;
+        if (typeof this._focusedIndex !== 'number') {
+          this._focusedIndex = -1;
+        }
+
+        this.requestUpdate();
+        event.preventDefault();
+        break;
+      case 39: // right
+        if (currentFocusedItem && currentFocusedItem.children && !currentFocusedItem.isExpanded) {
+          currentFocusedItem.isExpanded = true;
+          this.resetFocusState();
+          event.preventDefault();
+        }
+        break;
+      case 37: // left
+        if (currentFocusedItem && currentFocusedItem.children && currentFocusedItem.isExpanded) {
+          currentFocusedItem.isExpanded = false;
+          this.resetFocusState();
+          event.preventDefault();
+        }
+        break;
     }
   }
 
@@ -880,22 +823,12 @@ export class MgtTeamsChannelPicker extends MgtTemplatedComponent {
     this.isLoading = false;
   }
 
-  private resetTeams() {
-    for (const team of this.teams) {
-      const teamdiv = this.renderRoot.querySelector(`.team-list-${team.id}`);
-      teamdiv.classList.remove('hide-team');
-      team.showChannels = false;
-    }
-  }
-
   /**
    * Async method which query's the Graph with user input
    * @param name - user input or name of person searched
    */
   private loadChannelSearch(name: string) {
-    this.noChannelsFound = false;
     if (name === '') {
-      this.resetTeams();
       return;
     }
     const foundMatch = [];
@@ -919,8 +852,6 @@ export class MgtTeamsChannelPicker extends MgtTemplatedComponent {
           }
         }
       }
-    } else {
-      this.noChannelsFound = true;
     }
   }
 
@@ -928,7 +859,6 @@ export class MgtTeamsChannelPicker extends MgtTemplatedComponent {
     this.selectedTeams = [[], []];
     this._userInput = '';
 
-    this.resetTeams();
     this.fireCustomEvent('selectionChanged', this.selectedTeams);
   }
 
@@ -970,7 +900,6 @@ export class MgtTeamsChannelPicker extends MgtTemplatedComponent {
   private lostFocus() {
     this.isFocused = false;
     this._userInput = '';
-    this.resetTeams();
     const teamList = this.renderRoot.querySelector('.team-list');
     if (teamList) {
       teamList.setAttribute('style', 'display:none');

@@ -33,7 +33,7 @@ $input-focus-color: var(--input-focus-color, #0078d4);
 $selection-hover-color: var(--selection-hover-color, #f1f1f1dd);
 
 $selection-background-color: var(--selection-background-color, white);
-$input-background-color: var(--input-background-color, white);
+$input-background-color: var(--input-background-color, transparent);
 
 :host {
   border-radius: 2px;
@@ -41,6 +41,19 @@ $input-background-color: var(--input-background-color, white);
 :host .root,
 mgt-teams-channel-picker .root {
   display: block;
+}
+
+.item.selected {
+  background: lightBlue;
+}
+
+.item.focused {
+  background: lightGreen;
+}
+
+.item:hover {
+  background: lightGray;
+  cursor: pointer;
 }
 
 :host .teams-channel-picker,
