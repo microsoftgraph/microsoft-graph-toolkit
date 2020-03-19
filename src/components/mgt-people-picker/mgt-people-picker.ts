@@ -176,12 +176,15 @@ export class MgtPeoplePicker extends MgtTemplatedComponent {
     peopleInput.focus(options);
     peopleInput.select();
 
-    // Mouse is focused on input
-    if (!peopleInput.value) {
-      this.hideFlyout();
-    } else {
-      this.showFlyout();
-    }
+    // The timeout is needed to force the layout update.
+    setTimeout(() => {
+      // Mouse is focused on input
+      if (!peopleInput.value) {
+        this.hideFlyout();
+      } else {
+        this.showFlyout();
+      }
+    }, 0);
   }
 
   /**
@@ -222,15 +225,15 @@ export class MgtPeoplePicker extends MgtTemplatedComponent {
     const inputTemplate = this.renderInput();
     const flyoutTemplate = this.renderFlyout();
     return html`
-      <div class="people-picker">
-        <div class="people-picker-input" @click=${() => this.focus()}>
+      <div class="people-picker" @click=${() => this.focus()}>
+        <div class="people-picker-input">
           <div class="people-selected-list">
             ${selectedPeopleTemplate} ${inputTemplate}
           </div>
         </div>
         <div class="people-list-separator"></div>
-        ${flyoutTemplate}
       </div>
+      ${flyoutTemplate}
     `;
   }
 
