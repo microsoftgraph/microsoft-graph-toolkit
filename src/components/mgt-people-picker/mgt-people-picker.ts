@@ -98,7 +98,7 @@ export class MgtPeoplePicker extends MgtTemplatedComponent {
   protected userInput: string;
 
   /**
-   * Check the current state of the
+   * Check the current state of the results flyout
    *
    * @readonly
    * @protected
