@@ -188,15 +188,14 @@ export class MgtPeoplePicker extends MgtTemplatedComponent {
     peopleInput.focus(options);
     peopleInput.select();
 
-    // The timeout is needed to force the layout update.
-    setTimeout(() => {
+    window.requestAnimationFrame(() => {
       // Mouse is focused on input
       if (!peopleInput.value) {
         this.hideFlyout();
       } else {
         this.showFlyout();
       }
-    }, 0);
+    });
   }
 
   /**
