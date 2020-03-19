@@ -97,6 +97,18 @@ export class MgtPeoplePicker extends MgtTemplatedComponent {
    */
   protected userInput: string;
 
+  /**
+   * Check the current state of the
+   *
+   * @readonly
+   * @protected
+   * @type {boolean}
+   * @memberof MgtPeoplePicker
+   */
+  protected get isFlyoutOpen(): boolean {
+    return this._showFlyout;
+  }
+
   // if search is still loading don't load "people not found" state
   @property({ attribute: false }) private _showLoading: boolean;
 
