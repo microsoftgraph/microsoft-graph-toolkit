@@ -43,19 +43,6 @@ mgt-teams-channel-picker .root {
   display: block;
 }
 
-.item.selected {
-  background: lightBlue;
-}
-
-.item.focused {
-  background: lightGreen;
-}
-
-.item:hover {
-  background: lightGray;
-  cursor: pointer;
-}
-
 :host .teams-channel-picker,
 mgt-teams-channel-picker .teams-channel-picker {
   position: relative;
