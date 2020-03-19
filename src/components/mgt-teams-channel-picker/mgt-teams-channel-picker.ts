@@ -339,10 +339,10 @@ export class MgtTeamsChannelPicker extends MgtTemplatedComponent {
       } else {
         content = items.map((treeItem, index) => {
           const isLeaf = !treeItem.channels;
-          const renderChildren = !isLeaf && treeItem.isExpanded;
+          const renderChannels = !isLeaf && treeItem.isExpanded;
 
           return html`
-            ${this.renderItem(treeItem)} ${renderChildren ? this.renderDropdown(treeItem.channels, level + 1) : html``}
+            ${this.renderItem(treeItem)} ${renderChannels ? this.renderDropdown(treeItem.channels, level + 1) : html``}
           `;
         });
         this.requestUpdate();
@@ -500,9 +500,9 @@ export class MgtTeamsChannelPicker extends MgtTemplatedComponent {
           stateItem.isExpanded = filterString.length > 0;
         }
       } else if (item.channels) {
-        const children = this.generateTreeViewState(item.channels, filterString, stateItem);
-        if (children.length > 0) {
-          stateItem = { item, parent, channels: [], isExpanded: true };
+        const channels = this.generateTreeViewState(item.channels, filterString, stateItem);
+        if (channels.length > 0) {
+          stateItem = { item, parent, channels, isExpanded: true };
         }
       }
 
@@ -658,146 +658,6 @@ export class MgtTeamsChannelPicker extends MgtTemplatedComponent {
     }
   }
 
-  /**
-   * Tracks user input when inside team, in order to traverse channels
-   *
-   * @private
-   * @param {*} channels
-   * @memberof MgtTeamsChannelPicker
-   */
-  private handleChannelHighlight(channels: any) {
-    // moves counter once for user input
-    const htmlCount = this.channelCounter + 1;
-    const displayedChannels = [];
-
-    // if channel is not filtered by search (showing)
-
-    // tslint:disable-next-line: prefer-for-of
-    for (let i = 0; i < channels.length; i++) {
-      if (channels[i].children[0].classList.contains('showing')) {
-        displayedChannels.push(channels[i]);
-      }
-    }
-    displayedChannels[htmlCount].classList.add('teams-channel-list-fill');
-  }
-
-  private handleTeamHighlight(team: any) {
-    if (team) {
-      team.classList.add('teams-channel-list-fill');
-    }
-  }
-
-  /**
-   * Tracks user key selection for arrow key selection of channels
-   * @param event - tracks user key selection
-   */
-  private handleArrowSelection(event: any) {
-    // resets highlight
-    const teamList = this.renderRoot.querySelector('.team-list');
-    // tslint:disable-next-line: prefer-for-of
-    for (let i = 0; i < teamList.children.length; i++) {
-      teamList.children[i].classList.remove('teams-channel-list-fill');
-    }
-
-    const teamDivs = teamList.children;
-
-    const showingDivs = [];
-
-    // tslint:disable-next-line: prefer-for-of
-    for (let i = 0; i < teamDivs.length; i++) {
-      const elems = teamDivs[i];
-      if (!elems.classList.contains('hide-channels') || !elems.classList.contains('hide-team')) {
-        showingDivs.push(elems);
-      }
-    }
-
-    let teamLength = 0;
-    let isLast = false;
-
-    for (const item of showingDivs) {
-      if (showingDivs[this.arrowSelectionCount + 1]) {
-        if (
-          item.classList.contains('list-team') ||
-          !showingDivs[this.arrowSelectionCount + 1].classList.contains('hide-channels')
-        ) {
-          teamLength++;
-        }
-      } else {
-        isLast = true;
-      }
-    }
-
-    if (this.teams.length && !this.isLoading) {
-      if (event !== null) {
-        // update arrow count
-        if (event.keyCode === 38) {
-          // up arrow
-          if (this.arrowSelectionCount >= 1) {
-            this.arrowSelectionCount--;
-          }
-        }
-        if (event.keyCode === 40) {
-          if (!isLast) {
-            // down arrow
-            this.arrowSelectionCount++;
-            if (
-              showingDivs[this.arrowSelectionCount] &&
-              showingDivs[this.arrowSelectionCount].classList.contains('render-channels')
-            ) {
-              this.arrowSelectionCount++;
-            }
-          } else {
-            this.arrowSelectionCount = -1;
-          }
-        }
-      }
-
-      const channelSection = showingDivs[this.arrowSelectionCount - 1];
-
-      if (channelSection) {
-        if (channelSection.classList.contains('render-channels')) {
-          this.channelLength = -1;
-
-          // tslint:disable-next-line: prefer-for-of
-          for (let i = 0; i < channelSection.children.length; i++) {
-            channelSection.children[i].classList.remove('teams-channel-list-fill');
-            if (channelSection.children[i].clientHeight > 0) {
-              this.channelLength++;
-            }
-          }
-
-          if (this.channelCounter + 1 <= this.channelLength) {
-            this.handleChannelHighlight(channelSection.children);
-            this.arrowSelectionCount = this.arrowSelectionCount - 2;
-            this.channelCounter++;
-
-            return;
-          } else {
-            if (showingDivs[this.arrowSelectionCount]) {
-              this.handleTeamHighlight(showingDivs[this.arrowSelectionCount]);
-              // this.arrowSelectionCount--;
-            } else {
-              this.arrowSelectionCount = -1;
-            }
-
-            this.channelCounter = -1;
-          }
-        } else {
-          if (this.arrowSelectionCount === teamLength) {
-            this.arrowSelectionCount = 0;
-            this.handleTeamHighlight(showingDivs[this.arrowSelectionCount]);
-          } else {
-            if (this.channelCounter === -1) {
-              this.handleTeamHighlight(showingDivs[this.arrowSelectionCount]);
-            }
-          }
-        }
-      } else {
-        this.handleTeamHighlight(showingDivs[this.arrowSelectionCount]);
-      }
-    }
-  }
-
   private async loadTeams() {
     const provider = Providers.globalProvider;
     if (provider) {
@@ -875,7 +735,6 @@ export class MgtTeamsChannelPicker extends MgtTemplatedComponent {
   private renderLoadingMessage() {
     return html`
       <div class="message-parent">
-        r
         <div class="spinner"></div>
         <div label="loading-text" aria-label="loading" class="loading-text">
           Loading...
@@ -1006,18 +865,6 @@ export class MgtTeamsChannelPicker extends MgtTemplatedComponent {
     this._userInput = '';
     this.arrowSelectionCount = -1;
     this.channelCounter = 0;
-    this.requestUpdate();
-  }
-
-  private _clickTeam(id: string) {
-    const team = this.renderRoot.querySelector('.team-' + id);
-
-    for (const teams of this.teams) {
-      if (teams.id === id) {
-        teams.showChannels = !teams.showChannels;
-      }
-    }
-
     this.requestUpdate();
   }
 }
