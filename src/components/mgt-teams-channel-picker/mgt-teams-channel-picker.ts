@@ -392,7 +392,7 @@ export class MgtTeamsChannelPicker extends MgtTemplatedComponent {
         <div class="arrow">
           ${icon}
         </div>
-        ${itemState.item.displayName}
+        ${itemState.channels ? itemState.item.displayName : this.renderHighlightText(itemState.item)}
       </div>
     `;
   }
@@ -426,39 +426,6 @@ export class MgtTeamsChannelPicker extends MgtTemplatedComponent {
     this._treeViewState = this.generateTreeViewState(this.items, e.target.value);
     this._focusedIndex = -1;
     this.resetFocusState();
-  }
-
-  /**
-   * Renders a Team
-   *
-   * @protected
-   * @param {Team[]} teams
-   * @returns
-   * @memberof MgtTeamsChannelPicker
-   */
-  protected renderTeams(teams: Team[]) {
-    return html`
-      ${repeat(
-        teams,
-        teamData => teamData,
-        teamData => html`
-          <li
-            class="list-team teams-channel-list team-list-${teamData.id}"
-            @click="${() => this._clickTeam(teamData.id)}"
-          >
-            <div class="arrow">
-              ${teamData.showChannels ? getSvg(SvgIcon.ArrowDown, '#252424') : getSvg(SvgIcon.ArrowRight, '#252424')}
-            </div>
-            <div class="team-name" title="${teamData.displayName}">
-              ${teamData.displayName}
-            </div>
-          </li>
-          <div class="render-channels team-${teamData.id} ${teamData.showChannels ? '' : 'hide-channels'}">
-            ${this.renderChannels(teamData.channels)}
-          </div>
-        `
-      )}
-    `;
   }
 
   /**
@@ -546,7 +513,7 @@ export class MgtTeamsChannelPicker extends MgtTemplatedComponent {
             <div class="selected-team-name">${this.selectedTeams[0][0].displayName}</div>
             <div class="arrow">${getSvg(SvgIcon.TeamSeparator, '#B3B0AD')}</div>
             ${this.selectedTeams[1][0].displayName}
-            <div class="CloseIcon" @click="${() => this.removePerson(this.selectedTeams[0], this.selectedTeams[1])}">
+            <div class="CloseIcon" @click="${() => this.removeTeam(this.selectedTeams[0], this.selectedTeams[1])}">
               
             </div>
           </li>
@@ -957,11 +924,7 @@ export class MgtTeamsChannelPicker extends MgtTemplatedComponent {
     }
   }
 
-  /**
-   * Removes person from selected people
-   * @param person - person and details pertaining to user selected
-   */
-  private removePerson(team: MicrosoftGraph.Team[], pickedChannel: MicrosoftGraph.Channel[]) {
+  private removeTeam(team: MicrosoftGraph.Team[], pickedChannel: MicrosoftGraph.Channel[]) {
     this.selectedTeams = [[], []];
     this._userInput = '';
 
@@ -1015,7 +978,7 @@ export class MgtTeamsChannelPicker extends MgtTemplatedComponent {
     this.requestUpdate();
   }
 
-  private renderHighlightText(channel: MicrosoftGraph.Channel) {
+  private renderHighlightText(channel: any) {
     // tslint:disable-next-line: prefer-const
     let channels: any = {};
 
@@ -1048,7 +1011,7 @@ export class MgtTeamsChannelPicker extends MgtTemplatedComponent {
     }
 
     return html`
-      <div class="${shouldShow ? 'showing' : ''} channel-${channel.id.replace(/[^a-zA-Z ]/g, '')}">
+      <div class="showing channel-display">
         <span class="people-person-text">${channels.first}</span
         ><span class="people-person-text highlight-search-text">${channels.highlight}</span
         ><span class="people-person-text">${channels.last}</span>
