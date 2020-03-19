@@ -118,7 +118,7 @@ mgt-teams-channel-picker .people-chosen-list {
   .selected-team {
     padding-top: 1px;
     padding-right: 6px;
-    .selected-team-name{
+    .selected-team-name {
       font-weight: bold;
     }
   }
@@ -179,8 +179,8 @@ mgt-teams-channel-picker .selected-team {
   }
 }
 
-:host .list-team,
-mgt-teams-channel-picker .list-team {
+:host .listTeam,
+mgt-teams-channel-picker .listTeam {
   -moz-user-select: none;
   -webkit-user-select: none;
   -ms-user-select: none;
