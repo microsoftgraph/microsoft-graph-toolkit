@@ -179,7 +179,7 @@ export class MgtTeamsChannelPicker extends MgtTemplatedComponent {
    * @memberof MgtTeamsChannelPicker
    */
   public get selectedItem(): DropdownItem {
-    return this._selectedItemState.item;
+    return this._selectedItemState ? this._selectedItemState.item : null;
   }
 
   /**
