@@ -422,7 +422,7 @@ export class MgtTeamsChannelPicker extends MgtTemplatedComponent {
         this._treeViewState = this.generateTreeViewState(this.items, this._userInput);
         this._focusedIndex = -1;
         this.resetFocusState();
-      }, 800);
+      }, 400);
     }
 
     this.debouncedSearch();
