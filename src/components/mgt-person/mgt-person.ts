@@ -177,8 +177,6 @@ export class MgtPerson extends MgtTemplatedComponent {
     return this._isPersonCardVisible;
   }
 
-  @query('.initials-text') private initialsElement: HTMLElement;
-
   private _isPersonCardVisible: boolean;
   private _personCardShouldRender: boolean;
   private _personDetails: IDynamicPerson;
@@ -472,28 +470,6 @@ export class MgtPerson extends MgtTemplatedComponent {
         <mgt-person-card .personDetails=${person} .personImage=${image}></mgt-person-card>
       `
     );
-  }
-
-  /**
-   * Invoked whenever the element is updated. Implement to perform
-   * post-updating tasks via DOM APIs, for example, focusing an element.
-   *
-   * Setting properties inside this method will trigger the element to update
-   * again after this update cycle completes.
-   *
-   * * @param changedProperties Map of changed properties with old values
-   */
-  protected updated(changedProps: PropertyValues) {
-    super.updated(changedProps);
-
-    window.requestAnimationFrame(_ => {
-      const initials = this.initialsElement;
-      if (initials && initials.parentNode && (initials.parentNode as HTMLElement).getBoundingClientRect) {
-        const parent = initials.parentNode as HTMLElement;
-        const height = parent.getBoundingClientRect().height;
-        initials.style.fontSize = `${height * 0.4}px`;
-      }
-    });
   }
 
   /**
