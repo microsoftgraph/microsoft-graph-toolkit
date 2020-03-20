@@ -6,7 +6,7 @@
  */
 
 import * as MicrosoftGraph from '@microsoft/microsoft-graph-types';
-import { customElement, html, property, PropertyValues, TemplateResult } from 'lit-element';
+import { customElement, html, property, PropertyValues, query, TemplateResult } from 'lit-element';
 import { classMap } from 'lit-html/directives/class-map';
 import { findPerson, getEmailFromGraphEntity } from '../../graph/graph.people';
 import { getContactPhoto, getUserPhoto } from '../../graph/graph.photos';
@@ -176,6 +176,9 @@ export class MgtPerson extends MgtTemplatedComponent {
   protected get isPersonCardVisible(): boolean {
     return this._isPersonCardVisible;
   }
+
+  @query('.initials-text') private initialsElement: HTMLElement;
+
   private _isPersonCardVisible: boolean;
   private _personCardShouldRender: boolean;
   private _personDetails: IDynamicPerson;
@@ -483,12 +486,14 @@ export class MgtPerson extends MgtTemplatedComponent {
   protected updated(changedProps: PropertyValues) {
     super.updated(changedProps);
 
-    const initials = this.renderRoot.querySelector('.initials-text') as HTMLElement;
-    if (initials && initials.parentNode && (initials.parentNode as HTMLElement).getBoundingClientRect) {
-      const parent = initials.parentNode as HTMLElement;
-      const height = parent.getBoundingClientRect().height;
-      initials.style.fontSize = `${height * 0.4}px`;
-    }
+    window.requestAnimationFrame(_ => {
+      const initials = this.initialsElement;
+      if (initials && initials.parentNode && (initials.parentNode as HTMLElement).getBoundingClientRect) {
+        const parent = initials.parentNode as HTMLElement;
+        const height = parent.getBoundingClientRect().height;
+        initials.style.fontSize = `${height * 0.4}px`;
+      }
+    });
   }
 
   /**

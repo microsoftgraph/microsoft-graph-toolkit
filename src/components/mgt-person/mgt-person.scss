@@ -74,6 +74,10 @@ mgt-person .user-avatar {
     border-radius: 50%;
     font-weight: 400;
     font-size: 40%;
+
+    & .initials-text {
+      margin-top: -1px;
+    }
   }
 
   &.small {
