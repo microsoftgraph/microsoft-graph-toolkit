@@ -127,21 +127,25 @@ export class MgtPersonCard extends MgtTemplatedComponent {
       });
     }
 
-    // Check for a details template
-    let contentTemplate: TemplateResult = this.renderTemplate('details', {
+    // Check for a person-details template
+    let personDetailsTemplate = this.renderTemplate('person-details', {
       person: this.personDetails,
       personImage: image
     });
-    if (!contentTemplate) {
+    if (!personDetailsTemplate) {
       const personImageTemplate = this.renderPersonImage(image);
-      const personDetailsTemplate = this.renderPersonDetails(person);
+      const personNameTemplate = this.renderPersonName(person);
+      const contactIconsTemplate = this.renderContactIcons(person);
 
-      contentTemplate = html`
+      personDetailsTemplate = html`
         <div class="image">
           ${personImageTemplate}
         </div>
         <div class="details">
-          ${personDetailsTemplate}
+          ${personNameTemplate}
+          <div class="base-icons">
+            ${contactIconsTemplate}
+          </div>
         </div>
       `;
     }
@@ -152,8 +156,8 @@ export class MgtPersonCard extends MgtTemplatedComponent {
 
     return html`
       <div class="root" @click=${(e: Event) => this.handleClick(e)}>
-        <div class="default-view">
-          ${contentTemplate}
+        <div class="person-details-container">
+          ${personDetailsTemplate}
         </div>
         <div class="additional-details-container">
           ${additionalDetailsTemplate}
@@ -188,14 +192,14 @@ export class MgtPersonCard extends MgtTemplatedComponent {
   }
 
   /**
-   * Render the person details (e.g. name, department, job title, icons)
+   * Render the display name and persona details (e.g. department, job title) for a person.
    *
    * @protected
    * @param {IDynamicPerson} [person]
    * @returns {TemplateResult}
    * @memberof MgtPersonCard
    */
-  protected renderPersonDetails(person?: IDynamicPerson): TemplateResult {
+  protected renderPersonName(person?: IDynamicPerson): TemplateResult {
     person = person || this.personDetails;
 
     let department: TemplateResult;
@@ -213,14 +217,9 @@ export class MgtPersonCard extends MgtTemplatedComponent {
       `;
     }
 
-    const contactIconsTemplate = this.renderContactIcons(person);
-
     return html`
       <div class="display-name">${person.displayName}</div>
       ${jobTitle} ${department}
-      <div class="base-icons">
-        ${contactIconsTemplate}
-      </div>
     `;
   }
 
