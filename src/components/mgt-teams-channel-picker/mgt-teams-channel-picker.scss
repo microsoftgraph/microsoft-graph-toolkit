@@ -253,8 +253,8 @@ mgt-teams-channel-picker .listTeam {
   }
 }
 
-:host .teams-channel-list-fill,
-mgt-teams-channel-picker .teams-channel-list-fill {
+:host .item.focused,
+mgt-teams-channel-picker .item.focused {
   background-color: $selection-hover-color;
   .team-name {
     width: 100%;

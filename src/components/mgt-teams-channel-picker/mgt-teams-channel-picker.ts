@@ -711,6 +711,8 @@ export class MgtTeamsChannelPicker extends MgtTemplatedComponent {
     this.selectedChannel = [channel];
     this._userInput = '';
     this.requestUpdate();
+    this.lostFocus();
+    this.resetFocusState();
   }
 
   private findTeamByChannelId(channel: Channel) {
