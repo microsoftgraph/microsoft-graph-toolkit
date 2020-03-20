@@ -129,8 +129,8 @@ mgt-people-picker .list-person {
   }
 }
 
-:host .people-person-list-fill,
-mgt-people-picker .people-person-list-fill {
+:host .list-person.focused,
+mgt-people-picker .list-person.focused {
   background-color: #f1f1f1;
 }
 
@@ -146,8 +146,8 @@ mgt-people-picker .people-person-text {
 mgt-people-picker .input-search {
   margin: 7px 2px 0px 3px;
 }
-:host .input-search-start,
-mgt-people-picker .input-search-start {
+:host .input-search.input-search--start,
+mgt-people-picker .input-search.input-search--start {
   margin: 7px 0px 0px 0px;
   line-height: normal;
   margin-inline-start: 0px;

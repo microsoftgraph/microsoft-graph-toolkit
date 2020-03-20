@@ -6,6 +6,7 @@
  */
 
 import { customElement, html, property, TemplateResult } from 'lit-element';
+import { classMap } from 'lit-html/directives/class-map';
 import { repeat } from 'lit-html/directives/repeat';
 import { findPerson, getPeopleFromGroup } from '../../graph/graph.people';
 import { getUser } from '../../graph/graph.user';
@@ -18,14 +19,14 @@ import { MgtTemplatedComponent } from '../templatedComponent';
 import { styles } from './mgt-people-picker-css';
 
 /**
- * An interface used to mark an object as 'selected',
+ * An interface used to mark an object as 'focused',
  * so it can be rendered differently.
  *
- * @interface ISelectable
+ * @interface IFocusable
  */
-interface ISelectable {
+interface IFocusable {
   // tslint:disable-next-line: completed-docs
-  isSelected: boolean;
+  isFocused: boolean;
 }
 
 /**
@@ -256,8 +257,14 @@ export class MgtPeoplePicker extends MgtTemplatedComponent {
    * @memberof MgtPeoplePicker
    */
   protected renderInput(): TemplateResult {
+    const hasSelectedPeople = !!this.selectedPeople.length;
+    const inputClasses = {
+      'input-search': true,
+      'input-search--start': hasSelectedPeople
+    };
+
     return html`
-      <div class="${this.selectedPeople.length ? 'input-search-start' : 'input-search'}">
+      <div class="${classMap(inputClasses)}">
         <input
           id="people-picker-input"
           class="people-selected-input"
@@ -337,7 +344,7 @@ export class MgtPeoplePicker extends MgtTemplatedComponent {
     }
 
     const people = this.people.slice(0, this.showMax);
-    (people[0] as ISelectable).isSelected = true;
+    (people[0] as IFocusable).isFocused = true;
 
     return this.renderSearchResults(people);
   }
@@ -399,16 +406,17 @@ export class MgtPeoplePicker extends MgtTemplatedComponent {
         ${repeat(
           people,
           person => person.id,
-          person => html`
-            <li
-              class="list-person ${(person as ISelectable).isSelected
-                ? 'people-person-list-fill'
-                : 'people-person-list'}"
-              @click="${() => this.onPersonClick(person)}"
-            >
-              ${this.renderPersonResult(person)}
-            </li>
-          `
+          person => {
+            const listPersonClasses = {
+              focused: (person as IFocusable).isFocused,
+              'list-person': true
+            };
+            return html`
+              <li class="${classMap(listPersonClasses)}" @click="${() => this.onPersonClick(person)}">
+                ${this.renderPersonResult(person)}
+              </li>
+            `;
+          }
         )}
       </div>
     `;
@@ -702,10 +710,10 @@ export class MgtPeoplePicker extends MgtTemplatedComponent {
       // reset background color
       // tslint:disable-next-line: prefer-for-of
       for (let i = 0; i < peopleList.children.length; i++) {
-        peopleList.children[i].setAttribute('class', 'list-person people-person-list');
+        peopleList.children[i].classList.remove('focused');
       }
       // set selected background
-      peopleList.children[this._arrowSelectionCount].setAttribute('class', 'list-person people-person-list-fill');
+      peopleList.children[this._arrowSelectionCount].classList.add('focused');
     }
   }
 
