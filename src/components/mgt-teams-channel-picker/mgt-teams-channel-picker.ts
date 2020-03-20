@@ -705,10 +705,21 @@ export class MgtTeamsChannelPicker extends MgtTemplatedComponent {
     // setting menu item channel to first property
     const channel: Channel = item.item;
     // setting Team property to menu item parent which should be team
-    channel.Team = item.parent.item;
+    // doesn't always recieve "parent"
+    channel.Team = this.findTeamByChannelId(channel);
 
     this.selectedChannel = [channel];
     this._userInput = '';
     this.requestUpdate();
+  }
+
+  private findTeamByChannelId(channel: Channel) {
+    for (const team of this.teams) {
+      for (const channels of team.channels) {
+        if (channels.id === channel.id) {
+          return team;
+        }
+      }
+    }
   }
 }
