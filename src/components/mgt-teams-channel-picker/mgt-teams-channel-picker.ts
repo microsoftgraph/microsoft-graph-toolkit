@@ -295,7 +295,7 @@ export class MgtTeamsChannelPicker extends MgtTemplatedComponent {
             @click=${this.gainedFocus}
           >
             <div class="search-icon ${this.isFocused && this.selectedChannel.length === 0 ? 'focused' : ''}">
-              ${getSvg(SvgIcon.Search, '#252424')}
+              ${this.selectedChannel.length === 0 ? getSvg(SvgIcon.Search, '#252424') : ''}
             </div>
             ${this.renderChosenTeam()}
           </div>
@@ -435,7 +435,7 @@ export class MgtTeamsChannelPicker extends MgtTemplatedComponent {
           </div>
         </li>
         <div class="SearchIcon">
-          ${getSvg(SvgIcon.Search, '#252424')}
+          ${this.isFocused ? getSvg(SvgIcon.Search, '#252424') : ''}
         </div>
       `;
     }
@@ -609,38 +609,6 @@ export class MgtTeamsChannelPicker extends MgtTemplatedComponent {
     this.isLoading = false;
   }
 
-  /**
-   * Async method which query's the Graph with user input
-   * @param name - user input or name of person searched
-   */
-  private loadChannelSearch(name: string) {
-    if (name === '') {
-      return;
-    }
-    const foundMatch = [];
-    for (const team of this.teams) {
-      for (const channel of team.channels) {
-        if (channel.displayName.toLowerCase().indexOf(name) !== -1) {
-          foundMatch.push(team.displayName);
-        }
-      }
-    }
-
-    if (foundMatch.length) {
-      for (const team of this.teams) {
-        const teamdiv = this.renderRoot.querySelector(`.team-list-${team.id}`);
-        if (teamdiv) {
-          teamdiv.classList.remove('hide-team');
-          team.showChannels = true;
-          if (foundMatch.indexOf(team.displayName) === -1) {
-            team.showChannels = false;
-            teamdiv.classList.add('hide-team');
-          }
-        }
-      }
-    }
-  }
-
   private removeTeam() {
     this.selectedChannel = [];
     this._userInput = '';
@@ -696,8 +664,6 @@ export class MgtTeamsChannelPicker extends MgtTemplatedComponent {
     // tslint:disable-next-line: prefer-const
     let channels: any = {};
 
-    let shouldShow = true;
-
     const highlightLocation = channel.displayName.toLowerCase().indexOf(this._userInput.toLowerCase());
     if (highlightLocation !== -1) {
       // no location
@@ -721,7 +687,7 @@ export class MgtTeamsChannelPicker extends MgtTemplatedComponent {
         );
       }
     } else {
-      shouldShow = false;
+      return;
     }
 
     return html`
