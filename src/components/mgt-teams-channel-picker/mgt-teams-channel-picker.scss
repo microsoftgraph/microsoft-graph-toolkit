@@ -247,6 +247,10 @@ mgt-teams-channel-picker .listTeam {
       background-image: linear-gradient(to left, $selection-background-color, rgba(255, 255, 255, 0));
     }
   }
+  .arrow {
+    margin-right: 5px;
+    margin-bottom: 1px;
+  }
 }
 
 :host .teams-channel-list-fill,
@@ -413,10 +417,6 @@ mgt-teams-channel-picker .channel-display {
   }
 }
 
-:host .channel-display:last-child,
-mgt-teams-channel-picker .channel-display:last-child {
-  margin-bottom: 4px;
-}
 :host .hide-channels,
 mgt-teams-channel-picker .hide-channels {
   display: none;
