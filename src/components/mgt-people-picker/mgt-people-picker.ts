@@ -740,6 +740,8 @@ export class MgtPeoplePicker extends MgtTemplatedComponent {
   }
 
   private handleWindowClick(e: MouseEvent): void {
-    this.hideFlyout();
+    if (e.target !== this) {
+      this.hideFlyout();
+    }
   }
 }
