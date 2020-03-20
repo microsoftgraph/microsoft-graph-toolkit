@@ -40,7 +40,6 @@ export class MgtFlyout extends LitElement {
   public isOpen: boolean;
 
   private renderedOnce = false;
-  private openLeft: boolean = false;
 
   /**
    * Invoked when the element is first updated. Implement to perform one time
@@ -179,7 +178,7 @@ export class MgtFlyout extends LitElement {
           // anchor is larger than flyout, render aligned to anchor
           left = anchorRect.left;
         } else {
-          const centerOffset = flyoutWidth / 2 - anchorRect.width / 2;
+          const centerOffset = Math.floor(flyoutWidth / 2 - anchorRect.width / 2);
 
           if (anchorRect.left - centerOffset < windowRect.left) {
             // centered flyout is off screen to the left, render on the left edge
