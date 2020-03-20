@@ -73,12 +73,21 @@ mgt-person .user-avatar {
     color: $initials-color;
     border-radius: 50%;
     font-weight: 400;
-    font-size: 40%;
+
+    & .initials-text {
+      cursor: default;
+      margin-top: -1px;
+      font-size: calc(var(--avatar-size, 48px) * 0.4);
+    }
   }
 
   &.small {
     width: $avatar-size-s;
     height: $avatar-size-s;
+
+    & .initials-text {
+      font-size: calc(var(--avatar-size-s, 24px) * 0.4);
+    }
   }
 
   &.row-span-2 {
