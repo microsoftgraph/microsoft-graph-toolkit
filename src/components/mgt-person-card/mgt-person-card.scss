@@ -15,7 +15,7 @@ $color: var(--color, #{$ms-color-neutralDark});
   width: 340px;
   background: #ffffff;
   box-shadow: 0px 0px 4.55172px rgba(0, 0, 0, 0.16);
-  font-family: var(--default-font-family);
+  font-family: var(--default-font-family, 'Segoe UI');
 
   .default-view {
     display: flex;
