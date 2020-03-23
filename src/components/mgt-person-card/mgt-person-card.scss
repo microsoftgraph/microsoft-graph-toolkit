@@ -4,6 +4,8 @@
  * See License in the project root for license information.
  * -------------------------------------------------------------------------------------------
  */
+
+@import '../../styles/shared-styles.scss';
 @import '../../../node_modules/office-ui-fabric-core/dist/sass/References';
 
 $font-size: var(--font-size, #{$ms-font-size-m});
