@@ -64,7 +64,7 @@ export class MgtPersonCard extends MgtTemplatedComponent {
   public personImage: string;
 
   /**
-   * Gets or sets whether additional details section is rendered
+   * Gets or sets whether expanded details section is rendered
    *
    * @type {boolean}
    * @memberof MgtPersonCard
@@ -76,7 +76,7 @@ export class MgtPersonCard extends MgtTemplatedComponent {
   public isExpanded: boolean;
 
   /**
-   * Gets or sets whether additional details should be inherited from an mgt-person parent
+   * Gets or sets whether person details should be inherited from an mgt-person parent
    * Useful when used as template in an mgt-person component
    *
    * @type {boolean}
@@ -87,6 +87,16 @@ export class MgtPersonCard extends MgtTemplatedComponent {
     type: Boolean
   })
   public inheritDetails: boolean;
+
+  /**
+   * Invoked each time the custom element is appended into a document-connected element
+   *
+   * @memberof MgtPersonCard
+   */
+  public connectedCallback() {
+    super.connectedCallback();
+    this.addEventListener('click', e => e.stopPropagation());
+  }
 
   /**
    * Synchronizes property values when attributes change.
@@ -135,6 +145,8 @@ export class MgtPersonCard extends MgtTemplatedComponent {
     if (!personDetailsTemplate) {
       const personImageTemplate = this.renderPersonImage(image);
       const personNameTemplate = this.renderPersonName(person);
+      const personTitleTemplate = this.renderPersonTitle(person);
+      const personSubtitleTemplate = this.renderPersonSubtitle(person);
       const contactIconsTemplate = this.renderContactIcons(person);
 
       personDetailsTemplate = html`
@@ -142,7 +154,7 @@ export class MgtPersonCard extends MgtTemplatedComponent {
           ${personImageTemplate}
         </div>
         <div class="details">
-          ${personNameTemplate}
+          ${personNameTemplate} ${personTitleTemplate} ${personSubtitleTemplate}
           <div class="base-icons">
             ${contactIconsTemplate}
           </div>
@@ -150,17 +162,15 @@ export class MgtPersonCard extends MgtTemplatedComponent {
       `;
     }
 
-    const additionalDetailsTemplate = this.isExpanded
-      ? this.renderAdditionalDetails()
-      : this.renderAdditionalDetailsButton();
+    const expandedDetailsTemplate = this.isExpanded ? this.renderExpandedDetails() : this.renderExpandedDetailsButton();
 
     return html`
-      <div class="root" @click=${(e: Event) => this.handleClick(e)}>
+      <div class="root">
         <div class="person-details-container">
           ${personDetailsTemplate}
         </div>
-        <div class="additional-details-container">
-          ${additionalDetailsTemplate}
+        <div class="expanded-details-container">
+          ${expandedDetailsTemplate}
         </div>
       </div>
     `;
@@ -201,25 +211,44 @@ export class MgtPersonCard extends MgtTemplatedComponent {
    */
   protected renderPersonName(person?: IDynamicPerson): TemplateResult {
     person = person || this.personDetails;
-
-    let department: TemplateResult;
-    let jobTitle: TemplateResult;
-
-    if (person.department) {
-      department = html`
-        <div class="department">${person.department}</div>
-      `;
-    }
-
-    if (person.jobTitle) {
-      jobTitle = html`
-        <div class="job-title">${person.jobTitle}</div>
-      `;
-    }
-
     return html`
       <div class="display-name">${person.displayName}</div>
-      ${jobTitle} ${department}
+    `;
+  }
+
+  /**
+   * foo
+   *
+   * @protected
+   * @param {IDynamicPerson} person
+   * @returns {TemplateResult}
+   * @memberof MgtPersonCard
+   */
+  protected renderPersonTitle(person?: IDynamicPerson): TemplateResult {
+    person = person || this.personDetails;
+    if (!person.jobTitle) {
+      return;
+    }
+    return html`
+      <div class="job-title">${person.jobTitle}</div>
+    `;
+  }
+
+  /**
+   * foo
+   *
+   * @protected
+   * @param {IDynamicPerson} person
+   * @returns {TemplateResult}
+   * @memberof MgtPersonCard
+   */
+  protected renderPersonSubtitle(person?: IDynamicPerson): TemplateResult {
+    person = person || this.personDetails;
+    if (!person.department) {
+      return;
+    }
+    return html`
+      <div class="department">${person.department}</div>
     `;
   }
 
@@ -251,7 +280,7 @@ export class MgtPersonCard extends MgtTemplatedComponent {
     }
     if (getEmailFromGraphEntity(person)) {
       email = html`
-        <div class="icon" @click=${this.emailUser}>
+        <div class="icon" @click=${() => this.emailUser()}>
           ${getSvg(SvgIcon.Email, '#666666')}
         </div>
       `;
@@ -270,17 +299,17 @@ export class MgtPersonCard extends MgtTemplatedComponent {
   }
 
   /**
-   * Render the button used to expand the additional details.
+   * Render the button used to expand the expanded details.
    *
    * @protected
    * @returns {TemplateResult}
    * @memberof MgtPersonCard
    */
-  protected renderAdditionalDetailsButton(): TemplateResult {
+  protected renderExpandedDetailsButton(): TemplateResult {
     return html`
-      <div class="additional-details-button" @click=${(e: Event) => this.showAdditionalDetails(e)}>
+      <div class="expanded-details-button" @click=${() => this.showExpandedDetails()}>
         <svg
-          class="additional-details-svg"
+          class="expanded-details-svg"
           width="16"
           height="15"
           viewBox="0 0 16 15"
@@ -294,6 +323,30 @@ export class MgtPersonCard extends MgtTemplatedComponent {
   }
 
   /**
+   * foo
+   *
+   * @protected
+   * @param {IDynamicPerson} [person]
+   * @returns {TemplateResult}
+   * @memberof MgtPersonCard
+   */
+  protected renderExpandedDetails(person?: IDynamicPerson): TemplateResult {
+    person = person || this.personDetails;
+
+    const contactDetailsTemplate = this.renderContactDetails(person);
+    const additionalDetailsTemplate = this.renderAdditionalDetails(person);
+    const sectionDivider = additionalDetailsTemplate
+      ? html`
+          <div class="section-divider"></div>
+        `
+      : null;
+
+    return html`
+      ${contactDetailsTemplate} ${sectionDivider} ${additionalDetailsTemplate}
+    `;
+  }
+
+  /**
    * Render additional details for the person.
    *
    * @protected
@@ -301,25 +354,17 @@ export class MgtPersonCard extends MgtTemplatedComponent {
    * @memberof MgtPersonCard
    */
   protected renderAdditionalDetails(person?: IDynamicPerson): TemplateResult {
-    person = person || this.personDetails;
-
-    const contactDetailsTemplate = this.renderContactDetails();
-
-    // Check for additional details template
-    let additionalDetailsTemplate: TemplateResult = null;
-    if (this.hasTemplate('additional-details')) {
-      additionalDetailsTemplate = html`
-        <div class="section-divider"></div>
-        ${this.renderTemplate('additional-details', {
-          person,
-          personImage: this.getImage()
-        })}
-      `;
+    if (!this.hasTemplate('additional-details')) {
+      return null;
     }
 
+    person = person || this.personDetails;
+    const personImage = this.getImage();
+    const additionalDetailsTemplate = this.renderTemplate('additional-details', { person, personImage });
+
     return html`
-      <div class="additional-details-info">
-        ${contactDetailsTemplate} ${additionalDetailsTemplate}
+      <div class="expanded-details-info">
+        ${additionalDetailsTemplate}
       </div>
     `;
   }
@@ -356,7 +401,7 @@ export class MgtPersonCard extends MgtTemplatedComponent {
 
     if (getEmailFromGraphEntity(person)) {
       email = html`
-        <div class="details-icon" @click=${this.emailUser}>
+        <div class="details-icon" @click=${() => this.emailUser()}>
           ${getSvg(SvgIcon.SmallEmail, '#666666')}
           <span class="link-subtitle data">${getEmailFromGraphEntity(person)}</span>
         </div>
@@ -381,12 +426,10 @@ export class MgtPersonCard extends MgtTemplatedComponent {
     }
 
     return html`
-      <div class="contact-text">Contact</div>
-      <div class="additional-details-row">
-        <div class="additional-details-item">
-          <div class="icons">
-            ${chat} ${email} ${phone} ${location}
-          </div>
+      <div class="expanded-details-info">
+        <div class="contact-text">Contact</div>
+        <div class="icons">
+          ${chat} ${email} ${phone} ${location}
         </div>
       </div>
     `;
@@ -422,9 +465,59 @@ export class MgtPersonCard extends MgtTemplatedComponent {
     }
   }
 
-  private showAdditionalDetails(e: Event) {
-    // handles clicking when parent is also activated by click
-    e.stopPropagation();
+  /**
+   * Use the mailto: protocol to initiate a new email to the user.
+   *
+   * @protected
+   * @memberof MgtPersonCard
+   */
+  protected emailUser() {
+    const user = this.personDetails;
+    if (user) {
+      const email = getEmailFromGraphEntity(user);
+      if (email) {
+        window.open('mailto:' + email, '_blank');
+      }
+    }
+  }
+
+  /**
+   * Use the tel: protocol to initiate a new call to the user.
+   *
+   * @protected
+   * @memberof MgtPersonCard
+   */
+  protected callUser() {
+    const user = this.personDetails as MicrosoftGraph.User;
+    if (user && user.businessPhones && user.businessPhones.length) {
+      const phone = user.businessPhones[0];
+      if (phone) {
+        window.open('tel:' + phone, '_blank');
+      }
+    }
+  }
+
+  /**
+   * Use the sip: protocol to initiate a chat message to the user.
+   *
+   * @protected
+   * @memberof MgtPersonCard
+   */
+  protected chatUser() {
+    const user = this.personDetails as MicrosoftGraph.User;
+    if (user && user.mailNickname) {
+      const chat = user.mailNickname;
+      window.open('sip:' + chat, '_blank');
+    }
+  }
+
+  /**
+   * Display the expanded details panel.
+   *
+   * @protected
+   * @memberof MgtPersonCard
+   */
+  protected showExpandedDetails() {
     const root = this.renderRoot.querySelector('.root');
     if (root && root.animate) {
       // play back
@@ -447,43 +540,6 @@ export class MgtPersonCard extends MgtTemplatedComponent {
       );
     }
     this.isExpanded = true;
-  }
-
-  private callUser(e: Event) {
-    const user = this.personDetails;
-    let phone: string;
-
-    if ((user as MicrosoftGraph.User).businessPhones && (user as MicrosoftGraph.User).businessPhones.length > 0) {
-      phone = (user as MicrosoftGraph.User).businessPhones[0];
-    }
-    e.stopPropagation();
-    window.open('tel:' + phone, '_blank');
-  }
-
-  private emailUser(e: Event) {
-    const user = this.personDetails;
-    let email;
-
-    if (getEmailFromGraphEntity(user)) {
-      email = getEmailFromGraphEntity(user);
-    }
-    e.stopPropagation();
-    window.open('mailto:' + email, '_blank');
-  }
-
-  private chatUser(e: Event) {
-    const user = this.personDetails;
-    let chat: string;
-
-    if ((user as MicrosoftGraph.User).mailNickname) {
-      chat = (user as MicrosoftGraph.User).mailNickname;
-    }
-    e.stopPropagation();
-    window.open('sip:' + chat, '_blank');
-  }
-
-  private handleClick(e: Event) {
-    e.stopPropagation();
   }
 
   private getImage(): string {
