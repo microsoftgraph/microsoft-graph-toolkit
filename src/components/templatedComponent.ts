@@ -111,7 +111,7 @@ export abstract class MgtTemplatedComponent extends MgtBaseComponent {
    * @param slotName the slot name that will be used to host the new rendered template. set to a unique value if multiple templates of this type will be rendered. default is templateType
    */
   protected renderTemplate(templateType: string, context: object, slotName?: string) {
-    if (!this.templates[templateType]) {
+    if (!this.hasTemplate(templateType)) {
       return null;
     }
 
@@ -147,6 +147,18 @@ export abstract class MgtTemplatedComponent extends MgtBaseComponent {
     this.fireCustomEvent('templateRendered', { templateType, context, element: div });
 
     return template;
+  }
+
+  /**
+   * Check if a specific template has been provided.
+   *
+   * @protected
+   * @param {string} templateName
+   * @returns {boolean}
+   * @memberof MgtTemplatedComponent
+   */
+  protected hasTemplate(templateName: string): boolean {
+    return this.templates && this.templates[templateName];
   }
 
   private getTemplates() {

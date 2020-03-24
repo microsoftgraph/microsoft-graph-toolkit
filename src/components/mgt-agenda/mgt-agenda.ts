@@ -417,7 +417,7 @@ export class MgtAgenda extends MgtTemplatedComponent {
    * @memberof MgtAgenda
    */
   protected renderOther(event: MicrosoftGraph.Event): TemplateResult {
-    return this.templates['event-other']
+    return this.hasTemplate('event-other')
       ? html`
           ${this.renderTemplate('event-other', { event }, event.id + '-other')}
         `
