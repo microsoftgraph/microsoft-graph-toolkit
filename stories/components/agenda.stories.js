@@ -31,3 +31,7 @@ export const getByEventQuery = () => html`
 export const getByDate = () => html`
   <mgt-agenda group-by-day date="May 7, 2019" days="3"></mgt-agenda>
 `;
+
+export const getEventsForNextWeek = () => html`
+  <mgt-agenda group-by-day days="7"></mgt-agenda>
+`;
