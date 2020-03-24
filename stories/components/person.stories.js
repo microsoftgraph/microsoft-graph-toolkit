@@ -23,3 +23,7 @@ export default {
 export const person = () => html`
   <mgt-person person-query="me" show-name show-email></mgt-person>
 `;
+
+export const personPhotoOnly = () => html`
+  <mgt-person person-query="me"></mgt-person>
+`;

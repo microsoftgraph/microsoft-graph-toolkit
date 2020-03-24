@@ -145,6 +145,7 @@ export class MgtPeoplePicker extends MgtTemplatedComponent {
    */
   public connectedCallback() {
     super.connectedCallback();
+    this.addEventListener('click', e => e.stopPropagation());
     window.addEventListener('click', this.handleWindowClick);
   }
 
