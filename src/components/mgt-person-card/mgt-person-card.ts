@@ -11,9 +11,10 @@ import { getEmailFromGraphEntity } from '../../graph/graph.people';
 import { Providers } from '../../Providers';
 import { ProviderState } from '../../providers/IProvider';
 import { getSvg, SvgIcon } from '../../utils/SvgHelper';
-import { MgtPerson } from '../mgt-person/mgt-person';
+import { IDynamicPerson, MgtPerson } from '../mgt-person/mgt-person';
 import { MgtTemplatedComponent } from '../templatedComponent';
 import { styles } from './mgt-person-card-css';
+
 /**
  * Web Component used to show detailed data for a person in the
  * Microsoft Graph
@@ -40,16 +41,14 @@ export class MgtPersonCard extends MgtTemplatedComponent {
   /**
    * Set the person details to render
    *
-   * @type {(MicrosoftGraph.User
-   *     | MicrosoftGraph.Person
-   *     | MicrosoftGraph.Contact)}
+   * @type {IDynamicPerson}
    * @memberof MgtPersonCard
    */
   @property({
     attribute: 'person-details',
     type: Object
   })
-  public personDetails: MicrosoftGraph.User | MicrosoftGraph.Person | MicrosoftGraph.Contact;
+  public personDetails: IDynamicPerson;
 
   /**
    * Set the image of the person
@@ -377,8 +376,8 @@ export class MgtPersonCard extends MgtTemplatedComponent {
   private getImage(): string {
     if (this.personImage && this.personImage !== '@') {
       return this.personImage;
-    } else if (this.personDetails && (this.personDetails as any).personImage) {
-      return (this.personDetails as any).personImage;
+    } else if (this.personDetails && this.personDetails.personImage) {
+      return this.personDetails.personImage;
     }
     return null;
   }
