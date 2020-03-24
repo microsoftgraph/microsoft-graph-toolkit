@@ -163,7 +163,6 @@ export class MgtAgenda extends MgtTemplatedComponent {
    * @type {boolean}
    */
   @property({ attribute: false }) private _isNarrow: boolean;
-  @property({ attribute: false }) private _isLoadingEvents: boolean;
 
   private _eventQuery: string;
   private _days: number = 3;
@@ -205,7 +204,7 @@ export class MgtAgenda extends MgtTemplatedComponent {
    */
   public render(): TemplateResult {
     // Loading
-    if (this.isLoadingState && !this._isLoadingEvents) {
+    if (!this.events && this.isLoadingState) {
       return this.renderLoading();
     }
 
@@ -230,7 +229,7 @@ export class MgtAgenda extends MgtTemplatedComponent {
     return html`
       <div class="agenda${this._isNarrow ? ' narrow' : ''}${this.groupByDay ? ' grouped' : ''}">
         ${this.groupByDay ? this.renderGroups(events) : this.renderEvents(events)}
-        ${this._isLoadingEvents ? this.renderLoading() : html``}
+        ${this.isLoadingState ? this.renderLoading() : html``}
       </div>
     `;
   }
@@ -528,7 +527,6 @@ export class MgtAgenda extends MgtTemplatedComponent {
           const iterator = await getEventsPageIterator(graph, start, end, this.groupId);
 
           if (iterator && iterator.value) {
-            this._isLoadingEvents = true;
             this.events = iterator.value;
 
             while (iterator.hasNext) {
@@ -538,8 +536,6 @@ export class MgtAgenda extends MgtTemplatedComponent {
           }
         } catch (error) {
           // noop - possible error with graph
-        } finally {
-          this._isLoadingEvents = false;
         }
       }
     }
