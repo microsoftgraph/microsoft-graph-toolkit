@@ -145,6 +145,7 @@ export class MgtPeoplePicker extends MgtTemplatedComponent {
    */
   public connectedCallback() {
     super.connectedCallback();
+    this.addEventListener('click', e => e.stopPropagation());
     window.addEventListener('click', this.handleWindowClick);
   }
 
@@ -740,8 +741,6 @@ export class MgtPeoplePicker extends MgtTemplatedComponent {
   }
 
   private handleWindowClick(e: MouseEvent): void {
-    if (e.target !== this) {
-      this.hideFlyout();
-    }
+    this.hideFlyout();
   }
 }
