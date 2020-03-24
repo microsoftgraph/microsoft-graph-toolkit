@@ -15,7 +15,7 @@ import { getDayOfWeekString, getMonthString } from '../../utils/Utils';
 import '../mgt-person/mgt-person';
 import { MgtTemplatedComponent } from '../templatedComponent';
 import { styles } from './mgt-agenda-css';
-import { getEvents } from './mgt-agenda.graph';
+import { getEventsPageIterator } from './mgt-agenda.graph';
 
 /**
  * Web Component which represents events in a user or group calendar.
@@ -163,6 +163,7 @@ export class MgtAgenda extends MgtTemplatedComponent {
    * @type {boolean}
    */
   @property({ attribute: false }) private _isNarrow: boolean;
+  @property({ attribute: false }) private _isLoadingEvents: boolean;
 
   private _eventQuery: string;
   private _days: number = 3;
@@ -204,7 +205,7 @@ export class MgtAgenda extends MgtTemplatedComponent {
    */
   public render(): TemplateResult {
     // Loading
-    if (this.isLoadingState) {
+    if (this.isLoadingState && !this._isLoadingEvents) {
       return this.renderLoading();
     }
 
@@ -229,6 +230,7 @@ export class MgtAgenda extends MgtTemplatedComponent {
     return html`
       <div class="agenda${this._isNarrow ? ' narrow' : ''}${this.groupByDay ? ' grouped' : ''}">
         ${this.groupByDay ? this.renderGroups(events) : this.renderEvents(events)}
+        ${this._isLoadingEvents ? this.renderLoading() : html``}
       </div>
     `;
   }
@@ -523,9 +525,21 @@ export class MgtAgenda extends MgtTemplatedComponent {
         const end = new Date(start.getTime());
         end.setDate(start.getDate() + this.days);
         try {
-          this.events = await getEvents(graph, start, end, this.groupId);
+          const iterator = await getEventsPageIterator(graph, start, end, this.groupId);
+
+          if (iterator && iterator.value) {
+            this._isLoadingEvents = true;
+            this.events = iterator.value;
+
+            while (iterator.hasNext) {
+              await iterator.next();
+              this.events = iterator.value;
+            }
+          }
         } catch (error) {
           // noop - possible error with graph
+        } finally {
+          this._isLoadingEvents = false;
         }
       }
     }
