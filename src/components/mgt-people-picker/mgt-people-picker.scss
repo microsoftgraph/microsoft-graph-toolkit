@@ -21,6 +21,9 @@ $people-list-background-color: var(--people-list-background-color, white);
 
 :host {
   border-radius: 2px;
+  font-family: var(--default-font-family);
+  font-style: normal;
+  font-weight: normal;
 }
 :host .root,
 mgt-people-picker .root {
@@ -46,9 +49,6 @@ mgt-people-picker .flyout-root {
   overflow-y: auto;
   text-align: left;
   list-style-type: none;
-  font-family: var(--default-font-family, 'Segoe UI');
-  font-style: normal;
-  font-weight: normal;
 
   li {
     cursor: pointer;

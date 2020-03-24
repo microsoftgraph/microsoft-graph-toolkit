@@ -257,7 +257,7 @@ export class MgtPeople extends MgtTemplatedComponent {
     }
 
     const newIdsSet = new Set(newIds);
-    this.people = this.people.filter(p => newIdsSet.has(p.id));
+    this.people = this.people ? this.people.filter(p => newIdsSet.has(p.id)) : [];
     const oldIdsSet = new Set(this.people ? this.people.map(p => p.id) : []);
 
     const newToLoad = [];
