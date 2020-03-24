@@ -60,14 +60,24 @@ export class TemplateHelper {
     }
   }
 
+  private static _startExpression = '{';
+  private static _endExpression = '}';
   private static _expression = /{{+\s*[$\w\.()\[\]]+\s*}}+/g;
 
   /**
  * Overrides the expression used in template binding.
  * @param expression regular expression to be used in template binding
  */
-  public static set templateBindingExpression(expression: RegExp | string) {
-    this._expression = typeof (expression) === "string" ? new RegExp(expression) : expression;
+  public static setBindingExpression(startStr: string, endStr: string) {
+    this._startExpression = startStr;
+    this._endExpression = endStr;
+    const escapedStartStr = this.escapeForRegex(startStr);
+    const escapedEndStr = this.escapeForRegex(endStr);
+    this._expression = new RegExp(`${escapedStartStr}+\s*[$\w\.()\[\]]+\s*${escapedEndStr}+`, 'g');
+  }
+
+  private static escapeForRegex(str: string) {
+    return str.replace(/[-\/\\^$*+?.()|[\]{}]/g, '\\$&');
   }
 
   private static expandExpressionsAsString(str: string, context: object, additionalContext: object) {
@@ -243,11 +253,11 @@ export class TemplateHelper {
     let start = 0;
     let end = expression.length - 1;
 
-    while (expression[start] === '{' && start < end) {
+    while (expression[start] === this._startExpression && start < end) {
       start++;
     }
 
-    while (expression[end] === '}' && start <= end) {
+    while (expression[end] === this._endExpression && start <= end) {
       end--;
     }
 
