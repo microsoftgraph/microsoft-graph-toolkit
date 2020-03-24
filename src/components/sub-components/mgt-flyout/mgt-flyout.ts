@@ -5,9 +5,10 @@
  * -------------------------------------------------------------------------------------------
  */
 
-import { customElement, html, LitElement, property, PropertyValues } from 'lit-element';
+import { customElement, html, property, PropertyValues } from 'lit-element';
 import { classMap } from 'lit-html/directives/class-map';
 import { getSegmentAwareWindow, isWindowSegmentAware, IWindowSegment } from '../../../utils/WindowSegmentHelpers';
+import { MgtBaseComponent } from '../../baseComponent';
 import { styles } from './mgt-flyout-css';
 
 /**
@@ -18,7 +19,7 @@ import { styles } from './mgt-flyout-css';
  * @extends {LitElement}
  */
 @customElement('mgt-flyout')
-export class MgtFlyout extends LitElement {
+export class MgtFlyout extends MgtBaseComponent {
   /**
    * Array of styles to apply to the element. The styles should be defined
    * using the `css` tag function.
@@ -31,29 +32,63 @@ export class MgtFlyout extends LitElement {
    * Gets or sets whether the flyout is visible
    *
    * @type {string}
-   * @memberof MgtComponent
+   * @memberof MgtFlyout
    */
   @property({
     attribute: 'isOpen',
     type: Boolean
   })
-  public isOpen: boolean;
+  public get isOpen(): boolean {
+    return this._isOpen;
+  }
+  public set isOpen(value: boolean) {
+    if (this._isOpen !== value) {
+      this._isOpen = value;
+      this.requestUpdate('isOpen');
 
-  private renderedOnce = false;
+      if (!this._isOpen) {
+        this.fireCustomEvent('onclose');
+      }
+    }
+  }
 
   /**
-   * Invoked when the element is first updated. Implement to perform one time
-   * work on the element after update.
+   * Gets or sets whether the flyout is light dismissable.
    *
-   * Setting properties inside this method will trigger the element to update
-   * again after this update cycle completes.
-   *
-   * * @param _changedProperties Map of changed properties with old values
+   * @type {boolean}
+   * @memberof MgtFlyout
    */
-  public firstUpdated() {
-    this.addEventListener('updated', e => {
-      this.updateFlyout();
-    });
+  @property({
+    attribute: 'light-dismiss',
+    type: Boolean
+  })
+  public isLightDismiss: boolean;
+
+  private _isOpen: boolean;
+
+  constructor() {
+    super();
+    this.handleWindowClick = this.handleWindowClick.bind(this);
+  }
+
+  /**
+   * Invoked each time the custom element is appended into a document-connected element
+   *
+   * @memberof MgtFlyout
+   */
+  public connectedCallback() {
+    super.connectedCallback();
+    window.addEventListener('click', this.handleWindowClick);
+  }
+
+  /**
+   * Invoked each time the custom element is disconnected from the document's DOM
+   *
+   * @memberof MgtFlyout
+   */
+  public disconnectedCallback() {
+    window.removeEventListener('click', this.handleWindowClick);
+    super.disconnectedCallback();
   }
 
   /**
@@ -87,11 +122,9 @@ export class MgtFlyout extends LitElement {
   }
 
   private renderFlyout() {
-    if (!this.isOpen && !this.renderedOnce) {
+    if (!this.isOpen && !this.isFirstUpdated) {
       return;
     }
-
-    this.renderedOnce = true;
 
     const classes = {
       flyout: true,
@@ -207,6 +240,12 @@ export class MgtFlyout extends LitElement {
       flyout.style.left = typeof left !== 'undefined' ? `${left}px` : '';
       flyout.style.bottom = typeof bottom !== 'undefined' ? `${bottom}px` : '';
       flyout.style.top = typeof top !== 'undefined' ? `${top}px` : '';
+    }
+  }
+
+  private handleWindowClick(): void {
+    if (this.isOpen && this.isLightDismiss) {
+      this.isOpen = false;
     }
   }
 }

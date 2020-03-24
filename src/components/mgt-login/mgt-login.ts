@@ -68,17 +68,6 @@ export class MgtLogin extends MgtBaseComponent {
   public connectedCallback() {
     super.connectedCallback();
     this.addEventListener('click', e => e.stopPropagation());
-    window.addEventListener('click', e => this.handleWindowClick(e));
-  }
-
-  /**
-   * Invoked each time the custom element is disconnected from the document's DOM
-   *
-   * @memberof MgtLogin
-   */
-  public disconnectedCallback() {
-    window.removeEventListener('click', e => this.handleWindowClick(e));
-    super.disconnectedCallback();
   }
 
   /**
@@ -187,7 +176,7 @@ export class MgtLogin extends MgtBaseComponent {
    */
   protected renderFlyout() {
     return html`
-      <mgt-flyout .isOpen=${this._showFlyout}>
+      <mgt-flyout light-dismiss .isOpen=${this._showFlyout} @onclose=${this.hideFlyout}>
         <div slot="flyout" class="flyout">
           ${this.renderFlyoutContent()}
         </div>
@@ -278,11 +267,7 @@ export class MgtLogin extends MgtBaseComponent {
     this._showFlyout = !this._showFlyout;
   }
 
-  private handleWindowClick(e: MouseEvent) {
-    this.hideFlyout();
-  }
-
-  private onClick(event: MouseEvent) {
+  private onClick() {
     if (this.userDetails) {
       this.toggleFlyout();
     } else {
