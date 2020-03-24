@@ -50,35 +50,44 @@ export class MgtAgenda extends MgtTemplatedComponent {
   }
 
   /**
-   * array containing events from user agenda.
-   * @type {Array<MicrosoftGraph.Event>}
-   */
-  @property({
-    attribute: 'events'
-  })
-  public events: MicrosoftGraph.Event[];
-
-  /**
-   * allows developer to define agenda to group events by day.
-   * @type {Boolean}
-   */
-  @property({
-    attribute: 'group-by-day',
-    reflect: true,
-    type: Boolean
-  })
-  public groupByDay: boolean;
-
-  /**
    * stores current date for initial calender selection in events.
    * @type {string}
    */
   @property({
     attribute: 'date',
-    reflect: true,
     type: String
   })
-  public date: string;
+  public get date(): string {
+    return this._date;
+  }
+  public set date(value) {
+    if (this._date === value) {
+      return;
+    }
+
+    this._date = value;
+    this.requestStateUpdate(true);
+  }
+
+  /**
+   * determines if agenda events come from specific group
+   * @type {string}
+   */
+  @property({
+    attribute: 'group-id',
+    type: String
+  })
+  public get groupId(): string {
+    return this._groupId;
+  }
+  public set groupId(value) {
+    if (this._groupId === value) {
+      return;
+    }
+
+    this._groupId = value;
+    this.requestStateUpdate(true);
+  }
 
   /**
    * sets number of days until end date, 3 is the default
@@ -86,10 +95,19 @@ export class MgtAgenda extends MgtTemplatedComponent {
    */
   @property({
     attribute: 'days',
-    reflect: true,
     type: Number
   })
-  public days: number;
+  public get days(): number {
+    return this._days;
+  }
+  public set days(value) {
+    if (this._days === value) {
+      return;
+    }
+
+    this._days = value;
+    this.requestStateUpdate(true);
+  }
 
   /**
    * allows developer to specify a different graph query that retrieves events
@@ -99,7 +117,26 @@ export class MgtAgenda extends MgtTemplatedComponent {
     attribute: 'event-query',
     type: String
   })
-  public eventQuery: string;
+  public get eventQuery(): string {
+    return this._eventQuery;
+  }
+  public set eventQuery(value) {
+    if (this._eventQuery === value) {
+      return;
+    }
+
+    this._eventQuery = value;
+    this.requestStateUpdate(true);
+  }
+
+  /**
+   * array containing events from user agenda.
+   * @type {Array<MicrosoftGraph.Event>}
+   */
+  @property({
+    attribute: 'events'
+  })
+  public events: MicrosoftGraph.Event[];
 
   /**
    * allows developer to define max number of events shown
@@ -112,14 +149,14 @@ export class MgtAgenda extends MgtTemplatedComponent {
   public showMax: number;
 
   /**
-   * determines if agenda events come from specific group
-   * @type {string}
+   * allows developer to define agenda to group events by day.
+   * @type {Boolean}
    */
   @property({
-    attribute: 'group-id',
-    type: String
+    attribute: 'group-by-day',
+    type: Boolean
   })
-  public groupId: string;
+  public groupByDay: boolean;
 
   /**
    * determines width available for agenda component.
@@ -127,9 +164,13 @@ export class MgtAgenda extends MgtTemplatedComponent {
    */
   @property({ attribute: false }) private _isNarrow: boolean;
 
+  private _eventQuery: string;
+  private _days: number = 3;
+  private _groupId: string;
+  private _date: string;
+
   constructor() {
     super();
-    this.days = 3;
     this.onResize = this.onResize.bind(this);
   }
 
@@ -152,22 +193,6 @@ export class MgtAgenda extends MgtTemplatedComponent {
   public disconnectedCallback() {
     window.removeEventListener('resize', this.onResize);
     super.disconnectedCallback();
-  }
-
-  /**
-   * Synchronizes property values when attributes change.
-   *
-   * @param {*} name
-   * @param {*} oldValue
-   * @param {*} newValue
-   * @memberof MgtAgenda
-   */
-  public attributeChangedCallback(name, oldValue, newValue) {
-    if (oldValue !== newValue && (name === 'date' || name === 'days' || name === 'group-id')) {
-      this.events = null;
-      this.requestStateUpdate();
-    }
-    super.attributeChangedCallback(name, oldValue, newValue);
   }
 
   /**
@@ -206,6 +231,20 @@ export class MgtAgenda extends MgtTemplatedComponent {
         ${this.groupByDay ? this.renderGroups(events) : this.renderEvents(events)}
       </div>
     `;
+  }
+
+  /**
+   * Request to reload the state.
+   * Use reload instead of load to ensure loading events are fired.
+   *
+   * @protected
+   * @memberof MgtBaseComponent
+   */
+  protected async requestStateUpdate(force?: boolean) {
+    if (force) {
+      this.events = null;
+    }
+    super.requestStateUpdate(force);
   }
 
   /**
