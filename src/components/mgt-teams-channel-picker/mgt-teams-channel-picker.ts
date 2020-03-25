@@ -175,7 +175,7 @@ export class MgtTeamsChannelPicker extends MgtTemplatedComponent {
    * @type {DropdownItem}
    * @memberof MgtTeamsChannelPicker
    */
-  public get selectedItem(): SelectedChannel {
+  public get SelectedItem(): SelectedChannel {
     if (this._selectedItemState) {
       return { channel: this._selectedItemState.item, team: this._selectedItemState.parent.item };
     } else {
@@ -343,7 +343,7 @@ export class MgtTeamsChannelPicker extends MgtTemplatedComponent {
       focused: this._focusList[this._focusedIndex] === itemState,
       item: true,
       listTeam: itemState.channels ? true : false,
-      selected: this.selectedItem === itemState.item
+      selected: this.SelectedItem === itemState.item
     };
 
     return html`
