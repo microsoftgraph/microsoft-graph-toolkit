@@ -569,6 +569,23 @@ export class MgtTeamsChannelPicker extends MgtTemplatedComponent {
           event.preventDefault();
         }
         break;
+      case 9: // tab
+        if (currentFocusedItem && currentFocusedItem.channels) {
+          // focus item is a Team
+          currentFocusedItem.isExpanded = !currentFocusedItem.isExpanded;
+          this.resetFocusState();
+          event.preventDefault();
+        } else if (currentFocusedItem && !currentFocusedItem.channels) {
+          this._selectedItemState = currentFocusedItem;
+          this.addChannel(currentFocusedItem);
+
+          // refocus to new textbox on initial selection
+          this._isFocused = true;
+          this.resetFocusState();
+          this._focusedIndex = -1;
+          event.preventDefault();
+        }
+        break;
     }
   }
 
