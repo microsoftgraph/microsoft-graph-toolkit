@@ -299,11 +299,10 @@ export class MgtTeamsChannelPicker extends MgtTemplatedComponent {
    */
   public renderDropdown(items: ChannelPickerItemState[], level: number = 0) {
     let content: any;
-    console.log(this._treeViewState.length);
     if (this.items) {
       if (this.isLoading) {
         content = this.renderTemplate('loading', null, 'loading') || this.renderLoadingMessage();
-      } else if (!this.isLoading && this._treeViewState.length === 0) {
+      } else if (!this.isLoading && this._treeViewState.length === 0 && this._userInput.length) {
         content = this.renderTemplate('error', null, 'error') || this.renderErrorMessage();
       } else {
         content = items.map((treeItem, index) => {
