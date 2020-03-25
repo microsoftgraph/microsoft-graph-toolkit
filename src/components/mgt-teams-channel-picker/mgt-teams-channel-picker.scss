@@ -102,8 +102,8 @@ mgt-teams-channel-picker .team-chosen-input {
   }
 }
 
-:host .people-chosen-list,
-mgt-teams-channel-picker .people-chosen-list {
+:host .channel-chosen-list,
+mgt-teams-channel-picker .channel-chosen-list {
   min-height: 29px;
   display: flex;
   flex-wrap: wrap;
@@ -422,8 +422,8 @@ mgt-teams-channel-picker .hide-channels {
   display: none;
 }
 
-:host .people-person-text,
-mgt-teams-channel-picker .people-person-text {
+:host .channel-name-text,
+mgt-teams-channel-picker .channel-name-text {
   font-size: 14px;
   font-weight: normal;
   color: $font-color;

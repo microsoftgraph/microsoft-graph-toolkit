@@ -16,11 +16,16 @@ import { ProviderState } from '../../providers/IProvider';
 import '../../styles/fabric-icon-font';
 import { getSvg, SvgIcon } from '../../utils/SvgHelper';
 import { debounce } from '../../utils/Utils';
-import '../mgt-person/mgt-person';
 import { MgtTemplatedComponent } from '../templatedComponent';
 import { styles } from './mgt-teams-channel-picker-css';
 import { getAllMyTeams } from './mgt-teams-channel-picker.graph';
 
+/**
+ * Team with displayName
+ *
+ * @export
+ * @interface SelectedChannel
+ */
 export type Team = MicrosoftGraph.Team & {
   /**
    * Display name Of Team
@@ -178,15 +183,7 @@ export class MgtTeamsChannelPicker extends MgtTemplatedComponent {
     }
   }
 
-  /**
-   *  array of user picked people.
-   * @type {Array<any>}
-   */
-  @property({
-    attribute: 'selected-channel',
-    type: Array
-  })
-  public selected: ChannelPickerItemState[] = [];
+  private selected: ChannelPickerItemState[] = [];
 
   // User input in search
   private _userInput: string = '';
@@ -217,7 +214,7 @@ export class MgtTeamsChannelPicker extends MgtTemplatedComponent {
   /**
    * Invoked each time the custom element is appended into a document-connected element
    *
-   * @memberof MgtPerson
+   * @memberof MgtTeamsChannelPicker
    */
   public connectedCallback() {
     super.connectedCallback();
@@ -227,7 +224,7 @@ export class MgtTeamsChannelPicker extends MgtTemplatedComponent {
   /**
    * Invoked each time the custom element is disconnected from the document's DOM
    *
-   * @memberof MgtPerson
+   * @memberof MgtTeamsChannelPicker
    */
   public disconnectedCallback() {
     window.removeEventListener('click', this.handleWindowClick);
@@ -235,17 +232,29 @@ export class MgtTeamsChannelPicker extends MgtTemplatedComponent {
   }
 
   /**
-   * Queries the microsoft graph for a user based on the user id and adds them to the selectedPeople array
+   * Queries the microsoft graph channel and adds them to grap
    *
-   * @param {[string]} an array of user ids to add to selectedPeople
+   * @param {string} channelId MicrosoftGraph.Channel.id
    * @returns {Promise<void>}
-   * @memberof MgtPeoplePicker
+   * @memberof MgtTeamsChannelPicker
    */
-  public async selectChannelsById(channelIds: [string]): Promise<void> {
+  public async selectChannelsById(channelId: string): Promise<void> {
+    // since the component normally handles loading on hover, forces the load for items
+    if (this.items.length === 0) {
+      this.loadTeams();
+    }
+
     const provider = Providers.globalProvider;
-    const client = Providers.globalProvider.graph;
     if (provider && provider.state === ProviderState.SignedIn) {
-      // TODO
+      for (const item of this._treeViewState) {
+        for (const channel of item.channels) {
+          if (channel.item.id === channelId) {
+            this.selected = [channel];
+            this._selectedItemState = channel;
+            this.fireCustomEvent('selectionChanged', this.selected);
+          }
+        }
+      }
     }
   }
 
@@ -415,7 +424,7 @@ export class MgtTeamsChannelPicker extends MgtTemplatedComponent {
       `;
     }
     return html`
-      <div class="people-chosen-list">
+      <div class="channel-chosen-list">
         ${channelList}
         <div class="${inputClass}">
           <input
@@ -466,9 +475,6 @@ export class MgtTeamsChannelPicker extends MgtTemplatedComponent {
         treeView.push(stateItem);
       }
     }
-
-    console.log(treeView);
-
     return treeView;
   }
 
@@ -604,6 +610,8 @@ export class MgtTeamsChannelPicker extends MgtTemplatedComponent {
     this._userInput = '';
 
     this.fireCustomEvent('selectionChanged', this.selected);
+    this.lostFocus();
+    this.resetFocusState();
   }
 
   private renderErrorMessage() {
@@ -683,9 +691,9 @@ export class MgtTeamsChannelPicker extends MgtTemplatedComponent {
     return html`
       <div class="channel-display">
         <div class="showing">
-          <span class="people-person-text">${channels.first}</span
-          ><span class="people-person-text highlight-search-text">${channels.highlight}</span
-          ><span class="people-person-text">${channels.last}</span>
+          <span class="channel-name-text">${channels.first}</span
+          ><span class="channel-name-text highlight-search-text">${channels.highlight}</span
+          ><span class="channel-name-text">${channels.last}</span>
         </div>
       </div>
     `;
@@ -697,5 +705,6 @@ export class MgtTeamsChannelPicker extends MgtTemplatedComponent {
     this.requestUpdate();
     this.lostFocus();
     this.resetFocusState();
+    this.fireCustomEvent('selectionChanged', this.selected);
   }
 }
