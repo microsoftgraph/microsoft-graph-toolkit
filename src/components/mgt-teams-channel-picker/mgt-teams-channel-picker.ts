@@ -232,13 +232,13 @@ export class MgtTeamsChannelPicker extends MgtTemplatedComponent {
   }
 
   /**
-   * Queries the microsoft graph channel and adds them to grap
+   * Queries the microsoft graph channel and adds them to graph
    *
    * @param {string} channelId MicrosoftGraph.Channel.id
    * @returns {Promise<void>}
    * @memberof MgtTeamsChannelPicker
    */
-  public async selectChannelsById(channelId: string): Promise<void> {
+  public async selectChannelById(channelId: string): Promise<void> {
     // since the component normally handles loading on hover, forces the load for items
     if (this.items.length === 0) {
       this.loadTeams();
@@ -299,9 +299,12 @@ export class MgtTeamsChannelPicker extends MgtTemplatedComponent {
    */
   public renderDropdown(items: ChannelPickerItemState[], level: number = 0) {
     let content: any;
+    console.log(this._treeViewState.length);
     if (this.items) {
       if (this.isLoading) {
         content = this.renderTemplate('loading', null, 'loading') || this.renderLoadingMessage();
+      } else if (!this.isLoading && this._treeViewState.length === 0) {
+        content = this.renderTemplate('error', null, 'error') || this.renderErrorMessage();
       } else {
         content = items.map((treeItem, index) => {
           const isLeaf = !treeItem.channels;
