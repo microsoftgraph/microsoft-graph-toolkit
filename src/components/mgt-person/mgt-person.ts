@@ -6,7 +6,7 @@
  */
 
 import * as MicrosoftGraph from '@microsoft/microsoft-graph-types';
-import { customElement, html, property, PropertyValues, TemplateResult } from 'lit-element';
+import { customElement, html, property, TemplateResult } from 'lit-element';
 import { classMap } from 'lit-html/directives/class-map';
 import { findPerson, getEmailFromGraphEntity } from '../../graph/graph.people';
 import { getContactPhoto, getUserPhoto } from '../../graph/graph.photos';
@@ -19,6 +19,23 @@ import { MgtTemplatedComponent } from '../templatedComponent';
 import { PersonCardInteraction } from './../PersonCardInteraction';
 import { styles } from './mgt-person-css';
 import { findUserByEmail } from './mgt-person.graph';
+
+/**
+ * IDynamicPerson describes the person object we use throughout mgt-person,
+ * which can be one of three similar Graph types.
+ *
+ * In addition, this custom type also defines the optional `personImage` property,
+ * which is used to pass the image around to other components as part of the person object.
+ */
+export type IDynamicPerson = (MicrosoftGraph.User | MicrosoftGraph.Person | MicrosoftGraph.Contact) & {
+  /**
+   * personDetails.personImage is a toolkit injected property to pass image between components
+   * an optimization to avoid fetching the image when unnecessary.
+   *
+   * @type {string}
+   */
+  personImage?: string;
+};
 
 /**
  * The person component is used to display a person or contact by using their photo, name, and/or email address.
@@ -90,13 +107,29 @@ export class MgtPerson extends MgtTemplatedComponent {
 
   /**
    * object containing Graph details on person
-   * @type {MgtPersonDetails}
+   * @type {IDynamicPerson}
    */
   @property({
     attribute: 'person-details',
     type: Object
   })
-  public personDetails: MicrosoftGraph.User | MicrosoftGraph.Person | MicrosoftGraph.Contact;
+  public get personDetails(): IDynamicPerson {
+    return this._personDetails;
+  }
+
+  public set personDetails(value: IDynamicPerson) {
+    if (this._personDetails === value) {
+      return;
+    }
+
+    this._personDetails = value;
+    if (!value) {
+      this._personAvatarBg = 'gray20';
+    } else {
+      this._personAvatarBg = this.getColorFromName(value.displayName);
+    }
+    this.requestUpdate('personDetails');
+  }
 
   /**
    * Set the image of the person
@@ -132,8 +165,22 @@ export class MgtPerson extends MgtTemplatedComponent {
   })
   public personCardInteraction: PersonCardInteraction;
 
-  @property({ attribute: false }) private isPersonCardVisible: boolean;
-  @property({ attribute: false }) private personCardShouldRender: boolean;
+  /**
+   * Gets the visibility state of the personCard
+   *
+   * @readonly
+   * @protected
+   * @type {boolean}
+   * @memberof MgtPerson
+   */
+  protected get isPersonCardVisible(): boolean {
+    return this._isPersonCardVisible;
+  }
+
+  private _isPersonCardVisible: boolean;
+  private _personCardShouldRender: boolean;
+  private _personDetails: IDynamicPerson;
+  private _personAvatarBg: string;
 
   private _mouseLeaveTimeout;
   private _mouseEnterTimeout;
@@ -155,9 +202,16 @@ export class MgtPerson extends MgtTemplatedComponent {
   public attributeChangedCallback(name, oldval, newval) {
     super.attributeChangedCallback(name, oldval, newval);
 
-    if ((name === 'person-query' || name === 'user-id') && oldval !== newval) {
-      this.personDetails = null;
-      this.requestStateUpdate();
+    if (oldval === newval) {
+      return;
+    }
+
+    switch (name) {
+      case 'person-query':
+      case 'user-id':
+        this.personDetails = null;
+        this.requestStateUpdate();
+        break;
     }
   }
 
@@ -187,14 +241,32 @@ export class MgtPerson extends MgtTemplatedComponent {
    * trigger the element to update.
    */
   public render() {
+    // Loading
+    if (this.isLoadingState) {
+      return this.renderLoading();
+    }
+
+    // Prep data
+    const person = this.personDetails;
     const image = this.getImage();
-    const person =
-      this.renderTemplate('default', { person: this.personDetails, personImage: image }) ||
-      html`
+
+    // Default template
+    let personTemplate = this.renderTemplate('default', { person, personImage: image });
+    if (!personTemplate) {
+      const imageTemplate: TemplateResult = this.renderImage(image);
+      const detailsTemplate: TemplateResult = this.renderDetails(person);
+      personTemplate = html`
         <div class="person-root">
-          ${this.renderImage(image)} ${this.renderDetails()}
+          ${imageTemplate} ${detailsTemplate}
         </div>
       `;
+    }
+
+    // Flyout template
+    const flyoutTemplate: TemplateResult =
+      this.personCardInteraction !== PersonCardInteraction.none && this._personCardShouldRender
+        ? this.renderFlyout()
+        : html``;
 
     return html`
       <div
@@ -203,29 +275,201 @@ export class MgtPerson extends MgtTemplatedComponent {
         @mouseenter=${this.handleMouseEnter}
         @mouseleave=${this.handleMouseLeave}
       >
-        ${this.renderFlyout(person)}
+        ${personTemplate} ${flyoutTemplate}
       </div>
     `;
   }
 
   /**
-   * Invoked whenever the element is updated. Implement to perform
-   * post-updating tasks via DOM APIs, for example, focusing an element.
+   * Render the loading state
    *
-   * Setting properties inside this method will trigger the element to update
-   * again after this update cycle completes.
-   *
-   * * @param changedProperties Map of changed properties with old values
+   * @protected
+   * @returns {TemplateResult}
+   * @memberof MgtPerson
    */
-  protected updated(changedProps: PropertyValues) {
-    super.updated(changedProps);
+  protected renderLoading(): TemplateResult {
+    return this.renderTemplate('loading', null) || html``;
+  }
 
-    const initials = this.renderRoot.querySelector('.initials-text') as HTMLElement;
-    if (initials && initials.parentNode && (initials.parentNode as HTMLElement).getBoundingClientRect) {
-      const parent = initials.parentNode as HTMLElement;
-      const height = parent.getBoundingClientRect().height;
-      initials.style.fontSize = `${height * 0.5}px`;
+  /**
+   * Render the state when no data is available
+   *
+   * @protected
+   * @returns {TemplateResult}
+   * @memberof MgtPerson
+   */
+  protected renderNoData(): TemplateResult {
+    const noDataTemplate = this.renderTemplate('no-data', null);
+    if (noDataTemplate) {
+      return noDataTemplate;
     }
+
+    const isLarge = this.showEmail && this.showName;
+    const imageClasses = {
+      'avatar-icon': true,
+      'ms-Icon': true,
+      'ms-Icon--Contact': true,
+      'row-span-2': isLarge,
+      small: !isLarge
+    };
+
+    return html`
+      <i class=${classMap(imageClasses)}></i>
+    `;
+  }
+
+  /**
+   * Render the image part of the person template.
+   * If the image is unavailable, the person's initials will be used instead.
+   *
+   * @protected
+   * @param {string} [imageSrc]
+   * @returns
+   * @memberof MgtPerson
+   */
+  protected renderImage(imageSrc?: string) {
+    if (!imageSrc) {
+      imageSrc = this.getImage();
+    }
+
+    const title =
+      this.personDetails && this.personCardInteraction === PersonCardInteraction.none
+        ? this.personDetails.displayName
+        : '';
+    const isLarge = this.showEmail && this.showName;
+    const imageClasses = {
+      initials: !imageSrc,
+      'row-span-2': isLarge,
+      small: !isLarge,
+      'user-avatar': true
+    };
+
+    let imageHtml: TemplateResult;
+    if (imageSrc) {
+      // render the image
+      imageHtml = html`
+        <img alt=${title} src=${imageSrc} />
+      `;
+    } else if (this.personDetails) {
+      // render the initials
+      const initials = this.getInitials(this.personDetails);
+      // add avatar background color
+      imageClasses[this._personAvatarBg] = true;
+      imageHtml = html`
+        <span class="initials-text" aria-label="${initials}">
+          ${initials}
+        </span>
+      `;
+    } else {
+      return this.renderNoData();
+    }
+
+    return html`
+      <div class=${classMap(imageClasses)} title=${title} aria-label=${title}>
+        ${imageHtml}
+      </div>
+    `;
+  }
+
+  /**
+   * Render the details part of the person template.
+   *
+   * @protected
+   * @param {IDynamicPerson} [person]
+   * @param {string} [image]
+   * @returns {TemplateResult}
+   * @memberof MgtPerson
+   */
+  protected renderDetails(person?: IDynamicPerson): TemplateResult {
+    if (!this.showEmail && !this.showName) {
+      return html``;
+    }
+
+    person = person || this.personDetails;
+    if (!person) {
+      return html``;
+    }
+
+    const email = getEmailFromGraphEntity(person);
+    const emailTemplate: TemplateResult = this.showEmail ? this.renderEmail(email) : html``;
+    const nameTemplate: TemplateResult = this.showName ? this.renderName(person.displayName) : html``;
+    const isLarge = this.showEmail && this.showName;
+    const detailsClasses = classMap({
+      Details: true,
+      small: !isLarge
+    });
+
+    return html`
+      <span class="${detailsClasses}">
+        ${nameTemplate} ${emailTemplate}
+      </span>
+    `;
+  }
+
+  /**
+   * Render the name part of the person details.
+   *
+   * @protected
+   * @returns {TemplateResult}
+   * @memberof MgtPerson
+   */
+  protected renderName(displayName?: string): TemplateResult {
+    if (!displayName && this.personDetails) {
+      displayName = this.personDetails.displayName;
+    }
+    return html`
+      <div class="user-name" aria-label="${displayName}">${displayName}</div>
+    `;
+  }
+
+  /**
+   * Render the email part of the person details.
+   *
+   * @protected
+   * @memberof MgtPerson
+   */
+  protected renderEmail(email?: string): TemplateResult {
+    if (!email) {
+      email = getEmailFromGraphEntity(this.personDetails);
+    }
+    return html`
+      <div class="user-email" aria-label="${email}">${email}</div>
+    `;
+  }
+
+  /**
+   * Render the details flyout.
+   *
+   * @protected
+   * @returns {TemplateResult}
+   * @memberof MgtPerson
+   */
+  protected renderFlyout(): TemplateResult {
+    return html`
+      <mgt-flyout .isOpen=${this.isPersonCardVisible}>
+        <div slot="flyout" class="flyout">
+          ${this.renderFlyoutContent()}
+        </div>
+      </mgt-flyout>
+    `;
+  }
+
+  /**
+   * Render the flyout menu content.
+   *
+   * @protected
+   * @returns {TemplateResult}
+   * @memberof MgtPerson
+   */
+  protected renderFlyoutContent(): TemplateResult {
+    const person = this.personDetails;
+    const image = this.getImage();
+    return (
+      this.renderTemplate('person-card', { person, personImage: image }) ||
+      html`
+        <mgt-person-card .personDetails=${person} .personImage=${image}></mgt-person-card>
+      `
+    );
   }
 
   /**
@@ -247,18 +491,17 @@ export class MgtPerson extends MgtTemplatedComponent {
       return;
     }
 
-    // personDetails.personImage is a toolkit injected property to pass image between components
-    // an optimization to avoid fetching the image when unnecessary
     if (this.personDetails) {
       // in some cases we might only have name or email, but need to find the image
       // use @ for the image value to search for an image
-      if (this.personImage && this.personImage === '@' && !(this.personDetails as any).personImage) {
+      if (this.personImage === '@' && !this.personDetails.personImage) {
         this.loadImage();
       }
       return;
     }
 
-    if (this.userId || (this.personQuery && this.personQuery === 'me')) {
+    // User userId or 'me' query to get the person and image
+    if (this.userId || this.personQuery === 'me') {
       const graph = provider.graph.forComponent(this);
       const batch = graph.createBatch();
 
@@ -271,20 +514,100 @@ export class MgtPerson extends MgtTemplatedComponent {
       }
 
       const response = await batch.execute();
-
       this.personDetails = response.user;
-      this.personImage = response.photo;
-      (this.personDetails as any).personImage = response.photo;
-    } else if (!this.personDetails && this.personQuery) {
+      this.personDetails.personImage = response.photo;
+
+      this.personImage = this.getImage();
+      return;
+    }
+
+    // Use the personQuery to find our person.
+    if (this.personQuery) {
       const graph = provider.graph.forComponent(this);
       const people = await findPerson(graph, this.personQuery);
-      if (people && people.length > 0) {
-        const person = people[0] as MicrosoftGraph.Person;
-        this.personDetails = person;
 
-        this.loadImage();
+      if (people && people.length) {
+        this.personDetails = people[0];
+
+        if (this.personImage === '@') {
+          this.loadImage();
+        }
       }
     }
+  }
+
+  private async loadImage() {
+    const provider = Providers.globalProvider;
+    const graph = provider.graph.forComponent(this);
+    const person = this.personDetails;
+    let image: string;
+
+    if ((person as MicrosoftGraph.Person).userPrincipalName) {
+      // try to find a user by userPrincipalName
+      const userPrincipalName = (person as MicrosoftGraph.Person).userPrincipalName;
+      image = await getUserPhoto(graph, userPrincipalName);
+    } else {
+      // try to find a user by e-mail
+      const email = getEmailFromGraphEntity(person);
+      if (email) {
+        const users = await findUserByEmail(graph, email);
+        if (users && users.length) {
+          // Check for an OrganizationUser
+          const orgUser = users.find(p => {
+            return (p as any).personType && (p as any).personType.subclass === 'OrganizationUser';
+          });
+          if (orgUser) {
+            // Lookup by userId
+            const userId = (users[0] as MicrosoftGraph.Person).scoredEmailAddresses[0].address;
+            image = await getUserPhoto(graph, userId);
+          } else {
+            // Lookup by contactId
+            const contactId = users[0].id;
+            image = await getContactPhoto(graph, contactId);
+          }
+        }
+      }
+    }
+
+    if (image) {
+      this.personDetails.personImage = image;
+      this.personImage = image;
+    }
+  }
+
+  private getImage(): string {
+    if (this.personImage && this.personImage !== '@') {
+      return this.personImage;
+    }
+
+    const person = this.personDetails;
+    return person && person.personImage ? person.personImage : null;
+  }
+
+  private getInitials(person?: IDynamicPerson) {
+    if (!person) {
+      person = this.personDetails;
+    }
+
+    let initials = '';
+    if (person.givenName) {
+      initials += person.givenName[0].toUpperCase();
+    }
+    if (person.surname) {
+      initials += person.surname[0].toUpperCase();
+    }
+
+    if (!initials && person.displayName) {
+      const name = person.displayName.split(' ');
+      for (let i = 0; i < 2 && i < name.length; i++) {
+        if (name[i][0].match(/[a-z]/i)) {
+          // check if letter
+          initials += name[i][0].toUpperCase();
+        }
+      }
+    }
+
+    return initials;
   }
 
   private handleWindowClick(e: MouseEvent) {
@@ -293,42 +616,8 @@ export class MgtPerson extends MgtTemplatedComponent {
     }
   }
 
-  private async loadImage() {
-    const provider = Providers.globalProvider;
-    const graph = provider.graph.forComponent(this);
-
-    const person = this.personDetails;
-    let image: string;
-
-    if ((person as MicrosoftGraph.Person).userPrincipalName) {
-      const userPrincipalName = (person as MicrosoftGraph.Person).userPrincipalName;
-      image = await getUserPhoto(graph, userPrincipalName);
-    } else {
-      const email = getEmailFromGraphEntity(person);
-      if (email) {
-        // try to find a user by e-mail
-        const users = await findUserByEmail(graph, email);
-
-        if (users && users.length) {
-          if ((users[0] as any).personType && (users[0] as any).personType.subclass === 'OrganizationUser') {
-            image = await getUserPhoto(graph, (users[0] as MicrosoftGraph.Person).scoredEmailAddresses[0].address);
-          } else {
-            const contactId = users[0].id;
-            image = await getContactPhoto(graph, contactId);
-          }
-        }
-      }
-    }
-    if (image) {
-      this.personImage = image;
-      (this.personDetails as any).personImage = image;
-    }
-
-    this.requestUpdate();
-  }
-
   private handleMouseClick(e: MouseEvent) {
-    if (this.personCardInteraction !== PersonCardInteraction.none && !this.isPersonCardVisible) {
+    if (this.personCardInteraction !== PersonCardInteraction.click && !this.isPersonCardVisible) {
       this.showPersonCard();
     }
   }
@@ -348,175 +637,53 @@ export class MgtPerson extends MgtTemplatedComponent {
     this._mouseLeaveTimeout = setTimeout(this.hidePersonCard.bind(this), 500);
   }
 
-  private showPersonCard() {
-    if (!this.personCardShouldRender) {
-      this.personCardShouldRender = true;
-    }
-
-    this.isPersonCardVisible = true;
-  }
-
   private hidePersonCard() {
-    this.isPersonCardVisible = false;
+    this._isPersonCardVisible = false;
     const personCard = (this.querySelector('mgt-person-card') ||
       this.renderRoot.querySelector('mgt-person-card')) as MgtPersonCard;
     if (personCard) {
       personCard.isExpanded = false;
     }
+    this.requestUpdate();
   }
 
-  private getImage(): string {
-    if (this.personImage && this.personImage !== '@') {
-      return this.personImage;
-    } else if (this.personDetails && (this.personDetails as any).personImage) {
-      return (this.personDetails as any).personImage;
+  private showPersonCard() {
+    if (!this._personCardShouldRender) {
+      this._personCardShouldRender = true;
     }
-    return null;
+
+    this._isPersonCardVisible = true;
+    this.requestUpdate();
   }
 
-  private renderFlyout(anchor: TemplateResult) {
-    if (this.personCardInteraction === PersonCardInteraction.none) {
-      return anchor;
-    }
-
-    const image = this.getImage();
-    const flyout = this.personCardShouldRender
-      ? html`
-          <div slot="flyout" class="flyout">
-            ${this.renderTemplate('person-card', { person: this.personDetails, personImage: image }) ||
-              html`
-                <mgt-person-card .personDetails=${this.personDetails} .personImage=${image}> </mgt-person-card>
-              `}
-          </div>
-        `
-      : null;
-
-    return html`
-      <mgt-flyout .isOpen=${this.isPersonCardVisible}>
-        ${anchor} ${flyout}
-      </mgt-flyout>
-    `;
-  }
-
-  private renderDetails() {
-    if (this.showEmail || this.showName) {
-      const isLarge = this.showEmail && this.showName;
-
-      const detailsClasses = {
-        Details: true,
-        small: !isLarge
-      };
-
-      return html`
-        <span class="${classMap(detailsClasses)}">
-          ${this.renderNameAndEmail()}
-        </span>
-      `;
-    }
-
-    return null;
-  }
-
-  private renderImage(image: string) {
-    if (this.personDetails) {
-      const title = this.personCardInteraction === PersonCardInteraction.none ? this.personDetails.displayName : '';
-      const isLarge = this.showEmail && this.showName;
-      const imageClasses = {
-        initials: !image,
-        'row-span-2': isLarge,
-        small: !isLarge,
-        'user-avatar': true
-      };
-
-      let imageHtml;
-
-      if (image) {
-        imageHtml = html`
-          <img alt=${title} src=${image} />
-        `;
-      } else {
-        const initials = this.getInitials();
-
-        imageHtml = html`
-          <span class="initials-text" aria-label="${initials}">
-            ${initials}
-          </span>
-        `;
-      }
-
-      return html`
-        <div class=${classMap(imageClasses)} title=${title} aria-label=${title}>
-          ${imageHtml}
-        </div>
-      `;
-    }
-
-    return this.renderEmptyImage();
-  }
-
-  private renderEmptyImage() {
-    const isLarge = this.showEmail && this.showName;
-
-    const imageClasses = {
-      'avatar-icon': true,
-      'ms-Icon': true,
-      'ms-Icon--Contact': true,
-      'row-span-2': isLarge,
-      small: !isLarge
-    };
-
-    return html`
-      <i class=${classMap(imageClasses)}></i>
-    `;
-  }
-
-  private renderNameAndEmail() {
-    if (!this.personDetails || (!this.showEmail && !this.showName)) {
-      return;
-    }
-
-    const nameView = this.showName
-      ? html`
-          <div class="user-name" aria-label="${this.personDetails.displayName}">${this.personDetails.displayName}</div>
-        `
-      : null;
-
-    let emailView;
-    if (this.showEmail) {
-      const email = getEmailFromGraphEntity(this.personDetails);
-      emailView = html`
-        <div class="user-email" aria-label="${email}">${email}</div>
-      `;
-    }
-
-    return html`
-      ${nameView} ${emailView}
-    `;
-  }
-
-  private getInitials() {
-    if (!this.personDetails) {
-      return '';
-    }
-
-    let initials = '';
-    if (this.personDetails.givenName) {
-      initials += this.personDetails.givenName[0].toUpperCase();
-    }
-    if (this.personDetails.surname) {
-      initials += this.personDetails.surname[0].toUpperCase();
-    }
-
-    if (!initials && this.personDetails.displayName) {
-      const name = this.personDetails.displayName.split(' ');
-      for (let i = 0; i < 2 && i < name.length; i++) {
-        if (name[i][0].match(/[a-z]/i)) {
-          // check if letter
-          initials += name[i][0].toUpperCase();
-        }
-      }
-    }
-
-    return initials;
+  private getColorFromName(name) {
+    const charCodes = name
+      .split('')
+      .map(char => char.charCodeAt(0))
+      .join('');
+    const nameInt = parseInt(charCodes, 10);
+    const colors = [
+      'pinkRed10',
+      'red20',
+      'red10',
+      'orange20',
+      'orangeYellow20',
+      'green10',
+      'green20',
+      'cyan20',
+      'cyan30',
+      'cyanBlue10',
+      'cyanBlue20',
+      'blue10',
+      'blueMagenta30',
+      'blueMagenta20',
+      'magenta20',
+      'magenta10',
+      'magentaPink10',
+      'orange30',
+      'gray30',
+      'gray20'
+    ];
+    return colors[nameInt % colors.length];
   }
 }

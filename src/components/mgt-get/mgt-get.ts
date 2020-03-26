@@ -145,7 +145,7 @@ export class MgtGet extends MgtTemplatedComponent {
     } else if (this.error) {
       return this.renderTemplate('error', this.error);
       // tslint:disable-next-line: no-string-literal
-    } else if (this.templates['value'] && this.response && this.response.value) {
+    } else if (this.hasTemplate('value') && this.response && this.response.value) {
       let valueContent;
 
       if (Array.isArray(this.response.value)) {
@@ -161,7 +161,7 @@ export class MgtGet extends MgtTemplatedComponent {
       }
 
       // tslint:disable-next-line: no-string-literal
-      if (this.templates['default']) {
+      if (this.hasTemplate('default')) {
         const defaultContent = this.renderTemplate('default', this.response);
 
         // tslint:disable-next-line: no-string-literal
