@@ -8,9 +8,10 @@
 import * as MicrosoftGraph from '@microsoft/microsoft-graph-types';
 import { IGraph } from '../../IGraph';
 import { prepScopes } from '../../utils/GraphHelpers';
+import { GraphPageIterator } from '../../utils/GraphPageIterator';
 
 /**
- * async promise, returns Calender events associated with either the logged in user or a specific groupId
+ * returns Calender events iterator associated with either the logged in user or a specific groupId
  *
  * @param {Date} startDateTime
  * @param {Date} endDateTime
@@ -18,12 +19,12 @@ import { prepScopes } from '../../utils/GraphHelpers';
  * @returns {(Promise<Event[]>)}
  * @memberof Graph
  */
-export async function getEvents(
+export function getEventsPageIterator(
   graph: IGraph,
   startDateTime: Date,
   endDateTime: Date,
   groupId?: string
-): Promise<MicrosoftGraph.Event[]> {
+): Promise<GraphPageIterator<MicrosoftGraph.Event>> {
   const scopes = 'calendars.read';
 
   const sdt = `startdatetime=${startDateTime.toISOString()}`;
@@ -39,10 +40,10 @@ export async function getEvents(
 
   uri += `/calendarview?${sdt}&${edt}`;
 
-  const calendarView = await graph
+  const request = graph
     .api(uri)
     .middlewareOptions(prepScopes(scopes))
-    .orderby('start/dateTime')
-    .get();
-  return calendarView ? calendarView.value : null;
+    .orderby('start/dateTime');
+
+  return GraphPageIterator.create<MicrosoftGraph.Event>(graph, request);
 }

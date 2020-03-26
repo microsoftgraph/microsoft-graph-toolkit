@@ -78,7 +78,7 @@ export abstract class MgtBaseComponent extends LitElement {
   }
 
   /**
-   * A flag to check if the component's firstUpdated method has fired.
+   * A flag to check if the component is loading data state.
    *
    * @protected
    * @memberof MgtBaseComponent
@@ -87,15 +87,27 @@ export abstract class MgtBaseComponent extends LitElement {
     return this._isLoadingState;
   }
 
+  /**
+   * A flag to check if the component has updated once.
+   *
+   * @readonly
+   * @protected
+   * @type {boolean}
+   * @memberof MgtBaseComponent
+   */
+  protected get isFirstUpdated(): boolean {
+    return this._isFirstUpdated;
+  }
+
   private static _useShadowRoot: boolean = true;
 
   /**
    * determines if login component is in loading state
    * @type {boolean}
    */
-  @property({ attribute: false })
   private _isLoadingState: boolean = false;
 
+  private _isFirstUpdated = false;
   private _currentLoadStatePromise: Promise<unknown>;
 
   constructor() {
@@ -126,6 +138,7 @@ export abstract class MgtBaseComponent extends LitElement {
    */
   protected firstUpdated(changedProperties): void {
     super.firstUpdated(changedProperties);
+    this._isFirstUpdated = true;
     Providers.onProviderUpdated(() => this.requestStateUpdate());
     this.requestStateUpdate();
   }
@@ -193,23 +206,28 @@ export abstract class MgtBaseComponent extends LitElement {
    * @memberof MgtBaseComponent
    */
   protected async requestStateUpdate(force: boolean = false): Promise<unknown> {
+    // the component is still bootstraping - wait until first updated
+    if (!this._isFirstUpdated) {
+      return;
+    }
+
     // Wait for the current load promise to complete (unless forced).
-    if (this._isLoadingState && !force) {
+    if (this.isLoadingState && !force) {
       await this._currentLoadStatePromise;
     }
 
     const loadStatePromise = new Promise(async (resolve, reject) => {
       try {
-        this._isLoadingState = true;
+        this.setLoadingState(true);
         this.fireCustomEvent('loadingInitiated');
 
         await this.loadState();
 
-        this._isLoadingState = false;
+        this.setLoadingState(false);
         this.fireCustomEvent('loadingCompleted');
         resolve();
       } catch (e) {
-        this._isLoadingState = false;
+        this.setLoadingState(false);
         this.fireCustomEvent('loadingFailed');
         reject(e);
       }
@@ -218,6 +236,17 @@ export abstract class MgtBaseComponent extends LitElement {
     // Return the load state promise.
     // If loading + forced, chain the promises.
     return (this._currentLoadStatePromise =
-      this._isLoadingState && force ? this._currentLoadStatePromise.then(() => loadStatePromise) : loadStatePromise);
+      this.isLoadingState && !!this._currentLoadStatePromise && force
+        ? this._currentLoadStatePromise.then(() => loadStatePromise)
+        : loadStatePromise);
+  }
+
+  private setLoadingState(value: boolean) {
+    if (this._isLoadingState === value) {
+      return;
+    }
+
+    this._isLoadingState = value;
+    this.requestUpdate('isLoadingState');
   }
 }
