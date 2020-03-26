@@ -3,10 +3,10 @@ import * as monaco from 'monaco-editor/esm/vs/editor/editor.api';
 
 let debounce = (func, wait, immediate) => {
   var timeout;
-  return function() {
+  return function () {
     var context = this,
       args = arguments;
-    var later = function() {
+    var later = function () {
       timeout = null;
       if (!immediate) func.apply(context, args);
     };
@@ -29,30 +29,30 @@ export class EditorElement extends LitElement {
         height: 100%;
         display: flex;
         flex-direction: column;
-        background-color: rgb(37, 37, 38);
+        background-color: rgb(243, 243, 243);
+        border: 1px solid #e7e7e7;
       }
 
-      .tab-root {
-        height: 38px;
-      }
+      
 
       .editor-root {
         flex-basis: 100%;
       }
 
       .tab {
-        background-color: rgb(45, 45, 45);
-        color: rgba(255, 255, 255, 0.25);
-        font-family: 'Segoe UI', 'Segoe UI Web (West European)', 'Segoe UI', -apple-system, BlinkMacSystemFont, Roboto,
-          'Helvetica Neue', sans-serif;
-        font-size: 12px;
-        padding: 14px 18px;
+        background-color: rgb(236,236,236);
+        color: #616161;
+        font-family: -apple-system,BlinkMacSystemFont,sans-serif;
+        font-size: 10px;
+        padding: 8px 18px;
         display: inline-block;
+        cursor: pointer;
+        margin: 0px -2px 0px 0px;
       }
 
       .tab.selected {
-        background-color: rgb(30, 30, 30);
-        color: white;
+        background-color: white;
+        color: rgb(51, 51, 51);
         font-weight: 400;
       }
     `;
@@ -94,7 +94,7 @@ export class EditorElement extends LitElement {
       this.files[this.currentType] = this.editor.getValue();
       let event = new CustomEvent('fileUpdated');
       this.dispatchEvent(event);
-    }, 500);
+    }, 1000);
 
     this.setupEditor(this.editorRoot);
     this.appendChild(this.editorRoot);
@@ -123,11 +123,11 @@ export class EditorElement extends LitElement {
 
     this.editor = monaco.editor.create(htmlElement, {
       model: this.currentEditorState.model,
-      theme: 'vs-dark',
       scrollBeyondLastLine: false,
       minimap: {
         enabled: false
-      }
+      },
+      fontSize: '12px'
     });
 
     const changeViewZones = () => {
@@ -189,8 +189,8 @@ export class EditorElement extends LitElement {
       <div class="root">
         <div class="tab-root">
           ${this.fileTypes.map(
-            type =>
-              html`
+      type =>
+        html`
                 <div
                   @click="${_ => this.showTab(type)}"
                   class="tab ${type === this.currentType ? 'selected' : ''}"
@@ -198,7 +198,7 @@ export class EditorElement extends LitElement {
                   ${type}
                 </button>
               `
-          )}
+    )}
         </div>
         <div class="editor-root">
           <slot name="editor"></slot>
