@@ -387,13 +387,11 @@ mgt-tasks,
         }
         .Picker {
           background-color: white;
-          box-shadow: 0 3px 7px rgba(0, 0, 0, 0.3);
           -webkit-background-clip: padding-box;
           -moz-background-clip: padding-box;
           background-clip: padding-box;
           width: 350px;
           color: var(--task-detail-color, black);
-          margin: 8px;
           mgt-people-picker {
             --separator-margin: 0px 10px 0px 10px;
           }
