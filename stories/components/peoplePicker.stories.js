@@ -23,3 +23,7 @@ export default {
 export const peoplePicker = () => html`
   <mgt-people-picker></mgt-people-picker>
 `;
+
+export const groupId = () => html`
+<mgt-people-picker group-id="02bd9fd6-8f93-4758-87c3-1fb73740a315"></mgt-people-picker>
+`;

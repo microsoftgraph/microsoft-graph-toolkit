@@ -70,16 +70,6 @@ export class MgtPeoplePicker extends MgtTemplatedComponent {
   public showMax: number;
 
   /**
-   * value determining if search is filtered to a group.
-   * @type {string}
-   */
-  @property({
-    attribute: 'group-id',
-    type: String
-  })
-  public groupId: string;
-
-  /**
    *  array of user picked people.
    * @type {Array<IDynamicPerson>}
    */
@@ -88,6 +78,23 @@ export class MgtPeoplePicker extends MgtTemplatedComponent {
     type: Array
   })
   public selectedPeople: IDynamicPerson[];
+
+  /**
+   * value determining if search is filtered to a group.
+   * @type {string}
+   */
+  @property({ attribute: 'group-id' })
+  public get groupId(): string {
+    return this._groupId;
+  }
+  public set groupId(value) {
+    if (this._groupId === value) {
+      return;
+    }
+
+    this._groupId = value;
+    this.requestStateUpdate(true);
+  }
 
   /**
    * User input in search.
@@ -157,22 +164,6 @@ export class MgtPeoplePicker extends MgtTemplatedComponent {
   public disconnectedCallback() {
     window.removeEventListener('click', this.handleWindowClick);
     super.disconnectedCallback();
-  }
-
-  /**
-   * Synchronizes property values when attributes change.
-   *
-   * @param {*} name
-   * @param {*} oldValue
-   * @param {*} newValue
-   * @memberof MgtPersonCard
-   */
-  public attributeChangedCallback(att: string, oldval: string, newval: string) {
-    super.attributeChangedCallback(att, oldval, newval);
-
-    if (att === 'group-id' && oldval !== newval) {
-      this.requestStateUpdate();
-    }
   }
 
   /**
@@ -474,26 +465,20 @@ export class MgtPeoplePicker extends MgtTemplatedComponent {
       return;
     }
 
-    if (this.groupId !== this._groupId) {
-      this._groupId = this.groupId;
-      const graph = provider.graph.forComponent(this);
-      this._groupPeople = await getPeopleFromGroup(graph, this.groupId);
-    }
-
-    const query = this.userInput.toLowerCase();
+    const input = this.userInput.toLowerCase();
     let people: IDynamicPerson[];
 
-    // filtering groups
     if (this.groupId) {
-      people = this._groupPeople;
-    } else {
       const graph = provider.graph.forComponent(this);
-      people = await findPerson(graph, query);
+      people = await getPeopleFromGroup(graph, this.groupId);
+    } else if (input) {
+      const graph = provider.graph.forComponent(this);
+      people = await findPerson(graph, input);
     }
 
     if (people) {
       people = people.filter((person: IDynamicPerson) => {
-        return person.displayName.toLowerCase().indexOf(query) !== -1;
+        return person.displayName.toLowerCase().indexOf(input) !== -1;
       });
     }
 
