@@ -674,7 +674,9 @@ export class MgtTeamsChannelPicker extends MgtTemplatedComponent {
     if (teamList) {
       teamList.setAttribute('style', 'display:none');
     }
-    this.requestUpdate();
+    // resets tree so that searches without selection don't have persistant search
+    this._treeViewState = this.generateTreeViewState(this.items, this._userInput);
+    this.resetFocusState();
   }
 
   private renderHighlightText(channel: any) {
@@ -723,7 +725,6 @@ export class MgtTeamsChannelPicker extends MgtTemplatedComponent {
     this._userInput = '';
     this.requestUpdate();
     this.lostFocus();
-    this.resetFocusState();
     this.fireCustomEvent('selectionChanged', this.selected);
   }
 }
