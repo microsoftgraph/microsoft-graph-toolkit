@@ -5,10 +5,9 @@
  * -------------------------------------------------------------------------------------------
  */
 
-import { customElement, html, property, PropertyValues, TemplateResult } from 'lit-element';
+import { customElement, html, LitElement, property, PropertyValues, TemplateResult } from 'lit-element';
 import { classMap } from 'lit-html/directives/class-map';
 import { getSegmentAwareWindow, isWindowSegmentAware, IWindowSegment } from '../../../utils/WindowSegmentHelpers';
-import { MgtBaseComponent } from '../../baseComponent';
 import { styles } from './mgt-flyout-css';
 
 /**
@@ -19,7 +18,7 @@ import { styles } from './mgt-flyout-css';
  * @extends {LitElement}
  */
 @customElement('mgt-flyout')
-export class MgtFlyout extends MgtBaseComponent {
+export class MgtFlyout extends LitElement {
   /**
    * Array of styles to apply to the element. The styles should be defined
    * using the `css` tag function.
@@ -54,21 +53,13 @@ export class MgtFlyout extends MgtBaseComponent {
     return this._isOpen;
   }
   public set isOpen(value: boolean) {
-    if (this._isOpen !== value) {
-      this._isOpen = value;
-
-      if (value) {
-        this.registerLightDismissEvents();
-      } else {
-        this.unregisterLightDismissEvents();
-      }
-
-      this.requestUpdate('isOpen');
-
-      if (!value) {
-        this.fireCustomEvent('onclose');
-      }
+    if (this._isOpen === value) {
+      return;
     }
+    this._isOpen = value;
+    this.setupWindowEvents(value);
+    this.requestUpdate('isOpen');
+    this.dispatchEvent(new Event(value ? 'opened' : 'closed'));
   }
 
   private _isOpen: boolean;
@@ -76,12 +67,13 @@ export class MgtFlyout extends MgtBaseComponent {
   constructor() {
     super();
     this.handleWindowEvent = this.handleWindowEvent.bind(this);
+    this.handleWindowClickEvent = this.handleWindowClickEvent.bind(this);
   }
 
   /**
    * Show the flyout.
    */
-  public show(): void {
+  public open(): void {
     this.isOpen = true;
   }
 
@@ -93,22 +85,12 @@ export class MgtFlyout extends MgtBaseComponent {
   }
 
   /**
-   * Invoked each time the custom element is appended into a document-connected element
-   *
-   * @memberof MgtFlyout
-   */
-  public connectedCallback() {
-    super.connectedCallback();
-    this.registerLightDismissEvents();
-  }
-
-  /**
    * Invoked each time the custom element is disconnected from the document's DOM
    *
    * @memberof MgtFlyout
    */
   public disconnectedCallback() {
-    this.unregisterLightDismissEvents();
+    this.setupWindowEvents(false);
     super.disconnectedCallback();
   }
 
@@ -281,19 +263,41 @@ export class MgtFlyout extends MgtBaseComponent {
     }
   }
 
-  private registerLightDismissEvents(): void {
-    window.addEventListener('click', this.handleWindowEvent);
-    window.addEventListener('resize', this.handleWindowEvent);
-  }
-
-  private unregisterLightDismissEvents(): void {
-    window.removeEventListener('click', this.handleWindowEvent);
-    window.removeEventListener('resize', this.handleWindowEvent);
-  }
-
-  private handleWindowEvent(): void {
-    if (this.isLightDismiss) {
-      this.close();
+  private setupWindowEvents(isOpen: boolean): void {
+    if (isOpen && this.isLightDismiss) {
+      window.addEventListener('click', this.handleWindowClickEvent, true);
+      window.addEventListener('resize', this.handleWindowEvent);
+    } else {
+      window.removeEventListener('click', this.handleWindowClickEvent, true);
+      window.removeEventListener('resize', this.handleWindowEvent);
     }
+  }
+
+  private handleWindowEvent(e: Event): void {
+    this.close();
+  }
+
+  private handleWindowClickEvent(e: Event): void {
+    const flyout = this.renderRoot.querySelector('.flyout');
+
+    if (flyout) {
+      // IE
+      if (!e.composedPath) {
+        let currentElem = e.target as HTMLElement;
+        while (currentElem) {
+          currentElem = currentElem.parentElement;
+          if (currentElem === flyout || (e.type === 'pointerdown' && currentElem === this)) {
+            return;
+          }
+        }
+      } else {
+        const path = e.composedPath();
+        if (path.includes(flyout) || (e.type === 'pointerdown' && path.includes(this))) {
+          return;
+        }
+      }
+    }
+
+    this.handleWindowEvent(e);
   }
 }
