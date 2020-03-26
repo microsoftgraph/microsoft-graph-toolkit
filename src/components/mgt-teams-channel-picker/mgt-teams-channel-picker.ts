@@ -386,6 +386,8 @@ export class MgtTeamsChannelPicker extends MgtTemplatedComponent {
     if (this._userInput !== e.target.value) {
       this._userInput = e.target.value;
     }
+    // shows list
+    this.gainedFocus();
     if (!this.debouncedSearch) {
       this.debouncedSearch = debounce(() => {
         this._treeViewState = this.generateTreeViewState(this.items, this._userInput);
