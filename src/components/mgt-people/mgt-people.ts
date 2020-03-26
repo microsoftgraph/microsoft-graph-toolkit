@@ -13,6 +13,7 @@ import { getUsersForUserIds } from '../../graph/graph.user';
 import { Providers } from '../../Providers';
 import { ProviderState } from '../../providers/IProvider';
 import '../../styles/fabric-icon-font';
+import { arraysAreEqual } from '../../utils/Utils';
 import { IDynamicPerson } from '../mgt-person/mgt-person';
 import { MgtTemplatedComponent } from '../templatedComponent';
 import { PersonCardInteraction } from './../PersonCardInteraction';
@@ -37,26 +38,6 @@ export class MgtPeople extends MgtTemplatedComponent {
   static get styles() {
     return styles;
   }
-
-  /**
-   * containing array of people used in the component.
-   * @type {Array<MgtPersonDetails>}
-   */
-  @property({
-    attribute: 'people',
-    type: Object
-  })
-  public people: IDynamicPerson[];
-
-  /**
-   * developer determined max people shown in component
-   * @type {number}
-   */
-  @property({
-    attribute: 'show-max',
-    type: Number
-  })
-  public showMax: number;
 
   /**
    * determines if agenda events come from specific group
@@ -92,12 +73,32 @@ export class MgtPeople extends MgtTemplatedComponent {
     return this._userIds;
   }
   public set userIds(value: string[]) {
-    if (this._userIds === value) {
+    if (arraysAreEqual(this._userIds, value)) {
       return;
     }
     this._userIds = value;
     this.requestStateUpdate(true);
   }
+
+  /**
+   * containing array of people used in the component.
+   * @type {Array<MgtPersonDetails>}
+   */
+  @property({
+    attribute: 'people',
+    type: Object
+  })
+  public people: IDynamicPerson[];
+
+  /**
+   * developer determined max people shown in component
+   * @type {number}
+   */
+  @property({
+    attribute: 'show-max',
+    type: Number
+  })
+  public showMax: number;
 
   /**
    * Sets how the person-card is invoked
