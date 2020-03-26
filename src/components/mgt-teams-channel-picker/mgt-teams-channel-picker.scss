@@ -41,6 +41,7 @@ $input-background-color: var(--input-background-color, transparent);
 :host .root,
 mgt-teams-channel-picker .root {
   display: block;
+  font-family: var(--default-font-family, 'Segoe UI');
 }
 
 :host .teams-channel-picker,
@@ -60,7 +61,7 @@ mgt-teams-channel-picker .team-list {
   width: 100%;
   text-align: left;
   list-style-type: none;
-  font-family: Segoe UI;
+  font-family: var(--default-font-family, 'Segoe UI');
   font-style: normal;
   font-weight: normal;
   color: $font-color;
@@ -111,7 +112,7 @@ mgt-teams-channel-picker .channel-chosen-list {
   margin: 0 0 0 0;
   list-style-type: none;
   padding-left: 5px;
-  font-family: Segoe UI;
+  font-family: var(--default-font-family, 'Segoe UI');
   font-style: normal;
   font-weight: normal;
   color: $font-color;
@@ -191,7 +192,7 @@ mgt-teams-channel-picker .listTeam {
   align-items: center;
   padding: 5px 12px 6px 14px;
   margin-top: 6px;
-  font-family: Segoe UI;
+  font-family: var(--default-font-family, 'Segoe UI');
   font-style: normal;
   font-weight: 600;
   font-size: 16px;
@@ -493,49 +494,6 @@ mgt-teams-channel-picker .teams-channel-picker-input {
   &.focused {
     border-color: $input-focus-color;
   }
-}
-
-:host .duplicate-person,
-mgt-teams-channel-picker .duplicate-person {
-  text-decoration: none;
-  border-bottom: 1px solid red;
-}
-
-:host .remove-person-button,
-mgt-teams-channel-picker .remove-person-button {
-  background: #767676;
-  transform: matrix(-0.71, -0.71, 0.71, -0.71, 0, 0);
-}
-
-:host .remove-person-button-secondary,
-mgt-teams-channel-picker .remove-person-button-secondary {
-  background: #767676;
-  transform: matrix(0.71, -0.71, 0.71, 0.71, 0, 0);
-}
-
-:host .person-display-name,
-mgt-teams-channel-picker .person-display-name {
-  max-width: 100px;
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  margin-left: 8px;
-  font-family: Segoe UI;
-  font-style: normal;
-  font-weight: 600;
-  font-size: 14px;
-  color: $font-color;
-  line-height: 19px;
-  text-align: center;
-}
-
-mgt-person {
-  --avatar-size-s: 32px;
-  margin-left: 12px;
-}
-.chosen-person {
-  --avatar-size-s: 24px;
-  margin-left: 0px;
 }
 
 :host .search-error-text,
