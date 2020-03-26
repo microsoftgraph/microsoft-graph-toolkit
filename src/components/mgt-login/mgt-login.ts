@@ -6,12 +6,14 @@
  */
 
 import { User } from '@microsoft/microsoft-graph-types';
-import { customElement, html, property } from 'lit-element';
+import { customElement, html, property, query } from 'lit-element';
+import { classMap } from 'lit-html/directives/class-map';
 import { Providers } from '../../Providers';
 import { ProviderState } from '../../providers/IProvider';
 import '../../styles/fabric-icon-font';
 import { MgtBaseComponent } from '../baseComponent';
 import '../mgt-person/mgt-person';
+import { MgtFlyout } from '../sub-components/mgt-flyout/mgt-flyout';
 import { styles } from './mgt-login-css';
 
 /**
@@ -52,13 +54,17 @@ export class MgtLogin extends MgtBaseComponent {
   })
   public userDetails: User;
 
-  private _image: string;
-
   /**
-   * determines if login menu popup should be showing
-   * @type {boolean}
+   * Gets the flyout element
+   *
+   * @protected
+   * @type {MgtFlyout}
+   * @memberof MgtLogin
    */
-  @property({ attribute: false }) private _showFlyout: boolean;
+  @query('.flyout') protected flyout: MgtFlyout;
+
+  @property({ attribute: false }) private _isFlyoutOpen: boolean;
+  private _image: string;
 
   /**
    * Invoked each time the custom element is appended into a document-connected element
@@ -68,17 +74,6 @@ export class MgtLogin extends MgtBaseComponent {
   public connectedCallback() {
     super.connectedCallback();
     this.addEventListener('click', e => e.stopPropagation());
-    window.addEventListener('click', e => this.handleWindowClick(e));
-  }
-
-  /**
-   * Invoked each time the custom element is disconnected from the document's DOM
-   *
-   * @memberof MgtLogin
-   */
-  public disconnectedCallback() {
-    window.removeEventListener('click', e => this.handleWindowClick(e));
-    super.disconnectedCallback();
   }
 
   /**
@@ -172,8 +167,14 @@ export class MgtLogin extends MgtBaseComponent {
    * @memberof MgtLogin
    */
   protected renderButton() {
+    // disable click if flyout is open so the flyout can close itself
+    const classes = {
+      'login-button': true,
+      'no-click': this._isFlyoutOpen
+    };
+
     return html`
-      <button ?disabled="${this.isLoadingState}" @click=${this.onClick} class="login-button" role="button">
+      <button ?disabled="${this.isLoadingState}" @click=${this.onClick} class=${classMap(classes)} role="button">
         ${this.renderButtonContent()}
       </button>
     `;
@@ -187,8 +188,13 @@ export class MgtLogin extends MgtBaseComponent {
    */
   protected renderFlyout() {
     return html`
-      <mgt-flyout .isOpen=${this._showFlyout}>
-        <div slot="flyout" class="flyout">
+      <mgt-flyout
+        light-dismiss
+        class="flyout"
+        @opened=${() => (this._isFlyoutOpen = true)}
+        @closed=${() => (this._isFlyoutOpen = false)}
+      >
+        <div slot="flyout">
           ${this.renderFlyoutContent()}
         </div>
       </mgt-flyout>
@@ -226,6 +232,7 @@ export class MgtLogin extends MgtBaseComponent {
       </div>
     `;
   }
+
   /**
    * Render the button content.
    *
@@ -255,7 +262,10 @@ export class MgtLogin extends MgtBaseComponent {
    * @memberof MgtLogin
    */
   protected showFlyout(): void {
-    this._showFlyout = true;
+    const flyout = this.flyout;
+    if (flyout) {
+      flyout.open();
+    }
   }
 
   /**
@@ -265,26 +275,15 @@ export class MgtLogin extends MgtBaseComponent {
    * @memberof MgtLogin
    */
   protected hideFlyout(): void {
-    this._showFlyout = false;
-  }
-
-  /**
-   * Toggle the state of the flyout.
-   *
-   * @protected
-   * @memberof MgtLogin
-   */
-  protected toggleFlyout(): void {
-    this._showFlyout = !this._showFlyout;
-  }
-
-  private handleWindowClick(e: MouseEvent) {
-    this.hideFlyout();
+    const flyout = this.flyout;
+    if (flyout) {
+      flyout.close();
+    }
   }
 
   private onClick(event: MouseEvent) {
     if (this.userDetails) {
-      this.toggleFlyout();
+      this.showFlyout();
     } else {
       this.login();
     }

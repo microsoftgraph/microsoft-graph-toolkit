@@ -6,7 +6,7 @@
  */
 
 import * as MicrosoftGraph from '@microsoft/microsoft-graph-types';
-import { customElement, html, property, TemplateResult } from 'lit-element';
+import { customElement, html, property, query, TemplateResult } from 'lit-element';
 import { classMap } from 'lit-html/directives/class-map';
 import { findPerson, getEmailFromGraphEntity } from '../../graph/graph.people';
 import { getContactPhoto, getUserPhoto } from '../../graph/graph.photos';
@@ -15,6 +15,7 @@ import { ProviderState } from '../../providers/IProvider';
 import '../../styles/fabric-icon-font';
 import { MgtPersonCard } from '../mgt-person-card/mgt-person-card';
 import '../sub-components/mgt-flyout/mgt-flyout';
+import { MgtFlyout } from '../sub-components/mgt-flyout/mgt-flyout';
 import { MgtTemplatedComponent } from '../templatedComponent';
 import { PersonCardInteraction } from './../PersonCardInteraction';
 import { styles } from './mgt-person-css';
@@ -166,19 +167,15 @@ export class MgtPerson extends MgtTemplatedComponent {
   public personCardInteraction: PersonCardInteraction;
 
   /**
-   * Gets the visibility state of the personCard
+   * Gets the flyout element
    *
-   * @readonly
    * @protected
-   * @type {boolean}
+   * @type {MgtFlyout}
    * @memberof MgtPerson
    */
-  protected get isPersonCardVisible(): boolean {
-    return this._isPersonCardVisible;
-  }
+  @query('.flyout') protected flyout: MgtFlyout;
 
-  private _isPersonCardVisible: boolean;
-  private _personCardShouldRender: boolean;
+  @property({ attribute: false }) private _personCardShouldRender: boolean;
   private _personDetails: IDynamicPerson;
   private _personAvatarBg: string;
 
@@ -187,7 +184,6 @@ export class MgtPerson extends MgtTemplatedComponent {
 
   constructor() {
     super();
-    this.handleWindowClick = this.handleWindowClick.bind(this);
     this.personCardInteraction = PersonCardInteraction.none;
   }
 
@@ -213,26 +209,6 @@ export class MgtPerson extends MgtTemplatedComponent {
         this.requestStateUpdate();
         break;
     }
-  }
-
-  /**
-   * Invoked each time the custom element is appended into a document-connected element
-   *
-   * @memberof MgtPerson
-   */
-  public connectedCallback() {
-    super.connectedCallback();
-    window.addEventListener('click', this.handleWindowClick);
-  }
-
-  /**
-   * Invoked each time the custom element is disconnected from the document's DOM
-   *
-   * @memberof MgtPerson
-   */
-  public disconnectedCallback() {
-    window.removeEventListener('click', this.handleWindowClick);
-    super.disconnectedCallback();
   }
 
   /**
@@ -264,9 +240,7 @@ export class MgtPerson extends MgtTemplatedComponent {
 
     // Flyout template
     const flyoutTemplate: TemplateResult =
-      this.personCardInteraction !== PersonCardInteraction.none && this._personCardShouldRender
-        ? this.renderFlyout()
-        : html``;
+      this.personCardInteraction !== PersonCardInteraction.none ? this.renderFlyout(personTemplate) : null;
 
     return html`
       <div
@@ -275,7 +249,7 @@ export class MgtPerson extends MgtTemplatedComponent {
         @mouseenter=${this.handleMouseEnter}
         @mouseleave=${this.handleMouseLeave}
       >
-        ${personTemplate} ${flyoutTemplate}
+        ${flyoutTemplate || personTemplate}
       </div>
     `;
   }
@@ -444,12 +418,18 @@ export class MgtPerson extends MgtTemplatedComponent {
    * @returns {TemplateResult}
    * @memberof MgtPerson
    */
-  protected renderFlyout(): TemplateResult {
+  protected renderFlyout(anchor: TemplateResult): TemplateResult {
+    const flyoutContent = this._personCardShouldRender
+      ? html`
+          <div slot="flyout">
+            ${this.renderFlyoutContent()}
+          </div>
+        `
+      : html``;
+
     return html`
-      <mgt-flyout .isOpen=${this.isPersonCardVisible}>
-        <div slot="flyout" class="flyout">
-          ${this.renderFlyoutContent()}
-        </div>
+      <mgt-flyout light-dismiss class="flyout">
+        ${anchor} ${flyoutContent}
       </mgt-flyout>
     `;
   }
@@ -610,15 +590,12 @@ export class MgtPerson extends MgtTemplatedComponent {
     return initials;
   }
 
-  private handleWindowClick(e: MouseEvent) {
-    if (this.isPersonCardVisible && e.target !== this) {
-      this.hidePersonCard();
-    }
-  }
-
   private handleMouseClick(e: MouseEvent) {
-    if (this.personCardInteraction !== PersonCardInteraction.click && !this.isPersonCardVisible) {
-      this.showPersonCard();
+    if (this.personCardInteraction !== PersonCardInteraction.click) {
+      const flyout = this.flyout;
+      if (flyout && !flyout.isOpen) {
+        flyout.isOpen = true;
+      }
     }
   }
 
@@ -638,13 +615,16 @@ export class MgtPerson extends MgtTemplatedComponent {
   }
 
   private hidePersonCard() {
-    this._isPersonCardVisible = false;
+    const flyout = this.flyout;
+    if (flyout) {
+      flyout.isOpen = false;
+    }
+
     const personCard = (this.querySelector('mgt-person-card') ||
       this.renderRoot.querySelector('mgt-person-card')) as MgtPersonCard;
     if (personCard) {
       personCard.isExpanded = false;
     }
-    this.requestUpdate();
   }
 
   private showPersonCard() {
@@ -652,8 +632,10 @@ export class MgtPerson extends MgtTemplatedComponent {
       this._personCardShouldRender = true;
     }
 
-    this._isPersonCardVisible = true;
-    this.requestUpdate();
+    const flyout = this.flyout;
+    if (flyout) {
+      flyout.isOpen = true;
+    }
   }
 
   private getColorFromName(name) {
