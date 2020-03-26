@@ -241,7 +241,7 @@ export class MgtTeamsChannelPicker extends MgtTemplatedComponent {
   public async selectChannelById(channelId: string): Promise<void> {
     // since the component normally handles loading on hover, forces the load for items
     if (this.items.length === 0) {
-      this.loadTeams();
+      await this.loadTeams();
     }
 
     const provider = Providers.globalProvider;
@@ -252,6 +252,7 @@ export class MgtTeamsChannelPicker extends MgtTemplatedComponent {
             this.selected = [channel];
             this._selectedItemState = channel;
             this.fireCustomEvent('selectionChanged', this.selected);
+            this.requestUpdate();
           }
         }
       }
@@ -514,18 +515,20 @@ export class MgtTeamsChannelPicker extends MgtTemplatedComponent {
   }
 
   private mouseLeft() {
-    if (this._userInput.length === 0) {
+    if (this._userInput.length === 0 && !this.isLoading) {
       this._isHovered = false;
       this.requestUpdate();
     }
   }
 
   private handleHover() {
-    if (this.items.length === 0) {
-      this.loadTeams();
+    if (!this.isLoading) {
+      if (this.items.length === 0) {
+        this.loadTeams();
+      }
+      this._isHovered = true;
+      this.requestUpdate();
     }
-    this._isHovered = true;
-    this.requestUpdate();
   }
 
   private handleWindowClick(e: MouseEvent) {
