@@ -339,11 +339,18 @@ export class MgtTeamsChannelPicker extends MgtTemplatedComponent {
       icon = itemState.isExpanded ? getSvg(SvgIcon.ArrowDown, '#252424') : getSvg(SvgIcon.ArrowRight, '#252424');
     }
 
+    let isSelected = false;
+    if (this.SelectedItem) {
+      if (this.SelectedItem.channel === itemState.item) {
+        isSelected = true;
+      }
+    }
+
     const classes = {
       focused: this._focusList[this._focusedIndex] === itemState,
       item: true,
       listTeam: itemState.channels ? true : false,
-      selected: this.SelectedItem === itemState.item
+      selected: isSelected
     };
 
     return html`
@@ -415,9 +422,9 @@ export class MgtTeamsChannelPicker extends MgtTemplatedComponent {
 
       channelList = html`
         <li class="selected-team">
-          <div class="selected-team-name">${this.selected[0].item.displayName}</div>
+          <div class="selected-team-name">${this.selected[0].parent.item.displayName}</div>
           <div class="arrow">${getSvg(SvgIcon.TeamSeparator, '#B3B0AD')}</div>
-          ${this.selected[0].parent.item.displayName}
+          ${this.selected[0].item.displayName}
           <div class="CloseIcon" @click="${() => this.removeTeam()}">
             
           </div>
@@ -628,6 +635,7 @@ export class MgtTeamsChannelPicker extends MgtTemplatedComponent {
 
   private removeTeam() {
     this.selected = [];
+    this._selectedItemState = null;
     this._userInput = '';
 
     this.fireCustomEvent('selectionChanged', this.selected);

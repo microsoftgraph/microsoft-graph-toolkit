@@ -301,6 +301,31 @@ mgt-teams-channel-picker .item.focused {
   }
 }
 
+:host .item.selected,
+mgt-teams-channel-picker .item.selected {
+  background-color: #deecf9;
+  & .showing:last-child {
+    flex-flow: nowrap;
+    position: relative;
+    overflow: hidden;
+    white-space: nowrap;
+    &:after {
+      content: '';
+      position: absolute;
+      width: 36px;
+      height: 100%;
+      top: 0;
+      right: 0;
+      position: absolute;
+      background-image: -webkit-linear-gradient(right, #deecf9, rgba(255, 255, 255, 0));
+      background-image: -moz-linear-gradient(right, #deecf9, rgba(255, 255, 255, 0));
+      background-image: -ms-linear-gradient(right, #deecf9, rgba(255, 255, 255, 0));
+      background-image: -o-linear-gradient(right, #deecf9, rgba(255, 255, 255, 0));
+      background-image: linear-gradient(to left, #deecf9, rgba(255, 255, 255, 0));
+    }
+  }
+}
+
 :host .teams-list-fill,
 mgt-teams-channel-picker .teams-list-fill {
   background-color: $selection-hover-color;
@@ -536,6 +561,7 @@ mgt-teams-channel-picker .SearchErrorIcon {
 
 :host .message-parent,
 mgt-teams-channel-picker .message-parent {
+  padding: 2px;
   margin-top: 30px;
   margin-bottom: 30px;
   display: flex;
