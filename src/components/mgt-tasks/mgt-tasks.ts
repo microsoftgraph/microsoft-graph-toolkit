@@ -944,18 +944,21 @@ export class MgtTasks extends MgtTemplatedComponent {
     `;
   }
 
-  private showPeoplePicker(task: ITask) {
-    // logic for already created tasks
+  private togglePeoplePicker(task: ITask) {
     const picker = this.getPeoplePicker(task);
     const mgtPeople = this.getMgtPeople(task);
     const flyout = this.getFlyout(task);
 
-    if (picker && mgtPeople) {
-      picker.selectedPeople = mgtPeople.people;
-      flyout.open();
-      window.requestAnimationFrame(() => {
-        picker.focus();
-      });
+    if (picker && mgtPeople && flyout) {
+      if (flyout.isOpen) {
+        flyout.close();
+      } else {
+        picker.selectedPeople = mgtPeople.people;
+        flyout.open();
+        window.requestAnimationFrame(() => {
+          picker.focus();
+        });
+      }
     }
   }
 
@@ -1154,20 +1157,16 @@ export class MgtTasks extends MgtTemplatedComponent {
         class="people-${taskId}"
         .userIds="${assignedPeople}"
         .personCardInteraction=${PersonCardInteraction.none}
+        @click=${(e: MouseEvent) => {
+          this.togglePeoplePicker(task);
+          e.stopPropagation();
+        }}
         >${noPeopleTemplate}
       </mgt-people>
     `;
 
     return html`
-      <mgt-flyout
-        light-dismiss
-        class=${classMap(taskAssigneeClasses)}
-        @click=${(e: MouseEvent) => {
-          this.showPeoplePicker(task);
-          e.stopPropagation();
-        }}
-        @closed=${e => this.updateAssignedPeople(task)}
-      >
+      <mgt-flyout light-dismiss class=${classMap(taskAssigneeClasses)} @closed=${e => this.updateAssignedPeople(task)}>
         ${assignedPeopleHTML}
         <div slot="flyout" class=${classMap({ Picker: true })}>
           <mgt-people-picker

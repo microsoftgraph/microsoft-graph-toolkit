@@ -23,3 +23,7 @@ export default {
 export const People = () => html`
   <mgt-people show-max="5"></mgt-people>
 `;
+
+export const groupId = () => html`
+  <mgt-people group-id="02bd9fd6-8f93-4758-87c3-1fb73740a315"></mgt-people>
+`;

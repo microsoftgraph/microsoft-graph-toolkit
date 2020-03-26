@@ -5,7 +5,7 @@
  * -------------------------------------------------------------------------------------------
  */
 
-import { customElement, html, property, TemplateResult } from 'lit-element';
+import { customElement, html, property, query, TemplateResult } from 'lit-element';
 import { classMap } from 'lit-html/directives/class-map';
 import { repeat } from 'lit-html/directives/repeat';
 import { findPerson, getPeopleFromGroup } from '../../graph/graph.people';
@@ -15,6 +15,8 @@ import { ProviderState } from '../../providers/IProvider';
 import '../../styles/fabric-icon-font';
 import { debounce } from '../../utils/Utils';
 import { IDynamicPerson } from '../mgt-person/mgt-person';
+import { PersonCardInteraction } from '../PersonCardInteraction';
+import { MgtFlyout } from '../sub-components/mgt-flyout/mgt-flyout';
 import { MgtTemplatedComponent } from '../templatedComponent';
 import { styles } from './mgt-people-picker-css';
 
@@ -50,6 +52,23 @@ export class MgtPeoplePicker extends MgtTemplatedComponent {
   }
 
   /**
+   * value determining if search is filtered to a group.
+   * @type {string}
+   */
+  @property({ attribute: 'group-id' })
+  public get groupId(): string {
+    return this._groupId;
+  }
+  public set groupId(value) {
+    if (this._groupId === value) {
+      return;
+    }
+
+    this._groupId = value;
+    this.requestStateUpdate(true);
+  }
+
+  /**
    * containing object of MgtPersonDetails.
    * @type {MgtPersonDetails}
    */
@@ -68,16 +87,6 @@ export class MgtPeoplePicker extends MgtTemplatedComponent {
     type: Number
   })
   public showMax: number;
-
-  /**
-   * value determining if search is filtered to a group.
-   * @type {string}
-   */
-  @property({
-    attribute: 'group-id',
-    type: String
-  })
-  public groupId: string;
 
   /**
    *  array of user picked people.
@@ -99,25 +108,16 @@ export class MgtPeoplePicker extends MgtTemplatedComponent {
   protected userInput: string;
 
   /**
-   * Check the current state of the results flyout
+   * Gets the flyout element
    *
-   * @readonly
    * @protected
-   * @type {boolean}
-   * @memberof MgtPeoplePicker
+   * @type {MgtFlyout}
+   * @memberof MgtLogin
    */
-  protected get isFlyoutOpen(): boolean {
-    return this._showFlyout;
-  }
+  @query('.flyout') protected flyout: MgtFlyout;
 
   // if search is still loading don't load "people not found" state
   @property({ attribute: false }) private _showLoading: boolean;
-
-  /**
-   * determines if login menu popup should be showing
-   * @type {boolean}
-   */
-  @property({ attribute: false }) private _showFlyout: boolean;
 
   private _groupId: string;
   // tracking of user arrow key input for selection
@@ -130,12 +130,10 @@ export class MgtPeoplePicker extends MgtTemplatedComponent {
     super();
 
     this._showLoading = true;
-    this._showFlyout = false;
     this._groupId = null;
     this.userInput = '';
     this.showMax = 6;
     this.selectedPeople = [];
-    this.handleWindowClick = this.handleWindowClick.bind(this);
   }
 
   /**
@@ -146,33 +144,6 @@ export class MgtPeoplePicker extends MgtTemplatedComponent {
   public connectedCallback() {
     super.connectedCallback();
     this.addEventListener('click', e => e.stopPropagation());
-    window.addEventListener('click', this.handleWindowClick);
-  }
-
-  /**
-   * Invoked each time the custom element is disconnected from the document's DOM
-   *
-   * @memberof MgtLogin
-   */
-  public disconnectedCallback() {
-    window.removeEventListener('click', this.handleWindowClick);
-    super.disconnectedCallback();
-  }
-
-  /**
-   * Synchronizes property values when attributes change.
-   *
-   * @param {*} name
-   * @param {*} oldValue
-   * @param {*} newValue
-   * @memberof MgtPersonCard
-   */
-  public attributeChangedCallback(att: string, oldval: string, newval: string) {
-    super.attributeChangedCallback(att, oldval, newval);
-
-    if (att === 'group-id' && oldval !== newval) {
-      this.requestStateUpdate();
-    }
   }
 
   /**
@@ -236,17 +207,16 @@ export class MgtPeoplePicker extends MgtTemplatedComponent {
 
     const selectedPeopleTemplate = this.renderSelectedPeople(this.selectedPeople);
     const inputTemplate = this.renderInput();
-    const flyoutTemplate = this.renderFlyout();
+    const flyoutTemplate = this.renderFlyout(inputTemplate);
     return html`
       <div class="people-picker" @click=${() => this.focus()}>
         <div class="people-picker-input">
           <div class="people-selected-list">
-            ${selectedPeopleTemplate} ${inputTemplate}
+            ${selectedPeopleTemplate} ${flyoutTemplate}
           </div>
         </div>
         <div class="people-list-separator"></div>
       </div>
-      ${flyoutTemplate}
     `;
   }
 
@@ -316,9 +286,10 @@ export class MgtPeoplePicker extends MgtTemplatedComponent {
    * @returns {TemplateResult}
    * @memberof MgtPeoplePicker
    */
-  protected renderFlyout(): TemplateResult {
+  protected renderFlyout(anchor: TemplateResult): TemplateResult {
     return html`
-      <mgt-flyout .isOpen=${this._showFlyout}>
+      <mgt-flyout light-dismiss class="flyout">
+        ${anchor}
         <div slot="flyout">
           <div class="flyout-root">
             ${this.renderFlyoutContent()}
@@ -474,26 +445,20 @@ export class MgtPeoplePicker extends MgtTemplatedComponent {
       return;
     }
 
-    if (this.groupId !== this._groupId) {
-      this._groupId = this.groupId;
-      const graph = provider.graph.forComponent(this);
-      this._groupPeople = await getPeopleFromGroup(graph, this.groupId);
-    }
-
-    const query = this.userInput.toLowerCase();
+    const input = this.userInput.toLowerCase();
     let people: IDynamicPerson[];
 
-    // filtering groups
     if (this.groupId) {
-      people = this._groupPeople;
-    } else {
       const graph = provider.graph.forComponent(this);
-      people = await findPerson(graph, query);
+      people = await getPeopleFromGroup(graph, this.groupId);
+    } else if (input) {
+      const graph = provider.graph.forComponent(this);
+      people = await findPerson(graph, input);
     }
 
     if (people) {
       people = people.filter((person: IDynamicPerson) => {
-        return person.displayName.toLowerCase().indexOf(query) !== -1;
+        return person.displayName.toLowerCase().indexOf(input) !== -1;
       });
     }
 
@@ -501,23 +466,29 @@ export class MgtPeoplePicker extends MgtTemplatedComponent {
   }
 
   /**
-   * Hide the results flyout.
+   * Show the flyout and its content.
    *
    * @protected
-   * @memberof MgtPeoplePicker
+   * @memberof MgtLogin
    */
-  protected hideFlyout(): void {
-    this._showFlyout = false;
+  protected showFlyout(): void {
+    const flyout = this.flyout;
+    if (flyout) {
+      flyout.open();
+    }
   }
 
   /**
-   * Show the results flyout.
+   * Dismiss the flyout.
    *
    * @protected
-   * @memberof MgtPeoplePicker
+   * @memberof MgtLogin
    */
-  protected showFlyout(): void {
-    this._showFlyout = true;
+  protected hideFlyout(): void {
+    const flyout = this.flyout;
+    if (flyout) {
+      flyout.close();
+    }
   }
 
   /**
@@ -738,9 +709,5 @@ export class MgtPeoplePicker extends MgtTemplatedComponent {
 
       return filtered;
     }
-  }
-
-  private handleWindowClick(e: MouseEvent): void {
-    this.hideFlyout();
   }
 }
