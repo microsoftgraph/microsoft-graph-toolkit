@@ -242,6 +242,23 @@ export class MgtPeoplePicker extends MgtTemplatedComponent {
   }
 
   /**
+   * Request to reload the state.
+   * Use reload instead of load to ensure loading events are fired.
+   *
+   * @protected
+   * @memberof MgtBaseComponent
+   */
+  protected requestStateUpdate(force?: boolean) {
+    if (force) {
+      this._groupPeople = null;
+      this.people = null;
+      this.selectedPeople = [];
+    }
+
+    return super.requestStateUpdate(force);
+  }
+
+  /**
    * Render the input text box.
    *
    * @protected
@@ -469,8 +486,16 @@ export class MgtPeoplePicker extends MgtTemplatedComponent {
     let people: IDynamicPerson[];
 
     if (this.groupId) {
-      const graph = provider.graph.forComponent(this);
-      people = await getPeopleFromGroup(graph, this.groupId);
+      if (this._groupPeople === null) {
+        try {
+          const graph = provider.graph.forComponent(this);
+          this._groupPeople = await getPeopleFromGroup(graph, this.groupId);
+        } catch {
+          this._groupPeople = [];
+        }
+      }
+
+      people = this._groupPeople || [];
     } else if (input) {
       const graph = provider.graph.forComponent(this);
       people = await findPerson(graph, input);
