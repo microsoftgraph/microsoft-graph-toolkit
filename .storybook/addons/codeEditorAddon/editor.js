@@ -30,7 +30,6 @@ export class EditorElement extends LitElement {
         display: flex;
         flex-direction: column;
         background-color: rgb(243, 243, 243);
-        border: 1px solid #e7e7e7;
       }
 
       

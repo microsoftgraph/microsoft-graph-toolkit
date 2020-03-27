@@ -30,11 +30,12 @@
   }
 
   .story-mgt-editor {
-    width: 50%;
+    width: calc(50% - 1px);
     height: 100%;
     position: relative;
     float: left;
     overflow: hidden;
+    border-left: 1px solid #e7e7e7;
   }
 
   .story-mgt-separator {
@@ -67,8 +68,10 @@
     }
 
     .story-mgt-editor {
-      height: 50%;
+      height: calc(50% - 1px);
       width: 100%;
+      border-left: none;
+      border-top: 1px solid #e7e7e7;
     }
 
     .story-mgt-separator {
