@@ -168,8 +168,11 @@ export class MgtTeamsChannelPicker extends MgtTemplatedComponent {
   }
 
   private set items(value) {
+    if (this._items === value) {
+      return;
+    }
     this._items = value;
-    this._treeViewState = this.generateTreeViewState(value);
+    this._treeViewState = value ? this.generateTreeViewState(value) : [];
     this.resetFocusState();
   }
   private get items(): DropdownItem[] {
@@ -191,7 +194,7 @@ export class MgtTeamsChannelPicker extends MgtTemplatedComponent {
   private _focusedIndex: number = -1;
   private debouncedSearch;
 
-  // determines loading stateE
+  // determines loading state
   @property({ attribute: false }) private _isDropdownVisible;
 
   constructor() {
@@ -239,16 +242,14 @@ export class MgtTeamsChannelPicker extends MgtTemplatedComponent {
 
       let foundChannel: ChannelPickerItemState;
 
-      for (const item of this._treeViewState) {
-        for (const channel of item.channels) {
-          if (channel.item.id === channelId) {
+      compareItem: for (const item of this._treeViewState) {
+        compareChannel: for (const channel of item.channels) {
+          if (channel.item.id !== channelId) {
+            continue compareChannel;
+          } else {
             foundChannel = channel;
-            break;
           }
-        }
-
-        if (foundChannel) {
-          break;
+          continue compareItem;
         }
       }
       if (foundChannel) {
