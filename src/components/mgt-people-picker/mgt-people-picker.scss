@@ -115,7 +115,6 @@ mgt-people-picker .people-person {
 mgt-people-picker .list-person {
   display: flex;
   flex-direction: row;
-  flex-wrap: wrap;
   align-items: center;
   padding: 12px;
   font-style: normal;
@@ -253,4 +252,5 @@ mgt-people-picker .people-person-text-area {
   margin-left: 13px;
   flex: 1 1 0;
   max-height: 40px;
+  overflow: hidden;
 }
