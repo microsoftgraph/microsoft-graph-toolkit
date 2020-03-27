@@ -216,6 +216,44 @@ function equalsInternal(o1: any, o2: any, refs: Set<object>) {
 }
 
 /**
+ * Compares two arrays if the elements are equals
+ * Should be used for arrays of primitive types
+ *
+ * @export
+ * @template T the type of the elements in the array (should be primitive)
+ * @param {T[]} arr1
+ * @param {T[]} arr2
+ * @returns true if both arrays contain the same items or if both arrays are null or empty
+ */
+export function arraysAreEqual<T>(arr1: T[], arr2: T[]) {
+  if (arr1 === arr2) {
+    return true;
+  }
+
+  if (!arr1 || !arr2) {
+    return false;
+  }
+
+  if (arr1.length !== arr2.length) {
+    return false;
+  }
+
+  if (arr1.length === 0) {
+    return true;
+  }
+
+  const setArr1 = new Set(arr1);
+
+  for (const i of arr2) {
+    if (!setArr1.has(i)) {
+      return false;
+    }
+  }
+
+  return true;
+}
+
+/**
  * converts a blob to base64 encoding
  *
  * @param {Blob} blob
