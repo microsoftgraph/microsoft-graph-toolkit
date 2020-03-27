@@ -5,7 +5,7 @@
  * -------------------------------------------------------------------------------------------
  */
 
-import { customElement, html, property, TemplateResult } from 'lit-element';
+import { customElement, html, property, query, TemplateResult } from 'lit-element';
 import { classMap } from 'lit-html/directives/class-map';
 import { repeat } from 'lit-html/directives/repeat';
 import { findPerson, getPeopleFromGroup } from '../../graph/graph.people';
@@ -15,6 +15,7 @@ import { ProviderState } from '../../providers/IProvider';
 import '../../styles/fabric-icon-font';
 import { debounce } from '../../utils/Utils';
 import { IDynamicPerson } from '../mgt-person/mgt-person';
+import { MgtFlyout } from '../sub-components/mgt-flyout/mgt-flyout';
 import { MgtTemplatedComponent } from '../templatedComponent';
 import { styles } from './mgt-people-picker-css';
 
@@ -106,25 +107,16 @@ export class MgtPeoplePicker extends MgtTemplatedComponent {
   protected userInput: string;
 
   /**
-   * Check the current state of the results flyout
+   * Gets the flyout element
    *
-   * @readonly
    * @protected
-   * @type {boolean}
-   * @memberof MgtPeoplePicker
+   * @type {MgtFlyout}
+   * @memberof MgtLogin
    */
-  protected get isFlyoutOpen(): boolean {
-    return this._showFlyout;
-  }
+  @query('.flyout') protected flyout: MgtFlyout;
 
   // if search is still loading don't load "people not found" state
   @property({ attribute: false }) private _showLoading: boolean;
-
-  /**
-   * determines if login menu popup should be showing
-   * @type {boolean}
-   */
-  @property({ attribute: false }) private _showFlyout: boolean;
 
   private _groupId: string;
   // tracking of user arrow key input for selection
@@ -137,12 +129,10 @@ export class MgtPeoplePicker extends MgtTemplatedComponent {
     super();
 
     this._showLoading = true;
-    this._showFlyout = false;
     this._groupId = null;
     this.userInput = '';
     this.showMax = 6;
     this.selectedPeople = [];
-    this.handleWindowClick = this.handleWindowClick.bind(this);
   }
 
   /**
@@ -153,17 +143,6 @@ export class MgtPeoplePicker extends MgtTemplatedComponent {
   public connectedCallback() {
     super.connectedCallback();
     this.addEventListener('click', e => e.stopPropagation());
-    window.addEventListener('click', this.handleWindowClick);
-  }
-
-  /**
-   * Invoked each time the custom element is disconnected from the document's DOM
-   *
-   * @memberof MgtLogin
-   */
-  public disconnectedCallback() {
-    window.removeEventListener('click', this.handleWindowClick);
-    super.disconnectedCallback();
   }
 
   /**
@@ -227,17 +206,16 @@ export class MgtPeoplePicker extends MgtTemplatedComponent {
 
     const selectedPeopleTemplate = this.renderSelectedPeople(this.selectedPeople);
     const inputTemplate = this.renderInput();
-    const flyoutTemplate = this.renderFlyout();
+    const flyoutTemplate = this.renderFlyout(inputTemplate);
     return html`
       <div class="people-picker" @click=${() => this.focus()}>
         <div class="people-picker-input">
           <div class="people-selected-list">
-            ${selectedPeopleTemplate} ${inputTemplate}
+            ${selectedPeopleTemplate} ${flyoutTemplate}
           </div>
         </div>
         <div class="people-list-separator"></div>
       </div>
-      ${flyoutTemplate}
     `;
   }
 
@@ -324,9 +302,10 @@ export class MgtPeoplePicker extends MgtTemplatedComponent {
    * @returns {TemplateResult}
    * @memberof MgtPeoplePicker
    */
-  protected renderFlyout(): TemplateResult {
+  protected renderFlyout(anchor: TemplateResult): TemplateResult {
     return html`
-      <mgt-flyout .isOpen=${this._showFlyout}>
+      <mgt-flyout light-dismiss class="flyout">
+        ${anchor}
         <div slot="flyout">
           <div class="flyout-root">
             ${this.renderFlyoutContent()}
@@ -517,7 +496,10 @@ export class MgtPeoplePicker extends MgtTemplatedComponent {
    * @memberof MgtPeoplePicker
    */
   protected hideFlyout(): void {
-    this._showFlyout = false;
+    const flyout = this.flyout;
+    if (flyout) {
+      flyout.close();
+    }
   }
 
   /**
@@ -527,7 +509,10 @@ export class MgtPeoplePicker extends MgtTemplatedComponent {
    * @memberof MgtPeoplePicker
    */
   protected showFlyout(): void {
-    this._showFlyout = true;
+    const flyout = this.flyout;
+    if (flyout) {
+      flyout.open();
+    }
   }
 
   /**
@@ -748,9 +733,5 @@ export class MgtPeoplePicker extends MgtTemplatedComponent {
 
       return filtered;
     }
-  }
-
-  private handleWindowClick(e: MouseEvent): void {
-    this.hideFlyout();
   }
 }
