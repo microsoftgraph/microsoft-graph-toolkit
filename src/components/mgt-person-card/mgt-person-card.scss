@@ -14,7 +14,7 @@ $color: var(--color, #{$ms-color-neutralDark});
 
 :host .root {
   position: relative;
-  width: 340px;
+  width: var(--mgt-flyout-set-width, 340px);
   background: #ffffff;
   font-family: var(--default-font-family);
 
