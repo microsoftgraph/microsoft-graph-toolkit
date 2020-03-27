@@ -40,9 +40,7 @@ mgt-people-picker .people-picker {
 
 :host .flyout-root,
 mgt-people-picker .flyout-root {
-  margin: 7px 0px 0px 0px;
   padding: 0;
-  box-shadow: 0px 1.3289px 2.65781px rgba(180, 180, 180, 0.182), 0px 1.3289px 2.65781px rgba(68, 68, 68, 0.3);
   border-radius: 2px;
   background-color: $people-list-background-color;
   width: 100%;
@@ -218,6 +216,8 @@ mgt-people-picker .loading-text {
   line-height: 19px;
   text-align: center;
   color: #232222;
+  margin-left: 50px;
+  margin-right: 50px;
 }
 
 :host .SearchErrorIcon,
@@ -229,8 +229,7 @@ mgt-people-picker .SearchErrorIcon {
 
 :host .message-parent,
 mgt-people-picker .message-parent {
-  margin-top: 30px;
-  margin-bottom: 30px;
+  margin: 20px;
   display: flex;
   align-items: center;
   justify-content: center;
