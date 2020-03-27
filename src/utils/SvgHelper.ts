@@ -161,14 +161,14 @@ export function getSvg(svgIcon: SvgIcon, color: string) {
     case SvgIcon.ArrowRight:
       return html`
         <svg width="12" height="12" viewBox="0 0 12 12" fill="none" xmlns="http://www.w3.org/2000/svg">
-          <path d="M8 7L4.46481 10.5359L4.46481 7L4.46481 3.46413L8 7Z" fill="#323130" />
+          <path d="M8 7L4.46481 10.5359L4.46481 7L4.46481 3.46413L8 7Z" />
         </svg>
       `;
 
     case SvgIcon.ArrowDown:
       return html`
         <svg width="12" height="12" viewBox="0 0 12 12" fill="none" xmlns="http://www.w3.org/2000/svg">
-          <path d="M6 9L2.46447 5.46447H6H9.53553L6 9Z" fill="#323130" />
+          <path d="M6 9L2.46447 5.46447H6H9.53553L6 9Z" />
         </svg>
       `;
 

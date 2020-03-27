@@ -8,12 +8,6 @@
 @import '../../../node_modules/office-ui-fabric-core/dist/sass/References';
 @import '../../styles/shared-styles.scss';
 
-$list-margin: var(--list-margin, 20px 4px 8px 8px);
-$avatar-margin: var(--avatar-margin, 0 4px 0 0);
-$avatar-size-s: var(--avatar-size-s, 24px);
-$avatar-size: var(--avatar-size, 48px);
-$initials-color: var(--initials-color, white);
-$initials-background-color: var(--initials-background-color, #{$ms-color-magenta});
 $accent-color: var(--accent-color, #0078d4);
 
 $font-color: var(--font-color, #323130);
@@ -29,516 +23,383 @@ $input-border-top: var(--input-border-top, $input-border);
 
 $input-hover-color: var(--input-hover-color, #323130);
 $input-focus-color: var(--input-focus-color, #0078d4);
-
-$selection-hover-color: var(--selection-hover-color, #f1f1f1dd);
-
-$selection-background-color: var(--selection-background-color, white);
 $input-background-color: var(--input-background-color, transparent);
 
+$dropdown-item-hover-background: var(--dropdown-item-hover-background, #f1f1f1dd);
+$dropdown-background-color: var(--dropdown-background-color, white);
+$dropdown-item-selected-background: var(--dropdown-item-selected-background, #deecf9);
+
 :host {
-  border-radius: 2px;
-}
-:host .root,
-mgt-teams-channel-picker .root {
-  display: block;
   font-family: var(--default-font-family, 'Segoe UI');
 }
 
-:host .teams-channel-picker,
-mgt-teams-channel-picker .teams-channel-picker {
+.root {
   position: relative;
-}
 
-:host .team-list,
-mgt-teams-channel-picker .team-list {
-  padding-top: 5px;
-  padding-bottom: 11px;
-  position: absolute;
-  box-shadow: 0px 1.3289px 2.65781px rgba(180, 180, 180, 0.182), 0px 1.3289px 2.65781px rgba(68, 68, 68, 0.3);
-  border-radius: 2px;
-  background-color: $selection-background-color;
-  z-index: 1; /* Sit on top */
-  width: 100%;
-  text-align: left;
-  list-style-type: none;
-  font-family: var(--default-font-family, 'Segoe UI');
-  font-style: normal;
-  font-weight: normal;
-  color: $font-color;
-  display: none;
-  li {
-    cursor: pointer;
-    .arrow {
-      margin-right: 5px;
-      margin-bottom: 1px;
-      svg path {
+  .input-wrapper {
+    display: flex;
+    order: 2;
+    background-color: $input-background-color;
+    font-size: 14px;
+    color: $font-color;
+    line-height: 19px;
+    cursor: text;
+    padding-bottom: 5px;
+    border: $input-border;
+    border-bottom: $input-border-bottom;
+    border-left: $input-border-left;
+    border-top: $input-border-top;
+    border-right: $input-border-right;
+    &:hover {
+      border-color: $input-hover-color;
+    }
+
+    &.focused {
+      border-color: $input-focus-color;
+    }
+
+    .search-icon {
+      padding-top: 9px;
+      padding-left: 9px;
+    }
+
+    .channel-chosen-list {
+      min-height: 29px;
+      display: flex;
+      flex-wrap: wrap;
+      vertical-align: middle;
+      margin: 0 0 0 0;
+      list-style-type: none;
+      padding-left: 5px;
+      font-family: var(--default-font-family, 'Segoe UI');
+      font-style: normal;
+      font-weight: normal;
+      color: $font-color;
+      .selected-team {
+        padding-top: 1px;
+        padding-right: 6px;
+        border: none;
+        display: flex;
+        margin: 4px 5px 0 0;
+        align-items: center;
+        height: 24px;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        .arrow {
+          margin-left: 8px;
+          margin-right: 8px;
+        }
+        .selected-team-name {
+          font-weight: bold;
+        }
+      }
+
+      .team-chosen-input {
+        position: relative;
+        border: none;
+        line-height: normal;
+        outline: none;
+        font-family: Segoe UI;
+        font-style: normal;
+        font-weight: normal;
+        font-size: 14px;
+        line-height: 19px;
+        background-color: $input-background-color;
+        color: $font-color;
+        padding-left: 5px;
+        &::placeholder {
+          color: $placeholder-default-color;
+        }
+        &:focus::placeholder {
+          color: $placeholder-focus-color;
+        }
+      }
+
+      .close-icon {
+        position: absolute;
+        right: 0;
+        line-height: normal;
+        font-family: 'FabricMDL2Icons';
+        padding: 8px 10px 10px 8px;
+        margin-bottom: 1px;
+        cursor: pointer;
+        color: $placeholder-default-color;
+        &:hover {
+          color: $font-color;
+        }
+      }
+
+      .search-icon {
+        padding-top: 9px;
+        padding-left: 5px;
+        font-family: 'FabricMDL2Icons';
+        color: $accent-color;
+      }
+    }
+
+    .input-search {
+      margin: 7px 2px 0px 0px;
+    }
+
+    .input-search-start {
+      margin: 7px 3px 0px 0px;
+      line-height: normal;
+      margin-inline-start: 0px;
+      margin-inline-end: 0px;
+    }
+  }
+
+  .dropdown {
+    padding-top: 5px;
+    padding-bottom: 11px;
+    position: absolute;
+    box-shadow: 0px 1.3289px 2.65781px rgba(180, 180, 180, 0.182), 0px 1.3289px 2.65781px rgba(68, 68, 68, 0.3);
+    border-radius: 2px;
+    background-color: $dropdown-background-color;
+    z-index: 1; /* Sit on top */
+    width: 100%;
+    text-align: left;
+    list-style-type: none;
+    font-family: var(--default-font-family, 'Segoe UI');
+    font-style: normal;
+    font-weight: normal;
+    color: $font-color;
+    display: none;
+
+    &.visible {
+      display: block;
+    }
+
+    .item {
+      .arrow svg {
         fill: $arrow-fill;
       }
-    }
-  }
-}
 
-:host .team-chosen-input,
-mgt-teams-channel-picker .team-chosen-input {
-  position: relative;
-  border: none;
-  line-height: normal;
-  outline: none;
-  font-family: Segoe UI;
-  font-style: normal;
-  font-weight: normal;
-  font-size: 14px;
-  line-height: 19px;
-  background-color: $input-background-color;
-  color: $font-color;
-  padding-left: 5px;
-  &::placeholder {
-    color: $placeholder-default-color;
-  }
-  &.focused::placeholder {
-    color: $placeholder-focus-color;
-  }
-  &.hide {
-    display: none;
-  }
-}
+      &.list-team {
+        -moz-user-select: none;
+        -webkit-user-select: none;
+        -ms-user-select: none;
+        user-select: none;
+        -o-user-select: none;
+        display: flex;
+        flex-direction: row;
+        align-items: center;
+        padding: 5px 12px 6px 14px;
+        margin-top: 6px;
+        font-family: var(--default-font-family, 'Segoe UI');
+        font-style: normal;
+        font-weight: 600;
+        font-size: 16px;
+        color: $font-color;
 
-:host .channel-chosen-list,
-mgt-teams-channel-picker .channel-chosen-list {
-  min-height: 29px;
-  display: flex;
-  flex-wrap: wrap;
-  vertical-align: middle;
-  margin: 0 0 0 0;
-  list-style-type: none;
-  padding-left: 5px;
-  font-family: var(--default-font-family, 'Segoe UI');
-  font-style: normal;
-  font-weight: normal;
-  color: $font-color;
-  .selected-team {
-    padding-top: 1px;
-    padding-right: 6px;
-    .selected-team-name {
-      font-weight: bold;
-    }
-  }
-}
-.CloseIcon,
-mgt-teams-channel-picker .CloseIcon {
-  position: absolute;
-  right: 0;
-  line-height: normal;
-  font-family: 'FabricMDL2Icons';
-  padding: 8px 10px 10px 8px;
-  margin-bottom: 1px;
-  cursor: pointer;
-  color: #605e5c;
-  &:hover {
-    color: #000000;
-  }
-}
-
-.SearchIcon,
-mgt-teams-channel-picker .SearchIcon {
-  padding-top: 9px;
-  padding-left: 5px;
-}
-
-.InputArrowIcon,
-mgt-teams-channel-picker .InputArrowIcon {
-  padding-bottom: 13px;
-  padding-top: 7px;
-  position: absolute;
-  right: 0;
-  line-height: normal;
-  font-family: 'FabricMDL2Icons';
-  padding-right: 10px;
-  padding-left: 10px;
-  cursor: pointer;
-}
-
-:host .SearchIcon,
-mgt-teams-channel-picker .SearchIcon {
-  font-family: 'FabricMDL2Icons';
-  color: $accent-color;
-}
-
-:host .selected-team,
-mgt-teams-channel-picker .selected-team {
-  border: none;
-  display: flex;
-  margin: 4px 5px 0 0;
-  align-items: center;
-  height: 24px;
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  .arrow {
-    margin-left: 8px;
-    margin-right: 8px;
-  }
-}
-
-:host .listTeam,
-mgt-teams-channel-picker .listTeam {
-  -moz-user-select: none;
-  -webkit-user-select: none;
-  -ms-user-select: none;
-  user-select: none;
-  -o-user-select: none;
-  display: flex;
-  flex-direction: row;
-  align-items: center;
-  padding: 5px 12px 6px 14px;
-  margin-top: 6px;
-  font-family: var(--default-font-family, 'Segoe UI');
-  font-style: normal;
-  font-weight: 600;
-  font-size: 16px;
-  color: $font-color;
-  &.hide-team {
-    display: none;
-  }
-
-  &:hover {
-    background-color: $selection-hover-color;
-    .team-name {
-      width: 100%;
-      flex-flow: nowrap;
-      position: relative;
-      overflow: hidden;
-      white-space: nowrap;
-      background-color: transparent;
-      padding-right: 10px;
-      &:after {
-        content: '';
-        position: absolute;
-        width: 36px;
-        height: 100%;
-        top: 0;
-        right: 0;
-        background-image: -webkit-linear-gradient(right, $selection-hover-color, rgba(255, 255, 255, 0));
-        background-image: -moz-linear-gradient(right, $selection-hover-color, rgba(255, 255, 255, 0));
-        background-image: -ms-linear-gradient(right, $selection-hover-color, rgba(255, 255, 255, 0));
-        background-image: -o-linear-gradient(right, $selection-hover-color, rgba(255, 255, 255, 0));
-        background-image: linear-gradient(to left, $selection-hover-color, rgba(255, 255, 255, 0));
+        &:hover {
+          background-color: $dropdown-item-hover-background;
+        }
+        .arrow {
+          margin-right: 5px;
+          margin-bottom: 1px;
+        }
       }
-    }
-  }
-  .team-name {
-    width: 100%;
-    flex-flow: nowrap;
-    position: relative;
-    overflow: hidden;
-    white-space: nowrap;
-    background-color: transparent;
-    padding-right: 10px;
-    &:after {
-      content: '';
-      position: absolute;
-      width: 36px;
-      height: 100%;
-      top: 0;
-      right: 0;
-      background-image: -webkit-linear-gradient(right, $selection-background-color, rgba(255, 255, 255, 0));
-      background-image: -moz-linear-gradient(right, $selection-background-color, rgba(255, 255, 255, 0));
-      background-image: -ms-linear-gradient(right, $selection-background-color, rgba(255, 255, 255, 0));
-      background-image: -o-linear-gradient(right, $selection-background-color, rgba(255, 255, 255, 0));
-      background-image: linear-gradient(to left, $selection-background-color, rgba(255, 255, 255, 0));
-    }
-  }
-  .arrow {
-    margin-right: 5px;
-    margin-bottom: 1px;
-  }
-}
 
-:host .item.focused,
-mgt-teams-channel-picker .item.focused {
-  background-color: $selection-hover-color;
-  .team-name {
-    width: 100%;
-    flex-flow: nowrap;
-    position: relative;
-    overflow: hidden;
-    white-space: nowrap;
-    background-color: transparent;
-    padding-right: 10px;
-    &:after {
-      content: '';
-      position: absolute;
-      width: 36px;
-      height: 100%;
-      top: 0;
-      right: 0;
-      background-image: -webkit-linear-gradient(right, $selection-hover-color, rgba(255, 255, 255, 0));
-      background-image: -moz-linear-gradient(right, $selection-hover-color, rgba(255, 255, 255, 0));
-      background-image: -ms-linear-gradient(right, $selection-hover-color, rgba(255, 255, 255, 0));
-      background-image: -o-linear-gradient(right, $selection-hover-color, rgba(255, 255, 255, 0));
-      background-image: linear-gradient(to left, $selection-hover-color, rgba(255, 255, 255, 0));
-    }
-  }
-
-  .showing:last-child {
-    flex-flow: nowrap;
-    position: relative;
-    overflow: hidden;
-    white-space: nowrap;
-    background-color: transparent;
-    &:after {
-      content: '';
-      position: absolute;
-      width: 36px;
-      height: 100%;
-      top: 0;
-      right: 0;
-      background-image: -webkit-linear-gradient(right, $selection-hover-color, rgba(255, 255, 255, 0) !important);
-      background-image: -moz-linear-gradient(right, $selection-hover-color, rgba(255, 255, 255, 0) !important);
-      background-image: -ms-linear-gradient(right, $selection-hover-color, rgba(255, 255, 255, 0) !important);
-      background-image: -o-linear-gradient(right, $selection-hover-color, rgba(255, 255, 255, 0) !important);
-      background-image: linear-gradient(to left, $selection-hover-color, rgba(255, 255, 255, 0)) !important;
-    }
-  }
-}
-
-:host .item.selected,
-mgt-teams-channel-picker .item.selected {
-  background-color: #deecf9;
-  & .showing:last-child {
-    flex-flow: nowrap;
-    position: relative;
-    overflow: hidden;
-    white-space: nowrap;
-    &:after {
-      content: '';
-      position: absolute;
-      width: 36px;
-      height: 100%;
-      top: 0;
-      right: 0;
-      position: absolute;
-      background-image: -webkit-linear-gradient(right, #deecf9, rgba(255, 255, 255, 0));
-      background-image: -moz-linear-gradient(right, #deecf9, rgba(255, 255, 255, 0));
-      background-image: -ms-linear-gradient(right, #deecf9, rgba(255, 255, 255, 0));
-      background-image: -o-linear-gradient(right, #deecf9, rgba(255, 255, 255, 0));
-      background-image: linear-gradient(to left, #deecf9, rgba(255, 255, 255, 0));
-    }
-  }
-}
-
-:host .teams-list-fill,
-mgt-teams-channel-picker .teams-list-fill {
-  background-color: $selection-hover-color;
-}
-
-:host .channel-display,
-mgt-teams-channel-picker .channel-display {
-  -moz-user-select: none;
-  -webkit-user-select: none;
-  -ms-user-select: none;
-  user-select: none;
-  -o-user-select: none;
-  cursor: pointer;
-  padding-left: 21px;
-  padding-right: 10px;
-
-  & .showing:last-child {
-    flex-flow: nowrap;
-    position: relative;
-    overflow: hidden;
-    white-space: nowrap;
-    background-color: transparent;
-    &:after {
-      content: '';
-      position: absolute;
-      width: 36px;
-      height: 100%;
-      top: 0;
-      right: 0;
-      background-image: -webkit-linear-gradient(right, $selection-background-color, rgba(255, 255, 255, 0));
-      background-image: -moz-linear-gradient(right, $selection-background-color, rgba(255, 255, 255, 0));
-      background-image: -ms-linear-gradient(right, $selection-background-color, rgba(255, 255, 255, 0));
-      background-image: -o-linear-gradient(right, $selection-background-color, rgba(255, 255, 255, 0));
-      background-image: linear-gradient(to left, $selection-background-color, rgba(255, 255, 255, 0));
-    }
-  }
-
-  .showing {
-    padding-left: 10px;
-    padding-top: 4px;
-    padding-bottom: 4px;
-  }
-  .hiding {
-    display: none;
-  }
-  &.blue-highlight {
-    background-color: #deecf9;
-    & .showing:last-child {
-      flex-flow: nowrap;
-      position: relative;
-      overflow: hidden;
-      white-space: nowrap;
-      &:after {
-        content: '';
-        position: absolute;
-        width: 36px;
-        height: 100%;
-        top: 0;
-        right: 0;
-        position: absolute;
-        background-image: -webkit-linear-gradient(right, #deecf9, rgba(255, 255, 255, 0));
-        background-image: -moz-linear-gradient(right, #deecf9, rgba(255, 255, 255, 0));
-        background-image: -ms-linear-gradient(right, #deecf9, rgba(255, 255, 255, 0));
-        background-image: -o-linear-gradient(right, #deecf9, rgba(255, 255, 255, 0));
-        background-image: linear-gradient(to left, #deecf9, rgba(255, 255, 255, 0));
+      &.selected {
+        background-color: $dropdown-item-selected-background;
+        .showing:last-child:after {
+          background-image: -webkit-linear-gradient(
+            right,
+            $dropdown-item-selected-background,
+            rgba($dropdown-background-color, 0)
+          );
+          background-image: -moz-linear-gradient(
+            right,
+            $dropdown-item-selected-background,
+            rgba($dropdown-background-color, 0)
+          );
+          background-image: -ms-linear-gradient(
+            right,
+            $dropdown-item-selected-background,
+            rgba($dropdown-background-color, 0)
+          );
+          background-image: -o-linear-gradient(
+            right,
+            $dropdown-item-selected-background,
+            rgba($dropdown-background-color, 0)
+          );
+          background-image: linear-gradient(
+            to left,
+            $dropdown-item-selected-background,
+            rgba($dropdown-background-color, 0)
+          );
+        }
       }
-    }
-    &:hover {
-      background-color: #d2e4f5;
-      & .showing:last-child {
-        flex-flow: nowrap;
-        position: relative;
-        overflow: hidden;
-        white-space: nowrap;
-        &:after {
-          content: '';
-          position: absolute;
-          width: 36px;
-          height: 100%;
-          top: 0;
-          right: 0;
-          position: absolute;
-          background-image: -webkit-linear-gradient(right, #d2e4f5, rgba(255, 255, 255, 0));
-          background-image: -moz-linear-gradient(right, #d2e4f5, rgba(255, 255, 255, 0));
-          background-image: -ms-linear-gradient(right, #d2e4f5, rgba(255, 255, 255, 0));
-          background-image: -o-linear-gradient(right, #d2e4f5, rgba(255, 255, 255, 0));
-          background-image: linear-gradient(to left, #d2e4f5, rgba(255, 255, 255, 0));
+
+      &.focused {
+        background-color: $dropdown-item-hover-background;
+
+        .showing:last-child:after {
+          background-image: -webkit-linear-gradient(
+            right,
+            $dropdown-item-hover-background,
+            rgba($dropdown-background-color, 0) !important
+          );
+          background-image: -moz-linear-gradient(
+            right,
+            $dropdown-item-hover-background,
+            rgba($dropdown-background-color, 0) !important
+          );
+          background-image: -ms-linear-gradient(
+            right,
+            $dropdown-item-hover-background,
+            rgba($dropdown-background-color, 0) !important
+          );
+          background-image: -o-linear-gradient(
+            right,
+            $dropdown-item-hover-background,
+            rgba($dropdown-background-color, 0) !important
+          );
+          background-image: linear-gradient(
+            to left,
+            $dropdown-item-hover-background,
+            rgba($dropdown-background-color, 0)
+          ) !important;
         }
       }
     }
-  }
-  &:hover {
-    background-color: $selection-hover-color;
-    .showing:last-child {
-      flex-flow: nowrap;
-      position: relative;
-      overflow: hidden;
-      white-space: nowrap;
-      background-color: transparent;
-      &:after {
-        content: '';
-        position: absolute;
-        width: 36px;
-        height: 100%;
-        top: 0;
-        right: 0;
-        background-image: -webkit-linear-gradient(right, $selection-hover-color, rgba(255, 255, 255, 0));
-        background-image: -moz-linear-gradient(right, $selection-hover-color, rgba(255, 255, 255, 0));
-        background-image: -ms-linear-gradient(right, $selection-hover-color, rgba(255, 255, 255, 0));
-        background-image: -o-linear-gradient(right, $selection-hover-color, rgba(255, 255, 255, 0));
-        background-image: linear-gradient(to left, $selection-hover-color, rgba(255, 255, 255, 0));
+
+    .channel-display {
+      -moz-user-select: none;
+      -webkit-user-select: none;
+      -ms-user-select: none;
+      user-select: none;
+      -o-user-select: none;
+      cursor: pointer;
+      padding-left: 21px;
+      padding-right: 10px;
+
+      .showing {
+        padding-left: 10px;
+        padding-top: 4px;
+        padding-bottom: 4px;
+
+        &:last-child {
+          flex-flow: nowrap;
+          position: relative;
+          overflow: hidden;
+          white-space: nowrap;
+          background-color: transparent;
+          &:after {
+            content: '';
+            position: absolute;
+            width: 36px;
+            height: 100%;
+            top: 0;
+            right: 0;
+            background-image: -webkit-linear-gradient(
+              right,
+              $dropdown-background-color,
+              rgba($dropdown-background-color, 0)
+            );
+            background-image: -moz-linear-gradient(
+              right,
+              $dropdown-background-color,
+              rgba($dropdown-background-color, 0)
+            );
+            background-image: -ms-linear-gradient(
+              right,
+              $dropdown-background-color,
+              rgba($dropdown-background-color, 0)
+            );
+            background-image: -o-linear-gradient(
+              right,
+              $dropdown-background-color,
+              rgba($dropdown-background-color, 0)
+            );
+            background-image: linear-gradient(to left, $dropdown-background-color, rgba($dropdown-background-color, 0));
+          }
+        }
+
+        .channel-name-text {
+          font-size: 14px;
+          font-weight: normal;
+          color: $font-color;
+          margin: 0;
+          padding: 0;
+
+          &.highlight-search-text {
+            font-weight: bold;
+          }
+        }
+      }
+
+      &:hover {
+        background-color: $dropdown-item-hover-background;
+        .showing:last-child {
+          &:after {
+            background-image: -webkit-linear-gradient(
+              right,
+              $dropdown-item-hover-background,
+              rgba($dropdown-background-color, 0)
+            );
+            background-image: -moz-linear-gradient(
+              right,
+              $dropdown-item-hover-background,
+              rgba($dropdown-background-color, 0)
+            );
+            background-image: -ms-linear-gradient(
+              right,
+              $dropdown-item-hover-background,
+              rgba($dropdown-background-color, 0)
+            );
+            background-image: -o-linear-gradient(
+              right,
+              $dropdown-item-hover-background,
+              rgba($dropdown-background-color, 0)
+            );
+            background-image: linear-gradient(
+              to left,
+              $dropdown-item-hover-background,
+              rgba($dropdown-background-color, 0)
+            );
+          }
+        }
       }
     }
-  }
-}
 
-:host .hide-channels,
-mgt-teams-channel-picker .hide-channels {
-  display: none;
-}
+    .search-error-text,
+    .loading-text {
+      font-family: Segoe UI;
+      font-style: normal;
+      font-weight: 600;
+      font-size: 14px;
+      color: $font-color;
+      line-height: 19px;
+      text-align: center;
+      color: #232222;
+    }
 
-:host .channel-name-text,
-mgt-teams-channel-picker .channel-name-text {
-  font-size: 14px;
-  font-weight: normal;
-  color: $font-color;
-  margin: 0;
-  padding: 0;
-}
-
-:host .input-search,
-mgt-teams-channel-picker .input-search {
-  margin: 7px 2px 0px 0px;
-}
-:host .input-search-start,
-mgt-teams-channel-picker .input-search-start {
-  margin: 7px 3px 0px 0px;
-  line-height: normal;
-  margin-inline-start: 0px;
-  margin-inline-end: 0px;
-}
-
-:host .teams-channel-picker-input,
-mgt-teams-channel-picker .teams-channel-picker-input {
-  .search-icon {
-    padding-top: 9px;
-    padding-left: 9px;
-  }
-  display: flex;
-  order: 2;
-  background-color: $input-background-color;
-  font-size: 14px;
-  color: $font-color;
-  line-height: 19px;
-  cursor: text;
-  padding-bottom: 5px;
-  border: $input-border;
-  border-bottom: $input-border-bottom;
-  border-left: $input-border-left;
-  border-top: $input-border-top;
-  border-right: $input-border-right;
-  &.hovered {
-    border-color: $input-hover-color;
-  }
-  &.focused {
-    border-color: $input-focus-color;
-  }
-}
-
-:host .search-error-text,
-:host .loading-text,
-mgt-teams-channel-picker .search-error-text,
-mgt-teams-channel-picker .loading-text {
-  font-family: Segoe UI;
-  font-style: normal;
-  font-weight: 600;
-  font-size: 14px;
-  color: $font-color;
-  line-height: 19px;
-  text-align: center;
-  color: #232222;
-}
-
-:host .SearchErrorIcon,
-mgt-teams-channel-picker .SearchErrorIcon {
-  display: inline-block;
-  font-family: 'FabricMDL2Icons';
-  color: #cf0000;
-}
-
-:host .message-parent,
-mgt-teams-channel-picker .message-parent {
-  padding: 2px;
-  margin-top: 30px;
-  margin-bottom: 30px;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  vertical-align: middle;
-  .spinner {
-    border: 2px solid #c7e0f4; /* Light grey */
-    border-top: 2px solid #0078d4; /* Blue */
-    border-radius: 50%;
-    width: 20px;
-    height: 20px;
-    animation: spin 2s linear infinite;
-  }
-  .loading-text {
-    margin-top: 3px;
-    margin-left: 9px;
-    color: #0078d4;
+    .message-parent {
+      padding: 2px;
+      margin-top: 30px;
+      margin-bottom: 30px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      vertical-align: middle;
+      .spinner {
+        border: 2px solid #c7e0f4; /* Light grey */
+        border-top: 2px solid #0078d4; /* Blue */
+        border-radius: 50%;
+        width: 20px;
+        height: 20px;
+        animation: spin 2s linear infinite;
+      }
+      .loading-text {
+        margin-top: 3px;
+        margin-left: 9px;
+        color: #0078d4;
+      }
+    }
   }
 }
 
@@ -549,9 +410,4 @@ mgt-teams-channel-picker .message-parent {
   100% {
     transform: rotate(360deg);
   }
-}
-
-:host .highlight-search-text,
-mgt-teams-channel-picker .highlight-search-text {
-  font-weight: bold;
 }
