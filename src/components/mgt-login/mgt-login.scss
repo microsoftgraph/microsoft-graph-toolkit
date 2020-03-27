@@ -64,6 +64,10 @@ mgt-login .login-button {
     opacity: 0.4;
     pointer-events: none;
   }
+
+  &.no-click {
+    pointer-events: none;
+  }
 }
 
 :host .login-icon,
