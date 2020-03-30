@@ -240,21 +240,13 @@ export class MgtTeamsChannelPicker extends MgtTemplatedComponent {
         this.requestStateUpdate();
       }
 
-      let foundChannel: ChannelPickerItemState;
-
-      compareItem: for (const item of this._treeViewState) {
-        compareChannel: for (const channel of item.channels) {
-          if (channel.item.id !== channelId) {
-            continue compareChannel;
-          } else {
-            foundChannel = channel;
+      for (const item of this._treeViewState) {
+        for (const channel of item.channels) {
+          if (channel.item.id === channelId) {
+            this.selectChannel(channel);
+            return true;
           }
-          continue compareItem;
         }
-      }
-      if (foundChannel) {
-        this.selectChannel(foundChannel);
-        return true;
       }
     }
     return false;
