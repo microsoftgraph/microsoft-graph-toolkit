@@ -5,7 +5,7 @@
  * -------------------------------------------------------------------------------------------
  */
 
-import { customElement, html, LitElement, property, PropertyValues, TemplateResult } from 'lit-element';
+import { customElement, html, LitElement, property, PropertyValues, query, TemplateResult } from 'lit-element';
 import { classMap } from 'lit-html/directives/class-map';
 import { getSegmentAwareWindow, isWindowSegmentAware, IWindowSegment } from '../../../utils/WindowSegmentHelpers';
 import { styles } from './mgt-flyout-css';
@@ -28,7 +28,7 @@ export class MgtFlyout extends LitElement {
   }
 
   /**
-   * Gets or sets whether the flyout is light dismissable.
+   * Gets or sets whether the flyout is light dismissible.
    *
    * @type {boolean}
    * @memberof MgtFlyout
@@ -53,21 +53,48 @@ export class MgtFlyout extends LitElement {
     return this._isOpen;
   }
   public set isOpen(value: boolean) {
-    if (this._isOpen === value) {
+    const oldValue = this._isOpen;
+    if (oldValue === value) {
       return;
     }
+
     this._isOpen = value;
-    this.setupWindowEvents(value);
-    this.requestUpdate('isOpen');
+
+    window.requestAnimationFrame(() => {
+      this.setupWindowEvents(this.isOpen);
+      const flyout = this._flyout;
+      if (!this.isOpen && flyout) {
+        // reset style for next update
+        flyout.style.width = null;
+        flyout.style.setProperty('--mgt-flyout-set-width', null);
+        flyout.style.height = null;
+        flyout.style.top = null;
+        flyout.style.left = null;
+        flyout.style.bottom = null;
+      }
+    });
+
+    this.requestUpdate('isOpen', oldValue);
     this.dispatchEvent(new Event(value ? 'opened' : 'closed'));
   }
+
+  // Minimum distance to render from window edge
+  private _edgePadding: number = 24;
+
+  // if the flyout is opened once, this will keep the flyout in the dom
+  private _renderedOnce = false;
+
+  @query('.flyout') private _flyout: HTMLElement;
+  @query('.anchor') private _anchor: HTMLElement;
 
   private _isOpen: boolean;
 
   constructor() {
     super();
+
     this.handleWindowEvent = this.handleWindowEvent.bind(this);
-    this.handleWindowClickEvent = this.handleWindowClickEvent.bind(this);
+    this.handleResize = this.handleResize.bind(this);
+    this.handleKeyUp = this.handleKeyUp.bind(this);
   }
 
   /**
@@ -105,7 +132,10 @@ export class MgtFlyout extends LitElement {
    */
   protected updated(changedProps: PropertyValues) {
     super.updated(changedProps);
-    this.updateFlyout();
+
+    window.requestAnimationFrame(() => {
+      this.updateFlyout();
+    });
   }
 
   /**
@@ -114,22 +144,29 @@ export class MgtFlyout extends LitElement {
    * trigger the element to update.
    */
   protected render() {
-    const anchorTemplate = this.renderAnchor();
-    const flyoutTemplate = this.isOpen ? this.renderFlyout() : null;
-
     const flyoutClasses = {
-      flyout: true,
+      root: true,
       visible: this.isOpen
     };
 
+    const anchorTemplate = this.renderAnchor();
+    let flyoutTemplate = null;
+
+    if (this.isOpen || this._renderedOnce) {
+      this._renderedOnce = true;
+      flyoutTemplate = html`
+        <div class="flyout" @wheel=${this.handleFlyoutWheel}>
+          ${this.renderFlyout()}
+        </div>
+      `;
+    }
+
     return html`
-      <div class="root">
+      <div class=${classMap(flyoutClasses)}>
         <div class="anchor">
           ${anchorTemplate}
         </div>
-        <div class=${classMap(flyoutClasses)}>
-          ${flyoutTemplate}
-        </div>
+        ${flyoutTemplate}
       </div>
     `;
   }
@@ -161,35 +198,34 @@ export class MgtFlyout extends LitElement {
       return;
     }
 
-    const anchor = this.renderRoot.querySelector('.anchor');
-    const flyout = this.renderRoot.querySelector('.flyout') as HTMLElement;
+    const anchor = this._anchor;
+    const flyout = this._flyout;
+
     if (flyout && anchor) {
-      let left: number;
+      const windowWidth =
+        window.innerWidth && document.documentElement.clientWidth
+          ? Math.min(window.innerWidth, document.documentElement.clientWidth)
+          : window.innerWidth || document.documentElement.clientWidth;
+
+      const windowHeight =
+        window.innerHeight && document.documentElement.clientHeight
+          ? Math.min(window.innerHeight, document.documentElement.clientHeight)
+          : window.innerHeight || document.documentElement.clientHeight;
+
+      let left: number = 0;
       let bottom: number;
-      let top: number;
+      let top: number = 0;
+      let height: number;
+      let width: number;
 
-      // Pre-calculations
-      const documentClientHeight = document.documentElement.clientHeight;
-      const innerHeight =
-        window.innerHeight && documentClientHeight
-          ? Math.min(window.innerHeight, documentClientHeight)
-          : window.innerHeight || documentClientHeight;
-
-      const documentClientWidth = document.documentElement.clientWidth;
-      const innerWidth =
-        window.innerWidth && documentClientWidth
-          ? Math.min(window.innerWidth, documentClientWidth)
-          : window.innerWidth || documentClientWidth;
-
+      const flyoutRect = flyout.getBoundingClientRect();
       const anchorRect = anchor.getBoundingClientRect();
-      const anchorCenterX = anchorRect.left + anchorRect.width / 2;
-      const anchorCenterY = anchorRect.top + anchorRect.height / 2;
 
       const windowRect: IWindowSegment = {
-        height: 0,
+        height: windowHeight,
         left: 0,
         top: 0,
-        width: 0
+        width: windowWidth
       };
 
       if (isWindowSegmentAware()) {
@@ -197,88 +233,106 @@ export class MgtFlyout extends LitElement {
         const screenSegments = segmentAwareWindow.getWindowSegments();
 
         let anchorSegment: IWindowSegment;
+
+        const anchorCenterX = anchorRect.left + anchorRect.width / 2;
+        const anchorCenterY = anchorRect.top + anchorRect.height / 2;
+
         for (const segment of screenSegments) {
           if (anchorCenterX >= segment.left && anchorCenterY >= segment.top) {
             anchorSegment = segment;
+            break;
           }
         }
 
-        windowRect.left = anchorSegment.left;
-        windowRect.top = anchorSegment.top;
-        windowRect.width = anchorSegment.width;
-        windowRect.height = anchorSegment.height;
-      } else {
-        windowRect.height = innerHeight;
-        windowRect.width = innerWidth;
-      }
-
-      // normalize flyoutrect since we could have moved it before
-      // need to know where would it render, not where it renders
-      const flyoutWidth = flyout.scrollWidth;
-      const flyoutHeight = flyout.scrollHeight;
-      const flyoutTop = anchorRect.bottom;
-      const flyoutLeft = anchorRect.left;
-      const flyoutRight = flyoutLeft + flyoutWidth;
-      const flyoutBottom = flyoutTop + flyoutHeight;
-
-      // Rules of alignment:
-      // 1. Center if possible
-      // 2. Don't cross screen boundaries.
-
-      if (flyoutWidth > windowRect.width) {
-        // page width is smaller than flyout, render all the way to the left
-        left = -anchorRect.left;
-      } else if (Math.floor(anchorRect.width) >= flyoutWidth) {
-        // anchor is larger than flyout, render aligned to anchor
-        left = anchorRect.left;
-      } else {
-        const centerOffset = Math.floor(flyoutWidth / 2 - anchorRect.width / 2);
-
-        if (anchorRect.left - centerOffset < windowRect.left) {
-          // centered flyout is off screen to the left, render on the left edge
-          left = windowRect.left - anchorRect.left;
-        } else if (flyoutRight - centerOffset > windowRect.width) {
-          // centered flyout is off screen to the right, render on the right edge
-          left =
-            -centerOffset * 2 -
-            (anchorRect.left +
-              Math.floor(anchorRect.width) -
-              Math.min(windowRect.left + windowRect.width, innerWidth)) -
-            1;
-        } else {
-          // render centered
-          left = -centerOffset;
+        if (anchorSegment) {
+          windowRect.left = anchorSegment.left;
+          windowRect.top = anchorSegment.top;
+          windowRect.width = anchorSegment.width;
+          windowRect.height = anchorSegment.height;
         }
       }
 
-      if (flyoutHeight > windowRect.height || (windowRect.height < flyoutBottom && anchorRect.top < flyoutHeight)) {
-        top = -flyoutTop + anchorRect.height;
-      } else if (windowRect.height < flyoutBottom) {
-        bottom = anchorRect.height;
+      if (flyoutRect.width + 2 * this._edgePadding > windowRect.width) {
+        if (flyoutRect.width > windowRect.width) {
+          // flyout is wider than the window
+          width = windowRect.width;
+          left = 0;
+        } else {
+          // center in between
+          left = (windowRect.width - flyoutRect.width) / 2;
+        }
+      } else if (anchorRect.x + flyoutRect.width + this._edgePadding > windowRect.width) {
+        // it will render off screen to the right, move to the left
+        left = anchorRect.x - (anchorRect.x + flyoutRect.width + this._edgePadding - windowRect.width);
+      } else if (anchorRect.x < this._edgePadding) {
+        // it will render off screen to the left, move to the right
+        left = this._edgePadding;
+      } else {
+        left = anchorRect.x;
       }
 
-      flyout.style.left = typeof left !== 'undefined' ? `${left}px` : '';
-      flyout.style.bottom = typeof bottom !== 'undefined' ? `${bottom}px` : '';
-      flyout.style.top = typeof top !== 'undefined' ? `${top}px` : '';
+      if (flyoutRect.height + 2 * this._edgePadding > windowRect.height) {
+        if (flyoutRect.height >= windowRect.height) {
+          height = windowRect.height;
+          top = 0;
+        } else {
+          top = (windowRect.height - flyoutRect.height) / 2;
+        }
+      } else if (
+        anchorRect.y + anchorRect.height + flyoutRect.height + this._edgePadding > windowRect.height &&
+        anchorRect.y - flyoutRect.height - this._edgePadding > 0
+      ) {
+        if (windowRect.height - anchorRect.y + flyoutRect.height < 0) {
+          bottom = windowRect.height - flyoutRect.height - this._edgePadding;
+        } else {
+          bottom = Math.max(windowRect.height - anchorRect.y, this._edgePadding);
+        }
+      } else {
+        if (anchorRect.y + anchorRect.height + flyoutRect.height + this._edgePadding > windowRect.height) {
+          // it will render offscreen bellow, move it up a bit
+          top = windowRect.height - flyoutRect.height - this._edgePadding;
+        } else {
+          top = Math.max(anchorRect.y + anchorRect.height, this._edgePadding);
+        }
+      }
+
+      flyout.style.left = `${left + windowRect.left}px`;
+
+      if (typeof bottom !== 'undefined') {
+        flyout.style.top = 'unset';
+        flyout.style.bottom = `${bottom}px`;
+      } else {
+        flyout.style.bottom = 'unset';
+        flyout.style.top = `${top + windowRect.top}px`;
+      }
+
+      flyout.style.height = height ? `${height}px` : null;
+
+      if (width) {
+        // if we had to set the width, recalculate since the height could have changed
+        flyout.style.width = `${width}px`;
+        flyout.style.setProperty('--mgt-flyout-set-width', `${width}px`);
+        window.requestAnimationFrame(() => this.updateFlyout());
+      }
     }
   }
 
-  private setupWindowEvents(isOpen: boolean): void {
+  private setupWindowEvents(isOpen: boolean) {
     if (isOpen && this.isLightDismiss) {
-      window.addEventListener('click', this.handleWindowClickEvent, true);
-      window.addEventListener('resize', this.handleWindowEvent);
+      window.addEventListener('wheel', this.handleWindowEvent);
+      window.addEventListener('pointerdown', this.handleWindowEvent);
+      window.addEventListener('resize', this.handleResize);
+      window.addEventListener('keyup', this.handleKeyUp);
     } else {
-      window.removeEventListener('click', this.handleWindowClickEvent, true);
-      window.removeEventListener('resize', this.handleWindowEvent);
+      window.removeEventListener('wheel', this.handleWindowEvent);
+      window.removeEventListener('pointerdown', this.handleWindowEvent);
+      window.removeEventListener('resize', this.handleResize);
+      window.removeEventListener('keyup', this.handleKeyUp);
     }
   }
 
-  private handleWindowEvent(e: Event): void {
-    this.close();
-  }
-
-  private handleWindowClickEvent(e: Event): void {
-    const flyout = this.renderRoot.querySelector('.flyout');
+  private handleWindowEvent(e: Event) {
+    const flyout = this._flyout;
 
     if (flyout) {
       // IE
@@ -298,6 +352,20 @@ export class MgtFlyout extends LitElement {
       }
     }
 
-    this.handleWindowEvent(e);
+    this.close();
+  }
+
+  private handleResize(e: Event) {
+    this.close();
+  }
+
+  private handleKeyUp(e: KeyboardEvent) {
+    if (e.key === 'Escape') {
+      this.close();
+    }
+  }
+
+  private handleFlyoutWheel(e: Event) {
+    e.preventDefault();
   }
 }
