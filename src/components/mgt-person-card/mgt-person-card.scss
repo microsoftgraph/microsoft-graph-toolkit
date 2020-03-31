@@ -14,9 +14,8 @@ $color: var(--color, #{$ms-color-neutralDark});
 
 :host .root {
   position: relative;
-  width: 340px;
+  width: var(--mgt-flyout-set-width, 340px);
   background: #ffffff;
-  box-shadow: 0px 0px 4.55172px rgba(0, 0, 0, 0.16);
   font-family: var(--default-font-family);
 
   .person-details-container {
