@@ -13,7 +13,8 @@ import { getUsersForUserIds } from '../../graph/graph.user';
 import { Providers } from '../../Providers';
 import { ProviderState } from '../../providers/IProvider';
 import '../../styles/fabric-icon-font';
-import '../mgt-person/mgt-person';
+import { arraysAreEqual } from '../../utils/Utils';
+import { IDynamicPerson } from '../mgt-person/mgt-person';
 import { MgtTemplatedComponent } from '../templatedComponent';
 import { PersonCardInteraction } from './../PersonCardInteraction';
 import { styles } from './mgt-people-css';
@@ -39,6 +40,47 @@ export class MgtPeople extends MgtTemplatedComponent {
   }
 
   /**
+   * determines if agenda events come from specific group
+   * @type {string}
+   */
+  @property({
+    attribute: 'group-id',
+    type: String
+  })
+  public get groupId(): string {
+    return this._groupId;
+  }
+  public set groupId(value) {
+    if (this._groupId === value) {
+      return;
+    }
+    this._groupId = value;
+    this.requestStateUpdate(true);
+  }
+
+  /**
+   * user id array
+   *
+   * @memberof MgtPeople
+   */
+  @property({
+    attribute: 'user-ids',
+    converter: (value, type) => {
+      return value.split(',').map(v => v.trim());
+    }
+  })
+  public get userIds(): string[] {
+    return this._userIds;
+  }
+  public set userIds(value: string[]) {
+    if (arraysAreEqual(this._userIds, value)) {
+      return;
+    }
+    this._userIds = value;
+    this.requestStateUpdate(true);
+  }
+
+  /**
    * containing array of people used in the component.
    * @type {Array<MgtPersonDetails>}
    */
@@ -46,7 +88,7 @@ export class MgtPeople extends MgtTemplatedComponent {
     attribute: 'people',
     type: Object
   })
-  public people: Array<MicrosoftGraph.User | MicrosoftGraph.Person | MicrosoftGraph.Contact>;
+  public people: IDynamicPerson[];
 
   /**
    * developer determined max people shown in component
@@ -57,37 +99,6 @@ export class MgtPeople extends MgtTemplatedComponent {
     type: Number
   })
   public showMax: number;
-
-  /**
-   * determines if agenda events come from specific group
-   * @type {string}
-   */
-  @property({
-    attribute: 'group-id',
-    type: String
-  })
-  public groupId: string;
-
-  /**
-   * user id array
-   *
-   * @memberof MgtPeople
-   */
-  @property({
-    attribute: 'user-ids',
-    converter: (value, type) => {
-      return value.split(',');
-    }
-  })
-  public get userIds(): string[] {
-    return this.privateUserIds;
-  }
-  public set userIds(value: string[]) {
-    const oldValue = this.userIds;
-    this.privateUserIds = value;
-    this.updateUserIds(value);
-    this.requestUpdate('userIds', oldValue);
-  }
 
   /**
    * Sets how the person-card is invoked
@@ -109,12 +120,27 @@ export class MgtPeople extends MgtTemplatedComponent {
   })
   public personCardInteraction: PersonCardInteraction = PersonCardInteraction.hover;
 
-  private privateUserIds: string[];
+  private _groupId: string;
+  private _userIds: string[];
 
   constructor() {
     super();
 
     this.showMax = 3;
+  }
+
+  /**
+   * Request to reload the state.
+   * Use reload instead of load to ensure loading events are fired.
+   *
+   * @protected
+   * @memberof MgtBaseComponent
+   */
+  protected requestStateUpdate(force?: boolean) {
+    if (force) {
+      this.people = null;
+    }
+    return super.requestStateUpdate(force);
   }
 
   /**
@@ -248,36 +274,6 @@ export class MgtPeople extends MgtTemplatedComponent {
           this.people = await getPeople(graph);
         }
       }
-    }
-  }
-
-  private async updateUserIds(newIds: string[]) {
-    if (this.isLoadingState) {
-      return;
-    }
-
-    const newIdsSet = new Set(newIds);
-    this.people = this.people ? this.people.filter(p => newIdsSet.has(p.id)) : [];
-    const oldIdsSet = new Set(this.people ? this.people.map(p => p.id) : []);
-
-    const newToLoad = [];
-
-    for (const id of newIds) {
-      if (!oldIdsSet.has(id)) {
-        newToLoad.push(id);
-      }
-    }
-
-    if (newToLoad && newToLoad.length > 0) {
-      const provider = Providers.globalProvider;
-      if (!provider || provider.state !== ProviderState.SignedIn) {
-        return;
-      }
-
-      const graph = provider.graph.forComponent(this);
-
-      const newPeople = await getUsersForUserIds(graph, newToLoad);
-      this.people = (this.people || []).concat(newPeople);
     }
   }
 }
