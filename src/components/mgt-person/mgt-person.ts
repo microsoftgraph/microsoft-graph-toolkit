@@ -486,8 +486,6 @@ export class MgtPerson extends MgtTemplatedComponent {
       const person = await getUserWithPhoto(graph, this.userId);
 
       this.personDetails = person;
-      this.personDetails.personImage = person.personImage;
-
       this.personImage = this.getImage();
       return;
     }
