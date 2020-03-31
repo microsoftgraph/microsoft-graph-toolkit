@@ -9,7 +9,7 @@ import * as MicrosoftGraph from '@microsoft/microsoft-graph-types';
 import { customElement, html, property, TemplateResult } from 'lit-element';
 import { findPerson, findUserByEmail, getEmailFromGraphEntity } from '../../graph/graph.people';
 import { getContactPhoto, getUserPhoto, myPhoto } from '../../graph/graph.photos';
-import { getMe, getUser } from '../../graph/graph.user';
+import { getUserWithPhoto } from '../../graph/graph.user';
 import { Providers } from '../../Providers';
 import { ProviderState } from '../../providers/IProvider';
 import { getSvg, SvgIcon } from '../../utils/SvgHelper';
@@ -128,8 +128,20 @@ export class MgtPersonCard extends MgtTemplatedComponent {
   public attributeChangedCallback(name: string, oldValue: string, newValue: string) {
     super.attributeChangedCallback(name, oldValue, newValue);
 
-    if (name === 'is-expanded' && oldValue !== newValue) {
+    if (oldValue === newValue) {
+      return;
+    }
+
+    if (name === 'is-expanded') {
       this.isExpanded = false;
+    }
+
+    switch (name) {
+      case 'person-query':
+      case 'user-id':
+        this.personDetails = null;
+        this.requestStateUpdate();
+        break;
     }
   }
 
@@ -486,19 +498,10 @@ export class MgtPersonCard extends MgtTemplatedComponent {
       // Use userId or 'me' query to get the person and image
       if (this.userId || this.personQuery === 'me') {
         const graph = provider.graph.forComponent(this);
-        let person = null;
-        let photo = null;
-
-        if (this.userId) {
-          person = await getUser(graph, this.userId);
-          photo = await getUserPhoto(graph, this.userId);
-        } else {
-          person = await getMe(graph);
-          photo = await myPhoto(graph);
-        }
+        const person = await getUserWithPhoto(graph, this.userId);
 
         this.personDetails = person;
-        this.personDetails.personImage = photo;
+        this.personDetails.personImage = person.personImage;
 
         this.personImage = this.getImage();
         return;

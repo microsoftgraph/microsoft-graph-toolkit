@@ -10,7 +10,7 @@ import { customElement, html, property, TemplateResult } from 'lit-element';
 import { classMap } from 'lit-html/directives/class-map';
 import { findPerson, findUserByEmail, getEmailFromGraphEntity } from '../../graph/graph.people';
 import { getContactPhoto, getUserPhoto, myPhoto } from '../../graph/graph.photos';
-import { getMe, getUser } from '../../graph/graph.user';
+import { getUserWithPhoto } from '../../graph/graph.user';
 import { Providers } from '../../Providers';
 import { ProviderState } from '../../providers/IProvider';
 import '../../styles/fabric-icon-font';
@@ -503,19 +503,10 @@ export class MgtPerson extends MgtTemplatedComponent {
     // Use userId or 'me' query to get the person and image
     if (this.userId || this.personQuery === 'me') {
       const graph = provider.graph.forComponent(this);
-      let person = null;
-      let photo = null;
-
-      if (this.userId) {
-        person = await getUser(graph, this.userId);
-        photo = await getUserPhoto(graph, this.userId);
-      } else {
-        person = await getMe(graph);
-        photo = await myPhoto(graph);
-      }
+      const person = await getUserWithPhoto(graph, this.userId);
 
       this.personDetails = person;
-      this.personDetails.personImage = photo;
+      this.personDetails.personImage = person.personImage;
 
       this.personImage = this.getImage();
       return;

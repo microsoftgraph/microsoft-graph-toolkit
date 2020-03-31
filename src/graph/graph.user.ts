@@ -6,6 +6,7 @@
  */
 
 import { User } from '@microsoft/microsoft-graph-types';
+import { IDynamicPerson } from '../components/mgt-person/mgt-person';
 import { IGraph } from '../IGraph';
 import { prepScopes } from '../utils/GraphHelpers';
 
@@ -16,15 +17,36 @@ import { prepScopes } from '../utils/GraphHelpers';
  * @memberof Graph
  */
 export async function getMe(graph: IGraph): Promise<User> {
-  const batch = graph.createBatch();
-  batch.get('user', 'me', ['user.read']);
+  return graph
+    .api('me')
+    .middlewareOptions(prepScopes('user.read'))
+    .get();
+}
 
-  try {
-    const response = await batch.execute();
-    return response.user;
-  } catch {
-    return null;
+/**
+ * asnyc promise, returns IDynamicPerson
+ *
+ * @param {string} userId
+ * @returns {(Promise<IDynamicPerson>)}
+ * @memberof Graph
+ */
+
+export async function getUserWithPhoto(graph: IGraph, userId?: string): Promise<IDynamicPerson> {
+  const batch = graph.createBatch();
+  let person = null as IDynamicPerson;
+
+  if (userId) {
+    batch.get('user', `/users/${this.userId}`, ['user.readbasic.all']);
+    batch.get('photo', `users/${this.userId}/photo/$value`, ['user.readbasic.all']);
+  } else {
+    batch.get('user', 'me', ['user.read']);
+    batch.get('photo', 'me/photo/$value', ['user.read']);
   }
+  const response = await batch.execute();
+  person = response.user;
+  person.personImage = response.photo;
+
+  return person;
 }
 
 /**

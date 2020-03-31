@@ -21,11 +21,11 @@ export default {
   parameters: { options: { selectedPanel: 'storybookjs/knobs/panel' } }
 };
 
-export const personCard_hover = () => html`
+export const personCard = () => html`
   <mgt-person-card person-query="me"></mgt-person-card>
 `;
 
-export const personCard_inheritDetails = () => html`
+export const personCardInheritDetails = () => html`
   <style>
     .note {
       margin: 2em 0 0 1em;
