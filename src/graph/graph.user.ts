@@ -15,11 +15,16 @@ import { prepScopes } from '../utils/GraphHelpers';
  * @returns {(Promise<User>)}
  * @memberof Graph
  */
-export function getMe(graph: IGraph): Promise<User> {
-  return graph
-    .api('me')
-    .middlewareOptions(prepScopes('user.read'))
-    .get();
+export async function getMe(graph: IGraph): Promise<User> {
+  const batch = graph.createBatch();
+  batch.get('user', 'me', ['user.read']);
+
+  try {
+    const response = await batch.execute();
+    return response.user;
+  } catch {
+    return null;
+  }
 }
 
 /**
@@ -38,7 +43,7 @@ export function getUser(graph: IGraph, userPrincipleName: string): Promise<User>
 }
 
 /**
- * Returns a Promise of Graph Users array associated with the user ids arrau
+ * Returns a Promise of Graph Users array associated with the user ids array
  *
  * @export
  * @param {IGraph} graph

@@ -8,8 +8,9 @@
 import * as MicrosoftGraph from '@microsoft/microsoft-graph-types';
 import { customElement, html, property, TemplateResult } from 'lit-element';
 import { classMap } from 'lit-html/directives/class-map';
-import { findPerson, getEmailFromGraphEntity } from '../../graph/graph.people';
-import { getContactPhoto, getUserPhoto } from '../../graph/graph.photos';
+import { findPerson, findUserByEmail, getEmailFromGraphEntity } from '../../graph/graph.people';
+import { getContactPhoto, getUserPhoto, myPhoto } from '../../graph/graph.photos';
+import { getMe, getUser } from '../../graph/graph.user';
 import { Providers } from '../../Providers';
 import { ProviderState } from '../../providers/IProvider';
 import '../../styles/fabric-icon-font';
@@ -18,7 +19,6 @@ import '../sub-components/mgt-flyout/mgt-flyout';
 import { MgtTemplatedComponent } from '../templatedComponent';
 import { PersonCardInteraction } from './../PersonCardInteraction';
 import { styles } from './mgt-person-css';
-import { findUserByEmail } from './mgt-person.graph';
 
 /**
  * IDynamicPerson describes the person object we use throughout mgt-person,
@@ -500,22 +500,22 @@ export class MgtPerson extends MgtTemplatedComponent {
       return;
     }
 
-    // User userId or 'me' query to get the person and image
+    // Use userId or 'me' query to get the person and image
     if (this.userId || this.personQuery === 'me') {
       const graph = provider.graph.forComponent(this);
-      const batch = graph.createBatch();
+      let person = null;
+      let photo = null;
 
       if (this.userId) {
-        batch.get('user', `/users/${this.userId}`, ['user.readbasic.all']);
-        batch.get('photo', `users/${this.userId}/photo/$value`, ['user.readbasic.all']);
+        person = await getUser(graph, this.userId);
+        photo = await getUserPhoto(graph, this.userId);
       } else {
-        batch.get('user', 'me', ['user.read']);
-        batch.get('photo', 'me/photo/$value', ['user.read']);
+        person = await getMe(graph);
+        photo = await myPhoto(graph);
       }
 
-      const response = await batch.execute();
-      this.personDetails = response.user;
-      this.personDetails.personImage = response.photo;
+      this.personDetails = person;
+      this.personDetails.personImage = photo;
 
       this.personImage = this.getImage();
       return;

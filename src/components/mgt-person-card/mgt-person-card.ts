@@ -7,7 +7,9 @@
 
 import * as MicrosoftGraph from '@microsoft/microsoft-graph-types';
 import { customElement, html, property, TemplateResult } from 'lit-element';
-import { getEmailFromGraphEntity } from '../../graph/graph.people';
+import { findPerson, findUserByEmail, getEmailFromGraphEntity } from '../../graph/graph.people';
+import { getContactPhoto, getUserPhoto, myPhoto } from '../../graph/graph.photos';
+import { getMe, getUser } from '../../graph/graph.user';
 import { Providers } from '../../Providers';
 import { ProviderState } from '../../providers/IProvider';
 import { getSvg, SvgIcon } from '../../utils/SvgHelper';
@@ -37,6 +39,23 @@ export class MgtPersonCard extends MgtTemplatedComponent {
   static get styles() {
     return styles;
   }
+  /**
+   * allows developer to define name of person for component
+   * @type {string}
+   */
+  @property({
+    attribute: 'person-query'
+  })
+  public personQuery: string;
+
+  /**
+   * user-id property allows developer to use id value for component
+   * @type {string}
+   */
+  @property({
+    attribute: 'user-id'
+  })
+  public userId: string;
 
   /**
    * Set the person details to render
@@ -217,7 +236,7 @@ export class MgtPersonCard extends MgtTemplatedComponent {
   }
 
   /**
-   * foo
+   * Render person title.
    *
    * @protected
    * @param {IDynamicPerson} person
@@ -235,7 +254,7 @@ export class MgtPersonCard extends MgtTemplatedComponent {
   }
 
   /**
-   * foo
+   * Render person subtitle.
    *
    * @protected
    * @param {IDynamicPerson} person
@@ -323,7 +342,7 @@ export class MgtPersonCard extends MgtTemplatedComponent {
   }
 
   /**
-   * foo
+   * Render expanded details.
    *
    * @protected
    * @param {IDynamicPerson} [person]
@@ -443,6 +462,16 @@ export class MgtPersonCard extends MgtTemplatedComponent {
    * @memberof MgtPersonCard
    */
   protected async loadState() {
+    const provider = Providers.globalProvider;
+
+    if (!provider || provider.state !== ProviderState.SignedIn) {
+      return;
+    }
+
+    if (this.personDetails) {
+      return;
+    }
+
     if (this.inheritDetails) {
       let parent = this.parentElement;
       while (parent && parent.tagName !== 'MGT-PERSON') {
@@ -453,15 +482,41 @@ export class MgtPersonCard extends MgtTemplatedComponent {
         this.personDetails = (parent as MgtPerson).personDetails;
         this.personImage = (parent as MgtPerson).personImage;
       }
-    }
+    } else {
+      // Use userId or 'me' query to get the person and image
+      if (this.userId || this.personQuery === 'me') {
+        const graph = provider.graph.forComponent(this);
+        let person = null;
+        let photo = null;
 
-    if (this.personDetails) {
-      return;
-    }
+        if (this.userId) {
+          person = await getUser(graph, this.userId);
+          photo = await getUserPhoto(graph, this.userId);
+        } else {
+          person = await getMe(graph);
+          photo = await myPhoto(graph);
+        }
 
-    const provider = Providers.globalProvider;
-    if (!provider || provider.state !== ProviderState.SignedIn) {
-      return;
+        this.personDetails = person;
+        this.personDetails.personImage = photo;
+
+        this.personImage = this.getImage();
+        return;
+      }
+
+      // Use the personQuery to find our person.
+      if (this.personQuery) {
+        const graph = provider.graph.forComponent(this);
+        const people = await findPerson(graph, this.personQuery);
+
+        if (people && people.length) {
+          this.personDetails = people[0];
+
+          if (this.personImage === '@') {
+            this.loadImage();
+          }
+        }
+      }
     }
   }
 
@@ -540,6 +595,45 @@ export class MgtPersonCard extends MgtTemplatedComponent {
       );
     }
     this.isExpanded = true;
+  }
+
+  private async loadImage() {
+    const provider = Providers.globalProvider;
+    const graph = provider.graph.forComponent(this);
+    const person = this.personDetails;
+    let image: string;
+
+    if ((person as MicrosoftGraph.Person).userPrincipalName) {
+      // try to find a user by userPrincipalName
+      const userPrincipalName = (person as MicrosoftGraph.Person).userPrincipalName;
+      image = await getUserPhoto(graph, userPrincipalName);
+    } else {
+      // try to find a user by e-mail
+      const email = getEmailFromGraphEntity(person);
+      if (email) {
+        const users = await findUserByEmail(graph, email);
+        if (users && users.length) {
+          // Check for an OrganizationUser
+          const orgUser = users.find(p => {
+            return (p as any).personType && (p as any).personType.subclass === 'OrganizationUser';
+          });
+          if (orgUser) {
+            // Lookup by userId
+            const userId = (users[0] as MicrosoftGraph.Person).scoredEmailAddresses[0].address;
+            image = await getUserPhoto(graph, userId);
+          } else {
+            // Lookup by contactId
+            const contactId = users[0].id;
+            image = await getContactPhoto(graph, contactId);
+          }
+        }
+      }
+    }
+
+    if (image) {
+      this.personDetails.personImage = image;
+      this.personImage = image;
+    }
   }
 
   private getImage(): string {
