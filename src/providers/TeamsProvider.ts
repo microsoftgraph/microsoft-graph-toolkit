@@ -131,6 +131,21 @@ export class TeamsProvider extends MsalProvider {
   public static microsoftTeamsLib;
 
   /**
+   * Execute a deeplink against the Teams lib.
+   *
+   * @static
+   * @param {string} deeplink
+   * @param {(status: boolean, reason?: string) => void} [onComplete]
+   * @memberof TeamsProvider
+   */
+  public static executeDeeplink(deeplink: string, onComplete?: (status: boolean, reason?: string) => void): void {
+    const teams = TeamsProvider.microsoftTeamsLib || microsoftTeams;
+    if (teams) {
+      teams.executeDeeplink(deeplink, onComplete);
+    }
+  }
+
+  /**
    * Handle all authentication redirects in the authentication page and authenticates the user
    *
    * @static

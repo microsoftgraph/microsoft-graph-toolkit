@@ -10,6 +10,7 @@ import { customElement, html, property, TemplateResult } from 'lit-element';
 import { getEmailFromGraphEntity } from '../../graph/graph.people';
 import { Providers } from '../../Providers';
 import { ProviderState } from '../../providers/IProvider';
+import { TeamsProvider } from '../../providers/TeamsProvider';
 import { getSvg, SvgIcon } from '../../utils/SvgHelper';
 import { IDynamicPerson, MgtPerson } from '../mgt-person/mgt-person';
 import { MgtTemplatedComponent } from '../templatedComponent';
@@ -504,7 +505,7 @@ export class MgtPersonCard extends MgtTemplatedComponent {
   }
 
   /**
-   * Initiate a chat message to the user.
+   * Initiate a chat message to the user via deeplink.
    *
    * @protected
    * @memberof MgtPersonCard
@@ -512,9 +513,19 @@ export class MgtPersonCard extends MgtTemplatedComponent {
   protected chatUser() {
     const user = this.personDetails as MicrosoftGraph.User;
     if (user && user.userPrincipalName) {
-      const users: string = [user.userPrincipalName].join(',');
+      const users: string = user.userPrincipalName;
       const url = `https://teams.microsoft.com/l/chat/0/0?users=${users}`;
-      window.open(url, '_blank');
+      const openWindow = () => window.open(url, '_blank');
+
+      if (TeamsProvider.isAvailable) {
+        TeamsProvider.executeDeeplink(url, (status: boolean) => {
+          if (!status) {
+            openWindow();
+          }
+        });
+      } else {
+        openWindow();
+      }
     }
   }
 
