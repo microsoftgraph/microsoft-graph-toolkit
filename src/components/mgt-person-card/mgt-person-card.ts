@@ -490,6 +490,12 @@ export class MgtPersonCard extends MgtTemplatedComponent {
 
     // check if personDetail already populated
     if (this.personDetails) {
+      // in some cases we might only have name or email, but need to find the image
+      // use @ for the image value to search for an image
+      if (this.personImage === '@' && !this.personDetails.personImage) {
+        this.loadImage();
+      }
+
       if (this.personDetails.id) {
         const user = this.personDetails as MicrosoftGraph.User;
         const person = this.personDetails as MicrosoftGraph.Person;
