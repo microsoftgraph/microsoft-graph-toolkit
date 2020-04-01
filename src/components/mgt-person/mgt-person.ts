@@ -569,12 +569,11 @@ export class MgtPerson extends MgtTemplatedComponent {
       person = this.personDetails;
     }
 
-    if (person.initials) {
-      return person.initials;
+    if ((person as MicrosoftGraph.Contact).initials) {
+      return (person as MicrosoftGraph.Contact).initials;
     }
 
     let initials = '';
-
     if (person.givenName) {
       initials += person.givenName[0].toUpperCase();
     }
