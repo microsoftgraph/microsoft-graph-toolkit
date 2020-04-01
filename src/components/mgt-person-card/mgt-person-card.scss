@@ -8,14 +8,20 @@
 @import '../../styles/shared-styles.scss';
 @import '../../../node_modules/office-ui-fabric-core/dist/sass/References';
 
-$font-size: var(--font-size, #{$ms-font-size-m});
-$font-weight: var(--font-weight, #{$ms-font-weight-semibold});
-$color: var(--color, #{$ms-color-neutralDark});
+$person-card-display-name-font-size: var(--person-card-display-name-font-size, 27.3103px);
+$person-card-secondary-title-font-size: var(--person-card-secondary-title-font-size, 18.2069px);
+$person-card-additional-details-title-font-size: var(--person-card-additional-details-title-font-size, 14px);
+$person-card-additional-details-item-font-size: var(--person-card-additional-details-item-font-size, 15px);
+$person-card-display-name-color: var(--person-card-display-name-color, #333333);
+$person-card-secondary-title-color: var(--person-card-secondary-title-color, #767676);
+$person-card-additional-details-title-color: var(--person-card-additional-details-title-color, #000000);
+$person-card-additional-details-item-color: var(--person-card-additional-details-item-color, #201f1e);
+$person-card-background-color: var(--person-card-background-color, #ffffff);
 
 :host .root {
   position: relative;
   width: 340px;
-  background: #ffffff;
+  background: $person-card-background-color;
   box-shadow: 0px 0px 4.55172px rgba(0, 0, 0, 0.16);
   font-family: var(--default-font-family);
 
@@ -32,14 +38,13 @@ $color: var(--color, #{$ms-color-neutralDark});
       line-height: 1.15;
 
       .display-name {
-        font-size: 27.3103px;
-        color: #333333;
+        font-size: $person-card-display-name-font-size;
+        color: $person-card-display-name-color;
       }
 
       .job-title {
-        font-size: 18.2069px;
-        color: #767676;
-        font-weight: 600;
+        font-size: $person-card-secondary-title-font-size;
+        color: $person-card-secondary-title-color;
       }
 
       .department {
@@ -88,15 +93,16 @@ $color: var(--color, #{$ms-color-neutralDark});
       .contact-text {
         margin: 0 0 24px 0;
         font-weight: 600;
-        font-size: 14px;
-        color: #000000;
+        font-size: $person-card-additional-details-title-font-size;
+        color: $person-card-additional-details-title-color;
       }
 
       .icons {
         line-height: normal;
         font-style: normal;
         font-weight: normal;
-        font-size: 15px;
+        font-size: $person-card-additional-details-item-font-size;
+        color: $person-card-additional-details-item-color;
         text-align: left;
 
         .details-icon {
