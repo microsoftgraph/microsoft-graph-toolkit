@@ -20,9 +20,9 @@ $person-card-background-color: var(--person-card-background-color, #ffffff);
 
 :host .root {
   position: relative;
-  width: 340px;
   background: $person-card-background-color;
   box-shadow: 0px 0px 4.55172px rgba(0, 0, 0, 0.16);
+  width: var(--mgt-flyout-set-width, 340px);
   font-family: var(--default-font-family);
 
   .person-details-container {

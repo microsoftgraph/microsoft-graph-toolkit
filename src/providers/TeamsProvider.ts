@@ -7,11 +7,9 @@
 
 import { AuthenticationProviderOptions } from '@microsoft/microsoft-graph-client/lib/es/IAuthenticationProviderOptions';
 import { AuthenticationParameters, Configuration, UserAgentApplication } from 'msal';
+import { TeamsHelper } from '../utils/TeamsHelper';
 import { LoginType, ProviderState } from './IProvider';
 import { MsalProvider } from './MsalProvider';
-
-// tslint:disable-next-line: completed-docs
-declare var microsoftTeams: any;
 
 // tslint:disable-next-line: completed-docs
 declare global {
@@ -108,16 +106,8 @@ export class TeamsProvider extends MsalProvider {
    * @static
    * @memberof TeamsProvider
    */
-  public static get isAvailable() {
-    if (window.parent === window.self && window.nativeInterface) {
-      // In Teams mobile client
-      return true;
-    } else if (window.name === 'embedded-page-container' || window.name === 'extension-tab-frame') {
-      // In Teams web/desktop client
-      return true;
-    } else {
-      return false;
-    }
+  public static get isAvailable(): boolean {
+    return TeamsHelper.isAvailable;
   }
 
   /**
@@ -128,7 +118,12 @@ export class TeamsProvider extends MsalProvider {
    * @static
    * @memberof TeamsProvider
    */
-  public static microsoftTeamsLib;
+  public static get microsoftTeamsLib(): any {
+    return TeamsHelper.microsoftTeamsLib;
+  }
+  public static set microsoftTeamsLib(value: any) {
+    TeamsHelper.microsoftTeamsLib = value;
+  }
 
   /**
    * Handle all authentication redirects in the authentication page and authenticates the user
@@ -139,7 +134,7 @@ export class TeamsProvider extends MsalProvider {
    */
   public static async handleAuth() {
     // we are in popup world now - authenticate and handle it
-    const teams = TeamsProvider.microsoftTeamsLib || microsoftTeams;
+    const teams = TeamsHelper.microsoftTeamsLib;
     if (!teams) {
       // tslint:disable-next-line: no-console
       console.error('Make sure you have referenced the Microsoft Teams sdk before using the TeamsProvider');
@@ -246,9 +241,9 @@ export class TeamsProvider extends MsalProvider {
       scopes: config.scopes
     });
 
-    const teams = TeamsProvider.microsoftTeamsLib || microsoftTeams;
-
     this._authPopupUrl = config.authPopupUrl;
+
+    const teams = TeamsHelper.microsoftTeamsLib;
     teams.initialize();
   }
 
@@ -260,7 +255,7 @@ export class TeamsProvider extends MsalProvider {
    */
   public async login(): Promise<void> {
     this.setState(ProviderState.Loading);
-    const teams = TeamsProvider.microsoftTeamsLib || microsoftTeams;
+    const teams = TeamsHelper.microsoftTeamsLib;
 
     return new Promise((resolve, reject) => {
       teams.getContext(context => {
@@ -301,7 +296,7 @@ export class TeamsProvider extends MsalProvider {
    */
   public async getAccessToken(options: AuthenticationProviderOptions): Promise<string> {
     if (!this.teamsContext) {
-      const teams = TeamsProvider.microsoftTeamsLib || microsoftTeams;
+      const teams = TeamsHelper.microsoftTeamsLib;
       this.teamsContext = await teams.getContext();
     }
 
