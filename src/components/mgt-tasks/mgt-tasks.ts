@@ -25,7 +25,7 @@ import { MgtPeople } from '../mgt-people/mgt-people';
 import '../mgt-person/mgt-person';
 import '../sub-components/mgt-arrow-options/mgt-arrow-options';
 import '../sub-components/mgt-dot-options/mgt-dot-options';
-import '../sub-components/mgt-flyout/mgt-flyout';
+import { MgtFlyout } from '../sub-components/mgt-flyout/mgt-flyout';
 
 /**
  * Defines how a person card is shown when a user interacts with
@@ -275,12 +275,8 @@ export class MgtTasks extends MgtTemplatedComponent {
 
   @property() private _currentGroup: string;
   @property() private _currentFolder: string;
-  @property() private _currentTask: ITask;
-
-  @property() private isPeoplePickerVisible: boolean;
 
   private _me: User = null;
-  private handleWindowClick: (event: MouseEvent) => void;
   private previousMediaQuery: ComponentMediaQuery;
 
   constructor() {
@@ -297,7 +293,6 @@ export class MgtTasks extends MgtTemplatedComponent {
 
     this.previousMediaQuery = this.mediaQuery;
     this.onResize = this.onResize.bind(this);
-    this.handleWindowClick = () => this.hidePeoplePicker();
   }
 
   /**
@@ -308,7 +303,6 @@ export class MgtTasks extends MgtTemplatedComponent {
   public connectedCallback() {
     super.connectedCallback();
     window.addEventListener('resize', this.onResize);
-    window.addEventListener('click', this.handleWindowClick);
   }
 
   /**
@@ -318,7 +312,6 @@ export class MgtTasks extends MgtTemplatedComponent {
    */
   public disconnectedCallback() {
     window.removeEventListener('resize', this.onResize);
-    window.removeEventListener('click', this.handleWindowClick);
     super.disconnectedCallback();
   }
 
@@ -951,39 +944,32 @@ export class MgtTasks extends MgtTemplatedComponent {
     `;
   }
 
-  private showPeoplePicker(task: ITask) {
-    if (this.isPeoplePickerVisible) {
-      const isCurrentTask = task === this._currentTask;
-      if (isCurrentTask) {
-        this.hidePeoplePicker();
-        return;
-      }
-    }
-    this._currentTask = task;
-    this.isPeoplePickerVisible = true;
-
-    // logic for already created tasks
+  private togglePeoplePicker(task: ITask) {
     const picker = this.getPeoplePicker(task);
     const mgtPeople = this.getMgtPeople(task);
+    const flyout = this.getFlyout(task);
 
-    if (picker && mgtPeople) {
-      picker.selectedPeople = mgtPeople.people;
-      setTimeout(() => {
-        picker.focus();
-      }, 50);
+    if (picker && mgtPeople && flyout) {
+      if (flyout.isOpen) {
+        flyout.close();
+      } else {
+        picker.selectedPeople = mgtPeople.people;
+        flyout.open();
+        window.requestAnimationFrame(() => {
+          picker.focus();
+        });
+      }
     }
   }
 
-  private hidePeoplePicker() {
-    const picker = this.getPeoplePicker(this._currentTask);
-    const mgtPeople = this.getMgtPeople(this._currentTask);
+  private updateAssignedPeople(task: ITask) {
+    const picker = this.getPeoplePicker(task);
+    const mgtPeople = this.getMgtPeople(task);
 
-    if (picker) {
+    if (picker && picker.selectedPeople !== mgtPeople.people) {
       mgtPeople.people = picker.selectedPeople;
-      this.assignPeople(this._currentTask, picker.selectedPeople);
+      this.assignPeople(task, picker.selectedPeople);
     }
-    this.isPeoplePickerVisible = false;
-    this._currentTask = null;
   }
 
   private getPeoplePicker(task: ITask): MgtPeoplePicker {
@@ -998,6 +984,13 @@ export class MgtTasks extends MgtTemplatedComponent {
     const mgtPeople = this.renderRoot.querySelector(`.people-${taskId}`) as MgtPeople;
 
     return mgtPeople;
+  }
+
+  private getFlyout(task: ITask): MgtFlyout {
+    const taskId = task ? task.id : 'newTask';
+    const flyout = this.renderRoot.querySelector(`.flyout-${taskId}`) as MgtFlyout;
+
+    return flyout;
   }
 
   private renderTask(task: ITask) {
@@ -1157,25 +1150,23 @@ export class MgtTasks extends MgtTemplatedComponent {
     `;
 
     const taskId = task ? task.id : 'newTask';
+    taskAssigneeClasses[`flyout-${taskId}`] = true;
 
     assignedPeopleHTML = html`
       <mgt-people
         class="people-${taskId}"
         .userIds="${assignedPeople}"
-        .personCardInteraction=${this.isPeoplePickerVisible ? PersonCardInteraction.none : PersonCardInteraction.hover}
+        .personCardInteraction=${PersonCardInteraction.none}
+        @click=${(e: MouseEvent) => {
+          this.togglePeoplePicker(task);
+          e.stopPropagation();
+        }}
         >${noPeopleTemplate}
       </mgt-people>
     `;
 
     return html`
-      <mgt-flyout
-        class=${classMap(taskAssigneeClasses)}
-        @click=${(e: MouseEvent) => {
-          this.showPeoplePicker(task);
-          e.stopPropagation();
-        }}
-        .isOpen=${this.isPeoplePickerVisible && task === this._currentTask}
-      >
+      <mgt-flyout light-dismiss class=${classMap(taskAssigneeClasses)} @closed=${e => this.updateAssignedPeople(task)}>
         ${assignedPeopleHTML}
         <div slot="flyout" class=${classMap({ Picker: true })}>
           <mgt-people-picker
@@ -1188,7 +1179,7 @@ export class MgtTasks extends MgtTemplatedComponent {
   }
 
   private handleTaskClick(task: ITask) {
-    if (task && !this.isPeoplePickerVisible) {
+    if (task) {
       this.fireCustomEvent('taskClick', { task: task._raw });
     }
   }

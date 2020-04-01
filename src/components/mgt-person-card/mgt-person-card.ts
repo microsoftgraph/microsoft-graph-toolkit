@@ -11,6 +11,7 @@ import { getEmailFromGraphEntity } from '../../graph/graph.people';
 import { Providers } from '../../Providers';
 import { ProviderState } from '../../providers/IProvider';
 import { getSvg, SvgIcon } from '../../utils/SvgHelper';
+import { TeamsHelper } from '../../utils/TeamsHelper';
 import { IDynamicPerson, MgtPerson } from '../mgt-person/mgt-person';
 import { MgtTemplatedComponent } from '../templatedComponent';
 import { styles } from './mgt-person-card-css';
@@ -274,17 +275,18 @@ export class MgtPersonCard extends MgtTemplatedComponent {
     person = person || this.personDetails;
     const userPerson = person as MicrosoftGraph.User;
 
+    // Chat
     let chat: TemplateResult;
-    let email: TemplateResult;
-    let phone: TemplateResult;
-
-    if (userPerson.mailNickname) {
+    if (userPerson.userPrincipalName) {
       chat = html`
-        <div class="icon" @click=${this.chatUser}>
+        <div class="icon" @click=${() => this.chatUser()}>
           ${getSvg(SvgIcon.Chat, '#666666')}
         </div>
       `;
     }
+
+    // Email
+    let email: TemplateResult;
     if (getEmailFromGraphEntity(person)) {
       email = html`
         <div class="icon" @click=${() => this.emailUser()}>
@@ -292,9 +294,12 @@ export class MgtPersonCard extends MgtTemplatedComponent {
         </div>
       `;
     }
+
+    // Phone
+    let phone: TemplateResult;
     if (userPerson.businessPhones && userPerson.businessPhones.length > 0) {
       phone = html`
-        <div class="icon" @click=${this.callUser}>
+        <div class="icon" @click=${() => this.callUser()}>
           ${getSvg(SvgIcon.Phone, '#666666')}
         </div>
       `;
@@ -385,27 +390,25 @@ export class MgtPersonCard extends MgtTemplatedComponent {
    */
   protected renderContactDetails(person?: IDynamicPerson): TemplateResult {
     person = person || this.personDetails;
-
-    if (this.hasTemplate('contact-details')) {
-      return this.renderTemplate('contact-details', { person });
-    }
-
     const userPerson = person as MicrosoftGraph.User;
 
-    let phone: TemplateResult;
-    let email: TemplateResult;
-    let location: TemplateResult;
-    let chat: TemplateResult;
+    if (this.hasTemplate('contact-details')) {
+      return this.renderTemplate('contact-details', { userPerson });
+    }
 
-    if (userPerson.businessPhones && userPerson.businessPhones.length > 0) {
-      phone = html`
-        <div class="details-icon" @click=${this.callUser}>
-          ${getSvg(SvgIcon.SmallPhone, '#666666')}
-          <span class="link-subtitle data">${userPerson.businessPhones[0]}</span>
+    // Chat
+    let chat: TemplateResult;
+    if (userPerson.userPrincipalName) {
+      chat = html`
+        <div class="details-icon" @click=${() => this.chatUser()}>
+          ${getSvg(SvgIcon.SmallChat, '#666666')}
+          <span class="link-subtitle data">${userPerson.userPrincipalName}</span>
         </div>
       `;
     }
 
+    // Email
+    let email: TemplateResult;
     if (getEmailFromGraphEntity(person)) {
       email = html`
         <div class="details-icon" @click=${() => this.emailUser()}>
@@ -415,15 +418,19 @@ export class MgtPersonCard extends MgtTemplatedComponent {
       `;
     }
 
-    if (userPerson.mailNickname) {
-      chat = html`
-        <div class="details-icon" @click=${this.chatUser}>
-          ${getSvg(SvgIcon.SmallChat, '#666666')}
-          <span class="link-subtitle data">${userPerson.mailNickname}</span>
+    // Phone
+    let phone: TemplateResult;
+    if (userPerson.businessPhones && userPerson.businessPhones.length > 0) {
+      phone = html`
+        <div class="details-icon" @click=${() => this.callUser()}>
+          ${getSvg(SvgIcon.SmallPhone, '#666666')}
+          <span class="link-subtitle data">${userPerson.businessPhones[0]}</span>
         </div>
       `;
     }
 
+    // Location
+    let location: TemplateResult;
     if (person.officeLocation) {
       location = html`
         <div class="details-icon">
@@ -505,16 +512,27 @@ export class MgtPersonCard extends MgtTemplatedComponent {
   }
 
   /**
-   * Use the sip: protocol to initiate a chat message to the user.
+   * Initiate a chat message to the user via deeplink.
    *
    * @protected
    * @memberof MgtPersonCard
    */
   protected chatUser() {
     const user = this.personDetails as MicrosoftGraph.User;
-    if (user && user.mailNickname) {
-      const chat = user.mailNickname;
-      window.open('sip:' + chat, '_blank');
+    if (user && user.userPrincipalName) {
+      const users: string = user.userPrincipalName;
+      const url = `https://teams.microsoft.com/l/chat/0/0?users=${users}`;
+      const openWindow = () => window.open(url, '_blank');
+
+      if (TeamsHelper.isAvailable) {
+        TeamsHelper.executeDeepLink(url, (status: boolean) => {
+          if (!status) {
+            openWindow();
+          }
+        });
+      } else {
+        openWindow();
+      }
     }
   }
 
