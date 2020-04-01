@@ -10,8 +10,8 @@ import { customElement, html, property, TemplateResult } from 'lit-element';
 import { getEmailFromGraphEntity } from '../../graph/graph.people';
 import { Providers } from '../../Providers';
 import { ProviderState } from '../../providers/IProvider';
-import { TeamsProvider } from '../../providers/TeamsProvider';
 import { getSvg, SvgIcon } from '../../utils/SvgHelper';
+import { TeamsHelper } from '../../utils/TeamsHelper';
 import { IDynamicPerson, MgtPerson } from '../mgt-person/mgt-person';
 import { MgtTemplatedComponent } from '../templatedComponent';
 import { styles } from './mgt-person-card-css';
@@ -517,8 +517,8 @@ export class MgtPersonCard extends MgtTemplatedComponent {
       const url = `https://teams.microsoft.com/l/chat/0/0?users=${users}`;
       const openWindow = () => window.open(url, '_blank');
 
-      if (TeamsProvider.isAvailable) {
-        TeamsProvider.executeDeeplink(url, (status: boolean) => {
+      if (TeamsHelper.microsoftTeamsLib) {
+        TeamsHelper.executeDeepLink(url, (status: boolean) => {
           if (!status) {
             openWindow();
           }

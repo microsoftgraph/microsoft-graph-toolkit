@@ -7,11 +7,9 @@
 
 import { AuthenticationProviderOptions } from '@microsoft/microsoft-graph-client/lib/es/IAuthenticationProviderOptions';
 import { AuthenticationParameters, Configuration, UserAgentApplication } from 'msal';
+import { TeamsHelper } from '../utils/TeamsHelper';
 import { LoginType, ProviderState } from './IProvider';
 import { MsalProvider } from './MsalProvider';
-
-// tslint:disable-next-line: completed-docs
-declare var microsoftTeams: any;
 
 // tslint:disable-next-line: completed-docs
 declare global {
@@ -108,7 +106,7 @@ export class TeamsProvider extends MsalProvider {
    * @static
    * @memberof TeamsProvider
    */
-  public static get isAvailable() {
+  public static get isAvailable(): boolean {
     if (window.parent === window.self && window.nativeInterface) {
       // In Teams mobile client
       return true;
@@ -128,21 +126,11 @@ export class TeamsProvider extends MsalProvider {
    * @static
    * @memberof TeamsProvider
    */
-  public static microsoftTeamsLib;
-
-  /**
-   * Execute a deeplink against the Teams lib.
-   *
-   * @static
-   * @param {string} deeplink
-   * @param {(status: boolean, reason?: string) => void} [onComplete]
-   * @memberof TeamsProvider
-   */
-  public static executeDeeplink(deeplink: string, onComplete?: (status: boolean, reason?: string) => void): void {
-    const teams = TeamsProvider.microsoftTeamsLib || microsoftTeams;
-    if (teams) {
-      teams.executeDeeplink(deeplink, onComplete);
-    }
+  public static get microsoftTeamsLib(): any {
+    return TeamsHelper.microsoftTeamsLib;
+  }
+  public static set microsoftTeamsLib(value: any) {
+    TeamsHelper.microsoftTeamsLib = value;
   }
 
   /**
@@ -154,7 +142,7 @@ export class TeamsProvider extends MsalProvider {
    */
   public static async handleAuth() {
     // we are in popup world now - authenticate and handle it
-    const teams = TeamsProvider.microsoftTeamsLib || microsoftTeams;
+    const teams = TeamsHelper.microsoftTeamsLib;
     if (!teams) {
       // tslint:disable-next-line: no-console
       console.error('Make sure you have referenced the Microsoft Teams sdk before using the TeamsProvider');
@@ -261,9 +249,9 @@ export class TeamsProvider extends MsalProvider {
       scopes: config.scopes
     });
 
-    const teams = TeamsProvider.microsoftTeamsLib || microsoftTeams;
-
     this._authPopupUrl = config.authPopupUrl;
+
+    const teams = TeamsHelper.microsoftTeamsLib;
     teams.initialize();
   }
 
@@ -275,7 +263,7 @@ export class TeamsProvider extends MsalProvider {
    */
   public async login(): Promise<void> {
     this.setState(ProviderState.Loading);
-    const teams = TeamsProvider.microsoftTeamsLib || microsoftTeams;
+    const teams = TeamsHelper.microsoftTeamsLib;
 
     return new Promise((resolve, reject) => {
       teams.getContext(context => {
@@ -316,7 +304,7 @@ export class TeamsProvider extends MsalProvider {
    */
   public async getAccessToken(options: AuthenticationProviderOptions): Promise<string> {
     if (!this.teamsContext) {
-      const teams = TeamsProvider.microsoftTeamsLib || microsoftTeams;
+      const teams = TeamsHelper.microsoftTeamsLib;
       this.teamsContext = await teams.getContext();
     }
 
