@@ -9,7 +9,7 @@ import * as MicrosoftGraph from '@microsoft/microsoft-graph-types';
 import { customElement, html, property, TemplateResult } from 'lit-element';
 import { findPerson, findUserByEmail, getEmailFromGraphEntity } from '../../graph/graph.people';
 import { getContactPhoto, getUserPhoto, myPhoto } from '../../graph/graph.photos';
-import { getUserWithPhoto } from '../../graph/graph.user';
+import { getUser, getUserWithPhoto } from '../../graph/graph.user';
 import { Providers } from '../../Providers';
 import { ProviderState } from '../../providers/IProvider';
 import { getSvg, SvgIcon } from '../../utils/SvgHelper';
@@ -297,12 +297,14 @@ export class MgtPersonCard extends MgtTemplatedComponent {
 
     person = person || this.personDetails;
     const userPerson = person as MicrosoftGraph.User;
+    const personPerson = person as MicrosoftGraph.Person;
+    const contactPerson = person as MicrosoftGraph.Contact;
 
     let chat: TemplateResult;
     let email: TemplateResult;
     let phone: TemplateResult;
 
-    if (userPerson.mailNickname) {
+    if (userPerson.userPrincipalName || personPerson.userPrincipalName) {
       chat = html`
         <div class="icon" @click=${this.chatUser}>
           ${getSvg(SvgIcon.Chat, '#666666')}
@@ -316,7 +318,11 @@ export class MgtPersonCard extends MgtTemplatedComponent {
         </div>
       `;
     }
-    if (userPerson.businessPhones && userPerson.businessPhones.length > 0) {
+    if (
+      (userPerson.businessPhones && userPerson.businessPhones.length > 0) ||
+      (personPerson.phones && personPerson.phones.length > 0) ||
+      (contactPerson.businessPhones && contactPerson.businessPhones.length > 0)
+    ) {
       phone = html`
         <div class="icon" @click=${this.callUser}>
           ${getSvg(SvgIcon.Phone, '#666666')}
@@ -475,13 +481,30 @@ export class MgtPersonCard extends MgtTemplatedComponent {
    */
   protected async loadState() {
     const provider = Providers.globalProvider;
+    const graph = provider.graph.forComponent(this);
 
+    // check if user is signed in
     if (!provider || provider.state !== ProviderState.SignedIn) {
       return;
     }
 
+    // check if personDetail already populated
     if (this.personDetails) {
-      return;
+      if (this.personDetails.id) {
+        const user = this.personDetails as MicrosoftGraph.User;
+        const person = this.personDetails as MicrosoftGraph.Person;
+        const contact = this.personDetails as MicrosoftGraph.Contact;
+
+        // check if there's userPrincipalName in personDetails
+        if (user.userPrincipalName || person.userPrincipalName) {
+          // check if there's email present in personDetails
+          if (user.mail || person.scoredEmailAddresses || contact.emailAddresses) {
+            return;
+          }
+        } else {
+          this.personDetails = await getUser(graph, this.personDetails.id);
+        }
+      }
     }
 
     if (this.inheritDetails) {
@@ -497,7 +520,6 @@ export class MgtPersonCard extends MgtTemplatedComponent {
     } else {
       // Use userId or 'me' query to get the person and image
       if (this.userId || this.personQuery === 'me') {
-        const graph = provider.graph.forComponent(this);
         const person = await getUserWithPhoto(graph, this.userId);
 
         this.personDetails = person;
@@ -507,7 +529,6 @@ export class MgtPersonCard extends MgtTemplatedComponent {
 
       // Use the personQuery to find our person.
       if (this.personQuery) {
-        const graph = provider.graph.forComponent(this);
         const people = await findPerson(graph, this.personQuery);
 
         if (people && people.length) {
