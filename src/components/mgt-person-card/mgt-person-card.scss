@@ -8,13 +8,13 @@
 @import '../../styles/shared-styles.scss';
 @import '../../../node_modules/office-ui-fabric-core/dist/sass/References';
 
-$person-card-title-font-size: var(--person-card-title-font-size, 27.3103px);
-$person-card-secondary-title-font-size: var(--person-card-secondary-title-font-size, 18.2069px);
+$person-card-display-name-font-size: var(--person-card-display-name-font-size, 27.3103px);
+$person-card-title-font-size: var(--person-card-title-font-size, 18.2069px);
 $person-card-subtitle-font-size: var(--person-card-subtitle-font-size, 15.1724px);
 $person-card-details-title-font-size: var(--person-card-details-title-font-size, 14px);
 $person-card-details-item-font-size: var(--person-card-additional-details-item-font-size, 15px);
-$person-card-title-color: var(--person-card-title-color, #333333);
-$person-card-secondary-title-color: var(--person-card-secondary-title-color, #767676);
+$person-card-display-name-color: var(--person-card-display-name-color, #333333);
+$person-card-title-color: var(--person-card-title-color, #767676);
 $person-card-subtitle-font-color: var(--person-card-subtitle-font-color, #767676);
 $person-card-details-title-color: var(--person-card-details-title-color, #000000);
 $person-card-additional-details-item-color: var(--person-card-additional-details-item-color, #201f1e);
@@ -39,13 +39,13 @@ $person-card-background-color: var(--person-card-background-color, #ffffff);
       line-height: 1.15;
 
       .display-name {
-        font-size: $person-card-title-font-size;
-        color: $person-card-title-color;
+        font-size: $person-card-display-name-font-size;
+        color: $person-card-display-name-color;
       }
 
       .job-title {
-        font-size: $person-card-secondary-title-font-size;
-        color: $person-card-secondary-title-color;
+        font-size: $person-card-title-font-size;
+        color: $person-card-title-color;
       }
 
       .department {

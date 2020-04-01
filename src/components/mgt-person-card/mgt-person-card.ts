@@ -24,10 +24,10 @@ import { styles } from './mgt-person-card-css';
  * @class MgtPersonCard
  * @extends {MgtTemplatedComponent}
  *
- * @cssprop --person-card-title-font-size - {Length} Font size of display name title
- * @cssprop --person-card-title-color - {Color} Color of display name font
- * @cssprop --person-card-secondary-title-font-size - {Length} Font size of secondary title
- * @cssprop --person-card-secondary-title-color - {Color} Color of secondary title
+ * @cssprop --person-card-display-name-font-size - {Length} Font size of display name title
+ * @cssprop --person-card-display-name-color - {Color} Color of display name font
+ * @cssprop --person-card-title-font-size - {Length} Font size of title
+ * @cssprop --person-card-title-color - {Color} Color of title
  * @cssprop --person-card-subtitle-font-size - {Length} Font size of subtitle
  * @cssprop --person-card-subtitle-color - {Color} Color of subttitle
  * @cssprop --person-card-details-title-font-size - {Length} Font size additional details title
