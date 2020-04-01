@@ -32,6 +32,28 @@ export class TeamsHelper {
   }
 
   /**
+   * Gets whether the Teams provider can be used in the current context
+   * (Whether the app is running in Microsoft Teams)
+   *
+   * @readonly
+   * @static
+   * @memberof TeamsProvider
+   */
+  public static get isAvailable(): boolean {
+    if (!this.microsoftTeamsLib) {
+      return false;
+    }
+    if (window.parent === window.self && window.nativeInterface) {
+      // In Teams mobile client
+      return true;
+    } else if (window.name === 'embedded-page-container' || window.name === 'extension-tab-frame') {
+      // In Teams web/desktop client
+      return true;
+    }
+    return false;
+  }
+
+  /**
    * Execute a deeplink against the Teams lib.
    *
    * @static
@@ -41,11 +63,8 @@ export class TeamsHelper {
    */
   public static executeDeepLink(deeplink: string, onComplete?: (status: boolean, reason?: string) => void): void {
     const teams = this.microsoftTeamsLib;
-    if (teams) {
-      teams.initialize(() => {
-        teams.executeDeepLink(deeplink, onComplete);
-      });
-    }
+    teams.initialize();
+    teams.executeDeepLink(deeplink, onComplete);
   }
 
   private static _microsoftTeamsLib: any;

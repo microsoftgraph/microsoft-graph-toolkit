@@ -107,15 +107,7 @@ export class TeamsProvider extends MsalProvider {
    * @memberof TeamsProvider
    */
   public static get isAvailable(): boolean {
-    if (window.parent === window.self && window.nativeInterface) {
-      // In Teams mobile client
-      return true;
-    } else if (window.name === 'embedded-page-container' || window.name === 'extension-tab-frame') {
-      // In Teams web/desktop client
-      return true;
-    } else {
-      return false;
-    }
+    return TeamsHelper.isAvailable;
   }
 
   /**

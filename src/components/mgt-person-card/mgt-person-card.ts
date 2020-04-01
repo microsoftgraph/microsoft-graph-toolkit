@@ -517,7 +517,7 @@ export class MgtPersonCard extends MgtTemplatedComponent {
       const url = `https://teams.microsoft.com/l/chat/0/0?users=${users}`;
       const openWindow = () => window.open(url, '_blank');
 
-      if (TeamsHelper.microsoftTeamsLib) {
+      if (TeamsHelper.isAvailable) {
         TeamsHelper.executeDeepLink(url, (status: boolean) => {
           if (!status) {
             openWindow();
