@@ -16,7 +16,7 @@ import { prepScopes } from '../utils/GraphHelpers';
  * @returns {(Promise<User>)}
  * @memberof Graph
  */
-export async function getMe(graph: IGraph): Promise<User> {
+export function getMe(graph: IGraph): Promise<User> {
   return graph
     .api('me')
     .middlewareOptions(prepScopes('user.read'))
@@ -36,8 +36,8 @@ export async function getUserWithPhoto(graph: IGraph, userId?: string): Promise<
   let person = null as IDynamicPerson;
 
   if (userId) {
-    batch.get('user', `/users/${this.userId}`, ['user.readbasic.all']);
-    batch.get('photo', `users/${this.userId}/photo/$value`, ['user.readbasic.all']);
+    batch.get('user', `/users/${userId}`, ['user.readbasic.all']);
+    batch.get('photo', `users/${userId}/photo/$value`, ['user.readbasic.all']);
   } else {
     batch.get('user', 'me', ['user.read']);
     batch.get('photo', 'me/photo/$value', ['user.read']);

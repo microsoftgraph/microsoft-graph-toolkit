@@ -299,12 +299,10 @@ export class MgtPersonCard extends MgtTemplatedComponent {
     person = person || this.personDetails;
     const userPerson = person as MicrosoftGraph.User;
     const personPerson = person as MicrosoftGraph.Person;
-    const contactPerson = person as MicrosoftGraph.Contact;
 
     // Chat
     let chat: TemplateResult;
-
-    if (userPerson.userPrincipalName || personPerson.userPrincipalName) {
+    if (userPerson.userPrincipalName) {
       chat = html`
         <div class="icon" @click=${() => this.chatUser()}>
           ${getSvg(SvgIcon.Chat, '#666666')}
@@ -326,8 +324,7 @@ export class MgtPersonCard extends MgtTemplatedComponent {
     let phone: TemplateResult;
     if (
       (userPerson.businessPhones && userPerson.businessPhones.length > 0) ||
-      (personPerson.phones && personPerson.phones.length > 0) ||
-      (contactPerson.businessPhones && contactPerson.businessPhones.length > 0)
+      (personPerson.phones && personPerson.phones.length > 0)
     ) {
       phone = html`
         <div class="icon" @click=${() => this.callUser()}>
@@ -422,6 +419,7 @@ export class MgtPersonCard extends MgtTemplatedComponent {
   protected renderContactDetails(person?: IDynamicPerson): TemplateResult {
     person = person || this.personDetails;
     const userPerson = person as MicrosoftGraph.User;
+    const personPerson = person as MicrosoftGraph.Person;
 
     if (this.hasTemplate('contact-details')) {
       return this.renderTemplate('contact-details', { userPerson });
@@ -458,6 +456,14 @@ export class MgtPersonCard extends MgtTemplatedComponent {
           <span class="link-subtitle data">${userPerson.businessPhones[0]}</span>
         </div>
       `;
+    } else if (personPerson.phones && personPerson.phones.length > 0) {
+      const businessPhones = this.getPersonBusinessPhones(personPerson);
+      phone = html`
+        <div class="details-icon" @click=${() => this.callUser()}>
+          ${getSvg(SvgIcon.SmallPhone, '#666666')}
+          <span class="link-subtitle data">${businessPhones[0]}</span>
+        </div>
+      `;
     }
 
     // Location
@@ -489,39 +495,30 @@ export class MgtPersonCard extends MgtTemplatedComponent {
    */
   protected async loadState() {
     const provider = Providers.globalProvider;
-    const graph = provider.graph.forComponent(this);
 
     // check if user is signed in
     if (!provider || provider.state !== ProviderState.SignedIn) {
       return;
     }
 
+    const graph = provider.graph.forComponent(this);
+
     // check if personDetail already populated
     if (this.personDetails) {
-      // in some cases we might only have name or email, but need to find the image
-      // use @ for the image value to search for an image
-      if (this.personImage === '@' && !this.personDetails.personImage) {
+      const user = this.personDetails as MicrosoftGraph.User;
+      const id = user.userPrincipalName || user.id;
+      // if we have an id but no email, we should get data from the graph
+      if (id && !getEmailFromGraphEntity(user)) {
+        const person = await getUserWithPhoto(graph, id);
+        this.personDetails = person;
+        this.personImage = this.getImage();
+      } else if (this.personImage === '@' && !this.personDetails.personImage) {
+        // in some cases we might only have name or email, but need to find the image
+        // use @ for the image value to search for an image
         this.loadImage();
       }
-
-      if (this.personDetails.id) {
-        const user = this.personDetails as MicrosoftGraph.User;
-        const person = this.personDetails as MicrosoftGraph.Person;
-        const contact = this.personDetails as MicrosoftGraph.Contact;
-
-        // check if there's userPrincipalName in personDetails
-        if (user.userPrincipalName || person.userPrincipalName) {
-          // check if there's email present in personDetails
-          if (user.mail || person.scoredEmailAddresses || contact.emailAddresses) {
-            return;
-          }
-        } else {
-          this.personDetails = await getUser(graph, this.personDetails.id);
-        }
-      }
-    }
-
-    if (this.inheritDetails) {
+    } else if (this.inheritDetails) {
+      // User person details inherited from parent tree
       let parent = this.parentElement;
       while (parent && parent.tagName !== 'MGT-PERSON') {
         parent = parent.parentElement;
@@ -531,26 +528,21 @@ export class MgtPersonCard extends MgtTemplatedComponent {
         this.personDetails = (parent as MgtPerson).personDetails;
         this.personImage = (parent as MgtPerson).personImage;
       }
-    } else {
+    } else if (this.userId || this.personQuery === 'me') {
       // Use userId or 'me' query to get the person and image
-      if (this.userId || this.personQuery === 'me') {
-        const person = await getUserWithPhoto(graph, this.userId);
+      const person = await getUserWithPhoto(graph, this.userId);
 
-        this.personDetails = person;
-        this.personImage = this.getImage();
-        return;
-      }
-
+      this.personDetails = person;
+      this.personImage = this.getImage();
+    } else if (this.personQuery) {
       // Use the personQuery to find our person.
-      if (this.personQuery) {
-        const people = await findPerson(graph, this.personQuery);
+      const people = await findPerson(graph, this.personQuery);
 
-        if (people && people.length) {
-          this.personDetails = people[0];
+      if (people && people.length) {
+        this.personDetails = people[0];
 
-          if (this.personImage === '@') {
-            this.loadImage();
-          }
+        if (this.personImage === '@') {
+          this.loadImage();
         }
       }
     }
@@ -580,8 +572,16 @@ export class MgtPersonCard extends MgtTemplatedComponent {
    */
   protected callUser() {
     const user = this.personDetails as MicrosoftGraph.User;
+    const person = this.personDetails as microsoftgraph.Person;
+
     if (user && user.businessPhones && user.businessPhones.length) {
       const phone = user.businessPhones[0];
+      if (phone) {
+        window.open('tel:' + phone, '_blank');
+      }
+    } else if (person && person.phones && person.phones.length) {
+      const businessPhones = this.getPersonBusinessPhones(person);
+      const phone = businessPhones[0];
       if (phone) {
         window.open('tel:' + phone, '_blank');
       }
@@ -690,5 +690,16 @@ export class MgtPersonCard extends MgtTemplatedComponent {
 
     const person = this.personDetails;
     return person && person.personImage ? person.personImage : null;
+  }
+
+  private getPersonBusinessPhones(person: MicrosoftGraph.Person): string[] {
+    const phones = person.phones;
+    const businessPhones: string[] = [];
+    for (const p of phones) {
+      if (p.type === 'business') {
+        businessPhones.push(p.number);
+      }
+    }
+    return businessPhones;
   }
 }
