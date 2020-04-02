@@ -682,7 +682,7 @@ export class MgtTeamsChannelPicker extends MgtTemplatedComponent {
     const currentFocusedItem = this._focusList[this._focusedIndex];
 
     switch (event.keyCode) {
-      case 40: // up
+      case 40: // down
         this._focusedIndex = (this._focusedIndex + 1) % this._focusList.length;
         if (typeof this._focusedIndex !== 'number') {
           this._focusedIndex = -1;
@@ -691,12 +691,11 @@ export class MgtTeamsChannelPicker extends MgtTemplatedComponent {
         this.requestUpdate();
         event.preventDefault();
         break;
-      case 38: // down
-        this._focusedIndex = (this._focusedIndex - 1 + this._focusList.length) % this._focusList.length;
-        if (typeof this._focusedIndex !== 'number') {
-          this._focusedIndex = -1;
+      case 38: // up
+        if (this._focusedIndex === -1) {
+          this._focusedIndex = this._focusList.length;
         }
-
+        this._focusedIndex = (this._focusedIndex - 1 + this._focusList.length) % this._focusList.length;
         this.requestUpdate();
         event.preventDefault();
         break;
