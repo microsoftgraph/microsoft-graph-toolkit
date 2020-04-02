@@ -193,6 +193,33 @@ $dropdown-item-selected-background: var(--dropdown-item-selected-background, #de
         font-size: 16px;
         color: $font-color;
 
+        flex-flow: nowrap;
+        position: relative;
+        overflow: hidden;
+        white-space: nowrap;
+        background-color: transparent;
+        &:after {
+          content: '';
+          position: absolute;
+          width: 36px;
+          height: 100%;
+          top: 0;
+          right: 0;
+          background-image: -webkit-linear-gradient(
+            right,
+            $dropdown-background-color,
+            rgba($dropdown-background-color, 0)
+          );
+          background-image: -moz-linear-gradient(
+            right,
+            $dropdown-background-color,
+            rgba($dropdown-background-color, 0)
+          );
+          background-image: -ms-linear-gradient(right, $dropdown-background-color, rgba($dropdown-background-color, 0));
+          background-image: -o-linear-gradient(right, $dropdown-background-color, rgba($dropdown-background-color, 0));
+          background-image: linear-gradient(to left, $dropdown-background-color, rgba($dropdown-background-color, 0));
+        }
+
         &:hover {
           background-color: $dropdown-item-hover-background;
         }

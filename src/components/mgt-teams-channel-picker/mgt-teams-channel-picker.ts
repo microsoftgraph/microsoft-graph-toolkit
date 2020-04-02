@@ -280,7 +280,7 @@ export class MgtTeamsChannelPicker extends MgtTemplatedComponent {
         <div class="root" @blur=${this.lostFocus}>
           <div class=${classMap(inputClasses)} @click=${this.gainedFocus}>
             <div class=${classMap(iconClasses)}>
-              ${!!this._selectedItemState ? getSvg(SvgIcon.Search, '#252424') : ''}
+              ${!this._selectedItemState ? getSvg(SvgIcon.Search, '#252424') : ''}
             </div>
             <div class="channel-chosen-list">
               ${this.renderSelected()} ${this.renderInput()}
