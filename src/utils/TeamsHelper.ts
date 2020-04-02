@@ -5,9 +5,6 @@
  * -------------------------------------------------------------------------------------------
  */
 
-// tslint:disable-next-line: completed-docs
-declare var microsoftTeams: any;
-
 /**
  * A helper class for interacting with the Teams Client SDK.
  *
@@ -25,7 +22,8 @@ export class TeamsHelper {
    * @memberof TeamsHelper
    */
   public static get microsoftTeamsLib(): any {
-    return this._microsoftTeamsLib || microsoftTeams;
+    // tslint:disable-next-line: no-string-literal
+    return this._microsoftTeamsLib || window['microsoftTeams'];
   }
   public static set microsoftTeamsLib(value: any) {
     this._microsoftTeamsLib = value;
