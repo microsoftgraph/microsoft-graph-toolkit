@@ -25,6 +25,22 @@ export const personCard = () => html`
   <mgt-person-card person-query="me"></mgt-person-card>
 `;
 
+export const personCardHover = () => html`
+  <style>
+    .note {
+      margin: 2em 0 0 1em;
+      font-family: 'Segoe UI', 'Segoe UI Web (West European)', 'Segoe UI', -apple-system, BlinkMacSystemFont, Roboto,
+        'Helvetica Neue', sans-serif;
+      color: #323130;
+      font-size: 12px;
+    }
+  </style>
+  <mgt-person person-query="me" show-name show-email person-card="hover"></mgt-person>
+  <div class="note">
+    (Hover on person to view Person Card)
+  </div>
+`;
+
 export const personCardInheritDetails = () => html`
   <style>
     .note {

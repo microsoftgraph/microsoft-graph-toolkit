@@ -497,10 +497,7 @@ export class MgtPerson extends MgtTemplatedComponent {
 
       if (people && people.length) {
         this.personDetails = people[0];
-
-        if (this.personImage === '@') {
-          this.loadImage();
-        }
+        this.loadImage();
       }
     }
   }
