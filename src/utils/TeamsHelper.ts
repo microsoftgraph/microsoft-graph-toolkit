@@ -35,7 +35,7 @@ export class TeamsHelper {
    *
    * @readonly
    * @static
-   * @memberof TeamsProvider
+   * @memberof TeamsHelper
    */
   public static get isAvailable(): boolean {
     if (!this.microsoftTeamsLib) {
@@ -57,7 +57,7 @@ export class TeamsHelper {
    * @static
    * @param {string} deeplink
    * @param {(status: boolean, reason?: string) => void} [onComplete]
-   * @memberof TeamsProvider
+   * @memberof TeamsHelper
    */
   public static executeDeepLink(deeplink: string, onComplete?: (status: boolean, reason?: string) => void): void {
     const teams = this.microsoftTeamsLib;

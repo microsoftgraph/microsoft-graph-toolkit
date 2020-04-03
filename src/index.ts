@@ -9,4 +9,5 @@ export * from './components/components';
 export * from './components/providers/providers';
 export * from './Providers';
 export * from './providers/providers';
+export { TeamsHelper } from './utils/TeamsHelper';
 export { prepScopes } from './utils/GraphHelpers';
