@@ -26,10 +26,17 @@ import { styles } from './mgt-person-card-css';
  * @class MgtPersonCard
  * @extends {MgtTemplatedComponent}
  *
- * @cssprop --font-size - {Length} Font size
- * @cssprop --font-weight - {Length} Font weight
- * @cssprop --height - {String} Height
- * @cssprop --background-color - {Color} Background color
+ * @cssprop --person-card-display-name-font-size - {Length} Font size of display name title
+ * @cssprop --person-card-display-name-color - {Color} Color of display name font
+ * @cssprop --person-card-title-font-size - {Length} Font size of title
+ * @cssprop --person-card-title-color - {Color} Color of title
+ * @cssprop --person-card-subtitle-font-size - {Length} Font size of subtitle
+ * @cssprop --person-card-subtitle-color - {Color} Color of subttitle
+ * @cssprop --person-card-details-title-font-size - {Length} Font size additional details title
+ * @cssprop --person-card-details-title-color- {Color} Color of additional details title
+ * @cssprop --person-card-details-item-font-size - {Length} Font size items in additional details section
+ * @cssprop --person-card-details-item-color - {Color} Color of items in additional details section
+ * @cssprop --person-card-background-color - {Color} Color of person card background
  */
 @customElement('mgt-person-card')
 export class MgtPersonCard extends MgtTemplatedComponent {
