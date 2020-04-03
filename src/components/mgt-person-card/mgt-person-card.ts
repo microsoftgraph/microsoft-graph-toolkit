@@ -7,7 +7,9 @@
 
 import * as MicrosoftGraph from '@microsoft/microsoft-graph-types';
 import { customElement, html, property, TemplateResult } from 'lit-element';
-import { getEmailFromGraphEntity } from '../../graph/graph.people';
+import { findPerson, findUserByEmail, getEmailFromGraphEntity } from '../../graph/graph.people';
+import { getContactPhoto, getUserPhoto, myPhoto } from '../../graph/graph.photos';
+import { getUser, getUserWithPhoto } from '../../graph/graph.user';
 import { Providers } from '../../Providers';
 import { ProviderState } from '../../providers/IProvider';
 import { getSvg, SvgIcon } from '../../utils/SvgHelper';
@@ -45,6 +47,23 @@ export class MgtPersonCard extends MgtTemplatedComponent {
   static get styles() {
     return styles;
   }
+  /**
+   * allows developer to define name of person for component
+   * @type {string}
+   */
+  @property({
+    attribute: 'person-query'
+  })
+  public personQuery: string;
+
+  /**
+   * user-id property allows developer to use id value for component
+   * @type {string}
+   */
+  @property({
+    attribute: 'user-id'
+  })
+  public userId: string;
 
   /**
    * Set the person details to render
@@ -117,8 +136,20 @@ export class MgtPersonCard extends MgtTemplatedComponent {
   public attributeChangedCallback(name: string, oldValue: string, newValue: string) {
     super.attributeChangedCallback(name, oldValue, newValue);
 
-    if (name === 'is-expanded' && oldValue !== newValue) {
+    if (oldValue === newValue) {
+      return;
+    }
+
+    if (name === 'is-expanded') {
       this.isExpanded = false;
+    }
+
+    switch (name) {
+      case 'person-query':
+      case 'user-id':
+        this.personDetails = null;
+        this.requestStateUpdate();
+        break;
     }
   }
 
@@ -225,7 +256,7 @@ export class MgtPersonCard extends MgtTemplatedComponent {
   }
 
   /**
-   * foo
+   * Render person title.
    *
    * @protected
    * @param {IDynamicPerson} person
@@ -243,7 +274,7 @@ export class MgtPersonCard extends MgtTemplatedComponent {
   }
 
   /**
-   * foo
+   * Render person subtitle.
    *
    * @protected
    * @param {IDynamicPerson} person
@@ -274,6 +305,7 @@ export class MgtPersonCard extends MgtTemplatedComponent {
 
     person = person || this.personDetails;
     const userPerson = person as MicrosoftGraph.User;
+    const personPerson = person as MicrosoftGraph.Person;
 
     // Chat
     let chat: TemplateResult;
@@ -297,7 +329,10 @@ export class MgtPersonCard extends MgtTemplatedComponent {
 
     // Phone
     let phone: TemplateResult;
-    if (userPerson.businessPhones && userPerson.businessPhones.length > 0) {
+    if (
+      (userPerson.businessPhones && userPerson.businessPhones.length > 0) ||
+      (personPerson.phones && personPerson.phones.length > 0)
+    ) {
       phone = html`
         <div class="icon" @click=${() => this.callUser()}>
           ${getSvg(SvgIcon.Phone, '#666666')}
@@ -335,7 +370,7 @@ export class MgtPersonCard extends MgtTemplatedComponent {
   }
 
   /**
-   * foo
+   * Render expanded details.
    *
    * @protected
    * @param {IDynamicPerson} [person]
@@ -391,6 +426,7 @@ export class MgtPersonCard extends MgtTemplatedComponent {
   protected renderContactDetails(person?: IDynamicPerson): TemplateResult {
     person = person || this.personDetails;
     const userPerson = person as MicrosoftGraph.User;
+    const personPerson = person as MicrosoftGraph.Person;
 
     if (this.hasTemplate('contact-details')) {
       return this.renderTemplate('contact-details', { userPerson });
@@ -427,6 +463,14 @@ export class MgtPersonCard extends MgtTemplatedComponent {
           <span class="link-subtitle data">${userPerson.businessPhones[0]}</span>
         </div>
       `;
+    } else if (personPerson.phones && personPerson.phones.length > 0) {
+      const businessPhones = this.getPersonBusinessPhones(personPerson);
+      phone = html`
+        <div class="details-icon" @click=${() => this.callUser()}>
+          ${getSvg(SvgIcon.SmallPhone, '#666666')}
+          <span class="link-subtitle data">${businessPhones[0]}</span>
+        </div>
+      `;
     }
 
     // Location
@@ -457,7 +501,31 @@ export class MgtPersonCard extends MgtTemplatedComponent {
    * @memberof MgtPersonCard
    */
   protected async loadState() {
-    if (this.inheritDetails) {
+    const provider = Providers.globalProvider;
+
+    // check if user is signed in
+    if (!provider || provider.state !== ProviderState.SignedIn) {
+      return;
+    }
+
+    const graph = provider.graph.forComponent(this);
+
+    // check if personDetail already populated
+    if (this.personDetails) {
+      const user = this.personDetails as MicrosoftGraph.User;
+      const id = user.userPrincipalName || user.id;
+      // if we have an id but no email, we should get data from the graph
+      if (id && !getEmailFromGraphEntity(user)) {
+        const person = await getUserWithPhoto(graph, id);
+        this.personDetails = person;
+        this.personImage = this.getImage();
+      } else if (this.personImage === '@' && !this.personDetails.personImage) {
+        // in some cases we might only have name or email, but need to find the image
+        // use @ for the image value to search for an image
+        this.loadImage();
+      }
+    } else if (this.inheritDetails) {
+      // User person details inherited from parent tree
       let parent = this.parentElement;
       while (parent && parent.tagName !== 'MGT-PERSON') {
         parent = parent.parentElement;
@@ -467,15 +535,20 @@ export class MgtPersonCard extends MgtTemplatedComponent {
         this.personDetails = (parent as MgtPerson).personDetails;
         this.personImage = (parent as MgtPerson).personImage;
       }
-    }
+    } else if (this.userId || this.personQuery === 'me') {
+      // Use userId or 'me' query to get the person and image
+      const person = await getUserWithPhoto(graph, this.userId);
 
-    if (this.personDetails) {
-      return;
-    }
+      this.personDetails = person;
+      this.personImage = this.getImage();
+    } else if (this.personQuery) {
+      // Use the personQuery to find our person.
+      const people = await findPerson(graph, this.personQuery);
 
-    const provider = Providers.globalProvider;
-    if (!provider || provider.state !== ProviderState.SignedIn) {
-      return;
+      if (people && people.length) {
+        this.personDetails = people[0];
+        this.loadImage();
+      }
     }
   }
 
@@ -503,8 +576,16 @@ export class MgtPersonCard extends MgtTemplatedComponent {
    */
   protected callUser() {
     const user = this.personDetails as MicrosoftGraph.User;
+    const person = this.personDetails as microsoftgraph.Person;
+
     if (user && user.businessPhones && user.businessPhones.length) {
       const phone = user.businessPhones[0];
+      if (phone) {
+        window.open('tel:' + phone, '_blank');
+      }
+    } else if (person && person.phones && person.phones.length) {
+      const businessPhones = this.getPersonBusinessPhones(person);
+      const phone = businessPhones[0];
       if (phone) {
         window.open('tel:' + phone, '_blank');
       }
@@ -567,6 +648,45 @@ export class MgtPersonCard extends MgtTemplatedComponent {
     this.isExpanded = true;
   }
 
+  private async loadImage() {
+    const provider = Providers.globalProvider;
+    const graph = provider.graph.forComponent(this);
+    const person = this.personDetails;
+    let image: string;
+
+    if ((person as MicrosoftGraph.Person).userPrincipalName) {
+      // try to find a user by userPrincipalName
+      const userPrincipalName = (person as MicrosoftGraph.Person).userPrincipalName;
+      image = await getUserPhoto(graph, userPrincipalName);
+    } else {
+      // try to find a user by e-mail
+      const email = getEmailFromGraphEntity(person);
+      if (email) {
+        const users = await findUserByEmail(graph, email);
+        if (users && users.length) {
+          // Check for an OrganizationUser
+          const orgUser = users.find(p => {
+            return (p as any).personType && (p as any).personType.subclass === 'OrganizationUser';
+          });
+          if (orgUser) {
+            // Lookup by userId
+            const userId = (users[0] as MicrosoftGraph.Person).scoredEmailAddresses[0].address;
+            image = await getUserPhoto(graph, userId);
+          } else {
+            // Lookup by contactId
+            const contactId = users[0].id;
+            image = await getContactPhoto(graph, contactId);
+          }
+        }
+      }
+    }
+
+    if (image) {
+      this.personDetails.personImage = image;
+      this.personImage = image;
+    }
+  }
+
   private getImage(): string {
     if (this.personImage && this.personImage !== '@') {
       return this.personImage;
@@ -574,5 +694,16 @@ export class MgtPersonCard extends MgtTemplatedComponent {
 
     const person = this.personDetails;
     return person && person.personImage ? person.personImage : null;
+  }
+
+  private getPersonBusinessPhones(person: MicrosoftGraph.Person): string[] {
+    const phones = person.phones;
+    const businessPhones: string[] = [];
+    for (const p of phones) {
+      if (p.type === 'business') {
+        businessPhones.push(p.number);
+      }
+    }
+    return businessPhones;
   }
 }

@@ -21,22 +21,43 @@ export default {
   parameters: { options: { selectedPanel: 'storybookjs/knobs/panel' } }
 };
 
-export const personCard_hover = () => html`
-  <mgt-person person-query="me" show-name show-email person-card="hover"></mgt-person>
+export const personCard = () => html`
+  <mgt-person-card person-query="me"></mgt-person-card>
+`;
 
-  <div style="margin:2em 0 0 1em;font-family:segoe ui;color:#323130;font-size:12px">
+export const personCardHover = () => html`
+  <style>
+    .note {
+      margin: 2em 0 0 1em;
+      font-family: 'Segoe UI', 'Segoe UI Web (West European)', 'Segoe UI', -apple-system, BlinkMacSystemFont, Roboto,
+        'Helvetica Neue', sans-serif;
+      color: #323130;
+      font-size: 12px;
+    }
+  </style>
+  <mgt-person person-query="me" show-name show-email person-card="hover"></mgt-person>
+  <div class="note">
     (Hover on person to view Person Card)
   </div>
 `;
 
-export const personCard_inheritDetails = () => html`
+export const personCardInheritDetails = () => html`
+  <style>
+    .note {
+      margin: 2em 0 0 1em;
+      font-family: 'Segoe UI', 'Segoe UI Web (West European)', 'Segoe UI', -apple-system, BlinkMacSystemFont, Roboto,
+        'Helvetica Neue', sans-serif;
+      color: #323130;
+      font-size: 12px;
+    }
+  </style>
   <mgt-person person-query="me" show-name show-email person-card="hover">
     <template data-type="person-card">
       <mgt-person-card inherit-details></mgt-person-card>
     </template>
   </mgt-person>
 
-  <div style="margin:2em 0 0 1em;font-family:segoe ui;color:#323130;font-size:12px">
+  <div class="note">
     (Hover on person to view Person Card)
   </div>
 `;
