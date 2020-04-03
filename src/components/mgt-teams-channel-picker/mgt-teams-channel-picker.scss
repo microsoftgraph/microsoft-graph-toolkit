@@ -403,7 +403,7 @@ $dropdown-item-selected-background: var(--dropdown-item-selected-background, #de
       color: $font-color;
       line-height: 19px;
       text-align: center;
-      color: #232222;
+      color: $font-color;
     }
 
     .message-parent {
