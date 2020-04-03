@@ -237,7 +237,7 @@ export class MgtTeamsChannelPicker extends MgtTemplatedComponent {
     if (provider && provider.state === ProviderState.SignedIn) {
       // since the component normally handles loading on hover, forces the load for items
       if (!this.items) {
-        this.requestStateUpdate();
+        await this.requestStateUpdate();
       }
 
       for (const item of this._treeViewState) {
