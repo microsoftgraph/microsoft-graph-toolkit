@@ -684,10 +684,6 @@ export class MgtTeamsChannelPicker extends MgtTemplatedComponent {
     switch (event.keyCode) {
       case 40: // down
         this._focusedIndex = (this._focusedIndex + 1) % this._focusList.length;
-        if (typeof this._focusedIndex !== 'number') {
-          this._focusedIndex = -1;
-        }
-
         this.requestUpdate();
         event.preventDefault();
         break;

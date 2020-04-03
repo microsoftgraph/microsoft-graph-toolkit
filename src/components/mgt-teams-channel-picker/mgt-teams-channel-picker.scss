@@ -59,6 +59,7 @@ $dropdown-item-selected-background: var(--dropdown-item-selected-background, #de
     }
 
     .search-icon {
+      display: inline-block;
       padding-top: 9px;
       padding-left: 9px;
     }
@@ -100,7 +101,7 @@ $dropdown-item-selected-background: var(--dropdown-item-selected-background, #de
         border: none;
         line-height: normal;
         outline: none;
-        font-family: Segoe UI;
+        font-family: var(--default-font-family, 'Segoe UI');
         font-style: normal;
         font-weight: normal;
         font-size: 14px;
@@ -117,6 +118,7 @@ $dropdown-item-selected-background: var(--dropdown-item-selected-background, #de
       }
 
       .close-icon {
+        display: inline-block;
         position: absolute;
         right: 0;
         line-height: normal;
@@ -394,7 +396,7 @@ $dropdown-item-selected-background: var(--dropdown-item-selected-background, #de
 
     .search-error-text,
     .loading-text {
-      font-family: Segoe UI;
+      font-family: var(--default-font-family, 'Segoe UI');
       font-style: normal;
       font-weight: 600;
       font-size: 14px;
