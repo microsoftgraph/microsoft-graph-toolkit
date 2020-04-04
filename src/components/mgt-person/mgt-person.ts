@@ -8,8 +8,9 @@
 import * as MicrosoftGraph from '@microsoft/microsoft-graph-types';
 import { customElement, html, property, query, TemplateResult } from 'lit-element';
 import { classMap } from 'lit-html/directives/class-map';
-import { findPerson, getEmailFromGraphEntity } from '../../graph/graph.people';
-import { getContactPhoto, getUserPhoto } from '../../graph/graph.photos';
+import { findPerson, findUserByEmail, getEmailFromGraphEntity } from '../../graph/graph.people';
+import { getContactPhoto, getUserPhoto, myPhoto } from '../../graph/graph.photos';
+import { getUserWithPhoto } from '../../graph/graph.user';
 import { Providers } from '../../Providers';
 import { ProviderState } from '../../providers/IProvider';
 import '../../styles/fabric-icon-font';
@@ -19,7 +20,6 @@ import { MgtFlyout } from '../sub-components/mgt-flyout/mgt-flyout';
 import { MgtTemplatedComponent } from '../templatedComponent';
 import { PersonCardInteraction } from './../PersonCardInteraction';
 import { styles } from './mgt-person-css';
-import { findUserByEmail } from './mgt-person.graph';
 
 /**
  * IDynamicPerson describes the person object we use throughout mgt-person,
@@ -480,23 +480,12 @@ export class MgtPerson extends MgtTemplatedComponent {
       return;
     }
 
-    // User userId or 'me' query to get the person and image
+    // Use userId or 'me' query to get the person and image
     if (this.userId || this.personQuery === 'me') {
       const graph = provider.graph.forComponent(this);
-      const batch = graph.createBatch();
+      const person = await getUserWithPhoto(graph, this.userId);
 
-      if (this.userId) {
-        batch.get('user', `/users/${this.userId}`, ['user.readbasic.all']);
-        batch.get('photo', `users/${this.userId}/photo/$value`, ['user.readbasic.all']);
-      } else {
-        batch.get('user', 'me', ['user.read']);
-        batch.get('photo', 'me/photo/$value', ['user.read']);
-      }
-
-      const response = await batch.execute();
-      this.personDetails = response.user;
-      this.personDetails.personImage = response.photo;
-
+      this.personDetails = person;
       this.personImage = this.getImage();
       return;
     }
@@ -508,10 +497,7 @@ export class MgtPerson extends MgtTemplatedComponent {
 
       if (people && people.length) {
         this.personDetails = people[0];
-
-        if (this.personImage === '@') {
-          this.loadImage();
-        }
+        this.loadImage();
       }
     }
   }
@@ -569,6 +555,10 @@ export class MgtPerson extends MgtTemplatedComponent {
       person = this.personDetails;
     }
 
+    if ((person as MicrosoftGraph.Contact).initials) {
+      return (person as MicrosoftGraph.Contact).initials;
+    }
+
     let initials = '';
     if (person.givenName) {
       initials += person.givenName[0].toUpperCase();
@@ -578,9 +568,9 @@ export class MgtPerson extends MgtTemplatedComponent {
     }
 
     if (!initials && person.displayName) {
-      const name = person.displayName.split(' ');
+      const name = person.displayName.split(/\s+/);
       for (let i = 0; i < 2 && i < name.length; i++) {
-        if (name[i][0].match(/[a-z]/i)) {
+        if (name[i][0] && name[i][0].match(/[a-z]/i)) {
           // check if letter
           initials += name[i][0].toUpperCase();
         }

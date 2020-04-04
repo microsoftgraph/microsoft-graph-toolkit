@@ -6,6 +6,7 @@
  */
 
 import { User } from '@microsoft/microsoft-graph-types';
+import { IDynamicPerson } from '../components/mgt-person/mgt-person';
 import { IGraph } from '../IGraph';
 import { prepScopes } from '../utils/GraphHelpers';
 
@@ -20,6 +21,32 @@ export function getMe(graph: IGraph): Promise<User> {
     .api('me')
     .middlewareOptions(prepScopes('user.read'))
     .get();
+}
+
+/**
+ * asnyc promise, returns IDynamicPerson
+ *
+ * @param {string} userId
+ * @returns {(Promise<IDynamicPerson>)}
+ * @memberof Graph
+ */
+
+export async function getUserWithPhoto(graph: IGraph, userId?: string): Promise<IDynamicPerson> {
+  const batch = graph.createBatch();
+  let person = null as IDynamicPerson;
+
+  if (userId) {
+    batch.get('user', `/users/${userId}`, ['user.readbasic.all']);
+    batch.get('photo', `users/${userId}/photo/$value`, ['user.readbasic.all']);
+  } else {
+    batch.get('user', 'me', ['user.read']);
+    batch.get('photo', 'me/photo/$value', ['user.read']);
+  }
+  const response = await batch.execute();
+  person = response.user;
+  person.personImage = response.photo;
+
+  return person;
 }
 
 /**
@@ -38,7 +65,7 @@ export function getUser(graph: IGraph, userPrincipleName: string): Promise<User>
 }
 
 /**
- * Returns a Promise of Graph Users array associated with the user ids arrau
+ * Returns a Promise of Graph Users array associated with the user ids array
  *
  * @export
  * @param {IGraph} graph
