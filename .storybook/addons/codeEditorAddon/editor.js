@@ -42,10 +42,11 @@ export class EditorElement extends LitElement {
         background-color: rgb(236,236,236);
         color: #616161;
         font-family: -apple-system,BlinkMacSystemFont,sans-serif;
-        font-size: 10px;
+        font-size: 11px;
         padding: 8px 18px;
         display: inline-block;
         cursor: pointer;
+        user-select: none;
         margin: 0px -2px 0px 0px;
       }
 
@@ -125,8 +126,7 @@ export class EditorElement extends LitElement {
       scrollBeyondLastLine: false,
       minimap: {
         enabled: false
-      },
-      fontSize: '12px'
+      }
     });
 
     const changeViewZones = () => {
@@ -187,17 +187,11 @@ export class EditorElement extends LitElement {
     return html`
       <div class="root">
         <div class="tab-root">
-          ${this.fileTypes.map(
-      type =>
-        html`
-                <div
-                  @click="${_ => this.showTab(type)}"
-                  class="tab ${type === this.currentType ? 'selected' : ''}"
-                >
-                  ${type}
-                </button>
-              `
-    )}
+          ${this.fileTypes.map(type => html`
+            <div @click="${_ => this.showTab(type)}"
+                class="tab ${type === this.currentType ? 'selected' : ''}">
+              ${type}
+            </div>`)}
         </div>
         <div class="editor-root">
           <slot name="editor"></slot>
