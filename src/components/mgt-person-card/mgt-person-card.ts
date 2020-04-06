@@ -501,6 +501,21 @@ export class MgtPersonCard extends MgtTemplatedComponent {
    * @memberof MgtPersonCard
    */
   protected async loadState() {
+    if (!this.personDetails && this.inheritDetails) {
+      // User person details inherited from parent tree
+      let parent = this.parentElement;
+      while (parent && parent.tagName !== 'MGT-PERSON') {
+        parent = parent.parentElement;
+      }
+
+      if (parent && (parent as MgtPerson).personDetails) {
+        this.personDetails = (parent as MgtPerson).personDetails;
+        this.personImage = (parent as MgtPerson).personImage;
+      }
+
+      return;
+    }
+
     const provider = Providers.globalProvider;
 
     // check if user is signed in
@@ -523,17 +538,6 @@ export class MgtPersonCard extends MgtTemplatedComponent {
         // in some cases we might only have name or email, but need to find the image
         // use @ for the image value to search for an image
         this.loadImage();
-      }
-    } else if (this.inheritDetails) {
-      // User person details inherited from parent tree
-      let parent = this.parentElement;
-      while (parent && parent.tagName !== 'MGT-PERSON') {
-        parent = parent.parentElement;
-      }
-
-      if (parent && (parent as MgtPerson).personDetails) {
-        this.personDetails = (parent as MgtPerson).personDetails;
-        this.personImage = (parent as MgtPerson).personImage;
       }
     } else if (this.userId || this.personQuery === 'me') {
       // Use userId or 'me' query to get the person and image
