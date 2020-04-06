@@ -27,3 +27,11 @@ export const person = () => html`
 export const personPhotoOnly = () => html`
   <mgt-person person-query="me"></mgt-person>
 `;
+
+export const personCardHover = () => html`
+  <mgt-person person-query="me" person-card="hover"></mgt-person>
+`;
+
+export const personCardClick = () => html`
+  <mgt-person person-query="me" person-card="click"></mgt-person>
+`;
