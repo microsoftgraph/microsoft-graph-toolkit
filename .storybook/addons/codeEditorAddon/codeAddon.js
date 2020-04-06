@@ -73,21 +73,34 @@ export const withCodeEditor = makeDecorator({
       storyElement = story;
     }
 
+    // format a string to fit editor indentation
+    // index is the position of first char after spaces (number of spaces from beginning of block)
+    // when writing stories in our current format, there are always 2 spaces for html, 4 spaces for css and js
+    function formatEditorContent(str, index) {
+      return str
+        .split('\n')
+        .map(str => (str.length && str.charAt(index - 1) && str.charAt(index - 1) == ' ' ? str.substr(index) : str))
+        .join('\n')
+        .replace(/  /gm, '    ')
+        .trim();
+    }
+
     let scriptMatches = scriptRegex.exec(storyHtml);
-    let scriptCode = scriptMatches && scriptMatches.length > 1 ? scriptMatches[1].trim() : '';
+    let scriptCode = scriptMatches && scriptMatches.length > 1 ? formatEditorContent(scriptMatches[1], 4) : '';
 
     let styleMatches = styleRegex.exec(storyHtml);
-    let styleCode = styleMatches && styleMatches.length > 1 ? styleMatches[1].trim() : '';
+    let styleCode = styleMatches && styleMatches.length > 1 ? formatEditorContent(styleMatches[1], 4) : '';
 
     storyHtml = storyHtml
       .replace(styleRegex, '')
       .replace(scriptRegex, '')
-      .replace(/\n?<!---->\n?/g, '')
-      .trim();
+      .replace(/\n?<!---->\n?/g, '');
+
+    let formatedStoryHtml = formatEditorContent(storyHtml, 2);
 
     let editor = new EditorElement();
     editor.files = {
-      html: storyHtml,
+      html: formatedStoryHtml,
       js: scriptCode,
       css: styleCode
     };
