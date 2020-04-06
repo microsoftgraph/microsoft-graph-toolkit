@@ -113,10 +113,10 @@ export const withCodeEditor = makeDecorator({
     root.appendChild(editor);
 
     window.addEventListener('resize', () => {
-      storyElement.style.height = '';
-      storyElement.style.width = '';
-      editor.style.height = '';
-      editor.style.width = '';
+      storyElementWrapper.style.height = null;
+      storyElementWrapper.style.width = null;
+      editor.style.height = null;
+      editor.style.width = null;
     });
 
     return root;
