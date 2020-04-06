@@ -512,8 +512,6 @@ export class MgtPersonCard extends MgtTemplatedComponent {
         this.personDetails = (parent as MgtPerson).personDetails;
         this.personImage = (parent as MgtPerson).personImage;
       }
-
-      return;
     }
 
     const provider = Providers.globalProvider;
