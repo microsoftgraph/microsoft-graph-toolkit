@@ -173,7 +173,9 @@ export class MgtPerson extends MgtTemplatedComponent {
    * @type {MgtFlyout}
    * @memberof MgtPerson
    */
-  @query('.flyout') protected flyout: MgtFlyout;
+  protected get flyout(): MgtFlyout {
+    return this.renderRoot.querySelector('.flyout');
+  }
 
   @property({ attribute: false }) private _personCardShouldRender: boolean;
   private _personDetails: IDynamicPerson;

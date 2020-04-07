@@ -98,11 +98,11 @@ export async function getUsersForUserIds(graph: IGraph, userIds: string[]): Prom
     }
 
     return people;
-  } catch {
+  } catch (_) {
     // fallback to making the request one by one
     try {
       return Promise.all(userIds.filter(id => id && id !== '').map(id => getUser(graph, id)));
-    } catch {
+    } catch (_) {
       return [];
     }
   }

@@ -180,7 +180,9 @@ export class MgtTeamsChannelPicker extends MgtTemplatedComponent {
   }
 
   // User input in search
-  @query('.team-chosen-input') private _input: HTMLInputElement;
+  private get _input(): HTMLInputElement {
+    return this.renderRoot.querySelector('.team-chosen-input');
+  }
   private _inputValue: string = '';
 
   private _isFocused = false;

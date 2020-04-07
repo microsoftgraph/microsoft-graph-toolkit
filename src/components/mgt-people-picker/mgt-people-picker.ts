@@ -113,7 +113,9 @@ export class MgtPeoplePicker extends MgtTemplatedComponent {
    * @type {MgtFlyout}
    * @memberof MgtLogin
    */
-  @query('.flyout') protected flyout: MgtFlyout;
+  protected get flyout(): MgtFlyout {
+    return this.renderRoot.querySelector('.flyout');
+  }
 
   // if search is still loading don't load "people not found" state
   @property({ attribute: false }) private _showLoading: boolean;
@@ -469,7 +471,7 @@ export class MgtPeoplePicker extends MgtTemplatedComponent {
         try {
           const graph = provider.graph.forComponent(this);
           this._groupPeople = await getPeopleFromGroup(graph, this.groupId);
-        } catch {
+        } catch (_) {
           this._groupPeople = [];
         }
       }

@@ -84,8 +84,12 @@ export class MgtFlyout extends LitElement {
   // if the flyout is opened once, this will keep the flyout in the dom
   private _renderedOnce = false;
 
-  @query('.flyout') private _flyout: HTMLElement;
-  @query('.anchor') private _anchor: HTMLElement;
+  private get _flyout(): HTMLElement {
+    return this.renderRoot.querySelector('.flyout');
+  }
+  private get _anchor(): HTMLElement {
+    return this.renderRoot.querySelector('.anchor');
+  }
 
   private _isOpen: boolean;
 
@@ -261,14 +265,14 @@ export class MgtFlyout extends LitElement {
           // center in between
           left = (windowRect.width - flyoutRect.width) / 2;
         }
-      } else if (anchorRect.x + flyoutRect.width + this._edgePadding > windowRect.width) {
+      } else if (anchorRect.left + flyoutRect.width + this._edgePadding > windowRect.width) {
         // it will render off screen to the right, move to the left
-        left = anchorRect.x - (anchorRect.x + flyoutRect.width + this._edgePadding - windowRect.width);
-      } else if (anchorRect.x < this._edgePadding) {
+        left = anchorRect.left - (anchorRect.left + flyoutRect.width + this._edgePadding - windowRect.width);
+      } else if (anchorRect.left < this._edgePadding) {
         // it will render off screen to the left, move to the right
         left = this._edgePadding;
       } else {
-        left = anchorRect.x;
+        left = anchorRect.left;
       }
 
       if (flyoutRect.height + 2 * this._edgePadding > windowRect.height) {
@@ -279,20 +283,20 @@ export class MgtFlyout extends LitElement {
           top = (windowRect.height - flyoutRect.height) / 2;
         }
       } else if (
-        anchorRect.y + anchorRect.height + flyoutRect.height + this._edgePadding > windowRect.height &&
-        anchorRect.y - flyoutRect.height - this._edgePadding > 0
+        anchorRect.top + anchorRect.height + flyoutRect.height + this._edgePadding > windowRect.height &&
+        anchorRect.top - flyoutRect.height - this._edgePadding > 0
       ) {
-        if (windowRect.height - anchorRect.y + flyoutRect.height < 0) {
+        if (windowRect.height - anchorRect.top + flyoutRect.height < 0) {
           bottom = windowRect.height - flyoutRect.height - this._edgePadding;
         } else {
-          bottom = Math.max(windowRect.height - anchorRect.y, this._edgePadding);
+          bottom = Math.max(windowRect.height - anchorRect.top, this._edgePadding);
         }
       } else {
-        if (anchorRect.y + anchorRect.height + flyoutRect.height + this._edgePadding > windowRect.height) {
+        if (anchorRect.top + anchorRect.height + flyoutRect.height + this._edgePadding > windowRect.height) {
           // it will render offscreen bellow, move it up a bit
           top = windowRect.height - flyoutRect.height - this._edgePadding;
         } else {
-          top = Math.max(anchorRect.y + anchorRect.height, this._edgePadding);
+          top = Math.max(anchorRect.top + anchorRect.height, this._edgePadding);
         }
       }
 
