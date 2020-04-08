@@ -61,7 +61,9 @@ export class MgtLogin extends MgtBaseComponent {
    * @type {MgtFlyout}
    * @memberof MgtLogin
    */
-  @query('.flyout') protected flyout: MgtFlyout;
+  protected get flyout(): MgtFlyout {
+    return this.renderRoot.querySelector('.flyout');
+  }
 
   /**
    * determines if login menu popup should be showing
