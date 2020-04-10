@@ -220,7 +220,7 @@ export class MgtPerson extends MgtTemplatedComponent {
    */
   public render() {
     // Loading
-    if (this.isLoadingState) {
+    if (this.isLoadingState && !this.personDetails) {
       return this.renderLoading();
     }
 
@@ -477,29 +477,23 @@ export class MgtPerson extends MgtTemplatedComponent {
       // in some cases we might only have name or email, but need to find the image
       // use @ for the image value to search for an image
       if (this.personImage === '@' && !this.personDetails.personImage) {
-        this.loadImage();
+        await this.loadImage();
       }
-      return;
-    }
-
-    // Use userId or 'me' query to get the person and image
-    if (this.userId || this.personQuery === 'me') {
+    } else if (this.userId || this.personQuery === 'me') {
+      // Use userId or 'me' query to get the person and image
       const graph = provider.graph.forComponent(this);
       const person = await getUserWithPhoto(graph, this.userId);
 
       this.personDetails = person;
       this.personImage = this.getImage();
-      return;
-    }
-
-    // Use the personQuery to find our person.
-    if (this.personQuery) {
+    } else if (this.personQuery) {
+      // Use the personQuery to find our person.
       const graph = provider.graph.forComponent(this);
       const people = await findPerson(graph, this.personQuery);
 
       if (people && people.length) {
         this.personDetails = people[0];
-        this.loadImage();
+        await this.loadImage();
       }
     }
   }
