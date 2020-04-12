@@ -96,9 +96,21 @@ export class MgtPeople extends MgtTemplatedComponent {
    */
 
   @property({
-    attribute: 'people-query'
+    attribute: 'people-query',
+    converter: (value, type) => {
+      return value.split(',').map(v => v.trim());
+    }
   })
-  public peopleQuery: string[];
+  public get peopleQuery(): string[] {
+    return this._peopleQuery;
+  }
+  public set peopleQuery(value: string[]) {
+    if (arraysAreEqual(this._peopleQuery, value)) {
+      return;
+    }
+    this._peopleQuery = value;
+    this.requestStateUpdate(true);
+  }
 
   /**
    * developer determined max people shown in component
@@ -132,6 +144,7 @@ export class MgtPeople extends MgtTemplatedComponent {
 
   private _groupId: string;
   private _userIds: string[];
+  private _peopleQuery: string[];
 
   constructor() {
     super();
