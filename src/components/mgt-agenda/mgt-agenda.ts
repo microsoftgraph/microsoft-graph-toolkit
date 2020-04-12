@@ -397,13 +397,9 @@ export class MgtAgenda extends MgtTemplatedComponent {
     return html`
       <mgt-people
         class="event-attendees"
-        .people=${event.attendees.map(
-          attendee =>
-            ({
-              displayName: attendee.emailAddress.name,
-              emailAddresses: [attendee.emailAddress]
-            } as MicrosoftGraph.Contact)
-        )}
+        .peopleQuery=${event.attendees.map(attendee => {
+          return attendee.emailAddress.address;
+        })}
       ></mgt-people>
     `;
   }
