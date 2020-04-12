@@ -11,8 +11,11 @@ import * as strings from 'MgtDemoWebPartStrings';
 import MgtDemo from './components/MgtDemo';
 import { IMgtDemoProps } from './components/IMgtDemoProps';
 
+// import web component polyfills for browsers that need them
+import '@webcomponents/webcomponentsjs/webcomponents-bundle.js';
+
 // import the providers at the top of the page
-import { Providers, SharePointProvider } from '@microsoft/mgt/dist/commonjs';
+import { Providers, SharePointProvider } from '@microsoft/mgt';
 
 export interface IMgtDemoWebPartProps {
   description: string;
