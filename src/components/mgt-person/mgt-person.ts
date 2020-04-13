@@ -8,8 +8,8 @@
 import * as MicrosoftGraph from '@microsoft/microsoft-graph-types';
 import { customElement, html, property, query, TemplateResult } from 'lit-element';
 import { classMap } from 'lit-html/directives/class-map';
-import { findPerson, findUserByEmail, getEmailFromGraphEntity } from '../../graph/graph.people';
-import { getContactPhoto, getUserPhoto, myPhoto } from '../../graph/graph.photos';
+import { findPerson, getEmailFromGraphEntity } from '../../graph/graph.people';
+import { getPersonImage } from '../../graph/graph.photos';
 import { getUserWithPhoto } from '../../graph/graph.user';
 import { Providers } from '../../Providers';
 import { ProviderState } from '../../providers/IProvider';
@@ -463,6 +463,7 @@ export class MgtPerson extends MgtTemplatedComponent {
    */
   protected async loadState() {
     const provider = Providers.globalProvider;
+    const graph = provider.graph.forComponent(this);
 
     if (!provider || provider.state === ProviderState.Loading) {
       return;
@@ -477,14 +478,17 @@ export class MgtPerson extends MgtTemplatedComponent {
       // in some cases we might only have name or email, but need to find the image
       // use @ for the image value to search for an image
       if (this.personImage === '@' && !this.personDetails.personImage) {
-        this.loadImage();
+        const image = await getPersonImage(graph, this.personDetails);
+        if (image) {
+          this.personDetails.personImage = image;
+          this.personImage = image;
+        }
       }
       return;
     }
 
     // Use userId or 'me' query to get the person and image
     if (this.userId || this.personQuery === 'me') {
-      const graph = provider.graph.forComponent(this);
       const person = await getUserWithPhoto(graph, this.userId);
 
       this.personDetails = person;
@@ -494,52 +498,17 @@ export class MgtPerson extends MgtTemplatedComponent {
 
     // Use the personQuery to find our person.
     if (this.personQuery) {
-      const graph = provider.graph.forComponent(this);
       const people = await findPerson(graph, this.personQuery);
 
       if (people && people.length) {
         this.personDetails = people[0];
-        this.loadImage();
-      }
-    }
-  }
+        const image = await getPersonImage(graph, people[0]);
 
-  private async loadImage() {
-    const provider = Providers.globalProvider;
-    const graph = provider.graph.forComponent(this);
-    const person = this.personDetails;
-    let image: string;
-
-    if ((person as MicrosoftGraph.Person).userPrincipalName) {
-      // try to find a user by userPrincipalName
-      const userPrincipalName = (person as MicrosoftGraph.Person).userPrincipalName;
-      image = await getUserPhoto(graph, userPrincipalName);
-    } else {
-      // try to find a user by e-mail
-      const email = getEmailFromGraphEntity(person);
-      if (email) {
-        const users = await findUserByEmail(graph, email);
-        if (users && users.length) {
-          // Check for an OrganizationUser
-          const orgUser = users.find(p => {
-            return (p as any).personType && (p as any).personType.subclass === 'OrganizationUser';
-          });
-          if (orgUser) {
-            // Lookup by userId
-            const userId = (users[0] as MicrosoftGraph.Person).scoredEmailAddresses[0].address;
-            image = await getUserPhoto(graph, userId);
-          } else {
-            // Lookup by contactId
-            const contactId = users[0].id;
-            image = await getContactPhoto(graph, contactId);
-          }
+        if (image) {
+          this.personDetails.personImage = image;
+          this.personImage = image;
         }
       }
-    }
-
-    if (image) {
-      this.personDetails.personImage = image;
-      this.personImage = image;
     }
   }
 

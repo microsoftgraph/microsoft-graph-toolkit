@@ -9,6 +9,8 @@ import { User } from '@microsoft/microsoft-graph-types';
 import { IDynamicPerson } from '../components/mgt-person/mgt-person';
 import { IGraph } from '../IGraph';
 import { prepScopes } from '../utils/GraphHelpers';
+import { findPerson } from './graph.people';
+import { getPersonImage } from './graph.photos';
 
 /**
  * async promise, returns Graph User data relating to the user logged in
@@ -106,4 +108,35 @@ export async function getUsersForUserIds(graph: IGraph, userIds: string[]): Prom
       return [];
     }
   }
+}
+
+/**
+ * Returns a Promise of Graph Users array associated with the people queries array
+ *
+ * @export
+ * @param {IGraph} graph
+ * @param {string[]} peopleQueries, an array of string ids
+ * @returns {Promise<User[]>}
+ */
+export async function getUsersForPeopleQueries(graph: IGraph, peopleQueries: string[]): Promise<User[]> {
+  if (!peopleQueries || peopleQueries.length === 0) {
+    return [];
+  }
+
+  const people = [];
+  for (const personQuery of peopleQueries) {
+    if (personQuery !== '') {
+      const person = (await findPerson(graph, personQuery)) as IDynamicPerson[];
+      if (person && person.length) {
+        people.push(person[0]);
+
+        const image = await getPersonImage(graph, person[0]);
+        if (image) {
+          person[0].personImage = image;
+        }
+      }
+    }
+  }
+
+  return people;
 }

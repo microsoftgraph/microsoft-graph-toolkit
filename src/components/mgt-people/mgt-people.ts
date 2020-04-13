@@ -9,7 +9,7 @@ import * as MicrosoftGraph from '@microsoft/microsoft-graph-types';
 import { customElement, html, property, TemplateResult } from 'lit-element';
 import { repeat } from 'lit-html/directives/repeat';
 import { getPeople, getPeopleFromGroup } from '../../graph/graph.people';
-import { getUsersForUserIds } from '../../graph/graph.user';
+import { getUsersForPeopleQueries, getUsersForUserIds } from '../../graph/graph.user';
 import { Providers } from '../../Providers';
 import { ProviderState } from '../../providers/IProvider';
 import '../../styles/fabric-icon-font';
@@ -96,19 +96,19 @@ export class MgtPeople extends MgtTemplatedComponent {
    */
 
   @property({
-    attribute: 'people-query',
+    attribute: 'people-queries',
     converter: (value, type) => {
       return value.split(',').map(v => v.trim());
     }
   })
-  public get peopleQuery(): string[] {
-    return this._peopleQuery;
+  public get peopleQueries(): string[] {
+    return this._peopleQueries;
   }
-  public set peopleQuery(value: string[]) {
-    if (arraysAreEqual(this._peopleQuery, value)) {
+  public set peopleQueries(value: string[]) {
+    if (arraysAreEqual(this._peopleQueries, value)) {
       return;
     }
-    this._peopleQuery = value;
+    this._peopleQueries = value;
     this.requestStateUpdate(true);
   }
 
@@ -144,7 +144,7 @@ export class MgtPeople extends MgtTemplatedComponent {
 
   private _groupId: string;
   private _userIds: string[];
-  private _peopleQuery: string[];
+  private _peopleQueries: string[];
 
   constructor() {
     super();
@@ -293,8 +293,8 @@ export class MgtPeople extends MgtTemplatedComponent {
           this.people = await getPeopleFromGroup(graph, this.groupId);
         } else if (this.userIds) {
           this.people = await getUsersForUserIds(graph, this.userIds);
-        } else if (this.peopleQuery) {
-          this.people = await getUsersForUserIds(graph, this.peopleQuery);
+        } else if (this.peopleQueries) {
+          this.people = await getUsersForPeopleQueries(graph, this.peopleQueries);
         } else {
           this.people = await getPeople(graph);
         }
