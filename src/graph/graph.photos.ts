@@ -7,11 +7,11 @@
 
 import { ResponseType } from '@microsoft/microsoft-graph-client';
 import * as MicrosoftGraph from '@microsoft/microsoft-graph-types';
-import { IDynamicPerson } from '../components/mgt-person/mgt-person';
 import { IGraph } from '../IGraph';
 import { prepScopes } from '../utils/GraphHelpers';
 import { blobToBase64 } from '../utils/Utils';
 import { findUserByEmail, getEmailFromGraphEntity } from './graph.people';
+import { IDynamicPerson } from './Types';
 
 /**
  * retrieves a photo for the specified resource.
