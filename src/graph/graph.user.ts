@@ -10,7 +10,7 @@ import { IGraph } from '../IGraph';
 import { prepScopes } from '../utils/GraphHelpers';
 import { findPerson } from './graph.people';
 import { getPersonImage } from './graph.photos';
-import { IDynamicPerson } from './Types';
+import { IDynamicPerson } from './types';
 
 /**
  * async promise, returns Graph User data relating to the user logged in

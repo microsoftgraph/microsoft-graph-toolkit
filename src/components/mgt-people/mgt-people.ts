@@ -10,7 +10,7 @@ import { customElement, html, property, TemplateResult } from 'lit-element';
 import { repeat } from 'lit-html/directives/repeat';
 import { getPeople, getPeopleFromGroup } from '../../graph/graph.people';
 import { getUsersForPeopleQueries, getUsersForUserIds } from '../../graph/graph.user';
-import { IDynamicPerson } from '../../graph/Types';
+import { IDynamicPerson } from '../../graph/types';
 import { Providers } from '../../Providers';
 import { ProviderState } from '../../providers/IProvider';
 import '../../styles/fabric-icon-font';

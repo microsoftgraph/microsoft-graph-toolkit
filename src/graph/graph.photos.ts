@@ -11,7 +11,7 @@ import { IGraph } from '../IGraph';
 import { prepScopes } from '../utils/GraphHelpers';
 import { blobToBase64 } from '../utils/Utils';
 import { findUserByEmail, getEmailFromGraphEntity } from './graph.people';
-import { IDynamicPerson } from './Types';
+import { IDynamicPerson } from './types';
 
 /**
  * retrieves a photo for the specified resource.
