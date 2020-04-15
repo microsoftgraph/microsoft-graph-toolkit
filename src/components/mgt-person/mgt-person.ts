@@ -572,7 +572,7 @@ export class MgtPerson extends MgtTemplatedComponent {
     if (!initials && person.displayName) {
       const name = person.displayName.split(/\s+/);
       for (let i = 0; i < 2 && i < name.length; i++) {
-        if (name[i][0] && name[i][0].match(/[a-z]/i)) {
+        if (name[i][0] && name[i][0].match(/\p{L}/gu)) {
           // check if letter
           initials += name[i][0].toUpperCase();
         }
