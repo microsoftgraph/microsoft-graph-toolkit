@@ -397,7 +397,7 @@ export class MgtAgenda extends MgtTemplatedComponent {
     return html`
       <mgt-people
         class="event-attendees"
-        .peopleQuery=${event.attendees.map(attendee => {
+        .peopleQueries=${event.attendees.map(attendee => {
           return attendee.emailAddress.address;
         })}
       ></mgt-people>

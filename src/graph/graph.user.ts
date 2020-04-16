@@ -6,9 +6,11 @@
  */
 
 import { User } from '@microsoft/microsoft-graph-types';
-import { IDynamicPerson } from '../components/mgt-person/mgt-person';
 import { IGraph } from '../IGraph';
 import { prepScopes } from '../utils/GraphHelpers';
+import { findPerson } from './graph.people';
+import { getPersonImage } from './graph.photos';
+import { IDynamicPerson } from './types';
 
 /**
  * async promise, returns Graph User data relating to the user logged in
@@ -102,6 +104,57 @@ export async function getUsersForUserIds(graph: IGraph, userIds: string[]): Prom
     // fallback to making the request one by one
     try {
       return Promise.all(userIds.filter(id => id && id !== '').map(id => getUser(graph, id)));
+    } catch (_) {
+      return [];
+    }
+  }
+}
+
+/**
+ * Returns a Promise of Graph Users array associated with the people queries array
+ *
+ * @export
+ * @param {IGraph} graph
+ * @param {string[]} peopleQueries, an array of string ids
+ * @returns {Promise<User[]>}
+ */
+export async function getUsersForPeopleQueries(graph: IGraph, peopleQueries: string[]): Promise<User[]> {
+  if (!peopleQueries || peopleQueries.length === 0) {
+    return [];
+  }
+
+  const batch = graph.createBatch();
+  const people = [];
+
+  for (const personQuery of peopleQueries) {
+    if (personQuery !== '') {
+      batch.get(personQuery, `/me/people?$search="${personQuery}"`, ['people.read']);
+    }
+  }
+
+  try {
+    const response = await batch.execute();
+
+    for (const personQuery of peopleQueries) {
+      const person = response[personQuery];
+      if (person) {
+        people.push(person.value[0]);
+      }
+    }
+
+    return people;
+  } catch (_) {
+    try {
+      return Promise.all(
+        peopleQueries
+          .filter(personQuery => personQuery && personQuery !== '')
+          .map(async personQuery => {
+            const personArray = await findPerson(graph, personQuery);
+            if (personArray && personArray.length) {
+              return personArray[0];
+            }
+          })
+      );
     } catch (_) {
       return [];
     }

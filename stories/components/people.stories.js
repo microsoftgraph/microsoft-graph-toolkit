@@ -34,8 +34,8 @@ export const UserIds = () => html`
   ></mgt-people>
 `;
 
-export const PeopleQuery = () => html`
+export const PeopleQueries = () => html`
   <mgt-people
-    people-query="LidiaH@M365x214355.onmicrosoft.com, MeganB@M365x214355.onmicrosoft.com, LynneR@M365x214355.onmicrosoft.com, BrianJ@M365x214355.onmicrosoft.com, JoniS@M365x214355.onmicrosoft.com"
+    people-queries="LidiaH@M365x214355.onmicrosoft.com, Megan Bowen, Lynne Robbins, BrianJ@M365x214355.onmicrosoft.com, JoniS@M365x214355.onmicrosoft.com"
   ></mgt-people>
 `;
