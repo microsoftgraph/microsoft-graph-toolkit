@@ -145,20 +145,16 @@ export async function getUsersForPeopleQueries(graph: IGraph, peopleQueries: str
     return people;
   } catch (_) {
     try {
-      for (const personQuery of peopleQueries) {
-        if (personQuery !== '') {
-          const person = (await findPerson(graph, personQuery)) as IDynamicPerson[];
-          if (person && person.length) {
-            people.push(person[0]);
-
-            const image = await getPersonImage(graph, person[0]);
-            if (image) {
-              person[0].personImage = image;
+      return Promise.all(
+        peopleQueries
+          .filter(personQuery => personQuery && personQuery !== '')
+          .map(async personQuery => {
+            const personArray = await findPerson(graph, personQuery);
+            if (personArray && personArray.length) {
+              return personArray[0];
             }
-          }
-        }
-      }
-      return people;
+          })
+      );
     } catch (_) {
       return [];
     }
