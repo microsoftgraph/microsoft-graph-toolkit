@@ -251,7 +251,7 @@ export class MgtPersonCard extends MgtTemplatedComponent {
   protected renderPersonName(person?: IDynamicPerson): TemplateResult {
     person = person || this.personDetails;
     return html`
-      <div class="display-name">${person.displayName}</div>
+      <div class="display-name" title="${person.displayName}">${person.displayName}</div>
     `;
   }
 
