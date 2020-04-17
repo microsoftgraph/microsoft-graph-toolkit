@@ -143,7 +143,15 @@ export class TeamsProvider extends MsalProvider {
 
     teams.initialize();
 
-    const paramsString = localStorage.getItem(this._sessionStorageParametersKey);
+    // if we were signing out before, then we are done
+    if (sessionStorage.getItem(this._sessionStorageLogoutInProgress)) {
+      teams.authentication.notifySuccess();
+    }
+
+    const url = new URL(window.location.href);
+    const isSignOut = url.searchParams.get('signout');
+
+    const paramsString = localStorage.getItem(this._localStorageParametersKey);
     let authParams: AuthParams;
 
     if (paramsString) {
@@ -181,6 +189,11 @@ export class TeamsProvider extends MsalProvider {
       // how do we handle when user can't sign in
       // change to promise and return status
       if (provider.state === ProviderState.SignedOut) {
+        if (isSignOut) {
+          teams.authentication.notifySuccess();
+          return;
+        }
+
         // make sure we are calling login only once
         if (!sessionStorage.getItem(this._sessionStorageLoginInProgress)) {
           sessionStorage.setItem(this._sessionStorageLoginInProgress, 'true');
@@ -190,6 +203,12 @@ export class TeamsProvider extends MsalProvider {
           });
         }
       } else if (provider.state === ProviderState.SignedIn) {
+        if (isSignOut) {
+          sessionStorage.setItem(this._sessionStorageLogoutInProgress, 'true');
+          await provider.logout();
+          return;
+        }
+
         try {
           const accessToken = await provider.getAccessTokenForScopes(...provider.scopes);
           teams.authentication.notifySuccess(accessToken);
@@ -203,8 +222,9 @@ export class TeamsProvider extends MsalProvider {
     handleProviderState();
   }
 
-  private static _sessionStorageParametersKey = 'msg-teamsprovider-auth-parameters';
+  private static _localStorageParametersKey = 'msg-teamsprovider-auth-parameters';
   private static _sessionStorageLoginInProgress = 'msg-teamsprovider-login-in-progress';
+  private static _sessionStorageLogoutInProgress = 'msg-teamsprovider-logout-in-progress';
 
   private teamsContext;
   private _authPopupUrl: string;
@@ -243,13 +263,44 @@ export class TeamsProvider extends MsalProvider {
           scopes: this.scopes.join(',')
         };
 
-        localStorage.setItem(TeamsProvider._sessionStorageParametersKey, JSON.stringify(authParams));
+        localStorage.setItem(TeamsProvider._localStorageParametersKey, JSON.stringify(authParams));
 
         const url = new URL(this._authPopupUrl, new URL(window.location.href));
 
         teams.authentication.authenticate({
           failureCallback: reason => {
             this.setState(ProviderState.SignedOut);
+            reject();
+          },
+          successCallback: result => {
+            this.trySilentSignIn();
+            resolve();
+          },
+          url: url.href
+        });
+      });
+    });
+  }
+
+  /**
+   * sign out user
+   *
+   * @returns {Promise<void>}
+   * @memberof MsalProvider
+   */
+  public async logout(): Promise<void> {
+    const teams = TeamsHelper.microsoftTeamsLib;
+
+    return new Promise((resolve, reject) => {
+      teams.getContext(context => {
+        this.teamsContext = context;
+
+        const url = new URL(this._authPopupUrl, new URL(window.location.href));
+        url.searchParams.append('signout', 'true');
+
+        teams.authentication.authenticate({
+          failureCallback: reason => {
+            this.trySilentSignIn();
             reject();
           },
           successCallback: result => {
