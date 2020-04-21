@@ -9,12 +9,12 @@ import * as MicrosoftGraph from '@microsoft/microsoft-graph-types';
 import { customElement, html, property, TemplateResult } from 'lit-element';
 import { repeat } from 'lit-html/directives/repeat';
 import { getPeople, getPeopleFromGroup } from '../../graph/graph.people';
-import { getUsersForUserIds } from '../../graph/graph.user';
+import { getUsersForPeopleQueries, getUsersForUserIds } from '../../graph/graph.user';
+import { IDynamicPerson } from '../../graph/types';
 import { Providers } from '../../Providers';
 import { ProviderState } from '../../providers/IProvider';
 import '../../styles/fabric-icon-font';
 import { arraysAreEqual } from '../../utils/Utils';
-import { IDynamicPerson } from '../mgt-person/mgt-person';
 import { MgtTemplatedComponent } from '../templatedComponent';
 import { PersonCardInteraction } from './../PersonCardInteraction';
 import { styles } from './mgt-people-css';
@@ -91,6 +91,28 @@ export class MgtPeople extends MgtTemplatedComponent {
   public people: IDynamicPerson[];
 
   /**
+   * allows developer to define queries of people for component
+   * @type {string[]}
+   */
+
+  @property({
+    attribute: 'people-queries',
+    converter: (value, type) => {
+      return value.split(',').map(v => v.trim());
+    }
+  })
+  public get peopleQueries(): string[] {
+    return this._peopleQueries;
+  }
+  public set peopleQueries(value: string[]) {
+    if (arraysAreEqual(this._peopleQueries, value)) {
+      return;
+    }
+    this._peopleQueries = value;
+    this.requestStateUpdate(true);
+  }
+
+  /**
    * developer determined max people shown in component
    * @type {number}
    */
@@ -122,6 +144,7 @@ export class MgtPeople extends MgtTemplatedComponent {
 
   private _groupId: string;
   private _userIds: string[];
+  private _peopleQueries: string[];
 
   constructor() {
     super();
@@ -270,6 +293,8 @@ export class MgtPeople extends MgtTemplatedComponent {
           this.people = await getPeopleFromGroup(graph, this.groupId);
         } else if (this.userIds) {
           this.people = await getUsersForUserIds(graph, this.userIds);
+        } else if (this.peopleQueries) {
+          this.people = await getUsersForPeopleQueries(graph, this.peopleQueries);
         } else {
           this.people = await getPeople(graph);
         }
