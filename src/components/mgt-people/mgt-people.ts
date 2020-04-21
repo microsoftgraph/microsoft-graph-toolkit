@@ -8,7 +8,9 @@
 import * as MicrosoftGraph from '@microsoft/microsoft-graph-types';
 import { customElement, html, property, TemplateResult } from 'lit-element';
 import { repeat } from 'lit-html/directives/repeat';
+import { BetaGraph } from '../../BetaGraph';
 import { getPeople, getPeopleFromGroup } from '../../graph/graph.people';
+import { getPeoplePresence } from '../../graph/graph.presence';
 import { getUsersForPeopleQueries, getUsersForUserIds } from '../../graph/graph.user';
 import { IDynamicPerson } from '../../graph/types';
 import { Providers } from '../../Providers';
@@ -123,6 +125,16 @@ export class MgtPeople extends MgtTemplatedComponent {
   public showMax: number;
 
   /**
+   * determines if person component renders presence
+   * @type {boolean}
+   */
+  @property({
+    attribute: 'show-presence',
+    type: Boolean
+  })
+  public showPresence: boolean;
+
+  /**
    * Sets how the person-card is invoked
    * Set to PersonCardInteraction.none to not show the card
    *
@@ -145,6 +157,9 @@ export class MgtPeople extends MgtTemplatedComponent {
   private _groupId: string;
   private _userIds: string[];
   private _peopleQueries: string[];
+
+  // tslint:disable-next-line:completed-docs
+  private _peoplePresence: Array<{ '@odata.context': string; id: string; availability: string; activity: string }>;
 
   constructor() {
     super();
@@ -250,6 +265,17 @@ export class MgtPeople extends MgtTemplatedComponent {
    * @memberof MgtPeople
    */
   protected renderPerson(person: MicrosoftGraph.User | MicrosoftGraph.Person | MicrosoftGraph.Contact): TemplateResult {
+    // Get person presence from _peoplePresence to pass to mgt-person
+    let personPresence = null;
+    for (const presenceObj of this._peoplePresence) {
+      if (presenceObj.id === person.id) {
+        personPresence = {
+          activity: presenceObj.activity,
+          availability: presenceObj.availability,
+          id: presenceObj.id
+        };
+      }
+    }
     return (
       this.renderTemplate('person', { person }, person.id) ||
       // set image to @ to flag the mgt-person component to
@@ -259,6 +285,8 @@ export class MgtPeople extends MgtTemplatedComponent {
           .personDetails=${person}
           .personImage=${'@'}
           .personCardInteraction=${this.personCardInteraction}
+          .showPresence=${this.showPresence}
+          .personPresence=${personPresence}
         ></mgt-person>
       `
     );
@@ -288,7 +316,16 @@ export class MgtPeople extends MgtTemplatedComponent {
 
       if (provider && provider.state === ProviderState.SignedIn) {
         const graph = provider.graph.forComponent(this);
+        const betaGraph = BetaGraph.fromGraph(graph);
 
+        // populate presence for people only if userIds array exist
+        if (this.showPresence && this.userIds) {
+          this._peoplePresence = await getPeoplePresence(betaGraph, this.userIds);
+        } else {
+          this._peoplePresence = [];
+        }
+
+        // populate people
         if (this.groupId) {
           this.people = await getPeopleFromGroup(graph, this.groupId);
         } else if (this.userIds) {

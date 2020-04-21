@@ -11,15 +11,15 @@
 
 :host {
   display: block;
-  --default-font-family: "Segoe UI", "Segoe UI Web (West European)", "Segoe UI",
-    -apple-system, BlinkMacSystemFont, Roboto, "Helvetica Neue", sans-serif;
+  --default-font-family: 'Segoe UI', 'Segoe UI Web (West European)', 'Segoe UI', -apple-system, BlinkMacSystemFont,
+    Roboto, 'Helvetica Neue', sans-serif;
   --theme-primary-color: #0078d7;
   --theme-dark-color: #005a9e;
 }
 
 .ms-Icon {
   display: inline-block;
-  font-family: "FabricMDL2Icons";
+  font-family: 'FabricMDL2Icons';
   font-style: normal;
   font-weight: normal;
   font-size: 16px;
@@ -29,21 +29,27 @@
 }
 
 .ms-Icon--ChevronDown::before {
-  content: "\\\E70D";
+  content: '\\\E70D';
 }
 
 .ms-Icon--ChevronUp::before {
-  content: "\\\E70E";
+  content: '\\\E70E';
 }
 
 .ms-Icon--Contact::before {
-  content: "\\\E77B";
+  content: '\\\E77B';
 }
 
 .ms-Icon--AddFriend::before {
-  content: "\\\E8FA";
+  content: '\\\E8FA';
 }
 
 .ms-Icon--OutlookLogoInverse::before {
-  content: "\\\EB6D";
+  content: '\\\EB6D';
 }
+
+$presence-color-online: #6bb700;
+$presence-color-dnd: #c50f1f;
+$presence-color-away: #ffaa44;
+$presence-color-invisible: #8a8886;
+$presence-color-oof: #b4009e;

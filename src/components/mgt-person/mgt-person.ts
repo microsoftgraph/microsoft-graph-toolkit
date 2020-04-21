@@ -6,10 +6,13 @@
  */
 
 import * as MicrosoftGraph from '@microsoft/microsoft-graph-types';
+import { Presence } from '@microsoft/microsoft-graph-types-beta';
 import { customElement, html, property, query, TemplateResult } from 'lit-element';
 import { classMap } from 'lit-html/directives/class-map';
+import { BetaGraph } from '../../BetaGraph';
 import { findPerson, getEmailFromGraphEntity } from '../../graph/graph.people';
 import { getPersonImage } from '../../graph/graph.photos';
+import { getMyPresence, getPersonPresence } from '../../graph/graph.presence';
 import { getUserWithPhoto } from '../../graph/graph.user';
 import { IDynamicPerson } from '../../graph/types';
 import { Providers } from '../../Providers';
@@ -91,6 +94,16 @@ export class MgtPerson extends MgtTemplatedComponent {
   public showEmail: boolean;
 
   /**
+   * determines if person component renders presence
+   * @type {boolean}
+   */
+  @property({
+    attribute: 'show-presence',
+    type: Boolean
+  })
+  public showPresence: boolean;
+
+  /**
    * object containing Graph details on person
    * @type {IDynamicPerson}
    */
@@ -129,6 +142,18 @@ export class MgtPerson extends MgtTemplatedComponent {
     type: String
   })
   public personImage: string;
+
+  /**
+   * Gets or sets presence of person
+   *
+   * @type {Presence}
+   * @memberof MgtPerson
+   */
+  @property({
+    attribute: 'person-presence',
+    type: Object
+  })
+  public personPresence: Presence;
 
   /**
    * Sets how the person-card is invoked
@@ -211,15 +236,16 @@ export class MgtPerson extends MgtTemplatedComponent {
     // Prep data
     const person = this.personDetails;
     const image = this.getImage();
+    const presence = this.personPresence;
 
     // Default template
     let personTemplate = this.renderTemplate('default', { person, personImage: image });
     if (!personTemplate) {
-      const imageTemplate: TemplateResult = this.renderImage(image);
       const detailsTemplate: TemplateResult = this.renderDetails(person);
+      const imageWithPresenceTemplate: TemplateResult = this.renderImageWithPresence(image, presence);
       personTemplate = html`
         <div class="person-root">
-          ${imageTemplate} ${detailsTemplate}
+          ${imageWithPresenceTemplate} ${detailsTemplate}
         </div>
       `;
     }
@@ -296,13 +322,6 @@ export class MgtPerson extends MgtTemplatedComponent {
       this.personDetails && this.personCardInteraction === PersonCardInteraction.none
         ? this.personDetails.displayName
         : '';
-    const isLarge = this.showEmail && this.showName;
-    const imageClasses = {
-      initials: !imageSrc,
-      'row-span-2': isLarge,
-      small: !isLarge,
-      'user-avatar': true
-    };
 
     let imageHtml: TemplateResult;
     if (imageSrc) {
@@ -313,8 +332,6 @@ export class MgtPerson extends MgtTemplatedComponent {
     } else if (this.personDetails) {
       // render the initials
       const initials = this.getInitials(this.personDetails);
-      // add avatar background color
-      imageClasses[this._personAvatarBg] = true;
       imageHtml = html`
         <span class="initials-text" aria-label="${initials}">
           ${initials}
@@ -325,8 +342,153 @@ export class MgtPerson extends MgtTemplatedComponent {
     }
 
     return html`
+      ${imageHtml}
+    `;
+  }
+
+  /**
+   * Render presence for the person.
+   *
+   * @protected
+   * @param
+   * @memberof MgtPersonCard
+   */
+  protected renderPresence(presence?: Presence): TemplateResult {
+    if (!this.showPresence) {
+      return html``;
+    }
+
+    presence = presence || this.personPresence;
+    if (!presence) {
+      return html``;
+    }
+
+    let statusClass = null;
+    // attach appropriate css class to show different icons
+    switch (presence.availability) {
+      case 'DoNotDisturb':
+        statusClass = 'presence-dnd';
+        break;
+      case 'BeRightBack':
+        statusClass = 'presence-away';
+        break;
+      case 'Available':
+        switch (presence.activity) {
+          case 'Available':
+            statusClass = 'presence-available';
+            break;
+          case 'OutOfOffice':
+            statusClass = 'presence-oof-available';
+            break;
+        }
+        break;
+      case 'Busy':
+        switch (presence.activity) {
+          case 'OutOfOffice':
+            statusClass = 'presence-oof-busy';
+            break;
+          default:
+            // 'Busy', 'InACall', 'InAMeeting'
+            statusClass = 'presence-busy';
+            break;
+        }
+        break;
+      case 'Away':
+        switch (presence.activity) {
+          case 'Away':
+            statusClass = 'presence-away';
+            break;
+          case 'OutOfOffice':
+            statusClass = 'presence-oof-offline';
+            break;
+        }
+        break;
+      case 'Offline':
+        switch (presence.activity) {
+          case 'Offline':
+            statusClass = 'presence-offline';
+            break;
+          case 'OutOfOffice':
+            statusClass = 'presence-oof-offline';
+            break;
+        }
+        break;
+      default:
+        statusClass = 'presence-offline';
+        break;
+    }
+
+    const presenceClasses = {
+      'ms-Icon': true,
+      'presence-basic': true
+    };
+
+    presenceClasses[statusClass] = true;
+    // workaround because SkypeArrow icon from fluent doesn't work ¯\_(ツ)_/¯
+    let iconHtml = null;
+    if (statusClass === 'presence-oof-offline') {
+      iconHtml = html`
+        <div class="ms-Icon presence-basic presence-oof-offline-wrapper">
+          <svg class="presence-oof-offline" viewBox="0 0 12 10" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <path
+              d="M3.95184 0.480534C4.23385 0.10452 4.70926 -0.0724722 5.1685 0.0275755C5.62775 0.127623 5.98645 0.486329 6.0865 0.945575C6.18655 1.40482 6.00956 1.88023 5.63354 2.16224L4.07196 3.72623H10.7988C11.4622 3.72623 12 4.26403 12 4.92744C12 5.59086 11.4622 6.12866 10.7988 6.12866H4.07196L5.63114 7.68784C6.0955 8.15225 6.0955 8.90515 5.63114 9.36955C5.51655 9.48381 5.38119 9.57514 5.23234 9.63862C5.09341 9.69857 4.94399 9.73042 4.79269 9.73232C4.63498 9.73233 4.4789 9.70046 4.33382 9.63862C4.18765 9.57669 4.05593 9.48507 3.94703 9.36955L0.343377 5.7659C-0.114459 5.29881 -0.114459 4.55128 0.343377 4.08419L3.95184 0.480534Z"
+              fill="#B4009E"
+            />
+          </svg>
+        </div>
+      `;
+    } else {
+      iconHtml = html`
+        <i class=${classMap(presenceClasses)} aria-hidden="true"></i>
+      `;
+    }
+
+    return html`
+      <div class="user-presence">
+        ${iconHtml}
+      </div>
+    `;
+  }
+
+  /**
+   * Render image with presence for the person.
+   *
+   * @protected
+   * @param
+   * @memberof MgtPersonCard
+   */
+  protected renderImageWithPresence(image?: string, presence?: Presence): TemplateResult {
+    if (!image) {
+      image = this.getImage();
+    }
+
+    if (!presence) {
+      presence = this.personPresence;
+    }
+
+    const title =
+      this.personDetails && this.personCardInteraction === PersonCardInteraction.none
+        ? this.personDetails.displayName
+        : '';
+    const isLarge = this.showEmail && this.showName;
+    const imageClasses = {
+      initials: !image,
+      'row-span-2': isLarge,
+      small: !isLarge,
+      'user-avatar': true
+    };
+
+    if (!image && this.personDetails) {
+      // add avatar background color
+      imageClasses[this._personAvatarBg] = true;
+    }
+
+    const imageTemplate: TemplateResult = this.renderImage(image);
+    const presenceTemplate: TemplateResult = this.renderPresence(presence);
+
+    return html`
       <div class=${classMap(imageClasses)} title=${title} aria-label=${title}>
-        ${imageHtml}
+        ${imageTemplate} ${presenceTemplate}
       </div>
     `;
   }
@@ -457,6 +619,30 @@ export class MgtPerson extends MgtTemplatedComponent {
     }
 
     const graph = provider.graph.forComponent(this);
+    const betaGraph = BetaGraph.fromGraph(graph);
+
+    const defaultPresence = {
+      activity: 'Offline',
+      availability: 'Offline',
+      id: null
+    };
+
+    // populate presence
+    if (!this.personPresence) {
+      try {
+        if (this.userId) {
+          this.personPresence = await getPersonPresence(betaGraph, this.userId);
+        } else if (this.personQuery === 'me') {
+          this.personPresence = await getMyPresence(betaGraph);
+        } else {
+          this.personPresence = defaultPresence;
+        }
+      } catch (_) {
+        // set up a default Presence in case beta api changes or getting error code
+        this.personPresence = defaultPresence;
+      }
+    }
+
     if (this.personDetails) {
       // in some cases we might only have name or email, but need to find the image
       // use @ for the image value to search for an image
