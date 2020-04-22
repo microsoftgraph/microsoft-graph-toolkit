@@ -12,12 +12,13 @@ import { classMap } from 'lit-html/directives/class-map';
 import { BetaGraph } from '../../BetaGraph';
 import { findPerson, getEmailFromGraphEntity } from '../../graph/graph.people';
 import { getPersonImage } from '../../graph/graph.photos';
-import { getMyPresence, getPersonPresence } from '../../graph/graph.presence';
+import { getMyPresence, getUserPresence } from '../../graph/graph.presence';
 import { getUserWithPhoto } from '../../graph/graph.user';
 import { IDynamicPerson } from '../../graph/types';
 import { Providers } from '../../Providers';
 import { ProviderState } from '../../providers/IProvider';
 import '../../styles/fabric-icon-font';
+import { getSvg, SvgIcon } from '../../utils/SvgHelper';
 import { MgtPersonCard } from '../mgt-person-card/mgt-person-card';
 import '../sub-components/mgt-flyout/mgt-flyout';
 import { MgtFlyout } from '../sub-components/mgt-flyout/mgt-flyout';
@@ -429,12 +430,9 @@ export class MgtPerson extends MgtTemplatedComponent {
     if (statusClass === 'presence-oof-offline') {
       iconHtml = html`
         <div class="ms-Icon presence-basic presence-oof-offline-wrapper">
-          <svg class="presence-oof-offline" viewBox="0 0 12 10" fill="none" xmlns="http://www.w3.org/2000/svg">
-            <path
-              d="M3.95184 0.480534C4.23385 0.10452 4.70926 -0.0724722 5.1685 0.0275755C5.62775 0.127623 5.98645 0.486329 6.0865 0.945575C6.18655 1.40482 6.00956 1.88023 5.63354 2.16224L4.07196 3.72623H10.7988C11.4622 3.72623 12 4.26403 12 4.92744C12 5.59086 11.4622 6.12866 10.7988 6.12866H4.07196L5.63114 7.68784C6.0955 8.15225 6.0955 8.90515 5.63114 9.36955C5.51655 9.48381 5.38119 9.57514 5.23234 9.63862C5.09341 9.69857 4.94399 9.73042 4.79269 9.73232C4.63498 9.73233 4.4789 9.70046 4.33382 9.63862C4.18765 9.57669 4.05593 9.48507 3.94703 9.36955L0.343377 5.7659C-0.114459 5.29881 -0.114459 4.55128 0.343377 4.08419L3.95184 0.480534Z"
-              fill="#B4009E"
-            />
-          </svg>
+          <i class="presence-oof-offline">
+            ${getSvg(SvgIcon.SkypeArrow, '#666666')}
+          </i>
         </div>
       `;
     } else {
@@ -628,10 +626,10 @@ export class MgtPerson extends MgtTemplatedComponent {
     };
 
     // populate presence
-    if (!this.personPresence) {
+    if (!this.personPresence && this.showPresence) {
       try {
         if (this.userId) {
-          this.personPresence = await getPersonPresence(betaGraph, this.userId);
+          this.personPresence = await getUserPresence(betaGraph, this.userId);
         } else if (this.personQuery === 'me') {
           this.personPresence = await getMyPresence(betaGraph);
         } else {

@@ -26,12 +26,12 @@ export async function getMyPresence(graph: IGraph): Promise<Presence> {
 }
 
 /**
- * async promise, allows developer to get person presense
+ * async promise, allows developer to get user presense
  *
  * @returns {Promise<Presence>}
  * @memberof BetaGraph
  */
-export async function getPersonPresence(graph: IGraph, userId: string): Promise<Presence> {
+export async function getUserPresence(graph: IGraph, userId: string): Promise<Presence> {
   const scopes = 'presence.read, presence.read.all';
   const result = await graph
     .api(`/users/${userId}/presence`)
@@ -42,12 +42,13 @@ export async function getPersonPresence(graph: IGraph, userId: string): Promise<
 }
 
 /**
- * async promise, allows developer to get person presense
+ * async promise, allows developer to get person presense by providing user ids array
  *
  * @returns {}
  * @memberof BetaGraph
+ * @returns {Promise<Presence[]>}
  */
-export async function getPeoplePresence(graph: IGraph, userIds: string[]) {
+export async function getUsersPresenceByUserIds(graph: IGraph, userIds: string[]): Promise<Presence[]> {
   if (!userIds || userIds.length === 0) {
     return [];
   }
@@ -65,18 +66,15 @@ export async function getPeoplePresence(graph: IGraph, userIds: string[]) {
     const peoplePresence = [];
 
     for (const id of userIds) {
-      // tslint:disable
-      console.log('RESPONSE: ' + JSON.stringify(response));
       const personPresence = response[id];
       if (personPresence && personPresence.id) {
         peoplePresence.push(personPresence);
-        // { id: id, presence: personPresence }
       }
     }
     return peoplePresence;
   } catch (_) {
     try {
-      return Promise.all(userIds.filter(id => id && id !== '').map(id => getPersonPresence(graph, id)));
+      return Promise.all(userIds.filter(id => id && id !== '').map(id => getUserPresence(graph, id)));
     } catch (_) {
       return [];
     }

@@ -18,6 +18,12 @@ $color: var(--color, #{$ms-color-neutralDark});
 $email-font-size: var(--email-font-size, #{$ms-font-size-s});
 $email-color: var(--email-color, #{$ms-color-neutralPrimary});
 
+$presence-color-online: #6bb700;
+$presence-color-dnd: #c50f1f;
+$presence-color-away: #ffaa44;
+$presence-color-invisible: #8a8886;
+$presence-color-oof: #b4009e;
+
 :host {
   display: inline-block;
 }
@@ -83,7 +89,7 @@ mgt-person .user-avatar {
       background-color: #ffffff;
       border-color: $presence-color-oof;
 
-      .presence-oof-offline {
+      .presence-oof-offline svg {
         color: $presence-color-oof;
         width: calc(var(--avatar-size, 48px) * 0.14);
         margin-left: calc(var(--avatar-size, 48px) * 0.07 - 2px);
@@ -201,7 +207,7 @@ mgt-person .user-avatar {
         border-radius: 4px;
         padding: 0;
 
-        & .presence-oof-offline {
+        & .presence-oof-offline svg {
           height: 0;
           width: 0;
         }

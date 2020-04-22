@@ -6,11 +6,12 @@
  */
 
 import * as MicrosoftGraph from '@microsoft/microsoft-graph-types';
+import { Presence } from '@microsoft/microsoft-graph-types-beta';
 import { customElement, html, property, TemplateResult } from 'lit-element';
 import { repeat } from 'lit-html/directives/repeat';
 import { BetaGraph } from '../../BetaGraph';
 import { getPeople, getPeopleFromGroup } from '../../graph/graph.people';
-import { getPeoplePresence } from '../../graph/graph.presence';
+import { getUsersPresenceByUserIds } from '../../graph/graph.presence';
 import { getUsersForPeopleQueries, getUsersForUserIds } from '../../graph/graph.user';
 import { IDynamicPerson } from '../../graph/types';
 import { Providers } from '../../Providers';
@@ -157,9 +158,7 @@ export class MgtPeople extends MgtTemplatedComponent {
   private _groupId: string;
   private _userIds: string[];
   private _peopleQueries: string[];
-
-  // tslint:disable-next-line:completed-docs
-  private _peoplePresence: Array<{ '@odata.context': string; id: string; availability: string; activity: string }>;
+  private _peoplePresence: Presence[];
 
   constructor() {
     super();
@@ -320,7 +319,7 @@ export class MgtPeople extends MgtTemplatedComponent {
 
         // populate presence for people only if userIds array exist
         if (this.showPresence && this.userIds) {
-          this._peoplePresence = await getPeoplePresence(betaGraph, this.userIds);
+          this._peoplePresence = await getUsersPresenceByUserIds(betaGraph, this.userIds);
         } else {
           this._peoplePresence = [];
         }
