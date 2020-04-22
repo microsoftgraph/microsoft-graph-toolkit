@@ -74,10 +74,15 @@ mgt-person .user-avatar {
     border-radius: 50%;
     font-weight: 400;
 
-    & .initials-text {
+    & .initials-text,
+    & .ms-Icon {
       cursor: default;
       margin-top: -1px;
       font-size: calc(var(--avatar-size, 48px) * 0.4);
+    }
+
+    & .ms-Icon {
+      display: inline;
     }
   }
 
@@ -85,7 +90,8 @@ mgt-person .user-avatar {
     width: $avatar-size-s;
     height: $avatar-size-s;
 
-    & .initials-text {
+    & .initials-text,
+    & .ms-Icon {
       font-size: calc(var(--avatar-size-s, 24px) * 0.4);
     }
   }
