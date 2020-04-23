@@ -59,6 +59,11 @@ export const personPresenceDisplayAll = () => html`
       availability: 'DoNotDisturb',
       id: null
     };
+    const dndOof = {
+      activity: 'OutOfOffice',
+      availability: 'DoNotDisturb',
+      id: null
+    };
     const away = {
       activity: 'Away',
       availability: 'Away',
@@ -80,6 +85,7 @@ export const personPresenceDisplayAll = () => html`
     const busyPerson = document.getElementById('busy');
     const busyOofPerson = document.getElementById('busyOof');
     const dndPerson = document.getElementById('dnd');
+    const dndOofPerson = document.getElementById('dndOof');
     const awayPerson = document.getElementById('away');
     const oofPerson = document.getElementById('oof');
     const onlinePersonSmall = document.getElementById('online-small');
@@ -87,6 +93,7 @@ export const personPresenceDisplayAll = () => html`
     const busyPersonSmall = document.getElementById('busy-small');
     const busyOofPersonSmall = document.getElementById('busyOof-small');
     const dndPersonSmall = document.getElementById('dnd-small');
+    const dndOofPersonSmall = document.getElementById('dndOof-small');
     const awayPersonSmall = document.getElementById('away-small');
     const oofPersonSmall = document.getElementById('oof-small');
 
@@ -95,6 +102,7 @@ export const personPresenceDisplayAll = () => html`
     busyPerson.personPresence = busy;
     busyOofPerson.personPresence = busyOof;
     dndPerson.personPresence = dnd;
+    dndOofPerson.personPresence = dndOof;
     awayPerson.personPresence = away;
     oofPerson.personPresence = oof;
     onlinePersonSmall.personPresence = online;
@@ -102,6 +110,7 @@ export const personPresenceDisplayAll = () => html`
     busyPersonSmall.personPresence = busy;
     busyOofPersonSmall.personPresence = busyOof;
     dndPersonSmall.personPresence = dnd;
+    dndOofPersonSmall.personPresence = dndOof;
     awayPersonSmall.personPresence = away;
     oofPersonSmall.personPresence = oof;
   </script>
@@ -133,6 +142,7 @@ export const personPresenceDisplayAll = () => html`
   <mgt-person id="busy" person-query="bobk@tailspintoys.com" show-presence show-email show-name></mgt-person>
   <mgt-person id="busyOof" person-query="Diego Siciliani" show-presence show-email show-name></mgt-person>
   <mgt-person id="dnd" person-query="Lynne Robbins" show-presence show-email show-name></mgt-person>
+  <mgt-person id="dndOof" person-query="EmilyB" show-presence show-email show-name></mgt-person>
   <mgt-person id="away" person-query="BrianJ" show-presence show-email show-name></mgt-person>
   <mgt-person id="oof" person-query="JoniS@M365x214355.onmicrosoft.com" show-presence show-email show-name></mgt-person>
   <div class="title"><span>Presence badge on small avatars: </span></div>
@@ -141,6 +151,7 @@ export const personPresenceDisplayAll = () => html`
   <mgt-person class="small" id="busy-small" person-query="bobk@tailspintoys.com" show-presence></mgt-person>
   <mgt-person class="small" id="busyOof-small" person-query="Diego Siciliani" show-presence></mgt-person>
   <mgt-person class="small" id="dnd-small" person-query="Lynne Robbins" show-presence></mgt-person>
+  <mgt-person class="small" id="dndOof-small" person-query="EmilyB" show-presence></mgt-person>
   <mgt-person class="small" id="away-small" person-query="BrianJ" show-presence></mgt-person>
   <mgt-person class="small" id="oof-small" person-query="JoniS@M365x214355.onmicrosoft.com" show-presence></mgt-person>
 `;

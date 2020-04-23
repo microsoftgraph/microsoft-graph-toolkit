@@ -368,7 +368,14 @@ export class MgtPerson extends MgtTemplatedComponent {
     // attach appropriate css class to show different icons
     switch (presence.availability) {
       case 'DoNotDisturb':
-        statusClass = 'presence-dnd';
+        switch (presence.activity) {
+          case 'OutOfOffice':
+            statusClass = 'presence-oof-dnd';
+            break;
+          default:
+            statusClass = 'presence-dnd';
+            break;
+        }
         break;
       case 'BeRightBack':
         statusClass = 'presence-away';

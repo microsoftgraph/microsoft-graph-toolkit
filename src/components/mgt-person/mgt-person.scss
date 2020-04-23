@@ -133,6 +133,11 @@ mgt-person .user-avatar {
         border-color: $presence-color-dnd;
       }
 
+      &.presence-oof-dnd {
+        background-color: #ffffff;
+        border-color: $presence-color-dnd;
+      }
+
       &.presence-busy {
         background-color: $presence-color-dnd;
         border-color: $presence-color-dnd;
@@ -172,6 +177,12 @@ mgt-person .user-avatar {
     .presence-dnd::before {
       content: $ms-icon-code-SkypeMinus;
       color: #ffffff;
+      margin-left: calc(var(--avatar-size, 48px) * 0.07 - 2px);
+    }
+
+    .presence-oof-dnd::before {
+      content: $ms-icon-code-SkypeMinus;
+      color: $presence-color-dnd;
       margin-left: calc(var(--avatar-size, 48px) * 0.07 - 2px);
     }
   }
@@ -219,6 +230,7 @@ mgt-person .user-avatar {
       .presence-away::before,
       .presence-oof-away::before,
       .presence-dnd::before,
+      .presence-oof-dnd::before,
       .presence-oof-offline::before {
         content: '';
       }
