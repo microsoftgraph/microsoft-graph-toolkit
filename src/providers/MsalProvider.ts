@@ -47,7 +47,8 @@ export interface MsalConfig {
    */
   loginType?: LoginType;
   /**
-   * options
+   * options as defined in
+   * https://docs.microsoft.com/en-us/azure/active-directory/develop/msal-js-initializing-client-applications#configuration-options
    *
    * @type {Configuration}
    * @memberof MsalConfig
@@ -60,6 +61,13 @@ export interface MsalConfig {
    * @memberof MsalConfig
    */
   loginHint?: string;
+  /**
+   * redirect Uri
+   *
+   * @type {string}
+   * @memberof MsalConfig
+   */
+  redirectUri?: string;
 }
 
 /**
@@ -341,6 +349,10 @@ export class MsalProvider extends IProvider {
 
       if (config.authority) {
         msalConfig.auth.authority = config.authority;
+      }
+
+      if (config.redirectUri) {
+        msalConfig.auth.redirectUri = config.redirectUri;
       }
 
       this.clientId = config.clientId;
