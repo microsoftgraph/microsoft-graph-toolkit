@@ -193,13 +193,13 @@ mgt-person .user-avatar {
     font-weight: 400;
 
     & .initials-text,
-    & .ms-Icon {
+    & .contact-icon {
       cursor: default;
       margin-top: -1px;
       font-size: calc(var(--avatar-size, 48px) * 0.4);
     }
 
-    & .ms-Icon {
+    & .contact-icon {
       display: inline;
     }
   }
@@ -209,7 +209,7 @@ mgt-person .user-avatar {
     height: $avatar-size-s;
 
     & .initials-text,
-    & .ms-Icon {
+    & .contact-icon {
       font-size: calc(var(--avatar-size-s, 24px) * 0.4);
     }
     .user-presence {

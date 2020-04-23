@@ -350,7 +350,7 @@ export class MgtPerson extends MgtTemplatedComponent {
               ${initials}
             `
           : html`
-              <i class="ms-Icon ms-Icon--Contact"></i>
+              <i class="ms-Icon ms-Icon--Contact contact-icon"></i>
             `;
       imageHtml = html`
         <span class="initials-text" aria-label="${initials}">
