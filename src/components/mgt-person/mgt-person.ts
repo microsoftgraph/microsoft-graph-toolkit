@@ -324,18 +324,37 @@ export class MgtPerson extends MgtTemplatedComponent {
         ? this.personDetails.displayName
         : '';
 
+    const isLarge = this.showEmail && this.showName;
+    const imageClasses = {
+      initials: !imageSrc,
+      'row-span-2': isLarge,
+      small: !isLarge,
+      'user-avatar': true
+    };
+
     let imageHtml: TemplateResult;
+
     if (imageSrc) {
       // render the image
       imageHtml = html`
         <img alt=${title} src=${imageSrc} />
       `;
     } else if (this.personDetails) {
-      // render the initials
+      // add avatar background color
+      imageClasses[this._personAvatarBg] = true;
+      // render the initials or person icon
       const initials = this.getInitials(this.personDetails);
+      const initialsHtml =
+        initials && initials.length
+          ? html`
+              ${initials}
+            `
+          : html`
+              <i class="ms-Icon ms-Icon--Contact"></i>
+            `;
       imageHtml = html`
         <span class="initials-text" aria-label="${initials}">
-          ${initials}
+          ${initialsHtml}
         </span>
       `;
     } else {
@@ -709,7 +728,7 @@ export class MgtPerson extends MgtTemplatedComponent {
     if (!initials && person.displayName) {
       const name = person.displayName.split(/\s+/);
       for (let i = 0; i < 2 && i < name.length; i++) {
-        if (name[i][0] && name[i][0].match(/[a-z]/i)) {
+        if (name[i][0] && name[i][0].match(/\p{L}/gu)) {
           // check if letter
           initials += name[i][0].toUpperCase();
         }
