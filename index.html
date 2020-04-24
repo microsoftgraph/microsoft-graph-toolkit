@@ -25,7 +25,7 @@
 
     <mgt-msal-provider
       client-id="a974dfa0-9f57-49b9-95db-90f04ce2111a"
-      scopes="user.read,people.read,user.readbasic.all,contacts.read,calendars.read,presence.read,presence.read.all"
+      scopes="user.read,people.read,user.readbasic.all,contacts.read,calendars.read"
       depends-on="mgt-teams-provider"
     ></mgt-msal-provider>
 
@@ -33,9 +33,10 @@
 
     <mgt-login></mgt-login>
     <mgt-person person-query="me" show-name show-email person-card="hover"></mgt-person>
-    <mgt-people
-      people-queries="LidiaH@M365x937993.onmicrosoft.com, Megan Bowen, Lynne Robbins, BrianJ@M365x937993.onmicrosoft.com, JoniS@M365x937993.onmicrosoft.com"
-      show-presence
-    ></mgt-people>
+    <mgt-people-picker></mgt-people-picker>
+    <mgt-teams-channel-picker></mgt-teams-channel-picker>
+    <mgt-tasks data-source="todo"></mgt-tasks>
+    <mgt-agenda group-by-day></mgt-agenda>
+    <mgt-people></mgt-people>
   </body>
 </html>

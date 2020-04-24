@@ -9,7 +9,6 @@ import * as MicrosoftGraph from '@microsoft/microsoft-graph-types';
 import { Presence } from '@microsoft/microsoft-graph-types-beta';
 import { customElement, html, property, query, TemplateResult } from 'lit-element';
 import { classMap } from 'lit-html/directives/class-map';
-import { BetaGraph } from '../../BetaGraph';
 import { findPerson, getEmailFromGraphEntity } from '../../graph/graph.people';
 import { getPersonImage } from '../../graph/graph.photos';
 import { getMyPresence, getUserPresence } from '../../graph/graph.presence';
@@ -643,7 +642,6 @@ export class MgtPerson extends MgtTemplatedComponent {
     }
 
     const graph = provider.graph.forComponent(this);
-    const betaGraph = BetaGraph.fromGraph(graph);
 
     const defaultPresence = {
       activity: 'Offline',
@@ -655,9 +653,9 @@ export class MgtPerson extends MgtTemplatedComponent {
     if (!this.personPresence && this.showPresence) {
       try {
         if (this.userId) {
-          this.personPresence = await getUserPresence(betaGraph, this.userId);
+          this.personPresence = await getUserPresence(graph, this.userId);
         } else if (this.personQuery === 'me') {
-          this.personPresence = await getMyPresence(betaGraph);
+          this.personPresence = await getMyPresence(graph);
         } else {
           this.personPresence = defaultPresence;
         }
