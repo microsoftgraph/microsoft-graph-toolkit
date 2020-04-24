@@ -10,17 +10,57 @@ import { IGraph } from '../IGraph';
 import { prepScopes } from '../utils/GraphHelpers';
 
 /**
+ * Person Type enum
+ *
+ * @export
+ * @enum {number}
+ */
+export enum PersonType {
+  /**
+   * Any type
+   */
+  Any = 0,
+
+  /**
+   * A Person such as User or Contact
+   */
+  // tslint:disable-next-line:no-bitwise
+  Person = 1 << 0,
+
+  /**
+   * A group
+   */
+  // tslint:disable-next-line:no-bitwise
+  Group = 1 << 1
+}
+
+/**
  * async promise, returns all Graph people who are most relevant contacts to the signed in user.
  *
  * @param {string} query
+ * @param {number} [top=10] - number of people to return
+ * @param {PersonType} [personType=PersonType.Person] - the type of person to search for
  * @returns {(Promise<Person[]>)}
- * @memberof Graph
  */
-export async function findPerson(graph: IGraph, query: string): Promise<Person[]> {
+export async function findPeople(
+  graph: IGraph,
+  query: string,
+  top: number = 10,
+  personType: PersonType = PersonType.Person
+): Promise<Person[]> {
   const scopes = 'people.read';
+
+  let filterQuery = '';
+
+  if (personType !== PersonType.Any) {
+    filterQuery = `personType/class eq '${PersonType[personType]}'`;
+  }
+
   const result = await graph
     .api('/me/people')
     .search('"' + query + '"')
+    .top(top)
+    .filter(filterQuery)
     .middlewareOptions(prepScopes(scopes))
     .get();
   return result ? result.value : null;
@@ -108,7 +148,7 @@ export async function findContactByEmail(graph: IGraph, email: string): Promise<
  * @memberof Graph
  */
 export function findUserByEmail(graph: IGraph, email: string): Promise<Array<Person | Contact>> {
-  return Promise.all([findPerson(graph, email), findContactByEmail(graph, email)]).then(([people, contacts]) => {
+  return Promise.all([findPeople(graph, email), findContactByEmail(graph, email)]).then(([people, contacts]) => {
     return ((people as any[]) || []).concat(contacts || []);
   });
 }

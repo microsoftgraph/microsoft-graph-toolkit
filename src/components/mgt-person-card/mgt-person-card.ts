@@ -7,7 +7,7 @@
 
 import * as MicrosoftGraph from '@microsoft/microsoft-graph-types';
 import { customElement, html, property, TemplateResult } from 'lit-element';
-import { findPerson, getEmailFromGraphEntity } from '../../graph/graph.people';
+import { findPeople, getEmailFromGraphEntity } from '../../graph/graph.people';
 import { getPersonImage } from '../../graph/graph.photos';
 import { getUserWithPhoto } from '../../graph/graph.user';
 import { IDynamicPerson } from '../../graph/types';
@@ -266,11 +266,12 @@ export class MgtPersonCard extends MgtTemplatedComponent {
    */
   protected renderPersonTitle(person?: IDynamicPerson): TemplateResult {
     person = person || this.personDetails;
-    if (!person.jobTitle) {
+    const user = person as MicrosoftGraph.User;
+    if (!user.jobTitle) {
       return;
     }
     return html`
-      <div class="job-title">${person.jobTitle}</div>
+      <div class="job-title">${user.jobTitle}</div>
     `;
   }
 
@@ -284,11 +285,12 @@ export class MgtPersonCard extends MgtTemplatedComponent {
    */
   protected renderPersonSubtitle(person?: IDynamicPerson): TemplateResult {
     person = person || this.personDetails;
-    if (!person.department) {
+    const user = person as MicrosoftGraph.User;
+    if (!user.department) {
       return;
     }
     return html`
-      <div class="department">${person.department}</div>
+      <div class="department">${user.department}</div>
     `;
   }
 
@@ -476,10 +478,12 @@ export class MgtPersonCard extends MgtTemplatedComponent {
 
     // Location
     let location: TemplateResult;
-    if (person.officeLocation) {
+    if (userPerson.officeLocation) {
       location = html`
         <div class="details-icon">
-          ${getSvg(SvgIcon.SmallLocation, '#666666')}<span class="normal-subtitle data">${person.officeLocation}</span>
+          ${getSvg(SvgIcon.SmallLocation, '#666666')}<span class="normal-subtitle data"
+            >${userPerson.officeLocation}</span
+          >
         </div>
       `;
     }
@@ -550,7 +554,7 @@ export class MgtPersonCard extends MgtTemplatedComponent {
       this.personImage = this.getImage();
     } else if (this.personQuery) {
       // Use the personQuery to find our person.
-      const people = await findPerson(graph, this.personQuery);
+      const people = await findPeople(graph, this.personQuery, 1);
 
       if (people && people.length) {
         this.personDetails = people[0];

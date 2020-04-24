@@ -8,7 +8,7 @@
 import * as MicrosoftGraph from '@microsoft/microsoft-graph-types';
 import { customElement, html, property, query, TemplateResult } from 'lit-element';
 import { classMap } from 'lit-html/directives/class-map';
-import { findPerson, getEmailFromGraphEntity } from '../../graph/graph.people';
+import { findPeople, getEmailFromGraphEntity } from '../../graph/graph.people';
 import { getPersonImage } from '../../graph/graph.photos';
 import { getUserWithPhoto } from '../../graph/graph.user';
 import { IDynamicPerson } from '../../graph/types';
@@ -488,7 +488,7 @@ export class MgtPerson extends MgtTemplatedComponent {
       this.personImage = this.getImage();
     } else if (this.personQuery) {
       // Use the personQuery to find our person.
-      const people = await findPerson(graph, this.personQuery);
+      const people = await findPeople(graph, this.personQuery, 1);
 
       if (people && people.length) {
         this.personDetails = people[0];
@@ -521,11 +521,14 @@ export class MgtPerson extends MgtTemplatedComponent {
     }
 
     let initials = '';
-    if (person.givenName) {
-      initials += person.givenName[0].toUpperCase();
+
+    const user = person as MicrosoftGraph.User;
+
+    if (user.givenName) {
+      initials += user.givenName[0].toUpperCase();
     }
-    if (person.surname) {
-      initials += person.surname[0].toUpperCase();
+    if (user.surname) {
+      initials += user.surname[0].toUpperCase();
     }
 
     if (!initials && person.displayName) {
