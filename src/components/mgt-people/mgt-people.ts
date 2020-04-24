@@ -9,9 +9,8 @@ import * as MicrosoftGraph from '@microsoft/microsoft-graph-types';
 import { Presence } from '@microsoft/microsoft-graph-types-beta';
 import { customElement, html, property, TemplateResult } from 'lit-element';
 import { repeat } from 'lit-html/directives/repeat';
-import { BetaGraph } from '../../BetaGraph';
 import { getPeople, getPeopleFromGroup } from '../../graph/graph.people';
-import { getUsersPresenceByUserIds } from '../../graph/graph.presence';
+import { getUsersPresenceByPeople } from '../../graph/graph.presence';
 import { getUsersForPeopleQueries, getUsersForUserIds } from '../../graph/graph.user';
 import { IDynamicPerson } from '../../graph/types';
 import { Providers } from '../../Providers';
@@ -158,7 +157,7 @@ export class MgtPeople extends MgtTemplatedComponent {
   private _groupId: string;
   private _userIds: string[];
   private _peopleQueries: string[];
-  private _peoplePresence: Presence[];
+  private _peoplePresence: {};
 
   constructor() {
     super();
@@ -264,16 +263,14 @@ export class MgtPeople extends MgtTemplatedComponent {
    * @memberof MgtPeople
    */
   protected renderPerson(person: MicrosoftGraph.User | MicrosoftGraph.Person | MicrosoftGraph.Contact): TemplateResult {
-    // Get person presence from _peoplePresence to pass to mgt-person
-    let personPresence = null;
-    for (const presenceObj of this._peoplePresence) {
-      if (presenceObj.id === person.id) {
-        personPresence = {
-          activity: presenceObj.activity,
-          availability: presenceObj.availability,
-          id: presenceObj.id
-        };
-      }
+    let personPresence = {
+      // set up default presence
+      activity: 'Offline',
+      availability: 'Offline',
+      id: null
+    };
+    if (this.showPresence && this._peoplePresence) {
+      personPresence = this._peoplePresence[person.id];
     }
     return (
       this.renderTemplate('person', { person }, person.id) ||
@@ -315,14 +312,6 @@ export class MgtPeople extends MgtTemplatedComponent {
 
       if (provider && provider.state === ProviderState.SignedIn) {
         const graph = provider.graph.forComponent(this);
-        const betaGraph = BetaGraph.fromGraph(graph);
-
-        // populate presence for people only if userIds array exist
-        if (this.showPresence && this.userIds) {
-          this._peoplePresence = await getUsersPresenceByUserIds(betaGraph, this.userIds);
-        } else {
-          this._peoplePresence = [];
-        }
 
         // populate people
         if (this.groupId) {
@@ -333,6 +322,13 @@ export class MgtPeople extends MgtTemplatedComponent {
           this.people = await getUsersForPeopleQueries(graph, this.peopleQueries);
         } else {
           this.people = await getPeople(graph);
+        }
+
+        // populate presence for people
+        if (this.showPresence) {
+          this._peoplePresence = await getUsersPresenceByPeople(graph, this.people);
+        } else {
+          this._peoplePresence = null;
         }
       }
     }
