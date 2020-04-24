@@ -48,6 +48,7 @@
 
         .token-list__item {
           display: flex;
+          font-size: 14px;
           align-items: center;
           background: #f3f2f1;
           border-radius: 2px;
@@ -303,8 +304,8 @@
           const profile = await betaGraph.api(`/users/${userId}/profile`).get();
 
           // HACK: Inject dummy data for testing purposes.
-          console.log(profile);
           injectDummyData(profile);
+          console.log(profile);
 
           const additionalContext = {
             personalInterests: profile.interests.filter(isPersonalInterest),
@@ -351,6 +352,10 @@
 
       function handleTokenOverflow(section) {
         const tokenLists = section.querySelectorAll('.token-list');
+        if (!tokenLists || !tokenLists.length) {
+          return;
+        }
+
         for (const tokenList of tokenLists) {
           const items = tokenList.querySelectorAll('.token-list__item');
           if (!items || !items.length) {

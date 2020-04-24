@@ -166,7 +166,7 @@ $person-card-background-color: var(--person-card-background-color, #ffffff);
     }
     .section-divider {
       width: 96%;
-      height: 1px;
+      min-height: 1px;
       background: #eaeaea;
       align-self: center;
     }
