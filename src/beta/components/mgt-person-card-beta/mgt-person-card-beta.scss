@@ -5,8 +5,8 @@
  * -------------------------------------------------------------------------------------------
  */
 
-@import '../../styles/shared-styles.scss';
-@import '../../../node_modules/office-ui-fabric-core/dist/sass/References';
+@import '../../../styles/shared-styles.scss';
+@import '../../../../node_modules/office-ui-fabric-core/dist/sass/References';
 
 $person-card-display-name-font-size: var(--person-card-display-name-font-size, 27.3103px);
 $person-card-title-font-size: var(--person-card-title-font-size, 18.2069px);
@@ -92,6 +92,15 @@ $person-card-background-color: var(--person-card-background-color, #ffffff);
   }
 
   .expanded-details-container {
+    /* BEGIN */
+    display: flex;
+    flex-direction: column;
+    max-height: 600px;
+    overflow-y: auto;
+    overflow-x: hidden;
+    position: relative;
+    /* END */
+
     .expanded-details-button {
       display: flex;
       justify-content: center;
@@ -106,8 +115,11 @@ $person-card-background-color: var(--person-card-background-color, #ffffff);
       background-color: rgba(0, 0, 0, 0.068);
     }
     .expanded-details-info {
-      margin: 0 0 0 20px;
-      padding-bottom: 18px;
+      /* BEGIN */
+      /*margin: 0 0 0 20px;
+      padding-bottom: 18px;*/
+      padding: 18px;
+      /* END  */
       display: flex;
       flex-direction: column;
 
