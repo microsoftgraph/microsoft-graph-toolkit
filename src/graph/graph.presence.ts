@@ -53,7 +53,7 @@ export async function getUserPresence(graph: IGraph, userId: string): Promise<Pr
  */
 export async function getUsersPresenceByPeople(graph: IGraph, people?: IDynamicPerson[]) {
   if (!people || people.length === 0) {
-    return [];
+    return {};
   }
   const betaGraph = BetaGraph.fromGraph(graph);
   const batch = betaGraph.createBatch();

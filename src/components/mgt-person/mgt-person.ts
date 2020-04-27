@@ -11,7 +11,7 @@ import { customElement, html, property, query, TemplateResult } from 'lit-elemen
 import { classMap } from 'lit-html/directives/class-map';
 import { findPerson, getEmailFromGraphEntity } from '../../graph/graph.people';
 import { getPersonImage } from '../../graph/graph.photos';
-import { getMyPresence, getUserPresence } from '../../graph/graph.presence';
+import { getUserPresence } from '../../graph/graph.presence';
 import { getUserWithPhoto } from '../../graph/graph.user';
 import { IDynamicPerson } from '../../graph/types';
 import { Providers } from '../../Providers';
@@ -102,6 +102,16 @@ export class MgtPerson extends MgtTemplatedComponent {
     type: Boolean
   })
   public showPresence: boolean;
+
+  /**
+   * determines if person component image is small and apply presence badge accordingly
+   * @type {boolean}
+   */
+  @property({
+    attribute: 'small-avatar',
+    type: Boolean
+  })
+  public smallAvatar: boolean = true;
 
   /**
    * object containing Graph details on person
@@ -291,12 +301,13 @@ export class MgtPerson extends MgtTemplatedComponent {
     }
 
     const isLarge = this.showEmail && this.showName;
+    const smallAvatar = this.smallAvatar;
     const imageClasses = {
       'avatar-icon': true,
       'ms-Icon': true,
       'ms-Icon--Contact': true,
       'row-span-2': isLarge,
-      small: !isLarge
+      small: smallAvatar
     };
 
     return html`
@@ -324,10 +335,11 @@ export class MgtPerson extends MgtTemplatedComponent {
         : '';
 
     const isLarge = this.showEmail && this.showName;
+    const smallAvatar = this.smallAvatar;
     const imageClasses = {
       initials: !imageSrc,
       'row-span-2': isLarge,
-      small: !isLarge,
+      small: smallAvatar,
       'user-avatar': true
     };
 
@@ -494,10 +506,11 @@ export class MgtPerson extends MgtTemplatedComponent {
         ? this.personDetails.displayName
         : '';
     const isLarge = this.showEmail && this.showName;
+    const smallAvatar = this.smallAvatar;
     const imageClasses = {
       initials: !image,
       'row-span-2': isLarge,
-      small: !isLarge,
+      small: smallAvatar,
       'user-avatar': true
     };
 
@@ -538,10 +551,10 @@ export class MgtPerson extends MgtTemplatedComponent {
     const email = getEmailFromGraphEntity(person);
     const emailTemplate: TemplateResult = this.showEmail ? this.renderEmail(email) : html``;
     const nameTemplate: TemplateResult = this.showName ? this.renderName(person.displayName) : html``;
-    const isLarge = this.showEmail && this.showName;
+    const smallAvatar = this.smallAvatar;
     const detailsClasses = classMap({
       Details: true,
-      small: !isLarge
+      small: smallAvatar
     });
 
     return html`
@@ -615,10 +628,17 @@ export class MgtPerson extends MgtTemplatedComponent {
   protected renderFlyoutContent(): TemplateResult {
     const person = this.personDetails;
     const image = this.getImage();
+    const personPresence = this.personPresence;
+    const showPresence = this.showPresence;
     return (
       this.renderTemplate('person-card', { person, personImage: image }) ||
       html`
-        <mgt-person-card .personDetails=${person} .personImage=${image}></mgt-person-card>
+        <mgt-person-card
+          .personDetails=${person}
+          .personImage=${image}
+          .personPresence=${personPresence}
+          .showPresence=${showPresence}
+        ></mgt-person-card>
       `
     );
   }
@@ -642,28 +662,6 @@ export class MgtPerson extends MgtTemplatedComponent {
     }
 
     const graph = provider.graph.forComponent(this);
-
-    const defaultPresence = {
-      activity: 'Offline',
-      availability: 'Offline',
-      id: null
-    };
-
-    // populate presence
-    if (!this.personPresence && this.showPresence) {
-      try {
-        if (this.userId) {
-          this.personPresence = await getUserPresence(graph, this.userId);
-        } else if (this.personQuery === 'me') {
-          this.personPresence = await getMyPresence(graph);
-        } else {
-          this.personPresence = defaultPresence;
-        }
-      } catch (_) {
-        // set up a default Presence in case beta api changes or getting error code
-        this.personPresence = defaultPresence;
-      }
-    }
 
     if (this.personDetails) {
       // in some cases we might only have name or email, but need to find the image
@@ -694,6 +692,30 @@ export class MgtPerson extends MgtTemplatedComponent {
           this.personImage = image;
         }
       }
+    }
+
+    // populate presence
+    const defaultPresence = {
+      activity: 'Offline',
+      availability: 'Offline',
+      id: null
+    };
+    if (!this.personPresence && this.showPresence) {
+      try {
+        if (this.personDetails && this.personDetails.id) {
+          this.personPresence = await getUserPresence(graph, this.personDetails.id);
+        } else {
+          this.personPresence = defaultPresence;
+        }
+      } catch (_) {
+        // set up a default Presence in case beta api changes or getting error code
+        this.personPresence = defaultPresence;
+      }
+    }
+
+    // populate avatar size
+    if (this.showEmail || this.showName) {
+      this.smallAvatar = false;
     }
   }
 

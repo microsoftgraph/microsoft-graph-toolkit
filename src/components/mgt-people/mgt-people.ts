@@ -272,6 +272,7 @@ export class MgtPeople extends MgtTemplatedComponent {
     if (this.showPresence && this._peoplePresence) {
       personPresence = this._peoplePresence[person.id];
     }
+    const smallAvatar = true;
     return (
       this.renderTemplate('person', { person }, person.id) ||
       // set image to @ to flag the mgt-person component to
@@ -280,6 +281,7 @@ export class MgtPeople extends MgtTemplatedComponent {
         <mgt-person
           .personDetails=${person}
           .personImage=${'@'}
+          .smallAvatar=${smallAvatar}
           .personCardInteraction=${this.personCardInteraction}
           .showPresence=${this.showPresence}
           .personPresence=${personPresence}
