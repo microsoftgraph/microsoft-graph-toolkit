@@ -40,6 +40,7 @@ import { styles } from './mgt-person-card-beta-css';
  * @cssprop --person-card-background-color - {Color} Color of person card background
  */
 @customElement('mgt-person-card-beta')
+@customElement('mgt-person-card') // HACK
 export class MgtPersonCardBeta extends MgtTemplatedComponent {
   /**
    * Array of styles to apply to the element. The styles should be defined
