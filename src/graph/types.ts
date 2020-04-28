@@ -1,3 +1,10 @@
+/**
+ * -------------------------------------------------------------------------------------------
+ * Copyright (c) Microsoft Corporation.  All Rights Reserved.  Licensed under the MIT License.
+ * See License in the project root for license information.
+ * -------------------------------------------------------------------------------------------
+ */
+
 import * as MicrosoftGraph from '@microsoft/microsoft-graph-types';
 
 /**
@@ -16,3 +23,9 @@ export type IDynamicPerson = (MicrosoftGraph.User | MicrosoftGraph.Person | Micr
    */
   personImage?: string;
 };
+
+/**
+ *  avatarSize describes the enum strings that can be passed in to determine
+ *  size of avatar. And in turn will determine presence badge added to it.
+ */
+export type AvatarSize = 'small' | 'large';
