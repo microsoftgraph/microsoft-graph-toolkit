@@ -264,7 +264,7 @@ export class MgtPersonCard extends MgtTemplatedComponent {
     imageSrc = imageSrc || this.getImage();
     presence = presence || this.personPresence;
     showPresence = showPresence || this.showPresence;
-    const smallAvatar = false;
+    const avatarSize = 'large';
     return html`
       <mgt-person
         class="person-image"
@@ -272,7 +272,7 @@ export class MgtPersonCard extends MgtTemplatedComponent {
         .personImage=${imageSrc}
         .personPresence=${presence}
         .showPresence=${showPresence}
-        .smallAvatar=${smallAvatar}
+        .avatarSize=${avatarSize}
       ></mgt-person>
     `;
   }

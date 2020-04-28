@@ -13,7 +13,7 @@ import { findPerson, getEmailFromGraphEntity } from '../../graph/graph.people';
 import { getPersonImage } from '../../graph/graph.photos';
 import { getUserPresence } from '../../graph/graph.presence';
 import { getUserWithPhoto } from '../../graph/graph.user';
-import { IDynamicPerson } from '../../graph/types';
+import { AvatarSize, IDynamicPerson } from '../../graph/types';
 import { Providers } from '../../Providers';
 import { ProviderState } from '../../providers/IProvider';
 import '../../styles/fabric-icon-font';
@@ -104,14 +104,14 @@ export class MgtPerson extends MgtTemplatedComponent {
   public showPresence: boolean;
 
   /**
-   * determines if person component image is small and apply presence badge accordingly
-   * @type {boolean}
+   * determines person component avatar size and apply presence badge accordingly
+   * @type {AvatarSize}
    */
   @property({
-    attribute: 'small-avatar',
-    type: Boolean
+    attribute: 'avatar-size',
+    type: String
   })
-  public smallAvatar: boolean = true;
+  public avatarSize: AvatarSize = 'small';
 
   /**
    * object containing Graph details on person
@@ -301,13 +301,13 @@ export class MgtPerson extends MgtTemplatedComponent {
     }
 
     const isLarge = this.showEmail && this.showName;
-    const smallAvatar = this.smallAvatar;
+    const isSmallAvatar = this.avatarSize === 'small' ? true : false;
     const imageClasses = {
       'avatar-icon': true,
       'ms-Icon': true,
       'ms-Icon--Contact': true,
       'row-span-2': isLarge,
-      small: smallAvatar
+      small: isSmallAvatar
     };
 
     return html`
@@ -335,11 +335,11 @@ export class MgtPerson extends MgtTemplatedComponent {
         : '';
 
     const isLarge = this.showEmail && this.showName;
-    const smallAvatar = this.smallAvatar;
+    const isSmallAvatar = this.avatarSize === 'small' ? true : false;
     const imageClasses = {
       initials: !imageSrc,
       'row-span-2': isLarge,
-      small: smallAvatar,
+      small: isSmallAvatar,
       'user-avatar': true
     };
 
@@ -506,11 +506,11 @@ export class MgtPerson extends MgtTemplatedComponent {
         ? this.personDetails.displayName
         : '';
     const isLarge = this.showEmail && this.showName;
-    const smallAvatar = this.smallAvatar;
+    const isSmallAvatar = this.avatarSize === 'small' ? true : false;
     const imageClasses = {
       initials: !image,
       'row-span-2': isLarge,
-      small: smallAvatar,
+      small: isSmallAvatar,
       'user-avatar': true
     };
 
@@ -551,10 +551,10 @@ export class MgtPerson extends MgtTemplatedComponent {
     const email = getEmailFromGraphEntity(person);
     const emailTemplate: TemplateResult = this.showEmail ? this.renderEmail(email) : html``;
     const nameTemplate: TemplateResult = this.showName ? this.renderName(person.displayName) : html``;
-    const smallAvatar = this.smallAvatar;
+    const isSmallAvatar = this.avatarSize === 'small' ? true : false;
     const detailsClasses = classMap({
       Details: true,
-      small: smallAvatar
+      small: isSmallAvatar
     });
 
     return html`
@@ -714,8 +714,8 @@ export class MgtPerson extends MgtTemplatedComponent {
     }
 
     // populate avatar size
-    if (this.showEmail || this.showName) {
-      this.smallAvatar = false;
+    if (this.showEmail && this.showName) {
+      this.avatarSize = 'large';
     }
   }
 
