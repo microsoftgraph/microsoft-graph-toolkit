@@ -301,7 +301,7 @@ export class MgtPerson extends MgtTemplatedComponent {
     }
 
     const isLarge = this.showEmail && this.showName;
-    const isSmallAvatar = this.avatarSize === 'small' ? true : false;
+    const isSmallAvatar = this.avatarSize === 'small';
     const imageClasses = {
       'avatar-icon': true,
       'ms-Icon': true,
@@ -335,7 +335,7 @@ export class MgtPerson extends MgtTemplatedComponent {
         : '';
 
     const isLarge = this.showEmail && this.showName;
-    const isSmallAvatar = this.avatarSize === 'small' ? true : false;
+    const isSmallAvatar = this.avatarSize === 'small';
     const imageClasses = {
       initials: !imageSrc,
       'row-span-2': isLarge,
@@ -506,7 +506,7 @@ export class MgtPerson extends MgtTemplatedComponent {
         ? this.personDetails.displayName
         : '';
     const isLarge = this.showEmail && this.showName;
-    const isSmallAvatar = this.avatarSize === 'small' ? true : false;
+    const isSmallAvatar = this.avatarSize === 'small';
     const imageClasses = {
       initials: !image,
       'row-span-2': isLarge,
@@ -551,7 +551,7 @@ export class MgtPerson extends MgtTemplatedComponent {
     const email = getEmailFromGraphEntity(person);
     const emailTemplate: TemplateResult = this.showEmail ? this.renderEmail(email) : html``;
     const nameTemplate: TemplateResult = this.showName ? this.renderName(person.displayName) : html``;
-    const isSmallAvatar = this.avatarSize === 'small' ? true : false;
+    const isSmallAvatar = this.avatarSize === 'small';
     const detailsClasses = classMap({
       Details: true,
       small: isSmallAvatar
