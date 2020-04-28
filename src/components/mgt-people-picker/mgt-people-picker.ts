@@ -572,8 +572,13 @@ export class MgtPeoplePicker extends MgtTemplatedComponent {
 
       people = this._groupPeople || [];
       if (people) {
-        people = people.filter((person: IDynamicPerson) => {
-          return person.displayName.toLowerCase().indexOf(input) !== -1;
+        people = people.filter((user: User) => {
+          return (
+            user.displayName.toLowerCase().indexOf(input) !== -1 ||
+            (!!user.givenName && user.givenName.toLowerCase().indexOf(input) !== -1) ||
+            (!!user.surname && user.surname.toLowerCase().indexOf(input) !== -1) ||
+            (!!user.mail && user.mail.toLowerCase().indexOf(input) !== -1)
+          );
         });
       }
     } else if (input) {
