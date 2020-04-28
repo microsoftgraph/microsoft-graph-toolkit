@@ -51,7 +51,7 @@ export async function findPeople(
   let filterQuery = '';
 
   if (personType !== PersonType.Any) {
-    filterQuery = `personType/class eq '${PersonType[personType]}'`;
+    filterQuery = `personType/class eq '${personType}'`;
   }
 
   const result = await graph
