@@ -50,7 +50,7 @@ export class TemplateHelper {
       const div = document.createElement('div');
       // tslint:disable-next-line: prefer-for-of
       for (let i = 0; i < template.childNodes.length; i++) {
-        div.appendChild(template.childNodes[i].cloneNode(true));
+        div.appendChild(this.simpleCloneNode(template.childNodes[i]));
       }
       rendered = this.renderNode(div, root, context, additionalContext);
     }
@@ -61,6 +61,26 @@ export class TemplateHelper {
   }
 
   private static _expression = /{{+\s*[$\w\.()\[\]]+\s*}}+/g;
+
+  // simple implementation of deep cloneNode
+  // required for nested templates in polyfilled browsers
+  private static simpleCloneNode(node: ChildNode) {
+    if (!node) {
+      return null;
+    }
+
+    const clone = node.cloneNode(false);
+
+    // tslint:disable-next-line:prefer-for-of
+    for (let i = 0; i < node.childNodes.length; i++) {
+      const childClone = this.simpleCloneNode(node.childNodes[i]);
+      if (childClone) {
+        clone.appendChild(childClone);
+      }
+    }
+
+    return clone;
+  }
 
   private static expandExpressionsAsString(str: string, context: object, additionalContext: object) {
     return str.replace(this._expression, match => {
