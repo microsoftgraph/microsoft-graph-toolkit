@@ -24,14 +24,12 @@ export enum PersonType {
   /**
    * A Person such as User or Contact
    */
-  // tslint:disable-next-line:no-bitwise
-  Person = 1 << 0,
+  Person = 'Person',
 
   /**
    * A group
    */
-  // tslint:disable-next-line:no-bitwise
-  Group = 1 << 1
+  Group = 'Group'
 }
 
 /**

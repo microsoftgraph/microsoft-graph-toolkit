@@ -266,12 +266,11 @@ export class MgtPersonCard extends MgtTemplatedComponent {
    */
   protected renderPersonTitle(person?: IDynamicPerson): TemplateResult {
     person = person || this.personDetails;
-    const user = person as MicrosoftGraph.User;
-    if (!user.jobTitle) {
+    if (!person.jobTitle) {
       return;
     }
     return html`
-      <div class="job-title">${user.jobTitle}</div>
+      <div class="job-title">${person.jobTitle}</div>
     `;
   }
 
@@ -285,12 +284,11 @@ export class MgtPersonCard extends MgtTemplatedComponent {
    */
   protected renderPersonSubtitle(person?: IDynamicPerson): TemplateResult {
     person = person || this.personDetails;
-    const user = person as MicrosoftGraph.User;
-    if (!user.department) {
+    if (!person.department) {
       return;
     }
     return html`
-      <div class="department">${user.department}</div>
+      <div class="department">${person.department}</div>
     `;
   }
 
@@ -478,12 +476,10 @@ export class MgtPersonCard extends MgtTemplatedComponent {
 
     // Location
     let location: TemplateResult;
-    if (userPerson.officeLocation) {
+    if (person.officeLocation) {
       location = html`
         <div class="details-icon">
-          ${getSvg(SvgIcon.SmallLocation, '#666666')}<span class="normal-subtitle data"
-            >${userPerson.officeLocation}</span
-          >
+          ${getSvg(SvgIcon.SmallLocation, '#666666')}<span class="normal-subtitle data">${person.officeLocation}</span>
         </div>
       `;
     }

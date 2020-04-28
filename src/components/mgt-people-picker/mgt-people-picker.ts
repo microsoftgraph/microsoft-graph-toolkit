@@ -500,15 +500,8 @@ export class MgtPeoplePicker extends MgtTemplatedComponent {
    * @memberof MgtPeoplePicker
    */
   protected renderPersonResult(person: IDynamicPerson): TemplateResult {
-    let secondLine;
-
     const user = person as User;
-    const group = person as Group;
-    if (user.jobTitle) {
-      secondLine = user.jobTitle;
-    } else if (group.mail) {
-      secondLine = group.mail;
-    }
+    const subTitle = user.jobTitle || user.mail;
 
     const classes = {
       'people-person-job-title': true,
@@ -521,7 +514,7 @@ export class MgtPeoplePicker extends MgtTemplatedComponent {
         <mgt-person .personDetails=${person} .personImage=${'@'}></mgt-person>
         <div class="people-person-text-area" id="${person.displayName}">
           ${this.renderHighlightText(person)}
-          <span class="${classMap(classes)}">${secondLine}</span>
+          <span class="${classMap(classes)}">${subTitle}</span>
         </div>
       `
     );

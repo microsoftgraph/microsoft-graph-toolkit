@@ -522,13 +522,11 @@ export class MgtPerson extends MgtTemplatedComponent {
 
     let initials = '';
 
-    const user = person as MicrosoftGraph.User;
-
-    if (user.givenName) {
-      initials += user.givenName[0].toUpperCase();
+    if (person.givenName) {
+      initials += person.givenName[0].toUpperCase();
     }
-    if (user.surname) {
-      initials += user.surname[0].toUpperCase();
+    if (person.surname) {
+      initials += person.surname[0].toUpperCase();
     }
 
     if (!initials && person.displayName) {
