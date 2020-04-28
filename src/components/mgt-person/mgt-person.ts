@@ -521,7 +521,6 @@ export class MgtPerson extends MgtTemplatedComponent {
     }
 
     let initials = '';
-
     if (person.givenName) {
       initials += person.givenName[0].toUpperCase();
     }
