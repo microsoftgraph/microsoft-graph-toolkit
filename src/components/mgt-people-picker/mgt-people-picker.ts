@@ -8,7 +8,7 @@
 import { customElement, html, property, query, TemplateResult } from 'lit-element';
 import { classMap } from 'lit-html/directives/class-map';
 import { repeat } from 'lit-html/directives/repeat';
-import { findPerson, getPeopleFromGroup } from '../../graph/graph.people';
+import { findPerson, getPeople, getPeopleFromGroup } from '../../graph/graph.people';
 import { getUser } from '../../graph/graph.user';
 import { IDynamicPerson } from '../../graph/types';
 import { Providers } from '../../Providers';
@@ -164,11 +164,7 @@ export class MgtPeoplePicker extends MgtTemplatedComponent {
 
     window.requestAnimationFrame(() => {
       // Mouse is focused on input
-      if (!peopleInput.value) {
-        this.hideFlyout();
-      } else {
-        this.showFlyout();
-      }
+      this.showFlyout();
     });
   }
 
@@ -351,8 +347,9 @@ export class MgtPeoplePicker extends MgtTemplatedComponent {
       this.renderTemplate('loading', null) ||
       html`
         <div class="message-parent">
-          <div label="search-error-text" aria-label="loading" class="loading-text">
-            ......
+          <div class="spinner"></div>
+          <div label="loading-text" aria-label="loading" class="loading-text">
+            Loading...
           </div>
         </div>
       `
@@ -466,10 +463,10 @@ export class MgtPeoplePicker extends MgtTemplatedComponent {
     const input = this.userInput.toLowerCase();
     let people: IDynamicPerson[];
 
+    const graph = provider.graph.forComponent(this);
     if (this.groupId) {
       if (this._groupPeople === null) {
         try {
-          const graph = provider.graph.forComponent(this);
           this._groupPeople = await getPeopleFromGroup(graph, this.groupId);
         } catch (_) {
           this._groupPeople = [];
@@ -478,8 +475,10 @@ export class MgtPeoplePicker extends MgtTemplatedComponent {
 
       people = this._groupPeople || [];
     } else if (input) {
-      const graph = provider.graph.forComponent(this);
       people = await findPerson(graph, input);
+    } else if (!input.length) {
+      people = await getPeople(graph);
+      this._showLoading = false;
     }
 
     if (people) {
@@ -526,6 +525,7 @@ export class MgtPeoplePicker extends MgtTemplatedComponent {
       return p.id !== person.id;
     });
     this.selectedPeople = filteredPersonArr;
+    this.loadState();
     this.fireCustomEvent('selectionChanged', this.selectedPeople);
   }
 
@@ -545,7 +545,7 @@ export class MgtPeoplePicker extends MgtTemplatedComponent {
         this.selectedPeople = [...this.selectedPeople, person];
         this.fireCustomEvent('selectionChanged', this.selectedPeople);
 
-        this.people = [];
+        this.loadState();
       }
     }
   }
@@ -610,6 +610,9 @@ export class MgtPeoplePicker extends MgtTemplatedComponent {
       this.userInput = '';
       // remove last person in selected list
       this.selectedPeople = this.selectedPeople.splice(0, this.selectedPeople.length - 1);
+      // reset flyout position
+      this.hideFlyout();
+      this.showFlyout();
       // fire selected people changed event
       this.fireCustomEvent('selectionChanged', this.selectedPeople);
       return;
@@ -631,22 +634,17 @@ export class MgtPeoplePicker extends MgtTemplatedComponent {
   private handleUserSearch(input: HTMLInputElement) {
     if (!this._debouncedSearch) {
       this._debouncedSearch = debounce(async () => {
-        if (!this.userInput.length) {
-          this.people = [];
-          this.hideFlyout();
-          this._showLoading = true;
-        } else {
-          // Wait a few milliseconds before showing the flyout.
-          // This helps prevent loading state flickering while the user is actively changing the query.
-          const loadingTimeout = setTimeout(() => {
-            this._showLoading = true;
-          }, 400);
+        // Wait a few milliseconds before showing the flyout.
+        // This helps prevent loading state flickering while the user is actively changing the query.
 
-          await this.loadState();
-          clearTimeout(loadingTimeout);
-          this._showLoading = false;
-          this.showFlyout();
-        }
+        const loadingTimeout = setTimeout(() => {
+          this._showLoading = true;
+        }, 400);
+
+        await this.loadState();
+        clearTimeout(loadingTimeout);
+        this._showLoading = false;
+        this.showFlyout();
 
         this._arrowSelectionCount = 0;
       }, 400);
