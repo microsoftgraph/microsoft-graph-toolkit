@@ -18,6 +18,12 @@ $color: var(--color, #{$ms-color-neutralDark});
 $email-font-size: var(--email-font-size, #{$ms-font-size-s});
 $email-color: var(--email-color, #{$ms-color-neutralPrimary});
 
+$presence-color-online: #6bb700;
+$presence-color-dnd: #c50f1f;
+$presence-color-away: #ffaa44;
+$presence-color-invisible: #8a8886;
+$presence-color-oof: #b4009e;
+
 :host {
   display: inline-block;
 }
@@ -69,15 +75,132 @@ mgt-person .user-avatar {
   justify-content: center;
   align-items: center;
 
+  .user-presence {
+    margin: 0;
+    position: absolute;
+    left: calc(var(--avatar-size, 48px) * 0.72 - 4px);
+    top: calc(var(--avatar-size, 48px) * 0.72 - 4px);
+    width: calc(var(--avatar-size, 48px) * 0.28);
+    height: calc(var(--avatar-size, 48px) * 0.28);
+    border: 2px solid #ffffff;
+    border-radius: 50%;
+
+    .presence-oof-offline-wrapper {
+      background-color: #ffffff;
+      border-color: $presence-color-oof;
+
+      .presence-oof-offline svg {
+        color: $presence-color-oof;
+        width: calc(var(--avatar-size, 48px) * 0.14);
+        margin-left: calc(var(--avatar-size, 48px) * 0.07 - 2px);
+      }
+    }
+
+    .presence-basic {
+      width: calc(var(--avatar-size, 48px) * 0.28 - 4px);
+      height: calc(var(--avatar-size, 48px) * 0.28 - 4px);
+      border-style: solid;
+      border-width: 2px;
+      border-radius: 50%;
+      margin: 0;
+      font-size: calc(var(--avatar-size, 48px) * 0.14);
+      vertical-align: top;
+      display: flex;
+      align-items: center;
+
+      &.presence-offline {
+        background-color: #ffffff;
+        border-color: $presence-color-invisible;
+      }
+
+      &.presence-available {
+        background-color: $presence-color-online;
+        border-color: $presence-color-online;
+      }
+
+      &.presence-oof-available {
+        background-color: #ffffff;
+        border-color: $presence-color-online;
+      }
+
+      &.presence-away {
+        background-color: $presence-color-away;
+        border-color: $presence-color-away;
+      }
+
+      &.presence-dnd {
+        background-color: $presence-color-dnd;
+        border-color: $presence-color-dnd;
+      }
+
+      &.presence-oof-dnd {
+        background-color: #ffffff;
+        border-color: $presence-color-dnd;
+      }
+
+      &.presence-busy {
+        background-color: $presence-color-dnd;
+        border-color: $presence-color-dnd;
+      }
+
+      &.presence-oof-busy {
+        background-color: #ffffff;
+        border-color: $presence-color-dnd;
+      }
+    }
+
+    .presence-offline::before {
+      content: $ms-icon-code-StatusCircleErrorX;
+      color: $presence-color-invisible;
+      font-weight: bold;
+      margin-left: calc(var(--avatar-size, 48px) * 0.07 - 2px);
+    }
+
+    .presence-available::before {
+      content: $ms-icon-code-SkypeCheck;
+      color: #ffffff;
+      margin-left: calc(var(--avatar-size, 48px) * 0.07 - 2px);
+    }
+
+    .presence-oof-available::before {
+      content: $ms-icon-code-SkypeCheck;
+      color: $presence-color-online;
+      margin-left: calc(var(--avatar-size, 48px) * 0.07 - 2px);
+    }
+
+    .presence-away::before {
+      content: $ms-icon-code-SkypeClock;
+      color: #ffffff;
+      margin-left: calc(var(--avatar-size, 48px) * 0.07 - 2px);
+    }
+
+    .presence-dnd::before {
+      content: $ms-icon-code-SkypeMinus;
+      color: #ffffff;
+      margin-left: calc(var(--avatar-size, 48px) * 0.07 - 2px);
+    }
+
+    .presence-oof-dnd::before {
+      content: $ms-icon-code-SkypeMinus;
+      color: $presence-color-dnd;
+      margin-left: calc(var(--avatar-size, 48px) * 0.07 - 2px);
+    }
+  }
+
   &.initials {
     color: $initials-color;
     border-radius: 50%;
     font-weight: 400;
 
-    & .initials-text {
+    & .initials-text,
+    & .contact-icon {
       cursor: default;
       margin-top: -1px;
       font-size: calc(var(--avatar-size, 48px) * 0.4);
+    }
+
+    & .contact-icon {
+      display: inline;
     }
   }
 
@@ -85,8 +208,38 @@ mgt-person .user-avatar {
     width: $avatar-size-s;
     height: $avatar-size-s;
 
-    & .initials-text {
+    & .initials-text,
+    & .contact-icon {
       font-size: calc(var(--avatar-size-s, 24px) * 0.4);
+    }
+    .user-presence {
+      left: calc(var(--avatar-size-s, 24px) - 8px);
+      top: calc(var(--avatar-size-s, 24px) - 8px);
+      width: 8px;
+      height: 8px;
+
+      .presence-basic {
+        width: 4px;
+        height: 4px;
+        border-radius: 4px;
+        padding: 0;
+
+        & .presence-oof-offline svg {
+          height: 0;
+          width: 0;
+        }
+      }
+
+      .presence-offline::before,
+      .presence-available::before,
+      .presence-oof-available::before,
+      .presence-away::before,
+      .presence-oof-away::before,
+      .presence-dnd::before,
+      .presence-oof-dnd::before,
+      .presence-oof-offline::before {
+        content: '';
+      }
     }
   }
 
