@@ -6,9 +6,11 @@
  */
 
 import * as MicrosoftGraph from '@microsoft/microsoft-graph-types';
+import { Presence } from '@microsoft/microsoft-graph-types-beta';
 import { customElement, html, property, TemplateResult } from 'lit-element';
 import { findPerson, getEmailFromGraphEntity } from '../../graph/graph.people';
 import { getPersonImage } from '../../graph/graph.photos';
+import { getUserPresence } from '../../graph/graph.presence';
 import { getUserWithPhoto } from '../../graph/graph.user';
 import { IDynamicPerson } from '../../graph/types';
 import { Providers } from '../../Providers';
@@ -117,6 +119,28 @@ export class MgtPersonCard extends MgtTemplatedComponent {
   public inheritDetails: boolean;
 
   /**
+   * determines if person card component renders presence
+   * @type {boolean}
+   */
+  @property({
+    attribute: 'show-presence',
+    type: Boolean
+  })
+  public showPresence: boolean;
+
+  /**
+   * Gets or sets presence of person
+   *
+   * @type {Presence}
+   * @memberof MgtPerson
+   */
+  @property({
+    attribute: 'person-presence',
+    type: Object
+  })
+  public personPresence: Presence;
+
+  /**
    * Invoked each time the custom element is appended into a document-connected element
    *
    * @memberof MgtPersonCard
@@ -167,6 +191,8 @@ export class MgtPersonCard extends MgtTemplatedComponent {
 
     const person = this.personDetails;
     const image = this.getImage();
+    const presence = this.personPresence;
+    const showPresence = this.showPresence;
 
     // Check for a default template.
     // tslint:disable-next-line: no-string-literal
@@ -183,7 +209,7 @@ export class MgtPersonCard extends MgtTemplatedComponent {
       personImage: image
     });
     if (!personDetailsTemplate) {
-      const personImageTemplate = this.renderPersonImage(image);
+      const personImageTemplate = this.renderPersonImage(image, presence, showPresence);
       const personNameTemplate = this.renderPersonName(person);
       const personTitleTemplate = this.renderPersonTitle(person);
       const personSubtitleTemplate = this.renderPersonSubtitle(person);
@@ -234,10 +260,20 @@ export class MgtPersonCard extends MgtTemplatedComponent {
    * @param {*} image
    * @memberof MgtPersonCard
    */
-  protected renderPersonImage(imageSrc?: string): TemplateResult {
+  protected renderPersonImage(imageSrc?: string, presence?: Presence, showPresence?: boolean): TemplateResult {
     imageSrc = imageSrc || this.getImage();
+    presence = presence || this.personPresence;
+    showPresence = showPresence || this.showPresence;
+    const avatarSize = 'large';
     return html`
-      <mgt-person class="person-image" .personDetails=${this.personDetails} .personImage=${imageSrc}></mgt-person>
+      <mgt-person
+        class="person-image"
+        .personDetails=${this.personDetails}
+        .personImage=${imageSrc}
+        .personPresence=${presence}
+        .showPresence=${showPresence}
+        .avatarSize=${avatarSize}
+      ></mgt-person>
     `;
   }
 
@@ -512,6 +548,8 @@ export class MgtPersonCard extends MgtTemplatedComponent {
       if (parent && (parent as MgtPerson).personDetails) {
         this.personDetails = (parent as MgtPerson).personDetails;
         this.personImage = (parent as MgtPerson).personImage;
+        this.personPresence = (parent as MgtPerson).personPresence;
+        this.showPresence = (parent as MgtPerson).showPresence;
       }
     }
 
@@ -559,6 +597,25 @@ export class MgtPersonCard extends MgtTemplatedComponent {
           this.personDetails.personImage = image;
           this.personImage = image;
         }
+      }
+    }
+
+    // populate presence
+    const defaultPresence = {
+      activity: 'Offline',
+      availability: 'Offline',
+      id: null
+    };
+    if (!this.personPresence && this.showPresence) {
+      try {
+        if (this.personDetails && this.personDetails.id) {
+          this.personPresence = await getUserPresence(graph, this.personDetails.id);
+        } else {
+          this.personPresence = defaultPresence;
+        }
+      } catch (_) {
+        // set up a default Presence in case beta api changes or getting error code
+        this.personPresence = defaultPresence;
       }
     }
   }
