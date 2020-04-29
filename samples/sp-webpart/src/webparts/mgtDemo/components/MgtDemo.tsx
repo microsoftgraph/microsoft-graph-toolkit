@@ -21,7 +21,9 @@ export default class MgtDemo extends React.Component<IMgtDemoProps, {}> {
       <div className={styles.mgtDemo}>
         <div className={styles.container}>
           <mgt-person person-query="me" show-name person-card="hover" />
-          <mgt-agenda />
+          <mgt-people-picker></mgt-people-picker>
+          <mgt-people></mgt-people>
+          <mgt-agenda></mgt-agenda>
         </div>
       </div>
     );
