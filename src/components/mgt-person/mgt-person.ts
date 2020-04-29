@@ -312,6 +312,7 @@ export class MgtPerson extends MgtTemplatedComponent {
       this.personDetails && this.personCardInteraction === PersonCardInteraction.none
         ? this.personDetails.displayName
         : '';
+
     const isLarge = this.showEmail && this.showName;
     const imageClasses = {
       initials: !imageSrc,
@@ -321,19 +322,31 @@ export class MgtPerson extends MgtTemplatedComponent {
     };
 
     let imageHtml: TemplateResult;
+
     if (imageSrc) {
       // render the image
       imageHtml = html`
         <img alt=${title} src=${imageSrc} />
       `;
     } else if (this.personDetails) {
-      // render the initials
-      const initials = this.getInitials(this.personDetails);
+      // render the initials or person icon
+
       // add avatar background color
       imageClasses[this._personAvatarBg] = true;
+
+      const initials = this.getInitials(this.personDetails);
+      const initialsHtml =
+        initials && initials.length
+          ? html`
+              ${initials}
+            `
+          : html`
+              <i class="ms-Icon ms-Icon--Contact"></i>
+            `;
+
       imageHtml = html`
         <span class="initials-text" aria-label="${initials}">
-          ${initials}
+          ${initialsHtml}
         </span>
       `;
     } else {
@@ -572,14 +585,21 @@ export class MgtPerson extends MgtTemplatedComponent {
     if (!initials && person.displayName) {
       const name = person.displayName.split(/\s+/);
       for (let i = 0; i < 2 && i < name.length; i++) {
-        if (name[i][0] && name[i][0].match(/[a-z]/i)) {
-          // check if letter
+        if (name[i][0] && this.isLetter(name[i][0])) {
           initials += name[i][0].toUpperCase();
         }
       }
     }
 
     return initials;
+  }
+
+  private isLetter(char: string) {
+    try {
+      return char.match(new RegExp('\\p{L}', 'u'));
+    } catch (e) {
+      return char.toLowerCase() !== char.toUpperCase();
+    }
   }
 
   private handleMouseClick(e: MouseEvent) {
