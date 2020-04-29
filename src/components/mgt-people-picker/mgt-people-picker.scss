@@ -50,7 +50,7 @@ mgt-people-picker .people-picker {
   position: relative;
   margin: 7px 0 0 0;
   background-color: $input-background-color;
-  padding-bottom: 8px;
+  padding-bottom: 4px;
   border: $input-border;
   border-bottom: $input-border-bottom;
   border-left: $input-border-left;
@@ -112,7 +112,7 @@ mgt-people-picker .people-selected-list {
   display: flex;
   flex-wrap: wrap;
   vertical-align: middle;
-  margin: 0 0 0 0;
+  margin: 0 2px 0 0;
   list-style-type: none;
   padding-left: 10px;
   font-style: normal;
