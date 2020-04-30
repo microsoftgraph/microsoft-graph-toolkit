@@ -60,6 +60,17 @@ export class MgtMsalProvider extends MgtBaseProvider {
   public scopes;
 
   /**
+   * The redirect uri to use
+   *
+   * @memberof MgtMsalProvider
+   */
+  @property({
+    attribute: 'redirect-uri',
+    type: String
+  })
+  public redirectUri;
+
+  /**
    * Gets whether this provider can be used in this environment
    *
    * @readonly
@@ -97,6 +108,10 @@ export class MgtMsalProvider extends MgtBaseProvider {
         if (scope && scope.length > 0) {
           config.scopes = scope;
         }
+      }
+
+      if (this.redirectUri) {
+        config.redirectUri = this.redirectUri;
       }
 
       this.provider = new MsalProvider(config);

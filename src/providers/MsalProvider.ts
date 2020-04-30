@@ -6,7 +6,7 @@
  */
 
 import { AuthenticationProviderOptions } from '@microsoft/microsoft-graph-client/lib/es/IAuthenticationProviderOptions';
-import { createFromProvider, Graph } from '../Graph';
+import { createFromProvider } from '../Graph';
 import { IProvider, LoginType, ProviderState } from './IProvider';
 
 import { AuthenticationParameters, AuthError, AuthResponse, Configuration, UserAgentApplication } from 'msal';
@@ -47,7 +47,8 @@ export interface MsalConfig {
    */
   loginType?: LoginType;
   /**
-   * options
+   * options as defined in
+   * https://docs.microsoft.com/en-us/azure/active-directory/develop/msal-js-initializing-client-applications#configuration-options
    *
    * @type {Configuration}
    * @memberof MsalConfig
@@ -60,6 +61,13 @@ export interface MsalConfig {
    * @memberof MsalConfig
    */
   loginHint?: string;
+  /**
+   * redirect Uri
+   *
+   * @type {string}
+   * @memberof MsalConfig
+   */
+  redirectUri?: string;
 }
 
 /**
@@ -108,7 +116,7 @@ export class MsalProvider extends IProvider {
   }
 
   /**
-   * simplified form of single sign-on (SSO)
+   * attempts to sign in user silently
    *
    * @returns
    * @memberof MsalProvider
@@ -129,7 +137,7 @@ export class MsalProvider extends IProvider {
   }
 
   /**
-   * login auth Promise, Redirects request, and sets Provider state to SignedIn if response is recieved
+   * sign in user
    *
    * @param {AuthenticationParameters} [authenticationParameters]
    * @returns {Promise<void>}
@@ -151,7 +159,7 @@ export class MsalProvider extends IProvider {
   }
 
   /**
-   * logout auth Promise, sets Provider state to SignedOut
+   * sign out user
    *
    * @returns {Promise<void>}
    * @memberof MsalProvider
@@ -160,8 +168,9 @@ export class MsalProvider extends IProvider {
     this._userAgentApplication.logout();
     this.setState(ProviderState.SignedOut);
   }
+
   /**
-   * recieves acess token Promise
+   * returns an access token for scopes
    *
    * @param {AuthenticationProviderOptions} options
    * @returns {Promise<string>}
@@ -202,6 +211,7 @@ export class MsalProvider extends IProvider {
     }
     throw null;
   }
+
   /**
    * sets scopes
    *
@@ -213,7 +223,7 @@ export class MsalProvider extends IProvider {
   }
 
   /**
-   * if login runs into error, require user interaction
+   * checks if error indicates a user interaction is required
    *
    * @protected
    * @param {*} error
@@ -288,6 +298,7 @@ export class MsalProvider extends IProvider {
       sessionStorage.setItem(this.sessionStorageDeniedScopesKey, JSON.stringify(deniedScopes));
     }
   }
+
   /**
    * gets deniedScopes from sessionStorage
    *
@@ -299,6 +310,7 @@ export class MsalProvider extends IProvider {
     const scopesStr = sessionStorage.getItem(this.sessionStorageDeniedScopesKey);
     return scopesStr ? JSON.parse(scopesStr) : null;
   }
+
   /**
    * if scopes are denied
    *
@@ -323,14 +335,6 @@ export class MsalProvider extends IProvider {
     this._loginType = typeof config.loginType !== 'undefined' ? config.loginType : LoginType.Redirect;
     this._loginHint = config.loginHint;
 
-    const tokenReceivedCallbackFunction = ((response: AuthResponse) => {
-      this.tokenReceivedCallback(response);
-    }).bind(this);
-
-    const errorReceivedCallbackFunction = ((authError: AuthError, accountState: string) => {
-      this.errorReceivedCallback(authError, status);
-    }).bind(this);
-
     if (config.clientId) {
       const msalConfig: Configuration = config.options || { auth: { clientId: config.clientId } };
 
@@ -343,10 +347,17 @@ export class MsalProvider extends IProvider {
         msalConfig.auth.authority = config.authority;
       }
 
+      if (config.redirectUri) {
+        msalConfig.auth.redirectUri = config.redirectUri;
+      }
+
       this.clientId = config.clientId;
 
       this._userAgentApplication = new UserAgentApplication(msalConfig);
-      this._userAgentApplication.handleRedirectCallback(tokenReceivedCallbackFunction, errorReceivedCallbackFunction);
+      this._userAgentApplication.handleRedirectCallback(
+        response => this.tokenReceivedCallback(response),
+        (error, state) => this.errorReceivedCallback(error, state)
+      );
     } else {
       throw new Error('clientId must be provided');
     }
