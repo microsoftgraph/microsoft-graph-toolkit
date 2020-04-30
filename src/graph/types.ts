@@ -22,6 +22,13 @@ export type IDynamicPerson = (MicrosoftGraph.User | MicrosoftGraph.Person | Micr
    * @type {string}
    */
   personImage?: string;
+
+  /**
+   * personDetails.email is a toolkit injected property to manually set a singular email address for a user.
+   *
+   * @type {string}
+   */
+  email?: string;
 };
 
 /**
