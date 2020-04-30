@@ -9,7 +9,7 @@ import { customElement, html, property, query, TemplateResult } from 'lit-elemen
 import { classMap } from 'lit-html/directives/class-map';
 import { repeat } from 'lit-html/directives/repeat';
 import { findPerson, getPeople, getPeopleFromGroup } from '../../graph/graph.people';
-import { getUser } from '../../graph/graph.user';
+import { getUser, getUsersForUserIds } from '../../graph/graph.user';
 import { IDynamicPerson } from '../../graph/types';
 import { Providers } from '../../Providers';
 import { ProviderState } from '../../providers/IProvider';
@@ -96,6 +96,21 @@ export class MgtPeoplePicker extends MgtTemplatedComponent {
     this._groupId = value;
     this.requestStateUpdate(true);
   }
+
+  /**
+   * array of people to be selected upon intialization
+   *
+   * @type {Array}
+   * @memberof MgtPeoplePicker
+   */
+  @property({
+    attribute: 'default-selected-user-ids',
+    converter: value => {
+      return value.split(',').map(v => v.trim());
+    },
+    type: String
+  })
+  public defaultSelectedUserIds: '';
 
   /**
    * User input in search.
@@ -464,6 +479,13 @@ export class MgtPeoplePicker extends MgtTemplatedComponent {
     let people: IDynamicPerson[];
 
     const graph = provider.graph.forComponent(this);
+    if (this.defaultSelectedUserIds && !this.selectedPeople.length) {
+      const defaultSelectedUsers = await getUsersForUserIds(graph, this.defaultSelectedUserIds);
+
+      this.selectedPeople = [...defaultSelectedUsers];
+      this.requestUpdate();
+      this.fireCustomEvent('selectionChanged', this.selectedPeople);
+    }
     if (this.groupId) {
       if (this._groupPeople === null) {
         try {
