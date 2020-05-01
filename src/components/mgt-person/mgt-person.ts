@@ -9,7 +9,7 @@ import * as MicrosoftGraph from '@microsoft/microsoft-graph-types';
 import { Presence } from '@microsoft/microsoft-graph-types-beta';
 import { customElement, html, property, query, TemplateResult } from 'lit-element';
 import { classMap } from 'lit-html/directives/class-map';
-import { findPerson, getEmailFromGraphEntity } from '../../graph/graph.people';
+import { findPeople, getEmailFromGraphEntity } from '../../graph/graph.people';
 import { getPersonImage } from '../../graph/graph.photos';
 import { getUserPresence } from '../../graph/graph.presence';
 import { getUserWithPhoto } from '../../graph/graph.user';
@@ -681,7 +681,7 @@ export class MgtPerson extends MgtTemplatedComponent {
       this.personImage = this.getImage();
     } else if (this.personQuery) {
       // Use the personQuery to find our person.
-      const people = await findPerson(graph, this.personQuery);
+      const people = await findPeople(graph, this.personQuery, 1);
 
       if (people && people.length) {
         this.personDetails = people[0];
