@@ -5,8 +5,8 @@
  * -------------------------------------------------------------------------------------------
  */
 
-import { Group, User } from '@microsoft/microsoft-graph-types';
-import { customElement, html, property, TemplateResult } from 'lit-element';
+import { User } from '@microsoft/microsoft-graph-types';
+import { customElement, html, internalProperty, property, TemplateResult } from 'lit-element';
 import { classMap } from 'lit-html/directives/class-map';
 import { repeat } from 'lit-html/directives/repeat';
 import { findGroups, GroupType } from '../../graph/graph.groups';
@@ -206,6 +206,8 @@ export class MgtPeoplePicker extends MgtTemplatedComponent {
   private _groupPeople: IDynamicPerson[];
   private _debouncedSearch: { (): void; (): void };
 
+  @internalProperty() private _foundPeople: IDynamicPerson[];
+
   constructor() {
     super();
 
@@ -280,7 +282,7 @@ export class MgtPeoplePicker extends MgtTemplatedComponent {
    * @memberof MgtPeoplePicker
    */
   public render(): TemplateResult {
-    const defaultTemplate = this.renderTemplate('default', { people: this.people });
+    const defaultTemplate = this.renderTemplate('default', { people: this._foundPeople });
     if (defaultTemplate) {
       return defaultTemplate;
     }
@@ -310,7 +312,7 @@ export class MgtPeoplePicker extends MgtTemplatedComponent {
   protected requestStateUpdate(force?: boolean) {
     if (force) {
       this._groupPeople = null;
-      this.people = null;
+      this._foundPeople = null;
       this.selectedPeople = [];
     }
 
@@ -408,11 +410,13 @@ export class MgtPeoplePicker extends MgtTemplatedComponent {
       return this.renderLoading();
     }
 
-    if (!this.people || this.people.length === 0 || this.showMax === 0) {
+    let people = this._foundPeople;
+
+    if (!people || people.length === 0 || this.showMax === 0) {
       return this.renderNoData();
     }
 
-    const people = this.people.slice(0, this.showMax);
+    people = people.slice(0, this.showMax);
     (people[0] as IFocusable).isFocused = true;
 
     return this.renderSearchResults(people);
@@ -468,7 +472,7 @@ export class MgtPeoplePicker extends MgtTemplatedComponent {
    * @memberof MgtPeoplePicker
    */
   protected renderSearchResults(people?: IDynamicPerson[]) {
-    people = people || this.people;
+    people = people || this._foundPeople;
 
     return html`
       <div class="people-list">
@@ -545,74 +549,73 @@ export class MgtPeoplePicker extends MgtTemplatedComponent {
    * set's `this.groupPeople` to those members.
    */
   protected async loadState(): Promise<void> {
-    const provider = Providers.globalProvider;
-    if (!provider || provider.state !== ProviderState.SignedIn) {
-      return;
-    }
-
+    let people = this.people;
     const input = this.userInput.toLowerCase();
-    let people: IDynamicPerson[];
 
-    if (this.groupId) {
-      if (this._groupPeople === null) {
-        try {
-          const graph = provider.graph.forComponent(this);
-          this._groupPeople = await getPeopleFromGroup(graph, this.groupId);
-        } catch (_) {
-          this._groupPeople = [];
-        }
-      }
-
-      people = this._groupPeople || [];
-      if (people) {
-        people = people.filter((user: User) => {
-          return (
-            user.displayName.toLowerCase().indexOf(input) !== -1 ||
-            (!!user.givenName && user.givenName.toLowerCase().indexOf(input) !== -1) ||
-            (!!user.surname && user.surname.toLowerCase().indexOf(input) !== -1) ||
-            (!!user.mail && user.mail.toLowerCase().indexOf(input) !== -1)
-          );
-        });
-      }
-    } else if (input) {
-      const graph = provider.graph.forComponent(this);
-      people = [];
-
-      if (this.type === PersonType.Person || this.type === PersonType.Any) {
-        try {
-          people = (await findPeople(graph, input, this.showMax)) || [];
-        } catch (e) {
-          // nop
-        }
-
-        if (people.length < this.showMax) {
+    const provider = Providers.globalProvider;
+    if (!people && provider && provider.state === ProviderState.SignedIn) {
+      if (this.groupId) {
+        if (this._groupPeople === null) {
           try {
-            const users = (await findUsers(graph, input, this.showMax)) || [];
+            const graph = provider.graph.forComponent(this);
+            this._groupPeople = await getPeopleFromGroup(graph, this.groupId);
+          } catch (_) {
+            this._groupPeople = [];
+          }
+        }
 
-            // make sure only unique people
-            const peopleIds = new Set(people.map(p => p.id));
-            for (const user of users) {
-              if (!peopleIds.has(user.id)) {
-                people.push(user);
+        people = this._groupPeople || [];
+      } else if (input) {
+        const graph = provider.graph.forComponent(this);
+        people = [];
+
+        if (this.type === PersonType.Person || this.type === PersonType.Any) {
+          try {
+            people = (await findPeople(graph, input, this.showMax)) || [];
+          } catch (e) {
+            // nop
+          }
+
+          if (people.length < this.showMax) {
+            try {
+              const users = (await findUsers(graph, input, this.showMax)) || [];
+
+              // make sure only unique people
+              const peopleIds = new Set(people.map(p => p.id));
+              for (const user of users) {
+                if (!peopleIds.has(user.id)) {
+                  people.push(user);
+                }
               }
+            } catch (e) {
+              // nop
             }
+          }
+        }
+
+        if ((this.type === PersonType.Group || this.type === PersonType.Any) && people.length < this.showMax) {
+          try {
+            const groups = (await findGroups(graph, input, this.showMax, this.groupType)) || [];
+            people = people.concat(groups);
           } catch (e) {
             // nop
           }
         }
       }
-
-      if ((this.type === PersonType.Group || this.type === PersonType.Any) && people.length < this.showMax) {
-        try {
-          const groups = (await findGroups(graph, input, this.showMax, this.groupType)) || [];
-          people = people.concat(groups);
-        } catch (e) {
-          // nop
-        }
-      }
     }
 
-    this.people = this.filterPeople(people);
+    if (people) {
+      people = people.filter((user: User) => {
+        return (
+          user.displayName.toLowerCase().indexOf(input) !== -1 ||
+          (!!user.givenName && user.givenName.toLowerCase().indexOf(input) !== -1) ||
+          (!!user.surname && user.surname.toLowerCase().indexOf(input) !== -1) ||
+          (!!user.mail && user.mail.toLowerCase().indexOf(input) !== -1)
+        );
+      });
+    }
+
+    this._foundPeople = this.filterPeople(people);
   }
 
   /**
@@ -669,7 +672,7 @@ export class MgtPeoplePicker extends MgtTemplatedComponent {
         this.selectedPeople = [...this.selectedPeople, person];
         this.fireCustomEvent('selectionChanged', this.selectedPeople);
 
-        this.people = [];
+        this._foundPeople = [];
       }
     }
   }
@@ -726,7 +729,7 @@ export class MgtPeoplePicker extends MgtTemplatedComponent {
     if (event.code === 'Escape') {
       input.value = '';
       this.userInput = '';
-      this.people = [];
+      this._foundPeople = [];
       return;
     }
     if (event.code === 'Backspace' && this.userInput.length === 0 && this.selectedPeople.length > 0) {
@@ -756,7 +759,7 @@ export class MgtPeoplePicker extends MgtTemplatedComponent {
     if (!this._debouncedSearch) {
       this._debouncedSearch = debounce(async () => {
         if (!this.userInput.length) {
-          this.people = [];
+          this._foundPeople = [];
           this.hideFlyout();
           this._showLoading = true;
         } else {
@@ -795,10 +798,10 @@ export class MgtPeoplePicker extends MgtTemplatedComponent {
       }
     }
     if (event.code === 'Tab' || event.code === 'Enter') {
-      if (this.people.length) {
+      if (this._foundPeople.length) {
         event.preventDefault();
       }
-      this.addPerson(this.people[this._arrowSelectionCount]);
+      this.addPerson(this._foundPeople[this._arrowSelectionCount]);
       this.hideFlyout();
       (event.target as HTMLInputElement).value = '';
     }
@@ -809,7 +812,7 @@ export class MgtPeoplePicker extends MgtTemplatedComponent {
    * @param event - tracks user key selection
    */
   private handleArrowSelection(event: KeyboardEvent): void {
-    if (this.people.length) {
+    if (this._foundPeople.length) {
       // update arrow count
       if (event.keyCode === 38) {
         // up arrow
@@ -821,7 +824,10 @@ export class MgtPeoplePicker extends MgtTemplatedComponent {
       }
       if (event.keyCode === 40) {
         // down arrow
-        if (this._arrowSelectionCount + 1 !== this.people.length && this._arrowSelectionCount + 1 < this.showMax) {
+        if (
+          this._arrowSelectionCount + 1 !== this._foundPeople.length &&
+          this._arrowSelectionCount + 1 < this.showMax
+        ) {
           this._arrowSelectionCount++;
         } else {
           this._arrowSelectionCount = 0;
