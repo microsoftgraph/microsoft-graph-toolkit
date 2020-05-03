@@ -24,6 +24,8 @@ import { getEventsPageIterator } from './mgt-agenda.graph';
  * @class MgtAgenda
  * @extends {MgtTemplatedComponent}
  *
+ * @fires eventClick - Fired when user click an event
+ *
  * @cssprop --event-box-shadow - {String} Event box shadow color and size
  * @cssprop --event-margin - {String} Event margin
  * @cssprop --event-padding - {String} Event padding
@@ -150,7 +152,7 @@ export class MgtAgenda extends MgtTemplatedComponent {
 
   /**
    * allows developer to define agenda to group events by day.
-   * @type {Boolean}
+   * @type {boolean}
    */
   @property({
     attribute: 'group-by-day',

@@ -15,6 +15,8 @@ import { MgtTemplatedComponent } from '../templatedComponent';
 /**
  * Custom element for making Microsoft Graph get queries
  *
+ * @fires dataChange - Fired when data changes
+ *
  * @export
  * @class mgt-get
  * @extends {MgtTemplatedComponent}
@@ -94,7 +96,7 @@ export class MgtGet extends MgtTemplatedComponent {
   /**
    * Gets or sets the response of the request
    *
-   * @type {*}
+   * @type any
    * @memberof MgtGet
    */
   @property({ attribute: false }) public response: any;
@@ -102,7 +104,7 @@ export class MgtGet extends MgtTemplatedComponent {
   /**
    *
    * Gets or sets the error (if any) of the request
-   * @type {*}
+   * @type any
    * @memberof MgtGet
    */
   @property({ attribute: false }) public error: any;
