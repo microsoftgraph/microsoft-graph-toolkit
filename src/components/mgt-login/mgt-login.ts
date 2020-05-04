@@ -222,12 +222,19 @@ export class MgtLogin extends MgtBaseComponent {
     if (!this.userDetails) {
       return;
     }
+    const avatarSize = 'large';
 
     return html`
       <div class="popup">
         <div class="popup-content">
           <div>
-            <mgt-person .personDetails=${this.userDetails} .personImage=${this._image} show-name show-email />
+            <mgt-person
+              .personDetails=${this.userDetails}
+              .personImage=${this._image}
+              .avatarSize=${avatarSize}
+              show-name
+              show-email
+            />
           </div>
           <div class="popup-commands">
             <ul>
@@ -251,8 +258,14 @@ export class MgtLogin extends MgtBaseComponent {
    */
   protected renderButtonContent() {
     if (this.userDetails) {
+      const avatarSize = 'small';
       return html`
-        <mgt-person .personDetails=${this.userDetails} .personImage=${this._image} show-name />
+        <mgt-person
+          .personDetails=${this.userDetails}
+          .personImage=${this._image}
+          .avatarSize=${avatarSize}
+          show-name
+        />
       `;
     } else {
       return html`
