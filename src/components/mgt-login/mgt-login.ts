@@ -163,7 +163,7 @@ export class MgtLogin extends MgtBaseComponent {
    */
   protected async loadState() {
     const provider = Providers.globalProvider;
-    if (provider) {
+    if (provider && !this.userDetails) {
       if (provider.state === ProviderState.SignedIn) {
         const batch = provider.graph.forComponent(this).createBatch();
         batch.get('me', 'me', ['user.read']);
