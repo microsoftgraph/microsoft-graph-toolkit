@@ -8,6 +8,7 @@
 import { Contact, Person, User } from '@microsoft/microsoft-graph-types';
 import { IGraph } from '../IGraph';
 import { prepScopes } from '../utils/GraphHelpers';
+import { IDynamicPerson } from './types';
 
 /**
  * Person Type enum
@@ -104,7 +105,7 @@ export async function getPeopleFromGroup(graph: IGraph, groupId: string): Promis
  * returns a promise that resolves after specified time
  * @param time in milliseconds
  */
-export function getEmailFromGraphEntity(entity: User | Person | Contact): string {
+export function getEmailFromGraphEntity(entity: IDynamicPerson): string {
   const person = entity as Person;
   const user = entity as User;
   const contact = entity as Contact;
@@ -116,7 +117,6 @@ export function getEmailFromGraphEntity(entity: User | Person | Contact): string
   } else if (contact.emailAddresses && contact.emailAddresses.length) {
     return contact.emailAddresses[0].address;
   }
-
   return null;
 }
 
