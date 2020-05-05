@@ -41,6 +41,8 @@ interface IFocusable {
  * @class MgtPicker
  * @extends {MgtTemplatedComponent}
  *
+ * @fires selectionChanged - Fired when selection changes
+ *
  * @cssprop --people-list-background-color - {Color} People list background color
  * @cssprop --accent-color - {Color} Accent color
  */
@@ -55,8 +57,8 @@ export class MgtPeoplePicker extends MgtTemplatedComponent {
   }
 
   /**
-   * containing object of MgtPersonDetails.
-   * @type {MgtPersonDetails}
+   * containing object of IDynamicPerson.
+   * @type {IDynamicPerson[]}
    */
   @property({
     attribute: 'people',
@@ -76,7 +78,7 @@ export class MgtPeoplePicker extends MgtTemplatedComponent {
 
   /**
    *  array of user picked people.
-   * @type {Array<IDynamicPerson>}
+   * @type {IDynamicPerson[]}
    */
   @property({
     attribute: 'selected-people',

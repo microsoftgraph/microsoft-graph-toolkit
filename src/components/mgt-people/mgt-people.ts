@@ -6,7 +6,6 @@
  */
 
 import * as MicrosoftGraph from '@microsoft/microsoft-graph-types';
-import { Presence } from '@microsoft/microsoft-graph-types-beta';
 import { customElement, html, property, TemplateResult } from 'lit-element';
 import { repeat } from 'lit-html/directives/repeat';
 import { getPeople, getPeopleFromGroup } from '../../graph/graph.people';
@@ -20,6 +19,8 @@ import { arraysAreEqual } from '../../utils/Utils';
 import { MgtTemplatedComponent } from '../templatedComponent';
 import { PersonCardInteraction } from './../PersonCardInteraction';
 import { styles } from './mgt-people-css';
+
+export { PersonCardInteraction } from './../PersonCardInteraction';
 
 /**
  * web component to display a group of people or contacts by using their photos or initials.
@@ -84,7 +85,7 @@ export class MgtPeople extends MgtTemplatedComponent {
 
   /**
    * containing array of people used in the component.
-   * @type {Array<MgtPersonDetails>}
+   * @type {IDynamicPerson[]}
    */
   @property({
     attribute: 'people',

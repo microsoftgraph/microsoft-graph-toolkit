@@ -6,7 +6,7 @@
  */
 
 import * as MicrosoftGraph from '@microsoft/microsoft-graph-types';
-import { Presence } from '@microsoft/microsoft-graph-types-beta';
+import * as MicrosoftGraphBeta from '@microsoft/microsoft-graph-types-beta';
 import { customElement, html, property, query, TemplateResult } from 'lit-element';
 import { classMap } from 'lit-html/directives/class-map';
 import { findPeople, getEmailFromGraphEntity } from '../../graph/graph.people';
@@ -24,6 +24,8 @@ import { MgtFlyout } from '../sub-components/mgt-flyout/mgt-flyout';
 import { MgtTemplatedComponent } from '../templatedComponent';
 import { PersonCardInteraction } from './../PersonCardInteraction';
 import { styles } from './mgt-person-css';
+
+export { PersonCardInteraction } from './../PersonCardInteraction';
 
 /**
  * The person component is used to display a person or contact by using their photo, name, and/or email address.
@@ -156,14 +158,14 @@ export class MgtPerson extends MgtTemplatedComponent {
   /**
    * Gets or sets presence of person
    *
-   * @type {Presence}
+   * @type {MicrosoftGraphBeta.Presence}
    * @memberof MgtPerson
    */
   @property({
     attribute: 'person-presence',
     type: Object
   })
-  public personPresence: Presence;
+  public personPresence: MicrosoftGraphBeta.Presence;
 
   /**
    * Sets how the person-card is invoked
@@ -384,7 +386,7 @@ export class MgtPerson extends MgtTemplatedComponent {
    * @param
    * @memberof MgtPersonCard
    */
-  protected renderPresence(presence?: Presence): TemplateResult {
+  protected renderPresence(presence?: MicrosoftGraphBeta.Presence): TemplateResult {
     if (!this.showPresence) {
       return html``;
     }
@@ -492,7 +494,7 @@ export class MgtPerson extends MgtTemplatedComponent {
    * @param
    * @memberof MgtPersonCard
    */
-  protected renderImageWithPresence(image?: string, presence?: Presence): TemplateResult {
+  protected renderImageWithPresence(image?: string, presence?: MicrosoftGraphBeta.Presence): TemplateResult {
     if (!image) {
       image = this.getImage();
     }

@@ -6,7 +6,7 @@
  */
 
 import * as MicrosoftGraph from '@microsoft/microsoft-graph-types';
-import { Presence } from '@microsoft/microsoft-graph-types-beta';
+import * as MicrosoftGraphBeta from '@microsoft/microsoft-graph-types-beta';
 import { customElement, html, property, TemplateResult } from 'lit-element';
 import { findPeople, getEmailFromGraphEntity } from '../../graph/graph.people';
 import { getPersonImage } from '../../graph/graph.photos';
@@ -131,14 +131,14 @@ export class MgtPersonCard extends MgtTemplatedComponent {
   /**
    * Gets or sets presence of person
    *
-   * @type {Presence}
+   * @type {MicrosoftGraphBeta.Presence}
    * @memberof MgtPerson
    */
   @property({
     attribute: 'person-presence',
     type: Object
   })
-  public personPresence: Presence;
+  public personPresence: MicrosoftGraphBeta.Presence;
 
   /**
    * Invoked each time the custom element is appended into a document-connected element
@@ -260,7 +260,11 @@ export class MgtPersonCard extends MgtTemplatedComponent {
    * @param {*} image
    * @memberof MgtPersonCard
    */
-  protected renderPersonImage(imageSrc?: string, presence?: Presence, showPresence?: boolean): TemplateResult {
+  protected renderPersonImage(
+    imageSrc?: string,
+    presence?: MicrosoftGraphBeta.Presence,
+    showPresence?: boolean
+  ): TemplateResult {
     imageSrc = imageSrc || this.getImage();
     presence = presence || this.personPresence;
     showPresence = showPresence || this.showPresence;
