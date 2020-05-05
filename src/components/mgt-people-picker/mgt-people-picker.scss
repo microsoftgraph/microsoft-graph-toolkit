@@ -282,7 +282,9 @@ mgt-people-picker .people-person-job-title {
   order: 3;
   font-weight: normal;
   font-size: 12px;
-  text-transform: uppercase;
+  &.uppercase {
+    text-transform: uppercase;
+  }
 }
 :host .people-person-text-area,
 mgt-people-picker .people-person-text-area {

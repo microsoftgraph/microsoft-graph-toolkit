@@ -17,10 +17,13 @@ export default {
   title: 'Components | mgt-people-picker',
   component: 'mgt-people-picker',
   decorators: [withA11y, withSignIn, withCodeEditor],
-  parameters: { options: { selectedPanel: 'storybookjs/knobs/panel' } },
+  parameters: { options: { selectedPanel: 'storybookjs/knobs/panel' } }
 };
 
-export const peoplePicker = () => html` <mgt-people-picker></mgt-people-picker> `;
+export const peoplePicker = () =>
+  html`
+    <mgt-people-picker></mgt-people-picker>
+  `;
 
 export const groupId = () => html`
   <mgt-people-picker group-id="02bd9fd6-8f93-4758-87c3-1fb73740a315"></mgt-people-picker>
@@ -44,4 +47,19 @@ export const DarkMode = () => html`
       --placeholder-focus-color: rgba(255, 255, 255, 0.8);
     }
   </style>
+`;
+
+export const pickPeopleAndGroups = () => html`
+  <mgt-people-picker type="Any"></mgt-people-picker>
+  <!-- type can be "Any", "Person", "Group" -->
+`;
+
+export const pickGroups = () => html`
+  <mgt-people-picker type="Group"></mgt-people-picker>
+  <!-- type can be "Any", "Person", "Group" -->
+`;
+
+export const pickDistributionGroups = () => html`
+  <mgt-people-picker type="Group" group-type="Distribution"></mgt-people-picker>
+  <!-- group-type can be "Any", "Unified", "Security", "MailEnabledSecurity", "Distribution" -->
 `;
