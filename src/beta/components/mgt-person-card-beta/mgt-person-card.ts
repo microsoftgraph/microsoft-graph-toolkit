@@ -17,7 +17,10 @@ import { Providers } from '../../../Providers';
 import { ProviderState } from '../../../providers/IProvider';
 import { getSvg, SvgIcon } from '../../../utils/SvgHelper';
 import { TeamsHelper } from '../../../utils/TeamsHelper';
-import { styles } from './mgt-person-card-beta-css';
+import { styles } from './mgt-person-card-css';
+import { BasePersonCardSection } from './sections/BasePersonCardSection';
+import './sections/mgt-person-card-profile/mgt-person-card-profile';
+import { MgtPersonCardProfile } from './sections/mgt-person-card-profile/mgt-person-card-profile';
 
 /**
  * Web Component used to show detailed data for a person in the
@@ -115,6 +118,20 @@ export class MgtPersonCardBeta extends MgtTemplatedComponent {
     type: Boolean
   })
   public inheritDetails: boolean;
+
+  /**
+   * foo
+   *
+   * @protected
+   * @type {BasePersonCardSection[]}
+   * @memberof MgtPersonCardBeta
+   */
+  protected sections: BasePersonCardSection[];
+
+  constructor() {
+    super();
+    this.sections = [new MgtPersonCardProfile()];
+  }
 
   /**
    * Invoked each time the custom element is appended into a document-connected element
@@ -395,6 +412,57 @@ export class MgtPersonCardBeta extends MgtTemplatedComponent {
   }
 
   /**
+   * foo
+   *
+   * @protected
+   * @returns {TemplateResult}
+   * @memberof MgtPersonCardBeta
+   */
+  protected renderSectionNavigation(): TemplateResult {
+    return html``;
+  }
+
+  /**
+   * foo
+   *
+   * @protected
+   * @returns {TemplateResult}
+   * @memberof MgtPersonCardBeta
+   */
+  protected renderOverviewSection(): TemplateResult {
+    const compactTemplates = this.sections.map(
+      section => html`
+        <div class="section">
+          ${section.renderCompactView()}
+        </div>
+      `
+    );
+
+    return html`
+      <div class="sections">
+        ${compactTemplates}
+      </div>
+    `;
+  }
+
+  protected _currentSectionIndex: number = 0;
+
+  /**
+   * foo
+   *
+   * @protected
+   * @returns {TemplateResult}
+   * @memberof MgtPersonCardBeta
+   */
+  protected renderCurrentSection(): TemplateResult {
+    if (!this._currentSectionIndex) {
+      return this.renderOverviewSection();
+    }
+
+    return html``;
+  }
+
+  /**
    * Render additional details for the person.
    *
    * @protected
@@ -404,10 +472,11 @@ export class MgtPersonCardBeta extends MgtTemplatedComponent {
   protected renderAdditionalDetails(person?: IDynamicPerson): TemplateResult {
     person = person || this.personDetails;
     const personImage = this.getImage();
+
     const additionalDetailsTemplate = this.hasTemplate('additional-details')
       ? this.renderTemplate('additional-details', { person, personImage })
       : html`
-          <mgt-person-card-beta-profile user-id="${person.id}"></mgt-person-card-beta-profile>
+          <mgt-person-card-profile user-id="${person.id}"></mgt-person-card-profile>
         `;
 
     return html`

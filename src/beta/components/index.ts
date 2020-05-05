@@ -5,7 +5,4 @@
  * -------------------------------------------------------------------------------------------
  */
 
-export {
-  MgtPersonCardBetaProfile
-} from './mgt-person-card-beta/parts/mgt-person-card-beta-profile/mgt-person-card-beta-profile';
-export { MgtPersonCardBeta } from './mgt-person-card-beta/mgt-person-card-beta';
+export { MgtPersonCardBeta } from './mgt-person-card-beta/mgt-person-card';
