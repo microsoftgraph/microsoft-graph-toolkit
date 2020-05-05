@@ -30,7 +30,7 @@ jobs:
       uses: actions/upload-artifact@v2
       with:
         name: npm-package
-        path: wc-react-*.tgz
+        path: microsoft-mgt-*.tgz
     - name: Upload a Build Artifact - bundle
       uses: actions/upload-artifact@v2
       with:
