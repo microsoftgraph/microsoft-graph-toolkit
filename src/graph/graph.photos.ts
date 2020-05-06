@@ -75,8 +75,21 @@ export async function getPersonImage(graph: IGraph, person: IDynamicPerson) {
     const userPrincipalName = (person as MicrosoftGraph.Person).userPrincipalName;
     image = await getUserPhoto(graph, userPrincipalName);
   } else {
+    if (person.id) {
+      try {
+        image = await getUserPhoto(graph, person.id);
+      } catch (e) {
+        // nop
+      }
+    }
+
+    if (image) {
+      return image;
+    }
+
     // try to find a user by e-mail
     const email = getEmailFromGraphEntity(person);
+
     if (email) {
       const users = await findUserByEmail(graph, email);
       if (users && users.length) {
