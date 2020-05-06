@@ -12,7 +12,6 @@ import { withWebComponentsKnobs } from 'storybook-addon-web-components-knobs';
 import { withSignIn } from '../../.storybook/addons/signInAddon/signInAddon';
 import { withCodeEditor } from '../../.storybook/addons/codeEditorAddon/codeAddon';
 import '../../dist/es6/components/mgt-login/mgt-login';
-import '../../dist/es6/components/mgt-person/mgt-person';
 
 export default {
   title: 'Components | mgt-login',
