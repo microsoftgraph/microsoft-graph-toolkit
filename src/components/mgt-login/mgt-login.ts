@@ -16,6 +16,8 @@ import '../mgt-person/mgt-person';
 import { MgtFlyout } from '../sub-components/mgt-flyout/mgt-flyout';
 import { styles } from './mgt-login-css';
 
+export type LoginButtonType = 'avatar' | 'name' | 'avatarAndName';
+
 /**
  * Web component button and flyout control to facilitate Microsoft identity platform authentication
  *
@@ -60,6 +62,11 @@ export class MgtLogin extends MgtBaseComponent {
   })
   public userDetails: IDynamicPerson;
 
+  @property({
+    attribute: 'button-type'
+  })
+  public buttonType: LoginButtonType;
+
   /**
    * Gets the flyout element
    *
@@ -82,6 +89,7 @@ export class MgtLogin extends MgtBaseComponent {
   constructor() {
     super();
     this._isFlyoutOpen = false;
+    this.buttonType = 'avatarAndName';
   }
 
   /**
@@ -264,15 +272,23 @@ export class MgtLogin extends MgtBaseComponent {
    */
   protected renderButtonContent() {
     if (this.userDetails) {
-      const avatarSize = 'small';
-      return html`
-        <mgt-person
-          .personDetails=${this.userDetails}
-          .personImage=${this._image}
-          .avatarSize=${avatarSize}
-          show-name
-        />
-      `;
+      if (this.buttonType === 'name') {
+        return html`
+          <span>
+            ${this.userDetails.displayName}
+          </span>
+        `;
+      } else {
+        const avatarSize = 'small';
+        return html`
+          <mgt-person
+            .personDetails=${this.userDetails}
+            .personImage=${this._image}
+            .avatarSize=${avatarSize}
+            .showName=${this.buttonType === 'avatarAndName'}
+          />
+        `;
+      }
     } else {
       return html`
         <i class="login-icon ms-Icon ms-Icon--Contact"></i>
