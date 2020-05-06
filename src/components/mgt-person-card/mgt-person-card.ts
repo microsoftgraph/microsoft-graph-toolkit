@@ -82,7 +82,6 @@ export class MgtPersonCard extends MgtTemplatedComponent {
 
   /**
    * Set the image of the person
-   * Set to '@' to look up image from the graph
    *
    * @type {string}
    * @memberof MgtPersonCard
@@ -92,6 +91,20 @@ export class MgtPersonCard extends MgtTemplatedComponent {
     type: String
   })
   public personImage: string;
+
+  /**
+   * Sets whether the person image should be fetched
+   * from the Microsoft Graph based on the personDetails
+   * provided by the user
+   *
+   * @type {boolean}
+   * @memberof MgtPerson
+   */
+  @property({
+    attribute: 'fetch-image',
+    type: Boolean
+  })
+  public fetchImage: boolean;
 
   /**
    * Gets or sets whether expanded details section is rendered
@@ -575,12 +588,13 @@ export class MgtPersonCard extends MgtTemplatedComponent {
         const person = await getUserWithPhoto(graph, id);
         this.personDetails = person;
         this.personImage = this.getImage();
-      } else if (this.personImage === '@' && !this.personDetails.personImage) {
+      } else if (
+        !this.personDetails.personImage &&
+        ((this.fetchImage && !this.personImage) || this.personImage === '@')
+      ) {
         // in some cases we might only have name or email, but need to find the image
-        // use @ for the image value to search for an image
         const image = await getPersonImage(graph, this.personDetails);
         if (image) {
-          this.personDetails.personImage = image;
           this.personImage = image;
         }
       }
@@ -598,7 +612,6 @@ export class MgtPersonCard extends MgtTemplatedComponent {
         this.personDetails = people[0];
         const image = await getPersonImage(graph, this.personDetails);
         if (image) {
-          this.personDetails.personImage = image;
           this.personImage = image;
         }
       }
