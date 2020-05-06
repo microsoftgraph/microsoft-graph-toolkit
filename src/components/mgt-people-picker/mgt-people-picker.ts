@@ -58,6 +58,10 @@ interface IFocusable {
  *
  * @cssprop --placeholder-focus-color - {Color} Color of placeholder text during focus state
  * @cssprop --placeholder-default-color - {Color} Color of placeholder text
+ * @fires selectionChanged - Fired when selection changes
+ *
+ * @cssprop --people-list-background-color - {Color} People list background color
+ * @cssprop --accent-color - {Color} Accent color
  */
 @customElement('mgt-people-picker')
 export class MgtPeoplePicker extends MgtTemplatedComponent {
@@ -81,8 +85,8 @@ export class MgtPeoplePicker extends MgtTemplatedComponent {
   }
 
   /**
-   * containing object of MgtPersonDetails.
-   * @type {MgtPersonDetails}
+   * containing object of IDynamicPerson.
+   * @type {IDynamicPerson[]}
    */
   @property({
     attribute: 'people',
@@ -102,7 +106,7 @@ export class MgtPeoplePicker extends MgtTemplatedComponent {
 
   /**
    *  array of user picked people.
-   * @type {Array<IDynamicPerson>}
+   * @type {IDynamicPerson[]}
    */
   @property({
     attribute: 'selected-people',
