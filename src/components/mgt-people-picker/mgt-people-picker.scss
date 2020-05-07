@@ -35,9 +35,7 @@ $font-color: var(--font-color, #323130);
 
 :host {
   border-radius: 2px;
-  font-family: var(--default-font-family);
-  font-style: normal;
-  font-weight: normal;
+  font-family: var(--default-font-family, 'Segoe UI');
 }
 :host .root,
 mgt-people-picker .root {
@@ -80,6 +78,7 @@ mgt-people-picker .flyout-root {
 
 :host .people-selected-input,
 mgt-people-picker .people-selected-input {
+  font-family: var(--default-font-family, 'Segoe UI');
   position: relative;
   border: none;
   line-height: normal;
