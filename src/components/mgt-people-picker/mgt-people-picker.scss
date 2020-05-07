@@ -68,7 +68,7 @@ mgt-people-picker .flyout-root {
   padding: 0;
   border-radius: 2px;
   background-color: $dropdown-background-color;
-  width: 100%;
+  min-width: 260px;
   overflow-y: auto;
   text-align: left;
   list-style-type: none;
