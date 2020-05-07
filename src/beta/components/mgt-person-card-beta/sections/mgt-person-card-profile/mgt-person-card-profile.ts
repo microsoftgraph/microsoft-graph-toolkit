@@ -80,26 +80,13 @@ export class MgtPersonCardProfile extends BasePersonCardSection {
    * @returns {TemplateResult}
    * @memberof MgtPersonCardProfile
    */
-  public renderCompactView(): TemplateResult {
-    return html`
-      compact view
-    `;
-  }
-
-  /**
-   * foo
-   *
-   * @returns {TemplateResult}
-   * @memberof MgtPersonCardProfile
-   */
   public renderIcon(): TemplateResult {
     return html`
-      <svg width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
+      <svg xmlns="http://www.w3.org/2000/svg">
         <path
           fill-rule="evenodd"
           clip-rule="evenodd"
           d="M13 8C13 9.65685 11.6569 11 10 11C8.34315 11 7 9.65685 7 8C7 6.34315 8.34315 5 10 5C11.6569 5 13 6.34315 13 8ZM12.1273 11.388C13.2524 10.6801 14 9.42738 14 8C14 5.79086 12.2091 4 10 4C7.79086 4 6 5.79086 6 8C6 9.42739 6.74766 10.6802 7.87272 11.3881C5.90981 12.1325 4.43913 13.8773 4.08301 16H5.10007C5.56334 13.7178 7.58109 12 10 12C12.419 12 14.4368 13.7178 14.9 16H15.9171C15.561 13.8773 14.0903 12.1325 12.1273 11.388Z"
-          fill="#605E5C"
         />
       </svg>
     `;
@@ -111,11 +98,21 @@ export class MgtPersonCardProfile extends BasePersonCardSection {
    * trigger the element to update.
    */
   protected render() {
-    const template = html`
-      <div class="title">About</div>
-      ${this.renderLanguages()} ${this.renderSkills()} ${this.renderWorkExperience()} ${this.renderEducation()}
-      ${this.renderProfessionalInterests()} ${this.renderPersonalInterests()} ${this.renderBirthday()}
-    `;
+    let template: TemplateResult;
+    if (this.isCompact) {
+      template = html`
+        ${this.renderSkills()} ${this.renderProfessionalInterests()} ${this.renderBirthday()}
+      `;
+    } else {
+      template = html`
+        <div class="root">
+          <div class="title">About</div>
+          ${this.renderLanguages()} ${this.renderSkills()} ${this.renderWorkExperience()} ${this.renderEducation()}
+          ${this.renderProfessionalInterests()} ${this.renderPersonalInterests()} ${this.renderBirthday()}
+          <div></div>
+        </div>
+      `;
+    }
 
     setTimeout(() => {
       try {

@@ -32,8 +32,6 @@ export abstract class BasePersonCardSection extends MgtTemplatedComponent {
     this.requestStateUpdate();
   }
 
-  private _personDetails: IDynamicPerson;
-
   /**
    * foo
    *
@@ -44,13 +42,24 @@ export abstract class BasePersonCardSection extends MgtTemplatedComponent {
   public abstract get displayName(): string;
 
   /**
-   * foo
+   * Determines the appropriate view state: full or compact
    *
    * @protected
-   * @returns {TemplateResult}
+   * @type {boolean}
    * @memberof BasePersonCardSection
    */
-  public abstract renderCompactView(): TemplateResult;
+  protected get isCompact(): boolean {
+    return this._isCompact;
+  }
+
+  private _isCompact: boolean;
+  private _personDetails: IDynamicPerson;
+
+  constructor() {
+    super();
+    this._isCompact = false;
+    this._personDetails = null;
+  }
 
   /**
    * foo
@@ -61,4 +70,28 @@ export abstract class BasePersonCardSection extends MgtTemplatedComponent {
    * @memberof BasePersonCardSection
    */
   public abstract renderIcon(): TemplateResult;
+
+  /**
+   * foo
+   *
+   * @returns
+   * @memberof BasePersonCardSection
+   */
+  public asCompactView() {
+    this._isCompact = true;
+    this.requestUpdate();
+    return this;
+  }
+
+  /**
+   * foo
+   *
+   * @returns
+   * @memberof BasePersonCardSection
+   */
+  public asFullView() {
+    this._isCompact = false;
+    this.requestUpdate();
+    return this;
+  }
 }

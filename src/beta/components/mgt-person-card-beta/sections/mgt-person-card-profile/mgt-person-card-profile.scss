@@ -8,6 +8,14 @@
 @import '../../../../../styles/shared-styles.scss';
 @import '../../../../../../node_modules/office-ui-fabric-core/dist/sass/References';
 
+:host {
+  position: relative;
+}
+
+.root {
+  padding: 20px 20px 0 20px;
+}
+
 .title {
   font-size: 14px;
   font-weight: 600;
@@ -24,6 +32,9 @@
   display: flex;
   flex-direction: column;
   margin-top: 10px;
+}
+
+section:not(:last-child) {
   margin-bottom: 24px;
 }
 

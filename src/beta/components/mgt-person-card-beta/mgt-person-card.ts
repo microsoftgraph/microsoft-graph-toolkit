@@ -7,6 +7,7 @@
 
 import * as MicrosoftGraph from '@microsoft/microsoft-graph-types';
 import { customElement, html, property, TemplateResult } from 'lit-element';
+import { classMap } from 'lit-html/directives/class-map';
 import { MgtPerson } from '../../../components/mgt-person/mgt-person';
 import { MgtTemplatedComponent } from '../../../components/templatedComponent';
 import { findPerson, getEmailFromGraphEntity } from '../../../graph/graph.people';
@@ -426,7 +427,12 @@ export class MgtPersonCardBeta extends MgtTemplatedComponent {
     const currentSectionTemplate = this.renderCurrentSection();
 
     return html`
-      ${sectionNavTemplate} ${currentSectionTemplate}
+      <div class="section-nav">
+        ${sectionNavTemplate}
+      </div>
+      <div class="section-host">
+        ${currentSectionTemplate}
+      </div>
     `;
     /*
     const contactDetailsTemplate = this.renderContactDetails(person);
@@ -451,38 +457,33 @@ export class MgtPersonCardBeta extends MgtTemplatedComponent {
    * @memberof MgtPersonCardBeta
    */
   protected renderSectionNavigation(): TemplateResult {
-    const navIcons = this.sections.map(
-      section => html`
-        <button
-          class="section-nav__icon button--nav"
-          @click=${() => {
-            this._currentSection = section;
-            this.requestUpdate();
-          }}
-        >
+    const currentSectionIndex = this._currentSection ? this.sections.indexOf(this._currentSection) : -1;
+
+    const navIcons = this.sections.map((section, i, a) => {
+      const classes = classMap({
+        active: i === currentSectionIndex,
+        'section-nav__icon': true
+      });
+      return html`
+        <button class=${classes} @click=${() => this.updateCurrentSection(section)}>
           ${section.renderIcon()}
         </button>
-      `
-    );
+      `;
+    });
 
+    const overviewClasses = classMap({
+      active: currentSectionIndex === -1,
+      'section-nav__icon': true
+    });
     return html`
-      <div class="section-nav">
-        <button
-          class="section-nav__icon button--nav"
-          @click=${() => {
-            this._currentSection = null;
-            this.requestUpdate();
-          }}
-        >
-          <svg width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
-            <path
-              d="M12 4V9H2V4H12ZM11 8V5H3V8H11ZM13 4H18V9H13V4ZM17 8V5H14V8H17ZM8 15V10H18V15H8ZM9 11V14H17V11H9ZM2 15V10H7V15H2ZM3 11V14H6V11H3Z"
-              fill="#605E5C"
-            />
-          </svg>
-        </button>
-        ${navIcons}
-      </div>
+      <button class=${overviewClasses} @click=${() => this.updateCurrentSection(null)}>
+        <svg xmlns="http://www.w3.org/2000/svg">
+          <path
+            d="M12 4V9H2V4H12ZM11 8V5H3V8H11ZM13 4H18V9H13V4ZM17 8V5H14V8H17ZM8 15V10H18V15H8ZM9 11V14H17V11H9ZM2 15V10H7V15H2ZM3 11V14H6V11H3Z"
+          />
+        </svg>
+      </button>
+      ${navIcons}
     `;
   }
 
@@ -497,18 +498,26 @@ export class MgtPersonCardBeta extends MgtTemplatedComponent {
     const compactTemplates = this.sections.map(
       section => html`
         <div class="section">
-          <div>
+          <div class="section__header">
             <div class="section__title">${section.displayName}</div>
-            <div class="section__show-more">
-              <button class="button--show-more">Show more</button>
-            </div>
+            <a class="section__show-more" @click=${() => this.updateCurrentSection(section)}>Show more</a>
           </div>
-          <div class="section__content">${section.renderCompactView()}</div>
+          <div class="section__content">${section.asCompactView()}</div>
         </div>
       `
     );
 
     return html`
+      <div class="quick-message">
+        <input type="text" class="quick-message__input" placeholder="Message ${this.personDetails.displayName}" />
+        <button class="quick-message__send">
+          <svg xmlns="http://www.w3.org/2000/svg">
+            <path
+              d="M4.27144 8.99999L1.72572 2.45387C1.54854 1.99826 1.9928 1.56256 2.43227 1.71743L2.50153 1.74688L16.0015 8.49688C16.3902 8.69122 16.4145 9.22336 16.0744 9.45992L16.0015 9.50311L2.50153 16.2531C2.0643 16.4717 1.58932 16.0697 1.70282 15.6178L1.72572 15.5461L4.27144 8.99999L1.72572 2.45387L4.27144 8.99999ZM3.3028 3.4053L5.25954 8.43705L10.2302 8.43749C10.515 8.43749 10.7503 8.64911 10.7876 8.92367L10.7927 8.99999C10.7927 9.28476 10.5811 9.52011 10.3065 9.55736L10.2302 9.56249L5.25954 9.56205L3.3028 14.5947L14.4922 8.99999L3.3028 3.4053Z"
+            />
+          </svg>
+        </button>
+      </div>
       <div class="sections">
         ${compactTemplates}
       </div>
@@ -528,7 +537,7 @@ export class MgtPersonCardBeta extends MgtTemplatedComponent {
     }
 
     return html`
-      ${this._currentSection}
+      ${this._currentSection.asFullView()}
     `;
   }
 
@@ -816,5 +825,10 @@ export class MgtPersonCardBeta extends MgtTemplatedComponent {
       }
     }
     return businessPhones;
+  }
+
+  private updateCurrentSection(section) {
+    this._currentSection = section;
+    this.requestUpdate();
   }
 }
