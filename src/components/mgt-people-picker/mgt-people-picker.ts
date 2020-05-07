@@ -717,7 +717,6 @@ export class MgtPeoplePicker extends MgtTemplatedComponent {
 
   private lostFocus() {
     this._isFocused = false;
-    this.requestUpdate();
   }
 
   private renderHighlightText(person: IDynamicPerson): TemplateResult {
