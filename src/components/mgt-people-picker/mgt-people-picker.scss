@@ -37,6 +37,7 @@ $font-color: var(--font-color, #323130);
   border-radius: 2px;
   font-family: var(--default-font-family, 'Segoe UI');
   height: 38px;
+  display: contents;
 }
 :host .root,
 mgt-people-picker .root {
