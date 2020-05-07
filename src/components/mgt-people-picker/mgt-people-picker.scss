@@ -24,7 +24,7 @@ $input-border-top: var(--input-border-top, $input-border);
 
 $input-hover-color: var(--input-hover-color, #323130);
 $input-focus-color: var(--input-focus-color, #0078d4);
-$input-background-color: var(--input-background-color, transparent);
+$input-background-color: var(--input-background-color, white);
 
 $dropdown-background-color: var(--dropdown-background-color, white);
 $dropdown-item-hover-background: var(--dropdown-item-hover-background, #f1f1f1dd);
@@ -167,11 +167,11 @@ mgt-people-picker .people-person-text {
 
 :host .input-search,
 mgt-people-picker .input-search {
-  margin: 5px 2px 2.83px 3px;
+  margin: 6px 2px 1px 3px;
 }
 :host .input-search.input-search--start,
 mgt-people-picker .input-search.input-search--start {
-  margin: 5px 0px 0px 0px;
+  margin: 6px 0px 1px 0px;
   line-height: normal;
   margin-inline-start: 0px;
   margin-inline-end: 0px;

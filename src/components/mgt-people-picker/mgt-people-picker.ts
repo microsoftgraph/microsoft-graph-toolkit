@@ -41,6 +41,8 @@ interface IFocusable {
  * @class MgtPicker
  * @extends {MgtTemplatedComponent}
  *
+ * @fires selectionChanged - Fired when selection changes
+ *
  * @cssprop --font-color - {font} Default font color
  *
  * @cssprop --input-border - {String} Input section entire border
@@ -58,7 +60,6 @@ interface IFocusable {
  *
  * @cssprop --placeholder-focus-color - {Color} Color of placeholder text during focus state
  * @cssprop --placeholder-default-color - {Color} Color of placeholder text
- * @fires selectionChanged - Fired when selection changes
  *
  * @cssprop --people-list-background-color - {Color} People list background color
  * @cssprop --accent-color - {Color} Accent color
@@ -224,7 +225,7 @@ export class MgtPeoplePicker extends MgtTemplatedComponent {
   // List of people requested if group property is provided
   private _groupPeople: IDynamicPerson[];
   private _debouncedSearch: { (): void; (): void };
-  private _isFocused = false;
+  @internalProperty() private _isFocused = false;
 
   @internalProperty() private _foundPeople: IDynamicPerson[];
 
@@ -709,8 +710,6 @@ export class MgtPeoplePicker extends MgtTemplatedComponent {
     if (input) {
       input.focus();
     }
-
-    this.requestUpdate();
   }
 
   private lostFocus() {
