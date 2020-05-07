@@ -5,7 +5,7 @@
  * -------------------------------------------------------------------------------------------
  */
 
-import { customElement, html, property, TemplateResult } from 'lit-element';
+import { customElement, html, TemplateResult } from 'lit-element';
 import { Providers } from '../../../../../Providers';
 import { ProviderState } from '../../../../../providers/IProvider';
 import { BetaGraph } from '../../../../BetaGraph';
@@ -38,7 +38,7 @@ export class MgtPersonCardProfile extends BasePersonCardSection {
    * @memberof MgtPersonCardProfile
    */
   public get displayName(): string {
-    return 'Profile';
+    return 'About';
   }
 
   /**
@@ -94,7 +94,14 @@ export class MgtPersonCardProfile extends BasePersonCardSection {
    */
   public renderIcon(): TemplateResult {
     return html`
-      icon
+      <svg width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <path
+          fill-rule="evenodd"
+          clip-rule="evenodd"
+          d="M13 8C13 9.65685 11.6569 11 10 11C8.34315 11 7 9.65685 7 8C7 6.34315 8.34315 5 10 5C11.6569 5 13 6.34315 13 8ZM12.1273 11.388C13.2524 10.6801 14 9.42738 14 8C14 5.79086 12.2091 4 10 4C7.79086 4 6 5.79086 6 8C6 9.42739 6.74766 10.6802 7.87272 11.3881C5.90981 12.1325 4.43913 13.8773 4.08301 16H5.10007C5.56334 13.7178 7.58109 12 10 12C12.419 12 14.4368 13.7178 14.9 16H15.9171C15.561 13.8773 14.0903 12.1325 12.1273 11.388Z"
+          fill="#605E5C"
+        />
+      </svg>
     `;
   }
 
@@ -111,11 +118,16 @@ export class MgtPersonCardProfile extends BasePersonCardSection {
     `;
 
     setTimeout(() => {
-      const sections = this.shadowRoot.querySelectorAll('section');
-      sections.forEach(section => {
-        this.handleTokenOverflow(section);
-        this.drawSectionTimeline(section);
-      });
+      try {
+        const sections = this.shadowRoot.querySelectorAll('section');
+        sections.forEach(section => {
+          // Perform post render operations per section
+          this.handleTokenOverflow(section);
+          this.drawSectionTimeline(section);
+        });
+      } catch {
+        // An exception may occur if the component is suddenly removed during post render operations.
+      }
     }, 0);
 
     return template;

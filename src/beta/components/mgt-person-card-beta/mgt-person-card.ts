@@ -20,6 +20,9 @@ import { TeamsHelper } from '../../../utils/TeamsHelper';
 import { styles } from './mgt-person-card-css';
 import { BasePersonCardSection } from './sections/BasePersonCardSection';
 import { MgtPersonCardContact } from './sections/mgt-person-card-contact/mgt-person-card-contact';
+import { MgtPersonCardEmails } from './sections/mgt-person-card-emails/mgt-person-card-emails';
+import { MgtPersonCardFiles } from './sections/mgt-person-card-files/mgt-person-card-files';
+import { MgtPersonCardOrganization } from './sections/mgt-person-card-organization/mgt-person-card-organization';
 import './sections/mgt-person-card-profile/mgt-person-card-profile';
 import { MgtPersonCardProfile } from './sections/mgt-person-card-profile/mgt-person-card-profile';
 
@@ -140,12 +143,17 @@ export class MgtPersonCardBeta extends MgtTemplatedComponent {
   protected sections: BasePersonCardSection[];
 
   private _personDetails: IDynamicPerson;
-
   private _currentSection: BasePersonCardSection;
 
   constructor() {
     super();
-    this.sections = [new MgtPersonCardProfile(), new MgtPersonCardContact()];
+    this.sections = [
+      new MgtPersonCardContact(),
+      new MgtPersonCardOrganization(),
+      new MgtPersonCardEmails(),
+      new MgtPersonCardFiles(),
+      new MgtPersonCardProfile()
+    ];
     this._currentSection = null;
   }
 
@@ -459,6 +467,20 @@ export class MgtPersonCardBeta extends MgtTemplatedComponent {
 
     return html`
       <div class="section-nav">
+        <button
+          class="section-nav__icon button--nav"
+          @click=${() => {
+            this._currentSection = null;
+            this.requestUpdate();
+          }}
+        >
+          <svg width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <path
+              d="M12 4V9H2V4H12ZM11 8V5H3V8H11ZM13 4H18V9H13V4ZM17 8V5H14V8H17ZM8 15V10H18V15H8ZM9 11V14H17V11H9ZM2 15V10H7V15H2ZM3 11V14H6V11H3Z"
+              fill="#605E5C"
+            />
+          </svg>
+        </button>
         ${navIcons}
       </div>
     `;
