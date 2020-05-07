@@ -687,6 +687,7 @@ export class MgtPerson extends MgtTemplatedComponent {
       if (!this.personDetails.personImage && ((this.fetchImage && !this.personImage) || this.personImage === '@')) {
         const image = await getPersonImage(graph, this.personDetails);
         if (image) {
+          this.personDetails.personImage = image;
           this.personImage = image;
         }
       }
@@ -696,6 +697,7 @@ export class MgtPerson extends MgtTemplatedComponent {
 
       this.personDetails = person;
       this.personImage = this.getImage();
+      this.personDetails.personImage = this.personImage;
     } else if (this.personQuery) {
       // Use the personQuery to find our person.
       const people = await findPeople(graph, this.personQuery, 1);
@@ -705,6 +707,7 @@ export class MgtPerson extends MgtTemplatedComponent {
         const image = await getPersonImage(graph, people[0]);
 
         if (image) {
+          this.personDetails.personImage = image;
           this.personImage = image;
         }
       }

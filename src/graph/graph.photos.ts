@@ -76,15 +76,10 @@ export async function getPersonImage(graph: IGraph, person: IDynamicPerson) {
     image = await getUserPhoto(graph, userPrincipalName);
   } else {
     if (person.id) {
-      try {
-        image = await getUserPhoto(graph, person.id);
-      } catch (e) {
-        // nop
+      image = await getUserPhoto(graph, person.id);
+      if (image) {
+        return image;
       }
-    }
-
-    if (image) {
-      return image;
     }
 
     // try to find a user by e-mail

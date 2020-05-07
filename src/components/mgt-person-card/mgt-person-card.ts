@@ -588,6 +588,7 @@ export class MgtPersonCard extends MgtTemplatedComponent {
         const person = await getUserWithPhoto(graph, id);
         this.personDetails = person;
         this.personImage = this.getImage();
+        this.personDetails.personImage = this.personImage;
       } else if (
         !this.personDetails.personImage &&
         ((this.fetchImage && !this.personImage) || this.personImage === '@')
@@ -595,6 +596,7 @@ export class MgtPersonCard extends MgtTemplatedComponent {
         // in some cases we might only have name or email, but need to find the image
         const image = await getPersonImage(graph, this.personDetails);
         if (image) {
+          this.personDetails.personImage = image;
           this.personImage = image;
         }
       }
@@ -612,6 +614,7 @@ export class MgtPersonCard extends MgtTemplatedComponent {
         this.personDetails = people[0];
         const image = await getPersonImage(graph, this.personDetails);
         if (image) {
+          this.personDetails.personImage = image;
           this.personImage = image;
         }
       }
