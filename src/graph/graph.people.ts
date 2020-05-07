@@ -8,6 +8,7 @@
 import { Contact, Person, User } from '@microsoft/microsoft-graph-types';
 import { IGraph } from '../IGraph';
 import { prepScopes } from '../utils/GraphHelpers';
+import { IDynamicPerson } from './types';
 
 /**
  * async promise, returns all Graph people who are most relevant contacts to the signed in user.
@@ -66,7 +67,7 @@ export async function getPeopleFromGroup(graph: IGraph, groupId: string): Promis
  * returns a promise that resolves after specified time
  * @param time in milliseconds
  */
-export function getEmailFromGraphEntity(entity: User | Person | Contact): string {
+export function getEmailFromGraphEntity(entity: IDynamicPerson): string {
   const person = entity as Person;
   const user = entity as User;
   const contact = entity as Contact;

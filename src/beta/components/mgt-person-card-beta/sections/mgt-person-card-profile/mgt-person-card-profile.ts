@@ -42,53 +42,36 @@ export class MgtPersonCardProfile extends BasePersonCardSection {
   }
 
   /**
-   * user-id property allows developer to use id value for component
-   * @type {string}
+   * foo
+   *
+   * @protected
+   * @type {IProfile}
+   * @memberof MgtPersonCardProfile
    */
-  @property({
-    attribute: 'user-id'
-  })
-  public userId: string;
+  protected get profile(): IProfile {
+    return this._profile;
+  }
+  protected set profile(value: IProfile) {
+    if (value === this._profile) {
+      return;
+    }
 
-  private profile: IProfile;
-  private personalInterests: IPersonInterest[];
-  private professionalInterests: IPersonInterest[];
-  private birthdayAnniversary: IPersonAnniversary;
+    this._profile = value;
+    this._birthdayAnniversary =
+      value && value.anniversaries ? value.anniversaries.find(this.isBirthdayAnniversary) : null;
+    this._personalInterests = value && value.interests ? value.interests.filter(this.isPersonalInterest) : null;
+    this._professionalInterests = value && value.interests ? value.interests.filter(this.isProfessionalInterest) : null;
+  }
+
+  private _profile: IProfile;
+  private _personalInterests: IPersonInterest[];
+  private _professionalInterests: IPersonInterest[];
+  private _birthdayAnniversary: IPersonAnniversary;
 
   constructor() {
     super();
 
-    this.userId = null;
     this.profile = null;
-    this.personalInterests = null;
-    this.professionalInterests = null;
-    this.birthdayAnniversary = null;
-  }
-
-  /**
-   * Synchronizes property values when attributes change.
-   *
-   * @param {*} name
-   * @param {*} oldValue
-   * @param {*} newValue
-   * @memberof MgtPersonCardProfile
-   */
-  public attributeChangedCallback(name: string, oldValue: string, newValue: string) {
-    super.attributeChangedCallback(name, oldValue, newValue);
-
-    if (oldValue === newValue) {
-      return;
-    }
-
-    switch (name) {
-      case 'user-id':
-        this.profile = null;
-        this.personalInterests = null;
-        this.professionalInterests = null;
-        this.birthdayAnniversary = null;
-        this.requestStateUpdate();
-        break;
-    }
   }
 
   /**
@@ -148,10 +131,10 @@ export class MgtPersonCardProfile extends BasePersonCardSection {
   protected renderLanguages(): TemplateResult {
     let contentTemplate: TemplateResult;
 
-    if (this.profile && this.profile.languages) {
+    if (this._profile && this._profile.languages) {
       const languageItems: TemplateResult[] = [];
 
-      for (const language of this.profile.languages) {
+      for (const language of this._profile.languages) {
         let proficiency = null;
         if (language.proficiency && language.proficiency.length) {
           proficiency = html`
@@ -202,9 +185,9 @@ export class MgtPersonCardProfile extends BasePersonCardSection {
   protected renderSkills(): TemplateResult {
     let contentTemplate: TemplateResult;
 
-    if (this.profile && this.profile.skills) {
+    if (this._profile && this._profile.skills) {
       const skillItems: TemplateResult[] = [];
-      for (const skill of this.profile.skills) {
+      for (const skill of this._profile.skills) {
         skillItems.push(html`
           <div class="token-list__item skill">
             ${skill.displayName}
@@ -243,9 +226,9 @@ export class MgtPersonCardProfile extends BasePersonCardSection {
   protected renderWorkExperience(): TemplateResult {
     let contentTemplate: TemplateResult;
 
-    if (this.profile && this.profile.positions) {
+    if (this._profile && this._profile.positions) {
       const positionItems: TemplateResult[] = [];
-      for (const position of this.profile.positions) {
+      for (const position of this._profile.positions) {
         positionItems.push(html`
           <div class="data-list__item work-position">
             <div class="data-list__item__title">${position.detail.jobTitle}</div>
@@ -296,9 +279,9 @@ export class MgtPersonCardProfile extends BasePersonCardSection {
   protected renderEducation(): TemplateResult {
     let contentTemplate: TemplateResult;
 
-    if (this.profile && this.profile.positions) {
+    if (this._profile && this._profile.positions) {
       const positionItems: TemplateResult[] = [];
-      for (const educationalActivity of this.profile.educationalActivities) {
+      for (const educationalActivity of this._profile.educationalActivities) {
         positionItems.push(html`
           <div class="data-list__item educational-activity">
             <div class="data-list__item__title">${educationalActivity.institution.displayName}</div>
@@ -348,9 +331,9 @@ export class MgtPersonCardProfile extends BasePersonCardSection {
   protected renderProfessionalInterests(): TemplateResult {
     let contentTemplate: TemplateResult;
 
-    if (this.professionalInterests && this.professionalInterests.length) {
+    if (this._professionalInterests && this._professionalInterests.length) {
       const interestItems: TemplateResult[] = [];
-      for (const interest of this.professionalInterests) {
+      for (const interest of this._professionalInterests) {
         interestItems.push(html`
           <div class="token-list__item interest interest--professional">
             ${interest.displayName}
@@ -389,9 +372,9 @@ export class MgtPersonCardProfile extends BasePersonCardSection {
   protected renderPersonalInterests(): TemplateResult {
     let contentTemplate: TemplateResult;
 
-    if (this.personalInterests && this.personalInterests.length) {
+    if (this._personalInterests && this._personalInterests.length) {
       const interestItems: TemplateResult[] = [];
-      for (const interest of this.personalInterests) {
+      for (const interest of this._personalInterests) {
         interestItems.push(html`
           <div class="token-list__item interest interest--personal">
             ${interest.displayName}
@@ -430,7 +413,7 @@ export class MgtPersonCardProfile extends BasePersonCardSection {
   protected renderBirthday(): TemplateResult {
     let contentTemplate: TemplateResult;
 
-    if (this.birthdayAnniversary) {
+    if (this._birthdayAnniversary) {
       contentTemplate = html`
         <div class="birthday">
           <div class="birthday__icon">
@@ -443,7 +426,7 @@ export class MgtPersonCardProfile extends BasePersonCardSection {
             </svg>
           </div>
           <div class="birthday__date">
-            ${this.getDisplayDate(this.birthdayAnniversary.date)}
+            ${this.getDisplayDate(this._birthdayAnniversary.date)}
           </div>
         </div>
       `;
@@ -478,20 +461,18 @@ export class MgtPersonCardProfile extends BasePersonCardSection {
       return;
     }
 
-    if (!this.userId) {
+    if (!this.personDetails) {
       return;
     }
 
     const graph = provider.graph.forComponent(this);
     const betaGraph = BetaGraph.fromGraph(graph);
 
-    const userId = this.userId;
+    const userId = this.personDetails.id;
     const profile = await getProfile(betaGraph, userId);
 
     this.profile = profile;
-    this.birthdayAnniversary = profile.anniversaries ? profile.anniversaries.find(this.isBirthdayAnniversary) : null;
-    this.personalInterests = profile.interests ? profile.interests.filter(this.isPersonalInterest) : null;
-    this.professionalInterests = profile.interests ? profile.interests.filter(this.isProfessionalInterest) : null;
+    this.requestUpdate();
   }
 
   private isPersonalInterest(interest: IPersonInterest): boolean {

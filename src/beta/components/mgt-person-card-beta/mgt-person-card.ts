@@ -19,6 +19,7 @@ import { getSvg, SvgIcon } from '../../../utils/SvgHelper';
 import { TeamsHelper } from '../../../utils/TeamsHelper';
 import { styles } from './mgt-person-card-css';
 import { BasePersonCardSection } from './sections/BasePersonCardSection';
+import { MgtPersonCardContact } from './sections/mgt-person-card-contact/mgt-person-card-contact';
 import './sections/mgt-person-card-profile/mgt-person-card-profile';
 import { MgtPersonCardProfile } from './sections/mgt-person-card-profile/mgt-person-card-profile';
 
@@ -51,6 +52,28 @@ export class MgtPersonCardBeta extends MgtTemplatedComponent {
   static get styles() {
     return styles;
   }
+
+  /**
+   * Set the person details to render
+   *
+   * @type {IDynamicPerson}
+   * @memberof MgtPersonCard
+   */
+  @property({
+    attribute: 'person-details',
+    type: Object
+  })
+  public get personDetails(): IDynamicPerson {
+    return this._personDetails;
+  }
+  public set personDetails(value: IDynamicPerson) {
+    if (this._personDetails === value) {
+      return;
+    }
+
+    this._personDetails = value;
+    this.sections.forEach(s => (s.personDetails = value));
+  }
   /**
    * allows developer to define name of person for component
    * @type {string}
@@ -68,18 +91,6 @@ export class MgtPersonCardBeta extends MgtTemplatedComponent {
     attribute: 'user-id'
   })
   public userId: string;
-
-  /**
-   * Set the person details to render
-   *
-   * @type {IDynamicPerson}
-   * @memberof MgtPersonCard
-   */
-  @property({
-    attribute: 'person-details',
-    type: Object
-  })
-  public personDetails: IDynamicPerson;
 
   /**
    * Set the image of the person
@@ -128,9 +139,14 @@ export class MgtPersonCardBeta extends MgtTemplatedComponent {
    */
   protected sections: BasePersonCardSection[];
 
+  private _personDetails: IDynamicPerson;
+
+  private _currentSection: BasePersonCardSection;
+
   constructor() {
     super();
-    this.sections = [new MgtPersonCardProfile()];
+    this.sections = [new MgtPersonCardProfile(), new MgtPersonCardContact()];
+    this._currentSection = null;
   }
 
   /**
@@ -398,6 +414,13 @@ export class MgtPersonCardBeta extends MgtTemplatedComponent {
   protected renderExpandedDetails(person?: IDynamicPerson): TemplateResult {
     person = person || this.personDetails;
 
+    const sectionNavTemplate = this.renderSectionNavigation();
+    const currentSectionTemplate = this.renderCurrentSection();
+
+    return html`
+      ${sectionNavTemplate} ${currentSectionTemplate}
+    `;
+    /*
     const contactDetailsTemplate = this.renderContactDetails(person);
     const additionalDetailsTemplate = this.renderAdditionalDetails(person);
     const sectionDivider = additionalDetailsTemplate
@@ -409,6 +432,7 @@ export class MgtPersonCardBeta extends MgtTemplatedComponent {
     return html`
       ${contactDetailsTemplate} ${sectionDivider} ${additionalDetailsTemplate}
     `;
+    */
   }
 
   /**
@@ -419,7 +443,25 @@ export class MgtPersonCardBeta extends MgtTemplatedComponent {
    * @memberof MgtPersonCardBeta
    */
   protected renderSectionNavigation(): TemplateResult {
-    return html``;
+    const navIcons = this.sections.map(
+      section => html`
+        <button
+          class="section-nav__icon button--nav"
+          @click=${() => {
+            this._currentSection = section;
+            this.requestUpdate();
+          }}
+        >
+          ${section.renderIcon()}
+        </button>
+      `
+    );
+
+    return html`
+      <div class="section-nav">
+        ${navIcons}
+      </div>
+    `;
   }
 
   /**
@@ -433,7 +475,13 @@ export class MgtPersonCardBeta extends MgtTemplatedComponent {
     const compactTemplates = this.sections.map(
       section => html`
         <div class="section">
-          ${section.renderCompactView()}
+          <div>
+            <div class="section__title">${section.displayName}</div>
+            <div class="section__show-more">
+              <button class="button--show-more">Show more</button>
+            </div>
+          </div>
+          <div class="section__content">${section.renderCompactView()}</div>
         </div>
       `
     );
@@ -445,8 +493,6 @@ export class MgtPersonCardBeta extends MgtTemplatedComponent {
     `;
   }
 
-  protected _currentSectionIndex: number = 0;
-
   /**
    * foo
    *
@@ -455,11 +501,13 @@ export class MgtPersonCardBeta extends MgtTemplatedComponent {
    * @memberof MgtPersonCardBeta
    */
   protected renderCurrentSection(): TemplateResult {
-    if (!this._currentSectionIndex) {
+    if (!this._currentSection) {
       return this.renderOverviewSection();
     }
 
-    return html``;
+    return html`
+      ${this._currentSection}
+    `;
   }
 
   /**
