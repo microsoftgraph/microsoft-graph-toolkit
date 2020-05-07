@@ -281,7 +281,7 @@ export class MgtPeople extends MgtTemplatedComponent {
       html`
         <mgt-person
           .personDetails=${person}
-          .personImage=${'@'}
+          .fetchImage=${true}
           .avatarSize=${avatarSize}
           .personCardInteraction=${this.personCardInteraction}
           .showPresence=${this.showPresence}

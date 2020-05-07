@@ -17,6 +17,7 @@ import { Providers } from '../../Providers';
 import { ProviderState } from '../../providers/IProvider';
 import '../../styles/fabric-icon-font';
 import { debounce } from '../../utils/Utils';
+import { PersonCardInteraction } from '../PersonCardInteraction';
 import { MgtFlyout } from '../sub-components/mgt-flyout/mgt-flyout';
 import { MgtTemplatedComponent } from '../templatedComponent';
 import { styles } from './mgt-people-picker-css';
@@ -542,7 +543,7 @@ export class MgtPeoplePicker extends MgtTemplatedComponent {
     return (
       this.renderTemplate('person', { person }, person.id) ||
       html`
-        <mgt-person .personDetails=${person} .personImage=${'@'}></mgt-person>
+        <mgt-person .personDetails=${person} .fetchImage=${true}></mgt-person>
         <div class="people-person-text-area" id="${person.displayName}">
           ${this.renderHighlightText(person)}
           <span class="${classMap(classes)}">${subTitle}</span>
@@ -564,9 +565,9 @@ export class MgtPeoplePicker extends MgtTemplatedComponent {
       <mgt-person
         class="selected-person"
         .personDetails=${person}
-        .personImage=${'@'}
-        show-name
-        person-card="click"
+        .fetchImage=${true}
+        .showName=${true}
+        .personCardInteraction=${PersonCardInteraction.click}
       ></mgt-person>
     `;
   }
