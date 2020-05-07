@@ -692,6 +692,9 @@ export class MgtPeoplePicker extends MgtTemplatedComponent {
     if (person) {
       this.userInput = '';
       const duplicatePeople = this.selectedPeople.filter(p => {
+        if (!person.id) {
+          return p.displayName === person.displayName;
+        }
         return p.id === person.id;
       });
 
@@ -830,6 +833,9 @@ export class MgtPeoplePicker extends MgtTemplatedComponent {
    * @param event - event tracked on user input (keydown)
    */
   private onUserKeyDown(event: KeyboardEvent): void {
+    if (!this.flyout.isOpen) {
+      return;
+    }
     if (event.keyCode === 40 || event.keyCode === 38) {
       // keyCodes capture: down arrow (40) and up arrow (38)
       this.handleArrowSelection(event);
@@ -895,12 +901,16 @@ export class MgtPeoplePicker extends MgtTemplatedComponent {
     // find ids from selected people
     if (people) {
       const idFilter = this.selectedPeople.map(el => {
-        return el.id;
+        return el.id ? el.id : el.displayName;
       });
 
       // filter id's
       const filtered = people.filter((person: IDynamicPerson) => {
-        return idFilter.indexOf(person.id) === -1;
+        if (person.id) {
+          return idFilter.indexOf(person.id) === -1;
+        } else {
+          return idFilter.indexOf(person.displayName) === -1;
+        }
       });
 
       return filtered;
