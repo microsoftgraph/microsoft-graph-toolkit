@@ -78,7 +78,19 @@ export class MgtPersonCard extends MgtTemplatedComponent {
     attribute: 'person-details',
     type: Object
   })
-  public personDetails: IDynamicPerson;
+  public get personDetails(): IDynamicPerson {
+    return this._personDetails;
+  }
+  public set personDetails(value: IDynamicPerson) {
+    if (this._personDetails === value) {
+      return;
+    }
+
+    this._personDetails = value;
+
+    this.requestStateUpdate();
+    this.requestUpdate('personDetails');
+  }
 
   /**
    * Set the image of the person
@@ -152,6 +164,8 @@ export class MgtPersonCard extends MgtTemplatedComponent {
     type: Object
   })
   public personPresence: MicrosoftGraphBeta.Presence;
+
+  private _personDetails: IDynamicPerson;
 
   /**
    * Invoked each time the custom element is appended into a document-connected element

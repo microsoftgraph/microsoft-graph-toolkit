@@ -143,6 +143,10 @@ export class MgtPerson extends MgtTemplatedComponent {
       this.personImage = null;
     }
 
+    if (this.showPresence) {
+      this.personPresence = null;
+    }
+
     this.requestStateUpdate();
     this.requestUpdate('personDetails');
   }
