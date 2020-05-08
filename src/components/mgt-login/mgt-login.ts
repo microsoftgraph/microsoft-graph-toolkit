@@ -10,11 +10,12 @@ import { classMap } from 'lit-html/directives/class-map';
 import { IDynamicPerson } from '../../graph/types';
 import { Providers } from '../../Providers';
 import { ProviderState } from '../../providers/IProvider';
-import '../../styles/fabric-icon-font';
-import { MgtBaseComponent } from '../baseComponent';
-import '../mgt-person/mgt-person';
 import { MgtFlyout } from '../sub-components/mgt-flyout/mgt-flyout';
+import { MgtTemplatedComponent } from '../templatedComponent';
 import { styles } from './mgt-login-css';
+
+import '../../styles/fabric-icon-font';
+import '../mgt-person/mgt-person';
 
 /**
  * Web component button and flyout control to facilitate Microsoft identity platform authentication
@@ -29,6 +30,11 @@ import { styles } from './mgt-login-css';
  * @fires logoutInitiated - Fired when logout is initiated by the user
  * @fires logoutCompleted - Fired when logout completed
  *
+ * @template signed-in-button-content (dataContext: {personDetails, personImage})
+ * @template signed-out-button-content (dataContext: null)
+ * @template flyout-commands (dataContext: {handleSignOut})
+ * @template flyout-person-details (dataContext: {personDetails, personImage})
+ *
  * @cssprop --font-size - {Length} Login font size
  * @cssprop --font-weight - {Length} Login font weight
  * @cssprop --height - {String} Login height percentage
@@ -41,7 +47,7 @@ import { styles } from './mgt-login-css';
  * @cssprop --popup-command-font-size - {Length} Popup command font size
  */
 @customElement('mgt-login')
-export class MgtLogin extends MgtBaseComponent {
+export class MgtLogin extends MgtTemplatedComponent {
   /**
    * Array of styles to apply to the element. The styles should be defined
    * using the `css` tag function.
@@ -228,33 +234,66 @@ export class MgtLogin extends MgtBaseComponent {
     if (!this.userDetails) {
       return;
     }
-    const avatarSize = 'large';
-
     return html`
       <div class="popup">
         <div class="popup-content">
           <div>
-            <mgt-person
-              .personDetails=${this.userDetails}
-              .personImage=${this._image}
-              .avatarSize=${avatarSize}
-              show-name
-              show-email
-            />
+            ${this.renderFlyoutPersonDetails(this.userDetails, this._image)}
           </div>
           <div class="popup-commands">
-            <ul>
-              <li>
-                <button class="popup-command" @click=${this.logout} aria-label="Sign Out">
-                  Sign Out
-                </button>
-              </li>
-            </ul>
+            ${this.renderFlyoutCommands()}
           </div>
         </div>
       </div>
     `;
   }
+
+  /**
+   * Render the flyout person details.
+   *
+   * @protected
+   * @returns
+   * @memberof MgtLogin
+   */
+  protected renderFlyoutPersonDetails(personDetails: IDynamicPerson, personImage: string) {
+    const template = this.renderTemplate('flyout-person-details', { personDetails, personImage });
+    return (
+      template ||
+      html`
+        <mgt-person
+          .personDetails=${personDetails}
+          .personImage=${personImage}
+          .avatarSize="large"
+          .showName=${true}
+          .showEmail=${true}
+        />
+      `
+    );
+  }
+
+  /**
+   * Render the flyout commands.
+   *
+   * @protected
+   * @returns
+   * @memberof MgtLogin
+   */
+  protected renderFlyoutCommands() {
+    const template = this.renderTemplate('flyout-commands', { handleSignOut: () => this.logout() });
+    return (
+      template ||
+      html`
+        <ul>
+          <li>
+            <button class="popup-command" @click=${this.logout} aria-label="Sign Out">
+              Sign Out
+            </button>
+          </li>
+        </ul>
+      `
+    );
+  }
+
   /**
    * Render the button content.
    *
@@ -264,23 +303,52 @@ export class MgtLogin extends MgtBaseComponent {
    */
   protected renderButtonContent() {
     if (this.userDetails) {
-      const avatarSize = 'small';
-      return html`
+      return this.renderSignedInButtonContent(this.userDetails, this._image);
+    } else {
+      return this.renderSignedOutButtonContent();
+    }
+  }
+
+  /**
+   * Render the button content when the user is signed in.
+   *
+   * @protected
+   * @returns
+   * @memberof MgtLogin
+   */
+  protected renderSignedInButtonContent(personDetails: IDynamicPerson, personImage: string) {
+    const template = this.renderTemplate('signed-in-button-content', { personDetails, personImage });
+    return (
+      template ||
+      html`
         <mgt-person
           .personDetails=${this.userDetails}
           .personImage=${this._image}
-          .avatarSize=${avatarSize}
-          show-name
+          .avatarSize="small"
+          .showName=${true}
         />
-      `;
-    } else {
-      return html`
+      `
+    );
+  }
+
+  /**
+   * Render the button content when the user is not signed in.
+   *
+   * @protected
+   * @returns
+   * @memberof MgtLogin
+   */
+  protected renderSignedOutButtonContent() {
+    const template = this.renderTemplate('signed-out-button-content', null);
+    return (
+      template ||
+      html`
         <i class="login-icon ms-Icon ms-Icon--Contact"></i>
         <span aria-label="Sign In">
           Sign In
         </span>
-      `;
-    }
+      `
+    );
   }
 
   /**
