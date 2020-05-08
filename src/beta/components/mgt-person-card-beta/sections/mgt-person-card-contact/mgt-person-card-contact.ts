@@ -23,11 +23,31 @@ interface IContactPart {
   // tslint:disable-next-line: completed-docs
   title: string;
   // tslint:disable-next-line: completed-docs
-  value: string;
+  value?: string;
   // tslint:disable-next-line: completed-docs
   onClick?: (e: Event) => void;
   // tslint:disable-next-line: completed-docs
-  showCompact?: boolean;
+  showCompact: boolean;
+}
+
+/**
+ * foo
+ *
+ * @interface IContactPartCollection
+ */
+interface IContactPartCollection {
+  // tslint:disable-next-line: completed-docs
+  cellPhone: IContactPart;
+  // tslint:disable-next-line: completed-docs
+  chat: IContactPart;
+  // tslint:disable-next-line: completed-docs
+  department: IContactPart;
+  // tslint:disable-next-line: completed-docs
+  email: IContactPart;
+  // tslint:disable-next-line: completed-docs
+  officeLocation: IContactPart;
+  // tslint:disable-next-line: completed-docs
+  title: IContactPart;
 }
 
 /**
@@ -58,7 +78,46 @@ export class MgtPersonCardContact extends BasePersonCardSection {
     return 'Contact';
   }
 
-  private _contactDetails: IContactPart[];
+  // Defines the skeleton for what contact fields are available and what they do.
+
+  // tslint:disable: object-literal-sort-keys
+  private _contactParts: IContactPartCollection = {
+    email: {
+      icon: icons.email,
+      onClick: () => this.sendEmail(),
+      showCompact: true,
+      title: 'Email'
+    },
+    chat: {
+      icon: icons.chat,
+      onClick: () => this.sendChat(),
+      showCompact: false,
+      title: 'Teams'
+    },
+    cellPhone: {
+      icon: icons.cellPhone,
+      onClick: () => this.sendCall(),
+      showCompact: true,
+      title: 'Cell Phone'
+    },
+    department: {
+      icon: icons.department,
+      showCompact: false,
+      title: 'Department'
+    },
+    title: {
+      icon: icons.title,
+      showCompact: false,
+      title: 'Title'
+    },
+    officeLocation: {
+      icon: icons.officeLocation,
+      onClick: () => this.showOfficeLocation(),
+      showCompact: true,
+      title: 'Office Location'
+    }
+  };
+  // tslint:enable: object-literal-sort-keys
 
   /**
    * foo
@@ -94,15 +153,25 @@ export class MgtPersonCardContact extends BasePersonCardSection {
    * trigger the element to update.
    */
   protected render() {
+    // Filter for parts with values only
+    const availableParts: IContactPart[] = Object.values(this._contactParts).filter((p: IContactPart) => !!p.value);
+
     if (this.isCompact) {
-      const details = this._contactDetails ? this._contactDetails.filter(p => p.showCompact) : [];
-      return details.map(p => this.renderContactPart(p));
+      // Filter for compact mode parts only
+      const compactParts = availableParts && availableParts.length ? availableParts.filter(p => p.showCompact) : [];
+      return html`
+        <div class="root compact">
+          ${compactParts.map(p => this.renderContactPart(p))}
+        </div>
+      `;
     }
 
-    const templateParts = this._contactDetails ? this._contactDetails.map(part => this.renderContactPart(part)) : [];
+    const partTemplates = availableParts ? availableParts.map(part => this.renderContactPart(part)) : [];
     return html`
-      <div class="title">About</div>
-      ${templateParts}
+      <div class="root">
+        <div class="title">${this.displayName}</div>
+        ${partTemplates}
+      </div>
     `;
   }
 
@@ -115,13 +184,9 @@ export class MgtPersonCardContact extends BasePersonCardSection {
    * @memberof MgtPersonCardContact
    */
   protected renderContactPart(part: IContactPart): TemplateResult {
-    const valueTemplate = this.isLoadingState
+    const valueTemplate = part.onClick
       ? html`
-          <div class="shimmer"></div>
-        `
-      : part.onClick
-      ? html`
-          <a @click=${(e: Event) => part.onClick(e)}>${part.value}</a>
+          <button class="part__link" @click=${(e: Event) => part.onClick(e)}>${part.value}</button>
         `
       : html`
           ${part.value}
@@ -130,8 +195,10 @@ export class MgtPersonCardContact extends BasePersonCardSection {
     return html`
       <div class="part">
         <div class="part__icon">${part.icon}</div>
-        <div class="part__title">${part.title}</div>
-        <div class="part__value">${valueTemplate}</div>
+        <div class="part__details">
+          <div class="part__title">${part.title}</div>
+          <div class="part__value">${valueTemplate}</div>
+        </div>
       </div>
     `;
   }
@@ -151,70 +218,12 @@ export class MgtPersonCardContact extends BasePersonCardSection {
     const userPerson = this.personDetails as GraphTypes.User;
     const personPerson = this.personDetails as GraphTypes.Person;
 
-    const contactParts: IContactPart[] = [];
-
-    const email = getEmailFromGraphEntity(this.personDetails);
-    if (email) {
-      contactParts.push({
-        icon: html``,
-        onClick: (e: Event) => this.sendEmail(email),
-        showCompact: true,
-        title: 'Email',
-        value: email
-      });
-    }
-
-    const chat = personPerson.userPrincipalName;
-    if (chat) {
-      contactParts.push({
-        icon: html``,
-        onClick: (e: Event) => this.sendChat(chat),
-        title: 'Teams',
-        value: chat
-      });
-    }
-
-    const cellPhone = userPerson.mobilePhone;
-    if (cellPhone) {
-      contactParts.push({
-        icon: html``,
-        onClick: (e: Event) => this.sendCall(cellPhone),
-        showCompact: true,
-        title: 'Cell Phone',
-        value: cellPhone
-      });
-    }
-
-    const department = this.personDetails.department;
-    if (department) {
-      contactParts.push({
-        icon: html``,
-        title: 'Department',
-        value: department
-      });
-    }
-
-    const title = this.personDetails.jobTitle;
-    if (title) {
-      contactParts.push({
-        icon: html``,
-        title: 'Title',
-        value: title
-      });
-    }
-
-    const officeLocation = this.personDetails.officeLocation;
-    if (officeLocation) {
-      contactParts.push({
-        icon: html``,
-        onClick: (e: Event) => this.showOfficeLocation(officeLocation),
-        showCompact: true,
-        title: 'Office Location',
-        value: officeLocation
-      });
-    }
-
-    this._contactDetails = contactParts;
+    this._contactParts.email.value = getEmailFromGraphEntity(this.personDetails);
+    this._contactParts.chat.value = personPerson.userPrincipalName;
+    this._contactParts.cellPhone.value = userPerson.mobilePhone;
+    this._contactParts.department.value = this.personDetails.department;
+    this._contactParts.title.value = this.personDetails.jobTitle;
+    this._contactParts.officeLocation.value = this.personDetails.officeLocation;
   }
 
   /**
@@ -223,8 +232,11 @@ export class MgtPersonCardContact extends BasePersonCardSection {
    * @protected
    * @memberof MgtPersonCardContact
    */
-  protected sendChat(chat: string): void {
-    // foo
+  protected sendChat(): void {
+    const chat = this._contactParts.chat.value;
+    if (!chat) {
+      return;
+    }
   }
 
   /**
@@ -233,8 +245,11 @@ export class MgtPersonCardContact extends BasePersonCardSection {
    * @protected
    * @memberof MgtPersonCardContact
    */
-  protected sendEmail(email: string): void {
-    // foo
+  protected sendEmail(): void {
+    const email = this._contactParts.email.value;
+    if (!email) {
+      return;
+    }
   }
 
   /**
@@ -243,8 +258,12 @@ export class MgtPersonCardContact extends BasePersonCardSection {
    * @protected
    * @memberof MgtPersonCardContact
    */
-  protected sendCall(phone: string): void {
-    // foo
+  protected sendCall(): void {
+    const cellPhone = this._contactParts.cellPhone.value;
+    if (!cellPhone) {
+      return;
+    }
+    // TODO: Send call
   }
 
   /**
@@ -253,7 +272,79 @@ export class MgtPersonCardContact extends BasePersonCardSection {
    * @protected
    * @memberof MgtPersonCardContact
    */
-  protected showOfficeLocation(officeLocation: string): void {
-    // foo
+  protected showOfficeLocation(): void {
+    const officeLocation = this._contactParts.officeLocation.value;
+    if (!officeLocation) {
+      return;
+    }
+  }
+
+  private clearState() {
+    for (const key of Object.keys(this._contactParts)) {
+      this._contactParts[key] = null;
+    }
   }
 }
+
+/**
+ * Icon templates
+ */
+const icons = {
+  cellPhone: html`
+    <svg width="10" height="15" viewBox="0 0 10 15" fill="none" xmlns="http://www.w3.org/2000/svg">
+      <rect x="0.5" y="0.5" width="9" height="14" rx="0.9" stroke="#929292" />
+      <rect x="3" y="12" width="4" height="1" rx="0.5" fill="#929292" />
+    </svg>
+  `,
+  chat: html`
+    <svg width="17" height="15" viewBox="0 0 17 15" fill="none" xmlns="http://www.w3.org/2000/svg">
+      <path
+        d="M2.67824 0C2.3824 0 2.14258 0.239826 2.14258 0.535665C2.14258 0.831505 2.3824 1.07133 2.67824 1.07133H13.9985C14.5508 1.07133 14.9985 1.51905 14.9985 2.07133V12.3203C14.9985 12.6161 15.2384 12.856 15.5342 12.856C15.8301 12.856 16.0699 12.6161 16.0699 12.3203V2C16.0699 0.895431 15.1744 0 14.0699 0H2.67824Z"
+        fill="#929292"
+      />
+      <path
+        d="M9.34097 11.4769L9.3309 11.4769L9.32085 11.4773C6.74142 11.5804 3.51639 11.5801 1.6855 11.1657L1.6855 11.1657L1.67972 11.1644C1.30373 11.084 0.937799 10.8292 0.816663 10.7209L0.81023 10.7152L0.803602 10.7096C0.601843 10.5414 0.5 10.3403 0.5 10.0423V3.55978C0.5 3.07185 0.912353 2.64258 1.47765 2.64258H12.4497C13.0149 2.64258 13.4273 3.07185 13.4273 3.55978V13.9745C13.4273 14.1578 13.2827 14.3397 13.067 14.4366C12.8614 14.5288 12.6204 14.5275 12.457 14.3904L10.5932 11.9699C10.5218 11.8587 10.4457 11.7646 10.3579 11.6904C10.2528 11.6015 10.1556 11.5622 10.0869 11.5401L9.93419 12.0163L10.0869 11.5401C9.89097 11.4773 9.65413 11.477 9.34097 11.4769Z"
+        stroke="#929292"
+      />
+    </svg>
+  `,
+  department: html`
+    <svg width="14" height="14" viewBox="0 0 14 14" fill="none" xmlns="http://www.w3.org/2000/svg">
+      <path
+        d="M9.625 3.5H14V11.375H0V3.5H4.375V1.75H9.625V3.5ZM5.25 2.625V3.5H8.75V2.625H5.25ZM13.125 4.375H0.875V6.125H3.5V5.25H4.375V6.125H9.625V5.25H10.5V6.125H13.125V4.375ZM0.875 10.5H13.125V7H10.5V7.875H9.625V7H4.375V7.875H3.5V7H0.875V10.5Z"
+        fill="#929292"
+      />
+    </svg>
+  `,
+  email: html`
+    <svg width="14" height="10" viewBox="0 0 14 10" fill="none" xmlns="http://www.w3.org/2000/svg">
+      <path
+        d="M0.5 0.772727C0.5 0.622104 0.622104 0.5 0.772727 0.5H13.2273C13.3779 0.5 13.5 0.622104 13.5 0.772727V9.22727C13.5 9.3779 13.3779 9.5 13.2273 9.5H0.772727C0.622104 9.5 0.5 9.3779 0.5 9.22727V0.772727Z"
+        stroke="#929292"
+      />
+      <path d="M13.5 0.5L7.18923 4.70314C6.92113 4.8817 6.57039 4.87522 6.30907 4.68687L0.5 0.5" stroke="#929292" />
+    </svg>
+  `,
+  officeLocation: html`
+    <svg width="14" height="17" viewBox="0 0 14 17" fill="none" xmlns="http://www.w3.org/2000/svg">
+      <path
+        d="M6.78489 16.3832L6.78263 16.3859C6.75278 16.4216 6.71543 16.4503 6.67324 16.4701L6.88498 16.923L6.67324 16.4701C6.63105 16.4898 6.58504 16.5 6.53846 16.5C6.49188 16.5 6.44588 16.4898 6.40368 16.4701C6.36149 16.4503 6.32415 16.4216 6.2943 16.3859L6.29202 16.3832C5.47882 15.4241 4.01597 13.6289 2.75914 11.7172C2.13055 10.7611 1.56021 9.78597 1.14862 8.87887C0.732553 7.96189 0.5 7.15987 0.5 6.53687C0.5 3.20251 3.20343 0.5 6.53846 0.5C9.87349 0.5 12.5769 3.20251 12.5769 6.53687C12.5769 7.16011 12.3444 7.96225 11.9283 8.87925C11.5167 9.78639 10.9464 10.7615 10.3178 11.7175C9.06097 13.6291 7.59812 15.424 6.78489 16.3832Z"
+        stroke="#929292"
+      />
+      <path
+        d="M4.40039 6.53921C4.40039 5.37092 5.34748 4.42383 6.51577 4.42383C7.68407 4.42383 8.63116 5.37092 8.63116 6.53921C8.63116 7.70751 7.68407 8.6546 6.51577 8.6546C5.34748 8.6546 4.40039 7.70751 4.40039 6.53921Z"
+        stroke="#929292"
+      />
+    </svg>
+  `,
+  title: html`
+    <svg width="12" height="12" viewBox="0 0 12 12" fill="none" xmlns="http://www.w3.org/2000/svg">
+      <path
+        fill-rule="evenodd"
+        clip-rule="evenodd"
+        d="M8.91699 4C8.91699 5.65685 7.57385 7 5.91699 7C4.26014 7 2.91699 5.65685 2.91699 4C2.91699 2.34315 4.26014 1 5.91699 1C7.57385 1 8.91699 2.34315 8.91699 4ZM8.04431 7.38803C9.16935 6.68014 9.91699 5.42738 9.91699 4C9.91699 1.79086 8.12613 0 5.91699 0C3.70785 0 1.91699 1.79086 1.91699 4C1.91699 5.42739 2.66465 6.68016 3.78972 7.38805C1.82681 8.13254 0.356122 9.8773 0 12H1.01706C1.48033 9.71776 3.49808 8 5.91704 8C8.336 8 10.3538 9.71776 10.817 12H11.8341C11.478 9.87728 10.0072 8.1325 8.04431 7.38803Z"
+        fill="#929292"
+      />
+    </svg>
+  `
+};

@@ -6,7 +6,7 @@
  */
 
 import { Presence } from '@microsoft/microsoft-graph-types-beta';
-import { BetaGraph } from '../BetaGraph';
+import { BetaGraph } from '../beta/BetaGraph';
 import { IGraph } from '../IGraph';
 import { prepScopes } from '../utils/GraphHelpers';
 import { IDynamicPerson } from './types';

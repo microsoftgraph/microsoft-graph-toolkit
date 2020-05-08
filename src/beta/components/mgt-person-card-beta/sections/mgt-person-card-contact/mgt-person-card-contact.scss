@@ -7,3 +7,77 @@
 
 @import '../../../../../styles/shared-styles.scss';
 @import '../../../../../../node_modules/office-ui-fabric-core/dist/sass/References';
+
+:host {
+  position: relative;
+}
+
+.root {
+  padding: 20px;
+
+  .title {
+    font-size: 14px;
+    font-weight: 600;
+    color: #323130;
+    margin-bottom: 24px;
+  }
+
+  .part {
+    display: flex;
+
+    &:not(:last-child) {
+      margin-bottom: 20px;
+    }
+
+    .part__icon {
+      display: flex;
+      min-width: 20px;
+      width: 20px;
+      height: 20px;
+      align-items: center;
+      justify-content: center;
+      margin-right: 14px;
+    }
+
+    .part__details {
+      .part__title {
+        font-size: 12px;
+        color: #797775;
+      }
+
+      .part__value {
+        grid-column: 2;
+        color: #333333;
+        font-size: 14px;
+        font-weight: 400;
+
+        .part__link {
+          all: initial;
+          color: #0078d4;
+          font-family: var(--default-font-family);
+          font-size: 14px;
+        }
+      }
+
+      > div {
+        line-height: 20px;
+      }
+    }
+  }
+
+  &.compact {
+    padding: 0;
+
+    .part {
+      margin-bottom: 8px;
+    }
+
+    .part__title {
+      display: none;
+    }
+
+    .part__icon {
+      margin-right: 6px;
+    }
+  }
+}

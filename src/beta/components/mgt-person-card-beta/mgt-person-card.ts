@@ -10,7 +10,7 @@ import { customElement, html, property, TemplateResult } from 'lit-element';
 import { classMap } from 'lit-html/directives/class-map';
 import { MgtPerson } from '../../../components/mgt-person/mgt-person';
 import { MgtTemplatedComponent } from '../../../components/templatedComponent';
-import { findPerson, getEmailFromGraphEntity } from '../../../graph/graph.people';
+import { findPeople, getEmailFromGraphEntity } from '../../../graph/graph.people';
 import { getPersonImage } from '../../../graph/graph.photos';
 import { getUserWithPhoto } from '../../../graph/graph.user';
 import { IDynamicPerson } from '../../../graph/types';
@@ -698,7 +698,7 @@ export class MgtPersonCardBeta extends MgtTemplatedComponent {
       this.personImage = this.getImage();
     } else if (this.personQuery) {
       // Use the personQuery to find our person.
-      const people = await findPerson(graph, this.personQuery);
+      const people = await findPeople(graph, this.personQuery);
 
       if (people && people.length) {
         this.personDetails = people[0];
