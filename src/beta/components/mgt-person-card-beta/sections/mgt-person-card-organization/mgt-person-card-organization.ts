@@ -5,12 +5,25 @@
  * -------------------------------------------------------------------------------------------
  */
 
-import { customElement, html, property, TemplateResult } from 'lit-element';
+import { customElement, html, TemplateResult } from 'lit-element';
 import { Providers } from '../../../../../Providers';
 import { ProviderState } from '../../../../../providers/IProvider';
 import { BetaGraph } from '../../../../BetaGraph';
 import { BasePersonCardSection } from '../BasePersonCardSection';
 import { styles } from './mgt-person-card-organization-css';
+
+/**
+ * Defines the data required to render an org member.
+ *
+ * @interface IOrgMember
+ */
+interface IOrgMember {
+  id: string;
+  image: string;
+  displayName: string;
+  title: string;
+  department?: string;
+}
 
 /**
  * foo
@@ -39,6 +52,9 @@ export class MgtPersonCardOrganization extends BasePersonCardSection {
   public get displayName(): string {
     return 'Organization';
   }
+
+  private _orgMembers: IOrgMember[];
+  private _coworkers: IOrgMember[];
 
   /**
    * foo
@@ -76,7 +92,94 @@ export class MgtPersonCardOrganization extends BasePersonCardSection {
    * trigger the element to update.
    */
   protected render() {
-    return html``;
+    const orgMemberTemplates = this._orgMembers
+      ? this._orgMembers.map(orgMember => this.renderOrgMember(orgMember))
+      : [];
+    const targetMemberTemplate = this.personDetails ? this.renderTargetMember() : null;
+    const coworkerTemplates = this._coworkers ? this._coworkers.map(coworker => this.renderCoworker(coworker)) : [];
+
+    return html`
+      <div class="root">
+        <div class="title">${this.displayName}</div>
+        <div class="org-members">
+          ${orgMemberTemplates} ${targetMemberTemplate}
+        </div>
+        <div class="divider"></div>
+        <div class="subtitle">You work with</div>
+        <div class="coworkers">
+          ${coworkerTemplates}
+        </div>
+      </div>
+    `;
+  }
+
+  /**
+   * foo
+   *
+   * @protected
+   * @param {IOrgMember} orgMember
+   * @returns {TemplateResult}
+   * @memberof MgtPersonCardOrganization
+   */
+  protected renderOrgMember(orgMember: IOrgMember): TemplateResult {
+    return html`
+      <div class="org-member">
+        <div class="org-member__image">${orgMember.image}</div>
+        <div class="org-member__details">
+          <div class="org-member__name">${orgMember.displayName}</div>
+          <div class="org-member__title">${orgMember.title}</div>
+          <div class="org-member__department">${orgMember.department}</div>
+        </div>
+        <div class="org-member__more">
+          <svg width="8" height="13" viewBox="0 0 8 13" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <path d="M1 12L6.5 6.5L1 1" stroke="#B8B8B8" stroke-width="2" />
+          </svg>
+        </div>
+      </div>
+      <div class="org-member__separator"></div>
+    `;
+  }
+
+  /**
+   * foo
+   *
+   * @protected
+   * @returns {TemplateResult}
+   * @memberof MgtPersonCardOrganization
+   */
+  protected renderTargetMember(): TemplateResult {
+    return html`
+      <div class="org-member">
+        <div class="org-member__image">
+          <mgt-person .personDetails=${this.personDetails} avatar-size="large"></mgt-person>
+        </div>
+        <div class="org-member__details">
+          <div class="org-member__name">${this.personDetails.displayName}</div>
+          <div class="org-member__title">${this.personDetails.jobTitle}</div>
+          <div class="org-member__department">${this.personDetails.department}</div>
+        </div>
+      </div>
+    `;
+  }
+
+  /**
+   * foo
+   *
+   * @protected
+   * @param {IOrgMember} coworker
+   * @returns {TemplateResult}
+   * @memberof MgtPersonCardOrganization
+   */
+  protected renderCoworker(coworker: IOrgMember): TemplateResult {
+    return html`
+      <div class="coworker">
+        <div class="coworker__image"></div>
+        <div class="coworker__details">
+          <div class="coworker__name">${coworker.displayName}</div>
+          <div class="coworker__title">${coworker.title}</div>
+        </div>
+      </div>
+    `;
   }
 
   /**
@@ -101,10 +204,89 @@ export class MgtPersonCardOrganization extends BasePersonCardSection {
     const graph = provider.graph.forComponent(this);
     const betaGraph = BetaGraph.fromGraph(graph);
 
-    // const userId = this.personDetails.id;
-    // const profile = await getProfile(betaGraph, userId);
+    // TODO: Get real data
 
-    // this.profile = profile;
+    this._orgMembers = [];
+    this._coworkers = [];
+
+    this.injectDummyData();
+
     this.requestUpdate();
+  }
+
+  private injectDummyData() {
+    const orgMembers: IOrgMember[] = [
+      {
+        department: 'EPIC Mgmt RnD',
+        displayName: 'Jessica Smith',
+        id: '',
+        image: '',
+        title: 'SR PM MANAGER'
+      },
+      {
+        department: 'EPIC Mgmt RnD',
+        displayName: 'Jessica Smith',
+        id: '',
+        image: '',
+        title: 'SR PM MANAGER'
+      },
+      {
+        department: 'EPIC Mgmt RnD',
+        displayName: 'Jessica Smith',
+        id: '',
+        image: '',
+        title: 'SR PM MANAGER'
+      },
+      {
+        department: 'EPIC Mgmt RnD',
+        displayName: 'Jessica Smith',
+        id: '',
+        image: '',
+        title: 'SR PM MANAGER'
+      },
+      {
+        department: 'EPIC Mgmt RnD',
+        displayName: 'Jessica Smith',
+        id: '',
+        image: '',
+        title: 'SR PM MANAGER'
+      }
+    ];
+
+    const coworkers: IOrgMember[] = [
+      {
+        displayName: 'Jessica Smith',
+        id: '',
+        image: '',
+        title: 'SR PM MANAGER'
+      },
+      {
+        displayName: 'Jessica Smith',
+        id: '',
+        image: '',
+        title: 'SR PM MANAGER'
+      },
+      {
+        displayName: 'Jessica Smith',
+        id: '',
+        image: '',
+        title: 'SR PM MANAGER'
+      },
+      {
+        displayName: 'Jessica Smith',
+        id: '',
+        image: '',
+        title: 'SR PM MANAGER'
+      },
+      {
+        displayName: 'Jessica Smith',
+        id: '',
+        image: '',
+        title: 'SR PM MANAGER'
+      }
+    ];
+
+    this._orgMembers = orgMembers;
+    this._coworkers = coworkers;
   }
 }

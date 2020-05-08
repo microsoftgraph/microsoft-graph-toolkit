@@ -1,3 +1,10 @@
+/**
+ * -------------------------------------------------------------------------------------------
+ * Copyright (c) Microsoft Corporation.  All Rights Reserved.  Licensed under the MIT License.
+ * See License in the project root for license information.
+ * -------------------------------------------------------------------------------------------
+ */
+
 import { property, TemplateResult } from 'lit-element';
 import { MgtTemplatedComponent } from '../../../../components/templatedComponent';
 import { IDynamicPerson } from '../../../../graph/types';

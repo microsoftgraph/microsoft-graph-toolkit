@@ -7,3 +7,108 @@
 
 @import '../../../../../styles/shared-styles.scss';
 @import '../../../../../../node_modules/office-ui-fabric-core/dist/sass/References';
+
+:host {
+  position: relative;
+
+  .root {
+    padding: 20px;
+
+    .title {
+      font-size: 14px;
+      font-weight: 600;
+      color: #323130;
+      margin-bottom: 24px;
+    }
+
+    .subtitle {
+      color: #797775;
+      font-size: 14px;
+    }
+
+    .divider {
+      background: #e8e8e8;
+      width: 100%;
+      height: 1px;
+      margin-top: 26px;
+      margin-bottom: 18px;
+    }
+
+    .org-members {
+      .org-member {
+        height: 74px;
+        border: 1px solid #e8e8e8;
+        box-sizing: border-box;
+        border-radius: 2px;
+        padding: 12px;
+        display: flex;
+        align-items: center;
+
+        &:last-child {
+          background-color: #f5faff;
+          border-color: #3078d0;
+        }
+
+        .org-member__image {
+          height: 48px;
+          width: 48px;
+          border-radius: 48px;
+          background-color: #e8e8e8;
+          margin-right: 8px;
+        }
+
+        .org-member__details {
+          flex-grow: 1;
+
+          .org-member__name {
+            font-size: 16px;
+            color: #323130;
+            font-weight: 600;
+          }
+
+          .org-member__title,
+          .org-member__department {
+            font-weight: 14px;
+            color: #797775;
+          }
+        }
+      }
+
+      .org-member__separator {
+        border: 1px solid #e8e8e8;
+        box-sizing: border-box;
+        width: 0;
+        margin: 0 50%;
+        height: 14px;
+      }
+    }
+
+    .coworkers {
+      .coworker {
+        display: flex;
+        margin-top: 20px;
+
+        .coworker__image {
+          height: 46px;
+          width: 46px;
+          border-radius: 46px;
+          margin-right: 8px;
+          background-color: #e8e8e8;
+        }
+
+        .coworker__details {
+          .coworker__name {
+            color: #323130;
+            font-size: 16px;
+            font-weight: 600;
+          }
+
+          .coworker__title {
+            color: #797775;
+            font-size: 14px;
+          }
+        }
+      }
+    }
+  }
+}
