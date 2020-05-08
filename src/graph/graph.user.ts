@@ -136,7 +136,7 @@ export async function getUsersForPeopleQueries(graph: IGraph, peopleQueries: str
 
     for (const personQuery of peopleQueries) {
       const person = response[personQuery];
-      if (person) {
+      if (person && person.value && person.value.length) {
         people.push(person.value[0]);
       }
     }
