@@ -50,7 +50,7 @@ export class MgtPersonCardOrganization extends BasePersonCardSection {
    * @memberof MgtPersonCardOrganization
    */
   public get displayName(): string {
-    return 'Organization';
+    return 'Reports to';
   }
 
   private _orgMembers: IOrgMember[];
@@ -92,21 +92,37 @@ export class MgtPersonCardOrganization extends BasePersonCardSection {
    * trigger the element to update.
    */
   protected render() {
+    if (this.isCompact) {
+      if (!this._orgMembers) {
+        return html`
+          <div>show shimmer here</div>
+        `;
+      }
+
+      const reportsTo = this._orgMembers[0];
+      return html`
+        <div class="root compact">
+          ${this.renderCoworker(reportsTo)}
+        </div>
+      `;
+    }
+
     const orgMemberTemplates = this._orgMembers
       ? this._orgMembers.map(orgMember => this.renderOrgMember(orgMember))
       : [];
+
     const targetMemberTemplate = this.personDetails ? this.renderTargetMember() : null;
     const coworkerTemplates = this._coworkers ? this._coworkers.map(coworker => this.renderCoworker(coworker)) : [];
 
     return html`
       <div class="root">
-        <div class="title">${this.displayName}</div>
-        <div class="org-members">
+        <div class="title">Organization</div>
+        <div>
           ${orgMemberTemplates} ${targetMemberTemplate}
         </div>
         <div class="divider"></div>
         <div class="subtitle">You work with</div>
-        <div class="coworkers">
+        <div>
           ${coworkerTemplates}
         </div>
       </div>
