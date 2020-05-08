@@ -9,6 +9,7 @@ import * as MicrosoftGraph from '@microsoft/microsoft-graph-types';
 import { customElement, html, property, TemplateResult } from 'lit-element';
 import { repeat } from 'lit-html/directives/repeat';
 import { getPeople, getPeopleFromGroup } from '../../graph/graph.people';
+import { getUsersPresenceByPeople } from '../../graph/graph.presence';
 import { getUsersForPeopleQueries, getUsersForUserIds } from '../../graph/graph.user';
 import { IDynamicPerson } from '../../graph/types';
 import { Providers } from '../../Providers';
@@ -18,6 +19,8 @@ import { arraysAreEqual } from '../../utils/Utils';
 import { MgtTemplatedComponent } from '../templatedComponent';
 import { PersonCardInteraction } from './../PersonCardInteraction';
 import { styles } from './mgt-people-css';
+
+export { PersonCardInteraction } from './../PersonCardInteraction';
 
 /**
  * web component to display a group of people or contacts by using their photos or initials.
@@ -82,7 +85,7 @@ export class MgtPeople extends MgtTemplatedComponent {
 
   /**
    * containing array of people used in the component.
-   * @type {Array<MgtPersonDetails>}
+   * @type {IDynamicPerson[]}
    */
   @property({
     attribute: 'people',
@@ -123,6 +126,16 @@ export class MgtPeople extends MgtTemplatedComponent {
   public showMax: number;
 
   /**
+   * determines if person component renders presence
+   * @type {boolean}
+   */
+  @property({
+    attribute: 'show-presence',
+    type: Boolean
+  })
+  public showPresence: boolean;
+
+  /**
    * Sets how the person-card is invoked
    * Set to PersonCardInteraction.none to not show the card
    *
@@ -145,6 +158,7 @@ export class MgtPeople extends MgtTemplatedComponent {
   private _groupId: string;
   private _userIds: string[];
   private _peopleQueries: string[];
+  private _peoplePresence: {};
 
   constructor() {
     super();
@@ -250,6 +264,16 @@ export class MgtPeople extends MgtTemplatedComponent {
    * @memberof MgtPeople
    */
   protected renderPerson(person: MicrosoftGraph.User | MicrosoftGraph.Person | MicrosoftGraph.Contact): TemplateResult {
+    let personPresence = {
+      // set up default presence
+      activity: 'Offline',
+      availability: 'Offline',
+      id: null
+    };
+    if (this.showPresence && this._peoplePresence) {
+      personPresence = this._peoplePresence[person.id];
+    }
+    const avatarSize = 'small';
     return (
       this.renderTemplate('person', { person }, person.id) ||
       // set image to @ to flag the mgt-person component to
@@ -257,8 +281,11 @@ export class MgtPeople extends MgtTemplatedComponent {
       html`
         <mgt-person
           .personDetails=${person}
-          .personImage=${'@'}
+          .fetchImage=${true}
+          .avatarSize=${avatarSize}
           .personCardInteraction=${this.personCardInteraction}
+          .showPresence=${this.showPresence}
+          .personPresence=${personPresence}
         ></mgt-person>
       `
     );
@@ -289,6 +316,7 @@ export class MgtPeople extends MgtTemplatedComponent {
       if (provider && provider.state === ProviderState.SignedIn) {
         const graph = provider.graph.forComponent(this);
 
+        // populate people
         if (this.groupId) {
           this.people = await getPeopleFromGroup(graph, this.groupId);
         } else if (this.userIds) {
@@ -297,6 +325,13 @@ export class MgtPeople extends MgtTemplatedComponent {
           this.people = await getUsersForPeopleQueries(graph, this.peopleQueries);
         } else {
           this.people = await getPeople(graph);
+        }
+
+        // populate presence for people
+        if (this.showPresence) {
+          this._peoplePresence = await getUsersPresenceByPeople(graph, this.people);
+        } else {
+          this._peoplePresence = null;
         }
       }
     }

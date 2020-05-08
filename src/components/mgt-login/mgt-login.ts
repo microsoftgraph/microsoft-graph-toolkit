@@ -5,9 +5,9 @@
  * -------------------------------------------------------------------------------------------
  */
 
-import { User } from '@microsoft/microsoft-graph-types';
-import { customElement, html, property, query } from 'lit-element';
+import { customElement, html, property } from 'lit-element';
 import { classMap } from 'lit-html/directives/class-map';
+import { IDynamicPerson } from '../../graph/types';
 import { Providers } from '../../Providers';
 import { ProviderState } from '../../providers/IProvider';
 import '../../styles/fabric-icon-font';
@@ -22,6 +22,12 @@ import { styles } from './mgt-login-css';
  * @export
  * @class MgtLogin
  * @extends {MgtBaseComponent}
+ *
+ * @fires loginInitiated - Fired when login is initiated by the user
+ * @fires loginCompleted - Fired when login completes
+ * @fires loginFailed - Fired when login fails
+ * @fires logoutInitiated - Fired when logout is initiated by the user
+ * @fires logoutCompleted - Fired when logout completed
  *
  * @cssprop --font-size - {Length} Login font size
  * @cssprop --font-weight - {Length} Login font weight
@@ -46,13 +52,13 @@ export class MgtLogin extends MgtBaseComponent {
 
   /**
    * allows developer to use specific user details for login
-   * @type {MgtPersonDetails}
+   * @type {IDynamicPerson}
    */
   @property({
     attribute: 'user-details',
     type: Object
   })
-  public userDetails: User;
+  public userDetails: IDynamicPerson;
 
   /**
    * Gets the flyout element
@@ -157,7 +163,7 @@ export class MgtLogin extends MgtBaseComponent {
    */
   protected async loadState() {
     const provider = Providers.globalProvider;
-    if (provider) {
+    if (provider && !this.userDetails) {
       if (provider.state === ProviderState.SignedIn) {
         const batch = provider.graph.forComponent(this).createBatch();
         batch.get('me', 'me', ['user.read']);
@@ -222,12 +228,19 @@ export class MgtLogin extends MgtBaseComponent {
     if (!this.userDetails) {
       return;
     }
+    const avatarSize = 'large';
 
     return html`
       <div class="popup">
         <div class="popup-content">
           <div>
-            <mgt-person .personDetails=${this.userDetails} .personImage=${this._image} show-name show-email />
+            <mgt-person
+              .personDetails=${this.userDetails}
+              .personImage=${this._image}
+              .avatarSize=${avatarSize}
+              show-name
+              show-email
+            />
           </div>
           <div class="popup-commands">
             <ul>
@@ -251,8 +264,14 @@ export class MgtLogin extends MgtBaseComponent {
    */
   protected renderButtonContent() {
     if (this.userDetails) {
+      const avatarSize = 'small';
       return html`
-        <mgt-person .personDetails=${this.userDetails} .personImage=${this._image} show-name />
+        <mgt-person
+          .personDetails=${this.userDetails}
+          .personImage=${this._image}
+          .avatarSize=${avatarSize}
+          show-name
+        />
       `;
     } else {
       return html`

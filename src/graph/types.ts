@@ -23,3 +23,16 @@ export type IDynamicPerson = (MicrosoftGraph.User | MicrosoftGraph.Person | Micr
    */
   personImage?: string;
 };
+
+/**
+ *  avatarSize describes the enum strings that can be passed in to determine
+ *  size of avatar. And in turn will determine presence badge added to it.
+ */
+export type AvatarSize = 'small' | 'large';
+
+/**
+ * Template context object
+ */
+export interface TemplateContext {
+  [prop: string]: any;
+}

@@ -8,8 +8,7 @@
 import { User } from '@microsoft/microsoft-graph-types';
 import { IGraph } from '../IGraph';
 import { prepScopes } from '../utils/GraphHelpers';
-import { findPerson } from './graph.people';
-import { getPersonImage } from './graph.photos';
+import { findPeople } from './graph.people';
 import { IDynamicPerson } from './types';
 
 /**
@@ -137,7 +136,7 @@ export async function getUsersForPeopleQueries(graph: IGraph, peopleQueries: str
 
     for (const personQuery of peopleQueries) {
       const person = response[personQuery];
-      if (person) {
+      if (person && person.value && person.value.length) {
         people.push(person.value[0]);
       }
     }
@@ -149,7 +148,7 @@ export async function getUsersForPeopleQueries(graph: IGraph, peopleQueries: str
         peopleQueries
           .filter(personQuery => personQuery && personQuery !== '')
           .map(async personQuery => {
-            const personArray = await findPerson(graph, personQuery);
+            const personArray = await findPeople(graph, personQuery, 1);
             if (personArray && personArray.length) {
               return personArray[0];
             }
@@ -159,4 +158,26 @@ export async function getUsersForPeopleQueries(graph: IGraph, peopleQueries: str
       return [];
     }
   }
+}
+
+/**
+ * Search Microsoft Graph for Users in the organization
+ *
+ * @export
+ * @param {IGraph} graph
+ * @param {string} query - the string to search for
+ * @param {number} [top=10] - maximum number of results to return
+ * @returns {Promise<User[]>}
+ */
+export async function findUsers(graph: IGraph, query: string, top: number = 10): Promise<User[]> {
+  const scopes = 'User.ReadBasic.All';
+  const result = await graph
+    .api('users')
+    .filter(
+      `startswith(displayName,'${query}') or startswith(givenName,'${query}') or startswith(surname,'${query}') or startswith(mail,'${query}') or startswith(userPrincipalName,'${query}')`
+    )
+    .top(top)
+    .middlewareOptions(prepScopes(scopes))
+    .get();
+  return result ? result.value : null;
 }
