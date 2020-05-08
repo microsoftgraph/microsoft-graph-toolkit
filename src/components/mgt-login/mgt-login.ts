@@ -256,7 +256,7 @@ export class MgtLogin extends MgtTemplatedComponent {
    * @memberof MgtLogin
    */
   protected renderFlyoutPersonDetails(personDetails: IDynamicPerson, personImage: string) {
-    const template = this.renderTemplate('flyout-person-details', null);
+    const template = this.renderTemplate('flyout-person-details', { personDetails, personImage });
     return (
       template ||
       html`
@@ -340,12 +340,15 @@ export class MgtLogin extends MgtTemplatedComponent {
    */
   protected renderSignedOutButtonContent() {
     const template = this.renderTemplate('signed-out-button-content', null);
-    return html`
-      <i class="login-icon ms-Icon ms-Icon--Contact"></i>
-      <span aria-label="Sign In">
-        Sign In
-      </span>
-    `;
+    return (
+      template ||
+      html`
+        <i class="login-icon ms-Icon ms-Icon--Contact"></i>
+        <span aria-label="Sign In">
+          Sign In
+        </span>
+      `
+    );
   }
 
   /**

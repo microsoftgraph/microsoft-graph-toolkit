@@ -35,12 +35,10 @@ export const Templates = () => html`
     {{personDetails.givenName}}
   </template>
   <template data-type="flyout-commands">
-      <div>
-          <div>
-              <button data-props="{@click: handleSignOut}">Sign Out</button>
-              <button>Go to my profile</button>
-          </div>
-      </div>
+    <div>
+      <button data-props="{@click: handleSignOut}">Sign Out</button>
+      <button>Go to my profile</button>
+    </div>
   </template>
 </mgt-login>
 `;
