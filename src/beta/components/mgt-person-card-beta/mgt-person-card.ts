@@ -279,7 +279,12 @@ export class MgtPersonCardBeta extends MgtTemplatedComponent {
   protected renderPersonImage(imageSrc?: string): TemplateResult {
     imageSrc = imageSrc || this.getImage();
     return html`
-      <mgt-person class="person-image" .personDetails=${this.personDetails} .personImage=${imageSrc}></mgt-person>
+      <mgt-person
+        class="person-image"
+        .personDetails=${this.personDetails}
+        .personImage=${imageSrc}
+        .showPresence=${true}
+      ></mgt-person>
     `;
   }
 
