@@ -44,6 +44,24 @@ interface IFocusable {
  *
  * @fires selectionChanged - Fired when selection changes
  *
+ * @cssprop --font-color - {font} Default font color
+ *
+ * @cssprop --input-border - {String} Input section entire border
+ * @cssprop --input-border-top - {String} Input section border top only
+ * @cssprop --input-border-right - {String} Input section border right only
+ * @cssprop --input-border-bottom - {String} Input section border bottom only
+ * @cssprop --input-border-left - {String} Input section border left only
+ * @cssprop --input-background-color - {Color} Input section background color
+ * @cssprop --input-hover-color - {Color} Input text hover color
+ * @cssprop --input-focus-color - {Color} Input text focus color
+ *
+ * @cssprop --dropdown-background-color - {Color} Background color of dropdown area
+ * @cssprop --dropdown-item-hover-background - {Color} Background color of channel or team during hover
+ * @cssprop --dropdown-item-selected-background - {Color} Background color of selected channel
+ *
+ * @cssprop --placeholder-focus-color - {Color} Color of placeholder text during focus state
+ * @cssprop --placeholder-default-color - {Color} Color of placeholder text
+ *
  * @cssprop --people-list-background-color - {Color} People list background color
  * @cssprop --accent-color - {Color} Accent color
  */
@@ -55,6 +73,17 @@ export class MgtPeoplePicker extends MgtTemplatedComponent {
    */
   static get styles() {
     return styles;
+  }
+
+  /**
+   * Gets the flyout element
+   *
+   * @protected
+   * @type {MgtFlyout}
+   * @memberof MgtLogin
+   */
+  protected get flyout(): MgtFlyout {
+    return this.renderRoot.querySelector('.flyout');
   }
 
   /**
@@ -185,17 +214,6 @@ export class MgtPeoplePicker extends MgtTemplatedComponent {
    */
   protected userInput: string;
 
-  /**
-   * Gets the flyout element
-   *
-   * @protected
-   * @type {MgtFlyout}
-   * @memberof MgtLogin
-   */
-  protected get flyout(): MgtFlyout {
-    return this.renderRoot.querySelector('.flyout');
-  }
-
   // if search is still loading don't load "people not found" state
   @property({ attribute: false }) private _showLoading: boolean;
 
@@ -208,6 +226,7 @@ export class MgtPeoplePicker extends MgtTemplatedComponent {
   // List of people requested if group property is provided
   private _groupPeople: IDynamicPerson[];
   private _debouncedSearch: { (): void; (): void };
+  @internalProperty() private _isFocused = false;
 
   @internalProperty() private _foundPeople: IDynamicPerson[];
 
@@ -238,6 +257,7 @@ export class MgtPeoplePicker extends MgtTemplatedComponent {
    * @memberof MgtPeoplePicker
    */
   public focus(options?: FocusOptions) {
+    this.gainedFocus();
     const peopleInput = this.renderRoot.querySelector('.people-selected-input') as HTMLInputElement;
     if (!peopleInput) {
       return;
@@ -293,14 +313,18 @@ export class MgtPeoplePicker extends MgtTemplatedComponent {
     const selectedPeopleTemplate = this.renderSelectedPeople(this.selectedPeople);
     const inputTemplate = this.renderInput();
     const flyoutTemplate = this.renderFlyout(inputTemplate);
+
+    const inputClasses = {
+      focused: this._isFocused,
+      'people-picker': true
+    };
     return html`
-      <div class="people-picker" @click=${() => this.focus()}>
+      <div class=${classMap(inputClasses)} @click=${() => this.focus()}>
         <div class="people-picker-input">
           <div class="people-selected-list">
             ${selectedPeopleTemplate} ${flyoutTemplate}
           </div>
         </div>
-        <div class="people-list-separator"></div>
       </div>
     `;
   }
@@ -349,6 +373,7 @@ export class MgtPeoplePicker extends MgtTemplatedComponent {
           .value="${this.userInput}"
           @keydown="${this.onUserKeyDown}"
           @keyup="${this.onUserKeyUp}"
+          @blur=${this.lostFocus}
         />
       </div>
     `;
@@ -668,6 +693,9 @@ export class MgtPeoplePicker extends MgtTemplatedComponent {
     if (person) {
       this.userInput = '';
       const duplicatePeople = this.selectedPeople.filter(p => {
+        if (!person.id) {
+          return p.displayName === person.displayName;
+        }
         return p.id === person.id;
       });
 
@@ -678,6 +706,18 @@ export class MgtPeoplePicker extends MgtTemplatedComponent {
         this._foundPeople = [];
       }
     }
+  }
+
+  private gainedFocus() {
+    this._isFocused = true;
+    const input = this.renderRoot.querySelector('.people-selected-input') as HTMLInputElement;
+    if (input) {
+      input.focus();
+    }
+  }
+
+  private lostFocus() {
+    this._isFocused = false;
   }
 
   private renderHighlightText(person: IDynamicPerson): TemplateResult {
@@ -793,6 +833,9 @@ export class MgtPeoplePicker extends MgtTemplatedComponent {
    * @param event - event tracked on user input (keydown)
    */
   private onUserKeyDown(event: KeyboardEvent): void {
+    if (!this.flyout.isOpen) {
+      return;
+    }
     if (event.keyCode === 40 || event.keyCode === 38) {
       // keyCodes capture: down arrow (40) and up arrow (38)
       this.handleArrowSelection(event);
@@ -858,12 +901,16 @@ export class MgtPeoplePicker extends MgtTemplatedComponent {
     // find ids from selected people
     if (people) {
       const idFilter = this.selectedPeople.map(el => {
-        return el.id;
+        return el.id ? el.id : el.displayName;
       });
 
       // filter id's
       const filtered = people.filter((person: IDynamicPerson) => {
-        return idFilter.indexOf(person.id) === -1;
+        if (person.id) {
+          return idFilter.indexOf(person.id) === -1;
+        } else {
+          return idFilter.indexOf(person.displayName) === -1;
+        }
       });
 
       return filtered;
