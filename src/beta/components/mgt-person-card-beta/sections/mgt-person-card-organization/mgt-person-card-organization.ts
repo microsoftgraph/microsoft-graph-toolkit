@@ -62,18 +62,6 @@ export class MgtPersonCardOrganization extends BasePersonCardSection {
    * @returns {TemplateResult}
    * @memberof MgtPersonCardOrganization
    */
-  public renderCompactView(): TemplateResult {
-    return html`
-      compact
-    `;
-  }
-
-  /**
-   * foo
-   *
-   * @returns {TemplateResult}
-   * @memberof MgtPersonCardOrganization
-   */
   public renderIcon(): TemplateResult {
     return html`
       <svg xmlns="http://www.w3.org/2000/svg">
@@ -87,26 +75,34 @@ export class MgtPersonCardOrganization extends BasePersonCardSection {
   }
 
   /**
-   * Invoked on each update to perform rendering tasks. This method must return
-   * a lit-html TemplateResult. Setting properties inside this method will *not*
-   * trigger the element to update.
+   * foo
+   *
+   * @returns {TemplateResult}
+   * @memberof MgtPersonCardOrganization
    */
-  protected render() {
-    if (this.isCompact) {
-      if (!this._orgMembers) {
-        return html`
-          <div>show shimmer here</div>
-        `;
-      }
-
-      const reportsTo = this._orgMembers[0];
+  protected renderCompactView(): TemplateResult {
+    if (!this._orgMembers) {
       return html`
-        <div class="root compact">
-          ${this.renderCoworker(reportsTo)}
-        </div>
+        <div>show shimmer here</div>
       `;
     }
 
+    const reportsTo = this._orgMembers[0];
+    return html`
+      <div class="root compact">
+        ${this.renderCoworker(reportsTo)}
+      </div>
+    `;
+  }
+
+  /**
+   * foo
+   *
+   * @protected
+   * @returns {TemplateResult}
+   * @memberof MgtPersonCardOrganization
+   */
+  protected renderFullView(): TemplateResult {
     const orgMemberTemplates = this._orgMembers
       ? this._orgMembers.map(orgMember => this.renderOrgMember(orgMember))
       : [];

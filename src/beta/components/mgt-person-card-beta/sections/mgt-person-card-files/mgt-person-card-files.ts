@@ -14,6 +14,28 @@ import { styles } from './mgt-person-card-files-css';
 
 /**
  * foo
+ */
+enum IconType {
+  // tslint:disable-next-line: completed-docs
+  Word,
+  // tslint:disable-next-line: completed-docs
+  PowerPoint
+}
+
+/**
+ * foo
+ */
+interface IFile {
+  // tslint:disable-next-line: completed-docs
+  iconType: IconType;
+  // tslint:disable-next-line: completed-docs
+  fileName: string;
+  // tslint:disable-next-line: completed-docs
+  lastModified: Date;
+}
+
+/**
+ * foo
  *
  * @export
  * @class MgtPersonCardProfile
@@ -40,17 +62,7 @@ export class MgtPersonCardFiles extends BasePersonCardSection {
     return 'Files';
   }
 
-  /**
-   * foo
-   *
-   * @returns {TemplateResult}
-   * @memberof MgtPersonCardFiles
-   */
-  public renderCompactView(): TemplateResult {
-    return html`
-      compact
-    `;
-  }
+  private _files: IFile[];
 
   /**
    * foo
@@ -69,12 +81,59 @@ export class MgtPersonCardFiles extends BasePersonCardSection {
   }
 
   /**
-   * Invoked on each update to perform rendering tasks. This method must return
-   * a lit-html TemplateResult. Setting properties inside this method will *not*
-   * trigger the element to update.
+   * foo
+   *
+   * @returns {TemplateResult}
+   * @memberof MgtPersonCardFiles
    */
-  protected render() {
-    return html``;
+  public renderCompactView(): TemplateResult {
+    const fileTemplates = this._files ? this._files.slice(0, 3).map(file => this.renderFile(file)) : [];
+
+    return html`
+      <div class="root compact">
+        ${fileTemplates}
+      </div>
+    `;
+  }
+
+  /**
+   * foo
+   *
+   * @protected
+   * @returns {TemplateResult}
+   * @memberof MgtPersonCardFiles
+   */
+  protected renderFullView(): TemplateResult {
+    const fileTemplates = this._files ? this._files.map(file => this.renderFile(file)) : [];
+
+    return html`
+      <div class="root">
+        <div class="title">Files</div>
+        ${fileTemplates}
+      </div>
+    `;
+  }
+
+  /**
+   * foo
+   *
+   * @protected
+   * @param {IFile} file
+   * @returns {TemplateResult}
+   * @memberof MgtPersonCardFiles
+   */
+  protected renderFile(file: IFile): TemplateResult {
+    const iconTemplate = html``;
+
+    return html`
+      <div class="file">
+        <div class="file__icon">${iconTemplate}</div>
+        <div class="file__details">
+          <div class="file__name">${file.fileName}</div>
+          <div class="file__last-modified">Modified ${this.formatDate(file.lastModified)}</div>
+        </div>
+      </div>
+    `;
   }
 
   /**
@@ -96,13 +155,49 @@ export class MgtPersonCardFiles extends BasePersonCardSection {
       return;
     }
 
-    const graph = provider.graph.forComponent(this);
-    const betaGraph = BetaGraph.fromGraph(graph);
+    // const graph = provider.graph.forComponent(this);
+    // const betaGraph = BetaGraph.fromGraph(graph);
 
-    // const userId = this.personDetails.id;
-    // const profile = await getProfile(betaGraph, userId);
+    this._files = [];
+    this.injectDummyData();
 
-    // this.profile = profile;
     this.requestUpdate();
+  }
+
+  private formatDate(date: Date): string {
+    return `${date.getMonth() + 1}/${date.getDate()}/${date.getFullYear()}`;
+  }
+
+  private injectDummyData(): void {
+    this._files.push({
+      fileName: 'EPIC PAX Status _ Partners - Analytics - Essential eXperiences',
+      iconType: IconType.Word,
+      lastModified: new Date(2019, 11, 3)
+    });
+    this._files.push({
+      fileName: 'PAX MAX M365 Rampup',
+      iconType: IconType.PowerPoint,
+      lastModified: new Date(2018, 10, 27)
+    });
+    this._files.push({
+      fileName: 'EPIC PAX Status _ Partners - Analytics - Essential eXperiences',
+      iconType: IconType.Word,
+      lastModified: new Date(2019, 11, 3)
+    });
+    this._files.push({
+      fileName: 'PAX MAX M365 Rampup',
+      iconType: IconType.PowerPoint,
+      lastModified: new Date(2018, 10, 27)
+    });
+    this._files.push({
+      fileName: 'EPIC PAX Status _ Partners - Analytics - Essential eXperiences',
+      iconType: IconType.Word,
+      lastModified: new Date(2019, 11, 3)
+    });
+    this._files.push({
+      fileName: 'PAX MAX M365 Rampup',
+      iconType: IconType.PowerPoint,
+      lastModified: new Date(2018, 10, 27)
+    });
   }
 }

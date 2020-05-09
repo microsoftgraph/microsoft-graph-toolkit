@@ -93,41 +93,36 @@ export class MgtPersonCardProfile extends BasePersonCardSection {
   }
 
   /**
-   * Invoked on each update to perform rendering tasks. This method must return
-   * a lit-html TemplateResult. Setting properties inside this method will *not*
-   * trigger the element to update.
+   * foo
+   *
+   * @protected
+   * @returns {TemplateResult}
+   * @memberof MgtPersonCardProfile
    */
-  protected render() {
-    let template: TemplateResult;
-    if (this.isCompact) {
-      template = html`
-        ${this.renderSkills()} ${this.renderProfessionalInterests()} ${this.renderBirthday()}
-      `;
-    } else {
-      template = html`
-        <div class="root">
-          <div class="title">About</div>
-          ${this.renderLanguages()} ${this.renderSkills()} ${this.renderWorkExperience()} ${this.renderEducation()}
-          ${this.renderProfessionalInterests()} ${this.renderPersonalInterests()} ${this.renderBirthday()}
-          <div></div>
-        </div>
-      `;
-    }
+  protected renderCompactView(): TemplateResult {
+    this.initPostRenderOperations();
+    return html`
+      ${this.renderSkills()} ${this.renderProfessionalInterests()} ${this.renderBirthday()}
+    `;
+  }
 
-    setTimeout(() => {
-      try {
-        const sections = this.shadowRoot.querySelectorAll('section');
-        sections.forEach(section => {
-          // Perform post render operations per section
-          this.handleTokenOverflow(section);
-          this.drawSectionTimeline(section);
-        });
-      } catch {
-        // An exception may occur if the component is suddenly removed during post render operations.
-      }
-    }, 0);
-
-    return template;
+  /**
+   * foo
+   *
+   * @protected
+   * @returns
+   * @memberof MgtPersonCardProfile
+   */
+  protected renderFullView() {
+    this.initPostRenderOperations();
+    return html`
+      <div class="root">
+        <div class="title">About</div>
+        ${this.renderLanguages()} ${this.renderSkills()} ${this.renderWorkExperience()} ${this.renderEducation()}
+        ${this.renderProfessionalInterests()} ${this.renderPersonalInterests()} ${this.renderBirthday()}
+        <div></div>
+      </div>
+    `;
   }
 
   /**
@@ -512,6 +507,21 @@ export class MgtPersonCardProfile extends BasePersonCardSection {
 
     const end = event.endMonthYear ? new Date(event.endMonthYear).getFullYear() : 'Current';
     return `${start} — ${end}`;
+  }
+
+  private initPostRenderOperations(): void {
+    setTimeout(() => {
+      try {
+        const sections = this.shadowRoot.querySelectorAll('section');
+        sections.forEach(section => {
+          // Perform post render operations per section
+          this.handleTokenOverflow(section);
+          this.drawSectionTimeline(section);
+        });
+      } catch {
+        // An exception may occur if the component is suddenly removed during post render operations.
+      }
+    }, 0);
   }
 
   private handleTokenOverflow(section: HTMLElement): void {

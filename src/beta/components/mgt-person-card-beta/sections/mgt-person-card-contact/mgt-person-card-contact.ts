@@ -125,18 +125,6 @@ export class MgtPersonCardContact extends BasePersonCardSection {
    * @returns {TemplateResult}
    * @memberof MgtPersonCardContact
    */
-  public renderCompactView(): TemplateResult {
-    return html`
-      compact
-    `;
-  }
-
-  /**
-   * foo
-   *
-   * @returns {TemplateResult}
-   * @memberof MgtPersonCardContact
-   */
   public renderIcon(): TemplateResult {
     return html`
       <svg xmlns="http://www.w3.org/2000/svg">
@@ -148,25 +136,37 @@ export class MgtPersonCardContact extends BasePersonCardSection {
   }
 
   /**
-   * Invoked on each update to perform rendering tasks. This method must return
-   * a lit-html TemplateResult. Setting properties inside this method will *not*
-   * trigger the element to update.
+   * foo
+   *
+   * @returns {TemplateResult}
+   * @memberof MgtPersonCardContact
    */
-  protected render() {
+  protected renderCompactView(): TemplateResult {
+    // Filter for compact mode parts with values
+    const compactParts: IContactPart[] = Object.values(this._contactParts).filter(
+      (p: IContactPart) => !!p.value && p.showCompact
+    );
+
+    return html`
+      <div class="root compact">
+        ${compactParts.map(p => this.renderContactPart(p))}
+      </div>
+    `;
+  }
+
+  /**
+   * foo
+   *
+   * @protected
+   * @returns {TemplateResult}
+   * @memberof MgtPersonCardContact
+   */
+  protected renderFullView(): TemplateResult {
     // Filter for parts with values only
     const availableParts: IContactPart[] = Object.values(this._contactParts).filter((p: IContactPart) => !!p.value);
 
-    if (this.isCompact) {
-      // Filter for compact mode parts only
-      const compactParts = availableParts && availableParts.length ? availableParts.filter(p => p.showCompact) : [];
-      return html`
-        <div class="root compact">
-          ${compactParts.map(p => this.renderContactPart(p))}
-        </div>
-      `;
-    }
-
     const partTemplates = availableParts ? availableParts.map(part => this.renderContactPart(part)) : [];
+
     return html`
       <div class="root">
         <div class="title">${this.displayName}</div>

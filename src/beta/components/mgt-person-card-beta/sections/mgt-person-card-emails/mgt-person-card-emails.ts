@@ -14,9 +14,23 @@ import { styles } from './mgt-person-card-emails-css';
 
 /**
  * foo
+ */
+interface IEmail {
+  // tslint:disable-next-line: completed-docs
+  date: string;
+  // tslint:disable-next-line: completed-docs
+  subject: string;
+  // tslint:disable-next-line: completed-docs
+  from: string;
+  // tslint:disable-next-line: completed-docs
+  message: string;
+}
+
+/**
+ * foo
  *
  * @export
- * @class MgtPersonCardProfile
+ * @class MgtPersonCardEmails
  * @extends {MgtTemplatedComponent}
  */
 @customElement('mgt-person-card-emails')
@@ -40,17 +54,7 @@ export class MgtPersonCardEmails extends BasePersonCardSection {
     return 'Emails';
   }
 
-  /**
-   * foo
-   *
-   * @returns {TemplateResult}
-   * @memberof MgtPersonCardEmails
-   */
-  public renderCompactView(): TemplateResult {
-    return html`
-      compact
-    `;
-  }
+  private _emails: IEmail[];
 
   /**
    * foo
@@ -71,12 +75,58 @@ export class MgtPersonCardEmails extends BasePersonCardSection {
   }
 
   /**
-   * Invoked on each update to perform rendering tasks. This method must return
-   * a lit-html TemplateResult. Setting properties inside this method will *not*
-   * trigger the element to update.
+   * foo
+   *
+   * @returns {TemplateResult}
+   * @memberof MgtPersonCardEmails
    */
-  protected render() {
-    return html``;
+  public renderCompactView(): TemplateResult {
+    const emailTemplates = this._emails ? this._emails.slice(0, 3).map(email => this.renderEmail(email)) : [];
+
+    return html`
+      <div class="root compact">
+        ${emailTemplates}
+      </div>
+    `;
+  }
+
+  /**
+   * foo
+   *
+   * @protected
+   * @returns {TemplateResult}
+   * @memberof MgtPersonCardEmails
+   */
+  protected renderFullView(): TemplateResult {
+    const emailTemplates = this._emails ? this._emails.map(email => this.renderEmail(email)) : [];
+
+    return html`
+      <div class="root">
+        <div class="title">Emails</div>
+        ${emailTemplates}
+      </div>
+    `;
+  }
+
+  /**
+   * foo
+   *
+   * @protected
+   * @param {IEmail} email
+   * @returns {TemplateResult}
+   * @memberof MgtPersonCardEmails
+   */
+  protected renderEmail(email: IEmail): TemplateResult {
+    return html`
+      <div class="email">
+        <div class="email__detail">
+          <div class="email__subject">${email.subject}</div>
+          <div class="email__from">${email.from}</div>
+          <div class="email__message">${email.message}</div>
+        </div>
+        <div class="email__date">${email.date}</div>
+      </div>
+    `;
   }
 
   /**
@@ -84,7 +134,7 @@ export class MgtPersonCardEmails extends BasePersonCardSection {
    *
    * @protected
    * @returns {Promise<void>}
-   * @memberof MgtPersonCardProfile
+   * @memberof MgtPersonCardEmails
    */
   protected async loadState(): Promise<void> {
     const provider = Providers.globalProvider;
@@ -104,7 +154,36 @@ export class MgtPersonCardEmails extends BasePersonCardSection {
     // const userId = this.personDetails.id;
     // const profile = await getProfile(betaGraph, userId);
 
-    // this.profile = profile;
+    this._emails = [];
+    this.injectDummyData();
+
     this.requestUpdate();
+  }
+
+  private injectDummyData(): void {
+    this._emails.push({
+      date: '1:36 PM',
+      from: 'Dan Rosenstein',
+      message: 'Follow the white rabbit.',
+      subject: 'RE: Important message from the future'
+    });
+    this._emails.push({
+      date: '1:36 PM',
+      from: 'Dan Rosenstein',
+      message: 'This message is loooooooooooooooooooooooooooooooooooooooooooong.',
+      subject: 'RE: Important message from the future'
+    });
+    this._emails.push({
+      date: '1:36 PM',
+      from: 'Dan Rosenstein',
+      message: 'Follow the white rabbit.',
+      subject: 'RE: Important message from the future. You will not even believe it, it is so amazing. wow'
+    });
+    this._emails.push({
+      date: '1:36 PM',
+      from: 'Dan Rosenstein',
+      message: 'Follow the white rabbit.',
+      subject: 'RE: Important message from the future'
+    });
   }
 }

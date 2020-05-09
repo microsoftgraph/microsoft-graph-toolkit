@@ -101,4 +101,33 @@ export abstract class BasePersonCardSection extends MgtTemplatedComponent {
     this.requestUpdate();
     return this;
   }
+
+  /**
+   * Invoked on each update to perform rendering tasks. This method must return
+   * a lit-html TemplateResult. Setting properties inside this method will *not*
+   * trigger the element to update.
+   */
+  protected render() {
+    return this.isCompact ? this.renderCompactView() : this.renderFullView();
+  }
+
+  /**
+   * foo
+   *
+   * @protected
+   * @abstract
+   * @returns {TemplateResult}
+   * @memberof BasePersonCardSection
+   */
+  protected abstract renderCompactView(): TemplateResult;
+
+  /**
+   * foo
+   *
+   * @protected
+   * @abstract
+   * @returns {TemplateResult}
+   * @memberof BasePersonCardSection
+   */
+  protected abstract renderFullView(): TemplateResult;
 }
