@@ -6,6 +6,7 @@
  */
 
 import { html, PropertyValues } from 'lit-element';
+import { TemplateContext } from '../graph/types';
 import { equals } from '../utils/Utils';
 import { MgtBaseComponent } from './baseComponent';
 import { TemplateHelper } from './templateHelper';
@@ -38,20 +39,20 @@ export abstract class MgtTemplatedComponent extends MgtBaseComponent {
   /**
    * Collection of functions to be used in template binding
    *
-   * @type {*}
+   * @type {TemplateContext}
    * @memberof MgtTemplatedComponent
    * @deprecated since 1.2 - use templateContext instead
    */
-  public templateConverters: any;
+  public templateConverters: TemplateContext;
 
   /**
    * Additional data context to be used in template binding
    * Use this to add event listeners or value converters
    *
-   * @type {*}
+   * @type {TemplateContext}
    * @memberof MgtTemplatedComponent
    */
-  public templateContext: any;
+  public templateContext: TemplateContext;
 
   /**
    * Holds all templates defined by developer

@@ -15,15 +15,29 @@ $avatar-size: var(--avatar-size, 48px);
 $initials-color: var(--initials-color, white);
 $initials-background-color: var(--initials-background-color, #{$ms-color-magenta});
 $accent-color: var(--accent-color, #0078d4);
-$separator-margin: var(--separator-margin, 0px 0px 0px 0px);
 
-$people-list-background-color: var(--people-list-background-color, white);
+$input-border: var(--input-border, 2px solid #b3b0ad);
+$input-border-bottom: var(--input-border-bottom, $input-border);
+$input-border-right: var(--input-border-right, $input-border);
+$input-border-left: var(--input-border-left, $input-border);
+$input-border-top: var(--input-border-top, $input-border);
+
+$input-hover-color: var(--input-hover-color, #323130);
+$input-focus-color: var(--input-focus-color, #0078d4);
+$input-background-color: var(--input-background-color, var(--people-list-background-color, white));
+
+$dropdown-background-color: var(--dropdown-background-color, white);
+$dropdown-item-hover-background: var(--dropdown-item-hover-background, #f1f1f1dd);
+
+$placeholder-default-color: var(--placeholder-default-color, #605e5c);
+$placeholder-focus-color: var(--placeholder-focus-color, #323130);
+$font-color: var(--font-color, #323130);
 
 :host {
   border-radius: 2px;
-  font-family: var(--default-font-family);
-  font-style: normal;
-  font-weight: normal;
+  font-family: var(--default-font-family, 'Segoe UI');
+  height: 38px;
+  display: contents;
 }
 :host .root,
 mgt-people-picker .root {
@@ -34,16 +48,27 @@ mgt-people-picker .root {
 mgt-people-picker .people-picker {
   position: relative;
   margin: 7px 0 0 0;
-  background-color: white;
-  padding-bottom: 8px;
+  background-color: $input-background-color;
+  padding-bottom: 6px;
+  border: $input-border;
+  border-bottom: $input-border-bottom;
+  border-left: $input-border-left;
+  border-top: $input-border-top;
+  border-right: $input-border-right;
+  &:hover {
+    border-color: $input-hover-color;
+  }
+  &.focused {
+    border-color: $input-focus-color;
+  }
 }
 
 :host .flyout-root,
 mgt-people-picker .flyout-root {
   padding: 0;
   border-radius: 2px;
-  background-color: $people-list-background-color;
-  width: 100%;
+  background-color: $dropdown-background-color;
+  min-width: 260px;
   overflow-y: auto;
   text-align: left;
   list-style-type: none;
@@ -52,17 +77,10 @@ mgt-people-picker .flyout-root {
     cursor: pointer;
   }
 }
-:host .people-list-separator,
-mgt-people-picker .people-list-separator {
-  margin: $separator-margin;
-  height: 2px;
-  background: $accent-color;
-  margin-top: 5px;
-  text-align: center;
-}
 
 :host .people-selected-input,
 mgt-people-picker .people-selected-input {
+  font-family: var(--default-font-family, 'Segoe UI');
   position: relative;
   border: none;
   line-height: normal;
@@ -71,6 +89,14 @@ mgt-people-picker .people-selected-input {
   font-weight: normal;
   font-size: 14px;
   line-height: 19px;
+  background-color: $input-background-color;
+  color: $font-color;
+  &::placeholder {
+    color: $placeholder-default-color;
+  }
+  &:focus::placeholder {
+    color: $placeholder-focus-color;
+  }
 }
 
 :host .people-selected-list,
@@ -78,9 +104,9 @@ mgt-people-picker .people-selected-list {
   display: flex;
   flex-wrap: wrap;
   vertical-align: middle;
-  margin: 0 0 0 0;
+  margin: 0 2px 0 0;
   list-style-type: none;
-  padding-left: 10px;
+  padding-left: 8px;
   font-style: normal;
   font-weight: normal;
 }
@@ -92,6 +118,7 @@ mgt-people-picker .CloseIcon {
   padding-left: 4px;
   margin-top: 0px;
   cursor: pointer;
+  color: $font-color;
 }
 :host .SearchIcon,
 mgt-people-picker .SearchIcon {
@@ -102,7 +129,7 @@ mgt-people-picker .SearchIcon {
 :host .people-person,
 mgt-people-picker .people-person {
   display: flex;
-  margin: 4px 5px 0px 0;
+  margin: 5px 5px 0px 0;
   align-items: center;
   background-color: rgba(196, 196, 196, 0.24);
   border-radius: 15px;
@@ -122,13 +149,13 @@ mgt-people-picker .list-person {
   font-size: 14px;
 
   &:hover {
-    background-color: #f1f1f1dd;
+    background-color: $dropdown-item-hover-background;
   }
 }
 
 :host .list-person.focused,
 mgt-people-picker .list-person.focused {
-  background-color: #f1f1f1;
+  background-color: $dropdown-item-hover-background;
 }
 
 :host .people-person-text,
@@ -141,11 +168,11 @@ mgt-people-picker .people-person-text {
 
 :host .input-search,
 mgt-people-picker .input-search {
-  margin: 7px 2px 0px 3px;
+  margin: 6px 2px 1px 3px;
 }
 :host .input-search.input-search--start,
 mgt-people-picker .input-search.input-search--start {
-  margin: 7px 0px 0px 0px;
+  margin: 6px 0px 1px 0px;
   line-height: normal;
   margin-inline-start: 0px;
   margin-inline-end: 0px;
@@ -155,7 +182,7 @@ mgt-people-picker .input-search.input-search--start {
 mgt-people-picker .people-picker-input {
   display: flex;
   order: 2;
-  background-color: white;
+  background-color: $input-background-color;
   margin: $avatar-margin;
   font-size: 14px;
   line-height: 19px;
@@ -202,19 +229,22 @@ mgt-person {
 .selected-person {
   --avatar-size-s: 24px;
   margin-left: 0px;
+  --color: $font-color;
+  color: $font-color;
+  margin-bottom: 1px;
 }
 
 :host .search-error-text,
 :host .loading-text,
 mgt-people-picker .search-error-text,
 mgt-people-picker .loading-text {
-  font-family: Segoe UI;
+  font-family: var(--default-font-family, 'Segoe UI');
   font-style: normal;
   font-weight: 600;
   font-size: 14px;
   line-height: 19px;
   text-align: center;
-  color: #232222;
+  color: $font-color;
   margin-left: 50px;
   margin-right: 50px;
   color: #0078d4;
@@ -276,4 +306,5 @@ mgt-people-picker .people-person-text-area {
   flex: 1 1 0;
   max-height: 40px;
   overflow: hidden;
+  color: $font-color;
 }

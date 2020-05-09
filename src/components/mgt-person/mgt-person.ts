@@ -6,7 +6,7 @@
  */
 
 import * as MicrosoftGraph from '@microsoft/microsoft-graph-types';
-import { Presence } from '@microsoft/microsoft-graph-types-beta';
+import * as MicrosoftGraphBeta from '@microsoft/microsoft-graph-types-beta';
 import { customElement, html, property, query, TemplateResult } from 'lit-element';
 import { classMap } from 'lit-html/directives/class-map';
 import { findPeople, getEmailFromGraphEntity } from '../../graph/graph.people';
@@ -24,6 +24,8 @@ import { MgtFlyout } from '../sub-components/mgt-flyout/mgt-flyout';
 import { MgtTemplatedComponent } from '../templatedComponent';
 import { PersonCardInteraction } from './../PersonCardInteraction';
 import { styles } from './mgt-person-css';
+
+export { PersonCardInteraction } from './../PersonCardInteraction';
 
 /**
  * The person component is used to display a person or contact by using their photo, name, and/or email address.
@@ -136,34 +138,56 @@ export class MgtPerson extends MgtTemplatedComponent {
     } else {
       this._personAvatarBg = this.getColorFromName(value.displayName);
     }
+
+    if (this.fetchImage) {
+      this.personImage = null;
+    }
+
+    if (this.showPresence) {
+      this.personPresence = null;
+    }
+
+    this.requestStateUpdate();
     this.requestUpdate('personDetails');
   }
 
   /**
    * Set the image of the person
-   * Set to '@' to look up image from the graph
    *
    * @type {string}
    * @memberof MgtPersonCard
    */
   @property({
     attribute: 'person-image',
-    reflect: true,
     type: String
   })
   public personImage: string;
 
   /**
+   * Sets whether the person image should be fetched
+   * from the Microsoft Graph based on the personDetails
+   * provided by the user
+   *
+   * @type {boolean}
+   * @memberof MgtPerson
+   */
+  @property({
+    attribute: 'fetch-image',
+    type: Boolean
+  })
+  public fetchImage: boolean;
+
+  /**
    * Gets or sets presence of person
    *
-   * @type {Presence}
+   * @type {MicrosoftGraphBeta.Presence}
    * @memberof MgtPerson
    */
   @property({
     attribute: 'person-presence',
     type: Object
   })
-  public personPresence: Presence;
+  public personPresence: MicrosoftGraphBeta.Presence;
 
   /**
    * Sets how the person-card is invoked
@@ -384,7 +408,7 @@ export class MgtPerson extends MgtTemplatedComponent {
    * @param
    * @memberof MgtPersonCard
    */
-  protected renderPresence(presence?: Presence): TemplateResult {
+  protected renderPresence(presence?: MicrosoftGraphBeta.Presence): TemplateResult {
     if (!this.showPresence) {
       return html``;
     }
@@ -492,7 +516,7 @@ export class MgtPerson extends MgtTemplatedComponent {
    * @param
    * @memberof MgtPersonCard
    */
-  protected renderImageWithPresence(image?: string, presence?: Presence): TemplateResult {
+  protected renderImageWithPresence(image?: string, presence?: MicrosoftGraphBeta.Presence): TemplateResult {
     if (!image) {
       image = this.getImage();
     }
@@ -664,9 +688,7 @@ export class MgtPerson extends MgtTemplatedComponent {
     const graph = provider.graph.forComponent(this);
 
     if (this.personDetails) {
-      // in some cases we might only have name or email, but need to find the image
-      // use @ for the image value to search for an image
-      if (this.personImage === '@' && !this.personDetails.personImage) {
+      if (!this.personDetails.personImage && ((this.fetchImage && !this.personImage) || this.personImage === '@')) {
         const image = await getPersonImage(graph, this.personDetails);
         if (image) {
           this.personDetails.personImage = image;
@@ -679,6 +701,7 @@ export class MgtPerson extends MgtTemplatedComponent {
 
       this.personDetails = person;
       this.personImage = this.getImage();
+      this.personDetails.personImage = this.personImage;
     } else if (this.personQuery) {
       // Use the personQuery to find our person.
       const people = await findPeople(graph, this.personQuery, 1);
