@@ -34,15 +34,13 @@ export { PersonCardInteraction } from './../PersonCardInteraction';
  * @class MgtPerson
  * @extends {MgtTemplatedComponent}
  *
- * @cssprop --avatar-size-s - {Length} Avatar size
- * @cssprop --avatar-size - {Length} Avatar size when both name and email are shown
- * @cssprop --avatar-font-size--s - {Length} Avatar font size
- * @cssprop --avatar-font-size - {Length} Avatar font-size when both name and email are shown
+ * @cssprop --avatar-size - {Length} Avatar size
  * @cssprop --avatar-border - {String} Avatar border
  * @cssprop --initials-color - {Color} Initials color
  * @cssprop --initials-background-color - {Color} Initials background color
  * @cssprop --font-size - {Length} Font size
  * @cssprop --font-weight - {Length} Font weight
+ * @cssprop --default-font-family - {String} Font family
  * @cssprop --color - {Color} Color
  * @cssprop --email-font-size - {Length} Email font size
  * @cssprop --email-color - {Color} Email color
@@ -113,7 +111,7 @@ export class MgtPerson extends MgtTemplatedComponent {
     attribute: 'avatar-size',
     type: String
   })
-  public avatarSize: AvatarSize = 'small';
+  public avatarSize: AvatarSize = 'unset';
 
   /**
    * object containing Graph details on person
@@ -272,11 +270,17 @@ export class MgtPerson extends MgtTemplatedComponent {
     const image = this.getImage();
     const presence = this.personPresence;
 
+    if (!person && !image) {
+      return this.renderNoData();
+    }
+
     // Default template
     let personTemplate = this.renderTemplate('default', { person, personImage: image });
+
     if (!personTemplate) {
       const detailsTemplate: TemplateResult = this.renderDetails(person);
-      const imageWithPresenceTemplate: TemplateResult = this.renderImageWithPresence(image, presence);
+      const imageWithPresenceTemplate: TemplateResult = this.renderImageWithPresence(image, person, presence);
+
       personTemplate = html`
         <div class="person-root">
           ${imageWithPresenceTemplate} ${detailsTemplate}
@@ -284,9 +288,9 @@ export class MgtPerson extends MgtTemplatedComponent {
       `;
     }
 
-    // Flyout template
-    const flyoutTemplate: TemplateResult =
-      this.personCardInteraction !== PersonCardInteraction.none ? this.renderFlyout(personTemplate) : null;
+    if (this.personCardInteraction !== PersonCardInteraction.none) {
+      personTemplate = this.renderFlyout(personTemplate);
+    }
 
     return html`
       <div
@@ -295,7 +299,7 @@ export class MgtPerson extends MgtTemplatedComponent {
         @mouseenter=${this.handleMouseEnter}
         @mouseleave=${this.handleMouseLeave}
       >
-        ${flyoutTemplate || personTemplate}
+        ${personTemplate}
       </div>
     `;
   }
@@ -324,18 +328,17 @@ export class MgtPerson extends MgtTemplatedComponent {
       return noDataTemplate;
     }
 
-    const isLarge = this.showEmail && this.showName;
-    const isSmallAvatar = this.avatarSize === 'small';
-    const imageClasses = {
+    const isLarge = this.avatarSize === 'large' || (this.avatarSize === 'unset' && this.showEmail && this.showName);
+
+    const avatarClasses = {
       'avatar-icon': true,
       'ms-Icon': true,
       'ms-Icon--Contact': true,
-      'row-span-2': isLarge,
-      small: isSmallAvatar
+      small: !isLarge
     };
 
     return html`
-      <i class=${classMap(imageClasses)}></i>
+      <i class=${classMap(avatarClasses)}></i>
     `;
   }
 
@@ -345,60 +348,33 @@ export class MgtPerson extends MgtTemplatedComponent {
    *
    * @protected
    * @param {string} [imageSrc]
+   * @param {IDynamicPerson} [personDetails]
    * @returns
    * @memberof MgtPerson
    */
-  protected renderImage(imageSrc?: string) {
-    if (!imageSrc) {
-      imageSrc = this.getImage();
-    }
-
+  protected renderImage(imageSrc: string, personDetails: IDynamicPerson) {
     const title =
-      this.personDetails && this.personCardInteraction === PersonCardInteraction.none
-        ? this.personDetails.displayName
-        : '';
-
-    const isLarge = this.showEmail && this.showName;
-    const isSmallAvatar = this.avatarSize === 'small';
-    const imageClasses = {
-      initials: !imageSrc,
-      'row-span-2': isLarge,
-      small: isSmallAvatar,
-      'user-avatar': true
-    };
-
-    let imageHtml: TemplateResult;
+      personDetails && this.personCardInteraction === PersonCardInteraction.none ? personDetails.displayName : '';
 
     if (imageSrc) {
-      // render the image
-      imageHtml = html`
+      return html`
         <img alt=${title} src=${imageSrc} />
       `;
-    } else if (this.personDetails) {
-      // add avatar background color
-      imageClasses[this._personAvatarBg] = true;
-      // render the initials or person icon
-      const initials = this.getInitials(this.personDetails);
-      const initialsHtml =
-        initials && initials.length
-          ? html`
-              ${initials}
-            `
-          : html`
-              <i class="ms-Icon ms-Icon--Contact contact-icon"></i>
-            `;
-      imageHtml = html`
+    } else if (personDetails) {
+      const initials = this.getInitials(personDetails);
+
+      return html`
         <span class="initials-text" aria-label="${initials}">
-          ${initialsHtml}
+          ${initials && initials.length
+            ? html`
+                ${initials}
+              `
+            : html`
+                <i class="ms-Icon ms-Icon--Contact contact-icon"></i>
+              `}
         </span>
       `;
-    } else {
-      return this.renderNoData();
     }
-
-    return html`
-      ${imageHtml}
-    `;
   }
 
   /**
@@ -408,13 +384,8 @@ export class MgtPerson extends MgtTemplatedComponent {
    * @param
    * @memberof MgtPersonCard
    */
-  protected renderPresence(presence?: MicrosoftGraphBeta.Presence): TemplateResult {
-    if (!this.showPresence) {
-      return html``;
-    }
-
-    presence = presence || this.personPresence;
-    if (!presence) {
+  protected renderPresence(presence: MicrosoftGraphBeta.Presence): TemplateResult {
+    if (!this.showPresence || !presence) {
       return html``;
     }
 
@@ -516,25 +487,20 @@ export class MgtPerson extends MgtTemplatedComponent {
    * @param
    * @memberof MgtPersonCard
    */
-  protected renderImageWithPresence(image?: string, presence?: MicrosoftGraphBeta.Presence): TemplateResult {
-    if (!image) {
-      image = this.getImage();
-    }
-
-    if (!presence) {
-      presence = this.personPresence;
-    }
-
+  protected renderImageWithPresence(
+    image: string,
+    personDetails: IDynamicPerson,
+    presence: MicrosoftGraphBeta.Presence
+  ): TemplateResult {
     const title =
       this.personDetails && this.personCardInteraction === PersonCardInteraction.none
         ? this.personDetails.displayName
         : '';
-    const isLarge = this.showEmail && this.showName;
-    const isSmallAvatar = this.avatarSize === 'small';
+
+    const isLarge = this.avatarSize === 'large' || (this.avatarSize === 'unset' && this.showEmail && this.showName);
     const imageClasses = {
       initials: !image,
-      'row-span-2': isLarge,
-      small: isSmallAvatar,
+      small: !isLarge,
       'user-avatar': true
     };
 
@@ -543,7 +509,7 @@ export class MgtPerson extends MgtTemplatedComponent {
       imageClasses[this._personAvatarBg] = true;
     }
 
-    const imageTemplate: TemplateResult = this.renderImage(image);
+    const imageTemplate: TemplateResult = this.renderImage(image, personDetails);
     const presenceTemplate: TemplateResult = this.renderPresence(presence);
 
     return html`
@@ -562,29 +528,26 @@ export class MgtPerson extends MgtTemplatedComponent {
    * @returns {TemplateResult}
    * @memberof MgtPerson
    */
-  protected renderDetails(person?: IDynamicPerson): TemplateResult {
-    if (!this.showEmail && !this.showName) {
-      return html``;
-    }
-
-    person = person || this.personDetails;
-    if (!person) {
+  protected renderDetails(person: IDynamicPerson): TemplateResult {
+    if (!person || (!this.showEmail && !this.showName)) {
       return html``;
     }
 
     const email = getEmailFromGraphEntity(person);
-    const emailTemplate: TemplateResult = this.showEmail ? this.renderEmail(email) : html``;
+    const emailTemplate: TemplateResult = this.showEmail && !!email ? this.renderEmail(email) : html``;
     const nameTemplate: TemplateResult = this.showName ? this.renderName(person.displayName) : html``;
-    const isSmallAvatar = this.avatarSize === 'small';
+
+    const isLarge = this.avatarSize === 'large' || (this.avatarSize === 'unset' && this.showEmail && this.showName);
+
     const detailsClasses = classMap({
-      Details: true,
-      small: isSmallAvatar
+      details: true,
+      small: !isLarge
     });
 
     return html`
-      <span class="${detailsClasses}">
+      <div class="${detailsClasses}">
         ${nameTemplate} ${emailTemplate}
-      </span>
+      </div>
     `;
   }
 
@@ -595,10 +558,7 @@ export class MgtPerson extends MgtTemplatedComponent {
    * @returns {TemplateResult}
    * @memberof MgtPerson
    */
-  protected renderName(displayName?: string): TemplateResult {
-    if (!displayName && this.personDetails) {
-      displayName = this.personDetails.displayName;
-    }
+  protected renderName(displayName: string): TemplateResult {
     return html`
       <div class="user-name" aria-label="${displayName}">${displayName}</div>
     `;
@@ -610,10 +570,7 @@ export class MgtPerson extends MgtTemplatedComponent {
    * @protected
    * @memberof MgtPerson
    */
-  protected renderEmail(email?: string): TemplateResult {
-    if (!email) {
-      email = getEmailFromGraphEntity(this.personDetails);
-    }
+  protected renderEmail(email: string): TemplateResult {
     return html`
       <div class="user-email" aria-label="${email}">${email}</div>
     `;

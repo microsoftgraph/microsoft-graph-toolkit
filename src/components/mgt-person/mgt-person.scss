@@ -8,15 +8,15 @@
 @import '../../../node_modules/office-ui-fabric-core/dist/sass/References';
 @import '../../styles/shared-styles.scss';
 
-$avatar-size-s: var(--avatar-size-s, 24px);
-$avatar-size: var(--avatar-size, 48px);
+$avatar-size-s: var(--avatar-size-s, var(--avatar-size, 24px));
+$avatar-size: var(--avatar-size, var(--avatar-size-s, 48px));
 $avatar-border: var(--avatar-border, 0);
 $initials-color: var(--initials-color, white);
 $font-size: var(--font-size, #{$ms-font-size-m});
 $font-weight: var(--font-weight, #{$ms-font-weight-semibold});
 $color: var(--color, #{$ms-color-neutralDark});
 $email-font-size: var(--email-font-size, #{$ms-font-size-s});
-$email-color: var(--email-color, #{$ms-color-neutralPrimary});
+$email-color: var(--email-color, var(--color, #{$ms-color-neutralPrimary}));
 
 $presence-color-online: #6bb700;
 $presence-color-dnd: #c50f1f;
@@ -24,15 +24,19 @@ $presence-color-away: #ffaa44;
 $presence-color-invisible: #8a8886;
 $presence-color-oof: #b4009e;
 
+:host([hidden]) {
+  display: none;
+}
+
 :host {
-  display: inline-block;
+  display: block;
+  font-family: var(--default-font-family);
+  vertical-align: top;
 }
 
 :host .root {
-  display: inline-block;
+  display: block;
   color: $color;
-  position: relative;
-  vertical-align: top;
 }
 
 :host svg,
@@ -52,284 +56,295 @@ mgt-person .person-root {
   position: relative;
   display: flex;
   align-items: center;
-  font-family: var(--default-font-family, 'Segoe UI');
-}
 
-:host .Details,
-mgt-person .Details {
-  flex: 1 1 auto;
-  display: flex;
-  flex-direction: column;
-  margin-left: 12px;
+  .user-avatar {
+    width: $avatar-size;
+    height: $avatar-size;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-shrink: 0;
 
-  &.small {
-    margin-left: 6px;
-  }
-}
-
-:host .user-avatar,
-mgt-person .user-avatar {
-  width: $avatar-size;
-  height: $avatar-size;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-
-  .user-presence {
-    margin: 0;
-    position: absolute;
-    left: calc(var(--avatar-size, 48px) * 0.72 - 4px);
-    top: calc(var(--avatar-size, 48px) * 0.72 - 4px);
-    width: calc(var(--avatar-size, 48px) * 0.28);
-    height: calc(var(--avatar-size, 48px) * 0.28);
-    border: 2px solid #ffffff;
-    border-radius: 50%;
-
-    .presence-oof-offline-wrapper {
-      background-color: #ffffff;
-      border-color: $presence-color-oof;
-
-      .presence-oof-offline svg {
-        color: $presence-color-oof;
-        width: calc(var(--avatar-size, 48px) * 0.14);
-        margin-left: calc(var(--avatar-size, 48px) * 0.07 - 2px);
-      }
-    }
-
-    .presence-basic {
-      width: calc(var(--avatar-size, 48px) * 0.28 - 4px);
-      height: calc(var(--avatar-size, 48px) * 0.28 - 4px);
-      border-style: solid;
-      border-width: 2px;
-      border-radius: 50%;
-      margin: 0;
-      font-size: calc(var(--avatar-size, 48px) * 0.14);
-      vertical-align: top;
-      display: flex;
-      align-items: center;
-
-      &.presence-offline {
-        background-color: #ffffff;
-        border-color: $presence-color-invisible;
-      }
-
-      &.presence-available {
-        background-color: $presence-color-online;
-        border-color: $presence-color-online;
-      }
-
-      &.presence-oof-available {
-        background-color: #ffffff;
-        border-color: $presence-color-online;
-      }
-
-      &.presence-away {
-        background-color: $presence-color-away;
-        border-color: $presence-color-away;
-      }
-
-      &.presence-dnd {
-        background-color: $presence-color-dnd;
-        border-color: $presence-color-dnd;
-      }
-
-      &.presence-oof-dnd {
-        background-color: #ffffff;
-        border-color: $presence-color-dnd;
-      }
-
-      &.presence-busy {
-        background-color: $presence-color-dnd;
-        border-color: $presence-color-dnd;
-      }
-
-      &.presence-oof-busy {
-        background-color: #ffffff;
-        border-color: $presence-color-dnd;
-      }
-    }
-
-    .presence-offline::before {
-      content: $ms-icon-code-StatusCircleErrorX;
-      color: $presence-color-invisible;
-      font-weight: bold;
-      margin-left: calc(var(--avatar-size, 48px) * 0.07 - 2px);
-    }
-
-    .presence-available::before {
-      content: $ms-icon-code-SkypeCheck;
-      color: #ffffff;
-      margin-left: calc(var(--avatar-size, 48px) * 0.07 - 2px);
-    }
-
-    .presence-oof-available::before {
-      content: $ms-icon-code-SkypeCheck;
-      color: $presence-color-online;
-      margin-left: calc(var(--avatar-size, 48px) * 0.07 - 2px);
-    }
-
-    .presence-away::before {
-      content: $ms-icon-code-SkypeClock;
-      color: #ffffff;
-      margin-left: calc(var(--avatar-size, 48px) * 0.07 - 2px);
-    }
-
-    .presence-dnd::before {
-      content: $ms-icon-code-SkypeMinus;
-      color: #ffffff;
-      margin-left: calc(var(--avatar-size, 48px) * 0.07 - 2px);
-    }
-
-    .presence-oof-dnd::before {
-      content: $ms-icon-code-SkypeMinus;
-      color: $presence-color-dnd;
-      margin-left: calc(var(--avatar-size, 48px) * 0.07 - 2px);
-    }
-  }
-
-  &.initials {
-    color: $initials-color;
-    border-radius: 50%;
-    font-weight: 400;
-
-    & .initials-text,
-    & .contact-icon {
-      cursor: default;
-      margin-top: -1px;
-      font-size: calc(var(--avatar-size, 48px) * 0.4);
-    }
-
-    & .contact-icon {
-      display: inline;
-    }
-  }
-
-  &.small {
-    width: $avatar-size-s;
-    height: $avatar-size-s;
-
-    & .initials-text,
-    & .contact-icon {
-      font-size: calc(var(--avatar-size-s, 24px) * 0.4);
-    }
     .user-presence {
-      left: calc(var(--avatar-size-s, 24px) - 8px);
-      top: calc(var(--avatar-size-s, 24px) - 8px);
-      width: 8px;
-      height: 8px;
+      margin: 0;
+      position: absolute;
+      left: calc(#{$avatar-size} * 0.72 - 4px);
+      top: calc(#{$avatar-size} * 0.72 - 4px);
+      width: calc(v#{$avatar-size} * 0.28);
+      height: calc(#{$avatar-size} * 0.28);
+      border: 2px solid #ffffff;
+      border-radius: 50%;
 
-      .presence-basic {
-        width: 4px;
-        height: 4px;
-        border-radius: 4px;
-        padding: 0;
+      .presence-oof-offline-wrapper {
+        background-color: #ffffff;
+        border-color: $presence-color-oof;
 
-        & .presence-oof-offline svg {
-          height: 0;
-          width: 0;
+        .presence-oof-offline svg {
+          color: $presence-color-oof;
+          width: calc(#{$avatar-size} * 0.14);
+          margin-left: calc(#{$avatar-size} * 0.07 - 2px);
         }
       }
 
-      .presence-offline::before,
-      .presence-available::before,
-      .presence-oof-available::before,
-      .presence-away::before,
-      .presence-oof-away::before,
-      .presence-dnd::before,
-      .presence-oof-dnd::before,
-      .presence-oof-offline::before {
-        content: '';
+      .presence-basic {
+        width: calc(#{$avatar-size} * 0.28 - 4px);
+        height: calc(#{$avatar-size} * 0.28 - 4px);
+        border-style: solid;
+        border-width: 2px;
+        border-radius: 50%;
+        margin: 0;
+        font-size: calc(#{$avatar-size} * 0.14);
+        vertical-align: top;
+        display: flex;
+        align-items: center;
+
+        &.presence-offline {
+          background-color: #ffffff;
+          border-color: $presence-color-invisible;
+        }
+
+        &.presence-available {
+          background-color: $presence-color-online;
+          border-color: $presence-color-online;
+        }
+
+        &.presence-oof-available {
+          background-color: #ffffff;
+          border-color: $presence-color-online;
+        }
+
+        &.presence-away {
+          background-color: $presence-color-away;
+          border-color: $presence-color-away;
+        }
+
+        &.presence-dnd {
+          background-color: $presence-color-dnd;
+          border-color: $presence-color-dnd;
+        }
+
+        &.presence-oof-dnd {
+          background-color: #ffffff;
+          border-color: $presence-color-dnd;
+        }
+
+        &.presence-busy {
+          background-color: $presence-color-dnd;
+          border-color: $presence-color-dnd;
+        }
+
+        &.presence-oof-busy {
+          background-color: #ffffff;
+          border-color: $presence-color-dnd;
+        }
       }
+
+      .presence-offline::before {
+        content: $ms-icon-code-StatusCircleErrorX;
+        color: $presence-color-invisible;
+        font-weight: bold;
+        margin-left: calc(#{$avatar-size} * 0.07 - 2px);
+      }
+
+      .presence-available::before {
+        content: $ms-icon-code-SkypeCheck;
+        color: #ffffff;
+        margin-left: calc(#{$avatar-size} * 0.07 - 2px);
+      }
+
+      .presence-oof-available::before {
+        content: $ms-icon-code-SkypeCheck;
+        color: $presence-color-online;
+        margin-left: calc(#{$avatar-size} * 0.07 - 2px);
+      }
+
+      .presence-away::before {
+        content: $ms-icon-code-SkypeClock;
+        color: #ffffff;
+        margin-left: calc(#{$avatar-size} * 0.07 - 2px);
+      }
+
+      .presence-dnd::before {
+        content: $ms-icon-code-SkypeMinus;
+        color: #ffffff;
+        margin-left: calc(#{$avatar-size} * 0.07 - 2px);
+      }
+
+      .presence-oof-dnd::before {
+        content: $ms-icon-code-SkypeMinus;
+        color: $presence-color-dnd;
+        margin-left: calc(#{$avatar-size} * 0.07 - 2px);
+      }
+    }
+
+    &.initials {
+      color: $initials-color;
+      border-radius: 50%;
+      font-weight: 400;
+
+      & .initials-text,
+      & .contact-icon {
+        cursor: default;
+        margin-top: -1px;
+        font-size: calc(#{$avatar-size} * 0.4);
+      }
+
+      & .contact-icon {
+        display: inline;
+      }
+    }
+
+    &.small {
+      width: $avatar-size-s;
+      height: $avatar-size-s;
+
+      & .initials-text,
+      & .contact-icon {
+        font-size: calc(#{$avatar-size-s} * 0.4);
+      }
+      .user-presence {
+        left: calc(#{$avatar-size-s} - 8px);
+        top: calc(#{$avatar-size-s} - 8px);
+        width: 8px;
+        height: 8px;
+
+        .presence-basic {
+          width: 4px;
+          height: 4px;
+          border-radius: 4px;
+          padding: 0;
+
+          & .presence-oof-offline svg {
+            height: 0;
+            width: 0;
+          }
+        }
+
+        .presence-offline::before,
+        .presence-available::before,
+        .presence-oof-available::before,
+        .presence-away::before,
+        .presence-oof-away::before,
+        .presence-dnd::before,
+        .presence-oof-dnd::before,
+        .presence-oof-offline::before {
+          content: '';
+        }
+      }
+    }
+
+    img {
+      height: 100%;
+    }
+
+    &.pinkRed10 {
+      background-color: var(--initials-background-color, $ms-color-sharedPinkRed10);
+    }
+
+    &.red20 {
+      background-color: var(--initials-background-color, $ms-color-sharedRed20);
+    }
+
+    &.red10 {
+      background-color: var(--initials-background-color, $ms-color-sharedRed10);
+    }
+
+    &.orange20 {
+      background-color: var(--initials-background-color, $ms-color-sharedOrange20);
+    }
+
+    &.orangeYellow20 {
+      background-color: var(--initials-background-color, $ms-color-sharedOrangeYellow20);
+    }
+
+    &.green10 {
+      background-color: var(--initials-background-color, $ms-color-sharedGreen10);
+    }
+
+    &.green20 {
+      background-color: var(--initials-background-color, $ms-color-sharedGreen20);
+    }
+
+    &.cyan20 {
+      background-color: var(--initials-background-color, $ms-color-sharedCyan20);
+    }
+
+    &.cyan30 {
+      background-color: var(--initials-background-color, $ms-color-sharedCyan30);
+    }
+
+    &.cyanBlue10 {
+      background-color: var(--initials-background-color, $ms-color-sharedCyanBlue10);
+    }
+
+    &.cyanBlue20 {
+      background-color: var(--initials-background-color, $ms-color-sharedCyanBlue20);
+    }
+
+    &.blue10 {
+      background-color: var(--initials-background-color, $ms-color-sharedBlue10);
+    }
+
+    &.blueMagenta30 {
+      background-color: var(--initials-background-color, $ms-color-sharedBlueMagenta30);
+    }
+
+    &.blueMagenta20 {
+      background-color: var(--initials-background-color, $ms-color-sharedBlueMagenta20);
+    }
+
+    &.magenta20 {
+      background-color: var(--initials-background-color, $ms-color-sharedMagenta20);
+    }
+
+    &.magenta10 {
+      background-color: var(--initials-background-color, $ms-color-sharedMagenta10);
+    }
+
+    &.magentaPink10 {
+      background-color: var(--initials-background-color, $ms-color-sharedMagentaPink10);
+    }
+
+    &.orange30 {
+      background-color: var(--initials-background-color, $ms-color-sharedOrange30);
+    }
+
+    &.gray30 {
+      background-color: var(--initials-background-color, $ms-color-sharedGray30);
+    }
+
+    &.gray20 {
+      background-color: var(--initials-background-color, $ms-color-sharedGray20);
     }
   }
 
-  &.row-span-2 {
-    width: $avatar-size;
-    height: $avatar-size;
-  }
+  .details {
+    flex-shrink: 1;
+    display: flex;
+    flex-direction: column;
+    margin-left: 12px;
+    overflow: hidden;
+    line-height: 1.4;
 
-  img {
-    height: 100%;
-  }
+    &.small {
+      margin-left: 6px;
+    }
 
-  &.pinkRed10 {
-    background-color: var(--initials-background-color, $ms-color-sharedPinkRed10);
-  }
+    & > div {
+      text-overflow: ellipsis;
+      white-space: nowrap;
+      overflow: hidden;
+    }
 
-  &.red20 {
-    background-color: var(--initials-background-color, $ms-color-sharedRed20);
-  }
+    .user-name {
+      font-size: $font-size;
+      font-weight: $font-weight;
+    }
 
-  &.red10 {
-    background-color: var(--initials-background-color, $ms-color-sharedRed10);
-  }
-
-  &.orange20 {
-    background-color: var(--initials-background-color, $ms-color-sharedOrange20);
-  }
-
-  &.orangeYellow20 {
-    background-color: var(--initials-background-color, $ms-color-sharedOrangeYellow20);
-  }
-
-  &.green10 {
-    background-color: var(--initials-background-color, $ms-color-sharedGreen10);
-  }
-
-  &.green20 {
-    background-color: var(--initials-background-color, $ms-color-sharedGreen20);
-  }
-
-  &.cyan20 {
-    background-color: var(--initials-background-color, $ms-color-sharedCyan20);
-  }
-
-  &.cyan30 {
-    background-color: var(--initials-background-color, $ms-color-sharedCyan30);
-  }
-
-  &.cyanBlue10 {
-    background-color: var(--initials-background-color, $ms-color-sharedCyanBlue10);
-  }
-
-  &.cyanBlue20 {
-    background-color: var(--initials-background-color, $ms-color-sharedCyanBlue20);
-  }
-
-  &.blue10 {
-    background-color: var(--initials-background-color, $ms-color-sharedBlue10);
-  }
-
-  &.blueMagenta30 {
-    background-color: var(--initials-background-color, $ms-color-sharedBlueMagenta30);
-  }
-
-  &.blueMagenta20 {
-    background-color: var(--initials-background-color, $ms-color-sharedBlueMagenta20);
-  }
-
-  &.magenta20 {
-    background-color: var(--initials-background-color, $ms-color-sharedMagenta20);
-  }
-
-  &.magenta10 {
-    background-color: var(--initials-background-color, $ms-color-sharedMagenta10);
-  }
-
-  &.magentaPink10 {
-    background-color: var(--initials-background-color, $ms-color-sharedMagentaPink10);
-  }
-
-  &.orange30 {
-    background-color: var(--initials-background-color, $ms-color-sharedOrange30);
-  }
-
-  &.gray30 {
-    background-color: var(--initials-background-color, $ms-color-sharedGray30);
-  }
-
-  &.gray20 {
-    background-color: var(--initials-background-color, $ms-color-sharedGray20);
+    .user-email {
+      color: $email-color;
+      font-size: $email-font-size;
+    }
   }
 }
 
@@ -343,36 +358,4 @@ mgt-person .avatar-icon {
   &.small {
     font-size: $avatar-size-s;
   }
-
-  &.row-span-2 {
-    grid-row: 1 / 3;
-    -ms-grid-row: 1;
-    -ms-grid-row-span: 2;
-  }
-
-  &.row-span-3 {
-    grid-row: 1 / 4;
-    -ms-grid-row: 1;
-    -ms-grid-row-span: 3;
-  }
-}
-
-:host .user-name,
-mgt-person .user-name {
-  font-size: $font-size;
-  font-weight: $font-weight;
-  white-space: nowrap;
-  grid-column: 2;
-  -ms-grid-column: 2;
-}
-
-:host .user-email,
-mgt-person .user-email {
-  color: $email-color;
-  font-size: $email-font-size;
-  white-space: nowrap;
-  grid-column: 2;
-  -ms-grid-column: 2;
-  grid-row: 2;
-  -ms-grid-row: 2;
 }
