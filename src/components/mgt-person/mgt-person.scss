@@ -365,12 +365,16 @@ mgt-person .person-root {
 
 :host .avatar-icon,
 mgt-person .avatar-icon {
-  flex: 1 1 auto;
+  display: block;
   line-height: 1;
   margin: 0;
   font-size: $avatar-size;
+  width: $avatar-size;
+  height: $avatar-size;
 
   &.small {
     font-size: $avatar-size-s;
+    width: $avatar-size-s;
+    height: $avatar-size-s;
   }
 }

@@ -164,6 +164,22 @@ export const personCardClick = () => html`
   <mgt-person person-query="me" person-card="click"></mgt-person>
 `;
 
+export const setPersonDetails = () => html`
+  <mgt-person class="my-person" view="twoLines" line2-property="title" person-card="hover"> </mgt-person>
+  <script>
+    const person = document.querySelector('.my-person');
+
+    person.personDetails = {
+      displayName: 'Megan Bowen',
+      title: 'CEO',
+      mail: 'megan@contoso.com'
+    };
+
+    // set image
+    person.personImage = '';
+  </script>
+`;
+
 export const moreExamples = () => html`
   <style>
     .example {

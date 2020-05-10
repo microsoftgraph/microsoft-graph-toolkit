@@ -59,14 +59,19 @@ export enum PersonViewType {
  *
  * @cssprop --avatar-size - {Length} Avatar size
  * @cssprop --avatar-border - {String} Avatar border
+ * @cssprop --avatar-border-radius - {String} Avatar border radius
  * @cssprop --initials-color - {Color} Initials color
  * @cssprop --initials-background-color - {Color} Initials background color
+ * @cssprop --font-family - {String} Font family
  * @cssprop --font-size - {Length} Font size
  * @cssprop --font-weight - {Length} Font weight
- * @cssprop --default-font-family - {String} Font family
  * @cssprop --color - {Color} Color
- * @cssprop --email-font-size - {Length} Email font size
- * @cssprop --email-color - {Color} Email color
+ * @cssprop --line1-text-transform - {String} Line 1 text transform
+ * @cssprop --line2-font-size - {Length} Line 2 font size
+ * @cssprop --line2-font-weight - {Length} Line 2 font weight
+ * @cssprop --line2-color - {Color} Line 2 color
+ * @cssprop --line2-text-transform - {String} Line 2 text transform
+ * @cssprop --details-spacing - {Length} spacing between avatar and person details
  */
 @customElement('mgt-person')
 export class MgtPerson extends MgtTemplatedComponent {
@@ -177,7 +182,18 @@ export class MgtPerson extends MgtTemplatedComponent {
     attribute: 'person-image',
     type: String
   })
-  public personImage: string;
+  public get personImage(): string {
+    return this._personImage || this._fetchedImage;
+  }
+  public set personImage(value: string) {
+    if (value === this._personImage) {
+      return;
+    }
+
+    const oldValue = this._personImage;
+    this._personImage = value;
+    this.requestUpdate('personImage', oldValue);
+  }
 
   /**
    * Sets whether the person image should be fetched
@@ -203,7 +219,18 @@ export class MgtPerson extends MgtTemplatedComponent {
     attribute: 'person-presence',
     type: Object
   })
-  public personPresence: MicrosoftGraphBeta.Presence;
+  public get personPresence(): MicrosoftGraphBeta.Presence {
+    return this._personPresence || this._fetchedPresence;
+  }
+  public set personPresence(value: MicrosoftGraphBeta.Presence) {
+    if (value === this._personPresence) {
+      return;
+    }
+
+    const oldValue = this._personPresence;
+    this._personPresence = value;
+    this.requestUpdate('personPresence', oldValue);
+  }
 
   /**
    * Sets how the person-card is invoked
@@ -284,6 +311,8 @@ export class MgtPerson extends MgtTemplatedComponent {
 
   private _personDetails: IDynamicPerson;
   private _personAvatarBg: string;
+  private _personImage: string;
+  private _personPresence: MicrosoftGraphBeta.Presence;
 
   private _mouseLeaveTimeout;
   private _mouseEnterTimeout;
