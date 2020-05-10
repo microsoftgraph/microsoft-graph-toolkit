@@ -204,7 +204,7 @@ export const moreExamples = () => html`
   </div>
 
   <div class="example">
-    <span>Two lines, change line content</span>
+    <span>Change line content</span>
     <!--add fallback property by comma separating-->
     <mgt-person
       person-query="me"
@@ -248,11 +248,11 @@ export const moreExamples = () => html`
     <mgt-person class="person-initials" person-query="alex@fineartschool.net" view="oneline"></mgt-person>
   </div>
 
-  <!-- <div class="example">
-  <span>DEPRECATED</span>
-  <mgt-person person-query="me"></mgt-person>
-  <mgt-person person-query="me" show-name></mgt-person>
-  <mgt-person person-query="me" show-email></mgt-person>
-  <mgt-person person-query="me" show-name show-email></mgt-person>
-  </div> -->
+  <div class="example">
+    <span>DEPRECATED (show-name, show-email)</span>
+    <mgt-person person-query="me"></mgt-person>
+    <mgt-person person-query="me" show-name></mgt-person>
+    <mgt-person person-query="me" show-email></mgt-person>
+    <mgt-person person-query="me" show-name show-email></mgt-person>
+  </div>
 `;

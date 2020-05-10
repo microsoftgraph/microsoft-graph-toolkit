@@ -7,7 +7,7 @@
 
 import * as MicrosoftGraph from '@microsoft/microsoft-graph-types';
 import * as MicrosoftGraphBeta from '@microsoft/microsoft-graph-types-beta';
-import { customElement, html, property, query, TemplateResult } from 'lit-element';
+import { customElement, html, internalProperty, property, TemplateResult } from 'lit-element';
 import { classMap } from 'lit-html/directives/class-map';
 import { findPeople, getEmailFromGraphEntity } from '../../graph/graph.people';
 import { getPersonImage } from '../../graph/graph.photos';
@@ -160,13 +160,8 @@ export class MgtPerson extends MgtTemplatedComponent {
       this._personAvatarBg = this.getColorFromName(value.displayName);
     }
 
-    if (this.fetchImage) {
-      this.personImage = null;
-    }
-
-    if (this.showPresence) {
-      this.personPresence = null;
-    }
+    this._fetchedImage = null;
+    this._fetchedPresence = null;
 
     this.requestStateUpdate();
     this.requestUpdate('personDetails');
@@ -283,7 +278,10 @@ export class MgtPerson extends MgtTemplatedComponent {
   })
   public view: PersonViewType;
 
-  @property({ attribute: false }) private _personCardShouldRender: boolean;
+  @internalProperty() private _personCardShouldRender: boolean;
+  @internalProperty() private _fetchedPresence: MicrosoftGraphBeta.Presence;
+  @internalProperty() private _fetchedImage: string;
+
   private _personDetails: IDynamicPerson;
   private _personAvatarBg: string;
 
@@ -339,7 +337,7 @@ export class MgtPerson extends MgtTemplatedComponent {
     // Prep data
     const person = this.personDetails;
     const image = this.getImage();
-    const presence = this.personPresence;
+    const presence = this.personPresence || this._fetchedPresence;
 
     if (!person && !image) {
       return this.renderNoData();
@@ -350,7 +348,7 @@ export class MgtPerson extends MgtTemplatedComponent {
 
     if (!personTemplate) {
       const detailsTemplate: TemplateResult = this.renderDetails(person);
-      const imageWithPresenceTemplate: TemplateResult = this.renderImageWithPresence(image, person, presence);
+      const imageWithPresenceTemplate: TemplateResult = this.renderImageWithPresence(person, image, presence);
 
       personTemplate = html`
         <div class="person-root">
@@ -360,7 +358,7 @@ export class MgtPerson extends MgtTemplatedComponent {
     }
 
     if (this.personCardInteraction !== PersonCardInteraction.none) {
-      personTemplate = this.renderFlyout(personTemplate);
+      personTemplate = this.renderFlyout(personTemplate, person, image, presence);
     }
 
     return html`
@@ -421,7 +419,7 @@ export class MgtPerson extends MgtTemplatedComponent {
    * @returns
    * @memberof MgtPerson
    */
-  protected renderImage(imageSrc: string, personDetails: IDynamicPerson) {
+  protected renderImage(personDetails: IDynamicPerson, imageSrc: string) {
     const title =
       personDetails && this.personCardInteraction === PersonCardInteraction.none ? personDetails.displayName : '';
 
@@ -557,8 +555,8 @@ export class MgtPerson extends MgtTemplatedComponent {
    * @memberof MgtPersonCard
    */
   protected renderImageWithPresence(
-    image: string,
     personDetails: IDynamicPerson,
+    image: string,
     presence: MicrosoftGraphBeta.Presence
   ): TemplateResult {
     const title =
@@ -577,7 +575,7 @@ export class MgtPerson extends MgtTemplatedComponent {
       imageClasses[this._personAvatarBg] = true;
     }
 
-    const imageTemplate: TemplateResult = this.renderImage(image, personDetails);
+    const imageTemplate: TemplateResult = this.renderImage(personDetails, image);
     const presenceTemplate: TemplateResult = this.renderPresence(presence);
 
     return html`
@@ -640,11 +638,16 @@ export class MgtPerson extends MgtTemplatedComponent {
    * @returns {TemplateResult}
    * @memberof MgtPerson
    */
-  protected renderFlyout(anchor: TemplateResult): TemplateResult {
+  protected renderFlyout(
+    anchor: TemplateResult,
+    personDetails: IDynamicPerson,
+    image: string,
+    presence: MicrosoftGraphBeta.Presence
+  ): TemplateResult {
     const flyoutContent = this._personCardShouldRender
       ? html`
           <div slot="flyout">
-            ${this.renderFlyoutContent()}
+            ${this.renderFlyoutContent(personDetails, image, presence)}
           </div>
         `
       : html``;
@@ -663,19 +666,19 @@ export class MgtPerson extends MgtTemplatedComponent {
    * @returns {TemplateResult}
    * @memberof MgtPerson
    */
-  protected renderFlyoutContent(): TemplateResult {
-    const person = this.personDetails;
-    const image = this.getImage();
-    const personPresence = this.personPresence;
-    const showPresence = this.showPresence;
+  protected renderFlyoutContent(
+    personDetails: IDynamicPerson,
+    image: string,
+    presence: MicrosoftGraphBeta.Presence
+  ): TemplateResult {
     return (
-      this.renderTemplate('person-card', { person, personImage: image }) ||
+      this.renderTemplate('person-card', { person: personDetails, personImage: image }) ||
       html`
         <mgt-person-card
-          .personDetails=${person}
+          .personDetails=${personDetails}
           .personImage=${image}
-          .personPresence=${personPresence}
-          .showPresence=${showPresence}
+          .personPresence=${presence}
+          .showPresence=${this.showPresence}
         ></mgt-person-card>
       `
     );
@@ -702,11 +705,14 @@ export class MgtPerson extends MgtTemplatedComponent {
     const graph = provider.graph.forComponent(this);
 
     if (this.personDetails) {
-      if (!this.personDetails.personImage && ((this.fetchImage && !this.personImage) || this.personImage === '@')) {
+      if (
+        !this.personDetails.personImage &&
+        ((this.fetchImage && !this.personImage && !this._fetchedImage) || this.personImage === '@')
+      ) {
         const image = await getPersonImage(graph, this.personDetails);
         if (image) {
           this.personDetails.personImage = image;
-          this.personImage = image;
+          this._fetchedImage = image;
         }
       }
     } else if (this.userId || this.personQuery === 'me') {
@@ -714,7 +720,7 @@ export class MgtPerson extends MgtTemplatedComponent {
       const person = await getUserWithPhoto(graph, this.userId);
 
       this.personDetails = person;
-      this.personImage = this.getImage();
+      this._fetchedImage = this.getImage();
       this.personDetails.personImage = this.personImage;
     } else if (this.personQuery) {
       // Use the personQuery to find our person.
@@ -726,7 +732,7 @@ export class MgtPerson extends MgtTemplatedComponent {
 
         if (image) {
           this.personDetails.personImage = image;
-          this.personImage = image;
+          this._fetchedImage = image;
         }
       }
     }
@@ -737,16 +743,16 @@ export class MgtPerson extends MgtTemplatedComponent {
       availability: 'Offline',
       id: null
     };
-    if (!this.personPresence && this.showPresence) {
+    if (this.showPresence && !this.personPresence && !this._fetchedPresence) {
       try {
         if (this.personDetails && this.personDetails.id) {
-          this.personPresence = await getUserPresence(graph, this.personDetails.id);
+          this._fetchedPresence = await getUserPresence(graph, this.personDetails.id);
         } else {
-          this.personPresence = defaultPresence;
+          this._fetchedPresence = defaultPresence;
         }
       } catch (_) {
         // set up a default Presence in case beta api changes or getting error code
-        this.personPresence = defaultPresence;
+        this._fetchedPresence = defaultPresence;
       }
     }
 
@@ -759,6 +765,10 @@ export class MgtPerson extends MgtTemplatedComponent {
   private getImage(): string {
     if (this.personImage && this.personImage !== '@') {
       return this.personImage;
+    }
+
+    if (this._fetchedImage) {
+      return this._fetchedImage;
     }
 
     const person = this.personDetails;
