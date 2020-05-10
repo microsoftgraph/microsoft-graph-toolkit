@@ -25,7 +25,30 @@ import { MgtTemplatedComponent } from '../templatedComponent';
 import { PersonCardInteraction } from './../PersonCardInteraction';
 import { styles } from './mgt-person-css';
 
-export { PersonCardInteraction } from './../PersonCardInteraction';
+export { PersonCardInteraction } from '../PersonCardInteraction';
+
+/**
+ * Enumeration to define what parts of the person component render
+ *
+ * @export
+ * @enum {number}
+ */
+export enum PersonViewType {
+  /**
+   * Render only the avatar
+   */
+  avatar = 2,
+
+  /**
+   * Render the avatar and one line of text
+   */
+  oneline = 3,
+
+  /**
+   * Render the avatar and two lines of text
+   */
+  twolines = 4
+}
 
 /**
  * The person component is used to display a person or contact by using their photo, name, and/or email address.
@@ -111,7 +134,7 @@ export class MgtPerson extends MgtTemplatedComponent {
     attribute: 'avatar-size',
     type: String
   })
-  public avatarSize: AvatarSize = 'unset';
+  public avatarSize: AvatarSize;
 
   /**
    * object containing Graph details on person
@@ -218,6 +241,48 @@ export class MgtPerson extends MgtTemplatedComponent {
     return this.renderRoot.querySelector('.flyout');
   }
 
+  /**
+   * Sets the property of the personDetails to use for the first line of text.
+   * Default is displayName.
+   *
+   * @type {string}
+   * @memberof MgtPerson
+   */
+  @property({ attribute: 'line1-property' }) public line1Property: string;
+
+  /**
+   * Sets the property of the personDetails to use for the second line of text.
+   * Default is mail.
+   *
+   * @type {string}
+   * @memberof MgtPerson
+   */
+  @property({ attribute: 'line2-property' }) public line2Property: string;
+
+  /**
+   * Sets what data to be rendered (avatar only, oneLine, twoLines).
+   * Default is 'avatar'.
+   *
+   * @type {PersonViewType}
+   * @memberof MgtPerson
+   */
+  @property({
+    converter: value => {
+      if (!value || value.length === 0) {
+        return PersonViewType.avatar;
+      }
+
+      value = value.toLowerCase();
+
+      if (typeof PersonViewType[value] === 'undefined') {
+        return PersonViewType.avatar;
+      } else {
+        return PersonViewType[value];
+      }
+    }
+  })
+  public view: PersonViewType;
+
   @property({ attribute: false }) private _personCardShouldRender: boolean;
   private _personDetails: IDynamicPerson;
   private _personAvatarBg: string;
@@ -227,7 +292,13 @@ export class MgtPerson extends MgtTemplatedComponent {
 
   constructor() {
     super();
+
+    // defaults
     this.personCardInteraction = PersonCardInteraction.none;
+    this.line1Property = 'displayName';
+    this.line2Property = 'email';
+    this.view = PersonViewType.avatar;
+    this.avatarSize = 'auto';
   }
 
   /**
@@ -328,13 +399,11 @@ export class MgtPerson extends MgtTemplatedComponent {
       return noDataTemplate;
     }
 
-    const isLarge = this.avatarSize === 'large' || (this.avatarSize === 'unset' && this.showEmail && this.showName);
-
     const avatarClasses = {
       'avatar-icon': true,
       'ms-Icon': true,
       'ms-Icon--Contact': true,
-      small: !isLarge
+      small: !this.isLargeAvatar()
     };
 
     return html`
@@ -497,10 +566,9 @@ export class MgtPerson extends MgtTemplatedComponent {
         ? this.personDetails.displayName
         : '';
 
-    const isLarge = this.avatarSize === 'large' || (this.avatarSize === 'unset' && this.showEmail && this.showName);
     const imageClasses = {
       initials: !image,
-      small: !isLarge,
+      small: !this.isLargeAvatar(),
       'user-avatar': true
     };
 
@@ -529,50 +597,39 @@ export class MgtPerson extends MgtTemplatedComponent {
    * @memberof MgtPerson
    */
   protected renderDetails(person: IDynamicPerson): TemplateResult {
-    if (!person || (!this.showEmail && !this.showName)) {
+    if (!person || (!this.showEmail && !this.showName && this.view === PersonViewType.avatar)) {
       return html``;
     }
 
-    const email = getEmailFromGraphEntity(person);
-    const emailTemplate: TemplateResult = this.showEmail && !!email ? this.renderEmail(email) : html``;
-    const nameTemplate: TemplateResult = this.showName ? this.renderName(person.displayName) : html``;
+    const details: TemplateResult[] = [];
 
-    const isLarge = this.avatarSize === 'large' || (this.avatarSize === 'unset' && this.showEmail && this.showName);
+    if (this.showName || this.view > PersonViewType.avatar) {
+      const text = this.getTextFromProperty(person, this.line1Property);
+      if (text) {
+        details.push(html`
+          <div class="line1" aria-label="${text}">${text}</div>
+        `);
+      }
+    }
+
+    if (this.showEmail || this.view > PersonViewType.oneline) {
+      const text = this.getTextFromProperty(person, this.line2Property);
+      if (text) {
+        details.push(html`
+          <div class="line2" aria-label="${text}">${text}</div>
+        `);
+      }
+    }
 
     const detailsClasses = classMap({
       details: true,
-      small: !isLarge
+      small: !this.isLargeAvatar()
     });
 
     return html`
       <div class="${detailsClasses}">
-        ${nameTemplate} ${emailTemplate}
+        ${details}
       </div>
-    `;
-  }
-
-  /**
-   * Render the name part of the person details.
-   *
-   * @protected
-   * @returns {TemplateResult}
-   * @memberof MgtPerson
-   */
-  protected renderName(displayName: string): TemplateResult {
-    return html`
-      <div class="user-name" aria-label="${displayName}">${displayName}</div>
-    `;
-  }
-
-  /**
-   * Render the email part of the person details.
-   *
-   * @protected
-   * @memberof MgtPerson
-   */
-  protected renderEmail(email: string): TemplateResult {
-    return html`
-      <div class="user-email" aria-label="${email}">${email}</div>
     `;
   }
 
@@ -743,6 +800,38 @@ export class MgtPerson extends MgtTemplatedComponent {
     } catch (e) {
       return char.toLowerCase() !== char.toUpperCase();
     }
+  }
+
+  private getTextFromProperty(personDetails: IDynamicPerson, prop: string) {
+    if (!property || property.length === 0) {
+      return null;
+    }
+
+    const properties = prop.trim().split(',');
+    let text;
+    let i = 0;
+
+    while (!text && i < properties.length) {
+      const currentProp = properties[i].trim();
+      switch (currentProp) {
+        case 'mail':
+        case 'email':
+          text = getEmailFromGraphEntity(personDetails);
+          break;
+        default:
+          text = personDetails[currentProp];
+      }
+      i++;
+    }
+
+    return text;
+  }
+
+  private isLargeAvatar() {
+    return (
+      this.avatarSize === 'large' ||
+      (this.avatarSize === 'auto' && ((this.showEmail && this.showName) || this.view > PersonViewType.oneline))
+    );
   }
 
   private handleMouseClick(e: MouseEvent) {
