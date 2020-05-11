@@ -404,15 +404,8 @@ export class MgtPersonCardBeta extends MgtTemplatedComponent {
   protected renderExpandedDetailsButton(): TemplateResult {
     return html`
       <div class="expanded-details-button" @click=${() => this.showExpandedDetails()}>
-        <svg
-          class="expanded-details-svg"
-          width="16"
-          height="15"
-          viewBox="0 0 16 15"
-          fill="none"
-          xmlns="http://www.w3.org/2000/svg"
-        >
-          <path d="M15 7L8.24324 13.7568L1.24324 6.75676" stroke="#3078CD" />
+        <svg width="15" height="8" viewBox="0 0 15 8" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <path d="M14 1L7.5 7L1 1" stroke="#3078CD" />
         </svg>
       </div>
     `;
