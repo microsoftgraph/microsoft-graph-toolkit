@@ -122,6 +122,8 @@ interface ChannelPickerItemState {
  * @class MgtTeamsChannelPicker
  * @extends {MgtTemplatedComponent}
  *
+ * @fires selectionChanged - Fired when the selection changes
+ *
  * @cssprop --font-color - {font} Default font color
  *
  * @cssprop --input-border - {String} Input section entire border

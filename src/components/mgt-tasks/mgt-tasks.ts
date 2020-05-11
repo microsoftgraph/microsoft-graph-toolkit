@@ -34,6 +34,8 @@ import { MgtFlyout } from '../sub-components/mgt-flyout/mgt-flyout';
  * @export
  * @enum {number}
  *
+ * @fires taskClick - Fired when the user clicks a task
+ *
  * @cssprop --tasks-header-padding - {String} Tasks header padding
  * @cssprop --tasks-header-margin - {String} Tasks header margin
  * @cssprop --tasks-title-padding - {String} Tasks title padding
@@ -93,6 +95,56 @@ export enum TasksSource {
   todo
 }
 
+/**
+ * String resources for Mgt Tasks
+ *
+ * @export
+ * @interface TasksStringResource
+ */
+export interface TasksStringResource {
+  /**
+   * Self Assigned string
+   *
+   * @type {string}
+   * @memberof TasksStringResource
+   */
+  BASE_SELF_ASSIGNED: string;
+  /**
+   * Self Assigned Buckets string
+   *
+   * @type {string}
+   * @memberof TasksStringResource
+   */
+  BUCKETS_SELF_ASSIGNED: string;
+  /**
+   * Buckets not found string
+   *
+   * @type {string}
+   * @memberof TasksStringResource
+   */
+  BUCKET_NOT_FOUND: string;
+  /**
+   * Self Assigned Plans string
+   *
+   * @type {string}
+   * @memberof TasksStringResource
+   */
+  PLANS_SELF_ASSIGNED: string;
+  /**
+   * Plan not found string
+   *
+   * @type {string}
+   * @memberof TasksStringResource
+   */
+  PLAN_NOT_FOUND: string;
+}
+
+/*
+ * Filter function
+ */
+// tslint:disable-next-line: completed-docs
+export type TaskFilter = (task: PlannerTask | OutlookTask) => boolean;
+
 // Strings and Resources for different task contexts
 // tslint:disable-next-line: completed-docs
 const TASK_RES = {
@@ -131,6 +183,7 @@ export class MgtTasks extends MgtTemplatedComponent {
    * determines whether todo, or planner functionality for task component
    *
    * @readonly
+   * @type {TasksStringResource}
    * @memberof MgtTasks
    */
   public get res() {
@@ -256,7 +309,7 @@ export class MgtTasks extends MgtTemplatedComponent {
    *
    * @memberof MgtTasks
    */
-  public taskFilter: (task: PlannerTask | OutlookTask) => boolean;
+  public taskFilter: TaskFilter;
 
   @property() private _isNewTaskVisible: boolean;
   @property() private _newTaskBeingAdded: boolean;
