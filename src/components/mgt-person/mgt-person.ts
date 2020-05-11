@@ -66,7 +66,7 @@ export enum PersonViewType {
  * @cssprop --font-size - {Length} Font size
  * @cssprop --font-weight - {Length} Font weight
  * @cssprop --color - {Color} Color
- * @cssprop --line1-text-transform - {String} Line 1 text transform
+ * @cssprop --text-transform - {String} text transform
  * @cssprop --line2-font-size - {Length} Line 2 font size
  * @cssprop --line2-font-weight - {Length} Line 2 font weight
  * @cssprop --line2-color - {Color} Line 2 color
@@ -104,6 +104,7 @@ export class MgtPerson extends MgtTemplatedComponent {
   /**
    * determines if person component renders user-name
    * @type {boolean}
+   * @deprecated [This property will be removed in next major update. Use `view` instead]
    */
   @property({
     attribute: 'show-name',
@@ -114,6 +115,7 @@ export class MgtPerson extends MgtTemplatedComponent {
   /**
    * determines if person component renders email
    * @type {boolean}
+   * @deprecated [This property will be removed in next major update. Use `view` instead]
    */
   @property({
     attribute: 'show-email',
@@ -377,7 +379,7 @@ export class MgtPerson extends MgtTemplatedComponent {
 
     if (!personTemplate) {
       const detailsTemplate: TemplateResult = this.renderDetails(person);
-      const imageWithPresenceTemplate: TemplateResult = this.renderImageWithPresence(person, image, presence);
+      const imageWithPresenceTemplate: TemplateResult = this.renderAvatar(person, image, presence);
 
       personTemplate = html`
         <div class="person-root">
@@ -583,7 +585,7 @@ export class MgtPerson extends MgtTemplatedComponent {
    * @param
    * @memberof MgtPersonCard
    */
-  protected renderImageWithPresence(
+  protected renderAvatar(
     personDetails: IDynamicPerson,
     image: string,
     presence: MicrosoftGraphBeta.Presence
