@@ -9,6 +9,7 @@
 import * as GraphTypes from '@microsoft/microsoft-graph-types-beta';
 import { customElement, html, TemplateResult } from 'lit-element';
 import { getEmailFromGraphEntity } from '../../../../../graph/graph.people';
+import { TeamsHelper } from '../../../../../utils/TeamsHelper';
 import { BasePersonCardSection } from '../BasePersonCardSection';
 import { styles } from './mgt-person-card-contact-css';
 
@@ -186,7 +187,7 @@ export class MgtPersonCardContact extends BasePersonCardSection {
   protected renderContactPart(part: IContactPart): TemplateResult {
     const valueTemplate = part.onClick
       ? html`
-          <button class="part__link" @click=${(e: Event) => part.onClick(e)}>${part.value}</button>
+          <span class="part__link" @click=${(e: Event) => part.onClick(e)}>${part.value}</span>
         `
       : html`
           ${part.value}
@@ -198,6 +199,14 @@ export class MgtPersonCardContact extends BasePersonCardSection {
         <div class="part__details">
           <div class="part__title">${part.title}</div>
           <div class="part__value">${valueTemplate}</div>
+        </div>
+        <div class="part__copy">
+          <svg width="13" height="14" viewBox="0 0 13 14" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <path
+              d="M12.625 5.50293V14H3.875V11.375H0.375V0H6.24707L8.87207 2.625H9.74707L12.625 5.50293ZM10 5.25H11.1279L10 4.12207V5.25ZM3.875 2.625H7.62793L5.87793 0.875H1.25V10.5H3.875V2.625ZM11.75 6.125H9.125V3.5H4.75V13.125H11.75V6.125Z"
+              fill="black"
+            />
+          </svg>
         </div>
       </div>
     `;
@@ -214,6 +223,8 @@ export class MgtPersonCardContact extends BasePersonCardSection {
     if (!this.personDetails) {
       return;
     }
+
+    this.clearState();
 
     const userPerson = this.personDetails as GraphTypes.User;
     const personPerson = this.personDetails as GraphTypes.Person;
@@ -237,6 +248,19 @@ export class MgtPersonCardContact extends BasePersonCardSection {
     if (!chat) {
       return;
     }
+
+    const url = `https://teams.microsoft.com/l/chat/0/0?users=${chat}`;
+    const openWindow = () => window.open(url, '_blank');
+
+    if (TeamsHelper.isAvailable) {
+      TeamsHelper.executeDeepLink(url, (status: boolean) => {
+        if (!status) {
+          openWindow();
+        }
+      });
+    } else {
+      openWindow();
+    }
   }
 
   /**
@@ -247,8 +271,8 @@ export class MgtPersonCardContact extends BasePersonCardSection {
    */
   protected sendEmail(): void {
     const email = this._contactParts.email.value;
-    if (!email) {
-      return;
+    if (email) {
+      window.open('mailto:' + email, '_blank');
     }
   }
 
@@ -260,10 +284,9 @@ export class MgtPersonCardContact extends BasePersonCardSection {
    */
   protected sendCall(): void {
     const cellPhone = this._contactParts.cellPhone.value;
-    if (!cellPhone) {
-      return;
+    if (cellPhone) {
+      window.open('tel:' + cellPhone, '_blank');
     }
-    // TODO: Send call
   }
 
   /**
@@ -281,7 +304,7 @@ export class MgtPersonCardContact extends BasePersonCardSection {
 
   private clearState() {
     for (const key of Object.keys(this._contactParts)) {
-      this._contactParts[key] = null;
+      this._contactParts[key].value = null;
     }
   }
 }

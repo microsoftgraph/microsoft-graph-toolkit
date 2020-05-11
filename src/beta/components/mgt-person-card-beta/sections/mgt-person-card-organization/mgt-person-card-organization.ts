@@ -6,43 +6,12 @@
  */
 
 import { customElement, html, TemplateResult } from 'lit-element';
-import { IGraph } from '../../../../../IGraph';
 import { Providers } from '../../../../../Providers';
 import { ProviderState } from '../../../../../providers/IProvider';
 import { BetaGraph } from '../../../../BetaGraph';
 import { BasePersonCardSection } from '../BasePersonCardSection';
+import { getCoworkers, getManagers, IOrgMember } from './graph.organization';
 import { styles } from './mgt-person-card-organization-css';
-
-/**
- * Defines the data required to render an org member.
- *
- * @interface IOrgMember
- */
-interface IOrgMember {
-  // tslint:disable-next-line: completed-docs
-  id: string;
-  // tslint:disable-next-line: completed-docs
-  image: string;
-  // tslint:disable-next-line: completed-docs
-  displayName: string;
-  // tslint:disable-next-line: completed-docs
-  title: string;
-  // tslint:disable-next-line: completed-docs
-  department?: string;
-}
-
-/**
- * foo
- *
- * @export
- * @param {IGraph} graph
- * @param {string} userId
- * @returns {Promise<IOrgMember[]>}
- */
-export async function getCoworkers(graph: IGraph, userId: string): Promise<IOrgMember[]> {
-  const response = await graph.api(`users/${userId}/people`).get();
-  return response.value;
-}
 
 /**
  * foo
@@ -72,7 +41,7 @@ export class MgtPersonCardOrganization extends BasePersonCardSection {
     return 'Reports to';
   }
 
-  private _orgMembers: IOrgMember[];
+  private _managers: IOrgMember[];
   private _coworkers: IOrgMember[];
 
   /**
@@ -100,13 +69,15 @@ export class MgtPersonCardOrganization extends BasePersonCardSection {
    * @memberof MgtPersonCardOrganization
    */
   protected renderCompactView(): TemplateResult {
-    if (!this._orgMembers) {
-      return html`
-        <div>show shimmer here</div>
-      `;
+    if (this.isLoadingState) {
+      return null;
     }
 
-    const reportsTo = this._orgMembers[0];
+    if (!this._managers || !this._managers.length) {
+      return null;
+    }
+
+    const reportsTo = this._managers[0];
     return html`
       <div class="root compact">
         ${this.renderCoworker(reportsTo)}
@@ -122,10 +93,8 @@ export class MgtPersonCardOrganization extends BasePersonCardSection {
    * @memberof MgtPersonCardOrganization
    */
   protected renderFullView(): TemplateResult {
-    const orgMemberTemplates = this._orgMembers
-      ? this._orgMembers.map(orgMember => this.renderOrgMember(orgMember))
-      : [];
-
+    const managers = new Array(...this._managers);
+    const managerTemplates = managers ? managers.reverse().map(manager => this.renderManager(manager)) : [];
     const targetMemberTemplate = this.personDetails ? this.renderTargetMember() : null;
     const coworkerTemplates = this._coworkers
       ? this._coworkers.slice(0, 6).map(coworker => this.renderCoworker(coworker))
@@ -135,7 +104,7 @@ export class MgtPersonCardOrganization extends BasePersonCardSection {
       <div class="root">
         <div class="title">Organization</div>
         <div>
-          ${orgMemberTemplates} ${targetMemberTemplate}
+          ${managerTemplates} ${targetMemberTemplate}
         </div>
         <div class="divider"></div>
         <div class="subtitle">You work with</div>
@@ -154,10 +123,12 @@ export class MgtPersonCardOrganization extends BasePersonCardSection {
    * @returns {TemplateResult}
    * @memberof MgtPersonCardOrganization
    */
-  protected renderOrgMember(orgMember: IOrgMember): TemplateResult {
+  protected renderManager(orgMember: IOrgMember): TemplateResult {
     return html`
       <div class="org-member">
-        <div class="org-member__image">${orgMember.image}</div>
+        <div class="org-member__image">
+          <mgt-person .userId=${orgMember.id} avatar-size="large"></mgt-person>
+        </div>
         <div class="org-member__details">
           <div class="org-member__name">${orgMember.displayName}</div>
           <div class="org-member__title">${orgMember.title}</div>
@@ -237,92 +208,10 @@ export class MgtPersonCardOrganization extends BasePersonCardSection {
     }
 
     const graph = provider.graph.forComponent(this);
-    const betaGraph = BetaGraph.fromGraph(graph);
-
-    // TODO: Get real data
     const userId = this.personDetails.id;
-
-    this._orgMembers = [];
+    this._managers = await getManagers(graph, userId);
     this._coworkers = await getCoworkers(graph, userId);
 
-    this.injectDummyData();
-
     this.requestUpdate();
-  }
-
-  private injectDummyData() {
-    const orgMembers: IOrgMember[] = [
-      {
-        department: 'EPIC Mgmt RnD',
-        displayName: 'Jessica Smith',
-        id: '',
-        image: '',
-        title: 'SR PM MANAGER'
-      },
-      {
-        department: 'EPIC Mgmt RnD',
-        displayName: 'Jessica Smith',
-        id: '',
-        image: '',
-        title: 'SR PM MANAGER'
-      },
-      {
-        department: 'EPIC Mgmt RnD',
-        displayName: 'Jessica Smith',
-        id: '',
-        image: '',
-        title: 'SR PM MANAGER'
-      },
-      {
-        department: 'EPIC Mgmt RnD',
-        displayName: 'Jessica Smith',
-        id: '',
-        image: '',
-        title: 'SR PM MANAGER'
-      },
-      {
-        department: 'EPIC Mgmt RnD',
-        displayName: 'Jessica Smith',
-        id: '',
-        image: '',
-        title: 'SR PM MANAGER'
-      }
-    ];
-
-    const coworkers: IOrgMember[] = [
-      {
-        displayName: 'Jessica Smith',
-        id: '',
-        image: '',
-        title: 'SR PM MANAGER'
-      },
-      {
-        displayName: 'Jessica Smith',
-        id: '',
-        image: '',
-        title: 'SR PM MANAGER'
-      },
-      {
-        displayName: 'Jessica Smith',
-        id: '',
-        image: '',
-        title: 'SR PM MANAGER'
-      },
-      {
-        displayName: 'Jessica Smith',
-        id: '',
-        image: '',
-        title: 'SR PM MANAGER'
-      },
-      {
-        displayName: 'Jessica Smith',
-        id: '',
-        image: '',
-        title: 'SR PM MANAGER'
-      }
-    ];
-
-    this._orgMembers = orgMembers;
-    // this._coworkers = coworkers;
   }
 }

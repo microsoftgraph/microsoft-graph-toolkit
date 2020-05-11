@@ -12,22 +12,21 @@
   position: relative;
 
   .root {
-    padding: 20px;
-
-    &.compact {
-      padding: 0;
-    }
-
     .title {
       font-size: 14px;
       font-weight: 600;
       color: #323130;
-      margin-bottom: 24px;
+      margin: 20px 20px 12px 20px;
     }
 
     .file {
       display: flex;
-      margin-bottom: 10px;
+      padding: 5px 20px;
+
+      &:hover {
+        background-color: #f3f2f1;
+        cursor: pointer;
+      }
 
       &:last-child {
         margin-bottom: unset;

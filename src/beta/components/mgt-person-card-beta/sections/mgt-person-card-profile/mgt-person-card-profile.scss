@@ -13,14 +13,14 @@
 }
 
 .root {
-  padding: 20px 20px 0 20px;
+  padding: 0 20px;
 }
 
 .title {
   font-size: 14px;
   font-weight: 600;
   color: #323130;
-  margin-bottom: 24px;
+  margin: 20px 0 12px 0px;
 }
 
 .section__title {
@@ -59,6 +59,12 @@ section:not(:last-child) {
   margin-right: 10px;
   margin-top: 10px;
   color: rgba(50, 49, 48, 0.7);
+
+  &:hover {
+    background-color: #e1dfdd;
+    color: rgba(50, 49, 48, 0.9);
+    cursor: pointer;
+  }
 }
 
 .token-list__item:last-child {

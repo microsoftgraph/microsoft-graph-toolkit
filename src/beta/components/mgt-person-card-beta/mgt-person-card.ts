@@ -237,9 +237,10 @@ export class MgtPersonCardBeta extends MgtTemplatedComponent {
         </div>
         <div class="details">
           ${personNameTemplate} ${personTitleTemplate} ${personSubtitleTemplate}
-          <div class="base-icons">
-            ${contactIconsTemplate}
-          </div>
+        </div>
+        <div></div>
+        <div class="base-icons">
+          ${contactIconsTemplate}
         </div>
       `;
     }
@@ -353,43 +354,43 @@ export class MgtPersonCardBeta extends MgtTemplatedComponent {
 
     person = person || this.personDetails;
     const userPerson = person as MicrosoftGraph.User;
-    const personPerson = person as MicrosoftGraph.Person;
-
-    // Chat
-    let chat: TemplateResult;
-    if (userPerson.userPrincipalName) {
-      chat = html`
-        <div class="icon" @click=${() => this.chatUser()}>
-          ${getSvg(SvgIcon.Chat, '#666666')}
-        </div>
-      `;
-    }
 
     // Email
     let email: TemplateResult;
     if (getEmailFromGraphEntity(person)) {
       email = html`
         <div class="icon" @click=${() => this.emailUser()}>
-          ${getSvg(SvgIcon.Email, '#666666')}
+          <svg width="14" height="10" viewBox="0 0 14 10" xmlns="http://www.w3.org/2000/svg">
+            <path
+              fill-rule="evenodd"
+              clip-rule="evenodd"
+              d="M11.8473 1H2.04886L6.47364 4.18916C6.64273 4.31103 6.86969 4.31522 7.04316 4.19968L11.8473 1ZM1 1.47671V9H13V1.43376L7.59749 5.03198C7.07706 5.3786 6.39621 5.36601 5.88894 5.0004L1 1.47671ZM0 1C0 0.447715 0.447715 0 1 0H13C13.5523 0 14 0.447715 14 1V9C14 9.55228 13.5523 10 13 10H1C0.447716 10 0 9.55229 0 9V1Z"
+            />
+          </svg>
+          <span>Send email</span>
         </div>
       `;
     }
 
-    // Phone
-    let phone: TemplateResult;
-    if (
-      (userPerson.businessPhones && userPerson.businessPhones.length > 0) ||
-      (personPerson.phones && personPerson.phones.length > 0)
-    ) {
-      phone = html`
-        <div class="icon" @click=${() => this.callUser()}>
-          ${getSvg(SvgIcon.Phone, '#666666')}
+    // Chat
+    let chat: TemplateResult;
+    if (userPerson.userPrincipalName) {
+      chat = html`
+        <div class="icon" @click=${() => this.chatUser()}>
+          <svg width="13" height="13" viewBox="0 0 13 13" xmlns="http://www.w3.org/2000/svg">
+            <path
+              fill-rule="evenodd"
+              clip-rule="evenodd"
+              d="M9.5781 8.26403L9.57811 8.26403C9.68611 8.29867 9.8455 8.36364 10.0125 8.50479C10.1405 8.61294 10.2409 8.73883 10.3235 8.86465L11.9634 10.9944C11.9701 10.9924 11.9753 10.9904 11.9785 10.9889C11.9841 10.9864 11.9918 10.9823 12 10.9768V1.32284C12 1.18078 11.8731 1 11.6207 1H1.37926C1.12692 1 1 1.18078 1 1.32284V7.37377C1 7.45357 1.01415 7.49036 1.02102 7.50507C1.02778 7.51955 1.04342 7.54689 1.09159 7.58705L1.10485 7.5981L1.11771 7.6096C1.13526 7.62529 1.21707 7.69076 1.33937 7.76027C1.46122 7.82952 1.58119 7.87864 1.67944 7.89966L1.69102 7.90214L1.691 7.9022C3.32106 8.27116 6.2626 8.27688 8.67896 8.18036L8.69908 8.17955L8.71921 8.17956L8.7627 8.17954C9.01362 8.17932 9.31313 8.17907 9.5781 8.26403ZM11.2376 11.6908L9.50506 9.44081C9.39493 9.26422 9.32445 9.23285 9.27276 9.21627C9.17534 9.18504 9.0401 9.17966 8.71888 9.17956C6.31879 9.27543 3.24831 9.27999 1.47024 8.87753C1.01314 8.77974 0.600449 8.48852 0.451238 8.35513C0.15593 8.10893 0 7.78958 0 7.37377V1.32284C0 0.593147 0.610664 0 1.37926 0H11.6207C12.3893 0 13 0.593147 13 1.32284V11.0441C13 11.4686 12.6828 11.7689 12.3881 11.9012C12.1048 12.0284 11.673 12.0728 11.3387 11.7993C11.3003 11.7679 11.2678 11.7301 11.2376 11.6908ZM3 3.5C3 3.22386 3.22386 3 3.5 3H9.5C9.77614 3 10 3.22386 10 3.5C10 3.77614 9.77614 4 9.5 4H3.5C3.22386 4 3 3.77614 3 3.5ZM3.5 5C3.22386 5 3 5.22386 3 5.5C3 5.77614 3.22386 6 3.5 6H6.5C6.77614 6 7 5.77614 7 5.5C7 5.22386 6.77614 5 6.5 5H3.5Z"
+            />
+          </svg>
+          <span>Start chat</span>
         </div>
       `;
     }
 
     return html`
-      ${chat} ${email} ${phone}
+      ${email} ${chat}
     `;
   }
 
@@ -439,19 +440,6 @@ export class MgtPersonCardBeta extends MgtTemplatedComponent {
         ${currentSectionTemplate}
       </div>
     `;
-    /*
-    const contactDetailsTemplate = this.renderContactDetails(person);
-    const additionalDetailsTemplate = this.renderAdditionalDetails(person);
-    const sectionDivider = additionalDetailsTemplate
-      ? html`
-          <div class="section-divider"></div>
-        `
-      : null;
-
-    return html`
-      ${contactDetailsTemplate} ${sectionDivider} ${additionalDetailsTemplate}
-    `;
-    */
   }
 
   /**

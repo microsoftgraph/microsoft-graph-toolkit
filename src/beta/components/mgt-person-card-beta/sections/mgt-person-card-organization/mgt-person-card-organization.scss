@@ -12,11 +12,7 @@
   position: relative;
 
   .root {
-    padding: 20px;
-
     &.compact {
-      padding: 0;
-
       .coworker {
         margin: 0 0 6px 0;
 
@@ -40,12 +36,13 @@
       font-size: 14px;
       font-weight: 600;
       color: #323130;
-      margin-bottom: 24px;
+      margin: 20px;
     }
 
     .subtitle {
       color: #797775;
       font-size: 14px;
+      margin: 0 20px 8px 20px;
     }
 
     .divider {
@@ -54,6 +51,8 @@
       height: 1px;
       margin-top: 26px;
       margin-bottom: 18px;
+      margin-left: 20px;
+      margin-right: 20px;
     }
 
     .org-member {
@@ -64,6 +63,12 @@
       padding: 12px;
       display: flex;
       align-items: center;
+      margin-left: 20px;
+      margin-right: 20px;
+
+      &:hover {
+        background-color: #f3f2f1;
+      }
 
       &:last-child {
         background-color: #f5faff;
@@ -105,7 +110,12 @@
 
     .coworker {
       display: flex;
-      margin-top: 20px;
+      padding: 10px 20px;
+
+      &:hover {
+        cursor: pointer;
+        background-color: #f3f2f1;
+      }
 
       .coworker__image {
         height: 46px;

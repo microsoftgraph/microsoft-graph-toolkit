@@ -102,7 +102,9 @@ export class MgtPersonCardProfile extends BasePersonCardSection {
   protected renderCompactView(): TemplateResult {
     this.initPostRenderOperations();
     return html`
-      ${this.renderSkills()} ${this.renderProfessionalInterests()} ${this.renderBirthday()}
+      <div class="root">
+        ${this.renderSkills()} ${this.renderProfessionalInterests()} ${this.renderBirthday()}
+      </div>
     `;
   }
 

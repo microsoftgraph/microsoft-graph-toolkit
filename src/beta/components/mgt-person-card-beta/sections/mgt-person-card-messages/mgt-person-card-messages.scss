@@ -12,24 +12,23 @@
   position: relative;
 
   .root {
-    padding: 20px;
-
-    &.compact {
-      padding: 0;
-    }
-
     .title {
       font-size: 14px;
       font-weight: 600;
       color: #323130;
-      margin-bottom: 24px;
+      margin: 20px 20px 12px 20px;
     }
 
     .message {
-      margin-bottom: 14px;
+      padding: 8px 20px;
       display: flex;
       align-items: center;
       justify-content: space-between;
+
+      &:hover {
+        background-color: #f3f2f1;
+        cursor: pointer;
+      }
 
       &:last-child {
         margin-bottom: unset;

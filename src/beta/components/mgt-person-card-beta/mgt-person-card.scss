@@ -27,17 +27,20 @@ $person-card-background-color: var(--person-card-background-color, #ffffff);
   overflow: hidden;
 
   .person-details-container {
-    display: flex;
+    display: grid;
+    grid-template-rows: auto 1fr;
+    grid-template-columns: auto 1fr;
     padding: 18px 14px;
 
     mgt-person.person-image {
       --avatar-size-s: 75px;
+      margin-right: 14px;
     }
 
     .details {
-      margin-left: 14px;
       line-height: 1.15;
-      display: grid;
+      display: flex;
+      flex-direction: column;
       position: relative;
       overflow: hidden;
       text-overflow: ellipse;
@@ -71,21 +74,37 @@ $person-card-background-color: var(--person-card-background-color, #ffffff);
         font-size: $person-card-subtitle-font-size;
         color: $person-card-subtitle-color;
       }
+    }
 
-      .base-icons {
-        margin-top: 14px;
+    .base-icons {
+      display: flex;
+      -webkit-align-items: center;
+      align-items: center;
+      max-width: 120px;
+
+      .icon {
+        margin-top: 8px;
         display: flex;
-        -webkit-align-items: center;
         align-items: center;
-        max-width: 120px;
+        cursor: pointer;
+        font-size: 12px;
+        white-space: nowrap;
 
-        .icon {
-          margin: 0 22px 0 0;
-          cursor: pointer;
+        &:not(:last-child) {
+          margin-right: 20px;
         }
-        .icon:hover {
-          opacity: 0.6;
+
+        svg {
+          fill: #605e5c;
         }
+
+        span {
+          margin-left: 8px;
+          color: #0078d4;
+        }
+      }
+      .icon:hover {
+        color: #004578;
       }
     }
   }
@@ -231,15 +250,13 @@ $person-card-background-color: var(--person-card-background-color, #ffffff);
 
       &:hover {
         svg {
-          fill: #0078d4;
+          fill: #000000;
         }
       }
     }
   }
 
   .sections {
-    padding: 0 20px;
-
     .section {
       padding: 14px 0;
       display: flex;
@@ -253,6 +270,7 @@ $person-card-background-color: var(--person-card-background-color, #ffffff);
       .section__header {
         display: flex;
         flex-direction: row;
+        padding: 0 20px;
       }
 
       .section__title {
@@ -267,7 +285,11 @@ $person-card-background-color: var(--person-card-background-color, #ffffff);
         font-size: 12px;
         font-weight: 600;
         align-self: center;
-        cursor: pointer;
+
+        &:hover {
+          cursor: pointer;
+          color: #004578;
+        }
       }
 
       .section__content {
