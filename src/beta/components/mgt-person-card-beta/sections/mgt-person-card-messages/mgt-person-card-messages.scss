@@ -25,7 +25,7 @@
       margin-bottom: 24px;
     }
 
-    .email {
+    .message {
       margin-bottom: 14px;
       display: flex;
       align-items: center;
@@ -35,20 +35,20 @@
         margin-bottom: unset;
       }
 
-      .email__detail {
+      .message__detail {
         min-width: 0;
 
-        .email__subject {
+        .message__subject {
           font-size: 14px;
           color: #323130;
         }
 
-        .email__from {
+        .message__from {
           font-size: 12px;
           color: #201f1e;
         }
 
-        .email__message {
+        .message__message {
           font-size: 12px;
           color: #797775;
         }
@@ -60,7 +60,7 @@
         }
       }
 
-      .email__date {
+      .message__date {
         font-size: 12px;
         color: #797775;
         margin-left: 10px;

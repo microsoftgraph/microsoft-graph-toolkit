@@ -6,6 +6,7 @@
  */
 
 import { customElement, html, TemplateResult } from 'lit-element';
+import { IGraph } from '../../../../../IGraph';
 import { Providers } from '../../../../../Providers';
 import { ProviderState } from '../../../../../providers/IProvider';
 import { BetaGraph } from '../../../../BetaGraph';
@@ -18,11 +19,29 @@ import { styles } from './mgt-person-card-organization-css';
  * @interface IOrgMember
  */
 interface IOrgMember {
+  // tslint:disable-next-line: completed-docs
   id: string;
+  // tslint:disable-next-line: completed-docs
   image: string;
+  // tslint:disable-next-line: completed-docs
   displayName: string;
+  // tslint:disable-next-line: completed-docs
   title: string;
+  // tslint:disable-next-line: completed-docs
   department?: string;
+}
+
+/**
+ * foo
+ *
+ * @export
+ * @param {IGraph} graph
+ * @param {string} userId
+ * @returns {Promise<IOrgMember[]>}
+ */
+export async function getCoworkers(graph: IGraph, userId: string): Promise<IOrgMember[]> {
+  const response = await graph.api(`users/${userId}/people`).get();
+  return response.value;
 }
 
 /**
@@ -108,7 +127,9 @@ export class MgtPersonCardOrganization extends BasePersonCardSection {
       : [];
 
     const targetMemberTemplate = this.personDetails ? this.renderTargetMember() : null;
-    const coworkerTemplates = this._coworkers ? this._coworkers.map(coworker => this.renderCoworker(coworker)) : [];
+    const coworkerTemplates = this._coworkers
+      ? this._coworkers.slice(0, 6).map(coworker => this.renderCoworker(coworker))
+      : [];
 
     return html`
       <div class="root">
@@ -185,7 +206,9 @@ export class MgtPersonCardOrganization extends BasePersonCardSection {
   protected renderCoworker(coworker: IOrgMember): TemplateResult {
     return html`
       <div class="coworker">
-        <div class="coworker__image"></div>
+        <div class="coworker__image">
+          <mgt-person .userId=${coworker.id} avatar-size="large"></mgt-person>
+        </div>
         <div class="coworker__details">
           <div class="coworker__name">${coworker.displayName}</div>
           <div class="coworker__title">${coworker.title}</div>
@@ -217,9 +240,10 @@ export class MgtPersonCardOrganization extends BasePersonCardSection {
     const betaGraph = BetaGraph.fromGraph(graph);
 
     // TODO: Get real data
+    const userId = this.personDetails.id;
 
     this._orgMembers = [];
-    this._coworkers = [];
+    this._coworkers = await getCoworkers(graph, userId);
 
     this.injectDummyData();
 
@@ -299,6 +323,6 @@ export class MgtPersonCardOrganization extends BasePersonCardSection {
     ];
 
     this._orgMembers = orgMembers;
-    this._coworkers = coworkers;
+    // this._coworkers = coworkers;
   }
 }

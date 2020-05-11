@@ -21,8 +21,8 @@ import { TeamsHelper } from '../../../utils/TeamsHelper';
 import { styles } from './mgt-person-card-css';
 import { BasePersonCardSection } from './sections/BasePersonCardSection';
 import { MgtPersonCardContact } from './sections/mgt-person-card-contact/mgt-person-card-contact';
-import { MgtPersonCardEmails } from './sections/mgt-person-card-emails/mgt-person-card-emails';
 import { MgtPersonCardFiles } from './sections/mgt-person-card-files/mgt-person-card-files';
+import { MgtPersonCardMessages } from './sections/mgt-person-card-messages/mgt-person-card-messages';
 import { MgtPersonCardOrganization } from './sections/mgt-person-card-organization/mgt-person-card-organization';
 import './sections/mgt-person-card-profile/mgt-person-card-profile';
 import { MgtPersonCardProfile } from './sections/mgt-person-card-profile/mgt-person-card-profile';
@@ -151,7 +151,7 @@ export class MgtPersonCardBeta extends MgtTemplatedComponent {
     this.sections = [
       new MgtPersonCardContact(),
       new MgtPersonCardOrganization(),
-      new MgtPersonCardEmails(),
+      new MgtPersonCardMessages(),
       new MgtPersonCardFiles(),
       new MgtPersonCardProfile()
     ];

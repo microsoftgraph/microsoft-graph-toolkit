@@ -6,35 +6,22 @@
  */
 
 import { customElement, html, TemplateResult } from 'lit-element';
+import { getMe } from '../../../../../graph/graph.user';
 import { Providers } from '../../../../../Providers';
 import { ProviderState } from '../../../../../providers/IProvider';
-import { BetaGraph } from '../../../../BetaGraph';
 import { BasePersonCardSection } from '../BasePersonCardSection';
-import { styles } from './mgt-person-card-emails-css';
-
-/**
- * foo
- */
-interface IEmail {
-  // tslint:disable-next-line: completed-docs
-  receivedDateTime: Date;
-  // tslint:disable-next-line: completed-docs
-  subject: string;
-  // tslint:disable-next-line: completed-docs
-  from: { emailAddress: { address: string; name: string } };
-  // tslint:disable-next-line: completed-docs
-  bodyPreview: string;
-}
+import { getMessages, getMessagesWithUser, IMessage } from './graph.messages';
+import { styles } from './mgt-person-card-messages-css';
 
 /**
  * foo
  *
  * @export
- * @class MgtPersonCardEmails
+ * @class MgtPersonCardMessages
  * @extends {MgtTemplatedComponent}
  */
-@customElement('mgt-person-card-emails')
-export class MgtPersonCardEmails extends BasePersonCardSection {
+@customElement('mgt-person-card-messages')
+export class MgtPersonCardMessages extends BasePersonCardSection {
   /**
    * Array of styles to apply to the element. The styles should be defined
    * using the `css` tag function.
@@ -48,19 +35,19 @@ export class MgtPersonCardEmails extends BasePersonCardSection {
    *
    * @readonly
    * @type {string}
-   * @memberof MgtPersonCardEmails
+   * @memberof MgtPersonCardMessages
    */
   public get displayName(): string {
     return 'Emails';
   }
 
-  private _emails: IEmail[];
+  private _messages: IMessage[];
 
   /**
    * foo
    *
    * @returns {TemplateResult}
-   * @memberof MgtPersonCardEmails
+   * @memberof MgtPersonCardMessages
    */
   public renderIcon(): TemplateResult {
     return html`
@@ -78,14 +65,16 @@ export class MgtPersonCardEmails extends BasePersonCardSection {
    * foo
    *
    * @returns {TemplateResult}
-   * @memberof MgtPersonCardEmails
+   * @memberof MgtPersonCardMessages
    */
   public renderCompactView(): TemplateResult {
-    const emailTemplates = this._emails ? this._emails.slice(0, 3).map(email => this.renderEmail(email)) : [];
+    const messageTemplates = this._messages
+      ? this._messages.slice(0, 3).map(message => this.renderMessage(message))
+      : [];
 
     return html`
       <div class="root compact">
-        ${emailTemplates}
+        ${messageTemplates}
       </div>
     `;
   }
@@ -95,15 +84,17 @@ export class MgtPersonCardEmails extends BasePersonCardSection {
    *
    * @protected
    * @returns {TemplateResult}
-   * @memberof MgtPersonCardEmails
+   * @memberof MgtPersonCardMessages
    */
   protected renderFullView(): TemplateResult {
-    const emailTemplates = this._emails ? this._emails.slice(0, 5).map(email => this.renderEmail(email)) : [];
+    const messageTemplates = this._messages
+      ? this._messages.slice(0, 5).map(message => this.renderMessage(message))
+      : [];
 
     return html`
       <div class="root">
         <div class="title">Emails</div>
-        ${emailTemplates}
+        ${messageTemplates}
       </div>
     `;
   }
@@ -112,19 +103,19 @@ export class MgtPersonCardEmails extends BasePersonCardSection {
    * foo
    *
    * @protected
-   * @param {IEmail} email
+   * @param {IMessage} message
    * @returns {TemplateResult}
-   * @memberof MgtPersonCardEmails
+   * @memberof MgtPersonCardMessages
    */
-  protected renderEmail(email: IEmail): TemplateResult {
+  protected renderMessage(message: IMessage): TemplateResult {
     return html`
-      <div class="email">
-        <div class="email__detail">
-          <div class="email__subject">${email.subject}</div>
-          <div class="email__from">${email.from.emailAddress.name}</div>
-          <div class="email__message">${email.bodyPreview}</div>
+      <div class="message">
+        <div class="message__detail">
+          <div class="message__subject">${message.subject}</div>
+          <div class="message__from">${message.from.emailAddress.name}</div>
+          <div class="message__message">${message.bodyPreview}</div>
         </div>
-        <div class="email__date">${this.getDisplayDate(new Date(email.receivedDateTime))}</div>
+        <div class="message__date">${this.getDisplayDate(new Date(message.receivedDateTime))}</div>
       </div>
     `;
   }
@@ -133,7 +124,7 @@ export class MgtPersonCardEmails extends BasePersonCardSection {
    *
    * @protected
    * @returns {Promise<void>}
-   * @memberof MgtPersonCardEmails
+   * @memberof MgtPersonCardMessages
    */
   protected async loadState(): Promise<void> {
     const provider = Providers.globalProvider;
@@ -149,19 +140,13 @@ export class MgtPersonCardEmails extends BasePersonCardSection {
 
     const graph = provider.graph.forComponent(this);
 
-    const me = await graph.api('/me').get();
+    const me = await getMe(graph);
     const emailAddress = me.mail;
 
     const userId = this.personDetails.id;
-    if (me.id === userId) {
-      const response = await graph.api(`/users/${userId}/messages`).get();
-      this._emails = response.value;
-    } else {
-      const response = await graph
-        .api(`/users/${userId}/messages?$filter=(from/emailAddress/address) eq '${emailAddress}'`)
-        .get();
-      this._emails = response.value;
-    }
+
+    this._messages =
+      me.id === userId ? await getMessages(graph, userId) : await getMessagesWithUser(graph, userId, emailAddress);
 
     this.requestUpdate();
   }

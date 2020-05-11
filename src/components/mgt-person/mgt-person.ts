@@ -694,10 +694,11 @@ export class MgtPerson extends MgtTemplatedComponent {
     } else if (this.userId || this.personQuery === 'me') {
       // Use userId or 'me' query to get the person and image
       const person = await getUserWithPhoto(graph, this.userId);
-
-      this.personDetails = person;
-      this.personImage = this.getImage();
-      this.personDetails.personImage = this.personImage;
+      if (person) {
+        this.personDetails = person;
+        this.personImage = this.getImage();
+        this.personDetails.personImage = this.personImage;
+      }
     } else if (this.personQuery) {
       // Use the personQuery to find our person.
       const people = await findPeople(graph, this.personQuery, 1);
