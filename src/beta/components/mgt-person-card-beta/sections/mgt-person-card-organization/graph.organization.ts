@@ -41,7 +41,9 @@ export async function getManagers(graph: IGraph, userId: string): Promise<IOrgMe
       managers.push(manager);
       manager = await getManager(graph, manager.id);
     }
-  } catch {}
+  } catch {
+    // no-op
+  }
   return managers;
 }
 
