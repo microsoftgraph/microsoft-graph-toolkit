@@ -148,13 +148,21 @@ export class MgtPersonCardEmails extends BasePersonCardSection {
     }
 
     const graph = provider.graph.forComponent(this);
-    const betaGraph = BetaGraph.fromGraph(graph);
+
+    const me = await graph.api('/me').get();
+    const emailAddress = me.mail;
 
     const userId = this.personDetails.id;
-    const response = await betaGraph.api(`/users/${userId}/messages`).get();
-    const emails = response.value;
+    if (me.id === userId) {
+      const response = await graph.api(`/users/${userId}/messages`).get();
+      this._emails = response.value;
+    } else {
+      const response = await graph
+        .api(`/users/${userId}/messages?$filter=(from/emailAddress/address) eq '${emailAddress}'`)
+        .get();
+      this._emails = response.value;
+    }
 
-    this._emails = emails;
     this.requestUpdate();
   }
 
