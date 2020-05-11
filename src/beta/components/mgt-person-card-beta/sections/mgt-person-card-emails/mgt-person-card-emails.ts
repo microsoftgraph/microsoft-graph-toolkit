@@ -5,7 +5,7 @@
  * -------------------------------------------------------------------------------------------
  */
 
-import { customElement, html, property, TemplateResult } from 'lit-element';
+import { customElement, html, TemplateResult } from 'lit-element';
 import { Providers } from '../../../../../Providers';
 import { ProviderState } from '../../../../../providers/IProvider';
 import { BetaGraph } from '../../../../BetaGraph';
@@ -17,13 +17,13 @@ import { styles } from './mgt-person-card-emails-css';
  */
 interface IEmail {
   // tslint:disable-next-line: completed-docs
-  date: string;
+  receivedDateTime: Date;
   // tslint:disable-next-line: completed-docs
   subject: string;
   // tslint:disable-next-line: completed-docs
-  from: string;
+  from: { emailAddress: { address: string; name: string } };
   // tslint:disable-next-line: completed-docs
-  message: string;
+  bodyPreview: string;
 }
 
 /**
@@ -98,7 +98,7 @@ export class MgtPersonCardEmails extends BasePersonCardSection {
    * @memberof MgtPersonCardEmails
    */
   protected renderFullView(): TemplateResult {
-    const emailTemplates = this._emails ? this._emails.map(email => this.renderEmail(email)) : [];
+    const emailTemplates = this._emails ? this._emails.slice(0, 5).map(email => this.renderEmail(email)) : [];
 
     return html`
       <div class="root">
@@ -121,14 +121,13 @@ export class MgtPersonCardEmails extends BasePersonCardSection {
       <div class="email">
         <div class="email__detail">
           <div class="email__subject">${email.subject}</div>
-          <div class="email__from">${email.from}</div>
-          <div class="email__message">${email.message}</div>
+          <div class="email__from">${email.from.emailAddress.name}</div>
+          <div class="email__message">${email.bodyPreview}</div>
         </div>
-        <div class="email__date">${email.date}</div>
+        <div class="email__date">${this.getDisplayDate(new Date(email.receivedDateTime))}</div>
       </div>
     `;
   }
-
   /**
    * load state into the component
    *
@@ -151,39 +150,18 @@ export class MgtPersonCardEmails extends BasePersonCardSection {
     const graph = provider.graph.forComponent(this);
     const betaGraph = BetaGraph.fromGraph(graph);
 
-    // const userId = this.personDetails.id;
-    // const profile = await getProfile(betaGraph, userId);
+    const userId = this.personDetails.id;
+    const response = await betaGraph.api(`/users/${userId}/messages`).get();
+    const emails = response.value;
 
-    this._emails = [];
-    this.injectDummyData();
-
+    this._emails = emails;
     this.requestUpdate();
   }
 
-  private injectDummyData(): void {
-    this._emails.push({
-      date: '1:36 PM',
-      from: 'Dan Rosenstein',
-      message: 'Follow the white rabbit.',
-      subject: 'RE: Important message from the future'
-    });
-    this._emails.push({
-      date: '1:36 PM',
-      from: 'Dan Rosenstein',
-      message: 'This message is loooooooooooooooooooooooooooooooooooooooooooong.',
-      subject: 'RE: Important message from the future'
-    });
-    this._emails.push({
-      date: '1:36 PM',
-      from: 'Dan Rosenstein',
-      message: 'Follow the white rabbit.',
-      subject: 'RE: Important message from the future. You will not even believe it, it is so amazing. wow'
-    });
-    this._emails.push({
-      date: '1:36 PM',
-      from: 'Dan Rosenstein',
-      message: 'Follow the white rabbit.',
-      subject: 'RE: Important message from the future'
+  private getDisplayDate(date: Date): string {
+    return date.toLocaleString('default', {
+      day: 'numeric',
+      month: 'long'
     });
   }
 }
