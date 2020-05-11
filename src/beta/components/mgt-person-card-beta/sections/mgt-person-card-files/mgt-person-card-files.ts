@@ -8,31 +8,9 @@
 import { customElement, html, TemplateResult } from 'lit-element';
 import { Providers } from '../../../../../Providers';
 import { ProviderState } from '../../../../../providers/IProvider';
-import { BetaGraph } from '../../../../BetaGraph';
 import { BasePersonCardSection } from '../BasePersonCardSection';
+import { getSharedFiles, IFile } from './graph.files';
 import { styles } from './mgt-person-card-files-css';
-
-/**
- * foo
- */
-enum IconType {
-  // tslint:disable-next-line: completed-docs
-  Word,
-  // tslint:disable-next-line: completed-docs
-  PowerPoint
-}
-
-/**
- * foo
- */
-interface IFile {
-  // tslint:disable-next-line: completed-docs
-  iconType: IconType;
-  // tslint:disable-next-line: completed-docs
-  fileName: string;
-  // tslint:disable-next-line: completed-docs
-  lastModified: Date;
-}
 
 /**
  * foo
@@ -155,49 +133,14 @@ export class MgtPersonCardFiles extends BasePersonCardSection {
       return;
     }
 
-    // const graph = provider.graph.forComponent(this);
-    // const betaGraph = BetaGraph.fromGraph(graph);
-
-    this._files = [];
-    this.injectDummyData();
+    const graph = provider.graph.forComponent(this);
+    const userId = this.personDetails.id;
+    this._files = await getSharedFiles(graph, userId);
 
     this.requestUpdate();
   }
 
   private formatDate(date: Date): string {
     return `${date.getMonth() + 1}/${date.getDate()}/${date.getFullYear()}`;
-  }
-
-  private injectDummyData(): void {
-    this._files.push({
-      fileName: 'EPIC PAX Status _ Partners - Analytics - Essential eXperiences',
-      iconType: IconType.Word,
-      lastModified: new Date(2019, 11, 3)
-    });
-    this._files.push({
-      fileName: 'PAX MAX M365 Rampup',
-      iconType: IconType.PowerPoint,
-      lastModified: new Date(2018, 10, 27)
-    });
-    this._files.push({
-      fileName: 'EPIC PAX Status _ Partners - Analytics - Essential eXperiences',
-      iconType: IconType.Word,
-      lastModified: new Date(2019, 11, 3)
-    });
-    this._files.push({
-      fileName: 'PAX MAX M365 Rampup',
-      iconType: IconType.PowerPoint,
-      lastModified: new Date(2018, 10, 27)
-    });
-    this._files.push({
-      fileName: 'EPIC PAX Status _ Partners - Analytics - Essential eXperiences',
-      iconType: IconType.Word,
-      lastModified: new Date(2019, 11, 3)
-    });
-    this._files.push({
-      fileName: 'PAX MAX M365 Rampup',
-      iconType: IconType.PowerPoint,
-      lastModified: new Date(2018, 10, 27)
-    });
   }
 }
