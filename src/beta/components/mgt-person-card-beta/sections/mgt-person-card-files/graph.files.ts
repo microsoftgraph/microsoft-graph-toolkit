@@ -29,6 +29,7 @@ export interface IFile {
   lastModified: Date;
 }
 
+// tslint:disable-next-line: completed-docs
 export async function getSharedFiles(graph: IGraph, userId: string): Promise<any> {
   return getDummyData();
 }
