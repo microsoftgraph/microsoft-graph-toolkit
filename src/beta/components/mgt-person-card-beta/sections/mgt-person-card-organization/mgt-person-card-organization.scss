@@ -14,11 +14,12 @@
   .root {
     &.compact {
       .coworker {
-        margin: 0 0 6px 0;
-
         .coworker__image {
           height: 40px;
           width: 40px;
+          border-radius: 40px;
+          --avatar-size: 40px;
+          --avatar-size-s: 40px;
           margin-right: 12px;
         }
 
@@ -75,11 +76,9 @@
         border-color: #3078d0;
       }
 
-      .org-member__image {
-        height: 48px;
-        width: 48px;
-        border-radius: 48px;
-        background-color: #e8e8e8;
+      .org-member__image mgt-person {
+        --avatar-size: 48px;
+        --avatar-size-s: 48px;
         margin-right: 8px;
       }
 
@@ -121,6 +120,8 @@
       .coworker__image {
         height: 46px;
         width: 46px;
+        --avatar-size: 46px;
+        --avatar-size-s: 46px;
         border-radius: 46px;
         margin-right: 8px;
         background-color: #e8e8e8;

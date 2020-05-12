@@ -285,6 +285,7 @@ export class MgtPersonCardBeta extends MgtTemplatedComponent {
         .personDetails=${this.personDetails}
         .personImage=${imageSrc}
         .showPresence=${true}
+        avatar-size="large"
       ></mgt-person>
     `;
   }
