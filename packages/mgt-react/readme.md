@@ -1,6 +1,6 @@
 # React wrapper for Microsoft Graph Toolkit
 
-[![npm](https://img.shields.io/npm/v/mgt-react?style=for-the-badge)](https://www.npmjs.com/package/@microsoft/mgt-react)
+[![npm](https://img.shields.io/npm/v/@microsoft/mgt-react?style=for-the-badge)](https://www.npmjs.com/package/@microsoft/mgt-react)
 
 Use `mgt-react` to simplify usage of [Microsoft Graph Toolkit (mgt)](https://aka.ms/mgt) web components in React. The library wraps all mgt components and exports them as React components.
 
