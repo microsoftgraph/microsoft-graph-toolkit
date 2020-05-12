@@ -65,6 +65,17 @@ export class MgtPersonCardOrganization extends BasePersonCardSection {
   /**
    * foo
    *
+   * @protected
+   * @memberof MgtPersonCardOrganization
+   */
+  public clearState(): void {
+    this._managers = [];
+    this._coworkers = [];
+  }
+
+  /**
+   * foo
+   *
    * @returns {TemplateResult}
    * @memberof MgtPersonCardOrganization
    */
@@ -96,21 +107,21 @@ export class MgtPersonCardOrganization extends BasePersonCardSection {
     const managers = new Array(...this._managers);
     const managerTemplates = managers ? managers.reverse().map(manager => this.renderManager(manager)) : [];
     const targetMemberTemplate = this.personDetails ? this.renderTargetMember() : null;
-    const coworkerTemplates = this._coworkers
-      ? this._coworkers.slice(0, 6).map(coworker => this.renderCoworker(coworker))
-      : [];
+    const coworkersTemplate =
+      this._coworkers && this._coworkers.length
+        ? html`
+            <div class="divider"></div>
+            <div class="subtitle">You work with</div>
+            <div>
+              ${this._coworkers.slice(0, 6).map(coworker => this.renderCoworker(coworker))}
+            </div>
+          `
+        : [];
 
     return html`
       <div class="root">
         <div class="title">Organization</div>
-        <div>
-          ${managerTemplates} ${targetMemberTemplate}
-        </div>
-        <div class="divider"></div>
-        <div class="subtitle">You work with</div>
-        <div>
-          ${coworkerTemplates}
-        </div>
+        ${managerTemplates} ${targetMemberTemplate} ${coworkersTemplate}
       </div>
     `;
   }
@@ -153,7 +164,7 @@ export class MgtPersonCardOrganization extends BasePersonCardSection {
    */
   protected renderTargetMember(): TemplateResult {
     return html`
-      <div class="org-member">
+      <div class="org-member org-member--target">
         <div class="org-member__image">
           <mgt-person .personDetails=${this.personDetails} avatar-size="large"></mgt-person>
         </div>

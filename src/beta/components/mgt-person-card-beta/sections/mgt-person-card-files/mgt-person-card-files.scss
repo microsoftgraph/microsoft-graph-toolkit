@@ -12,15 +12,22 @@
   position: relative;
 
   .root {
+    padding: 20px 0;
+
+    &.compact {
+      padding: 0;
+    }
+
     .title {
       font-size: 14px;
       font-weight: 600;
       color: #323130;
-      margin: 20px 20px 12px 20px;
+      margin: 0 20px 12px 20px;
     }
 
     .file {
       display: flex;
+      align-items: center;
       padding: 5px 20px;
 
       &:hover {
@@ -37,6 +44,7 @@
         min-width: 28px;
         height: 28px;
         margin-right: 12px;
+        background-color: #797775;
       }
 
       .file__details {

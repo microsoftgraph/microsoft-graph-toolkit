@@ -12,11 +12,13 @@
   position: relative;
 
   .root {
+    padding: 20px 0;
+
     .title {
       font-size: 14px;
       font-weight: 600;
       color: #323130;
-      margin: 20px 20px 12px 20px;
+      margin: 0 20px 12px 20px;
     }
 
     .part {

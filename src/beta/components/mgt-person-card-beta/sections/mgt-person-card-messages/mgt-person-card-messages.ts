@@ -83,6 +83,16 @@ export class MgtPersonCardMessages extends BasePersonCardSection {
    * foo
    *
    * @protected
+   * @memberof MgtPersonCardMessages
+   */
+  public clearState(): void {
+    this._messages = [];
+  }
+
+  /**
+   * foo
+   *
+   * @protected
    * @returns {TemplateResult}
    * @memberof MgtPersonCardMessages
    */

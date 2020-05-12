@@ -210,6 +210,12 @@ export class MgtPersonCardBeta extends MgtTemplatedComponent {
    */
   public navigate(person: IDynamicPerson): void {
     this._history.push(this.personDetails);
+
+    this.sections.forEach((s: BasePersonCardSection) => {
+      s.clearState();
+      s.requestUpdate();
+    });
+
     this.personDetails = person;
     this._currentSection = null;
   }

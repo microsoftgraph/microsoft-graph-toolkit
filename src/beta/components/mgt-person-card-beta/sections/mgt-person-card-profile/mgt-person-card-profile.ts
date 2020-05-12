@@ -96,13 +96,23 @@ export class MgtPersonCardProfile extends BasePersonCardSection {
    * foo
    *
    * @protected
+   * @memberof MgtPersonCardProfile
+   */
+  public clearState(): void {
+    this.profile = null;
+  }
+
+  /**
+   * foo
+   *
+   * @protected
    * @returns {TemplateResult}
    * @memberof MgtPersonCardProfile
    */
   protected renderCompactView(): TemplateResult {
     this.initPostRenderOperations();
     return html`
-      <div class="root">
+      <div class="root compact">
         ${this.renderSkills()} ${this.renderProfessionalInterests()} ${this.renderBirthday()}
       </div>
     `;
@@ -122,7 +132,6 @@ export class MgtPersonCardProfile extends BasePersonCardSection {
         <div class="title">About</div>
         ${this.renderLanguages()} ${this.renderSkills()} ${this.renderWorkExperience()} ${this.renderEducation()}
         ${this.renderProfessionalInterests()} ${this.renderPersonalInterests()} ${this.renderBirthday()}
-        <div></div>
       </div>
     `;
   }

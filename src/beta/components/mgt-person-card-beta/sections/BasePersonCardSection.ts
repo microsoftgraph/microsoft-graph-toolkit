@@ -104,6 +104,15 @@ export abstract class BasePersonCardSection extends MgtTemplatedComponent {
   }
 
   /**
+   * foo
+   *
+   * @protected
+   * @abstract
+   * @memberof BasePersonCardSection
+   */
+  public abstract clearState(): void;
+
+  /**
    * Invoked on each update to perform rendering tasks. This method must return
    * a lit-html TemplateResult. Setting properties inside this method will *not*
    * trigger the element to update.

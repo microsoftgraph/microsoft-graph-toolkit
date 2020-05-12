@@ -78,6 +78,16 @@ export class MgtPersonCardFiles extends BasePersonCardSection {
    * foo
    *
    * @protected
+   * @memberof MgtPersonCardFiles
+   */
+  public clearState(): void {
+    this._files = [];
+  }
+
+  /**
+   * foo
+   *
+   * @protected
    * @returns {TemplateResult}
    * @memberof MgtPersonCardFiles
    */

@@ -40,6 +40,8 @@ $person-card-background-color: var(--person-card-background-color, #ffffff);
       }
 
       &:hover {
+        cursor: pointer;
+
         svg {
           fill: #000000;
         }

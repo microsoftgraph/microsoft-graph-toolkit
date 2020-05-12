@@ -139,6 +139,18 @@ export class MgtPersonCardContact extends BasePersonCardSection {
   /**
    * foo
    *
+   * @protected
+   * @memberof MgtPersonCardContact
+   */
+  public clearState() {
+    for (const key of Object.keys(this._contactParts)) {
+      this._contactParts[key].value = null;
+    }
+  }
+
+  /**
+   * foo
+   *
    * @returns {TemplateResult}
    * @memberof MgtPersonCardContact
    */
@@ -194,7 +206,7 @@ export class MgtPersonCardContact extends BasePersonCardSection {
         `;
 
     return html`
-      <div class="part">
+      <div class="part" @click=${(e: MouseEvent) => this.handlePartClick(e, part.value)}>
         <div class="part__icon">${part.icon}</div>
         <div class="part__details">
           <div class="part__title">${part.title}</div>
@@ -216,6 +228,18 @@ export class MgtPersonCardContact extends BasePersonCardSection {
    * foo
    *
    * @protected
+   * @memberof MgtPersonCardContact
+   */
+  protected handlePartClick(e: MouseEvent, value: string): void {
+    if (value && !this.isCompact) {
+      navigator.clipboard.writeText(value);
+    }
+  }
+
+  /**
+   * foo
+   *
+   * @protected
    * @returns {IContactPart[]}
    * @memberof MgtPersonCardContact
    */
@@ -223,8 +247,6 @@ export class MgtPersonCardContact extends BasePersonCardSection {
     if (!this.personDetails) {
       return;
     }
-
-    this.clearState();
 
     const userPerson = this.personDetails as GraphTypes.User;
     const personPerson = this.personDetails as GraphTypes.Person;
@@ -299,12 +321,6 @@ export class MgtPersonCardContact extends BasePersonCardSection {
     const officeLocation = this._contactParts.officeLocation.value;
     if (!officeLocation) {
       return;
-    }
-  }
-
-  private clearState() {
-    for (const key of Object.keys(this._contactParts)) {
-      this._contactParts[key].value = null;
     }
   }
 }

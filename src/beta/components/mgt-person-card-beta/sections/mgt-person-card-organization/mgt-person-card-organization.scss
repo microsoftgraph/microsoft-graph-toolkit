@@ -12,7 +12,11 @@
   position: relative;
 
   .root {
+    padding: 20px 0;
+
     &.compact {
+      padding: 0;
+
       .coworker {
         .coworker__image {
           height: 40px;
@@ -37,7 +41,7 @@
       font-size: 14px;
       font-weight: 600;
       color: #323130;
-      margin: 20px;
+      margin: 0 20px 20px 20px;
     }
 
     .subtitle {
@@ -67,7 +71,13 @@
       margin-left: 20px;
       margin-right: 20px;
 
+      &.org-member--target {
+        background-color: #f5faff;
+        border: 1px solid #3078d0;
+      }
+
       &:hover {
+        cursor: pointer;
         background-color: #f3f2f1;
       }
 
