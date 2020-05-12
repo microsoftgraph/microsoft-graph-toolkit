@@ -12,12 +12,13 @@ import { MgtPerson } from '../../../components/mgt-person/mgt-person';
 import { MgtTemplatedComponent } from '../../../components/templatedComponent';
 import { findPeople, getEmailFromGraphEntity } from '../../../graph/graph.people';
 import { getPersonImage } from '../../../graph/graph.photos';
-import { getUserWithPhoto } from '../../../graph/graph.user';
+import { getMe, getUserWithPhoto } from '../../../graph/graph.user';
 import { IDynamicPerson } from '../../../graph/types';
 import { Providers } from '../../../Providers';
 import { ProviderState } from '../../../providers/IProvider';
 import { getSvg, SvgIcon } from '../../../utils/SvgHelper';
 import { TeamsHelper } from '../../../utils/TeamsHelper';
+import { BetaGraph } from '../../BetaGraph';
 import { styles } from './mgt-person-card-css';
 import { BasePersonCardSection } from './sections/BasePersonCardSection';
 import { MgtPersonCardContact } from './sections/mgt-person-card-contact/mgt-person-card-contact';
@@ -143,11 +144,14 @@ export class MgtPersonCardBeta extends MgtTemplatedComponent {
    */
   protected sections: BasePersonCardSection[];
 
-  private _personDetails: IDynamicPerson;
+  private _chatInput: string;
   private _currentSection: BasePersonCardSection;
+  private _personDetails: IDynamicPerson;
 
   constructor() {
     super();
+    this._chatInput = '';
+    this._currentSection = null;
     this.sections = [
       new MgtPersonCardContact(),
       new MgtPersonCardOrganization(),
@@ -155,7 +159,6 @@ export class MgtPersonCardBeta extends MgtTemplatedComponent {
       new MgtPersonCardFiles(),
       new MgtPersonCardProfile()
     ];
-    this._currentSection = null;
   }
 
   /**
@@ -496,8 +499,16 @@ export class MgtPersonCardBeta extends MgtTemplatedComponent {
 
     return html`
       <div class="quick-message">
-        <input type="text" class="quick-message__input" placeholder="Message ${this.personDetails.displayName}" />
-        <button class="quick-message__send">
+        <input
+          type="text"
+          class="quick-message__input"
+          placeholder="Message ${this.personDetails.displayName}"
+          .value=${this._chatInput}
+          @input=${(e: Event) => {
+            this._chatInput = (e.target as HTMLInputElement).value;
+          }}
+        />
+        <button class="quick-message__send" @click=${() => this.sendQuickMessage()}>
           <svg xmlns="http://www.w3.org/2000/svg">
             <path
               d="M4.27144 8.99999L1.72572 2.45387C1.54854 1.99826 1.9928 1.56256 2.43227 1.71743L2.50153 1.74688L16.0015 8.49688C16.3902 8.69122 16.4145 9.22336 16.0744 9.45992L16.0015 9.50311L2.50153 16.2531C2.0643 16.4717 1.58932 16.0697 1.70282 15.6178L1.72572 15.5461L4.27144 8.99999L1.72572 2.45387L4.27144 8.99999ZM3.3028 3.4053L5.25954 8.43705L10.2302 8.43749C10.515 8.43749 10.7503 8.64911 10.7876 8.92367L10.7927 8.99999C10.7927 9.28476 10.5811 9.52011 10.3065 9.55736L10.2302 9.56249L5.25954 9.56205L3.3028 14.5947L14.4922 8.99999L3.3028 3.4053Z"
@@ -699,6 +710,22 @@ export class MgtPersonCardBeta extends MgtTemplatedComponent {
   }
 
   /**
+   * foo
+   *
+   * @protected
+   * @returns {void}
+   * @memberof MgtPersonCardBeta
+   */
+  protected sendQuickMessage(): void {
+    const message = this._chatInput.trim();
+    if (!message || !message.length) {
+      return;
+    }
+
+    this.chatUser(message);
+  }
+
+  /**
    * Use the mailto: protocol to initiate a new email to the user.
    *
    * @protected
@@ -744,11 +771,16 @@ export class MgtPersonCardBeta extends MgtTemplatedComponent {
    * @protected
    * @memberof MgtPersonCard
    */
-  protected chatUser() {
+  protected chatUser(message: string = null) {
     const user = this.personDetails as MicrosoftGraph.User;
     if (user && user.userPrincipalName) {
       const users: string = user.userPrincipalName;
-      const url = `https://teams.microsoft.com/l/chat/0/0?users=${users}`;
+
+      let url = `https://teams.microsoft.com/l/chat/0/0?users=${users}`;
+      if (message && message.length) {
+        url += `&message=${message}`;
+      }
+
       const openWindow = () => window.open(url, '_blank');
 
       if (TeamsHelper.isAvailable) {
