@@ -38,7 +38,7 @@ export class MgtPersonCardProfile extends BasePersonCardSection {
    * @memberof MgtPersonCardProfile
    */
   public get displayName(): string {
-    return 'About';
+    return 'Skills & Experience';
   }
 
   /**
@@ -110,10 +110,22 @@ export class MgtPersonCardProfile extends BasePersonCardSection {
    * @memberof MgtPersonCardProfile
    */
   protected renderCompactView(): TemplateResult {
-    this.initPostRenderOperations();
+    let contentTemplate: TemplateResult;
+
+    if (this.isLoadingState) {
+      contentTemplate = this.renderLoading();
+    } else if (!this._profile) {
+      contentTemplate = this.renderNoData();
+    } else {
+      this.initPostRenderOperations();
+      contentTemplate = html`
+        ${this.renderSkills()} ${this.renderProfessionalInterests()} ${this.renderBirthday()}
+      `;
+    }
+
     return html`
       <div class="root compact">
-        ${this.renderSkills()} ${this.renderProfessionalInterests()} ${this.renderBirthday()}
+        ${contentTemplate}
       </div>
     `;
   }
@@ -126,13 +138,51 @@ export class MgtPersonCardProfile extends BasePersonCardSection {
    * @memberof MgtPersonCardProfile
    */
   protected renderFullView() {
-    this.initPostRenderOperations();
+    let contentTemplate: TemplateResult;
+
+    if (this.isLoadingState) {
+      contentTemplate = this.renderLoading();
+    } else if (!this._profile) {
+      contentTemplate = this.renderNoData();
+    } else {
+      this.initPostRenderOperations();
+      contentTemplate = html`
+        ${this.renderLanguages()} ${this.renderSkills()} ${this.renderWorkExperience()} ${this.renderEducation()}
+        ${this.renderProfessionalInterests()} ${this.renderPersonalInterests()} ${this.renderBirthday()}
+      `;
+    }
+
     return html`
       <div class="root">
         <div class="title">About</div>
-        ${this.renderLanguages()} ${this.renderSkills()} ${this.renderWorkExperience()} ${this.renderEducation()}
-        ${this.renderProfessionalInterests()} ${this.renderPersonalInterests()} ${this.renderBirthday()}
+        ${contentTemplate}
       </div>
+    `;
+  }
+
+  /**
+   * foo
+   *
+   * @protected
+   * @returns {TemplateResult}
+   * @memberof MgtPersonCardContact
+   */
+  protected renderLoading(): TemplateResult {
+    return html`
+      <div class="loading">Loading</div>
+    `;
+  }
+
+  /**
+   * foo
+   *
+   * @protected
+   * @returns {TemplateResult}
+   * @memberof MgtPersonCardContact
+   */
+  protected renderNoData(): TemplateResult {
+    return html`
+      <div class="no-data">No data</div>
     `;
   }
 

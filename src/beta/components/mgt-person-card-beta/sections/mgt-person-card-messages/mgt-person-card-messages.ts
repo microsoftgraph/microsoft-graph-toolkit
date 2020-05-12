@@ -46,6 +46,16 @@ export class MgtPersonCardMessages extends BasePersonCardSection {
   /**
    * foo
    *
+   * @protected
+   * @memberof MgtPersonCardMessages
+   */
+  public clearState(): void {
+    this._messages = [];
+  }
+
+  /**
+   * foo
+   *
    * @returns {TemplateResult}
    * @memberof MgtPersonCardMessages
    */
@@ -68,25 +78,26 @@ export class MgtPersonCardMessages extends BasePersonCardSection {
    * @memberof MgtPersonCardMessages
    */
   public renderCompactView(): TemplateResult {
-    const messageTemplates = this._messages
-      ? this._messages.slice(0, 3).map(message => this.renderMessage(message))
-      : [];
+    let contentTemplate: TemplateResult;
+
+    if (this.isLoadingState) {
+      contentTemplate = this.renderLoading();
+    } else if (!this._messages || !this._messages.length) {
+      contentTemplate = this.renderNoData();
+    } else {
+      const messageTemplates = this._messages
+        ? this._messages.slice(0, 3).map(message => this.renderMessage(message))
+        : [];
+      contentTemplate = html`
+        ${messageTemplates}
+      `;
+    }
 
     return html`
       <div class="root compact">
-        ${messageTemplates}
+        ${contentTemplate}
       </div>
     `;
-  }
-
-  /**
-   * foo
-   *
-   * @protected
-   * @memberof MgtPersonCardMessages
-   */
-  public clearState(): void {
-    this._messages = [];
   }
 
   /**
@@ -97,15 +108,49 @@ export class MgtPersonCardMessages extends BasePersonCardSection {
    * @memberof MgtPersonCardMessages
    */
   protected renderFullView(): TemplateResult {
-    const messageTemplates = this._messages
-      ? this._messages.slice(0, 5).map(message => this.renderMessage(message))
-      : [];
+    let contentTemplate: TemplateResult;
+
+    if (this.isLoadingState) {
+      contentTemplate = this.renderLoading();
+    } else if (!this._messages || !this._messages.length) {
+      contentTemplate = this.renderNoData();
+    } else {
+      contentTemplate = html`
+        ${this._messages.slice(0, 5).map(message => this.renderMessage(message))}
+      `;
+    }
 
     return html`
       <div class="root">
         <div class="title">Emails</div>
-        ${messageTemplates}
+        ${contentTemplate}
       </div>
+    `;
+  }
+
+  /**
+   * foo
+   *
+   * @protected
+   * @returns {TemplateResult}
+   * @memberof MgtPersonCardContact
+   */
+  protected renderLoading(): TemplateResult {
+    return html`
+      <div class="loading">Loading</div>
+    `;
+  }
+
+  /**
+   * foo
+   *
+   * @protected
+   * @returns {TemplateResult}
+   * @memberof MgtPersonCardContact
+   */
+  protected renderNoData(): TemplateResult {
+    return html`
+      <div class="no-data">No data</div>
     `;
   }
 

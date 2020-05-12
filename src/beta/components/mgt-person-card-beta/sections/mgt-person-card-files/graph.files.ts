@@ -30,8 +30,11 @@ export interface IFile {
 }
 
 // tslint:disable-next-line: completed-docs
-export async function getSharedFiles(graph: IGraph, userId: string): Promise<any> {
-  return getDummyData();
+export async function getSharedFiles(graph: IGraph, userId: string): Promise<IFile[]> {
+  const response = await graph.api(`users/${userId}/drive/root/children`).get();
+  return response.value;
+
+  // return getDummyData();
 }
 
 // tslint:disable-next-line: completed-docs

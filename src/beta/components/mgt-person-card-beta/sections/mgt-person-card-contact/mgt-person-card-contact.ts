@@ -155,14 +155,28 @@ export class MgtPersonCardContact extends BasePersonCardSection {
    * @memberof MgtPersonCardContact
    */
   protected renderCompactView(): TemplateResult {
-    // Filter for compact mode parts with values
-    const compactParts: IContactPart[] = Object.values(this._contactParts).filter(
-      (p: IContactPart) => !!p.value && p.showCompact
-    );
+    let contentTemplate: TemplateResult;
+
+    if (this.isLoadingState) {
+      contentTemplate = this.renderLoading();
+    } else {
+      // Filter for compact mode parts with values
+      const compactParts: IContactPart[] = Object.values(this._contactParts).filter(
+        (p: IContactPart) => !!p.value && p.showCompact
+      );
+
+      if (!compactParts || !compactParts.length) {
+        contentTemplate = this.renderNoData();
+      } else {
+        contentTemplate = html`
+          ${compactParts.map(p => this.renderContactPart(p))}
+        `;
+      }
+    }
 
     return html`
       <div class="root compact">
-        ${compactParts.map(p => this.renderContactPart(p))}
+        ${contentTemplate}
       </div>
     `;
   }
@@ -175,16 +189,55 @@ export class MgtPersonCardContact extends BasePersonCardSection {
    * @memberof MgtPersonCardContact
    */
   protected renderFullView(): TemplateResult {
-    // Filter for parts with values only
-    const availableParts: IContactPart[] = Object.values(this._contactParts).filter((p: IContactPart) => !!p.value);
+    let contentTemplate: TemplateResult;
 
-    const partTemplates = availableParts ? availableParts.map(part => this.renderContactPart(part)) : [];
+    if (this.isLoadingState) {
+      contentTemplate = this.renderLoading();
+    } else if (!this._contactParts) {
+      contentTemplate = this.renderNoData();
+    } else {
+      // Filter for parts with values only
+      const availableParts: IContactPart[] = Object.values(this._contactParts).filter((p: IContactPart) => !!p.value);
+      if (!availableParts.length) {
+        contentTemplate = this.renderNoData();
+      } else {
+        contentTemplate = html`
+          ${availableParts.map(part => this.renderContactPart(part))}
+        `;
+      }
+    }
 
     return html`
       <div class="root">
         <div class="title">${this.displayName}</div>
-        ${partTemplates}
+        ${contentTemplate}
       </div>
+    `;
+  }
+
+  /**
+   * foo
+   *
+   * @protected
+   * @returns {TemplateResult}
+   * @memberof MgtPersonCardContact
+   */
+  protected renderLoading(): TemplateResult {
+    return html`
+      <div class="loading">Loading</div>
+    `;
+  }
+
+  /**
+   * foo
+   *
+   * @protected
+   * @returns {TemplateResult}
+   * @memberof MgtPersonCardContact
+   */
+  protected renderNoData(): TemplateResult {
+    return html`
+      <div class="no-data">No data</div>
     `;
   }
 
@@ -213,10 +266,9 @@ export class MgtPersonCardContact extends BasePersonCardSection {
           <div class="part__value">${valueTemplate}</div>
         </div>
         <div class="part__copy">
-          <svg width="13" height="14" viewBox="0 0 13 14" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <svg width="13" height="14" viewBox="0 0 13 14" xmlns="http://www.w3.org/2000/svg">
             <path
               d="M12.625 5.50293V14H3.875V11.375H0.375V0H6.24707L8.87207 2.625H9.74707L12.625 5.50293ZM10 5.25H11.1279L10 4.12207V5.25ZM3.875 2.625H7.62793L5.87793 0.875H1.25V10.5H3.875V2.625ZM11.75 6.125H9.125V3.5H4.75V13.125H11.75V6.125Z"
-              fill="black"
             />
           </svg>
         </div>
@@ -322,6 +374,7 @@ export class MgtPersonCardContact extends BasePersonCardSection {
     if (!officeLocation) {
       return;
     }
+    // TODO: Show the office location somehow.
   }
 }
 

@@ -8,6 +8,7 @@
 import { customElement, html, TemplateResult } from 'lit-element';
 import { Providers } from '../../../../../Providers';
 import { ProviderState } from '../../../../../providers/IProvider';
+import { BetaGraph } from '../../../../BetaGraph';
 import { BasePersonCardSection } from '../BasePersonCardSection';
 import { getSharedFiles, IFile } from './graph.files';
 import { styles } from './mgt-person-card-files-css';
@@ -45,6 +46,16 @@ export class MgtPersonCardFiles extends BasePersonCardSection {
   /**
    * foo
    *
+   * @protected
+   * @memberof MgtPersonCardFiles
+   */
+  public clearState(): void {
+    this._files = [];
+  }
+
+  /**
+   * foo
+   *
    * @returns {TemplateResult}
    * @memberof MgtPersonCardFiles
    */
@@ -65,23 +76,23 @@ export class MgtPersonCardFiles extends BasePersonCardSection {
    * @memberof MgtPersonCardFiles
    */
   public renderCompactView(): TemplateResult {
-    const fileTemplates = this._files ? this._files.slice(0, 3).map(file => this.renderFile(file)) : [];
+    let contentTemplate: TemplateResult;
+
+    if (this.isLoadingState) {
+      contentTemplate = this.renderLoading();
+    } else if (!this._files || !this._files.length) {
+      contentTemplate = this.renderNoData();
+    } else {
+      contentTemplate = html`
+        ${this._files.slice(0, 3).map(file => this.renderFile(file))}
+      `;
+    }
 
     return html`
       <div class="root compact">
-        ${fileTemplates}
+        ${contentTemplate}
       </div>
     `;
-  }
-
-  /**
-   * foo
-   *
-   * @protected
-   * @memberof MgtPersonCardFiles
-   */
-  public clearState(): void {
-    this._files = [];
   }
 
   /**
@@ -92,13 +103,49 @@ export class MgtPersonCardFiles extends BasePersonCardSection {
    * @memberof MgtPersonCardFiles
    */
   protected renderFullView(): TemplateResult {
-    const fileTemplates = this._files ? this._files.map(file => this.renderFile(file)) : [];
+    let contentTemplate: TemplateResult;
+
+    if (this.isLoadingState) {
+      contentTemplate = this.renderLoading();
+    } else if (!this._files || !this._files.length) {
+      contentTemplate = this.renderNoData();
+    } else {
+      contentTemplate = html`
+        ${this._files.map(file => this.renderFile(file))}
+      `;
+    }
 
     return html`
       <div class="root">
         <div class="title">Files</div>
-        ${fileTemplates}
+        ${contentTemplate}
       </div>
+    `;
+  }
+
+  /**
+   * foo
+   *
+   * @protected
+   * @returns {TemplateResult}
+   * @memberof MgtPersonCardContact
+   */
+  protected renderLoading(): TemplateResult {
+    return html`
+      <div class="loading">Loading</div>
+    `;
+  }
+
+  /**
+   * foo
+   *
+   * @protected
+   * @returns {TemplateResult}
+   * @memberof MgtPersonCardContact
+   */
+  protected renderNoData(): TemplateResult {
+    return html`
+      <div class="no-data">No data</div>
     `;
   }
 
@@ -144,8 +191,9 @@ export class MgtPersonCardFiles extends BasePersonCardSection {
     }
 
     const graph = provider.graph.forComponent(this);
+    const betaGraph = BetaGraph.fromGraph(graph);
     const userId = this.personDetails.id;
-    this._files = await getSharedFiles(graph, userId);
+    this._files = await getSharedFiles(betaGraph, userId);
 
     this.requestUpdate();
   }

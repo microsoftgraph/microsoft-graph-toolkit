@@ -37,6 +37,11 @@
       }
     }
 
+    .no-data,
+    .loading {
+      padding: 0 20px;
+    }
+
     .title {
       font-size: 14px;
       font-weight: 600;

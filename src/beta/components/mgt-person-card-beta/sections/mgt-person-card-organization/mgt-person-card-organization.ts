@@ -80,18 +80,20 @@ export class MgtPersonCardOrganization extends BasePersonCardSection {
    * @memberof MgtPersonCardOrganization
    */
   protected renderCompactView(): TemplateResult {
+    let contentTemplate: TemplateResult;
+
     if (this.isLoadingState) {
-      return null;
+      contentTemplate = this.renderLoading();
+    } else if (!this._managers || !this._managers.length) {
+      contentTemplate = this.renderNoData();
+    } else {
+      const reportsTo = this._managers[0];
+      contentTemplate = this.renderCoworker(reportsTo);
     }
 
-    if (!this._managers || !this._managers.length) {
-      return null;
-    }
-
-    const reportsTo = this._managers[0];
     return html`
       <div class="root compact">
-        ${this.renderCoworker(reportsTo)}
+        ${contentTemplate}
       </div>
     `;
   }
@@ -104,25 +106,63 @@ export class MgtPersonCardOrganization extends BasePersonCardSection {
    * @memberof MgtPersonCardOrganization
    */
   protected renderFullView(): TemplateResult {
-    const managers = new Array(...this._managers);
-    const managerTemplates = managers ? managers.reverse().map(manager => this.renderManager(manager)) : [];
-    const targetMemberTemplate = this.personDetails ? this.renderTargetMember() : null;
-    const coworkersTemplate =
-      this._coworkers && this._coworkers.length
-        ? html`
-            <div class="divider"></div>
-            <div class="subtitle">You work with</div>
-            <div>
-              ${this._coworkers.slice(0, 6).map(coworker => this.renderCoworker(coworker))}
-            </div>
-          `
-        : [];
+    let contentTemplate: TemplateResult;
+
+    if (this.isLoadingState) {
+      contentTemplate = this.renderLoading();
+    } else if ((!this._managers || !this._managers.length) && (!this._coworkers || !this._coworkers.length)) {
+      contentTemplate = this.renderNoData();
+    } else {
+      const managers = new Array(...this._managers);
+      const managerTemplates = managers ? managers.reverse().map(manager => this.renderManager(manager)) : [];
+      const targetMemberTemplate = this.personDetails ? this.renderTargetMember() : null;
+      const coworkersTemplate =
+        this._coworkers && this._coworkers.length
+          ? html`
+              <div class="divider"></div>
+              <div class="subtitle">You work with</div>
+              <div>
+                ${this._coworkers.slice(0, 6).map(coworker => this.renderCoworker(coworker))}
+              </div>
+            `
+          : [];
+
+      contentTemplate = html`
+        ${managerTemplates} ${targetMemberTemplate} ${coworkersTemplate}
+      `;
+    }
 
     return html`
       <div class="root">
         <div class="title">Organization</div>
-        ${managerTemplates} ${targetMemberTemplate} ${coworkersTemplate}
+        ${contentTemplate}
       </div>
+    `;
+  }
+
+  /**
+   * foo
+   *
+   * @protected
+   * @returns {TemplateResult}
+   * @memberof MgtPersonCardContact
+   */
+  protected renderLoading(): TemplateResult {
+    return html`
+      <div class="loading">Loading</div>
+    `;
+  }
+
+  /**
+   * foo
+   *
+   * @protected
+   * @returns {TemplateResult}
+   * @memberof MgtPersonCardContact
+   */
+  protected renderNoData(): TemplateResult {
+    return html`
+      <div class="no-data">No data</div>
     `;
   }
 
