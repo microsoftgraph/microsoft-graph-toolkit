@@ -18,7 +18,6 @@ import { Providers } from '../../../Providers';
 import { ProviderState } from '../../../providers/IProvider';
 import { getSvg, SvgIcon } from '../../../utils/SvgHelper';
 import { TeamsHelper } from '../../../utils/TeamsHelper';
-import { BetaGraph } from '../../BetaGraph';
 import { styles } from './mgt-person-card-css';
 import { BasePersonCardSection } from './sections/BasePersonCardSection';
 import { MgtPersonCardContact } from './sections/mgt-person-card-contact/mgt-person-card-contact';
@@ -77,7 +76,9 @@ export class MgtPersonCardBeta extends MgtTemplatedComponent {
     }
 
     this._personDetails = value;
+    this.personImage = null;
     this.sections.forEach(s => (s.personDetails = value));
+    this.requestStateUpdate();
   }
   /**
    * allows developer to define name of person for component
@@ -144,6 +145,7 @@ export class MgtPersonCardBeta extends MgtTemplatedComponent {
    */
   protected sections: BasePersonCardSection[];
 
+  private _history: IDynamicPerson[];
   private _chatInput: string;
   private _currentSection: BasePersonCardSection;
   private _personDetails: IDynamicPerson;
@@ -152,6 +154,7 @@ export class MgtPersonCardBeta extends MgtTemplatedComponent {
     super();
     this._chatInput = '';
     this._currentSection = null;
+    this._history = [];
     this.sections = [
       new MgtPersonCardContact(),
       new MgtPersonCardOrganization(),
@@ -200,6 +203,31 @@ export class MgtPersonCardBeta extends MgtTemplatedComponent {
   }
 
   /**
+   * foo
+   *
+   * @protected
+   * @memberof MgtPersonCardBeta
+   */
+  public navigate(person: IDynamicPerson): void {
+    this._history.push(this.personDetails);
+    this.personDetails = person;
+    this._currentSection = null;
+  }
+
+  /**
+   * foo
+   *
+   * @returns {void}
+   * @memberof MgtPersonCardBeta
+   */
+  public goBack(): void {
+    if (!this._history || !this._history.length) {
+      return;
+    }
+    this.personDetails = this._history.pop();
+  }
+
+  /**
    * Invoked on each update to perform rendering tasks. This method must return
    * a lit-html TemplateResult. Setting properties inside this method will *not*
    * trigger the element to update.
@@ -221,6 +249,21 @@ export class MgtPersonCardBeta extends MgtTemplatedComponent {
         personImage: image
       });
     }
+
+    const navigationTemplate =
+      this._history && this._history.length
+        ? html`
+            <div class="nav">
+              <div class="nav__back" @click=${() => this.goBack()}>
+                <svg width="16" height="16" viewBox="0 0 16 16" xmlns="http://www.w3.org/2000/svg">
+                  <path
+                    d="M16 8.5H1.95312L8.10156 14.6484L7.39844 15.3516L0.046875 8L7.39844 0.648438L8.10156 1.35156L1.95312 7.5H16V8.5Z"
+                  />
+                </svg>
+              </div>
+            </div>
+          `
+        : null;
 
     // Check for a person-details template
     let personDetailsTemplate = this.renderTemplate('person-details', {
@@ -252,6 +295,7 @@ export class MgtPersonCardBeta extends MgtTemplatedComponent {
 
     return html`
       <div class="root">
+        ${navigationTemplate}
         <div class="person-details-container">
           ${personDetailsTemplate}
         </div>

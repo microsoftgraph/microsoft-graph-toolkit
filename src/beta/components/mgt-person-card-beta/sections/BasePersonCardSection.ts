@@ -8,6 +8,7 @@
 import { property, TemplateResult } from 'lit-element';
 import { MgtTemplatedComponent } from '../../../../components/templatedComponent';
 import { IDynamicPerson } from '../../../../graph/types';
+import { MgtPersonCardBeta } from '../mgt-person-card';
 
 /**
  * foo
@@ -130,4 +131,26 @@ export abstract class BasePersonCardSection extends MgtTemplatedComponent {
    * @memberof BasePersonCardSection
    */
   protected abstract renderFullView(): TemplateResult;
+
+  /**
+   * foo
+   *
+   * @protected
+   * @memberof BasePersonCardSection
+   */
+  protected navigateCard(person: IDynamicPerson): void {
+    // Search for card parent and update it's personDetails object
+    let parent: any = this.parentNode;
+    while (parent) {
+      parent = parent.parentNode;
+
+      if (parent && parent.host && parent.host.tagName === 'MGT-PERSON-CARD-BETA') {
+        parent = parent.host;
+        break;
+      }
+    }
+
+    const personCard = parent as MgtPersonCardBeta;
+    personCard.navigate(person);
+  }
 }

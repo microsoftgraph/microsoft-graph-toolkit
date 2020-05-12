@@ -26,6 +26,27 @@ $person-card-background-color: var(--person-card-background-color, #ffffff);
   font-family: var(--default-font-family);
   overflow: hidden;
 
+  .nav {
+    display: flex;
+
+    .nav__back {
+      padding: 10px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+
+      svg {
+        fill: #0078d4;
+      }
+
+      &:hover {
+        svg {
+          fill: #000000;
+        }
+      }
+    }
+  }
+
   .person-details-container {
     display: grid;
     grid-template-rows: auto 1fr;

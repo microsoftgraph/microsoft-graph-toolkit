@@ -125,7 +125,7 @@ export class MgtPersonCardOrganization extends BasePersonCardSection {
    */
   protected renderManager(orgMember: IOrgMember): TemplateResult {
     return html`
-      <div class="org-member">
+      <div class="org-member" @click=${() => this.navigateCard(orgMember)}>
         <div class="org-member__image">
           <mgt-person .userId=${orgMember.id} avatar-size="large"></mgt-person>
         </div>
@@ -176,7 +176,7 @@ export class MgtPersonCardOrganization extends BasePersonCardSection {
    */
   protected renderCoworker(coworker: IOrgMember): TemplateResult {
     return html`
-      <div class="coworker">
+      <div class="coworker" @click=${() => this.navigateCard(coworker)}>
         <div class="coworker__image">
           <mgt-person .userId=${coworker.id} avatar-size="large"></mgt-person>
         </div>
