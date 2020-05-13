@@ -597,11 +597,13 @@ export class MgtPersonCardProfile extends BasePersonCardSection {
         continue;
       }
 
+      let overflowItems: Element[] = null;
       let itemRect = items[0].getBoundingClientRect();
       const tokenListRect = tokenList.getBoundingClientRect();
       const maxtop = itemRect.height * 2 + tokenListRect.top;
-      let overflowItems: Element[] = null;
-      for (let i = 0; i < items.length; i++) {
+
+      // Use (items.length - 1) to prevent [+1 more] from appearing.
+      for (let i = 0; i < items.length - 1; i++) {
         itemRect = items[i].getBoundingClientRect();
         if (itemRect.top > maxtop) {
           overflowItems = Array.from(items).slice(i, items.length);
@@ -610,11 +612,16 @@ export class MgtPersonCardProfile extends BasePersonCardSection {
       }
 
       if (overflowItems) {
-        overflowItems.forEach(i => i.remove());
+        overflowItems.forEach(i => i.classList.add('overflow'));
 
         const overflowToken = document.createElement('div');
         overflowToken.classList.add('token-list__item');
         overflowToken.innerText = `+ ${overflowItems.length} more`;
+        overflowToken.addEventListener('click', (e: MouseEvent) => {
+          // On click, remove [+n more] token and reveal the hidden overflow tokens.
+          overflowToken.remove();
+          overflowItems.forEach(i => i.classList.remove('overflow'));
+        });
         tokenList.appendChild(overflowToken);
       }
     }

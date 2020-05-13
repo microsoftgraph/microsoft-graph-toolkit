@@ -37,7 +37,7 @@ export async function getManagers(graph: IGraph, userId: string): Promise<IOrgMe
   const managers = [];
   try {
     let manager = await getManager(graph, userId);
-    while (manager.id) {
+    while (manager && manager.id) {
       managers.push(manager);
       manager = await getManager(graph, manager.id);
     }

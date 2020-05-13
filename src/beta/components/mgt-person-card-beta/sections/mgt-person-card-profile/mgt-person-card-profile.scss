@@ -72,6 +72,10 @@
       margin-top: 10px;
       color: rgba(50, 49, 48, 0.7);
 
+      &.overflow {
+        display: none;
+      }
+
       &:hover {
         background-color: #e1dfdd;
         color: rgba(50, 49, 48, 0.9);

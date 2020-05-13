@@ -67,7 +67,6 @@
 
     .org-member {
       height: 74px;
-      border: 1px solid #e8e8e8;
       box-sizing: border-box;
       border-radius: 2px;
       padding: 12px;
@@ -81,14 +80,14 @@
         border: 1px solid #3078d0;
       }
 
-      &:hover {
-        cursor: pointer;
-        background-color: #f3f2f1;
-      }
+      &:not(.org-member--target) {
+        background-color: #ffffff;
+        border: 1px solid #e8e8e8;
 
-      &:last-child {
-        background-color: #f5faff;
-        border-color: #3078d0;
+        &:hover {
+          cursor: pointer;
+          background-color: #f3f2f1;
+        }
       }
 
       .org-member__image mgt-person {
