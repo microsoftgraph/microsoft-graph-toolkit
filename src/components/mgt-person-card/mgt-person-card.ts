@@ -602,7 +602,6 @@ export class MgtPersonCard extends MgtTemplatedComponent {
         const person = await getUserWithPhoto(graph, id);
         this.personDetails = person;
         this.personImage = this.getImage();
-        this.personDetails.personImage = this.personImage;
       } else if (
         !this.personDetails.personImage &&
         ((this.fetchImage && !this.personImage) || this.personImage === '@')

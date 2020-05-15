@@ -752,7 +752,6 @@ export class MgtPerson extends MgtTemplatedComponent {
 
       this.personDetails = person;
       this._fetchedImage = this.getImage();
-      this.personDetails.personImage = this.personImage;
     } else if (this.personQuery) {
       // Use the personQuery to find our person.
       const people = await findPeople(graph, this.personQuery, 1);
