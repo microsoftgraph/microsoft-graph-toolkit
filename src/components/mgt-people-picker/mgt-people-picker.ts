@@ -10,7 +10,7 @@ import { customElement, html, internalProperty, property, TemplateResult } from 
 import { classMap } from 'lit-html/directives/class-map';
 import { repeat } from 'lit-html/directives/repeat';
 import { findGroups, GroupType } from '../../graph/graph.groups';
-import { findPeople, getPeopleFromGroup, PersonType, getPeople } from '../../graph/graph.people';
+import { findPeople, getPeople, getPeopleFromGroup, PersonType } from '../../graph/graph.people';
 import { findUsers, getUser, getUsersForUserIds } from '../../graph/graph.user';
 import { IDynamicPerson } from '../../graph/types';
 import { Providers } from '../../Providers';
@@ -87,36 +87,6 @@ export class MgtPeoplePicker extends MgtTemplatedComponent {
   }
 
   /**
-   * containing object of IDynamicPerson.
-   * @type {IDynamicPerson[]}
-   */
-  @property({
-    attribute: 'people',
-    type: Object
-  })
-  public people: IDynamicPerson[];
-
-  /**
-   * determining how many people to show in list.
-   * @type {number}
-   */
-  @property({
-    attribute: 'show-max',
-    type: Number
-  })
-  public showMax: number;
-
-  /**
-   *  array of user picked people.
-   * @type {IDynamicPerson[]}
-   */
-  @property({
-    attribute: 'selected-people',
-    type: Array
-  })
-  public selectedPeople: IDynamicPerson[];
-
-  /**
    * value determining if search is filtered to a group.
    * @type {string}
    */
@@ -132,21 +102,6 @@ export class MgtPeoplePicker extends MgtTemplatedComponent {
     this._groupId = value;
     this.requestStateUpdate(true);
   }
-
-  /**
-   * array of people to be selected upon intialization
-   *
-   * @type {Array}
-   * @memberof MgtPeoplePicker
-   */
-  @property({
-    attribute: 'default-selected-user-ids',
-    converter: value => {
-      return value.split(',').map(v => v.trim());
-    },
-    type: String
-  })
-  public defaultSelectedUserIds: '';
 
   /**
    * value determining if search is filtered to a group.
@@ -221,6 +176,51 @@ export class MgtPeoplePicker extends MgtTemplatedComponent {
   }
 
   /**
+   * containing object of IDynamicPerson.
+   * @type {IDynamicPerson[]}
+   */
+  @property({
+    attribute: 'people',
+    type: Object
+  })
+  public people: IDynamicPerson[];
+
+  /**
+   * determining how many people to show in list.
+   * @type {number}
+   */
+  @property({
+    attribute: 'show-max',
+    type: Number
+  })
+  public showMax: number;
+
+  /**
+   *  array of user picked people.
+   * @type {IDynamicPerson[]}
+   */
+  @property({
+    attribute: 'selected-people',
+    type: Array
+  })
+  public selectedPeople: IDynamicPerson[];
+
+  /**
+   * array of people to be selected upon intialization
+   *
+   * @type {Array}
+   * @memberof MgtPeoplePicker
+   */
+  @property({
+    attribute: 'default-selected-user-ids',
+    converter: value => {
+      return value.split(',').map(v => v.trim());
+    },
+    type: String
+  })
+  public defaultSelectedUserIds: '';
+
+  /**
    * User input in search.
    *
    * @protected
@@ -235,6 +235,8 @@ export class MgtPeoplePicker extends MgtTemplatedComponent {
   private _groupId: string;
   private _type: PersonType = PersonType.Person;
   private _groupType: GroupType = GroupType.Any;
+
+  private defaultPeople: IDynamicPerson[];
 
   // tracking of user arrow key input for selection
   private _arrowSelectionCount: number = 0;
@@ -281,10 +283,19 @@ export class MgtPeoplePicker extends MgtTemplatedComponent {
     peopleInput.focus(options);
     peopleInput.select();
 
-    window.requestAnimationFrame(() => {
-      // Mouse is focused on input
-      this.showFlyout();
-    });
+    // handles hiding control if default people have no more selections available
+    const peopleLeft = this.filterPeople(this.defaultPeople);
+    let shouldShow = true;
+    if (peopleLeft && peopleLeft.length === 0) {
+      shouldShow = false;
+    }
+
+    if (shouldShow) {
+      window.requestAnimationFrame(() => {
+        // Mouse is focused on input
+        this.showFlyout();
+      });
+    }
   }
 
   /**
@@ -596,8 +607,14 @@ export class MgtPeoplePicker extends MgtTemplatedComponent {
     if (!people && provider && provider.state === ProviderState.SignedIn) {
       const graph = provider.graph.forComponent(this);
 
-      if (!input.length) {
-        people = await getPeople(graph);
+      // default common people
+      if (!input.length && this._isFocused) {
+        if (this.defaultPeople) {
+          people = this.defaultPeople;
+        } else {
+          people = await getPeople(graph);
+          this.defaultPeople = people;
+        }
         this._showLoading = false;
       }
 
@@ -740,6 +757,8 @@ export class MgtPeoplePicker extends MgtTemplatedComponent {
     if (input) {
       input.focus();
     }
+    this._showLoading = true;
+    this.loadState();
   }
 
   private lostFocus() {
@@ -828,6 +847,7 @@ export class MgtPeoplePicker extends MgtTemplatedComponent {
    * @param input - input text
    */
   private handleUserSearch(input: HTMLInputElement) {
+    this._showLoading = true;
     if (!this._debouncedSearch) {
       this._debouncedSearch = debounce(async () => {
         // Wait a few milliseconds before showing the flyout.
@@ -837,7 +857,6 @@ export class MgtPeoplePicker extends MgtTemplatedComponent {
           if (!this.userInput.length) {
             this._foundPeople = [];
             this.hideFlyout();
-            this._showLoading = true;
           }
         }, 400);
 
