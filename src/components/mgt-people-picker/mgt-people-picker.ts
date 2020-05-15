@@ -221,6 +221,30 @@ export class MgtPeoplePicker extends MgtTemplatedComponent {
   public defaultSelectedUserIds: '';
 
   /**
+   * Placeholder text.
+   *
+   * @type {string}
+   * @memberof MgtPeoplePicker
+   */
+  @property({
+    attribute: 'placeholder',
+    type: String
+  })
+  public placeholder: string;
+
+  /**
+   * Determines whether component allows multiple or single selection of people
+   *
+   * @type {string}
+   * @memberof MgtPeoplePicker
+   */
+  @property({
+    attribute: 'selection-mode',
+    type: String
+  })
+  public selectionMode: string;
+
+  /**
    * User input in search.
    *
    * @protected
@@ -377,10 +401,20 @@ export class MgtPeoplePicker extends MgtTemplatedComponent {
    */
   protected renderInput(): TemplateResult {
     const hasSelectedPeople = !!this.selectedPeople.length;
+
+    const placeholder = this.placeholder ? this.placeholder : 'Start typing a name';
+
+    const selectionMode = this.selectionMode ? this.selectionMode : 'multiple';
+
     const inputClasses = {
       'input-search': true,
       'input-search--start': hasSelectedPeople
     };
+
+    if (selectionMode === 'single' && this.selectedPeople.length >= 1) {
+      this.lostFocus();
+      return null;
+    }
 
     return html`
       <div class="${classMap(inputClasses)}">
@@ -388,7 +422,7 @@ export class MgtPeoplePicker extends MgtTemplatedComponent {
           id="people-picker-input"
           class="people-selected-input"
           type="text"
-          placeholder="Start typing a name"
+          placeholder=${placeholder}
           label="people-picker-input"
           aria-label="people-picker-input"
           role="input"
@@ -838,8 +872,11 @@ export class MgtPeoplePicker extends MgtTemplatedComponent {
 
   private onPersonClick(person: IDynamicPerson): void {
     this.addPerson(person);
-    this.focus();
     this.hideFlyout();
+    if (this.selectionMode === 'single') {
+      return;
+    }
+    this.focus();
   }
 
   /**
