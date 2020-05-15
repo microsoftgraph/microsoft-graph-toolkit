@@ -500,6 +500,11 @@ export class MgtPeoplePicker extends MgtTemplatedComponent {
       return this.renderNoData();
     }
 
+    // clears focus
+    for (const person of people) {
+      (person as IFocusable).isFocused = false;
+    }
+
     people = people.slice(0, this.showMax);
     (people[0] as IFocusable).isFocused = true;
 
