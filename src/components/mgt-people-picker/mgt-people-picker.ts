@@ -10,8 +10,8 @@ import { customElement, html, internalProperty, property, TemplateResult } from 
 import { classMap } from 'lit-html/directives/class-map';
 import { repeat } from 'lit-html/directives/repeat';
 import { findGroups, GroupType } from '../../graph/graph.groups';
-import { findPeople, getPeopleFromGroup, PersonType } from '../../graph/graph.people';
-import { findUsers, getUser } from '../../graph/graph.user';
+import { findPeople, getPeople, getPeopleFromGroup, PersonType } from '../../graph/graph.people';
+import { findUsers, getUser, getUsersForUserIds } from '../../graph/graph.user';
 import { IDynamicPerson } from '../../graph/types';
 import { Providers } from '../../Providers';
 import { ProviderState } from '../../providers/IProvider';
@@ -86,36 +86,6 @@ export class MgtPeoplePicker extends MgtTemplatedComponent {
   protected get flyout(): MgtFlyout {
     return this.renderRoot.querySelector('.flyout');
   }
-
-  /**
-   * containing object of IDynamicPerson.
-   * @type {IDynamicPerson[]}
-   */
-  @property({
-    attribute: 'people',
-    type: Object
-  })
-  public people: IDynamicPerson[];
-
-  /**
-   * determining how many people to show in list.
-   * @type {number}
-   */
-  @property({
-    attribute: 'show-max',
-    type: Number
-  })
-  public showMax: number;
-
-  /**
-   *  array of user picked people.
-   * @type {IDynamicPerson[]}
-   */
-  @property({
-    attribute: 'selected-people',
-    type: Array
-  })
-  public selectedPeople: IDynamicPerson[];
 
   /**
    * value determining if search is filtered to a group.
@@ -207,6 +177,51 @@ export class MgtPeoplePicker extends MgtTemplatedComponent {
   }
 
   /**
+   * containing object of IDynamicPerson.
+   * @type {IDynamicPerson[]}
+   */
+  @property({
+    attribute: 'people',
+    type: Object
+  })
+  public people: IDynamicPerson[];
+
+  /**
+   * determining how many people to show in list.
+   * @type {number}
+   */
+  @property({
+    attribute: 'show-max',
+    type: Number
+  })
+  public showMax: number;
+
+  /**
+   *  array of user picked people.
+   * @type {IDynamicPerson[]}
+   */
+  @property({
+    attribute: 'selected-people',
+    type: Array
+  })
+  public selectedPeople: IDynamicPerson[];
+
+  /**
+   * array of people to be selected upon intialization
+   *
+   * @type {Array}
+   * @memberof MgtPeoplePicker
+   */
+  @property({
+    attribute: 'default-selected-user-ids',
+    converter: value => {
+      return value.split(',').map(v => v.trim());
+    },
+    type: String
+  })
+  public defaultSelectedUserIds: '';
+
+  /**
    * Placeholder text.
    *
    * @type {string}
@@ -245,6 +260,8 @@ export class MgtPeoplePicker extends MgtTemplatedComponent {
   private _groupId: string;
   private _type: PersonType = PersonType.Person;
   private _groupType: GroupType = GroupType.Any;
+
+  private defaultPeople: IDynamicPerson[];
 
   // tracking of user arrow key input for selection
   private _arrowSelectionCount: number = 0;
@@ -291,14 +308,19 @@ export class MgtPeoplePicker extends MgtTemplatedComponent {
     peopleInput.focus(options);
     peopleInput.select();
 
-    window.requestAnimationFrame(() => {
-      // Mouse is focused on input
-      if (!peopleInput.value) {
-        this.hideFlyout();
-      } else {
+    // handles hiding control if default people have no more selections available
+    const peopleLeft = this.filterPeople(this.defaultPeople);
+    let shouldShow = true;
+    if (peopleLeft && peopleLeft.length === 0) {
+      shouldShow = false;
+    }
+
+    if (shouldShow) {
+      window.requestAnimationFrame(() => {
+        // Mouse is focused on input
         this.showFlyout();
-      }
-    });
+      });
+    }
   }
 
   /**
@@ -479,6 +501,11 @@ export class MgtPeoplePicker extends MgtTemplatedComponent {
       return this.renderNoData();
     }
 
+    // clears focus
+    for (const person of people) {
+      (person as IFocusable).isFocused = false;
+    }
+
     people = people.slice(0, this.showMax);
     (people[0] as IFocusable).isFocused = true;
 
@@ -497,8 +524,9 @@ export class MgtPeoplePicker extends MgtTemplatedComponent {
       this.renderTemplate('loading', null) ||
       html`
         <div class="message-parent">
-          <div label="search-error-text" aria-label="loading" class="loading-text">
-            ......
+          <div class="spinner"></div>
+          <div label="loading-text" aria-label="loading" class="loading-text">
+            Loading...
           </div>
         </div>
       `
@@ -617,10 +645,30 @@ export class MgtPeoplePicker extends MgtTemplatedComponent {
 
     const provider = Providers.globalProvider;
     if (!people && provider && provider.state === ProviderState.SignedIn) {
-      if (this.groupId) {
+      const graph = provider.graph.forComponent(this);
+
+      // default common people
+      if (!input.length && this._isFocused) {
+        if (this.defaultPeople) {
+          people = this.defaultPeople;
+        } else {
+          people = await getPeople(graph);
+          this.defaultPeople = people;
+        }
+        this._showLoading = false;
+      }
+
+      if (this.defaultSelectedUserIds && !this.selectedPeople.length) {
+        const defaultSelectedUsers = await getUsersForUserIds(graph, this.defaultSelectedUserIds);
+
+        this.selectedPeople = [...defaultSelectedUsers];
+        this.requestUpdate();
+        this.fireCustomEvent('selectionChanged', this.selectedPeople);
+      }
+
+      if (this.groupId && input) {
         if (this._groupPeople === null) {
           try {
-            const graph = provider.graph.forComponent(this);
             this._groupPeople = await getPeopleFromGroup(graph, this.groupId);
           } catch (_) {
             this._groupPeople = [];
@@ -629,9 +677,7 @@ export class MgtPeoplePicker extends MgtTemplatedComponent {
 
         people = this._groupPeople || [];
       } else if (input) {
-        const graph = provider.graph.forComponent(this);
         people = [];
-
         if (this.type === PersonType.Person || this.type === PersonType.Any) {
           try {
             people = (await findPeople(graph, input, this.showMax)) || [];
@@ -716,6 +762,7 @@ export class MgtPeoplePicker extends MgtTemplatedComponent {
       return p.id !== person.id;
     });
     this.selectedPeople = filteredPersonArr;
+    this.loadState();
     this.fireCustomEvent('selectionChanged', this.selectedPeople);
   }
 
@@ -738,6 +785,7 @@ export class MgtPeoplePicker extends MgtTemplatedComponent {
         this.selectedPeople = [...this.selectedPeople, person];
         this.fireCustomEvent('selectionChanged', this.selectedPeople);
 
+        this.loadState();
         this._foundPeople = [];
       }
     }
@@ -749,6 +797,8 @@ export class MgtPeoplePicker extends MgtTemplatedComponent {
     if (input) {
       input.focus();
     }
+    this._showLoading = true;
+    this.loadState();
   }
 
   private lostFocus() {
@@ -815,6 +865,9 @@ export class MgtPeoplePicker extends MgtTemplatedComponent {
       this.userInput = '';
       // remove last person in selected list
       this.selectedPeople = this.selectedPeople.splice(0, this.selectedPeople.length - 1);
+      // reset flyout position
+      this.hideFlyout();
+      this.showFlyout();
       // fire selected people changed event
       this.fireCustomEvent('selectionChanged', this.selectedPeople);
       return;
@@ -837,24 +890,23 @@ export class MgtPeoplePicker extends MgtTemplatedComponent {
    * @param input - input text
    */
   private handleUserSearch(input: HTMLInputElement) {
+    this._showLoading = true;
     if (!this._debouncedSearch) {
       this._debouncedSearch = debounce(async () => {
-        if (!this.userInput.length) {
-          this._foundPeople = [];
-          this.hideFlyout();
-          this._showLoading = true;
-        } else {
-          // Wait a few milliseconds before showing the flyout.
-          // This helps prevent loading state flickering while the user is actively changing the query.
-          const loadingTimeout = setTimeout(() => {
-            this._showLoading = true;
-          }, 400);
+        // Wait a few milliseconds before showing the flyout.
+        // This helps prevent loading state flickering while the user is actively changing the query.
 
-          await this.loadState();
-          clearTimeout(loadingTimeout);
-          this._showLoading = false;
-          this.showFlyout();
-        }
+        const loadingTimeout = setTimeout(() => {
+          if (!this.userInput.length) {
+            this._foundPeople = [];
+            this.hideFlyout();
+          }
+        }, 400);
+
+        await this.loadState();
+        clearTimeout(loadingTimeout);
+        this._showLoading = false;
+        this.showFlyout();
 
         this._arrowSelectionCount = 0;
       }, 400);
