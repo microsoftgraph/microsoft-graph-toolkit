@@ -16,6 +16,7 @@ import { styles } from './mgt-login-css';
 
 import '../../styles/fabric-icon-font';
 import '../mgt-person/mgt-person';
+import { PersonViewType } from '../mgt-person/mgt-person';
 
 /**
  * Web component button and flyout control to facilitate Microsoft identity platform authentication
@@ -260,13 +261,7 @@ export class MgtLogin extends MgtTemplatedComponent {
     return (
       template ||
       html`
-        <mgt-person
-          .personDetails=${personDetails}
-          .personImage=${personImage}
-          .avatarSize="large"
-          .showName=${true}
-          .showEmail=${true}
-        />
+        <mgt-person .personDetails=${personDetails} .personImage=${personImage} .view=${PersonViewType.twolines} />
       `
     );
   }
@@ -321,12 +316,7 @@ export class MgtLogin extends MgtTemplatedComponent {
     return (
       template ||
       html`
-        <mgt-person
-          .personDetails=${this.userDetails}
-          .personImage=${this._image}
-          .avatarSize="small"
-          .showName=${true}
-        />
+        <mgt-person .personDetails=${this.userDetails} .personImage=${this._image} .view=${PersonViewType.oneline} />
       `
     );
   }

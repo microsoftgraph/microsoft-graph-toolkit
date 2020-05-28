@@ -21,7 +21,7 @@ export default {
 };
 
 export const person = () => html`
-  <mgt-person person-query="me" show-name show-email></mgt-person>
+  <mgt-person person-query="me" view="twoLines"></mgt-person>
 `;
 
 export const personPhotoOnly = () => html`
@@ -29,7 +29,7 @@ export const personPhotoOnly = () => html`
 `;
 
 export const personPresence = () => html`
-  <mgt-person person-query="me" show-presence show-email show-name></mgt-person>
+  <mgt-person person-query="me" show-presence view="twoLines"></mgt-person>
 `;
 
 export const personPresenceDisplayAll = () => html`
@@ -137,14 +137,14 @@ export const personPresenceDisplayAll = () => html`
     }
   </style>
   <div class="title"><span>Presence badge on big avatars: </span></div>
-  <mgt-person id="online" person-query="me" show-presence show-email show-name></mgt-person>
-  <mgt-person id="onlineOof" person-query="Isaiah Langer" show-presence show-email show-name></mgt-person>
-  <mgt-person id="busy" person-query="bobk@tailspintoys.com" show-presence show-email show-name></mgt-person>
-  <mgt-person id="busyOof" person-query="Diego Siciliani" show-presence show-email show-name></mgt-person>
-  <mgt-person id="dnd" person-query="Lynne Robbins" show-presence show-email show-name></mgt-person>
-  <mgt-person id="dndOof" person-query="EmilyB" show-presence show-email show-name></mgt-person>
-  <mgt-person id="away" person-query="BrianJ" show-presence show-email show-name></mgt-person>
-  <mgt-person id="oof" person-query="JoniS@M365x214355.onmicrosoft.com" show-presence show-email show-name></mgt-person>
+  <mgt-person id="online" person-query="me" show-presence view="twoLines"></mgt-person>
+  <mgt-person id="onlineOof" person-query="Isaiah Langer" show-presence view="twoLines"></mgt-person>
+  <mgt-person id="busy" person-query="bobk@tailspintoys.com" show-presence view="twoLines"></mgt-person>
+  <mgt-person id="busyOof" person-query="Diego Siciliani" show-presence view="twoLines"></mgt-person>
+  <mgt-person id="dnd" person-query="Lynne Robbins" show-presence view="twoLines"></mgt-person>
+  <mgt-person id="dndOof" person-query="EmilyB" show-presence view="twoLines"></mgt-person>
+  <mgt-person id="away" person-query="BrianJ" show-presence view="twoLines"></mgt-person>
+  <mgt-person id="oof" person-query="JoniS@M365x214355.onmicrosoft.com" show-presence view="twoLines"></mgt-person>
   <div class="title"><span>Presence badge on small avatars: </span></div>
   <mgt-person class="small" id="online-small" person-query="me" show-presence></mgt-person>
   <mgt-person class="small" id="onlineOof-small" person-query="Isaiah Langer" show-presence></mgt-person>
@@ -162,4 +162,113 @@ export const personCardHover = () => html`
 
 export const personCardClick = () => html`
   <mgt-person person-query="me" person-card="click"></mgt-person>
+`;
+
+export const setPersonDetails = () => html`
+  <mgt-person class="my-person" view="twoLines" line2-property="title" person-card="hover"> </mgt-person>
+  <script>
+    const person = document.querySelector('.my-person');
+
+    person.personDetails = {
+      displayName: 'Megan Bowen',
+      title: 'CEO',
+      mail: 'megan@contoso.com'
+    };
+
+    // set image
+    person.personImage = '';
+  </script>
+`;
+
+export const moreExamples = () => html`
+  <style>
+    .example {
+      margin-bottom: 20px;
+    }
+
+    .styled-person {
+      --font-family: 'Comic Sans MS', cursive, sans-serif;
+      --color: red;
+      --avatar-size: 60px;
+      --font-size: 20px;
+      --line2-color: green;
+      --avatar-border-radius: 10% 35%;
+      --line2-text-transform: uppercase;
+    }
+
+    .person-initials {
+      --initials-color: yellow;
+      --initials-background-color: red;
+      --avatar-size: 60px;
+      --avatar-border-radius: 10% 35%;
+    }
+  </style>
+
+  <div class="example">
+    <span>Default person</span>
+    <mgt-person person-query="me"></mgt-person>
+  </div>
+
+  <div class="example">
+    <span>One line</span>
+    <mgt-person person-query="me" view="oneline"></mgt-person>
+  </div>
+
+  <div class="example">
+    <span>Two lines</span>
+    <mgt-person person-query="me" view="twoLines"></mgt-person>
+  </div>
+
+  <div class="example">
+    <span>Change line content</span>
+    <!--add fallback property by comma separating-->
+    <mgt-person
+      person-query="me"
+      line1-property="givenName"
+      line2-property="jobTitle,mail"
+      view="twoLines"
+    ></mgt-person>
+  </div>
+
+  <div class="example">
+    <span>Large avatar</span>
+    <mgt-person person-query="me" avatar-size="large"></mgt-person>
+  </div>
+
+  <div class="example">
+    <span>Different styles (see css tab for style)</span>
+    <mgt-person class="styled-person" person-query="me" view="twoLines"></mgt-person>
+  </div>
+
+  <div class="example" style="width: 200px">
+    <span>Overflow</span>
+    <mgt-person person-query="me" view="twoLines"></mgt-person>
+  </div>
+
+  <div class="example">
+    <span>No data template</span>
+    <mgt-person>
+      <template data-type="no-data">
+        <div>No person</div>
+      </template>
+    </mgt-person>
+  </div>
+
+  <div class="example">
+    <span>Person card</span>
+    <mgt-person person-query="me" view="twoLines" person-card="hover"></mgt-person>
+  </div>
+
+  <div class="example">
+    <span>Style initials (see css tab for style)</span>
+    <mgt-person class="person-initials" person-query="alex@fineartschool.net" view="oneline"></mgt-person>
+  </div>
+
+  <div class="example">
+    <span>DEPRECATED (show-name, show-email)</span>
+    <mgt-person person-query="me"></mgt-person>
+    <mgt-person person-query="me" show-name></mgt-person>
+    <mgt-person person-query="me" show-email></mgt-person>
+    <mgt-person person-query="me" show-name show-email></mgt-person>
+  </div>
 `;

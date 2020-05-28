@@ -17,6 +17,7 @@ import { Providers } from '../../Providers';
 import { ProviderState } from '../../providers/IProvider';
 import '../../styles/fabric-icon-font';
 import { debounce } from '../../utils/Utils';
+import { PersonViewType } from '../mgt-person/mgt-person';
 import { PersonCardInteraction } from '../PersonCardInteraction';
 import { MgtFlyout } from '../sub-components/mgt-flyout/mgt-flyout';
 import { MgtTemplatedComponent } from '../templatedComponent';
@@ -600,7 +601,7 @@ export class MgtPeoplePicker extends MgtTemplatedComponent {
         class="selected-person"
         .personDetails=${person}
         .fetchImage=${true}
-        .showName=${true}
+        .view=${PersonViewType.oneline}
         .personCardInteraction=${PersonCardInteraction.click}
       ></mgt-person>
     `;

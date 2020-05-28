@@ -44,8 +44,11 @@ export async function getUserWithPhoto(graph: IGraph, userId?: string): Promise<
     batch.get('photo', 'me/photo/$value', ['user.read']);
   }
   const response = await batch.execute();
-  person = response.user;
-  person.personImage = response.photo;
+
+  if (response && response.user) {
+    person = response.user;
+    person.personImage = response.photo;
+  }
 
   return person;
 }
