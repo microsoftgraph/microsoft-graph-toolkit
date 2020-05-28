@@ -35,7 +35,7 @@ export const personCardHover = () => html`
       font-size: 12px;
     }
   </style>
-  <mgt-person person-query="me" show-name show-email person-card="hover"></mgt-person>
+  <mgt-person person-query="me" view="twoLines" person-card="hover"></mgt-person>
   <div class="note">
     (Hover on person to view Person Card)
   </div>
@@ -51,7 +51,7 @@ export const personCardInheritDetails = () => html`
       font-size: 12px;
     }
   </style>
-  <mgt-person person-query="me" show-name show-email person-card="hover">
+  <mgt-person person-query="me" view="twoLines" person-card="hover">
     <template data-type="person-card">
       <mgt-person-card inherit-details></mgt-person-card>
     </template>
