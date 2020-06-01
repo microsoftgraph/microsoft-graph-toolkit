@@ -28,3 +28,17 @@ export default {
 export const Login = () => html`
   <mgt-login></mgt-login>
 `;
+
+export const Templates = () => html`
+<mgt-login>
+  <template data-type="signed-in-button-content">
+    {{personDetails.givenName}}
+  </template>
+  <template data-type="flyout-commands">
+    <div>
+      <button data-props="{@click: handleSignOut}">Sign Out</button>
+      <button>Go to my profile</button>
+    </div>
+  </template>
+</mgt-login>
+`;

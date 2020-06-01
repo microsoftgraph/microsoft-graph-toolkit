@@ -25,6 +25,4 @@ export * from './mgt-person/mgt-person';
 export * from './mgt-tasks/mgt-tasks';
 export * from './mgt-teams-channel-picker/mgt-teams-channel-picker';
 
-// Sub-Components, not for export!
-// export * from './sub-components/mgt-dot-options/mgt-dot-options';
-// export * from './sub-components/mgt-arrow-options/mgt-arrow-options';
+export { ComponentMediaQuery } from './baseComponent';
