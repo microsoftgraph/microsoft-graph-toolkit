@@ -22,7 +22,7 @@ export default {
 };
 
 export const PersonCardAdditionalDetails = () => html`
-  <mgt-person person-query="me" show-name show-email person-card="hover">
+  <mgt-person person-query="me" view="twoLines" person-card="hover">
     <template data-type="person-card">
       <mgt-person-card inherit-details>
         <template data-type="additional-details">
@@ -242,6 +242,7 @@ export const AgendaEventTemplate = () => html`
     mgt-person {
       --avatar-size-s: 16px;
       margin-right: 4px;
+      display: inline-block;
     }
   </style>
 `;
@@ -252,7 +253,7 @@ export const GroupedEmail = () => html`
       <div>
         <div data-for="group in groupMail(value)">
           <div class="header">
-            <mgt-person person-query="{{ group[0] }}" show-name person-card="hover"></mgt-person>
+            <mgt-person person-query="{{ group[0] }}" view="oneLine" person-card="hover"></mgt-person>
           </div>
           <div data-for="message in group[1]" class="email">
             <h2>{{ message.subject }}</h2>
@@ -317,7 +318,7 @@ export const TeamsMessages = () => html`
 <mgt-get id="messagesGet" version="beta">
   <template data-type="value">
     <div data-if="!deletedDateTime" class="teams-message">
-      <mgt-person user-id="{{from.user.id}}" show-name person-card="hover"></mgt-person>
+      <mgt-person user-id="{{from.user.id}}" view="oneLine" person-card="hover"></mgt-person>
       <div data-props="@click: messageClick, innerHTML: body.content"></div>
       <div class="reply hidden">
         <input></input>

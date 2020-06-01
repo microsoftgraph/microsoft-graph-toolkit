@@ -1,0 +1,18 @@
+﻿<!--  Copyright (c) Microsoft. All rights reserved. Licensed under the MIT license.
+        See LICENSE in the source repository root for complete license information. -->
+
+@{
+    ViewData["Title"] = "Home Page";
+}
+
+<h2>Microsoft Graph Toolkit ASP.NET Core 3.1 Sample</h2>
+
+@if (!User.Identity.IsAuthenticated)
+{
+    <br />
+    <p>Choose <b>Sign in</b> at the top of the page and sign in with your work or school account.</p>
+}
+@if (User.Identity.IsAuthenticated)
+{
+    <mgt-person person-details="@ViewData["Response"]" person-image="@ViewData["Picture"]" show-name show-email person-card="hover"></mgt-person>
+}
