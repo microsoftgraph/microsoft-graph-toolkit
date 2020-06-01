@@ -1,4 +1,4 @@
-import { IDynamicPerson,TemplateContext,ComponentMediaQuery,AvatarSize,PersonCardInteraction,TasksStringResource,TaskFilter,SelectedChannel } from '@microsoft/mgt';
+import { IDynamicPerson,TemplateContext,ComponentMediaQuery,PersonCardInteraction,PersonViewType,AvatarSize,TasksStringResource,TaskFilter,SelectedChannel } from '@microsoft/mgt';
 import * as MicrosoftGraph from '@microsoft/microsoft-graph-types';
 import * as MicrosoftGraphBeta from '@microsoft/microsoft-graph-types-beta';
 import {wrapMgt} from '../Mgt';
@@ -25,12 +25,15 @@ export type PersonProps = {
 	showName?: boolean,
 	showEmail?: boolean,
 	showPresence?: boolean,
-	avatarSize?: AvatarSize,
 	personDetails?: IDynamicPerson,
 	personImage?: string,
 	fetchImage?: boolean,
 	personPresence?: MicrosoftGraphBeta.Presence,
 	personCardInteraction?: PersonCardInteraction,
+	line1Property?: string,
+	line2Property?: string,
+	view?: PersonViewType,
+	avatarSize?: AvatarSize,
 	templateContext?: TemplateContext,
 	templateConverters?: TemplateContext,
 	mediaQuery?: ComponentMediaQuery,
@@ -79,10 +82,13 @@ export type LoginProps = {
 }
 
 export type PeoplePickerProps = {
-	people?: IDynamicPerson[],
 	groupId?: string,
 	type?: string,
 	groupType?: string,
+	people?: IDynamicPerson[],
+	defaultSelectedUserIds?: string[],
+	placeholder?: string,
+	selectionMode?: string,
 	showMax?: number,
 	selectedPeople?: IDynamicPerson[],
 	templateContext?: TemplateContext,
