@@ -192,6 +192,7 @@ export class MgtPerson extends MgtTemplatedComponent {
       return;
     }
 
+    this._isInvalidImageSrc = !!value;
     const oldValue = this._personImage;
     this._personImage = value;
     this.requestUpdate('personImage', oldValue);
@@ -315,6 +316,7 @@ export class MgtPerson extends MgtTemplatedComponent {
   private _personAvatarBg: string;
   private _personImage: string;
   private _personPresence: MicrosoftGraphBeta.Presence;
+  private _isInvalidImageSrc: boolean;
 
   private _mouseLeaveTimeout;
   private _mouseEnterTimeout;
@@ -328,6 +330,7 @@ export class MgtPerson extends MgtTemplatedComponent {
     this.line2Property = 'email';
     this.view = PersonViewType.avatar;
     this.avatarSize = 'auto';
+    this._isInvalidImageSrc = false;
   }
 
   /**
@@ -452,11 +455,21 @@ export class MgtPerson extends MgtTemplatedComponent {
    */
   protected renderImage(personDetails: IDynamicPerson, imageSrc: string) {
     const title =
-      personDetails && this.personCardInteraction === PersonCardInteraction.none ? personDetails.displayName : '';
+      personDetails && this.personCardInteraction === PersonCardInteraction.none
+        ? personDetails.displayName || personDetails.mail || ''
+        : '';
 
-    if (imageSrc) {
+    if (imageSrc && !this._isInvalidImageSrc) {
+      const image = new Image();
+      image.alt = title;
+      image.src = imageSrc;
+      image.addEventListener('error', e => {
+        this._isInvalidImageSrc = true;
+        this.requestUpdate('personImage');
+      });
+
       return html`
-        <img alt=${title} src=${imageSrc} />
+        ${image}
       `;
     } else if (personDetails) {
       const initials = this.getInitials(personDetails);
