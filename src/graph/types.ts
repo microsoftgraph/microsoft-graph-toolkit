@@ -22,6 +22,13 @@ export type IDynamicPerson = (MicrosoftGraph.User | MicrosoftGraph.Person | Micr
    * @type {string}
    */
   personImage?: string;
+
+  /**
+   * Placeholder for user provided mail value. Used when setting personDetails manually.
+   *
+   * @type {string}
+   */
+  mail?: string;
 };
 
 /**
