@@ -15,6 +15,8 @@ import { MgtTemplatedComponent } from '../templatedComponent';
 /**
  * Custom element for making Microsoft Graph get queries
  *
+ * @fires dataChange - Fired when data changes
+ *
  * @export
  * @class mgt-get
  * @extends {MgtTemplatedComponent}
@@ -94,7 +96,7 @@ export class MgtGet extends MgtTemplatedComponent {
   /**
    * Gets or sets the response of the request
    *
-   * @type {*}
+   * @type any
    * @memberof MgtGet
    */
   @property({ attribute: false }) public response: any;
@@ -102,7 +104,7 @@ export class MgtGet extends MgtTemplatedComponent {
   /**
    *
    * Gets or sets the error (if any) of the request
-   * @type {*}
+   * @type any
    * @memberof MgtGet
    */
   @property({ attribute: false }) public error: any;
@@ -140,12 +142,12 @@ export class MgtGet extends MgtTemplatedComponent {
    * trigger the element to update.
    */
   protected render() {
-    if (this.isLoadingState) {
+    if (this.isLoadingState && !this.isPolling) {
       return this.renderTemplate('loading', null);
     } else if (this.error) {
       return this.renderTemplate('error', this.error);
       // tslint:disable-next-line: no-string-literal
-    } else if (this.templates['value'] && this.response && this.response.value) {
+    } else if (this.hasTemplate('value') && this.response && this.response.value) {
       let valueContent;
 
       if (Array.isArray(this.response.value)) {
@@ -161,7 +163,7 @@ export class MgtGet extends MgtTemplatedComponent {
       }
 
       // tslint:disable-next-line: no-string-literal
-      if (this.templates['default']) {
+      if (this.hasTemplate('default')) {
         const defaultContent = this.renderTemplate('default', this.response);
 
         // tslint:disable-next-line: no-string-literal
@@ -179,8 +181,6 @@ export class MgtGet extends MgtTemplatedComponent {
       }
     } else if (this.response) {
       return this.renderTemplate('default', this.response) || html``;
-    } else if (this.isLoadingState) {
-      return this.renderTemplate('loading', null) || html``;
     } else {
       return html``;
     }
@@ -205,12 +205,14 @@ export class MgtGet extends MgtTemplatedComponent {
     if (this.resource) {
       try {
         let uri = this.resource;
-        let delta = false;
+        let isDeltaLink = false;
 
         // if we had a response earlier with a delta link, use it instead
         if (this.response && this.response['@odata.deltaLink']) {
           uri = this.response['@odata.deltaLink'];
-          delta = true;
+          isDeltaLink = true;
+        } else {
+          isDeltaLink = new URL(uri, 'https://graph.microsoft.com').pathname.endsWith('delta');
         }
 
         const graph = provider.graph.forComponent(this);
@@ -220,23 +222,23 @@ export class MgtGet extends MgtTemplatedComponent {
           request = request.middlewareOptions(prepScopes(...this.scopes));
         }
 
-        const response = await request.get();
+        let response = await request.get();
 
-        if (delta && this.response && Array.isArray(this.response.value) && Array.isArray(response.value)) {
+        if (isDeltaLink && this.response && Array.isArray(this.response.value) && Array.isArray(response.value)) {
           response.value = this.response.value.concat(response.value);
         }
 
-        if (!equals(this.response, response)) {
+        if (!this.isPolling && !equals(this.response, response)) {
           this.response = response;
         }
 
         // get more pages if there are available
-        if (this.response && Array.isArray(this.response.value) && this.response['@odata.nextLink']) {
+        if (response && Array.isArray(response.value) && response['@odata.nextLink']) {
           let pageCount = 1;
-          let page = this.response;
+          let page = response;
 
           while (
-            (pageCount < this.maxPages || this.maxPages <= 0 || this.pollingRate) &&
+            (pageCount < this.maxPages || this.maxPages <= 0 || (isDeltaLink && this.pollingRate)) &&
             page &&
             page['@odata.nextLink']
           ) {
@@ -247,10 +249,17 @@ export class MgtGet extends MgtTemplatedComponent {
               .version(this.version)
               .get();
             if (page && page.value && page.value.length) {
-              page.value = this.response.value.concat(page.value);
-              this.response = page;
+              page.value = response.value.concat(page.value);
+              response = page;
+              if (!this.isPolling) {
+                this.response = response;
+              }
             }
           }
+        }
+
+        if (!equals(this.response, response)) {
+          this.response = response;
         }
       } catch (e) {
         this.error = e;

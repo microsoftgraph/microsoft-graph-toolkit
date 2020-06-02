@@ -5,28 +5,37 @@
  * -------------------------------------------------------------------------------------------
  */
 
+@import '../../../../node_modules/office-ui-fabric-core/dist/sass/References';
+
 .root {
-  position: relative;
-}
-
-.root .flyout {
-  display: none;
-  position: absolute;
-  z-index: 1;
-  animation-duration: 300ms;
-}
-
-.root .flyout.visible {
-  display: inline-block;
-  animation-name: fade-in;
-}
-
-@keyframes fade-in {
-  from {
+  .flyout {
+    display: none;
+    position: fixed;
+    z-index: 9999999;
     opacity: 0;
+    box-shadow: $ms-depth-shadow-8;
   }
 
+  &.visible {
+    .flyout {
+      display: inline-block;
+      animation-name: fadeIn;
+      animation-duration: 0.3s;
+      animation-timing-function: cubic-bezier(0.1, 0.9, 0.2, 1);
+      animation-fill-mode: both;
+    }
+  }
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    margin-top: -10px;
+    margin-bottom: -10px;
+  }
   to {
     opacity: 1;
+    margin-top: 0;
+    margin-bottom: 0;
   }
 }

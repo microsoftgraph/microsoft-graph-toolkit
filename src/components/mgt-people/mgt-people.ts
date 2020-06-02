@@ -9,14 +9,18 @@ import * as MicrosoftGraph from '@microsoft/microsoft-graph-types';
 import { customElement, html, property, TemplateResult } from 'lit-element';
 import { repeat } from 'lit-html/directives/repeat';
 import { getPeople, getPeopleFromGroup } from '../../graph/graph.people';
-import { getUsersForUserIds } from '../../graph/graph.user';
+import { getUsersPresenceByPeople } from '../../graph/graph.presence';
+import { getUsersForPeopleQueries, getUsersForUserIds } from '../../graph/graph.user';
+import { IDynamicPerson } from '../../graph/types';
 import { Providers } from '../../Providers';
 import { ProviderState } from '../../providers/IProvider';
 import '../../styles/fabric-icon-font';
-import '../mgt-person/mgt-person';
+import { arraysAreEqual } from '../../utils/Utils';
 import { MgtTemplatedComponent } from '../templatedComponent';
 import { PersonCardInteraction } from './../PersonCardInteraction';
 import { styles } from './mgt-people-css';
+
+export { PersonCardInteraction } from './../PersonCardInteraction';
 
 /**
  * web component to display a group of people or contacts by using their photos or initials.
@@ -39,14 +43,77 @@ export class MgtPeople extends MgtTemplatedComponent {
   }
 
   /**
+   * determines if agenda events come from specific group
+   * @type {string}
+   */
+  @property({
+    attribute: 'group-id',
+    type: String
+  })
+  public get groupId(): string {
+    return this._groupId;
+  }
+  public set groupId(value) {
+    if (this._groupId === value) {
+      return;
+    }
+    this._groupId = value;
+    this.requestStateUpdate(true);
+  }
+
+  /**
+   * user id array
+   *
+   * @memberof MgtPeople
+   */
+  @property({
+    attribute: 'user-ids',
+    converter: (value, type) => {
+      return value.split(',').map(v => v.trim());
+    }
+  })
+  public get userIds(): string[] {
+    return this._userIds;
+  }
+  public set userIds(value: string[]) {
+    if (arraysAreEqual(this._userIds, value)) {
+      return;
+    }
+    this._userIds = value;
+    this.requestStateUpdate(true);
+  }
+
+  /**
    * containing array of people used in the component.
-   * @type {Array<MgtPersonDetails>}
+   * @type {IDynamicPerson[]}
    */
   @property({
     attribute: 'people',
     type: Object
   })
-  public people: Array<MicrosoftGraph.User | MicrosoftGraph.Person | MicrosoftGraph.Contact>;
+  public people: IDynamicPerson[];
+
+  /**
+   * allows developer to define queries of people for component
+   * @type {string[]}
+   */
+
+  @property({
+    attribute: 'people-queries',
+    converter: (value, type) => {
+      return value.split(',').map(v => v.trim());
+    }
+  })
+  public get peopleQueries(): string[] {
+    return this._peopleQueries;
+  }
+  public set peopleQueries(value: string[]) {
+    if (arraysAreEqual(this._peopleQueries, value)) {
+      return;
+    }
+    this._peopleQueries = value;
+    this.requestStateUpdate(true);
+  }
 
   /**
    * developer determined max people shown in component
@@ -59,35 +126,14 @@ export class MgtPeople extends MgtTemplatedComponent {
   public showMax: number;
 
   /**
-   * determines if agenda events come from specific group
-   * @type {string}
+   * determines if person component renders presence
+   * @type {boolean}
    */
   @property({
-    attribute: 'group-id',
-    type: String
+    attribute: 'show-presence',
+    type: Boolean
   })
-  public groupId: string;
-
-  /**
-   * user id array
-   *
-   * @memberof MgtPeople
-   */
-  @property({
-    attribute: 'user-ids',
-    converter: (value, type) => {
-      return value.split(',');
-    }
-  })
-  public get userIds(): string[] {
-    return this.privateUserIds;
-  }
-  public set userIds(value: string[]) {
-    const oldValue = this.userIds;
-    this.privateUserIds = value;
-    this.updateUserIds(value);
-    this.requestUpdate('userIds', oldValue);
-  }
+  public showPresence: boolean;
 
   /**
    * Sets how the person-card is invoked
@@ -109,12 +155,29 @@ export class MgtPeople extends MgtTemplatedComponent {
   })
   public personCardInteraction: PersonCardInteraction = PersonCardInteraction.hover;
 
-  private privateUserIds: string[];
+  private _groupId: string;
+  private _userIds: string[];
+  private _peopleQueries: string[];
+  private _peoplePresence: {};
 
   constructor() {
     super();
 
     this.showMax = 3;
+  }
+
+  /**
+   * Request to reload the state.
+   * Use reload instead of load to ensure loading events are fired.
+   *
+   * @protected
+   * @memberof MgtBaseComponent
+   */
+  protected requestStateUpdate(force?: boolean) {
+    if (force) {
+      this.people = null;
+    }
+    return super.requestStateUpdate(force);
   }
 
   /**
@@ -201,6 +264,16 @@ export class MgtPeople extends MgtTemplatedComponent {
    * @memberof MgtPeople
    */
   protected renderPerson(person: MicrosoftGraph.User | MicrosoftGraph.Person | MicrosoftGraph.Contact): TemplateResult {
+    let personPresence = {
+      // set up default presence
+      activity: 'Offline',
+      availability: 'Offline',
+      id: null
+    };
+    if (this.showPresence && this._peoplePresence) {
+      personPresence = this._peoplePresence[person.id];
+    }
+    const avatarSize = 'small';
     return (
       this.renderTemplate('person', { person }, person.id) ||
       // set image to @ to flag the mgt-person component to
@@ -208,8 +281,11 @@ export class MgtPeople extends MgtTemplatedComponent {
       html`
         <mgt-person
           .personDetails=${person}
-          .personImage=${'@'}
+          .fetchImage=${true}
+          .avatarSize=${avatarSize}
           .personCardInteraction=${this.personCardInteraction}
+          .showPresence=${this.showPresence}
+          .personPresence=${personPresence}
         ></mgt-person>
       `
     );
@@ -240,44 +316,24 @@ export class MgtPeople extends MgtTemplatedComponent {
       if (provider && provider.state === ProviderState.SignedIn) {
         const graph = provider.graph.forComponent(this);
 
+        // populate people
         if (this.groupId) {
           this.people = await getPeopleFromGroup(graph, this.groupId);
         } else if (this.userIds) {
           this.people = await getUsersForUserIds(graph, this.userIds);
+        } else if (this.peopleQueries) {
+          this.people = await getUsersForPeopleQueries(graph, this.peopleQueries);
         } else {
           this.people = await getPeople(graph);
         }
+
+        // populate presence for people
+        if (this.showPresence) {
+          this._peoplePresence = await getUsersPresenceByPeople(graph, this.people);
+        } else {
+          this._peoplePresence = null;
+        }
       }
-    }
-  }
-
-  private async updateUserIds(newIds: string[]) {
-    if (this.isLoadingState) {
-      return;
-    }
-
-    const newIdsSet = new Set(newIds);
-    this.people = this.people.filter(p => newIdsSet.has(p.id));
-    const oldIdsSet = new Set(this.people ? this.people.map(p => p.id) : []);
-
-    const newToLoad = [];
-
-    for (const id of newIds) {
-      if (!oldIdsSet.has(id)) {
-        newToLoad.push(id);
-      }
-    }
-
-    if (newToLoad && newToLoad.length > 0) {
-      const provider = Providers.globalProvider;
-      if (!provider || provider.state !== ProviderState.SignedIn) {
-        return;
-      }
-
-      const graph = provider.graph.forComponent(this);
-
-      const newPeople = await getUsersForUserIds(graph, newToLoad);
-      this.people = (this.people || []).concat(newPeople);
     }
   }
 }

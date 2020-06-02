@@ -13,6 +13,7 @@ import './mgt-people/mgt-people';
 import './mgt-person-card/mgt-person-card';
 import './mgt-person/mgt-person';
 import './mgt-tasks/mgt-tasks';
+import './mgt-teams-channel-picker/mgt-teams-channel-picker';
 
 export * from './mgt-agenda/mgt-agenda';
 export * from './mgt-get/mgt-get';
@@ -22,7 +23,6 @@ export * from './mgt-people/mgt-people';
 export * from './mgt-person-card/mgt-person-card';
 export * from './mgt-person/mgt-person';
 export * from './mgt-tasks/mgt-tasks';
+export * from './mgt-teams-channel-picker/mgt-teams-channel-picker';
 
-// Sub-Components, not for export!
-// export * from './sub-components/mgt-dot-options/mgt-dot-options';
-// export * from './sub-components/mgt-arrow-options/mgt-arrow-options';
+export { ComponentMediaQuery } from './baseComponent';

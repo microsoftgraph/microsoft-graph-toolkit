@@ -25,6 +25,7 @@ The toolkit currently includes the following components:
 * [mgt-agenda](https://docs.microsoft.com/graph/toolkit/components/agenda)
 * [mgt-tasks](https://docs.microsoft.com/graph/toolkit/components/tasks)
 * [mgt-get](https://docs.microsoft.com/graph/toolkit/components/get)
+* [mgt-teams-channel-picker](https://docs.microsoft.com/en-us/graph/toolkit/components/teams-channel-picker)
 
 And the following providers:
 

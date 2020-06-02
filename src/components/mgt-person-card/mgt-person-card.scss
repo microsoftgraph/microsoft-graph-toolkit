@@ -4,45 +4,72 @@
  * See License in the project root for license information.
  * -------------------------------------------------------------------------------------------
  */
+
+@import '../../styles/shared-styles.scss';
 @import '../../../node_modules/office-ui-fabric-core/dist/sass/References';
 
-$font-size: var(--font-size, #{$ms-font-size-m});
-$font-weight: var(--font-weight, #{$ms-font-weight-semibold});
-$color: var(--color, #{$ms-color-neutralDark});
+$person-card-display-name-font-size: var(--person-card-display-name-font-size, 27.3103px);
+$person-card-title-font-size: var(--person-card-title-font-size, 18.2069px);
+$person-card-subtitle-font-size: var(--person-card-subtitle-font-size, 15.1724px);
+$person-card-details-title-font-size: var(--person-card-details-title-font-size, 14px);
+$person-card-details-item-font-size: var(--person-card-details-item-font-size, 15px);
+$person-card-display-name-color: var(--person-card-display-name-color, #333333);
+$person-card-title-color: var(--person-card-title-color, #767676);
+$person-card-subtitle-color: var(--person-card-subtitle-color, #767676);
+$person-card-details-title-color: var(--person-card-details-title-color, #000000);
+$person-card-details-item-color: var(--person-card-details-item-color, #201f1e);
+$person-card-background-color: var(--person-card-background-color, #ffffff);
 
 :host .root {
   position: relative;
-  width: 340px;
-  background: #ffffff;
-  box-shadow: 0px 0px 4.55172px rgba(0, 0, 0, 0.16);
+  background: $person-card-background-color;
+  width: var(--mgt-flyout-set-width, 340px);
   font-family: var(--default-font-family);
 
-  .default-view {
+  .person-details-container {
     display: flex;
     padding: 18px 14px;
 
     mgt-person.person-image {
-      --avatar-size-s: 75px;
+      --avatar-size: 75px;
     }
 
     .details {
       margin-left: 14px;
       line-height: 1.15;
-
+      display: grid;
+      position: relative;
+      overflow: hidden;
+      text-overflow: ellipse;
+      white-space: nowrap;
+      background-color: transparent;
+      width: 100%;
       .display-name {
-        font-size: 27.3103px;
-        color: #333333;
+        font-size: $person-card-display-name-font-size;
+        color: $person-card-display-name-color;
+        &::after {
+          content: '';
+          position: absolute;
+          width: 100%;
+          height: 100%;
+          top: 0;
+          right: 0;
+          background: linear-gradient(left, transparent, transparent 80%, $person-card-background-color);
+          background: -moz-linear-gradient(left, transparent, transparent 80%, $person-card-background-color);
+          background: -o-linear-gradient(left, transparent, transparent 80%, $person-card-background-color);
+          background: -ms-linear-gradient(left, transparent, transparent 80%, $person-card-background-color);
+          background: -webkit-linear-gradient(left, transparent, transparent 80%, $person-card-background-color);
+        }
       }
 
       .job-title {
-        font-size: 18.2069px;
-        color: #767676;
-        font-weight: 600;
+        font-size: $person-card-title-font-size;
+        color: $person-card-title-color;
       }
 
       .department {
-        font-size: 15.1724px;
-        color: #767676;
+        font-size: $person-card-subtitle-font-size;
+        color: $person-card-subtitle-color;
       }
 
       .base-icons {
@@ -63,73 +90,71 @@ $color: var(--color, #{$ms-color-neutralDark});
     }
   }
 
-  .additional-details-container {
-    .additional-details-button {
+  .expanded-details-container {
+    .expanded-details-button {
       display: flex;
       justify-content: center;
       align-items: center;
       height: 28px;
       background: rgba(196, 196, 196, 0.1);
-      .additional-details-svg {
+      .expanded-details-svg {
         margin-bottom: 3px;
       }
     }
-    .additional-details-button:hover {
+    .expanded-details-button:hover {
       background-color: rgba(0, 0, 0, 0.068);
     }
-    .additional-details-info {
+    .expanded-details-info {
       margin: 0 0 0 20px;
       padding-bottom: 18px;
+      display: flex;
+      flex-direction: column;
 
       .contact-text {
         margin: 0 0 24px 0;
         font-weight: 600;
-        font-size: 14px;
-        color: #000000;
+        font-size: $person-card-details-title-font-size;
+        color: $person-card-details-title-color;
       }
-      .additional-details-row {
-        display: flex;
-        .additional-details-item {
-          line-height: normal;
-          font-style: normal;
-          font-weight: normal;
-          font-size: 15px;
-          .icons {
-            text-align: left;
-            .details-icon {
-              margin: 0 0 10px 0;
-              display: flex;
-              flex-direction: row;
-              align-items: center;
-            }
-          }
-          .data {
-            display: block;
-            margin: 0 0 0px 10px;
-            white-space: nowrap;
-            overflow: hidden;
-            text-overflow: ellipsis;
-            width: 280px;
-          }
-          .normal-subtitle {
-            padding-top: 2px;
-          }
-          .link-subtitle {
-            color: #3078cd;
-            cursor: pointer;
-          }
-          .link-subtitle:hover {
-            opacity: 0.6;
-          }
+
+      .icons {
+        line-height: normal;
+        font-style: normal;
+        font-weight: normal;
+        font-size: $person-card-details-item-font-size;
+        color: $person-card-details-item-color;
+        text-align: left;
+
+        .details-icon {
+          margin: 0 0 10px 0;
+          display: flex;
+          flex-direction: row;
+          align-items: center;
         }
       }
-      .section-divider {
-        width: 96%;
-        height: 1px;
-        background: #eaeaea;
+      .data {
+        display: block;
+        margin: 0 0 0px 10px;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        width: 280px;
       }
-      .custom-section {
+      .normal-subtitle {
+        padding-top: 2px;
       }
+      .link-subtitle {
+        color: #3078cd;
+        cursor: pointer;
+      }
+      .link-subtitle:hover {
+        opacity: 0.6;
+      }
+    }
+    .section-divider {
+      width: 96%;
+      height: 1px;
+      background: #eaeaea;
     }
   }
 }

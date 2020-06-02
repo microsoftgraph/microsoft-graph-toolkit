@@ -6,9 +6,12 @@
  */
 
 import { ResponseType } from '@microsoft/microsoft-graph-client';
+import * as MicrosoftGraph from '@microsoft/microsoft-graph-types';
 import { IGraph } from '../IGraph';
 import { prepScopes } from '../utils/GraphHelpers';
 import { blobToBase64 } from '../utils/Utils';
+import { findUserByEmail, getEmailFromGraphEntity } from './graph.people';
+import { IDynamicPerson } from './types';
 
 /**
  * retrieves a photo for the specified resource.
@@ -57,4 +60,50 @@ export function getUserPhoto(graph: IGraph, userId: string): Promise<string> {
  */
 export function myPhoto(graph: IGraph): Promise<string> {
   return getPhotoForResource(graph, 'me', ['user.read']);
+}
+
+/**
+ * async promise, loads image of user
+ *
+ * @export
+ */
+export async function getPersonImage(graph: IGraph, person: IDynamicPerson) {
+  let image: string;
+
+  if ((person as MicrosoftGraph.Person).userPrincipalName) {
+    // try to find a user by userPrincipalName
+    const userPrincipalName = (person as MicrosoftGraph.Person).userPrincipalName;
+    image = await getUserPhoto(graph, userPrincipalName);
+  } else {
+    if (person.id) {
+      image = await getUserPhoto(graph, person.id);
+      if (image) {
+        return image;
+      }
+    }
+
+    // try to find a user by e-mail
+    const email = getEmailFromGraphEntity(person);
+
+    if (email) {
+      const users = await findUserByEmail(graph, email);
+      if (users && users.length) {
+        // Check for an OrganizationUser
+        const orgUser = users.find(p => {
+          return (p as any).personType && (p as any).personType.subclass === 'OrganizationUser';
+        });
+        if (orgUser) {
+          // Lookup by userId
+          const userId = (users[0] as MicrosoftGraph.Person).scoredEmailAddresses[0].address;
+          image = await getUserPhoto(graph, userId);
+        } else {
+          // Lookup by contactId
+          const contactId = users[0].id;
+          image = await getContactPhoto(graph, contactId);
+        }
+      }
+    }
+  }
+
+  return image;
 }

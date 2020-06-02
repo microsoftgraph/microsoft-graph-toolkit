@@ -7,11 +7,9 @@
 
 import { AuthenticationProviderOptions } from '@microsoft/microsoft-graph-client/lib/es/IAuthenticationProviderOptions';
 import { AuthenticationParameters, Configuration, UserAgentApplication } from 'msal';
+import { TeamsHelper } from '../utils/TeamsHelper';
 import { LoginType, ProviderState } from './IProvider';
 import { MsalProvider } from './MsalProvider';
-
-// tslint:disable-next-line: completed-docs
-declare var microsoftTeams: any;
 
 // tslint:disable-next-line: completed-docs
 declare global {
@@ -108,16 +106,8 @@ export class TeamsProvider extends MsalProvider {
    * @static
    * @memberof TeamsProvider
    */
-  public static get isAvailable() {
-    if (window.parent === window.self && window.nativeInterface) {
-      // In Teams mobile client
-      return true;
-    } else if (window.name === 'embedded-page-container' || window.name === 'extension-tab-frame') {
-      // In Teams web/desktop client
-      return true;
-    } else {
-      return false;
-    }
+  public static get isAvailable(): boolean {
+    return TeamsHelper.isAvailable;
   }
 
   /**
@@ -128,7 +118,12 @@ export class TeamsProvider extends MsalProvider {
    * @static
    * @memberof TeamsProvider
    */
-  public static microsoftTeamsLib;
+  public static get microsoftTeamsLib(): any {
+    return TeamsHelper.microsoftTeamsLib;
+  }
+  public static set microsoftTeamsLib(value: any) {
+    TeamsHelper.microsoftTeamsLib = value;
+  }
 
   /**
    * Handle all authentication redirects in the authentication page and authenticates the user
@@ -139,7 +134,7 @@ export class TeamsProvider extends MsalProvider {
    */
   public static async handleAuth() {
     // we are in popup world now - authenticate and handle it
-    const teams = TeamsProvider.microsoftTeamsLib || microsoftTeams;
+    const teams = TeamsHelper.microsoftTeamsLib;
     if (!teams) {
       // tslint:disable-next-line: no-console
       console.error('Make sure you have referenced the Microsoft Teams sdk before using the TeamsProvider');
@@ -148,31 +143,21 @@ export class TeamsProvider extends MsalProvider {
 
     teams.initialize();
 
-    // msal checks for the window.opener.msal to check if this is a popup authentication
-    // and gets a false positive since teams opens a popup for the authentication.
-    // in reality, we are doing a redirect authentication and need to act as if this is the
-    // window initiating the authentication
-    if (window.opener) {
-      window.opener.msal = null;
+    // if we were signing out before, then we are done
+    if (sessionStorage.getItem(this._sessionStorageLogoutInProgress)) {
+      teams.authentication.notifySuccess();
     }
 
     const url = new URL(window.location.href);
+    const isSignOut = url.searchParams.get('signout');
 
-    const paramsString = sessionStorage.getItem(this._sessionStorageParametersKey);
+    const paramsString = localStorage.getItem(this._localStorageParametersKey);
     let authParams: AuthParams;
 
     if (paramsString) {
       authParams = JSON.parse(paramsString);
     } else {
       authParams = {};
-    }
-
-    if (!authParams.clientId) {
-      authParams.clientId = url.searchParams.get('clientId');
-      authParams.scopes = url.searchParams.get('scopes');
-      authParams.loginHint = url.searchParams.get('loginHint');
-
-      sessionStorage.setItem(this._sessionStorageParametersKey, JSON.stringify(authParams));
     }
 
     if (!authParams.clientId) {
@@ -186,8 +171,7 @@ export class TeamsProvider extends MsalProvider {
       clientId: authParams.clientId,
       options: {
         auth: {
-          clientId: authParams.clientId,
-          redirectUri: url.protocol + '//' + url.host + url.pathname
+          clientId: authParams.clientId
         },
         system: {
           loadFrameTimeout: 10000
@@ -205,17 +189,30 @@ export class TeamsProvider extends MsalProvider {
       // how do we handle when user can't sign in
       // change to promise and return status
       if (provider.state === ProviderState.SignedOut) {
-        provider.login({
-          loginHint: authParams.loginHint,
-          scopes: scopes || provider.scopes
-        });
+        if (isSignOut) {
+          teams.authentication.notifySuccess();
+          return;
+        }
+
+        // make sure we are calling login only once
+        if (!sessionStorage.getItem(this._sessionStorageLoginInProgress)) {
+          sessionStorage.setItem(this._sessionStorageLoginInProgress, 'true');
+          provider.login({
+            loginHint: authParams.loginHint,
+            scopes: scopes || provider.scopes
+          });
+        }
       } else if (provider.state === ProviderState.SignedIn) {
+        if (isSignOut) {
+          sessionStorage.setItem(this._sessionStorageLogoutInProgress, 'true');
+          await provider.logout();
+          return;
+        }
+
         try {
           const accessToken = await provider.getAccessTokenForScopes(...provider.scopes);
-          sessionStorage.removeItem(this._sessionStorageParametersKey);
           teams.authentication.notifySuccess(accessToken);
         } catch (e) {
-          sessionStorage.removeItem(this._sessionStorageParametersKey);
           teams.authentication.notifyFailure(e);
         }
       }
@@ -225,15 +222,9 @@ export class TeamsProvider extends MsalProvider {
     handleProviderState();
   }
 
-  private static _sessionStorageParametersKey = 'msg-teamsprovider-auth-parameters';
-
-  /**
-   * Scopes used for authentication
-   *
-   * @type {string[]}
-   * @memberof TeamsProvider
-   */
-  public scopes: string[];
+  private static _localStorageParametersKey = 'msg-teamsprovider-auth-parameters';
+  private static _sessionStorageLoginInProgress = 'msg-teamsprovider-login-in-progress';
+  private static _sessionStorageLogoutInProgress = 'msg-teamsprovider-logout-in-progress';
 
   private teamsContext;
   private _authPopupUrl: string;
@@ -246,9 +237,9 @@ export class TeamsProvider extends MsalProvider {
       scopes: config.scopes
     });
 
-    const teams = TeamsProvider.microsoftTeamsLib || microsoftTeams;
-
     this._authPopupUrl = config.authPopupUrl;
+
+    const teams = TeamsHelper.microsoftTeamsLib;
     teams.initialize();
   }
 
@@ -260,22 +251,21 @@ export class TeamsProvider extends MsalProvider {
    */
   public async login(): Promise<void> {
     this.setState(ProviderState.Loading);
-    const teams = TeamsProvider.microsoftTeamsLib || microsoftTeams;
+    const teams = TeamsHelper.microsoftTeamsLib;
 
     return new Promise((resolve, reject) => {
       teams.getContext(context => {
         this.teamsContext = context;
 
+        const authParams: AuthParams = {
+          clientId: this.clientId,
+          loginHint: context.loginHint,
+          scopes: this.scopes.join(',')
+        };
+
+        localStorage.setItem(TeamsProvider._localStorageParametersKey, JSON.stringify(authParams));
+
         const url = new URL(this._authPopupUrl, new URL(window.location.href));
-        url.searchParams.append('clientId', this.clientId);
-
-        if (context.loginHint) {
-          url.searchParams.append('loginHint', context.loginHint);
-        }
-
-        if (this.scopes) {
-          url.searchParams.append('scopes', this.scopes.join(','));
-        }
 
         teams.authentication.authenticate({
           failureCallback: reason => {
@@ -283,7 +273,38 @@ export class TeamsProvider extends MsalProvider {
             reject();
           },
           successCallback: result => {
-            this.setState(ProviderState.SignedIn);
+            this.trySilentSignIn();
+            resolve();
+          },
+          url: url.href
+        });
+      });
+    });
+  }
+
+  /**
+   * sign out user
+   *
+   * @returns {Promise<void>}
+   * @memberof MsalProvider
+   */
+  public async logout(): Promise<void> {
+    const teams = TeamsHelper.microsoftTeamsLib;
+
+    return new Promise((resolve, reject) => {
+      teams.getContext(context => {
+        this.teamsContext = context;
+
+        const url = new URL(this._authPopupUrl, new URL(window.location.href));
+        url.searchParams.append('signout', 'true');
+
+        teams.authentication.authenticate({
+          failureCallback: reason => {
+            this.trySilentSignIn();
+            reject();
+          },
+          successCallback: result => {
+            this.trySilentSignIn();
             resolve();
           },
           url: url.href
@@ -300,8 +321,9 @@ export class TeamsProvider extends MsalProvider {
    * @memberof TeamsProvider
    */
   public async getAccessToken(options: AuthenticationProviderOptions): Promise<string> {
-    if (!this.teamsContext) {
-      const teams = TeamsProvider.microsoftTeamsLib || microsoftTeams;
+    if (!this.teamsContext && TeamsHelper.microsoftTeamsLib) {
+      const teams = TeamsHelper.microsoftTeamsLib;
+      teams.initialize();
       this.teamsContext = await teams.getContext();
     }
 
@@ -314,17 +336,10 @@ export class TeamsProvider extends MsalProvider {
       accessTokenRequest.loginHint = this.teamsContext.loginHint;
     }
 
-    const currentParent = window.parent;
-    if (document.referrer.startsWith('https://teams.microsoft.com/')) {
-      (window as any).parent = window;
-    }
-
     try {
       const response = await this._userAgentApplication.acquireTokenSilent(accessTokenRequest);
-      (window as any).parent = currentParent;
       return response.accessToken;
     } catch (e) {
-      (window as any).parent = currentParent;
       if (this.requiresInteraction(e)) {
         // nothing we can do now until we can do incremental consent
         return null;

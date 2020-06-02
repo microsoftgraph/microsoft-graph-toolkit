@@ -6,6 +6,7 @@
  */
 
 import { html, PropertyValues } from 'lit-element';
+import { TemplateContext } from '../graph/types';
 import { equals } from '../utils/Utils';
 import { MgtBaseComponent } from './baseComponent';
 import { TemplateHelper } from './templateHelper';
@@ -38,20 +39,20 @@ export abstract class MgtTemplatedComponent extends MgtBaseComponent {
   /**
    * Collection of functions to be used in template binding
    *
-   * @type {*}
+   * @type {TemplateContext}
    * @memberof MgtTemplatedComponent
    * @deprecated since 1.2 - use templateContext instead
    */
-  public templateConverters: any;
+  public templateConverters: TemplateContext;
 
   /**
    * Additional data context to be used in template binding
    * Use this to add event listeners or value converters
    *
-   * @type {*}
+   * @type {TemplateContext}
    * @memberof MgtTemplatedComponent
    */
-  public templateContext: any;
+  public templateContext: TemplateContext;
 
   /**
    * Holds all templates defined by developer
@@ -111,7 +112,7 @@ export abstract class MgtTemplatedComponent extends MgtBaseComponent {
    * @param slotName the slot name that will be used to host the new rendered template. set to a unique value if multiple templates of this type will be rendered. default is templateType
    */
   protected renderTemplate(templateType: string, context: object, slotName?: string) {
-    if (!this.templates[templateType]) {
+    if (!this.hasTemplate(templateType)) {
       return null;
     }
 
@@ -147,6 +148,18 @@ export abstract class MgtTemplatedComponent extends MgtBaseComponent {
     this.fireCustomEvent('templateRendered', { templateType, context, element: div });
 
     return template;
+  }
+
+  /**
+   * Check if a specific template has been provided.
+   *
+   * @protected
+   * @param {string} templateName
+   * @returns {boolean}
+   * @memberof MgtTemplatedComponent
+   */
+  protected hasTemplate(templateName: string): boolean {
+    return this.templates && this.templates[templateName];
   }
 
   private getTemplates() {
