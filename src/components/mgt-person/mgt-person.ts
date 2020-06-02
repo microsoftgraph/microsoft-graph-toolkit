@@ -592,7 +592,7 @@ export class MgtPerson extends MgtTemplatedComponent {
   ): TemplateResult {
     const title =
       this.personDetails && this.personCardInteraction === PersonCardInteraction.none
-        ? this.personDetails.displayName || this.personDetails.mail || ''
+        ? this.personDetails.displayName || getEmailFromGraphEntity(this.personDetails) || ''
         : '';
 
     const imageClasses = {
