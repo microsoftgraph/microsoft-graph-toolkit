@@ -209,7 +209,7 @@ export class MgtPeoplePicker extends MgtTemplatedComponent {
   /**
    * array of people to be selected upon intialization
    *
-   * @type {Array}
+   * @type {string[]}
    * @memberof MgtPeoplePicker
    */
   @property({
@@ -219,7 +219,7 @@ export class MgtPeoplePicker extends MgtTemplatedComponent {
     },
     type: String
   })
-  public defaultSelectedUserIds: '';
+  public defaultSelectedUserIds: string[];
 
   /**
    * Placeholder text.
