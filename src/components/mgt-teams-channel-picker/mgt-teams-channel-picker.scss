@@ -120,10 +120,9 @@ $dropdown-item-selected-background: var(--dropdown-item-selected-background, #de
       .close-icon {
         display: inline-block;
         position: absolute;
-        right: 0;
+        right: 10px;
         line-height: normal;
         font-family: 'FabricMDL2Icons';
-        padding: 8px 10px 10px 8px;
         margin-bottom: 1px;
         cursor: pointer;
         color: $placeholder-default-color;
