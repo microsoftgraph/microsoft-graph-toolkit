@@ -161,10 +161,10 @@ export class MgtPerson extends MgtTemplatedComponent {
     }
 
     this._personDetails = value;
-    if (!value) {
-      this._personAvatarBg = 'gray20';
-    } else {
+    if (value && value.displayName) {
       this._personAvatarBg = this.getColorFromName(value.displayName);
+    } else {
+      this._personAvatarBg = 'gray20';
     }
 
     this._fetchedImage = null;
@@ -592,7 +592,7 @@ export class MgtPerson extends MgtTemplatedComponent {
   ): TemplateResult {
     const title =
       this.personDetails && this.personCardInteraction === PersonCardInteraction.none
-        ? this.personDetails.displayName
+        ? this.personDetails.displayName || getEmailFromGraphEntity(this.personDetails) || ''
         : '';
 
     const imageClasses = {
@@ -843,7 +843,7 @@ export class MgtPerson extends MgtTemplatedComponent {
   }
 
   private getTextFromProperty(personDetails: IDynamicPerson, prop: string) {
-    if (!property || property.length === 0) {
+    if (!prop || prop.length === 0) {
       return null;
     }
 
