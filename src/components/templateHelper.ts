@@ -78,6 +78,20 @@ export class TemplateHelper {
     this._expression = new RegExp(`${start}\\s*\([$\\w\\.()\\[\\]]+\)\\s*${end}`, 'g');
   }
 
+  /**
+   * Global context containing data or functions available to
+   * all templates for binding
+   *
+   * @readonly
+   * @static
+   * @memberof TemplateHelper
+   */
+  public static get globalContext() {
+    return this._globalContext;
+  }
+
+  private static _globalContext = {};
+
   private static get expression() {
     if (!this._expression) {
       this.setBindingSyntax('{{', '}}');
@@ -270,10 +284,12 @@ export class TemplateHelper {
   }
 
   private static evalBoolInContext(expression, context) {
+    context = { ...context, ...this.globalContext };
     return new Function('with(this) { return !!(' + expression + ')}').call(context);
   }
 
   private static evalInContext(expression, context) {
+    context = { ...context, ...this.globalContext };
     const func = new Function('with(this) { return ' + expression + ';}');
     let result;
     try {

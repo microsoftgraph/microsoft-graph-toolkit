@@ -82,10 +82,8 @@
 
       TemplateHelper.setBindingSyntax('[[', ']]');
 
-      document.querySelector('mgt-get').templateContext = {
-        toggleExpand: (e, context, root) => {
-          root.classList.toggle('expanded');
-        }
+      TemplateHelper.globalContext.toggleExpand = (e, context, root) => {
+        root.classList.toggle('expanded');
       };
     </script>
   </body>
