@@ -609,12 +609,12 @@ export class MgtPerson extends MgtTemplatedComponent {
         : '';
 
     const imageClasses = {
-      initials: !image,
+      initials: !image || this._isInvalidImageSrc,
       small: !this.isLargeAvatar(),
       'user-avatar': true
     };
 
-    if (!image && this.personDetails) {
+    if ((!image || this._isInvalidImageSrc) && this.personDetails) {
       // add avatar background color
       imageClasses[this._personAvatarBg] = true;
     }
