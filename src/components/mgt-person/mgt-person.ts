@@ -308,15 +308,15 @@ export class MgtPerson extends MgtTemplatedComponent {
   })
   public view: PersonViewType;
 
-  @internalProperty() private _personCardShouldRender: boolean;
-  @internalProperty() private _fetchedPresence: MicrosoftGraphBeta.Presence;
   @internalProperty() private _fetchedImage: string;
+  @internalProperty() private _fetchedPresence: MicrosoftGraphBeta.Presence;
+  @internalProperty() private _isInvalidImageSrc: boolean;
+  @internalProperty() private _personCardShouldRender: boolean;
 
   private _personDetails: IDynamicPerson;
   private _personAvatarBg: string;
   private _personImage: string;
   private _personPresence: MicrosoftGraphBeta.Presence;
-  private _isInvalidImageSrc: boolean;
 
   private _mouseLeaveTimeout;
   private _mouseEnterTimeout;
@@ -460,16 +460,8 @@ export class MgtPerson extends MgtTemplatedComponent {
         : '';
 
     if (imageSrc && !this._isInvalidImageSrc) {
-      const image = new Image();
-      image.alt = title;
-      image.src = imageSrc;
-      image.addEventListener('error', e => {
-        this._isInvalidImageSrc = true;
-        this.requestUpdate('personImage');
-      });
-
       return html`
-        ${image}
+        <img alt=${title} src=${imageSrc} @error=${() => (this._isInvalidImageSrc = true)} />
       `;
     } else if (personDetails) {
       const initials = this.getInitials(personDetails);
