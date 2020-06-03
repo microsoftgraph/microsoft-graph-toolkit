@@ -263,6 +263,8 @@ export class MgtPeoplePicker extends MgtTemplatedComponent {
 
   private defaultPeople: IDynamicPerson[];
 
+  private selectionMade = false;
+
   // tracking of user arrow key input for selection
   private _arrowSelectionCount: number = 0;
   // List of people requested if group property is provided
@@ -315,10 +317,14 @@ export class MgtPeoplePicker extends MgtTemplatedComponent {
     }
 
     if (shouldShow) {
-      window.requestAnimationFrame(() => {
-        // Mouse is focused on input
-        this.showFlyout();
-      });
+      if (!this.selectionMade) {
+        window.requestAnimationFrame(() => {
+          // Mouse is focused on input
+          this.showFlyout();
+        });
+      } else {
+        this.selectionMade = false;
+      }
     }
   }
 
@@ -786,6 +792,7 @@ export class MgtPeoplePicker extends MgtTemplatedComponent {
 
         this.loadState();
         this._foundPeople = [];
+        this.selectionMade = true;
       }
     }
   }
@@ -881,7 +888,6 @@ export class MgtPeoplePicker extends MgtTemplatedComponent {
     if (this.selectionMode === 'single') {
       return;
     }
-    this.focus();
   }
 
   /**
