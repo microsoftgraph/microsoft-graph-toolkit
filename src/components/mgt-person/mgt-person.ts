@@ -456,7 +456,7 @@ export class MgtPerson extends MgtTemplatedComponent {
   protected renderImage(personDetails: IDynamicPerson, imageSrc: string) {
     const title =
       personDetails && this.personCardInteraction === PersonCardInteraction.none
-        ? personDetails.displayName || personDetails.mail || ''
+        ? personDetails.displayName || getEmailFromGraphEntity(personDetails) || ''
         : '';
 
     if (imageSrc && !this._isInvalidImageSrc) {
