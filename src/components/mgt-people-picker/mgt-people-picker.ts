@@ -263,8 +263,6 @@ export class MgtPeoplePicker extends MgtTemplatedComponent {
 
   private defaultPeople: IDynamicPerson[];
 
-  private selectionMade = false;
-
   // tracking of user arrow key input for selection
   private _arrowSelectionCount: number = 0;
   // List of people requested if group property is provided
@@ -291,6 +289,7 @@ export class MgtPeoplePicker extends MgtTemplatedComponent {
    */
   public connectedCallback() {
     super.connectedCallback();
+    this.addEventListener('click', e => e.stopPropagation());
   }
 
   /**
@@ -317,14 +316,10 @@ export class MgtPeoplePicker extends MgtTemplatedComponent {
     }
 
     if (shouldShow) {
-      if (!this.selectionMade) {
-        window.requestAnimationFrame(() => {
-          // Mouse is focused on input
-          this.showFlyout();
-        });
-      } else {
-        this.selectionMade = false;
-      }
+      window.requestAnimationFrame(() => {
+        // Mouse is focused on input
+        this.showFlyout();
+      });
     }
   }
 
@@ -792,7 +787,6 @@ export class MgtPeoplePicker extends MgtTemplatedComponent {
 
         this.loadState();
         this._foundPeople = [];
-        this.selectionMade = true;
       }
     }
   }
@@ -809,7 +803,6 @@ export class MgtPeoplePicker extends MgtTemplatedComponent {
 
   private lostFocus() {
     this._isFocused = false;
-    this.requestUpdate();
   }
 
   private renderHighlightText(person: IDynamicPerson): TemplateResult {
@@ -854,8 +847,8 @@ export class MgtPeoplePicker extends MgtTemplatedComponent {
    * Adds debounce method for set delay on user input
    */
   private onUserKeyUp(event: KeyboardEvent): void {
-    if (event.keyCode === 40 || event.keyCode === 39 || event.keyCode === 38 || event.keyCode === 37) {
-      // keyCodes capture: down arrow (40), right arrow (39), up arrow (38) and left arrow (37)
+    if (event.keyCode === 40 || event.keyCode === 38) {
+      // keyCodes capture: down arrow (40) and up arrow (38)
       return;
     }
 
@@ -872,7 +865,6 @@ export class MgtPeoplePicker extends MgtTemplatedComponent {
       this.userInput = '';
       // remove last person in selected list
       this.selectedPeople = this.selectedPeople.splice(0, this.selectedPeople.length - 1);
-      this.loadState();
       // reset flyout position
       this.hideFlyout();
       this.showFlyout();
@@ -881,9 +873,7 @@ export class MgtPeoplePicker extends MgtTemplatedComponent {
       return;
     }
 
-    if (input.value) {
-      this.handleUserSearch(input);
-    }
+    this.handleUserSearch(input);
   }
 
   private onPersonClick(person: IDynamicPerson): void {
@@ -892,6 +882,7 @@ export class MgtPeoplePicker extends MgtTemplatedComponent {
     if (this.selectionMode === 'single') {
       return;
     }
+    this.focus();
   }
 
   /**
@@ -942,9 +933,7 @@ export class MgtPeoplePicker extends MgtTemplatedComponent {
         event.preventDefault();
       }
     }
-
-    if (event.keyCode === 9 || event.keyCode === 13) {
-      // keyCodes capture: tab (9) and enter (13)
+    if (event.code === 'Tab' || event.code === 'Enter') {
       if (this._foundPeople.length) {
         event.preventDefault();
       }
