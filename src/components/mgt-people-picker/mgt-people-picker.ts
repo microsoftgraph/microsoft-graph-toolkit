@@ -844,8 +844,8 @@ export class MgtPeoplePicker extends MgtTemplatedComponent {
    * Adds debounce method for set delay on user input
    */
   private onUserKeyUp(event: KeyboardEvent): void {
-    if (event.keyCode === 40 || event.keyCode === 38) {
-      // keyCodes capture: down arrow (40) and up arrow (38)
+    if (event.keyCode === 40 || event.keyCode === 39 || event.keyCode === 38 || event.keyCode === 37) {
+      // keyCodes capture: down arrow (40), right arrow (39), up arrow (38) and left arrow (37)
       return;
     }
 
