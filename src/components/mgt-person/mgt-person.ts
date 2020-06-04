@@ -192,7 +192,7 @@ export class MgtPerson extends MgtTemplatedComponent {
       return;
     }
 
-    this._isInvalidImageSrc = !!value;
+    this._isInvalidImageSrc = !value;
     const oldValue = this._personImage;
     this._personImage = value;
     this.requestUpdate('personImage', oldValue);
