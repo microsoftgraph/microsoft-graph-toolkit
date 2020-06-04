@@ -205,7 +205,7 @@ export class Batch {
           // this request was throttled
           // add request back to queue and set retry wait time
           this.requestsQueue.unshift(r.id);
-          this.retryAfter = r.headers['Retry-After'];
+          this.retryAfter = Math.max(this.retryAfter, parseInt(r.headers['Retry-After'], 10) || 1);
         }
         continue;
       } else if (r.headers['Content-Type'].includes('image/jpeg')) {
