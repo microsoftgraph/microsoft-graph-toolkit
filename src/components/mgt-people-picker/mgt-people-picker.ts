@@ -108,6 +108,13 @@ export class MgtPeoplePicker extends MgtTemplatedComponent {
   @property({
     attribute: 'type',
     converter: (value, type) => {
+      const capitalize = s => {
+        if (typeof s !== 'string') {
+          return '';
+        }
+        return s.charAt(0).toUpperCase() + s.toLowerCase().slice(1);
+      };
+      value = capitalize(value);
       if (!value || value.length === 0) {
         return PersonType.Any;
       }
@@ -712,7 +719,7 @@ export class MgtPeoplePicker extends MgtTemplatedComponent {
         }
       }
       // default group search without user input
-      if ((input.length === 0 && this.type === PersonType.Group) || this.type === PersonType.Any) {
+      if (input.length === 0 && this.type === PersonType.Group) {
         people = [];
         try {
           const groups = (await findGroups(graph, '', this.showMax, GroupType.Any)) || [];
