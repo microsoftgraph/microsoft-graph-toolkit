@@ -656,10 +656,22 @@ export class MgtPeoplePicker extends MgtTemplatedComponent {
         if (this.defaultPeople) {
           people = this.defaultPeople;
         } else {
-          if (this.type === PersonType.Person || this.type === PersonType.Any) {
+          if (this.groupId) {
+            if (this._groupPeople === null) {
+              try {
+                this._groupPeople = await getPeopleFromGroup(graph, this.groupId);
+              } catch (_) {
+                this._groupPeople = [];
+              }
+            }
+            people = this._groupPeople || [];
+          } else if (this.type === PersonType.Person || this.type === PersonType.Any) {
             people = await getPeople(graph);
-            this.defaultPeople = people;
+          } else if (this.type === PersonType.Group) {
+            const groups = (await findGroups(graph, '', this.showMax, GroupType.Any)) || [];
+            people = groups;
           }
+          this.defaultPeople = people;
         }
         this._showLoading = false;
       }
@@ -671,18 +683,7 @@ export class MgtPeoplePicker extends MgtTemplatedComponent {
         this.requestUpdate();
         this.fireCustomEvent('selectionChanged', this.selectedPeople);
       }
-
-      if (this.groupId) {
-        if (this._groupPeople === null) {
-          try {
-            this._groupPeople = await getPeopleFromGroup(graph, this.groupId);
-          } catch (_) {
-            this._groupPeople = [];
-          }
-        }
-
-        people = this._groupPeople || [];
-      } else if (!this.groupId && input) {
+      if (input) {
         people = [];
         if (this.type === PersonType.Person || this.type === PersonType.Any) {
           try {
@@ -716,16 +717,6 @@ export class MgtPeoplePicker extends MgtTemplatedComponent {
           } catch (e) {
             // nop
           }
-        }
-      }
-      // default group search without user input
-      if (input.length === 0 && this.type === PersonType.Group) {
-        people = [];
-        try {
-          const groups = (await findGroups(graph, '', this.showMax, GroupType.Any)) || [];
-          people = people.concat(groups);
-        } catch (e) {
-          // nop
         }
       }
     }
