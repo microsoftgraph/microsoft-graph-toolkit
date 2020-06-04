@@ -43,11 +43,15 @@ export async function getUserWithPhoto(graph: IGraph, userId?: string): Promise<
     batch.get('user', 'me', ['user.read']);
     batch.get('photo', 'me/photo/$value', ['user.read']);
   }
-  const response = await batch.execute();
+  const response = await batch.executeAll();
 
-  if (response && response.user) {
-    person = response.user;
-    person.personImage = response.photo;
+  const photoResponse = response.get('photo');
+  const userDetailsResponse = response.get('user');
+
+  if (userDetailsResponse.content) {
+    person = userDetailsResponse.content;
+
+    person.personImage = photoResponse.content;
   }
 
   return person;
@@ -90,14 +94,14 @@ export async function getUsersForUserIds(graph: IGraph, userIds: string[]): Prom
   }
 
   try {
-    const response = await batch.execute();
+    const responses = await batch.executeAll();
     const people = [];
 
     // iterate over userIds to ensure the order of ids
     for (const id of userIds) {
-      const person = response[id];
-      if (person && person.id) {
-        people.push(person);
+      const response = responses.get(id);
+      if (response && response.content) {
+        people.push(response.content);
       }
     }
 
@@ -135,12 +139,12 @@ export async function getUsersForPeopleQueries(graph: IGraph, peopleQueries: str
   }
 
   try {
-    const response = await batch.execute();
+    const responses = await batch.executeAll();
 
     for (const personQuery of peopleQueries) {
-      const person = response[personQuery];
-      if (person && person.value && person.value.length) {
-        people.push(person.value[0]);
+      const response = responses.get(personQuery);
+      if (response && response.content && response.content.value && response.content.value.length > 0) {
+        people.push(response.content.value[0]);
       }
     }
 
