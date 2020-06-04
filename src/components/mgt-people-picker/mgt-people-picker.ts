@@ -141,7 +141,7 @@ export class MgtPeoplePicker extends MgtTemplatedComponent {
     attribute: 'group-type',
     converter: (value, type) => {
       if (!value || value.length === 0) {
-        return GroupType.Any;
+        return GroupType.any;
       }
 
       const values = value.split(',');
@@ -155,7 +155,7 @@ export class MgtPeoplePicker extends MgtTemplatedComponent {
       }
 
       if (groupTypes.length === 0) {
-        return GroupType.Any;
+        return GroupType.any;
       }
 
       // tslint:disable-next-line:no-bitwise
@@ -257,7 +257,7 @@ export class MgtPeoplePicker extends MgtTemplatedComponent {
 
   private _groupId: string;
   private _type: PersonType = PersonType.person;
-  private _groupType: GroupType = GroupType.Any;
+  private _groupType: GroupType = GroupType.any;
 
   private defaultPeople: IDynamicPerson[];
 
