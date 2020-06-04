@@ -50,16 +50,16 @@ export const DarkMode = () => html`
 `;
 
 export const pickPeopleAndGroups = () => html`
-  <mgt-people-picker type="Any"></mgt-people-picker>
-  <!-- type can be "Any", "Person", "Group" -->
+  <mgt-people-picker type="any"></mgt-people-picker>
+  <!-- type can be "any", "person", "group" -->
 `;
 
 export const pickGroups = () => html`
-  <mgt-people-picker type="Group"></mgt-people-picker>
-  <!-- type can be "Any", "Person", "Group" -->
+  <mgt-people-picker type="group"></mgt-people-picker>
+  <!-- type can be "any", "person", "group" -->
 `;
 
 export const pickDistributionGroups = () => html`
-  <mgt-people-picker type="Group" group-type="Distribution"></mgt-people-picker>
-  <!-- group-type can be "Any", "Unified", "Security", "MailEnabledSecurity", "Distribution" -->
+  <mgt-people-picker type="group" group-type="distribution"></mgt-people-picker>
+  <!-- group-type can be "any", "unified", "security", "mailenabledsecurity", "distribution" -->
 `;
