@@ -668,7 +668,7 @@ export class MgtPeoplePicker extends MgtTemplatedComponent {
         this.fireCustomEvent('selectionChanged', this.selectedPeople);
       }
 
-      if (this.groupId && input) {
+      if (this.groupId) {
         if (this._groupPeople === null) {
           try {
             this._groupPeople = await getPeopleFromGroup(graph, this.groupId);
@@ -678,7 +678,7 @@ export class MgtPeoplePicker extends MgtTemplatedComponent {
         }
 
         people = this._groupPeople || [];
-      } else if (input) {
+      } else if (!this.groupId && input) {
         people = [];
         if (this.type === PersonType.Person || this.type === PersonType.Any) {
           try {
@@ -703,8 +703,19 @@ export class MgtPeoplePicker extends MgtTemplatedComponent {
             }
           }
         }
+        // default group search with user input
+        if ((this.type === PersonType.Group || this.type === PersonType.Any) && people.length < this.showMax) {
+          people = [];
+          try {
+            const groups = (await findGroups(graph, '', this.showMax, this.groupType)) || [];
+            people = people.concat(groups);
+          } catch (e) {
+            // nop
+          }
+        }
       }
-      if (this.type === PersonType.Group || this.type === PersonType.Any) {
+      // default group search without user input
+      if ((input.length === 0 && this.type === PersonType.Group) || this.type === PersonType.Any) {
         people = [];
         try {
           const groups = (await findGroups(graph, '', this.showMax, GroupType.Any)) || [];
