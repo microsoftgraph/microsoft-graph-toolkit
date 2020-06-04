@@ -57,14 +57,11 @@ interface IFocusable {
  * @cssprop --input-focus-color - {Color} Input text focus color
  *
  * @cssprop --dropdown-background-color - {Color} Background color of dropdown area
- * @cssprop --dropdown-item-hover-background - {Color} Background color of channel or team during hover
- * @cssprop --dropdown-item-selected-background - {Color} Background color of selected channel
+ * @cssprop --dropdown-item-hover-background - {Color} Background color of person during hover
  *
  * @cssprop --placeholder-focus-color - {Color} Color of placeholder text during focus state
  * @cssprop --placeholder-default-color - {Color} Color of placeholder text
  *
- * @cssprop --people-list-background-color - {Color} People list background color
- * @cssprop --accent-color - {Color} Accent color
  */
 @customElement('mgt-people-picker')
 export class MgtPeoplePicker extends MgtTemplatedComponent {
@@ -847,8 +844,8 @@ export class MgtPeoplePicker extends MgtTemplatedComponent {
    * Adds debounce method for set delay on user input
    */
   private onUserKeyUp(event: KeyboardEvent): void {
-    if (event.keyCode === 40 || event.keyCode === 38) {
-      // keyCodes capture: down arrow (40) and up arrow (38)
+    if (event.keyCode === 40 || event.keyCode === 39 || event.keyCode === 38 || event.keyCode === 37) {
+      // keyCodes capture: down arrow (40), right arrow (39), up arrow (38) and left arrow (37)
       return;
     }
 
