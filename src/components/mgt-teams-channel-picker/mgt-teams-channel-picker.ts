@@ -535,7 +535,7 @@ export class MgtTeamsChannelPicker extends MgtTemplatedComponent {
   }
 
   /**
-   * Quieries Microsoft Graph for Teams & respective channels then sets to items list
+   * Queries Microsoft Graph for Teams & respective channels then sets to items list
    *
    * @protected
    * @memberof MgtTeamsChannelPicker
@@ -547,27 +547,34 @@ export class MgtTeamsChannelPicker extends MgtTemplatedComponent {
       const graph = provider.graph.forComponent(this);
 
       teams = await getAllMyTeams(graph);
+      teams = teams.filter(t => !t.isArchived);
 
       const batch = provider.graph.createBatch();
 
-      for (const [i, team] of teams.entries()) {
-        batch.get(`${i}`, `teams/${team.id}/channels`, ['group.read.all']);
+      for (const team of teams) {
+        batch.get(team.id, `teams/${team.id}/channels`, ['group.read.all']);
       }
-      const response = await batch.execute();
-      this.items = teams.map(t => {
-        return {
-          item: t
-        };
-      });
-      for (const [i] of teams.entries()) {
-        if (response[i] && response[i].value) {
-          this.items[i].channels = response[i].value.map(c => {
+
+      const responses = await batch.executeAll();
+
+      for (const team of teams) {
+        const response = responses.get(team.id);
+
+        if (response && response.content && response.content.value) {
+          team.channels = response.content.value.map(c => {
             return {
               item: c
             };
           });
         }
       }
+
+      this.items = teams.map(t => {
+        return {
+          channels: t.channels as DropdownItem[],
+          item: t
+        };
+      });
     }
     this.filterList();
     this.resetFocusState();
