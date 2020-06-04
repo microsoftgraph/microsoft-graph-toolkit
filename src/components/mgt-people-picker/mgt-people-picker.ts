@@ -652,8 +652,10 @@ export class MgtPeoplePicker extends MgtTemplatedComponent {
         if (this.defaultPeople) {
           people = this.defaultPeople;
         } else {
-          people = await getPeople(graph);
-          this.defaultPeople = people;
+          if (this.type === PersonType.Person || this.type === PersonType.Any) {
+            people = await getPeople(graph);
+            this.defaultPeople = people;
+          }
         }
         this._showLoading = false;
       }
@@ -701,14 +703,14 @@ export class MgtPeoplePicker extends MgtTemplatedComponent {
             }
           }
         }
-
-        if ((this.type === PersonType.Group || this.type === PersonType.Any) && people.length < this.showMax) {
-          try {
-            const groups = (await findGroups(graph, input, this.showMax, this.groupType)) || [];
-            people = people.concat(groups);
-          } catch (e) {
-            // nop
-          }
+      }
+      if (this.type === PersonType.Group || this.type === PersonType.Any) {
+        people = [];
+        try {
+          const groups = (await findGroups(graph, '', this.showMax, GroupType.Any)) || [];
+          people = people.concat(groups);
+        } catch (e) {
+          // nop
         }
       }
     }

@@ -64,7 +64,10 @@ export async function findGroups(
 ): Promise<Group[]> {
   const scopes = 'Group.Read.All';
 
-  let filterQuery = `(startswith(displayName,'${query}') or startswith(mailNickname,'${query}') or startswith(mail,'${query}'))`;
+  let filterQuery = '';
+  if (query !== '') {
+    filterQuery = `(startswith(displayName,'${query}') or startswith(mailNickname,'${query}') or startswith(mail,'${query}'))`;
+  }
 
   if (groupTypes !== GroupType.Any) {
     const filterGroups = [];
