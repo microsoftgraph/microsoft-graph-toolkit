@@ -1,23 +1,23 @@
 import React, { Component } from 'react';
-import "@microsoft/mgt";
+import { Login, Agenda, Person} from '@microsoft/mgt-react';
+import { PersonViewType } from '@microsoft/mgt';
 
 class App extends Component {
   render() {
+
+    const personDetails = {
+      displayName: 'Nikola Metulev'
+    };
+
     return (
       <div className="App">
-          <mgt-login ref="loginComponent"></mgt-login>
-          <mgt-agenda group-by-day></mgt-agenda>
+          <Login loginCompleted={()=> console.log('login completed')}/>
+          <Agenda groupByDay="true"/>
 
           
-          <mgt-person show-name ref={el => el.personDetails = {displayName: 'Nikola Metulev'}}></mgt-person>
+          <Person personDetails={personDetails} view={PersonViewType.oneline}/>
       </div>
     );
-  }
-
-  componentDidMount() {
-    this.refs.loginComponent.addEventListener('loginCompleted', e => {
-      console.log('logincompleted');
-  });
   }
 }
 
