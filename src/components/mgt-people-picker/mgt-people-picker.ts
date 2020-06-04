@@ -661,7 +661,7 @@ export class MgtPeoplePicker extends MgtTemplatedComponent {
           } else if (this.type === PersonType.person || this.type === PersonType.any) {
             people = await getPeople(graph);
           } else if (this.type === PersonType.group) {
-            const groups = (await findGroups(graph, input, this.showMax, this.groupType)) || [];
+            const groups = (await findGroups(graph, '', this.showMax, this.groupType)) || [];
             people = groups;
           }
           this.defaultPeople = people;
@@ -705,7 +705,7 @@ export class MgtPeoplePicker extends MgtTemplatedComponent {
         if ((this.type === PersonType.group || this.type === PersonType.any) && people.length < this.showMax) {
           people = [];
           try {
-            const groups = (await findGroups(graph, '', this.showMax, this.groupType)) || [];
+            const groups = (await findGroups(graph, input, this.showMax, this.groupType)) || [];
             people = people.concat(groups);
           } catch (e) {
             // nop

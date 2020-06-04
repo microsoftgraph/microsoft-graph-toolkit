@@ -51,14 +51,13 @@ export async function findPeople(
 
   let filterQuery = '';
 
-  // converts personType to capitalized case
-  const personTypeString =
-    personType
-      .toString()
-      .charAt(0)
-      .toUpperCase() + personType.toString().slice(1);
-
   if (personType !== PersonType.any) {
+    // converts personType to capitalized case
+    const personTypeString =
+      personType
+        .toString()
+        .charAt(0)
+        .toUpperCase() + personType.toString().slice(1);
     filterQuery = `personType/class eq '${personTypeString}'`;
   }
 
