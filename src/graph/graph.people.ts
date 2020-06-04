@@ -38,7 +38,7 @@ export enum PersonType {
  *
  * @param {string} query
  * @param {number} [top=10] - number of people to return
- * @param {PersonType} [personType=PersonType.Person] - the type of person to search for
+ * @param {PersonType} [personType=PersonType.person] - the type of person to search for
  * @returns {(Promise<Person[]>)}
  */
 export async function findPeople(
@@ -51,8 +51,15 @@ export async function findPeople(
 
   let filterQuery = '';
 
+  // converts personType to capitalized case
+  const personTypeString =
+    personType
+      .toString()
+      .charAt(0)
+      .toUpperCase() + personType.toString().slice(1);
+
   if (personType !== PersonType.any) {
-    filterQuery = `personType/class eq '${personType}'`;
+    filterQuery = `personType/class eq '${personTypeString}'`;
   }
 
   const result = await graph
