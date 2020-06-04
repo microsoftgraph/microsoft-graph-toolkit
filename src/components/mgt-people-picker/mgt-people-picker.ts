@@ -645,7 +645,6 @@ export class MgtPeoplePicker extends MgtTemplatedComponent {
     if (!people && provider && provider.state === ProviderState.SignedIn) {
       const graph = provider.graph.forComponent(this);
 
-      // default common people
       if (!input.length && this._isFocused) {
         if (this.defaultPeople) {
           people = this.defaultPeople;
@@ -662,7 +661,7 @@ export class MgtPeoplePicker extends MgtTemplatedComponent {
           } else if (this.type === PersonType.person || this.type === PersonType.any) {
             people = await getPeople(graph);
           } else if (this.type === PersonType.group) {
-            const groups = (await findGroups(graph, '', this.showMax, GroupType.Any)) || [];
+            const groups = (await findGroups(graph, input, this.showMax, this.groupType)) || [];
             people = groups;
           }
           this.defaultPeople = people;
