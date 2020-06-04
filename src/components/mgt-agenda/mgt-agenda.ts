@@ -68,7 +68,7 @@ export class MgtAgenda extends MgtTemplatedComponent {
     }
 
     this._date = value;
-    this.requestStateUpdate(true);
+    this.reloadState();
   }
 
   /**
@@ -88,7 +88,7 @@ export class MgtAgenda extends MgtTemplatedComponent {
     }
 
     this._groupId = value;
-    this.requestStateUpdate(true);
+    this.reloadState();
   }
 
   /**
@@ -108,7 +108,7 @@ export class MgtAgenda extends MgtTemplatedComponent {
     }
 
     this._days = value;
-    this.requestStateUpdate(true);
+    this.reloadState();
   }
 
   /**
@@ -128,7 +128,7 @@ export class MgtAgenda extends MgtTemplatedComponent {
     }
 
     this._eventQuery = value;
-    this.requestStateUpdate(true);
+    this.reloadState();
   }
 
   /**
@@ -234,20 +234,6 @@ export class MgtAgenda extends MgtTemplatedComponent {
         ${this.isLoadingState ? this.renderLoading() : html``}
       </div>
     `;
-  }
-
-  /**
-   * Request to reload the state.
-   * Use reload instead of load to ensure loading events are fired.
-   *
-   * @protected
-   * @memberof MgtBaseComponent
-   */
-  protected async requestStateUpdate(force?: boolean) {
-    if (force) {
-      this.events = null;
-    }
-    super.requestStateUpdate(force);
   }
 
   /**
@@ -537,6 +523,11 @@ export class MgtAgenda extends MgtTemplatedComponent {
         }
       }
     }
+  }
+
+  private async reloadState() {
+    this.events = null;
+    this.requestStateUpdate(true);
   }
 
   private onResize() {
