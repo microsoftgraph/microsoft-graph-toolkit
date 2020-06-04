@@ -108,19 +108,13 @@ export class MgtPeoplePicker extends MgtTemplatedComponent {
   @property({
     attribute: 'type',
     converter: (value, type) => {
-      const capitalize = s => {
-        if (typeof s !== 'string') {
-          return '';
-        }
-        return s.charAt(0).toUpperCase() + s.toLowerCase().slice(1);
-      };
-      value = capitalize(value);
+      value = value.toLowerCase();
       if (!value || value.length === 0) {
-        return PersonType.Any;
+        return PersonType.any;
       }
 
       if (typeof PersonType[value] === 'undefined') {
-        return PersonType.Any;
+        return PersonType.any;
       } else {
         return PersonType[value];
       }
@@ -262,7 +256,7 @@ export class MgtPeoplePicker extends MgtTemplatedComponent {
   @property({ attribute: false }) private _showLoading: boolean;
 
   private _groupId: string;
-  private _type: PersonType = PersonType.Person;
+  private _type: PersonType = PersonType.person;
   private _groupType: GroupType = GroupType.Any;
 
   private defaultPeople: IDynamicPerson[];
@@ -665,9 +659,9 @@ export class MgtPeoplePicker extends MgtTemplatedComponent {
               }
             }
             people = this._groupPeople || [];
-          } else if (this.type === PersonType.Person || this.type === PersonType.Any) {
+          } else if (this.type === PersonType.person || this.type === PersonType.any) {
             people = await getPeople(graph);
-          } else if (this.type === PersonType.Group) {
+          } else if (this.type === PersonType.group) {
             const groups = (await findGroups(graph, '', this.showMax, GroupType.Any)) || [];
             people = groups;
           }
@@ -685,7 +679,7 @@ export class MgtPeoplePicker extends MgtTemplatedComponent {
       }
       if (input) {
         people = [];
-        if (this.type === PersonType.Person || this.type === PersonType.Any) {
+        if (this.type === PersonType.person || this.type === PersonType.any) {
           try {
             people = (await findPeople(graph, input, this.showMax)) || [];
           } catch (e) {
@@ -709,7 +703,7 @@ export class MgtPeoplePicker extends MgtTemplatedComponent {
           }
         }
         // default group search with user input
-        if ((this.type === PersonType.Group || this.type === PersonType.Any) && people.length < this.showMax) {
+        if ((this.type === PersonType.group || this.type === PersonType.any) && people.length < this.showMax) {
           people = [];
           try {
             const groups = (await findGroups(graph, '', this.showMax, this.groupType)) || [];

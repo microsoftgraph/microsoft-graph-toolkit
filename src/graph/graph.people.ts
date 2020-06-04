@@ -20,17 +20,17 @@ export enum PersonType {
   /**
    * Any type
    */
-  Any = 0,
+  any = 0,
 
   /**
    * A Person such as User or Contact
    */
-  Person = 'Person',
+  person = 'person',
 
   /**
    * A group
    */
-  Group = 'Group'
+  group = 'group'
 }
 
 /**
@@ -45,13 +45,13 @@ export async function findPeople(
   graph: IGraph,
   query: string,
   top: number = 10,
-  personType: PersonType = PersonType.Person
+  personType: PersonType = PersonType.person
 ): Promise<Person[]> {
   const scopes = 'people.read';
 
   let filterQuery = '';
 
-  if (personType !== PersonType.Any) {
+  if (personType !== PersonType.any) {
     filterQuery = `personType/class eq '${personType}'`;
   }
 
