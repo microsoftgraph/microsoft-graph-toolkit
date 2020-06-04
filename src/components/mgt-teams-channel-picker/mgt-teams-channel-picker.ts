@@ -287,7 +287,7 @@ export class MgtTeamsChannelPicker extends MgtTemplatedComponent {
               ${!this._selectedItemState ? getSvg(SvgIcon.Search, '#252424') : ''}
             </div>
             <div class="channel-chosen-list">
-              ${this.renderSelected()} ${this.renderInput()}
+              ${this.renderSelected()} ${this.renderInput()} ${this.renderCloseButton()}
             </div>
           </div>
           <div class=${classMap(dropdownClasses)}>${this.renderDropdown()}</div>
@@ -313,9 +313,6 @@ export class MgtTeamsChannelPicker extends MgtTemplatedComponent {
         <div class="selected-team-name">${this._selectedItemState.parent.item.displayName}</div>
         <div class="arrow">${getSvg(SvgIcon.TeamSeparator, '#B3B0AD')}</div>
         ${this._selectedItemState.item.displayName}
-        <div class="close-icon" @click="${() => this.selectChannel(null)}">
-          
-        </div>
       </li>
       <div class="search-icon">
         ${this._isFocused ? getSvg(SvgIcon.Search, '#252424') : ''}
@@ -348,6 +345,21 @@ export class MgtTeamsChannelPicker extends MgtTemplatedComponent {
           role="input"
           @input=${e => this.handleInputChanged(e)}
         />
+      </div>
+    `;
+  }
+
+  /**
+   * Renders close button
+   *
+   * @protected
+   * @returns
+   * @memberof MgtTeamsChannelPicker
+   */
+  protected renderCloseButton() {
+    return html`
+      <div class="close-icon" @click="${() => this.selectChannel(null)}">
+        
       </div>
     `;
   }
