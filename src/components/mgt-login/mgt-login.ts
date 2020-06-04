@@ -14,6 +14,7 @@ import { MgtFlyout } from '../sub-components/mgt-flyout/mgt-flyout';
 import { MgtTemplatedComponent } from '../templatedComponent';
 import { styles } from './mgt-login-css';
 
+import { getUserWithPhoto } from '../../graph/graph.user';
 import '../../styles/fabric-icon-font';
 import '../mgt-person/mgt-person';
 import { PersonViewType } from '../mgt-person/mgt-person';
@@ -172,13 +173,11 @@ export class MgtLogin extends MgtTemplatedComponent {
     const provider = Providers.globalProvider;
     if (provider && !this.userDetails) {
       if (provider.state === ProviderState.SignedIn) {
-        const batch = provider.graph.forComponent(this).createBatch();
-        batch.get('me', 'me', ['user.read']);
-        batch.get('photo', 'me/photo/$value', ['user.read']);
-        const response = await batch.execute();
+        this.userDetails = await getUserWithPhoto(provider.graph.forComponent(this));
 
-        this._image = response.photo;
-        this.userDetails = response.me;
+        if (this.userDetails.personImage) {
+          this._image = this.userDetails.personImage;
+        }
       } else {
         this.userDetails = null;
       }

@@ -19,7 +19,7 @@ export async function getAllMyTeams(graph: IGraph): Promise<Team[]> {
   const teams = await graph
     .api('/me/joinedTeams')
     .middlewareOptions(prepScopes('User.Read.All'))
-    .select(['displayName', 'id'])
+    .select(['displayName', 'id', 'isArchived'])
     .get();
   return teams ? teams.value : null;
 }
