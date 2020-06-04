@@ -118,11 +118,6 @@ mgt-people-picker .CloseIcon {
   cursor: pointer;
   color: $font-color;
 }
-:host .SearchIcon,
-mgt-people-picker .SearchIcon {
-  font-family: 'FabricMDL2Icons';
-  color: $accent-color;
-}
 
 :host .people-person,
 mgt-people-picker .people-person {
