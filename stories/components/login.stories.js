@@ -36,7 +36,7 @@ export const Templates = () => html`
   </template>
   <template data-type="flyout-commands">
     <div>
-      <button data-props="{@click: handleSignOut}">Sign Out</button>
+      <button data-props="@click: handleSignOut">Sign Out</button>
       <button>Go to my profile</button>
     </div>
   </template>
