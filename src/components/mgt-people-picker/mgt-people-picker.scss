@@ -8,13 +8,11 @@
 @import '../../../node_modules/office-ui-fabric-core/dist/sass/References';
 @import '../../styles/shared-styles.scss';
 
-$list-margin: var(--list-margin, 20px 4px 8px 8px);
 $avatar-margin: var(--avatar-margin, 0 4px 0 0);
 $avatar-size-s: var(--avatar-size-s, 24px);
 $avatar-size: var(--avatar-size, 48px);
 $initials-color: var(--initials-color, white);
 $initials-background-color: var(--initials-background-color, #{$ms-color-magenta});
-$accent-color: var(--accent-color, #0078d4);
 
 $input-border: var(--input-border, 2px solid #b3b0ad);
 $input-border-bottom: var(--input-border-bottom, $input-border);
@@ -119,11 +117,6 @@ mgt-people-picker .CloseIcon {
   margin-top: 0px;
   cursor: pointer;
   color: $font-color;
-}
-:host .SearchIcon,
-mgt-people-picker .SearchIcon {
-  font-family: 'FabricMDL2Icons';
-  color: $accent-color;
 }
 
 :host .people-person,

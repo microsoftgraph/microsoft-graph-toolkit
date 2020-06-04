@@ -57,14 +57,11 @@ interface IFocusable {
  * @cssprop --input-focus-color - {Color} Input text focus color
  *
  * @cssprop --dropdown-background-color - {Color} Background color of dropdown area
- * @cssprop --dropdown-item-hover-background - {Color} Background color of channel or team during hover
- * @cssprop --dropdown-item-selected-background - {Color} Background color of selected channel
+ * @cssprop --dropdown-item-hover-background - {Color} Background color of person during hover
  *
  * @cssprop --placeholder-focus-color - {Color} Color of placeholder text during focus state
  * @cssprop --placeholder-default-color - {Color} Color of placeholder text
  *
- * @cssprop --people-list-background-color - {Color} People list background color
- * @cssprop --accent-color - {Color} Accent color
  */
 @customElement('mgt-people-picker')
 export class MgtPeoplePicker extends MgtTemplatedComponent {
