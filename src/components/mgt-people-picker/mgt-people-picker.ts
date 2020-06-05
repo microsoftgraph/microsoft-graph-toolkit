@@ -867,7 +867,6 @@ export class MgtPeoplePicker extends MgtTemplatedComponent {
       this.userInput = '';
       // remove last person in selected list
       this.selectedPeople = this.selectedPeople.splice(0, this.selectedPeople.length - 1);
-      this.loadState();
       // reset flyout position
       this.hideFlyout();
       this.showFlyout();
@@ -893,7 +892,6 @@ export class MgtPeoplePicker extends MgtTemplatedComponent {
    * @param input - input text
    */
   private handleUserSearch(input: HTMLInputElement) {
-    this._showLoading = true;
     if (!this._debouncedSearch) {
       this._debouncedSearch = debounce(async () => {
         // Wait a few milliseconds before showing the flyout.
@@ -915,8 +913,11 @@ export class MgtPeoplePicker extends MgtTemplatedComponent {
       }, 400);
     }
 
-    this.userInput = input.value;
-    this._debouncedSearch();
+    if (this.userInput !== input.value) {
+      this._showLoading = true;
+      this.userInput = input.value;
+      this._debouncedSearch();
+    }
   }
 
   /**
