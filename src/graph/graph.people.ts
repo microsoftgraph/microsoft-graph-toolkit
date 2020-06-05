@@ -20,17 +20,17 @@ export enum PersonType {
   /**
    * Any type
    */
-  Any = 0,
+  any = 0,
 
   /**
    * A Person such as User or Contact
    */
-  Person = 'Person',
+  person = 'person',
 
   /**
    * A group
    */
-  Group = 'Group'
+  group = 'group'
 }
 
 /**
@@ -38,21 +38,27 @@ export enum PersonType {
  *
  * @param {string} query
  * @param {number} [top=10] - number of people to return
- * @param {PersonType} [personType=PersonType.Person] - the type of person to search for
+ * @param {PersonType} [personType=PersonType.person] - the type of person to search for
  * @returns {(Promise<Person[]>)}
  */
 export async function findPeople(
   graph: IGraph,
   query: string,
   top: number = 10,
-  personType: PersonType = PersonType.Person
+  personType: PersonType = PersonType.person
 ): Promise<Person[]> {
   const scopes = 'people.read';
 
   let filterQuery = '';
 
-  if (personType !== PersonType.Any) {
-    filterQuery = `personType/class eq '${personType}'`;
+  if (personType !== PersonType.any) {
+    // converts personType to capitalized case
+    const personTypeString =
+      personType
+        .toString()
+        .charAt(0)
+        .toUpperCase() + personType.toString().slice(1);
+    filterQuery = `personType/class eq '${personTypeString}'`;
   }
 
   const result = await graph
