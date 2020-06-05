@@ -92,7 +92,7 @@ export async function findGroups(
       filterGroups.push('(mailEnabled eq true and securityEnabled eq false)');
     }
 
-    filterQuery += ' and ' + filterGroups.join(' or ');
+    filterQuery += (query !== '' ? ' and ' : '') + filterGroups.join(' or ');
   }
 
   const result = await graph
