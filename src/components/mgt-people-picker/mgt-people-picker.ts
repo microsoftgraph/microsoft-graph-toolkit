@@ -266,6 +266,8 @@ export class MgtPeoplePicker extends MgtTemplatedComponent {
   // List of people requested if group property is provided
   private _groupPeople: IDynamicPerson[];
   private _debouncedSearch: { (): void; (): void };
+
+  private madeSelection = false;
   @internalProperty() private _isFocused = false;
 
   @internalProperty() private _foundPeople: IDynamicPerson[];
@@ -314,10 +316,14 @@ export class MgtPeoplePicker extends MgtTemplatedComponent {
     }
 
     if (shouldShow) {
-      window.requestAnimationFrame(() => {
-        // Mouse is focused on input
-        this.showFlyout();
-      });
+      if (!this.madeSelection) {
+        window.requestAnimationFrame(() => {
+          // Mouse is focused on input
+          this.showFlyout();
+        });
+      } else {
+        this.madeSelection = false;
+      }
     }
   }
 
@@ -789,6 +795,7 @@ export class MgtPeoplePicker extends MgtTemplatedComponent {
 
         this.loadState();
         this._foundPeople = [];
+        this.madeSelection = true;
       }
     }
   }
@@ -884,7 +891,6 @@ export class MgtPeoplePicker extends MgtTemplatedComponent {
     if (this.selectionMode === 'single') {
       return;
     }
-    this.focus();
   }
 
   /**
