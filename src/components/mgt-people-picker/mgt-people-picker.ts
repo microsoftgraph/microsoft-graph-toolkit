@@ -867,6 +867,7 @@ export class MgtPeoplePicker extends MgtTemplatedComponent {
       this.userInput = '';
       // remove last person in selected list
       this.selectedPeople = this.selectedPeople.splice(0, this.selectedPeople.length - 1);
+      this.loadState();
       // reset flyout position
       this.hideFlyout();
       this.showFlyout();
@@ -875,7 +876,9 @@ export class MgtPeoplePicker extends MgtTemplatedComponent {
       return;
     }
 
-    this.handleUserSearch(input);
+    if (input.value) {
+      this.handleUserSearch(input);
+    }
   }
 
   private onPersonClick(person: IDynamicPerson): void {
