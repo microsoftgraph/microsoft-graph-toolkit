@@ -876,9 +876,7 @@ export class MgtPeoplePicker extends MgtTemplatedComponent {
       return;
     }
 
-    if (input.value) {
-      this.handleUserSearch(input);
-    }
+    this.handleUserSearch(input);
   }
 
   private onPersonClick(person: IDynamicPerson): void {
@@ -917,10 +915,8 @@ export class MgtPeoplePicker extends MgtTemplatedComponent {
       }, 400);
     }
 
-    if (this.userInput !== input.value) {
-      this.userInput = input.value;
-      this._debouncedSearch();
-    }
+    this.userInput = input.value;
+    this._debouncedSearch();
   }
 
   /**
