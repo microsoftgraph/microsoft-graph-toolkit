@@ -676,6 +676,7 @@ export class MgtPeoplePicker extends MgtTemplatedComponent {
         this.requestUpdate();
         this.fireCustomEvent('selectionChanged', this.selectedPeople);
       }
+
       if (input) {
         people = [];
         if (this.type === PersonType.person || this.type === PersonType.any) {
@@ -701,7 +702,7 @@ export class MgtPeoplePicker extends MgtTemplatedComponent {
             }
           }
         }
-        // default group search with user input
+
         if ((this.type === PersonType.group || this.type === PersonType.any) && people.length < this.showMax) {
           people = [];
           try {
