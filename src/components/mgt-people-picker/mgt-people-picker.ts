@@ -460,7 +460,7 @@ export class MgtPeoplePicker extends MgtTemplatedComponent {
             <div class="people-person">
               ${this.renderTemplate('selected-person', { person }, `selected-${person.id}`) ||
                 this.renderSelectedPerson(person)}
-              <div class="CloseIcon" @click="${() => this.removePerson(person)}">\uE711</div>
+              <div class="CloseIcon" @click="${e => this.removePerson(person, e)}">\uE711</div>
             </div>
           `
       )}
@@ -765,7 +765,8 @@ export class MgtPeoplePicker extends MgtTemplatedComponent {
    * Removes person from selected people
    * @param person - person and details pertaining to user selected
    */
-  protected removePerson(person: IDynamicPerson): void {
+  protected removePerson(person: IDynamicPerson, e: MouseEvent): void {
+    e.stopPropagation();
     const filteredPersonArr = this.selectedPeople.filter(p => {
       return p.id !== person.id;
     });
@@ -874,9 +875,7 @@ export class MgtPeoplePicker extends MgtTemplatedComponent {
       this.userInput = '';
       // remove last person in selected list
       this.selectedPeople = this.selectedPeople.splice(0, this.selectedPeople.length - 1);
-      // reset flyout position
       this.hideFlyout();
-      this.showFlyout();
       // fire selected people changed event
       this.fireCustomEvent('selectionChanged', this.selectedPeople);
       return;
