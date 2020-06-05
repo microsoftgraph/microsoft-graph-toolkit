@@ -19,31 +19,31 @@ export enum GroupType {
   /**
    * Any group Type
    */
-  Any = 0,
+  any = 0,
 
   /**
    * Office 365 group
    */
   // tslint:disable-next-line:no-bitwise
-  Unified = 1 << 0,
+  unified = 1 << 0,
 
   /**
    * Security group
    */
   // tslint:disable-next-line:no-bitwise
-  Security = 1 << 1,
+  security = 1 << 1,
 
   /**
    * Mail Enabled Security group
    */
   // tslint:disable-next-line:no-bitwise
-  MailEnabledSecurity = 1 << 2,
+  mailenabledsecurity = 1 << 2,
 
   /**
    * Distribution Group
    */
   // tslint:disable-next-line:no-bitwise
-  Distribution = 1 << 3
+  distribution = 1 << 3
 }
 
 /**
@@ -53,43 +53,46 @@ export enum GroupType {
  * @param {IGraph} graph
  * @param {string} query - what to search for
  * @param {number} [top=10] - number of groups to return
- * @param {GroupType} [groupTypes=GroupType.Any] - the type of group to search for
+ * @param {GroupType} [groupTypes=GroupType.any] - the type of group to search for
  * @returns {Promise<Group[]>} An array of Groups
  */
 export async function findGroups(
   graph: IGraph,
   query: string,
   top: number = 10,
-  groupTypes: GroupType = GroupType.Any
+  groupTypes: GroupType = GroupType.any
 ): Promise<Group[]> {
   const scopes = 'Group.Read.All';
 
-  let filterQuery = `(startswith(displayName,'${query}') or startswith(mailNickname,'${query}') or startswith(mail,'${query}'))`;
+  let filterQuery = '';
+  if (query !== '') {
+    filterQuery = `(startswith(displayName,'${query}') or startswith(mailNickname,'${query}') or startswith(mail,'${query}'))`;
+  }
 
-  if (groupTypes !== GroupType.Any) {
+  if (groupTypes !== GroupType.any) {
     const filterGroups = [];
 
     // tslint:disable-next-line:no-bitwise
-    if (GroupType.Unified === (groupTypes & GroupType.Unified)) {
+    if (GroupType.unified === (groupTypes & GroupType.unified)) {
       filterGroups.push("groupTypes/any(c:c+eq+'Unified')");
     }
 
     // tslint:disable-next-line:no-bitwise
-    if (GroupType.Security === (groupTypes & GroupType.Security)) {
+    if (GroupType.security === (groupTypes & GroupType.security)) {
       filterGroups.push('(mailEnabled eq false and securityEnabled eq true)');
     }
 
     // tslint:disable-next-line:no-bitwise
-    if (GroupType.MailEnabledSecurity === (groupTypes & GroupType.MailEnabledSecurity)) {
+    if (GroupType.mailenabledsecurity === (groupTypes & GroupType.mailenabledsecurity)) {
       filterGroups.push('(mailEnabled eq true and securityEnabled eq true)');
     }
 
     // tslint:disable-next-line:no-bitwise
-    if (GroupType.Distribution === (groupTypes & GroupType.Distribution)) {
+    if (GroupType.distribution === (groupTypes & GroupType.distribution)) {
       filterGroups.push('(mailEnabled eq true and securityEnabled eq false)');
     }
 
-    filterQuery += ' and ' + filterGroups.join(' or ');
+    filterQuery += (query !== '' ? ' and ' : '') + filterGroups.join(' or ');
   }
 
   const result = await graph
