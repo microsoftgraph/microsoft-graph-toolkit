@@ -670,8 +670,8 @@ export class MgtPeoplePicker extends MgtTemplatedComponent {
           }
           this.defaultPeople = people;
         }
-        this._showLoading = false;
       }
+      this._showLoading = false;
 
       if (this.defaultSelectedUserIds && !this.selectedPeople.length) {
         const defaultSelectedUsers = await getUsersForUserIds(graph, this.defaultSelectedUserIds);
