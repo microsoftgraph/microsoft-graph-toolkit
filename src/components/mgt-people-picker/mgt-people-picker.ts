@@ -267,7 +267,6 @@ export class MgtPeoplePicker extends MgtTemplatedComponent {
   private _groupPeople: IDynamicPerson[];
   private _debouncedSearch: { (): void; (): void };
 
-  private madeSelection = false;
   @internalProperty() private _isFocused = false;
 
   @internalProperty() private _foundPeople: IDynamicPerson[];
@@ -795,7 +794,6 @@ export class MgtPeoplePicker extends MgtTemplatedComponent {
 
         this.loadState();
         this._foundPeople = [];
-        this.madeSelection = true;
       }
     }
   }
