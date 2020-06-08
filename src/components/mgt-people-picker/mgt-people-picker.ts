@@ -903,7 +903,6 @@ export class MgtPeoplePicker extends MgtTemplatedComponent {
    * @param input - input text
    */
   private handleUserSearch(input: HTMLInputElement) {
-    this._showLoading = true;
     if (!this._debouncedSearch) {
       this._debouncedSearch = debounce(async () => {
         // Wait a few milliseconds before showing the flyout.
