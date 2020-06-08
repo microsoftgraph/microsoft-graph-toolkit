@@ -88,6 +88,7 @@ $dropdown-item-selected-background: var(--dropdown-item-selected-background, #de
       display: flex;
       flex-wrap: nowrap;
       align-items: center;
+      margin-right: 25px;
     }
 
     .team-chosen-input {
@@ -139,7 +140,6 @@ $dropdown-item-selected-background: var(--dropdown-item-selected-background, #de
       height: 90%;
       top: 2px;
       right: 2px;
-      // bottom: 4px;
       background-image: linear-gradient(
         to right,
         rgba(255, 255, 255, 0) 0%,
