@@ -303,7 +303,6 @@ export class MgtPeoplePicker extends MgtTemplatedComponent {
     if (!peopleInput) {
       return;
     }
-    this.handleFlyout();
     peopleInput.focus(options);
     peopleInput.select();
   }
@@ -352,11 +351,10 @@ export class MgtPeoplePicker extends MgtTemplatedComponent {
     };
     return html`
       <div class=${classMap(inputClasses)} @click=${e => this.focus(e)}>
-        <div class="people-picker-input">
-          <div class="people-selected-list">
-            ${selectedPeopleTemplate} ${flyoutTemplate}
-          </div>
+        <div class="people-selected-list">
+          ${selectedPeopleTemplate} ${flyoutTemplate}
         </div>
+        <div class="people-picker-input"></div>
       </div>
     `;
   }

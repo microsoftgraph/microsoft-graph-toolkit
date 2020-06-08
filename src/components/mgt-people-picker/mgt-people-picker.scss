@@ -77,6 +77,10 @@ mgt-people-picker .flyout-root {
 
 :host .people-selected-input,
 mgt-people-picker .people-selected-input {
+  box-sizing: border-box;
+  width: 100%;
+  display: flex;
+  flex: 1 0 auto;
   font-family: var(--default-font-family, 'Segoe UI');
   position: relative;
   border: none;
@@ -98,6 +102,7 @@ mgt-people-picker .people-selected-input {
 
 :host .people-selected-list,
 mgt-people-picker .people-selected-list {
+  flex: 1 0 auto;
   display: flex;
   flex-wrap: wrap;
   vertical-align: middle;
@@ -173,6 +178,7 @@ mgt-people-picker .input-search.input-search--start {
 :host .people-picker-input,
 mgt-people-picker .people-picker-input {
   display: flex;
+  flex-wrap: wrap;
   order: 2;
   background-color: $input-background-color;
   margin: $avatar-margin;
@@ -299,4 +305,8 @@ mgt-people-picker .people-person-text-area {
   max-height: 40px;
   overflow: hidden;
   color: $font-color;
+}
+
+mgt-flyout {
+  flex: 1 0 auto;
 }
