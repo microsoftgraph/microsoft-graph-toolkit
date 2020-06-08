@@ -106,16 +106,60 @@ mgt-people-picker .people-selected-list {
   padding-left: 8px;
   font-style: normal;
   font-weight: normal;
+  overflow: hidden;
 }
+
+.overflow-gradient,
+mgt-people-picker .overflow-gradient {
+  content: '';
+  position: absolute;
+  width: 15px;
+  height: 90%;
+  top: 0;
+  right: 22px;
+  background-image: linear-gradient(
+    to right,
+    rgba(255, 255, 255, 0) 0%,
+    rgba(255, 255, 255, 0) 60%,
+    rgb(241, 241, 241) 100%
+  );
+  background-image: -moz-linear-gradient(
+    left,
+    rgba(255, 255, 255, 0) 0%,
+    rgba(255, 255, 255, 0) 60%,
+    rgb(241, 241, 241) 100%
+  );
+  background-image: -o-linear-gradient(
+    left,
+    rgba(255, 255, 255, 0) 0%,
+    rgba(255, 255, 255, 0) 60%,
+    rgb(241, 241, 241) 100%
+  );
+  background-image: -ms-linear-gradient(
+    left,
+    rgba(255, 255, 255, 0) 0%,
+    rgba(255, 255, 255, 0) 60%,
+    rgb(241, 241, 241) 100%
+  );
+  background-image: -webkit-linear-gradient(
+    left,
+    rgba(255, 255, 255, 0) 0%,
+    rgba(255, 255, 255, 0) 60%,
+    rgb(241, 241, 241) 100%
+  );
+}
+
 .CloseIcon,
 mgt-people-picker .CloseIcon {
   line-height: normal;
   font-family: 'FabricMDL2Icons';
   padding-right: 8px;
-  padding-left: 4px;
   margin-top: 0px;
   cursor: pointer;
   color: $font-color;
+  background-color: rgb(241, 241, 241);
+  position: absolute;
+  right: 0px;
 }
 
 :host .people-person,
@@ -128,6 +172,8 @@ mgt-people-picker .people-person {
   height: 24px;
   white-space: nowrap;
   text-overflow: ellipsis;
+  overflow: hidden;
+  position: relative;
 }
 
 :host .list-person,
@@ -224,6 +270,7 @@ mgt-person {
   --color: $font-color;
   color: $font-color;
   margin-bottom: 1px;
+  margin-right: 26px;
 }
 
 :host .search-error-text,
