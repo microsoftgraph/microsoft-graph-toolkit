@@ -304,27 +304,9 @@ export class MgtPeoplePicker extends MgtTemplatedComponent {
     if (!peopleInput) {
       return;
     }
-
+    this.handleFlyout();
     peopleInput.focus(options);
     peopleInput.select();
-
-    // handles hiding control if default people have no more selections available
-    const peopleLeft = this.filterPeople(this.defaultPeople);
-    let shouldShow = true;
-    if (peopleLeft && peopleLeft.length === 0) {
-      shouldShow = false;
-    }
-
-    if (shouldShow) {
-      if (!this.madeSelection) {
-        window.requestAnimationFrame(() => {
-          // Mouse is focused on input
-          this.showFlyout();
-        });
-      } else {
-        this.madeSelection = false;
-      }
-    }
   }
 
   /**
@@ -370,7 +352,7 @@ export class MgtPeoplePicker extends MgtTemplatedComponent {
       'people-picker': true
     };
     return html`
-      <div class=${classMap(inputClasses)} @click=${() => this.focus()}>
+      <div class=${classMap(inputClasses)} @click=${e => this.focus(e)}>
         <div class="people-picker-input">
           <div class="people-selected-list">
             ${selectedPeopleTemplate} ${flyoutTemplate}
@@ -435,6 +417,7 @@ export class MgtPeoplePicker extends MgtTemplatedComponent {
           @keydown="${this.onUserKeyDown}"
           @keyup="${this.onUserKeyUp}"
           @blur=${this.lostFocus}
+          @click=${this.handleFlyout}
         />
       </div>
     `;
@@ -465,6 +448,22 @@ export class MgtPeoplePicker extends MgtTemplatedComponent {
           `
       )}
     `;
+  }
+
+  private handleFlyout() {
+    // handles hiding control if default people have no more selections available
+    const peopleLeft = this.filterPeople(this.defaultPeople);
+    let shouldShow = true;
+    if (peopleLeft && peopleLeft.length === 0) {
+      shouldShow = false;
+    }
+
+    if (shouldShow) {
+      window.requestAnimationFrame(() => {
+        // Mouse is focused on input
+        this.showFlyout();
+      });
+    }
   }
 
   /**
@@ -580,7 +579,7 @@ export class MgtPeoplePicker extends MgtTemplatedComponent {
               'list-person': true
             };
             return html`
-              <li class="${classMap(listPersonClasses)}" @click="${() => this.onPersonClick(person)}">
+              <li class="${classMap(listPersonClasses)}" @click="${e => this.onPersonClick(person, e)}">
                 ${this.renderPersonResult(person)}
               </li>
             `;
@@ -644,6 +643,7 @@ export class MgtPeoplePicker extends MgtTemplatedComponent {
    * set's `this.groupPeople` to those members.
    */
   protected async loadState(): Promise<void> {
+    console.log('loadstate');
     let people = this.people;
     const input = this.userInput.toLowerCase();
 
@@ -755,6 +755,7 @@ export class MgtPeoplePicker extends MgtTemplatedComponent {
    * @memberof MgtPeoplePicker
    */
   protected showFlyout(): void {
+    console.log('show flyout');
     const flyout = this.flyout;
     if (flyout) {
       flyout.open();
@@ -809,10 +810,12 @@ export class MgtPeoplePicker extends MgtTemplatedComponent {
     }
     this._showLoading = true;
     this.loadState();
+    console.log('gained focus');
   }
 
   private lostFocus() {
     this._isFocused = false;
+    console.log('lostfocus');
   }
 
   private renderHighlightText(person: IDynamicPerson): TemplateResult {
@@ -884,8 +887,17 @@ export class MgtPeoplePicker extends MgtTemplatedComponent {
     this.handleUserSearch(input);
   }
 
-  private onPersonClick(person: IDynamicPerson): void {
+  private onPersonClick(person: IDynamicPerson, e: MouseEvent): void {
+    e.stopPropagation();
     this.addPerson(person);
+    this.hideFlyout();
+
+    const peopleInput = this.renderRoot.querySelector('.people-selected-input') as HTMLInputElement;
+    if (!peopleInput) {
+      return;
+    }
+    peopleInput.focus();
+    this._isFocused = true;
     this.hideFlyout();
     if (this.selectionMode === 'single') {
       return;
