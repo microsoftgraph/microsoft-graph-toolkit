@@ -448,23 +448,6 @@ export class MgtPeoplePicker extends MgtTemplatedComponent {
       )}
     `;
   }
-
-  private handleFlyout() {
-    // handles hiding control if default people have no more selections available
-    const peopleLeft = this.filterPeople(this.defaultPeople);
-    let shouldShow = true;
-    if (peopleLeft && peopleLeft.length === 0) {
-      shouldShow = false;
-    }
-
-    if (shouldShow) {
-      window.requestAnimationFrame(() => {
-        // Mouse is focused on input
-        this.showFlyout();
-      });
-    }
-  }
-
   /**
    * Render the flyout chrome.
    *
@@ -795,6 +778,22 @@ export class MgtPeoplePicker extends MgtTemplatedComponent {
         this.loadState();
         this._foundPeople = [];
       }
+    }
+  }
+
+  private handleFlyout() {
+    // handles hiding control if default people have no more selections available
+    const peopleLeft = this.filterPeople(this.defaultPeople);
+    let shouldShow = true;
+    if (peopleLeft && peopleLeft.length === 0) {
+      shouldShow = false;
+    }
+
+    if (shouldShow) {
+      window.requestAnimationFrame(() => {
+        // Mouse is focused on input
+        this.showFlyout();
+      });
     }
   }
 
