@@ -643,7 +643,6 @@ export class MgtPeoplePicker extends MgtTemplatedComponent {
    * set's `this.groupPeople` to those members.
    */
   protected async loadState(): Promise<void> {
-    console.log('loadstate');
     let people = this.people;
     const input = this.userInput.toLowerCase();
 
@@ -755,7 +754,6 @@ export class MgtPeoplePicker extends MgtTemplatedComponent {
    * @memberof MgtPeoplePicker
    */
   protected showFlyout(): void {
-    console.log('show flyout');
     const flyout = this.flyout;
     if (flyout) {
       flyout.open();
@@ -810,12 +808,10 @@ export class MgtPeoplePicker extends MgtTemplatedComponent {
     }
     this._showLoading = true;
     this.loadState();
-    console.log('gained focus');
   }
 
   private lostFocus() {
     this._isFocused = false;
-    console.log('lostfocus');
   }
 
   private renderHighlightText(person: IDynamicPerson): TemplateResult {
@@ -878,6 +874,7 @@ export class MgtPeoplePicker extends MgtTemplatedComponent {
       this.userInput = '';
       // remove last person in selected list
       this.selectedPeople = this.selectedPeople.splice(0, this.selectedPeople.length - 1);
+      this.loadState();
       this.hideFlyout();
       // fire selected people changed event
       this.fireCustomEvent('selectionChanged', this.selectedPeople);
@@ -932,6 +929,7 @@ export class MgtPeoplePicker extends MgtTemplatedComponent {
     }
 
     if (this.userInput !== input.value) {
+      this._showLoading = true;
       this.userInput = input.value;
       this._debouncedSearch();
     }
