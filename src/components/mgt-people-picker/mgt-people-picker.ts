@@ -108,12 +108,13 @@ export class MgtPeoplePicker extends MgtTemplatedComponent {
   @property({
     attribute: 'type',
     converter: (value, type) => {
+      value = value.toLowerCase();
       if (!value || value.length === 0) {
-        return PersonType.Any;
+        return PersonType.any;
       }
 
       if (typeof PersonType[value] === 'undefined') {
-        return PersonType.Any;
+        return PersonType.any;
       } else {
         return PersonType[value];
       }
@@ -140,7 +141,7 @@ export class MgtPeoplePicker extends MgtTemplatedComponent {
     attribute: 'group-type',
     converter: (value, type) => {
       if (!value || value.length === 0) {
-        return GroupType.Any;
+        return GroupType.any;
       }
 
       const values = value.split(',');
@@ -154,7 +155,7 @@ export class MgtPeoplePicker extends MgtTemplatedComponent {
       }
 
       if (groupTypes.length === 0) {
-        return GroupType.Any;
+        return GroupType.any;
       }
 
       // tslint:disable-next-line:no-bitwise
@@ -255,8 +256,8 @@ export class MgtPeoplePicker extends MgtTemplatedComponent {
   @property({ attribute: false }) private _showLoading: boolean;
 
   private _groupId: string;
-  private _type: PersonType = PersonType.Person;
-  private _groupType: GroupType = GroupType.Any;
+  private _type: PersonType = PersonType.person;
+  private _groupType: GroupType = GroupType.any;
 
   private defaultPeople: IDynamicPerson[];
 
@@ -645,12 +646,25 @@ export class MgtPeoplePicker extends MgtTemplatedComponent {
     if (!people && provider && provider.state === ProviderState.SignedIn) {
       const graph = provider.graph.forComponent(this);
 
-      // default common people
       if (!input.length && this._isFocused) {
         if (this.defaultPeople) {
           people = this.defaultPeople;
         } else {
-          people = await getPeople(graph);
+          if (this.groupId) {
+            if (this._groupPeople === null) {
+              try {
+                this._groupPeople = await getPeopleFromGroup(graph, this.groupId);
+              } catch (_) {
+                this._groupPeople = [];
+              }
+            }
+            people = this._groupPeople || [];
+          } else if (this.type === PersonType.person || this.type === PersonType.any) {
+            people = await getPeople(graph);
+          } else if (this.type === PersonType.group) {
+            const groups = (await findGroups(graph, '', this.showMax, this.groupType)) || [];
+            people = groups;
+          }
           this.defaultPeople = people;
         }
         this._showLoading = false;
@@ -664,19 +678,9 @@ export class MgtPeoplePicker extends MgtTemplatedComponent {
         this.fireCustomEvent('selectionChanged', this.selectedPeople);
       }
 
-      if (this.groupId && input) {
-        if (this._groupPeople === null) {
-          try {
-            this._groupPeople = await getPeopleFromGroup(graph, this.groupId);
-          } catch (_) {
-            this._groupPeople = [];
-          }
-        }
-
-        people = this._groupPeople || [];
-      } else if (input) {
+      if (input) {
         people = [];
-        if (this.type === PersonType.Person || this.type === PersonType.Any) {
+        if (this.type === PersonType.person || this.type === PersonType.any) {
           try {
             people = (await findPeople(graph, input, this.showMax)) || [];
           } catch (e) {
@@ -700,7 +704,8 @@ export class MgtPeoplePicker extends MgtTemplatedComponent {
           }
         }
 
-        if ((this.type === PersonType.Group || this.type === PersonType.Any) && people.length < this.showMax) {
+        if ((this.type === PersonType.group || this.type === PersonType.any) && people.length < this.showMax) {
+          people = [];
           try {
             const groups = (await findGroups(graph, input, this.showMax, this.groupType)) || [];
             people = people.concat(groups);
@@ -863,6 +868,7 @@ export class MgtPeoplePicker extends MgtTemplatedComponent {
       this.userInput = '';
       // remove last person in selected list
       this.selectedPeople = this.selectedPeople.splice(0, this.selectedPeople.length - 1);
+      this.loadState();
       // reset flyout position
       this.hideFlyout();
       this.showFlyout();
@@ -888,7 +894,6 @@ export class MgtPeoplePicker extends MgtTemplatedComponent {
    * @param input - input text
    */
   private handleUserSearch(input: HTMLInputElement) {
-    this._showLoading = true;
     if (!this._debouncedSearch) {
       this._debouncedSearch = debounce(async () => {
         // Wait a few milliseconds before showing the flyout.
@@ -911,6 +916,7 @@ export class MgtPeoplePicker extends MgtTemplatedComponent {
     }
 
     if (this.userInput !== input.value) {
+      this._showLoading = true;
       this.userInput = input.value;
       this._debouncedSearch();
     }
