@@ -25,7 +25,7 @@ $input-focus-color: var(--input-focus-color, #0078d4);
 $input-background-color: var(--input-background-color, var(--people-list-background-color, white));
 
 $dropdown-background-color: var(--dropdown-background-color, white);
-$dropdown-item-hover-background: var(--dropdown-item-hover-background, #f1f1f1dd);
+$dropdown-item-hover-background: var(--dropdown-item-hover-background, rgba(241, 241, 241, 0.87));
 
 $placeholder-default-color: var(--placeholder-default-color, #605e5c);
 $placeholder-focus-color: var(--placeholder-focus-color, #323130);
