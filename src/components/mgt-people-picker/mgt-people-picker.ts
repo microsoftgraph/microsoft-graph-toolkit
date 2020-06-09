@@ -354,7 +354,6 @@ export class MgtPeoplePicker extends MgtTemplatedComponent {
         <div class="people-selected-list">
           ${selectedPeopleTemplate} ${flyoutTemplate}
         </div>
-        <div class="people-picker-input"></div>
       </div>
     `;
   }
@@ -902,6 +901,7 @@ export class MgtPeoplePicker extends MgtTemplatedComponent {
    */
   private handleUserSearch(input: HTMLInputElement) {
     if (!this._debouncedSearch) {
+      this._showLoading = true;
       this._debouncedSearch = debounce(async () => {
         // Wait a few milliseconds before showing the flyout.
         // This helps prevent loading state flickering while the user is actively changing the query.
@@ -923,7 +923,6 @@ export class MgtPeoplePicker extends MgtTemplatedComponent {
     }
 
     if (this.userInput !== input.value) {
-      this._showLoading = true;
       this.userInput = input.value;
       this._debouncedSearch();
     }
