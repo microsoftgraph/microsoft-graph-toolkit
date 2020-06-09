@@ -163,7 +163,6 @@ mgt-people-picker .CloseIcon {
   cursor: pointer;
   color: $font-color;
   background-color: rgb(241, 241, 241);
-  position: absolute;
   right: 0px;
 }
 
@@ -276,7 +275,7 @@ mgt-person {
   --color: $font-color;
   color: $font-color;
   margin-bottom: 1px;
-  margin-right: 26px;
+  margin-right: 4px;
 }
 
 :host .search-error-text,
