@@ -807,6 +807,7 @@ export class MgtPeoplePicker extends MgtTemplatedComponent {
 
   private lostFocus() {
     this._isFocused = false;
+    this.requestUpdate();
   }
 
   private renderHighlightText(person: IDynamicPerson): TemplateResult {
@@ -943,7 +944,8 @@ export class MgtPeoplePicker extends MgtTemplatedComponent {
         event.preventDefault();
       }
     }
-    if (event.code === 'Tab' || event.code === 'Enter') {
+    if (event.keyCode === 9 || event.keyCode === 13) {
+      // keyCodes capture: tab (9) and enter (13)
       if (this._foundPeople.length) {
         event.preventDefault();
       }

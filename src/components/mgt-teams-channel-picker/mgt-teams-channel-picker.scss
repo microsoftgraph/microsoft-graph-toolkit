@@ -25,7 +25,7 @@ $input-hover-color: var(--input-hover-color, #323130);
 $input-focus-color: var(--input-focus-color, #0078d4);
 $input-background-color: var(--input-background-color, white);
 
-$dropdown-item-hover-background: var(--dropdown-item-hover-background, #f1f1f1dd);
+$dropdown-item-hover-background: var(--dropdown-item-hover-background, rgba(241, 241, 241, 0.87));
 $dropdown-background-color: var(--dropdown-background-color, white);
 $dropdown-item-selected-background: var(--dropdown-item-selected-background, #deecf9);
 
@@ -46,7 +46,7 @@ $dropdown-item-selected-background: var(--dropdown-item-selected-background, #de
     background-color: $input-background-color;
     font-size: 14px;
     color: $font-color;
-    min-height: 29px;
+    height: 29px;
     line-height: 19px;
     cursor: text;
     border: $input-border;
