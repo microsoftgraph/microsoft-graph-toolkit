@@ -266,6 +266,7 @@ export class MgtPeoplePicker extends MgtTemplatedComponent {
   // List of people requested if group property is provided
   private _groupPeople: IDynamicPerson[];
   private _debouncedSearch: { (): void; (): void };
+
   @internalProperty() private _isFocused = false;
 
   @internalProperty() private _foundPeople: IDynamicPerson[];
@@ -287,7 +288,6 @@ export class MgtPeoplePicker extends MgtTemplatedComponent {
    */
   public connectedCallback() {
     super.connectedCallback();
-    this.addEventListener('click', e => e.stopPropagation());
   }
 
   /**
@@ -302,23 +302,8 @@ export class MgtPeoplePicker extends MgtTemplatedComponent {
     if (!peopleInput) {
       return;
     }
-
     peopleInput.focus(options);
     peopleInput.select();
-
-    // handles hiding control if default people have no more selections available
-    const peopleLeft = this.filterPeople(this.defaultPeople);
-    let shouldShow = true;
-    if (peopleLeft && peopleLeft.length === 0) {
-      shouldShow = false;
-    }
-
-    if (shouldShow) {
-      window.requestAnimationFrame(() => {
-        // Mouse is focused on input
-        this.showFlyout();
-      });
-    }
   }
 
   /**
@@ -364,11 +349,9 @@ export class MgtPeoplePicker extends MgtTemplatedComponent {
       'people-picker': true
     };
     return html`
-      <div class=${classMap(inputClasses)} @click=${() => this.focus()}>
-        <div class="people-picker-input">
-          <div class="people-selected-list">
-            ${selectedPeopleTemplate} ${flyoutTemplate}
-          </div>
+      <div class=${classMap(inputClasses)} @click=${e => this.focus(e)}>
+        <div class="people-selected-list">
+          ${selectedPeopleTemplate} ${flyoutTemplate}
         </div>
       </div>
     `;
@@ -429,6 +412,7 @@ export class MgtPeoplePicker extends MgtTemplatedComponent {
           @keydown="${this.onUserKeyDown}"
           @keyup="${this.onUserKeyUp}"
           @blur=${this.lostFocus}
+          @click=${this.handleFlyout}
         />
       </div>
     `;
@@ -454,13 +438,14 @@ export class MgtPeoplePicker extends MgtTemplatedComponent {
             <div class="people-person">
               ${this.renderTemplate('selected-person', { person }, `selected-${person.id}`) ||
                 this.renderSelectedPerson(person)}
-              <div class="CloseIcon" @click="${() => this.removePerson(person)}">\uE711</div>
+
+              <div class="overflow-gradient"></div>
+              <div class="CloseIcon" @click="${e => this.removePerson(person, e)}">\uE711</div>
             </div>
           `
       )}
     `;
   }
-
   /**
    * Render the flyout chrome.
    *
@@ -574,7 +559,7 @@ export class MgtPeoplePicker extends MgtTemplatedComponent {
               'list-person': true
             };
             return html`
-              <li class="${classMap(listPersonClasses)}" @click="${() => this.onPersonClick(person)}">
+              <li class="${classMap(listPersonClasses)}" @click="${e => this.onPersonClick(person)}">
                 ${this.renderPersonResult(person)}
               </li>
             `;
@@ -666,8 +651,8 @@ export class MgtPeoplePicker extends MgtTemplatedComponent {
           }
           this.defaultPeople = people;
         }
-        this._showLoading = false;
       }
+      this._showLoading = false;
 
       if (this.defaultSelectedUserIds && !this.selectedPeople.length) {
         const defaultSelectedUsers = await getUsersForUserIds(graph, this.defaultSelectedUserIds);
@@ -759,7 +744,8 @@ export class MgtPeoplePicker extends MgtTemplatedComponent {
    * Removes person from selected people
    * @param person - person and details pertaining to user selected
    */
-  protected removePerson(person: IDynamicPerson): void {
+  protected removePerson(person: IDynamicPerson, e: MouseEvent): void {
+    e.stopPropagation();
     const filteredPersonArr = this.selectedPeople.filter(p => {
       return p.id !== person.id;
     });
@@ -790,6 +776,22 @@ export class MgtPeoplePicker extends MgtTemplatedComponent {
         this.loadState();
         this._foundPeople = [];
       }
+    }
+  }
+
+  private handleFlyout() {
+    // handles hiding control if default people have no more selections available
+    const peopleLeft = this.filterPeople(this.defaultPeople);
+    let shouldShow = true;
+    if (peopleLeft && peopleLeft.length === 0) {
+      shouldShow = false;
+    }
+
+    if (shouldShow) {
+      window.requestAnimationFrame(() => {
+        // Mouse is focused on input
+        this.showFlyout();
+      });
     }
   }
 
@@ -868,9 +870,7 @@ export class MgtPeoplePicker extends MgtTemplatedComponent {
       // remove last person in selected list
       this.selectedPeople = this.selectedPeople.splice(0, this.selectedPeople.length - 1);
       this.loadState();
-      // reset flyout position
       this.hideFlyout();
-      this.showFlyout();
       // fire selected people changed event
       this.fireCustomEvent('selectionChanged', this.selectedPeople);
       return;
@@ -882,10 +882,17 @@ export class MgtPeoplePicker extends MgtTemplatedComponent {
   private onPersonClick(person: IDynamicPerson): void {
     this.addPerson(person);
     this.hideFlyout();
+
+    const peopleInput = this.renderRoot.querySelector('.people-selected-input') as HTMLInputElement;
+    if (!peopleInput) {
+      return;
+    }
+    peopleInput.focus();
+    this._isFocused = true;
+    this.hideFlyout();
     if (this.selectionMode === 'single') {
       return;
     }
-    this.focus();
   }
 
   /**
@@ -894,6 +901,7 @@ export class MgtPeoplePicker extends MgtTemplatedComponent {
    */
   private handleUserSearch(input: HTMLInputElement) {
     if (!this._debouncedSearch) {
+      this._showLoading = true;
       this._debouncedSearch = debounce(async () => {
         // Wait a few milliseconds before showing the flyout.
         // This helps prevent loading state flickering while the user is actively changing the query.
@@ -915,7 +923,6 @@ export class MgtPeoplePicker extends MgtTemplatedComponent {
     }
 
     if (this.userInput !== input.value) {
-      this._showLoading = true;
       this.userInput = input.value;
       this._debouncedSearch();
     }
