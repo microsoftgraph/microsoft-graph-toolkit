@@ -182,7 +182,7 @@ export class MgtTeamsChannelPicker extends MgtTemplatedComponent {
   }
 
   // User input in search
-  private get _input(): HTMLInputElement {
+  private get _input(): HTMLElement {
     return this.renderRoot.querySelector('.team-chosen-input');
   }
   private _inputValue: string = '';
@@ -283,13 +283,10 @@ export class MgtTeamsChannelPicker extends MgtTemplatedComponent {
       html`
         <div class="root" @blur=${this.lostFocus}>
           <div class=${classMap(inputClasses)} @click=${this.gainedFocus}>
-            <div class=${classMap(iconClasses)}>
-              ${!this._selectedItemState ? getSvg(SvgIcon.Search, '#252424') : ''}
-            </div>
-            <div class="channel-chosen-list">
-              ${this.renderSelected()} ${this.renderInput()} ${this.renderCloseButton()}
-            </div>
+            ${this.renderSelected()}
+            <div class="search-wrapper">${this.renderSearchIcon()} ${this.renderInput()}</div>
           </div>
+          ${this.renderCloseButton()}
           <div class=${classMap(dropdownClasses)}>${this.renderDropdown()}</div>
         </div>
       `
@@ -309,13 +306,25 @@ export class MgtTeamsChannelPicker extends MgtTemplatedComponent {
     }
 
     return html`
-      <li class="selected-team">
+      <li class="selected-team" title=${this._selectedItemState.item.displayName}>
         <div class="selected-team-name">${this._selectedItemState.parent.item.displayName}</div>
         <div class="arrow">${getSvg(SvgIcon.TeamSeparator, '#B3B0AD')}</div>
         ${this._selectedItemState.item.displayName}
       </li>
+    `;
+  }
+
+  /**
+   * Renders search icon
+   *
+   * @protected
+   * @returns
+   * @memberof MgtTeamsChannelPicker
+   */
+  protected renderSearchIcon() {
+    return html`
       <div class="search-icon">
-        ${this._isFocused ? getSvg(SvgIcon.Search, '#252424') : ''}
+        ${getSvg(SvgIcon.Search, '#252424')}
       </div>
     `;
   }
@@ -335,16 +344,17 @@ export class MgtTeamsChannelPicker extends MgtTemplatedComponent {
 
     return html`
       <div class="${classMap(rootClasses)}">
-        <input
+        <span
           id="teams-channel-picker-input"
           class="team-chosen-input"
           type="text"
-          placeholder="${!!this._selectedItemState ? '' : 'Select a channel '} "
           label="teams-channel-picker-input"
           aria-label="Select a channel"
+          data-placeholder="${!!this._selectedItemState ? '' : 'Select a channel '} "
           role="input"
           @input=${e => this.handleInputChanged(e)}
-        />
+          contenteditable
+        ></span>
       </div>
     `;
   }
@@ -604,7 +614,7 @@ export class MgtTeamsChannelPicker extends MgtTemplatedComponent {
   }
 
   private handleInputChanged(e) {
-    this._inputValue = e.target.value;
+    this._inputValue = e.target.textContent;
     // shows list
     this.gainedFocus();
 
@@ -781,7 +791,7 @@ export class MgtTeamsChannelPicker extends MgtTemplatedComponent {
     this._isFocused = false;
     const input = this._input;
     if (input) {
-      input.value = this._inputValue = '';
+      input.textContent = this._inputValue = '';
     }
 
     this._isDropdownVisible = false;
@@ -796,7 +806,7 @@ export class MgtTeamsChannelPicker extends MgtTemplatedComponent {
 
     const input = this._input;
     if (input) {
-      input.value = this._inputValue = '';
+      input.textContent = this._inputValue = '';
     }
     this.requestUpdate();
     this.lostFocus();

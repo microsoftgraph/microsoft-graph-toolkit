@@ -439,6 +439,8 @@ export class MgtPeoplePicker extends MgtTemplatedComponent {
             <div class="people-person">
               ${this.renderTemplate('selected-person', { person }, `selected-${person.id}`) ||
                 this.renderSelectedPerson(person)}
+
+              <div class="overflow-gradient"></div>
               <div class="CloseIcon" @click="${e => this.removePerson(person, e)}">\uE711</div>
             </div>
           `
