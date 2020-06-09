@@ -560,7 +560,7 @@ export class MgtPeoplePicker extends MgtTemplatedComponent {
               'list-person': true
             };
             return html`
-              <li class="${classMap(listPersonClasses)}" @click="${e => this.onPersonClick(person, e)}">
+              <li class="${classMap(listPersonClasses)}" @click="${e => this.onPersonClick(person)}">
                 ${this.renderPersonResult(person)}
               </li>
             `;
@@ -880,8 +880,7 @@ export class MgtPeoplePicker extends MgtTemplatedComponent {
     this.handleUserSearch(input);
   }
 
-  private onPersonClick(person: IDynamicPerson, e: MouseEvent): void {
-    e.stopPropagation();
+  private onPersonClick(person: IDynamicPerson): void {
     this.addPerson(person);
     this.hideFlyout();
 
