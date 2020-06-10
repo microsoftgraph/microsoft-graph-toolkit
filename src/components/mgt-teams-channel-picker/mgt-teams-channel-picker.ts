@@ -614,7 +614,12 @@ export class MgtTeamsChannelPicker extends MgtTemplatedComponent {
   }
 
   private handleInputChanged(e) {
-    this._inputValue = e.target.textContent;
+    if (this._inputValue !== e.target.textContent) {
+      this._inputValue = e.target.textContent;
+    } else {
+      return;
+    }
+
     // shows list
     this.gainedFocus();
 
