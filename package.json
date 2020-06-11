@@ -2,7 +2,8 @@
     "name": "root",
     "private": true,
     "scripts": {
-        "build": "npm run --prefix packages\\mgt build",
+        "pack": "lerna run --prefix packages\\mgt pack",
+        "build": "lerna run --prefix packages\\mgt build",
         "start": "npm run --prefix packages\\mgt start",
         "storybook": "start-storybook -p 6006 -s assets",
         "storybook:dev": "npm run build && wca analyze packages --format json --outFile custom-elements.json",

@@ -25,6 +25,7 @@
     "src"
   ],
   "scripts": {
+    "pack": "npm pack",
     "clean": "shx rm -rf dist",
     "start": "npm run sass && run-p sass:watch build:watch serve",
     "start:https": "npm run sass && run-p sass:watch build:watch serve:https",
