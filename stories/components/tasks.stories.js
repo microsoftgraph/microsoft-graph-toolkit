@@ -11,7 +11,7 @@ import { withKnobs } from '@storybook/addon-knobs';
 import { withWebComponentsKnobs } from 'storybook-addon-web-components-knobs';
 import { withSignIn } from '../../.storybook/addons/signInAddon/signInAddon';
 import { withCodeEditor } from '../../.storybook/addons/codeEditorAddon/codeAddon';
-import '../../dist/es6/components/mgt-tasks/mgt-tasks';
+import '../../packages/mgt/dist/es6/components/mgt-tasks/mgt-tasks';
 
 export default {
   title: 'Components | mgt-tasks',

@@ -9,7 +9,7 @@ import { html } from 'lit-element';
 import { withA11y } from '@storybook/addon-a11y';
 import { withSignIn } from '../../.storybook/addons/signInAddon/signInAddon';
 import { withCodeEditor } from '../../.storybook/addons/codeEditorAddon/codeAddon';
-import '../../dist/es6/components/mgt-teams-channel-picker/mgt-teams-channel-picker';
+import '../../packages/mgt/dist/es6/components/mgt-teams-channel-picker/mgt-teams-channel-picker';
 
 export default {
   title: 'Components | mgt-teams-channel-picker',
