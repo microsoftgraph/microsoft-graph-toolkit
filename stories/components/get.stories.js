@@ -5,28 +5,31 @@
  * -------------------------------------------------------------------------------------------
  */
 
-import { html } from 'lit-element';
-import { withA11y } from '@storybook/addon-a11y';
-import { withKnobs } from '@storybook/addon-knobs';
-import { withWebComponentsKnobs } from 'storybook-addon-web-components-knobs';
-import { withSignIn } from '../../.storybook/addons/signInAddon/signInAddon';
-import { withCodeEditor } from '../../.storybook/addons/codeEditorAddon/codeAddon';
-import '../../dist/es6/components/mgt-get/mgt-get';
+import { html } from "lit-element";
+import { withA11y } from "@storybook/addon-a11y";
+import { withSignIn } from "../../.storybook/addons/signInAddon/signInAddon";
+import { withCodeEditor } from "../../.storybook/addons/codeEditorAddon/codeAddon";
+import "../../packages/mgt/dist/es6/components/mgt-get/mgt-get";
 
 export default {
-  title: 'Components | mgt-get',
-  component: 'mgt-get',
+  title: "Components | mgt-get",
+  component: "mgt-get",
   decorators: [withA11y, withSignIn, withCodeEditor],
   parameters: {
-    options: { selectedPanel: 'mgt/sign-in' },
+    options: { selectedPanel: "mgt/sign-in" },
     signInAddon: {
-      test: 'test'
+      test: "test"
     }
   }
 };
 
 export const GetEmail = () => html`
-  <mgt-get resource="/me/messages" version="beta" scopes="mail.read" max-pages="2">
+  <mgt-get
+    resource="/me/messages"
+    version="beta"
+    scopes="mail.read"
+    max-pages="2"
+  >
     <template>
       <div class="email" data-for="email in value">
         <h4>
@@ -37,7 +40,9 @@ export const GetEmail = () => html`
           ></mgt-person>
         </h4>
         <h3>{{ email.subject }}</h3>
-        <div data-if="email.bodyPreview" class="preview" innerHtml>{{email.bodyPreview}}</div>
+        <div data-if="email.bodyPreview" class="preview" innerHtml>
+          {{email.bodyPreview}}
+        </div>
         <div data-else class="preview">
           email body is empty
         </div>
@@ -56,7 +61,8 @@ export const GetEmail = () => html`
       box-shadow: 0 3px 7px rgba(0, 0, 0, 0.3);
       padding: 10px;
       margin: 8px 4px;
-      font-family: Segoe UI, Frutiger, Frutiger Linotype, Dejavu Sans, Helvetica Neue, Arial, sans-serif;
+      font-family: Segoe UI, Frutiger, Frutiger Linotype, Dejavu Sans,
+        Helvetica Neue, Arial, sans-serif;
     }
 
     .email:hover {
@@ -103,7 +109,8 @@ export const ExtendingPersonCard = () => html`
                 <div data-if="positions && positions.length">
                   <h4>Work history</h4>
                   <div data-for="position in positions">
-                    <b>{{ position.detail.jobTitle }}</b> ({{ position.detail.company.department }})
+                    <b>{{ position.detail.jobTitle }}</b> ({{
+                    position.detail.company.department }})
                   </div>
                   <hr />
                 </div>
@@ -114,10 +121,14 @@ export const ExtendingPersonCard = () => html`
                   </div>
                   <hr />
                 </div>
-                <div data-if="educationalActivities && educationalActivities.length">
+                <div
+                  data-if="educationalActivities && educationalActivities.length"
+                >
                   <h4>Educational Activities</h4>
                   <div data-for="edu in educationalActivities">
-                    <div data-if="edu.program.displayName"><b>program:</b> {{ edu.program.displayName }}</div>
+                    <div data-if="edu.program.displayName">
+                      <b>program:</b> {{ edu.program.displayName }}
+                    </div>
                     <div data-if="edu.institution.displayName">
                       <b>Institution:</b> {{ edu.institution.displayName }}
                     </div>
@@ -127,14 +138,20 @@ export const ExtendingPersonCard = () => html`
                 <div>
                   <h4>Interests</h4>
                   <span data-for="interest in interests">
-                    {{ interest.displayName }}<span data-if="$index < interests.length - 1">, </span>
+                    {{ interest.displayName }}<span
+                      data-if="$index < interests.length - 1"
+                      >,
+                    </span>
                   </span>
                   <hr />
                 </div>
                 <div data-if="languages && languages.length">
                   <h4>Languages</h4>
                   <span data-for="language in languages">
-                    {{ language.displayName }}<span data-if="$index < languages.length - 1">, </span>
+                    {{ language.displayName }}<span
+                      data-if="$index < languages.length - 1"
+                      >,
+                    </span>
                   </span>
                 </div>
               </div>

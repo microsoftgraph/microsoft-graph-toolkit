@@ -1,16 +1,26 @@
 <html>
   <head>
-    <script type="module" src="../../dist/es6/index.js"></script>
+    <script type="module" src="../../packages/mgt/dist/es6/index.js"></script>
   </head>
   <body>
-    <mgt-msal-provider client-id="a974dfa0-9f57-49b9-95db-90f04ce2111a"></mgt-msal-provider>
+    <mgt-msal-provider
+      client-id="a974dfa0-9f57-49b9-95db-90f04ce2111a"
+    ></mgt-msal-provider>
     <mgt-login></mgt-login>
 
-    <mgt-get resource="/me/messages" version="beta" scopes="mail.read" max-pages="2">
+    <mgt-get
+      resource="/me/messages"
+      version="beta"
+      scopes="mail.read"
+      max-pages="2"
+    >
       <template data-type="value">
         <div class="email">
           <h4>
-            <mgt-person person-query="[[sender.emailAddress.address]]" view="oneline"></mgt-person>
+            <mgt-person
+              person-query="[[sender.emailAddress.address]]"
+              view="oneline"
+            ></mgt-person>
           </h4>
           <h3>
             [[ subject ]]
@@ -38,7 +48,8 @@
         box-shadow: 0 3px 7px rgba(0, 0, 0, 0.3);
         padding: 10px;
         margin: 8px 4px;
-        font-family: Segoe UI, Frutiger, Frutiger Linotype, Dejavu Sans, Helvetica Neue, Arial, sans-serif;
+        font-family: Segoe UI, Frutiger, Frutiger Linotype, Dejavu Sans,
+          Helvetica Neue, Arial, sans-serif;
       }
 
       .email:hover {
@@ -78,12 +89,12 @@
     </style>
 
     <script type="module">
-      import { TemplateHelper } from '../../dist/es6/index.js';
+      import { TemplateHelper } from "../../packages/mgt/dist/es6/index.js";
 
-      TemplateHelper.setBindingSyntax('[[', ']]');
+      TemplateHelper.setBindingSyntax("[[", "]]");
 
       TemplateHelper.globalContext.toggleExpand = (e, context, root) => {
-        root.classList.toggle('expanded');
+        root.classList.toggle("expanded");
       };
     </script>
   </body>

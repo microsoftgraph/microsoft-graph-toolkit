@@ -5,20 +5,18 @@
  * -------------------------------------------------------------------------------------------
  */
 
-import { html } from 'lit-element';
-import { withA11y } from '@storybook/addon-a11y';
-import { withKnobs } from '@storybook/addon-knobs';
-import { withWebComponentsKnobs } from 'storybook-addon-web-components-knobs';
-import { withSignIn } from '../../.storybook/addons/signInAddon/signInAddon';
-import { withCodeEditor } from '../../.storybook/addons/codeEditorAddon/codeAddon';
-import '../../dist/es6/components/mgt-person-card/mgt-person-card';
-import '../../dist/es6/components/mgt-person/mgt-person';
+import { html } from "lit-element";
+import { withA11y } from "@storybook/addon-a11y";
+import { withSignIn } from "../../.storybook/addons/signInAddon/signInAddon";
+import { withCodeEditor } from "../../.storybook/addons/codeEditorAddon/codeAddon";
+import "../../packages/mgt/dist/es6/components/mgt-person-card/mgt-person-card";
+import "../../packages/mgt/dist/es6/components/mgt-person/mgt-person";
 
 export default {
-  title: 'Components | mgt-person-card',
-  component: 'mgt-person',
+  title: "Components | mgt-person-card",
+  component: "mgt-person",
   decorators: [withA11y, withSignIn, withCodeEditor],
-  parameters: { options: { selectedPanel: 'storybookjs/knobs/panel' } }
+  parameters: { options: { selectedPanel: "storybookjs/knobs/panel" } }
 };
 
 export const personCard = () => html`
@@ -29,13 +27,17 @@ export const personCardHover = () => html`
   <style>
     .note {
       margin: 2em 0 0 1em;
-      font-family: 'Segoe UI', 'Segoe UI Web (West European)', 'Segoe UI', -apple-system, BlinkMacSystemFont, Roboto,
-        'Helvetica Neue', sans-serif;
+      font-family: "Segoe UI", "Segoe UI Web (West European)", "Segoe UI",
+        -apple-system, BlinkMacSystemFont, Roboto, "Helvetica Neue", sans-serif;
       color: #323130;
       font-size: 12px;
     }
   </style>
-  <mgt-person person-query="me" view="twoLines" person-card="hover"></mgt-person>
+  <mgt-person
+    person-query="me"
+    view="twoLines"
+    person-card="hover"
+  ></mgt-person>
   <div class="note">
     (Hover on person to view Person Card)
   </div>
@@ -45,8 +47,8 @@ export const personCardInheritDetails = () => html`
   <style>
     .note {
       margin: 2em 0 0 1em;
-      font-family: 'Segoe UI', 'Segoe UI Web (West European)', 'Segoe UI', -apple-system, BlinkMacSystemFont, Roboto,
-        'Helvetica Neue', sans-serif;
+      font-family: "Segoe UI", "Segoe UI Web (West European)", "Segoe UI",
+        -apple-system, BlinkMacSystemFont, Roboto, "Helvetica Neue", sans-serif;
       color: #323130;
       font-size: 12px;
     }

@@ -5,18 +5,18 @@
  * -------------------------------------------------------------------------------------------
  */
 
-import { html } from 'lit-element';
-import { withSignIn } from '../../.storybook/addons/signInAddon/signInAddon';
-import { withCodeEditor } from '../../.storybook/addons/codeEditorAddon/codeAddon';
-import '../../dist/es6/components/mgt-get/mgt-get';
+import { html } from "lit-element";
+import { withSignIn } from "../../.storybook/addons/signInAddon/signInAddon";
+import { withCodeEditor } from "../../.storybook/addons/codeEditorAddon/codeAddon";
+import "../../packages/mgt/dist/es6/components/mgt-get/mgt-get";
 
 export default {
-  title: 'Samples | Templating',
-  component: 'mgt-get',
+  title: "Samples | Templating",
+  component: "mgt-get",
   decorators: [withSignIn, withCodeEditor],
   parameters: {
     signInAddon: {
-      test: 'test'
+      test: "test"
     }
   }
 };
@@ -36,7 +36,9 @@ export const PersonCardAdditionalDetails = () => html`
       </mgt-person-card>
     </template>
   </mgt-person>
-  <div style="margin:2em 0 0 1em;font-family:segoe ui;color:#323130;font-size:12px">
+  <div
+    style="margin:2em 0 0 1em;font-family:segoe ui;color:#323130;font-size:12px"
+  >
     (Hover on person to view Person Card)
   </div>
 `;
@@ -53,7 +55,10 @@ export const AgendaEventTemplate = () => html`
         <div class="separator">
           <div class="vertical-line top"></div>
           <div class="circle">
-            <div data-if="!event.bodyPreview.includes('Join Microsoft Teams Meeting')" class="inner-circle"></div>
+            <div
+              data-if="!event.bodyPreview.includes('Join Microsoft Teams Meeting')"
+              class="inner-circle"
+            ></div>
           </div>
           <div class="vertical-line bottom"></div>
         </div>
@@ -62,18 +67,30 @@ export const AgendaEventTemplate = () => html`
           <div class="subject">{{ event.subject }}</div>
           <div class="location" data-if="event.location.displayName">
             at
-            <a href="https://bing.com/maps/default.aspx?where1={{event.location.displayName}}" target="_blank"
+            <a
+              href="https://bing.com/maps/default.aspx?where1={{event.location.displayName}}"
+              target="_blank"
               ><b>{{ event.location.displayName }}</b></a
             >
           </div>
           <div class="attendees" data-if="event.attendees.length">
             <span class="attendee" data-for="attendee in event.attendees">
-              <mgt-person person-query="{{attendee.emailAddress.name}}"></mgt-person>
+              <mgt-person
+                person-query="{{attendee.emailAddress.name}}"
+              ></mgt-person>
             </span>
           </div>
-          <div class="online-meeting" data-if="event.bodyPreview.includes('Join Microsoft Teams Meeting')">
-            <img class="online-meeting-icon" src="https://img.icons8.com/color/48/000000/microsoft-teams.png" />
-            <a class="online-meeting-link" href="{{ event.onlineMeetingUrl }}">Join Teams Meeting</a>
+          <div
+            class="online-meeting"
+            data-if="event.bodyPreview.includes('Join Microsoft Teams Meeting')"
+          >
+            <img
+              class="online-meeting-icon"
+              src="https://img.icons8.com/color/48/000000/microsoft-teams.png"
+            />
+            <a class="online-meeting-link" href="{{ event.onlineMeetingUrl }}"
+              >Join Teams Meeting</a
+            >
           </div>
         </div>
       </div>
@@ -81,52 +98,52 @@ export const AgendaEventTemplate = () => html`
   </mgt-agenda>
 
   <script>
-    document.querySelector('mgt-agenda').templateContext = {
+    document.querySelector("mgt-agenda").templateContext = {
       dayFromDateTime: dateTimeString => {
         let date = new Date(dateTimeString);
         date.setMinutes(date.getMinutes() - date.getTimezoneOffset());
         let monthNames = [
-          'January',
-          'February',
-          'March',
-          'April',
-          'May',
-          'June',
-          'July',
-          'August',
-          'September',
-          'October',
-          'November',
-          'December'
+          "January",
+          "February",
+          "March",
+          "April",
+          "May",
+          "June",
+          "July",
+          "August",
+          "September",
+          "October",
+          "November",
+          "December"
         ];
 
         let monthIndex = date.getMonth();
         let day = date.getDate();
         let year = date.getFullYear();
 
-        return monthNames[monthIndex] + ' ' + day + ' ' + year;
+        return monthNames[monthIndex] + " " + day + " " + year;
       },
 
       timeRangeFromEvent: event => {
         if (event.isAllDay) {
-          return 'ALL DAY';
+          return "ALL DAY";
         }
 
         let prettyPrintTimeFromDateTime = date => {
           date.setMinutes(date.getMinutes() - date.getTimezoneOffset());
           let hours = date.getHours();
           let minutes = date.getMinutes();
-          let ampm = hours >= 12 ? 'PM' : 'AM';
+          let ampm = hours >= 12 ? "PM" : "AM";
           hours = hours % 12;
           hours = hours ? hours : 12;
-          let minutesStr = minutes < 10 ? '0' + minutes : minutes;
-          return hours + ':' + minutesStr + ' ' + ampm;
+          let minutesStr = minutes < 10 ? "0" + minutes : minutes;
+          return hours + ":" + minutesStr + " " + ampm;
         };
 
         let start = prettyPrintTimeFromDateTime(new Date(event.start.dateTime));
         let end = prettyPrintTimeFromDateTime(new Date(event.end.dateTime));
 
-        return start + ' - ' + end;
+        return start + " - " + end;
       }
     };
   </script>
@@ -253,7 +270,11 @@ export const GroupedEmail = () => html`
       <div>
         <div data-for="group in groupMail(value)">
           <div class="header">
-            <mgt-person person-query="{{ group[0] }}" view="oneLine" person-card="hover"></mgt-person>
+            <mgt-person
+              person-query="{{ group[0] }}"
+              view="oneLine"
+              person-card="hover"
+            ></mgt-person>
           </div>
           <div data-for="message in group[1]" class="email">
             <h2>{{ message.subject }}</h2>
@@ -265,7 +286,7 @@ export const GroupedEmail = () => html`
   </mgt-get>
 
   <script>
-    document.querySelector('mgt-get').templateContext = {
+    document.querySelector("mgt-get").templateContext = {
       groupMail: messages => {
         let groupBy = (list, keyGetter) => {
           const map = new Map();
@@ -298,7 +319,8 @@ export const GroupedEmail = () => html`
     .email {
       padding: 10px;
       margin: 8px 16px;
-      font-family: Segoe UI, Frutiger, Frutiger Linotype, Dejavu Sans, Helvetica Neue, Arial, sans-serif;
+      font-family: Segoe UI, Frutiger, Frutiger Linotype, Dejavu Sans,
+        Helvetica Neue, Arial, sans-serif;
     }
 
     .email:hover {

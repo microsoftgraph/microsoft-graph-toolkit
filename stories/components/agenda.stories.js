@@ -5,19 +5,17 @@
  * -------------------------------------------------------------------------------------------
  */
 
-import { html } from 'lit-element';
-import { withA11y } from '@storybook/addon-a11y';
-import { withKnobs } from '@storybook/addon-knobs';
-import { withWebComponentsKnobs } from 'storybook-addon-web-components-knobs';
-import { withSignIn } from '../../.storybook/addons/signInAddon/signInAddon';
-import { withCodeEditor } from '../../.storybook/addons/codeEditorAddon/codeAddon';
-import '../../dist/es6/components/mgt-agenda/mgt-agenda';
+import { html } from "lit-element";
+import { withA11y } from "@storybook/addon-a11y";
+import { withSignIn } from "../../.storybook/addons/signInAddon/signInAddon";
+import { withCodeEditor } from "../../.storybook/addons/codeEditorAddon/codeAddon";
+import "../../packages/mgt/dist/es6/components/mgt-agenda/mgt-agenda";
 
 export default {
-  title: 'Components | mgt-agenda',
-  component: 'mgt-agenda',
+  title: "Components | mgt-agenda",
+  component: "mgt-agenda",
   decorators: [withA11y, withSignIn, withCodeEditor],
-  parameters: { options: { selectedPanel: 'storybookjs/knobs/panel' } }
+  parameters: { options: { selectedPanel: "storybookjs/knobs/panel" } }
 };
 
 export const simple = () => html`

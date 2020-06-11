@@ -1,17 +1,24 @@
 <html>
   <head>
-    <script type="module" src="../../../dist/es6/index.js"></script>
+    <script
+      type="module"
+      src="../../../packages/mgt/dist/es6/index.js"
+    ></script>
     <!-- <script src="https://unpkg.com/@microsoft/mgt/dist/bundle/mgt-loader.js"></script> -->
   </head>
   <body>
-    <mgt-msal-provider client-id="a974dfa0-9f57-49b9-95db-90f04ce2111a"></mgt-msal-provider>
+    <mgt-msal-provider
+      client-id="a974dfa0-9f57-49b9-95db-90f04ce2111a"
+    ></mgt-msal-provider>
     <mgt-login></mgt-login>
 
     <mgt-get resource="/me/joinedTeams" id="teamsGet">
       <template>
         Team:
         <select data-props="{{@change: teamChange}}">
-          <option data-for="{{team in value}}" value="{{team.id}}">{{team.displayName}}</option>
+          <option data-for="{{team in value}}" value="{{team.id}}"
+            >{{team.displayName}}</option
+          >
         </select>
       </template>
     </mgt-get>
@@ -20,7 +27,9 @@
       <template>
         Channel:
         <select data-props="{{@change: channelChange}}">
-          <option data-for="channel in value" value="{{channel.id}}">{{channel.displayName}}</option>
+          <option data-for="channel in value" value="{{channel.id}}"
+            >{{channel.displayName}}</option
+          >
         </select>
       </template>
       <template data-type="loading">
@@ -46,11 +55,11 @@
     </div>
 
     <script type="module">
-      import { Providers } from '../../../dist/es6/index.js';
+      import { Providers } from "../../../packages/mgt/dist/es6/index.js";
 
-      const teamsGet = document.getElementById('teamsGet');
-      const channelsGet = document.getElementById('channelsGet');
-      const messagesGet = document.getElementById('messagesGet');
+      const teamsGet = document.getElementById("teamsGet");
+      const channelsGet = document.getElementById("channelsGet");
+      const messagesGet = document.getElementById("messagesGet");
 
       let teamId, channelId;
 
@@ -62,32 +71,34 @@
 
       const setChannelId = id => {
         channelId = id;
-        messagesGet.resource = channelId ? `teams/${teamId}/channels/${channelId}/messages/delta` : null;
+        messagesGet.resource = channelId
+          ? `teams/${teamId}/channels/${channelId}/messages/delta`
+          : null;
       };
 
       teamsGet.templateContext = teamsGet.templateContext || {};
-      teamsGet.templateContext['teamChange'] = e => {
+      teamsGet.templateContext["teamChange"] = e => {
         setTeamId(e.target.options[e.target.selectedIndex].value);
       };
 
       channelsGet.templateContext = channelsGet.templateContext || {};
-      channelsGet.templateContext['channelChange'] = e => {
+      channelsGet.templateContext["channelChange"] = e => {
         setChannelId(e.target.options[e.target.selectedIndex].value);
       };
 
-      teamsGet.addEventListener('dataChange', e => {
+      teamsGet.addEventListener("dataChange", e => {
         setTeamId(e.detail.response ? e.detail.response.value[0].id : null);
       });
 
-      channelsGet.addEventListener('dataChange', e => {
+      channelsGet.addEventListener("dataChange", e => {
         setChannelId(e.detail.response ? e.detail.response.value[0].id : null);
       });
 
-      messagesGet.addEventListener('dataChange', e => {
+      messagesGet.addEventListener("dataChange", e => {
         if (e.detail.response) {
-          document.querySelector('#sendMessageDiv').className = '';
+          document.querySelector("#sendMessageDiv").className = "";
         } else {
-          document.querySelector('#sendMessageDiv').className = 'hidden';
+          document.querySelector("#sendMessageDiv").className = "hidden";
         }
 
         setTimeout(() => {
@@ -95,24 +106,26 @@
         }, 100);
       });
 
-      document.querySelector('#sendMessageButton').addEventListener('click', async e => {
-        const messageInput = document.querySelector('#messageText');
-        const messageToSend = messageInput.value;
+      document
+        .querySelector("#sendMessageButton")
+        .addEventListener("click", async e => {
+          const messageInput = document.querySelector("#messageText");
+          const messageToSend = messageInput.value;
 
-        const content = {
-          body: {
-            contentType: 'text',
-            content: messageToSend
-          }
-        };
+          const content = {
+            body: {
+              contentType: "text",
+              content: messageToSend
+            }
+          };
 
-        await Providers.globalProvider.graph.client
-          .api(`/teams/${teamId}/channels/${channelId}/messages`)
-          .version('beta')
-          .post(content);
+          await Providers.globalProvider.graph.client
+            .api(`/teams/${teamId}/channels/${channelId}/messages`)
+            .version("beta")
+            .post(content);
 
-        messageInput.value = '';
-      });
+          messageInput.value = "";
+        });
     </script>
 
     <style>
@@ -120,7 +133,8 @@
         box-shadow: 0 3px 7px rgba(0, 0, 0, 0.3);
         padding: 10px;
         margin: 8px 4px;
-        font-family: Segoe UI, Frutiger, Frutiger Linotype, Dejavu Sans, Helvetica Neue, Arial, sans-serif;
+        font-family: Segoe UI, Frutiger, Frutiger Linotype, Dejavu Sans,
+          Helvetica Neue, Arial, sans-serif;
       }
 
       .teams-message:hover {
