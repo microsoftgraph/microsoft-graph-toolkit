@@ -19,7 +19,7 @@ steps:
     customCommand: '--no-git-tag-version version $(baseVersionNumber).$(Build.BuildId)'
 
 - task: Npm@1
-  displayName: 'npm run install'
+  displayName: 'npm install'
   inputs:
    verbose: false
 
