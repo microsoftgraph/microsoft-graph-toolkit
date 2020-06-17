@@ -2,7 +2,7 @@
     "name": "root",
     "private": true,
     "scripts": {
-        "install": "lerna bootstrap",
+        "install": "npm i && lerna bootstrap",
         "pack": "lerna run pack",
         "build": "lerna run build",
         "start": "npm run --prefix packages\\mgt start",
