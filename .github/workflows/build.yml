@@ -24,8 +24,8 @@ jobs:
       uses: actions/setup-node@v1
       with:
         node-version: ${{ matrix.node-version }}
-    - run: npm i
-    - run: npm pack
+    - run: npm run install
+    - run: npm run pack
     - name: Upload a Build Artifact - package
       uses: actions/upload-artifact@v2
       with:
