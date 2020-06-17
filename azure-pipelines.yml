@@ -24,7 +24,7 @@ steps:
    verbose: false
 
 - task: Npm@1
-  displayName: 'npm run bootstrap'
+  displayName: 'npm run prepare'
   inputs:
    verbose: false
 
