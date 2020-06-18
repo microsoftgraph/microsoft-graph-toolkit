@@ -35,7 +35,7 @@
     "sass:watch": "gulp watchSass",
     "setVersion": "gulp setVersion",
     "setLicense": "gulp setLicense",
-    "build": "run-s prettier:check lint setVersion clean build:esm build:bundle",
+    "build": "run-s lint setVersion clean build:esm build:bundle",
     "build:esm": "npm run sass && tsc",
     "build:watch": "tsc --watch",
     "build:bundle": "npm run copy:loader && npm run copy:wc && npm run sass && rollup -c",
@@ -44,10 +44,7 @@
     "copy:wc": "cpx node_modules/@webcomponents/webcomponentsjs/bundles/**/* dist/bundle/wc/bundles && cpx node_modules/@webcomponents/webcomponentsjs/webcomponents-loader.js dist/bundle/wc",
     "test": "jest",
     "test:watch": "jest --watch",
-    "prepack": "npm run build",
-    "prettier:base": "prettier --parser typescript",
-    "prettier:check": "npm run prettier:base -- --list-different \"{src,tests}/**/*.{ts,tsx}\"",
-    "prettier:write": "npm run prettier:base -- --write \"{src,tests}/**/*.{ts,tsx}\""
+    "prepack": "npm run build"
   },
   "dependencies": {
     "@microsoft/microsoft-graph-client": "^2.0.0",
@@ -64,14 +61,5 @@
     "titleTemplate": "{classname} - {title}",
     "ancestorSeparator": " > ",
     "usePathForSuiteName": "true"
-  },
-  "husky": {
-    "hooks": {
-      "pre-commit": "npm run prettier:check"
-    }
-  },
-  "prettier": {
-    "printWidth": 120,
-    "singleQuote": true
   }
 }

@@ -3,8 +3,11 @@
     "scripts": {
         "prepare": "lerna bootstrap",
         "pack": "lerna run pack",
-        "build": "lerna run build",
+        "build": "npm run prettier:check && lerna run build",
         "start": "npm run --prefix packages\\mgt start",
+        "prettier:base": "prettier --parser typescript",
+        "prettier:check": "npm run prettier:base -- --list-different \"packages/**/*.{ts,tsx}\"",
+        "prettier:write": "npm run prettier:base -- --write \"packages/**/*.{ts,tsx}\"",
         "storybook": "start-storybook -p 6006 -s assets",
         "storybook:dev": "npm run build && wca analyze packages --format json --outFile custom-elements.json",
         "storybook:build": "build-storybook -s assets && cpx .storybook/CNAME storybook-static",
@@ -73,5 +76,14 @@
         "typescript": "^3.7.5",
         "web-component-analyzer": "1.0.3",
         "whatwg-fetch": "^3.0.0"
+    },
+    "husky": {
+        "hooks": {
+            "pre-commit": "npm run prettier:check"
+        }
+    },
+    "prettier": {
+        "printWidth": 120,
+        "singleQuote": true
     }
 }
