@@ -31,7 +31,7 @@ jobs:
       uses: actions/upload-artifact@v2
       with:
         name: npm-package
-        path: microsoft-mgt-*.tgz
+        path: packages/mgt/microsoft-mgt-*.tgz
     - name: Upload a Build Artifact - bundle
       uses: actions/upload-artifact@v2
       with:
