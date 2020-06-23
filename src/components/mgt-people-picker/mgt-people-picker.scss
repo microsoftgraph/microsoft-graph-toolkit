@@ -24,7 +24,7 @@ $input-hover-color: var(--input-hover-color, #323130);
 $input-focus-color: var(--input-focus-color, #0078d4);
 $input-background-color: var(--input-background-color, var(--people-list-background-color, white));
 
-$person-item-background-color: var(--person-item-background-color, #f1f1f1);
+$selected-person-background-color: var(--selected-person-background-color, #f1f1f1);
 
 $dropdown-background-color: var(--dropdown-background-color, white);
 $dropdown-item-hover-background: var(--dropdown-item-hover-background, rgba(241, 241, 241, 0.87));
@@ -129,31 +129,31 @@ mgt-people-picker .overflow-gradient {
     to right,
     rgba(255, 255, 255, 0) 0%,
     rgba(255, 255, 255, 0) 60%,
-    $person-item-background-color 100%
+    $selected-person-background-color 100%
   );
   background-image: -moz-linear-gradient(
     left,
     rgba(255, 255, 255, 0) 0%,
     rgba(255, 255, 255, 0) 60%,
-    $person-item-background-color 100%
+    $selected-person-background-color 100%
   );
   background-image: -o-linear-gradient(
     left,
     rgba(255, 255, 255, 0) 0%,
     rgba(255, 255, 255, 0) 60%,
-    $person-item-background-color 100%
+    $selected-person-background-color 100%
   );
   background-image: -ms-linear-gradient(
     left,
     rgba(255, 255, 255, 0) 0%,
     rgba(255, 255, 255, 0) 60%,
-    $person-item-background-color 100%
+    $selected-person-background-color 100%
   );
   background-image: -webkit-linear-gradient(
     left,
     rgba(255, 255, 255, 0) 0%,
     rgba(255, 255, 255, 0) 60%,
-    $person-item-background-color 100%
+    $selected-person-background-color 100%
   );
 }
 
@@ -165,7 +165,7 @@ mgt-people-picker .CloseIcon {
   margin-top: 0px;
   cursor: pointer;
   color: $font-color;
-  background-color: $person-item-background-color;
+  background-color: $selected-person-background-color;
   right: 0px;
 }
 
@@ -174,7 +174,7 @@ mgt-people-picker .people-person {
   display: flex;
   margin: 5px 5px 0px 0;
   align-items: center;
-  background-color: $person-item-background-color;
+  background-color: $selected-person-background-color;
   border-radius: 15px;
   height: 24px;
   white-space: nowrap;
