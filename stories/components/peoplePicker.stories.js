@@ -45,6 +45,7 @@ export const DarkMode = () => html`
       --input-focus-color: #0f78d4;
       --font-color: white;
       --placeholder-focus-color: rgba(255, 255, 255, 0.8);
+      --people-list-background-color: #474747;
     }
   </style>
 `;
