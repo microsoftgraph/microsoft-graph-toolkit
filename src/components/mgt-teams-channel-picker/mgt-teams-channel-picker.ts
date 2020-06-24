@@ -719,6 +719,11 @@ export class MgtTeamsChannelPicker extends MgtTemplatedComponent {
   }
 
   private onUserKeyDown(event: KeyboardEvent) {
+    if (event.keyCode === 13) {
+      // No new line
+      event.preventDefault();
+    }
+
     if (this._treeViewState.length === 0) {
       return;
     }
