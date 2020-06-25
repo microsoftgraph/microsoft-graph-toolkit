@@ -9,6 +9,7 @@ import { customElement, property } from 'lit-element';
 import { Providers } from '../../Providers';
 import { TeamsConfig, TeamsProvider } from '../../providers/TeamsProvider';
 import { MgtBaseProvider } from './baseProvider';
+import { Configuration } from 'msal';
 
 /**
  * Authentication Library Provider for Microsoft Teams accounts
@@ -40,6 +41,13 @@ export class MgtTeamsProvider extends MgtBaseProvider {
     type: String
   })
   public authPopupUrl = '';
+
+  /**
+   * The authority to use.
+   *
+   * @memberof MgtTeamsProvider
+   */
+  @property() public authority;
 
   /**
    * Comma separated list of scopes.
@@ -78,6 +86,16 @@ export class MgtTeamsProvider extends MgtBaseProvider {
         if (scope && scope.length > 0) {
           config.scopes = scope;
         }
+      }
+
+      if (this.authority) {
+        const msalConfig: Configuration = {
+          auth: {
+            clientId: this.clientId,
+            authority: this.authority
+          }
+        };
+        config.msalOptions = msalConfig;
       }
 
       this.provider = new TeamsProvider(config);
