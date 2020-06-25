@@ -50,6 +50,15 @@ interface AuthParams {
    * @memberof AuthParams
    */
   loginHint?: string;
+
+  /**
+   * Additional Msal configurations options to use
+   * See Msal.js documentation for more details
+   *
+   * @type {Configuration}
+   * @memberof TeamsConfig
+   */
+  options?: Configuration;
 }
 
 /**
@@ -167,16 +176,14 @@ export class TeamsProvider extends MsalProvider {
 
     const scopes = authParams.scopes ? authParams.scopes.split(',') : null;
 
+    const options = authParams.options || { auth: { clientId: authParams.clientId } };
+
+    options.system = options.system || {};
+    options.system.loadFrameTimeout = 10000;
+
     const provider = new MsalProvider({
       clientId: authParams.clientId,
-      options: {
-        auth: {
-          clientId: authParams.clientId
-        },
-        system: {
-          loadFrameTimeout: 10000
-        }
-      },
+      options,
       scopes
     });
 
@@ -228,6 +235,7 @@ export class TeamsProvider extends MsalProvider {
 
   private teamsContext;
   private _authPopupUrl: string;
+  private _msalOptions: Configuration;
 
   constructor(config: TeamsConfig) {
     super({
@@ -237,6 +245,7 @@ export class TeamsProvider extends MsalProvider {
       scopes: config.scopes
     });
 
+    this._msalOptions = config.msalOptions;
     this._authPopupUrl = config.authPopupUrl;
 
     const teams = TeamsHelper.microsoftTeamsLib;
@@ -260,6 +269,7 @@ export class TeamsProvider extends MsalProvider {
         const authParams: AuthParams = {
           clientId: this.clientId,
           loginHint: context.loginHint,
+          options: this._msalOptions,
           scopes: this.scopes.join(',')
         };
 
