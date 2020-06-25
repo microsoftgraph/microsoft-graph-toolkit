@@ -32,6 +32,8 @@ Clone the repo and run the following in the terminal/command line/powershell:
 
 ```bash
 npm install
+npm run prepare
+npm run build
 npm start
 ```
 
