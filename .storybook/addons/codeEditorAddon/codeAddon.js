@@ -62,6 +62,7 @@ export const withCodeEditor = makeDecorator({
 
     let storyHtml;
     const root = document.createElement('div');
+    let storyElementWrapper = document.createElement('div');
     let storyElement;
 
     if (story.strings) {
@@ -98,22 +99,24 @@ export const withCodeEditor = makeDecorator({
 
     const separator = document.createElement('div');
 
-    setupEditorResize(storyElement, separator, editor, () => editor.layout());
+    setupEditorResize(storyElementWrapper, separator, editor, () => editor.layout());
 
     root.className = 'story-mgt-root';
+    storyElementWrapper.className = 'story-mgt-preview-wrapper';
     storyElement.className = 'story-mgt-preview';
     separator.className = 'story-mgt-separator';
     editor.className = 'story-mgt-editor';
 
-    root.appendChild(storyElement);
+    root.appendChild(storyElementWrapper);
+    storyElementWrapper.appendChild(storyElement);
     root.appendChild(separator);
     root.appendChild(editor);
 
     window.addEventListener('resize', () => {
-      storyElement.style.height = '';
-      storyElement.style.width = '';
-      editor.style.height = '';
-      editor.style.width = '';
+      storyElementWrapper.style.height = null;
+      storyElementWrapper.style.width = null;
+      editor.style.height = null;
+      editor.style.width = null;
     });
 
     return root;

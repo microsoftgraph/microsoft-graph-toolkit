@@ -11,7 +11,7 @@ import { withKnobs } from '@storybook/addon-knobs';
 import { withWebComponentsKnobs } from 'storybook-addon-web-components-knobs';
 import { withSignIn } from '../../.storybook/addons/signInAddon/signInAddon';
 import { withCodeEditor } from '../../.storybook/addons/codeEditorAddon/codeAddon';
-import '../../dist/es6/components/mgt-login/mgt-login';
+import '../../packages/mgt/dist/es6/components/mgt-login/mgt-login';
 
 export default {
   title: 'Components | mgt-login',
@@ -27,4 +27,18 @@ export default {
 
 export const Login = () => html`
   <mgt-login></mgt-login>
+`;
+
+export const Templates = () => html`
+<mgt-login>
+  <template data-type="signed-in-button-content">
+    {{personDetails.givenName}}
+  </template>
+  <template data-type="flyout-commands">
+    <div>
+      <button data-props="@click: handleSignOut">Sign Out</button>
+      <button>Go to my profile</button>
+    </div>
+  </template>
+</mgt-login>
 `;

@@ -11,7 +11,7 @@ import { withKnobs } from '@storybook/addon-knobs';
 import { withWebComponentsKnobs } from 'storybook-addon-web-components-knobs';
 import { withSignIn } from '../../.storybook/addons/signInAddon/signInAddon';
 import { withCodeEditor } from '../../.storybook/addons/codeEditorAddon/codeAddon';
-import '../../dist/es6/components/mgt-agenda/mgt-agenda';
+import '../../packages/mgt/dist/es6/components/mgt-agenda/mgt-agenda';
 
 export default {
   title: 'Components | mgt-agenda',
@@ -30,4 +30,8 @@ export const getByEventQuery = () => html`
 
 export const getByDate = () => html`
   <mgt-agenda group-by-day date="May 7, 2019" days="3"></mgt-agenda>
+`;
+
+export const getEventsForNextWeek = () => html`
+  <mgt-agenda group-by-day days="7"></mgt-agenda>
 `;

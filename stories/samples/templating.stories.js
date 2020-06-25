@@ -8,7 +8,7 @@
 import { html } from 'lit-element';
 import { withSignIn } from '../../.storybook/addons/signInAddon/signInAddon';
 import { withCodeEditor } from '../../.storybook/addons/codeEditorAddon/codeAddon';
-import '../../dist/es6/components/mgt-get/mgt-get';
+import '../../packages/mgt/dist/es6/components/mgt-get/mgt-get';
 
 export default {
   title: 'Samples | Templating',
@@ -22,7 +22,7 @@ export default {
 };
 
 export const PersonCardAdditionalDetails = () => html`
-  <mgt-person person-query="me" show-name show-email person-card="hover">
+  <mgt-person person-query="me" view="twoLines" person-card="hover">
     <template data-type="person-card">
       <mgt-person-card inherit-details>
         <template data-type="additional-details">
@@ -242,6 +242,7 @@ export const AgendaEventTemplate = () => html`
     mgt-person {
       --avatar-size-s: 16px;
       margin-right: 4px;
+      display: inline-block;
     }
   </style>
 `;
@@ -252,7 +253,7 @@ export const GroupedEmail = () => html`
       <div>
         <div data-for="group in groupMail(value)">
           <div class="header">
-            <mgt-person person-query="{{ group[0] }}" show-name person-card="hover"></mgt-person>
+            <mgt-person person-query="{{ group[0] }}" view="oneLine" person-card="hover"></mgt-person>
           </div>
           <div data-for="message in group[1]" class="email">
             <h2>{{ message.subject }}</h2>
@@ -310,4 +311,63 @@ export const GroupedEmail = () => html`
       margin-bottom: 0px;
     }
   </style>
+`;
+
+export const TeamsMessages = () => html`
+<mgt-teams-channel-picker></mgt-teams-channel-picker>
+<mgt-get id="messagesGet" version="beta">
+  <template data-type="value">
+    <div data-if="!deletedDateTime" class="teams-message">
+      <mgt-person user-id="{{from.user.id}}" view="oneLine" person-card="hover"></mgt-person>
+      <div data-props="@click: messageClick, innerHTML: body.content"></div>
+      <div class="reply hidden">
+        <input></input>
+        <button>reply</button>
+      </div>
+    </div>
+  </template>
+  <template data-type="loading">
+    loading
+  </template>
+</mgt-get>
+<script type="module">
+  const channelPicker = document.querySelector('mgt-teams-channel-picker');
+  const messagesGet = document.getElementById('messagesGet');
+
+  channelPicker.addEventListener('selectionChanged', e => {
+    if (e.detail.length) {
+      let channelId = e.detail[0].channel.id;
+      let teamId = e.detail[0].team.id;
+      messagesGet.resource = \`teams/\${teamId}/channels/\${channelId}/messages/delta\`;
+    }
+  });
+
+  messagesGet.templateContext = {
+    messageClick: (e, message, root) => {
+      const reply = root.querySelector('.reply');
+      reply.classList.toggle('hidden');
+    }
+  };
+</script>
+<style>
+  .teams-message {
+    box-shadow: 0 3px 7px rgba(0, 0, 0, 0.3);
+    padding: 10px;
+    margin: 8px 4px;
+    font-family: Segoe UI, Frutiger, Frutiger Linotype, Dejavu Sans, Helvetica Neue, Arial, sans-serif;
+  }
+
+  .teams-message:hover {
+    box-shadow: 0 3px 14px rgba(0, 0, 0, 0.3);
+  }
+
+  .hidden {
+    display: none;
+  }
+
+  #messagesGet {
+    overflow: auto;
+    display: block;
+  }
+</style>
 `;

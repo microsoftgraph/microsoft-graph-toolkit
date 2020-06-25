@@ -1,27 +1,29 @@
 import * as React from 'react';
 import styles from './MgtDemo.module.scss';
 import { IMgtDemoProps } from './IMgtDemoProps';
+import {Person, People, Agenda, TeamsChannelPicker, Tasks, PeoplePicker} from '@microsoft/mgt-react';
+import { PersonViewType, PersonCardInteraction } from '@microsoft/mgt';
 
-declare global {
-  namespace JSX {
-    interface IntrinsicElements {
-      'mgt-person': any;
-      'mgt-people': any;
-      'mgt-people-picker': any;
-      'mgt-agenda': any;
-      'mgt-tasks': any;
-      template: any;
-    }
-  }
-}
 
 export default class MgtDemo extends React.Component<IMgtDemoProps, {}> {
   public render(): React.ReactElement<IMgtDemoProps> {
     return (
       <div className={styles.mgtDemo}>
         <div className={styles.container}>
-          <mgt-person person-query="me" show-name person-card="hover" />
-          <mgt-agenda />
+          <Person personQuery="me" 
+            view={PersonViewType.twolines} 
+            personCardInteraction={PersonCardInteraction.hover} 
+            showPresence={true}></Person>
+
+          <People></People>
+
+          <Agenda></Agenda>
+
+          <PeoplePicker></PeoplePicker>
+
+          <TeamsChannelPicker></TeamsChannelPicker>
+
+          <Tasks></Tasks>
         </div>
       </div>
     );

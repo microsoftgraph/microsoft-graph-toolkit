@@ -1,0 +1,16 @@
+<html>
+  <head>
+    <script src="https://unpkg.com/@microsoft/teams-js/dist/MicrosoftTeams.min.js" crossorigin="anonymous"></script>
+    <!-- <script src="./dist/bundle/mgt-loader.js"></script>
+    <script>
+      mgt.TeamsProvider.handleAuth();
+    </script> -->
+    <script type="module">
+      import { TeamsProvider } from './dist/es6/providers/TeamsProvider.js';
+      TeamsProvider.handleAuth();
+    </script>
+  </head>
+  <body>
+    Signing You In...
+  </body>
+</html>

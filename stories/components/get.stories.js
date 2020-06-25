@@ -11,7 +11,7 @@ import { withKnobs } from '@storybook/addon-knobs';
 import { withWebComponentsKnobs } from 'storybook-addon-web-components-knobs';
 import { withSignIn } from '../../.storybook/addons/signInAddon/signInAddon';
 import { withCodeEditor } from '../../.storybook/addons/codeEditorAddon/codeAddon';
-import '../../dist/es6/components/mgt-get/mgt-get';
+import '../../packages/mgt/dist/es6/components/mgt-get/mgt-get';
 
 export default {
   title: 'Components | mgt-get',
@@ -30,7 +30,11 @@ export const GetEmail = () => html`
     <template>
       <div class="email" data-for="email in value">
         <h4>
-          <mgt-person person-query="{{email.sender.emailAddress.address}}" show-name person-card="hover"></mgt-person>
+          <mgt-person
+            person-query="{{email.sender.emailAddress.address}}"
+            view="oneline"
+            person-card="hover"
+          ></mgt-person>
         </h4>
         <h3>{{ email.subject }}</h3>
         <div data-if="email.bodyPreview" class="preview" innerHtml>{{email.bodyPreview}}</div>
@@ -89,7 +93,7 @@ export const GetEmail = () => html`
 `;
 
 export const ExtendingPersonCard = () => html`
-  <mgt-person person-query="Isaiah" show-name show-email person-card="hover">
+  <mgt-person person-query="Isaiah" view="twoLines" person-card="hover">
     <template data-type="person-card">
       <mgt-person-card inherit-details>
         <template data-type="additional-details">
