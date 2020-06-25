@@ -6,10 +6,10 @@
  */
 
 import { customElement, property } from 'lit-element';
+import { Configuration } from 'msal';
 import { Providers } from '../../Providers';
 import { TeamsConfig, TeamsProvider } from '../../providers/TeamsProvider';
 import { MgtBaseProvider } from './baseProvider';
-import { Configuration } from 'msal';
 
 /**
  * Authentication Library Provider for Microsoft Teams accounts
@@ -91,8 +91,8 @@ export class MgtTeamsProvider extends MgtBaseProvider {
       if (this.authority) {
         const msalConfig: Configuration = {
           auth: {
-            clientId: this.clientId,
-            authority: this.authority
+            authority: this.authority,
+            clientId: this.clientId
           }
         };
         config.msalOptions = msalConfig;
