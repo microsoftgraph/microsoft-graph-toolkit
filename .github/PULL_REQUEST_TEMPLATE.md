@@ -1,5 +1,5 @@
 <!-- Review contributing guidelines before creating PRs -->
-<!-- https://github.com/microsoftgraph/microsoft-graph-toolkit/blob/master/CONTRIBUTING.md -->
+<!-- https://github.com/microsoftgraph/microsoft-graph-toolkit/blob/main/CONTRIBUTING.md -->
 
 Closes # <!-- REQUIRED: Add the issue number (ex: #12) so the issue is automatically closed when PR is merged -->
 
