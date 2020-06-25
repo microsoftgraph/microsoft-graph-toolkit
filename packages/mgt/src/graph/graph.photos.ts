@@ -109,8 +109,12 @@ export async function getContactPhoto(graph: IGraph, contactId: string): Promise
 export async function getUserPhoto(graph: IGraph, userId: string): Promise<string> {
   const cache = new Cache<CachePhoto>(cacheSchema, 'users');
 
+  console.log('get photo for ' + userId);
+
   let photoDetails: CachePhoto = await cache.getValue(userId);
   if (photoDetails) {
+    console.log('found photo in cache', photoDetails);
+
     if (Date.now() - photoDetails.timeCached > cacheInvalidationTime) {
       // check if new image is available and update for next time
       graph
