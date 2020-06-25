@@ -452,6 +452,12 @@ export class MgtTeamsChannelPicker extends MgtTemplatedComponent {
       selected: isSelected
     };
 
+    const dropDown = this.renderRoot.querySelector('.dropdown');
+
+    if (dropDown.children[this._focusedIndex]) {
+      dropDown.children[this._focusedIndex].scrollIntoView(false);
+    }
+
     return html`
       <div @click=${() => this.handleItemClick(itemState)} class="${classMap(classes)}">
         <div class="arrow">
