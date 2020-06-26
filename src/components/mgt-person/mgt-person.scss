@@ -21,6 +21,7 @@ $font-size: var(--font-size, #{$ms-font-size-m});
 $font-weight: var(--font-weight, #{$ms-font-weight-semibold});
 $color: var(--color, #{$ms-color-neutralDark});
 $text-transform: var(text-transform, none);
+$background-color: var(--background-color, #ffffff);
 
 $line2-font-size: var(--line2-font-size, var(--email-font-size, #{$ms-font-size-s}));
 $line2-font-weight: var(--line2-font-weight, 400);
@@ -67,6 +68,7 @@ mgt-person .person-root {
   position: relative;
   display: flex;
   align-items: center;
+  background-color: $background-color;
 
   .user-avatar {
     width: $avatar-size;
@@ -83,11 +85,11 @@ mgt-person .person-root {
       top: calc(#{$avatar-size} * 0.72 - 4px);
       width: calc(v#{$avatar-size} * 0.28);
       height: calc(#{$avatar-size} * 0.28);
-      border: 2px solid #ffffff;
+      border: 2px solid $background-color;
       border-radius: 50%;
 
       .presence-oof-offline-wrapper {
-        background-color: #ffffff;
+        background-color: $background-color;
         border-color: $presence-color-oof;
 
         .presence-oof-offline svg {
@@ -110,7 +112,7 @@ mgt-person .person-root {
         align-items: center;
 
         &.presence-offline {
-          background-color: #ffffff;
+          background-color: $background-color;
           border-color: $presence-color-invisible;
         }
 
@@ -120,7 +122,7 @@ mgt-person .person-root {
         }
 
         &.presence-oof-available {
-          background-color: #ffffff;
+          background-color: $background-color;
           border-color: $presence-color-online;
         }
 
@@ -135,7 +137,7 @@ mgt-person .person-root {
         }
 
         &.presence-oof-dnd {
-          background-color: #ffffff;
+          background-color: $background-color;
           border-color: $presence-color-dnd;
         }
 
@@ -145,7 +147,7 @@ mgt-person .person-root {
         }
 
         &.presence-oof-busy {
-          background-color: #ffffff;
+          background-color: $background-color;
           border-color: $presence-color-dnd;
         }
       }
@@ -159,7 +161,7 @@ mgt-person .person-root {
 
       .presence-available::before {
         content: $ms-icon-code-SkypeCheck;
-        color: #ffffff;
+        color: $background-color;
         margin-left: calc(#{$avatar-size} * 0.07 - 2px);
       }
 
@@ -171,13 +173,13 @@ mgt-person .person-root {
 
       .presence-away::before {
         content: $ms-icon-code-SkypeClock;
-        color: #ffffff;
+        color: $background-color;
         margin-left: calc(#{$avatar-size} * 0.07 - 2px);
       }
 
       .presence-dnd::before {
         content: $ms-icon-code-SkypeMinus;
-        color: #ffffff;
+        color: $background-color;
         margin-left: calc(#{$avatar-size} * 0.07 - 2px);
       }
 
