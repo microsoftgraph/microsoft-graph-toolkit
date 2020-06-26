@@ -2,17 +2,21 @@ import * as React from 'react';
 import * as ReactDom from 'react-dom';
 import { Version } from '@microsoft/sp-core-library';
 import { BaseClientSideWebPart } from '@microsoft/sp-webpart-base';
-import {
-  IPropertyPaneConfiguration,
-  PropertyPaneTextField
-} from '@microsoft/sp-property-pane';
+import { IPropertyPaneConfiguration, PropertyPaneTextField } from '@microsoft/sp-property-pane';
+
+// import web component polyfills for browsers that need them
+import 'regenerator-runtime/runtime';
+import 'core-js/es/number';
+import 'core-js/es/math';
+import 'core-js/es/string';
+import 'core-js/es/date';
+import 'core-js/es/array';
+import 'core-js/es/regexp';
+import '@webcomponents/webcomponentsjs/webcomponents-bundle.js';
 
 import * as strings from 'MgtDemoWebPartStrings';
 import MgtDemo from './components/MgtDemo';
 import { IMgtDemoProps } from './components/IMgtDemoProps';
-
-// import web component polyfills for browsers that need them
-import '@webcomponents/webcomponentsjs/webcomponents-bundle.js';
 
 // import the providers at the top of the page
 import { Providers, SharePointProvider } from '@microsoft/mgt';
