@@ -30,8 +30,12 @@ $person-card-background-color: var(--person-card-background-color, #ffffff);
     display: flex;
     padding: 18px 14px;
 
-    mgt-person.person-image {
-      --avatar-size: 75px;
+    mgt-person {
+      --background-color: var(--person-card-background-color, #ffffff);
+
+      &.person-image {
+        --avatar-size: 75px;
+      }
     }
 
     .details {
@@ -54,12 +58,37 @@ $person-card-background-color: var(--person-card-background-color, #ffffff);
           height: 100%;
           top: 0;
           right: 0;
-          background-image: linear-gradient(to right, rgba(255,255,255,0) 0%,rgba(255,255,255,0) 80%,$person-card-background-color 100%);
-          background-image: -moz-linear-gradient(left, rgba(255,255,255,0) 0%,rgba(255,255,255,0) 80%,$person-card-background-color 100%);
-          background-image: -o-linear-gradient(left, rgba(255,255,255,0) 0%,rgba(255,255,255,0) 80%,$person-card-background-color 100%);
-          background-image: -ms-linear-gradient(left right, rgba(255,255,255,0) 0%,rgba(255,255,255,0) 80%,$person-card-background-color 100%);
-          background-image: -webkit-linear-gradient(left, rgba(255,255,255,0) 0%,rgba(255,255,255,0) 80%,$person-card-background-color 100%);
-         }
+          background-image: linear-gradient(
+            to right,
+            rgba(255, 255, 255, 0) 0%,
+            rgba(255, 255, 255, 0) 80%,
+            $person-card-background-color 100%
+          );
+          background-image: -moz-linear-gradient(
+            left,
+            rgba(255, 255, 255, 0) 0%,
+            rgba(255, 255, 255, 0) 80%,
+            $person-card-background-color 100%
+          );
+          background-image: -o-linear-gradient(
+            left,
+            rgba(255, 255, 255, 0) 0%,
+            rgba(255, 255, 255, 0) 80%,
+            $person-card-background-color 100%
+          );
+          background-image: -ms-linear-gradient(
+            left,
+            rgba(255, 255, 255, 0) 0%,
+            rgba(255, 255, 255, 0) 80%,
+            $person-card-background-color 100%
+          );
+          background-image: -webkit-linear-gradient(
+            left,
+            rgba(255, 255, 255, 0) 0%,
+            rgba(255, 255, 255, 0) 80%,
+            $person-card-background-color 100%
+          );
+        }
       }
 
       .job-title {
