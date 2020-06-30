@@ -31,8 +31,6 @@ $person-card-background-color: var(--person-card-background-color, #ffffff);
     padding: 18px 14px;
 
     mgt-person {
-      --background-color: var(--person-card-background-color, #ffffff);
-
       &.person-image {
         --avatar-size: 75px;
       }
