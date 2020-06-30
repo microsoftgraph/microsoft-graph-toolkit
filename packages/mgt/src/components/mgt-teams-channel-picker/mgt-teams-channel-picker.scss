@@ -204,6 +204,8 @@ $dropdown-item-selected-background: var(--dropdown-item-selected-background, #de
     font-weight: normal;
     color: $font-color;
     display: none;
+    max-height: 346px;
+    overflow-y: auto;
 
     &.visible {
       display: block;
