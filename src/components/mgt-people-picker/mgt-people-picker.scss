@@ -269,6 +269,7 @@ mgt-people-picker .person-display-name {
 
 mgt-person {
   --avatar-size-s: 32px;
+  --background-color: var(--selected-person-background-color, #f1f1f1);
   margin-left: 12px;
   cursor: default;
 }
@@ -358,4 +359,21 @@ mgt-people-picker .people-person-text-area {
 
 mgt-flyout {
   flex: 1 0 auto;
+  .list-person {
+    mgt-person {
+      --background-color: var(--dropdown-background-color, white);
+    }
+
+    &:hover {
+      mgt-person {
+        --background-color: var(--dropdown-item-hover-background, rgba(241, 241, 241, 0.87));
+      }
+    }
+
+    &.focused {
+      mgt-person {
+        --background-color: var(--dropdown-item-hover-background, rgba(241, 241, 241, 0.87));
+      }
+    }
+  }
 }
