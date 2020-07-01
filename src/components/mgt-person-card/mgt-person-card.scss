@@ -52,6 +52,7 @@ $person-card-background-color: var(--person-card-background-color, #ffffff);
         font-size: $person-card-display-name-font-size;
         color: $person-card-display-name-color;
         &::after {
+          pointer-events: none;
           content: '';
           position: absolute;
           width: 100%;
