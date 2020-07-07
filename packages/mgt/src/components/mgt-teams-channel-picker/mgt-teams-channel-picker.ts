@@ -352,7 +352,7 @@ export class MgtTeamsChannelPicker extends MgtTemplatedComponent {
           aria-label="Select a channel"
           data-placeholder="${!!this._selectedItemState ? '' : 'Select a channel '} "
           role="input"
-          @input=${e => this.handleInputChanged(e)}
+          @keyup=${e => this.handleInputChanged(e)}
           contenteditable
         ></span>
       </div>
@@ -451,6 +451,12 @@ export class MgtTeamsChannelPicker extends MgtTemplatedComponent {
       'list-team': itemState.channels ? true : false,
       selected: isSelected
     };
+
+    const dropDown = this.renderRoot.querySelector('.dropdown');
+
+    if (dropDown.children[this._focusedIndex]) {
+      dropDown.children[this._focusedIndex].scrollIntoView(false);
+    }
 
     return html`
       <div @click=${() => this.handleItemClick(itemState)} class="${classMap(classes)}">
@@ -614,7 +620,12 @@ export class MgtTeamsChannelPicker extends MgtTemplatedComponent {
   }
 
   private handleInputChanged(e) {
-    this._inputValue = e.target.textContent;
+    if (this._inputValue !== e.target.textContent) {
+      this._inputValue = e.target.textContent;
+    } else {
+      return;
+    }
+
     // shows list
     this.gainedFocus();
 
@@ -708,6 +719,11 @@ export class MgtTeamsChannelPicker extends MgtTemplatedComponent {
   }
 
   private onUserKeyDown(event: KeyboardEvent) {
+    if (event.keyCode === 13) {
+      // No new line
+      event.preventDefault();
+    }
+
     if (this._treeViewState.length === 0) {
       return;
     }
