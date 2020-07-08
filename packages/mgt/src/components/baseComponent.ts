@@ -44,7 +44,7 @@ export enum ComponentMediaQuery {
 export abstract class MgtBaseComponent extends ScopedElementsMixin(LitElement) {
   /**
    * Get the scoped elements.
-   * Prevents name collision in mutli-instance scenarios (e.g. SharePoint).
+   * Prevents name collision in multi-instance scenarios (e.g. SharePoint).
    *
    * @readonly
    * @static
