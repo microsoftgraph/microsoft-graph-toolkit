@@ -7,9 +7,10 @@
 
 import { html, property } from 'lit-element';
 import { classMap } from 'lit-html/directives/class-map';
-import { ComponentRegistry } from '../../../utils/ComponentRegistry';
+import { registeredComponent } from '../../../utils/ComponentRegistry';
 import { MgtBaseComponent } from '../../baseComponent';
 import { styles } from './mgt-dot-options-css';
+
 /**
  * Custom Component used to handle an arrow rendering for TaskGroups utilized in the task component.
  *
@@ -17,6 +18,7 @@ import { styles } from './mgt-dot-options-css';
  * @class MgtDotOptions
  * @extends {MgtBaseComponent}
  */
+@registeredComponent('mgt-dot-options')
 export class MgtDotOptions extends MgtBaseComponent {
   /**
    * Array of styles to apply to the element. The styles should be defined
@@ -107,5 +109,3 @@ export class MgtDotOptions extends MgtBaseComponent {
     this.open = !this.open;
   }
 }
-
-ComponentRegistry.register('mgt-dot-options', MgtDotOptions);

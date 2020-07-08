@@ -7,7 +7,7 @@
 
 import { html, LitElement, property, PropertyValues, TemplateResult } from 'lit-element';
 import { classMap } from 'lit-html/directives/class-map';
-import { ComponentRegistry } from '../../../utils/ComponentRegistry';
+import { registeredComponent } from '../../../utils/ComponentRegistry';
 import { getSegmentAwareWindow, isWindowSegmentAware, IWindowSegment } from '../../../utils/WindowSegmentHelpers';
 import { styles } from './mgt-flyout-css';
 
@@ -18,6 +18,7 @@ import { styles } from './mgt-flyout-css';
  * @class MgtFlyout
  * @extends {LitElement}
  */
+@registeredComponent('mgt-flyout')
 export class MgtFlyout extends LitElement {
   /**
    * Array of styles to apply to the element. The styles should be defined
@@ -373,5 +374,3 @@ export class MgtFlyout extends LitElement {
     e.preventDefault();
   }
 }
-
-ComponentRegistry.register('mgt-flyout', MgtFlyout);

@@ -11,7 +11,7 @@ import { classMap } from 'lit-html/directives/class-map';
 import { Providers } from '../../Providers';
 import { ProviderState } from '../../providers/IProvider';
 import '../../styles/fabric-icon-font';
-import { ComponentRegistry } from '../../utils/ComponentRegistry';
+import { registeredComponent } from '../../utils/ComponentRegistry';
 import { getSvg, SvgIcon } from '../../utils/SvgHelper';
 import { debounce } from '../../utils/Utils';
 import { MgtTemplatedComponent } from '../templatedComponent';
@@ -145,6 +145,7 @@ interface ChannelPickerItemState {
  * @cssprop --placeholder-default-color - {Color} Color of placeholder text
  *
  */
+@registeredComponent('mgt-people-picker')
 export class MgtTeamsChannelPicker extends MgtTemplatedComponent {
   /**
    * Array of styles to apply to the element. The styles should be defined
@@ -828,5 +829,3 @@ export class MgtTeamsChannelPicker extends MgtTemplatedComponent {
     this.lostFocus();
   }
 }
-
-ComponentRegistry.register('mgt-teams-channel-picker', MgtTeamsChannelPicker);

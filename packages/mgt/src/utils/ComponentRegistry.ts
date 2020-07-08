@@ -77,3 +77,16 @@ export class ComponentRegistry {
 
   private static _scopedElements: object = {};
 }
+
+/**
+ * Decorator for registering custom components
+ *
+ * @export
+ * @param {string} tagName
+ * @returns
+ */
+export function registeredComponent(tagName: string) {
+  return component => {
+    ComponentRegistry.register(tagName, component);
+  };
+}

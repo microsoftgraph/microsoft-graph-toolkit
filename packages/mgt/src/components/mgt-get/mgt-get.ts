@@ -8,7 +8,7 @@
 import { html, property } from 'lit-element';
 import { Providers } from '../../Providers';
 import { ProviderState } from '../../providers/IProvider';
-import { ComponentRegistry } from '../../utils/ComponentRegistry';
+import { registeredComponent } from '../../utils/ComponentRegistry';
 import { prepScopes } from '../../utils/GraphHelpers';
 import { equals } from '../../utils/Utils';
 import { MgtTemplatedComponent } from '../templatedComponent';
@@ -22,6 +22,7 @@ import { MgtTemplatedComponent } from '../templatedComponent';
  * @class mgt-get
  * @extends {MgtTemplatedComponent}
  */
+@registeredComponent('mgt-get')
 export class MgtGet extends MgtTemplatedComponent {
   /**
    * The resource to get
@@ -283,5 +284,3 @@ export class MgtGet extends MgtTemplatedComponent {
     this.fireCustomEvent('dataChange', { response: this.response, error: this.error });
   }
 }
-
-ComponentRegistry.register('mgt-get', MgtGet);

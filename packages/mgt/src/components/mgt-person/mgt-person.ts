@@ -17,7 +17,7 @@ import { AvatarSize, IDynamicPerson } from '../../graph/types';
 import { Providers } from '../../Providers';
 import { ProviderState } from '../../providers/IProvider';
 import '../../styles/fabric-icon-font';
-import { ComponentRegistry } from '../../utils/ComponentRegistry';
+import { registeredComponent } from '../../utils/ComponentRegistry';
 import { getSvg, SvgIcon } from '../../utils/SvgHelper';
 import { MgtPersonCard } from '../mgt-person-card/mgt-person-card';
 import '../sub-components/mgt-flyout/mgt-flyout';
@@ -75,6 +75,7 @@ export enum PersonViewType {
  * @cssprop --line2-text-transform - {String} Line 2 text transform
  * @cssprop --details-spacing - {Length} spacing between avatar and person details
  */
+@registeredComponent('mgt-person')
 export class MgtPerson extends MgtTemplatedComponent {
   /**
    * Array of styles to apply to the element. The styles should be defined
@@ -956,5 +957,3 @@ export class MgtPerson extends MgtTemplatedComponent {
     return colors[nameInt % colors.length];
   }
 }
-
-ComponentRegistry.register('mgt-person', MgtPerson);

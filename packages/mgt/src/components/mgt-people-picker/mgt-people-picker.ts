@@ -16,7 +16,7 @@ import { IDynamicPerson } from '../../graph/types';
 import { Providers } from '../../Providers';
 import { ProviderState } from '../../providers/IProvider';
 import '../../styles/fabric-icon-font';
-import { ComponentRegistry } from '../../utils/ComponentRegistry';
+import { registeredComponent } from '../../utils/ComponentRegistry';
 import { debounce } from '../../utils/Utils';
 import { PersonViewType } from '../mgt-person/mgt-person';
 import { PersonCardInteraction } from '../PersonCardInteraction';
@@ -66,6 +66,7 @@ interface IFocusable {
  * @cssprop --placeholder-default-color - {Color} Color of placeholder text
  *
  */
+@registeredComponent('mgt-people-picker')
 export class MgtPeoplePicker extends MgtTemplatedComponent {
   /**
    * Array of styles to apply to the element. The styles should be defined
@@ -1021,5 +1022,3 @@ export class MgtPeoplePicker extends MgtTemplatedComponent {
     }
   }
 }
-
-ComponentRegistry.register('mgt-people-picker', MgtPeoplePicker);

@@ -15,7 +15,7 @@ import { getUserWithPhoto } from '../../graph/graph.user';
 import { IDynamicPerson } from '../../graph/types';
 import { Providers } from '../../Providers';
 import { ProviderState } from '../../providers/IProvider';
-import { ComponentRegistry } from '../../utils/ComponentRegistry';
+import { registeredComponent } from '../../utils/ComponentRegistry';
 import { getSvg, SvgIcon } from '../../utils/SvgHelper';
 import { TeamsHelper } from '../../utils/TeamsHelper';
 import { MgtPerson } from '../mgt-person/mgt-person';
@@ -42,6 +42,7 @@ import { styles } from './mgt-person-card-css';
  * @cssprop --person-card-details-item-color - {Color} Color of items in additional details section
  * @cssprop --person-card-background-color - {Color} Color of person card background
  */
+@registeredComponent('mgt-person-card')
 export class MgtPersonCard extends MgtTemplatedComponent {
   /**
    * Array of styles to apply to the element. The styles should be defined
@@ -769,5 +770,3 @@ export class MgtPersonCard extends MgtTemplatedComponent {
     return businessPhones;
   }
 }
-
-ComponentRegistry.register('mgt-person-card', MgtPersonCard);
