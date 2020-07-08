@@ -51,7 +51,7 @@ export async function getUserWithPhoto(graph: IGraph, userId?: string): Promise<
   if (userDetailsResponse.content) {
     person = userDetailsResponse.content;
 
-    person.personImage = photoResponse.content;
+    person.personImage = photoResponse && photoResponse.content;
   }
 
   return person;
