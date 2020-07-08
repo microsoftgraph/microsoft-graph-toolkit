@@ -1,14 +1,14 @@
 import { customElement } from 'lit-element';
 
 /**
- * foo
+ * Manages the registration of custom elements.
  *
  * @export
  * @class ComponentRegistry
  */
 export class ComponentRegistry {
   /**
-   * foo
+   * Maintains the collection of custom elements available in the toolkit.
    *
    * @readonly
    * @static
@@ -20,18 +20,44 @@ export class ComponentRegistry {
   }
 
   /**
-   * foo
+   * Set a prefix to alias built-in components.
+   *
+   * JS -> ...usePrefix('foo');
+   * HTML -> <foo-mgt-login></foo-mgt-login>
    *
    * @static
    * @param {string} prefix
    * @memberof ComponentRegistry
    */
-  public static setPrefix(prefix: string) {
-    this._prefix = prefix;
+  public static usePrefix(prefix: string) {
+    if (!prefix) {
+      return;
+    }
+
+    // tslint:disable-next-line: forin
+    for (const tagName in this._scopedElements) {
+      // External tag name
+      const externalTag = `${prefix}-${tagName}`;
+      const component = this._scopedElements[tagName];
+
+      // Check for existing registration
+      if (!customElements.get(externalTag)) {
+        // Create a type clone
+        // tslint:disable-next-line: max-classes-per-file
+        const clone: any = class extends component {
+          constructor() {
+            super();
+          }
+        };
+
+        // Register component
+        customElement(externalTag)(clone);
+      }
+    }
   }
 
   /**
-   * foo
+   * Register a custom component for use in the DOM.
    *
    * @static
    * @param {string} tagName
@@ -42,16 +68,12 @@ export class ComponentRegistry {
     // Add the component to the scopedElements object.
     ComponentRegistry._scopedElements[tagName] = component;
 
-    // External tag name
-    const externalTag = this._prefix ? `${this._prefix}-${tagName}` : tagName;
-
     // Check for existing registration
-    if (!customElements.get(externalTag)) {
+    if (!customElements.get(tagName)) {
       // Register component
-      customElement(externalTag)(component);
+      customElement(tagName)(component);
     }
   }
 
-  private static _prefix: string;
   private static _scopedElements: object = {};
 }
