@@ -9,6 +9,7 @@ import { customElement, property } from 'lit-element';
 import { Configuration } from 'msal';
 import { Providers } from '../../Providers';
 import { TeamsConfig, TeamsProvider } from '../../providers/TeamsProvider';
+import { ComponentRegistry } from '../../utils/ComponentRegistry';
 import { MgtBaseProvider } from './baseProvider';
 
 /**
@@ -18,7 +19,7 @@ import { MgtBaseProvider } from './baseProvider';
  * @class MgtTeamsProvider
  * @extends {MgtBaseProvider}
  */
-@customElement('mgt-teams-provider')
+// @customElement('mgt-teams-provider')
 export class MgtTeamsProvider extends MgtBaseProvider {
   /**
    * String alphanumerical value relation to a specific user
@@ -103,3 +104,5 @@ export class MgtTeamsProvider extends MgtBaseProvider {
     }
   }
 }
+
+ComponentRegistry.register('mgt-teams-provider', MgtTeamsProvider);

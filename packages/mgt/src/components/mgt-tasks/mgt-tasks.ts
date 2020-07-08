@@ -20,6 +20,7 @@ import { styles } from './mgt-tasks-css';
 import { ITask, ITaskFolder, ITaskGroup, ITaskSource, PlannerTaskSource, TodoTaskSource } from './task-sources';
 
 import { getMe } from '../../graph/graph.user';
+import { ComponentRegistry } from '../../utils/ComponentRegistry';
 import { ComponentMediaQuery } from '../baseComponent';
 import { MgtPeople } from '../mgt-people/mgt-people';
 import '../mgt-person/mgt-person';
@@ -177,7 +178,7 @@ const plannerAssignment = {
  * @class MgtTasks
  * @extends {MgtBaseComponent}
  */
-@customElement('mgt-tasks')
+// @customElement('mgt-tasks')
 export class MgtTasks extends MgtTemplatedComponent {
   /**
    * determines whether todo, or planner functionality for task component
@@ -1362,3 +1363,5 @@ export class MgtTasks extends MgtTemplatedComponent {
     return null;
   }
 }
+
+ComponentRegistry.register('mgt-tasks', MgtTasks);

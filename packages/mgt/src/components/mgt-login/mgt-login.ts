@@ -16,6 +16,7 @@ import { styles } from './mgt-login-css';
 
 import { getUserWithPhoto } from '../../graph/graph.user';
 import '../../styles/fabric-icon-font';
+import { ComponentRegistry } from '../../utils/ComponentRegistry';
 import '../mgt-person/mgt-person';
 import { PersonViewType } from '../mgt-person/mgt-person';
 
@@ -48,7 +49,7 @@ import { PersonViewType } from '../mgt-person/mgt-person';
  * @cssprop --popup-content-background-color - {Color} Popup content background color
  * @cssprop --popup-command-font-size - {Length} Popup command font size
  */
-@customElement('mgt-login')
+// @customElement('mgt-login')
 export class MgtLogin extends MgtTemplatedComponent {
   /**
    * Array of styles to apply to the element. The styles should be defined
@@ -374,3 +375,5 @@ export class MgtLogin extends MgtTemplatedComponent {
     }
   }
 }
+
+ComponentRegistry.register('mgt-login', MgtLogin);

@@ -5,8 +5,10 @@
  * -------------------------------------------------------------------------------------------
  */
 
-import { LitElement, property, PropertyValues } from 'lit-element';
+import { ScopedElementsMixin } from '@open-wc/scoped-elements';
+import { LitElement, PropertyValues } from 'lit-element';
 import { Providers } from '../Providers';
+import { ComponentRegistry } from '../utils/ComponentRegistry';
 
 /**
  * Defines media query based on component width
@@ -39,7 +41,19 @@ export enum ComponentMediaQuery {
  * @class MgtBaseComponent
  * @extends {LitElement}
  */
-export abstract class MgtBaseComponent extends LitElement {
+export abstract class MgtBaseComponent extends ScopedElementsMixin(LitElement) {
+  /**
+   * Get the scoped elements.
+   * Prevents name collision in mutli-instance scenarios (e.g. SharePoint).
+   *
+   * @readonly
+   * @static
+   * @memberof MgtBaseComponent
+   */
+  static get scopedElements() {
+    return ComponentRegistry.scopedElements;
+  }
+
   /**
    * Get ShadowRoot toggle, returns value of _useShadowRoot
    *

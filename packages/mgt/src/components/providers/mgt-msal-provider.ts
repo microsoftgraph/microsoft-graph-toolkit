@@ -9,6 +9,7 @@ import { customElement, LitElement, property } from 'lit-element';
 import { Providers } from '../../Providers';
 import { LoginType } from '../../providers/IProvider';
 import { MsalConfig, MsalProvider } from '../../providers/MsalProvider';
+import { ComponentRegistry } from '../../utils/ComponentRegistry';
 import { MgtBaseProvider } from './baseProvider';
 /**
  * Authentication Library Provider for Microsoft personal accounts
@@ -17,7 +18,7 @@ import { MgtBaseProvider } from './baseProvider';
  * @class MgtMsalProvider
  * @extends {MgtBaseProvider}
  */
-@customElement('mgt-msal-provider')
+// @customElement('mgt-msal-provider')
 export class MgtMsalProvider extends MgtBaseProvider {
   /**
    * String alphanumerical value relation to a specific user
@@ -119,3 +120,5 @@ export class MgtMsalProvider extends MgtBaseProvider {
     }
   }
 }
+
+ComponentRegistry.register('mgt-msal-provider', MgtMsalProvider);
