@@ -5,7 +5,7 @@
  * -------------------------------------------------------------------------------------------
  */
 
-import { customElement, html, property } from 'lit-element';
+import { html, property } from 'lit-element';
 import { classMap } from 'lit-html/directives/class-map';
 import { IDynamicPerson } from '../../graph/types';
 import { Providers } from '../../Providers';
@@ -49,7 +49,6 @@ import { PersonViewType } from '../mgt-person/mgt-person';
  * @cssprop --popup-content-background-color - {Color} Popup content background color
  * @cssprop --popup-command-font-size - {Length} Popup command font size
  */
-// @customElement('mgt-login')
 export class MgtLogin extends MgtTemplatedComponent {
   /**
    * Array of styles to apply to the element. The styles should be defined

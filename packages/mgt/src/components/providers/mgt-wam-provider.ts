@@ -5,7 +5,7 @@
  * -------------------------------------------------------------------------------------------
  */
 
-import { customElement, LitElement, property } from 'lit-element';
+import { LitElement, property } from 'lit-element';
 import { Providers } from '../../Providers';
 import { WamProvider } from '../../providers/WamProvider';
 import { ComponentRegistry } from '../../utils/ComponentRegistry';
@@ -16,7 +16,6 @@ import { ComponentRegistry } from '../../utils/ComponentRegistry';
  * @class MgtWamProvider
  * @extends {LitElement}
  */
-// @customElement('mgt-wam-provider')
 export class MgtWamProvider extends LitElement {
   /**
    * String alphanumerical value relation to a specific user

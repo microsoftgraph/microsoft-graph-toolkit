@@ -7,7 +7,7 @@
 
 import * as MicrosoftGraph from '@microsoft/microsoft-graph-types';
 import * as MicrosoftGraphBeta from '@microsoft/microsoft-graph-types-beta';
-import { customElement, html, internalProperty, property, TemplateResult } from 'lit-element';
+import { html, internalProperty, property, TemplateResult } from 'lit-element';
 import { classMap } from 'lit-html/directives/class-map';
 import { findPeople, getEmailFromGraphEntity } from '../../graph/graph.people';
 import { getPersonImage } from '../../graph/graph.photos';
@@ -75,7 +75,6 @@ export enum PersonViewType {
  * @cssprop --line2-text-transform - {String} Line 2 text transform
  * @cssprop --details-spacing - {Length} spacing between avatar and person details
  */
-// @customElement('mgt-person')
 export class MgtPerson extends MgtTemplatedComponent {
   /**
    * Array of styles to apply to the element. The styles should be defined

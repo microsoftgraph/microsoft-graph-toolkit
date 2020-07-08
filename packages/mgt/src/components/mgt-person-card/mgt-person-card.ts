@@ -7,7 +7,7 @@
 
 import * as MicrosoftGraph from '@microsoft/microsoft-graph-types';
 import * as MicrosoftGraphBeta from '@microsoft/microsoft-graph-types-beta';
-import { customElement, html, property, TemplateResult } from 'lit-element';
+import { html, property, TemplateResult } from 'lit-element';
 import { findPeople, getEmailFromGraphEntity } from '../../graph/graph.people';
 import { getPersonImage } from '../../graph/graph.photos';
 import { getUserPresence } from '../../graph/graph.presence';
@@ -42,7 +42,6 @@ import { styles } from './mgt-person-card-css';
  * @cssprop --person-card-details-item-color - {Color} Color of items in additional details section
  * @cssprop --person-card-background-color - {Color} Color of person card background
  */
-// @customElement('mgt-person-card')
 export class MgtPersonCard extends MgtTemplatedComponent {
   /**
    * Array of styles to apply to the element. The styles should be defined

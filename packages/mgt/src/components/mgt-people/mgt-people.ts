@@ -6,7 +6,7 @@
  */
 
 import * as MicrosoftGraph from '@microsoft/microsoft-graph-types';
-import { customElement, html, property, TemplateResult } from 'lit-element';
+import { html, property, TemplateResult } from 'lit-element';
 import { repeat } from 'lit-html/directives/repeat';
 import { getPeople, getPeopleFromGroup } from '../../graph/graph.people';
 import { getUsersPresenceByPeople } from '../../graph/graph.presence';
@@ -33,7 +33,6 @@ export { PersonCardInteraction } from './../PersonCardInteraction';
  * @cssprop --list-margin - {String} List margin for component
  * @cssprop --avatar-margin - {String} Margin for each person
  */
-// @customElement('mgt-people')
 export class MgtPeople extends MgtTemplatedComponent {
   /**
    * Array of styles to apply to the element. The styles should be defined

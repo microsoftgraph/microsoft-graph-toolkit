@@ -5,7 +5,7 @@
  * -------------------------------------------------------------------------------------------
  */
 
-import { customElement, LitElement, property } from 'lit-element';
+import { property } from 'lit-element';
 import { Providers } from '../../Providers';
 import { ProxyProvider } from '../../providers/ProxyProvider';
 import { ComponentRegistry } from '../../utils/ComponentRegistry';
@@ -18,7 +18,6 @@ import { MgtBaseProvider } from './baseProvider';
  * @class MgtProxyProvider
  * @extends {LitElement}
  */
-// @customElement('mgt-proxy-provider')
 export class MgtProxyProvider extends MgtBaseProvider {
   /**
    * The base url to the proxy api

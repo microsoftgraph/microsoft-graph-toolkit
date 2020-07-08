@@ -5,7 +5,7 @@
  * -------------------------------------------------------------------------------------------
  */
 
-import { customElement, LitElement, property } from 'lit-element';
+import { property } from 'lit-element';
 import { MgtBaseProvider } from '../components/providers/baseProvider';
 import { Providers } from '../Providers';
 import { ComponentRegistry } from '../utils/ComponentRegistry';
@@ -17,7 +17,6 @@ import { MockProvider } from './MockProvider';
  * @class MgtMockProvider
  * @extends {LitElement}
  */
-// @customElement('mgt-mock-provider')
 export class MgtMockProvider extends MgtBaseProvider {
   /**
    * A property to allow the developer to start the sample logged out if they desired.

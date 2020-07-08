@@ -7,7 +7,7 @@
 
 import { Person, PlannerAssignments, PlannerTask, User } from '@microsoft/microsoft-graph-types';
 import { Contact, OutlookTask, OutlookTaskFolder } from '@microsoft/microsoft-graph-types-beta';
-import { customElement, html, property } from 'lit-element';
+import { html, property } from 'lit-element';
 import { classMap } from 'lit-html/directives/class-map';
 import { repeat } from 'lit-html/directives/repeat';
 import { Providers } from '../../Providers';
@@ -178,7 +178,6 @@ const plannerAssignment = {
  * @class MgtTasks
  * @extends {MgtBaseComponent}
  */
-// @customElement('mgt-tasks')
 export class MgtTasks extends MgtTemplatedComponent {
   /**
    * determines whether todo, or planner functionality for task component

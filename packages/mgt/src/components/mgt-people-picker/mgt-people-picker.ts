@@ -6,7 +6,7 @@
  */
 
 import { User } from '@microsoft/microsoft-graph-types';
-import { customElement, html, internalProperty, property, TemplateResult } from 'lit-element';
+import { html, internalProperty, property, TemplateResult } from 'lit-element';
 import { classMap } from 'lit-html/directives/class-map';
 import { repeat } from 'lit-html/directives/repeat';
 import { findGroups, GroupType } from '../../graph/graph.groups';
@@ -66,7 +66,6 @@ interface IFocusable {
  * @cssprop --placeholder-default-color - {Color} Color of placeholder text
  *
  */
-// @customElement('mgt-people-picker')
 export class MgtPeoplePicker extends MgtTemplatedComponent {
   /**
    * Array of styles to apply to the element. The styles should be defined

@@ -5,7 +5,7 @@
  * -------------------------------------------------------------------------------------------
  */
 
-import { customElement, LitElement, property } from 'lit-element';
+import { property } from 'lit-element';
 import { Providers } from '../../Providers';
 import { LoginType } from '../../providers/IProvider';
 import { MsalConfig, MsalProvider } from '../../providers/MsalProvider';
@@ -18,7 +18,6 @@ import { MgtBaseProvider } from './baseProvider';
  * @class MgtMsalProvider
  * @extends {MgtBaseProvider}
  */
-// @customElement('mgt-msal-provider')
 export class MgtMsalProvider extends MgtBaseProvider {
   /**
    * String alphanumerical value relation to a specific user

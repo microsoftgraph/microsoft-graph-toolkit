@@ -6,7 +6,7 @@
  */
 
 import * as MicrosoftGraph from '@microsoft/microsoft-graph-types';
-import { customElement, html, property, query, TemplateResult } from 'lit-element';
+import { html, property, query, TemplateResult } from 'lit-element';
 import { classMap } from 'lit-html/directives/class-map';
 import { Providers } from '../../Providers';
 import { ProviderState } from '../../providers/IProvider';
@@ -145,7 +145,6 @@ interface ChannelPickerItemState {
  * @cssprop --placeholder-default-color - {Color} Color of placeholder text
  *
  */
-// @customElement('mgt-teams-channel-picker')
 export class MgtTeamsChannelPicker extends MgtTemplatedComponent {
   /**
    * Array of styles to apply to the element. The styles should be defined

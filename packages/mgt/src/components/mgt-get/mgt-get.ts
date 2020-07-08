@@ -5,7 +5,7 @@
  * -------------------------------------------------------------------------------------------
  */
 
-import { customElement, html, property } from 'lit-element';
+import { html, property } from 'lit-element';
 import { Providers } from '../../Providers';
 import { ProviderState } from '../../providers/IProvider';
 import { ComponentRegistry } from '../../utils/ComponentRegistry';
@@ -22,7 +22,6 @@ import { MgtTemplatedComponent } from '../templatedComponent';
  * @class mgt-get
  * @extends {MgtTemplatedComponent}
  */
-// @customElement('mgt-get')
 export class MgtGet extends MgtTemplatedComponent {
   /**
    * The resource to get

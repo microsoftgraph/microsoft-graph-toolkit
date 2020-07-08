@@ -5,7 +5,7 @@
  * -------------------------------------------------------------------------------------------
  */
 
-import { customElement, property } from 'lit-element';
+import { property } from 'lit-element';
 import { Configuration } from 'msal';
 import { Providers } from '../../Providers';
 import { TeamsConfig, TeamsProvider } from '../../providers/TeamsProvider';
@@ -19,7 +19,6 @@ import { MgtBaseProvider } from './baseProvider';
  * @class MgtTeamsProvider
  * @extends {MgtBaseProvider}
  */
-// @customElement('mgt-teams-provider')
 export class MgtTeamsProvider extends MgtBaseProvider {
   /**
    * String alphanumerical value relation to a specific user

@@ -6,7 +6,7 @@
  */
 
 import * as MicrosoftGraph from '@microsoft/microsoft-graph-types';
-import { customElement, html, property, TemplateResult } from 'lit-element';
+import { html, property, TemplateResult } from 'lit-element';
 import { Providers } from '../../Providers';
 import { ProviderState } from '../../providers/IProvider';
 import '../../styles/fabric-icon-font';
@@ -42,7 +42,6 @@ import { getEventsPageIterator } from './mgt-agenda.graph';
  * @cssprop --event-location-font-size - {Length} Event location font size
  * @cssprop --event-location-color - {Color} Event location color
  */
-// @customElement('mgt-agenda')
 export class MgtAgenda extends MgtTemplatedComponent {
   /**
    * Array of styles to apply to the element. The styles should be defined
