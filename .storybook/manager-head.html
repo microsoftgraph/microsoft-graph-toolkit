@@ -36,6 +36,10 @@
   <a href="https://www.microsoft.com/en-us/legal/intellectualproperty/copyright/default">Term of use</a>
 </footer>
 <style>
+  #root > div:first-of-type {
+    height: calc(100% - 40px);
+  }
+
   .storybook-footer {
     position: absolute;
     bottom: 0;
@@ -53,5 +57,11 @@
 
   .storybook-footer a:hover {
     color: #323232;
+  }
+
+  @media (max-width: 768px) {
+    #root > div:first-of-type {
+      height: calc(100% - 50px);
+    }
   }
 </style>
