@@ -31,22 +31,22 @@ export class Cache<T extends CacheItem> {
     this.store = store;
   }
 
-  public async getValue(userId: string): Promise<T> {
+  public async getValue(key: string): Promise<T> {
     if (!window.indexedDB) {
       console.log("browser doesn't support indexedDB");
       return null;
     }
 
-    return (await this.getDb()).get(this.store, userId);
+    return (await this.getDb()).get(this.store, key);
   }
 
-  public async putValue(userId: string, item: T) {
+  public async putValue(key: string, item: T) {
     if (!window.indexedDB) {
       console.log("browser doesn't support indexedDB");
       return;
     }
 
-    await (await this.getDb()).put(this.store, { ...item, timeCached: Date.now() }, userId);
+    await (await this.getDb()).put(this.store, { ...item, timeCached: Date.now() }, key);
   }
 
   private getDb() {

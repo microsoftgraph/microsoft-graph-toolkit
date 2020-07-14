@@ -6,7 +6,9 @@
  */
 
 import { Contact, Person, User } from '@microsoft/microsoft-graph-types';
+import { time } from 'console';
 import { IGraph } from '../IGraph';
+import { Cache, CacheItem, CacheSchema } from '../utils/Cache';
 import { prepScopes } from '../utils/GraphHelpers';
 import { IDynamicPerson } from './types';
 
@@ -34,6 +36,58 @@ export enum PersonType {
 }
 
 /**
+ * definition of cache structure
+ */
+const cacheSchema: CacheSchema = {
+  name: 'people',
+  stores: {
+    contacts: {},
+    groupPeople: {},
+    peopleQuery: {}
+  },
+  version: 1
+};
+
+/**
+ * Stores individuals
+ */
+interface CachePerson extends CacheItem {
+  /**
+   * json representing a person stored as string
+   */
+  person?: string;
+}
+
+/**
+ * Stores results of queries (multiple users returned)
+ */
+interface CachePeopleQuery extends CacheItem {
+  /**
+   * max number of results the query asks for
+   */
+  maxResults?: number;
+  /**
+   * list of people returned by query (might be less than max results!)
+   */
+  results?: string[];
+}
+
+/**
+ * Stores people from a group
+ */
+interface CacheGroupPeople extends CacheItem {
+  /**
+   * list of people returned by query (might be less than max results!)
+   */
+  people?: string[];
+}
+
+/** Time to invalidate cache in ms
+ * 600000ms === 1hr
+ */
+const cacheInvalidationTime = 3600000;
+
+/**
  * async promise, returns all Graph people who are most relevant contacts to the signed in user.
  *
  * @param {string} query
@@ -48,7 +102,13 @@ export async function findPeople(
   personType: PersonType = PersonType.person
 ): Promise<Person[]> {
   const scopes = 'people.read';
+  const cache = new Cache<CachePeopleQuery>(cacheSchema, 'peopleQuery');
+  const item = { maxResults: top, results: null };
+  const result: CachePeopleQuery = await cache.getValue(query);
 
+  if (result && cacheInvalidationTime > Date.now() - result.timeCached) {
+    return result.results.map(peopleStr => JSON.parse(peopleStr));
+  }
   let filterQuery = '';
 
   if (personType !== PersonType.any) {
@@ -61,14 +121,18 @@ export async function findPeople(
     filterQuery = `personType/class eq '${personTypeString}'`;
   }
 
-  const result = await graph
+  const graphResult = await graph
     .api('/me/people')
     .search('"' + query + '"')
     .top(top)
     .filter(filterQuery)
     .middlewareOptions(prepScopes(scopes))
     .get();
-  return result ? result.value : null;
+  item.results = graphResult.value.map(personStr => JSON.stringify(personStr));
+  if (item.results) {
+    cache.putValue(query, item);
+  }
+  return item.results ? graphResult.value : null;
 }
 
 /**
@@ -98,12 +162,18 @@ export async function getPeople(graph: IGraph): Promise<Person[]> {
  */
 export async function getPeopleFromGroup(graph: IGraph, groupId: string): Promise<Person[]> {
   const scopes = 'people.read';
+  const cache = new Cache<CacheGroupPeople>(cacheSchema, 'groupPeople');
+  const peopleItem = await cache.getValue(groupId);
+  if (peopleItem && cacheInvalidationTime > Date.now() - peopleItem.timeCached) {
+    return peopleItem.people.map(peopleStr => JSON.parse(peopleStr));
+  }
 
   const uri = `/groups/${groupId}/members`;
   const people = await graph
     .api(uri)
     .middlewareOptions(prepScopes(scopes))
     .get();
+  cache.putValue(groupId, { people: people.value.map(ppl => JSON.stringify(ppl)) });
   return people ? people.value : null;
 }
 
@@ -135,11 +205,23 @@ export function getEmailFromGraphEntity(entity: IDynamicPerson): string {
  */
 export async function findContactByEmail(graph: IGraph, email: string): Promise<Contact[]> {
   const scopes = 'contacts.read';
+  const cache = new Cache<CachePerson>(cacheSchema, 'contacts');
+  const contact = await cache.getValue(email);
+
+  if (contact && cacheInvalidationTime > Date.now() - contact.timeCached) {
+    return JSON.parse(contact.person);
+  }
+
   const result = await graph
     .api('/me/contacts')
     .filter(`emailAddresses/any(a:a/address eq '${email}')`)
     .middlewareOptions(prepScopes(scopes))
     .get();
+
+  if (result) {
+    cache.putValue(email, { person: JSON.stringify(result.value) });
+  }
+
   return result ? result.value : null;
 }
 

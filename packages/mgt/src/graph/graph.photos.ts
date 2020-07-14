@@ -14,6 +14,9 @@ import { blobToBase64 } from '../utils/Utils';
 import { findUserByEmail, getEmailFromGraphEntity } from './graph.people';
 import { IDynamicPerson } from './types';
 
+/**
+ * defines the structure of the cache
+ */
 const cacheSchema: CacheSchema = {
   name: 'photos',
   stores: {
@@ -23,13 +26,24 @@ const cacheSchema: CacheSchema = {
   version: 1
 };
 
+/**
+ * photo object stored in cache
+ */
 interface CachePhoto extends CacheItem {
+  /**
+   * user tag associated with photo
+   */
   eTag?: string;
+  /**
+   * user/contact photo
+   */
   photo?: string;
 }
 
-// Time to invalidate cache in ms
-// 3600000ms === 1hr
+/**
+ * Time to invalidate cache in ms
+ *  3600000ms === 1hr
+ */
 const cacheInvalidationTime = 3600000;
 
 /**
@@ -109,11 +123,11 @@ export async function getContactPhoto(graph: IGraph, contactId: string): Promise
 export async function getUserPhoto(graph: IGraph, userId: string): Promise<string> {
   const cache = new Cache<CachePhoto>(cacheSchema, 'users');
 
-  console.log('get photo for ' + userId);
+  // console.log('get photo for ' + userId);
 
   let photoDetails: CachePhoto = await cache.getValue(userId);
   if (photoDetails) {
-    console.log('found photo in cache', photoDetails);
+    // console.log('found photo in cache', photoDetails);
 
     if (Date.now() - photoDetails.timeCached > cacheInvalidationTime) {
       // check if new image is available and update for next time
@@ -136,7 +150,9 @@ export async function getUserPhoto(graph: IGraph, userId: string): Promise<strin
   }
 
   photoDetails = await getPhotoForResource(graph, `users/${userId}`, ['user.readbasic.all']);
-  cache.putValue(userId, photoDetails || {});
+  if (photoDetails) {
+    cache.putValue(userId, photoDetails || {});
+  }
 
   return photoDetails ? photoDetails.photo : null;
 }

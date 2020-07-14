@@ -7,9 +7,52 @@
 
 import { User } from '@microsoft/microsoft-graph-types';
 import { IGraph } from '../IGraph';
+import { Cache, CacheItem, CacheSchema } from '../utils/Cache';
 import { prepScopes } from '../utils/GraphHelpers';
 import { findPeople } from './graph.people';
 import { IDynamicPerson } from './types';
+
+/**
+ * Describes the organization of the cache db
+ */
+const cacheSchema: CacheSchema = {
+  name: 'users',
+  stores: {
+    users: {},
+    usersQuery: {}
+  },
+  version: 1
+};
+
+/**
+ * Object to be stored in cache
+ */
+interface CacheUser extends CacheItem {
+  /**
+   * stringified json representing a user
+   */
+  user?: string;
+}
+
+/**
+ * Object to be stored in cache
+ */
+interface CacheUserQuery extends CacheItem {
+  /**
+   * max number of results the query asks for
+   */
+  maxResults?: number;
+  /**
+   * list of users returned by query
+   */
+  results?: string[];
+}
+
+/**
+ * Time to invalidate cache in ms
+ * Currently set for 60 min
+ */
+const cacheInvalidationTime = 3600000;
 
 /**
  * async promise, returns Graph User data relating to the user logged in
@@ -17,11 +60,20 @@ import { IDynamicPerson } from './types';
  * @returns {(Promise<User>)}
  * @memberof Graph
  */
-export function getMe(graph: IGraph): Promise<User> {
-  return graph
+export async function getMe(graph: IGraph): Promise<User> {
+  const cache = new Cache<CacheUser>(cacheSchema, 'users');
+  const me = await cache.getValue('me');
+
+  if (me && cacheInvalidationTime > Date.now() - me.timeCached) {
+    return JSON.parse(me.user);
+  }
+
+  const graphRes = graph
     .api('me')
     .middlewareOptions(prepScopes('user.read'))
     .get();
+  cache.putValue('me', { user: JSON.stringify(graphRes) });
+  return graphRes;
 }
 
 /**
@@ -34,7 +86,14 @@ export function getMe(graph: IGraph): Promise<User> {
 
 export async function getUserWithPhoto(graph: IGraph, userId?: string): Promise<IDynamicPerson> {
   const batch = graph.createBatch();
+  const cache = new Cache<CacheUser>(cacheSchema, 'users');
   let person = null as IDynamicPerson;
+
+  const user: CacheUser = await cache.getValue(userId || 'me');
+
+  if (user && Date.now() - user.timeCached < cacheInvalidationTime) {
+    return JSON.parse(user.user);
+  }
 
   if (userId) {
     batch.get('user', `/users/${userId}`, ['user.readbasic.all']);
@@ -53,6 +112,7 @@ export async function getUserWithPhoto(graph: IGraph, userId?: string): Promise<
 
     person.personImage = photoResponse.content;
   }
+  cache.putValue(userId || 'me', { user: JSON.stringify(person) });
 
   return person;
 }
@@ -64,12 +124,24 @@ export async function getUserWithPhoto(graph: IGraph, userId?: string): Promise<
  * @returns {(Promise<User>)}
  * @memberof Graph
  */
-export function getUser(graph: IGraph, userPrincipleName: string): Promise<User> {
+export async function getUser(graph: IGraph, userPrincipleName: string): Promise<User> {
   const scopes = 'user.readbasic.all';
-  return graph
+  const cache = new Cache<CacheUser>(cacheSchema, 'users');
+
+  // check cache
+  let user: CacheUser = await cache.getValue(userPrincipleName);
+  // is it stored and is timestamp good?
+  if (user || cacheInvalidationTime > Date.now() - user.timeCached) {
+    // return without any worries
+    return JSON.parse(user.user);
+  }
+  // else we must grab it
+  user = await graph
     .api(`/users/${userPrincipleName}`)
     .middlewareOptions(prepScopes(scopes))
     .get();
+  cache.putValue(userPrincipleName, { user: JSON.stringify(user) });
+  return JSON.parse(user.user);
 }
 
 /**
@@ -125,15 +197,22 @@ export async function getUsersForUserIds(graph: IGraph, userIds: string[]): Prom
  * @returns {Promise<User[]>}
  */
 export async function getUsersForPeopleQueries(graph: IGraph, peopleQueries: string[]): Promise<User[]> {
+  const cache = new Cache<CacheUserQuery>(cacheSchema, 'usersQuery');
   if (!peopleQueries || peopleQueries.length === 0) {
     return [];
   }
 
   const batch = graph.createBatch();
   const people = [];
+  let cacheRes = null;
+  const cachePeople = [];
 
   for (const personQuery of peopleQueries) {
-    if (personQuery !== '') {
+    cacheRes = await cache.getValue(personQuery);
+
+    if (cacheRes && cacheInvalidationTime > Date.now() - cacheRes.timeCached) {
+      people.push(cacheRes.results.map(userStr => JSON.parse(userStr))[0]);
+    } else if (personQuery !== '') {
       batch.get(personQuery, `/me/people?$search="${personQuery}"`, ['people.read']);
     }
   }
@@ -145,6 +224,7 @@ export async function getUsersForPeopleQueries(graph: IGraph, peopleQueries: str
       const response = responses.get(personQuery);
       if (response && response.content && response.content.value && response.content.value.length > 0) {
         people.push(response.content.value[0]);
+        cache.putValue(personQuery, { maxResults: 1, results: [JSON.stringify(response.content.value[0])] });
       }
     }
 
@@ -157,6 +237,7 @@ export async function getUsersForPeopleQueries(graph: IGraph, peopleQueries: str
           .map(async personQuery => {
             const personArray = await findPeople(graph, personQuery, 1);
             if (personArray && personArray.length) {
+              cache.putValue(personQuery, { maxResults: 1, results: [JSON.stringify(personArray[0])] });
               return personArray[0];
             }
           })
@@ -178,7 +259,15 @@ export async function getUsersForPeopleQueries(graph: IGraph, peopleQueries: str
  */
 export async function findUsers(graph: IGraph, query: string, top: number = 10): Promise<User[]> {
   const scopes = 'User.ReadBasic.All';
-  const result = await graph
+  const cache = new Cache<CacheUserQuery>(cacheSchema, 'usersQuery');
+  const item = { maxResults: top, results: null };
+  const result: CacheUserQuery = await cache.getValue(query);
+
+  if (result && cacheInvalidationTime > Date.now() - result.timeCached) {
+    return result.results.map(userStr => JSON.parse(userStr));
+  }
+
+  const graphResult = await graph
     .api('users')
     .filter(
       `startswith(displayName,'${query}') or startswith(givenName,'${query}') or startswith(surname,'${query}') or startswith(mail,'${query}') or startswith(userPrincipalName,'${query}')`
@@ -186,5 +275,10 @@ export async function findUsers(graph: IGraph, query: string, top: number = 10):
     .top(top)
     .middlewareOptions(prepScopes(scopes))
     .get();
-  return result ? result.value : null;
+
+  item.results = graphResult.value.map(userStr => JSON.stringify(userStr));
+  if (item.results) {
+    cache.putValue(query, item);
+  }
+  return item.results ? graphResult.value : null;
 }
