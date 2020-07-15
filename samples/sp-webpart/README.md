@@ -14,7 +14,7 @@ gulp
 
 ### Testing the webpart
 
-Run the webpart bu running:
+Run the webpart by running:
 
 `gulp serve`
 

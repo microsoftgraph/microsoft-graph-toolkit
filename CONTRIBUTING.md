@@ -32,6 +32,8 @@ Clone the repo and run the following in the terminal/command line/powershell:
 
 ```bash
 npm install
+npm run prepare
+npm run build
 npm start
 ```
 
@@ -91,7 +93,7 @@ to find other issues to help with.
 
 ### Git workflow
 
-The Microsoft Graph Toolkit uses the [GitHub flow](https://guides.github.com/introduction/flow/) where most development happens directly on the `master` branch. The `master` branch should always be in a healthy state which is ready for release.
+The Microsoft Graph Toolkit uses the [GitHub flow](https://guides.github.com/introduction/flow/) where most development happens directly on the `main` branch. The `main` branch should always be in a healthy state which is ready for release.
 
 If your change is complex, please clean up the branch history before submitting a pull request.
 You can use [git rebase](https://docs.microsoft.com/en-us/azure/devops/repos/git/rebase#squash-local-commits) to group your changes into a small number of commits which we can review one at a time.
@@ -105,7 +107,7 @@ Writing a good description for your pull request is crucial to help reviewers an
 - [Link the issue you're addressing in the pull request](https://github.com/blog/957-introducing-issue-mentions). Each pull request must be linked to an issue.
 - Describe _why_ the change is being made and _why_ you've chosen a particular solution.
 - Describe any manual testing you performed to validate your change.
-- Ensure the appropriate tests and [documentation](https://github.com/microsoftgraph/microsoft-graph-docs/tree/master/concepts/toolkit) have been added
+- Ensure the appropriate tests and [documentation](https://github.com/microsoftgraph/microsoft-graph-docs/tree/main/concepts/toolkit) have been added
 
 Please submit one pull request per issue. Large pull requests which have unrelated changes can be difficult to review.
 
@@ -119,7 +121,7 @@ We encourage developers to follow the following guidance when submitting new fea
 
 1. Ensure the appropriate tests have been added in the `src\test` folder. Run the tests and make sure they all pass.
 1. Ensure the code is properly documented following the [tsdoc](https://github.com/Microsoft/tsdoc) syntax
-1. Update the [documentation](https://github.com/microsoftgraph/microsoft-graph-docs/tree/master/concepts/toolkit) when necessary
+1. Update the [documentation](https://github.com/microsoftgraph/microsoft-graph-docs/tree/main/concepts/toolkit) when necessary
 1. Follow the [accessibility guidance](https://developer.mozilla.org/en-US/docs/Web/Accessibility) for web development
 
 

@@ -11,8 +11,8 @@ import { withKnobs } from '@storybook/addon-knobs';
 import { withWebComponentsKnobs } from 'storybook-addon-web-components-knobs';
 import { withSignIn } from '../../.storybook/addons/signInAddon/signInAddon';
 import { withCodeEditor } from '../../.storybook/addons/codeEditorAddon/codeAddon';
-import '../../dist/es6/components/mgt-person-card/mgt-person-card';
-import '../../dist/es6/components/mgt-person/mgt-person';
+import '../../packages/mgt/dist/es6/components/mgt-person-card/mgt-person-card';
+import '../../packages/mgt/dist/es6/components/mgt-person/mgt-person';
 
 export default {
   title: 'Components | mgt-person-card',
@@ -60,4 +60,30 @@ export const personCardInheritDetails = () => html`
   <div class="note">
     (Hover on person to view Person Card)
   </div>
+`;
+
+export const personCardWithPresence = () => html`
+<script>
+  const available = {
+    activity: 'Available',
+    availability: 'Available',
+    id: null
+  }; 
+  
+  document.getElementById('with-presence').personPresence = available;
+</script>
+<style>
+  .note {
+    margin: 2em 0 0 1em;
+    font-family: 'Segoe UI', 'Segoe UI Web (West European)', 'Segoe UI', -apple-system, BlinkMacSystemFont, Roboto,
+      'Helvetica Neue', sans-serif;
+    color: #323130;
+    font-size: 12px;
+  }
+</style>
+<mgt-person id="with-presence" person-query="me" person-card="hover" view="twoLines" show-presence></mgt-person>
+
+<div class="note">
+  (Hover on person to view Person Card)
+</div>
 `;

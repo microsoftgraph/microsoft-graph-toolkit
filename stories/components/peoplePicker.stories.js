@@ -11,7 +11,7 @@ import { withKnobs } from '@storybook/addon-knobs';
 import { withWebComponentsKnobs } from 'storybook-addon-web-components-knobs';
 import { withSignIn } from '../../.storybook/addons/signInAddon/signInAddon';
 import { withCodeEditor } from '../../.storybook/addons/codeEditorAddon/codeAddon';
-import '../../dist/es6/components/mgt-people-picker/mgt-people-picker';
+import '../../packages/mgt/dist/es6/components/mgt-people-picker/mgt-people-picker';
 
 export default {
   title: 'Components | mgt-people-picker',
@@ -45,21 +45,33 @@ export const DarkMode = () => html`
       --input-focus-color: #0f78d4;
       --font-color: white;
       --placeholder-focus-color: rgba(255, 255, 255, 0.8);
+      --selected-person-background-color: #474747;
     }
   </style>
 `;
 
 export const pickPeopleAndGroups = () => html`
-  <mgt-people-picker type="Any"></mgt-people-picker>
-  <!-- type can be "Any", "Person", "Group" -->
+  <mgt-people-picker type="any"></mgt-people-picker>
+  <!-- type can be "any", "person", "group" -->
 `;
 
 export const pickGroups = () => html`
-  <mgt-people-picker type="Group"></mgt-people-picker>
-  <!-- type can be "Any", "Person", "Group" -->
+  <mgt-people-picker type="group"></mgt-people-picker>
+  <!-- type can be "any", "person", "group" -->
 `;
 
 export const pickDistributionGroups = () => html`
-  <mgt-people-picker type="Group" group-type="Distribution"></mgt-people-picker>
-  <!-- group-type can be "Any", "Unified", "Security", "MailEnabledSecurity", "Distribution" -->
+  <mgt-people-picker type="group" group-type="distribution"></mgt-people-picker>
+  <!-- group-type can be "any", "unified", "security", "mailenabledsecurity", "distribution" -->
+`;
+
+export const pickerOverflowGradient = () => html`
+  <mgt-people-picker
+    default-selected-user-ids="e8a02cc7-df4d-4778-956d-784cc9506e5a,eeMcKFN0P0aANVSXFM_xFQ==,48d31887-5fad-4d73-a9f5-3c356e68a038,e3d0513b-449e-4198-ba6f-bd97ae7cae85"
+  ></mgt-people-picker>
+  <style>
+    .story-mgt-preview-wrapper {
+      width: 120px;
+    }
+  </style>
 `;

@@ -8,7 +8,7 @@
 import { html } from 'lit-element';
 import { withSignIn } from '../../.storybook/addons/signInAddon/signInAddon';
 import { withCodeEditor } from '../../.storybook/addons/codeEditorAddon/codeAddon';
-import '../../dist/es6/components/mgt-get/mgt-get';
+import '../../packages/mgt/dist/es6/components/mgt-get/mgt-get';
 
 export default {
   title: 'Samples | Templating',

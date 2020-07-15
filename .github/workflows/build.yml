@@ -5,9 +5,9 @@ name: Build CI
 
 on:
   push:
-    branches: [ master ]
+    branches: [ main, release/** ]
   pull_request:
-    branches: [ master ]
+    branches: [ main, release/** ]
 
 jobs:
   build:
@@ -25,14 +25,15 @@ jobs:
       with:
         node-version: ${{ matrix.node-version }}
     - run: npm i
-    - run: npm pack
+    - run: npm run prepare
+    - run: npm run pack
     - name: Upload a Build Artifact - package
       uses: actions/upload-artifact@v2
       with:
         name: npm-package
-        path: microsoft-mgt-*.tgz
+        path: packages/mgt/microsoft-mgt-*.tgz
     - name: Upload a Build Artifact - bundle
       uses: actions/upload-artifact@v2
       with:
         name: bundle
-        path: dist/bundle
+        path: packages/mgt/dist/bundle
