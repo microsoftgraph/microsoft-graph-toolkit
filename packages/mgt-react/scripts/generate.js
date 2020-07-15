@@ -14,7 +14,7 @@ const tags = new Set([
   'mgt-people-picker',
   'mgt-people',
   'mgt-tasks',
-  'mgt-teams-channel-picker',
+  'mgt-teams-channel-picker'
 ]);
 
 let output = '';
@@ -29,13 +29,13 @@ for (const tag of wc.tags) {
   const className = tag.name
     .split('-')
     .slice(1)
-    .map((t) => t[0].toUpperCase() + t.substring(1))
+    .map(t => t[0].toUpperCase() + t.substring(1))
     .join('');
 
   wrappers.push({
     tag: tag.name,
     propsType: className + 'Props',
-    className: className,
+    className: className
   });
 
   const props = {};
@@ -66,11 +66,11 @@ for (const tag of wc.tags) {
   let propsType = '';
 
   for (const prop in props) {
-    propsType += `\t${prop}?: ${props[prop]},\n`;
+    propsType += `\t${prop}?: ${props[prop]};\n`;
   }
 
   for (const event of tag.events) {
-    propsType += `\t${event.name}?: (e: Event) => void,\n`;
+    propsType += `\t${event.name}?: (e: Event) => void;\n`;
   }
 
   output += `\nexport type ${className}Props = {\n${propsType}}\n`;

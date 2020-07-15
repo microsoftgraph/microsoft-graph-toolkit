@@ -61,5 +61,24 @@
     "titleTemplate": "{classname} - {title}",
     "ancestorSeparator": " > ",
     "usePathForSuiteName": "true"
+  },
+  "devDependencies": {
+    "@webcomponents/webcomponentsjs": "^2.4.3",
+    "cpx": "^1.5.0",
+    "es-dev-server": "^1.45.3",
+    "gulp": "^4.0.2",
+    "gulp-append-prepend": "^1.0.8",
+    "gulp-header-license": "^1.0.9",
+    "gulp-rename": "^2.0.0",
+    "gulp-sass": "^4.0.2",
+    "gulp-util": "^3.0.8",
+    "jest": "^24.5.0",
+    "jest-junit": "^6.3.0",
+    "npm-run-all": "^4.1.5",
+    "sass": "^1.26.3",
+    "shx": "^0.3.2",
+    "ts-jest": "^24.3.0",
+    "tslint": "^5.20.1",
+    "tslint-config-prettier": "^1.18.0"
   }
 }
