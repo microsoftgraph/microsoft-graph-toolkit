@@ -6,6 +6,7 @@
  */
 
 import { customElement, property } from 'lit-element';
+import { Configuration } from 'msal';
 import { Providers } from '../../Providers';
 import { TeamsConfig, TeamsProvider } from '../../providers/TeamsProvider';
 import { MgtBaseProvider } from './baseProvider';
@@ -40,6 +41,13 @@ export class MgtTeamsProvider extends MgtBaseProvider {
     type: String
   })
   public authPopupUrl = '';
+
+  /**
+   * The authority to use.
+   *
+   * @memberof MgtTeamsProvider
+   */
+  @property() public authority;
 
   /**
    * Comma separated list of scopes.
@@ -78,6 +86,16 @@ export class MgtTeamsProvider extends MgtBaseProvider {
         if (scope && scope.length > 0) {
           config.scopes = scope;
         }
+      }
+
+      if (this.authority) {
+        const msalConfig: Configuration = {
+          auth: {
+            authority: this.authority,
+            clientId: this.clientId
+          }
+        };
+        config.msalOptions = msalConfig;
       }
 
       this.provider = new TeamsProvider(config);

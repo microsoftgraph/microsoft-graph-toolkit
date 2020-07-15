@@ -56,6 +56,8 @@ interface IFocusable {
  * @cssprop --input-hover-color - {Color} Input text hover color
  * @cssprop --input-focus-color - {Color} Input text focus color
  *
+ * @cssprop --selected-person-background-color - {Color} Selected person background color
+ *
  * @cssprop --dropdown-background-color - {Color} Background color of dropdown area
  * @cssprop --dropdown-item-hover-background - {Color} Background color of person during hover
  *
@@ -439,8 +441,10 @@ export class MgtPeoplePicker extends MgtTemplatedComponent {
               ${this.renderTemplate('selected-person', { person }, `selected-${person.id}`) ||
                 this.renderSelectedPerson(person)}
 
-              <div class="overflow-gradient"></div>
-              <div class="CloseIcon" @click="${e => this.removePerson(person, e)}">\uE711</div>
+              <div class="overflow-offset">
+                <div class="overflow-gradient"></div>
+                <div class="CloseIcon" @click="${e => this.removePerson(person, e)}">\uE711</div>
+              </div>
             </div>
           `
       )}
