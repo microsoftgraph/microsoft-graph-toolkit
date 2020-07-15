@@ -161,10 +161,10 @@ export class MgtPerson extends MgtTemplatedComponent {
     }
 
     this._personDetails = value;
-    if (!value) {
-      this._personAvatarBg = 'gray20';
-    } else {
+    if (value && value.displayName) {
       this._personAvatarBg = this.getColorFromName(value.displayName);
+    } else {
+      this._personAvatarBg = 'gray20';
     }
 
     this._fetchedImage = null;
@@ -192,6 +192,7 @@ export class MgtPerson extends MgtTemplatedComponent {
       return;
     }
 
+    this._isInvalidImageSrc = !value;
     const oldValue = this._personImage;
     this._personImage = value;
     this.requestUpdate('personImage', oldValue);
@@ -307,9 +308,10 @@ export class MgtPerson extends MgtTemplatedComponent {
   })
   public view: PersonViewType;
 
-  @internalProperty() private _personCardShouldRender: boolean;
-  @internalProperty() private _fetchedPresence: MicrosoftGraphBeta.Presence;
   @internalProperty() private _fetchedImage: string;
+  @internalProperty() private _fetchedPresence: MicrosoftGraphBeta.Presence;
+  @internalProperty() private _isInvalidImageSrc: boolean;
+  @internalProperty() private _personCardShouldRender: boolean;
 
   private _personDetails: IDynamicPerson;
   private _personAvatarBg: string;
@@ -328,6 +330,7 @@ export class MgtPerson extends MgtTemplatedComponent {
     this.line2Property = 'email';
     this.view = PersonViewType.avatar;
     this.avatarSize = 'auto';
+    this._isInvalidImageSrc = false;
   }
 
   /**
@@ -452,11 +455,13 @@ export class MgtPerson extends MgtTemplatedComponent {
    */
   protected renderImage(personDetails: IDynamicPerson, imageSrc: string) {
     const title =
-      personDetails && this.personCardInteraction === PersonCardInteraction.none ? personDetails.displayName : '';
+      personDetails && this.personCardInteraction === PersonCardInteraction.none
+        ? personDetails.displayName || getEmailFromGraphEntity(personDetails) || ''
+        : '';
 
-    if (imageSrc) {
+    if (imageSrc && !this._isInvalidImageSrc) {
       return html`
-        <img alt=${title} src=${imageSrc} />
+        <img alt=${title} src=${imageSrc} @error=${() => (this._isInvalidImageSrc = true)} />
       `;
     } else if (personDetails) {
       const initials = this.getInitials(personDetails);
@@ -592,16 +597,16 @@ export class MgtPerson extends MgtTemplatedComponent {
   ): TemplateResult {
     const title =
       this.personDetails && this.personCardInteraction === PersonCardInteraction.none
-        ? this.personDetails.displayName
+        ? this.personDetails.displayName || getEmailFromGraphEntity(this.personDetails) || ''
         : '';
 
     const imageClasses = {
-      initials: !image,
+      initials: !image || this._isInvalidImageSrc,
       small: !this.isLargeAvatar(),
       'user-avatar': true
     };
 
-    if (!image && this.personDetails) {
+    if ((!image || this._isInvalidImageSrc) && this.personDetails) {
       // add avatar background color
       imageClasses[this._personAvatarBg] = true;
     }
@@ -843,7 +848,7 @@ export class MgtPerson extends MgtTemplatedComponent {
   }
 
   private getTextFromProperty(personDetails: IDynamicPerson, prop: string) {
-    if (!property || property.length === 0) {
+    if (!prop || prop.length === 0) {
       return null;
     }
 

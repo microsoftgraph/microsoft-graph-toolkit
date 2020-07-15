@@ -60,7 +60,53 @@ export class TemplateHelper {
     }
   }
 
-  private static _expression = /{{+\s*[$\w\.()\[\]]+\s*}}+/g;
+  /**
+   * Set an alternative binding syntax. Default is {{ <value> }}
+   *
+   * @static
+   * @param {string} startStr start of binding syntax
+   * @param {string} endStr end of binding syntax
+   * @memberof TemplateHelper
+   */
+  public static setBindingSyntax(startStr: string, endStr: string) {
+    this._startExpression = startStr;
+    this._endExpression = endStr;
+
+    const start = this.escapeRegex(this._startExpression);
+    const end = this.escapeRegex(this._endExpression);
+
+    this._expression = new RegExp(`${start}\\s*\([$\\w\\.()\\[\\]]+\)\\s*${end}`, 'g');
+  }
+
+  /**
+   * Global context containing data or functions available to
+   * all templates for binding
+   *
+   * @readonly
+   * @static
+   * @memberof TemplateHelper
+   */
+  public static get globalContext() {
+    return this._globalContext;
+  }
+
+  private static _globalContext = {};
+
+  private static get expression() {
+    if (!this._expression) {
+      this.setBindingSyntax('{{', '}}');
+    }
+
+    return this._expression;
+  }
+
+  private static _startExpression: string;
+  private static _endExpression: string;
+  private static _expression: RegExp;
+
+  private static escapeRegex(string) {
+    return string.replace(/[-\/\\^$*+?.()|[\]{}]/g, '\\$&');
+  }
 
   // simple implementation of deep cloneNode
   // required for nested templates in polyfilled browsers
@@ -83,8 +129,8 @@ export class TemplateHelper {
   }
 
   private static expandExpressionsAsString(str: string, context: object, additionalContext: object) {
-    return str.replace(this._expression, match => {
-      const value = this.evalInContext(this.trimExpression(match), { ...context, ...additionalContext });
+    return str.replace(this.expression, (match, p1) => {
+      const value = this.evalInContext(p1 || this.trimExpression(match), { ...context, ...additionalContext });
       if (value) {
         if (typeof value === 'object') {
           return JSON.stringify(value);
@@ -238,10 +284,12 @@ export class TemplateHelper {
   }
 
   private static evalBoolInContext(expression, context) {
+    context = { ...context, ...this.globalContext };
     return new Function('with(this) { return !!(' + expression + ')}').call(context);
   }
 
   private static evalInContext(expression, context) {
+    context = { ...context, ...this.globalContext };
     const func = new Function('with(this) { return ' + expression + ';}');
     let result;
     try {
@@ -252,17 +300,16 @@ export class TemplateHelper {
   }
 
   private static trimExpression(expression: string) {
-    let start = 0;
-    let end = expression.length - 1;
+    expression = expression.trim();
 
-    while (expression[start] === '{' && start < end) {
-      start++;
+    if (expression.startsWith(this._startExpression) && expression.endsWith(this._endExpression)) {
+      expression = expression.substr(
+        this._startExpression.length,
+        expression.length - this._startExpression.length - this._endExpression.length
+      );
+      expression = expression.trim();
     }
 
-    while (expression[end] === '}' && start <= end) {
-      end--;
-    }
-
-    return expression.substring(start, end + 1).trim();
+    return expression;
   }
 }

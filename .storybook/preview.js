@@ -11,7 +11,7 @@ import { configure, addParameters, setCustomElements } from '@storybook/web-comp
 import customElements from '../custom-elements.json';
 import '../node_modules/@webcomponents/webcomponentsjs/webcomponents-bundle.js';
 import theme from './theme';
-import '../dist/es6/components/mgt-login/mgt-login.js';
+import '../packages/mgt/dist/es6/components/mgt-login/mgt-login.js';
 
 setCustomElements(customElements);
 

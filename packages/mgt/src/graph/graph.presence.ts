@@ -66,7 +66,13 @@ export async function getUsersPresenceByPeople(graph: IGraph, people?: IDynamicP
   }
 
   try {
-    const peoplePresence = await batch.execute();
+    const peoplePresence = {};
+    const response = await batch.executeAll();
+
+    for (const r of response.values()) {
+      peoplePresence[r.id] = r.content;
+    }
+
     return peoplePresence;
   } catch (_) {
     try {

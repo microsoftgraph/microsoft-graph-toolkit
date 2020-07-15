@@ -57,14 +57,11 @@ interface IFocusable {
  * @cssprop --input-focus-color - {Color} Input text focus color
  *
  * @cssprop --dropdown-background-color - {Color} Background color of dropdown area
- * @cssprop --dropdown-item-hover-background - {Color} Background color of channel or team during hover
- * @cssprop --dropdown-item-selected-background - {Color} Background color of selected channel
+ * @cssprop --dropdown-item-hover-background - {Color} Background color of person during hover
  *
  * @cssprop --placeholder-focus-color - {Color} Color of placeholder text during focus state
  * @cssprop --placeholder-default-color - {Color} Color of placeholder text
  *
- * @cssprop --people-list-background-color - {Color} People list background color
- * @cssprop --accent-color - {Color} Accent color
  */
 @customElement('mgt-people-picker')
 export class MgtPeoplePicker extends MgtTemplatedComponent {
@@ -111,12 +108,13 @@ export class MgtPeoplePicker extends MgtTemplatedComponent {
   @property({
     attribute: 'type',
     converter: (value, type) => {
+      value = value.toLowerCase();
       if (!value || value.length === 0) {
-        return PersonType.Any;
+        return PersonType.any;
       }
 
       if (typeof PersonType[value] === 'undefined') {
-        return PersonType.Any;
+        return PersonType.any;
       } else {
         return PersonType[value];
       }
@@ -143,7 +141,7 @@ export class MgtPeoplePicker extends MgtTemplatedComponent {
     attribute: 'group-type',
     converter: (value, type) => {
       if (!value || value.length === 0) {
-        return GroupType.Any;
+        return GroupType.any;
       }
 
       const values = value.split(',');
@@ -157,7 +155,7 @@ export class MgtPeoplePicker extends MgtTemplatedComponent {
       }
 
       if (groupTypes.length === 0) {
-        return GroupType.Any;
+        return GroupType.any;
       }
 
       // tslint:disable-next-line:no-bitwise
@@ -209,7 +207,7 @@ export class MgtPeoplePicker extends MgtTemplatedComponent {
   /**
    * array of people to be selected upon intialization
    *
-   * @type {Array}
+   * @type {string[]}
    * @memberof MgtPeoplePicker
    */
   @property({
@@ -219,7 +217,7 @@ export class MgtPeoplePicker extends MgtTemplatedComponent {
     },
     type: String
   })
-  public defaultSelectedUserIds: '';
+  public defaultSelectedUserIds: string[];
 
   /**
    * Placeholder text.
@@ -258,8 +256,8 @@ export class MgtPeoplePicker extends MgtTemplatedComponent {
   @property({ attribute: false }) private _showLoading: boolean;
 
   private _groupId: string;
-  private _type: PersonType = PersonType.Person;
-  private _groupType: GroupType = GroupType.Any;
+  private _type: PersonType = PersonType.person;
+  private _groupType: GroupType = GroupType.any;
 
   private defaultPeople: IDynamicPerson[];
 
@@ -268,6 +266,7 @@ export class MgtPeoplePicker extends MgtTemplatedComponent {
   // List of people requested if group property is provided
   private _groupPeople: IDynamicPerson[];
   private _debouncedSearch: { (): void; (): void };
+
   @internalProperty() private _isFocused = false;
 
   @internalProperty() private _foundPeople: IDynamicPerson[];
@@ -289,7 +288,6 @@ export class MgtPeoplePicker extends MgtTemplatedComponent {
    */
   public connectedCallback() {
     super.connectedCallback();
-    this.addEventListener('click', e => e.stopPropagation());
   }
 
   /**
@@ -304,23 +302,8 @@ export class MgtPeoplePicker extends MgtTemplatedComponent {
     if (!peopleInput) {
       return;
     }
-
     peopleInput.focus(options);
     peopleInput.select();
-
-    // handles hiding control if default people have no more selections available
-    const peopleLeft = this.filterPeople(this.defaultPeople);
-    let shouldShow = true;
-    if (peopleLeft && peopleLeft.length === 0) {
-      shouldShow = false;
-    }
-
-    if (shouldShow) {
-      window.requestAnimationFrame(() => {
-        // Mouse is focused on input
-        this.showFlyout();
-      });
-    }
   }
 
   /**
@@ -366,11 +349,9 @@ export class MgtPeoplePicker extends MgtTemplatedComponent {
       'people-picker': true
     };
     return html`
-      <div class=${classMap(inputClasses)} @click=${() => this.focus()}>
-        <div class="people-picker-input">
-          <div class="people-selected-list">
-            ${selectedPeopleTemplate} ${flyoutTemplate}
-          </div>
+      <div class=${classMap(inputClasses)} @click=${e => this.focus(e)}>
+        <div class="people-selected-list">
+          ${selectedPeopleTemplate} ${flyoutTemplate}
         </div>
       </div>
     `;
@@ -431,6 +412,7 @@ export class MgtPeoplePicker extends MgtTemplatedComponent {
           @keydown="${this.onUserKeyDown}"
           @keyup="${this.onUserKeyUp}"
           @blur=${this.lostFocus}
+          @click=${this.handleFlyout}
         />
       </div>
     `;
@@ -456,13 +438,14 @@ export class MgtPeoplePicker extends MgtTemplatedComponent {
             <div class="people-person">
               ${this.renderTemplate('selected-person', { person }, `selected-${person.id}`) ||
                 this.renderSelectedPerson(person)}
-              <div class="CloseIcon" @click="${() => this.removePerson(person)}">\uE711</div>
+
+              <div class="overflow-gradient"></div>
+              <div class="CloseIcon" @click="${e => this.removePerson(person, e)}">\uE711</div>
             </div>
           `
       )}
     `;
   }
-
   /**
    * Render the flyout chrome.
    *
@@ -576,7 +559,7 @@ export class MgtPeoplePicker extends MgtTemplatedComponent {
               'list-person': true
             };
             return html`
-              <li class="${classMap(listPersonClasses)}" @click="${() => this.onPersonClick(person)}">
+              <li class="${classMap(listPersonClasses)}" @click="${e => this.onPersonClick(person)}">
                 ${this.renderPersonResult(person)}
               </li>
             `;
@@ -647,16 +630,29 @@ export class MgtPeoplePicker extends MgtTemplatedComponent {
     if (!people && provider && provider.state === ProviderState.SignedIn) {
       const graph = provider.graph.forComponent(this);
 
-      // default common people
       if (!input.length && this._isFocused) {
         if (this.defaultPeople) {
           people = this.defaultPeople;
         } else {
-          people = await getPeople(graph);
+          if (this.groupId) {
+            if (this._groupPeople === null) {
+              try {
+                this._groupPeople = await getPeopleFromGroup(graph, this.groupId);
+              } catch (_) {
+                this._groupPeople = [];
+              }
+            }
+            people = this._groupPeople || [];
+          } else if (this.type === PersonType.person || this.type === PersonType.any) {
+            people = await getPeople(graph);
+          } else if (this.type === PersonType.group) {
+            const groups = (await findGroups(graph, '', this.showMax, this.groupType)) || [];
+            people = groups;
+          }
           this.defaultPeople = people;
         }
-        this._showLoading = false;
       }
+      this._showLoading = false;
 
       if (this.defaultSelectedUserIds && !this.selectedPeople.length) {
         const defaultSelectedUsers = await getUsersForUserIds(graph, this.defaultSelectedUserIds);
@@ -666,19 +662,9 @@ export class MgtPeoplePicker extends MgtTemplatedComponent {
         this.fireCustomEvent('selectionChanged', this.selectedPeople);
       }
 
-      if (this.groupId && input) {
-        if (this._groupPeople === null) {
-          try {
-            this._groupPeople = await getPeopleFromGroup(graph, this.groupId);
-          } catch (_) {
-            this._groupPeople = [];
-          }
-        }
-
-        people = this._groupPeople || [];
-      } else if (input) {
+      if (input) {
         people = [];
-        if (this.type === PersonType.Person || this.type === PersonType.Any) {
+        if (this.type === PersonType.person || this.type === PersonType.any) {
           try {
             people = (await findPeople(graph, input, this.showMax)) || [];
           } catch (e) {
@@ -702,7 +688,8 @@ export class MgtPeoplePicker extends MgtTemplatedComponent {
           }
         }
 
-        if ((this.type === PersonType.Group || this.type === PersonType.Any) && people.length < this.showMax) {
+        if ((this.type === PersonType.group || this.type === PersonType.any) && people.length < this.showMax) {
+          people = [];
           try {
             const groups = (await findGroups(graph, input, this.showMax, this.groupType)) || [];
             people = people.concat(groups);
@@ -757,7 +744,8 @@ export class MgtPeoplePicker extends MgtTemplatedComponent {
    * Removes person from selected people
    * @param person - person and details pertaining to user selected
    */
-  protected removePerson(person: IDynamicPerson): void {
+  protected removePerson(person: IDynamicPerson, e: MouseEvent): void {
+    e.stopPropagation();
     const filteredPersonArr = this.selectedPeople.filter(p => {
       return p.id !== person.id;
     });
@@ -791,6 +779,22 @@ export class MgtPeoplePicker extends MgtTemplatedComponent {
     }
   }
 
+  private handleFlyout() {
+    // handles hiding control if default people have no more selections available
+    const peopleLeft = this.filterPeople(this.defaultPeople);
+    let shouldShow = true;
+    if (peopleLeft && peopleLeft.length === 0) {
+      shouldShow = false;
+    }
+
+    if (shouldShow) {
+      window.requestAnimationFrame(() => {
+        // Mouse is focused on input
+        this.showFlyout();
+      });
+    }
+  }
+
   private gainedFocus() {
     this._isFocused = true;
     const input = this.renderRoot.querySelector('.people-selected-input') as HTMLInputElement;
@@ -803,6 +807,7 @@ export class MgtPeoplePicker extends MgtTemplatedComponent {
 
   private lostFocus() {
     this._isFocused = false;
+    this.requestUpdate();
   }
 
   private renderHighlightText(person: IDynamicPerson): TemplateResult {
@@ -847,8 +852,8 @@ export class MgtPeoplePicker extends MgtTemplatedComponent {
    * Adds debounce method for set delay on user input
    */
   private onUserKeyUp(event: KeyboardEvent): void {
-    if (event.keyCode === 40 || event.keyCode === 38) {
-      // keyCodes capture: down arrow (40) and up arrow (38)
+    if (event.keyCode === 40 || event.keyCode === 39 || event.keyCode === 38 || event.keyCode === 37) {
+      // keyCodes capture: down arrow (40), right arrow (39), up arrow (38) and left arrow (37)
       return;
     }
 
@@ -865,9 +870,8 @@ export class MgtPeoplePicker extends MgtTemplatedComponent {
       this.userInput = '';
       // remove last person in selected list
       this.selectedPeople = this.selectedPeople.splice(0, this.selectedPeople.length - 1);
-      // reset flyout position
+      this.loadState();
       this.hideFlyout();
-      this.showFlyout();
       // fire selected people changed event
       this.fireCustomEvent('selectionChanged', this.selectedPeople);
       return;
@@ -879,10 +883,17 @@ export class MgtPeoplePicker extends MgtTemplatedComponent {
   private onPersonClick(person: IDynamicPerson): void {
     this.addPerson(person);
     this.hideFlyout();
+
+    const peopleInput = this.renderRoot.querySelector('.people-selected-input') as HTMLInputElement;
+    if (!peopleInput) {
+      return;
+    }
+    peopleInput.focus();
+    this._isFocused = true;
+    this.hideFlyout();
     if (this.selectionMode === 'single') {
       return;
     }
-    this.focus();
   }
 
   /**
@@ -890,8 +901,8 @@ export class MgtPeoplePicker extends MgtTemplatedComponent {
    * @param input - input text
    */
   private handleUserSearch(input: HTMLInputElement) {
-    this._showLoading = true;
     if (!this._debouncedSearch) {
+      this._showLoading = true;
       this._debouncedSearch = debounce(async () => {
         // Wait a few milliseconds before showing the flyout.
         // This helps prevent loading state flickering while the user is actively changing the query.
@@ -933,7 +944,8 @@ export class MgtPeoplePicker extends MgtTemplatedComponent {
         event.preventDefault();
       }
     }
-    if (event.code === 'Tab' || event.code === 'Enter') {
+    if (event.keyCode === 9 || event.keyCode === 13) {
+      // keyCodes capture: tab (9) and enter (13)
       if (this._foundPeople.length) {
         event.preventDefault();
       }
