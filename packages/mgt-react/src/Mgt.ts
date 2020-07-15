@@ -112,9 +112,9 @@ export class Mgt extends Wc {
 
     let templates = {};
 
-    React.Children.forEach(children, (child) => {
+    React.Children.forEach(children, child => {
       let element = child as ReactElement;
-      if (element?.props?.template) {
+      if (element && element.props && element.props.template) {
         templates[element.props.template] = element;
       }
     });
