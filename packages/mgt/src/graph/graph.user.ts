@@ -204,14 +204,13 @@ export async function getUsersForPeopleQueries(graph: IGraph, peopleQueries: str
 
   const batch = graph.createBatch();
   const people = [];
-  let cacheRes = null;
-  const cachePeople = [];
+  let cacheRes: CacheUserQuery;
 
   for (const personQuery of peopleQueries) {
     cacheRes = await cache.getValue(personQuery);
 
     if (cacheRes && cacheInvalidationTime > Date.now() - cacheRes.timeCached) {
-      people.push(cacheRes.results.map(userStr => JSON.parse(userStr))[0]);
+      people.push(JSON.parse(cacheRes.results[0]));
     } else if (personQuery !== '') {
       batch.get(personQuery, `/me/people?$search="${personQuery}"`, ['people.read']);
     }

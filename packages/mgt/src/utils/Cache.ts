@@ -49,6 +49,15 @@ export class Cache<T extends CacheItem> {
     await (await this.getDb()).put(this.store, { ...item, timeCached: Date.now() }, key);
   }
 
+  public async clearStore() {
+    if (!window.indexedDB) {
+      console.log("browser doesn't support indexedDB");
+      return;
+    }
+
+    (await this.getDb()).clear(this.store);
+  }
+
   private getDb() {
     return openDB(this.getDBName(), this.schema.version, {
       upgrade: (db, oldVersion, newVersion, transaction) => {

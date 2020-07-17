@@ -11,7 +11,7 @@ import { classMap } from 'lit-html/directives/class-map';
 import { repeat } from 'lit-html/directives/repeat';
 import { findGroups, GroupType } from '../../graph/graph.groups';
 import { findPeople, getPeople, getPeopleFromGroup, PersonType } from '../../graph/graph.people';
-import { findUsers, getUser, getUsersForUserIds, getUserWithPhoto } from '../../graph/graph.user';
+import { findUsers, getUser, getUsersForUserIds } from '../../graph/graph.user';
 import { IDynamicPerson } from '../../graph/types';
 import { Providers } from '../../Providers';
 import { ProviderState } from '../../providers/IProvider';
@@ -322,7 +322,7 @@ export class MgtPeoplePicker extends MgtTemplatedComponent {
       // tslint:disable-next-line: forin
       for (const id in userIds) {
         try {
-          const personDetails = await getUserWithPhoto(graph, userIds[id]);
+          const personDetails = await getUser(graph, userIds[id]);
           this.addPerson(personDetails);
           // tslint:disable-next-line: no-empty
         } catch (e) {}

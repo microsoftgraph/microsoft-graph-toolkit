@@ -6,7 +6,6 @@
  */
 
 import { Contact, Person, User } from '@microsoft/microsoft-graph-types';
-import { time } from 'console';
 import { IGraph } from '../IGraph';
 import { Cache, CacheItem, CacheSchema } from '../utils/Cache';
 import { prepScopes } from '../utils/GraphHelpers';
@@ -143,6 +142,14 @@ export async function findPeople(
  */
 export async function getPeople(graph: IGraph): Promise<Person[]> {
   const scopes = 'people.read';
+  // debugger;
+  const cache = new Cache<CachePeopleQuery>(cacheSchema, 'peopleQuery');
+  // not a great way to do this, don't know a better way
+  const cacheRes = await cache.getValue('*');
+
+  if (cacheRes && cacheInvalidationTime > Date.now() - cacheRes.timeCached) {
+    return cacheRes.results.map(ppl => JSON.parse(ppl));
+  }
 
   const uri = '/me/people';
   const people = await graph
@@ -150,6 +157,9 @@ export async function getPeople(graph: IGraph): Promise<Person[]> {
     .middlewareOptions(prepScopes(scopes))
     .filter("personType/class eq 'Person'")
     .get();
+  if (people) {
+    cache.putValue('*', { maxResults: 10, results: people.value.map(ppl => JSON.stringify(ppl)) });
+  }
   return people ? people.value : null;
 }
 
