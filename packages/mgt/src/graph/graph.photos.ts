@@ -8,7 +8,7 @@
 import { ResponseType } from '@microsoft/microsoft-graph-client';
 import * as MicrosoftGraph from '@microsoft/microsoft-graph-types';
 import { IGraph } from '../IGraph';
-import { Cache, CacheItem, CacheSchema } from '../utils/Cache';
+import { CacheItem, CacheSchema, CacheService } from '../utils/Cache';
 import { prepScopes } from '../utils/GraphHelpers';
 import { blobToBase64 } from '../utils/Utils';
 import { findUserByEmail, getEmailFromGraphEntity } from './graph.people';
@@ -80,7 +80,7 @@ async function getPhotoForResource(graph: IGraph, resource: string, scopes: stri
  * @memberof Graph
  */
 export async function getContactPhoto(graph: IGraph, contactId: string): Promise<string> {
-  const cache = new Cache<CachePhoto>(cacheSchema, 'contacts');
+  const cache = CacheService.getCache<CachePhoto>(cacheSchema, 'contacts');
 
   // try to get a photo from cache
   let photoDetails: CachePhoto = await cache.getValue(contactId);
@@ -89,7 +89,7 @@ export async function getContactPhoto(graph: IGraph, contactId: string): Promise
   if (photoDetails) {
     if (Date.now() - photoDetails.timeCached > cacheInvalidationTime) {
       // check if new image is available and update for next time
-      graph
+      graph //
         .api(`me/contacts/${contactId}/photo`)
         .get()
         .then(
@@ -121,7 +121,7 @@ export async function getContactPhoto(graph: IGraph, contactId: string): Promise
  * @memberof Graph
  */
 export async function getUserPhoto(graph: IGraph, userId: string): Promise<string> {
-  const cache = new Cache<CachePhoto>(cacheSchema, 'users');
+  const cache = CacheService.getCache<CachePhoto>(cacheSchema, 'users');
   let photoDetails: CachePhoto = await cache.getValue(userId);
 
   if (photoDetails) {
@@ -159,7 +159,7 @@ export async function getUserPhoto(graph: IGraph, userId: string): Promise<strin
  * @memberof Graph
  */
 export async function myPhoto(graph: IGraph): Promise<string> {
-  const cache = new Cache<CachePhoto>(cacheSchema, 'users');
+  const cache = CacheService.getCache<CachePhoto>(cacheSchema, 'users');
 
   let photoDetails: CachePhoto = await cache.getValue('me');
   if (photoDetails) {

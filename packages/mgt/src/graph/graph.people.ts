@@ -7,7 +7,7 @@
 
 import { Contact, Person, User } from '@microsoft/microsoft-graph-types';
 import { IGraph } from '../IGraph';
-import { Cache, CacheItem, CacheSchema } from '../utils/Cache';
+import { CacheItem, CacheSchema, CacheService } from '../utils/Cache';
 import { prepScopes } from '../utils/GraphHelpers';
 import { IDynamicPerson } from './types';
 
@@ -101,7 +101,7 @@ export async function findPeople(
   personType: PersonType = PersonType.person
 ): Promise<Person[]> {
   const scopes = 'people.read';
-  const cache = new Cache<CachePeopleQuery>(cacheSchema, 'peopleQuery');
+  const cache = CacheService.getCache<CachePeopleQuery>(cacheSchema, 'peopleQuery');
   const item = { maxResults: top, results: null };
   const result: CachePeopleQuery = await cache.getValue(query);
 
@@ -143,7 +143,7 @@ export async function findPeople(
 export async function getPeople(graph: IGraph): Promise<Person[]> {
   const scopes = 'people.read';
   // debugger;
-  const cache = new Cache<CachePeopleQuery>(cacheSchema, 'peopleQuery');
+  const cache = CacheService.getCache<CachePeopleQuery>(cacheSchema, 'peopleQuery');
   // not a great way to do this, don't know a better way
   const cacheRes = await cache.getValue('*');
 
@@ -172,7 +172,7 @@ export async function getPeople(graph: IGraph): Promise<Person[]> {
  */
 export async function getPeopleFromGroup(graph: IGraph, groupId: string): Promise<Person[]> {
   const scopes = 'people.read';
-  const cache = new Cache<CacheGroupPeople>(cacheSchema, 'groupPeople');
+  const cache = CacheService.getCache<CacheGroupPeople>(cacheSchema, 'groupPeople');
   const peopleItem = await cache.getValue(groupId);
   if (peopleItem && cacheInvalidationTime > Date.now() - peopleItem.timeCached) {
     return peopleItem.people.map(peopleStr => JSON.parse(peopleStr));
@@ -215,7 +215,7 @@ export function getEmailFromGraphEntity(entity: IDynamicPerson): string {
  */
 export async function findContactByEmail(graph: IGraph, email: string): Promise<Contact[]> {
   const scopes = 'contacts.read';
-  const cache = new Cache<CachePerson>(cacheSchema, 'contacts');
+  const cache = CacheService.getCache<CachePerson>(cacheSchema, 'contacts');
   const contact = await cache.getValue(email);
 
   if (contact && cacheInvalidationTime > Date.now() - contact.timeCached) {
