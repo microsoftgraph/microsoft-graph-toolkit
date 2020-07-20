@@ -6,17 +6,17 @@
  */
 
 import * as MicrosoftGraph from '@microsoft/microsoft-graph-types';
-import { html, property, query, TemplateResult } from 'lit-element';
+import { html, property, TemplateResult } from 'lit-element';
 import { classMap } from 'lit-html/directives/class-map';
 import { Providers } from '../../Providers';
 import { ProviderState } from '../../providers/IProvider';
-import '../../styles/fabric-icon-font';
-import { registeredComponent } from '../../utils/ComponentRegistry';
 import { getSvg, SvgIcon } from '../../utils/SvgHelper';
 import { debounce } from '../../utils/Utils';
 import { MgtTemplatedComponent } from '../templatedComponent';
 import { styles } from './mgt-teams-channel-picker-css';
 import { getAllMyTeams } from './mgt-teams-channel-picker.graph';
+
+import '../../styles/fabric-icon-font';
 
 /**
  * Team with displayName
@@ -145,7 +145,6 @@ interface ChannelPickerItemState {
  * @cssprop --placeholder-default-color - {Color} Color of placeholder text
  *
  */
-@registeredComponent('mgt-people-picker')
 export class MgtTeamsChannelPicker extends MgtTemplatedComponent {
   /**
    * Array of styles to apply to the element. The styles should be defined

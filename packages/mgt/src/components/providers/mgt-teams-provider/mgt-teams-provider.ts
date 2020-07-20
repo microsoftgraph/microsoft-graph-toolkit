@@ -7,10 +7,9 @@
 
 import { property } from 'lit-element';
 import { Configuration } from 'msal';
-import { Providers } from '../../Providers';
-import { TeamsConfig, TeamsProvider } from '../../providers/TeamsProvider';
-import { registeredComponent } from '../../utils/ComponentRegistry';
-import { MgtBaseProvider } from './baseProvider';
+import { Providers } from '../../../Providers';
+import { TeamsConfig, TeamsProvider } from '../../../providers/TeamsProvider';
+import { MgtBaseProvider } from '../baseProvider';
 
 /**
  * Authentication Library Provider for Microsoft Teams accounts
@@ -19,7 +18,6 @@ import { MgtBaseProvider } from './baseProvider';
  * @class MgtTeamsProvider
  * @extends {MgtBaseProvider}
  */
-@registeredComponent('mgt-teams-provider')
 export class MgtTeamsProvider extends MgtBaseProvider {
   /**
    * String alphanumerical value relation to a specific user

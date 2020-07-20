@@ -7,7 +7,6 @@
 
 import { html, property } from 'lit-element';
 import { classMap } from 'lit-html/directives/class-map';
-import { registeredComponent } from '../../../utils/ComponentRegistry';
 import { MgtBaseComponent } from '../../baseComponent';
 import { styles } from './mgt-dot-options-css';
 
@@ -18,7 +17,6 @@ import { styles } from './mgt-dot-options-css';
  * @class MgtDotOptions
  * @extends {MgtBaseComponent}
  */
-@registeredComponent('mgt-dot-options')
 export class MgtDotOptions extends MgtBaseComponent {
   /**
    * Array of styles to apply to the element. The styles should be defined

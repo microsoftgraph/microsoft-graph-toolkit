@@ -16,15 +16,16 @@ import { getUserWithPhoto } from '../../graph/graph.user';
 import { AvatarSize, IDynamicPerson } from '../../graph/types';
 import { Providers } from '../../Providers';
 import { ProviderState } from '../../providers/IProvider';
-import '../../styles/fabric-icon-font';
-import { registeredComponent } from '../../utils/ComponentRegistry';
 import { getSvg, SvgIcon } from '../../utils/SvgHelper';
 import { MgtPersonCard } from '../mgt-person-card/mgt-person-card';
-import '../sub-components/mgt-flyout/mgt-flyout';
 import { MgtFlyout } from '../sub-components/mgt-flyout/mgt-flyout';
 import { MgtTemplatedComponent } from '../templatedComponent';
 import { PersonCardInteraction } from './../PersonCardInteraction';
 import { styles } from './mgt-person-css';
+
+import '../../styles/fabric-icon-font';
+import '../mgt-person-card';
+import '../sub-components/mgt-flyout';
 
 export { PersonCardInteraction } from '../PersonCardInteraction';
 
@@ -75,7 +76,6 @@ export enum PersonViewType {
  * @cssprop --line2-text-transform - {String} Line 2 text transform
  * @cssprop --details-spacing - {Length} spacing between avatar and person details
  */
-@registeredComponent('mgt-person')
 export class MgtPerson extends MgtTemplatedComponent {
   /**
    * Array of styles to apply to the element. The styles should be defined

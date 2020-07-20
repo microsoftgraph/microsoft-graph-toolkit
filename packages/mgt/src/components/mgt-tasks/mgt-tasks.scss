@@ -19,7 +19,6 @@ $task-icon-border-radius: var(--task-icon-border-radius, 50%);
 $task-icon-color: var(--task-icon-color, black);
 $task-icon-color-completed: var(--task-icon-color-completed, white);
 
-mgt-tasks,
 :host {
   font-family: var(--default-font-family, 'Segoe UI');
   display: flex;
@@ -28,7 +27,6 @@ mgt-tasks,
   padding: var(--tasks-padding, 12px);
 }
 
-mgt-tasks .TaskIcon,
 :host .TaskIcon {
   font-family: 'FabricMDL2Icons';
   user-select: none;
@@ -36,27 +34,23 @@ mgt-tasks .TaskIcon,
   -ms-user-select: none;
 }
 
-mgt-tasks .Header,
 :host .Header {
   padding: var(--tasks-header-padding, 0);
   margin: var(--tasks-header-margin, 0 0 12px 0);
 }
 
-mgt-tasks .TaskIcon.Divider,
 :host .TaskIcon.Divider {
   vertical-align: initial;
   margin: 0 12px;
   font-size: 16px;
 }
 
-mgt-tasks .Header,
 :host .Header {
   padding: var(--tasks-title-padding, 0);
   display: flex;
   align-items: center;
 }
 
-mgt-tasks select,
 :host select {
   font-family: var(--default-font-family, 'Segoe UI');
   border: none;
@@ -65,41 +59,33 @@ mgt-tasks select,
   cursor: pointer;
 }
 
-mgt-tasks select::-ms-expand,
 :host select::-ms-expand {
   display: none;
 }
 
-mgt-tasks select,
 :host select,
-mgt-tasks .Header .PlanTitle,
 :host .Header .PlanTitle {
   font-family: var(--default-font-family, 'Segoe UI');
   font-size: var(--tasks-plan-title-font-size, 1.1em);
   padding: var(--tasks-plan-title-padding, 5px);
 }
 
-mgt-tasks .Header .AddBar,
 :host .Header .AddBar {
   display: flex;
 }
 
-mgt-tasks .Header .AddBar .AddBarItem,
 :host .Header .AddBar .AddBarItem {
   flex: 1 1 auto;
 }
 
-mgt-tasks .Header .NewTaskDue,
 :host .Header .NewTaskDue {
   display: flex;
 }
 
-mgt-tasks .Header .NewTaskDue input,
 :host .Header .NewTaskDue input {
   flex: 1 1 auto;
 }
 
-mgt-tasks .Header .TitleCont,
 :host .Header .TitleCont {
   flex: 1 1 auto;
   display: flex;
@@ -107,7 +93,6 @@ mgt-tasks .Header .TitleCont,
   height: var(--tasks-new-button-height, 34px);
 }
 
-mgt-tasks .Header .NewTaskButton,
 :host .Header .NewTaskButton {
   flex: 0 0 auto;
   display: flex;
@@ -141,17 +126,14 @@ mgt-tasks .Header .NewTaskButton,
   }
 }
 
-mgt-tasks .Header .NewTaskButton:hover,
 :host .Header .NewTaskButton:hover {
   background: var(--tasks-new-button-hover-background, $ms-color-communicationShade10);
 }
 
-mgt-tasks .Header .NewTaskButton:active,
 :host .Header .NewTaskButton:active {
   background: var(--tasks-new-button-active-background, $ms-color-communicationShade20);
 }
 
-mgt-tasks,
 :host {
   .Task {
     position: relative;
@@ -235,7 +217,7 @@ mgt-tasks,
           -ms-grid-column: 1;
           -ms-grid-column-span: 2;
 
-          mgt-people {
+          .people {
             --list-margin: 0;
           }
         }
@@ -377,7 +359,7 @@ mgt-tasks,
           color: $ms-color-gray120;
           margin-right: 8px;
         }
-        mgt-people {
+        .people {
           color: var(--task-detail-color, black);
           font-size: 16px;
         }
@@ -385,14 +367,15 @@ mgt-tasks,
         mgt-person {
           display: inline-block;
         }
-        .Picker {
+
+        .people-flyout {
           background-color: white;
           -webkit-background-clip: padding-box;
           -moz-background-clip: padding-box;
           background-clip: padding-box;
           width: var(--mgt-flyout-set-width, 350px);
           color: var(--task-detail-color, black);
-          mgt-people-picker {
+          .picker {
             --separator-margin: 0px 10px 0px 10px;
           }
         }

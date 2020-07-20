@@ -10,23 +10,21 @@ import { Contact, OutlookTask, OutlookTaskFolder } from '@microsoft/microsoft-gr
 import { html, property } from 'lit-element';
 import { classMap } from 'lit-html/directives/class-map';
 import { repeat } from 'lit-html/directives/repeat';
+import { getMe } from '../../graph/graph.user';
 import { Providers } from '../../Providers';
 import { ProviderState } from '../../providers/IProvider';
 import { getShortDateString } from '../../utils/Utils';
-import { MgtPeoplePicker } from '../mgt-people-picker/mgt-people-picker';
-import { MgtTemplatedComponent } from '../templatedComponent';
-import { PersonCardInteraction } from './../PersonCardInteraction';
-import { styles } from './mgt-tasks-css';
-import { ITask, ITaskFolder, ITaskGroup, ITaskSource, PlannerTaskSource, TodoTaskSource } from './task-sources';
-
-import { getMe } from '../../graph/graph.user';
-import { registeredComponent } from '../../utils/ComponentRegistry';
 import { ComponentMediaQuery } from '../baseComponent';
+import { MgtPeoplePicker } from '../mgt-people-picker/mgt-people-picker';
 import { MgtPeople } from '../mgt-people/mgt-people';
 import '../mgt-person/mgt-person';
 import '../sub-components/mgt-arrow-options/mgt-arrow-options';
 import '../sub-components/mgt-dot-options/mgt-dot-options';
-import { MgtFlyout } from '../sub-components/mgt-flyout/mgt-flyout';
+import { MgtFlyout } from '../sub-components/mgt-flyout';
+import { MgtTemplatedComponent } from '../templatedComponent';
+import { PersonCardInteraction } from './../PersonCardInteraction';
+import { styles } from './mgt-tasks-css';
+import { ITask, ITaskFolder, ITaskGroup, ITaskSource, PlannerTaskSource, TodoTaskSource } from './task-sources';
 
 /**
  * Defines how a person card is shown when a user interacts with
@@ -178,7 +176,6 @@ const plannerAssignment = {
  * @class MgtTasks
  * @extends {MgtBaseComponent}
  */
-@registeredComponent('mgt-tasks')
 export class MgtTasks extends MgtTemplatedComponent {
   /**
    * determines whether todo, or planner functionality for task component
@@ -1028,21 +1025,21 @@ export class MgtTasks extends MgtTemplatedComponent {
 
   private getPeoplePicker(task: ITask): MgtPeoplePicker {
     const taskId = task ? task.id : 'newTask';
-    const picker = this.renderRoot.querySelector(`.picker-${taskId}`) as MgtPeoplePicker;
+    const picker = this.renderRoot.querySelector(`.picker--${taskId}`) as MgtPeoplePicker;
 
     return picker;
   }
 
   private getMgtPeople(task: ITask): MgtPeople {
     const taskId = task ? task.id : 'newTask';
-    const mgtPeople = this.renderRoot.querySelector(`.people-${taskId}`) as MgtPeople;
+    const mgtPeople = this.renderRoot.querySelector(`.people--${taskId}`) as MgtPeople;
 
     return mgtPeople;
   }
 
   private getFlyout(task: ITask): MgtFlyout {
     const taskId = task ? task.id : 'newTask';
-    const flyout = this.renderRoot.querySelector(`.flyout-${taskId}`) as MgtFlyout;
+    const flyout = this.renderRoot.querySelector(`.flyout--${taskId}`) as MgtFlyout;
 
     return flyout;
   }
@@ -1185,12 +1182,6 @@ export class MgtTasks extends MgtTemplatedComponent {
   private renderAssignedPeople(task: ITask) {
     let assignedPeopleHTML = null;
 
-    const taskAssigneeClasses = {
-      NewTaskAssignee: task === null,
-      TaskAssignee: task !== null,
-      TaskDetail: task !== null
-    };
-
     const assignedPeople = task
       ? Object.keys(task.assignments).map(key => {
           return key;
@@ -1204,11 +1195,17 @@ export class MgtTasks extends MgtTemplatedComponent {
     `;
 
     const taskId = task ? task.id : 'newTask';
-    taskAssigneeClasses[`flyout-${taskId}`] = true;
+    const taskAssigneeClasses = {
+      NewTaskAssignee: task === null,
+      TaskAssignee: task !== null,
+      TaskDetail: task !== null,
+      flyout: true
+    };
+    taskAssigneeClasses[`flyout--${taskId}`] = true;
 
     assignedPeopleHTML = html`
       <mgt-people
-        class="people-${taskId}"
+        class="people people--${taskId}"
         .userIds="${assignedPeople}"
         .personCardInteraction=${PersonCardInteraction.none}
         @click=${(e: MouseEvent) => {
@@ -1222,9 +1219,9 @@ export class MgtTasks extends MgtTemplatedComponent {
     return html`
       <mgt-flyout light-dismiss class=${classMap(taskAssigneeClasses)} @closed=${e => this.updateAssignedPeople(task)}>
         ${assignedPeopleHTML}
-        <div slot="flyout" class=${classMap({ Picker: true })}>
+        <div slot="flyout" class="people-flyout">
           <mgt-people-picker
-            class="picker-${taskId}"
+            class="picker picker--${taskId}"
             @click=${(e: MouseEvent) => e.stopPropagation()}
           ></mgt-people-picker>
         </div>

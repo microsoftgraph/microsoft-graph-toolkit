@@ -15,8 +15,6 @@ import { findUsers, getUser, getUsersForUserIds } from '../../graph/graph.user';
 import { IDynamicPerson } from '../../graph/types';
 import { Providers } from '../../Providers';
 import { ProviderState } from '../../providers/IProvider';
-import '../../styles/fabric-icon-font';
-import { registeredComponent } from '../../utils/ComponentRegistry';
 import { debounce } from '../../utils/Utils';
 import { PersonViewType } from '../mgt-person/mgt-person';
 import { PersonCardInteraction } from '../PersonCardInteraction';
@@ -66,7 +64,6 @@ interface IFocusable {
  * @cssprop --placeholder-default-color - {Color} Color of placeholder text
  *
  */
-@registeredComponent('mgt-people-picker')
 export class MgtPeoplePicker extends MgtTemplatedComponent {
   /**
    * Array of styles to apply to the element. The styles should be defined
@@ -592,7 +589,7 @@ export class MgtPeoplePicker extends MgtTemplatedComponent {
     return (
       this.renderTemplate('person', { person }, person.id) ||
       html`
-        <mgt-person .personDetails=${person} .fetchImage=${true}></mgt-person>
+        <mgt-person class="person" .personDetails=${person} .fetchImage=${true}></mgt-person>
         <div class="people-person-text-area" id="${person.displayName}">
           ${this.renderHighlightText(person)}
           <span class="${classMap(classes)}">${subTitle}</span>
@@ -612,7 +609,7 @@ export class MgtPeoplePicker extends MgtTemplatedComponent {
   protected renderSelectedPerson(person: IDynamicPerson): TemplateResult {
     return html`
       <mgt-person
-        class="selected-person"
+        class="person person--selected"
         .personDetails=${person}
         .fetchImage=${true}
         .view=${PersonViewType.oneline}

@@ -7,18 +7,17 @@
 
 import { html, property } from 'lit-element';
 import { classMap } from 'lit-html/directives/class-map';
+import { getUserWithPhoto } from '../../graph/graph.user';
 import { IDynamicPerson } from '../../graph/types';
 import { Providers } from '../../Providers';
 import { ProviderState } from '../../providers/IProvider';
-import { MgtFlyout } from '../sub-components/mgt-flyout/mgt-flyout';
+import { PersonViewType } from '../mgt-person';
+import { MgtFlyout } from '../sub-components/mgt-flyout';
 import { MgtTemplatedComponent } from '../templatedComponent';
 import { styles } from './mgt-login-css';
 
-import { getUserWithPhoto } from '../../graph/graph.user';
-import '../../styles/fabric-icon-font';
-import { registeredComponent } from '../../utils/ComponentRegistry';
-import '../mgt-person/mgt-person';
-import { PersonViewType } from '../mgt-person/mgt-person';
+import '../mgt-person';
+import '../sub-components/mgt-flyout';
 
 /**
  * Web component button and flyout control to facilitate Microsoft identity platform authentication
@@ -49,7 +48,6 @@ import { PersonViewType } from '../mgt-person/mgt-person';
  * @cssprop --popup-content-background-color - {Color} Popup content background color
  * @cssprop --popup-command-font-size - {Length} Popup command font size
  */
-@registeredComponent('mgt-login')
 export class MgtLogin extends MgtTemplatedComponent {
   /**
    * Array of styles to apply to the element. The styles should be defined

@@ -8,7 +8,6 @@
 import { LitElement, property } from 'lit-element';
 import { Providers } from '../../Providers';
 import { WamProvider } from '../../providers/WamProvider';
-import { registeredComponent } from '../../utils/ComponentRegistry';
 
 /**
  * Authentication Library Provider for Web Account Manager (UWP apps)
@@ -17,7 +16,6 @@ import { registeredComponent } from '../../utils/ComponentRegistry';
  * @class MgtWamProvider
  * @extends {LitElement}
  */
-@registeredComponent('mgt-wam-provider')
 export class MgtWamProvider extends LitElement {
   /**
    * String alphanumerical value relation to a specific user

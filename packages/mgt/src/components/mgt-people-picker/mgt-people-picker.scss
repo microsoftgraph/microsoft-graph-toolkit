@@ -41,13 +41,12 @@ $font-color: var(--font-color, #323130);
   height: 100%;
   overflow: hidden;
 }
-:host .root,
-mgt-people-picker .root {
+
+:host .root {
   display: block;
 }
 
-:host .people-picker,
-mgt-people-picker .people-picker {
+:host .people-picker {
   background-color: $input-background-color;
   padding-bottom: 6px;
   border: $input-border;
@@ -63,8 +62,7 @@ mgt-people-picker .people-picker {
   }
 }
 
-:host .flyout-root,
-mgt-people-picker .flyout-root {
+:host .flyout-root {
   padding: 0;
   border-radius: 2px;
   background-color: $dropdown-background-color;
@@ -78,8 +76,7 @@ mgt-people-picker .flyout-root {
   }
 }
 
-:host .people-selected-input,
-mgt-people-picker .people-selected-input {
+:host .people-selected-input {
   box-sizing: border-box;
   width: 100%;
   display: flex;
@@ -103,8 +100,7 @@ mgt-people-picker .people-selected-input {
   }
 }
 
-:host .people-selected-list,
-mgt-people-picker .people-selected-list {
+:host .people-selected-list {
   flex: 1 0 auto;
   display: flex;
   flex-wrap: wrap;
@@ -117,8 +113,7 @@ mgt-people-picker .people-selected-list {
   overflow: hidden;
 }
 
-.overflow-gradient,
-mgt-people-picker .overflow-gradient {
+.overflow-gradient {
   content: '';
   position: absolute;
   width: 15px;
@@ -157,8 +152,7 @@ mgt-people-picker .overflow-gradient {
   );
 }
 
-.CloseIcon,
-mgt-people-picker .CloseIcon {
+.CloseIcon {
   line-height: normal;
   font-family: 'FabricMDL2Icons';
   padding-right: 8px;
@@ -169,8 +163,7 @@ mgt-people-picker .CloseIcon {
   right: 0px;
 }
 
-:host .people-person,
-mgt-people-picker .people-person {
+:host .people-person {
   display: flex;
   margin: 5px 5px 0px 0;
   align-items: center;
@@ -183,8 +176,7 @@ mgt-people-picker .people-person {
   position: relative;
 }
 
-:host .list-person,
-mgt-people-picker .list-person {
+:host .list-person {
   display: flex;
   flex-direction: row;
   align-items: center;
@@ -198,33 +190,28 @@ mgt-people-picker .list-person {
   }
 }
 
-:host .list-person.focused,
-mgt-people-picker .list-person.focused {
+:host .list-person.focused {
   background-color: $dropdown-item-hover-background;
 }
 
-:host .people-person-text,
-mgt-people-picker .people-person-text {
+:host .people-person-text {
   font-size: 14px;
   font-weight: normal;
   margin: 0;
   padding: 0;
 }
 
-:host .input-search,
-mgt-people-picker .input-search {
+:host .input-search {
   margin: 6px 2px 1px 3px;
 }
-:host .input-search.input-search--start,
-mgt-people-picker .input-search.input-search--start {
+:host .input-search.input-search--start {
   margin: 6px 0px 1px 0px;
   line-height: normal;
   margin-inline-start: 0px;
   margin-inline-end: 0px;
 }
 
-:host .people-picker-input,
-mgt-people-picker .people-picker-input {
+:host .people-picker-input {
   display: flex;
   flex-wrap: wrap;
   order: 2;
@@ -235,26 +222,22 @@ mgt-people-picker .people-picker-input {
   cursor: text;
 }
 
-:host .duplicate-person,
-mgt-people-picker .duplicate-person {
+:host .duplicate-person {
   text-decoration: none;
   border-bottom: 1px solid red;
 }
 
-:host .remove-person-button,
-mgt-people-picker .remove-person-button {
+:host .remove-person-button {
   background: #767676;
   transform: matrix(-0.71, -0.71, 0.71, -0.71, 0, 0);
 }
 
-:host .remove-person-button-secondary,
-mgt-people-picker .remove-person-button-secondary {
+:host .remove-person-button-secondary {
   background: #767676;
   transform: matrix(0.71, -0.71, 0.71, 0.71, 0, 0);
 }
 
-:host .person-display-name,
-mgt-people-picker .person-display-name {
+:host .person-display-name {
   max-width: 100px;
   white-space: nowrap;
   text-overflow: ellipsis;
@@ -267,12 +250,12 @@ mgt-people-picker .person-display-name {
   color: #000000;
 }
 
-mgt-person {
+.person {
   --avatar-size-s: 32px;
   margin-left: 12px;
   cursor: default;
 }
-.selected-person {
+.person--selected {
   --avatar-size-s: 24px;
   margin-left: 0px;
   --color: $font-color;
@@ -282,9 +265,7 @@ mgt-person {
 }
 
 :host .search-error-text,
-:host .loading-text,
-mgt-people-picker .search-error-text,
-mgt-people-picker .loading-text {
+:host .loading-text {
   font-family: var(--default-font-family, 'Segoe UI');
   font-style: normal;
   font-weight: 600;
@@ -297,15 +278,13 @@ mgt-people-picker .loading-text {
   color: #0078d4;
 }
 
-:host .SearchErrorIcon,
-mgt-people-picker .SearchErrorIcon {
+:host .SearchErrorIcon {
   display: inline-block;
   font-family: 'FabricMDL2Icons';
   color: #cf0000;
 }
 
-:host .message-parent,
-mgt-people-picker .message-parent {
+:host .message-parent {
   padding: 2px;
   margin-top: 30px;
   margin-bottom: 30px;
@@ -333,12 +312,10 @@ mgt-people-picker .message-parent {
   }
 }
 
-:host .highlight-search-text,
-mgt-people-picker .highlight-search-text {
+:host .highlight-search-text {
   font-weight: bold;
 }
-:host .people-person-job-title,
-mgt-people-picker .people-person-job-title {
+:host .people-person-job-title {
   flex: 100%;
   order: 3;
   font-weight: normal;
@@ -347,8 +324,7 @@ mgt-people-picker .people-person-job-title {
     text-transform: uppercase;
   }
 }
-:host .people-person-text-area,
-mgt-people-picker .people-person-text-area {
+:host .people-person-text-area {
   margin-left: 13px;
   flex: 1 1 0;
   max-height: 40px;
@@ -356,6 +332,6 @@ mgt-people-picker .people-person-text-area {
   color: $font-color;
 }
 
-mgt-flyout {
+.flyout {
   flex: 1 0 auto;
 }

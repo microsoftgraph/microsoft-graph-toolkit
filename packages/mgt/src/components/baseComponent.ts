@@ -41,19 +41,7 @@ export enum ComponentMediaQuery {
  * @class MgtBaseComponent
  * @extends {LitElement}
  */
-export abstract class MgtBaseComponent extends ScopedElementsMixin(LitElement) {
-  /**
-   * Get the scoped elements.
-   * Prevents name collision in multi-instance scenarios (e.g. SharePoint).
-   *
-   * @readonly
-   * @static
-   * @memberof MgtBaseComponent
-   */
-  static get scopedElements() {
-    return ComponentRegistry.scopedElements;
-  }
-
+export abstract class MgtBaseComponent extends LitElement {
   /**
    * Get ShadowRoot toggle, returns value of _useShadowRoot
    *

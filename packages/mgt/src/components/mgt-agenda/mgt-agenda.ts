@@ -6,17 +6,17 @@
  */
 
 import * as MicrosoftGraph from '@microsoft/microsoft-graph-types';
-import { customElement, html, property, TemplateResult } from 'lit-element';
+import { html, property, TemplateResult } from 'lit-element';
 import { Providers } from '../../Providers';
 import { ProviderState } from '../../providers/IProvider';
-import '../../styles/fabric-icon-font';
-import { ComponentRegistry, registeredComponent } from '../../utils/ComponentRegistry';
 import { prepScopes } from '../../utils/GraphHelpers';
 import { getDayOfWeekString, getMonthString } from '../../utils/Utils';
-import '../mgt-person/mgt-person';
 import { MgtTemplatedComponent } from '../templatedComponent';
 import { styles } from './mgt-agenda-css';
 import { getEventsPageIterator } from './mgt-agenda.graph';
+
+import '../../styles/fabric-icon-font';
+import '../mgt-person';
 
 /**
  * Web Component which represents events in a user or group calendar.
@@ -42,7 +42,6 @@ import { getEventsPageIterator } from './mgt-agenda.graph';
  * @cssprop --event-location-font-size - {Length} Event location font size
  * @cssprop --event-location-color - {Color} Event location color
  */
-@registeredComponent('mgt-agenda')
 export class MgtAgenda extends MgtTemplatedComponent {
   /**
    * Array of styles to apply to the element. The styles should be defined

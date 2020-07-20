@@ -6,10 +6,9 @@
  */
 
 import { property } from 'lit-element';
-import { Providers } from '../../Providers';
-import { ProxyProvider } from '../../providers/ProxyProvider';
-import { registeredComponent } from '../../utils/ComponentRegistry';
-import { MgtBaseProvider } from './baseProvider';
+import { Providers } from '../../../Providers';
+import { ProxyProvider } from '../../../providers/ProxyProvider';
+import { MgtBaseProvider } from '../baseProvider';
 
 /**
  * Authentication component for ProxyProvider
@@ -18,7 +17,6 @@ import { MgtBaseProvider } from './baseProvider';
  * @class MgtProxyProvider
  * @extends {LitElement}
  */
-@registeredComponent('mgt-proxy-provider')
 export class MgtProxyProvider extends MgtBaseProvider {
   /**
    * The base url to the proxy api

@@ -7,7 +7,6 @@
 
 import { html, property } from 'lit-element';
 import { classMap } from 'lit-html/directives/class-map';
-import { registeredComponent } from '../../../utils/ComponentRegistry';
 import { MgtBaseComponent } from '../../baseComponent';
 import { styles } from './mgt-arrow-options-css';
 
@@ -26,7 +25,6 @@ import { styles } from './mgt-arrow-options-css';
  * @class MgtArrowOptions
  * @extends {MgtBaseComponent}
  */
-@registeredComponent('mgt-arrow-options')
 export class MgtArrowOptions extends MgtBaseComponent {
   /**
    * Array of styles to apply to the element. The styles should be defined

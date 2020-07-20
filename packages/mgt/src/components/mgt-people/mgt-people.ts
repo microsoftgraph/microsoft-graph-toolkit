@@ -14,8 +14,6 @@ import { getUsersForPeopleQueries, getUsersForUserIds } from '../../graph/graph.
 import { IDynamicPerson } from '../../graph/types';
 import { Providers } from '../../Providers';
 import { ProviderState } from '../../providers/IProvider';
-import '../../styles/fabric-icon-font';
-import { registeredComponent } from '../../utils/ComponentRegistry';
 import { arraysAreEqual } from '../../utils/Utils';
 import { MgtTemplatedComponent } from '../templatedComponent';
 import { PersonCardInteraction } from './../PersonCardInteraction';
@@ -33,7 +31,6 @@ export { PersonCardInteraction } from './../PersonCardInteraction';
  * @cssprop --list-margin - {String} List margin for component
  * @cssprop --avatar-margin - {String} Margin for each person
  */
-@registeredComponent('mgt-people')
 export class MgtPeople extends MgtTemplatedComponent {
   /**
    * Array of styles to apply to the element. The styles should be defined

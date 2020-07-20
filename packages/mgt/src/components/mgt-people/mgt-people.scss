@@ -11,8 +11,7 @@
 $list-margin: var(--list-margin, 8px 4px 8px 8px);
 $avatar-margin: var(--avatar-margin, 0 4px 0 0);
 
-:host .people-list,
-mgt-people .people-list {
+:host .people-list {
   list-style-type: none;
   margin: $list-margin;
   padding: 0;
@@ -23,13 +22,11 @@ mgt-people .people-list {
   align-items: center;
 }
 
-:host .people-person,
-mgt-people .people-person {
+:host .people-person {
   margin: $avatar-margin;
   display: flex;
 }
-:host .overflow,
-mgt-people .overflow {
+:host .overflow {
   span {
     vertical-align: middle;
   }

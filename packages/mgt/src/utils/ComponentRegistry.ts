@@ -27,43 +27,6 @@ export class ComponentRegistry {
   }
 
   /**
-   * Set a prefix to alias built-in components.
-   *
-   * JS -> ...usePrefix('foo');
-   * HTML -> <foo-mgt-login></foo-mgt-login>
-   *
-   * @static
-   * @param {string} prefix
-   * @memberof ComponentRegistry
-   */
-  public static usePrefix(prefix: string) {
-    if (!prefix) {
-      return;
-    }
-
-    // tslint:disable-next-line: forin
-    for (const tagName in this._scopedElements) {
-      // External tag name
-      const externalTag = `${prefix}-${tagName}`;
-      const component = this._scopedElements[tagName];
-
-      // Check for existing registration
-      if (!customElements.get(externalTag)) {
-        // Create a type clone
-        // tslint:disable-next-line: max-classes-per-file
-        const clone: any = class extends component {
-          constructor() {
-            super();
-          }
-        };
-
-        // Register component
-        customElement(externalTag)(clone);
-      }
-    }
-  }
-
-  /**
    * Register a custom component for use in the DOM.
    *
    * @static
@@ -83,17 +46,4 @@ export class ComponentRegistry {
   }
 
   private static _scopedElements: object = {};
-}
-
-/**
- * Decorator for registering custom components
- *
- * @export
- * @param {string} tagName
- * @returns
- */
-export function registeredComponent(tagName: string) {
-  return component => {
-    ComponentRegistry.register(tagName, component);
-  };
 }
