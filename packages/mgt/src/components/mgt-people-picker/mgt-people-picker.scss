@@ -113,54 +113,62 @@ $font-color: var(--font-color, #323130);
   overflow: hidden;
 }
 
-.overflow-gradient {
-  content: '';
-  position: absolute;
-  width: 15px;
-  height: 90%;
-  top: 0;
-  right: 22px;
-  background-image: linear-gradient(
-    to right,
-    rgba(255, 255, 255, 0) 0%,
-    rgba(255, 255, 255, 0) 60%,
-    $selected-person-background-color 100%
-  );
-  background-image: -moz-linear-gradient(
-    left,
-    rgba(255, 255, 255, 0) 0%,
-    rgba(255, 255, 255, 0) 60%,
-    $selected-person-background-color 100%
-  );
-  background-image: -o-linear-gradient(
-    left,
-    rgba(255, 255, 255, 0) 0%,
-    rgba(255, 255, 255, 0) 60%,
-    $selected-person-background-color 100%
-  );
-  background-image: -ms-linear-gradient(
-    left,
-    rgba(255, 255, 255, 0) 0%,
-    rgba(255, 255, 255, 0) 60%,
-    $selected-person-background-color 100%
-  );
-  background-image: -webkit-linear-gradient(
-    left,
-    rgba(255, 255, 255, 0) 0%,
-    rgba(255, 255, 255, 0) 60%,
-    $selected-person-background-color 100%
-  );
+:host .overflow-offset {
+  margin-left: 25px;
+  .overflow-gradient {
+    content: '';
+    position: absolute;
+    margin-right: 23px;
+    width: 10px;
+    height: 90%;
+    top: 0;
+    right: 0;
+    background-image: linear-gradient(
+      to right,
+      rgba(255, 255, 255, 0) 0%,
+      rgba(255, 255, 255, 0) 60%,
+      $selected-person-background-color 100%
+    );
+    background-image: -moz-linear-gradient(
+      left,
+      rgba(255, 255, 255, 0) 0%,
+      rgba(255, 255, 255, 0) 60%,
+      $selected-person-background-color 100%
+    );
+    background-image: -o-linear-gradient(
+      left,
+      rgba(255, 255, 255, 0) 0%,
+      rgba(255, 255, 255, 0) 60%,
+      $selected-person-background-color 100%
+    );
+    background-image: -ms-linear-gradient(
+      left,
+      rgba(255, 255, 255, 0) 0%,
+      rgba(255, 255, 255, 0) 60%,
+      $selected-person-background-color 100%
+    );
+    background-image: -webkit-linear-gradient(
+      left,
+      rgba(255, 255, 255, 0) 0%,
+      rgba(255, 255, 255, 0) 60%,
+      $selected-person-background-color 100%
+    );
+  }
 }
 
-.CloseIcon {
+:host .CloseIcon {
+  height: 100%;
+  top: 0;
+  margin-top: 4px;
+  margin-left: 10px;
+  position: absolute;
   line-height: normal;
   font-family: 'FabricMDL2Icons';
-  padding-right: 8px;
-  margin-top: 0px;
+  padding-right: 7px;
   cursor: pointer;
   color: $font-color;
   background-color: $selected-person-background-color;
-  right: 0px;
+  right: 0;
 }
 
 :host .people-person {
@@ -255,7 +263,10 @@ $font-color: var(--font-color, #323130);
   margin-left: 12px;
   cursor: default;
 }
+
 .person--selected {
+  overflow: hidden;
+  min-width: 100%;
   --avatar-size-s: 24px;
   margin-left: 0px;
   --color: $font-color;

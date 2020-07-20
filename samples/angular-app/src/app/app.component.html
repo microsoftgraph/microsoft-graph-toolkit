@@ -1,5 +1,2 @@
-<mgt-login (loginCompleted)="loginCompleted()"></mgt-login>
-
-<mgt-agenda group-by-day></mgt-agenda>
-
-<mgt-person [personDetails]="person" show-name></mgt-person>
+<app-nav-bar></app-nav-bar>
+<app-angular-agenda *ngIf="this.isLoggedIn()"></app-angular-agenda>
