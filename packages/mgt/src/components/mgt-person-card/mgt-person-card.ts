@@ -17,7 +17,7 @@ import { Providers } from '../../Providers';
 import { ProviderState } from '../../providers/IProvider';
 import { getSvg, SvgIcon } from '../../utils/SvgHelper';
 import { TeamsHelper } from '../../utils/TeamsHelper';
-import { MgtPerson } from '../mgt-person/mgt-person';
+import { MgtPerson } from '../mgt-person';
 import { MgtTemplatedComponent } from '../templatedComponent';
 import { styles } from './mgt-person-card-css';
 

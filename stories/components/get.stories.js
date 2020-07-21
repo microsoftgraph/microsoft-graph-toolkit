@@ -7,11 +7,9 @@
 
 import { html } from 'lit-element';
 import { withA11y } from '@storybook/addon-a11y';
-import { withKnobs } from '@storybook/addon-knobs';
-import { withWebComponentsKnobs } from 'storybook-addon-web-components-knobs';
 import { withSignIn } from '../../.storybook/addons/signInAddon/signInAddon';
 import { withCodeEditor } from '../../.storybook/addons/codeEditorAddon/codeAddon';
-import '../../packages/mgt/dist/es6/components/mgt-get/mgt-get';
+import '../../packages/mgt/dist/es6/components/mgt-get';
 
 export default {
   title: 'Components | mgt-get',

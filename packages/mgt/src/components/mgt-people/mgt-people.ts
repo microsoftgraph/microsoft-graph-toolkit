@@ -19,6 +19,8 @@ import { MgtTemplatedComponent } from '../templatedComponent';
 import { PersonCardInteraction } from './../PersonCardInteraction';
 import { styles } from './mgt-people-css';
 
+import '../mgt-person';
+
 export { PersonCardInteraction } from './../PersonCardInteraction';
 
 /**
