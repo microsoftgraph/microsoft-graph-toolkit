@@ -79,7 +79,7 @@ export async function getPersonImage(graph: IGraph, person: IDynamicPerson) {
     // if person is a contact, look for them and their photo in contact api
     email = getEmailFromGraphEntity(person);
     const contact = await findContactByEmail(graph, email);
-    if (contact[0] && contact[0].id) {
+    if (contact && contact.length && contact[0].id) {
       image = await getContactPhoto(graph, contact[0].id);
     }
   } else if (person.id) {
