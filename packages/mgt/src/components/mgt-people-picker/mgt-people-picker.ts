@@ -39,7 +39,8 @@ interface IFocusable {
  * Web component used to search for people from the Microsoft Graph
  *
  * @export
- * @class MgtPicker
+ * @element mgt-people-picker
+ * @class MgtPeoplePicker
  * @extends {MgtTemplatedComponent}
  *
  * @fires selectionChanged - Fired when selection changes

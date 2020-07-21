@@ -56,6 +56,7 @@ export enum PersonViewType {
  * The person component is used to display a person or contact by using their photo, name, and/or email address.
  *
  * @export
+ * @element mgt-person
  * @class MgtPerson
  * @extends {MgtTemplatedComponent}
  *

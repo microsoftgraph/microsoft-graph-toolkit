@@ -15,6 +15,7 @@ import { MgtBaseProvider } from '../baseProvider';
  * Authentication Library Provider for Microsoft personal accounts
  *
  * @export
+ * @element mgt-msal-provider
  * @class MgtMsalProvider
  * @extends {MgtBaseProvider}
  */

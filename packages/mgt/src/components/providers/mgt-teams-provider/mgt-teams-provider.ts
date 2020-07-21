@@ -15,6 +15,7 @@ import { MgtBaseProvider } from '../baseProvider';
  * Authentication Library Provider for Microsoft Teams accounts
  *
  * @export
+ * @element mgt-teams-provider
  * @class MgtTeamsProvider
  * @extends {MgtBaseProvider}
  */

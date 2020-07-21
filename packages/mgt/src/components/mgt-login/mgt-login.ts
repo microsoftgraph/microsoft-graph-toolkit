@@ -23,6 +23,7 @@ import '../sub-components/mgt-flyout';
  * Web component button and flyout control to facilitate Microsoft identity platform authentication
  *
  * @export
+ * @element mgt-login
  * @class MgtLogin
  * @extends {MgtBaseComponent}
  *

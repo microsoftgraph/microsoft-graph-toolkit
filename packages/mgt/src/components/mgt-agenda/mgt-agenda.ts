@@ -22,6 +22,7 @@ import '../mgt-person';
  * Web Component which represents events in a user or group calendar.
  *
  * @export
+ * @element mgt-agenda
  * @class MgtAgenda
  * @extends {MgtTemplatedComponent}
  *

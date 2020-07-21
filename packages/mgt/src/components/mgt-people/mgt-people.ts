@@ -25,6 +25,7 @@ export { PersonCardInteraction } from './../PersonCardInteraction';
  * web component to display a group of people or contacts by using their photos or initials.
  *
  * @export
+ * @element mgt-people
  * @class MgtPeople
  * @extends {MgtTemplatedComponent}
  *

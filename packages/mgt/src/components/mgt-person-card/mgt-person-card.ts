@@ -26,6 +26,7 @@ import { styles } from './mgt-person-card-css';
  * Microsoft Graph
  *
  * @export
+ * @element mgt-person-card
  * @class MgtPersonCard
  * @extends {MgtTemplatedComponent}
  *

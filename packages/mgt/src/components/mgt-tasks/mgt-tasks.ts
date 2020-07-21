@@ -173,6 +173,7 @@ const plannerAssignment = {
  * component enables the user to view, add, remove, complete, or edit tasks. It works with tasks in Microsoft Planner or Microsoft To-Do.
  *
  * @export
+ * @element mgt-tasks
  * @class MgtTasks
  * @extends {MgtBaseComponent}
  */

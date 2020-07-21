@@ -18,7 +18,8 @@ import { MgtTemplatedComponent } from '../templatedComponent';
  * @fires dataChange - Fired when data changes
  *
  * @export
- * @class mgt-get
+ * @element mgt-get
+ * @class MgtGet
  * @extends {MgtTemplatedComponent}
  */
 export class MgtGet extends MgtTemplatedComponent {

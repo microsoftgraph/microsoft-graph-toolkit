@@ -119,7 +119,8 @@ interface ChannelPickerItemState {
 /**
  * Web component used to select channels from a User's Microsoft Teams profile
  *
- *
+ * @export
+ * @element mgt-teams-channel-picker
  * @class MgtTeamsChannelPicker
  * @extends {MgtTemplatedComponent}
  *

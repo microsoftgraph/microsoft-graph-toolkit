@@ -14,6 +14,7 @@ import { MgtBaseProvider } from '../baseProvider';
  * Authentication component for ProxyProvider
  *
  * @export
+ * @element mgt-proxy-provider
  * @class MgtProxyProvider
  * @extends {LitElement}
  */
