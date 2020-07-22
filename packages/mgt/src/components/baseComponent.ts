@@ -5,10 +5,8 @@
  * -------------------------------------------------------------------------------------------
  */
 
-import { ScopedElementsMixin } from '@open-wc/scoped-elements';
 import { LitElement, PropertyValues } from 'lit-element';
 import { Providers } from '../Providers';
-import { ComponentRegistry } from '../utils/ComponentRegistry';
 
 /**
  * Defines media query based on component width

@@ -28,6 +28,7 @@
     "@storybook/cli": "^5.3.17",
     "@storybook/storybook-deployer": "^2.8.5",
     "@storybook/web-components": "^5.3.17",
+    "@webcomponents/webcomponentsjs": "^2.4.3",
     "lerna": "^3.22.0",
     "lit-element": "^2.3.1",
     "monaco-editor": "^0.19.3",
