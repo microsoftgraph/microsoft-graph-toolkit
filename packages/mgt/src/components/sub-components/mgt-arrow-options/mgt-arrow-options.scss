@@ -5,14 +5,12 @@
  * -------------------------------------------------------------------------------------------
  */
 
-:host,
-mgt-arrow-options {
+:host {
   position: relative;
   font-family: 'Segoe UI';
 }
 
-:host .ArrowIcon,
-mgt-arrow-options .ArrowIcon {
+:host .ArrowIcon {
   font-family: 'FabricMDL2Icons';
   margin: 0 0 0 20px;
   user-select: none;
@@ -20,19 +18,16 @@ mgt-arrow-options .ArrowIcon {
   -ms-user-select: none;
 }
 
-:host .Header,
-mgt-arrow-options .Header {
+:host .Header {
   cursor: pointer;
 }
 
-:host .Header:hover,
-mgt-arrow-options .Header:hover {
+:host .Header:hover {
   color: var(--theme-primary-color);
   background-color: var(--background-color--hover);
 }
 
-:host .Menu,
-mgt-arrow-options .Menu {
+:host .Menu {
   position: absolute;
   left: 0;
   box-shadow: rgba(0, 0, 0, 0.08) 0px 0px 40px 5px;
@@ -43,13 +38,11 @@ mgt-arrow-options .Menu {
   white-space: nowrap;
 }
 
-:host .Menu.Open,
-mgt-arrow-options .Menu.Open {
+:host .Menu.Open {
   display: block;
 }
 
-:host .MenuOption,
-mgt-arrow-options .MenuOption {
+:host .MenuOption {
   padding: 20px;
   cursor: pointer;
   user-select: none;
@@ -61,29 +54,24 @@ mgt-arrow-options .MenuOption {
   justify-items: stretch;
 }
 
-:host .MenuOption:first,
-mgt-arrow-options .MenuOption:first {
+:host .MenuOption:first {
   padding: 12px 20px 20px 20px;
 }
 
-:host .MenuOption:hover,
-mgt-arrow-options .MenuOption:hover {
+:host .MenuOption:hover {
   background: #c0c0c0;
 }
 
-:host .MenuOption:active,
-mgt-arrow-options .MenuOption:active {
+:host .MenuOption:active {
   background: #d8d8d8;
 }
 
-:host .MenuOptionCheck,
-mgt-arrow-options .MenuOptionCheck {
+:host .MenuOptionCheck {
   font-family: 'FabricMDL2Icons';
   color: rgba(0, 0, 0, 0);
   margin-right: 10px;
 }
 
-:host .MenuOptionCheck.CurrentValue,
-mgt-arrow-options .MenuOptionCheck.CurrentValue {
+:host .MenuOptionCheck.CurrentValue {
   color: #0078d4;
 }
