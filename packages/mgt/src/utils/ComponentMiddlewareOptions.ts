@@ -6,7 +6,6 @@
  */
 
 import { MiddlewareOptions } from '@microsoft/microsoft-graph-client';
-import { MgtBaseComponent } from '../components/baseComponent';
 
 /**
  * Middleware Options used for component telemetry
@@ -24,11 +23,8 @@ export class ComponentMiddlewareOptions implements MiddlewareOptions {
    */
   public componentName: string;
 
-  constructor(component: MgtBaseComponent | string) {
-    if (typeof component === 'string') {
-      this.componentName = component;
-    } else {
-      this.componentName = component.tagName.toLowerCase();
-    }
+  constructor(componentName: string) {
+    // Trim off any tag prefixes
+    this.componentName = componentName.slice(componentName.lastIndexOf('mgt-'));
   }
 }
