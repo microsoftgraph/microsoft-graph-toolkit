@@ -5,9 +5,9 @@
  * -------------------------------------------------------------------------------------------
  */
 
+import { IGraph } from '@microsoft/mgt-element';
 import { Client } from '@microsoft/microsoft-graph-client';
 import { Graph } from './Graph';
-import { IGraph } from './IGraph';
 
 /**
  * The version of the Graph to use for making requests.

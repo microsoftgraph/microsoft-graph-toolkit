@@ -1,7 +1,8 @@
 {
   "name": "root",
   "scripts": {
-    "prepare": "lerna bootstrap",
+    "prepare": "lerna bootstrap --force-local",
+    "link": "lerna link --force-local",
     "pack": "lerna run pack",
     "build": "npm run prettier:check && lerna run build",
     "start": "npm run --prefix packages/mgt start",
