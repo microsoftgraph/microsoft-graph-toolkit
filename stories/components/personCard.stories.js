@@ -29,8 +29,6 @@ export const personCardHover = () => html`
   <style>
     .note {
       margin: 2em 0 0 1em;
-      font-family: 'Segoe UI', 'Segoe UI Web (West European)', 'Segoe UI', -apple-system, BlinkMacSystemFont, Roboto,
-        'Helvetica Neue', sans-serif;
       color: #323130;
       font-size: 12px;
     }
@@ -45,8 +43,6 @@ export const personCardInheritDetails = () => html`
   <style>
     .note {
       margin: 2em 0 0 1em;
-      font-family: 'Segoe UI', 'Segoe UI Web (West European)', 'Segoe UI', -apple-system, BlinkMacSystemFont, Roboto,
-        'Helvetica Neue', sans-serif;
       color: #323130;
       font-size: 12px;
     }
@@ -63,27 +59,25 @@ export const personCardInheritDetails = () => html`
 `;
 
 export const personCardWithPresence = () => html`
-<script>
-  const available = {
-    activity: 'Available',
-    availability: 'Available',
-    id: null
-  }; 
-  
-  document.getElementById('with-presence').personPresence = available;
-</script>
-<style>
-  .note {
-    margin: 2em 0 0 1em;
-    font-family: 'Segoe UI', 'Segoe UI Web (West European)', 'Segoe UI', -apple-system, BlinkMacSystemFont, Roboto,
-      'Helvetica Neue', sans-serif;
-    color: #323130;
-    font-size: 12px;
-  }
-</style>
-<mgt-person id="with-presence" person-query="me" person-card="hover" view="twoLines" show-presence></mgt-person>
+  <script>
+    const available = {
+      activity: 'Available',
+      availability: 'Available',
+      id: null
+    };
 
-<div class="note">
-  (Hover on person to view Person Card)
-</div>
+    document.getElementById('with-presence').personPresence = available;
+  </script>
+  <style>
+    .note {
+      margin: 2em 0 0 1em;
+      color: #323130;
+      font-size: 12px;
+    }
+  </style>
+  <mgt-person id="with-presence" person-query="me" person-card="hover" view="twoLines" show-presence></mgt-person>
+
+  <div class="note">
+    (Hover on person to view Person Card)
+  </div>
 `;
