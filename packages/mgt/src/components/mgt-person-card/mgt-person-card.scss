@@ -30,13 +30,10 @@ $person-card-background-color: var(--person-card-background-color, #ffffff);
     display: flex;
     padding: 18px 14px;
 
-    mgt-person {
+    .person-image {
       --presence-background-color: var(--person-card-background-color, #ffffff);
       --presence-icon-color: var(--person-card-background-color, #ffffff);
-
-      &.person-image {
-        --avatar-size: 75px;
-      }
+      --avatar-size: 75px;
     }
 
     .details {
