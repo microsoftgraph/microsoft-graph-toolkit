@@ -41,10 +41,16 @@ interface CachePhoto extends CacheItem {
 }
 
 /**
- * Time to invalidate cache in ms
- *  3600000ms === 1hr
+ * Defines expiration time
  */
-const cacheInvalidationTime = 3600000;
+const photoInvalidationTime = CacheService.config.photos.invalidiationPeriod
+  ? CacheService.config.photos.invalidiationPeriod
+  : CacheService.config.defaultInvalidationPeriod;
+
+/**
+ * Whether photo store is enabled
+ */
+const photosCacheEnabled = CacheService.config.photos.isEnabled;
 
 /**
  * retrieves a photo for the specified resource.
@@ -83,11 +89,11 @@ export async function getContactPhoto(graph: IGraph, contactId: string): Promise
   const cache = CacheService.getCache<CachePhoto>(cacheSchema, 'contacts');
 
   // try to get a photo from cache
-  let photoDetails: CachePhoto = await cache.getValue(contactId);
+  let photoDetails: CachePhoto = photosCacheEnabled ? await cache.getValue(contactId) : null;
 
   // if photo is cached, use it
   if (photoDetails) {
-    if (Date.now() - photoDetails.timeCached > cacheInvalidationTime) {
+    if (Date.now() - photoDetails.timeCached > photoInvalidationTime) {
       // check if new image is available and update for next time
       graph //
         .api(`me/contacts/${contactId}/photo`)
@@ -98,11 +104,15 @@ export async function getContactPhoto(graph: IGraph, contactId: string): Promise
             if (response) {
               photoDetails = await getPhotoForResource(graph, `me/contacts/${contactId}`, ['contacts.read']);
             }
-            cache.putValue(contactId, photoDetails);
+            if (photosCacheEnabled) {
+              cache.putValue(contactId, photoDetails);
+            }
           },
           error => {
             // just add an empty photo to cache
-            cache.putValue(contactId, {});
+            if (photosCacheEnabled) {
+              cache.putValue(contactId, {});
+            }
           }
         );
     }
@@ -110,7 +120,9 @@ export async function getContactPhoto(graph: IGraph, contactId: string): Promise
   }
 
   photoDetails = await getPhotoForResource(graph, `me/contacts/${contactId}`, ['contacts.read']);
-  cache.putValue(contactId, photoDetails || {});
+  if (photosCacheEnabled) {
+    cache.putValue(contactId, photoDetails || {});
+  }
   return photoDetails ? photoDetails.photo : null;
 }
 
@@ -122,10 +134,10 @@ export async function getContactPhoto(graph: IGraph, contactId: string): Promise
  */
 export async function getUserPhoto(graph: IGraph, userId: string): Promise<string> {
   const cache = CacheService.getCache<CachePhoto>(cacheSchema, 'users');
-  let photoDetails: CachePhoto = await cache.getValue(userId);
+  let photoDetails: CachePhoto = photosCacheEnabled ? await cache.getValue(userId) : null;
 
   if (photoDetails) {
-    if (Date.now() - photoDetails.timeCached > cacheInvalidationTime) {
+    if (Date.now() - photoDetails.timeCached > photoInvalidationTime) {
       // check if new image is available and update for next time
       graph
         .api(`users/${userId}/photo`)
@@ -135,10 +147,14 @@ export async function getUserPhoto(graph: IGraph, userId: string): Promise<strin
             if (response && response['@odata.mediaEtag'] !== photoDetails.eTag) {
               photoDetails = await getPhotoForResource(graph, `users/${userId}`, ['user.readbasic.all']);
             }
-            cache.putValue(userId, photoDetails);
+            if (photosCacheEnabled) {
+              cache.putValue(userId, photoDetails);
+            }
           },
           error => {
-            cache.putValue(userId, {});
+            if (photosCacheEnabled) {
+              cache.putValue(userId, {});
+            }
           }
         );
     }
@@ -146,7 +162,7 @@ export async function getUserPhoto(graph: IGraph, userId: string): Promise<strin
   }
 
   photoDetails = await getPhotoForResource(graph, `users/${userId}`, ['user.readbasic.all']);
-  if (photoDetails) {
+  if (photosCacheEnabled && photoDetails) {
     cache.putValue(userId, photoDetails || {});
   }
 
@@ -161,9 +177,9 @@ export async function getUserPhoto(graph: IGraph, userId: string): Promise<strin
 export async function myPhoto(graph: IGraph): Promise<string> {
   const cache = CacheService.getCache<CachePhoto>(cacheSchema, 'users');
 
-  let photoDetails: CachePhoto = await cache.getValue('me');
+  let photoDetails: CachePhoto = photosCacheEnabled ? await cache.getValue('me') : null;
   if (photoDetails) {
-    if (Date.now() - photoDetails.timeCached > cacheInvalidationTime) {
+    if (Date.now() - photoDetails.timeCached > photoInvalidationTime) {
       // check if new image is available and update for next time
       graph
         .api('me/photo')
@@ -173,10 +189,14 @@ export async function myPhoto(graph: IGraph): Promise<string> {
             if (response && response['@odata.mediaEtag'] !== photoDetails.eTag) {
               photoDetails = await getPhotoForResource(graph, 'me', ['user.read']);
             }
-            cache.putValue('me', photoDetails);
+            if (photosCacheEnabled) {
+              cache.putValue('me', photoDetails);
+            }
           },
           error => {
-            cache.putValue('me', {});
+            if (photosCacheEnabled) {
+              cache.putValue('me', {});
+            }
           }
         );
     }
@@ -184,7 +204,9 @@ export async function myPhoto(graph: IGraph): Promise<string> {
   }
 
   photoDetails = await getPhotoForResource(graph, 'me', ['user.read']);
-  cache.putValue('me', photoDetails || {});
+  if (photosCacheEnabled) {
+    cache.putValue('me', photoDetails || {});
+  }
 
   return photoDetails ? photoDetails.photo : null;
 }
