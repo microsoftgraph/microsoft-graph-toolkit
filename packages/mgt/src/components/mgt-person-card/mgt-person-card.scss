@@ -5,184 +5,184 @@
  * -------------------------------------------------------------------------------------------
  */
 
- @import '../../styles/shared-styles.scss';
- @import '../../../node_modules/office-ui-fabric-core/dist/sass/References';
- 
- $person-card-display-name-font-size: var(--person-card-display-name-font-size, 27.3103px);
- $person-card-title-font-size: var(--person-card-title-font-size, 18.2069px);
- $person-card-subtitle-font-size: var(--person-card-subtitle-font-size, 15.1724px);
- $person-card-details-title-font-size: var(--person-card-details-title-font-size, 14px);
- $person-card-details-item-font-size: var(--person-card-details-item-font-size, 15px);
- $person-card-display-name-color: var(--person-card-display-name-color, #333333);
- $person-card-title-color: var(--person-card-title-color, #767676);
- $person-card-subtitle-color: var(--person-card-subtitle-color, #767676);
- $person-card-details-title-color: var(--person-card-details-title-color, #000000);
- $person-card-details-item-color: var(--person-card-details-item-color, #201f1e);
- $person-card-background-color: var(--person-card-background-color, #ffffff);
- 
- :host .root {
-   position: relative;
-   background: $person-card-background-color;
-   width: var(--mgt-flyout-set-width, 340px);
-   font-family: var(--default-font-family);
- 
-   .person-details-container {
-     display: flex;
-     padding: 18px 14px;
- 
-     mgt-person {
-       &.person-image {
-         --avatar-size: 75px;
-       }
-     }
- 
-     .details {
-       margin-left: 14px;
-       line-height: 1.15;
-       display: grid;
-       position: relative;
-       overflow: hidden;
-       text-overflow: ellipsis;
-       white-space: nowrap;
-       background-color: transparent;
-       width: 100%;
-       .display-name {
-         font-size: $person-card-display-name-font-size;
-         color: $person-card-display-name-color;
-         &::after {
-           pointer-events: none;
-           content: '';
-           position: absolute;
-           width: 100%;
-           height: 100%;
-           top: 0;
-           right: 0;
-           background-image: linear-gradient(
-             to right,
-             rgba(255, 255, 255, 0) 0%,
-             rgba(255, 255, 255, 0) 80%,
-             $person-card-background-color 100%
-           );
-           background-image: -moz-linear-gradient(
-             left,
-             rgba(255, 255, 255, 0) 0%,
-             rgba(255, 255, 255, 0) 80%,
-             $person-card-background-color 100%
-           );
-           background-image: -o-linear-gradient(
-             left,
-             rgba(255, 255, 255, 0) 0%,
-             rgba(255, 255, 255, 0) 80%,
-             $person-card-background-color 100%
-           );
-           background-image: -ms-linear-gradient(
-             left,
-             rgba(255, 255, 255, 0) 0%,
-             rgba(255, 255, 255, 0) 80%,
-             $person-card-background-color 100%
-           );
-           background-image: -webkit-linear-gradient(
-             left,
-             rgba(255, 255, 255, 0) 0%,
-             rgba(255, 255, 255, 0) 80%,
-             $person-card-background-color 100%
-           );
-         }
-       }
- 
-       .job-title {
-         font-size: $person-card-title-font-size;
-         color: $person-card-title-color;
-       }
- 
-       .department {
-         font-size: $person-card-subtitle-font-size;
-         color: $person-card-subtitle-color;
-       }
- 
-       .base-icons {
-         margin-top: 14px;
-         display: flex;
-         -webkit-align-items: center;
-         align-items: center;
-         max-width: 120px;
- 
-         .icon {
-           margin: 0 22px 0 0;
-           cursor: pointer;
-         }
-         .icon:hover {
-           opacity: 0.6;
-         }
-       }
-     }
-   }
- 
-   .expanded-details-container {
-     .expanded-details-button {
-       display: flex;
-       justify-content: center;
-       align-items: center;
-       height: 28px;
-       background: rgba(196, 196, 196, 0.1);
-       .expanded-details-svg {
-         margin-bottom: 3px;
-       }
-     }
-     .expanded-details-button:hover {
-       background-color: rgba(0, 0, 0, 0.068);
-     }
-     .expanded-details-info {
-       margin: 0 0 0 20px;
-       padding-bottom: 18px;
-       display: flex;
-       flex-direction: column;
- 
-       .contact-text {
-         margin: 0 0 24px 0;
-         font-weight: 600;
-         font-size: $person-card-details-title-font-size;
-         color: $person-card-details-title-color;
-       }
- 
-       .icons {
-         line-height: normal;
-         font-style: normal;
-         font-weight: normal;
-         font-size: $person-card-details-item-font-size;
-         color: $person-card-details-item-color;
-         text-align: left;
- 
-         .details-icon {
-           margin: 0 0 10px 0;
-           display: flex;
-           flex-direction: row;
-           align-items: center;
-         }
-       }
-       .data {
-         display: block;
-         margin: 0 0 0px 10px;
-         white-space: nowrap;
-         overflow: hidden;
-         text-overflow: ellipsis;
-         width: 280px;
-       }
-       .normal-subtitle {
-         padding-top: 2px;
-       }
-       .link-subtitle {
-         color: #3078cd;
-         cursor: pointer;
-       }
-       .link-subtitle:hover {
-         opacity: 0.6;
-       }
-     }
-     .section-divider {
-       width: 96%;
-       height: 1px;
-       background: #eaeaea;
-     }
-   }
- }
+@import '../../styles/shared-styles.scss';
+@import '../../../node_modules/office-ui-fabric-core/dist/sass/References';
+
+$person-card-display-name-font-size: var(--person-card-display-name-font-size, 27.3103px);
+$person-card-title-font-size: var(--person-card-title-font-size, 18.2069px);
+$person-card-subtitle-font-size: var(--person-card-subtitle-font-size, 15.1724px);
+$person-card-details-title-font-size: var(--person-card-details-title-font-size, 14px);
+$person-card-details-item-font-size: var(--person-card-details-item-font-size, 15px);
+$person-card-display-name-color: var(--person-card-display-name-color, #333333);
+$person-card-title-color: var(--person-card-title-color, #767676);
+$person-card-subtitle-color: var(--person-card-subtitle-color, #767676);
+$person-card-details-title-color: var(--person-card-details-title-color, #000000);
+$person-card-details-item-color: var(--person-card-details-item-color, #201f1e);
+$person-card-background-color: var(--person-card-background-color, #ffffff);
+
+:host .root {
+  position: relative;
+  background: $person-card-background-color;
+  width: var(--mgt-flyout-set-width, 340px);
+  font-family: var(--default-font-family);
+
+  .person-details-container {
+    display: flex;
+    padding: 18px 14px;
+
+    .person-image {
+      --presence-background-color: var(--person-card-background-color, #ffffff);
+      --presence-icon-color: var(--person-card-background-color, #ffffff);
+      --avatar-size: 75px;
+    }
+
+    .details {
+      margin-left: 14px;
+      line-height: 1.15;
+      display: grid;
+      position: relative;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+      background-color: transparent;
+      width: 100%;
+      .display-name {
+        font-size: $person-card-display-name-font-size;
+        color: $person-card-display-name-color;
+        &::after {
+          pointer-events: none;
+          content: '';
+          position: absolute;
+          width: 100%;
+          height: 100%;
+          top: 0;
+          right: 0;
+          background-image: linear-gradient(
+            to right,
+            rgba(255, 255, 255, 0) 0%,
+            rgba(255, 255, 255, 0) 80%,
+            $person-card-background-color 100%
+          );
+          background-image: -moz-linear-gradient(
+            left,
+            rgba(255, 255, 255, 0) 0%,
+            rgba(255, 255, 255, 0) 80%,
+            $person-card-background-color 100%
+          );
+          background-image: -o-linear-gradient(
+            left,
+            rgba(255, 255, 255, 0) 0%,
+            rgba(255, 255, 255, 0) 80%,
+            $person-card-background-color 100%
+          );
+          background-image: -ms-linear-gradient(
+            left,
+            rgba(255, 255, 255, 0) 0%,
+            rgba(255, 255, 255, 0) 80%,
+            $person-card-background-color 100%
+          );
+          background-image: -webkit-linear-gradient(
+            left,
+            rgba(255, 255, 255, 0) 0%,
+            rgba(255, 255, 255, 0) 80%,
+            $person-card-background-color 100%
+          );
+        }
+      }
+
+      .job-title {
+        font-size: $person-card-title-font-size;
+        color: $person-card-title-color;
+      }
+
+      .department {
+        font-size: $person-card-subtitle-font-size;
+        color: $person-card-subtitle-color;
+      }
+
+      .base-icons {
+        margin-top: 14px;
+        display: flex;
+        -webkit-align-items: center;
+        align-items: center;
+        max-width: 120px;
+
+        .icon {
+          margin: 0 22px 0 0;
+          cursor: pointer;
+        }
+        .icon:hover {
+          opacity: 0.6;
+        }
+      }
+    }
+  }
+
+  .expanded-details-container {
+    .expanded-details-button {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 28px;
+      background: rgba(196, 196, 196, 0.1);
+      .expanded-details-svg {
+        margin-bottom: 3px;
+      }
+    }
+    .expanded-details-button:hover {
+      background-color: rgba(0, 0, 0, 0.068);
+    }
+    .expanded-details-info {
+      margin: 0 0 0 20px;
+      padding-bottom: 18px;
+      display: flex;
+      flex-direction: column;
+
+      .contact-text {
+        margin: 0 0 24px 0;
+        font-weight: 600;
+        font-size: $person-card-details-title-font-size;
+        color: $person-card-details-title-color;
+      }
+
+      .icons {
+        line-height: normal;
+        font-style: normal;
+        font-weight: normal;
+        font-size: $person-card-details-item-font-size;
+        color: $person-card-details-item-color;
+        text-align: left;
+
+        .details-icon {
+          margin: 0 0 10px 0;
+          display: flex;
+          flex-direction: row;
+          align-items: center;
+        }
+      }
+      .data {
+        display: block;
+        margin: 0 0 0px 10px;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        width: 280px;
+      }
+      .normal-subtitle {
+        padding-top: 2px;
+      }
+      .link-subtitle {
+        color: #3078cd;
+        cursor: pointer;
+      }
+      .link-subtitle:hover {
+        opacity: 0.6;
+      }
+    }
+    .section-divider {
+      width: 96%;
+      height: 1px;
+      background: #eaeaea;
+    }
+  }
+}
