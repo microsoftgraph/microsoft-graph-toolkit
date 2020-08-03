@@ -6,25 +6,22 @@
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using MicrosoftGraphAspNetCoreConnectSample.Helpers;
-using Microsoft.Extensions.Configuration;
 using Microsoft.Graph;
 using Microsoft.AspNetCore.Hosting;
 using System.Security.Claims;
+using MicrosoftGraphAspNetCoreConnectSample.Services;
 
 namespace MicrosoftGraphAspNetCoreConnectSample.Controllers
 {
     public class HomeController : Controller
     {
-        private readonly IConfiguration _configuration;
-        private readonly IHostingEnvironment _env;
-        private readonly IGraphSdkHelper _graphSdkHelper;
+        private readonly IWebHostEnvironment _env;
+        private readonly IGraphServiceClientFactory _graphServiceClientFactory;
 
-        public HomeController(IConfiguration configuration, IHostingEnvironment hostingEnvironment, IGraphSdkHelper graphSdkHelper)
+        public HomeController(IWebHostEnvironment hostingEnvironment, IGraphServiceClientFactory graphServiceClientFactory)
         {
-            _configuration = configuration;
             _env = hostingEnvironment;
-            _graphSdkHelper = graphSdkHelper;
+            _graphServiceClientFactory = graphServiceClientFactory;
         }
 
         [AllowAnonymous]
@@ -34,11 +31,11 @@ namespace MicrosoftGraphAspNetCoreConnectSample.Controllers
             if (User.Identity.IsAuthenticated)
             {
                 // Get users's email.
-                email = email ?? User.FindFirst("preferred_username")?.Value;
+                email ??= User.FindFirst("preferred_username")?.Value;
                 ViewData["Email"] = email;
 
                 // Initialize the GraphServiceClient.
-                var graphClient = _graphSdkHelper.GetAuthenticatedClient((ClaimsIdentity)User.Identity);
+                var graphClient = _graphServiceClientFactory.GetAuthenticatedGraphClient((ClaimsIdentity)User.Identity);
 
                 ViewData["Response"] = await GraphService.GetUserJson(graphClient, email, HttpContext);
 
@@ -62,7 +59,7 @@ namespace MicrosoftGraphAspNetCoreConnectSample.Controllers
             try
             {
                 // Initialize the GraphServiceClient.
-                var graphClient = _graphSdkHelper.GetAuthenticatedClient((ClaimsIdentity)User.Identity);
+                var graphClient = _graphServiceClientFactory.GetAuthenticatedGraphClient((ClaimsIdentity)User.Identity);
 
                 // Send the email.
                 await GraphService.SendEmail(graphClient, _env, recipients, HttpContext);
@@ -78,7 +75,13 @@ namespace MicrosoftGraphAspNetCoreConnectSample.Controllers
             }
         }
 
+        [AllowAnonymous]
         public IActionResult Messages()
+        {
+            return View();
+        }
+        
+        public IActionResult Privacy()
         {
             return View();
         }
