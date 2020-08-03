@@ -269,6 +269,8 @@ export class MgtPeoplePicker extends MgtTemplatedComponent {
   private _groupPeople: IDynamicPerson[];
   private _debouncedSearch: { (): void; (): void };
 
+  private defaultSelectedUsers: IDynamicPerson[];
+
   @internalProperty() private _isFocused = false;
 
   @internalProperty() private _foundPeople: IDynamicPerson[];
@@ -658,10 +660,10 @@ export class MgtPeoplePicker extends MgtTemplatedComponent {
       }
       this._showLoading = false;
 
-      if (this.defaultSelectedUserIds && !this.selectedPeople.length) {
-        const defaultSelectedUsers = await getUsersForUserIds(graph, this.defaultSelectedUserIds);
+      if (this.defaultSelectedUserIds && !this.selectedPeople.length && !this.defaultSelectedUsers) {
+        this.defaultSelectedUsers = await getUsersForUserIds(graph, this.defaultSelectedUserIds);
 
-        this.selectedPeople = [...defaultSelectedUsers];
+        this.selectedPeople = [...this.defaultSelectedUsers];
         this.requestUpdate();
         this.fireCustomEvent('selectionChanged', this.selectedPeople);
       }

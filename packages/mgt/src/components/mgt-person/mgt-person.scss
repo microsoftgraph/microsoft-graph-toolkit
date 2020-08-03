@@ -22,7 +22,6 @@ $font-weight: var(--font-weight, #{$ms-font-weight-semibold});
 $color: var(--color, #{$ms-color-neutralDark});
 $text-transform: var(text-transform, none);
 $presence-background-color: var(--presence-background-color, #ffffff);
-$presence-icon-color: var(--presence-icon-color, #ffffff);
 
 $line2-font-size: var(--line2-font-size, var(--email-font-size, #{$ms-font-size-s}));
 $line2-font-weight: var(--line2-font-weight, 400);
@@ -56,12 +55,6 @@ $presence-color-oof: #b4009e;
 mgt-person svg {
   width: $avatar-size-s;
   height: $avatar-size-s;
-}
-
-:host img,
-mgt-person img {
-  border: $avatar-border;
-  border-radius: $avatar-border-radius;
 }
 
 :host .person-root,
@@ -161,7 +154,7 @@ mgt-person .person-root {
 
       .presence-available::before {
         content: $ms-icon-code-SkypeCheck;
-        color: $presence-icon-color;
+        color: $presence-background-color;
         margin-left: calc(#{$avatar-size} * 0.07 - 2px);
       }
 
@@ -173,13 +166,13 @@ mgt-person .person-root {
 
       .presence-away::before {
         content: $ms-icon-code-SkypeClock;
-        color: $presence-icon-color;
+        color: $presence-background-color;
         margin-left: calc(#{$avatar-size} * 0.07 - 2px);
       }
 
       .presence-dnd::before {
         content: $ms-icon-code-SkypeMinus;
-        color: $presence-icon-color;
+        color: $presence-background-color;
         margin-left: calc(#{$avatar-size} * 0.07 - 2px);
       }
 
@@ -246,8 +239,26 @@ mgt-person .person-root {
       }
     }
 
-    img {
+    .img-wrapper {
       height: 100%;
+      width: 100%;
+      display: flex;
+      overflow: hidden;
+      border: $avatar-border;
+      border-radius: $avatar-border-radius;
+      position: relative;
+
+      img {
+        position: absolute;
+        display: block;
+        top: -100%;
+        right: -100%;
+        bottom: -100%;
+        left: -100%;
+        margin: auto;
+        height: 100%;
+        width: auto;
+      }
     }
 
     &.pinkRed10 {
