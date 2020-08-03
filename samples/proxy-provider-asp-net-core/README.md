@@ -2,7 +2,7 @@
 
 To use the Microsoft Graph Toolkit with backend authentication, one solution is to proxy all calls from the front end to the back end. The Microsoft Graph Toolkit ships with an authentication provider implementation (ProxyProvider) that enables all components to call the Microsoft Graph via the backend. 
 
-This sample is a reference on how to leverage the [ProxyProvider](https://docs.microsoft.com/graph/toolkit/providers/proxy) with an ASP.NET Core backend. However, it is worth nothing that the ProxyProvider can work with any backend service.
+This sample is a reference on how to leverage the [ProxyProvider](https://docs.microsoft.com/graph/toolkit/providers/proxy) with an ASP.NET Core backend. However, it is worth noting that the ProxyProvider can work with any backend service.
 
 ## Client code
 

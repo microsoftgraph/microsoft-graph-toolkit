@@ -76,17 +76,11 @@ namespace MicrosoftGraphAspNetCoreConnectSample.Controllers
         }
 
         [AllowAnonymous]
-        public IActionResult About()
+        public IActionResult Messages()
         {
             return View();
         }
-
-        [AllowAnonymous]
-        public IActionResult Contact()
-        {
-            return View();
-        }
-
+        
         public IActionResult Privacy()
         {
             return View();
