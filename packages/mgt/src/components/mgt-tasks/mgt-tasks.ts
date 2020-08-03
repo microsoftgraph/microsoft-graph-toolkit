@@ -612,7 +612,9 @@ export class MgtTasks extends MgtTemplatedComponent {
     } as ITask;
 
     this._newTaskBeingAdded = true;
-    await ts.addTask(newTask);
+    const task = await ts.addTask(newTask);
+    this.fireCustomEvent('taskAdded', task);
+
     await this.requestStateUpdate();
     this._newTaskBeingAdded = false;
     this.isNewTaskVisible = false;
@@ -625,6 +627,8 @@ export class MgtTasks extends MgtTemplatedComponent {
     }
     this._loadingTasks = [...this._loadingTasks, task.id];
     await ts.setTaskComplete(task.id, task.eTag);
+    this.fireCustomEvent('taskChanged', task);
+
     await this.requestStateUpdate();
     this._loadingTasks = this._loadingTasks.filter(id => id !== task.id);
   }
@@ -637,6 +641,8 @@ export class MgtTasks extends MgtTemplatedComponent {
 
     this._loadingTasks = [...this._loadingTasks, task.id];
     await ts.setTaskIncomplete(task.id, task.eTag);
+    this.fireCustomEvent('taskChanged', task);
+
     await this.requestStateUpdate();
     this._loadingTasks = this._loadingTasks.filter(id => id !== task.id);
   }
@@ -649,6 +655,8 @@ export class MgtTasks extends MgtTemplatedComponent {
 
     this._hiddenTasks = [...this._hiddenTasks, task.id];
     await ts.removeTask(task.id, task.eTag);
+    this.fireCustomEvent('taskRemoved', task);
+
     await this.requestStateUpdate();
     this._hiddenTasks = this._hiddenTasks.filter(id => id !== task.id);
   }
