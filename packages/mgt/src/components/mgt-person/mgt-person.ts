@@ -462,7 +462,9 @@ export class MgtPerson extends MgtTemplatedComponent {
 
     if (imageSrc && !this._isInvalidImageSrc) {
       return html`
-        <img alt=${title} src=${imageSrc} @error=${() => (this._isInvalidImageSrc = true)} />
+        <div class="img-wrapper">
+          <img alt=${title} src=${imageSrc} @error=${() => (this._isInvalidImageSrc = true)} />
+        </div>
       `;
     } else if (personDetails) {
       const initials = this.getInitials(personDetails);
