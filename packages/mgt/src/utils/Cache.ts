@@ -58,7 +58,7 @@ export interface CacheConfig {
  */
 export interface CacheOptions {
   /**
-   * Defines the time for objects in the store to expire
+   * Defines the time (in ms) for objects in the store to expire
    *
    * @type {number}
    * @memberof CacheOptions
@@ -112,7 +112,7 @@ export class CacheService {
    */
   public static enableCacheGlobal() {
     CacheService._cacheConfig = {
-      defaultInvalidationPeriod: 360000,
+      defaultInvalidationPeriod: 3600000,
       people: {
         invalidiationPeriod: CacheService.config.people.invalidiationPeriod,
         isEnabled: true
@@ -136,7 +136,7 @@ export class CacheService {
    */
   public static disableCacheGlobal() {
     CacheService._cacheConfig = {
-      defaultInvalidationPeriod: 360000,
+      defaultInvalidationPeriod: 3600000,
       people: {
         invalidiationPeriod: CacheService.config.people.invalidiationPeriod,
         isEnabled: false
@@ -158,7 +158,7 @@ export class CacheService {
   private static _state: ProviderState;
 
   private static _cacheConfig: CacheConfig = {
-    defaultInvalidationPeriod: 360000,
+    defaultInvalidationPeriod: 3600000,
     people: {
       invalidiationPeriod: null,
       isEnabled: true
