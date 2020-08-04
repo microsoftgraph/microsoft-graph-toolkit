@@ -1,4 +1,5 @@
-﻿using System.Linq;
+using System.Collections.Generic;
+using System.Linq;
 using System.Net;
 using System.Net.Http;
 using System.Net.Http.Headers;
@@ -9,8 +10,9 @@ using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.Primitives;
 using Microsoft.Graph;
-using MicrosoftGraphAspNetCoreConnectSample.Helpers;
+using MicrosoftGraphAspNetCoreConnectSample.Services;
 
 namespace MicrosoftGraphAspNetCoreConnectSample.Controllers
 {
@@ -18,51 +20,53 @@ namespace MicrosoftGraphAspNetCoreConnectSample.Controllers
     [ApiController]
     public class ProxyController : ControllerBase
     {
-        private readonly IGraphSdkHelper _graphSdkHelper;
+        private readonly IWebHostEnvironment _env;
+        private readonly IGraphServiceClientFactory _graphServiceClientFactory;
 
-        public ProxyController(IConfiguration configuration, IHostingEnvironment hostingEnvironment, IGraphSdkHelper graphSdkHelper)
+        public ProxyController(IWebHostEnvironment hostingEnvironment, IGraphServiceClientFactory graphServiceClientFactory)
         {
-            _graphSdkHelper = graphSdkHelper;
+            _env = hostingEnvironment;
+            _graphServiceClientFactory = graphServiceClientFactory;
         }
 
         [HttpGet]
         [Route("{*all}")]
-        public async Task<HttpResponseMessage> GetAsync(string all)
+        public async Task<IActionResult> GetAsync(string all)
         {
             return await ProcessRequestAsync("GET", all, null).ConfigureAwait(false);
         }
 
         [HttpPost]
         [Route("{*all}")]
-        public async Task<HttpResponseMessage> PostAsync(string all, [FromBody]object body)
+        public async Task<IActionResult> PostAsync(string all, [FromBody] object body)
         {
             return await ProcessRequestAsync("POST", all, body).ConfigureAwait(false);
         }
 
         [HttpDelete]
         [Route("{*all}")]
-        public async Task<HttpResponseMessage> DeleteAsync(string all)
+        public async Task<IActionResult> DeleteAsync(string all)
         {
             return await ProcessRequestAsync("DELETE", all, null).ConfigureAwait(false);
         }
 
         [HttpPut]
         [Route("{*all}")]
-        public async Task<HttpResponseMessage> PutAsync(string all, [FromBody]object body)
+        public async Task<IActionResult> PutAsync(string all, [FromBody] object body)
         {
             return await ProcessRequestAsync("PUT", all, body).ConfigureAwait(false);
         }
 
         [HttpPatch]
         [Route("{*all}")]
-        public async Task<HttpResponseMessage> PatchAsync(string all, [FromBody]object body)
+        public async Task<IActionResult> PatchAsync(string all, [FromBody] object body)
         {
             return await ProcessRequestAsync("PATCH", all, body).ConfigureAwait(false);
         }
 
-        private async Task<HttpResponseMessage> ProcessRequestAsync(string method, string all, object content)
+        private async Task<IActionResult> ProcessRequestAsync(string method, string all, object content)
         {
-            var graphClient = _graphSdkHelper.GetAuthenticatedClient((ClaimsIdentity)User.Identity);
+            var graphClient = _graphServiceClientFactory.GetAuthenticatedGraphClient((ClaimsIdentity)User.Identity);
 
             var qs = HttpContext.Request.QueryString;
             var url = $"{GetBaseUrlWithoutVersion(graphClient)}/{all}{qs.ToUriComponent()}";
@@ -93,12 +97,12 @@ namespace MicrosoftGraphAspNetCoreConnectSample.Controllers
                     contentType = contentTypes?.FirstOrDefault() ?? contentType;
 
                     var byteArrayContent = await response.Content.ReadAsByteArrayAsync().ConfigureAwait(false);
-                    return ReturnHttpResponseMessage(HttpStatusCode.OK, contentType, new ByteArrayContent(byteArrayContent));
+                    return new HttpResponseMessageResult(ReturnHttpResponseMessage(HttpStatusCode.OK, contentType, new ByteArrayContent(byteArrayContent)));
                 }
             }
             catch (ServiceException ex)
             {
-                return ReturnHttpResponseMessage(ex.StatusCode, contentType, new StringContent(ex.Error.ToString()));
+                return new HttpResponseMessageResult(ReturnHttpResponseMessage(ex.StatusCode, contentType, new StringContent(ex.Error.ToString())));
             }
         }
 
@@ -127,5 +131,34 @@ namespace MicrosoftGraphAspNetCoreConnectSample.Controllers
             var index = baseUrl.LastIndexOf('/');
             return baseUrl.Substring(0, index);
         }
+
+        public class HttpResponseMessageResult : IActionResult
+        {
+            private readonly HttpResponseMessage _responseMessage;
+
+            public HttpResponseMessageResult(HttpResponseMessage responseMessage)
+            {
+                _responseMessage = responseMessage; // could add throw if null
+            }
+
+            public async Task ExecuteResultAsync(ActionContext context)
+            {
+                context.HttpContext.Response.StatusCode = (int)_responseMessage.StatusCode;
+
+                foreach (var header in _responseMessage.Headers)
+                {
+                    context.HttpContext.Response.Headers.TryAdd(header.Key, new StringValues(header.Value.ToArray()));
+                }
+
+                context.HttpContext.Response.ContentType = _responseMessage.Content.Headers.ContentType.ToString();
+
+                using (var stream = await _responseMessage.Content.ReadAsStreamAsync())
+                {
+                    await stream.CopyToAsync(context.HttpContext.Response.Body);
+                    await context.HttpContext.Response.Body.FlushAsync();
+                }
+            }
+        }
+
     }
 }
