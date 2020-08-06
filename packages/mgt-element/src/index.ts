@@ -1,2 +1,2 @@
-export * from './IGraph';
 export * from './IBatch';
+export * from './IGraph';
