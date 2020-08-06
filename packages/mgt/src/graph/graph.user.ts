@@ -52,7 +52,7 @@ interface CacheUserQuery extends CacheItem {
  * Defines the time it takes for objects in the cache to expire
  */
 const getUserInvalidationTime = (): number =>
-  CacheService.config.users.invalidiationPeriod || CacheService.config.defaultInvalidationPeriod;
+  CacheService.config.users.invalidationPeriod || CacheService.config.defaultInvalidationPeriod;
 
 /**
  * Whether or not the cache is enabled

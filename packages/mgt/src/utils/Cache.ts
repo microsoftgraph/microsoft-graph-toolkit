@@ -35,6 +35,13 @@ export interface CacheConfig {
    */
   isEnabled: boolean;
   /**
+   * Cache options for groups store
+   *
+   * @type {CacheOptions}
+   * @memberof CacheConfig
+   */
+  groups: CacheOptions;
+  /**
    * Cache options for people store
    *
    * @type {CacheOptions}
@@ -70,7 +77,7 @@ export interface CacheOptions {
    * @type {number}
    * @memberof CacheOptions
    */
-  invalidiationPeriod: number;
+  invalidationPeriod: number;
   /**
    * Whether the store is enabled or not
    *
@@ -123,17 +130,21 @@ export class CacheService {
 
   private static cacheConfig: CacheConfig = {
     defaultInvalidationPeriod: 3600000,
+    groups: {
+      invalidationPeriod: null,
+      isEnabled: true
+    },
     isEnabled: true,
     people: {
-      invalidiationPeriod: null,
+      invalidationPeriod: null,
       isEnabled: true
     },
     photos: {
-      invalidiationPeriod: null,
+      invalidationPeriod: null,
       isEnabled: true
     },
     users: {
-      invalidiationPeriod: null,
+      invalidationPeriod: null,
       isEnabled: true
     }
   };

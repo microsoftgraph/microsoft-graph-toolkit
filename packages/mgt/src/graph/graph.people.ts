@@ -85,7 +85,7 @@ interface CacheGroupPeople extends CacheItem {
  * Defines the expiration time
  */
 const getPeopleInvalidationTime = (): number =>
-  CacheService.config.people.invalidiationPeriod || CacheService.config.defaultInvalidationPeriod;
+  CacheService.config.people.invalidationPeriod || CacheService.config.defaultInvalidationPeriod;
 
 /**
  * Whether the people store is enabled
