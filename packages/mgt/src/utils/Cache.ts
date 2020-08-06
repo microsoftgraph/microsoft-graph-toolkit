@@ -28,6 +28,13 @@ export interface CacheConfig {
    */
   defaultInvalidationPeriod: number;
   /**
+   * Controls whether the cache is enabled globally
+   *
+   * @type {boolean}
+   * @memberof CacheConfig
+   */
+  isEnabled: boolean;
+  /**
    * Cache options for people store
    *
    * @type {CacheOptions}
@@ -105,60 +112,18 @@ export class CacheService {
   }
 
   /**
-   * Globally enables the cache
-   *
-   * @static
-   * @memberof CacheService
+   * Clears all the stores within the cache
    */
-  public static enableCacheGlobal() {
-    CacheService._cacheConfig = {
-      defaultInvalidationPeriod: 3600000,
-      people: {
-        invalidiationPeriod: CacheService.config.people.invalidiationPeriod,
-        isEnabled: true
-      },
-      photos: {
-        invalidiationPeriod: CacheService.config.photos.invalidiationPeriod,
-        isEnabled: true
-      },
-      users: {
-        invalidiationPeriod: CacheService.config.users.invalidiationPeriod,
-        isEnabled: true
-      }
-    };
-  }
-
-  /**
-   * Globally disables the cache
-   *
-   * @static
-   * @memberof CacheService
-   */
-  public static disableCacheGlobal() {
-    CacheService._cacheConfig = {
-      defaultInvalidationPeriod: 3600000,
-      people: {
-        invalidiationPeriod: CacheService.config.people.invalidiationPeriod,
-        isEnabled: false
-      },
-      photos: {
-        invalidiationPeriod: CacheService.config.photos.invalidiationPeriod,
-        isEnabled: false
-      },
-      users: {
-        invalidiationPeriod: CacheService.config.users.invalidiationPeriod,
-        isEnabled: false
-      }
-    };
+  public static clearCaches() {
+    this.cacheStore.forEach(x => x.clearStore());
   }
 
   private static cacheStore: Map<string, Cache<CacheItem>> = new Map();
   private static isInitialized: boolean = false;
-  private static globalEnabled: boolean = true;
-  private static _state: ProviderState;
 
-  private static _cacheConfig: CacheConfig = {
+  private static cacheConfig: CacheConfig = {
     defaultInvalidationPeriod: 3600000,
+    isEnabled: true,
     people: {
       invalidiationPeriod: null,
       isEnabled: true
@@ -182,30 +147,30 @@ export class CacheService {
    * @memberof CacheService
    */
   public static get config(): CacheConfig {
-    return this._cacheConfig;
+    return this.cacheConfig;
   }
 
   /**
+   * Checks for current sign in state and see if it has changed from signed-in to signed out
+   *
+   *
    * @private
    * @static
    * @memberof CacheService
    */
   private static init() {
+    let previousState: ProviderState;
     if (Providers.globalProvider) {
-      this._state = Providers.globalProvider.state;
+      previousState = Providers.globalProvider.state;
     }
 
     Providers.onProviderUpdated(() => {
-      if (this._state === ProviderState.SignedIn && Providers.globalProvider.state === ProviderState.SignedOut) {
+      if (previousState === ProviderState.SignedIn && Providers.globalProvider.state === ProviderState.SignedOut) {
         this.clearCaches();
       }
-      this._state = Providers.globalProvider.state;
+      previousState = Providers.globalProvider.state;
     });
     this.isInitialized = true;
-  }
-
-  private static clearCaches() {
-    this.cacheStore.forEach(x => x.clearStore());
   }
 }
 
@@ -277,10 +242,9 @@ export interface CacheItem {
  * @template T
  */
 // tslint:disable-next-line: max-classes-per-file
-class Cache<T extends CacheItem> {
+export class Cache<T extends CacheItem> {
   private schema: CacheSchema;
   private store: string;
-  private _state: ProviderState;
 
   public constructor(schema: CacheSchema, store: string) {
     if (!(store in schema.stores)) {
@@ -300,8 +264,6 @@ class Cache<T extends CacheItem> {
    */
   public async getValue(key: string): Promise<T> {
     if (!window.indexedDB) {
-      // tslint:disable-next-line: no-console
-      console.log("browser doesn't support indexedDB");
       return null;
     }
 
@@ -318,8 +280,6 @@ class Cache<T extends CacheItem> {
    */
   public async putValue(key: string, item: T) {
     if (!window.indexedDB) {
-      // tslint:disable-next-line: no-console
-      console.log("browser doesn't support indexedDB");
       return;
     }
 
@@ -334,8 +294,6 @@ class Cache<T extends CacheItem> {
    */
   public async clearStore() {
     if (!window.indexedDB) {
-      // tslint:disable-next-line: no-console
-      console.log("browser doesn't support indexedDB");
       return;
     }
 
