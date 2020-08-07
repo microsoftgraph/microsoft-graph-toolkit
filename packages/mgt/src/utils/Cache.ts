@@ -5,10 +5,6 @@
  * -------------------------------------------------------------------------------------------
  */
 
-// TODO ands consideration
-// Should db clear on sign out
-// SHould db be named with the user id
-
 import { openDB } from 'idb';
 import { Providers } from '../Providers';
 import { ProviderState } from '../providers/IProvider';
@@ -102,10 +98,10 @@ export class CacheService {
    * @template T
    * @param {CacheSchema} schema
    * @param {string} store
-   * @returns {Cache<T>}
+   * @returns {CacheStore<T>}
    * @memberof CacheService
    */
-  public static getCache<T extends CacheItem>(schema: CacheSchema, store: string): Cache<T> {
+  public static getCache<T extends CacheItem>(schema: CacheSchema, store: string): CacheStore<T> {
     const key = `${schema.name}/${store}`;
 
     if (!this.isInitialized) {
@@ -113,9 +109,9 @@ export class CacheService {
     }
 
     if (!this.cacheStore.has(store)) {
-      this.cacheStore.set(key, new Cache<T>(schema, store));
+      this.cacheStore.set(key, new CacheStore<T>(schema, store));
     }
-    return this.cacheStore.get(key) as Cache<T>;
+    return this.cacheStore.get(key) as CacheStore<T>;
   }
 
   /**
@@ -125,7 +121,7 @@ export class CacheService {
     this.cacheStore.forEach(x => x.clearStore());
   }
 
-  private static cacheStore: Map<string, Cache<CacheItem>> = new Map();
+  private static cacheStore: Map<string, CacheStore<CacheItem>> = new Map();
   private static isInitialized: boolean = false;
 
   private static cacheConfig: CacheConfig = {
@@ -247,13 +243,13 @@ export interface CacheItem {
 }
 
 /**
- * Poorly named, but represents a store in the cache
+ * Represents a store in the cache
  *
- * @class Cache
+ * @class CacheStore
  * @template T
  */
 // tslint:disable-next-line: max-classes-per-file
-export class Cache<T extends CacheItem> {
+export class CacheStore<T extends CacheItem> {
   private schema: CacheSchema;
   private store: string;
 
@@ -324,7 +320,6 @@ export class Cache<T extends CacheItem> {
   }
 
   private getDBName() {
-    // TODO: signed in user id
     return `mgt-${this.schema.name}`;
   }
 }

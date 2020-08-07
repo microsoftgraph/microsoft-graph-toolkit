@@ -7,7 +7,7 @@
 
 import { User } from '@microsoft/microsoft-graph-types';
 import { IGraph } from '../IGraph';
-import { Cache, CacheItem, CacheSchema, CacheService } from '../utils/Cache';
+import { CacheItem, CacheSchema, CacheService, CacheStore } from '../utils/Cache';
 import { prepScopes } from '../utils/GraphHelpers';
 import { findPeople } from './graph.people';
 import { IDynamicPerson } from './types';
@@ -66,7 +66,7 @@ const usersCacheEnabled = (): boolean => CacheService.config.users.isEnabled && 
  * @memberof Graph
  */
 export async function getMe(graph: IGraph): Promise<User> {
-  let cache: Cache<CacheUser>;
+  let cache: CacheStore<CacheUser>;
   if (usersCacheEnabled()) {
     cache = CacheService.getCache<CacheUser>(cacheSchema, 'users');
     const me = await cache.getValue('me');
@@ -96,7 +96,7 @@ export async function getMe(graph: IGraph): Promise<User> {
 export async function getUserWithPhoto(graph: IGraph, userId?: string): Promise<IDynamicPerson> {
   const batch = graph.createBatch();
   let person = null as IDynamicPerson;
-  let cache: Cache<CacheUser>;
+  let cache: CacheStore<CacheUser>;
 
   if (usersCacheEnabled()) {
     cache = CacheService.getCache<CacheUser>(cacheSchema, 'users');
@@ -141,7 +141,7 @@ export async function getUserWithPhoto(graph: IGraph, userId?: string): Promise<
  */
 export async function getUser(graph: IGraph, userPrincipleName: string): Promise<User> {
   const scopes = 'user.readbasic.all';
-  let cache: Cache<CacheUser>;
+  let cache: CacheStore<CacheUser>;
   let user: CacheUser;
 
   if (usersCacheEnabled()) {
@@ -179,7 +179,7 @@ export async function getUsersForUserIds(graph: IGraph, userIds: string[]): Prom
   }
   const batch = graph.createBatch();
   let people = [];
-  let cache: Cache<CacheUser>;
+  let cache: CacheStore<CacheUser>;
 
   if (usersCacheEnabled()) {
     cache = CacheService.getCache<CacheUser>(cacheSchema, 'usersQuery');
@@ -237,7 +237,7 @@ export async function getUsersForPeopleQueries(graph: IGraph, peopleQueries: str
   const batch = graph.createBatch();
   const people = [];
   let cacheRes: CacheUserQuery;
-  let cache: Cache<CacheUserQuery>;
+  let cache: CacheStore<CacheUserQuery>;
   if (usersCacheEnabled()) {
     cache = CacheService.getCache<CacheUserQuery>(cacheSchema, 'usersQuery');
   }
@@ -301,7 +301,7 @@ export async function getUsersForPeopleQueries(graph: IGraph, peopleQueries: str
 export async function findUsers(graph: IGraph, query: string, top: number = 10): Promise<User[]> {
   const scopes = 'User.ReadBasic.All';
   const item = { maxResults: top, results: null };
-  let cache: Cache<CacheUserQuery>;
+  let cache: CacheStore<CacheUserQuery>;
 
   if (usersCacheEnabled()) {
     cache = CacheService.getCache<CacheUserQuery>(cacheSchema, 'usersQuery');
