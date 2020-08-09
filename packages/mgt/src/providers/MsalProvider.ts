@@ -17,7 +17,7 @@ import { IProvider, LoginType, ProviderState } from './IProvider';
  * @export
  * @interface MsalConfigBase
  */
-export interface MsalConfigBase {
+interface MsalConfigBase {
   /**
    * scopes
    *
