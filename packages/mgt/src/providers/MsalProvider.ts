@@ -364,18 +364,7 @@ export class MsalProvider extends IProvider {
     let userAgentApplication: UserAgentApplication;
     let clientId: string;
 
-    if ('userAgentApplication' in config) {
-      if (config.userAgentApplication instanceof UserAgentApplication) {
-        userAgentApplication = config.userAgentApplication;
-        const msalConfig = userAgentApplication.getCurrentConfiguration();
-
-        clientId = msalConfig.auth.clientId;
-      }
-      else {
-        throw new Error('userAgentApplication must be provided');
-      }
-    }
-    else if ('clientId' in config) {
+    if ('clientId' in config) {
       if (config.clientId) {
         const msalConfig: Configuration = config.options || { auth: { clientId: config.clientId } };
 
@@ -397,6 +386,16 @@ export class MsalProvider extends IProvider {
         userAgentApplication = new UserAgentApplication(msalConfig);
       } else {
         throw new Error('clientId must be provided');
+      }
+    } else if ('userAgentApplication' in config) {
+      if (config.userAgentApplication instanceof UserAgentApplication) {
+        userAgentApplication = config.userAgentApplication;
+        const msalConfig = userAgentApplication.getCurrentConfiguration();
+
+        clientId = msalConfig.auth.clientId;
+      }
+      else {
+        throw new Error('userAgentApplication must be provided');
       }
     } else {
       throw new Error('either clientId or userAgentApplication must be provided');
