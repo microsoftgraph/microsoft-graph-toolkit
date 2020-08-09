@@ -104,6 +104,18 @@ or, add it in your code:
 </script>
 ```
 
+or, if you already use MSAL.js and have a `UserAgentApplication`, you can use it:
+
+```html
+<script type="module">
+  import { Providers, MsalProvider } from '@microsoft/mgt';
+
+  const app = new UserAgentApplication({ auth: { clientId: '[CLIENT-ID]' } });
+
+  Providers.globalProvider = new MsalProvider({ userAgentApplication: app });
+</script>
+```
+
 ## Providers
 
 The components work best when used with a [provider](https://docs.microsoft.com/graph/toolkit/providers). The provider exposes authentication and Microsoft Graph apis used by the components to call into the Microsoft Graph.
