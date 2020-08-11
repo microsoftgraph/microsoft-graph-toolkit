@@ -12,7 +12,7 @@
   "scripts": {
     "build": "npm run clean && tsc",
     "clean": "shx rm -rf dist",
-    "pack": "npm pack",
+    "prepack": "npm run build",
     "watch": "tsc --watch"
   },
   "author": "Microsoft",
@@ -23,17 +23,7 @@
   "devDependencies": {
     "npm-run-all": "^4.1.5",
     "typescript": "^3.7.5",
-    "sass": "^1.26.3",
-    "shx": "^0.3.2",
-    "rollup": "^1.29.1",
-    "rollup-plugin-babel": "^4.3.3",
-    "rollup-plugin-babel-minify": "^9.1.1",
-    "rollup-plugin-commonjs": "^10.1.0",
-    "rollup-plugin-json": "^4.0.0",
-    "rollup-plugin-node-resolve": "^5.2.0",
-    "rollup-plugin-postcss": "^2.5.0",
-    "rollup-plugin-terser": "^5.2.0",
-    "rollup-plugin-typescript": "^1.0.1"
+    "shx": "^0.3.2"
   },
   "publishConfig": {
     "directory": "dist"

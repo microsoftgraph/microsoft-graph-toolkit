@@ -1,9 +1,10 @@
 {
   "name": "root",
+  "npmClient": "npm",
   "scripts": {
     "clean": "lerna run --parallel --stream clean",
     "link": "lerna link --force-local",
-    "pack": "lerna run --parallel --stream pack",
+    "pack": "lerna exec --stream -- npm pack",
     "prepare": "lerna bootstrap --force-local",
     "serve": "es-dev-server --port 3000 --node-resolve --open --watch --compatibility none --app-index index.html",
     "serve:https": "es-dev-server --http2 --port 3000 --node-resolve --open --watch --compatibility none --app-index index.html",

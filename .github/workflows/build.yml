@@ -5,13 +5,12 @@ name: Build CI
 
 on:
   push:
-    branches: [ main, release/** ]
+    branches: [main, release/**]
   pull_request:
-    branches: [ main, release/** ]
+    branches: [main, release/**]
 
 jobs:
   build:
-
     runs-on: ubuntu-latest
 
     strategy:
@@ -19,21 +18,20 @@ jobs:
         node-version: [10.x]
 
     steps:
-    - uses: actions/checkout@v2
-    - name: Use Node.js ${{ matrix.node-version }}
-      uses: actions/setup-node@v1
-      with:
-        node-version: ${{ matrix.node-version }}
-    - run: npm i
-    - run: npm run prepare
-    - run: npm run pack
-    - name: Upload a Build Artifact - package
-      uses: actions/upload-artifact@v2
-      with:
-        name: npm-package
-        path: packages/mgt/microsoft-mgt-*.tgz
-    - name: Upload a Build Artifact - bundle
-      uses: actions/upload-artifact@v2
-      with:
-        name: bundle
-        path: packages/mgt/dist/bundle
+      - uses: actions/checkout@v2
+      - name: Use Node.js ${{ matrix.node-version }}
+        uses: actions/setup-node@v1
+        with:
+          node-version: ${{ matrix.node-version }}
+      - run: npm i
+      - run: npm run pack
+      - name: Upload a Build Artifact - package
+        uses: actions/upload-artifact@v2
+        with:
+          name: npm-package
+          path: packages/mgt/microsoft-mgt-*.tgz
+      - name: Upload a Build Artifact - bundle
+        uses: actions/upload-artifact@v2
+        with:
+          name: bundle
+          path: packages/mgt/dist/bundle
