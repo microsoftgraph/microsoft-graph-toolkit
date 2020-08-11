@@ -10,9 +10,10 @@
     "src"
   ],
   "scripts": {
-    "clean": "shx rm -rf dist",
     "build": "npm run clean && tsc",
-    "build:watch": "npm run clean && tsc --watch"
+    "clean": "shx rm -rf dist",
+    "pack": "npm pack",
+    "watch": "tsc --watch"
   },
   "author": "Microsoft",
   "license": "MIT",
