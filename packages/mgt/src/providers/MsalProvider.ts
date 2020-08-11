@@ -10,7 +10,6 @@ import { AuthenticationParameters, AuthError, AuthResponse, Configuration, UserA
 import { createFromProvider } from '../Graph';
 import { IProvider, LoginType, ProviderState } from './IProvider';
 
-
 /**
  * base config for MSAL authentication
  *
@@ -393,8 +392,7 @@ export class MsalProvider extends IProvider {
         const msalConfig = userAgentApplication.getCurrentConfiguration();
 
         clientId = msalConfig.auth.clientId;
-      }
-      else {
+      } else {
         throw new Error('userAgentApplication must be provided');
       }
     } else {
