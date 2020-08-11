@@ -19,7 +19,9 @@
     "@angular/platform-browser": "~9.1.6",
     "@angular/platform-browser-dynamic": "~9.1.6",
     "@angular/router": "~9.1.6",
-    "@microsoft/mgt": "^1.3.0",
+    "@azure/msal-angular": "^1.0.0",
+    "@microsoft/mgt": "^1.3.3",
+    "msal": "^1.3.2",
     "rxjs": "~6.5.4",
     "tslib": "^1.10.0",
     "zone.js": "~0.10.2"
