@@ -156,6 +156,57 @@ export const personPresenceDisplayAll = () => html`
   <mgt-person class="small" id="oof-small" person-query="JoniS@M365x214355.onmicrosoft.com" show-presence></mgt-person>
 `;
 
+export const darkMode = () => html`
+  <div class="title"><span>Transparent presence badge background:</span></div>
+  <mgt-person person-query="me" view="twoLines" show-presence></mgt-person>
+  <div class="title"><span>Light presence icon:</span></div>
+  <mgt-person id="online" person-query="Isaiah Langer" show-presence view="twoLines"></mgt-person>
+  <div class="title"><span>Dark presence icon:</span></div>
+  <mgt-person id="dnd" person-query="Lynne Robbins" show-presence view="twoLines"></mgt-person>
+
+  <script>
+    const online = {
+      activity: 'Available',
+      availability: 'Available',
+      id: null
+    };
+    const dnd = {
+      activity: 'DoNotDisturb',
+      availability: 'DoNotDisturb',
+      id: null
+    };
+    const onlinePerson = document.getElementById('online');
+    const dndPerson = document.getElementById('dnd');
+
+    onlinePerson.personPresence = online;
+    dndPerson.personPresence = dnd;
+  </script>
+
+  <style>
+    .story-mgt-preview-wrapper {
+      background-color: black;
+    }
+    mgt-person {
+      --color: white;
+      --presence-background-color: black;
+    }
+    .title {
+      color: white;
+      display: block;
+      padding: 5px;
+      font-size: 20px;
+      margin: 10px 0 10px 0;
+    }
+    .title span {
+      border-bottom: 1px solid #8a8886;
+      padding-bottom: 5px;
+    }
+    #dnd {
+      --presence-icon-color: black;
+    }
+  </style>
+`;
+
 export const personCardHover = () => html`
   <mgt-person person-query="me" person-card="hover"></mgt-person>
 `;

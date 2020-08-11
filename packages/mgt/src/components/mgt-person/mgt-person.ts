@@ -67,6 +67,7 @@ export enum PersonViewType {
  * @cssprop --font-weight - {Length} Font weight
  * @cssprop --color - {Color} Color
  * @cssprop --presence-background-color - {Color} Presence badge background color
+ * @cssprop --presence-icon-color - {Color} Presence badge icon color
  * @cssprop --text-transform - {String} text transform
  * @cssprop --line2-font-size - {Length} Line 2 font size
  * @cssprop --line2-font-weight - {Length} Line 2 font weight
@@ -462,7 +463,9 @@ export class MgtPerson extends MgtTemplatedComponent {
 
     if (imageSrc && !this._isInvalidImageSrc) {
       return html`
-        <img alt=${title} src=${imageSrc} @error=${() => (this._isInvalidImageSrc = true)} />
+        <div class="img-wrapper">
+          <img alt=${title} src=${imageSrc} @error=${() => (this._isInvalidImageSrc = true)} />
+        </div>
       `;
     } else if (personDetails) {
       const initials = this.getInitials(personDetails);
