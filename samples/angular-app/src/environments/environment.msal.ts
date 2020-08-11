@@ -4,9 +4,6 @@
 import { MsalAngularConfiguration } from '@azure/msal-angular';
 import { Configuration } from 'msal';
 
-export const protectedResourceMap: [string, string[]][] = [
-];
-
 const isIE = window.navigator.userAgent.indexOf('MSIE ') > -1 || window.navigator.userAgent.indexOf('Trident/') > -1;
 
 export const MsalConfig: Configuration = {
@@ -16,7 +13,7 @@ export const MsalConfig: Configuration = {
         validateAuthority: true,
         redirectUri: 'http://localhost:4200/',
         postLogoutRedirectUri: 'http://localhost:4200/',
-        navigateToLoginRequestUrl: true,
+        navigateToLoginRequestUrl: true
     },
     cache: {
         cacheLocation: 'localStorage',
@@ -30,8 +27,6 @@ export const MSALAngularConfig: MsalAngularConfiguration = {
         'user.read',
         'openid',
         'profile'
-    ],
-    protectedResourceMap,
-    extraQueryParameters: {}
+    ]
 };
 
