@@ -8,11 +8,10 @@ import { AppComponent } from './app.component';
 import { NavBarComponent } from './nav-bar/nav-bar.component';
 
 @NgModule({
-  bootstrap: [AppComponent],
   declarations: [
     AppComponent,
-    AngularAgendaComponent,
     NavBarComponent,
+    AngularAgendaComponent
   ],
   imports: [
     BrowserModule,
@@ -20,5 +19,7 @@ import { NavBarComponent } from './nav-bar/nav-bar.component';
     RouterModule.forRoot([]),
   ],
   schemas: [CUSTOM_ELEMENTS_SCHEMA],
+  providers: [],
+  bootstrap: [AppComponent]
 })
 export class AppModule { }
