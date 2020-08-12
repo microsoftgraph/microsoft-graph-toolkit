@@ -383,6 +383,8 @@ mgt-person .avatar-icon {
   font-size: $avatar-size;
   width: $avatar-size;
   height: $avatar-size;
+  overflow: hidden;
+  border-radius: $avatar-border-radius;
 
   &.small {
     font-size: $avatar-size-s;

@@ -5,6 +5,48 @@
  * -------------------------------------------------------------------------------------------
  */
 
+export function getRelativeDisplayDate(date: Date): string {
+  const now = new Date();
+
+  // Today -> 5:23 PM
+  const today = new Date(now.getFullYear(), now.getMonth(), now.getDate());
+  if (date >= today) {
+    return date.toLocaleString('default', {
+      hour: 'numeric',
+      minute: 'numeric'
+    });
+  }
+
+  // This week -> Sun 3:04 PM
+  const sunday = new Date(today);
+  sunday.setDate(now.getDate() - now.getDay());
+  if (date >= sunday) {
+    return date.toLocaleString('default', {
+      hour: 'numeric',
+      minute: 'numeric',
+      weekday: 'short'
+    });
+  }
+
+  // Last two week -> Sun 8/2
+  const lastTwoWeeks = new Date(sunday);
+  lastTwoWeeks.setDate(sunday.getDate() - 7);
+  if (date >= lastTwoWeeks) {
+    return date.toLocaleString('default', {
+      day: 'numeric',
+      month: 'numeric',
+      weekday: 'short'
+    });
+  }
+
+  // More than two weeks ago -> 8/1/2020
+  return date.toLocaleString('default', {
+    day: 'numeric',
+    month: 'numeric',
+    year: 'numeric'
+  });
+}
+
 /**
  * returns a promise that resolves after specified time
  * @param time in milliseconds
