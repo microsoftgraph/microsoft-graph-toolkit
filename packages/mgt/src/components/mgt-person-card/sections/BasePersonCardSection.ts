@@ -11,7 +11,7 @@ import { IDynamicPerson } from '../../../graph/types';
 import { MgtPersonCard } from '../mgt-person-card';
 
 /**
- * foo
+ * A base class for building person card subsections.
  *
  * @export
  * @class BasePersonCardSection
@@ -41,7 +41,7 @@ export abstract class BasePersonCardSection extends MgtTemplatedComponent {
   }
 
   /**
-   * foo
+   * The name for display in the overview section.
    *
    * @abstract
    * @type {string}
@@ -70,7 +70,7 @@ export abstract class BasePersonCardSection extends MgtTemplatedComponent {
   }
 
   /**
-   * foo
+   * Render the icon for display in the navigation ribbon.
    *
    * @protected
    * @abstract
@@ -80,7 +80,7 @@ export abstract class BasePersonCardSection extends MgtTemplatedComponent {
   public abstract renderIcon(): TemplateResult;
 
   /**
-   * foo
+   * Set the section to compact view mode
    *
    * @returns
    * @memberof BasePersonCardSection
@@ -92,7 +92,7 @@ export abstract class BasePersonCardSection extends MgtTemplatedComponent {
   }
 
   /**
-   * foo
+   * Set the section to full view mode
    *
    * @returns
    * @memberof BasePersonCardSection
@@ -104,7 +104,7 @@ export abstract class BasePersonCardSection extends MgtTemplatedComponent {
   }
 
   /**
-   * foo
+   * Reset any state in the section
    *
    * @protected
    * @abstract
@@ -122,7 +122,7 @@ export abstract class BasePersonCardSection extends MgtTemplatedComponent {
   }
 
   /**
-   * foo
+   * Render the compact view
    *
    * @protected
    * @abstract
@@ -132,7 +132,7 @@ export abstract class BasePersonCardSection extends MgtTemplatedComponent {
   protected abstract renderCompactView(): TemplateResult;
 
   /**
-   * foo
+   * Render the full view
    *
    * @protected
    * @abstract
@@ -142,7 +142,7 @@ export abstract class BasePersonCardSection extends MgtTemplatedComponent {
   protected abstract renderFullView(): TemplateResult;
 
   /**
-   * foo
+   * Navigate the card to a different user.
    *
    * @protected
    * @memberof BasePersonCardSection

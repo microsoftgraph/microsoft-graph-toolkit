@@ -8,17 +8,19 @@
 import { IGraph } from '../../../../IGraph';
 
 /**
- * foo
+ * Potential file icon types
  */
 export enum IconType {
   // tslint:disable-next-line: completed-docs
   Word,
   // tslint:disable-next-line: completed-docs
-  PowerPoint
+  PowerPoint,
+  // tslint:disable-next-line: completed-docs
+  Other
 }
 
 /**
- * foo
+ * Display metadata for a file
  */
 export interface IFile {
   // tslint:disable-next-line: completed-docs
@@ -29,7 +31,14 @@ export interface IFile {
   lastModified: Date;
 }
 
-// tslint:disable-next-line: completed-docs
+/**
+ * TODO: Figure out the correct graph call.
+ *
+ * @export
+ * @param {IGraph} graph
+ * @param {string} userId
+ * @returns {Promise<IFile[]>}
+ */
 export async function getSharedFiles(graph: IGraph, userId: string): Promise<IFile[]> {
   const response = await graph.api(`users/${userId}/drive/root/children`).get();
   // return response.value;

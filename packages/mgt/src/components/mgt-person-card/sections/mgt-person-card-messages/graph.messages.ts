@@ -8,7 +8,7 @@
 import { IGraph } from '../../../../IGraph';
 
 /**
- * foo
+ * Display metadata for a message item
  */
 export interface IMessage {
   // tslint:disable-next-line: completed-docs
@@ -22,7 +22,7 @@ export interface IMessage {
 }
 
 /**
- * foo
+ * Get messages for a user
  *
  * @export
  * @param {IGraph} graph
@@ -35,7 +35,7 @@ export async function getMessages(graph: IGraph, userId: string): Promise<IMessa
 }
 
 /**
- * foo
+ * Get common message with a user
  *
  * @export
  * @param {IGraph} graph

@@ -26,7 +26,7 @@ export interface IOrgMember {
 }
 
 /**
- * foo
+ * Get the managers for a user
  *
  * @export
  * @param {IGraph} graph
@@ -48,7 +48,7 @@ export async function getManagers(graph: IGraph, userId: string): Promise<IOrgMe
 }
 
 /**
- * foo
+ * Get a user's direct manager.
  *
  * @export
  * @param {IGraph} graph
@@ -61,7 +61,7 @@ export async function getManager(graph: IGraph, userId: string): Promise<IOrgMem
 }
 
 /**
- * foo
+ * Get a user's coworkers
  *
  * @export
  * @param {IGraph} graph

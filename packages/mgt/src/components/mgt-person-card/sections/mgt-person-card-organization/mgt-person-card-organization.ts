@@ -13,7 +13,7 @@ import { getCoworkers, getManagers, IOrgMember } from './graph.organization';
 import { styles } from './mgt-person-card-organization-css';
 
 /**
- * foo
+ * The member organization subsection of the person card
  *
  * @export
  * @class MgtPersonCardProfile
@@ -30,7 +30,7 @@ export class MgtPersonCardOrganization extends BasePersonCardSection {
   }
 
   /**
-   * foo
+   * The name for display in the overview section.
    *
    * @readonly
    * @type {string}
@@ -44,7 +44,7 @@ export class MgtPersonCardOrganization extends BasePersonCardSection {
   private _coworkers: IOrgMember[];
 
   /**
-   * foo
+   * Render the icon for display in the navigation ribbon.
    *
    * @returns {TemplateResult}
    * @memberof MgtPersonCardOrganization
@@ -62,7 +62,7 @@ export class MgtPersonCardOrganization extends BasePersonCardSection {
   }
 
   /**
-   * foo
+   * Reset any state in the section
    *
    * @protected
    * @memberof MgtPersonCardOrganization
@@ -73,7 +73,7 @@ export class MgtPersonCardOrganization extends BasePersonCardSection {
   }
 
   /**
-   * foo
+   * Render the compact view
    *
    * @returns {TemplateResult}
    * @memberof MgtPersonCardOrganization
@@ -98,7 +98,7 @@ export class MgtPersonCardOrganization extends BasePersonCardSection {
   }
 
   /**
-   * foo
+   * Render the full view
    *
    * @protected
    * @returns {TemplateResult}
@@ -140,7 +140,7 @@ export class MgtPersonCardOrganization extends BasePersonCardSection {
   }
 
   /**
-   * foo
+   * Render the section in a loading state
    *
    * @protected
    * @returns {TemplateResult}
@@ -153,7 +153,7 @@ export class MgtPersonCardOrganization extends BasePersonCardSection {
   }
 
   /**
-   * foo
+   * Render the section in a empty data state
    *
    * @protected
    * @returns {TemplateResult}
@@ -166,7 +166,7 @@ export class MgtPersonCardOrganization extends BasePersonCardSection {
   }
 
   /**
-   * foo
+   * Render a manager org member
    *
    * @protected
    * @param {IOrgMember} orgMember
@@ -195,7 +195,7 @@ export class MgtPersonCardOrganization extends BasePersonCardSection {
   }
 
   /**
-   * foo
+   * Render the user/self member
    *
    * @protected
    * @returns {TemplateResult}
@@ -217,7 +217,7 @@ export class MgtPersonCardOrganization extends BasePersonCardSection {
   }
 
   /**
-   * foo
+   * Render a coworker org member
    *
    * @protected
    * @param {IOrgMember} coworker

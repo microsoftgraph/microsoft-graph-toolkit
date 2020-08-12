@@ -473,7 +473,7 @@ export interface IProfile {
 }
 
 /**
- * foo
+ * TODO: Figure out the correct graph call
  *
  * @export
  * @param {IGraph} graph

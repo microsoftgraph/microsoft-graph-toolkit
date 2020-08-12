@@ -14,7 +14,7 @@ import { BasePersonCardSection } from '../BasePersonCardSection';
 import { styles } from './mgt-person-card-contact-css';
 
 /**
- * foo
+ * Represents a contact part and its metadata
  *
  * @interface IContectPart
  */
@@ -32,7 +32,7 @@ interface IContactPart {
 }
 
 /**
- * foo
+ * The collection of relevant contact parts
  *
  * @interface IContactPartCollection
  */
@@ -52,7 +52,7 @@ interface IContactPartCollection {
 }
 
 /**
- * foo
+ * The contact details subsection of the person card
  *
  * @export
  * @class MgtPersonCardProfile
@@ -69,7 +69,7 @@ export class MgtPersonCardContact extends BasePersonCardSection {
   }
 
   /**
-   * foo
+   * The name for display in the overview section.
    *
    * @readonly
    * @type {string}
@@ -121,7 +121,7 @@ export class MgtPersonCardContact extends BasePersonCardSection {
   // tslint:enable: object-literal-sort-keys
 
   /**
-   * foo
+   * Render the icon for display in the navigation ribbon.
    *
    * @returns {TemplateResult}
    * @memberof MgtPersonCardContact
@@ -137,7 +137,7 @@ export class MgtPersonCardContact extends BasePersonCardSection {
   }
 
   /**
-   * foo
+   * Reset any state in the section
    *
    * @protected
    * @memberof MgtPersonCardContact
@@ -149,7 +149,7 @@ export class MgtPersonCardContact extends BasePersonCardSection {
   }
 
   /**
-   * foo
+   * Render the compact view
    *
    * @returns {TemplateResult}
    * @memberof MgtPersonCardContact
@@ -182,7 +182,7 @@ export class MgtPersonCardContact extends BasePersonCardSection {
   }
 
   /**
-   * foo
+   * Render the full view
    *
    * @protected
    * @returns {TemplateResult}
@@ -216,7 +216,7 @@ export class MgtPersonCardContact extends BasePersonCardSection {
   }
 
   /**
-   * foo
+   * Render the section in a loading state
    *
    * @protected
    * @returns {TemplateResult}
@@ -229,7 +229,7 @@ export class MgtPersonCardContact extends BasePersonCardSection {
   }
 
   /**
-   * foo
+   * Render the section in a empty data state
    *
    * @protected
    * @returns {TemplateResult}
@@ -242,7 +242,7 @@ export class MgtPersonCardContact extends BasePersonCardSection {
   }
 
   /**
-   * foo
+   * Render a specific contact part
    *
    * @protected
    * @param {IContactPart} part
@@ -277,7 +277,7 @@ export class MgtPersonCardContact extends BasePersonCardSection {
   }
 
   /**
-   * foo
+   * Handle the click event for contact parts
    *
    * @protected
    * @memberof MgtPersonCardContact
@@ -289,7 +289,7 @@ export class MgtPersonCardContact extends BasePersonCardSection {
   }
 
   /**
-   * foo
+   * Load the section state
    *
    * @protected
    * @returns {IContactPart[]}
@@ -312,7 +312,7 @@ export class MgtPersonCardContact extends BasePersonCardSection {
   }
 
   /**
-   * foo
+   * Send a chat message to the user
    *
    * @protected
    * @memberof MgtPersonCardContact
@@ -338,7 +338,7 @@ export class MgtPersonCardContact extends BasePersonCardSection {
   }
 
   /**
-   * foo
+   * Send an email to the user
    *
    * @protected
    * @memberof MgtPersonCardContact
@@ -351,7 +351,7 @@ export class MgtPersonCardContact extends BasePersonCardSection {
   }
 
   /**
-   * foo
+   * Send a call to the user
    *
    * @protected
    * @memberof MgtPersonCardContact
@@ -364,7 +364,7 @@ export class MgtPersonCardContact extends BasePersonCardSection {
   }
 
   /**
-   * foo
+   * Display the user's office location
    *
    * @protected
    * @memberof MgtPersonCardContact
@@ -374,7 +374,7 @@ export class MgtPersonCardContact extends BasePersonCardSection {
     if (!officeLocation) {
       return;
     }
-    // TODO: Show the office location somehow.
+    // TODO: Show the office location somehow. Maybe in Bing?
   }
 }
 

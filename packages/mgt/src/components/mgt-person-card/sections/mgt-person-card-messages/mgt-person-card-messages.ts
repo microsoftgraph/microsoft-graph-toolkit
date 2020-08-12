@@ -15,7 +15,7 @@ import { getMessages, getMessagesWithUser, IMessage } from './graph.messages';
 import { styles } from './mgt-person-card-messages-css';
 
 /**
- * foo
+ * The email messages subsection of the person card
  *
  * @export
  * @class MgtPersonCardMessages
@@ -32,7 +32,7 @@ export class MgtPersonCardMessages extends BasePersonCardSection {
   }
 
   /**
-   * foo
+   * The name for display in the overview section.
    *
    * @readonly
    * @type {string}
@@ -45,7 +45,7 @@ export class MgtPersonCardMessages extends BasePersonCardSection {
   private _messages: IMessage[];
 
   /**
-   * foo
+   * Reset any state in the section
    *
    * @protected
    * @memberof MgtPersonCardMessages
@@ -55,7 +55,7 @@ export class MgtPersonCardMessages extends BasePersonCardSection {
   }
 
   /**
-   * foo
+   * Render the icon for display in the navigation ribbon.
    *
    * @returns {TemplateResult}
    * @memberof MgtPersonCardMessages
@@ -73,7 +73,7 @@ export class MgtPersonCardMessages extends BasePersonCardSection {
   }
 
   /**
-   * foo
+   * Render the compact view
    *
    * @returns {TemplateResult}
    * @memberof MgtPersonCardMessages
@@ -102,7 +102,7 @@ export class MgtPersonCardMessages extends BasePersonCardSection {
   }
 
   /**
-   * foo
+   * Render the full view
    *
    * @protected
    * @returns {TemplateResult}
@@ -130,7 +130,7 @@ export class MgtPersonCardMessages extends BasePersonCardSection {
   }
 
   /**
-   * foo
+   * Render the section in a loading state
    *
    * @protected
    * @returns {TemplateResult}
@@ -143,7 +143,7 @@ export class MgtPersonCardMessages extends BasePersonCardSection {
   }
 
   /**
-   * foo
+   * Render the section in a empty data state
    *
    * @protected
    * @returns {TemplateResult}
@@ -156,7 +156,7 @@ export class MgtPersonCardMessages extends BasePersonCardSection {
   }
 
   /**
-   * foo
+   * Render a message item
    *
    * @protected
    * @param {IMessage} message

@@ -15,7 +15,7 @@ import { getSharedFiles, IFile } from './graph.files';
 import { styles } from './mgt-person-card-files-css';
 
 /**
- * foo
+ * The files subsection of the person card
  *
  * @export
  * @class MgtPersonCardProfile
@@ -32,7 +32,7 @@ export class MgtPersonCardFiles extends BasePersonCardSection {
   }
 
   /**
-   * foo
+   * The name for display in the overview section.
    *
    * @readonly
    * @type {string}
@@ -45,7 +45,7 @@ export class MgtPersonCardFiles extends BasePersonCardSection {
   private _files: IFile[];
 
   /**
-   * foo
+   * Reset any state in the section
    *
    * @protected
    * @memberof MgtPersonCardFiles
@@ -55,7 +55,7 @@ export class MgtPersonCardFiles extends BasePersonCardSection {
   }
 
   /**
-   * foo
+   * Render the icon for display in the navigation ribbon.
    *
    * @returns {TemplateResult}
    * @memberof MgtPersonCardFiles
@@ -71,7 +71,7 @@ export class MgtPersonCardFiles extends BasePersonCardSection {
   }
 
   /**
-   * foo
+   * Render the compact view
    *
    * @returns {TemplateResult}
    * @memberof MgtPersonCardFiles
@@ -97,7 +97,7 @@ export class MgtPersonCardFiles extends BasePersonCardSection {
   }
 
   /**
-   * foo
+   * Render the full view
    *
    * @protected
    * @returns {TemplateResult}
@@ -125,7 +125,7 @@ export class MgtPersonCardFiles extends BasePersonCardSection {
   }
 
   /**
-   * foo
+   * Render the section in a loading state
    *
    * @protected
    * @returns {TemplateResult}
@@ -138,7 +138,7 @@ export class MgtPersonCardFiles extends BasePersonCardSection {
   }
 
   /**
-   * foo
+   * Render the section in a empty data state
    *
    * @protected
    * @returns {TemplateResult}
@@ -151,7 +151,7 @@ export class MgtPersonCardFiles extends BasePersonCardSection {
   }
 
   /**
-   * foo
+   * Render a file item
    *
    * @protected
    * @param {IFile} file

@@ -137,7 +137,7 @@ export class MgtPersonCard extends MgtTemplatedComponent {
   public inheritDetails: boolean;
 
   /**
-   * foo
+   * The subsections for display in the lower part of the card
    *
    * @protected
    * @type {BasePersonCardSection[]}
@@ -203,7 +203,7 @@ export class MgtPersonCard extends MgtTemplatedComponent {
   }
 
   /**
-   * foo
+   * Navigate the card to a different user.
    *
    * @protected
    * @memberof MgtPersonCard
@@ -221,7 +221,7 @@ export class MgtPersonCard extends MgtTemplatedComponent {
   }
 
   /**
-   * foo
+   * Navigate the card back to the previous user
    *
    * @returns {void}
    * @memberof MgtPersonCard
@@ -490,7 +490,7 @@ export class MgtPersonCard extends MgtTemplatedComponent {
   }
 
   /**
-   * foo
+   * Render the navigation ribbon for subsections
    *
    * @protected
    * @returns {TemplateResult}
@@ -528,7 +528,7 @@ export class MgtPersonCard extends MgtTemplatedComponent {
   }
 
   /**
-   * foo
+   * Render the default section with compact views for each subsection.
    *
    * @protected
    * @returns {TemplateResult}
@@ -573,7 +573,7 @@ export class MgtPersonCard extends MgtTemplatedComponent {
   }
 
   /**
-   * foo
+   * Render the actively selected section.
    *
    * @protected
    * @returns {TemplateResult}
@@ -760,7 +760,7 @@ export class MgtPersonCard extends MgtTemplatedComponent {
   }
 
   /**
-   * foo
+   * Send a chat message to the user from the quick message input.
    *
    * @protected
    * @returns {void}

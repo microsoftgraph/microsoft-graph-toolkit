@@ -14,7 +14,7 @@ import { getProfile, IPersonAnniversary, IPersonInterest, IProfile } from './gra
 import { styles } from './mgt-person-card-profile-css';
 
 /**
- * foo
+ * The user profile subsection of the person card
  *
  * @export
  * @class MgtPersonCardProfile
@@ -31,7 +31,7 @@ export class MgtPersonCardProfile extends BasePersonCardSection {
   }
 
   /**
-   * foo
+   * The name for display in the overview section.
    *
    * @readonly
    * @type {string}
@@ -42,7 +42,7 @@ export class MgtPersonCardProfile extends BasePersonCardSection {
   }
 
   /**
-   * foo
+   * The user's profile metadata
    *
    * @protected
    * @type {IProfile}
@@ -75,7 +75,7 @@ export class MgtPersonCardProfile extends BasePersonCardSection {
   }
 
   /**
-   * foo
+   * Render the icon for display in the navigation ribbon.
    *
    * @returns {TemplateResult}
    * @memberof MgtPersonCardProfile
@@ -93,7 +93,7 @@ export class MgtPersonCardProfile extends BasePersonCardSection {
   }
 
   /**
-   * foo
+   * Reset any state in the section
    *
    * @protected
    * @memberof MgtPersonCardProfile
@@ -103,7 +103,7 @@ export class MgtPersonCardProfile extends BasePersonCardSection {
   }
 
   /**
-   * foo
+   * Render the compact view
    *
    * @protected
    * @returns {TemplateResult}
@@ -131,7 +131,7 @@ export class MgtPersonCardProfile extends BasePersonCardSection {
   }
 
   /**
-   * foo
+   * Render the full view
    *
    * @protected
    * @returns
@@ -161,7 +161,7 @@ export class MgtPersonCardProfile extends BasePersonCardSection {
   }
 
   /**
-   * foo
+   * Render the section in a loading state
    *
    * @protected
    * @returns {TemplateResult}
@@ -174,7 +174,7 @@ export class MgtPersonCardProfile extends BasePersonCardSection {
   }
 
   /**
-   * foo
+   * Render the section in a empty data state
    *
    * @protected
    * @returns {TemplateResult}
@@ -187,7 +187,7 @@ export class MgtPersonCardProfile extends BasePersonCardSection {
   }
 
   /**
-   * foo
+   * Render the user's known languages
    *
    * @protected
    * @returns
@@ -241,7 +241,7 @@ export class MgtPersonCardProfile extends BasePersonCardSection {
   }
 
   /**
-   * foo
+   * Render the user's skills
    *
    * @protected
    * @returns {TemplateResult}
@@ -282,7 +282,7 @@ export class MgtPersonCardProfile extends BasePersonCardSection {
   }
 
   /**
-   * foo
+   * Render the user's work experience timeline
    *
    * @protected
    * @returns {TemplateResult}
@@ -335,7 +335,7 @@ export class MgtPersonCardProfile extends BasePersonCardSection {
   }
 
   /**
-   * foo
+   * Render the user's education timeline
    *
    * @protected
    * @returns {TemplateResult}
@@ -387,7 +387,7 @@ export class MgtPersonCardProfile extends BasePersonCardSection {
   }
 
   /**
-   * foo
+   * Render the user's professional interests
    *
    * @protected
    * @returns {TemplateResult}
@@ -428,7 +428,7 @@ export class MgtPersonCardProfile extends BasePersonCardSection {
   }
 
   /**
-   * foo
+   * Render the user's personal interests
    *
    * @protected
    * @returns {TemplateResult}
@@ -469,7 +469,7 @@ export class MgtPersonCardProfile extends BasePersonCardSection {
   }
 
   /**
-   * foo
+   * Render the user's birthday
    *
    * @protected
    * @returns {TemplateResult}
