@@ -12,7 +12,7 @@ import { MgtPerson } from '../../components/mgt-person/mgt-person';
 import { MgtTemplatedComponent } from '../../components/templatedComponent';
 import { findPeople, getEmailFromGraphEntity } from '../../graph/graph.people';
 import { getPersonImage } from '../../graph/graph.photos';
-import { getMe, getUserWithPhoto } from '../../graph/graph.user';
+import { getUserWithPhoto } from '../../graph/graph.user';
 import { IDynamicPerson } from '../../graph/types';
 import { Providers } from '../../Providers';
 import { ProviderState } from '../../providers/IProvider';
@@ -28,8 +28,7 @@ import './sections/mgt-person-card-profile/mgt-person-card-profile';
 import { MgtPersonCardProfile } from './sections/mgt-person-card-profile/mgt-person-card-profile';
 
 /**
- * Web Component used to show detailed data for a person in the
- * Microsoft Graph
+ * Web Component used to show detailed data for a person in the Microsoft Graph
  *
  * @export
  * @class MgtPersonCard
@@ -586,107 +585,6 @@ export class MgtPersonCard extends MgtTemplatedComponent {
 
     return html`
       ${this._currentSection.asFullView()}
-    `;
-  }
-
-  /**
-   * Render additional details for the person.
-   *
-   * @protected
-   * @returns {TemplateResult}
-   * @memberof MgtPersonCard
-   */
-  protected renderAdditionalDetails(person?: IDynamicPerson): TemplateResult {
-    person = person || this.personDetails;
-    const personImage = this.getImage();
-
-    const additionalDetailsTemplate = this.hasTemplate('additional-details')
-      ? this.renderTemplate('additional-details', { person, personImage })
-      : html`
-          <mgt-person-card-profile user-id="${person.id}"></mgt-person-card-profile>
-        `;
-
-    return html`
-      <div class="expanded-details-info">
-        ${additionalDetailsTemplate}
-      </div>
-    `;
-  }
-
-  /**
-   * Render the contact info part of the additional details.
-   *
-   * @protected
-   * @returns {TemplateResult}
-   * @memberof MgtPersonCard
-   */
-  protected renderContactDetails(person?: IDynamicPerson): TemplateResult {
-    person = person || this.personDetails;
-    const userPerson = person as MicrosoftGraph.User;
-    const personPerson = person as MicrosoftGraph.Person;
-
-    if (this.hasTemplate('contact-details')) {
-      return this.renderTemplate('contact-details', { userPerson });
-    }
-
-    // Chat
-    let chat: TemplateResult;
-    if (userPerson.userPrincipalName) {
-      chat = html`
-        <div class="details-icon" @click=${() => this.chatUser()}>
-          ${getSvg(SvgIcon.SmallChat, '#666666')}
-          <span class="link-subtitle data">${userPerson.userPrincipalName}</span>
-        </div>
-      `;
-    }
-
-    // Email
-    let email: TemplateResult;
-    if (getEmailFromGraphEntity(person)) {
-      email = html`
-        <div class="details-icon" @click=${() => this.emailUser()}>
-          ${getSvg(SvgIcon.SmallEmail, '#666666')}
-          <span class="link-subtitle data">${getEmailFromGraphEntity(person)}</span>
-        </div>
-      `;
-    }
-
-    // Phone
-    let phone: TemplateResult;
-    if (userPerson.businessPhones && userPerson.businessPhones.length > 0) {
-      phone = html`
-        <div class="details-icon" @click=${() => this.callUser()}>
-          ${getSvg(SvgIcon.SmallPhone, '#666666')}
-          <span class="link-subtitle data">${userPerson.businessPhones[0]}</span>
-        </div>
-      `;
-    } else if (personPerson.phones && personPerson.phones.length > 0) {
-      const businessPhones = this.getPersonBusinessPhones(personPerson);
-      phone = html`
-        <div class="details-icon" @click=${() => this.callUser()}>
-          ${getSvg(SvgIcon.SmallPhone, '#666666')}
-          <span class="link-subtitle data">${businessPhones[0]}</span>
-        </div>
-      `;
-    }
-
-    // Location
-    let location: TemplateResult;
-    if (person.officeLocation) {
-      location = html`
-        <div class="details-icon">
-          ${getSvg(SvgIcon.SmallLocation, '#666666')}<span class="normal-subtitle data">${person.officeLocation}</span>
-        </div>
-      `;
-    }
-
-    return html`
-      <div class="expanded-details-info">
-        <div class="contact-text">Contact</div>
-        <div class="icons">
-          ${chat} ${email} ${phone} ${location}
-        </div>
-      </div>
     `;
   }
 
