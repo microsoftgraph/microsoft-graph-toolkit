@@ -16,7 +16,6 @@ import { getUserWithPhoto } from '../../graph/graph.user';
 import { IDynamicPerson } from '../../graph/types';
 import { Providers } from '../../Providers';
 import { ProviderState } from '../../providers/IProvider';
-import { getSvg, SvgIcon } from '../../utils/SvgHelper';
 import { TeamsHelper } from '../../utils/TeamsHelper';
 import { styles } from './mgt-person-card-css';
 import { BasePersonCardSection } from './sections/BasePersonCardSection';
@@ -24,7 +23,6 @@ import { MgtPersonCardContact } from './sections/mgt-person-card-contact/mgt-per
 import { MgtPersonCardFiles } from './sections/mgt-person-card-files/mgt-person-card-files';
 import { MgtPersonCardMessages } from './sections/mgt-person-card-messages/mgt-person-card-messages';
 import { MgtPersonCardOrganization } from './sections/mgt-person-card-organization/mgt-person-card-organization';
-import './sections/mgt-person-card-profile/mgt-person-card-profile';
 import { MgtPersonCardProfile } from './sections/mgt-person-card-profile/mgt-person-card-profile';
 
 /**
