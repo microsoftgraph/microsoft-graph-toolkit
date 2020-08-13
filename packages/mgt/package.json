@@ -41,7 +41,7 @@
     "test": "jest",
     "test:watch": "jest --watch",
     "tsc": "tsc",
-    "tsc:watch": "tsc --watch",
+    "tsc:watch": "tsc --watch --project ./tsconfig.dev.json",
     "watch": "npm-run-all -p sass:watch tsc:watch"
   },
   "dependencies": {

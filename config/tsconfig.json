@@ -8,8 +8,7 @@
     "target": "es2015",
     "declaration": true,
     "esModuleInterop": true,
-    "inlineSourceMap": true,
-    "inlineSources": true
+    "sourceMap": true
   },
   "exclude": ["node_modules"]
 }
