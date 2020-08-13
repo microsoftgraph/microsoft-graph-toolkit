@@ -2,23 +2,13 @@
   "compilerOptions": {
     "allowSyntheticDefaultImports": true,
     "experimentalDecorators": true,
-    "lib": [
-      "dom",
-      "es2015"
-    ],
-    "module": "esnext",
+    "lib": ["dom", "es2015"],
+    "module": "es6",
     "moduleResolution": "node",
     "target": "es2015",
-    "outDir": "dist/es6",
     "declaration": true,
     "esModuleInterop": true,
-    "sourceMap": true,
-    "rootDir": "src"
+    "sourceMap": true
   },
-  "exclude": [
-    "node_modules"
-  ],
-  "include": [
-    "src"
-  ]
+  "exclude": ["node_modules"]
 }

@@ -5,8 +5,8 @@
  * -------------------------------------------------------------------------------------------
  */
 
+import { IGraph } from '@microsoft/mgt-element';
 import { GraphRequest } from '@microsoft/microsoft-graph-client';
-import { IGraph } from '../IGraph';
 
 /**
  * A helper class to assist in getting multiple pages from a resource

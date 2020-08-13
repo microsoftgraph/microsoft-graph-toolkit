@@ -5,8 +5,8 @@
  * -------------------------------------------------------------------------------------------
  */
 
+import { IGraph } from '@microsoft/mgt-element';
 import { User } from '@microsoft/microsoft-graph-types';
-import { IGraph } from '../IGraph';
 import { CacheItem, CacheSchema, CacheService, CacheStore } from '../utils/Cache';
 import { prepScopes } from '../utils/GraphHelpers';
 import { findPeople } from './graph.people';

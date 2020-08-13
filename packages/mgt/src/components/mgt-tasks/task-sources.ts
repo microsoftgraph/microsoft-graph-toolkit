@@ -5,10 +5,10 @@
  * -------------------------------------------------------------------------------------------
  */
 
+import { IGraph } from '@microsoft/mgt-element';
 import { PlannerAssignments } from '@microsoft/microsoft-graph-types';
 import { OutlookTask, OutlookTaskFolder, OutlookTaskGroup } from '@microsoft/microsoft-graph-types-beta';
 import { BetaGraph } from '../../BetaGraph';
-import { IGraph } from '../../IGraph';
 import {
   addPlannerTask,
   assignPeopleToPlannerTask,
