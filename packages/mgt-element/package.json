@@ -10,8 +10,10 @@
     "src"
   ],
   "scripts": {
-    "build": "npm run clean && tsc",
+    "build": "npm-run-all clean build:esm",
+    "build:esm": "tsc",
     "clean": "shx rm -rf dist",
+    "lint": "tslint -c ../../tslint.json 'src/**/*.ts'",
     "prepack": "npm run build",
     "watch": "tsc --watch"
   },
@@ -22,8 +24,10 @@
   },
   "devDependencies": {
     "npm-run-all": "^4.1.5",
-    "typescript": "^3.7.5",
-    "shx": "^0.3.2"
+    "shx": "^0.3.2",
+    "tslint": "^5.20.1",
+    "tslint-config-prettier": "^1.18.0",
+    "typescript": "^3.7.5"
   },
   "publishConfig": {
     "directory": "dist"

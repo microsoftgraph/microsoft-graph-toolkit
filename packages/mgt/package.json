@@ -25,13 +25,13 @@
     "src"
   ],
   "scripts": {
-    "build": "run-s lint setVersion clean build:esm build:bundle",
+    "build": "npm-run-all setVersion clean build:esm build:bundle",
     "build:esm": "npm run sass && npm run tsc",
     "build:bundle": "npm run copy:loader && npm run copy:wc && npm run sass && rollup -c",
     "clean": "shx rm -rf dist",
     "copy:loader": "cpx src/bundle/mgt-loader.js dist/bundle",
     "copy:wc": "cpx node_modules/@webcomponents/webcomponentsjs/bundles/**/* dist/bundle/wc/bundles && cpx node_modules/@webcomponents/webcomponentsjs/webcomponents-loader.js dist/bundle/wc",
-    "lint": "tslint -c tslint.json 'src/**/*.ts'",
+    "lint": "tslint -c ../../tslint.json 'src/**/*.ts'",
     "prepack": "npm run build",
     "sass": "gulp sass",
     "sass:watch": "gulp watchSass",
@@ -51,6 +51,13 @@
     "@microsoft/mgt-element": "1.0.0",
     "msal": "^1.3.2",
     "office-ui-fabric-core": "11.0.0"
+  },
+  "devDependencies": {
+    "npm-run-all": "^4.1.5",
+    "tslint": "^5.20.1",
+    "tslint-config-prettier": "^1.18.0",
+    "typescript": "^3.7.5",
+    "shx": "^0.3.2"
   },
   "jest-junit": {
     "suiteName": "jest tests",

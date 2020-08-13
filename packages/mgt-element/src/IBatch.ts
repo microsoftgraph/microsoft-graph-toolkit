@@ -40,6 +40,12 @@ export class BatchResponse {
   public content: any;
 }
 
+/**
+ * Represents a collection of Graph requests to be sent simultaneously.
+ *
+ * @export
+ * @interface IBatch
+ */
 export interface IBatch {
   /**
    * Get whether there are requests that have not been executed

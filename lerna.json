@@ -1,4 +1,4 @@
 {
-  "packages": ["packages/mgt-element", "packages/mgt"],
+  "packages": ["packages/**/*"],
   "version": "independent"
 }
