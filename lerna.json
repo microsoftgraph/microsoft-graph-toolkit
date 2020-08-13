@@ -1,6 +1,4 @@
 {
-  "packages": [
-    "packages/mgt"
-  ],
-  "version": "1.3.3"
+  "packages": ["packages/**/*"],
+  "version": "independent"
 }
