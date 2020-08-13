@@ -13,7 +13,7 @@
     "build": "npm-run-all clean build:esm",
     "build:esm": "tsc",
     "clean": "shx rm -rf dist",
-    "lint": "tslint -c ../../tslint.json 'src/**/*.ts'",
+    "lint": "tslint -c ../../config/tslint.json 'src/**/*.ts'",
     "prepack": "npm run build",
     "watch": "tsc --watch"
   },
