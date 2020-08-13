@@ -157,7 +157,6 @@ export async function getPeople(graph: IGraph): Promise<Person[]> {
   let cache: CacheStore<CachePeopleQuery>;
   if (peopleCacheEnabled()) {
     cache = CacheService.getCache<CachePeopleQuery>(cacheSchema, 'peopleQuery');
-    // not a great way to do this, don't know a better way
     const cacheRes = await cache.getValue('*');
 
     if (cacheRes && getPeopleInvalidationTime() > Date.now() - cacheRes.timeCached) {

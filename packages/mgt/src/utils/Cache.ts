@@ -5,7 +5,7 @@
  * -------------------------------------------------------------------------------------------
  */
 
-import { openDB } from 'idb';
+import { deleteDB, openDB } from 'idb';
 import { Providers } from '../Providers';
 import { ProviderState } from '../providers/IProvider';
 
@@ -118,7 +118,9 @@ export class CacheService {
    * Clears all the stores within the cache
    */
   public static clearCaches() {
-    this.cacheStore.forEach(x => x.clearStore());
+    // this.cacheStore.forEach(x => x.clearStore());
+    this.cacheStore.forEach(x => x.deleteParentDB());
+    // indexedDB.deleteDatabase('mgt-users');
   }
 
   private static cacheStore: Map<string, CacheStore<CacheItem>> = new Map();
@@ -305,6 +307,10 @@ export class CacheStore<T extends CacheItem> {
     }
 
     (await this.getDb()).clear(this.store);
+  }
+
+  public deleteParentDB() {
+    indexedDB.deleteDatabase(this.getDBName());
   }
 
   private getDb() {
