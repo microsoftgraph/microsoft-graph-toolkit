@@ -1,7 +1,0 @@
-{
-  "extends": "./tsconfig",
-  "compilerOptions": {
-    "module": "esnext"
-  },
-  "exclude": ["node_modules", "dist"]
-}
