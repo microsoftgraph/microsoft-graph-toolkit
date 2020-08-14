@@ -5,10 +5,10 @@
  * -------------------------------------------------------------------------------------------
  */
 
+import { BatchResponse, IBatch, IGraph } from '@microsoft/mgt-element';
 import { BatchRequestContent, MiddlewareOptions } from '@microsoft/microsoft-graph-client';
-import { IGraph } from '../IGraph';
+import { delay } from '../utils/Utils';
 import { prepScopes } from './GraphHelpers';
-import { delay } from './Utils';
 
 /**
  * Represents a request to be executed in a batch
@@ -62,48 +62,13 @@ export class BatchRequest {
 }
 
 /**
- * Represents a response from a request executed in a batch
- *
- * @export
- * @class BatchResponse
- */
-// tslint:disable-next-line:max-classes-per-file
-export class BatchResponse {
-  /**
-   * The index of the requests as it was added to the queue
-   * Use this value if you need to sort the responses
-   * in the order they were added
-   *
-   * @type {number}
-   * @memberof BatchResponse
-   */
-  public index: number;
-
-  /**
-   * The id of the requests
-   *
-   * @type {string}
-   * @memberof BatchResponse
-   */
-  public id: string;
-
-  /**
-   * The content of the response
-   *
-   * @type {*}
-   * @memberof BatchResponse
-   */
-  public content: any;
-}
-
-/**
  * Method to reduce repetitive requests to the Graph
  *
  * @export
  * @class Batch
  */
 // tslint:disable-next-line: max-classes-per-file
-export class Batch {
+export class Batch implements IBatch {
   // this doesn't really mater what it is as long as it's a root base url
   // otherwise a Request assumes the current path and that could change the relative path
   private static baseUrl = 'https://graph.microsoft.com';

@@ -9,5 +9,6 @@
     "flyout",
     "semibold",
     "xmlns"
-  ]
+  ],
+  "tslint.configFile": "./config/tslint.json"
 }
