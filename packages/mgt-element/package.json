@@ -14,7 +14,7 @@
     "build:esm": "tsc",
     "clean": "shx rm -rf dist",
     "lint": "tslint -c ../../config/tslint.json 'src/**/*.ts'",
-    "prepack": "npm run build",
+    "prepack": "shx rm -rf *.tgz && npm run build",
     "postpack": "cpx *.tgz ../../artifacts",
     "watch": "tsc --watch"
   },
