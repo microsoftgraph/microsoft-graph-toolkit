@@ -5,7 +5,7 @@
  * -------------------------------------------------------------------------------------------
  */
 
-import { deleteDB, openDB } from 'idb';
+import { openDB } from 'idb';
 import { Providers } from '../Providers';
 import { ProviderState } from '../providers/IProvider';
 
@@ -97,19 +97,19 @@ export class CacheService {
    * @static
    * @template T
    * @param {CacheSchema} schema
-   * @param {string} store
+   * @param {string} storeName
    * @returns {CacheStore<T>}
    * @memberof CacheService
    */
-  public static getCache<T extends CacheItem>(schema: CacheSchema, store: string): CacheStore<T> {
-    const key = `${schema.name}/${store}`;
+  public static getCache<T extends CacheItem>(schema: CacheSchema, storeName: string): CacheStore<T> {
+    const key = `${schema.name}/${storeName}`;
 
     if (!this.isInitialized) {
       this.init();
     }
 
-    if (!this.cacheStore.has(store)) {
-      this.cacheStore.set(key, new CacheStore<T>(schema, store));
+    if (!this.cacheStore.has(storeName)) {
+      this.cacheStore.set(key, new CacheStore<T>(schema, storeName));
     }
     return this.cacheStore.get(key) as CacheStore<T>;
   }
@@ -118,9 +118,7 @@ export class CacheService {
    * Clears all the stores within the cache
    */
   public static clearCaches() {
-    // this.cacheStore.forEach(x => x.clearStore());
-    this.cacheStore.forEach(x => x.deleteParentDB());
-    // indexedDB.deleteDatabase('mgt-users');
+    this.cacheStore.forEach(x => indexedDB.deleteDatabase(x.getDBName()));
   }
 
   private static cacheStore: Map<string, CacheStore<CacheItem>> = new Map();
@@ -296,7 +294,7 @@ export class CacheStore<T extends CacheItem> {
   }
 
   /**
-   * clears the store of all stored values
+   * Clears the store of all stored values
    *
    * @returns
    * @memberof Cache
@@ -309,8 +307,11 @@ export class CacheStore<T extends CacheItem> {
     (await this.getDb()).clear(this.store);
   }
 
-  public deleteParentDB() {
-    indexedDB.deleteDatabase(this.getDBName());
+  /**
+   * Returns the name of the parent DB that the cache store belongs to
+   */
+  public getDBName() {
+    return `mgt-${this.schema.name}`;
   }
 
   private getDb() {
@@ -323,9 +324,5 @@ export class CacheStore<T extends CacheItem> {
         }
       }
     });
-  }
-
-  private getDBName() {
-    return `mgt-${this.schema.name}`;
   }
 }
