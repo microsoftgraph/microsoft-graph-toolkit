@@ -14,5 +14,5 @@
 }
 @if (User.Identity.IsAuthenticated)
 {
-    <mgt-person person-details="@ViewData["Response"]" person-image="@ViewData["Picture"]" show-name show-email person-card="hover"></mgt-person>
+    <mgt-person person-details="@ViewData["Response"]" person-image="@ViewData["Picture"]" show-presence view="twoLines" person-card="hover"></mgt-person>
 }
