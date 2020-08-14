@@ -14,7 +14,8 @@
     "build:esm": "tsc",
     "clean": "shx rm -rf dist",
     "lint": "tslint -c ../../config/tslint.json 'src/**/*.ts'",
-    "prepack": "npm run build",
+    "prepack": "shx rm -rf *.tgz && npm run build",
+    "postpack": "cpx *.tgz ../../artifacts",
     "watch": "tsc --watch"
   },
   "author": "Microsoft",
@@ -24,6 +25,7 @@
   },
   "devDependencies": {
     "npm-run-all": "^4.1.5",
+    "cpx": "^1.5.0",
     "shx": "^0.3.2",
     "tslint": "^5.20.1",
     "tslint-config-prettier": "^1.18.0",
