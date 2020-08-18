@@ -10,11 +10,11 @@ using Microsoft.Identity.Client;
 using Microsoft.Graph;
 using MicrosoftGraphAspNetCoreConnectSample.Extensions;
 
-namespace MicrosoftGraphAspNetCoreConnectSample.Helpers
+namespace MicrosoftGraphAspNetCoreConnectSample.Services
 {
     public class GraphAuthProvider : IGraphAuthProvider
     {
-        private IConfidentialClientApplication _app;
+        private readonly IConfidentialClientApplication _app;
         private readonly string[] _scopes;
 
         public GraphAuthProvider(IConfiguration configuration)

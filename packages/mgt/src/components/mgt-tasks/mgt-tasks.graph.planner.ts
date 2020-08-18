@@ -5,8 +5,8 @@
  * -------------------------------------------------------------------------------------------
  */
 
+import { IGraph } from '@microsoft/mgt-element';
 import { PlannerBucket, PlannerPlan, PlannerTask } from '@microsoft/microsoft-graph-types';
-import { IGraph } from '../../IGraph';
 import { prepScopes } from '../../utils/GraphHelpers';
 
 /**
