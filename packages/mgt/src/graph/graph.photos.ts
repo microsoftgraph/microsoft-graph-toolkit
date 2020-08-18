@@ -52,6 +52,16 @@ const getPhotoInvalidationTime = () =>
 const photosCacheEnabled = () => CacheService.config.photos.isEnabled && CacheService.config.isEnabled;
 
 /**
+ * Name of the users store name
+ */
+const userStore: string = 'users';
+
+/**
+ * Name of the contacts store name
+ */
+const contactStore: string = 'contacts';
+
+/**
  * retrieves a photo for the specified resource.
  *
  * @param {string} resource
@@ -88,7 +98,7 @@ export async function getContactPhoto(graph: IGraph, contactId: string): Promise
   let cache: CacheStore<CachePhoto>;
   let photoDetails: CachePhoto;
   if (photosCacheEnabled()) {
-    cache = CacheService.getCache<CachePhoto>(cacheSchema, 'contacts');
+    cache = CacheService.getCache<CachePhoto>(cacheSchema, contactStore);
     photoDetails = await cache.getValue(contactId);
     if (photoDetails && getPhotoInvalidationTime() > Date.now() - photoDetails.timeCached) {
       return photoDetails.photo;
@@ -96,7 +106,7 @@ export async function getContactPhoto(graph: IGraph, contactId: string): Promise
   }
 
   photoDetails = await getPhotoForResource(graph, `me/contacts/${contactId}`, ['contacts.read']);
-  if (photosCacheEnabled()) {
+  if (photosCacheEnabled() && photoDetails) {
     cache.putValue(contactId, photoDetails);
   }
   return photoDetails ? photoDetails.photo : null;
@@ -120,7 +130,7 @@ export async function getUserPhoto(graph: IGraph, userId: string): Promise<strin
   }
 
   photoDetails = await getPhotoForResource(graph, `users/${userId}`, ['user.readbasic.all']);
-  if (photosCacheEnabled()) {
+  if (photosCacheEnabled() && photoDetails) {
     cache.putValue(userId, photoDetails);
   }
   return photoDetails ? photoDetails.photo : null;
@@ -135,7 +145,7 @@ export async function myPhoto(graph: IGraph): Promise<string> {
   let cache: CacheStore<CachePhoto>;
   let photoDetails: CachePhoto;
   if (photosCacheEnabled()) {
-    cache = CacheService.getCache<CachePhoto>(cacheSchema, 'users');
+    cache = CacheService.getCache<CachePhoto>(cacheSchema, userStore);
     photoDetails = await cache.getValue('me');
     if (photoDetails && getPhotoInvalidationTime() > Date.now() - photoDetails.timeCached) {
       return photoDetails.photo;
@@ -163,7 +173,7 @@ export async function getPersonImage(graph: IGraph, person: IDynamicPerson) {
     // try to find a user by userPrincipalName
     const userPrincipalName = (person as MicrosoftGraph.Person).userPrincipalName;
     image = await getUserPhoto(graph, userPrincipalName);
-  } else if ((person as any).personType.subclass === 'PersonalContact') {
+  } else if ('personType' in person && (person as any).personType.subclass === 'PersonalContact') {
     // if person is a contact, look for them and their photo in contact api
     email = getEmailFromGraphEntity(person);
     const contact = await findContactByEmail(graph, email);
