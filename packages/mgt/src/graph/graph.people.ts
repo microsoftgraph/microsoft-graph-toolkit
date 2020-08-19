@@ -215,7 +215,7 @@ export async function getPeopleFromGroup(graph: IGraph, groupId: string): Promis
     .api(uri)
     .middlewareOptions(prepScopes(scopes))
     .get();
-  if (peopleCacheEnabled) {
+  if (peopleCacheEnabled()) {
     cache.putValue(groupId, { people: people.value.map(ppl => JSON.stringify(ppl)) });
   }
   return people ? people.value : null;

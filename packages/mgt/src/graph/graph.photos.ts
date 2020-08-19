@@ -43,13 +43,13 @@ interface CachePhoto extends CacheItem {
 /**
  * Defines expiration time
  */
-const getPhotoInvalidationTime = () =>
+export const getPhotoInvalidationTime = () =>
   CacheService.config.photos.invalidationPeriod || CacheService.config.defaultInvalidationPeriod;
 
 /**
  * Whether photo store is enabled
  */
-const photosCacheEnabled = () => CacheService.config.photos.isEnabled && CacheService.config.isEnabled;
+export const photosCacheEnabled = () => CacheService.config.photos.isEnabled && CacheService.config.isEnabled;
 
 /**
  * Name of the users store name

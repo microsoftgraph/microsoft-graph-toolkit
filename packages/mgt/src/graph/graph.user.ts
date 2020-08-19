@@ -10,7 +10,13 @@ import { User } from '@microsoft/microsoft-graph-types';
 import { CacheItem, CacheSchema, CacheService, CacheStore } from '../utils/Cache';
 import { prepScopes } from '../utils/GraphHelpers';
 import { findPeople } from './graph.people';
-import { getPhotoForResource, getPhotoFromCache, getUserPhoto, myPhoto, storePhotoInCache } from './graph.photos';
+import {
+  getPhotoForResource,
+  getPhotoFromCache,
+  getPhotoInvalidationTime,
+  photosCacheEnabled,
+  storePhotoInCache
+} from './graph.photos';
 import { IDynamicPerson } from './types';
 
 /**
@@ -103,28 +109,26 @@ export async function getMe(graph: IGraph): Promise<User> {
  * @returns {(Promise<IDynamicPerson>)}
  * @memberof Graph
  */
-
 export async function getUserWithPhoto(graph: IGraph, userId?: string): Promise<IDynamicPerson> {
   let person = null as IDynamicPerson;
   let cache: CacheStore<CacheUser>;
-
-  let userResponse = null;
-  let photoResponse: string = null;
-  let cachePhoto = null;
-  let user: CacheUser;
-
+  let photo = null;
+  let user: IDynamicPerson;
   // attempt to get user and photo from cache if enabled
   if (usersCacheEnabled()) {
-    cachePhoto = await getPhotoFromCache(userId || 'me', 'users');
-
     cache = CacheService.getCache<CacheUser>(cacheSchema, userStore);
-    user = await cache.getValue(userId || 'me');
-    if (user && getUserInvalidationTime() > Date.now() - user.timeCached) {
-      person = JSON.parse(user.user);
+    const cachedUser = await cache.getValue(userId || 'me');
+    if (cachedUser && getUserInvalidationTime() > Date.now() - cachedUser.timeCached) {
+      user = JSON.parse(cachedUser.user);
     }
   }
-
-  if (!cachePhoto && !user) {
+  if (photosCacheEnabled()) {
+    const cachedPhoto = await getPhotoFromCache(userId || 'me', 'users');
+    if (cachedPhoto && getPhotoInvalidationTime() > Date.now() - cachedPhoto.timeCached) {
+      photo = cachedPhoto.photo;
+    }
+  }
+  if (!photo && !user) {
     // batch calls
     const batch = graph.createBatch();
     if (userId) {
@@ -135,18 +139,22 @@ export async function getUserWithPhoto(graph: IGraph, userId?: string): Promise<
       batch.get('photo', 'me/photo/$value', ['user.read']);
     }
     const response = await batch.executeAll();
-    photoResponse = response.get('photo').content;
-    userResponse = response.get('user');
-  } else if (!cachePhoto) {
+    photo = response.get('photo').content;
+    user = response.get('user').content;
+  } else if (!photo) {
     // get photo from graph
     const resource = userId ? `users/${userId}` : 'me';
     const scopes = userId ? ['user.readbasic.all'] : ['user.read'];
-
     const response = await getPhotoForResource(graph, resource, scopes);
-    photoResponse = response.photo;
+    if (response) {
+      if (photosCacheEnabled()) {
+        storePhotoInCache(userId || 'me', 'users', { eTag: response.eTag, photo: response.photo });
+      }
+      photo = response.photo;
+    }
   } else if (!user) {
     // get user from graph
-    userResponse = userId
+    const response = userId
       ? await graph
           .api(`/users/${userId}`)
           .middlewareOptions(prepScopes('user.readbasic.all'))
@@ -155,21 +163,15 @@ export async function getUserWithPhoto(graph: IGraph, userId?: string): Promise<
           .api('me')
           .middlewareOptions(prepScopes('user.read'))
           .get();
-  }
-
-  // person & photo is either from cache or from graph
-  person = person || userResponse.content;
-  person.personImage = cachePhoto ? cachePhoto.photo : photoResponse;
-
-  // store user + photo if cache enabled
-  if (usersCacheEnabled()) {
-    const id = userId || 'me';
-    cache.putValue(id, { user: JSON.stringify(person) });
-    // cache is enabled but photo isn't
-    if (!cachePhoto) {
-      storePhotoInCache(userId || 'me', 'users', { eTag: null, photo: photoResponse });
+    if (response) {
+      if (usersCacheEnabled()) {
+        cache.putValue(userId || 'me', { user: JSON.stringify(response.content) });
+      }
+      user = response.content;
     }
   }
+  person = user;
+  person.personImage = photo;
   return person;
 }
 
