@@ -10,7 +10,7 @@ import { User } from '@microsoft/microsoft-graph-types';
 import { CacheItem, CacheSchema, CacheService, CacheStore } from '../utils/Cache';
 import { prepScopes } from '../utils/GraphHelpers';
 import { findPeople } from './graph.people';
-import { getUserPhoto, myPhoto } from './graph.photos';
+import { getPhotoForResource, getPhotoFromCache, getUserPhoto, myPhoto, storePhotoInCache } from './graph.photos';
 import { IDynamicPerson } from './types';
 
 /**
@@ -107,21 +107,46 @@ export async function getMe(graph: IGraph): Promise<User> {
 export async function getUserWithPhoto(graph: IGraph, userId?: string): Promise<IDynamicPerson> {
   let person = null as IDynamicPerson;
   let cache: CacheStore<CacheUser>;
-  // let userDetailsResponse = null;
-  const photo = userId ? await getUserPhoto(graph, userId) : await myPhoto(graph);
 
+  let userResponse = null;
+  let photoResponse: string = null;
+  let cachePhoto = null;
+  let user: CacheUser;
+
+  // attempt to get user and photo from cache if enabled
   if (usersCacheEnabled()) {
-    cache = CacheService.getCache<CacheUser>(cacheSchema, userStore);
-    const user: CacheUser = await cache.getValue(userId || 'me');
+    cachePhoto = await getPhotoFromCache(userId || 'me', 'users');
 
+    cache = CacheService.getCache<CacheUser>(cacheSchema, userStore);
+    user = await cache.getValue(userId || 'me');
     if (user && getUserInvalidationTime() > Date.now() - user.timeCached) {
       person = JSON.parse(user.user);
-      person.personImage = photo;
     }
   }
 
-  if (!person) {
-    const response = userId
+  if (!cachePhoto && !user) {
+    // batch calls
+    const batch = graph.createBatch();
+    if (userId) {
+      batch.get('user', `/users/${userId}`, ['user.readbasic.all']);
+      batch.get('photo', `users/${userId}/photo/$value`, ['user.readbasic.all']);
+    } else {
+      batch.get('user', 'me', ['user.read']);
+      batch.get('photo', 'me/photo/$value', ['user.read']);
+    }
+    const response = await batch.executeAll();
+    photoResponse = response.get('photo').content;
+    userResponse = response.get('user');
+  } else if (!cachePhoto) {
+    // get photo from graph
+    const resource = userId ? `users/${userId}` : 'me';
+    const scopes = userId ? ['user.readbasic.all'] : ['user.read'];
+
+    const response = await getPhotoForResource(graph, resource, scopes);
+    photoResponse = response.photo;
+  } else if (!user) {
+    // get user from graph
+    userResponse = userId
       ? await graph
           .api(`/users/${userId}`)
           .middlewareOptions(prepScopes('user.readbasic.all'))
@@ -130,16 +155,21 @@ export async function getUserWithPhoto(graph: IGraph, userId?: string): Promise<
           .api('me')
           .middlewareOptions(prepScopes('user.read'))
           .get();
-    if (response) {
-      person = response;
-      person.personImage = photo;
-    }
-    if (usersCacheEnabled()) {
-      const id = userId || 'me';
-      cache.putValue(id, { user: JSON.stringify(response) });
-    }
   }
 
+  // person & photo is either from cache or from graph
+  person = person || userResponse.content;
+  person.personImage = cachePhoto ? cachePhoto.photo : photoResponse;
+
+  // store user + photo if cache enabled
+  if (usersCacheEnabled()) {
+    const id = userId || 'me';
+    cache.putValue(id, { user: JSON.stringify(person) });
+    // cache is enabled but photo isn't
+    if (!cachePhoto) {
+      storePhotoInCache(userId || 'me', 'users', { eTag: null, photo: photoResponse });
+    }
+  }
   return person;
 }
 
@@ -194,17 +224,22 @@ export async function getUsersForUserIds(graph: IGraph, userIds: string[]): Prom
 
   if (usersCacheEnabled()) {
     cache = CacheService.getCache<CacheUser>(cacheSchema, userStore);
-    for (const id of userIds) {
-      peopleDict[id] = null;
-      const user = await cache.getValue(id);
-      if (user && getUserInvalidationTime() > Date.now() - user.timeCached) {
-        peopleDict[id] = JSON.parse(user.user);
-      } else if (id !== '') {
-        batch.get(id, `/users/${id}`, ['user.readbasic.all']);
-        notInCache.push(id);
-      }
+  }
+
+  for (const id of userIds) {
+    peopleDict[id] = null;
+    let user = null;
+    if (usersCacheEnabled()) {
+      user = await cache.getValue(id);
+    }
+    if (user && getUserInvalidationTime() > Date.now() - user.timeCached) {
+      peopleDict[id] = JSON.parse(user.user);
+    } else if (id !== '') {
+      batch.get(id, `/users/${id}`, ['user.readbasic.all']);
+      notInCache.push(id);
     }
   }
+
   try {
     const responses = await batch.executeAll();
     // iterate over userIds to ensure the order of ids

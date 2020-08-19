@@ -68,7 +68,7 @@ const contactStore: string = 'contacts';
  * @param {string[]} scopes
  * @returns {Promise<string>}
  */
-async function getPhotoForResource(graph: IGraph, resource: string, scopes: string[]): Promise<CachePhoto> {
+export async function getPhotoForResource(graph: IGraph, resource: string, scopes: string[]): Promise<CachePhoto> {
   try {
     const response = (await graph
       .api(`${resource}/photo/$value`)
@@ -122,7 +122,7 @@ export async function getUserPhoto(graph: IGraph, userId: string): Promise<strin
   let cache: CacheStore<CachePhoto>;
   let photoDetails: CachePhoto;
   if (photosCacheEnabled()) {
-    cache = CacheService.getCache<CachePhoto>(cacheSchema, 'users');
+    cache = CacheService.getCache<CachePhoto>(cacheSchema, userStore);
     photoDetails = await cache.getValue(userId);
     if (photoDetails && getPhotoInvalidationTime() > Date.now() - photoDetails.timeCached) {
       return photoDetails.photo;
@@ -215,4 +215,27 @@ export async function getPersonImage(graph: IGraph, person: IDynamicPerson) {
   }
 
   return image;
+}
+
+/**
+ * checks if user has a photo in the cache
+ * @param userId
+ * @returns {CachePhoto}
+ * @memberof Graph
+ */
+export async function getPhotoFromCache(userId: string, storeName: string): Promise<CachePhoto> {
+  const cache = CacheService.getCache<CachePhoto>(cacheSchema, storeName);
+  const item = await cache.getValue(userId);
+  return item;
+}
+
+/**
+ * checks if user has a photo in the cache
+ * @param userId
+ * @returns {void}
+ * @memberof Graph
+ */
+export async function storePhotoInCache(userId: string, storeName: string, value: CachePhoto): Promise<void> {
+  const cache = CacheService.getCache<CachePhoto>(cacheSchema, storeName);
+  cache.putValue(userId, value);
 }
