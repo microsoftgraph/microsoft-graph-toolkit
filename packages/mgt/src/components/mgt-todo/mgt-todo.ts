@@ -31,11 +31,11 @@ import {
 import { styles } from './mgt-todo-css';
 
 /**
- * Defines how a person card is shown when a user interacts with
- * a person component
+ * component enables the user to view, add, remove, complete, or edit todo tasks. It works with tasks in Microsoft Planner or Microsoft To-Do.
  *
  * @export
- * @enum {number}
+ * @class MgtTodo
+ * @extends {MgtTasksBase}
  *
  * @cssprop --tasks-header-padding - {String} Tasks header padding
  * @cssprop --tasks-header-margin - {String} Tasks header margin
@@ -83,14 +83,6 @@ import { styles } from './mgt-todo-css';
  * @cssprop --task-icon-border-radius - {String} Task icon border radius
  * @cssprop --task-icon-color - {Color} Task icon color
  * @cssprop --task-icon-color-completed - {Color} Task icon color when completed
- */
-
-/**
- * component enables the user to view, add, remove, complete, or edit tasks. It works with tasks in Microsoft Planner or Microsoft To-Do.
- *
- * @export
- * @class MgtTasks
- * @extends {MgtBaseComponent}
  */
 @customElement('mgt-todo')
 export class MgtTodo extends MgtTasksBase {
