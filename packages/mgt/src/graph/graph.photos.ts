@@ -5,9 +5,9 @@
  * -------------------------------------------------------------------------------------------
  */
 
+import { IGraph } from '@microsoft/mgt-element';
 import { ResponseType } from '@microsoft/microsoft-graph-client';
 import * as MicrosoftGraph from '@microsoft/microsoft-graph-types';
-import { IGraph } from '../IGraph';
 import { CacheItem, CacheSchema, CacheService, CacheStore } from '../utils/Cache';
 import { prepScopes } from '../utils/GraphHelpers';
 import { blobToBase64 } from '../utils/Utils';
@@ -43,13 +43,23 @@ interface CachePhoto extends CacheItem {
 /**
  * Defines expiration time
  */
-const getPhotoInvalidationTime = () =>
+export const getPhotoInvalidationTime = () =>
   CacheService.config.photos.invalidationPeriod || CacheService.config.defaultInvalidationPeriod;
 
 /**
  * Whether photo store is enabled
  */
-const photosCacheEnabled = () => CacheService.config.photos.isEnabled && CacheService.config.isEnabled;
+export const photosCacheEnabled = () => CacheService.config.photos.isEnabled && CacheService.config.isEnabled;
+
+/**
+ * Name of the users store name
+ */
+const userStore: string = 'users';
+
+/**
+ * Name of the contacts store name
+ */
+const contactStore: string = 'contacts';
 
 /**
  * retrieves a photo for the specified resource.
@@ -58,7 +68,7 @@ const photosCacheEnabled = () => CacheService.config.photos.isEnabled && CacheSe
  * @param {string[]} scopes
  * @returns {Promise<string>}
  */
-async function getPhotoForResource(graph: IGraph, resource: string, scopes: string[]): Promise<CachePhoto> {
+export async function getPhotoForResource(graph: IGraph, resource: string, scopes: string[]): Promise<CachePhoto> {
   try {
     const response = (await graph
       .api(`${resource}/photo/$value`)
@@ -88,7 +98,7 @@ export async function getContactPhoto(graph: IGraph, contactId: string): Promise
   let cache: CacheStore<CachePhoto>;
   let photoDetails: CachePhoto;
   if (photosCacheEnabled()) {
-    cache = CacheService.getCache<CachePhoto>(cacheSchema, 'contacts');
+    cache = CacheService.getCache<CachePhoto>(cacheSchema, contactStore);
     photoDetails = await cache.getValue(contactId);
     if (photoDetails && getPhotoInvalidationTime() > Date.now() - photoDetails.timeCached) {
       return photoDetails.photo;
@@ -96,7 +106,7 @@ export async function getContactPhoto(graph: IGraph, contactId: string): Promise
   }
 
   photoDetails = await getPhotoForResource(graph, `me/contacts/${contactId}`, ['contacts.read']);
-  if (photosCacheEnabled()) {
+  if (photosCacheEnabled() && photoDetails) {
     cache.putValue(contactId, photoDetails);
   }
   return photoDetails ? photoDetails.photo : null;
@@ -112,7 +122,7 @@ export async function getUserPhoto(graph: IGraph, userId: string): Promise<strin
   let cache: CacheStore<CachePhoto>;
   let photoDetails: CachePhoto;
   if (photosCacheEnabled()) {
-    cache = CacheService.getCache<CachePhoto>(cacheSchema, 'users');
+    cache = CacheService.getCache<CachePhoto>(cacheSchema, userStore);
     photoDetails = await cache.getValue(userId);
     if (photoDetails && getPhotoInvalidationTime() > Date.now() - photoDetails.timeCached) {
       return photoDetails.photo;
@@ -120,7 +130,7 @@ export async function getUserPhoto(graph: IGraph, userId: string): Promise<strin
   }
 
   photoDetails = await getPhotoForResource(graph, `users/${userId}`, ['user.readbasic.all']);
-  if (photosCacheEnabled()) {
+  if (photosCacheEnabled() && photoDetails) {
     cache.putValue(userId, photoDetails);
   }
   return photoDetails ? photoDetails.photo : null;
@@ -135,7 +145,7 @@ export async function myPhoto(graph: IGraph): Promise<string> {
   let cache: CacheStore<CachePhoto>;
   let photoDetails: CachePhoto;
   if (photosCacheEnabled()) {
-    cache = CacheService.getCache<CachePhoto>(cacheSchema, 'users');
+    cache = CacheService.getCache<CachePhoto>(cacheSchema, userStore);
     photoDetails = await cache.getValue('me');
     if (photoDetails && getPhotoInvalidationTime() > Date.now() - photoDetails.timeCached) {
       return photoDetails.photo;
@@ -163,7 +173,7 @@ export async function getPersonImage(graph: IGraph, person: IDynamicPerson) {
     // try to find a user by userPrincipalName
     const userPrincipalName = (person as MicrosoftGraph.Person).userPrincipalName;
     image = await getUserPhoto(graph, userPrincipalName);
-  } else if ((person as any).personType.subclass === 'PersonalContact') {
+  } else if ('personType' in person && (person as any).personType.subclass === 'PersonalContact') {
     // if person is a contact, look for them and their photo in contact api
     email = getEmailFromGraphEntity(person);
     const contact = await findContactByEmail(graph, email);
@@ -205,4 +215,27 @@ export async function getPersonImage(graph: IGraph, person: IDynamicPerson) {
   }
 
   return image;
+}
+
+/**
+ * checks if user has a photo in the cache
+ * @param userId
+ * @returns {CachePhoto}
+ * @memberof Graph
+ */
+export async function getPhotoFromCache(userId: string, storeName: string): Promise<CachePhoto> {
+  const cache = CacheService.getCache<CachePhoto>(cacheSchema, storeName);
+  const item = await cache.getValue(userId);
+  return item;
+}
+
+/**
+ * checks if user has a photo in the cache
+ * @param userId
+ * @returns {void}
+ * @memberof Graph
+ */
+export async function storePhotoInCache(userId: string, storeName: string, value: CachePhoto): Promise<void> {
+  const cache = CacheService.getCache<CachePhoto>(cacheSchema, storeName);
+  cache.putValue(userId, value);
 }

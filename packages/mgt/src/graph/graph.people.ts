@@ -5,8 +5,8 @@
  * -------------------------------------------------------------------------------------------
  */
 
+import { IGraph } from '@microsoft/mgt-element';
 import { Contact, Person, User } from '@microsoft/microsoft-graph-types';
-import { IGraph } from '../IGraph';
 import { CacheItem, CacheSchema, CacheService, CacheStore } from '../utils/Cache';
 import { prepScopes } from '../utils/GraphHelpers';
 import { IDynamicPerson } from './types';
@@ -93,6 +93,21 @@ const getPeopleInvalidationTime = (): number =>
 const peopleCacheEnabled = (): boolean => CacheService.config.people.isEnabled && CacheService.config.isEnabled;
 
 /**
+ * Name of the contacts store name
+ */
+const contactsStore: string = 'contacts';
+
+/**
+ * Name of group people store name
+ */
+const groupStore: string = 'groupPeople';
+
+/**
+ * Name of people store name
+ */
+const peopleStore: string = 'peopleQuery';
+
+/**
  * async promise, returns all Graph people who are most relevant contacts to the signed in user.
  *
  * @param {string} query
@@ -109,10 +124,9 @@ export async function findPeople(
   const scopes = 'people.read';
 
   let cache: CacheStore<CachePeopleQuery>;
-  const item = { maxResults: top, results: null };
 
   if (peopleCacheEnabled()) {
-    cache = CacheService.getCache<CachePeopleQuery>(cacheSchema, 'peopleQuery');
+    cache = CacheService.getCache<CachePeopleQuery>(cacheSchema, peopleStore);
     const result: CachePeopleQuery = peopleCacheEnabled() ? await cache.getValue(query) : null;
     if (result && getPeopleInvalidationTime() > Date.now() - result.timeCached) {
       return result.results.map(peopleStr => JSON.parse(peopleStr));
@@ -139,6 +153,7 @@ export async function findPeople(
     .get();
 
   if (peopleCacheEnabled() && graphResult) {
+    const item = { maxResults: top, results: null };
     item.results = graphResult.value.map(personStr => JSON.stringify(personStr));
     cache.putValue(query, item);
   }
@@ -156,8 +171,7 @@ export async function getPeople(graph: IGraph): Promise<Person[]> {
 
   let cache: CacheStore<CachePeopleQuery>;
   if (peopleCacheEnabled()) {
-    cache = CacheService.getCache<CachePeopleQuery>(cacheSchema, 'peopleQuery');
-    // not a great way to do this, don't know a better way
+    cache = CacheService.getCache<CachePeopleQuery>(cacheSchema, peopleStore);
     const cacheRes = await cache.getValue('*');
 
     if (cacheRes && getPeopleInvalidationTime() > Date.now() - cacheRes.timeCached) {
@@ -189,7 +203,7 @@ export async function getPeopleFromGroup(graph: IGraph, groupId: string): Promis
   let cache: CacheStore<CacheGroupPeople>;
 
   if (peopleCacheEnabled()) {
-    cache = CacheService.getCache<CacheGroupPeople>(cacheSchema, 'groupPeople');
+    cache = CacheService.getCache<CacheGroupPeople>(cacheSchema, groupStore);
     const peopleItem = await cache.getValue(groupId);
     if (peopleItem && getPeopleInvalidationTime() > Date.now() - peopleItem.timeCached) {
       return peopleItem.people.map(peopleStr => JSON.parse(peopleStr));
@@ -201,7 +215,7 @@ export async function getPeopleFromGroup(graph: IGraph, groupId: string): Promis
     .api(uri)
     .middlewareOptions(prepScopes(scopes))
     .get();
-  if (peopleCacheEnabled) {
+  if (peopleCacheEnabled()) {
     cache.putValue(groupId, { people: people.value.map(ppl => JSON.stringify(ppl)) });
   }
   return people ? people.value : null;
@@ -237,7 +251,7 @@ export async function findContactByEmail(graph: IGraph, email: string): Promise<
   const scopes = 'contacts.read';
   let cache: CacheStore<CachePerson>;
   if (peopleCacheEnabled()) {
-    cache = CacheService.getCache<CachePerson>(cacheSchema, 'contacts');
+    cache = CacheService.getCache<CachePerson>(cacheSchema, contactsStore);
     const contact = await cache.getValue(email);
 
     if (contact && getPeopleInvalidationTime() > Date.now() - contact.timeCached) {
