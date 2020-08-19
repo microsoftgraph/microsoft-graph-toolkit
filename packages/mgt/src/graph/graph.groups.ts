@@ -7,6 +7,7 @@
 
 import { IGraph } from '@microsoft/mgt-element';
 import { Group } from '@microsoft/microsoft-graph-types';
+import { CacheItem, CacheSchema, CacheService, CacheStore } from '../utils/Cache';
 import { prepScopes } from '../utils/GraphHelpers';
 
 /**
@@ -47,6 +48,38 @@ export enum GroupType {
 }
 
 /**
+ * Definition of cache structure
+ */
+const cacheSchema: CacheSchema = {
+  name: 'groups',
+  stores: {
+    groups: {}
+  },
+  version: 1
+};
+
+/**
+ * Object to be stored in cache representing individual people
+ */
+interface CacheGroup extends CacheItem {
+  /**
+   * json representing a person stored as string
+   */
+  groups?: string[];
+}
+
+/**
+ * Defines the expiration time
+ */
+const getGroupsInvalidationTime = (): number =>
+  CacheService.config.groups.invalidationPeriod || CacheService.config.defaultInvalidationPeriod;
+
+/**
+ * Whether the groups store is enabled
+ */
+const groupsCacheEnabled = (): boolean => CacheService.config.groups.isEnabled && CacheService.config.isEnabled;
+
+/**
  * Searches the Graph for Groups
  *
  * @export
@@ -63,6 +96,16 @@ export async function findGroups(
   groupTypes: GroupType = GroupType.any
 ): Promise<Group[]> {
   const scopes = 'Group.Read.All';
+
+  let cache: CacheStore<CacheGroup>;
+
+  if (groupsCacheEnabled()) {
+    cache = CacheService.getCache(cacheSchema, 'groups');
+    const groups = await cache.getValue(query);
+    if (groups && getGroupsInvalidationTime() > Date.now() - groups.timeCached) {
+      return groups.groups.map(x => JSON.parse(x));
+    }
+  }
 
   let filterQuery = '';
   if (query !== '') {
@@ -101,5 +144,10 @@ export async function findGroups(
     .top(top)
     .middlewareOptions(prepScopes(scopes))
     .get();
+
+  if (groupsCacheEnabled() && result) {
+    cache.putValue(query, { groups: result.value.map(x => JSON.stringify(x)) });
+  }
+
   return result ? result.value : null;
 }

@@ -17,6 +17,13 @@ import { ProviderState } from '../providers/IProvider';
  */
 export interface CacheConfig {
   /**
+   * Cache options for agenda store
+   *
+   * @type {CacheOptions}
+   * @memberof CacheConfig
+   */
+  agenda: CacheOptions;
+  /**
    * Default global invalidation period
    *
    * @type {number}
@@ -45,19 +52,27 @@ export interface CacheConfig {
    */
   people: CacheOptions;
   /**
-   * Cache options for users store
-   *
-   * @type {CacheOptions}
-   * @memberof CacheConfig
-   */
-  users: CacheOptions;
-  /**
    * Cache options for photos store
    *
    * @type {CacheOptions}
    * @memberof CacheConfig
    */
   photos: CacheOptions;
+  /**
+   * Cache options for presence store
+   *
+   * @type {CacheOptions}
+   * @memberof CacheConfig
+   */
+
+  presence: CacheOptions;
+  /**
+   * Cache options for users store
+   *
+   * @type {CacheOptions}
+   * @memberof CacheConfig
+   */
+  users: CacheOptions;
 }
 
 /**
@@ -125,6 +140,10 @@ export class CacheService {
   private static isInitialized: boolean = false;
 
   private static cacheConfig: CacheConfig = {
+    agenda: {
+      invalidationPeriod: null,
+      isEnabled: true
+    },
     defaultInvalidationPeriod: 3600000,
     groups: {
       invalidationPeriod: null,
@@ -137,6 +156,10 @@ export class CacheService {
     },
     photos: {
       invalidationPeriod: null,
+      isEnabled: true
+    },
+    presence: {
+      invalidationPeriod: 300000,
       isEnabled: true
     },
     users: {
