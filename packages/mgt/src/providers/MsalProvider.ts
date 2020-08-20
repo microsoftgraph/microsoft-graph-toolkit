@@ -387,7 +387,7 @@ export class MsalProvider extends IProvider {
         throw new Error('clientId must be provided');
       }
     } else if ('userAgentApplication' in config) {
-      if (config.userAgentApplication instanceof UserAgentApplication) {
+      if (config.userAgentApplication) {
         userAgentApplication = config.userAgentApplication;
         const msalConfig = userAgentApplication.getCurrentConfiguration();
 
