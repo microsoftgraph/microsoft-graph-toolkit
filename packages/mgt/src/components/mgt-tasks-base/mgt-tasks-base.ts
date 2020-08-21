@@ -9,6 +9,8 @@ import { html, property, TemplateResult } from 'lit-element';
 import { classMap } from 'lit-html/directives/class-map';
 import { ComponentMediaQuery } from '../baseComponent';
 import { MgtTemplatedComponent } from '../templatedComponent';
+import { Providers } from '../../Providers';
+import { ProviderState } from '../../providers/IProvider';
 
 /**
  * The foundation for creating task based components.
@@ -129,6 +131,15 @@ export abstract class MgtTasksBase extends MgtTemplatedComponent {
    * trigger the element to update.
    */
   protected render() {
+    const provider = Providers.globalProvider;
+    if (!provider || provider.state !== ProviderState.SignedIn) {
+      return html``;
+    }
+
+    if (this.isLoadingState) {
+      return this.renderLoadingTask();
+    }
+
     const headerTemplate = !this.hideHeader ? this.renderHeader() : null;
     const newTaskTemplate = this._isNewTaskVisible ? this.renderNewTaskPanel() : null;
     const tasksTemplate = this.isLoadingState ? this.renderLoadingTask() : this.renderTasks();
