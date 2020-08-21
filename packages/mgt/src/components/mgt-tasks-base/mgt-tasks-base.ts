@@ -388,8 +388,6 @@ export abstract class MgtTasksBase extends MgtTemplatedComponent {
    */
   protected handleTaskClick(e: Event, task: any) {
     this.fireCustomEvent('taskClick', { task });
-    e.stopPropagation();
-    e.preventDefault();
   }
 
   /**
