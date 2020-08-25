@@ -25,7 +25,7 @@
     "src"
   ],
   "scripts": {
-    "build": "npm-run-all setVersion clean build:compile",
+    "build": "npm-run-all setVersion clean build:compile bundle",
     "build:compile": "npm-run-all sass compile",
     "build:watch": "npm-run-all -p sass:watch compile:watch",
     "clean": "shx rm -rf ./dist && shx rm -rf ./tsconfig.tsbuildinfo",

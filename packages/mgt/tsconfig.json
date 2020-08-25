@@ -5,7 +5,6 @@
     "rootDir": "src",
     "baseUrl": "./",
     "resolveJsonModule": true,
-    "esModuleInterop": true,
     "paths": {
       "@microsoft/mgt-element": ["../mgt-element/src"]
     }
