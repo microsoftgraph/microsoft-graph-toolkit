@@ -9,7 +9,7 @@ import { customElement, html, TemplateResult } from 'lit-element';
 import { classMap } from 'lit-html/directives/class-map';
 import { repeat } from 'lit-html/directives/repeat';
 import { BetaGraph } from '../../BetaGraph';
-import { IGraph } from '../../IGraph';
+import { IGraph } from '@microsoft/mgt-element';
 import { Providers } from '../../Providers';
 import { ProviderState } from '../../providers/IProvider';
 import { getShortDateString } from '../../utils/Utils';
