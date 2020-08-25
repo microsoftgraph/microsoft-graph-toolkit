@@ -1,9 +1,16 @@
 {
-  "extends": "../../config/tsconfig",
+  "extends": "../tsconfig.base.json",
   "compilerOptions": {
     "outDir": "dist/es6",
-    "rootDir": "src"
+    "rootDir": "src",
+    "baseUrl": "./",
+    "resolveJsonModule": true,
+    "esModuleInterop": true,
+    "paths": {
+      "@microsoft/mgt-element": ["../mgt-element/src"]
+    }
   },
+  "include": ["src/**/*"],
   "exclude": ["node_modules", "src/bundle"],
-  "include": ["src/**/*"]
+  "references": [{ "path": "../mgt-element" }]
 }
