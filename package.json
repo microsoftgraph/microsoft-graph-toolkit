@@ -5,7 +5,7 @@
     "packages/*"
   ],
   "scripts": {
-    "build": "npm-run-all prettier:check clean build:mgt-element build:mgt",
+    "build": "npm run prettier:check && npm run clean && lerna run build",
     "build:mgt": "cd ./packages/mgt && npm run build",
     "build:mgt-element": "cd ./packages/mgt-element && npm run build",
     "bundle": "cd ./packages/mgt && npm run bundle",
