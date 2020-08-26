@@ -61,7 +61,7 @@ const cacheSchema: CacheSchema = {
 /**
  * Object to be stored in cache representing individual people
  */
-interface CacheGroup extends CacheItem {
+interface CacheGroups extends CacheItem {
   /**
    * json representing a person stored as string
    */
@@ -97,7 +97,7 @@ export async function findGroups(
 ): Promise<Group[]> {
   const scopes = 'Group.Read.All';
 
-  let cache: CacheStore<CacheGroup>;
+  let cache: CacheStore<CacheGroups>;
 
   if (groupsCacheEnabled()) {
     cache = CacheService.getCache(cacheSchema, 'groups');

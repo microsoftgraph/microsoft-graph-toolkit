@@ -491,8 +491,6 @@ export class MgtAgenda extends MgtTemplatedComponent {
 
           let request = await graph.api(query);
 
-          // add caching here
-
           if (scope) {
             request = request.middlewareOptions(prepScopes(scope));
           }
