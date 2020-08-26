@@ -40,7 +40,7 @@ yarn
 # Build
 yarn build
 
-# Watch, and serve
+# Watch and serve
 yarn start
 ```
 
