@@ -17,13 +17,6 @@ import { ProviderState } from '../providers/IProvider';
  */
 export interface CacheConfig {
   /**
-   * Cache options for agenda store
-   *
-   * @type {CacheOptions}
-   * @memberof CacheConfig
-   */
-  agenda: CacheOptions;
-  /**
    * Default global invalidation period
    *
    * @type {number}
@@ -140,10 +133,6 @@ export class CacheService {
   private static isInitialized: boolean = false;
 
   private static cacheConfig: CacheConfig = {
-    agenda: {
-      invalidationPeriod: null,
-      isEnabled: true
-    },
     defaultInvalidationPeriod: 3600000,
     groups: {
       invalidationPeriod: null,
