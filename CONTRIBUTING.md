@@ -37,7 +37,10 @@ npm i -g yarn
 # Install dependencies in node_modules
 yarn
 
-# Build, watch, and serve
+# Build
+yarn build
+
+# Watch, and serve
 yarn start
 ```
 
