@@ -35,7 +35,7 @@
     "copy:loader": "cpx src/bundle/mgt-loader.js dist/bundle",
     "copy:wc": "cpx ../../node_modules/@webcomponents/webcomponentsjs/bundles/**/* dist/bundle/wc/bundles && cpx ../../node_modules/@webcomponents/webcomponentsjs/webcomponents-loader.js dist/bundle/wc",
     "lint": "tslint -c ../../tslint.json 'src/**/*.ts'",
-    "prepack": "shx rm -rf *.tgz && npm-run-all build",
+    "prepack": "shx rm -rf *.tgz && npm run build",
     "postpack": "cpx *.tgz ../../artifacts",
     "rollup": "rollup -c",
     "sass": "gulp sass",
