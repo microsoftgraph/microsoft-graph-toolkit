@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <script type="module" src="../../packages/mgt/dist/es6/mock/mgt-mock-provider.js"></script>
+
+    <script type="module">
+      import { CacheService } from '../../packages/mgt/dist/es6/index.js';
+
+      let cacheButton = document.getElementById('CacheButton');
+      let isEnabled =
+        localStorage.getItem('mgt-cache-enabled') === 'true' || localStorage.getItem('mgt-cache-enabled') === null;
+
+      let updateButton = () => {
+        if (!isEnabled) {
+          // show enable button
+          cacheButton.innerHTML = 'Enable Cache';
+        } else {
+          // show disable button
+          cacheButton.innerHTML = 'Disable Cache';
+        }
+        CacheService.config.isEnabled = isEnabled;
+      };
+
+      cacheButton.addEventListener('click', () => {
+        isEnabled = !isEnabled;
+        updateButton();
+        localStorage.setItem('mgt-cache-enabled', isEnabled);
+      });
+
+      updateButton();
+
+      // clear cache button
+      let clearCacheButton = document.getElementById('ClearCacheButton');
+      clearCacheButton.addEventListener('click', clearCache);
+      function clearCache() {
+        CacheService.clearCaches();
+      }
+    </script>
+  </head>
+  <body>
+    <mgt-mock-provider></mgt-mock-provider>
+
+    <button id="CacheButton" type="button"></button>
+    <!-- <button id="DisableCacheButton" type="button">Disable Cache</button> -->
+    <button id="ClearCacheButton" type="button">Clear Cache</button>
+
+    <mgt-login></mgt-login>
+    <mgt-person person-query="me" view="twoLines" person-card="hover" show-presence></mgt-person>
+    <mgt-person user-id="4782e723-f4f4-4af3-a76e-25e3bab0d896" view="twoLines"></mgt-person>
+    <mgt-people-picker></mgt-people-picker>
+    <mgt-people-picker group-id="02bd9fd6-8f93-4758-87c3-1fb73740a315"></mgt-people-picker>
+    <mgt-teams-channel-picker></mgt-teams-channel-picker>
+    <mgt-tasks data-source="todo"></mgt-tasks>
+    <mgt-agenda group-by-day></mgt-agenda>
+    <mgt-people show-presence></mgt-people>
+    <mgt-people group-id="02bd9fd6-8f93-4758-87c3-1fb73740a315"></mgt-people>
+    <mgt-people user-ids="4782e723-f4f4-4af3-a76e-25e3bab0d896, f5289423-7233-4d60-831a-fe107a8551cc"></mgt-people>
+  </body>
+</html>
