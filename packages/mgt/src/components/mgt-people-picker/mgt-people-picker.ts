@@ -13,8 +13,7 @@ import { findGroups, GroupType } from '../../graph/graph.groups';
 import { findPeople, getPeople, getPeopleFromGroup, PersonType } from '../../graph/graph.people';
 import { findUsers, getUser, getUsersForUserIds } from '../../graph/graph.user';
 import { IDynamicPerson } from '../../graph/types';
-import { Providers } from '../../Providers';
-import { ProviderState } from '../../providers/IProvider';
+import { Providers, ProviderState } from '@microsoft/mgt-element';
 import '../../styles/fabric-icon-font';
 import { debounce } from '../../utils/Utils';
 import { PersonViewType } from '../mgt-person/mgt-person';
@@ -25,6 +24,7 @@ import { styles } from './mgt-people-picker-css';
 
 export { GroupType } from '../../graph/graph.groups';
 export { PersonType } from '../../graph/graph.people';
+
 /**
  * An interface used to mark an object as 'focused',
  * so it can be rendered differently.
@@ -445,7 +445,7 @@ export class MgtPeoplePicker extends MgtTemplatedComponent {
 
               <div class="overflow-offset">
                 <div class="overflow-gradient"></div>
-                <div class="CloseIcon" @click="${e => this.removePerson(person, e)}">\uE711</div>
+                <div class="CloseIcon" @click="${e => this.removePerson(person, e)}"></div>
               </div>
             </div>
           `

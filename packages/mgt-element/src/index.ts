@@ -7,3 +7,6 @@
 
 export * from './IBatch';
 export * from './IGraph';
+export * from './providers/IProvider';
+export * from './providers/Providers';
+export * from './utils/EventDispatcher';
