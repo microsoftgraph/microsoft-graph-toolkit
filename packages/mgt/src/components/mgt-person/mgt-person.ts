@@ -6,7 +6,6 @@
  */
 
 import * as MicrosoftGraph from '@microsoft/microsoft-graph-types';
-import * as MicrosoftGraphBeta from '@microsoft/microsoft-graph-types-beta';
 import { customElement, html, internalProperty, property, TemplateResult } from 'lit-element';
 import { classMap } from 'lit-html/directives/class-map';
 import { findPeople, getEmailFromGraphEntity } from '../../graph/graph.people';
@@ -24,6 +23,7 @@ import { MgtFlyout } from '../sub-components/mgt-flyout/mgt-flyout';
 import { MgtTemplatedComponent } from '../templatedComponent';
 import { PersonCardInteraction } from './../PersonCardInteraction';
 import { styles } from './mgt-person-css';
+import { Presence } from '@microsoft/microsoft-graph-types-beta';
 
 export { PersonCardInteraction } from '../PersonCardInteraction';
 
@@ -217,17 +217,17 @@ export class MgtPerson extends MgtTemplatedComponent {
   /**
    * Gets or sets presence of person
    *
-   * @type {MicrosoftGraphBeta.Presence}
+   * @type {Presence}
    * @memberof MgtPerson
    */
   @property({
     attribute: 'person-presence',
     type: Object
   })
-  public get personPresence(): MicrosoftGraphBeta.Presence {
+  public get personPresence(): Presence {
     return this._personPresence || this._fetchedPresence;
   }
-  public set personPresence(value: MicrosoftGraphBeta.Presence) {
+  public set personPresence(value: Presence) {
     if (value === this._personPresence) {
       return;
     }
@@ -311,14 +311,14 @@ export class MgtPerson extends MgtTemplatedComponent {
   public view: PersonViewType;
 
   @internalProperty() private _fetchedImage: string;
-  @internalProperty() private _fetchedPresence: MicrosoftGraphBeta.Presence;
+  @internalProperty() private _fetchedPresence: Presence;
   @internalProperty() private _isInvalidImageSrc: boolean;
   @internalProperty() private _personCardShouldRender: boolean;
 
   private _personDetails: IDynamicPerson;
   private _personAvatarBg: string;
   private _personImage: string;
-  private _personPresence: MicrosoftGraphBeta.Presence;
+  private _personPresence: Presence;
 
   private _mouseLeaveTimeout;
   private _mouseEnterTimeout;
@@ -491,7 +491,7 @@ export class MgtPerson extends MgtTemplatedComponent {
    * @param
    * @memberof MgtPersonCard
    */
-  protected renderPresence(presence: MicrosoftGraphBeta.Presence): TemplateResult {
+  protected renderPresence(presence: Presence): TemplateResult {
     if (!this.showPresence || !presence) {
       return html``;
     }
@@ -594,11 +594,7 @@ export class MgtPerson extends MgtTemplatedComponent {
    * @param
    * @memberof MgtPersonCard
    */
-  protected renderAvatar(
-    personDetails: IDynamicPerson,
-    image: string,
-    presence: MicrosoftGraphBeta.Presence
-  ): TemplateResult {
+  protected renderAvatar(personDetails: IDynamicPerson, image: string, presence: Presence): TemplateResult {
     const title =
       this.personDetails && this.personCardInteraction === PersonCardInteraction.none
         ? this.personDetails.displayName || getEmailFromGraphEntity(this.personDetails) || ''
@@ -682,7 +678,7 @@ export class MgtPerson extends MgtTemplatedComponent {
     anchor: TemplateResult,
     personDetails: IDynamicPerson,
     image: string,
-    presence: MicrosoftGraphBeta.Presence
+    presence: Presence
   ): TemplateResult {
     const flyoutContent = this._personCardShouldRender
       ? html`
@@ -706,11 +702,7 @@ export class MgtPerson extends MgtTemplatedComponent {
    * @returns {TemplateResult}
    * @memberof MgtPerson
    */
-  protected renderFlyoutContent(
-    personDetails: IDynamicPerson,
-    image: string,
-    presence: MicrosoftGraphBeta.Presence
-  ): TemplateResult {
+  protected renderFlyoutContent(personDetails: IDynamicPerson, image: string, presence: Presence): TemplateResult {
     return (
       this.renderTemplate('person-card', { person: personDetails, personImage: image }) ||
       html`
