@@ -1,7 +1,15 @@
 {
   "name": "root",
-  "npmClient": "npm",
+  "private": true,
+  "workspaces": [
+    "packages/*"
+  ],
   "scripts": {
+    "build": "npm run prettier:check && npm run clean && lerna run build",
+    "build:mgt": "cd ./packages/mgt && npm run build",
+    "build:mgt-element": "cd ./packages/mgt-element && npm run build",
+    "bundle": "cd ./packages/mgt && npm run bundle",
+    "bootstrap": "lerna bootstrap --useWorkspaces",
     "clean": "lerna run --parallel --stream clean",
     "link": "lerna link --force-local",
     "lint": "lerna run --parallel --stream lint",
@@ -11,11 +19,9 @@
     "serve:https": "es-dev-server --http2 --port 3000 --node-resolve --open --watch --compatibility none --app-index index.html",
     "start": "npm-run-all prettier:check watch:serve",
     "start:https": "npm-run-all prettier:check build:esm watch:serve:https",
-    "watch": "lerna run --parallel --stream watch",
-    "watch:serve": "npm-run-all -p watch serve",
-    "watch:serve:https": "npm-run-all -p watch serve:https",
-    "build": "npm run prettier:check && lerna run --stream build",
-    "build:esm": "npm run prettier:check && lerna run --stream build:esm",
+    "watch": "lerna run --parallel --stream build:watch",
+    "watch:serve": "npm-run-all --parallel watch serve",
+    "watch:serve:https": "npm-run-all -parallel watch serve:https",
     "prettier:base": "prettier --parser typescript",
     "prettier:check": "npm run prettier:base -- --list-different \"packages/**/*.{ts,tsx}\"",
     "prettier:write": "npm run prettier:base -- --write \"packages/**/*.{ts,tsx}\"",
