@@ -5,12 +5,9 @@
  * -------------------------------------------------------------------------------------------
  */
 
-export * from './IBatch';
-export * from './IGraph';
-export * from './components/baseComponent';
-export * from './components/templatedComponent';
-export * from './providers/IProvider';
-export * from './providers/Providers';
-export * from './utils/EventDispatcher';
-export * from './utils/TemplateHelper';
-export * from './utils/equals';
+/**
+ * Template context object
+ */
+export interface TemplateContext {
+  [prop: string]: any;
+}

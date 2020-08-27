@@ -6,9 +6,10 @@
  */
 
 import { html, PropertyValues } from 'lit-element';
-import { TemplateContext } from '../graph/types';
-import { equals } from '../utils/Utils';
-import { MgtBaseComponent, TemplateHelper } from '@microsoft/mgt-element';
+import { TemplateContext } from '../utils/TemplateContext';
+import { equals } from '../utils/equals';
+import { MgtBaseComponent } from './baseComponent';
+import { TemplateHelper } from '../utils/TemplateHelper';
 
 /**
  * Lookup for rendered component templates and contexts by slot name.
