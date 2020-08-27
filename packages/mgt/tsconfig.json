@@ -1,25 +1,15 @@
 {
+  "extends": "../../tsconfig.json",
   "compilerOptions": {
-    "allowSyntheticDefaultImports": true,
-    "experimentalDecorators": true,
-    "lib": [
-      "dom",
-      "es2015"
-    ],
-    "module": "es6",
-    "moduleResolution": "node",
-    "target": "es2015",
     "outDir": "dist/es6",
-    "declaration": true,
-    "esModuleInterop": true,
-    "sourceMap": true,
-    "rootDir": "src"
+    "rootDir": "src",
+    "baseUrl": "./",
+    "resolveJsonModule": true,
+    "paths": {
+      "@microsoft/mgt-element": ["../mgt-element/src"]
+    }
   },
-  "exclude": [
-    "node_modules",
-    "src/bundle"
-  ],
-  "include": [
-    "src"
-  ]
+  "include": ["src/**/*"],
+  "exclude": ["node_modules", "src/bundle"],
+  "references": [{ "path": "../mgt-element" }]
 }

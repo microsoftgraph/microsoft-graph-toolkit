@@ -1,45 +1,45 @@
 <html lang="en">
-<head>
-    <script src="https://unpkg.com/@microsoft/mgt/dist/bundle/mgt-loader.js"></script>
-</head>
-<body>
+  <head>
+    <script type="module" src="../../packages/mgt/dist/es6/index.js"></script>
+  </head>
+  <body>
     <mgt-msal-provider client-id="a974dfa0-9f57-49b9-95db-90f04ce2111a"></mgt-msal-provider>
     <mgt-login></mgt-login>
 
-    <mgt-person person-query="me" person-card="hover" >
-        <template data-type="person-card">
-            <mgt-person-card person-details={{person}} person-image={{personImage}}>
-                <template data-type="additional-details"></template>
-            </mgt-person-card>
-        </template>
+    <mgt-person person-query="me" person-card="hover">
+      <template data-type="person-card">
+        <mgt-person-card person-details="{{person}}" person-image="{{personImage}}">
+          <template data-type="additional-details"></template>
+        </mgt-person-card>
+      </template>
     </mgt-person>
 
-    <script>
-        let mgtPerson = document.querySelector('mgt-person');
-        mgtPerson.addEventListener('templateRendered', async (e) => {
+    <script type="module">
+      import { Providers } from '../../packages/mgt/dist/es6/index.js';
 
-            // this template is rendered on demand when the user first views the person card
-            let personCard = e.detail.element.querySelector('mgt-person-card');
-            if (personCard) {
+      let mgtPerson = document.querySelector('mgt-person');
+      mgtPerson.addEventListener('templateRendered', async e => {
+        // this template is rendered on demand when the user first views the person card
+        let personCard = e.detail.element.querySelector('mgt-person-card');
+        if (personCard) {
+          // make the network call before the template is rendered
+          // so the data is available when it is viewed
+          let client = Providers.globalProvider.graph.client;
+          let extensions = await client
+            .api('me')
+            .select('id')
+            .expand(`extensions($filter=id eq 'com.contoso.roamingSettings')`)
+            .get();
 
-                // make the network call before the template is rendered
-                // so the data is available when it is viewed
-                let client = mgt.Providers.globalProvider.graph.client;
-                let extensions = 
-                    await client.api('me')
-                                .select('id')
-                                .expand(`extensions($filter=id eq 'com.contoso.roamingSettings')`)
-                                .get();
-                
-                if (extensions.extensions.length) {
-                    let contosoExtension = extensions.extensions[0];
-                    personCard.addEventListener('templateRendered', (e) => {
-                        // this will be called when the user expands the person card the first time
-                        e.detail.element.innerHTML = `<b>theme:</b> ${contosoExtension.theme}`;
-                    });
-                }
-            }
-        })
+          if (extensions.extensions.length) {
+            let contosoExtension = extensions.extensions[0];
+            personCard.addEventListener('templateRendered', e => {
+              // this will be called when the user expands the person card the first time
+              e.detail.element.innerHTML = `<b>theme:</b> ${contosoExtension.theme}`;
+            });
+          }
+        }
+      });
     </script>
-</body>
+  </body>
 </html>

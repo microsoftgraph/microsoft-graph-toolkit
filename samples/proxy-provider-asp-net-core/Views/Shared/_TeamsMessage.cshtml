@@ -1,9 +1,8 @@
-﻿
-<div data-if="!deletedDateTime" class="teams-message">
+﻿<div data-if="!deletedDateTime" class="teams-message">
     <mgt-person user-id="{{from.user.id}}" show-name person-card="hover"></mgt-person>
     <div data-props="@Html.Raw("@")click: messageClick, innerHTML: body.content"></div>
     <div class="reply hidden">
-        <input></input>
+        <input />
         <button>reply</button>
     </div>
 </div>

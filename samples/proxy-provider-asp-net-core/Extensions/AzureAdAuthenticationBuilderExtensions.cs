@@ -6,7 +6,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Protocols.OpenIdConnect;
 using Microsoft.IdentityModel.Tokens;
-using MicrosoftGraphAspNetCoreConnectSample.Helpers;
+using MicrosoftGraphAspNetCoreConnectSample.Services;
 
 namespace MicrosoftGraphAspNetCoreConnectSample.Extensions
 {

@@ -11,10 +11,10 @@
 
     <script src="https://unpkg.com/@microsoft/teams-js/dist/MicrosoftTeams.min.js" crossorigin="anonymous"></script>
 
-    <!-- <script src="./dist/bundle/mgt-loader.js"></script> -->
+    <!-- <script src="./packages/mgt/dist/bundle/mgt-loader.js"></script> -->
 
-    <script type="module" src="./dist/es6/index.js"></script>
-    <script type="module" src="./dist/es6/mock/mgt-mock-provider.js"></script>
+    <script type="module" src="./packages/mgt/dist/es6/index.js"></script>
+    <script type="module" src="./packages/mgt/dist/es6/mock/mgt-mock-provider.js"></script>
   </head>
 
   <body>
@@ -39,5 +39,6 @@
     <mgt-tasks data-source="todo"></mgt-tasks>
     <mgt-agenda group-by-day></mgt-agenda>
     <mgt-people show-presence></mgt-people>
+    <mgt-todo></mgt-todo>
   </body>
 </html>
