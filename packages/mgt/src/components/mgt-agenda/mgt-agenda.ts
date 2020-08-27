@@ -7,12 +7,11 @@
 
 import * as MicrosoftGraph from '@microsoft/microsoft-graph-types';
 import { customElement, html, property, TemplateResult } from 'lit-element';
-import { Providers, ProviderState } from '@microsoft/mgt-element';
+import { Providers, ProviderState, MgtTemplatedComponent } from '@microsoft/mgt-element';
 import '../../styles/fabric-icon-font';
 import { prepScopes } from '../../utils/GraphHelpers';
 import { getDayOfWeekString, getMonthString } from '../../utils/Utils';
 import '../mgt-person/mgt-person';
-import { MgtTemplatedComponent } from '../templatedComponent';
 import { styles } from './mgt-agenda-css';
 import { getEventsPageIterator } from './mgt-agenda.graph';
 

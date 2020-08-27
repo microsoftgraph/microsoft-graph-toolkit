@@ -12,10 +12,8 @@ import { getPeople, getPeopleFromGroup } from '../../graph/graph.people';
 import { getUsersPresenceByPeople } from '../../graph/graph.presence';
 import { getUsersForPeopleQueries, getUsersForUserIds } from '../../graph/graph.user';
 import { IDynamicPerson } from '../../graph/types';
-import { Providers, ProviderState } from '@microsoft/mgt-element';
+import { Providers, ProviderState, MgtTemplatedComponent, arraysAreEqual } from '@microsoft/mgt-element';
 import '../../styles/fabric-icon-font';
-import { arraysAreEqual } from '../../utils/Utils';
-import { MgtTemplatedComponent } from '../templatedComponent';
 import { PersonCardInteraction } from './../PersonCardInteraction';
 import { styles } from './mgt-people-css';
 

@@ -7,8 +7,7 @@
 
 import { html, property, TemplateResult } from 'lit-element';
 import { classMap } from 'lit-html/directives/class-map';
-import { ComponentMediaQuery, Providers, ProviderState } from '@microsoft/mgt-element';
-import { MgtTemplatedComponent } from '../templatedComponent';
+import { ComponentMediaQuery, Providers, ProviderState, MgtTemplatedComponent } from '@microsoft/mgt-element';
 
 /**
  * The foundation for creating task based components.
