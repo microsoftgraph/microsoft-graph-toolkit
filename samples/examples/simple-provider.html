@@ -3,7 +3,7 @@
   <head>
     <title>Quickstart for MSAL JS</title>
     <script src="https://secure.aadcdn.microsoftonline-p.com/lib/1.0.0/js/msal.js"></script>
-    <script src="../../packages/mgt/dist/es6/index.js"></script>
+    <script type="module" src="../../packages/mgt/dist/es6/index.js"></script>
   </head>
 
   <body>
@@ -21,7 +21,9 @@
       <mgt-agenda group-by-day></mgt-agenda>
       <mgt-tasks data-source="todo"></mgt-tasks>
     </div>
-    <script>
+    <script type="module">
+      import { Providers, SimpleProvider, ProviderState } from '../../packages/mgt/dist/es6/index.js';
+
       var msalConfig = {
         auth: {
           clientId: 'a974dfa0-9f57-49b9-95db-90f04ce2111a', //This is your client ID
@@ -49,7 +51,7 @@
       // myMSALObj.handleRedirectCallbacks(acquireTokenRedirectCallBack, acquireTokenErrorRedirectCallBack);
       myMSALObj.handleRedirectCallback(authRedirectCallBack);
 
-      mgt.Providers.globalProvider = new mgt.SimpleProvider(async function(scopes) {
+      Providers.globalProvider = new SimpleProvider(async function(scopes) {
         var request = { scopes: scopes };
 
         try {
@@ -120,7 +122,7 @@
       }
 
       function showWelcomeMessage() {
-        mgt.Providers.globalProvider.setState(mgt.ProviderState.SignedIn);
+        Providers.globalProvider.setState(ProviderState.SignedIn);
 
         var divWelcome = document.getElementById('WelcomeMessage');
         divWelcome.innerHTML = 'Welcome ' + myMSALObj.getAccount().userName + ' to Microsoft Graph API';
@@ -189,7 +191,7 @@
           showWelcomeMessage();
           acquireTokenPopupAndCallMSGraph();
         } else {
-          mgt.Providers.globalProvider.setState(mgt.ProviderState.SignedOut);
+          Providers.globalProvider.setState(ProviderState.SignedOut);
         }
       } else if (loginType === 'REDIRECT') {
         document.getElementById('SignIn').onclick = function() {
@@ -201,7 +203,7 @@
           showWelcomeMessage();
           acquireTokenRedirectAndCallMSGraph();
         } else {
-          mgt.Providers.globalProvider.setState(mgt.ProviderState.SignedOut);
+          Providers.globalProvider.setState(ProviderState.SignedOut);
         }
       } else {
         console.error('Please set a valid login type');

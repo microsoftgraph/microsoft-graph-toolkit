@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
   <head>
-    <script src="../../packages/mgt/dist/es6/index.js"></script>
+    <script type="module" src="../../packages/mgt/dist/es6/index.js"></script>
   </head>
 
   <body>
@@ -22,20 +22,21 @@
       <ul id="chosenPeople"></ul>
     </div>
   </body>
-  <script>
+  <script type="module">
+    import { Providers, ProviderState } from '../../packages/mgt/dist/es6/index.js';
+
     let picker1 = document.getElementById('picker1');
     let chosenArea = document.getElementById('chosenPeople');
     let groupChooser = document.getElementById('groupChooser');
 
     groupChooser.addEventListener('change', getGroupValue);
 
-    let provider = mgt.Providers.globalProvider;
-
     loadGroups();
-    provider.onStateChanged(loadGroups);
+    Providers.onProviderUpdated(loadGroups);
 
     function loadGroups() {
-      if (provider && provider.state === mgt.ProviderState.SignedIn) {
+      let provider = Providers.globalProvider;
+      if (provider && provider.state === ProviderState.SignedIn) {
         let client = provider.graph.client;
 
         client

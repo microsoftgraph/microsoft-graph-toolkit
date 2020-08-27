@@ -1,6 +1,6 @@
 <html lang="en">
   <head>
-    <script src="../../packages/mgt/dist/es6/index.js"></script>
+    <script type="module" src="../../packages/mgt/dist/es6/index.js"></script>
   </head>
   <body>
     <mgt-msal-provider client-id="a974dfa0-9f57-49b9-95db-90f04ce2111a"></mgt-msal-provider>
@@ -14,7 +14,9 @@
       </template>
     </mgt-person>
 
-    <script>
+    <script type="module">
+      import { Providers } from '../../packages/mgt/dist/es6/index.js';
+
       let mgtPerson = document.querySelector('mgt-person');
       mgtPerson.addEventListener('templateRendered', async e => {
         // this template is rendered on demand when the user first views the person card
@@ -22,7 +24,7 @@
         if (personCard) {
           // make the network call before the template is rendered
           // so the data is available when it is viewed
-          let client = mgt.Providers.globalProvider.graph.client;
+          let client = Providers.globalProvider.graph.client;
           let extensions = await client
             .api('me')
             .select('id')
