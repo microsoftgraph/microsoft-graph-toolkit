@@ -6,8 +6,7 @@
  */
 
 import { customElement, html, property } from 'lit-element';
-import { Providers } from '../../Providers';
-import { ProviderState } from '../../providers/IProvider';
+import { Providers, ProviderState } from '@microsoft/mgt-element';
 import { prepScopes } from '../../utils/GraphHelpers';
 import { equals } from '../../utils/Utils';
 import { MgtTemplatedComponent } from '../templatedComponent';

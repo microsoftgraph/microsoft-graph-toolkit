@@ -5,9 +5,9 @@
  * -------------------------------------------------------------------------------------------
  */
 
-import { customElement, LitElement, property } from 'lit-element';
+import { customElement, property } from 'lit-element';
 import { MgtBaseProvider } from '../components/providers/baseProvider';
-import { Providers } from '../Providers';
+import { Providers } from '@microsoft/mgt-element';
 import { MockProvider } from './MockProvider';
 /**
  * Sets global provider to a mock Provider

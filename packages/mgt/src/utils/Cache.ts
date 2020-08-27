@@ -6,8 +6,7 @@
  */
 
 import { openDB } from 'idb';
-import { Providers } from '../Providers';
-import { ProviderState } from '../providers/IProvider';
+import { Providers, ProviderState } from '@microsoft/mgt-element';
 
 /**
  * Holds the cache options for cache store

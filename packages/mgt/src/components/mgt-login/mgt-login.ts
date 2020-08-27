@@ -8,8 +8,7 @@
 import { customElement, html, property } from 'lit-element';
 import { classMap } from 'lit-html/directives/class-map';
 import { IDynamicPerson } from '../../graph/types';
-import { Providers } from '../../Providers';
-import { ProviderState } from '../../providers/IProvider';
+import { Providers, ProviderState } from '@microsoft/mgt-element';
 import { MgtFlyout } from '../sub-components/mgt-flyout/mgt-flyout';
 import { MgtTemplatedComponent } from '../templatedComponent';
 import { styles } from './mgt-login-css';
