@@ -5,8 +5,8 @@
  * -------------------------------------------------------------------------------------------
  */
 
-import { LitElement, property, PropertyValues } from 'lit-element';
-import { Providers } from '@microsoft/mgt-element';
+import { LitElement, PropertyValues } from 'lit-element';
+import { Providers } from '../providers/Providers';
 
 /**
  * Defines media query based on component width
