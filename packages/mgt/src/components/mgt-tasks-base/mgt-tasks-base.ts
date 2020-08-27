@@ -7,8 +7,7 @@
 
 import { html, property, TemplateResult } from 'lit-element';
 import { classMap } from 'lit-html/directives/class-map';
-import { Providers, ProviderState } from '@microsoft/mgt-element';
-import { ComponentMediaQuery } from '../baseComponent';
+import { ComponentMediaQuery, Providers, ProviderState } from '@microsoft/mgt-element';
 import { MgtTemplatedComponent } from '../templatedComponent';
 
 /**

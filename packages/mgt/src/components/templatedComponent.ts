@@ -8,7 +8,7 @@
 import { html, PropertyValues } from 'lit-element';
 import { TemplateContext } from '../graph/types';
 import { equals } from '../utils/Utils';
-import { MgtBaseComponent } from './baseComponent';
+import { MgtBaseComponent } from '@microsoft/mgt-element';
 import { TemplateHelper } from './templateHelper';
 
 /**
