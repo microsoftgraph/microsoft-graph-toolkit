@@ -88,9 +88,9 @@ export async function getUserPresence(graph: IGraph, userId: string): Promise<Pr
 
   if (presenceCacheEnabled()) {
     cache = CacheService.getCache(cacheSchema, 'presence');
-    const myPresence = await cache.getValue(userId);
-    if (myPresence && getPresenceInvalidationTime() > Date.now() - myPresence.timeCached) {
-      return JSON.parse(myPresence.presence);
+    const presence = await cache.getValue(userId);
+    if (presence && getPresenceInvalidationTime() > Date.now() - presence.timeCached) {
+      return JSON.parse(presence.presence);
     }
   }
 
@@ -129,11 +129,16 @@ export async function getUsersPresenceByPeople(graph: IGraph, people?: IDynamicP
     if (person !== '' && person.id) {
       const id = person.id;
       peoplePresence[id] = null;
+      let presence: CachePresence;
       if (presenceCacheEnabled()) {
-        const presence = await cache.getValue(id);
-        if (presence && getPresenceInvalidationTime() > Date.now() - (await presence).timeCached) {
-          peoplePresence[id] = JSON.parse(presence.presence);
-        }
+        presence = await cache.getValue(id);
+      }
+      if (
+        presenceCacheEnabled() &&
+        presence &&
+        getPresenceInvalidationTime() > Date.now() - (await presence).timeCached
+      ) {
+        peoplePresence[id] = JSON.parse(presence.presence);
       } else {
         batch.get(id, `/users/${id}/presence`, ['presence.read', 'presence.read.all']);
       }

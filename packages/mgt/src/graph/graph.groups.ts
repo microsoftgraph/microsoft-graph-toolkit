@@ -61,7 +61,7 @@ const cacheSchema: CacheSchema = {
 /**
  * Object to be stored in cache representing individual people
  */
-interface CacheGroups extends CacheItem {
+interface CacheGroupQuery extends CacheItem {
   /**
    * json representing a person stored as string
    */
@@ -69,7 +69,7 @@ interface CacheGroups extends CacheItem {
   /**
    * top number of results
    */
-  numResults?: number;
+  top?: number;
 }
 
 /**
@@ -101,18 +101,16 @@ export async function findGroups(
 ): Promise<Group[]> {
   const scopes = 'Group.Read.All';
 
-  let cache: CacheStore<CacheGroups>;
+  let cache: CacheStore<CacheGroupQuery>;
   const key = query || '*' + groupTypes;
 
   if (groupsCacheEnabled()) {
     cache = CacheService.getCache(cacheSchema, 'groupsQuery');
-    const groups = await cache.getValue(key);
-    if (groups && getGroupsInvalidationTime() > Date.now() - groups.timeCached) {
-      if (groups.numResults === top) {
-        return groups.groups.map(x => JSON.parse(x));
-      } else if (groups.numResults > top) {
+    const cacheGroupQuery = await cache.getValue(key);
+    if (cacheGroupQuery && getGroupsInvalidationTime() > Date.now() - cacheGroupQuery.timeCached) {
+      if (cacheGroupQuery.top >= top) {
         // if request is less than the cache's requests, return a slice of the results
-        return groups.groups.map(x => JSON.parse(x)).slice(0, top + 1);
+        return cacheGroupQuery.groups.map(x => JSON.parse(x)).slice(0, top + 1);
       }
       // if the new request needs more results than what's presently in the cache, graph must be called again
     }
@@ -157,7 +155,7 @@ export async function findGroups(
     .get();
 
   if (groupsCacheEnabled() && result) {
-    cache.putValue(key, { groups: result.value.map(x => JSON.stringify(x)), numResults: top });
+    cache.putValue(key, { groups: result.value.map(x => JSON.stringify(x)), top: top });
   }
 
   return result ? result.value : null;
