@@ -59,6 +59,8 @@
     "@babel/preset-typescript": "^7.9.0",
     "@types/jest": "^24.9.1",
     "@types/node": "12.12.22",
+    "@types/react": "^16.9.32",
+    "@types/react-dom": "^16.9.6",
     "@webcomponents/webcomponentsjs": "^2.4.3",
     "babel-loader": "^8.1.0",
     "core-js": "^3.6.4",
@@ -72,9 +74,12 @@
     "sass": "^1.26.3",
     "shx": "^0.3.2",
     "ts-jest": "^24.3.0",
+    "whatwg-fetch": "^3.0.0",
+    "fs-extra": "^9.0.0",
+    "react": "^16.13.1",
+    "react-dom": "^16.13.1",
     "typescript": "^3.7.5",
-    "web-component-analyzer": "1.0.3",
-    "whatwg-fetch": "^3.0.0"
+    "web-component-analyzer": "^1.1.6"
   },
   "husky": {
     "hooks": {
