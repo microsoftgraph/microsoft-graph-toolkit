@@ -51,9 +51,9 @@ export enum GroupType {
  * Definition of cache structure
  */
 const cacheSchema: CacheSchema = {
-  name: 'groups',
+  name: 'groupsQuery',
   stores: {
-    groups: {}
+    groupsQuery: {}
   },
   version: 1
 };
@@ -66,6 +66,10 @@ interface CacheGroups extends CacheItem {
    * json representing a person stored as string
    */
   groups?: string[];
+  /**
+   * top number of results
+   */
+  numResults?: number;
 }
 
 /**
@@ -98,12 +102,19 @@ export async function findGroups(
   const scopes = 'Group.Read.All';
 
   let cache: CacheStore<CacheGroups>;
+  const key = query || '*' + groupTypes;
 
   if (groupsCacheEnabled()) {
-    cache = CacheService.getCache(cacheSchema, 'groups');
-    const groups = await cache.getValue(query);
+    cache = CacheService.getCache(cacheSchema, 'groupsQuery');
+    const groups = await cache.getValue(key);
     if (groups && getGroupsInvalidationTime() > Date.now() - groups.timeCached) {
-      return groups.groups.map(x => JSON.parse(x));
+      if (groups.numResults === top) {
+        return groups.groups.map(x => JSON.parse(x));
+      } else if (groups.numResults > top) {
+        // if request is less than the cache's requests, return a slice of the results
+        return groups.groups.map(x => JSON.parse(x)).slice(0, top + 1);
+      }
+      // if the new request needs more results than what's presently in the cache, graph must be called again
     }
   }
 
@@ -146,7 +157,7 @@ export async function findGroups(
     .get();
 
   if (groupsCacheEnabled() && result) {
-    cache.putValue(query, { groups: result.value.map(x => JSON.stringify(x)) });
+    cache.putValue(key, { groups: result.value.map(x => JSON.stringify(x)), numResults: top });
   }
 
   return result ? result.value : null;

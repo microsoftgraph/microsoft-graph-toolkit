@@ -57,9 +57,9 @@ export async function getMyPresence(graph: IGraph): Promise<Presence> {
 
   if (presenceCacheEnabled()) {
     cache = CacheService.getCache(cacheSchema, 'presence');
-    const myPresence = await cache.getValue('me');
-    if (myPresence && getPresenceInvalidationTime() > Date.now() - myPresence.timeCached) {
-      return JSON.parse(myPresence.presence);
+    const presence = await cache.getValue('me');
+    if (presence && getPresenceInvalidationTime() > Date.now() - presence.timeCached) {
+      return JSON.parse(presence.presence);
     }
   }
 
@@ -128,6 +128,7 @@ export async function getUsersPresenceByPeople(graph: IGraph, people?: IDynamicP
   for (const person of people) {
     if (person !== '' && person.id) {
       const id = person.id;
+      peoplePresence[id] = null;
       if (presenceCacheEnabled()) {
         const presence = await cache.getValue(id);
         if (presence && getPresenceInvalidationTime() > Date.now() - (await presence).timeCached) {
@@ -144,19 +145,34 @@ export async function getUsersPresenceByPeople(graph: IGraph, people?: IDynamicP
 
     for (const r of response.values()) {
       peoplePresence[r.id] = r.content;
-      cache.putValue(r.id, { presence: JSON.stringify(r.content) });
+      if (presenceCacheEnabled()) {
+        cache.putValue(r.id, { presence: JSON.stringify(r.content) });
+      }
     }
 
     return peoplePresence;
   } catch (_) {
     try {
+      /**
+       * individual calls to getUserPresence as fallback
+       * must filter out the contacts, which will either 404 or have PresenceUnknown response
+       * caching will be handled by getUserPresence
+       */
       const response = await Promise.all(
-        people.filter(person => person && person.id).map(person => getUserPresence(betaGraph, person.id))
+        people
+          .filter(
+            person =>
+              person &&
+              person.id &&
+              !peoplePresence[person.id] &&
+              'personType' in person &&
+              (person as any).personType.subclass === 'OrganizationUser'
+          )
+          .map(person => getUserPresence(betaGraph, person.id))
       );
 
       for (const r of response) {
         peoplePresence[r.id] = r;
-        cache.putValue(r.id, { presence: JSON.stringify(r) });
       }
       return peoplePresence;
     } catch (_) {
