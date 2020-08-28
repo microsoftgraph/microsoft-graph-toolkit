@@ -19,7 +19,7 @@ import { TeamsHelper } from '../../utils/TeamsHelper';
 import { MgtPerson } from '../mgt-person/mgt-person';
 import { MgtTemplatedComponent } from '../templatedComponent';
 import { styles } from './mgt-person-card-css';
-import { Presence } from '@microsoft/microsoft-graph-types-beta';
+import * as MicrosoftGraphBeta from '@microsoft/microsoft-graph-types-beta';
 
 /**
  * Web Component used to show detailed data for a person in the
@@ -156,14 +156,14 @@ export class MgtPersonCard extends MgtTemplatedComponent {
   /**
    * Gets or sets presence of person
    *
-   * @type {Presence}
+   * @type {MicrosoftGraphBeta.Presence}
    * @memberof MgtPerson
    */
   @property({
     attribute: 'person-presence',
     type: Object
   })
-  public personPresence: Presence;
+  public personPresence: MicrosoftGraphBeta.Presence;
 
   private _personDetails: IDynamicPerson;
 
@@ -287,7 +287,11 @@ export class MgtPersonCard extends MgtTemplatedComponent {
    * @param {*} image
    * @memberof MgtPersonCard
    */
-  protected renderPersonImage(imageSrc?: string, presence?: Presence, showPresence?: boolean): TemplateResult {
+  protected renderPersonImage(
+    imageSrc?: string,
+    presence?: MicrosoftGraphBeta.Presence,
+    showPresence?: boolean
+  ): TemplateResult {
     imageSrc = imageSrc || this.getImage();
     presence = presence || this.personPresence;
     showPresence = showPresence || this.showPresence;

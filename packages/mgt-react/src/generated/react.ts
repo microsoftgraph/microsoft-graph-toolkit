@@ -136,6 +136,10 @@ export type TasksProps = {
 	templateConverters?: TemplateContext;
 	useShadowRoot?: boolean;
 	mediaQuery?: ComponentMediaQuery;
+	taskAdded?: (e: Event) => void;
+	taskChanged?: (e: Event) => void;
+	taskClick?: (e: Event) => void;
+	taskRemoved?: (e: Event) => void;
 	updated?: (e: Event) => void;
 }
 
