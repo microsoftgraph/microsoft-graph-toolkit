@@ -4,9 +4,9 @@
   "description": "Microsoft Graph Toolkit React wrapper class",
   "author": "Microsoft",
   "license": "MIT",
-  "module": "dist/index.js",
-  "main": "dist/index.js",
-  "types": "dist/types.d.ts",
+  "module": "dist/es6/index.js",
+  "main": "dist/es6/index.js",
+  "types": "dist/es6/types.d.ts",
   "files": [
     "dist",
     "src"
