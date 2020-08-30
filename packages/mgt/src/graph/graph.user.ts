@@ -241,7 +241,6 @@ export async function getUsersForUserIds(graph: IGraph, userIds: string[]): Prom
       notInCache.push(id);
     }
   }
-
   try {
     const responses = await batch.executeAll();
     // iterate over userIds to ensure the order of ids
