@@ -51,7 +51,7 @@ export enum GroupType {
  * Definition of cache structure
  */
 const cacheSchema: CacheSchema = {
-  name: 'groupsQuery',
+  name: 'groups',
   stores: {
     groupsQuery: {}
   },
