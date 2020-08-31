@@ -64,7 +64,7 @@ export abstract class MgtBaseComponent extends LitElement {
    * Gets the ComponentMediaQuery of the component
    *
    * @readonly
-   * @type {ComponentMediaQuery}
+   * @type {MgtElement.ComponentMediaQuery}
    * @memberof MgtBaseComponent
    */
   public get mediaQuery(): ComponentMediaQuery {

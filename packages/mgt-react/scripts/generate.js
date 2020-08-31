@@ -53,11 +53,16 @@ for (const tag of wc.tags) {
         continue;
       }
 
-      if (type.startsWith('MicrosoftGraph.') || type.startsWith('MicrosoftGraphBeta.')) {
+      if (
+        type.startsWith('MicrosoftGraph.') ||
+        type.startsWith('MicrosoftGraphBeta.') ||
+        type.startsWith('MgtElement.')
+      ) {
         continue;
       }
 
       if (!primitives.has(type) && !mgtImports.has(type)) {
+        console.log(type);
         mgtImports.add(type);
       }
     }
@@ -69,8 +74,10 @@ for (const tag of wc.tags) {
     propsType += `\t${prop}?: ${props[prop]};\n`;
   }
 
-  for (const event of tag.events) {
-    propsType += `\t${event.name}?: (e: Event) => void;\n`;
+  if (tag.events) {
+    for (const event of tag.events) {
+      propsType += `\t${event.name}?: (e: Event) => void;\n`;
+    }
   }
 
   output += `\nexport type ${className}Props = {\n${propsType}}\n`;
@@ -81,6 +88,7 @@ for (const wrapper of wrappers) {
 }
 
 output = `import { ${Array.from(mgtImports).join(',')} } from '@microsoft/mgt';
+import * as MgtElement from '@microsoft/mgt-element';
 import * as MicrosoftGraph from '@microsoft/microsoft-graph-types';
 import * as MicrosoftGraphBeta from '@microsoft/microsoft-graph-types-beta';
 import {wrapMgt} from '../Mgt';

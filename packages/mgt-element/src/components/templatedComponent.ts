@@ -39,7 +39,7 @@ export abstract class MgtTemplatedComponent extends MgtBaseComponent {
   /**
    * Collection of functions to be used in template binding
    *
-   * @type {TemplateContext}
+   * @type {MgtElement.TemplateContext}
    * @memberof MgtTemplatedComponent
    * @deprecated since 1.2 - use templateContext instead
    */
@@ -49,7 +49,7 @@ export abstract class MgtTemplatedComponent extends MgtBaseComponent {
    * Additional data context to be used in template binding
    * Use this to add event listeners or value converters
    *
-   * @type {TemplateContext}
+   * @type {MgtElement.TemplateContext}
    * @memberof MgtTemplatedComponent
    */
   public templateContext: TemplateContext;

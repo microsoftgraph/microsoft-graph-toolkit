@@ -12,5 +12,6 @@ export * from './components/templatedComponent';
 export * from './providers/IProvider';
 export * from './providers/Providers';
 export * from './utils/EventDispatcher';
+export * from './utils/TemplateContext';
 export * from './utils/TemplateHelper';
 export * from './utils/equals';
