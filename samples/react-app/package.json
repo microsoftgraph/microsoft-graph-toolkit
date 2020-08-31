@@ -3,8 +3,8 @@
   "version": "1.3.0",
   "private": true,
   "dependencies": {
-    "@microsoft/mgt": "^1.3.0",
-    "@microsoft/mgt-react": "^1.3.0-preview.3",
+    "@microsoft/mgt": "*",
+    "@microsoft/mgt-react": "*",
     "@webcomponents/webcomponentsjs": "2.2.10",
     "react": "^16.8.5",
     "react-app-polyfill": "1.0.1",

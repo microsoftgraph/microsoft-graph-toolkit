@@ -2,24 +2,26 @@
   "name": "root",
   "private": true,
   "workspaces": [
-    "packages/*"
+    "packages/*",
+    "samples/react-app"
   ],
   "scripts": {
-    "build": "npm run prettier:check && npm run clean && lerna run build",
+    "build": "npm run prettier:check && npm run clean && lerna run build --scope @microsoft/*",
     "build:mgt": "cd ./packages/mgt && npm run build",
     "build:mgt-element": "cd ./packages/mgt-element && npm run build",
+    "build:mgt-react": "lerna run build --scope @microsoft/mgt-react",
     "bundle": "cd ./packages/mgt && npm run bundle",
     "bootstrap": "lerna bootstrap --useWorkspaces",
-    "clean": "lerna run --parallel --stream clean",
+    "clean": "lerna run --parallel --stream --scope @microsoft/* clean",
     "link": "lerna link --force-local",
-    "lint": "lerna run --parallel --stream lint",
-    "pack": "shx rm -rf artifacts/*.tgz && lerna exec --stream -- npm pack",
+    "lint": "lerna run --parallel --stream --scope @microsoft/* lint",
+    "pack": "shx rm -rf artifacts/*.tgz && lerna exec --stream --scope @microsoft/* -- npm pack",
     "prepare": "lerna bootstrap --force-local",
     "serve": "es-dev-server --port 3000 --node-resolve --open --watch --compatibility none --app-index index.html",
     "serve:https": "es-dev-server --http2 --port 3000 --node-resolve --open --watch --compatibility none --app-index index.html",
     "start": "npm-run-all prettier:check watch:serve",
     "start:https": "npm-run-all prettier:check build:esm watch:serve:https",
-    "watch": "lerna run --parallel --stream build:watch",
+    "watch": "lerna run --parallel --stream --scope @microsoft/* build:watch ",
     "watch:serve": "npm-run-all --parallel watch serve",
     "watch:serve:https": "npm-run-all -parallel watch serve:https",
     "prettier:base": "prettier --parser typescript",
@@ -59,6 +61,8 @@
     "@babel/preset-typescript": "^7.9.0",
     "@types/jest": "^24.9.1",
     "@types/node": "12.12.22",
+    "@types/react": "^16.9.32",
+    "@types/react-dom": "^16.9.6",
     "@webcomponents/webcomponentsjs": "^2.4.3",
     "babel-loader": "^8.1.0",
     "core-js": "^3.6.4",
@@ -72,9 +76,12 @@
     "sass": "^1.26.3",
     "shx": "^0.3.2",
     "ts-jest": "^24.3.0",
+    "whatwg-fetch": "^3.0.0",
+    "fs-extra": "^9.0.0",
+    "react": "^16.13.1",
+    "react-dom": "^16.13.1",
     "typescript": "^3.7.5",
-    "web-component-analyzer": "1.0.3",
-    "whatwg-fetch": "^3.0.0"
+    "web-component-analyzer": "^1.1.6"
   },
   "husky": {
     "hooks": {
