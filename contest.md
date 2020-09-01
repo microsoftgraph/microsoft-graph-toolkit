@@ -30,7 +30,9 @@ To Enter, complete the following steps with the Entry Period:
 4. Submit pull request to the repository to best address the issue
 5. If you encounter difficulty in any step above, you can reach out to mgt-core@microsoft.com for help 
  
-The entry limit is on per person per Issue per Prize Period.  Any attempt to obtain more than the stated number of entries by using multiple/different accounts, email addresses, identities, registrations, logins, or any other methods will void your entries and you may be disqualified. Use of any automated system to participate is prohibited.   
+The entry limit is on per person per Issue per Prize Period.  Any attempt to obtain more than the stated number of entries by using multiple/different accounts, email addresses, identities, registrations, logins, or any other methods will void your entries and you may be disqualified. Use of any automated system to participate is prohibited.
+
+Non-winning entries will carry forward to subsequent Prize Periods. 
 
 We are not responsible for excess, lost, late, or incomplete entries. If disputed, entries will be deemed submitted by the “authorized account holder” of the email address, social media account, or other method used to enter. The “authorized account holder” is the natural person assigned to an email address by an internet or online service provider, or other organization responsible for assigning email addresses.  
 
