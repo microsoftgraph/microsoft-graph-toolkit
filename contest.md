@@ -30,7 +30,7 @@ To Enter, complete the following steps with the Entry Period:
 4. Follow the [Contributing guide](https://github.com/microsoftgraph/microsoft-graph-toolkit/blob/main/CONTRIBUTING.md) and submit pull request to the repository to best address the issue
 5. If you encounter difficulty in any step above, you can reach out to mgt-core@microsoft.com for help 
  
-The entry limit is on per person per Issue per Prize Period.  Any attempt to obtain more than the stated number of entries by using multiple/different accounts, email addresses, identities, registrations, logins, or any other methods will void your entries and you may be disqualified. Use of any automated system to participate is prohibited.
+The entry limit is one per person per Issue per Prize Period.  Any attempt to obtain more than the stated number of entries by using multiple/different accounts, email addresses, identities, registrations, logins, or any other methods will void your entries and you may be disqualified. Use of any automated system to participate is prohibited.
 
 Non-winning entries will carry forward to subsequent Prize Periods. 
 
