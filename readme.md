@@ -114,6 +114,8 @@ The toolkit contains providers for [MSAL](https://docs.microsoft.com/graph/toolk
 
 We enthusiastically welcome contributions and feedback. Please read the [contributing guide](CONTRIBUTING.md) before you begin.
 
+Check out our new [Code Contribution Challenge](contest.md). You can now submit a PR to solve an issue in the [Community Love](https://github.com/microsoftgraph/microsoft-graph-toolkit/projects/29) project to win exciting prizes!
+
 ## Feedback and Requests
 
 For general questions and support, please use [Stack Overflow](https://stackoverflow.com/questions/tagged/microsoft-graph-toolkit) where questions should be tagged with `microsoft-graph-toolkit`
