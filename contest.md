@@ -27,7 +27,8 @@ To Enter, complete the following steps with the Entry Period:
 1. Register for (or have an existing) a free GitHub account
 2. Login to Github and navigate to [Microsoft Graph Toolkit repository](https://github.com/microsoftgraph/microsoft-graph-toolkit)
 3. Self-assign an 'Issue' on the Microsoft Graph Toolkit repository with tag 'help-wanted' or belongs to the project board [Community Love](https://github.com/microsoftgraph/microsoft-graph-toolkit/projects/29)
-4. Submit pull request to the repository to best address the issue 
+4. Submit pull request to the repository to best address the issue
+5. If you encounter difficulty in any step above, you can reach out to mgt-core@microsoft.com for help 
  
 The entry limit is on per person per Issue per Prize Period.  Any attempt to obtain more than the stated number of entries by using multiple/different accounts, email addresses, identities, registrations, logins, or any other methods will void your entries and you may be disqualified. Use of any automated system to participate is prohibited.   
 
