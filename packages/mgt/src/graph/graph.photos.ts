@@ -29,7 +29,7 @@ const cacheSchema: CacheSchema = {
 /**
  * photo object stored in cache
  */
-interface CachePhoto extends CacheItem {
+export interface CachePhoto extends CacheItem {
   /**
    * user tag associated with photo
    */
@@ -79,8 +79,7 @@ export async function getPhotoForResource(graph: IGraph, resource: string, scope
     if (!response.ok) {
       return null;
     }
-
-    const eTag = response.headers.get('ETag');
+    const eTag = response.headers.get('eTag');
     const blob = await blobToBase64(await response.blob());
     return { eTag, photo: blob };
   } catch (e) {
@@ -121,13 +120,35 @@ export async function getContactPhoto(graph: IGraph, contactId: string): Promise
 export async function getUserPhoto(graph: IGraph, userId: string): Promise<string> {
   let cache: CacheStore<CachePhoto>;
   let photoDetails: CachePhoto;
+
   if (photosCacheEnabled()) {
     cache = CacheService.getCache<CachePhoto>(cacheSchema, userStore);
     photoDetails = await cache.getValue(userId);
     if (photoDetails && getPhotoInvalidationTime() > Date.now() - photoDetails.timeCached) {
       return photoDetails.photo;
+    } else if (photoDetails) {
+      // there is a photo in the cache, but it's stale
+      graph
+        .api(`users/${userId}/photo`)
+        .get()
+        .then(
+          async response => {
+            if (response && response['@odata.mediaEtag'] !== photoDetails.eTag) {
+              photoDetails = await getPhotoForResource(graph, `users/${userId}`, ['user.readbasic.all']);
+            }
+            // put current or new image into the cache to update the timestamp
+            cache.putValue(userId, photoDetails);
+            return photoDetails ? photoDetails.photo : null;
+          },
+          error => {
+            cache.putValue(userId, {});
+            return null;
+          }
+        );
     }
   }
+
+  // no photo at all
 
   photoDetails = await getPhotoForResource(graph, `users/${userId}`, ['user.readbasic.all']);
   if (photosCacheEnabled() && photoDetails) {
