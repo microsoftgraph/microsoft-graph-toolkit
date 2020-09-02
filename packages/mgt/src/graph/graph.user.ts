@@ -19,7 +19,6 @@ import {
   CachePhoto
 } from './graph.photos';
 import { IDynamicPerson } from './types';
-import { blobToBase64 } from 'src/utils/Utils';
 
 /**
  * Describes the organization of the cache db
