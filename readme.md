@@ -114,6 +114,9 @@ The toolkit contains providers for [MSAL](https://docs.microsoft.com/graph/toolk
 
 We enthusiastically welcome contributions and feedback. Please read the [contributing guide](CONTRIBUTING.md) before you begin.
 
+### Code Contribution Challenge
+There are many exciting new features or interesting bugs that have been left behind because our team is small with limited capacity. We would love your help! We have tagged these issues with 'help wanted' and/or 'good first issue'. We added them into project board [Community Love](https://github.com/microsoftgraph/microsoft-graph-toolkit/projects/29) for easy tracking. If you see anything you would like to contribute to, you can reach out to [mgt-core team](mgt-core@microsoft.com) or tag one of us ([Beth](https://github.com/beth-panx), [Elise](https://github.com/elisenyang), [Nick](https://github.com/vogtn), [Nikola](https://github.com/nmetulev), and [Shane](https://github.com/shweaver-MSFT)) in the issue for help or further discussion. By submitting a PR to solve an issue mentioned above, you can enter to win some exciting prizes! We have some cool socks and t-shirts waiting for you. Check out the official rules for [Code Contribution Challenge](contest.md). The contest will continue until March 2021 where prizes are awarded every month from now on.
+
 ## Feedback and Requests
 
 For general questions and support, please use [Stack Overflow](https://stackoverflow.com/questions/tagged/microsoft-graph-toolkit) where questions should be tagged with `microsoft-graph-toolkit`
