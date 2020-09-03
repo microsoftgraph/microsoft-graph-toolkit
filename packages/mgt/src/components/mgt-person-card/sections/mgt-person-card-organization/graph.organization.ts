@@ -5,7 +5,7 @@
  * -------------------------------------------------------------------------------------------
  */
 
-import { IGraph } from '../../../../IGraph';
+import { IGraph } from '@microsoft/mgt-element';
 
 /**
  * Defines the data required to render an org member.

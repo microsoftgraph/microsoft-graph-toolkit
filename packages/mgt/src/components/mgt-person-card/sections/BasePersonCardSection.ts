@@ -5,7 +5,7 @@
  * -------------------------------------------------------------------------------------------
  */
 
-import { property, TemplateResult } from 'lit-element';
+import { property, TemplateResult, html } from 'lit-element';
 import { MgtTemplatedComponent } from '../../../components/templatedComponent';
 import { IDynamicPerson } from '../../../graph/types';
 import { MgtPersonCard } from '../mgt-person-card';
@@ -119,6 +119,32 @@ export abstract class BasePersonCardSection extends MgtTemplatedComponent {
    */
   protected render() {
     return this.isCompact ? this.renderCompactView() : this.renderFullView();
+  }
+
+  /**
+   * Render a spinner while the component loads state
+   *
+   * @protected
+   * @returns {TemplateResult}
+   * @memberof BasePersonCardSection
+   */
+  protected renderLoading(): TemplateResult {
+    return html`
+      <div class="spinner"></div>
+    `;
+  }
+
+  /**
+   * Render the section in a empty data state
+   *
+   * @protected
+   * @returns {TemplateResult}
+   * @memberof MgtPersonCardContact
+   */
+  protected renderNoData(): TemplateResult {
+    return html`
+      <div class="no-data">No data</div>
+    `;
   }
 
   /**

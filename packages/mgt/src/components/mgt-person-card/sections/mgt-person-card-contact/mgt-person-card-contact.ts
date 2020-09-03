@@ -216,32 +216,6 @@ export class MgtPersonCardContact extends BasePersonCardSection {
   }
 
   /**
-   * Render the section in a loading state
-   *
-   * @protected
-   * @returns {TemplateResult}
-   * @memberof MgtPersonCardContact
-   */
-  protected renderLoading(): TemplateResult {
-    return html`
-      <div class="loading">Loading</div>
-    `;
-  }
-
-  /**
-   * Render the section in a empty data state
-   *
-   * @protected
-   * @returns {TemplateResult}
-   * @memberof MgtPersonCardContact
-   */
-  protected renderNoData(): TemplateResult {
-    return html`
-      <div class="no-data">No data</div>
-    `;
-  }
-
-  /**
    * Render a specific contact part
    *
    * @protected
@@ -299,6 +273,9 @@ export class MgtPersonCardContact extends BasePersonCardSection {
     if (!this.personDetails) {
       return;
     }
+
+    const delay = ms => new Promise(r => setTimeout(r, ms));
+    await delay(10000);
 
     const userPerson = this.personDetails as GraphTypes.User;
     const personPerson = this.personDetails as GraphTypes.Person;

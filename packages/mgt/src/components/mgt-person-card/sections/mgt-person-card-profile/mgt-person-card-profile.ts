@@ -161,32 +161,6 @@ export class MgtPersonCardProfile extends BasePersonCardSection {
   }
 
   /**
-   * Render the section in a loading state
-   *
-   * @protected
-   * @returns {TemplateResult}
-   * @memberof MgtPersonCardContact
-   */
-  protected renderLoading(): TemplateResult {
-    return html`
-      <div class="loading">Loading</div>
-    `;
-  }
-
-  /**
-   * Render the section in a empty data state
-   *
-   * @protected
-   * @returns {TemplateResult}
-   * @memberof MgtPersonCardContact
-   */
-  protected renderNoData(): TemplateResult {
-    return html`
-      <div class="no-data">No data</div>
-    `;
-  }
-
-  /**
    * Render the user's known languages
    *
    * @protected

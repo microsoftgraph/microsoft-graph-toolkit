@@ -5,7 +5,7 @@
  * -------------------------------------------------------------------------------------------
  */
 
-import { IGraph } from '../../../../IGraph';
+import { IGraph } from '@microsoft/mgt-element';
 
 /**
  * Display metadata for a message item

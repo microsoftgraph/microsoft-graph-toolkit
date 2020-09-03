@@ -25,6 +25,7 @@ import { MgtPersonCardMessages } from './sections/mgt-person-card-messages/mgt-p
 import { MgtPersonCardOrganization } from './sections/mgt-person-card-organization/mgt-person-card-organization';
 import { MgtPersonCardProfile } from './sections/mgt-person-card-profile/mgt-person-card-profile';
 import { Presence } from '@microsoft/microsoft-graph-types-beta';
+import { getUserPresence } from '../../graph/graph.presence';
 
 /**
  * Web Component used to show detailed data for a person in the Microsoft Graph
@@ -110,6 +111,20 @@ export class MgtPersonCard extends MgtTemplatedComponent {
   public personImage: string;
 
   /**
+   * Sets whether the person image should be fetched
+   * from the Microsoft Graph based on the personDetails
+   * provided by the user
+   *
+   * @type {boolean}
+   * @memberof MgtPerson
+   */
+  @property({
+    attribute: 'fetch-image',
+    type: Boolean
+  })
+  public fetchImage: boolean;
+
+  /**
    * Gets or sets whether expanded details section is rendered
    *
    * @type {boolean}
@@ -135,6 +150,28 @@ export class MgtPersonCard extends MgtTemplatedComponent {
   public inheritDetails: boolean;
 
   /**
+   * determines if person card component renders presence
+   * @type {boolean}
+   */
+  @property({
+    attribute: 'show-presence',
+    type: Boolean
+  })
+  public showPresence: boolean;
+
+  /**
+   * Gets or sets presence of person
+   *
+   * @type {MicrosoftGraphBeta.Presence}
+   * @memberof MgtPerson
+   */
+  @property({
+    attribute: 'person-presence',
+    type: Object
+  })
+  public personPresence: Presence;
+
+  /**
    * The subsections for display in the lower part of the card
    *
    * @protected
@@ -142,12 +179,6 @@ export class MgtPersonCard extends MgtTemplatedComponent {
    * @memberof MgtPersonCard
    */
   protected sections: BasePersonCardSection[];
-
-  @property({
-    attribute: 'person-presence',
-    type: Object
-  })
-  public personPresence: Presence;
 
   private _history: IDynamicPerson[];
   private _chatInput: string;
@@ -250,6 +281,8 @@ export class MgtPersonCard extends MgtTemplatedComponent {
 
     const person = this.personDetails;
     const image = this.getImage();
+    const presence = this.personPresence;
+    const showPresence = this.showPresence;
 
     // Check for a default template.
     // tslint:disable-next-line: no-string-literal
@@ -281,7 +314,7 @@ export class MgtPersonCard extends MgtTemplatedComponent {
       personImage: image
     });
     if (!personDetailsTemplate) {
-      const personImageTemplate = this.renderPersonImage(image);
+      const personImageTemplate = this.renderPersonImage(image, presence, showPresence);
       const personNameTemplate = this.renderPersonName(person);
       const personTitleTemplate = this.renderPersonTitle(person);
       const personSubtitleTemplate = this.renderPersonSubtitle(person);
@@ -632,9 +665,11 @@ export class MgtPersonCard extends MgtTemplatedComponent {
         const person = await getUserWithPhoto(graph, id);
         this.personDetails = person;
         this.personImage = this.getImage();
-      } else if (this.personImage === '@' && !this.personDetails.personImage) {
+      } else if (
+        !this.personDetails.personImage &&
+        ((this.fetchImage && !this.personImage) || this.personImage === '@')
+      ) {
         // in some cases we might only have name or email, but need to find the image
-        // use @ for the image value to search for an image
         const image = await getPersonImage(graph, this.personDetails);
         if (image) {
           this.personDetails.personImage = image;
@@ -658,6 +693,25 @@ export class MgtPersonCard extends MgtTemplatedComponent {
           this.personDetails.personImage = image;
           this.personImage = image;
         }
+      }
+    }
+
+    // populate presence
+    const defaultPresence = {
+      activity: 'Offline',
+      availability: 'Offline',
+      id: null
+    };
+    if (!this.personPresence && this.showPresence) {
+      try {
+        if (this.personDetails && this.personDetails.id) {
+          this.personPresence = await getUserPresence(graph, this.personDetails.id);
+        } else {
+          this.personPresence = defaultPresence;
+        }
+      } catch (_) {
+        // set up a default Presence in case beta api changes or getting error code
+        this.personPresence = defaultPresence;
       }
     }
   }

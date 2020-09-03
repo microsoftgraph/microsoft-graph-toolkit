@@ -5,7 +5,7 @@
  * -------------------------------------------------------------------------------------------
  */
 
-import { IGraph } from '../../../../IGraph';
+import { IGraph } from '@microsoft/mgt-element';
 
 /**
  * Potential file icon types
@@ -41,7 +41,7 @@ export interface IFile {
  */
 export async function getSharedFiles(graph: IGraph, userId: string): Promise<IFile[]> {
   const response = await graph.api(`users/${userId}/drive/root/children`).get();
-  // return response.value;
+  //return response.value;
 
   return getDummyData();
 }

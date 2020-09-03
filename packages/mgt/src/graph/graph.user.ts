@@ -139,8 +139,14 @@ export async function getUserWithPhoto(graph: IGraph, userId?: string): Promise<
       batch.get('photo', 'me/photo/$value', ['user.read']);
     }
     const response = await batch.executeAll();
-    photo = response.get('photo').content;
-    user = response.get('user').content;
+    const photoResponse = response.get('photo');
+    if (photoResponse) {
+      photo = photoResponse.content;
+    }
+    const userResponse = response.get('user');
+    if (userResponse) {
+      user = userResponse.content;
+    }
   } else if (!photo) {
     // get photo from graph
     const resource = userId ? `users/${userId}` : 'me';
@@ -170,8 +176,10 @@ export async function getUserWithPhoto(graph: IGraph, userId?: string): Promise<
       user = response.content;
     }
   }
-  person = user;
-  person.personImage = photo;
+  if (user) {
+    person = user;
+    person.personImage = photo;
+  }
   return person;
 }
 

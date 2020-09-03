@@ -6,7 +6,7 @@
  */
 
 import { PhysicalAddress } from '@microsoft/microsoft-graph-types-beta';
-import { IGraph } from '../../../../IGraph';
+import { IGraph } from '@microsoft/mgt-element';
 
 /**
  * Represents the details of meaningful dates associated with a person in a user's profile.
@@ -482,7 +482,7 @@ export interface IProfile {
  */
 export async function getProfile(graph: IGraph, userId: string): Promise<IProfile> {
   const profile = await graph.api(`/users/${userId}/profile`).get();
-  injectDummyData(profile);
+  //injectDummyData(profile);
   return profile;
 }
 
