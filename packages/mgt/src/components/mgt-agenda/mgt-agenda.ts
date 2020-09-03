@@ -133,7 +133,7 @@ export class MgtAgenda extends MgtTemplatedComponent {
 
   /**
    * array containing events from user agenda.
-   * @type {Array<MicrosoftGraph.Event>}
+   * @type {MicrosoftGraph.Event[]}
    */
   @property({
     attribute: 'events'

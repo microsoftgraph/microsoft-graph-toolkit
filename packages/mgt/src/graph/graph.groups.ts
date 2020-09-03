@@ -7,6 +7,7 @@
 
 import { IGraph } from '@microsoft/mgt-element';
 import { Group } from '@microsoft/microsoft-graph-types';
+import { CacheItem, CacheSchema, CacheService, CacheStore } from '../utils/Cache';
 import { prepScopes } from '../utils/GraphHelpers';
 
 /**
@@ -47,6 +48,42 @@ export enum GroupType {
 }
 
 /**
+ * Definition of cache structure
+ */
+const cacheSchema: CacheSchema = {
+  name: 'groups',
+  stores: {
+    groupsQuery: {}
+  },
+  version: 1
+};
+
+/**
+ * Object to be stored in cache representing individual people
+ */
+interface CacheGroupQuery extends CacheItem {
+  /**
+   * json representing a person stored as string
+   */
+  groups?: string[];
+  /**
+   * top number of results
+   */
+  top?: number;
+}
+
+/**
+ * Defines the expiration time
+ */
+const getGroupsInvalidationTime = (): number =>
+  CacheService.config.groups.invalidationPeriod || CacheService.config.defaultInvalidationPeriod;
+
+/**
+ * Whether the groups store is enabled
+ */
+const groupsCacheEnabled = (): boolean => CacheService.config.groups.isEnabled && CacheService.config.isEnabled;
+
+/**
  * Searches the Graph for Groups
  *
  * @export
@@ -63,6 +100,21 @@ export async function findGroups(
   groupTypes: GroupType = GroupType.any
 ): Promise<Group[]> {
   const scopes = 'Group.Read.All';
+
+  let cache: CacheStore<CacheGroupQuery>;
+  const key = query || '*' + groupTypes;
+
+  if (groupsCacheEnabled()) {
+    cache = CacheService.getCache(cacheSchema, 'groupsQuery');
+    const cacheGroupQuery = await cache.getValue(key);
+    if (cacheGroupQuery && getGroupsInvalidationTime() > Date.now() - cacheGroupQuery.timeCached) {
+      if (cacheGroupQuery.top >= top) {
+        // if request is less than the cache's requests, return a slice of the results
+        return cacheGroupQuery.groups.map(x => JSON.parse(x)).slice(0, top + 1);
+      }
+      // if the new request needs more results than what's presently in the cache, graph must be called again
+    }
+  }
 
   let filterQuery = '';
   if (query !== '') {
@@ -101,5 +153,10 @@ export async function findGroups(
     .top(top)
     .middlewareOptions(prepScopes(scopes))
     .get();
+
+  if (groupsCacheEnabled() && result) {
+    cache.putValue(key, { groups: result.value.map(x => JSON.stringify(x)), top: top });
+  }
+
   return result ? result.value : null;
 }

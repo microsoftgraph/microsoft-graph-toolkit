@@ -24,6 +24,7 @@ import { MgtPersonCardFiles } from './sections/mgt-person-card-files/mgt-person-
 import { MgtPersonCardMessages } from './sections/mgt-person-card-messages/mgt-person-card-messages';
 import { MgtPersonCardOrganization } from './sections/mgt-person-card-organization/mgt-person-card-organization';
 import { MgtPersonCardProfile } from './sections/mgt-person-card-profile/mgt-person-card-profile';
+import { Presence } from '@microsoft/microsoft-graph-types-beta';
 
 /**
  * Web Component used to show detailed data for a person in the Microsoft Graph
@@ -141,6 +142,12 @@ export class MgtPersonCard extends MgtTemplatedComponent {
    * @memberof MgtPersonCard
    */
   protected sections: BasePersonCardSection[];
+
+  @property({
+    attribute: 'person-presence',
+    type: Object
+  })
+  public personPresence: Presence;
 
   private _history: IDynamicPerson[];
   private _chatInput: string;
@@ -327,7 +334,7 @@ export class MgtPersonCard extends MgtTemplatedComponent {
    * @param {*} image
    * @memberof MgtPersonCard
    */
-  protected renderPersonImage(imageSrc?: string): TemplateResult {
+  protected renderPersonImage(imageSrc?: string, presence?: Presence, showPresence?: boolean): TemplateResult {
     imageSrc = imageSrc || this.getImage();
     return html`
       <mgt-person

@@ -6,7 +6,7 @@
  */
 
 @import '../../styles/shared-styles.scss';
-@import '../../../node_modules/office-ui-fabric-core/dist/sass/References';
+@import '../../../../../node_modules/office-ui-fabric-core/dist/sass/References';
 
 $person-card-display-name-font-size: var(--person-card-display-name-font-size, 20px);
 $person-card-title-font-size: var(--person-card-title-font-size, 14px);

@@ -105,7 +105,7 @@ export class MgtPeoplePicker extends MgtTemplatedComponent {
 
   /**
    * value determining if search is filtered to a group.
-   * @type {string}
+   * @type {PersonType}
    */
   @property({
     attribute: 'type',
@@ -137,7 +137,7 @@ export class MgtPeoplePicker extends MgtTemplatedComponent {
   /**
    * type of group to search for - requires personType to be
    * set to "Group" or "All"
-   * @type {string}
+   * @type {GroupType}
    */
   @property({
     attribute: 'group-type',

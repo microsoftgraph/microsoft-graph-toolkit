@@ -7,6 +7,7 @@
 
 import { IGraph } from '@microsoft/mgt-element';
 import { Contact, Person, User } from '@microsoft/microsoft-graph-types';
+import { CacheItem, CacheSchema, CacheService, CacheStore } from '../utils/Cache';
 import { prepScopes } from '../utils/GraphHelpers';
 import { IDynamicPerson } from './types';
 
@@ -34,6 +35,79 @@ export enum PersonType {
 }
 
 /**
+ * Definition of cache structure
+ */
+const cacheSchema: CacheSchema = {
+  name: 'people',
+  stores: {
+    contacts: {},
+    groupPeople: {},
+    peopleQuery: {}
+  },
+  version: 1
+};
+
+/**
+ * Object to be stored in cache representing individual people
+ */
+interface CachePerson extends CacheItem {
+  /**
+   * json representing a person stored as string
+   */
+  person?: string;
+}
+
+/**
+ * Stores results of queries (multiple people returned)
+ */
+interface CachePeopleQuery extends CacheItem {
+  /**
+   * max number of results the query asks for
+   */
+  maxResults?: number;
+  /**
+   * list of people returned by query (might be less than max results!)
+   */
+  results?: string[];
+}
+
+/**
+ * Stores people from a group
+ */
+interface CacheGroupPeople extends CacheItem {
+  /**
+   * list of people returned by query (might be less than max results!)
+   */
+  people?: string[];
+}
+
+/**
+ * Defines the expiration time
+ */
+const getPeopleInvalidationTime = (): number =>
+  CacheService.config.people.invalidationPeriod || CacheService.config.defaultInvalidationPeriod;
+
+/**
+ * Whether the people store is enabled
+ */
+const peopleCacheEnabled = (): boolean => CacheService.config.people.isEnabled && CacheService.config.isEnabled;
+
+/**
+ * Name of the contacts store name
+ */
+const contactsStore: string = 'contacts';
+
+/**
+ * Name of group people store name
+ */
+const groupStore: string = 'groupPeople';
+
+/**
+ * Name of people store name
+ */
+const peopleStore: string = 'peopleQuery';
+
+/**
  * async promise, returns all Graph people who are most relevant contacts to the signed in user.
  *
  * @param {string} query
@@ -49,6 +123,15 @@ export async function findPeople(
 ): Promise<Person[]> {
   const scopes = 'people.read';
 
+  let cache: CacheStore<CachePeopleQuery>;
+
+  if (peopleCacheEnabled()) {
+    cache = CacheService.getCache<CachePeopleQuery>(cacheSchema, peopleStore);
+    const result: CachePeopleQuery = peopleCacheEnabled() ? await cache.getValue(query) : null;
+    if (result && getPeopleInvalidationTime() > Date.now() - result.timeCached) {
+      return result.results.map(peopleStr => JSON.parse(peopleStr));
+    }
+  }
   let filterQuery = '';
 
   if (personType !== PersonType.any) {
@@ -61,14 +144,20 @@ export async function findPeople(
     filterQuery = `personType/class eq '${personTypeString}'`;
   }
 
-  const result = await graph
+  const graphResult = await graph
     .api('/me/people')
     .search('"' + query + '"')
     .top(top)
     .filter(filterQuery)
     .middlewareOptions(prepScopes(scopes))
     .get();
-  return result ? result.value : null;
+
+  if (peopleCacheEnabled() && graphResult) {
+    const item = { maxResults: top, results: null };
+    item.results = graphResult.value.map(personStr => JSON.stringify(personStr));
+    cache.putValue(query, item);
+  }
+  return graphResult ? graphResult.value : null;
 }
 
 /**
@@ -80,12 +169,25 @@ export async function findPeople(
 export async function getPeople(graph: IGraph): Promise<Person[]> {
   const scopes = 'people.read';
 
+  let cache: CacheStore<CachePeopleQuery>;
+  if (peopleCacheEnabled()) {
+    cache = CacheService.getCache<CachePeopleQuery>(cacheSchema, peopleStore);
+    const cacheRes = await cache.getValue('*');
+
+    if (cacheRes && getPeopleInvalidationTime() > Date.now() - cacheRes.timeCached) {
+      return cacheRes.results.map(ppl => JSON.parse(ppl));
+    }
+  }
+
   const uri = '/me/people';
   const people = await graph
     .api(uri)
     .middlewareOptions(prepScopes(scopes))
     .filter("personType/class eq 'Person'")
     .get();
+  if (peopleCacheEnabled() && people) {
+    cache.putValue('*', { maxResults: 10, results: people.value.map(ppl => JSON.stringify(ppl)) });
+  }
   return people ? people.value : null;
 }
 
@@ -98,12 +200,24 @@ export async function getPeople(graph: IGraph): Promise<Person[]> {
  */
 export async function getPeopleFromGroup(graph: IGraph, groupId: string): Promise<Person[]> {
   const scopes = 'people.read';
+  let cache: CacheStore<CacheGroupPeople>;
+
+  if (peopleCacheEnabled()) {
+    cache = CacheService.getCache<CacheGroupPeople>(cacheSchema, groupStore);
+    const peopleItem = await cache.getValue(groupId);
+    if (peopleItem && getPeopleInvalidationTime() > Date.now() - peopleItem.timeCached) {
+      return peopleItem.people.map(peopleStr => JSON.parse(peopleStr));
+    }
+  }
 
   const uri = `/groups/${groupId}/members`;
   const people = await graph
     .api(uri)
     .middlewareOptions(prepScopes(scopes))
     .get();
+  if (peopleCacheEnabled()) {
+    cache.putValue(groupId, { people: people.value.map(ppl => JSON.stringify(ppl)) });
+  }
   return people ? people.value : null;
 }
 
@@ -135,11 +249,26 @@ export function getEmailFromGraphEntity(entity: IDynamicPerson): string {
  */
 export async function findContactByEmail(graph: IGraph, email: string): Promise<Contact[]> {
   const scopes = 'contacts.read';
+  let cache: CacheStore<CachePerson>;
+  if (peopleCacheEnabled()) {
+    cache = CacheService.getCache<CachePerson>(cacheSchema, contactsStore);
+    const contact = await cache.getValue(email);
+
+    if (contact && getPeopleInvalidationTime() > Date.now() - contact.timeCached) {
+      return JSON.parse(contact.person);
+    }
+  }
+
   const result = await graph
     .api('/me/contacts')
     .filter(`emailAddresses/any(a:a/address eq '${email}')`)
     .middlewareOptions(prepScopes(scopes))
     .get();
+
+  if (peopleCacheEnabled() && result) {
+    cache.putValue(email, { person: JSON.stringify(result.value) });
+  }
+
   return result ? result.value : null;
 }
 
