@@ -130,7 +130,11 @@ export async function getUserPhoto(graph: IGraph, userId: string): Promise<strin
       // there is a photo in the cache, but it's stale
       try {
         const response = await graph.api(`users/${userId}/photo`).get();
-        if (response && response['@odata.mediaEtag'] !== photoDetails.eTag) {
+        if (
+          response &&
+          (response['@odata.mediaEtag'] !== photoDetails.eTag ||
+            (response['@odata.mediaEtag'] === null && response.eTag === null))
+        ) {
           // set photoDetails to null so that photo gets pulled from the graph later
           photoDetails = null;
         }

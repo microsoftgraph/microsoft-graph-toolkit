@@ -134,7 +134,7 @@ export async function getUserWithPhoto(graph: IGraph, userId?: string): Promise<
     } else if (cachedPhoto) {
       try {
         const response = await graph.api(`${resource}/photo`).get();
-        if (response && response['@odata.mediaEtag'] === cachedPhoto.eTag) {
+        if (response && response['@odata.mediaEtag'] && response['@odata.mediaEtag'] === cachedPhoto.eTag) {
           // put current image into the cache to update the timestamp since etag is the same
           storePhotoInCache(userId || 'me', 'users', cachedPhoto);
           photo = cachedPhoto.photo;
