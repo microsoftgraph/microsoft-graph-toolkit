@@ -128,29 +128,20 @@ export async function getUserPhoto(graph: IGraph, userId: string): Promise<strin
       return photoDetails.photo;
     } else if (photoDetails) {
       // there is a photo in the cache, but it's stale
-      graph
-        .api(`users/${userId}/photo`)
-        .get()
-        .then(
-          async response => {
-            if (response && response['@odata.mediaEtag'] !== photoDetails.eTag) {
-              photoDetails = await getPhotoForResource(graph, `users/${userId}`, ['user.readbasic.all']);
-            }
-            // put current or new image into the cache to update the timestamp
-            cache.putValue(userId, photoDetails);
-            return photoDetails ? photoDetails.photo : null;
-          },
-          error => {
-            cache.putValue(userId, {});
-            return null;
-          }
-        );
+      try {
+        const response = await graph.api(`users/${userId}/photo`).get();
+        if (response && response['@odata.mediaEtag'] !== photoDetails.eTag) {
+          // set photoDetails to null so that photo gets pulled from the graph later
+          photoDetails = null;
+        }
+      } catch {
+        return null;
+      }
     }
   }
 
-  // no photo at all
-
-  photoDetails = await getPhotoForResource(graph, `users/${userId}`, ['user.readbasic.all']);
+  // if there is a photo in the cache, we got here because it was stale
+  photoDetails = photoDetails || (await getPhotoForResource(graph, `users/${userId}`, ['user.readbasic.all']));
   if (photosCacheEnabled() && photoDetails) {
     cache.putValue(userId, photoDetails);
   }

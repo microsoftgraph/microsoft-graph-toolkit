@@ -116,6 +116,9 @@ export async function getUserWithPhoto(graph: IGraph, userId?: string): Promise<
   let photo = null;
   let user: IDynamicPerson;
   let cachedPhoto: CachePhoto;
+  const resource = userId ? `users/${userId}` : 'me';
+  const scopes = userId ? ['user.readbasic.all'] : ['user.read'];
+
   // attempt to get user and photo from cache if enabled
   if (usersCacheEnabled()) {
     cache = CacheService.getCache<CacheUser>(cacheSchema, userStore);
@@ -129,23 +132,14 @@ export async function getUserWithPhoto(graph: IGraph, userId?: string): Promise<
     if (cachedPhoto && getPhotoInvalidationTime() > Date.now() - cachedPhoto.timeCached) {
       photo = cachedPhoto.photo;
     } else if (cachedPhoto) {
-      const resource = userId ? `users/${userId}` : 'me';
-      const scopes = userId ? ['user.readbasic.all'] : ['user.read'];
-      graph
-        .api(`${resource}/photo`)
-        .get()
-        .then(
-          async response => {
-            if (response && response['@odata.mediaEtag'] === cachedPhoto.eTag) {
-              // put current image into the cache to update the timestamp since etag is the same
-              storePhotoInCache(userId || 'me', 'users', cachedPhoto);
-            }
-          },
-          error => {
-            cache.putValue(userId, {});
-            return null;
-          }
-        );
+      try {
+        const response = await graph.api(`${resource}/photo`).get();
+        if (response && response['@odata.mediaEtag'] === cachedPhoto.eTag) {
+          // put current image into the cache to update the timestamp since etag is the same
+          storePhotoInCache(userId || 'me', 'users', cachedPhoto);
+          photo = cachedPhoto.photo;
+        }
+      } catch (e) {}
     }
   }
 
@@ -193,11 +187,12 @@ export async function getUserWithPhoto(graph: IGraph, userId?: string): Promise<
           .api('me')
           .middlewareOptions(prepScopes('user.read'))
           .get();
+    console.log(response);
     if (response) {
       if (usersCacheEnabled()) {
-        cache.putValue(userId || 'me', { user: JSON.stringify(response.content) });
+        cache.putValue(userId || 'me', { user: JSON.stringify(response) });
       }
-      user = response.content;
+      user = response;
     }
   }
   person = user;
