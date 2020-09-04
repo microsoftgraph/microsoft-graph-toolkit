@@ -168,7 +168,20 @@ export async function myPhoto(graph: IGraph): Promise<string> {
     }
   }
 
-  photoDetails = await getPhotoForResource(graph, 'me', ['user.read']);
+  try {
+    const response = await graph.api(`me/photo`).get();
+    if (
+      response &&
+      (response['@odata.mediaEtag'] !== photoDetails.eTag ||
+        (response['@odata.mediaEtag'] === null && response.eTag === null))
+    ) {
+      photoDetails = null;
+    }
+  } catch {
+    return null;
+  }
+
+  photoDetails = photoDetails || (await getPhotoForResource(graph, 'me', ['user.read']));
   if (photosCacheEnabled()) {
     cache.putValue('me', photoDetails || {});
   }
