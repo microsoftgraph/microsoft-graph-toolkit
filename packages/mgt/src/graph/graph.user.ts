@@ -187,7 +187,6 @@ export async function getUserWithPhoto(graph: IGraph, userId?: string): Promise<
           .api('me')
           .middlewareOptions(prepScopes('user.read'))
           .get();
-    console.log(response);
     if (response) {
       if (usersCacheEnabled()) {
         cache.putValue(userId || 'me', { user: JSON.stringify(response) });
