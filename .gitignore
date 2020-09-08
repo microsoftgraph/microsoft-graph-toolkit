@@ -34,6 +34,8 @@ coverage/
 testResults/junit.xml
 
 *-css.ts
+*.tsbuildinfo
+package-lock.json
 
 # storybook
 storybook-static/

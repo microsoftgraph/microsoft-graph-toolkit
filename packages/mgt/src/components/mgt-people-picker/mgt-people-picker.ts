@@ -16,6 +16,7 @@ import { IDynamicPerson } from '../../graph/types';
 import { Providers } from '../../Providers';
 import { ProviderState } from '../../providers/IProvider';
 import '../../styles/fabric-icon-font';
+import '../sub-components/mgt-spinner/mgt-spinner';
 import { debounce } from '../../utils/Utils';
 import { PersonViewType } from '../mgt-person/mgt-person';
 import { PersonCardInteraction } from '../PersonCardInteraction';
@@ -105,7 +106,7 @@ export class MgtPeoplePicker extends MgtTemplatedComponent {
 
   /**
    * value determining if search is filtered to a group.
-   * @type {string}
+   * @type {PersonType}
    */
   @property({
     attribute: 'type',
@@ -137,7 +138,7 @@ export class MgtPeoplePicker extends MgtTemplatedComponent {
   /**
    * type of group to search for - requires personType to be
    * set to "Group" or "All"
-   * @type {string}
+   * @type {GroupType}
    */
   @property({
     attribute: 'group-type',
@@ -532,7 +533,7 @@ export class MgtPeoplePicker extends MgtTemplatedComponent {
       this.renderTemplate('loading', null) ||
       html`
         <div class="message-parent">
-          <div class="spinner"></div>
+          <mgt-spinner></mgt-spinner>
           <div label="loading-text" aria-label="loading" class="loading-text">
             Loading...
           </div>

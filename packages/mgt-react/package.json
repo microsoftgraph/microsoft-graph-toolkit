@@ -1,0 +1,43 @@
+{
+  "name": "@microsoft/mgt-react",
+  "version": "2.0.0",
+  "description": "Microsoft Graph Toolkit React wrapper class",
+  "author": "Microsoft",
+  "license": "MIT",
+  "module": "dist/es6/index.js",
+  "main": "dist/es6/index.js",
+  "types": "dist/es6/types.d.ts",
+  "files": [
+    "dist",
+    "src"
+  ],
+  "keywords": [
+    "react",
+    "microsoft graph toolkit",
+    "web components",
+    "mgt"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/microsoftgraph/microsoft-graph-toolkit"
+  },
+  "bugs": {
+    "url": "https://github.com/microsoftgraph/microsoft-graph-toolkit/issues"
+  },
+  "scripts": {
+    "build": "npm run clean && npm run generate && tsc",
+    "clean": "node ./scripts/clean.js",
+    "prepack": "shx rm -rf *.tgz && npm run build",
+    "postpack": "cpx *.tgz ../../artifacts",
+    "generate": "wca analyze ../mgt/src --format json --outFile temp/web-components.json && node ./scripts/generate.js"
+  },
+  "dependencies": {
+    "@microsoft/mgt": "*",
+    "@microsoft/microsoft-graph-types": "^1.12.0",
+    "@microsoft/microsoft-graph-types-beta": "github:microsoftgraph/msgraph-typescript-typings#beta",
+    "wc-react": "^0.3.1"
+  },
+  "publishConfig": {
+    "access": "public"
+  }
+}
