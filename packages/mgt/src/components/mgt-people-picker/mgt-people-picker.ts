@@ -15,6 +15,7 @@ import { findUsers, getUser, getUsersForUserIds } from '../../graph/graph.user';
 import { IDynamicPerson } from '../../graph/types';
 import { Providers, ProviderState, MgtTemplatedComponent } from '@microsoft/mgt-element';
 import '../../styles/fabric-icon-font';
+import '../sub-components/mgt-spinner/mgt-spinner';
 import { debounce } from '../../utils/Utils';
 import { PersonViewType } from '../mgt-person/mgt-person';
 import { PersonCardInteraction } from '../PersonCardInteraction';
@@ -512,7 +513,7 @@ export class MgtPeoplePicker extends MgtTemplatedComponent {
       this.renderTemplate('loading', null) ||
       html`
         <div class="message-parent">
-          <div class="spinner"></div>
+          <mgt-spinner></mgt-spinner>
           <div label="loading-text" aria-label="loading" class="loading-text">
             Loading...
           </div>

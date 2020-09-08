@@ -175,6 +175,8 @@ export class MgtLogin extends MgtTemplatedComponent {
         if (this.userDetails.personImage) {
           this._image = this.userDetails.personImage;
         }
+
+        this.fireCustomEvent('loginCompleted');
       } else {
         this.userDetails = null;
       }

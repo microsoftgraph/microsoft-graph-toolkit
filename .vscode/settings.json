@@ -10,5 +10,5 @@
     "semibold",
     "xmlns"
   ],
-  "tslint.configFile": "./config/tslint.json"
+"tslint.configFile": "./config/tslint.json"
 }
