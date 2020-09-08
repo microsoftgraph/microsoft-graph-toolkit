@@ -177,7 +177,7 @@ mgt-people-picker .root {
   display: block;
 }
 
-$themes: ('light', 'dark', 'my');
+$themes: ('light', 'dark', 'custom');
 @mixin theme() {
   @each $theme in $themes {
     :host .people-picker.theme-#{$theme},
