@@ -164,6 +164,7 @@ export class Batch implements IBatch {
 
       response.id = request.id;
       response.index = request.index;
+      response.headers = r.headers;
 
       if (r.status !== 200) {
         if (r.status === 429) {
