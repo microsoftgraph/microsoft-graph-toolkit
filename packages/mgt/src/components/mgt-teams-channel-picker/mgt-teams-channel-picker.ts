@@ -11,6 +11,7 @@ import { classMap } from 'lit-html/directives/class-map';
 import { Providers } from '../../Providers';
 import { ProviderState } from '../../providers/IProvider';
 import '../../styles/fabric-icon-font';
+import '../sub-components/mgt-spinner/mgt-spinner';
 import { getSvg, SvgIcon } from '../../utils/SvgHelper';
 import { debounce } from '../../utils/Utils';
 import { MgtTemplatedComponent } from '../templatedComponent';
@@ -553,7 +554,7 @@ export class MgtTeamsChannelPicker extends MgtTemplatedComponent {
       template ||
       html`
         <div class="message-parent">
-          <div class="spinner"></div>
+          <mgt-spinner></mgt-spinner>
           <div label="loading-text" aria-label="loading" class="loading-text">
             Loading...
           </div>
