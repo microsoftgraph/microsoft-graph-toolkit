@@ -5,8 +5,8 @@
  * -------------------------------------------------------------------------------------------
  */
 
-import { createFromProvider, Graph } from '../Graph';
-import { IProvider, ProviderState } from './IProvider';
+import { createFromProvider } from '../Graph';
+import { IProvider, ProviderState } from '@microsoft/mgt-element';
 
 /**
  * AadTokenProvider

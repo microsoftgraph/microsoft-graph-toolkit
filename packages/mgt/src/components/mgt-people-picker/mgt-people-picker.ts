@@ -13,19 +13,18 @@ import { findGroups, GroupType } from '../../graph/graph.groups';
 import { findPeople, getPeople, getPeopleFromGroup, PersonType } from '../../graph/graph.people';
 import { findUsers, getUser, getUsersForUserIds } from '../../graph/graph.user';
 import { IDynamicPerson } from '../../graph/types';
-import { Providers } from '../../Providers';
-import { ProviderState } from '../../providers/IProvider';
+import { Providers, ProviderState, MgtTemplatedComponent } from '@microsoft/mgt-element';
 import '../../styles/fabric-icon-font';
 import '../sub-components/mgt-spinner/mgt-spinner';
 import { debounce } from '../../utils/Utils';
 import { PersonViewType } from '../mgt-person/mgt-person';
 import { PersonCardInteraction } from '../PersonCardInteraction';
 import { MgtFlyout } from '../sub-components/mgt-flyout/mgt-flyout';
-import { MgtTemplatedComponent } from '../templatedComponent';
 import { styles } from './mgt-people-picker-css';
 
 export { GroupType } from '../../graph/graph.groups';
 export { PersonType } from '../../graph/graph.people';
+
 /**
  * An interface used to mark an object as 'focused',
  * so it can be rendered differently.

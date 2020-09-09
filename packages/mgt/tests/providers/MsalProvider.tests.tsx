@@ -1,5 +1,5 @@
 import { MsalProvider, MsalConfig } from '../../src/providers/MsalProvider';
-import { LoginType } from '../../src/providers/IProvider';
+import { LoginType } from '@microsoft/mgt-element';
 import { AuthenticationProviderOptions } from '@microsoft/microsoft-graph-client/lib/es/IAuthenticationProviderOptions';
 import { UserAgentApplication } from 'msal';
 
