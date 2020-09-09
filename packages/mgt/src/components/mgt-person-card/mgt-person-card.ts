@@ -12,12 +12,10 @@ import { getPersonImage } from '../../graph/graph.photos';
 import { getUserPresence } from '../../graph/graph.presence';
 import { getUserWithPhoto } from '../../graph/graph.user';
 import { IDynamicPerson } from '../../graph/types';
-import { Providers } from '../../Providers';
-import { ProviderState } from '../../providers/IProvider';
+import { Providers, ProviderState, MgtTemplatedComponent } from '@microsoft/mgt-element';
 import { getSvg, SvgIcon } from '../../utils/SvgHelper';
 import { TeamsHelper } from '../../utils/TeamsHelper';
 import { MgtPerson } from '../mgt-person/mgt-person';
-import { MgtTemplatedComponent } from '../templatedComponent';
 import { styles } from './mgt-person-card-css';
 import { Presence } from '@microsoft/microsoft-graph-types-beta';
 
@@ -156,7 +154,7 @@ export class MgtPersonCard extends MgtTemplatedComponent {
   /**
    * Gets or sets presence of person
    *
-   * @type {Presence}
+   * @type {MicrosoftGraphBeta.Presence}
    * @memberof MgtPerson
    */
   @property({

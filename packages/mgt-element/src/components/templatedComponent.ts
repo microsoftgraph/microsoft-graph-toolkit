@@ -6,10 +6,10 @@
  */
 
 import { html, PropertyValues } from 'lit-element';
-import { TemplateContext } from '../graph/types';
-import { equals } from '../utils/Utils';
+import { TemplateContext } from '../utils/TemplateContext';
+import { equals } from '../utils/equals';
 import { MgtBaseComponent } from './baseComponent';
-import { TemplateHelper } from './templateHelper';
+import { TemplateHelper } from '../utils/TemplateHelper';
 
 /**
  * Lookup for rendered component templates and contexts by slot name.
@@ -39,7 +39,7 @@ export abstract class MgtTemplatedComponent extends MgtBaseComponent {
   /**
    * Collection of functions to be used in template binding
    *
-   * @type {TemplateContext}
+   * @type {MgtElement.TemplateContext}
    * @memberof MgtTemplatedComponent
    * @deprecated since 1.2 - use templateContext instead
    */
@@ -49,7 +49,7 @@ export abstract class MgtTemplatedComponent extends MgtBaseComponent {
    * Additional data context to be used in template binding
    * Use this to add event listeners or value converters
    *
-   * @type {TemplateContext}
+   * @type {MgtElement.TemplateContext}
    * @memberof MgtTemplatedComponent
    */
   public templateContext: TemplateContext;

@@ -38,6 +38,12 @@ export class BatchResponse {
    * @memberof BatchResponse
    */
   public content: any;
+  /**
+   * The header of the response
+   * @type {*}
+   * @memberof BatchResponse
+   */
+  public headers: string[];
 }
 
 /**

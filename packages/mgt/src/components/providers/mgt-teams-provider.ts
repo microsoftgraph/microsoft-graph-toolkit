@@ -7,7 +7,7 @@
 
 import { customElement, property } from 'lit-element';
 import { Configuration } from 'msal';
-import { Providers } from '../../Providers';
+import { Providers } from '@microsoft/mgt-element';
 import { TeamsConfig, TeamsProvider } from '../../providers/TeamsProvider';
 import { MgtBaseProvider } from './baseProvider';
 

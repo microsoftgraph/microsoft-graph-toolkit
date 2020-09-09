@@ -6,8 +6,7 @@
  */
 
 import { openDB } from 'idb';
-import { Providers } from '../Providers';
-import { ProviderState } from '../providers/IProvider';
+import { Providers, ProviderState } from '@microsoft/mgt-element';
 
 /**
  * Holds the cache options for cache store
@@ -45,19 +44,27 @@ export interface CacheConfig {
    */
   people: CacheOptions;
   /**
-   * Cache options for users store
-   *
-   * @type {CacheOptions}
-   * @memberof CacheConfig
-   */
-  users: CacheOptions;
-  /**
    * Cache options for photos store
    *
    * @type {CacheOptions}
    * @memberof CacheConfig
    */
   photos: CacheOptions;
+  /**
+   * Cache options for presence store
+   *
+   * @type {CacheOptions}
+   * @memberof CacheConfig
+   */
+
+  presence: CacheOptions;
+  /**
+   * Cache options for users store
+   *
+   * @type {CacheOptions}
+   * @memberof CacheConfig
+   */
+  users: CacheOptions;
 }
 
 /**
@@ -137,6 +144,10 @@ export class CacheService {
     },
     photos: {
       invalidationPeriod: null,
+      isEnabled: true
+    },
+    presence: {
+      invalidationPeriod: 300000,
       isEnabled: true
     },
     users: {

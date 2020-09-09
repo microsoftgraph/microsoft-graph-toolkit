@@ -8,12 +8,9 @@
 import { customElement, html, property } from 'lit-element';
 import { classMap } from 'lit-html/directives/class-map';
 import { IDynamicPerson } from '../../graph/types';
-import { Providers } from '../../Providers';
-import { ProviderState } from '../../providers/IProvider';
+import { Providers, ProviderState, MgtTemplatedComponent } from '@microsoft/mgt-element';
 import { MgtFlyout } from '../sub-components/mgt-flyout/mgt-flyout';
-import { MgtTemplatedComponent } from '../templatedComponent';
 import { styles } from './mgt-login-css';
-
 import { getUserWithPhoto } from '../../graph/graph.user';
 import '../../styles/fabric-icon-font';
 import '../mgt-person/mgt-person';
@@ -178,6 +175,8 @@ export class MgtLogin extends MgtTemplatedComponent {
         if (this.userDetails.personImage) {
           this._image = this.userDetails.personImage;
         }
+
+        this.fireCustomEvent('loginCompleted');
       } else {
         this.userDetails = null;
       }
