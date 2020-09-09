@@ -62,7 +62,6 @@ for (const tag of wc.tags) {
       }
 
       if (!primitives.has(type) && !mgtImports.has(type)) {
-        console.log(type);
         mgtImports.add(type);
       }
     }
