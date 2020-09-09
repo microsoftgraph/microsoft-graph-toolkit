@@ -32,7 +32,7 @@ $dropdown__background-color: (
   light: var(--dropdown-background-color, #{$white})
 );
 
-$bg: (
+$background-color: (
   dark: var(--input-background-color, var(--people-list-background-color, #1f1f1f)),
   light: var(--input-background-color, var(--people-list-background-color, #{$white}))
 );
@@ -80,7 +80,7 @@ $selected-person__background-color: (
 );
 
 @mixin theme__background($theme) {
-  background-color: map-get($bg, $theme);
+  background-color: map-get($background-color, $theme);
 }
 
 @mixin theme__border($theme) {
@@ -178,6 +178,7 @@ mgt-people-picker .root {
 }
 
 $themes: ('light', 'dark', 'custom');
+
 @mixin theme() {
   @each $theme in $themes {
     :host .people-picker.theme-#{$theme},
