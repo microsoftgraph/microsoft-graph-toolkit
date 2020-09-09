@@ -15,7 +15,8 @@ import {
   getPhotoFromCache,
   getPhotoInvalidationTime,
   photosCacheEnabled,
-  storePhotoInCache
+  storePhotoInCache,
+  CachePhoto
 } from './graph.photos';
 import { IDynamicPerson } from './types';
 
@@ -114,6 +115,10 @@ export async function getUserWithPhoto(graph: IGraph, userId?: string): Promise<
   let cache: CacheStore<CacheUser>;
   let photo = null;
   let user: IDynamicPerson;
+  let cachedPhoto: CachePhoto;
+  const resource = userId ? `users/${userId}` : 'me';
+  const scopes = userId ? ['user.readbasic.all'] : ['user.read'];
+
   // attempt to get user and photo from cache if enabled
   if (usersCacheEnabled()) {
     cache = CacheService.getCache<CacheUser>(cacheSchema, userStore);
@@ -123,11 +128,21 @@ export async function getUserWithPhoto(graph: IGraph, userId?: string): Promise<
     }
   }
   if (photosCacheEnabled()) {
-    const cachedPhoto = await getPhotoFromCache(userId || 'me', 'users');
+    cachedPhoto = await getPhotoFromCache(userId || 'me', 'users');
     if (cachedPhoto && getPhotoInvalidationTime() > Date.now() - cachedPhoto.timeCached) {
       photo = cachedPhoto.photo;
+    } else if (cachedPhoto) {
+      try {
+        const response = await graph.api(`${resource}/photo`).get();
+        if (response && response['@odata.mediaEtag'] && response['@odata.mediaEtag'] === cachedPhoto.eTag) {
+          // put current image into the cache to update the timestamp since etag is the same
+          storePhotoInCache(userId || 'me', 'users', cachedPhoto);
+          photo = cachedPhoto.photo;
+        }
+      } catch (e) {}
     }
   }
+
   if (!photo && !user) {
     // batch calls
     const batch = graph.createBatch();
@@ -139,13 +154,16 @@ export async function getUserWithPhoto(graph: IGraph, userId?: string): Promise<
       batch.get('photo', 'me/photo/$value', ['user.read']);
     }
     const response = await batch.executeAll();
-    const photoResponse = response.get('photo');
-    if (photoResponse) {
-      photo = photoResponse.content;
+    const eTag = response.get('photo').headers['ETag'];
+    photo = response.get('photo').content;
+    user = response.get('user').content;
+
+    // store user & photo in their respective cache
+    if (usersCacheEnabled()) {
+      cache.putValue(userId || 'me', { user: JSON.stringify(user) });
     }
-    const userResponse = response.get('user');
-    if (userResponse) {
-      user = userResponse.content;
+    if (photosCacheEnabled()) {
+      storePhotoInCache(userId || 'me', 'users', { eTag, photo: photo });
     }
   } else if (!photo) {
     // get photo from graph
@@ -171,9 +189,9 @@ export async function getUserWithPhoto(graph: IGraph, userId?: string): Promise<
           .get();
     if (response) {
       if (usersCacheEnabled()) {
-        cache.putValue(userId || 'me', { user: JSON.stringify(response.content) });
+        cache.putValue(userId || 'me', { user: JSON.stringify(response) });
       }
-      user = response.content;
+      user = response;
     }
   }
   if (user) {
