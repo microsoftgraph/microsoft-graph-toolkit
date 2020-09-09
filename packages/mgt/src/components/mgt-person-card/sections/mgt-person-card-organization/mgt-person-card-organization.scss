@@ -5,8 +5,7 @@
  * -------------------------------------------------------------------------------------------
  */
 
-@import '../../../../styles/shared-styles.scss';
-@import '../../../../../../../node_modules/office-ui-fabric-core/dist/sass/References';
+@import '../base-person-card-section.scss';
 
 :host {
   position: relative;
@@ -35,11 +34,6 @@
           font-size: 12px;
         }
       }
-    }
-
-    .no-data,
-    .loading {
-      padding: 0 20px;
     }
 
     .title {

@@ -9,6 +9,7 @@ import { property, TemplateResult, html } from 'lit-element';
 import { MgtTemplatedComponent } from '../../../components/templatedComponent';
 import { IDynamicPerson } from '../../../graph/types';
 import { MgtPersonCard } from '../mgt-person-card';
+import '../../sub-components/mgt-spinner/mgt-spinner';
 
 /**
  * A base class for building person card subsections.
@@ -130,7 +131,9 @@ export abstract class BasePersonCardSection extends MgtTemplatedComponent {
    */
   protected renderLoading(): TemplateResult {
     return html`
-      <div class="spinner"></div>
+      <div class="loading">
+        <mgt-spinner></mgt-spinner>
+      </div>
     `;
   }
 

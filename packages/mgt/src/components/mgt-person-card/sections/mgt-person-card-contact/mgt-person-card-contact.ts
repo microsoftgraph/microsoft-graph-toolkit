@@ -274,8 +274,10 @@ export class MgtPersonCardContact extends BasePersonCardSection {
       return;
     }
 
-    const delay = ms => new Promise(r => setTimeout(r, ms));
-    await delay(10000);
+    //const delay = ms => new Promise(r => setTimeout(r, ms));
+    //await delay(100000);
+
+    return;
 
     const userPerson = this.personDetails as GraphTypes.User;
     const personPerson = this.personDetails as GraphTypes.Person;
