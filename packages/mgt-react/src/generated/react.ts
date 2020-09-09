@@ -1,4 +1,4 @@
-import { IDynamicPerson,PersonType,GroupType,PersonCardInteraction,PersonViewType,AvatarSize,TasksStringResource,TaskFilter,SelectedChannel } from '@microsoft/mgt';
+import { IDynamicPerson,PersonType,GroupType,ThemeType,PersonCardInteraction,PersonViewType,AvatarSize,TasksStringResource,TaskFilter,SelectedChannel } from '@microsoft/mgt';
 import * as MgtElement from '@microsoft/mgt-element';
 import * as MicrosoftGraph from '@microsoft/microsoft-graph-types';
 import * as MicrosoftGraphBeta from '@microsoft/microsoft-graph-types-beta';
@@ -55,6 +55,7 @@ export type PeoplePickerProps = {
 	selectionMode?: string;
 	showMax?: number;
 	selectedPeople?: IDynamicPerson[];
+	theme?: ThemeType;
 	templateConverters?: MgtElement.TemplateContext;
 	templateContext?: MgtElement.TemplateContext;
 	useShadowRoot?: boolean;
