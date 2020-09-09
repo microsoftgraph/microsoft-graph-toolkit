@@ -55,13 +55,14 @@ $person-card-background-color: var(--person-card-background-color, #ffffff);
     grid-template-columns: auto 1fr;
     padding: 15px 15px 20px 15px;
 
-    mgt-person.person-image {
-      --avatar-size-s: 75px;
+    .person-image {
+      --presence-background-color: var(--person-card-background-color, #ffffff);
+      --presence-icon-color: var(--person-card-background-color, #ffffff);
       --avatar-size: 75px;
-      margin-right: 14px;
     }
 
     .details {
+      margin-left: 14px;
       line-height: 1.15;
       display: flex;
       flex-direction: column;
