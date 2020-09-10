@@ -13,10 +13,11 @@ import '../node_modules/@webcomponents/webcomponentsjs/webcomponents-bundle.js';
 import React from 'react';
 import ReactDOM from 'react-dom';
 import App from './App';
-import {Providers, MsalProvider} from '@microsoft/mgt';
-import {MockProvider} from '@microsoft/mgt/dist/es6/mock/MockProvider';
+import { Providers } from '@microsoft/mgt-element';
+import { MsalProvider } from '@microsoft/mgt';
+import { MockProvider } from '@microsoft/mgt/dist/es6/mock/MockProvider';
 
-Providers.globalProvider = new MockProvider();
+Providers.globalProvider = new MockProvider(true);
 
 // uncomment to use MSAL provider with your own ClientID (also comment above line)
 // Providers.globalProvider = new MsalProvider({clientId: '{YOUR_CLIENT_ID}'});

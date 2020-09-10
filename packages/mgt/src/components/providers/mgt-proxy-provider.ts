@@ -5,8 +5,8 @@
  * -------------------------------------------------------------------------------------------
  */
 
-import { customElement, LitElement, property } from 'lit-element';
-import { Providers } from '../../Providers';
+import { customElement, property } from 'lit-element';
+import { Providers } from '@microsoft/mgt-element';
 import { ProxyProvider } from '../../providers/ProxyProvider';
 import { MgtBaseProvider } from './baseProvider';
 

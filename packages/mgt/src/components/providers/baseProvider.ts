@@ -6,8 +6,7 @@
  */
 
 import { property } from 'lit-element';
-import { IProvider } from '../../providers/IProvider';
-import { MgtBaseComponent } from '../baseComponent';
+import { IProvider, MgtBaseComponent } from '@microsoft/mgt-element';
 
 /**
  * Abstract implementation for provider component

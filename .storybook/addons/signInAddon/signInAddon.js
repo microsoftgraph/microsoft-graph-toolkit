@@ -1,6 +1,6 @@
 import addons, { makeDecorator } from '@storybook/addons';
-import { Providers } from '../../../packages/mgt/dist/es6/Providers';
-import { ProviderState } from '../../../packages/mgt/dist/es6/providers/IProvider';
+import { Providers } from '../../../packages/mgt-element/dist/providers/Providers';
+import { ProviderState } from '../../../packages/mgt-element/dist/providers/IProvider';
 import { MsalProvider } from '../../../packages/mgt/dist/es6/providers/MsalProvider';
 import { MockProvider } from '../../../packages/mgt/dist/es6/mock/MockProvider';
 import { CLIENTID, SETPROVIDER_EVENT, GETPROVIDER_EVENT } from '../../env';

@@ -29,10 +29,3 @@ export type IDynamicPerson = (MicrosoftGraph.User | MicrosoftGraph.Person | Micr
  *  size of avatar. And in turn will determine presence badge added to it.
  */
 export type AvatarSize = 'small' | 'large' | 'auto';
-
-/**
- * Template context object
- */
-export interface TemplateContext {
-  [prop: string]: any;
-}

@@ -31,10 +31,17 @@ We highly recommend you browse existing issues first.
 Clone the repo and run the following in the terminal/command line/powershell:
 
 ```bash
-npm install
-npm run prepare
-npm run build
-npm start
+# If you haven't already, install yarn globally
+npm i -g yarn
+
+# Install dependencies in node_modules
+yarn
+
+# Build
+yarn build
+
+# Watch and serve
+yarn start
 ```
 
 ## Creating a new component (quick start)

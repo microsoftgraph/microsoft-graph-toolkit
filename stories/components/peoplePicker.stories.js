@@ -30,22 +30,10 @@ export const groupId = () => html`
 `;
 
 export const DarkMode = () => html`
-  <mgt-people-picker></mgt-people-picker>
+  <mgt-people-picker theme="dark"></mgt-people-picker>
   <style>
     .story-mgt-preview-wrapper {
       background-color: black;
-    }
-    mgt-people-picker {
-      --input-border: 2px rgba(255, 255, 255, 0.5) solid;
-      --input-background-color: #1f1f1f;
-      --dropdown-background-color: #1f1f1f;
-      --dropdown-item-hover-background: #333d47;
-      --dropdown-item-selected-background: #0f78d4;
-      --input-hover-color: #008394;
-      --input-focus-color: #0f78d4;
-      --font-color: white;
-      --placeholder-focus-color: rgba(255, 255, 255, 0.8);
-      --selected-person-background-color: #474747;
     }
   </style>
 `;

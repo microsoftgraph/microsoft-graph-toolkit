@@ -1,9 +1,12 @@
 {
-  "extends": "../../config/tsconfig",
+  "extends": "../../tsconfig.base.json",
   "compilerOptions": {
     "outDir": "dist/es6",
-    "rootDir": "src"
+    "sourceRoot": "src",
+    "rootDir": "src",
+    "composite": true
   },
-  "exclude": ["node_modules", "src/bundle"],
-  "include": ["src/**/*"]
+  "references": [{ "path": "../mgt-element" }],
+  "include": ["src"],
+  "exclude": ["src/bundle"]
 }

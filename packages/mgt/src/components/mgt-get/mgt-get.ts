@@ -6,11 +6,8 @@
  */
 
 import { customElement, html, property } from 'lit-element';
-import { Providers } from '../../Providers';
-import { ProviderState } from '../../providers/IProvider';
+import { Providers, ProviderState, MgtTemplatedComponent, equals } from '@microsoft/mgt-element';
 import { prepScopes } from '../../utils/GraphHelpers';
-import { equals } from '../../utils/Utils';
-import { MgtTemplatedComponent } from '../templatedComponent';
 
 /**
  * Custom element for making Microsoft Graph get queries
