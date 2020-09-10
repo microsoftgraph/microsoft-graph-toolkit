@@ -11,12 +11,58 @@ import { IProvider, LoginType, ProviderState } from '@microsoft/mgt-element';
 import { AuthenticationParameters, AuthError, AuthResponse, Configuration, UserAgentApplication } from 'msal';
 
 /**
+ * base config for MSAL authentication
+ *
+ * @export
+ * @interface MsalConfigBase
+ */
+interface MsalConfigBase {
+  /**
+   * scopes
+   *
+   * @type {string[]}
+   * @memberof MsalConfigBase
+   */
+  scopes?: string[];
+  /**
+   * loginType if login uses popup
+   *
+   * @type {LoginType}
+   * @memberof MsalConfigBase
+   */
+  loginType?: LoginType;
+  /**
+   * login hint value
+   *
+   * @type {string}
+   * @memberof MsalConfigBase
+   */
+  loginHint?: string;
+}
+
+/**
+ * config for MSAL authentication where a UserAgentApplication already exists
+ *
+ * @export
+ * @interface MsalConfig
+ */
+export interface MsalUserAgentApplicationConfig extends MsalConfigBase {
+  /**
+   * UserAgentApplication instance to use
+   *
+   * @type {UserAgentApplication}
+   * @memberof MsalConfig
+   */
+  userAgentApplication: UserAgentApplication;
+}
+
+/**
  * config for MSAL authentication
  *
  * @export
  * @interface MsalConfig
  */
-export interface MsalConfig {
+export interface MsalConfig extends MsalConfigBase {
   /**
    * clientId alphanumeric code
    *
@@ -24,13 +70,7 @@ export interface MsalConfig {
    * @memberof MsalConfig
    */
   clientId: string;
-  /**
-   * scopes
-   *
-   * @type {string[]}
-   * @memberof MsalConfig
-   */
-  scopes?: string[];
+
   /**
    * config authority
    *
@@ -39,13 +79,6 @@ export interface MsalConfig {
    */
   authority?: string;
   /**
-   * loginType if login uses popup
-   *
-   * @type {LoginType}
-   * @memberof MsalConfig
-   */
-  loginType?: LoginType;
-  /**
    * options as defined in
    * https://docs.microsoft.com/en-us/azure/active-directory/develop/msal-js-initializing-client-applications#configuration-options
    *
@@ -53,13 +86,6 @@ export interface MsalConfig {
    * @memberof MsalConfig
    */
   options?: Configuration;
-  /**
-   * login hint value
-   *
-   * @type {string}
-   * @memberof MsalConfig
-   */
-  loginHint?: string;
   /**
    * redirect Uri
    *
@@ -109,7 +135,7 @@ export class MsalProvider extends IProvider {
   private sessionStorageRequestedScopesKey = 'mgt-requested-scopes';
   private sessionStorageDeniedScopesKey = 'mgt-denied-scopes';
 
-  constructor(config: MsalConfig) {
+  constructor(config: MsalConfig | MsalUserAgentApplicationConfig) {
     super();
     this.initProvider(config);
   }
@@ -329,37 +355,57 @@ export class MsalProvider extends IProvider {
     return false;
   }
 
-  private initProvider(config: MsalConfig) {
+  private initProvider(config: MsalConfig | MsalUserAgentApplicationConfig) {
     this.scopes = typeof config.scopes !== 'undefined' ? config.scopes : ['user.read'];
     this._loginType = typeof config.loginType !== 'undefined' ? config.loginType : LoginType.Redirect;
     this._loginHint = config.loginHint;
 
-    if (config.clientId) {
-      const msalConfig: Configuration = config.options || { auth: { clientId: config.clientId } };
+    let userAgentApplication: UserAgentApplication;
+    let clientId: string;
 
-      msalConfig.auth.clientId = config.clientId;
-      msalConfig.cache = msalConfig.cache || {};
-      msalConfig.cache.cacheLocation = msalConfig.cache.cacheLocation || 'localStorage';
-      msalConfig.cache.storeAuthStateInCookie = msalConfig.cache.storeAuthStateInCookie || true;
+    if ('clientId' in config) {
+      if (config.clientId) {
+        const msalConfig: Configuration = config.options || { auth: { clientId: config.clientId } };
 
-      if (config.authority) {
-        msalConfig.auth.authority = config.authority;
+        msalConfig.auth.clientId = config.clientId;
+        msalConfig.cache = msalConfig.cache || {};
+        msalConfig.cache.cacheLocation = msalConfig.cache.cacheLocation || 'localStorage';
+        msalConfig.cache.storeAuthStateInCookie = msalConfig.cache.storeAuthStateInCookie || true;
+
+        if (config.authority) {
+          msalConfig.auth.authority = config.authority;
+        }
+
+        if (config.redirectUri) {
+          msalConfig.auth.redirectUri = config.redirectUri;
+        }
+
+        clientId = config.clientId;
+
+        userAgentApplication = new UserAgentApplication(msalConfig);
+      } else {
+        throw new Error('clientId must be provided');
       }
+    } else if ('userAgentApplication' in config) {
+      if (config.userAgentApplication) {
+        userAgentApplication = config.userAgentApplication;
+        const msalConfig = userAgentApplication.getCurrentConfiguration();
 
-      if (config.redirectUri) {
-        msalConfig.auth.redirectUri = config.redirectUri;
+        clientId = msalConfig.auth.clientId;
+      } else {
+        throw new Error('userAgentApplication must be provided');
       }
-
-      this.clientId = config.clientId;
-
-      this._userAgentApplication = new UserAgentApplication(msalConfig);
-      this._userAgentApplication.handleRedirectCallback(
-        response => this.tokenReceivedCallback(response),
-        (error, state) => this.errorReceivedCallback(error, state)
-      );
     } else {
-      throw new Error('clientId must be provided');
+      throw new Error('either clientId or userAgentApplication must be provided');
     }
+
+    this.clientId = clientId;
+
+    this._userAgentApplication = userAgentApplication;
+    this._userAgentApplication.handleRedirectCallback(
+      response => this.tokenReceivedCallback(response),
+      (error, state) => this.errorReceivedCallback(error, state)
+    );
 
     this.graph = createFromProvider(this);
 
