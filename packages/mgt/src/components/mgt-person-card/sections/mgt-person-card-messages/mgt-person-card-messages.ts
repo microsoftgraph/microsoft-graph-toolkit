@@ -13,6 +13,7 @@ import { getRelativeDisplayDate } from '../../../../utils/Utils';
 import { BasePersonCardSection } from '../BasePersonCardSection';
 import { getMessages, getMessagesWithUser, IMessage } from './graph.messages';
 import { styles } from './mgt-person-card-messages-css';
+import { getEmailFromGraphEntity } from '../../../../graph/graph.people';
 
 /**
  * The email messages subsection of the person card
@@ -169,14 +170,18 @@ export class MgtPersonCardMessages extends BasePersonCardSection {
     }
 
     const graph = provider.graph.forComponent(this);
-
     const me = await getMe(graph);
-    const emailAddress = me.mail;
 
     const userId = this.personDetails.id;
 
-    this._messages =
-      me.id === userId ? await getMessages(graph, userId) : await getMessagesWithUser(graph, userId, emailAddress);
+    if (me.id === userId) {
+      this._messages = await getMessages(graph);
+    } else {
+      const emailAddress = getEmailFromGraphEntity(this.personDetails);
+      if (emailAddress) {
+        this._messages = await getMessagesWithUser(graph, emailAddress);
+      }
+    }
 
     this.requestUpdate();
   }

@@ -113,7 +113,6 @@ export class MgtPersonCardContact extends BasePersonCardSection {
     },
     officeLocation: {
       icon: icons.officeLocation,
-      onClick: () => this.showOfficeLocation(),
       showCompact: true,
       title: 'Office Location'
     }
@@ -274,11 +273,6 @@ export class MgtPersonCardContact extends BasePersonCardSection {
       return;
     }
 
-    //const delay = ms => new Promise(r => setTimeout(r, ms));
-    //await delay(100000);
-
-    return;
-
     const userPerson = this.personDetails as GraphTypes.User;
     const personPerson = this.personDetails as GraphTypes.Person;
 
@@ -340,20 +334,6 @@ export class MgtPersonCardContact extends BasePersonCardSection {
     if (cellPhone) {
       window.open('tel:' + cellPhone, '_blank');
     }
-  }
-
-  /**
-   * Display the user's office location
-   *
-   * @protected
-   * @memberof MgtPersonCardContact
-   */
-  protected showOfficeLocation(): void {
-    const officeLocation = this._contactParts.officeLocation.value;
-    if (!officeLocation) {
-      return;
-    }
-    // TODO: Show the office location somehow. Maybe in Bing?
   }
 }
 

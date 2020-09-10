@@ -29,8 +29,8 @@ export interface IMessage {
  * @param {string} userId
  * @returns {IMessage}
  */
-export async function getMessages(graph: IGraph, userId: string): Promise<IMessage[]> {
-  const response = await graph.api(`/users/${userId}/messages`).get();
+export async function getMessages(graph: IGraph): Promise<IMessage[]> {
+  const response = await graph.api(`/me/messages`).get();
   return response.value;
 }
 
@@ -43,9 +43,7 @@ export async function getMessages(graph: IGraph, userId: string): Promise<IMessa
  * @param {string} emailAddress
  * @returns {Promise<IMessage[]>}
  */
-export async function getMessagesWithUser(graph: IGraph, userId: string, emailAddress: string): Promise<IMessage[]> {
-  const response = await graph
-    .api(`/users/${userId}/messages?$filter=(from/emailAddress/address) eq '${emailAddress}'`)
-    .get();
+export async function getMessagesWithUser(graph: IGraph, emailAddress: string): Promise<IMessage[]> {
+  const response = await graph.api(`/me/messages?$search="participants:${emailAddress}"`).get();
   return response.value;
 }
