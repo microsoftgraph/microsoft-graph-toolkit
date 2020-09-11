@@ -140,7 +140,7 @@ export class MgtPersonCardMessages extends BasePersonCardSection {
    */
   protected renderMessage(message: IMessage): TemplateResult {
     return html`
-      <div class="message">
+      <div class="message" @click=${() => this.handleMessageClick(message)}>
         <div class="message__detail">
           <div class="message__subject">${message.subject}</div>
           <div class="message__from">${message.from.emailAddress.name}</div>
@@ -150,6 +150,11 @@ export class MgtPersonCardMessages extends BasePersonCardSection {
       </div>
     `;
   }
+
+  private handleMessageClick(message: IMessage): void {
+    window.open(message.webLink, '_blank');
+  }
+
   /**
    * load state into the component
    *

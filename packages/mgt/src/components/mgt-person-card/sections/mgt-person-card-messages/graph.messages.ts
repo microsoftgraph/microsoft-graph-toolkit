@@ -6,20 +6,12 @@
  */
 
 import { IGraph } from '@microsoft/mgt-element';
+import { Message } from '@microsoft/microsoft-graph-types';
 
 /**
  * Display metadata for a message item
  */
-export interface IMessage {
-  // tslint:disable-next-line: completed-docs
-  receivedDateTime: Date;
-  // tslint:disable-next-line: completed-docs
-  subject: string;
-  // tslint:disable-next-line: completed-docs
-  from: { emailAddress: { address: string; name: string } };
-  // tslint:disable-next-line: completed-docs
-  bodyPreview: string;
-}
+export interface IMessage extends Message {}
 
 /**
  * Get messages for a user

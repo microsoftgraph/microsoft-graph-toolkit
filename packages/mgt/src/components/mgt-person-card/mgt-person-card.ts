@@ -194,7 +194,7 @@ export class MgtPersonCard extends MgtTemplatedComponent {
       new MgtPersonCardContact(),
       new MgtPersonCardOrganization(),
       new MgtPersonCardMessages(),
-      new MgtPersonCardFiles(),
+      // new MgtPersonCardFiles(),
       new MgtPersonCardProfile()
     ];
   }

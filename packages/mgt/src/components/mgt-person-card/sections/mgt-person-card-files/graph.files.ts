@@ -6,6 +6,7 @@
  */
 
 import { IGraph } from '@microsoft/mgt-element';
+import { DriveItem } from '@microsoft/microsoft-graph-types';
 
 /**
  * Potential file icon types
@@ -22,16 +23,10 @@ export enum IconType {
 /**
  * Display metadata for a file
  */
-export interface IFile {
-  // tslint:disable-next-line: completed-docs
-  iconType: IconType;
-  // tslint:disable-next-line: completed-docs
-  fileName: string;
-  // tslint:disable-next-line: completed-docs
-  lastModified: Date;
-}
+export interface IFile extends DriveItem {}
 
 /**
+ * Get files shared between me and another user.
  * TODO: Figure out the correct graph call.
  *
  * @export
@@ -39,45 +34,19 @@ export interface IFile {
  * @param {string} userId
  * @returns {Promise<IFile[]>}
  */
-export async function getSharedFiles(graph: IGraph, userId: string): Promise<IFile[]> {
-  const response = await graph.api(`users/${userId}/drive/root/children`).get();
-  //return response.value;
-
-  return getDummyData();
+export async function getFilesSharedWithUser(graph: IGraph, userId: string): Promise<IFile[]> {
+  const response = await graph.api(`users/${userId}/drive`).get();
+  return response.value;
 }
 
-// tslint:disable-next-line: completed-docs
-function getDummyData(): IFile[] {
-  return [
-    {
-      fileName: 'EPIC PAX Status _ Partners - Analytics - Essential eXperiences',
-      iconType: IconType.Word,
-      lastModified: new Date(2020, 7, 3)
-    },
-    {
-      fileName: 'PAX MAX M365 Rampup',
-      iconType: IconType.PowerPoint,
-      lastModified: new Date(2020, 7, 12, 8, 40, 13)
-    },
-    {
-      fileName: 'EPIC PAX Status _ Partners - Analytics - Essential eXperiences',
-      iconType: IconType.Word,
-      lastModified: new Date(2020, 6, 30)
-    },
-    {
-      fileName: 'PAX MAX M365 Rampup',
-      iconType: IconType.PowerPoint,
-      lastModified: new Date(2020, 6, 20)
-    },
-    {
-      fileName: 'EPIC PAX Status _ Partners - Analytics - Essential eXperiences',
-      iconType: IconType.Word,
-      lastModified: new Date(2019, 11, 3)
-    },
-    {
-      fileName: 'PAX MAX M365 Rampup',
-      iconType: IconType.PowerPoint,
-      lastModified: new Date(2018, 10, 27)
-    }
-  ];
+/**
+ * Get files shared with me
+ *
+ * @export
+ * @param {IGraph} graph
+ * @returns {Promise<IFile[]>}
+ */
+export async function getFilesSharedWithMe(graph: IGraph): Promise<IFile[]> {
+  const response = await graph.api(`/me/drive/sharedWithMe`).get();
+  return response.value;
 }

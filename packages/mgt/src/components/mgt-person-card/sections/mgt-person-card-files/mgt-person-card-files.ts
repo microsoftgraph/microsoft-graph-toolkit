@@ -11,8 +11,10 @@ import { Providers } from '../../../../Providers';
 import { ProviderState } from '../../../../providers/IProvider';
 import { getRelativeDisplayDate } from '../../../../utils/Utils';
 import { BasePersonCardSection } from '../BasePersonCardSection';
-import { getSharedFiles, IFile } from './graph.files';
+import { IFile, getFilesSharedWithMe, getFilesSharedWithUser } from './graph.files';
 import { styles } from './mgt-person-card-files-css';
+import { getEmailFromGraphEntity } from '../../../../graph/graph.people';
+import { getMe } from '../../../../graph/graph.user';
 
 /**
  * The files subsection of the person card
@@ -133,14 +135,22 @@ export class MgtPersonCardFiles extends BasePersonCardSection {
    * @memberof MgtPersonCardFiles
    */
   protected renderFile(file: IFile): TemplateResult {
-    const iconTemplate = html``;
+    const iconTemplate = html`
+      <img src="${1}" />
+    `;
+
+    const lastModifiedTemplate = file.lastModifiedDateTime
+      ? html`
+          <div class="file__last-modified">Modified ${getRelativeDisplayDate(new Date(file.lastModifiedDateTime))}</div>
+        `
+      : null;
 
     return html`
       <div class="file">
         <div class="file__icon">${iconTemplate}</div>
         <div class="file__details">
-          <div class="file__name">${file.fileName}</div>
-          <div class="file__last-modified">Modified ${getRelativeDisplayDate(file.lastModified)}</div>
+          <div class="file__name">${file.name}</div>
+          ${lastModifiedTemplate}
         </div>
       </div>
     `;
@@ -167,8 +177,32 @@ export class MgtPersonCardFiles extends BasePersonCardSection {
 
     const graph = provider.graph.forComponent(this);
     const betaGraph = BetaGraph.fromGraph(graph);
+
+    const me = await getMe(graph);
+
     const userId = this.personDetails.id;
-    this._files = await getSharedFiles(betaGraph, userId);
+
+    if (me.id === userId) {
+      this._files = await getFilesSharedWithMe(betaGraph);
+    } else {
+      const emailAddress = getEmailFromGraphEntity(this.personDetails);
+      if (emailAddress) {
+        this._files = await getFilesSharedWithUser(betaGraph, emailAddress);
+      }
+    }
+
+    if (this._files) {
+      for (const file of this._files) {
+        const thumbnailRequest = graph.api(`/users/${userId}/drive/items/${file.id}/thumbnails`).get();
+        thumbnailRequest
+          .then(thumbnails => {
+            file.thumbnails = thumbnails;
+          })
+          .catch(e => {
+            console.log(e);
+          });
+      }
+    }
 
     this.requestUpdate();
   }
