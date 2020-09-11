@@ -10,8 +10,7 @@ import { classMap } from 'lit-html/directives/class-map';
 import { repeat } from 'lit-html/directives/repeat';
 import { BetaGraph } from '../../BetaGraph';
 import { IGraph } from '@microsoft/mgt-element';
-import { Providers } from '../../Providers';
-import { ProviderState } from '../../providers/IProvider';
+import { Providers, ProviderState } from '@microsoft/mgt-element';
 import { getShortDateString } from '../../utils/Utils';
 import '../mgt-person/mgt-person';
 import { MgtTasksBase } from '../mgt-tasks-base/mgt-tasks-base';
@@ -282,11 +281,11 @@ export class MgtTodo extends MgtTasksBase {
 
     const taskCheckContent = isLoading
       ? html`
-          \uF16A
+          
         `
       : isCompleted
       ? html`
-          \uE73E
+          
         `
       : null;
 

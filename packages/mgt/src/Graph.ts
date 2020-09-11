@@ -17,8 +17,7 @@ import {
   TelemetryHandler
 } from '@microsoft/microsoft-graph-client';
 
-import { IGraph } from '@microsoft/mgt-element';
-import { IProvider } from '.';
+import { IGraph, IProvider } from '@microsoft/mgt-element';
 import { Batch } from './utils/Batch';
 import { ComponentMiddlewareOptions } from './utils/ComponentMiddlewareOptions';
 import { chainMiddleware } from './utils/GraphHelpers';

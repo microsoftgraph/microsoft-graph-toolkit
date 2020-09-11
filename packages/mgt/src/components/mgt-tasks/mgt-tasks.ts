@@ -10,17 +10,13 @@ import { Contact, OutlookTask, OutlookTaskFolder } from '@microsoft/microsoft-gr
 import { customElement, html, property } from 'lit-element';
 import { classMap } from 'lit-html/directives/class-map';
 import { repeat } from 'lit-html/directives/repeat';
-import { Providers } from '../../Providers';
-import { ProviderState } from '../../providers/IProvider';
+import { ComponentMediaQuery, Providers, ProviderState, MgtTemplatedComponent } from '@microsoft/mgt-element';
 import { getShortDateString } from '../../utils/Utils';
 import { MgtPeoplePicker } from '../mgt-people-picker/mgt-people-picker';
-import { MgtTemplatedComponent } from '../templatedComponent';
 import { PersonCardInteraction } from './../PersonCardInteraction';
 import { styles } from './mgt-tasks-css';
 import { ITask, ITaskFolder, ITaskGroup, ITaskSource, PlannerTaskSource, TodoTaskSource } from './task-sources';
-
 import { getMe } from '../../graph/graph.user';
-import { ComponentMediaQuery } from '../baseComponent';
 import { MgtPeople } from '../mgt-people/mgt-people';
 import '../mgt-person/mgt-person';
 import '../sub-components/mgt-arrow-options/mgt-arrow-options';
@@ -778,7 +774,7 @@ export class MgtTasks extends MgtTemplatedComponent {
                 this.isNewTaskVisible = !this.isNewTaskVisible;
               }}"
             >
-              <span class="TaskIcon">\uE710</span>
+              <span class="TaskIcon"></span>
               <span>Add</span>
             </button>
           `;
@@ -987,7 +983,7 @@ export class MgtTasks extends MgtTemplatedComponent {
               <span>Cancel</span>
             </div>
             <div class="TaskIcon TaskAdd" @click="${this.onAddTaskClick}">
-              <span>\uE710</span>
+              <span></span>
             </div>
           </div>
         `;
@@ -1072,11 +1068,11 @@ export class MgtTasks extends MgtTemplatedComponent {
 
     const taskCheckContent = isLoading
       ? html`
-          \uF16A
+          
         `
       : completed
       ? html`
-          \uE73E
+          
         `
       : null;
 
