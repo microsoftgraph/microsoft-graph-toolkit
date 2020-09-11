@@ -13,6 +13,7 @@ import { BasePersonCardSection } from '../BasePersonCardSection';
 import { getMessages, getMessagesWithUser, IMessage } from './graph.messages';
 import { styles } from './mgt-person-card-messages-css';
 import { getEmailFromGraphEntity } from '../../../../graph/graph.people';
+import { SvgIcon, getSvg } from '../../../../utils/SvgHelper';
 
 /**
  * The email messages subsection of the person card
@@ -61,15 +62,7 @@ export class MgtPersonCardMessages extends BasePersonCardSection {
    * @memberof MgtPersonCardMessages
    */
   public renderIcon(): TemplateResult {
-    return html`
-      <svg xmlns="http://www.w3.org/2000/svg">
-        <path
-          fill-rule="evenodd"
-          clip-rule="evenodd"
-          d="M4 3.5C4 3.22386 4.22386 3 4.5 3H16C17.1046 3 18 3.89543 18 5V12.5C18 12.7761 17.7761 13 17.5 13C17.2239 13 17 12.7761 17 12.5V5C17 4.44772 16.5523 4 16 4H4.5C4.22386 4 4 3.77614 4 3.5ZM4.04886 6H13.8473L9.04316 9.19968C8.86969 9.31522 8.64273 9.31103 8.47364 9.18916L4.04886 6ZM3 14V6.47671L7.88894 10.0004C8.39621 10.366 9.07706 10.3786 9.59749 10.032L15 6.43376V14H3ZM3 5C2.44772 5 2 5.44772 2 6V14C2 14.5523 2.44772 15 3 15H15C15.5523 15 16 14.5523 16 14V6C16 5.44772 15.5523 5 15 5H3Z"
-        />
-      </svg>
-    `;
+    return getSvg(SvgIcon.Messages);
   }
 
   /**

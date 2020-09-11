@@ -10,6 +10,7 @@ import { Providers, ProviderState } from '@microsoft/mgt-element';
 import { BasePersonCardSection } from '../BasePersonCardSection';
 import { getCoworkers, getManagers, IOrgMember } from './graph.organization';
 import { styles } from './mgt-person-card-organization-css';
+import { getSvg, SvgIcon } from '../../../../utils/SvgHelper';
 
 /**
  * The member organization subsection of the person card
@@ -49,15 +50,7 @@ export class MgtPersonCardOrganization extends BasePersonCardSection {
    * @memberof MgtPersonCardOrganization
    */
   public renderIcon(): TemplateResult {
-    return html`
-      <svg xmlns="http://www.w3.org/2000/svg">
-        <path
-          fill-rule="evenodd"
-          clip-rule="evenodd"
-          d="M13 4H8V7H13V4ZM8 3C7.44772 3 7 3.44772 7 4V7C7 7.55228 7.44772 8 8 8H10V9H7.5C6.67157 9 6 9.67157 6 10.5V11H4C3.44772 11 3 11.4477 3 12V15C3 15.5523 3.44772 16 4 16H9C9.55228 16 10 15.5523 10 15V12C10 11.4477 9.55228 11 9 11H7V10.5C7 10.2239 7.22386 10 7.5 10H13.5C13.7761 10 14 10.2239 14 10.5V11H12C11.4477 11 11 11.4477 11 12V15C11 15.5523 11.4477 16 12 16H17C17.5523 16 18 15.5523 18 15V12C18 11.4477 17.5523 11 17 11H15V10.5C15 9.67157 14.3284 9 13.5 9H11V8H13C13.5523 8 14 7.55228 14 7V4C14 3.44772 13.5523 3 13 3H8ZM9 12H4L4 15H9V12ZM12 12H17V15H12V12Z"
-        />
-      </svg>
-    `;
+    return getSvg(SvgIcon.Organization);
   }
 
   /**
@@ -158,9 +151,7 @@ export class MgtPersonCardOrganization extends BasePersonCardSection {
           <div class="org-member__department">${orgMember.department}</div>
         </div>
         <div class="org-member__more">
-          <svg width="8" height="13" viewBox="0 0 8 13" fill="none" xmlns="http://www.w3.org/2000/svg">
-            <path d="M1 12L6.5 6.5L1 1" stroke="#B8B8B8" stroke-width="2" />
-          </svg>
+          ${getSvg(SvgIcon.ExpandRight)}
         </div>
       </div>
       <div class="org-member__separator"></div>
