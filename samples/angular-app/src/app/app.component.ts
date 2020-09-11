@@ -1,5 +1,8 @@
 import { Component, OnInit } from '@angular/core';
-import { Providers, MsalProvider, TemplateHelper, ProviderState} from '@microsoft/mgt';
+import { MsalService } from '@azure/msal-angular';
+import { MsalProvider } from '@microsoft/mgt';
+import { LoginType, Providers, ProviderState, TemplateHelper } from '@microsoft/mgt-element';
+import { MSALAngularConfig } from '../environments/environment.msal';
 
 @Component({
   selector: 'app-root',
@@ -9,13 +12,19 @@ import { Providers, MsalProvider, TemplateHelper, ProviderState} from '@microsof
 export class AppComponent implements OnInit {
   title = 'demo-mgt-angular';
 
-  public isLoggedIn(){
+  constructor(msalService: MsalService) {
+    Providers.globalProvider = new MsalProvider({
+      userAgentApplication: msalService,
+      scopes: MSALAngularConfig.consentScopes,
+      loginType: MSALAngularConfig.popUp === true ? LoginType.Popup : LoginType.Redirect
+    });
+
+    TemplateHelper.setBindingSyntax('[[', ']]');
+  }
+
+  public isLoggedIn() {
     return Providers.globalProvider.state === ProviderState.SignedIn;
   }
 
-  ngOnInit()
-  {
-    Providers.globalProvider = new MsalProvider({ clientId: '[YOUR-CLIENT-ID]' });
-    TemplateHelper.setBindingSyntax('[[', ']]');
-  }
+  public ngOnInit() {}
 }
