@@ -15,6 +15,7 @@ import { getUserWithPhoto } from '../../graph/graph.user';
 import '../../styles/fabric-icon-font';
 import '../mgt-person/mgt-person';
 import { PersonViewType } from '../mgt-person/mgt-person';
+import { LocalizationHelper } from '../../utils/localizationHelper';
 
 /**
  * Web component button and flyout control to facilitate Microsoft identity platform authentication
@@ -87,6 +88,7 @@ export class MgtLogin extends MgtTemplatedComponent {
   constructor() {
     super();
     this._isFlyoutOpen = false;
+    this.handleLocalizationChanged = this.handleLocalizationChanged.bind(this);
   }
 
   /**
@@ -97,6 +99,47 @@ export class MgtLogin extends MgtTemplatedComponent {
   public connectedCallback() {
     super.connectedCallback();
     this.addEventListener('click', e => e.stopPropagation());
+    window.addEventListener('strings', (event: CustomEvent) => this.handleLocalizationChanged(event));
+    this.updateDirection();
+  }
+
+  /**
+   * Matches string to user provided one and returns
+   *
+   * @protected
+   * @param {*} stringKey
+   * @returns
+   * @memberof MgtLogin
+   */
+  protected getString(stringKey) {
+    return LocalizationHelper.getString(this.tagName, stringKey);
+  }
+
+  /**
+   * Request localization changes when the 'strings' event is detected
+   *
+   * @private
+   * @param {CustomEvent} event
+   * @memberof MgtLogin
+   */
+  private handleLocalizationChanged(event: CustomEvent) {
+    if (event && event.detail) {
+      LocalizationHelper._strings = event.detail.strings;
+      this.requestUpdate();
+    }
+  }
+
+  /**
+   * returns dir attribute on body
+   *
+   * @private
+   * @memberof MgtLogin
+   */
+  private updateDirection() {
+    let direction = LocalizationHelper.getDirection();
+    if (direction == 'rtl') {
+      this.classList.add('rtl');
+    }
   }
 
   /**
@@ -279,7 +322,7 @@ export class MgtLogin extends MgtTemplatedComponent {
         <ul>
           <li>
             <button class="popup-command" @click=${this.logout} aria-label="Sign Out">
-              Sign Out
+              ${this.getString('Sign Out')}
             </button>
           </li>
         </ul>

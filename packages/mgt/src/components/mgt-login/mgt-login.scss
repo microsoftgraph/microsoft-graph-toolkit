@@ -117,3 +117,16 @@ mgt-login .popup-command {
     color: var(--theme-dark-color);
   }
 }
+
+:host .login-button,
+mgt-login.rtl {
+  mgt-person {
+    --details-spacing: 0px 6px 0px 0px;
+  }
+}
+:host .popup-content,
+mgt-login.rtl {
+  mgt-person {
+    --details-spacing: 0px 12px 0px 0px;
+  }
+}
