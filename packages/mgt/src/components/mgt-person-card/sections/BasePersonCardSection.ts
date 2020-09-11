@@ -6,7 +6,7 @@
  */
 
 import { property, TemplateResult, html } from 'lit-element';
-import { MgtTemplatedComponent } from '../../../components/templatedComponent';
+import { MgtTemplatedComponent } from '@microsoft/mgt-element';
 import { IDynamicPerson } from '../../../graph/types';
 import { MgtPersonCard } from '../mgt-person-card';
 import '../../sub-components/mgt-spinner/mgt-spinner';

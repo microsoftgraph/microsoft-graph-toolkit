@@ -7,8 +7,7 @@
 
 import { customElement, html, TemplateResult } from 'lit-element';
 import { BetaGraph } from '../../../../BetaGraph';
-import { Providers } from '../../../../Providers';
-import { ProviderState } from '../../../../providers/IProvider';
+import { Providers, ProviderState } from '@microsoft/mgt-element';
 import { getRelativeDisplayDate } from '../../../../utils/Utils';
 import { BasePersonCardSection } from '../BasePersonCardSection';
 import { IFile, getFilesSharedWithMe, getFilesSharedWithUser } from './graph.files';

@@ -6,8 +6,7 @@
  */
 
 import { customElement, html, TemplateResult } from 'lit-element';
-import { Providers } from '../../../../Providers';
-import { ProviderState } from '../../../../providers/IProvider';
+import { Providers, ProviderState } from '@microsoft/mgt-element';
 import { BasePersonCardSection } from '../BasePersonCardSection';
 import { getCoworkers, getManagers, IOrgMember } from './graph.organization';
 import { styles } from './mgt-person-card-organization-css';
