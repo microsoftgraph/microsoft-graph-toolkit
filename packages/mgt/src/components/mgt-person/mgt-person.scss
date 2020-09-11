@@ -348,10 +348,10 @@ mgt-person .person-root {
     flex-direction: column;
     overflow: hidden;
     line-height: 1.4;
-    margin-left: var($details-spacing, 12px);
+    margin: var($details-spacing, 0px 0px 0px 12px);
 
     &.small {
-      margin-left: var($details-spacing, 6px);
+      margin: var($details-spacing, 0px 0px 0px 6px);
     }
 
     & > div {
@@ -388,5 +388,23 @@ mgt-person .avatar-icon {
     font-size: $avatar-size-s;
     width: $avatar-size-s;
     height: $avatar-size-s;
+  }
+}
+
+mgt-person.rtl {
+  .root {
+    direction: rtl;
+  }
+  svg {
+    direction: rtl;
+  }
+  .user-avatar {
+    position: relative;
+  }
+  .details {
+    margin: var($details-spacing, 0px 12px 0px 0px);
+    &.small {
+      margin: var($details-spacing, 0px 6px 0px 0px);
+    }
   }
 }
