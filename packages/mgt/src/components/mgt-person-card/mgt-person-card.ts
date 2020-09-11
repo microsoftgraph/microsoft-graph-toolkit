@@ -326,7 +326,6 @@ export class MgtPersonCard extends MgtTemplatedComponent {
         <div class="details">
           ${personNameTemplate} ${personTitleTemplate} ${personSubtitleTemplate}
         </div>
-        <div></div>
         <div class="base-icons">
           ${contactIconsTemplate}
         </div>
