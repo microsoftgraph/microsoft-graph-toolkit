@@ -369,13 +369,17 @@ export class MgtPersonCard extends MgtTemplatedComponent {
    */
   protected renderPersonImage(imageSrc?: string, presence?: Presence, showPresence?: boolean): TemplateResult {
     imageSrc = imageSrc || this.getImage();
+    presence = presence || this.personPresence;
+    showPresence = showPresence || this.showPresence;
+    const avatarSize = 'large';
     return html`
       <mgt-person
         class="person-image"
         .personDetails=${this.personDetails}
         .personImage=${imageSrc}
-        .showPresence=${true}
-        avatar-size="large"
+        .personPresence=${presence}
+        .showPresence=${showPresence}
+        .avatarSize=${avatarSize}
       ></mgt-person>
     `;
   }
