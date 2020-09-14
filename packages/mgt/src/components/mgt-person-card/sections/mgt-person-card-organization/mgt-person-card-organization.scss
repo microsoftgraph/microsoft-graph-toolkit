@@ -1,0 +1,152 @@
+/**
+ * -------------------------------------------------------------------------------------------
+ * Copyright (c) Microsoft Corporation.  All Rights Reserved.  Licensed under the MIT License.
+ * See License in the project root for license information.
+ * -------------------------------------------------------------------------------------------
+ */
+
+@import '../base-person-card-section.scss';
+
+:host {
+  position: relative;
+
+  .root {
+    padding: 20px 0;
+
+    &.compact {
+      padding: 0;
+
+      .coworker {
+        .coworker__image {
+          height: 40px;
+          width: 40px;
+          border-radius: 40px;
+          --avatar-size: 40px;
+          --avatar-size-s: 40px;
+          margin-right: 12px;
+        }
+
+        .coworker__name {
+          font-size: 14px;
+        }
+
+        .coworker__title {
+          font-size: 12px;
+        }
+      }
+    }
+
+    .title {
+      font-size: 14px;
+      font-weight: 600;
+      color: #323130;
+      margin: 0 20px 20px 20px;
+    }
+
+    .subtitle {
+      color: #797775;
+      font-size: 14px;
+      margin: 0 20px 8px 20px;
+    }
+
+    .divider {
+      display: flex;
+      background: #e8e8e8;
+      height: 1px;
+      margin-top: 26px;
+      margin-bottom: 18px;
+      margin-left: 20px;
+      margin-right: 20px;
+    }
+
+    .org-member {
+      height: 74px;
+      box-sizing: border-box;
+      border-radius: 2px;
+      padding: 12px;
+      display: flex;
+      align-items: center;
+      margin-left: 20px;
+      margin-right: 20px;
+
+      &.org-member--target {
+        background-color: #f5faff;
+        border: 1px solid #3078d0;
+      }
+
+      &:not(.org-member--target) {
+        background-color: #ffffff;
+        border: 1px solid #e8e8e8;
+
+        &:hover {
+          cursor: pointer;
+          background-color: #f3f2f1;
+        }
+      }
+
+      .org-member__image mgt-person {
+        --avatar-size: 48px;
+        --avatar-size-s: 48px;
+        margin-right: 8px;
+      }
+
+      .org-member__details {
+        flex-grow: 1;
+
+        .org-member__name {
+          font-size: 16px;
+          color: #323130;
+          font-weight: 600;
+        }
+
+        .org-member__title,
+        .org-member__department {
+          font-weight: 14px;
+          color: #797775;
+        }
+      }
+    }
+
+    .org-member__separator {
+      border: 1px solid #e8e8e8;
+      box-sizing: border-box;
+      width: 0;
+      margin: 0 50%;
+      height: 14px;
+    }
+
+    .coworker {
+      display: flex;
+      align-items: center;
+      padding: 10px 20px;
+
+      &:hover {
+        cursor: pointer;
+        background-color: #f3f2f1;
+      }
+
+      .coworker__image {
+        height: 46px;
+        width: 46px;
+        --avatar-size: 46px;
+        --avatar-size-s: 46px;
+        border-radius: 46px;
+        margin-right: 8px;
+        background-color: #e8e8e8;
+      }
+
+      .coworker__details {
+        .coworker__name {
+          color: #323130;
+          font-size: 16px;
+          font-weight: 600;
+        }
+
+        .coworker__title {
+          color: #797775;
+          font-size: 14px;
+        }
+      }
+    }
+  }
+}

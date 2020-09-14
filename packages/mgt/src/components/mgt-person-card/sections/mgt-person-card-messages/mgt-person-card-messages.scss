@@ -1,0 +1,75 @@
+/**
+ * -------------------------------------------------------------------------------------------
+ * Copyright (c) Microsoft Corporation.  All Rights Reserved.  Licensed under the MIT License.
+ * See License in the project root for license information.
+ * -------------------------------------------------------------------------------------------
+ */
+
+@import '../base-person-card-section.scss';
+
+:host {
+  position: relative;
+
+  .root {
+    padding: 20px 0;
+
+    &.compact {
+      padding: 0;
+    }
+
+    .title {
+      font-size: 14px;
+      font-weight: 600;
+      color: #323130;
+      margin: 0 20px 12px 20px;
+    }
+
+    .message {
+      padding: 8px 20px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+
+      &:hover {
+        background-color: #f3f2f1;
+        cursor: pointer;
+      }
+
+      &:last-child {
+        margin-bottom: unset;
+      }
+
+      .message__detail {
+        min-width: 0;
+
+        .message__subject {
+          font-size: 14px;
+          color: #323130;
+        }
+
+        .message__from {
+          font-size: 12px;
+          color: #201f1e;
+        }
+
+        .message__message {
+          font-size: 12px;
+          color: #797775;
+        }
+
+        > div {
+          white-space: nowrap;
+          overflow: hidden;
+          text-overflow: ellipsis;
+        }
+      }
+
+      .message__date {
+        font-size: 12px;
+        color: #797775;
+        margin-left: 10px;
+        white-space: nowrap;
+      }
+    }
+  }
+}

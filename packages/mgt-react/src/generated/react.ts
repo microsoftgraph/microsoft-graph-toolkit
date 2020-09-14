@@ -78,9 +78,9 @@ export type PeopleProps = {
 }
 
 export type PersonCardProps = {
+	personDetails?: IDynamicPerson;
 	personQuery?: string;
 	userId?: string;
-	personDetails?: IDynamicPerson;
 	personImage?: string;
 	fetchImage?: boolean;
 	isExpanded?: boolean;
