@@ -10,7 +10,7 @@ import { BetaGraph } from '../../../../BetaGraph';
 import { Providers, ProviderState } from '@microsoft/mgt-element';
 import { getRelativeDisplayDate } from '../../../../utils/Utils';
 import { BasePersonCardSection } from '../BasePersonCardSection';
-import { IFile, getFilesSharedWithMe, getFilesSharedWithUser } from './graph.files';
+import { IFile, getFilesSharedWithMe, getFilesSharedWithUser, getThumbnails } from './graph.files';
 import { styles } from './mgt-person-card-files-css';
 import { getEmailFromGraphEntity } from '../../../../graph/graph.people';
 import { getMe } from '../../../../graph/graph.user';
@@ -129,9 +129,7 @@ export class MgtPersonCardFiles extends BasePersonCardSection {
    * @memberof MgtPersonCardFiles
    */
   protected renderFile(file: IFile): TemplateResult {
-    const iconTemplate = html`
-      <img src="${1}" />
-    `;
+    const iconSource = file.thumbnails ? file.thumbnails[0].small.url : null;
 
     const lastModifiedTemplate = file.lastModifiedDateTime
       ? html`
@@ -141,7 +139,9 @@ export class MgtPersonCardFiles extends BasePersonCardSection {
 
     return html`
       <div class="file">
-        <div class="file__icon">${iconTemplate}</div>
+        <div class="file__icon">
+          <img src="${iconSource}" />
+        </div>
         <div class="file__details">
           <div class="file__name">${file.name}</div>
           ${lastModifiedTemplate}
@@ -173,7 +173,6 @@ export class MgtPersonCardFiles extends BasePersonCardSection {
     const betaGraph = BetaGraph.fromGraph(graph);
 
     const me = await getMe(graph);
-
     const userId = this.personDetails.id;
 
     if (me.id === userId) {
@@ -187,14 +186,7 @@ export class MgtPersonCardFiles extends BasePersonCardSection {
 
     if (this._files) {
       for (const file of this._files) {
-        const thumbnailRequest = graph.api(`/users/${userId}/drive/items/${file.id}/thumbnails`).get();
-        thumbnailRequest
-          .then(thumbnails => {
-            file.thumbnails = thumbnails;
-          })
-          .catch(e => {
-            console.log(e);
-          });
+        file.thumbnails = await getThumbnails(graph, file);
       }
     }
 

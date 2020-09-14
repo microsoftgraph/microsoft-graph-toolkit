@@ -6,7 +6,7 @@
  */
 
 import { IGraph } from '@microsoft/mgt-element';
-import { DriveItem } from '@microsoft/microsoft-graph-types';
+import { DriveItem, ThumbnailSet } from '@microsoft/microsoft-graph-types';
 
 /**
  * Potential file icon types
@@ -35,8 +35,8 @@ export interface IFile extends DriveItem {}
  * @returns {Promise<IFile[]>}
  */
 export async function getFilesSharedWithUser(graph: IGraph, userId: string): Promise<IFile[]> {
-  const response = await graph.api(`users/${userId}/drive`).get();
-  return response.value;
+  const response = await graph.api(`users/${userId}/drive/sharedWithMe`).get();
+  return response.value || null;
 }
 
 /**
@@ -49,4 +49,12 @@ export async function getFilesSharedWithUser(graph: IGraph, userId: string): Pro
 export async function getFilesSharedWithMe(graph: IGraph): Promise<IFile[]> {
   const response = await graph.api(`/me/drive/sharedWithMe`).get();
   return response.value;
+}
+
+export async function getThumbnails(graph: IGraph, item: DriveItem): Promise<ThumbnailSet[]> {
+  const driveId = item.remoteItem.parentReference.driveId;
+  const itemId = item.remoteItem.id;
+
+  const response = await graph.api(`/drives/${driveId}/items/${itemId}/thumbnails`).get();
+  return response.value || null;
 }
