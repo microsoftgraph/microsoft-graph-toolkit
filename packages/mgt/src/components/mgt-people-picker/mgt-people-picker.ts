@@ -703,8 +703,9 @@ export class MgtPeoplePicker extends MgtTemplatedComponent {
             // nop
           }
         }
+        //Group ID case
       } else if (input && this.groupId) {
-        people = await getPeopleFromGroup(graph, this.groupId);
+        people = this._groupPeople;
       }
     }
 
