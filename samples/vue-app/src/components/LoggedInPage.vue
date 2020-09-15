@@ -12,12 +12,14 @@
 
       <mgt-people v-pre>
         <template>
-          <ul><li data-for="person in people">
-            <mgt-person person-query="{{ person.userPrincipalName }}"></mgt-person>
-            <h3>{{ person.displayName }}</h3>
-            <p>{{ person.jobTitle }}</p>
-            <p>{{ person.department }}</p>
-          </li></ul>
+          <ul>
+            <li data-for="person in people">
+              <mgt-person person-query="{{ person.userPrincipalName }}"></mgt-person>
+              <h3>{{ person.displayName }}</h3>
+              <p>{{ person.jobTitle }}</p>
+              <p>{{ person.department }}</p>
+            </li>
+          </ul>
         </template>
       </mgt-people>
     </div>
@@ -29,23 +31,24 @@
     <mgt-tasks data-source="todo" read-only="true"></mgt-tasks>
 
     <h2 id="filesHeader">Files</h2>
-    <recent-file-list class="files"/>
+    <recent-file-list class="files" />
   </div>
 </template>
 
 <script lang="ts">
 import { Component, Prop, Vue } from 'vue-property-decorator';
-import { MgtPerson, MgtAgenda, MgtPeople, MgtTasks, MgtPersonDetails, Providers } from '@microsoft/mgt';
+import { MgtPerson, MgtAgenda, MgtPeople, MgtTasks, IDynamicPerson } from '@microsoft/mgt';
+import { Providers } from '@microsoft/mgt-element';
 import RecentFileList from './RecentFileList.vue';
 
 @Component({
   components: {
-    RecentFileList,
-  },
+    RecentFileList
+  }
 })
 export default class LoggedInPage extends Vue {
   private showPanel = true;
-  private details: MgtPersonDetails = {};
+  private details: IDynamicPerson = {};
 
   private async mounted() {
     // TODO: Fire event in person when data loaded from query. See Issue #99.
@@ -73,8 +76,6 @@ export default class LoggedInPage extends Vue {
   grid-template-columns: 488px auto auto;
 
   height: 100vh;
-  
-  overflow: hidden;
 }
 
 #sidePanel {
@@ -91,7 +92,7 @@ export default class LoggedInPage extends Vue {
   box-shadow: 8px 4px 14px rgba(21, 21, 21, 0.05);
 
   #profile {
-    color: #00188F;
+    color: #00188f;
     background-color: white;
 
     width: 408px;
@@ -107,7 +108,7 @@ export default class LoggedInPage extends Vue {
       left: 20px;
 
       --avatar-size-s: 92px;
-      --avatar-border: 4px solid #00A5B0;
+      --avatar-border: 4px solid #00a5b0;
     }
 
     h3 {
@@ -122,7 +123,7 @@ export default class LoggedInPage extends Vue {
       font-size: 24px;
       line-height: 32px;
 
-      color: #00188F;
+      color: #00188f;
     }
 
     p {
@@ -135,7 +136,7 @@ export default class LoggedInPage extends Vue {
       font-size: 12.0351px;
       line-height: 18px;
 
-      color: #676B80;
+      color: #676b80;
     }
 
     span {
@@ -146,7 +147,7 @@ export default class LoggedInPage extends Vue {
       font-size: 30px;
       font-weight: 300;
 
-      color: #0078D4;
+      color: #0078d4;
       transform: rotate(90deg);
     }
 
@@ -160,7 +161,7 @@ export default class LoggedInPage extends Vue {
       font-size: 20px;
       line-height: 100%;
 
-      color: #D73B02;
+      color: #d73b02;
 
       img {
         width: 20px;
@@ -175,7 +176,7 @@ export default class LoggedInPage extends Vue {
     --avatar-spacing: 0px 0px 16px 0px;
 
     &::before {
-      content: "My Frequent Contacts";
+      content: 'My Frequent Contacts';
       font-style: normal;
       font-weight: normal;
       font-size: 24px;
@@ -226,7 +227,7 @@ export default class LoggedInPage extends Vue {
         margin-left: 20px;
         margin-bottom: 8px;
 
-        color: #33332D;
+        color: #33332d;
       }
 
       p {
@@ -247,7 +248,7 @@ export default class LoggedInPage extends Vue {
 #agendaHeader {
   grid-column: 2;
 
-  color: #EF6950;
+  color: #ef6950;
 
   @media only screen and (max-width: 1280px) {
     grid-column: 2 / span 2;
@@ -258,7 +259,7 @@ mgt-agenda {
   grid-column: 2;
   grid-row: 2;
 
-  border-right: 1px solid #E1DFDD;
+  border-right: 1px solid #e1dfdd;
 
   padding-left: 20px;
   padding-right: 20px;
@@ -274,7 +275,7 @@ mgt-agenda {
 #tasksHeader {
   grid-column: 3;
 
-  color: #2F80ED;
+  color: #2f80ed;
 
   border-left: 0;
 
@@ -299,17 +300,17 @@ mgt-tasks {
   grid-row: 3;
   grid-column: 2 / span 2;
 
-  color: #7B68C6;
+  color: #7b68c6;
 
   span {
     font-style: normal;
     font-weight: normal;
     font-size: 20px;
     line-height: 100%;
-    
+
     cursor: pointer;
 
-    color: #917EDB;
+    color: #917edb;
   }
 }
 
@@ -325,7 +326,7 @@ h2 {
 
   height: 64px;
 
-  border: 1px solid #E1E1E1;
+  border: 1px solid #e1e1e1;
   box-sizing: border-box;
   box-shadow: 0px 2px 24px rgba(0, 0, 0, 0.03);
 }
