@@ -7,10 +7,7 @@
 
 import { html, property, TemplateResult } from 'lit-element';
 import { classMap } from 'lit-html/directives/class-map';
-import { Providers } from '../../Providers';
-import { ProviderState } from '../../providers/IProvider';
-import { ComponentMediaQuery } from '../baseComponent';
-import { MgtTemplatedComponent } from '../templatedComponent';
+import { ComponentMediaQuery, Providers, ProviderState, MgtTemplatedComponent } from '@microsoft/mgt-element';
 
 /**
  * The foundation for creating task based components.
@@ -172,7 +169,7 @@ export abstract class MgtTasksBase extends MgtTemplatedComponent {
       <div class="header">
         ${headerContentTemplate}
         <button class="${addClasses}" @click="${() => this.showNewTaskPanel()}">
-          <span class="TaskIcon">\uE710</span>
+          <span class="TaskIcon"></span>
           <span>Add</span>
         </button>
       </div>
@@ -246,7 +243,7 @@ export abstract class MgtTasksBase extends MgtTemplatedComponent {
             <span>Cancel</span>
           </div>
           <div class="TaskIcon TaskAdd" @click="${() => this.addTask()}">
-            <span>\uE710</span>
+            <span></span>
           </div>
         `
       : null;

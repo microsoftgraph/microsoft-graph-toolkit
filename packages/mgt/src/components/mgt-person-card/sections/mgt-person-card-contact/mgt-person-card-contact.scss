@@ -1,0 +1,127 @@
+/**
+ * -------------------------------------------------------------------------------------------
+ * Copyright (c) Microsoft Corporation.  All Rights Reserved.  Licensed under the MIT License.
+ * See License in the project root for license information.
+ * -------------------------------------------------------------------------------------------
+ */
+
+@import '../base-person-card-section.scss';
+
+:host {
+  position: relative;
+
+  .root {
+    padding: 20px 0;
+
+    .title {
+      font-size: 14px;
+      font-weight: 600;
+      color: #323130;
+      margin: 0 20px 12px 20px;
+    }
+
+    .part {
+      display: grid;
+      grid-template-columns: auto 1fr auto;
+
+      .part__icon {
+        display: flex;
+        min-width: 20px;
+        width: 20px;
+        height: 20px;
+        align-items: center;
+        justify-content: center;
+        margin-left: 20px;
+        margin-top: 10px;
+        line-height: 20px;
+      }
+
+      .part__details {
+        margin: 10px 14px;
+        overflow: hidden;
+
+        .part__title {
+          font-size: 12px;
+          color: #797775;
+          line-height: 20px;
+        }
+
+        .part__value {
+          grid-column: 2;
+          color: #333333;
+          font-size: 14px;
+          font-weight: 400;
+
+          .part__link {
+            color: #0078d4;
+            font-family: var(--default-font-family);
+            font-size: 14px;
+            cursor: pointer;
+            text-overflow: ellipsis;
+            overflow: hidden;
+            white-space: nowrap;
+            width: 100%;
+            display: inline-block;
+
+            &:hover {
+              color: #004578;
+            }
+          }
+        }
+      }
+
+      .part__copy {
+        width: 32px;
+        height: 100%;
+        background-color: #e1dfdd;
+        visibility: hidden;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+      }
+
+      &:hover {
+        background-color: #f3f2f1;
+        cursor: pointer;
+
+        .part__copy {
+          visibility: visible;
+        }
+      }
+    }
+
+    &.compact {
+      padding: 0;
+
+      .part {
+        display: flex;
+
+        &:not(:last-child) {
+          margin-bottom: 8px;
+        }
+
+        &:hover {
+          background-color: initial;
+          cursor: initial;
+
+          .part__copy {
+            visibility: hidden;
+          }
+        }
+      }
+
+      .part__details {
+        margin: 0;
+      }
+
+      .part__title {
+        display: none;
+      }
+
+      .part__icon {
+        margin-top: 0;
+        margin-right: 6px;
+      }
+    }
+  }
+}

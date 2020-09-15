@@ -1,0 +1,29 @@
+/**
+ * -------------------------------------------------------------------------------------------
+ * Copyright (c) Microsoft Corporation.  All Rights Reserved.  Licensed under the MIT License.
+ * See License in the project root for license information.
+ * -------------------------------------------------------------------------------------------
+ */
+
+@import '../../../styles/shared-styles.scss';
+@import '../../../../../../node_modules/office-ui-fabric-core/dist/sass/References';
+
+$font-color: var(--font-color, #323130);
+
+:host {
+  .loading,
+  .no-data {
+    margin: 0 20px;
+    display: flex;
+    justify-content: center;
+  }
+
+  .no-data {
+    font-family: var(--default-font-family, 'Segoe UI');
+    font-style: normal;
+    font-weight: 600;
+    font-size: 14px;
+    color: $font-color;
+    line-height: 19px;
+  }
+}

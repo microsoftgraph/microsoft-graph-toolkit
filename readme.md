@@ -104,11 +104,39 @@ or, add it in your code:
 </script>
 ```
 
+or, if you already use MSAL.js and have a `UserAgentApplication`, you can use it:
+
+```html
+<script type="module">
+  import { Providers, MsalProvider } from '@microsoft/mgt';
+
+  const app = new UserAgentApplication({ auth: { clientId: '[CLIENT-ID]' } });
+
+  Providers.globalProvider = new MsalProvider({ userAgentApplication: app });
+</script>
+```
+
 ## Providers
 
 The components work best when used with a [provider](https://docs.microsoft.com/graph/toolkit/providers). The provider exposes authentication and Microsoft Graph apis used by the components to call into the Microsoft Graph.
 
 The toolkit contains providers for [MSAL](https://docs.microsoft.com/graph/toolkit/providers/msal), [SharePoint](https://docs.microsoft.com/graph/toolkit/providers/sharepoint), and [Teams](https://docs.microsoft.com/graph/toolkit/providers/teams). You can also create your own providers by extending the [IProvider](https://docs.microsoft.com/graph/toolkit/providers/custom) abstract class.
+
+## Running the samples
+
+Some of our samples are coupled to use the locally built mgt packages instead of the published version from npm. Becuase of this, it's helpful to build the monorepo before attempting to run any of the samples.
+
+```bash
+# Starting at the root
+yarn
+yarn build
+# Now you can run the React sample using the local packages
+cd ./samples/react-app/
+yarn start
+```
+
+This also means that running the samples in isolation may fail if there are breaking changes between the published version of mgt and the local copy. 
+To workaround this, use samples that are known to be compatible with a specific release by checking out the appropriate branch or tag first. 
 
 ## Contribute
 
