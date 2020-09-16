@@ -144,6 +144,8 @@ export async function getUserWithPhoto(graph: IGraph, userId?: string): Promise<
   }
 
   if (!photo && !user) {
+    let eTag: string;
+
     // batch calls
     const batch = graph.createBatch();
     if (userId) {
@@ -154,9 +156,17 @@ export async function getUserWithPhoto(graph: IGraph, userId?: string): Promise<
       batch.get('photo', 'me/photo/$value', ['user.read']);
     }
     const response = await batch.executeAll();
-    const eTag = response.get('photo').headers['ETag'];
-    photo = response.get('photo').content;
-    user = response.get('user').content;
+
+    const photoResponse = response.get('photo');
+    if (photoResponse) {
+      eTag = photoResponse.headers['ETag'];
+      photo = photoResponse.content;
+    }
+
+    const userResponse = response.get('user');
+    if (userResponse) {
+      user = userResponse.content;
+    }
 
     // store user & photo in their respective cache
     if (usersCacheEnabled()) {
@@ -194,8 +204,10 @@ export async function getUserWithPhoto(graph: IGraph, userId?: string): Promise<
       user = response;
     }
   }
-  person = user;
-  person.personImage = photo;
+  if (user) {
+    person = user;
+    person.personImage = photo;
+  }
   return person;
 }
 

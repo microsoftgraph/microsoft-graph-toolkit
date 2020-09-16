@@ -1,16 +1,18 @@
-import { Component, OnInit, ViewChild } from '@angular/core';
+import { AfterViewInit, Component, ElementRef, ViewChild } from '@angular/core';
+import { MgtAgenda } from '@microsoft/mgt';
 
 @Component({
   selector: 'app-angular-agenda',
   templateUrl: './angular-agenda.component.html',
   styleUrls: ['./angular-agenda.component.scss']
 })
-export class AngularAgendaComponent implements OnInit {
-  @ViewChild('myagenda', {static: true}) agendaElement: any;
+export class AngularAgendaComponent implements AfterViewInit {
+  @ViewChild('myagenda', {static: true})
+  agendaElement: ElementRef<MgtAgenda>;
 
   constructor() { }
 
-  ngOnInit() {
+  ngAfterViewInit() {
     this.agendaElement.nativeElement.templateContext = {
       openWebLink: (e: any, context: { event: { webLink: string | undefined; }; }, root: any) => {
           window.open(context.event.webLink, '_blank');

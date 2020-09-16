@@ -1,0 +1,165 @@
+/**
+ * -------------------------------------------------------------------------------------------
+ * Copyright (c) Microsoft Corporation.  All Rights Reserved.  Licensed under the MIT License.
+ * See License in the project root for license information.
+ * -------------------------------------------------------------------------------------------
+ */
+
+@import '../base-person-card-section.scss';
+
+:host {
+  position: relative;
+
+  .root {
+    padding: 20px 0;
+
+    &.compact {
+      padding: 0;
+    }
+
+    .title {
+      font-size: 14px;
+      font-weight: 600;
+      color: #323130;
+      margin: 0 20px 12px 20px;
+    }
+
+    .section__title {
+      font-size: 16px;
+      color: #797775;
+    }
+
+    .section__content {
+      display: flex;
+      flex-direction: column;
+      margin-top: 10px;
+    }
+
+    section {
+      margin-bottom: 24px;
+      padding: 0 20px;
+    }
+
+    section:last-child {
+      margin: 0;
+    }
+
+    .token-list {
+      display: flex;
+      flex-direction: row;
+      flex-wrap: wrap;
+      margin-top: -10px;
+    }
+
+    .token-list__item {
+      text-overflow: ellipsis;
+      white-space: nowrap;
+      display: inline-block;
+      overflow: hidden;
+      font-size: 14px;
+      align-items: center;
+      background: #f3f2f1;
+      border-radius: 2px;
+      max-height: 28px;
+      padding: 4px 8px;
+      margin-right: 10px;
+      margin-top: 10px;
+      color: rgba(50, 49, 48, 0.7);
+
+      &.overflow {
+        display: none;
+      }
+
+      &:hover {
+        background-color: #e1dfdd;
+        color: rgba(50, 49, 48, 0.9);
+        cursor: pointer;
+      }
+    }
+
+    .token-list__item:last-child {
+      margin-right: initial;
+    }
+
+    .data-list__item {
+      margin-bottom: 20px;
+    }
+
+    .data-list__item:last-child {
+      margin-bottom: initial;
+    }
+
+    .data-list__item__title {
+      font-size: 14px;
+      font-weight: 600;
+      line-height: 16px;
+      color: #323130;
+    }
+
+    .data-list__item__content {
+      font-size: 12px;
+      line-height: 16px;
+      color: #605e5c;
+      margin-top: 4px;
+    }
+
+    .language__proficiency {
+      opacity: 0.77;
+    }
+
+    .work-position__company {
+      color: #69afe5;
+      cursor: pointer;
+    }
+
+    .work-position__location {
+      font-size: 10px;
+    }
+
+    .educational-activity__degree {
+      font-size: 12px;
+      line-height: 14px;
+    }
+
+    .birthday {
+      display: flex;
+      align-items: center;
+      margin-top: -6px;
+    }
+
+    .birthday__icon {
+      margin-right: 8px;
+    }
+
+    .birthday__date {
+      font-size: 12px;
+      color: #201f1e;
+    }
+
+    .flex-rows {
+      display: flex;
+      flex-direction: row;
+      justify-content: space-between;
+    }
+
+    .date-range {
+      display: flex;
+      align-items: flex-start;
+    }
+
+    .date-range__circle {
+      height: 10px;
+      width: 10px;
+      border-radius: 10px;
+      border: 2px solid #c4c4c4;
+      display: inline-block;
+      margin-left: 8px;
+    }
+
+    .date-range__line {
+      position: absolute;
+      width: 2px;
+      background-color: #c4c4c4;
+    }
+  }
+}

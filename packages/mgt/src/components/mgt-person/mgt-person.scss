@@ -22,6 +22,7 @@ $font-weight: var(--font-weight, #{$ms-font-weight-semibold});
 $color: var(--color, #{$ms-color-neutralDark});
 $text-transform: var(text-transform, none);
 $presence-background-color: var(--presence-background-color, #ffffff);
+$presence-icon-color: var(--presence-icon-color, #ffffff);
 
 $line2-font-size: var(--line2-font-size, var(--email-font-size, #{$ms-font-size-s}));
 $line2-font-weight: var(--line2-font-weight, 400);
@@ -154,7 +155,7 @@ mgt-person .person-root {
 
       .presence-available::before {
         content: $ms-icon-code-SkypeCheck;
-        color: $presence-background-color;
+        color: $presence-icon-color;
         margin-left: calc(#{$avatar-size} * 0.07 - 2px);
       }
 
@@ -166,13 +167,13 @@ mgt-person .person-root {
 
       .presence-away::before {
         content: $ms-icon-code-SkypeClock;
-        color: $presence-background-color;
+        color: $presence-icon-color;
         margin-left: calc(#{$avatar-size} * 0.07 - 2px);
       }
 
       .presence-dnd::before {
         content: $ms-icon-code-SkypeMinus;
-        color: $presence-background-color;
+        color: $presence-icon-color;
         margin-left: calc(#{$avatar-size} * 0.07 - 2px);
       }
 
@@ -383,6 +384,8 @@ mgt-person .avatar-icon {
   font-size: $avatar-size;
   width: $avatar-size;
   height: $avatar-size;
+  overflow: hidden;
+  border-radius: $avatar-border-radius;
 
   &.small {
     font-size: $avatar-size-s;

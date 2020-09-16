@@ -104,7 +104,7 @@ $task-icon-color-completed: var(--task-icon-color-completed, white);
       justify-content: center;
       align-items: center;
 
-      width: var(--task-new-button-width, auto);
+      width: var(--tasks-new-button-width, auto);
       height: var(--tasks-new-button-height, 32px);
       border-radius: 2px;
       padding: 0 20px;
@@ -166,8 +166,8 @@ $task-icon-color-completed: var(--task-icon-color-completed, white);
         flex: 1;
         display: grid;
         display: -ms-grid;
-        grid-template-columns: 1fr auto;
-        -ms-grid-columns: 1fr auto;
+        grid-template-columns: auto 1fr;
+        -ms-grid-columns: auto 1fr;
         grid-template-rows: auto auto auto auto;
         -ms-grid-rows: auto auto auto auto;
         justify-content: space-between;
@@ -219,18 +219,6 @@ $task-icon-color-completed: var(--task-icon-color-completed, white);
           -ms-grid-column: 2;
         }
 
-        .TaskAssignee {
-          grid-row: 3;
-          -ms-grid-row: 3;
-          grid-column: 1 / 3;
-          -ms-grid-column: 1;
-          -ms-grid-column-span: 2;
-
-          mgt-people {
-            --list-margin: 0;
-          }
-        }
-
         .TaskDue {
           justify-content: flex-end;
           align-items: flex-start;
@@ -243,8 +231,8 @@ $task-icon-color-completed: var(--task-icon-color-completed, white);
         }
 
         &.tablet {
-          grid-template-columns: 1fr auto auto auto;
-          -ms-grid-columns: 1fr auto auto auto;
+          grid-template-columns: 1fr 0.5fr 1fr 0.5fr;
+          -ms-grid-columns: 1fr 0.5fr 1fr 0.5fr;
           grid-template-rows: auto auto;
           -ms-grid-rows: auto auto;
 
@@ -396,13 +384,6 @@ $task-icon-color-completed: var(--task-icon-color-completed, white);
       }
     }
 
-    .TaskHeader {
-      display: flex;
-      justify-content: center;
-      color: var(--task-header-color, #333333);
-      margin: var(--task-header-margin, 0 0 0 10px);
-    }
-
     .TaskCheckContainer {
       font-family: 'FabricMDL2Icons';
       display: inline-block;
@@ -464,6 +445,7 @@ $task-icon-color-completed: var(--task-icon-color-completed, white);
 
     &.Complete {
       background: var(--task-complete-background, $ms-color-gray30);
+      border: var(--task-complete-border, inherit);
     }
 
     &.NewTask {
@@ -642,10 +624,6 @@ $task-icon-color-completed: var(--task-icon-color-completed, white);
         background: #f2f2f2;
         border-color: #f2f2f2;
         cursor: default;
-      }
-      .TaskHeader {
-        justify-content: flex-start;
-        justify-items: flex-start;
       }
       .TaskDetailIcon {
         width: 16px;
