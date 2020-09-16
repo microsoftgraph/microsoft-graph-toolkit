@@ -22,6 +22,7 @@ import { MgtFlyout } from '../sub-components/mgt-flyout/mgt-flyout';
 import { PersonCardInteraction } from './../PersonCardInteraction';
 import { styles } from './mgt-person-css';
 import { Presence } from '@microsoft/microsoft-graph-types-beta';
+import { LocalizationHelper } from '../../utils/localizationHelper';
 
 export { PersonCardInteraction } from '../PersonCardInteraction';
 
@@ -333,6 +334,11 @@ export class MgtPerson extends MgtTemplatedComponent {
     this._isInvalidImageSrc = false;
   }
 
+  public connectedCallback() {
+    super.connectedCallback();
+    this.updateDirection();
+  }
+
   /**
    * Synchronizes property values when attributes change.
    *
@@ -347,13 +353,25 @@ export class MgtPerson extends MgtTemplatedComponent {
     if (oldval === newval) {
       return;
     }
-
     switch (name) {
       case 'person-query':
       case 'user-id':
         this.personDetails = null;
         this.requestStateUpdate();
         break;
+    }
+  }
+
+  /**
+   * returns dir attribute on body
+   *
+   * @private
+   * @memberof MgtPerson
+   */
+  private updateDirection() {
+    let direction = LocalizationHelper.getDirection();
+    if (direction == 'rtl') {
+      this.classList.add('rtl');
     }
   }
 

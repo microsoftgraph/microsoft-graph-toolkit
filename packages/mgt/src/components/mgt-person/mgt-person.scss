@@ -391,6 +391,7 @@ mgt-person .avatar-icon {
   }
 }
 
+:host,
 mgt-person.rtl {
   .root {
     direction: rtl;
@@ -398,13 +399,15 @@ mgt-person.rtl {
   svg {
     direction: rtl;
   }
-  .user-avatar {
-    position: relative;
-  }
-  .details {
-    margin: var($details-spacing, 0px 12px 0px 0px);
-    &.small {
-      margin: var($details-spacing, 0px 6px 0px 0px);
+  .person-root {
+    .user-avatar {
+      position: relative;
+    }
+    .details {
+      margin: var($details-spacing, 0px 12px 0px 0px);
+      &.small {
+        margin: var($details-spacing, 0px 6px 0px 0px);
+      }
     }
   }
 }
