@@ -389,3 +389,36 @@ mgt-flyout {
 }
 
 @include theme();
+
+:host,
+mgt-people-picker.rtl {
+  .selected-list {
+    list-style-type: none;
+    &__person-wrapper {
+      margin-left: 6px !important;
+      &__person {
+        margin-right: 0px !important;
+        margin-left: 4px !important;
+      }
+      &__overflow {
+        &__gradient {
+          right: auto !important;
+          position: absolute;
+          margin-right: 0px;
+          width: 10px;
+          height: 90%;
+          top: 0;
+        }
+        &__close-icon {
+          right: auto !important;
+          margin-left: 5px !important;
+          left: 0px;
+        }
+      }
+    }
+  }
+
+  .flyout-root {
+    text-align: right !important;
+  }
+}

@@ -22,6 +22,7 @@ import { PersonCardInteraction } from '../PersonCardInteraction';
 import { MgtFlyout } from '../sub-components/mgt-flyout/mgt-flyout';
 import { styles } from './mgt-people-picker-css';
 
+import { LocalizationHelper } from '../../utils/localizationHelper';
 export { GroupType } from '../../graph/graph.groups';
 export { PersonType } from '../../graph/graph.people';
 
@@ -335,10 +336,51 @@ export class MgtPeoplePicker extends MgtTemplatedComponent {
   /**
    * Invoked each time the custom element is appended into a document-connected element
    *
-   * @memberof MgtLogin
+   * @memberof MgtPeoplePicker
    */
   public connectedCallback() {
     super.connectedCallback();
+    window.addEventListener('strings', (event: CustomEvent) => this.handleLocalizationChanged(event));
+    this.updateDirection();
+  }
+
+  /**
+   * returns dir attribute on body
+   *
+   * @private
+   * @memberof MgtPeoplePicker
+   */
+  private updateDirection() {
+    let direction = LocalizationHelper.getDirection();
+    if (direction == 'rtl') {
+      this.classList.add('rtl');
+    }
+  }
+
+  /**
+   * Request localization changes when the 'strings' event is detected
+   *
+   * @private
+   * @param {CustomEvent} event
+   * @memberof MgtPeoplePicker
+   */
+  private handleLocalizationChanged(event: CustomEvent) {
+    if (event && event.detail) {
+      LocalizationHelper._strings = event.detail.strings;
+      this.requestUpdate();
+    }
+  }
+
+  /**
+   * Matches string to user provided one and returns
+   *
+   * @protected
+   * @param {*} stringKey
+   * @returns
+   * @memberof MgtPeoplePicker
+   */
+  protected getString(stringKey) {
+    return LocalizationHelper.getString(this.tagName, stringKey);
   }
 
   /**
@@ -438,7 +480,7 @@ export class MgtPeoplePicker extends MgtTemplatedComponent {
   protected renderInput(): TemplateResult {
     const hasSelectedPeople = !!this.selectedPeople.length;
 
-    const placeholder = this.placeholder ? this.placeholder : 'Start typing a name';
+    const placeholder = this.placeholder ? this.placeholder : this.getString('Start typing a name');
 
     const selectionMode = this.selectionMode ? this.selectionMode : 'multiple';
 
