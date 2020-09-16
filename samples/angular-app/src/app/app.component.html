@@ -1,5 +1,5 @@
 <app-nav-bar></app-nav-bar>
-<app-angular-agenda #agenda *ngIf="this.isLoggedIn(); else notLoggedIn"></app-angular-agenda>
+<app-angular-agenda #agenda *ngIf="this.isLoggedIn; else notLoggedIn"></app-angular-agenda>
 
 <ng-template #notLoggedIn>
   <div class="container mx-auto" style="margin-top: 20px">
