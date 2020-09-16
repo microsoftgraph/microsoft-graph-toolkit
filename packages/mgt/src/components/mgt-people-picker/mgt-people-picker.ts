@@ -668,7 +668,7 @@ export class MgtPeoplePicker extends MgtTemplatedComponent {
         this.fireCustomEvent('selectionChanged', this.selectedPeople);
       }
 
-      if (input) {
+      if (input && !this.groupId) {
         people = [];
         if (this.type === PersonType.person || this.type === PersonType.any) {
           try {
@@ -703,6 +703,8 @@ export class MgtPeoplePicker extends MgtTemplatedComponent {
             // nop
           }
         }
+      } else if (input && this.groupId) {
+        people = this._groupPeople;
       }
     }
 
@@ -843,6 +845,8 @@ export class MgtPeoplePicker extends MgtTemplatedComponent {
         highlight = displayName.slice(highlightLocation, highlightLocation + userInputLength);
         last = displayName.slice(highlightLocation + userInputLength, displayName.length);
       }
+    } else {
+      first = displayName;
     }
 
     return html`
