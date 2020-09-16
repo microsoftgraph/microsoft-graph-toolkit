@@ -19,7 +19,7 @@ export class LocalizationHelper extends LitElement {
   public static _strings: object;
 
   /**
-   *
+   * returns body dir attribute to determine rtl or ltr
    *
    * @static
    * @returns {string} dir
@@ -34,6 +34,10 @@ export class LocalizationHelper extends LitElement {
     console.log(this._strings);
     if (this._strings) {
       let newStringKeys = Object.keys(this._strings);
+
+      if (!this._strings[tagName.toLowerCase()]) {
+        return stringKey;
+      }
 
       for (let tagKey of newStringKeys) {
         //match tagName
