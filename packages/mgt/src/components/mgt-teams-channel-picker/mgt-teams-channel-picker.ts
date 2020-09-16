@@ -15,6 +15,7 @@ import { getSvg, SvgIcon } from '../../utils/SvgHelper';
 import { debounce } from '../../utils/Utils';
 import { styles } from './mgt-teams-channel-picker-css';
 import { getAllMyTeams } from './mgt-teams-channel-picker.graph';
+import { LocalizationHelper } from '../../utils/localizationHelper';
 
 /**
  * Team with displayName
@@ -206,6 +207,8 @@ export class MgtTeamsChannelPicker extends MgtTemplatedComponent {
     this.addEventListener('keydown', e => this.onUserKeyDown(e));
     this.addEventListener('focus', _ => this.loadTeamsIfNotLoaded());
     this.addEventListener('mouseover', _ => this.loadTeamsIfNotLoaded());
+    window.addEventListener('strings', (event: CustomEvent) => this.handleLocalizationChanged(event));
+    this.updateDirection();
   }
 
   /**
@@ -226,6 +229,45 @@ export class MgtTeamsChannelPicker extends MgtTemplatedComponent {
   public disconnectedCallback() {
     window.removeEventListener('click', this.handleWindowClick);
     super.disconnectedCallback();
+  }
+
+  /**
+   * returns dir attribute on body
+   *
+   * @private
+   * @memberof MgtPeoplePicker
+   */
+  private updateDirection() {
+    let direction = LocalizationHelper.getDirection();
+    if (direction == 'rtl') {
+      this.classList.add('rtl');
+    }
+  }
+
+  /**
+   * Request localization changes when the 'strings' event is detected
+   *
+   * @private
+   * @param {CustomEvent} event
+   * @memberof MgtPeoplePicker
+   */
+  private handleLocalizationChanged(event: CustomEvent) {
+    if (event && event.detail) {
+      LocalizationHelper._strings = event.detail.strings;
+      this.requestUpdate();
+    }
+  }
+
+  /**
+   * Matches string to user provided one and returns
+   *
+   * @protected
+   * @param {*} stringKey
+   * @returns
+   * @memberof MgtPeoplePicker
+   */
+  protected getString(stringKey) {
+    return LocalizationHelper.getString(this.tagName, stringKey);
   }
 
   /**
@@ -349,7 +391,7 @@ export class MgtTeamsChannelPicker extends MgtTemplatedComponent {
           type="text"
           label="teams-channel-picker-input"
           aria-label="Select a channel"
-          data-placeholder="${!!this._selectedItemState ? '' : 'Select a channel '} "
+          data-placeholder="${!!this._selectedItemState ? '' : this.getString('Select a channel')} "
           role="input"
           @keyup=${e => this.handleInputChanged(e)}
           contenteditable
@@ -531,7 +573,7 @@ export class MgtTeamsChannelPicker extends MgtTemplatedComponent {
       html`
         <div class="message-parent">
           <div label="search-error-text" aria-label="We didn't find any matches." class="search-error-text">
-            We didn't find any matches.
+            ${this.getString("We didn't find any matches.")}
           </div>
         </div>
       `
@@ -554,7 +596,7 @@ export class MgtTeamsChannelPicker extends MgtTemplatedComponent {
         <div class="message-parent">
           <mgt-spinner></mgt-spinner>
           <div label="loading-text" aria-label="loading" class="loading-text">
-            Loading...
+            ${this.getString('Loading...')}
           </div>
         </div>
       `
