@@ -668,7 +668,7 @@ export class MgtPeoplePicker extends MgtTemplatedComponent {
         this.fireCustomEvent('selectionChanged', this.selectedPeople);
       }
 
-      if (input && !this.groupId) {
+      if (input) {
         people = [];
         if (this.type === PersonType.person || this.type === PersonType.any) {
           try {
@@ -683,6 +683,7 @@ export class MgtPeoplePicker extends MgtTemplatedComponent {
 
               // make sure only unique people
               const peopleIds = new Set(people.map(p => p.id));
+
               for (const user of users) {
                 if (!peopleIds.has(user.id)) {
                   people.push(user);
@@ -702,8 +703,6 @@ export class MgtPeoplePicker extends MgtTemplatedComponent {
             // nop
           }
         }
-      } else if (input && this.groupId) {
-        people = this._groupPeople;
       }
     }
 
@@ -821,6 +820,7 @@ export class MgtPeoplePicker extends MgtTemplatedComponent {
     let first: string = '';
     let last: string = '';
     let highlight: string = '';
+
     const displayName = person.displayName;
     const highlightLocation = displayName.toLowerCase().indexOf(this.userInput.toLowerCase());
     if (highlightLocation !== -1) {
@@ -843,8 +843,6 @@ export class MgtPeoplePicker extends MgtTemplatedComponent {
         highlight = displayName.slice(highlightLocation, highlightLocation + userInputLength);
         last = displayName.slice(highlightLocation + userInputLength, displayName.length);
       }
-    } else {
-      first = displayName;
     }
 
     return html`
