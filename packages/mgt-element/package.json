@@ -2,8 +2,19 @@
   "name": "@microsoft/mgt-element",
   "version": "1.0.0",
   "description": "Microsoft Graph Toolkit base classes",
+  "homepage": "https://github.com/microsoftgraph/microsoft-graph-toolkit",
+  "bugs": {
+    "url": "https://github.com/microsoftgraph/microsoft-graph-toolkit/issues"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/microsoftgraph/microsoft-graph-toolkit"
+  },
+  "author": "Microsoft",
+  "license": "MIT",
   "main": "./dist/index.js",
   "types": "./dist/index.d.ts",
+  "module": "./dist/index.js",
   "files": [
     "dist",
     "src"
@@ -19,15 +30,17 @@
     "postpack": "cpx *.tgz ../../artifacts",
     "prepack": "shx rm -rf *.tgz && npm run build"
   },
-  "author": "Microsoft",
-  "license": "MIT",
   "dependencies": {
-    "@microsoft/microsoft-graph-client": "^2.0.0"
+    "@microsoft/microsoft-graph-client": "^2.0.0",
+    "lit-element": "^2.3.1"
   },
   "devDependencies": {
     "cpx": "^1.5.0",
     "shx": "^0.3.2",
     "tslint": "^5.20.1",
     "typescript": "^3.7.5"
+  },
+  "publishConfig": {
+    "directory": "dist"
   }
 }
