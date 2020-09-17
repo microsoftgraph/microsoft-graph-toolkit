@@ -30,8 +30,6 @@ export class LocalizationHelper extends LitElement {
   }
 
   public static getString(tagName, stringKey) {
-    // console.log(tagName, stringKey);
-    // console.log(this._strings);
     if (this._strings) {
       let newStringKeys = Object.keys(this._strings);
 
@@ -43,13 +41,12 @@ export class LocalizationHelper extends LitElement {
         //match tagName
         if (tagKey.toLowerCase() === tagName.toLowerCase()) {
           //checks if tagName has user string
-          let matches = Object.keys(this._strings[tagName.toLowerCase()]);
-          for (let str of matches) {
-            //match string
-            if (str.replace(/[ ,.]/g, '') === stringKey.replace(/[ ,.]/g, '')) {
-              return this._strings[tagName.toLowerCase()][str];
-            }
+          if (!this._strings[tagName.toLowerCase()][stringKey]) {
+            return stringKey;
           }
+
+          //match string
+          return this._strings[tagName.toLowerCase()][stringKey];
         }
       }
     }
