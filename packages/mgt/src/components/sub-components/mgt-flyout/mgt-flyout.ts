@@ -9,6 +9,7 @@ import { customElement, html, LitElement, property, PropertyValues, query, Templ
 import { classMap } from 'lit-html/directives/class-map';
 import { getSegmentAwareWindow, isWindowSegmentAware, IWindowSegment } from '../../../utils/WindowSegmentHelpers';
 import { styles } from './mgt-flyout-css';
+import { LocalizationHelper } from '../../../utils/localizationHelper';
 
 /**
  * A component to create flyout anchored to an element
@@ -84,6 +85,8 @@ export class MgtFlyout extends LitElement {
   // if the flyout is opened once, this will keep the flyout in the dom
   private _renderedOnce = false;
 
+  private _isRTL = false;
+
   private get _flyout(): HTMLElement {
     return this.renderRoot.querySelector('.flyout');
   }
@@ -115,6 +118,10 @@ export class MgtFlyout extends LitElement {
     this.isOpen = false;
   }
 
+  public connectedCallback() {
+    super.connectedCallback();
+    this.updateDirection();
+  }
   /**
    * Invoked each time the custom element is disconnected from the document's DOM
    *
@@ -300,7 +307,14 @@ export class MgtFlyout extends LitElement {
         }
       }
 
-      flyout.style.left = `${left + windowRect.left}px`;
+      if (this._isRTL) {
+        if (left > 100) {
+          //potentially anchored to right side (for non people-picker flyout)
+          flyout.style.left = `${windowRect.width - left + flyoutRect.left - flyoutRect.width - 30}px`;
+        }
+      } else {
+        flyout.style.left = `${left + windowRect.left}px`;
+      }
 
       if (typeof bottom !== 'undefined') {
         flyout.style.top = 'unset';
@@ -371,5 +385,12 @@ export class MgtFlyout extends LitElement {
 
   private handleFlyoutWheel(e: Event) {
     e.preventDefault();
+  }
+
+  private updateDirection() {
+    let direction = LocalizationHelper.getDirection();
+    if (direction == 'rtl') {
+      this._isRTL = true;
+    }
   }
 }
