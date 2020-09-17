@@ -695,7 +695,6 @@ export class MgtPeoplePicker extends MgtTemplatedComponent {
         }
 
         if ((this.type === PersonType.group || this.type === PersonType.any) && people.length < this.showMax) {
-          people = [];
           try {
             const groups = (await findGroups(graph, input, this.showMax, this.groupType)) || [];
             people = people.concat(groups);
@@ -822,7 +821,6 @@ export class MgtPeoplePicker extends MgtTemplatedComponent {
     let first: string = '';
     let last: string = '';
     let highlight: string = '';
-
     const displayName = person.displayName;
     const highlightLocation = displayName.toLowerCase().indexOf(this.userInput.toLowerCase());
     if (highlightLocation !== -1) {
