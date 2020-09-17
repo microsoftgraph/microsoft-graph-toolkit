@@ -461,8 +461,7 @@ $dropdown-item-selected-background: var(--dropdown-item-selected-background, #de
   }
 }
 
-:host,
-mgt-people-picker.rtl {
+:host(.rtl) {
   .input-wrapper::after {
     content: '';
     position: absolute;

@@ -390,8 +390,7 @@ mgt-flyout {
 
 @include theme();
 
-:host,
-mgt-people-picker.rtl {
+:host(.rtl) {
   .selected-list {
     list-style-type: none;
     &__person-wrapper {
