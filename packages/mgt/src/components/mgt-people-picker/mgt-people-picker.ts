@@ -683,6 +683,7 @@ export class MgtPeoplePicker extends MgtTemplatedComponent {
 
               // make sure only unique people
               const peopleIds = new Set(people.map(p => p.id));
+
               for (const user of users) {
                 if (!peopleIds.has(user.id)) {
                   people.push(user);
@@ -695,7 +696,6 @@ export class MgtPeoplePicker extends MgtTemplatedComponent {
         }
 
         if ((this.type === PersonType.group || this.type === PersonType.any) && people.length < this.showMax) {
-          people = [];
           try {
             const groups = (await findGroups(graph, input, this.showMax, this.groupType)) || [];
             people = people.concat(groups);
