@@ -53,15 +53,22 @@ $person-card-background-color: var(--person-card-background-color, #ffffff);
     display: grid;
     grid-template-rows: auto 1fr;
     grid-template-columns: auto 1fr;
+    grid-template-areas:
+      'image details'
+      '. icons';
     padding: 15px 15px 20px 15px;
 
-    .person-image {
-      --presence-background-color: var(--person-card-background-color, #ffffff);
-      --presence-icon-color: var(--person-card-background-color, #ffffff);
-      --avatar-size: 75px;
+    .image {
+      grid-area: image;
+      .person-image {
+        --presence-background-color: var(--person-card-background-color, #ffffff);
+        --presence-icon-color: var(--person-card-background-color, #ffffff);
+        --avatar-size: 75px;
+      }
     }
 
     .details {
+      grid-area: details;
       margin-left: 14px;
       line-height: 1.15;
       display: flex;
@@ -104,6 +111,7 @@ $person-card-background-color: var(--person-card-background-color, #ffffff);
     }
 
     .base-icons {
+      grid-area: icons;
       display: flex;
       -webkit-align-items: center;
       align-items: center;
