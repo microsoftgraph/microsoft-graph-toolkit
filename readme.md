@@ -12,13 +12,11 @@
 </p>
 
 <p align="center">
-  <iframe src="https://mgt.dev/iframe.html?id=samples-general--login-to-show-agenda"></iframe><br>
   The Microsoft Graph Toolkit is a collection of web components powered by Microsoft Graph. The components are functional, working automatically with Microsoft Graph, and work with any web framework and on all modern browsers.
 </p>
 
 <p align="center">
-  <a href="#components-&-documentation">Components & Documentation</a> • <a href="#getting-started">Getting Started</a> • <a href="#running-the-samples">Running the Samples</a> 
-  • <a href="#contribute">Contribute</a> • <a href="#feedback-and-requests">Feedback & Requests</a> • <a href="#license">License</a> • <a href="#code-of-conduct">Code of Conduct</a>
+  <a href="#components-&-documentation">Components & Documentation</a> • <a href="#getting-started">Getting Started</a> • <a href="#running-the-samples">Running the Samples</a> • <a href="#contribute">Contribute</a> • <a href="#feedback-and-requests">Feedback & Requests</a> <br>• <a href="#license">License</a> • <a href="#code-of-conduct">Code of Conduct</a>
 </p>
 
 ## Components & Documentation
