@@ -1,0 +1,25 @@
+/**
+ * -------------------------------------------------------------------------------------------
+ * Copyright (c) Microsoft Corporation.  All Rights Reserved.  Licensed under the MIT License.
+ * See License in the project root for license information.
+ * -------------------------------------------------------------------------------------------
+ */
+
+@import '../../../../../node_modules/office-ui-fabric-core/dist/sass/References';
+@import '../../styles/shared-styles.scss';
+
+:host {
+  display: inline-block;
+  font-family: var(--default-font-family);
+
+  .button {
+    border: 1px solid #666666;
+    border-radius: 2px;
+    background-color: #ffffff;
+    color: #000000;
+    padding: 4px 12px;
+  }
+
+  .flyout {
+  }
+}
