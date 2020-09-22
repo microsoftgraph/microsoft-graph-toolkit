@@ -5,6 +5,8 @@
  * -------------------------------------------------------------------------------------------
  */
 
+$arrow-options-left: var(--arrow-options-left, 0);
+
 :host,
 mgt-arrow-options {
   position: relative;
@@ -34,7 +36,7 @@ mgt-arrow-options .Header:hover {
 :host .Menu,
 mgt-arrow-options .Menu {
   position: absolute;
-  left: 0;
+  left: var(--arrow-options-left, 0);
   box-shadow: rgba(0, 0, 0, 0.08) 0px 0px 40px 5px;
   background: #ffffff;
   z-index: 1;

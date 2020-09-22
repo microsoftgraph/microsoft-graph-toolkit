@@ -22,6 +22,7 @@ import '../mgt-person/mgt-person';
 import '../sub-components/mgt-arrow-options/mgt-arrow-options';
 import '../sub-components/mgt-dot-options/mgt-dot-options';
 import { MgtFlyout } from '../sub-components/mgt-flyout/mgt-flyout';
+import { LocalizationHelper } from '../../utils/localizationHelper';
 
 /**
  * Defines how a person card is shown when a user interacts with
@@ -229,6 +230,45 @@ export class MgtTasks extends MgtTemplatedComponent {
   }
 
   /**
+   * returns dir attribute on body
+   *
+   * @private
+   * @memberof MgtTasks
+   */
+  private updateDirection() {
+    let direction = LocalizationHelper.getDirection();
+    if (direction == 'rtl') {
+      this.classList.add('rtl');
+    }
+  }
+
+  /**
+   * Request localization changes when the 'strings' event is detected
+   *
+   * @private
+   * @param {CustomEvent} event
+   * @memberof MgtTasks
+   */
+  private handleLocalizationChanged(event: CustomEvent) {
+    if (event && event.detail) {
+      LocalizationHelper._strings = event.detail.strings;
+      this.requestUpdate();
+    }
+  }
+
+  /**
+   * Matches string to user provided one and returns
+   *
+   * @protected
+   * @param {*} stringKey
+   * @returns
+   * @memberof MgtPeoplePicker
+   */
+  protected getString(stringKey) {
+    return LocalizationHelper.getString(this.tagName, stringKey);
+  }
+
+  /**
    * determines if tasks are un-editable
    * @type {boolean}
    */
@@ -355,6 +395,8 @@ export class MgtTasks extends MgtTemplatedComponent {
    */
   public connectedCallback() {
     super.connectedCallback();
+    window.addEventListener('strings', (event: CustomEvent) => this.handleLocalizationChanged(event));
+    this.updateDirection();
     window.addEventListener('resize', this.onResize);
   }
 
@@ -876,7 +918,7 @@ export class MgtTasks extends MgtTemplatedComponent {
     const taskTitle = html`
       <input
         type="text"
-        placeholder="Task..."
+        placeholder=${this.getString('Task...')}
         .value="${this._newTaskName}"
         label="new-taskName-input"
         aria-label="new-taskName-input"

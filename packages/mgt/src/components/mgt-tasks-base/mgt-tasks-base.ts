@@ -8,6 +8,7 @@
 import { html, property, TemplateResult } from 'lit-element';
 import { classMap } from 'lit-html/directives/class-map';
 import { ComponentMediaQuery, Providers, ProviderState, MgtTemplatedComponent } from '@microsoft/mgt-element';
+import { LocalizationHelper } from '../../utils/localizationHelper';
 
 /**
  * The foundation for creating task based components.
@@ -110,6 +111,8 @@ export abstract class MgtTasksBase extends MgtTemplatedComponent {
   public connectedCallback() {
     super.connectedCallback();
     window.addEventListener('resize', this.onResize);
+    window.addEventListener('strings', (event: CustomEvent) => this.handleLocalizationChanged(event));
+    this.updateDirection();
   }
 
   /**
@@ -120,6 +123,45 @@ export abstract class MgtTasksBase extends MgtTemplatedComponent {
   public disconnectedCallback() {
     window.removeEventListener('resize', this.onResize);
     super.disconnectedCallback();
+  }
+
+  /**
+   * returns dir attribute on body
+   *
+   * @private
+   * @memberof MgtPeoplePicker
+   */
+  private updateDirection() {
+    let direction = LocalizationHelper.getDirection();
+    if (direction == 'rtl') {
+      this.classList.add('rtl');
+    }
+  }
+
+  /**
+   * Request localization changes when the 'strings' event is detected
+   *
+   * @private
+   * @param {CustomEvent} event
+   * @memberof MgtPeoplePicker
+   */
+  private handleLocalizationChanged(event: CustomEvent) {
+    if (event && event.detail) {
+      LocalizationHelper._strings = event.detail.strings;
+      this.requestUpdate();
+    }
+  }
+
+  /**
+   * Matches string to user provided one and returns
+   *
+   * @protected
+   * @param {*} stringKey
+   * @returns
+   * @memberof MgtPeoplePicker
+   */
+  protected getString(stringKey) {
+    return LocalizationHelper.getString(this.tagName, stringKey);
   }
 
   /**

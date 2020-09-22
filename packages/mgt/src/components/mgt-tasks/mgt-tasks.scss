@@ -690,3 +690,19 @@ mgt-tasks,
     transform: rotate(360deg);
   }
 }
+
+:host(.rtl) {
+  mgt-arrow-options {
+    --arrow-options-left: auto;
+  }
+  mgt-dot-options {
+    --dot-options-translateX: translateX(60px);
+  }
+
+  .TaskDetails {
+    margin-right: 14px !important;
+  }
+  .TaskIcon {
+    margin-left: 8px !important;
+  }
+}
