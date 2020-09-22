@@ -7,7 +7,7 @@ const isIE = window.navigator.userAgent.indexOf('MSIE ') > -1 || window.navigato
 
 export const MsalConfig: Configuration = {
   auth: {
-    clientId: 'a974dfa0-9f57-49b9-95db-90f04ce2111a',
+    clientId: '[YOUR-CLIENT-ID]',
     authority: 'https://login.microsoftonline.com/common/',
     validateAuthority: true,
     redirectUri: 'http://localhost:4200/',
