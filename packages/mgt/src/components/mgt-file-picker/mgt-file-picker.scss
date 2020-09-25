@@ -9,18 +9,104 @@
 @import '../../styles/shared-styles.scss';
 
 :host {
+  --flyout-width: 300px;
+  --flyout-background-color: #ffffff;
+  --item-background-color: #ffffff;
+  --item-background-color-hover: #f3f2f1;
+
   display: inline-block;
+  user-select: none;
   font-family: var(--default-font-family);
 
   .button {
-    border: 1px solid #666666;
+    border: 1px solid #c4c4c4;
     border-radius: 2px;
-    background-color: #ffffff;
+    background-color: #f3f2f1;
     color: #000000;
-    padding: 4px 12px;
     cursor: pointer;
+    display: flex;
+    flex-direction: row;
+
+    .button__text {
+      padding: 4px 12px;
+    }
+
+    .button__icon {
+      background-color: #f3f2f1;
+      border-left: 1px solid #c4c4c4;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 4px 8px;
+    }
   }
 
   .flyout {
+    .flyout-root {
+      padding: 12px 0px;
+      width: var(--flyout-width);
+      max-width: var(--flyout-width);
+      background-color: var(--flyout-background-color);
+      max-height: 400px;
+      overflow-y: auto;
+    }
+
+    &.loading {
+      .spinner {
+        display: flex;
+        justify-content: center;
+      }
+    }
+
+    &.disabled {
+      .button {
+        opacity: 0.5;
+      }
+    }
+  }
+
+  .items {
+    .item {
+      position: relative;
+      display: flex;
+      align-items: center;
+      padding: 4px 12px;
+      cursor: pointer;
+      background-color: var(--item-background-color);
+
+      .item__icon {
+        max-height: 24px;
+        max-width: 24px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+      }
+
+      .item__details {
+        .item__title {
+          overflow: hidden;
+          white-space: nowrap;
+          text-overflow: ellipsis;
+          margin: 0px 8px;
+          font-size: 14px;
+          line-height: 20px;
+          color: #323130;
+        }
+
+        .item__last-used {
+          overflow: hidden;
+          white-space: nowrap;
+          text-overflow: ellipsis;
+          padding: 0px 8px;
+          font-size: 12px;
+          line-height: 16px;
+          color: #797775;
+        }
+      }
+
+      &:hover {
+        background-color: var(--item-background-color-hover);
+      }
+    }
   }
 }
