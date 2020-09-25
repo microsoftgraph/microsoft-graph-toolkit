@@ -43,16 +43,17 @@
 
   .flyout {
     .flyout-root {
-      padding: 12px 0px;
+      display: flex;
+      flex-direction: column;
       width: var(--flyout-width);
       max-width: var(--flyout-width);
       background-color: var(--flyout-background-color);
       max-height: 400px;
-      overflow-y: auto;
     }
 
     &.loading {
       .spinner {
+        margin: 12px;
         display: flex;
         justify-content: center;
       }
@@ -65,7 +66,34 @@
     }
   }
 
+  .header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 12px;
+
+    .header__title {
+      font-size: 14px;
+      line-height: 16px;
+      color: #323130;
+      font-weight: 600;
+    }
+
+    .header__all-items {
+      color: #0078d4;
+      cursor: pointer;
+
+      &:hover {
+        text-decoration: underline;
+        color: #004578;
+      }
+    }
+  }
+
   .items {
+    padding-bottom: 12px;
+    overflow-y: auto;
+
     .item {
       position: relative;
       display: flex;

@@ -12,7 +12,9 @@ import '../sub-components/mgt-spinner/mgt-spinner';
 const strings = {
   buttonLabel: 'Pick from OneDrive',
   itemModifiedFormat: 'Modified {0}',
-  itemAccessedFormat: 'Accessed {0}'
+  itemAccessedFormat: 'Accessed {0}',
+  seeAllItems: 'See all files',
+  resultsTitle: 'Recent files'
 };
 
 const formatString = function(format: string, ...values: string[]): string {
@@ -125,6 +127,12 @@ export class MgtFilePicker extends MgtTemplatedComponent {
     let contentTemplate = this.isLoadingState
       ? this.renderLoading()
       : html`
+          <div class="header">
+            <div class="header__title">${strings.resultsTitle}</div>
+            <div class="header__all-items" @click=${e => this.handleAllFilesClick(e)}>
+              ${strings.seeAllItems}
+            </div>
+          </div>
           <div class="items">
             ${repeat(this._items || [], i => i.id, i => this.renderItem(i))}
           </div>
@@ -233,6 +241,14 @@ export class MgtFilePicker extends MgtTemplatedComponent {
 
   protected handleItemMouseEnter(item: InsightsItem, event: PointerEvent): void {}
 
+  protected handleAllFilesClick(e: PointerEvent): void {
+    this.openFullPicker();
+  }
+
+  protected openFullPicker(): void {
+    console.log('Full picker.');
+  }
+
   /**
    * Load the state of the control.
    *
@@ -253,8 +269,8 @@ export class MgtFilePicker extends MgtTemplatedComponent {
     }
 
     // Artificial loading time
-    const delay = ms => new Promise(c => setTimeout(c, ms));
-    await delay(1000 * 5);
+    //const delay = ms => new Promise(c => setTimeout(c, ms));
+    //await delay(1000 * 5);
 
     const graph = Providers.globalProvider.graph;
     this._items = await getMyInsights(graph);
