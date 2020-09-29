@@ -4,14 +4,15 @@ Going forward in version 2, Microsoft Graph Toolkit will be broken up into multi
 
 `@microsft/mgt-element` is the first of these packages. It contains the low level interfaces and base classes that all MGT components and providers are built upon.
 
-The most notable change for consuming apps is the relocation of the `Providers` class. Access to the global provider instance is managed through `Providers`, so any module references will need to import from `@microsoft/mgt-element` instead.
-
 ```ts
 <script type="module">
-    import { MsalProvider } from '@microsoft/mgt';
-    import { IGraph, IProvider, Providers } from '@microsoft/mgt-element'
+    import { IProvider, Providers } from '@microsoft/mgt-element'
 
-    const provider: IProvider = new MsalProvider({ clientId: '[CLIENT-ID]' });
+    export class MyProvider extends IProvider {
+        // Create your own provider
+    }
+
+    const provider: IProvider = new MyProvider();
     Providers.globalProvider = provider;
 
     const graph: IGraph = provider.graph;

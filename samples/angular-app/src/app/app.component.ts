@@ -1,7 +1,6 @@
 import { Component, OnInit, ChangeDetectorRef } from '@angular/core';
 import { MsalService } from '@azure/msal-angular';
-import { MsalProvider } from '@microsoft/mgt';
-import { LoginType, Providers, ProviderState, TemplateHelper } from '@microsoft/mgt-element';
+import { MsalProvider, LoginType, Providers, ProviderState, TemplateHelper } from '@microsoft/mgt';
 import { MSALAngularConfig } from '../environments/environment.msal';
 
 @Component({

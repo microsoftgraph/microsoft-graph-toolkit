@@ -4,7 +4,6 @@
   "private": true,
   "dependencies": {
     "@microsoft/mgt": "*",
-    "@microsoft/mgt-element": "*",
     "@microsoft/mgt-react": "*",
     "@webcomponents/webcomponentsjs": "2.2.10",
     "react": "^16.8.5",

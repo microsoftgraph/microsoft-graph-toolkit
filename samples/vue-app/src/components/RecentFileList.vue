@@ -22,8 +22,7 @@
 
 <script lang="ts">
 import { Component, Prop, Vue } from 'vue-property-decorator';
-import { prepScopes } from '@microsoft/mgt';
-import { Providers } from '@microsoft/mgt-element';
+import { prepScopes, Providers } from '@microsoft/mgt';
 
 import * as MicrosoftGraph from '@microsoft/microsoft-graph-types';
 
@@ -41,8 +40,8 @@ import * as MicrosoftGraph from '@microsoft/microsoft-graph-types';
       }
 
       return Math.round(size / 1000) + 'MB';
-    },
-  },
+    }
+  }
 })
 export default class RecentFileList extends Vue {
   private files: MicrosoftGraph.DriveItem[] = [];

@@ -22,14 +22,13 @@
 
 <script lang="ts">
 import { Component, Vue } from 'vue-property-decorator';
-import { MgtMsalProvider, MgtLogin } from '@microsoft/mgt';
-import { ProviderState, Providers } from '@microsoft/mgt-element';
+import { MgtMsalProvider, MgtLogin, ProviderState, Providers } from '@microsoft/mgt';
 import LoggedInPage from './components/LoggedInPage.vue';
 
 @Component({
   components: {
-    LoggedInPage,
-  },
+    LoggedInPage
+  }
 })
 export default class App extends Vue {
   private signedIn = false;
