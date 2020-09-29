@@ -6,7 +6,7 @@
   "license": "MIT",
   "module": "dist/es6/index.js",
   "main": "dist/es6/index.js",
-  "types": "dist/es6/types.d.ts",
+  "types": "dist/es6/index.d.ts",
   "files": [
     "dist",
     "src"
