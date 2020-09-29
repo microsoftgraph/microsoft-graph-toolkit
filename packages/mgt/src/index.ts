@@ -12,3 +12,4 @@ export * from './graph/types';
 export { TeamsHelper } from './utils/TeamsHelper';
 export { prepScopes } from './utils/GraphHelpers';
 export * from './utils/Cache';
+export * from '@microsoft/mgt-element';
