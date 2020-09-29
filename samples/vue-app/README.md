@@ -6,33 +6,38 @@ The sample was initially created with the [vue-cli](https://cli.vuejs.org/) tool
 
 ## Setting up Vue for MGT
 
-1. Install MGT with `npm install @microsoft/mgt`
+1. Install MGT with `yarn add @microsoft/mgt`
 2. In your `App.vue` or other Vue components, add an import with the components you want to use E.g. `import { MgtMsalProvider, MgtLogin, MgtAgenda } from '@microsoft/mgt';`.
 3. Now you can use those MGT components in your Vue component!
 
 ## Project setup
-```
-npm install
+```bash
+# Run these commands at the repo root directory to build the local mgt packages
+# and install dependencies in node_modules folders.
+npm i -g yarn
+yarn
+yarn build
+cd ./samples/vue-app
 ```
 
 ### Compiles and hot-reloads for development
-```
-npm run serve
+```bash
+yarn serve
 ```
 
 ### Compiles and minifies for production
-```
-npm run build
+```bash
+yarn build
 ```
 
 ### Run your tests
-```
-npm run test
+```bash
+yarn test
 ```
 
 ### Lints and fixes files
 ```
-npm run lint
+yarn lint
 ```
 
 ### Customize configuration

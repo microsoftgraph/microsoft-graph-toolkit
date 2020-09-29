@@ -4,7 +4,8 @@
   "workspaces": [
     "packages/*",
     "samples/react-app",
-    "samples/angular-app"
+    "samples/angular-app",
+    "samples/vue-app"
   ],
   "scripts": {
     "build": "npm run prettier:check && npm run clean && lerna run build --scope @microsoft/*",

@@ -13,8 +13,7 @@ import '../node_modules/@webcomponents/webcomponentsjs/webcomponents-bundle.js';
 import React from 'react';
 import ReactDOM from 'react-dom';
 import App from './App';
-import { Providers } from '@microsoft/mgt-element';
-import { MsalProvider } from '@microsoft/mgt';
+import { Providers, MsalProvider } from '@microsoft/mgt';
 import { MockProvider } from '@microsoft/mgt/dist/es6/mock/MockProvider';
 
 Providers.globalProvider = new MockProvider(true);
