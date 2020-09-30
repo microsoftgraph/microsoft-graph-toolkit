@@ -12,9 +12,8 @@ import '../sub-components/mgt-spinner/mgt-spinner';
 const strings = {
   buttonLabel: 'Pick from OneDrive',
   itemModifiedFormat: 'Modified {0}',
-  itemAccessedFormat: 'Accessed {0}',
-  seeAllItems: 'See all files',
-  resultsTitle: 'Recent files'
+  seeAllItems: 'See all',
+  resultsTitle: 'Recent'
 };
 
 const formatString = function(format: string, ...values: string[]): string {
@@ -94,7 +93,7 @@ export class MgtFilePicker extends MgtTemplatedComponent {
     });
 
     return html`
-      <mgt-flyout class=${flyoutClasses}>
+      <mgt-flyout class=${flyoutClasses} light-dismiss>
         ${root} ${flyoutContent}
       </mgt-flyout>
     `;
@@ -127,12 +126,6 @@ export class MgtFilePicker extends MgtTemplatedComponent {
     let contentTemplate = this.isLoadingState
       ? this.renderLoading()
       : html`
-          <div class="header">
-            <div class="header__title">${strings.resultsTitle}</div>
-            <div class="header__all-items" @click=${e => this.handleAllFilesClick(e)}>
-              ${strings.seeAllItems}
-            </div>
-          </div>
           <div class="items">
             ${repeat(this._items || [], i => i.id, i => this.renderItem(i))}
           </div>
@@ -140,6 +133,12 @@ export class MgtFilePicker extends MgtTemplatedComponent {
 
     return html`
       <div class="flyout-root">
+        <div class="header">
+          <div class="header__title">${strings.resultsTitle}</div>
+          <div class="header__all-items" @click=${e => this.handleAllItemsClick(e)}>
+            ${strings.seeAllItems}
+          </div>
+        </div>
         ${contentTemplate}
       </div>
     `;
@@ -163,18 +162,9 @@ export class MgtFilePicker extends MgtTemplatedComponent {
   protected renderItem(item: InsightsItem): TemplateResult {
     let lastUsedTemplate: TemplateResult = null;
     const lastUsed = item.lastUsed;
-    if (lastUsed && (lastUsed.lastModifiedDateTime || lastUsed.lastAccessedDateTime)) {
-      let lastUsedDate: Date;
-      let lastUsedStringFormat: string;
-
-      if (item.lastUsed.lastModifiedDateTime) {
-        lastUsedDate = new Date(item.lastUsed.lastModifiedDateTime);
-        lastUsedStringFormat = strings.itemModifiedFormat;
-      } else if (item.lastUsed.lastAccessedDateTime) {
-        lastUsedDate = new Date(item.lastUsed.lastAccessedDateTime);
-        lastUsedStringFormat = strings.itemAccessedFormat;
-      }
-
+    if (lastUsed && lastUsed.lastModifiedDateTime) {
+      const lastUsedDate = new Date(item.lastUsed.lastModifiedDateTime);
+      const lastUsedStringFormat = strings.itemModifiedFormat;
       const relativeDateString = getRelativeDisplayDate(lastUsedDate);
       const lastUsedString = formatString(lastUsedStringFormat, relativeDateString);
 
@@ -186,16 +176,12 @@ export class MgtFilePicker extends MgtTemplatedComponent {
     }
 
     return html`
-      <div
-        class="item"
-        @click=${e => this.handleItemClick(item, e)}
-        @mouseenter=${e => this.handleItemMouseEnter(item, e)}
-      >
+      <div class="item" @click=${e => this.handleItemClick(item, e)}>
         <div class="item__icon">
           ${getSvg(SvgIcon.File)}
         </div>
         <div class="item__details">
-          <div class="item__title">
+          <div class="item__title" alt=${item.resourceVisualization.title}>
             ${item.resourceVisualization.title}
           </div>
           ${lastUsedTemplate}
@@ -219,10 +205,8 @@ export class MgtFilePicker extends MgtTemplatedComponent {
       this.flyout.close();
     } else {
       // Lazy load
-      if (!this._doLoad) {
-        this._doLoad = true;
-        this.requestStateUpdate();
-      }
+      this._doLoad = true;
+      this.requestStateUpdate();
 
       this.flyout.open();
     }
@@ -239,9 +223,7 @@ export class MgtFilePicker extends MgtTemplatedComponent {
     window.open(item.resourceReference.webUrl, '_blank');
   }
 
-  protected handleItemMouseEnter(item: InsightsItem, event: PointerEvent): void {}
-
-  protected handleAllFilesClick(e: PointerEvent): void {
+  protected handleAllItemsClick(e: PointerEvent): void {
     this.openFullPicker();
   }
 
