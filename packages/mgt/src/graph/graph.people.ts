@@ -151,7 +151,7 @@ export async function findContactByEmail(graph: IGraph, email: string): Promise<
  * @returns {(Promise<Array<Person | Contact>>)}
  * @memberof Graph
  */
-export function findUserByEmail(graph: IGraph, email: string): Promise<Array<Person | Contact>> {
+export function findUserByEmail(graph: IGraph, email: string): Promise<(Person | Contact)[]> {
   return Promise.all([findPeople(graph, email), findContactByEmail(graph, email)]).then(([people, contacts]) => {
     return ((people as any[]) || []).concat(contacts || []);
   });
