@@ -13,6 +13,7 @@
   --flyout-background-color: #ffffff;
   --item-background-color: #ffffff;
   --item-background-color-hover: #f3f2f1;
+  --item-background-color-selected: #f3f2f1;
 
   display: inline-block;
   user-select: none;
@@ -26,9 +27,13 @@
     cursor: pointer;
     display: flex;
     flex-direction: row;
+    width: 200px;
 
     .button__text {
       padding: 4px 12px;
+      flex-grow: 1;
+      white-space: nowrap;
+      overflow: hidden;
     }
 
     .button__icon {
@@ -96,6 +101,8 @@
     overflow-y: auto;
 
     .item {
+      border-top: 1px solid transparent;
+      border-bottom: 1px solid transparent;
       position: relative;
       display: flex;
       align-items: center;
@@ -135,6 +142,12 @@
 
       &:hover {
         background-color: var(--item-background-color-hover);
+      }
+
+      &.item--selected {
+        border-top-color: #c4c4c4;
+        border-bottom-color: #c4c4c4;
+        background-color: var(--item-background-color-selected);
       }
     }
   }

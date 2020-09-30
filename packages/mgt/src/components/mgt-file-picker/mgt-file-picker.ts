@@ -1,5 +1,5 @@
 import { MgtTemplatedComponent, Providers, ProviderState } from '@microsoft/mgt-element';
-import { customElement, html, property, TemplateResult } from 'lit-element';
+import { customElement, html, internalProperty, property, TemplateResult } from 'lit-element';
 import { getSvg, SvgIcon } from '../../utils/SvgHelper';
 import { MgtFlyout } from '../sub-components/mgt-flyout/mgt-flyout';
 import { getMyInsights, InsightsItem } from './graph.files';
@@ -50,7 +50,22 @@ export class MgtFilePicker extends MgtTemplatedComponent {
     return this._items;
   }
 
+  /**
+   * The selected item
+   *
+   * @readonly
+   * @memberof MgtFilePicker
+   */
+  public get selectedItem() {
+    return this._selectedItem;
+  }
+
+  @internalProperty()
+  private _selectedItem: InsightsItem;
+
+  @internalProperty()
   private _items: InsightsItem[];
+
   private _doLoad: boolean;
 
   /**
@@ -68,6 +83,7 @@ export class MgtFilePicker extends MgtTemplatedComponent {
     super();
 
     this._items = null;
+    this._selectedItem = null;
     this._doLoad = false;
   }
 
@@ -107,9 +123,11 @@ export class MgtFilePicker extends MgtTemplatedComponent {
    * @memberof MgtFilePicker
    */
   protected renderButton(): TemplateResult {
+    const buttonText = this._selectedItem ? this._selectedItem.resourceVisualization.title : strings.buttonLabel;
+
     return html`
       <div class="button" @click=${() => this.toggleFlyout()}>
-        <div class="button__text">${strings.buttonLabel}</div>
+        <div class="button__text">${buttonText}</div>
         <div class="button__icon">${getSvg(SvgIcon.ExpandDown)}</div>
       </div>
     `;
@@ -159,6 +177,14 @@ export class MgtFilePicker extends MgtTemplatedComponent {
     `;
   }
 
+  /**
+   * Render an individual item
+   *
+   * @protected
+   * @param {InsightsItem} item
+   * @returns {TemplateResult}
+   * @memberof MgtFilePicker
+   */
   protected renderItem(item: InsightsItem): TemplateResult {
     let lastUsedTemplate: TemplateResult = null;
     const lastUsed = item.lastUsed;
@@ -175,8 +201,13 @@ export class MgtFilePicker extends MgtTemplatedComponent {
       `;
     }
 
+    const itemClasses = classMap({
+      item: true,
+      'item--selected': this._selectedItem && item.id === this._selectedItem.id
+    });
+
     return html`
-      <div class="item" @click=${e => this.handleItemClick(item, e)}>
+      <div class=${itemClasses} @click=${e => this.handleItemClick(item, e)}>
         <div class="item__icon">
           ${getSvg(SvgIcon.File)}
         </div>
@@ -205,8 +236,10 @@ export class MgtFilePicker extends MgtTemplatedComponent {
       this.flyout.close();
     } else {
       // Lazy load
-      this._doLoad = true;
-      this.requestStateUpdate();
+      if (!this._doLoad) {
+        this._doLoad = true;
+        this.requestStateUpdate();
+      }
 
       this.flyout.open();
     }
@@ -220,13 +253,30 @@ export class MgtFilePicker extends MgtTemplatedComponent {
    * @memberof MgtFilePicker
    */
   protected handleItemClick(item: InsightsItem, event: PointerEvent): void {
-    window.open(item.resourceReference.webUrl, '_blank');
+    if (this._selectedItem === item) {
+      this._selectedItem = null;
+    } else {
+      this._selectedItem = item;
+    }
   }
 
+  /**
+   * Handle the event when the user clicks to see all items.
+   *
+   * @protected
+   * @param {PointerEvent} e
+   * @memberof MgtFilePicker
+   */
   protected handleAllItemsClick(e: PointerEvent): void {
     this.openFullPicker();
   }
 
+  /**
+   * Open the full OneDrive File Picker
+   *
+   * @protected
+   * @memberof MgtFilePicker
+   */
   protected openFullPicker(): void {
     console.log('Full picker.');
   }
@@ -256,5 +306,10 @@ export class MgtFilePicker extends MgtTemplatedComponent {
 
     const graph = Providers.globalProvider.graph;
     this._items = await getMyInsights(graph);
+
+    // Reset the selected item if it doesn't match any of the new results.
+    if (this._selectedItem && this._items.findIndex(v => v.id === this._selectedItem.id) === -1) {
+      this._selectedItem = null;
+    }
   }
 }
