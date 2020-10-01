@@ -653,7 +653,7 @@ export class MgtTasks extends MgtTemplatedComponent {
     this._hiddenTasks = this._hiddenTasks.filter(id => id !== task.id);
   }
 
-  private async assignPeople(task: ITask, people: Array<User | Person | Contact>) {
+  private async assignPeople(task: ITask, people: (User | Person | Contact)[]) {
     const ts = this.getTaskSource();
     if (!ts) {
       return;
