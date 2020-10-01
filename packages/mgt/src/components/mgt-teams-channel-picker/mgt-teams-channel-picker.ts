@@ -15,7 +15,7 @@ import { getSvg, SvgIcon } from '../../utils/SvgHelper';
 import { debounce } from '../../utils/Utils';
 import { styles } from './mgt-teams-channel-picker-css';
 import { getAllMyTeams } from './mgt-teams-channel-picker.graph';
-import { LocalizationHelper } from '../../utils/localizationHelper';
+import { LocalizationHelper } from '../../utils/LocalizationHelper';
 
 /**
  * Team with displayName
@@ -207,7 +207,7 @@ export class MgtTeamsChannelPicker extends MgtTemplatedComponent {
     this.addEventListener('keydown', e => this.onUserKeyDown(e));
     this.addEventListener('focus', _ => this.loadTeamsIfNotLoaded());
     this.addEventListener('mouseover', _ => this.loadTeamsIfNotLoaded());
-    window.addEventListener('strings', (event: CustomEvent) => this.handleLocalizationChanged(event));
+    this.handleLocalizationChanged = this.handleLocalizationChanged.bind(this);
     this.updateDirection();
   }
 
@@ -219,6 +219,7 @@ export class MgtTeamsChannelPicker extends MgtTemplatedComponent {
   public connectedCallback() {
     super.connectedCallback();
     window.addEventListener('click', this.handleWindowClick);
+    LocalizationHelper.onUpdated(this.handleLocalizationChanged);
   }
 
   /**
@@ -229,6 +230,7 @@ export class MgtTeamsChannelPicker extends MgtTemplatedComponent {
   public disconnectedCallback() {
     window.removeEventListener('click', this.handleWindowClick);
     super.disconnectedCallback();
+    LocalizationHelper.removeOnUpdated(this.handleLocalizationChanged);
   }
 
   /**
@@ -248,14 +250,10 @@ export class MgtTeamsChannelPicker extends MgtTemplatedComponent {
    * Request localization changes when the 'strings' event is detected
    *
    * @private
-   * @param {CustomEvent} event
-   * @memberof MgtPeoplePicker
+   * @memberof MgtTeamsChannelPicker
    */
-  private handleLocalizationChanged(event: CustomEvent) {
-    if (event && event.detail) {
-      LocalizationHelper._strings = event.detail.strings;
-      this.requestUpdate();
-    }
+  private handleLocalizationChanged() {
+    this.requestUpdate();
   }
 
   /**
@@ -391,7 +389,7 @@ export class MgtTeamsChannelPicker extends MgtTemplatedComponent {
           type="text"
           label="teams-channel-picker-input"
           aria-label="Select a channel"
-          data-placeholder="${!!this._selectedItemState ? '' : this.getString('Select a channel')} "
+          data-placeholder="${!!this._selectedItemState ? '' : this.getString('placeholder')} "
           role="input"
           @keyup=${e => this.handleInputChanged(e)}
           contenteditable

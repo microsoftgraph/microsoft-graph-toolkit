@@ -15,7 +15,7 @@ import { getUserWithPhoto } from '../../graph/graph.user';
 import '../../styles/fabric-icon-font';
 import '../mgt-person/mgt-person';
 import { PersonViewType } from '../mgt-person/mgt-person';
-import { LocalizationHelper } from '../../utils/localizationHelper';
+import { LocalizationHelper } from '../../utils/LocalizationHelper';
 
 /**
  * Web component button and flyout control to facilitate Microsoft identity platform authentication
@@ -99,8 +99,13 @@ export class MgtLogin extends MgtTemplatedComponent {
   public connectedCallback() {
     super.connectedCallback();
     this.addEventListener('click', e => e.stopPropagation());
-    window.addEventListener('strings', (event: CustomEvent) => this.handleLocalizationChanged(event));
+    LocalizationHelper.onUpdated(this.handleLocalizationChanged);
     this.updateDirection();
+  }
+
+  public disconnectedCallback() {
+    super.disconnectedCallback();
+    LocalizationHelper.removeOnUpdated(this.handleLocalizationChanged);
   }
 
   /**
@@ -122,11 +127,8 @@ export class MgtLogin extends MgtTemplatedComponent {
    * @param {CustomEvent} event
    * @memberof MgtLogin
    */
-  private handleLocalizationChanged(event: CustomEvent) {
-    if (event && event.detail) {
-      LocalizationHelper._strings = event.detail.strings;
-      this.requestUpdate();
-    }
+  private handleLocalizationChanged() {
+    this.requestUpdate();
   }
 
   /**
@@ -322,7 +324,7 @@ export class MgtLogin extends MgtTemplatedComponent {
         <ul>
           <li>
             <button class="popup-command" @click=${this.logout} aria-label="Sign Out">
-              ${this.getString('Sign Out')}
+              ${this.getString('signOut')}
             </button>
           </li>
         </ul>
@@ -376,7 +378,7 @@ export class MgtLogin extends MgtTemplatedComponent {
       html`
         <i class="login-icon ms-Icon ms-Icon--Contact"></i>
         <span aria-label="Sign In">
-          Sign In
+          ${this.getString('signIn')}
         </span>
       `
     );

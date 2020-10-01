@@ -9,7 +9,7 @@ import { customElement, html, LitElement, property, PropertyValues, query, Templ
 import { classMap } from 'lit-html/directives/class-map';
 import { getSegmentAwareWindow, isWindowSegmentAware, IWindowSegment } from '../../../utils/WindowSegmentHelpers';
 import { styles } from './mgt-flyout-css';
-import { LocalizationHelper } from '../../../utils/localizationHelper';
+import { LocalizationHelper } from '../../../utils/LocalizationHelper';
 
 /**
  * A component to create flyout anchored to an element

@@ -22,7 +22,7 @@ import { PersonCardInteraction } from '../PersonCardInteraction';
 import { MgtFlyout } from '../sub-components/mgt-flyout/mgt-flyout';
 import { styles } from './mgt-people-picker-css';
 
-import { LocalizationHelper } from '../../utils/localizationHelper';
+import { LocalizationHelper } from '../../utils/LocalizationHelper';
 export { GroupType } from '../../graph/graph.groups';
 export { PersonType } from '../../graph/graph.people';
 
@@ -331,6 +331,7 @@ export class MgtPeoplePicker extends MgtTemplatedComponent {
     this.showMax = 6;
     this.selectedPeople = [];
     this.theme = ThemeType.light;
+    this.handleLocalizationChanged = this.handleLocalizationChanged.bind(this);
   }
 
   /**
@@ -340,8 +341,13 @@ export class MgtPeoplePicker extends MgtTemplatedComponent {
    */
   public connectedCallback() {
     super.connectedCallback();
-    window.addEventListener('strings', (event: CustomEvent) => this.handleLocalizationChanged(event));
+    LocalizationHelper.onUpdated(this.handleLocalizationChanged);
     this.updateDirection();
+  }
+
+  public disconnectedCallback() {
+    super.disconnectedCallback();
+    LocalizationHelper.removeOnUpdated(this.handleLocalizationChanged);
   }
 
   /**
@@ -361,14 +367,11 @@ export class MgtPeoplePicker extends MgtTemplatedComponent {
    * Request localization changes when the 'strings' event is detected
    *
    * @private
-   * @param {CustomEvent} event
+   *
    * @memberof MgtPeoplePicker
    */
-  private handleLocalizationChanged(event: CustomEvent) {
-    if (event && event.detail) {
-      LocalizationHelper._strings = event.detail.strings;
-      this.requestUpdate();
-    }
+  private handleLocalizationChanged() {
+    this.requestUpdate();
   }
 
   /**
@@ -480,7 +483,7 @@ export class MgtPeoplePicker extends MgtTemplatedComponent {
   protected renderInput(): TemplateResult {
     const hasSelectedPeople = !!this.selectedPeople.length;
 
-    const placeholder = this.placeholder ? this.placeholder : this.getString('Start typing a name');
+    const placeholder = this.placeholder ? this.placeholder : this.getString('placeholder');
 
     const selectionMode = this.selectionMode ? this.selectionMode : 'multiple';
 
@@ -610,7 +613,7 @@ export class MgtPeoplePicker extends MgtTemplatedComponent {
         <div class="message-parent">
           <mgt-spinner></mgt-spinner>
           <div label="loading-text" aria-label="loading" class="loading-text">
-            ${this.getString('Loading...')}
+            ${this.getString('loading')}
           </div>
         </div>
       `
@@ -631,7 +634,7 @@ export class MgtPeoplePicker extends MgtTemplatedComponent {
       html`
         <div class="message-parent">
           <div label="search-error-text" aria-label="We didn't find any matches." class="search-error-text">
-            ${this.getString("We didn't find any matches.")}
+            ${this.getString('noResultsFound')}
           </div>
         </div>
       `
