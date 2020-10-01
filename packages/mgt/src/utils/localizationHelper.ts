@@ -5,18 +5,35 @@
  * -------------------------------------------------------------------------------------------
  */
 
-import { customElement, property, LitElement } from 'lit-element';
+import { EventDispatcher, EventHandler } from '@microsoft/mgt-element';
+import * as defaultStrings from '../l10n/en-us';
 
 /**
- * Helper class for SocalizationService
+ * Helper class for Localization
  *
  *
  * @export
  * @class LocalizationHelper
  */
-export class LocalizationHelper extends LitElement {
-  private static _direction: string;
-  public static _strings: object;
+export class LocalizationHelper {
+  private static _strings: object;
+
+  private static _eventDispatcher: EventDispatcher<any> = new EventDispatcher();
+
+  public static get strings() {
+    return this._strings;
+  }
+
+  /**
+   * Set strings to be localized
+   *
+   * @static
+   * @memberof LocalizationHelper
+   */
+  public static set strings(value: any) {
+    this._strings = value;
+    this._eventDispatcher.fire(null);
+  }
 
   /**
    * returns body dir attribute to determine rtl or ltr
@@ -30,84 +47,62 @@ export class LocalizationHelper extends LitElement {
   }
 
   /**
-   * Recieves string and associated tagname from component, compares to new strings
+   * Fires event when Provider changes state
    *
    * @static
-   * @param {*} tagName
-   * @param {*} stringKey
+   * @param {EventHandler<ProvidersChangedState>} event
+   * @memberof Providers
+   */
+  public static onUpdated(event: EventHandler<any>) {
+    this._eventDispatcher.add(event);
+  }
+
+  public static removeOnUpdated(event: EventHandler<any>) {
+    this._eventDispatcher.remove(event);
+  }
+
+  /**
+   * Provided helper method to determine localized or defaultString for specific string is returned
+   *
+   * @static
+   * @param {string} tagName
+   * @param {string} stringKey
    * @returns
    * @memberof LocalizationHelper
    */
-  public static getString(tagName, stringKey) {
+  public static getString(tagName: string, stringKey: string) {
+    let string: string;
+
+    tagName = tagName.toLowerCase();
+
+    if (tagName.startsWith('mgt-')) {
+      tagName = tagName.substring(4);
+    }
+
+    // first search through the user provided strings
     if (this._strings) {
-      let newStringKeys = Object.keys(this._strings);
-
-      if (!this._strings[tagName.toLowerCase()]) {
-        return stringKey;
+      if (this._strings['_components'] && this._strings['_components'][tagName]) {
+        let strings = this._strings['_components'][tagName];
+        string = strings[stringKey];
       }
 
-      //converts strings to enum
-      function getKeyByValue(object, value) {
-        return Object.keys(object).find(key => object[key] === value);
-      }
-
-      let enumKey = getKeyByValue(StoredString, stringKey);
-
-      for (let tagKey of newStringKeys) {
-        //match tagName
-        if (tagKey.toLowerCase() === tagName.toLowerCase()) {
-          //checks if tagName has user string
-          if (!this._strings[tagName.toLowerCase()][enumKey]) {
-            return stringKey;
-          }
-
-          //match string
-          return this._strings[tagName.toLowerCase()][enumKey];
-        }
+      if (!string) {
+        string = this._strings[stringKey];
       }
     }
+
+    // if no stringKey in user provider strings, or no user provider strings
+    if (!string) {
+      if (defaultStrings.default['_components'] && defaultStrings.default['_components'][tagName]) {
+        let strings = defaultStrings.default['_components'][tagName];
+        string = strings[stringKey];
+      }
+
+      if (!string) {
+        string = defaultStrings.default[stringKey];
+      }
+    }
+
+    return string;
   }
-}
-
-/**
- * StoredString
- *
- * @export
- * @enum {number}
- */
-export enum StoredString {
-  /**
-   * No results found for a picker
-   */
-  noResultsFound = "We didn't find any matches.",
-
-  /**
-   * No results found for a picker
-   */
-  loading = 'Loading...',
-
-  /**
-   * placeholder for mgt-people-picker
-   */
-  peoplePickerPlaceholder = 'Start typing a name',
-
-  /**
-   * Sign in for mgt-login
-   */
-  signIn = 'Sign In',
-
-  /**
-   * Sign out for mgt-login
-   */
-  signOut = 'Sign Out',
-
-  /**
-   * placeholder for mgt-teams-channel-picker
-   */
-  channelPickerPlaceholder = 'Select a channel',
-
-  /**
-   * placeholder for mgt-tasks new task
-   */
-  newTaskPlaceholder = 'Task...'
 }
