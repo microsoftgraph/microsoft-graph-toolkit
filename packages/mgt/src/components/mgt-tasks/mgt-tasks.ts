@@ -1021,7 +1021,7 @@ export class MgtTasks extends MgtTemplatedComponent {
       : html`
           <div class="TaskAddButtonContainer ${this._newTaskName === '' ? 'Disabled' : ''}">
             <div class="TaskIcon TaskCancel" @click="${() => (this.isNewTaskVisible = false)}">
-              <span>Cancel</span>
+              <span>${this.getString('cancel')}</span>
             </div>
             <div class="TaskIcon TaskAdd" @click="${this.onAddTaskClick}">
               <span></span>

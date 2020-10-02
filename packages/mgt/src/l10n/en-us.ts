@@ -14,6 +14,7 @@ export default {
   //task
   newTaskPlaceholder: 'Task...',
   addTaskButton: 'Add',
+  cancel: 'Cancel',
   //person-card subsections
   contact: 'Contact',
   organization: 'Organization',
