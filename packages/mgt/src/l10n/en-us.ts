@@ -11,6 +11,9 @@ export default {
   noResultsFound: "We didn't find any matches.",
   loading: 'Loading...',
   noData: 'No data',
+  //task
+  newTaskPlaceholder: 'Task...',
+  addTaskButton: 'Add',
   //person-card subsections
   contact: 'Contact',
   organization: 'Organization',
@@ -21,12 +24,7 @@ export default {
   //component specific
   _components: {
     tasks: {
-      newTaskPlaceholder: 'Task...',
-      addTaskButton: 'Add'
-    },
-    'tasks-base': {
-      newTaskPlaceholder: 'Task...',
-      addTaskButton: 'Add'
+      deleteTask: 'Delete Task'
     },
     'people-picker': {
       placeholder: 'Start typing a name'

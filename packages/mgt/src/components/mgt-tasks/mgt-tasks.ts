@@ -1177,7 +1177,7 @@ export class MgtTasks extends MgtTemplatedComponent {
             <div class="TaskOptions">
               <mgt-dot-options
                 .options="${{
-                  'Delete Task': () => this.removeTask(task)
+                  [this.getString('deleteTask')]: () => this.removeTask(task)
                 }}"
               ></mgt-dot-options>
             </div>
