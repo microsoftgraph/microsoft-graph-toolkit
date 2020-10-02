@@ -6,11 +6,25 @@
  */
 
 export default {
+  //global
   error: 'An error occurred',
   noResultsFound: "We didn't find any matches.",
   loading: 'Loading...',
+  noData: 'No data',
+  //person-card subsections
+  contact: 'Contact',
+  organization: 'Organization',
+  reportsTo: 'Reports to',
+  emails: 'Emails',
+  skillsExperience: 'Skills & Experience',
+
+  //component specific
   _components: {
     tasks: {
+      newTaskPlaceholder: 'Task...',
+      addTaskButton: 'Add'
+    },
+    'tasks-base': {
       newTaskPlaceholder: 'Task...',
       addTaskButton: 'Add'
     },
@@ -23,6 +37,33 @@ export default {
     login: {
       signIn: 'Sign In',
       signOut: 'Sign Out'
+    },
+    'person-card': {
+      sendEmail: 'Send Email',
+      startChat: 'Start Chat',
+      message: 'Message',
+      showMore: 'Show more'
+    },
+    'person-card-contact': {
+      email: 'Email',
+      teams: 'Teams',
+      cellPhone: 'Cell Phone',
+      department: 'Department',
+      title: 'Title',
+      officeLocation: 'Office Location'
+    },
+    'person-card-organization': {
+      coworkerSubtitle: 'You work with'
+    },
+    'person-card-messages': {},
+    'person-card-profile': {
+      about: 'About',
+      skills: 'Skills',
+      workExperience: 'Work Experience',
+      education: 'Education',
+      professionalInterests: 'Professional Interests',
+      personalInterests: 'Personal Interests',
+      birthday: 'birthday'
     }
   }
 };

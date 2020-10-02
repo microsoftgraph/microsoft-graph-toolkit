@@ -12,6 +12,7 @@ import { getProfile, IPersonAnniversary, IPersonInterest, IProfile } from './gra
 import { styles } from './mgt-person-card-profile-css';
 import { ProviderState, Providers } from '@microsoft/mgt-element';
 import { getSvg, SvgIcon } from '../../../../utils/SvgHelper';
+import { LocalizationHelper } from '../../../../utils/LocalizationHelper';
 
 /**
  * The user profile subsection of the person card
@@ -72,6 +73,45 @@ export class MgtPersonCardProfile extends BasePersonCardSection {
     super();
 
     this.profile = null;
+    this.handleLocalizationChanged = this.handleLocalizationChanged.bind(this);
+  }
+
+  /**
+   * Matches string to user provided one and returns
+   *
+   * @protected
+   * @param {*} stringKey
+   * @returns
+   * @memberof MgtPersonCardMessages
+   */
+  protected getString(stringKey) {
+    return LocalizationHelper.getString(this.tagName, stringKey);
+  }
+
+  /**
+   * Request localization changes when the 'strings' event is detected
+   *
+   * @private
+   * @memberof MgtPersonCardMessages
+   */
+  protected handleLocalizationChanged() {
+    this.requestUpdate();
+  }
+
+  /**
+   * Invoked each time the custom element is appended into a document-connected element
+   *
+   * @memberof MgtPersonCardMessages
+   */
+  public connectedCallback() {
+    super.connectedCallback();
+    this.addEventListener('click', e => e.stopPropagation());
+    LocalizationHelper.onUpdated(this.handleLocalizationChanged);
+  }
+
+  public disconnectedCallback() {
+    super.disconnectedCallback();
+    LocalizationHelper.removeOnUpdated(this.handleLocalizationChanged);
   }
 
   /**
@@ -146,7 +186,7 @@ export class MgtPersonCardProfile extends BasePersonCardSection {
 
     return html`
       <div class="root">
-        <div class="title">About</div>
+        <div class="title">${this.getString('about')}</div>
         ${contentTemplate}
       </div>
     `;
@@ -190,13 +230,13 @@ export class MgtPersonCardProfile extends BasePersonCardSection {
       `;
     } else {
       contentTemplate = html`
-        <div>None</div>
+        <div>${this.getString('none')}</div>
       `;
     }
 
     const languagesTemplate = html`
       <section>
-        <div class="section__title">Languages</div>
+        <div class="section__title">${this.getString('languages')}</div>
         <div class="section__content">
           ${contentTemplate}
         </div>
@@ -239,7 +279,7 @@ export class MgtPersonCardProfile extends BasePersonCardSection {
 
     return html`
       <section>
-        <div class="section__title">Skills</div>
+        <div class="section__title">${this.getString('skills')}</div>
         <div class="section__content">
           ${contentTemplate}
         </div>
@@ -292,7 +332,7 @@ export class MgtPersonCardProfile extends BasePersonCardSection {
 
     return html`
       <section>
-        <div class="section__title">Work Experience</div>
+        <div class="section__title">${this.getString('workExperience')}</div>
         <div class="section__content">
           ${contentTemplate}
         </div>
@@ -344,7 +384,7 @@ export class MgtPersonCardProfile extends BasePersonCardSection {
 
     return html`
       <section>
-        <div class="section__title">Education</div>
+        <div class="section__title">${this.getString('education')}</div>
         <div class="section__content">
           ${contentTemplate}
         </div>
@@ -385,7 +425,7 @@ export class MgtPersonCardProfile extends BasePersonCardSection {
 
     return html`
       <section>
-        <div class="section__title">Professional Interests</div>
+        <div class="section__title">${this.getString('professionalInterests')}</div>
         <div class="section__content">
           ${contentTemplate}
         </div>
@@ -426,7 +466,7 @@ export class MgtPersonCardProfile extends BasePersonCardSection {
 
     return html`
       <section>
-        <div class="section__title">Personal Interests</div>
+        <div class="section__title">${this.getString('personalInterests')}</div>
         <div class="section__content">
           ${contentTemplate}
         </div>
@@ -463,7 +503,7 @@ export class MgtPersonCardProfile extends BasePersonCardSection {
 
     return html`
       <section>
-        <div class="section__title">Birthday</div>
+        <div class="section__title">${this.getString('birthday')}</div>
         <div class="section__content">
           ${contentTemplate}
         </div>

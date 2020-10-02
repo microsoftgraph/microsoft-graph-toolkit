@@ -13,6 +13,7 @@ import { TeamsHelper } from '../../../../utils/TeamsHelper';
 import { BasePersonCardSection } from '../BasePersonCardSection';
 import { styles } from './mgt-person-card-contact-css';
 import { SvgIcon, getSvg } from '../../../../utils/SvgHelper';
+import { LocalizationHelper } from '../../../../utils/LocalizationHelper';
 
 /**
  * Represents a contact part and its metadata
@@ -69,6 +70,48 @@ export class MgtPersonCardContact extends BasePersonCardSection {
     return styles;
   }
 
+  constructor() {
+    super();
+    this.handleLocalizationChanged = this.handleLocalizationChanged.bind(this);
+  }
+
+  /**
+   * Matches string to user provided one and returns
+   *
+   * @protected
+   * @param {*} stringKey
+   * @returns
+   * @memberof MgtPersonCardContact
+   */
+  protected getString(stringKey) {
+    return LocalizationHelper.getString(this.tagName, stringKey);
+  }
+
+  /**
+   * Request localization changes when the 'strings' event is detected
+   *
+   * @private
+   * @memberof MgtPersonCardContact
+   */
+  protected handleLocalizationChanged() {
+    this.requestUpdate();
+  }
+
+  /**
+   * Invoked each time the custom element is appended into a document-connected element
+   *
+   * @memberof MgtPersonCardContact
+   */
+  public connectedCallback() {
+    super.connectedCallback();
+    LocalizationHelper.onUpdated(this.handleLocalizationChanged);
+  }
+
+  public disconnectedCallback() {
+    super.disconnectedCallback();
+    LocalizationHelper.removeOnUpdated(this.handleLocalizationChanged);
+  }
+
   /**
    * The name for display in the overview section.
    *
@@ -88,34 +131,34 @@ export class MgtPersonCardContact extends BasePersonCardSection {
       icon: getSvg(SvgIcon.Email, '#929292'),
       onClick: () => this.sendEmail(),
       showCompact: true,
-      title: 'Email'
+      title: this.getString('email')
     },
     chat: {
       icon: getSvg(SvgIcon.Chat, '#929292'),
       onClick: () => this.sendChat(),
       showCompact: false,
-      title: 'Teams'
+      title: this.getString('teams')
     },
     cellPhone: {
       icon: getSvg(SvgIcon.CellPhone, '#929292'),
       onClick: () => this.sendCall(),
       showCompact: true,
-      title: 'Cell Phone'
+      title: this.getString('cellPhone')
     },
     department: {
       icon: getSvg(SvgIcon.Department, '#929292'),
       showCompact: false,
-      title: 'Department'
+      title: this.getString('department')
     },
     title: {
       icon: getSvg(SvgIcon.Person, '#929292'),
       showCompact: false,
-      title: 'Title'
+      title: this.getString('title')
     },
     officeLocation: {
       icon: getSvg(SvgIcon.OfficeLocation, '#929292'),
       showCompact: true,
-      title: 'Office Location'
+      title: this.getString('officeLocation')
     }
   };
   // tslint:enable: object-literal-sort-keys
@@ -203,7 +246,7 @@ export class MgtPersonCardContact extends BasePersonCardSection {
 
     return html`
       <div class="root">
-        <div class="title">${this.displayName}</div>
+        <div class="title">${this.getString(this.displayName.toLowerCase())}</div>
         ${contentTemplate}
       </div>
     `;

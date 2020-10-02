@@ -11,6 +11,7 @@ import { BasePersonCardSection } from '../BasePersonCardSection';
 import { getCoworkers, getManagers, IOrgMember } from './graph.organization';
 import { styles } from './mgt-person-card-organization-css';
 import { getSvg, SvgIcon } from '../../../../utils/SvgHelper';
+import { LocalizationHelper } from '../../../../utils/LocalizationHelper';
 
 /**
  * The member organization subsection of the person card
@@ -27,6 +28,49 @@ export class MgtPersonCardOrganization extends BasePersonCardSection {
    */
   static get styles() {
     return styles;
+  }
+
+  constructor() {
+    super();
+    this.handleLocalizationChanged = this.handleLocalizationChanged.bind(this);
+  }
+
+  /**
+   * Matches string to user provided one and returns
+   *
+   * @protected
+   * @param {*} stringKey
+   * @returns
+   * @memberof MgtPersonCardOrganization
+   */
+  protected getString(stringKey) {
+    return LocalizationHelper.getString(this.tagName, stringKey);
+  }
+
+  /**
+   * Request localization changes when the 'strings' event is detected
+   *
+   * @private
+   * @memberof MgtPersonCardOrganization
+   */
+  protected handleLocalizationChanged() {
+    this.requestUpdate();
+  }
+
+  /**
+   * Invoked each time the custom element is appended into a document-connected element
+   *
+   * @memberof MgtPersonCard
+   */
+  public connectedCallback() {
+    super.connectedCallback();
+    this.addEventListener('click', e => e.stopPropagation());
+    LocalizationHelper.onUpdated(this.handleLocalizationChanged);
+  }
+
+  public disconnectedCallback() {
+    super.disconnectedCallback();
+    LocalizationHelper.removeOnUpdated(this.handleLocalizationChanged);
   }
 
   /**
@@ -111,7 +155,7 @@ export class MgtPersonCardOrganization extends BasePersonCardSection {
         this._coworkers && this._coworkers.length
           ? html`
               <div class="divider"></div>
-              <div class="subtitle">You work with</div>
+              <div class="subtitle">${this.getString('coworkerSubtitle')}</div>
               <div>
                 ${this._coworkers.slice(0, 6).map(coworker => this.renderCoworker(coworker))}
               </div>
@@ -125,7 +169,7 @@ export class MgtPersonCardOrganization extends BasePersonCardSection {
 
     return html`
       <div class="root">
-        <div class="title">Organization</div>
+        <div class="title">${this.getString('organization')}</div>
         ${contentTemplate}
       </div>
     `;

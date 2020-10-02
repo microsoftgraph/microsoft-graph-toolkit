@@ -25,6 +25,7 @@ import { MgtPersonCardProfile } from './sections/mgt-person-card-profile/mgt-per
 import { Presence } from '@microsoft/microsoft-graph-types-beta';
 import { getUserPresence } from '../../graph/graph.presence';
 import { getSvg, SvgIcon } from '../../utils/SvgHelper';
+import { LocalizationHelper } from '../../utils/LocalizationHelper';
 
 /**
  * Web Component used to show detailed data for a person in the Microsoft Graph
@@ -196,6 +197,7 @@ export class MgtPersonCard extends MgtTemplatedComponent {
       // new MgtPersonCardFiles(),
       new MgtPersonCardProfile()
     ];
+    this.handleLocalizationChanged = this.handleLocalizationChanged.bind(this);
   }
 
   /**
@@ -206,6 +208,34 @@ export class MgtPersonCard extends MgtTemplatedComponent {
   public connectedCallback() {
     super.connectedCallback();
     this.addEventListener('click', e => e.stopPropagation());
+    LocalizationHelper.onUpdated(this.handleLocalizationChanged);
+  }
+
+  public disconnectedCallback() {
+    super.disconnectedCallback();
+    LocalizationHelper.removeOnUpdated(this.handleLocalizationChanged);
+  }
+
+  /**
+   * Matches string to user provided one and returns
+   *
+   * @protected
+   * @param {*} stringKey
+   * @returns
+   * @memberof MgtPersonCard
+   */
+  protected getString(stringKey) {
+    return LocalizationHelper.getString(this.tagName, stringKey);
+  }
+
+  /**
+   * Request localization changes when the 'strings' event is detected
+   *
+   * @private
+   * @memberof MgtPersonCard
+   */
+  protected handleLocalizationChanged() {
+    this.requestUpdate();
   }
 
   /**
@@ -450,7 +480,7 @@ export class MgtPersonCard extends MgtTemplatedComponent {
       email = html`
         <div class="icon" @click=${() => this.emailUser()}>
           ${getSvg(SvgIcon.SmallEmail)}
-          <span>Send email</span>
+          <span>${this.getString('sendEmail')}</span>
         </div>
       `;
     }
@@ -461,7 +491,7 @@ export class MgtPersonCard extends MgtTemplatedComponent {
       chat = html`
         <div class="icon" @click=${() => this.chatUser()}>
           ${getSvg(SvgIcon.SmallChat)}
-          <span>Start chat</span>
+          <span>${this.getString('startChat')}</span>
         </div>
       `;
     }
@@ -556,8 +586,12 @@ export class MgtPersonCard extends MgtTemplatedComponent {
       section => html`
         <div class="section">
           <div class="section__header">
-            <div class="section__title">${section.displayName}</div>
-            <a class="section__show-more" @click=${() => this.updateCurrentSection(section)}>Show more</a>
+            <div class="section__title">
+              ${this.getString(this.camelCase(section.displayName))}
+            </div>
+            <a class="section__show-more" @click=${() => this.updateCurrentSection(section)}
+              >${this.getString('showMore')}</a
+            >
           </div>
           <div class="section__content">${section.asCompactView()}</div>
         </div>
@@ -569,7 +603,7 @@ export class MgtPersonCard extends MgtTemplatedComponent {
         <input
           type="text"
           class="quick-message__input"
-          placeholder="Message ${this.personDetails.displayName}"
+          placeholder="${this.getString('message')} ${this.personDetails.displayName}"
           .value=${this._chatInput}
           @input=${(e: Event) => {
             this._chatInput = (e.target as HTMLInputElement).value;
@@ -835,5 +869,14 @@ export class MgtPersonCard extends MgtTemplatedComponent {
 
     this._currentSection = section;
     this.requestUpdate();
+  }
+
+  private camelCase(str) {
+    return str
+      .replace(/(?:^\w|[A-Z]|\b\w)/g, function(word, index) {
+        return index === 0 ? word.toLowerCase() : word.toUpperCase();
+      })
+      .replace(/\s+/g, '')
+      .replace(/&/g, '');
   }
 }

@@ -14,6 +14,7 @@ import { getMessages, getMessagesWithUser, IMessage } from './graph.messages';
 import { styles } from './mgt-person-card-messages-css';
 import { getEmailFromGraphEntity } from '../../../../graph/graph.people';
 import { SvgIcon, getSvg } from '../../../../utils/SvgHelper';
+import { LocalizationHelper } from '../../../../utils/LocalizationHelper';
 
 /**
  * The email messages subsection of the person card
@@ -30,6 +31,48 @@ export class MgtPersonCardMessages extends BasePersonCardSection {
    */
   static get styles() {
     return styles;
+  }
+
+  constructor() {
+    super();
+    this.handleLocalizationChanged = this.handleLocalizationChanged.bind(this);
+  }
+
+  /**
+   * Matches string to user provided one and returns
+   *
+   * @protected
+   * @param {*} stringKey
+   * @returns
+   * @memberof MgtPersonCardContact
+   */
+  protected getString(stringKey) {
+    return LocalizationHelper.getString(this.tagName, stringKey);
+  }
+
+  /**
+   * Request localization changes when the 'strings' event is detected
+   *
+   * @protected
+   * @memberof MgtPersonCardMessages
+   */
+  protected handleLocalizationChanged() {
+    this.requestUpdate();
+  }
+
+  /**
+   * Invoked each time the custom element is appended into a document-connected element
+   *
+   * @memberof MgtPersonCardMessages
+   */
+  public connectedCallback() {
+    super.connectedCallback();
+    LocalizationHelper.onUpdated(this.handleLocalizationChanged);
+  }
+
+  public disconnectedCallback() {
+    super.disconnectedCallback();
+    LocalizationHelper.removeOnUpdated(this.handleLocalizationChanged);
   }
 
   /**
@@ -116,7 +159,7 @@ export class MgtPersonCardMessages extends BasePersonCardSection {
 
     return html`
       <div class="root">
-        <div class="title">Emails</div>
+        <div class="title">${this.getString('emails')}</div>
         ${contentTemplate}
       </div>
     `;
