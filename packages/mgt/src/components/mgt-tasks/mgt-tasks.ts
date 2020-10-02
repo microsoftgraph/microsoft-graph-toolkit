@@ -22,7 +22,7 @@ import '../mgt-person/mgt-person';
 import '../sub-components/mgt-arrow-options/mgt-arrow-options';
 import '../sub-components/mgt-dot-options/mgt-dot-options';
 import { MgtFlyout } from '../sub-components/mgt-flyout/mgt-flyout';
-import { LocalizationHelper } from '../../utils/localizationHelper';
+import { LocalizationHelper } from '../../utils/LocalizationHelper';
 
 /**
  * Defines how a person card is shown when a user interacts with
@@ -249,11 +249,8 @@ export class MgtTasks extends MgtTemplatedComponent {
    * @param {CustomEvent} event
    * @memberof MgtTasks
    */
-  private handleLocalizationChanged(event: CustomEvent) {
-    if (event && event.detail) {
-      LocalizationHelper._strings = event.detail.strings;
-      this.requestUpdate();
-    }
+  private handleLocalizationChanged() {
+    this.requestUpdate();
   }
 
   /**
@@ -262,7 +259,7 @@ export class MgtTasks extends MgtTemplatedComponent {
    * @protected
    * @param {*} stringKey
    * @returns
-   * @memberof MgtPeoplePicker
+   * @memberof MgtTasks
    */
   protected getString(stringKey) {
     return LocalizationHelper.getString(this.tagName, stringKey);
@@ -386,6 +383,7 @@ export class MgtTasks extends MgtTemplatedComponent {
 
     this.previousMediaQuery = this.mediaQuery;
     this.onResize = this.onResize.bind(this);
+    this.handleLocalizationChanged = this.handleLocalizationChanged.bind(this);
   }
 
   /**
@@ -395,7 +393,7 @@ export class MgtTasks extends MgtTemplatedComponent {
    */
   public connectedCallback() {
     super.connectedCallback();
-    window.addEventListener('strings', (event: CustomEvent) => this.handleLocalizationChanged(event));
+    LocalizationHelper.onUpdated(this.handleLocalizationChanged);
     this.updateDirection();
     window.addEventListener('resize', this.onResize);
   }
@@ -407,6 +405,7 @@ export class MgtTasks extends MgtTemplatedComponent {
    */
   public disconnectedCallback() {
     window.removeEventListener('resize', this.onResize);
+    LocalizationHelper.removeOnUpdated(this.handleLocalizationChanged);
     super.disconnectedCallback();
   }
 
@@ -817,7 +816,7 @@ export class MgtTasks extends MgtTemplatedComponent {
               }}"
             >
               <span class="TaskIcon"></span>
-              <span>Add</span>
+              <span>${this.getString('addTaskButton')}</span>
             </button>
           `;
 
@@ -918,7 +917,7 @@ export class MgtTasks extends MgtTemplatedComponent {
     const taskTitle = html`
       <input
         type="text"
-        placeholder=${this.getString('Task...')}
+        placeholder=${this.getString('newTaskPlaceholder')}
         .value="${this._newTaskName}"
         label="new-taskName-input"
         aria-label="new-taskName-input"

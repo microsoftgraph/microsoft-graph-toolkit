@@ -11,7 +11,8 @@ export default {
   loading: 'Loading...',
   _components: {
     tasks: {
-      newTaskPlaceholder: 'Task...'
+      newTaskPlaceholder: 'Task...',
+      addTaskButton: 'Add'
     },
     'people-picker': {
       placeholder: 'Start typing a name'

@@ -8,7 +8,7 @@
 import { html, property, TemplateResult } from 'lit-element';
 import { classMap } from 'lit-html/directives/class-map';
 import { ComponentMediaQuery, Providers, ProviderState, MgtTemplatedComponent } from '@microsoft/mgt-element';
-import { LocalizationHelper } from '../../utils/localizationHelper';
+import { LocalizationHelper } from '../../utils/LocalizationHelper';
 
 /**
  * The foundation for creating task based components.
@@ -111,7 +111,7 @@ export abstract class MgtTasksBase extends MgtTemplatedComponent {
   public connectedCallback() {
     super.connectedCallback();
     window.addEventListener('resize', this.onResize);
-    window.addEventListener('strings', (event: CustomEvent) => this.handleLocalizationChanged(event));
+    LocalizationHelper.onUpdated(this.handleLocalizationChanged);
     this.updateDirection();
   }
 
@@ -123,13 +123,14 @@ export abstract class MgtTasksBase extends MgtTemplatedComponent {
   public disconnectedCallback() {
     window.removeEventListener('resize', this.onResize);
     super.disconnectedCallback();
+    LocalizationHelper.removeOnUpdated(this.handleLocalizationChanged);
   }
 
   /**
    * returns dir attribute on body
    *
    * @private
-   * @memberof MgtPeoplePicker
+   * @memberof MgtTasksBase
    */
   private updateDirection() {
     let direction = LocalizationHelper.getDirection();
@@ -142,14 +143,10 @@ export abstract class MgtTasksBase extends MgtTemplatedComponent {
    * Request localization changes when the 'strings' event is detected
    *
    * @private
-   * @param {CustomEvent} event
-   * @memberof MgtPeoplePicker
+   * @memberof MgtTasksBase
    */
-  private handleLocalizationChanged(event: CustomEvent) {
-    if (event && event.detail) {
-      LocalizationHelper._strings = event.detail.strings;
-      this.requestUpdate();
-    }
+  private handleLocalizationChanged() {
+    this.requestUpdate();
   }
 
   /**
@@ -158,7 +155,7 @@ export abstract class MgtTasksBase extends MgtTemplatedComponent {
    * @protected
    * @param {*} stringKey
    * @returns
-   * @memberof MgtPeoplePicker
+   * @memberof MgtTasksBase
    */
   protected getString(stringKey) {
     return LocalizationHelper.getString(this.tagName, stringKey);
@@ -212,7 +209,7 @@ export abstract class MgtTasksBase extends MgtTemplatedComponent {
         ${headerContentTemplate}
         <button class="${addClasses}" @click="${() => this.showNewTaskPanel()}">
           <span class="TaskIcon"></span>
-          <span>Add</span>
+          <span>${this.getString('addTaskButton')}</span>
         </button>
       </div>
     `;
@@ -263,7 +260,7 @@ export abstract class MgtTasksBase extends MgtTemplatedComponent {
     const taskTitle = html`
       <input
         type="text"
-        placeholder="Task..."
+        placeholder="${this.getString('newTaskPlaceholder')}"
         .value="${newTaskName}"
         label="new-taskName-input"
         aria-label="new-taskName-input"
