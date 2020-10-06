@@ -29,13 +29,15 @@
         <p>Looking forward to your first day!</p>
       </div>
       <div class="main">
-        <div class="column">
+        <div class="column first">
           <p>Timeline</p>
           <mgt-agenda show-max="7" days="10">
             <template data-type="event">
               <div class="root">
                 <div class="time-container">
-                  <div class="date">{{ dayFromDateTime(event.start.dateTime)}}</div>
+                  <div class="date">
+                    {{ dayFromDateTime(event.start.dateTime)}}
+                  </div>
                   <div class="time">{{ timeRangeFromEvent(event) }}</div>
                 </div>
                 <div class="separator">
@@ -70,18 +72,20 @@
             </template>
           </mgt-agenda>
         </div>
-        <div class="column">
+        <div class="column second">
           <p>To-do list</p>
           <mgt-todo hide-header>
             <template data-type="task-details">
               <div class="wrapper">
                 <div>{{task.title}}</div>
-                <div>&#128197; {{dayFromDateTime(task.dueDateTime.dateTime)}}</div>
+                <div>
+                  &#128197; {{dayFromDateTime(task.dueDateTime.dateTime)}}
+                </div>
               </div>
             </template>
           </mgt-todo>
         </div>
-        <div class="column">
+        <div class="column third">
           <p>Your Team</p>
           <mgt-people show-max="5">
             <template>

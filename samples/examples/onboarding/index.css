@@ -25,7 +25,8 @@ header .login {
 }
 
 article {
-  padding: 0 5em;
+  margin: 0 auto;
+  width: 90%;
 }
 
 article .greeting {
@@ -59,6 +60,7 @@ article .main .column {
   flex: 0 0 31%;
   padding: 1em;
   height: 30em;
+  min-width: 400px;
 }
 
 article .main .root {
@@ -68,7 +70,7 @@ article .main .root {
 }
 
 article .main .time-container {
-  width: 9em;
+  width: 30%;
   margin-top: 10px;
   margin-right: 10px;
   display: flex;
@@ -93,7 +95,7 @@ article .main .location {
 article .main .details {
   margin-bottom: 20px;
   margin-top: 5px;
-  min-width: 180px;
+  max-width: 180px;
   padding-left: 5px;
 }
 
@@ -188,4 +190,32 @@ article .main mgt-todo .wrapper {
 article .main mgt-people mgt-person {
   --avatar-size: 3em;
   margin: 0 0 1em 2em;
+}
+
+@media (min-width: 480px) and (max-width: 1400px) {
+  article {
+    width: 100%;
+  }
+
+  article .main {
+    flex-direction: column;
+  }
+
+  article .main .column.first {
+    order: 1;
+  }
+
+  article .main .column.second {
+    order: 2;
+    margin-top: 130px;
+  }
+
+  article .main .column.third {
+    order: 3;
+    margin-top: 100px;
+  }
+
+  article .main .details {
+    max-width: unset;
+  }
 }
