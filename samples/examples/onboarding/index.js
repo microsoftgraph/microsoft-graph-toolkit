@@ -1,3 +1,18 @@
+import { ProviderState } from '../../../packages/mgt-element/dist/providers/IProvider';
+import { Providers } from '../../../packages/mgt-element/dist/providers/Providers';
+
+const provider = Providers.globalProvider;
+const initialScreen = document.getElementById('splash');
+const main = document.getElementById('article');
+
+if (provider && provider.state === ProviderState.SignedOut) {
+  // use not signed in
+  main.style.display = 'none';
+} else if (provider.state === ProviderState.SignedIn) {
+  // user signed in
+  initialScreen.style.display = 'none';
+}
+
 function formatDateTime(dateTimeString) {
   let date = new Date(dateTimeString);
   date.setMinutes(date.getMinutes() - date.getTimezoneOffset());

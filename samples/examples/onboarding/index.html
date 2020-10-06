@@ -4,7 +4,7 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Ignite Demo</title>
-    <script src="../../../packages/mgt/dist/bundle/mgt-loader.js"></script>
+    <script type="module" src="../../../packages/mgt/dist/es6/index.js"></script>
   </head>
   <body>
     <mgt-msal-provider client-id="a974dfa0-9f57-49b9-95db-90f04ce2111a"></mgt-msal-provider>
@@ -15,7 +15,11 @@
       <mgt-login class="login"></mgt-login>
     </header>
 
-    <article>
+    <div id="splash" class="splash">
+      <p>Please signin to get started</p>
+      <mgt-login></mgt-login>
+    </div>
+    <article id="article">
       <div class="greeting">
         <img src="./assets/welcome.svg" />
         <h1>
@@ -108,5 +112,5 @@
   </body>
 
   <link rel="stylesheet" href="index.css" />
-  <script src="index.js"></script>
+  <script type="module" src="index.js"></script>
 </html>

@@ -24,6 +24,18 @@ header .login {
   margin-left: auto;
 }
 
+.splash {
+  display: flex;
+  flex-direction: column;
+  width: 90%;
+  margin: 0 auto;
+  align-items: center;
+}
+
+.splash p {
+  margin: 4em 0 1em 0;
+}
+
 article {
   margin: 0 auto;
   width: 90%;
