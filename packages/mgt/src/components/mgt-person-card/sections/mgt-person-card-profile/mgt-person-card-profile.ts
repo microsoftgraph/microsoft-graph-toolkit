@@ -214,34 +214,26 @@ export class MgtPersonCardProfile extends BasePersonCardSection {
    * @memberof MgtPersonCardProfile
    */
   protected renderSkills(): TemplateResult {
-    let contentTemplate: TemplateResult;
+    if (!this._profile || !this._profile.skills) {
+      return html``;
+    }
 
-    if (this._profile && this._profile.skills) {
-      const skillItems: TemplateResult[] = [];
-      for (const skill of this._profile.skills) {
-        skillItems.push(html`
-          <div class="token-list__item skill">
-            ${skill.displayName}
-          </div>
-        `);
-      }
-
-      contentTemplate = html`
-        <div class="token-list">
-          ${skillItems}
+    const skillItems: TemplateResult[] = [];
+    for (const skill of this._profile.skills) {
+      skillItems.push(html`
+        <div class="token-list__item skill">
+          ${skill.displayName}
         </div>
-      `;
-    } else {
-      contentTemplate = html`
-        <div>None</div>
-      `;
+      `);
     }
 
     return html`
       <section>
         <div class="section__title">Skills</div>
         <div class="section__content">
-          ${contentTemplate}
+          <div class="token-list">
+            ${skillItems}
+          </div>
         </div>
       </section>
     `;
@@ -255,47 +247,39 @@ export class MgtPersonCardProfile extends BasePersonCardSection {
    * @memberof MgtPersonCardProfile
    */
   protected renderWorkExperience(): TemplateResult {
-    let contentTemplate: TemplateResult;
+    if (!this._profile || !this._profile.positions) {
+      return html``;
+    }
 
-    if (this._profile && this._profile.positions) {
-      const positionItems: TemplateResult[] = [];
-      for (const position of this._profile.positions) {
-        positionItems.push(html`
-          <div class="data-list__item work-position">
-            <div class="data-list__item__header">
-              <div class="data-list__item__title">${position.detail.jobTitle}</div>
-              <div class="data-list__item__date-range">
-                ${this.getDisplayDateRange(position.detail)}
-              </div>
-            </div>
-            <div class="data-list__item__content">
-              <div class="work-position__company">
-                ${position.detail.company.displayName}
-              </div>
-              <div class="work-position__location">
-                ${position.detail.company.address.city}, ${position.detail.company.address.state}
-              </div>
+    const positionItems: TemplateResult[] = [];
+    for (const position of this._profile.positions) {
+      positionItems.push(html`
+        <div class="data-list__item work-position">
+          <div class="data-list__item__header">
+            <div class="data-list__item__title">${position.detail.jobTitle}</div>
+            <div class="data-list__item__date-range">
+              ${this.getDisplayDateRange(position.detail)}
             </div>
           </div>
-        `);
-      }
-
-      contentTemplate = html`
-        <div class="data-list" data-if="positions && positions.length">
-          ${positionItems}
+          <div class="data-list__item__content">
+            <div class="work-position__company">
+              ${position.detail.company.displayName}
+            </div>
+            <div class="work-position__location">
+              ${position.detail.company.address.city}, ${position.detail.company.address.state}
+            </div>
+          </div>
         </div>
-      `;
-    } else {
-      contentTemplate = html`
-        <div>None</div>
-      `;
+      `);
     }
 
     return html`
       <section>
         <div class="section__title">Work Experience</div>
         <div class="section__content">
-          ${contentTemplate}
+          <div class="data-list">
+            ${positionItems}
+          </div>
         </div>
       </section>
     `;
@@ -309,44 +293,36 @@ export class MgtPersonCardProfile extends BasePersonCardSection {
    * @memberof MgtPersonCardProfile
    */
   protected renderEducation(): TemplateResult {
-    let contentTemplate: TemplateResult;
+    if (!this._profile || !this._profile.positions) {
+      return html``;
+    }
 
-    if (this._profile && this._profile.positions) {
-      const positionItems: TemplateResult[] = [];
-      for (const educationalActivity of this._profile.educationalActivities) {
-        positionItems.push(html`
-          <div class="data-list__item educational-activity">
-            <div class="data-list__item__header">
-              <div class="data-list__item__title">${educationalActivity.institution.displayName}</div>
-              <div class="data-list__item__date-range">
-                ${this.getDisplayDateRange(educationalActivity)}
-              </div>
-            </div>
-            <div class="data-list__item__content">
-              <div class="educational-activity__degree">
-                ${educationalActivity.program.displayName || 'Bachelors Degree'}
-              </div>
+    const positionItems: TemplateResult[] = [];
+    for (const educationalActivity of this._profile.educationalActivities) {
+      positionItems.push(html`
+        <div class="data-list__item educational-activity">
+          <div class="data-list__item__header">
+            <div class="data-list__item__title">${educationalActivity.institution.displayName}</div>
+            <div class="data-list__item__date-range">
+              ${this.getDisplayDateRange(educationalActivity)}
             </div>
           </div>
-        `);
-      }
-
-      contentTemplate = html`
-        <div class="data-list">
-          ${positionItems}
+          <div class="data-list__item__content">
+            <div class="educational-activity__degree">
+              ${educationalActivity.program.displayName || 'Bachelors Degree'}
+            </div>
+          </div>
         </div>
-      `;
-    } else {
-      contentTemplate = html`
-        <div>None</div>
-      `;
+      `);
     }
 
     return html`
       <section>
         <div class="section__title">Education</div>
         <div class="section__content">
-          ${contentTemplate}
+          <div class="data-list">
+            ${positionItems}
+          </div>
         </div>
       </section>
     `;
@@ -360,34 +336,26 @@ export class MgtPersonCardProfile extends BasePersonCardSection {
    * @memberof MgtPersonCardProfile
    */
   protected renderProfessionalInterests(): TemplateResult {
-    let contentTemplate: TemplateResult;
+    if (!this._professionalInterests || !this._professionalInterests.length) {
+      return html``;
+    }
 
-    if (this._professionalInterests && this._professionalInterests.length) {
-      const interestItems: TemplateResult[] = [];
-      for (const interest of this._professionalInterests) {
-        interestItems.push(html`
-          <div class="token-list__item interest interest--professional">
-            ${interest.displayName}
-          </div>
-        `);
-      }
-
-      contentTemplate = html`
-        <div class="token-list">
-          ${interestItems}
+    const interestItems: TemplateResult[] = [];
+    for (const interest of this._professionalInterests) {
+      interestItems.push(html`
+        <div class="token-list__item interest interest--professional">
+          ${interest.displayName}
         </div>
-      `;
-    } else {
-      contentTemplate = html`
-        <div>None</div>
-      `;
+      `);
     }
 
     return html`
       <section>
         <div class="section__title">Professional Interests</div>
         <div class="section__content">
-          ${contentTemplate}
+          <div class="token-list">
+            ${interestItems}
+          </div>
         </div>
       </section>
     `;
@@ -401,34 +369,26 @@ export class MgtPersonCardProfile extends BasePersonCardSection {
    * @memberof MgtPersonCardProfile
    */
   protected renderPersonalInterests(): TemplateResult {
-    let contentTemplate: TemplateResult;
+    if (!this._personalInterests || !this._personalInterests.length) {
+      return html``;
+    }
 
-    if (this._personalInterests && this._personalInterests.length) {
-      const interestItems: TemplateResult[] = [];
-      for (const interest of this._personalInterests) {
-        interestItems.push(html`
-          <div class="token-list__item interest interest--personal">
-            ${interest.displayName}
-          </div>
-        `);
-      }
-
-      contentTemplate = html`
-        <div class="token-list">
-          ${interestItems}
+    const interestItems: TemplateResult[] = [];
+    for (const interest of this._personalInterests) {
+      interestItems.push(html`
+        <div class="token-list__item interest interest--personal">
+          ${interest.displayName}
         </div>
-      `;
-    } else {
-      contentTemplate = html`
-        <div>None</div>
-      `;
+      `);
     }
 
     return html`
       <section>
         <div class="section__title">Personal Interests</div>
         <div class="section__content">
-          ${contentTemplate}
+          <div class="token-list">
+            ${interestItems}
+          </div>
         </div>
       </section>
     `;
@@ -442,30 +402,22 @@ export class MgtPersonCardProfile extends BasePersonCardSection {
    * @memberof MgtPersonCardProfile
    */
   protected renderBirthday(): TemplateResult {
-    let contentTemplate: TemplateResult;
-
-    if (this._birthdayAnniversary) {
-      contentTemplate = html`
-        <div class="birthday">
-          <div class="birthday__icon">
-            ${getSvg(SvgIcon.Birthday)}
-          </div>
-          <div class="birthday__date">
-            ${this.getDisplayDate(this._birthdayAnniversary.date)}
-          </div>
-        </div>
-      `;
-    } else {
-      contentTemplate = html`
-        <div>Unknown</div>
-      `;
+    if (!this._birthdayAnniversary || !this._birthdayAnniversary.date) {
+      return html``;
     }
 
     return html`
       <section>
         <div class="section__title">Birthday</div>
         <div class="section__content">
-          ${contentTemplate}
+          <div class="birthday">
+            <div class="birthday__icon">
+              ${getSvg(SvgIcon.Birthday)}
+            </div>
+            <div class="birthday__date">
+              ${this.getDisplayDate(this._birthdayAnniversary.date)}
+            </div>
+          </div>
         </div>
       </section>
     `;
