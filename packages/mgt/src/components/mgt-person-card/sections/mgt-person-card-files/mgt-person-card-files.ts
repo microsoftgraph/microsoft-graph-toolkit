@@ -129,8 +129,6 @@ export class MgtPersonCardFiles extends BasePersonCardSection {
    * @memberof MgtPersonCardFiles
    */
   protected renderFile(file: IFile): TemplateResult {
-    //const iconSource = file.thumbnails ? file.thumbnails[0].small.url : null;
-
     const lastModifiedTemplate = file.lastModifiedDateTime
       ? html`
           <div class="file__last-modified">Modified ${getRelativeDisplayDate(new Date(file.lastModifiedDateTime))}</div>
