@@ -129,7 +129,7 @@ export class MgtPersonCardFiles extends BasePersonCardSection {
    * @memberof MgtPersonCardFiles
    */
   protected renderFile(file: IFile): TemplateResult {
-    const iconSource = file.thumbnails ? file.thumbnails[0].small.url : null;
+    //const iconSource = file.thumbnails ? file.thumbnails[0].small.url : null;
 
     const lastModifiedTemplate = file.lastModifiedDateTime
       ? html`
@@ -140,7 +140,7 @@ export class MgtPersonCardFiles extends BasePersonCardSection {
     return html`
       <div class="file">
         <div class="file__icon">
-          <img src="${iconSource}" />
+          ${getSvg(SvgIcon.File)}
         </div>
         <div class="file__details">
           <div class="file__name">${file.name}</div>

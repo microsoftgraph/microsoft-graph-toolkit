@@ -262,17 +262,18 @@ export class MgtPersonCardProfile extends BasePersonCardSection {
       for (const position of this._profile.positions) {
         positionItems.push(html`
           <div class="data-list__item work-position">
-            <div class="data-list__item__title">${position.detail.jobTitle}</div>
-            <div class="data-list__item__content flex-rows">
-              <div>
-                <div class="work-position__company">${position.detail.company.displayName}</div>
-                <div class="work-position__location">
-                  ${position.detail.company.address.city}, ${position.detail.company.address.state}
-                </div>
+            <div class="data-list__item__header">
+              <div class="data-list__item__title">${position.detail.jobTitle}</div>
+              <div class="data-list__item__date-range">
+                ${this.getDisplayDateRange(position.detail)}
               </div>
-              <div class="date-range">
-                <div class="work-position__date-range">${this.getDisplayDateRange(position.detail)}</div>
-                <div class="date-range__circle"></div>
+            </div>
+            <div class="data-list__item__content">
+              <div class="work-position__company">
+                ${position.detail.company.displayName}
+              </div>
+              <div class="work-position__location">
+                ${position.detail.company.address.city}, ${position.detail.company.address.state}
               </div>
             </div>
           </div>
@@ -315,16 +316,15 @@ export class MgtPersonCardProfile extends BasePersonCardSection {
       for (const educationalActivity of this._profile.educationalActivities) {
         positionItems.push(html`
           <div class="data-list__item educational-activity">
-            <div class="data-list__item__title">${educationalActivity.institution.displayName}</div>
-            <div class="data-list__item__content flex-rows">
-              <div>
-                <div class="educational-activity__degree">${educationalActivity.program.displayName}</div>
+            <div class="data-list__item__header">
+              <div class="data-list__item__title">${educationalActivity.institution.displayName}</div>
+              <div class="data-list__item__date-range">
+                ${this.getDisplayDateRange(educationalActivity)}
               </div>
-              <div class="date-range">
-                <div class="educational-activity__date-range">
-                  ${this.getDisplayDateRange(educationalActivity)}
-                </div>
-                <div class="date-range__circle"></div>
+            </div>
+            <div class="data-list__item__content">
+              <div class="educational-activity__degree">
+                ${educationalActivity.program.displayName || 'Bachelors Degree'}
               </div>
             </div>
           </div>
@@ -537,7 +537,6 @@ export class MgtPersonCardProfile extends BasePersonCardSection {
         sections.forEach(section => {
           // Perform post render operations per section
           this.handleTokenOverflow(section);
-          this.drawSectionTimeline(section);
         });
       } catch {
         // An exception may occur if the component is suddenly removed during post render operations.
@@ -576,6 +575,7 @@ export class MgtPersonCardProfile extends BasePersonCardSection {
 
         const overflowToken = document.createElement('div');
         overflowToken.classList.add('token-list__item');
+        overflowToken.classList.add('token-list__item--show-overflow');
         overflowToken.innerText = `+ ${overflowItems.length} more`;
         overflowToken.addEventListener('click', (e: MouseEvent) => {
           // On click, remove [+n more] token and reveal the hidden overflow tokens.
@@ -584,34 +584,6 @@ export class MgtPersonCardProfile extends BasePersonCardSection {
         });
         tokenList.appendChild(overflowToken);
       }
-    }
-  }
-
-  private drawSectionTimeline(section) {
-    const circles = section.querySelectorAll('.date-range .date-range__circle');
-    if (!circles || circles.length <= 1) {
-      return;
-    }
-
-    for (let i = 0; i < circles.length - 1; i++) {
-      const currentCircle = circles[i];
-      const nextCircle = circles[i + 1];
-
-      const line = document.createElement('div');
-      line.classList.add('date-range__line');
-      section.appendChild(line);
-
-      const lineRect = line.getBoundingClientRect();
-      const lineParentRect = line.offsetParent.getBoundingClientRect();
-      const topCircleRect = currentCircle.getBoundingClientRect();
-      const lastCircleRect = nextCircle.getBoundingClientRect();
-      const top = topCircleRect.bottom - lineParentRect.top;
-      const height = lastCircleRect.top - lineParentRect.top - top;
-      const left = topCircleRect.left - lineParentRect.left + (topCircleRect.width / 2 - lineRect.width / 2);
-
-      line.style.top = `${top}px`;
-      line.style.height = `${height}px`;
-      line.style.left = `${left}px`;
     }
   }
 }
