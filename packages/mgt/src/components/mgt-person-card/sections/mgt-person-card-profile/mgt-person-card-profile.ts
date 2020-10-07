@@ -160,50 +160,39 @@ export class MgtPersonCardProfile extends BasePersonCardSection {
    * @memberof MgtPersonCardProfile
    */
   protected renderLanguages(): TemplateResult {
-    let contentTemplate: TemplateResult;
-
-    if (this._profile && this._profile.languages) {
-      const languageItems: TemplateResult[] = [];
-
-      for (const language of this._profile.languages) {
-        let proficiency = null;
-        if (language.proficiency && language.proficiency.length) {
-          proficiency = html`
-            <span class="language__proficiency">
-              &nbsp;(${language.proficiency})
-            </span>
-          `;
-        }
-
-        languageItems.push(html`
-          <div class="token-list__item language">
-            <span class="language__title">${language.displayName}</span>
-            ${proficiency}
-          </div>
-        `);
-      }
-
-      contentTemplate = html`
-        <div class="token-list">
-          ${languageItems}
-        </div>
-      `;
-    } else {
-      contentTemplate = html`
-        <div>None</div>
-      `;
+    if (!this._profile || !this._profile.languages) {
+      return html``;
     }
 
-    const languagesTemplate = html`
+    const languageItems: TemplateResult[] = [];
+    for (const language of this._profile.languages) {
+      let proficiency = null;
+      if (language.proficiency && language.proficiency.length) {
+        proficiency = html`
+          <span class="language__proficiency">
+            &nbsp;(${language.proficiency})
+          </span>
+        `;
+      }
+
+      languageItems.push(html`
+        <div class="token-list__item language">
+          <span class="language__title">${language.displayName}</span>
+          ${proficiency}
+        </div>
+      `);
+    }
+
+    return html`
       <section>
         <div class="section__title">Languages</div>
         <div class="section__content">
-          ${contentTemplate}
+          <div class="token-list">
+            ${languageItems}
+          </div>
         </div>
       </section>
     `;
-
-    return languagesTemplate;
   }
 
   /**
