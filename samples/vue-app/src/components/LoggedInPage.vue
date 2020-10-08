@@ -1,13 +1,9 @@
 <template>
   <div id="mainPage">
     <div id="sidePanel" v-if="showPanel">
-      <div id="profile" @click="logout">
-        <mgt-person person-query="me" ref="user"></mgt-person>
-        <h3>{{ details.displayName }}</h3>
-        <!-- TODO: Add more details here based on Issue #100 -->
-        <span>&hellip;</span>
-        <!-- 
-        <template data-type="sign-out"><div class="menu"><img src="/exit.svg"/><div>{{ signOutText }}</div></div></template> -->
+      <div id="profile">
+        <mgt-person person-query="me" view="twoLines" line2-property="jobTitle"> </mgt-person>
+        <a href="#" @click="logout">Sign Out</a>
       </div>
 
       <mgt-people v-pre>
@@ -93,36 +89,24 @@ export default class LoggedInPage extends Vue {
   #profile {
     color: #00188f;
     background-color: white;
+    display: flex;
+    flex-direction: column;
 
-    width: 408px;
-    height: 136px;
-
-    cursor: pointer;
+    width: 370px;
+    padding: 20px;
 
     box-shadow: 0px 3.4386px 10.3158px rgba(0, 0, 0, 0.11);
 
     mgt-person {
-      position: relative;
-      top: 20px;
-      left: 20px;
-
-      --avatar-size-s: 92px;
+      --avatar-size: 92px;
       --avatar-border: 4px solid #00a5b0;
+      --font-size: 24px;
+      --font-weight: 250;
+      --color: #00188f;
     }
 
-    h3 {
-      margin: 0;
-
-      position: relative;
-      top: -48px;
-      left: 137px;
-
-      font-style: normal;
-      font-weight: 350;
-      font-size: 24px;
-      line-height: 32px;
-
-      color: #00188f;
+    a {
+      margin-top: 20px;
     }
 
     p {
