@@ -112,7 +112,7 @@ export async function getMe(graph: IGraph): Promise<User> {
  */
 export async function getUserWithPhoto(graph: IGraph, userId?: string): Promise<IDynamicPerson> {
   let photo = null;
-  let user: IDynamicPerson;
+  let user: IDynamicPerson = null;
 
   let cachedPhoto: CachePhoto;
   let cachedUser: CacheUser;
