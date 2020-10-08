@@ -25,6 +25,7 @@ $person-card-background-color: var(--person-card-background-color, #ffffff);
   width: var(--mgt-flyout-set-width, 340px);
   font-family: var(--default-font-family);
   overflow: hidden;
+  user-select: none;
 
   .nav {
     display: flex;

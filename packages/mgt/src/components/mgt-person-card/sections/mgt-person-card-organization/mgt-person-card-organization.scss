@@ -9,6 +9,7 @@
 
 :host {
   position: relative;
+  user-select: none;
 
   .root {
     padding: 20px 0;
