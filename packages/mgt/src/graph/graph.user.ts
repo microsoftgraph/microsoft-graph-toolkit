@@ -125,7 +125,7 @@ export async function getUserWithPhoto(graph: IGraph, userId?: string): Promise<
     let cache = CacheService.getCache<CacheUser>(cacheSchema, userStore);
     cachedUser = await cache.getValue(userId || 'me');
     if (cachedUser && getUserInvalidationTime() > Date.now() - cachedUser.timeCached) {
-      user = JSON.parse(cachedUser.user);
+      user = cachedUser.user ? JSON.parse(cachedUser.user) : null;
     } else {
       cachedUser = null;
     }
@@ -231,7 +231,7 @@ export async function getUser(graph: IGraph, userPrincipleName: string): Promise
     // is it stored and is timestamp good?
     if (user && getUserInvalidationTime() > Date.now() - user.timeCached) {
       // return without any worries
-      return JSON.parse(user.user);
+      return user.user ? JSON.parse(user.user) : null;
     }
   }
   // else we must grab it
@@ -273,7 +273,7 @@ export async function getUsersForUserIds(graph: IGraph, userIds: string[]): Prom
       user = await cache.getValue(id);
     }
     if (user && getUserInvalidationTime() > Date.now() - user.timeCached) {
-      peopleDict[id] = JSON.parse(user.user);
+      peopleDict[id] = user.user ? JSON.parse(user.user) : null;
     } else if (id !== '') {
       batch.get(id, `/users/${id}`, ['user.readbasic.all']);
       notInCache.push(id);
