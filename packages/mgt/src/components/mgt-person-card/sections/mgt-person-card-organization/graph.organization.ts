@@ -69,6 +69,6 @@ export async function getManager(graph: IGraph, userId: string): Promise<IOrgMem
  * @returns {Promise<IOrgMember[]>}
  */
 export async function getCoworkers(graph: IGraph, userId: string): Promise<IOrgMember[]> {
-  const response = await graph.api(`users/${userId}/people`).get();
+  const response = await graph.api(`users/${userId}/people?$filter=personType/class eq 'Person'`).get();
   return response.value;
 }
