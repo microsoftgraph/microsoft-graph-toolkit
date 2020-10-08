@@ -111,20 +111,23 @@ export async function getMe(graph: IGraph): Promise<User> {
  * @memberof Graph
  */
 export async function getUserWithPhoto(graph: IGraph, userId?: string): Promise<IDynamicPerson> {
-  let person = null as IDynamicPerson;
-  let cache: CacheStore<CacheUser>;
   let photo = null;
   let user: IDynamicPerson;
+
   let cachedPhoto: CachePhoto;
+  let cachedUser: CacheUser;
+
   const resource = userId ? `users/${userId}` : 'me';
   const scopes = userId ? ['user.readbasic.all'] : ['user.read'];
 
   // attempt to get user and photo from cache if enabled
   if (usersCacheEnabled()) {
-    cache = CacheService.getCache<CacheUser>(cacheSchema, userStore);
-    const cachedUser = await cache.getValue(userId || 'me');
+    let cache = CacheService.getCache<CacheUser>(cacheSchema, userStore);
+    cachedUser = await cache.getValue(userId || 'me');
     if (cachedUser && getUserInvalidationTime() > Date.now() - cachedUser.timeCached) {
       user = JSON.parse(cachedUser.user);
+    } else {
+      cachedUser = null;
     }
   }
   if (photosCacheEnabled()) {
@@ -138,12 +141,15 @@ export async function getUserWithPhoto(graph: IGraph, userId?: string): Promise<
           // put current image into the cache to update the timestamp since etag is the same
           storePhotoInCache(userId || 'me', 'users', cachedPhoto);
           photo = cachedPhoto.photo;
+        } else {
+          cachedPhoto = null;
         }
       } catch (e) {}
     }
   }
 
-  if (!photo && !user) {
+  // if both are not in the cache, batch get them
+  if (!cachedPhoto && !cachedUser) {
     let eTag: string;
 
     // batch calls
@@ -170,15 +176,14 @@ export async function getUserWithPhoto(graph: IGraph, userId?: string): Promise<
 
     // store user & photo in their respective cache
     if (usersCacheEnabled()) {
+      let cache = CacheService.getCache<CacheUser>(cacheSchema, userStore);
       cache.putValue(userId || 'me', { user: JSON.stringify(user) });
     }
     if (photosCacheEnabled()) {
       storePhotoInCache(userId || 'me', 'users', { eTag, photo: photo });
     }
-  } else if (!photo) {
-    // get photo from graph
-    const resource = userId ? `users/${userId}` : 'me';
-    const scopes = userId ? ['user.readbasic.all'] : ['user.read'];
+  } else if (!cachedPhoto) {
+    // if only photo or user is not cached, get it individually
     const response = await getPhotoForResource(graph, resource, scopes);
     if (response) {
       if (photosCacheEnabled()) {
@@ -186,29 +191,26 @@ export async function getUserWithPhoto(graph: IGraph, userId?: string): Promise<
       }
       photo = response.photo;
     }
-  } else if (!user) {
+  } else if (!cachedUser) {
     // get user from graph
-    const response = userId
-      ? await graph
-          .api(`/users/${userId}`)
-          .middlewareOptions(prepScopes('user.readbasic.all'))
-          .get()
-      : await graph
-          .api('me')
-          .middlewareOptions(prepScopes('user.read'))
-          .get();
+    const response = await graph
+      .api(resource)
+      .middlewareOptions(prepScopes(...scopes))
+      .get();
+
     if (response) {
       if (usersCacheEnabled()) {
+        let cache = CacheService.getCache<CacheUser>(cacheSchema, userStore);
         cache.putValue(userId || 'me', { user: JSON.stringify(response) });
       }
       user = response;
     }
   }
+
   if (user) {
-    person = user;
-    person.personImage = photo;
+    user.personImage = photo;
   }
-  return person;
+  return user;
 }
 
 /**
@@ -399,14 +401,18 @@ export async function findUsers(graph: IGraph, query: string, top: number = 10):
     }
   }
 
-  const graphResult = await graph
-    .api('users')
-    .filter(
-      `startswith(displayName,'${query}') or startswith(givenName,'${query}') or startswith(surname,'${query}') or startswith(mail,'${query}') or startswith(userPrincipalName,'${query}')`
-    )
-    .top(top)
-    .middlewareOptions(prepScopes(scopes))
-    .get();
+  let graphResult;
+
+  try {
+    graphResult = await graph
+      .api('users')
+      .filter(
+        `startswith(displayName,'${query}') or startswith(givenName,'${query}') or startswith(surname,'${query}') or startswith(mail,'${query}') or startswith(userPrincipalName,'${query}')`
+      )
+      .top(top)
+      .middlewareOptions(prepScopes(scopes))
+      .get();
+  } catch {}
 
   if (usersCacheEnabled() && graphResult) {
     item.results = graphResult.value.map(userStr => JSON.stringify(userStr));
