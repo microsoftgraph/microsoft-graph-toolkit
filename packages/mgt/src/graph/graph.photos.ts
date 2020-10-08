@@ -78,6 +78,9 @@ export async function getPhotoForResource(graph: IGraph, resource: string, scope
       .get()) as Response;
 
     if (response.status === 404) {
+      // 404 means the resource does not have a photo
+      // we still want to cache that state
+      // so we return an object that can be cached
       return { eTag: null, photo: null };
     } else if (!response.ok) {
       return null;
