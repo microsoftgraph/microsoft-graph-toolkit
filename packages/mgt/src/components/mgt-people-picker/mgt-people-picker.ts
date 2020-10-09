@@ -37,29 +37,6 @@ interface IFocusable {
 }
 
 /**
- * Enumeration to define what theme to render
- *
- * @export
- * @enum {string}
- */
-export enum ThemeType {
-  /**
-   * Render light theme
-   */
-  light = 'light',
-
-  /**
-   * Render dark theme
-   */
-  dark = 'dark',
-
-  /**
-   * Render custom theme
-   */
-  custom = 'custom'
-}
-
-/**
  * Web component used to search for people from the Microsoft Graph
  *
  * @export
@@ -269,29 +246,6 @@ export class MgtPeoplePicker extends MgtTemplatedComponent {
   public selectionMode: string;
 
   /**
-   * Determines theme of people picker
-   *
-   * @type {ThemeType}
-   * @memberof MgtPeoplePicker
-   */
-  @property({
-    converter: value => {
-      if (!value || value.length === 0) {
-        return ThemeType.light;
-      }
-
-      value = value.toLowerCase();
-
-      if (typeof ThemeType[value] === 'undefined') {
-        return ThemeType.light;
-      } else {
-        return ThemeType[value];
-      }
-    }
-  })
-  public theme: ThemeType;
-
-  /**
    * User input in search.
    *
    * @protected
@@ -329,7 +283,6 @@ export class MgtPeoplePicker extends MgtTemplatedComponent {
     this.userInput = '';
     this.showMax = 6;
     this.selectedPeople = [];
-    this.theme = ThemeType.light;
   }
 
   /**
@@ -399,8 +352,8 @@ export class MgtPeoplePicker extends MgtTemplatedComponent {
       focused: this._isFocused,
       'people-picker': true
     };
-    const theme = `theme-${this.theme}`;
-    inputClasses[theme] = true;
+
+    this.loadTheme(inputClasses);
 
     return html`
       <div class=${classMap(inputClasses)} @click=${e => this.focus(e)}>
