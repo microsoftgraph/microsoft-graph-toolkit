@@ -182,7 +182,7 @@ article .main mgt-people {
   background: #ffffff;
   box-shadow: 0px 4px 16px rgba(0, 0, 0, 0.04);
   height: 100%;
-  overflow: scroll;
+  overflow: auto;
 }
 
 article .main mgt-person {
