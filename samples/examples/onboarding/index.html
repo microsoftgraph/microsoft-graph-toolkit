@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Onboarding Sample</title>
+    <script type="module" src="../../../packages/mgt/dist/es6/index.js"></script>
+  </head>
+  <body>
+    <mgt-msal-provider client-id="a974dfa0-9f57-49b9-95db-90f04ce2111a"></mgt-msal-provider>
+
+    <header>
+      <img class="menu" src="./assets/header_menu.svg" />
+      <img class="logo" src="./assets/header_logo.svg" />
+      <mgt-login class="login"></mgt-login>
+    </header>
+
+    <div id="splash" class="splash">
+      <p>Please signin to get started</p>
+      <mgt-login></mgt-login>
+    </div>
+    <article id="article">
+      <div class="greeting">
+        <img src="./assets/welcome.svg" />
+        <h1>
+          Welcome to PAX,
+          <mgt-person person-query="me">
+            <template>
+              <div>{{ person.givenName }}! 🤗</div>
+            </template>
+          </mgt-person>
+        </h1>
+        <p>Looking forward to your first day!</p>
+      </div>
+      <div class="main">
+        <div class="column first">
+          <p>Timeline</p>
+          <mgt-agenda show-max="7" days="10">
+            <template data-type="event">
+              <div class="root">
+                <div class="time-container">
+                  <div class="date">
+                    {{ dayFromDateTime(event.start.dateTime)}}
+                  </div>
+                  <div class="time">{{ timeRangeFromEvent(event) }}</div>
+                </div>
+                <div class="separator">
+                  <div class="vertical-line top"></div>
+                  <div class="circle">
+                    <div
+                      data-if="!event.bodyPreview.includes('Join Microsoft Teams Meeting')"
+                      class="inner-circle"
+                    ></div>
+                  </div>
+                  <div class="vertical-line bottom"></div>
+                </div>
+                <div class="details">
+                  <div class="subject">{{ event.subject }}</div>
+                  <div class="location" data-if="event.location.displayName">
+                    at
+                    <a href="https://bing.com/maps/default.aspx?where1={{event.location.displayName}}" target="_blank"
+                      ><b>{{ event.location.displayName }}</b></a
+                    >
+                  </div>
+                  <div class="attendees" data-if="event.attendees.length">
+                    <span class="attendee" data-for="attendee in event.attendees">
+                      <mgt-person person-query="{{attendee.emailAddress.name}}"></mgt-person>
+                    </span>
+                  </div>
+                  <div class="online-meeting" data-if="event.bodyPreview.includes('Join Microsoft Teams Meeting')">
+                    <img class="online-meeting-icon" src="https://img.icons8.com/color/48/000000/microsoft-teams.png" />
+                    <a class="online-meeting-link" href="{{ event.onlineMeetingUrl }}">Join Teams Meeting</a>
+                  </div>
+                </div>
+              </div>
+            </template>
+          </mgt-agenda>
+        </div>
+        <div class="column second">
+          <p>To-do list</p>
+          <mgt-todo hide-header>
+            <template data-type="task-details">
+              <div class="wrapper">
+                <div>{{task.title}}</div>
+                <div>
+                  &#128197; {{dayFromDateTime(task.dueDateTime.dateTime)}}
+                </div>
+              </div>
+            </template>
+          </mgt-todo>
+        </div>
+        <div class="column third">
+          <p>Your Team</p>
+          <mgt-people show-max="5">
+            <template>
+              <div data-for="person in people">
+                <div data-if="{{person.userPrincipalName}}">
+                  <mgt-person
+                    person-query="{{ person.userPrincipalName }}"
+                    line1-property="displayName"
+                    line2-property="jobTitle,mail"
+                    view="twoLines"
+                    person-card="click"
+                  ></mgt-person>
+                </div>
+              </div>
+            </template>
+          </mgt-people>
+        </div>
+      </div>
+    </article>
+  </body>
+
+  <link rel="stylesheet" href="index.css" />
+  <script type="module" src="index.js"></script>
+</html>
