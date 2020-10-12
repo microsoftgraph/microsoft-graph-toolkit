@@ -160,50 +160,39 @@ export class MgtPersonCardProfile extends BasePersonCardSection {
    * @memberof MgtPersonCardProfile
    */
   protected renderLanguages(): TemplateResult {
-    let contentTemplate: TemplateResult;
-
-    if (this._profile && this._profile.languages) {
-      const languageItems: TemplateResult[] = [];
-
-      for (const language of this._profile.languages) {
-        let proficiency = null;
-        if (language.proficiency && language.proficiency.length) {
-          proficiency = html`
-            <span class="language__proficiency">
-              &nbsp;(${language.proficiency})
-            </span>
-          `;
-        }
-
-        languageItems.push(html`
-          <div class="token-list__item language">
-            <span class="language__title">${language.displayName}</span>
-            ${proficiency}
-          </div>
-        `);
-      }
-
-      contentTemplate = html`
-        <div class="token-list">
-          ${languageItems}
-        </div>
-      `;
-    } else {
-      contentTemplate = html`
-        <div>None</div>
-      `;
+    if (!this._profile || !this._profile.languages) {
+      return html``;
     }
 
-    const languagesTemplate = html`
+    const languageItems: TemplateResult[] = [];
+    for (const language of this._profile.languages) {
+      let proficiency = null;
+      if (language.proficiency && language.proficiency.length) {
+        proficiency = html`
+          <span class="language__proficiency">
+            &nbsp;(${language.proficiency})
+          </span>
+        `;
+      }
+
+      languageItems.push(html`
+        <div class="token-list__item language">
+          <span class="language__title">${language.displayName}</span>
+          ${proficiency}
+        </div>
+      `);
+    }
+
+    return html`
       <section>
         <div class="section__title">Languages</div>
         <div class="section__content">
-          ${contentTemplate}
+          <div class="token-list">
+            ${languageItems}
+          </div>
         </div>
       </section>
     `;
-
-    return languagesTemplate;
   }
 
   /**
@@ -214,34 +203,26 @@ export class MgtPersonCardProfile extends BasePersonCardSection {
    * @memberof MgtPersonCardProfile
    */
   protected renderSkills(): TemplateResult {
-    let contentTemplate: TemplateResult;
+    if (!this._profile || !this._profile.skills) {
+      return html``;
+    }
 
-    if (this._profile && this._profile.skills) {
-      const skillItems: TemplateResult[] = [];
-      for (const skill of this._profile.skills) {
-        skillItems.push(html`
-          <div class="token-list__item skill">
-            ${skill.displayName}
-          </div>
-        `);
-      }
-
-      contentTemplate = html`
-        <div class="token-list">
-          ${skillItems}
+    const skillItems: TemplateResult[] = [];
+    for (const skill of this._profile.skills) {
+      skillItems.push(html`
+        <div class="token-list__item skill">
+          ${skill.displayName}
         </div>
-      `;
-    } else {
-      contentTemplate = html`
-        <div>None</div>
-      `;
+      `);
     }
 
     return html`
       <section>
         <div class="section__title">Skills</div>
         <div class="section__content">
-          ${contentTemplate}
+          <div class="token-list">
+            ${skillItems}
+          </div>
         </div>
       </section>
     `;
@@ -255,46 +236,39 @@ export class MgtPersonCardProfile extends BasePersonCardSection {
    * @memberof MgtPersonCardProfile
    */
   protected renderWorkExperience(): TemplateResult {
-    let contentTemplate: TemplateResult;
+    if (!this._profile || !this._profile.positions) {
+      return html``;
+    }
 
-    if (this._profile && this._profile.positions) {
-      const positionItems: TemplateResult[] = [];
-      for (const position of this._profile.positions) {
-        positionItems.push(html`
-          <div class="data-list__item work-position">
+    const positionItems: TemplateResult[] = [];
+    for (const position of this._profile.positions) {
+      positionItems.push(html`
+        <div class="data-list__item work-position">
+          <div class="data-list__item__header">
             <div class="data-list__item__title">${position.detail.jobTitle}</div>
-            <div class="data-list__item__content flex-rows">
-              <div>
-                <div class="work-position__company">${position.detail.company.displayName}</div>
-                <div class="work-position__location">
-                  ${position.detail.company.address.city}, ${position.detail.company.address.state}
-                </div>
-              </div>
-              <div class="date-range">
-                <div class="work-position__date-range">${this.getDisplayDateRange(position.detail)}</div>
-                <div class="date-range__circle"></div>
-              </div>
+            <div class="data-list__item__date-range">
+              ${this.getDisplayDateRange(position.detail)}
             </div>
           </div>
-        `);
-      }
-
-      contentTemplate = html`
-        <div class="data-list" data-if="positions && positions.length">
-          ${positionItems}
+          <div class="data-list__item__content">
+            <div class="work-position__company">
+              ${position.detail.company.displayName}
+            </div>
+            <div class="work-position__location">
+              ${position.detail.company.address.city}, ${position.detail.company.address.state}
+            </div>
+          </div>
         </div>
-      `;
-    } else {
-      contentTemplate = html`
-        <div>None</div>
-      `;
+      `);
     }
 
     return html`
       <section>
         <div class="section__title">Work Experience</div>
         <div class="section__content">
-          ${contentTemplate}
+          <div class="data-list">
+            ${positionItems}
+          </div>
         </div>
       </section>
     `;
@@ -308,45 +282,36 @@ export class MgtPersonCardProfile extends BasePersonCardSection {
    * @memberof MgtPersonCardProfile
    */
   protected renderEducation(): TemplateResult {
-    let contentTemplate: TemplateResult;
+    if (!this._profile || !this._profile.positions) {
+      return html``;
+    }
 
-    if (this._profile && this._profile.positions) {
-      const positionItems: TemplateResult[] = [];
-      for (const educationalActivity of this._profile.educationalActivities) {
-        positionItems.push(html`
-          <div class="data-list__item educational-activity">
+    const positionItems: TemplateResult[] = [];
+    for (const educationalActivity of this._profile.educationalActivities) {
+      positionItems.push(html`
+        <div class="data-list__item educational-activity">
+          <div class="data-list__item__header">
             <div class="data-list__item__title">${educationalActivity.institution.displayName}</div>
-            <div class="data-list__item__content flex-rows">
-              <div>
-                <div class="educational-activity__degree">${educationalActivity.program.displayName}</div>
-              </div>
-              <div class="date-range">
-                <div class="educational-activity__date-range">
-                  ${this.getDisplayDateRange(educationalActivity)}
-                </div>
-                <div class="date-range__circle"></div>
-              </div>
+            <div class="data-list__item__date-range">
+              ${this.getDisplayDateRange(educationalActivity)}
             </div>
           </div>
-        `);
-      }
-
-      contentTemplate = html`
-        <div class="data-list">
-          ${positionItems}
+          <div class="data-list__item__content">
+            <div class="educational-activity__degree">
+              ${educationalActivity.program.displayName || 'Bachelors Degree'}
+            </div>
+          </div>
         </div>
-      `;
-    } else {
-      contentTemplate = html`
-        <div>None</div>
-      `;
+      `);
     }
 
     return html`
       <section>
         <div class="section__title">Education</div>
         <div class="section__content">
-          ${contentTemplate}
+          <div class="data-list">
+            ${positionItems}
+          </div>
         </div>
       </section>
     `;
@@ -360,34 +325,26 @@ export class MgtPersonCardProfile extends BasePersonCardSection {
    * @memberof MgtPersonCardProfile
    */
   protected renderProfessionalInterests(): TemplateResult {
-    let contentTemplate: TemplateResult;
+    if (!this._professionalInterests || !this._professionalInterests.length) {
+      return html``;
+    }
 
-    if (this._professionalInterests && this._professionalInterests.length) {
-      const interestItems: TemplateResult[] = [];
-      for (const interest of this._professionalInterests) {
-        interestItems.push(html`
-          <div class="token-list__item interest interest--professional">
-            ${interest.displayName}
-          </div>
-        `);
-      }
-
-      contentTemplate = html`
-        <div class="token-list">
-          ${interestItems}
+    const interestItems: TemplateResult[] = [];
+    for (const interest of this._professionalInterests) {
+      interestItems.push(html`
+        <div class="token-list__item interest interest--professional">
+          ${interest.displayName}
         </div>
-      `;
-    } else {
-      contentTemplate = html`
-        <div>None</div>
-      `;
+      `);
     }
 
     return html`
       <section>
         <div class="section__title">Professional Interests</div>
         <div class="section__content">
-          ${contentTemplate}
+          <div class="token-list">
+            ${interestItems}
+          </div>
         </div>
       </section>
     `;
@@ -401,34 +358,26 @@ export class MgtPersonCardProfile extends BasePersonCardSection {
    * @memberof MgtPersonCardProfile
    */
   protected renderPersonalInterests(): TemplateResult {
-    let contentTemplate: TemplateResult;
+    if (!this._personalInterests || !this._personalInterests.length) {
+      return html``;
+    }
 
-    if (this._personalInterests && this._personalInterests.length) {
-      const interestItems: TemplateResult[] = [];
-      for (const interest of this._personalInterests) {
-        interestItems.push(html`
-          <div class="token-list__item interest interest--personal">
-            ${interest.displayName}
-          </div>
-        `);
-      }
-
-      contentTemplate = html`
-        <div class="token-list">
-          ${interestItems}
+    const interestItems: TemplateResult[] = [];
+    for (const interest of this._personalInterests) {
+      interestItems.push(html`
+        <div class="token-list__item interest interest--personal">
+          ${interest.displayName}
         </div>
-      `;
-    } else {
-      contentTemplate = html`
-        <div>None</div>
-      `;
+      `);
     }
 
     return html`
       <section>
         <div class="section__title">Personal Interests</div>
         <div class="section__content">
-          ${contentTemplate}
+          <div class="token-list">
+            ${interestItems}
+          </div>
         </div>
       </section>
     `;
@@ -442,30 +391,22 @@ export class MgtPersonCardProfile extends BasePersonCardSection {
    * @memberof MgtPersonCardProfile
    */
   protected renderBirthday(): TemplateResult {
-    let contentTemplate: TemplateResult;
-
-    if (this._birthdayAnniversary) {
-      contentTemplate = html`
-        <div class="birthday">
-          <div class="birthday__icon">
-            ${getSvg(SvgIcon.Birthday)}
-          </div>
-          <div class="birthday__date">
-            ${this.getDisplayDate(this._birthdayAnniversary.date)}
-          </div>
-        </div>
-      `;
-    } else {
-      contentTemplate = html`
-        <div>Unknown</div>
-      `;
+    if (!this._birthdayAnniversary || !this._birthdayAnniversary.date) {
+      return html``;
     }
 
     return html`
       <section>
         <div class="section__title">Birthday</div>
         <div class="section__content">
-          ${contentTemplate}
+          <div class="birthday">
+            <div class="birthday__icon">
+              ${getSvg(SvgIcon.Birthday)}
+            </div>
+            <div class="birthday__date">
+              ${this.getDisplayDate(this._birthdayAnniversary.date)}
+            </div>
+          </div>
         </div>
       </section>
     `;
@@ -537,7 +478,6 @@ export class MgtPersonCardProfile extends BasePersonCardSection {
         sections.forEach(section => {
           // Perform post render operations per section
           this.handleTokenOverflow(section);
-          this.drawSectionTimeline(section);
         });
       } catch {
         // An exception may occur if the component is suddenly removed during post render operations.
@@ -576,6 +516,7 @@ export class MgtPersonCardProfile extends BasePersonCardSection {
 
         const overflowToken = document.createElement('div');
         overflowToken.classList.add('token-list__item');
+        overflowToken.classList.add('token-list__item--show-overflow');
         overflowToken.innerText = `+ ${overflowItems.length} more`;
         overflowToken.addEventListener('click', (e: MouseEvent) => {
           // On click, remove [+n more] token and reveal the hidden overflow tokens.
@@ -584,34 +525,6 @@ export class MgtPersonCardProfile extends BasePersonCardSection {
         });
         tokenList.appendChild(overflowToken);
       }
-    }
-  }
-
-  private drawSectionTimeline(section) {
-    const circles = section.querySelectorAll('.date-range .date-range__circle');
-    if (!circles || circles.length <= 1) {
-      return;
-    }
-
-    for (let i = 0; i < circles.length - 1; i++) {
-      const currentCircle = circles[i];
-      const nextCircle = circles[i + 1];
-
-      const line = document.createElement('div');
-      line.classList.add('date-range__line');
-      section.appendChild(line);
-
-      const lineRect = line.getBoundingClientRect();
-      const lineParentRect = line.offsetParent.getBoundingClientRect();
-      const topCircleRect = currentCircle.getBoundingClientRect();
-      const lastCircleRect = nextCircle.getBoundingClientRect();
-      const top = topCircleRect.bottom - lineParentRect.top;
-      const height = lastCircleRect.top - lineParentRect.top - top;
-      const left = topCircleRect.left - lineParentRect.left + (topCircleRect.width / 2 - lineRect.width / 2);
-
-      line.style.top = `${top}px`;
-      line.style.height = `${height}px`;
-      line.style.left = `${left}px`;
     }
   }
 }

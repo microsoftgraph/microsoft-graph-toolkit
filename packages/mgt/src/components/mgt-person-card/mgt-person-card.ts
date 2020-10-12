@@ -18,7 +18,7 @@ import { MgtPerson } from '../mgt-person/mgt-person';
 import { styles } from './mgt-person-card-css';
 import { BasePersonCardSection } from './sections/BasePersonCardSection';
 import { MgtPersonCardContact } from './sections/mgt-person-card-contact/mgt-person-card-contact';
-// import { MgtPersonCardFiles } from './sections/mgt-person-card-files/mgt-person-card-files';
+import { MgtPersonCardFiles } from './sections/mgt-person-card-files/mgt-person-card-files';
 import { MgtPersonCardMessages } from './sections/mgt-person-card-messages/mgt-person-card-messages';
 import { MgtPersonCardOrganization } from './sections/mgt-person-card-organization/mgt-person-card-organization';
 import { MgtPersonCardProfile } from './sections/mgt-person-card-profile/mgt-person-card-profile';
@@ -193,7 +193,7 @@ export class MgtPersonCard extends MgtTemplatedComponent {
       new MgtPersonCardContact(),
       new MgtPersonCardOrganization(),
       new MgtPersonCardMessages(),
-      // new MgtPersonCardFiles(),
+      new MgtPersonCardFiles(),
       new MgtPersonCardProfile()
     ];
   }
