@@ -7,6 +7,7 @@
 
 import { LitElement, PropertyValues } from 'lit-element';
 import { Providers } from '../providers/Providers';
+import { LocalizationHelper } from '@microsoft/mgt';
 
 /**
  * Defines media query based on component width
@@ -115,6 +116,33 @@ export abstract class MgtBaseComponent extends LitElement {
     if (this.isShadowRootDisabled()) {
       (this as any)._needsShimAdoptedStyleSheets = true;
     }
+    this.handleLocalizationChanged = this.handleLocalizationChanged.bind(this);
+  }
+
+  /**
+   * Invoked each time the custom element is appended into a document-connected element
+   *
+   * @memberof MgtBaseComponent
+   */
+  public connectedCallback() {
+    super.connectedCallback();
+    LocalizationHelper.onUpdated(this.handleLocalizationChanged);
+    this.updateDirection();
+  }
+
+  public disconnectedCallback() {
+    super.disconnectedCallback();
+    LocalizationHelper.removeOnUpdated(this.handleLocalizationChanged);
+  }
+
+  /**
+   * Request localization changes when the 'strings' event is detected
+   *
+   * @protected
+   * @memberof MgtBaseComponent
+   */
+  protected handleLocalizationChanged() {
+    this.requestUpdate();
   }
 
   /**
@@ -248,5 +276,30 @@ export abstract class MgtBaseComponent extends LitElement {
 
     this._isLoadingState = value;
     this.requestUpdate('isLoadingState');
+  }
+
+  /**
+   *  Gathers default strings from component for localization
+   *
+   * @protected
+   * @param {*} strings
+   * @returns
+   * @memberof MgtBaseComponent
+   */
+  protected serveStrings(strings) {
+    return LocalizationHelper.getString(this.tagName, strings);
+  }
+
+  /**
+   * returns dir attribute on body
+   *
+   * @private
+   * @memberof MgtBaseComponent
+   */
+  protected updateDirection() {
+    let direction = LocalizationHelper.getDirection();
+    if (direction == 'rtl') {
+      this.classList.add('rtl');
+    }
   }
 }

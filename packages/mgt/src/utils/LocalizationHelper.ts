@@ -6,7 +6,6 @@
  */
 
 import { EventDispatcher, EventHandler } from '@microsoft/mgt-element';
-import * as defaultStrings from '../l10n/en-us';
 
 /**
  * Helper class for Localization
@@ -47,11 +46,11 @@ export class LocalizationHelper {
   }
 
   /**
-   * Fires event when Provider changes state
+   * Fires event when LocalizationHelper changes state
    *
    * @static
    * @param {EventHandler<ProvidersChangedState>} event
-   * @memberof Providers
+   * @memberof LocalizationHelper
    */
   public static onUpdated(event: EventHandler<any>) {
     this._eventDispatcher.add(event);
@@ -66,43 +65,35 @@ export class LocalizationHelper {
    *
    * @static
    * @param {string} tagName
-   * @param {string} stringKey
+   * @param  strings
    * @returns
    * @memberof LocalizationHelper
    */
-  public static getString(tagName: string, stringKey: string) {
-    let string: string;
-
+  public static getString(tagName: string, stringObj) {
     tagName = tagName.toLowerCase();
 
     if (tagName.startsWith('mgt-')) {
       tagName = tagName.substring(4);
     }
 
-    // first search through the user provided strings
     if (this._strings) {
+      //check for top level strings, applied per component, overridden by specific component def
+      for (let prop of Object.entries(stringObj)) {
+        if (this._strings[prop[0]]) {
+          stringObj[prop[0]] = this._strings[prop[0]];
+        }
+      }
+      //strings defined component specific
       if (this._strings['_components'] && this._strings['_components'][tagName]) {
-        let strings = this._strings['_components'][tagName];
-        string = strings[stringKey];
-      }
-
-      if (!string) {
-        string = this._strings[stringKey];
-      }
-    }
-
-    // if no stringKey in user provider strings, or no user provider strings
-    if (!string) {
-      if (defaultStrings.default['_components'] && defaultStrings.default['_components'][tagName]) {
-        let strings = defaultStrings.default['_components'][tagName];
-        string = strings[stringKey];
-      }
-
-      if (!string) {
-        string = defaultStrings.default[stringKey];
+        let strings: any = this._strings['_components'][tagName];
+        for (let key of Object.keys(strings)) {
+          if (stringObj[key]) {
+            stringObj[key] = strings[key];
+          }
+        }
       }
     }
 
-    return string;
+    return stringObj;
   }
 }
