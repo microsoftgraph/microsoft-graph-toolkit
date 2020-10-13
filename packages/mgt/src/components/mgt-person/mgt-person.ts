@@ -22,7 +22,6 @@ import { MgtFlyout } from '../sub-components/mgt-flyout/mgt-flyout';
 import { PersonCardInteraction } from './../PersonCardInteraction';
 import { styles } from './mgt-person-css';
 import { Presence } from '@microsoft/microsoft-graph-types-beta';
-import { LocalizationHelper } from '../../utils/LocalizationHelper';
 
 export { PersonCardInteraction } from '../PersonCardInteraction';
 
@@ -359,19 +358,6 @@ export class MgtPerson extends MgtTemplatedComponent {
         this.personDetails = null;
         this.requestStateUpdate();
         break;
-    }
-  }
-
-  /**
-   * returns dir attribute on body
-   *
-   * @private
-   * @memberof MgtPerson
-   */
-  private updateDirection() {
-    let direction = LocalizationHelper.getDirection();
-    if (direction == 'rtl') {
-      this.classList.add('rtl');
     }
   }
 

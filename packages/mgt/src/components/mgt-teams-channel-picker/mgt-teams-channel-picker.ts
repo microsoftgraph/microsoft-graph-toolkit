@@ -15,7 +15,6 @@ import { getSvg, SvgIcon } from '../../utils/SvgHelper';
 import { debounce } from '../../utils/Utils';
 import { styles } from './mgt-teams-channel-picker-css';
 import { getAllMyTeams } from './mgt-teams-channel-picker.graph';
-import { LocalizationHelper } from '../../utils/LocalizationHelper';
 import defaultStrings from './strings';
 
 /**

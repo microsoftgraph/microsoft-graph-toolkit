@@ -14,7 +14,6 @@ import { getDayOfWeekString, getMonthString } from '../../utils/Utils';
 import '../mgt-person/mgt-person';
 import { styles } from './mgt-agenda-css';
 import { getEventsPageIterator } from './mgt-agenda.graph';
-import { LocalizationHelper } from '../../utils/LocalizationHelper';
 
 /**
  * Web Component which represents events in a user or group calendar.
@@ -184,7 +183,6 @@ export class MgtAgenda extends MgtTemplatedComponent {
     this._isNarrow = this.offsetWidth < 600;
     super.connectedCallback();
     window.addEventListener('resize', this.onResize);
-    this.updateDirection();
   }
 
   /**
@@ -195,31 +193,6 @@ export class MgtAgenda extends MgtTemplatedComponent {
   public disconnectedCallback() {
     window.removeEventListener('resize', this.onResize);
     super.disconnectedCallback();
-  }
-
-  /**
-   * returns dir attribute on body
-   *
-   * @private
-   * @memberof MgtAgenda
-   */
-  private updateDirection() {
-    let direction = LocalizationHelper.getDirection();
-    if (direction == 'rtl') {
-      this.classList.add('rtl');
-    }
-  }
-
-  /**
-   * Matches string to user provided one and returns
-   *
-   * @protected
-   * @param {*} stringKey
-   * @returns
-   * @memberof MgtPeoplePicker
-   */
-  protected getString(stringKey) {
-    return LocalizationHelper.getString(this.tagName, stringKey);
   }
 
   /**

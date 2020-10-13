@@ -22,7 +22,6 @@ import { PersonCardInteraction } from '../PersonCardInteraction';
 import { MgtFlyout } from '../sub-components/mgt-flyout/mgt-flyout';
 import { styles } from './mgt-people-picker-css';
 
-import { LocalizationHelper } from '../../utils/LocalizationHelper';
 import defaultStrings from './strings';
 
 export { GroupType } from '../../graph/graph.groups';

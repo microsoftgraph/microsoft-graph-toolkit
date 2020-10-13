@@ -15,7 +15,6 @@ import { getUserWithPhoto } from '../../graph/graph.user';
 import '../../styles/fabric-icon-font';
 import '../mgt-person/mgt-person';
 import { PersonViewType } from '../mgt-person/mgt-person';
-import { LocalizationHelper } from '../../utils/LocalizationHelper';
 import defaultStrings from './strings';
 
 /**

@@ -22,7 +22,6 @@ import '../mgt-person/mgt-person';
 import '../sub-components/mgt-arrow-options/mgt-arrow-options';
 import '../sub-components/mgt-dot-options/mgt-dot-options';
 import { MgtFlyout } from '../sub-components/mgt-flyout/mgt-flyout';
-import { LocalizationHelper } from '../../utils/LocalizationHelper';
 import defaultStrings from './strings';
 
 /**
@@ -242,18 +241,6 @@ export class MgtTasks extends MgtTemplatedComponent {
   handleLocalizationChanged() {
     this._strings = this.serveStrings(this._strings);
     this.requestUpdate();
-  }
-
-  /**
-   * Matches string to user provided one and returns
-   *
-   * @protected
-   * @param {*} stringKey
-   * @returns
-   * @memberof MgtTasks
-   */
-  protected getString(stringKey) {
-    return LocalizationHelper.getString(this.tagName, stringKey);
   }
 
   /**

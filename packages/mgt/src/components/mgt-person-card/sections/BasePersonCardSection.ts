@@ -10,7 +10,6 @@ import { MgtTemplatedComponent } from '@microsoft/mgt-element';
 import { IDynamicPerson } from '../../../graph/types';
 import { MgtPersonCard } from '../mgt-person-card';
 import '../../sub-components/mgt-spinner/mgt-spinner';
-import { LocalizationHelper } from '../../../utils/LocalizationHelper';
 
 /**
  * A base class for building person card subsections.
@@ -69,44 +68,6 @@ export abstract class BasePersonCardSection extends MgtTemplatedComponent {
     super();
     this._isCompact = false;
     this._personDetails = null;
-    this.handleLocalizationChanged = this.handleLocalizationChanged.bind(this);
-  }
-
-  /**
-   * Matches string to user provided one and returns
-   *
-   * @protected
-   * @param {*} stringKey
-   * @returns
-   * @memberof basePersonCardSection
-   */
-  protected getString(stringKey) {
-    return LocalizationHelper.getString(this.tagName, stringKey);
-  }
-
-  /**
-   * Request localization changes when the 'strings' event is detected
-   *
-   * @private
-   * @memberof basePersonCardSection
-   */
-  protected handleLocalizationChanged() {
-    this.requestUpdate();
-  }
-
-  /**
-   * Invoked each time the custom element is appended into a document-connected element
-   *
-   * @memberof basePersonCardSection
-   */
-  public connectedCallback() {
-    super.connectedCallback();
-    LocalizationHelper.onUpdated(this.handleLocalizationChanged);
-  }
-
-  public disconnectedCallback() {
-    super.disconnectedCallback();
-    LocalizationHelper.removeOnUpdated(this.handleLocalizationChanged);
   }
 
   /**
@@ -185,7 +146,7 @@ export abstract class BasePersonCardSection extends MgtTemplatedComponent {
    */
   protected renderNoData(): TemplateResult {
     return html`
-      <div class="no-data">${this.getString('noData')}</div>
+      <div class="no-data">No data</div>
     `;
   }
 
