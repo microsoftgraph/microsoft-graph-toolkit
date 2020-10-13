@@ -247,7 +247,7 @@ export function getEmailFromGraphEntity(entity: IDynamicPerson): string {
  * @returns {(Promise<Contact[]>)}
  * @memberof Graph
  */
-export async function findContactByEmail(graph: IGraph, email: string): Promise<Contact[]> {
+export async function findContactsByEmail(graph: IGraph, email: string): Promise<Contact[]> {
   const scopes = 'contacts.read';
   let cache: CacheStore<CachePerson>;
   if (peopleCacheEnabled()) {
@@ -270,18 +270,4 @@ export async function findContactByEmail(graph: IGraph, email: string): Promise<
   }
 
   return result ? result.value : null;
-}
-
-/**
- * async promise, returns Graph contact and/or Person associated with the email provided
- * Uses: Graph.findPerson(email) and Graph.findContactByEmail(email)
- *
- * @param {string} email
- * @returns {(Promise<Array<Person | Contact>>)}
- * @memberof Graph
- */
-export function findUserByEmail(graph: IGraph, email: string): Promise<Array<Person | Contact>> {
-  return Promise.all([findPeople(graph, email), findContactByEmail(graph, email)]).then(([people, contacts]) => {
-    return ((people as any[]) || []).concat(contacts || []);
-  });
 }

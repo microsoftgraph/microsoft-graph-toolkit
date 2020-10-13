@@ -9,6 +9,7 @@
 
 :host {
   position: relative;
+  user-select: none;
 
   .root {
     padding: 20px 0;
@@ -43,7 +44,9 @@
         min-width: 28px;
         height: 28px;
         margin-right: 12px;
-        background-color: #797775;
+        display: flex;
+        align-items: center;
+        justify-content: center;
       }
 
       .file__details {
