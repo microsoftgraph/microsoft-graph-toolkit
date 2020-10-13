@@ -9,6 +9,6 @@
     "esModuleInterop": true
   },
   "references": [{ "path": "../mgt-element" }],
-  "include": ["src", "src/**/*.ts"],
+  "include": ["src", "src/**/*.ts", "src/**/strings.ts"],
   "exclude": ["src/bundle"]
 }
