@@ -23,6 +23,8 @@ import { MgtFlyout } from '../sub-components/mgt-flyout/mgt-flyout';
 import { styles } from './mgt-people-picker-css';
 
 import { LocalizationHelper } from '../../utils/LocalizationHelper';
+import defaultStrings from './strings';
+
 export { GroupType } from '../../graph/graph.groups';
 export { PersonType } from '../../graph/graph.people';
 
@@ -322,6 +324,8 @@ export class MgtPeoplePicker extends MgtTemplatedComponent {
 
   @internalProperty() private _foundPeople: IDynamicPerson[];
 
+  private _strings: any;
+
   constructor() {
     super();
 
@@ -331,59 +335,18 @@ export class MgtPeoplePicker extends MgtTemplatedComponent {
     this.showMax = 6;
     this.selectedPeople = [];
     this.theme = ThemeType.light;
-    this.handleLocalizationChanged = this.handleLocalizationChanged.bind(this);
-  }
-
-  /**
-   * Invoked each time the custom element is appended into a document-connected element
-   *
-   * @memberof MgtPeoplePicker
-   */
-  public connectedCallback() {
-    super.connectedCallback();
-    LocalizationHelper.onUpdated(this.handleLocalizationChanged);
-    this.updateDirection();
-  }
-
-  public disconnectedCallback() {
-    super.disconnectedCallback();
-    LocalizationHelper.removeOnUpdated(this.handleLocalizationChanged);
-  }
-
-  /**
-   * returns dir attribute on body
-   *
-   * @private
-   * @memberof MgtPeoplePicker
-   */
-  private updateDirection() {
-    let direction = LocalizationHelper.getDirection();
-    if (direction == 'rtl') {
-      this.classList.add('rtl');
-    }
+    this._strings = defaultStrings;
   }
 
   /**
    * Request localization changes when the 'strings' event is detected
    *
-   * @private
-   *
-   * @memberof MgtPeoplePicker
-   */
-  private handleLocalizationChanged() {
-    this.requestUpdate();
-  }
-
-  /**
-   * Matches string to user provided one and returns
-   *
    * @protected
-   * @param {*} stringKey
-   * @returns
    * @memberof MgtPeoplePicker
    */
-  protected getString(stringKey) {
-    return LocalizationHelper.getString(this.tagName, stringKey);
+  handleLocalizationChanged() {
+    this._strings = this.serveStrings(this._strings);
+    this.requestUpdate();
   }
 
   /**
@@ -483,7 +446,7 @@ export class MgtPeoplePicker extends MgtTemplatedComponent {
   protected renderInput(): TemplateResult {
     const hasSelectedPeople = !!this.selectedPeople.length;
 
-    const placeholder = this.placeholder ? this.placeholder : this.getString('placeholder');
+    const placeholder = this.placeholder ? this.placeholder : this._strings.placeholder;
 
     const selectionMode = this.selectionMode ? this.selectionMode : 'multiple';
 
@@ -613,7 +576,7 @@ export class MgtPeoplePicker extends MgtTemplatedComponent {
         <div class="message-parent">
           <mgt-spinner></mgt-spinner>
           <div label="loading-text" aria-label="loading" class="loading-text">
-            ${this.getString('loading')}
+            ${this._strings.loading}
           </div>
         </div>
       `
@@ -634,7 +597,7 @@ export class MgtPeoplePicker extends MgtTemplatedComponent {
       html`
         <div class="message-parent">
           <div label="search-error-text" aria-label="We didn't find any matches." class="search-error-text">
-            ${this.getString('noResultsFound')}
+            ${this._strings.noResultsFound}
           </div>
         </div>
       `

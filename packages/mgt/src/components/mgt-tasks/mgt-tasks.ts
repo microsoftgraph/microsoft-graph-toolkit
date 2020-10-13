@@ -23,6 +23,7 @@ import '../sub-components/mgt-arrow-options/mgt-arrow-options';
 import '../sub-components/mgt-dot-options/mgt-dot-options';
 import { MgtFlyout } from '../sub-components/mgt-flyout/mgt-flyout';
 import { LocalizationHelper } from '../../utils/LocalizationHelper';
+import defaultStrings from './strings';
 
 /**
  * Defines how a person card is shown when a user interacts with
@@ -180,6 +181,8 @@ const plannerAssignment = {
  */
 @customElement('mgt-tasks')
 export class MgtTasks extends MgtTemplatedComponent {
+  private _strings: any;
+
   /**
    * determines whether todo, or planner functionality for task component
    *
@@ -230,26 +233,14 @@ export class MgtTasks extends MgtTemplatedComponent {
   }
 
   /**
-   * returns dir attribute on body
-   *
-   * @private
-   * @memberof MgtTasks
-   */
-  private updateDirection() {
-    let direction = LocalizationHelper.getDirection();
-    if (direction == 'rtl') {
-      this.classList.add('rtl');
-    }
-  }
-
-  /**
    * Request localization changes when the 'strings' event is detected
    *
    * @private
    * @param {CustomEvent} event
    * @memberof MgtTasks
    */
-  private handleLocalizationChanged() {
+  handleLocalizationChanged() {
+    this._strings = this.serveStrings(this._strings);
     this.requestUpdate();
   }
 
@@ -383,7 +374,7 @@ export class MgtTasks extends MgtTemplatedComponent {
 
     this.previousMediaQuery = this.mediaQuery;
     this.onResize = this.onResize.bind(this);
-    this.handleLocalizationChanged = this.handleLocalizationChanged.bind(this);
+    this._strings = defaultStrings;
   }
 
   /**
@@ -393,8 +384,6 @@ export class MgtTasks extends MgtTemplatedComponent {
    */
   public connectedCallback() {
     super.connectedCallback();
-    LocalizationHelper.onUpdated(this.handleLocalizationChanged);
-    this.updateDirection();
     window.addEventListener('resize', this.onResize);
   }
 
@@ -405,7 +394,6 @@ export class MgtTasks extends MgtTemplatedComponent {
    */
   public disconnectedCallback() {
     window.removeEventListener('resize', this.onResize);
-    LocalizationHelper.removeOnUpdated(this.handleLocalizationChanged);
     super.disconnectedCallback();
   }
 
@@ -816,7 +804,7 @@ export class MgtTasks extends MgtTemplatedComponent {
               }}"
             >
               <span class="TaskIcon"></span>
-              <span>${this.getString('addTaskButton')}</span>
+              <span>${this._strings.addTaskButtonSubtitle}</span>
             </button>
           `;
 
@@ -917,7 +905,7 @@ export class MgtTasks extends MgtTemplatedComponent {
     const taskTitle = html`
       <input
         type="text"
-        placeholder=${this.getString('newTaskPlaceholder')}
+        placeholder=${this._strings.newTaskPlaceholder}
         .value="${this._newTaskName}"
         label="new-taskName-input"
         aria-label="new-taskName-input"
@@ -1021,7 +1009,7 @@ export class MgtTasks extends MgtTemplatedComponent {
       : html`
           <div class="TaskAddButtonContainer ${this._newTaskName === '' ? 'Disabled' : ''}">
             <div class="TaskIcon TaskCancel" @click="${() => (this.isNewTaskVisible = false)}">
-              <span>${this.getString('cancel')}</span>
+              <span>${this._strings.cancelNewTaskSubtitle}</span>
             </div>
             <div class="TaskIcon TaskAdd" @click="${this.onAddTaskClick}">
               <span></span>
@@ -1177,7 +1165,7 @@ export class MgtTasks extends MgtTemplatedComponent {
             <div class="TaskOptions">
               <mgt-dot-options
                 .options="${{
-                  [this.getString('deleteTask')]: () => this.removeTask(task)
+                  [this._strings.removeTaskSubtitle]: () => this.removeTask(task)
                 }}"
               ></mgt-dot-options>
             </div>

@@ -16,6 +16,7 @@ import { debounce } from '../../utils/Utils';
 import { styles } from './mgt-teams-channel-picker-css';
 import { getAllMyTeams } from './mgt-teams-channel-picker.graph';
 import { LocalizationHelper } from '../../utils/LocalizationHelper';
+import defaultStrings from './strings';
 
 /**
  * Team with displayName
@@ -198,6 +199,8 @@ export class MgtTeamsChannelPicker extends MgtTemplatedComponent {
   private _focusedIndex: number = -1;
   private debouncedSearch;
 
+  private _strings: any;
+
   // determines loading state
   @property({ attribute: false }) private _isDropdownVisible;
 
@@ -207,8 +210,7 @@ export class MgtTeamsChannelPicker extends MgtTemplatedComponent {
     this.addEventListener('keydown', e => this.onUserKeyDown(e));
     this.addEventListener('focus', _ => this.loadTeamsIfNotLoaded());
     this.addEventListener('mouseover', _ => this.loadTeamsIfNotLoaded());
-    this.handleLocalizationChanged = this.handleLocalizationChanged.bind(this);
-    this.updateDirection();
+    this._strings = defaultStrings;
   }
 
   /**
@@ -219,7 +221,6 @@ export class MgtTeamsChannelPicker extends MgtTemplatedComponent {
   public connectedCallback() {
     super.connectedCallback();
     window.addEventListener('click', this.handleWindowClick);
-    LocalizationHelper.onUpdated(this.handleLocalizationChanged);
   }
 
   /**
@@ -230,20 +231,6 @@ export class MgtTeamsChannelPicker extends MgtTemplatedComponent {
   public disconnectedCallback() {
     window.removeEventListener('click', this.handleWindowClick);
     super.disconnectedCallback();
-    LocalizationHelper.removeOnUpdated(this.handleLocalizationChanged);
-  }
-
-  /**
-   * returns dir attribute on body
-   *
-   * @private
-   * @memberof MgtPeoplePicker
-   */
-  private updateDirection() {
-    let direction = LocalizationHelper.getDirection();
-    if (direction == 'rtl') {
-      this.classList.add('rtl');
-    }
   }
 
   /**
@@ -252,20 +239,9 @@ export class MgtTeamsChannelPicker extends MgtTemplatedComponent {
    * @private
    * @memberof MgtTeamsChannelPicker
    */
-  private handleLocalizationChanged() {
+  handleLocalizationChanged() {
+    this._strings = this.serveStrings(this._strings);
     this.requestUpdate();
-  }
-
-  /**
-   * Matches string to user provided one and returns
-   *
-   * @protected
-   * @param {*} stringKey
-   * @returns
-   * @memberof MgtPeoplePicker
-   */
-  protected getString(stringKey) {
-    return LocalizationHelper.getString(this.tagName, stringKey);
   }
 
   /**
@@ -389,7 +365,7 @@ export class MgtTeamsChannelPicker extends MgtTemplatedComponent {
           type="text"
           label="teams-channel-picker-input"
           aria-label="Select a channel"
-          data-placeholder="${!!this._selectedItemState ? '' : this.getString('placeholder')} "
+          data-placeholder="${!!this._selectedItemState ? '' : this._strings.placeholder} "
           role="input"
           @keyup=${e => this.handleInputChanged(e)}
           contenteditable
@@ -571,7 +547,7 @@ export class MgtTeamsChannelPicker extends MgtTemplatedComponent {
       html`
         <div class="message-parent">
           <div label="search-error-text" aria-label="We didn't find any matches." class="search-error-text">
-            ${this.getString("We didn't find any matches.")}
+            ${this._strings.noResultsFound}
           </div>
         </div>
       `
@@ -594,7 +570,7 @@ export class MgtTeamsChannelPicker extends MgtTemplatedComponent {
         <div class="message-parent">
           <mgt-spinner></mgt-spinner>
           <div label="loading-text" aria-label="loading" class="loading-text">
-            ${this.getString('Loading...')}
+            ${this._strings.loading}
           </div>
         </div>
       `
