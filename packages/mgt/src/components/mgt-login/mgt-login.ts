@@ -16,6 +16,7 @@ import '../../styles/fabric-icon-font';
 import '../mgt-person/mgt-person';
 import { PersonViewType } from '../mgt-person/mgt-person';
 import { LocalizationHelper } from '../../utils/LocalizationHelper';
+import defaultStrings from './strings';
 
 /**
  * Web component button and flyout control to facilitate Microsoft identity platform authentication
@@ -85,10 +86,12 @@ export class MgtLogin extends MgtTemplatedComponent {
 
   private _image: string;
 
+  private _strings: any;
+
   constructor() {
     super();
     this._isFlyoutOpen = false;
-    this.handleLocalizationChanged = this.handleLocalizationChanged.bind(this);
+    this._strings = defaultStrings;
   }
 
   /**
@@ -99,49 +102,17 @@ export class MgtLogin extends MgtTemplatedComponent {
   public connectedCallback() {
     super.connectedCallback();
     this.addEventListener('click', e => e.stopPropagation());
-    LocalizationHelper.onUpdated(this.handleLocalizationChanged);
-    this.updateDirection();
-  }
-
-  public disconnectedCallback() {
-    super.disconnectedCallback();
-    LocalizationHelper.removeOnUpdated(this.handleLocalizationChanged);
-  }
-
-  /**
-   * Matches string to user provided one and returns
-   *
-   * @protected
-   * @param {*} stringKey
-   * @returns
-   * @memberof MgtLogin
-   */
-  protected getString(stringKey) {
-    return LocalizationHelper.getString(this.tagName, stringKey);
   }
 
   /**
    * Request localization changes when the 'strings' event is detected
    *
-   * @private
-   * @param {CustomEvent} event
+   * @protected
    * @memberof MgtLogin
    */
-  private handleLocalizationChanged() {
+  handleLocalizationChanged() {
+    this._strings = this.serveStrings(this._strings);
     this.requestUpdate();
-  }
-
-  /**
-   * returns dir attribute on body
-   *
-   * @private
-   * @memberof MgtLogin
-   */
-  private updateDirection() {
-    let direction = LocalizationHelper.getDirection();
-    if (direction == 'rtl') {
-      this.classList.add('rtl');
-    }
   }
 
   /**
@@ -324,7 +295,7 @@ export class MgtLogin extends MgtTemplatedComponent {
         <ul>
           <li>
             <button class="popup-command" @click=${this.logout} aria-label="Sign Out">
-              ${this.getString('signOut')}
+              ${this._strings.signOutLinkSubtitle}
             </button>
           </li>
         </ul>
@@ -378,7 +349,7 @@ export class MgtLogin extends MgtTemplatedComponent {
       html`
         <i class="login-icon ms-Icon ms-Icon--Contact"></i>
         <span aria-label="Sign In">
-          ${this.getString('signIn')}
+          ${this._strings.signInLinkSubtitle}
         </span>
       `
     );
