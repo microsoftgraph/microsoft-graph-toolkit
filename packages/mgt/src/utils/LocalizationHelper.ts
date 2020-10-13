@@ -5,7 +5,7 @@
  * -------------------------------------------------------------------------------------------
  */
 
-import { EventDispatcher, EventHandler } from '@microsoft/mgt-element';
+import { EventDispatcher, EventHandler } from '@microsoft/mgt-element/src/utils/EventDispatcher';
 
 /**
  * Helper class for Localization
