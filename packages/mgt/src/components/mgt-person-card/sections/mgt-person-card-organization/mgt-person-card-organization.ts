@@ -192,7 +192,7 @@ export class MgtPersonCardOrganization extends BasePersonCardSection {
     return html`
       <div class="coworker" @click=${() => this.navigateCard(coworker)}>
         <div class="coworker__image">
-          <mgt-person .userId=${coworker.id} avatar-size="large"></mgt-person>
+          <mgt-person .personDetails=${coworker} avatar-size="large" fetch-image></mgt-person>
         </div>
         <div class="coworker__details">
           <div class="coworker__name">${coworker.displayName}</div>
