@@ -136,7 +136,8 @@ export class MgtAgenda extends MgtTemplatedComponent {
    * @type {Array<MicrosoftGraph.Event>}
    */
   @property({
-    attribute: 'events'
+    attribute: 'events',
+    type: Array
   })
   public events: MicrosoftGraph.Event[];
 
