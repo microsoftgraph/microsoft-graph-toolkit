@@ -11,7 +11,7 @@ The file picker component provides a button, a drop down list of files, and as w
 | Provide a button that renders a drop down when clicked | P0 | |	
 | Retrieve a list of files based on information provided | P0 | |
 | Use the `mgt-file-list` component to render the list inside of the drop down | P0 | |
-| On selection of a file, an event is fired | P0 | |	
+| On selection or deselection of a file, an event is fired | P0 | |	
 | The selected file object(s) is accessible by the developer for further action |P0 | |	
 | Ability for developer to toggle between single-select and multiselect | P1 |  | 
 | Visual indication of selected files | P2 | Will not be included in v1. |
@@ -38,10 +38,16 @@ The file picker component provides a button, a drop down list of files, and as w
 | `group-id ` | `groupId` | Id of the group the folder belongs to. Must also provide either `item-id` or `item-path`. |
 | `site-id` | `siteId` | Id of the site the folder belongs to. Must also provide either `{item-id}` or `{item-path}`. Provide `{list-id}` if you’re referencing a file from a list. |
 | `item-id` | `itemId` | Id of the folder. Default query is `/me/drive/items`. Provide `{drive-id}`, `{group-id}`, `{site-id}`, or `{user-id}` to query a specific location. |
-| `item-path` `itemPath` | Item path of the folder. Default query is `/me/drive/root`. Provide `{drive-id}`, `{group-id}`, `{site-id}`, or `{user-id}` to query a specific location. |
+| `item-path` | `itemPath` | Item path of the folder. Default query is `/me/drive/root`. Provide `{drive-id}`, `{group-id}`, `{site-id}`, or `{user-id}` to query a specific location. |
 | `show-max` | `showMax` | A number value to indicate the maximum number of files to show. |
 | `selected-files` | `selectedFiles`| An array of selected file objects. |
 | `multiselect` | `multiselect` | Enable/Disable selection of more than 1 file. Default is `false`.|
+
+## Events
+
+| Event | Description |
+| ----- | ----------- |
+|selectionChanged | Fired when the user selects or deselects a file |
 
 ## APIs and Permission
 
