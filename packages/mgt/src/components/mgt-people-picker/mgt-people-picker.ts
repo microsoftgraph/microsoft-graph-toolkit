@@ -432,7 +432,7 @@ export class MgtPeoplePicker extends MgtTemplatedComponent {
   protected renderInput(): TemplateResult {
     const hasSelectedPeople = !!this.selectedPeople.length;
 
-    const placeholder = this.placeholder ? this.placeholder : this._strings.placeholder;
+    const placeholder = this.placeholder ? this.placeholder : this._strings.inputPlaceholderText;
 
     const selectionMode = this.selectionMode ? this.selectionMode : 'multiple';
 
@@ -562,7 +562,7 @@ export class MgtPeoplePicker extends MgtTemplatedComponent {
         <div class="message-parent">
           <mgt-spinner></mgt-spinner>
           <div label="loading-text" aria-label="loading" class="loading-text">
-            ${this._strings.loading}
+            ${this._strings.loadingMessage}
           </div>
         </div>
       `

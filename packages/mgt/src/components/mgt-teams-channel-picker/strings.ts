@@ -13,7 +13,7 @@
  */
 
 export const strings = {
-  placeholder: 'Select a channel',
+  inputPlaceholderText: 'Select a channel',
   noResultsFound: `We didn't find any matches.`,
-  loading: 'Loading...'
+  loadingMessage: 'Loading...'
 };

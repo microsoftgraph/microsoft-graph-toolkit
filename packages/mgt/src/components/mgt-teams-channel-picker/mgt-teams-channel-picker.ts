@@ -351,7 +351,7 @@ export class MgtTeamsChannelPicker extends MgtTemplatedComponent {
           type="text"
           label="teams-channel-picker-input"
           aria-label="Select a channel"
-          data-placeholder="${!!this._selectedItemState ? '' : this._strings.placeholder} "
+          data-placeholder="${!!this._selectedItemState ? '' : this._strings.inputPlaceholderText} "
           role="input"
           @keyup=${e => this.handleInputChanged(e)}
           contenteditable
@@ -556,7 +556,7 @@ export class MgtTeamsChannelPicker extends MgtTemplatedComponent {
         <div class="message-parent">
           <mgt-spinner></mgt-spinner>
           <div label="loading-text" aria-label="loading" class="loading-text">
-            ${this._strings.loading}
+            ${this._strings.loadingMessage}
           </div>
         </div>
       `
