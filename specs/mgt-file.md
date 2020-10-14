@@ -21,7 +21,7 @@ The File component is used to represent an individual file/folder from OneDrive 
 The request made: `GET /me/drives/items/123`
 
 ### Example 2: Developer provides a site-id and item-id
-````<mgt-file site-id="123" item-id="456"></mgt-file>```
+```<mgt-file site-id="123" item-id="456"></mgt-file>```
 
 The request made: `GET /sites/123/drive/items/123`
 

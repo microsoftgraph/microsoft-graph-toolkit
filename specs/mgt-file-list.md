@@ -8,7 +8,7 @@ The File List component displays a list of multiple folders and files by using t
 
 | Feature | Priority | Notes |
 | ------- | -------- | ----- |
-| Retrieve a list of files based on information provided | P0 | |
+| Retrieve a list of files based on information provided | P0 | Can be from a specific drive or site or from an insight type |
 | Use the `mgt-file` component to render each item | P0 | |
 | Render the children of folders hierarchically using a tree view | P1 | Potentially use the FAST tree view web component |
 | Allow sorting of the files by the user | P2 | |
@@ -64,7 +64,7 @@ The request made : `GET /drives/123/items/456/children`
 | `GET /me/drive/items/{item-id}/children` | ONLY `{item-id}` | " | 
 | `GET /sites/{site-id}/drive/items/{item-id}/children` | `{site-id}` AND `{item-id}` | " |
 | `GET /users/{user-id}/drive/items/{item-id}/children` | `{user-id}` AND `{item-id}` | " |
-| `GET /drives/{drive-id}/root:/{path-relative-to-root}:/children` | `{drive-id}` AND `{path-relative-to-root}` |
+| `GET /drives/{drive-id}/root:/{path-relative-to-root}:/children` | `{drive-id}` AND `{path-relative-to-root}` | " |
 | `GET /me/insights/trending` | `insight-type` is trending | Sites.Read.All |
 | `GET /users/{id or userPrincipalName}/insights/trending` | {user-id or upn} AND `insight-type` is `trending` | " | 
 | `GET /me/insights/used` | `insight-type` is `used` | " |
