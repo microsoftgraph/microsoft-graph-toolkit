@@ -77,7 +77,7 @@ mgt-person .person-root {
       position: absolute;
       left: calc(#{$avatar-size} * 0.72 - 4px);
       top: calc(#{$avatar-size} * 0.72 - 4px);
-      width: calc(v#{$avatar-size} * 0.28);
+      width: calc(#{$avatar-size} * 0.28);
       height: calc(#{$avatar-size} * 0.28);
       border: 2px solid $presence-background-color;
       border-radius: 50%;
@@ -378,10 +378,12 @@ mgt-person .person-root {
 
 :host .avatar-icon,
 mgt-person .avatar-icon {
-  display: block;
+  display: flex;
+  align-items: center;
+  justify-content: center;
   line-height: 1;
   margin: 0;
-  font-size: $avatar-size;
+  font-size: calc(#{$avatar-size} * 0.5);
   width: $avatar-size;
   height: $avatar-size;
   overflow: hidden;
