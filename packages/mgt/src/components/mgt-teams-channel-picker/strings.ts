@@ -12,7 +12,7 @@
  * -------------------------------------------------------------------------------------------
  */
 
-export default {
+export const strings = {
   placeholder: 'Select a channel',
   noResultsFound: `We didn't find any matches.`,
   loading: 'Loading...'

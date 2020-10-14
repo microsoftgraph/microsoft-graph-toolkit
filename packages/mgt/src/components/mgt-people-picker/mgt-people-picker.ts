@@ -22,7 +22,7 @@ import { PersonCardInteraction } from '../PersonCardInteraction';
 import { MgtFlyout } from '../sub-components/mgt-flyout/mgt-flyout';
 import { styles } from './mgt-people-picker-css';
 
-import defaultStrings from './strings';
+import { strings } from './strings';
 
 export { GroupType } from '../../graph/graph.groups';
 export { PersonType } from '../../graph/graph.people';
@@ -323,8 +323,6 @@ export class MgtPeoplePicker extends MgtTemplatedComponent {
 
   @internalProperty() private _foundPeople: IDynamicPerson[];
 
-  private _strings: any;
-
   constructor() {
     super();
 
@@ -334,18 +332,7 @@ export class MgtPeoplePicker extends MgtTemplatedComponent {
     this.showMax = 6;
     this.selectedPeople = [];
     this.theme = ThemeType.light;
-    this._strings = defaultStrings;
-  }
-
-  /**
-   * Request localization changes when the 'strings' event is detected
-   *
-   * @protected
-   * @memberof MgtPeoplePicker
-   */
-  handleLocalizationChanged() {
-    this._strings = this.serveStrings(this._strings);
-    this.requestUpdate();
+    this._strings = strings;
   }
 
   /**

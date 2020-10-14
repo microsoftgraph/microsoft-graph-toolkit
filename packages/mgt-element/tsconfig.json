@@ -6,5 +6,5 @@
     "rootDir": "src",
     "composite": true
   },
-  "include": ["src", "../../../mgt"]
+  "include": ["src"]
 }

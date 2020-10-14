@@ -7,7 +7,7 @@
 
 import { LitElement, PropertyValues } from 'lit-element';
 import { Providers } from '../providers/Providers';
-import { LocalizationHelper } from '@microsoft/mgt';
+import { LocalizationHelper } from '../utils/LocalizationHelper';
 
 /**
  * Defines media query based on component width
@@ -102,6 +102,8 @@ export abstract class MgtBaseComponent extends LitElement {
 
   private static _useShadowRoot: boolean = true;
 
+  public _strings: any;
+
   /**
    * determines if login component is in loading state
    * @type {boolean}
@@ -142,6 +144,7 @@ export abstract class MgtBaseComponent extends LitElement {
    * @memberof MgtBaseComponent
    */
   protected handleLocalizationChanged() {
+    this._strings = this.serveStrings(this._strings);
     this.requestUpdate();
   }
 
@@ -287,17 +290,28 @@ export abstract class MgtBaseComponent extends LitElement {
    * @memberof MgtBaseComponent
    */
   protected serveStrings(strings) {
-    return LocalizationHelper.getString(this.tagName, strings);
+    return LocalizationHelper.updateStringsForTag(this.tagName, strings);
   }
 
   /**
-   * returns dir attribute on body
+   * returns directional attribute from Localization Helper
+   *
+   * @protected
+   * @returns
+   * @memberof MgtBaseComponent
+   */
+  protected getDirection() {
+    return LocalizationHelper.getDirection();
+  }
+
+  /**
+   * Adds rtl class to component if direction is returned rtl
    *
    * @private
    * @memberof MgtBaseComponent
    */
   protected updateDirection() {
-    let direction = LocalizationHelper.getDirection();
+    const direction = this.getDirection();
     if (direction == 'rtl') {
       this.classList.add('rtl');
     }

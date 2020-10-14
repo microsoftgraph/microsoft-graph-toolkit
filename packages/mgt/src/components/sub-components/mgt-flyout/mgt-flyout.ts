@@ -5,11 +5,11 @@
  * -------------------------------------------------------------------------------------------
  */
 
-import { customElement, html, LitElement, property, PropertyValues, query, TemplateResult } from 'lit-element';
+import { customElement, html, property, PropertyValues, TemplateResult } from 'lit-element';
 import { classMap } from 'lit-html/directives/class-map';
 import { getSegmentAwareWindow, isWindowSegmentAware, IWindowSegment } from '../../../utils/WindowSegmentHelpers';
 import { styles } from './mgt-flyout-css';
-import { LocalizationHelper } from '../../../utils/LocalizationHelper';
+import { MgtBaseComponent } from '@microsoft/mgt-element/';
 
 /**
  * A component to create flyout anchored to an element
@@ -19,7 +19,7 @@ import { LocalizationHelper } from '../../../utils/LocalizationHelper';
  * @extends {LitElement}
  */
 @customElement('mgt-flyout')
-export class MgtFlyout extends LitElement {
+export class MgtFlyout extends MgtBaseComponent {
   /**
    * Array of styles to apply to the element. The styles should be defined
    * using the `css` tag function.
@@ -387,8 +387,8 @@ export class MgtFlyout extends LitElement {
     e.preventDefault();
   }
 
-  private updateDirection() {
-    let direction = LocalizationHelper.getDirection();
+  updateDirection() {
+    let direction = this.getDirection();
     if (direction == 'rtl') {
       this._isRTL = true;
     }

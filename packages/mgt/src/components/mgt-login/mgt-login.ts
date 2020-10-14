@@ -15,7 +15,7 @@ import { getUserWithPhoto } from '../../graph/graph.user';
 import '../../styles/fabric-icon-font';
 import '../mgt-person/mgt-person';
 import { PersonViewType } from '../mgt-person/mgt-person';
-import defaultStrings from './strings';
+import { strings } from './strings';
 
 /**
  * Web component button and flyout control to facilitate Microsoft identity platform authentication
@@ -56,6 +56,10 @@ export class MgtLogin extends MgtTemplatedComponent {
     return styles;
   }
 
+  static get strings() {
+    return strings;
+  }
+
   /**
    * allows developer to use specific user details for login
    * @type {IDynamicPerson}
@@ -85,12 +89,10 @@ export class MgtLogin extends MgtTemplatedComponent {
 
   private _image: string;
 
-  private _strings: any;
-
   constructor() {
     super();
     this._isFlyoutOpen = false;
-    this._strings = defaultStrings;
+    this._strings = strings;
   }
 
   /**
@@ -101,17 +103,6 @@ export class MgtLogin extends MgtTemplatedComponent {
   public connectedCallback() {
     super.connectedCallback();
     this.addEventListener('click', e => e.stopPropagation());
-  }
-
-  /**
-   * Request localization changes when the 'strings' event is detected
-   *
-   * @protected
-   * @memberof MgtLogin
-   */
-  handleLocalizationChanged() {
-    this._strings = this.serveStrings(this._strings);
-    this.requestUpdate();
   }
 
   /**

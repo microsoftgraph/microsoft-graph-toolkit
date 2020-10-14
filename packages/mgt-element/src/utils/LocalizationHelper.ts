@@ -5,7 +5,7 @@
  * -------------------------------------------------------------------------------------------
  */
 
-import { EventDispatcher, EventHandler } from '@microsoft/mgt-element/src/utils/EventDispatcher';
+import { EventDispatcher, EventHandler } from './EventDispatcher';
 
 /**
  * Helper class for Localization
@@ -15,9 +15,9 @@ import { EventDispatcher, EventHandler } from '@microsoft/mgt-element/src/utils/
  * @class LocalizationHelper
  */
 export class LocalizationHelper {
-  private static _strings: object;
+  static _strings: any;
 
-  private static _eventDispatcher: EventDispatcher<any> = new EventDispatcher();
+  static _eventDispatcher: EventDispatcher<any> = new EventDispatcher();
 
   public static get strings() {
     return this._strings;
@@ -69,14 +69,16 @@ export class LocalizationHelper {
    * @returns
    * @memberof LocalizationHelper
    */
-  public static getString(tagName: string, stringObj) {
+
+  //TODO: updateStringsForTag
+  public static updateStringsForTag(tagName: string, stringObj) {
     tagName = tagName.toLowerCase();
 
     if (tagName.startsWith('mgt-')) {
       tagName = tagName.substring(4);
     }
 
-    if (this._strings) {
+    if (this._strings && stringObj) {
       //check for top level strings, applied per component, overridden by specific component def
       for (let prop of Object.entries(stringObj)) {
         if (this._strings[prop[0]]) {

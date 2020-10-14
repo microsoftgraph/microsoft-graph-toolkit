@@ -12,7 +12,7 @@
  * -------------------------------------------------------------------------------------------
  */
 
-export default {
+export const strings = {
   signInLinkSubtitle: 'Sign In',
   signOutLinkSubtitle: 'Sign Out'
 };

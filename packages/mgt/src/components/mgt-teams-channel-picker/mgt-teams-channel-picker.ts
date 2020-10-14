@@ -15,7 +15,7 @@ import { getSvg, SvgIcon } from '../../utils/SvgHelper';
 import { debounce } from '../../utils/Utils';
 import { styles } from './mgt-teams-channel-picker-css';
 import { getAllMyTeams } from './mgt-teams-channel-picker.graph';
-import defaultStrings from './strings';
+import { strings } from './strings';
 
 /**
  * Team with displayName
@@ -198,8 +198,6 @@ export class MgtTeamsChannelPicker extends MgtTemplatedComponent {
   private _focusedIndex: number = -1;
   private debouncedSearch;
 
-  private _strings: any;
-
   // determines loading state
   @property({ attribute: false }) private _isDropdownVisible;
 
@@ -209,7 +207,7 @@ export class MgtTeamsChannelPicker extends MgtTemplatedComponent {
     this.addEventListener('keydown', e => this.onUserKeyDown(e));
     this.addEventListener('focus', _ => this.loadTeamsIfNotLoaded());
     this.addEventListener('mouseover', _ => this.loadTeamsIfNotLoaded());
-    this._strings = defaultStrings;
+    this._strings = strings;
   }
 
   /**
@@ -230,17 +228,6 @@ export class MgtTeamsChannelPicker extends MgtTemplatedComponent {
   public disconnectedCallback() {
     window.removeEventListener('click', this.handleWindowClick);
     super.disconnectedCallback();
-  }
-
-  /**
-   * Request localization changes when the 'strings' event is detected
-   *
-   * @private
-   * @memberof MgtTeamsChannelPicker
-   */
-  handleLocalizationChanged() {
-    this._strings = this.serveStrings(this._strings);
-    this.requestUpdate();
   }
 
   /**

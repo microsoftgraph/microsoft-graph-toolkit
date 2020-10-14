@@ -22,7 +22,7 @@ import '../mgt-person/mgt-person';
 import '../sub-components/mgt-arrow-options/mgt-arrow-options';
 import '../sub-components/mgt-dot-options/mgt-dot-options';
 import { MgtFlyout } from '../sub-components/mgt-flyout/mgt-flyout';
-import defaultStrings from './strings';
+import { strings } from './strings';
 
 /**
  * Defines how a person card is shown when a user interacts with
@@ -180,8 +180,6 @@ const plannerAssignment = {
  */
 @customElement('mgt-tasks')
 export class MgtTasks extends MgtTemplatedComponent {
-  private _strings: any;
-
   /**
    * determines whether todo, or planner functionality for task component
    *
@@ -229,18 +227,6 @@ export class MgtTasks extends MgtTemplatedComponent {
       this._newTaskName = '';
       this._newTaskGroupId = '';
     }
-  }
-
-  /**
-   * Request localization changes when the 'strings' event is detected
-   *
-   * @private
-   * @param {CustomEvent} event
-   * @memberof MgtTasks
-   */
-  handleLocalizationChanged() {
-    this._strings = this.serveStrings(this._strings);
-    this.requestUpdate();
   }
 
   /**
@@ -361,7 +347,7 @@ export class MgtTasks extends MgtTemplatedComponent {
 
     this.previousMediaQuery = this.mediaQuery;
     this.onResize = this.onResize.bind(this);
-    this._strings = defaultStrings;
+    this._strings = strings;
   }
 
   /**
