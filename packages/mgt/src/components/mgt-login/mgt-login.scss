@@ -119,5 +119,10 @@ mgt-login .popup-command {
 }
 
 :host(.rtl) .login-button {
-  --details-spacing: 0px 6px 0px 0px;
+  --details-spacing: 0px 6px 0px 0px !important;
+}
+.login-icon {
+  & + span {
+    margin-right: 6px;
+  }
 }
