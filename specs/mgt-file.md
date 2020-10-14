@@ -1,6 +1,8 @@
 # mgt-file
 
-The File component is used to represent an individual file/folder from OneDrive or SharePoint by displaying information such as the file/folder name, an icon indicating the file type, and other properties such as the author, last modified date, or other details selected by the developer. The developer or application provides the identifiers for a file and the component will generate the query to retreive the file based on the indetifiers provided. This component can be used on it's own or as part of the [mgt-file-list](./mgt-file-list.md) and [mgt-file-picker](./mgt-file-picker.md) components. 
+The File component is used to represent an individual file/folder from OneDrive or SharePoint by displaying information such as the file/folder name, an icon indicating the file type, and other properties such as the author, last modified date, or other details selected by the developer. The developer or application provides the identifiers for a file and the component will generate the query to retreive the file based on the identifiers provided. This component can be used on it's own or as part of the [mgt-file-list](./mgt-file-list.md) and [mgt-file-picker](./mgt-file-picker.md) components. 
+
+<img src="./images/mgt-file.png" width=300/>
 
 ## Supported functionality
 
@@ -71,7 +73,7 @@ The request made: `GET /me/insights/trending/123/resource`
 | `GET /users/{user-id}/drive/items/{item-id}` | `{user-id}` AND `{item-id}` | " |
 | `GET /users/{user-id}/drive/root:/{item-path}` | `{user-id}` AND `{item-path}` | " |
 | `GET /me/insights/trending/{id}/resource` | `insight-type` AND `{id}` | Sites.Read.All |
-| ` GET /users/{id | userPrincipalName}/insights/trending/{id}/resource` | `{user-id|upn}` AND `insight-type` AND `{id}` |  "|
+| `GET /users/{id | userPrincipalName}/insights/trending/{id}/resource` | `{user-id|upn}` AND `insight-type` AND `{id}` | " |
 | `GET /me/insights/used/{id}/resource` | `insight-type` AND `{id}` | " |
 | `GET /users/{id | userPrincipalName}/insights/used/{id}/resource` | `{user-id|upn}` AND `insight-type` AND `{id}` | " |
 | `GET /me/insights/shared/{id}/resource` | `insight-type` AND `{id}` | " |
