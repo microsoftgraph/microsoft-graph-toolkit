@@ -56,10 +56,6 @@ export class MgtLogin extends MgtTemplatedComponent {
     return styles;
   }
 
-  static get strings() {
-    return strings;
-  }
-
   /**
    * allows developer to use specific user details for login
    * @type {IDynamicPerson}

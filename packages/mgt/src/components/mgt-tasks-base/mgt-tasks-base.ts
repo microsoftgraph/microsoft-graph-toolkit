@@ -8,6 +8,7 @@
 import { html, property, TemplateResult } from 'lit-element';
 import { classMap } from 'lit-html/directives/class-map';
 import { ComponentMediaQuery, Providers, ProviderState, MgtTemplatedComponent } from '@microsoft/mgt-element';
+import { strings } from './strings';
 
 /**
  * The foundation for creating task based components.
@@ -81,6 +82,7 @@ export abstract class MgtTasksBase extends MgtTemplatedComponent {
     this.clearState();
     this._previousMediaQuery = this.mediaQuery;
     this.onResize = this.onResize.bind(this);
+    this._strings = strings;
   }
 
   /**
@@ -170,7 +172,7 @@ export abstract class MgtTasksBase extends MgtTemplatedComponent {
         ${headerContentTemplate}
         <button class="${addClasses}" @click="${() => this.showNewTaskPanel()}">
           <span class="TaskIcon"></span>
-          <span>Add</span>
+          <span>${this._strings.addTaskButtonSubtitle}</span>
         </button>
       </div>
     `;
@@ -221,7 +223,7 @@ export abstract class MgtTasksBase extends MgtTemplatedComponent {
     const taskTitle = html`
       <input
         type="text"
-        placeholder="Task..."
+        placeholder="${this._strings.newTaskPlaceholder}"
         .value="${newTaskName}"
         label="new-taskName-input"
         aria-label="new-taskName-input"
@@ -240,7 +242,7 @@ export abstract class MgtTasksBase extends MgtTemplatedComponent {
     const taskAddTemplate = !this._isNewTaskBeingAdded
       ? html`
           <div class="TaskIcon TaskCancel" @click="${() => this.hideNewTaskPanel()}">
-            <span>Cancel</span>
+            <span>${this._strings.cancelNewTaskSubtitle}</span>
           </div>
           <div class="TaskIcon TaskAdd" @click="${() => this.addTask()}">
             <span></span>
