@@ -63,14 +63,12 @@ export class LocalizationHelper {
   /**
    * Provided helper method to determine localized or defaultString for specific string is returned
    *
-   * @static
+   * @static updateStringsForTag
    * @param {string} tagName
-   * @param  strings
+   * @param  stringsObj
    * @returns
    * @memberof LocalizationHelper
    */
-
-  //TODO: updateStringsForTag
   public static updateStringsForTag(tagName: string, stringObj) {
     tagName = tagName.toLowerCase();
 
