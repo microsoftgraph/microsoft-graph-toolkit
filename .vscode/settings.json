@@ -4,11 +4,6 @@
   "editor.codeActionsOnSave": {
     "source.fixAll.tslint": true
   },
-  "cSpell.words": [
-    "Templated",
-    "flyout",
-    "semibold",
-    "xmlns"
-  ],
-"tslint.configFile": "./config/tslint.json"
+  "cSpell.words": ["Templated", "flyout", "semibold", "xmlns"],
+  "tslint.configFile": "./tslint.json"
 }
