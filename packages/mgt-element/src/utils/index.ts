@@ -5,9 +5,12 @@
  * -------------------------------------------------------------------------------------------
  */
 
-export * from '@microsoft/mgt-element';
-export * from '@microsoft/mgt-components';
-export * from '@microsoft/mgt-msal-provider';
-export * from '@microsoft/mgt-teams-provider';
-export * from '@microsoft/mgt-proxy-provider';
-export * from '@microsoft/mgt-sharepoint-provider';
+/**
+ * returns a promise that resolves after specified time
+ * @param time in milliseconds
+ */
+export function delay(ms: number): Promise<void> {
+  return new Promise(resolve => {
+    setTimeout(resolve, ms);
+  });
+}

@@ -1,7 +1,16 @@
 {
-  "name": "@microsoft/mgt-element",
+  "name": "@microsoft/mgt-sharepoint-provider",
   "version": "2.0.0",
-  "description": "Microsoft Graph Toolkit base classes",
+  "description": "The Microsoft Graph Toolkit SharePoint Provider",
+  "keywords": [
+    "microsoft graph",
+    "microsoft graph toolkit",
+    "mgt",
+    "sharepoint",
+    "spfx",
+    "auth",
+    "authentication"
+  ],
   "homepage": "https://github.com/microsoftgraph/microsoft-graph-toolkit",
   "bugs": {
     "url": "https://github.com/microsoftgraph/microsoft-graph-toolkit/issues"
@@ -12,9 +21,9 @@
   },
   "author": "Microsoft",
   "license": "MIT",
-  "main": "./dist/index.js",
-  "types": "./dist/index.d.ts",
-  "module": "./dist/index.js",
+  "main": "./dist/es6/index.js",
+  "types": "./dist/es6/index.d.ts",
+  "module": "./dist/es6/index.js",
   "files": [
     "dist",
     "src"
@@ -26,16 +35,13 @@
     "clean": "shx rm -rf ./dist && shx rm -rf ./tsconfig.tsbuildinfo",
     "compile": "tsc -b",
     "compile:watch": "tsc -w",
-    "lint": "tslint -c ../../tslint.json 'src/**/*.ts'",
-    "setVersion": "gulp setVersion --cwd .",
+    "lint": "tslint -c ../../../tslint.json 'src/**/*.ts'",
     "setLicense": "gulp setLicense --cwd .",
-    "postpack": "cpx *.tgz ../../artifacts",
-    "prepack": "shx rm -rf *.tgz && npm run setVersion && npm run build"
+    "prepack": "shx rm -rf *.tgz && npm run build",
+    "postpack": "cpx *.tgz ../../../artifacts"
   },
   "dependencies": {
-    "@microsoft/microsoft-graph-client": "^2.0.0",
-    "lit-element": "^2.4.0",
-    "idb": "^5.0.6"
+    "@microsoft/mgt-element": "*"
   },
   "devDependencies": {
     "cpx": "^1.5.0",
@@ -47,6 +53,7 @@
     "gulp-util": "^3.0.8",
     "shx": "^0.3.2",
     "tslint": "^5.20.1",
+    "tslint-config-prettier": "^1.18.0",
     "typescript": "^3.7.5"
   },
   "publishConfig": {

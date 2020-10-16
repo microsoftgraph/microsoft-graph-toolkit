@@ -1,11 +1,10 @@
 {
-  "name": "@microsoft/mgt",
+  "name": "@microsoft/mgt-components",
   "version": "2.0.0",
-  "description": "The Microsoft Graph Toolkit",
+  "description": "The Microsoft Graph Toolkit Components",
   "keywords": [
     "microsoft graph",
-    "web components",
-    "msal"
+    "web components"
   ],
   "homepage": "https://github.com/microsoftgraph/microsoft-graph-toolkit",
   "bugs": {
@@ -25,35 +24,26 @@
     "src"
   ],
   "scripts": {
-    "build": "npm-run-all clean build:compile build:bundle",
-    "build:bundle": "npm-run-all copy:loader copy:wc sass rollup",
+    "build": "npm-run-all clean build:compile",
     "build:compile": "npm-run-all sass compile",
     "build:watch": "npm-run-all -p sass:watch compile:watch",
     "clean": "shx rm -rf ./dist && shx rm -rf ./tsconfig.tsbuildinfo",
     "compile": "tsc -b",
     "compile:watch": "tsc -w",
-    "copy:loader": "cpx src/bundle/mgt-loader.js dist/bundle",
-    "copy:wc": "cpx ../../node_modules/@webcomponents/webcomponentsjs/bundles/**/* dist/bundle/wc/bundles && cpx ../../node_modules/@webcomponents/webcomponentsjs/webcomponents-loader.js dist/bundle/wc",
     "lint": "tslint -c ../../tslint.json 'src/**/*.ts'",
     "prepack": "shx rm -rf *.tgz && npm run build",
     "postpack": "cpx *.tgz ../../artifacts",
-    "rollup": "rollup -c",
     "sass": "gulp sass --cwd .",
     "sass:watch": "gulp watchSass --cwd .",
-    "setLicense": "gulp setLicense --cwd .",
-    "test": "jest",
-    "test:watch": "jest --watch"
+    "setLicense": "gulp setLicense --cwd ."
   },
   "dependencies": {
+    "@microsoft/microsoft-graph-types": "^1.22.0",
+    "@microsoft/microsoft-graph-types-beta": "github:microsoftgraph/msgraph-typescript-typings#beta",
     "@microsoft/mgt-element": "*",
-    "@microsoft/mgt-components": "*",
-    "@microsoft/mgt-msal-provider": "*",
-    "@microsoft/mgt-teams-provider": "*",
-    "@microsoft/mgt-proxy-provider": "*",
-    "@microsoft/mgt-sharepoint-provider": "*"
+    "office-ui-fabric-core": "11.0.0"
   },
   "devDependencies": {
-    "@webcomponents/webcomponentsjs": "^2.4.3",
     "cpx": "^1.5.0",
     "gulp": "^4.0.2",
     "gulp-append-prepend": "^1.0.8",
@@ -62,27 +52,10 @@
     "gulp-sass": "^4.0.2",
     "gulp-util": "^3.0.8",
     "npm-run-all": "^4.1.5",
-    "rollup": "^1.32.1",
-    "rollup-plugin-babel": "^4.3.3",
-    "rollup-plugin-babel-minify": "^9.1.1",
-    "rollup-plugin-commonjs": "^10.1.0",
-    "rollup-plugin-json": "^4.0.0",
-    "rollup-plugin-node-resolve": "^5.2.0",
-    "rollup-plugin-postcss": "^2.5.0",
-    "rollup-plugin-terser": "^5.2.0",
-    "rollup-plugin-typescript": "^1.0.1",
     "shx": "^0.3.2",
     "tslint": "^5.20.1",
     "tslint-config-prettier": "^1.18.0",
     "typescript": "^3.7.5"
-  },
-  "jest-junit": {
-    "suiteName": "jest tests",
-    "output": "testResults/junit.xml",
-    "classNameTemplate": "{classname} - {title}",
-    "titleTemplate": "{classname} - {title}",
-    "ancestorSeparator": " > ",
-    "usePathForSuiteName": "true"
   },
   "publishConfig": {
     "directory": "dist"

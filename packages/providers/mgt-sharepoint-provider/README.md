@@ -1,0 +1,1 @@
+# MGT Msal Provider
