@@ -118,10 +118,6 @@ export class MgtFlyout extends MgtBaseComponent {
     this.isOpen = false;
   }
 
-  public connectedCallback() {
-    super.connectedCallback();
-    this.updateDirection();
-  }
   /**
    * Invoked each time the custom element is disconnected from the document's DOM
    *

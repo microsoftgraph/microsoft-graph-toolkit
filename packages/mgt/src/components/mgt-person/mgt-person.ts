@@ -335,7 +335,6 @@ export class MgtPerson extends MgtTemplatedComponent {
 
   public connectedCallback() {
     super.connectedCallback();
-    this.updateDirection();
   }
 
   /**
