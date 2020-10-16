@@ -4,11 +4,9 @@
     "outDir": "dist/es6",
     "sourceRoot": "src",
     "rootDir": "src",
-    "composite": true,
-    "resolveJsonModule": true,
-    "esModuleInterop": true
+    "composite": true
   },
   "references": [{ "path": "../mgt-element" }],
-  "include": ["src", "src/**/*.ts", "src/**/strings.ts"],
+  "include": ["src"],
   "exclude": ["src/bundle"]
 }
