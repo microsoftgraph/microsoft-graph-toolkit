@@ -390,18 +390,18 @@ mgt-flyout {
 
 @include theme();
 
-:host(.rtl) {
+[dir='rtl'] {
   .selected-list {
     list-style-type: none;
     &__person-wrapper {
-      margin-left: 6px !important;
+      margin-left: 6px;
       &__person {
-        margin-right: 0px !important;
-        margin-left: 4px !important;
+        margin-right: 0px;
+        margin-left: 4px;
       }
       &__overflow {
         &__gradient {
-          right: auto !important;
+          right: auto;
           position: absolute;
           margin-right: 0px;
           width: 10px;
@@ -409,8 +409,8 @@ mgt-flyout {
           top: 0;
         }
         &__close-icon {
-          right: auto !important;
-          margin-left: 5px !important;
+          right: auto;
+          margin-left: 5px;
           left: 0px;
         }
       }
@@ -418,6 +418,6 @@ mgt-flyout {
   }
 
   .flyout-root {
-    text-align: right !important;
+    text-align: right;
   }
 }

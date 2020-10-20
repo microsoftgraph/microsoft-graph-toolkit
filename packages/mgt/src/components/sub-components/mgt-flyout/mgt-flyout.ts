@@ -153,7 +153,8 @@ export class MgtFlyout extends MgtBaseComponent {
   protected render() {
     const flyoutClasses = {
       root: true,
-      visible: this.isOpen
+      visible: this.isOpen,
+      dir: this.direction
     };
 
     const anchorTemplate = this.renderAnchor();
@@ -303,7 +304,7 @@ export class MgtFlyout extends MgtBaseComponent {
         }
       }
 
-      if (this._isRTL) {
+      if (this.direction === 'rtl') {
         if (left > 100) {
           //potentially anchored to right side (for non people-picker flyout)
           flyout.style.left = `${windowRect.width - left + flyoutRect.left - flyoutRect.width - 30}px`;
@@ -381,12 +382,5 @@ export class MgtFlyout extends MgtBaseComponent {
 
   private handleFlyoutWheel(e: Event) {
     e.preventDefault();
-  }
-
-  updateDirection() {
-    let direction = this.getDirection();
-    if (direction == 'rtl') {
-      this._isRTL = true;
-    }
   }
 }

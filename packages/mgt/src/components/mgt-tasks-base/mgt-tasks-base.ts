@@ -148,7 +148,7 @@ export abstract class MgtTasksBase extends MgtTemplatedComponent {
 
     return html`
       ${headerTemplate} ${newTaskTemplate}
-      <div class="Tasks">
+      <div class="Tasks" dir=${this.direction}>
         ${tasksTemplate}
       </div>
     `;

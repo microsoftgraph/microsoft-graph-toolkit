@@ -154,7 +154,7 @@ export class MgtLogin extends MgtTemplatedComponent {
    */
   protected render() {
     return html`
-      <div class="root">
+      <div class="root" dir=${this.direction}>
         <div>
           ${this.renderButton()}
         </div>

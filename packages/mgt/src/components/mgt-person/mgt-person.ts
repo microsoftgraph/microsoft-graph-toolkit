@@ -397,6 +397,7 @@ export class MgtPerson extends MgtTemplatedComponent {
     return html`
       <div
         class="root"
+        dir=${this.direction}
         @click=${this.handleMouseClick}
         @mouseenter=${this.handleMouseEnter}
         @mouseleave=${this.handleMouseLeave}

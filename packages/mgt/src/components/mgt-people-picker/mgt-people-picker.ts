@@ -400,7 +400,7 @@ export class MgtPeoplePicker extends MgtTemplatedComponent {
     inputClasses[theme] = true;
 
     return html`
-      <div class=${classMap(inputClasses)} @click=${e => this.focus(e)}>
+      <div dir=${this.direction} class=${classMap(inputClasses)} @click=${e => this.focus(e)}>
         <div class="selected-list">
           ${selectedPeopleTemplate} ${flyoutTemplate}
         </div>

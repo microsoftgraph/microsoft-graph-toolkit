@@ -118,8 +118,8 @@ mgt-login .popup-command {
   }
 }
 
-.login-button[dir='rtl'] {
-  --details-spacing: 0px 6px 0px 0px;
+[dir='rtl'] {
+  --details-spacing: 0px 6px 0px 0px !important;
 }
 .login-icon {
   & + span {

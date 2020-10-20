@@ -461,7 +461,7 @@ $dropdown-item-selected-background: var(--dropdown-item-selected-background, #de
   }
 }
 
-:host(.rtl) {
+[dir='rtl'] {
   .input-wrapper::after {
     content: '';
     position: absolute;

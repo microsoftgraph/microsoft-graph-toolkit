@@ -396,7 +396,7 @@ mgt-person .avatar-icon {
   }
 }
 
-:host(.rtl) {
+[dir='rtl'] {
   .root {
     direction: rtl;
   }

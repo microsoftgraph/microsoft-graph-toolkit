@@ -5,7 +5,7 @@
  * -------------------------------------------------------------------------------------------
  */
 
-import { LitElement, PropertyValues } from 'lit-element';
+import { internalProperty, LitElement, PropertyValues } from 'lit-element';
 import { Providers } from '../providers/Providers';
 import { LocalizationHelper } from '../utils/LocalizationHelper';
 
@@ -41,6 +41,8 @@ export enum ComponentMediaQuery {
  * @extends {LitElement}
  */
 export abstract class MgtBaseComponent extends LitElement {
+  @internalProperty() public direction;
+
   /**
    * Get ShadowRoot toggle, returns value of _useShadowRoot
    *
@@ -137,13 +139,13 @@ export abstract class MgtBaseComponent extends LitElement {
    */
   public connectedCallback() {
     super.connectedCallback();
-    LocalizationHelper.onUpdated(this.handleLocalizationChanged);
+    LocalizationHelper.onStringsUpdated(this.handleLocalizationChanged);
     this.updateDirection();
   }
 
   public disconnectedCallback() {
     super.disconnectedCallback();
-    LocalizationHelper.removeOnUpdated(this.handleLocalizationChanged);
+    LocalizationHelper.removeOnStringsUpdated(this.handleLocalizationChanged);
   }
 
   /**
@@ -153,7 +155,8 @@ export abstract class MgtBaseComponent extends LitElement {
    * @memberof MgtBaseComponent
    */
   protected handleLocalizationChanged() {
-    return LocalizationHelper.updateStringsForTag(this.tagName, this.strings);
+    this.requestUpdate();
+    LocalizationHelper.updateStringsForTag(this.tagName, this.strings);
   }
 
   /**
@@ -290,26 +293,12 @@ export abstract class MgtBaseComponent extends LitElement {
   }
 
   /**
-   * returns directional attribute from Localization Helper
-   *
-   * @protected
-   * @returns
-   * @memberof MgtBaseComponent
-   */
-  protected getDirection() {
-    return LocalizationHelper.getDirection();
-  }
-
-  /**
-   * Adds rtl class to component if direction is returned rtl
+   * Adds rtl attribute to component if direction is returned rtl
    *
    * @private
    * @memberof MgtBaseComponent
    */
   protected updateDirection() {
-    const direction = this.getDirection();
-    if (direction == 'rtl') {
-      this.classList.add('rtl');
-    }
+    this.direction = LocalizationHelper.getDocumentDirection();
   }
 }

@@ -691,7 +691,7 @@ mgt-tasks,
   }
 }
 
-:host(.rtl) {
+[dir='rtl'] {
   mgt-arrow-options {
     --arrow-options-left: auto;
   }

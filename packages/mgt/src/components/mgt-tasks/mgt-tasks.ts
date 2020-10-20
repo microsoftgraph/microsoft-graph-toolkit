@@ -456,7 +456,7 @@ export class MgtTasks extends MgtTemplatedComponent {
 
     if (!this.hideHeader) {
       header = html`
-        <div class="Header">
+        <div class="Header" dir=${this.direction}>
           ${this.renderPlanOptions()}
         </div>
       `;

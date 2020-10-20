@@ -154,7 +154,7 @@ mgt-agenda .event-attendee-loading {
   margin: 0 2px 0 0;
 }
 
-:host(.rtl) {
+[dir='rtl'] {
   .event-location {
     margin: 0px 4px 0px 0px !important;
   }

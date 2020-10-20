@@ -285,7 +285,7 @@ export class MgtTeamsChannelPicker extends MgtTemplatedComponent {
     return (
       this.renderTemplate('default', { teams: this.items }) ||
       html`
-        <div class="root" @blur=${this.lostFocus}>
+        <div class="root" @blur=${this.lostFocus} dir=${this.direction}>
           <div class=${classMap(inputClasses)} @click=${this.gainedFocus}>
             ${this.renderSelected()}
             <div class="search-wrapper">${this.renderSearchIcon()} ${this.renderInput()}</div>

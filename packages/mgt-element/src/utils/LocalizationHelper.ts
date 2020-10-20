@@ -17,7 +17,11 @@ import { EventDispatcher, EventHandler } from './EventDispatcher';
 export class LocalizationHelper {
   static _strings: any;
 
-  static _eventDispatcher: EventDispatcher<any> = new EventDispatcher();
+  static _stringsEventDispatcher: EventDispatcher<any> = new EventDispatcher();
+
+  static _directionEventDispatcher: EventDispatcher<any> = new EventDispatcher();
+
+  private static mutationObserver;
 
   public static get strings() {
     return this._strings;
@@ -31,7 +35,7 @@ export class LocalizationHelper {
    */
   public static set strings(value: any) {
     this._strings = value;
-    this._eventDispatcher.fire(null);
+    this._stringsEventDispatcher.fire(null);
   }
 
   /**
@@ -41,8 +45,9 @@ export class LocalizationHelper {
    * @returns {string} dir
    * @memberof LocalizationHelper
    */
-  public static getDirection() {
-    return document.body.getAttribute('dir');
+  public static getDocumentDirection() {
+    this.initDirection();
+    return document.body.getAttribute('dir') || document.documentElement.getAttribute('dir');
   }
 
   /**
@@ -52,12 +57,48 @@ export class LocalizationHelper {
    * @param {EventHandler<ProvidersChangedState>} event
    * @memberof LocalizationHelper
    */
-  public static onUpdated(event: EventHandler<any>) {
-    this._eventDispatcher.add(event);
+  public static onStringsUpdated(event: EventHandler<any>) {
+    this._stringsEventDispatcher.add(event);
   }
 
-  public static removeOnUpdated(event: EventHandler<any>) {
-    this._eventDispatcher.remove(event);
+  public static removeOnStringsUpdated(event: EventHandler<any>) {
+    this._stringsEventDispatcher.remove(event);
+  }
+
+  public static onDirectionUpdated(event: EventHandler<any>) {
+    this.initDirection();
+    this._directionEventDispatcher.add(event);
+  }
+
+  public static removeOnDirectionUpdated(event: EventHandler<any>) {
+    this.mutationObserver.disconnect();
+    this._directionEventDispatcher.remove(event);
+  }
+
+  private static _isDirectionInit = false;
+
+  /**
+   * Checks for direction setup and adds mutationObserver
+   *
+   * @private
+   * @static
+   * @returns
+   * @memberof LocalizationHelper
+   */
+  private static initDirection() {
+    if (this._isDirectionInit) {
+      return;
+    }
+
+    this._isDirectionInit = true;
+    this.mutationObserver = new MutationObserver(function(mutations) {
+      mutations.forEach(function(mutation) {
+        if (mutation.attributeName == 'dir') {
+          this._directionEventDispatcher.fire(null);
+        }
+      });
+    });
+    this.mutationObserver.observe(document.body, { childList: true });
   }
 
   /**
