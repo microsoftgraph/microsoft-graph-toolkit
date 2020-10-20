@@ -76,13 +76,16 @@ export abstract class MgtTasksBase extends MgtTemplatedComponent {
   private _newTaskName: string;
   private _previousMediaQuery: ComponentMediaQuery;
 
+  protected get strings() {
+    return strings;
+  }
+
   constructor() {
     super();
 
     this.clearState();
     this._previousMediaQuery = this.mediaQuery;
     this.onResize = this.onResize.bind(this);
-    this._strings = strings;
   }
 
   /**
@@ -172,7 +175,7 @@ export abstract class MgtTasksBase extends MgtTemplatedComponent {
         ${headerContentTemplate}
         <button class="${addClasses}" @click="${() => this.showNewTaskPanel()}">
           <span class="TaskIcon"></span>
-          <span>${this._strings.addTaskButtonSubtitle}</span>
+          <span>${this.strings.addTaskButtonSubtitle}</span>
         </button>
       </div>
     `;
@@ -223,7 +226,7 @@ export abstract class MgtTasksBase extends MgtTemplatedComponent {
     const taskTitle = html`
       <input
         type="text"
-        placeholder="${this._strings.newTaskPlaceholder}"
+        placeholder="${this.strings.newTaskPlaceholder}"
         .value="${newTaskName}"
         label="new-taskName-input"
         aria-label="new-taskName-input"
@@ -242,7 +245,7 @@ export abstract class MgtTasksBase extends MgtTemplatedComponent {
     const taskAddTemplate = !this._isNewTaskBeingAdded
       ? html`
           <div class="TaskIcon TaskCancel" @click="${() => this.hideNewTaskPanel()}">
-            <span>${this._strings.cancelNewTaskSubtitle}</span>
+            <span>${this.strings.cancelNewTaskSubtitle}</span>
           </div>
           <div class="TaskIcon TaskAdd" @click="${() => this.addTask()}">
             <span></span>

@@ -55,6 +55,9 @@ export class MgtLogin extends MgtTemplatedComponent {
   static get styles() {
     return styles;
   }
+  protected get strings() {
+    return strings;
+  }
 
   /**
    * allows developer to use specific user details for login
@@ -88,7 +91,6 @@ export class MgtLogin extends MgtTemplatedComponent {
   constructor() {
     super();
     this._isFlyoutOpen = false;
-    this._strings = strings;
   }
 
   /**
@@ -281,7 +283,7 @@ export class MgtLogin extends MgtTemplatedComponent {
         <ul>
           <li>
             <button class="popup-command" @click=${this.logout} aria-label="Sign Out">
-              ${this._strings.signOutLinkSubtitle}
+              ${this.strings.signOutLinkSubtitle}
             </button>
           </li>
         </ul>
@@ -335,7 +337,7 @@ export class MgtLogin extends MgtTemplatedComponent {
       html`
         <i class="login-icon ms-Icon ms-Icon--Contact"></i>
         <span aria-label="Sign In">
-          ${this._strings.signInLinkSubtitle}
+          ${this.strings.signInLinkSubtitle}
         </span>
       `
     );

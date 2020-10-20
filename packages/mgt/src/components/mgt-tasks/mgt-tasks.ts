@@ -206,6 +206,10 @@ export class MgtTasks extends MgtTemplatedComponent {
     return styles;
   }
 
+  protected get strings() {
+    return strings;
+  }
+
   /**
    * Get whether new task view is visible
    *
@@ -347,7 +351,6 @@ export class MgtTasks extends MgtTemplatedComponent {
 
     this.previousMediaQuery = this.mediaQuery;
     this.onResize = this.onResize.bind(this);
-    this._strings = strings;
   }
 
   /**
@@ -777,7 +780,7 @@ export class MgtTasks extends MgtTemplatedComponent {
               }}"
             >
               <span class="TaskIcon"></span>
-              <span>${this._strings.addTaskButtonSubtitle}</span>
+              <span>${this.strings.addTaskButtonSubtitle}</span>
             </button>
           `;
 
@@ -878,7 +881,7 @@ export class MgtTasks extends MgtTemplatedComponent {
     const taskTitle = html`
       <input
         type="text"
-        placeholder=${this._strings.newTaskPlaceholder}
+        placeholder=${this.strings.newTaskPlaceholder}
         .value="${this._newTaskName}"
         label="new-taskName-input"
         aria-label="new-taskName-input"
@@ -982,7 +985,7 @@ export class MgtTasks extends MgtTemplatedComponent {
       : html`
           <div class="TaskAddButtonContainer ${this._newTaskName === '' ? 'Disabled' : ''}">
             <div class="TaskIcon TaskCancel" @click="${() => (this.isNewTaskVisible = false)}">
-              <span>${this._strings.cancelNewTaskSubtitle}</span>
+              <span>${this.strings.cancelNewTaskSubtitle}</span>
             </div>
             <div class="TaskIcon TaskAdd" @click="${this.onAddTaskClick}">
               <span></span>
@@ -1138,7 +1141,7 @@ export class MgtTasks extends MgtTemplatedComponent {
             <div class="TaskOptions">
               <mgt-dot-options
                 .options="${{
-                  [this._strings.removeTaskSubtitle]: () => this.removeTask(task)
+                  [this.strings.removeTaskSubtitle]: () => this.removeTask(task)
                 }}"
               ></mgt-dot-options>
             </div>

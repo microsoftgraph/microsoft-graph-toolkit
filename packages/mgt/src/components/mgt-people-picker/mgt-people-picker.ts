@@ -100,6 +100,10 @@ export class MgtPeoplePicker extends MgtTemplatedComponent {
     return styles;
   }
 
+  protected get strings() {
+    return strings;
+  }
+
   /**
    * Gets the flyout element
    *
@@ -332,7 +336,6 @@ export class MgtPeoplePicker extends MgtTemplatedComponent {
     this.showMax = 6;
     this.selectedPeople = [];
     this.theme = ThemeType.light;
-    this._strings = strings;
   }
 
   /**
@@ -432,7 +435,7 @@ export class MgtPeoplePicker extends MgtTemplatedComponent {
   protected renderInput(): TemplateResult {
     const hasSelectedPeople = !!this.selectedPeople.length;
 
-    const placeholder = this.placeholder ? this.placeholder : this._strings.inputPlaceholderText;
+    const placeholder = this.placeholder ? this.placeholder : this.strings.inputPlaceholderText;
 
     const selectionMode = this.selectionMode ? this.selectionMode : 'multiple';
 
@@ -562,7 +565,7 @@ export class MgtPeoplePicker extends MgtTemplatedComponent {
         <div class="message-parent">
           <mgt-spinner></mgt-spinner>
           <div label="loading-text" aria-label="loading" class="loading-text">
-            ${this._strings.loadingMessage}
+            ${this.strings.loadingMessage}
           </div>
         </div>
       `
@@ -583,7 +586,7 @@ export class MgtPeoplePicker extends MgtTemplatedComponent {
       html`
         <div class="message-parent">
           <div label="search-error-text" aria-label="We didn't find any matches." class="search-error-text">
-            ${this._strings.noResultsFound}
+            ${this.strings.noResultsFound}
           </div>
         </div>
       `

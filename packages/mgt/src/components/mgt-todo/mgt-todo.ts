@@ -28,7 +28,6 @@ import {
   updateTodoTask
 } from './graph.todo';
 import { styles } from './mgt-todo-css';
-import { strings } from './strings';
 
 /**
  * component enables the user to view, add, remove, complete, or edit todo tasks. It works with tasks in Microsoft Planner or Microsoft To-Do.
@@ -111,7 +110,6 @@ export class MgtTodo extends MgtTasksBase {
     this._tasks = [];
     this._loadingTasks = [];
     this._isLoadingTasks = false;
-    this._strings = strings;
   }
 
   /**
@@ -311,7 +309,7 @@ export class MgtTodo extends MgtTasksBase {
             <div class="TaskOptions">
               <mgt-dot-options
                 .options="${{
-                  [this._strings.removeTaskSubtitle]: e => this.removeTask(e, task.id)
+                  [this.strings.removeTaskSubtitle]: e => this.removeTask(e, task.id)
                 }}"
               ></mgt-dot-options>
             </div>
