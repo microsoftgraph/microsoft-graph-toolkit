@@ -102,7 +102,18 @@ export abstract class MgtBaseComponent extends LitElement {
 
   private static _useShadowRoot: boolean = true;
 
-  public _strings: any;
+  private _strings: any;
+
+  /**
+   * returns component strings
+   *
+   * @readonly
+   * @protected
+   * @memberof MgtBaseComponent
+   */
+  protected get strings() {
+    return this._strings;
+  }
 
   /**
    * determines if login component is in loading state
@@ -144,8 +155,7 @@ export abstract class MgtBaseComponent extends LitElement {
    * @memberof MgtBaseComponent
    */
   protected handleLocalizationChanged() {
-    this._strings = this.serveStrings(this._strings);
-    this.requestUpdate();
+    return LocalizationHelper.updateStringsForTag(this.tagName, this.strings);
   }
 
   /**
@@ -279,18 +289,6 @@ export abstract class MgtBaseComponent extends LitElement {
 
     this._isLoadingState = value;
     this.requestUpdate('isLoadingState');
-  }
-
-  /**
-   *  Gathers default strings from component for localization
-   *
-   * @protected
-   * @param {*} strings
-   * @returns
-   * @memberof MgtBaseComponent
-   */
-  protected serveStrings(strings) {
-    return LocalizationHelper.updateStringsForTag(this.tagName, strings);
   }
 
   /**
