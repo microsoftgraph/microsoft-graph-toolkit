@@ -333,10 +333,6 @@ export class MgtPerson extends MgtTemplatedComponent {
     this._isInvalidImageSrc = false;
   }
 
-  public connectedCallback() {
-    super.connectedCallback();
-  }
-
   /**
    * Synchronizes property values when attributes change.
    *
