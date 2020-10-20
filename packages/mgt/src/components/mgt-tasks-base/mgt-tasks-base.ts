@@ -76,7 +76,7 @@ export abstract class MgtTasksBase extends MgtTemplatedComponent {
   private _newTaskName: string;
   private _previousMediaQuery: ComponentMediaQuery;
 
-  protected get strings() {
+  protected get strings(): { [x: string]: string } {
     return strings;
   }
 

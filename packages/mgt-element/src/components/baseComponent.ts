@@ -102,8 +102,6 @@ export abstract class MgtBaseComponent extends LitElement {
 
   private static _useShadowRoot: boolean = true;
 
-  private _strings: any;
-
   /**
    * returns component strings
    *
@@ -111,8 +109,8 @@ export abstract class MgtBaseComponent extends LitElement {
    * @protected
    * @memberof MgtBaseComponent
    */
-  protected get strings() {
-    return this._strings;
+  protected get strings(): { [x: string]: string } {
+    return {};
   }
 
   /**
