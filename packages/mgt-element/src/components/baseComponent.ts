@@ -6,6 +6,7 @@
  */
 
 import { internalProperty, LitElement, PropertyValues } from 'lit-element';
+import { runInThisContext } from 'vm';
 import { Providers } from '../providers/Providers';
 import { LocalizationHelper } from '../utils/LocalizationHelper';
 
@@ -41,7 +42,7 @@ export enum ComponentMediaQuery {
  * @extends {LitElement}
  */
 export abstract class MgtBaseComponent extends LitElement {
-  @internalProperty() public direction;
+  @internalProperty() public direction = 'ltr';
 
   /**
    * Get ShadowRoot toggle, returns value of _useShadowRoot
@@ -130,6 +131,8 @@ export abstract class MgtBaseComponent extends LitElement {
       (this as any)._needsShimAdoptedStyleSheets = true;
     }
     this.handleLocalizationChanged = this.handleLocalizationChanged.bind(this);
+    this.updateDirection = this.updateDirection.bind(this);
+    this.updateDirection();
   }
 
   /**
@@ -140,12 +143,13 @@ export abstract class MgtBaseComponent extends LitElement {
   public connectedCallback() {
     super.connectedCallback();
     LocalizationHelper.onStringsUpdated(this.handleLocalizationChanged);
-    this.updateDirection();
+    LocalizationHelper.onDirectionUpdated(this.updateDirection);
   }
 
   public disconnectedCallback() {
     super.disconnectedCallback();
     LocalizationHelper.removeOnStringsUpdated(this.handleLocalizationChanged);
+    LocalizationHelper.removeOnDirectionUpdated(this.updateDirection);
   }
 
   /**

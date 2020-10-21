@@ -46,7 +46,6 @@ export class LocalizationHelper {
    * @memberof LocalizationHelper
    */
   public static getDocumentDirection() {
-    this.initDirection();
     return document.body.getAttribute('dir') || document.documentElement.getAttribute('dir');
   }
 
@@ -66,12 +65,11 @@ export class LocalizationHelper {
   }
 
   public static onDirectionUpdated(event: EventHandler<any>) {
-    this.initDirection();
     this._directionEventDispatcher.add(event);
+    this.initDirection();
   }
 
   public static removeOnDirectionUpdated(event: EventHandler<any>) {
-    this.mutationObserver.disconnect();
     this._directionEventDispatcher.remove(event);
   }
 
@@ -89,7 +87,6 @@ export class LocalizationHelper {
     if (this._isDirectionInit) {
       return;
     }
-
     this._isDirectionInit = true;
     this.mutationObserver = new MutationObserver(function(mutations) {
       mutations.forEach(function(mutation) {
@@ -98,7 +95,9 @@ export class LocalizationHelper {
         }
       });
     });
-    this.mutationObserver.observe(document.body, { childList: true });
+    const options = { attributes: true, attributeFilter: ['dir'] };
+    this.mutationObserver.observe(document.body, options);
+    this.mutationObserver.observe(document.documentElement, options);
   }
 
   /**
