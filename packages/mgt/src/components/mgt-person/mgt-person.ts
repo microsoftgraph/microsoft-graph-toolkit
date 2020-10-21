@@ -90,7 +90,18 @@ export class MgtPerson extends MgtTemplatedComponent {
   @property({
     attribute: 'person-query'
   })
-  public personQuery: string;
+  public get personQuery(): string {
+    return this._personQuery;
+  }
+  public set personQuery(value: string) {
+    if (value === this._personQuery) {
+      return;
+    }
+
+    this._personQuery = value;
+    this.personDetails = null;
+    this.requestStateUpdate();
+  }
 
   /**
    * user-id property allows developer to use id value to determine person
@@ -99,7 +110,18 @@ export class MgtPerson extends MgtTemplatedComponent {
   @property({
     attribute: 'user-id'
   })
-  public userId: string;
+  public get userId(): string {
+    return this._userId;
+  }
+  public set userId(value: string) {
+    if (value === this._userId) {
+      return;
+    }
+
+    this._userId = value;
+    this.personDetails = null;
+    this.requestStateUpdate();
+  }
 
   /**
    * determines if person component renders user-name
@@ -317,6 +339,8 @@ export class MgtPerson extends MgtTemplatedComponent {
   private _personAvatarBg: string;
   private _personImage: string;
   private _personPresence: Presence;
+  private _personQuery: string;
+  private _userId: string;
 
   private _mouseLeaveTimeout;
   private _mouseEnterTimeout;
@@ -331,30 +355,6 @@ export class MgtPerson extends MgtTemplatedComponent {
     this.view = PersonViewType.avatar;
     this.avatarSize = 'auto';
     this._isInvalidImageSrc = false;
-  }
-
-  /**
-   * Synchronizes property values when attributes change.
-   *
-   * @param {*} name
-   * @param {*} oldValue
-   * @param {*} newValue
-   * @memberof MgtPerson
-   */
-  public attributeChangedCallback(name, oldval, newval) {
-    super.attributeChangedCallback(name, oldval, newval);
-
-    if (oldval === newval) {
-      return;
-    }
-
-    switch (name) {
-      case 'person-query':
-      case 'user-id':
-        this.personDetails = null;
-        this.requestStateUpdate();
-        break;
-    }
   }
 
   /**
