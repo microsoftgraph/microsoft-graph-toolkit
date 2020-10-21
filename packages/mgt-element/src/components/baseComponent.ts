@@ -32,22 +32,6 @@ export enum ComponentMediaQuery {
 }
 
 /**
- * theme types
- * @enum {string}
- */
-export enum ThemeType {
-  /**
-   * Render light theme
-   */
-  light = 'mgt-light',
-
-  /**
-   * Render dark theme
-   */
-  dark = 'mgt-dark'
-}
-
-/**
  * BaseComponent extends LitElement including ShadowRoot toggle and fireCustomEvent features
  *
  * @export  MgtBaseComponent
@@ -165,31 +149,6 @@ export abstract class MgtBaseComponent extends LitElement {
    */
   protected loadState(): Promise<void> {
     return Promise.resolve();
-  }
-
-  /**
-   * load theme of component.
-   * @protected
-   * @param {Object} classes root or first child level class where theme class is loaded into
-   * @memberof MgtBaseComponent
-   */
-  protected loadTheme(classes) {
-    const parent = this.closest("[class^='mgt-']");
-    let theme = ThemeType.light.toString(); // 'mgt-light'
-    if (parent && parent.className) {
-      const className = parent.className;
-      // extract only the mgt- theme class
-      const reg = /(mgt-\S\w*)/;
-      const themeReg = reg.exec(className);
-      theme = themeReg[0];
-
-      // default to mgt-light if mgt-foo is supplied
-      if (!Object.values(ThemeType).includes(theme as ThemeType)) {
-        theme = ThemeType.light.toString();
-      }
-    }
-
-    classes[theme] = true;
   }
 
   /**

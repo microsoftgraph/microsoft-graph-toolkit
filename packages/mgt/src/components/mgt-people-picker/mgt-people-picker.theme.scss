@@ -10,78 +10,86 @@
 $themes: ('light', 'dark');
 
 // variables with theme colors
-$dropdown__background-color: (
-  dark: var(--dropdown-background-color, #1f1f1f),
-  light: var(--dropdown-background-color, $list__background-color--light)
+$theme-values: (
+  dropdown__background-color: (
+    _var: --dropdown-background-color,
+    dark: #1f1f1f,
+    light: $list__background-color--light
+  ),
+  dropdown-item__background-color: (
+    _var: --dropdown-item-hover-background,
+    dark: $input-outlined__background-color--hover--dark,
+    light: $input-outlined__background-color--hover--light
+  ),
+  placeholder--focus: (
+    _var: --placeholder-focus-color,
+    dark: rgba(255, 255, 255, 0.8),
+    light: #323130
+  ),
+  background-color: (
+    _var: --input-background-color,
+    dark: var(--people-list-background-color, $input-outlined__background-color--dark),
+    light: var(--people-list-background-color, $input-outlined__background-color--light)
+  ),
+  input__border: (
+    _var: --input-border,
+    dark: 2px solid $input-outlined__border-color--dark,
+    light: 2px solid $input-outlined__border-color--light
+  ),
+  input__border-top: (
+    _var: --input-border-top,
+    dark: 2px solid $input-outlined__border-color--dark,
+    light: 2px solid $input-outlined__border-color--light
+  ),
+  input__border-right: (
+    _var: --input-border-right,
+    dark: 2px solid $input-outlined__border-color--dark,
+    light: 2px solid $input-outlined__border-color--light
+  ),
+  input__border-bottom: (
+    _var: --input-border-bottom,
+    dark: 2px solid $input-outlined__border-color--dark,
+    light: 2px solid $input-outlined__border-color--light
+  ),
+  input__border-left: (
+    _var: --input-border-left,
+    dark: 2px solid $input-outlined__border-color--dark,
+    light: 2px solid $input-outlined__border-color--light
+  ),
+  input__border-color--hover: (
+    _var: --input-hover-color,
+    light: $input-outlined__border-color--hover--light,
+    dark: $input-outlined__border-color--hover--dark
+  ),
+  input__border-color--focused: (
+    _var: --input-focus-color,
+    light: $input-outlined__border-color--focused--light,
+    dark: $input-outlined__border-color--focused--dark
+  ),
+  color: (
+    _var: --font-color,
+    dark: $text__color__sub1--dark,
+    light: $text__color__sub1--light
+  ),
+  selected-person__background-color: (
+    _var: --selected-person-background-color,
+    dark: #474747,
+    light: $pill__background-color--light
+  )
 );
 
-$dropdown-item__background-color: (
-  dark: var(--dropdown-item-hover-background, $input-outlined__background-color--hover--dark),
-  light: var(--dropdown-item-hover-background, $input-outlined__background-color--hover--light)
-);
-
-$placeholder--focus: (
-  dark: var(--placeholder-focus-color, rgba(255, 255, 255, 0.8)),
-  light: var(--placeholder-focus-color, #323130)
-);
-
-$background-color: (
-  dark: var(--input-background-color, var(--people-list-background-color, $input-outlined__background-color--dark)),
-  light: var(--input-background-color, var(--people-list-background-color, $input-outlined__background-color--light))
-);
-
-$input__border: (
-  dark: var(--input-border, 2px solid $input-outlined__border-color--dark),
-  light: var(--input-border, 2px solid $input-outlined__border-color--light)
-);
-
-$input__border-top: (
-  dark: var(--input-border-top, 2px solid $input-outlined__border-color--dark),
-  light: var(--input-border-top, 2px solid $input-outlined__border-color--light)
-);
-
-$input__border-right: (
-  dark: var(--input-border-right, 2px solid $input-outlined__border-color--dark),
-  light: var(--input-border-right, 2px solid $input-outlined__border-color--light)
-);
-
-$input__border-bottom: (
-  dark: var(--input-border-bottom, 2px solid $input-outlined__border-color--dark),
-  light: var(--input-border-bottom, 2px solid $input-outlined__border-color--light)
-);
-
-$input__border-left: (
-  dark: var(--input-border-left, 2px solid $input-outlined__border-color--dark),
-  light: var(--input-border-left, 2px solid $input-outlined__border-color--light)
-);
-
-$input__border-color--hover: (
-  light: var(--input-hover-color, $input-outlined__border-color--hover--light),
-  dark: var(--input-hover-color, $input-outlined__border-color--hover--dark)
-);
-
-$input__border-color--focused: (
-  light: var(--input-focus-color, $input-outlined__border-color--focused--light),
-  dark: var(--input-focus-color, $input-outlined__border-color--focused--dark)
-);
-
-$color: (
-  dark: var(--font-color, $text__color__sub1--dark),
-  light: var(--font-color, $text__color__sub1--light)
-);
-
-$selected-person__background-color: (
-  dark: var(--selected-person-background-color, #474747),
-  light: var(--selected-person-background-color, $pill__background-color--light)
-);
+@function set-var($var, $theme) {
+  $theme-value: map-get($theme-values, $var);
+  @return var(#{map-get($theme-value, '_var')}, #{map-get($theme-value, $theme)});
+}
 
 // mixins
 @mixin input__border($theme) {
-  border: map-get($input__border, $theme);
-  border-top: map-get($input__border-top, $theme);
-  border-right: map-get($input__border-right, $theme);
-  border-bottom: map-get($input__border-bottom, $theme);
-  border-left: map-get($input__border-left, $theme);
+  border: set-var(input__border, $theme);
+  border-top: set-var(input__border-top, $theme);
+  border-right: set-var(input__border-right, $theme);
+  border-bottom: set-var(input__border-bottom, $theme);
+  border-left: set-var(input__border-left, $theme);
 }
 
 @mixin selected-person__overflow($theme) {
@@ -89,30 +97,30 @@ $selected-person__background-color: (
     to right,
     rgba(255, 255, 255, 0) 0%,
     rgba(255, 255, 255, 0) 60%,
-    map-get($selected-person__background-color, $theme) 100%
+    set-var(selected-person__background-color, $theme) 100%
   );
   background-image: -moz-linear-gradient(
     left,
     rgba(255, 255, 255, 0) 0%,
     rgba(255, 255, 255, 0) 60%,
-    map-get($selected-person__background-color, $theme) 100%
+    set-var(selected-person__background-color, $theme) 100%
   );
   background-image: -o-linear-gradient(
     left,
     rgba(255, 255, 255, 0) 0%,
     rgba(255, 255, 255, 0) 60%,
-    map-get($selected-person__background-color, $theme) 100%
+    set-var(selected-person__background-color, $theme) 100%
   );
   background-image: -ms-linear-gradient(
     left,
     rgba(255, 255, 255, 0) 0%,
     rgba(255, 255, 255, 0) 60%,
-    map-get($selected-person__background-color, $theme) 100%
+    set-var(selected-person__background-color, $theme) 100%
   );
   background-image: -webkit-linear-gradient(
     left,
     rgba(255, 255, 255, 0) 0%,
     rgba(255, 255, 255, 0) 60%,
-    map-get($selected-person__background-color, $theme) 100%
+    set-var(selected-person__background-color, $theme) 100%
   );
 }

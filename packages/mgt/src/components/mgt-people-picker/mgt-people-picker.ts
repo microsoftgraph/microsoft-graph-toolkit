@@ -353,8 +353,6 @@ export class MgtPeoplePicker extends MgtTemplatedComponent {
       'people-picker': true
     };
 
-    this.loadTheme(inputClasses);
-
     return html`
       <div class=${classMap(inputClasses)} @click=${e => this.focus(e)}>
         <div class="selected-list">
