@@ -85,8 +85,6 @@ export class MgtFlyout extends MgtBaseComponent {
   // if the flyout is opened once, this will keep the flyout in the dom
   private _renderedOnce = false;
 
-  private _isRTL = false;
-
   private get _flyout(): HTMLElement {
     return this.renderRoot.querySelector('.flyout');
   }
