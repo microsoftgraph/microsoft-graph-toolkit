@@ -28,6 +28,27 @@ export const personPhotoOnly = () => html`
   <mgt-person person-query="me"></mgt-person>
 `;
 
+export const personView = () => html`
+<div class="example">
+  <mgt-person person-query="me" view="avatar"></mgt-person>
+</div>
+<div class="example">
+  <mgt-person person-query="me" view="oneline"></mgt-person>
+</div>
+<div class="example">
+  <mgt-person person-query="me" view="twolines"></mgt-person>
+</div>
+<div class="example">
+  <mgt-person person-query="me" view="threelines"></mgt-person>
+</div>
+
+<style>
+  .example {
+    margin-bottom: 20px;
+  }
+</style>
+`;
+
 export const personPresence = () => html`
   <mgt-person person-query="me" show-presence view="twoLines"></mgt-person>
 `;
@@ -220,14 +241,14 @@ export const setPersonDetails = () => html`
   <script>
     const person = document.querySelector('.my-person');
 
-    person.personDetails = {
-      displayName: 'Megan Bowen',
-      title: 'CEO',
-      mail: 'megan@contoso.com'
-    };
+            person.personDetails = {
+              displayName: 'Megan Bowen',
+              title: 'CEO',
+              mail: 'megan@contoso.com'
+            };
 
-    // set image
-    person.personImage = '';
+            // set image
+            person.personImage = '';
   </script>
 `;
 

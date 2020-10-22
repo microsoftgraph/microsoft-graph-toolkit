@@ -45,7 +45,12 @@ export enum PersonViewType {
   /**
    * Render the avatar and two lines of text
    */
-  twolines = 4
+  twolines = 4,
+
+  /**
+   * Render the avatar and two lines of text
+   */
+  threelines = 5
 }
 
 /**
@@ -71,6 +76,10 @@ export enum PersonViewType {
  * @cssprop --line2-font-weight - {Length} Line 2 font weight
  * @cssprop --line2-color - {Color} Line 2 color
  * @cssprop --line2-text-transform - {String} Line 2 text transform
+ * @cssprop --line3-font-size - {Length} Line 2 font size
+ * @cssprop --line3-font-weight - {Length} Line 2 font weight
+ * @cssprop --line3-color - {Color} Line 2 color
+ * @cssprop --line3-text-transform - {String} Line 2 text transform
  * @cssprop --details-spacing - {Length} spacing between avatar and person details
  */
 @customElement('mgt-person')
@@ -100,28 +109,6 @@ export class MgtPerson extends MgtTemplatedComponent {
     attribute: 'user-id'
   })
   public userId: string;
-
-  /**
-   * determines if person component renders user-name
-   * @type {boolean}
-   * @deprecated [This property will be removed in next major update. Use `view` instead]
-   */
-  @property({
-    attribute: 'show-name',
-    type: Boolean
-  })
-  public showName: boolean;
-
-  /**
-   * determines if person component renders email
-   * @type {boolean}
-   * @deprecated [This property will be removed in next major update. Use `view` instead]
-   */
-  @property({
-    attribute: 'show-email',
-    type: Boolean
-  })
-  public showEmail: boolean;
 
   /**
    * determines if person component renders presence
@@ -285,6 +272,15 @@ export class MgtPerson extends MgtTemplatedComponent {
   @property({ attribute: 'line2-property' }) public line2Property: string;
 
   /**
+   * Sets the property of the personDetails to use for the second line of text.
+   * Default is mail.
+   *
+   * @type {string}
+   * @memberof MgtPerson
+   */
+  @property({ attribute: 'line3-property' }) public line3Property: string;
+
+  /**
    * Sets what data to be rendered (avatar only, oneLine, twoLines).
    * Default is 'avatar'.
    *
@@ -328,6 +324,7 @@ export class MgtPerson extends MgtTemplatedComponent {
     this.personCardInteraction = PersonCardInteraction.none;
     this.line1Property = 'displayName';
     this.line2Property = 'email';
+    this.line3Property = 'jobTitle';
     this.view = PersonViewType.avatar;
     this.avatarSize = 'auto';
     this._isInvalidImageSrc = false;
@@ -629,13 +626,13 @@ export class MgtPerson extends MgtTemplatedComponent {
    * @memberof MgtPerson
    */
   protected renderDetails(person: IDynamicPerson): TemplateResult {
-    if (!person || (!this.showEmail && !this.showName && this.view === PersonViewType.avatar)) {
+    if (!person || this.view === PersonViewType.avatar) {
       return html``;
     }
 
     const details: TemplateResult[] = [];
 
-    if (this.showName || this.view > PersonViewType.avatar) {
+    if (this.view > PersonViewType.avatar) {
       const text = this.getTextFromProperty(person, this.line1Property);
       if (text) {
         details.push(html`
@@ -644,11 +641,20 @@ export class MgtPerson extends MgtTemplatedComponent {
       }
     }
 
-    if (this.showEmail || this.view > PersonViewType.oneline) {
+    if (this.view > PersonViewType.oneline) {
       const text = this.getTextFromProperty(person, this.line2Property);
       if (text) {
         details.push(html`
           <div class="line2" aria-label="${text}">${text}</div>
+        `);
+      }
+    }
+
+    if (this.view > PersonViewType.twolines) {
+      const text = this.getTextFromProperty(person, this.line3Property);
+      if (text) {
+        details.push(html`
+          <div class="line3" aria-label="${text}">${text}</div>
         `);
       }
     }
@@ -784,11 +790,6 @@ export class MgtPerson extends MgtTemplatedComponent {
         this._fetchedPresence = defaultPresence;
       }
     }
-
-    // populate avatar size
-    if (this.showEmail && this.showName) {
-      this.avatarSize = 'large';
-    }
   }
 
   private getImage(): string {
@@ -867,10 +868,7 @@ export class MgtPerson extends MgtTemplatedComponent {
   }
 
   private isLargeAvatar() {
-    return (
-      this.avatarSize === 'large' ||
-      (this.avatarSize === 'auto' && ((this.showEmail && this.showName) || this.view > PersonViewType.oneline))
-    );
+    return this.avatarSize === 'large' || (this.avatarSize === 'auto' && this.view > PersonViewType.oneline);
   }
 
   private handleMouseClick(e: MouseEvent) {
