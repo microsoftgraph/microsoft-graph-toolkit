@@ -241,14 +241,14 @@ export const setPersonDetails = () => html`
   <script>
     const person = document.querySelector('.my-person');
 
-            person.personDetails = {
-              displayName: 'Megan Bowen',
-              title: 'CEO',
-              mail: 'megan@contoso.com'
-            };
+    person.personDetails = {
+      displayName: 'Megan Bowen',
+      title: 'CEO',
+      mail: 'megan@contoso.com'
+    };
 
-            // set image
-            person.personImage = '';
+    // set image
+    person.personImage = '';
   </script>
 `;
 
