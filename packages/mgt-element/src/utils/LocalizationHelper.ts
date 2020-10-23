@@ -88,8 +88,8 @@ export class LocalizationHelper {
       return;
     }
     this._isDirectionInit = true;
-    this.mutationObserver = new MutationObserver(function(mutations) {
-      mutations.forEach(function(mutation) {
+    this.mutationObserver = new MutationObserver(mutations => {
+      mutations.forEach(mutation => {
         if (mutation.attributeName == 'dir') {
           this._directionEventDispatcher.fire(null);
         }
