@@ -670,7 +670,7 @@ $task-icon-color-completed: var(--task-icon-color-completed, white);
   }
 
   .TaskDetails {
-    margin-right: 14px;
+    margin-right: 14px !important;
   }
   .TaskIcon {
     margin-left: 8px;

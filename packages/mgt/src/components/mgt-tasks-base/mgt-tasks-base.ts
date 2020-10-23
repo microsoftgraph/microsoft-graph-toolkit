@@ -171,7 +171,7 @@ export abstract class MgtTasksBase extends MgtTemplatedComponent {
     });
 
     return html`
-      <div class="header">
+      <div class="header" dir=${this.direction}>
         ${headerContentTemplate}
         <button class="${addClasses}" @click="${() => this.showNewTaskPanel()}">
           <span class="TaskIcon"></span>
@@ -256,7 +256,7 @@ export abstract class MgtTasksBase extends MgtTemplatedComponent {
     const newTaskDetailsTemplate = this.renderNewTaskDetails();
 
     return html`
-      <div class="Task NewTask Incomplete">
+      <div dir=${this.direction} class="Task NewTask Incomplete">
         <div class="TaskContent">
           <div class="TaskDetailsContainer">
             <div class="TaskTitle">
