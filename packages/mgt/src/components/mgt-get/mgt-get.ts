@@ -9,7 +9,6 @@ import { customElement, html, property } from 'lit-element';
 import { Providers, ProviderState, MgtTemplatedComponent, equals } from '@microsoft/mgt-element';
 import { prepScopes } from '../../utils/GraphHelpers';
 import { blobToBase64 } from '../../utils/Utils';
-import { ResponseType } from '@microsoft/microsoft-graph-client';
 import { getPhotoForResource, photosCacheEnabled, storePhotoInCache } from '../../graph/graph.photos';
 
 /**
@@ -18,7 +17,7 @@ import { getPhotoForResource, photosCacheEnabled, storePhotoInCache } from '../.
  * @export
  * @enum {string}
  */
-export enum QueryType {
+export enum ResponseType {
   /**
    * Fetches a call as JSON
    */
@@ -87,15 +86,15 @@ export class MgtGet extends MgtTemplatedComponent {
    * Default = json
    * Supported values = json, image
    *
-   * @type {QueryType}
+   * @type {ResponseType}
    * @memberof MgtGet
    */
   @property({
     attribute: 'type',
     reflect: true,
-    type: QueryType
+    type: ResponseType
   })
-  public type: QueryType = QueryType.json;
+  public type: ResponseType = ResponseType.json;
 
   /**
    * Maximum number of pages to get for the resource
@@ -256,7 +255,7 @@ export class MgtGet extends MgtTemplatedComponent {
         }
 
         let response = null;
-        if (this.type == QueryType.json) {
+        if (this.type == ResponseType.json) {
           response = await request.get();
 
           if (isDeltaLink && this.response && Array.isArray(this.response.value) && Array.isArray(response.value)) {
