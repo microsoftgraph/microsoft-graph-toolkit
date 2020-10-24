@@ -117,8 +117,9 @@ export async function getUsersPresenceByPeople(graph: IGraph, people?: IDynamicP
   }
 
   const betaGraph = BetaGraph.fromGraph(graph);
-  const batch = betaGraph.createBatch();
   const peoplePresence = {};
+  const peoplePresenceToQuery: string[] = [];
+  const scopes = ['presence.read.all'];
   let cache: CacheStore<CachePresence>;
 
   if (presenceCacheEnabled()) {
@@ -140,18 +141,25 @@ export async function getUsersPresenceByPeople(graph: IGraph, people?: IDynamicP
       ) {
         peoplePresence[id] = JSON.parse(presence.presence);
       } else {
-        batch.get(id, `/users/${id}/presence`, ['presence.read', 'presence.read.all']);
+        peoplePresenceToQuery.push(id);
       }
     }
   }
 
   try {
-    const response = await batch.executeAll();
+    if (peoplePresenceToQuery.length > 0) {
+      const presenceResult = await betaGraph
+        .api(`/communications/getPresencesByUserId`)
+        .middlewareOptions(prepScopes(...scopes))
+        .post({
+          ids: peoplePresenceToQuery
+        });
 
-    for (const r of response.values()) {
-      peoplePresence[r.id] = r.content;
-      if (presenceCacheEnabled()) {
-        cache.putValue(r.id, { presence: JSON.stringify(r.content) });
+      for (const r of presenceResult.value) {
+        peoplePresence[r.id] = r;
+        if (presenceCacheEnabled()) {
+          cache.putValue(r.id, { presence: JSON.stringify(r) });
+        }
       }
     }
 
