@@ -81,7 +81,7 @@ export class MgtGet extends MgtTemplatedComponent {
   public version: string = 'v1.0';
 
   /**
-   * Type of query
+   * Type of response
    * Default = json
    * Supported values = json, image
    *
