@@ -255,7 +255,7 @@ export class MgtGet extends MgtTemplatedComponent {
         }
 
         let response = null;
-        if (this.type == ResponseType.json) {
+        if (this.type === ResponseType.json) {
           response = await request.get();
 
           if (isDeltaLink && this.response && Array.isArray(this.response.value) && Array.isArray(response.value)) {
