@@ -52,11 +52,11 @@ const App = (props) => {
 import { PeoplePicker } from '@microsoft/mgt-react';
 
 const App = (props) => {
-  handleSelectionChanged = (e) => {
+  const handleSelectionChanged = (e) => {
     this.setState({ people: e.target.selectedPeople });
   };
 
-  return <PeoplePicker selectionChanged={this.handleSelectionChanged} />;
+  return <PeoplePicker selectionChanged={handleSelectionChanged} />;
 };
 ```
 
