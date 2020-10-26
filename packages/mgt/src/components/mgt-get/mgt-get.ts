@@ -8,8 +8,7 @@
 import { customElement, html, property } from 'lit-element';
 import { Providers, ProviderState, MgtTemplatedComponent, equals } from '@microsoft/mgt-element';
 import { prepScopes } from '../../utils/GraphHelpers';
-import { blobToBase64 } from '../../utils/Utils';
-import { getPhotoForResource, photosCacheEnabled, storePhotoInCache } from '../../graph/graph.photos';
+import { getPhotoForResource } from '../../graph/graph.photos';
 
 /**
  * Enumeration to define what types of query are available
