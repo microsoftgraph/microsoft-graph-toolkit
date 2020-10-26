@@ -298,7 +298,7 @@ export class MgtGet extends MgtTemplatedComponent {
 
           // Sanitizing the resource to ensure getPhotoForResource gets the right format
           const sanitizedResource = this.resource.replace('/photo/$value', '');
-          const photoResponse = await getPhotoForResource(graph, sanitizedResource, ['user.readbasic.all']);
+          const photoResponse = await getPhotoForResource(graph, sanitizedResource, this.scopes);
 
           if (photoResponse) {
             response = {
