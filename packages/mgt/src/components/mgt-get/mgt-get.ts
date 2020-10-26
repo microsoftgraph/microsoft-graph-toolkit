@@ -292,7 +292,7 @@ export class MgtGet extends MgtTemplatedComponent {
             }
           }
         } else {
-          if (this.resource.indexOf('/photo/$value') == -1) {
+          if (this.resource.indexOf('/photo/$value') === -1) {
             throw new Error('Only /photo/$value endpoints support the image type');
           }
 
