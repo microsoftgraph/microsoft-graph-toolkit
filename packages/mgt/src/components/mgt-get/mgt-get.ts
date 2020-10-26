@@ -254,7 +254,7 @@ export class MgtGet extends MgtTemplatedComponent {
         }
 
         let response = null;
-        if (this.type == ResponseType.json) {
+        if (this.type === ResponseType.json) {
           response = await request.get();
 
           if (isDeltaLink && this.response && Array.isArray(this.response.value) && Array.isArray(response.value)) {
@@ -291,7 +291,7 @@ export class MgtGet extends MgtTemplatedComponent {
             }
           }
         } else {
-          if (this.resource.indexOf('/photo/$value') == -1) {
+          if (this.resource.indexOf('/photo/$value') === -1) {
             throw new Error('Only /photo/$value endpoints support the image type');
           }
 
