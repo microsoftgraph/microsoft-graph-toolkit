@@ -957,6 +957,7 @@ export class MgtPeoplePicker extends MgtTemplatedComponent {
     if (event.keyCode === 9 || event.keyCode === 13) {
       // keyCodes capture: tab (9) and enter (13)
       if (this._foundPeople.length) {
+        this.fireCustomEvent('blur');
         event.preventDefault();
       }
       this.addPerson(this._foundPeople[this._arrowSelectionCount]);
