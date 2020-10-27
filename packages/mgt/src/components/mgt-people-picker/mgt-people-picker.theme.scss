@@ -7,7 +7,9 @@
 
 @import '../../styles/shared-styles.scss';
 
+// define theme strings when introducing new themes
 $themes: ('light', 'dark');
+$theme-default: 'light';
 
 // variables with theme colors
 $theme-values: (

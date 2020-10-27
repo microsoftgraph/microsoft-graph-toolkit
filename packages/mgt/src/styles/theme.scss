@@ -1,13 +1,9 @@
 @import '../components/mgt-people-picker/mgt-people-picker.theme.scss';
 
-.mgt-dark-test {
-  @each $name, $var in $theme-values {
-    #{map-get($var, _var)}: #{map-get($var, dark)};
-  }
-}
-
-.mgt-light-test {
-  @each $name, $var in $theme-values {
-    #{map-get($var, _var)}: #{map-get($var, light)};
+@each $theme in $themes {
+  .mgt-#{$theme} {
+    @each $name, $var in $theme-values {
+      #{map-get($var, _var)}: #{map-get($var, $theme)};
+    }
   }
 }

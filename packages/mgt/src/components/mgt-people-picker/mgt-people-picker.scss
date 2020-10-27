@@ -33,13 +33,13 @@ mgt-people-picker .root {
 }
 
 .people-picker {
-  background-color: set-var(background-color, 'light');
-  @include input__border('light');
+  background-color: set-var(background-color, $theme-default);
+  @include input__border($theme-default);
   &:hover {
-    border-color: set-var(input__border-color--hover, 'light');
+    border-color: set-var(input__border-color--hover, $theme-default);
   }
   &.focused {
-    border-color: set-var(input__border-color--focused, 'light');
+    border-color: set-var(input__border-color--focused, $theme-default);
   }
   padding-bottom: 6px;
 
@@ -65,15 +65,15 @@ mgt-people-picker .root {
       text-overflow: ellipsis;
       overflow: hidden;
       position: relative;
-      background-color: set-var(selected-person__background-color, 'light');
+      background-color: set-var(selected-person__background-color, $theme-default);
 
       &__person {
         overflow: hidden;
         min-width: 100%;
         --avatar-size-s: 24px;
         margin-left: 0px;
-        --color: set-var(color, 'light');
-        color: set-var(color, 'light');
+        --color: set-var(color, $theme-default);
+        color: set-var(color, $theme-default);
         margin-bottom: 1px;
         margin-right: 4px;
       }
@@ -89,7 +89,7 @@ mgt-people-picker .root {
           height: 90%;
           top: 0;
           right: 0;
-          @include selected-person__overflow('light');
+          @include selected-person__overflow($theme-default);
         }
 
         &__close-icon {
@@ -103,8 +103,8 @@ mgt-people-picker .root {
           padding-right: 7px;
           cursor: pointer;
           right: 0;
-          background-color: set-var(selected-person__background-color, 'light');
-          color: set-var(color, 'light');
+          background-color: set-var(selected-person__background-color, $theme-default);
+          color: set-var(color, $theme-default);
         }
       }
     }
@@ -135,13 +135,13 @@ mgt-people-picker .root {
           font-weight: normal;
           font-size: 14px;
           line-height: 19px;
-          background-color: set-var(background-color, 'light');
-          color: set-var(color, 'light');
+          background-color: set-var(background-color, $theme-default);
+          color: set-var(color, $theme-default);
           &::placeholder {
             color: $placeholder;
           }
           &:focus::placeholder {
-            color: set-var(placeholder--focus, 'light');
+            color: set-var(placeholder--focus, $theme-default);
           }
         }
       }
@@ -153,7 +153,7 @@ mgt-people-picker .root {
         overflow-y: auto;
         text-align: left;
         list-style-type: none;
-        background-color: set-var(dropdown__background-color, 'light');
+        background-color: set-var(dropdown__background-color, $theme-default);
 
         li {
           cursor: pointer;
@@ -177,7 +177,7 @@ mgt-people-picker .root {
               flex: 1 1 0;
               max-height: 40px;
               overflow: hidden;
-              color: set-var(color, 'light');
+              color: set-var(color, $theme-default);
 
               .people-person-text {
                 font-size: 14px;
