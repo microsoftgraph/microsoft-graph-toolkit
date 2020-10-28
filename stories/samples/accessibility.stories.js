@@ -29,13 +29,6 @@ export default {
 };
 
 export const RightToLeft = () => html`
-  <div class="dropdown">
-    <label for="direction">Document Direction</label>
-    <select id="direction" name="direction">
-      <option value="ltr">Left-To-Right</option>
-      <option value="rtl">Right-To-Left</option>
-    </select>
-  </div>
   <mgt-login></mgt-login>
   <mgt-person person-query="me"></mgt-person>
   <mgt-people-picker></mgt-people-picker>
