@@ -303,7 +303,7 @@ export class MgtFlyout extends MgtBaseComponent {
       }
 
       if (this.direction === 'rtl') {
-        if (left > 100) {
+        if (left > 100 && this.offsetLeft > 100) {
           //potentially anchored to right side (for non people-picker flyout)
           flyout.style.left = `${windowRect.width - left + flyoutRect.left - flyoutRect.width - 30}px`;
         }

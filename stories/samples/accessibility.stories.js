@@ -8,17 +8,22 @@
 import { html } from 'lit-element';
 import { withSignIn } from '../../.storybook/addons/signInAddon/signInAddon';
 import { withCodeEditor } from '../../.storybook/addons/codeEditorAddon/codeAddon';
+import { localize } from '../../.storybook/addons/localizeAddon/localizationAddon';
+import { withKnobs, text, boolean, number } from '@storybook/addon-knobs';
 
 export default {
   title: 'Samples | Accessibility',
   component: 'mgt-combo',
-  decorators: [withSignIn, withCodeEditor],
+  decorators: [withSignIn, withCodeEditor, localize, withKnobs],
   parameters: {
     a11y: {
       disabled: true
     },
     signInAddon: {
       test: 'test'
+    },
+    knobs: {
+      timestamps: true
     }
   }
 };
@@ -40,9 +45,16 @@ export const RightToLeft = () => html`
   <mgt-people></mgt-people>
   <mgt-todo></mgt-todo>
   <script>
-    let direction = document.querySelector('#direction');
-    direction.addEventListener('change', function(e) {
-      document.body.setAttribute('dir', e.target.value);
-    });
+    document.body.querySelector('.story-mgt-editor').style.direction = 'ltr';
   </script>
+`;
+
+export const Localization = () => html`
+  <mgt-login></mgt-login>
+  <mgt-people-picker></mgt-people-picker>
+  <mgt-teams-channel-picker></mgt-teams-channel-picker>
+  <mgt-tasks></mgt-tasks>
+  <mgt-agenda></mgt-agenda>
+  <mgt-people></mgt-people>
+  <mgt-todo></mgt-todo>
 `;
