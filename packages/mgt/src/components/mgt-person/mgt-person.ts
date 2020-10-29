@@ -48,7 +48,7 @@ export enum PersonViewType {
   twolines = 4,
 
   /**
-   * Render the avatar and two lines of text
+   * Render the avatar and three lines of text
    */
   threelines = 5
 }
