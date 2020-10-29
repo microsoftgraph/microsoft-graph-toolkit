@@ -7,15 +7,11 @@
 
 @import '../../styles/shared-styles.scss';
 
-// define theme strings when introducing new themes
-$themes: ('light', 'dark');
-$theme-default: 'light';
-
 // variables with theme colors
-$theme-values: (
+$people-picker: (
   dropdown__background-color: (
     _var: --dropdown-background-color,
-    dark: #1f1f1f,
+    dark: $list__background-color--dark,
     light: $list__background-color--light
   ),
   dropdown-item__background-color: (
@@ -23,12 +19,17 @@ $theme-values: (
     dark: $input-outlined__background-color--hover--dark,
     light: $input-outlined__background-color--hover--light
   ),
-  placeholder--focus: (
-    _var: --placeholder-focus-color,
-    dark: rgba(255, 255, 255, 0.8),
-    light: #323130
+  placeholder__color: (
+    _var: --placeholder-default-color,
+    dark: $input-outlined__placeholder__color--dark,
+    light: $input-outlined__placeholder__color--light
   ),
-  background-color: (
+  placeholder__color--focus: (
+    _var: --placeholder-focus-color,
+    dark: $input-outlined__placeholder__color--focus--dark,
+    light: $input-outlined__placeholder__color--focus--light
+  ),
+  input__background-color: (
     _var: --input-background-color,
     dark: var(--people-list-background-color, $input-outlined__background-color--dark),
     light: var(--people-list-background-color, $input-outlined__background-color--light)
@@ -63,10 +64,10 @@ $theme-values: (
     light: $input-outlined__border-color--hover--light,
     dark: $input-outlined__border-color--hover--dark
   ),
-  input__border-color--focused: (
+  input__border-color--focus: (
     _var: --input-focus-color,
-    light: $input-outlined__border-color--focused--light,
-    dark: $input-outlined__border-color--focused--dark
+    light: $input-outlined__border-color--focus--light,
+    dark: $input-outlined__border-color--focus--dark
   ),
   color: (
     _var: --font-color,
@@ -75,23 +76,18 @@ $theme-values: (
   ),
   selected-person__background-color: (
     _var: --selected-person-background-color,
-    dark: #474747,
+    dark: $pill__background-color--dark,
     light: $pill__background-color--light
   )
 );
 
-@function set-var($var, $theme) {
-  $theme-value: map-get($theme-values, $var);
-  @return var(#{map-get($theme-value, '_var')}, #{map-get($theme-value, $theme)});
-}
-
 // mixins
 @mixin input__border($theme) {
-  border: set-var(input__border, $theme);
-  border-top: set-var(input__border-top, $theme);
-  border-right: set-var(input__border-right, $theme);
-  border-bottom: set-var(input__border-bottom, $theme);
-  border-left: set-var(input__border-left, $theme);
+  border: set-var(input__border, $theme, $people-picker);
+  border-top: set-var(input__border-top, $theme, $people-picker);
+  border-right: set-var(input__border-right, $theme, $people-picker);
+  border-bottom: set-var(input__border-bottom, $theme, $people-picker);
+  border-left: set-var(input__border-left, $theme, $people-picker);
 }
 
 @mixin selected-person__overflow($theme) {
@@ -99,30 +95,30 @@ $theme-values: (
     to right,
     rgba(255, 255, 255, 0) 0%,
     rgba(255, 255, 255, 0) 60%,
-    set-var(selected-person__background-color, $theme) 100%
+    set-var(selected-person__background-color, $theme, $people-picker) 100%
   );
   background-image: -moz-linear-gradient(
     left,
     rgba(255, 255, 255, 0) 0%,
     rgba(255, 255, 255, 0) 60%,
-    set-var(selected-person__background-color, $theme) 100%
+    set-var(selected-person__background-color, $theme, $people-picker) 100%
   );
   background-image: -o-linear-gradient(
     left,
     rgba(255, 255, 255, 0) 0%,
     rgba(255, 255, 255, 0) 60%,
-    set-var(selected-person__background-color, $theme) 100%
+    set-var(selected-person__background-color, $theme, $people-picker) 100%
   );
   background-image: -ms-linear-gradient(
     left,
     rgba(255, 255, 255, 0) 0%,
     rgba(255, 255, 255, 0) 60%,
-    set-var(selected-person__background-color, $theme) 100%
+    set-var(selected-person__background-color, $theme, $people-picker) 100%
   );
   background-image: -webkit-linear-gradient(
     left,
     rgba(255, 255, 255, 0) 0%,
     rgba(255, 255, 255, 0) 60%,
-    set-var(selected-person__background-color, $theme) 100%
+    set-var(selected-person__background-color, $theme, $people-picker) 100%
   );
 }

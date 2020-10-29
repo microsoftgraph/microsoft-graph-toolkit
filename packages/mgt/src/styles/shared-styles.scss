@@ -88,79 +88,115 @@ $green: #6bb700; /* Person / Available */
 /* -----Background----- */
 // light
 $background-color__main--light: $white;
+$background-color__sub--light: $gray20;
 $background-color__main--hover--light: $gray20;
-$background-color__main--active--light: $white;
+$background-color__main--active--light: $gray30;
 // dark
-$background-color__main--dark: $gray190;
-$background-color__main--hover--dark: $gray210;
-$background-color__main--active--dark: $black;
+$background-color__main--dark: $black;
+$background-color__sub--dark: $gray140;
+$background-color__main--hover--dark: $gray160;
+$background-color__main--active--dark: $gray140;
 
 /* -----Text----- */
 // light
 $text__color__main--light: $black;
 $text__color__sub1--light: $gray160;
 $text__color__sub2--light: $gray120;
+$text__color__sub3--light: $gray100;
 // dark
 $text__color__main--dark: $white;
 $text__color__sub1--dark: $gray20;
 $text__color__sub2--dark: $gray60;
+$text__color__sub3--dark: $gray100;
 
 /* -----Title----- */
+// light
 $title__color__main--light: $text__color__main--light;
 $title__color__subtitle--light: $text__color__sub1--light;
+// dark
+$title__color__main--dark: $text__color__main--dark;
+$title__color__subtitle--dark: $text__color__sub1--dark;
 
 /* -----Icon----- */
+// light
 $icon__main--light: $black;
 $icon__sub1--light: $gray130;
 $icon__sub2--light: $gray100;
+// dark
+$icon__main--dark: $gray130;
+$icon__sub1--dark: $gray120;
+$icon__sub2--dark: $gray100;
 
 /* -----Other Elements----- */
 $line-separator--light: $gray30;
+$line-separator--dark: $gray150;
 
-/* -----Tab----- */
-$tab__line__color--light: $line-separator--light;
+/* -----Tab----- (mgt-person-card) */
+// light
+$tab__line__color--light: $line-separator--light; /* gray30 #EDEBE9 */
 $tab__line__color--active--light: $commblue_primary;
 $tab__line__color--hover--light: $gray100;
 $tab__background-color--hover--light: $background-color__main--hover--light;
-$tab__icon: $icon__sub1--light;
-$tab__icon--active: $commblue_primary;
+$tab__icon--light: $icon__sub1--light;
+$tab__icon--active--light: $commblue_primary;
+// dark
+$tab__line__color--dark: $line-separator--dark; /* gray150  #3B3A39*/
+$tab__line__color--active--dark: $commblue_primary;
+$tab__line__color--hover--dark: $gray100;
+$tab__background-color--hover--dark: $background-color__main--hover--dark;
+$tab__icon--dark: $icon__sub1--dark;
+$tab__icon--active--dark: $commblue_primary;
 
 /* -----Input----- */
 // light
 $input-outlined__placeholder__color--light: $gray130;
 $input-outlined__placeholder__color--hover--light: $gray150;
-$input-outlined__color--light: $gray190;
+$input-outlined__placeholder__color--focus--light: $text__color__sub1--light;
+$input-outlined__color--light: $text__color__sub1--light;
 $input-outlined__border-color--light: $gray130;
 $input-outlined__border-color--hover--light: $gray160;
-$input-outlined__border-color--focused--light: $commblue_primary;
+$input-outlined__border-color--focus--light: $commblue_primary;
 $input-outlined__background-color--light: $background-color__main--light;
 $input-outlined__background-color--hover--light: $background-color__main--hover--light;
-$input-outlined__background-color--focused--light: $background-color__main--active--light;
+$input-outlined__background-color--focus--light: $background-color__main--active--light;
 // dark
 $input-outlined__placeholder__color--dark: $gray120;
 $input-outlined__placeholder__color--hover--dark: $gray90;
-$input-outlined__color--dark: $gray30;
+$input-outlined__placeholder__color--focus--dark: $text__color__sub1--dark;
+
+$input-outlined__color--dark: $text__color__sub1--dark;
 $input-outlined__border-color--dark: $gray110;
 $input-outlined__border-color--hover--dark: $gray90;
-$input-outlined__border-color--focused--dark: $commblue_primary;
+$input-outlined__border-color--focus--dark: $commblue_primary;
 $input-outlined__background-color--dark: $background-color__main--dark;
 $input-outlined__background-color--hover--dark: $background-color__main--hover--dark;
-$input-outlined__background-color--focused--light: $background-color__main--active--dark;
+$input-outlined__background-color--focus--dark: $background-color__main--active--dark;
 
 /* -----List----- */
+// light
 $list__color__main--light: $text__color__sub1--light;
 $list__color__sub--light: $text__color__sub2--light;
 $list__background-color--light: $background-color__main--light;
 $list__item__background-color--hover--light: $background-color__main--hover--light;
 $list__icon__color--light: $icon__sub2--light;
+// dark
+$list__color__main--dark: $text__color__sub1--dark;
+$list__color__sub--dark: $text__color__sub2--dark;
+$list__background-color--dark: $background-color__main--dark;
+$list__item__background-color--hover--dark: $background-color__main--hover--dark;
+$list__icon__color--dark: $icon__sub2--dark;
 
 /* -----Tag----- */
 $tag__background-color--light: $gray20;
 $tag__color--light: $text__color__sub1--light;
 
 /* -----Pill----- */
-$pill__background-color--light: $gray20;
-$pill__color--light: $gray180;
+// light
+$pill__background-color--light: $background-color__sub--light;
+$pill__color--light: $text__color__sub1--light;
+// dark
+$pill__background-color--dark: $background-color__sub--dark;
+$pill__color--dark: $text__color__sub1--dark;
 
 /* -----Link----- */
 $link__color--light: $gray160;

@@ -7,7 +7,7 @@
 
 @import '../../../../../node_modules/office-ui-fabric-core/dist/sass/References';
 @import '../../styles/shared-styles.scss';
-@import './mgt-people-picker.theme.scss';
+@import '../../styles/theme.scss';
 
 // common vars regardless of themes
 $avatar-margin: var(--avatar-margin, 0 4px 0 0);
@@ -15,7 +15,6 @@ $avatar-size-s: var(--avatar-size-s, 24px);
 $avatar-size: var(--avatar-size, 48px);
 $initials-color: var(--initials-color, #{$white});
 $initials-background-color: var(--initials-background-color, #{$ms-color-magenta});
-$placeholder: var(--placeholder-default-color, $input-outlined__placeholder__color--light);
 
 // Main
 :host {
@@ -33,13 +32,13 @@ mgt-people-picker .root {
 }
 
 .people-picker {
-  background-color: set-var(background-color, $theme-default);
+  background-color: set-var(input__background-color, $theme-default, $people-picker);
   @include input__border($theme-default);
   &:hover {
-    border-color: set-var(input__border-color--hover, $theme-default);
+    border-color: set-var(input__border-color--hover, $theme-default, $people-picker);
   }
   &.focused {
-    border-color: set-var(input__border-color--focused, $theme-default);
+    border-color: set-var(input__border-color--focus, $theme-default, $people-picker);
   }
   padding-bottom: 6px;
 
@@ -65,15 +64,15 @@ mgt-people-picker .root {
       text-overflow: ellipsis;
       overflow: hidden;
       position: relative;
-      background-color: set-var(selected-person__background-color, $theme-default);
+      background-color: set-var(selected-person__background-color, $theme-default, $people-picker);
 
       &__person {
         overflow: hidden;
         min-width: 100%;
         --avatar-size-s: 24px;
         margin-left: 0px;
-        --color: set-var(color, $theme-default);
-        color: set-var(color, $theme-default);
+        --color: set-var(color, $theme-default, $people-picker);
+        color: set-var(color, $theme-default, $people-picker);
         margin-bottom: 1px;
         margin-right: 4px;
       }
@@ -103,8 +102,8 @@ mgt-people-picker .root {
           padding-right: 7px;
           cursor: pointer;
           right: 0;
-          background-color: set-var(selected-person__background-color, $theme-default);
-          color: set-var(color, $theme-default);
+          background-color: set-var(selected-person__background-color, $theme-default, $people-picker);
+          color: set-var(color, $theme-default, $people-picker);
         }
       }
     }
@@ -135,13 +134,13 @@ mgt-people-picker .root {
           font-weight: normal;
           font-size: 14px;
           line-height: 19px;
-          background-color: set-var(background-color, $theme-default);
-          color: set-var(color, $theme-default);
+          background-color: set-var(input__background-color, $theme-default, $people-picker);
+          color: set-var(color, $theme-default, $people-picker);
           &::placeholder {
-            color: $placeholder;
+            color: set-var(placeholder__color, $theme-default, $people-picker);
           }
           &:focus::placeholder {
-            color: set-var(placeholder--focus, $theme-default);
+            color: set-var(placeholder__color--focus, $theme-default, $people-picker);
           }
         }
       }
@@ -153,7 +152,7 @@ mgt-people-picker .root {
         overflow-y: auto;
         text-align: left;
         list-style-type: none;
-        background-color: set-var(dropdown__background-color, $theme-default);
+        background-color: set-var(dropdown__background-color, $theme-default, $people-picker);
 
         li {
           cursor: pointer;
@@ -170,14 +169,14 @@ mgt-people-picker .root {
             font-size: 14px;
             &:hover,
             &.focused {
-              background-color: set-var(dropdown-item__background-color, light);
+              background-color: set-var(dropdown-item__background-color, $theme-default, $people-picker);
             }
             .people-person-text-area {
               margin-left: 13px;
               flex: 1 1 0;
               max-height: 40px;
               overflow: hidden;
-              color: set-var(color, $theme-default);
+              color: set-var(color, $theme-default, $people-picker);
 
               .people-person-text {
                 font-size: 14px;
