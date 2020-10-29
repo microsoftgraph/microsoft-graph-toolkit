@@ -370,7 +370,12 @@ export class MsalProvider extends IProvider {
         msalConfig.auth.clientId = config.clientId;
         msalConfig.cache = msalConfig.cache || {};
         msalConfig.cache.cacheLocation = msalConfig.cache.cacheLocation || 'localStorage';
-        msalConfig.cache.storeAuthStateInCookie = msalConfig.cache.storeAuthStateInCookie || true;
+        if (
+          typeof msalConfig.cache.storeAuthStateInCookie === 'undefined' ||
+          msalConfig.cache.storeAuthStateInCookie === null
+        ) {
+          msalConfig.cache.storeAuthStateInCookie = true;
+        }
 
         if (config.authority) {
           msalConfig.auth.authority = config.authority;
