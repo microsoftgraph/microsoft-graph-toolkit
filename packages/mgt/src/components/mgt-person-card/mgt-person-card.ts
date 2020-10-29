@@ -26,6 +26,16 @@ import { Presence } from '@microsoft/microsoft-graph-types-beta';
 import { getUserPresence } from '../../graph/graph.presence';
 import { getSvg, SvgIcon } from '../../utils/SvgHelper';
 
+export type MgtPersonCardConfig = {
+  sections: {
+    contact: boolean;
+    organization: boolean;
+    mailMessages: boolean;
+    files: boolean;
+    profile: boolean;
+  };
+};
+
 /**
  * Web Component used to show detailed data for a person in the Microsoft Graph
  *
@@ -53,6 +63,20 @@ export class MgtPersonCard extends MgtTemplatedComponent {
    */
   static get styles() {
     return styles;
+  }
+
+  private static _config: MgtPersonCardConfig = {
+    sections: {
+      contact: true,
+      files: true,
+      mailMessages: true,
+      organization: true,
+      profile: true
+    }
+  };
+
+  public static get config() {
+    return this._config;
   }
 
   /**
@@ -189,13 +213,7 @@ export class MgtPersonCard extends MgtTemplatedComponent {
     this._chatInput = '';
     this._currentSection = null;
     this._history = [];
-    this.sections = [
-      new MgtPersonCardContact(),
-      new MgtPersonCardOrganization(),
-      new MgtPersonCardMessages(),
-      new MgtPersonCardFiles(),
-      new MgtPersonCardProfile()
-    ];
+    this.sections = [];
   }
 
   /**
@@ -265,6 +283,21 @@ export class MgtPersonCard extends MgtTemplatedComponent {
       return;
     }
     this.personDetails = this._history.pop();
+  }
+
+  protected firstUpdated(changedProperties: any) {
+    // tslint:disable-next-line:no-unused-expression
+    MgtPersonCard.config.sections.contact && this.sections.push(new MgtPersonCardContact());
+    // tslint:disable-next-line:no-unused-expression
+    MgtPersonCard.config.sections.organization && this.sections.push(new MgtPersonCardOrganization());
+    // tslint:disable-next-line:no-unused-expression
+    MgtPersonCard.config.sections.mailMessages && this.sections.push(new MgtPersonCardMessages());
+    // tslint:disable-next-line:no-unused-expression
+    MgtPersonCard.config.sections.files && this.sections.push(new MgtPersonCardFiles());
+    // tslint:disable-next-line:no-unused-expression
+    MgtPersonCard.config.sections.profile && this.sections.push(new MgtPersonCardProfile());
+
+    super.firstUpdated(changedProperties);
   }
 
   /**
@@ -437,10 +470,6 @@ export class MgtPersonCard extends MgtTemplatedComponent {
    * @memberof MgtPersonCard
    */
   protected renderContactIcons(person?: IDynamicPerson): TemplateResult {
-    if (this.isExpanded) {
-      return html``;
-    }
-
     person = person || this.personDetails;
     const userPerson = person as MicrosoftGraph.User;
 
@@ -563,6 +592,23 @@ export class MgtPersonCard extends MgtTemplatedComponent {
         </div>
       `
     );
+
+    // TODO - pass state somehow
+    const additionalDetails = this.renderTemplate('additional-details', null);
+    if (additionalDetails) {
+      compactTemplates.splice(
+        1,
+        0,
+        html`
+          <div class="section">
+            <div class="section__header">
+              <div class="section__title">More TODO</div>
+            </div>
+            <div class="section__content additional-details">${additionalDetails}</div>
+          </div>
+        `
+      );
+    }
 
     return html`
       <div class="quick-message">

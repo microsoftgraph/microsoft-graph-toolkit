@@ -9,24 +9,6 @@ import { IGraph } from '@microsoft/mgt-element';
 import { Message } from '@microsoft/microsoft-graph-types';
 
 /**
- * Display metadata for a message item
- */
-export interface IMessage extends Message {}
-
-/**
- * Get messages for a user
- *
- * @export
- * @param {IGraph} graph
- * @param {string} userId
- * @returns {IMessage}
- */
-export async function getMessages(graph: IGraph): Promise<IMessage[]> {
-  const response = await graph.api(`/me/messages`).get();
-  return response.value;
-}
-
-/**
  * Get common message with a user
  *
  * @export
@@ -35,7 +17,10 @@ export async function getMessages(graph: IGraph): Promise<IMessage[]> {
  * @param {string} emailAddress
  * @returns {Promise<IMessage[]>}
  */
-export async function getMessagesWithUser(graph: IGraph, emailAddress: string): Promise<IMessage[]> {
-  const response = await graph.api(`/me/messages?$search="participants:${emailAddress}"`).get();
+export async function getMessagesWithUser(graph: IGraph, emailAddress: string): Promise<Message[]> {
+  const response = await graph
+    .api('/me/messages')
+    .search(`"from:${emailAddress}"`)
+    .get();
   return response.value;
 }

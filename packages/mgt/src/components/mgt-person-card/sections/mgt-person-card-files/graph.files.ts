@@ -6,24 +6,16 @@
  */
 
 import { IGraph } from '@microsoft/mgt-element';
-import { DriveItem, ThumbnailSet } from '@microsoft/microsoft-graph-types';
+import { DriveItem, SharedInsight, ThumbnailSet } from '@microsoft/microsoft-graph-types';
 
 /**
  * Potential file icon types
  */
 export enum IconType {
-  // tslint:disable-next-line: completed-docs
   Word,
-  // tslint:disable-next-line: completed-docs
   PowerPoint,
-  // tslint:disable-next-line: completed-docs
   Other
 }
-
-/**
- * Display metadata for a file
- */
-export interface IFile extends DriveItem {}
 
 /**
  * Get files shared between me and another user.
@@ -32,23 +24,21 @@ export interface IFile extends DriveItem {}
  * @export
  * @param {IGraph} graph
  * @param {string} userId
- * @returns {Promise<IFile[]>}
+ * @returns {Promise<DriveItem[]>}
  */
-export async function getFilesSharedWithUser(graph: IGraph, userId: string): Promise<IFile[]> {
-  const response = await graph.api(`users/${userId}/drive/sharedWithMe`).get();
+export async function getFilesSharedByUser(graph: IGraph, emailAddress: string): Promise<SharedInsight[]> {
+  // https://graph.microsoft.com/v1.0/me/insights/shared?$filter=lastshared/sharedby/address eq 'kellygraham@contoso.com'
+  const response = await graph
+    .api('me/insights/shared')
+    .filter(`lastshared/sharedby/address eq '${emailAddress}'`)
+    .get();
   return response.value || null;
 }
 
-/**
- * Get files shared with me
- *
- * @export
- * @param {IGraph} graph
- * @returns {Promise<IFile[]>}
- */
-export async function getFilesSharedWithMe(graph: IGraph): Promise<IFile[]> {
-  const response = await graph.api(`/me/drive/sharedWithMe`).get();
-  return response.value;
+export async function getMostRecentFiles(graph: IGraph): Promise<SharedInsight[]> {
+  // https://graph.microsoft.com/v1.0/me/insights/shared?$filter=lastshared/sharedby/address eq 'kellygraham@contoso.com'
+  const response = await graph.api('me/insights/used').get();
+  return response.value || null;
 }
 
 export async function getThumbnails(graph: IGraph, item: DriveItem): Promise<ThumbnailSet[]> {

@@ -61,6 +61,18 @@ export abstract class MgtBaseComponent extends LitElement {
   }
 
   /**
+   * AAD Scopes required for this component to function
+   *
+   * @readonly
+   * @static
+   * @type {string[]}
+   * @memberof MgtBaseComponent
+   */
+  public static get scopes(): string[] {
+    return [];
+  }
+
+  /**
    * Gets the ComponentMediaQuery of the component
    *
    * @readonly

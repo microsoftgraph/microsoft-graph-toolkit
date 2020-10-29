@@ -335,6 +335,10 @@ $person-card-background-color: var(--person-card-background-color, #ffffff);
 
       .section__content {
         margin-top: 14px;
+
+        &.additional-details {
+          padding: 0 20px;
+        }
       }
     }
   }

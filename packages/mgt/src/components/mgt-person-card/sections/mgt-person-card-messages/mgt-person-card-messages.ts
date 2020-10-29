@@ -6,14 +6,14 @@
  */
 
 import { customElement, html, TemplateResult } from 'lit-element';
-import { getMe } from '../../../../graph/graph.user';
 import { Providers, ProviderState } from '@microsoft/mgt-element';
 import { getRelativeDisplayDate } from '../../../../utils/Utils';
 import { BasePersonCardSection } from '../BasePersonCardSection';
-import { getMessages, getMessagesWithUser, IMessage } from './graph.messages';
+import { getMessagesWithUser } from './graph.messages';
 import { styles } from './mgt-person-card-messages-css';
 import { getEmailFromGraphEntity } from '../../../../graph/graph.people';
 import { SvgIcon, getSvg } from '../../../../utils/SvgHelper';
+import { Message } from '@microsoft/microsoft-graph-types';
 
 /**
  * The email messages subsection of the person card
@@ -43,7 +43,7 @@ export class MgtPersonCardMessages extends BasePersonCardSection {
     return 'Emails';
   }
 
-  private _messages: IMessage[];
+  private _messages: Message[];
 
   /**
    * Reset any state in the section
@@ -130,7 +130,7 @@ export class MgtPersonCardMessages extends BasePersonCardSection {
    * @returns {TemplateResult}
    * @memberof MgtPersonCardMessages
    */
-  protected renderMessage(message: IMessage): TemplateResult {
+  protected renderMessage(message: Message): TemplateResult {
     return html`
       <div class="message" @click=${() => this.handleMessageClick(message)}>
         <div class="message__detail">
@@ -141,10 +141,6 @@ export class MgtPersonCardMessages extends BasePersonCardSection {
         <div class="message__date">${getRelativeDisplayDate(new Date(message.receivedDateTime))}</div>
       </div>
     `;
-  }
-
-  private handleMessageClick(message: IMessage): void {
-    window.open(message.webLink, '_blank');
   }
 
   /**
@@ -167,19 +163,16 @@ export class MgtPersonCardMessages extends BasePersonCardSection {
     }
 
     const graph = provider.graph.forComponent(this);
-    const me = await getMe(graph);
 
-    const userId = this.personDetails.id;
-
-    if (me.id === userId) {
-      this._messages = await getMessages(graph);
-    } else {
-      const emailAddress = getEmailFromGraphEntity(this.personDetails);
-      if (emailAddress) {
-        this._messages = await getMessagesWithUser(graph, emailAddress);
-      }
+    const emailAddress = getEmailFromGraphEntity(this.personDetails);
+    if (emailAddress) {
+      this._messages = await getMessagesWithUser(graph, emailAddress);
     }
 
     this.requestUpdate();
+  }
+
+  private handleMessageClick(message: Message): void {
+    window.open(message.webLink, '_blank');
   }
 }

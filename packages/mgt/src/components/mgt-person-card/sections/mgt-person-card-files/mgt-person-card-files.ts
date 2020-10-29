@@ -10,11 +10,12 @@ import { BetaGraph } from '../../../../BetaGraph';
 import { Providers, ProviderState } from '@microsoft/mgt-element';
 import { getRelativeDisplayDate } from '../../../../utils/Utils';
 import { BasePersonCardSection } from '../BasePersonCardSection';
-import { IFile, getFilesSharedWithMe, getFilesSharedWithUser, getThumbnails } from './graph.files';
+import { getFilesSharedByUser, getThumbnails, getMostRecentFiles } from './graph.files';
 import { styles } from './mgt-person-card-files-css';
 import { getEmailFromGraphEntity } from '../../../../graph/graph.people';
 import { getMe } from '../../../../graph/graph.user';
 import { getSvg, SvgIcon } from '../../../../utils/SvgHelper';
+import { DriveItem, SharedInsight } from '@microsoft/microsoft-graph-types';
 
 /**
  * The files subsection of the person card
@@ -44,7 +45,7 @@ export class MgtPersonCardFiles extends BasePersonCardSection {
     return 'Files';
   }
 
-  private _files: IFile[];
+  private _files: DriveItem[];
 
   /**
    * Reset any state in the section
@@ -128,10 +129,12 @@ export class MgtPersonCardFiles extends BasePersonCardSection {
    * @returns {TemplateResult}
    * @memberof MgtPersonCardFiles
    */
-  protected renderFile(file: IFile): TemplateResult {
-    const lastModifiedTemplate = file.lastModifiedDateTime
+  protected renderFile(file: SharedInsight): TemplateResult {
+    const lastModifiedTemplate = file.lastShared
       ? html`
-          <div class="file__last-modified">Modified ${getRelativeDisplayDate(new Date(file.lastModifiedDateTime))}</div>
+          <div class="file__last-modified">
+            Shared ${getRelativeDisplayDate(new Date(file.lastShared.sharedDateTime))}
+          </div>
         `
       : null;
 
@@ -141,7 +144,7 @@ export class MgtPersonCardFiles extends BasePersonCardSection {
           ${getSvg(SvgIcon.File)}
         </div>
         <div class="file__details">
-          <div class="file__name">${file.name}</div>
+          <div class="file__name">${file.lastShared.sharingSubject}</div>
           ${lastModifiedTemplate}
         </div>
       </div>
@@ -174,19 +177,20 @@ export class MgtPersonCardFiles extends BasePersonCardSection {
     const userId = this.personDetails.id;
 
     if (me.id === userId) {
-      this._files = await getFilesSharedWithMe(betaGraph);
+      this._files = await getMostRecentFiles(betaGraph);
     } else {
       const emailAddress = getEmailFromGraphEntity(this.personDetails);
       if (emailAddress) {
-        this._files = await getFilesSharedWithUser(betaGraph, emailAddress);
+        this._files = await getFilesSharedByUser(betaGraph, emailAddress);
       }
     }
 
-    if (this._files) {
-      for (const file of this._files) {
-        file.thumbnails = await getThumbnails(graph, file);
-      }
-    }
+    // TODO
+    // if (this._files) {
+    //   for (const file of this._files) {
+    //     file.thumbnails = await getThumbnails(graph, file);
+    //   }
+    // }
 
     this.requestUpdate();
   }
