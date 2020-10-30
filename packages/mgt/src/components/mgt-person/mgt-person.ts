@@ -774,7 +774,9 @@ export class MgtPerson extends MgtTemplatedComponent {
     if (this.showPresence && !this.personPresence && !this._fetchedPresence) {
       try {
         if (this.personDetails && this.personDetails.id) {
-          this._fetchedPresence = await getUserPresence(graph, this.personDetails.id);
+          // setting userId to 'me' ensures only the presence.read permission is required
+          const userId = this.personQuery !== 'me' ? this.personDetails.id : null;
+          this._fetchedPresence = await getUserPresence(graph, userId);
         } else {
           this._fetchedPresence = defaultPresence;
         }

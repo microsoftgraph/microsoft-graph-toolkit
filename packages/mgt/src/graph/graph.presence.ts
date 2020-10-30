@@ -12,33 +12,21 @@ import { prepScopes } from '../utils/GraphHelpers';
 import { IDynamicPerson } from './types';
 
 /**
- * async promise, allows developer to get my presense
- *
- * @returns {Promise<Presence>}
- * @memberof BetaGraph
- */
-export async function getMyPresence(graph: IGraph): Promise<Presence> {
-  const betaGraph = BetaGraph.fromGraph(graph);
-  const scopes = 'presence.read';
-  const result = await betaGraph
-    .api('/me/presence')
-    .middlewareOptions(prepScopes(scopes))
-    .get();
-
-  return result;
-}
-
-/**
  * async promise, allows developer to get user presense
  *
  * @returns {Promise<Presence>}
+ * @param {IGraph} graph
+ * @param {string} userId - id for the user or null for current signed in user
  * @memberof BetaGraph
  */
-export async function getUserPresence(graph: IGraph, userId: string): Promise<Presence> {
+export async function getUserPresence(graph: IGraph, userId?: string): Promise<Presence> {
   const betaGraph = BetaGraph.fromGraph(graph);
-  const scopes = ['presence.read', 'presence.read.all'];
+
+  const scopes = userId ? ['presence.read.all'] : ['presence.read'];
+  const resource = userId ? `/users/${userId}/presence` : '/me/presence';
+
   const result = await betaGraph
-    .api(`/users/${userId}/presence`)
+    .api(resource)
     .middlewareOptions(prepScopes(...scopes))
     .get();
 
