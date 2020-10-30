@@ -27,6 +27,7 @@ import { getUserPresence } from '../../graph/graph.presence';
 import { getSvg, SvgIcon } from '../../utils/SvgHelper';
 
 export type MgtPersonCardConfig = {
+  isSendMessageVisible: boolean;
   sections: {
     contact: boolean;
     organization: boolean;
@@ -66,6 +67,7 @@ export class MgtPersonCard extends MgtTemplatedComponent {
   }
 
   private static _config: MgtPersonCardConfig = {
+    isSendMessageVisible: true,
     sections: {
       contact: true,
       files: true,
@@ -601,30 +603,30 @@ export class MgtPersonCard extends MgtTemplatedComponent {
         0,
         html`
           <div class="section">
-            <div class="section__header">
-              <div class="section__title">More TODO</div>
-            </div>
-            <div class="section__content additional-details">${additionalDetails}</div>
+            <div class="additional-details">${additionalDetails}</div>
           </div>
         `
       );
     }
 
     return html`
-      <div class="quick-message">
-        <input
-          type="text"
-          class="quick-message__input"
-          placeholder="Message ${this.personDetails.displayName}"
-          .value=${this._chatInput}
-          @input=${(e: Event) => {
-            this._chatInput = (e.target as HTMLInputElement).value;
-          }}
-        />
-        <button class="quick-message__send" @click=${() => this.sendQuickMessage()}>
-          ${getSvg(SvgIcon.Send)}
-        </button>
-      </div>
+      ${MgtPersonCard.config.isSendMessageVisible &&
+        html`
+          <div class="quick-message">
+            <input
+              type="text"
+              class="quick-message__input"
+              placeholder="Message ${this.personDetails.displayName}"
+              .value=${this._chatInput}
+              @input=${(e: Event) => {
+                this._chatInput = (e.target as HTMLInputElement).value;
+              }}
+            />
+            <button class="quick-message__send" @click=${() => this.sendQuickMessage()}>
+              ${getSvg(SvgIcon.Send)}
+            </button>
+          </div>
+        `}
       <div class="sections">
         ${compactTemplates}
       </div>

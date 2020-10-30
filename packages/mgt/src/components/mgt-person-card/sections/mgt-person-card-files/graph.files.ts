@@ -27,7 +27,6 @@ export enum IconType {
  * @returns {Promise<DriveItem[]>}
  */
 export async function getFilesSharedByUser(graph: IGraph, emailAddress: string): Promise<SharedInsight[]> {
-  // https://graph.microsoft.com/v1.0/me/insights/shared?$filter=lastshared/sharedby/address eq 'kellygraham@contoso.com'
   const response = await graph
     .api('me/insights/shared')
     .filter(`lastshared/sharedby/address eq '${emailAddress}'`)
@@ -36,7 +35,6 @@ export async function getFilesSharedByUser(graph: IGraph, emailAddress: string):
 }
 
 export async function getMostRecentFiles(graph: IGraph): Promise<SharedInsight[]> {
-  // https://graph.microsoft.com/v1.0/me/insights/shared?$filter=lastshared/sharedby/address eq 'kellygraham@contoso.com'
   const response = await graph.api('me/insights/used').get();
   return response.value || null;
 }
