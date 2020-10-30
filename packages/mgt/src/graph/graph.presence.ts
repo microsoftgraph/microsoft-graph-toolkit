@@ -45,61 +45,34 @@ const getPresenceInvalidationTime = (): number =>
 const presenceCacheEnabled = (): boolean => CacheService.config.presence.isEnabled && CacheService.config.isEnabled;
 
 /**
- * async promise, allows developer to get my presense
- *
- * @returns {Promise<Presence>}
- * @memberof BetaGraph
- */
-export async function getMyPresence(graph: IGraph): Promise<Presence> {
-  const betaGraph = BetaGraph.fromGraph(graph);
-  const scopes = 'presence.read';
-  let cache: CacheStore<CachePresence>;
-
-  if (presenceCacheEnabled()) {
-    cache = CacheService.getCache(cacheSchema, 'presence');
-    const presence = await cache.getValue('me');
-    if (presence && getPresenceInvalidationTime() > Date.now() - presence.timeCached) {
-      return JSON.parse(presence.presence);
-    }
-  }
-
-  const result = await betaGraph
-    .api('/me/presence')
-    .middlewareOptions(prepScopes(scopes))
-    .get();
-
-  if (presenceCacheEnabled()) {
-    cache.putValue('me', { presence: result });
-  }
-
-  return result;
-}
-
-/**
  * async promise, allows developer to get user presense
  *
  * @returns {Promise<Presence>}
+ * @param {IGraph} graph
+ * @param {string} userId - id for the user or null for current signed in user
  * @memberof BetaGraph
  */
-export async function getUserPresence(graph: IGraph, userId: string): Promise<Presence> {
+export async function getUserPresence(graph: IGraph, userId?: string): Promise<Presence> {
   const betaGraph = BetaGraph.fromGraph(graph);
-  const scopes = ['presence.read', 'presence.read.all'];
   let cache: CacheStore<CachePresence>;
 
   if (presenceCacheEnabled()) {
     cache = CacheService.getCache(cacheSchema, 'presence');
-    const presence = await cache.getValue(userId);
+    const presence = await cache.getValue(userId || 'me');
     if (presence && getPresenceInvalidationTime() > Date.now() - presence.timeCached) {
       return JSON.parse(presence.presence);
     }
   }
 
+  const scopes = userId ? ['presence.read.all'] : ['presence.read'];
+  const resource = userId ? `/users/${userId}/presence` : '/me/presence';
+
   const result = await betaGraph
-    .api(`/users/${userId}/presence`)
+    .api(resource)
     .middlewareOptions(prepScopes(...scopes))
     .get();
   if (presenceCacheEnabled()) {
-    cache.putValue(userId, { presence: JSON.stringify(result) });
+    cache.putValue(userId || 'me', { presence: JSON.stringify(result) });
   }
 
   return result;
