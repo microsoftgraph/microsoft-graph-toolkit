@@ -83,11 +83,11 @@ $people-picker: (
 
 // mixins
 @mixin input__border($theme) {
-  border: set-var(input__border, $theme, $people-picker);
   border-top: set-var(input__border-top, $theme, $people-picker);
   border-right: set-var(input__border-right, $theme, $people-picker);
   border-bottom: set-var(input__border-bottom, $theme, $people-picker);
   border-left: set-var(input__border-left, $theme, $people-picker);
+  border: set-var(input__border, $theme, $people-picker);
 }
 
 @mixin selected-person__overflow($theme) {
@@ -122,3 +122,5 @@ $people-picker: (
     set-var(selected-person__background-color, $theme, $people-picker) 100%
   );
 }
+
+@include create-themes($people-picker);

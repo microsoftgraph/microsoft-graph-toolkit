@@ -80,11 +80,11 @@ $channel-picker: (
 
 // mixins
 @mixin input__border($theme) {
-  border: set-var(input__border, $theme, $channel-picker);
   border-top: set-var(input__border-top, $theme, $channel-picker);
   border-right: set-var(input__border-right, $theme, $channel-picker);
   border-bottom: set-var(input__border-bottom, $theme, $channel-picker);
   border-left: set-var(input__border-left, $theme, $channel-picker);
+  border: set-var(input__border, $theme, $channel-picker);
 }
 
 @mixin selected-team__overflow($theme) {
@@ -147,3 +147,5 @@ $channel-picker: (
     rgba(set-var(dropdown__background-color, $theme, $channel-picker), 0)
   );
 }
+
+@include create-themes($channel-picker);

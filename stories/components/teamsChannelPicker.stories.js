@@ -30,20 +30,17 @@ export const getSelectedChannel = () => html`
   <div class="output"></div>
 
   <script>
-  
-  document.querySelector('.button').addEventListener('click', _ => {
-    const picker = document.querySelector('mgt-teams-channel-picker');
-    const output = document.querySelector('.output');
+    document.querySelector('.button').addEventListener('click', _ => {
+      const picker = document.querySelector('mgt-teams-channel-picker');
+      const output = document.querySelector('.output');
 
-    if (picker.selectedItem) {
-      output.innerHTML = "<b>channel:</b> " + picker.selectedItem.channel.displayName
-      output.innerHTML += "<br/><b>team:</b> " + picker.selectedItem.team.displayName;
-    } else {
-      output.innerText = "no channel selected";
-    }
-    
-  });
-
+      if (picker.selectedItem) {
+        output.innerHTML = '<b>channel:</b> ' + picker.selectedItem.channel.displayName;
+        output.innerHTML += '<br/><b>team:</b> ' + picker.selectedItem.team.displayName;
+      } else {
+        output.innerText = 'no channel selected';
+      }
+    });
   </script>
 `;
 
@@ -53,21 +50,17 @@ export const selectionChangedEvent = () => html`
   <div class="output">no channel selected</div>
 
   <script>
-  
-  const picker = document.querySelector('mgt-teams-channel-picker');
-  picker.addEventListener('selectionChanged', e => {
-    const output = document.querySelector('.output');
+    const picker = document.querySelector('mgt-teams-channel-picker');
+    picker.addEventListener('selectionChanged', e => {
+      const output = document.querySelector('.output');
 
-    if (e.detail.length) {
-      output.innerHTML = "<b>channel:</b> " + e.detail[0].channel.displayName;
-      output.innerHTML += "<br/><b>team:</b> " + e.detail[0].team.displayName;
-    } else {
-      output.innerText = "no channel selected";
-    }
-    
-    
-  });
-
+      if (e.detail.length) {
+        output.innerHTML = '<b>channel:</b> ' + e.detail[0].channel.displayName;
+        output.innerHTML += '<br/><b>team:</b> ' + e.detail[0].team.displayName;
+      } else {
+        output.innerText = 'no channel selected';
+      }
+    });
   </script>
 `;
 
@@ -77,35 +70,52 @@ export const selectChannel = () => html`
   <button class="button">Select Channel By Id</button>
 
   <script>
-  const button = document.querySelector('.button');
-  button.addEventListener('click', async _ => {
-    const picker = document.querySelector('mgt-teams-channel-picker');
-    button.disabled = true;
-    await picker.selectChannelById('19:d0bba23c2fc8413991125a43a54cc30e@thread.skype');
-    button.disabled = false;
-  });
-
+    const button = document.querySelector('.button');
+    button.addEventListener('click', async _ => {
+      const picker = document.querySelector('mgt-teams-channel-picker');
+      button.disabled = true;
+      await picker.selectChannelById('19:d0bba23c2fc8413991125a43a54cc30e@thread.skype');
+      button.disabled = false;
+    });
   </script>
 `;
 
-export const DarkMode = () => html`
-  <mgt-teams-channel-picker></mgt-teams-channel-picker>
+export const theme = () => html`
+  <div class="mgt-light">
+    <header class="mgt-dark">
+      <p>I should be dark, regional class</p>
+      <mgt-teams-channel-picker></mgt-teams-channel-picker>
+      <div class="mgt-light">
+        <p>I should be light, second level regional class</p>
+        <mgt-teams-channel-picker></mgt-teams-channel-picker>
+      </div>
+    </header>
+    <article>
+      <p>I should be light, global class</p>
+      <mgt-teams-channel-picker></mgt-teams-channel-picker>
+    </article>
+    <p>I am custom themed</p>
+    <mgt-teams-channel-picker class="custom1"></mgt-teams-channel-picker>
+    <p>I have both custom input background color and mgt-dark theme</p>
+    <mgt-teams-channel-picker class="mgt-dark custom2"></mgt-teams-channel-picker>
+    <p>I should be light, with unknown class mgt-foo</p>
+    <mgt-teams-channel-picker class="mgt-foo"></mgt-teams-channel-picker>
+  </div>
   <style>
-    .story-mgt-preview-wrapper{
-        background-color: black;
+    .custom1 {
+      --input-border: 2px solid teal;
+      --input-background-color: #33c2c2;
+      --dropdown-background-color: #33c2c2;
+      --dropdown-item-hover-background: #2a7d88;
+      --input-hover-color: #b911b1;
+      --input-focus-color: #441540;
+      --font-color: white;
+      --placeholder-default-color: white;
+      --placeholder-focus-color: #441540;
     }
 
-    mgt-teams-channel-picker {
-      --input-border: 2px rgba(255, 255, 255, 0.5) solid;
-      --input-background-color: #1f1f1f;
-      --dropdown-background-color: #1f1f1f;
-      --dropdown-item-hover-background: #333d47;
-      --dropdown-item-selected-background: #0F78D4;
-      --input-hover-color: #008394;
-      --input-focus-color: #0f78d4;
-      --font-color: white;
-      --arrow-fill: #ffffff;
-      --placeholder-focus-color: rgba(255, 255, 255, 0.8);
+    .custom2 {
+      --input-background-color: #e47c4d;
     }
   </style>
 `;

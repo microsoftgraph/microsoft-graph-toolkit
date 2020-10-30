@@ -9,8 +9,6 @@
 @import '../../styles/shared-styles.scss';
 @import '../../styles/theme.scss';
 
-$accent-color: var(--accent-color, #0078d4);
-
 :host {
   font-family: var(--default-font-family, 'Segoe UI');
 }
@@ -102,7 +100,7 @@ $accent-color: var(--accent-color, #0078d4);
     .search-icon {
       align-self: flex-start;
       font-family: 'FabricMDL2Icons';
-      color: $accent-color;
+      color: var(--accent-color, $commblue_primary);
     }
 
     .input-search-start {

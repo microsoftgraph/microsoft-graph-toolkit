@@ -52,7 +52,7 @@ export const theme = () => html`
   </div>
   <style>
     .custom1 {
-      --input-border: 2px solid red;
+      --input-border: 2px solid teal;
       --input-background-color: #33c2c2;
       --dropdown-background-color: #33c2c2;
       --dropdown-item-hover-background: #2a7d88;
