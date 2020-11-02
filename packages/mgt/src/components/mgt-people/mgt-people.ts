@@ -13,7 +13,7 @@ import { getUsersPresenceByPeople } from '../../graph/graph.presence';
 import { getUsersForPeopleQueries, getUsersForUserIds } from '../../graph/graph.user';
 import { IDynamicPerson } from '../../graph/types';
 import { Providers, ProviderState, MgtTemplatedComponent, arraysAreEqual } from '@microsoft/mgt-element';
-import '../../styles/fabric-icon-font';
+import '../../styles/style-helper';
 import { PersonCardInteraction } from './../PersonCardInteraction';
 import { styles } from './mgt-people-css';
 
