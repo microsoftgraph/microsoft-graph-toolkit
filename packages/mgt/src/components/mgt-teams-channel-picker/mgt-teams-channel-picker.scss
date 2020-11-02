@@ -7,7 +7,7 @@
 
 @import '../../../../../node_modules/office-ui-fabric-core/dist/sass/References';
 @import '../../styles/shared-styles.scss';
-@import '../../styles/theme.scss';
+@import './mgt-teams-channel-picker.theme.scss';
 
 :host {
   font-family: var(--default-font-family, 'Segoe UI');
