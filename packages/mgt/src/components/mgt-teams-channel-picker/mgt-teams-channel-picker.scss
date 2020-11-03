@@ -7,27 +7,7 @@
 
 @import '../../../../../node_modules/office-ui-fabric-core/dist/sass/References';
 @import '../../styles/shared-styles.scss';
-
-$accent-color: var(--accent-color, #0078d4);
-
-$font-color: var(--font-color, #323130);
-$placeholder-default-color: var(--placeholder-default-color, #605e5c);
-$placeholder-focus-color: var(--placeholder-focus-color, #323130);
-$arrow-fill: var(--arrow-fill, #252424);
-
-$input-border: var(--input-border, 2px solid #b3b0ad);
-$input-border-bottom: var(--input-border-bottom, $input-border);
-$input-border-right: var(--input-border-right, $input-border);
-$input-border-left: var(--input-border-left, $input-border);
-$input-border-top: var(--input-border-top, $input-border);
-
-$input-hover-color: var(--input-hover-color, #323130);
-$input-focus-color: var(--input-focus-color, #0078d4);
-$input-background-color: var(--input-background-color, white);
-
-$dropdown-item-hover-background: var(--dropdown-item-hover-background, rgba(241, 241, 241, 0.87));
-$dropdown-background-color: var(--dropdown-background-color, white);
-$dropdown-item-selected-background: var(--dropdown-item-selected-background, #deecf9);
+@import './mgt-teams-channel-picker.theme.scss';
 
 :host {
   font-family: var(--default-font-family, 'Segoe UI');
@@ -43,23 +23,19 @@ $dropdown-item-selected-background: var(--dropdown-item-selected-background, #de
     align-items: center;
     padding: 4px 10px;
     position: relative;
-    background-color: $input-background-color;
+    background-color: set-var(input__background-color, $theme-default, $channel-picker);
     font-size: 14px;
-    color: $font-color;
+    color: set-var(color, $theme-default, $channel-picker);
     height: 29px;
     line-height: 19px;
     cursor: text;
-    border: $input-border;
-    border-bottom: $input-border-bottom;
-    border-left: $input-border-left;
-    border-top: $input-border-top;
-    border-right: $input-border-right;
+    @include input__border($theme-default);
     &:hover {
-      border-color: $input-hover-color;
+      border-color: set-var(input__border-color--hover, $theme-default, $channel-picker);
     }
 
     &.focused {
-      border-color: $input-focus-color;
+      border-color: set-var(input__border-color--focus, $theme-default, $channel-picker);
     }
 
     .selected-team {
@@ -102,29 +78,29 @@ $dropdown-item-selected-background: var(--dropdown-item-selected-background, #de
       font-size: 14px;
       line-height: 19px;
       background-color: transparent;
-      color: $font-color;
+      color: set-var(color, $theme-default, $channel-picker);
       padding-left: 5px;
       &::placeholder {
-        color: $placeholder-default-color;
+        color: set-var(placeholder__color, $theme-default, $channel-picker);
       }
       &:focus::placeholder {
-        color: $placeholder-focus-color;
+        color: set-var(placeholder__color--focus, $theme-default, $channel-picker);
       }
     }
     .team-chosen-input[contenteditable]:empty::after {
       content: attr(data-placeholder);
       display: inline-block;
-      color: $placeholder-default-color;
+      color: set-var(placeholder__color, $theme-default, $channel-picker);
     }
     .team-chosen-input[contenteditable]:empty:focus::after {
       content: attr(data-placeholder);
-      color: $placeholder-focus-color;
+      color: set-var(placeholder__color--focus, $theme-default, $channel-picker);
     }
 
     .search-icon {
       align-self: flex-start;
       font-family: 'FabricMDL2Icons';
-      color: $accent-color;
+      color: var(--accent-color, $commblue_primary);
     }
 
     .input-search-start {
@@ -140,36 +116,7 @@ $dropdown-item-selected-background: var(--dropdown-item-selected-background, #de
       height: 90%;
       top: 2px;
       right: 2px;
-      background-image: linear-gradient(
-        to right,
-        rgba(255, 255, 255, 0) 0%,
-        rgba(255, 255, 255, 0) 80%,
-        $input-background-color 100%
-      );
-      background-image: -moz-linear-gradient(
-        left,
-        rgba(255, 255, 255, 0) 0%,
-        rgba(255, 255, 255, 0) 80%,
-        $input-background-color 100%
-      );
-      background-image: -o-linear-gradient(
-        left,
-        rgba(255, 255, 255, 0) 0%,
-        rgba(255, 255, 255, 0) 80%,
-        $input-background-color 100%
-      );
-      background-image: -ms-linear-gradient(
-        left,
-        rgba(255, 255, 255, 0) 0%,
-        rgba(255, 255, 255, 0) 80%,
-        $input-background-color 100%
-      );
-      background-image: -webkit-linear-gradient(
-        left,
-        rgba(255, 255, 255, 0) 0%,
-        rgba(255, 255, 255, 0) 80%,
-        $input-background-color 100%
-      );
+      @include selected-team__overflow($theme-default);
     }
   }
 
@@ -181,10 +128,10 @@ $dropdown-item-selected-background: var(--dropdown-item-selected-background, #de
     line-height: normal;
     font-family: 'FabricMDL2Icons';
     cursor: pointer;
-    color: $placeholder-default-color;
-    background-color: $input-background-color;
+    color: set-var(placeholder__color, $theme-default, $channel-picker);
+    background-color: set-var(input__background-color, $theme-default, $channel-picker);
     &:hover {
-      color: $font-color;
+      color: set-var(color, $theme-default, $channel-picker);
     }
   }
 
@@ -194,7 +141,7 @@ $dropdown-item-selected-background: var(--dropdown-item-selected-background, #de
     position: absolute;
     box-shadow: 0px 1.3289px 2.65781px rgba(180, 180, 180, 0.182), 0px 1.3289px 2.65781px rgba(68, 68, 68, 0.3);
     border-radius: 2px;
-    background-color: $dropdown-background-color;
+    background-color: set-var(dropdown__background-color, $theme-default, $channel-picker);
     z-index: 1; /* Sit on top */
     width: 100%;
     text-align: left;
@@ -202,7 +149,7 @@ $dropdown-item-selected-background: var(--dropdown-item-selected-background, #de
     font-family: var(--default-font-family, 'Segoe UI');
     font-style: normal;
     font-weight: normal;
-    color: $font-color;
+    color: set-var(color, $theme-default, $channel-picker);
     display: none;
     max-height: 346px;
     overflow-y: auto;
@@ -213,7 +160,7 @@ $dropdown-item-selected-background: var(--dropdown-item-selected-background, #de
 
     .item {
       .arrow svg {
-        fill: $arrow-fill;
+        fill: set-var(arrow, $theme-default, $channel-picker);
       }
 
       &.list-team {
@@ -231,7 +178,7 @@ $dropdown-item-selected-background: var(--dropdown-item-selected-background, #de
         font-style: normal;
         font-weight: 600;
         font-size: 16px;
-        color: $font-color;
+        color: set-var(color, $theme-default, $channel-picker);
 
         flex-flow: nowrap;
         position: relative;
@@ -245,23 +192,11 @@ $dropdown-item-selected-background: var(--dropdown-item-selected-background, #de
           height: 100%;
           top: 0;
           right: 0;
-          background-image: -webkit-linear-gradient(
-            right,
-            $dropdown-background-color,
-            rgba($dropdown-background-color, 0)
-          );
-          background-image: -moz-linear-gradient(
-            right,
-            $dropdown-background-color,
-            rgba($dropdown-background-color, 0)
-          );
-          background-image: -ms-linear-gradient(right, $dropdown-background-color, rgba($dropdown-background-color, 0));
-          background-image: -o-linear-gradient(right, $dropdown-background-color, rgba($dropdown-background-color, 0));
-          background-image: linear-gradient(to left, $dropdown-background-color, rgba($dropdown-background-color, 0));
+          @include dropdown-item__overflow($theme-default);
         }
 
         &:hover {
-          background-color: $dropdown-item-hover-background;
+          background-color: set-var(dropdown-item__background-color--hover, $theme-default, $channel-picker);
         }
         .arrow {
           margin-right: 5px;
@@ -270,66 +205,11 @@ $dropdown-item-selected-background: var(--dropdown-item-selected-background, #de
       }
 
       &.selected {
-        background-color: $dropdown-item-selected-background;
-        .showing:last-child:after {
-          background-image: -webkit-linear-gradient(
-            right,
-            $dropdown-item-selected-background,
-            rgba($dropdown-background-color, 0)
-          );
-          background-image: -moz-linear-gradient(
-            right,
-            $dropdown-item-selected-background,
-            rgba($dropdown-background-color, 0)
-          );
-          background-image: -ms-linear-gradient(
-            right,
-            $dropdown-item-selected-background,
-            rgba($dropdown-background-color, 0)
-          );
-          background-image: -o-linear-gradient(
-            right,
-            $dropdown-item-selected-background,
-            rgba($dropdown-background-color, 0)
-          );
-          background-image: linear-gradient(
-            to left,
-            $dropdown-item-selected-background,
-            rgba($dropdown-background-color, 0)
-          );
-        }
+        background-color: set-var(dropdown-item__background-color--selected, $theme-default, $channel-picker);
       }
 
       &.focused {
-        background-color: $dropdown-item-hover-background;
-
-        .showing:last-child:after {
-          background-image: -webkit-linear-gradient(
-            right,
-            $dropdown-item-hover-background,
-            rgba($dropdown-background-color, 0) !important
-          );
-          background-image: -moz-linear-gradient(
-            right,
-            $dropdown-item-hover-background,
-            rgba($dropdown-background-color, 0) !important
-          );
-          background-image: -ms-linear-gradient(
-            right,
-            $dropdown-item-hover-background,
-            rgba($dropdown-background-color, 0) !important
-          );
-          background-image: -o-linear-gradient(
-            right,
-            $dropdown-item-hover-background,
-            rgba($dropdown-background-color, 0) !important
-          );
-          background-image: linear-gradient(
-            to left,
-            $dropdown-item-hover-background,
-            rgba($dropdown-background-color, 0)
-          ) !important;
-        }
+        background-color: set-var(dropdown-item__background-color--hover, $theme-default, $channel-picker);
       }
     }
 
@@ -347,48 +227,10 @@ $dropdown-item-selected-background: var(--dropdown-item-selected-background, #de
         padding-left: 10px;
         padding-top: 4px;
         padding-bottom: 4px;
-
-        &:last-child {
-          flex-flow: nowrap;
-          position: relative;
-          overflow: hidden;
-          white-space: nowrap;
-          background-color: transparent;
-          &:after {
-            content: '';
-            position: absolute;
-            width: 36px;
-            height: 100%;
-            top: 0;
-            right: 0;
-            background-image: -webkit-linear-gradient(
-              right,
-              $dropdown-background-color,
-              rgba($dropdown-background-color, 0)
-            );
-            background-image: -moz-linear-gradient(
-              right,
-              $dropdown-background-color,
-              rgba($dropdown-background-color, 0)
-            );
-            background-image: -ms-linear-gradient(
-              right,
-              $dropdown-background-color,
-              rgba($dropdown-background-color, 0)
-            );
-            background-image: -o-linear-gradient(
-              right,
-              $dropdown-background-color,
-              rgba($dropdown-background-color, 0)
-            );
-            background-image: linear-gradient(to left, $dropdown-background-color, rgba($dropdown-background-color, 0));
-          }
-        }
-
         .channel-name-text {
           font-size: 14px;
           font-weight: normal;
-          color: $font-color;
+          color: set-var(color, $theme-default, $channel-picker);
           margin: 0;
           padding: 0;
 
@@ -399,36 +241,7 @@ $dropdown-item-selected-background: var(--dropdown-item-selected-background, #de
       }
 
       &:hover {
-        background-color: $dropdown-item-hover-background;
-        .showing:last-child {
-          &:after {
-            background-image: -webkit-linear-gradient(
-              right,
-              $dropdown-item-hover-background,
-              rgba($dropdown-background-color, 0)
-            );
-            background-image: -moz-linear-gradient(
-              right,
-              $dropdown-item-hover-background,
-              rgba($dropdown-background-color, 0)
-            );
-            background-image: -ms-linear-gradient(
-              right,
-              $dropdown-item-hover-background,
-              rgba($dropdown-background-color, 0)
-            );
-            background-image: -o-linear-gradient(
-              right,
-              $dropdown-item-hover-background,
-              rgba($dropdown-background-color, 0)
-            );
-            background-image: linear-gradient(
-              to left,
-              $dropdown-item-hover-background,
-              rgba($dropdown-background-color, 0)
-            );
-          }
-        }
+        background-color: set-var(dropdown-item__background-color--hover, $theme-default, $channel-picker);
       }
     }
 
@@ -438,7 +251,7 @@ $dropdown-item-selected-background: var(--dropdown-item-selected-background, #de
       font-style: normal;
       font-weight: 600;
       font-size: 14px;
-      color: $font-color;
+      color: set-var(color, $theme-default, $channel-picker);
       line-height: 19px;
       text-align: center;
     }
