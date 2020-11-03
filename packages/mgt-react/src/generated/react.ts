@@ -96,8 +96,6 @@ export type PersonCardProps = {
 export type PersonProps = {
 	personQuery?: string;
 	userId?: string;
-	showName?: boolean;
-	showEmail?: boolean;
 	showPresence?: boolean;
 	personDetails?: IDynamicPerson;
 	personImage?: string;
@@ -106,6 +104,7 @@ export type PersonProps = {
 	personCardInteraction?: PersonCardInteraction;
 	line1Property?: string;
 	line2Property?: string;
+	line3Property?: string;
 	view?: PersonViewType;
 	avatarSize?: AvatarSize;
 	templateConverters?: MgtElement.TemplateContext;
