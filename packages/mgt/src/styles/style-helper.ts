@@ -5,6 +5,8 @@
  * -------------------------------------------------------------------------------------------
  */
 
+import { styles } from './theme-css';
+
 const fabricFont = document.createElement('style');
 fabricFont.type = 'text/css';
 fabricFont.appendChild(
@@ -18,3 +20,7 @@ fabricFont.appendChild(
 `)
 );
 document.head!.appendChild(fabricFont);
+
+const themeStyle = document.createElement('style');
+themeStyle.innerHTML = styles.toString();
+document.head!.appendChild(themeStyle);
