@@ -9,16 +9,13 @@ import { html } from 'lit-element';
 import { withSignIn } from '../../.storybook/addons/signInAddon/signInAddon';
 import { withCodeEditor } from '../../.storybook/addons/codeEditorAddon/codeAddon';
 import { localize } from '../../.storybook/addons/localizeAddon/localizationAddon';
-import { withKnobs, text, boolean, number } from '@storybook/addon-knobs';
+import { withKnobs } from '@storybook/addon-knobs';
 
 export default {
   title: 'Samples | Accessibility',
   component: 'mgt-combo',
   decorators: [withSignIn, withCodeEditor, localize, withKnobs],
   parameters: {
-    a11y: {
-      disabled: true
-    },
     signInAddon: {
       test: 'test'
     },
@@ -50,4 +47,7 @@ export const Localization = () => html`
   <mgt-agenda></mgt-agenda>
   <mgt-people></mgt-people>
   <mgt-todo></mgt-todo>
+  <script>
+    document.body.querySelector('.story-mgt-editor').style.direction = 'ltr';
+  </script>
 `;
