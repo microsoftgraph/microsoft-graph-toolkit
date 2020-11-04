@@ -6,7 +6,6 @@
  */
 
 import { internalProperty, LitElement, PropertyValues } from 'lit-element';
-import { runInThisContext } from 'vm';
 import { Providers } from '../providers/Providers';
 import { LocalizationHelper } from '../utils/LocalizationHelper';
 
