@@ -1,5 +1,4 @@
 <link rel="shortcut icon" type="image/png" href="/favicon.png" />
-<div id="cookie-banner"></div>
 <footer class="storybook-footer">
   Microsoft Graph Toolkit Playground was founded by Microsoft as a community guided, open source project.
   <a href="https://privacy.microsoft.com/en-us/privacystatement">Privacy & cookies</a>
@@ -9,37 +8,19 @@
 <script src="https://consentdeliveryfd.azurefd.net/mscc/lib/v2/wcp-consent.js"></script>
 <script src="https://az725175.vo.msecnd.net/scripts/jsll-4.js" type="text/javascript"></script>
 <script type="text/javascript">
-  WcpConsent.init(
-    'en-US',
-    'cookie-banner',
-    function(err, _siteConsent) {
-      if (err != undefined) {
-        return err;
-      } else {
-        siteConsent = _siteConsent; //siteConsent is used to get the current consent
-      }
+  var config = {
+    autoCapture: {
+      lineage: true
     },
-    onConsentChanged
-  );
-
-  function onConsentChanged(consentCategories) {
-    console.log('consentCatogories', consentCategories);
-    if (siteConsent.getConsentFor(WcpConsent.consentCategories.Analytics)) {
-      // add analytics
-      var config = {
-        autoCapture: {
-          lineage: true
-        },
-        coreData: {
-          appId: 'JS:GraphToolkit'
-        }
-      };
-      awa.init(config);
+    coreData: {
+      appId: 'JS:GraphToolkit'
     }
-  }
+  };
+  awa.init(config);
 </script>
 
 <style>
+  /* this keeps the storybook body area above footer */
   #root > div:first-of-type {
     height: calc(100% - 40px);
   }

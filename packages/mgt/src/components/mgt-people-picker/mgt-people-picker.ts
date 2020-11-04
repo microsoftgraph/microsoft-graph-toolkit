@@ -14,7 +14,7 @@ import { findPeople, getPeople, getPeopleFromGroup, PersonType } from '../../gra
 import { findUsers, getUser, getUsersForUserIds } from '../../graph/graph.user';
 import { IDynamicPerson } from '../../graph/types';
 import { Providers, ProviderState, MgtTemplatedComponent } from '@microsoft/mgt-element';
-import '../../styles/fabric-icon-font';
+import '../../styles/style-helper';
 import '../sub-components/mgt-spinner/mgt-spinner';
 import { debounce } from '../../utils/Utils';
 import { PersonViewType } from '../mgt-person/mgt-person';
@@ -34,29 +34,6 @@ export { PersonType } from '../../graph/graph.people';
 interface IFocusable {
   // tslint:disable-next-line: completed-docs
   isFocused: boolean;
-}
-
-/**
- * Enumeration to define what theme to render
- *
- * @export
- * @enum {string}
- */
-export enum ThemeType {
-  /**
-   * Render light theme
-   */
-  light = 'light',
-
-  /**
-   * Render dark theme
-   */
-  dark = 'dark',
-
-  /**
-   * Render custom theme
-   */
-  custom = 'custom'
 }
 
 /**
@@ -269,29 +246,6 @@ export class MgtPeoplePicker extends MgtTemplatedComponent {
   public selectionMode: string;
 
   /**
-   * Determines theme of people picker
-   *
-   * @type {ThemeType}
-   * @memberof MgtPeoplePicker
-   */
-  @property({
-    converter: value => {
-      if (!value || value.length === 0) {
-        return ThemeType.light;
-      }
-
-      value = value.toLowerCase();
-
-      if (typeof ThemeType[value] === 'undefined') {
-        return ThemeType.light;
-      } else {
-        return ThemeType[value];
-      }
-    }
-  })
-  public theme: ThemeType;
-
-  /**
    * User input in search.
    *
    * @protected
@@ -329,7 +283,6 @@ export class MgtPeoplePicker extends MgtTemplatedComponent {
     this.userInput = '';
     this.showMax = 6;
     this.selectedPeople = [];
-    this.theme = ThemeType.light;
   }
 
   /**
@@ -399,8 +352,6 @@ export class MgtPeoplePicker extends MgtTemplatedComponent {
       focused: this._isFocused,
       'people-picker': true
     };
-    const theme = `theme-${this.theme}`;
-    inputClasses[theme] = true;
 
     return html`
       <div class=${classMap(inputClasses)} @click=${e => this.focus(e)}>

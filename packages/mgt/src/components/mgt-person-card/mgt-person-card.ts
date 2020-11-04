@@ -10,22 +10,22 @@ import { customElement, html, internalProperty, property, TemplateResult } from 
 import { classMap } from 'lit-html/directives/class-map';
 import { findPeople, getEmailFromGraphEntity } from '../../graph/graph.people';
 import { getPersonImage } from '../../graph/graph.photos';
-import { getDirectReportsForUser, getExpandedUser, getMe, getUser, getUserWithPhoto } from '../../graph/graph.user';
+import { getMe, getUserWithPhoto } from '../../graph/graph.user';
+import { getSvg, SvgIcon } from '../../utils/SvgHelper';
+import { getUserPresence } from '../../graph/graph.presence';
 import { IDynamicPerson } from '../../graph/types';
 import { Providers, ProviderState, MgtTemplatedComponent } from '@microsoft/mgt-element';
+import { Presence } from '@microsoft/microsoft-graph-types-beta';
 import { TeamsHelper } from '../../utils/TeamsHelper';
-import { MgtPerson } from '../mgt-person/mgt-person';
+import { MgtPerson, PersonViewType } from '../mgt-person/mgt-person';
 import { styles } from './mgt-person-card-css';
 import { BasePersonCardSection } from './sections/BasePersonCardSection';
 import { MgtPersonCardContact } from './sections/mgt-person-card-contact/mgt-person-card-contact';
 import { MgtPersonCardFiles } from './sections/mgt-person-card-files/mgt-person-card-files';
 import { MgtPersonCardMessages } from './sections/mgt-person-card-messages/mgt-person-card-messages';
 import { MgtPersonCardOrganization } from './sections/mgt-person-card-organization/mgt-person-card-organization';
-import { MgtPersonCardProfile } from './sections/mgt-person-card-profile/mgt-person-card-profile';
-import { Presence } from '@microsoft/microsoft-graph-types-beta';
-import { getUserPresence } from '../../graph/graph.presence';
-import { getSvg, SvgIcon } from '../../utils/SvgHelper';
 import { getPersonCardGraphData, MgtPersonCardState } from './mgt-person-card.graph';
+import { MgtPersonCardProfile } from './sections/mgt-person-card-profile/mgt-person-card-profile';
 
 export type MgtPersonCardConfig = {
   isSendMessageVisible: boolean;
@@ -224,16 +224,6 @@ export class MgtPersonCard extends MgtTemplatedComponent {
   }
 
   /**
-   * Invoked each time the custom element is appended into a document-connected element
-   *
-   * @memberof MgtPersonCard
-   */
-  public connectedCallback() {
-    super.connectedCallback();
-    this.addEventListener('click', e => e.stopPropagation());
-  }
-
-  /**
    * Synchronizes property values when attributes change.
    *
    * @param {*} name
@@ -246,10 +236,6 @@ export class MgtPersonCard extends MgtTemplatedComponent {
 
     if (oldValue === newValue) {
       return;
-    }
-
-    if (name === 'is-expanded') {
-      this.isExpanded = false;
     }
 
     switch (name) {
@@ -339,19 +325,11 @@ export class MgtPersonCard extends MgtTemplatedComponent {
       personImage: image
     });
     if (!personDetailsTemplate) {
-      const personImageTemplate = this.renderPersonImage(image, presence, showPresence);
-      const personNameTemplate = this.renderPersonName(person);
-      const personTitleTemplate = this.renderPersonTitle(person);
-      const personSubtitleTemplate = this.renderPersonSubtitle(person);
+      const personTemplate = this.renderPerson();
       const contactIconsTemplate = this.renderContactIcons(person);
 
       personDetailsTemplate = html`
-        <div class="image">
-          ${personImageTemplate}
-        </div>
-        <div class="details">
-          ${personNameTemplate} ${personTitleTemplate} ${personSubtitleTemplate}
-        </div>
+        ${personTemplate}
         <div class="base-icons">
           ${contactIconsTemplate}
         </div>
@@ -391,53 +369,20 @@ export class MgtPersonCard extends MgtTemplatedComponent {
    * @param {*} image
    * @memberof MgtPersonCard
    */
-  protected renderPersonImage(imageSrc?: string, presence?: Presence, showPresence?: boolean): TemplateResult {
-    imageSrc = imageSrc || this.getImage();
-    presence = presence || this.personPresence;
-    showPresence = showPresence || this.showPresence;
+  protected renderPerson(): TemplateResult {
     const avatarSize = 'large';
     return html`
       <mgt-person
         class="person-image"
         .personDetails=${this.personDetails}
-        .personImage=${imageSrc}
-        .personPresence=${presence}
-        .showPresence=${showPresence}
+        .personImage=${this.getImage()}
+        .personPresence=${this.personPresence}
+        .showPresence=${this.showPresence}
         .avatarSize=${avatarSize}
+        .view=${PersonViewType.threelines}
+        .line2Property=${'jobTitle'}
+        .line3Property=${'officeLocation'}
       ></mgt-person>
-    `;
-  }
-
-  /**
-   * Render the display name and persona details (e.g. department, job title) for a person.
-   *
-   * @protected
-   * @param {IDynamicPerson} [person]
-   * @returns {TemplateResult}
-   * @memberof MgtPersonCard
-   */
-  protected renderPersonName(person?: IDynamicPerson): TemplateResult {
-    person = person || this.personDetails;
-    return html`
-      <div class="display-name" title="${person.displayName}">${person.displayName}</div>
-    `;
-  }
-
-  /**
-   * Render person title.
-   *
-   * @protected
-   * @param {IDynamicPerson} person
-   * @returns {TemplateResult}
-   * @memberof MgtPersonCard
-   */
-  protected renderPersonTitle(person?: IDynamicPerson): TemplateResult {
-    person = person || this.personDetails;
-    if (!person.jobTitle) {
-      return;
-    }
-    return html`
-      <div class="job-title">${person.jobTitle}</div>
     `;
   }
 

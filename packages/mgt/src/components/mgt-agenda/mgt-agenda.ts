@@ -8,7 +8,7 @@
 import * as MicrosoftGraph from '@microsoft/microsoft-graph-types';
 import { customElement, html, property, TemplateResult } from 'lit-element';
 import { Providers, ProviderState, MgtTemplatedComponent } from '@microsoft/mgt-element';
-import '../../styles/fabric-icon-font';
+import '../../styles/style-helper';
 import { prepScopes } from '../../utils/GraphHelpers';
 import { getDayOfWeekString, getMonthString } from '../../utils/Utils';
 import '../mgt-person/mgt-person';

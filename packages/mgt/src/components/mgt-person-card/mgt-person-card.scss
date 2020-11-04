@@ -51,72 +51,29 @@ $person-card-background-color: var(--person-card-background-color, #ffffff);
   }
 
   .person-details-container {
-    display: grid;
-    grid-template-rows: auto 1fr;
-    grid-template-columns: auto 1fr;
-    grid-template-areas:
-      'image details'
-      '. icons';
+    display: flex;
+    flex-direction: column;
+    width: calc(var(--mgt-flyout-set-width, 340px) - 30px);
     padding: 15px 15px 20px 15px;
 
-    .image {
-      grid-area: image;
-      .person-image {
-        --presence-background-color: var(--person-card-background-color, #ffffff);
-        --presence-icon-color: var(--person-card-background-color, #ffffff);
-        --avatar-size: 75px;
-      }
-    }
-
-    .details {
-      grid-area: details;
-      margin-left: 14px;
-      line-height: 1.15;
-      display: flex;
-      flex-direction: column;
-      position: relative;
-      overflow: hidden;
-      text-overflow: ellipse;
-      white-space: nowrap;
-      background-color: transparent;
-      width: 100%;
-      margin-top: 5px;
-
-      .display-name {
-        font-size: $person-card-display-name-font-size;
-        color: $person-card-display-name-color;
-        &::after {
-          content: '';
-          position: absolute;
-          width: 100%;
-          height: 100%;
-          top: 0;
-          right: 0;
-          background: linear-gradient(left, transparent, transparent 80%, $person-card-background-color);
-          background: -moz-linear-gradient(left, transparent, transparent 80%, $person-card-background-color);
-          background: -o-linear-gradient(left, transparent, transparent 80%, $person-card-background-color);
-          background: -ms-linear-gradient(left, transparent, transparent 80%, $person-card-background-color);
-          background: -webkit-linear-gradient(left, transparent, transparent 80%, $person-card-background-color);
-        }
-      }
-
-      .job-title {
-        font-size: $person-card-title-font-size;
-        color: $person-card-title-color;
-      }
-
-      .department {
-        font-size: $person-card-subtitle-font-size;
-        color: $person-card-subtitle-color;
-      }
+    .person-image {
+      --presence-background-color: var(--person-card-background-color, #ffffff);
+      --presence-icon-color: var(--person-card-background-color, #ffffff);
+      --avatar-size: 75px;
+      --font-size: 20px;
+      --line2-font-size: 14px;
+      --line2-color: #{$ms-color-gray120};
+      --line3-font-size: 12px;
+      --line3-color: #{$ms-color-gray110};
     }
 
     .base-icons {
-      grid-area: icons;
       display: flex;
       -webkit-align-items: center;
       align-items: center;
       max-width: 120px;
+      margin-left: 87px;
+      margin-top: 4px;
 
       .icon {
         display: flex;
