@@ -75,6 +75,10 @@
         border: 1px solid #3078d0;
       }
 
+      &.org-member--direct-report:not(:last-child) {
+        border-bottom: none;
+      }
+
       &:not(.org-member--target) {
         background-color: #ffffff;
         border: 1px solid #e8e8e8;
@@ -85,10 +89,14 @@
         }
       }
 
-      .org-member__image mgt-person {
-        --avatar-size: 48px;
-        --avatar-size-s: 48px;
-        margin-right: 8px;
+      .org-member__image {
+        flex-grow: 1;
+        mgt-person {
+          --avatar-size: 48px;
+          --avatar-size-s: 48px;
+          margin-right: 8px;
+          max-width: 230px;
+        }
       }
 
       .org-member__details {

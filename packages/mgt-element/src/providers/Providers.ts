@@ -7,6 +7,7 @@
 
 import { IProvider } from './IProvider';
 import { EventDispatcher, EventHandler } from '../utils/EventDispatcher';
+import { User } from '@microsoft/microsoft-graph-types';
 
 /**
  * Provides implementation for acquiring the necessary access token for calling the Microsoft Graph APIs.
@@ -51,6 +52,7 @@ export class Providers {
   public static onProviderUpdated(event: EventHandler<ProvidersChangedState>) {
     this._eventDispatcher.add(event);
   }
+
   /**
    * Remove event handler
    *
@@ -61,6 +63,19 @@ export class Providers {
   public static removeProviderUpdatedListener(event: EventHandler<ProvidersChangedState>) {
     this._eventDispatcher.remove(event);
   }
+
+  /**
+   * Gets the current signed in user
+   *
+   * @static
+   * @memberof Providers
+   */
+  public static async me() {
+    // TODO
+  }
+
+  private static _me: User;
+
   private static _eventDispatcher: EventDispatcher<ProvidersChangedState> = new EventDispatcher<
     ProvidersChangedState
   >();

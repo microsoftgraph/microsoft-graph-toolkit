@@ -6,11 +6,11 @@
  */
 
 import * as MicrosoftGraph from '@microsoft/microsoft-graph-types';
-import { customElement, html, property, TemplateResult } from 'lit-element';
+import { customElement, html, internalProperty, property, TemplateResult } from 'lit-element';
 import { classMap } from 'lit-html/directives/class-map';
 import { findPeople, getEmailFromGraphEntity } from '../../graph/graph.people';
 import { getPersonImage } from '../../graph/graph.photos';
-import { getUserWithPhoto } from '../../graph/graph.user';
+import { getDirectReportsForUser, getExpandedUser, getMe, getUser, getUserWithPhoto } from '../../graph/graph.user';
 import { IDynamicPerson } from '../../graph/types';
 import { Providers, ProviderState, MgtTemplatedComponent } from '@microsoft/mgt-element';
 import { TeamsHelper } from '../../utils/TeamsHelper';
@@ -25,6 +25,7 @@ import { MgtPersonCardProfile } from './sections/mgt-person-card-profile/mgt-per
 import { Presence } from '@microsoft/microsoft-graph-types-beta';
 import { getUserPresence } from '../../graph/graph.presence';
 import { getSvg, SvgIcon } from '../../utils/SvgHelper';
+import { getPersonCardGraphData, MgtPersonCardState } from './mgt-person-card.graph';
 
 export type MgtPersonCardConfig = {
   isSendMessageVisible: boolean;
@@ -67,7 +68,7 @@ export class MgtPersonCard extends MgtTemplatedComponent {
   }
 
   private static _config: MgtPersonCardConfig = {
-    isSendMessageVisible: true,
+    isSendMessageVisible: false,
     sections: {
       contact: true,
       files: true,
@@ -102,6 +103,7 @@ export class MgtPersonCard extends MgtTemplatedComponent {
     this._personDetails = value;
     this.personImage = null;
     this.sections.forEach(s => (s.personDetails = value));
+    console.log('request - person details');
     this.requestStateUpdate();
   }
   /**
@@ -196,6 +198,8 @@ export class MgtPersonCard extends MgtTemplatedComponent {
   })
   public personPresence: Presence;
 
+  @internalProperty() private state: MgtPersonCardState;
+
   /**
    * The subsections for display in the lower part of the card
    *
@@ -209,6 +213,7 @@ export class MgtPersonCard extends MgtTemplatedComponent {
   private _chatInput: string;
   private _currentSection: BasePersonCardSection;
   private _personDetails: IDynamicPerson;
+  private _me: MicrosoftGraph.User;
 
   constructor() {
     super();
@@ -252,6 +257,7 @@ export class MgtPersonCard extends MgtTemplatedComponent {
       case 'user-id':
         this.personDetails = null;
         this.requestStateUpdate();
+        console.log('request attribute changed callback');
         break;
     }
   }
@@ -288,17 +294,6 @@ export class MgtPersonCard extends MgtTemplatedComponent {
   }
 
   protected firstUpdated(changedProperties: any) {
-    // tslint:disable-next-line:no-unused-expression
-    MgtPersonCard.config.sections.contact && this.sections.push(new MgtPersonCardContact());
-    // tslint:disable-next-line:no-unused-expression
-    MgtPersonCard.config.sections.organization && this.sections.push(new MgtPersonCardOrganization());
-    // tslint:disable-next-line:no-unused-expression
-    MgtPersonCard.config.sections.mailMessages && this.sections.push(new MgtPersonCardMessages());
-    // tslint:disable-next-line:no-unused-expression
-    MgtPersonCard.config.sections.files && this.sections.push(new MgtPersonCardFiles());
-    // tslint:disable-next-line:no-unused-expression
-    MgtPersonCard.config.sections.profile && this.sections.push(new MgtPersonCardProfile());
-
     super.firstUpdated(changedProperties);
   }
 
@@ -610,23 +605,24 @@ export class MgtPersonCard extends MgtTemplatedComponent {
     }
 
     return html`
-      ${MgtPersonCard.config.isSendMessageVisible &&
-        html`
-          <div class="quick-message">
-            <input
-              type="text"
-              class="quick-message__input"
-              placeholder="Message ${this.personDetails.displayName}"
-              .value=${this._chatInput}
-              @input=${(e: Event) => {
-                this._chatInput = (e.target as HTMLInputElement).value;
-              }}
-            />
-            <button class="quick-message__send" @click=${() => this.sendQuickMessage()}>
-              ${getSvg(SvgIcon.Send)}
-            </button>
-          </div>
-        `}
+      ${this.personDetails.id !== this._me.id && MgtPersonCard.config.isSendMessageVisible
+        ? html`
+            <div class="quick-message">
+              <input
+                type="text"
+                class="quick-message__input"
+                placeholder="Message ${this.personDetails.displayName}"
+                .value=${this._chatInput}
+                @input=${(e: Event) => {
+                  this._chatInput = (e.target as HTMLInputElement).value;
+                }}
+              />
+              <button class="quick-message__send" @click=${() => this.sendQuickMessage()}>
+                ${getSvg(SvgIcon.Send)}
+              </button>
+            </div>
+          `
+        : null}
       <div class="sections">
         ${compactTemplates}
       </div>
@@ -658,6 +654,12 @@ export class MgtPersonCard extends MgtTemplatedComponent {
    * @memberof MgtPersonCard
    */
   protected async loadState() {
+    console.log('loadState');
+
+    if (this.state) {
+      return;
+    }
+
     if (!this.personDetails && this.inheritDetails) {
       // User person details inherited from parent tree
       let parent = this.parentElement;
@@ -680,25 +682,22 @@ export class MgtPersonCard extends MgtTemplatedComponent {
 
     const graph = provider.graph.forComponent(this);
 
+    // TODO - move this to providers and cache me for the session
+    if (!this._me) {
+      this._me = await getMe(graph);
+    }
+
     // check if personDetail already populated
     if (this.personDetails) {
       const user = this.personDetails as MicrosoftGraph.User;
       const id = user.userPrincipalName || user.id;
+
       // if we have an id but no email, we should get data from the graph
+      // in some graph calls, the user object does not contain the email
       if (id && !getEmailFromGraphEntity(user)) {
         const person = await getUserWithPhoto(graph, id);
         this.personDetails = person;
         this.personImage = this.getImage();
-      } else if (
-        !this.personDetails.personImage &&
-        ((this.fetchImage && !this.personImage) || this.personImage === '@')
-      ) {
-        // in some cases we might only have name or email, but need to find the image
-        const image = await getPersonImage(graph, this.personDetails);
-        if (image) {
-          this.personDetails.personImage = image;
-          this.personImage = image;
-        }
       }
     } else if (this.userId || this.personQuery === 'me') {
       // Use userId or 'me' query to get the person and image
@@ -708,15 +707,16 @@ export class MgtPersonCard extends MgtTemplatedComponent {
       this.personImage = this.getImage();
     } else if (this.personQuery) {
       // Use the personQuery to find our person.
-      const people = await findPeople(graph, this.personQuery);
+      const people = await findPeople(graph, this.personQuery, 1);
 
       if (people && people.length) {
         this.personDetails = people[0];
-        const image = await getPersonImage(graph, this.personDetails);
-        if (image) {
-          this.personDetails.personImage = image;
-          this.personImage = image;
-        }
+        getPersonImage(graph, this.personDetails).then(image => {
+          if (image) {
+            this.personDetails.personImage = image;
+            this.personImage = image;
+          }
+        });
       }
     }
 
@@ -729,7 +729,9 @@ export class MgtPersonCard extends MgtTemplatedComponent {
     if (!this.personPresence && this.showPresence) {
       try {
         if (this.personDetails && this.personDetails.id) {
-          this.personPresence = await getUserPresence(graph, this.personDetails.id);
+          getUserPresence(graph, this.personDetails.id).then(presence => {
+            this.personPresence = presence;
+          });
         } else {
           this.personPresence = defaultPresence;
         }
@@ -737,6 +739,46 @@ export class MgtPersonCard extends MgtTemplatedComponent {
         // set up a default Presence in case beta api changes or getting error code
         this.personPresence = defaultPresence;
       }
+    }
+
+    this.state = await getPersonCardGraphData(
+      graph,
+      this.personDetails,
+      this._me === this.personDetails.id,
+      MgtPersonCard.config
+    );
+
+    this.loadSections();
+
+    // // tslint:disable-next-line:no-unused-expression
+    // MgtPersonCard.config.sections.contact && this.sections.push(new MgtPersonCardContact());
+    // // tslint:disable-next-line:no-unused-expression
+    // MgtPersonCard.config.sections.organization && this.sections.push(new MgtPersonCardOrganization());
+    // // tslint:disable-next-line:no-unused-expression
+    // MgtPersonCard.config.sections.mailMessages && this.sections.push(new MgtPersonCardMessages());
+    // // tslint:disable-next-line:no-unused-expression
+    // MgtPersonCard.config.sections.files && this.sections.push(new MgtPersonCardFiles());
+    // // tslint:disable-next-line:no-unused-expression
+    // MgtPersonCard.config.sections.profile && this.sections.push(new MgtPersonCardProfile());
+  }
+
+  private loadSections() {
+    this.sections = [];
+
+    if (!this.personDetails) {
+      return;
+    }
+
+    if (MgtPersonCard.config.sections.contact) {
+      this.sections.push(new MgtPersonCardContact());
+    }
+
+    if (!this.state) {
+      return;
+    }
+
+    if (MgtPersonCard.config.sections.organization && this.state.person) {
+      this.sections.push(new MgtPersonCardOrganization(this.state));
     }
   }
 

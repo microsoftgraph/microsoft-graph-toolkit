@@ -264,8 +264,7 @@ $person-card-background-color: var(--person-card-background-color, #ffffff);
   .quick-message {
     display: flex;
     flex-direction: row;
-    padding: 8px 10px;
-    border-bottom: 1px solid #e8e8e8;
+    padding: 12px 10px 8px 10px;
 
     .quick-message__input {
       flex-grow: 1;
@@ -304,8 +303,14 @@ $person-card-background-color: var(--person-card-background-color, #ffffff);
       flex-direction: column;
       position: relative;
 
-      &:not(:last-child) {
+      &:not(:last-child):after {
+        position: absolute;
+        content: '';
+        width: 90%;
+        transform: translateX(-50%);
         border-bottom: 1px solid #eaeaea;
+        left: 50%;
+        bottom: 0;
       }
 
       .section__header {

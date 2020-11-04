@@ -74,11 +74,15 @@
       .part__copy {
         width: 32px;
         height: 100%;
-        background-color: #e1dfdd;
         visibility: hidden;
         display: flex;
         align-items: center;
         justify-content: center;
+        cursor: pointer;
+
+        &:hover {
+          background-color: #e1dfdd;
+        }
 
         &:active {
           background-color: #f3f2f1;
@@ -87,7 +91,6 @@
 
       &:hover {
         background-color: #f3f2f1;
-        cursor: pointer;
 
         .part__copy {
           visibility: visible;
@@ -95,38 +98,26 @@
       }
     }
 
-    // &.compact {
-    //   padding: 0;
+    &.compact {
+      padding: 0;
 
-    //   .part {
-    //     display: flex;
+      .part {
+        height: 30px;
+        align-items: center;
+      }
 
-    //     &:not(:last-child) {
-    //       margin-bottom: 8px;
-    //     }
+      .part__details {
+        margin: 0;
+      }
 
-    //     &:hover {
-    //       background-color: initial;
-    //       cursor: initial;
+      .part__title {
+        display: none;
+      }
 
-    //       .part__copy {
-    //         // visibility: hidden;
-    //       }
-    //     }
-    //   }
-
-    //   .part__details {
-    //     margin: 0;
-    //   }
-
-    //   .part__title {
-    //     display: none;
-    //   }
-
-    //   .part__icon {
-    //     margin-top: 0;
-    //     margin-right: 6px;
-    //   }
-    // }
+      .part__icon {
+        margin-top: 0;
+        margin-right: 6px;
+      }
+    }
   }
 }
