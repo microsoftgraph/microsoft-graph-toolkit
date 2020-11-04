@@ -242,7 +242,7 @@ export class MgtTasks extends MgtTemplatedComponent {
 
   /**
    * determines which task source is loaded, either planner or todo
-   * @type {string}
+   * @type {TasksSource}
    */
   @property({
     attribute: 'data-source',
@@ -305,6 +305,8 @@ export class MgtTasks extends MgtTemplatedComponent {
 
   /**
    * allows developer to define specific group id
+   *
+   * @type {string}
    */
   @property({ attribute: 'group-id', type: String })
   public groupId: string;
@@ -312,6 +314,7 @@ export class MgtTasks extends MgtTemplatedComponent {
   /**
    * Optional filter function when rendering tasks
    *
+   * @type {TaskFilter}
    * @memberof MgtTasks
    */
   public taskFilter: TaskFilter;

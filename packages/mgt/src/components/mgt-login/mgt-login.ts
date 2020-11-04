@@ -12,7 +12,7 @@ import { Providers, ProviderState, MgtTemplatedComponent } from '@microsoft/mgt-
 import { MgtFlyout } from '../sub-components/mgt-flyout/mgt-flyout';
 import { styles } from './mgt-login-css';
 import { getUserWithPhoto } from '../../graph/graph.user';
-import '../../styles/fabric-icon-font';
+import '../../styles/style-helper';
 import '../mgt-person/mgt-person';
 import { PersonViewType } from '../mgt-person/mgt-person';
 import { strings } from './strings';
