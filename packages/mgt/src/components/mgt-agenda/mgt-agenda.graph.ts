@@ -16,6 +16,7 @@ import { GraphPageIterator } from '../../utils/GraphPageIterator';
  * @param {Date} startDateTime
  * @param {Date} endDateTime
  * @param {string} [groupId]
+ * @param {string} preferredTimezone
  * @returns {(Promise<Event[]>)}
  * @memberof Graph
  */
@@ -23,7 +24,8 @@ export function getEventsPageIterator(
   graph: IGraph,
   startDateTime: Date,
   endDateTime: Date,
-  groupId?: string
+  groupId?: string,
+  preferredTimezone?: string
 ): Promise<GraphPageIterator<MicrosoftGraph.Event>> {
   const scopes = 'calendars.read';
 
@@ -40,10 +42,14 @@ export function getEventsPageIterator(
 
   uri += `/calendarview?${sdt}&${edt}`;
 
-  const request = graph
+  let request = graph
     .api(uri)
     .middlewareOptions(prepScopes(scopes))
     .orderby('start/dateTime');
+
+  if (preferredTimezone) {
+    request = request.header('Prefer', `outlook.timezone="${preferredTimezone}"`);
+  }
 
   return GraphPageIterator.create<MicrosoftGraph.Event>(graph, request);
 }
