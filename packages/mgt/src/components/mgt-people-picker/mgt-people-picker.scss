@@ -388,8 +388,6 @@ mgt-flyout {
   flex: 1 0 auto;
 }
 
-@include theme();
-
 [dir='rtl'] {
   mgt-person {
     margin: 0px 12px 0px 0px;
