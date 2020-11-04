@@ -1,6 +1,7 @@
 import addons, { makeDecorator } from '@storybook/addons';
 import { LocalizationHelper } from '../../../packages/mgt/dist/es6/index.js';
 import { withKnobs, text, object, select } from '@storybook/addon-knobs';
+import { STORY_CHANGED } from '@storybook/core-events';
 
 export const localize = makeDecorator({
   name: `localize`,
@@ -15,11 +16,14 @@ export const localize = makeDecorator({
     };
     let defaultValue = 'ltr';
     const groupId = 'Document Direction';
-    if (context.name === 'Right To Left') {
-      defaultValue = 'rtl';
-    }
     const value = select(label, options, defaultValue, groupId);
     document.body.setAttribute('dir', value);
+
+    const channel = addons.getChannel();
+
+    channel.on(STORY_CHANGED, params => {
+      document.body.setAttribute('dir', 'ltr');
+    });
 
     let defaultStrings = {
       _components: {
@@ -87,7 +91,9 @@ export const localize = makeDecorator({
           if (LocalizationHelper.strings['_components'][component][keys]) {
             for (let key in LocalizationHelper.strings['_components'][component]) {
               let value = text(key, LocalizationHelper.strings['_components'][component][key], component);
-              LocalizationHelper.strings['_components'][component][key] = value;
+              if (value) {
+                LocalizationHelper.strings['_components'][component][key] = value;
+              }
             }
           }
         }
