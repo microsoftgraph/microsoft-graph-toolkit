@@ -10,7 +10,7 @@ import { customElement, html, internalProperty, property, TemplateResult } from 
 import { classMap } from 'lit-html/directives/class-map';
 import { repeat } from 'lit-html/directives/repeat';
 import { findGroups, GroupType } from '../../graph/graph.groups';
-import { findPeople, getPeople, getPeopleFromGroup, PersonType } from '../../graph/graph.people';
+import { findPeople, findPeopleFromGroup, getPeople, getPeopleFromGroup, PersonType } from '../../graph/graph.people';
 import { findUsers, getUser, getUsersForUserIds } from '../../graph/graph.user';
 import { IDynamicPerson } from '../../graph/types';
 import { Providers, ProviderState, MgtTemplatedComponent } from '@microsoft/mgt-element';
@@ -676,12 +676,16 @@ export class MgtPeoplePicker extends MgtTemplatedComponent {
         people = [];
         if (this.type === PersonType.person || this.type === PersonType.any) {
           try {
-            people = (await findPeople(graph, input, this.showMax)) || [];
+            if (this.groupId) {
+              people = (await findPeopleFromGroup(graph, input, this.groupId, this.showMax)) || [];
+            } else {
+              people = (await findPeople(graph, input, this.showMax)) || [];
+            }
           } catch (e) {
             // nop
           }
 
-          if (people.length < this.showMax) {
+          if (people.length < this.showMax && !this.groupId) {
             try {
               const users = (await findUsers(graph, input, this.showMax)) || [];
 
