@@ -286,31 +286,31 @@
       to left,
       rgba(255, 255, 255, 0) 0%,
       rgba(255, 255, 255, 0) 80%,
-      $input-background-color 100%
+      input__background-color 100%
     );
     background-image: -moz-linear-gradient(
       right,
       rgba(255, 255, 255, 0) 0%,
       rgba(255, 255, 255, 0) 80%,
-      $input-background-color 100%
+      input__background-color 100%
     );
     background-image: -o-linear-gradient(
       right,
       rgba(255, 255, 255, 0) 0%,
       rgba(255, 255, 255, 0) 80%,
-      $input-background-color 100%
+      input__background-color 100%
     );
     background-image: -ms-linear-gradient(
       right,
       rgba(255, 255, 255, 0) 0%,
       rgba(255, 255, 255, 0) 80%,
-      $input-background-color 100%
+      input__background-color 100%
     );
     background-image: -webkit-linear-gradient(
       right,
       rgba(255, 255, 255, 0) 0%,
       rgba(255, 255, 255, 0) 80%,
-      $input-background-color 100%
+      input__background-color 100%
     );
   }
   .search-wrapper {
