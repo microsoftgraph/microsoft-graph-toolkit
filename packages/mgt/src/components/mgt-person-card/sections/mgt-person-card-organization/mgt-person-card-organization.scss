@@ -89,11 +89,19 @@
         }
       }
 
-      .org-member__image {
+      .org-member__person {
         flex-grow: 1;
         mgt-person {
           --avatar-size: 48px;
           --avatar-size-s: 48px;
+          --font-size: 16px;
+          --color: #323130;
+          --line2-font-size: 14px;
+          --line3-font-size: 14px;
+          --line2-text-transform: uppercase;
+          --line2-color: #797775;
+          --line3-color: #797775;
+          --line3-text-transform: uppercase;
           margin-right: 8px;
           max-width: 230px;
         }
@@ -134,26 +142,20 @@
         background-color: #f3f2f1;
       }
 
-      .coworker__image {
+      .coworker__person {
         height: 46px;
         width: 46px;
-        --avatar-size: 46px;
-        --avatar-size-s: 46px;
         border-radius: 46px;
         margin-right: 8px;
         background-color: #e8e8e8;
-      }
 
-      .coworker__details {
-        .coworker__name {
-          color: #323130;
-          font-size: 16px;
-          font-weight: 600;
-        }
-
-        .coworker__title {
-          color: #797775;
-          font-size: 14px;
+        mgt-person {
+          --font-size: 16px;
+          --line2-text-transform: uppercase;
+          --line2-font-size: 14px;
+          --line2-color: #797775;
+          --avatar-size: 46px;
+          --avatar-size-s: 46px;
         }
       }
     }

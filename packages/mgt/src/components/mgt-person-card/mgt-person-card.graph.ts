@@ -86,7 +86,7 @@ function buildOrgStructureRequest(batch: IBatch, userId: string) {
 
   batch.get(
     batchKeys.person,
-    `users/${userId}?$expand=${expandManagers}&$select=${userProperties}`,
+    `users/${userId}?$expand=${expandManagers}&$select=${userProperties}&$count=true`,
     ['user.read.all'],
     {
       ConsistencyLevel: 'eventual'

@@ -723,7 +723,7 @@ export class MgtPersonCard extends MgtTemplatedComponent {
     }
 
     if (MgtPersonCard.config.sections.organization && this.state.person) {
-      this.sections.push(new MgtPersonCardOrganization(this.state));
+      this.sections.push(new MgtPersonCardOrganization(this.state, this._me));
     }
   }
 
