@@ -160,6 +160,15 @@ export async function findPeople(
   return graphResult ? graphResult.value : null;
 }
 
+/**
+ * async promise, returns all matching Graph users who are member of the specified group
+ *
+ * @param {string} query
+ * @param {string} gorupId - the group to query
+ * @param {number} [top=10] - number of people to return
+ * @param {PersonType} [personType=PersonType.person] - the type of person to search for
+ * @returns {(Promise<Person[]>)}
+ */
 export async function findPeopleFromGroup(
   graph: IGraph,
   query: string,
