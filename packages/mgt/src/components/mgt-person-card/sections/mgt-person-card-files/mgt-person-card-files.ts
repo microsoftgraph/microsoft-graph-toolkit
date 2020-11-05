@@ -5,17 +5,14 @@
  * -------------------------------------------------------------------------------------------
  */
 
+import { SharedInsight } from '@microsoft/microsoft-graph-types';
 import { customElement, html, TemplateResult } from 'lit-element';
-import { BetaGraph } from '../../../../BetaGraph';
-import { Providers, ProviderState } from '@microsoft/mgt-element';
+
 import { getRelativeDisplayDate } from '../../../../utils/Utils';
 import { BasePersonCardSection } from '../BasePersonCardSection';
-import { getFilesSharedByUser, getThumbnails, getMostRecentFiles } from './graph.files';
-import { styles } from './mgt-person-card-files-css';
-import { getEmailFromGraphEntity } from '../../../../graph/graph.people';
-import { getMe } from '../../../../graph/graph.user';
+import { getFileTypeIconUri } from '../../../../styles/fluent-icons';
 import { getSvg, SvgIcon } from '../../../../utils/SvgHelper';
-import { DriveItem, SharedInsight } from '@microsoft/microsoft-graph-types';
+import { styles } from './mgt-person-card-files-css';
 
 /**
  * The files subsection of the person card
@@ -34,6 +31,13 @@ export class MgtPersonCardFiles extends BasePersonCardSection {
     return styles;
   }
 
+  private _files: SharedInsight[];
+
+  public constructor(files: SharedInsight[]) {
+    super();
+    this._files = files;
+  }
+
   /**
    * The name for display in the overview section.
    *
@@ -45,17 +49,13 @@ export class MgtPersonCardFiles extends BasePersonCardSection {
     return 'Files';
   }
 
-  private _files: DriveItem[];
-
   /**
    * Reset any state in the section
    *
    * @protected
    * @memberof MgtPersonCardFiles
    */
-  public clearState(): void {
-    this._files = [];
-  }
+  public clearState(): void {}
 
   /**
    * Render the icon for display in the navigation ribbon.
@@ -139,59 +139,21 @@ export class MgtPersonCardFiles extends BasePersonCardSection {
       : null;
 
     return html`
-      <div class="file">
+      <div class="file" @click=${e => this.handleFileClick(file)}>
         <div class="file__icon">
-          ${getSvg(SvgIcon.File)}
+          <img src=${getFileTypeIconUri(file.resourceVisualization.type, 48, 'svg')} />
         </div>
         <div class="file__details">
-          <div class="file__name">${file.lastShared.sharingSubject}</div>
+          <div class="file__name">${file.resourceVisualization.title}</div>
           ${lastModifiedTemplate}
         </div>
       </div>
     `;
   }
 
-  /**
-   * load state into the component
-   *
-   * @protected
-   * @returns {Promise<void>}
-   * @memberof MgtPersonCardProfile
-   */
-  protected async loadState(): Promise<void> {
-    const provider = Providers.globalProvider;
-
-    // check if user is signed in
-    if (!provider || provider.state !== ProviderState.SignedIn) {
-      return;
+  private handleFileClick(file: SharedInsight) {
+    if (file.resourceReference && file.resourceReference.webUrl) {
+      window.open(file.resourceReference.webUrl, '_blank');
     }
-
-    if (!this.personDetails) {
-      return;
-    }
-
-    const graph = provider.graph.forComponent(this);
-    const betaGraph = BetaGraph.fromGraph(graph);
-
-    const me = await getMe(graph);
-    const userId = this.personDetails.id;
-
-    if (me.id === userId) {
-      this._files = await getMostRecentFiles(betaGraph);
-    } else {
-      const emailAddress = getEmailFromGraphEntity(this.personDetails);
-      if (emailAddress) {
-        this._files = await getFilesSharedByUser(betaGraph, emailAddress);
-      }
-    }
-
-    // TODO
-    // if (this._files) {
-    //   for (const file of this._files) {
-    //     file.thumbnails = await getThumbnails(graph, file);
-    //   }
-    // }
-
-    this.requestUpdate();
   }
 }

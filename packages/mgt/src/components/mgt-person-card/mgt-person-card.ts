@@ -215,6 +215,10 @@ export class MgtPersonCard extends MgtTemplatedComponent {
   private _personDetails: IDynamicPerson;
   private _me: MicrosoftGraph.User;
 
+  private get internalPersonDetails(): IDynamicPerson {
+    return (this.state && this.state.person) || this.personDetails;
+  }
+
   constructor() {
     super();
     this._chatInput = '';
@@ -290,20 +294,18 @@ export class MgtPersonCard extends MgtTemplatedComponent {
    */
   protected render() {
     // Handle no data
-    if (!this.personDetails) {
+    if (!this.internalPersonDetails) {
       return this.renderNoData();
     }
 
-    const person = this.personDetails;
+    const person = this.internalPersonDetails;
     const image = this.getImage();
-    const presence = this.personPresence;
-    const showPresence = this.showPresence;
 
     // Check for a default template.
     // tslint:disable-next-line: no-string-literal
     if (this.hasTemplate('default')) {
       return this.renderTemplate('default', {
-        person: this.personDetails,
+        person: this.internalPersonDetails,
         personImage: image
       });
     }
@@ -321,7 +323,7 @@ export class MgtPersonCard extends MgtTemplatedComponent {
 
     // Check for a person-details template
     let personDetailsTemplate = this.renderTemplate('person-details', {
-      person: this.personDetails,
+      person: this.internalPersonDetails,
       personImage: image
     });
     if (!personDetailsTemplate) {
@@ -374,14 +376,14 @@ export class MgtPersonCard extends MgtTemplatedComponent {
     return html`
       <mgt-person
         class="person-image"
-        .personDetails=${this.personDetails}
+        .personDetails=${this.internalPersonDetails}
         .personImage=${this.getImage()}
         .personPresence=${this.personPresence}
         .showPresence=${this.showPresence}
         .avatarSize=${avatarSize}
         .view=${PersonViewType.threelines}
         .line2Property=${'jobTitle'}
-        .line3Property=${'officeLocation'}
+        .line3Property=${'department'}
       ></mgt-person>
     `;
   }
@@ -395,7 +397,7 @@ export class MgtPersonCard extends MgtTemplatedComponent {
    * @memberof MgtPersonCard
    */
   protected renderPersonSubtitle(person?: IDynamicPerson): TemplateResult {
-    person = person || this.personDetails;
+    person = person || this.internalPersonDetails;
     if (!person.department) {
       return;
     }
@@ -412,7 +414,7 @@ export class MgtPersonCard extends MgtTemplatedComponent {
    * @memberof MgtPersonCard
    */
   protected renderContactIcons(person?: IDynamicPerson): TemplateResult {
-    person = person || this.personDetails;
+    person = person || this.internalPersonDetails;
     const userPerson = person as MicrosoftGraph.User;
 
     // Email
@@ -466,7 +468,7 @@ export class MgtPersonCard extends MgtTemplatedComponent {
    * @memberof MgtPersonCard
    */
   protected renderExpandedDetails(person?: IDynamicPerson): TemplateResult {
-    person = person || this.personDetails;
+    person = person || this.internalPersonDetails;
 
     const sectionNavTemplate = this.renderSectionNavigation();
     const currentSectionTemplate = this.renderCurrentSection();
@@ -550,13 +552,13 @@ export class MgtPersonCard extends MgtTemplatedComponent {
     }
 
     return html`
-      ${this.personDetails.id !== this._me.id && MgtPersonCard.config.isSendMessageVisible
+      ${this.internalPersonDetails.id !== this._me.id && MgtPersonCard.config.isSendMessageVisible
         ? html`
             <div class="quick-message">
               <input
                 type="text"
                 class="quick-message__input"
-                placeholder="Message ${this.personDetails.displayName}"
+                placeholder="Message ${this.internalPersonDetails.displayName}"
                 .value=${this._chatInput}
                 @input=${(e: Event) => {
                   this._chatInput = (e.target as HTMLInputElement).value;
@@ -710,12 +712,12 @@ export class MgtPersonCard extends MgtTemplatedComponent {
   private loadSections() {
     this.sections = [];
 
-    if (!this.personDetails) {
+    if (!this.internalPersonDetails) {
       return;
     }
 
-    if (MgtPersonCard.config.sections.contact) {
-      this.sections.push(new MgtPersonCardContact());
+    if (MgtPersonCard.config.sections.contact && this.state.person) {
+      this.sections.push(new MgtPersonCardContact(this.state.person));
     }
 
     if (!this.state) {
@@ -724,6 +726,21 @@ export class MgtPersonCard extends MgtTemplatedComponent {
 
     if (MgtPersonCard.config.sections.organization && this.state.person) {
       this.sections.push(new MgtPersonCardOrganization(this.state, this._me));
+    }
+
+    if (MgtPersonCard.config.sections.mailMessages && this.state.messages) {
+      this.sections.push(new MgtPersonCardMessages(this.state.messages));
+    }
+
+    if (MgtPersonCard.config.sections.files && this.state.files) {
+      this.sections.push(new MgtPersonCardFiles(this.state.files)); //this.state, this._me));
+    }
+
+    // TODO - load beta state
+    if (MgtPersonCard.config.sections.profile) {
+      const profileSection = new MgtPersonCardProfile();
+      profileSection.personDetails = this.personDetails;
+      this.sections.push(profileSection);
     }
   }
 
@@ -750,7 +767,7 @@ export class MgtPersonCard extends MgtTemplatedComponent {
    * @memberof MgtPersonCard
    */
   protected emailUser() {
-    const user = this.personDetails;
+    const user = this.internalPersonDetails;
     if (user) {
       const email = getEmailFromGraphEntity(user);
       if (email) {

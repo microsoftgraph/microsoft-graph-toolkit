@@ -32,6 +32,13 @@ export class MgtPersonCardMessages extends BasePersonCardSection {
     return styles;
   }
 
+  private _messages: Message[];
+
+  public constructor(messages: Message[]) {
+    super();
+    this._messages = messages;
+  }
+
   /**
    * The name for display in the overview section.
    *
@@ -42,8 +49,6 @@ export class MgtPersonCardMessages extends BasePersonCardSection {
   public get displayName(): string {
     return 'Emails';
   }
-
-  private _messages: Message[];
 
   /**
    * Reset any state in the section
@@ -141,35 +146,6 @@ export class MgtPersonCardMessages extends BasePersonCardSection {
         <div class="message__date">${getRelativeDisplayDate(new Date(message.receivedDateTime))}</div>
       </div>
     `;
-  }
-
-  /**
-   * load state into the component
-   *
-   * @protected
-   * @returns {Promise<void>}
-   * @memberof MgtPersonCardMessages
-   */
-  protected async loadState(): Promise<void> {
-    const provider = Providers.globalProvider;
-
-    // check if user is signed in
-    if (!provider || provider.state !== ProviderState.SignedIn) {
-      return;
-    }
-
-    if (!this.personDetails) {
-      return;
-    }
-
-    const graph = provider.graph.forComponent(this);
-
-    const emailAddress = getEmailFromGraphEntity(this.personDetails);
-    if (emailAddress) {
-      this._messages = await getMessagesWithUser(graph, emailAddress);
-    }
-
-    this.requestUpdate();
   }
 
   private handleMessageClick(message: Message): void {
