@@ -496,7 +496,45 @@ export class MgtAgenda extends MgtTemplatedComponent {
       return;
     }
 
+    const events = await this.loadEvents();
+    if (events && events.length > 0) {
+      this.events = events;
+    }
+  }
+
+  protected async reload() {
+    this.events = await this.loadEvents();
+    this.render();
+  }
+
+  private async reloadState() {
+    this.events = null;
+    this.requestStateUpdate(true);
+  }
+
+  private onResize() {
+    this._isNarrow = this.offsetWidth < 600;
+  }
+
+  private eventClicked(event: MicrosoftGraph.Event) {
+    this.fireCustomEvent('eventClick', { event });
+  }
+
+  private getEventTimeString(event: MicrosoftGraph.Event) {
+    if (event.isAllDay) {
+      return 'ALL DAY';
+    }
+
+    const start = this.prettyPrintTimeFromDateTime(new Date(event.start.dateTime));
+    const end = this.prettyPrintTimeFromDateTime(new Date(event.end.dateTime));
+
+    return `${start} - ${end}`;
+  }
+
+  private async loadEvents(): Promise<MicrosoftGraph.Event[]> {
     const p = Providers.globalProvider;
+    let events: MicrosoftGraph.Event[] = [];
+
     if (p && p.state === ProviderState.SignedIn) {
       const graph = p.graph.forComponent(this);
 
@@ -525,7 +563,7 @@ export class MgtAgenda extends MgtTemplatedComponent {
           const results = await request.get();
 
           if (results && results.value) {
-            this.events = results.value;
+            events = results.value;
           }
           // tslint:disable-next-line: no-empty
         } catch (e) {}
@@ -538,11 +576,11 @@ export class MgtAgenda extends MgtTemplatedComponent {
           const iterator = await getEventsPageIterator(graph, start, end, this.groupId, this.preferredTimezone);
 
           if (iterator && iterator.value) {
-            this.events = iterator.value;
+            events = iterator.value;
 
             while (iterator.hasNext) {
               await iterator.next();
-              this.events = iterator.value;
+              events = iterator.value;
             }
           }
         } catch (error) {
@@ -550,30 +588,8 @@ export class MgtAgenda extends MgtTemplatedComponent {
         }
       }
     }
-  }
 
-  private async reloadState() {
-    this.events = null;
-    this.requestStateUpdate(true);
-  }
-
-  private onResize() {
-    this._isNarrow = this.offsetWidth < 600;
-  }
-
-  private eventClicked(event: MicrosoftGraph.Event) {
-    this.fireCustomEvent('eventClick', { event });
-  }
-
-  private getEventTimeString(event: MicrosoftGraph.Event) {
-    if (event.isAllDay) {
-      return 'ALL DAY';
-    }
-
-    const start = this.prettyPrintTimeFromDateTime(new Date(event.start.dateTime));
-    const end = this.prettyPrintTimeFromDateTime(new Date(event.end.dateTime));
-
-    return `${start} - ${end}`;
+    return events;
   }
 
   private prettyPrintTimeFromDateTime(date: Date) {
