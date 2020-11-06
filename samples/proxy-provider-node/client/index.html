@@ -84,12 +84,13 @@
 
       sessionStorage.setItem('msalAccount', authResult.account.username);
 
-      mgt.Providers.globalProvider.setState(mgt.ProviderState.SignedIn);
+      provider.setState(mgt.ProviderState.SignedIn);
     };
 
     provider.logout = () => {
       msalClient.logout();
       sessionStorage.removeItem('msalAccount');
+      provider.setState(mgt.ProviderState.SignedOut);
     };
 
     mgt.Providers.globalProvider = provider;
