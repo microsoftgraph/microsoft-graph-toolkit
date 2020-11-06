@@ -420,3 +420,53 @@ export async function findUsers(graph: IGraph, query: string, top: number = 10):
   }
   return graphResult ? graphResult.value : null;
 }
+
+/**
+ * async promise, returns all matching Graph users who are member of the specified group
+ *
+ * @param {string} query
+ * @param {string} groupId - the group to query
+ * @param {number} [top=10] - number of people to return
+ * @param {boolean} [transitive=false] - whether the return should contain a flat list of all nested members
+ * @returns {(Promise<User[]>)}
+ */
+export async function findUsersFromGroup(
+  graph: IGraph,
+  query: string,
+  groupId: string,
+  top: number = 10,
+  transitive: boolean = false
+): Promise<User[]> {
+  const scopes = 'user.read.all';
+  const item = { maxResults: top, results: null };
+
+  let cache: CacheStore<CacheUserQuery>;
+  const key = `${groupId}:${query}:${transitive}`;
+
+  if (usersCacheEnabled()) {
+    cache = CacheService.getCache<CacheUserQuery>(cacheSchema, queryStore);
+    const result: CacheUserQuery = await cache.getValue(key);
+
+    if (result && getUserInvalidationTime() > Date.now() - result.timeCached) {
+      return result.results.map(userStr => JSON.parse(userStr));
+    }
+  }
+
+  const filter: string = `startswith(displayName,'${query}') or startswith(givenName,'${query}') or startswith(surname,'${query}') or startswith(mail,'${query}') or startswith(userPrincipalName,'${query}')`;
+  let apiUrl: string = `/groups/${groupId}/${transitive ? 'transitiveMembers' : 'members'}/microsoft.graph.user`;
+
+  const graphResult = await graph
+    .api(apiUrl)
+    .count(true)
+    .top(top)
+    .filter(filter)
+    .header('ConsistencyLevel', 'eventual')
+    .middlewareOptions(prepScopes(scopes))
+    .get();
+
+  if (usersCacheEnabled() && graphResult) {
+    item.results = graphResult.value.map(userStr => JSON.stringify(userStr));
+    cache.putValue(key, item);
+  }
+  return graphResult ? graphResult.value : null;
+}
