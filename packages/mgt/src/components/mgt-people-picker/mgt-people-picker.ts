@@ -710,16 +710,16 @@ export class MgtPeoplePicker extends MgtTemplatedComponent {
       }
     }
 
-    if (people) {
-      people = people.filter((user: User) => {
-        return (
-          user.displayName.toLowerCase().indexOf(input) !== -1 ||
-          (!!user.givenName && user.givenName.toLowerCase().indexOf(input) !== -1) ||
-          (!!user.surname && user.surname.toLowerCase().indexOf(input) !== -1) ||
-          (!!user.mail && user.mail.toLowerCase().indexOf(input) !== -1)
-        );
-      });
-    }
+    // if (people) {
+    //   people = people.filter((user: User) => {
+    //     return (
+    //       user.displayName.toLowerCase().indexOf(input) !== -1 ||
+    //       (!!user.givenName && user.givenName.toLowerCase().indexOf(input) !== -1) ||
+    //       (!!user.surname && user.surname.toLowerCase().indexOf(input) !== -1) ||
+    //       (!!user.mail && user.mail.toLowerCase().indexOf(input) !== -1)
+    //     );
+    //   });
+    // }
 
     this._foundPeople = this.filterPeople(people);
   }
@@ -847,6 +847,8 @@ export class MgtPeoplePicker extends MgtTemplatedComponent {
         highlight = displayName.slice(highlightLocation, highlightLocation + userInputLength);
         last = displayName.slice(highlightLocation + userInputLength, displayName.length);
       }
+    } else {
+      first = person.displayName;
     }
 
     return html`
