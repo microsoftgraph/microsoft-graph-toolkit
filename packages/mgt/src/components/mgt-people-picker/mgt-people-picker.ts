@@ -22,6 +22,8 @@ import { PersonCardInteraction } from '../PersonCardInteraction';
 import { MgtFlyout } from '../sub-components/mgt-flyout/mgt-flyout';
 import { styles } from './mgt-people-picker-css';
 
+import { strings } from './strings';
+
 export { GroupType } from '../../graph/graph.groups';
 export { PersonType } from '../../graph/graph.people';
 
@@ -73,6 +75,10 @@ export class MgtPeoplePicker extends MgtTemplatedComponent {
    */
   static get styles() {
     return styles;
+  }
+
+  protected get strings() {
+    return strings;
   }
 
   /**
@@ -286,15 +292,6 @@ export class MgtPeoplePicker extends MgtTemplatedComponent {
   }
 
   /**
-   * Invoked each time the custom element is appended into a document-connected element
-   *
-   * @memberof MgtLogin
-   */
-  public connectedCallback() {
-    super.connectedCallback();
-  }
-
-  /**
    * Focuses the input element when focus is called
    *
    * @param {FocusOptions} [options]
@@ -354,7 +351,7 @@ export class MgtPeoplePicker extends MgtTemplatedComponent {
     };
 
     return html`
-      <div class=${classMap(inputClasses)} @click=${e => this.focus(e)}>
+      <div dir=${this.direction} class=${classMap(inputClasses)} @click=${e => this.focus(e)}>
         <div class="selected-list">
           ${selectedPeopleTemplate} ${flyoutTemplate}
         </div>
@@ -389,7 +386,7 @@ export class MgtPeoplePicker extends MgtTemplatedComponent {
   protected renderInput(): TemplateResult {
     const hasSelectedPeople = !!this.selectedPeople.length;
 
-    const placeholder = this.placeholder ? this.placeholder : 'Start typing a name';
+    const placeholder = this.placeholder ? this.placeholder : this.strings.inputPlaceholderText;
 
     const selectionMode = this.selectionMode ? this.selectionMode : 'multiple';
 
@@ -519,7 +516,7 @@ export class MgtPeoplePicker extends MgtTemplatedComponent {
         <div class="message-parent">
           <mgt-spinner></mgt-spinner>
           <div label="loading-text" aria-label="loading" class="loading-text">
-            Loading...
+            ${this.strings.loadingMessage}
           </div>
         </div>
       `
@@ -540,7 +537,7 @@ export class MgtPeoplePicker extends MgtTemplatedComponent {
       html`
         <div class="message-parent">
           <div label="search-error-text" aria-label="We didn't find any matches." class="search-error-text">
-            We didn't find any matches.
+            ${this.strings.noResultsFound}
           </div>
         </div>
       `
