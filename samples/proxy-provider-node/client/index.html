@@ -1,0 +1,99 @@
+<!-- Copyright (c) Microsoft Corporation.
+     Licensed under the MIT License. -->
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, shrink-to-fit=no">
+  <title>Node.js Graph Proxy Client</title>
+
+  <link rel="shortcut icon" href="g-raph.png">
+  <link href="style.css" rel="stylesheet" type="text/css" />
+</head>
+
+<body>
+  <main id="main-container" role="main" class="container">
+    <h2>Login component</h2>
+    <mgt-login></mgt-login>
+    <h2>Person component</h2>
+    <mgt-person person-query="me" person-card="hover" show-presence="true" view="twolines"></mgt-person>
+    <h2>Tasks component</h2>
+    <mgt-tasks data-source="todo"></mgt-tasks>
+  </main>
+
+  <!-- MSAL -->
+  <script src="https://alcdn.msauth.net/browser/2.5.2/js/msal-browser.min.js"></script>
+
+  <!-- Graph Toolkit -->
+  <script src="https://unpkg.com/@microsoft/mgt/dist/bundle/mgt-loader.js"></script>
+
+  <!-- Configuration -->
+  <script src="config.js"></script>
+
+  <script>
+    // This is used to sign in the user and get a token that
+    // allows the client to call the proxy
+    const msalClient = new msal.PublicClientApplication(msalConfig);
+
+    const provider = new mgt.ProxyProvider('http://localhost:8000/apiproxy', async() => {
+      // This code executes for each call to the proxy to
+      // get any headers that it should add to the request.
+
+      // Get the user account name
+      const account = sessionStorage.getItem('msalAccount');
+      if (!account) {
+        throw new Error(
+          'User account missing from session. Please sign out and sign in again.');
+      }
+
+      // Build a silent token request - this takes advantage of
+      // token caching
+      const silentTokenRequest = {
+        // Permission scope is for the proxy, NOT Graph
+        scopes: apiScopes,
+        account: msalClient.getAccountByUsername(account)
+      }
+
+      try {
+        // Get the token and return it as an Authorization header
+        const result = await msalClient.acquireTokenSilent(silentTokenRequest);
+        return { Authorization: `Bearer ${result.accessToken}` };
+      } catch (silentError) {
+        // If silent requests fails with InteractionRequiredAuthError,
+        // attempt to get the token interactively
+        if (silentError instanceof msal.InteractionRequiredAuthError) {
+          const interactiveResult = await msalClient.acquireTokenPopup({
+            scopes: apiScopes,
+            prompt: 'consent'
+          });
+          return { Authorization: `Bearer ${interactiveResult.accessToken}` };
+        } else {
+          throw silentError;
+        }
+      }
+    });
+
+    provider.login = async () => {
+      // Use MSAL to login
+      const authResult = await msalClient.loginPopup({
+        scopes: apiScopes
+      });
+
+      console.log(`Access token: ${authResult.accessToken}`);
+
+      sessionStorage.setItem('msalAccount', authResult.account.username);
+
+      provider.setState(mgt.ProviderState.SignedIn);
+    };
+
+    provider.logout = () => {
+      msalClient.logout();
+      sessionStorage.removeItem('msalAccount');
+      provider.setState(mgt.ProviderState.SignedOut);
+    };
+
+    mgt.Providers.globalProvider = provider;
+</script>
+</body>
+</html>
