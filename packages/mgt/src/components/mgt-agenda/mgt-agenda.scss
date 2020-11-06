@@ -153,3 +153,22 @@ mgt-agenda .event-attendee-loading {
   border-radius: 10px;
   margin: 0 2px 0 0;
 }
+
+[dir='rtl'] {
+  .event-location {
+    margin: 0px 4px 0px 0px;
+  }
+  .event-time-container {
+    direction: ltr;
+    margin: 18px 18px 18px 38px;
+  }
+  .event-details-container {
+    margin: 14px 0px 14px 18px;
+    .event-subject {
+      margin: 0px 0px 0px 18px;
+    }
+    .event-location-container {
+      margin: 8px 0px 0px 18px;
+    }
+  }
+}

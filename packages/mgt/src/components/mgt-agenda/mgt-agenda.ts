@@ -252,7 +252,7 @@ export class MgtAgenda extends MgtTemplatedComponent {
 
     // Render list
     return html`
-      <div class="agenda${this._isNarrow ? ' narrow' : ''}${this.groupByDay ? ' grouped' : ''}">
+      <div dir=${this.direction} class="agenda${this._isNarrow ? ' narrow' : ''}${this.groupByDay ? ' grouped' : ''}">
         ${this.groupByDay ? this.renderGroups(events) : this.renderEvents(events)}
         ${this.isLoadingState ? this.renderLoading() : html``}
       </div>
@@ -577,7 +577,15 @@ export class MgtAgenda extends MgtTemplatedComponent {
   }
 
   private prettyPrintTimeFromDateTime(date: Date) {
-    date.setMinutes(date.getMinutes() - date.getTimezoneOffset());
+    // If a preferred time zone was sent in the Graph request
+    // times are already set correctly. Do not adjust
+    if (!this.preferredTimezone) {
+      // If no preferred time zone was specified, the times are in UTC
+      // fall back to old behavior and adjust the times to the browser's
+      // time zone
+      date.setMinutes(date.getMinutes() - date.getTimezoneOffset());
+    }
+
     let hours = date.getHours();
     const minutes = date.getMinutes();
     const ampm = hours >= 12 ? 'PM' : 'AM';
