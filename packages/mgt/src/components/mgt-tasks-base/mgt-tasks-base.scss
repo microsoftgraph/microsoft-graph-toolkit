@@ -660,3 +660,24 @@ $task-icon-color-completed: var(--task-icon-color-completed, white);
     transform: rotate(360deg);
   }
 }
+
+[dir='rtl'] {
+  mgt-arrow-options {
+    --arrow-options-left: auto;
+  }
+  mgt-dot-options {
+    --dot-options-translateX: translateX(60px);
+  }
+
+  .TaskDetails {
+    margin-right: 14px !important;
+  }
+  .TaskIcon {
+    margin-left: 8px;
+  }
+  .TaskDetail {
+    svg {
+      margin-left: 4px;
+    }
+  }
+}
