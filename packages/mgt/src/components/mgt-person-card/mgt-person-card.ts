@@ -27,6 +27,22 @@ import { MgtPersonCardOrganization } from './sections/mgt-person-card-organizati
 import { MgtPersonCardProfile } from './sections/mgt-person-card-profile/mgt-person-card-profile';
 
 /**
+ * Configuration object for the Person Card component
+ *
+ * @export
+ * @interface MgtPersonConfig
+ */
+export interface MgtPersonCardConfig {
+  /**
+   * Sets or gets whether the person card component can use Contacts APIs to
+   * find contacts and their images
+   *
+   * @type {boolean}
+   */
+  useContactApis: boolean;
+}
+
+/**
  * Web Component used to show detailed data for a person in the Microsoft Graph
  *
  * @export
@@ -54,6 +70,18 @@ export class MgtPersonCard extends MgtTemplatedComponent {
   static get styles() {
     return styles;
   }
+
+  /**
+   * Global configuration object for
+   * all person card components
+   *
+   * @static
+   * @type {MgtPersonCardConfig}
+   * @memberof MgtPersonCard
+   */
+  public static config: MgtPersonCardConfig = {
+    useContactApis: true
+  };
 
   /**
    * Set the person details to render
@@ -587,7 +615,7 @@ export class MgtPersonCard extends MgtTemplatedComponent {
         ((this.fetchImage && !this.personImage) || this.personImage === '@')
       ) {
         // in some cases we might only have name or email, but need to find the image
-        const image = await getPersonImage(graph, this.personDetails);
+        const image = await getPersonImage(graph, this.personDetails, MgtPersonCard.config.useContactApis);
         if (image) {
           this.personDetails.personImage = image;
           this.personImage = image;
@@ -605,7 +633,7 @@ export class MgtPersonCard extends MgtTemplatedComponent {
 
       if (people && people.length) {
         this.personDetails = people[0];
-        const image = await getPersonImage(graph, this.personDetails);
+        const image = await getPersonImage(graph, this.personDetails, MgtPersonCard.config.useContactApis);
         if (image) {
           this.personDetails.personImage = image;
           this.personImage = image;
