@@ -5,10 +5,11 @@
  * -------------------------------------------------------------------------------------------
  */
 
-import { customElement, html, LitElement, property, PropertyValues, query, TemplateResult } from 'lit-element';
+import { customElement, html, property, PropertyValues, TemplateResult } from 'lit-element';
 import { classMap } from 'lit-html/directives/class-map';
 import { getSegmentAwareWindow, isWindowSegmentAware, IWindowSegment } from '../../../utils/WindowSegmentHelpers';
 import { styles } from './mgt-flyout-css';
+import { MgtBaseComponent } from '@microsoft/mgt-element/';
 
 /**
  * A component to create flyout anchored to an element
@@ -18,7 +19,7 @@ import { styles } from './mgt-flyout-css';
  * @extends {LitElement}
  */
 @customElement('mgt-flyout')
-export class MgtFlyout extends LitElement {
+export class MgtFlyout extends MgtBaseComponent {
   /**
    * Array of styles to apply to the element. The styles should be defined
    * using the `css` tag function.
@@ -150,7 +151,8 @@ export class MgtFlyout extends LitElement {
   protected render() {
     const flyoutClasses = {
       root: true,
-      visible: this.isOpen
+      visible: this.isOpen,
+      dir: this.direction
     };
 
     const anchorTemplate = this.renderAnchor();
@@ -300,7 +302,14 @@ export class MgtFlyout extends LitElement {
         }
       }
 
-      flyout.style.left = `${left + windowRect.left}px`;
+      if (this.direction === 'rtl') {
+        if (left > 100 && this.offsetLeft > 100) {
+          //potentially anchored to right side (for non people-picker flyout)
+          flyout.style.left = `${windowRect.width - left + flyoutRect.left - flyoutRect.width - 30}px`;
+        }
+      } else {
+        flyout.style.left = `${left + windowRect.left}px`;
+      }
 
       if (typeof bottom !== 'undefined') {
         flyout.style.top = 'unset';

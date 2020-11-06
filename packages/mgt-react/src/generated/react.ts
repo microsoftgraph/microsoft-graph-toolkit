@@ -14,6 +14,7 @@ export type AgendaProps = {
 	groupByDay?: boolean;
 	templateConverters?: MgtElement.TemplateContext;
 	templateContext?: MgtElement.TemplateContext;
+	direction?: string;
 	useShadowRoot?: boolean;
 	mediaQuery?: MgtElement.ComponentMediaQuery;
 	eventClick?: (e: Event) => void;
@@ -28,6 +29,7 @@ export type GetProps = {
 	pollingRate?: number;
 	templateConverters?: MgtElement.TemplateContext;
 	templateContext?: MgtElement.TemplateContext;
+	direction?: string;
 	useShadowRoot?: boolean;
 	mediaQuery?: MgtElement.ComponentMediaQuery;
 	dataChange?: (e: Event) => void;
@@ -37,6 +39,7 @@ export type LoginProps = {
 	userDetails?: IDynamicPerson;
 	templateConverters?: MgtElement.TemplateContext;
 	templateContext?: MgtElement.TemplateContext;
+	direction?: string;
 	useShadowRoot?: boolean;
 	mediaQuery?: MgtElement.ComponentMediaQuery;
 	loginInitiated?: (e: Event) => void;
@@ -58,6 +61,7 @@ export type PeoplePickerProps = {
 	selectedPeople?: IDynamicPerson[];
 	templateConverters?: MgtElement.TemplateContext;
 	templateContext?: MgtElement.TemplateContext;
+	direction?: string;
 	useShadowRoot?: boolean;
 	mediaQuery?: MgtElement.ComponentMediaQuery;
 	selectionChanged?: (e: Event) => void;
@@ -73,6 +77,7 @@ export type PeopleProps = {
 	showMax?: number;
 	templateConverters?: MgtElement.TemplateContext;
 	templateContext?: MgtElement.TemplateContext;
+	direction?: string;
 	useShadowRoot?: boolean;
 	mediaQuery?: MgtElement.ComponentMediaQuery;
 }
@@ -89,6 +94,7 @@ export type PersonCardProps = {
 	personPresence?: MicrosoftGraphBeta.Presence;
 	templateConverters?: MgtElement.TemplateContext;
 	templateContext?: MgtElement.TemplateContext;
+	direction?: string;
 	useShadowRoot?: boolean;
 	mediaQuery?: MgtElement.ComponentMediaQuery;
 }
@@ -109,6 +115,7 @@ export type PersonProps = {
 	avatarSize?: AvatarSize;
 	templateConverters?: MgtElement.TemplateContext;
 	templateContext?: MgtElement.TemplateContext;
+	direction?: string;
 	useShadowRoot?: boolean;
 	mediaQuery?: MgtElement.ComponentMediaQuery;
 }
@@ -128,6 +135,7 @@ export type TasksProps = {
 	taskFilter?: TaskFilter;
 	templateConverters?: MgtElement.TemplateContext;
 	templateContext?: MgtElement.TemplateContext;
+	direction?: string;
 	useShadowRoot?: boolean;
 	mediaQuery?: MgtElement.ComponentMediaQuery;
 	taskAdded?: (e: Event) => void;
@@ -140,6 +148,7 @@ export type TeamsChannelPickerProps = {
 	selectedItem?: SelectedChannel;
 	templateConverters?: MgtElement.TemplateContext;
 	templateContext?: MgtElement.TemplateContext;
+	direction?: string;
 	useShadowRoot?: boolean;
 	mediaQuery?: MgtElement.ComponentMediaQuery;
 	selectionChanged?: (e: Event) => void;

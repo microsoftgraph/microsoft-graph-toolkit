@@ -117,3 +117,15 @@ mgt-login .popup-command {
     color: var(--theme-dark-color);
   }
 }
+
+[dir='rtl'] {
+  --popup-padding: 24px 24px 16px 48px;
+  mgt-person {
+    .details {
+      --details-spacing: 0px 12px 0px 0px;
+      &.small {
+        --details-spacing: 0px 6px 0px 0px;
+      }
+    }
+  }
+}
