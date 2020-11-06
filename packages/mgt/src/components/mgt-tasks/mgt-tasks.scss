@@ -690,3 +690,28 @@ mgt-tasks,
     transform: rotate(360deg);
   }
 }
+
+[dir='rtl'] {
+  mgt-arrow-options {
+    --arrow-options-left: auto;
+  }
+  mgt-dot-options {
+    --dot-options-translateX: translateX(40px);
+  }
+  .TaskCheckContainer {
+    margin: 21px 20px 20px 10px !important;
+  }
+
+  .TaskDetails {
+    margin-right: 14px;
+  }
+  .TaskDetailsContainer {
+    svg {
+      margin-left: 4px !important;
+      margin-right: 0px;
+    }
+  }
+  .TaskIcon {
+    margin-left: 8px;
+  }
+}
