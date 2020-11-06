@@ -40,3 +40,7 @@ package-lock.json
 # storybook
 storybook-static/
 custom-elements.json
+/samples/teams-blazor-server/obj
+/samples/teams-blazor-server/.vs/teams-blazor-server/config
+/samples/teams-blazor-server/.vs/teams-blazor-server
+/samples/teams-blazor-server/bin/Debug/netcoreapp3.1
