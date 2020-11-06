@@ -1,4 +1,4 @@
-import { ResponseType,IDynamicPerson,PersonType,GroupType,PersonCardInteraction,PersonViewType,AvatarSize,TasksStringResource,TaskFilter,SelectedChannel } from '@microsoft/mgt';
+import { ResponseType,IDynamicPerson,PersonType,GroupType,PersonCardInteraction,PersonViewType,AvatarSize,TasksStringResource,TasksSource,TaskFilter,SelectedChannel } from '@microsoft/mgt';
 import * as MgtElement from '@microsoft/mgt-element';
 import * as MicrosoftGraph from '@microsoft/microsoft-graph-types';
 import * as MicrosoftGraphBeta from '@microsoft/microsoft-graph-types-beta';
@@ -96,8 +96,6 @@ export type PersonCardProps = {
 export type PersonProps = {
 	personQuery?: string;
 	userId?: string;
-	showName?: boolean;
-	showEmail?: boolean;
 	showPresence?: boolean;
 	personDetails?: IDynamicPerson;
 	personImage?: string;
@@ -106,6 +104,7 @@ export type PersonProps = {
 	personCardInteraction?: PersonCardInteraction;
 	line1Property?: string;
 	line2Property?: string;
+	line3Property?: string;
 	view?: PersonViewType;
 	avatarSize?: AvatarSize;
 	templateConverters?: MgtElement.TemplateContext;
@@ -118,7 +117,7 @@ export type TasksProps = {
 	res?: TasksStringResource;
 	isNewTaskVisible?: boolean;
 	readOnly?: boolean;
-	dataSource?: string;
+	dataSource?: TasksSource;
 	targetId?: string;
 	targetBucketId?: string;
 	initialId?: string;

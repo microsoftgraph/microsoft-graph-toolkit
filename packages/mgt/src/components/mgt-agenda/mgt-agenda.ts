@@ -160,6 +160,29 @@ export class MgtAgenda extends MgtTemplatedComponent {
   public groupByDay: boolean;
 
   /**
+   * allows developer to specify preferred timezone that should be used for
+   * retrieving events from Graph, eg. `Pacific Standard Time`. The preferred timezone for
+   * the current user can be retrieved by calling `me/mailboxSettings` and
+   * retrieving the value of the `timeZone` property.
+   * @type {string}
+   */
+  @property({
+    attribute: 'preferred-timezone',
+    type: String
+  })
+  public get preferredTimezone(): string {
+    return this._preferredTimezone;
+  }
+  public set preferredTimezone(value) {
+    if (this._preferredTimezone === value) {
+      return;
+    }
+
+    this._preferredTimezone = value;
+    this.reloadState();
+  }
+
+  /**
    * determines width available for agenda component.
    * @type {boolean}
    */
@@ -169,6 +192,7 @@ export class MgtAgenda extends MgtTemplatedComponent {
   private _days: number = 3;
   private _groupId: string;
   private _date: string;
+  private _preferredTimezone: string;
 
   constructor() {
     super();
@@ -494,6 +518,10 @@ export class MgtAgenda extends MgtTemplatedComponent {
             request = request.middlewareOptions(prepScopes(scope));
           }
 
+          if (this.preferredTimezone) {
+            request = request.header('Prefer', `outlook.timezone="${this.preferredTimezone}"`);
+          }
+
           const results = await request.get();
 
           if (results && results.value) {
@@ -507,7 +535,7 @@ export class MgtAgenda extends MgtTemplatedComponent {
         const end = new Date(start.getTime());
         end.setDate(start.getDate() + this.days);
         try {
-          const iterator = await getEventsPageIterator(graph, start, end, this.groupId);
+          const iterator = await getEventsPageIterator(graph, start, end, this.groupId, this.preferredTimezone);
 
           if (iterator && iterator.value) {
             this.events = iterator.value;

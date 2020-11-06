@@ -29,6 +29,11 @@ $line2-font-weight: var(--line2-font-weight, 400);
 $line2-color: var(--line2-color, var(--email-color, #{$color}));
 $line2-text-transform: var(--line2-text-transform, #{$text-transform});
 
+$line3-font-size: var(--line3-font-size, var(--email-font-size, #{$ms-font-size-s}));
+$line3-font-weight: var(--line3-font-weight, 400);
+$line3-color: var(--line3-color, var(--email-color, #{$color}));
+$line3-text-transform: var(--line3-text-transform, #{$text-transform});
+
 $details-spacing: --details-spacing;
 
 $presence-color-online: #6bb700;
@@ -372,6 +377,13 @@ mgt-person .person-root {
       font-size: $line2-font-size;
       font-weight: $line2-font-weight;
       text-transform: $line2-text-transform;
+    }
+
+    .line3 {
+      color: $line3-color;
+      font-size: $line3-font-size;
+      font-weight: $line3-font-weight;
+      text-transform: $line3-text-transform;
     }
   }
 }
