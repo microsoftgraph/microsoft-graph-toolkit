@@ -1,6 +1,6 @@
 {
   "name": "@microsoft/mgt",
-  "version": "1.3.5",
+  "version": "1.3.6",
   "description": "The Microsoft Graph Toolkit",
   "keywords": [
     "microsoft graph",
@@ -43,8 +43,7 @@
     "copy:wc": "cpx node_modules/@webcomponents/webcomponentsjs/bundles/**/* dist/bundle/wc/bundles && cpx node_modules/@webcomponents/webcomponentsjs/webcomponents-loader.js dist/bundle/wc",
     "test": "jest",
     "test:watch": "jest --watch",
-    "pack": "npm pack",
-    "prepack": "npm run build"
+    "pack": "npm pack"
   },
   "dependencies": {
     "@microsoft/microsoft-graph-client": "^2.0.0",
