@@ -808,7 +808,14 @@ export class MgtPerson extends MgtTemplatedComponent {
     return person && person.personImage ? person.personImage : null;
   }
 
-  private getInitials(person?: IDynamicPerson) {
+  /**
+   * Gets the user initials
+   *
+   * @protected
+   * @returns {string}
+   * @memberof MgtPerson
+   */
+  protected getInitials(person?: IDynamicPerson): string {
     if (!person) {
       person = this.personDetails;
     }
@@ -919,7 +926,15 @@ export class MgtPerson extends MgtTemplatedComponent {
     }
   }
 
-  private getColorFromName(name) {
+  /**
+   * Gets color from name
+   *
+   * @protected
+   * @param {string} name
+   * @returns {string}
+   * @memberof MgtPerson
+   */
+  protected getColorFromName(name: string): string {
     const charCodes = name
       .split('')
       .map(char => char.charCodeAt(0))
