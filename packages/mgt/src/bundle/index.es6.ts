@@ -6,5 +6,4 @@
  */
 
 export * from '../index';
-export * from '../components/baseComponent';
 export * from '../mock/mgt-mock-provider';

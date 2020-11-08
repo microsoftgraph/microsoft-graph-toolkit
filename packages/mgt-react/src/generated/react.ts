@@ -1,4 +1,5 @@
-import { TemplateContext,ComponentMediaQuery,IDynamicPerson,PersonType,GroupType,PersonCardInteraction,PersonViewType,AvatarSize,TasksStringResource,TaskFilter,SelectedChannel } from '@microsoft/mgt';
+import { ResponseType,IDynamicPerson,PersonType,GroupType,PersonCardInteraction,PersonViewType,AvatarSize,TasksStringResource,TasksSource,TaskFilter,SelectedChannel } from '@microsoft/mgt';
+import * as MgtElement from '@microsoft/mgt-element';
 import * as MicrosoftGraph from '@microsoft/microsoft-graph-types';
 import * as MicrosoftGraphBeta from '@microsoft/microsoft-graph-types-beta';
 import {wrapMgt} from '../Mgt';
@@ -11,40 +12,41 @@ export type AgendaProps = {
 	events?: MicrosoftGraph.Event[];
 	showMax?: number;
 	groupByDay?: boolean;
-	templateContext?: TemplateContext;
-	templateConverters?: TemplateContext;
+	templateConverters?: MgtElement.TemplateContext;
+	templateContext?: MgtElement.TemplateContext;
+	direction?: string;
 	useShadowRoot?: boolean;
-	mediaQuery?: ComponentMediaQuery;
+	mediaQuery?: MgtElement.ComponentMediaQuery;
 	eventClick?: (e: Event) => void;
-	updated?: (e: Event) => void;
 }
 
 export type GetProps = {
 	resource?: string;
 	scopes?: string[];
 	version?: string;
+	type?: ResponseType;
 	maxPages?: number;
 	pollingRate?: number;
-	templateContext?: TemplateContext;
-	templateConverters?: TemplateContext;
+	templateConverters?: MgtElement.TemplateContext;
+	templateContext?: MgtElement.TemplateContext;
+	direction?: string;
 	useShadowRoot?: boolean;
-	mediaQuery?: ComponentMediaQuery;
+	mediaQuery?: MgtElement.ComponentMediaQuery;
 	dataChange?: (e: Event) => void;
-	updated?: (e: Event) => void;
 }
 
 export type LoginProps = {
 	userDetails?: IDynamicPerson;
-	templateContext?: TemplateContext;
-	templateConverters?: TemplateContext;
+	templateConverters?: MgtElement.TemplateContext;
+	templateContext?: MgtElement.TemplateContext;
+	direction?: string;
 	useShadowRoot?: boolean;
-	mediaQuery?: ComponentMediaQuery;
+	mediaQuery?: MgtElement.ComponentMediaQuery;
 	loginInitiated?: (e: Event) => void;
 	loginCompleted?: (e: Event) => void;
 	loginFailed?: (e: Event) => void;
 	logoutInitiated?: (e: Event) => void;
 	logoutCompleted?: (e: Event) => void;
-	updated?: (e: Event) => void;
 }
 
 export type PeoplePickerProps = {
@@ -57,12 +59,12 @@ export type PeoplePickerProps = {
 	selectionMode?: string;
 	showMax?: number;
 	selectedPeople?: IDynamicPerson[];
-	templateContext?: TemplateContext;
-	templateConverters?: TemplateContext;
+	templateConverters?: MgtElement.TemplateContext;
+	templateContext?: MgtElement.TemplateContext;
+	direction?: string;
 	useShadowRoot?: boolean;
-	mediaQuery?: ComponentMediaQuery;
+	mediaQuery?: MgtElement.ComponentMediaQuery;
 	selectionChanged?: (e: Event) => void;
-	updated?: (e: Event) => void;
 }
 
 export type PeopleProps = {
@@ -73,35 +75,33 @@ export type PeopleProps = {
 	showPresence?: boolean;
 	personCardInteraction?: PersonCardInteraction;
 	showMax?: number;
-	templateContext?: TemplateContext;
-	templateConverters?: TemplateContext;
+	templateConverters?: MgtElement.TemplateContext;
+	templateContext?: MgtElement.TemplateContext;
+	direction?: string;
 	useShadowRoot?: boolean;
-	mediaQuery?: ComponentMediaQuery;
-	updated?: (e: Event) => void;
+	mediaQuery?: MgtElement.ComponentMediaQuery;
 }
 
 export type PersonCardProps = {
+	personDetails?: IDynamicPerson;
 	personQuery?: string;
 	userId?: string;
-	personDetails?: IDynamicPerson;
 	personImage?: string;
 	fetchImage?: boolean;
 	isExpanded?: boolean;
 	inheritDetails?: boolean;
 	showPresence?: boolean;
 	personPresence?: MicrosoftGraphBeta.Presence;
-	templateContext?: TemplateContext;
-	templateConverters?: TemplateContext;
+	templateConverters?: MgtElement.TemplateContext;
+	templateContext?: MgtElement.TemplateContext;
+	direction?: string;
 	useShadowRoot?: boolean;
-	mediaQuery?: ComponentMediaQuery;
-	updated?: (e: Event) => void;
+	mediaQuery?: MgtElement.ComponentMediaQuery;
 }
 
 export type PersonProps = {
 	personQuery?: string;
 	userId?: string;
-	showName?: boolean;
-	showEmail?: boolean;
 	showPresence?: boolean;
 	personDetails?: IDynamicPerson;
 	personImage?: string;
@@ -110,20 +110,21 @@ export type PersonProps = {
 	personCardInteraction?: PersonCardInteraction;
 	line1Property?: string;
 	line2Property?: string;
+	line3Property?: string;
 	view?: PersonViewType;
 	avatarSize?: AvatarSize;
-	templateContext?: TemplateContext;
-	templateConverters?: TemplateContext;
+	templateConverters?: MgtElement.TemplateContext;
+	templateContext?: MgtElement.TemplateContext;
+	direction?: string;
 	useShadowRoot?: boolean;
-	mediaQuery?: ComponentMediaQuery;
-	updated?: (e: Event) => void;
+	mediaQuery?: MgtElement.ComponentMediaQuery;
 }
 
 export type TasksProps = {
 	res?: TasksStringResource;
 	isNewTaskVisible?: boolean;
 	readOnly?: boolean;
-	dataSource?: string;
+	dataSource?: TasksSource;
 	targetId?: string;
 	targetBucketId?: string;
 	initialId?: string;
@@ -132,25 +133,25 @@ export type TasksProps = {
 	hideOptions?: boolean;
 	groupId?: string;
 	taskFilter?: TaskFilter;
-	templateContext?: TemplateContext;
-	templateConverters?: TemplateContext;
+	templateConverters?: MgtElement.TemplateContext;
+	templateContext?: MgtElement.TemplateContext;
+	direction?: string;
 	useShadowRoot?: boolean;
-	mediaQuery?: ComponentMediaQuery;
+	mediaQuery?: MgtElement.ComponentMediaQuery;
 	taskAdded?: (e: Event) => void;
 	taskChanged?: (e: Event) => void;
 	taskClick?: (e: Event) => void;
 	taskRemoved?: (e: Event) => void;
-	updated?: (e: Event) => void;
 }
 
 export type TeamsChannelPickerProps = {
 	selectedItem?: SelectedChannel;
-	templateContext?: TemplateContext;
-	templateConverters?: TemplateContext;
+	templateConverters?: MgtElement.TemplateContext;
+	templateContext?: MgtElement.TemplateContext;
+	direction?: string;
 	useShadowRoot?: boolean;
-	mediaQuery?: ComponentMediaQuery;
+	mediaQuery?: MgtElement.ComponentMediaQuery;
 	selectionChanged?: (e: Event) => void;
-	updated?: (e: Event) => void;
 }
 
 export const Agenda = wrapMgt<AgendaProps>('mgt-agenda');

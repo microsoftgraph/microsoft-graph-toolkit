@@ -11,7 +11,8 @@ import * as MicrosoftGraph from '@microsoft/microsoft-graph-types';
 import { CacheItem, CacheSchema, CacheService, CacheStore } from '../utils/Cache';
 import { prepScopes } from '../utils/GraphHelpers';
 import { blobToBase64 } from '../utils/Utils';
-import { findContactByEmail, findUserByEmail, getEmailFromGraphEntity } from './graph.people';
+import { findContactsByEmail, getEmailFromGraphEntity } from './graph.people';
+import { findUsers } from './graph.user';
 import { IDynamicPerson } from './types';
 
 /**
@@ -29,7 +30,7 @@ const cacheSchema: CacheSchema = {
 /**
  * photo object stored in cache
  */
-interface CachePhoto extends CacheItem {
+export interface CachePhoto extends CacheItem {
   /**
    * user tag associated with photo
    */
@@ -76,11 +77,16 @@ export async function getPhotoForResource(graph: IGraph, resource: string, scope
       .middlewareOptions(prepScopes(...scopes))
       .get()) as Response;
 
-    if (!response.ok) {
+    if (response.status === 404) {
+      // 404 means the resource does not have a photo
+      // we still want to cache that state
+      // so we return an object that can be cached
+      return { eTag: null, photo: null };
+    } else if (!response.ok) {
       return null;
     }
 
-    const eTag = response.headers.get('ETag');
+    const eTag = response.headers.get('eTag');
     const blob = await blobToBase64(await response.blob());
     return { eTag, photo: blob };
   } catch (e) {
@@ -121,15 +127,32 @@ export async function getContactPhoto(graph: IGraph, contactId: string): Promise
 export async function getUserPhoto(graph: IGraph, userId: string): Promise<string> {
   let cache: CacheStore<CachePhoto>;
   let photoDetails: CachePhoto;
+
   if (photosCacheEnabled()) {
     cache = CacheService.getCache<CachePhoto>(cacheSchema, userStore);
     photoDetails = await cache.getValue(userId);
     if (photoDetails && getPhotoInvalidationTime() > Date.now() - photoDetails.timeCached) {
       return photoDetails.photo;
+    } else if (photoDetails) {
+      // there is a photo in the cache, but it's stale
+      try {
+        const response = await graph.api(`users/${userId}/photo`).get();
+        if (
+          response &&
+          (response['@odata.mediaEtag'] !== photoDetails.eTag ||
+            (response['@odata.mediaEtag'] === null && response.eTag === null))
+        ) {
+          // set photoDetails to null so that photo gets pulled from the graph later
+          photoDetails = null;
+        }
+      } catch {
+        return null;
+      }
     }
   }
 
-  photoDetails = await getPhotoForResource(graph, `users/${userId}`, ['user.readbasic.all']);
+  // if there is a photo in the cache, we got here because it was stale
+  photoDetails = photoDetails || (await getPhotoForResource(graph, `users/${userId}`, ['user.readbasic.all']));
   if (photosCacheEnabled() && photoDetails) {
     cache.putValue(userId, photoDetails);
   }
@@ -152,7 +175,20 @@ export async function myPhoto(graph: IGraph): Promise<string> {
     }
   }
 
-  photoDetails = await getPhotoForResource(graph, 'me', ['user.read']);
+  try {
+    const response = await graph.api(`me/photo`).get();
+    if (
+      response &&
+      (response['@odata.mediaEtag'] !== photoDetails.eTag ||
+        (response['@odata.mediaEtag'] === null && response.eTag === null))
+    ) {
+      photoDetails = null;
+    }
+  } catch {
+    return null;
+  }
+
+  photoDetails = photoDetails || (await getPhotoForResource(graph, 'me', ['user.read']));
   if (photosCacheEnabled()) {
     cache.putValue('me', photoDetails || {});
   }
@@ -166,55 +202,51 @@ export async function myPhoto(graph: IGraph): Promise<string> {
  * @export
  */
 export async function getPersonImage(graph: IGraph, person: IDynamicPerson) {
-  let image: string;
-  let email: string;
-
-  if ((person as MicrosoftGraph.Person).userPrincipalName) {
-    // try to find a user by userPrincipalName
-    const userPrincipalName = (person as MicrosoftGraph.Person).userPrincipalName;
-    image = await getUserPhoto(graph, userPrincipalName);
-  } else if ('personType' in person && (person as any).personType.subclass === 'PersonalContact') {
+  // handle if contact
+  if ('personType' in person && (person as any).personType.subclass === 'PersonalContact') {
     // if person is a contact, look for them and their photo in contact api
-    email = getEmailFromGraphEntity(person);
-    const contact = await findContactByEmail(graph, email);
+    let email = getEmailFromGraphEntity(person);
+    const contact = await findContactsByEmail(graph, email);
     if (contact && contact.length && contact[0].id) {
-      image = await getContactPhoto(graph, contact[0].id);
+      return await getContactPhoto(graph, contact[0].id);
     }
-  } else if (person.id) {
-    image = await getUserPhoto(graph, person.id);
-  }
-  if (image) {
-    return image;
+
+    return null;
   }
 
-  // try to find a user by e-mail
-  email = getEmailFromGraphEntity(person);
+  // handle if user
+  if ((person as MicrosoftGraph.Person).userPrincipalName || person.id) {
+    // try to find a user by userPrincipalName
+    const id = (person as MicrosoftGraph.Person).userPrincipalName || person.id;
+    return await getUserPhoto(graph, id);
+  }
+
+  // else assume id is for user and try to get photo
+  if (person.id) {
+    let image = await getUserPhoto(graph, person.id);
+    if (image) {
+      return image;
+    }
+  }
+
+  // let's try to find a person by the email
+  let email = getEmailFromGraphEntity(person);
 
   if (email) {
-    const users = await findUserByEmail(graph, email);
+    // try to find user
+    const users = await findUsers(graph, email, 1);
     if (users && users.length) {
-      // Check for an OrganizationUser
-      const orgUser = users.find(p => {
-        return (p as any).personType && (p as any).personType.subclass === 'OrganizationUser';
-      });
-      if (orgUser) {
-        // Lookup by userId
-        const userId = (users[0] as MicrosoftGraph.Person).scoredEmailAddresses[0].address;
-        image = await getUserPhoto(graph, userId);
-      } else {
-        // Lookup by contactId
-        for (const user of users) {
-          const contactId = user.id;
-          image = await getContactPhoto(graph, contactId);
-          if (image) {
-            break;
-          }
-        }
-      }
+      return await getUserPhoto(graph, users[0].id);
+    }
+
+    // if no user, try to find a contact
+    const contacts = await findContactsByEmail(graph, email);
+    if (contacts && contacts.length) {
+      return await getContactPhoto(graph, contacts[0].id);
     }
   }
 
-  return image;
+  return null;
 }
 
 /**

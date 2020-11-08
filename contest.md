@@ -102,5 +102,5 @@ This Contest will be governed by the laws of the State of Washington, and you co
 
 ## Winners List
 
-Send an email to xupamgt-core@microsoft.com with the subject line “Microsoft Graph Toolkit Code Contribution Challenge Contest winners” within 30 days of March 31, 2021 to receive a list of winners that received a prize worth $25.00 or more.
+Send an email to mgt-help@microsoft.com with the subject line “Microsoft Graph Toolkit Code Contribution Challenge Contest winners” within 30 days of March 31, 2021 to receive a list of winners that received a prize worth $25.00 or more.
  

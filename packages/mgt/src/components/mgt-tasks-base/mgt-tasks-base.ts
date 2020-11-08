@@ -7,10 +7,8 @@
 
 import { html, property, TemplateResult } from 'lit-element';
 import { classMap } from 'lit-html/directives/class-map';
-import { Providers } from '../../Providers';
-import { ProviderState } from '../../providers/IProvider';
-import { ComponentMediaQuery } from '../baseComponent';
-import { MgtTemplatedComponent } from '../templatedComponent';
+import { ComponentMediaQuery, Providers, ProviderState, MgtTemplatedComponent } from '@microsoft/mgt-element';
+import { strings } from './strings';
 
 /**
  * The foundation for creating task based components.
@@ -77,6 +75,10 @@ export abstract class MgtTasksBase extends MgtTemplatedComponent {
   private _isNewTaskVisible: boolean;
   private _newTaskName: string;
   private _previousMediaQuery: ComponentMediaQuery;
+
+  protected get strings(): { [x: string]: string } {
+    return strings;
+  }
 
   constructor() {
     super();
@@ -146,7 +148,7 @@ export abstract class MgtTasksBase extends MgtTemplatedComponent {
 
     return html`
       ${headerTemplate} ${newTaskTemplate}
-      <div class="Tasks">
+      <div class="Tasks" dir=${this.direction}>
         ${tasksTemplate}
       </div>
     `;
@@ -169,11 +171,11 @@ export abstract class MgtTasksBase extends MgtTemplatedComponent {
     });
 
     return html`
-      <div class="header">
+      <div class="header" dir=${this.direction}>
         ${headerContentTemplate}
         <button class="${addClasses}" @click="${() => this.showNewTaskPanel()}">
-          <span class="TaskIcon">\uE710</span>
-          <span>Add</span>
+          <span class="TaskIcon"></span>
+          <span>${this.strings.addTaskButtonSubtitle}</span>
         </button>
       </div>
     `;
@@ -224,7 +226,7 @@ export abstract class MgtTasksBase extends MgtTemplatedComponent {
     const taskTitle = html`
       <input
         type="text"
-        placeholder="Task..."
+        placeholder="${this.strings.newTaskPlaceholder}"
         .value="${newTaskName}"
         label="new-taskName-input"
         aria-label="new-taskName-input"
@@ -243,10 +245,10 @@ export abstract class MgtTasksBase extends MgtTemplatedComponent {
     const taskAddTemplate = !this._isNewTaskBeingAdded
       ? html`
           <div class="TaskIcon TaskCancel" @click="${() => this.hideNewTaskPanel()}">
-            <span>Cancel</span>
+            <span>${this.strings.cancelNewTaskSubtitle}</span>
           </div>
           <div class="TaskIcon TaskAdd" @click="${() => this.addTask()}">
-            <span>\uE710</span>
+            <span></span>
           </div>
         `
       : null;
@@ -254,7 +256,7 @@ export abstract class MgtTasksBase extends MgtTemplatedComponent {
     const newTaskDetailsTemplate = this.renderNewTaskDetails();
 
     return html`
-      <div class="Task NewTask Incomplete">
+      <div dir=${this.direction} class="Task NewTask Incomplete">
         <div class="TaskContent">
           <div class="TaskDetailsContainer">
             <div class="TaskTitle">

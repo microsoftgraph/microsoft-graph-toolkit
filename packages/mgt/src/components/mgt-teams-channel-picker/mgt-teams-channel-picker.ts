@@ -8,14 +8,14 @@
 import * as MicrosoftGraph from '@microsoft/microsoft-graph-types';
 import { customElement, html, property, TemplateResult } from 'lit-element';
 import { classMap } from 'lit-html/directives/class-map';
-import { Providers } from '../../Providers';
-import { ProviderState } from '../../providers/IProvider';
-import '../../styles/fabric-icon-font';
+import { Providers, ProviderState, MgtTemplatedComponent } from '@microsoft/mgt-element';
+import '../../styles/style-helper';
+import '../sub-components/mgt-spinner/mgt-spinner';
 import { getSvg, SvgIcon } from '../../utils/SvgHelper';
 import { debounce } from '../../utils/Utils';
-import { MgtTemplatedComponent } from '../templatedComponent';
 import { styles } from './mgt-teams-channel-picker-css';
 import { getAllMyTeams } from './mgt-teams-channel-picker.graph';
+import { strings } from './strings';
 
 /**
  * Team with displayName
@@ -154,6 +154,10 @@ export class MgtTeamsChannelPicker extends MgtTemplatedComponent {
     return styles;
   }
 
+  protected get strings() {
+    return strings;
+  }
+
   /**
    * Gets Selected item to be used
    *
@@ -281,7 +285,7 @@ export class MgtTeamsChannelPicker extends MgtTemplatedComponent {
     return (
       this.renderTemplate('default', { teams: this.items }) ||
       html`
-        <div class="root" @blur=${this.lostFocus}>
+        <div class="root" @blur=${this.lostFocus} dir=${this.direction}>
           <div class=${classMap(inputClasses)} @click=${this.gainedFocus}>
             ${this.renderSelected()}
             <div class="search-wrapper">${this.renderSearchIcon()} ${this.renderInput()}</div>
@@ -350,7 +354,7 @@ export class MgtTeamsChannelPicker extends MgtTemplatedComponent {
           type="text"
           label="teams-channel-picker-input"
           aria-label="Select a channel"
-          data-placeholder="${!!this._selectedItemState ? '' : 'Select a channel '} "
+          data-placeholder="${!!this._selectedItemState ? '' : this.strings.inputPlaceholderText} "
           role="input"
           @keyup=${e => this.handleInputChanged(e)}
           contenteditable
@@ -532,7 +536,7 @@ export class MgtTeamsChannelPicker extends MgtTemplatedComponent {
       html`
         <div class="message-parent">
           <div label="search-error-text" aria-label="We didn't find any matches." class="search-error-text">
-            We didn't find any matches.
+            ${this.strings.noResultsFound}
           </div>
         </div>
       `
@@ -553,9 +557,9 @@ export class MgtTeamsChannelPicker extends MgtTemplatedComponent {
       template ||
       html`
         <div class="message-parent">
-          <div class="spinner"></div>
+          <mgt-spinner></mgt-spinner>
           <div label="loading-text" aria-label="loading" class="loading-text">
-            Loading...
+            ${this.strings.loadingMessage}
           </div>
         </div>
       `

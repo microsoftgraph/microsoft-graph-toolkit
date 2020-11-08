@@ -13,18 +13,20 @@ import { findGroups, GroupType } from '../../graph/graph.groups';
 import { findPeople, getPeople, getPeopleFromGroup, PersonType } from '../../graph/graph.people';
 import { findUsers, getUser, getUsersForUserIds } from '../../graph/graph.user';
 import { IDynamicPerson } from '../../graph/types';
-import { Providers } from '../../Providers';
-import { ProviderState } from '../../providers/IProvider';
-import '../../styles/fabric-icon-font';
+import { Providers, ProviderState, MgtTemplatedComponent } from '@microsoft/mgt-element';
+import '../../styles/style-helper';
+import '../sub-components/mgt-spinner/mgt-spinner';
 import { debounce } from '../../utils/Utils';
 import { PersonViewType } from '../mgt-person/mgt-person';
 import { PersonCardInteraction } from '../PersonCardInteraction';
 import { MgtFlyout } from '../sub-components/mgt-flyout/mgt-flyout';
-import { MgtTemplatedComponent } from '../templatedComponent';
 import { styles } from './mgt-people-picker-css';
+
+import { strings } from './strings';
 
 export { GroupType } from '../../graph/graph.groups';
 export { PersonType } from '../../graph/graph.people';
+
 /**
  * An interface used to mark an object as 'focused',
  * so it can be rendered differently.
@@ -73,6 +75,10 @@ export class MgtPeoplePicker extends MgtTemplatedComponent {
    */
   static get styles() {
     return styles;
+  }
+
+  protected get strings() {
+    return strings;
   }
 
   /**
@@ -286,15 +292,6 @@ export class MgtPeoplePicker extends MgtTemplatedComponent {
   }
 
   /**
-   * Invoked each time the custom element is appended into a document-connected element
-   *
-   * @memberof MgtLogin
-   */
-  public connectedCallback() {
-    super.connectedCallback();
-  }
-
-  /**
    * Focuses the input element when focus is called
    *
    * @param {FocusOptions} [options]
@@ -302,7 +299,7 @@ export class MgtPeoplePicker extends MgtTemplatedComponent {
    */
   public focus(options?: FocusOptions) {
     this.gainedFocus();
-    const peopleInput = this.renderRoot.querySelector('.people-selected-input') as HTMLInputElement;
+    const peopleInput = this.renderRoot.querySelector('.search-box__input') as HTMLInputElement;
     if (!peopleInput) {
       return;
     }
@@ -352,9 +349,10 @@ export class MgtPeoplePicker extends MgtTemplatedComponent {
       focused: this._isFocused,
       'people-picker': true
     };
+
     return html`
-      <div class=${classMap(inputClasses)} @click=${e => this.focus(e)}>
-        <div class="people-selected-list">
+      <div dir=${this.direction} class=${classMap(inputClasses)} @click=${e => this.focus(e)}>
+        <div class="selected-list">
           ${selectedPeopleTemplate} ${flyoutTemplate}
         </div>
       </div>
@@ -388,13 +386,13 @@ export class MgtPeoplePicker extends MgtTemplatedComponent {
   protected renderInput(): TemplateResult {
     const hasSelectedPeople = !!this.selectedPeople.length;
 
-    const placeholder = this.placeholder ? this.placeholder : 'Start typing a name';
+    const placeholder = this.placeholder ? this.placeholder : this.strings.inputPlaceholderText;
 
     const selectionMode = this.selectionMode ? this.selectionMode : 'multiple';
 
     const inputClasses = {
-      'input-search': true,
-      'input-search--start': hasSelectedPeople
+      'search-box': true,
+      'search-box-start': hasSelectedPeople
     };
 
     if (selectionMode === 'single' && this.selectedPeople.length >= 1) {
@@ -406,7 +404,7 @@ export class MgtPeoplePicker extends MgtTemplatedComponent {
       <div class="${classMap(inputClasses)}">
         <input
           id="people-picker-input"
-          class="people-selected-input"
+          class="search-box__input"
           type="text"
           placeholder=${placeholder}
           label="people-picker-input"
@@ -439,13 +437,18 @@ export class MgtPeoplePicker extends MgtTemplatedComponent {
       ${selectedPeople.slice(0, selectedPeople.length).map(
         person =>
           html`
-            <div class="people-person">
+            <div class="selected-list__person-wrapper">
               ${this.renderTemplate('selected-person', { person }, `selected-${person.id}`) ||
                 this.renderSelectedPerson(person)}
 
-              <div class="overflow-offset">
-                <div class="overflow-gradient"></div>
-                <div class="CloseIcon" @click="${e => this.removePerson(person, e)}">\uE711</div>
+              <div class="selected-list__person-wrapper__overflow">
+                <div class="selected-list__person-wrapper__overflow__gradient"></div>
+                <div
+                  class="selected-list__person-wrapper__overflow__close-icon"
+                  @click="${e => this.removePerson(person, e)}"
+                >
+                  \uE711
+                </div>
               </div>
             </div>
           `
@@ -463,10 +466,8 @@ export class MgtPeoplePicker extends MgtTemplatedComponent {
     return html`
       <mgt-flyout light-dismiss class="flyout">
         ${anchor}
-        <div slot="flyout">
-          <div class="flyout-root">
-            ${this.renderFlyoutContent()}
-          </div>
+        <div slot="flyout" class="flyout-root">
+          ${this.renderFlyoutContent()}
         </div>
       </mgt-flyout>
     `;
@@ -513,9 +514,9 @@ export class MgtPeoplePicker extends MgtTemplatedComponent {
       this.renderTemplate('loading', null) ||
       html`
         <div class="message-parent">
-          <div class="spinner"></div>
+          <mgt-spinner></mgt-spinner>
           <div label="loading-text" aria-label="loading" class="loading-text">
-            Loading...
+            ${this.strings.loadingMessage}
           </div>
         </div>
       `
@@ -536,7 +537,7 @@ export class MgtPeoplePicker extends MgtTemplatedComponent {
       html`
         <div class="message-parent">
           <div label="search-error-text" aria-label="We didn't find any matches." class="search-error-text">
-            We didn't find any matches.
+            ${this.strings.noResultsFound}
           </div>
         </div>
       `
@@ -615,7 +616,7 @@ export class MgtPeoplePicker extends MgtTemplatedComponent {
   protected renderSelectedPerson(person: IDynamicPerson): TemplateResult {
     return html`
       <mgt-person
-        class="selected-person"
+        class="selected-list__person-wrapper__person"
         .personDetails=${person}
         .fetchImage=${true}
         .view=${PersonViewType.oneline}
@@ -803,7 +804,7 @@ export class MgtPeoplePicker extends MgtTemplatedComponent {
 
   private gainedFocus() {
     this._isFocused = true;
-    const input = this.renderRoot.querySelector('.people-selected-input') as HTMLInputElement;
+    const input = this.renderRoot.querySelector('.search-box__input') as HTMLInputElement;
     if (input) {
       input.focus();
     }
@@ -890,7 +891,7 @@ export class MgtPeoplePicker extends MgtTemplatedComponent {
     this.addPerson(person);
     this.hideFlyout();
 
-    const peopleInput = this.renderRoot.querySelector('.people-selected-input') as HTMLInputElement;
+    const peopleInput = this.renderRoot.querySelector('.search-box__input') as HTMLInputElement;
     if (!peopleInput) {
       return;
     }
@@ -953,6 +954,7 @@ export class MgtPeoplePicker extends MgtTemplatedComponent {
     if (event.keyCode === 9 || event.keyCode === 13) {
       // keyCodes capture: tab (9) and enter (13)
       if (this._foundPeople.length) {
+        this.fireCustomEvent('blur');
         event.preventDefault();
       }
       this.addPerson(this._foundPeople[this._arrowSelectionCount]);

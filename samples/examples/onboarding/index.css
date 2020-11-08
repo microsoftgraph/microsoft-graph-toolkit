@@ -1,0 +1,233 @@
+html,
+body {
+  font-family: Segoe UI, Frutiger, Frutiger Linotype, Dejavu Sans, Helvetica Neue, Arial, sans-serif;
+  color: #333333;
+  background: #f9fafd;
+}
+
+a {
+  color: #333333;
+}
+header {
+  background: url(./assets/header_background.png);
+  display: flex;
+  padding: 0 1em;
+}
+
+header .menu,
+header .logo,
+header .login {
+  padding: 1em;
+}
+
+header .login {
+  margin-left: auto;
+}
+
+.splash {
+  display: flex;
+  flex-direction: column;
+  width: 90%;
+  margin: 0 auto;
+  align-items: center;
+}
+
+.splash p {
+  margin: 4em 0 1em 0;
+}
+
+article {
+  margin: 0 auto;
+  width: 90%;
+}
+
+article .greeting {
+  display: flex;
+  justify-content: center;
+  flex-direction: column;
+  align-items: center;
+}
+
+article .greeting img {
+  max-width: 40em;
+}
+
+article .greeting h1 mgt-person {
+  display: inline-block;
+}
+
+article .greeting h1 {
+  margin-bottom: 0;
+}
+
+article .greeting p {
+  color: #8c8d8e;
+}
+
+article .main {
+  display: flex;
+}
+
+article .main .column {
+  flex: 0 0 31%;
+  padding: 1em;
+  height: 30em;
+  min-width: 400px;
+}
+
+article .main .root {
+  display: flex;
+  min-height: 75px;
+  background: white;
+}
+
+article .main .time-container {
+  width: 30%;
+  margin-top: 10px;
+  margin-right: 10px;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+}
+
+article .main .date {
+  font-size: 13px;
+  font-weight: bold;
+}
+
+article .main .time {
+  display: inline;
+  font-size: 12px;
+}
+
+article .main .location {
+  font-size: 12px;
+}
+
+article .main .details {
+  margin-bottom: 20px;
+  margin-top: 5px;
+  max-width: 180px;
+  padding-left: 5px;
+}
+
+article .main .separator {
+  width: 2em;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  opacity: 1;
+}
+
+article .main .vertical-line {
+  align-content: center;
+  width: 4px;
+  background-color: #e6eaf1;
+}
+
+article .main .vertical-line.top {
+  height: 16px;
+}
+
+article .main .vertical-line.bottom {
+  flex: 1;
+}
+
+article .main .circle {
+  border-radius: 50%;
+  height: 20px;
+  width: 20px;
+  position: relative;
+  border: 2px solid #e6eaf1;
+}
+
+article .main .circle .inner-circle {
+  position: absolute;
+  background-color: #93a7c7;
+  border-radius: 50%;
+  height: 8px;
+  width: 8px;
+
+  top: 50%;
+  left: 50%;
+  margin: -4px 0 0 -4px;
+}
+
+article .main .online-meeting {
+  font-size: 10px;
+  margin-top: 8px;
+}
+
+article .main .online-meeting-icon {
+  max-width: 16px;
+  vertical-align: middle;
+}
+
+article .main .online-meeting-link {
+  text-decoration: none;
+}
+
+article .main .attendees {
+  margin-top: 8px;
+}
+
+article .main .attendee {
+  display: inline-block;
+}
+
+article .main mgt-agenda,
+article .main mgt-todo,
+article .main mgt-people {
+  padding: 3em 0;
+  background: #ffffff;
+  box-shadow: 0px 4px 16px rgba(0, 0, 0, 0.04);
+  height: 100%;
+  overflow: auto;
+}
+
+article .main mgt-person {
+  --avatar-size-s: 16px;
+  margin-right: 4px;
+  display: inline-block;
+}
+
+article .main mgt-todo {
+  padding: 2em;
+}
+
+article .main mgt-todo .wrapper {
+  margin-top: 1em;
+}
+
+article .main mgt-people mgt-person {
+  --avatar-size: 3em;
+  margin: 0 0 1em 2em;
+}
+
+@media (min-width: 480px) and (max-width: 1400px) {
+  article {
+    width: 100%;
+  }
+
+  article .main {
+    flex-direction: column;
+  }
+
+  article .main .column.first {
+    order: 1;
+  }
+
+  article .main .column.second {
+    order: 2;
+    margin-top: 130px;
+  }
+
+  article .main .column.third {
+    order: 3;
+    margin-top: 100px;
+  }
+
+  article .main .details {
+    max-width: unset;
+  }
+}

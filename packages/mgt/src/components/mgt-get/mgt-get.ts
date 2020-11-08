@@ -6,11 +6,27 @@
  */
 
 import { customElement, html, property } from 'lit-element';
-import { Providers } from '../../Providers';
-import { ProviderState } from '../../providers/IProvider';
+import { Providers, ProviderState, MgtTemplatedComponent, equals } from '@microsoft/mgt-element';
 import { prepScopes } from '../../utils/GraphHelpers';
-import { equals } from '../../utils/Utils';
-import { MgtTemplatedComponent } from '../templatedComponent';
+import { getPhotoForResource } from '../../graph/graph.photos';
+
+/**
+ * Enumeration to define what types of query are available
+ *
+ * @export
+ * @enum {string}
+ */
+export enum ResponseType {
+  /**
+   * Fetches a call as JSON
+   */
+  json = 'json',
+
+  /**
+   * Fetches a call as image
+   */
+  image = 'image'
+}
 
 /**
  * Custom element for making Microsoft Graph get queries
@@ -37,7 +53,7 @@ export class MgtGet extends MgtTemplatedComponent {
   public resource: string;
 
   /**
-   * The resource to get
+   * The scopes to request
    *
    * @type {string[]}
    * @memberof MgtGet
@@ -63,6 +79,21 @@ export class MgtGet extends MgtTemplatedComponent {
     type: String
   })
   public version: string = 'v1.0';
+
+  /**
+   * Type of response
+   * Default = json
+   * Supported values = json, image
+   *
+   * @type {ResponseType}
+   * @memberof MgtGet
+   */
+  @property({
+    attribute: 'type',
+    reflect: true,
+    type: ResponseType
+  })
+  public type: ResponseType = ResponseType.json;
 
   /**
    * Maximum number of pages to get for the resource
@@ -222,39 +253,56 @@ export class MgtGet extends MgtTemplatedComponent {
           request = request.middlewareOptions(prepScopes(...this.scopes));
         }
 
-        let response = await request.get();
+        let response = null;
+        if (this.type === ResponseType.json) {
+          response = await request.get();
 
-        if (isDeltaLink && this.response && Array.isArray(this.response.value) && Array.isArray(response.value)) {
-          response.value = this.response.value.concat(response.value);
-        }
+          if (isDeltaLink && this.response && Array.isArray(this.response.value) && Array.isArray(response.value)) {
+            response.value = this.response.value.concat(response.value);
+          }
 
-        if (!this.isPolling && !equals(this.response, response)) {
-          this.response = response;
-        }
+          if (!this.isPolling && !equals(this.response, response)) {
+            this.response = response;
+          }
 
-        // get more pages if there are available
-        if (response && Array.isArray(response.value) && response['@odata.nextLink']) {
-          let pageCount = 1;
-          let page = response;
+          // get more pages if there are available
+          if (response && Array.isArray(response.value) && response['@odata.nextLink']) {
+            let pageCount = 1;
+            let page = response;
 
-          while (
-            (pageCount < this.maxPages || this.maxPages <= 0 || (isDeltaLink && this.pollingRate)) &&
-            page &&
-            page['@odata.nextLink']
-          ) {
-            pageCount++;
-            const nextResource = page['@odata.nextLink'].split(this.version)[1];
-            page = await graph.client
-              .api(nextResource)
-              .version(this.version)
-              .get();
-            if (page && page.value && page.value.length) {
-              page.value = response.value.concat(page.value);
-              response = page;
-              if (!this.isPolling) {
-                this.response = response;
+            while (
+              (pageCount < this.maxPages || this.maxPages <= 0 || (isDeltaLink && this.pollingRate)) &&
+              page &&
+              page['@odata.nextLink']
+            ) {
+              pageCount++;
+              const nextResource = page['@odata.nextLink'].split(this.version)[1];
+              page = await graph.client
+                .api(nextResource)
+                .version(this.version)
+                .get();
+              if (page && page.value && page.value.length) {
+                page.value = response.value.concat(page.value);
+                response = page;
+                if (!this.isPolling) {
+                  this.response = response;
+                }
               }
             }
+          }
+        } else {
+          if (this.resource.indexOf('/photo/$value') === -1) {
+            throw new Error('Only /photo/$value endpoints support the image type');
+          }
+
+          // Sanitizing the resource to ensure getPhotoForResource gets the right format
+          const sanitizedResource = this.resource.replace('/photo/$value', '');
+          const photoResponse = await getPhotoForResource(graph, sanitizedResource, this.scopes);
+
+          if (photoResponse) {
+            response = {
+              image: photoResponse.photo
+            };
           }
         }
 

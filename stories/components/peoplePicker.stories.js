@@ -29,23 +29,42 @@ export const groupId = () => html`
   <mgt-people-picker group-id="02bd9fd6-8f93-4758-87c3-1fb73740a315"></mgt-people-picker>
 `;
 
-export const DarkMode = () => html`
-  <mgt-people-picker></mgt-people-picker>
+export const theme = () => html`
+  <div class="mgt-light">
+    <header class="mgt-dark">
+      <p>I should be dark, regional class</p>
+      <mgt-people-picker></mgt-people-picker>
+      <div class="mgt-light">
+        <p>I should be light, second level regional class</p>
+        <mgt-people-picker></mgt-people-picker>
+      </div>
+    </header>
+    <article>
+      <p>I should be light, global class</p>
+      <mgt-people-picker></mgt-people-picker>
+    </article>
+    <p>I am custom themed</p>
+    <mgt-people-picker class="custom1"></mgt-people-picker>
+    <p>I have both custom input background color and mgt-dark theme</p>
+    <mgt-people-picker class="mgt-dark custom2"></mgt-people-picker>
+    <p>I should be light, with unknown class mgt-foo</p>
+    <mgt-people-picker class="mgt-foo"></mgt-people-picker>
+  </div>
   <style>
-    .story-mgt-preview-wrapper {
-      background-color: black;
-    }
-    mgt-people-picker {
-      --input-border: 2px rgba(255, 255, 255, 0.5) solid;
-      --input-background-color: #1f1f1f;
-      --dropdown-background-color: #1f1f1f;
-      --dropdown-item-hover-background: #333d47;
-      --dropdown-item-selected-background: #0f78d4;
-      --input-hover-color: #008394;
-      --input-focus-color: #0f78d4;
+    .custom1 {
+      --input-border: 2px solid teal;
+      --input-background-color: #33c2c2;
+      --dropdown-background-color: #33c2c2;
+      --dropdown-item-hover-background: #2a7d88;
+      --input-hover-color: #b911b1;
+      --input-focus-color: #441540;
       --font-color: white;
-      --placeholder-focus-color: rgba(255, 255, 255, 0.8);
-      --selected-person-background-color: #474747;
+      --placeholder-focus-color: #441540;
+      --selected-person-background-color: #441540;
+    }
+
+    .custom2 {
+      --input-background-color: #e47c4d;
     }
   </style>
 `;

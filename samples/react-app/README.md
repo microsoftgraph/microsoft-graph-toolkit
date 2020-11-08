@@ -1,4 +1,41 @@
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+# React sample for Mgt
+
+This sample demonstrates the integration of the Microsoft Graph Toolkit into a React application using [Create React App](https://github.com/facebook/create-react-app). 
+
+The sample uses the library [@microsoft/mgt-react](https://www.npmjs.com/package/@microsoft/mgt-react) to simplify usage of [Microsoft Graph Toolkit (mgt)](https://aka.ms/mgt) web components in React. The library wraps all mgt components and exports them as React components.
+
+
+## Setting up MGT in a React app
+
+
+1. Install
+```bash
+npm install @microsoft/mgt-react @microsoft/mgt
+```
+
+or
+
+```bash
+yarn add @microsoft/mgt-react @microsoft/mgt
+```
+
+2. mgt-react does not import the Microsoft Graph Toolkit components automatically. Make sure to have the toolkit imported in your app somewhere:
+ 
+```js 
+import `@microsoft/mgt`
+```
+
+
+3. In your `App.js` or other components, add an import with the components you want to use 
+
+```js
+ import { Login, Agenda, Person } from '@microsoft/mgt-react';
+```
+
+
+4. Now you can use the components in React! 
+
+<br/><br/>
 
 ## Available Scripts
 

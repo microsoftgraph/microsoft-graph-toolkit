@@ -7,23 +7,27 @@
 
 import * as MicrosoftGraph from '@microsoft/microsoft-graph-types';
 import { customElement, html, property, TemplateResult } from 'lit-element';
+import { classMap } from 'lit-html/directives/class-map';
 import { findPeople, getEmailFromGraphEntity } from '../../graph/graph.people';
 import { getPersonImage } from '../../graph/graph.photos';
 import { getUserPresence } from '../../graph/graph.presence';
 import { getUserWithPhoto } from '../../graph/graph.user';
-import { IDynamicPerson } from '../../graph/types';
-import { Providers } from '../../Providers';
-import { ProviderState } from '../../providers/IProvider';
 import { getSvg, SvgIcon } from '../../utils/SvgHelper';
-import { TeamsHelper } from '../../utils/TeamsHelper';
-import { MgtPerson } from '../mgt-person/mgt-person';
-import { MgtTemplatedComponent } from '../templatedComponent';
-import { styles } from './mgt-person-card-css';
+import { IDynamicPerson } from '../../graph/types';
+import { Providers, ProviderState, MgtTemplatedComponent } from '@microsoft/mgt-element';
 import { Presence } from '@microsoft/microsoft-graph-types-beta';
+import { TeamsHelper } from '../../utils/TeamsHelper';
+import { MgtPerson, PersonViewType } from '../mgt-person/mgt-person';
+import { styles } from './mgt-person-card-css';
+import { BasePersonCardSection } from './sections/BasePersonCardSection';
+import { MgtPersonCardContact } from './sections/mgt-person-card-contact/mgt-person-card-contact';
+import { MgtPersonCardFiles } from './sections/mgt-person-card-files/mgt-person-card-files';
+import { MgtPersonCardMessages } from './sections/mgt-person-card-messages/mgt-person-card-messages';
+import { MgtPersonCardOrganization } from './sections/mgt-person-card-organization/mgt-person-card-organization';
+import { MgtPersonCardProfile } from './sections/mgt-person-card-profile/mgt-person-card-profile';
 
 /**
- * Web Component used to show detailed data for a person in the
- * Microsoft Graph
+ * Web Component used to show detailed data for a person in the Microsoft Graph
  *
  * @export
  * @class MgtPersonCard
@@ -50,23 +54,6 @@ export class MgtPersonCard extends MgtTemplatedComponent {
   static get styles() {
     return styles;
   }
-  /**
-   * allows developer to define name of person for component
-   * @type {string}
-   */
-  @property({
-    attribute: 'person-query'
-  })
-  public personQuery: string;
-
-  /**
-   * user-id property allows developer to use id value for component
-   * @type {string}
-   */
-  @property({
-    attribute: 'user-id'
-  })
-  public userId: string;
 
   /**
    * Set the person details to render
@@ -87,13 +74,31 @@ export class MgtPersonCard extends MgtTemplatedComponent {
     }
 
     this._personDetails = value;
-
+    this.personImage = null;
+    this.sections.forEach(s => (s.personDetails = value));
     this.requestStateUpdate();
-    this.requestUpdate('personDetails');
   }
+  /**
+   * allows developer to define name of person for component
+   * @type {string}
+   */
+  @property({
+    attribute: 'person-query'
+  })
+  public personQuery: string;
+
+  /**
+   * user-id property allows developer to use id value for component
+   * @type {string}
+   */
+  @property({
+    attribute: 'user-id'
+  })
+  public userId: string;
 
   /**
    * Set the image of the person
+   * Set to '@' to look up image from the graph
    *
    * @type {string}
    * @memberof MgtPersonCard
@@ -165,16 +170,32 @@ export class MgtPersonCard extends MgtTemplatedComponent {
   })
   public personPresence: Presence;
 
-  private _personDetails: IDynamicPerson;
-
   /**
-   * Invoked each time the custom element is appended into a document-connected element
+   * The subsections for display in the lower part of the card
    *
+   * @protected
+   * @type {BasePersonCardSection[]}
    * @memberof MgtPersonCard
    */
-  public connectedCallback() {
-    super.connectedCallback();
-    this.addEventListener('click', e => e.stopPropagation());
+  protected sections: BasePersonCardSection[];
+
+  private _history: IDynamicPerson[];
+  private _chatInput: string;
+  private _currentSection: BasePersonCardSection;
+  private _personDetails: IDynamicPerson;
+
+  constructor() {
+    super();
+    this._chatInput = '';
+    this._currentSection = null;
+    this._history = [];
+    this.sections = [
+      new MgtPersonCardContact(),
+      new MgtPersonCardOrganization(),
+      new MgtPersonCardMessages(),
+      new MgtPersonCardFiles(),
+      new MgtPersonCardProfile()
+    ];
   }
 
   /**
@@ -192,10 +213,6 @@ export class MgtPersonCard extends MgtTemplatedComponent {
       return;
     }
 
-    if (name === 'is-expanded') {
-      this.isExpanded = false;
-    }
-
     switch (name) {
       case 'person-query':
       case 'user-id':
@@ -203,6 +220,37 @@ export class MgtPersonCard extends MgtTemplatedComponent {
         this.requestStateUpdate();
         break;
     }
+  }
+
+  /**
+   * Navigate the card to a different user.
+   *
+   * @protected
+   * @memberof MgtPersonCard
+   */
+  public navigate(person: IDynamicPerson): void {
+    this._history.push(this.personDetails);
+
+    this.sections.forEach((s: BasePersonCardSection) => {
+      s.clearState();
+      s.requestUpdate();
+    });
+
+    this.personDetails = person;
+    this._currentSection = null;
+  }
+
+  /**
+   * Navigate the card back to the previous user
+   *
+   * @returns {void}
+   * @memberof MgtPersonCard
+   */
+  public goBack(): void {
+    if (!this._history || !this._history.length) {
+      return;
+    }
+    this.personDetails = this._history.pop();
   }
 
   /**
@@ -230,27 +278,30 @@ export class MgtPersonCard extends MgtTemplatedComponent {
       });
     }
 
+    const navigationTemplate =
+      this._history && this._history.length
+        ? html`
+            <div class="nav">
+              <div class="nav__back" @click=${() => this.goBack()}>
+                ${getSvg(SvgIcon.Back)}
+              </div>
+            </div>
+          `
+        : null;
+
     // Check for a person-details template
     let personDetailsTemplate = this.renderTemplate('person-details', {
       person: this.personDetails,
       personImage: image
     });
     if (!personDetailsTemplate) {
-      const personImageTemplate = this.renderPersonImage(image, presence, showPresence);
-      const personNameTemplate = this.renderPersonName(person);
-      const personTitleTemplate = this.renderPersonTitle(person);
-      const personSubtitleTemplate = this.renderPersonSubtitle(person);
+      const personTemplate = this.renderPerson();
       const contactIconsTemplate = this.renderContactIcons(person);
 
       personDetailsTemplate = html`
-        <div class="image">
-          ${personImageTemplate}
-        </div>
-        <div class="details">
-          ${personNameTemplate} ${personTitleTemplate} ${personSubtitleTemplate}
-          <div class="base-icons">
-            ${contactIconsTemplate}
-          </div>
+        ${personTemplate}
+        <div class="base-icons">
+          ${contactIconsTemplate}
         </div>
       `;
     }
@@ -259,6 +310,7 @@ export class MgtPersonCard extends MgtTemplatedComponent {
 
     return html`
       <div class="root">
+        ${navigationTemplate}
         <div class="person-details-container">
           ${personDetailsTemplate}
         </div>
@@ -287,53 +339,20 @@ export class MgtPersonCard extends MgtTemplatedComponent {
    * @param {*} image
    * @memberof MgtPersonCard
    */
-  protected renderPersonImage(imageSrc?: string, presence?: Presence, showPresence?: boolean): TemplateResult {
-    imageSrc = imageSrc || this.getImage();
-    presence = presence || this.personPresence;
-    showPresence = showPresence || this.showPresence;
+  protected renderPerson(): TemplateResult {
     const avatarSize = 'large';
     return html`
       <mgt-person
         class="person-image"
         .personDetails=${this.personDetails}
-        .personImage=${imageSrc}
-        .personPresence=${presence}
-        .showPresence=${showPresence}
+        .personImage=${this.getImage()}
+        .personPresence=${this.personPresence}
+        .showPresence=${this.showPresence}
         .avatarSize=${avatarSize}
+        .view=${PersonViewType.threelines}
+        .line2Property=${'jobTitle'}
+        .line3Property=${'officeLocation'}
       ></mgt-person>
-    `;
-  }
-
-  /**
-   * Render the display name and persona details (e.g. department, job title) for a person.
-   *
-   * @protected
-   * @param {IDynamicPerson} [person]
-   * @returns {TemplateResult}
-   * @memberof MgtPersonCard
-   */
-  protected renderPersonName(person?: IDynamicPerson): TemplateResult {
-    person = person || this.personDetails;
-    return html`
-      <div class="display-name" title="${person.displayName}">${person.displayName}</div>
-    `;
-  }
-
-  /**
-   * Render person title.
-   *
-   * @protected
-   * @param {IDynamicPerson} person
-   * @returns {TemplateResult}
-   * @memberof MgtPersonCard
-   */
-  protected renderPersonTitle(person?: IDynamicPerson): TemplateResult {
-    person = person || this.personDetails;
-    if (!person.jobTitle) {
-      return;
-    }
-    return html`
-      <div class="job-title">${person.jobTitle}</div>
     `;
   }
 
@@ -363,49 +382,33 @@ export class MgtPersonCard extends MgtTemplatedComponent {
    * @memberof MgtPersonCard
    */
   protected renderContactIcons(person?: IDynamicPerson): TemplateResult {
-    if (this.isExpanded) {
-      return html``;
-    }
-
     person = person || this.personDetails;
     const userPerson = person as MicrosoftGraph.User;
-    const personPerson = person as MicrosoftGraph.Person;
-
-    // Chat
-    let chat: TemplateResult;
-    if (userPerson.userPrincipalName) {
-      chat = html`
-        <div class="icon" @click=${() => this.chatUser()}>
-          ${getSvg(SvgIcon.Chat, '#666666')}
-        </div>
-      `;
-    }
 
     // Email
     let email: TemplateResult;
     if (getEmailFromGraphEntity(person)) {
       email = html`
         <div class="icon" @click=${() => this.emailUser()}>
-          ${getSvg(SvgIcon.Email, '#666666')}
+          ${getSvg(SvgIcon.SmallEmail)}
+          <span>Send email</span>
         </div>
       `;
     }
 
-    // Phone
-    let phone: TemplateResult;
-    if (
-      (userPerson.businessPhones && userPerson.businessPhones.length > 0) ||
-      (personPerson.phones && personPerson.phones.length > 0)
-    ) {
-      phone = html`
-        <div class="icon" @click=${() => this.callUser()}>
-          ${getSvg(SvgIcon.Phone, '#666666')}
+    // Chat
+    let chat: TemplateResult;
+    if (userPerson.userPrincipalName) {
+      chat = html`
+        <div class="icon" @click=${() => this.chatUser()}>
+          ${getSvg(SvgIcon.SmallChat)}
+          <span>Start chat</span>
         </div>
       `;
     }
 
     return html`
-      ${chat} ${email} ${phone}
+      ${email} ${chat}
     `;
   }
 
@@ -419,16 +422,7 @@ export class MgtPersonCard extends MgtTemplatedComponent {
   protected renderExpandedDetailsButton(): TemplateResult {
     return html`
       <div class="expanded-details-button" @click=${() => this.showExpandedDetails()}>
-        <svg
-          class="expanded-details-svg"
-          width="16"
-          height="15"
-          viewBox="0 0 16 15"
-          fill="none"
-          xmlns="http://www.w3.org/2000/svg"
-        >
-          <path d="M15 7L8.24324 13.7568L1.24324 6.75676" stroke="#3078CD" />
-        </svg>
+        ${getSvg(SvgIcon.ExpandDown)}
       </div>
     `;
   }
@@ -444,116 +438,108 @@ export class MgtPersonCard extends MgtTemplatedComponent {
   protected renderExpandedDetails(person?: IDynamicPerson): TemplateResult {
     person = person || this.personDetails;
 
-    const contactDetailsTemplate = this.renderContactDetails(person);
-    const additionalDetailsTemplate = this.renderAdditionalDetails(person);
-    const sectionDivider = additionalDetailsTemplate
-      ? html`
-          <div class="section-divider"></div>
-        `
-      : null;
+    const sectionNavTemplate = this.renderSectionNavigation();
+    const currentSectionTemplate = this.renderCurrentSection();
 
     return html`
-      ${contactDetailsTemplate} ${sectionDivider} ${additionalDetailsTemplate}
-    `;
-  }
-
-  /**
-   * Render additional details for the person.
-   *
-   * @protected
-   * @returns {TemplateResult}
-   * @memberof MgtPersonCard
-   */
-  protected renderAdditionalDetails(person?: IDynamicPerson): TemplateResult {
-    if (!this.hasTemplate('additional-details')) {
-      return null;
-    }
-
-    person = person || this.personDetails;
-    const personImage = this.getImage();
-    const additionalDetailsTemplate = this.renderTemplate('additional-details', { person, personImage });
-
-    return html`
-      <div class="expanded-details-info">
-        ${additionalDetailsTemplate}
+      <div class="section-nav">
+        ${sectionNavTemplate}
+      </div>
+      <div class="section-host">
+        ${currentSectionTemplate}
       </div>
     `;
   }
 
   /**
-   * Render the contact info part of the additional details.
+   * Render the navigation ribbon for subsections
    *
    * @protected
    * @returns {TemplateResult}
    * @memberof MgtPersonCard
    */
-  protected renderContactDetails(person?: IDynamicPerson): TemplateResult {
-    person = person || this.personDetails;
-    const userPerson = person as MicrosoftGraph.User;
-    const personPerson = person as MicrosoftGraph.Person;
+  protected renderSectionNavigation(): TemplateResult {
+    const currentSectionIndex = this._currentSection ? this.sections.indexOf(this._currentSection) : -1;
 
-    if (this.hasTemplate('contact-details')) {
-      return this.renderTemplate('contact-details', { userPerson });
-    }
+    const navIcons = this.sections.map((section, i, a) => {
+      const classes = classMap({
+        active: i === currentSectionIndex,
+        'section-nav__icon': true
+      });
+      return html`
+        <button class=${classes} @click=${() => this.updateCurrentSection(section)}>
+          ${section.renderIcon()}
+        </button>
+      `;
+    });
 
-    // Chat
-    let chat: TemplateResult;
-    if (userPerson.userPrincipalName) {
-      chat = html`
-        <div class="details-icon" @click=${() => this.chatUser()}>
-          ${getSvg(SvgIcon.SmallChat, '#666666')}
-          <span class="link-subtitle data">${userPerson.userPrincipalName}</span>
-        </div>
-      `;
-    }
+    const overviewClasses = classMap({
+      active: currentSectionIndex === -1,
+      'section-nav__icon': true
+    });
+    return html`
+      <button class=${overviewClasses} @click=${() => this.updateCurrentSection(null)}>
+        ${getSvg(SvgIcon.Overview)}
+      </button>
+      ${navIcons}
+    `;
+  }
 
-    // Email
-    let email: TemplateResult;
-    if (getEmailFromGraphEntity(person)) {
-      email = html`
-        <div class="details-icon" @click=${() => this.emailUser()}>
-          ${getSvg(SvgIcon.SmallEmail, '#666666')}
-          <span class="link-subtitle data">${getEmailFromGraphEntity(person)}</span>
+  /**
+   * Render the default section with compact views for each subsection.
+   *
+   * @protected
+   * @returns {TemplateResult}
+   * @memberof MgtPersonCard
+   */
+  protected renderOverviewSection(): TemplateResult {
+    const compactTemplates = this.sections.map(
+      section => html`
+        <div class="section">
+          <div class="section__header">
+            <div class="section__title">${section.displayName}</div>
+            <a class="section__show-more" @click=${() => this.updateCurrentSection(section)}>Show more</a>
+          </div>
+          <div class="section__content">${section.asCompactView()}</div>
         </div>
-      `;
-    }
+      `
+    );
 
-    // Phone
-    let phone: TemplateResult;
-    if (userPerson.businessPhones && userPerson.businessPhones.length > 0) {
-      phone = html`
-        <div class="details-icon" @click=${() => this.callUser()}>
-          ${getSvg(SvgIcon.SmallPhone, '#666666')}
-          <span class="link-subtitle data">${userPerson.businessPhones[0]}</span>
-        </div>
-      `;
-    } else if (personPerson.phones && personPerson.phones.length > 0) {
-      const businessPhones = this.getPersonBusinessPhones(personPerson);
-      phone = html`
-        <div class="details-icon" @click=${() => this.callUser()}>
-          ${getSvg(SvgIcon.SmallPhone, '#666666')}
-          <span class="link-subtitle data">${businessPhones[0]}</span>
-        </div>
-      `;
-    }
+    return html`
+      <div class="quick-message">
+        <input
+          type="text"
+          class="quick-message__input"
+          placeholder="Message ${this.personDetails.displayName}"
+          .value=${this._chatInput}
+          @input=${(e: Event) => {
+            this._chatInput = (e.target as HTMLInputElement).value;
+          }}
+        />
+        <button class="quick-message__send" @click=${() => this.sendQuickMessage()}>
+          ${getSvg(SvgIcon.Send)}
+        </button>
+      </div>
+      <div class="sections">
+        ${compactTemplates}
+      </div>
+    `;
+  }
 
-    // Location
-    let location: TemplateResult;
-    if (person.officeLocation) {
-      location = html`
-        <div class="details-icon">
-          ${getSvg(SvgIcon.SmallLocation, '#666666')}<span class="normal-subtitle data">${person.officeLocation}</span>
-        </div>
-      `;
+  /**
+   * Render the actively selected section.
+   *
+   * @protected
+   * @returns {TemplateResult}
+   * @memberof MgtPersonCard
+   */
+  protected renderCurrentSection(): TemplateResult {
+    if (!this._currentSection) {
+      return this.renderOverviewSection();
     }
 
     return html`
-      <div class="expanded-details-info">
-        <div class="contact-text">Contact</div>
-        <div class="icons">
-          ${chat} ${email} ${phone} ${location}
-        </div>
-      </div>
+      ${this._currentSection.asFullView()}
     `;
   }
 
@@ -575,8 +561,6 @@ export class MgtPersonCard extends MgtTemplatedComponent {
       if (parent && (parent as MgtPerson).personDetails) {
         this.personDetails = (parent as MgtPerson).personDetails;
         this.personImage = (parent as MgtPerson).personImage;
-        this.personPresence = (parent as MgtPerson).personPresence;
-        this.showPresence = (parent as MgtPerson).showPresence;
       }
     }
 
@@ -617,7 +601,7 @@ export class MgtPersonCard extends MgtTemplatedComponent {
       this.personImage = this.getImage();
     } else if (this.personQuery) {
       // Use the personQuery to find our person.
-      const people = await findPeople(graph, this.personQuery, 1);
+      const people = await findPeople(graph, this.personQuery);
 
       if (people && people.length) {
         this.personDetails = people[0];
@@ -647,6 +631,22 @@ export class MgtPersonCard extends MgtTemplatedComponent {
         this.personPresence = defaultPresence;
       }
     }
+  }
+
+  /**
+   * Send a chat message to the user from the quick message input.
+   *
+   * @protected
+   * @returns {void}
+   * @memberof MgtPersonCard
+   */
+  protected sendQuickMessage(): void {
+    const message = this._chatInput.trim();
+    if (!message || !message.length) {
+      return;
+    }
+
+    this.chatUser(message);
   }
 
   /**
@@ -695,11 +695,16 @@ export class MgtPersonCard extends MgtTemplatedComponent {
    * @protected
    * @memberof MgtPersonCard
    */
-  protected chatUser() {
+  protected chatUser(message: string = null) {
     const user = this.personDetails as MicrosoftGraph.User;
     if (user && user.userPrincipalName) {
       const users: string = user.userPrincipalName;
-      const url = `https://teams.microsoft.com/l/chat/0/0?users=${users}`;
+
+      let url = `https://teams.microsoft.com/l/chat/0/0?users=${users}`;
+      if (message && message.length) {
+        url += `&message=${message}`;
+      }
+
       const openWindow = () => window.open(url, '_blank');
 
       if (TeamsHelper.isAvailable) {
@@ -763,5 +768,13 @@ export class MgtPersonCard extends MgtTemplatedComponent {
       }
     }
     return businessPhones;
+  }
+
+  private updateCurrentSection(section) {
+    const sectionHost = this.renderRoot.querySelector('.section-host');
+    sectionHost.scrollTop = 0;
+
+    this._currentSection = section;
+    this.requestUpdate();
   }
 }

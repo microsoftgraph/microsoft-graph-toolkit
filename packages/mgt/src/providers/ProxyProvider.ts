@@ -6,8 +6,7 @@
  */
 
 import { Graph } from '../Graph';
-import { getMe } from '../graph/graph.user';
-import { IProvider, ProviderState } from '../providers/IProvider';
+import { IProvider, ProviderState } from '@microsoft/mgt-element';
 import { ProxyGraph } from '../ProxyGraph';
 
 /**
@@ -27,18 +26,22 @@ export class ProxyProvider extends IProvider {
   constructor(graphProxyUrl: string, getCustomHeaders: () => Promise<object> = null) {
     super();
     this.graph = new ProxyGraph(graphProxyUrl, getCustomHeaders);
-    getMe(this.graph).then(
-      user => {
-        if (user != null) {
-          this.setState(ProviderState.SignedIn);
-        } else {
+
+    this.graph
+      .api('me')
+      .get()
+      .then(
+        user => {
+          if (user != null) {
+            this.setState(ProviderState.SignedIn);
+          } else {
+            this.setState(ProviderState.SignedOut);
+          }
+        },
+        err => {
           this.setState(ProviderState.SignedOut);
         }
-      },
-      err => {
-        this.setState(ProviderState.SignedOut);
-      }
-    );
+      );
   }
 
   /**

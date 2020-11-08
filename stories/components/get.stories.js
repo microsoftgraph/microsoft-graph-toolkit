@@ -145,3 +145,15 @@ export const ExtendingPersonCard = () => html`
     </template>
   </mgt-person>
 `;
+
+export const UsingImageType = () => html`
+  <mgt-get resource="me">
+    <template>
+      <mgt-get resource="users/{{id}}/photo/$value" type="image">
+        <template>
+          <mgt-person-card person-details="{{$parent}}" person-image="{{image}}"></mgt-person-card>
+        </template>
+      </mgt-get>
+    </template>
+  </mgt-get>
+`;
