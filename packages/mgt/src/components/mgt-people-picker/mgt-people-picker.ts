@@ -707,16 +707,6 @@ export class MgtPeoplePicker extends MgtTemplatedComponent {
       }
     }
 
-    // if (people) {
-    //   people = people.filter((user: User) => {
-    //     return (
-    //       user.displayName.toLowerCase().indexOf(input) !== -1 ||
-    //       (!!user.givenName && user.givenName.toLowerCase().indexOf(input) !== -1) ||
-    //       (!!user.surname && user.surname.toLowerCase().indexOf(input) !== -1) ||
-    //       (!!user.mail && user.mail.toLowerCase().indexOf(input) !== -1)
-    //     );
-    //   });
-    // }
 
     this._foundPeople = this.filterPeople(people);
   }
