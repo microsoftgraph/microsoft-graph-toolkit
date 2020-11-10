@@ -12,6 +12,7 @@ export type AgendaProps = {
 	events?: MicrosoftGraph.Event[];
 	showMax?: number;
 	groupByDay?: boolean;
+	preferredTimezone?: string;
 	templateConverters?: MgtElement.TemplateContext;
 	templateContext?: MgtElement.TemplateContext;
 	direction?: string;
