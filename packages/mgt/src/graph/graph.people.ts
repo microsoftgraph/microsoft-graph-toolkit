@@ -192,52 +192,6 @@ export async function getPeople(graph: IGraph): Promise<Person[]> {
 }
 
 /**
- * async promise to the Graph for People, defined by a group id
- *
- * @param {string} groupId
- * @param {boolean} [transitive=false] - whether the return should contain a flat list of all nested members
- * @param {PersonType} [personType=PersonType.person] - the type of person to search for
- * @returns {(Promise<Person[]>)}
- * @memberof Graph
- */
-export async function getPeopleFromGroup(
-  graph: IGraph,
-  groupId: string,
-  transitive: boolean = false,
-  personType: PersonType = PersonType.person
-): Promise<Person[]> {
-  const scopes = 'people.read';
-  let cache: CacheStore<CacheGroupPeople>;
-  const key = `${groupId || '*'}:${personType}:${transitive}`;
-
-  if (peopleCacheEnabled()) {
-    cache = CacheService.getCache<CacheGroupPeople>(cacheSchema, groupStore);
-    const peopleItem = await cache.getValue(key);
-    if (peopleItem && getPeopleInvalidationTime() > Date.now() - peopleItem.timeCached) {
-      return peopleItem.people.map(peopleStr => JSON.parse(peopleStr));
-    }
-  }
-
-  let uri = `/groups/${groupId}/${transitive ? 'transitiveMembers' : 'members'}`;
-  if (personType === PersonType.person) {
-    uri += `/microsoft.graph.user`;
-  } else if (personType === PersonType.group) {
-    uri += `/microsoft.graph.group`;
-  }
-
-  const people = await graph
-    .api(uri)
-    .count(true)
-    .header('ConsistencyLevel', 'eventual')
-    .middlewareOptions(prepScopes(scopes))
-    .get();
-  if (peopleCacheEnabled()) {
-    cache.putValue(key, { people: people.value.map(ppl => JSON.stringify(ppl)) });
-  }
-  return people ? people.value : null;
-}
-
-/**
  * returns a promise that resolves after specified time
  * @param time in milliseconds
  */

@@ -654,7 +654,15 @@ export class MgtPeoplePicker extends MgtTemplatedComponent {
           if (this.groupId) {
             if (this._groupPeople === null) {
               try {
-                this._groupPeople = await getPeopleFromGroup(graph, this.groupId, this.transitiveSearch, this.type);
+                //this._groupPeople = await getPeopleFromGroup(graph, this.groupId, this.transitiveSearch, this.type);
+                this._groupPeople = await findUsersFromGroup(
+                  graph,
+                  null,
+                  this.groupId,
+                  this.showMax,
+                  this.type,
+                  this.transitiveSearch
+                );
               } catch (_) {
                 this._groupPeople = [];
               }
@@ -685,7 +693,14 @@ export class MgtPeoplePicker extends MgtTemplatedComponent {
           try {
             if (this.groupId) {
               people =
-                (await findUsersFromGroup(graph, input, this.groupId, this.showMax, this.transitiveSearch)) || [];
+                (await findUsersFromGroup(
+                  graph,
+                  input,
+                  this.groupId,
+                  this.showMax,
+                  this.type,
+                  this.transitiveSearch
+                )) || [];
             } else {
               people = (await findPeople(graph, input, this.showMax)) || [];
             }
@@ -710,7 +725,7 @@ export class MgtPeoplePicker extends MgtTemplatedComponent {
           }
         }
 
-        if ((this.type === PersonType.group || this.type === PersonType.any) && people.length < this.showMax) {
+        if (this.type === PersonType.group && people.length < this.showMax) {
           let groups = [];
           try {
             if (this.groupId) {

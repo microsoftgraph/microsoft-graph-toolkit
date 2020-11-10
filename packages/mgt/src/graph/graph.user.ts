@@ -9,7 +9,7 @@ import { IGraph } from '@microsoft/mgt-element';
 import { User } from '@microsoft/microsoft-graph-types';
 import { CacheItem, CacheSchema, CacheService, CacheStore } from '../utils/Cache';
 import { prepScopes } from '../utils/GraphHelpers';
-import { findPeople } from './graph.people';
+import { findPeople, PersonType } from './graph.people';
 import {
   getPhotoForResource,
   getPhotoFromCache,
@@ -427,6 +427,7 @@ export async function findUsers(graph: IGraph, query: string, top: number = 10):
  * @param {string} query
  * @param {string} groupId - the group to query
  * @param {number} [top=10] - number of people to return
+ * @param {PersonType} [personType=PersonType.person] - the type of person to search for
  * @param {boolean} [transitive=false] - whether the return should contain a flat list of all nested members
  * @returns {(Promise<User[]>)}
  */
@@ -435,13 +436,14 @@ export async function findUsersFromGroup(
   query: string,
   groupId: string,
   top: number = 10,
+  personType: PersonType = PersonType.person,
   transitive: boolean = false
 ): Promise<User[]> {
-  const scopes = 'user.read.all';
+  const scopes = ['user.read.all', 'people.read'];
   const item = { maxResults: top, results: null };
 
   let cache: CacheStore<CacheUserQuery>;
-  const key = `${groupId}:${query}:${transitive}`;
+  const key = `${groupId || '*'}:${query || '*'}:${personType}:${transitive}`;
 
   if (usersCacheEnabled()) {
     cache = CacheService.getCache<CacheUserQuery>(cacheSchema, queryStore);
@@ -452,8 +454,17 @@ export async function findUsersFromGroup(
     }
   }
 
-  const filter: string = `startswith(displayName,'${query}') or startswith(givenName,'${query}') or startswith(surname,'${query}') or startswith(mail,'${query}') or startswith(userPrincipalName,'${query}')`;
-  let apiUrl: string = `/groups/${groupId}/${transitive ? 'transitiveMembers' : 'members'}/microsoft.graph.user`;
+  let filter: string = '';
+  if (query) {
+    filter = `startswith(displayName,'${query}') or startswith(givenName,'${query}') or startswith(surname,'${query}') or startswith(mail,'${query}') or startswith(userPrincipalName,'${query}')`;
+  }
+
+  let apiUrl: string = `/groups/${groupId}/${transitive ? 'transitiveMembers' : 'members'}`;
+  if (personType === PersonType.person) {
+    apiUrl += `/microsoft.graph.user`;
+  } else if (personType === PersonType.group) {
+    apiUrl += `/microsoft.graph.group`;
+  }
 
   const graphResult = await graph
     .api(apiUrl)
@@ -461,12 +472,13 @@ export async function findUsersFromGroup(
     .top(top)
     .filter(filter)
     .header('ConsistencyLevel', 'eventual')
-    .middlewareOptions(prepScopes(scopes))
+    .middlewareOptions(prepScopes(...scopes))
     .get();
 
   if (usersCacheEnabled() && graphResult) {
     item.results = graphResult.value.map(userStr => JSON.stringify(userStr));
     cache.putValue(key, item);
   }
+
   return graphResult ? graphResult.value : null;
 }

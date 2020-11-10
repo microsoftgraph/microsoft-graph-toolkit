@@ -10,7 +10,7 @@ import { customElement, html, property, TemplateResult } from 'lit-element';
 import { repeat } from 'lit-html/directives/repeat';
 import { getPeople, getPeopleFromGroup } from '../../graph/graph.people';
 import { getUsersPresenceByPeople } from '../../graph/graph.presence';
-import { getUsersForPeopleQueries, getUsersForUserIds } from '../../graph/graph.user';
+import { findUsersFromGroup, getUsersForPeopleQueries, getUsersForUserIds } from '../../graph/graph.user';
 import { IDynamicPerson } from '../../graph/types';
 import { Providers, ProviderState, MgtTemplatedComponent, arraysAreEqual } from '@microsoft/mgt-element';
 import '../../styles/style-helper';
@@ -315,7 +315,8 @@ export class MgtPeople extends MgtTemplatedComponent {
 
         // populate people
         if (this.groupId) {
-          this.people = await getPeopleFromGroup(graph, this.groupId);
+          //this.people = await getPeopleFromGroup(graph, this.groupId);
+          this.people = await findUsersFromGroup(graph, null, this.groupId);
         } else if (this.userIds) {
           this.people = await getUsersForUserIds(graph, this.userIds);
         } else if (this.peopleQueries) {
