@@ -315,7 +315,6 @@ export class MgtPeople extends MgtTemplatedComponent {
 
         // populate people
         if (this.groupId) {
-          //this.people = await getPeopleFromGroup(graph, this.groupId);
           this.people = await findUsersFromGroup(graph, null, this.groupId);
         } else if (this.userIds) {
           this.people = await getUsersForUserIds(graph, this.userIds);
