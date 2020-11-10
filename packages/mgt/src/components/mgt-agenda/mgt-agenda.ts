@@ -260,6 +260,15 @@ export class MgtAgenda extends MgtTemplatedComponent {
   }
 
   /**
+   * Reloads the component with its current settings and potential new data
+   *
+   * @memberof MgtAgenda
+   */
+  protected async reload() {
+    this.events = await this.loadEvents();
+  }
+
+  /**
    * Render the loading state
    *
    * @protected
@@ -500,10 +509,6 @@ export class MgtAgenda extends MgtTemplatedComponent {
     if (events && events.length > 0) {
       this.events = events;
     }
-  }
-
-  protected async reload() {
-    this.events = await this.loadEvents();
   }
 
   private async reloadState() {
