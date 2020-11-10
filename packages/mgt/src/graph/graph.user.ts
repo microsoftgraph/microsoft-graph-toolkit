@@ -406,9 +406,9 @@ export async function findUsers(graph: IGraph, query: string, top: number = 10):
   try {
     graphResult = await graph
       .api('users')
-      .filter(
-        `startswith(displayName,'${query}') or startswith(givenName,'${query}') or startswith(surname,'${query}') or startswith(mail,'${query}') or startswith(userPrincipalName,'${query}')`
-      )
+      .header('ConsistencyLevel', 'eventual')
+      .count(true)
+      .search(`"displayName:${query}"`)
       .top(top)
       .middlewareOptions(prepScopes(scopes))
       .get();
