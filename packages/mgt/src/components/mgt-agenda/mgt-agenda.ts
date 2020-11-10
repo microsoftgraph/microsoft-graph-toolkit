@@ -264,7 +264,7 @@ export class MgtAgenda extends MgtTemplatedComponent {
    *
    * @memberof MgtAgenda
    */
-  protected async reload() {
+  public async reload() {
     this.events = await this.loadEvents();
   }
 
