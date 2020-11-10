@@ -10,7 +10,7 @@ import { customElement, html, internalProperty, property, TemplateResult } from 
 import { classMap } from 'lit-html/directives/class-map';
 import { repeat } from 'lit-html/directives/repeat';
 import { findGroups, findGroupsFromGroup, GroupType } from '../../graph/graph.groups';
-import { findPeople, getPeople, getPeopleFromGroup, PersonType } from '../../graph/graph.people';
+import { findPeople, getPeople, PersonType } from '../../graph/graph.people';
 import { findUsers, findUsersFromGroup, getUser, getUsersForUserIds } from '../../graph/graph.user';
 import { IDynamicPerson } from '../../graph/types';
 import { Providers, ProviderState, MgtTemplatedComponent } from '@microsoft/mgt-element';
