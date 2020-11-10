@@ -707,7 +707,6 @@ export class MgtPeoplePicker extends MgtTemplatedComponent {
       }
     }
 
-
     this._foundPeople = this.filterPeople(people);
   }
 
