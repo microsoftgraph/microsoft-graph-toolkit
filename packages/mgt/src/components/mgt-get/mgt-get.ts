@@ -9,6 +9,7 @@ import { customElement, html, property } from 'lit-element';
 import { Providers, ProviderState, MgtTemplatedComponent, equals } from '@microsoft/mgt-element';
 import { prepScopes } from '../../utils/GraphHelpers';
 import { getPhotoForResource } from '../../graph/graph.photos';
+import { CacheItem, CacheSchema, CacheService, CacheStore } from '../../utils/Cache';
 
 /**
  * Enumeration to define what types of query are available
@@ -27,6 +28,45 @@ export enum ResponseType {
    */
   image = 'image'
 }
+
+/**
+ * Definition of cache structure
+ */
+const cacheSchema: CacheSchema = {
+  name: 'responses',
+  stores: {
+    responses: {}
+  },
+  version: 1
+};
+
+/**
+ * Object to be stored in cache representing a generic query
+ */
+interface CacheResponse extends CacheItem {
+  /**
+   * json representing a resonse as string
+   */
+  response?: string;
+}
+
+/**
+ * Defines the expiration time
+ */
+const getResponseInvalidationTime = (currentInvalidationPeriod: number): number =>
+  currentInvalidationPeriod ||
+  CacheService.config.response.invalidationPeriod ||
+  CacheService.config.defaultInvalidationPeriod;
+
+/**
+ * Whether the response store is enabled
+ */
+const responseCacheEnabled = (): boolean => CacheService.config.response.isEnabled && CacheService.config.isEnabled;
+
+/**
+ * Name of the response store name
+ */
+const responsesStore: string = 'responses';
 
 /**
  * Custom element for making Microsoft Graph get queries
@@ -123,6 +163,33 @@ export class MgtGet extends MgtTemplatedComponent {
     type: Number
   })
   public pollingRate: number = 0;
+
+  /**
+   * Enables cache on the response from the specified resource
+   * default = false
+   *
+   * @type {boolean}
+   * @memberof MgtGet
+   */
+  @property({
+    attribute: 'cache-enabled',
+    reflect: true,
+    type: Boolean
+  })
+  public cacheEnabled: boolean = false;
+
+  /**
+   * Invalidation period of the cache for the responses in milliseconds
+   *
+   * @type {number}
+   * @memberof MgtGet
+   */
+  @property({
+    attribute: 'cache-invalidation-period',
+    reflect: true,
+    type: Number
+  })
+  public cacheInvalidationPeriod: number = 0;
 
   /**
    * Gets or sets the response of the request
@@ -235,74 +302,92 @@ export class MgtGet extends MgtTemplatedComponent {
 
     if (this.resource) {
       try {
-        let uri = this.resource;
-        let isDeltaLink = false;
-
-        // if we had a response earlier with a delta link, use it instead
-        if (this.response && this.response['@odata.deltaLink']) {
-          uri = this.response['@odata.deltaLink'];
-          isDeltaLink = true;
-        } else {
-          isDeltaLink = new URL(uri, 'https://graph.microsoft.com').pathname.endsWith('delta');
-        }
-
-        const graph = provider.graph.forComponent(this);
-        let request = graph.api(uri).version(this.version);
-
-        if (this.scopes && this.scopes.length) {
-          request = request.middlewareOptions(prepScopes(...this.scopes));
-        }
-
+        let cache: CacheStore<CacheResponse>;
+        const key = `${this.version}${this.resource}`;
         let response = null;
-        if (this.type === ResponseType.json) {
-          response = await request.get();
 
-          if (isDeltaLink && this.response && Array.isArray(this.response.value) && Array.isArray(response.value)) {
-            response.value = this.response.value.concat(response.value);
-          }
-
-          if (!this.isPolling && !equals(this.response, response)) {
+        if (responseCacheEnabled() && this.cacheEnabled) {
+          cache = CacheService.getCache<CacheResponse>(cacheSchema, responsesStore);
+          const result: CacheResponse = responseCacheEnabled() ? await cache.getValue(key) : null;
+          if (result && getResponseInvalidationTime(this.cacheInvalidationPeriod) > Date.now() - result.timeCached) {
+            response = JSON.parse(result.response);
             this.response = response;
           }
+        }
 
-          // get more pages if there are available
-          if (response && Array.isArray(response.value) && response['@odata.nextLink']) {
-            let pageCount = 1;
-            let page = response;
+        if (!this.response) {
+          let uri = this.resource;
+          let isDeltaLink = false;
 
-            while (
-              (pageCount < this.maxPages || this.maxPages <= 0 || (isDeltaLink && this.pollingRate)) &&
-              page &&
-              page['@odata.nextLink']
-            ) {
-              pageCount++;
-              const nextResource = page['@odata.nextLink'].split(this.version)[1];
-              page = await graph.client
-                .api(nextResource)
-                .version(this.version)
-                .get();
-              if (page && page.value && page.value.length) {
-                page.value = response.value.concat(page.value);
-                response = page;
-                if (!this.isPolling) {
-                  this.response = response;
+          // if we had a response earlier with a delta link, use it instead
+          if (this.response && this.response['@odata.deltaLink']) {
+            uri = this.response['@odata.deltaLink'];
+            isDeltaLink = true;
+          } else {
+            isDeltaLink = new URL(uri, 'https://graph.microsoft.com').pathname.endsWith('delta');
+          }
+
+          const graph = provider.graph.forComponent(this);
+          let request = graph.api(uri).version(this.version);
+
+          if (this.scopes && this.scopes.length) {
+            request = request.middlewareOptions(prepScopes(...this.scopes));
+          }
+
+          if (this.type === ResponseType.json) {
+            response = await request.get();
+
+            if (isDeltaLink && this.response && Array.isArray(this.response.value) && Array.isArray(response.value)) {
+              response.value = this.response.value.concat(response.value);
+            }
+
+            if (!this.isPolling && !equals(this.response, response)) {
+              this.response = response;
+            }
+
+            // get more pages if there are available
+            if (response && Array.isArray(response.value) && response['@odata.nextLink']) {
+              let pageCount = 1;
+              let page = response;
+
+              while (
+                (pageCount < this.maxPages || this.maxPages <= 0 || (isDeltaLink && this.pollingRate)) &&
+                page &&
+                page['@odata.nextLink']
+              ) {
+                pageCount++;
+                const nextResource = page['@odata.nextLink'].split(this.version)[1];
+                page = await graph.client
+                  .api(nextResource)
+                  .version(this.version)
+                  .get();
+                if (page && page.value && page.value.length) {
+                  page.value = response.value.concat(page.value);
+                  response = page;
+                  if (!this.isPolling) {
+                    this.response = response;
+                  }
                 }
               }
             }
-          }
-        } else {
-          if (this.resource.indexOf('/photo/$value') === -1) {
-            throw new Error('Only /photo/$value endpoints support the image type');
-          }
 
-          // Sanitizing the resource to ensure getPhotoForResource gets the right format
-          const sanitizedResource = this.resource.replace('/photo/$value', '');
-          const photoResponse = await getPhotoForResource(graph, sanitizedResource, this.scopes);
+            if (responseCacheEnabled() && this.cacheEnabled && this.response) {
+              cache.putValue(key, { response: JSON.stringify(this.response) });
+            }
+          } else {
+            if (this.resource.indexOf('/photo/$value') === -1) {
+              throw new Error('Only /photo/$value endpoints support the image type');
+            }
 
-          if (photoResponse) {
-            response = {
-              image: photoResponse.photo
-            };
+            // Sanitizing the resource to ensure getPhotoForResource gets the right format
+            const sanitizedResource = this.resource.replace('/photo/$value', '');
+            const photoResponse = await getPhotoForResource(graph, sanitizedResource, this.scopes);
+
+            if (photoResponse) {
+              response = {
+                image: photoResponse.photo
+              };
+            }
           }
         }
 
