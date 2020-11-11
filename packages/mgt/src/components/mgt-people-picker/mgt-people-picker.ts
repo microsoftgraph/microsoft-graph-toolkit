@@ -724,7 +724,7 @@ export class MgtPeoplePicker extends MgtTemplatedComponent {
           }
         }
 
-        if (this.type === PersonType.group && people.length < this.showMax) {
+        if (this.type === PersonType.group || (this.type === PersonType.any && people.length < this.showMax)) {
           let groups = [];
           try {
             if (this.groupId) {
@@ -749,6 +749,7 @@ export class MgtPeoplePicker extends MgtTemplatedComponent {
       }
     }
 
+    people = this.getUniquePeople(people);
     this._foundPeople = this.filterPeople(people);
   }
 
@@ -1054,6 +1055,29 @@ export class MgtPeoplePicker extends MgtTemplatedComponent {
         } else {
           return idFilter.indexOf(person.displayName) === -1;
         }
+      });
+
+      return filtered;
+    }
+  }
+
+  /**
+   * Filters people searched from already selected people
+   * @param people - array of people returned from query to Graph
+   */
+  private getUniquePeople(people: IDynamicPerson[]): IDynamicPerson[] {
+    if (people) {
+      const uniqueIds = [...new Set(people.map(item => (item.id ? item.id : item.displayName)))];
+
+      // filter id's
+      const filtered = uniqueIds.map((id: string) => {
+        return people.find((person: IDynamicPerson) => {
+          if (person.id) {
+            return id === person.id;
+          } else {
+            return id === person.displayName;
+          }
+        });
       });
 
       return filtered;
