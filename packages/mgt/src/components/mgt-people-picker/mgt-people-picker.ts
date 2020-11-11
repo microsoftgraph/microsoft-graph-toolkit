@@ -654,7 +654,6 @@ export class MgtPeoplePicker extends MgtTemplatedComponent {
           if (this.groupId) {
             if (this._groupPeople === null) {
               try {
-                //this._groupPeople = await getPeopleFromGroup(graph, this.groupId, this.transitiveSearch, this.type);
                 this._groupPeople = await findUsersFromGroup(
                   graph,
                   null,
