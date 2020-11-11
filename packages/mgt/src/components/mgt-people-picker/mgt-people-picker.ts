@@ -1067,20 +1067,9 @@ export class MgtPeoplePicker extends MgtTemplatedComponent {
    */
   private getUniquePeople(people: IDynamicPerson[]): IDynamicPerson[] {
     if (people) {
-      const uniqueIds = [...new Set(people.map(item => (item.id ? item.id : item.displayName)))];
+      const uniquePeople = [...new Map(people.map(item => [item.id, item])).values()];
 
-      // filter id's
-      const filtered = uniqueIds.map((id: string) => {
-        return people.find((person: IDynamicPerson) => {
-          if (person.id) {
-            return id === person.id;
-          } else {
-            return id === person.displayName;
-          }
-        });
-      });
-
-      return filtered;
+      return uniquePeople;
     }
   }
 }
