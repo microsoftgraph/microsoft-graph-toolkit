@@ -54,6 +54,22 @@ export enum PersonViewType {
 }
 
 /**
+ * Configuration object for the Person component
+ *
+ * @export
+ * @interface MgtPersonConfig
+ */
+export interface MgtPersonConfig {
+  /**
+   * Sets or gets whether the person component can use Contacts APIs to
+   * find contacts and their images
+   *
+   * @type {boolean}
+   */
+  useContactApis: boolean;
+}
+
+/**
  * The person component is used to display a person or contact by using their photo, name, and/or email address.
  *
  * @export
@@ -91,6 +107,18 @@ export class MgtPerson extends MgtTemplatedComponent {
   static get styles() {
     return styles;
   }
+
+  /**
+   * Global Configuration object for all
+   * person components
+   *
+   * @static
+   * @type {MgtPersonConfig}
+   * @memberof MgtPerson
+   */
+  public static config: MgtPersonConfig = {
+    useContactApis: true
+  };
 
   /**
    * allows developer to define name of person for component
@@ -746,7 +774,7 @@ export class MgtPerson extends MgtTemplatedComponent {
         !this.personDetails.personImage &&
         ((this.fetchImage && !this.personImage && !this._fetchedImage) || this.personImage === '@')
       ) {
-        const image = await getPersonImage(graph, this.personDetails);
+        const image = await getPersonImage(graph, this.personDetails, MgtPerson.config.useContactApis);
         if (image) {
           this.personDetails.personImage = image;
           this._fetchedImage = image;
@@ -764,7 +792,7 @@ export class MgtPerson extends MgtTemplatedComponent {
 
       if (people && people.length) {
         this.personDetails = people[0];
-        const image = await getPersonImage(graph, people[0]);
+        const image = await getPersonImage(graph, people[0], MgtPerson.config.useContactApis);
 
         if (image) {
           this.personDetails.personImage = image;
