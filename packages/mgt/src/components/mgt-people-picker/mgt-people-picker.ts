@@ -724,7 +724,7 @@ export class MgtPeoplePicker extends MgtTemplatedComponent {
           }
         }
 
-        if (this.type === PersonType.group || (this.type === PersonType.any && people.length < this.showMax)) {
+        if ((this.type === PersonType.group || this.type === PersonType.any) && people.length < this.showMax) {
           let groups = [];
           try {
             if (this.groupId) {
