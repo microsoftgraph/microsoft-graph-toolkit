@@ -14,13 +14,15 @@ import { findPeople, getPeople, getPeopleFromGroup, PersonType } from '../../gra
 import { findUsers, getUser, getUsersForUserIds } from '../../graph/graph.user';
 import { IDynamicPerson } from '../../graph/types';
 import { Providers, ProviderState, MgtTemplatedComponent } from '@microsoft/mgt-element';
-import '../../styles/fabric-icon-font';
+import '../../styles/style-helper';
 import '../sub-components/mgt-spinner/mgt-spinner';
 import { debounce } from '../../utils/Utils';
 import { PersonViewType } from '../mgt-person/mgt-person';
 import { PersonCardInteraction } from '../PersonCardInteraction';
 import { MgtFlyout } from '../sub-components/mgt-flyout/mgt-flyout';
 import { styles } from './mgt-people-picker-css';
+
+import { strings } from './strings';
 
 export { GroupType } from '../../graph/graph.groups';
 export { PersonType } from '../../graph/graph.people';
@@ -34,29 +36,6 @@ export { PersonType } from '../../graph/graph.people';
 interface IFocusable {
   // tslint:disable-next-line: completed-docs
   isFocused: boolean;
-}
-
-/**
- * Enumeration to define what theme to render
- *
- * @export
- * @enum {string}
- */
-export enum ThemeType {
-  /**
-   * Render light theme
-   */
-  light = 'light',
-
-  /**
-   * Render dark theme
-   */
-  dark = 'dark',
-
-  /**
-   * Render custom theme
-   */
-  custom = 'custom'
 }
 
 /**
@@ -96,6 +75,10 @@ export class MgtPeoplePicker extends MgtTemplatedComponent {
    */
   static get styles() {
     return styles;
+  }
+
+  protected get strings() {
+    return strings;
   }
 
   /**
@@ -269,29 +252,6 @@ export class MgtPeoplePicker extends MgtTemplatedComponent {
   public selectionMode: string;
 
   /**
-   * Determines theme of people picker
-   *
-   * @type {ThemeType}
-   * @memberof MgtPeoplePicker
-   */
-  @property({
-    converter: value => {
-      if (!value || value.length === 0) {
-        return ThemeType.light;
-      }
-
-      value = value.toLowerCase();
-
-      if (typeof ThemeType[value] === 'undefined') {
-        return ThemeType.light;
-      } else {
-        return ThemeType[value];
-      }
-    }
-  })
-  public theme: ThemeType;
-
-  /**
    * User input in search.
    *
    * @protected
@@ -329,16 +289,6 @@ export class MgtPeoplePicker extends MgtTemplatedComponent {
     this.userInput = '';
     this.showMax = 6;
     this.selectedPeople = [];
-    this.theme = ThemeType.light;
-  }
-
-  /**
-   * Invoked each time the custom element is appended into a document-connected element
-   *
-   * @memberof MgtLogin
-   */
-  public connectedCallback() {
-    super.connectedCallback();
   }
 
   /**
@@ -399,11 +349,9 @@ export class MgtPeoplePicker extends MgtTemplatedComponent {
       focused: this._isFocused,
       'people-picker': true
     };
-    const theme = `theme-${this.theme}`;
-    inputClasses[theme] = true;
 
     return html`
-      <div class=${classMap(inputClasses)} @click=${e => this.focus(e)}>
+      <div dir=${this.direction} class=${classMap(inputClasses)} @click=${e => this.focus(e)}>
         <div class="selected-list">
           ${selectedPeopleTemplate} ${flyoutTemplate}
         </div>
@@ -438,7 +386,7 @@ export class MgtPeoplePicker extends MgtTemplatedComponent {
   protected renderInput(): TemplateResult {
     const hasSelectedPeople = !!this.selectedPeople.length;
 
-    const placeholder = this.placeholder ? this.placeholder : 'Start typing a name';
+    const placeholder = this.placeholder ? this.placeholder : this.strings.inputPlaceholderText;
 
     const selectionMode = this.selectionMode ? this.selectionMode : 'multiple';
 
@@ -568,7 +516,7 @@ export class MgtPeoplePicker extends MgtTemplatedComponent {
         <div class="message-parent">
           <mgt-spinner></mgt-spinner>
           <div label="loading-text" aria-label="loading" class="loading-text">
-            Loading...
+            ${this.strings.loadingMessage}
           </div>
         </div>
       `
@@ -589,7 +537,7 @@ export class MgtPeoplePicker extends MgtTemplatedComponent {
       html`
         <div class="message-parent">
           <div label="search-error-text" aria-label="We didn't find any matches." class="search-error-text">
-            We didn't find any matches.
+            ${this.strings.noResultsFound}
           </div>
         </div>
       `
@@ -759,17 +707,6 @@ export class MgtPeoplePicker extends MgtTemplatedComponent {
       }
     }
 
-    if (people) {
-      people = people.filter((user: User) => {
-        return (
-          user.displayName.toLowerCase().indexOf(input) !== -1 ||
-          (!!user.givenName && user.givenName.toLowerCase().indexOf(input) !== -1) ||
-          (!!user.surname && user.surname.toLowerCase().indexOf(input) !== -1) ||
-          (!!user.mail && user.mail.toLowerCase().indexOf(input) !== -1)
-        );
-      });
-    }
-
     this._foundPeople = this.filterPeople(people);
   }
 
@@ -896,6 +833,8 @@ export class MgtPeoplePicker extends MgtTemplatedComponent {
         highlight = displayName.slice(highlightLocation, highlightLocation + userInputLength);
         last = displayName.slice(highlightLocation + userInputLength, displayName.length);
       }
+    } else {
+      first = person.displayName;
     }
 
     return html`
@@ -972,6 +911,7 @@ export class MgtPeoplePicker extends MgtTemplatedComponent {
             this.hideFlyout();
           }
         }, 400);
+        this.userInput = input.value;
 
         await this.loadState();
         clearTimeout(loadingTimeout);
@@ -983,7 +923,6 @@ export class MgtPeoplePicker extends MgtTemplatedComponent {
     }
 
     if (this.userInput !== input.value) {
-      this.userInput = input.value;
       this._debouncedSearch();
     }
   }
@@ -1006,6 +945,7 @@ export class MgtPeoplePicker extends MgtTemplatedComponent {
     if (event.keyCode === 9 || event.keyCode === 13) {
       // keyCodes capture: tab (9) and enter (13)
       if (this._foundPeople.length) {
+        this.fireCustomEvent('blur');
         event.preventDefault();
       }
       this.addPerson(this._foundPeople[this._arrowSelectionCount]);

@@ -14,7 +14,7 @@ import { getUserPresence } from '../../graph/graph.presence';
 import { getUserWithPhoto } from '../../graph/graph.user';
 import { AvatarSize, IDynamicPerson } from '../../graph/types';
 import { Providers, ProviderState, MgtTemplatedComponent } from '@microsoft/mgt-element';
-import '../../styles/fabric-icon-font';
+import '../../styles/style-helper';
 import { getSvg, SvgIcon } from '../../utils/SvgHelper';
 import { MgtPersonCard } from '../mgt-person-card/mgt-person-card';
 import '../sub-components/mgt-flyout/mgt-flyout';
@@ -45,7 +45,28 @@ export enum PersonViewType {
   /**
    * Render the avatar and two lines of text
    */
-  twolines = 4
+  twolines = 4,
+
+  /**
+   * Render the avatar and three lines of text
+   */
+  threelines = 5
+}
+
+/**
+ * Configuration object for the Person component
+ *
+ * @export
+ * @interface MgtPersonConfig
+ */
+export interface MgtPersonConfig {
+  /**
+   * Sets or gets whether the person component can use Contacts APIs to
+   * find contacts and their images
+   *
+   * @type {boolean}
+   */
+  useContactApis: boolean;
 }
 
 /**
@@ -71,6 +92,10 @@ export enum PersonViewType {
  * @cssprop --line2-font-weight - {Length} Line 2 font weight
  * @cssprop --line2-color - {Color} Line 2 color
  * @cssprop --line2-text-transform - {String} Line 2 text transform
+ * @cssprop --line3-font-size - {Length} Line 2 font size
+ * @cssprop --line3-font-weight - {Length} Line 2 font weight
+ * @cssprop --line3-color - {Color} Line 2 color
+ * @cssprop --line3-text-transform - {String} Line 2 text transform
  * @cssprop --details-spacing - {Length} spacing between avatar and person details
  */
 @customElement('mgt-person')
@@ -84,13 +109,36 @@ export class MgtPerson extends MgtTemplatedComponent {
   }
 
   /**
+   * Global Configuration object for all
+   * person components
+   *
+   * @static
+   * @type {MgtPersonConfig}
+   * @memberof MgtPerson
+   */
+  public static config: MgtPersonConfig = {
+    useContactApis: true
+  };
+
+  /**
    * allows developer to define name of person for component
    * @type {string}
    */
   @property({
     attribute: 'person-query'
   })
-  public personQuery: string;
+  public get personQuery(): string {
+    return this._personQuery;
+  }
+  public set personQuery(value: string) {
+    if (value === this._personQuery) {
+      return;
+    }
+
+    this._personQuery = value;
+    this.personDetails = null;
+    this.requestStateUpdate();
+  }
 
   /**
    * user-id property allows developer to use id value to determine person
@@ -99,29 +147,18 @@ export class MgtPerson extends MgtTemplatedComponent {
   @property({
     attribute: 'user-id'
   })
-  public userId: string;
+  public get userId(): string {
+    return this._userId;
+  }
+  public set userId(value: string) {
+    if (value === this._userId) {
+      return;
+    }
 
-  /**
-   * determines if person component renders user-name
-   * @type {boolean}
-   * @deprecated [This property will be removed in next major update. Use `view` instead]
-   */
-  @property({
-    attribute: 'show-name',
-    type: Boolean
-  })
-  public showName: boolean;
-
-  /**
-   * determines if person component renders email
-   * @type {boolean}
-   * @deprecated [This property will be removed in next major update. Use `view` instead]
-   */
-  @property({
-    attribute: 'show-email',
-    type: Boolean
-  })
-  public showEmail: boolean;
+    this._userId = value;
+    this.personDetails = null;
+    this.requestStateUpdate();
+  }
 
   /**
    * determines if person component renders presence
@@ -285,6 +322,15 @@ export class MgtPerson extends MgtTemplatedComponent {
   @property({ attribute: 'line2-property' }) public line2Property: string;
 
   /**
+   * Sets the property of the personDetails to use for the second line of text.
+   * Default is mail.
+   *
+   * @type {string}
+   * @memberof MgtPerson
+   */
+  @property({ attribute: 'line3-property' }) public line3Property: string;
+
+  /**
    * Sets what data to be rendered (avatar only, oneLine, twoLines).
    * Default is 'avatar'.
    *
@@ -317,6 +363,8 @@ export class MgtPerson extends MgtTemplatedComponent {
   private _personAvatarBg: string;
   private _personImage: string;
   private _personPresence: Presence;
+  private _personQuery: string;
+  private _userId: string;
 
   private _mouseLeaveTimeout;
   private _mouseEnterTimeout;
@@ -328,33 +376,10 @@ export class MgtPerson extends MgtTemplatedComponent {
     this.personCardInteraction = PersonCardInteraction.none;
     this.line1Property = 'displayName';
     this.line2Property = 'email';
+    this.line3Property = 'jobTitle';
     this.view = PersonViewType.avatar;
     this.avatarSize = 'auto';
     this._isInvalidImageSrc = false;
-  }
-
-  /**
-   * Synchronizes property values when attributes change.
-   *
-   * @param {*} name
-   * @param {*} oldValue
-   * @param {*} newValue
-   * @memberof MgtPerson
-   */
-  public attributeChangedCallback(name, oldval, newval) {
-    super.attributeChangedCallback(name, oldval, newval);
-
-    if (oldval === newval) {
-      return;
-    }
-
-    switch (name) {
-      case 'person-query':
-      case 'user-id':
-        this.personDetails = null;
-        this.requestStateUpdate();
-        break;
-    }
   }
 
   /**
@@ -398,6 +423,7 @@ export class MgtPerson extends MgtTemplatedComponent {
     return html`
       <div
         class="root"
+        dir=${this.direction}
         @click=${this.handleMouseClick}
         @mouseenter=${this.handleMouseEnter}
         @mouseleave=${this.handleMouseLeave}
@@ -629,13 +655,13 @@ export class MgtPerson extends MgtTemplatedComponent {
    * @memberof MgtPerson
    */
   protected renderDetails(person: IDynamicPerson): TemplateResult {
-    if (!person || (!this.showEmail && !this.showName && this.view === PersonViewType.avatar)) {
+    if (!person || this.view === PersonViewType.avatar) {
       return html``;
     }
 
     const details: TemplateResult[] = [];
 
-    if (this.showName || this.view > PersonViewType.avatar) {
+    if (this.view > PersonViewType.avatar) {
       const text = this.getTextFromProperty(person, this.line1Property);
       if (text) {
         details.push(html`
@@ -644,11 +670,20 @@ export class MgtPerson extends MgtTemplatedComponent {
       }
     }
 
-    if (this.showEmail || this.view > PersonViewType.oneline) {
+    if (this.view > PersonViewType.oneline) {
       const text = this.getTextFromProperty(person, this.line2Property);
       if (text) {
         details.push(html`
           <div class="line2" aria-label="${text}">${text}</div>
+        `);
+      }
+    }
+
+    if (this.view > PersonViewType.twolines) {
+      const text = this.getTextFromProperty(person, this.line3Property);
+      if (text) {
+        details.push(html`
+          <div class="line3" aria-label="${text}">${text}</div>
         `);
       }
     }
@@ -739,7 +774,7 @@ export class MgtPerson extends MgtTemplatedComponent {
         !this.personDetails.personImage &&
         ((this.fetchImage && !this.personImage && !this._fetchedImage) || this.personImage === '@')
       ) {
-        const image = await getPersonImage(graph, this.personDetails);
+        const image = await getPersonImage(graph, this.personDetails, MgtPerson.config.useContactApis);
         if (image) {
           this.personDetails.personImage = image;
           this._fetchedImage = image;
@@ -757,7 +792,7 @@ export class MgtPerson extends MgtTemplatedComponent {
 
       if (people && people.length) {
         this.personDetails = people[0];
-        const image = await getPersonImage(graph, people[0]);
+        const image = await getPersonImage(graph, people[0], MgtPerson.config.useContactApis);
 
         if (image) {
           this.personDetails.personImage = image;
@@ -775,7 +810,9 @@ export class MgtPerson extends MgtTemplatedComponent {
     if (this.showPresence && !this.personPresence && !this._fetchedPresence) {
       try {
         if (this.personDetails && this.personDetails.id) {
-          this._fetchedPresence = await getUserPresence(graph, this.personDetails.id);
+          // setting userId to 'me' ensures only the presence.read permission is required
+          const userId = this.personQuery !== 'me' ? this.personDetails.id : null;
+          this._fetchedPresence = await getUserPresence(graph, userId);
         } else {
           this._fetchedPresence = defaultPresence;
         }
@@ -783,11 +820,6 @@ export class MgtPerson extends MgtTemplatedComponent {
         // set up a default Presence in case beta api changes or getting error code
         this._fetchedPresence = defaultPresence;
       }
-    }
-
-    // populate avatar size
-    if (this.showEmail && this.showName) {
-      this.avatarSize = 'large';
     }
   }
 
@@ -804,7 +836,14 @@ export class MgtPerson extends MgtTemplatedComponent {
     return person && person.personImage ? person.personImage : null;
   }
 
-  private getInitials(person?: IDynamicPerson) {
+  /**
+   * Gets the user initials
+   *
+   * @protected
+   * @returns {string}
+   * @memberof MgtPerson
+   */
+  protected getInitials(person?: IDynamicPerson): string {
     if (!person) {
       person = this.personDetails;
     }
@@ -867,10 +906,7 @@ export class MgtPerson extends MgtTemplatedComponent {
   }
 
   private isLargeAvatar() {
-    return (
-      this.avatarSize === 'large' ||
-      (this.avatarSize === 'auto' && ((this.showEmail && this.showName) || this.view > PersonViewType.oneline))
-    );
+    return this.avatarSize === 'large' || (this.avatarSize === 'auto' && this.view > PersonViewType.oneline);
   }
 
   private handleMouseClick(e: MouseEvent) {
@@ -918,7 +954,15 @@ export class MgtPerson extends MgtTemplatedComponent {
     }
   }
 
-  private getColorFromName(name) {
+  /**
+   * Gets color from name
+   *
+   * @protected
+   * @param {string} name
+   * @returns {string}
+   * @memberof MgtPerson
+   */
+  protected getColorFromName(name: string): string {
     const charCodes = name
       .split('')
       .map(char => char.charCodeAt(0))

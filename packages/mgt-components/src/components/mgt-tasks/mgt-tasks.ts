@@ -22,6 +22,7 @@ import '../mgt-person/mgt-person';
 import '../sub-components/mgt-arrow-options/mgt-arrow-options';
 import '../sub-components/mgt-dot-options/mgt-dot-options';
 import { MgtFlyout } from '../sub-components/mgt-flyout/mgt-flyout';
+import { strings } from './strings';
 
 /**
  * Defines how a person card is shown when a user interacts with
@@ -205,6 +206,10 @@ export class MgtTasks extends MgtTemplatedComponent {
     return styles;
   }
 
+  protected get strings() {
+    return strings;
+  }
+
   /**
    * Get whether new task view is visible
    *
@@ -237,7 +242,7 @@ export class MgtTasks extends MgtTemplatedComponent {
 
   /**
    * determines which task source is loaded, either planner or todo
-   * @type {string}
+   * @type {TasksSource}
    */
   @property({
     attribute: 'data-source',
@@ -300,6 +305,8 @@ export class MgtTasks extends MgtTemplatedComponent {
 
   /**
    * allows developer to define specific group id
+   *
+   * @type {string}
    */
   @property({ attribute: 'group-id', type: String })
   public groupId: string;
@@ -307,6 +314,7 @@ export class MgtTasks extends MgtTemplatedComponent {
   /**
    * Optional filter function when rendering tasks
    *
+   * @type {TaskFilter}
    * @memberof MgtTasks
    */
   public taskFilter: TaskFilter;
@@ -451,7 +459,7 @@ export class MgtTasks extends MgtTemplatedComponent {
 
     if (!this.hideHeader) {
       header = html`
-        <div class="Header">
+        <div class="Header" dir=${this.direction}>
           ${this.renderPlanOptions()}
         </div>
       `;
@@ -459,7 +467,7 @@ export class MgtTasks extends MgtTemplatedComponent {
 
     return html`
       ${header}
-      <div class="Tasks">
+      <div class="Tasks" dir=${this.direction}>
         ${this._isNewTaskVisible ? this.renderNewTask() : null} ${loadingTask}
         ${repeat(tasks, task => task.id, task => this.renderTask(task))}
       </div>
@@ -775,7 +783,7 @@ export class MgtTasks extends MgtTemplatedComponent {
               }}"
             >
               <span class="TaskIcon"></span>
-              <span>Add</span>
+              <span>${this.strings.addTaskButtonSubtitle}</span>
             </button>
           `;
 
@@ -876,7 +884,7 @@ export class MgtTasks extends MgtTemplatedComponent {
     const taskTitle = html`
       <input
         type="text"
-        placeholder="Task..."
+        placeholder=${this.strings.newTaskPlaceholder}
         .value="${this._newTaskName}"
         label="new-taskName-input"
         aria-label="new-taskName-input"
@@ -980,7 +988,7 @@ export class MgtTasks extends MgtTemplatedComponent {
       : html`
           <div class="TaskAddButtonContainer ${this._newTaskName === '' ? 'Disabled' : ''}">
             <div class="TaskIcon TaskCancel" @click="${() => (this.isNewTaskVisible = false)}">
-              <span>Cancel</span>
+              <span>${this.strings.cancelNewTaskSubtitle}</span>
             </div>
             <div class="TaskIcon TaskAdd" @click="${this.onAddTaskClick}">
               <span></span>
@@ -1136,7 +1144,7 @@ export class MgtTasks extends MgtTemplatedComponent {
             <div class="TaskOptions">
               <mgt-dot-options
                 .options="${{
-                  'Delete Task': () => this.removeTask(task)
+                  [this.strings.removeTaskSubtitle]: () => this.removeTask(task)
                 }}"
               ></mgt-dot-options>
             </div>

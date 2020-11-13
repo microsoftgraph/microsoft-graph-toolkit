@@ -11,7 +11,7 @@ import { withKnobs } from '@storybook/addon-knobs';
 import { withWebComponentsKnobs } from 'storybook-addon-web-components-knobs';
 import { withSignIn } from '../../.storybook/addons/signInAddon/signInAddon';
 import { withCodeEditor } from '../../.storybook/addons/codeEditorAddon/codeAddon';
-import '../../packages/mgt/dist/es6/components/mgt-people/mgt-people';
+import '../../packages/mgt-components/dist/es6/components/mgt-people/mgt-people';
 
 export default {
   title: 'Components | mgt-people',
@@ -30,12 +30,13 @@ export const GroupId = () => html`
 
 export const UserIds = () => html`
   <mgt-people
-    user-ids="2804bc07-1e1f-4938-9085-ce6d756a32d2 ,e8a02cc7-df4d-4778-956d-784cc9506e5a,c8913c86-ceea-4d39-b1ea-f63a5b675166"
-  ></mgt-people>
+    user-ids="2804bc07-1e1f-4938-9085-ce6d756a32d2 ,e8a02cc7-df4d-4778-956d-784cc9506e5a,c8913c86-ceea-4d39-b1ea-f63a5b675166">
+  </mgt-people>
+  </mgt-people>
 `;
 
 export const PeopleQueries = () => html`
   <mgt-people
-    people-queries="LidiaH@M365x214355.onmicrosoft.com, Megan Bowen, Lynne Robbins, BrianJ@M365x214355.onmicrosoft.com, JoniS@M365x214355.onmicrosoft.com"
-  ></mgt-people>
+    people-queries="LidiaH@M365x214355.onmicrosoft.com, Megan Bowen, Lynne Robbins, BrianJ@M365x214355.onmicrosoft.com, JoniS@M365x214355.onmicrosoft.com">
+  </mgt-people>
 `;

@@ -22,3 +22,4 @@ export * from './utils/TeamsHelper';
 export * from './utils/TemplateContext';
 export * from './utils/TemplateHelper';
 export * from './utils/GraphPageIterator';
+export * from './utils/LocalizationHelper';

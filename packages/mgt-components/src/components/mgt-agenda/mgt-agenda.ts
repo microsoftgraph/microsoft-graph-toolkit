@@ -8,7 +8,7 @@
 import * as MicrosoftGraph from '@microsoft/microsoft-graph-types';
 import { customElement, html, property, TemplateResult } from 'lit-element';
 import { Providers, ProviderState, MgtTemplatedComponent, prepScopes } from '@microsoft/mgt-element';
-import '../../styles/fabric-icon-font';
+import '../../styles/style-helper';
 import { getDayOfWeekString, getMonthString } from '../../utils/Utils';
 import '../mgt-person/mgt-person';
 import { styles } from './mgt-agenda-css';
@@ -159,6 +159,29 @@ export class MgtAgenda extends MgtTemplatedComponent {
   public groupByDay: boolean;
 
   /**
+   * allows developer to specify preferred timezone that should be used for
+   * retrieving events from Graph, eg. `Pacific Standard Time`. The preferred timezone for
+   * the current user can be retrieved by calling `me/mailboxSettings` and
+   * retrieving the value of the `timeZone` property.
+   * @type {string}
+   */
+  @property({
+    attribute: 'preferred-timezone',
+    type: String
+  })
+  public get preferredTimezone(): string {
+    return this._preferredTimezone;
+  }
+  public set preferredTimezone(value) {
+    if (this._preferredTimezone === value) {
+      return;
+    }
+
+    this._preferredTimezone = value;
+    this.reloadState();
+  }
+
+  /**
    * determines width available for agenda component.
    * @type {boolean}
    */
@@ -168,6 +191,7 @@ export class MgtAgenda extends MgtTemplatedComponent {
   private _days: number = 3;
   private _groupId: string;
   private _date: string;
+  private _preferredTimezone: string;
 
   constructor() {
     super();
@@ -227,11 +251,20 @@ export class MgtAgenda extends MgtTemplatedComponent {
 
     // Render list
     return html`
-      <div class="agenda${this._isNarrow ? ' narrow' : ''}${this.groupByDay ? ' grouped' : ''}">
+      <div dir=${this.direction} class="agenda${this._isNarrow ? ' narrow' : ''}${this.groupByDay ? ' grouped' : ''}">
         ${this.groupByDay ? this.renderGroups(events) : this.renderEvents(events)}
         ${this.isLoadingState ? this.renderLoading() : html``}
       </div>
     `;
+  }
+
+  /**
+   * Reloads the component with its current settings and potential new data
+   *
+   * @memberof MgtAgenda
+   */
+  public async reload() {
+    this.events = await this.loadEvents();
   }
 
   /**
@@ -294,9 +327,7 @@ export class MgtAgenda extends MgtTemplatedComponent {
         <div class="event-details-container">
           ${this.renderTitle(event)} ${this.renderLocation(event)} ${this.renderAttendees(event)}
         </div>
-        <div class="event-other-container">
-          ${this.renderOther(event)}
-        </div>
+        <div class="event-other-container">${this.renderOther(event)}</div>
       </div>
     `;
     // <div class="event-duration">${this.getEventDuration(event)}</div>
@@ -428,9 +459,7 @@ export class MgtAgenda extends MgtTemplatedComponent {
       ${Object.keys(grouped).map(
         header =>
           html`
-            <div class="group">
-              ${this.renderHeader(header)} ${this.renderEvents(grouped[header])}
-            </div>
+            <div class="group">${this.renderHeader(header)} ${this.renderEvents(grouped[header])}</div>
           `
       )}
     `;
@@ -471,55 +500,9 @@ export class MgtAgenda extends MgtTemplatedComponent {
       return;
     }
 
-    const p = Providers.globalProvider;
-    if (p && p.state === ProviderState.SignedIn) {
-      const graph = p.graph.forComponent(this);
-
-      if (this.eventQuery) {
-        try {
-          const tokens = this.eventQuery.split('|');
-          let scope: string;
-          let query: string;
-          if (tokens.length > 1) {
-            query = tokens[0].trim();
-            scope = tokens[1].trim();
-          } else {
-            query = this.eventQuery;
-          }
-
-          let request = await graph.api(query);
-
-          if (scope) {
-            request = request.middlewareOptions(prepScopes(scope));
-          }
-
-          const results = await request.get();
-
-          if (results && results.value) {
-            this.events = results.value;
-          }
-          // tslint:disable-next-line: no-empty
-        } catch (e) {}
-      } else {
-        const start = this.date ? new Date(this.date) : new Date();
-        start.setHours(0, 0, 0, 0);
-        const end = new Date(start.getTime());
-        end.setDate(start.getDate() + this.days);
-        try {
-          const iterator = await getEventsPageIterator(graph, start, end, this.groupId);
-
-          if (iterator && iterator.value) {
-            this.events = iterator.value;
-
-            while (iterator.hasNext) {
-              await iterator.next();
-              this.events = iterator.value;
-            }
-          }
-        } catch (error) {
-          // noop - possible error with graph
-        }
-      }
+    const events = await this.loadEvents();
+    if (events && events.length > 0) {
+      this.events = events;
     }
   }
 
@@ -547,8 +530,77 @@ export class MgtAgenda extends MgtTemplatedComponent {
     return `${start} - ${end}`;
   }
 
+  private async loadEvents(): Promise<MicrosoftGraph.Event[]> {
+    const p = Providers.globalProvider;
+    let events: MicrosoftGraph.Event[] = [];
+
+    if (p && p.state === ProviderState.SignedIn) {
+      const graph = p.graph.forComponent(this);
+
+      if (this.eventQuery) {
+        try {
+          const tokens = this.eventQuery.split('|');
+          let scope: string;
+          let query: string;
+          if (tokens.length > 1) {
+            query = tokens[0].trim();
+            scope = tokens[1].trim();
+          } else {
+            query = this.eventQuery;
+          }
+
+          let request = await graph.api(query);
+
+          if (scope) {
+            request = request.middlewareOptions(prepScopes(scope));
+          }
+
+          if (this.preferredTimezone) {
+            request = request.header('Prefer', `outlook.timezone="${this.preferredTimezone}"`);
+          }
+
+          const results = await request.get();
+
+          if (results && results.value) {
+            events = results.value;
+          }
+          // tslint:disable-next-line: no-empty
+        } catch (e) {}
+      } else {
+        const start = this.date ? new Date(this.date) : new Date();
+        start.setHours(0, 0, 0, 0);
+        const end = new Date(start.getTime());
+        end.setDate(start.getDate() + this.days);
+        try {
+          const iterator = await getEventsPageIterator(graph, start, end, this.groupId, this.preferredTimezone);
+
+          if (iterator && iterator.value) {
+            events = iterator.value;
+
+            while (iterator.hasNext) {
+              await iterator.next();
+              events = iterator.value;
+            }
+          }
+        } catch (error) {
+          // noop - possible error with graph
+        }
+      }
+    }
+
+    return events;
+  }
+
   private prettyPrintTimeFromDateTime(date: Date) {
-    date.setMinutes(date.getMinutes() - date.getTimezoneOffset());
+    // If a preferred time zone was sent in the Graph request
+    // times are already set correctly. Do not adjust
+    if (!this.preferredTimezone) {
+      // If no preferred time zone was specified, the times are in UTC
+      // fall back to old behavior and adjust the times to the browser's
+      // time zone
+      date.setMinutes(date.getMinutes() - date.getTimezoneOffset());
+    }
+
     let hours = date.getHours();
     const minutes = date.getMinutes();
     const ampm = hours >= 12 ? 'PM' : 'AM';

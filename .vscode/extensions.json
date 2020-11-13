@@ -7,7 +7,6 @@
     "esbenp.prettier-vscode",
     "rebornix.project-snippets",
     "ms-vscode.vscode-typescript-tslint-plugin",
-    "joelday.docthis",
     "msjsdiag.debugger-for-edge"
   ]
 }

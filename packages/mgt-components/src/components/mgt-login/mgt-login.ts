@@ -12,9 +12,10 @@ import { Providers, ProviderState, MgtTemplatedComponent } from '@microsoft/mgt-
 import { MgtFlyout } from '../sub-components/mgt-flyout/mgt-flyout';
 import { styles } from './mgt-login-css';
 import { getUserWithPhoto } from '../../graph/graph.user';
-import '../../styles/fabric-icon-font';
+import '../../styles/style-helper';
 import '../mgt-person/mgt-person';
 import { PersonViewType } from '../mgt-person/mgt-person';
+import { strings } from './strings';
 
 /**
  * Web component button and flyout control to facilitate Microsoft identity platform authentication
@@ -53,6 +54,9 @@ export class MgtLogin extends MgtTemplatedComponent {
    */
   static get styles() {
     return styles;
+  }
+  protected get strings() {
+    return strings;
   }
 
   /**
@@ -150,7 +154,7 @@ export class MgtLogin extends MgtTemplatedComponent {
    */
   protected render() {
     return html`
-      <div class="root">
+      <div class="root" dir=${this.direction}>
         <div>
           ${this.renderButton()}
         </div>
@@ -279,7 +283,7 @@ export class MgtLogin extends MgtTemplatedComponent {
         <ul>
           <li>
             <button class="popup-command" @click=${this.logout} aria-label="Sign Out">
-              Sign Out
+              ${this.strings.signOutLinkSubtitle}
             </button>
           </li>
         </ul>
@@ -333,7 +337,7 @@ export class MgtLogin extends MgtTemplatedComponent {
       html`
         <i class="login-icon ms-Icon ms-Icon--Contact"></i>
         <span aria-label="Sign In">
-          Sign In
+          ${this.strings.signInLinkSubtitle}
         </span>
       `
     );

@@ -11,7 +11,7 @@ import { withKnobs } from '@storybook/addon-knobs';
 import { withWebComponentsKnobs } from 'storybook-addon-web-components-knobs';
 import { withSignIn } from '../../.storybook/addons/signInAddon/signInAddon';
 import { withCodeEditor } from '../../.storybook/addons/codeEditorAddon/codeAddon';
-import '../../packages/mgt/dist/es6/components/mgt-person/mgt-person';
+import '../../packages/mgt-components/dist/es6/components/mgt-person/mgt-person';
 
 export default {
   title: 'Components | mgt-person',
@@ -26,6 +26,27 @@ export const person = () => html`
 
 export const personPhotoOnly = () => html`
   <mgt-person person-query="me"></mgt-person>
+`;
+
+export const personView = () => html`
+<div class="example">
+  <mgt-person person-query="me" view="avatar"></mgt-person>
+</div>
+<div class="example">
+  <mgt-person person-query="me" view="oneline"></mgt-person>
+</div>
+<div class="example">
+  <mgt-person person-query="me" view="twolines"></mgt-person>
+</div>
+<div class="example">
+  <mgt-person person-query="me" view="threelines"></mgt-person>
+</div>
+
+<style>
+  .example {
+    margin-bottom: 20px;
+  }
+</style>
 `;
 
 export const personPresence = () => html`
@@ -220,14 +241,14 @@ export const setPersonDetails = () => html`
   <script>
     const person = document.querySelector('.my-person');
 
-    person.personDetails = {
-      displayName: 'Megan Bowen',
-      title: 'CEO',
-      mail: 'megan@contoso.com'
-    };
+      person.personDetails = {
+        displayName: 'Megan Bowen',
+        title: 'CEO',
+        mail: 'megan@contoso.com'
+      };
 
-    // set image
-    person.personImage = '';
+      // set image
+      person.personImage = '';
   </script>
 `;
 

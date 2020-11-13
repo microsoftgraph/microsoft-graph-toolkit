@@ -7,160 +7,14 @@
 
 @import '../../../../../node_modules/office-ui-fabric-core/dist/sass/References';
 @import '../../styles/shared-styles.scss';
+@import './mgt-people-picker.theme.scss';
 
-// common regardless of themes
+// common vars regardless of themes
 $avatar-margin: var(--avatar-margin, 0 4px 0 0);
 $avatar-size-s: var(--avatar-size-s, 24px);
 $avatar-size: var(--avatar-size, 48px);
-$initials-color: var(--initials-color, white);
+$initials-color: var(--initials-color, #{$white});
 $initials-background-color: var(--initials-background-color, #{$ms-color-magenta});
-$placeholder: var(--placeholder-default-color, #605e5c);
-
-// variables with theme colors
-$dropdown-item__background-color: (
-  dark: var(--dropdown-item-hover-background, #333d47),
-  light: var(--dropdown-item-hover-background, rgba(241, 241, 241, 0.87))
-);
-
-$placeholder--focus: (
-  light: var(--placeholder-focus-color, #323130),
-  dark: var(--placeholder-focus-color, rgba(255, 255, 255, 0.8))
-);
-
-$dropdown__background-color: (
-  dark: var(--dropdown-background-color, #1f1f1f),
-  light: var(--dropdown-background-color, #{$white})
-);
-
-$background-color: (
-  dark: var(--input-background-color, var(--people-list-background-color, #1f1f1f)),
-  light: var(--input-background-color, var(--people-list-background-color, #{$white}))
-);
-
-$border: (
-  dark: var(--input-border, 2px rgba(255, 255, 255, 0.5) solid),
-  light: var(--input-border, 2px solid #b3b0ad)
-);
-
-$border__top: (
-  dark: var(--input-border-top, 2px rgba(255, 255, 255, 0.5) solid),
-  light: var(--input-border-top, 2px solid #b3b0ad)
-);
-
-$border__right: (
-  dark: var(--input-border-right, 2px rgba(255, 255, 255, 0.5) solid),
-  light: var(--input-border-right, 2px solid #b3b0ad)
-);
-
-$border__bottom: (
-  dark: var(--input-border-bottom, 2px rgba(255, 255, 255, 0.5) solid),
-  light: var(--input-border-bottom, 2px solid #b3b0ad)
-);
-
-$border__left: (
-  dark: var(--input-border-left, 2px rgba(255, 255, 255, 0.5) solid),
-  light: var(--input-border-left, 2px solid #b3b0ad)
-);
-
-$input__border-color: (
-  light--hover: var(--input-hover-color, #323130),
-  light--focused: var(--input-focus-color, #0078d4),
-  dark--hover: var(--input-hover-color, #008394),
-  dark--focused: var(--input-focus-color, #0f78d4)
-);
-
-$color: (
-  dark: var(--font-color, #{$white}),
-  light: var(--font-color, #323130)
-);
-
-$selected-person__background-color: (
-  dark: var(--selected-person-background-color, #474747),
-  light: var(--selected-person-background-color, #f1f1f1)
-);
-
-@mixin theme__background($theme) {
-  background-color: map-get($background-color, $theme);
-}
-
-@mixin theme__border($theme) {
-  border: map-get($border, $theme);
-  border-top: map-get($border__top, $theme);
-  border-right: map-get($border__right, $theme);
-  border-bottom: map-get($border__bottom, $theme);
-  border-left: map-get($border__left, $theme);
-}
-
-@mixin theme__border--states($theme) {
-  &:hover {
-    border-color: map-get($input__border-color, $theme#{--hover});
-  }
-
-  &.focused {
-    border-color: map-get($input__border-color, $theme#{--focused});
-  }
-}
-
-@mixin theme__font-color($theme) {
-  color: map-get($color, $theme);
-}
-
-@mixin theme__selected-person($theme) {
-  background-color: map-get($selected-person__background-color, $theme);
-}
-
-@mixin theme__selected-person__overflow($theme) {
-  background-image: linear-gradient(
-    to right,
-    rgba(255, 255, 255, 0) 0%,
-    rgba(255, 255, 255, 0) 60%,
-    map-get($selected-person__background-color, $theme) 100%
-  );
-  background-image: -moz-linear-gradient(
-    left,
-    rgba(255, 255, 255, 0) 0%,
-    rgba(255, 255, 255, 0) 60%,
-    map-get($selected-person__background-color, $theme) 100%
-  );
-  background-image: -o-linear-gradient(
-    left,
-    rgba(255, 255, 255, 0) 0%,
-    rgba(255, 255, 255, 0) 60%,
-    map-get($selected-person__background-color, $theme) 100%
-  );
-  background-image: -ms-linear-gradient(
-    left,
-    rgba(255, 255, 255, 0) 0%,
-    rgba(255, 255, 255, 0) 60%,
-    map-get($selected-person__background-color, $theme) 100%
-  );
-  background-image: -webkit-linear-gradient(
-    left,
-    rgba(255, 255, 255, 0) 0%,
-    rgba(255, 255, 255, 0) 60%,
-    map-get($selected-person__background-color, $theme) 100%
-  );
-}
-
-@mixin theme__flyout($theme) {
-  background-color: map-get($dropdown__background-color, $theme);
-}
-
-@mixin placeholder--focus($theme) {
-  &:focus::placeholder {
-    color: map-get($placeholder--focus, $theme);
-  }
-}
-
-@mixin theme__dropdown-item__background-color($theme) {
-  &:hover {
-    background-color: map-get($dropdown-item__background-color, $theme);
-  }
-
-  &.focused {
-    background-color: map-get($dropdown-item__background-color, $theme);
-  }
-}
 
 // Main
 :host {
@@ -177,156 +31,158 @@ mgt-people-picker .root {
   display: block;
 }
 
-$themes: ('light', 'dark', 'custom');
+.people-picker {
+  background-color: set-var(input__background-color, $theme-default, $people-picker);
+  @include input__border($theme-default);
+  &:hover {
+    border-color: set-var(input__border-color--hover, $theme-default, $people-picker);
+  }
+  &.focused {
+    border-color: set-var(input__border-color--focus, $theme-default, $people-picker);
+  }
+  padding-bottom: 6px;
 
-@mixin theme() {
-  @each $theme in $themes {
-    :host .people-picker.theme-#{$theme},
-    mgt-people-picker .people-picker.theme-#{$theme} {
-      @include theme__background($theme);
-      @include theme__border($theme);
-      @include theme__border--states($theme);
-      padding-bottom: 6px;
+  .selected-list {
+    flex: 1 0 auto;
+    display: flex;
+    flex-wrap: wrap;
+    vertical-align: middle;
+    margin: 0 2px 0 0;
+    list-style-type: none;
+    padding-left: 8px;
+    font-style: normal;
+    font-weight: normal;
+    overflow: hidden;
 
-      .selected-list {
-        flex: 1 0 auto;
-        display: flex;
-        flex-wrap: wrap;
-        vertical-align: middle;
-        margin: 0 2px 0 0;
-        list-style-type: none;
-        padding-left: 8px;
-        font-style: normal;
-        font-weight: normal;
+    &__person-wrapper {
+      display: flex;
+      margin: 5px 5px 0px 0;
+      align-items: center;
+      border-radius: 15px;
+      height: 24px;
+      white-space: nowrap;
+      text-overflow: ellipsis;
+      overflow: hidden;
+      position: relative;
+      background-color: set-var(selected-person__background-color, $theme-default, $people-picker);
+
+      &__person {
         overflow: hidden;
+        min-width: 100%;
+        --avatar-size-s: 24px;
+        margin-left: 0px;
+        --color: set-var(color, $theme-default, $people-picker);
+        color: set-var(color, $theme-default, $people-picker);
+        margin-bottom: 1px;
+        margin-right: 4px;
+      }
 
-        &__person-wrapper {
-          display: flex;
-          margin: 5px 5px 0px 0;
-          align-items: center;
-          border-radius: 15px;
-          height: 24px;
-          white-space: nowrap;
-          text-overflow: ellipsis;
-          overflow: hidden;
-          position: relative;
-          @include theme__selected-person($theme);
+      &__overflow {
+        margin-left: 25px;
 
-          &__person {
-            overflow: hidden;
-            min-width: 100%;
-            --avatar-size-s: 24px;
-            margin-left: 0px;
-            --color: map-get($color, $theme);
-            @include theme__font-color($theme);
-            margin-bottom: 1px;
-            margin-right: 4px;
-          }
-
-          &__overflow {
-            margin-left: 25px;
-
-            &__gradient {
-              content: '';
-              position: absolute;
-              margin-right: 23px;
-              width: 10px;
-              height: 90%;
-              top: 0;
-              right: 0;
-              @include theme__selected-person__overflow($theme);
-            }
-
-            &__close-icon {
-              height: 100%;
-              top: 0;
-              margin-top: 4px;
-              margin-left: 10px;
-              position: absolute;
-              line-height: normal;
-              font-family: 'FabricMDL2Icons';
-              padding-right: 7px;
-              cursor: pointer;
-              right: 0;
-              @include theme__selected-person($theme);
-              @include theme__font-color($theme);
-            }
-          }
+        &__gradient {
+          content: '';
+          position: absolute;
+          margin-right: 23px;
+          width: 10px;
+          height: 90%;
+          top: 0;
+          right: 0;
+          @include selected-person__overflow($theme-default);
         }
 
-        .flyout {
-          .search-box {
-            margin: 6px 2px 1px 3px;
+        &__close-icon {
+          height: 100%;
+          top: 0;
+          margin-top: 4px;
+          margin-left: 10px;
+          position: absolute;
+          line-height: normal;
+          font-family: 'FabricMDL2Icons';
+          padding-right: 7px;
+          cursor: pointer;
+          right: 0;
+          background-color: set-var(selected-person__background-color, $theme-default, $people-picker);
+          color: set-var(color, $theme-default, $people-picker);
+        }
+      }
+    }
 
-            &.search-box-start {
-              margin: 6px 0px 1px 0px;
-              line-height: normal;
-              margin-inline-start: 0px;
-              margin-inline-end: 0px;
-            }
+    .flyout {
+      .search-box {
+        margin: 6px 2px 1px 3px;
 
-            &__input {
-              box-sizing: border-box;
-              border-width: 0;
-              border-style: none;
-              width: 100%;
-              display: flex;
-              flex: 1 0 auto;
-              font-family: var(--default-font-family, 'Segoe UI');
-              position: relative;
-              line-height: normal;
-              outline: none;
-              font-style: normal;
-              font-weight: normal;
-              font-size: 14px;
-              line-height: 19px;
-              @include theme__background($theme);
-              @include theme__font-color($theme);
-              &::placeholder {
-                color: $placeholder;
-              }
-              @include placeholder--focus($theme);
-            }
+        &.search-box-start {
+          margin: 6px 0px 1px 0px;
+          line-height: normal;
+          margin-inline-start: 0px;
+          margin-inline-end: 0px;
+        }
+
+        &__input {
+          box-sizing: border-box;
+          border-width: 0;
+          border-style: none;
+          width: 100%;
+          display: flex;
+          flex: 1 0 auto;
+          font-family: var(--default-font-family, 'Segoe UI');
+          position: relative;
+          line-height: normal;
+          outline: none;
+          font-style: normal;
+          font-weight: normal;
+          font-size: 14px;
+          line-height: 19px;
+          background-color: set-var(input__background-color, $theme-default, $people-picker);
+          color: set-var(color, $theme-default, $people-picker);
+          &::placeholder {
+            color: set-var(placeholder__color, $theme-default, $people-picker);
           }
+          &:focus::placeholder {
+            color: set-var(placeholder__color--focus, $theme-default, $people-picker);
+          }
+        }
+      }
 
-          .flyout-root {
-            padding: 0;
-            border-radius: 2px;
-            min-width: 260px;
-            overflow-y: auto;
-            text-align: left;
-            list-style-type: none;
-            @include theme__flyout($theme);
+      .flyout-root {
+        padding: 0;
+        border-radius: 2px;
+        min-width: 260px;
+        overflow-y: auto;
+        text-align: left;
+        list-style-type: none;
+        background-color: set-var(dropdown__background-color, $theme-default, $people-picker);
 
-            li {
-              cursor: pointer;
+        li {
+          cursor: pointer;
+        }
+
+        .people-list {
+          .list-person {
+            display: flex;
+            flex-direction: row;
+            align-items: center;
+            padding: 12px;
+            font-style: normal;
+            font-weight: 600;
+            font-size: 14px;
+            &:hover,
+            &.focused {
+              background-color: set-var(dropdown-item__background-color, $theme-default, $people-picker);
             }
+            .people-person-text-area {
+              margin-left: 13px;
+              flex: 1 1 0;
+              max-height: 40px;
+              overflow: hidden;
+              color: set-var(color, $theme-default, $people-picker);
 
-            .people-list {
-              .list-person {
-                display: flex;
-                flex-direction: row;
-                align-items: center;
-                padding: 12px;
-                font-style: normal;
-                font-weight: 600;
+              .people-person-text {
                 font-size: 14px;
-                @include theme__dropdown-item__background-color($theme);
-
-                .people-person-text-area {
-                  margin-left: 13px;
-                  flex: 1 1 0;
-                  max-height: 40px;
-                  overflow: hidden;
-                  @include theme__font-color($theme);
-
-                  .people-person-text {
-                    font-size: 14px;
-                    font-weight: normal;
-                    margin: 0;
-                    padding: 0;
-                  }
-                }
+                font-weight: normal;
+                margin: 0;
+                padding: 0;
               }
             }
           }
@@ -388,4 +244,41 @@ mgt-flyout {
   flex: 1 0 auto;
 }
 
-@include theme();
+[dir='rtl'] {
+  mgt-person {
+    margin: 0px 12px 0px 0px;
+  }
+  .selected-list {
+    margin-right: 8px !important;
+    &__person-wrapper {
+      margin-left: 6px !important;
+      &__person {
+        margin-right: 0px !important;
+        margin-left: 4px !important;
+      }
+      &__overflow {
+        &__gradient {
+          right: auto !important;
+          position: absolute !important;
+          margin-right: 0px !important;
+          width: 10px !important;
+          height: 90%;
+          top: 0;
+        }
+        &__close-icon {
+          right: auto !important;
+          margin-left: 5px !important;
+          left: 0px !important;
+        }
+      }
+    }
+  }
+  .people-person-text-area {
+    margin-right: 13px;
+    margin-left: 0px !important;
+  }
+
+  .flyout-root {
+    text-align: right !important;
+  }
+}

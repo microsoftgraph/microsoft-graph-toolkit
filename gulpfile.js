@@ -1,6 +1,7 @@
 const gulp = require('gulp');
 const sass = require('gulp-sass');
 const gap = require('gulp-append-prepend');
+const cleanCSS = require('gulp-clean-css');
 const rename = require('gulp-rename');
 var license = require('gulp-header-license');
 
@@ -38,6 +39,7 @@ function runSass() {
   return gulp
     .src('src/**/!(shared-styles).scss')
     .pipe(sass())
+    .pipe(cleanCSS())
     .pipe(gap.prependText(scssFileHeader))
     .pipe(gap.appendText(scssFileFooter))
     .pipe(rename({ extname: '-css.ts' }))
