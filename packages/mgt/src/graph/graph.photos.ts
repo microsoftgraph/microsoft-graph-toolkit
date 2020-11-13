@@ -201,14 +201,16 @@ export async function myPhoto(graph: IGraph): Promise<string> {
  *
  * @export
  */
-export async function getPersonImage(graph: IGraph, person: IDynamicPerson) {
+export async function getPersonImage(graph: IGraph, person: IDynamicPerson, useContactsApis: boolean = true) {
   // handle if contact
   if ('personType' in person && (person as any).personType.subclass === 'PersonalContact') {
-    // if person is a contact, look for them and their photo in contact api
-    let email = getEmailFromGraphEntity(person);
-    const contact = await findContactsByEmail(graph, email);
-    if (contact && contact.length && contact[0].id) {
-      return await getContactPhoto(graph, contact[0].id);
+    if (useContactsApis) {
+      // if person is a contact, look for them and their photo in contact api
+      const email = getEmailFromGraphEntity(person);
+      const contact = await findContactsByEmail(graph, email);
+      if (contact && contact.length && contact[0].id) {
+        return await getContactPhoto(graph, contact[0].id);
+      }
     }
 
     return null;
@@ -223,14 +225,14 @@ export async function getPersonImage(graph: IGraph, person: IDynamicPerson) {
 
   // else assume id is for user and try to get photo
   if (person.id) {
-    let image = await getUserPhoto(graph, person.id);
+    const image = await getUserPhoto(graph, person.id);
     if (image) {
       return image;
     }
   }
 
   // let's try to find a person by the email
-  let email = getEmailFromGraphEntity(person);
+  const email = getEmailFromGraphEntity(person);
 
   if (email) {
     // try to find user
@@ -240,9 +242,11 @@ export async function getPersonImage(graph: IGraph, person: IDynamicPerson) {
     }
 
     // if no user, try to find a contact
-    const contacts = await findContactsByEmail(graph, email);
-    if (contacts && contacts.length) {
-      return await getContactPhoto(graph, contacts[0].id);
+    if (useContactsApis) {
+      const contacts = await findContactsByEmail(graph, email);
+      if (contacts && contacts.length) {
+        return await getContactPhoto(graph, contacts[0].id);
+      }
     }
   }
 
