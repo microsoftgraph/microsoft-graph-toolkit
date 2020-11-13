@@ -766,7 +766,7 @@ export class MgtPeoplePicker extends MgtTemplatedComponent {
    */
   protected addPerson(person: IDynamicPerson): void {
     if (person) {
-      this.input.value = '';
+      this.clearInput();
       const duplicatePeople = this.selectedPeople.filter(p => {
         if (!person.id) {
           return p.displayName === person.displayName;
@@ -782,6 +782,11 @@ export class MgtPeoplePicker extends MgtTemplatedComponent {
         this._foundPeople = [];
       }
     }
+  }
+
+  private clearInput() {
+    this.input.value = '';
+    this.userInput = '';
   }
 
   private handleFlyout() {
@@ -866,8 +871,7 @@ export class MgtPeoplePicker extends MgtTemplatedComponent {
     const input = event.target as HTMLInputElement;
 
     if (event.code === 'Escape') {
-      input.value = '';
-      this.userInput = '';
+      this.clearInput();
       this._foundPeople = [];
     } else if (event.code === 'Backspace' && this.userInput.length === 0 && this.selectedPeople.length > 0) {
       // remove last person in selected list
