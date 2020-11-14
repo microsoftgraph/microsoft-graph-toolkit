@@ -208,6 +208,7 @@ export class MgtGet extends MgtTemplatedComponent {
   @property({ attribute: false }) public error: any;
 
   private isPolling: boolean = false;
+  private isRefreshing: boolean = false;
 
   /**
    * Synchronizes property values when attributes change.
@@ -231,7 +232,9 @@ export class MgtGet extends MgtTemplatedComponent {
    * @memberof MgtGet
    */
   public refresh(hardRefresh = false) {
+    this.isRefreshing = true;
     this.requestStateUpdate(hardRefresh);
+    this.isRefreshing = false;
   }
 
   /**
@@ -306,16 +309,15 @@ export class MgtGet extends MgtTemplatedComponent {
         const key = `${this.version}${this.resource}`;
         let response = null;
 
-        if (responseCacheEnabled() && this.cacheEnabled) {
+        if (this.shouldRetrieveCache()) {
           cache = CacheService.getCache<CacheResponse>(cacheSchema, responsesStore);
           const result: CacheResponse = responseCacheEnabled() ? await cache.getValue(key) : null;
           if (result && getResponseInvalidationTime(this.cacheInvalidationPeriod) > Date.now() - result.timeCached) {
             response = JSON.parse(result.response);
-            this.response = response;
           }
         }
 
-        if (!this.response) {
+        if (!response) {
           let uri = this.resource;
           let isDeltaLink = false;
 
@@ -370,10 +372,6 @@ export class MgtGet extends MgtTemplatedComponent {
                 }
               }
             }
-
-            if (responseCacheEnabled() && this.cacheEnabled && this.response) {
-              cache.putValue(key, { response: JSON.stringify(this.response) });
-            }
           } else {
             if (this.resource.indexOf('/photo/$value') === -1) {
               throw new Error('Only /photo/$value endpoints support the image type');
@@ -389,6 +387,11 @@ export class MgtGet extends MgtTemplatedComponent {
               };
             }
           }
+        }
+
+        if (this.shouldUpdateCache() && response) {
+          cache = CacheService.getCache<CacheResponse>(cacheSchema, responsesStore);
+          cache.putValue(key, { response: JSON.stringify(response) });
         }
 
         if (!equals(this.response, response)) {
@@ -414,5 +417,13 @@ export class MgtGet extends MgtTemplatedComponent {
     }
 
     this.fireCustomEvent('dataChange', { response: this.response, error: this.error });
+  }
+
+  private shouldRetrieveCache(): boolean {
+    return responseCacheEnabled() && this.cacheEnabled && !(this.isRefreshing || this.isPolling);
+  }
+
+  private shouldUpdateCache(): boolean {
+    return responseCacheEnabled() && this.cacheEnabled;
   }
 }
