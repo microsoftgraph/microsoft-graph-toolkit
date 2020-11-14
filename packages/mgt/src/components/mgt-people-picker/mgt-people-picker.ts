@@ -11,7 +11,7 @@ import { classMap } from 'lit-html/directives/class-map';
 import { repeat } from 'lit-html/directives/repeat';
 import { findGroups, findGroupsFromGroup, GroupType } from '../../graph/graph.groups';
 import { findPeople, getPeople, PersonType } from '../../graph/graph.people';
-import { findUsers, findUsersFromGroup, getUser, getUsersForUserIds } from '../../graph/graph.user';
+import { findUsers, findGroupMembers, getUser, getUsersForUserIds } from '../../graph/graph.user';
 import { IDynamicPerson } from '../../graph/types';
 import { Providers, ProviderState, MgtTemplatedComponent } from '@microsoft/mgt-element';
 import '../../styles/style-helper';
@@ -654,7 +654,7 @@ export class MgtPeoplePicker extends MgtTemplatedComponent {
           if (this.groupId) {
             if (this._groupPeople === null) {
               try {
-                this._groupPeople = await findUsersFromGroup(
+                this._groupPeople = await findGroupMembers(
                   graph,
                   null,
                   this.groupId,
@@ -688,68 +688,48 @@ export class MgtPeoplePicker extends MgtTemplatedComponent {
 
       if (input) {
         people = [];
-        if (this.type === PersonType.person || this.type === PersonType.any) {
-          try {
-            if (this.groupId) {
-              people =
-                (await findUsersFromGroup(
-                  graph,
-                  input,
-                  this.groupId,
-                  this.showMax,
-                  this.type,
-                  this.transitiveSearch
-                )) || [];
-            } else {
-              people = (await findPeople(graph, input, this.showMax)) || [];
-            }
-          } catch (e) {
-            // nop
-          }
 
-          if (people.length < this.showMax && !this.groupId) {
+        if (this.groupId) {
+          people =
+            (await findGroupMembers(graph, input, this.groupId, this.showMax, this.type, this.transitiveSearch)) || [];
+        } else {
+          if (this.type === PersonType.person || this.type === PersonType.any) {
             try {
-              const users = (await findUsers(graph, input, this.showMax)) || [];
+              people = (await findPeople(graph, input, this.showMax)) || [];
+            } catch (e) {
+              // nop
+            }
 
-              // make sure only unique people
-              const peopleIds = new Set(people.map(p => p.id));
-              for (const user of users) {
-                if (!peopleIds.has(user.id)) {
-                  people.push(user);
+            if (people.length < this.showMax && !this.groupId) {
+              try {
+                const users = (await findUsers(graph, input, this.showMax)) || [];
+
+                // make sure only unique people
+                const peopleIds = new Set(people.map(p => p.id));
+                for (const user of users) {
+                  if (!peopleIds.has(user.id)) {
+                    people.push(user);
+                  }
                 }
+              } catch (e) {
+                // nop
               }
+            }
+          }
+          if ((this.type === PersonType.group || this.type === PersonType.any) && people.length < this.showMax) {
+            let groups = [];
+            try {
+              groups = (await findGroups(graph, input, this.showMax, this.groupType)) || [];
+              people = people.concat(groups);
             } catch (e) {
               // nop
             }
           }
         }
-
-        if ((this.type === PersonType.group || this.type === PersonType.any) && people.length < this.showMax) {
-          let groups = [];
-          try {
-            if (this.groupId) {
-              groups =
-                (await findGroupsFromGroup(
-                  graph,
-                  input,
-                  this.groupId,
-                  this.showMax,
-                  this.transitiveSearch,
-                  this.groupType
-                )) || [];
-            } else {
-              groups = (await findGroups(graph, input, this.showMax, this.groupType)) || [];
-            }
-
-            people = people.concat(groups);
-          } catch (e) {
-            // nop
-          }
-        }
       }
     }
 
-    people = this.getUniquePeople(people);
+    //people = this.getUniquePeople(people);
     this._foundPeople = this.filterPeople(people);
   }
 

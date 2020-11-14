@@ -431,7 +431,7 @@ export async function findUsers(graph: IGraph, query: string, top: number = 10):
  * @param {boolean} [transitive=false] - whether the return should contain a flat list of all nested members
  * @returns {(Promise<User[]>)}
  */
-export async function findUsersFromGroup(
+export async function findGroupMembers(
   graph: IGraph,
   query: string,
   groupId: string,
@@ -464,6 +464,9 @@ export async function findUsersFromGroup(
     apiUrl += `/microsoft.graph.user`;
   } else if (personType === PersonType.group) {
     apiUrl += `/microsoft.graph.group`;
+    if (query) {
+      filter = `startswith(displayName,'${query}') or startswith(mail,'${query}')`;
+    }
   }
 
   const graphResult = await graph
