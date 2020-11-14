@@ -192,36 +192,6 @@ export async function getPeople(graph: IGraph): Promise<Person[]> {
 }
 
 /**
- * async promise to the Graph for People, defined by a group id
- *
- * @param {string} groupId
- * @returns {(Promise<Person[]>)}
- * @memberof Graph
- */
-export async function getPeopleFromGroup(graph: IGraph, groupId: string): Promise<Person[]> {
-  const scopes = 'people.read';
-  let cache: CacheStore<CacheGroupPeople>;
-
-  if (peopleCacheEnabled()) {
-    cache = CacheService.getCache<CacheGroupPeople>(cacheSchema, groupStore);
-    const peopleItem = await cache.getValue(groupId);
-    if (peopleItem && getPeopleInvalidationTime() > Date.now() - peopleItem.timeCached) {
-      return peopleItem.people.map(peopleStr => JSON.parse(peopleStr));
-    }
-  }
-
-  const uri = `/groups/${groupId}/members`;
-  const people = await graph
-    .api(uri)
-    .middlewareOptions(prepScopes(scopes))
-    .get();
-  if (peopleCacheEnabled()) {
-    cache.putValue(groupId, { people: people.value.map(ppl => JSON.stringify(ppl)) });
-  }
-  return people ? people.value : null;
-}
-
-/**
  * returns a promise that resolves after specified time
  * @param time in milliseconds
  */
