@@ -700,7 +700,7 @@ export class MgtPeoplePicker extends MgtTemplatedComponent {
               // nop
             }
 
-            if (people.length < this.showMax && !this.groupId) {
+            if (people.length < this.showMax) {
               try {
                 const users = (await findUsers(graph, input, this.showMax)) || [];
 
@@ -1038,18 +1038,6 @@ export class MgtPeoplePicker extends MgtTemplatedComponent {
       });
 
       return filtered;
-    }
-  }
-
-  /**
-   * Filters people searched from already selected people
-   * @param people - array of people returned from query to Graph
-   */
-  private getUniquePeople(people: IDynamicPerson[]): IDynamicPerson[] {
-    if (people) {
-      const uniquePeople = [...new Map(people.map(item => [item.id, item])).values()];
-
-      return uniquePeople;
     }
   }
 }
