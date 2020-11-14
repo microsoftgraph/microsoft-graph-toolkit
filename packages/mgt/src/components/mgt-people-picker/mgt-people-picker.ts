@@ -934,6 +934,7 @@ export class MgtPeoplePicker extends MgtTemplatedComponent {
             this.hideFlyout();
           }
         }, 400);
+        this.userInput = input.value;
 
         await this.loadState();
         clearTimeout(loadingTimeout);
@@ -945,7 +946,6 @@ export class MgtPeoplePicker extends MgtTemplatedComponent {
     }
 
     if (this.userInput !== input.value) {
-      this.userInput = input.value;
       this._debouncedSearch();
     }
   }
