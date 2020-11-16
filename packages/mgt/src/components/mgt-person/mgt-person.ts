@@ -69,6 +69,10 @@ export interface MgtPersonConfig {
   useContactApis: boolean;
 }
 
+export interface MgtPersonScopeParams {
+  withPermission: boolean;
+}
+
 /**
  * The person component is used to display a person or contact by using their photo, name, and/or email address.
  *
@@ -106,6 +110,29 @@ export class MgtPerson extends MgtTemplatedComponent {
    */
   static get styles() {
     return styles;
+  }
+
+  /**
+   * An arrays of scopes required for the component to function
+   *
+   * @readonly
+   * @static
+   * @type {string[]}
+   * @memberof MgtPerson
+   */
+  public static getScopes(params?: MgtPersonScopeParams): string[] {
+    const scopes = ['User.Read', 'People.Read', 'User.ReadBasic.All'];
+
+    if (this.config.useContactApis) {
+      scopes.push('Contacts.Read');
+    }
+
+    if (params && params.withPermission) {
+      scopes.push('Presence.Read');
+      scopes.push('Presence.Read.All');
+    }
+
+    return scopes;
   }
 
   /**

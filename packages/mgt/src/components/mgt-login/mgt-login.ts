@@ -55,6 +55,19 @@ export class MgtLogin extends MgtTemplatedComponent {
   static get styles() {
     return styles;
   }
+
+  /**
+   * An arrays of scopes required for the component to function
+   *
+   * @readonly
+   * @static
+   * @type {string[]}
+   * @memberof MgtAgenda
+   */
+  public static get scopes() {
+    return ['User.Read'];
+  }
+
   protected get strings() {
     return strings;
   }

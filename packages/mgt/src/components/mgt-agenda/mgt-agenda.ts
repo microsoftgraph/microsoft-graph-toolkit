@@ -8,12 +8,13 @@
 import * as MicrosoftGraph from '@microsoft/microsoft-graph-types';
 import { customElement, html, property, TemplateResult } from 'lit-element';
 import { Providers, ProviderState, MgtTemplatedComponent } from '@microsoft/mgt-element';
-import '../../styles/style-helper';
 import { prepScopes } from '../../utils/GraphHelpers';
 import { getDayOfWeekString, getMonthString } from '../../utils/Utils';
-import '../mgt-person/mgt-person';
 import { styles } from './mgt-agenda-css';
 import { getEventsPageIterator } from './mgt-agenda.graph';
+import { MgtPeople } from '../mgt-people/mgt-people';
+
+import '../../styles/style-helper';
 
 /**
  * Web Component which represents events in a user or group calendar.
@@ -47,6 +48,20 @@ export class MgtAgenda extends MgtTemplatedComponent {
    */
   static get styles() {
     return styles;
+  }
+
+  /**
+   * An arrays of scopes required for the component to function
+   *
+   * @readonly
+   * @static
+   * @type {string[]}
+   * @memberof MgtAgenda
+   */
+  public static get scopes(): string[] {
+    const scopes = [...MgtPeople.getScopes(), 'Calendars.Read'];
+
+    return scopes;
   }
 
   /**

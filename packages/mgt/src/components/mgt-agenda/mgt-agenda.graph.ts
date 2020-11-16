@@ -27,7 +27,7 @@ export function getEventsPageIterator(
   groupId?: string,
   preferredTimezone?: string
 ): Promise<GraphPageIterator<MicrosoftGraph.Event>> {
-  const scopes = 'calendars.read';
+  const scopes = 'Calendars.Read';
 
   const sdt = `startdatetime=${startDateTime.toISOString()}`;
   const edt = `enddatetime=${endDateTime.toISOString()}`;

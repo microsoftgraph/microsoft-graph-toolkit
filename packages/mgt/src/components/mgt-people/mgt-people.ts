@@ -39,6 +39,12 @@ export class MgtPeople extends MgtTemplatedComponent {
     return styles;
   }
 
+  public static getScopes() {
+    const scopes = ['User.Read', 'People.Read', 'User.ReadBasic.All'];
+
+    return scopes;
+  }
+
   /**
    * determines if agenda events come from specific group
    * @type {string}

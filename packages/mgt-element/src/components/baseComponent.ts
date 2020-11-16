@@ -63,6 +63,18 @@ export abstract class MgtBaseComponent extends LitElement {
     this._useShadowRoot = value;
   }
 
+  // /**
+  //  * An arrays of scopes required for the component to function
+  //  *
+  //  * @readonly
+  //  * @static
+  //  * @type {string[]}
+  //  * @memberof MgtBaseComponent
+  //  */
+  // public static get scopes(): string[] {
+  //   return [];
+  // }
+
   /**
    * Gets the ComponentMediaQuery of the component
    *

@@ -439,7 +439,7 @@ export async function findGroupMembers(
   personType: PersonType = PersonType.person,
   transitive: boolean = false
 ): Promise<User[]> {
-  const scopes = ['user.read.all', 'people.read'];
+  const scopes = ['User.ReadBasic.All'];
   const item = { maxResults: top, results: null };
 
   let cache: CacheStore<CacheUserQuery>;
