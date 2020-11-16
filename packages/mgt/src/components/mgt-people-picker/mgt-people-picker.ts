@@ -9,9 +9,9 @@ import { User } from '@microsoft/microsoft-graph-types';
 import { customElement, html, internalProperty, property, TemplateResult } from 'lit-element';
 import { classMap } from 'lit-html/directives/class-map';
 import { repeat } from 'lit-html/directives/repeat';
-import { findGroups, GroupType } from '../../graph/graph.groups';
-import { findPeople, getPeople, getPeopleFromGroup, PersonType } from '../../graph/graph.people';
-import { findUsers, getUser, getUsersForUserIds } from '../../graph/graph.user';
+import { findGroups, findGroupsFromGroup, GroupType } from '../../graph/graph.groups';
+import { findPeople, getPeople, PersonType } from '../../graph/graph.people';
+import { findUsers, findGroupMembers, getUser, getUsersForUserIds } from '../../graph/graph.user';
 import { IDynamicPerson } from '../../graph/types';
 import { Providers, ProviderState, MgtTemplatedComponent } from '@microsoft/mgt-element';
 import '../../styles/style-helper';
@@ -192,6 +192,16 @@ export class MgtPeoplePicker extends MgtTemplatedComponent {
     this._groupType = value;
     this.requestStateUpdate(true);
   }
+
+  /**
+   * whether the return should contain a flat list of all nested members
+   * @type {boolean}
+   */
+  @property({
+    attribute: 'transitive-search',
+    type: Boolean
+  })
+  public transitiveSearch: boolean;
 
   /**
    * containing object of IDynamicPerson.
@@ -653,7 +663,14 @@ export class MgtPeoplePicker extends MgtTemplatedComponent {
           if (this.groupId) {
             if (this._groupPeople === null) {
               try {
-                this._groupPeople = await getPeopleFromGroup(graph, this.groupId);
+                this._groupPeople = await findGroupMembers(
+                  graph,
+                  null,
+                  this.groupId,
+                  this.showMax,
+                  this.type,
+                  this.transitiveSearch
+                );
               } catch (_) {
                 this._groupPeople = [];
               }
@@ -680,42 +697,48 @@ export class MgtPeoplePicker extends MgtTemplatedComponent {
 
       if (input) {
         people = [];
-        if (this.type === PersonType.person || this.type === PersonType.any) {
-          try {
-            people = (await findPeople(graph, input, this.showMax)) || [];
-          } catch (e) {
-            // nop
-          }
 
-          if (people.length < this.showMax) {
+        if (this.groupId) {
+          people =
+            (await findGroupMembers(graph, input, this.groupId, this.showMax, this.type, this.transitiveSearch)) || [];
+        } else {
+          if (this.type === PersonType.person || this.type === PersonType.any) {
             try {
-              const users = (await findUsers(graph, input, this.showMax)) || [];
+              people = (await findPeople(graph, input, this.showMax)) || [];
+            } catch (e) {
+              // nop
+            }
 
-              // make sure only unique people
-              const peopleIds = new Set(people.map(p => p.id));
-              for (const user of users) {
-                if (!peopleIds.has(user.id)) {
-                  people.push(user);
+            if (people.length < this.showMax) {
+              try {
+                const users = (await findUsers(graph, input, this.showMax)) || [];
+
+                // make sure only unique people
+                const peopleIds = new Set(people.map(p => p.id));
+                for (const user of users) {
+                  if (!peopleIds.has(user.id)) {
+                    people.push(user);
+                  }
                 }
+              } catch (e) {
+                // nop
               }
+            }
+          }
+          if ((this.type === PersonType.group || this.type === PersonType.any) && people.length < this.showMax) {
+            let groups = [];
+            try {
+              groups = (await findGroups(graph, input, this.showMax, this.groupType)) || [];
+              people = people.concat(groups);
             } catch (e) {
               // nop
             }
           }
         }
-
-        if ((this.type === PersonType.group || this.type === PersonType.any) && people.length < this.showMax) {
-          people = [];
-          try {
-            const groups = (await findGroups(graph, input, this.showMax, this.groupType)) || [];
-            people = people.concat(groups);
-          } catch (e) {
-            // nop
-          }
-        }
       }
     }
 
+    //people = this.getUniquePeople(people);
     this._foundPeople = this.filterPeople(people);
   }
 

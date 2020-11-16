@@ -160,3 +160,88 @@ export async function findGroups(
 
   return result ? result.value : null;
 }
+
+/**
+ * Searches the Graph for Groups
+ *
+ * @export
+ * @param {IGraph} graph
+ * @param {string} query - what to search for
+ * @param {string} groupId - what to search for
+ * @param {number} [top=10] - number of groups to return
+ * @param {boolean} [transitive=false] - whether the return should contain a flat list of all nested members
+ * @param {GroupType} [groupTypes=GroupType.any] - the type of group to search for
+ * @returns {Promise<Group[]>} An array of Groups
+ */
+export async function findGroupsFromGroup(
+  graph: IGraph,
+  query: string,
+  groupId: string,
+  top: number = 10,
+  transitive: boolean = false,
+  groupTypes: GroupType = GroupType.any
+): Promise<Group[]> {
+  const scopes = 'Group.Read.All';
+
+  let cache: CacheStore<CacheGroupQuery>;
+  const key = `${groupId}:${query || '*'}:${groupTypes}:${transitive}`;
+
+  if (groupsCacheEnabled()) {
+    cache = CacheService.getCache(cacheSchema, 'groupsQuery');
+    const cacheGroupQuery = await cache.getValue(key);
+    if (cacheGroupQuery && getGroupsInvalidationTime() > Date.now() - cacheGroupQuery.timeCached) {
+      if (cacheGroupQuery.top >= top) {
+        // if request is less than the cache's requests, return a slice of the results
+        return cacheGroupQuery.groups.map(x => JSON.parse(x)).slice(0, top + 1);
+      }
+      // if the new request needs more results than what's presently in the cache, graph must be called again
+    }
+  }
+
+  const apiUrl = `groups/${groupId}/${transitive ? 'transitiveMembers' : 'members'}/microsoft.graph.group`;
+  let filterQuery = '';
+  if (query !== '') {
+    filterQuery = `(startswith(displayName,'${query}') or startswith(mailNickname,'${query}') or startswith(mail,'${query}'))`;
+  }
+
+  if (groupTypes !== GroupType.any) {
+    const filterGroups = [];
+
+    // tslint:disable-next-line:no-bitwise
+    if (GroupType.unified === (groupTypes & GroupType.unified)) {
+      filterGroups.push("groupTypes/any(c:c+eq+'Unified')");
+    }
+
+    // tslint:disable-next-line:no-bitwise
+    if (GroupType.security === (groupTypes & GroupType.security)) {
+      filterGroups.push('(mailEnabled eq false and securityEnabled eq true)');
+    }
+
+    // tslint:disable-next-line:no-bitwise
+    if (GroupType.mailenabledsecurity === (groupTypes & GroupType.mailenabledsecurity)) {
+      filterGroups.push('(mailEnabled eq true and securityEnabled eq true)');
+    }
+
+    // tslint:disable-next-line:no-bitwise
+    if (GroupType.distribution === (groupTypes & GroupType.distribution)) {
+      filterGroups.push('(mailEnabled eq true and securityEnabled eq false)');
+    }
+
+    filterQuery += (query !== '' ? ' and ' : '') + filterGroups.join(' or ');
+  }
+
+  const result = await graph
+    .api(apiUrl)
+    .filter(filterQuery)
+    .count(true)
+    .top(top)
+    .header('ConsistencyLevel', 'eventual')
+    .middlewareOptions(prepScopes(scopes))
+    .get();
+
+  if (groupsCacheEnabled() && result) {
+    cache.putValue(key, { groups: result.value.map(x => JSON.stringify(x)), top: top });
+  }
+
+  return result ? result.value : null;
+}
