@@ -56,6 +56,7 @@ export type PeoplePickerProps = {
 	groupId?: string;
 	type?: PersonType;
 	groupType?: GroupType;
+	transitiveSearch?: boolean;
 	people?: IDynamicPerson[];
 	defaultSelectedUserIds?: string[];
 	placeholder?: string;
