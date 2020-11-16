@@ -392,7 +392,8 @@ export class MgtGet extends MgtTemplatedComponent {
             cache = CacheService.getCache<CacheResponse>(cacheSchema, responsesStore);
             cache.putValue(key, { response: JSON.stringify(response) });
           }
-        }     
+        }
+
         if (!equals(this.response, response)) {
           this.response = response;
         }
