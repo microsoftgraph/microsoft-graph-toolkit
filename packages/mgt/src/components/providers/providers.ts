@@ -7,4 +7,5 @@
 
 export * from './mgt-msal-provider';
 export * from './mgt-teams-provider';
+export * from './mgt-teams-sso-provider';
 export * from './mgt-proxy-provider';
