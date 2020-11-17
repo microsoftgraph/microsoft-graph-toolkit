@@ -27,6 +27,11 @@ import { MgtPersonCardOrganization } from './sections/mgt-person-card-organizati
 import { getPersonCardGraphData, MgtPersonCardState } from './mgt-person-card.graph';
 import { MgtPersonCardProfile } from './sections/mgt-person-card-profile/mgt-person-card-profile';
 
+import '../sub-components/mgt-spinner/mgt-spinner';
+
+// TODO - remove
+import { delay } from '../../utils/Utils';
+
 export type MgtPersonCardConfig = {
   isSendMessageVisible: boolean;
   sections: {
@@ -199,6 +204,7 @@ export class MgtPersonCard extends MgtTemplatedComponent {
   public personPresence: Presence;
 
   @internalProperty() private state: MgtPersonCardState;
+  @internalProperty() private isStateLoading: boolean;
 
   /**
    * The subsections for display in the lower part of the card
@@ -468,6 +474,14 @@ export class MgtPersonCard extends MgtTemplatedComponent {
    * @memberof MgtPersonCard
    */
   protected renderExpandedDetails(person?: IDynamicPerson): TemplateResult {
+    if (!this.state && this.isStateLoading) {
+      return html`
+        <div class="loading">
+          <mgt-spinner></mgt-spinner>
+        </div>
+      `;
+    }
+
     person = person || this.internalPersonDetails;
 
     const sectionNavTemplate = this.renderSectionNavigation();
@@ -477,7 +491,7 @@ export class MgtPersonCard extends MgtTemplatedComponent {
       <div class="section-nav">
         ${sectionNavTemplate}
       </div>
-      <div class="section-host">
+      <div class="section-host" @wheel=${(e: Event) => e.stopPropagation()}>
         ${currentSectionTemplate}
       </div>
     `;
@@ -601,8 +615,6 @@ export class MgtPersonCard extends MgtTemplatedComponent {
    * @memberof MgtPersonCard
    */
   protected async loadState() {
-    console.log('loadState');
-
     if (this.state) {
       return;
     }
@@ -626,6 +638,8 @@ export class MgtPersonCard extends MgtTemplatedComponent {
     if (!provider || provider.state !== ProviderState.SignedIn) {
       return;
     }
+
+    this.isStateLoading = true;
 
     const graph = provider.graph.forComponent(this);
 
@@ -688,6 +702,7 @@ export class MgtPersonCard extends MgtTemplatedComponent {
       }
     }
 
+    await delay(3000);
     this.state = await getPersonCardGraphData(
       graph,
       this.personDetails,
@@ -696,6 +711,8 @@ export class MgtPersonCard extends MgtTemplatedComponent {
     );
 
     this.loadSections();
+
+    this.isStateLoading = false;
 
     // // tslint:disable-next-line:no-unused-expression
     // MgtPersonCard.config.sections.contact && this.sections.push(new MgtPersonCardContact());

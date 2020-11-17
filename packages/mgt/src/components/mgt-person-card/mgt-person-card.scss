@@ -212,6 +212,12 @@ $person-card-background-color: var(--person-card-background-color, #ffffff);
     }
   }
 
+  .loading {
+    margin: 40px 20px;
+    display: flex;
+    justify-content: center;
+  }
+
   .section-host {
     max-height: 600px;
     overflow-y: auto;
