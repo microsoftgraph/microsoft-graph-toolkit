@@ -66,6 +66,14 @@ export interface CacheConfig {
    * @memberof CacheConfig
    */
   users: CacheOptions;
+
+  /**
+   * Cache options for a generic response store
+   *
+   * @type {CacheOptions}
+   * @memberof CacheConfig
+   */
+  response: CacheOptions;
 }
 
 /**
@@ -152,6 +160,10 @@ export class CacheService {
       isEnabled: true
     },
     users: {
+      invalidationPeriod: null,
+      isEnabled: true
+    },
+    response: {
       invalidationPeriod: null,
       isEnabled: true
     }

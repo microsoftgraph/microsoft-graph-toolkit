@@ -74,6 +74,11 @@ export const pickPeopleAndGroups = () => html`
   <!-- type can be "any", "person", "group" -->
 `;
 
+export const pickPeopleAndGroupsNested = () => html`
+  <mgt-people-picker type="any" transitive-search="true"></mgt-people-picker>
+  <!-- type can be "any", "person", "group" -->
+`;
+
 export const pickGroups = () => html`
   <mgt-people-picker type="group"></mgt-people-picker>
   <!-- type can be "any", "person", "group" -->

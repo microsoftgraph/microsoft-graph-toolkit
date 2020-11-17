@@ -157,3 +157,11 @@ export const UsingImageType = () => html`
     </template>
   </mgt-get>
 `;
+
+export const UsingCaching = () => html`
+  <mgt-get resource="me" caching-enabled="true">
+    <template>
+      Hello {{ displayName }}
+    </template>
+  </mgt-get>
+`;

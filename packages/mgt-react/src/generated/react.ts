@@ -28,6 +28,8 @@ export type GetProps = {
 	type?: ResponseType;
 	maxPages?: number;
 	pollingRate?: number;
+	cacheEnabled?: boolean;
+	cacheInvalidationPeriod?: number;
 	templateConverters?: MgtElement.TemplateContext;
 	templateContext?: MgtElement.TemplateContext;
 	direction?: string;
@@ -54,6 +56,7 @@ export type PeoplePickerProps = {
 	groupId?: string;
 	type?: PersonType;
 	groupType?: GroupType;
+	transitiveSearch?: boolean;
 	people?: IDynamicPerson[];
 	defaultSelectedUserIds?: string[];
 	placeholder?: string;
