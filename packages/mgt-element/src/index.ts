@@ -15,3 +15,4 @@ export * from './utils/EventDispatcher';
 export * from './utils/TemplateContext';
 export * from './utils/TemplateHelper';
 export * from './utils/equals';
+export * from './utils/LocalizationHelper';

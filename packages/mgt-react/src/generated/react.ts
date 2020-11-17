@@ -1,4 +1,4 @@
-import { ResponseType,IDynamicPerson,PersonType,GroupType,PersonCardInteraction,PersonViewType,AvatarSize,TasksStringResource,TasksSource,TaskFilter,SelectedChannel } from '@microsoft/mgt';
+import { ResponseType,IDynamicPerson,PersonType,GroupType,PersonCardInteraction,MgtPersonCardConfig,MgtPersonConfig,PersonViewType,AvatarSize,TasksStringResource,TasksSource,TaskFilter,SelectedChannel } from '@microsoft/mgt';
 import * as MgtElement from '@microsoft/mgt-element';
 import * as MicrosoftGraph from '@microsoft/microsoft-graph-types';
 import * as MicrosoftGraphBeta from '@microsoft/microsoft-graph-types-beta';
@@ -12,8 +12,10 @@ export type AgendaProps = {
 	events?: MicrosoftGraph.Event[];
 	showMax?: number;
 	groupByDay?: boolean;
+	preferredTimezone?: string;
 	templateConverters?: MgtElement.TemplateContext;
 	templateContext?: MgtElement.TemplateContext;
+	direction?: string;
 	useShadowRoot?: boolean;
 	mediaQuery?: MgtElement.ComponentMediaQuery;
 	eventClick?: (e: Event) => void;
@@ -28,6 +30,7 @@ export type GetProps = {
 	pollingRate?: number;
 	templateConverters?: MgtElement.TemplateContext;
 	templateContext?: MgtElement.TemplateContext;
+	direction?: string;
 	useShadowRoot?: boolean;
 	mediaQuery?: MgtElement.ComponentMediaQuery;
 	dataChange?: (e: Event) => void;
@@ -37,6 +40,7 @@ export type LoginProps = {
 	userDetails?: IDynamicPerson;
 	templateConverters?: MgtElement.TemplateContext;
 	templateContext?: MgtElement.TemplateContext;
+	direction?: string;
 	useShadowRoot?: boolean;
 	mediaQuery?: MgtElement.ComponentMediaQuery;
 	loginInitiated?: (e: Event) => void;
@@ -50,6 +54,7 @@ export type PeoplePickerProps = {
 	groupId?: string;
 	type?: PersonType;
 	groupType?: GroupType;
+	transitiveSearch?: boolean;
 	people?: IDynamicPerson[];
 	defaultSelectedUserIds?: string[];
 	placeholder?: string;
@@ -58,6 +63,7 @@ export type PeoplePickerProps = {
 	selectedPeople?: IDynamicPerson[];
 	templateConverters?: MgtElement.TemplateContext;
 	templateContext?: MgtElement.TemplateContext;
+	direction?: string;
 	useShadowRoot?: boolean;
 	mediaQuery?: MgtElement.ComponentMediaQuery;
 	selectionChanged?: (e: Event) => void;
@@ -73,11 +79,13 @@ export type PeopleProps = {
 	showMax?: number;
 	templateConverters?: MgtElement.TemplateContext;
 	templateContext?: MgtElement.TemplateContext;
+	direction?: string;
 	useShadowRoot?: boolean;
 	mediaQuery?: MgtElement.ComponentMediaQuery;
 }
 
 export type PersonCardProps = {
+	config?: MgtPersonCardConfig;
 	personDetails?: IDynamicPerson;
 	personQuery?: string;
 	userId?: string;
@@ -89,11 +97,13 @@ export type PersonCardProps = {
 	personPresence?: MicrosoftGraphBeta.Presence;
 	templateConverters?: MgtElement.TemplateContext;
 	templateContext?: MgtElement.TemplateContext;
+	direction?: string;
 	useShadowRoot?: boolean;
 	mediaQuery?: MgtElement.ComponentMediaQuery;
 }
 
 export type PersonProps = {
+	config?: MgtPersonConfig;
 	personQuery?: string;
 	userId?: string;
 	showPresence?: boolean;
@@ -109,6 +119,7 @@ export type PersonProps = {
 	avatarSize?: AvatarSize;
 	templateConverters?: MgtElement.TemplateContext;
 	templateContext?: MgtElement.TemplateContext;
+	direction?: string;
 	useShadowRoot?: boolean;
 	mediaQuery?: MgtElement.ComponentMediaQuery;
 }
@@ -128,6 +139,7 @@ export type TasksProps = {
 	taskFilter?: TaskFilter;
 	templateConverters?: MgtElement.TemplateContext;
 	templateContext?: MgtElement.TemplateContext;
+	direction?: string;
 	useShadowRoot?: boolean;
 	mediaQuery?: MgtElement.ComponentMediaQuery;
 	taskAdded?: (e: Event) => void;
@@ -140,6 +152,7 @@ export type TeamsChannelPickerProps = {
 	selectedItem?: SelectedChannel;
 	templateConverters?: MgtElement.TemplateContext;
 	templateContext?: MgtElement.TemplateContext;
+	direction?: string;
 	useShadowRoot?: boolean;
 	mediaQuery?: MgtElement.ComponentMediaQuery;
 	selectionChanged?: (e: Event) => void;

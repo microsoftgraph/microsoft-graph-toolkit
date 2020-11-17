@@ -183,6 +183,9 @@ mgt-people-picker .root {
                 font-weight: normal;
                 margin: 0;
                 padding: 0;
+                &.highlight-search-text {
+                  font-weight: bold;
+                }
               }
             }
           }
@@ -225,10 +228,6 @@ mgt-people-picker .message-parent {
   vertical-align: middle;
 }
 
-:host .highlight-search-text,
-mgt-people-picker .highlight-search-text {
-  font-weight: bold;
-}
 :host .people-person-job-title,
 mgt-people-picker .people-person-job-title {
   flex: 100%;
@@ -242,4 +241,43 @@ mgt-people-picker .people-person-job-title {
 
 mgt-flyout {
   flex: 1 0 auto;
+}
+
+[dir='rtl'] {
+  mgt-person {
+    margin: 0px 12px 0px 0px;
+  }
+  .selected-list {
+    margin-right: 8px !important;
+    &__person-wrapper {
+      margin-left: 6px !important;
+      &__person {
+        margin-right: 0px !important;
+        margin-left: 4px !important;
+      }
+      &__overflow {
+        &__gradient {
+          right: auto !important;
+          position: absolute !important;
+          margin-right: 0px !important;
+          width: 10px !important;
+          height: 90%;
+          top: 0;
+        }
+        &__close-icon {
+          right: auto !important;
+          margin-left: 5px !important;
+          left: 0px !important;
+        }
+      }
+    }
+  }
+  .people-person-text-area {
+    margin-right: 13px;
+    margin-left: 0px !important;
+  }
+
+  .flyout-root {
+    text-align: right !important;
+  }
 }

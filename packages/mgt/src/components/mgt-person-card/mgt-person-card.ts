@@ -32,7 +32,14 @@ import '../sub-components/mgt-spinner/mgt-spinner';
 // TODO - remove
 import { delay } from '../../utils/Utils';
 
-export type MgtPersonCardConfig = {
+export interface MgtPersonCardConfig {
+  /**
+   * Sets or gets whether the person card component can use Contacts APIs to
+   * find contacts and their images
+   *
+   * @type {boolean}
+   */
+  useContactApis: boolean;
   isSendMessageVisible: boolean;
   sections: {
     contact: boolean;
@@ -41,7 +48,7 @@ export type MgtPersonCardConfig = {
     files: boolean;
     profile: boolean;
   };
-};
+}
 
 /**
  * Web Component used to show detailed data for a person in the Microsoft Graph
@@ -73,6 +80,7 @@ export class MgtPersonCard extends MgtTemplatedComponent {
   }
 
   private static _config: MgtPersonCardConfig = {
+    useContactApis: true,
     isSendMessageVisible: false,
     sections: {
       contact: true,
@@ -83,6 +91,14 @@ export class MgtPersonCard extends MgtTemplatedComponent {
     }
   };
 
+  /**
+   * Global configuration object for
+   * all person card components
+   *
+   * @static
+   * @type {MgtPersonCardConfig}
+   * @memberof MgtPersonCard
+   */
   public static get config() {
     return this._config;
   }
@@ -672,7 +688,7 @@ export class MgtPersonCard extends MgtTemplatedComponent {
 
       if (people && people.length) {
         this.personDetails = people[0];
-        getPersonImage(graph, this.personDetails).then(image => {
+        getPersonImage(graph, this.personDetails, MgtPersonCard.config.useContactApis).then(image => {
           if (image) {
             this.personDetails.personImage = image;
             this.personImage = image;
