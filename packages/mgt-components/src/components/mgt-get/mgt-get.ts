@@ -6,9 +6,19 @@
  */
 
 import { customElement, html, property } from 'lit-element';
-import { Providers, ProviderState, MgtTemplatedComponent, equals, prepScopes } from '@microsoft/mgt-element';
 import { getPhotoForResource } from '../../graph/graph.photos';
-import { CacheItem, CacheSchema, CacheService, CacheStore } from '../../utils/Cache';
+
+import {
+  CacheItem,
+  CacheSchema,
+  CacheService,
+  CacheStore,
+  equals,
+  MgtTemplatedComponent,
+  prepScopes,
+  Providers,
+  ProviderState
+} from '@microsoft/mgt-element';
 
 /**
  * Enumeration to define what types of query are available
