@@ -183,6 +183,9 @@ mgt-people-picker .root {
                 font-weight: normal;
                 margin: 0;
                 padding: 0;
+                &.highlight-search-text {
+                  font-weight: bold;
+                }
               }
             }
           }
@@ -225,10 +228,6 @@ mgt-people-picker .message-parent {
   vertical-align: middle;
 }
 
-:host .highlight-search-text,
-mgt-people-picker .highlight-search-text {
-  font-weight: bold;
-}
 :host .people-person-job-title,
 mgt-people-picker .people-person-job-title {
   flex: 100%;

@@ -93,6 +93,17 @@ export class MgtPeoplePicker extends MgtTemplatedComponent {
   }
 
   /**
+   * Gets the input element
+   *
+   * @protected
+   * @type {MgtFlyout}
+   * @memberof MgtLogin
+   */
+  protected get input(): HTMLInputElement {
+    return this.renderRoot.querySelector('.search-box__input');
+  }
+
+  /**
    * value determining if search is filtered to a group.
    * @type {string}
    */
@@ -309,12 +320,11 @@ export class MgtPeoplePicker extends MgtTemplatedComponent {
    */
   public focus(options?: FocusOptions) {
     this.gainedFocus();
-    const peopleInput = this.renderRoot.querySelector('.search-box__input') as HTMLInputElement;
-    if (!peopleInput) {
+    if (!this.input) {
       return;
     }
-    peopleInput.focus(options);
-    peopleInput.select();
+    this.input.focus(options);
+    this.input.select();
   }
 
   /**
@@ -420,7 +430,6 @@ export class MgtPeoplePicker extends MgtTemplatedComponent {
           label="people-picker-input"
           aria-label="people-picker-input"
           role="input"
-          .value="${this.userInput}"
           @keydown="${this.onUserKeyDown}"
           @keyup="${this.onUserKeyUp}"
           @blur=${this.lostFocus}
@@ -780,7 +789,7 @@ export class MgtPeoplePicker extends MgtTemplatedComponent {
    */
   protected addPerson(person: IDynamicPerson): void {
     if (person) {
-      this.userInput = '';
+      this.clearInput();
       const duplicatePeople = this.selectedPeople.filter(p => {
         if (!person.id) {
           return p.displayName === person.displayName;
@@ -796,6 +805,11 @@ export class MgtPeoplePicker extends MgtTemplatedComponent {
         this._foundPeople = [];
       }
     }
+  }
+
+  private clearInput() {
+    this.input.value = '';
+    this.userInput = '';
   }
 
   private handleFlyout() {
@@ -816,9 +830,8 @@ export class MgtPeoplePicker extends MgtTemplatedComponent {
 
   private gainedFocus() {
     this._isFocused = true;
-    const input = this.renderRoot.querySelector('.search-box__input') as HTMLInputElement;
-    if (input) {
-      input.focus();
+    if (this.input) {
+      this.input.focus();
     }
     this._showLoading = true;
     this.loadState();
@@ -881,35 +894,30 @@ export class MgtPeoplePicker extends MgtTemplatedComponent {
     const input = event.target as HTMLInputElement;
 
     if (event.code === 'Escape') {
-      input.value = '';
-      this.userInput = '';
+      this.clearInput();
       this._foundPeople = [];
-      return;
-    }
-    if (event.code === 'Backspace' && this.userInput.length === 0 && this.selectedPeople.length > 0) {
-      input.value = '';
-      this.userInput = '';
+    } else if (event.code === 'Backspace' && this.userInput.length === 0 && this.selectedPeople.length > 0) {
       // remove last person in selected list
       this.selectedPeople = this.selectedPeople.splice(0, this.selectedPeople.length - 1);
       this.loadState();
       this.hideFlyout();
       // fire selected people changed event
       this.fireCustomEvent('selectionChanged', this.selectedPeople);
-      return;
+    } else {
+      this.userInput = input.value;
+      this.handleUserSearch();
     }
-
-    this.handleUserSearch(input);
   }
 
   private onPersonClick(person: IDynamicPerson): void {
     this.addPerson(person);
     this.hideFlyout();
 
-    const peopleInput = this.renderRoot.querySelector('.search-box__input') as HTMLInputElement;
-    if (!peopleInput) {
+    if (!this.input) {
       return;
     }
-    peopleInput.focus();
+
+    this.input.focus();
     this._isFocused = true;
     this.hideFlyout();
     if (this.selectionMode === 'single') {
@@ -921,20 +929,12 @@ export class MgtPeoplePicker extends MgtTemplatedComponent {
    * Tracks event on user input in search
    * @param input - input text
    */
-  private handleUserSearch(input: HTMLInputElement) {
+  private handleUserSearch() {
     if (!this._debouncedSearch) {
-      this._showLoading = true;
       this._debouncedSearch = debounce(async () => {
-        // Wait a few milliseconds before showing the flyout.
-        // This helps prevent loading state flickering while the user is actively changing the query.
-
         const loadingTimeout = setTimeout(() => {
-          if (!this.userInput.length) {
-            this._foundPeople = [];
-            this.hideFlyout();
-          }
-        }, 400);
-        this.userInput = input.value;
+          this._showLoading = true;
+        }, 50);
 
         await this.loadState();
         clearTimeout(loadingTimeout);
@@ -945,9 +945,7 @@ export class MgtPeoplePicker extends MgtTemplatedComponent {
       }, 400);
     }
 
-    if (this.userInput !== input.value) {
-      this._debouncedSearch();
-    }
+    this._debouncedSearch();
   }
 
   /**
@@ -961,7 +959,7 @@ export class MgtPeoplePicker extends MgtTemplatedComponent {
     if (event.keyCode === 40 || event.keyCode === 38) {
       // keyCodes capture: down arrow (40) and up arrow (38)
       this.handleArrowSelection(event);
-      if (this.userInput.length > 0) {
+      if (this.input.value.length > 0) {
         event.preventDefault();
       }
     }
@@ -1006,9 +1004,11 @@ export class MgtPeoplePicker extends MgtTemplatedComponent {
 
       const peopleList = this.renderRoot.querySelector('.people-list');
       // reset background color
-      // tslint:disable-next-line: prefer-for-of
-      for (let i = 0; i < peopleList.children.length; i++) {
-        peopleList.children[i].classList.remove('focused');
+      if (peopleList) {
+        // tslint:disable-next-line: prefer-for-of
+        for (let i = 0; i < peopleList.children.length; i++) {
+          peopleList.children[i].classList.remove('focused');
+        }
       }
       // set selected background
       peopleList.children[this._arrowSelectionCount].classList.add('focused');
