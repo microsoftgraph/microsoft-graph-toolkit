@@ -6,10 +6,10 @@
  */
 
 import { BatchResponse, IBatch, IGraph } from '@microsoft/mgt-element';
-import { Message, Person, SharedInsight, User } from '@microsoft/microsoft-graph-types';
+import { Profile } from '@microsoft/microsoft-graph-types-beta';
 import { getEmailFromGraphEntity } from '../../graph/graph.people';
 import { IDynamicPerson } from '../../graph/types';
-import { MgtPersonCard, MgtPersonCardConfig } from './mgt-person-card';
+import { MgtPersonCardConfig, MgtPersonCardState } from './mgt-person-card.types';
 
 // tslint:disable-next-line:completed-docs
 const userProperties =
@@ -22,16 +22,6 @@ const batchKeys = {
   messages: 'messages',
   people: 'people',
   person: 'person'
-};
-
-export type UserWithManager = User & { manager?: UserWithManager };
-
-export type MgtPersonCardState = {
-  directReports?: User[];
-  files?: SharedInsight[];
-  messages?: Message[];
-  people?: Person[];
-  person?: UserWithManager;
 };
 
 /**
@@ -69,14 +59,26 @@ export async function getPersonCardGraphData(
   try {
     response = await batch.executeAll();
   } catch {
-    return data;
+    // nop
   }
 
-  for (const [key, value] of response) {
-    data[key] = value.content.value || value.content;
+  if (response) {
+    for (const [key, value] of response) {
+      data[key] = value.content.value || value.content;
+    }
   }
 
-  console.log(data);
+  if (config.sections.profile) {
+    try {
+      const profile = await getProfile(graph, userId);
+      if (profile) {
+        data.profile = profile;
+      }
+    } catch {
+      // nop
+    }
+  }
+
   return data;
 }
 
@@ -114,4 +116,12 @@ function buildFilesRequest(batch: IBatch, emailAddress?: string) {
   }
 
   batch.get(batchKeys.files, request); // TODO , ['sites.read.all']);
+}
+
+async function getProfile(graph: IGraph, userId: string): Promise<Profile> {
+  const profile = await graph
+    .api(`/users/${userId}/profile`)
+    .version('beta')
+    .get();
+  return profile;
 }

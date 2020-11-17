@@ -12,8 +12,7 @@ import { TeamsHelper } from '../../../../utils/TeamsHelper';
 import { BasePersonCardSection } from '../BasePersonCardSection';
 import { styles } from './mgt-person-card-contact-css';
 import { SvgIcon, getSvg } from '../../../../utils/SvgHelper';
-import { IDynamicPerson } from '../../../../graph/types';
-import { Person, User } from '@microsoft/microsoft-graph-types';
+import { User } from '@microsoft/microsoft-graph-types';
 
 /**
  * Represents a contact part and its metadata
@@ -99,6 +98,17 @@ export class MgtPersonCardContact extends BasePersonCardSection {
   public constructor(person: User) {
     super();
     this._person = person;
+
+    this._contactParts.email.value = getEmailFromGraphEntity(this._person);
+    this._contactParts.chat.value = this._person.userPrincipalName;
+    this._contactParts.cellPhone.value = this._person.mobilePhone;
+    this._contactParts.department.value = this._person.department;
+    this._contactParts.title.value = this._person.jobTitle;
+    this._contactParts.officeLocation.value = this._person.officeLocation;
+
+    if (this._person.businessPhones && this._person.businessPhones.length) {
+      this._contactParts.businessPhone.value = this._person.businessPhones[0];
+    }
   }
 
   /**
@@ -241,32 +251,8 @@ export class MgtPersonCardContact extends BasePersonCardSection {
    * @memberof MgtPersonCardContact
    */
   protected handlePartClick(e: MouseEvent, value: string): void {
-    if (value && !this.isCompact) {
+    if (value) {
       navigator.clipboard.writeText(value);
-    }
-  }
-
-  /**
-   * Load the section state
-   *
-   * @protected
-   * @returns {IContactPart[]}
-   * @memberof MgtPersonCardContact
-   */
-  protected async loadState(): Promise<void> {
-    if (!this._person) {
-      return;
-    }
-
-    this._contactParts.email.value = getEmailFromGraphEntity(this._person);
-    this._contactParts.chat.value = this._person.userPrincipalName;
-    this._contactParts.cellPhone.value = this._person.mobilePhone;
-    this._contactParts.department.value = this._person.department;
-    this._contactParts.title.value = this._person.jobTitle;
-    this._contactParts.officeLocation.value = this._person.officeLocation;
-
-    if (this._person.businessPhones && this._person.businessPhones.length) {
-      this._contactParts.businessPhone.value = this._person.businessPhones[0];
     }
   }
 

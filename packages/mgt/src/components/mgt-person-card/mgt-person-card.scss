@@ -28,11 +28,14 @@ $person-card-background-color: var(--person-card-background-color, #ffffff);
   user-select: none;
 
   .nav {
-    display: flex;
+    height: 0px;
+    position: relative;
+    z-index: 100;
 
     .nav__back {
-      padding: 10px;
-      display: flex;
+      padding: 8px;
+      height: 32px;
+      width: 32px;
       align-items: center;
       justify-content: center;
 
@@ -54,7 +57,7 @@ $person-card-background-color: var(--person-card-background-color, #ffffff);
     display: flex;
     flex-direction: column;
     width: calc(var(--mgt-flyout-set-width, 340px) - 30px);
-    padding: 15px 15px 20px 15px;
+    padding: 20px;
 
     .person-image {
       --presence-background-color: var(--person-card-background-color, #ffffff);
@@ -72,8 +75,8 @@ $person-card-background-color: var(--person-card-background-color, #ffffff);
       -webkit-align-items: center;
       align-items: center;
       max-width: 120px;
-      margin-left: 87px;
-      margin-top: 4px;
+      // margin-left: 87px;
+      margin-top: 16px;
 
       .icon {
         display: flex;
@@ -219,7 +222,8 @@ $person-card-background-color: var(--person-card-background-color, #ffffff);
   }
 
   .section-host {
-    max-height: 600px;
+    max-height: 360px;
+    min-height: 360px;
     overflow-y: auto;
     overflow-x: hidden;
   }

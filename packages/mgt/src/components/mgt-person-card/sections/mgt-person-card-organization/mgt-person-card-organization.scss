@@ -155,8 +155,19 @@
           --line2-font-size: 14px;
           --line2-color: #797775;
           --avatar-size: 46px;
-          --avatar-size-s: 46px;
         }
+      }
+    }
+
+    .direct-report__compact {
+      padding: 12px 20px;
+
+      .direct-report {
+        cursor: pointer;
+        width: 38px;
+        margin-right: 4px;
+        display: inline;
+        --avatar-size: 38px;
       }
     }
   }

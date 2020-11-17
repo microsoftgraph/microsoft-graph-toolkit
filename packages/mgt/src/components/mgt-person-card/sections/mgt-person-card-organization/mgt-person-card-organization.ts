@@ -5,14 +5,14 @@
  * -------------------------------------------------------------------------------------------
  */
 
-import { customElement, html, TemplateResult } from 'lit-element';
-import { Providers, ProviderState } from '@microsoft/mgt-element';
-import { BasePersonCardSection } from '../BasePersonCardSection';
-import { styles } from './mgt-person-card-organization-css';
-import { getSvg, SvgIcon } from '../../../../utils/SvgHelper';
-import { MgtPersonCardState } from '../../mgt-person-card.graph';
 import { User } from '@microsoft/microsoft-graph-types';
+import { customElement, html, TemplateResult } from 'lit-element';
+
+import { BasePersonCardSection } from '../BasePersonCardSection';
+import { getSvg, SvgIcon } from '../../../../utils/SvgHelper';
+import { MgtPersonCardState } from '../../mgt-person-card.types';
 import { PersonViewType } from '../../../mgt-person/mgt-person';
+import { styles } from './mgt-person-card-organization-css';
 
 /**
  * The member organization subsection of the person card
@@ -48,6 +48,12 @@ export class MgtPersonCardOrganization extends BasePersonCardSection {
    * @memberof MgtPersonCardOrganization
    */
   public get displayName(): string {
+    const { person, directReports } = this._state;
+
+    if (!person.manager && directReports && directReports.length) {
+      return `Direct reports (${directReports.length})`;
+    }
+
     return 'Reports to';
   }
 
@@ -82,12 +88,14 @@ export class MgtPersonCardOrganization extends BasePersonCardSection {
       return null;
     }
 
-    const { person } = this._state;
+    const { person, directReports } = this._state;
 
     if (!person) {
       return null;
-    } else if (person && person.manager) {
+    } else if (person.manager) {
       contentTemplate = this.renderCoworker(person.manager);
+    } else if (directReports && directReports.length) {
+      contentTemplate = this.renderCompactDirectReports();
     }
 
     return html`
@@ -221,6 +229,30 @@ export class MgtPersonCardOrganization extends BasePersonCardSection {
               <div class="org-member__more">
                 ${getSvg(SvgIcon.ExpandRight)}
               </div>
+            </div>
+          `
+        )}
+      </div>
+    `;
+  }
+
+  /**
+   * Render direct reports in compact view
+   *
+   * @protected
+   * @param {User} person
+   * @returns {TemplateResult}
+   * @memberof MgtPersonCardOrganization
+   */
+  protected renderCompactDirectReports(): TemplateResult {
+    const { directReports } = this._state;
+
+    return html`
+      <div class="direct-report__compact">
+        ${directReports.slice(0, 6).map(
+          person => html`
+            <div class="direct-report" @click=${() => this.navigateCard(person)}>
+              <mgt-person .personDetails=${person} .fetchImage=${true}></mgt-person>
             </div>
           `
         )}

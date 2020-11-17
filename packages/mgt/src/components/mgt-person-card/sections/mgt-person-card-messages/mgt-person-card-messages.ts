@@ -6,12 +6,9 @@
  */
 
 import { customElement, html, TemplateResult } from 'lit-element';
-import { Providers, ProviderState } from '@microsoft/mgt-element';
 import { getRelativeDisplayDate } from '../../../../utils/Utils';
 import { BasePersonCardSection } from '../BasePersonCardSection';
-import { getMessagesWithUser } from './graph.messages';
 import { styles } from './mgt-person-card-messages-css';
-import { getEmailFromGraphEntity } from '../../../../graph/graph.people';
 import { SvgIcon, getSvg } from '../../../../utils/SvgHelper';
 import { Message } from '@microsoft/microsoft-graph-types';
 

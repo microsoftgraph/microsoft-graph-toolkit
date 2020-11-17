@@ -217,10 +217,15 @@ export abstract class MgtBaseComponent extends LitElement {
    * @returns {boolean}
    * @memberof MgtBaseComponent
    */
-  protected fireCustomEvent(eventName: string, detail?: any): boolean {
+  protected fireCustomEvent(
+    eventName: string,
+    detail?: any,
+    bubbles: boolean = false,
+    cancelable: boolean = false
+  ): boolean {
     const event = new CustomEvent(eventName, {
-      bubbles: false,
-      cancelable: true,
+      bubbles,
+      cancelable,
       detail
     });
     return this.dispatchEvent(event);

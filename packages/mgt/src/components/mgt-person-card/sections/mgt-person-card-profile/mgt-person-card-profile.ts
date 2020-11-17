@@ -6,12 +6,10 @@
  */
 
 import { customElement, html, TemplateResult } from 'lit-element';
-import { BetaGraph } from '../../../../BetaGraph';
 import { BasePersonCardSection } from '../BasePersonCardSection';
-import { getProfile, IPersonAnniversary, IPersonInterest, IProfile } from './graph.profile';
 import { styles } from './mgt-person-card-profile-css';
-import { ProviderState, Providers } from '@microsoft/mgt-element';
 import { getSvg, SvgIcon } from '../../../../utils/SvgHelper';
+import { EducationalActivity, PersonAnniversary, PersonInterest, Profile } from '@microsoft/microsoft-graph-types-beta';
 
 /**
  * The user profile subsection of the person card
@@ -48,10 +46,10 @@ export class MgtPersonCardProfile extends BasePersonCardSection {
    * @type {IProfile}
    * @memberof MgtPersonCardProfile
    */
-  protected get profile(): IProfile {
+  protected get profile(): Profile {
     return this._profile;
   }
-  protected set profile(value: IProfile) {
+  protected set profile(value: Profile) {
     if (value === this._profile) {
       return;
     }
@@ -63,15 +61,15 @@ export class MgtPersonCardProfile extends BasePersonCardSection {
     this._professionalInterests = value && value.interests ? value.interests.filter(this.isProfessionalInterest) : null;
   }
 
-  private _profile: IProfile;
-  private _personalInterests: IPersonInterest[];
-  private _professionalInterests: IPersonInterest[];
-  private _birthdayAnniversary: IPersonAnniversary;
+  private _profile: Profile;
+  private _personalInterests: PersonInterest[];
+  private _professionalInterests: PersonInterest[];
+  private _birthdayAnniversary: PersonAnniversary;
 
-  constructor() {
+  constructor(profile: Profile) {
     super();
 
-    this.profile = null;
+    this.profile = profile;
   }
 
   /**
@@ -404,7 +402,7 @@ export class MgtPersonCardProfile extends BasePersonCardSection {
               ${getSvg(SvgIcon.Birthday)}
             </div>
             <div class="birthday__date">
-              ${this.getDisplayDate(this._birthdayAnniversary.date)}
+              ${this.getDisplayDate(new Date(this._birthdayAnniversary.date))}
             </div>
           </div>
         </div>
@@ -412,44 +410,15 @@ export class MgtPersonCardProfile extends BasePersonCardSection {
     `;
   }
 
-  /**
-   * load state into the component
-   *
-   * @protected
-   * @returns {Promise<void>}
-   * @memberof MgtPersonCardProfile
-   */
-  protected async loadState(): Promise<void> {
-    const provider = Providers.globalProvider;
-
-    // check if user is signed in
-    if (!provider || provider.state !== ProviderState.SignedIn) {
-      return;
-    }
-
-    if (!this.personDetails) {
-      return;
-    }
-
-    const graph = provider.graph.forComponent(this);
-    const betaGraph = BetaGraph.fromGraph(graph);
-
-    const userId = this.personDetails.id;
-    const profile = await getProfile(betaGraph, userId);
-
-    this.profile = profile;
-    this.requestUpdate();
-  }
-
-  private isPersonalInterest(interest: IPersonInterest): boolean {
+  private isPersonalInterest(interest: PersonInterest): boolean {
     return interest.categories && interest.categories.includes('personal');
   }
 
-  private isProfessionalInterest(interest: IPersonInterest): boolean {
+  private isProfessionalInterest(interest: PersonInterest): boolean {
     return interest.categories && interest.categories.includes('professional');
   }
 
-  private isBirthdayAnniversary(anniversary: IPersonAnniversary): boolean {
+  private isBirthdayAnniversary(anniversary: PersonAnniversary): boolean {
     return anniversary.type === 'birthday';
   }
 
@@ -461,7 +430,8 @@ export class MgtPersonCardProfile extends BasePersonCardSection {
   }
 
   // tslint:disable-next-line: completed-docs
-  private getDisplayDateRange(event: { startMonthYear: Date; endMonthYear: Date }): string {
+  private getDisplayDateRange(event: EducationalActivity): string {
+    console.log(event);
     const start = new Date(event.startMonthYear).getFullYear();
     if (start === 0) {
       return null;

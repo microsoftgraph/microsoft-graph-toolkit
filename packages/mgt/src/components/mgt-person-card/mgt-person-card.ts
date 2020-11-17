@@ -24,31 +24,13 @@ import { MgtPersonCardContact } from './sections/mgt-person-card-contact/mgt-per
 import { MgtPersonCardFiles } from './sections/mgt-person-card-files/mgt-person-card-files';
 import { MgtPersonCardMessages } from './sections/mgt-person-card-messages/mgt-person-card-messages';
 import { MgtPersonCardOrganization } from './sections/mgt-person-card-organization/mgt-person-card-organization';
-import { getPersonCardGraphData, MgtPersonCardState } from './mgt-person-card.graph';
+import { getPersonCardGraphData } from './mgt-person-card.graph';
 import { MgtPersonCardProfile } from './sections/mgt-person-card-profile/mgt-person-card-profile';
+import { MgtPersonCardConfig, MgtPersonCardHistoryState, MgtPersonCardState } from './mgt-person-card.types';
 
 import '../sub-components/mgt-spinner/mgt-spinner';
 
-// TODO - remove
-import { delay } from '../../utils/Utils';
-
-export interface MgtPersonCardConfig {
-  /**
-   * Sets or gets whether the person card component can use Contacts APIs to
-   * find contacts and their images
-   *
-   * @type {boolean}
-   */
-  useContactApis: boolean;
-  isSendMessageVisible: boolean;
-  sections: {
-    contact: boolean;
-    organization: boolean;
-    mailMessages: boolean;
-    files: boolean;
-    profile: boolean;
-  };
-}
+export { MgtPersonCardConfig } from './mgt-person-card.types';
 
 /**
  * Web Component used to show detailed data for a person in the Microsoft Graph
@@ -123,8 +105,6 @@ export class MgtPersonCard extends MgtTemplatedComponent {
 
     this._personDetails = value;
     this.personImage = null;
-    this.sections.forEach(s => (s.personDetails = value));
-    console.log('request - person details');
     this.requestStateUpdate();
   }
   /**
@@ -219,9 +199,6 @@ export class MgtPersonCard extends MgtTemplatedComponent {
   })
   public personPresence: Presence;
 
-  @internalProperty() private state: MgtPersonCardState;
-  @internalProperty() private isStateLoading: boolean;
-
   /**
    * The subsections for display in the lower part of the card
    *
@@ -231,7 +208,10 @@ export class MgtPersonCard extends MgtTemplatedComponent {
    */
   protected sections: BasePersonCardSection[];
 
-  private _history: IDynamicPerson[];
+  @internalProperty() private state: MgtPersonCardState;
+  @internalProperty() private isStateLoading: boolean;
+
+  private _history: MgtPersonCardHistoryState[];
   private _chatInput: string;
   private _currentSection: BasePersonCardSection;
   private _personDetails: IDynamicPerson;
@@ -275,25 +255,28 @@ export class MgtPersonCard extends MgtTemplatedComponent {
   }
 
   /**
-   * Navigate the card to a different user.
+   * Navigate the card to a different person.
    *
    * @protected
    * @memberof MgtPersonCard
    */
   public navigate(person: IDynamicPerson): void {
-    this._history.push(this.personDetails);
-
-    this.sections.forEach((s: BasePersonCardSection) => {
-      s.clearState();
-      s.requestUpdate();
+    this._history.push({
+      personDetails: this.personDetails,
+      personImage: this.getImage(),
+      state: this.state
     });
 
-    this.personDetails = person;
+    this._personDetails = person;
+    this.state = null;
+    this.personImage = null;
     this._currentSection = null;
+    this.sections = [];
+    this.requestStateUpdate();
   }
 
   /**
-   * Navigate the card back to the previous user
+   * Navigate the card back to the previous person
    *
    * @returns {void}
    * @memberof MgtPersonCard
@@ -302,11 +285,36 @@ export class MgtPersonCard extends MgtTemplatedComponent {
     if (!this._history || !this._history.length) {
       return;
     }
-    this.personDetails = this._history.pop();
+
+    const historyState = this._history.pop();
+    this._currentSection = null;
+
+    this.state = historyState.state;
+    this._personDetails = historyState.state;
+    this.personImage = historyState.personImage;
+    this.loadSections();
   }
 
-  protected firstUpdated(changedProperties: any) {
-    super.firstUpdated(changedProperties);
+  /**
+   * Navigate the card back to first person and clear history
+   *
+   * @returns {void}
+   * @memberof MgtPersonCard
+   */
+  public clearHistory(): void {
+    this._currentSection = null;
+
+    if (!this._history || !this._history.length) {
+      return;
+    }
+
+    const historyState = this._history[0];
+    this._history = [];
+
+    this.state = historyState.state;
+    this._personDetails = historyState.state;
+    this.personImage = historyState.personImage;
+    this.loadSections();
   }
 
   /**
@@ -353,10 +361,7 @@ export class MgtPersonCard extends MgtTemplatedComponent {
       const contactIconsTemplate = this.renderContactIcons(person);
 
       personDetailsTemplate = html`
-        ${personTemplate}
-        <div class="base-icons">
-          ${contactIconsTemplate}
-        </div>
+        ${personTemplate} ${contactIconsTemplate}
       `;
     }
 
@@ -436,6 +441,10 @@ export class MgtPersonCard extends MgtTemplatedComponent {
    * @memberof MgtPersonCard
    */
   protected renderContactIcons(person?: IDynamicPerson): TemplateResult {
+    if (this.isExpanded) {
+      return;
+    }
+
     person = person || this.internalPersonDetails;
     const userPerson = person as MicrosoftGraph.User;
 
@@ -462,7 +471,9 @@ export class MgtPersonCard extends MgtTemplatedComponent {
     }
 
     return html`
-      ${email} ${chat}
+      <div class="base-icons">
+        ${email} ${chat}
+      </div>
     `;
   }
 
@@ -507,7 +518,7 @@ export class MgtPersonCard extends MgtTemplatedComponent {
       <div class="section-nav">
         ${sectionNavTemplate}
       </div>
-      <div class="section-host" @wheel=${(e: Event) => e.stopPropagation()}>
+      <div class="section-host" @wheel=${(e: WheelEvent) => this.handleSectionScroll(e)}>
         ${currentSectionTemplate}
       </div>
     `;
@@ -521,6 +532,10 @@ export class MgtPersonCard extends MgtTemplatedComponent {
    * @memberof MgtPersonCard
    */
   protected renderSectionNavigation(): TemplateResult {
+    if (!this.sections || this.sections.length < 2) {
+      return;
+    }
+
     const currentSectionIndex = this._currentSection ? this.sections.indexOf(this._currentSection) : -1;
 
     const navIcons = this.sections.map((section, i, a) => {
@@ -614,6 +629,16 @@ export class MgtPersonCard extends MgtTemplatedComponent {
    * @memberof MgtPersonCard
    */
   protected renderCurrentSection(): TemplateResult {
+    if (!this.sections || !this.sections.length) {
+      return;
+    }
+
+    if (this.sections.length === 1) {
+      return html`
+        ${this.sections[0].asFullView()}
+      `;
+    }
+
     if (!this._currentSection) {
       return this.renderOverviewSection();
     }
@@ -718,7 +743,6 @@ export class MgtPersonCard extends MgtTemplatedComponent {
       }
     }
 
-    await delay(3000);
     this.state = await getPersonCardGraphData(
       graph,
       this.personDetails,
@@ -729,17 +753,6 @@ export class MgtPersonCard extends MgtTemplatedComponent {
     this.loadSections();
 
     this.isStateLoading = false;
-
-    // // tslint:disable-next-line:no-unused-expression
-    // MgtPersonCard.config.sections.contact && this.sections.push(new MgtPersonCardContact());
-    // // tslint:disable-next-line:no-unused-expression
-    // MgtPersonCard.config.sections.organization && this.sections.push(new MgtPersonCardOrganization());
-    // // tslint:disable-next-line:no-unused-expression
-    // MgtPersonCard.config.sections.mailMessages && this.sections.push(new MgtPersonCardMessages());
-    // // tslint:disable-next-line:no-unused-expression
-    // MgtPersonCard.config.sections.files && this.sections.push(new MgtPersonCardFiles());
-    // // tslint:disable-next-line:no-unused-expression
-    // MgtPersonCard.config.sections.profile && this.sections.push(new MgtPersonCardProfile());
   }
 
   private loadSections() {
@@ -749,31 +762,30 @@ export class MgtPersonCard extends MgtTemplatedComponent {
       return;
     }
 
-    if (MgtPersonCard.config.sections.contact && this.state.person) {
-      this.sections.push(new MgtPersonCardContact(this.state.person));
+    if (MgtPersonCard.config.sections.contact) {
+      this.sections.push(new MgtPersonCardContact(this.internalPersonDetails as MicrosoftGraph.User));
     }
 
     if (!this.state) {
       return;
     }
 
-    if (MgtPersonCard.config.sections.organization && this.state.person) {
+    const { person, messages, files, profile } = this.state;
+
+    if (MgtPersonCard.config.sections.organization && person) {
       this.sections.push(new MgtPersonCardOrganization(this.state, this._me));
     }
 
-    if (MgtPersonCard.config.sections.mailMessages && this.state.messages) {
-      this.sections.push(new MgtPersonCardMessages(this.state.messages));
+    if (MgtPersonCard.config.sections.mailMessages && messages && messages.length) {
+      this.sections.push(new MgtPersonCardMessages(messages));
     }
 
-    if (MgtPersonCard.config.sections.files && this.state.files) {
-      this.sections.push(new MgtPersonCardFiles(this.state.files)); //this.state, this._me));
+    if (MgtPersonCard.config.sections.files && files && files.length) {
+      this.sections.push(new MgtPersonCardFiles(files));
     }
 
-    // TODO - load beta state
-    if (MgtPersonCard.config.sections.profile) {
-      const profileSection = new MgtPersonCardProfile();
-      profileSection.personDetails = this.personDetails;
-      this.sections.push(profileSection);
+    if (MgtPersonCard.config.sections.profile && profile) {
+      this.sections.push(new MgtPersonCardProfile(profile));
     }
   }
 
@@ -892,10 +904,12 @@ export class MgtPersonCard extends MgtTemplatedComponent {
       );
     }
     this.isExpanded = true;
+
+    this.fireCustomEvent('expanded', null, true);
   }
 
   private getImage(): string {
-    if (this.personImage && this.personImage !== '@') {
+    if (this.personImage) {
       return this.personImage;
     }
 
@@ -920,5 +934,17 @@ export class MgtPersonCard extends MgtTemplatedComponent {
 
     this._currentSection = section;
     this.requestUpdate();
+  }
+
+  private handleSectionScroll(e: WheelEvent) {
+    const target = this.renderRoot.querySelector('.section-host') as HTMLElement;
+    if (target) {
+      if (
+        !(e.deltaY < 0 && target.scrollTop === 0) &&
+        !(e.deltaY > 0 && target.clientHeight + target.scrollTop >= target.scrollHeight - 1)
+      ) {
+        e.stopPropagation();
+      }
+    }
   }
 }
