@@ -144,7 +144,6 @@ export const withCodeEditor = makeDecorator({
     editor.className = 'story-mgt-editor';
 
     root.appendChild(storyElementWrapper);
-    // storyElementWrapper.appendChild(storyElement);
     root.appendChild(separator);
     root.appendChild(editor);
 
