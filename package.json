@@ -9,6 +9,7 @@
   ],
   "scripts": {
     "build": "npm run prettier:check && npm run clean && lerna run build --scope @microsoft/*",
+    "build:compile": "npm run prettier:check && npm run clean && lerna run build:compile --scope @microsoft/*",
     "build:mgt": "cd ./packages/mgt && npm run build",
     "build:mgt-element": "cd ./packages/mgt-element && npm run build",
     "build:mgt-react": "lerna run build --scope @microsoft/mgt-react",
@@ -30,9 +31,10 @@
     "prettier:check": "npm run prettier:base -- --list-different \"packages/**/*.{ts,tsx}\"",
     "prettier:write": "npm run prettier:base -- --write \"packages/**/*.{ts,tsx}\"",
     "storybook": "start-storybook -p 6006 -s assets",
-    "storybook:dev": "npm run build && wca analyze packages --format json --outFile custom-elements.json",
-    "storybook:build": "build-storybook -s assets && cpx .storybook/CNAME storybook-static",
-    "storybook:deploy": "npm run storybook:build && storybook-to-ghpages -e storybook-static"
+    "storybook:dev": "npm run build:compile && npm run storybook:buildMgt && wca analyze packages --format json --outFile custom-elements.json",
+    "storybook:build": "npm run storybook:dev && build-storybook -s assets && cpx .storybook/CNAME storybook-static",
+    "storybook:deploy": "npm run storybook:build && storybook-to-ghpages -e storybook-static",
+    "storybook:buildMgt": "rollup -c ./.storybook/rollup.config.js"
   },
   "storybook-deployer": {
     "gitUsername": "@microsoft/mgt",

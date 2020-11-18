@@ -13,3 +13,6 @@ export { TeamsHelper } from './utils/TeamsHelper';
 export { prepScopes } from './utils/GraphHelpers';
 export * from './utils/Cache';
 export * from '@microsoft/mgt-element';
+
+export * from './mock/MockProvider';
+export * from './mock/mgt-mock-provider';
