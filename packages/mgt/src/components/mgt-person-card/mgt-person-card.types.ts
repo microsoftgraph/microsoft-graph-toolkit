@@ -48,7 +48,16 @@ export interface MgtPersonCardConfig {
      *
      * @type {boolean}
      */
-    organization: boolean;
+    organization:
+      | boolean
+      | {
+          /**
+           * Gets or sets whether the "Works with" section is shown
+           *
+           * @type {boolean}
+           */
+          showWorksWith: boolean;
+        };
 
     /**
      * Gets or sets whether the messages section is shown

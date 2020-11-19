@@ -71,16 +71,62 @@ export class MgtPersonCard extends MgtTemplatedComponent {
     return styles;
   }
 
-  private static _config: MgtPersonCardConfig = {
-    sections: {
-      contact: true,
-      files: true,
-      mailMessages: true,
-      organization: true,
-      profile: true
-    },
-    useContactApis: true
-  };
+  /**
+   * Get the scopes required for the person card
+   * The scopes depend on what sections are shown
+   *
+   * Use the `MgtPersonCard.config` object to configure
+   * what sections are shown
+   *
+   * @static
+   * @return {*}  {string[]}
+   * @memberof MgtPersonCard
+   */
+  public static getScopes(): string[] {
+    const scopes = [];
+
+    if (this.config.sections.contact) {
+      scopes.push('User.Read.All');
+    }
+
+    if (this.config.sections.files) {
+      scopes.push('Sites.Read.All');
+    }
+
+    if (this.config.sections.mailMessages) {
+      scopes.push('Mail.ReadBasic');
+    }
+
+    if (this.config.sections.organization) {
+      scopes.push('User.Read.All');
+
+      if (typeof this.config.sections.organization !== 'boolean' && this.config.sections.organization.showWorksWith) {
+        scopes.push('People.Read.All');
+      }
+    }
+
+    if (this.config.sections.profile) {
+      scopes.push('User.Read.All');
+    }
+
+    if (this.config.useContactApis) {
+      scopes.push('Contacts.Read');
+    }
+
+    if (scopes.indexOf('User.Read.All') < 0) {
+      // at minimum, we need these scopes
+      scopes.push('User.ReadBasic.All');
+      scopes.push('User.Read');
+    }
+
+    if (scopes.indexOf('People.Read.All') < 0) {
+      // at minimum, we need these scopes
+      scopes.push('People.Read');
+    }
+
+    // return unique
+    return [...new Set(scopes)];
+  }
 
   /**
    * Global configuration object for
@@ -93,6 +139,17 @@ export class MgtPersonCard extends MgtTemplatedComponent {
   public static get config() {
     return this._config;
   }
+
+  private static _config: MgtPersonCardConfig = {
+    sections: {
+      contact: true,
+      files: true,
+      mailMessages: true,
+      organization: { showWorksWith: true },
+      profile: true
+    },
+    useContactApis: true
+  };
 
   /**
    * Set the person details to render

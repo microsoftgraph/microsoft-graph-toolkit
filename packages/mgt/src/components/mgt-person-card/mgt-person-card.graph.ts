@@ -54,6 +54,10 @@ export async function getPersonCardGraphData(
   if (!isContactOrGroup) {
     if (config.sections.organization) {
       buildOrgStructureRequest(batch, userId);
+
+      if (typeof config.sections.organization !== 'boolean' && config.sections.organization.showWorksWith) {
+        buildWorksWithRequest(batch, userId);
+      }
     }
   }
 
@@ -107,7 +111,10 @@ function buildOrgStructureRequest(batch: IBatch, userId: string) {
   );
 
   batch.get(batchKeys.directReports, `users/${userId}/directReports?$select=${userProperties}`);
+}
 
+// tslint:disable-next-line:completed-docs
+function buildWorksWithRequest(batch: IBatch, userId: string) {
   batch.get(batchKeys.people, `users/${userId}/people?$filter=personType/class eq 'Person'`, ['People.Read.All']);
 }
 
@@ -126,7 +133,7 @@ function buildFilesRequest(batch: IBatch, emailAddress?: string) {
     request = 'me/insights/used';
   }
 
-  batch.get(batchKeys.files, request); // TODO , ['sites.read.all']);
+  batch.get(batchKeys.files, request, ['Sites.Read.All']);
 }
 
 /**
