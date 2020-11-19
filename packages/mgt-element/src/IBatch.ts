@@ -67,6 +67,7 @@ export interface IBatch {
    * @param {string} id
    * @param {string} resource
    * @param {string[]} [scopes]
+   * @param {{ [header: string]: string }} [headers]
    * @memberof IBatch
    */
   get(id: string, resource: string, scopes?: string[], headers?: { [header: string]: string });

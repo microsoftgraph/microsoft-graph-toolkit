@@ -41,7 +41,13 @@ export enum ComponentMediaQuery {
  * @extends {LitElement}
  */
 export abstract class MgtBaseComponent extends LitElement {
-  @internalProperty() public direction = 'ltr';
+  /**
+   * Gets or sets the direction of the component
+   *
+   * @protected
+   * @memberof MgtBaseComponent
+   */
+  @internalProperty() protected direction = 'ltr';
 
   /**
    * Get ShadowRoot toggle, returns value of _useShadowRoot
@@ -61,18 +67,6 @@ export abstract class MgtBaseComponent extends LitElement {
    */
   public static set useShadowRoot(value: boolean) {
     this._useShadowRoot = value;
-  }
-
-  /**
-   * AAD Scopes required for this component to function
-   *
-   * @readonly
-   * @static
-   * @type {string[]}
-   * @memberof MgtBaseComponent
-   */
-  public static get scopes(): string[] {
-    return [];
   }
 
   /**
@@ -157,6 +151,11 @@ export abstract class MgtBaseComponent extends LitElement {
     LocalizationHelper.onDirectionUpdated(this.updateDirection);
   }
 
+  /**
+   * Invoked each time the custom element is removed from the document
+   *
+   * @memberof MgtBaseComponent
+   */
   public disconnectedCallback() {
     super.disconnectedCallback();
     LocalizationHelper.removeOnStringsUpdated(this.handleLocalizationChanged);
@@ -212,9 +211,11 @@ export abstract class MgtBaseComponent extends LitElement {
    * helps facilitate creation of events across components
    *
    * @protected
-   * @param {string} eventName name given to specific event
-   * @param {*} [detail] optional any value to dispatch with event
-   * @returns {boolean}
+   * @param {string} eventName
+   * @param {*} [detail]
+   * @param {boolean} [bubbles=false]
+   * @param {boolean} [cancelable=false]
+   * @return {*}  {boolean}
    * @memberof MgtBaseComponent
    */
   protected fireCustomEvent(

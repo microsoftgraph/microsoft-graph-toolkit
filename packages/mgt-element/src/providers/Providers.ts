@@ -5,9 +5,11 @@
  * -------------------------------------------------------------------------------------------
  */
 
-import { IProvider } from './IProvider';
-import { EventDispatcher, EventHandler } from '../utils/EventDispatcher';
+import { Client } from '@microsoft/microsoft-graph-client';
 import { User } from '@microsoft/microsoft-graph-types';
+
+import { EventDispatcher, EventHandler } from '../utils/EventDispatcher';
+import { IProvider, ProviderState } from './IProvider';
 
 /**
  * Provides implementation for acquiring the necessary access token for calling the Microsoft Graph APIs.
@@ -71,17 +73,49 @@ export class Providers {
    * @memberof Providers
    */
   public static async me() {
-    // TODO
+    if (!this._me) {
+      const client = this.client;
+      if (client) {
+        try {
+          const response: User = await client.api('me').get();
+          if (response && response.id) {
+            this._me = response;
+          }
+        } catch {}
+      }
+    }
+
+    return this._me;
   }
 
-  private static _me: User;
+  /**
+   * Gets the current graph client
+   *
+   * @readonly
+   * @static
+   * @type {Client}
+   * @memberof Providers
+   */
+  public static get client(): Client {
+    if (Providers.globalProvider && Providers.globalProvider.state === ProviderState.SignedIn) {
+      return Providers.globalProvider.graph.client;
+    }
+    return null;
+  }
 
   private static _eventDispatcher: EventDispatcher<ProvidersChangedState> = new EventDispatcher<
     ProvidersChangedState
   >();
+
   private static _globalProvider: IProvider;
+  private static _me: User;
 
   private static handleProviderStateChanged() {
+    if (!Providers.globalProvider || Providers.globalProvider.state !== ProviderState.SignedIn) {
+      // clear current signed in user info
+      Providers._me = null;
+    }
+
     Providers._eventDispatcher.fire(ProvidersChangedState.ProviderStateChanged);
   }
 }

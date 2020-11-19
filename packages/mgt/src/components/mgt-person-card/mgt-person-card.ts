@@ -684,9 +684,8 @@ export class MgtPersonCard extends MgtTemplatedComponent {
 
     const graph = provider.graph.forComponent(this);
 
-    // TODO - move this to providers and cache me for the session
     if (!this._me) {
-      this._me = await getMe(graph);
+      this._me = await Providers.me();
     }
 
     // check if personDetail already populated
