@@ -11,7 +11,7 @@ import { withKnobs } from '@storybook/addon-knobs';
 import { withWebComponentsKnobs } from 'storybook-addon-web-components-knobs';
 import { withSignIn } from '../../.storybook/addons/signInAddon/signInAddon';
 import { withCodeEditor } from '../../.storybook/addons/codeEditorAddon/codeAddon';
-import '../../packages/mgt/dist/es6/components/mgt-get/mgt-get';
+import '../../packages/mgt-components/dist/es6/components/mgt-get/mgt-get';
 
 export default {
   title: 'Components | mgt-get',
@@ -154,6 +154,14 @@ export const UsingImageType = () => html`
           <mgt-person-card person-details="{{$parent}}" person-image="{{image}}"></mgt-person-card>
         </template>
       </mgt-get>
+    </template>
+  </mgt-get>
+`;
+
+export const UsingCaching = () => html`
+  <mgt-get resource="me" caching-enabled="true">
+    <template>
+      Hello {{ displayName }}
     </template>
   </mgt-get>
 `;

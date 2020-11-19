@@ -1,4 +1,4 @@
-import { ResponseType,IDynamicPerson,PersonType,GroupType,PersonCardInteraction,PersonViewType,AvatarSize,TasksStringResource,TasksSource,TaskFilter,SelectedChannel } from '@microsoft/mgt';
+import { ResponseType,IDynamicPerson,PersonType,GroupType,PersonCardInteraction,MgtPersonCardConfig,MgtPersonConfig,PersonViewType,AvatarSize,TasksStringResource,TasksSource,TaskFilter,SelectedChannel } from '@microsoft/mgt';
 import * as MgtElement from '@microsoft/mgt-element';
 import * as MicrosoftGraph from '@microsoft/microsoft-graph-types';
 import * as MicrosoftGraphBeta from '@microsoft/microsoft-graph-types-beta';
@@ -28,6 +28,8 @@ export type GetProps = {
 	type?: ResponseType;
 	maxPages?: number;
 	pollingRate?: number;
+	cacheEnabled?: boolean;
+	cacheInvalidationPeriod?: number;
 	templateConverters?: MgtElement.TemplateContext;
 	templateContext?: MgtElement.TemplateContext;
 	direction?: string;
@@ -54,6 +56,7 @@ export type PeoplePickerProps = {
 	groupId?: string;
 	type?: PersonType;
 	groupType?: GroupType;
+	transitiveSearch?: boolean;
 	people?: IDynamicPerson[];
 	defaultSelectedUserIds?: string[];
 	placeholder?: string;
@@ -84,6 +87,7 @@ export type PeopleProps = {
 }
 
 export type PersonCardProps = {
+	config?: MgtPersonCardConfig;
 	personDetails?: IDynamicPerson;
 	personQuery?: string;
 	userId?: string;
@@ -101,6 +105,7 @@ export type PersonCardProps = {
 }
 
 export type PersonProps = {
+	config?: MgtPersonConfig;
 	personQuery?: string;
 	userId?: string;
 	showPresence?: boolean;

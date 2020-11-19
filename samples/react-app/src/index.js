@@ -14,7 +14,7 @@ import React from 'react';
 import ReactDOM from 'react-dom';
 import App from './App';
 import { Providers, MsalProvider } from '@microsoft/mgt';
-import { MockProvider } from '@microsoft/mgt/dist/es6/mock/MockProvider';
+import { MockProvider } from '@microsoft/mgt/dist/mock/MockProvider';
 
 Providers.globalProvider = new MockProvider(true);
 
