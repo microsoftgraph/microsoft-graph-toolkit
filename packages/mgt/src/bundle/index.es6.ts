@@ -6,4 +6,4 @@
  */
 
 export * from '../index';
-export * from '../mock/mgt-mock-provider';
+export * from '@microsoft/mgt-element/dist/mock/mgt-mock-provider';
