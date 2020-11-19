@@ -26,11 +26,21 @@ import { MgtPersonCardMessages } from './sections/mgt-person-card-messages/mgt-p
 import { MgtPersonCardOrganization } from './sections/mgt-person-card-organization/mgt-person-card-organization';
 import { getPersonCardGraphData } from './mgt-person-card.graph';
 import { MgtPersonCardProfile } from './sections/mgt-person-card-profile/mgt-person-card-profile';
-import { MgtPersonCardStateHistory, MgtPersonCardState, MgtPersonCardConfig } from './mgt-person-card.types';
+import { MgtPersonCardConfig, MgtPersonCardState } from './mgt-person-card.types';
 
 import '../sub-components/mgt-spinner/mgt-spinner';
 
-export { MgtPersonCardConfig } from './mgt-person-card.types';
+export * from './mgt-person-card.types';
+
+// tslint:disable-next-line:completed-docs
+interface MgtPersonCardStateHistory {
+  // tslint:disable-next-line:completed-docs
+  state: MgtPersonCardState;
+  // tslint:disable-next-line:completed-docs
+  personDetails: IDynamicPerson;
+  // tslint:disable-next-line:completed-docs
+  personImage: string;
+}
 
 /**
  * Web Component used to show detailed data for a person in the Microsoft Graph
@@ -680,9 +690,9 @@ export class MgtPersonCard extends MgtTemplatedComponent {
       return;
     }
 
-    this.isStateLoading = true;
-
     const graph = provider.graph.forComponent(this);
+
+    this.isStateLoading = true;
 
     if (!this._me) {
       this._me = await Providers.me();
@@ -703,7 +713,6 @@ export class MgtPersonCard extends MgtTemplatedComponent {
     } else if (this.userId || this.personQuery === 'me') {
       // Use userId or 'me' query to get the person and image
       const person = await getUserWithPhoto(graph, this.userId);
-
       this.personDetails = person;
       this.personImage = this.getImage();
     } else if (this.personQuery) {
@@ -752,40 +761,6 @@ export class MgtPersonCard extends MgtTemplatedComponent {
     this.loadSections();
 
     this.isStateLoading = false;
-  }
-
-  private loadSections() {
-    this.sections = [];
-
-    if (!this.internalPersonDetails) {
-      return;
-    }
-
-    if (MgtPersonCard.config.sections.contact) {
-      this.sections.push(new MgtPersonCardContact(this.internalPersonDetails as MicrosoftGraph.User));
-    }
-
-    if (!this.state) {
-      return;
-    }
-
-    const { person, messages, files, profile } = this.state;
-
-    if (MgtPersonCard.config.sections.organization && person) {
-      this.sections.push(new MgtPersonCardOrganization(this.state, this._me));
-    }
-
-    if (MgtPersonCard.config.sections.mailMessages && messages && messages.length) {
-      this.sections.push(new MgtPersonCardMessages(messages));
-    }
-
-    if (MgtPersonCard.config.sections.files && files && files.length) {
-      this.sections.push(new MgtPersonCardFiles(files));
-    }
-
-    if (MgtPersonCard.config.sections.profile && profile) {
-      this.sections.push(new MgtPersonCardProfile(profile));
-    }
   }
 
   /**
@@ -905,6 +880,40 @@ export class MgtPersonCard extends MgtTemplatedComponent {
     this.isExpanded = true;
 
     this.fireCustomEvent('expanded', null, true);
+  }
+
+  private loadSections() {
+    this.sections = [];
+
+    if (!this.internalPersonDetails) {
+      return;
+    }
+
+    if (MgtPersonCard.config.sections.contact) {
+      this.sections.push(new MgtPersonCardContact(this.internalPersonDetails as MicrosoftGraph.User));
+    }
+
+    if (!this.state) {
+      return;
+    }
+
+    const { person, messages, files, profile } = this.state;
+
+    if (MgtPersonCard.config.sections.organization && person) {
+      this.sections.push(new MgtPersonCardOrganization(this.state, this._me));
+    }
+
+    if (MgtPersonCard.config.sections.mailMessages && messages && messages.length) {
+      this.sections.push(new MgtPersonCardMessages(messages));
+    }
+
+    if (MgtPersonCard.config.sections.files && files && files.length) {
+      this.sections.push(new MgtPersonCardFiles(files));
+    }
+
+    if (MgtPersonCard.config.sections.profile && profile) {
+      this.sections.push(new MgtPersonCardProfile(profile));
+    }
   }
 
   private getImage(): string {

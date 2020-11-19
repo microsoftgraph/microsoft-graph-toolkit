@@ -1,8 +1,6 @@
 import { Message, Person, SharedInsight, User } from '@microsoft/microsoft-graph-types';
 import { Profile } from '@microsoft/microsoft-graph-types-beta';
 
-import { IDynamicPerson } from '../../graph/types';
-
 /**
  * Person Card Global Configuration Type
  *
@@ -66,16 +64,6 @@ export interface MgtPersonCardConfig {
      */
     profile: boolean;
   };
-}
-
-// tslint:disable-next-line:completed-docs
-export interface MgtPersonCardStateHistory {
-  // tslint:disable-next-line:completed-docs
-  state: MgtPersonCardState;
-  // tslint:disable-next-line:completed-docs
-  personDetails: IDynamicPerson;
-  // tslint:disable-next-line:completed-docs
-  personImage: string;
 }
 
 // tslint:disable-next-line:completed-docs

@@ -44,10 +44,17 @@ export async function getPersonCardGraphData(
   const userId = personDetails.id;
   const email = getEmailFromGraphEntity(personDetails);
 
+  const isContactOrGroup =
+    'classification' in personDetails ||
+    ('personType' in personDetails &&
+      (personDetails.personType.subclass === 'PersonalContact' || personDetails.personType.class === 'Group'));
+
   const batch = graph.createBatch();
 
-  if (config.sections.organization) {
-    buildOrgStructureRequest(batch, userId);
+  if (!isContactOrGroup) {
+    if (config.sections.organization) {
+      buildOrgStructureRequest(batch, userId);
+    }
   }
 
   if (config.sections.mailMessages && email) {
@@ -72,7 +79,7 @@ export async function getPersonCardGraphData(
     }
   }
 
-  if (config.sections.profile) {
+  if (!isContactOrGroup && config.sections.profile) {
     try {
       const profile = await getProfile(graph, userId);
       if (profile) {
