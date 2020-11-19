@@ -68,14 +68,6 @@ export class MgtPersonCardOrganization extends BasePersonCardSection {
   }
 
   /**
-   * Reset any state in the section
-   *
-   * @protected
-   * @memberof MgtPersonCardOrganization
-   */
-  public clearState(): void {}
-
-  /**
    * Render the compact view
    *
    * @returns {TemplateResult}

@@ -8,10 +8,10 @@
 import { SharedInsight } from '@microsoft/microsoft-graph-types';
 import { customElement, html, TemplateResult } from 'lit-element';
 
-import { getRelativeDisplayDate } from '../../../../utils/Utils';
 import { BasePersonCardSection } from '../BasePersonCardSection';
 import { getFileTypeIconUri } from '../../../../styles/fluent-icons';
 import { getSvg, SvgIcon } from '../../../../utils/SvgHelper';
+import { getRelativeDisplayDate } from '../../../../utils/Utils';
 import { styles } from './mgt-person-card-files-css';
 
 /**

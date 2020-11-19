@@ -5,11 +5,12 @@
  * -------------------------------------------------------------------------------------------
  */
 
-import { customElement, html, TemplateResult } from 'lit-element';
-import { BasePersonCardSection } from '../BasePersonCardSection';
-import { styles } from './mgt-person-card-profile-css';
-import { getSvg, SvgIcon } from '../../../../utils/SvgHelper';
 import { EducationalActivity, PersonAnniversary, PersonInterest, Profile } from '@microsoft/microsoft-graph-types-beta';
+import { customElement, html, TemplateResult } from 'lit-element';
+
+import { BasePersonCardSection } from '../BasePersonCardSection';
+import { getSvg, SvgIcon } from '../../../../utils/SvgHelper';
+import { styles } from './mgt-person-card-profile-css';
 
 /**
  * The user profile subsection of the person card
@@ -431,7 +432,6 @@ export class MgtPersonCardProfile extends BasePersonCardSection {
 
   // tslint:disable-next-line: completed-docs
   private getDisplayDateRange(event: EducationalActivity): string {
-    console.log(event);
     const start = new Date(event.startMonthYear).getFullYear();
     if (start === 0) {
       return null;

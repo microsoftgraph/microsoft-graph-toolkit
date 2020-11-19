@@ -10,7 +10,7 @@ import { customElement, html, internalProperty, property, TemplateResult } from 
 import { classMap } from 'lit-html/directives/class-map';
 import { findPeople, getEmailFromGraphEntity } from '../../graph/graph.people';
 import { getPersonImage } from '../../graph/graph.photos';
-import { getMe, getUserWithPhoto } from '../../graph/graph.user';
+import { getUserWithPhoto } from '../../graph/graph.user';
 import { getSvg, SvgIcon } from '../../utils/SvgHelper';
 import { getUserPresence } from '../../graph/graph.presence';
 import { IDynamicPerson } from '../../graph/types';
@@ -26,7 +26,7 @@ import { MgtPersonCardMessages } from './sections/mgt-person-card-messages/mgt-p
 import { MgtPersonCardOrganization } from './sections/mgt-person-card-organization/mgt-person-card-organization';
 import { getPersonCardGraphData } from './mgt-person-card.graph';
 import { MgtPersonCardProfile } from './sections/mgt-person-card-profile/mgt-person-card-profile';
-import { MgtPersonCardConfig, MgtPersonCardHistoryState, MgtPersonCardState } from './mgt-person-card.types';
+import { MgtPersonCardStateHistory, MgtPersonCardState, MgtPersonCardConfig } from './mgt-person-card.types';
 
 import '../sub-components/mgt-spinner/mgt-spinner';
 
@@ -62,15 +62,14 @@ export class MgtPersonCard extends MgtTemplatedComponent {
   }
 
   private static _config: MgtPersonCardConfig = {
-    useContactApis: true,
-    isSendMessageVisible: false,
     sections: {
       contact: true,
       files: true,
       mailMessages: true,
       organization: true,
       profile: true
-    }
+    },
+    useContactApis: true
   };
 
   /**
@@ -211,7 +210,7 @@ export class MgtPersonCard extends MgtTemplatedComponent {
   @internalProperty() private state: MgtPersonCardState;
   @internalProperty() private isStateLoading: boolean;
 
-  private _history: MgtPersonCardHistoryState[];
+  private _history: MgtPersonCardStateHistory[];
   private _chatInput: string;
   private _currentSection: BasePersonCardSection;
   private _personDetails: IDynamicPerson;
@@ -249,7 +248,6 @@ export class MgtPersonCard extends MgtTemplatedComponent {
       case 'user-id':
         this.personDetails = null;
         this.requestStateUpdate();
-        console.log('request attribute changed callback');
         break;
     }
   }
@@ -596,25 +594,27 @@ export class MgtPersonCard extends MgtTemplatedComponent {
       );
     }
 
+    // To be included when support for direct messaging is added
+    // ${this.internalPersonDetails.id !== this._me.id && MgtPersonCard.config.isSendMessageVisible
+    //   ? html`
+    //       <div class="quick-message">
+    //         <input
+    //           type="text"
+    //           class="quick-message__input"
+    //           placeholder="Message ${this.internalPersonDetails.displayName}"
+    //           .value=${this._chatInput}
+    //           @input=${(e: Event) => {
+    //             this._chatInput = (e.target as HTMLInputElement).value;
+    //           }}
+    //         />
+    //         <button class="quick-message__send" @click=${() => this.sendQuickMessage()}>
+    //           ${getSvg(SvgIcon.Send)}
+    //         </button>
+    //       </div>
+    //     `
+    //   : null}
+
     return html`
-      ${this.internalPersonDetails.id !== this._me.id && MgtPersonCard.config.isSendMessageVisible
-        ? html`
-            <div class="quick-message">
-              <input
-                type="text"
-                class="quick-message__input"
-                placeholder="Message ${this.internalPersonDetails.displayName}"
-                .value=${this._chatInput}
-                @input=${(e: Event) => {
-                  this._chatInput = (e.target as HTMLInputElement).value;
-                }}
-              />
-              <button class="quick-message__send" @click=${() => this.sendQuickMessage()}>
-                ${getSvg(SvgIcon.Send)}
-              </button>
-            </div>
-          `
-        : null}
       <div class="sections">
         ${compactTemplates}
       </div>

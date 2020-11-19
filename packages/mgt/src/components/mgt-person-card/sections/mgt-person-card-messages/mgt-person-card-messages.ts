@@ -5,12 +5,13 @@
  * -------------------------------------------------------------------------------------------
  */
 
-import { customElement, html, TemplateResult } from 'lit-element';
-import { getRelativeDisplayDate } from '../../../../utils/Utils';
-import { BasePersonCardSection } from '../BasePersonCardSection';
-import { styles } from './mgt-person-card-messages-css';
-import { SvgIcon, getSvg } from '../../../../utils/SvgHelper';
 import { Message } from '@microsoft/microsoft-graph-types';
+import { customElement, html, TemplateResult } from 'lit-element';
+
+import { BasePersonCardSection } from '../BasePersonCardSection';
+import { getSvg, SvgIcon } from '../../../../utils/SvgHelper';
+import { getRelativeDisplayDate } from '../../../../utils/Utils';
+import { styles } from './mgt-person-card-messages-css';
 
 /**
  * The email messages subsection of the person card

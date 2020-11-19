@@ -7,6 +7,7 @@
 
 import { BatchResponse, IBatch, IGraph } from '@microsoft/mgt-element';
 import { Profile } from '@microsoft/microsoft-graph-types-beta';
+
 import { getEmailFromGraphEntity } from '../../graph/graph.people';
 import { IDynamicPerson } from '../../graph/types';
 import { MgtPersonCardConfig, MgtPersonCardState } from './mgt-person-card.types';
@@ -25,11 +26,14 @@ const batchKeys = {
 };
 
 /**
- * Get initial data to populate the person card
+ * Get data to populate the person card
  *
- * @param {string} userId
- * @returns {(Promise<IDynamicPerson>)}
- * @memberof Graph
+ * @export
+ * @param {IGraph} graph
+ * @param {IDynamicPerson} personDetails
+ * @param {boolean} isMe
+ * @param {MgtPersonCardConfig} config
+ * @return {*}  {Promise<MgtPersonCardState>}
  */
 export async function getPersonCardGraphData(
   graph: IGraph,
@@ -118,6 +122,13 @@ function buildFilesRequest(batch: IBatch, emailAddress?: string) {
   batch.get(batchKeys.files, request); // TODO , ['sites.read.all']);
 }
 
+/**
+ * Get the profile for a user
+ *
+ * @param {IGraph} graph
+ * @param {string} userId
+ * @return {*}  {Promise<Profile>}
+ */
 async function getProfile(graph: IGraph, userId: string): Promise<Profile> {
   const profile = await graph
     .api(`/users/${userId}/profile`)

@@ -5,14 +5,14 @@
  * -------------------------------------------------------------------------------------------
  */
 
-// import * as GraphTypes from '@microsoft/microsoft-graph-types';
+import { User } from '@microsoft/microsoft-graph-types';
 import { customElement, html, TemplateResult } from 'lit-element';
+
 import { getEmailFromGraphEntity } from '../../../../graph/graph.people';
+import { getSvg, SvgIcon } from '../../../../utils/SvgHelper';
 import { TeamsHelper } from '../../../../utils/TeamsHelper';
 import { BasePersonCardSection } from '../BasePersonCardSection';
 import { styles } from './mgt-person-card-contact-css';
-import { SvgIcon, getSvg } from '../../../../utils/SvgHelper';
-import { User } from '@microsoft/microsoft-graph-types';
 
 /**
  * Represents a contact part and its metadata

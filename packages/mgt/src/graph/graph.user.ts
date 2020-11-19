@@ -20,9 +20,6 @@ import {
 } from './graph.photos';
 import { IDynamicPerson } from './types';
 
-const userProperties =
-  'businessPhones,companyName,department,displayName,givenName,jobTitle,mail,mobilePhone,officeLocation,preferredLanguage,surname,userPrincipalName,id';
-
 /**
  * Describes the organization of the cache db
  */
@@ -245,122 +242,6 @@ export async function getUser(graph: IGraph, userPrincipleName: string): Promise
   if (usersCacheEnabled()) {
     cache.putValue(userPrincipleName, { user: JSON.stringify(response) });
   }
-  return response;
-}
-
-/**
- * async promise, returns a Graph users expanded to include additional information than default
- *
- * @param {string} userPrincipleName
- * @returns {(Promise<User>)}
- * @memberof Graph
- */
-export async function getExpandedUser(graph: IGraph, userId: string): Promise<User> {
-  const scopes = 'user.read.all';
-  let cache: CacheStore<CacheUser>;
-
-  // if (usersCacheEnabled()) {
-  //   cache = CacheService.getCache<CacheUser>(cacheSchema, userStore);
-  //   // check cache
-  //   const user = await cache.getValue(userPrincipleName);
-  //   // is it stored and is timestamp good?
-  //   if (user && getUserInvalidationTime() > Date.now() - user.timeCached) {
-  //     // return without any worries
-  //     return user.user ? JSON.parse(user.user) : null;
-  //   }
-  // }
-
-  // else we must grab it
-  const request = graph
-    .api(`users/${userId}`)
-    .expand(`manager($levels=max;$select=${userProperties})`)
-    .select(userProperties)
-    .middlewareOptions(prepScopes(scopes))
-    .count(true)
-    .header('ConsistencyLevel', 'eventual');
-
-  console.log(request);
-
-  const response = await request.get();
-
-  // if (usersCacheEnabled()) {
-  //   cache.putValue(userPrincipleName, { user: JSON.stringify(response) });
-  // }
-  return response;
-}
-
-// /**
-//  * async promise, returns a Graph users expanded to include additional information than default
-//  *
-//  * @param {string} userPrincipleName
-//  * @returns {(Promise<User>)}
-//  * @memberof Graph
-//  */
-// export async function getExpandedUser(graph: IGraph, userId: string): Promise<User> {
-//   const scopes = 'user.read.all';
-//   let cache: CacheStore<CacheUser>;
-
-//   // if (usersCacheEnabled()) {
-//   //   cache = CacheService.getCache<CacheUser>(cacheSchema, userStore);
-//   //   // check cache
-//   //   const user = await cache.getValue(userPrincipleName);
-//   //   // is it stored and is timestamp good?
-//   //   if (user && getUserInvalidationTime() > Date.now() - user.timeCached) {
-//   //     // return without any worries
-//   //     return user.user ? JSON.parse(user.user) : null;
-//   //   }
-//   // }
-
-//   // else we must grab it
-//   const response = await graph
-//     .api(`users/${userId}`)
-//     .expand(`manager($levels=max;$select=${userProperties})`)
-//     .select(userProperties)
-//     .middlewareOptions(prepScopes(scopes))
-//     .count(true)
-//     .header('ConsistencyLevel', 'eventual')
-//     .get();
-
-//   // if (usersCacheEnabled()) {
-//   //   cache.putValue(userPrincipleName, { user: JSON.stringify(response) });
-//   // }
-//   return response;
-// }
-
-/**
- * async promise, returns a Graph users expanded to include additional information than default
- *
- * @param {string} userPrincipleName
- * @returns {(Promise<User>)}
- * @memberof Graph
- */
-export async function getDirectReportsForUser(graph: IGraph, userId: string): Promise<User> {
-  const scopes = 'user.read.all';
-  let cache: CacheStore<CacheUser>;
-
-  // if (usersCacheEnabled()) {
-  //   cache = CacheService.getCache<CacheUser>(cacheSchema, userStore);
-  //   // check cache
-  //   const user = await cache.getValue(userPrincipleName);
-  //   // is it stored and is timestamp good?
-  //   if (user && getUserInvalidationTime() > Date.now() - user.timeCached) {
-  //     // return without any worries
-  //     return user.user ? JSON.parse(user.user) : null;
-  //   }
-  // }
-
-  // else we must grab it
-  const response = await graph
-    .api(`users/${userId}/directReports`)
-    .select(userProperties)
-    .middlewareOptions(prepScopes(scopes))
-    .count(true)
-    .header('ConsistencyLevel', 'eventual')
-    .get();
-
-  // if (usersCacheEnabled()) {
-  //   cache.putValue(userPrincipleName, { user: JSON.stringify(response) });
-  // }
   return response;
 }
 
