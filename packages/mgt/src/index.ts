@@ -5,14 +5,9 @@
  * -------------------------------------------------------------------------------------------
  */
 
-export * from './components/components';
-export * from './components/providers/providers';
-export * from './providers/providers';
-export * from './graph/types';
-export { TeamsHelper } from './utils/TeamsHelper';
-export { prepScopes } from './utils/GraphHelpers';
-export * from './utils/Cache';
 export * from '@microsoft/mgt-element';
-
-export * from './mock/MockProvider';
-export * from './mock/mgt-mock-provider';
+export * from '@microsoft/mgt-components';
+export * from '@microsoft/mgt-msal-provider';
+export * from '@microsoft/mgt-teams-provider';
+export * from '@microsoft/mgt-proxy-provider';
+export * from '@microsoft/mgt-sharepoint-provider';

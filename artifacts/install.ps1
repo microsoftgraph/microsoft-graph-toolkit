@@ -20,6 +20,6 @@ function Get-Packages {
   Write-Output $output
 }
 
-$packages = Get-Packages mgt-element mgt mgt-react
+$packages = Get-Packages mgt-element mgt-msal-provider mgt mgt-react
 
 npm i $packages
