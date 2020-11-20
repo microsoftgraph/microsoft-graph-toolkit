@@ -85,10 +85,6 @@ export class MgtPersonCard extends MgtTemplatedComponent {
   public static getScopes(): string[] {
     const scopes = [];
 
-    if (this.config.sections.contact) {
-      scopes.push('User.Read.All');
-    }
-
     if (this.config.sections.files) {
       scopes.push('Sites.Read.All');
     }
@@ -142,7 +138,6 @@ export class MgtPersonCard extends MgtTemplatedComponent {
 
   private static _config: MgtPersonCardConfig = {
     sections: {
-      contact: true,
       files: true,
       mailMessages: true,
       organization: { showWorksWith: true },
@@ -591,7 +586,7 @@ export class MgtPersonCard extends MgtTemplatedComponent {
    * @memberof MgtPersonCard
    */
   protected renderSectionNavigation(): TemplateResult {
-    if (!this.sections || this.sections.length < 2) {
+    if (!this.sections || (this.sections.length < 2 && !this.hasTemplate('additional-details'))) {
       return;
     }
 
@@ -639,8 +634,11 @@ export class MgtPersonCard extends MgtTemplatedComponent {
       `
     );
 
-    // TODO - pass state somehow
-    const additionalDetails = this.renderTemplate('additional-details', null);
+    const additionalDetails = this.renderTemplate('additional-details', {
+      person: this.internalPersonDetails,
+      personImage: this.getImage(),
+      state: this.state
+    });
     if (additionalDetails) {
       compactTemplates.splice(
         1,
@@ -688,11 +686,11 @@ export class MgtPersonCard extends MgtTemplatedComponent {
    * @memberof MgtPersonCard
    */
   protected renderCurrentSection(): TemplateResult {
-    if (!this.sections || !this.sections.length) {
+    if ((!this.sections || !this.sections.length) && !this.hasTemplate('additional-details')) {
       return;
     }
 
-    if (this.sections.length === 1) {
+    if (this.sections.length === 1 && !this.hasTemplate('additional-details')) {
       return html`
         ${this.sections[0].asFullView()}
       `;
@@ -938,9 +936,7 @@ export class MgtPersonCard extends MgtTemplatedComponent {
       return;
     }
 
-    if (MgtPersonCard.config.sections.contact) {
-      this.sections.push(new MgtPersonCardContact(this.internalPersonDetails as MicrosoftGraph.User));
-    }
+    this.sections.push(new MgtPersonCardContact(this.internalPersonDetails as MicrosoftGraph.User));
 
     if (!this.state) {
       return;

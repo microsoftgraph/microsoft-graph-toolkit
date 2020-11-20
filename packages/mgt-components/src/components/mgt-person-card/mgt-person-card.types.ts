@@ -37,16 +37,8 @@ export interface MgtPersonCardConfig {
    */
   sections: {
     /**
-     * Gets or sets whether the contact section is shown
-     *
-     * @type {boolean}
-     */
-    contact: boolean;
-
-    /**
      * Gets or sets whether the organization section is shown
      *
-     * @type {boolean}
      */
     organization:
       | boolean

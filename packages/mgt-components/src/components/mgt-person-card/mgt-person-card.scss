@@ -56,7 +56,7 @@ $person-card-background-color: var(--person-card-background-color, #ffffff);
   .person-details-container {
     display: flex;
     flex-direction: column;
-    width: calc(var(--mgt-flyout-set-width, 340px) - 30px);
+    width: calc(var(--mgt-flyout-set-width, 340px) - 40px);
     padding: 20px;
 
     .person-image {
