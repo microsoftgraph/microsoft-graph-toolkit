@@ -1,6 +1,7 @@
 dist/
 www/
 lib/
+assets/*.js
 
 *~
 *.sw[mnpcod]

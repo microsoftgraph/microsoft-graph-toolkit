@@ -1,6 +1,8 @@
 import { makeDecorator } from '@storybook/addons';
 import { EditorElement } from './editor';
 
+const mgtScriptName = './mgt.storybook.js';
+
 // function is used for dragging and moving
 const setupEditorResize = (first, separator, last, dragComplete) => {
   var md; // remember mouse down info
@@ -63,14 +65,11 @@ export const withCodeEditor = makeDecorator({
     let storyHtml;
     const root = document.createElement('div');
     let storyElementWrapper = document.createElement('div');
-    let storyElement;
 
     if (story.strings) {
       storyHtml = story.strings[0];
-      storyElement = document.createElement('div');
     } else {
       storyHtml = story.innerHTML;
-      storyElement = story;
     }
 
     let scriptMatches = scriptRegex.exec(storyHtml);
@@ -93,8 +92,46 @@ export const withCodeEditor = makeDecorator({
     };
 
     editor.addEventListener('fileUpdated', () => {
-      storyElement.innerHTML = editor.files.html + `<style>${editor.files.css}</style>`;
-      eval(editor.files.js);
+      const storyElement = document.createElement('iframe');
+
+      storyElement.addEventListener('load', () => {
+        let doc = storyElement.contentDocument;
+
+        let { html, css, js } = editor.files;
+        js = js.replace(
+          /import \{([^\}]+)\}\s+from\s+['"]@microsoft\/mgt['"];/gm,
+          `import {$1} from '${mgtScriptName}';`
+        );
+
+        const docContent = `
+      <html>
+        <head>
+          <script type="module" src="${mgtScriptName}"></script>
+          <script type="module">
+            import {Providers, MockProvider} from "${mgtScriptName}";
+            Providers.globalProvider = new MockProvider(true);
+          </script>
+          <style>
+            ${css}
+          </style>
+        </head>
+        <body>
+          ${html}
+          <script type="module">
+            ${js}
+          </script>
+        </body>
+      </html>
+      `;
+
+        doc.open();
+        doc.write(docContent);
+        doc.close();
+      });
+
+      storyElement.className = 'story-mgt-preview';
+      storyElementWrapper.innerHTML = '';
+      storyElementWrapper.appendChild(storyElement);
     });
 
     const separator = document.createElement('div');
@@ -103,12 +140,10 @@ export const withCodeEditor = makeDecorator({
 
     root.className = 'story-mgt-root';
     storyElementWrapper.className = 'story-mgt-preview-wrapper';
-    storyElement.className = 'story-mgt-preview';
     separator.className = 'story-mgt-separator';
     editor.className = 'story-mgt-editor';
 
     root.appendChild(storyElementWrapper);
-    storyElementWrapper.appendChild(storyElement);
     root.appendChild(separator);
     root.appendChild(editor);
 
