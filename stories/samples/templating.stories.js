@@ -371,3 +371,18 @@ export const TeamsMessages = () => html`
   }
 </style>
 `;
+
+export const ChangeBindingSyntax = () => html`
+<mgt-agenda>
+  <template data-type="event">
+    <div>
+      [[event.subject]]
+    </div>
+  </template>
+</mgt-agenda>
+<script>
+  import { TemplateHelper } from '@microsoft/mgt';
+
+  TemplateHelper.setBindingSyntax('[[', ']]');
+</script>
+`;
