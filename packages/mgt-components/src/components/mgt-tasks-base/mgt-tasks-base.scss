@@ -9,15 +9,12 @@
 @import '../../../../../node_modules/office-ui-fabric-core/dist/sass/References';
 @import './mgt-tasks-base.theme.scss';
 
-// $tasks-background-color: var(--tasks-background-color, #f8f8f8);
-
 $task-icon-alignment: var(--task-icon-alignment, flex-start);
 $task-icon-background: var(--task-icon-background, transparent);
 $task-icon-background-completed: var(--task-icon-background-completed, $ms-color-sharedGreenCyan10);
 $task-icon-border: var(--task-icon-border, solid 1px $ms-color-gray120);
 $task-icon-border-completed: var(--task-icon-border-completed, solid 1px white);
 $task-icon-border-radius: var(--task-icon-border-radius, 50%);
-// $task-icon-color: var(--task-icon-color, black);
 $task-icon-color-completed: var(--task-icon-color-completed, white);
 $task-border-completed: var(--task-complete-border, 2px dotted inherit);
 
