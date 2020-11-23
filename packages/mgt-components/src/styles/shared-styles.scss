@@ -108,12 +108,14 @@ $green: #6bb700; /* Person / Available */
 /* -----Background----- */
 // light
 $background-color__main--light: $white;
-$background-color__sub--light: $gray20;
+$background-color__sub1--light: $gray10;
+$background-color__sub2--light: $gray20;
 $background-color__main--hover--light: $gray20;
 $background-color__main--active--light: $gray30;
 // dark
 $background-color__main--dark: $black;
-$background-color__sub--dark: $gray140;
+$background-color__sub1--dark: $gray210;
+$background-color__sub2--dark: $gray140;
 $background-color__main--hover--dark: $gray160;
 $background-color__main--active--dark: $gray140;
 
@@ -212,10 +214,10 @@ $tag__color--light: $text__color__sub1--light;
 
 /* -----Pill----- */
 // light
-$pill__background-color--light: $background-color__sub--light;
+$pill__background-color--light: $background-color__sub2--light;
 $pill__color--light: $text__color__sub1--light;
 // dark
-$pill__background-color--dark: $background-color__sub--dark;
+$pill__background-color--dark: $background-color__sub2--dark;
 $pill__color--dark: $text__color__sub1--dark;
 
 /* -----Link----- */

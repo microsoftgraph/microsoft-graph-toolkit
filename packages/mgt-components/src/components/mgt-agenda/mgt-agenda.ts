@@ -13,6 +13,7 @@ import { getDayOfWeekString, getMonthString } from '../../utils/Utils';
 import '../mgt-person/mgt-person';
 import { styles } from './mgt-agenda-css';
 import { getEventsPageIterator } from './mgt-agenda.graph';
+import { SvgIcon, getSvg } from '../../utils/SvgHelper';
 
 /**
  * Web Component which represents events in a user or group calendar.
@@ -380,20 +381,7 @@ export class MgtAgenda extends MgtTemplatedComponent {
 
     return html`
       <div class="event-location-container">
-        <svg width="10" height="13" viewBox="0 0 10 13" fill="none" xmlns="http://www.w3.org/2000/svg">
-          <path
-            fill-rule="evenodd"
-            clip-rule="evenodd"
-            d="M4.99989 6.49989C4.15159 6.49989 3.46143 5.81458 3.46143 4.97224C3.46143 4.12965 4.15159 3.44434 4.99989 3.44434C5.84845 3.44434 6.53835 4.12965 6.53835 4.97224C6.53835 5.81458 5.84845 6.49989 4.99989 6.49989Z"
-            stroke="black"
-          />
-          <path
-            fill-rule="evenodd"
-            clip-rule="evenodd"
-            d="M8.1897 7.57436L5.00029 12L1.80577 7.56765C0.5971 6.01895 0.770299 3.47507 2.17681 2.12383C2.93098 1.39918 3.93367 1 5.00029 1C6.06692 1 7.06961 1.39918 7.82401 2.12383C9.23075 3.47507 9.40372 6.01895 8.1897 7.57436Z"
-            stroke="black"
-          />
-        </svg>
+        <div class="event-location-icon">${getSvg(SvgIcon.OfficeLocation)}</div>
         <div class="event-location" aria-label="${event.location.displayName}">${event.location.displayName}</div>
       </div>
     `;
