@@ -1,0 +1,53 @@
+/**
+ * -------------------------------------------------------------------------------------------
+ * Copyright (c) Microsoft Corporation.  All Rights Reserved.  Licensed under the MIT License.
+ * See License in the project root for license information.
+ * -------------------------------------------------------------------------------------------
+ */
+
+@import '../../styles/shared-styles.scss';
+
+$tasks: (
+  background-color: (
+    _var: --tasks-background-color,
+    light: $background-color__main--light,
+    dark: $background-color__main--dark
+  ),
+  background-color--completed: (
+    _var: --task-complete-background,
+    light: $background-color__sub1--light,
+    dark: $background-color__sub1--dark
+  ),
+  border--completed: (
+    _var: --task-complete-border,
+    light: 2px dotted $background-color__sub3--light,
+    dark: 2px dotted $background-color__sub3--dark
+  ),
+  title__color: (
+    _var: --task-title-color,
+    light: $title__color__subtitle--light,
+    dark: $title__color__subtitle--dark
+  ),
+  button__background-color--disabled: (
+    _var: --task-new-add-button-disabled-background,
+    light: $gray30,
+    dark: $gray140
+  ),
+  button__color--cancle: (
+    _var: --task-new-cancel-button-color,
+    light: $text__color__sub1--light,
+    dark: $text__color__sub1--dark
+  ),
+  detail__color: (
+    _var: --task-detail-color,
+    light: $text__color__sub2--light,
+    dark: $text__color__sub2--dark
+  ),
+  icon__color: (
+    _var: --task-icon-color,
+    light: $text__color__main--light,
+    dark: $text__color__main--dark
+  )
+);
+
+@include create-themes($tasks);
