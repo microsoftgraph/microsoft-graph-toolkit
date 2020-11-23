@@ -48,26 +48,6 @@
   content: '\\\EB6D';
 }
 
-/* ---------------Common theming vars / functions / mixins--------------- */
-$themes: ('light', 'dark');
-$theme-default: 'light';
-
-@function set-var($var, $theme, $component) {
-  $theme-value: map-get($component, $var);
-
-  @return var(#{map-get($theme-value, '_var')}, #{map-get($theme-value, $theme)});
-}
-
-@mixin create-themes($component) {
-  @each $theme in $themes {
-    .mgt-#{$theme} {
-      @each $name, $var in $component {
-        #{map-get($var, _var)}: #{map-get($var, $theme)};
-      }
-    }
-  }
-}
-
 /* ---------------Common color variables--------------- */
 $white: #ffffff; /* Neutrals / White #FFFFFF */
 $black: #000000; /* Neutrals / Web / Black #000000 */
@@ -225,3 +205,33 @@ $link__color--light: $gray160;
 $link__color--hover--light: $commblue_primary;
 $link__color--pressed--light: $black;
 $link__color--disabled--light: $gray90;
+
+/* ---------------Common theming vars / functions / mixins--------------- */
+$themes: ('light', 'dark');
+$theme-default: 'light';
+
+$common: (
+  color: (
+    _var: --color,
+    dark: $text__color__main--dark,
+    light: $text__color__main--light
+  )
+);
+
+@function set-var($var, $theme, $component) {
+  $theme-value: map-get($component, $var);
+
+  @return var(#{map-get($theme-value, '_var')}, #{map-get($theme-value, $theme)});
+}
+
+@mixin create-themes($component) {
+  @each $theme in $themes {
+    .mgt-#{$theme} {
+      @each $name, $var in $component {
+        #{map-get($var, _var)}: #{map-get($var, $theme)};
+      }
+    }
+  }
+}
+
+@include create-themes($common);

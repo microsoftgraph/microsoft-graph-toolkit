@@ -7,6 +7,7 @@
 
 @import '../../../../../node_modules/office-ui-fabric-core/dist/sass/References';
 @import '../../styles/shared-styles.scss';
+@import './mgt-people.theme.scss';
 
 $list-margin: var(--list-margin, 8px 4px 8px 8px);
 $avatar-margin: var(--avatar-margin, 0 4px 0 0);
@@ -17,6 +18,7 @@ mgt-people .people-list {
   margin: $list-margin;
   padding: 0;
   font-family: var(--default-font-family, 'Segoe UI');
+  color: set-var(color, $theme-default, $common);
   font-style: normal;
   font-weight: normal;
   display: flex;
