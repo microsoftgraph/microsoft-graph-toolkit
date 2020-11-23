@@ -9,13 +9,6 @@
 @import '../../styles/shared-styles.scss';
 @import './mgt-people-picker.theme.scss';
 
-// common vars regardless of themes
-$avatar-margin: var(--avatar-margin, 0 4px 0 0);
-$avatar-size-s: var(--avatar-size-s, 24px);
-$avatar-size: var(--avatar-size, 48px);
-$initials-color: var(--initials-color, #{$white});
-$initials-background-color: var(--initials-background-color, #{$ms-color-magenta});
-
 // Main
 :host {
   border-radius: 2px;
