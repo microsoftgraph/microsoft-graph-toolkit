@@ -7,6 +7,7 @@
 
 @import '../../../../../node_modules/office-ui-fabric-core/dist/sass/References';
 @import '../../styles/shared-styles.scss';
+@import './mgt-person.theme.scss';
 
 $avatar-size-s: var(--avatar-size-s, var(--avatar-size, 24px));
 $avatar-size: var(--avatar-size, var(--avatar-size-s, 48px));
@@ -19,19 +20,14 @@ $initials-background-color: --initials-background-color;
 $font-family: var(--font-family, var(--default-font-family));
 $font-size: var(--font-size, #{$ms-font-size-m});
 $font-weight: var(--font-weight, #{$ms-font-weight-semibold});
-$color: var(--color, #{$ms-color-neutralDark});
 $text-transform: var(text-transform, none);
-$presence-background-color: var(--presence-background-color, #ffffff);
-$presence-icon-color: var(--presence-icon-color, #ffffff);
 
 $line2-font-size: var(--line2-font-size, var(--email-font-size, #{$ms-font-size-s}));
 $line2-font-weight: var(--line2-font-weight, 400);
-$line2-color: var(--line2-color, var(--email-color, #{$color}));
 $line2-text-transform: var(--line2-text-transform, #{$text-transform});
 
 $line3-font-size: var(--line3-font-size, var(--email-font-size, #{$ms-font-size-s}));
 $line3-font-weight: var(--line3-font-weight, 400);
-$line3-color: var(--line3-color, var(--email-color, #{$color}));
 $line3-text-transform: var(--line3-text-transform, #{$text-transform});
 
 $details-spacing: --details-spacing;
@@ -54,7 +50,7 @@ $presence-color-oof: #b4009e;
 
 :host .root {
   display: block;
-  color: $color;
+  color: set-var(color, $theme-default, $person);
 }
 
 :host svg,
@@ -84,11 +80,11 @@ mgt-person .person-root {
       top: calc(#{$avatar-size} * 0.72 - 4px);
       width: calc(#{$avatar-size} * 0.28);
       height: calc(#{$avatar-size} * 0.28);
-      border: 2px solid $presence-background-color;
+      border: 2px solid set-var(presence__background-color, $theme-default, $person);
       border-radius: 50%;
 
       .presence-oof-offline-wrapper {
-        background-color: $presence-background-color;
+        background-color: set-var(presence__background-color, $theme-default, $person);
         border-color: $presence-color-oof;
 
         .presence-oof-offline svg {
@@ -111,7 +107,7 @@ mgt-person .person-root {
         align-items: center;
 
         &.presence-offline {
-          background-color: $presence-background-color;
+          background-color: set-var(presence__background-color, $theme-default, $person);
           border-color: $presence-color-invisible;
         }
 
@@ -121,7 +117,7 @@ mgt-person .person-root {
         }
 
         &.presence-oof-available {
-          background-color: $presence-background-color;
+          background-color: set-var(presence__background-color, $theme-default, $person);
           border-color: $presence-color-online;
         }
 
@@ -136,7 +132,7 @@ mgt-person .person-root {
         }
 
         &.presence-oof-dnd {
-          background-color: $presence-background-color;
+          background-color: set-var(presence__background-color, $theme-default, $person);
           border-color: $presence-color-dnd;
         }
 
@@ -146,7 +142,7 @@ mgt-person .person-root {
         }
 
         &.presence-oof-busy {
-          background-color: $presence-background-color;
+          background-color: set-var(presence__background-color, $theme-default, $person);
           border-color: $presence-color-dnd;
         }
       }
@@ -160,7 +156,7 @@ mgt-person .person-root {
 
       .presence-available::before {
         content: $ms-icon-code-SkypeCheck;
-        color: $presence-icon-color;
+        color: set-var(presence__icon__color, $theme-default, $person);
         margin-left: calc(#{$avatar-size} * 0.07 - 2px);
       }
 
@@ -172,13 +168,13 @@ mgt-person .person-root {
 
       .presence-away::before {
         content: $ms-icon-code-SkypeClock;
-        color: $presence-icon-color;
+        color: set-var(presence__icon__color, $theme-default, $person);
         margin-left: calc(#{$avatar-size} * 0.07 - 2px);
       }
 
       .presence-dnd::before {
         content: $ms-icon-code-SkypeMinus;
-        color: $presence-icon-color;
+        color: set-var(presence__icon__color, $theme-default, $person);
         margin-left: calc(#{$avatar-size} * 0.07 - 2px);
       }
 
@@ -373,14 +369,14 @@ mgt-person .person-root {
     }
 
     .line2 {
-      color: $line2-color;
+      color: set-var(line2__color, $theme-default, $person);
       font-size: $line2-font-size;
       font-weight: $line2-font-weight;
       text-transform: $line2-text-transform;
     }
 
     .line3 {
-      color: $line3-color;
+      color: set-var(line3__color, $theme-default, $person);
       font-size: $line3-font-size;
       font-weight: $line3-font-weight;
       text-transform: $line3-text-transform;

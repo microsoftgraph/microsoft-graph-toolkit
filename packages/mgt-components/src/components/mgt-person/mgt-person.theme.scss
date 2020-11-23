@@ -1,0 +1,38 @@
+/**
+ * -------------------------------------------------------------------------------------------
+ * Copyright (c) Microsoft Corporation.  All Rights Reserved.  Licensed under the MIT License.
+ * See License in the project root for license information.
+ * -------------------------------------------------------------------------------------------
+ */
+
+@import '../../styles/shared-styles.scss';
+
+$person: (
+  color: (
+    _var: --color,
+    dark: $text__color__main--dark,
+    light: $text__color__main--light
+  ),
+  presence__background-color: (
+    _var: --presence-background-color,
+    dark: $background-color__main--dark,
+    light: $background-color__main--light
+  ),
+  presence__icon__color: (
+    _var: --presence-icon-color,
+    dark: $text__color__main--dark,
+    light: $text__color__main--light
+  ),
+  line2__color: (
+    _var: --line2-color,
+    dark: $text__color__sub1--dark,
+    light: $text__color__sub1--light
+  ),
+  line3__color: (
+    _var: --line3-color,
+    dark: $text__color__sub2--dark,
+    light: $text__color__sub2--light
+  )
+);
+
+@include create-themes($person);
