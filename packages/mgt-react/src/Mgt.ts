@@ -116,6 +116,8 @@ export class Mgt extends Wc {
       let element = child as ReactElement;
       if (element && element.props && element.props.template) {
         templates[element.props.template] = element;
+      } else {
+        templates['default'] = element;
       }
     });
 
