@@ -722,7 +722,7 @@ export class MgtPerson extends MgtTemplatedComponent {
       : html``;
 
     return html`
-      <mgt-flyout light-dismiss class="flyout">
+      <mgt-flyout light-dismiss class="flyout" .avoidHidingAnchor=${false}>
         ${anchor} ${flyoutContent}
       </mgt-flyout>
     `;
@@ -940,6 +940,7 @@ export class MgtPerson extends MgtTemplatedComponent {
       this.renderRoot.querySelector('mgt-person-card')) as MgtPersonCard;
     if (personCard) {
       personCard.isExpanded = false;
+      personCard.clearHistory();
     }
   }
 

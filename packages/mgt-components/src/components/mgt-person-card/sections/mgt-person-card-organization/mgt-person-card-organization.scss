@@ -75,6 +75,10 @@
         border: 1px solid #3078d0;
       }
 
+      &.org-member--direct-report:not(:last-child) {
+        border-bottom: none;
+      }
+
       &:not(.org-member--target) {
         background-color: #ffffff;
         border: 1px solid #e8e8e8;
@@ -85,10 +89,22 @@
         }
       }
 
-      .org-member__image mgt-person {
-        --avatar-size: 48px;
-        --avatar-size-s: 48px;
-        margin-right: 8px;
+      .org-member__person {
+        flex-grow: 1;
+        mgt-person {
+          --avatar-size: 48px;
+          --avatar-size-s: 48px;
+          --font-size: 16px;
+          --color: #323130;
+          --line2-font-size: 14px;
+          --line3-font-size: 14px;
+          --line2-text-transform: uppercase;
+          --line2-color: #797775;
+          --line3-color: #797775;
+          --line3-text-transform: uppercase;
+          margin-right: 8px;
+          max-width: 230px;
+        }
       }
 
       .org-member__details {
@@ -126,27 +142,32 @@
         background-color: #f3f2f1;
       }
 
-      .coworker__image {
+      .coworker__person {
         height: 46px;
         width: 46px;
-        --avatar-size: 46px;
-        --avatar-size-s: 46px;
         border-radius: 46px;
         margin-right: 8px;
         background-color: #e8e8e8;
+
+        mgt-person {
+          --font-size: 16px;
+          --line2-text-transform: uppercase;
+          --line2-font-size: 14px;
+          --line2-color: #797775;
+          --avatar-size: 46px;
+        }
       }
+    }
 
-      .coworker__details {
-        .coworker__name {
-          color: #323130;
-          font-size: 16px;
-          font-weight: 600;
-        }
+    .direct-report__compact {
+      padding: 12px 20px;
 
-        .coworker__title {
-          color: #797775;
-          font-size: 14px;
-        }
+      .direct-report {
+        cursor: pointer;
+        width: 38px;
+        margin-right: 4px;
+        display: inline;
+        --avatar-size: 38px;
       }
     }
   }
