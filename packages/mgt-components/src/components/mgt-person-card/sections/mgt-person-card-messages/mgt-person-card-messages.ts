@@ -5,15 +5,13 @@
  * -------------------------------------------------------------------------------------------
  */
 
+import { Message } from '@microsoft/microsoft-graph-types';
 import { customElement, html, TemplateResult } from 'lit-element';
-import { getMe } from '../../../../graph/graph.user';
-import { Providers, ProviderState } from '@microsoft/mgt-element';
-import { getRelativeDisplayDate } from '../../../../utils/Utils';
+
 import { BasePersonCardSection } from '../BasePersonCardSection';
-import { getMessages, getMessagesWithUser, IMessage } from './graph.messages';
+import { getSvg, SvgIcon } from '../../../../utils/SvgHelper';
+import { getRelativeDisplayDate } from '../../../../utils/Utils';
 import { styles } from './mgt-person-card-messages-css';
-import { getEmailFromGraphEntity } from '../../../../graph/graph.people';
-import { SvgIcon, getSvg } from '../../../../utils/SvgHelper';
 
 /**
  * The email messages subsection of the person card
@@ -32,6 +30,13 @@ export class MgtPersonCardMessages extends BasePersonCardSection {
     return styles;
   }
 
+  private _messages: Message[];
+
+  public constructor(messages: Message[]) {
+    super();
+    this._messages = messages;
+  }
+
   /**
    * The name for display in the overview section.
    *
@@ -42,8 +47,6 @@ export class MgtPersonCardMessages extends BasePersonCardSection {
   public get displayName(): string {
     return 'Emails';
   }
-
-  private _messages: IMessage[];
 
   /**
    * Reset any state in the section
@@ -130,7 +133,7 @@ export class MgtPersonCardMessages extends BasePersonCardSection {
    * @returns {TemplateResult}
    * @memberof MgtPersonCardMessages
    */
-  protected renderMessage(message: IMessage): TemplateResult {
+  protected renderMessage(message: Message): TemplateResult {
     return html`
       <div class="message" @click=${() => this.handleMessageClick(message)}>
         <div class="message__detail">
@@ -143,43 +146,7 @@ export class MgtPersonCardMessages extends BasePersonCardSection {
     `;
   }
 
-  private handleMessageClick(message: IMessage): void {
+  private handleMessageClick(message: Message): void {
     window.open(message.webLink, '_blank');
-  }
-
-  /**
-   * load state into the component
-   *
-   * @protected
-   * @returns {Promise<void>}
-   * @memberof MgtPersonCardMessages
-   */
-  protected async loadState(): Promise<void> {
-    const provider = Providers.globalProvider;
-
-    // check if user is signed in
-    if (!provider || provider.state !== ProviderState.SignedIn) {
-      return;
-    }
-
-    if (!this.personDetails) {
-      return;
-    }
-
-    const graph = provider.graph.forComponent(this);
-    const me = await getMe(graph);
-
-    const userId = this.personDetails.id;
-
-    if (me.id === userId) {
-      this._messages = await getMessages(graph);
-    } else {
-      const emailAddress = getEmailFromGraphEntity(this.personDetails);
-      if (emailAddress) {
-        this._messages = await getMessagesWithUser(graph, emailAddress);
-      }
-    }
-
-    this.requestUpdate();
   }
 }

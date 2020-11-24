@@ -76,6 +76,10 @@
         border: 1px solid $commblue_primary;
       }
 
+      &.org-member--direct-report:not(:last-child) {
+        border-bottom: none;
+      }
+
       &:not(.org-member--target) {
         background-color: set-var(background-color__sub1, $theme-default, $common);
         border: 1px solid set-var(line-seperator__color, $theme-default, $common);
@@ -86,10 +90,22 @@
         }
       }
 
-      .org-member__image mgt-person {
-        --avatar-size: 48px;
-        --avatar-size-s: 48px;
-        margin-right: 8px;
+      .org-member__person {
+        flex-grow: 1;
+        mgt-person {
+          --avatar-size: 48px;
+          --avatar-size-s: 48px;
+          --font-size: 16px;
+          --color: #323130;
+          --line2-font-size: 14px;
+          --line3-font-size: 14px;
+          --line2-text-transform: uppercase;
+          --line2-color: #797775;
+          --line3-color: #797775;
+          --line3-text-transform: uppercase;
+          margin-right: 8px;
+          max-width: 230px;
+        }
       }
 
       .org-member__details {
@@ -127,26 +143,31 @@
         background-color: set-var(background-color--hover, $theme-default, $common);
       }
 
-      .coworker__image {
+      .coworker__person {
         height: 46px;
         width: 46px;
-        --avatar-size: 46px;
-        --avatar-size-s: 46px;
         border-radius: 46px;
         margin-right: 8px;
+
+        mgt-person {
+          --font-size: 16px;
+          --line2-text-transform: uppercase;
+          --line2-font-size: 14px;
+          --line2-color: set-var(color__sub2, $theme-default, $common);
+          --avatar-size: 46px;
+        }
       }
+    }
 
-      .coworker__details {
-        .coworker__name {
-          color: set-var(color__sub1, $theme-default, $common);
-          font-size: 16px;
-          font-weight: 600;
-        }
+    .direct-report__compact {
+      padding: 12px 20px;
 
-        .coworker__title {
-          color: set-var(color__sub2, $theme-default, $common);
-          font-size: 14px;
-        }
+      .direct-report {
+        cursor: pointer;
+        width: 38px;
+        margin-right: 4px;
+        display: inline;
+        --avatar-size: 38px;
       }
     }
   }

@@ -5,10 +5,12 @@
  * -------------------------------------------------------------------------------------------
  */
 
-import { property, TemplateResult, html } from 'lit-element';
 import { MgtTemplatedComponent } from '@microsoft/mgt-element';
+import { html, property, TemplateResult } from 'lit-element';
+
 import { IDynamicPerson } from '../../../graph/types';
 import { MgtPersonCard } from '../mgt-person-card';
+
 import '../../sub-components/mgt-spinner/mgt-spinner';
 
 /**
@@ -111,7 +113,8 @@ export abstract class BasePersonCardSection extends MgtTemplatedComponent {
    * @abstract
    * @memberof BasePersonCardSection
    */
-  public abstract clearState(): void;
+  // tslint:disable-next-line:no-empty
+  public clearState(): void {}
 
   /**
    * Invoked on each update to perform rendering tasks. This method must return

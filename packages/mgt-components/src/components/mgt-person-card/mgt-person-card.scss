@@ -23,11 +23,14 @@ $person-card-details-item-font-size: var(--person-card-details-item-font-size, 1
   user-select: none;
 
   .nav {
-    display: flex;
+    height: 0px;
+    position: relative;
+    z-index: 100;
 
     .nav__back {
-      padding: 10px;
-      display: flex;
+      padding: 8px;
+      height: 32px;
+      width: 32px;
       align-items: center;
       justify-content: center;
 
@@ -48,8 +51,8 @@ $person-card-details-item-font-size: var(--person-card-details-item-font-size, 1
   .person-details-container {
     display: flex;
     flex-direction: column;
-    width: calc(var(--mgt-flyout-set-width, 340px) - 30px);
-    padding: 15px 15px 20px 15px;
+    width: calc(var(--mgt-flyout-set-width, 340px) - 40px);
+    padding: 20px;
 
     .person-image {
       --presence-background-color: #{set-var(background-color, $theme-default, $person-card)};
@@ -65,8 +68,8 @@ $person-card-details-item-font-size: var(--person-card-details-item-font-size, 1
       -webkit-align-items: center;
       align-items: center;
       max-width: 120px;
-      margin-left: 87px;
-      margin-top: 4px;
+      // margin-left: 87px;
+      margin-top: 16px;
 
       .icon {
         display: flex;
@@ -205,8 +208,16 @@ $person-card-details-item-font-size: var(--person-card-details-item-font-size, 1
     }
   }
 
+  .loading {
+    margin: 40px 20px;
+    display: flex;
+    justify-content: center;
+    height: 360px;
+  }
+
   .section-host {
-    max-height: 600px;
+    max-height: 360px;
+    min-height: 360px;
     overflow-y: auto;
     overflow-x: hidden;
   }
@@ -214,8 +225,8 @@ $person-card-details-item-font-size: var(--person-card-details-item-font-size, 1
   .quick-message {
     display: flex;
     flex-direction: row;
-    padding: 8px 10px;
     border-bottom: 1px solid set-var(tab__line__color, $theme-default, $person-card);
+    padding: 12px 10px 8px 10px;
 
     .quick-message__input {
       flex-grow: 1;
@@ -255,8 +266,14 @@ $person-card-details-item-font-size: var(--person-card-details-item-font-size, 1
       flex-direction: column;
       position: relative;
 
-      &:not(:last-child) {
+      &:not(:last-child):after {
+        position: absolute;
+        content: '';
+        width: 90%;
+        transform: translateX(-50%);
         border-bottom: 1px solid set-var(tab__line__color, $theme-default, $person-card);
+        left: 50%;
+        bottom: 0;
       }
 
       .section__header {
@@ -286,6 +303,10 @@ $person-card-details-item-font-size: var(--person-card-details-item-font-size, 1
 
       .section__content {
         margin-top: 14px;
+      }
+
+      .additional-details {
+        padding: 0 20px;
       }
     }
   }

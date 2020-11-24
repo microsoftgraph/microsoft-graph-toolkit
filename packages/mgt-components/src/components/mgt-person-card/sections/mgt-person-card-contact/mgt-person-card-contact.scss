@@ -83,6 +83,7 @@
 
         svg {
           fill: set-var(color__sub1, $theme-default, $common);
+          cursor: pointer;
         }
       }
 
@@ -100,20 +101,8 @@
       padding: 0;
 
       .part {
-        display: flex;
-
-        &:not(:last-child) {
-          margin-bottom: 8px;
-        }
-
-        &:hover {
-          background-color: initial;
-          cursor: initial;
-
-          .part__copy {
-            visibility: hidden;
-          }
-        }
+        height: 30px;
+        align-items: center;
       }
 
       .part__details {

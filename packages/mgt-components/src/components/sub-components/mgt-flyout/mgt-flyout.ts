@@ -41,6 +41,19 @@ export class MgtFlyout extends MgtBaseComponent {
   public isLightDismiss: boolean;
 
   /**
+   * Gets or sets whether the flyout should avoid rendering the flyout
+   * on top of the anchor
+   *
+   * @type {boolean}
+   * @memberof MgtFlyout
+   */
+  @property({
+    attribute: null,
+    type: Boolean
+  })
+  public avoidHidingAnchor: boolean;
+
+  /**
    * Gets or sets whether the flyout is visible
    *
    * @type {string}
@@ -97,9 +110,18 @@ export class MgtFlyout extends MgtBaseComponent {
   constructor() {
     super();
 
+    this.avoidHidingAnchor = true;
+
     this.handleWindowEvent = this.handleWindowEvent.bind(this);
     this.handleResize = this.handleResize.bind(this);
     this.handleKeyUp = this.handleKeyUp.bind(this);
+
+    // handling when person-card is expanded and size changes
+    this.addEventListener('expanded', () => {
+      window.requestAnimationFrame(() => {
+        this.updateFlyout();
+      });
+    });
   }
 
   /**
@@ -150,9 +172,9 @@ export class MgtFlyout extends MgtBaseComponent {
    */
   protected render() {
     const flyoutClasses = {
+      dir: this.direction,
       root: true,
-      visible: this.isOpen,
-      dir: this.direction
+      visible: this.isOpen
     };
 
     const anchorTemplate = this.renderAnchor();
@@ -285,6 +307,7 @@ export class MgtFlyout extends MgtBaseComponent {
           top = (windowRect.height - flyoutRect.height) / 2;
         }
       } else if (
+        this.avoidHidingAnchor &&
         anchorRect.top + anchorRect.height + flyoutRect.height + this._edgePadding > windowRect.height &&
         anchorRect.top - flyoutRect.height - this._edgePadding > 0
       ) {
@@ -304,7 +327,7 @@ export class MgtFlyout extends MgtBaseComponent {
 
       if (this.direction === 'rtl') {
         if (left > 100 && this.offsetLeft > 100) {
-          //potentially anchored to right side (for non people-picker flyout)
+          // potentially anchored to right side (for non people-picker flyout)
           flyout.style.left = `${windowRect.width - left + flyoutRect.left - flyoutRect.width - 30}px`;
         }
       } else {
