@@ -6,6 +6,7 @@
  */
 
 @import '../base-person-card-section.scss';
+@import '../../../../styles/shared-styles.scss';
 
 :host {
   position: relative;
@@ -21,7 +22,7 @@
     .title {
       font-size: 14px;
       font-weight: 600;
-      color: #323130;
+      color: set-var(title__color__subtitle, $theme-default, $common);
       margin: 0 20px 12px 20px;
     }
 
@@ -35,7 +36,7 @@
 
       .section__title {
         font-size: 16px;
-        color: #797775;
+        color: set-var(title__color__sub2, $theme-default, $common);
       }
 
       .section__content {
@@ -58,13 +59,13 @@
         overflow: hidden;
         font-size: 14px;
         align-items: center;
-        background: #f3f2f1;
+        background: set-var(background-color__sub2, $theme-default, $common);
         border-radius: 2px;
         max-height: 28px;
         padding: 4px 8px;
         margin-right: 10px;
         margin-top: 10px;
-        color: rgba(50, 49, 48, 0.7);
+        color: set-var(color__sub1, $theme-default, $common);
 
         &:last-child {
           margin-right: initial;
@@ -75,8 +76,8 @@
         }
 
         &:hover {
-          background-color: #e1dfdd;
-          color: rgba(50, 49, 48, 0.9);
+          background-color: set-var(background-color--hover, $theme-default, $common);
+          color: set-var(color__sub1, $theme-default, $common);
         }
 
         &.token-list__item--show-overflow {
@@ -102,18 +103,18 @@
       .data-list__item__content {
         font-size: 12px;
         line-height: 16px;
-        color: #605e5c;
+        color: set-var(color__sub2, $theme-default, $common);
         margin-top: 4px;
       }
 
       .data-list__item__title {
         font-size: 14px;
         line-height: 16px;
-        color: #323130;
+        color: set-var(title__color__subtitle, $theme-default, $common);
       }
 
       .data-list__item__date-range {
-        color: #605e5c;
+        color: set-var(color__sub2, $theme-default, $common);
         font-size: 10px;
         line-height: 12px;
       }
@@ -125,12 +126,12 @@
 
     .work-position {
       .work-position__company {
-        color: #0078d4;
+        color: $commblue_primary;
       }
 
       .work-position__location {
         font-size: 10px;
-        color: #605e5c;
+        color: set-var(color__sub2, $theme-default, $common);
         line-height: 16px;
       }
     }
@@ -139,7 +140,7 @@
       .educational-activity__degree {
         font-size: 12px;
         line-height: 14px;
-        color: #605e5c;
+        color: set-var(color__sub3, $theme-default, $common);
       }
     }
 
@@ -154,7 +155,7 @@
 
       .birthday__date {
         font-size: 12px;
-        color: #201f1e;
+        color: set-var(color__sub1, $theme-default, $common);
       }
     }
   }

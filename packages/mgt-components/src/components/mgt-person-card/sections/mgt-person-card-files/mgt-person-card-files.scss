@@ -6,6 +6,7 @@
  */
 
 @import '../base-person-card-section.scss';
+@import '../../../../styles/shared-styles.scss';
 
 :host {
   position: relative;
@@ -21,7 +22,7 @@
     .title {
       font-size: 14px;
       font-weight: 600;
-      color: #323130;
+      color: set-var(title__color__subtitle, $theme-default, $common);
       margin: 0 20px 12px 20px;
     }
 
@@ -31,7 +32,7 @@
       padding: 11px 20px;
 
       &:hover {
-        background-color: #f3f2f1;
+        background-color: set-var(background-color--hover, $theme-default, $common);
         cursor: pointer;
       }
 
@@ -55,12 +56,12 @@
 
         .file__name {
           font-size: 14px;
-          color: #323130;
+          color: set-var(color__sub1, $theme-default, $common);
         }
 
         .file__last-modified {
           font-size: 12px;
-          color: #797775;
+          color: set-var(color__sub2, $theme-default, $common);
         }
 
         > div {

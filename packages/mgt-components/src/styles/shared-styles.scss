@@ -91,8 +91,8 @@ $background-color__main--light: $white;
 $background-color__sub1--light: $gray10;
 $background-color__sub2--light: $gray20;
 $background-color__sub3--light: $gray40;
-$background-color__main--hover--light: $gray20;
-$background-color__main--active--light: $gray30;
+$background-color__main--hover--light: $gray30;
+$background-color__main--active--light: $gray40;
 // dark
 $background-color__main--dark: $black;
 $background-color__sub1--dark: $gray210;
@@ -117,9 +117,11 @@ $text__color__sub3--dark: $gray100;
 // light
 $title__color__main--light: $text__color__main--light;
 $title__color__subtitle--light: $text__color__sub1--light;
+$title__color__sub2--light: $text__color__sub2--light;
 // dark
 $title__color__main--dark: $text__color__main--dark;
 $title__color__subtitle--dark: $text__color__sub1--dark;
+$title__color__sub2--dark: $text__color__sub2--dark;
 
 /* -----Icon----- */
 // light
@@ -130,6 +132,8 @@ $icon__sub2--light: $gray100;
 $icon__main--dark: $gray130;
 $icon__sub1--dark: $gray120;
 $icon__sub2--dark: $gray100;
+
+$icon--active: $commblue_primary;
 
 /* -----Other Elements----- */
 $line-separator--light: $gray30;
@@ -220,6 +224,21 @@ $common: (
     dark: $text__color__main--dark,
     light: $text__color__main--light
   ),
+  color__sub1: (
+    _var: --color-sub1,
+    dark: $text__color__sub1--dark,
+    light: $text__color__sub1--light
+  ),
+  color__sub2: (
+    _var: --color-sub2,
+    dark: $text__color__sub2--dark,
+    light: $text__color__sub2--light
+  ),
+  color__sub3: (
+    _var: --color-sub3,
+    dark: $text__color__sub3--dark,
+    light: $text__color__sub3--light
+  ),
   background-color: (
     _var: --background-color,
     dark: $background-color__main--dark,
@@ -236,14 +255,39 @@ $common: (
     light: $background-color__main--active--light
   ),
   background-color__sub1: (
-    _var: --background-color,
+    _var: --background-color-sub1,
     dark: $background-color__sub1--dark,
     light: $background-color__sub1--light
+  ),
+  background-color__sub2: (
+    _var: --background-color-sub2,
+    dark: $background-color__sub2--dark,
+    light: $background-color__sub2--light
   ),
   box-shadow: (
     _var: --box-shadow,
     dark: rgba(0, 0, 0, 1),
     light: rgba(0, 0, 0, 0.092)
+  ),
+  title__color__main: (
+    _var: --title-color-main,
+    dark: $title__color__main--dark,
+    light: $title__color__main--light
+  ),
+  title__color__subtitle: (
+    _var: --title-color-subtitle,
+    dark: $title__color__subtitle--dark,
+    light: $title__color__subtitle--light
+  ),
+  title__color__sub2: (
+    _var: --title-color-sub2,
+    dark: $title__color__sub2--dark,
+    light: $title__color__sub2--light
+  ),
+  line-seperator__color: (
+    _var: --line-seperator-color,
+    dark: $line-separator--dark,
+    light: $line-separator--light
   )
 );
 

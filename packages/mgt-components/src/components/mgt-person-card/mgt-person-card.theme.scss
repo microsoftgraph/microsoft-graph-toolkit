@@ -1,0 +1,68 @@
+/**
+ * -------------------------------------------------------------------------------------------
+ * Copyright (c) Microsoft Corporation.  All Rights Reserved.  Licensed under the MIT License.
+ * See License in the project root for license information.
+ * -------------------------------------------------------------------------------------------
+ */
+
+@import '../../styles/shared-styles.scss';
+
+$person-card: (
+  display-name__color: (
+    _var: --person-card-display-name-color,
+    light: $text__color__sub1--light,
+    dark: $text__color__sub1--dark
+  ),
+  title__color: (
+    _var: --person-card-title-color,
+    light: $text__color__sub2--light,
+    dark: $text__color__sub2--dark
+  ),
+  subtitle__color: (
+    _var: --person-card-subtitle-color,
+    light: $text__color__sub2--light,
+    dark: $text__color__sub2--dark
+  ),
+  details-title__color: (
+    _var: --person-card-details-title-color,
+    light: $text__color__main--light,
+    dark: $text__color__main--dark
+  ),
+  details-item__color: (
+    _var: --person-card-details-item-color,
+    light: $gray190,
+    dark: $gray10
+  ),
+  background-color: (
+    _var: --person-card-background-color,
+    light: $background-color__sub1--light,
+    dark: $background-color__sub1--dark
+  ),
+  icon__color: (
+    _var: --icon-color,
+    dark: $icon__sub1--dark,
+    light: $icon__sub1--light
+  ),
+  tab__line__color: (
+    _var: --tab-line-color,
+    dark: $tab__line__color--dark,
+    light: $tab__line__color--light
+  ),
+  tab__line__color--hover: (
+    _var: --tab-line-color--hover,
+    dark: $tab__line__color--hover--dark,
+    light: $tab__line__color--hover--light
+  ),
+  tab__background-color--hover: (
+    _var: --tab-background-color--hover,
+    dark: $tab__background-color--hover--dark,
+    light: $tab__background-color--hover--light
+  ),
+  tab__icon__color: (
+    _var: --tab-icon-color,
+    dark: $tab__icon--dark,
+    light: $tab__icon--light
+  )
+);
+
+@include create-themes($person-card);
