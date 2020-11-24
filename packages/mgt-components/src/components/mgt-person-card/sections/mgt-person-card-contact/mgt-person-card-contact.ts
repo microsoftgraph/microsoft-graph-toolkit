@@ -49,6 +49,24 @@ export class MgtPersonCardContact extends BasePersonCardSection {
     return styles;
   }
 
+  /**
+   * Returns true if the component has data it can render
+   *
+   * @readonly
+   * @abstract
+   * @type {boolean}
+   * @memberof BasePersonCardSection
+   */
+  public get hasData(): boolean {
+    if (!this._contactParts) {
+      return false;
+    }
+
+    const availableParts: IContactPart[] = Object.values(this._contactParts).filter((p: IContactPart) => !!p.value);
+
+    return !!availableParts.length;
+  }
+
   private _person: User;
 
   // tslint:disable: object-literal-sort-keys
@@ -155,22 +173,24 @@ export class MgtPersonCardContact extends BasePersonCardSection {
   protected renderCompactView(): TemplateResult {
     let contentTemplate: TemplateResult;
 
-    if (this.isLoadingState) {
-      contentTemplate = this.renderLoading();
-    } else {
-      // Filter for compact mode parts with values
-      const compactParts: IContactPart[] = Object.values(this._contactParts).filter(
-        (p: IContactPart) => !!p.value && p.showCompact
-      );
-
-      if (!compactParts || !compactParts.length) {
-        contentTemplate = this.renderNoData();
-      } else {
-        contentTemplate = html`
-          ${compactParts.map(p => this.renderContactPart(p))}
-        `;
-      }
+    if (!this.hasData) {
+      return null;
     }
+
+    const availableParts: IContactPart[] = Object.values(this._contactParts).filter((p: IContactPart) => !!p.value);
+
+    // Filter for compact mode parts with values
+    let compactParts: IContactPart[] = Object.values(availableParts).filter(
+      (p: IContactPart) => !!p.value && p.showCompact
+    );
+
+    if (!compactParts || !compactParts.length) {
+      compactParts = Object.values(availableParts).slice(0, 2);
+    }
+
+    contentTemplate = html`
+      ${compactParts.map(p => this.renderContactPart(p))}
+    `;
 
     return html`
       <div class="root compact">
@@ -189,20 +209,12 @@ export class MgtPersonCardContact extends BasePersonCardSection {
   protected renderFullView(): TemplateResult {
     let contentTemplate: TemplateResult;
 
-    if (this.isLoadingState) {
-      contentTemplate = this.renderLoading();
-    } else if (!this._contactParts) {
-      contentTemplate = this.renderNoData();
-    } else {
+    if (this.hasData) {
       // Filter for parts with values only
       const availableParts: IContactPart[] = Object.values(this._contactParts).filter((p: IContactPart) => !!p.value);
-      if (!availableParts.length) {
-        contentTemplate = this.renderNoData();
-      } else {
-        contentTemplate = html`
-          ${availableParts.map(part => this.renderContactPart(part))}
-        `;
-      }
+      contentTemplate = html`
+        ${availableParts.map(part => this.renderContactPart(part))}
+      `;
     }
 
     return html`

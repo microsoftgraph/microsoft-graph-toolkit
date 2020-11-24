@@ -40,6 +40,34 @@ export class MgtPersonCardProfile extends BasePersonCardSection {
   }
 
   /**
+   * Returns true if the profile contains data
+   * that can be rendered
+   *
+   * @readonly
+   * @type {boolean}
+   * @memberof MgtPersonCardProfile
+   */
+  public get hasData(): boolean {
+    if (!this.profile) {
+      return false;
+    }
+
+    const { languages, skills, positions, educationalActivities } = this.profile;
+
+    return (
+      [
+        this._birthdayAnniversary,
+        this._personalInterests && this._personalInterests.length,
+        this._professionalInterests && this._professionalInterests.length,
+        languages && languages.length,
+        skills && skills.length,
+        positions && positions.length,
+        educationalActivities && educationalActivities.length
+      ].filter(v => !!v).length > 0
+    );
+  }
+
+  /**
    * The user's profile metadata
    *
    * @protected
@@ -100,22 +128,9 @@ export class MgtPersonCardProfile extends BasePersonCardSection {
    * @memberof MgtPersonCardProfile
    */
   protected renderCompactView(): TemplateResult {
-    let contentTemplate: TemplateResult;
-
-    if (this.isLoadingState) {
-      contentTemplate = this.renderLoading();
-    } else if (!this._profile) {
-      contentTemplate = this.renderNoData();
-    } else {
-      this.initPostRenderOperations();
-      contentTemplate = html`
-        ${this.renderSkills()} ${this.renderProfessionalInterests()} ${this.renderBirthday()}
-      `;
-    }
-
     return html`
       <div class="root compact">
-        ${contentTemplate}
+        ${this.renderSubSections().slice(0, 2)}
       </div>
     `;
   }
@@ -128,26 +143,36 @@ export class MgtPersonCardProfile extends BasePersonCardSection {
    * @memberof MgtPersonCardProfile
    */
   protected renderFullView() {
-    let contentTemplate: TemplateResult;
-
-    if (this.isLoadingState) {
-      contentTemplate = this.renderLoading();
-    } else if (!this._profile) {
-      contentTemplate = this.renderNoData();
-    } else {
-      this.initPostRenderOperations();
-      contentTemplate = html`
-        ${this.renderLanguages()} ${this.renderSkills()} ${this.renderWorkExperience()} ${this.renderEducation()}
-        ${this.renderProfessionalInterests()} ${this.renderPersonalInterests()} ${this.renderBirthday()}
-      `;
-    }
+    this.initPostRenderOperations();
 
     return html`
       <div class="root">
         <div class="title">About</div>
-        ${contentTemplate}
+        ${this.renderSubSections()}
       </div>
     `;
+  }
+
+  /**
+   * Renders all subSections of the profile
+   * Defines order of how they render
+   *
+   * @protected
+   * @return {*}
+   * @memberof MgtPersonCardProfile
+   */
+  protected renderSubSections() {
+    const subSections = [
+      this.renderSkills(),
+      this.renderBirthday(),
+      this.renderLanguages(),
+      this.renderWorkExperience(),
+      this.renderEducation(),
+      this.renderProfessionalInterests(),
+      this.renderPersonalInterests()
+    ];
+
+    return subSections.filter(s => !!s);
   }
 
   /**
@@ -158,12 +183,13 @@ export class MgtPersonCardProfile extends BasePersonCardSection {
    * @memberof MgtPersonCardProfile
    */
   protected renderLanguages(): TemplateResult {
-    if (!this._profile || !this._profile.languages) {
-      return html``;
+    const { languages } = this._profile;
+    if (!(languages && languages.length)) {
+      return null;
     }
 
     const languageItems: TemplateResult[] = [];
-    for (const language of this._profile.languages) {
+    for (const language of languages) {
       let proficiency = null;
       if (language.proficiency && language.proficiency.length) {
         proficiency = html`
@@ -201,12 +227,14 @@ export class MgtPersonCardProfile extends BasePersonCardSection {
    * @memberof MgtPersonCardProfile
    */
   protected renderSkills(): TemplateResult {
-    if (!this._profile || !this._profile.skills) {
-      return html``;
+    const { skills } = this._profile;
+
+    if (!(skills && skills.length)) {
+      return null;
     }
 
     const skillItems: TemplateResult[] = [];
-    for (const skill of this._profile.skills) {
+    for (const skill of skills) {
       skillItems.push(html`
         <div class="token-list__item skill">
           ${skill.displayName}
@@ -235,7 +263,7 @@ export class MgtPersonCardProfile extends BasePersonCardSection {
    */
   protected renderWorkExperience(): TemplateResult {
     if (!this._profile || !this._profile.positions) {
-      return html``;
+      return null;
     }
 
     const positionItems: TemplateResult[] = [];
@@ -280,12 +308,14 @@ export class MgtPersonCardProfile extends BasePersonCardSection {
    * @memberof MgtPersonCardProfile
    */
   protected renderEducation(): TemplateResult {
-    if (!this._profile || !this._profile.positions) {
-      return html``;
+    const { educationalActivities } = this._profile;
+
+    if (!(educationalActivities && educationalActivities.length)) {
+      return null;
     }
 
     const positionItems: TemplateResult[] = [];
-    for (const educationalActivity of this._profile.educationalActivities) {
+    for (const educationalActivity of educationalActivities) {
       positionItems.push(html`
         <div class="data-list__item educational-activity">
           <div class="data-list__item__header">
@@ -324,7 +354,7 @@ export class MgtPersonCardProfile extends BasePersonCardSection {
    */
   protected renderProfessionalInterests(): TemplateResult {
     if (!this._professionalInterests || !this._professionalInterests.length) {
-      return html``;
+      return null;
     }
 
     const interestItems: TemplateResult[] = [];
@@ -357,7 +387,7 @@ export class MgtPersonCardProfile extends BasePersonCardSection {
    */
   protected renderPersonalInterests(): TemplateResult {
     if (!this._personalInterests || !this._personalInterests.length) {
-      return html``;
+      return null;
     }
 
     const interestItems: TemplateResult[] = [];
@@ -390,7 +420,7 @@ export class MgtPersonCardProfile extends BasePersonCardSection {
    */
   protected renderBirthday(): TemplateResult {
     if (!this._birthdayAnniversary || !this._birthdayAnniversary.date) {
-      return html``;
+      return null;
     }
 
     return html`

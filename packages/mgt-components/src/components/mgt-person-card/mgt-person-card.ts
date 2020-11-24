@@ -936,15 +936,21 @@ export class MgtPersonCard extends MgtTemplatedComponent {
       return;
     }
 
-    this.sections.push(new MgtPersonCardContact(this.internalPersonDetails as MicrosoftGraph.User));
+    const contactSections = new MgtPersonCardContact(this.internalPersonDetails as MicrosoftGraph.User);
+    if (contactSections.hasData) {
+      this.sections.push(contactSections);
+    }
 
     if (!this.state) {
       return;
     }
 
-    const { person, messages, files, profile } = this.state;
+    const { person, directReports, messages, files, profile } = this.state;
 
-    if (MgtPersonCard.config.sections.organization && person) {
+    if (
+      MgtPersonCard.config.sections.organization &&
+      ((person && person.manager) || (directReports && directReports.length))
+    ) {
       this.sections.push(new MgtPersonCardOrganization(this.state, this._me));
     }
 
@@ -957,7 +963,10 @@ export class MgtPersonCard extends MgtTemplatedComponent {
     }
 
     if (MgtPersonCard.config.sections.profile && profile) {
-      this.sections.push(new MgtPersonCardProfile(profile));
+      const profileSection = new MgtPersonCardProfile(profile);
+      if (profileSection.hasData) {
+        this.sections.push(profileSection);
+      }
     }
   }
 
