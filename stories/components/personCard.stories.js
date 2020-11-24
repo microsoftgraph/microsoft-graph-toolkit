@@ -81,3 +81,38 @@ export const personCardWithPresence = () => html`
     (Hover on person to view Person Card)
   </div>
 `;
+
+export const ScopesAndConfigureSections = () => html`
+  <script>
+import { MgtPersonCard } from '@microsoft/mgt';
+
+MgtPersonCard.config.useContactApis = false;
+
+MgtPersonCard.config.sections.mailMessages = true;
+MgtPersonCard.config.sections.files = true;
+MgtPersonCard.config.sections.profile = true;
+MgtPersonCard.config.sections.organization = true;
+
+// disable only "Works With" subsection under organization
+// MgtPersonCard.config.sections.organization = { showWorksWith: false };
+
+// change config above to see scopes update
+document.querySelector('.scopes').textContent = MgtPersonCard.getScopes();
+  </script>
+  <style>
+    .note {
+      margin: 2em;
+      color: #323130;
+      font-size: 12px;
+    }
+  </style>
+<mgt-person person-query="me" person-card="hover" view="twoLines" show-presence></mgt-person>
+
+<div class="note">
+	(Hover on person to view Person Card)
+</div>
+
+<div>
+	Scopes: <span class="scopes"></span>
+</div>
+`;

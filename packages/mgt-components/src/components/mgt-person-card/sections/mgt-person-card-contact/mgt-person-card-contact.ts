@@ -5,14 +5,14 @@
  * -------------------------------------------------------------------------------------------
  */
 
-// import * as GraphTypes from '@microsoft/microsoft-graph-types';
-import * as GraphTypes from '@microsoft/microsoft-graph-types-beta';
+import { User } from '@microsoft/microsoft-graph-types';
 import { customElement, html, TemplateResult } from 'lit-element';
+import { TeamsHelper } from '@microsoft/mgt-element';
+
 import { getEmailFromGraphEntity } from '../../../../graph/graph.people';
 import { BasePersonCardSection } from '../BasePersonCardSection';
 import { styles } from './mgt-person-card-contact-css';
-import { SvgIcon, getSvg } from '../../../../utils/SvgHelper';
-import { TeamsHelper } from '@microsoft/mgt-element';
+import { getSvg, SvgIcon } from '../../../../utils/SvgHelper';
 
 /**
  * Represents a contact part and its metadata
@@ -33,26 +33,6 @@ interface IContactPart {
 }
 
 /**
- * The collection of relevant contact parts
- *
- * @interface IContactPartCollection
- */
-interface IContactPartCollection {
-  // tslint:disable-next-line: completed-docs
-  cellPhone: IContactPart;
-  // tslint:disable-next-line: completed-docs
-  chat: IContactPart;
-  // tslint:disable-next-line: completed-docs
-  department: IContactPart;
-  // tslint:disable-next-line: completed-docs
-  email: IContactPart;
-  // tslint:disable-next-line: completed-docs
-  officeLocation: IContactPart;
-  // tslint:disable-next-line: completed-docs
-  title: IContactPart;
-}
-
-/**
  * The contact details subsection of the person card
  *
  * @export
@@ -70,6 +50,86 @@ export class MgtPersonCardContact extends BasePersonCardSection {
   }
 
   /**
+   * Returns true if the component has data it can render
+   *
+   * @readonly
+   * @abstract
+   * @type {boolean}
+   * @memberof BasePersonCardSection
+   */
+  public get hasData(): boolean {
+    if (!this._contactParts) {
+      return false;
+    }
+
+    const availableParts: IContactPart[] = Object.values(this._contactParts).filter((p: IContactPart) => !!p.value);
+
+    return !!availableParts.length;
+  }
+
+  private _person: User;
+
+  // tslint:disable: object-literal-sort-keys
+  private _contactParts = {
+    email: {
+      icon: getSvg(SvgIcon.Email, '#929292'),
+      onClick: () => this.sendEmail(),
+      showCompact: true,
+      title: 'Email'
+    } as IContactPart,
+    chat: {
+      icon: getSvg(SvgIcon.Chat, '#929292'),
+      onClick: () => this.sendChat(),
+      showCompact: false,
+      title: 'Teams'
+    } as IContactPart,
+    businessPhone: {
+      icon: getSvg(SvgIcon.CellPhone, '#929292'),
+      onClick: () => this.sendCall(),
+      showCompact: true,
+      title: 'Business Phone'
+    } as IContactPart,
+    cellPhone: {
+      icon: getSvg(SvgIcon.CellPhone, '#929292'),
+      onClick: () => this.sendCall(),
+      showCompact: true,
+      title: 'Mobile Phone'
+    } as IContactPart,
+    department: {
+      icon: getSvg(SvgIcon.Department, '#929292'),
+      showCompact: false,
+      title: 'Department'
+    } as IContactPart,
+    title: {
+      icon: getSvg(SvgIcon.Person, '#929292'),
+      showCompact: false,
+      title: 'Title'
+    } as IContactPart,
+    officeLocation: {
+      icon: getSvg(SvgIcon.OfficeLocation, '#929292'),
+      showCompact: true,
+      title: 'Office Location'
+    } as IContactPart
+  };
+  // tslint:enable: object-literal-sort-keys
+
+  public constructor(person: User) {
+    super();
+    this._person = person;
+
+    this._contactParts.email.value = getEmailFromGraphEntity(this._person);
+    this._contactParts.chat.value = this._person.userPrincipalName;
+    this._contactParts.cellPhone.value = this._person.mobilePhone;
+    this._contactParts.department.value = this._person.department;
+    this._contactParts.title.value = this._person.jobTitle;
+    this._contactParts.officeLocation.value = this._person.officeLocation;
+
+    if (this._person.businessPhones && this._person.businessPhones.length) {
+      this._contactParts.businessPhone.value = this._person.businessPhones[0];
+    }
+  }
+
+  /**
    * The name for display in the overview section.
    *
    * @readonly
@@ -81,44 +141,6 @@ export class MgtPersonCardContact extends BasePersonCardSection {
   }
 
   // Defines the skeleton for what contact fields are available and what they do.
-
-  // tslint:disable: object-literal-sort-keys
-  private _contactParts: IContactPartCollection = {
-    email: {
-      icon: getSvg(SvgIcon.Email, '#929292'),
-      onClick: () => this.sendEmail(),
-      showCompact: true,
-      title: 'Email'
-    },
-    chat: {
-      icon: getSvg(SvgIcon.Chat, '#929292'),
-      onClick: () => this.sendChat(),
-      showCompact: false,
-      title: 'Teams'
-    },
-    cellPhone: {
-      icon: getSvg(SvgIcon.CellPhone, '#929292'),
-      onClick: () => this.sendCall(),
-      showCompact: true,
-      title: 'Cell Phone'
-    },
-    department: {
-      icon: getSvg(SvgIcon.Department, '#929292'),
-      showCompact: false,
-      title: 'Department'
-    },
-    title: {
-      icon: getSvg(SvgIcon.Person, '#929292'),
-      showCompact: false,
-      title: 'Title'
-    },
-    officeLocation: {
-      icon: getSvg(SvgIcon.OfficeLocation, '#929292'),
-      showCompact: true,
-      title: 'Office Location'
-    }
-  };
-  // tslint:enable: object-literal-sort-keys
 
   /**
    * Render the icon for display in the navigation ribbon.
@@ -151,22 +173,24 @@ export class MgtPersonCardContact extends BasePersonCardSection {
   protected renderCompactView(): TemplateResult {
     let contentTemplate: TemplateResult;
 
-    if (this.isLoadingState) {
-      contentTemplate = this.renderLoading();
-    } else {
-      // Filter for compact mode parts with values
-      const compactParts: IContactPart[] = Object.values(this._contactParts).filter(
-        (p: IContactPart) => !!p.value && p.showCompact
-      );
-
-      if (!compactParts || !compactParts.length) {
-        contentTemplate = this.renderNoData();
-      } else {
-        contentTemplate = html`
-          ${compactParts.map(p => this.renderContactPart(p))}
-        `;
-      }
+    if (!this.hasData) {
+      return null;
     }
+
+    const availableParts: IContactPart[] = Object.values(this._contactParts).filter((p: IContactPart) => !!p.value);
+
+    // Filter for compact mode parts with values
+    let compactParts: IContactPart[] = Object.values(availableParts).filter(
+      (p: IContactPart) => !!p.value && p.showCompact
+    );
+
+    if (!compactParts || !compactParts.length) {
+      compactParts = Object.values(availableParts).slice(0, 2);
+    }
+
+    contentTemplate = html`
+      ${compactParts.map(p => this.renderContactPart(p))}
+    `;
 
     return html`
       <div class="root compact">
@@ -185,20 +209,12 @@ export class MgtPersonCardContact extends BasePersonCardSection {
   protected renderFullView(): TemplateResult {
     let contentTemplate: TemplateResult;
 
-    if (this.isLoadingState) {
-      contentTemplate = this.renderLoading();
-    } else if (!this._contactParts) {
-      contentTemplate = this.renderNoData();
-    } else {
+    if (this.hasData) {
       // Filter for parts with values only
       const availableParts: IContactPart[] = Object.values(this._contactParts).filter((p: IContactPart) => !!p.value);
-      if (!availableParts.length) {
-        contentTemplate = this.renderNoData();
-      } else {
-        contentTemplate = html`
-          ${availableParts.map(part => this.renderContactPart(part))}
-        `;
-      }
+      contentTemplate = html`
+        ${availableParts.map(part => this.renderContactPart(part))}
+      `;
     }
 
     return html`
@@ -247,32 +263,9 @@ export class MgtPersonCardContact extends BasePersonCardSection {
    * @memberof MgtPersonCardContact
    */
   protected handlePartClick(e: MouseEvent, value: string): void {
-    if (value && !this.isCompact) {
+    if (value) {
       navigator.clipboard.writeText(value);
     }
-  }
-
-  /**
-   * Load the section state
-   *
-   * @protected
-   * @returns {IContactPart[]}
-   * @memberof MgtPersonCardContact
-   */
-  protected async loadState(): Promise<void> {
-    if (!this.personDetails) {
-      return;
-    }
-
-    const userPerson = this.personDetails as GraphTypes.User;
-    const personPerson = this.personDetails as GraphTypes.Person;
-
-    this._contactParts.email.value = getEmailFromGraphEntity(this.personDetails);
-    this._contactParts.chat.value = personPerson.userPrincipalName;
-    this._contactParts.cellPhone.value = userPerson.mobilePhone;
-    this._contactParts.department.value = this.personDetails.department;
-    this._contactParts.title.value = this.personDetails.jobTitle;
-    this._contactParts.officeLocation.value = this.personDetails.officeLocation;
   }
 
   /**

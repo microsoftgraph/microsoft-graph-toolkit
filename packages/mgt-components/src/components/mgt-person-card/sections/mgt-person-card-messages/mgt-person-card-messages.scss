@@ -42,9 +42,10 @@
 
       .message__detail {
         min-width: 0;
+        line-height: normal;
 
         .message__subject {
-          font-size: 14px;
+          font-size: 16px;
           color: #323130;
         }
 

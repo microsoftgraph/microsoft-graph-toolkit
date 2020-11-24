@@ -1,4 +1,4 @@
 export type MgtTemplateProps = {
-  template: string;
+  template?: string;
   dataContext?: any;
 };

@@ -5,12 +5,14 @@
  * -------------------------------------------------------------------------------------------
  */
 
+import { User } from '@microsoft/microsoft-graph-types';
 import { customElement, html, TemplateResult } from 'lit-element';
-import { Providers, ProviderState } from '@microsoft/mgt-element';
+
 import { BasePersonCardSection } from '../BasePersonCardSection';
-import { getCoworkers, getManagers, IOrgMember } from './graph.organization';
-import { styles } from './mgt-person-card-organization-css';
 import { getSvg, SvgIcon } from '../../../../utils/SvgHelper';
+import { MgtPersonCardState } from '../../mgt-person-card.types';
+import { PersonViewType } from '../../../mgt-person/mgt-person';
+import { styles } from './mgt-person-card-organization-css';
 
 /**
  * The member organization subsection of the person card
@@ -29,6 +31,15 @@ export class MgtPersonCardOrganization extends BasePersonCardSection {
     return styles;
   }
 
+  private _state: MgtPersonCardState;
+  private _me: User;
+
+  constructor(state: MgtPersonCardState, me: User) {
+    super();
+    this._state = state;
+    this._me = me;
+  }
+
   /**
    * The name for display in the overview section.
    *
@@ -37,11 +48,14 @@ export class MgtPersonCardOrganization extends BasePersonCardSection {
    * @memberof MgtPersonCardOrganization
    */
   public get displayName(): string {
+    const { person, directReports } = this._state;
+
+    if (!person.manager && directReports && directReports.length) {
+      return `Direct reports (${directReports.length})`;
+    }
+
     return 'Reports to';
   }
-
-  private _managers: IOrgMember[];
-  private _coworkers: IOrgMember[];
 
   /**
    * Render the icon for display in the navigation ribbon.
@@ -54,17 +68,6 @@ export class MgtPersonCardOrganization extends BasePersonCardSection {
   }
 
   /**
-   * Reset any state in the section
-   *
-   * @protected
-   * @memberof MgtPersonCardOrganization
-   */
-  public clearState(): void {
-    this._managers = [];
-    this._coworkers = [];
-  }
-
-  /**
    * Render the compact view
    *
    * @returns {TemplateResult}
@@ -73,13 +76,18 @@ export class MgtPersonCardOrganization extends BasePersonCardSection {
   protected renderCompactView(): TemplateResult {
     let contentTemplate: TemplateResult;
 
-    if (this.isLoadingState) {
-      contentTemplate = this.renderLoading();
-    } else if (!this._managers || !this._managers.length) {
-      contentTemplate = this.renderNoData();
-    } else {
-      const reportsTo = this._managers[0];
-      contentTemplate = this.renderCoworker(reportsTo);
+    if (!this._state || !this._state.person) {
+      return null;
+    }
+
+    const { person, directReports } = this._state;
+
+    if (!person) {
+      return null;
+    } else if (person.manager) {
+      contentTemplate = this.renderCoworker(person.manager);
+    } else if (directReports && directReports.length) {
+      contentTemplate = this.renderCompactDirectReports();
     }
 
     return html`
@@ -99,27 +107,22 @@ export class MgtPersonCardOrganization extends BasePersonCardSection {
   protected renderFullView(): TemplateResult {
     let contentTemplate: TemplateResult;
 
-    if (this.isLoadingState) {
-      contentTemplate = this.renderLoading();
-    } else if ((!this._managers || !this._managers.length) && (!this._coworkers || !this._coworkers.length)) {
-      contentTemplate = this.renderNoData();
+    if (!this._state || !this._state.person) {
+      return null;
+    }
+
+    const { person, directReports, people } = this._state;
+
+    if (!person && !directReports && !people) {
+      return null;
     } else {
-      const managers = new Array(...this._managers);
-      const managerTemplates = managers ? managers.reverse().map(manager => this.renderManager(manager)) : [];
-      const targetMemberTemplate = this.personDetails ? this.renderTargetMember() : null;
-      const coworkersTemplate =
-        this._coworkers && this._coworkers.length
-          ? html`
-              <div class="divider"></div>
-              <div class="subtitle">You work with</div>
-              <div>
-                ${this._coworkers.slice(0, 6).map(coworker => this.renderCoworker(coworker))}
-              </div>
-            `
-          : [];
+      const managerTemplates = this.renderManagers();
+      const currentUserTemplate = this.renderCurrentUser();
+      const directReportsTemplate = this.renderDirectReports();
+      const coworkersTemplate = this.renderCoworkers();
 
       contentTemplate = html`
-        ${managerTemplates} ${targetMemberTemplate} ${coworkersTemplate}
+        ${managerTemplates} ${currentUserTemplate} ${directReportsTemplate} ${coworkersTemplate}
       `;
     }
 
@@ -135,20 +138,21 @@ export class MgtPersonCardOrganization extends BasePersonCardSection {
    * Render a manager org member
    *
    * @protected
-   * @param {IOrgMember} orgMember
+   * @param {User} person
    * @returns {TemplateResult}
    * @memberof MgtPersonCardOrganization
    */
-  protected renderManager(orgMember: IOrgMember): TemplateResult {
+  protected renderManager(person: User): TemplateResult {
     return html`
-      <div class="org-member" @click=${() => this.navigateCard(orgMember)}>
-        <div class="org-member__image">
-          <mgt-person .userId=${orgMember.id} avatar-size="large"></mgt-person>
-        </div>
-        <div class="org-member__details">
-          <div class="org-member__name">${orgMember.displayName}</div>
-          <div class="org-member__title">${orgMember.title}</div>
-          <div class="org-member__department">${orgMember.department}</div>
+      <div class="org-member" @click=${() => this.navigateCard(person)}>
+        <div class="org-member__person">
+          <mgt-person
+            .personDetails=${person}
+            .line2Property=${'jobTitle'}
+            .line3Property=${'department'}
+            .fetchImage=${true}
+            .view=${PersonViewType.threelines}
+          ></mgt-person>
         </div>
         <div class="org-member__more">
           ${getSvg(SvgIcon.ExpandRight)}
@@ -159,22 +163,114 @@ export class MgtPersonCardOrganization extends BasePersonCardSection {
   }
 
   /**
+   * Render a manager org member
+   *
+   * @protected
+   * @returns {TemplateResult}
+   * @memberof MgtPersonCardOrganization
+   */
+  protected renderManagers(): TemplateResult[] {
+    const { person } = this._state;
+    if (!person || !person.manager) {
+      return null;
+    }
+
+    const managers = [];
+    let currentManager = person;
+    while (currentManager.manager) {
+      managers.push(currentManager.manager);
+      currentManager = currentManager.manager;
+    }
+
+    if (!managers.length) {
+      return null;
+    }
+
+    return managers.reverse().map(manager => this.renderManager(manager));
+  }
+
+  /**
+   * Render a direct report
+   *
+   * @protected
+   * @param {User} person
+   * @returns {TemplateResult}
+   * @memberof MgtPersonCardOrganization
+   */
+  protected renderDirectReports(): TemplateResult {
+    const { directReports } = this._state;
+    if (!directReports || !directReports.length) {
+      return null;
+    }
+
+    return html`
+      <div class="org-member__separator"></div>
+      <div>
+        ${directReports.map(
+          person => html`
+            <div class="org-member org-member--direct-report" @click=${() => this.navigateCard(person)}>
+              <div class="org-member__person">
+                <mgt-person
+                  .personDetails=${person}
+                  .line2Property=${'jobTitle'}
+                  .line3Property=${'department'}
+                  .fetchImage=${true}
+                  .view=${PersonViewType.twolines}
+                ></mgt-person>
+              </div>
+              <div class="org-member__more">
+                ${getSvg(SvgIcon.ExpandRight)}
+              </div>
+            </div>
+          `
+        )}
+      </div>
+    `;
+  }
+
+  /**
+   * Render direct reports in compact view
+   *
+   * @protected
+   * @param {User} person
+   * @returns {TemplateResult}
+   * @memberof MgtPersonCardOrganization
+   */
+  protected renderCompactDirectReports(): TemplateResult {
+    const { directReports } = this._state;
+
+    return html`
+      <div class="direct-report__compact">
+        ${directReports.slice(0, 6).map(
+          person => html`
+            <div class="direct-report" @click=${() => this.navigateCard(person)}>
+              <mgt-person .personDetails=${person} .fetchImage=${true}></mgt-person>
+            </div>
+          `
+        )}
+      </div>
+    `;
+  }
+
+  /**
    * Render the user/self member
    *
    * @protected
    * @returns {TemplateResult}
    * @memberof MgtPersonCardOrganization
    */
-  protected renderTargetMember(): TemplateResult {
+  protected renderCurrentUser(): TemplateResult {
+    const { person } = this._state;
     return html`
       <div class="org-member org-member--target">
-        <div class="org-member__image">
-          <mgt-person .personDetails=${this.personDetails} avatar-size="large"></mgt-person>
-        </div>
-        <div class="org-member__details">
-          <div class="org-member__name">${this.personDetails.displayName}</div>
-          <div class="org-member__title">${this.personDetails.jobTitle}</div>
-          <div class="org-member__department">${this.personDetails.department}</div>
+        <div class="org-member__person">
+          <mgt-person
+            .personDetails=${person}
+            .line2Property=${'jobTitle'}
+            .line3Property=${'department'}
+            .fetchImage=${true}
+            .view=${PersonViewType.threelines}
+          ></mgt-person>
         </div>
       </div>
     `;
@@ -184,48 +280,48 @@ export class MgtPersonCardOrganization extends BasePersonCardSection {
    * Render a coworker org member
    *
    * @protected
-   * @param {IOrgMember} coworker
+   * @param {User} person
    * @returns {TemplateResult}
    * @memberof MgtPersonCardOrganization
    */
-  protected renderCoworker(coworker: IOrgMember): TemplateResult {
+  protected renderCoworker(person: User): TemplateResult {
     return html`
-      <div class="coworker" @click=${() => this.navigateCard(coworker)}>
-        <div class="coworker__image">
-          <mgt-person .personDetails=${coworker} avatar-size="large" fetch-image></mgt-person>
-        </div>
-        <div class="coworker__details">
-          <div class="coworker__name">${coworker.displayName}</div>
-          <div class="coworker__title">${coworker.title}</div>
+      <div class="coworker" @click=${() => this.navigateCard(person)}>
+        <div class="coworker__person">
+          <mgt-person
+            .personDetails=${person}
+            .line2Property=${'jobTitle'}
+            .fetchImage=${true}
+            .view=${PersonViewType.twolines}
+          ></mgt-person>
         </div>
       </div>
     `;
   }
 
   /**
-   * load state into the component
+   * Render a coworker org member
    *
    * @protected
-   * @returns {Promise<void>}
-   * @memberof MgtPersonCardProfile
+   * @param {User} person
+   * @returns {TemplateResult}
+   * @memberof MgtPersonCardOrganization
    */
-  protected async loadState(): Promise<void> {
-    const provider = Providers.globalProvider;
-
-    // check if user is signed in
-    if (!provider || provider.state !== ProviderState.SignedIn) {
-      return;
+  protected renderCoworkers(): TemplateResult {
+    const { people } = this._state;
+    if (!people || !people.length) {
+      return null;
     }
 
-    if (!this.personDetails) {
-      return;
-    }
+    const subtitle =
+      this._me.id === this._state.person.id ? 'You work with' : `${this._state.person.givenName} works with`;
 
-    const graph = provider.graph.forComponent(this);
-    const userId = this.personDetails.id;
-    this._managers = await getManagers(graph, userId);
-    this._coworkers = await getCoworkers(graph, userId);
-
-    this.requestUpdate();
+    return html`
+      <div class="divider"></div>
+      <div class="subtitle">${subtitle}</div>
+      <div>
+        ${people.slice(0, 6).map(person => this.renderCoworker(person))}
+      </div>
+    `;
   }
 }
