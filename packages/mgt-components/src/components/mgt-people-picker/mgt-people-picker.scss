@@ -146,6 +146,7 @@ mgt-people-picker .root {
         text-align: left;
         list-style-type: none;
         background-color: set-var(dropdown__background-color, $theme-default, $people-picker);
+        box-shadow: set-var(box-shadow, $theme-default, $common);
 
         li {
           cursor: pointer;

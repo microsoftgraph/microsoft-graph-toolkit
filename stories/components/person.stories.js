@@ -29,24 +29,24 @@ export const personPhotoOnly = () => html`
 `;
 
 export const personView = () => html`
-<div class="example">
-  <mgt-person person-query="me" view="avatar"></mgt-person>
-</div>
-<div class="example">
-  <mgt-person person-query="me" view="oneline"></mgt-person>
-</div>
-<div class="example">
-  <mgt-person person-query="me" view="twolines"></mgt-person>
-</div>
-<div class="example">
-  <mgt-person person-query="me" view="threelines"></mgt-person>
-</div>
+  <div class="example">
+    <mgt-person person-query="me" view="avatar"></mgt-person>
+  </div>
+  <div class="example">
+    <mgt-person person-query="me" view="oneline"></mgt-person>
+  </div>
+  <div class="example">
+    <mgt-person person-query="me" view="twolines"></mgt-person>
+  </div>
+  <div class="example">
+    <mgt-person person-query="me" view="threelines"></mgt-person>
+  </div>
 
-<style>
-  .example {
-    margin-bottom: 20px;
-  }
-</style>
+  <style>
+    .example {
+      margin-bottom: 20px;
+    }
+  </style>
 `;
 
 export const personPresence = () => html`
@@ -177,14 +177,15 @@ export const personPresenceDisplayAll = () => html`
   <mgt-person class="small" id="oof-small" person-query="JoniS@M365x214355.onmicrosoft.com" show-presence></mgt-person>
 `;
 
-export const darkMode = () => html`
-  <div class="title"><span>Transparent presence badge background:</span></div>
-  <mgt-person person-query="me" view="twoLines" show-presence></mgt-person>
-  <div class="title"><span>Light presence icon:</span></div>
-  <mgt-person id="online" person-query="Isaiah Langer" show-presence view="twoLines"></mgt-person>
-  <div class="title"><span>Dark presence icon:</span></div>
-  <mgt-person id="dnd" person-query="Lynne Robbins" show-presence view="twoLines"></mgt-person>
-
+export const darkTheme = () => html`
+  <div class="mgt-dark">
+    <div class="title"><span>Transparent presence badge background:</span></div>
+    <mgt-person person-query="me" view="twoLines" show-presence></mgt-person>
+    <div class="title"><span>Light presence icon:</span></div>
+    <mgt-person id="online" person-query="Isaiah Langer" show-presence view="twoLines"></mgt-person>
+    <div class="title"><span>Dark presence icon:</span></div>
+    <mgt-person id="dnd" person-query="Lynne Robbins" show-presence view="twoLines"></mgt-person>
+  </div>
   <script>
     const online = {
       activity: 'Available',
@@ -204,12 +205,8 @@ export const darkMode = () => html`
   </script>
 
   <style>
-    .story-mgt-preview-wrapper {
+    body {
       background-color: black;
-    }
-    mgt-person {
-      --color: white;
-      --presence-background-color: black;
     }
     .title {
       color: white;
@@ -217,13 +214,15 @@ export const darkMode = () => html`
       padding: 5px;
       font-size: 20px;
       margin: 10px 0 10px 0;
+      font-family: 'Segoe UI', 'Segoe UI Web (West European)', 'Segoe UI', -apple-system, BlinkMacSystemFont, Roboto,
+        'Helvetica Neue', sans-serif;
     }
     .title span {
       border-bottom: 1px solid #8a8886;
       padding-bottom: 5px;
     }
-    #dnd {
-      --presence-icon-color: black;
+    #online {
+      --presence-icon-color: white;
     }
   </style>
 `;
@@ -241,14 +240,14 @@ export const setPersonDetails = () => html`
   <script>
     const person = document.querySelector('.my-person');
 
-      person.personDetails = {
-        displayName: 'Megan Bowen',
-        title: 'CEO',
-        mail: 'megan@contoso.com'
-      };
+    person.personDetails = {
+      displayName: 'Megan Bowen',
+      title: 'CEO',
+      mail: 'megan@contoso.com'
+    };
 
-      // set image
-      person.personImage = '';
+    // set image
+    person.personImage = '';
   </script>
 `;
 

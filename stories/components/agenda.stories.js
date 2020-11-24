@@ -35,3 +35,12 @@ export const getByDate = () => html`
 export const getEventsForNextWeek = () => html`
   <mgt-agenda group-by-day days="7"></mgt-agenda>
 `;
+
+export const darkTheme = () => html`
+  <mgt-agenda group-by-day days="7" class="mgt-dark"></mgt-agenda>
+  <style>
+    body {
+      background-color: black;
+    }
+  </style>
+`;

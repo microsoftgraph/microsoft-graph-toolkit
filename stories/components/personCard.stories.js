@@ -81,3 +81,12 @@ export const personCardWithPresence = () => html`
     (Hover on person to view Person Card)
   </div>
 `;
+
+export const darkTheme = () => html`
+  <mgt-person-card person-query="me" class="mgt-dark"></mgt-person-card>
+  <style>
+    body {
+      background-color: black;
+    }
+  </style>
+`;

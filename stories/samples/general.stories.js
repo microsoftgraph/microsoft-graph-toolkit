@@ -66,3 +66,43 @@ export const Localization = () => html`
   <mgt-people></mgt-people>
   <mgt-todo></mgt-todo>
 `;
+
+export const theme = () => html`
+  <div class="mgt-light">
+    <header class="mgt-dark">
+      <p>I should be dark, regional class</p>
+      <mgt-teams-channel-picker></mgt-teams-channel-picker>
+      <div class="mgt-light">
+        <p>I should be light, second level regional class</p>
+        <mgt-teams-channel-picker></mgt-teams-channel-picker>
+      </div>
+    </header>
+    <article>
+      <p>I should be light, global class</p>
+      <mgt-teams-channel-picker></mgt-teams-channel-picker>
+    </article>
+    <p>I am custom themed</p>
+    <mgt-teams-channel-picker class="custom1"></mgt-teams-channel-picker>
+    <p>I have both custom input background color and mgt-dark theme</p>
+    <mgt-teams-channel-picker class="mgt-dark custom2"></mgt-teams-channel-picker>
+    <p>I should be light, with unknown class mgt-foo</p>
+    <mgt-teams-channel-picker class="mgt-foo"></mgt-teams-channel-picker>
+  </div>
+  <style>
+    .custom1 {
+      --input-border: 2px solid teal;
+      --input-background-color: #33c2c2;
+      --dropdown-background-color: #33c2c2;
+      --dropdown-item-hover-background: #2a7d88;
+      --input-hover-color: #b911b1;
+      --input-focus-color: #441540;
+      --font-color: white;
+      --placeholder-default-color: white;
+      --placeholder-focus-color: #441540;
+    }
+
+    .custom2 {
+      --input-background-color: #e47c4d;
+    }
+  </style>
+`;
