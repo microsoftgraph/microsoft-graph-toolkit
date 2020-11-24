@@ -13,10 +13,7 @@ export type AgendaProps = {
 	showMax?: number;
 	groupByDay?: boolean;
 	preferredTimezone?: string;
-	templateConverters?: MgtElement.TemplateContext;
 	templateContext?: MgtElement.TemplateContext;
-	direction?: string;
-	useShadowRoot?: boolean;
 	mediaQuery?: MgtElement.ComponentMediaQuery;
 	eventClick?: (e: Event) => void;
 }
@@ -30,20 +27,14 @@ export type GetProps = {
 	pollingRate?: number;
 	cacheEnabled?: boolean;
 	cacheInvalidationPeriod?: number;
-	templateConverters?: MgtElement.TemplateContext;
 	templateContext?: MgtElement.TemplateContext;
-	direction?: string;
-	useShadowRoot?: boolean;
 	mediaQuery?: MgtElement.ComponentMediaQuery;
 	dataChange?: (e: Event) => void;
 }
 
 export type LoginProps = {
 	userDetails?: IDynamicPerson;
-	templateConverters?: MgtElement.TemplateContext;
 	templateContext?: MgtElement.TemplateContext;
-	direction?: string;
-	useShadowRoot?: boolean;
 	mediaQuery?: MgtElement.ComponentMediaQuery;
 	loginInitiated?: (e: Event) => void;
 	loginCompleted?: (e: Event) => void;
@@ -63,10 +54,7 @@ export type PeoplePickerProps = {
 	selectionMode?: string;
 	showMax?: number;
 	selectedPeople?: IDynamicPerson[];
-	templateConverters?: MgtElement.TemplateContext;
 	templateContext?: MgtElement.TemplateContext;
-	direction?: string;
-	useShadowRoot?: boolean;
 	mediaQuery?: MgtElement.ComponentMediaQuery;
 	selectionChanged?: (e: Event) => void;
 }
@@ -79,10 +67,7 @@ export type PeopleProps = {
 	showPresence?: boolean;
 	personCardInteraction?: PersonCardInteraction;
 	showMax?: number;
-	templateConverters?: MgtElement.TemplateContext;
 	templateContext?: MgtElement.TemplateContext;
-	direction?: string;
-	useShadowRoot?: boolean;
 	mediaQuery?: MgtElement.ComponentMediaQuery;
 }
 
@@ -97,10 +82,7 @@ export type PersonCardProps = {
 	inheritDetails?: boolean;
 	showPresence?: boolean;
 	personPresence?: MicrosoftGraphBeta.Presence;
-	templateConverters?: MgtElement.TemplateContext;
 	templateContext?: MgtElement.TemplateContext;
-	direction?: string;
-	useShadowRoot?: boolean;
 	mediaQuery?: MgtElement.ComponentMediaQuery;
 }
 
@@ -119,10 +101,7 @@ export type PersonProps = {
 	line3Property?: string;
 	view?: PersonViewType;
 	avatarSize?: AvatarSize;
-	templateConverters?: MgtElement.TemplateContext;
 	templateContext?: MgtElement.TemplateContext;
-	direction?: string;
-	useShadowRoot?: boolean;
 	mediaQuery?: MgtElement.ComponentMediaQuery;
 }
 
@@ -139,10 +118,7 @@ export type TasksProps = {
 	hideOptions?: boolean;
 	groupId?: string;
 	taskFilter?: TaskFilter;
-	templateConverters?: MgtElement.TemplateContext;
 	templateContext?: MgtElement.TemplateContext;
-	direction?: string;
-	useShadowRoot?: boolean;
 	mediaQuery?: MgtElement.ComponentMediaQuery;
 	taskAdded?: (e: Event) => void;
 	taskChanged?: (e: Event) => void;
@@ -152,10 +128,7 @@ export type TasksProps = {
 
 export type TeamsChannelPickerProps = {
 	selectedItem?: SelectedChannel;
-	templateConverters?: MgtElement.TemplateContext;
 	templateContext?: MgtElement.TemplateContext;
-	direction?: string;
-	useShadowRoot?: boolean;
 	mediaQuery?: MgtElement.ComponentMediaQuery;
 	selectionChanged?: (e: Event) => void;
 }

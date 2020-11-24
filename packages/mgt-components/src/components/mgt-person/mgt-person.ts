@@ -770,10 +770,7 @@ export class MgtPerson extends MgtTemplatedComponent {
     const graph = provider.graph.forComponent(this);
 
     if (this.personDetails) {
-      if (
-        !this.personDetails.personImage &&
-        ((this.fetchImage && !this.personImage && !this._fetchedImage) || this.personImage === '@')
-      ) {
+      if (!this.personDetails.personImage && (this.fetchImage && !this.personImage && !this._fetchedImage)) {
         const image = await getPersonImage(graph, this.personDetails, MgtPerson.config.useContactApis);
         if (image) {
           this.personDetails.personImage = image;
@@ -823,19 +820,6 @@ export class MgtPerson extends MgtTemplatedComponent {
     }
   }
 
-  private getImage(): string {
-    if (this.personImage && this.personImage !== '@') {
-      return this.personImage;
-    }
-
-    if (this._fetchedImage) {
-      return this._fetchedImage;
-    }
-
-    const person = this.personDetails;
-    return person && person.personImage ? person.personImage : null;
-  }
-
   /**
    * Gets the user initials
    *
@@ -870,6 +854,58 @@ export class MgtPerson extends MgtTemplatedComponent {
     }
 
     return initials;
+  }
+
+  /**
+   * Gets color from name
+   *
+   * @protected
+   * @param {string} name
+   * @returns {string}
+   * @memberof MgtPerson
+   */
+  protected getColorFromName(name: string): string {
+    const charCodes = name
+      .split('')
+      .map(char => char.charCodeAt(0))
+      .join('');
+    const nameInt = parseInt(charCodes, 10);
+    const colors = [
+      'pinkRed10',
+      'red20',
+      'red10',
+      'orange20',
+      'orangeYellow20',
+      'green10',
+      'green20',
+      'cyan20',
+      'cyan30',
+      'cyanBlue10',
+      'cyanBlue20',
+      'blue10',
+      'blueMagenta30',
+      'blueMagenta20',
+      'magenta20',
+      'magenta10',
+      'magentaPink10',
+      'orange30',
+      'gray30',
+      'gray20'
+    ];
+    return colors[nameInt % colors.length];
+  }
+
+  private getImage(): string {
+    if (this.personImage) {
+      return this.personImage;
+    }
+
+    if (this._fetchedImage) {
+      return this._fetchedImage;
+    }
+
+    const person = this.personDetails;
+    return person && person.personImage ? person.personImage : null;
   }
 
   private isLetter(char: string) {
@@ -952,44 +988,5 @@ export class MgtPerson extends MgtTemplatedComponent {
     if (flyout) {
       flyout.isOpen = true;
     }
-  }
-
-  /**
-   * Gets color from name
-   *
-   * @protected
-   * @param {string} name
-   * @returns {string}
-   * @memberof MgtPerson
-   */
-  protected getColorFromName(name: string): string {
-    const charCodes = name
-      .split('')
-      .map(char => char.charCodeAt(0))
-      .join('');
-    const nameInt = parseInt(charCodes, 10);
-    const colors = [
-      'pinkRed10',
-      'red20',
-      'red10',
-      'orange20',
-      'orangeYellow20',
-      'green10',
-      'green20',
-      'cyan20',
-      'cyan30',
-      'cyanBlue10',
-      'cyanBlue20',
-      'blue10',
-      'blueMagenta30',
-      'blueMagenta20',
-      'magenta20',
-      'magenta10',
-      'magentaPink10',
-      'orange30',
-      'gray30',
-      'gray20'
-    ];
-    return colors[nameInt % colors.length];
   }
 }
