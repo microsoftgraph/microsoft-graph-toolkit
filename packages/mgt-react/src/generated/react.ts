@@ -1,4 +1,4 @@
-import { ResponseType,IDynamicPerson,PersonType,GroupType,PersonCardInteraction,MgtPersonCardConfig,MgtPersonConfig,PersonViewType,AvatarSize,TasksStringResource,TasksSource,TaskFilter,SelectedChannel } from '@microsoft/mgt';
+import { ResponseType,IDynamicPerson,PersonType,GroupType,PersonCardInteraction,MgtPersonConfig,PersonViewType,AvatarSize,TasksStringResource,TasksSource,TaskFilter,SelectedChannel } from '@microsoft/mgt';
 import * as MgtElement from '@microsoft/mgt-element';
 import * as MicrosoftGraph from '@microsoft/microsoft-graph-types';
 import * as MicrosoftGraphBeta from '@microsoft/microsoft-graph-types-beta';
@@ -72,7 +72,6 @@ export type PeopleProps = {
 }
 
 export type PersonCardProps = {
-	config?: MgtPersonCardConfig;
 	personDetails?: IDynamicPerson;
 	personQuery?: string;
 	userId?: string;

@@ -42,8 +42,9 @@ export enum ComponentMediaQuery {
  */
 export abstract class MgtBaseComponent extends LitElement {
   /**
-   * The `rtl` or `ltr` direction
+   * Gets or sets the direction of the component
    *
+   * @protected
    * @memberof MgtBaseComponent
    */
   @internalProperty() protected direction = 'ltr';
@@ -164,15 +165,22 @@ export abstract class MgtBaseComponent extends LitElement {
    * helps facilitate creation of events across components
    *
    * @protected
-   * @param {string} eventName name given to specific event
-   * @param {*} [detail] optional any value to dispatch with event
-   * @returns {boolean}
+   * @param {string} eventName
+   * @param {*} [detail]
+   * @param {boolean} [bubbles=false]
+   * @param {boolean} [cancelable=false]
+   * @return {*}  {boolean}
    * @memberof MgtBaseComponent
    */
-  protected fireCustomEvent(eventName: string, detail?: any): boolean {
+  protected fireCustomEvent(
+    eventName: string,
+    detail?: any,
+    bubbles: boolean = false,
+    cancelable: boolean = false
+  ): boolean {
     const event = new CustomEvent(eventName, {
-      bubbles: false,
-      cancelable: true,
+      bubbles,
+      cancelable,
       detail
     });
     return this.dispatchEvent(event);
