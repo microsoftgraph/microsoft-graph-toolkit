@@ -50,7 +50,7 @@ $presence-color-oof: #b4009e;
 
 :host .root {
   display: block;
-  color: set-var(color, $theme-default, $person);
+  color: $color;
 }
 
 :host svg,
@@ -80,11 +80,11 @@ mgt-person .person-root {
       top: calc(#{$avatar-size} * 0.72 - 4px);
       width: calc(#{$avatar-size} * 0.28);
       height: calc(#{$avatar-size} * 0.28);
-      border: 2px solid set-var(presence__background-color, $theme-default, $person);
+      border: 2px solid $presence__background-color;
       border-radius: 50%;
 
       .presence-oof-offline-wrapper {
-        background-color: set-var(presence__background-color, $theme-default, $person);
+        background-color: $presence__background-color;
         border-color: $presence-color-oof;
 
         .presence-oof-offline svg {
@@ -107,7 +107,7 @@ mgt-person .person-root {
         align-items: center;
 
         &.presence-offline {
-          background-color: set-var(presence__background-color, $theme-default, $person);
+          background-color: $presence__background-color;
           border-color: $presence-color-invisible;
         }
 
@@ -117,7 +117,7 @@ mgt-person .person-root {
         }
 
         &.presence-oof-available {
-          background-color: set-var(presence__background-color, $theme-default, $person);
+          background-color: $presence__background-color;
           border-color: $presence-color-online;
         }
 
@@ -132,7 +132,7 @@ mgt-person .person-root {
         }
 
         &.presence-oof-dnd {
-          background-color: set-var(presence__background-color, $theme-default, $person);
+          background-color: $presence__background-color;
           border-color: $presence-color-dnd;
         }
 
@@ -142,7 +142,7 @@ mgt-person .person-root {
         }
 
         &.presence-oof-busy {
-          background-color: set-var(presence__background-color, $theme-default, $person);
+          background-color: $presence__background-color;
           border-color: $presence-color-dnd;
         }
       }
@@ -156,7 +156,7 @@ mgt-person .person-root {
 
       .presence-available::before {
         content: $ms-icon-code-SkypeCheck;
-        color: set-var(presence__icon__color, $theme-default, $person);
+        color: $presence__icon__color;
         margin-left: calc(#{$avatar-size} * 0.07 - 2px);
       }
 
@@ -168,13 +168,13 @@ mgt-person .person-root {
 
       .presence-away::before {
         content: $ms-icon-code-SkypeClock;
-        color: set-var(presence__icon__color, $theme-default, $person);
+        color: $presence__icon__color;
         margin-left: calc(#{$avatar-size} * 0.07 - 2px);
       }
 
       .presence-dnd::before {
         content: $ms-icon-code-SkypeMinus;
-        color: set-var(presence__icon__color, $theme-default, $person);
+        color: $presence__icon__color;
         margin-left: calc(#{$avatar-size} * 0.07 - 2px);
       }
 
@@ -369,14 +369,14 @@ mgt-person .person-root {
     }
 
     .line2 {
-      color: set-var(line2__color, $theme-default, $person);
+      color: $line2__color;
       font-size: $line2-font-size;
       font-weight: $line2-font-weight;
       text-transform: $line2-text-transform;
     }
 
     .line3 {
-      color: set-var(line3__color, $theme-default, $person);
+      color: $line3__color;
       font-size: $line3-font-size;
       font-weight: $line3-font-weight;
       text-transform: $line3-text-transform;

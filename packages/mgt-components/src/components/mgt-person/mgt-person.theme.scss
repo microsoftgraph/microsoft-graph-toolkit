@@ -7,32 +7,7 @@
 
 @import '../../styles/shared-sass-variables.scss';
 
-$person: (
-  color: (
-    _var: --color,
-    dark: $text__color__main--dark,
-    light: $text__color__main--light
-  ),
-  presence__background-color: (
-    _var: --presence-background-color,
-    dark: $background-color__main--dark,
-    light: $background-color__main--light
-  ),
-  presence__icon__color: (
-    _var: --presence-icon-color,
-    dark: $text__color__main--light,
-    light: $text__color__main--dark
-  ),
-  line2__color: (
-    _var: --line2-color,
-    dark: $text__color__sub1--dark,
-    light: $text__color__sub1--light
-  ),
-  line3__color: (
-    _var: --line3-color,
-    dark: $text__color__sub2--dark,
-    light: $text__color__sub2--light
-  )
-);
-
-@include create-themes($person);
+$presence__background-color: var(--presence-background-color, set-var(background-color, $theme-default, $common));
+$presence__icon__color: var(--presence-icon-color, set-var(color, $theme-default, $common));
+$line2__color: var(--line2-color, set-var(color__sub1, $theme-default, $common));
+$line3__color: var(--line3-color, set-var(color__sub2, $theme-default, $common));
