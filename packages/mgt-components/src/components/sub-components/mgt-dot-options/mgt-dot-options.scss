@@ -6,6 +6,7 @@
  */
 
 @import '../../../styles/shared-styles.scss';
+@import '../../../styles/shared-sass-variables.scss';
 @import '../../../../../../node_modules/office-ui-fabric-core/dist/sass/References';
 
 $dot-options-translateX: var(--dot-options-translateX, translateX(-50px));
