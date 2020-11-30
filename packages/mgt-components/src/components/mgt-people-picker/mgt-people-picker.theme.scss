@@ -7,73 +7,24 @@
 
 @import '../../styles/shared-sass-variables.scss';
 
-// variables with theme colors
+$color: set-var(color__sub1, $theme-default, $common);
+$dropdown__background-color: var(--dropdown-background-color, set-var(list__background-color, $theme-default, $common));
+$dropdown-item__background-color--hover: var(
+  --dropdown-item-hover-background,
+  set-var(input-outlined__background-color--hover, $theme-default, $common)
+);
+$placeholder__color: set-var(input-outlined__placeholder__color, $theme-default, $common);
+$placeholder__color--focus: set-var(input-outlined__placeholder__color--focus, $theme-default, $common);
+$input__background-color: set-var(input-outlined__background-color, $theme-default, $common);
+$input__border: set-var(input-outlined__border, $theme-default, $common);
+$input__border-top: set-var(input-outlined__border-top, $theme-default, $common);
+$input__border-right: set-var(input-outlined__border-right, $theme-default, $common);
+$input__border-bottom: set-var(input-outlined__border-bottom, $theme-default, $common);
+$input__border-left: set-var(input-outlined__border-left, $theme-default, $common);
+$input__border-color--hover: set-var(input-outlined__border-color--hover, $theme-default, $common);
+$input__border-color--focus: set-var(input-outlined__border-color--focus, $theme-default, $common);
+
 $people-picker: (
-  dropdown__background-color: (
-    _var: --dropdown-background-color,
-    dark: $list__background-color--dark,
-    light: $list__background-color--light
-  ),
-  dropdown-item__background-color: (
-    _var: --dropdown-item-hover-background,
-    dark: $input-outlined__background-color--hover--dark,
-    light: $input-outlined__background-color--hover--light
-  ),
-  placeholder__color: (
-    _var: --placeholder-default-color,
-    dark: $input-outlined__placeholder__color--dark,
-    light: $input-outlined__placeholder__color--light
-  ),
-  placeholder__color--focus: (
-    _var: --placeholder-focus-color,
-    dark: $input-outlined__placeholder__color--focus--dark,
-    light: $input-outlined__placeholder__color--focus--light
-  ),
-  input__background-color: (
-    _var: --input-background-color,
-    dark: var(--people-list-background-color, $input-outlined__background-color--dark),
-    light: var(--people-list-background-color, $input-outlined__background-color--light)
-  ),
-  input__border: (
-    _var: --input-border,
-    dark: 2px solid $input-outlined__border-color--dark,
-    light: 2px solid $input-outlined__border-color--light
-  ),
-  input__border-top: (
-    _var: --input-border-top,
-    dark: 2px solid $input-outlined__border-color--dark,
-    light: 2px solid $input-outlined__border-color--light
-  ),
-  input__border-right: (
-    _var: --input-border-right,
-    dark: 2px solid $input-outlined__border-color--dark,
-    light: 2px solid $input-outlined__border-color--light
-  ),
-  input__border-bottom: (
-    _var: --input-border-bottom,
-    dark: 2px solid $input-outlined__border-color--dark,
-    light: 2px solid $input-outlined__border-color--light
-  ),
-  input__border-left: (
-    _var: --input-border-left,
-    dark: 2px solid $input-outlined__border-color--dark,
-    light: 2px solid $input-outlined__border-color--light
-  ),
-  input__border-color--hover: (
-    _var: --input-hover-color,
-    light: $input-outlined__border-color--hover--light,
-    dark: $input-outlined__border-color--hover--dark
-  ),
-  input__border-color--focus: (
-    _var: --input-focus-color,
-    light: $input-outlined__border-color--focus--light,
-    dark: $input-outlined__border-color--focus--dark
-  ),
-  color: (
-    _var: --font-color,
-    dark: $text__color__sub1--dark,
-    light: $text__color__sub1--light
-  ),
   selected-person__background-color: (
     _var: --selected-person-background-color,
     dark: $pill__background-color--dark,
@@ -82,12 +33,12 @@ $people-picker: (
 );
 
 // mixins
-@mixin input__border($theme) {
-  border-top: set-var(input__border-top, $theme, $people-picker);
-  border-right: set-var(input__border-right, $theme, $people-picker);
-  border-bottom: set-var(input__border-bottom, $theme, $people-picker);
-  border-left: set-var(input__border-left, $theme, $people-picker);
-  border: set-var(input__border, $theme, $people-picker);
+@mixin input__border($theme-default) {
+  border-top: $input__border-top;
+  border-right: $input__border-right;
+  border-bottom: $input__border-bottom;
+  border-left: $input__border-left;
+  border: $input__border;
 }
 
 @mixin selected-person__overflow($theme) {

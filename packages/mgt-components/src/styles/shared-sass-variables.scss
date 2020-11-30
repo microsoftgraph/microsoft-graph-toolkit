@@ -121,7 +121,6 @@ $input-outlined__background-color--focus--light: $background-color__main--active
 $input-outlined__placeholder__color--dark: $gray120;
 $input-outlined__placeholder__color--hover--dark: $gray90;
 $input-outlined__placeholder__color--focus--dark: $text__color__sub1--dark;
-
 $input-outlined__color--dark: $text__color__sub1--dark;
 $input-outlined__border-color--dark: $gray110;
 $input-outlined__border-color--hover--dark: $gray90;
@@ -140,7 +139,7 @@ $list__icon__color--light: $icon__sub2--light;
 // dark
 $list__color__main--dark: $text__color__sub1--dark;
 $list__color__sub--dark: $text__color__sub2--dark;
-$list__background-color--dark: $background-color__main--dark;
+$list__background-color--dark: $background-color__sub1--dark;
 $list__item__background-color--hover--dark: $background-color__main--hover--dark;
 $list__icon__color--dark: $icon__sub2--dark;
 
@@ -161,6 +160,10 @@ $link__color--light: $gray160;
 $link__color--hover--light: $commblue_primary;
 $link__color--pressed--light: $black;
 $link__color--disabled--light: $gray90;
+
+/* -----Depth----- */
+$depth-shadow--light: 0 3.2px 7.2px 0 rgba(0, 0, 0, 0.132);
+$depth-shadow--dark: 0 3.2px 7.2px 0 rgba(0, 0, 0, 1);
 
 $font-family: var(--default-font-family);
 
@@ -216,8 +219,8 @@ $common: (
   ),
   box-shadow: (
     _var: --box-shadow,
-    dark: rgba(0, 0, 0, 1),
-    light: rgba(0, 0, 0, 0.092)
+    dark: $depth-shadow--dark,
+    light: $depth-shadow--light
   ),
   title__color__main: (
     _var: --title-color-main,
@@ -238,6 +241,66 @@ $common: (
     _var: --line-seperator-color,
     dark: $line-separator--dark,
     light: $line-separator--light
+  ),
+  input-outlined__placeholder__color: (
+    _var: --placeholder-color,
+    dark: $input-outlined__placeholder__color--dark,
+    light: $input-outlined__placeholder__color--light
+  ),
+  input-outlined__placeholder__color--focus: (
+    _var: --placeholder-color--focus,
+    dark: $input-outlined__placeholder__color--focus--dark,
+    light: $input-outlined__placeholder__color--focus--light
+  ),
+  input-outlined__background-color: (
+    _var: --input-background-color,
+    dark: $input-outlined__background-color--dark,
+    light: $input-outlined__background-color--light
+  ),
+  input-outlined__background-color--hover: (
+    _var: --input-background-color--hover,
+    dark: $input-outlined__background-color--hover--dark,
+    light: $input-outlined__background-color--hover--light
+  ),
+  input-outlined__border: (
+    _var: --input-border,
+    dark: 2px solid $input-outlined__border-color--dark,
+    light: 2px solid $input-outlined__border-color--light
+  ),
+  input-outlined__border-top: (
+    _var: --input-border-top,
+    dark: 2px solid $input-outlined__border-color--dark,
+    light: 2px solid $input-outlined__border-color--light
+  ),
+  input-outlined__border-right: (
+    _var: --input-border-right,
+    dark: 2px solid $input-outlined__border-color--dark,
+    light: 2px solid $input-outlined__border-color--light
+  ),
+  input-outlined__border-bottom: (
+    _var: --input-border-bottom,
+    dark: 2px solid $input-outlined__border-color--dark,
+    light: 2px solid $input-outlined__border-color--light
+  ),
+  input-outlined__border-left: (
+    _var: --input-border-left,
+    dark: 2px solid $input-outlined__border-color--dark,
+    light: 2px solid $input-outlined__border-color--light
+  ),
+  input-outlined__border-color--hover: (
+    _var: --input-hover-color,
+    light: $input-outlined__border-color--hover--light,
+    dark: $input-outlined__border-color--hover--dark
+  ),
+  input-outlined__border-color--focus: (
+    _var: --input-focus-color,
+    light: $input-outlined__border-color--focus--light,
+    dark: $input-outlined__border-color--focus--dark
+  ),
+  list__background-color: (
+    _var: --list-background-color,
+    dark: $list__background-color--dark,
+    light: $list__background-color--light
   )
 );
 
