@@ -6,31 +6,16 @@
  */
 @import '../../styles/shared-sass-variables.scss';
 
+$event__time__color: var(--event-time-color, set-var(color, $theme-default, $common));
+$event__subject__color: var(--event-subject-color, set-var(color__sub1, $theme-default, $common));
+$event__location__color: var(--event-location-color, set-var(color, $theme-default, $common));
+$header__color: var(--header-color, set-var(color__sub1, $theme-default, $common));
+
 $agenda: (
   event__background-color: (
     _var: --event-background,
     light: $background-color__main--light,
     dark: $background-color__sub1--dark
-  ),
-  event__time__color: (
-    _var: --event-time-color,
-    light: $text__color__main--light,
-    dark: $text__color__main--dark
-  ),
-  event__subject__color: (
-    _var: --event-time-color,
-    light: $text__color__sub1--light,
-    dark: $text__color__sub1--dark
-  ),
-  event__location__color: (
-    _var: --event-location-color,
-    light: $text__color__main--light,
-    dark: $text__color__main--dark
-  ),
-  header__color: (
-    _var: --agenda-header-color,
-    light: $text__color__sub1--light,
-    dark: $text__color__sub1--dark
   )
 );
 

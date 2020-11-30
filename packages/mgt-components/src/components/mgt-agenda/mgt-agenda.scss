@@ -12,9 +12,9 @@
 :host .header,
 mgt-agenda .header {
   margin: var(--agenda-header-margin, 40px 10px 14px 10px);
-  font-family: var(--default-font-family);
+  font-family: $font-family;
   font-size: var(--agenda-header-font-size, 24px);
-  color: set-var(header__color, $theme-default, $agenda);
+  color: $header__color;
 }
 
 :host .agenda > .group:first-child > .header,
@@ -27,7 +27,7 @@ mgt-agenda .agenda-list {
   list-style-type: none;
   padding: 0;
   margin: 0;
-  font-family: var(--default-font-family);
+  font-family: $font-family;
   font-style: normal;
   font-weight: normal;
 }
@@ -52,7 +52,7 @@ mgt-agenda .event-time-container {
   display: flex;
   flex-direction: column;
   margin: 18px 38px 18px 18px;
-  width: 120px;
+  width: 125px;
 }
 
 :host .narrow .event-time-container,
@@ -63,7 +63,7 @@ mgt-agenda .narrow .event-time-container {
 :host .event-time,
 mgt-agenda .event-time {
   font-size: var(--event-time-font-size, 12px);
-  color: set-var(event__time__color, $theme-default, $agenda);
+  color: $event__time__color;
   font-weight: 600;
 }
 
@@ -86,7 +86,7 @@ mgt-agenda .narrow .event-details-container {
 mgt-agenda .event-subject {
   margin: 0px 18px 0px 0px;
   font-size: var(--event-subject-font-size, 19px);
-  color: set-var(event__subject__color, $theme-default, $agenda);
+  color: $event__subject__color;
 }
 
 :host .event-location-container,
@@ -102,13 +102,13 @@ mgt-agenda .event-location-icon svg {
 
 :host .event-location-icon svg path,
 mgt-agenda .event-location-icon svg path {
-  stroke: set-var(event__location__color, $theme-default, $agenda);
+  stroke: $event__location__color;
 }
 
 :host .event-location,
 mgt-agenda .event-location {
   font-size: var(--event-location-font-size, 12px);
-  color: set-var(event__location__color, $theme-default, $agenda);
+  color: $event__location__color;
   margin: 0px 0px 0px 4px;
   line-height: 17px;
 }
@@ -129,7 +129,7 @@ mgt-agenda .event-other-container {
 
 :host .loading-element,
 mgt-agenda .loading-element {
-  background: #f2f2f2;
+  background: set-var(event__background-color, $theme-default, $agenda);
   border-radius: 1px;
 }
 
