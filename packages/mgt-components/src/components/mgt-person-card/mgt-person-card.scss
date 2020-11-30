@@ -16,11 +16,13 @@ $person-card-details-title-font-size: var(--person-card-details-title-font-size,
 $person-card-details-item-font-size: var(--person-card-details-item-font-size, 15px);
 
 :host {
-  background: set-var(background-color, $theme-default, $person-card);
+  background: $background-color;
   width: var(--mgt-flyout-set-width, 340px);
-  font-family: var(--default-font-family);
+  font-family: $font-family;
   overflow: hidden;
   user-select: none;
+  box-shadow: set-var(box-shadow, $theme-default, $common);
+  border: 1px solid set-var(background-color__sub1, $theme-default, $common);
 
   .nav {
     height: 0px;
@@ -55,8 +57,8 @@ $person-card-details-item-font-size: var(--person-card-details-item-font-size, 1
     padding: 20px;
 
     .person-image {
-      --presence-background-color: #{set-var(background-color, $theme-default, $person-card)};
-      --presence-icon-color: #{set-var(background-color, $theme-default, $person-card)};
+      --presence-background-color: #{$background-color};
+      --presence-icon-color: #{$background-color};
       --avatar-size: 75px;
       --font-size: 20px;
       --line2-font-size: 14px;
@@ -68,7 +70,6 @@ $person-card-details-item-font-size: var(--person-card-details-item-font-size, 1
       -webkit-align-items: center;
       align-items: center;
       max-width: 120px;
-      // margin-left: 87px;
       margin-top: 16px;
 
       .icon {
@@ -83,16 +84,16 @@ $person-card-details-item-font-size: var(--person-card-details-item-font-size, 1
         }
 
         svg {
-          fill: set-var(icon__color, $theme-default, $person-card);
+          fill: set-var(icon__color, $theme-default, $common);
         }
 
         span {
           margin-left: 8px;
-          color: #0078d4;
+          color: $commblue_primary;
         }
       }
       .icon:hover {
-        color: #004578;
+        color: $commblue_shade20;
       }
     }
   }
@@ -107,7 +108,7 @@ $person-card-details-item-font-size: var(--person-card-details-item-font-size, 1
       justify-content: center;
       align-items: center;
       height: 28px;
-      background: set-var(background-color, $theme-default, $person-card);
+      background: $background-color;
       border-top: 1px solid set-var(line-seperator__color, $theme-default, $common);
       .expanded-details-svg {
         margin-bottom: 3px;
@@ -125,7 +126,7 @@ $person-card-details-item-font-size: var(--person-card-details-item-font-size, 1
         margin: 0 0 24px 0;
         font-weight: 600;
         font-size: $person-card-details-title-font-size;
-        color: set-var(details-title__color, $theme-default, $person-card);
+        color: $details-title__color;
       }
 
       .icons {
@@ -155,7 +156,7 @@ $person-card-details-item-font-size: var(--person-card-details-item-font-size, 1
         padding-top: 2px;
       }
       .link-subtitle {
-        color: #3078cd;
+        color: $commblue_primary;
         cursor: pointer;
       }
       .link-subtitle:hover {
@@ -173,7 +174,7 @@ $person-card-details-item-font-size: var(--person-card-details-item-font-size, 1
   .section-nav {
     display: flex;
     padding: 0 14px;
-    border-bottom: 1px solid set-var(tab__line__color, $theme-default, $person-card);
+    border-bottom: 1px solid set-var(tab__line__color, $theme-default, $common);
 
     .section-nav__icon {
       all: initial;
@@ -190,12 +191,12 @@ $person-card-details-item-font-size: var(--person-card-details-item-font-size, 1
       svg {
         width: 20px;
         height: 20px;
-        fill: set-var(icon__color, $theme-default, $person-card);
+        fill: set-var(icon__color, $theme-default, $common);
       }
 
       &:hover {
-        background: set-var(tab__background-color--hover, $theme-default, $person-card);
-        border-color: set-var(tab__line__color--hover, $theme-default, $person-card);
+        background: set-var(tab__background-color--hover, $theme-default, $common);
+        border-color: set-var(tab__line__color--hover, $theme-default, $common);
       }
 
       &.active {
@@ -225,7 +226,7 @@ $person-card-details-item-font-size: var(--person-card-details-item-font-size, 1
   .quick-message {
     display: flex;
     flex-direction: row;
-    border-bottom: 1px solid set-var(tab__line__color, $theme-default, $person-card);
+    border-bottom: 1px solid set-var(tab__line__color, $theme-default, $common);
     padding: 12px 10px 8px 10px;
 
     .quick-message__input {
@@ -233,7 +234,7 @@ $person-card-details-item-font-size: var(--person-card-details-item-font-size, 1
       padding-left: 8px;
       border: none;
       border-radius: 2px;
-      color: set-var(color, $theme-default, $common);
+      color: $color;
       background-color: set-var(background-color__sub2, $theme-default, $common);
     }
 
@@ -271,7 +272,7 @@ $person-card-details-item-font-size: var(--person-card-details-item-font-size, 1
         content: '';
         width: 90%;
         transform: translateX(-50%);
-        border-bottom: 1px solid set-var(tab__line__color, $theme-default, $person-card);
+        border-bottom: 1px solid set-var(tab__line__color, $theme-default, $common);
         left: 50%;
         bottom: 0;
       }
@@ -290,14 +291,14 @@ $person-card-details-item-font-size: var(--person-card-details-item-font-size, 1
       }
 
       .section__show-more {
-        color: #0078d4;
+        color: $commblue_primary;
         font-size: 12px;
         font-weight: 600;
         align-self: center;
 
         &:hover {
           cursor: pointer;
-          color: #004578;
+          color: $commblue_shade20;
         }
       }
 

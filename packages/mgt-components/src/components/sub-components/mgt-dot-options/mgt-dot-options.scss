@@ -29,7 +29,7 @@ mgt-dot-options .DotIcon {
 :host .Menu,
 mgt-dot-options .Menu {
   position: absolute;
-  box-shadow: set-var(box-shadow, $theme-default, $common) 0px 0px 40px 5px;
+  box-shadow: set-var(box-shadow__color, $theme-default, $common) 0px 0px 40px 5px;
   background: set-var(background-color, $theme-default, $common);
   z-index: 1;
   display: none;

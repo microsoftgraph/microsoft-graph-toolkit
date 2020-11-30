@@ -227,6 +227,26 @@ $common: (
     dark: rgba(0, 0, 0, 1),
     light: rgba(0, 0, 0, 0.092)
   ),
+  icon__color: (
+    _var: --icon-color,
+    dark: $icon__sub1--dark,
+    light: $icon__sub1--light
+  ),
+  tab__line__color: (
+    _var: --tab-line-color,
+    dark: $tab__line__color--dark,
+    light: $tab__line__color--light
+  ),
+  tab__line__color--hover: (
+    _var: --tab-line-color--hover,
+    dark: $tab__line__color--hover--dark,
+    light: $tab__line__color--hover--light
+  ),
+  tab__background-color--hover: (
+    _var: --tab-background-color--hover,
+    dark: $tab__background-color--hover--dark,
+    light: $tab__background-color--hover--light
+  ),
   title__color__main: (
     _var: --title-color-main,
     dark: $title__color__main--dark,

@@ -39,7 +39,7 @@ mgt-arrow-options .Header:hover {
 mgt-arrow-options .Menu {
   position: absolute;
   left: var(--arrow-options-left, 0);
-  box-shadow: set-var(box-shadow, $theme-default, $common) 0px 0px 40px 5px;
+  box-shadow: set-var(box-shadow__color, $theme-default, $common) 0px 0px 40px 5px;
   background: set-var(background-color, $theme-default, $common);
   z-index: 1;
   display: none;
