@@ -14,7 +14,7 @@
     position: fixed;
     z-index: 9999999;
     opacity: 0;
-    box-shadow: set-var(box-shadow, $theme-default, $common);
+    box-shadow: set-var(box-shadow__ms, $theme-default, $common);
   }
 
   &.visible {

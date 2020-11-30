@@ -217,10 +217,15 @@ $common: (
     dark: $background-color__sub2--dark,
     light: $background-color__sub2--light
   ),
-  box-shadow: (
+  box-shadow__ms: (
     _var: --box-shadow,
     dark: $depth-shadow--dark,
     light: $depth-shadow--light
+  ),
+  box-shadow: (
+    _var: --box-shadow,
+    dark: rgba(0, 0, 0, 1),
+    light: rgba(0, 0, 0, 0.092)
   ),
   title__color__main: (
     _var: --title-color-main,
@@ -318,6 +323,31 @@ $common: (
       }
     }
   }
+}
+
+$color: set-var(color__sub1, $theme-default, $common);
+$placeholder__color: set-var(input-outlined__placeholder__color, $theme-default, $common);
+$placeholder__color--focus: set-var(input-outlined__placeholder__color--focus, $theme-default, $common);
+$input__background-color: set-var(input-outlined__background-color, $theme-default, $common);
+$input__border: set-var(input-outlined__border, $theme-default, $common);
+$input__border-top: set-var(input-outlined__border-top, $theme-default, $common);
+$input__border-right: set-var(input-outlined__border-right, $theme-default, $common);
+$input__border-bottom: set-var(input-outlined__border-bottom, $theme-default, $common);
+$input__border-left: set-var(input-outlined__border-left, $theme-default, $common);
+$input__border-color--hover: set-var(input-outlined__border-color--hover, $theme-default, $common);
+$input__border-color--focus: set-var(input-outlined__border-color--focus, $theme-default, $common);
+$dropdown__background-color: var(--dropdown-background-color, set-var(list__background-color, $theme-default, $common));
+$dropdown-item__background-color--hover: var(
+  --dropdown-item-hover-background,
+  set-var(input-outlined__background-color--hover, $theme-default, $common)
+);
+
+@mixin input__border($theme) {
+  border-top: $input__border-top;
+  border-right: $input__border-right;
+  border-bottom: $input__border-bottom;
+  border-left: $input__border-left;
+  border: $input__border;
 }
 
 @include create-themes($common);
