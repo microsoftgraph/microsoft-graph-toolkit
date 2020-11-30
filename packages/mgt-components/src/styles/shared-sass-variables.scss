@@ -217,13 +217,13 @@ $common: (
     dark: $background-color__sub2--dark,
     light: $background-color__sub2--light
   ),
-  box-shadow__ms: (
+  box-shadow: (
     _var: --box-shadow,
     dark: $depth-shadow--dark,
     light: $depth-shadow--light
   ),
-  box-shadow: (
-    _var: --box-shadow,
+  box-shadow__color: (
+    _var: --box-shadow-color,
     dark: rgba(0, 0, 0, 1),
     light: rgba(0, 0, 0, 0.092)
   ),
