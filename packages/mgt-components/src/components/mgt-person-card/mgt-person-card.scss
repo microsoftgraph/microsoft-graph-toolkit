@@ -316,3 +316,20 @@ $person-card-background-color: var(--person-card-background-color, #ffffff);
     }
   }
 }
+
+[dir='rtl'] {
+  .base-icons {
+    span {
+      margin-right: 8px;
+    }
+  }
+  .nav__back {
+    width: 20px !important;
+    -moz-transform: scaleX(-1);
+    -o-transform: scaleX(-1);
+    -webkit-transform: scaleX(-1);
+    transform: scaleX(-1);
+    filter: FlipH;
+    -ms-filter: 'FlipH';
+  }
+}

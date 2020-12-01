@@ -129,7 +129,7 @@ export class MgtPersonCardProfile extends BasePersonCardSection {
    */
   protected renderCompactView(): TemplateResult {
     return html`
-      <div class="root compact">
+      <div class="root compact" dir=${this.direction}>
         ${this.renderSubSections().slice(0, 2)}
       </div>
     `;
@@ -146,7 +146,7 @@ export class MgtPersonCardProfile extends BasePersonCardSection {
     this.initPostRenderOperations();
 
     return html`
-      <div class="root">
+      <div class="root" dir=${this.direction}>
         <div class="title">About</div>
         ${this.renderSubSections()}
       </div>
