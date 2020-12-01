@@ -21,3 +21,12 @@ export default {
 export const tasks = () => html`
   <mgt-todo></mgt-todo>
 `;
+
+export const darkTheme = () => html`
+  <mgt-todo class="mgt-dark"></mgt-todo>
+  <style>
+    body {
+      background-color: black;
+    }
+  </style>
+`;

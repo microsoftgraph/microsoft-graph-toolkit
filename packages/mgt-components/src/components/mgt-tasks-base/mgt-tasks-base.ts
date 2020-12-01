@@ -171,7 +171,7 @@ export abstract class MgtTasksBase extends MgtTemplatedComponent {
     });
 
     return html`
-      <div class="header" dir=${this.direction}>
+      <div class="Header" dir=${this.direction}>
         ${headerContentTemplate}
         <button class="${addClasses}" @click="${() => this.showNewTaskPanel()}">
           <span class="TaskIcon"></span>
