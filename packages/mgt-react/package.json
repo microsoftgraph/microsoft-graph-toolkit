@@ -27,9 +27,9 @@
   "scripts": {
     "build": "npm run clean && npm run generate && tsc",
     "clean": "node ./scripts/clean.js",
-    "prepack": "shx rm -rf *.tgz && npm run build",
     "postpack": "cpx *.tgz ../../artifacts",
-    "generate": "wca analyze ../mgt-components/src --format json --outFile temp/web-components.json && node ./scripts/generate.js"
+    "generate": "wca analyze ../mgt-components/src --format json --outFile temp/web-components.json && node ./scripts/generate.js",
+    "publish:next": "npm publish --tag next"
   },
   "dependencies": {
     "@microsoft/mgt": "*",

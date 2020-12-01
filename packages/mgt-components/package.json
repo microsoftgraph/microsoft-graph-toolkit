@@ -31,11 +31,11 @@
     "compile": "tsc -b",
     "compile:watch": "tsc -w",
     "lint": "tslint -c ../../tslint.json 'src/**/*.ts'",
-    "prepack": "shx rm -rf *.tgz && npm run build",
     "postpack": "cpx *.tgz ../../artifacts",
     "sass": "gulp sass --cwd .",
     "sass:watch": "gulp watchSass --cwd .",
-    "setLicense": "gulp setLicense --cwd ."
+    "setLicense": "gulp setLicense --cwd .",
+    "publish:next": "npm publish --tag next"
   },
   "dependencies": {
     "@microsoft/microsoft-graph-types": "^1.22.0",
