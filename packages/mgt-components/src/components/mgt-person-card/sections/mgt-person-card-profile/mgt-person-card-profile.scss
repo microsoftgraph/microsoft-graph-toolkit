@@ -77,7 +77,6 @@
         }
 
         &:hover {
-          background-color: set-var(background-color--hover, $theme-default, $common);
           color: set-var(color__sub1, $theme-default, $common);
         }
 

@@ -19,12 +19,12 @@ $task-icon-color-completed: var(--task-icon-color-completed, white);
 $task-border-completed: var(--task-complete-border, 2px dotted inherit);
 
 :host {
-  font-family: var(--default-font-family, 'Segoe UI');
+  font-family: $font-family;
   display: flex;
   flex-direction: column;
   background-color: set-var(background-color__sub1, $theme-default, $common);
   padding: var(--tasks-padding, 12px);
-  color: set-var(color, $theme-default, $common);
+  color: $color;
 
   .TaskIcon {
     font-family: 'FabricMDL2Icons';
@@ -149,7 +149,7 @@ $task-border-completed: var(--task-complete-border, 2px dotted inherit);
     position: relative;
     margin: var(--task-margin, 0 0 18px 0);
     padding: var(--task-padding, 0 0 0 0);
-    background-color: set-var(background-color, $theme-default, $tasks);
+    background-color: $background-color;
 
     .TaskContent {
       display: flex;
@@ -174,7 +174,7 @@ $task-border-completed: var(--task-complete-border, 2px dotted inherit);
         justify-content: space-between;
         align-items: flex-start;
 
-        color: set-var(detail__color, $theme-default, $tasks);
+        color: $detail__color;
         font-size: 12px;
         font-weight: 600;
         white-space: nowrap;
@@ -191,7 +191,7 @@ $task-border-completed: var(--task-complete-border, 2px dotted inherit);
         }
 
         .TaskTitle {
-          color: var(--task-title-color, $ms-color-gray160);
+          color: $title__color;
           font-size: 14px;
           font-weight: 600;
           grid-row: 1;
@@ -349,7 +349,7 @@ $task-border-completed: var(--task-complete-border, 2px dotted inherit);
           margin-right: 4px;
 
           path {
-            fill: set-var(detail__color, $theme-default, $tasks);
+            fill: $detail__color;
           }
         }
         span,
@@ -362,7 +362,7 @@ $task-border-completed: var(--task-complete-border, 2px dotted inherit);
           margin-right: 8px;
         }
         mgt-people {
-          color: set-var(detail__color, $theme-default, $tasks);
+          color: $detail__color;
           font-size: 16px;
         }
 
@@ -375,7 +375,7 @@ $task-border-completed: var(--task-complete-border, 2px dotted inherit);
           -moz-background-clip: padding-box;
           background-clip: padding-box;
           width: var(--mgt-flyout-set-width, 350px);
-          color: set-var(detail__color, $theme-default, $tasks);
+          color: $detail__color;
           mgt-people-picker {
             --separator-margin: 0px 10px 0px 10px;
           }
@@ -383,7 +383,7 @@ $task-border-completed: var(--task-complete-border, 2px dotted inherit);
 
         input,
         select {
-          color: set-var(detail__color, $theme-default, $tasks);
+          color: $detail__color;
           font-size: 0.9em;
           background-color: set-var(background-color__sub1, $theme-default, $common);
         }
@@ -411,8 +411,9 @@ $task-border-completed: var(--task-complete-border, 2px dotted inherit);
           color: $task-icon-color-completed;
         }
 
-        .TaskTitle {
+        .TaskContent .TaskDetailsContainer .TaskTitle {
           text-decoration: line-through;
+          color: set-var(color__sub3, $theme-default, $common);
         }
       }
 
@@ -454,11 +455,12 @@ $task-border-completed: var(--task-complete-border, 2px dotted inherit);
     }
 
     &.Complete {
-      background: set-var(background-color--completed, $theme-default, $tasks);
+      background: $background-color--completed;
       border: set-var(border--completed, $theme-default, $tasks);
 
-      .TaskTitle {
+      .TaskContent .TaskDetailsContainer .TaskTitle {
         text-decoration: line-through;
+        color: set-var(color__sub3, $theme-default, $common);
       }
     }
 
@@ -567,7 +569,7 @@ $task-border-completed: var(--task-complete-border, 2px dotted inherit);
 
             select,
             input {
-              font-family: var(--default-font-family, 'Segoe UI');
+              font-family: $font-family;
               font-size: 12px;
               font-weight: 600;
               border: var(--task-new-select-border, none);
@@ -617,7 +619,7 @@ $task-border-completed: var(--task-complete-border, 2px dotted inherit);
           font-family: var(--default-font-family, 'Segoe UI');
           font-size: 14px;
           font-weight: 600;
-          color: set-var(button__color--cancle, $theme-default, $tasks);
+          color: $button__color--cancel;
           margin: 0 12px 0 32px;
         }
 

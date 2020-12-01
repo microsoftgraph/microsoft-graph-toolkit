@@ -9,7 +9,6 @@
 
 $button__color--hover: var(--color-hover, #{$commblue_primary});
 $button__color: var(--button-color, set-var(color__sub1, $theme-default, $common));
-$button__background-color: var(--button-background-color, set-var(background-color__sub1, $theme-default, $common));
 $button__background-color--hover: var(
   --button-background-color-hover,
   set-var(background-color--hover, $theme-default, $common)

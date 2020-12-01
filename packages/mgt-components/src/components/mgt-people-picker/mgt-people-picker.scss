@@ -132,9 +132,6 @@ mgt-people-picker .root {
           &::placeholder {
             color: $placeholder__color;
           }
-          &:focus::placeholder {
-            color: $placeholder__color--focus;
-          }
         }
       }
 

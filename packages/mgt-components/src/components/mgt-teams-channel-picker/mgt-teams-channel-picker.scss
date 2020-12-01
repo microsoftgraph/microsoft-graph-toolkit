@@ -83,18 +83,11 @@
       &::placeholder {
         color: $placeholder__color;
       }
-      &:focus::placeholder {
-        color: $placeholder__color--focus;
-      }
     }
     .team-chosen-input[contenteditable]:empty::after {
       content: attr(data-placeholder);
       display: inline-block;
       color: $placeholder__color;
-    }
-    .team-chosen-input[contenteditable]:empty:focus::after {
-      content: attr(data-placeholder);
-      color: $placeholder__color--focus;
     }
 
     .search-icon {
