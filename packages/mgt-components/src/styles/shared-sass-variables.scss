@@ -313,12 +313,12 @@ $common: (
     light: 2px solid $input-outlined__border-color--light
   ),
   input-outlined__border-color--hover: (
-    _var: --input-hover-color,
+    _var: --input-border-color--hover,
     light: $input-outlined__border-color--hover--light,
     dark: $input-outlined__border-color--hover--dark
   ),
   input-outlined__border-color--focus: (
-    _var: --input-focus-color,
+    _var: --input-border-color--focus,
     light: $input-outlined__border-color--focus--light,
     dark: $input-outlined__border-color--focus--dark
   ),

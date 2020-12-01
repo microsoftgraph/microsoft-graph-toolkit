@@ -47,7 +47,7 @@ interface IFocusable {
  *
  * @fires selectionChanged - Fired when selection changes
  *
- * @cssprop --font-color - {font} Default font color
+ * @cssprop --color - {Color} Default font color
  *
  * @cssprop --input-border - {String} Input section entire border
  * @cssprop --input-border-top - {String} Input section border top only
@@ -55,16 +55,16 @@ interface IFocusable {
  * @cssprop --input-border-bottom - {String} Input section border bottom only
  * @cssprop --input-border-left - {String} Input section border left only
  * @cssprop --input-background-color - {Color} Input section background color
- * @cssprop --input-hover-color - {Color} Input text hover color
- * @cssprop --input-focus-color - {Color} Input text focus color
+ * @cssprop --input-border-color--hover - {Color} Input border hover color
+ * @cssprop --input-border-color--focus - {Color} Input border focus color
  *
  * @cssprop --selected-person-background-color - {Color} Selected person background color
  *
  * @cssprop --dropdown-background-color - {Color} Background color of dropdown area
  * @cssprop --dropdown-item-hover-background - {Color} Background color of person during hover
  *
- * @cssprop --placeholder-focus-color - {Color} Color of placeholder text during focus state
- * @cssprop --placeholder-default-color - {Color} Color of placeholder text
+ * @cssprop --placeholder-color--focus - {Color} Color of placeholder text during focus state
+ * @cssprop --placeholder-color - {Color} Color of placeholder text
  *
  */
 @customElement('mgt-people-picker')

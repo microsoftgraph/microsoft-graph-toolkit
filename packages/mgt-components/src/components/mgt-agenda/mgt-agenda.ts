@@ -27,8 +27,8 @@ import { SvgIcon, getSvg } from '../../utils/SvgHelper';
  * @cssprop --event-box-shadow - {String} Event box shadow color and size
  * @cssprop --event-margin - {String} Event margin
  * @cssprop --event-padding - {String} Event padding
- * @cssprop --event-background - {Color} Event background color
- * @cssprop --event-border - {String} Event border color
+ * @cssprop --event-background-color - {Color} Event background color
+ * @cssprop --event-border - {String} Event border style
  * @cssprop --agenda-header-margin - {String} Agenda header margin size
  * @cssprop --agenda-header-font-size - {Length} Agenda header font size
  * @cssprop --agenda-header-color - {Color} Agenda header color

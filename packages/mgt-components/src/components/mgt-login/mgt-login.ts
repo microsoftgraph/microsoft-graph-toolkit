@@ -40,10 +40,12 @@ import { strings } from './strings';
  * @cssprop --height - {String} Login height percentage
  * @cssprop --margin - {String} Margin size
  * @cssprop --padding - {String} Padding size
- * @cssprop --color - {Color} Login font color
- * @cssprop --background-color - {Color} Login background color
- * @cssprop --background-color--hover - {Color} Login background hover color
- * @cssprop --popup-content-background-color - {Color} Popup content background color
+ * @cssprop --button-color - {Color} Login button font color
+ * @cssprop --button-color--hover - {Color} Login button font hover color
+ * @cssprop --button-background-color - {Color} Login button background color
+ * @cssprop --button-background-color--hover - {Color} Login background hover color
+ * @cssprop --popup-background-color - {Color} Popup background color
+ * @cssprop --popup-color - {Color} Popup font color
  * @cssprop --popup-command-font-size - {Length} Popup command font size
  */
 @customElement('mgt-login')

@@ -40,7 +40,7 @@ mgt-login .login-button {
   margin: var(--margin);
   padding: var(--padding);
   color: $button__color;
-  background-color: transparent;
+  background-color: var(--button-background-color, transparent);
   border: none;
   cursor: pointer;
   transition: color 0.3s, background-color 0.3s;

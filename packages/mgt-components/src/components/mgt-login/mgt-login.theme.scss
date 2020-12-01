@@ -7,10 +7,10 @@
 
 @import '../../styles/shared-sass-variables.scss';
 
-$button__color--hover: var(--color-hover, #{$commblue_primary});
+$button__color--hover: var(--button-color--hover, #{$commblue_primary});
 $button__color: var(--button-color, set-var(color__sub1, $theme-default, $common));
 $button__background-color--hover: var(
-  --button-background-color-hover,
+  --button-background-color--hover,
   set-var(background-color--hover, $theme-default, $common)
 );
 $popup__color: var(--popup-color, set-var(color__sub1, $theme-default, $common));

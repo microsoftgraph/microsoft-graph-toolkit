@@ -124,7 +124,7 @@ interface ChannelPickerItemState {
  *
  * @fires selectionChanged - Fired when the selection changes
  *
- * @cssprop --font-color - {font} Default font color
+ * @cssprop --color - {font} Default font color
  *
  * @cssprop --input-border - {String} Input section entire border
  * @cssprop --input-border-top - {String} Input section border top only
@@ -132,16 +132,16 @@ interface ChannelPickerItemState {
  * @cssprop --input-border-bottom - {String} Input section border bottom only
  * @cssprop --input-border-left - {String} Input section border left only
  * @cssprop --input-background-color - {Color} Input section background color
- * @cssprop --input-hover-color - {Color} Input text hover color
- * @cssprop --input-focus-color - {Color} Input text focus color
+ * @cssprop --input-border-color--hover - {Color} Input border hover color
+ * @cssprop --input-border-color--focus - {Color} Input border focus color
  *
  * @cssprop --dropdown-background-color - {Color} Background color of dropdown area
  * @cssprop --dropdown-item-hover-background - {Color} Background color of channel or team during hover
  * @cssprop --dropdown-item-selected-background - {Color} Background color of selected channel
  *
  * @cssprop --arrow-fill - {Color} Color of arrow svg
- * @cssprop --placeholder-focus-color - {Color} Color of placeholder text during focus state
- * @cssprop --placeholder-default-color - {Color} Color of placeholder text
+ * @cssprop --placeholder-color--focus - {Color} Color of placeholder text during focus state
+ * @cssprop --placeholder-color - {Color} Color of placeholder text
  *
  */
 @customElement('mgt-teams-channel-picker')
