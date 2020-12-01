@@ -79,3 +79,12 @@
     }
   }
 }
+
+[dir='rtl'] {
+  .file__icon {
+    margin-right: 0px !important;
+  }
+  .file__details {
+    margin-right: 12px !important;
+  }
+}

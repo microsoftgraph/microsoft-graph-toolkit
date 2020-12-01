@@ -426,7 +426,7 @@ export class MgtPersonCard extends MgtTemplatedComponent {
     const expandedDetailsTemplate = this.isExpanded ? this.renderExpandedDetails() : this.renderExpandedDetailsButton();
 
     return html`
-      <div class="root">
+      <div class="root" dir=${this.direction}>
         ${navigationTemplate}
         <div class="person-details-container">${personDetailsTemplate}</div>
         <div class="expanded-details-container">${expandedDetailsTemplate}</div>

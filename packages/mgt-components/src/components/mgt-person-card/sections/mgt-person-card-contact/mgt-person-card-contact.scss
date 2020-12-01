@@ -121,3 +121,21 @@
     }
   }
 }
+
+[dir='rtl'] {
+  .part__link {
+    &.phone {
+      text-align: right;
+      direction: ltr;
+    }
+  }
+  .part__icon {
+    margin: 10px 20px 0px 0px !important;
+  }
+  &.compact {
+    .part__icon {
+      margin-left: 6px !important;
+      margin-top: 0px !important;
+    }
+  }
+}

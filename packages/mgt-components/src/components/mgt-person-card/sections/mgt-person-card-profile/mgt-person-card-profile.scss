@@ -160,3 +160,9 @@
     }
   }
 }
+
+[dir='rtl'] {
+  .token-list__item {
+    margin-right: 0px !important;
+  }
+}
