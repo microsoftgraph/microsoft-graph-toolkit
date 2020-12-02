@@ -13,6 +13,7 @@ import { getSvg, SvgIcon } from '../../../../utils/SvgHelper';
 import { MgtPersonCardState } from '../../mgt-person-card.types';
 import { PersonViewType } from '../../../mgt-person/mgt-person';
 import { styles } from './mgt-person-card-organization-css';
+import { strings } from './strings';
 
 /**
  * The member organization subsection of the person card
@@ -29,6 +30,10 @@ export class MgtPersonCardOrganization extends BasePersonCardSection {
    */
   static get styles() {
     return styles;
+  }
+
+  protected get strings() {
+    return strings;
   }
 
   private _state: MgtPersonCardState;
@@ -51,10 +56,10 @@ export class MgtPersonCardOrganization extends BasePersonCardSection {
     const { person, directReports } = this._state;
 
     if (!person.manager && directReports && directReports.length) {
-      return `Direct reports (${directReports.length})`;
+      return `${this.strings.directReportsSectionTitle} (${directReports.length})`;
     }
 
-    return 'Reports to';
+    return this.strings.reportsToSectionTitle;
   }
 
   /**
@@ -128,7 +133,7 @@ export class MgtPersonCardOrganization extends BasePersonCardSection {
 
     return html`
       <div class="root" dir=${this.direction}>
-        <div class="title">Organization</div>
+        <div class="title">${this.strings.organizationSectionTitle}</div>
         ${contentTemplate}
       </div>
     `;
@@ -314,7 +319,9 @@ export class MgtPersonCardOrganization extends BasePersonCardSection {
     }
 
     const subtitle =
-      this._me.id === this._state.person.id ? 'You work with' : `${this._state.person.givenName} works with`;
+      this._me.id === this._state.person.id
+        ? this.strings.youWorkWithSubSectionTitle
+        : `${this._state.person.givenName} ${this.strings.userWorksWithSubSectionTitle}`;
 
     return html`
       <div class="divider"></div>

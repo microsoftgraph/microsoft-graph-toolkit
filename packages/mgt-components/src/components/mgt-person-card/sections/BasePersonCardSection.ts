@@ -70,6 +70,7 @@ export abstract class BasePersonCardSection extends MgtTemplatedComponent {
     super();
     this._isCompact = false;
     this._personDetails = null;
+    this.handleLocalizationChanged();
   }
 
   /**

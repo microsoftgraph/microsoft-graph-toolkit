@@ -170,6 +170,7 @@ export abstract class MgtBaseComponent extends LitElement {
    */
   protected handleLocalizationChanged() {
     this.requestUpdate();
+    console.log(this.tagName);
     LocalizationHelper.updateStringsForTag(this.tagName, this.strings);
   }
 
