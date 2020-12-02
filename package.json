@@ -21,6 +21,7 @@
     "lint": "lerna run --parallel --stream --scope @microsoft/* lint",
     "pack": "shx rm -rf artifacts/*.tgz && lerna exec --stream --scope @microsoft/* -- npm pack",
     "prepare": "lerna bootstrap --force-local",
+    "sass": "lerna run sass --scope @microsoft/*",
     "serve": "es-dev-server --port 3000 --node-resolve --open --watch --compatibility none --app-index index.html",
     "serve:https": "es-dev-server --http2 --port 3000 --node-resolve --open --watch --compatibility none --app-index index.html",
     "start": "npm-run-all prettier:check watch:serve",
@@ -35,7 +36,8 @@
     "storybook:dev": "npm run build:compile && npm run storybook:bundle && wca analyze packages --format json --outFile custom-elements.json",
     "storybook:build": "npm run storybook:dev && build-storybook -s assets && cpx .storybook/CNAME storybook-static",
     "storybook:deploy": "npm run storybook:build && storybook-to-ghpages -e storybook-static",
-    "storybook:bundle": "rollup -c ./.storybook/rollup.config.js"
+    "storybook:bundle": "rollup -c ./.storybook/rollup.config.js",
+    "publish:next": "lerna run publish:next --scope @microsoft/*"
   },
   "storybook-deployer": {
     "gitUsername": "@microsoft/mgt",

@@ -776,7 +776,7 @@ export class MgtTasks extends MgtTemplatedComponent {
       this.readOnly || this._isNewTaskVisible
         ? null
         : html`
-            <button
+            <div
               class="AddBarItem NewTaskButton"
               @click="${() => {
                 this.isNewTaskVisible = !this.isNewTaskVisible;
@@ -784,7 +784,7 @@ export class MgtTasks extends MgtTemplatedComponent {
             >
               <span class="TaskIcon"></span>
               <span>${this.strings.addTaskButtonSubtitle}</span>
-            </button>
+            </div>
           `;
 
     if (this.dataSource === TasksSource.planner) {

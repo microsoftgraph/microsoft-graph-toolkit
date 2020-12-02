@@ -82,22 +82,30 @@ export const personCardWithPresence = () => html`
   </div>
 `;
 
+export const darkTheme = () => html`
+  <mgt-person-card person-query="me" class="mgt-dark"></mgt-person-card>
+  <style>
+    body {
+      background-color: black;
+    }
+  </style>
+`;
 export const ScopesAndConfigureSections = () => html`
   <script>
-import { MgtPersonCard } from '@microsoft/mgt';
+    import { MgtPersonCard } from '@microsoft/mgt';
 
-MgtPersonCard.config.useContactApis = false;
+    MgtPersonCard.config.useContactApis = false;
 
-MgtPersonCard.config.sections.mailMessages = true;
-MgtPersonCard.config.sections.files = true;
-MgtPersonCard.config.sections.profile = true;
-MgtPersonCard.config.sections.organization = true;
+    MgtPersonCard.config.sections.mailMessages = true;
+    MgtPersonCard.config.sections.files = true;
+    MgtPersonCard.config.sections.profile = true;
+    MgtPersonCard.config.sections.organization = true;
 
-// disable only "Works With" subsection under organization
-// MgtPersonCard.config.sections.organization = { showWorksWith: false };
+    // disable only "Works With" subsection under organization
+    // MgtPersonCard.config.sections.organization = { showWorksWith: false };
 
-// change config above to see scopes update
-document.querySelector('.scopes').textContent = MgtPersonCard.getScopes();
+    // change config above to see scopes update
+    document.querySelector('.scopes').textContent = MgtPersonCard.getScopes();
   </script>
   <style>
     .note {
@@ -106,13 +114,11 @@ document.querySelector('.scopes').textContent = MgtPersonCard.getScopes();
       font-size: 12px;
     }
   </style>
-<mgt-person person-query="me" person-card="hover" view="twoLines" show-presence></mgt-person>
+  <mgt-person person-query="me" person-card="hover" view="twoLines" show-presence></mgt-person>
 
-<div class="note">
-	(Hover on person to view Person Card)
-</div>
+  <div class="note">
+    (Hover on person to view Person Card)
+  </div>
 
-<div>
-	Scopes: <span class="scopes"></span>
-</div>
+  <div>Scopes: <span class="scopes"></span></div>
 `;

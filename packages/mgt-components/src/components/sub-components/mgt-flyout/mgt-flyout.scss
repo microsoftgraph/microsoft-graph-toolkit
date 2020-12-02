@@ -6,6 +6,7 @@
  */
 
 @import '../../../../../../node_modules/office-ui-fabric-core/dist/sass/References';
+@import '../../../styles/shared-sass-variables.scss';
 
 .root {
   .flyout {
@@ -13,7 +14,7 @@
     position: fixed;
     z-index: 9999999;
     opacity: 0;
-    box-shadow: $ms-depth-shadow-8;
+    box-shadow: set-var(box-shadow, $theme-default, $common);
   }
 
   &.visible {
