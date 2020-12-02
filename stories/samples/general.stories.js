@@ -8,46 +8,17 @@
 import { html } from 'lit-element';
 import { withSignIn } from '../../.storybook/addons/signInAddon/signInAddon';
 import { withCodeEditor } from '../../.storybook/addons/codeEditorAddon/codeAddon';
-import { localize } from '../../.storybook/addons/localizeAddon/localizationAddon';
-import { withKnobs } from '@storybook/addon-knobs';
 
 export default {
   title: 'Samples | General',
   component: 'mgt-combo',
-  decorators: [withSignIn, withCodeEditor, withKnobs, localize],
+  decorators: [withSignIn, withCodeEditor],
   parameters: {
     a11y: {
       disabled: true
     },
     signInAddon: {
       test: 'test'
-    },
-    strings: {
-      _components: {
-        login: {
-          signInLinkSubtitle: 'تسجيل الدخول',
-          signOutLinkSubtitle: 'خروج'
-        },
-        'people-picker': {
-          inputPlaceholderText: 'ابدأ في كتابة الاسم',
-          noResultsFound: 'لم نجد أي قنوات',
-          loadingMessage: '...جار التحميل'
-        },
-        'teams-channel-picker': {
-          inputPlaceholderText: 'حدد قناة',
-          noResultsFound: `لم يتم العثور على نتائج`,
-          loadingMessage: 'Loading...'
-        },
-        tasks: {
-          removeTaskSubtitle: 'delete',
-          cancelNewTaskSubtitle: 'canceltest',
-          newTaskPlaceholder: 'newTaskTest',
-          addTaskButtonSubtitle: 'addme'
-        },
-        todo: {
-          removeTaskSubtitle: 'todoremoveTEST'
-        }
-      }
     }
   }
 };
@@ -65,6 +36,70 @@ export const Localization = () => html`
   <mgt-agenda></mgt-agenda>
   <mgt-people></mgt-people>
   <mgt-todo></mgt-todo>
+  <script>
+    import { LocalizationHelper } from '@microsoft/mgt';
+    LocalizationHelper.strings = {
+      _components: {
+        login: {
+          signInLinkSubtitle: 'تسجيل الدخول',
+          signOutLinkSubtitle: 'خروج'
+        },
+        'people-picker': {
+          inputPlaceholderText: 'ابدأ في كتابة الاسم',
+          noResultsFound: 'لم نجد أي قنوات',
+          loadingMessage: '...جار التحميل'
+        },
+        'teams-channel-picker': {
+          inputPlaceholderText: 'حدد قناة',
+          noResultsFound: 'لم يتم العثور على نتائج',
+          loadingMessage: 'Loading...'
+        },
+        tasks: {
+          removeTaskSubtitle: 'delete',
+          cancelNewTaskSubtitle: 'canceltest',
+          newTaskPlaceholder: 'newTaskTest',
+          addTaskButtonSubtitle: 'addme'
+        },
+        todo: {
+          removeTaskSubtitle: 'todoremoveTEST'
+        },
+        'person-card': {
+          sendEmailLinkSubtitle: 'ارسل بريد الكتروني',
+          startChatLinkSubtitle: 'ابدأ الدردشة',
+          showMoreSectionButton: 'أظهر المزيد' // global declaration
+        },
+        'person-card-contact': {
+          contactSectionTitle: 'اتصل'
+        },
+        'person-card-organization': {
+          reportsToSectionTitle: 'تقارير ل',
+          directReportsSectionTitle: 'تقارير مباشرة',
+          organizationSectionTitle: 'منظمة',
+          youWorkWithSubSectionTitle: 'انت تعمل مع',
+          userWorksWithSubSectionTitle: 'يعمل مع'
+        },
+        'person-card-messages': {
+          emailsSectionTitle: 'رسائل البريد الإلكتروني'
+        },
+        'person-card-files': {
+          filesSectionTitle: 'الملفات',
+          sharedTextSubtitle: 'مشترك'
+        },
+        'person-card-profile': {
+          SkillsAndExperienceSectionTitle: 'المهارات والخبرة',
+          AboutCompactSectionTitle: 'حول',
+          SkillsSubSectionTitle: 'مهارات',
+          LanguagesSubSectionTitle: 'اللغات',
+          WorkExperienceSubSectionTitle: 'خبرة في العمل',
+          EducationSubSectionTitle: 'التعليم',
+          professionalInterestsSubSectionTitle: 'المصالح المهنية',
+          personalInterestsSubSectionTitle: 'اهتمامات شخصية',
+          birthdaySubSectionTitle: 'عيد الميلاد',
+          currentYearSubtitle: 'السنة الحالية'
+        }
+      }
+    };
+  </script>
 `;
 
 export const theme = () => html`
