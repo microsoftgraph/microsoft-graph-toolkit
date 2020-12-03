@@ -12,6 +12,7 @@ import { BasePersonCardSection } from '../BasePersonCardSection';
 import { getSvg, SvgIcon } from '../../../../utils/SvgHelper';
 import { getRelativeDisplayDate } from '../../../../utils/Utils';
 import { styles } from './mgt-person-card-messages-css';
+import { strings } from './strings';
 
 /**
  * The email messages subsection of the person card
@@ -30,6 +31,10 @@ export class MgtPersonCardMessages extends BasePersonCardSection {
     return styles;
   }
 
+  protected get strings() {
+    return strings;
+  }
+
   private _messages: Message[];
 
   public constructor(messages: Message[]) {
@@ -45,7 +50,7 @@ export class MgtPersonCardMessages extends BasePersonCardSection {
    * @memberof MgtPersonCardMessages
    */
   public get displayName(): string {
-    return 'Emails';
+    return this.strings.emailsSectionTitle;
   }
 
   /**
@@ -119,7 +124,7 @@ export class MgtPersonCardMessages extends BasePersonCardSection {
 
     return html`
       <div class="root">
-        <div class="title">Emails</div>
+        <div class="title">${this.strings.emailsSectionTitle}</div>
         ${contentTemplate}
       </div>
     `;

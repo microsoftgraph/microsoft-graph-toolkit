@@ -14,6 +14,7 @@ import { getEmailFromGraphEntity } from '../../../../graph/graph.people';
 import { BasePersonCardSection } from '../BasePersonCardSection';
 import { styles } from './mgt-person-card-contact-css';
 import { getSvg, SvgIcon } from '../../../../utils/SvgHelper';
+import { strings } from './strings';
 
 /**
  * Represents a contact part and its metadata
@@ -48,6 +49,10 @@ export class MgtPersonCardContact extends BasePersonCardSection {
    */
   static get styles() {
     return styles;
+  }
+
+  protected get strings() {
+    return strings;
   }
 
   /**
@@ -138,7 +143,7 @@ export class MgtPersonCardContact extends BasePersonCardSection {
    * @memberof MgtPersonCardContact
    */
   public get displayName(): string {
-    return 'Contact';
+    return this.strings.contactSectionTitle;
   }
 
   // Defines the skeleton for what contact fields are available and what they do.
