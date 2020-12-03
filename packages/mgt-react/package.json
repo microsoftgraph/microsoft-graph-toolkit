@@ -33,7 +33,7 @@
   "dependencies": {
     "@microsoft/mgt": "*",
     "@microsoft/mgt-element": "*",
-    "@microsoft/microsoft-graph-types": "^1.12.0",
+    "@microsoft/microsoft-graph-types": "^1.27.0",
     "@microsoft/microsoft-graph-types-beta": "github:microsoftgraph/msgraph-typescript-typings#beta",
     "wc-react": "^0.3.1"
   },
