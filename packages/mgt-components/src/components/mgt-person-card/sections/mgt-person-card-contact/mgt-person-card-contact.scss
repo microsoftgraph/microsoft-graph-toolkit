@@ -6,6 +6,8 @@
  */
 
 @import '../base-person-card-section.scss';
+@import '../../../../styles/shared-styles.scss';
+@import '../../../../styles/shared-sass-variables.scss';
 
 :host {
   position: relative;
@@ -17,7 +19,7 @@
     .title {
       font-size: 14px;
       font-weight: 600;
-      color: #323130;
+      color: set-var(title__color__subtitle, $theme-default, $common);
       margin: 0 20px 12px 20px;
     }
 
@@ -43,19 +45,19 @@
 
         .part__title {
           font-size: 12px;
-          color: #797775;
+          color: set-var(title__color__sub2, $theme-default, $common);
           line-height: 20px;
         }
 
         .part__value {
           grid-column: 2;
-          color: #333333;
+          color: set-var(color__sub1, $theme-default, $common);
           font-size: 14px;
           font-weight: 400;
 
           .part__link {
-            color: #0078d4;
-            font-family: var(--default-font-family);
+            color: $commblue_primary;
+            font-family: $font-family;
             font-size: 14px;
             cursor: pointer;
             text-overflow: ellipsis;
@@ -74,23 +76,21 @@
       .part__copy {
         width: 32px;
         height: 100%;
+        background-color: set-var(background-color__sub2, $theme-default, $common);
         visibility: hidden;
         display: flex;
         align-items: center;
         justify-content: center;
-        cursor: pointer;
 
-        &:hover {
-          background-color: #e1dfdd;
-        }
-
-        &:active {
-          background-color: #f3f2f1;
+        svg {
+          fill: set-var(color__sub1, $theme-default, $common);
+          cursor: pointer;
         }
       }
 
       &:hover {
-        background-color: #f3f2f1;
+        background-color: set-var(background-color--hover, $theme-default, $common);
+        cursor: pointer;
 
         .part__copy {
           visibility: visible;
@@ -118,6 +118,24 @@
         margin-top: 0;
         margin-right: 6px;
       }
+    }
+  }
+}
+
+[dir='rtl'] {
+  .part__link {
+    &.phone {
+      text-align: right;
+      direction: ltr;
+    }
+  }
+  .part__icon {
+    margin: 10px 20px 0px 0px !important;
+  }
+  &.compact {
+    .part__icon {
+      margin-left: 6px !important;
+      margin-top: 0px !important;
     }
   }
 }

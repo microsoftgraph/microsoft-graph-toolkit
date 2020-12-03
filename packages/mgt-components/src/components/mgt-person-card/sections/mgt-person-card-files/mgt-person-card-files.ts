@@ -86,7 +86,7 @@ export class MgtPersonCardFiles extends BasePersonCardSection {
     }
 
     return html`
-      <div class="root compact">
+      <div class="root compact" dir=${this.direction}>
         ${contentTemplate}
       </div>
     `;
@@ -113,7 +113,7 @@ export class MgtPersonCardFiles extends BasePersonCardSection {
     }
 
     return html`
-      <div class="root">
+      <div class="root" dir=${this.direction}>
         <div class="title">Files</div>
         ${contentTemplate}
       </div>

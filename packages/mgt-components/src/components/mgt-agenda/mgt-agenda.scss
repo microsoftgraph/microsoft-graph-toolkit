@@ -7,13 +7,14 @@
 
 @import '../../../../../node_modules/office-ui-fabric-core/dist/sass/References';
 @import '../../styles/shared-styles.scss';
+@import './mgt-agenda.theme.scss';
 
 :host .header,
 mgt-agenda .header {
   margin: var(--agenda-header-margin, 40px 10px 14px 10px);
-  font-family: var(--default-font-family);
+  font-family: $font-family;
   font-size: var(--agenda-header-font-size, 24px);
-  color: var(--agenda-header-color, #333333);
+  color: $header__color;
 }
 
 :host .agenda > .group:first-child > .header,
@@ -26,16 +27,16 @@ mgt-agenda .agenda-list {
   list-style-type: none;
   padding: 0;
   margin: 0;
-  font-family: var(--default-font-family);
+  font-family: $font-family;
   font-style: normal;
   font-weight: normal;
 }
 
 :host .event,
 mgt-agenda .event {
-  background: var(--event-background, #ffffff);
+  background: set-var(event__background-color, $theme-default, $agenda);
   border: var(--event-border, solid 2px rgba(0, 0, 0, 0));
-  box-shadow: var(--event-box-shadow, 0px 2px 8px rgba(0, 0, 0, 0.092));
+  box-shadow: var(--event-box-shadow, 0px 2px 8px set-var(box-shadow__color, $theme-default, $common));
   margin: var(--event-margin, 0px 10px 14px 10px);
   padding: var(--event-padding, 0px);
   display: flex;
@@ -51,7 +52,7 @@ mgt-agenda .event-time-container {
   display: flex;
   flex-direction: column;
   margin: 18px 38px 18px 18px;
-  width: 120px;
+  width: 125px;
 }
 
 :host .narrow .event-time-container,
@@ -62,7 +63,7 @@ mgt-agenda .narrow .event-time-container {
 :host .event-time,
 mgt-agenda .event-time {
   font-size: var(--event-time-font-size, 12px);
-  color: var(--event-time-color, #000000);
+  color: $event__time__color;
   font-weight: 600;
 }
 
@@ -85,7 +86,7 @@ mgt-agenda .narrow .event-details-container {
 mgt-agenda .event-subject {
   margin: 0px 18px 0px 0px;
   font-size: var(--event-subject-font-size, 19px);
-  color: var(--event-subject-color, #333333);
+  color: $event__subject__color;
 }
 
 :host .event-location-container,
@@ -94,11 +95,22 @@ mgt-agenda .event-location-container {
   margin: 8px 18px 0px 0px;
 }
 
+:host .event-location-icon svg,
+mgt-agenda .event-location-icon svg {
+  height: 12px;
+}
+
+:host .event-location-icon svg path,
+mgt-agenda .event-location-icon svg path {
+  stroke: $event__location__color;
+}
+
 :host .event-location,
 mgt-agenda .event-location {
   font-size: var(--event-location-font-size, 12px);
-  color: var(--event-location-color, #000000);
+  color: $event__location__color;
   margin: 0px 0px 0px 4px;
+  line-height: 17px;
 }
 
 :host .event-attendees,
@@ -117,7 +129,7 @@ mgt-agenda .event-other-container {
 
 :host .loading-element,
 mgt-agenda .loading-element {
-  background: #f2f2f2;
+  background: set-var(event__background-color, $theme-default, $agenda);
   border-radius: 1px;
 }
 

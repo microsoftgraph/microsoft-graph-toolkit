@@ -37,7 +37,7 @@ export const PACKAGE_VERSION = '[VERSION]';
 
 function runSass() {
   return gulp
-    .src('src/**/!(shared-styles).scss')
+    .src('src/**/!(shared)*.scss')
     .pipe(sass())
     .pipe(cleanCSS())
     .pipe(gap.prependText(scssFileHeader))

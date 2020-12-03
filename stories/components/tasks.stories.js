@@ -23,3 +23,12 @@ export default {
 export const tasks = () => html`
   <mgt-tasks></mgt-tasks>
 `;
+
+export const darkTheme = () => html`
+  <mgt-tasks class="mgt-dark"></mgt-tasks>
+  <style>
+    body {
+      background-color: black;
+    }
+  </style>
+`;

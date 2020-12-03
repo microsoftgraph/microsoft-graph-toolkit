@@ -8,6 +8,7 @@
 import { User } from '@microsoft/microsoft-graph-types';
 import { customElement, html, TemplateResult } from 'lit-element';
 import { TeamsHelper } from '@microsoft/mgt-element';
+import { classMap } from 'lit-html/directives/class-map';
 
 import { getEmailFromGraphEntity } from '../../../../graph/graph.people';
 import { BasePersonCardSection } from '../BasePersonCardSection';
@@ -193,7 +194,7 @@ export class MgtPersonCardContact extends BasePersonCardSection {
     `;
 
     return html`
-      <div class="root compact">
+      <div class="root compact" dir=${this.direction}>
         ${contentTemplate}
       </div>
     `;
@@ -218,7 +219,7 @@ export class MgtPersonCardContact extends BasePersonCardSection {
     }
 
     return html`
-      <div class="root">
+      <div class="root" dir=${this.direction}>
         <div class="title">${this.displayName}</div>
         ${contentTemplate}
       </div>
@@ -234,9 +235,20 @@ export class MgtPersonCardContact extends BasePersonCardSection {
    * @memberof MgtPersonCardContact
    */
   protected renderContactPart(part: IContactPart): TemplateResult {
+    let isPhone = false;
+
+    if (part.title === 'Mobile Phone' || part.title === 'Business Phone') {
+      isPhone = true;
+    }
+
+    const partLinkClasses = {
+      part__link: true,
+      phone: isPhone
+    };
+
     const valueTemplate = part.onClick
       ? html`
-          <span class="part__link" @click=${(e: Event) => part.onClick(e)}>${part.value}</span>
+          <span class=${classMap(partLinkClasses)} @click=${(e: Event) => part.onClick(e)}>${part.value}</span>
         `
       : html`
           ${part.value}
