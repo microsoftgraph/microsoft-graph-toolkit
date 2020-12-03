@@ -9,7 +9,7 @@ import { customElement, html, TemplateResult } from 'lit-element';
 import { classMap } from 'lit-html/directives/class-map';
 import { repeat } from 'lit-html/directives/repeat';
 import { IGraph } from '@microsoft/mgt-element';
-import { Providers, ProviderState, BetaGraph } from '@microsoft/mgt-element';
+import { Providers, ProviderState } from '@microsoft/mgt-element';
 import { getShortDateString } from '../../utils/Utils';
 import '../mgt-person/mgt-person';
 import { MgtTasksBase } from '../mgt-tasks-base/mgt-tasks-base';
@@ -363,8 +363,7 @@ export class MgtTodo extends MgtTasksBase {
 
     if (!this._graph) {
       const graph = provider.graph.forComponent(this);
-      const betaGraph = BetaGraph.fromGraph(graph);
-      this._graph = betaGraph;
+      this._graph = graph;
     }
 
     let lists = this._lists;

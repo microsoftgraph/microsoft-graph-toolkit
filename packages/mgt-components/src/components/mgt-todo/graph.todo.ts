@@ -5,7 +5,7 @@
  * -------------------------------------------------------------------------------------------
  */
 
-import { DateTimeTimeZone, ItemBody, PatternedRecurrence } from '@microsoft/microsoft-graph-types-beta';
+import { DateTimeTimeZone, ItemBody, PatternedRecurrence } from '@microsoft/microsoft-graph-types';
 import { IGraph, prepScopes } from '@microsoft/mgt-element';
 
 // tslint:disable
