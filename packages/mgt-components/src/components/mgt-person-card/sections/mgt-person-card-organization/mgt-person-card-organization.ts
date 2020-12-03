@@ -32,6 +32,13 @@ export class MgtPersonCardOrganization extends BasePersonCardSection {
     return styles;
   }
 
+  /**
+   * returns component strings
+   *
+   * @readonly
+   * @protected
+   * @memberof MgtBaseComponent
+   */
   protected get strings() {
     return strings;
   }

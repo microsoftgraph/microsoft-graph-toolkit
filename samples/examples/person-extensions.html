@@ -12,11 +12,11 @@
     <!-- 'me' person -->
     <mgt-person person-query="me"></mgt-person>
     <hr />
-    <mgt-person person-query="me" show-name></mgt-person>
+    <mgt-person person-query="me" view="oneline"></mgt-person>
     <hr />
-    <mgt-person person-query="me" show-email></mgt-person>
+    <mgt-person person-query="me" view="oneline" line1property="email"></mgt-person>
     <hr />
-    <mgt-person person-card="hover" person-query="me" show-name show-email></mgt-person>
+    <mgt-person person-card="hover" person-query="me" view="twolines"></mgt-person>
     <hr />
     <!-- Custom person image -->
     <mgt-person
@@ -28,19 +28,18 @@
       person-query="me"
       person-card="hover"
       person-image="https://cdn.pixabay.com/photo/2013/07/25/01/31/sunlight-166733_960_720.jpg"
-      show-email
-      show-name
+      view="twolines"
     ></mgt-person>
     <hr />
     <!-- Custom templates -->
-    <mgt-person person-query="me" person-card="hover" show-email show-name>
+    <mgt-person person-query="me" person-card="hover" view="twolines">
       <template data-type="default">
         <div>Default</div>
       </template>
     </mgt-person>
     <hr />
 
-    <mgt-person person-query="me" show-email show-name>
+    <mgt-person person-query="me" view="twolines">
       <template data-type="loading">
         <h1>Loading</h1>
       </template>
@@ -54,7 +53,7 @@
     </mgt-person>
     <hr />
 
-    <mgt-person person-query="me" person-card="hover" show-email show-name>
+    <mgt-person person-query="me" person-card="hover" view="twolines">
       <template data-type="person-card">
         <h1>Person card</h1>
       </template>
@@ -67,11 +66,11 @@
       person-image="https://cdn.pixabay.com/photo/2013/07/25/01/31/sunlight-166733_960_720.jpg"
     ></my-person>
     <hr />
-    <my-person person-query="me" show-name show-email person-card="hover"></my-person>
+    <my-person person-query="me" view="twolines" person-card="hover"></my-person>
     <hr />
-    <my-person person-query="me" show-name></my-person>
+    <my-person person-query="me" view="oneline"></my-person>
     <hr />
-    <my-person person-query="me" show-email></my-person>
+    <my-person person-query="me" view="oneline" line1property="email"></my-person>
 
     <script type="module">
       import { MgtPerson } from '../../packages/mgt/dist/es6/index.js';

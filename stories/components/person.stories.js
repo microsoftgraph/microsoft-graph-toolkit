@@ -276,22 +276,22 @@ export const moreExamples = () => html`
   </style>
 
   <div class="example">
-    <span>Default person</span>
+    <div>Default person</div>
     <mgt-person person-query="me"></mgt-person>
   </div>
 
   <div class="example">
-    <span>One line</span>
+    <div>One line</div>
     <mgt-person person-query="me" view="oneline"></mgt-person>
   </div>
 
   <div class="example">
-    <span>Two lines</span>
+    <div>Two lines</div>
     <mgt-person person-query="me" view="twoLines"></mgt-person>
   </div>
 
   <div class="example">
-    <span>Change line content</span>
+    <div>Change line content</div>
     <!--add fallback property by comma separating-->
     <mgt-person
       person-query="me"
@@ -302,22 +302,22 @@ export const moreExamples = () => html`
   </div>
 
   <div class="example">
-    <span>Large avatar</span>
+    <div>Large avatar</div>
     <mgt-person person-query="me" avatar-size="large"></mgt-person>
   </div>
 
   <div class="example">
-    <span>Different styles (see css tab for style)</span>
+    <div>Different styles (see css tab for style)</div>
     <mgt-person class="styled-person" person-query="me" view="twoLines"></mgt-person>
   </div>
 
   <div class="example" style="width: 200px">
-    <span>Overflow</span>
+    <div>Overflow</div>
     <mgt-person person-query="me" view="twoLines"></mgt-person>
   </div>
 
   <div class="example">
-    <span>No data template</span>
+    <div>No data template</div>
     <mgt-person>
       <template data-type="no-data">
         <div>No person</div>
@@ -326,20 +326,12 @@ export const moreExamples = () => html`
   </div>
 
   <div class="example">
-    <span>Person card</span>
+    <div>Person card</div>
     <mgt-person person-query="me" view="twoLines" person-card="hover"></mgt-person>
   </div>
 
   <div class="example">
-    <span>Style initials (see css tab for style)</span>
+    <div>Style initials (see css tab for style)</div>
     <mgt-person class="person-initials" person-query="alex@fineartschool.net" view="oneline"></mgt-person>
-  </div>
-
-  <div class="example">
-    <span>DEPRECATED (show-name, show-email)</span>
-    <mgt-person person-query="me"></mgt-person>
-    <mgt-person person-query="me" show-name></mgt-person>
-    <mgt-person person-query="me" show-email></mgt-person>
-    <mgt-person person-query="me" show-name show-email></mgt-person>
   </div>
 `;
