@@ -113,6 +113,7 @@ export abstract class MgtBaseComponent extends LitElement {
     this.handleLocalizationChanged = this.handleLocalizationChanged.bind(this);
     this.handleDirectionChanged = this.handleDirectionChanged.bind(this);
     this.handleDirectionChanged();
+    this.handleLocalizationChanged();
   }
 
   /**

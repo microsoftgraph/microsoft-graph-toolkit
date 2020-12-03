@@ -289,7 +289,6 @@ export class MgtPersonCard extends MgtTemplatedComponent {
 
   constructor() {
     super();
-    this.handleLocalizationChanged();
     this._chatInput = '';
     this._currentSection = null;
     this._history = [];
