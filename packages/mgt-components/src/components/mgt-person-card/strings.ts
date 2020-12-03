@@ -5,6 +5,8 @@
  * -------------------------------------------------------------------------------------------
  */
 
-@import '../../styles/shared-styles.scss';
-@import '../../../../../node_modules/office-ui-fabric-core/dist/sass/References';
-@import '../mgt-tasks-base/mgt-tasks-base.scss';
+export const strings = {
+  sendEmailLinkSubtitle: 'Send email',
+  startChatLinkSubtitle: 'Start chat',
+  showMoreSectionButton: 'Show more'
+};

@@ -1,75 +1,10 @@
-@import '../../styles/shared-styles.scss';
+@import '../../styles/shared-sass-variables.scss';
 
 $channel-picker: (
-  color: (
-    _var: --font-color,
-    dark: $text__color__sub1--dark,
-    light: $text__color__sub1--light
-  ),
-  input__background-color: (
-    _var: --input-background-color,
-    dark: var(--people-list-background-color, $input-outlined__background-color--dark),
-    light: var(--people-list-background-color, $input-outlined__background-color--light)
-  ),
-  input__border: (
-    _var: --input-border,
-    dark: 2px solid $input-outlined__border-color--dark,
-    light: 2px solid $input-outlined__border-color--light
-  ),
-  input__border-top: (
-    _var: --input-border-top,
-    dark: 2px solid $input-outlined__border-color--dark,
-    light: 2px solid $input-outlined__border-color--light
-  ),
-  input__border-right: (
-    _var: --input-border-right,
-    dark: 2px solid $input-outlined__border-color--dark,
-    light: 2px solid $input-outlined__border-color--light
-  ),
-  input__border-bottom: (
-    _var: --input-border-bottom,
-    dark: 2px solid $input-outlined__border-color--dark,
-    light: 2px solid $input-outlined__border-color--light
-  ),
-  input__border-left: (
-    _var: --input-border-left,
-    dark: 2px solid $input-outlined__border-color--dark,
-    light: 2px solid $input-outlined__border-color--light
-  ),
-  input__border-color--hover: (
-    _var: --input-hover-color,
-    light: $input-outlined__border-color--hover--light,
-    dark: $input-outlined__border-color--hover--dark
-  ),
-  input__border-color--focus: (
-    _var: --input-focus-color,
-    light: $input-outlined__border-color--focus--light,
-    dark: $input-outlined__border-color--focus--dark
-  ),
-  dropdown__background-color: (
-    _var: --dropdown-background-color,
-    dark: $list__background-color--dark,
-    light: $list__background-color--light
-  ),
-  dropdown-item__background-color--hover: (
-    _var: --dropdown-item-hover-background,
-    dark: $input-outlined__background-color--hover--dark,
-    light: $input-outlined__background-color--hover--light
-  ),
   dropdown-item__background-color--selected: (
     _var: --dropdown-item-selected-background,
-    dark: #deecf9,
+    dark: #333d47,
     light: #deecf9
-  ),
-  placeholder__color: (
-    _var: --placeholder-default-color,
-    dark: $input-outlined__placeholder__color--dark,
-    light: $input-outlined__placeholder__color--light
-  ),
-  placeholder__color--focus: (
-    _var: --placeholder-focus-color,
-    dark: $input-outlined__placeholder__color--focus--dark,
-    light: $input-outlined__placeholder__color--focus--light
   ),
   arrow: (
     _var: --arrow-fill,
@@ -79,73 +14,46 @@ $channel-picker: (
 );
 
 // mixins
-@mixin input__border($theme) {
-  border-top: set-var(input__border-top, $theme, $channel-picker);
-  border-right: set-var(input__border-right, $theme, $channel-picker);
-  border-bottom: set-var(input__border-bottom, $theme, $channel-picker);
-  border-left: set-var(input__border-left, $theme, $channel-picker);
-  border: set-var(input__border, $theme, $channel-picker);
-}
 
-@mixin selected-team__overflow($theme) {
+@mixin selected-team__overflow($theme-default) {
   background-image: linear-gradient(
     to right,
     rgba(255, 255, 255, 0) 0%,
     rgba(255, 255, 255, 0) 80%,
-    set-var(input__background-color, $theme, $channel-picker) 100%
+    $input__background-color 100%
   );
   background-image: -moz-linear-gradient(
     left,
     rgba(255, 255, 255, 0) 0%,
     rgba(255, 255, 255, 0) 80%,
-    set-var(input__background-color, $theme, $channel-picker) 100%
+    $input__background-color 100%
   );
   background-image: -o-linear-gradient(
     left,
     rgba(255, 255, 255, 0) 0%,
     rgba(255, 255, 255, 0) 80%,
-    set-var(input__background-color, $theme, $channel-picker) 100%
+    $input__background-color 100%
   );
   background-image: -ms-linear-gradient(
     left,
     rgba(255, 255, 255, 0) 0%,
     rgba(255, 255, 255, 0) 80%,
-    set-var(input__background-color, $theme, $channel-picker) 100%
+    $input__background-color 100%
   );
   background-image: -webkit-linear-gradient(
     left,
     rgba(255, 255, 255, 0) 0%,
     rgba(255, 255, 255, 0) 80%,
-    set-var(input__background-color, $theme, $channel-picker) 100%
+    $input__background-color 100%
   );
 }
 
-@mixin dropdown-item__overflow($theme) {
-  background-image: -webkit-linear-gradient(
-    right,
-    set-var(dropdown__background-color, $theme, $channel-picker),
-    rgba(set-var(dropdown__background-color, $theme, $channel-picker), 0)
-  );
-  background-image: -moz-linear-gradient(
-    right,
-    set-var(dropdown__background-color, $theme, $channel-picker),
-    rgba(set-var(dropdown__background-color, $theme, $channel-picker), 0)
-  );
-  background-image: -ms-linear-gradient(
-    right,
-    set-var(dropdown__background-color, $theme, $channel-picker),
-    rgba(set-var(dropdown__background-color, $theme, $channel-picker), 0)
-  );
-  background-image: -o-linear-gradient(
-    right,
-    set-var(dropdown__background-color, $theme, $channel-picker),
-    rgba(set-var(dropdown__background-color, $theme, $channel-picker), 0)
-  );
-  background-image: linear-gradient(
-    to left,
-    set-var(dropdown__background-color, $theme, $channel-picker),
-    rgba(set-var(dropdown__background-color, $theme, $channel-picker), 0)
-  );
+@mixin dropdown-item__overflow($theme-default) {
+  background-image: -webkit-linear-gradient(right, $dropdown__background-color, rgba($dropdown__background-color, 0));
+  background-image: -moz-linear-gradient(right, $dropdown__background-color, rgba($dropdown__background-color, 0));
+  background-image: -ms-linear-gradient(right, $dropdown__background-color, rgba($dropdown__background-color, 0));
+  background-image: -o-linear-gradient(right, $dropdown__background-color, rgba($dropdown__background-color, 0));
+  background-image: linear-gradient(to left, $dropdown__background-color, rgba($dropdown__background-color, 0));
 }
 
 @include create-themes($channel-picker);

@@ -20,7 +20,7 @@
     "src"
   ],
   "scripts": {
-    "build": "npm run clean && npm run build:compile",
+    "build": "npm run setVersion && npm run clean && npm run build:compile",
     "build:compile": "npm run compile",
     "build:watch": "npm run compile:watch",
     "clean": "shx rm -rf ./dist && shx rm -rf ./tsconfig.tsbuildinfo",
@@ -29,8 +29,7 @@
     "lint": "tslint -c ../../tslint.json 'src/**/*.ts'",
     "setVersion": "gulp setVersion --cwd .",
     "setLicense": "gulp setLicense --cwd .",
-    "postpack": "cpx *.tgz ../../artifacts",
-    "prepack": "shx rm -rf *.tgz && npm run setVersion && npm run build"
+    "postpack": "cpx *.tgz ../../artifacts"
   },
   "dependencies": {
     "@microsoft/microsoft-graph-client": "^2.1.1",

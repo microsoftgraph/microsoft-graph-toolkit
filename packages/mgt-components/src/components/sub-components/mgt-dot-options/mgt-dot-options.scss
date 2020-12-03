@@ -6,13 +6,14 @@
  */
 
 @import '../../../styles/shared-styles.scss';
+@import '../../../styles/shared-sass-variables.scss';
 @import '../../../../../../node_modules/office-ui-fabric-core/dist/sass/References';
 
 $dot-options-translateX: var(--dot-options-translateX, translateX(-50px));
 
 :host,
 mgt-dot-options {
-  font-family: 'Segoe UI';
+  font-family: $font-family;
 }
 
 :host .DotIcon,
@@ -28,11 +29,11 @@ mgt-dot-options .DotIcon {
 :host .Menu,
 mgt-dot-options .Menu {
   position: absolute;
-  box-shadow: rgba(0, 0, 0, 0.08) 0px 0px 40px 5px;
-  background: #ffffff;
+  box-shadow: set-var(box-shadow__color, $theme-default, $common) 0px 0px 40px 5px;
+  background: set-var(background-color, $theme-default, $common);
   z-index: 1;
   display: none;
-  color: black;
+  color: set-var(color, $theme-default, $common);
   white-space: nowrap;
   transform: var(--dot-options-translateX, translateX(-50px));
 }
@@ -51,12 +52,12 @@ mgt-dot-options .DotMenu .DotItem {
 
 :host .DotMenu .DotItem:hover,
 mgt-dot-options .DotMenu .DotItem:hover {
-  background: #c0c0c0;
+  background: set-var(background-color--hover, $theme-default, $common);
 }
 
 :host .DotMenu .DotItem:active,
 mgt-dot-options .DotMenu .DotItem:active {
-  background: #d8d8d8;
+  background: set-var(background-color--active, $theme-default, $common);
 }
 
 :host .DotMenu .DotItemName,

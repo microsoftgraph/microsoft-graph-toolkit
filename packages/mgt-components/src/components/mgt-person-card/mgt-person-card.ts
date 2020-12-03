@@ -27,6 +27,7 @@ import { MgtPersonCardMessages } from './sections/mgt-person-card-messages/mgt-p
 import { MgtPersonCardOrganization } from './sections/mgt-person-card-organization/mgt-person-card-organization';
 import { MgtPersonCardProfile } from './sections/mgt-person-card-profile/mgt-person-card-profile';
 import { MgtPersonCardConfig, MgtPersonCardState } from './mgt-person-card.types';
+import { strings } from './strings';
 
 import '../sub-components/mgt-spinner/mgt-spinner';
 
@@ -69,6 +70,10 @@ export class MgtPersonCard extends MgtTemplatedComponent {
    */
   static get styles() {
     return styles;
+  }
+
+  protected get strings() {
+    return strings;
   }
 
   /**
@@ -284,6 +289,7 @@ export class MgtPersonCard extends MgtTemplatedComponent {
 
   constructor() {
     super();
+    this.handleLocalizationChanged();
     this._chatInput = '';
     this._currentSection = null;
     this._history = [];
@@ -426,7 +432,7 @@ export class MgtPersonCard extends MgtTemplatedComponent {
     const expandedDetailsTemplate = this.isExpanded ? this.renderExpandedDetails() : this.renderExpandedDetailsButton();
 
     return html`
-      <div class="root">
+      <div class="root" dir=${this.direction}>
         ${navigationTemplate}
         <div class="person-details-container">${personDetailsTemplate}</div>
         <div class="expanded-details-container">${expandedDetailsTemplate}</div>
@@ -508,7 +514,7 @@ export class MgtPersonCard extends MgtTemplatedComponent {
       email = html`
         <div class="icon" @click=${() => this.emailUser()}>
           ${getSvg(SvgIcon.SmallEmail)}
-          <span>Send email</span>
+          <span>${this.strings.sendEmailLinkSubtitle}</span>
         </div>
       `;
     }
@@ -519,7 +525,7 @@ export class MgtPersonCard extends MgtTemplatedComponent {
       chat = html`
         <div class="icon" @click=${() => this.chatUser()}>
           ${getSvg(SvgIcon.SmallChat)}
-          <span>Start chat</span>
+          <span>${this.strings.startChatLinkSubtitle}</span>
         </div>
       `;
     }
@@ -627,7 +633,9 @@ export class MgtPersonCard extends MgtTemplatedComponent {
         <div class="section">
           <div class="section__header">
             <div class="section__title">${section.displayName}</div>
-            <a class="section__show-more" @click=${() => this.updateCurrentSection(section)}>Show more</a>
+            <a class="section__show-more" @click=${() => this.updateCurrentSection(section)}
+              >${this.strings.showMoreSectionButton}</a
+            >
           </div>
           <div class="section__content">${section.asCompactView()}</div>
         </div>

@@ -12,6 +12,7 @@ import { getFileTypeIconUri } from '../../../../styles/fluent-icons';
 import { getSvg, SvgIcon } from '../../../../utils/SvgHelper';
 import { getRelativeDisplayDate } from '../../../../utils/Utils';
 import { styles } from './mgt-person-card-files-css';
+import { strings } from './strings';
 
 /**
  * The files subsection of the person card
@@ -30,6 +31,10 @@ export class MgtPersonCardFiles extends BasePersonCardSection {
     return styles;
   }
 
+  protected get strings() {
+    return strings;
+  }
+
   private _files: SharedInsight[];
 
   public constructor(files: SharedInsight[]) {
@@ -45,7 +50,7 @@ export class MgtPersonCardFiles extends BasePersonCardSection {
    * @memberof MgtPersonCardFiles
    */
   public get displayName(): string {
-    return 'Files';
+    return this.strings.filesSectionTitle;
   }
 
   /**
@@ -86,7 +91,7 @@ export class MgtPersonCardFiles extends BasePersonCardSection {
     }
 
     return html`
-      <div class="root compact">
+      <div class="root compact" dir=${this.direction}>
         ${contentTemplate}
       </div>
     `;
@@ -113,8 +118,8 @@ export class MgtPersonCardFiles extends BasePersonCardSection {
     }
 
     return html`
-      <div class="root">
-        <div class="title">Files</div>
+      <div class="root" dir=${this.direction}>
+        <div class="title">${this.strings.filesSectionTitle}</div>
         ${contentTemplate}
       </div>
     `;
@@ -132,7 +137,7 @@ export class MgtPersonCardFiles extends BasePersonCardSection {
     const lastModifiedTemplate = file.lastShared
       ? html`
           <div class="file__last-modified">
-            Shared ${getRelativeDisplayDate(new Date(file.lastShared.sharedDateTime))}
+            ${this.strings.sharedTextSubtitle} ${getRelativeDisplayDate(new Date(file.lastShared.sharedDateTime))}
           </div>
         `
       : null;

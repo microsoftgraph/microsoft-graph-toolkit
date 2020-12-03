@@ -5,6 +5,10 @@
  * -------------------------------------------------------------------------------------------
  */
 
-@import '../../styles/shared-styles.scss';
-@import '../../../../../node_modules/office-ui-fabric-core/dist/sass/References';
-@import '../mgt-tasks-base/mgt-tasks-base.scss';
+export const strings = {
+  reportsToSectionTitle: 'Reports to',
+  directReportsSectionTitle: 'Direct reports',
+  organizationSectionTitle: 'Organization',
+  youWorkWithSubSectionTitle: 'You work with',
+  userWorksWithSubSectionTitle: 'works with'
+};

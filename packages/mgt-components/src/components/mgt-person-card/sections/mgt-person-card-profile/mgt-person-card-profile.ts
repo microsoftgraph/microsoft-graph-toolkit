@@ -10,6 +10,7 @@ import { customElement, html, TemplateResult } from 'lit-element';
 import { BasePersonCardSection } from '../BasePersonCardSection';
 import { getSvg, SvgIcon } from '../../../../utils/SvgHelper';
 import { styles } from './mgt-person-card-profile-css';
+import { strings } from './strings';
 
 /**
  * The user profile subsection of the person card
@@ -28,6 +29,10 @@ export class MgtPersonCardProfile extends BasePersonCardSection {
     return styles;
   }
 
+  protected get strings() {
+    return strings;
+  }
+
   /**
    * The name for display in the overview section.
    *
@@ -36,7 +41,7 @@ export class MgtPersonCardProfile extends BasePersonCardSection {
    * @memberof MgtPersonCardProfile
    */
   public get displayName(): string {
-    return 'Skills & Experience';
+    return this.strings.SkillsAndExperienceSectionTitle;
   }
 
   /**
@@ -129,7 +134,7 @@ export class MgtPersonCardProfile extends BasePersonCardSection {
    */
   protected renderCompactView(): TemplateResult {
     return html`
-      <div class="root compact">
+      <div class="root compact" dir=${this.direction}>
         ${this.renderSubSections().slice(0, 2)}
       </div>
     `;
@@ -146,8 +151,8 @@ export class MgtPersonCardProfile extends BasePersonCardSection {
     this.initPostRenderOperations();
 
     return html`
-      <div class="root">
-        <div class="title">About</div>
+      <div class="root" dir=${this.direction}>
+        <div class="title">${this.strings.AboutCompactSectionTitle}</div>
         ${this.renderSubSections()}
       </div>
     `;
@@ -209,7 +214,7 @@ export class MgtPersonCardProfile extends BasePersonCardSection {
 
     return html`
       <section>
-        <div class="section__title">Languages</div>
+        <div class="section__title">${this.strings.LanguagesSubSectionTitle}</div>
         <div class="section__content">
           <div class="token-list">
             ${languageItems}
@@ -244,7 +249,7 @@ export class MgtPersonCardProfile extends BasePersonCardSection {
 
     return html`
       <section>
-        <div class="section__title">Skills</div>
+        <div class="section__title">${this.strings.SkillsSubSectionTitle}</div>
         <div class="section__content">
           <div class="token-list">
             ${skillItems}
@@ -290,7 +295,7 @@ export class MgtPersonCardProfile extends BasePersonCardSection {
 
     return html`
       <section>
-        <div class="section__title">Work Experience</div>
+        <div class="section__title">${this.strings.WorkExperienceSubSectionTitle}</div>
         <div class="section__content">
           <div class="data-list">
             ${positionItems}
@@ -335,7 +340,7 @@ export class MgtPersonCardProfile extends BasePersonCardSection {
 
     return html`
       <section>
-        <div class="section__title">Education</div>
+        <div class="section__title">${this.strings.EducationSubSectionTitle}</div>
         <div class="section__content">
           <div class="data-list">
             ${positionItems}
@@ -368,7 +373,7 @@ export class MgtPersonCardProfile extends BasePersonCardSection {
 
     return html`
       <section>
-        <div class="section__title">Professional Interests</div>
+        <div class="section__title">${this.strings.professionalInterestsSubSectionTitle}</div>
         <div class="section__content">
           <div class="token-list">
             ${interestItems}
@@ -401,7 +406,7 @@ export class MgtPersonCardProfile extends BasePersonCardSection {
 
     return html`
       <section>
-        <div class="section__title">Personal Interests</div>
+        <div class="section__title">${this.strings.personalInterestsSubSectionTitle}</div>
         <div class="section__content">
           <div class="token-list">
             ${interestItems}
@@ -466,7 +471,7 @@ export class MgtPersonCardProfile extends BasePersonCardSection {
       return null;
     }
 
-    const end = event.endMonthYear ? new Date(event.endMonthYear).getFullYear() : 'Current';
+    const end = event.endMonthYear ? new Date(event.endMonthYear).getFullYear() : this.strings.currentYearSubtitle;
     return `${start} — ${end}`;
   }
 
