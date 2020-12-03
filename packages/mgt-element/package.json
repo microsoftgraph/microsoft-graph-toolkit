@@ -29,8 +29,7 @@
     "lint": "tslint -c ../../tslint.json 'src/**/*.ts'",
     "setVersion": "gulp setVersion --cwd .",
     "setLicense": "gulp setLicense --cwd .",
-    "postpack": "cpx *.tgz ../../artifacts",
-    "publish:next": "npm publish --tag next"
+    "postpack": "cpx *.tgz ../../artifacts"
   },
   "dependencies": {
     "@microsoft/microsoft-graph-client": "^2.0.0",

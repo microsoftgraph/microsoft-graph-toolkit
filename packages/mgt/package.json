@@ -41,8 +41,7 @@
     "sass:watch": "gulp watchSass --cwd .",
     "setLicense": "gulp setLicense --cwd .",
     "test": "jest",
-    "test:watch": "jest --watch",
-    "publish:next": "npm publish --tag next"
+    "test:watch": "jest --watch"
   },
   "dependencies": {
     "@microsoft/mgt-element": "*",

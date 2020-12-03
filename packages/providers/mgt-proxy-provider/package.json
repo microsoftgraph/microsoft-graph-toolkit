@@ -35,8 +35,7 @@
     "compile:watch": "tsc -w",
     "lint": "tslint -c ../../../tslint.json 'src/**/*.ts'",
     "setLicense": "gulp setLicense --cwd .",
-    "postpack": "cpx *.tgz ../../../artifacts",
-    "publish:next": "npm publish --tag next"
+    "postpack": "cpx *.tgz ../../../artifacts"
   },
   "dependencies": {
     "@microsoft/mgt-element": "*"

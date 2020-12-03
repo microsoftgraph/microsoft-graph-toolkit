@@ -34,8 +34,7 @@
     "postpack": "cpx *.tgz ../../artifacts",
     "sass": "gulp sass --cwd .",
     "sass:watch": "gulp watchSass --cwd .",
-    "setLicense": "gulp setLicense --cwd .",
-    "publish:next": "npm publish --tag next"
+    "setLicense": "gulp setLicense --cwd ."
   },
   "dependencies": {
     "@microsoft/microsoft-graph-types": "^1.22.0",
