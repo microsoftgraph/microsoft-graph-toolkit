@@ -30,7 +30,7 @@
     <mgt-get id="messagesGet" version="beta" polling-rate="3000">
       <template data-type="value">
         <div data-if="!deletedDateTime" class="teams-message">
-          <mgt-person user-id="{{from.user.id}}" show-name></mgt-person>
+          <mgt-person user-id="{{from.user.id}}" view="oneline"></mgt-person>
           <div>{{body.content}}</div>
         </div>
       </template>
