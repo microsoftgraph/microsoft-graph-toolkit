@@ -28,8 +28,8 @@ function updateMgtDependencyVersion(packages, version) {
   for (let package of packages) {
     const data = fs.readFileSync(package, 'utf8');
 
-    var result = data.replace(/"(@microsoft\/mgt.*)": "(\*)",/g, `"$1": "${version}",`);
-    result = result.replace(/"version": "(.*)",/g, `"version": "${version}",`);
+    var result = data.replace(/"(@microsoft\/mgt.*)": "(\*)"/g, `"$1": "${version}"`);
+    result = result.replace(/"version": "(.*)"/g, `"version": "${version}"`);
 
     fs.writeFileSync(package, result, 'utf8');
   }

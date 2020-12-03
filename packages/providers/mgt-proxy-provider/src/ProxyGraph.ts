@@ -14,8 +14,8 @@ import {
   TelemetryHandler
 } from '@microsoft/microsoft-graph-client';
 import { Graph, chainMiddleware } from '@microsoft/mgt-element';
-import { SdkVersionMiddleware } from '@microsoft/mgt-element/dist/utils/SdkVersionMiddleware';
-import { PACKAGE_VERSION } from '@microsoft/mgt-element/dist/utils/version';
+import { SdkVersionMiddleware } from '@microsoft/mgt-element/dist/es6/utils/SdkVersionMiddleware';
+import { PACKAGE_VERSION } from '@microsoft/mgt-element/dist/es6/utils/version';
 import { CustomHeaderMiddleware } from './CustomHeaderMiddleware';
 
 /**

@@ -35,24 +35,10 @@
     "compile:watch": "tsc -w",
     "lint": "tslint -c ../../../tslint.json 'src/**/*.ts'",
     "setLicense": "gulp setLicense --cwd .",
-    "postpack": "cpx *.tgz ../../../artifacts",
-    "publish:next": "npm publish --tag next"
+    "postpack": "cpx *.tgz ../../../artifacts"
   },
   "dependencies": {
     "@microsoft/mgt-element": "*"
-  },
-  "devDependencies": {
-    "cpx": "^1.5.0",
-    "gulp": "^4.0.2",
-    "gulp-append-prepend": "^1.0.8",
-    "gulp-header-license": "^1.0.9",
-    "gulp-rename": "^2.0.0",
-    "gulp-sass": "^4.0.2",
-    "gulp-util": "^3.0.8",
-    "shx": "^0.3.2",
-    "tslint": "^5.20.1",
-    "tslint-config-prettier": "^1.18.0",
-    "typescript": "^3.7.5"
   },
   "publishConfig": {
     "directory": "dist"

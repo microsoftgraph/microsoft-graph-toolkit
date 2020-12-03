@@ -5,9 +5,10 @@
  * -------------------------------------------------------------------------------------------
  */
 
-import 'core-js/stable';
-import 'regenerator-runtime/runtime';
-import 'whatwg-fetch';
-// tslint:disable-next-line: ordered-imports
-import '@webcomponents/webcomponentsjs/webcomponents-bundle';
-export * from '../index';
+export const strings = {
+  reportsToSectionTitle: 'Reports to',
+  directReportsSectionTitle: 'Direct reports',
+  organizationSectionTitle: 'Organization',
+  youWorkWithSubSectionTitle: 'You work with',
+  userWorksWithSubSectionTitle: 'works with'
+};

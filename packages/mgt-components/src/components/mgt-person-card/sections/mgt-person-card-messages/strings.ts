@@ -5,5 +5,6 @@
  * -------------------------------------------------------------------------------------------
  */
 
-export * from '../index';
-export * from '@microsoft/mgt-element/dist/mock/mgt-mock-provider';
+export const strings = {
+  emailsSectionTitle: 'Emails'
+};

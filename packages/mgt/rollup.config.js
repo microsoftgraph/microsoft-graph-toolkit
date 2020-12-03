@@ -33,7 +33,7 @@ const commonPlugins = [
 ];
 
 const es6Bundle = {
-  input: ['src/bundle/index.es6.ts'],
+  input: ['src/index.ts'],
   output: {
     dir: 'dist/bundle',
     entryFileNames: 'mgt.es6.js',
