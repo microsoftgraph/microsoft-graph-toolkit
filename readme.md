@@ -51,7 +51,7 @@ The Toolkit currently includes the following components:
 * [mgt-todo](https://docs.microsoft.com/graph/toolkit/components/todo)
 * [mgt-teams-channel-picker](https://docs.microsoft.com/en-us/graph/toolkit/components/teams-channel-picker)
 
-[Providers](https://docs.microsoft.com/graph/toolkit/providers) enable authentication and provide the implementation for acquiring access tokens on various platforms and expose a Microsoft Graph Client for calling the Microsoft Graph APIs. The components work best when used with a provider, but the providers can be used on their own.
+[Providers](https://docs.microsoft.com/graph/toolkit/providers) enable authentication and provide the implementation for acquiring access tokens on various platforms. The providers also expose a Microsoft Graph Client for calling the Microsoft Graph APIs. The components work best when used with a provider, but the providers can be used on their own as well.
 
 * [Msal Provider](https://docs.microsoft.com/graph/toolkit/providers/msal)
 * [SharePoint Provider](https://docs.microsoft.com/graph/toolkit/providers/sharepoint)
