@@ -386,3 +386,44 @@ export const ChangeBindingSyntax = () => html`
   TemplateHelper.setBindingSyntax('[[', ']]');
 </script>
 `;
+
+export const TemplateRenderedEvent = () => html`
+<mgt-person person-query="me" person-card="hover">
+  <template data-type="person-card">
+    <mgt-person-card inherit-details>
+      <template data-type="additional-details"></template>
+    </mgt-person-card>
+  </template>
+</mgt-person>
+
+<script type="module">
+  import { Providers } from '@microsoft/mgt';
+
+let mgtPerson = document.querySelector('mgt-person');
+
+mgtPerson.addEventListener('templateRendered', async (e) => {
+
+  // this template is rendered on demand when the user first views the person card
+  let personCard = e.detail.element.querySelector('mgt-person-card');
+  if (personCard) {
+    // make the network call before the template is rendered
+    // so the data is available when it is viewed
+    let client = Providers.globalProvider.graph.client;
+    let extensions = await client
+      .api('me')
+      .select('id')
+      .expand("extensions($filter=id eq 'com.contoso.roamingSettings')")
+      .get();
+
+    if (extensions.extensions.length) {
+      let contosoExtension = extensions.extensions[0];
+
+      personCard.addEventListener('templateRendered', e => {
+        // this will be called when the user expands the person card the first time
+        e.detail.element.innerHTML = \`<b>theme:</b> \${contosoExtension.theme}\`;
+      });
+    }
+  }
+});
+</script>
+`;
