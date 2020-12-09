@@ -50,7 +50,7 @@ The providers work well with the `@microsoft/mgt-components` package and all com
 
 ## Create your own provider
 
-In scenarios where you want to use the Providers namespace and/or add mgt components to an application with pre-existing authentication code, you can create a custom provider that hooks into your authentication mechanism. `@microsoft/mgt` provides two ways to create new providers:
+In scenarios where you want to use the Providers namespace and/or add Microsoft Graph Toolkit components to an application with pre-existing authentication code, you can create a custom provider that hooks into your authentication mechanism. `@microsoft/mgt` provides two ways to create new providers:
 
 ### Create a Simple Provider
 
