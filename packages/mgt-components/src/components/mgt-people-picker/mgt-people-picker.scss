@@ -33,7 +33,7 @@ mgt-people-picker .root {
   &.focused {
     border-color: $input__border-color--focus;
   }
-  padding: 7px 0;
+  padding: 6px 0 0;
 
   .selected-list {
     flex: 1 0 auto;
@@ -48,7 +48,7 @@ mgt-people-picker .root {
 
     &__person-wrapper {
       display: flex;
-      margin: 0 5px 0px 0;
+      margin: 0 5px 6px 0;
       align-items: center;
       border-radius: 15px;
       height: 24px;
@@ -102,7 +102,7 @@ mgt-people-picker .root {
 
     .flyout {
       .search-box {
-        margin: 1px 2px 2px;
+        margin: 1px 2px 8px;
 
         &.search-box-start {
           line-height: normal;
