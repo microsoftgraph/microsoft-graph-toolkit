@@ -46,7 +46,7 @@ This example illustrates how to instantiate a new provider (MsalProvider in this
 
 You can learn more about how to use the providers in the [documentation](https://docs.microsoft.com/graph/toolkit/providers).
 
-The providers work well with the `@microsoft/mgt-components` package and all components use the provider automatically when they need to call the graph.
+The providers work well with the `@microsoft/mgt-components` package and all components use the provider automatically when they need to call Microsoft Graph.
 
 ## Create your own provider
 
