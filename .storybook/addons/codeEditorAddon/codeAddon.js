@@ -104,25 +104,28 @@ export const withCodeEditor = makeDecorator({
         );
 
         const docContent = `
-      <html>
-        <head>
-          <script type="module" src="${mgtScriptName}"></script>
-          <script type="module">
-            import {Providers, MockProvider} from "${mgtScriptName}";
-            Providers.globalProvider = new MockProvider(true);
-          </script>
-          <style>
-            ${css}
-          </style>
-        </head>
-        <body>
-          ${html}
-          <script type="module">
-            ${js}
-          </script>
-        </body>
-      </html>
-      `;
+          <html>
+            <head>
+              <script type="module" src="${mgtScriptName}"></script>
+              <script type="module">
+                import {Providers, MockProvider} from "${mgtScriptName}";
+                Providers.globalProvider = new MockProvider(true);
+              </script>
+              <style>
+                html, body {
+                  height: 100%;
+                }
+                ${css}
+              </style>
+            </head>
+            <body>
+              ${html}
+              <script type="module">
+                ${js}
+              </script>
+            </body>
+          </html>
+        `;
 
         doc.open();
         doc.write(docContent);
