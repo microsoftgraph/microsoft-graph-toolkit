@@ -33,23 +33,22 @@ mgt-people-picker .root {
   &.focused {
     border-color: $input__border-color--focus;
   }
-  padding-bottom: 6px;
+  padding: 6px 0 0;
 
   .selected-list {
     flex: 1 0 auto;
     display: flex;
     flex-wrap: wrap;
     vertical-align: middle;
-    margin: 0 2px 0 0;
+    margin: 0 8px;
     list-style-type: none;
-    padding-left: 8px;
     font-style: normal;
     font-weight: normal;
     overflow: hidden;
 
     &__person-wrapper {
       display: flex;
-      margin: 5px 5px 0px 0;
+      margin: 0 5px 6px 0;
       align-items: center;
       border-radius: 15px;
       height: 24px;
@@ -66,8 +65,8 @@ mgt-people-picker .root {
         margin-left: 0px;
         --color: #{$color};
         color: $color;
-        margin-bottom: 1px;
-        margin-right: 4px;
+        padding-bottom: 1px;
+        padding-right: 4px;
       }
 
       &__overflow {
@@ -103,10 +102,9 @@ mgt-people-picker .root {
 
     .flyout {
       .search-box {
-        margin: 6px 2px 1px 3px;
+        margin: 1px 2px 8px;
 
         &.search-box-start {
-          margin: 6px 0px 1px 0px;
           line-height: normal;
           margin-inline-start: 0px;
           margin-inline-end: 0px;
