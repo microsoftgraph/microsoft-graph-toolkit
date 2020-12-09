@@ -222,3 +222,15 @@ export function blobToBase64(blob: Blob): Promise<string> {
     reader.readAsDataURL(blob);
   });
 }
+
+/**
+ * extracts an email address from a string
+ *
+ * @param {string} emailString
+ * @returns {string}
+ */
+export function extractEmailAddress(emailString: string): string {
+  if (emailString.startsWith('[')) {
+    return emailString.match(/([a-zA-Z0-9+._-]+@[a-zA-Z0-9._-]+\.[a-zA-Z0-9_-]+)/gi).toString();
+  } else return emailString;
+}
