@@ -86,7 +86,7 @@
     }
     .team-chosen-input[contenteditable]:empty::after {
       content: attr(data-placeholder);
-      display: inline-block;
+      display: flex;
       color: $placeholder__color;
     }
 
