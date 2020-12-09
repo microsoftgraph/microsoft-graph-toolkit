@@ -18,7 +18,7 @@
 </p>
 
 <p align="center">
-  <a href="#packages">Packages</a> • <a href="#components-&-documentation">Components & Documentation</a> • <a href="#getting-started">Getting Started</a> • <a href="#running-the-samples">Running the Samples</a> • <a href="#contribute">Contribute</a> • <a href="#feedback-and-requests">Feedback & Requests</a> <br>• <a href="#license">License</a> • <a href="#code-of-conduct">Code of Conduct</a>
+  <a href="#packages">Packages</a> • <a href="#components">Components</a> • <a href="#providers">Providers</a> • <a href="#getting-started">Getting Started</a> • <a href="#running-the-samples">Running the Samples</a> • <a href="#contribute">Contribute</a> • <a href="#feedback-and-requests">Feedback & Requests</a> <br>• <a href="#license">License</a> • <a href="#code-of-conduct">Code of Conduct</a>
 </p>
 
 ## Packages
@@ -34,7 +34,7 @@
 | [`@microsoft/mgt-sharepoint-provider`](https://www.npmjs.com/package/@microsoft/mgt-sharepoint-provider) | <img src="https://img.shields.io/npm/v/@microsoft/mgt-sharepoint-provider/latest.svg"> | <img src="https://img.shields.io/npm/v/@microsoft/mgt-sharepoint-provider/next.svg"> |
 | [`@microsoft/mgt-proxy-provider`](https://www.npmjs.com/package/@microsoft/mgt-proxy-provider) | <img src="https://img.shields.io/npm/v/@microsoft/mgt-proxy-provider/latest.svg"> | <img src="https://img.shields.io/npm/v/@microsoft/mgt-proxy-provider/next.svg"> |
 
-## Components & Documentation
+## Components
 
 You can explore components and samples with the [playground](https://mgt.dev) powered by storybook.
 
@@ -50,6 +50,10 @@ The Toolkit currently includes the following components:
 * [mgt-get](https://docs.microsoft.com/graph/toolkit/components/get)
 * [mgt-todo](https://docs.microsoft.com/graph/toolkit/components/todo)
 * [mgt-teams-channel-picker](https://docs.microsoft.com/en-us/graph/toolkit/components/teams-channel-picker)
+
+All web components are also available as React component - see [@microsoft/mgt-react documentation](https://docs.microsoft.com/graph/toolkit/get-started/mgt-react).
+
+## Providers
 
 [Providers](https://docs.microsoft.com/graph/toolkit/providers) enable authentication and provide the implementation for acquiring access tokens on various platforms. The providers also expose a Microsoft Graph Client for calling the Microsoft Graph APIs. The components work best when used with a provider, but the providers can be used on their own as well.
 
