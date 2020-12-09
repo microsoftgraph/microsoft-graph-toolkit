@@ -10,8 +10,7 @@
     <div class="container">
       <div class="leftContainer">
         <p id="WelcomeMessage">Welcome to the Microsoft Authentication Library For Javascript Quickstart</p>
-        <button id="SignIn">Sign In</button>
-        <button id="SignOut" hidden>Sign Out</button>
+        <button id="SignIn" onclick="signIn()">Sign In</button>
       </div>
       <div class="rightContainer">
         <pre id="json"></pre>
@@ -51,10 +50,6 @@
       // Register Callbacks for redirect flow
       // myMSALObj.handleRedirectCallbacks(acquireTokenRedirectCallBack, acquireTokenErrorRedirectCallBack);
       myMSALObj.handleRedirectCallback(authRedirectCallBack);
-      //Set login button
-      var loginbutton = document.getElementById('SignIn');
-      loginbutton.removeAttribute('hidden');
-      loginbutton.addEventListener('click', signIn, true);
 
       Providers.globalProvider = new SimpleProvider(async function(scopes) {
         var request = { scopes: scopes };
@@ -132,12 +127,9 @@
         var divWelcome = document.getElementById('WelcomeMessage');
         divWelcome.innerHTML = 'Welcome ' + myMSALObj.getAccount().userName + ' to Microsoft Graph API';
 
-        //Toggle login and logout buttons
-        var logoutbutton = document.getElementById('SignOut');
-        logoutbutton.removeAttribute('hidden');
-        logoutbutton.addEventListener('click', signOut, true);
         var loginbutton = document.getElementById('SignIn');
-        loginbutton.setAttribute('hidden', true);
+        loginbutton.innerHTML = 'Sign Out';
+        loginbutton.setAttribute('onclick', 'signOut();');
       }
 
       //This function can be removed if you do not need to support IE
