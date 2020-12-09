@@ -230,5 +230,8 @@ export function blobToBase64(blob: Blob): Promise<string> {
  * @returns {string}
  */
 export function extractEmailAddress(emailString: string): string {
-  return emailString.match(/([a-zA-Z0-9._-]+@[a-zA-Z0-9._-]+\.[a-zA-Z0-9_-]+)/gi).toString();
+  if (emailString.startsWith('[')) {
+    let email = emailString.match(/([a-zA-Z0-9+._-]+@[a-zA-Z0-9._-]+\.[a-zA-Z0-9_-]+)/gi).toString();
+    if (email) return email;
+  } else return emailString;
 }
