@@ -63,7 +63,7 @@ mgt-person .person-root {
   position: relative;
   display: flex;
   align-items: center;
-  color: var(--person-color, $color);
+  color: $color;
 
   .user-avatar {
     width: $avatar-size;

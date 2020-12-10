@@ -39,20 +39,21 @@ mgt-login .login-button {
   height: var(--height);
   margin: var(--margin);
   padding: var(--padding);
-  color: $button__color;
+  color: set-var(button__color, $theme-default, $login);
   background-color: var(--button-background-color, transparent);
   border: none;
   cursor: pointer;
   transition: color 0.3s, background-color 0.3s;
 
+  mgt-person {
+    --color-sub1: set-var(button__color, $theme-default, $login);
+  }
+
   &:hover {
     color: $button__color--hover;
     --color: #{$button__color--hover};
     background-color: $button__background-color--hover;
-
-    mgt-person {
-      --person-color: #{$button__color--hover};
-    }
+    --color-sub1: #{$button__color--hover};
   }
 
   &:focus {
@@ -66,10 +67,6 @@ mgt-login .login-button {
 
   &.no-click {
     pointer-events: none;
-  }
-
-  mgt-person {
-    --person-color: #{$button__color};
   }
 }
 
@@ -86,11 +83,10 @@ mgt-login .popup {
   background-color: $popup__background-color;
   min-width: 240px;
   z-index: 1;
-  color: $popup__color;
-  --color: #{$popup__color};
+  color: set-var(popup__color, $theme-default, $login);
 
   mgt-person {
-    --person-color: #{$popup__color};
+    --color-sub1: set-var(popup__color, $theme-default, $login);
   }
 }
 
