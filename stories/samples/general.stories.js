@@ -12,7 +12,7 @@ import { withCodeEditor } from '../../.storybook/addons/codeEditorAddon/codeAddo
 export default {
   title: 'Samples | General',
   component: 'mgt-combo',
-  decorators: [withSignIn, withCodeEditor],
+  decorators: [withCodeEditor],
   parameters: {
     a11y: {
       disabled: true
@@ -102,6 +102,74 @@ export const Localization = () => html`
   </script>
 `;
 
+export const cache = () => html`
+  <button id="ClearCacheButton" type="button">Clear Cache</button>
+  <span class="notes"
+    >*Note* Please refer to your browser Developer Tools -> Applications -> Storage -> IndexedDB for cached
+    objects</span
+  >
+
+  <mgt-login></mgt-login>
+  <mgt-person person-query="me" view="twoLines" person-card="hover" show-presence></mgt-person>
+  <mgt-person user-id="4782e723-f4f4-4af3-a76e-25e3bab0d896" view="twoLines"></mgt-person>
+  <mgt-people-picker></mgt-people-picker>
+  <mgt-people-picker type="group"></mgt-people-picker>
+  <mgt-people-picker group-id="02bd9fd6-8f93-4758-87c3-1fb73740a315"></mgt-people-picker>
+  <mgt-teams-channel-picker></mgt-teams-channel-picker>
+  <mgt-tasks data-source="todo"></mgt-tasks>
+  <mgt-agenda group-by-day></mgt-agenda>
+  <mgt-people show-presence show-max="10"></mgt-people>
+  <mgt-people group-id="02bd9fd6-8f93-4758-87c3-1fb73740a315"></mgt-people>
+  <mgt-people user-ids="4782e723-f4f4-4af3-a76e-25e3bab0d896, f5289423-7233-4d60-831a-fe107a8551cc"></mgt-people>
+  <style>
+    .notes {
+      display: block;
+      font-size: 12px;
+      font-family: 'Segoe UI', 'Segoe UI Web (West European)', 'Segoe UI', -apple-system, BlinkMacSystemFont, Roboto,
+        'Helvetica Neue', sans-serif;
+      margin-bottom: 5px;
+    }
+  </style>
+  <script>
+    import { CacheService } from '@microsoft/mgt';
+    CacheService.config.isEnabled = true;
+
+    let clearCacheButton = document.getElementById('ClearCacheButton');
+    clearCacheButton.addEventListener('click', clearCache);
+    function clearCache() {
+      CacheService.clearCaches();
+    }
+
+    // you can clear cache by:
+    // CacheService.clearCaches();
+
+    // this is the config object
+    // {
+    //   defaultInvalidationPeriod: number,
+    //   isEnabled: boolean,
+    //   people: {
+    //     invalidationPeriod: number,
+    //     isEnabled: boolean
+    //   },
+    //   photos: {
+    //     invalidationPeriod: number,
+    //     isEnabled: boolean
+    //   },
+    //   users: {
+    //     invalidationPeriod: number,
+    //     isEnabled: boolean
+    //   },
+    //   presence: {
+    //     invalidationPeriod: number,
+    //     isEnabled: boolean
+    //   },
+    //   groups: {
+    //     invalidationPeriod: number,
+    //     isEnabled: boolean
+    //   }
+    // };
+  </script>
+`;
 export const theme = () => html`
   <div class="mgt-light">
     <header class="mgt-dark">

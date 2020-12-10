@@ -13,7 +13,7 @@ import '../../packages/mgt-components/dist/es6/components/mgt-get/mgt-get';
 export default {
   title: 'Samples | Templating',
   component: 'mgt-get',
-  decorators: [withSignIn, withCodeEditor],
+  decorators: [withCodeEditor],
   parameters: {
     signInAddon: {
       test: 'test'
@@ -373,16 +373,16 @@ export const TeamsMessages = () => html`
 `;
 
 export const ChangeBindingSyntax = () => html`
-<mgt-agenda>
-  <template data-type="event">
-    <div>
-      [[event.subject]]
-    </div>
-  </template>
-</mgt-agenda>
-<script>
-  import { TemplateHelper } from '@microsoft/mgt';
+  <mgt-agenda>
+    <template data-type="event">
+      <div>
+        [[event.subject]]
+      </div>
+    </template>
+  </mgt-agenda>
+  <script>
+    import { TemplateHelper } from '@microsoft/mgt';
 
-  TemplateHelper.setBindingSyntax('[[', ']]');
-</script>
+    TemplateHelper.setBindingSyntax('[[', ']]');
+  </script>
 `;

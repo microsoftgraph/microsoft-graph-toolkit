@@ -16,7 +16,7 @@ import '../../packages/mgt-components/dist/es6/components/mgt-people/mgt-people'
 export default {
   title: 'Components | mgt-people',
   component: 'mgt-people',
-  decorators: [withA11y, withSignIn, withCodeEditor],
+  decorators: [withCodeEditor],
   parameters: { options: { selectedPanel: 'storybookjs/knobs/panel' } }
 };
 
