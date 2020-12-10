@@ -61,6 +61,7 @@
     }
 
     .search-wrapper {
+      height: 14px;
       display: flex;
       flex-wrap: nowrap;
       align-items: center;
@@ -86,7 +87,6 @@
     }
     .team-chosen-input[contenteditable]:empty::after {
       content: attr(data-placeholder);
-      display: inline-block;
       color: $placeholder__color;
     }
 
@@ -94,6 +94,11 @@
       align-self: flex-start;
       font-family: 'FabricMDL2Icons';
       color: var(--accent-color, $commblue_primary);
+      line-height: normal;
+    }
+
+    .input-search {
+      height: 19px;
     }
 
     .input-search-start {
