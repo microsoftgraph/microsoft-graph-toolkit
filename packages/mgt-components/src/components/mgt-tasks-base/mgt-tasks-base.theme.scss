@@ -14,6 +14,11 @@ $button__color--cancel: var(--task-new-cancel-button-color, set-var(color__sub1,
 $detail__color: var(--task-detail-color, set-var(color__sub2, $theme-default, $common));
 
 $tasks: (
+  border: (
+    _var: --task-border,
+    light: 2px solid $background-color__sub3--light,
+    dark: 2px solid $background-color__sub3--dark
+  ),
   border--completed: (
     _var: --task-complete-border,
     light: 2px dotted $background-color__sub3--light,
