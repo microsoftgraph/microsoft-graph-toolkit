@@ -7,6 +7,7 @@
 
 import { IGraph, prepScopes, CacheItem, CacheSchema, CacheService, CacheStore } from '@microsoft/mgt-element';
 import { Contact, Person, User } from '@microsoft/microsoft-graph-types';
+import { extractEmailAddress } from '../utils/Utils';
 import { IDynamicPerson } from './types';
 
 /**
@@ -199,11 +200,11 @@ export function getEmailFromGraphEntity(entity: IDynamicPerson): string {
   const contact = entity as Contact;
 
   if (user.mail) {
-    return user.mail;
+    return extractEmailAddress(user.mail);
   } else if (person.scoredEmailAddresses && person.scoredEmailAddresses.length) {
-    return person.scoredEmailAddresses[0].address;
+    return extractEmailAddress(person.scoredEmailAddresses[0].address);
   } else if (contact.emailAddresses && contact.emailAddresses.length) {
-    return contact.emailAddresses[0].address;
+    return extractEmailAddress(contact.emailAddresses[0].address);
   }
   return null;
 }
