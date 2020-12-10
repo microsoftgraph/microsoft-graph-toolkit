@@ -50,7 +50,6 @@ $presence-color-oof: #b4009e;
 
 :host .root {
   display: block;
-  color: $color;
 }
 
 :host svg,
@@ -64,6 +63,7 @@ mgt-person .person-root {
   position: relative;
   display: flex;
   align-items: center;
+  color: $color;
 
   .user-avatar {
     width: $avatar-size;
