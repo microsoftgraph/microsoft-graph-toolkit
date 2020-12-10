@@ -27,7 +27,7 @@ jobs:
       - run: npm install -g yarn lerna
       - run: yarn
       - run: yarn build
-      - run: node .\scripts\setVersion.js --next
+      - run: node /scripts/setVersion.js --next
       - run: lerna exec --scope @microsoft/* -- "npm publish --tag next"
         env:
           NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
