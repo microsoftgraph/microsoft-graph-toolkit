@@ -14,7 +14,7 @@ import '../../packages/mgt-components/dist/es6/components/mgt-teams-channel-pick
 export default {
   title: 'Components | mgt-teams-channel-picker',
   component: 'mgt-teams-channel-picker',
-  decorators: [withA11y, withSignIn, withCodeEditor],
+  decorators: [withCodeEditor],
   parameters: { options: { selectedPanel: 'storybookjs/knobs/panel' } }
 };
 

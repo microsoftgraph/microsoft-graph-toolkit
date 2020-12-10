@@ -16,7 +16,7 @@ import '../../packages/mgt-components/dist/es6/components/mgt-people-picker/mgt-
 export default {
   title: 'Components | mgt-people-picker',
   component: 'mgt-people-picker',
-  decorators: [withA11y, withSignIn, withCodeEditor],
+  decorators: [withCodeEditor],
   parameters: { options: { selectedPanel: 'storybookjs/knobs/panel' } }
 };
 
@@ -27,6 +27,84 @@ export const peoplePicker = () =>
 
 export const groupId = () => html`
   <mgt-people-picker group-id="02bd9fd6-8f93-4758-87c3-1fb73740a315"></mgt-people-picker>
+`;
+
+export const dynamicGroupId = () => html`
+  <mgt-people-picker id="picker"></mgt-people-picker>
+  <div>
+    <p class="notes">Pick a group:</p>
+    <select id="groupChooser" name="group">
+      <option value="">none</option>
+    </select>
+    <p class="notes">People chosen:</p>
+    <div id="chosenPeople"></div>
+  </div>
+
+  <style>
+    body {
+      font-family: 'Segoe UI', 'Segoe UI Web (West European)', 'Segoe UI', -apple-system, BlinkMacSystemFont, Roboto,
+        'Helvetica Neue', sans-serif;
+    }
+
+    .notes {
+      font-size: 12px;
+      margin-bottom: 2px;
+    }
+  </style>
+  <script type="module">
+    import { Providers, ProviderState } from '@microsoft/mgt';
+
+    let picker = document.getElementById('picker');
+    let chosenArea = document.getElementById('chosenPeople');
+    let groupChooser = document.getElementById('groupChooser');
+
+    groupChooser.addEventListener('change', getGroupValue);
+
+    loadGroups();
+    Providers.onProviderUpdated(loadGroups);
+
+    function loadGroups() {
+      let provider = Providers.globalProvider;
+      if (provider && provider.state === ProviderState.SignedIn) {
+        let client = provider.graph.client;
+
+        client
+          .api('/groups')
+          .get()
+          .then(groups => {
+            for (let group of groups.value) {
+              let option = document.createElement('option');
+              option.value = group.id;
+              option.text = group.displayName;
+
+              groupChooser.appendChild(option);
+            }
+          });
+      }
+    }
+
+    picker.addEventListener('selectionChanged', function(e) {
+      //reset area
+      chosenArea.innerHTML = '';
+      //render selected people to chosen people div
+      for (var i = 0; i < e.detail.length; i++) {
+        let newElem = document.createElement('div');
+        newElem.innerHTML = e.detail[i].displayName + ' ' + e.detail[i].id;
+        chosenArea.append(newElem);
+      }
+    });
+
+    function getGroupValue(e) {
+      let selection = groupChooser.selectedOptions[0];
+      if (selection !== undefined) {
+        setGroupValue(selection.value);
+      }
+    }
+
+    function setGroupValue(selected) {
+      picker.setAttribute('group', selected);
+    }
+  </script>
 `;
 
 export const pickPeopleAndGroups = () => html`

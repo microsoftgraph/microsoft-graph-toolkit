@@ -5,60 +5,6 @@
   </head>
   <body>
     <mgt-mock-provider></mgt-mock-provider>
-    <!-- MgtPerson -->
-    <!-- No person -->
-    <mgt-person person-card="hover"></mgt-person>
-    <hr />
-    <!-- 'me' person -->
-    <mgt-person person-query="me"></mgt-person>
-    <hr />
-    <mgt-person person-query="me" view="oneline"></mgt-person>
-    <hr />
-    <mgt-person person-query="me" view="oneline" line1property="email"></mgt-person>
-    <hr />
-    <mgt-person person-card="hover" person-query="me" view="twolines"></mgt-person>
-    <hr />
-    <!-- Custom person image -->
-    <mgt-person
-      person-card="hover"
-      person-image="https://cdn.pixabay.com/photo/2013/07/25/01/31/sunlight-166733_960_720.jpg"
-    ></mgt-person>
-    <hr />
-    <mgt-person
-      person-query="me"
-      person-card="hover"
-      person-image="https://cdn.pixabay.com/photo/2013/07/25/01/31/sunlight-166733_960_720.jpg"
-      view="twolines"
-    ></mgt-person>
-    <hr />
-    <!-- Custom templates -->
-    <mgt-person person-query="me" person-card="hover" view="twolines">
-      <template data-type="default">
-        <div>Default</div>
-      </template>
-    </mgt-person>
-    <hr />
-
-    <mgt-person person-query="me" view="twolines">
-      <template data-type="loading">
-        <h1>Loading</h1>
-      </template>
-    </mgt-person>
-    <hr />
-
-    <mgt-person>
-      <template data-type="no-data">
-        <div>No data</div>
-      </template>
-    </mgt-person>
-    <hr />
-
-    <mgt-person person-query="me" person-card="hover" view="twolines">
-      <template data-type="person-card">
-        <h1>Person card</h1>
-      </template>
-    </mgt-person>
-    <hr />
 
     <!-- MyPerson -->
     <my-person
