@@ -98,7 +98,7 @@ export class MgtTodo extends MgtTasksBase {
    * @type {TodoFilter}
    * @memberof MgtTodo
    */
-  public todoFilter: TodoFilter;
+  public taskFilter: TodoFilter;
 
   private _lists: TodoTaskList[];
   private _tasks: TodoTask[];
@@ -131,8 +131,8 @@ export class MgtTodo extends MgtTasksBase {
     }
 
     let tasks = this._tasks;
-    if (tasks && this.todoFilter) {
-      tasks = tasks.filter(task => this.todoFilter(task));
+    if (tasks && this.taskFilter) {
+      tasks = tasks.filter(task => this.taskFilter(task));
     }
 
     const taskTemplates = repeat(tasks, task => task.id, task => this.renderTask(task));
