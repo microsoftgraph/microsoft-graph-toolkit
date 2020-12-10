@@ -49,6 +49,10 @@ mgt-login .login-button {
     color: $button__color--hover;
     --color: #{$button__color--hover};
     background-color: $button__background-color--hover;
+
+    mgt-person {
+      --person-color: #{$button__color--hover};
+    }
   }
 
   &:focus {
@@ -62,6 +66,10 @@ mgt-login .login-button {
 
   &.no-click {
     pointer-events: none;
+  }
+
+  mgt-person {
+    --person-color: #{$button__color};
   }
 }
 
@@ -80,6 +88,10 @@ mgt-login .popup {
   z-index: 1;
   color: $popup__color;
   --color: #{$popup__color};
+
+  mgt-person {
+    --person-color: #{$popup__color};
+  }
 }
 
 :host .popup-content,
