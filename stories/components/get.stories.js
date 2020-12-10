@@ -16,7 +16,7 @@ import '../../packages/mgt-components/dist/es6/components/mgt-get/mgt-get';
 export default {
   title: 'Components | mgt-get',
   component: 'mgt-get',
-  decorators: [withA11y, withSignIn, withCodeEditor],
+  decorators: [withCodeEditor],
   parameters: {
     options: { selectedPanel: 'mgt/sign-in' },
     signInAddon: {
@@ -162,6 +162,14 @@ export const UsingCaching = () => html`
   <mgt-get resource="me" caching-enabled="true">
     <template>
       Hello {{ displayName }}
+    </template>
+  </mgt-get>
+`;
+
+export const PollingRate = () => html`
+  <mgt-get resource="/me/presence" version="beta" scopes="Presence.Read" polling-rate="2000">
+    <template>
+      {{availability}}
     </template>
   </mgt-get>
 `;

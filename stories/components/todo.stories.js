@@ -14,7 +14,7 @@ import '../../packages/mgt-components/dist/es6/components/mgt-todo/mgt-todo';
 export default {
   title: 'Components | mgt-todo',
   component: 'mgt-todo',
-  decorators: [withA11y, withSignIn, withCodeEditor],
+  decorators: [withCodeEditor],
   parameters: { options: { selectedPanel: 'storybookjs/knobs/panel' } }
 };
 
