@@ -132,6 +132,17 @@ export type TeamsChannelPickerProps = {
 	selectionChanged?: (e: Event) => void;
 }
 
+export type TodoProps = {
+	taskFilter?: TaskFilter;
+	readOnly?: boolean;
+	hideHeader?: boolean;
+	hideOptions?: boolean;
+	targetId?: string;
+	initialId?: string;
+	templateContext?: TemplateContext;
+	mediaQuery?: ComponentMediaQuery;
+}
+
 export const Agenda = wrapMgt<AgendaProps>('mgt-agenda');
 
 export const Get = wrapMgt<GetProps>('mgt-get');
@@ -149,6 +160,8 @@ export const Person = wrapMgt<PersonProps>('mgt-person');
 export const Tasks = wrapMgt<TasksProps>('mgt-tasks');
 
 export const TeamsChannelPicker = wrapMgt<TeamsChannelPickerProps>('mgt-teams-channel-picker');
+
+export const Todo = wrapMgt<TodoProps>('mgt-todo');
 
 export { ResponseType,IDynamicPerson,PersonType,GroupType,PersonCardInteraction,MgtPersonConfig,PersonViewType,AvatarSize,TasksStringResource,TasksSource,TaskFilter,SelectedChannel } from '@microsoft/mgt-components';
 export { TemplateContext,ComponentMediaQuery } from '@microsoft/mgt-element';

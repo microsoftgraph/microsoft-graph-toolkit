@@ -15,7 +15,8 @@ const tags = new Set([
   'mgt-people-picker',
   'mgt-people',
   'mgt-tasks',
-  'mgt-teams-channel-picker'
+  'mgt-teams-channel-picker',
+  'mgt-todo'
 ]);
 
 let output = '';
@@ -54,10 +55,7 @@ for (const tag of wc.tags) {
         continue;
       }
 
-      if (
-        type.startsWith('MicrosoftGraph.') ||
-        type.startsWith('MicrosoftGraphBeta.')
-      ) {
+      if (type.startsWith('MicrosoftGraph.') || type.startsWith('MicrosoftGraphBeta.')) {
         continue;
       }
 

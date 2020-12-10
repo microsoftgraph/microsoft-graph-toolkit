@@ -29,6 +29,12 @@ import {
 import { styles } from './mgt-todo-css';
 import { strings } from './strings';
 
+/*
+ * Filter function
+ */
+// tslint:disable-next-line: completed-docs
+export type TaskFilter = (task: TodoTask) => boolean;
+
 /**
  * component enables the user to view, add, remove, complete, or edit todo tasks. It works with tasks in Microsoft Planner or Microsoft To-Do.
  *
@@ -89,9 +95,10 @@ export class MgtTodo extends MgtTasksBase {
   /**
    * Optional filter function when rendering tasks
    *
+   * @type {TaskFilter}
    * @memberof MgtTodo
    */
-  public taskFilter: (task: TodoTask) => boolean;
+  public taskFilter: TaskFilter;
 
   private _lists: TodoTaskList[];
   private _tasks: TodoTask[];
