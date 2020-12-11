@@ -1,4 +1,4 @@
-import { ResponseType,IDynamicPerson,PersonType,GroupType,PersonCardInteraction,MgtPersonConfig,PersonViewType,AvatarSize,TasksStringResource,TasksSource,TaskFilter,SelectedChannel } from '@microsoft/mgt-components';
+import { ResponseType,IDynamicPerson,PersonType,GroupType,PersonCardInteraction,MgtPersonConfig,PersonViewType,AvatarSize,TasksStringResource,TasksSource,TaskFilter,SelectedChannel,TodoFilter } from '@microsoft/mgt-components';
 import { TemplateContext,ComponentMediaQuery } from '@microsoft/mgt-element';
 import * as MicrosoftGraph from '@microsoft/microsoft-graph-types';
 import * as MicrosoftGraphBeta from '@microsoft/microsoft-graph-types-beta';
@@ -132,6 +132,17 @@ export type TeamsChannelPickerProps = {
 	selectionChanged?: (e: Event) => void;
 }
 
+export type TodoProps = {
+	todoFilter?: TodoFilter;
+	readOnly?: boolean;
+	hideHeader?: boolean;
+	hideOptions?: boolean;
+	targetId?: string;
+	initialId?: string;
+	templateContext?: TemplateContext;
+	mediaQuery?: ComponentMediaQuery;
+}
+
 export const Agenda = wrapMgt<AgendaProps>('mgt-agenda');
 
 export const Get = wrapMgt<GetProps>('mgt-get');
@@ -150,5 +161,7 @@ export const Tasks = wrapMgt<TasksProps>('mgt-tasks');
 
 export const TeamsChannelPicker = wrapMgt<TeamsChannelPickerProps>('mgt-teams-channel-picker');
 
-export { ResponseType,IDynamicPerson,PersonType,GroupType,PersonCardInteraction,MgtPersonConfig,PersonViewType,AvatarSize,TasksStringResource,TasksSource,TaskFilter,SelectedChannel } from '@microsoft/mgt-components';
+export const Todo = wrapMgt<TodoProps>('mgt-todo');
+
+export { ResponseType,IDynamicPerson,PersonType,GroupType,PersonCardInteraction,MgtPersonConfig,PersonViewType,AvatarSize,TasksStringResource,TasksSource,TaskFilter,SelectedChannel,TodoFilter } from '@microsoft/mgt-components';
 export { TemplateContext,ComponentMediaQuery } from '@microsoft/mgt-element';
