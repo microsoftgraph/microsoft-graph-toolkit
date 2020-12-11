@@ -133,7 +133,7 @@ export type TeamsChannelPickerProps = {
 }
 
 export type TodoProps = {
-	todoFilter?: TodoFilter;
+	taskFilter?: TodoFilter;
 	readOnly?: boolean;
 	hideHeader?: boolean;
 	hideOptions?: boolean;
