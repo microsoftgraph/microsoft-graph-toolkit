@@ -54,7 +54,7 @@ function setLicense() {
 }
 
 function setVersion() {
-  var pkg = require(process.cwd() + '/package.json');
+  var pkg = require('./package.json');
   var fs = require('fs');
   fs.writeFileSync('./src/utils/version.ts', versionFile.replace('[VERSION]', pkg.version));
 }
