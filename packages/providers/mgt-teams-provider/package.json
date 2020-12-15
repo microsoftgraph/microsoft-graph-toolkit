@@ -42,7 +42,8 @@
   },
   "dependencies": {
     "@microsoft/mgt-element": "*",
-    "@microsoft/mgt-msal-provider": "*"
+    "@microsoft/mgt-msal-provider": "*",
+    "@microsoft/microsoft-graph-client": "^2.2.1"
   },
   "publishConfig": {
     "directory": "dist"
