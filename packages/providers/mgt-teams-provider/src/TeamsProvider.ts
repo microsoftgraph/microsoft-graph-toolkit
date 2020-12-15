@@ -194,8 +194,8 @@ export class TeamsProvider extends MsalProvider {
       scopes
     });
 
-    if (window.location.href.indexOf('#') != -1) {
-      // the page should redirect again
+    if (provider.userAgentApplication.urlContainsHash(window.location.hash)) {
+      // the page should redirect again
       return;
     }
 
@@ -379,14 +379,6 @@ export class TeamsProvider extends MsalProvider {
       // Exchange token from server
       const response: Response = await fetch(`${url.href}?${params}`, {
         method: 'GET',
-        // headers: {
-        //   'Content-Type': 'application/json',
-        //   authorization: `Bearer ${clientToken}`
-        // },
-        // body: JSON.stringify({
-        //   scopes: scopes,
-        //   clientid: this.clientId
-        // }),
         mode: 'cors',
         cache: 'default'
       });
@@ -434,15 +426,11 @@ export class TeamsProvider extends MsalProvider {
     // Try to get access token
     const accessToken: string = await this.getAccessToken(null);
     // If we need to consent. Make sure we do this once during the log in process
-    if (this._needsConsent && !accessToken) {
-      await this.login();
-    } else {
-      this.setState(accessToken ? ProviderState.SignedIn : ProviderState.SignedOut);
-    }
+    this.setState(accessToken ? ProviderState.SignedIn : ProviderState.SignedOut);
   }
 
   /**
-   * Get an Id Token via the Teams SDK
+   * Get a token via the Teams SDK
    *
    * @returns {Promise<string>}
    * @memberof TeamsSSOProvider

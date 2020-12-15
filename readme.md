@@ -4,22 +4,37 @@
   Microsoft Graph Toolkit
 </h1>
 
-<h4 align="center">Web Components powered by <a href="https://graph.microsoft.com">Microsoft Graph</a></h4>
+<h4 align="center">UI Components and Authentication Providers for <a href="https://graph.microsoft.com">Microsoft Graph</a></h4>
 
 <p align="center">
-  <a href="https://www.npmjs.com/package/@microsoft/mgt"><img src="https://img.shields.io/npm/v/@microsoft/mgt.svg"></a> <a href="https://github.com/microsoftgraph/msgraph-sdk-javascript"><img src="https://img.shields.io/badge/code_style-prettier-ff69b4.svg"></a> <a href="https://stackoverflow.com/questions/tagged/microsoft-graph-toolkit"><img src="https://img.shields.io/stackexchange/stackoverflow/t/microsoft-graph-toolkit.svg"></a>
-  <a href="https://dev.azure.com/microsoft-graph-toolkit/microsoft-graph-toolkit/_build/latest?definitionId=1&branchName=main"><br><img src="https://dev.azure.com/microsoft-graph-toolkit/microsoft-graph-toolkit/_apis/build/status/microsoftgraph.microsoft-graph-toolkit?branchName=main"></a> <a href="https://www.webcomponents.org/element/@microsoft/mgt"><img src="https://img.shields.io/badge/webcomponents.org-published-blue.svg"></a> <a href="https://mgt.dev"><img src="https://cdn.jsdelivr.net/gh/storybookjs/brand@master/badge/badge-storybook.svg"></a> <a href="https://github.com/microsoftgraph/microsoft-graph-toolkit/issues?q=is%3Aissue+is%3Aopen+label%3A%22good+first+issue%22"><img src="https://img.shields.io/github/issues/microsoftgraph/microsoft-graph-toolkit/good%20first%20issue?color=brightgreen"></a>
+  <a href="https://github.com/microsoftgraph/msgraph-sdk-javascript"><img src="https://img.shields.io/badge/code_style-prettier-ff69b4.svg"></a> <a href="https://stackoverflow.com/questions/tagged/microsoft-graph-toolkit"><img src="https://img.shields.io/stackexchange/stackoverflow/t/microsoft-graph-toolkit.svg"></a>
+  <img src="https://github.com/microsoftgraph/microsoft-graph-toolkit/workflows/Build%20CI/badge.svg" /> <a href="https://www.webcomponents.org/element/@microsoft/mgt"><img src="https://img.shields.io/badge/webcomponents.org-published-blue.svg"></a> <a href="https://mgt.dev"><img src="https://cdn.jsdelivr.net/gh/storybookjs/brand@master/badge/badge-storybook.svg"></a> <a href="https://github.com/microsoftgraph/microsoft-graph-toolkit/issues?q=is%3Aissue+is%3Aopen+label%3A%22good+first+issue%22"><img src="https://img.shields.io/github/issues/microsoftgraph/microsoft-graph-toolkit/good%20first%20issue?color=brightgreen"></a>
+</p>
+
+<h3 align="center"><a href="https://aka.ms/mgt-docs">Documentation</a></h3>
+
+<p align="center">
+  The Microsoft Graph Toolkit is a collection of reusable, framework-agnostic components and authentication providers for accessing and working with Microsoft Graph. The components are fully functional right of out of the box, with built in providers that authenticate with and fetch data from Microsoft Graph.
 </p>
 
 <p align="center">
-  The Microsoft Graph Toolkit is a collection of web components powered by Microsoft Graph. The components are functional, working automatically with Microsoft Graph, and work with any web framework and on all modern browsers.
+  <a href="#packages">Packages</a> • <a href="#components">Components</a> • <a href="#providers">Providers</a> • <a href="#getting-started">Getting Started</a> • <a href="#running-the-samples">Running the Samples</a> • <a href="#contribute">Contribute</a> • <a href="#feedback-and-requests">Feedback & Requests</a> <br>• <a href="#license">License</a> • <a href="#code-of-conduct">Code of Conduct</a>
 </p>
 
-<p align="center">
-  <a href="#components-&-documentation">Components & Documentation</a> • <a href="#getting-started">Getting Started</a> • <a href="#running-the-samples">Running the Samples</a> • <a href="#contribute">Contribute</a> • <a href="#feedback-and-requests">Feedback & Requests</a> <br>• <a href="#license">License</a> • <a href="#code-of-conduct">Code of Conduct</a>
-</p>
+## Packages
 
-## Components & Documentation
+| Package | Latest | Next |
+| - | - | - |
+| [`@microsoft/mgt`](https://www.npmjs.com/package/@microsoft/mgt) | <img src="https://img.shields.io/npm/v/@microsoft/mgt/latest.svg"> | <img src="https://img.shields.io/npm/v/@microsoft/mgt/next.svg">
+| [`@microsoft/mgt-element`](https://www.npmjs.com/package/@microsoft/mgt-element) | <img src="https://img.shields.io/npm/v/@microsoft/mgt-element/latest.svg"> | <img src="https://img.shields.io/npm/v/@microsoft/mgt-element/next.svg"> |
+| [`@microsoft/mgt-components`](https://www.npmjs.com/package/@microsoft/mgt-components) | <img src="https://img.shields.io/npm/v/@microsoft/mgt-components/latest.svg"> | <img src="https://img.shields.io/npm/v/@microsoft/mgt-components/next.svg"> |
+| [`@microsoft/mgt-react`](https://www.npmjs.com/package/@microsoft/mgt-react) | <img src="https://img.shields.io/npm/v/@microsoft/mgt-react/latest.svg"> | <img src="https://img.shields.io/npm/v/@microsoft/mgt-react/next.svg"> |
+| [`@microsoft/mgt-msal-provider`](https://www.npmjs.com/package/@microsoft/mgt-msal-provider) | <img src="https://img.shields.io/npm/v/@microsoft/mgt-msal-provider/latest.svg"> | <img src="https://img.shields.io/npm/v/@microsoft/mgt-msal-provider/next.svg"> |
+| [`@microsoft/mgt-teams-provider`](https://www.npmjs.com/package/@microsoft/mgt-teams-provider) | <img src="https://img.shields.io/npm/v/@microsoft/mgt-teams-provider/latest.svg"> | <img src="https://img.shields.io/npm/v/@microsoft/mgt-teams-provider/next.svg"> |
+| [`@microsoft/mgt-sharepoint-provider`](https://www.npmjs.com/package/@microsoft/mgt-sharepoint-provider) | <img src="https://img.shields.io/npm/v/@microsoft/mgt-sharepoint-provider/latest.svg"> | <img src="https://img.shields.io/npm/v/@microsoft/mgt-sharepoint-provider/next.svg"> |
+| [`@microsoft/mgt-proxy-provider`](https://www.npmjs.com/package/@microsoft/mgt-proxy-provider) | <img src="https://img.shields.io/npm/v/@microsoft/mgt-proxy-provider/latest.svg"> | <img src="https://img.shields.io/npm/v/@microsoft/mgt-proxy-provider/next.svg"> |
+
+## Components
 
 You can explore components and samples with the [playground](https://mgt.dev) powered by storybook.
 
@@ -33,9 +48,14 @@ The Toolkit currently includes the following components:
 * [mgt-agenda](https://docs.microsoft.com/graph/toolkit/components/agenda)
 * [mgt-tasks](https://docs.microsoft.com/graph/toolkit/components/tasks)
 * [mgt-get](https://docs.microsoft.com/graph/toolkit/components/get)
+* [mgt-todo](https://docs.microsoft.com/graph/toolkit/components/todo)
 * [mgt-teams-channel-picker](https://docs.microsoft.com/en-us/graph/toolkit/components/teams-channel-picker)
 
-The components work best when used with a [provider](https://docs.microsoft.com/graph/toolkit/providers). The provider handles authentication and the requests to the Microsoft Graph APIs used by the components. The Toolkit contains the following providers:
+All web components are also available as React component - see [@microsoft/mgt-react documentation](https://docs.microsoft.com/graph/toolkit/get-started/mgt-react).
+
+## Providers
+
+[Providers](https://docs.microsoft.com/graph/toolkit/providers) enable authentication and provide the implementation for acquiring access tokens on various platforms. The providers also expose a Microsoft Graph Client for calling the Microsoft Graph APIs. The components work best when used with a provider, but the providers can be used on their own as well.
 
 * [Msal Provider](https://docs.microsoft.com/graph/toolkit/providers/msal)
 * [SharePoint Provider](https://docs.microsoft.com/graph/toolkit/providers/sharepoint)
@@ -87,51 +107,20 @@ The benefits of using MGT through NPM is that you have full control of the bundl
 npm install @microsoft/mgt
 ```
 
-Now you can reference all components at the page you are using:
+Now you can reference all components and providers at the page you are using:
 
 ```html
-<script src="node_modules/@microsoft/mgt/dist/es6/components.js"></script>
-```
-
-Or, just reference the component you need and avoid loading everything else:
-
-```html
-<script src="node_modules/@microsoft/mgt/dist/es6/components/mgt-login/mgt-login.js"></script>
-```
-
-Similarly, to add a provider, you can add it as a component:
-
-```html
-<script src="node_modules/@microsoft/mgt/dist/es6/components/providers/mgt-msal-provider.js"></script>
+<script type="module" src="node_modules/@microsoft/mgt/dist/es6/index.js"></script>
 
 <mgt-msal-provider client-id="[CLIENT-ID]"></mgt-msal-provider>
+
+<mgt-login></mgt-login>
+<mgt-agenda></mgt-agenda>
 ```
-
-or, add it in your code:
-
-```html
-<script type="module">
-  import { Providers, MsalProvider } from '@microsoft/mgt';
-
-  Providers.globalProvider = new MsalProvider({ clientId: '[CLIENT-ID]' });
-</script>
-```
-
-or, if you already use MSAL.js and have a `UserAgentApplication`, you can use it:
-
-```html
-<script type="module">
-  import { Providers, MsalProvider } from '@microsoft/mgt';
-
-  const app = new UserAgentApplication({ auth: { clientId: '[CLIENT-ID]' } });
-
-  Providers.globalProvider = new MsalProvider({ userAgentApplication: app });
-</script>
-``` 
 
 ## Running the samples
 
-Some of our samples are coupled to use the locally built mgt packages instead of the published version from npm. Becuase of this, it's helpful to build the monorepo before attempting to run any of the samples.
+Some of our samples are coupled to use the locally built mgt packages instead of the published version from npm. Because of this, it's helpful to build the monorepo before attempting to run any of the samples.
 
 ```bash
 # Starting at the root
