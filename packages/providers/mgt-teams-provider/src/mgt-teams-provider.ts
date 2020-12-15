@@ -42,6 +42,17 @@ export class MgtTeamsProvider extends MgtBaseProvider {
   public authPopupUrl = '';
 
   /**
+   * The relative or absolute path to the token exchange backend service
+   *
+   * @memberof MgtTeamsProvider
+   */
+  @property({
+    attribute: 'sso-url',
+    type: String
+  })
+  public ssoUrl = '';
+
+  /**
    * The authority to use.
    *
    * @memberof MgtTeamsProvider
@@ -95,6 +106,10 @@ export class MgtTeamsProvider extends MgtBaseProvider {
           }
         };
         config.msalOptions = msalConfig;
+      }
+
+      if (this.ssoUrl) {
+        config.ssoUrl = this.ssoUrl;
       }
 
       this.provider = new TeamsProvider(config);

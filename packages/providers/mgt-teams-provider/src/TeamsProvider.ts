@@ -404,7 +404,7 @@ export class TeamsProvider extends MsalProvider {
       }
 
       try {
-        const response = await this._userAgentApplication.acquireTokenSilent(accessTokenRequest);
+        const response = await this.userAgentApplication.acquireTokenSilent(accessTokenRequest);
         return response.accessToken;
       } catch (e) {
         if (this.requiresInteraction(e)) {
@@ -425,7 +425,7 @@ export class TeamsProvider extends MsalProvider {
   private async internalLogin(): Promise<void> {
     // Try to get access token
     const accessToken: string = await this.getAccessToken(null);
-    // If we need to consent. Make sure we do this once during the log in process
+    // TODO, fix consent
     this.setState(accessToken ? ProviderState.SignedIn : ProviderState.SignedOut);
   }
 
