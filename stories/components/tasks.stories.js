@@ -16,7 +16,7 @@ import '../../packages/mgt-components/dist/es6/components/mgt-tasks/mgt-tasks';
 export default {
   title: 'Components | mgt-tasks',
   component: 'mgt-tasks',
-  decorators: [withA11y, withSignIn, withCodeEditor],
+  decorators: [withCodeEditor],
   parameters: { options: { selectedPanel: 'storybookjs/knobs/panel' } }
 };
 

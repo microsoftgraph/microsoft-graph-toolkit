@@ -50,7 +50,6 @@ $presence-color-oof: #b4009e;
 
 :host .root {
   display: block;
-  color: $color;
 }
 
 :host svg,
@@ -64,6 +63,7 @@ mgt-person .person-root {
   position: relative;
   display: flex;
   align-items: center;
+  color: $color;
 
   .user-avatar {
     width: $avatar-size;
@@ -419,6 +419,60 @@ mgt-person .avatar-icon {
       margin: var($details-spacing, 0px 12px 0px 0px);
       &.small {
         margin: var($details-spacing, 0px 6px 0px 0px);
+      }
+    }
+
+    .user-presence {
+      .presence-oof-offline svg {
+        margin-right: calc(#{$avatar-size} * 0.07 - 2px);
+      }
+      .presence-offline::before {
+        margin-right: calc(#{$avatar-size} * 0.07 - 2px);
+      }
+
+      .presence-available::before {
+        margin-right: calc(#{$avatar-size} * 0.07 - 2px);
+      }
+
+      .presence-oof-available::before {
+        margin-right: calc(#{$avatar-size} * 0.07 - 2px);
+      }
+
+      .presence-away::before {
+        margin-right: calc(#{$avatar-size} * 0.07 - 2px);
+      }
+
+      .presence-dnd::before {
+        margin-right: calc(#{$avatar-size} * 0.07 - 2px);
+      }
+
+      .presence-oof-dnd::before {
+        margin-right: calc(#{$avatar-size} * 0.07 - 2px);
+      }
+    }
+
+    &.small {
+      & .initials-text,
+      & .contact-icon {
+        font-size: calc(#{$avatar-size-s} * 0.4);
+      }
+      .user-presence {
+        left: calc(#{$avatar-size-s} - 8px);
+        top: calc(#{$avatar-size-s} - 8px);
+        width: 8px;
+        height: 8px;
+
+        .presence-basic {
+          width: 4px;
+          height: 4px;
+          border-radius: 4px;
+          padding: 0;
+
+          & .presence-oof-offline svg {
+            height: 0;
+            width: 0;
+          }
+        }
       }
     }
   }

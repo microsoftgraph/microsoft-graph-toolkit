@@ -1,5 +1,5 @@
-import { ResponseType,IDynamicPerson,PersonType,GroupType,PersonCardInteraction,MgtPersonConfig,PersonViewType,AvatarSize,TasksStringResource,TasksSource,TaskFilter,SelectedChannel } from '@microsoft/mgt';
-import * as MgtElement from '@microsoft/mgt-element';
+import { ResponseType,IDynamicPerson,PersonType,GroupType,PersonCardInteraction,MgtPersonConfig,PersonViewType,AvatarSize,TasksStringResource,TasksSource,TaskFilter,SelectedChannel,TodoFilter } from '@microsoft/mgt-components';
+import { TemplateContext,ComponentMediaQuery } from '@microsoft/mgt-element';
 import * as MicrosoftGraph from '@microsoft/microsoft-graph-types';
 import * as MicrosoftGraphBeta from '@microsoft/microsoft-graph-types-beta';
 import {wrapMgt} from '../Mgt';
@@ -13,8 +13,8 @@ export type AgendaProps = {
 	showMax?: number;
 	groupByDay?: boolean;
 	preferredTimezone?: string;
-	templateContext?: MgtElement.TemplateContext;
-	mediaQuery?: MgtElement.ComponentMediaQuery;
+	templateContext?: TemplateContext;
+	mediaQuery?: ComponentMediaQuery;
 	eventClick?: (e: Event) => void;
 }
 
@@ -27,15 +27,15 @@ export type GetProps = {
 	pollingRate?: number;
 	cacheEnabled?: boolean;
 	cacheInvalidationPeriod?: number;
-	templateContext?: MgtElement.TemplateContext;
-	mediaQuery?: MgtElement.ComponentMediaQuery;
+	templateContext?: TemplateContext;
+	mediaQuery?: ComponentMediaQuery;
 	dataChange?: (e: Event) => void;
 }
 
 export type LoginProps = {
 	userDetails?: IDynamicPerson;
-	templateContext?: MgtElement.TemplateContext;
-	mediaQuery?: MgtElement.ComponentMediaQuery;
+	templateContext?: TemplateContext;
+	mediaQuery?: ComponentMediaQuery;
 	loginInitiated?: (e: Event) => void;
 	loginCompleted?: (e: Event) => void;
 	loginFailed?: (e: Event) => void;
@@ -54,8 +54,8 @@ export type PeoplePickerProps = {
 	selectionMode?: string;
 	showMax?: number;
 	selectedPeople?: IDynamicPerson[];
-	templateContext?: MgtElement.TemplateContext;
-	mediaQuery?: MgtElement.ComponentMediaQuery;
+	templateContext?: TemplateContext;
+	mediaQuery?: ComponentMediaQuery;
 	selectionChanged?: (e: Event) => void;
 }
 
@@ -67,8 +67,8 @@ export type PeopleProps = {
 	showPresence?: boolean;
 	personCardInteraction?: PersonCardInteraction;
 	showMax?: number;
-	templateContext?: MgtElement.TemplateContext;
-	mediaQuery?: MgtElement.ComponentMediaQuery;
+	templateContext?: TemplateContext;
+	mediaQuery?: ComponentMediaQuery;
 }
 
 export type PersonCardProps = {
@@ -81,8 +81,8 @@ export type PersonCardProps = {
 	inheritDetails?: boolean;
 	showPresence?: boolean;
 	personPresence?: MicrosoftGraphBeta.Presence;
-	templateContext?: MgtElement.TemplateContext;
-	mediaQuery?: MgtElement.ComponentMediaQuery;
+	templateContext?: TemplateContext;
+	mediaQuery?: ComponentMediaQuery;
 }
 
 export type PersonProps = {
@@ -100,8 +100,8 @@ export type PersonProps = {
 	line3Property?: string;
 	view?: PersonViewType;
 	avatarSize?: AvatarSize;
-	templateContext?: MgtElement.TemplateContext;
-	mediaQuery?: MgtElement.ComponentMediaQuery;
+	templateContext?: TemplateContext;
+	mediaQuery?: ComponentMediaQuery;
 }
 
 export type TasksProps = {
@@ -117,8 +117,8 @@ export type TasksProps = {
 	hideOptions?: boolean;
 	groupId?: string;
 	taskFilter?: TaskFilter;
-	templateContext?: MgtElement.TemplateContext;
-	mediaQuery?: MgtElement.ComponentMediaQuery;
+	templateContext?: TemplateContext;
+	mediaQuery?: ComponentMediaQuery;
 	taskAdded?: (e: Event) => void;
 	taskChanged?: (e: Event) => void;
 	taskClick?: (e: Event) => void;
@@ -127,9 +127,20 @@ export type TasksProps = {
 
 export type TeamsChannelPickerProps = {
 	selectedItem?: SelectedChannel;
-	templateContext?: MgtElement.TemplateContext;
-	mediaQuery?: MgtElement.ComponentMediaQuery;
+	templateContext?: TemplateContext;
+	mediaQuery?: ComponentMediaQuery;
 	selectionChanged?: (e: Event) => void;
+}
+
+export type TodoProps = {
+	taskFilter?: TodoFilter;
+	readOnly?: boolean;
+	hideHeader?: boolean;
+	hideOptions?: boolean;
+	targetId?: string;
+	initialId?: string;
+	templateContext?: TemplateContext;
+	mediaQuery?: ComponentMediaQuery;
 }
 
 export const Agenda = wrapMgt<AgendaProps>('mgt-agenda');
@@ -150,3 +161,7 @@ export const Tasks = wrapMgt<TasksProps>('mgt-tasks');
 
 export const TeamsChannelPicker = wrapMgt<TeamsChannelPickerProps>('mgt-teams-channel-picker');
 
+export const Todo = wrapMgt<TodoProps>('mgt-todo');
+
+export { ResponseType,IDynamicPerson,PersonType,GroupType,PersonCardInteraction,MgtPersonConfig,PersonViewType,AvatarSize,TasksStringResource,TasksSource,TaskFilter,SelectedChannel,TodoFilter } from '@microsoft/mgt-components';
+export { TemplateContext,ComponentMediaQuery } from '@microsoft/mgt-element';
