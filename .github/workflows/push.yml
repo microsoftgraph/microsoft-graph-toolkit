@@ -5,9 +5,9 @@ name: Build CI
 
 on:
   push:
-    branches: [main, release/**]
-  pull_request:
-    branches: [main, release/**]
+    branches: [main]
+    paths:
+      - 'packages/**'
 
 jobs:
   build:
@@ -15,7 +15,7 @@ jobs:
 
     strategy:
       matrix:
-        node-version: [10.x]
+        node-version: [12.x]
 
     steps:
       - uses: actions/checkout@v2
@@ -23,15 +23,12 @@ jobs:
         uses: actions/setup-node@v1
         with:
           node-version: ${{ matrix.node-version }}
-      - run: npm i
-      - run: npm run pack
-      - name: Upload a Build Artifact - package
-        uses: actions/upload-artifact@v2
-        with:
-          name: npm-packages
-          path: artifacts/*
-      - name: Upload a Build Artifact - bundle
-        uses: actions/upload-artifact@v2
-        with:
-          name: bundle
-          path: packages/mgt/dist/bundle
+          registry-url: 'https://registry.npmjs.org'
+      - run: npm install -g yarn lerna
+      - run: yarn
+      - run: yarn build
+      - run: node scripts/setVersion.js --next
+      - run: lerna exec --scope @microsoft/* -- "npm publish --tag next"
+        if: github.repository == 'microsoftgraph/microsoft-graph-toolkit'
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}

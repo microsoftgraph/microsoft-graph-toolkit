@@ -187,7 +187,7 @@ export class TeamsProvider extends MsalProvider {
       scopes
     });
 
-    if ((UserAgentApplication.prototype as any).urlContainsHash(window.location.hash)) {
+    if (provider.userAgentApplication.urlContainsHash(window.location.hash)) {
       // the page should redirect again
       return;
     }
@@ -347,7 +347,7 @@ export class TeamsProvider extends MsalProvider {
     }
 
     try {
-      const response = await this._userAgentApplication.acquireTokenSilent(accessTokenRequest);
+      const response = await this.userAgentApplication.acquireTokenSilent(accessTokenRequest);
       return response.accessToken;
     } catch (e) {
       if (this.requiresInteraction(e)) {

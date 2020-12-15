@@ -1,6 +1,7 @@
 {
   "name": "root",
   "private": true,
+  "version": "2.1.0",
   "workspaces": [
     "packages/*",
     "packages/providers/*",

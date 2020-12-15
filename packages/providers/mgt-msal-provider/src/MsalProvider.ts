@@ -111,13 +111,15 @@ export class MsalProvider extends IProvider {
   public scopes: string[];
 
   /**
-   * Determines application
+   * Gets the user agent application instance
    *
    * @protected
    * @type {UserAgentApplication}
    * @memberof MsalProvider
    */
-  protected _userAgentApplication: UserAgentApplication;
+  public get userAgentApplication() {
+    return this._userAgentApplication;
+  }
 
   /**
    * client-id authentication
@@ -127,6 +129,8 @@ export class MsalProvider extends IProvider {
    * @memberof MsalProvider
    */
   protected clientId: string;
+
+  private _userAgentApplication: UserAgentApplication;
   private _loginType: LoginType;
   private _loginHint: string;
 
