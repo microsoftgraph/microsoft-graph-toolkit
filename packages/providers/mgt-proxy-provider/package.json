@@ -38,7 +38,8 @@
     "postpack": "cpx *.tgz ../../../artifacts"
   },
   "dependencies": {
-    "@microsoft/mgt-element": "*"
+    "@microsoft/mgt-element": "*",
+    "@microsoft/microsoft-graph-client": "^2.2.1"
   },
   "publishConfig": {
     "directory": "dist"
