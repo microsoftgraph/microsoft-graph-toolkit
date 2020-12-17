@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="UTF-8" />
+    <title>Sample Electron-MGT App</title>
+  </head>
+  <body>
+    <mgt-login></mgt-login>
+    <mgt-person person-query="me" view="twoLines" person-card="hover" show-presence></mgt-person>
+    <mgt-people-picker></mgt-people-picker>
+    <mgt-teams-channel-picker></mgt-teams-channel-picker>
+    <mgt-tasks data-source="todo"></mgt-tasks>
+    <mgt-agenda group-by-day></mgt-agenda>
+    <mgt-people show-presence></mgt-people>
+    <mgt-todo></mgt-todo>
+    <script>
+      require('./dist/renderer.js');
+    </script>
+  </body>
+</html>
