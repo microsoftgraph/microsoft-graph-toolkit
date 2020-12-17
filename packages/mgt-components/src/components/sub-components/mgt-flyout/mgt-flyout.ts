@@ -81,7 +81,8 @@ export class MgtFlyout extends MgtBaseComponent {
         // reset style for next update
         flyout.style.width = null;
         flyout.style.setProperty('--mgt-flyout-set-width', null);
-        flyout.style.height = null;
+        flyout.style.setProperty('--mgt-flyout-set-height', null);
+        flyout.style.maxHeight = null;
         flyout.style.top = null;
         flyout.style.left = null;
         flyout.style.bottom = null;
@@ -299,29 +300,47 @@ export class MgtFlyout extends MgtBaseComponent {
         left = anchorRect.left;
       }
 
-      if (flyoutRect.height + 2 * this._edgePadding > windowRect.height) {
-        if (flyoutRect.height >= windowRect.height) {
-          height = windowRect.height;
-          top = 0;
+      const anchorRectBottomToWindowBottom = windowRect.height - (anchorRect.top + anchorRect.height);
+      const anchorRectTopToWindowTop = anchorRect.top;
+
+      if (this.avoidHidingAnchor) {
+        if (anchorRectBottomToWindowBottom <= flyoutRect.height) {
+          if (anchorRectTopToWindowTop < flyoutRect.height) {
+            if (anchorRectTopToWindowTop > anchorRectBottomToWindowBottom) {
+              // more room top than bottom - render above
+              bottom = windowRect.height - anchorRect.top;
+              height = anchorRectTopToWindowTop;
+            } else {
+              // more room bottom than top
+              top = anchorRect.bottom;
+              height = anchorRectBottomToWindowBottom;
+            }
+          } else {
+            // render above anchor
+            bottom = windowRect.height - anchorRect.top;
+            height = anchorRectTopToWindowTop;
+          }
         } else {
-          top = (windowRect.height - flyoutRect.height) / 2;
-        }
-      } else if (
-        this.avoidHidingAnchor &&
-        anchorRect.top + anchorRect.height + flyoutRect.height + this._edgePadding > windowRect.height &&
-        anchorRect.top - flyoutRect.height - this._edgePadding > 0
-      ) {
-        if (windowRect.height - anchorRect.top + flyoutRect.height < 0) {
-          bottom = windowRect.height - flyoutRect.height - this._edgePadding;
-        } else {
-          bottom = Math.max(windowRect.height - anchorRect.top, this._edgePadding);
+          top = anchorRect.bottom;
+          height = anchorRectBottomToWindowBottom;
         }
       } else {
-        if (anchorRect.top + anchorRect.height + flyoutRect.height + this._edgePadding > windowRect.height) {
-          // it will render offscreen bellow, move it up a bit
-          top = windowRect.height - flyoutRect.height - this._edgePadding;
+        if (flyoutRect.height + 2 * this._edgePadding > windowRect.height) {
+          // flyout wants to be higher than the window hight, and we don't need to avoid hiding the anchor
+          // make the flyout height the height of the window
+          if (flyoutRect.height >= windowRect.height) {
+            height = windowRect.height;
+            top = 0;
+          } else {
+            top = (windowRect.height - flyoutRect.height) / 2;
+          }
         } else {
-          top = Math.max(anchorRect.top + anchorRect.height, this._edgePadding);
+          if (anchorRect.top + anchorRect.height + flyoutRect.height + this._edgePadding > windowRect.height) {
+            // it will render offscreen bellow, move it up a bit
+            top = windowRect.height - flyoutRect.height - this._edgePadding;
+          } else {
+            top = Math.max(anchorRect.top + anchorRect.height, this._edgePadding);
+          }
         }
       }
 
@@ -342,13 +361,19 @@ export class MgtFlyout extends MgtBaseComponent {
         flyout.style.top = `${top + windowRect.top}px`;
       }
 
-      flyout.style.height = height ? `${height}px` : null;
-
       if (width) {
         // if we had to set the width, recalculate since the height could have changed
         flyout.style.width = `${width}px`;
         flyout.style.setProperty('--mgt-flyout-set-width', `${width}px`);
         window.requestAnimationFrame(() => this.updateFlyout());
+      }
+
+      if (height) {
+        flyout.style.maxHeight = `${height}px`;
+        flyout.style.setProperty('--mgt-flyout-set-height', `${height}px`);
+      } else {
+        flyout.style.maxHeight = null;
+        flyout.style.setProperty('--mgt-flyout-set-height', `unset`);
       }
     }
   }
