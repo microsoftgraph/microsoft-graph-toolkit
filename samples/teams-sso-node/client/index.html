@@ -21,7 +21,7 @@ Licensed under the MIT License. -->
 
     <!-- <mgt-teams-provider client-id="{ YOUR CLIENT ID }"
       auth-popup-url="auth.html" 
-      scopes="user.read,people.read,user.readbasic.all,contacts.read,calendars.read,presence.read.all,tasks.readwrite,presence.read,user.read.all,group.read.all,tasks.read"
+      scopes="user.read,people.read,user.readbasic.all,contacts.read,presence.read,presence.read.all,tasks.readwrite"
       sso-url="/api/token">
     </mgt-teams-provider> -->
 
@@ -38,19 +38,14 @@ Licensed under the MIT License. -->
       'people.read',
       'user.readbasic.all',
       'contacts.read',
-      'calendars.read',
-      'presence.read.all',
-      'tasks.readwrite',
       'presence.read',
-      'user.read.all',
-      'group.read.all',
-      'tasks.read'
+      'presence.read.all',
+      'tasks.readwrite'
     ];
     const config = {
       authPopupUrl: 'auth.html',
       ssoUrl: '/api/token',
-      clientId: 'f7d38469-d9d3-4bcd-981b-52eec8432009',
-      // clientId: { YOUR CLIENT ID },
+      clientId: '{ YOUR CLIENT ID }',
       scopes: scopes
     };
     const provider = new mgt.TeamsProvider(config);

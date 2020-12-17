@@ -58,10 +58,16 @@ Leave this running while you're running the application locally, and open anothe
 
 1. Select **Microsoft Graph**, then **Delegated permissions**.
 
-1. Make sure you have the following Graph permissions enabled: `email`, `offline_access`, `openid`, `profile`, and `User.Read`.
+1. Select the following permissions, then select **Add permissions**.
+    - `email`, `offline_access`, `openid`, `profile`, `User.Read`, `People.Read`, `User.ReadBasic.All`, `Contacts.Read`, `Presence.Read`, `Presence.Read.All`, `Tasks.ReadWrite`
+    
+    > **NOTE**
+    > These are the permissions required for the Microsoft Graph Toolkit components used in the client application and for the Singe-Sign-On. If you use different components, you may require additional permissions. See the [documentation](https://docs.microsoft.com/graph/toolkit/overview) for each component for details on required permissions.
 
-1. Select **Expose an API**. Select the **Set** link next to **Application ID URI**. You will be presented with `api://{Your App Id}`. Change this by adding the URI you created in Ngrok. 
-    - Ex: `api://mgtsso.ngrok.io/{Your App Id}`
+1. Select **Grant admin consent**, then select **Yes**
+
+    > **NOTE**
+    > Right now you need to pre-consent the scopes
 
 1. In the **Scopes defined by this API** section, select **Add a scope**. Fill in the fields as follows and select **Add scope**.
 
@@ -82,16 +88,67 @@ Leave this running while you're running the application locally, and open anothe
 
     
 ## Create Teams App
-1. Now you can use [App Studio](https://docs.microsoft.com/en-us/microsoftteams/platform/get-started/get-started-app-studio) to quickly develop your app manifest for Microsoft Teams and test the app
 
-* You could look at the `example.manifest.json` as inspiration. You would have to change the following in this manifest file:
-    * Generate a new unique ID for the application and replace the id field with this GUID. On Windows, you can generate a new GUID in PowerShell with this command:
-    ~~~ powershell
+### App Studio
+Now you can use the [App Studio](https://docs.microsoft.com/en-us/microsoftteams/platform/get-started/get-started-app-studio) app from within the Microsoft Teams client to help create your app manifest. If you do not have App studio installed in Teams, select Apps Store App at the bottom-left corner of the Teams app, and search for App Studio. Once you find the tile, select it and choose install in the pop-up window dialog box.
+
+If you open the Microsoft Teams client—using the web-based version will enable you to inspect your front-end code using your browser's developer tools.
+
+1. Open App Studio and select the **Manifest editor** tab.
+
+1. Choose the **Create a new app** tile. This will bring you into the **App Details** section.
+
+1. Under **App names** fill in 
+    - **Short name:** `MGT SSO Tab Sample`
+    - **Full name** `Microsoft Graph Toolkit SSO Auth sample app for Microsoft Teams`
+
+1. Under **Identification** press **Generate** to generate an App Id (this is only for the Teams App). Then fill in
+    - **Package name:** `com.mgt.teamsSsoSample`
+    - **Version:** `1.0.0`
+
+1. Under **Descriptions** fill in
+    - **Short description:** `MGT SSO sample for Microsoft Teams`
+    - **Full description:** `This sample app provides a very simple app for Microsoft Teams which illustrates how single sign-on (SSO) with Microsoft Graph Toolkit should work for tabs.`
+
+1. Under **Developer information** section fill out your details
+
+1. Under **App URLs** provide links, ex:
+    - **Privacy statement** `https://www.microsoft.com/privacy`
+    - **Terms of use** `https://www.microsoft.com/termsofuse`
+
+1. In the left navigation, in the **Capabilities** section, select **Tabs**
+
+1. Select **Add** to create a **Personal tab**
+
+1. In the popup you can enter your details and then press **Save**. ex:
+    - **Name** `MGT SSO Tab`
+    - **Entity ID** `com.mgt.mgtSsoSample.static`
+    - **Content URL** `https://{Your Ngrok subdomain}.ngrok.io`
+
+1. In the left navigation, in the **Finish** section, select **Domains and permissions**
+
+1. Under **AAD App ID** enter the client id from your AAD App registration
+
+1. Under **Single-Sign-On** enter the API URL we set during the AAD App registration process.
+    -  Ex: `api://mgtsso.ngrok.io/{Your App Id}`
+
+1. From the left nav **Finish** section, select **Test and distribute**. There you can download your app package, Install the package into a team, or Submit to the Teams app store for approval.
+
+1. You could now select **Apps** in the Teams Client, scroll down, and select **Upload a custom app**
+
+1. Select the .zip file that you downloaded and then **Add**
+
+### Create Manifest manually
+If you want to create the manifest manually you could visit this link: [Create your app package manually](https://docs.microsoft.com/en-us/microsoftteams/platform/tabs/how-to/add-tab#create-your-app-package-manually)
+
+You could look at the `example.manifest.json` as inspiration. You would have to change the following in this manifest file:
+- Generate a new unique ID for the application and replace the id field with this GUID. On Windows, you can generate a new GUID in PowerShell with this command:
+    ``` powershell
      [guid]::NewGuid()
-    ~~~
-    * Ensure the package name is unique within the tenant where you will run the app
-    * Replace `{ngrokSubdomain}` with the subdomain you've assigned to your Ngrok account in step #1 above.
-    * Update your `webApplicationInfo` section with your Azure AD application ID that you were assigned in step #2 above.
+    ```
+- Ensure the package name is unique within the tenant where you will run the app
+- Replace `{ngrokSubdomain}` with the subdomain you've assigned to your Ngrok account in step #1 above.
+- Update your `webApplicationInfo` section with your Azure AD application ID that you were assigned in step #2 above.
 
 ## Configuring the sample
 
@@ -131,5 +188,4 @@ The `index.html` page displays two ways of using the provider:
 
 ### How do I know it worked?
 
-If everything worked correctly, the components should load data just as they would normally after a login.
-If you haven't consented the scopes, you might be presented with a consent popup where you need to enter your password and then consent. After you have consented, the components should be filled with content.
+If everything worked correctly, the components should load data just as they would normally after login.
