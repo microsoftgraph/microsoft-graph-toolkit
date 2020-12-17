@@ -451,6 +451,6 @@ export class TeamsProvider extends MsalProvider {
   }
 
   private unhandledFetchError(err: any) {
-    console.error(`Unhandled fetch error: ${err}`);
+    console.error(`There was an error during the server side token exchange: ${err}`);
   }
 }

@@ -1,8 +1,8 @@
 # Node.js Teams Single Sign On (SSO) Sample
-This sample is using the Microsoft Graph Toolkit's [Teams SSO Provider](https://docs.microsoft.com/graph/toolkit/providers/teamssso) and it will:
+This sample is using the Microsoft Graph Toolkit's [Teams Provider](https://docs.microsoft.com/graph/toolkit/providers/teams) and it will:
 1. Get an access token for the logged-in user via the Microsoft Teams SSO experience, with the help of the Teams SDK.
 2. Call the Node.js backend to exchange the current token for one with the requested scopes - using `on-behalf-of flow`
-3. Pass the access token to the MGT components in order to make Microsoft Graph API calls. 
+3. Pass the access token to the MGT components to make Microsoft Graph API calls. 
 
 ## On-behalf-of
 
@@ -31,28 +31,56 @@ Your tab needs to run as a registered Azure AD application to obtain an access t
 
 Leave this running while you're running the application locally, and open another command prompt for the steps which follow.
 
-1. Create an [AAD application](https://docs.microsoft.com/en-us/microsoftteams/platform/tabs/how-to/authentication/auth-aad-sso#1-create-your-aad-application-in-azure) in Azure. You can do this by visiting the "Azure AD app registration" portal in Azure. Make sure to copy the `Application Id` and the `Tenant Id`, you will use them later.
+1. Open a browser and navigate to the [Azure Active Directory admin center](https://aad.portal.azure.com). Login using a **personal account** (aka: Microsoft Account) or **Work or School Account**.
 
-    * Set your application URI to the same URI you've created in Ngrok. 
-        * Ex: `api://mgtsso.ngrok.io/{appId}`
-        using the application ID that was assigned to your app
-    * Setup your redirect URIs. This will allow Azure AD to return authentication results to the correct URI. This is required for consent to work.
-        * Visit `Manage > Authentication`. 
-        * Create a redirect URI in the format of: `https://mgtsso.ngrok.io`.
-        * Enable Implicit Grant by selecting `Access Tokens` and `ID Tokens`.
-    * Setup a client secret. You will need this when you exchange the token for more API permissions from your backend.
-        * Visit `Manage > Certificates & secrets`
-        * Create a new client secret.
-    * Setup your API permissions. This is what your application is allowed to request permission to access.
-        * Visit `Manage > API Permissions`
-        * Make sure you have the following Graph permissions enabled: `email`, `offline_access`, `openid`, `profile`, and `User.Read`.
-    * Expose an API that will give the Teams desktop, web and mobile clients access to the permissions above
-        * Visit `Manage > Expose an API`
-        * Add a scope and give it a scope name of `access_as_user`. Your API url should look like this: `api://mgtsso.ngrok.io/{appID}/access_as_user`. In the "who can consent" step, enable it for "Admins and users". Make sure the state is set to "enabled".
-        * Next, add two client applications. This is for the Teams desktop/mobile clients and the web client.
-            * 5e3ce6c0-2b1f-4285-8d4b-75ee78787346
-            * 1fec8e78-bce4-4aaf-ab1b-5451cc387264
+1. Select **Azure Active Directory** in the left-hand navigation, then select **App registrations** under **Manage**.
 
+1. Select **New registration**. On the **Register an application** page, set the values as follows.
+
+    - Set **Name** to `Node.js Teams SSO`.
+    - Set **Supported account types** to **Accounts in any organizational directory and personal Microsoft accounts**.
+    - Under **Redirect URI**, set the first drop-down to `Web` and set the value to your domain. ex `https://mgtsso.ngrok.io`.
+        - Enable Implicit Grant by selecting `Access Tokens` and `ID Tokens`
+
+    > **IMPORTANT** 
+    Setting up the redirect URI will allow Azure AD to return authentication results to the correct URI. This is required for consent to work.
+
+1. Select **Register**. On the **Node.js Teams SSO** page, copy the value of the **Application (client) ID** and **Directory (tenant) ID**. Save them, you will need them in the next step.
+
+1. Select **Certificates & secrets** under **Manage**. Select the **New client secret** button. Enter a value in **Description** and select one of the options for **Expires** and select **Add**.
+
+1. Copy the client secret value before you leave this page. You will need it in the next step.
+
+    > **IMPORTANT**
+    > This client secret is never shown again, so make sure you copy it now.
+
+1. Select **API permissions** under **Manage**, then select **Add a permission**.
+
+1. Select **Microsoft Graph**, then **Delegated permissions**.
+
+1. Make sure you have the following Graph permissions enabled: `email`, `offline_access`, `openid`, `profile`, and `User.Read`.
+
+1. Select **Expose an API**. Select the **Set** link next to **Application ID URI**. You will be presented with `api://{Your App Id}`. Change this by adding the URI you created in Ngrok. 
+    - Ex: `api://mgtsso.ngrok.io/{Your App Id}`
+
+1. In the **Scopes defined by this API** section, select **Add a scope**. Fill in the fields as follows and select **Add scope**.
+
+    - **Scope name:** `access_as_user`
+    - **Who can consent?: Admins and users**
+    - **Admin consent display name:** `Teams can access the user’s profile`
+    - **Admin consent description:** `Allows Teams to call the app’s web APIs as the current user`
+    - **User consent display name:** `Teams can access the user profile and make requests on the user's behalf`
+    - **User consent description:** `Enable Teams to call this app’s APIs with the same rights as the user.`
+    - **State: Enabled**
+    
+    Your API URL should look like this: `api://mgtsso.ngrok.io/{appID}/access_as_user`. 
+
+1. Next, add two client applications. This is for the Teams desktop/mobile clients and the web client. In the **Authorized client applications** section, select **Add a client application**. Fill in the Client ID and select the scope we created. Then select **Add application**. Do this for the followings Ids
+    
+    - 5e3ce6c0-2b1f-4285-8d4b-75ee78787346
+    - 1fec8e78-bce4-4aaf-ab1b-5451cc387264
+
+    
 ## Create Teams App
 1. Now you can use [App Studio](https://docs.microsoft.com/en-us/microsoftteams/platform/get-started/get-started-app-studio) to quickly develop your app manifest for Microsoft Teams and test the app
 
@@ -76,7 +104,7 @@ Leave this running while you're running the application locally, and open anothe
     | APP_SECRET | The client secret from your app registration |
 
 ## Run the sample
-The `Teams SSO Provider` needs the `client id` of your app registration, the `scopes` your app will use, and a relative or absolute `sso url`.
+The `Teams Provider` needs the `client id` of your app registration, the `scopes` your app will use, and a relative or absolute `sso url`.
 The `index.html` page displays two ways of using the provider:
 - Commented away, is the way to use the component provider.
 - Inside of the script tag is the way to do this in code.

@@ -81,7 +81,7 @@ export async function getAccessTokenOnBehalfOf(req: Request, res: Response): Pro
       scopes: graphScopes,
       skipCache: true
     });
-    res.json({ access_token: result.accessToken });
+    res.json({ access_token: result?.accessToken });
   } catch (error) {
     if (error.errorCode === 'invalid_grant' || error.errorCode === 'interaction_required') {
       // This is expected if it's the user's first time running the app ( user must consent ) or the admin requires MFA

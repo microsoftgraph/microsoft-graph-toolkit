@@ -17,10 +17,14 @@ Licensed under the MIT License. -->
 
 <body>
   <main id="main-container" role="main" class="container">
-    <!-- <mgt-teams-sso-provider client-id="{ YOUR CLIENT ID }"
+    <!-- One way of using the TeamsProvider with SSO is to use the component provider as below  -->
+
+    <!-- <mgt-teams-provider client-id="{ YOUR CLIENT ID }"
+      auth-popup-url="auth.html" 
       scopes="user.read,people.read,user.readbasic.all,contacts.read,calendars.read,presence.read.all,tasks.readwrite,presence.read,user.read.all,group.read.all,tasks.read"
       sso-url="/api/token">
-    </mgt-teams-sso-provider> -->
+    </mgt-teams-provider> -->
+
     <h2>Person component</h2>
     <mgt-person person-query="me" view="twoLines" person-card="hover" show-presence></mgt-person>
     <h2>Todo component</h2>
@@ -28,6 +32,7 @@ Licensed under the MIT License. -->
   </main>
 
   <script>
+    // This is the way to use the TeamsProvider with SSO in code
     const scopes = [
       'user.read',
       'people.read',
@@ -45,6 +50,7 @@ Licensed under the MIT License. -->
       authPopupUrl: 'auth.html',
       ssoUrl: '/api/token',
       clientId: 'f7d38469-d9d3-4bcd-981b-52eec8432009',
+      // clientId: { YOUR CLIENT ID },
       scopes: scopes
     };
     const provider = new mgt.TeamsProvider(config);
