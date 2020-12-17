@@ -52,9 +52,7 @@ export class ElectronAuthenticator {
       },
       system: {
         loggerOptions: {
-          loggerCallback(loglevel, message, containsPii) {
-            console.log(message);
-          },
+          loggerCallback(loglevel, message, containsPii) {},
           piiLoggingEnabled: false,
           logLevel: LogLevel.Warning
         }
@@ -123,7 +121,7 @@ export class ElectronAuthenticator {
   async getAccessToken(options?: AuthenticationProviderOptions): Promise<string> {
     let authResponse;
     const account = this.account || (await this.getAccount());
-    if (this.authWindow.isDestroyed()) {
+    if (!this.authWindow || this.authWindow.isDestroyed()) {
       this.setAuthWindow(false);
     }
     if (account) {
@@ -197,11 +195,9 @@ export class ElectronAuthenticator {
   //Listen for the auth code in API response
   private async listenForAuthCode(navigateUrl: string): Promise<string> {
     this.authWindow.loadURL(navigateUrl);
-    console.log('URL', navigateUrl);
     return new Promise((resolve, reject) => {
       this.authWindow.webContents.on('will-redirect', (event, responseUrl) => {
         try {
-          console.log('Response URL', responseUrl);
           const parsedUrl = new URL(responseUrl);
           const authCode = parsedUrl.searchParams.get('code');
           resolve(authCode);

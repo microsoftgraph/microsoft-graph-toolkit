@@ -17,11 +17,8 @@ export class ElectronProvider extends IProvider {
       }
     });
   }
-  async getAccessToken(
-    options?: AuthenticationProviderOptions
-  ): Promise<string> {
+  async getAccessToken(options?: AuthenticationProviderOptions): Promise<string> {
     const token = await ipcRenderer.invoke('token');
-    console.log('Token is ', token);
     ipcRenderer.send('tokenreceived');
     return token;
   }
