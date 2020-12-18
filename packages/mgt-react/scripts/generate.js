@@ -41,7 +41,8 @@ for (const tag of wc.tags) {
   });
 
   const props = {
-    className: 'string'
+    className: 'string',
+    id: 'string'
   };
 
   for (const prop of tag.properties) {
