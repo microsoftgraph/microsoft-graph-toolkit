@@ -28,23 +28,53 @@ Before deploying your SharePoint Framework package to your tenant, you will need
 
 ## Usage
 
-When building SharePoint Framework web parts and extensions, reference the Microsoft Graph Toolkit `Provider` and `SharePointProvider` from the `@microsoft/mgt-spfx` package. This will ensure, that your solution will use MGT components that are already registered on the page, rather than instantiating its own:
+When building SharePoint Framework web parts and extensions, reference the Microsoft Graph Toolkit `Provider` and `SharePointProvider` from the `@microsoft/mgt-spfx` package. This will ensure, that your solution will use MGT components that are already registered on the page, rather than instantiating its own. The instantiation process is the same for all web parts no matter which JavaScript framework they use:
 
 ```ts
 import { Providers, SharePointProvider } from '@microsoft/mgt-spfx';
 
 // [...] trimmed for brevity
 
-export default class MgtReactWebPart extends BaseClientSideWebPart<IMgtReactWebPartProps> {
+export default class MgtWebPart extends BaseClientSideWebPart<IMgtWebPartProps> {
   protected async onInit() {
-    Providers.globalProvider = new SharePointProvider(this.context);
+    if (!Providers.globalProvider) {
+      Providers.globalProvider = new SharePointProvider(this.context);
+    }
   }
 
   // [...] trimmed for brevity
 }
 ```
 
-When referencing the actual components, you can load them directly from the `@microsoft/mgt`, or the `@microsoft/mgt-react` package if you use React.
+When building web parts using framework other than React, you can load components directly in your web part:
+
+```ts
+export default class MgtNoFrameworkWebPart extends BaseClientSideWebPart<IMgtNoFrameworkWebPartProps> {
+  protected async onInit() {
+    if (!Providers.globalProvider) {
+      Providers.globalProvider = new SharePointProvider(this.context);
+    }
+  }
+
+  public render(): void {
+    this.domElement.innerHTML = `
+      <div class="${styles.mgtNoFramework}">
+        <div class="${styles.container}">
+          <div class="${styles.row}">
+            <div class="${styles.column}">
+              <span class="${styles.title}">No framework webpart</span>
+              <mgt-person person-query="me" show-name show-email></mgt-person>
+            </div>
+          </div>
+        </div>
+      </div>`;
+  }
+
+  // [...] trimmed for brevity
+}
+```
+
+If you build web part using React, load components from the `@microsoft/mgt-react` package:
 
 ```tsx
 import { Person } from '@microsoft/mgt-react';
