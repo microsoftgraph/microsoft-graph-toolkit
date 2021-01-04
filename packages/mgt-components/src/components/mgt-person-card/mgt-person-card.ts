@@ -14,7 +14,7 @@ import { MgtTemplatedComponent, Providers, ProviderState, TeamsHelper } from '@m
 import { findPeople, getEmailFromGraphEntity } from '../../graph/graph.people';
 import { IDynamicPerson } from '../../graph/types';
 import { getPersonImage } from '../../graph/graph.photos';
-import { getUserWithPhoto } from '../../graph/graph.user';
+import { getUserWithPhoto } from '../../graph/graph.userWithPhoto';
 import { getSvg, SvgIcon } from '../../utils/SvgHelper';
 import { getUserPresence } from '../../graph/graph.presence';
 import { getPersonCardGraphData } from './mgt-person-card.graph';
