@@ -232,24 +232,9 @@ export interface CacheSchema {
    * @type {{ [name: string]: CacheSchemaStore }}
    * @memberof CacheSchema
    */
-  stores: { [name: string]: CacheSchemaStore };
+  stores: { [name: string]: string };
 }
 
-/**
- * Represents an individual store within each cache
- *
- * @export
- * @interface CacheSchemaStore
- */
-export interface CacheSchemaStore {
-  /**
-   * key used to access values in the cache
-   *
-   * @type {string}
-   * @memberof CacheSchemaStore
-   */
-  key?: string;
-}
 /**
  * item that is stored in cache
  *
