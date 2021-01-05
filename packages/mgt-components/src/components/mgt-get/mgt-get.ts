@@ -6,11 +6,8 @@
  */
 
 import { customElement, html, property } from 'lit-element';
-import { getPhotoForResource } from '../../graph/graph.photos';
-
 import {
   CacheItem,
-  CacheSchema,
   CacheService,
   CacheStore,
   equals,
@@ -19,6 +16,9 @@ import {
   Providers,
   ProviderState
 } from '@microsoft/mgt-element';
+
+import { getPhotoForResource } from '../../graph/graph.photos';
+import { schemas } from '../../graph/cacheStores';
 
 /**
  * Enumeration to define what types of query are available
@@ -39,22 +39,11 @@ export enum ResponseType {
 }
 
 /**
- * Definition of cache structure
- */
-const cacheSchema: CacheSchema = {
-  name: 'responses',
-  stores: {
-    responses: {}
-  },
-  version: 1
-};
-
-/**
  * Object to be stored in cache representing a generic query
  */
 interface CacheResponse extends CacheItem {
   /**
-   * json representing a resonse as string
+   * json representing a response as string
    */
   response?: string;
 }
@@ -70,12 +59,8 @@ const getResponseInvalidationTime = (currentInvalidationPeriod: number): number 
 /**
  * Whether the response store is enabled
  */
-const responseCacheEnabled = (): boolean => CacheService.config.response.isEnabled && CacheService.config.isEnabled;
-
-/**
- * Name of the response store name
- */
-const responsesStore: string = 'responses';
+const getIsResponseCacheEnabled = (): boolean =>
+  CacheService.config.response.isEnabled && CacheService.config.isEnabled;
 
 /**
  * Custom element for making Microsoft Graph get queries
@@ -319,8 +304,8 @@ export class MgtGet extends MgtTemplatedComponent {
         let response = null;
 
         if (this.shouldRetrieveCache()) {
-          cache = CacheService.getCache<CacheResponse>(cacheSchema, responsesStore);
-          const result: CacheResponse = responseCacheEnabled() ? await cache.getValue(key) : null;
+          cache = CacheService.getCache<CacheResponse>(schemas.get, schemas.get.stores.responses);
+          const result: CacheResponse = getIsResponseCacheEnabled() ? await cache.getValue(key) : null;
           if (result && getResponseInvalidationTime(this.cacheInvalidationPeriod) > Date.now() - result.timeCached) {
             response = JSON.parse(result.response);
           }
@@ -398,7 +383,7 @@ export class MgtGet extends MgtTemplatedComponent {
           }
 
           if (this.shouldUpdateCache() && response) {
-            cache = CacheService.getCache<CacheResponse>(cacheSchema, responsesStore);
+            cache = CacheService.getCache<CacheResponse>(schemas.get, schemas.get.stores.responses);
             cache.putValue(key, { response: JSON.stringify(response) });
           }
         }
@@ -429,10 +414,10 @@ export class MgtGet extends MgtTemplatedComponent {
   }
 
   private shouldRetrieveCache(): boolean {
-    return responseCacheEnabled() && this.cacheEnabled && !(this.isRefreshing || this.isPolling);
+    return getIsResponseCacheEnabled() && this.cacheEnabled && !(this.isRefreshing || this.isPolling);
   }
 
   private shouldUpdateCache(): boolean {
-    return responseCacheEnabled() && this.cacheEnabled;
+    return getIsResponseCacheEnabled() && this.cacheEnabled;
   }
 }

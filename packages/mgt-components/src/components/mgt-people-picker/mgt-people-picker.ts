@@ -485,7 +485,7 @@ export class MgtPeoplePicker extends MgtTemplatedComponent {
     return html`
       <mgt-flyout light-dismiss class="flyout">
         ${anchor}
-        <div slot="flyout" class="flyout-root">
+        <div slot="flyout" class="flyout-root" @wheel=${(e: WheelEvent) => this.handleSectionScroll(e)}>
           ${this.renderFlyoutContent()}
         </div>
       </mgt-flyout>
@@ -980,38 +980,31 @@ export class MgtPeoplePicker extends MgtTemplatedComponent {
    * @param event - tracks user key selection
    */
   private handleArrowSelection(event: KeyboardEvent): void {
-    if (this._foundPeople.length) {
+    const peopleList = this.renderRoot.querySelector('.people-list');
+    if (peopleList && peopleList.children.length) {
       // update arrow count
       if (event.keyCode === 38) {
         // up arrow
-        if (this._arrowSelectionCount > 0) {
-          this._arrowSelectionCount--;
-        } else {
-          this._arrowSelectionCount = 0;
-        }
+        this._arrowSelectionCount =
+          (this._arrowSelectionCount - 1 + peopleList.children.length) % peopleList.children.length;
       }
       if (event.keyCode === 40) {
         // down arrow
-        if (
-          this._arrowSelectionCount + 1 !== this._foundPeople.length &&
-          this._arrowSelectionCount + 1 < this.showMax
-        ) {
-          this._arrowSelectionCount++;
-        } else {
-          this._arrowSelectionCount = 0;
-        }
+        this._arrowSelectionCount = (this._arrowSelectionCount + 1) % peopleList.children.length;
       }
 
-      const peopleList = this.renderRoot.querySelector('.people-list');
       // reset background color
-      if (peopleList) {
-        // tslint:disable-next-line: prefer-for-of
-        for (let i = 0; i < peopleList.children.length; i++) {
-          peopleList.children[i].classList.remove('focused');
-        }
+      // tslint:disable-next-line: prefer-for-of
+      for (let i = 0; i < peopleList.children.length; i++) {
+        peopleList.children[i].classList.remove('focused');
       }
+
       // set selected background
-      peopleList.children[this._arrowSelectionCount].classList.add('focused');
+      const focusedItem = peopleList.children[this._arrowSelectionCount];
+      if (focusedItem) {
+        focusedItem.classList.add('focused');
+        focusedItem.scrollIntoView({ behavior: 'smooth', block: 'nearest', inline: 'start' });
+      }
     }
   }
 
@@ -1038,6 +1031,19 @@ export class MgtPeoplePicker extends MgtTemplatedComponent {
       });
 
       return filtered;
+    }
+  }
+
+  // stop propagating wheel event to flyout so mouse scrolling works
+  private handleSectionScroll(e: WheelEvent) {
+    const target = this.renderRoot.querySelector('.flyout-root') as HTMLElement;
+    if (target) {
+      if (
+        !(e.deltaY < 0 && target.scrollTop === 0) &&
+        !(e.deltaY > 0 && target.clientHeight + target.scrollTop >= target.scrollHeight - 1)
+      ) {
+        e.stopPropagation();
+      }
     }
   }
 }

@@ -7,15 +7,18 @@
 
 import { customElement, html, property } from 'lit-element';
 import { classMap } from 'lit-html/directives/class-map';
-import { IDynamicPerson } from '../../graph/types';
 import { Providers, ProviderState, MgtTemplatedComponent } from '@microsoft/mgt-element';
+
+import { IDynamicPerson } from '../../graph/types';
 import { MgtFlyout } from '../sub-components/mgt-flyout/mgt-flyout';
+import { getUserWithPhoto } from '../../graph/graph.userWithPhoto';
+import { PersonViewType } from '../mgt-person/mgt-person';
+
 import { styles } from './mgt-login-css';
-import { getUserWithPhoto } from '../../graph/graph.user';
+import { strings } from './strings';
+
 import '../../styles/style-helper';
 import '../mgt-person/mgt-person';
-import { PersonViewType } from '../mgt-person/mgt-person';
-import { strings } from './strings';
 
 /**
  * Web component button and flyout control to facilitate Microsoft identity platform authentication
