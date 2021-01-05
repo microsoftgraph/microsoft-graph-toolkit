@@ -12,6 +12,7 @@ import { findPeople, getEmailFromGraphEntity } from '../../graph/graph.people';
 import { getPersonImage } from '../../graph/graph.photos';
 import { getUserPresence } from '../../graph/graph.presence';
 import { getUserWithPhoto } from '../../graph/graph.userWithPhoto';
+import { findUsers } from '../../graph/graph.user';
 import { AvatarSize, IDynamicPerson } from '../../graph/types';
 import { Providers, ProviderState, MgtTemplatedComponent } from '@microsoft/mgt-element';
 import '../../styles/style-helper';
@@ -785,7 +786,11 @@ export class MgtPerson extends MgtTemplatedComponent {
       this._fetchedImage = this.getImage();
     } else if (this.personQuery) {
       // Use the personQuery to find our person.
-      const people = await findPeople(graph, this.personQuery, 1);
+      let people = await findPeople(graph, this.personQuery, 1);
+
+      if (!people || people.length === 0) {
+        people = (await findUsers(graph, this.personQuery, 1)) || [];
+      }
 
       if (people && people.length) {
         this.personDetails = people[0];
