@@ -58,14 +58,26 @@
       .selected-team-name {
         font-weight: bold;
       }
+      .search-wrapper {
+        margin-left: 12px;
+        height: 16px;
+        display: flex;
+        flex-wrap: nowrap;
+        align-items: center;
+        margin-right: 30px;
+      }
     }
 
     .search-wrapper {
-      height: 14px;
+      overflow: hidden;
+      height: 16px;
       display: flex;
       flex-wrap: nowrap;
       align-items: center;
       margin-right: 30px;
+    }
+    .hide-icon {
+      display: none;
     }
 
     .team-chosen-input {
@@ -91,6 +103,7 @@
     }
 
     .search-icon {
+      margin-top: 1px;
       align-self: flex-start;
       font-family: 'FabricMDL2Icons';
       color: var(--accent-color, $commblue_primary);
