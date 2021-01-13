@@ -577,7 +577,7 @@ export class MgtPersonCard extends MgtTemplatedComponent {
       <div class="section-nav">
         ${sectionNavTemplate}
       </div>
-      <div class="section-host" @wheel=${(e: WheelEvent) => this.handleSectionScroll(e)}>
+      <div tabindex="0" class="section-host" @wheel=${(e: WheelEvent) => this.handleSectionScroll(e)}>
         ${currentSectionTemplate}
       </div>
     `;
@@ -603,7 +603,9 @@ export class MgtPersonCard extends MgtTemplatedComponent {
         'section-nav__icon': true
       });
       return html`
-        <button class=${classes} @click=${() => this.updateCurrentSection(section)}>${section.renderIcon()}</button>
+        <button aria-label="${section.displayName}" class=${classes} @click=${() => this.updateCurrentSection(section)}>
+          ${section.renderIcon()}
+        </button>
       `;
     });
 
@@ -612,7 +614,7 @@ export class MgtPersonCard extends MgtTemplatedComponent {
       'section-nav__icon': true
     });
     return html`
-      <button class=${overviewClasses} @click=${() => this.updateCurrentSection(null)}>
+      <button aria-label="Overview" class=${overviewClasses} @click=${() => this.updateCurrentSection(null)}>
         ${getSvg(SvgIcon.Overview)}
       </button>
       ${navIcons}
