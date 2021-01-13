@@ -60,7 +60,7 @@
       }
       .search-wrapper {
         margin-left: 12px;
-        height: 16px;
+        height: 18px;
         display: flex;
         flex-wrap: nowrap;
         align-items: center;
@@ -70,7 +70,7 @@
 
     .search-wrapper {
       overflow: hidden;
-      height: 16px;
+      height: 18px;
       display: flex;
       flex-wrap: nowrap;
       align-items: center;
@@ -115,6 +115,7 @@
     }
 
     .input-search-start {
+      white-space: nowrap;
       line-height: normal;
       margin-inline-start: 0px;
       margin-inline-end: 0px;
