@@ -1,6 +1,6 @@
 import { app, BrowserWindow } from 'electron';
 import * as path from 'path';
-import { ElectronAuthenticator } from '@microsoft/mgt-electron-provider/dist/es6/ElectronAuthenticator';
+import { ElectronAuthenticator } from '@microsoft/mgt-electron-provider/dist/Authenticator/ElectronAuthenticator';
 
 export default class Main {
   static application: Electron.App;

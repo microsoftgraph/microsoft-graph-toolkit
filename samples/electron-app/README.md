@@ -5,12 +5,13 @@
 ## To Use
 
 # Navigate to this project folder
-cd  <insert_path>
+cd /samples/src/electron-app
 
 # Install dependencies
-npm install
+yarn
 # Run the app
-npm start
+yarn build
+yarn start
 ```
 
 

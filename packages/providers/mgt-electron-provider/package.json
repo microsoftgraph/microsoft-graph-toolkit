@@ -33,13 +33,14 @@
     "build:compile": "npm run compile",
     "build:watch": "npm run compile:watch",
     "clean": "shx rm -rf ./dist && shx rm -rf ./tsconfig.tsbuildinfo",
-    "compile": "tsc -b",
-    "compile:watch": "tsc -w",
+    "compile": "tsc -p ./tsconfig.provider.json && tsc -p ./tsconfig.authenticator.json",
+    "compile:watch": "tsc -w -p ./tsconfig.provider.json && tsc -w -p ./tsconfig.authenticator.json",
     "lint": "tslint -c ../../../tslint.json 'src/**/*.ts'",
     "setLicense": "gulp setLicense --cwd .",
     "postpack": "cpx *.tgz ../../../artifacts"
   },
   "dependencies": {
+    "@azure/msal-node-extensions": "^1.0.0-alpha.4",
     "@azure/msal-node": "^1.0.0-beta.1",
     "@microsoft/mgt-element": "*",
     "@microsoft/microsoft-graph-client": "^2.2.1",

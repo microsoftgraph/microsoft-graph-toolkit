@@ -1,12 +1,11 @@
 {
   "extends": "../../../tsconfig.base.json",
   "compilerOptions": {
-    "outDir": "dist/es6",
+    "outDir": "dist",
     "sourceRoot": "src",
-    "rootDir": "src",
-    "composite": true
+    "composite": true,
+    "rootDir": "src"
   },
   "references": [{ "path": "../../mgt-element" }],
-  "include": ["src"],
-  "exclude": ["src/bundle"]
+  "include": ["src/Provider"]
 }

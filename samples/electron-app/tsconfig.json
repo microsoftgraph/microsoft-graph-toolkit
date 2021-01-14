@@ -9,5 +9,5 @@
     "outDir": "dist",
     "noImplicitReturns": true
   },
-  "include": ["src/**/*"]
+  "include": ["src/main/*"]
 }

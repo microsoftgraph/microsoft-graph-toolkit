@@ -7,7 +7,8 @@
     "packages/providers/*",
     "samples/react-app",
     "samples/angular-app",
-    "samples/vue-app"
+    "samples/vue-app",
+    "samples/electron-app"
   ],
   "scripts": {
     "build": "npm run prettier:check && npm run clean && lerna run build --scope @microsoft/*",
