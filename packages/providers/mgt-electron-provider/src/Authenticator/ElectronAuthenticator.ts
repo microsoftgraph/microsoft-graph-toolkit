@@ -17,7 +17,6 @@ import {
 } from '@azure/msal-node-extensions';
 import { AuthenticationProviderOptions } from '@microsoft/microsoft-graph-client/lib/es/IAuthenticationProviderOptions';
 import { BrowserWindow, ipcMain } from 'electron';
-import { cachePlugin } from './CachePlugin';
 import { CustomFileProtocolListener } from './CustomFileProtocol';
 import { CACHE_LOCATION, REDIRECT_URI } from './Constants';
 
