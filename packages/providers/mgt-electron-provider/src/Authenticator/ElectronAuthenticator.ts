@@ -199,7 +199,6 @@ export class ElectronAuthenticator {
 
     ipcMain.handle('login', async () => {
       const account = await this.login();
-      console.log('account?', account ? 'true' : 'false');
       if (account) {
         this.mainWindow.webContents.send('isloggedin', true);
       } else {
@@ -358,7 +357,6 @@ export class ElectronAuthenticator {
   protected areScopesDenied(scopes: string[]) {
     if (scopes) {
       if (this.deniedScopes && this.deniedScopes.filter(s => -1 !== scopes.indexOf(s)).length > 0) {
-        console.log('Scopes are already denied');
         return true;
       }
     }
@@ -408,7 +406,6 @@ export class ElectronAuthenticator {
           const authCode = parsedUrl.searchParams.get('code');
           resolve(authCode);
         } catch (err) {
-          console.log('Inside error', err);
           this.authWindow.destroy();
           reject(err);
         }
@@ -426,7 +423,6 @@ export class ElectronAuthenticator {
     this.account = this.account || (await this.getAccount());
     if (this.account) {
       const token = await this.getAccessToken();
-      console.log('Account detected');
       if (token) {
         this.mainWindow.webContents.send('isloggedin', true);
       } else {
