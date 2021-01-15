@@ -431,7 +431,7 @@ export class MgtPersonCard extends MgtTemplatedComponent {
     const expandedDetailsTemplate = this.isExpanded ? this.renderExpandedDetails() : this.renderExpandedDetailsButton();
 
     return html`
-      <div class="root" dir=${this.direction}>
+      <div class="root" dir=${this.direction} tabindex="-1">
         ${navigationTemplate}
         <div class="person-details-container">${personDetailsTemplate}</div>
         <div class="expanded-details-container">${expandedDetailsTemplate}</div>
@@ -511,7 +511,7 @@ export class MgtPersonCard extends MgtTemplatedComponent {
     let email: TemplateResult;
     if (getEmailFromGraphEntity(person)) {
       email = html`
-        <div class="icon" @click=${() => this.emailUser()}>
+        <div class="icon" tabindex="0" @click=${() => this.emailUser()}>
           ${getSvg(SvgIcon.SmallEmail)}
           <span>${this.strings.sendEmailLinkSubtitle}</span>
         </div>
@@ -522,7 +522,7 @@ export class MgtPersonCard extends MgtTemplatedComponent {
     let chat: TemplateResult;
     if (userPerson.userPrincipalName) {
       chat = html`
-        <div class="icon" @click=${() => this.chatUser()}>
+        <div class="icon" tabindex="0" @click=${() => this.chatUser()}>
           ${getSvg(SvgIcon.SmallChat)}
           <span>${this.strings.startChatLinkSubtitle}</span>
         </div>
@@ -545,7 +545,7 @@ export class MgtPersonCard extends MgtTemplatedComponent {
    */
   protected renderExpandedDetailsButton(): TemplateResult {
     return html`
-      <div class="expanded-details-button" @click=${() => this.showExpandedDetails()}>
+      <button class="expanded-details-button" tabindex="0" @click=${() => this.showExpandedDetails()}>
         ${getSvg(SvgIcon.ExpandDown)}
       </div>
     `;
@@ -603,7 +603,12 @@ export class MgtPersonCard extends MgtTemplatedComponent {
         'section-nav__icon': true
       });
       return html`
-        <button aria-label="${section.displayName}" class=${classes} @click=${() => this.updateCurrentSection(section)}>
+        <button
+          aria-label="${section.displayName}"
+          tabindex="${i + 2}"
+          class=${classes}
+          @click=${() => this.updateCurrentSection(section)}
+        >
           ${section.renderIcon()}
         </button>
       `;
@@ -611,10 +616,16 @@ export class MgtPersonCard extends MgtTemplatedComponent {
 
     const overviewClasses = classMap({
       active: currentSectionIndex === -1,
-      'section-nav__icon': true
+      'section-nav__icon': true,
+      'section-nav__icon--overview': true
     });
     return html`
-      <button aria-label="Overview" class=${overviewClasses} @click=${() => this.updateCurrentSection(null)}>
+      <button
+        aria-label="Overview"
+        tabindex="1"
+        class=${overviewClasses}
+        @click=${() => this.updateCurrentSection(null)}
+      >
         ${getSvg(SvgIcon.Overview)}
       </button>
       ${navIcons}
@@ -634,9 +645,9 @@ export class MgtPersonCard extends MgtTemplatedComponent {
         <div class="section">
           <div class="section__header">
             <div class="section__title">${section.displayName}</div>
-            <a class="section__show-more" @click=${() => this.updateCurrentSection(section)}
-              >${this.strings.showMoreSectionButton}</a
-            >
+            <a class="section__show-more" tabindex="0" href="#" @click=${() => this.updateCurrentSection(section)}>
+              ${this.strings.showMoreSectionButton}
+            </a>
           </div>
           <div class="section__content">${section.asCompactView()}</div>
         </div>
@@ -935,6 +946,11 @@ export class MgtPersonCard extends MgtTemplatedComponent {
     }
     this.isExpanded = true;
 
+    window.requestAnimationFrame(() => {
+      const overviewIcon = this.renderRoot.querySelector('.section-nav__icon--overview') as HTMLButtonElement;
+      overviewIcon.focus();
+    });
+
     this.fireCustomEvent('expanded', null, true);
   }
 
@@ -1005,6 +1021,11 @@ export class MgtPersonCard extends MgtTemplatedComponent {
 
     this._currentSection = section;
     this.requestUpdate();
+
+    window.requestAnimationFrame(() => {
+      const activeSectionIcon = this.renderRoot.querySelector('.section-nav__icon.active') as HTMLButtonElement;
+      activeSectionIcon.focus();
+    });
   }
 
   private handleSectionScroll(e: WheelEvent) {

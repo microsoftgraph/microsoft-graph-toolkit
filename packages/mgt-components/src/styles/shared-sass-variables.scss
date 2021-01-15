@@ -71,11 +71,11 @@ $text__color__sub5--dark: $gray170;
 /* -----Title----- */
 // light
 $title__color__main--light: $text__color__main--light;
-$title__color__subtitle--light: $text__color__sub1--light;
+$title__color__subtitle--light: $text__color__sub5--light;
 $title__color__sub2--light: $text__color__sub2--light;
 // dark
 $title__color__main--dark: $text__color__main--dark;
-$title__color__subtitle--dark: $text__color__sub1--dark;
+$title__color__subtitle--dark: $text__color__sub5--dark;
 $title__color__sub2--dark: $text__color__sub2--dark;
 
 /* -----Icon----- */
@@ -88,7 +88,7 @@ $icon__main--dark: $gray130;
 $icon__sub1--dark: $gray120;
 $icon__sub2--dark: $gray100;
 
-$icon--active: $commblue_primary;
+$icon--active: $commblue_shade20;
 
 /* -----Other Elements----- */
 $line-separator--light: $gray30;
