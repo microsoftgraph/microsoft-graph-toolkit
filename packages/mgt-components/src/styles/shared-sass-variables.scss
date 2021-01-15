@@ -58,6 +58,7 @@ $text__color__sub1--light: $gray160;
 $text__color__sub2--light: $gray120;
 $text__color__sub3--light: $gray100;
 $text__color__sub4--light: $gray130;
+$text__color__sub5--light: $gray170;
 
 // dark
 $text__color__main--dark: $white;
@@ -65,6 +66,7 @@ $text__color__sub1--dark: $gray20;
 $text__color__sub2--dark: $gray60;
 $text__color__sub3--dark: $gray100;
 $text__color__sub4--dark: $gray130;
+$text__color__sub5--dark: $gray170;
 
 /* -----Title----- */
 // light
@@ -199,6 +201,11 @@ $common: (
     _var: --color-sub4,
     dark: $text__color__sub4--dark,
     light: $text__color__sub4--light
+  ),
+  color__sub5: (
+    _var: --color-sub5,
+    dark: $text__color__sub5--dark,
+    light: $text__color__sub5--light
   ),
   background-color: (
     _var: --background-color,

@@ -363,6 +363,7 @@ mgt-person .person-root {
     }
 
     .line1 {
+      color: $line1__color;
       font-size: $font-size;
       font-weight: $font-weight;
       text-transform: $text-transform;
