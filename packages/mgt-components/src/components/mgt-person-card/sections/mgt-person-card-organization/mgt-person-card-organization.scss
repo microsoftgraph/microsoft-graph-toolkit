@@ -62,15 +62,21 @@
       margin-right: 20px;
     }
 
+    .org-chain {
+      padding: 0 20px;
+    }
+
     .org-member {
+      text-align: initial;
       height: 74px;
+      width: 100%;
+      border: initial;
+      background: initial;
       box-sizing: border-box;
       border-radius: 2px;
       padding: 12px;
       display: flex;
       align-items: center;
-      margin-left: 20px;
-      margin-right: 20px;
 
       &.org-member--target {
         background-color: set-var(background-color__sub2, $theme-default, $common);
@@ -136,6 +142,10 @@
       display: flex;
       align-items: center;
       padding: 10px 20px;
+      border: initial;
+      background: initial;
+      text-align: initial;
+      width: 100%;
 
       &:hover {
         cursor: pointer;

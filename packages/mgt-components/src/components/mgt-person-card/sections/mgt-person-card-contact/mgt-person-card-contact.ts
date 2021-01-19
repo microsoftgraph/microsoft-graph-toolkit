@@ -260,7 +260,11 @@ export class MgtPersonCardContact extends BasePersonCardSection {
         `;
 
     return html`
-      <div class="part" @click=${(e: MouseEvent) => this.handlePartClick(e, part.value)}>
+      <button
+        class="part"
+        aria-label=${this.strings.contactSectionCopyPartLabel}
+        @click=${(e: MouseEvent) => this.handlePartClick(e, part.value)}
+      >
         <div class="part__icon">${part.icon}</div>
         <div class="part__details">
           <div class="part__title">${part.title}</div>
@@ -269,7 +273,7 @@ export class MgtPersonCardContact extends BasePersonCardSection {
         <div class="part__copy">
           ${getSvg(SvgIcon.Copy)}
         </div>
-      </div>
+      </button>
     `;
   }
 

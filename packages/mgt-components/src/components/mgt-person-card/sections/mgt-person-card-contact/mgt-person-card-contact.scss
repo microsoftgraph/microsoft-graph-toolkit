@@ -26,6 +26,11 @@
     .part {
       display: grid;
       grid-template-columns: auto 1fr auto;
+      padding: initial;
+      background: initial;
+      border: initial;
+      width: 100%;
+      text-align: initial;
 
       .part__icon {
         display: flex;
@@ -56,6 +61,7 @@
           font-weight: 400;
 
           .part__link {
+            all: initial;
             color: $commblue_shade20;
             font-family: $font-family;
             font-size: 14px;

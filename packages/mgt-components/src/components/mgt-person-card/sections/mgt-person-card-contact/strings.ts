@@ -6,5 +6,6 @@
  */
 
 export const strings = {
-  contactSectionTitle: 'Contact'
+  contactSectionTitle: 'Contact',
+  contactSectionCopyPartLabel: 'Copy'
 };

@@ -104,7 +104,8 @@ $person-card-details-item-font-size: var(--person-card-details-item-font-size, 1
     position: relative;
 
     .expanded-details-button {
-      all: initial;
+      border: initial;
+      background: initial;
       display: flex;
       justify-content: center;
       align-items: center;
@@ -115,8 +116,7 @@ $person-card-details-item-font-size: var(--person-card-details-item-font-size, 1
         margin-bottom: 3px;
       }
 
-      &:hover,
-      &:focus {
+      &:hover {
         background-color: set-var(background-color--hover, $theme-default, $common);
       }
     }
@@ -181,7 +181,8 @@ $person-card-details-item-font-size: var(--person-card-details-item-font-size, 1
     border-bottom: 1px solid set-var(tab__line__color, $theme-default, $common);
 
     .section-nav__icon {
-      all: initial;
+      border: initial;
+      background: initial;
       box-sizing: border-box;
       width: 48px;
       padding: 12px;
@@ -198,8 +199,7 @@ $person-card-details-item-font-size: var(--person-card-details-item-font-size, 1
         fill: set-var(icon__color, $theme-default, $common);
       }
 
-      &:hover,
-      &:focus {
+      &:hover {
         background: set-var(tab__background-color--hover, $theme-default, $common);
         border-color: set-var(tab__line__color--hover, $theme-default, $common);
       }

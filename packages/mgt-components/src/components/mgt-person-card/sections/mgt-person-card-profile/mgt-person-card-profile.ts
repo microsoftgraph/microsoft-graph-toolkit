@@ -133,6 +133,8 @@ export class MgtPersonCardProfile extends BasePersonCardSection {
    * @memberof MgtPersonCardProfile
    */
   protected renderCompactView(): TemplateResult {
+    this.initPostRenderOperations();
+
     return html`
       <div class="root compact" dir=${this.direction}>
         ${this.renderSubSections().slice(0, 2)}
@@ -242,7 +244,7 @@ export class MgtPersonCardProfile extends BasePersonCardSection {
     for (const skill of skills) {
       skillItems.push(html`
         <div class="token-list__item skill">
-          ${skill.displayName}
+          <div class="token-list__item__inner-text">${skill.displayName}</div>
         </div>
       `);
     }
@@ -366,7 +368,7 @@ export class MgtPersonCardProfile extends BasePersonCardSection {
     for (const interest of this._professionalInterests) {
       interestItems.push(html`
         <div class="token-list__item interest interest--professional">
-          ${interest.displayName}
+          <div class="token-list__item__inner-text">${interest.displayName}</div>
         </div>
       `);
     }
@@ -399,7 +401,7 @@ export class MgtPersonCardProfile extends BasePersonCardSection {
     for (const interest of this._personalInterests) {
       interestItems.push(html`
         <div class="token-list__item interest interest--personal">
-          ${interest.displayName}
+          <div class="token-list__item__inner-text">${interest.displayName}</div>
         </div>
       `);
     }
@@ -518,7 +520,7 @@ export class MgtPersonCardProfile extends BasePersonCardSection {
       if (overflowItems) {
         overflowItems.forEach(i => i.classList.add('overflow'));
 
-        const overflowToken = document.createElement('div');
+        const overflowToken = document.createElement('button');
         overflowToken.classList.add('token-list__item');
         overflowToken.classList.add('token-list__item--show-overflow');
         overflowToken.innerText = `+ ${overflowItems.length} more`;

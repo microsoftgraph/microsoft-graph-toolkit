@@ -31,6 +31,10 @@
       display: flex;
       align-items: center;
       padding: 11px 20px;
+      border: initial;
+      width: 100%;
+      background: initial;
+      text-align: initial;
 
       &:hover {
         background-color: set-var(background-color--hover, $theme-default, $common);

@@ -128,13 +128,8 @@ export class MgtPersonCardOrganization extends BasePersonCardSection {
     if (!person && !directReports && !people) {
       return null;
     } else {
-      const managerTemplates = this.renderManagers();
-      const currentUserTemplate = this.renderCurrentUser();
-      const directReportsTemplate = this.renderDirectReports();
-      const coworkersTemplate = this.renderCoworkers();
-
       contentTemplate = html`
-        ${managerTemplates} ${currentUserTemplate} ${directReportsTemplate} ${coworkersTemplate}
+        ${this.renderOrgChain()} ${this.renderCoworkers()}
       `;
     }
 
@@ -142,6 +137,25 @@ export class MgtPersonCardOrganization extends BasePersonCardSection {
       <div class="root" dir=${this.direction}>
         <div class="title">${this.strings.organizationSectionTitle}</div>
         ${contentTemplate}
+      </div>
+    `;
+  }
+
+  /**
+   * Render the member's organization chain
+   *
+   * @protected
+   * @returns {TemplateResult}
+   * @memberof MgtPersonCardOrganization
+   */
+  protected renderOrgChain(): TemplateResult {
+    const managerTemplates = this.renderManagers();
+    const currentUserTemplate = this.renderCurrentUser();
+    const directReportsTemplate = this.renderDirectReports();
+
+    return html`
+      <div class="org-chain">
+        ${managerTemplates} ${currentUserTemplate} ${directReportsTemplate}
       </div>
     `;
   }
@@ -156,7 +170,7 @@ export class MgtPersonCardOrganization extends BasePersonCardSection {
    */
   protected renderManager(person: User): TemplateResult {
     return html`
-      <div class="org-member" @click=${() => this.navigateCard(person)}>
+      <button class="org-member" @click=${() => this.navigateCard(person)}>
         <div class="org-member__person">
           <mgt-person
             .personDetails=${person}
@@ -169,7 +183,7 @@ export class MgtPersonCardOrganization extends BasePersonCardSection {
         <div class="org-member__more">
           ${getSvg(SvgIcon.ExpandRight)}
         </div>
-      </div>
+      </button>
       <div class="org-member__separator"></div>
     `;
   }
@@ -220,7 +234,7 @@ export class MgtPersonCardOrganization extends BasePersonCardSection {
       <div>
         ${directReports.map(
           person => html`
-            <div class="org-member org-member--direct-report" @click=${() => this.navigateCard(person)}>
+            <button class="org-member org-member--direct-report" @click=${() => this.navigateCard(person)}>
               <div class="org-member__person">
                 <mgt-person
                   .personDetails=${person}
@@ -233,7 +247,7 @@ export class MgtPersonCardOrganization extends BasePersonCardSection {
               <div class="org-member__more">
                 ${getSvg(SvgIcon.ExpandRight)}
               </div>
-            </div>
+            </button>
           `
         )}
       </div>
@@ -255,9 +269,9 @@ export class MgtPersonCardOrganization extends BasePersonCardSection {
       <div class="direct-report__compact">
         ${directReports.slice(0, 6).map(
           person => html`
-            <div class="direct-report" @click=${() => this.navigateCard(person)}>
+            <button class="direct-report" @click=${() => this.navigateCard(person)}>
               <mgt-person .personDetails=${person} .fetchImage=${true}></mgt-person>
-            </div>
+            </button>
           `
         )}
       </div>
@@ -298,7 +312,7 @@ export class MgtPersonCardOrganization extends BasePersonCardSection {
    */
   protected renderCoworker(person: User): TemplateResult {
     return html`
-      <div class="coworker" @click=${() => this.navigateCard(person)}>
+      <button class="coworker" @click=${() => this.navigateCard(person)}>
         <div class="coworker__person">
           <mgt-person
             .personDetails=${person}
@@ -307,7 +321,7 @@ export class MgtPersonCardOrganization extends BasePersonCardSection {
             .view=${PersonViewType.twolines}
           ></mgt-person>
         </div>
-      </div>
+      </button>
     `;
   }
 
@@ -333,7 +347,7 @@ export class MgtPersonCardOrganization extends BasePersonCardSection {
     return html`
       <div class="divider"></div>
       <div class="subtitle">${subtitle}</div>
-      <div>
+      <div class="corworkers">
         ${people.slice(0, 6).map(person => this.renderCoworker(person))}
       </div>
     `;

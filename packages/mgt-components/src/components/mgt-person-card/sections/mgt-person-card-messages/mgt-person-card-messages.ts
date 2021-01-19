@@ -140,14 +140,14 @@ export class MgtPersonCardMessages extends BasePersonCardSection {
    */
   protected renderMessage(message: Message): TemplateResult {
     return html`
-      <div class="message" @click=${() => this.handleMessageClick(message)}>
+      <button class="message" @click=${() => this.handleMessageClick(message)}>
         <div class="message__detail">
           <div class="message__subject">${message.subject}</div>
           <div class="message__from">${message.from.emailAddress.name}</div>
           <div class="message__message">${message.bodyPreview}</div>
         </div>
         <div class="message__date">${getRelativeDisplayDate(new Date(message.receivedDateTime))}</div>
-      </div>
+      </button>
     `;
   }
 

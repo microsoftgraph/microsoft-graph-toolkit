@@ -54,16 +54,14 @@
       margin-top: -10px;
 
       .token-list__item {
-        text-overflow: ellipsis;
-        white-space: nowrap;
-        display: inline-block;
-        overflow: hidden;
+        overflow: auto;
+        display: inline-flex;
         font-size: 14px;
         align-items: center;
         background: set-var(background-color__sub2, $theme-default, $common);
         border-radius: 2px;
-        max-height: 28px;
-        padding: 4px 8px;
+        padding: 0 8px;
+        height: 28px;
         margin-right: 10px;
         margin-top: 10px;
         color: set-var(color__sub6, $theme-default, $common);
@@ -83,6 +81,13 @@
         &.token-list__item--show-overflow {
           cursor: pointer;
           user-select: unset;
+          border: initial;
+        }
+
+        .token-list__item__inner-text {
+          text-overflow: ellipsis;
+          white-space: nowrap;
+          overflow: hidden;
         }
       }
     }

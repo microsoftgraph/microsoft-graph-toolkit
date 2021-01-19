@@ -143,7 +143,7 @@ export class MgtPersonCardFiles extends BasePersonCardSection {
       : null;
 
     return html`
-      <div class="file" @click=${e => this.handleFileClick(file)}>
+      <button class="file" @click=${e => this.handleFileClick(file)}>
         <div class="file__icon">
           <img alt="" src=${getFileTypeIconUri(file.resourceVisualization.type, 48, 'svg')} />
         </div>
@@ -151,7 +151,7 @@ export class MgtPersonCardFiles extends BasePersonCardSection {
           <div class="file__name">${file.resourceVisualization.title}</div>
           ${lastModifiedTemplate}
         </div>
-      </div>
+      </button>
     `;
   }
 

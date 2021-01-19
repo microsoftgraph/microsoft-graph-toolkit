@@ -32,6 +32,10 @@
       display: flex;
       align-items: center;
       justify-content: space-between;
+      border: initial;
+      background: initial;
+      text-align: initial;
+      width: 100%;
 
       &:hover {
         background-color: set-var(background-color--hover, $theme-default, $common);
