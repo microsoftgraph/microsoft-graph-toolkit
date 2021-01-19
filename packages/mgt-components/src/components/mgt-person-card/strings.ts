@@ -8,5 +8,6 @@
 export const strings = {
   sendEmailLinkSubtitle: 'Send email',
   startChatLinkSubtitle: 'Start chat',
+  showExpandedDetailsButton: 'Show expanded details',
   showMoreSectionButton: 'Show more'
 };
