@@ -5,28 +5,10 @@
  * -------------------------------------------------------------------------------------------
  */
 
-import {
-  IGraph,
-  prepScopes,
-  BetaGraph,
-  CacheItem,
-  CacheSchema,
-  CacheService,
-  CacheStore
-} from '@microsoft/mgt-element';
+import { IGraph, prepScopes, BetaGraph, CacheItem, CacheService, CacheStore } from '@microsoft/mgt-element';
 import { Presence } from '@microsoft/microsoft-graph-types-beta';
+import { schemas } from './cacheStores';
 import { IDynamicPerson } from './types';
-
-/**
- * Definition of cache structure
- */
-const cacheSchema: CacheSchema = {
-  name: 'presence',
-  stores: {
-    presence: {}
-  },
-  version: 1
-};
 
 /**
  * Object to be stored in cache representing individual people
@@ -47,10 +29,11 @@ const getPresenceInvalidationTime = (): number =>
 /**
  * Whether the groups store is enabled
  */
-const presenceCacheEnabled = (): boolean => CacheService.config.presence.isEnabled && CacheService.config.isEnabled;
+const getIsPresenceCacheEnabled = (): boolean =>
+  CacheService.config.presence.isEnabled && CacheService.config.isEnabled;
 
 /**
- * async promise, allows developer to get user presense
+ * async promise, allows developer to get user presence
  *
  * @returns {Promise<Presence>}
  * @param {IGraph} graph
@@ -61,8 +44,8 @@ export async function getUserPresence(graph: IGraph, userId?: string): Promise<P
   const betaGraph = BetaGraph.fromGraph(graph);
   let cache: CacheStore<CachePresence>;
 
-  if (presenceCacheEnabled()) {
-    cache = CacheService.getCache(cacheSchema, 'presence');
+  if (getIsPresenceCacheEnabled()) {
+    cache = CacheService.getCache(schemas.presence, schemas.presence.stores.presence);
     const presence = await cache.getValue(userId || 'me');
     if (presence && getPresenceInvalidationTime() > Date.now() - presence.timeCached) {
       return JSON.parse(presence.presence);
@@ -76,7 +59,7 @@ export async function getUserPresence(graph: IGraph, userId?: string): Promise<P
     .api(resource)
     .middlewareOptions(prepScopes(...scopes))
     .get();
-  if (presenceCacheEnabled()) {
+  if (getIsPresenceCacheEnabled()) {
     cache.putValue(userId || 'me', { presence: JSON.stringify(result) });
   }
 
@@ -100,8 +83,8 @@ export async function getUsersPresenceByPeople(graph: IGraph, people?: IDynamicP
   const scopes = ['presence.read.all'];
   let cache: CacheStore<CachePresence>;
 
-  if (presenceCacheEnabled()) {
-    cache = CacheService.getCache(cacheSchema, 'presence');
+  if (getIsPresenceCacheEnabled()) {
+    cache = CacheService.getCache(schemas.presence, schemas.presence.stores.presence);
   }
 
   for (const person of people) {
@@ -109,11 +92,11 @@ export async function getUsersPresenceByPeople(graph: IGraph, people?: IDynamicP
       const id = person.id;
       peoplePresence[id] = null;
       let presence: CachePresence;
-      if (presenceCacheEnabled()) {
+      if (getIsPresenceCacheEnabled()) {
         presence = await cache.getValue(id);
       }
       if (
-        presenceCacheEnabled() &&
+        getIsPresenceCacheEnabled() &&
         presence &&
         getPresenceInvalidationTime() > Date.now() - (await presence).timeCached
       ) {
@@ -127,7 +110,7 @@ export async function getUsersPresenceByPeople(graph: IGraph, people?: IDynamicP
   try {
     if (peoplePresenceToQuery.length > 0) {
       const presenceResult = await betaGraph
-        .api(`/communications/getPresencesByUserId`)
+        .api('/communications/getPresencesByUserId')
         .middlewareOptions(prepScopes(...scopes))
         .post({
           ids: peoplePresenceToQuery
@@ -135,7 +118,7 @@ export async function getUsersPresenceByPeople(graph: IGraph, people?: IDynamicP
 
       for (const r of presenceResult.value) {
         peoplePresence[r.id] = r;
-        if (presenceCacheEnabled()) {
+        if (getIsPresenceCacheEnabled()) {
           cache.putValue(r.id, { presence: JSON.stringify(r) });
         }
       }
