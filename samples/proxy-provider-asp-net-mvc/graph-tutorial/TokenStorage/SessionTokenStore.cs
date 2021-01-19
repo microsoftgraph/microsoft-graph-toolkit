@@ -115,11 +115,11 @@ namespace graph_tutorial.TokenStorage
 
             if (user != null)
             {
-                var userObjectId = user.FindFirst("http://schemas.microsoft.com/identity/claims/objectidentifier").Value ??
-                    user.FindFirst("oid").Value;
+                var userObjectId = user.FindFirst("http://schemas.microsoft.com/identity/claims/objectidentifier")?.Value ??
+                    user.FindFirst("oid")?.Value;
 
-                var userTenantId = user.FindFirst("http://schemas.microsoft.com/identity/claims/tenantid").Value ??
-                    user.FindFirst("tid").Value;
+                var userTenantId = user.FindFirst("http://schemas.microsoft.com/identity/claims/tenantid")?.Value ??
+                    user.FindFirst("tid")?.Value;
 
                 if (!string.IsNullOrEmpty(userObjectId) && !string.IsNullOrEmpty(userTenantId))
                 {
