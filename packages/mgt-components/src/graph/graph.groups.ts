@@ -5,8 +5,9 @@
  * -------------------------------------------------------------------------------------------
  */
 
-import { IGraph, prepScopes, CacheItem, CacheSchema, CacheService, CacheStore } from '@microsoft/mgt-element';
+import { IGraph, prepScopes, CacheItem, CacheService, CacheStore } from '@microsoft/mgt-element';
 import { Group } from '@microsoft/microsoft-graph-types';
+import { schemas } from './cacheStores';
 
 /**
  * Group Type enumeration
@@ -46,17 +47,6 @@ export enum GroupType {
 }
 
 /**
- * Definition of cache structure
- */
-const cacheSchema: CacheSchema = {
-  name: 'groups',
-  stores: {
-    groupsQuery: {}
-  },
-  version: 1
-};
-
-/**
  * Object to be stored in cache representing individual people
  */
 interface CacheGroupQuery extends CacheItem {
@@ -79,7 +69,7 @@ const getGroupsInvalidationTime = (): number =>
 /**
  * Whether the groups store is enabled
  */
-const groupsCacheEnabled = (): boolean => CacheService.config.groups.isEnabled && CacheService.config.isEnabled;
+const getIsGroupsCacheEnabled = (): boolean => CacheService.config.groups.isEnabled && CacheService.config.isEnabled;
 
 /**
  * Searches the Graph for Groups
@@ -102,8 +92,8 @@ export async function findGroups(
   let cache: CacheStore<CacheGroupQuery>;
   const key = query || '*' + groupTypes;
 
-  if (groupsCacheEnabled()) {
-    cache = CacheService.getCache(cacheSchema, 'groupsQuery');
+  if (getIsGroupsCacheEnabled()) {
+    cache = CacheService.getCache(schemas.groups, schemas.groups.stores.groupsQuery);
     const cacheGroupQuery = await cache.getValue(key);
     if (cacheGroupQuery && getGroupsInvalidationTime() > Date.now() - cacheGroupQuery.timeCached) {
       if (cacheGroupQuery.top >= top) {
@@ -152,7 +142,7 @@ export async function findGroups(
     .middlewareOptions(prepScopes(scopes))
     .get();
 
-  if (groupsCacheEnabled() && result) {
+  if (getIsGroupsCacheEnabled() && result) {
     cache.putValue(key, { groups: result.value.map(x => JSON.stringify(x)), top: top });
   }
 
@@ -184,8 +174,8 @@ export async function findGroupsFromGroup(
   let cache: CacheStore<CacheGroupQuery>;
   const key = `${groupId}:${query || '*'}:${groupTypes}:${transitive}`;
 
-  if (groupsCacheEnabled()) {
-    cache = CacheService.getCache(cacheSchema, 'groupsQuery');
+  if (getIsGroupsCacheEnabled()) {
+    cache = CacheService.getCache(schemas.groups, schemas.groups.stores.groupsQuery);
     const cacheGroupQuery = await cache.getValue(key);
     if (cacheGroupQuery && getGroupsInvalidationTime() > Date.now() - cacheGroupQuery.timeCached) {
       if (cacheGroupQuery.top >= top) {
@@ -237,7 +227,7 @@ export async function findGroupsFromGroup(
     .middlewareOptions(prepScopes(scopes))
     .get();
 
-  if (groupsCacheEnabled() && result) {
+  if (getIsGroupsCacheEnabled() && result) {
     cache.putValue(key, { groups: result.value.map(x => JSON.stringify(x)), top: top });
   }
 
