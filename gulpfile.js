@@ -37,7 +37,7 @@ export const PACKAGE_VERSION = '[VERSION]';
 
 function runSass() {
   return gulp
-    .src('src/**/!(shared-styles).scss')
+    .src('src/**/!(shared)*.scss')
     .pipe(sass())
     .pipe(cleanCSS())
     .pipe(gap.prependText(scssFileHeader))
@@ -54,7 +54,7 @@ function setLicense() {
 }
 
 function setVersion() {
-  var pkg = require(process.cwd() + '/package.json');
+  var pkg = require('./package.json');
   var fs = require('fs');
   fs.writeFileSync('./src/utils/version.ts', versionFile.replace('[VERSION]', pkg.version));
 }

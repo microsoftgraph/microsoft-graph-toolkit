@@ -124,7 +124,7 @@ interface ChannelPickerItemState {
  *
  * @fires selectionChanged - Fired when the selection changes
  *
- * @cssprop --font-color - {font} Default font color
+ * @cssprop --color - {font} Default font color
  *
  * @cssprop --input-border - {String} Input section entire border
  * @cssprop --input-border-top - {String} Input section border top only
@@ -132,16 +132,16 @@ interface ChannelPickerItemState {
  * @cssprop --input-border-bottom - {String} Input section border bottom only
  * @cssprop --input-border-left - {String} Input section border left only
  * @cssprop --input-background-color - {Color} Input section background color
- * @cssprop --input-hover-color - {Color} Input text hover color
- * @cssprop --input-focus-color - {Color} Input text focus color
+ * @cssprop --input-border-color--hover - {Color} Input border hover color
+ * @cssprop --input-border-color--focus - {Color} Input border focus color
  *
  * @cssprop --dropdown-background-color - {Color} Background color of dropdown area
  * @cssprop --dropdown-item-hover-background - {Color} Background color of channel or team during hover
  * @cssprop --dropdown-item-selected-background - {Color} Background color of selected channel
  *
  * @cssprop --arrow-fill - {Color} Color of arrow svg
- * @cssprop --placeholder-focus-color - {Color} Color of placeholder text during focus state
- * @cssprop --placeholder-default-color - {Color} Color of placeholder text
+ * @cssprop --placeholder-color--focus - {Color} Color of placeholder text during focus state
+ * @cssprop --placeholder-color - {Color} Color of placeholder text
  *
  */
 @customElement('mgt-teams-channel-picker')
@@ -282,13 +282,18 @@ export class MgtTeamsChannelPicker extends MgtTemplatedComponent {
       visible: this._isDropdownVisible
     };
 
+    const searchClasses = {
+      'hide-icon': !!this._selectedItemState,
+      'search-wrapper': true
+    };
+
     return (
       this.renderTemplate('default', { teams: this.items }) ||
       html`
         <div class="root" @blur=${this.lostFocus} dir=${this.direction}>
           <div class=${classMap(inputClasses)} @click=${this.gainedFocus}>
             ${this.renderSelected()}
-            <div class="search-wrapper">${this.renderSearchIcon()} ${this.renderInput()}</div>
+            <div class=${classMap(searchClasses)}>${this.renderSearchIcon()} ${this.renderInput()}</div>
           </div>
           ${this.renderCloseButton()}
           <div class=${classMap(dropdownClasses)}>${this.renderDropdown()}</div>
@@ -314,6 +319,7 @@ export class MgtTeamsChannelPicker extends MgtTemplatedComponent {
         <div class="selected-team-name">${this._selectedItemState.parent.item.displayName}</div>
         <div class="arrow">${getSvg(SvgIcon.TeamSeparator, '#B3B0AD')}</div>
         ${this._selectedItemState.item.displayName}
+        <div class="search-wrapper">${this.renderSearchIcon()} ${this.renderInput()}</div>
       </li>
     `;
   }

@@ -10,32 +10,32 @@
 @import './mgt-teams-channel-picker.theme.scss';
 
 :host {
-  font-family: var(--default-font-family, 'Segoe UI');
+  font-family: $font-family;
 }
 
 .root {
   position: relative;
 
   .input-wrapper {
-    font-family: var(--default-font-family, 'Segoe UI');
+    font-family: $font-family;
     display: flex;
     flex-wrap: wrap;
     align-items: center;
     padding: 4px 10px;
     position: relative;
-    background-color: set-var(input__background-color, $theme-default, $channel-picker);
+    background-color: $input__background-color;
     font-size: 14px;
-    color: set-var(color, $theme-default, $channel-picker);
+    color: $color;
     height: 29px;
     line-height: 19px;
     cursor: text;
     @include input__border($theme-default);
     &:hover {
-      border-color: set-var(input__border-color--hover, $theme-default, $channel-picker);
+      border-color: $input__border-color--hover;
     }
 
     &.focused {
-      border-color: set-var(input__border-color--focus, $theme-default, $channel-picker);
+      border-color: $input__border-color--focus;
     }
 
     .selected-team {
@@ -58,13 +58,26 @@
       .selected-team-name {
         font-weight: bold;
       }
+      .search-wrapper {
+        margin-left: 12px;
+        height: 18px;
+        display: flex;
+        flex-wrap: nowrap;
+        align-items: center;
+        margin-right: 30px;
+      }
     }
 
     .search-wrapper {
+      overflow: hidden;
+      height: 18px;
       display: flex;
       flex-wrap: nowrap;
       align-items: center;
       margin-right: 30px;
+    }
+    .hide-icon {
+      display: none;
     }
 
     .team-chosen-input {
@@ -72,38 +85,37 @@
       border: none;
       line-height: normal;
       outline: none;
-      font-family: var(--default-font-family, 'Segoe UI');
+      font-family: $font-family;
       font-style: normal;
       font-weight: normal;
       font-size: 14px;
       line-height: 19px;
       background-color: transparent;
-      color: set-var(color, $theme-default, $channel-picker);
+      color: $color;
       padding-left: 5px;
       &::placeholder {
-        color: set-var(placeholder__color, $theme-default, $channel-picker);
-      }
-      &:focus::placeholder {
-        color: set-var(placeholder__color--focus, $theme-default, $channel-picker);
+        color: $placeholder__color;
       }
     }
     .team-chosen-input[contenteditable]:empty::after {
       content: attr(data-placeholder);
-      display: inline-block;
-      color: set-var(placeholder__color, $theme-default, $channel-picker);
-    }
-    .team-chosen-input[contenteditable]:empty:focus::after {
-      content: attr(data-placeholder);
-      color: set-var(placeholder__color--focus, $theme-default, $channel-picker);
+      color: $placeholder__color;
     }
 
     .search-icon {
+      margin-top: 1px;
       align-self: flex-start;
       font-family: 'FabricMDL2Icons';
       color: var(--accent-color, $commblue_primary);
+      line-height: normal;
+    }
+
+    .input-search {
+      height: 19px;
     }
 
     .input-search-start {
+      white-space: nowrap;
       line-height: normal;
       margin-inline-start: 0px;
       margin-inline-end: 0px;
@@ -128,10 +140,10 @@
     line-height: normal;
     font-family: 'FabricMDL2Icons';
     cursor: pointer;
-    color: set-var(placeholder__color, $theme-default, $channel-picker);
-    background-color: set-var(input__background-color, $theme-default, $channel-picker);
+    color: $placeholder__color;
+    background-color: $input__background-color;
     &:hover {
-      color: set-var(color, $theme-default, $channel-picker);
+      color: $color;
     }
   }
 
@@ -141,15 +153,15 @@
     position: absolute;
     box-shadow: 0px 1.3289px 2.65781px rgba(180, 180, 180, 0.182), 0px 1.3289px 2.65781px rgba(68, 68, 68, 0.3);
     border-radius: 2px;
-    background-color: set-var(dropdown__background-color, $theme-default, $channel-picker);
+    background-color: $dropdown__background-color;
     z-index: 1; /* Sit on top */
     width: 100%;
     text-align: left;
     list-style-type: none;
-    font-family: var(--default-font-family, 'Segoe UI');
+    font-family: $font-family;
     font-style: normal;
     font-weight: normal;
-    color: set-var(color, $theme-default, $channel-picker);
+    color: $color;
     display: none;
     max-height: 346px;
     overflow-y: auto;
@@ -174,11 +186,11 @@
         align-items: center;
         padding: 5px 12px 6px 14px;
         margin-top: 6px;
-        font-family: var(--default-font-family, 'Segoe UI');
+        font-family: $font-family;
         font-style: normal;
         font-weight: 600;
         font-size: 16px;
-        color: set-var(color, $theme-default, $channel-picker);
+        color: $color;
 
         flex-flow: nowrap;
         position: relative;
@@ -196,7 +208,7 @@
         }
 
         &:hover {
-          background-color: set-var(dropdown-item__background-color--hover, $theme-default, $channel-picker);
+          background-color: $dropdown-item__background-color--hover;
         }
         .arrow {
           margin-right: 5px;
@@ -209,7 +221,7 @@
       }
 
       &.focused {
-        background-color: set-var(dropdown-item__background-color--hover, $theme-default, $channel-picker);
+        background-color: $dropdown-item__background-color--hover;
       }
     }
 
@@ -230,7 +242,7 @@
         .channel-name-text {
           font-size: 14px;
           font-weight: normal;
-          color: set-var(color, $theme-default, $channel-picker);
+          color: $color;
           margin: 0;
           padding: 0;
 
@@ -241,17 +253,17 @@
       }
 
       &:hover {
-        background-color: set-var(dropdown-item__background-color--hover, $theme-default, $channel-picker);
+        background-color: $dropdown-item__background-color--hover;
       }
     }
 
     .search-error-text,
     .loading-text {
-      font-family: var(--default-font-family, 'Segoe UI');
+      font-family: $font-family;
       font-style: normal;
       font-weight: 600;
       font-size: 14px;
-      color: set-var(color, $theme-default, $channel-picker);
+      color: $color;
       line-height: 19px;
       text-align: center;
     }
@@ -286,31 +298,31 @@
       to left,
       rgba(255, 255, 255, 0) 0%,
       rgba(255, 255, 255, 0) 80%,
-      input__background-color 100%
+      $input__background-color 100%
     );
     background-image: -moz-linear-gradient(
       right,
       rgba(255, 255, 255, 0) 0%,
       rgba(255, 255, 255, 0) 80%,
-      input__background-color 100%
+      $input__background-color 100%
     );
     background-image: -o-linear-gradient(
       right,
       rgba(255, 255, 255, 0) 0%,
       rgba(255, 255, 255, 0) 80%,
-      input__background-color 100%
+      $input__background-color 100%
     );
     background-image: -ms-linear-gradient(
       right,
       rgba(255, 255, 255, 0) 0%,
       rgba(255, 255, 255, 0) 80%,
-      input__background-color 100%
+      $input__background-color 100%
     );
     background-image: -webkit-linear-gradient(
       right,
       rgba(255, 255, 255, 0) 0%,
       rgba(255, 255, 255, 0) 80%,
-      input__background-color 100%
+      $input__background-color 100%
     );
   }
   .search-wrapper {

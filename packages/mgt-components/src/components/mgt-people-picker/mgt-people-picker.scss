@@ -9,17 +9,10 @@
 @import '../../styles/shared-styles.scss';
 @import './mgt-people-picker.theme.scss';
 
-// common vars regardless of themes
-$avatar-margin: var(--avatar-margin, 0 4px 0 0);
-$avatar-size-s: var(--avatar-size-s, 24px);
-$avatar-size: var(--avatar-size, 48px);
-$initials-color: var(--initials-color, #{$white});
-$initials-background-color: var(--initials-background-color, #{$ms-color-magenta});
-
 // Main
 :host {
   border-radius: 2px;
-  font-family: var(--default-font-family, 'Segoe UI');
+  font-family: $font-family;
   height: 38px;
   display: contents;
   height: 100%;
@@ -32,31 +25,30 @@ mgt-people-picker .root {
 }
 
 .people-picker {
-  background-color: set-var(input__background-color, $theme-default, $people-picker);
+  background-color: $input__background-color;
   @include input__border($theme-default);
   &:hover {
-    border-color: set-var(input__border-color--hover, $theme-default, $people-picker);
+    border-color: $input__border-color--hover;
   }
   &.focused {
-    border-color: set-var(input__border-color--focus, $theme-default, $people-picker);
+    border-color: $input__border-color--focus;
   }
-  padding-bottom: 6px;
+  padding: 6px 0 0;
 
   .selected-list {
     flex: 1 0 auto;
     display: flex;
     flex-wrap: wrap;
     vertical-align: middle;
-    margin: 0 2px 0 0;
+    margin: 0 8px;
     list-style-type: none;
-    padding-left: 8px;
     font-style: normal;
     font-weight: normal;
     overflow: hidden;
 
     &__person-wrapper {
       display: flex;
-      margin: 5px 5px 0px 0;
+      margin: 0 5px 6px 0;
       align-items: center;
       border-radius: 15px;
       height: 24px;
@@ -71,10 +63,10 @@ mgt-people-picker .root {
         min-width: 100%;
         --avatar-size-s: 24px;
         margin-left: 0px;
-        --color: set-var(color, $theme-default, $people-picker);
-        color: set-var(color, $theme-default, $people-picker);
-        margin-bottom: 1px;
-        margin-right: 4px;
+        --color: #{$color};
+        color: $color;
+        padding-bottom: 1px;
+        padding-right: 4px;
       }
 
       &__overflow {
@@ -103,17 +95,16 @@ mgt-people-picker .root {
           cursor: pointer;
           right: 0;
           background-color: set-var(selected-person__background-color, $theme-default, $people-picker);
-          color: set-var(color, $theme-default, $people-picker);
+          color: $color;
         }
       }
     }
 
     .flyout {
       .search-box {
-        margin: 6px 2px 1px 3px;
+        margin: 1px 2px 8px;
 
         &.search-box-start {
-          margin: 6px 0px 1px 0px;
           line-height: normal;
           margin-inline-start: 0px;
           margin-inline-end: 0px;
@@ -126,7 +117,7 @@ mgt-people-picker .root {
           width: 100%;
           display: flex;
           flex: 1 0 auto;
-          font-family: var(--default-font-family, 'Segoe UI');
+          font-family: $font-family;
           position: relative;
           line-height: normal;
           outline: none;
@@ -134,13 +125,10 @@ mgt-people-picker .root {
           font-weight: normal;
           font-size: 14px;
           line-height: 19px;
-          background-color: set-var(input__background-color, $theme-default, $people-picker);
-          color: set-var(color, $theme-default, $people-picker);
+          background-color: $input__background-color;
+          color: $color;
           &::placeholder {
-            color: set-var(placeholder__color, $theme-default, $people-picker);
-          }
-          &:focus::placeholder {
-            color: set-var(placeholder__color--focus, $theme-default, $people-picker);
+            color: $placeholder__color;
           }
         }
       }
@@ -152,8 +140,8 @@ mgt-people-picker .root {
         overflow-y: auto;
         text-align: left;
         list-style-type: none;
-        background-color: set-var(dropdown__background-color, $theme-default, $people-picker);
-
+        background-color: $dropdown__background-color;
+        max-height: var(--mgt-flyout-set-height, unset);
         li {
           cursor: pointer;
         }
@@ -169,14 +157,14 @@ mgt-people-picker .root {
             font-size: 14px;
             &:hover,
             &.focused {
-              background-color: set-var(dropdown-item__background-color, $theme-default, $people-picker);
+              background-color: $dropdown-item__background-color--hover;
             }
             .people-person-text-area {
               margin-left: 13px;
               flex: 1 1 0;
               max-height: 40px;
               overflow: hidden;
-              color: set-var(color, $theme-default, $people-picker);
+              color: $color;
 
               .people-person-text {
                 font-size: 14px;
@@ -205,7 +193,7 @@ mgt-person {
 :host .loading-text,
 mgt-people-picker .search-error-text,
 mgt-people-picker .loading-text {
-  font-family: var(--default-font-family, 'Segoe UI');
+  font-family: $font-family;
   font-style: normal;
   font-weight: 600;
   font-size: 14px;
@@ -213,7 +201,7 @@ mgt-people-picker .loading-text {
   text-align: center;
   margin-left: 50px;
   margin-right: 50px;
-  color: #0078d4;
+  color: $commblue_primary;
 }
 
 :host .message-parent,

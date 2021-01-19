@@ -7,8 +7,7 @@
 
 @import '../../styles/shared-styles.scss';
 @import '../../../../../node_modules/office-ui-fabric-core/dist/sass/References';
-
-$tasks-background-color: var(--tasks-background-color, #f8f8f8);
+@import './mgt-tasks-base.theme.scss';
 
 $task-icon-alignment: var(--task-icon-alignment, flex-start);
 $task-icon-background: var(--task-icon-background, transparent);
@@ -16,15 +15,16 @@ $task-icon-background-completed: var(--task-icon-background-completed, $ms-color
 $task-icon-border: var(--task-icon-border, solid 1px $ms-color-gray120);
 $task-icon-border-completed: var(--task-icon-border-completed, solid 1px white);
 $task-icon-border-radius: var(--task-icon-border-radius, 50%);
-$task-icon-color: var(--task-icon-color, black);
 $task-icon-color-completed: var(--task-icon-color-completed, white);
+$task-border-completed: var(--task-complete-border, 2px dotted inherit);
 
 :host {
-  font-family: var(--default-font-family, 'Segoe UI');
+  font-family: $font-family;
   display: flex;
   flex-direction: column;
-  background-color: $tasks-background-color;
+  background-color: set-var(background-color__sub1, $theme-default, $common);
   padding: var(--tasks-padding, 12px);
+  color: $color;
 
   .TaskIcon {
     font-family: 'FabricMDL2Icons';
@@ -39,7 +39,7 @@ $task-icon-color-completed: var(--task-icon-color-completed, white);
     }
   }
 
-  .header {
+  .Header {
     padding: var(--tasks-header-padding, 0);
     margin: var(--tasks-header-margin, 0 0 12px 0);
 
@@ -88,6 +88,7 @@ $task-icon-color-completed: var(--task-icon-color-completed, white);
 
       input {
         flex: 1 1 auto;
+        background-color: set-var(background-color__sub1, $theme-default, $common);
       }
     }
 
@@ -148,7 +149,8 @@ $task-icon-color-completed: var(--task-icon-color-completed, white);
     position: relative;
     margin: var(--task-margin, 0 0 18px 0);
     padding: var(--task-padding, 0 0 0 0);
-    background-color: var(--task-background, white);
+    background-color: $background-color;
+    border: set-var(border, $theme-default, $tasks);
 
     .TaskContent {
       display: flex;
@@ -159,7 +161,7 @@ $task-icon-color-completed: var(--task-icon-color-completed, white);
         left: 0;
         right: 0;
         bottom: 0;
-        background-color: $ms-color-gray30;
+        background-color: set-var(background-color__sub1, $theme-default, $common);
       }
 
       .TaskDetailsContainer {
@@ -173,7 +175,7 @@ $task-icon-color-completed: var(--task-icon-color-completed, white);
         justify-content: space-between;
         align-items: flex-start;
 
-        color: var(--task-detail-color, $ms-color-gray130);
+        color: $detail__color;
         font-size: 12px;
         font-weight: 600;
         white-space: nowrap;
@@ -190,7 +192,7 @@ $task-icon-color-completed: var(--task-icon-color-completed, white);
         }
 
         .TaskTitle {
-          color: var(--task-title-color, $ms-color-gray160);
+          color: $title__color;
           font-size: 14px;
           font-weight: 600;
           grid-row: 1;
@@ -346,6 +348,10 @@ $task-icon-color-completed: var(--task-icon-color-completed, white);
         svg {
           vertical-align: middle;
           margin-right: 4px;
+
+          path {
+            fill: $detail__color;
+          }
         }
         span,
         select {
@@ -357,7 +363,7 @@ $task-icon-color-completed: var(--task-icon-color-completed, white);
           margin-right: 8px;
         }
         mgt-people {
-          color: var(--task-detail-color, black);
+          color: $detail__color;
           font-size: 16px;
         }
 
@@ -365,12 +371,12 @@ $task-icon-color-completed: var(--task-icon-color-completed, white);
           display: inline-block;
         }
         .Picker {
-          background-color: white;
+          background-color: set-var(background-color__sub1, $theme-default, $common);
           -webkit-background-clip: padding-box;
           -moz-background-clip: padding-box;
           background-clip: padding-box;
           width: var(--mgt-flyout-set-width, 350px);
-          color: var(--task-detail-color, black);
+          color: $detail__color;
           mgt-people-picker {
             --separator-margin: 0px 10px 0px 10px;
           }
@@ -378,8 +384,9 @@ $task-icon-color-completed: var(--task-icon-color-completed, white);
 
         input,
         select {
-          color: var(--task-detail-color, #767676);
+          color: $detail__color;
           font-size: 0.9em;
+          background-color: set-var(background-color__sub1, $theme-default, $common);
         }
       }
     }
@@ -404,6 +411,11 @@ $task-icon-color-completed: var(--task-icon-color-completed, white);
           border: $task-icon-border-completed;
           color: $task-icon-color-completed;
         }
+
+        .TaskContent .TaskDetailsContainer .TaskTitle {
+          text-decoration: line-through;
+          color: set-var(color__sub3, $theme-default, $common);
+        }
       }
 
       .TaskCheck {
@@ -414,7 +426,7 @@ $task-icon-color-completed: var(--task-icon-color-completed, white);
         height: 18px;
         border-radius: $task-icon-border-radius;
         border: $task-icon-border;
-        color: $task-icon-color;
+        color: set-var(icon__color, $theme-default, $tasks);
         display: flex;
         justify-content: center;
         align-items: center;
@@ -444,8 +456,13 @@ $task-icon-color-completed: var(--task-icon-color-completed, white);
     }
 
     &.Complete {
-      background: var(--task-complete-background, $ms-color-gray30);
-      border: var(--task-complete-border, inherit);
+      background: $background-color--completed;
+      border: set-var(border--completed, $theme-default, $tasks);
+
+      .TaskContent .TaskDetailsContainer .TaskTitle {
+        text-decoration: line-through;
+        color: set-var(color__sub3, $theme-default, $common);
+      }
     }
 
     &.NewTask {
@@ -505,6 +522,7 @@ $task-icon-color-completed: var(--task-icon-color-completed, white);
               border-bottom: 1px solid $ms-color-gray40;
               outline: none;
               border-radius: 0;
+              background-color: set-var(background-color__sub1, $theme-default, $common);
             }
 
             input:hover {
@@ -552,7 +570,7 @@ $task-icon-color-completed: var(--task-icon-color-completed, white);
 
             select,
             input {
-              font-family: var(--default-font-family, 'Segoe UI');
+              font-family: $font-family;
               font-size: 12px;
               font-weight: 600;
               border: var(--task-new-select-border, none);
@@ -602,7 +620,7 @@ $task-icon-color-completed: var(--task-icon-color-completed, white);
           font-family: var(--default-font-family, 'Segoe UI');
           font-size: 14px;
           font-weight: 600;
-          color: var(--task-new-cancel-button-color, $ms-color-gray210);
+          color: $button__color--cancel;
           margin: 0 12px 0 32px;
         }
 

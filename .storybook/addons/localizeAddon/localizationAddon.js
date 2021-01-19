@@ -1,5 +1,5 @@
 import addons, { makeDecorator } from '@storybook/addons';
-import { LocalizationHelper } from '../../../packages/mgt-element/dist/utils/LocalizationHelper';
+import { LocalizationHelper } from '../../../packages/mgt-element/dist/es6/utils/LocalizationHelper';
 import { withKnobs, text, object, select } from '@storybook/addon-knobs';
 import { STORY_CHANGED, STORY_INIT, FORCE_RE_RENDER } from '@storybook/core-events';
 

@@ -10,8 +10,7 @@ import { addons, types } from '@storybook/addons';
 import { STORIES_CONFIGURED, STORY_MISSING } from '@storybook/core-events';
 import { AddonPanel } from '@storybook/components';
 import { useParameter, useChannel } from '@storybook/api';
-import { MsalProvider } from '../packages/mgt/dist/commonjs';
-import { Providers, LoginType } from '../packages/mgt-element/dist';
+import { Providers, LoginType, MsalProvider } from '../packages/mgt/dist/es6';
 import { CLIENTID, GETPROVIDER_EVENT, SETPROVIDER_EVENT } from './env';
 
 const PARAM_KEY = 'signInAddon';
@@ -54,8 +53,8 @@ const SignInPanel = () => {
       {_allow_signin ? (
         <mgt-login />
       ) : (
-        'All components are using mock data - sign in function will be available in a future release'
-      )}
+          'All components are using mock data - sign in function will be available in a future release'
+        )}
     </div>
   );
 };

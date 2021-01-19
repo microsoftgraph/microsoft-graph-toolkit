@@ -14,10 +14,19 @@ import '../../packages/mgt-components/dist/es6/components/mgt-todo/mgt-todo';
 export default {
   title: 'Components | mgt-todo',
   component: 'mgt-todo',
-  decorators: [withA11y, withSignIn, withCodeEditor],
+  decorators: [withCodeEditor],
   parameters: { options: { selectedPanel: 'storybookjs/knobs/panel' } }
 };
 
 export const tasks = () => html`
   <mgt-todo></mgt-todo>
+`;
+
+export const darkTheme = () => html`
+  <mgt-todo class="mgt-dark"></mgt-todo>
+  <style>
+    body {
+      background-color: black;
+    }
+  </style>
 `;

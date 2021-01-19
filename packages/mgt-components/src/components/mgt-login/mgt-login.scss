@@ -7,6 +7,7 @@
 
 @import '../../../../../node_modules/office-ui-fabric-core/dist/sass/References';
 @import '../../styles/shared-styles.scss';
+@import './mgt-login.theme.scss';
 
 :host,
 mgt-login {
@@ -16,15 +17,9 @@ mgt-login {
   --height: '100%';
   --margin: 0;
   --padding: 12px 20px;
-  --color: #{$ms-color-neutralPrimary};
-  --color-hover: var(--theme-primary-color);
-  --background-color: transparent;
-  --background-color--hover: #{$ms-color-neutralLight};
-  --popup-content-background-color: white;
   --popup-command-font-size: #{$ms-font-size-s};
   --popup-command-margin: 16px 0 0;
   --popup-padding: 24px 48px 16px 24px;
-  --popup-color: #{$ms-color-neutralPrimary};
 }
 
 :host .root,
@@ -37,23 +32,28 @@ mgt-login .root {
 mgt-login .login-button {
   display: flex;
   align-items: center;
-  font-family: var(--default-font-family);
+  font-family: $font-family;
   font-size: var(--font-size);
   font-weight: var(--font-weight);
   width: var(--width);
   height: var(--height);
   margin: var(--margin);
   padding: var(--padding);
-  color: var(--color);
-  background-color: var(--background-color);
+  color: set-var(button__color, $theme-default, $login);
+  background-color: var(--button-background-color, transparent);
   border: none;
   cursor: pointer;
   transition: color 0.3s, background-color 0.3s;
 
+  mgt-person {
+    --color-sub1: set-var(button__color, $theme-default, $login);
+  }
+
   &:hover {
-    color: var(--color-hover);
-    --color: var(--color-hover);
-    background-color: var(--background-color--hover);
+    color: $button__color--hover;
+    --color: #{$button__color--hover};
+    background-color: $button__background-color--hover;
+    --color-sub1: #{$button__color--hover};
   }
 
   &:focus {
@@ -79,12 +79,15 @@ mgt-login .login-icon {
 
 :host .popup,
 mgt-login .popup {
-  font-family: var(--default-font-family);
-  background: var(--popup-content-background-color);
+  font-family: $font-family;
+  background-color: $popup__background-color;
   min-width: 240px;
   z-index: 1;
-  color: var(--popup-color);
-  --color: var(--popup-color);
+  color: set-var(popup__color, $theme-default, $login);
+
+  mgt-person {
+    --color-sub1: set-var(popup__color, $theme-default, $login);
+  }
 }
 
 :host .popup-content,
@@ -103,18 +106,18 @@ mgt-login .popup-commands ul {
 
 :host .popup-command,
 mgt-login .popup-command {
-  font-family: var(--default-font-family);
+  font-family: $font-family;
   font-size: var(--popup-command-font-size);
   font-weight: var(--font-weight);
-  color: var(--theme-primary-color);
-  background-color: transparent;
+  color: #{$commblue_primary};
+  background-color: $popup__background-color;
   border: none;
   padding: 0;
   cursor: pointer;
   transition: color 0.3s;
 
   &:hover {
-    color: var(--theme-dark-color);
+    color: #{$commblue_shade20};
   }
 }
 

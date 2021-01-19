@@ -23,8 +23,8 @@ export class BatchRequest {
    * @type {string}
    * @memberof BatchRequest
    */
-
   public resource: string;
+
   /**
    * method passed to be requested
    *
@@ -42,6 +42,14 @@ export class BatchRequest {
    * @memberof BatchRequest
    */
   public index: number;
+
+  /**
+   * The headers of the request
+   *
+   * @type {{[headerName: string]: string}}
+   * @memberof BatchRequest
+   */
+  public headers: { [header: string]: string };
 
   /**
    * The id of the requests
@@ -110,9 +118,10 @@ export class Batch implements IBatch {
    * @param {string[]} [scopes]
    * @memberof Batch
    */
-  public get(id: string, resource: string, scopes?: string[]) {
+  public get(id: string, resource: string, scopes?: string[], headers?: { [header: string]: string }) {
     const index = this.nextIndex++;
     const request = new BatchRequest(index, id, resource, 'GET');
+    request.headers = headers;
     this.allRequests.push(request);
     this.requestsQueue.push(index);
     if (scopes) {
@@ -148,7 +157,8 @@ export class Batch implements IBatch {
       batchRequestContent.addRequest({
         id: request.index.toString(),
         request: new Request(Batch.baseUrl + request.resource, {
-          method: request.method
+          method: request.method,
+          headers: request.headers
         })
       });
     }

@@ -6,6 +6,8 @@
  */
 
 @import '../base-person-card-section.scss';
+@import '../../../../styles/shared-styles.scss';
+@import '../../../../styles/shared-sass-variables.scss';
 
 :host {
   position: relative;
@@ -21,7 +23,7 @@
     .title {
       font-size: 14px;
       font-weight: 600;
-      color: #323130;
+      color: set-var(title__color__subtitle, $theme-default, $common);
       margin: 0 20px 12px 20px;
     }
 
@@ -32,7 +34,7 @@
       justify-content: space-between;
 
       &:hover {
-        background-color: #f3f2f1;
+        background-color: set-var(background-color--hover, $theme-default, $common);
         cursor: pointer;
       }
 
@@ -42,20 +44,21 @@
 
       .message__detail {
         min-width: 0;
+        line-height: normal;
 
         .message__subject {
-          font-size: 14px;
-          color: #323130;
+          color: set-var(color, $theme-default, $common);
+          font-size: 16px;
         }
 
         .message__from {
           font-size: 12px;
-          color: #201f1e;
+          color: set-var(color__sub1, $theme-default, $common);
         }
 
         .message__message {
           font-size: 12px;
-          color: #797775;
+          color: set-var(color__sub2, $theme-default, $common);
         }
 
         > div {
@@ -67,7 +70,7 @@
 
       .message__date {
         font-size: 12px;
-        color: #797775;
+        color: set-var(color__sub2, $theme-default, $common);
         margin-left: 10px;
         white-space: nowrap;
       }

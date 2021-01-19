@@ -6,13 +6,14 @@
  */
 
 @import '../../../styles/shared-styles.scss';
+@import '../../../styles/shared-sass-variables.scss';
 
 $arrow-options-left: var(--arrow-options-left, 0);
 
 :host,
 mgt-arrow-options {
   position: relative;
-  font-family: var(--default-font-family);
+  font-family: $font-family;
 }
 
 :host .ArrowIcon,
@@ -32,18 +33,17 @@ mgt-arrow-options .Header {
 :host .Header:hover,
 mgt-arrow-options .Header:hover {
   color: var(--theme-primary-color);
-  background-color: var(--background-color--hover);
 }
 
 :host .Menu,
 mgt-arrow-options .Menu {
   position: absolute;
   left: var(--arrow-options-left, 0);
-  box-shadow: rgba(0, 0, 0, 0.08) 0px 0px 40px 5px;
-  background: #ffffff;
+  box-shadow: set-var(box-shadow__color, $theme-default, $common) 0px 0px 40px 5px;
+  background: set-var(background-color, $theme-default, $common);
   z-index: 1;
   display: none;
-  color: black;
+  color: set-var(color, $theme-default, $common);
   white-space: nowrap;
 }
 
@@ -72,12 +72,12 @@ mgt-arrow-options .MenuOption:first {
 
 :host .MenuOption:hover,
 mgt-arrow-options .MenuOption:hover {
-  background: #c0c0c0;
+  background-color: set-var(background-color--hover, $theme-default, $common);
 }
 
 :host .MenuOption:active,
 mgt-arrow-options .MenuOption:active {
-  background: #d8d8d8;
+  background-color: set-var(background-color--active, $theme-default, $common);
 }
 
 :host .MenuOptionCheck,
@@ -89,5 +89,5 @@ mgt-arrow-options .MenuOptionCheck {
 
 :host .MenuOptionCheck.CurrentValue,
 mgt-arrow-options .MenuOptionCheck.CurrentValue {
-  color: #0078d4;
+  color: $commblue_primary;
 }

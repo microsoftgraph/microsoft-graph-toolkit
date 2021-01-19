@@ -9,7 +9,7 @@ import { customElement, html, TemplateResult } from 'lit-element';
 import { classMap } from 'lit-html/directives/class-map';
 import { repeat } from 'lit-html/directives/repeat';
 import { IGraph } from '@microsoft/mgt-element';
-import { Providers, ProviderState, BetaGraph } from '@microsoft/mgt-element';
+import { Providers, ProviderState } from '@microsoft/mgt-element';
 import { getShortDateString } from '../../utils/Utils';
 import '../mgt-person/mgt-person';
 import { MgtTasksBase } from '../mgt-tasks-base/mgt-tasks-base';
@@ -28,6 +28,12 @@ import {
 } from './graph.todo';
 import { styles } from './mgt-todo-css';
 import { strings } from './strings';
+
+/*
+ * Filter function
+ */
+// tslint:disable-next-line: completed-docs
+export type TodoFilter = (task: TodoTask) => boolean;
 
 /**
  * component enables the user to view, add, remove, complete, or edit todo tasks. It works with tasks in Microsoft Planner or Microsoft To-Do.
@@ -89,9 +95,10 @@ export class MgtTodo extends MgtTasksBase {
   /**
    * Optional filter function when rendering tasks
    *
+   * @type {TodoFilter}
    * @memberof MgtTodo
    */
-  public taskFilter: (task: TodoTask) => boolean;
+  public taskFilter: TodoFilter;
 
   private _lists: TodoTaskList[];
   private _tasks: TodoTask[];
@@ -363,8 +370,7 @@ export class MgtTodo extends MgtTasksBase {
 
     if (!this._graph) {
       const graph = provider.graph.forComponent(this);
-      const betaGraph = BetaGraph.fromGraph(graph);
-      this._graph = betaGraph;
+      this._graph = graph;
     }
 
     let lists = this._lists;

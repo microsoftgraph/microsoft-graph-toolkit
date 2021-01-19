@@ -1,7 +1,9 @@
-var path = require('path'),
-  fs = require('fs');
+var child_process = require('child_process')
+var path = require('path');
+var fs = require('fs');
+var project = require('../package.json');
 
-function getPackageJsons(startPath, results) {
+const getPackageJsons = (startPath, results) => {
   startPath = startPath || 'packages';
   results = results || [];
   const filter = 'package.json';
@@ -24,23 +26,41 @@ function getPackageJsons(startPath, results) {
   return results;
 }
 
-function updateMgtDependencyVersion(packages, version) {
+const updateMgtDependencyVersion = (packages, version) => {
   for (let package of packages) {
     const data = fs.readFileSync(package, 'utf8');
 
-    var result = data.replace(/"(@microsoft\/mgt.*)": "(\*)",/g, `"$1": "${version}",`);
-    result = result.replace(/"version": "(.*)",/g, `"version": "${version}",`);
+    var result = data.replace(/"(@microsoft\/mgt.*)": "(\*)"/g, `"$1": "${version}"`);
+    result = result.replace(/"version": "(.*)"/g, `"version": "${version}"`);
 
     fs.writeFileSync(package, result, 'utf8');
   }
 }
 
-if (process.argv.length < 3) {
-  console.log('usage: node setVersion.js VERSION');
-  return;
+let version = project.version;
+
+if (process.argv.length > 2) {
+  switch (process.argv[2]) {
+    case '-n':
+    case '--next':
+      // set version from git hash
+      const shortSha = child_process.execSync('git rev-parse --short HEAD').toString().trim();
+      version = `${version}-preview.${shortSha}`;
+      break;
+    case '-v':
+    case '--version':
+      // set version from argument
+      if (process.argv.length > 3) {
+        version = process.argv[3];
+        break;
+      }
+    default:
+      console.log('usage: node setVersion.js');
+      console.log('usage: node setVersion.js --next');
+      console.log('usage: node setVersion.js --version [version]');
+      return;
+  }
 }
 
-const version = process.argv[2];
-
-packages = getPackageJsons();
+const packages = getPackageJsons();
 updateMgtDependencyVersion(packages, version);
