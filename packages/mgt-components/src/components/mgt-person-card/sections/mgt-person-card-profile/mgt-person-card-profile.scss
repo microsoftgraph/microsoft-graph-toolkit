@@ -37,7 +37,7 @@
 
       .section__title {
         font-size: 16px;
-        color: set-var(title__color__sub2, $theme-default, $common);
+        color: set-var(color__sub4, $theme-default, $common);
       }
 
       .section__content {
@@ -66,7 +66,7 @@
         padding: 4px 8px;
         margin-right: 10px;
         margin-top: 10px;
-        color: set-var(color__sub1, $theme-default, $common);
+        color: set-var(color__sub6, $theme-default, $common);
 
         &:last-child {
           margin-right: initial;
@@ -103,18 +103,18 @@
       .data-list__item__content {
         font-size: 12px;
         line-height: 16px;
-        color: set-var(color__sub2, $theme-default, $common);
+        color: set-var(color__sub4, $theme-default, $common);
         margin-top: 4px;
       }
 
       .data-list__item__title {
         font-size: 14px;
         line-height: 16px;
-        color: set-var(title__color__subtitle, $theme-default, $common);
+        color: set-var(color__sub5, $theme-default, $common);
       }
 
       .data-list__item__date-range {
-        color: set-var(color__sub2, $theme-default, $common);
+        color: set-var(color__sub4, $theme-default, $common);
         font-size: 10px;
         line-height: 12px;
       }
@@ -126,12 +126,12 @@
 
     .work-position {
       .work-position__company {
-        color: $commblue_primary;
+        color: $commblue_shade20;
       }
 
       .work-position__location {
         font-size: 10px;
-        color: set-var(color__sub2, $theme-default, $common);
+        color: set-var(color__sub4, $theme-default, $common);
         line-height: 16px;
       }
     }

@@ -545,7 +545,8 @@ export class MgtPersonCard extends MgtTemplatedComponent {
    */
   protected renderExpandedDetailsButton(): TemplateResult {
     return html`
-      <button class="expanded-details-button" tabindex="0" @click=${() => this.showExpandedDetails()}>
+      <button class="expanded-details-button" tabindex="0" aria-label="Show expanded details" @click=${() =>
+        this.showExpandedDetails()}>
         ${getSvg(SvgIcon.ExpandDown)}
       </div>
     `;

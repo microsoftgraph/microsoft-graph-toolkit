@@ -62,12 +62,12 @@
 
         .file__name {
           font-size: 14px;
-          color: set-var(color__sub1, $theme-default, $common);
+          color: set-var(color__sub5, $theme-default, $common);
         }
 
         .file__last-modified {
           font-size: 12px;
-          color: set-var(color__sub2, $theme-default, $common);
+          color: set-var(color__sub4, $theme-default, $common);
         }
 
         > div {

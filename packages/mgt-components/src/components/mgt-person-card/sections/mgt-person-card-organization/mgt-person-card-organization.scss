@@ -47,7 +47,7 @@
     }
 
     .subtitle {
-      color: set-var(title__color__sub2, $theme-default, $common);
+      color: set-var(color__sub4, $theme-default, $common);
       font-size: 14px;
       margin: 0 20px 8px 20px;
     }
@@ -97,12 +97,10 @@
           --avatar-size: 48px;
           --avatar-size-s: 48px;
           --font-size: 16px;
-          --color: #323130;
           --line2-font-size: 14px;
           --line3-font-size: 14px;
           --line2-text-transform: uppercase;
-          --line2-color: #797775;
-          --line3-color: #797775;
+          --line1-color: set-var(color__sub1, $theme-default, $common);
           --line3-text-transform: uppercase;
           margin-right: 8px;
           max-width: 230px;
@@ -121,7 +119,7 @@
         .org-member__title,
         .org-member__department {
           font-weight: 14px;
-          color: set-var(color__sub2, $theme-default, $common);
+          color: set-var(color__sub4, $theme-default, $common);
         }
       }
     }
@@ -154,7 +152,6 @@
           --font-size: 16px;
           --line2-text-transform: uppercase;
           --line2-font-size: 14px;
-          --line2-color: set-var(color__sub2, $theme-default, $common);
           --avatar-size: 46px;
         }
       }

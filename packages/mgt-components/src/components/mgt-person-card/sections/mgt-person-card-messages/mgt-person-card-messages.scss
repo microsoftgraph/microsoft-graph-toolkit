@@ -47,18 +47,18 @@
         line-height: normal;
 
         .message__subject {
-          color: set-var(color, $theme-default, $common);
+          color: set-var(color__sub5, $theme-default, $common);
           font-size: 16px;
         }
 
         .message__from {
           font-size: 12px;
-          color: set-var(color__sub1, $theme-default, $common);
+          color: set-var(color__sub5, $theme-default, $common);
         }
 
         .message__message {
           font-size: 12px;
-          color: set-var(color__sub2, $theme-default, $common);
+          color: set-var(color__sub4, $theme-default, $common);
         }
 
         > div {
@@ -70,7 +70,7 @@
 
       .message__date {
         font-size: 12px;
-        color: set-var(color__sub2, $theme-default, $common);
+        color: set-var(color__sub4, $theme-default, $common);
         margin-left: 10px;
         white-space: nowrap;
       }
