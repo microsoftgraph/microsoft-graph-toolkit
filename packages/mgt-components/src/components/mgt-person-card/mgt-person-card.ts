@@ -314,6 +314,7 @@ export class MgtPersonCard extends MgtTemplatedComponent {
       case 'person-query':
       case 'user-id':
         this.personDetails = null;
+        this.state = null;
         this.requestStateUpdate();
         break;
     }
