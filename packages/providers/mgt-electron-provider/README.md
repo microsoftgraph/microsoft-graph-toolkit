@@ -22,7 +22,7 @@ The `@microsoft/mgt-electron-provider` package exposes the `ElectronAuthenticato
 
 3. Initialize ElectronAuthenticator in Main.ts (Back end)
 
-```ts
+    ```ts
     import { ElectronAuthenticator } from '@microsoft/mgt-electron-provider/dist/es6/ElectronAuthenticator';
 
     const authProvider = new ElectronAuthenticator({
