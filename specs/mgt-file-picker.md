@@ -30,7 +30,7 @@ The file picker component provides a button, a drop down list of files, and as w
 
 | Attribute | Property | Description |
 | --------- | -------- | ----------- |
-| `folder-query` | `folderQuery` | The full query or path to the folder in a drive or site to retrieve the list of files from |
+| `file-list-query` | `fileListQuery` | The full query or path to the folder in a drive or site to retrieve the list of files from |
 | `file-queries` | `fileQueries` | An array of file queries to be rendered by the component |
 | `files` | `files` | An array of files to get or set the list of files rendered by the component. Use this to access the files loaded by the component. Set this value to load your own files. |
 | `insight-type` | `insightType` | Set to show the user’s trending, used, or shared files. |
@@ -53,5 +53,12 @@ The file picker component provides a button, a drop down list of files, and as w
 
 Same as [mgt-file-list](./mgt-file-list.md).
 
+## Templates
 
-
+| Data type | Data Context | Description |
+| --------- | ------------ | ----------- |
+| default | null: no data | The template used to override the rendering of the entire component |
+| loading | null: no data | The template used to render the state of the picker while the request to Graph is being made. |
+| error | null: no data | The template used if no files are returned |
+| selected-file | file: the file details object | The template to render selected files |
+| file | file: the file details object | The template to render files in the dropdown |

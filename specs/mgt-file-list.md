@@ -39,11 +39,14 @@ The request made: `GET /me/insights/trending`
 
 The request made : `GET /drives/123/items/456/children`
 
+### Example 5: Developer provides a search query
+```<mgt-file-list search-query="foo"></mgt-file-list>```
+
 ## Attributes and Properties
 
 | Attribute | Property | Description |
 | --------- | -------- | ----------- |
-| `folder-query` | `folderQuery` | The full query or path to the drive or site that contains the list of files to render. |
+| `file-list-query` | `fileListQuery` | The full query or path to the drive or site that contains the list of files to render. |
 | `file-queries` | `fileQueries` | An array of file queries to be rendered by the component.
  `files` | `files` | An array of files to get or set the list of files rendered by the component. Use this to access the files loaded by the component. Set this value to load your own files. |
 | `insight-type` | `insightType` | Set to show the user’s trending, used, or shared files.
@@ -71,3 +74,13 @@ The request made : `GET /drives/123/items/456/children`
 | `GET /users/{id or userPrincipalName}/insights/used`  | {user-id or upn} AND `insight-type` is `used` | " |
 | `GET /me/insights/shared` | `insight-type` is shared | " |
 | `GET /users/{id or userPrincipalName}/insights/shared` | `{user-id or upn}` AND `insight-type` is `shared` | " |
+|`POST /beta/search/query` Request body: `{"requests": [{"entityTypes": ["driveItem", "listItem"], "query":{"queryString":"foo"}}]}` | `search-query` | Files.Read, Files.Read.All, Files.ReadWrite.All, Sites.Read.All, Sites.ReadWrite.All |
+
+## Templates
+
+| Data type | Data context | Description |
+| ----------- | -------------- | ------------ |
+| default | `files`: list of file objects | The default template replaces the entire component with your own. |
+| file | `file`: file object | The template used to render each file. |
+| no-data | No data context is passed | The template used when no data is available. |
+| loading | No data context is passed | The template used while the component loads state.

@@ -78,3 +78,11 @@ The request made: `GET /me/insights/trending/123/resource`
 | `GET /users/{id or userPrincipalName}/insights/used/{id}/resource` | `{user-id or upn}` AND `insight-type` is `used` AND `{id}` | " |
 | `GET /me/insights/shared/{id}/resource` | `insight-type` is `shared` AND `{id}` | " |
 | `GET /users/{id or userPrincipalName}/insights/shared/{id}/resource` | `{user-id or upn}` AND `insight-type` is `shared` AND `{id}` | " |
+
+## Templates
+
+| Data Type | Data Context | Description |
+| ----------- | -------------- | ------------- |
+| loading | none | The template to render while the component is in a loading state. |
+| no-data | none | The template to render when no file data is available. |
+| default | file: the file details object | The default template replaces the entire component with your own. |
