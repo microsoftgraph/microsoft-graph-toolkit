@@ -4,8 +4,6 @@
 
 Use `mgt-react` to simplify usage of [Microsoft Graph Toolkit (mgt)](https://aka.ms/mgt) web components in React. The library wraps all mgt components and exports them as React components.
 
-`mgt-react` extends [`wc-react`](https://github.com/nmetulev/wc-react) adding support for templates.
-
 ## Installation
 
 ```bash
@@ -20,7 +18,7 @@ yarn add @microsoft/mgt-react
 
 ## Usage
 
-Import a component at the top:
+All components are available via the npm package and are named using PascalCase. To use a component, first import it at the top:
 
 ```tsx
 import { Person } from '@microsoft/mgt-react';
@@ -32,7 +30,7 @@ You can now use `Person` anywhere in your JSX as a regular React component.
 <Person personQuery="me" />
 ```
 
-### Use properties instead of attributes
+All properties and events map exactly as they are defined in the component documentation - [see web component docs](https://aka.ms/mgt-docs).
 
 For example, you can set the `personDetails` property to an object:
 
@@ -46,27 +44,29 @@ const App = (props) => {
 };
 ```
 
-### Register event handlers:
+Or, register an event handler:
 
 ```jsx
-import { PeoplePicker } from '@microsoft/mgt-react';
+import { PeoplePicker, People } from '@microsoft/mgt-react';
 
 const App = (props) => {
-  handleSelectionChanged = (e) => {
-    this.setState({ people: e.target.selectedPeople });
+  const [people, setPeople] = useState([]);
+
+  const handleSelectionChanged = (e) => {
+    setPeople(e.target.selectedPeople);
   };
 
-  return <PeoplePicker selectionChanged={this.handleSelectionChanged} />;
+  return
+    <div>
+      <PeoplePicker selectionChanged={handleSelectionChanged} />
+      Selected People: <People people={people} />
+    </div>;
 };
 ```
 
-All properties and events map exactly as they are defined on the web component - [see web component docs](https://aka.ms/mgt-docs).
+## Templates
 
-### Templates
-
-`mgt-react` allows you to leverage React for writing templates for mgt components.
-
-> Note: You can learn more about [templating mgt components here](https://docs.microsoft.com/graph/toolkit/templates)
+Most Microsoft Graph Toolkit components [support templating](https://docs.microsoft.com/graph/toolkit/customize-components/templates) and `mgt-react` allows you to leverage React for writing templates.
 
 For example, to create a template to be used for rendering events in the `mgt-agenda` component, first define a component to be used for rendering an event:
 
@@ -92,12 +92,6 @@ const App = (props) => {
 ```
 
 The `template` prop allows you to specify which template to overwrite. In this case, the `MyEvent` component will be repeated for every event, and the `event` object will be passed as part of the `dataContext` prop.
-
-## What components can I use?
-
-The library is auto generated from the Microsoft Graph Toolkit and all components are available.
-
-The names of the React components are in PascalCase and do not include the `Mgt` prefix. For example, the `mgt-person` component is available as `Person`, and the `mgt-people-picker` component is available as `PeoplePicker`. See the [Microsoft Graph Toolkit documentation](https://aka.ms/mgt-docs) for a list of all components.
 
 ## Why
 

@@ -11,13 +11,13 @@ import { withKnobs } from '@storybook/addon-knobs';
 import { withWebComponentsKnobs } from 'storybook-addon-web-components-knobs';
 import { withSignIn } from '../../.storybook/addons/signInAddon/signInAddon';
 import { withCodeEditor } from '../../.storybook/addons/codeEditorAddon/codeAddon';
-import '../../packages/mgt/dist/es6/components/mgt-person-card/mgt-person-card';
-import '../../packages/mgt/dist/es6/components/mgt-person/mgt-person';
+import '../../packages/mgt-components/dist/es6/components/mgt-person-card/mgt-person-card';
+import '../../packages/mgt-components/dist/es6/components/mgt-person/mgt-person';
 
 export default {
   title: 'Components | mgt-person-card',
   component: 'mgt-person',
-  decorators: [withA11y, withSignIn, withCodeEditor],
+  decorators: [withCodeEditor],
   parameters: { options: { selectedPanel: 'storybookjs/knobs/panel' } }
 };
 
@@ -80,4 +80,45 @@ export const personCardWithPresence = () => html`
   <div class="note">
     (Hover on person to view Person Card)
   </div>
+`;
+
+export const darkTheme = () => html`
+  <mgt-person-card person-query="me" class="mgt-dark"></mgt-person-card>
+  <style>
+    body {
+      background-color: black;
+    }
+  </style>
+`;
+export const ScopesAndConfigureSections = () => html`
+  <script>
+    import { MgtPersonCard } from '@microsoft/mgt';
+
+    MgtPersonCard.config.useContactApis = false;
+
+    MgtPersonCard.config.sections.mailMessages = true;
+    MgtPersonCard.config.sections.files = true;
+    MgtPersonCard.config.sections.profile = true;
+    MgtPersonCard.config.sections.organization = true;
+
+    // disable only "Works With" subsection under organization
+    // MgtPersonCard.config.sections.organization = { showWorksWith: false };
+
+    // change config above to see scopes update
+    document.querySelector('.scopes').textContent = MgtPersonCard.getScopes();
+  </script>
+  <style>
+    .note {
+      margin: 2em;
+      color: #323130;
+      font-size: 12px;
+    }
+  </style>
+  <mgt-person person-query="me" person-card="hover" view="twoLines" show-presence></mgt-person>
+
+  <div class="note">
+    (Hover on person to view Person Card)
+  </div>
+
+  <div>Scopes: <span class="scopes"></span></div>
 `;

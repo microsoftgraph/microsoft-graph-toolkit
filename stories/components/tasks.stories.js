@@ -11,15 +11,24 @@ import { withKnobs } from '@storybook/addon-knobs';
 import { withWebComponentsKnobs } from 'storybook-addon-web-components-knobs';
 import { withSignIn } from '../../.storybook/addons/signInAddon/signInAddon';
 import { withCodeEditor } from '../../.storybook/addons/codeEditorAddon/codeAddon';
-import '../../packages/mgt/dist/es6/components/mgt-tasks/mgt-tasks';
+import '../../packages/mgt-components/dist/es6/components/mgt-tasks/mgt-tasks';
 
 export default {
   title: 'Components | mgt-tasks',
   component: 'mgt-tasks',
-  decorators: [withA11y, withSignIn, withCodeEditor],
+  decorators: [withCodeEditor],
   parameters: { options: { selectedPanel: 'storybookjs/knobs/panel' } }
 };
 
 export const tasks = () => html`
   <mgt-tasks></mgt-tasks>
+`;
+
+export const darkTheme = () => html`
+  <mgt-tasks class="mgt-dark"></mgt-tasks>
+  <style>
+    body {
+      background-color: black;
+    }
+  </style>
 `;

@@ -5,8 +5,9 @@
  * -------------------------------------------------------------------------------------------
  */
 
-import { LitElement, PropertyValues } from 'lit-element';
+import { internalProperty, LitElement, PropertyValues } from 'lit-element';
 import { Providers } from '../providers/Providers';
+import { LocalizationHelper } from '../utils/LocalizationHelper';
 
 /**
  * Defines media query based on component width
@@ -21,7 +22,7 @@ export enum ComponentMediaQuery {
   mobile = '',
 
   /**
-   * devies with width < 1200
+   * devices with width < 1200
    */
   tablet = 'tablet',
 
@@ -32,7 +33,7 @@ export enum ComponentMediaQuery {
 }
 
 /**
- * BaseComponent extends LitElement including ShadowRoot toggle and fireCustomEvent features
+ * BaseComponent extends LitElement adding mgt specific features to all components
  *
  * @export  MgtBaseComponent
  * @abstract
@@ -41,24 +42,12 @@ export enum ComponentMediaQuery {
  */
 export abstract class MgtBaseComponent extends LitElement {
   /**
-   * Get ShadowRoot toggle, returns value of _useShadowRoot
+   * Gets or sets the direction of the component
    *
-   * @static _useShadowRoot
+   * @protected
    * @memberof MgtBaseComponent
    */
-  public static get useShadowRoot() {
-    return this._useShadowRoot;
-  }
-
-  /**
-   * Set ShadowRoot toggle value
-   *
-   * @static _useShadowRoot
-   * @memberof MgtBaseComponent
-   */
-  public static set useShadowRoot(value: boolean) {
-    this._useShadowRoot = value;
-  }
+  @internalProperty() protected direction = 'ltr';
 
   /**
    * Gets the ComponentMediaQuery of the component
@@ -99,7 +88,16 @@ export abstract class MgtBaseComponent extends LitElement {
     return this._isFirstUpdated;
   }
 
-  private static _useShadowRoot: boolean = true;
+  /**
+   * returns component strings
+   *
+   * @readonly
+   * @protected
+   * @memberof MgtBaseComponent
+   */
+  protected get strings(): { [x: string]: string } {
+    return {};
+  }
 
   /**
    * determines if login component is in loading state
@@ -112,19 +110,32 @@ export abstract class MgtBaseComponent extends LitElement {
 
   constructor() {
     super();
-    if (this.isShadowRootDisabled()) {
-      (this as any)._needsShimAdoptedStyleSheets = true;
-    }
+    this.handleLocalizationChanged = this.handleLocalizationChanged.bind(this);
+    this.handleDirectionChanged = this.handleDirectionChanged.bind(this);
+    this.handleDirectionChanged();
+    this.handleLocalizationChanged();
   }
 
   /**
-   * Receive ShadowRoot Disabled value
+   * Invoked each time the custom element is appended into a document-connected element
    *
-   * @returns boolean _useShadowRoot value
    * @memberof MgtBaseComponent
    */
-  public isShadowRootDisabled() {
-    return !MgtBaseComponent._useShadowRoot || !(this.constructor as typeof MgtBaseComponent)._useShadowRoot;
+  public connectedCallback() {
+    super.connectedCallback();
+    LocalizationHelper.onStringsUpdated(this.handleLocalizationChanged);
+    LocalizationHelper.onDirectionUpdated(this.handleDirectionChanged);
+  }
+
+  /**
+   * Invoked each time the custom element is removed from a document-connected element
+   *
+   * @memberof MgtBaseComponent
+   */
+  public disconnectedCallback() {
+    super.disconnectedCallback();
+    LocalizationHelper.removeOnStringsUpdated(this.handleLocalizationChanged);
+    LocalizationHelper.removeOnDirectionUpdated(this.handleDirectionChanged);
   }
 
   /**
@@ -155,29 +166,25 @@ export abstract class MgtBaseComponent extends LitElement {
    * helps facilitate creation of events across components
    *
    * @protected
-   * @param {string} eventName name given to specific event
-   * @param {*} [detail] optional any value to dispatch with event
-   * @returns {boolean}
+   * @param {string} eventName
+   * @param {*} [detail]
+   * @param {boolean} [bubbles=false]
+   * @param {boolean} [cancelable=false]
+   * @return {*}  {boolean}
    * @memberof MgtBaseComponent
    */
-  protected fireCustomEvent(eventName: string, detail?: any): boolean {
+  protected fireCustomEvent(
+    eventName: string,
+    detail?: any,
+    bubbles: boolean = false,
+    cancelable: boolean = false
+  ): boolean {
     const event = new CustomEvent(eventName, {
-      bubbles: false,
-      cancelable: true,
+      bubbles,
+      cancelable,
       detail
     });
     return this.dispatchEvent(event);
-  }
-
-  /**
-   * method to create ShadowRoot if disabled flag isn't present
-   *
-   * @protected
-   * @returns boolean
-   * @memberof MgtBaseComponent
-   */
-  protected createRenderRoot() {
-    return this.isShadowRootDisabled() ? this : super.createRenderRoot();
   }
 
   /**
@@ -248,5 +255,14 @@ export abstract class MgtBaseComponent extends LitElement {
 
     this._isLoadingState = value;
     this.requestUpdate('isLoadingState');
+  }
+
+  private handleLocalizationChanged() {
+    LocalizationHelper.updateStringsForTag(this.tagName, this.strings);
+    this.requestUpdate();
+  }
+
+  private handleDirectionChanged() {
+    this.direction = LocalizationHelper.getDocumentDirection();
   }
 }
