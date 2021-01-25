@@ -38,7 +38,8 @@
     "storybook:dev": "npm run build:compile && npm run storybook:bundle && wca analyze packages --format json --outFile custom-elements.json",
     "storybook:build": "npm run storybook:dev && build-storybook -s assets && cpx .storybook/CNAME storybook-static",
     "storybook:deploy": "npm run storybook:build && storybook-to-ghpages -e storybook-static",
-    "storybook:bundle": "rollup -c ./.storybook/rollup.config.js"
+    "storybook:bundle": "rollup -c ./.storybook/rollup.config.js",
+    "setLicense": "gulp setLicense"
   },
   "storybook-deployer": {
     "gitUsername": "@microsoft/mgt",
