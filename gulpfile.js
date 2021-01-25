@@ -48,7 +48,7 @@ function runSass() {
 
 function setLicense() {
   return gulp
-    .src(['packages/**/src/**/*.{ts,js,scss}'], { base: './' })
+    .src(['packages/**/src/**/*.{ts,js,scss}', "!packages/**/generated/**/*"], { base: './' })
     .pipe(license(licenseStr))
     .pipe(gulp.dest('./'));
 }
