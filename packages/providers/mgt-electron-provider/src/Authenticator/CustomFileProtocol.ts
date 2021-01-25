@@ -5,9 +5,6 @@
  * -------------------------------------------------------------------------------------------
  */
 
-// Copyright (c) Microsoft Corporation. All rights reserved.
-// Licensed under the MIT License.
-
 import { AuthCodeListener } from './AuthCodeListener';
 
 import { protocol } from 'electron';

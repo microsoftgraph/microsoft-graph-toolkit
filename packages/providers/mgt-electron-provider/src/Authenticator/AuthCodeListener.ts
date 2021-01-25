@@ -5,9 +5,6 @@
  * -------------------------------------------------------------------------------------------
  */
 
-// Copyright (c) Microsoft Corporation. All rights reserved.
-// Licensed under the MIT License.
-
 /**
  * AuthCodeListener is the base class from which
  * special CustomFileProtocol and HttpAuthCode inherit
