@@ -1,3 +1,10 @@
+/**
+ * -------------------------------------------------------------------------------------------
+ * Copyright (c) Microsoft Corporation.  All Rights Reserved.  Licensed under the MIT License.
+ * See License in the project root for license information.
+ * -------------------------------------------------------------------------------------------
+ */
+
 import React, { ReactNode, ReactElement } from 'react';
 import ReactDOM from 'react-dom';
 import { Wc, WcProps, WcTypeProps } from 'wc-react';
