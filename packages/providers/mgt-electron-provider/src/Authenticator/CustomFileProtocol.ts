@@ -14,7 +14,7 @@ import * as url from 'url';
 /**
  * CustomFileProtocolListener can be instantiated in order
  * to register and unregister a custom file protocol on which
- * MSAL can listen for Auth Code reponses.
+ * MSAL can listen for Auth Code responses.
  */
 export class CustomFileProtocolListener extends AuthCodeListener {
   constructor(hostName: string) {
