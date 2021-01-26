@@ -48,9 +48,9 @@ function runSass() {
 
 function setLicense() {
   return gulp
-    .src(['src/**/*.{ts,js,scss}', 'tests/**/*.{ts,js,scss}'])
+    .src(['packages/**/src/**/*.{ts,js,scss}'], { base: './' })
     .pipe(license(licenseStr))
-    .pipe(gulp.dest('src/'));
+    .pipe(gulp.dest('./'));
 }
 
 function setVersion() {
