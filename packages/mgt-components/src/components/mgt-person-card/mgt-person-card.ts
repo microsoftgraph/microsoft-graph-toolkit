@@ -189,7 +189,18 @@ export class MgtPersonCard extends MgtTemplatedComponent {
   @property({
     attribute: 'user-id'
   })
-  public userId: string;
+  public get userId(): string {
+    return this._userId;
+  }
+  public set userId(value: string) {
+    if (value === this._userId) {
+      return;
+    }
+    this._userId = value;
+    this.personDetails = null;
+    this.state = null;
+    this.requestStateUpdate();
+  }
 
   /**
    * Set the image of the person
@@ -283,6 +294,8 @@ export class MgtPersonCard extends MgtTemplatedComponent {
   private _personDetails: IDynamicPerson;
   private _me: MicrosoftGraph.User;
 
+  private _userId: string;
+
   private get internalPersonDetails(): IDynamicPerson {
     return (this.state && this.state.person) || this.personDetails;
   }
@@ -312,8 +325,8 @@ export class MgtPersonCard extends MgtTemplatedComponent {
 
     switch (name) {
       case 'person-query':
-      case 'user-id':
         this.personDetails = null;
+        this.state = null;
         this.requestStateUpdate();
         break;
     }
