@@ -10,7 +10,7 @@ The `@microsoft/mgt-electron-provider` package exposes the `ElectronAuthenticato
 
 # <to be added>
 
-2. Initialize the provider in renderer.ts (Front end)
+2. Initialize the provider in your renderer process (Front end, ex: renderer.ts )
 
     ```ts
     import {Providers} from '@microsoft/mgt-element';
