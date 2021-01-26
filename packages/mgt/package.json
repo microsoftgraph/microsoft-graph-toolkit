@@ -39,7 +39,6 @@
     "rollup": "rollup -c",
     "sass": "gulp sass --cwd .",
     "sass:watch": "gulp watchSass --cwd .",
-    "setLicense": "gulp setLicense --cwd .",
     "test": "jest",
     "test:watch": "jest --watch"
   },
