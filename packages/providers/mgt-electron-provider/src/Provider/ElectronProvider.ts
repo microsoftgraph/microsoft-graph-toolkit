@@ -25,10 +25,8 @@ export class ElectronProvider extends IProvider {
   setupProvider() {
     ipcRenderer.on('isloggedin', async (event, isLoggedIn) => {
       if (isLoggedIn) {
-        console.log('Signed in');
         Providers.globalProvider.setState(ProviderState.SignedIn);
       } else {
-        console.log('Signed out');
         Providers.globalProvider.setState(ProviderState.SignedOut);
       }
     });

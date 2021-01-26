@@ -8,9 +8,11 @@ The `@microsoft/mgt-electron-provider` package exposes the `ElectronAuthenticato
 
 1. Install the packages
 
-# <to be added>
+  ```bash
+    npm install @microsoft/mgt-element @microsoft/mgt-electron-provider
+  ```
 
-2. Initialize the provider in renderer.ts (Front end)
+2. Initialize the provider in your renderer process (Front end, eg. renderer.ts)
 
     ```ts
     import {Providers} from '@microsoft/mgt-element';

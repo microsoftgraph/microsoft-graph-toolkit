@@ -17,10 +17,30 @@ export abstract class AuthCodeListener {
     this.hostName = hostName;
   }
 
+  /**
+   * hostName getter
+   *
+   * @readonly
+   * @type {string}
+   * @memberof AuthCodeListener
+   */
   public get host(): string {
     return this.hostName;
   }
 
+  /**
+   * Start listening for auth code
+   *
+   * @abstract
+   * @memberof AuthCodeListener
+   */
   public abstract start(): void;
+
+  /**
+   * Stop listening for auth code
+   *
+   * @abstract
+   * @memberof AuthCodeListener
+   */
   public abstract close(): void;
 }

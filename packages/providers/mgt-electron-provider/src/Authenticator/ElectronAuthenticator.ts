@@ -5,20 +5,14 @@ import {
   AuthorizationCodeRequest,
   AuthorizationUrlRequest,
   Configuration,
+  ICachePlugin,
   LogLevel,
   PublicClientApplication
 } from '@azure/msal-node';
-import {
-  PersistenceCachePlugin,
-  FilePersistenceWithDataProtection,
-  DataProtectionScope,
-  KeychainPersistence,
-  LibSecretPersistence
-} from '@azure/msal-node-extensions';
 import { AuthenticationProviderOptions } from '@microsoft/microsoft-graph-client/lib/es/IAuthenticationProviderOptions';
 import { BrowserWindow, ipcMain } from 'electron';
 import { CustomFileProtocolListener } from './CustomFileProtocol';
-import { CACHE_LOCATION, REDIRECT_URI } from './Constants';
+import { REDIRECT_URI } from './Constants';
 
 /**
  * base config for MSAL authentication
@@ -65,6 +59,8 @@ interface MsalElectronConfig {
    * @memberof MsalElectronConfig
    */
   isIncrementalConsentEnabled?: boolean;
+
+  cachePlugin?: ICachePlugin;
 }
 
 /**
@@ -135,23 +131,21 @@ export class ElectronAuthenticator {
    * @memberof ElectronAuthenticator
    */
   private async setConfig(config: MsalElectronConfig) {
-    this.createPersistence().then(filePersistence => {
-      this.ms_config = {
-        auth: {
-          clientId: config.clientId,
-          authority: config.authority
-        },
-        cache: { cachePlugin: new PersistenceCachePlugin(filePersistence) },
-        system: {
-          loggerOptions: {
-            loggerCallback(loglevel, message, containsPii) {},
-            piiLoggingEnabled: false,
-            logLevel: LogLevel.Warning
-          }
+    this.ms_config = {
+      auth: {
+        clientId: config.clientId,
+        authority: config.authority
+      },
+      cache: config.cachePlugin ? { cachePlugin: config.cachePlugin } : null,
+      system: {
+        loggerOptions: {
+          loggerCallback(loglevel, message, containsPii) {},
+          piiLoggingEnabled: false,
+          logLevel: LogLevel.Warning
         }
-      };
-      this.clientApplication = new PublicClientApplication(this.ms_config);
-    });
+      }
+    };
+    this.clientApplication = new PublicClientApplication(this.ms_config);
   }
 
   /**
@@ -433,24 +427,6 @@ export class ElectronAuthenticator {
       console.log('No accounts detected');
       this.mainWindow.webContents.send('isloggedin', false);
     }
-  }
-
-  private async createPersistence() {
-    // On Windows, uses a DPAPI encrypted file
-    if (process.platform === 'win32') {
-      return FilePersistenceWithDataProtection.create(CACHE_LOCATION, DataProtectionScope.CurrentUser);
-    }
-
-    // On Mac, uses keychain.
-    if (process.platform === 'darwin') {
-      return KeychainPersistence.create(CACHE_LOCATION, 'serviceName', 'accountName'); // Replace serviceName and accountName
-    }
-
-    // On Linux, uses  libsecret to store to secret service. Libsecret has to be installed.
-    if (process.platform === 'linux') {
-      return LibSecretPersistence.create(CACHE_LOCATION, 'serviceName', 'accountName'); // Replace serviceName and accountName
-    }
-    throw new Error('Could not create persistence. Platform not supported');
   }
 
   /**
