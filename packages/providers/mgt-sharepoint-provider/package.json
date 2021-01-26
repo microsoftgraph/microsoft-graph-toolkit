@@ -36,7 +36,6 @@
     "compile": "tsc -b",
     "compile:watch": "tsc -w",
     "lint": "tslint -c ../../../tslint.json 'src/**/*.ts'",
-    "setLicense": "gulp setLicense --cwd .",
     "postpack": "cpx *.tgz ../../../artifacts"
   },
   "dependencies": {
