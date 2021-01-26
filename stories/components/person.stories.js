@@ -49,6 +49,45 @@ export const personView = () => html`
   </style>
 `;
 
+export const personLineClickEvents = () => html`
+  <div class="example">
+    <mgt-person person-query="me" view="threelines"></mgt-person>
+  </div>
+
+  <div class="output">no line clicked</div>
+
+  <script>
+    const picker = document.querySelector('mgt-person');
+    picker.addEventListener('line1clicked', e => {
+      const output = document.querySelector('.output');
+
+      if (e && e.detail && e.detail.displayName) {
+        output.innerHTML = '<b>line1clicked:</b> ' + e.detail.displayName;
+      }
+    });
+    picker.addEventListener('line2clicked', e => {
+      const output = document.querySelector('.output');
+
+      if (e && e.detail && e.detail.mail) {
+        output.innerHTML = '<b>line2clicked:</b> ' + e.detail.mail;
+      }
+    });
+    picker.addEventListener('line3clicked', e => {
+      const output = document.querySelector('.output');
+
+      if (e && e.detail && e.detail.jobTitle) {
+        output.innerHTML = '<b>line3clicked:</b> ' + e.detail.jobTitle;
+      }
+    });
+  </script>
+
+  <style>
+    .example {
+      margin-bottom: 20px;
+    }
+  </style>
+`;
+
 export const personPresence = () => html`
   <mgt-person person-query="me" show-presence view="twoLines"></mgt-person>
 `;
