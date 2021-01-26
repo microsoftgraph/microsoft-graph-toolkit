@@ -1,7 +1,7 @@
 {
   "name": "electron-app-mgt",
   "version": "1.0.0",
-  "description": "A sample Electron application that uses msal-node to acquire tokens",
+  "description": "A sample Electron application that uses Microsoft Graph Toolkit to authenticate and call Microsoft Graph",
   "main": "app.ts",
   "private": true,
   "scripts": {
