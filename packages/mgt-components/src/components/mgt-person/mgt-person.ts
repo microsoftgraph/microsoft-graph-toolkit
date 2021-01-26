@@ -650,15 +650,15 @@ export class MgtPerson extends MgtTemplatedComponent {
     `;
   }
 
-  private line1ClickedEvent() {
+  private handleLine1Clicked() {
     this.fireCustomEvent('line1clicked', this.personDetails);
   }
 
-  private line2ClickedEvent() {
+  private handleLine2Clicked() {
     this.fireCustomEvent('line2clicked', this.personDetails);
   }
 
-  private line3ClickedEvent() {
+  private handleLine3Clicked() {
     this.fireCustomEvent('line3clicked', this.personDetails);
   }
 
@@ -682,7 +682,7 @@ export class MgtPerson extends MgtTemplatedComponent {
       const text = this.getTextFromProperty(person, this.line1Property);
       if (text) {
         details.push(html`
-          <div class="line1" aria-label="${text}" @click=${() => this.line1ClickedEvent()}>${text}</div>
+          <div class="line1" aria-label="${text}" @click=${() => this.handleLine1Clicked()}>${text}</div>
         `);
       }
     }
@@ -691,7 +691,7 @@ export class MgtPerson extends MgtTemplatedComponent {
       const text = this.getTextFromProperty(person, this.line2Property);
       if (text) {
         details.push(html`
-          <div class="line2" aria-label="${text}" @click=${() => this.line2ClickedEvent()}>${text}</div>
+          <div class="line2" aria-label="${text}" @click=${() => this.handleLine2Clicked()}>${text}</div>
         `);
       }
     }
@@ -700,7 +700,7 @@ export class MgtPerson extends MgtTemplatedComponent {
       const text = this.getTextFromProperty(person, this.line3Property);
       if (text) {
         details.push(html`
-          <div class="line3" aria-label="${text}" @click=${() => this.line3ClickedEvent()}>${text}</div>
+          <div class="line3" aria-label="${text}" @click=${() => this.handleLine3Clicked()}>${text}</div>
         `);
       }
     }

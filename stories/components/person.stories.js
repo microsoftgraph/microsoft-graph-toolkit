@@ -57,22 +57,22 @@ export const personLineClickEvents = () => html`
   <div class="output">no line clicked</div>
 
   <script>
-    const picker = document.querySelector('mgt-person');
-    picker.addEventListener('line1clicked', e => {
+    const person = document.querySelector('mgt-person');
+    person.addEventListener('line1clicked', e => {
       const output = document.querySelector('.output');
 
       if (e && e.detail && e.detail.displayName) {
         output.innerHTML = '<b>line1clicked:</b> ' + e.detail.displayName;
       }
     });
-    picker.addEventListener('line2clicked', e => {
+    person.addEventListener('line2clicked', e => {
       const output = document.querySelector('.output');
 
       if (e && e.detail && e.detail.mail) {
         output.innerHTML = '<b>line2clicked:</b> ' + e.detail.mail;
       }
     });
-    picker.addEventListener('line3clicked', e => {
+    person.addEventListener('line3clicked', e => {
       const output = document.querySelector('.output');
 
       if (e && e.detail && e.detail.jobTitle) {
