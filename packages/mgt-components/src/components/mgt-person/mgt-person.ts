@@ -77,6 +77,10 @@ export interface MgtPersonConfig {
  * @class MgtPerson
  * @extends {MgtTemplatedComponent}
  *
+ * @fires line1clicked - Fired when line1 is clicked
+ * @fires line2clicked - Fired when line2 is clicked
+ * @fires line3clicked - Fired when line3 is clicked
+ *
  * @cssprop --avatar-size - {Length} Avatar size
  * @cssprop --avatar-border - {String} Avatar border
  * @cssprop --avatar-border-radius - {String} Avatar border radius
@@ -646,6 +650,18 @@ export class MgtPerson extends MgtTemplatedComponent {
     `;
   }
 
+  private line1ClickedEvent() {
+    this.fireCustomEvent('line1clicked', this.personDetails);
+  }
+
+  private line2ClickedEvent() {
+    this.fireCustomEvent('line2clicked', this.personDetails);
+  }
+
+  private line3ClickedEvent() {
+    this.fireCustomEvent('line3clicked', this.personDetails);
+  }
+
   /**
    * Render the details part of the person template.
    *
@@ -666,7 +682,7 @@ export class MgtPerson extends MgtTemplatedComponent {
       const text = this.getTextFromProperty(person, this.line1Property);
       if (text) {
         details.push(html`
-          <div class="line1" aria-label="${text}">${text}</div>
+          <div class="line1" aria-label="${text}" @click=${() => this.line1ClickedEvent()}>${text}</div>
         `);
       }
     }
@@ -675,7 +691,7 @@ export class MgtPerson extends MgtTemplatedComponent {
       const text = this.getTextFromProperty(person, this.line2Property);
       if (text) {
         details.push(html`
-          <div class="line2" aria-label="${text}">${text}</div>
+          <div class="line2" aria-label="${text}" @click=${() => this.line2ClickedEvent()}>${text}</div>
         `);
       }
     }
@@ -684,7 +700,7 @@ export class MgtPerson extends MgtTemplatedComponent {
       const text = this.getTextFromProperty(person, this.line3Property);
       if (text) {
         details.push(html`
-          <div class="line3" aria-label="${text}">${text}</div>
+          <div class="line3" aria-label="${text}" @click=${() => this.line3ClickedEvent()}>${text}</div>
         `);
       }
     }
