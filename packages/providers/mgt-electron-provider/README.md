@@ -1,4 +1,4 @@
-# Microsoft Graph Toolkit MSAL Provider
+# Microsoft Graph Toolkit Electron Provider
 The [Microsoft Graph Toolkit (mgt)](https://aka.ms/mgt) library is a collection of authentication providers and UI components powered by Microsoft Graph. 
 
 The `@microsoft/mgt-electron-provider` package exposes the `ElectronAuthenticator` and `ElectronProvider` classes which uses MSAL node to sign in users and acquire tokens to use with Microsoft Graph.
