@@ -10,8 +10,8 @@
     "developer": {
       "name": "Microsoft Graph Toolkit",
       "websiteUrl": "https://docs.microsoft.com/graph/toolkit/overview",
-      "privacyUrl": "https://docs.microsoft.com/graph/toolkit/overview",
-      "termsOfUseUrl": "https://docs.microsoft.com/graph/toolkit/overview",
+      "privacyUrl": "https://privacy.microsoft.com/privacystatement",
+      "termsOfUseUrl": "https://privacy.microsoft.com/privacystatement",
       "mpnId": "000000"
     }
   },
