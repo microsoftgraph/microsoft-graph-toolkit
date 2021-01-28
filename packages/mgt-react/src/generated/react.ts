@@ -116,6 +116,9 @@ export type PersonProps = {
 	avatarSize?: AvatarSize;
 	templateContext?: TemplateContext;
 	mediaQuery?: ComponentMediaQuery;
+	line1clicked?: (e: Event) => void;
+	line2clicked?: (e: Event) => void;
+	line3clicked?: (e: Event) => void;
 }
 
 export type TasksProps = {
