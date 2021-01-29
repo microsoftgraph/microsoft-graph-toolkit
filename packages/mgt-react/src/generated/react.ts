@@ -5,8 +5,6 @@ import * as MicrosoftGraphBeta from '@microsoft/microsoft-graph-types-beta';
 import {wrapMgt} from '../Mgt';
 
 export type AgendaProps = {
-	className?: string;
-	id?: string;
 	date?: string;
 	groupId?: string;
 	days?: number;
@@ -21,8 +19,6 @@ export type AgendaProps = {
 }
 
 export type GetProps = {
-	className?: string;
-	id?: string;
 	resource?: string;
 	scopes?: string[];
 	version?: string;
@@ -37,8 +33,6 @@ export type GetProps = {
 }
 
 export type LoginProps = {
-	className?: string;
-	id?: string;
 	userDetails?: IDynamicPerson;
 	templateContext?: TemplateContext;
 	mediaQuery?: ComponentMediaQuery;
@@ -50,8 +44,6 @@ export type LoginProps = {
 }
 
 export type PeoplePickerProps = {
-	className?: string;
-	id?: string;
 	groupId?: string;
 	type?: PersonType;
 	groupType?: GroupType;
@@ -68,8 +60,6 @@ export type PeoplePickerProps = {
 }
 
 export type PeopleProps = {
-	className?: string;
-	id?: string;
 	groupId?: string;
 	userIds?: string[];
 	people?: IDynamicPerson[];
@@ -82,8 +72,6 @@ export type PeopleProps = {
 }
 
 export type PersonCardProps = {
-	className?: string;
-	id?: string;
 	personDetails?: IDynamicPerson;
 	personQuery?: string;
 	userId?: string;
@@ -98,8 +86,6 @@ export type PersonCardProps = {
 }
 
 export type PersonProps = {
-	className?: string;
-	id?: string;
 	config?: MgtPersonConfig;
 	personQuery?: string;
 	userId?: string;
@@ -122,8 +108,6 @@ export type PersonProps = {
 }
 
 export type TasksProps = {
-	className?: string;
-	id?: string;
 	res?: TasksStringResource;
 	isNewTaskVisible?: boolean;
 	readOnly?: boolean;
@@ -145,8 +129,6 @@ export type TasksProps = {
 }
 
 export type TeamsChannelPickerProps = {
-	className?: string;
-	id?: string;
 	selectedItem?: SelectedChannel;
 	templateContext?: TemplateContext;
 	mediaQuery?: ComponentMediaQuery;
@@ -154,8 +136,6 @@ export type TeamsChannelPickerProps = {
 }
 
 export type TodoProps = {
-	className?: string;
-	id?: string;
 	taskFilter?: TodoFilter;
 	readOnly?: boolean;
 	hideHeader?: boolean;
