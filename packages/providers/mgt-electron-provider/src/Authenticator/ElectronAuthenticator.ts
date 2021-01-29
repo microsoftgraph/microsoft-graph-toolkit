@@ -19,7 +19,7 @@ import {
 import { AuthenticationProviderOptions } from '@microsoft/microsoft-graph-client/lib/es/IAuthenticationProviderOptions';
 import { BrowserWindow, ipcMain } from 'electron';
 import { CustomFileProtocolListener } from './CustomFileProtocol';
-import { REDIRECT_URI } from './Constants';
+import { REDIRECT_URI, COMMON_AUTHORITY_URL } from './Constants';
 
 /**
  * base config for MSAL authentication
@@ -60,13 +60,11 @@ interface MsalElectronConfig {
   scopes?: string[];
 
   /**
-   * Incremental consent, false by default
+   * Cache plugin to enable persistent caching
    *
-   * @type {boolean}
+   * @type {ICachePlugin}
    * @memberof MsalElectronConfig
    */
-  isIncrementalConsentEnabled?: boolean;
-
   cachePlugin?: ICachePlugin;
 }
 
@@ -113,21 +111,49 @@ export class ElectronAuthenticator {
   private authCodeRequest: AuthorizationCodeRequest;
 
   //Listener that will listen for auth code in response
-  authCodeListener: CustomFileProtocolListener;
+  private authCodeListener: CustomFileProtocolListener;
 
   //List of scopes denied by user so that they are not asked again
   private deniedScopes: string[];
 
-  //List of scopes that are initially consented
-  scopes: string[];
+  //Instance of the authenticator
+  private static instance: ElectronAuthenticator;
 
-  constructor(config: MsalElectronConfig) {
+  /**
+   * Creates an instance of ElectronAuthenticator.
+   * @param {MsalElectronConfig} config
+   * @memberof ElectronAuthenticator
+   */
+  private constructor(config: MsalElectronConfig) {
     this.setConfig(config);
     this.account = null;
     this.mainWindow = config.mainWindow;
     this.setRequestObjects(config.scopes);
-    this.isIncrementalConsentEnabled = config.isIncrementalConsentEnabled ? true : false;
+    this.isIncrementalConsentEnabled = false;
     this.setupProvider();
+  }
+
+  /**
+   * Initialize the authenticator. Call this method in your main process to create an instance of ElectronAuthenticator.
+   *
+   * @static
+   * @param {MsalElectronConfig} config
+   * @memberof ElectronAuthenticator
+   */
+  public static initialize(config: MsalElectronConfig) {
+    if (!ElectronAuthenticator.instance) {
+      ElectronAuthenticator.instance = new ElectronAuthenticator(config);
+    }
+  }
+
+  /**
+   * Getter for the ElectronAuthenticator instance.
+   *
+   * @readonly
+   * @memberof ElectronAuthenticator
+   */
+  public get instance() {
+    return this.instance;
   }
 
   /**
@@ -141,7 +167,7 @@ export class ElectronAuthenticator {
     this.ms_config = {
       auth: {
         clientId: config.clientId,
-        authority: config.authority
+        authority: config.authority ? config.authority : COMMON_AUTHORITY_URL
       },
       cache: config.cachePlugin ? { cachePlugin: config.cachePlugin } : null,
       system: {
@@ -158,11 +184,11 @@ export class ElectronAuthenticator {
   /**
    * Set up request parameters
    *
-   * @private
+   * @protected
    * @param {*} [scopes]
    * @memberof ElectronAuthenticator
    */
-  private setRequestObjects(scopes?): void {
+  protected setRequestObjects(scopes?): void {
     const requestScopes = scopes ? scopes : [];
     const redirectUri = REDIRECT_URI;
 
@@ -181,19 +207,20 @@ export class ElectronAuthenticator {
   /**
    * Set up an auth window with an option to be visible (invisible during silent sign in)
    *
+   * @protected
    * @param {boolean} visible
    * @memberof ElectronAuthenticator
    */
-  setAuthWindow(visible: boolean) {
+  protected setAuthWindow(visible: boolean) {
     this.authWindow = new BrowserWindow({ show: visible });
   }
 
   /**
    * Set up messaging between authenticator and provider
-   *
+   * @protected
    * @memberof ElectronAuthenticator
    */
-  setupProvider() {
+  protected setupProvider() {
     this.mainWindow.webContents.on('did-finish-load', async () => {
       await this.attemptSilentLogin();
     });
@@ -224,11 +251,12 @@ export class ElectronAuthenticator {
   /**
    * Get access token
    *
+   * @protected
    * @param {AuthenticationProviderOptions} [options]
    * @return {*}  {Promise<string>}
    * @memberof ElectronAuthenticator
    */
-  async getAccessToken(options?: AuthenticationProviderOptions): Promise<string> {
+  protected async getAccessToken(options?: AuthenticationProviderOptions): Promise<string> {
     let authResponse;
     const scopes = options && options.scopes ? options.scopes : this.authCodeUrlParams.scopes;
     const account = this.account || (await this.getAccount());
@@ -250,12 +278,13 @@ export class ElectronAuthenticator {
   /**
    * Get token silently if available
    *
+   * @protected
    * @param {*} tokenRequest
    * @param {*} [scopes]
    * @return {*}  {Promise<AuthenticationResult>}
    * @memberof ElectronAuthenticator
    */
-  async getTokenSilent(tokenRequest, scopes?): Promise<AuthenticationResult> {
+  protected async getTokenSilent(tokenRequest, scopes?): Promise<AuthenticationResult> {
     let token;
     try {
       return await this.clientApplication.acquireTokenSilent(tokenRequest);
@@ -263,7 +292,6 @@ export class ElectronAuthenticator {
       if (!this.isIncrementalConsentEnabled) {
         return null;
       }
-      console.log('Silent token acquisition failed, acquiring token using redirect');
       if (!this.areScopesDenied(scopes)) {
         token = await this.getTokenInteractive(Prompt_Type.consent, scopes);
       } else {
@@ -275,11 +303,11 @@ export class ElectronAuthenticator {
 
   /**
    * Login (open popup and allow user to select account/login)
-   *
+   * @private
    * @return {*}
    * @memberof ElectronAuthenticator
    */
-  async login() {
+  protected async login() {
     const authResponse = await this.getTokenInteractive(Prompt_Type.select_account);
     return this.setAccountFromResponse(authResponse);
   }
@@ -287,10 +315,11 @@ export class ElectronAuthenticator {
   /**
    * Logout
    *
+   * @private
    * @return {*}  {Promise<void>}
    * @memberof ElectronAuthenticator
    */
-  async logout(): Promise<void> {
+  protected async logout(): Promise<void> {
     if (this.account) {
       await this.clientApplication.getTokenCache().removeAccount(this.account);
       this.account = null;
@@ -317,12 +346,13 @@ export class ElectronAuthenticator {
   /**
    * Get token interactively and optionally allow prompt to select account
    *
+   * @protected
    * @param {Prompt_Type} prompt_type
    * @param {*} [scopes]
    * @return {*}  {Promise<AuthenticationResult>}
    * @memberof ElectronAuthenticator
    */
-  async getTokenInteractive(prompt_type: Prompt_Type, scopes?): Promise<AuthenticationResult> {
+  protected async getTokenInteractive(prompt_type: Prompt_Type, scopes?): Promise<AuthenticationResult> {
     let authResult;
     const requestScopes = scopes ? scopes : this.authCodeUrlParams.scopes;
     const authCodeUrlParams = {
@@ -341,7 +371,6 @@ export class ElectronAuthenticator {
         code: authCode
       })
       .catch((e: AuthError) => {
-        console.log('Denied scopes');
         this.addDeniedScopes(requestScopes);
       });
     return authResult;
@@ -418,20 +447,19 @@ export class ElectronAuthenticator {
   /**
    * Attempt to Silently Sign In
    *
+   * @protected
    * @memberof ElectronAuthenticator
    */
-  async attemptSilentLogin() {
+  protected async attemptSilentLogin() {
     this.account = this.account || (await this.getAccount());
     if (this.account) {
       const token = await this.getAccessToken();
       if (token) {
         this.mainWindow.webContents.send('isloggedin', true);
       } else {
-        console.log('No token');
         this.mainWindow.webContents.send('isloggedin', false);
       }
     } else {
-      console.log('No accounts detected');
       this.mainWindow.webContents.send('isloggedin', false);
     }
   }
@@ -448,13 +476,10 @@ export class ElectronAuthenticator {
     const currentAccounts = await cache.getAllAccounts();
 
     if (currentAccounts === null) {
-      console.log('No accounts detected');
       return null;
     }
 
     if (currentAccounts.length > 1) {
-      // Add choose account code here
-      console.log('Multiple accounts detected, need to add choose account code.');
       return currentAccounts[0];
     } else if (currentAccounts.length === 1) {
       return currentAccounts[0];

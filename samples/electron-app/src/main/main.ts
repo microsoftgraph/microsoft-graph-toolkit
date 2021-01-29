@@ -17,9 +17,11 @@ export default class Main {
 
   static onReady() {
     Main.createMainWindow();
-    Main.authProvider = new ElectronAuthenticator({
+
+    //Initialize the authenticator
+    ElectronAuthenticator.initialize({
       clientId: 'e5774a5b-d84d-4f30-892e-c4f73a503943',
-      authority: 'https://login.microsoftonline.com/29d87d10-93c7-4330-8d09-d6ac77ae5af2',
+      // authority: '<authority URL optional, uses common authority by default.>',
       mainWindow: Main.mainWindow,
       scopes: [
         'user.read',
@@ -35,6 +37,24 @@ export default class Main {
         'tasks.read'
       ]
     });
+    // Main.authProvider = new ElectronAuthenticator({
+    //   clientId: 'e5774a5b-d84d-4f30-892e-c4f73a503943',
+    //   // authority: '<authority URL optional , uses common authority by default. See >',
+    //   mainWindow: Main.mainWindow,
+    //   scopes: [
+    //     'user.read',
+    //     'people.read',
+    //     'user.readbasic.all',
+    //     'contacts.read',
+    //     'calendars.read',
+    //     'presence.read.all',
+    //     'tasks.readwrite',
+    //     'presence.read',
+    //     'user.read.all',
+    //     'group.read.all',
+    //     'tasks.read'
+    //   ]
+    // });
     Main.mainWindow.loadFile(path.join(__dirname, '../index.html'));
     Main.mainWindow.on('closed', Main.onClose);
   }
