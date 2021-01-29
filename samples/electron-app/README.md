@@ -12,7 +12,9 @@ This sample shows how the ElectronProvider works in a simple Electron applicatio
 cd /samples/src/electron-app
 ```
 # Install dependencies
+```cmd
 yarn
+```
 # Run the app
 ```cmd
 yarn start
