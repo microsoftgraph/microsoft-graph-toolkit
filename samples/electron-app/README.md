@@ -2,14 +2,15 @@
 
 **Clone and run for a quick way to see Microsoft Graph Toolkit Integrated in Electron**
 
-## To Use
+# To Use
 
-# Navigate to this project folder
-cd /samples/src/electron-app
+## Navigate to this project folder
+cd ./samples/electron-app
 
-# Install dependencies
+## Install dependencies
 yarn
-# Run the app
+
+## Run the app
 yarn build
 yarn start
 ```
