@@ -117,8 +117,5 @@
   "prettier": {
     "printWidth": 120,
     "singleQuote": true
-  },
-  "dependencies": {
-    "npm": "^6.14.10"
   }
 }

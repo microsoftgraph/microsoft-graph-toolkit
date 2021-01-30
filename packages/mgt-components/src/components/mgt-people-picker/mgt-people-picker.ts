@@ -432,27 +432,6 @@ export class MgtPeoplePicker extends MgtTemplatedComponent {
       return null;
     }
 
-    if (this.disabled) {
-      return html`
-        <div class="${classMap(inputClasses)}">
-          <input
-            id="people-picker-input"
-            class="search-box__input"
-            type="text"
-            placeholder=${placeholder}
-            label="people-picker-input"
-            aria-label="people-picker-input"
-            role="input"
-            @keydown="${this.onUserKeyDown}"
-            @keyup="${this.onUserKeyUp}"
-            @blur=${this.lostFocus}
-            @click=${this.handleFlyout}
-            disabled
-          />
-        </div>
-      `;
-    }
-
     return html`
       <div class="${classMap(inputClasses)}">
         <input
@@ -467,6 +446,7 @@ export class MgtPeoplePicker extends MgtTemplatedComponent {
           @keyup="${this.onUserKeyUp}"
           @blur=${this.lostFocus}
           @click=${this.handleFlyout}
+          ?disabled=${this.disabled}
         />
       </div>
     `;

@@ -12,7 +12,7 @@ class App extends Component {
       <div className="App">
         <Login loginCompleted={() => console.log('login completed')} />
         <Agenda groupByDay="true" />
-        <PeoplePicker disabled />
+        <PeoplePicker disabled={true} />
         <Person personDetails={personDetails} view={PersonViewType.oneline} />
       </div>
     );
