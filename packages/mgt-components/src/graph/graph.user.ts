@@ -268,7 +268,7 @@ export async function findUsers(graph: IGraph, query: string, top: number = 10):
       .api('users')
       .header('ConsistencyLevel', 'eventual')
       .count(true)
-      .search(`"displayName:${query}"`)
+      .search(`"displayName:${query}" OR "mail:${query}"`)
       .top(top)
       .middlewareOptions(prepScopes(scopes))
       .get();
