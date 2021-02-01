@@ -142,7 +142,6 @@ export const pickerDisabled = () => html`
   <mgt-people-picker
     default-selected-user-ids="e3d0513b-449e-4198-ba6f-bd97ae7cae85, 40079818-3808-4585-903b-02605f061225" disabled>
   </mgt-people-picker>
-  </mgt-people-picker>
 `;
 
 export const pickerDefaultSelectedUserIds = () => html`
