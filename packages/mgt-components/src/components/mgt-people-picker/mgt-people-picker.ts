@@ -261,6 +261,18 @@ export class MgtPeoplePicker extends MgtTemplatedComponent {
   public placeholder: string;
 
   /**
+   * Determines whether component should be disabled or not
+   *
+   * @type {boolean}
+   * @memberof MgtPeoplePicker
+   */
+  @property({
+    attribute: 'disabled',
+    type: Boolean
+  })
+  public disabled: boolean;
+
+  /**
    * Determines whether component allows multiple or single selection of people
    *
    * @type {string}
@@ -295,7 +307,6 @@ export class MgtPeoplePicker extends MgtTemplatedComponent {
   // List of people requested if group property is provided
   private _groupPeople: IDynamicPerson[];
   private _debouncedSearch: { (): void; (): void };
-
   private defaultSelectedUsers: IDynamicPerson[];
 
   @internalProperty() private _isFocused = false;
@@ -310,6 +321,7 @@ export class MgtPeoplePicker extends MgtTemplatedComponent {
     this.userInput = '';
     this.showMax = 6;
     this.selectedPeople = [];
+    this.disabled = false;
   }
 
   /**
@@ -434,6 +446,7 @@ export class MgtPeoplePicker extends MgtTemplatedComponent {
           @keyup="${this.onUserKeyUp}"
           @blur=${this.lostFocus}
           @click=${this.handleFlyout}
+          ?disabled=${this.disabled}
         />
       </div>
     `;
