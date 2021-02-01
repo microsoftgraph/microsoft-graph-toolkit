@@ -1,6 +1,6 @@
 import { app, BrowserWindow } from 'electron';
 import * as path from 'path';
-import { ElectronAuthenticator } from '@microsoft/mgt-electron-provider/dist/Authenticator';
+import { ElectronAuthenticator, SimpleCachePlugin } from '@microsoft/mgt-electron-provider/dist/Authenticator';
 export default class Main {
   static application: Electron.App;
   public static mainWindow: Electron.BrowserWindow;
@@ -21,7 +21,7 @@ export default class Main {
     //Initialize the authenticator
     ElectronAuthenticator.initialize({
       clientId: 'e5774a5b-d84d-4f30-892e-c4f73a503943',
-      // authority: '<authority URL optional, uses common authority by default.>',
+      // authority: '<authority URL optional, uses common authority by default>',
       mainWindow: Main.mainWindow,
       scopes: [
         'user.read',
@@ -35,26 +35,9 @@ export default class Main {
         'user.read.all',
         'group.read.all',
         'tasks.read'
-      ]
+      ],
+      cachePlugin: SimpleCachePlugin
     });
-    // Main.authProvider = new ElectronAuthenticator({
-    //   clientId: 'e5774a5b-d84d-4f30-892e-c4f73a503943',
-    //   // authority: '<authority URL optional , uses common authority by default. See >',
-    //   mainWindow: Main.mainWindow,
-    //   scopes: [
-    //     'user.read',
-    //     'people.read',
-    //     'user.readbasic.all',
-    //     'contacts.read',
-    //     'calendars.read',
-    //     'presence.read.all',
-    //     'tasks.readwrite',
-    //     'presence.read',
-    //     'user.read.all',
-    //     'group.read.all',
-    //     'tasks.read'
-    //   ]
-    // });
     Main.mainWindow.loadFile(path.join(__dirname, '../index.html'));
     Main.mainWindow.on('closed', Main.onClose);
   }

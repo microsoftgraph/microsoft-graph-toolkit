@@ -20,7 +20,6 @@ import { AuthenticationProviderOptions } from '@microsoft/microsoft-graph-client
 import { BrowserWindow, ipcMain } from 'electron';
 import { CustomFileProtocolListener } from './CustomFileProtocol';
 import { REDIRECT_URI, COMMON_AUTHORITY_URL } from './Constants';
-
 /**
  * base config for MSAL authentication
  *
@@ -74,8 +73,7 @@ interface MsalElectronConfig {
  * @enum {number}
  */
 enum Prompt_Type {
-  select_account = 'select_account',
-  consent = 'consent'
+  select_account = 'select_account'
 }
 
 /**
@@ -88,9 +86,6 @@ enum Prompt_Type {
 export class ElectronAuthenticator {
   //config variables to set up MSAL auth
   private ms_config: Configuration;
-
-  //Enable incremental consent, false by default
-  private isIncrementalConsentEnabled: Boolean = false;
 
   //Application instance
   public clientApplication: PublicClientApplication;
@@ -113,9 +108,6 @@ export class ElectronAuthenticator {
   //Listener that will listen for auth code in response
   private authCodeListener: CustomFileProtocolListener;
 
-  //List of scopes denied by user so that they are not asked again
-  private deniedScopes: string[];
-
   //Instance of the authenticator
   private static instance: ElectronAuthenticator;
 
@@ -129,7 +121,6 @@ export class ElectronAuthenticator {
     this.account = null;
     this.mainWindow = config.mainWindow;
     this.setRequestObjects(config.scopes);
-    this.isIncrementalConsentEnabled = false;
     this.setupProvider();
   }
 
@@ -289,15 +280,7 @@ export class ElectronAuthenticator {
     try {
       return await this.clientApplication.acquireTokenSilent(tokenRequest);
     } catch (error) {
-      if (!this.isIncrementalConsentEnabled) {
-        return null;
-      }
-      if (!this.areScopesDenied(scopes)) {
-        token = await this.getTokenInteractive(Prompt_Type.consent, scopes);
-      } else {
-        throw new Error('Scopes are denied');
-      }
-      return token;
+      return null;
     }
   }
 
@@ -371,50 +354,9 @@ export class ElectronAuthenticator {
         code: authCode
       })
       .catch((e: AuthError) => {
-        this.addDeniedScopes(requestScopes);
+        console.log(e.errorMessage);
       });
     return authResult;
-  }
-
-  /**
-   * Check if scopes have been previously denied
-   *
-   * @protected
-   * @param {string[]} scopes
-   * @return {*}
-   * @memberof ElectronAuthenticator
-   */
-  protected areScopesDenied(scopes: string[]) {
-    if (scopes) {
-      if (this.deniedScopes && this.deniedScopes.filter(s => -1 !== scopes.indexOf(s)).length > 0) {
-        return true;
-      }
-    }
-    return false;
-  }
-
-  /**
-   * If scopes are denied, add them to the list of denied scopes
-   *
-   * @protected
-   * @param {string[]} scopes
-   * @memberof ElectronAuthenticator
-   */
-  protected addDeniedScopes(scopes: string[]) {
-    if (scopes) {
-      let deniedScopes: string[] = this.deniedScopes || [];
-      this.deniedScopes = deniedScopes.concat(scopes);
-
-      let index = deniedScopes.indexOf('openid');
-      if (index !== -1) {
-        deniedScopes.splice(index, 1);
-      }
-
-      index = deniedScopes.indexOf('profile');
-      if (index !== -1) {
-        deniedScopes.splice(index, 1);
-      }
-    }
   }
 
   /**
