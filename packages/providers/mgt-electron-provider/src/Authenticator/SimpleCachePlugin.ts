@@ -1,4 +1,4 @@
-// NOTE : This is a simple cache plugin that you can use to test storage and access of tokens.
+// NOTE : This is a simple cache plugin made for the purpose of demonstrating caching support for the Electron Provider.
 // PLEASE DO NOT USE THIS IN PRODUCTION ENVIRONMENTS.
 
 const fs = require('fs');
@@ -57,7 +57,7 @@ const afterCacheAccess = async cacheContext => {
   }
 };
 
-//This is a simple cache plugin made for the purpose of demonstrating caching support for the Electron Provider. Not recommended for use in production environments.
+// PLEASE DO NOT USE THIS IN PRODUCTION ENVIRONMENTS.
 export const SimpleCachePlugin = {
   beforeCacheAccess,
   afterCacheAccess
