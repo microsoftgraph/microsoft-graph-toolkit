@@ -12,6 +12,7 @@ import { findPeople, getEmailFromGraphEntity } from '../../graph/graph.people';
 import { getPersonImage } from '../../graph/graph.photos';
 import { getUserPresence } from '../../graph/graph.presence';
 import { getUserWithPhoto } from '../../graph/graph.userWithPhoto';
+import { findUsers } from '../../graph/graph.user';
 import { AvatarSize, IDynamicPerson } from '../../graph/types';
 import { Providers, ProviderState, MgtTemplatedComponent } from '@microsoft/mgt-element';
 import '../../styles/style-helper';
@@ -75,6 +76,10 @@ export interface MgtPersonConfig {
  * @export
  * @class MgtPerson
  * @extends {MgtTemplatedComponent}
+ *
+ * @fires line1clicked - Fired when line1 is clicked
+ * @fires line2clicked - Fired when line2 is clicked
+ * @fires line3clicked - Fired when line3 is clicked
  *
  * @cssprop --avatar-size - {Length} Avatar size
  * @cssprop --avatar-border - {String} Avatar border
@@ -645,6 +650,18 @@ export class MgtPerson extends MgtTemplatedComponent {
     `;
   }
 
+  private handleLine1Clicked() {
+    this.fireCustomEvent('line1clicked', this.personDetails);
+  }
+
+  private handleLine2Clicked() {
+    this.fireCustomEvent('line2clicked', this.personDetails);
+  }
+
+  private handleLine3Clicked() {
+    this.fireCustomEvent('line3clicked', this.personDetails);
+  }
+
   /**
    * Render the details part of the person template.
    *
@@ -665,7 +682,7 @@ export class MgtPerson extends MgtTemplatedComponent {
       const text = this.getTextFromProperty(person, this.line1Property);
       if (text) {
         details.push(html`
-          <div class="line1" aria-label="${text}">${text}</div>
+          <div class="line1" aria-label="${text}" @click=${() => this.handleLine1Clicked()}>${text}</div>
         `);
       }
     }
@@ -674,7 +691,7 @@ export class MgtPerson extends MgtTemplatedComponent {
       const text = this.getTextFromProperty(person, this.line2Property);
       if (text) {
         details.push(html`
-          <div class="line2" aria-label="${text}">${text}</div>
+          <div class="line2" aria-label="${text}" @click=${() => this.handleLine2Clicked()}>${text}</div>
         `);
       }
     }
@@ -683,7 +700,7 @@ export class MgtPerson extends MgtTemplatedComponent {
       const text = this.getTextFromProperty(person, this.line3Property);
       if (text) {
         details.push(html`
-          <div class="line3" aria-label="${text}">${text}</div>
+          <div class="line3" aria-label="${text}" @click=${() => this.handleLine3Clicked()}>${text}</div>
         `);
       }
     }
@@ -785,7 +802,11 @@ export class MgtPerson extends MgtTemplatedComponent {
       this._fetchedImage = this.getImage();
     } else if (this.personQuery) {
       // Use the personQuery to find our person.
-      const people = await findPeople(graph, this.personQuery, 1);
+      let people = await findPeople(graph, this.personQuery, 1);
+
+      if (!people || people.length === 0) {
+        people = (await findUsers(graph, this.personQuery, 1)) || [];
+      }
 
       if (people && people.length) {
         this.personDetails = people[0];

@@ -40,10 +40,7 @@ for (const tag of wc.tags) {
     className: className
   });
 
-  const props = {
-    className: 'string',
-    id: 'string'
-  };
+  const props = {};
 
   for (const prop of tag.properties) {
     if (prop.type) {
