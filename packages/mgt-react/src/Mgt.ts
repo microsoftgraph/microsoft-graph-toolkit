@@ -30,7 +30,7 @@ export class Mgt extends Wc {
   public render() {
     const tag = this.getTag();
     if (!tag) {
-      throw '"type" must be set!';
+      throw '"wcType" must be set!';
     }
 
     this.processTemplates(this.props.children);
@@ -141,6 +141,7 @@ export class Mgt extends Wc {
  * @returns React component
  */
 export const wrapMgt = <T = WcProps>(tag: string) => {
-  const component: React.FC<T> = (props: T) => React.createElement(Mgt, { type: tag, ...props });
+  const component: React.FC<T & React.HTMLAttributes<any>> = (props: T) =>
+    React.createElement(Mgt, { wcType: tag, ...props });
   return component;
 };
