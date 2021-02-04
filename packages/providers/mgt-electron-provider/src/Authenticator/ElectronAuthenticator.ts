@@ -94,31 +94,85 @@ enum AuthState {
  * @class ElectronAuthenticator
  */
 export class ElectronAuthenticator {
-  //config variables to set up MSAL auth
+  /**
+   * Configuration for MSAL Authentication
+   *
+   * @private
+   * @type {Configuration}
+   * @memberof ElectronAuthenticator
+   */
   private ms_config: Configuration;
 
-  //Application instance
+  /**
+   * Application instance
+   *
+   * @type {PublicClientApplication}
+   * @memberof ElectronAuthenticator
+   */
   public clientApplication: PublicClientApplication;
 
-  //Mainwindow instance
+  /**
+   * Mainwindow instance
+   *
+   * @type {BrowserWindow}
+   * @memberof ElectronAuthenticator
+   */
   public mainWindow: BrowserWindow;
 
   //Popup which will take the user through the login/consent process
+
+  /**
+   *
+   *
+   * @type {BrowserWindow}
+   * @memberof ElectronAuthenticator
+   */
   public authWindow: BrowserWindow;
 
-  //Logged in account
+  /**
+   * Logged in account
+   *
+   * @private
+   * @type {AccountInfo}
+   * @memberof ElectronAuthenticator
+   */
   private account: AccountInfo;
 
-  //Params to generate the URL for MSAL auth
+  /**
+   * Params to generate the URL for MSAL auth
+   *
+   * @private
+   * @type {AuthorizationUrlRequest}
+   * @memberof ElectronAuthenticator
+   */
   private authCodeUrlParams: AuthorizationUrlRequest;
 
-  //Request for authentication call
+  /**
+   * Request for authentication call
+   *
+   * @private
+   * @type {AuthorizationCodeRequest}
+   * @memberof ElectronAuthenticator
+   */
   private authCodeRequest: AuthorizationCodeRequest;
 
-  //Listener that will listen for auth code in response
+  /**
+   * Listener that will listen for auth code in response
+   *
+   * @private
+   * @type {CustomFileProtocolListener}
+   * @memberof ElectronAuthenticator
+   */
   private authCodeListener: CustomFileProtocolListener;
 
-  //Instance of the authenticator
+  /**
+   * Instance of the authenticator
+   *
+   * @private
+   * @static
+   * @type {ElectronAuthenticator}
+   * @memberof ElectronAuthenticator
+   */
   private static authInstance: ElectronAuthenticator;
 
   /**
@@ -245,7 +299,7 @@ export class ElectronAuthenticator {
 
     ipcMain.handle('logout', async () => {
       await this.logout();
-      this.mainWindow.webContents.send('isloggedin', false);
+      this.mainWindow.webContents.send('mgtAuthState', AuthState.LOGGED_OUT);
     });
   }
 
@@ -271,8 +325,6 @@ export class ElectronAuthenticator {
     }
     if (authResponse) {
       return authResponse.accessToken;
-    } else {
-      throw new Error('Permission Denied');
     }
   }
 
@@ -363,7 +415,7 @@ export class ElectronAuthenticator {
         code: authCode
       })
       .catch((e: AuthError) => {
-        console.log(e.errorMessage);
+        throw e;
       });
     return authResult;
   }
@@ -406,12 +458,12 @@ export class ElectronAuthenticator {
     if (this.account) {
       const token = await this.getAccessToken();
       if (token) {
-        this.mainWindow.webContents.send('isloggedin', true);
+        this.mainWindow.webContents.send('mgtAuthState', AuthState.LOGGED_IN);
       } else {
-        this.mainWindow.webContents.send('isloggedin', false);
+        this.mainWindow.webContents.send('mgtAuthState', AuthState.LOGGED_OUT);
       }
     } else {
-      this.mainWindow.webContents.send('isloggedin', false);
+      this.mainWindow.webContents.send('mgtAuthState', AuthState.LOGGED_OUT);
     }
   }
 

@@ -5,8 +5,10 @@
  * -------------------------------------------------------------------------------------------
  */
 
-// NOTE : This is a simple cache plugin made for the purpose of demonstrating caching support for the Electron Provider.
-// PLEASE DO NOT USE THIS IN PRODUCTION ENVIRONMENTS.
+/**
+ *  NOTE : This is a simple cache plugin made for the purpose of demonstrating caching support for the Electron Provider.
+ *  PLEASE DO NOT USE THIS IN PRODUCTION ENVIRONMENTS.
+ */
 
 const fs = require('fs');
 var path = require('path');
@@ -64,7 +66,10 @@ const afterCacheAccess = async cacheContext => {
   }
 };
 
-// PLEASE DO NOT USE THIS IN PRODUCTION ENVIRONMENTS.
+/**
+ *  PLEASE DO NOT USE THIS IN PRODUCTION ENVIRONMENTS.
+ *
+ */
 export const SimpleCachePlugin = {
   beforeCacheAccess,
   afterCacheAccess

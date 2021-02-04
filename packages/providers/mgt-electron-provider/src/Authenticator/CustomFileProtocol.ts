@@ -6,7 +6,6 @@
  */
 
 import { AuthCodeListener } from './AuthCodeListener';
-
 import { protocol } from 'electron';
 import * as path from 'path';
 import * as url from 'url';
@@ -26,7 +25,6 @@ export class CustomFileProtocolListener extends AuthCodeListener {
    * listen for Auth Code response.
    */
   public start(): void {
-    console.log('Protocol', protocol);
     protocol.registerFileProtocol(this.host, (req, callback) => {
       const requestUrl = url.parse(req.url, true);
       callback(path.normalize(`${__dirname}/${requestUrl.path}`));
