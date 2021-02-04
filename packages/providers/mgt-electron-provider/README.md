@@ -49,16 +49,17 @@ See [provider usage documentation](https://docs.microsoft.com/graph/toolkit/prov
 See [Electron provider documentation](https://docs.microsoft.com/graph/toolkit/providers/electron)
 
 ### Cache Plugin
+
 [MSAL Node](https://github.com/AzureAD/microsoft-authentication-library-for-js/tree/dev/lib/msal-node) supports an in-memory cache by default and provides the ICachePlugin interface to perform cache serialization, but does not provide a default way of storing the token cache to disk. If you need persistent cache storage to enable silent log-ins or cross-platform caching, we recommend using the default implementation provided by MSAL Node [here](https://github.com/AzureAD/microsoft-authentication-library-for-js/tree/dev/extensions/msal-node-extensions). You can import this plugin, and pass the instance of the cache plugin while initializing ElectronAuthenticator.
 
-    ```ts
-    let config: MsalElectronConfig = {
-      ...
-      cachePlugin: new PersistenceCachePlugin(filePersistence)
-    };
-    ```
-
- For more details on how to implement this, refer to the sample for this extension [here](https://github.com/AzureAD/microsoft-authentication-library-for-js/tree/dev/extensions/samples/msal-node-extensions).  
+```ts
+let config: MsalElectronConfig = {
+   ...
+cachePlugin: new PersistenceCachePlugin(filePersistence)
+};
+```
+    
+For more details on how to implement this, refer to the sample for this extension [here](https://github.com/AzureAD/microsoft-authentication-library-for-js/tree/dev/extensions/samples/msal-node-extensions).  
     
 
 
