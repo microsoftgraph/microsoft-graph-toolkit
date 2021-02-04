@@ -30,10 +30,10 @@ export class ElectronProvider extends IProvider {
    * @memberof ElectronProvider
    */
   setupProvider() {
-    ipcRenderer.on('isloggedin', async (event, isLoggedIn) => {
-      if (isLoggedIn) {
+    ipcRenderer.on('mgtAuthState', async (event, authState) => {
+      if (authState === 'logged_in') {
         Providers.globalProvider.setState(ProviderState.SignedIn);
-      } else {
+      } else if (authState === 'logged_out') {
         Providers.globalProvider.setState(ProviderState.SignedOut);
       }
     });
