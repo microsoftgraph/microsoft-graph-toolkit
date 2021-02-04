@@ -45,8 +45,7 @@ The `@microsoft/mgt-electron-provider` package exposes the `ElectronAuthenticato
     ElectronAuthenticator.initialize(config);
     ```
 
-See [provider usage documentation](https://docs.microsoft.com/graph/toolkit/providers) to learn about how to use the providers with the mgt components, to sign in/sign out, get access tokens, call Microsoft Graph, and more.
-See [Electron provider documentation](https://docs.microsoft.com/graph/toolkit/providers/electron)
+See [provider usage documentation](https://docs.microsoft.com/graph/toolkit/providers) to learn about how to use the providers with the mgt components, to sign in/sign out, get access tokens, call Microsoft Graph, and more. See [Electron provider documentation](https://docs.microsoft.com/graph/toolkit/providers/electron).
 
 ### Cache Plugin
 
