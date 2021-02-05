@@ -16,7 +16,7 @@ The `@microsoft/mgt-electron-provider` package exposes the `ElectronAuthenticato
 
     ```ts
     import {Providers} from '@microsoft/mgt-element';
-    import {ElectronProvider} from '@microsoft/mgt-electron-provider/dist/ElectronProvider';
+    import {ElectronProvider} from '@microsoft/mgt-electron-provider/dist/Provider';
 
     // initialize the auth provider globally
     Providers.globalProvider = new ElectronProvider();
@@ -39,7 +39,7 @@ The `@microsoft/mgt-electron-provider` package exposes the `ElectronAuthenticato
       authority: '<your_authority_url>', //optional, uses common authority by default
       mainWindow: mainWindow, //This is the BrowserWindow instance that requires authentication
       scopes: [
-        'user.read',
+        'user.read', 
       ],
     };
     ElectronAuthenticator.initialize(config);
