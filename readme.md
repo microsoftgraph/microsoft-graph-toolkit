@@ -63,6 +63,7 @@ All web components are also available as React component - see [@microsoft/mgt-r
 * [Teams Provider](https://docs.microsoft.com/graph/toolkit/providers/teams)
 * [Proxy Provider](https://docs.microsoft.com/graph/toolkit/providers/proxy)
 * [Simple Provider](https://docs.microsoft.com/graph/toolkit/providers/custom)
+* [Electron Provider](https://docs.microsoft.com/graph/toolkit/providers/electron)
 
 You can also create your own providers by extending the [IProvider](https://docs.microsoft.com/graph/toolkit/providers/custom) abstract class.
 
