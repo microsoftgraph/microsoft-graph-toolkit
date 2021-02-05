@@ -53,8 +53,8 @@ See [provider usage documentation](https://docs.microsoft.com/graph/toolkit/prov
 
 ```ts
 let config: MsalElectronConfig = {
-   ...
-cachePlugin: new PersistenceCachePlugin(filePersistence)
+  ...
+  cachePlugin: new PersistenceCachePlugin(filePersistence)
 };
 ```
     
