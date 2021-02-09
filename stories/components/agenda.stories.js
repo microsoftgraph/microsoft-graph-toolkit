@@ -11,12 +11,12 @@ import { withKnobs } from '@storybook/addon-knobs';
 import { withWebComponentsKnobs } from 'storybook-addon-web-components-knobs';
 import { withSignIn } from '../../.storybook/addons/signInAddon/signInAddon';
 import { withCodeEditor } from '../../.storybook/addons/codeEditorAddon/codeAddon';
-import '../../packages/mgt/dist/es6/components/mgt-agenda/mgt-agenda';
+import '../../packages/mgt-components/dist/es6/components/mgt-agenda/mgt-agenda';
 
 export default {
   title: 'Components | mgt-agenda',
   component: 'mgt-agenda',
-  decorators: [withA11y, withSignIn, withCodeEditor],
+  decorators: [withCodeEditor],
   parameters: { options: { selectedPanel: 'storybookjs/knobs/panel' } }
 };
 
@@ -34,4 +34,13 @@ export const getByDate = () => html`
 
 export const getEventsForNextWeek = () => html`
   <mgt-agenda group-by-day days="7"></mgt-agenda>
+`;
+
+export const darkTheme = () => html`
+  <mgt-agenda group-by-day days="7" class="mgt-dark"></mgt-agenda>
+  <style>
+    body {
+      background-color: black;
+    }
+  </style>
 `;

@@ -11,12 +11,12 @@ import { withKnobs } from '@storybook/addon-knobs';
 import { withWebComponentsKnobs } from 'storybook-addon-web-components-knobs';
 import { withSignIn } from '../../.storybook/addons/signInAddon/signInAddon';
 import { withCodeEditor } from '../../.storybook/addons/codeEditorAddon/codeAddon';
-import '../../packages/mgt/dist/es6/components/mgt-person/mgt-person';
+import '../../packages/mgt-components/dist/es6/components/mgt-person/mgt-person';
 
 export default {
   title: 'Components | mgt-person',
   component: 'mgt-person',
-  decorators: [withA11y, withSignIn, withCodeEditor],
+  decorators: [withCodeEditor],
   parameters: { options: { selectedPanel: 'storybookjs/knobs/panel' } }
 };
 
@@ -26,6 +26,66 @@ export const person = () => html`
 
 export const personPhotoOnly = () => html`
   <mgt-person person-query="me"></mgt-person>
+`;
+
+export const personView = () => html`
+  <div class="example">
+    <mgt-person person-query="me" view="avatar"></mgt-person>
+  </div>
+  <div class="example">
+    <mgt-person person-query="me" view="oneline"></mgt-person>
+  </div>
+  <div class="example">
+    <mgt-person person-query="me" view="twolines"></mgt-person>
+  </div>
+  <div class="example">
+    <mgt-person person-query="me" view="threelines"></mgt-person>
+  </div>
+
+  <style>
+    .example {
+      margin-bottom: 20px;
+    }
+  </style>
+`;
+
+export const personLineClickEvents = () => html`
+  <div class="example">
+    <mgt-person person-query="me" view="threelines"></mgt-person>
+  </div>
+
+  <div class="output">no line clicked</div>
+
+  <script>
+    const person = document.querySelector('mgt-person');
+    person.addEventListener('line1clicked', e => {
+      const output = document.querySelector('.output');
+
+      if (e && e.detail && e.detail.displayName) {
+        output.innerHTML = '<b>line1clicked:</b> ' + e.detail.displayName;
+      }
+    });
+    person.addEventListener('line2clicked', e => {
+      const output = document.querySelector('.output');
+
+      if (e && e.detail && e.detail.mail) {
+        output.innerHTML = '<b>line2clicked:</b> ' + e.detail.mail;
+      }
+    });
+    person.addEventListener('line3clicked', e => {
+      const output = document.querySelector('.output');
+
+      if (e && e.detail && e.detail.jobTitle) {
+        output.innerHTML = '<b>line3clicked:</b> ' + e.detail.jobTitle;
+      }
+    });
+  </script>
+
+  <style>
+    .example {
+      margin-bottom: 20px;
+    }
+  </style>
 `;
 
 export const personPresence = () => html`
@@ -156,14 +216,15 @@ export const personPresenceDisplayAll = () => html`
   <mgt-person class="small" id="oof-small" person-query="JoniS@M365x214355.onmicrosoft.com" show-presence></mgt-person>
 `;
 
-export const darkMode = () => html`
-  <div class="title"><span>Transparent presence badge background:</span></div>
-  <mgt-person person-query="me" view="twoLines" show-presence></mgt-person>
-  <div class="title"><span>Light presence icon:</span></div>
-  <mgt-person id="online" person-query="Isaiah Langer" show-presence view="twoLines"></mgt-person>
-  <div class="title"><span>Dark presence icon:</span></div>
-  <mgt-person id="dnd" person-query="Lynne Robbins" show-presence view="twoLines"></mgt-person>
-
+export const darkTheme = () => html`
+  <div class="mgt-dark">
+    <div class="title"><span>Transparent presence badge background:</span></div>
+    <mgt-person person-query="me" view="twoLines" show-presence></mgt-person>
+    <div class="title"><span>Light presence icon:</span></div>
+    <mgt-person id="online" person-query="Isaiah Langer" show-presence view="twoLines"></mgt-person>
+    <div class="title"><span>Dark presence icon:</span></div>
+    <mgt-person id="dnd" person-query="Lynne Robbins" show-presence view="twoLines"></mgt-person>
+  </div>
   <script>
     const online = {
       activity: 'Available',
@@ -183,12 +244,8 @@ export const darkMode = () => html`
   </script>
 
   <style>
-    .story-mgt-preview-wrapper {
+    body {
       background-color: black;
-    }
-    mgt-person {
-      --color: white;
-      --presence-background-color: black;
     }
     .title {
       color: white;
@@ -196,13 +253,15 @@ export const darkMode = () => html`
       padding: 5px;
       font-size: 20px;
       margin: 10px 0 10px 0;
+      font-family: 'Segoe UI', 'Segoe UI Web (West European)', 'Segoe UI', -apple-system, BlinkMacSystemFont, Roboto,
+        'Helvetica Neue', sans-serif;
     }
     .title span {
       border-bottom: 1px solid #8a8886;
       padding-bottom: 5px;
     }
-    #dnd {
-      --presence-icon-color: black;
+    #online {
+      --presence-icon-color: white;
     }
   </style>
 `;
@@ -256,22 +315,22 @@ export const moreExamples = () => html`
   </style>
 
   <div class="example">
-    <span>Default person</span>
+    <div>Default person</div>
     <mgt-person person-query="me"></mgt-person>
   </div>
 
   <div class="example">
-    <span>One line</span>
+    <div>One line</div>
     <mgt-person person-query="me" view="oneline"></mgt-person>
   </div>
 
   <div class="example">
-    <span>Two lines</span>
+    <div>Two lines</div>
     <mgt-person person-query="me" view="twoLines"></mgt-person>
   </div>
 
   <div class="example">
-    <span>Change line content</span>
+    <div>Change line content</div>
     <!--add fallback property by comma separating-->
     <mgt-person
       person-query="me"
@@ -282,22 +341,22 @@ export const moreExamples = () => html`
   </div>
 
   <div class="example">
-    <span>Large avatar</span>
+    <div>Large avatar</div>
     <mgt-person person-query="me" avatar-size="large"></mgt-person>
   </div>
 
   <div class="example">
-    <span>Different styles (see css tab for style)</span>
+    <div>Different styles (see css tab for style)</div>
     <mgt-person class="styled-person" person-query="me" view="twoLines"></mgt-person>
   </div>
 
   <div class="example" style="width: 200px">
-    <span>Overflow</span>
+    <div>Overflow</div>
     <mgt-person person-query="me" view="twoLines"></mgt-person>
   </div>
 
   <div class="example">
-    <span>No data template</span>
+    <div>No data template</div>
     <mgt-person>
       <template data-type="no-data">
         <div>No person</div>
@@ -306,20 +365,12 @@ export const moreExamples = () => html`
   </div>
 
   <div class="example">
-    <span>Person card</span>
+    <div>Person card</div>
     <mgt-person person-query="me" view="twoLines" person-card="hover"></mgt-person>
   </div>
 
   <div class="example">
-    <span>Style initials (see css tab for style)</span>
+    <div>Style initials (see css tab for style)</div>
     <mgt-person class="person-initials" person-query="alex@fineartschool.net" view="oneline"></mgt-person>
-  </div>
-
-  <div class="example">
-    <span>DEPRECATED (show-name, show-email)</span>
-    <mgt-person person-query="me"></mgt-person>
-    <mgt-person person-query="me" show-name></mgt-person>
-    <mgt-person person-query="me" show-email></mgt-person>
-    <mgt-person person-query="me" show-name show-email></mgt-person>
   </div>
 `;

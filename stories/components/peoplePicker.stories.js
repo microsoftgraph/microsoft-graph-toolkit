@@ -11,12 +11,12 @@ import { withKnobs } from '@storybook/addon-knobs';
 import { withWebComponentsKnobs } from 'storybook-addon-web-components-knobs';
 import { withSignIn } from '../../.storybook/addons/signInAddon/signInAddon';
 import { withCodeEditor } from '../../.storybook/addons/codeEditorAddon/codeAddon';
-import '../../packages/mgt/dist/es6/components/mgt-people-picker/mgt-people-picker';
+import '../../packages/mgt-components/dist/es6/components/mgt-people-picker/mgt-people-picker';
 
 export default {
   title: 'Components | mgt-people-picker',
   component: 'mgt-people-picker',
-  decorators: [withA11y, withSignIn, withCodeEditor],
+  decorators: [withCodeEditor],
   parameters: { options: { selectedPanel: 'storybookjs/knobs/panel' } }
 };
 
@@ -29,17 +29,91 @@ export const groupId = () => html`
   <mgt-people-picker group-id="02bd9fd6-8f93-4758-87c3-1fb73740a315"></mgt-people-picker>
 `;
 
-export const DarkMode = () => html`
-  <mgt-people-picker theme="dark"></mgt-people-picker>
+export const dynamicGroupId = () => html`
+  <mgt-people-picker id="picker"></mgt-people-picker>
+  <div>
+    <p class="notes">Pick a group:</p>
+    <select id="groupChooser" name="group">
+      <option value="">none</option>
+    </select>
+    <p class="notes">People chosen:</p>
+    <div id="chosenPeople"></div>
+  </div>
+
   <style>
-    .story-mgt-preview-wrapper {
-      background-color: black;
+    body {
+      font-family: 'Segoe UI', 'Segoe UI Web (West European)', 'Segoe UI', -apple-system, BlinkMacSystemFont, Roboto,
+        'Helvetica Neue', sans-serif;
+    }
+
+    .notes {
+      font-size: 12px;
+      margin-bottom: 2px;
     }
   </style>
+  <script type="module">
+    import { Providers, ProviderState } from '@microsoft/mgt';
+
+    let picker = document.getElementById('picker');
+    let chosenArea = document.getElementById('chosenPeople');
+    let groupChooser = document.getElementById('groupChooser');
+
+    groupChooser.addEventListener('change', getGroupValue);
+
+    loadGroups();
+    Providers.onProviderUpdated(loadGroups);
+
+    function loadGroups() {
+      let provider = Providers.globalProvider;
+      if (provider && provider.state === ProviderState.SignedIn) {
+        let client = provider.graph.client;
+
+        client
+          .api('/groups')
+          .get()
+          .then(groups => {
+            for (let group of groups.value) {
+              let option = document.createElement('option');
+              option.value = group.id;
+              option.text = group.displayName;
+
+              groupChooser.appendChild(option);
+            }
+          });
+      }
+    }
+
+    picker.addEventListener('selectionChanged', function(e) {
+      //reset area
+      chosenArea.innerHTML = '';
+      //render selected people to chosen people div
+      for (var i = 0; i < e.detail.length; i++) {
+        let newElem = document.createElement('div');
+        newElem.innerHTML = e.detail[i].displayName + ' ' + e.detail[i].id;
+        chosenArea.append(newElem);
+      }
+    });
+
+    function getGroupValue(e) {
+      let selection = groupChooser.selectedOptions[0];
+      if (selection !== undefined) {
+        setGroupValue(selection.value);
+      }
+    }
+
+    function setGroupValue(selected) {
+      picker.setAttribute('group', selected);
+    }
+  </script>
 `;
 
 export const pickPeopleAndGroups = () => html`
   <mgt-people-picker type="any"></mgt-people-picker>
+  <!-- type can be "any", "person", "group" -->
+`;
+
+export const pickPeopleAndGroupsNested = () => html`
+  <mgt-people-picker type="any" transitive-search="true"></mgt-people-picker>
   <!-- type can be "any", "person", "group" -->
 `;
 
@@ -64,8 +138,24 @@ export const pickerOverflowGradient = () => html`
   </style>
 `;
 
+export const pickerDisabled = () => html`
+  <mgt-people-picker
+    default-selected-user-ids="e3d0513b-449e-4198-ba6f-bd97ae7cae85, 40079818-3808-4585-903b-02605f061225" disabled>
+  </mgt-people-picker>
+`;
+
 export const pickerDefaultSelectedUserIds = () => html`
   <mgt-people-picker
-    default-selected-user-ids="e3d0513b-449e-4198-ba6f-bd97ae7cae85, 40079818-3808-4585-903b-02605f061225"
-  ></mgt-people-picker>
+    default-selected-user-ids="e3d0513b-449e-4198-ba6f-bd97ae7cae85, 40079818-3808-4585-903b-02605f061225">
+  </mgt-people-picker>
+  </mgt-people-picker>
+`;
+
+export const darkTheme = () => html`
+  <mgt-people-picker class="mgt-dark"></mgt-people-picker>
+  <style>
+    body {
+      background-color: black;
+    }
+  </style>
 `;

@@ -1,12 +1,8 @@
 {
   "defaultSeverity": "warning",
-  "extends": [
-    "tslint:recommended"
-  ],
+  "extends": ["tslint:recommended"],
   "linterOptions": {
-    "exclude": [
-      "node_modules/**"
-    ]
+    "exclude": ["node_modules/**"]
   },
   "rules": {
     "quotemark": [true, "single"],
@@ -14,6 +10,7 @@
     "interface-name": false,
     "ordered-imports": false,
     "object-literal-sort-keys": false,
-    "no-consecutive-blank-lines": false
+    "no-consecutive-blank-lines": false,
+    "trailing-comma": false
   }
 }

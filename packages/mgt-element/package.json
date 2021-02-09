@@ -1,6 +1,6 @@
 {
   "name": "@microsoft/mgt-element",
-  "version": "1.0.0",
+  "version": "2.0.0",
   "description": "Microsoft Graph Toolkit base classes",
   "homepage": "https://github.com/microsoftgraph/microsoft-graph-toolkit",
   "bugs": {
@@ -12,33 +12,28 @@
   },
   "author": "Microsoft",
   "license": "MIT",
-  "main": "./dist/index.js",
-  "types": "./dist/index.d.ts",
-  "module": "./dist/index.js",
+  "main": "./dist/es6/index.js",
+  "types": "./dist/es6/index.d.ts",
+  "module": "./dist/es6/index.js",
   "files": [
     "dist",
     "src"
   ],
   "scripts": {
-    "build": "npm run clean && npm run build:compile",
+    "build": "npm run setVersion && npm run clean && npm run build:compile",
     "build:compile": "npm run compile",
     "build:watch": "npm run compile:watch",
     "clean": "shx rm -rf ./dist && shx rm -rf ./tsconfig.tsbuildinfo",
     "compile": "tsc -b",
     "compile:watch": "tsc -w",
     "lint": "tslint -c ../../tslint.json 'src/**/*.ts'",
-    "postpack": "cpx *.tgz ../../artifacts",
-    "prepack": "shx rm -rf *.tgz && npm run build"
+    "setVersion": "gulp setVersion --cwd .",
+    "postpack": "cpx *.tgz ../../artifacts"
   },
   "dependencies": {
-    "@microsoft/microsoft-graph-client": "^2.0.0",
-    "lit-element": "^2.3.1"
-  },
-  "devDependencies": {
-    "cpx": "^1.5.0",
-    "shx": "^0.3.2",
-    "tslint": "^5.20.1",
-    "typescript": "^3.7.5"
+    "@microsoft/microsoft-graph-client": "^2.2.1",
+    "lit-element": "^2.4.0",
+    "idb": "^5.0.7"
   },
   "publishConfig": {
     "directory": "dist"

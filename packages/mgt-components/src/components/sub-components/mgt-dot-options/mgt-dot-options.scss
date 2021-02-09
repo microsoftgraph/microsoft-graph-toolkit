@@ -1,0 +1,66 @@
+/**
+ * -------------------------------------------------------------------------------------------
+ * Copyright (c) Microsoft Corporation.  All Rights Reserved.  Licensed under the MIT License.
+ * See License in the project root for license information.
+ * -------------------------------------------------------------------------------------------
+ */
+
+@import '../../../styles/shared-styles.scss';
+@import '../../../styles/shared-sass-variables.scss';
+@import '../../../../../../node_modules/office-ui-fabric-core/dist/sass/References';
+
+$dot-options-translateX: var(--dot-options-translateX, translateX(-50px));
+
+:host,
+mgt-dot-options {
+  font-family: $font-family;
+}
+
+:host .DotIcon,
+mgt-dot-options .DotIcon {
+  display: inline-block;
+  font-family: 'FabricMDL2Icons';
+  min-width: 40px;
+  min-height: 30px;
+  text-align: center;
+  line-height: 30px;
+}
+
+:host .Menu,
+mgt-dot-options .Menu {
+  position: absolute;
+  box-shadow: set-var(box-shadow__color, $theme-default, $common) 0px 0px 40px 5px;
+  background: set-var(background-color, $theme-default, $common);
+  z-index: 1;
+  display: none;
+  color: set-var(color, $theme-default, $common);
+  white-space: nowrap;
+  transform: var(--dot-options-translateX, translateX(-50px));
+}
+
+:host .DotMenu.Open .Menu,
+mgt-dot-options .DotMenu.Open .Menu {
+  display: block;
+}
+
+:host .DotMenu .DotItem,
+mgt-dot-options .DotMenu .DotItem {
+  direction: ltr;
+  text-align: left;
+  padding: 10px 10px 8px 10px;
+}
+
+:host .DotMenu .DotItem:hover,
+mgt-dot-options .DotMenu .DotItem:hover {
+  background: set-var(background-color--hover, $theme-default, $common);
+}
+
+:host .DotMenu .DotItem:active,
+mgt-dot-options .DotMenu .DotItem:active {
+  background: set-var(background-color--active, $theme-default, $common);
+}
+
+:host .DotMenu .DotItemName,
+mgt-dot-options .DotMenu .DotItemName {
+  direction: rtl;
+}
