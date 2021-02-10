@@ -17,7 +17,7 @@ The file picker component provides a button, a drop down list of files, and as w
 | Extended file picker is launched when “See all” is clicked | P0 | |
 | **v2** | | |
 | Retrieve files from a specified insight type or from a specific drive location based on identifiers provided by developer | P1 | |
-| Ability for developer to toggle between single-select and multiselect | P1 | Will not be included in v1. | 
+| Ability for developer to toggle between single-select and multiselect | P1 | | 
 | Visual indication of selected files | P2 | |
 | Render the selected files | P2 | |
 
@@ -45,7 +45,6 @@ The file picker component provides a button, a drop down list of files, and as w
 | `site-id` | `siteId` | Id of the site the folder belongs to. Must also provide either `{item-id}` or `{item-path}`. Provide `{list-id}` if you’re referencing a file from a list. |
 | `item-id` | `itemId` | Id of the folder. Default query is `/me/drive/items`. Provide `{drive-id}`, `{group-id}`, `{site-id}`, or `{user-id}` to query a specific location. |
 | `item-path` | `itemPath` | Item path of the folder. Default query is `/me/drive/root`. Provide `{drive-id}`, `{group-id}`, `{site-id}`, or `{user-id}` to query a specific location. |
-| `selected-files` | `selectedFiles`| An array of selected file objects. |
 | `multiselect` | `multiselect` | Enable/Disable selection of more than 1 file. Default is `false`.|
 
 ## Events
@@ -79,3 +78,5 @@ The file picker component provides a button, a drop down list of files, and as w
 | loading | null: no data | The template used to render the state of the picker while the request to Graph is being made. |
 | error | null: no data | The template used if no files are returned |
 | file | file: the file details object | The template to render files in the dropdown |
+| button | null: no data | The template used to override the default button that opens the picker |
+| header | null: no data | The template used to override the header (text and "See All" button) displayed in the picker |
