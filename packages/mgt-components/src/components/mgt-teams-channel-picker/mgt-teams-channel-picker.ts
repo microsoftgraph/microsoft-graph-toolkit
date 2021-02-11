@@ -282,13 +282,18 @@ export class MgtTeamsChannelPicker extends MgtTemplatedComponent {
       visible: this._isDropdownVisible
     };
 
+    const searchClasses = {
+      'hide-icon': !!this._selectedItemState,
+      'search-wrapper': true
+    };
+
     return (
       this.renderTemplate('default', { teams: this.items }) ||
       html`
         <div class="root" @blur=${this.lostFocus} dir=${this.direction}>
           <div class=${classMap(inputClasses)} @click=${this.gainedFocus}>
             ${this.renderSelected()}
-            <div class="search-wrapper">${this.renderSearchIcon()} ${this.renderInput()}</div>
+            <div class=${classMap(searchClasses)}>${this.renderSearchIcon()} ${this.renderInput()}</div>
           </div>
           ${this.renderCloseButton()}
           <div class=${classMap(dropdownClasses)}>${this.renderDropdown()}</div>
@@ -314,6 +319,7 @@ export class MgtTeamsChannelPicker extends MgtTemplatedComponent {
         <div class="selected-team-name">${this._selectedItemState.parent.item.displayName}</div>
         <div class="arrow">${getSvg(SvgIcon.TeamSeparator, '#B3B0AD')}</div>
         ${this._selectedItemState.item.displayName}
+        <div class="search-wrapper">${this.renderSearchIcon()} ${this.renderInput()}</div>
       </li>
     `;
   }

@@ -5,35 +5,16 @@
  * -------------------------------------------------------------------------------------------
  */
 
-import { IGraph, prepScopes, CacheItem, CacheSchema, CacheService, CacheStore } from '@microsoft/mgt-element';
+import { IGraph, prepScopes, CacheItem, CacheService, CacheStore } from '@microsoft/mgt-element';
 import { User } from '@microsoft/microsoft-graph-types';
-import { findPeople, PersonType } from './graph.people';
-import {
-  getPhotoForResource,
-  getPhotoFromCache,
-  getPhotoInvalidationTime,
-  photosCacheEnabled,
-  storePhotoInCache,
-  CachePhoto
-} from './graph.photos';
-import { IDynamicPerson } from './types';
 
-/**
- * Describes the organization of the cache db
- */
-const cacheSchema: CacheSchema = {
-  name: 'users',
-  stores: {
-    users: {},
-    usersQuery: {}
-  },
-  version: 1
-};
+import { findPeople, PersonType } from './graph.people';
+import { schemas } from './cacheStores';
 
 /**
  * Object to be stored in cache
  */
-interface CacheUser extends CacheItem {
+export interface CacheUser extends CacheItem {
   /**
    * stringified json representing a user
    */
@@ -43,7 +24,7 @@ interface CacheUser extends CacheItem {
 /**
  * Object to be stored in cache
  */
-interface CacheUserQuery extends CacheItem {
+export interface CacheUserQuery extends CacheItem {
   /**
    * max number of results the query asks for
    */
@@ -57,23 +38,14 @@ interface CacheUserQuery extends CacheItem {
 /**
  * Defines the time it takes for objects in the cache to expire
  */
-const getUserInvalidationTime = (): number =>
+export const getUserInvalidationTime = (): number =>
   CacheService.config.users.invalidationPeriod || CacheService.config.defaultInvalidationPeriod;
 
 /**
  * Whether or not the cache is enabled
  */
-const usersCacheEnabled = (): boolean => CacheService.config.users.isEnabled && CacheService.config.isEnabled;
-
-/**
- * Name of the users store name
- */
-const userStore: string = 'users';
-
-/**
- * Name of the users query store name
- */
-const queryStore: string = 'usersQuery';
+export const getIsUsersCacheEnabled = (): boolean =>
+  CacheService.config.users.isEnabled && CacheService.config.isEnabled;
 
 /**
  * async promise, returns Graph User data relating to the user logged in
@@ -83,8 +55,8 @@ const queryStore: string = 'usersQuery';
  */
 export async function getMe(graph: IGraph): Promise<User> {
   let cache: CacheStore<CacheUser>;
-  if (usersCacheEnabled()) {
-    cache = CacheService.getCache<CacheUser>(cacheSchema, userStore);
+  if (getIsUsersCacheEnabled()) {
+    cache = CacheService.getCache<CacheUser>(schemas.users, schemas.users.stores.users);
     const me = await cache.getValue('me');
 
     if (me && getUserInvalidationTime() > Date.now() - me.timeCached) {
@@ -95,120 +67,10 @@ export async function getMe(graph: IGraph): Promise<User> {
     .api('me')
     .middlewareOptions(prepScopes('user.read'))
     .get();
-  if (usersCacheEnabled()) {
+  if (getIsUsersCacheEnabled()) {
     cache.putValue('me', { user: JSON.stringify(await response) });
   }
   return response;
-}
-
-/**
- * asnyc promise, returns IDynamicPerson
- *
- * @param {string} userId
- * @returns {(Promise<IDynamicPerson>)}
- * @memberof Graph
- */
-export async function getUserWithPhoto(graph: IGraph, userId?: string): Promise<IDynamicPerson> {
-  let photo = null;
-  let user: IDynamicPerson = null;
-
-  let cachedPhoto: CachePhoto;
-  let cachedUser: CacheUser;
-
-  const resource = userId ? `users/${userId}` : 'me';
-  const scopes = userId ? ['user.readbasic.all'] : ['user.read'];
-
-  // attempt to get user and photo from cache if enabled
-  if (usersCacheEnabled()) {
-    let cache = CacheService.getCache<CacheUser>(cacheSchema, userStore);
-    cachedUser = await cache.getValue(userId || 'me');
-    if (cachedUser && getUserInvalidationTime() > Date.now() - cachedUser.timeCached) {
-      user = cachedUser.user ? JSON.parse(cachedUser.user) : null;
-    } else {
-      cachedUser = null;
-    }
-  }
-  if (photosCacheEnabled()) {
-    cachedPhoto = await getPhotoFromCache(userId || 'me', 'users');
-    if (cachedPhoto && getPhotoInvalidationTime() > Date.now() - cachedPhoto.timeCached) {
-      photo = cachedPhoto.photo;
-    } else if (cachedPhoto) {
-      try {
-        const response = await graph.api(`${resource}/photo`).get();
-        if (response && response['@odata.mediaEtag'] && response['@odata.mediaEtag'] === cachedPhoto.eTag) {
-          // put current image into the cache to update the timestamp since etag is the same
-          storePhotoInCache(userId || 'me', 'users', cachedPhoto);
-          photo = cachedPhoto.photo;
-        } else {
-          cachedPhoto = null;
-        }
-      } catch (e) {}
-    }
-  }
-
-  // if both are not in the cache, batch get them
-  if (!cachedPhoto && !cachedUser) {
-    let eTag: string;
-
-    // batch calls
-    const batch = graph.createBatch();
-    if (userId) {
-      batch.get('user', `/users/${userId}`, ['user.readbasic.all']);
-      batch.get('photo', `users/${userId}/photo/$value`, ['user.readbasic.all']);
-    } else {
-      batch.get('user', 'me', ['user.read']);
-      batch.get('photo', 'me/photo/$value', ['user.read']);
-    }
-    const response = await batch.executeAll();
-
-    const photoResponse = response.get('photo');
-    if (photoResponse) {
-      eTag = photoResponse.headers['ETag'];
-      photo = photoResponse.content;
-    }
-
-    const userResponse = response.get('user');
-    if (userResponse) {
-      user = userResponse.content;
-    }
-
-    // store user & photo in their respective cache
-    if (usersCacheEnabled()) {
-      let cache = CacheService.getCache<CacheUser>(cacheSchema, userStore);
-      cache.putValue(userId || 'me', { user: JSON.stringify(user) });
-    }
-    if (photosCacheEnabled()) {
-      storePhotoInCache(userId || 'me', 'users', { eTag, photo: photo });
-    }
-  } else if (!cachedPhoto) {
-    // if only photo or user is not cached, get it individually
-    const response = await getPhotoForResource(graph, resource, scopes);
-    if (response) {
-      if (photosCacheEnabled()) {
-        storePhotoInCache(userId || 'me', 'users', { eTag: response.eTag, photo: response.photo });
-      }
-      photo = response.photo;
-    }
-  } else if (!cachedUser) {
-    // get user from graph
-    const response = await graph
-      .api(resource)
-      .middlewareOptions(prepScopes(...scopes))
-      .get();
-
-    if (response) {
-      if (usersCacheEnabled()) {
-        let cache = CacheService.getCache<CacheUser>(cacheSchema, userStore);
-        cache.putValue(userId || 'me', { user: JSON.stringify(response) });
-      }
-      user = response;
-    }
-  }
-
-  if (user) {
-    user.personImage = photo;
-  }
-  return user;
 }
 
 /**
@@ -222,8 +84,8 @@ export async function getUser(graph: IGraph, userPrincipleName: string): Promise
   const scopes = 'user.readbasic.all';
   let cache: CacheStore<CacheUser>;
 
-  if (usersCacheEnabled()) {
-    cache = CacheService.getCache<CacheUser>(cacheSchema, userStore);
+  if (getIsUsersCacheEnabled()) {
+    cache = CacheService.getCache<CacheUser>(schemas.users, schemas.users.stores.users);
     // check cache
     const user = await cache.getValue(userPrincipleName);
     // is it stored and is timestamp good?
@@ -237,7 +99,7 @@ export async function getUser(graph: IGraph, userPrincipleName: string): Promise
     .api(`/users/${userPrincipleName}`)
     .middlewareOptions(prepScopes(scopes))
     .get();
-  if (usersCacheEnabled()) {
+  if (getIsUsersCacheEnabled()) {
     cache.putValue(userPrincipleName, { user: JSON.stringify(response) });
   }
   return response;
@@ -260,14 +122,14 @@ export async function getUsersForUserIds(graph: IGraph, userIds: string[]): Prom
   const notInCache = [];
   let cache: CacheStore<CacheUser>;
 
-  if (usersCacheEnabled()) {
-    cache = CacheService.getCache<CacheUser>(cacheSchema, userStore);
+  if (getIsUsersCacheEnabled()) {
+    cache = CacheService.getCache<CacheUser>(schemas.users, schemas.users.stores.users);
   }
 
   for (const id of userIds) {
     peopleDict[id] = null;
     let user = null;
-    if (usersCacheEnabled()) {
+    if (getIsUsersCacheEnabled()) {
       user = await cache.getValue(id);
     }
     if (user && getUserInvalidationTime() > Date.now() - user.timeCached) {
@@ -284,7 +146,7 @@ export async function getUsersForUserIds(graph: IGraph, userIds: string[]): Prom
       const response = responses.get(id);
       if (response && response.content) {
         peopleDict[id] = response.content;
-        if (usersCacheEnabled()) {
+        if (getIsUsersCacheEnabled()) {
           cache.putValue(id, { user: JSON.stringify(response.content) });
         }
       }
@@ -295,7 +157,7 @@ export async function getUsersForUserIds(graph: IGraph, userIds: string[]): Prom
     try {
       // call getUser for all the users that weren't cached
       userIds.filter(id => notInCache.includes(id)).forEach(id => (peopleDict[id] = getUser(graph, id)));
-      if (usersCacheEnabled()) {
+      if (getIsUsersCacheEnabled()) {
         // store all users that weren't retrieved from the cache, into the cache
         userIds
           .filter(id => notInCache.includes(id))
@@ -325,16 +187,16 @@ export async function getUsersForPeopleQueries(graph: IGraph, peopleQueries: str
   const people = [];
   let cacheRes: CacheUserQuery;
   let cache: CacheStore<CacheUserQuery>;
-  if (usersCacheEnabled()) {
-    cache = CacheService.getCache<CacheUserQuery>(cacheSchema, queryStore);
+  if (getIsUsersCacheEnabled()) {
+    cache = CacheService.getCache<CacheUserQuery>(schemas.users, schemas.users.stores.usersQuery);
   }
 
   for (const personQuery of peopleQueries) {
-    if (usersCacheEnabled()) {
+    if (getIsUsersCacheEnabled()) {
       cacheRes = await cache.getValue(personQuery);
     }
 
-    if (usersCacheEnabled() && cacheRes && getUserInvalidationTime() > Date.now() - cacheRes.timeCached) {
+    if (getIsUsersCacheEnabled() && cacheRes && getUserInvalidationTime() > Date.now() - cacheRes.timeCached) {
       people.push(JSON.parse(cacheRes.results[0]));
     } else if (personQuery !== '') {
       batch.get(personQuery, `/me/people?$search="${personQuery}"`, ['people.read']);
@@ -348,7 +210,7 @@ export async function getUsersForPeopleQueries(graph: IGraph, peopleQueries: str
       const response = responses.get(personQuery);
       if (response && response.content && response.content.value && response.content.value.length > 0) {
         people.push(response.content.value[0]);
-        if (usersCacheEnabled()) {
+        if (getIsUsersCacheEnabled()) {
           cache.putValue(personQuery, { maxResults: 1, results: [JSON.stringify(response.content.value[0])] });
         }
       }
@@ -363,7 +225,7 @@ export async function getUsersForPeopleQueries(graph: IGraph, peopleQueries: str
           .map(async personQuery => {
             const personArray = await findPeople(graph, personQuery, 1);
             if (personArray && personArray.length) {
-              if (usersCacheEnabled()) {
+              if (getIsUsersCacheEnabled()) {
                 cache.putValue(personQuery, { maxResults: 1, results: [JSON.stringify(personArray[0])] });
               }
               return personArray[0];
@@ -390,8 +252,8 @@ export async function findUsers(graph: IGraph, query: string, top: number = 10):
   const item = { maxResults: top, results: null };
   let cache: CacheStore<CacheUserQuery>;
 
-  if (usersCacheEnabled()) {
-    cache = CacheService.getCache<CacheUserQuery>(cacheSchema, queryStore);
+  if (getIsUsersCacheEnabled()) {
+    cache = CacheService.getCache<CacheUserQuery>(schemas.users, schemas.users.stores.usersQuery);
     const result: CacheUserQuery = await cache.getValue(query);
 
     if (result && getUserInvalidationTime() > Date.now() - result.timeCached) {
@@ -406,13 +268,13 @@ export async function findUsers(graph: IGraph, query: string, top: number = 10):
       .api('users')
       .header('ConsistencyLevel', 'eventual')
       .count(true)
-      .search(`"displayName:${query}"`)
+      .search(`"displayName:${query}" OR "mail:${query}"`)
       .top(top)
       .middlewareOptions(prepScopes(scopes))
       .get();
   } catch {}
 
-  if (usersCacheEnabled() && graphResult) {
+  if (getIsUsersCacheEnabled() && graphResult) {
     item.results = graphResult.value.map(userStr => JSON.stringify(userStr));
     cache.putValue(query, item);
   }
@@ -443,8 +305,8 @@ export async function findGroupMembers(
   let cache: CacheStore<CacheUserQuery>;
   const key = `${groupId || '*'}:${query || '*'}:${personType}:${transitive}`;
 
-  if (usersCacheEnabled()) {
-    cache = CacheService.getCache<CacheUserQuery>(cacheSchema, queryStore);
+  if (getIsUsersCacheEnabled()) {
+    cache = CacheService.getCache<CacheUserQuery>(schemas.users, schemas.users.stores.usersQuery);
     const result: CacheUserQuery = await cache.getValue(key);
 
     if (result && getUserInvalidationTime() > Date.now() - result.timeCached) {
@@ -476,7 +338,7 @@ export async function findGroupMembers(
     .middlewareOptions(prepScopes(...scopes))
     .get();
 
-  if (usersCacheEnabled() && graphResult) {
+  if (getIsUsersCacheEnabled() && graphResult) {
     item.results = graphResult.value.map(userStr => JSON.stringify(userStr));
     cache.putValue(key, item);
   }
