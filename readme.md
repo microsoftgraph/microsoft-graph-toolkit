@@ -33,6 +33,7 @@
 | [`@microsoft/mgt-teams-provider`](https://www.npmjs.com/package/@microsoft/mgt-teams-provider) | <img src="https://img.shields.io/npm/v/@microsoft/mgt-teams-provider/latest.svg"> | <img src="https://img.shields.io/npm/v/@microsoft/mgt-teams-provider/next.svg"> |
 | [`@microsoft/mgt-sharepoint-provider`](https://www.npmjs.com/package/@microsoft/mgt-sharepoint-provider) | <img src="https://img.shields.io/npm/v/@microsoft/mgt-sharepoint-provider/latest.svg"> | <img src="https://img.shields.io/npm/v/@microsoft/mgt-sharepoint-provider/next.svg"> |
 | [`@microsoft/mgt-proxy-provider`](https://www.npmjs.com/package/@microsoft/mgt-proxy-provider) | <img src="https://img.shields.io/npm/v/@microsoft/mgt-proxy-provider/latest.svg"> | <img src="https://img.shields.io/npm/v/@microsoft/mgt-proxy-provider/next.svg"> |
+| [`@microsoft/mgt-electron-provider`](https://www.npmjs.com/package/@microsoft/mgt-electron-provider) | <img src="https://img.shields.io/npm/v/@microsoft/mgt-electron-provider/latest.svg"> | <img src="https://img.shields.io/npm/v/@microsoft/mgt-electron-provider/next.svg"> |
 
 ## Components
 
@@ -62,6 +63,7 @@ All web components are also available as React component - see [@microsoft/mgt-r
 * [Teams Provider](https://docs.microsoft.com/graph/toolkit/providers/teams)
 * [Proxy Provider](https://docs.microsoft.com/graph/toolkit/providers/proxy)
 * [Simple Provider](https://docs.microsoft.com/graph/toolkit/providers/custom)
+* [Electron Provider](https://docs.microsoft.com/graph/toolkit/providers/electron)
 
 You can also create your own providers by extending the [IProvider](https://docs.microsoft.com/graph/toolkit/providers/custom) abstract class.
 
