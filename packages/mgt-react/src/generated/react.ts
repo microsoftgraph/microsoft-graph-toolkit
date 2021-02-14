@@ -89,6 +89,7 @@ export type PersonCardProps = {
 export type PersonProps = {
 	config?: MgtPersonConfig;
 	personQuery?: string;
+	fallbackDetails?: IDynamicPerson;
 	userId?: string;
 	showPresence?: boolean;
 	personDetails?: IDynamicPerson;

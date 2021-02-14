@@ -146,6 +146,31 @@ export class MgtPerson extends MgtTemplatedComponent {
   }
 
   /**
+   * Fallback when no user is found
+   * @type {IDynamicPerson}
+   */
+  @property({
+    attribute: 'fallback-details',
+    type: Object
+  })
+  public get fallbackDetails(): IDynamicPerson {
+    return this._fallbackDetails;
+  }
+  public set fallbackDetails(value: IDynamicPerson) {
+    if (value === this._fallbackDetails) {
+      return;
+    }
+
+    this._fallbackDetails = value;
+    if (value && value.displayName) {
+      this._personAvatarBg = this.getColorFromName(value.displayName);
+    } else {
+      this._personAvatarBg = 'gray20';
+    }
+    this.requestStateUpdate();
+  }
+
+  /**
    * user-id property allows developer to use id value to determine person
    * @type {string}
    */
@@ -365,6 +390,7 @@ export class MgtPerson extends MgtTemplatedComponent {
   @internalProperty() private _personCardShouldRender: boolean;
 
   private _personDetails: IDynamicPerson;
+  private _fallbackDetails: IDynamicPerson;
   private _personAvatarBg: string;
   private _personImage: string;
   private _personPresence: Presence;
@@ -394,12 +420,12 @@ export class MgtPerson extends MgtTemplatedComponent {
    */
   public render() {
     // Loading
-    if (this.isLoadingState && !this.personDetails) {
+    if (this.isLoadingState && !this.personDetails && !this.fallbackDetails) {
       return this.renderLoading();
     }
 
     // Prep data
-    const person = this.personDetails;
+    const person = this.personDetails || this.fallbackDetails;
     const image = this.getImage();
     const presence = this.personPresence || this._fetchedPresence;
 
@@ -624,10 +650,11 @@ export class MgtPerson extends MgtTemplatedComponent {
    * @memberof MgtPersonCard
    */
   protected renderAvatar(personDetails: IDynamicPerson, image: string, presence: Presence): TemplateResult {
-    const title =
-      this.personDetails && this.personCardInteraction === PersonCardInteraction.none
-        ? this.personDetails.displayName || getEmailFromGraphEntity(this.personDetails) || ''
-        : '';
+    const title = this.fallbackDetails
+      ? this.fallbackDetails.displayName || ''
+      : this.personDetails && this.personCardInteraction === PersonCardInteraction.none
+      ? this.personDetails.displayName || getEmailFromGraphEntity(this.personDetails) || ''
+      : '';
 
     const imageClasses = {
       initials: !image || this._isInvalidImageSrc,
@@ -635,7 +662,7 @@ export class MgtPerson extends MgtTemplatedComponent {
       'user-avatar': true
     };
 
-    if ((!image || this._isInvalidImageSrc) && this.personDetails) {
+    if ((!image || this._isInvalidImageSrc) && (this.personDetails || this.fallbackDetails)) {
       // add avatar background color
       imageClasses[this._personAvatarBg] = true;
     }
@@ -951,7 +978,7 @@ export class MgtPerson extends MgtTemplatedComponent {
       switch (currentProp) {
         case 'mail':
         case 'email':
-          text = getEmailFromGraphEntity(personDetails);
+          text = this.fallbackDetails ? personDetails[currentProp] : getEmailFromGraphEntity(personDetails);
           break;
         default:
           text = personDetails[currentProp];
