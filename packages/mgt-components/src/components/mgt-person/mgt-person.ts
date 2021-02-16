@@ -726,7 +726,7 @@ export class MgtPerson extends MgtTemplatedComponent {
       const text = this.getTextFromProperty(person, this.line1Property);
       if (text) {
         details.push(html`
-          <div class="line1" aria-label="${text}">${text}</div>
+          <div class="line1" @click=${() => this.handleLine1Clicked()} aria-label="${text}">${text}</div>
         `);
       }
     }
@@ -735,7 +735,7 @@ export class MgtPerson extends MgtTemplatedComponent {
       const text = this.getTextFromProperty(person, this.line2Property);
       if (text) {
         details.push(html`
-          <div class="line2" aria-label="${text}">${text}</div>
+          <div class="line2" @click=${() => this.handleLine2Clicked()} aria-label="${text}">${text}</div>
         `);
       }
     }
@@ -744,7 +744,7 @@ export class MgtPerson extends MgtTemplatedComponent {
       const text = this.getTextFromProperty(person, this.line3Property);
       if (text) {
         details.push(html`
-          <div class="line3" aria-label="${text}">${text}</div>
+          <div class="line3" @click=${() => this.handleLine3Clicked()} aria-label="${text}">${text}</div>
         `);
       }
     }
