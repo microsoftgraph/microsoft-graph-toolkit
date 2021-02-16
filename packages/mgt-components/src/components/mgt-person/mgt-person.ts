@@ -162,6 +162,11 @@ export class MgtPerson extends MgtTemplatedComponent {
     }
 
     this._fallbackDetails = value;
+
+    if (this.personDetails) {
+      return;
+    }
+
     if (value && value.displayName) {
       this._personAvatarBg = this.getColorFromName(value.displayName);
     } else {
@@ -650,11 +655,10 @@ export class MgtPerson extends MgtTemplatedComponent {
    * @memberof MgtPersonCard
    */
   protected renderAvatar(personDetails: IDynamicPerson, image: string, presence: Presence): TemplateResult {
-    const title = this.fallbackDetails
-      ? this.fallbackDetails.displayName || ''
-      : this.personDetails && this.personCardInteraction === PersonCardInteraction.none
-      ? this.personDetails.displayName || getEmailFromGraphEntity(this.personDetails) || ''
-      : '';
+    const title =
+      personDetails && this.personCardInteraction === PersonCardInteraction.none
+        ? personDetails.displayName || getEmailFromGraphEntity(personDetails) || ''
+        : '';
 
     const imageClasses = {
       initials: !image || this._isInvalidImageSrc,
@@ -662,7 +666,7 @@ export class MgtPerson extends MgtTemplatedComponent {
       'user-avatar': true
     };
 
-    if ((!image || this._isInvalidImageSrc) && (this.personDetails || this.fallbackDetails)) {
+    if ((!image || this._isInvalidImageSrc) && personDetails) {
       // add avatar background color
       imageClasses[this._personAvatarBg] = true;
     }
@@ -978,7 +982,7 @@ export class MgtPerson extends MgtTemplatedComponent {
       switch (currentProp) {
         case 'mail':
         case 'email':
-          text = this.fallbackDetails ? personDetails[currentProp] : getEmailFromGraphEntity(personDetails);
+          text = getEmailFromGraphEntity(personDetails);
           break;
         default:
           text = personDetails[currentProp];
