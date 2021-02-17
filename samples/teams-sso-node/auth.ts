@@ -19,8 +19,7 @@ export function validateJwt(req: Request, res: Response, next: NextFunction): vo
     // const token = authHeader.split(' ')[1];
 
     const validationOptions = {
-      audience: process.env.SSO_API,
-      issuer: `https://sts.windows.net/${process.env.APP_TENANT_ID}/`
+      audience: process.env.CLIENT_ID,
     };
     jwt.verify(ssoToken, getSigningKey, validationOptions, (err, payload) => {
       if (err) {
@@ -61,11 +60,11 @@ export async function getAccessTokenOnBehalfOf(req: Request, res: Response): Pro
   const ssoToken: string = req.query.ssoToken!.toString();
   const clientId: string = req.query.clientId!.toString();
   const graphScopes: string[] = req.query.scopes!.toString().split(',');
-  
+
   // Get tenantId from the SSO Token
   const tenantId: string = jwt_decode<any>(ssoToken).tid;
   const clientSecret: string = process.env.APP_SECRET!;
- 
+
   // Create an MSAL client
   const msalClient = new msal.ConfidentialClientApplication({
     auth: {

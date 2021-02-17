@@ -3,57 +3,56 @@ Licensed under the MIT License. -->
 
 <!DOCTYPE html>
 <html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, shrink-to-fit=no" />
+    <title>Teams SSO Sample for Microsoft Graph Toolkit in Node.js</title>
 
-<head>
-  <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, shrink-to-fit=no">
-  <title>Teams SSO Sample for Microsoft Graph Toolkit in Node.js</title>
+    <script src="https://unpkg.com/@microsoft/teams-js/dist/MicrosoftTeams.min.js" crossorigin="anonymous"></script>
+    <script src="./mgt/mgt-loader.js"></script>
+    <link href="style.css" rel="stylesheet" type="text/css" />
+  </head>
 
-  <link rel="shortcut icon" href="g-raph.png">
-  <script src="https://unpkg.com/@microsoft/teams-js/dist/MicrosoftTeams.min.js" crossorigin="anonymous"></script>
-  <script src="./mgt/mgt-loader.js"></script>
-  <link href="style.css" rel="stylesheet" type="text/css" />
-</head>
+  <body>
+    <main id="main-container" role="main" class="container">
+      <!-- One way of using the TeamsProvider with SSO is to use the component provider as below  -->
 
-<body>
-  <main id="main-container" role="main" class="container">
-    <!-- One way of using the TeamsProvider with SSO is to use the component provider as below  -->
-
-    <!-- <mgt-teams-provider client-id="{ YOUR CLIENT ID }"
-      auth-popup-url="auth.html" 
+      <!-- <mgt-teams-provider client-id="{ YOUR CLIENT ID }"
+      auth-popup-url="auth.html"
       scopes="user.read,people.read,user.readbasic.all,contacts.read,presence.read,presence.read.all,tasks.readwrite,tasks.read"
       sso-url="/api/token">
     </mgt-teams-provider> -->
 
-    <h2>Person component</h2>
-    <mgt-person person-query="me" view="twoLines" person-card="hover" show-presence></mgt-person>
-    <h2>Todo component</h2>
-    <mgt-todo></mgt-todo>
-  </main>
+      <h2>Person component</h2>
+      <mgt-person person-query="me" view="twoLines" person-card="hover" show-presence></mgt-person>
+      <h2>Todo component</h2>
+      <mgt-todo></mgt-todo>
+      <mgt-agenda></mgt-agenda>
+    </main>
 
-  <script>
-    // This is the way to use the TeamsProvider with SSO in code
-    const scopes = [
-      'user.read',
-      'people.read',
-      'user.readbasic.all',
-      'contacts.read',
-      'presence.read',
-      'presence.read.all',
-      'tasks.readwrite',
-      'tasks.read'
-    ];
-    const config = {
-      authPopupUrl: 'auth.html',
-      ssoUrl: '/api/token',
-      clientId: 'f7d38469-d9d3-4bcd-981b-52eec8432009',
-      // clientId: { YOUR CLIENT ID },
-      scopes: scopes,
-      autoConsent: true
-    };
-    const provider = new mgt.TeamsProvider(config);
-    mgt.Providers.globalProvider = provider;
-  </script>
-</body>
-
+    <script>
+      // This is the way to use the TeamsProvider with SSO in code
+      const scopes = [
+        'user.read',
+        'people.read',
+        'user.readbasic.all',
+        'contacts.read',
+        'presence.read',
+        'presence.read.all',
+        'tasks.readwrite',
+        'tasks.read',
+        'calendars.read'
+      ];
+      const config = {
+        authPopupUrl: 'auth.html',
+        ssoUrl: '/api/token',
+        clientId: 'f7d38469-d9d3-4bcd-981b-52eec8432009',
+        // clientId: { YOUR CLIENT ID },
+        scopes: scopes,
+        autoConsent: true
+      };
+      const provider = new mgt.TeamsProvider(config);
+      mgt.Providers.globalProvider = provider;
+    </script>
+  </body>
 </html>
