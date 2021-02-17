@@ -12,7 +12,7 @@ import { findPeople, getEmailFromGraphEntity } from '../../graph/graph.people';
 import { getPersonImage } from '../../graph/graph.photos';
 import { getUserPresence } from '../../graph/graph.presence';
 import { getUserWithPhoto } from '../../graph/graph.userWithPhoto';
-import { findUsers, getMe, getUsersForUserIds } from '../../graph/graph.user';
+import { findUsers, getMe, getUser } from '../../graph/graph.user';
 import { AvatarSize, IDynamicPerson } from '../../graph/types';
 import { Providers, ProviderState, MgtTemplatedComponent } from '@microsoft/mgt-element';
 import '../../styles/style-helper';
@@ -850,11 +850,9 @@ export class MgtPerson extends MgtTemplatedComponent {
         if (this.personQuery === 'me') {
           person = await getMe(graph);
         } else {
-          person = await getUsersForUserIds(graph, [this.userId]);
-          person = person[0];
+          person = await getUser(graph, this.userId);
         }
       }
-      //person = await getUserWithPhoto(graph, this.userId);
       this.personDetails = person;
       this._fetchedImage = this.getImage();
     } else if (this.personQuery) {
