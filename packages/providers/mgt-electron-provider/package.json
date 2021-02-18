@@ -39,7 +39,7 @@
     "postpack": "cpx *.tgz ../../../artifacts"
   },
   "dependencies": {
-    "@azure/msal-node": "^1.0.0-beta.1",
+    "@azure/msal-node": "^1.0.0",
     "@microsoft/mgt-element": "*",
     "@microsoft/microsoft-graph-client": "^2.2.1",
     "electron": "^11.0.2"
