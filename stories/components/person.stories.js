@@ -49,6 +49,11 @@ export const personView = () => html`
   </style>
 `;
 
+export const personAvatarType = () => html`
+  <mgt-person person-query="me" avatar-type="photo"></mgt-person>
+  <mgt-person person-query="me" avatar-type="initials"></mgt-person>
+`;
+
 export const personLineClickEvents = () => html`
   <div class="example">
     <mgt-person person-query="me" view="threelines"></mgt-person>
