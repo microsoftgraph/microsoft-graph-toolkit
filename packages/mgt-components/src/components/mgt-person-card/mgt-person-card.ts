@@ -421,9 +421,7 @@ export class MgtPersonCard extends MgtTemplatedComponent {
     const navigationTemplate =
       this._history && this._history.length
         ? html`
-            <div class="nav">
-              <div class="nav__back" @click=${() => this.goBack()}>${getSvg(SvgIcon.Back)}</div>
-            </div>
+            <button tab-index="1" class="nav__back" @click=${() => this.goBack()}>${getSvg(SvgIcon.Back)}</button>
           `
         : null;
 
@@ -445,7 +443,7 @@ export class MgtPersonCard extends MgtTemplatedComponent {
 
     return html`
       <div class="root" dir=${this.direction} tabindex="-1">
-        ${navigationTemplate}
+        <div class="nav">${navigationTemplate}</div>
         <div class="person-details-container">${personDetailsTemplate}</div>
         <div class="expanded-details-container">${expandedDetailsTemplate}</div>
       </div>
@@ -524,10 +522,10 @@ export class MgtPersonCard extends MgtTemplatedComponent {
     let email: TemplateResult;
     if (getEmailFromGraphEntity(person)) {
       email = html`
-        <div class="icon" tabindex="0" @click=${() => this.emailUser()}>
+        <button class="icon" tabindex="0" @click=${() => this.emailUser()}>
           ${getSvg(SvgIcon.SmallEmail)}
           <span>${this.strings.sendEmailLinkSubtitle}</span>
-        </div>
+        </button>
       `;
     }
 

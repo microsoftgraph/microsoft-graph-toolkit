@@ -35,6 +35,8 @@ $person-card-details-item-font-size: var(--person-card-details-item-font-size, 1
       width: 32px;
       align-items: center;
       justify-content: center;
+      background: transparent;
+      border: none;
 
       svg {
         fill: #{$commblue_primary};
@@ -78,6 +80,8 @@ $person-card-details-item-font-size: var(--person-card-details-item-font-size, 1
         cursor: pointer;
         font-size: 12px;
         white-space: nowrap;
+        background: transparent;
+        border: none;
 
         &:not(:last-child) {
           margin-right: 20px;
