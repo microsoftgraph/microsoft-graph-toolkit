@@ -40,7 +40,7 @@
   "dependencies": {
     "@microsoft/mgt-element": "*",
     "@microsoft/microsoft-graph-client": "^2.2.1",
-    "msal": "^1.4.4"
+    "msal": "^1.4.6"
   },
   "publishConfig": {
     "directory": "dist"

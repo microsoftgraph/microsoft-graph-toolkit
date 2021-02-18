@@ -302,8 +302,7 @@ $person-card-details-item-font-size: var(--person-card-details-item-font-size, 1
         align-self: center;
         text-decoration: none;
 
-        &:hover,
-        &:focus {
+        &:hover {
           cursor: pointer;
           color: $commblue_shade20;
         }

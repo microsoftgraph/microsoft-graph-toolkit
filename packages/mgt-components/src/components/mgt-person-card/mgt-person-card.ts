@@ -961,11 +961,6 @@ export class MgtPersonCard extends MgtTemplatedComponent {
     }
     this.isExpanded = true;
 
-    window.requestAnimationFrame(() => {
-      const overviewIcon = this.renderRoot.querySelector('.section-nav__icon--overview') as HTMLButtonElement;
-      overviewIcon.focus();
-    });
-
     this.fireCustomEvent('expanded', null, true);
   }
 
@@ -1036,11 +1031,6 @@ export class MgtPersonCard extends MgtTemplatedComponent {
 
     this._currentSection = section;
     this.requestUpdate();
-
-    window.requestAnimationFrame(() => {
-      const activeSectionIcon = this.renderRoot.querySelector('.section-nav__icon.active') as HTMLButtonElement;
-      activeSectionIcon.focus();
-    });
   }
 
   private handleSectionScroll(e: WheelEvent) {
