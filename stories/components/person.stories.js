@@ -24,6 +24,26 @@ export const person = () => html`
   <mgt-person person-query="me" view="twoLines"></mgt-person>
 `;
 
+export const personFallbackDetails = () => html`
+  <div class="example">
+    <mgt-person person-query="mbowen" view="twoLines" fallback-details='{"displayName":"Megan Bowen"}'></mgt-person>
+  </div>
+  <div class="example">
+    <mgt-person
+      person-query="mbowen"
+      view="twoLines"
+      fallback-details='{"mail":"MeganB@M365x214355.onmicrosoft.com"}'
+    ></mgt-person>
+  </div>
+  <div class="example">
+    <mgt-person
+      person-query="mbowen"
+      view="twoLines"
+      fallback-details='{"mail":"MeganB@M365x214355.onmicrosoft.com","displayName":"Megan Bowen"}'
+    ></mgt-person>
+  </div>
+`;
+
 export const personPhotoOnly = () => html`
   <mgt-person person-query="me"></mgt-person>
 `;
