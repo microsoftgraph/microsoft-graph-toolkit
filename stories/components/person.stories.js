@@ -295,6 +295,26 @@ export const setPersonDetails = () => html`
   </script>
 `;
 
+export const retemplateMetadata = () => html`
+  <mgt-person person-query="me" view="threeLines">
+    <template data-type="line1">
+      <div>
+        Hello, my name is: {{person.displayName}}
+      </div>
+    </template>
+    <template data-type="line2">
+      <div>
+        {{person.jobTitle}}
+      </div>
+    </template>
+    <template data-type="line3">
+      <div>
+        Loves MGT
+      </div>
+    </template>
+  </mgt-person>
+`;
+
 export const moreExamples = () => html`
   <style>
     .example {
