@@ -31,6 +31,11 @@ export type IDynamicPerson = (MicrosoftGraph.User | MicrosoftGraph.Person | Micr
 export type AvatarSize = 'small' | 'large' | 'auto';
 
 /**
+ * Insight string types used to retrive OneDrive files
+ */
+export type OfficeGraphInsightString = 'trending' | 'used' | 'shared';
+
+/**
  * Enumeration to define what parts of the person component render
  *
  * @export

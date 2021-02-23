@@ -31,10 +31,21 @@ mgt-file .item {
   display: flex;
   flex-flow: row nowrap;
   align-items: center;
-  border: 1px solid teal; // dev, todo: remove
+  box-shadow: 0px 3.2px 7.2px rgba(0, 0, 0, 0.132), 0px 0.6px 1.8px rgba(0, 0, 0, 0.108); // dev, todo: remove
 
   &__file-type-icon {
     padding: 16px;
+    width: 28px;
+    min-width: 28px;
+    height: 28px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    img {
+      height: 28px;
+      width: 28px;
+    }
   }
 
   &__details {

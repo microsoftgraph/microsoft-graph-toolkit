@@ -5,15 +5,29 @@
  * -------------------------------------------------------------------------------------------
  */
 
-import { DriveItem } from '@microsoft/microsoft-graph-types';
+import { Drive, DriveItem, Image } from '@microsoft/microsoft-graph-types';
 import { customElement, html, property, TemplateResult } from 'lit-element';
 import { styles } from './mgt-file-css';
 import { MgtTemplatedComponent, Providers, ProviderState } from '@microsoft/mgt-element';
-import { getSvg, SvgIcon } from '../../utils/SvgHelper';
-import { getDriveItem } from '../../graph/graph.files';
+import {
+  getDriveItemById,
+  getDriveItemByPath,
+  getDriveItemByQuery,
+  getGroupDriveItemById,
+  getGroupDriveItemByPath,
+  getListDriveItemById,
+  getMyDriveItemById,
+  getMyDriveItemByPath,
+  getMyInsightsDriveItemById,
+  getSiteDriveItemById,
+  getSiteDriveItemByPath,
+  getUserDriveItemById,
+  getUserDriveItemByPath,
+  getUserInsightsDriveItemById
+} from '../../graph/graph.files';
 import { getRelativeDisplayDate } from '../../utils/Utils';
-import { ViewType } from '../../graph/types';
-import { deleteTodoTaskList } from '../mgt-todo/graph.todo';
+import { OfficeGraphInsightString, ViewType } from '../../graph/types';
+import { getFileTypeIconUri, getFileTypeIconUriByExtension } from '../../styles/fluent-icons';
 
 /**
  * The File component is used to represent an individual file/folder from OneDrive or SharePoint by displaying information such as the file/folder name, an icon indicating the file type, and other properties such as the author, last modified date, or other details selected by the developer.
@@ -51,7 +65,238 @@ export class MgtFile extends MgtTemplatedComponent {
 
     this._fileQuery = value;
     this.requestStateUpdate();
-    // this.requestUpdate('fileQuery');
+  }
+
+  /**
+   * allows developer to provide site id for a file
+   *
+   * @type {string}
+   * @memberof MgtFile
+   */
+  @property({
+    attribute: 'site-id'
+  })
+  public get siteId(): string {
+    return this._siteId;
+  }
+  public set siteId(value: string) {
+    if (value === this._siteId) {
+      return;
+    }
+
+    this._siteId = value;
+    this.requestStateUpdate();
+  }
+
+  /**
+   * allows developer to provide drive id for a file
+   *
+   * @type {string}
+   * @memberof MgtFile
+   */
+  @property({
+    attribute: 'drive-id'
+  })
+  public get driveId(): string {
+    return this._driveId;
+  }
+  public set driveId(value: string) {
+    if (value === this._driveId) {
+      return;
+    }
+
+    this._driveId = value;
+    this.requestStateUpdate();
+  }
+
+  /**
+   * allows developer to provide group id for a file
+   *
+   * @type {string}
+   * @memberof MgtFile
+   */
+  @property({
+    attribute: 'group-id'
+  })
+  public get groupId(): string {
+    return this._groupId;
+  }
+  public set groupId(value: string) {
+    if (value === this._groupId) {
+      return;
+    }
+
+    this._groupId = value;
+    this.requestStateUpdate();
+  }
+
+  /**
+   * allows developer to provide list id for a file
+   *
+   * @type {string}
+   * @memberof MgtFile
+   */
+  @property({
+    attribute: 'list-id'
+  })
+  public get listId(): string {
+    return this._listId;
+  }
+  public set listId(value: string) {
+    if (value === this._listId) {
+      return;
+    }
+
+    this._listId = value;
+    this.requestStateUpdate();
+  }
+
+  /**
+   * allows developer to provide user id for a file
+   *
+   * @type {string}
+   * @memberof MgtFile
+   */
+  @property({
+    attribute: 'user-id'
+  })
+  public get userId(): string {
+    return this._userId;
+  }
+  public set userId(value: string) {
+    if (value === this._userId) {
+      return;
+    }
+
+    this._userId = value;
+    this.requestStateUpdate();
+  }
+
+  /**
+   * allows developer to provide item id for a file
+   *
+   * @type {string}
+   * @memberof MgtFile
+   */
+  @property({
+    attribute: 'item-id'
+  })
+  public get itemId(): string {
+    return this._itemId;
+  }
+  public set itemId(value: string) {
+    if (value === this._itemId) {
+      return;
+    }
+
+    this._itemId = value;
+    this.requestStateUpdate();
+  }
+
+  /**
+   * allows developer to provide item path for a file
+   *
+   * @type {string}
+   * @memberof MgtFile
+   */
+  @property({
+    attribute: 'item-path'
+  })
+  public get itemPath(): string {
+    return this._itemPath;
+  }
+  public set itemPath(value: string) {
+    if (value === this._itemPath) {
+      return;
+    }
+
+    this._itemPath = value;
+    this.requestStateUpdate();
+  }
+
+  /**
+   * allows developer to provide insight type for a file
+   * can be trending, used, or shared
+   *
+   * @type {OfficeGraphInsightString}
+   * @memberof MgtFile
+   */
+  @property({
+    attribute: 'insight-type'
+  })
+  public get insightType(): OfficeGraphInsightString {
+    return this._insightType;
+  }
+  public set insightType(value: OfficeGraphInsightString) {
+    if (value === this._insightType) {
+      return;
+    }
+
+    this._insightType = value;
+    this.requestStateUpdate();
+  }
+
+  /**
+   * allows developer to provide insight id for a file
+   *
+   * @type {string}
+   * @memberof MgtFile
+   */
+  @property({
+    attribute: 'insight-id'
+  })
+  public get insightId(): string {
+    return this._insightId;
+  }
+  public set insightId(value: string) {
+    if (value === this._insightId) {
+      return;
+    }
+
+    this._insightId = value;
+    this.requestStateUpdate();
+  }
+
+  /**
+   * allows developer to provide file object
+   *
+   * @type {DriveItem}
+   * @memberof MgtFile
+   */
+  @property({
+    attribute: 'file-details'
+  })
+  public get fileDetails(): DriveItem {
+    return this._fileDetails;
+  }
+  public set fileDetails(value: DriveItem) {
+    if (value === this._fileDetails) {
+      return;
+    }
+
+    this._fileDetails = value;
+    this.requestStateUpdate();
+  }
+
+  /**
+   * allows developer to provide file type icon url
+   *
+   * @type {string}
+   * @memberof MgtFile
+   */
+  @property({
+    attribute: 'file-icon'
+  })
+  public get fileIcon(): string {
+    return this._fileIcon;
+  }
+  public set fileIcon(value: string) {
+    if (value === this._fileIcon) {
+      return;
+    }
+
+    this._fileIcon = value;
+    this.requestStateUpdate();
   }
 
   /**
@@ -118,6 +363,17 @@ export class MgtFile extends MgtTemplatedComponent {
   public view: ViewType;
 
   private _fileQuery: string;
+  private _siteId: string;
+  private _itemId: string;
+  private _driveId: string;
+  private _itemPath: string;
+  private _listId: string;
+  private _groupId: string;
+  private _userId: string;
+  private _insightType: OfficeGraphInsightString;
+  private _insightId: string;
+  private _fileDetails: DriveItem;
+  private _fileIcon: string;
 
   constructor() {
     super();
@@ -137,8 +393,9 @@ export class MgtFile extends MgtTemplatedComponent {
     }
 
     const file = this.driveItem;
-    let fileTemplate = this.renderTemplate('default', { file });
+    let fileTemplate;
 
+    fileTemplate = this.renderTemplate('default', { file });
     if (!fileTemplate) {
       const fileDetailsTemplate: TemplateResult = this.renderDetails(file);
       const fileTypeIconTemplate: TemplateResult = this.renderFileTypeIcon();
@@ -185,15 +442,23 @@ export class MgtFile extends MgtTemplatedComponent {
    * @memberof MgtFile
    */
   protected renderFileTypeIcon(): TemplateResult {
+    if (!this.driveItem.name) {
+      return html``;
+    }
+
+    // get file type extension from file name
+    const re = /(?:\.([^.]+))?$/;
+    const fileType = re.exec(this.driveItem.name)[1] || 'folder';
+
     return html`
       <div class="item__file-type-icon">
-        ${getSvg(SvgIcon.File)}
+        <img src=${getFileTypeIconUriByExtension(fileType, 48, 'svg')} />
       </div>
     `;
   }
 
   /**
-   * Render the file type icon
+   * Render the file details
    *
    * @protected
    * @param {MicrosoftGraph.DriveItem} [driveItem]
@@ -240,6 +505,13 @@ export class MgtFile extends MgtTemplatedComponent {
     `;
   }
 
+  /**
+   * load state into the component.
+   *
+   * @protected
+   * @returns
+   * @memberof MgtFile
+   */
   protected async loadState() {
     const provider = Providers.globalProvider;
     if (!provider || provider.state === ProviderState.Loading) {
@@ -252,13 +524,76 @@ export class MgtFile extends MgtTemplatedComponent {
     }
 
     const graph = provider.graph.forComponent(this);
-    const driveItem = await getDriveItem(graph, this.fileQuery);
+    let driveItem;
+
+    // return null when a combination of provided properties are required
+    if (
+      (this.driveId && (!this.itemId && !this.itemPath)) ||
+      (this.siteId && (!this.itemId && !this.itemPath)) ||
+      (this.groupId && (!this.itemId && !this.itemPath)) ||
+      (this.listId && (!this.siteId && !this.itemId)) ||
+      (this.insightType && !this.insightId) ||
+      (this.userId && (!this.insightType && !this.insightId)) ||
+      (this.userId && (!this.itemId && !this.itemPath))
+    ) {
+      driveItem = null;
+    }
+
+    if (this.fileDetails) {
+      driveItem = this.fileDetails;
+    }
+
+    // evaluate to true when only item-id or item-path is provided
+    const getFromMyDrive = !this.driveId && !this.siteId && !this.groupId && !this.listId && !this.userId;
+
+    // todo: error handle can't find file
+
+    if (this.fileQuery) {
+      driveItem = await getDriveItemByQuery(graph, this.fileQuery);
+    } else if (this.itemId && getFromMyDrive) {
+      driveItem = await getMyDriveItemById(graph, this.itemId);
+    } else if (this.itemPath && getFromMyDrive) {
+      driveItem = await getMyDriveItemByPath(graph, this.itemPath);
+    } else if (this.userId) {
+      if (this.itemId) {
+        driveItem = await getUserDriveItemById(graph, this.userId, this.itemId);
+      } else if (this.itemPath) {
+        driveItem = await getUserDriveItemByPath(graph, this.userId, this.itemPath);
+      }
+    } else if (this.driveId) {
+      if (this.itemId) {
+        driveItem = await getDriveItemById(graph, this.driveId, this.itemId);
+      } else if (this.itemPath) {
+        driveItem = await getDriveItemByPath(graph, this.driveId, this.itemPath);
+      }
+    } else if (this.siteId && !this.listId) {
+      if (this.itemId) {
+        driveItem = await getSiteDriveItemById(graph, this.siteId, this.itemId);
+      } else if (this.itemPath) {
+        driveItem = await getSiteDriveItemByPath(graph, this.siteId, this.itemPath);
+      }
+    } else if (this.listId) {
+      driveItem = await getListDriveItemById(graph, this.siteId, this.listId, this.itemId);
+    } else if (this.groupId) {
+      if (this.itemId) {
+        driveItem = await getGroupDriveItemById(graph, this.groupId, this.itemId);
+      } else if (this.itemPath) {
+        driveItem = await getGroupDriveItemByPath(graph, this.groupId, this.itemPath);
+      }
+    } else if (this.insightType) {
+      if (this.userId) {
+        driveItem = await getUserInsightsDriveItemById(graph, this.userId, this.insightType, this.insightId);
+      } else {
+        driveItem = await getMyInsightsDriveItemById(graph, this.insightType, this.insightId);
+      }
+    }
+
     this.driveItem = driveItem;
   }
 
   private getFileTypeIcon() {
     return;
-    // graph call to get file type
+    // todo: graph call to get file type
     // determine which icon to render based on file type
   }
 

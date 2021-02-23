@@ -1,15 +1,108 @@
 <html lang="en">
   <head>
     <script type="module" src="../../packages/mgt/dist/es6/index.js"></script>
+    <style>
+      body {
+        font-family: 'Segoe UI', 'Segoe UI Web (West European)', 'Segoe UI', -apple-system, BlinkMacSystemFont,
+    Roboto, 'Helvetica Neue', sans-serif;
+      }
+    </style>
   </head>
   <body>
-    <mgt-msal-provider
-      scopes="user.read,people.read,user.readbasic.all,contacts.read,calendars.read,Files.ReadWrite.All,Sites.ReadWrite.All"
-      client-id="a974dfa0-9f57-49b9-95db-90f04ce2111a"
-    >
-    </mgt-msal-provider>
+    
+    <mgt-mock-provider></mgt-mock-provider>
     <mgt-login></mgt-login>
 
-    <mgt-file-picker></mgt-file-picker>
+    <p>One Line: </p> 
+    <mgt-file file-query="/me/drive/items/01BYE5RZZFWGWWVNHHKVHYXE3OUJHGWCT2" view='oneline'></mgt-file>
+
+    <p>Two Lines: </p> 
+    <mgt-file file-query="/me/drive/items/01BYE5RZZFWGWWVNHHKVHYXE3OUJHGWCT2" view='twolines'></mgt-file>
+
+    <p>Combinations of properties that should render files: </p> 
+    <p>file-query: </p></p>
+    <mgt-file file-query="/me/drive/items/01BYE5RZZFWGWWVNHHKVHYXE3OUJHGWCT2"></mgt-file>
+
+    <p>drive-id + item-id: </p>
+    <mgt-file drive-id="b!-RIj2DuyvEyV1T4NlOaMHk8XkS_I8MdFlUCq1BlcjgmhRfAj3-Z8RY2VpuvV_tpd" item-id="01BYE5RZ5MYLM2SMX75ZBIPQZIHT6OAYPB"></mgt-file>
+
+    <p>drive-id + item-path: </p>
+    <mgt-file drive-id="b!-RIj2DuyvEyV1T4NlOaMHk8XkS_I8MdFlUCq1BlcjgmhRfAj3-Z8RY2VpuvV_tpd" item-path="Attachments"></mgt-file>
+
+    <p>group-id + item-id: </p> 
+    <mgt-file group-id="02bd9fd6-8f93-4758-87c3-1fb73740a315" item-id="01XKNBVLNL4EWP43GPU5EY67UHT3DGKCWQ"></mgt-file>
+
+    <p>group-id + item-path: </p> 
+    <mgt-file group-id="02bd9fd6-8f93-4758-87c3-1fb73740a315" item-path="Onboarding/Employee Handbook.docx"></mgt-file>
+    
+    <p>item-id: </p>
+    <mgt-file item-id="01BYE5RZ6QN3ZWBTUFOFD3GSPGOHDJD36K"></mgt-file>
+
+    <p>item-path: </p> 
+    <mgt-file item-path="Class Documents/01. Organic Chemistry Header Image.jpg"></mgt-file>
+
+    <p>site-id + item-id: </p> 
+    <mgt-file site-id="m365x214355.sharepoint.com,5a58bb09-1fba-41c1-8125-69da264370a0,9f2ec1da-0be4-4a74-9254-973f0add78fd" item-id="01OXYKUGW6HG5WM2OBTVDZ72ABJAY5P4BY"></mgt-file>
+    
+    <p>site-id + item-path: </p>
+    <mgt-file site-id="m365x214355.sharepoint.com,5a58bb09-1fba-41c1-8125-69da264370a0,9f2ec1da-0be4-4a74-9254-973f0add78fd" item-Path="/DemoDocs/AdminDemo"></mgt-file>
+ 
+    <p>site-id + list-id + item-id: TODO: find example of this</p> 
+
+    <p>user-id + item-id: </p> 
+    <mgt-file user-id="e3d0513b-449e-4198-ba6f-bd97ae7cae85" item-id="01HT2SVWU2EX3RVDWYAFAZDLCGYFZTCUHC"></mgt-file>
+    
+    <p>user-id + item-path: </p> 
+    <mgt-file user-id="e3d0513b-449e-4198-ba6f-bd97ae7cae85" item-path ="Fashion Products v2.pdf"></mgt-file>
+    
+    <p>insight-type + insight-id: </p>
+    <mgt-file insight-type="shared" insight-id="AW1GxMvkOztMkJX-SCppUSRPF5EvyPDHRZVAqtQZXI4JoUXwI9_mfEWNlabr1f7aXRBWDMt2C2FDop4fP1vsUw9tRsTL5Ds7TJCV_kgqaVEkBA"></mgt-file>
+
+    <p>user-id + insight-type + insight-id: Not sure why this is not working</p>
+    <!-- https://graph.microsoft.com/v1.0/users/e3d0513b-449e-4198-ba6f-bd97ae7cae85/insights/used/ATUGb_bBy5VGjCXXbCC1-IO8Uw3a0f7dRLWSy6dsQqnuxuFB60wgokCzK2CTizdAAFKDHtbA1h5NjZJhNlwQN0c1Bm_2wcuVRowl12wgtfiDBA/resource -->
+    <mgt-file user-id="e3d0513b-449e-4198-ba6f-bd97ae7cae85" insight-type="used" insight-id="ATUGb_bBy5VGjCXXbCC1-IO8Uw3a0f7dRLWSy6dsQqnuxuFB60wgokCzK2CTizdAAFKDHtbA1h5NjZJhNlwQN0c1Bm_2wcuVRowl12wgtfiDBA"></mgt-file>
+
+     
+    <div style="color: red;">
+      Should not render:
+      <p>drive-id:</p>
+      <mgt-file drive-id="b!-RIj2DuyvEyV1T4NlOaMHk8XkS_I8MdFlUCq1BlcjgmhRfAj3-Z8RY2VpuvV_tpd"></mgt-file>
+
+      <p>group-id:</p>
+      <mgt-file group-id="02bd9fd6-8f93-4758-87c3-1fb73740a315"></mgt-file>
+
+      <p>site-id:</p>
+      <mgt-file
+        site-id="m365x214355.sharepoint.com,5a58bb09-1fba-41c1-8125-69da264370a0,9f2ec1da-0be4-4a74-9254-973f0add78fd"
+      ></mgt-file>
+
+      <p>list-id: Need example</p>
+      <mgt-file list-id=""></mgt-file>
+
+      <p>site-id + list-id: Need example</p>
+      <mgt-file site-id="" list-id=""></mgt-file>
+
+      <p>user-id:</p>
+      <mgt-file user-id="e3d0513b-449e-4198-ba6f-bd97ae7cae85"></mgt-file>
+
+      <p>insight-type:</p>
+      <mgt-file insight-type="shared"></mgt-file>
+
+      <p>insight-id:</p>
+      <mgt-file
+        insight-id="AW1GxMvkOztMkJX-SCppUSRPF5EvyPDHRZVAqtQZXI4JoUXwI9_mfEWNlabr1f7aXRBWDMt2C2FDop4fP1vsUw9tRsTL5Ds7TJCV_kgqaVEkBA"
+      ></mgt-file>
+
+      <p>user-id + insight-type:</p>
+      <mgt-file user-id="e3d0513b-449e-4198-ba6f-bd97ae7cae85" insight-type="trending"></mgt-file>
+
+      <p>user-id + insight-id:</p>
+      <mgt-file
+        user-id="e3d0513b-449e-4198-ba6f-bd97ae7cae85"
+        ,
+        insight-id="ATUGb_bBy5VGjCXXbCC1-IPuv4GE8BDDQZw0RdluOGmg7wvbB9D2HESU6kMFHVpYFXZzHS4cBBJKkWjUlJJEs4k1Bm_2wcuVRowl12wgtfiDBA"
+      ></mgt-file>
+    </div>
+
   </body>
 </html>
