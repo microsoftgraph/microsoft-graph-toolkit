@@ -13,7 +13,7 @@ import { getPersonImage } from '../../graph/graph.photos';
 import { getUserPresence } from '../../graph/graph.presence';
 import { getUserWithPhoto } from '../../graph/graph.userWithPhoto';
 import { findUsers } from '../../graph/graph.user';
-import { AvatarSize, IDynamicPerson } from '../../graph/types';
+import { AvatarSize, IDynamicPerson, ViewType } from '../../graph/types';
 import { Providers, ProviderState, MgtTemplatedComponent } from '@microsoft/mgt-element';
 import '../../styles/style-helper';
 import { getSvg, SvgIcon } from '../../utils/SvgHelper';
@@ -25,34 +25,6 @@ import { styles } from './mgt-person-css';
 import { Presence } from '@microsoft/microsoft-graph-types-beta';
 
 export { PersonCardInteraction } from '../PersonCardInteraction';
-
-/**
- * Enumeration to define what parts of the person component render
- *
- * @export
- * @enum {number}
- */
-export enum PersonViewType {
-  /**
-   * Render only the avatar
-   */
-  avatar = 2,
-
-  /**
-   * Render the avatar and one line of text
-   */
-  oneline = 3,
-
-  /**
-   * Render the avatar and two lines of text
-   */
-  twolines = 4,
-
-  /**
-   * Render the avatar and three lines of text
-   */
-  threelines = 5
-}
 
 /**
  * Configuration object for the Person component
@@ -107,7 +79,7 @@ export interface MgtPersonConfig {
 export class MgtPerson extends MgtTemplatedComponent {
   /**
    * Array of styles to apply to the element. The styles should be defined
-   * user the `css` tag function.
+   * using the `css` tag function.
    */
   static get styles() {
     return styles;
@@ -337,27 +309,27 @@ export class MgtPerson extends MgtTemplatedComponent {
 
   /**
    * Sets what data to be rendered (avatar only, oneLine, twoLines).
-   * Default is 'avatar'.
+   * Default is 'image'.
    *
-   * @type {PersonViewType}
+   * @type {ViewType}
    * @memberof MgtPerson
    */
   @property({
     converter: value => {
       if (!value || value.length === 0) {
-        return PersonViewType.avatar;
+        return ViewType.image;
       }
 
       value = value.toLowerCase();
 
-      if (typeof PersonViewType[value] === 'undefined') {
-        return PersonViewType.avatar;
+      if (typeof ViewType[value] === 'undefined') {
+        return ViewType.image;
       } else {
-        return PersonViewType[value];
+        return ViewType[value];
       }
     }
   })
-  public view: PersonViewType;
+  public view: ViewType;
 
   @internalProperty() private _fetchedImage: string;
   @internalProperty() private _fetchedPresence: Presence;
@@ -382,7 +354,7 @@ export class MgtPerson extends MgtTemplatedComponent {
     this.line1Property = 'displayName';
     this.line2Property = 'email';
     this.line3Property = 'jobTitle';
-    this.view = PersonViewType.avatar;
+    this.view = ViewType.image;
     this.avatarSize = 'auto';
     this._isInvalidImageSrc = false;
   }
@@ -672,13 +644,13 @@ export class MgtPerson extends MgtTemplatedComponent {
    * @memberof MgtPerson
    */
   protected renderDetails(person: IDynamicPerson): TemplateResult {
-    if (!person || this.view === PersonViewType.avatar) {
+    if (!person || this.view === ViewType.image) {
       return html``;
     }
 
     const details: TemplateResult[] = [];
 
-    if (this.view > PersonViewType.avatar) {
+    if (this.view > ViewType.image) {
       const text = this.getTextFromProperty(person, this.line1Property);
       if (text) {
         details.push(html`
@@ -687,7 +659,7 @@ export class MgtPerson extends MgtTemplatedComponent {
       }
     }
 
-    if (this.view > PersonViewType.oneline) {
+    if (this.view > ViewType.oneline) {
       const text = this.getTextFromProperty(person, this.line2Property);
       if (text) {
         details.push(html`
@@ -696,7 +668,7 @@ export class MgtPerson extends MgtTemplatedComponent {
       }
     }
 
-    if (this.view > PersonViewType.twolines) {
+    if (this.view > ViewType.twolines) {
       const text = this.getTextFromProperty(person, this.line3Property);
       if (text) {
         details.push(html`
@@ -963,7 +935,7 @@ export class MgtPerson extends MgtTemplatedComponent {
   }
 
   private isLargeAvatar() {
-    return this.avatarSize === 'large' || (this.avatarSize === 'auto' && this.view > PersonViewType.oneline);
+    return this.avatarSize === 'large' || (this.avatarSize === 'auto' && this.view > ViewType.oneline);
   }
 
   private handleMouseClick(e: MouseEvent) {

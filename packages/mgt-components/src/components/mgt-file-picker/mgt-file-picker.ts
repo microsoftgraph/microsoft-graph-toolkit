@@ -2,7 +2,7 @@ import { MgtTemplatedComponent, Providers, ProviderState } from '@microsoft/mgt-
 import { customElement, html, internalProperty, property, TemplateResult } from 'lit-element';
 import { getSvg, SvgIcon } from '../../utils/SvgHelper';
 import { MgtFlyout } from '../sub-components/mgt-flyout/mgt-flyout';
-import { getMyInsights, InsightsItem } from './graph.files';
+import { getMyInsights, InsightsItem } from '../../graph/graph.files';
 import { classMap } from 'lit-html/directives/class-map';
 import { repeat } from 'lit-html/directives/repeat';
 import { styles } from './mgt-file-picker-css';

@@ -1,4 +1,5 @@
 import { IGraph } from '@microsoft/mgt-element';
+import { DriveItem } from '@microsoft/microsoft-graph-types';
 import { UsedInsight } from '@microsoft/microsoft-graph-types-beta';
 
 /**
@@ -17,4 +18,9 @@ export type InsightsItem = UsedInsight;
 export async function getMyInsights(graph: IGraph): Promise<InsightsItem[]> {
   let response = await graph.api('/me/insights/used').get();
   return response.value || null;
+}
+
+export async function getDriveItem(graph: IGraph, resource: string): Promise<DriveItem> {
+  let response = await graph.api(resource).get();
+  return response || null;
 }

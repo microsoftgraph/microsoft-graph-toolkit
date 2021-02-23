@@ -12,12 +12,11 @@ import { repeat } from 'lit-html/directives/repeat';
 import { findGroups, findGroupsFromGroup, GroupType } from '../../graph/graph.groups';
 import { findPeople, getPeople, PersonType } from '../../graph/graph.people';
 import { findUsers, findGroupMembers, getUser, getUsersForUserIds } from '../../graph/graph.user';
-import { IDynamicPerson } from '../../graph/types';
+import { IDynamicPerson, ViewType } from '../../graph/types';
 import { Providers, ProviderState, MgtTemplatedComponent } from '@microsoft/mgt-element';
 import '../../styles/style-helper';
 import '../sub-components/mgt-spinner/mgt-spinner';
 import { debounce } from '../../utils/Utils';
-import { PersonViewType } from '../mgt-person/mgt-person';
 import { PersonCardInteraction } from '../PersonCardInteraction';
 import { MgtFlyout } from '../sub-components/mgt-flyout/mgt-flyout';
 import { styles } from './mgt-people-picker-css';
@@ -651,7 +650,7 @@ export class MgtPeoplePicker extends MgtTemplatedComponent {
         class="selected-list__person-wrapper__person"
         .personDetails=${person}
         .fetchImage=${true}
-        .view=${PersonViewType.oneline}
+        .view=${ViewType.oneline}
         .personCardInteraction=${PersonCardInteraction.click}
       ></mgt-person>
     `;
