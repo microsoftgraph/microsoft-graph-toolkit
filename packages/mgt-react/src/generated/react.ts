@@ -31,7 +31,7 @@ export type FileProps = {
 	insightId?: string;
 	fileDetails?: MicrosoftGraph.DriveItem;
 	fileIcon?: string;
-	driveItem?: string;
+	driveItem?: MicrosoftGraph.DriveItem;
 	line1Property?: string;
 	line2Property?: string;
 	line3Property?: string;
