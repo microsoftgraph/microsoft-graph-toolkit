@@ -333,6 +333,11 @@ $common: (
     _var: --list-background-color,
     dark: $list__background-color--dark,
     light: $list__background-color--light
+  ),
+  list__item__background-color--hover: (
+    _var: --list-item-background-color--hover,
+    dark: $list__item__background-color--hover--dark,
+    light: $list__item__background-color--hover--light
   )
 );
 

@@ -10,6 +10,10 @@
 @import './mgt-file-list.theme.scss';
 
 $background-color: var(--file-list-background-color, set-var(background-color, $theme-default, $common));
+$file-item-background-color--hover: var(
+  --file-item-background-color--hover,
+  set-var(list__item__background-color--hover, $theme-default, $common)
+);
 $max-height: var(--file-list-max-height, 425px);
 
 :host {
@@ -32,6 +36,10 @@ mgt-file-item .file-list-wrapper {
 
     .file-item {
       border-bottom: var(--file-list-item-border-bottom, 1px solid $gray30);
+
+      &:hover {
+        background-color: $file-item-background-color--hover;
+      }
     }
 
     .show-more {
