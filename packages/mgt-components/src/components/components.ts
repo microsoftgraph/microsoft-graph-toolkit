@@ -7,9 +7,9 @@
 
 import './mgt-agenda/mgt-agenda';
 import './mgt-file/mgt-file';
-import './mgt-file-picker/mgt-file-picker';
 import './mgt-get/mgt-get';
 import './mgt-login/mgt-login';
+import './mgt-people-picker/mgt-people-picker';
 import './mgt-people/mgt-people';
 import './mgt-person-card/mgt-person-card';
 import './mgt-person/mgt-person';
