@@ -5,7 +5,7 @@
  * -------------------------------------------------------------------------------------------
  */
 
-import * as MicrosoftGraph from '@microsoft/microsoft-graph-types';
+import { DriveItem } from '@microsoft/microsoft-graph-types';
 import { customElement, html, property, TemplateResult } from 'lit-element';
 import { styles } from './mgt-file-css';
 import { MgtTemplatedComponent, Providers, ProviderState } from '@microsoft/mgt-element';
@@ -283,10 +283,10 @@ export class MgtFile extends MgtTemplatedComponent {
   @property({
     attribute: 'file-details'
   })
-  public get fileDetails(): MicrosoftGraph.DriveItem {
+  public get fileDetails(): DriveItem {
     return this._fileDetails;
   }
-  public set fileDetails(value: MicrosoftGraph.DriveItem) {
+  public set fileDetails(value: DriveItem) {
     if (value === this._fileDetails) {
       return;
     }
@@ -319,14 +319,14 @@ export class MgtFile extends MgtTemplatedComponent {
   /**
    * object containing Graph details on driveItem
    *
-   * @type {string}
+   * @type {MicrosoftGraph.DriveItem}
    * @memberof MgtFile
    */
   @property({
     attribute: 'drive-item',
     type: Object
   })
-  public driveItem: MicrosoftGraph.DriveItem;
+  public driveItem: DriveItem;
 
   /**
    * Sets the property of the file to use for the first line of text.
@@ -389,7 +389,7 @@ export class MgtFile extends MgtTemplatedComponent {
   private _userId: string;
   private _insightType: OfficeGraphInsightString;
   private _insightId: string;
-  private _fileDetails: MicrosoftGraph.DriveItem;
+  private _fileDetails: DriveItem;
   private _fileIcon: string;
 
   constructor() {
@@ -488,7 +488,7 @@ export class MgtFile extends MgtTemplatedComponent {
    * @param {MicrosoftGraph.DriveItem} [driveItem]
    * @memberof MgtFile
    */
-  protected renderDetails(driveItem: MicrosoftGraph.DriveItem): TemplateResult {
+  protected renderDetails(driveItem: DriveItem): TemplateResult {
     if (!driveItem || this.view === ViewType.image) {
       return html``;
     }
@@ -615,13 +615,7 @@ export class MgtFile extends MgtTemplatedComponent {
     this.driveItem = driveItem;
   }
 
-  private getFileTypeIcon() {
-    return;
-    // todo: graph call to get file type
-    // determine which icon to render based on file type
-  }
-
-  private getTextFromProperty(driveItem: MicrosoftGraph.DriveItem, properties: string) {
+  private getTextFromProperty(driveItem: DriveItem, properties: string) {
     if (!properties || properties.length === 0) {
       return null;
     }

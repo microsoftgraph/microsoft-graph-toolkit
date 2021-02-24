@@ -8,6 +8,7 @@
 import { MgtTemplatedComponent, Providers, ProviderState } from '@microsoft/mgt-element';
 import * as MicrosoftGraph from '@microsoft/microsoft-graph-types';
 import { customElement, html, property, TemplateResult } from 'lit-element';
+import { debounce } from '../../utils/Utils';
 import { repeat } from 'lit-html/directives/repeat';
 import {
   getDriveFilesById,
@@ -260,12 +261,25 @@ export class MgtFileList extends MgtTemplatedComponent {
   /**
    * A number value to indicate the maximum number of files to show
    * @type {number}
+   * @memberof MgtFileList
    */
   @property({
     attribute: 'show-max',
     type: Number
   })
   public showMax: number;
+
+  /**
+   * Gets or sets whether expanded section of files are rendered
+   *
+   * @type {boolean}
+   * @memberof MgtFileList
+   */
+  @property({
+    attribute: 'is-expanded',
+    type: Boolean
+  })
+  public isExpanded: boolean;
 
   private _fileListQuery: string;
   private _fileQueries: string[];
@@ -281,7 +295,7 @@ export class MgtFileList extends MgtTemplatedComponent {
   constructor() {
     super();
 
-    this.showMax = 5;
+    this.showMax = 15;
   }
 
   public render() {
@@ -327,22 +341,28 @@ export class MgtFileList extends MgtTemplatedComponent {
    * @memberof mgtFileList
    */
   protected renderFiles(): TemplateResult {
-    console.log('files', this.files);
     const maxFiles = this.files.slice(0, this.showMax);
 
+    const expandedFilesTemplate = this.isExpanded ? this.renderOverflowContent() : this.renderOverflowButton();
+
+    // onscroll="${this.handleScroll()}"
     return html`
-      <ul class="file-list">
-        ${repeat(
-          maxFiles,
-          f => f.id,
-          f => html`
-            <li class="file-item">
-              ${this.renderFile(f)}
-            </li>
-          `
-        )}
-        ${this.files.length > this.showMax ? this.renderOverflow() : null}
-      </ul>
+      <div id="file-list-wrapper" class="file-list-wrapper" onscroll="${this.handleScroll()}">
+        <ul id="file-list" class="file-list">
+          ${repeat(
+            maxFiles,
+            f => f.id,
+            f => html`
+              <li class="file-item">
+                ${this.renderFile(f)}
+              </li>
+            `
+          )}
+          ${this.files.length > this.showMax ? expandedFilesTemplate : null}
+        </ul>
+
+        <div id="file-list-overflow" class="file-list-overflow"></div>
+      </div>
     `;
   }
 
@@ -370,7 +390,7 @@ export class MgtFileList extends MgtTemplatedComponent {
    * @returns {TemplateResult}
    * @memberof MgtFileList
    */
-  protected renderOverflow(): TemplateResult {
+  protected renderOverflowButton(): TemplateResult {
     const extra = this.files.length - this.showMax;
     return (
       this.renderTemplate('overflow', {
@@ -379,9 +399,67 @@ export class MgtFileList extends MgtTemplatedComponent {
         files: this.files
       }) ||
       html`
-        <li class="overflow"><span>+${extra}<span></li>
+        <li class="show-more" @click=${() => this.showRemainingFiles()}><span>Show ${extra} more items<span></li>
       `
     );
+  }
+
+  protected renderOverflowContent(): TemplateResult {
+    if (!this.files && this.isLoadingState) {
+      return html`
+        <div class="loading">
+          <mgt-spinner></mgt-spinner>
+        </div>
+      `;
+    }
+
+    const remainingFiles = this.files.slice(this.showMax);
+
+    return html`
+          ${repeat(
+            remainingFiles,
+            f => f.id,
+            f => html`
+              <li class="file-item">
+                ${this.renderFile(f)}
+              </li>
+            `
+          )}
+      </div>
+    `;
+  }
+
+  /**
+   * Display the remaining files.
+   *
+   * @protected
+   * @memberof MgtFileList
+   */
+  protected showRemainingFiles() {
+    const root = this.renderRoot.querySelector('file-list-wrapper');
+    if (root && root.animate) {
+      // play back
+      root.animate(
+        [
+          {
+            height: 'auto',
+            transformOrigin: 'top left'
+          },
+          {
+            height: 'auto',
+            transformOrigin: 'top left'
+          }
+        ],
+        {
+          duration: 1000,
+          easing: 'ease-in-out',
+          fill: 'both'
+        }
+      );
+    }
+    this.isExpanded = true;
+
+    this.fireCustomEvent('expanded', null, true);
   }
 
   /**
@@ -441,6 +519,22 @@ export class MgtFileList extends MgtTemplatedComponent {
         files = await getFiles(graph);
       }
       this.files = files;
+    }
+  }
+
+  private handleScroll() {
+    const scrollable = this.shadowRoot.getElementById('file-list');
+    const overflow = this.shadowRoot.getElementById('file-list-overflow');
+
+    if (scrollable) {
+      scrollable.addEventListener(
+        'scroll',
+        debounce(() => {
+          scrollable.scrollTop === scrollable.scrollHeight - scrollable.offsetHeight
+            ? overflow.classList.add('fadeout')
+            : overflow.classList.remove('fadeout');
+        }, 10)
+      );
     }
   }
 }

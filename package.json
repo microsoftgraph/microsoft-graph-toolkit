@@ -78,7 +78,7 @@
     "@webcomponents/webcomponentsjs": "^2.5.0",
     "babel-loader": "^8.2.1",
     "core-js": "^3.7.0",
-    "es-dev-server": "^1.57.8",
+    "es-dev-server": "^2.1.0",
     "gulp": "^4.0.2",
     "gulp-append-prepend": "^1.0.8",
     "gulp-clean-css": "4.3.0",
