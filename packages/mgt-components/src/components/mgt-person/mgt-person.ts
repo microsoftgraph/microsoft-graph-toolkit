@@ -12,7 +12,7 @@ import { findPeople, getEmailFromGraphEntity } from '../../graph/graph.people';
 import { getPersonImage } from '../../graph/graph.photos';
 import { getUserPresence } from '../../graph/graph.presence';
 import { getUserWithPhoto } from '../../graph/graph.userWithPhoto';
-import { findUsers } from '../../graph/graph.user';
+import { findUsers, getMe, getUser } from '../../graph/graph.user';
 import { AvatarSize, IDynamicPerson, ViewType } from '../../graph/types';
 import { Providers, ProviderState, MgtTemplatedComponent } from '@microsoft/mgt-element';
 import '../../styles/style-helper';
@@ -25,6 +25,18 @@ import { styles } from './mgt-person-css';
 import { Presence } from '@microsoft/microsoft-graph-types-beta';
 
 export { PersonCardInteraction } from '../PersonCardInteraction';
+
+export enum avatarType {
+  /**
+   * Renders avatar photo if available, falls back to initials
+   */
+  photo = 'photo',
+
+  /**
+   * Forces render avatar initials
+   */
+  initials = 'initials'
+}
 
 /**
  * Configuration object for the Person component
@@ -114,6 +126,36 @@ export class MgtPerson extends MgtTemplatedComponent {
 
     this._personQuery = value;
     this.personDetails = null;
+    this.requestStateUpdate();
+  }
+
+  /**
+   * Fallback when no user is found
+   * @type {IDynamicPerson}
+   */
+  @property({
+    attribute: 'fallback-details',
+    type: Object
+  })
+  public get fallbackDetails(): IDynamicPerson {
+    return this._fallbackDetails;
+  }
+  public set fallbackDetails(value: IDynamicPerson) {
+    if (value === this._fallbackDetails) {
+      return;
+    }
+
+    this._fallbackDetails = value;
+
+    if (this.personDetails) {
+      return;
+    }
+
+    if (value && value.displayName) {
+      this._personAvatarBg = this.getColorFromName(value.displayName);
+    } else {
+      this._personAvatarBg = 'gray20';
+    }
     this.requestStateUpdate();
   }
 
@@ -227,6 +269,37 @@ export class MgtPerson extends MgtTemplatedComponent {
   public fetchImage: boolean;
 
   /**
+   * Determines and sets person avatar
+   *
+   *
+   * @type {string}
+   * @memberof MgtPerson
+   */
+  @property({
+    attribute: 'avatar-type',
+    converter: value => {
+      value = value.toLowerCase();
+
+      if (value === 'initials') {
+        return avatarType.initials;
+      } else {
+        return avatarType.photo;
+      }
+    }
+  })
+  public get avatarType(): string {
+    return this._avatarType;
+  }
+  public set avatarType(value: string) {
+    if (value === this._avatarType) {
+      return;
+    }
+
+    this._avatarType = value;
+    this.requestStateUpdate();
+  }
+
+  /**
    * Gets or sets presence of person
    *
    * @type {MicrosoftGraphBeta.Presence}
@@ -337,11 +410,13 @@ export class MgtPerson extends MgtTemplatedComponent {
   @internalProperty() private _personCardShouldRender: boolean;
 
   private _personDetails: IDynamicPerson;
+  private _fallbackDetails: IDynamicPerson;
   private _personAvatarBg: string;
   private _personImage: string;
   private _personPresence: Presence;
   private _personQuery: string;
   private _userId: string;
+  private _avatarType: string;
 
   private _mouseLeaveTimeout;
   private _mouseEnterTimeout;
@@ -357,6 +432,7 @@ export class MgtPerson extends MgtTemplatedComponent {
     this.view = ViewType.image;
     this.avatarSize = 'auto';
     this._isInvalidImageSrc = false;
+    this._avatarType = 'photo';
   }
 
   /**
@@ -366,12 +442,12 @@ export class MgtPerson extends MgtTemplatedComponent {
    */
   public render() {
     // Loading
-    if (this.isLoadingState && !this.personDetails) {
+    if (this.isLoadingState && !this.personDetails && !this.fallbackDetails) {
       return this.renderLoading();
     }
 
     // Prep data
-    const person = this.personDetails;
+    const person = this.personDetails || this.fallbackDetails;
     const image = this.getImage();
     const presence = this.personPresence || this._fetchedPresence;
 
@@ -461,8 +537,7 @@ export class MgtPerson extends MgtTemplatedComponent {
       personDetails && this.personCardInteraction === PersonCardInteraction.none
         ? personDetails.displayName || getEmailFromGraphEntity(personDetails) || ''
         : '';
-
-    if (imageSrc && !this._isInvalidImageSrc) {
+    if (imageSrc && !this._isInvalidImageSrc && this._avatarType === 'photo') {
       return html`
         <div class="img-wrapper">
           <img alt=${title} src=${imageSrc} @error=${() => (this._isInvalidImageSrc = true)} />
@@ -597,17 +672,17 @@ export class MgtPerson extends MgtTemplatedComponent {
    */
   protected renderAvatar(personDetails: IDynamicPerson, image: string, presence: Presence): TemplateResult {
     const title =
-      this.personDetails && this.personCardInteraction === PersonCardInteraction.none
-        ? this.personDetails.displayName || getEmailFromGraphEntity(this.personDetails) || ''
+      personDetails && this.personCardInteraction === PersonCardInteraction.none
+        ? personDetails.displayName || getEmailFromGraphEntity(personDetails) || ''
         : '';
 
     const imageClasses = {
-      initials: !image || this._isInvalidImageSrc,
+      initials: !image || this._isInvalidImageSrc || this._avatarType === 'initials',
       small: !this.isLargeAvatar(),
       'user-avatar': true
     };
 
-    if ((!image || this._isInvalidImageSrc) && this.personDetails) {
+    if ((!image || this._isInvalidImageSrc || this._avatarType === 'initials') && personDetails) {
       // add avatar background color
       imageClasses[this._personAvatarBg] = true;
     }
@@ -651,29 +726,56 @@ export class MgtPerson extends MgtTemplatedComponent {
     const details: TemplateResult[] = [];
 
     if (this.view > ViewType.image) {
-      const text = this.getTextFromProperty(person, this.line1Property);
-      if (text) {
+      if (this.hasTemplate('line1')) {
+        // Render the line1 template
+        const template = this.renderTemplate('line1', { person });
         details.push(html`
-          <div class="line1" aria-label="${text}" @click=${() => this.handleLine1Clicked()}>${text}</div>
+          <div class="line1" @click=${() => this.handleLine1Clicked()}>${template}</div>
         `);
+      } else {
+        // Render the line1 property value
+        const text = this.getTextFromProperty(person, this.line1Property);
+        if (text) {
+          details.push(html`
+            <div class="line1" @click=${() => this.handleLine1Clicked()} aria-label="${text}">${text}</div>
+          `);
+        }
       }
     }
 
     if (this.view > ViewType.oneline) {
-      const text = this.getTextFromProperty(person, this.line2Property);
-      if (text) {
+      if (this.hasTemplate('line2')) {
+        // Render the line2 template
+        const template = this.renderTemplate('line2', { person });
         details.push(html`
-          <div class="line2" aria-label="${text}" @click=${() => this.handleLine2Clicked()}>${text}</div>
+          <div class="line2" @click=${() => this.handleLine2Clicked()}>${template}</div>
         `);
+      } else {
+        // Render the line2 property value
+        const text = this.getTextFromProperty(person, this.line2Property);
+        if (text) {
+          details.push(html`
+            <div class="line2" @click=${() => this.handleLine2Clicked()} aria-label="${text}">${text}</div>
+          `);
+        }
       }
     }
 
     if (this.view > ViewType.twolines) {
-      const text = this.getTextFromProperty(person, this.line3Property);
-      if (text) {
+      if (this.hasTemplate('line3')) {
+        // Render the line3 template
+        const template = this.renderTemplate('line3', { person });
         details.push(html`
-          <div class="line3" aria-label="${text}" @click=${() => this.handleLine3Clicked()}>${text}</div>
+          <div class="line3" @click=${() => this.handleLine3Clicked()}>${template}</div>
         `);
+      } else {
+        // Render the line3 property value
+        const text = this.getTextFromProperty(person, this.line3Property);
+        if (text) {
+          details.push(html`
+            <div class="line3" @click=${() => this.handleLine3Clicked()} aria-label="${text}">${text}</div>
+          `);
+        }
       }
     }
 
@@ -759,7 +861,10 @@ export class MgtPerson extends MgtTemplatedComponent {
     const graph = provider.graph.forComponent(this);
 
     if (this.personDetails) {
-      if (!this.personDetails.personImage && (this.fetchImage && !this.personImage && !this._fetchedImage)) {
+      if (
+        !this.personDetails.personImage &&
+        (this.fetchImage && this._avatarType === 'photo' && !this.personImage && !this._fetchedImage)
+      ) {
         const image = await getPersonImage(graph, this.personDetails, MgtPerson.config.useContactApis);
         if (image) {
           this.personDetails.personImage = image;
@@ -768,8 +873,16 @@ export class MgtPerson extends MgtTemplatedComponent {
       }
     } else if (this.userId || this.personQuery === 'me') {
       // Use userId or 'me' query to get the person and image
-      const person = await getUserWithPhoto(graph, this.userId);
-
+      let person;
+      if (this._avatarType === 'photo') {
+        person = await getUserWithPhoto(graph, this.userId);
+      } else {
+        if (this.personQuery === 'me') {
+          person = await getMe(graph);
+        } else {
+          person = await getUser(graph, this.userId);
+        }
+      }
       this.personDetails = person;
       this._fetchedImage = this.getImage();
     } else if (this.personQuery) {
