@@ -16,7 +16,8 @@ const tags = new Set([
   'mgt-people',
   'mgt-tasks',
   'mgt-teams-channel-picker',
-  'mgt-todo'
+  'mgt-todo',
+  'mgt-file'
 ]);
 
 let output = '';

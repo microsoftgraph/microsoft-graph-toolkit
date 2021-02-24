@@ -5,7 +5,7 @@
  * -------------------------------------------------------------------------------------------
  */
 
-import { Drive, DriveItem, Image } from '@microsoft/microsoft-graph-types';
+import * as MicrosoftGraph from '@microsoft/microsoft-graph-types';
 import { customElement, html, property, TemplateResult } from 'lit-element';
 import { styles } from './mgt-file-css';
 import { MgtTemplatedComponent, Providers, ProviderState } from '@microsoft/mgt-element';
@@ -27,7 +27,7 @@ import {
 } from '../../graph/graph.files';
 import { getRelativeDisplayDate } from '../../utils/Utils';
 import { OfficeGraphInsightString, ViewType } from '../../graph/types';
-import { getFileTypeIconUri, getFileTypeIconUriByExtension } from '../../styles/fluent-icons';
+import { getFileTypeIconUriByExtension } from '../../styles/fluent-icons';
 
 /**
  * The File component is used to represent an individual file/folder from OneDrive or SharePoint by displaying information such as the file/folder name, an icon indicating the file type, and other properties such as the author, last modified date, or other details selected by the developer.
@@ -35,7 +35,24 @@ import { getFileTypeIconUri, getFileTypeIconUriByExtension } from '../../styles/
  * @export
  * @class MgtFile
  * @extends {MgtTemplatedComponent}
+ *
+ * @cssprop --file-type-icon-size - {Length} file type icon size
+ * @cssprop --file-border - {String} file item border style
+ * @cssprop --file-box-shadow - {String} file item box shadow style
+ * @cssprop --font-family - {String} Font family
+ * @cssprop --font-size - {Length} Font size
+ * @cssprop --font-weight - {Length} Font weight
+ * @cssprop --text-transform - {String} text transform
+ * @cssprop --line2-font-size - {Length} Line 2 font size
+ * @cssprop --line2-font-weight - {Length} Line 2 font weight
+ * @cssprop --line2-color - {Color} Line 2 color
+ * @cssprop --line2-text-transform - {String} Line 2 text transform
+ * @cssprop --line3-font-size - {Length} Line 2 font size
+ * @cssprop --line3-font-weight - {Length} Line 2 font weight
+ * @cssprop --line3-color - {Color} Line 2 color
+ * @cssprop --line3-text-transform - {String} Line 2 text transform
  */
+
 @customElement('mgt-file')
 export class MgtFile extends MgtTemplatedComponent {
   /**
@@ -260,16 +277,16 @@ export class MgtFile extends MgtTemplatedComponent {
   /**
    * allows developer to provide file object
    *
-   * @type {DriveItem}
+   * @type {MicrosoftGraph.DriveItem}
    * @memberof MgtFile
    */
   @property({
     attribute: 'file-details'
   })
-  public get fileDetails(): DriveItem {
+  public get fileDetails(): MicrosoftGraph.DriveItem {
     return this._fileDetails;
   }
-  public set fileDetails(value: DriveItem) {
+  public set fileDetails(value: MicrosoftGraph.DriveItem) {
     if (value === this._fileDetails) {
       return;
     }
@@ -309,7 +326,7 @@ export class MgtFile extends MgtTemplatedComponent {
     attribute: 'drive-item',
     type: Object
   })
-  public driveItem: DriveItem;
+  public driveItem: MicrosoftGraph.DriveItem;
 
   /**
    * Sets the property of the file to use for the first line of text.
@@ -372,7 +389,7 @@ export class MgtFile extends MgtTemplatedComponent {
   private _userId: string;
   private _insightType: OfficeGraphInsightString;
   private _insightId: string;
-  private _fileDetails: DriveItem;
+  private _fileDetails: MicrosoftGraph.DriveItem;
   private _fileIcon: string;
 
   constructor() {
@@ -471,7 +488,7 @@ export class MgtFile extends MgtTemplatedComponent {
    * @param {MicrosoftGraph.DriveItem} [driveItem]
    * @memberof MgtFile
    */
-  protected renderDetails(driveItem: DriveItem): TemplateResult {
+  protected renderDetails(driveItem: MicrosoftGraph.DriveItem): TemplateResult {
     if (!driveItem || this.view === ViewType.image) {
       return html``;
     }
@@ -604,7 +621,7 @@ export class MgtFile extends MgtTemplatedComponent {
     // determine which icon to render based on file type
   }
 
-  private getTextFromProperty(driveItem: DriveItem, properties: string) {
+  private getTextFromProperty(driveItem: MicrosoftGraph.DriveItem, properties: string) {
     if (!properties || properties.length === 0) {
       return null;
     }
