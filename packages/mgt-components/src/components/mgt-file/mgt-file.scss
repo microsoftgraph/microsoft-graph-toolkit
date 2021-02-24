@@ -9,6 +9,10 @@
 @import '../../styles/shared-styles.scss';
 @import './mgt-file.theme.scss';
 
+$file-type-icon-size: var(--file-type-icon-size, 28px);
+$file-border: var(--file-border, none);
+$file-box-shadow: var(--file-box-shadow, none);
+
 $font-family: var(--font-family, var(--default-font-family));
 $font-size: var(--font-size, #{$ms-font-size-m});
 $font-weight: var(--font-weight, 400);
@@ -31,20 +35,19 @@ mgt-file .item {
   display: flex;
   flex-flow: row nowrap;
   align-items: center;
-  box-shadow: 0px 3.2px 7.2px rgba(0, 0, 0, 0.132), 0px 0.6px 1.8px rgba(0, 0, 0, 0.108); // dev, todo: remove
 
   &__file-type-icon {
     padding: 16px;
-    width: 28px;
-    min-width: 28px;
-    height: 28px;
+    width: $file-type-icon-size;
+    min-width: $file-type-icon-size;
+    height: $file-type-icon-size;
     display: flex;
     align-items: center;
     justify-content: center;
 
     img {
-      height: 28px;
-      width: 28px;
+      height: $file-type-icon-size;
+      width: $file-type-icon-size;
     }
   }
 

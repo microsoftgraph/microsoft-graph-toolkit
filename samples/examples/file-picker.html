@@ -6,6 +6,10 @@
         font-family: 'Segoe UI', 'Segoe UI Web (West European)', 'Segoe UI', -apple-system, BlinkMacSystemFont,
     Roboto, 'Helvetica Neue', sans-serif;
       }
+
+      mgt-file {
+        --file-box-shadow: 0px 3.2px 7.2px rgba(0, 0, 0, 0.132), 0px 0.6px 1.8px rgba(0, 0, 0, 0.108);
+      }
     </style>
   </head>
   <body>
@@ -20,8 +24,12 @@
     <mgt-file file-query="/me/drive/items/01BYE5RZZFWGWWVNHHKVHYXE3OUJHGWCT2" view='twolines'></mgt-file>
 
     <p>Combinations of properties that should render files: </p> 
+
     <p>file-query: </p></p>
     <mgt-file file-query="/me/drive/items/01BYE5RZZFWGWWVNHHKVHYXE3OUJHGWCT2"></mgt-file>
+
+    <p>file-query + file-icon</p>
+    <mgt-file file-query="/me/drive/items/01BYE5RZZFWGWWVNHHKVHYXE3OUJHGWCT2" file-icon="https://github.com//microsoftgraph/microsoft-graph-toolkit/blob/main/assets/favicon.png?raw=true"></mgt-file>
 
     <p>drive-id + item-id: </p>
     <mgt-file drive-id="b!-RIj2DuyvEyV1T4NlOaMHk8XkS_I8MdFlUCq1BlcjgmhRfAj3-Z8RY2VpuvV_tpd" item-id="01BYE5RZ5MYLM2SMX75ZBIPQZIHT6OAYPB"></mgt-file>

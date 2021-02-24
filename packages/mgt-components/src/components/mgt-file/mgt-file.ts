@@ -442,17 +442,24 @@ export class MgtFile extends MgtTemplatedComponent {
    * @memberof MgtFile
    */
   protected renderFileTypeIcon(): TemplateResult {
-    if (!this.driveItem.name) {
+    if (!this.fileIcon && !this.driveItem.name) {
       return html``;
     }
 
-    // get file type extension from file name
-    const re = /(?:\.([^.]+))?$/;
-    const fileType = re.exec(this.driveItem.name)[1] || 'folder';
+    let fileIconSrc;
+
+    if (this.fileIcon) {
+      fileIconSrc = this.fileIcon;
+    } else {
+      // get file type extension from file name
+      const re = /(?:\.([^.]+))?$/;
+      const fileType = re.exec(this.driveItem.name)[1] || 'folder';
+      fileIconSrc = getFileTypeIconUriByExtension(fileType, 48, 'svg');
+    }
 
     return html`
       <div class="item__file-type-icon">
-        <img src=${getFileTypeIconUriByExtension(fileType, 48, 'svg')} />
+        <img src=${fileIconSrc} />
       </div>
     `;
   }

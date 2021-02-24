@@ -30,7 +30,7 @@ export const personPhotoOnly = () => html`
 
 export const personView = () => html`
   <div class="example">
-    <mgt-person person-query="me" view="avatar"></mgt-person>
+    <mgt-person person-query="me" view="image"></mgt-person>
   </div>
   <div class="example">
     <mgt-person person-query="me" view="oneline"></mgt-person>
