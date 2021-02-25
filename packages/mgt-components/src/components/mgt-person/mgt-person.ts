@@ -449,6 +449,8 @@ export class MgtPerson extends MgtTemplatedComponent {
   private _mouseLeaveTimeout;
   private _mouseEnterTimeout;
 
+  private requestedProps: string[];
+
   constructor() {
     super();
 
@@ -461,6 +463,19 @@ export class MgtPerson extends MgtTemplatedComponent {
     this.avatarSize = 'auto';
     this._isInvalidImageSrc = false;
     this._avatarType = 'photo';
+    this.requestedProps = [
+      'businessPhones',
+      'displayName',
+      'givenName',
+      'jobTitle',
+      'mail',
+      'mobilePhone',
+      'officeLocation',
+      'preferredLanguage',
+      'surname',
+      'userPrincipalName',
+      'id'
+    ];
   }
 
   /**
@@ -861,6 +876,9 @@ export class MgtPerson extends MgtTemplatedComponent {
 
     const graph = provider.graph.forComponent(this);
 
+    // Prepare person props
+    const personProps = [...this.requestedProps, this.line1Property, this.line2Property, this.line3Property];
+
     if (this.personDetails) {
       if (
         !this.personDetails.personImage &&
@@ -876,12 +894,12 @@ export class MgtPerson extends MgtTemplatedComponent {
       // Use userId or 'me' query to get the person and image
       let person;
       if (this._avatarType === 'photo') {
-        person = await getUserWithPhoto(graph, this.userId);
+        person = await getUserWithPhoto(graph, this.userId, personProps);
       } else {
         if (this.personQuery === 'me') {
-          person = await getMe(graph);
+          person = await getMe(graph, personProps);
         } else {
-          person = await getUser(graph, this.userId);
+          person = await getUser(graph, this.userId, personProps);
         }
       }
       this.personDetails = person;

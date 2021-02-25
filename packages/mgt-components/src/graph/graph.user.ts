@@ -53,18 +53,29 @@ export const getIsUsersCacheEnabled = (): boolean =>
  * @returns {(Promise<User>)}
  * @memberof Graph
  */
-export async function getMe(graph: IGraph): Promise<User> {
+export async function getMe(graph: IGraph, requestedProps?: string[]): Promise<User> {
   let cache: CacheStore<CacheUser>;
   if (getIsUsersCacheEnabled()) {
     cache = CacheService.getCache<CacheUser>(schemas.users, schemas.users.stores.users);
     const me = await cache.getValue('me');
 
+    const cachedData = JSON.parse(me.user);
+    const uniqueProps = requestedProps.filter(prop => !Object.keys(cachedData).includes(prop));
+
     if (me && getUserInvalidationTime() > Date.now() - me.timeCached) {
-      return JSON.parse(me.user);
+      // if requestedProps doesn't contain any unique props other than "@odata.context"
+      if (uniqueProps.length <= 1) {
+        return cachedData;
+      }
     }
   }
+
+  let apiString = 'me';
+  if (requestedProps) {
+    apiString = apiString + '?$select=' + requestedProps.toString();
+  }
   const response = graph
-    .api('me')
+    .api(apiString)
     .middlewareOptions(prepScopes('user.read'))
     .get();
   if (getIsUsersCacheEnabled()) {
@@ -80,7 +91,7 @@ export async function getMe(graph: IGraph): Promise<User> {
  * @returns {(Promise<User>)}
  * @memberof Graph
  */
-export async function getUser(graph: IGraph, userPrincipleName: string): Promise<User> {
+export async function getUser(graph: IGraph, userPrincipleName: string, requestedProps?: string[]): Promise<User> {
   const scopes = 'user.readbasic.all';
   let cache: CacheStore<CacheUser>;
 
@@ -88,15 +99,29 @@ export async function getUser(graph: IGraph, userPrincipleName: string): Promise
     cache = CacheService.getCache<CacheUser>(schemas.users, schemas.users.stores.users);
     // check cache
     const user = await cache.getValue(userPrincipleName);
+    let uniqueProps;
+    if (user.user) {
+      const cachedData = JSON.parse(user.user);
+      uniqueProps = requestedProps.filter(prop => !Object.keys(cachedData).includes(prop));
+    }
+
     // is it stored and is timestamp good?
     if (user && getUserInvalidationTime() > Date.now() - user.timeCached) {
       // return without any worries
-      return user.user ? JSON.parse(user.user) : null;
+      if (uniqueProps.length <= 1) {
+        return user.user ? JSON.parse(user.user) : null;
+      }
     }
   }
+
+  let apiString = '/users/${userPrincipleName}';
+  if (requestedProps) {
+    apiString = apiString + '?$' + requestedProps.toString();
+  }
+
   // else we must grab it
   const response = await graph
-    .api(`/users/${userPrincipleName}`)
+    .api(apiString)
     .middlewareOptions(prepScopes(scopes))
     .get();
   if (getIsUsersCacheEnabled()) {
