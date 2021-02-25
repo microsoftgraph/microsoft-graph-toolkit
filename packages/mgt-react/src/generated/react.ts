@@ -54,6 +54,7 @@ export type PeoplePickerProps = {
 	selectionMode?: string;
 	showMax?: number;
 	selectedPeople?: IDynamicPerson[];
+	disabled?: boolean;
 	templateContext?: TemplateContext;
 	mediaQuery?: ComponentMediaQuery;
 	selectionChanged?: (e: Event) => void;
@@ -88,11 +89,13 @@ export type PersonCardProps = {
 export type PersonProps = {
 	config?: MgtPersonConfig;
 	personQuery?: string;
+	fallbackDetails?: IDynamicPerson;
 	userId?: string;
 	showPresence?: boolean;
 	personDetails?: IDynamicPerson;
 	personImage?: string;
 	fetchImage?: boolean;
+	avatarType?: string;
 	personPresence?: MicrosoftGraphBeta.Presence;
 	personCardInteraction?: PersonCardInteraction;
 	line1Property?: string;
@@ -102,6 +105,9 @@ export type PersonProps = {
 	avatarSize?: AvatarSize;
 	templateContext?: TemplateContext;
 	mediaQuery?: ComponentMediaQuery;
+	line1clicked?: (e: Event) => void;
+	line2clicked?: (e: Event) => void;
+	line3clicked?: (e: Event) => void;
 }
 
 export type TasksProps = {

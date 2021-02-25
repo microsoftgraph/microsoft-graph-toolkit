@@ -77,7 +77,7 @@ namespace MicrosoftGraphAspNetCoreConnectSample.Controllers
                 ContentType = HttpContext.Request.ContentType,
             };
 
-            var neededHeaders = Request.Headers.Where(h => h.Key.ToLower() == "if-match").ToList();
+            var neededHeaders = Request.Headers.Where(h => h.Key.ToLower() == "if-match" || h.Key.ToLower() == "consistencylevel").ToList();
             if (neededHeaders.Count() > 0)
             {
                 foreach (var header in neededHeaders)

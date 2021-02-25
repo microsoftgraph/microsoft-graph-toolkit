@@ -24,6 +24,26 @@ export const person = () => html`
   <mgt-person person-query="me" view="twoLines"></mgt-person>
 `;
 
+export const personFallbackDetails = () => html`
+  <div class="example">
+    <mgt-person person-query="mbowen" view="twoLines" fallback-details='{"displayName":"Megan Bowen"}'></mgt-person>
+  </div>
+  <div class="example">
+    <mgt-person
+      person-query="mbowen"
+      view="twoLines"
+      fallback-details='{"mail":"MeganB@M365x214355.onmicrosoft.com"}'
+    ></mgt-person>
+  </div>
+  <div class="example">
+    <mgt-person
+      person-query="mbowen"
+      view="twoLines"
+      fallback-details='{"mail":"MeganB@M365x214355.onmicrosoft.com","displayName":"Megan Bowen"}'
+    ></mgt-person>
+  </div>
+`;
+
 export const personPhotoOnly = () => html`
   <mgt-person person-query="me"></mgt-person>
 `;
@@ -41,6 +61,50 @@ export const personView = () => html`
   <div class="example">
     <mgt-person person-query="me" view="threelines"></mgt-person>
   </div>
+
+  <style>
+    .example {
+      margin-bottom: 20px;
+    }
+  </style>
+`;
+
+export const personAvatarType = () => html`
+  <mgt-person person-query="me" avatar-type="photo"></mgt-person>
+  <mgt-person person-query="me" avatar-type="initials"></mgt-person>
+`;
+
+export const personLineClickEvents = () => html`
+  <div class="example">
+    <mgt-person person-query="me" view="threelines"></mgt-person>
+  </div>
+
+  <div class="output">no line clicked</div>
+
+  <script>
+    const person = document.querySelector('mgt-person');
+    person.addEventListener('line1clicked', e => {
+      const output = document.querySelector('.output');
+
+      if (e && e.detail && e.detail.displayName) {
+        output.innerHTML = '<b>line1clicked:</b> ' + e.detail.displayName;
+      }
+    });
+    person.addEventListener('line2clicked', e => {
+      const output = document.querySelector('.output');
+
+      if (e && e.detail && e.detail.mail) {
+        output.innerHTML = '<b>line2clicked:</b> ' + e.detail.mail;
+      }
+    });
+    person.addEventListener('line3clicked', e => {
+      const output = document.querySelector('.output');
+
+      if (e && e.detail && e.detail.jobTitle) {
+        output.innerHTML = '<b>line3clicked:</b> ' + e.detail.jobTitle;
+      }
+    });
+  </script>
 
   <style>
     .example {
@@ -249,6 +313,26 @@ export const setPersonDetails = () => html`
     // set image
     person.personImage = '';
   </script>
+`;
+
+export const retemplateMetadata = () => html`
+  <mgt-person person-query="me" view="threeLines">
+    <template data-type="line1">
+      <div>
+        Hello, my name is: {{person.displayName}}
+      </div>
+    </template>
+    <template data-type="line2">
+      <div>
+        {{person.jobTitle}}
+      </div>
+    </template>
+    <template data-type="line3">
+      <div>
+        Loves MGT
+      </div>
+    </template>
+  </mgt-person>
 `;
 
 export const moreExamples = () => html`

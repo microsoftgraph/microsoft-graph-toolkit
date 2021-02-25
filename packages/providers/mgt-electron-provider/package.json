@@ -1,0 +1,50 @@
+{
+  "name": "@microsoft/mgt-electron-provider",
+  "version": "2.0.0",
+  "description": "The Microsoft Graph Toolkit Electron Provider",
+  "keywords": [
+    "microsoft graph",
+    "microsoft graph toolkit",
+    "mgt",
+    "msal",
+    "electron",
+    "auth",
+    "authentication"
+  ],
+  "homepage": "https://github.com/microsoftgraph/microsoft-graph-toolkit",
+  "bugs": {
+    "url": "https://github.com/microsoftgraph/microsoft-graph-toolkit/issues"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/microsoftgraph/microsoft-graph-toolkit"
+  },
+  "author": "Microsoft",
+  "license": "MIT",
+  "main": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "module": "./dist/index.js",
+  "files": [
+    "dist",
+    "src"
+  ],
+  "scripts": {
+    "build": "npm run clean && npm run build:compile",
+    "build:compile": "npm run compile",
+    "build:watch": "npm run compile:watch",
+    "clean": "shx rm -rf ./dist && shx rm -rf ./tsconfig.authenticator.tsbuildinfo  && shx rm -rf ./tsconfig.provider.tsbuildinfo",
+    "compile": "tsc -p ./tsconfig.provider.json && tsc -p ./tsconfig.authenticator.json",
+    "compile:watch": "tsc -w -p ./tsconfig.provider.json && tsc -w -p ./tsconfig.authenticator.json",
+    "lint": "tslint -c ../../../tslint.json 'src/**/*.ts'",
+    "postpack": "cpx *.tgz ../../../artifacts"
+  },
+  "dependencies": {
+    "@azure/msal-node": "^1.0.0",
+    "@microsoft/mgt-element": "*",
+    "@microsoft/microsoft-graph-client": "^2.2.1",
+    "electron": "^11.0.2"
+  },
+  "publishConfig": {
+    "directory": "dist"
+  }
+}

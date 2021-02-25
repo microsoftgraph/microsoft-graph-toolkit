@@ -3,10 +3,11 @@ var path = require('path');
 var fs = require('fs');
 var project = require('../package.json');
 
-const getPackageJsons = (startPath, results) => {
-  startPath = startPath || 'packages';
-  results = results || [];
-  const filter = 'package.json';
+const ignoreDirs = ['node_modules'];
+
+const getFiles = (filter, startPath = 'packages') => {
+  let results = [];
+
   if (!fs.existsSync(startPath)) {
     console.log('no dir ', startPath);
     return;
@@ -16,8 +17,8 @@ const getPackageJsons = (startPath, results) => {
   for (var i = 0; i < files.length; i++) {
     var filename = path.join(startPath, files[i]);
     var stat = fs.lstatSync(filename);
-    if (stat.isDirectory()) {
-      getPackageJsons(filename, results); //recurse
+    if (stat.isDirectory() && ignoreDirs.indexOf(path.basename(filename)) < 0) {
+      results = [...results, ...getFiles(filter, filename)]; //recurse
     } else if (filename.indexOf(filter) >= 0) {
       results.push(filename);
     }
@@ -28,12 +29,24 @@ const getPackageJsons = (startPath, results) => {
 
 const updateMgtDependencyVersion = (packages, version) => {
   for (let package of packages) {
+    console.log(`updating package ${package} with version ${version}`)
     const data = fs.readFileSync(package, 'utf8');
 
     var result = data.replace(/"(@microsoft\/mgt.*)": "(\*)"/g, `"$1": "${version}"`);
     result = result.replace(/"version": "(.*)"/g, `"version": "${version}"`);
 
     fs.writeFileSync(package, result, 'utf8');
+  }
+}
+
+const updateSpfxSolutionVersion = (solutions, version) => {
+  for (let solution of solutions) {
+    console.log(`updating spfx solution ${solution} with version ${version}`)
+    const data = fs.readFileSync(solution, 'utf8');
+
+    var result = data.replace(/"version": "(.*)"/g, `"version": "${version}.0"`);
+
+    fs.writeFileSync(solution, result, 'utf8');
   }
 }
 
@@ -62,5 +75,8 @@ if (process.argv.length > 2) {
   }
 }
 
-const packages = getPackageJsons();
+const packages = getFiles('package.json');
 updateMgtDependencyVersion(packages, version);
+
+const spfxSolutions = getFiles('package-solution.json');
+updateSpfxSolutionVersion(spfxSolutions, project.version);
