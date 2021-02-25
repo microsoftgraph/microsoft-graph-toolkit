@@ -52,7 +52,7 @@ The request made: `GET /me/insights/trending/123/resource`
 | `insight-id` | `insightId` | Id of the insight resource. |
 | `file-details` | `fileDetails` | Set to an object representing a file |
 | `file-icon` | `fileIcon` | Set to an icon to show for the file |
-| `view` | `view` | Set to control how the file is rendered. The default is `oneline`. <br>`icon` - show only the icon <br>`oneline` - show the icon and one line of text (default is file `name`) <br>`twolines` - show the icone and two lines of text (`name` and `lastModifiedDateTime` by default)<br> `threelines` - show the icon and three lines of text (`name`, `lastModifiedDateTime`, and `displayName` of the author by default) |
+| `view` | `view` | Set to control how the file is rendered. The default is `oneline`. <br>`image` - show only the icon <br>`oneline` - show the icon and one line of text (default is file `name`) <br>`twolines` - show the icon and two lines of text (`name` and `lastModifiedDateTime` by default)<br> `threelines` - show the icon and three lines of text (`name`, `lastModifiedDateTime`, and `displayName` of the author by default) |
 | `line1-property` | `line1Property` | Sets the property of `fileDetails` to use for the first line of text. Default is `name` of the file. |
 | `line2-property` | `line2Property` | Sets the property of `fileDetails` to use for the second line of text. Default is `lastModifiedDateTime`. |
 | `line3-property` | `line3Property` | Sets the property of `fileDetails` to use for the third line of text. Default is `displayName` of the file author. |
