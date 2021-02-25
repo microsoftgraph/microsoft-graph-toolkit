@@ -421,7 +421,7 @@ export class MgtTodo extends MgtTasksBase {
     if (this._newTaskDueDate) {
       // tslint:disable-next-line: no-string-literal
       taskData['dueDateTime'] = {
-        dateTime: this._newTaskDueDate.toISOString(),
+        dateTime: this._newTaskDueDate.toLocaleDateString(),
         timeZone: 'UTC'
       };
     }
