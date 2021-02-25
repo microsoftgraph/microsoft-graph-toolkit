@@ -754,29 +754,56 @@ export class MgtPerson extends MgtTemplatedComponent {
     const details: TemplateResult[] = [];
 
     if (this.view > PersonViewType.avatar) {
-      const text = this.getTextFromProperty(person, this.line1Property);
-      if (text) {
+      if (this.hasTemplate('line1')) {
+        // Render the line1 template
+        const template = this.renderTemplate('line1', { person });
         details.push(html`
-          <div class="line1" @click=${() => this.handleLine1Clicked()} aria-label="${text}">${text}</div>
+          <div class="line1" @click=${() => this.handleLine1Clicked()}>${template}</div>
         `);
+      } else {
+        // Render the line1 property value
+        const text = this.getTextFromProperty(person, this.line1Property);
+        if (text) {
+          details.push(html`
+            <div class="line1" @click=${() => this.handleLine1Clicked()} aria-label="${text}">${text}</div>
+          `);
+        }
       }
     }
 
     if (this.view > PersonViewType.oneline) {
-      const text = this.getTextFromProperty(person, this.line2Property);
-      if (text) {
+      if (this.hasTemplate('line2')) {
+        // Render the line2 template
+        const template = this.renderTemplate('line2', { person });
         details.push(html`
-          <div class="line2" @click=${() => this.handleLine2Clicked()} aria-label="${text}">${text}</div>
+          <div class="line2" @click=${() => this.handleLine2Clicked()}>${template}</div>
         `);
+      } else {
+        // Render the line2 property value
+        const text = this.getTextFromProperty(person, this.line2Property);
+        if (text) {
+          details.push(html`
+            <div class="line2" @click=${() => this.handleLine2Clicked()} aria-label="${text}">${text}</div>
+          `);
+        }
       }
     }
 
     if (this.view > PersonViewType.twolines) {
-      const text = this.getTextFromProperty(person, this.line3Property);
-      if (text) {
+      if (this.hasTemplate('line3')) {
+        // Render the line3 template
+        const template = this.renderTemplate('line3', { person });
         details.push(html`
-          <div class="line3" @click=${() => this.handleLine3Clicked()} aria-label="${text}">${text}</div>
+          <div class="line3" @click=${() => this.handleLine3Clicked()}>${template}</div>
         `);
+      } else {
+        // Render the line3 property value
+        const text = this.getTextFromProperty(person, this.line3Property);
+        if (text) {
+          details.push(html`
+            <div class="line3" @click=${() => this.handleLine3Clicked()} aria-label="${text}">${text}</div>
+          `);
+        }
       }
     }
 
