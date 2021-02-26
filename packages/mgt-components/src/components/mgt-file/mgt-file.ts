@@ -28,6 +28,7 @@ import {
 import { getRelativeDisplayDate } from '../../utils/Utils';
 import { OfficeGraphInsightString, ViewType } from '../../graph/types';
 import { getFileTypeIconUriByExtension } from '../../styles/fluent-icons';
+import { getSvg, SvgIcon } from '../../utils/SvgHelper';
 
 /**
  * The File component is used to represent an individual file/folder from OneDrive or SharePoint by displaying information such as the file/folder name, an icon indicating the file type, and other properties such as the author, last modified date, or other details selected by the developer.
@@ -473,7 +474,13 @@ export class MgtFile extends MgtTemplatedComponent {
 
     return html`
       <div class="item__file-type-icon">
-        <img src=${fileIconSrc} />
+        ${fileIconSrc
+          ? html`
+              <img src=${fileIconSrc} />
+            `
+          : html`
+              ${getSvg(SvgIcon.File)}
+            `}
       </div>
     `;
   }
@@ -617,7 +624,10 @@ export class MgtFile extends MgtTemplatedComponent {
       switch (current) {
         case 'size':
           // convert size to mb
-          const sizeInMb = (driveItem.size / (1024 * 1024)).toFixed(2);
+          let sizeInMb;
+          if (driveItem.size) {
+            sizeInMb = (driveItem.size / (1024 * 1024)).toFixed(2);
+          }
           text = `Size: ${sizeInMb}MB`;
           break;
         case 'lastModifiedDateTime':

@@ -5,7 +5,7 @@
  * -------------------------------------------------------------------------------------------
  */
 
-import { MgtTemplatedComponent, Providers, ProviderState } from '@microsoft/mgt-element';
+import { arraysAreEqual, MgtTemplatedComponent, Providers, ProviderState } from '@microsoft/mgt-element';
 import * as MicrosoftGraph from '@microsoft/microsoft-graph-types';
 import { customElement, html, property, TemplateResult } from 'lit-element';
 import { debounce } from '../../utils/Utils';
@@ -14,12 +14,17 @@ import {
   getDriveFilesById,
   getDriveFilesByPath,
   getFiles,
+  getFilesById,
   getFilesByListQuery,
+  getFilesByPath,
   getFilesByQueries,
   getGroupFilesById,
+  getGroupFilesByPath,
   getMyInsightsFiles,
   getSiteFilesById,
+  getSiteFilesByPath,
   getUserFilesById,
+  getUserFilesByPath,
   getUserInsightsFiles
 } from '../../graph/graph.files';
 
@@ -71,17 +76,20 @@ export class MgtFileList extends MgtTemplatedComponent {
   /**
    * allows developer to provide an array of file queries
    *
-   * @type {[string[]}
+   * @type {string[]}
    * @memberof MgtFileList
    */
   @property({
-    attribute: 'file-queries'
+    attribute: 'file-queries',
+    converter: (value, type) => {
+      return value.split(',').map(v => v.trim());
+    }
   })
   public get fileQueries(): string[] {
     return this._fileQueries;
   }
   public set fileQueries(value: string[]) {
-    if (value === this._fileQueries) {
+    if (arraysAreEqual(this._fileQueries, value)) {
       return;
     }
 
@@ -92,12 +100,10 @@ export class MgtFileList extends MgtTemplatedComponent {
   /**
    * allows developer to provide an array of files
    *
-   * @type {[MicrosoftGraph.DriveItem[]}
+   * @type {MicrosoftGraph.DriveItem[]}
    * @memberof MgtFileList
    */
-  @property({
-    attribute: 'files'
-  })
+  @property({ type: Object })
   public get files(): MicrosoftGraph.DriveItem[] {
     return this._files;
   }
@@ -269,18 +275,6 @@ export class MgtFileList extends MgtTemplatedComponent {
   })
   public showMax: number;
 
-  /**
-   * Gets or sets whether expanded section of files are rendered
-   *
-   * @type {boolean}
-   * @memberof MgtFileList
-   */
-  @property({
-    attribute: 'is-expanded',
-    type: Boolean
-  })
-  public isExpanded: boolean;
-
   private _fileListQuery: string;
   private _fileQueries: string[];
   private _files: MicrosoftGraph.DriveItem[];
@@ -295,7 +289,7 @@ export class MgtFileList extends MgtTemplatedComponent {
   constructor() {
     super();
 
-    this.showMax = 15;
+    this.showMax = 10;
   }
 
   public render() {
@@ -343,11 +337,8 @@ export class MgtFileList extends MgtTemplatedComponent {
   protected renderFiles(): TemplateResult {
     const maxFiles = this.files.slice(0, this.showMax);
 
-    const expandedFilesTemplate = this.isExpanded ? this.renderOverflowContent() : this.renderOverflowButton();
-
-    // onscroll="${this.handleScroll()}"
     return html`
-      <div id="file-list-wrapper" class="file-list-wrapper" onscroll="${this.handleScroll()}">
+      <div id="file-list-wrapper" class="file-list-wrapper">
         <ul id="file-list" class="file-list">
           ${repeat(
             maxFiles,
@@ -358,10 +349,8 @@ export class MgtFileList extends MgtTemplatedComponent {
               </li>
             `
           )}
-          ${this.files.length > this.showMax ? expandedFilesTemplate : null}
+          ${this.files.length > this.showMax ? this.renderOverflowButton() : null}
         </ul>
-
-        <div id="file-list-overflow" class="file-list-overflow"></div>
       </div>
     `;
   }
@@ -399,67 +388,9 @@ export class MgtFileList extends MgtTemplatedComponent {
         files: this.files
       }) ||
       html`
-        <li class="show-more" @click=${() => this.showRemainingFiles()}><span>Show ${extra} more items<span></li>
+        <li class="show-more"}><span>${extra} more items<span></li>
       `
     );
-  }
-
-  protected renderOverflowContent(): TemplateResult {
-    if (!this.files && this.isLoadingState) {
-      return html`
-        <div class="loading">
-          <mgt-spinner></mgt-spinner>
-        </div>
-      `;
-    }
-
-    const remainingFiles = this.files.slice(this.showMax);
-
-    return html`
-          ${repeat(
-            remainingFiles,
-            f => f.id,
-            f => html`
-              <li class="file-item">
-                ${this.renderFile(f)}
-              </li>
-            `
-          )}
-      </div>
-    `;
-  }
-
-  /**
-   * Display the remaining files.
-   *
-   * @protected
-   * @memberof MgtFileList
-   */
-  protected showRemainingFiles() {
-    const root = this.renderRoot.querySelector('file-list-wrapper');
-    if (root && root.animate) {
-      // play back
-      root.animate(
-        [
-          {
-            height: 'auto',
-            transformOrigin: 'top left'
-          },
-          {
-            height: 'auto',
-            transformOrigin: 'top left'
-          }
-        ],
-        {
-          duration: 1000,
-          easing: 'ease-in-out',
-          fill: 'both'
-        }
-      );
-    }
-    this.isExpanded = true;
-
-    this.fireCustomEvent('expanded', null, true);
   }
 
   /**
@@ -479,24 +410,35 @@ export class MgtFileList extends MgtTemplatedComponent {
       this.files = null;
       return;
     }
+    const graph = provider.graph.forComponent(this);
+    let files;
+
+    const getFromMyDrive = !this.driveId && !this.siteId && !this.groupId && !this.userId;
 
     if (
       (this.driveId && (!this.itemId && !this.itemPath)) ||
-      (this.groupId && !this.itemId) ||
-      (this.siteId && !this.itemId) ||
-      (this.userId && (!this.insightType && !this.itemId))
+      (this.groupId && (!this.itemId && !this.itemPath)) ||
+      (this.siteId && (!this.itemId && !this.itemPath)) ||
+      (this.userId && (!this.insightType && (!this.itemId && !this.itemPath)))
     ) {
       this.files = null;
     }
-
-    const graph = provider.graph.forComponent(this);
-    let files;
 
     if (!this.files) {
       if (this.fileListQuery) {
         files = await getFilesByListQuery(graph, this.fileListQuery);
       } else if (this.fileQueries) {
         files = await getFilesByQueries(graph, this.fileQueries);
+      } else if (getFromMyDrive) {
+        if (this.itemId) {
+          files = await getFilesById(graph, this.itemId);
+        } else if (this.itemPath) {
+          files = await getFilesByPath(graph, this.itemPath);
+        } else if (this.insightType) {
+          files = await getMyInsightsFiles(graph, this.insightType);
+        } else {
+          files = await getFiles(graph);
+        }
       } else if (this.driveId) {
         if (this.itemId) {
           files = await getDriveFilesById(graph, this.driveId, this.itemId);
@@ -504,37 +446,27 @@ export class MgtFileList extends MgtTemplatedComponent {
           files = await getDriveFilesByPath(graph, this.driveId, this.itemPath);
         }
       } else if (this.groupId) {
-        files = await getGroupFilesById(graph, this.groupId, this.itemId);
+        if (this.itemId) {
+          files = await getGroupFilesById(graph, this.groupId, this.itemId);
+        } else if (this.itemPath) {
+          files = await getGroupFilesByPath(graph, this.groupId, this.itemPath);
+        }
       } else if (this.siteId) {
-        files = await getSiteFilesById(graph, this.siteId, this.itemId);
+        if (this.itemId) {
+          files = await getSiteFilesById(graph, this.siteId, this.itemId);
+        } else if (this.itemPath) {
+          files = await getSiteFilesByPath(graph, this.siteId, this.itemPath);
+        }
       } else if (this.userId) {
         if (this.itemId) {
           files = await getUserFilesById(graph, this.userId, this.itemId);
+        } else if (this.itemPath) {
+          files = await getUserFilesByPath(graph, this.userId, this.itemPath);
         } else if (this.insightType) {
           files = await getUserInsightsFiles(graph, this.userId, this.insightType);
         }
-      } else if (this.insightType && !this.userId) {
-        files = await getMyInsightsFiles(graph, this.insightType);
-      } else {
-        files = await getFiles(graph);
       }
       this.files = files;
-    }
-  }
-
-  private handleScroll() {
-    const scrollable = this.shadowRoot.getElementById('file-list');
-    const overflow = this.shadowRoot.getElementById('file-list-overflow');
-
-    if (scrollable) {
-      scrollable.addEventListener(
-        'scroll',
-        debounce(() => {
-          scrollable.scrollTop === scrollable.scrollHeight - scrollable.offsetHeight
-            ? overflow.classList.add('fadeout')
-            : overflow.classList.remove('fadeout');
-        }, 10)
-      );
     }
   }
 }

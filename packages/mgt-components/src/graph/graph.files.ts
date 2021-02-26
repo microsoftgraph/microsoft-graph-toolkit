@@ -5,9 +5,8 @@
  * -------------------------------------------------------------------------------------------
  */
 
-import { Graph, IGraph, prepScopes } from '@microsoft/mgt-element';
+import { IGraph, prepScopes } from '@microsoft/mgt-element';
 import { DriveItem } from '@microsoft/microsoft-graph-types';
-import { group } from 'console';
 
 export async function getDriveItemByQuery(graph: IGraph, resource: string): Promise<DriveItem> {
   const scopes = 'files.read';
@@ -229,7 +228,7 @@ export async function getDriveFilesById(graph: IGraph, driveId: string, itemId: 
   return response.value || null;
 }
 
-// GET /drives/{drive-id}/root:/{path-relative-to-root}:/children
+// GET /drives/{drive-id}/root:/{item-path}:/children
 export async function getDriveFilesByPath(graph: IGraph, driveId: string, itemPath: string): Promise<DriveItem[]> {
   const scopes = 'files.read';
   let response;
@@ -255,6 +254,19 @@ export async function getGroupFilesById(graph: IGraph, groupId: string, itemId: 
   return response.value || null;
 }
 
+// GET /groups/{group-id}/drive/root:/{item-path}:/children
+export async function getGroupFilesByPath(graph: IGraph, groupId: string, itemPath: string): Promise<DriveItem[]> {
+  const scopes = 'files.read';
+  let response;
+  try {
+    response = await graph
+      .api(`/groups/${groupId}/drive/root:/${itemPath}:/children`)
+      .middlewareOptions(prepScopes(scopes))
+      .get();
+  } catch {}
+  return response.value || null;
+}
+
 // GET /me/drive/items/{item-id}/children
 export async function getFilesById(graph: IGraph, itemId: string): Promise<DriveItem[]> {
   const scopes = 'files.read';
@@ -262,6 +274,19 @@ export async function getFilesById(graph: IGraph, itemId: string): Promise<Drive
   try {
     response = await graph
       .api(`/me/drive/items/${itemId}/children`)
+      .middlewareOptions(prepScopes(scopes))
+      .get();
+  } catch {}
+  return response.value || null;
+}
+
+// GET /me/drive/root:/{item-path}:/children
+export async function getFilesByPath(graph: IGraph, itemPath: string): Promise<DriveItem[]> {
+  const scopes = 'files.read';
+  let response;
+  try {
+    response = await graph
+      .api(`/me/drive/root:/${itemPath}:/children`)
       .middlewareOptions(prepScopes(scopes))
       .get();
   } catch {}
@@ -281,6 +306,19 @@ export async function getSiteFilesById(graph: IGraph, siteId: string, itemId: st
   return response.value || null;
 }
 
+// GET /sites/{site-id}/drive/root:/{item-path}:/children
+export async function getSiteFilesByPath(graph: IGraph, siteId: string, itemPath: string): Promise<DriveItem[]> {
+  const scopes = 'files.read';
+  let response;
+  try {
+    response = await graph
+      .api(`/sites/${siteId}/drive/root:/${itemPath}:/children`)
+      .middlewareOptions(prepScopes(scopes))
+      .get();
+  } catch {}
+  return response.value || null;
+}
+
 // GET /users/{user-id}/drive/items/{item-id}/children
 export async function getUserFilesById(graph: IGraph, userId: string, itemId: string): Promise<DriveItem[]> {
   const scopes = 'files.read';
@@ -294,30 +332,60 @@ export async function getUserFilesById(graph: IGraph, userId: string, itemId: st
   return response.value || null;
 }
 
-// GET /me/insights/{trending	| used | shared}
-export async function getMyInsightsFiles(graph: IGraph, insightType: string): Promise<DriveItem[]> {
-  const scopes = 'sites.read.all';
+// GET /users/{user-id}/drive/root:/{item-path}:/children
+export async function getUserFilesByPath(graph: IGraph, userId: string, itemPath: string): Promise<DriveItem[]> {
+  const scopes = 'files.read';
   let response;
   try {
     response = await graph
-      .api(`/me/insights/${insightType}`)
+      .api(`/users/${userId}/drive/root:/${itemPath}:/children`)
       .middlewareOptions(prepScopes(scopes))
       .get();
   } catch {}
   return response.value || null;
 }
 
-// GET /users/{id | userPrincipalName}/insights/{trending	| used | shared}
-export async function getUserInsightsFiles(graph: IGraph, userId: string, insightType: string): Promise<DriveItem[]> {
-  const scopes = 'sites.read.all';
-  let response;
+// GET /me/insights/{trending	| used | shared}
+export async function getMyInsightsFiles(graph: IGraph, insightType: string): Promise<DriveItem[]> {
+  const scopes = ['sites.read.all'];
+  let insightResponse;
   try {
-    response = await graph
-      .api(`/users/${userId}/insights/${insightType}`)
-      .middlewareOptions(prepScopes(scopes))
+    insightResponse = await graph
+      .api(`/me/insights/${insightType}`)
+      .filter(`resourceReference/type eq 'microsoft.graph.driveItem'`)
+      .middlewareOptions(prepScopes(...scopes))
       .get();
   } catch {}
-  return response.value || null;
+
+  const result = getDriveItemsByInsights(graph, insightResponse, scopes);
+  return result || null;
+}
+
+// GET /users/{id | userPrincipalName}/insights/{trending	| used | shared}
+export async function getUserInsightsFiles(graph: IGraph, userId: string, insightType: string): Promise<DriveItem[]> {
+  const scopes = ['sites.read.all'];
+  let insightResponse;
+  let endpoint;
+  let filter;
+
+  if (insightType === 'shared') {
+    endpoint = `/me/insights/shared`;
+    filter = `((lastshared/sharedby/id eq '${userId}') and (resourceReference/type eq 'microsoft.graph.driveItem'))`;
+  } else {
+    endpoint = `/users/${userId}/insights/${insightType}`;
+    filter = `resourceReference/type eq 'microsoft.graph.driveItem'`;
+  }
+
+  try {
+    insightResponse = await graph
+      .api(endpoint)
+      .filter(filter)
+      .middlewareOptions(prepScopes(...scopes))
+      .get();
+  } catch {}
+
+  const result = getDriveItemsByInsights(graph, insightResponse, scopes);
+  return result || null;
 }
 
 export async function getFilesByListQuery(graph: IGraph, listQuery: string): Promise<DriveItem[]> {
@@ -352,8 +420,8 @@ export async function getFilesByQueries(graph: IGraph, fileQueries: string[]): P
 
     for (const fileQuery of fileQueries) {
       const response = responses.get(fileQuery);
-      if (response && response.content && response.content.value && response.content.value.length > 0) {
-        files.push(response.content.value[0]);
+      if (response && response.content) {
+        files.push(response.content);
       }
     }
 
@@ -367,6 +435,52 @@ export async function getFilesByQueries(graph: IGraph, fileQueries: string[]): P
             const file = await getDriveItemByQuery(graph, fileQuery);
             if (file) {
               return file;
+            }
+          })
+      );
+    } catch (_) {
+      return [];
+    }
+  }
+}
+
+async function getDriveItemsByInsights(graph: IGraph, insightResponse, scopes) {
+  if (!insightResponse) {
+    return [];
+  }
+
+  const insightItems = insightResponse.value;
+  const batch = graph.createBatch();
+  const driveItems = [];
+  for (const item of insightItems) {
+    const driveItemId = item.resourceReference.id;
+    if (driveItemId !== '') {
+      batch.get(driveItemId, driveItemId, scopes);
+    }
+  }
+
+  try {
+    const driveItemResponses = await batch.executeAll();
+
+    for (const item of insightItems) {
+      const driveItemResponse = driveItemResponses.get(item.resourceReference.id);
+      if (driveItemResponse && driveItemResponse.content) {
+        driveItems.push(driveItemResponse.content);
+      }
+    }
+    return driveItems;
+  } catch (_) {
+    try {
+      return Promise.all(
+        insightItems
+          .filter(insightItem => insightItem.resourceReference.id && insightItem.resourceReference.id !== '')
+          .map(async insightItem => {
+            const driveItemResponses = await graph
+              .api(insightItem.resourceReference.id)
+              .middlewareOptions(prepScopes(...scopes))
+              .get();
+            if (driveItemResponses && driveItemResponses.length) {
+              return driveItemResponses[0].content;
             }
           })
       );
