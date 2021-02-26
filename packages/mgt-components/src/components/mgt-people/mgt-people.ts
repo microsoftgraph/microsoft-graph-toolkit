@@ -159,8 +159,17 @@ export class MgtPeople extends MgtTemplatedComponent {
 
   constructor() {
     super();
-
     this.showMax = 3;
+  }
+
+  /**
+   * Clears the state of the component
+   *
+   * @protected
+   * @memberof MgtPeople
+   */
+  protected clearState(): void {
+    this.people = null;
   }
 
   /**

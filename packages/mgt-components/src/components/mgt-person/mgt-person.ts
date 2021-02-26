@@ -526,6 +526,20 @@ export class MgtPerson extends MgtTemplatedComponent {
   }
 
   /**
+   * Clears state of the component
+   *
+   * @protected
+   * @memberof MgtPerson
+   */
+  protected clearState(): void {
+    this._personImage = '';
+    this._personDetails = null;
+    this._fallbackDetails = null;
+    this._fetchedImage = null;
+    this._fetchedPresence = null;
+  }
+
+  /**
    * Render the state when no data is available
    *
    * @protected
