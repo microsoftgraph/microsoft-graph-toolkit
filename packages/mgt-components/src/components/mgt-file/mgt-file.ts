@@ -275,13 +275,13 @@ export class MgtFile extends MgtTemplatedComponent {
   }
 
   /**
-   * allows developer to provide file object
+   * allows developer to provide DriveItem object
    *
    * @type {MicrosoftGraph.DriveItem}
    * @memberof MgtFile
    */
   @property({
-    attribute: 'file-details'
+    type: Object
   })
   public get fileDetails(): DriveItem {
     return this._fileDetails;
@@ -317,15 +317,12 @@ export class MgtFile extends MgtTemplatedComponent {
   }
 
   /**
-   * object containing Graph details on driveItem
+   * object containing Graph details on item
    *
    * @type {MicrosoftGraph.DriveItem}
    * @memberof MgtFile
    */
-  @property({
-    attribute: 'drive-item',
-    type: Object
-  })
+  @property({ type: Object })
   public driveItem: DriveItem;
 
   /**
@@ -550,29 +547,22 @@ export class MgtFile extends MgtTemplatedComponent {
     const graph = provider.graph.forComponent(this);
     let driveItem;
 
-    // return null when a combination of provided properties are required
-    if (
+    // evaluate to true when only item-id or item-path is provided
+    const getFromMyDrive = !this.driveId && !this.siteId && !this.groupId && !this.listId && !this.userId;
+
+    if (this.fileDetails) {
+      driveItem = this.fileDetails;
+    } else if (
+      // return null when a combination of provided properties are required
       (this.driveId && (!this.itemId && !this.itemPath)) ||
       (this.siteId && (!this.itemId && !this.itemPath)) ||
       (this.groupId && (!this.itemId && !this.itemPath)) ||
       (this.listId && (!this.siteId && !this.itemId)) ||
       (this.insightType && !this.insightId) ||
-      (this.userId && (!this.insightType && !this.insightId)) ||
-      (this.userId && (!this.itemId && !this.itemPath))
+      (this.userId && (!this.itemId && !this.itemPath) && (!this.insightType && !this.insightId))
     ) {
       driveItem = null;
-    }
-
-    if (this.fileDetails) {
-      driveItem = this.fileDetails;
-    }
-
-    // evaluate to true when only item-id or item-path is provided
-    const getFromMyDrive = !this.driveId && !this.siteId && !this.groupId && !this.listId && !this.userId;
-
-    // todo: error handle can't find file
-
-    if (this.fileQuery) {
+    } else if (this.fileQuery) {
       driveItem = await getDriveItemByQuery(graph, this.fileQuery);
     } else if (this.itemId && getFromMyDrive) {
       driveItem = await getMyDriveItemById(graph, this.itemId);
@@ -583,6 +573,8 @@ export class MgtFile extends MgtTemplatedComponent {
         driveItem = await getUserDriveItemById(graph, this.userId, this.itemId);
       } else if (this.itemPath) {
         driveItem = await getUserDriveItemByPath(graph, this.userId, this.itemPath);
+      } else if (this.insightType && this.insightId) {
+        driveItem = await getUserInsightsDriveItemById(graph, this.userId, this.insightType, this.insightId);
       }
     } else if (this.driveId) {
       if (this.itemId) {
@@ -604,12 +596,8 @@ export class MgtFile extends MgtTemplatedComponent {
       } else if (this.itemPath) {
         driveItem = await getGroupDriveItemByPath(graph, this.groupId, this.itemPath);
       }
-    } else if (this.insightType) {
-      if (this.userId) {
-        driveItem = await getUserInsightsDriveItemById(graph, this.userId, this.insightType, this.insightId);
-      } else {
-        driveItem = await getMyInsightsDriveItemById(graph, this.insightType, this.insightId);
-      }
+    } else if (this.insightType && !this.userId) {
+      driveItem = await getMyInsightsDriveItemById(graph, this.insightType, this.insightId);
     }
 
     this.driveItem = driveItem;
@@ -624,20 +612,21 @@ export class MgtFile extends MgtTemplatedComponent {
     let text;
     let i = 0;
 
-    // convert date time
-    const lastModifiedDateTime = new Date(driveItem.lastModifiedDateTime);
-    const relativeDateString = getRelativeDisplayDate(lastModifiedDateTime);
-
-    // convert size to mb
-    const sizeInMb = (driveItem.size / (1024 * 1024)).toFixed(2);
-
     while (!text && i < propertyList.length) {
       const current = propertyList[i].trim();
       switch (current) {
         case 'size':
+          // convert size to mb
+          const sizeInMb = (driveItem.size / (1024 * 1024)).toFixed(2);
           text = `Size: ${sizeInMb}MB`;
           break;
         case 'lastModifiedDateTime':
+          // convert date time
+          let relativeDateString;
+          if (driveItem.lastModifiedDateTime) {
+            const lastModifiedDateTime = new Date(driveItem.lastModifiedDateTime);
+            relativeDateString = getRelativeDisplayDate(lastModifiedDateTime);
+          }
           text = `Modified ${relativeDateString}`;
           break;
         default:

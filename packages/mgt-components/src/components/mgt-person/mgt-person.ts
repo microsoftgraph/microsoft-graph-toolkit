@@ -26,6 +26,34 @@ import { Presence } from '@microsoft/microsoft-graph-types-beta';
 
 export { PersonCardInteraction } from '../PersonCardInteraction';
 
+/**
+ * Enumeration to define what parts of the person component render
+ *
+ * @export
+ * @enum {number}
+ */
+export enum PersonViewType {
+  /**
+   * Render only the avatar
+   */
+  avatar = 2,
+
+  /**
+   * Render the avatar and one line of text
+   */
+  oneline = 3,
+
+  /**
+   * Render the avatar and two lines of text
+   */
+  twolines = 4,
+
+  /**
+   * Render the avatar and three lines of text
+   */
+  threelines = 5
+}
+
 export enum avatarType {
   /**
    * Renders avatar photo if available, falls back to initials
@@ -381,10 +409,10 @@ export class MgtPerson extends MgtTemplatedComponent {
   @property({ attribute: 'line3-property' }) public line3Property: string;
 
   /**
-   * Sets what data to be rendered (avatar only, oneLine, twoLines).
+   * Sets what data to be rendered (image only, oneLine, twoLines).
    * Default is 'image'.
    *
-   * @type {ViewType}
+   * @type {ViewType | PersonViewType}
    * @memberof MgtPerson
    */
   @property({
@@ -402,7 +430,7 @@ export class MgtPerson extends MgtTemplatedComponent {
       }
     }
   })
-  public view: ViewType;
+  public view: ViewType | PersonViewType;
 
   @internalProperty() private _fetchedImage: string;
   @internalProperty() private _fetchedPresence: Presence;
@@ -719,7 +747,7 @@ export class MgtPerson extends MgtTemplatedComponent {
    * @memberof MgtPerson
    */
   protected renderDetails(person: IDynamicPerson): TemplateResult {
-    if (!person || this.view === ViewType.image) {
+    if (!person || this.view === ViewType.image || this.view === PersonViewType.avatar) {
       return html``;
     }
 
