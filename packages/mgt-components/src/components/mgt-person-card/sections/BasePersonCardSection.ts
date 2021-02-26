@@ -113,8 +113,10 @@ export abstract class BasePersonCardSection extends MgtTemplatedComponent {
    * @abstract
    * @memberof BasePersonCardSection
    */
-  // tslint:disable-next-line:no-empty
-  public clearState(): void {}
+  public clearState(): void {
+    this._isCompact = false;
+    this._personDetails = null;
+  }
 
   /**
    * Invoked on each update to perform rendering tasks. This method must return
