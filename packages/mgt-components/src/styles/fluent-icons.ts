@@ -45,7 +45,7 @@ export function getFileTypeIconUri(type: string, size: IconSize, extension: 'png
 }
 
 export function getFileTypeIconUriByExtension(type: string, size: IconSize, extension: 'png' | 'svg') {
-  if (type === 'jpg') {
+  if (type === 'jpg' || type === 'png') {
     type = 'photo';
   }
   return `${baseUri}/${size.toString()}/${type}.${extension}`;

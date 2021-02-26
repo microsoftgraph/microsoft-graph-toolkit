@@ -26,6 +26,34 @@ import { Presence } from '@microsoft/microsoft-graph-types-beta';
 
 export { PersonCardInteraction } from '../PersonCardInteraction';
 
+/**
+ * Enumeration to define what parts of the person component render
+ *
+ * @export
+ * @enum {number}
+ */
+export enum PersonViewType {
+  /**
+   * Render only the avatar
+   */
+  avatar = 2,
+
+  /**
+   * Render the avatar and one line of text
+   */
+  oneline = 3,
+
+  /**
+   * Render the avatar and two lines of text
+   */
+  twolines = 4,
+
+  /**
+   * Render the avatar and three lines of text
+   */
+  threelines = 5
+}
+
 export enum avatarType {
   /**
    * Renders avatar photo if available, falls back to initials
@@ -381,7 +409,7 @@ export class MgtPerson extends MgtTemplatedComponent {
   @property({ attribute: 'line3-property' }) public line3Property: string;
 
   /**
-   * Sets what data to be rendered (avatar only, oneLine, twoLines).
+   * Sets what data to be rendered (image only, oneLine, twoLines).
    * Default is 'image'.
    *
    * @type {ViewType}
@@ -404,6 +432,32 @@ export class MgtPerson extends MgtTemplatedComponent {
   })
   public view: ViewType;
 
+  /**
+   * DEPRECATED
+   *
+   * Sets what data to be rendered (avatar only, oneLine, twoLines).
+   * Default is 'avatar'.
+   *
+   * @type {PersonViewType}
+   * @memberof MgtPerson
+   */
+  @property({
+    converter: value => {
+      if (!value || value.length === 0) {
+        return PersonViewType.avatar;
+      }
+
+      value = value.toLowerCase();
+
+      if (typeof PersonViewType[value] === 'undefined') {
+        return PersonViewType.avatar;
+      } else {
+        return PersonViewType[value];
+      }
+    }
+  })
+  public personView: PersonViewType;
+
   @internalProperty() private _fetchedImage: string;
   @internalProperty() private _fetchedPresence: Presence;
   @internalProperty() private _isInvalidImageSrc: boolean;
@@ -421,6 +475,8 @@ export class MgtPerson extends MgtTemplatedComponent {
   private _mouseLeaveTimeout;
   private _mouseEnterTimeout;
 
+  private _view;
+
   constructor() {
     super();
 
@@ -433,6 +489,12 @@ export class MgtPerson extends MgtTemplatedComponent {
     this.avatarSize = 'auto';
     this._isInvalidImageSrc = false;
     this._avatarType = 'photo';
+
+    if (this.view && this.personView) {
+      this._view = this.personView;
+    } else {
+      this._view = this.view || this.personView;
+    }
   }
 
   /**
@@ -719,13 +781,13 @@ export class MgtPerson extends MgtTemplatedComponent {
    * @memberof MgtPerson
    */
   protected renderDetails(person: IDynamicPerson): TemplateResult {
-    if (!person || this.view === ViewType.image) {
+    if (!person || this.view === ViewType.image || this.personView === PersonViewType.avatar) {
       return html``;
     }
 
     const details: TemplateResult[] = [];
 
-    if (this.view > ViewType.image) {
+    if (this._view > ViewType.image) {
       if (this.hasTemplate('line1')) {
         // Render the line1 template
         const template = this.renderTemplate('line1', { person });
@@ -743,7 +805,7 @@ export class MgtPerson extends MgtTemplatedComponent {
       }
     }
 
-    if (this.view > ViewType.oneline) {
+    if (this._view > ViewType.oneline) {
       if (this.hasTemplate('line2')) {
         // Render the line2 template
         const template = this.renderTemplate('line2', { person });
@@ -761,7 +823,7 @@ export class MgtPerson extends MgtTemplatedComponent {
       }
     }
 
-    if (this.view > ViewType.twolines) {
+    if (this._view > ViewType.twolines) {
       if (this.hasTemplate('line3')) {
         // Render the line3 template
         const template = this.renderTemplate('line3', { person });
@@ -1048,7 +1110,7 @@ export class MgtPerson extends MgtTemplatedComponent {
   }
 
   private isLargeAvatar() {
-    return this.avatarSize === 'large' || (this.avatarSize === 'auto' && this.view > ViewType.oneline);
+    return this.avatarSize === 'large' || (this.avatarSize === 'auto' && this._view > ViewType.oneline);
   }
 
   private handleMouseClick(e: MouseEvent) {

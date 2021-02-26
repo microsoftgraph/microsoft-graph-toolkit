@@ -5,7 +5,7 @@
  * -------------------------------------------------------------------------------------------
  */
 
-import * as MicrosoftGraph from '@microsoft/microsoft-graph-types';
+import { DriveItem } from '@microsoft/microsoft-graph-types';
 import { customElement, html, property, TemplateResult } from 'lit-element';
 import { styles } from './mgt-file-css';
 import { MgtTemplatedComponent, Providers, ProviderState } from '@microsoft/mgt-element';
@@ -275,18 +275,18 @@ export class MgtFile extends MgtTemplatedComponent {
   }
 
   /**
-   * allows developer to provide file object
+   * allows developer to provide DriveItem object
    *
    * @type {MicrosoftGraph.DriveItem}
    * @memberof MgtFile
    */
   @property({
-    attribute: 'file-details'
+    type: Object
   })
-  public get fileDetails(): MicrosoftGraph.DriveItem {
+  public get fileDetails(): DriveItem {
     return this._fileDetails;
   }
-  public set fileDetails(value: MicrosoftGraph.DriveItem) {
+  public set fileDetails(value: DriveItem) {
     if (value === this._fileDetails) {
       return;
     }
@@ -317,16 +317,13 @@ export class MgtFile extends MgtTemplatedComponent {
   }
 
   /**
-   * object containing Graph details on driveItem
+   * object containing Graph details on item
    *
-   * @type {string}
+   * @type {MicrosoftGraph.DriveItem}
    * @memberof MgtFile
    */
-  @property({
-    attribute: 'drive-item',
-    type: Object
-  })
-  public driveItem: MicrosoftGraph.DriveItem;
+  @property({ type: Object })
+  public driveItem: DriveItem;
 
   /**
    * Sets the property of the file to use for the first line of text.
@@ -389,7 +386,7 @@ export class MgtFile extends MgtTemplatedComponent {
   private _userId: string;
   private _insightType: OfficeGraphInsightString;
   private _insightId: string;
-  private _fileDetails: MicrosoftGraph.DriveItem;
+  private _fileDetails: DriveItem;
   private _fileIcon: string;
 
   constructor() {
@@ -488,7 +485,7 @@ export class MgtFile extends MgtTemplatedComponent {
    * @param {MicrosoftGraph.DriveItem} [driveItem]
    * @memberof MgtFile
    */
-  protected renderDetails(driveItem: MicrosoftGraph.DriveItem): TemplateResult {
+  protected renderDetails(driveItem: DriveItem): TemplateResult {
     if (!driveItem || this.view === ViewType.image) {
       return html``;
     }
@@ -550,8 +547,13 @@ export class MgtFile extends MgtTemplatedComponent {
     const graph = provider.graph.forComponent(this);
     let driveItem;
 
-    // return null when a combination of provided properties are required
-    if (
+    // evaluate to true when only item-id or item-path is provided
+    const getFromMyDrive = !this.driveId && !this.siteId && !this.groupId && !this.listId && !this.userId;
+
+    if (this.fileDetails) {
+      driveItem = this.fileDetails;
+    } else if (
+      // return null when a combination of provided properties are required
       (this.driveId && (!this.itemId && !this.itemPath)) ||
       (this.siteId && (!this.itemId && !this.itemPath)) ||
       (this.groupId && (!this.itemId && !this.itemPath)) ||
@@ -561,18 +563,7 @@ export class MgtFile extends MgtTemplatedComponent {
       (this.userId && (!this.itemId && !this.itemPath))
     ) {
       driveItem = null;
-    }
-
-    if (this.fileDetails) {
-      driveItem = this.fileDetails;
-    }
-
-    // evaluate to true when only item-id or item-path is provided
-    const getFromMyDrive = !this.driveId && !this.siteId && !this.groupId && !this.listId && !this.userId;
-
-    // todo: error handle can't find file
-
-    if (this.fileQuery) {
+    } else if (this.fileQuery) {
       driveItem = await getDriveItemByQuery(graph, this.fileQuery);
     } else if (this.itemId && getFromMyDrive) {
       driveItem = await getMyDriveItemById(graph, this.itemId);
@@ -615,13 +606,7 @@ export class MgtFile extends MgtTemplatedComponent {
     this.driveItem = driveItem;
   }
 
-  private getFileTypeIcon() {
-    return;
-    // todo: graph call to get file type
-    // determine which icon to render based on file type
-  }
-
-  private getTextFromProperty(driveItem: MicrosoftGraph.DriveItem, properties: string) {
+  private getTextFromProperty(driveItem: DriveItem, properties: string) {
     if (!properties || properties.length === 0) {
       return null;
     }
@@ -630,20 +615,21 @@ export class MgtFile extends MgtTemplatedComponent {
     let text;
     let i = 0;
 
-    // convert date time
-    const lastModifiedDateTime = new Date(driveItem.lastModifiedDateTime);
-    const relativeDateString = getRelativeDisplayDate(lastModifiedDateTime);
-
-    // convert size to mb
-    const sizeInMb = (driveItem.size / (1024 * 1024)).toFixed(2);
-
     while (!text && i < propertyList.length) {
       const current = propertyList[i].trim();
       switch (current) {
         case 'size':
+          // convert size to mb
+          const sizeInMb = (driveItem.size / (1024 * 1024)).toFixed(2);
           text = `Size: ${sizeInMb}MB`;
           break;
         case 'lastModifiedDateTime':
+          // convert date time
+          let relativeDateString;
+          if (driveItem.lastModifiedDateTime) {
+            const lastModifiedDateTime = new Date(driveItem.lastModifiedDateTime);
+            relativeDateString = getRelativeDisplayDate(lastModifiedDateTime);
+          }
           text = `Modified ${relativeDateString}`;
           break;
         default:
