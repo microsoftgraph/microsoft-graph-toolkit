@@ -559,8 +559,7 @@ export class MgtFile extends MgtTemplatedComponent {
       (this.groupId && (!this.itemId && !this.itemPath)) ||
       (this.listId && (!this.siteId && !this.itemId)) ||
       (this.insightType && !this.insightId) ||
-      (this.userId && (!this.insightType && !this.insightId)) ||
-      (this.userId && (!this.itemId && !this.itemPath))
+      (this.userId && (!this.itemId && !this.itemPath) && (!this.insightType && !this.insightId))
     ) {
       driveItem = null;
     } else if (this.fileQuery) {
@@ -574,6 +573,8 @@ export class MgtFile extends MgtTemplatedComponent {
         driveItem = await getUserDriveItemById(graph, this.userId, this.itemId);
       } else if (this.itemPath) {
         driveItem = await getUserDriveItemByPath(graph, this.userId, this.itemPath);
+      } else if (this.insightType && this.insightId) {
+        driveItem = await getUserInsightsDriveItemById(graph, this.userId, this.insightType, this.insightId);
       }
     } else if (this.driveId) {
       if (this.itemId) {
@@ -595,12 +596,8 @@ export class MgtFile extends MgtTemplatedComponent {
       } else if (this.itemPath) {
         driveItem = await getGroupDriveItemByPath(graph, this.groupId, this.itemPath);
       }
-    } else if (this.insightType) {
-      if (this.userId) {
-        driveItem = await getUserInsightsDriveItemById(graph, this.userId, this.insightType, this.insightId);
-      } else {
-        driveItem = await getMyInsightsDriveItemById(graph, this.insightType, this.insightId);
-      }
+    } else if (this.insightType && !this.userId) {
+      driveItem = await getMyInsightsDriveItemById(graph, this.insightType, this.insightId);
     }
 
     this.driveItem = driveItem;
