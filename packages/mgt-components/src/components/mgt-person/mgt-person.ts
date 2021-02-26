@@ -489,12 +489,6 @@ export class MgtPerson extends MgtTemplatedComponent {
     this.avatarSize = 'auto';
     this._isInvalidImageSrc = false;
     this._avatarType = 'photo';
-
-    if (this.view && this.personView) {
-      this._view = this.personView;
-    } else {
-      this._view = this.view || this.personView;
-    }
   }
 
   /**
@@ -918,6 +912,12 @@ export class MgtPerson extends MgtTemplatedComponent {
     if (provider.state === ProviderState.SignedOut) {
       this.personDetails = null;
       return;
+    }
+
+    if (this.view && this.personView) {
+      this._view = this.personView;
+    } else {
+      this._view = this.view || this.personView;
     }
 
     const graph = provider.graph.forComponent(this);
