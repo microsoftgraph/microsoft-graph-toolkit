@@ -22,28 +22,21 @@
   }
 
   .flyout {
+    display: none;
     position: fixed;
     z-index: 9999999;
-
-    slot {
-      box-shadow: set-var(box-shadow, $theme-default, $common);
-      opacity: 0;
-      z-index: 9999999;
-      display: none;
-    }
+    opacity: 0;
+    box-shadow: set-var(box-shadow, $theme-default, $common);
   }
 
   &.visible {
     .flyout {
+      display: inline-block;
+      animation-name: fadeIn;
+      animation-duration: 0.3s;
+      animation-timing-function: cubic-bezier(0.1, 0.9, 0.2, 1);
+      animation-fill-mode: both;
       transition: top 0.3s ease, bottom 0.3s ease, left 0.3s ease;
-
-      slot {
-        display: inline-block;
-        animation-name: fadeIn;
-        animation-duration: 0.3s;
-        animation-timing-function: cubic-bezier(0.1, 0.9, 0.2, 1);
-        animation-fill-mode: both;
-      }
     }
   }
 }
