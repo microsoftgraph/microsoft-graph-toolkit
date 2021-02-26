@@ -1103,7 +1103,7 @@ export class MgtPerson extends MgtTemplatedComponent {
   private hidePersonCard() {
     const flyout = this.flyout;
     if (flyout) {
-      flyout.isOpen = false;
+      flyout.close();
     }
 
     const personCard = (this.querySelector('mgt-person-card') ||
@@ -1121,7 +1121,7 @@ export class MgtPerson extends MgtTemplatedComponent {
 
     const flyout = this.flyout;
     if (flyout) {
-      flyout.isOpen = true;
+      flyout.open();
     }
   }
 }
