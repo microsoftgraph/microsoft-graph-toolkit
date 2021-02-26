@@ -1,4 +1,4 @@
-import { OfficeGraphInsightString,ViewType,ResponseType,IDynamicPerson,PersonType,GroupType,PersonCardInteraction,MgtPersonConfig,PersonViewType,AvatarSize,TasksStringResource,TasksSource,TaskFilter,SelectedChannel,TodoFilter } from '@microsoft/mgt-components';
+import { OfficeGraphInsightString,ViewType,ResponseType,IDynamicPerson,PersonType,GroupType,PersonCardInteraction,MgtPersonConfig,AvatarSize,PersonViewType,TasksStringResource,TasksSource,TaskFilter,SelectedChannel,TodoFilter } from '@microsoft/mgt-components';
 import { TemplateContext,ComponentMediaQuery } from '@microsoft/mgt-element';
 import * as MicrosoftGraph from '@microsoft/microsoft-graph-types';
 import * as MicrosoftGraphBeta from '@microsoft/microsoft-graph-types-beta';
@@ -119,12 +119,11 @@ export type PersonProps = {
 	fetchImage?: boolean;
 	avatarType?: string;
 	personPresence?: MicrosoftGraphBeta.Presence;
-	personView?: PersonViewType;
 	personCardInteraction?: PersonCardInteraction;
 	line1Property?: string;
 	line2Property?: string;
 	line3Property?: string;
-	view?: ViewType;
+	view?: ViewType | PersonViewType;
 	avatarSize?: AvatarSize;
 	templateContext?: TemplateContext;
 	mediaQuery?: ComponentMediaQuery;
@@ -194,5 +193,5 @@ export const TeamsChannelPicker = wrapMgt<TeamsChannelPickerProps>('mgt-teams-ch
 
 export const Todo = wrapMgt<TodoProps>('mgt-todo');
 
-export { OfficeGraphInsightString,ViewType,ResponseType,IDynamicPerson,PersonType,GroupType,PersonCardInteraction,MgtPersonConfig,PersonViewType,AvatarSize,TasksStringResource,TasksSource,TaskFilter,SelectedChannel,TodoFilter } from '@microsoft/mgt-components';
+export { OfficeGraphInsightString,ViewType,ResponseType,IDynamicPerson,PersonType,GroupType,PersonCardInteraction,MgtPersonConfig,AvatarSize,PersonViewType,TasksStringResource,TasksSource,TaskFilter,SelectedChannel,TodoFilter } from '@microsoft/mgt-components';
 export { TemplateContext,ComponentMediaQuery } from '@microsoft/mgt-element';

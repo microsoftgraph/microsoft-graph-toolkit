@@ -412,7 +412,7 @@ export class MgtPerson extends MgtTemplatedComponent {
    * Sets what data to be rendered (image only, oneLine, twoLines).
    * Default is 'image'.
    *
-   * @type {ViewType}
+   * @type {ViewType | PersonViewType}
    * @memberof MgtPerson
    */
   @property({
@@ -430,33 +430,7 @@ export class MgtPerson extends MgtTemplatedComponent {
       }
     }
   })
-  public view: ViewType;
-
-  /**
-   * DEPRECATED
-   *
-   * Sets what data to be rendered (avatar only, oneLine, twoLines).
-   * Default is 'avatar'.
-   *
-   * @type {PersonViewType}
-   * @memberof MgtPerson
-   */
-  @property({
-    converter: value => {
-      if (!value || value.length === 0) {
-        return PersonViewType.avatar;
-      }
-
-      value = value.toLowerCase();
-
-      if (typeof PersonViewType[value] === 'undefined') {
-        return PersonViewType.avatar;
-      } else {
-        return PersonViewType[value];
-      }
-    }
-  })
-  public personView: PersonViewType;
+  public view: ViewType | PersonViewType;
 
   @internalProperty() private _fetchedImage: string;
   @internalProperty() private _fetchedPresence: Presence;
@@ -474,8 +448,6 @@ export class MgtPerson extends MgtTemplatedComponent {
 
   private _mouseLeaveTimeout;
   private _mouseEnterTimeout;
-
-  private _view;
 
   constructor() {
     super();
@@ -775,13 +747,13 @@ export class MgtPerson extends MgtTemplatedComponent {
    * @memberof MgtPerson
    */
   protected renderDetails(person: IDynamicPerson): TemplateResult {
-    if (!person || this.view === ViewType.image || this.personView === PersonViewType.avatar) {
+    if (!person || this.view === ViewType.image || this.view === PersonViewType.avatar) {
       return html``;
     }
 
     const details: TemplateResult[] = [];
 
-    if (this._view > ViewType.image) {
+    if (this.view > ViewType.image) {
       if (this.hasTemplate('line1')) {
         // Render the line1 template
         const template = this.renderTemplate('line1', { person });
@@ -799,7 +771,7 @@ export class MgtPerson extends MgtTemplatedComponent {
       }
     }
 
-    if (this._view > ViewType.oneline) {
+    if (this.view > ViewType.oneline) {
       if (this.hasTemplate('line2')) {
         // Render the line2 template
         const template = this.renderTemplate('line2', { person });
@@ -817,7 +789,7 @@ export class MgtPerson extends MgtTemplatedComponent {
       }
     }
 
-    if (this._view > ViewType.twolines) {
+    if (this.view > ViewType.twolines) {
       if (this.hasTemplate('line3')) {
         // Render the line3 template
         const template = this.renderTemplate('line3', { person });
@@ -912,12 +884,6 @@ export class MgtPerson extends MgtTemplatedComponent {
     if (provider.state === ProviderState.SignedOut) {
       this.personDetails = null;
       return;
-    }
-
-    if (this.view && this.personView) {
-      this._view = this.personView;
-    } else {
-      this._view = this.view || this.personView;
     }
 
     const graph = provider.graph.forComponent(this);
@@ -1110,7 +1076,7 @@ export class MgtPerson extends MgtTemplatedComponent {
   }
 
   private isLargeAvatar() {
-    return this.avatarSize === 'large' || (this.avatarSize === 'auto' && this._view > ViewType.oneline);
+    return this.avatarSize === 'large' || (this.avatarSize === 'auto' && this.view > ViewType.oneline);
   }
 
   private handleMouseClick(e: MouseEvent) {
