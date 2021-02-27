@@ -538,7 +538,7 @@ export class MgtFile extends MgtTemplatedComponent {
       this.driveItem = this.fileDetails;
       return;
     }
-    
+
     const provider = Providers.globalProvider;
     if (!provider || provider.state === ProviderState.Loading) {
       return;
