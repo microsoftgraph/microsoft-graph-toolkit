@@ -534,6 +534,11 @@ export class MgtFile extends MgtTemplatedComponent {
    * @memberof MgtFile
    */
   protected async loadState() {
+    if (this.fileDetails) {
+      this.driveItem = this.fileDetails;
+      return;
+    }
+    
     const provider = Providers.globalProvider;
     if (!provider || provider.state === ProviderState.Loading) {
       return;
@@ -550,9 +555,7 @@ export class MgtFile extends MgtTemplatedComponent {
     // evaluate to true when only item-id or item-path is provided
     const getFromMyDrive = !this.driveId && !this.siteId && !this.groupId && !this.listId && !this.userId;
 
-    if (this.fileDetails) {
-      driveItem = this.fileDetails;
-    } else if (
+    if (
       // return null when a combination of provided properties are required
       (this.driveId && (!this.itemId && !this.itemPath)) ||
       (this.siteId && (!this.itemId && !this.itemPath)) ||
