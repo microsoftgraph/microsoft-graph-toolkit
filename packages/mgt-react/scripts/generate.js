@@ -16,7 +16,8 @@ const tags = new Set([
   'mgt-people',
   'mgt-tasks',
   'mgt-teams-channel-picker',
-  'mgt-todo'
+  'mgt-todo',
+  'mgt-file'
 ]);
 
 let output = '';
@@ -42,11 +43,25 @@ for (const tag of wc.tags) {
 
   const props = {};
 
-  for (const prop of tag.properties) {
-    if (prop.type) {
-      props[prop.name] = prop.type;
+  for (let i = 0; i < tag.properties.length; ++i) {
+    const prop = tag.properties[i];
+    let type = prop.type;
 
-      let type = prop.type;
+    if (type) {
+      if (prop.name) {
+        props[prop.name] = type;
+      }
+
+      if (type.includes('|')) {
+        const types = type.split('|');
+        for (const t of types) {
+          tag.properties.push({
+            type: t.trim()
+          });
+        }
+        continue;
+      }
+
       if (type.endsWith('[]')) {
         type = type.substring(0, type.length - 2);
       } else if (type.startsWith('Array<')) {

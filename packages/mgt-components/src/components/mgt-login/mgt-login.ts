@@ -9,10 +9,9 @@ import { customElement, html, property } from 'lit-element';
 import { classMap } from 'lit-html/directives/class-map';
 import { Providers, ProviderState, MgtTemplatedComponent } from '@microsoft/mgt-element';
 
-import { IDynamicPerson } from '../../graph/types';
+import { IDynamicPerson, ViewType } from '../../graph/types';
 import { MgtFlyout } from '../sub-components/mgt-flyout/mgt-flyout';
 import { getUserWithPhoto } from '../../graph/graph.userWithPhoto';
-import { PersonViewType } from '../mgt-person/mgt-person';
 
 import { styles } from './mgt-login-css';
 import { strings } from './strings';
@@ -268,7 +267,7 @@ export class MgtLogin extends MgtTemplatedComponent {
     return (
       template ||
       html`
-        <mgt-person .personDetails=${personDetails} .personImage=${personImage} .view=${PersonViewType.twolines} />
+        <mgt-person .personDetails=${personDetails} .personImage=${personImage} .view=${ViewType.twolines} />
       `
     );
   }
@@ -323,7 +322,7 @@ export class MgtLogin extends MgtTemplatedComponent {
     return (
       template ||
       html`
-        <mgt-person .personDetails=${this.userDetails} .personImage=${this._image} .view=${PersonViewType.oneline} />
+        <mgt-person .personDetails=${this.userDetails} .personImage=${this._image} .view=${ViewType.oneline} />
       `
     );
   }

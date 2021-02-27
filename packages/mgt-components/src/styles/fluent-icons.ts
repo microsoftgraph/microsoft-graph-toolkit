@@ -43,3 +43,10 @@ export function getFileTypeIconUri(type: string, size: IconSize, extension: 'png
   const fileType = fileTypeMap[type] || 'genericfile';
   return `${baseUri}/${size.toString()}/${fileType}.${extension}`;
 }
+
+export function getFileTypeIconUriByExtension(type: string, size: IconSize, extension: 'png' | 'svg') {
+  if (type === 'jpg' || type === 'png') {
+    type = 'photo';
+  }
+  return `${baseUri}/${size.toString()}/${type}.${extension}`;
+}

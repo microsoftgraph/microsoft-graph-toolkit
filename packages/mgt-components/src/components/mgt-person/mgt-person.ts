@@ -13,7 +13,7 @@ import { getPersonImage } from '../../graph/graph.photos';
 import { getUserPresence } from '../../graph/graph.presence';
 import { getUserWithPhoto } from '../../graph/graph.userWithPhoto';
 import { findUsers, getMe, getUser } from '../../graph/graph.user';
-import { AvatarSize, IDynamicPerson } from '../../graph/types';
+import { AvatarSize, IDynamicPerson, ViewType } from '../../graph/types';
 import { Providers, ProviderState, MgtTemplatedComponent } from '@microsoft/mgt-element';
 import '../../styles/style-helper';
 import { getSvg, SvgIcon } from '../../utils/SvgHelper';
@@ -119,7 +119,7 @@ export interface MgtPersonConfig {
 export class MgtPerson extends MgtTemplatedComponent {
   /**
    * Array of styles to apply to the element. The styles should be defined
-   * user the `css` tag function.
+   * using the `css` tag function.
    */
   static get styles() {
     return styles;
@@ -409,28 +409,28 @@ export class MgtPerson extends MgtTemplatedComponent {
   @property({ attribute: 'line3-property' }) public line3Property: string;
 
   /**
-   * Sets what data to be rendered (avatar only, oneLine, twoLines).
-   * Default is 'avatar'.
+   * Sets what data to be rendered (image only, oneLine, twoLines).
+   * Default is 'image'.
    *
-   * @type {PersonViewType}
+   * @type {ViewType | PersonViewType}
    * @memberof MgtPerson
    */
   @property({
     converter: value => {
       if (!value || value.length === 0) {
-        return PersonViewType.avatar;
+        return ViewType.image;
       }
 
       value = value.toLowerCase();
 
-      if (typeof PersonViewType[value] === 'undefined') {
-        return PersonViewType.avatar;
+      if (typeof ViewType[value] === 'undefined') {
+        return ViewType.image;
       } else {
-        return PersonViewType[value];
+        return ViewType[value];
       }
     }
   })
-  public view: PersonViewType;
+  public view: ViewType | PersonViewType;
 
   @internalProperty() private _fetchedImage: string;
   @internalProperty() private _fetchedPresence: Presence;
@@ -457,7 +457,7 @@ export class MgtPerson extends MgtTemplatedComponent {
     this.line1Property = 'displayName';
     this.line2Property = 'email';
     this.line3Property = 'jobTitle';
-    this.view = PersonViewType.avatar;
+    this.view = ViewType.image;
     this.avatarSize = 'auto';
     this._isInvalidImageSrc = false;
     this._avatarType = 'photo';
@@ -747,13 +747,13 @@ export class MgtPerson extends MgtTemplatedComponent {
    * @memberof MgtPerson
    */
   protected renderDetails(person: IDynamicPerson): TemplateResult {
-    if (!person || this.view === PersonViewType.avatar) {
+    if (!person || this.view === ViewType.image || this.view === PersonViewType.avatar) {
       return html``;
     }
 
     const details: TemplateResult[] = [];
 
-    if (this.view > PersonViewType.avatar) {
+    if (this.view > ViewType.image) {
       if (this.hasTemplate('line1')) {
         // Render the line1 template
         const template = this.renderTemplate('line1', { person });
@@ -771,7 +771,7 @@ export class MgtPerson extends MgtTemplatedComponent {
       }
     }
 
-    if (this.view > PersonViewType.oneline) {
+    if (this.view > ViewType.oneline) {
       if (this.hasTemplate('line2')) {
         // Render the line2 template
         const template = this.renderTemplate('line2', { person });
@@ -789,7 +789,7 @@ export class MgtPerson extends MgtTemplatedComponent {
       }
     }
 
-    if (this.view > PersonViewType.twolines) {
+    if (this.view > ViewType.twolines) {
       if (this.hasTemplate('line3')) {
         // Render the line3 template
         const template = this.renderTemplate('line3', { person });
@@ -1076,7 +1076,7 @@ export class MgtPerson extends MgtTemplatedComponent {
   }
 
   private isLargeAvatar() {
-    return this.avatarSize === 'large' || (this.avatarSize === 'auto' && this.view > PersonViewType.oneline);
+    return this.avatarSize === 'large' || (this.avatarSize === 'auto' && this.view > ViewType.oneline);
   }
 
   private handleMouseClick(e: MouseEvent) {
