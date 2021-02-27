@@ -419,7 +419,7 @@ export class MgtPeoplePicker extends MgtTemplatedComponent {
   protected renderInput(): TemplateResult {
     const hasSelectedPeople = !!this.selectedPeople.length;
 
-    const placeholder = this.placeholder ? this.placeholder : this.strings.inputPlaceholderText;
+    const placeholder = !this.disabled ? (this.placeholder ? this.placeholder : this.strings.inputPlaceholderText) : '';
 
     const selectionMode = this.selectionMode ? this.selectionMode : 'multiple';
 
