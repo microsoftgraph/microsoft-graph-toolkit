@@ -122,6 +122,7 @@ export class MgtPersonCardProfile extends BasePersonCardSection {
    * @memberof MgtPersonCardProfile
    */
   public clearState(): void {
+    super.clearState();
     this.profile = null;
   }
 

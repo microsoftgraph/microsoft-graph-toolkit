@@ -6,6 +6,7 @@
  */
 
 import { internalProperty, LitElement, PropertyValues } from 'lit-element';
+import { ProviderState } from '../providers/IProvider';
 import { Providers } from '../providers/Providers';
 import { LocalizationHelper } from '../utils/LocalizationHelper';
 
@@ -162,6 +163,8 @@ export abstract class MgtBaseComponent extends LitElement {
     return Promise.resolve();
   }
 
+  protected clearState(): void {}
+
   /**
    * helps facilitate creation of events across components
    *
@@ -223,29 +226,45 @@ export abstract class MgtBaseComponent extends LitElement {
       await this._currentLoadStatePromise;
     }
 
-    const loadStatePromise = new Promise(async (resolve, reject) => {
-      try {
-        this.setLoadingState(true);
-        this.fireCustomEvent('loadingInitiated');
+    const provider = Providers.globalProvider;
 
-        await this.loadState();
+    if (provider.state == ProviderState.SignedOut) {
+      // Signed out, clear the component state
+      this.clearState();
+      return Promise.resolve();
+    } else if (provider.state == ProviderState.Loading) {
+      // The provider state is indeterminate. Do nothing.
+      return Promise.resolve();
+    } else {
+      // Signed in, load the internal component state
+      const loadStatePromise = new Promise(async (resolve, reject) => {
+        try {
+          this.setLoadingState(true);
+          this.fireCustomEvent('loadingInitiated');
 
-        this.setLoadingState(false);
-        this.fireCustomEvent('loadingCompleted');
-        resolve();
-      } catch (e) {
-        this.setLoadingState(false);
-        this.fireCustomEvent('loadingFailed');
-        reject(e);
-      }
-    });
+          await this.loadState();
 
-    // Return the load state promise.
-    // If loading + forced, chain the promises.
-    return (this._currentLoadStatePromise =
-      this.isLoadingState && !!this._currentLoadStatePromise && force
-        ? this._currentLoadStatePromise.then(() => loadStatePromise)
-        : loadStatePromise);
+          this.setLoadingState(false);
+          this.fireCustomEvent('loadingCompleted');
+          resolve();
+        } catch (e) {
+          // Loading failed. Clear any partially set data.
+          this.clearState();
+
+          this.setLoadingState(false);
+          this.fireCustomEvent('loadingFailed');
+          reject(e);
+        }
+
+        // Return the load state promise.
+        // If loading + forced, chain the promises.
+        // This is to account for the lack of a cancellation token concept.
+        return (this._currentLoadStatePromise =
+          this.isLoadingState && !!this._currentLoadStatePromise && force
+            ? this._currentLoadStatePromise.then(() => loadStatePromise)
+            : loadStatePromise);
+      });
+    }
   }
 
   private setLoadingState(value: boolean) {
