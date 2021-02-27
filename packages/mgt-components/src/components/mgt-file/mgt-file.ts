@@ -562,7 +562,6 @@ export class MgtFile extends MgtTemplatedComponent {
     // evaluate to true when only item-id or item-path is provided
     const getFromMyDrive = !this.driveId && !this.siteId && !this.groupId && !this.listId && !this.userId;
 
-
     if (
       // return null when a combination of provided properties are required
       (this.driveId && (!this.itemId && !this.itemPath)) ||
