@@ -325,6 +325,19 @@ export class MgtTeamsChannelPicker extends MgtTemplatedComponent {
   }
 
   /**
+   * Clears the state of the component
+   *
+   * @protected
+   * @memberof MgtTeamsChannelPicker
+   */
+  protected clearState(): void {
+    this._items = [];
+    this._inputValue = '';
+    this._treeViewState = [];
+    this._focusList = [];
+  }
+
+  /**
    * Renders search icon
    *
    * @protected

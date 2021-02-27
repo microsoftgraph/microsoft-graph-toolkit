@@ -315,12 +315,10 @@ export class MgtPeoplePicker extends MgtTemplatedComponent {
 
   constructor() {
     super();
-
+    this.clearState();
     this._showLoading = true;
-    this._groupId = null;
-    this.userInput = '';
     this.showMax = 6;
-    this.selectedPeople = [];
+
     this.disabled = false;
   }
 
@@ -390,6 +388,18 @@ export class MgtPeoplePicker extends MgtTemplatedComponent {
         </div>
       </div>
     `;
+  }
+
+  /**
+   * Clears state of the component
+   *
+   * @protected
+   * @memberof MgtPeoplePicker
+   */
+  protected clearState(): void {
+    this._groupId = null;
+    this.selectedPeople = [];
+    this.userInput = '';
   }
 
   /**
