@@ -5,8 +5,6 @@
  * -------------------------------------------------------------------------------------------
  */
 
-import { getSvg, SvgIcon } from '../utils/SvgHelper';
-
 const fileTypeMap = {
   PowerPoint: 'pptx',
   Word: 'docx',

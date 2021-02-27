@@ -474,7 +474,6 @@ export class MgtFile extends MgtTemplatedComponent {
 
     return html`
       <div class="item__file-type-icon">
-        <<<<<<< HEAD <<<<<<< HEAD ======= >>>>>>> 9dbe38c3088ab97a4d7bad098c6de95bb04a82d8
         ${fileIconSrc
           ? html`
               <img src=${fileIconSrc} />
@@ -482,9 +481,6 @@ export class MgtFile extends MgtTemplatedComponent {
           : html`
               ${getSvg(SvgIcon.File)}
             `}
-        <<<<<<< HEAD =======
-        <img src=${fileIconSrc} />
-        >>>>>>> 3f855534e28c298388ef377a02ff7f61cb8b10c5 ======= >>>>>>> 9dbe38c3088ab97a4d7bad098c6de95bb04a82d8
       </div>
     `;
   }
