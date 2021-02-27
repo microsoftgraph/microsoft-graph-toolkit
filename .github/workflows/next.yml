@@ -6,6 +6,8 @@ name: Build CI
 on:
   push:
     branches: [next/*]
+    paths:
+      - 'packages/**'
 
 jobs:
   build:
