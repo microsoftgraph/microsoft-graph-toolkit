@@ -4,8 +4,10 @@
 name: Build CI
 
 on:
-  pull_request:
-    branches: [main, release/**, next/**]
+  push:
+    branches: [next/*]
+    paths:
+      - 'packages/**'
 
 jobs:
   build:
@@ -21,18 +23,17 @@ jobs:
         uses: actions/setup-node@v1
         with:
           node-version: ${{ matrix.node-version }}
-      - run: npm install -g yarn
+          registry-url: 'https://registry.npmjs.org'
+      - run: npm install -g yarn lerna
       - run: yarn
       - run: yarn build
       - run: node scripts/setVersion.js --next
-      - run: yarn run pack
-      - name: Upload a Build Artifact - package
+      - run: lerna exec --scope @microsoft/* -- "npm publish --tag ${GITHUB_REF#refs/heads/}"
+        if: github.repository == 'microsoftgraph/microsoft-graph-toolkit'
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
+      - name: Upload a Build Artifact - mgt-spfx Solution
         uses: actions/upload-artifact@v2
         with:
-          name: npm-packages
-          path: artifacts/*
-      - name: Upload a Build Artifact - bundle
-        uses: actions/upload-artifact@v2
-        with:
-          name: bundle
-          path: packages/mgt/dist/bundle
+          name: mgt-spfx solution
+          path: packages/mgt-spfx/sharepoint/*
