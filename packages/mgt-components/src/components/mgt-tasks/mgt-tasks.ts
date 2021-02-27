@@ -342,15 +342,7 @@ export class MgtTasks extends MgtTemplatedComponent {
 
   constructor() {
     super();
-    this._newTaskName = '';
-    this._newTaskDueDate = null;
-    this._newTaskGroupId = '';
-    this._newTaskFolderId = '';
-    this._groups = [];
-    this._folders = [];
-    this._tasks = [];
-    this._hiddenTasks = [];
-    this._loadingTasks = [];
+    this.clearState();
 
     this.previousMediaQuery = this.mediaQuery;
     this.onResize = this.onResize.bind(this);
@@ -395,22 +387,27 @@ export class MgtTasks extends MgtTemplatedComponent {
         this._currentFolder = this.initialId;
       }
 
-      this._newTaskFolderId = '';
-      this._newTaskGroupId = '';
-      this._newTaskDueDate = null;
-      this._newTaskName = '';
-      this._newTaskBeingAdded = false;
-
-      this._tasks = [];
-      this._folders = [];
-      this._groups = [];
-
-      this._hasDoneInitialLoad = false;
-      this._inTaskLoad = false;
-      this._todoDefaultSet = false;
-
+      this.clearState();
       this.requestStateUpdate();
     }
+  }
+
+  protected clearState(): void {
+    this._newTaskFolderId = '';
+    this._newTaskGroupId = '';
+    this._newTaskDueDate = null;
+    this._newTaskName = '';
+    this._newTaskBeingAdded = false;
+
+    this._tasks = [];
+    this._folders = [];
+    this._groups = [];
+    this._hiddenTasks = [];
+    this._loadingTasks = [];
+
+    this._hasDoneInitialLoad = false;
+    this._inTaskLoad = false;
+    this._todoDefaultSet = false;
   }
 
   /**
