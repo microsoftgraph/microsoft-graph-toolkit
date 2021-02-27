@@ -28,7 +28,7 @@ jobs:
       - run: yarn
       - run: yarn build
       - run: node scripts/setVersion.js --next
-      - run: lerna exec --scope @microsoft/* -- "npm publish --tag ${GITHUB_REF##*/}"
+      - run: lerna exec --scope @microsoft/* -- "npm publish --tag ${GITHUB_REF#refs/heads/}"
         if: github.repository == 'microsoftgraph/microsoft-graph-toolkit'
         env:
           NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
