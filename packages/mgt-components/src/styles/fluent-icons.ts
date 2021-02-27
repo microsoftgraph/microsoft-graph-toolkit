@@ -56,5 +56,4 @@ export function getFileTypeIconUriByExtension(type: string, size: IconSize, exte
   } else {
     return null;
   }
-
 }
