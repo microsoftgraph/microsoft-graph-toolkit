@@ -165,6 +165,7 @@ export class MgtPersonCardContact extends BasePersonCardSection {
    * @memberof MgtPersonCardContact
    */
   public clearState() {
+    super.clearState();
     for (const key of Object.keys(this._contactParts)) {
       this._contactParts[key].value = null;
     }
