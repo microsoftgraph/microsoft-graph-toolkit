@@ -29,9 +29,11 @@ export type FileListProps = {
 	itemPath?: string;
 	userId?: string;
 	insightType?: OfficeGraphInsightString;
+	selectedItem?: MicrosoftGraph.DriveItem;
 	showMax?: number;
 	templateContext?: TemplateContext;
 	mediaQuery?: ComponentMediaQuery;
+	fileSelected?: (e: Event) => void;
 }
 
 export type FileProps = {

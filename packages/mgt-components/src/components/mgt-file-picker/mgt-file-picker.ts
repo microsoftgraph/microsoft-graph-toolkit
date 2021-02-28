@@ -1,51 +1,40 @@
-/**
- * -------------------------------------------------------------------------------------------
- * Copyright (c) Microsoft Corporation.  All Rights Reserved.  Licensed under the MIT License.
- * See License in the project root for license information.
- * -------------------------------------------------------------------------------------------
- */
-
+import * as MicrosoftGraph from '@microsoft/microsoft-graph-types';
+import { customElement, html, property, TemplateResult } from 'lit-element';
+import { styles } from './mgt-file-picker-css';
 import { arraysAreEqual, MgtTemplatedComponent, Providers, ProviderState } from '@microsoft/mgt-element';
-import { DriveItem } from '@microsoft/microsoft-graph-types';
-import { customElement, html, internalProperty, property, TemplateResult } from 'lit-element';
-import { repeat } from 'lit-html/directives/repeat';
+import { OfficeGraphInsightString } from '../../graph/types';
+import { MgtFlyout } from '../sub-components/mgt-flyout/mgt-flyout';
 import { classMap } from 'lit-html/directives/class-map';
+import { MgtFileList } from '../mgt-file-list/mgt-file-list';
 import {
+  getFilesByListQuery,
+  getFilesByQueries,
+  getFilesById,
+  getFilesByPath,
+  getMyInsightsFiles,
+  getFiles,
   getDriveFilesById,
   getDriveFilesByPath,
-  getFiles,
-  getFilesById,
-  getFilesByListQuery,
-  getFilesByPath,
-  getFilesByQueries,
   getGroupFilesById,
   getGroupFilesByPath,
-  getMyInsightsFiles,
   getSiteFilesById,
-  getSiteFilesByPath,
-  getUserFilesById,
-  getUserFilesByPath,
-  getUserInsightsFiles
+  getSiteFilesByPath
 } from '../../graph/graph.files';
 
-import { OfficeGraphInsightString, ViewType } from '../../graph/types';
-import { styles } from './mgt-file-list-css';
-
 /**
- * The File List component displays a list of multiple folders and files by using the file/folder name, an icon, and other properties specicified by the developer. This component uses the mgt-file component.
+ * The File component is used to represent an individual file/folder from OneDrive or SharePoint by displaying information such as the file/folder name, an icon indicating the file type, and other properties such as the author, last modified date, or other details selected by the developer.
  *
  * @export
- * @class MgtFileList
+ * @class MgtFilePicker
  * @extends {MgtTemplatedComponent}
  *
  * @fires fileSelected
  *
  * @cssprop
- *
  */
 
-@customElement('mgt-file-list')
-export class MgtFileList extends MgtTemplatedComponent {
+@customElement('mgt-file-picker')
+export class MgtFilePicker extends MgtTemplatedComponent {
   /**
    * Array of styles to apply to the element. The styles should be defined
    * using the `css` tag function.
@@ -58,7 +47,7 @@ export class MgtFileList extends MgtTemplatedComponent {
    * allows developer to provide query for a file list
    *
    * @type {string}
-   * @memberof MgtFileList
+   * @memberof MgtFilePicker
    */
   @property({
     attribute: 'file-list-query'
@@ -79,7 +68,7 @@ export class MgtFileList extends MgtTemplatedComponent {
    * allows developer to provide an array of file queries
    *
    * @type {string[]}
-   * @memberof MgtFileList
+   * @memberof MgtFilePicker
    */
   @property({
     attribute: 'file-queries',
@@ -103,13 +92,13 @@ export class MgtFileList extends MgtTemplatedComponent {
    * allows developer to provide an array of files
    *
    * @type {MicrosoftGraph.DriveItem[]}
-   * @memberof MgtFileList
+   * @memberof MgtFilePicker
    */
   @property({ type: Object })
-  public get files(): DriveItem[] {
+  public get files(): MicrosoftGraph.DriveItem[] {
     return this._files;
   }
-  public set files(value: DriveItem[]) {
+  public set files(value: MicrosoftGraph.DriveItem[]) {
     if (value === this._files) {
       return;
     }
@@ -122,7 +111,7 @@ export class MgtFileList extends MgtTemplatedComponent {
    * allows developer to provide site id for a file
    *
    * @type {string}
-   * @memberof MgtFileList
+   * @memberof MgtFilePicker
    */
   @property({
     attribute: 'site-id'
@@ -143,7 +132,7 @@ export class MgtFileList extends MgtTemplatedComponent {
    * allows developer to provide drive id for a file
    *
    * @type {string}
-   * @memberof MgtFileList
+   * @memberof MgtFilePicker
    */
   @property({
     attribute: 'drive-id'
@@ -164,7 +153,7 @@ export class MgtFileList extends MgtTemplatedComponent {
    * allows developer to provide group id for a file
    *
    * @type {string}
-   * @memberof MgtFileList
+   * @memberof MgtFilePicker
    */
   @property({
     attribute: 'group-id'
@@ -185,7 +174,7 @@ export class MgtFileList extends MgtTemplatedComponent {
    * allows developer to provide item id for a file
    *
    * @type {string}
-   * @memberof MgtFileList
+   * @memberof MgtFilePicker
    */
   @property({
     attribute: 'item-id'
@@ -206,7 +195,7 @@ export class MgtFileList extends MgtTemplatedComponent {
    * allows developer to provide item path for a file
    *
    * @type {string}
-   * @memberof MgtFileList
+   * @memberof MgtFilePicker
    */
   @property({
     attribute: 'item-path'
@@ -224,32 +213,11 @@ export class MgtFileList extends MgtTemplatedComponent {
   }
 
   /**
-   * allows developer to provide user id for a file
-   *
-   * @type {string}
-   * @memberof MgtFile
-   */
-  @property({
-    attribute: 'user-id'
-  })
-  public get userId(): string {
-    return this._userId;
-  }
-  public set userId(value: string) {
-    if (value === this._userId) {
-      return;
-    }
-
-    this._userId = value;
-    this.requestStateUpdate();
-  }
-
-  /**
    * allows developer to provide insight type for a file
    * can be trending, used, or shared
    *
    * @type {OfficeGraphInsightString}
-   * @memberof MgtFileList
+   * @memberof MgtFilePicker
    */
   @property({
     attribute: 'insight-type'
@@ -269,7 +237,7 @@ export class MgtFileList extends MgtTemplatedComponent {
   /**
    * A number value to indicate the maximum number of files to show
    * @type {number}
-   * @memberof MgtFileList
+   * @memberof MgtFilePicker
    */
   @property({
     attribute: 'show-max',
@@ -278,35 +246,43 @@ export class MgtFileList extends MgtTemplatedComponent {
   public showMax: number;
 
   /**
+   * Gets the flyout element
+   *
+   * @protected
+   * @type {MgtFlyout}
+   * @memberof MgtFilePicker
+   */
+  protected get flyout(): MgtFlyout {
+    return this.renderRoot.querySelector('.flyout');
+  }
+
+  /**
    * The selected item
    *
    * @readonly
-   * @memberof MgtFileList
    * @type {MicrosoftGraph.DriveItem}
+   * @memberof MgtFilePicker
    */
   public get selectedItem() {
     return this._selectedItem;
   }
 
-  @internalProperty()
-  private _selectedItem: DriveItem;
-
   private _fileListQuery: string;
   private _fileQueries: string[];
-  private _files: DriveItem[];
+  private _files: MicrosoftGraph.DriveItem[];
   private _siteId: string;
   private _itemId: string;
   private _driveId: string;
   private _itemPath: string;
   private _groupId: string;
   private _insightType: OfficeGraphInsightString;
-  private _userId: string;
+  private _selectedItem: MicrosoftGraph.DriveItem;
+  private _doLoad: boolean;
 
   constructor() {
     super();
 
     this.showMax = 10;
-    this._selectedItem = null;
   }
 
   public render() {
@@ -318,7 +294,18 @@ export class MgtFileList extends MgtTemplatedComponent {
       return this.renderNoData();
     }
 
-    return this.renderTemplate('default', { files: this.files, max: this.showMax }) || this.renderFiles();
+    // return this.renderTemplate('default', { files: this.files, max: this.showMax }) || this.renderFileList();
+    const flyoutClasses = classMap({
+      flyout: true,
+      disabled: !Providers.globalProvider || Providers.globalProvider.state === ProviderState.SignedOut,
+      loading: this.isLoadingState
+    });
+
+    return html`
+      <mgt-flyout class=${flyoutClasses} light-dismiss>
+        ${this.renderButton()} ${this.renderFlyout()}
+      </mgt-flyout>
+    `;
   }
 
   /**
@@ -326,7 +313,7 @@ export class MgtFileList extends MgtTemplatedComponent {
    *
    * @protected
    * @returns {TemplateResult}
-   * @memberof MgtFileList
+   * @memberof MgtFilePicker
    */
   protected renderLoading(): TemplateResult {
     return this.renderTemplate('loading', null) || html``;
@@ -337,100 +324,109 @@ export class MgtFileList extends MgtTemplatedComponent {
    *
    * @protected
    * @returns {TemplateResult}
-   * @memberof MgtFileList
+   * @memberof MgtFilePicker
    */
   protected renderNoData(): TemplateResult {
     return this.renderTemplate('no-data', null) || html``;
   }
 
   /**
-   * Render the list of files.
+   * Render the file list.
    *
    * @protected
    * @param {*} files
    * @returns {TemplateResult}
-   * @memberof mgtFileList
+   * @memberof MgtFilePicker
    */
-  protected renderFiles(): TemplateResult {
-    const maxFiles = this.files.slice(0, this.showMax);
+  protected renderFlyout(): TemplateResult {
+    return html`
+      <div slot="flyout">
+        <mgt-file-list
+          id="file-list"
+          .files=${this.files}
+          .insightType=${this.insightType}
+          .fileListQuery=${this.fileListQuery}
+          .fileQueries=${this.fileQueries}
+          .showMax=${this.showMax}
+          .driveId=${this.driveId}
+          .siteId=${this.siteId}
+          .groupId=${this.groupId}
+          .itemId=${this.itemId}
+          .itemPath=${this.itemPath}
+          @fileSelected="${() => this.onFileSelected()}"
+        ></mgt-file-list>
+      </div>
+    `;
+  }
+
+  onFileSelected() {
+    const selectedFile = (this.renderRoot.querySelector('#file-list') as MgtFileList).selectedItem;
+    this._selectedItem = selectedFile;
+
+    this.fireCustomEvent('fileSelected', this.selectedItem);
+  }
+
+  /**
+   * Render the button used to invoke the flyout
+   *
+   * @protected
+   * @returns {TemplateResult}
+   * @memberof MgtFilePicker
+   */
+  protected renderButton(): TemplateResult {
+    const buttonText = 'Select a file';
 
     return html`
-      <div id="file-list-wrapper" class="file-list-wrapper">
-        <ul id="file-list" class="file-list">
-          ${repeat(
-            maxFiles,
-            f => f.id,
-            f => html`
-              <li class="file-item" @click=${e => this.handleItemSelect(f, e)}>
-                ${this.renderFile(f)}
-              </li>
-            `
-          )}
-          ${this.files.length > this.showMax ? this.renderOverflowButton() : null}
-        </ul>
+      <div class="button" @click=${() => this.toggleFlyout()}>
+        <div class="button__text">${buttonText}</div>
+        <div class="button__icon"></div>
       </div>
     `;
   }
 
   /**
-   * Render an individual file.
+   * Toggle the flyout visiblity
    *
    * @protected
-   * @returns {TemplateResult}
-   * @memberof mgtFileList
+   * @memberof MgtFilePicker
    */
-  protected renderFile(file: DriveItem): TemplateResult {
-    const view = ViewType.twolines;
-
-    const fileClasses = classMap({
-      'file-item--selected': this._selectedItem && file.id === this._selectedItem.id
-    });
-
-    return (
-      this.renderTemplate('file', { file }) ||
-      html`
-        <mgt-file class=${fileClasses} .fileDetails=${file} .view=${view}></mgt-file>
-      `
-    );
-  }
-
-  /**
-   * Render the overflow content to represent any extra files, beyond the max.
-   *
-   * @protected
-   * @returns {TemplateResult}
-   * @memberof MgtFileList
-   */
-  protected renderOverflowButton(): TemplateResult {
-    const extra = this.files.length - this.showMax;
-    return (
-      this.renderTemplate('overflow', {
-        extra,
-        max: this.showMax,
-        files: this.files
-      }) ||
-      html`
-        <li class="show-more"}><span>${extra} more items<span></li>
-      `
-    );
-  }
-
-  /**
-   * Handle the click event on an item.
-   *
-   * @protected
-   * @param {MicrosoftGraph.DriveItem} item
-   * @memberof MgtFileList
-   */
-  protected handleItemSelect(item: DriveItem, event: PointerEvent): void {
-    if (this._selectedItem === item) {
-      this._selectedItem = null;
-    } else {
-      this._selectedItem = item;
+  protected toggleFlyout(): void {
+    if (!Providers.globalProvider || Providers.globalProvider.state === ProviderState.SignedOut) {
+      return;
     }
 
-    this.fireCustomEvent('fileSelected', this._selectedItem);
-    // todo: do I need to re loadState()? ... probably
+    if (this.flyout.isOpen) {
+      this.flyout.close();
+    } else {
+      // Lazy load
+      if (!this._doLoad) {
+        this._doLoad = true;
+        this.requestStateUpdate();
+      }
+
+      this.flyout.open();
+    }
+  }
+
+  /**
+   * Handle the event when the user clicks to see all items.
+   *
+   * @protected
+   * @param {PointerEvent} e
+   * @memberof MgtFilePicker
+   */
+  protected handleSeeAll(e: PointerEvent): void {
+    this.openFullPicker();
+  }
+
+  /**
+   * Open the full OneDrive File Picker
+   *
+   * @protected
+   * @memberof MgtFilePicker
+   */
+  protected openFullPicker(): void {
+    console.log('Full picker.');
   }
 
   /**
@@ -438,7 +434,7 @@ export class MgtFileList extends MgtTemplatedComponent {
    *
    * @protected
    * @returns
-   * @memberof MgtFileList
+   * @memberof MgtFilePicker
    */
   protected async loadState() {
     const provider = Providers.globalProvider;
@@ -453,13 +449,12 @@ export class MgtFileList extends MgtTemplatedComponent {
     const graph = provider.graph.forComponent(this);
     let files;
 
-    const getFromMyDrive = !this.driveId && !this.siteId && !this.groupId && !this.userId;
+    const getFromMyDrive = !this.driveId && !this.siteId && !this.groupId;
 
     if (
       (this.driveId && (!this.itemId && !this.itemPath)) ||
       (this.groupId && (!this.itemId && !this.itemPath)) ||
-      (this.siteId && (!this.itemId && !this.itemPath)) ||
-      (this.userId && (!this.insightType && (!this.itemId && !this.itemPath)))
+      (this.siteId && (!this.itemId && !this.itemPath))
     ) {
       this.files = null;
     }
@@ -497,15 +492,8 @@ export class MgtFileList extends MgtTemplatedComponent {
         } else if (this.itemPath) {
           files = await getSiteFilesByPath(graph, this.siteId, this.itemPath);
         }
-      } else if (this.userId) {
-        if (this.itemId) {
-          files = await getUserFilesById(graph, this.userId, this.itemId);
-        } else if (this.itemPath) {
-          files = await getUserFilesByPath(graph, this.userId, this.itemPath);
-        } else if (this.insightType) {
-          files = await getUserInsightsFiles(graph, this.userId, this.insightType);
-        }
       }
+
       this.files = files;
     }
 

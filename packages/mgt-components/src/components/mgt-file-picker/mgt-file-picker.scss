@@ -1,0 +1,42 @@
+/**
+ * -------------------------------------------------------------------------------------------
+ * Copyright (c) Microsoft Corporation.  All Rights Reserved.  Licensed under the MIT License.
+ * See License in the project root for license information.
+ * -------------------------------------------------------------------------------------------
+ */
+
+@import '../../../../../node_modules/office-ui-fabric-core/dist/sass/References';
+@import '../../styles/shared-styles.scss';
+@import './mgt-file-picker.theme.scss';
+
+:host {
+  font-family: $font-family;
+  font-size: $font-size;
+
+  .button {
+    border: 1px solid #c4c4c4;
+    border-radius: 2px;
+    background-color: #f3f2f1;
+    color: #000000;
+    cursor: pointer;
+    display: flex;
+    flex-direction: row;
+    width: 200px;
+
+    .button__text {
+      padding: 4px 12px;
+      flex-grow: 1;
+      white-space: nowrap;
+      overflow: hidden;
+    }
+
+    .button__icon {
+      background-color: #f3f2f1;
+      border-left: 1px solid #c4c4c4;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 4px 8px;
+    }
+  }
+}
