@@ -22,12 +22,9 @@ import {
   getSiteFilesByPath
 } from '../../graph/graph.files';
 
-/*
- * Ensure that tree-shaking doesn't remove these components from the bundle.
- * There are multiple ways to prevent tree shaking, of which this is one.
- */
-FluentDesignSystemProvider;
-FluentButton;
+// Prevent tree-shaking
+// FluentButton;
+// FluentDesignSystemProvider;
 
 /**
  * The File component is used to represent an individual file/folder from OneDrive or SharePoint by displaying information such as the file/folder name, an icon indicating the file type, and other properties such as the author, last modified date, or other details selected by the developer.
@@ -361,17 +358,11 @@ export class MgtFilePicker extends MgtTemplatedComponent {
           .groupId=${this.groupId}
           .itemId=${this.itemId}
           .itemPath=${this.itemPath}
+          render-on-scroll
           @fileSelected="${() => this.onFileSelected()}"
         ></mgt-file-list>
       </div>
     `;
-  }
-
-  onFileSelected() {
-    const selectedFile = (this.renderRoot.querySelector('#file-list') as MgtFileList).selectedItem;
-    this._selectedItem = selectedFile;
-
-    this.fireCustomEvent('fileSelected', this.selectedItem);
   }
 
   /**
@@ -385,12 +376,12 @@ export class MgtFilePicker extends MgtTemplatedComponent {
     const buttonText = 'Select a file';
 
     return html`
-      <fluent-design-system-provider use-defaults>
-        <fluent-button>Hello world</fluent-button>
-      </fluent-design-system-provider>
+      <!-- <fluent-design-system-provider use-defaults>
+        <fluent-button appearance="neutral">Button</fluent-button>
+      </fluent-design-system-provider> -->
       <div class="button" @click=${() => this.toggleFlyout()}>
+        <div class="button__icon">&#128206;</div>
         <div class="button__text">${buttonText}</div>
-        <div class="button__icon"></div>
       </div>
     `;
   }
@@ -512,5 +503,15 @@ export class MgtFilePicker extends MgtTemplatedComponent {
     if (this._selectedItem && this.files.findIndex(v => v.id === this._selectedItem.id) === -1) {
       this._selectedItem = null;
     }
+  }
+
+  /**
+   * Handle file selection event
+   *
+   */
+  private onFileSelected() {
+    const selectedFile = (this.renderRoot.querySelector('#file-list') as MgtFileList).selectedItem;
+    this._selectedItem = selectedFile;
+    this.fireCustomEvent('fileSelected', this.selectedItem);
   }
 }

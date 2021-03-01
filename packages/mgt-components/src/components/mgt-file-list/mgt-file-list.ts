@@ -30,6 +30,7 @@ import {
 
 import { OfficeGraphInsightString, ViewType } from '../../graph/types';
 import { styles } from './mgt-file-list-css';
+import { debounce } from '../../utils/Utils';
 
 /**
  * The File List component displays a list of multiple folders and files by using the file/folder name, an icon, and other properties specicified by the developer. This component uses the mgt-file component.
@@ -278,6 +279,29 @@ export class MgtFileList extends MgtTemplatedComponent {
   public showMax: number;
 
   /**
+   * Gets or sets whether expanded section of files are rendered
+   *
+   * @type {boolean}
+   * @memberof MgtFileList
+   */
+  @property({
+    attribute: 'is-expanded',
+    type: Boolean
+  })
+  public isExpanded: boolean;
+
+  /**
+   * A boolean value to indicate whether to render more files when scrolled to the bottom
+   * @type {number}
+   * @memberof MgtFileList
+   */
+  @property({
+    attribute: 'render-on-scroll',
+    type: Boolean
+  })
+  public renderOnScroll: boolean;
+
+  /**
    * The selected item
    *
    * @readonly
@@ -307,6 +331,7 @@ export class MgtFileList extends MgtTemplatedComponent {
 
     this.showMax = 10;
     this._selectedItem = null;
+    this.renderOnScroll = false;
   }
 
   public render() {
@@ -354,20 +379,28 @@ export class MgtFileList extends MgtTemplatedComponent {
   protected renderFiles(): TemplateResult {
     const maxFiles = this.files.slice(0, this.showMax);
 
+    const expandedFilesTemplate = this.isExpanded ? this.renderOverflowContent() : this.renderOverflowButton();
+
+    const fileListClasses = classMap({
+      'file-list': true,
+      scrollable: this.renderOnScroll
+    });
+
     return html`
-      <div id="file-list-wrapper" class="file-list-wrapper">
-        <ul id="file-list" class="file-list">
+      <div id="file-list-wrapper" class="file-list-wrapper" onscroll="${this.handleScroll()}">
+        <ul id="file-list" class=${fileListClasses}>
           ${repeat(
             maxFiles,
             f => f.id,
-            f => html`
-              <li class="file-item" @click=${e => this.handleItemSelect(f, e)}>
-                ${this.renderFile(f)}
-              </li>
-            `
+            f =>
+              html`
+                <li class="file-item">${this.renderFile(f)}</li>
+              `
           )}
-          ${this.files.length > this.showMax ? this.renderOverflowButton() : null}
+          ${this.files.length > this.showMax ? expandedFilesTemplate : null}
         </ul>
+
+        <div id="file-list-overflow" class="file-list-overflow"></div>
       </div>
     `;
   }
@@ -401,18 +434,56 @@ export class MgtFileList extends MgtTemplatedComponent {
    * @returns {TemplateResult}
    * @memberof MgtFileList
    */
+  protected renderOverflowContent(): TemplateResult {
+    if (!this.files && this.isLoadingState) {
+      return html`
+        <div class="loading">
+          <mgt-spinner></mgt-spinner>
+        </div>
+      `;
+    }
+
+    const remainingFiles = this.files.slice(this.showMax);
+
+    return html`
+          ${repeat(
+            remainingFiles,
+            f => f.id,
+            f =>
+              html`
+                <li class="file-item">${this.renderFile(f)}</li>
+              `
+          )}
+      </div>
+    `;
+  }
+
+  /**
+   * Render the overflow button.
+   *
+   * @protected
+   * @returns {TemplateResult}
+   * @memberof MgtFileList
+   */
   protected renderOverflowButton(): TemplateResult {
     const extra = this.files.length - this.showMax;
-    return (
-      this.renderTemplate('overflow', {
-        extra,
-        max: this.showMax,
-        files: this.files
-      }) ||
-      html`
-        <li class="show-more"}><span>${extra} more items<span></li>
-      `
-    );
+
+    if (this.renderOnScroll) {
+      return (
+        this.renderTemplate('overflow', {
+          extra,
+          max: this.showMax,
+          files: this.files
+        }) ||
+        html`
+          <li class="show-more" @click=${() => this.showRemainingFiles()}><span>Show ${extra} more items<span></li>
+        `
+      );
+    } else {
+      return html`
+      <li class="show-more"><span>${extra} more items<span></li>
+    `;
+    }
   }
 
   /**
@@ -430,7 +501,39 @@ export class MgtFileList extends MgtTemplatedComponent {
     }
 
     this.fireCustomEvent('fileSelected', this._selectedItem);
-    // todo: do I need to re loadState()? ... probably
+  }
+
+  /**
+   * Display the remaining files.
+   *
+   * @protected
+   * @memberof MgtFileList
+   */
+  protected showRemainingFiles() {
+    const root = this.renderRoot.querySelector('file-list-wrapper');
+    if (root && root.animate) {
+      // play back
+      root.animate(
+        [
+          {
+            height: 'auto',
+            transformOrigin: 'top left'
+          },
+          {
+            height: 'auto',
+            transformOrigin: 'top left'
+          }
+        ],
+        {
+          duration: 1000,
+          easing: 'ease-in-out',
+          fill: 'both'
+        }
+      );
+    }
+    this.isExpanded = true;
+
+    this.fireCustomEvent('expanded', null, true);
   }
 
   /**
@@ -512,6 +615,25 @@ export class MgtFileList extends MgtTemplatedComponent {
     // Reset the selected item if it doesn't match any of the new results.
     if (this._selectedItem && this.files.findIndex(v => v.id === this._selectedItem.id) === -1) {
       this._selectedItem = null;
+    }
+  }
+
+  /**
+   * Handle load more files on scrolling at the bottom of the list
+   */
+  private handleScroll() {
+    const scrollable = this.shadowRoot.getElementById('file-list');
+    const overflow = this.shadowRoot.getElementById('file-list-overflow');
+
+    if (scrollable) {
+      scrollable.addEventListener(
+        'scroll',
+        debounce(() => {
+          scrollable.scrollTop === scrollable.scrollHeight - scrollable.offsetHeight
+            ? overflow.classList.add('fadeout')
+            : overflow.classList.remove('fadeout');
+        }, 10)
+      );
     }
   }
 }

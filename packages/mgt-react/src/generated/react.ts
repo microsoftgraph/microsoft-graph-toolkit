@@ -29,8 +29,10 @@ export type FileListProps = {
 	itemPath?: string;
 	userId?: string;
 	insightType?: OfficeGraphInsightString;
+	isExpanded?: boolean;
 	selectedItem?: MicrosoftGraph.DriveItem;
 	showMax?: number;
+	renderOnScroll?: number;
 	templateContext?: TemplateContext;
 	mediaQuery?: ComponentMediaQuery;
 	fileSelected?: (e: Event) => void;

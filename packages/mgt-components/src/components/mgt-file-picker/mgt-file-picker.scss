@@ -14,29 +14,30 @@
   font-size: $font-size;
 
   .button {
-    border: 1px solid #c4c4c4;
     border-radius: 2px;
-    background-color: #f3f2f1;
-    color: #000000;
+    background-color: #005393;
+    color: #ffffff;
     cursor: pointer;
     display: flex;
     flex-direction: row;
-    width: 200px;
+    width: 100px;
+    padding: 6px;
 
     .button__text {
-      padding: 4px 12px;
-      flex-grow: 1;
+      padding: 6px;
       white-space: nowrap;
       overflow: hidden;
     }
 
     .button__icon {
-      background-color: #f3f2f1;
-      border-left: 1px solid #c4c4c4;
       display: flex;
       align-items: center;
       justify-content: center;
-      padding: 4px 8px;
     }
+  }
+
+  .fly mgt-file-list {
+    --file-list-width: 350px;
+    --file-list-max-height: 425px;
   }
 }
