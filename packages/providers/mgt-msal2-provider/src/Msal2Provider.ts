@@ -11,7 +11,7 @@ import {
 } from '@azure/msal-browser';
 import { AuthenticationProviderOptions } from '@microsoft/microsoft-graph-client/lib/es/IAuthenticationProviderOptions';
 
-interface Msal2Config {
+export interface Msal2Config {
   clientId: string;
   loginType?: LoginType;
   scopes?: string[];
@@ -58,7 +58,7 @@ export class Msal2Provider extends IProvider {
       this.scopes = typeof config.scopes !== 'undefined' ? config.scopes : ['user.read'];
       this._publicClientApplication = new PublicClientApplication(this.ms_config);
       this._publicClientApplication
-        .handleRedirectPromise()
+        .handleRedirectPromise(window.location.hash)
         .then((tokenResponse: AuthenticationResult) => {
           if (tokenResponse !== null) {
             if (tokenResponse.idToken) {
@@ -74,9 +74,38 @@ export class Msal2Provider extends IProvider {
 
     //TODO : Can someone provide a PublicClientApplication?
     this.graph = createFromProvider(this);
+
+    this.trySilentSignIn();
   }
 
-  //TODO: AuthenticationParameters
+  public async trySilentSignIn() {
+    console.log('Inside silent log in ');
+    const silentRequest: SilentRequest = {
+      scopes: this.scopes
+    };
+    try {
+      //TODO : What is ssosilent
+      //const response: AuthenticationResult = await this._publicClientApplication.ssoSilent(silentRequest);
+      //if (response) {
+      this.account = this.account || (await this.getAccount());
+      console.log('Inside silent', this.account);
+      if (this.account) {
+        const token = await this.getAccessToken();
+        if (token) {
+          console.log(token);
+
+          this.setState(ProviderState.SignedIn);
+        } else {
+          this.setState(ProviderState.SignedOut);
+        }
+      }
+      //}
+    } catch (e) {
+      this.setState(ProviderState.SignedOut);
+    }
+  }
+
+  //TODO: AuthenticationParameters passed as argument
   public async login(): Promise<void> {
     const loginRequest: PopupRequest = {
       scopes: this.scopes,
