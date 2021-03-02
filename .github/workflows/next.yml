@@ -27,8 +27,12 @@ jobs:
       - run: npm install -g yarn lerna
       - run: yarn
       - run: yarn build
-      - run: node scripts/setVersion.js --next
-      - run: lerna exec --scope @microsoft/* -- "npm publish --tag ${GITHUB_REF#refs/heads/}"
+      - name: Extract tag name
+        shell: bash
+        run: echo "##[set-output name=tag;]$(branch=${GITHUB_REF#refs/heads/}; echo ${branch/\//.})"
+        id: extract_tag
+      - run: node scripts/setVersion.js --tag ${{ steps.extract_tag.outputs.tag }}
+      - run: lerna exec --scope @microsoft/* -- "npm publish --tag ${{ steps.extract_tag.outputs.tag }}"
         if: github.repository == 'microsoftgraph/microsoft-graph-toolkit'
         env:
           NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
