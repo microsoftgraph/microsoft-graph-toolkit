@@ -343,7 +343,7 @@ export const moreExamples = () => html`
 
     .styled-person {
       --font-family: 'Comic Sans MS', cursive, sans-serif;
-      --color: red;
+      --color-sub1: red;
       --avatar-size: 60px;
       --font-size: 20px;
       --line2-color: green;
