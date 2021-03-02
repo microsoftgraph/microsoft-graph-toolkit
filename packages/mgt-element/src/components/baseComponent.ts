@@ -228,11 +228,15 @@ export abstract class MgtBaseComponent extends LitElement {
 
     const provider = Providers.globalProvider;
 
-    if (provider.state == ProviderState.SignedOut) {
+    if (!provider) {
+      return Promise.resolve();
+    }
+
+    if (provider.state === ProviderState.SignedOut) {
       // Signed out, clear the component state
       this.clearState();
-      return Promise.resolve();
-    } else if (provider.state == ProviderState.Loading) {
+      return;
+    } else if (provider.state === ProviderState.Loading) {
       // The provider state is indeterminate. Do nothing.
       return Promise.resolve();
     } else {
