@@ -379,7 +379,8 @@ export class MgtPeoplePicker extends MgtTemplatedComponent {
 
     const inputClasses = {
       focused: this._isFocused,
-      'people-picker': true
+      'people-picker': true,
+      disabled: this.disabled
     };
 
     return html`
@@ -418,7 +419,11 @@ export class MgtPeoplePicker extends MgtTemplatedComponent {
   protected renderInput(): TemplateResult {
     const hasSelectedPeople = !!this.selectedPeople.length;
 
-    const placeholder = this.placeholder ? this.placeholder : this.strings.inputPlaceholderText;
+    const placeholder = !this.disabled
+      ? this.placeholder
+        ? this.placeholder
+        : this.strings.inputPlaceholderText
+      : this.placeholder || '';
 
     const selectionMode = this.selectionMode ? this.selectionMode : 'multiple';
 
