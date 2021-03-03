@@ -180,12 +180,13 @@ export class MsalProvider extends IProvider {
    * @memberof MsalProvider
    */
   public async login(authenticationParameters?: AuthenticationParameters): Promise<void> {
-    const loginRequest: AuthenticationParameters = authenticationParameters || {
+    let loginRequest: AuthenticationParameters = authenticationParameters || {
       loginHint: this._loginHint,
       prompt: 'select_account',
-      scopes: this.scopes,
-      extraQueryParameters: { domain_hint: this._domainHint ? this._domainHint : null }
+      scopes: this.scopes
     };
+
+    this._domainHint ? (loginRequest.extraQueryParameters = { domain_hint: this._domainHint }) : '';
 
     if (this._loginType === LoginType.Popup) {
       const response = await this._userAgentApplication.loginPopup(loginRequest);
@@ -217,9 +218,9 @@ export class MsalProvider extends IProvider {
     const scopes = options ? options.scopes || this.scopes : this.scopes;
     const accessTokenRequest: AuthenticationParameters = {
       loginHint: this._loginHint,
-      scopes,
-      extraQueryParameters: { domain_hint: this._domainHint ? this._domainHint : null }
+      scopes
     };
+    this._domainHint ? (accessTokenRequest.extraQueryParameters = { domain_hint: this._domainHint }) : '';
     try {
       const response = await this._userAgentApplication.acquireTokenSilent(accessTokenRequest);
       return response.accessToken;
