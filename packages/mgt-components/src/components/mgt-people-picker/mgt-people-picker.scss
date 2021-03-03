@@ -33,6 +33,9 @@ mgt-people-picker .root {
   &.focused {
     border-color: $input__border-color--focus;
   }
+  &.disabled {
+    pointer-events: none;
+  }
   padding: 6px 0 0;
 
   .selected-list {
