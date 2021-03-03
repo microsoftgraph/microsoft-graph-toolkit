@@ -183,7 +183,8 @@ export class MsalProvider extends IProvider {
     const loginRequest: AuthenticationParameters = authenticationParameters || {
       loginHint: this._loginHint,
       prompt: 'select_account',
-      scopes: this.scopes
+      scopes: this.scopes,
+      extraQueryParameters: { domain_hint: this._domainHint ? this._domainHint : null }
     };
 
     if (this._loginType === LoginType.Popup) {
@@ -217,7 +218,7 @@ export class MsalProvider extends IProvider {
     const accessTokenRequest: AuthenticationParameters = {
       loginHint: this._loginHint,
       scopes,
-      extraQueryParameters: { domain_hint: this._domainHint }
+      extraQueryParameters: { domain_hint: this._domainHint ? this._domainHint : null }
     };
     try {
       const response = await this._userAgentApplication.acquireTokenSilent(accessTokenRequest);
