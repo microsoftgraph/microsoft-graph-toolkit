@@ -37,6 +37,13 @@ interface MsalConfigBase {
    * @memberof MsalConfigBase
    */
   loginHint?: string;
+  /**
+   * Domain hint value
+   *
+   * @type {string}
+   * @memberof MsalConfigBase
+   */
+  domainHint?: string;
 }
 
 /**
@@ -133,6 +140,7 @@ export class MsalProvider extends IProvider {
   private _userAgentApplication: UserAgentApplication;
   private _loginType: LoginType;
   private _loginHint: string;
+  private _domainHint: string;
 
   // session storage
   private sessionStorageRequestedScopesKey = 'mgt-requested-scopes';
@@ -208,7 +216,8 @@ export class MsalProvider extends IProvider {
     const scopes = options ? options.scopes || this.scopes : this.scopes;
     const accessTokenRequest: AuthenticationParameters = {
       loginHint: this._loginHint,
-      scopes
+      scopes,
+      extraQueryParameters: { domain_hint: this._domainHint }
     };
     try {
       const response = await this._userAgentApplication.acquireTokenSilent(accessTokenRequest);
@@ -362,6 +371,7 @@ export class MsalProvider extends IProvider {
     this.scopes = typeof config.scopes !== 'undefined' ? config.scopes : ['user.read'];
     this._loginType = typeof config.loginType !== 'undefined' ? config.loginType : LoginType.Redirect;
     this._loginHint = config.loginHint;
+    this._domainHint = config.domainHint;
 
     let userAgentApplication: UserAgentApplication;
     let clientId: string;
