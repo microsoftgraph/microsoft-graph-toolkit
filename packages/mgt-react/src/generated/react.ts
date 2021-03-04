@@ -49,11 +49,11 @@ export type PeoplePickerProps = {
 	groupType?: GroupType;
 	transitiveSearch?: boolean;
 	people?: IDynamicPerson[];
+	selectedPeople?: IDynamicPerson[];
 	defaultSelectedUserIds?: string[];
 	placeholder?: string;
 	selectionMode?: string;
 	showMax?: number;
-	selectedPeople?: IDynamicPerson[];
 	disabled?: boolean;
 	templateContext?: TemplateContext;
 	mediaQuery?: ComponentMediaQuery;
