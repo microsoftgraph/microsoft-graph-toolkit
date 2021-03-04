@@ -60,11 +60,14 @@ export async function getMe(graph: IGraph, requestedProps?: string[]): Promise<U
     const me = await cache.getValue('me');
 
     const cachedData = JSON.parse(me.user);
-    const uniqueProps = requestedProps.filter(prop => !Object.keys(cachedData).includes(prop));
+    let uniqueProps;
+    if (requestedProps) {
+      uniqueProps = requestedProps.filter(prop => !Object.keys(cachedData).includes(prop));
+    }
 
     if (me && getUserInvalidationTime() > Date.now() - me.timeCached) {
       // if requestedProps doesn't contain any unique props other than "@odata.context"
-      if (uniqueProps.length <= 1) {
+      if (uniqueProps && uniqueProps.length <= 1) {
         return cachedData;
       }
     }
