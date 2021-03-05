@@ -918,7 +918,8 @@ export class MgtPerson extends MgtTemplatedComponent {
     const graph = provider.graph.forComponent(this);
 
     // Prepare person props
-    const personProps = [...this.requestedProps, this.line1Property, this.line2Property, this.line3Property];
+    let personProps = [...this.requestedProps, this.line1Property, this.line2Property, this.line3Property];
+    personProps = personProps.filter(email => email !== 'email');
 
     if (this.personDetails) {
       if (
