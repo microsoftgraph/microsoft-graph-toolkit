@@ -15,8 +15,8 @@ import { Msal2Config, Msal2Provider } from './Msal2Provider';
  * @class MgtMsalProvider
  * @extends {MgtBaseProvider}
  */
-@customElement('mgt-msal-provider')
-export class MgtMsalProvider extends MgtBaseProvider {
+@customElement('mgt-msal2-provider')
+export class MgtMsal2Provider extends MgtBaseProvider {
   /**
    * String alphanumerical value relation to a specific user
    *
@@ -85,6 +85,7 @@ export class MgtMsalProvider extends MgtBaseProvider {
    * @memberof MgtMsalProvider
    */
   protected initializeProvider() {
+    console.log('Inside the provider');
     if (this.clientId) {
       const config: Msal2Config = {
         clientId: this.clientId
