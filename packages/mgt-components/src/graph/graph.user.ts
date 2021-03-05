@@ -59,16 +59,18 @@ export async function getMe(graph: IGraph, requestedProps?: string[]): Promise<U
     cache = CacheService.getCache<CacheUser>(schemas.users, schemas.users.stores.users);
     const me = await cache.getValue('me');
 
-    const cachedData = JSON.parse(me.user);
-    let uniqueProps;
-    if (requestedProps) {
-      uniqueProps = requestedProps.filter(prop => !Object.keys(cachedData).includes(prop));
-    }
+    if (me && me.user) {
+      const cachedData = JSON.parse(me.user);
+      let uniqueProps;
+      if (requestedProps) {
+        uniqueProps = requestedProps.filter(prop => !Object.keys(cachedData).includes(prop));
+      }
 
-    if (me && getUserInvalidationTime() > Date.now() - me.timeCached) {
-      // if requestedProps doesn't contain any unique props other than "@odata.context"
-      if (uniqueProps && uniqueProps.length <= 1) {
-        return cachedData;
+      if (me && getUserInvalidationTime() > Date.now() - me.timeCached) {
+        // if requestedProps doesn't contain any unique props other than "@odata.context"
+        if (uniqueProps && uniqueProps.length <= 1) {
+          return cachedData;
+        }
       }
     }
   }
@@ -103,7 +105,7 @@ export async function getUser(graph: IGraph, userPrincipleName: string, requeste
     // check cache
     const user = await cache.getValue(userPrincipleName);
     let uniqueProps;
-    if (user.user) {
+    if (user && user.user) {
       const cachedData = JSON.parse(user.user);
       uniqueProps = requestedProps.filter(prop => !Object.keys(cachedData).includes(prop));
     }
@@ -117,9 +119,9 @@ export async function getUser(graph: IGraph, userPrincipleName: string, requeste
     }
   }
 
-  let apiString = '/users/${userPrincipleName}';
+  let apiString = `/users/${userPrincipleName}`;
   if (requestedProps) {
-    apiString = apiString + '?$' + requestedProps.toString();
+    apiString = apiString + '?$select=' + requestedProps.toString();
   }
 
   // else we must grab it
