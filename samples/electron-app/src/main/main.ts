@@ -1,10 +1,13 @@
 import { app, BrowserWindow } from 'electron';
 import * as path from 'path';
-import { ElectronAuthenticator, SimpleCachePlugin } from '@microsoft/mgt-electron-provider/dist/Authenticator';
+import {
+  ElectronAuthenticator,
+  SimpleCachePlugin,
+  MsalElectronConfig
+} from '@microsoft/mgt-electron-provider/dist/Authenticator';
 export default class Main {
   static application: Electron.App;
   public static mainWindow: Electron.BrowserWindow;
-  static authProvider: ElectronAuthenticator;
 
   static main(): void {
     Main.application = app;
@@ -17,9 +20,7 @@ export default class Main {
 
   static onReady() {
     Main.createMainWindow();
-
-    //Initialize the authenticator
-    ElectronAuthenticator.initialize({
+    let config: MsalElectronConfig = {
       clientId: 'e5774a5b-d84d-4f30-892e-c4f73a503943',
       // authority: '<authority URL optional, uses common authority by default>',
       mainWindow: Main.mainWindow,
@@ -36,8 +37,11 @@ export default class Main {
         'group.read.all',
         'tasks.read'
       ],
+      //SimpleCachePlugin is used here as an example. It stores unencrypted tokens directly on your machine, so please only use it for testing purposes
       cachePlugin: SimpleCachePlugin
-    });
+    };
+    //Initialize the authenticator
+    ElectronAuthenticator.initialize(config);
     Main.mainWindow.loadFile(path.join(__dirname, '../index.html'));
     Main.mainWindow.on('closed', Main.onClose);
   }

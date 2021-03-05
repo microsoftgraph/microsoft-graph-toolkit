@@ -5,17 +5,20 @@ The `@microsoft/mgt-electron-provider` package exposes the `ElectronAuthenticato
 
 This sample shows how the ElectronProvider works in a simple Electron application.
 
-## To Use
+# To Use
 
-# Navigate to this project folder
-```cmd
-cd /samples/src/electron-app
-```
-# Install dependencies
+## In root of repo install all dependencies and build all packages
 ```cmd
 yarn
+yarn build
 ```
-# Run the app
+
+## Navigate to this project folder
+```cmd
+cd /samples/electron-app
+```
+
+## Run the app
 ```cmd
 yarn start
 ```

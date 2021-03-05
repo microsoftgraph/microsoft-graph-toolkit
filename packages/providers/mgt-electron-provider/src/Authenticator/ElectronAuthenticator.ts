@@ -25,7 +25,7 @@ import { REDIRECT_URI, COMMON_AUTHORITY_URL } from './Constants';
  *
  * @interface MsalElectronConfig
  */
-interface MsalElectronConfig {
+export interface MsalElectronConfig {
   /**
    * Client ID alphanumeric code
    *
@@ -72,8 +72,18 @@ interface MsalElectronConfig {
  *
  * @enum {number}
  */
-enum Prompt_Type {
-  select_account = 'select_account'
+enum promptType {
+  SELECT_ACCOUNT = 'select_account'
+}
+
+/**
+ * State of Authentication Provider
+ *
+ * @enum {number}
+ */
+enum AuthState {
+  LOGGED_IN = 'logged_in',
+  LOGGED_OUT = 'logged_out'
 }
 
 /**
@@ -84,32 +94,86 @@ enum Prompt_Type {
  * @class ElectronAuthenticator
  */
 export class ElectronAuthenticator {
-  //config variables to set up MSAL auth
+  /**
+   * Configuration for MSAL Authentication
+   *
+   * @private
+   * @type {Configuration}
+   * @memberof ElectronAuthenticator
+   */
   private ms_config: Configuration;
 
-  //Application instance
+  /**
+   * Application instance
+   *
+   * @type {PublicClientApplication}
+   * @memberof ElectronAuthenticator
+   */
   public clientApplication: PublicClientApplication;
 
-  //Mainwindow instance
+  /**
+   * Mainwindow instance
+   *
+   * @type {BrowserWindow}
+   * @memberof ElectronAuthenticator
+   */
   public mainWindow: BrowserWindow;
 
   //Popup which will take the user through the login/consent process
+
+  /**
+   *
+   *
+   * @type {BrowserWindow}
+   * @memberof ElectronAuthenticator
+   */
   public authWindow: BrowserWindow;
 
-  //Logged in account
+  /**
+   * Logged in account
+   *
+   * @private
+   * @type {AccountInfo}
+   * @memberof ElectronAuthenticator
+   */
   private account: AccountInfo;
 
-  //Params to generate the URL for MSAL auth
+  /**
+   * Params to generate the URL for MSAL auth
+   *
+   * @private
+   * @type {AuthorizationUrlRequest}
+   * @memberof ElectronAuthenticator
+   */
   private authCodeUrlParams: AuthorizationUrlRequest;
 
-  //Request for authentication call
+  /**
+   * Request for authentication call
+   *
+   * @private
+   * @type {AuthorizationCodeRequest}
+   * @memberof ElectronAuthenticator
+   */
   private authCodeRequest: AuthorizationCodeRequest;
 
-  //Listener that will listen for auth code in response
+  /**
+   * Listener that will listen for auth code in response
+   *
+   * @private
+   * @type {CustomFileProtocolListener}
+   * @memberof ElectronAuthenticator
+   */
   private authCodeListener: CustomFileProtocolListener;
 
-  //Instance of the authenticator
-  private static instance: ElectronAuthenticator;
+  /**
+   * Instance of the authenticator
+   *
+   * @private
+   * @static
+   * @type {ElectronAuthenticator}
+   * @memberof ElectronAuthenticator
+   */
+  private static authInstance: ElectronAuthenticator;
 
   /**
    * Creates an instance of ElectronAuthenticator.
@@ -133,7 +197,7 @@ export class ElectronAuthenticator {
    */
   public static initialize(config: MsalElectronConfig) {
     if (!ElectronAuthenticator.instance) {
-      ElectronAuthenticator.instance = new ElectronAuthenticator(config);
+      ElectronAuthenticator.authInstance = new ElectronAuthenticator(config);
     }
   }
 
@@ -143,8 +207,8 @@ export class ElectronAuthenticator {
    * @readonly
    * @memberof ElectronAuthenticator
    */
-  public get instance() {
-    return this.instance;
+  public static get instance() {
+    return this.authInstance;
   }
 
   /**
@@ -219,9 +283,9 @@ export class ElectronAuthenticator {
     ipcMain.handle('login', async () => {
       const account = await this.login();
       if (account) {
-        this.mainWindow.webContents.send('isloggedin', true);
+        this.mainWindow.webContents.send('mgtAuthState', AuthState.LOGGED_IN);
       } else {
-        this.mainWindow.webContents.send('isloggedin', false);
+        this.mainWindow.webContents.send('mgtAuthState', AuthState.LOGGED_OUT);
       }
     });
     ipcMain.handle('token', async (e, options: AuthenticationProviderOptions) => {
@@ -235,7 +299,7 @@ export class ElectronAuthenticator {
 
     ipcMain.handle('logout', async () => {
       await this.logout();
-      this.mainWindow.webContents.send('isloggedin', false);
+      this.mainWindow.webContents.send('mgtAuthState', AuthState.LOGGED_OUT);
     });
   }
 
@@ -261,8 +325,6 @@ export class ElectronAuthenticator {
     }
     if (authResponse) {
       return authResponse.accessToken;
-    } else {
-      throw new Error('Permission Denied');
     }
   }
 
@@ -276,7 +338,6 @@ export class ElectronAuthenticator {
    * @memberof ElectronAuthenticator
    */
   protected async getTokenSilent(tokenRequest, scopes?): Promise<AuthenticationResult> {
-    let token;
     try {
       return await this.clientApplication.acquireTokenSilent(tokenRequest);
     } catch (error) {
@@ -291,7 +352,7 @@ export class ElectronAuthenticator {
    * @memberof ElectronAuthenticator
    */
   protected async login() {
-    const authResponse = await this.getTokenInteractive(Prompt_Type.select_account);
+    const authResponse = await this.getTokenInteractive(promptType.SELECT_ACCOUNT);
     return this.setAccountFromResponse(authResponse);
   }
 
@@ -330,12 +391,12 @@ export class ElectronAuthenticator {
    * Get token interactively and optionally allow prompt to select account
    *
    * @protected
-   * @param {Prompt_Type} prompt_type
+   * @param {promptType} prompt_type
    * @param {*} [scopes]
    * @return {*}  {Promise<AuthenticationResult>}
    * @memberof ElectronAuthenticator
    */
-  protected async getTokenInteractive(prompt_type: Prompt_Type, scopes?): Promise<AuthenticationResult> {
+  protected async getTokenInteractive(prompt_type: promptType, scopes?): Promise<AuthenticationResult> {
     let authResult;
     const requestScopes = scopes ? scopes : this.authCodeUrlParams.scopes;
     const authCodeUrlParams = {
@@ -354,7 +415,7 @@ export class ElectronAuthenticator {
         code: authCode
       })
       .catch((e: AuthError) => {
-        console.log(e.errorMessage);
+        throw e;
       });
     return authResult;
   }
@@ -364,11 +425,11 @@ export class ElectronAuthenticator {
    *
    * @private
    * @param {string} navigateUrl
-   * @param {Prompt_Type} prompt_type
+   * @param {promptType} prompt_type
    * @return {*}  {Promise<string>}
    * @memberof ElectronAuthenticator
    */
-  private async listenForAuthCode(navigateUrl: string, prompt_type: Prompt_Type): Promise<string> {
+  private async listenForAuthCode(navigateUrl: string, prompt_type: promptType): Promise<string> {
     this.setAuthWindow(true);
     await this.authWindow.loadURL(navigateUrl);
     return new Promise((resolve, reject) => {
@@ -397,12 +458,12 @@ export class ElectronAuthenticator {
     if (this.account) {
       const token = await this.getAccessToken();
       if (token) {
-        this.mainWindow.webContents.send('isloggedin', true);
+        this.mainWindow.webContents.send('mgtAuthState', AuthState.LOGGED_IN);
       } else {
-        this.mainWindow.webContents.send('isloggedin', false);
+        this.mainWindow.webContents.send('mgtAuthState', AuthState.LOGGED_OUT);
       }
     } else {
-      this.mainWindow.webContents.send('isloggedin', false);
+      this.mainWindow.webContents.send('mgtAuthState', AuthState.LOGGED_OUT);
     }
   }
 

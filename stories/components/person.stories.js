@@ -24,6 +24,26 @@ export const person = () => html`
   <mgt-person person-query="me" view="twoLines"></mgt-person>
 `;
 
+export const personFallbackDetails = () => html`
+  <div class="example">
+    <mgt-person person-query="mbowen" view="twoLines" fallback-details='{"displayName":"Megan Bowen"}'></mgt-person>
+  </div>
+  <div class="example">
+    <mgt-person
+      person-query="mbowen"
+      view="twoLines"
+      fallback-details='{"mail":"MeganB@M365x214355.onmicrosoft.com"}'
+    ></mgt-person>
+  </div>
+  <div class="example">
+    <mgt-person
+      person-query="mbowen"
+      view="twoLines"
+      fallback-details='{"mail":"MeganB@M365x214355.onmicrosoft.com","displayName":"Megan Bowen"}'
+    ></mgt-person>
+  </div>
+`;
+
 export const personPhotoOnly = () => html`
   <mgt-person person-query="me"></mgt-person>
 `;
@@ -47,6 +67,11 @@ export const personView = () => html`
       margin-bottom: 20px;
     }
   </style>
+`;
+
+export const personAvatarType = () => html`
+  <mgt-person person-query="me" avatar-type="photo"></mgt-person>
+  <mgt-person person-query="me" avatar-type="initials"></mgt-person>
 `;
 
 export const personLineClickEvents = () => html`
@@ -290,6 +315,26 @@ export const setPersonDetails = () => html`
   </script>
 `;
 
+export const retemplateMetadata = () => html`
+  <mgt-person person-query="me" view="threeLines">
+    <template data-type="line1">
+      <div>
+        Hello, my name is: {{person.displayName}}
+      </div>
+    </template>
+    <template data-type="line2">
+      <div>
+        {{person.jobTitle}}
+      </div>
+    </template>
+    <template data-type="line3">
+      <div>
+        Loves MGT
+      </div>
+    </template>
+  </mgt-person>
+`;
+
 export const moreExamples = () => html`
   <style>
     .example {
@@ -298,7 +343,7 @@ export const moreExamples = () => html`
 
     .styled-person {
       --font-family: 'Comic Sans MS', cursive, sans-serif;
-      --color: red;
+      --color-sub1: red;
       --avatar-size: 60px;
       --font-size: 20px;
       --line2-color: green;

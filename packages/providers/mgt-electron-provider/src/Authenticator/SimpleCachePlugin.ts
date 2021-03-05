@@ -1,5 +1,14 @@
-// NOTE : This is a simple cache plugin made for the purpose of demonstrating caching support for the Electron Provider.
-// PLEASE DO NOT USE THIS IN PRODUCTION ENVIRONMENTS.
+/**
+ * -------------------------------------------------------------------------------------------
+ * Copyright (c) Microsoft Corporation.  All Rights Reserved.  Licensed under the MIT License.
+ * See License in the project root for license information.
+ * -------------------------------------------------------------------------------------------
+ */
+
+/**
+ *  NOTE : This is a simple cache plugin made for the purpose of demonstrating caching support for the Electron Provider.
+ *  PLEASE DO NOT USE THIS IN PRODUCTION ENVIRONMENTS.
+ */
 
 const fs = require('fs');
 var path = require('path');
@@ -13,7 +22,7 @@ import { CACHE_LOCATION } from './Constants';
  * @return {*}
  */
 const beforeCacheAccess = async cacheContext => {
-  console.log('PLEASE DO NOT USE THIS CACHE PLUGIN IN PRODUCTION ENVIRONMENTS!!!!');
+  console.warn('PLEASE DO NOT USE THIS CACHE PLUGIN IN PRODUCTION ENVIRONMENTS!!!!');
   return new Promise<void>(async (resolve, reject) => {
     if (fs.existsSync(CACHE_LOCATION)) {
       fs.readFile(CACHE_LOCATION, 'utf-8', (err, data) => {
@@ -57,7 +66,10 @@ const afterCacheAccess = async cacheContext => {
   }
 };
 
-// PLEASE DO NOT USE THIS IN PRODUCTION ENVIRONMENTS.
+/**
+ *  PLEASE DO NOT USE THIS IN PRODUCTION ENVIRONMENTS.
+ *
+ */
 export const SimpleCachePlugin = {
   beforeCacheAccess,
   afterCacheAccess
