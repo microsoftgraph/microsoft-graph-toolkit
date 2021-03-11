@@ -83,12 +83,9 @@ export interface MgtPersonConfig {
 }
 
 /**
- * Person properties part of orginal set provided by graph by default
- *
- * @export
- * @enum {number}
+ * Person properties part of original set provided by graph by default
  */
-export enum defaultPersonProperties {
+const defaultPersonProperties = [
   'businessPhones',
   'displayName',
   'givenName',
@@ -100,7 +97,7 @@ export enum defaultPersonProperties {
   'surname',
   'userPrincipalName',
   'id'
-}
+];
 
 /**
  * The person component is used to display a person or contact by using their photo, name, and/or email address.
