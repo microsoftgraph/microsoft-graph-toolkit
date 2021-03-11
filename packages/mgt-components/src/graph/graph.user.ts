@@ -60,7 +60,6 @@ export async function getMe(graph: IGraph, requestedProps?: string[]): Promise<U
     const me = await cache.getValue('me');
 
     if (me && getUserInvalidationTime() > Date.now() - me.timeCached) {
-      console.log('getting cached');
       const cachedData = JSON.parse(me.user);
       const uniqueProps = requestedProps
         ? requestedProps.filter(prop => !Object.keys(cachedData).includes(prop))
