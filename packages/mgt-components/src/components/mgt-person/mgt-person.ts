@@ -466,8 +466,6 @@ export class MgtPerson extends MgtTemplatedComponent {
   private _mouseLeaveTimeout;
   private _mouseEnterTimeout;
 
-  private requestedProps: string[];
-
   constructor() {
     super();
 
@@ -480,19 +478,6 @@ export class MgtPerson extends MgtTemplatedComponent {
     this.avatarSize = 'auto';
     this._isInvalidImageSrc = false;
     this._avatarType = 'photo';
-    this.requestedProps = [
-      'businessPhones',
-      'displayName',
-      'givenName',
-      'jobTitle',
-      'mail',
-      'mobilePhone',
-      'officeLocation',
-      'preferredLanguage',
-      'surname',
-      'userPrincipalName',
-      'id'
-    ];
   }
 
   /**
