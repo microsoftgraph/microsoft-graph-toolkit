@@ -83,6 +83,26 @@ export interface MgtPersonConfig {
 }
 
 /**
+ * Person properties part of orginal set provided by graph by default
+ *
+ * @export
+ * @enum {number}
+ */
+export enum defaultPersonProperties {
+  'businessPhones',
+  'displayName',
+  'givenName',
+  'jobTitle',
+  'mail',
+  'mobilePhone',
+  'officeLocation',
+  'preferredLanguage',
+  'surname',
+  'userPrincipalName',
+  'id'
+}
+
+/**
  * The person component is used to display a person or contact by using their photo, name, and/or email address.
  *
  * @export
@@ -916,9 +936,10 @@ export class MgtPerson extends MgtTemplatedComponent {
     }
 
     const graph = provider.graph.forComponent(this);
+    let defaultProps: any[] = Object.values(defaultPersonProperties).filter(value => typeof value === 'string');
 
     // Prepare person props
-    let personProps = [...this.requestedProps, this.line1Property, this.line2Property, this.line3Property];
+    let personProps = [...defaultProps, this.line1Property, this.line2Property, this.line3Property];
     personProps = personProps.filter(email => email !== 'email');
 
     if (this.personDetails) {
