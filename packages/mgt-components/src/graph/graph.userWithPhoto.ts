@@ -53,7 +53,6 @@ export async function getUserWithPhoto(
         if (uniqueProps.length >= 1) {
           user = null;
           cachedUser = null;
-          cachedPhoto = null;
         }
       }
     } else {
