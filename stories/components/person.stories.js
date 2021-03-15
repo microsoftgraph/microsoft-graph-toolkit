@@ -418,4 +418,14 @@ export const moreExamples = () => html`
     <div>Style initials (see css tab for style)</div>
     <mgt-person class="person-initials" person-query="alex@fineartschool.net" view="oneline"></mgt-person>
   </div>
+
+  <div>
+    <div>Additional Person properties</div>
+    <mgt-person
+      person-query="me"
+      view="twoLines"
+      line1-property="mailNickname"
+      line2-property="officeLocation"
+    ></mgt-person>
+  </div>
 `;
