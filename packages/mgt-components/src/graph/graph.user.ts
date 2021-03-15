@@ -101,17 +101,16 @@ export async function getUser(graph: IGraph, userPrincipleName: string, requeste
     cache = CacheService.getCache<CacheUser>(schemas.users, schemas.users.stores.users);
     // check cache
     const user = await cache.getValue(userPrincipleName);
-    let uniqueProps;
-    if (user && user.user) {
-      const cachedData = JSON.parse(user.user);
-      uniqueProps = requestedProps.filter(prop => !Object.keys(cachedData).includes(prop));
-    }
 
     // is it stored and is timestamp good?
     if (user && getUserInvalidationTime() > Date.now() - user.timeCached) {
+      const cachedData = user.user ? JSON.parse(user.user) : null;
+      const uniqueProps =
+        requestedProps && cachedData ? requestedProps.filter(prop => !Object.keys(cachedData).includes(prop)) : null;
+
       // return without any worries
-      if (uniqueProps.length <= 1) {
-        return user.user ? JSON.parse(user.user) : null;
+      if (!uniqueProps || uniqueProps.length <= 1) {
+        return cachedData;
       }
     }
   }

@@ -37,7 +37,7 @@ export async function getUserWithPhoto(
   let cachedPhoto: CachePhoto;
   let cachedUser: CacheUser;
 
-  let resource = userId ? `users/${userId}/` : 'me';
+  let resource = userId ? `users/${userId}` : 'me';
   resource += requestedProps ? `?$select=${requestedProps.toString()}` : '';
 
   const scopes = userId ? ['user.readbasic.all'] : ['user.read'];
@@ -84,7 +84,7 @@ export async function getUserWithPhoto(
     // batch calls
     const batch = graph.createBatch();
     if (userId) {
-      batch.get('user', `/users/${userId}/${requestedProps ? '?$select=' + requestedProps.toString() : ''}`, [
+      batch.get('user', `/users/${userId}${requestedProps ? '?$select=' + requestedProps.toString() : ''}`, [
         'user.readbasic.all'
       ]);
       batch.get('photo', `users/${userId}/photo/$value`, ['user.readbasic.all']);
