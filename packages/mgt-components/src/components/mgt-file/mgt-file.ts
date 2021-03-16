@@ -630,17 +630,23 @@ export class MgtFile extends MgtTemplatedComponent {
           let sizeInMb;
           if (driveItem.size) {
             sizeInMb = (driveItem.size / (1024 * 1024)).toFixed(2);
+          } else {
+            sizeInMb = '0';
           }
           text = `Size: ${sizeInMb}MB`;
           break;
         case 'lastModifiedDateTime':
           // convert date time
           let relativeDateString;
+          let lastModifiedString;
           if (driveItem.lastModifiedDateTime) {
             const lastModifiedDateTime = new Date(driveItem.lastModifiedDateTime);
             relativeDateString = getRelativeDisplayDate(lastModifiedDateTime);
+            lastModifiedString = `Modified ${relativeDateString}`;
+          } else {
+            lastModifiedString = '';
           }
-          text = `Modified ${relativeDateString}`;
+          text = lastModifiedString;
           break;
         default:
           text = driveItem[current];

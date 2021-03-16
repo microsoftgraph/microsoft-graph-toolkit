@@ -275,6 +275,17 @@ export class MgtFileList extends MgtTemplatedComponent {
   })
   public showMax: number;
 
+  /**
+   * A number value to indicate the number of more files to load when show more button is clicked
+   * @type {number}
+   * @memberof MgtFileList
+   */
+  @property({
+    attribute: 'load-more-file-count',
+    type: Number
+  })
+  public loadMoreFileCount: number;
+
   private _fileListQuery: string;
   private _fileQueries: string[];
   private _files: MicrosoftGraph.DriveItem[];
@@ -285,11 +296,15 @@ export class MgtFileList extends MgtTemplatedComponent {
   private _groupId: string;
   private _insightType: OfficeGraphInsightString;
   private _userId: string;
+  private _renderedFileCount: number;
+  private _filesToRender: MicrosoftGraph.DriveItem[];
 
   constructor() {
     super();
 
     this.showMax = 10;
+    this._renderedFileCount = this.showMax;
+    this.loadMoreFileCount = 5;
   }
 
   public render() {
@@ -301,7 +316,7 @@ export class MgtFileList extends MgtTemplatedComponent {
       return this.renderNoData();
     }
 
-    return this.renderTemplate('default', { files: this.files, max: this.showMax }) || this.renderFiles();
+    return this.renderTemplate('default', { files: this.files }) || this.renderFiles();
   }
 
   /**
@@ -327,7 +342,7 @@ export class MgtFileList extends MgtTemplatedComponent {
   }
 
   /**
-   * Render the list of people.
+   * Render the list of files.
    *
    * @protected
    * @param {*} files
@@ -335,13 +350,11 @@ export class MgtFileList extends MgtTemplatedComponent {
    * @memberof mgtFileList
    */
   protected renderFiles(): TemplateResult {
-    const maxFiles = this.files.slice(0, this.showMax);
-
     return html`
       <div id="file-list-wrapper" class="file-list-wrapper">
         <ul id="file-list" class="file-list">
           ${repeat(
-            maxFiles,
+            this._filesToRender,
             f => f.id,
             f => html`
               <li class="file-item">
@@ -349,7 +362,7 @@ export class MgtFileList extends MgtTemplatedComponent {
               </li>
             `
           )}
-          ${this.files.length > this.showMax ? this.renderOverflowButton() : null}
+          ${this._renderedFileCount < this.files.length ? this.renderMoreFileButton() : null}
         </ul>
       </div>
     `;
@@ -373,24 +386,18 @@ export class MgtFileList extends MgtTemplatedComponent {
   }
 
   /**
-   * Render the overflow content to represent any extra files, beyond the max.
+   * Render the button when clicked will show more files.
    *
    * @protected
    * @returns {TemplateResult}
    * @memberof MgtFileList
    */
-  protected renderOverflowButton(): TemplateResult {
-    const extra = this.files.length - this.showMax;
-    return (
-      this.renderTemplate('overflow', {
-        extra,
-        max: this.showMax,
-        files: this.files
-      }) ||
-      html`
-        <li class="show-more"}><span>${extra} more items<span></li>
-      `
-    );
+  protected renderMoreFileButton(): TemplateResult {
+    const extra = this.files.length - this._renderedFileCount;
+    return html`
+        <li class="show-more" @click=${() =>
+          this.showMoreFiles(this.loadMoreFileCount)}><span>${extra} more items<span></li>
+      `;
   }
 
   /**
@@ -411,7 +418,7 @@ export class MgtFileList extends MgtTemplatedComponent {
       return;
     }
     const graph = provider.graph.forComponent(this);
-    let files;
+    let files: MicrosoftGraph.DriveItem[];
 
     const getFromMyDrive = !this.driveId && !this.siteId && !this.groupId && !this.userId;
 
@@ -425,48 +432,85 @@ export class MgtFileList extends MgtTemplatedComponent {
     }
 
     if (!this.files) {
-      if (this.fileListQuery) {
+      if (this.fileListQuery && this.fileListQuery !== null) {
         files = await getFilesByListQuery(graph, this.fileListQuery);
-      } else if (this.fileQueries) {
+      } else if (this.fileQueries && this.fileQueries !== null) {
         files = await getFilesByQueries(graph, this.fileQueries);
       } else if (getFromMyDrive) {
-        if (this.itemId) {
+        if (this.itemId && this.itemId !== null) {
           files = await getFilesById(graph, this.itemId);
-        } else if (this.itemPath) {
+        } else if (this.itemPath && this.itemPath !== null) {
           files = await getFilesByPath(graph, this.itemPath);
-        } else if (this.insightType) {
+        } else if (this.insightType && this.insightType !== null) {
           files = await getMyInsightsFiles(graph, this.insightType);
         } else {
           files = await getFiles(graph);
         }
-      } else if (this.driveId) {
-        if (this.itemId) {
+      } else if (this.driveId && this.driveId !== null) {
+        if (this.itemId && this.itemId !== null) {
           files = await getDriveFilesById(graph, this.driveId, this.itemId);
-        } else if (this.itemPath) {
+        } else if (this.itemPath && this.itemPath !== null) {
           files = await getDriveFilesByPath(graph, this.driveId, this.itemPath);
         }
-      } else if (this.groupId) {
-        if (this.itemId) {
+      } else if (this.groupId && this.groupId !== null) {
+        if (this.itemId && this.itemId !== null) {
           files = await getGroupFilesById(graph, this.groupId, this.itemId);
-        } else if (this.itemPath) {
+        } else if (this.itemPath && this.itemPath !== null) {
           files = await getGroupFilesByPath(graph, this.groupId, this.itemPath);
         }
-      } else if (this.siteId) {
-        if (this.itemId) {
+      } else if (this.siteId && this.siteId !== null) {
+        if (this.itemId && this.itemId !== null) {
           files = await getSiteFilesById(graph, this.siteId, this.itemId);
-        } else if (this.itemPath) {
+        } else if (this.itemPath && this.itemPath !== null) {
           files = await getSiteFilesByPath(graph, this.siteId, this.itemPath);
         }
-      } else if (this.userId) {
-        if (this.itemId) {
+      } else if (this.userId && this.userId !== null) {
+        if (this.itemId && this.itemId !== null) {
           files = await getUserFilesById(graph, this.userId, this.itemId);
-        } else if (this.itemPath) {
+        } else if (this.itemPath && this.itemPath !== null) {
           files = await getUserFilesByPath(graph, this.userId, this.itemPath);
-        } else if (this.insightType) {
+        } else if (this.insightType && this.insightType !== null) {
           files = await getUserInsightsFiles(graph, this.userId, this.insightType);
         }
       }
+
       this.files = files;
+      this._filesToRender = files.slice(0, this.showMax);
+    }
+  }
+
+  private showMoreFiles(count: number) {
+    const root = this.renderRoot.querySelector('file-list-wrapper');
+    if (root && root.animate) {
+      // play back
+      root.animate(
+        [
+          {
+            height: 'auto',
+            transformOrigin: 'top left'
+          },
+          {
+            height: 'auto',
+            transformOrigin: 'top left'
+          }
+        ],
+        {
+          duration: 1000,
+          easing: 'ease-in-out',
+          fill: 'both'
+        }
+      );
+    }
+    if (this.files.length > this._renderedFileCount) {
+      if (this.files.length - this._renderedFileCount > count) {
+        this._filesToRender = this.files.slice(0, this._renderedFileCount + count);
+        this._renderedFileCount += count;
+        this.requestUpdate();
+      } else {
+        this._renderedFileCount = this.files.length;
+        this._filesToRender = this.files.slice(0, this.files.length);
+        this.requestUpdate();
+      }
     }
   }
 }

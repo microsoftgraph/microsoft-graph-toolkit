@@ -13,7 +13,7 @@ export const fileList = () => html`
   <mgt-file-list></mgt-file-list>
 `;
 
-export const getFileLIstByListQuery = () => html`
+export const getFileListByListQuery = () => html`
   <mgt-file-list file-list-query="me/drive/items/01BYE5RZYJ43UXGBP23BBIFPISHHMCDTOY/children"></mgt-file-list>
 `;
 
@@ -62,7 +62,7 @@ export const getFileListBySiteId = () => html`
 `;
 
 export const getFileListByUserId = () => html`
-  <mgt-person user-id="e3d0513b-449e-4198-ba6f-bd97ae7cae85" view="twolines"></mgt-person>
+  <mgt-person user-id="48d31887-5fad-4d73-a9f5-3c356e68a038" view="twolines"></mgt-person>
   <mgt-file-list
     user-id="48d31887-5fad-4d73-a9f5-3c356e68a038"
     item-id="01BYE5RZYFPM65IDVARFELFLNTXR4ZKABD"
