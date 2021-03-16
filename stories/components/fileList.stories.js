@@ -74,3 +74,8 @@ export const getFileListByInsights = () => html`
   <mgt-file-list user-id="e3d0513b-449e-4198-ba6f-bd97ae7cae85" insight-type="trending"></mgt-file-list>
   <mgt-file-list insight-type="shared"></mgt-file-list>
 `;
+
+export const getFileListByExtensions = () => html`
+  <mgt-file-list file-extensions="docx, xlsx"></mgt-file-list>
+  <mgt-file-list insight-type="shared" file-extensions="docx"></mgt-file-list>
+`;

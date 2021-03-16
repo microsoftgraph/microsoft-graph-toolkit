@@ -265,6 +265,31 @@ export class MgtFileList extends MgtTemplatedComponent {
   }
 
   /**
+   * allows developer to provide file type to filter the list
+   * can be docx
+   *
+   * @type {string[]}
+   * @memberof MgtFileList
+   */
+  @property({
+    attribute: 'file-extensions',
+    converter: (value, type) => {
+      return value.split(',').map(v => v.trim());
+    }
+  })
+  public get fileExtensions(): string[] {
+    return this._fileExtensions;
+  }
+  public set fileExtensions(value: string[]) {
+    if (arraysAreEqual(this._fileExtensions, value)) {
+      return;
+    }
+
+    this._fileExtensions = value;
+    this.requestStateUpdate();
+  }
+
+  /**
    * A number value to indicate the maximum number of files to show
    * @type {number}
    * @memberof MgtFileList
@@ -295,6 +320,7 @@ export class MgtFileList extends MgtTemplatedComponent {
   private _itemPath: string;
   private _groupId: string;
   private _insightType: OfficeGraphInsightString;
+  private _fileExtensions: string[];
   private _userId: string;
   private _renderedFileCount: number;
   private _filesToRender: MicrosoftGraph.DriveItem[];
@@ -475,7 +501,24 @@ export class MgtFileList extends MgtTemplatedComponent {
       }
 
       this.files = files;
-      this._filesToRender = files.slice(0, this.showMax);
+
+      // filter files when extensions are provided
+      let filteredByFileExtension: MicrosoftGraph.DriveItem[];
+      if (this.fileExtensions && this.fileExtensions !== null) {
+        filteredByFileExtension = files.filter(file => {
+          for (const e of this.fileExtensions) {
+            if (e == this.getFileExtension(file.name)) {
+              return file;
+            }
+          }
+        });
+      }
+
+      if (filteredByFileExtension && filteredByFileExtension.length >= 0) {
+        this.files = filteredByFileExtension;
+      }
+
+      this._filesToRender = this.files.slice(0, this.showMax);
     }
   }
 
@@ -512,5 +555,12 @@ export class MgtFileList extends MgtTemplatedComponent {
         this.requestUpdate();
       }
     }
+  }
+
+  private getFileExtension(name) {
+    const re = /(?:\.([^.]+))?$/;
+    const fileExtension = re.exec(name)[1] || '';
+
+    return fileExtension;
   }
 }
