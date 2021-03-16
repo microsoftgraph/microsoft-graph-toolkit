@@ -265,6 +265,31 @@ export class MgtFileList extends MgtTemplatedComponent {
   }
 
   /**
+   * Sets what data to be rendered (file icon only, oneLine, twoLines threeLines).
+   * Default is 'threeLines'.
+   *
+   * @type {ViewType}
+   * @memberof MgtFileList
+   */
+  @property({
+    attribute: 'view',
+    converter: value => {
+      if (!value || value.length === 0) {
+        return ViewType.threelines;
+      }
+
+      value = value.toLowerCase();
+
+      if (typeof ViewType[value] === 'undefined') {
+        return ViewType.threelines;
+      } else {
+        return ViewType[value];
+      }
+    }
+  })
+  public view: ViewType;
+
+  /**
    * allows developer to provide file type to filter the list
    * can be docx
    *
@@ -328,9 +353,9 @@ export class MgtFileList extends MgtTemplatedComponent {
   constructor() {
     super();
 
-    this.showMax = 10;
-    this._renderedFileCount = this.showMax;
+    this.showMax = 5;
     this.loadMoreFileCount = 5;
+    this.view = ViewType.twolines;
   }
 
   public render() {
@@ -402,7 +427,7 @@ export class MgtFileList extends MgtTemplatedComponent {
    * @memberof mgtFileList
    */
   protected renderFile(file: MicrosoftGraph.DriveItem): TemplateResult {
-    const view = ViewType.twolines;
+    const view = this.view;
     return (
       this.renderTemplate('file', { file }) ||
       html`
@@ -518,6 +543,7 @@ export class MgtFileList extends MgtTemplatedComponent {
         this.files = filteredByFileExtension;
       }
 
+      this._renderedFileCount = this.showMax;
       this._filesToRender = this.files.slice(0, this.showMax);
     }
   }

@@ -7,12 +7,17 @@
 
 @import '../../styles/shared-sass-variables.scss';
 
-// mixins
-@mixin file-list__overflow() {
-  // todo: mind the dark theme
-  background-image: linear-gradient(to bottom, rgba(255, 255, 255, 0), rgba(255, 255, 255, 1) 90%);
-  background-image: -moz-linear-gradient(top, rgba(255, 255, 255, 0), rgba(255, 255, 255, 1) 90%);
-  background-image: -o-linear-gradient(top, rgba(255, 255, 255, 0), rgba(255, 255, 255, 1) 90%);
-  background-image: -ms-linear-gradient(top, rgba(255, 255, 255, 0), rgba(255, 255, 255, 1) 90%);
-  background-image: -webkit-linear-gradient(top, rgba(255, 255, 255, 0), rgba(255, 255, 255, 1) 90%);
-}
+$file-list: (
+  list__item__background-color--hover: (
+    _var: --file-item-background-color--hover,
+    light: rgba(0, 0, 0, 0.1),
+    dark: #0078d4
+  ),
+  list__background-color: (
+    _var: --file-list-background-color,
+    light: $list__background-color--light,
+    dark: #424242
+  )
+);
+
+@include create-themes($file-list);

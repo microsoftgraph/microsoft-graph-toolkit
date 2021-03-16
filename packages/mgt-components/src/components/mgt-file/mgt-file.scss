@@ -12,6 +12,7 @@
 $file-type-icon-size: var(--file-type-icon-size, 28px);
 $file-border: var(--file-border, none);
 $file-box-shadow: var(--file-box-shadow, none);
+$file-background-color: set-var(background-color, $theme-default, $file);
 
 $font-family: var(--font-family, var(--default-font-family));
 $font-size: var(--font-size, #{$ms-font-size-m});
@@ -35,6 +36,7 @@ mgt-file .item {
   display: flex;
   flex-flow: row nowrap;
   align-items: center;
+  background-color: $file-background-color;
 
   &__file-type-icon {
     padding: 16px;
@@ -59,6 +61,7 @@ mgt-file .item {
       font-weight: $font-weight;
       text-transform: $text-transform;
       line-height: 20px;
+      color: $color;
     }
 
     .line2 {

@@ -79,3 +79,7 @@ export const getFileListByExtensions = () => html`
   <mgt-file-list file-extensions="docx, xlsx"></mgt-file-list>
   <mgt-file-list insight-type="shared" file-extensions="docx"></mgt-file-list>
 `;
+
+export const darkTheme = () => html`
+  <mgt-file-list class="mgt-dark" file-extensions="docx, xlsx"></mgt-file-list>
+`;

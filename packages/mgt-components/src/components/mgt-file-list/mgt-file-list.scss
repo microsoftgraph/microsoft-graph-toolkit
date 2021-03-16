@@ -9,11 +9,8 @@
 @import '../../styles/shared-styles.scss';
 @import './mgt-file-list.theme.scss';
 
-$background-color: var(--file-list-background-color, set-var(background-color, $theme-default, $common));
-$file-item-background-color--hover: var(
-  --file-item-background-color--hover,
-  set-var(list__item__background-color--hover, $theme-default, $common)
-);
+$file-item-background-color--hover: set-var(list__item__background-color--hover, $theme-default, $file-list);
+$background-color: set-var(list__background-color, $theme-default, $file-list);
 
 :host {
   font-family: $font-family;
@@ -22,28 +19,44 @@ $file-item-background-color--hover: var(
 
 :host .file-list-wrapper,
 mgt-file-item .file-list-wrapper {
-  background: $background-color;
+  background-color: $background-color;
   box-shadow: 0px 3.2px 7.2px rgba(0, 0, 0, 0.132), 0px 0.6px 1.8px rgba(0, 0, 0, 0.108);
+  border-radius: 4px;
   position: relative;
+  color: $color;
 
   .file-list {
     display: flex;
-    padding: 0;
+    padding: 4px 0;
     flex-direction: column;
+    list-style: none;
 
     .file-item {
-      border-bottom: var(--file-list-item-border-bottom, 1px solid $gray30);
+      border-bottom: var(--file-list-item-border-bottom, none);
+      margin: 0 4px;
+      border-radius: 2px;
 
       &:hover {
         background-color: $file-item-background-color--hover;
+
+        mgt-file {
+          --file-background-color: $file-item-background-color--hover;
+        }
       }
     }
 
     .show-more {
       border-bottom: none;
       text-align: center;
-      margin: 1em;
+      padding: 12px;
+      margin-bottom: -6px;
       list-style-type: none;
+      cursor: pointer;
+      background-color: set-var(background-color__sub2, $theme-default, $common);
+
+      &:hover {
+        background-color: $file-item-background-color--hover;
+      }
     }
   }
 }

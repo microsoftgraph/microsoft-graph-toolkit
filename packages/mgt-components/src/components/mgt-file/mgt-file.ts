@@ -361,6 +361,7 @@ export class MgtFile extends MgtTemplatedComponent {
    * @memberof MgtFile
    */
   @property({
+    attribute: 'view',
     converter: value => {
       if (!value || value.length === 0) {
         return ViewType.threelines;
