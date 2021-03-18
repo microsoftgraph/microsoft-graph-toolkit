@@ -21,9 +21,8 @@
       "../../node_modules/@types",
       "../../node_modules/@microsoft"
     ],
-    "types": ["es6-promise", "webpack-env"],
-    "lib": ["es5", "dom", "es2015.collection"]
+    "types": ["webpack-env"],
+    "lib": ["es5", "dom", "es2015.collection", "es2015.promise"]
   },
-  "include": ["src/**/*.ts", "src/**/*.tsx"],
-  "exclude": ["node_modules", "lib"]
+  "include": ["src/**/*.ts", "src/**/*.tsx"]
 }
