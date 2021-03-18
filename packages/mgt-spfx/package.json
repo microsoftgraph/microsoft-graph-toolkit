@@ -20,9 +20,11 @@
   "author": "Microsoft",
   "license": "MIT",
   "scripts": {
-    "build": "gulp bundle",
+    "build": "npm run clean && gulp bundle --production",
     "clean": "gulp clean",
-    "test": "gulp test"
+    "test": "gulp test",
+    "package": "npm run build && gulp package-solution --production",
+    "postpublish": "npm run package"
   },
   "dependencies": {
     "@microsoft/mgt-components": "*",
