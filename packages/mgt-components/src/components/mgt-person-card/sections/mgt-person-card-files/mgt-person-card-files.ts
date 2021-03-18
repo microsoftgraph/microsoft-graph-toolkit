@@ -59,7 +59,10 @@ export class MgtPersonCardFiles extends BasePersonCardSection {
    * @protected
    * @memberof MgtPersonCardFiles
    */
-  public clearState(): void {}
+  public clearState(): void {
+    super.clearState();
+    this._files = null;
+  }
 
   /**
    * Render the icon for display in the navigation ribbon.

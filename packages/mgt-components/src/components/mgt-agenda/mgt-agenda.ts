@@ -301,6 +301,16 @@ export class MgtAgenda extends MgtTemplatedComponent {
   }
 
   /**
+   * Clears state of the component
+   *
+   * @protected
+   * @memberof MgtAgenda
+   */
+  protected clearState(): void {
+    this.events = null;
+  }
+
+  /**
    * Render the no-data state.
    *
    * @protected

@@ -315,12 +315,10 @@ export class MgtPeoplePicker extends MgtTemplatedComponent {
 
   constructor() {
     super();
-
+    this.clearState();
     this._showLoading = true;
-    this._groupId = null;
-    this.userInput = '';
     this.showMax = 6;
-    this.selectedPeople = [];
+
     this.disabled = false;
   }
 
@@ -379,7 +377,8 @@ export class MgtPeoplePicker extends MgtTemplatedComponent {
 
     const inputClasses = {
       focused: this._isFocused,
-      'people-picker': true
+      'people-picker': true,
+      disabled: this.disabled
     };
 
     return html`
@@ -389,6 +388,18 @@ export class MgtPeoplePicker extends MgtTemplatedComponent {
         </div>
       </div>
     `;
+  }
+
+  /**
+   * Clears state of the component
+   *
+   * @protected
+   * @memberof MgtPeoplePicker
+   */
+  protected clearState(): void {
+    this._groupId = null;
+    this.selectedPeople = [];
+    this.userInput = '';
   }
 
   /**
@@ -418,7 +429,11 @@ export class MgtPeoplePicker extends MgtTemplatedComponent {
   protected renderInput(): TemplateResult {
     const hasSelectedPeople = !!this.selectedPeople.length;
 
-    const placeholder = this.placeholder ? this.placeholder : this.strings.inputPlaceholderText;
+    const placeholder = !this.disabled
+      ? this.placeholder
+        ? this.placeholder
+        : this.strings.inputPlaceholderText
+      : this.placeholder || '';
 
     const selectionMode = this.selectionMode ? this.selectionMode : 'multiple';
 

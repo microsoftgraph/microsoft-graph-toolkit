@@ -5,7 +5,7 @@
  * -------------------------------------------------------------------------------------------
  */
 
-import { EducationalActivity, PersonAnniversary, PersonInterest, Profile } from '@microsoft/microsoft-graph-types-beta';
+import { EducationalActivity, PersonAnnualEvent, PersonInterest, Profile } from '@microsoft/microsoft-graph-types-beta';
 import { customElement, html, TemplateResult } from 'lit-element';
 import { BasePersonCardSection } from '../BasePersonCardSection';
 import { getSvg, SvgIcon } from '../../../../utils/SvgHelper';
@@ -97,7 +97,7 @@ export class MgtPersonCardProfile extends BasePersonCardSection {
   private _profile: Profile;
   private _personalInterests: PersonInterest[];
   private _professionalInterests: PersonInterest[];
-  private _birthdayAnniversary: PersonAnniversary;
+  private _birthdayAnniversary: PersonAnnualEvent;
 
   constructor(profile: Profile) {
     super();
@@ -122,6 +122,7 @@ export class MgtPersonCardProfile extends BasePersonCardSection {
    * @memberof MgtPersonCardProfile
    */
   public clearState(): void {
+    super.clearState();
     this.profile = null;
   }
 
@@ -453,7 +454,7 @@ export class MgtPersonCardProfile extends BasePersonCardSection {
     return interest.categories && interest.categories.includes('professional');
   }
 
-  private isBirthdayAnniversary(anniversary: PersonAnniversary): boolean {
+  private isBirthdayAnniversary(anniversary: PersonAnnualEvent): boolean {
     return anniversary.type === 'birthday';
   }
 
