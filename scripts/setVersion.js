@@ -67,10 +67,19 @@ if (process.argv.length > 2) {
         version = process.argv[3];
         break;
       }
+    case '-t':
+    case '--tag':
+      // set version from argument
+      if (process.argv.length > 3) {
+        const shortSha = child_process.execSync('git rev-parse --short HEAD').toString().trim();
+        version = `${version}-${process.argv[3]}.${shortSha}`;
+        break;
+      }
     default:
       console.log('usage: node setVersion.js');
-      console.log('usage: node setVersion.js --next');
       console.log('usage: node setVersion.js --version [version]');
+      console.log('usage: node setVersion.js --next');
+      console.log('usage: node setVersion.js --tag [tag]');
       return;
   }
 }
