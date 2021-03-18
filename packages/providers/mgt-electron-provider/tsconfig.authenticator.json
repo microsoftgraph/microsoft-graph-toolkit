@@ -1,0 +1,13 @@
+{
+  "extends": "../../../tsconfig.base.json",
+  "compilerOptions": {
+    "outDir": "dist",
+    "sourceRoot": "src",
+    "target": "es6",
+    "module": "commonjs",
+    "composite": true,
+    "rootDir": "src"
+  },
+  "references": [{ "path": "../../mgt-element" }],
+  "include": ["src/Authenticator"]
+}
