@@ -603,7 +603,7 @@ export class MgtTeamsChannelPicker extends MgtTemplatedComponent {
       const batch = provider.graph.createBatch();
 
       for (const team of teams) {
-        batch.get(team.id, `teams/${team.id}/channels`, ['group.read.all']);
+        batch.get(team.id, `teams/${team.id}/channels`, ['Channel.ReadBasic.All']);
       }
 
       const responses = await batch.executeAll();
