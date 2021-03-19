@@ -525,8 +525,6 @@ export class MgtFileList extends MgtTemplatedComponent {
         }
       }
 
-      this.files = files;
-
       // filter files when extensions are provided
       let filteredByFileExtension: MicrosoftGraph.DriveItem[];
       if (this.fileExtensions && this.fileExtensions !== null) {
@@ -541,6 +539,8 @@ export class MgtFileList extends MgtTemplatedComponent {
 
       if (filteredByFileExtension && filteredByFileExtension.length >= 0) {
         this.files = filteredByFileExtension;
+      } else {
+        this.files = files;
       }
 
       this._renderedFileCount = this.showMax;
