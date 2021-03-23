@@ -203,140 +203,290 @@ export async function getUserInsightsDriveItemById(
 }
 
 // GET /me/drive/root/children
-export async function getFiles(graph: IGraph): Promise<DriveItem[]> {
+export async function getFilesIterator(graph: IGraph, top?: number): Promise<GraphPageIterator<DriveItem>> {
   const scopes = 'files.read';
   let request;
-  let files;
+  let filesPageIterator;
 
   try {
-    request = graph.api('/me/drive/root/children').middlewareOptions(prepScopes(scopes));
-    files = await getFilesPageIterator(graph, request);
+    if (top) {
+      request = await graph
+        .api('/me/drive/root/children')
+        .top(top)
+        .middlewareOptions(prepScopes(scopes));
+    } else {
+      request = graph.api('/me/drive/root/children').middlewareOptions(prepScopes(scopes));
+    }
+
+    filesPageIterator = await getFilesPageIterator(graph, request);
   } catch {}
-  return files || null;
+  return filesPageIterator || null;
 }
 
 // GET /drives/{drive-id}/items/{item-id}/children
-export async function getDriveFilesById(graph: IGraph, driveId: string, itemId: string): Promise<DriveItem[]> {
+export async function getDriveFilesByIdIterator(
+  graph: IGraph,
+  driveId: string,
+  itemId: string,
+  top?: number
+): Promise<GraphPageIterator<DriveItem>> {
   const scopes = 'files.read';
   let request;
-  let files;
+  let filesPageIterator;
 
   try {
-    request = graph.api(`/drives/${driveId}/items/${itemId}/children`).middlewareOptions(prepScopes(scopes));
-    files = await getFilesPageIterator(graph, request);
+    if (top) {
+      request = graph
+        .api(`/drives/${driveId}/items/${itemId}/children`)
+        .top(top)
+        .middlewareOptions(prepScopes(scopes));
+    } else {
+      request = graph.api(`/drives/${driveId}/items/${itemId}/children`).middlewareOptions(prepScopes(scopes));
+    }
+    filesPageIterator = await getFilesPageIterator(graph, request);
   } catch {}
-  return files || null;
+  return filesPageIterator || null;
 }
 
 // GET /drives/{drive-id}/root:/{item-path}:/children
-export async function getDriveFilesByPath(graph: IGraph, driveId: string, itemPath: string): Promise<DriveItem[]> {
+export async function getDriveFilesByPathIterator(
+  graph: IGraph,
+  driveId: string,
+  itemPath: string,
+  top?: number
+): Promise<GraphPageIterator<DriveItem>> {
   const scopes = 'files.read';
   let request;
-  let files;
+  let filesPageIterator;
 
   try {
-    request = graph.api(`/drives/${driveId}/root:/${itemPath}:/children`).middlewareOptions(prepScopes(scopes));
-    files = await getFilesPageIterator(graph, request);
+    if (top) {
+      request = graph
+        .api(`/drives/${driveId}/root:/${itemPath}:/children`)
+        .top(top)
+        .middlewareOptions(prepScopes(scopes));
+    } else {
+      request = graph.api(`/drives/${driveId}/root:/${itemPath}:/children`).middlewareOptions(prepScopes(scopes));
+    }
+    filesPageIterator = await getFilesPageIterator(graph, request);
   } catch {}
-  return files || null;
+  return filesPageIterator || null;
 }
 
 // GET /groups/{group-id}/drive/items/{item-id}/children
-export async function getGroupFilesById(graph: IGraph, groupId: string, itemId: string): Promise<DriveItem[]> {
+export async function getGroupFilesByIdIterator(
+  graph: IGraph,
+  groupId: string,
+  itemId: string,
+  top?: number
+): Promise<GraphPageIterator<DriveItem>> {
   const scopes = 'files.read';
   let request;
-  let files;
+  let filesPageIterator;
 
   try {
-    request = graph.api(`/groups/${groupId}/drive/items/${itemId}/children`).middlewareOptions(prepScopes(scopes));
-    files = await getFilesPageIterator(graph, request);
+    if (top) {
+      request = graph
+        .api(`/groups/${groupId}/drive/items/${itemId}/children`)
+        .top(top)
+        .middlewareOptions(prepScopes(scopes));
+    } else {
+      request = graph.api(`/groups/${groupId}/drive/items/${itemId}/children`).middlewareOptions(prepScopes(scopes));
+    }
+    filesPageIterator = await getFilesPageIterator(graph, request);
   } catch {}
-  return files || null;
+  return filesPageIterator || null;
 }
 
 // GET /groups/{group-id}/drive/root:/{item-path}:/children
-export async function getGroupFilesByPath(graph: IGraph, groupId: string, itemPath: string): Promise<DriveItem[]> {
+export async function getGroupFilesByPathIterator(
+  graph: IGraph,
+  groupId: string,
+  itemPath: string,
+  top?: number
+): Promise<GraphPageIterator<DriveItem>> {
   const scopes = 'files.read';
   let request;
-  let files;
+  let filesPageIterator;
 
   try {
-    request = graph.api(`/groups/${groupId}/drive/root:/${itemPath}:/children`).middlewareOptions(prepScopes(scopes));
-    files = await getFilesPageIterator(graph, request);
+    if (top) {
+      request = graph
+        .api(`/groups/${groupId}/drive/root:/${itemPath}:/children`)
+        .top(top)
+        .middlewareOptions(prepScopes(scopes));
+    } else {
+      request = graph.api(`/groups/${groupId}/drive/root:/${itemPath}:/children`).middlewareOptions(prepScopes(scopes));
+    }
+    filesPageIterator = await getFilesPageIterator(graph, request);
   } catch {}
-  return files || null;
+  return filesPageIterator || null;
 }
 
 // GET /me/drive/items/{item-id}/children
-export async function getFilesById(graph: IGraph, itemId: string): Promise<DriveItem[]> {
+export async function getFilesByIdIterator(
+  graph: IGraph,
+  itemId: string,
+  top?: number
+): Promise<GraphPageIterator<DriveItem>> {
   const scopes = 'files.read';
   let request;
-  let files;
+  let filesPageIterator;
   try {
-    request = graph.api(`/me/drive/items/${itemId}/children`).middlewareOptions(prepScopes(scopes));
-    files = await getFilesPageIterator(graph, request);
+    if (top) {
+      request = graph
+        .api(`/me/drive/items/${itemId}/children`)
+        .top(top)
+        .middlewareOptions(prepScopes(scopes));
+    } else {
+      request = graph.api(`/me/drive/items/${itemId}/children`).middlewareOptions(prepScopes(scopes));
+    }
+    filesPageIterator = await getFilesPageIterator(graph, request);
   } catch {}
-  return files || null;
+  return filesPageIterator || null;
 }
 
 // GET /me/drive/root:/{item-path}:/children
-export async function getFilesByPath(graph: IGraph, itemPath: string): Promise<DriveItem[]> {
+export async function getFilesByPathIterator(
+  graph: IGraph,
+  itemPath: string,
+  top?: number
+): Promise<GraphPageIterator<DriveItem>> {
   const scopes = 'files.read';
   let request;
-  let files;
+  let filesPageIterator;
   try {
-    request = graph.api(`/me/drive/root:/${itemPath}:/children`).middlewareOptions(prepScopes(scopes));
-    files = await getFilesPageIterator(graph, request);
+    if (top) {
+      request = graph
+        .api(`/me/drive/root:/${itemPath}:/children`)
+        .top(top)
+        .middlewareOptions(prepScopes(scopes));
+    } else {
+      request = graph.api(`/me/drive/root:/${itemPath}:/children`).middlewareOptions(prepScopes(scopes));
+    }
+    filesPageIterator = await getFilesPageIterator(graph, request);
   } catch {}
-  return files || null;
+  return filesPageIterator || null;
 }
 
 // GET /sites/{site-id}/drive/items/{item-id}/children
-export async function getSiteFilesById(graph: IGraph, siteId: string, itemId: string): Promise<DriveItem[]> {
+export async function getSiteFilesByIdIterator(
+  graph: IGraph,
+  siteId: string,
+  itemId: string,
+  top?: number
+): Promise<GraphPageIterator<DriveItem>> {
   const scopes = 'files.read';
   let request;
-  let files;
+  let filesPageIterator;
   try {
-    request = graph.api(`/sites/${siteId}/drive/items/${itemId}/children`).middlewareOptions(prepScopes(scopes));
-    files = await getFilesPageIterator(graph, request);
+    if (top) {
+      request = graph
+        .api(`/sites/${siteId}/drive/items/${itemId}/children`)
+        .top(top)
+        .middlewareOptions(prepScopes(scopes));
+    } else {
+      request = graph.api(`/sites/${siteId}/drive/items/${itemId}/children`).middlewareOptions(prepScopes(scopes));
+    }
+    filesPageIterator = await getFilesPageIterator(graph, request);
   } catch {}
-  return files || null;
+  return filesPageIterator || null;
 }
 
 // GET /sites/{site-id}/drive/root:/{item-path}:/children
-export async function getSiteFilesByPath(graph: IGraph, siteId: string, itemPath: string): Promise<DriveItem[]> {
+export async function getSiteFilesByPathIterator(
+  graph: IGraph,
+  siteId: string,
+  itemPath: string,
+  top?: number
+): Promise<GraphPageIterator<DriveItem>> {
   const scopes = 'files.read';
   let request;
-  let files;
+  let filesPageIterator;
   try {
-    request = graph.api(`/sites/${siteId}/drive/root:/${itemPath}:/children`).middlewareOptions(prepScopes(scopes));
-    files = await getFilesPageIterator(graph, request);
+    if (top) {
+      request = graph
+        .api(`/sites/${siteId}/drive/root:/${itemPath}:/children`)
+        .top(top)
+        .middlewareOptions(prepScopes(scopes));
+    } else {
+      request = graph.api(`/sites/${siteId}/drive/root:/${itemPath}:/children`).middlewareOptions(prepScopes(scopes));
+    }
+    filesPageIterator = await getFilesPageIterator(graph, request);
   } catch {}
-  return files || null;
+  return filesPageIterator || null;
 }
 
 // GET /users/{user-id}/drive/items/{item-id}/children
-export async function getUserFilesById(graph: IGraph, userId: string, itemId: string): Promise<DriveItem[]> {
+export async function getUserFilesByIdIterator(
+  graph: IGraph,
+  userId: string,
+  itemId: string,
+  top?: number
+): Promise<GraphPageIterator<DriveItem>> {
   const scopes = 'files.read';
   let request;
-  let files;
+  let filesPageIterator;
   try {
-    request = graph.api(`/users/${userId}/drive/items/${itemId}/children`).middlewareOptions(prepScopes(scopes));
-    files = await getFilesPageIterator(graph, request);
+    if (top) {
+      request = graph
+        .api(`/users/${userId}/drive/items/${itemId}/children`)
+        .top(top)
+        .middlewareOptions(prepScopes(scopes));
+    } else {
+      request = graph.api(`/users/${userId}/drive/items/${itemId}/children`).middlewareOptions(prepScopes(scopes));
+    }
+    filesPageIterator = await getFilesPageIterator(graph, request);
   } catch {}
-  return files || null;
+  return filesPageIterator || null;
 }
 
 // GET /users/{user-id}/drive/root:/{item-path}:/children
-export async function getUserFilesByPath(graph: IGraph, userId: string, itemPath: string): Promise<DriveItem[]> {
+export async function getUserFilesByPathIterator(
+  graph: IGraph,
+  userId: string,
+  itemPath: string,
+  top?: number
+): Promise<GraphPageIterator<DriveItem>> {
   const scopes = 'files.read';
   let request;
-  let files;
+  let filesPageIterator;
   try {
-    request = graph.api(`/users/${userId}/drive/root:/${itemPath}:/children`).middlewareOptions(prepScopes(scopes));
-    files = await getFilesPageIterator(graph, request);
+    if (top) {
+      request = graph
+        .api(`/users/${userId}/drive/root:/${itemPath}:/children`)
+        .top(top)
+        .middlewareOptions(prepScopes(scopes));
+    } else {
+      request = graph.api(`/users/${userId}/drive/root:/${itemPath}:/children`).middlewareOptions(prepScopes(scopes));
+    }
+    filesPageIterator = await getFilesPageIterator(graph, request);
   } catch {}
-  return files || null;
+  return filesPageIterator || null;
+}
+
+export async function getFilesByListQueryIterator(
+  graph: IGraph,
+  listQuery: string,
+  top?: number
+): Promise<GraphPageIterator<DriveItem>> {
+  const scopes = ['files.read', 'sites.read.all'];
+  let request;
+  let filesPageIterator;
+
+  try {
+    if (top) {
+      request = await graph
+        .api(listQuery)
+        .top(top)
+        .middlewareOptions(prepScopes(...scopes));
+    } else {
+      request = await graph.api(listQuery).middlewareOptions(prepScopes(...scopes));
+    }
+
+    filesPageIterator = await getFilesPageIterator(graph, request);
+  } catch {}
+  return filesPageIterator || null;
 }
 
 // GET /me/insights/{trending	| used | shared}
@@ -380,18 +530,6 @@ export async function getUserInsightsFiles(graph: IGraph, userId: string, insigh
 
   const result = getDriveItemsByInsights(graph, insightResponse, scopes);
   return result || null;
-}
-
-export async function getFilesByListQuery(graph: IGraph, listQuery: string): Promise<DriveItem[]> {
-  const scopes = ['files.read', 'sites.read.all'];
-  let request;
-  let files;
-
-  try {
-    request = await graph.api(listQuery).middlewareOptions(prepScopes(...scopes));
-    files = await getFilesPageIterator(graph, request);
-  } catch {}
-  return files || null;
 }
 
 export async function getFilesByQueries(graph: IGraph, fileQueries: string[]): Promise<DriveItem[]> {
@@ -485,15 +623,5 @@ async function getDriveItemsByInsights(graph: IGraph, insightResponse, scopes) {
 }
 
 async function getFilesPageIterator(graph: IGraph, request) {
-  let files;
-  const filesIterator = await GraphPageIterator.create<DriveItem>(graph, request);
-  if (filesIterator && filesIterator.value) {
-    files = filesIterator.value;
-
-    while (filesIterator.hasNext) {
-      await filesIterator.next();
-      files = filesIterator.value;
-    }
-  }
-  return files;
+  return GraphPageIterator.create<DriveItem>(graph, request);
 }

@@ -5,34 +5,42 @@
  * -------------------------------------------------------------------------------------------
  */
 
-import { arraysAreEqual, MgtTemplatedComponent, Providers, ProviderState } from '@microsoft/mgt-element';
+import {
+  arraysAreEqual,
+  GraphPageIterator,
+  MgtTemplatedComponent,
+  Providers,
+  ProviderState
+} from '@microsoft/mgt-element';
 import * as MicrosoftGraph from '@microsoft/microsoft-graph-types';
-import { customElement, html, property, TemplateResult } from 'lit-element';
+import { customElement, html, internalProperty, property, TemplateResult } from 'lit-element';
 import { debounce } from '../../utils/Utils';
 import { repeat } from 'lit-html/directives/repeat';
 import {
-  getDriveFilesById,
-  getDriveFilesByPath,
-  getFiles,
-  getFilesById,
-  getFilesByListQuery,
-  getFilesByPath,
+  getDriveFilesByIdIterator,
+  getDriveFilesByPathIterator,
+  getFilesByIdIterator,
+  getFilesByListQueryIterator,
+  getFilesByPathIterator,
   getFilesByQueries,
-  getGroupFilesById,
-  getGroupFilesByPath,
+  getFilesIterator,
+  getGroupFilesByIdIterator,
+  getGroupFilesByPathIterator,
   getMyInsightsFiles,
-  getSiteFilesById,
-  getSiteFilesByPath,
-  getUserFilesById,
-  getUserFilesByPath,
+  getSiteFilesByIdIterator,
+  getSiteFilesByPathIterator,
+  getUserFilesByIdIterator,
+  getUserFilesByPathIterator,
   getUserInsightsFiles
 } from '../../graph/graph.files';
-
+import '../sub-components/mgt-spinner/mgt-spinner';
 import { OfficeGraphInsightString, ViewType } from '../../graph/types';
 import { styles } from './mgt-file-list-css';
 
 /**
- * The File List component displays a list of multiple folders and files by using the file/folder name, an icon, and other properties specicified by the developer. This component uses the mgt-file component.
+ * The File List component displays a list of multiple folders and files by
+ * using the file/folder name, an icon, and other properties specicified by the developer.
+ * This component uses the mgt-file component.
  *
  * @export
  * @class MgtFileList
@@ -272,7 +280,7 @@ export class MgtFileList extends MgtTemplatedComponent {
    * @memberof MgtFileList
    */
   @property({
-    attribute: 'view',
+    attribute: 'item-view',
     converter: value => {
       if (!value || value.length === 0) {
         return ViewType.threelines;
@@ -287,7 +295,7 @@ export class MgtFileList extends MgtTemplatedComponent {
       }
     }
   })
-  public view: ViewType;
+  public itemView: ViewType;
 
   /**
    * allows developer to provide file type to filter the list
@@ -315,26 +323,17 @@ export class MgtFileList extends MgtTemplatedComponent {
   }
 
   /**
-   * A number value to indicate the maximum number of files to show
-   * @type {number}
-   * @memberof MgtFileList
-   */
-  @property({
-    attribute: 'show-max',
-    type: Number
-  })
-  public showMax: number;
-
-  /**
    * A number value to indicate the number of more files to load when show more button is clicked
    * @type {number}
    * @memberof MgtFileList
    */
   @property({
-    attribute: 'load-more-file-count',
+    attribute: 'page-size',
     type: Number
   })
-  public loadMoreFileCount: number;
+  public pageSize: number;
+
+  @internalProperty() private _filesToRender: MicrosoftGraph.DriveItem[];
 
   private _fileListQuery: string;
   private _fileQueries: string[];
@@ -347,15 +346,13 @@ export class MgtFileList extends MgtTemplatedComponent {
   private _insightType: OfficeGraphInsightString;
   private _fileExtensions: string[];
   private _userId: string;
-  private _renderedFileCount: number;
-  private _filesToRender: MicrosoftGraph.DriveItem[];
+  private pageIterator: GraphPageIterator<MicrosoftGraph.DriveItem>;
 
   constructor() {
     super();
 
-    this.showMax = 5;
-    this.loadMoreFileCount = 5;
-    this.view = ViewType.twolines;
+    this.pageSize = 10;
+    this.itemView = ViewType.twolines;
   }
 
   public render() {
@@ -405,7 +402,7 @@ export class MgtFileList extends MgtTemplatedComponent {
       <div id="file-list-wrapper" class="file-list-wrapper">
         <ul id="file-list" class="file-list">
           ${repeat(
-            this._filesToRender,
+            this.files,
             f => f.id,
             f => html`
               <li class="file-item">
@@ -413,8 +410,8 @@ export class MgtFileList extends MgtTemplatedComponent {
               </li>
             `
           )}
-          ${this._renderedFileCount < this.files.length ? this.renderMoreFileButton() : null}
         </ul>
+        ${this.pageIterator && this.pageIterator.hasNext ? this.renderMoreFileButton() : null}
       </div>
     `;
   }
@@ -427,7 +424,7 @@ export class MgtFileList extends MgtTemplatedComponent {
    * @memberof mgtFileList
    */
   protected renderFile(file: MicrosoftGraph.DriveItem): TemplateResult {
-    const view = this.view;
+    const view = this.itemView;
     return (
       this.renderTemplate('file', { file }) ||
       html`
@@ -444,11 +441,14 @@ export class MgtFileList extends MgtTemplatedComponent {
    * @memberof MgtFileList
    */
   protected renderMoreFileButton(): TemplateResult {
-    const extra = this.files.length - this._renderedFileCount;
-    return html`
-        <li class="show-more" @click=${() =>
-          this.showMoreFiles(this.loadMoreFileCount)}><span>${extra} more items<span></li>
+    if (this.isLoadingState) {
+      return html`
+        <mgt-spinner></mgt-spinner>
       `;
+    } else {
+      return html`<a id="show-more" class="show-more" @click=${() =>
+        this.renderNextPage()}><span>Show more items<span></a>`;
+    }
   }
 
   /**
@@ -470,6 +470,7 @@ export class MgtFileList extends MgtTemplatedComponent {
     }
     const graph = provider.graph.forComponent(this);
     let files: MicrosoftGraph.DriveItem[];
+    let pageIterator: GraphPageIterator<MicrosoftGraph.DriveItem>;
 
     const getFromMyDrive = !this.driveId && !this.siteId && !this.groupId && !this.userId;
 
@@ -484,52 +485,75 @@ export class MgtFileList extends MgtTemplatedComponent {
 
     if (!this.files) {
       if (this.fileListQuery && this.fileListQuery !== null) {
-        files = await getFilesByListQuery(graph, this.fileListQuery);
+        pageIterator = await getFilesByListQueryIterator(graph, this.fileListQuery, this.pageSize);
+        files = pageIterator.value;
       } else if (this.fileQueries && this.fileQueries !== null) {
         files = await getFilesByQueries(graph, this.fileQueries);
       } else if (getFromMyDrive) {
         if (this.itemId && this.itemId !== null) {
-          files = await getFilesById(graph, this.itemId);
+          pageIterator = await getFilesByIdIterator(graph, this.itemId, this.pageSize);
+          files = pageIterator.value;
         } else if (this.itemPath && this.itemPath !== null) {
-          files = await getFilesByPath(graph, this.itemPath);
+          pageIterator = await getFilesByPathIterator(graph, this.itemPath, this.pageSize);
+          files = pageIterator.value;
         } else if (this.insightType && this.insightType !== null) {
           files = await getMyInsightsFiles(graph, this.insightType);
         } else {
-          files = await getFiles(graph);
+          pageIterator = await getFilesIterator(graph, this.pageSize);
+          files = pageIterator.value;
         }
       } else if (this.driveId && this.driveId !== null) {
         if (this.itemId && this.itemId !== null) {
-          files = await getDriveFilesById(graph, this.driveId, this.itemId);
+          pageIterator = await getDriveFilesByIdIterator(graph, this.driveId, this.itemId, this.pageSize);
+          files = pageIterator.value;
         } else if (this.itemPath && this.itemPath !== null) {
-          files = await getDriveFilesByPath(graph, this.driveId, this.itemPath);
+          pageIterator = await getDriveFilesByPathIterator(graph, this.driveId, this.itemPath, this.pageSize);
+          files = pageIterator.value;
         }
       } else if (this.groupId && this.groupId !== null) {
         if (this.itemId && this.itemId !== null) {
-          files = await getGroupFilesById(graph, this.groupId, this.itemId);
+          pageIterator = await getGroupFilesByIdIterator(graph, this.groupId, this.itemId, this.pageSize);
+          files = pageIterator.value;
         } else if (this.itemPath && this.itemPath !== null) {
-          files = await getGroupFilesByPath(graph, this.groupId, this.itemPath);
+          pageIterator = await getGroupFilesByPathIterator(graph, this.groupId, this.itemPath, this.pageSize);
+          files = pageIterator.value;
         }
       } else if (this.siteId && this.siteId !== null) {
         if (this.itemId && this.itemId !== null) {
-          files = await getSiteFilesById(graph, this.siteId, this.itemId);
+          pageIterator = await getSiteFilesByIdIterator(graph, this.siteId, this.itemId, this.pageSize);
+          files = pageIterator.value;
         } else if (this.itemPath && this.itemPath !== null) {
-          files = await getSiteFilesByPath(graph, this.siteId, this.itemPath);
+          pageIterator = await getSiteFilesByPathIterator(graph, this.siteId, this.itemPath, this.pageSize);
+          files = pageIterator.value;
         }
       } else if (this.userId && this.userId !== null) {
         if (this.itemId && this.itemId !== null) {
-          files = await getUserFilesById(graph, this.userId, this.itemId);
+          pageIterator = await getUserFilesByIdIterator(graph, this.userId, this.itemId, this.pageSize);
+          files = pageIterator.value;
         } else if (this.itemPath && this.itemPath !== null) {
-          files = await getUserFilesByPath(graph, this.userId, this.itemPath);
+          pageIterator = await getUserFilesByPathIterator(graph, this.userId, this.itemPath, this.pageSize);
+          files = pageIterator.value;
         } else if (this.insightType && this.insightType !== null) {
           files = await getUserInsightsFiles(graph, this.userId, this.insightType);
         }
       }
 
-      this.files = files;
+      if (pageIterator) {
+        this.pageIterator = pageIterator;
+      }
 
       // filter files when extensions are provided
       let filteredByFileExtension: MicrosoftGraph.DriveItem[];
       if (this.fileExtensions && this.fileExtensions !== null) {
+        // retrive all pages before filtering
+        if (pageIterator && pageIterator.value) {
+          files = pageIterator.value;
+
+          while (pageIterator.hasNext) {
+            await pageIterator.next();
+            files = pageIterator.value;
+          }
+        }
         filteredByFileExtension = files.filter(file => {
           for (const e of this.fileExtensions) {
             if (e == this.getFileExtension(file.name)) {
@@ -541,14 +565,13 @@ export class MgtFileList extends MgtTemplatedComponent {
 
       if (filteredByFileExtension && filteredByFileExtension.length >= 0) {
         this.files = filteredByFileExtension;
+      } else {
+        this.files = files;
       }
-
-      this._renderedFileCount = this.showMax;
-      this._filesToRender = this.files.slice(0, this.showMax);
     }
   }
 
-  private showMoreFiles(count: number) {
+  private async renderNextPage() {
     const root = this.renderRoot.querySelector('file-list-wrapper');
     if (root && root.animate) {
       // play back
@@ -570,16 +593,10 @@ export class MgtFileList extends MgtTemplatedComponent {
         }
       );
     }
-    if (this.files.length > this._renderedFileCount) {
-      if (this.files.length - this._renderedFileCount > count) {
-        this._filesToRender = this.files.slice(0, this._renderedFileCount + count);
-        this._renderedFileCount += count;
-        this.requestUpdate();
-      } else {
-        this._renderedFileCount = this.files.length;
-        this._filesToRender = this.files.slice(0, this.files.length);
-        this.requestUpdate();
-      }
+
+    if (this.pageIterator.hasNext) {
+      await this.pageIterator.next();
+      this.files = this.pageIterator.value;
     }
   }
 

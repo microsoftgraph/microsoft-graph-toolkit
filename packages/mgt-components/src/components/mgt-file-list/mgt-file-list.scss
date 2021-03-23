@@ -24,6 +24,8 @@ mgt-file-item .file-list-wrapper {
   border-radius: 4px;
   position: relative;
   color: $color;
+  display: flex;
+  flex-direction: column;
 
   .file-list {
     display: flex;
@@ -33,7 +35,7 @@ mgt-file-item .file-list-wrapper {
 
     .file-item {
       border-bottom: var(--file-list-item-border-bottom, none);
-      margin: 0 6px;
+      margin: 0 4px;
       border-radius: 2px;
 
       &:hover {
@@ -44,19 +46,18 @@ mgt-file-item .file-list-wrapper {
         }
       }
     }
+  }
+  .show-more {
+    border-bottom: none;
+    text-align: center;
+    padding: 12px;
+    margin-bottom: -6px;
+    list-style-type: none;
+    cursor: pointer;
+    background-color: set-var(background-color__sub2, $theme-default, $common);
 
-    .show-more {
-      border-bottom: none;
-      text-align: center;
-      padding: 12px;
-      margin-bottom: -6px;
-      list-style-type: none;
-      cursor: pointer;
-      background-color: set-var(background-color__sub2, $theme-default, $common);
-
-      &:hover {
-        background-color: $file-item-background-color--hover;
-      }
+    &:hover {
+      background-color: $file-item-background-color--hover;
     }
   }
 }

@@ -7,8 +7,8 @@
 
 @import '../../styles/shared-sass-variables.scss';
 
-$line2__color: var(--line2-color, set-var(color__sub1, $theme-default, $common));
-$line3__color: var(--line3-color, set-var(color__sub1, $theme-default, $common));
+$line2__color: var(--line2-color, set-var(color__sub2, $theme-default, $common));
+$line3__color: var(--line3-color, set-var(color__sub2, $theme-default, $common));
 
 $file: (
   background-color: (
