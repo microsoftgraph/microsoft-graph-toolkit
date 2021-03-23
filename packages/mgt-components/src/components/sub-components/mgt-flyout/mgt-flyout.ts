@@ -102,8 +102,17 @@ export class MgtFlyout extends MgtBaseComponent {
   private get _flyout(): HTMLElement {
     return this.renderRoot.querySelector('.flyout');
   }
+
   private get _anchor(): HTMLElement {
     return this.renderRoot.querySelector('.anchor');
+  }
+
+  private get _topScout(): HTMLElement {
+    return this.renderRoot.querySelector('.scout-top');
+  }
+
+  private get _bottomScout(): HTMLElement {
+    return this.renderRoot.querySelector('.scout-bottom');
   }
 
   private _isOpen: boolean;
@@ -195,6 +204,8 @@ export class MgtFlyout extends MgtBaseComponent {
         <div class="anchor">
           ${anchorTemplate}
         </div>
+        <div class="scout-top"></div>
+        <div class="scout-bottom"></div>
         ${flyoutTemplate}
       </div>
     `;
@@ -249,6 +260,8 @@ export class MgtFlyout extends MgtBaseComponent {
 
       const flyoutRect = flyout.getBoundingClientRect();
       const anchorRect = anchor.getBoundingClientRect();
+      const topScoutRect = this._topScout.getBoundingClientRect();
+      const bottomScoutRect = this._bottomScout.getBoundingClientRect();
 
       const windowRect: IWindowSegment = {
         height: windowHeight,
@@ -341,6 +354,21 @@ export class MgtFlyout extends MgtBaseComponent {
           } else {
             top = Math.max(anchorRect.top + anchorRect.height, this._edgePadding);
           }
+        }
+      }
+
+      // check the scout is positioned where it is supposed to be
+      // if it's not, then we are no longer fixed position and should assume
+      // absolute positioning
+      // this is a workaround when a transform is applied to a parent
+      // https://stackoverflow.com/questions/42660332/css-transform-parent-and-fixed-child
+      if (topScoutRect.top !== 0 || topScoutRect.left !== 0) {
+        left -= topScoutRect.left;
+
+        if (typeof bottom !== 'undefined') {
+          bottom += bottomScoutRect.top - windowHeight;
+        } else {
+          top -= topScoutRect.top;
         }
       }
 
