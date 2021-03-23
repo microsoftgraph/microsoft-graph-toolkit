@@ -14,7 +14,6 @@ import {
 } from '@microsoft/mgt-element';
 import * as MicrosoftGraph from '@microsoft/microsoft-graph-types';
 import { customElement, html, internalProperty, property, TemplateResult } from 'lit-element';
-import { debounce } from '../../utils/Utils';
 import { repeat } from 'lit-html/directives/repeat';
 import {
   getDriveFilesByIdIterator,
@@ -332,8 +331,6 @@ export class MgtFileList extends MgtTemplatedComponent {
     type: Number
   })
   public pageSize: number;
-
-  @internalProperty() private _filesToRender: MicrosoftGraph.DriveItem[];
 
   private _fileListQuery: string;
   private _fileQueries: string[];
