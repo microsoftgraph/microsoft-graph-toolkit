@@ -209,13 +209,9 @@ export async function getFilesIterator(graph: IGraph, top?: number): Promise<Gra
   let filesPageIterator;
 
   try {
+    request = await graph.api('/me/drive/root/children').middlewareOptions(prepScopes(scopes));
     if (top) {
-      request = await graph
-        .api('/me/drive/root/children')
-        .top(top)
-        .middlewareOptions(prepScopes(scopes));
-    } else {
-      request = graph.api('/me/drive/root/children').middlewareOptions(prepScopes(scopes));
+      request.top(top);
     }
 
     filesPageIterator = await getFilesPageIterator(graph, request);
@@ -235,13 +231,9 @@ export async function getDriveFilesByIdIterator(
   let filesPageIterator;
 
   try {
+    request = graph.api(`/drives/${driveId}/items/${itemId}/children`).middlewareOptions(prepScopes(scopes));
     if (top) {
-      request = graph
-        .api(`/drives/${driveId}/items/${itemId}/children`)
-        .top(top)
-        .middlewareOptions(prepScopes(scopes));
-    } else {
-      request = graph.api(`/drives/${driveId}/items/${itemId}/children`).middlewareOptions(prepScopes(scopes));
+      request.top(top);
     }
     filesPageIterator = await getFilesPageIterator(graph, request);
   } catch {}
@@ -260,13 +252,9 @@ export async function getDriveFilesByPathIterator(
   let filesPageIterator;
 
   try {
+    request = graph.api(`/drives/${driveId}/root:/${itemPath}:/children`).middlewareOptions(prepScopes(scopes));
     if (top) {
-      request = graph
-        .api(`/drives/${driveId}/root:/${itemPath}:/children`)
-        .top(top)
-        .middlewareOptions(prepScopes(scopes));
-    } else {
-      request = graph.api(`/drives/${driveId}/root:/${itemPath}:/children`).middlewareOptions(prepScopes(scopes));
+      request.top(top);
     }
     filesPageIterator = await getFilesPageIterator(graph, request);
   } catch {}
@@ -285,13 +273,9 @@ export async function getGroupFilesByIdIterator(
   let filesPageIterator;
 
   try {
+    request = graph.api(`/groups/${groupId}/drive/items/${itemId}/children`).middlewareOptions(prepScopes(scopes));
     if (top) {
-      request = graph
-        .api(`/groups/${groupId}/drive/items/${itemId}/children`)
-        .top(top)
-        .middlewareOptions(prepScopes(scopes));
-    } else {
-      request = graph.api(`/groups/${groupId}/drive/items/${itemId}/children`).middlewareOptions(prepScopes(scopes));
+      request.top(top);
     }
     filesPageIterator = await getFilesPageIterator(graph, request);
   } catch {}
@@ -310,13 +294,9 @@ export async function getGroupFilesByPathIterator(
   let filesPageIterator;
 
   try {
+    request = graph.api(`/groups/${groupId}/drive/root:/${itemPath}:/children`).middlewareOptions(prepScopes(scopes));
     if (top) {
-      request = graph
-        .api(`/groups/${groupId}/drive/root:/${itemPath}:/children`)
-        .top(top)
-        .middlewareOptions(prepScopes(scopes));
-    } else {
-      request = graph.api(`/groups/${groupId}/drive/root:/${itemPath}:/children`).middlewareOptions(prepScopes(scopes));
+      request.top(top);
     }
     filesPageIterator = await getFilesPageIterator(graph, request);
   } catch {}
@@ -333,13 +313,9 @@ export async function getFilesByIdIterator(
   let request;
   let filesPageIterator;
   try {
+    request = graph.api(`/me/drive/items/${itemId}/children`).middlewareOptions(prepScopes(scopes));
     if (top) {
-      request = graph
-        .api(`/me/drive/items/${itemId}/children`)
-        .top(top)
-        .middlewareOptions(prepScopes(scopes));
-    } else {
-      request = graph.api(`/me/drive/items/${itemId}/children`).middlewareOptions(prepScopes(scopes));
+      request.top(top);
     }
     filesPageIterator = await getFilesPageIterator(graph, request);
   } catch {}
@@ -356,13 +332,9 @@ export async function getFilesByPathIterator(
   let request;
   let filesPageIterator;
   try {
+    request = graph.api(`/me/drive/root:/${itemPath}:/children`).middlewareOptions(prepScopes(scopes));
     if (top) {
-      request = graph
-        .api(`/me/drive/root:/${itemPath}:/children`)
-        .top(top)
-        .middlewareOptions(prepScopes(scopes));
-    } else {
-      request = graph.api(`/me/drive/root:/${itemPath}:/children`).middlewareOptions(prepScopes(scopes));
+      request.top(top);
     }
     filesPageIterator = await getFilesPageIterator(graph, request);
   } catch {}
@@ -380,13 +352,9 @@ export async function getSiteFilesByIdIterator(
   let request;
   let filesPageIterator;
   try {
+    request = graph.api(`/sites/${siteId}/drive/items/${itemId}/children`).middlewareOptions(prepScopes(scopes));
     if (top) {
-      request = graph
-        .api(`/sites/${siteId}/drive/items/${itemId}/children`)
-        .top(top)
-        .middlewareOptions(prepScopes(scopes));
-    } else {
-      request = graph.api(`/sites/${siteId}/drive/items/${itemId}/children`).middlewareOptions(prepScopes(scopes));
+      request.top(top);
     }
     filesPageIterator = await getFilesPageIterator(graph, request);
   } catch {}
@@ -404,13 +372,9 @@ export async function getSiteFilesByPathIterator(
   let request;
   let filesPageIterator;
   try {
+    request = graph.api(`/sites/${siteId}/drive/root:/${itemPath}:/children`).middlewareOptions(prepScopes(scopes));
     if (top) {
-      request = graph
-        .api(`/sites/${siteId}/drive/root:/${itemPath}:/children`)
-        .top(top)
-        .middlewareOptions(prepScopes(scopes));
-    } else {
-      request = graph.api(`/sites/${siteId}/drive/root:/${itemPath}:/children`).middlewareOptions(prepScopes(scopes));
+      request.top(top);
     }
     filesPageIterator = await getFilesPageIterator(graph, request);
   } catch {}
@@ -428,13 +392,9 @@ export async function getUserFilesByIdIterator(
   let request;
   let filesPageIterator;
   try {
+    request = graph.api(`/users/${userId}/drive/items/${itemId}/children`).middlewareOptions(prepScopes(scopes));
     if (top) {
-      request = graph
-        .api(`/users/${userId}/drive/items/${itemId}/children`)
-        .top(top)
-        .middlewareOptions(prepScopes(scopes));
-    } else {
-      request = graph.api(`/users/${userId}/drive/items/${itemId}/children`).middlewareOptions(prepScopes(scopes));
+      request.top(top);
     }
     filesPageIterator = await getFilesPageIterator(graph, request);
   } catch {}
@@ -452,13 +412,9 @@ export async function getUserFilesByPathIterator(
   let request;
   let filesPageIterator;
   try {
+    request = graph.api(`/users/${userId}/drive/root:/${itemPath}:/children`).middlewareOptions(prepScopes(scopes));
     if (top) {
-      request = graph
-        .api(`/users/${userId}/drive/root:/${itemPath}:/children`)
-        .top(top)
-        .middlewareOptions(prepScopes(scopes));
-    } else {
-      request = graph.api(`/users/${userId}/drive/root:/${itemPath}:/children`).middlewareOptions(prepScopes(scopes));
+      request.top(top);
     }
     filesPageIterator = await getFilesPageIterator(graph, request);
   } catch {}
@@ -475,15 +431,10 @@ export async function getFilesByListQueryIterator(
   let filesPageIterator;
 
   try {
+    request = await graph.api(listQuery).middlewareOptions(prepScopes(...scopes));
     if (top) {
-      request = await graph
-        .api(listQuery)
-        .top(top)
-        .middlewareOptions(prepScopes(...scopes));
-    } else {
-      request = await graph.api(listQuery).middlewareOptions(prepScopes(...scopes));
+      request.top(top);
     }
-
     filesPageIterator = await getFilesPageIterator(graph, request);
   } catch {}
   return filesPageIterator || null;

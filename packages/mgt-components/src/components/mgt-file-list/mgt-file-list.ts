@@ -12,7 +12,7 @@ import {
   Providers,
   ProviderState
 } from '@microsoft/mgt-element';
-import * as MicrosoftGraph from '@microsoft/microsoft-graph-types';
+import { DriveItem } from '@microsoft/microsoft-graph-types';
 import { customElement, html, internalProperty, property, TemplateResult } from 'lit-element';
 import { repeat } from 'lit-html/directives/repeat';
 import {
@@ -111,10 +111,10 @@ export class MgtFileList extends MgtTemplatedComponent {
    * @memberof MgtFileList
    */
   @property({ type: Object })
-  public get files(): MicrosoftGraph.DriveItem[] {
+  public get files(): DriveItem[] {
     return this._files;
   }
-  public set files(value: MicrosoftGraph.DriveItem[]) {
+  public set files(value: DriveItem[]) {
     if (value === this._files) {
       return;
     }
@@ -332,9 +332,23 @@ export class MgtFileList extends MgtTemplatedComponent {
   })
   public pageSize: number;
 
+  /**
+   * The selected item
+   *
+   * @readonly
+   * @memberof MgtFileList
+   * @type {MicrosoftGraph.DriveItem}
+   */
+  public get selectedItem() {
+    return this._selectedItem;
+  }
+
+  @internalProperty()
+  private _selectedItem: DriveItem;
+
   private _fileListQuery: string;
   private _fileQueries: string[];
-  private _files: MicrosoftGraph.DriveItem[];
+  private _files: DriveItem[];
   private _siteId: string;
   private _itemId: string;
   private _driveId: string;
@@ -343,13 +357,56 @@ export class MgtFileList extends MgtTemplatedComponent {
   private _insightType: OfficeGraphInsightString;
   private _fileExtensions: string[];
   private _userId: string;
-  private pageIterator: GraphPageIterator<MicrosoftGraph.DriveItem>;
+  private pageIterator: GraphPageIterator<DriveItem>;
 
   constructor() {
     super();
 
+    this.clearState();
     this.pageSize = 10;
+    this._selectedItem = null;
     this.itemView = ViewType.twolines;
+  }
+
+  /**
+   * Synchronizes property values when attributes change.
+   *
+   * @param {*} name
+   * @param {*} oldValue
+   * @param {*} newValue
+   * @memberof MgtPersonCard
+   */
+  public attributeChangedCallback(name: string, oldValue: string, newValue: string) {
+    super.attributeChangedCallback(name, oldValue, newValue);
+
+    if (oldValue === newValue) {
+      return;
+    }
+
+    switch (name) {
+      case 'file-list-query':
+      case 'file-queries':
+      case 'site-id':
+      case 'drive-id':
+      case 'group-id':
+      case 'item-id':
+      case 'item-path':
+      case 'user-id':
+      case 'insight-type':
+        this.clearState;
+        this.requestStateUpdate();
+        break;
+    }
+  }
+
+  /**
+   * Reset state
+   *
+   * @memberof MgtFileList
+   */
+  public clearState(): void {
+    super.clearState();
+    this._files = null;
   }
 
   public render() {
@@ -420,12 +477,12 @@ export class MgtFileList extends MgtTemplatedComponent {
    * @returns {TemplateResult}
    * @memberof mgtFileList
    */
-  protected renderFile(file: MicrosoftGraph.DriveItem): TemplateResult {
+  protected renderFile(file: DriveItem): TemplateResult {
     const view = this.itemView;
     return (
       this.renderTemplate('file', { file }) ||
       html`
-        <mgt-file .fileDetails=${file} .view=${view}></mgt-file>
+        <mgt-file .fileDetails=${file} .view=${view} @click=${e => this.handleItemSelect(file, e)}></mgt-file>
       `
     );
   }
@@ -466,11 +523,13 @@ export class MgtFileList extends MgtTemplatedComponent {
       return;
     }
     const graph = provider.graph.forComponent(this);
-    let files: MicrosoftGraph.DriveItem[];
-    let pageIterator: GraphPageIterator<MicrosoftGraph.DriveItem>;
+    let files: DriveItem[];
+    let pageIterator: GraphPageIterator<DriveItem>;
 
     const getFromMyDrive = !this.driveId && !this.siteId && !this.groupId && !this.userId;
 
+    // combinations of these attributes must be provided in order for the component to know which endpoint to call to request files
+    // not supplying enough for these combinations will get a null file result
     if (
       (this.driveId && (!this.itemId && !this.itemPath)) ||
       (this.groupId && (!this.itemId && !this.itemPath)) ||
@@ -540,16 +599,14 @@ export class MgtFileList extends MgtTemplatedComponent {
       }
 
       // filter files when extensions are provided
-      let filteredByFileExtension: MicrosoftGraph.DriveItem[];
+      let filteredByFileExtension: DriveItem[];
       if (this.fileExtensions && this.fileExtensions !== null) {
         // retrive all pages before filtering
         if (pageIterator && pageIterator.value) {
-          files = pageIterator.value;
-
           while (pageIterator.hasNext) {
             await pageIterator.next();
-            files = pageIterator.value;
           }
+          files = pageIterator.value;
         }
         filteredByFileExtension = files.filter(file => {
           for (const e of this.fileExtensions) {
@@ -566,9 +623,36 @@ export class MgtFileList extends MgtTemplatedComponent {
         this.files = files;
       }
     }
+
+    // Reset the selected item if it doesn't match any of the new results.
+    if (this._selectedItem && this.files.findIndex(v => v.id === this._selectedItem.id) === -1) {
+      this._selectedItem = null;
+    }
   }
 
-  private async renderNextPage() {
+  /**
+   * Handle the click event on an item.
+   *
+   * @protected
+   * @memberof MgtFileList
+   */
+  protected handleItemSelect(item: DriveItem, event: PointerEvent): void {
+    if (this._selectedItem === item) {
+      this._selectedItem = null;
+    } else {
+      this._selectedItem = item;
+    }
+
+    this.fireCustomEvent('fileSelected', this._selectedItem);
+  }
+
+  /**
+   * Handle the click event on button to show next page.
+   *
+   * @protected
+   * @memberof MgtFileList
+   */
+  protected async renderNextPage() {
     const root = this.renderRoot.querySelector('file-list-wrapper');
     if (root && root.animate) {
       // play back
