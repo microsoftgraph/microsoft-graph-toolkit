@@ -44,6 +44,13 @@ interface MsalConfigBase {
    * @memberof MsalConfigBase
    */
   domainHint?: string;
+  /**
+   * prompt value
+   *
+   * @type {string}
+   * @memberof MsalConfigBase
+   */
+  prompt?: string;
 }
 
 /**
@@ -141,6 +148,7 @@ export class MsalProvider extends IProvider {
   private _loginType: LoginType;
   private _loginHint: string;
   private _domainHint: string;
+  private _prompt: string;
 
   // session storage
   private sessionStorageRequestedScopesKey = 'mgt-requested-scopes';
@@ -182,7 +190,7 @@ export class MsalProvider extends IProvider {
   public async login(authenticationParameters?: AuthenticationParameters): Promise<void> {
     let loginRequest: AuthenticationParameters = authenticationParameters || {
       loginHint: this._loginHint,
-      prompt: 'select_account',
+      prompt: this._prompt ? this._prompt : 'select_account',
       scopes: this.scopes
     };
 
