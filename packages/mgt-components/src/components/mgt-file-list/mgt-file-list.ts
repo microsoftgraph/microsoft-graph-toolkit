@@ -350,6 +350,17 @@ export class MgtFileList extends MgtTemplatedComponent {
   })
   public pageSize: number;
 
+  /**
+   * A boolean value indication if 'show-more' button should be disabled
+   * @type {boolean}
+   * @memberof MgtFileList
+   */
+  @property({
+    attribute: 'disable-expansion',
+    type: Boolean
+  })
+  public disableExpansion: boolean;
+
   private _fileListQuery: string;
   private _fileQueries: string[];
   private _files: DriveItem[];
@@ -446,7 +457,7 @@ export class MgtFileList extends MgtTemplatedComponent {
             `
           )}
         </ul>
-        ${this.pageIterator && this.pageIterator.hasNext ? this.renderMoreFileButton() : null}
+        ${!this.disableExpansion && this.pageIterator && this.pageIterator.hasNext ? this.renderMoreFileButton() : null}
       </div>
     `;
   }

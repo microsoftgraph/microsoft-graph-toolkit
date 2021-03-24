@@ -79,6 +79,10 @@ export const getFileListByExtensions = () => html`
   <mgt-file-list file-extensions="docx, xlsx"></mgt-file-list>
 `;
 
+export const disableFileExpansion = () => html`
+  <mgt-file-list disable-expansion></mgt-file-list>
+`;
+
 export const selectedFile = () => html`
   <p>Selected File:</p>
   <mgt-file></mgt-file>
