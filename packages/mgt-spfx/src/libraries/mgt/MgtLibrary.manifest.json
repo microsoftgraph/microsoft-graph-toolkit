@@ -1,0 +1,9 @@
+{
+  "id": "78b11c7d-7ca8-47cb-a93c-d3beabb519a1",
+  "alias": "MgtSpfxLibrary",
+  "componentType": "Library",
+
+  // The "*" signifies that the version should be taken from the package.json
+  "version": "*",
+  "manifestVersion": 2
+}
