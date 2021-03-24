@@ -83,6 +83,23 @@ export interface MgtPersonConfig {
 }
 
 /**
+ * Person properties part of original set provided by graph by default
+ */
+const defaultPersonProperties = [
+  'businessPhones',
+  'displayName',
+  'givenName',
+  'jobTitle',
+  'mail',
+  'mobilePhone',
+  'officeLocation',
+  'preferredLanguage',
+  'surname',
+  'userPrincipalName',
+  'id'
+];
+
+/**
  * The person component is used to display a person or contact by using their photo, name, and/or email address.
  *
  * @export
@@ -526,6 +543,20 @@ export class MgtPerson extends MgtTemplatedComponent {
   }
 
   /**
+   * Clears state of the component
+   *
+   * @protected
+   * @memberof MgtPerson
+   */
+  protected clearState(): void {
+    this._personImage = '';
+    this._personDetails = null;
+    this._fallbackDetails = null;
+    this._fetchedImage = null;
+    this._fetchedPresence = null;
+  }
+
+  /**
    * Render the state when no data is available
    *
    * @protected
@@ -888,6 +919,10 @@ export class MgtPerson extends MgtTemplatedComponent {
 
     const graph = provider.graph.forComponent(this);
 
+    // Prepare person props
+    let personProps = [...defaultPersonProperties, this.line1Property, this.line2Property, this.line3Property];
+    personProps = personProps.filter(email => email !== 'email');
+
     if (this.personDetails) {
       if (
         !this.personDetails.personImage &&
@@ -903,12 +938,12 @@ export class MgtPerson extends MgtTemplatedComponent {
       // Use userId or 'me' query to get the person and image
       let person;
       if (this._avatarType === 'photo') {
-        person = await getUserWithPhoto(graph, this.userId);
+        person = await getUserWithPhoto(graph, this.userId, personProps);
       } else {
         if (this.personQuery === 'me') {
-          person = await getMe(graph);
+          person = await getMe(graph, personProps);
         } else {
-          person = await getUser(graph, this.userId);
+          person = await getUser(graph, this.userId, personProps);
         }
       }
       this.personDetails = person;
@@ -1103,7 +1138,7 @@ export class MgtPerson extends MgtTemplatedComponent {
   private hidePersonCard() {
     const flyout = this.flyout;
     if (flyout) {
-      flyout.isOpen = false;
+      flyout.close();
     }
 
     const personCard = (this.querySelector('mgt-person-card') ||
@@ -1121,7 +1156,7 @@ export class MgtPerson extends MgtTemplatedComponent {
 
     const flyout = this.flyout;
     if (flyout) {
-      flyout.isOpen = true;
+      flyout.open();
     }
   }
 }

@@ -325,6 +325,19 @@ export class MgtTeamsChannelPicker extends MgtTemplatedComponent {
   }
 
   /**
+   * Clears the state of the component
+   *
+   * @protected
+   * @memberof MgtTeamsChannelPicker
+   */
+  protected clearState(): void {
+    this._items = [];
+    this._inputValue = '';
+    this._treeViewState = [];
+    this._focusList = [];
+  }
+
+  /**
    * Renders search icon
    *
    * @protected
@@ -590,7 +603,7 @@ export class MgtTeamsChannelPicker extends MgtTemplatedComponent {
       const batch = provider.graph.createBatch();
 
       for (const team of teams) {
-        batch.get(team.id, `teams/${team.id}/channels`, ['group.read.all']);
+        batch.get(team.id, `teams/${team.id}/channels`, ['Channel.ReadBasic.All']);
       }
 
       const responses = await batch.executeAll();
