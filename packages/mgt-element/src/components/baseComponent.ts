@@ -151,7 +151,7 @@ export abstract class MgtBaseComponent extends LitElement {
   protected firstUpdated(changedProperties): void {
     super.firstUpdated(changedProperties);
     this._isFirstUpdated = true;
-    Providers.onProviderUpdated(() => this.requestStateUpdate());
+    Providers.onProviderUpdated(() => this.providerUpdatedHandler());
     this.requestStateUpdate();
   }
 
@@ -208,6 +208,15 @@ export abstract class MgtBaseComponent extends LitElement {
     this.dispatchEvent(event);
   }
 
+  protected providerUpdatedHandler() {
+    if (Providers.globalProvider && Providers.globalProvider.switchAccount) {
+      const provider = Providers.globalProvider;
+      provider.onActiveAccountChanged(() => {
+        this.requestStateUpdate();
+      });
+    }
+    this.requestStateUpdate();
+  }
   /**
    * Request to reload the state.
    * Use reload instead of load to ensure loading events are fired.

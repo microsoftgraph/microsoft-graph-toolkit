@@ -1,7 +1,6 @@
 import { IProvider, LoginType, ProviderState, createFromProvider, Providers } from '@microsoft/mgt-element';
 import {
   Configuration,
-  LogLevel,
   PublicClientApplication,
   SilentRequest,
   PopupRequest,
@@ -12,6 +11,7 @@ import {
   InteractionRequiredAuthError
 } from '@azure/msal-browser';
 import { AuthenticationProviderOptions } from '@microsoft/microsoft-graph-client/lib/es/IAuthenticationProviderOptions';
+import { isRegExp } from 'util';
 
 export interface Msal2Config {
   clientId: string;
@@ -26,18 +26,70 @@ export interface Msal2Config {
 }
 export class Msal2Provider extends IProvider {
   private _publicClientApplication: PublicClientApplication;
+
+  /**
+   * Login type, Either Redirect or Popup
+   *
+   * @private
+   * @type {LoginType}
+   * @memberof Msal2Provider
+   */
   private _loginType: LoginType;
+
+  /**
+   * Login hint, if provided
+   *
+   * @private
+   * @memberof Msal2Provider
+   */
   private _loginHint;
+
+  /**
+   * Domain hint if provided
+   *
+   * @private
+   * @memberof Msal2Provider
+   */
   private _domainHint;
+
+  /**
+   * Session ID, if provided
+   *
+   * @private
+   * @memberof Msal2Provider
+   */
   private _sid;
+
+  /**
+   * Configuration settings for authentication
+   *
+   * @private
+   * @type {Configuration}
+   * @memberof Msal2Provider
+   */
   private ms_config: Configuration;
+
+  /**
+   * Gets the PublicClientApplication Instance
+   *
+   * @private
+   * @type {PublicClientApplication}
+   * @memberof Msal2Provider
+   */
+  public get publicClientApplication() {
+    return this._publicClientApplication;
+  }
+
   public scopes: string[];
   account: any;
 
   // session storage
+
+  //TODO: Bugs - switching accounts doesn't work with caching
+  //TODO: Adding new account does not work with loginpopup
   private sessionStorageRequestedScopesKey = 'mgt-requested-scopes';
   private sessionStorageDeniedScopesKey = 'mgt-denied-scopes';
-  private homeAccountKey = 'home-account-id';
+  private homeAccountKey = '275f3731-e4a4-468a-bf9c-baca24b31e26';
   public constructor(config: Msal2Config) {
     super();
     this.initProvider(config);
@@ -77,13 +129,14 @@ export class Msal2Provider extends IProvider {
       this._publicClientApplication = new PublicClientApplication(this.ms_config);
       try {
         this._publicClientApplication.handleRedirectPromise().then((tokenResponse: AuthenticationResult | null) => {
+          console.log('Redirect');
           this.handleResponse(tokenResponse);
           if (tokenResponse === null) {
             this.trySilentSignIn();
           }
         });
       } catch (e) {
-        console.log(e);
+        console.log('redirect', e);
       }
     } else {
       throw new Error('clientId must be provided');
@@ -93,8 +146,6 @@ export class Msal2Provider extends IProvider {
   }
 
   public async trySilentSignIn() {
-    //this.account = this.getAccount(); //TODO : Add else in case user provides sid- add to config
-    console.log('Reached silent ');
     let silentRequest: any = {
       scopes: this.scopes,
       domainHint: this._domainHint
@@ -113,6 +164,7 @@ export class Msal2Provider extends IProvider {
     }
     if (silentRequest.sid) {
       try {
+        this.setState(ProviderState.Loading);
         const response = await this._publicClientApplication.ssoSilent(silentRequest);
         if (response) {
           console.log('SILENT SUCCESSFUL!!!');
@@ -125,7 +177,6 @@ export class Msal2Provider extends IProvider {
     }
   }
 
-  //TODO: AuthenticationParameters passed as argument
   public async login(): Promise<void> {
     const loginRequest: PopupRequest = {
       scopes: this.scopes,
@@ -136,39 +187,63 @@ export class Msal2Provider extends IProvider {
     if (this._loginType == LoginType.Popup) {
       const response = await this._publicClientApplication.loginPopup(loginRequest);
       this.handleResponse(response);
+      this.fireActiveAccountChanged();
     } else {
       const loginRedirectRequest: RedirectRequest = { ...loginRequest };
       this._publicClientApplication.loginRedirect(loginRedirectRequest);
     }
   }
 
+  public getAllAccounts() {
+    let usernames = [];
+    this._publicClientApplication.getAllAccounts().forEach((account: AccountInfo) => {
+      usernames.push({ username: account.username, id: account.homeAccountId });
+    });
+    return usernames;
+  }
+
+  public switchAccount(user: any) {
+    this._publicClientApplication.setActiveAccount(this._publicClientApplication.getAccountByHomeId(user.id));
+    this.setStoredAccount();
+    console.log('New getStoredAccount', this.getStoredAccount());
+    this.fireActiveAccountChanged();
+  }
+
   handleResponse(response: AuthenticationResult | null) {
-    console.log('All accounts', this._publicClientApplication.getAllAccounts());
     if (response !== null) {
       this.account = response.account;
-      this.setState(ProviderState.SignedIn);
       this._publicClientApplication.setActiveAccount(this.account);
       this.setStoredAccount();
-      console.log('Inside handleresponse', this.getStoredAccount());
+      this.setState(ProviderState.SignedIn);
+      console.log(
+        'All accounts',
+        this._publicClientApplication.getAllAccounts(),
+        'Active account',
+        this._publicClientApplication.getActiveAccount()
+      );
     } else {
       this.setState(ProviderState.SignedOut);
     }
     this.clearRequestedScopes();
   }
+
   private setStoredAccount() {
     this.clearStoredAccount();
-    localStorage.setItem(this.homeAccountKey, this._publicClientApplication.getActiveAccount().homeAccountId);
+    window[this.ms_config.cache.cacheLocation].setItem(
+      this.homeAccountKey,
+      this._publicClientApplication.getActiveAccount().homeAccountId
+    );
   }
   private getStoredAccount() {
-    console.log('getstorecaccount');
-    //TODO : Should I check if user has enabled localstorage? i.e.
-    //if(this.ms_config.cache.cacheLocation === 'localstorage')
-    const homeId = localStorage.getItem(this.homeAccountKey);
+    let homeId = null;
+
+    homeId = window[this.ms_config.cache.cacheLocation].getItem(this.homeAccountKey);
+
     return this._publicClientApplication.getAccountByHomeId(homeId);
   }
 
   private clearStoredAccount() {
-    localStorage.removeItem(this.homeAccountKey);
+    window[this.ms_config.cache.cacheLocation].removeItem(this.homeAccountKey);
   }
 
   protected setRequestedScopes(scopes: string[]) {
@@ -216,29 +291,27 @@ export class Msal2Provider extends IProvider {
 
   private getAccount(): AccountInfo | null {
     const account = this.getStoredAccount();
-    console.log('inside getaccount', this.getStoredAccount());
+    console.log('Stored Account', this.getStoredAccount());
     if (account) {
-      console.log('Account already exists inside getAccount', account);
       return account;
+    } else if (this._publicClientApplication.getAllAccounts().length > 0) {
+      return this._publicClientApplication.getAllAccounts()[0];
     }
     return null;
   }
 
   public async logout() {
-    let account: AccountInfo | undefined;
-    if (this.account) {
-      account = this.account;
-    }
+    const logOutAccount = this._publicClientApplication.getActiveAccount();
     const logOutRequest: EndSessionRequest = {
-      account
+      account: logOutAccount
     };
-
+    this.clearStoredAccount();
+    console.log(logOutRequest.account);
     this._publicClientApplication.logout(logOutRequest);
     this.setState(ProviderState.SignedOut);
   }
 
   public async getAccessToken(options?: AuthenticationProviderOptions): Promise<string> {
-    console.log('called', options ? options.scopes : 'Not from login');
     const scopes = options ? options.scopes || this.scopes : this.scopes;
     const accessTokenRequest = {
       scopes: scopes,
@@ -247,8 +320,6 @@ export class Msal2Provider extends IProvider {
     };
     try {
       const silentRequest: SilentRequest = accessTokenRequest;
-      silentRequest.account = this.getAccount();
-      console.log('Inside access token', silentRequest);
       const response = await this._publicClientApplication.acquireTokenSilent(silentRequest);
       return response.accessToken;
     } catch (e) {
