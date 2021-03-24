@@ -79,6 +79,52 @@ export const getFileListByExtensions = () => html`
   <mgt-file-list file-extensions="docx, xlsx"></mgt-file-list>
 `;
 
+export const selectedFile = () => html`
+  <p>Selected File:</p>
+  <mgt-file></mgt-file>
+  <mgt-file-list></mgt-file-list>
+  <script>
+    document.querySelector('mgt-file-list').addEventListener('itemClick', e => {
+      const file = document.querySelector('mgt-file');
+      file.fileDetails = e.detail;
+    });
+  </script>
+  <style>
+    body {
+      font-family: 'Segoe UI', 'Segoe UI Web (West European)', 'Segoe UI', -apple-system, BlinkMacSystemFont, Roboto,
+        'Helvetica Neue', sans-serif;
+    }
+
+    p {
+      margin: 0;
+    }
+  </style>
+`;
+
+export const customCssProperties = () => html`
+  <style>
+    mgt-file-list {
+      --file-list-background-color: #e0f8db;
+      --file-item-background-color--hover: #caf1de;
+      --file-item-background-color--active: #acddde;
+      --file-list-border: 4px dotted #ffbdc3;
+      --file-list-box-shadow: none;
+      --file-list-padding: 0;
+      --file-list-margin: 0;
+      --file-item-border-radius: 12px;
+      --file-item-margin: 2px 6px;
+      --file-item-border-bottom: 4px dotted #ffbdc3;
+      --show-more-button-background-color: #fef8dd;
+      --show-more-button-background-color--hover: #ffe7c7;
+      --show-more-button-font-size: 14px;
+      --show-more-button-padding: 16px;
+      --show-more-button-border-bottom-right-radius: 12px;
+      --show-more-button-border-bottom-left-radius: 12px;
+    }
+  </style>
+  <mgt-file-list></mgt-file-list>
+`;
+
 export const darkTheme = () => html`
   <mgt-file-list class="mgt-dark"></mgt-file-list>
 `;

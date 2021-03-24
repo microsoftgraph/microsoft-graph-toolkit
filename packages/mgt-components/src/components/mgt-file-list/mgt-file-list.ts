@@ -13,7 +13,7 @@ import {
   ProviderState
 } from '@microsoft/mgt-element';
 import { DriveItem } from '@microsoft/microsoft-graph-types';
-import { customElement, html, internalProperty, property, TemplateResult } from 'lit-element';
+import { customElement, html, property, TemplateResult } from 'lit-element';
 import { repeat } from 'lit-html/directives/repeat';
 import {
   getDriveFilesByIdIterator,
@@ -45,10 +45,23 @@ import { styles } from './mgt-file-list-css';
  * @class MgtFileList
  * @extends {MgtTemplatedComponent}
  *
- * @fires fileSelected - Fired when user click a file. Returns the file (DriveItem) details.
+ * @fires itemClick - Fired when user click a file. Returns the file (DriveItem) details.
  * @cssprop --file-list-background-color - {Color} File list background color
+ * @cssprop --file-list-box-shadow - {String} File list box shadow style
+ * @cssprop --file-list-border - {String} File list border styles
+ * @cssprop --file-list-padding -{String} File list padding
+ * @cssprop --file-list-margin -{String} File list margin
  * @cssprop --file-item-background-color--hover - {Color} File item background hover color
  * @cssprop --file-item-border-bottom - {String} File item border bottom style
+ * @cssprop --file-item-background-color--active - {Color} File item background active color
+ * @cssprop --file-item-border-radius - {String} File item border radius
+ * @cssprop --file-item-margin - {String} File item margin
+ * @cssprop --show-more-button-background-color - {Color} Show more button background color
+ * @cssprop --show-more-button-background-color--hover - {Color} Show more button background hover color
+ * @cssprop --show-more-button-font-size - {String} Show more button font size
+ * @cssprop --show-more-button-padding - {String} Show more button padding
+ * @cssprop --show-more-button-border-bottom-right-radius - {String} Show more button bottom right radius
+ * @cssprop --show-more-button-border-bottom-left-radius - {String} Show more button bottom left radius
  */
 
 @customElement('mgt-file-list')
@@ -79,7 +92,7 @@ export class MgtFileList extends MgtTemplatedComponent {
     }
 
     this._fileListQuery = value;
-    this.requestStateUpdate();
+    this.requestStateUpdate(true);
   }
 
   /**
@@ -91,7 +104,11 @@ export class MgtFileList extends MgtTemplatedComponent {
   @property({
     attribute: 'file-queries',
     converter: (value, type) => {
-      return value.split(',').map(v => v.trim());
+      if (value) {
+        return value.split(',').map(v => v.trim());
+      } else {
+        return null;
+      }
     }
   })
   public get fileQueries(): string[] {
@@ -103,7 +120,7 @@ export class MgtFileList extends MgtTemplatedComponent {
     }
 
     this._fileQueries = value;
-    this.requestStateUpdate();
+    this.requestStateUpdate(true);
   }
 
   /**
@@ -122,7 +139,6 @@ export class MgtFileList extends MgtTemplatedComponent {
     }
 
     this._files = value;
-    this.requestStateUpdate();
   }
 
   /**
@@ -143,7 +159,7 @@ export class MgtFileList extends MgtTemplatedComponent {
     }
 
     this._siteId = value;
-    this.requestStateUpdate();
+    this.requestStateUpdate(true);
   }
 
   /**
@@ -164,7 +180,7 @@ export class MgtFileList extends MgtTemplatedComponent {
     }
 
     this._driveId = value;
-    this.requestStateUpdate();
+    this.requestStateUpdate(true);
   }
 
   /**
@@ -185,7 +201,7 @@ export class MgtFileList extends MgtTemplatedComponent {
     }
 
     this._groupId = value;
-    this.requestStateUpdate();
+    this.requestStateUpdate(true);
   }
 
   /**
@@ -206,7 +222,7 @@ export class MgtFileList extends MgtTemplatedComponent {
     }
 
     this._itemId = value;
-    this.requestStateUpdate();
+    this.requestStateUpdate(true);
   }
 
   /**
@@ -227,7 +243,7 @@ export class MgtFileList extends MgtTemplatedComponent {
     }
 
     this._itemPath = value;
-    this.requestStateUpdate();
+    this.requestStateUpdate(true);
   }
 
   /**
@@ -248,7 +264,7 @@ export class MgtFileList extends MgtTemplatedComponent {
     }
 
     this._userId = value;
-    this.requestStateUpdate();
+    this.requestStateUpdate(true);
   }
 
   /**
@@ -270,7 +286,7 @@ export class MgtFileList extends MgtTemplatedComponent {
     }
 
     this._insightType = value;
-    this.requestStateUpdate();
+    this.requestStateUpdate(true);
   }
 
   /**
@@ -320,7 +336,7 @@ export class MgtFileList extends MgtTemplatedComponent {
     }
 
     this._fileExtensions = value;
-    this.requestStateUpdate();
+    this.requestStateUpdate(true);
   }
 
   /**
@@ -333,20 +349,6 @@ export class MgtFileList extends MgtTemplatedComponent {
     type: Number
   })
   public pageSize: number;
-
-  /**
-   * The selected item
-   *
-   * @readonly
-   * @memberof MgtFileList
-   * @type {MicrosoftGraph.DriveItem}
-   */
-  public get selectedItem() {
-    return this._selectedItem;
-  }
-
-  @internalProperty()
-  private _selectedItem: DriveItem;
 
   private _fileListQuery: string;
   private _fileQueries: string[];
@@ -364,41 +366,18 @@ export class MgtFileList extends MgtTemplatedComponent {
   constructor() {
     super();
 
-    this.clearState();
     this.pageSize = 10;
-    this._selectedItem = null;
     this.itemView = ViewType.twolines;
   }
 
   /**
-   * Synchronizes property values when attributes change.
+   * Override requestStateUpdate to include clearstate.
    *
-   * @param {*} name
-   * @param {*} oldValue
-   * @param {*} newValue
-   * @memberof MgtPersonCard
+   * @memberof MgtFileList
    */
-  public attributeChangedCallback(name: string, oldValue: string, newValue: string) {
-    super.attributeChangedCallback(name, oldValue, newValue);
-
-    if (oldValue === newValue) {
-      return;
-    }
-
-    switch (name) {
-      case 'file-list-query':
-      case 'file-queries':
-      case 'site-id':
-      case 'drive-id':
-      case 'group-id':
-      case 'item-id':
-      case 'item-path':
-      case 'user-id':
-      case 'insight-type':
-        this.clearState;
-        this.requestStateUpdate();
-        break;
-    }
+  protected requestStateUpdate(force?: boolean) {
+    this.clearState();
+    return super.requestStateUpdate(force);
   }
 
   /**
@@ -406,7 +385,7 @@ export class MgtFileList extends MgtTemplatedComponent {
    *
    * @memberof MgtFileList
    */
-  public clearState(): void {
+  protected clearState(): void {
     super.clearState();
     this._files = null;
   }
@@ -542,56 +521,56 @@ export class MgtFileList extends MgtTemplatedComponent {
     }
 
     if (!this.files) {
-      if (this.fileListQuery && this.fileListQuery !== null) {
+      if (this.fileListQuery) {
         pageIterator = await getFilesByListQueryIterator(graph, this.fileListQuery, this.pageSize);
         files = pageIterator.value;
-      } else if (this.fileQueries && this.fileQueries !== null) {
+      } else if (this.fileQueries) {
         files = await getFilesByQueries(graph, this.fileQueries);
       } else if (getFromMyDrive) {
-        if (this.itemId && this.itemId !== null) {
+        if (this.itemId) {
           pageIterator = await getFilesByIdIterator(graph, this.itemId, this.pageSize);
           files = pageIterator.value;
-        } else if (this.itemPath && this.itemPath !== null) {
+        } else if (this.itemPath) {
           pageIterator = await getFilesByPathIterator(graph, this.itemPath, this.pageSize);
           files = pageIterator.value;
-        } else if (this.insightType && this.insightType !== null) {
+        } else if (this.insightType) {
           files = await getMyInsightsFiles(graph, this.insightType);
         } else {
           pageIterator = await getFilesIterator(graph, this.pageSize);
           files = pageIterator.value;
         }
-      } else if (this.driveId && this.driveId !== null) {
-        if (this.itemId && this.itemId !== null) {
+      } else if (this.driveId) {
+        if (this.itemId) {
           pageIterator = await getDriveFilesByIdIterator(graph, this.driveId, this.itemId, this.pageSize);
           files = pageIterator.value;
-        } else if (this.itemPath && this.itemPath !== null) {
+        } else if (this.itemPath) {
           pageIterator = await getDriveFilesByPathIterator(graph, this.driveId, this.itemPath, this.pageSize);
           files = pageIterator.value;
         }
-      } else if (this.groupId && this.groupId !== null) {
-        if (this.itemId && this.itemId !== null) {
+      } else if (this.groupId) {
+        if (this.itemId) {
           pageIterator = await getGroupFilesByIdIterator(graph, this.groupId, this.itemId, this.pageSize);
           files = pageIterator.value;
-        } else if (this.itemPath && this.itemPath !== null) {
+        } else if (this.itemPath) {
           pageIterator = await getGroupFilesByPathIterator(graph, this.groupId, this.itemPath, this.pageSize);
           files = pageIterator.value;
         }
-      } else if (this.siteId && this.siteId !== null) {
-        if (this.itemId && this.itemId !== null) {
+      } else if (this.siteId) {
+        if (this.itemId) {
           pageIterator = await getSiteFilesByIdIterator(graph, this.siteId, this.itemId, this.pageSize);
           files = pageIterator.value;
-        } else if (this.itemPath && this.itemPath !== null) {
+        } else if (this.itemPath) {
           pageIterator = await getSiteFilesByPathIterator(graph, this.siteId, this.itemPath, this.pageSize);
           files = pageIterator.value;
         }
-      } else if (this.userId && this.userId !== null) {
-        if (this.itemId && this.itemId !== null) {
+      } else if (this.userId) {
+        if (this.itemId) {
           pageIterator = await getUserFilesByIdIterator(graph, this.userId, this.itemId, this.pageSize);
           files = pageIterator.value;
-        } else if (this.itemPath && this.itemPath !== null) {
+        } else if (this.itemPath) {
           pageIterator = await getUserFilesByPathIterator(graph, this.userId, this.itemPath, this.pageSize);
           files = pageIterator.value;
-        } else if (this.insightType && this.insightType !== null) {
+        } else if (this.insightType) {
           files = await getUserInsightsFiles(graph, this.userId, this.insightType);
         }
       }
@@ -625,11 +604,6 @@ export class MgtFileList extends MgtTemplatedComponent {
         this.files = files;
       }
     }
-
-    // Reset the selected item if it doesn't match any of the new results.
-    if (this._selectedItem && this.files.findIndex(v => v.id === this._selectedItem.id) === -1) {
-      this._selectedItem = null;
-    }
   }
 
   /**
@@ -639,13 +613,7 @@ export class MgtFileList extends MgtTemplatedComponent {
    * @memberof MgtFileList
    */
   protected handleItemSelect(item: DriveItem, event: PointerEvent): void {
-    if (this._selectedItem === item) {
-      this._selectedItem = null;
-    } else {
-      this._selectedItem = item;
-    }
-
-    this.fireCustomEvent('fileSelected', this._selectedItem);
+    this.fireCustomEvent('itemClick', item);
   }
 
   /**
@@ -680,6 +648,7 @@ export class MgtFileList extends MgtTemplatedComponent {
     if (this.pageIterator.hasNext) {
       await this.pageIterator.next();
       this.files = this.pageIterator.value;
+      this.requestUpdate();
     }
   }
 

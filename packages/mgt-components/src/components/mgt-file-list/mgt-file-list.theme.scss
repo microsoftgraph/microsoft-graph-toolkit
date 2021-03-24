@@ -13,6 +13,11 @@ $file-list: (
     light: rgba(0, 0, 0, 0.1),
     dark: #0078d4
   ),
+  list__item__background-color--active: (
+    _var: --file-item-background-color--active,
+    light: rgba(0, 0, 0, 0.05),
+    dark: #238ada
+  ),
   list__background-color: (
     _var: --file-list-background-color,
     light: $list__background-color--light,

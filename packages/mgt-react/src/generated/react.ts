@@ -29,9 +29,12 @@ export type FileListProps = {
 	itemPath?: string;
 	userId?: string;
 	insightType?: OfficeGraphInsightString;
-	showMax?: number;
+	fileExtensions?: string[];
+	pageSize?: number;
+	itemView?: ViewType;
 	templateContext?: TemplateContext;
 	mediaQuery?: ComponentMediaQuery;
+	itemClick?: (e: Event) => void;
 }
 
 export type FileProps = {
