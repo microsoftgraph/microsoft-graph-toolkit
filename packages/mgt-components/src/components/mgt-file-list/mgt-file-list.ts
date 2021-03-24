@@ -523,53 +523,53 @@ export class MgtFileList extends MgtTemplatedComponent {
     if (!this.files) {
       if (this.fileListQuery) {
         pageIterator = await getFilesByListQueryIterator(graph, this.fileListQuery, this.pageSize);
-        files = pageIterator.value;
+        files = pageIterator ? pageIterator.value : null;
       } else if (this.fileQueries) {
         files = await getFilesByQueries(graph, this.fileQueries);
       } else if (getFromMyDrive) {
         if (this.itemId) {
           pageIterator = await getFilesByIdIterator(graph, this.itemId, this.pageSize);
-          files = pageIterator.value;
+          files = pageIterator ? pageIterator.value : null;
         } else if (this.itemPath) {
           pageIterator = await getFilesByPathIterator(graph, this.itemPath, this.pageSize);
-          files = pageIterator.value;
+          files = pageIterator ? pageIterator.value : null;
         } else if (this.insightType) {
           files = await getMyInsightsFiles(graph, this.insightType);
         } else {
           pageIterator = await getFilesIterator(graph, this.pageSize);
-          files = pageIterator.value;
+          files = pageIterator ? pageIterator.value : null;
         }
       } else if (this.driveId) {
         if (this.itemId) {
           pageIterator = await getDriveFilesByIdIterator(graph, this.driveId, this.itemId, this.pageSize);
-          files = pageIterator.value;
+          files = pageIterator ? pageIterator.value : null;
         } else if (this.itemPath) {
           pageIterator = await getDriveFilesByPathIterator(graph, this.driveId, this.itemPath, this.pageSize);
-          files = pageIterator.value;
+          files = pageIterator ? pageIterator.value : null;
         }
       } else if (this.groupId) {
         if (this.itemId) {
           pageIterator = await getGroupFilesByIdIterator(graph, this.groupId, this.itemId, this.pageSize);
-          files = pageIterator.value;
+          files = pageIterator ? pageIterator.value : null;
         } else if (this.itemPath) {
           pageIterator = await getGroupFilesByPathIterator(graph, this.groupId, this.itemPath, this.pageSize);
-          files = pageIterator.value;
+          files = pageIterator ? pageIterator.value : null;
         }
       } else if (this.siteId) {
         if (this.itemId) {
           pageIterator = await getSiteFilesByIdIterator(graph, this.siteId, this.itemId, this.pageSize);
-          files = pageIterator.value;
+          files = pageIterator ? pageIterator.value : null;
         } else if (this.itemPath) {
           pageIterator = await getSiteFilesByPathIterator(graph, this.siteId, this.itemPath, this.pageSize);
-          files = pageIterator.value;
+          files = pageIterator ? pageIterator.value : null;
         }
       } else if (this.userId) {
         if (this.itemId) {
           pageIterator = await getUserFilesByIdIterator(graph, this.userId, this.itemId, this.pageSize);
-          files = pageIterator.value;
+          files = pageIterator ? pageIterator.value : null;
         } else if (this.itemPath) {
           pageIterator = await getUserFilesByPathIterator(graph, this.userId, this.itemPath, this.pageSize);
-          files = pageIterator.value;
+          files = pageIterator ? pageIterator.value : null;
         } else if (this.insightType) {
           files = await getUserInsightsFiles(graph, this.userId, this.insightType);
         }
