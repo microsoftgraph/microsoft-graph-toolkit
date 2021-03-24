@@ -45,8 +45,10 @@ import { styles } from './mgt-file-list-css';
  * @class MgtFileList
  * @extends {MgtTemplatedComponent}
  *
- * @cssprop
- *
+ * @fires fileSelected - Fired when user click a file. Returns the file (DriveItem) details.
+ * @cssprop --file-list-background-color - {Color} File list background color
+ * @cssprop --file-item-background-color--hover - {Color} File item background hover color
+ * @cssprop --file-item-border-bottom - {String} File item border bottom style
  */
 
 @customElement('mgt-file-list')

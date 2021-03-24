@@ -34,7 +34,7 @@ mgt-file-item .file-list-wrapper {
     list-style: none;
 
     .file-item {
-      border-bottom: var(--file-list-item-border-bottom, none);
+      border-bottom: var(--file-item-border-bottom, none);
       margin: 0 4px;
       border-radius: 2px;
       cursor: pointer;
