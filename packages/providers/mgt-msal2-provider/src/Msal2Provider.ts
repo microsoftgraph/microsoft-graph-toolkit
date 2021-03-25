@@ -184,6 +184,7 @@ export class Msal2Provider extends IProvider {
       prompt: 'select_account',
       domainHint: this._domainHint
     };
+    this._publicClientApplication.setActiveAccount(null);
     if (this._loginType == LoginType.Popup) {
       const response = await this._publicClientApplication.loginPopup(loginRequest);
       this.handleResponse(response);
