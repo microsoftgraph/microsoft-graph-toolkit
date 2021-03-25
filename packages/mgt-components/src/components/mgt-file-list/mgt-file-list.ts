@@ -347,10 +347,10 @@ export class MgtFileList extends MgtTemplatedComponent {
    * @memberof MgtFileList
    */
   @property({
-    attribute: 'hide-more-file-button',
+    attribute: 'hide-more-files-button',
     type: Boolean
   })
-  public hideMoreFileButton: boolean;
+  public hideMoreFilesButton: boolean;
 
   private _fileListQuery: string;
   private _fileQueries: string[];
@@ -447,7 +447,7 @@ export class MgtFileList extends MgtTemplatedComponent {
             `
           )}
         </ul>
-        ${!this.hideMoreFileButton && this.pageIterator && this.pageIterator.hasNext
+        ${!this.hideMoreFilesButton && this.pageIterator && this.pageIterator.hasNext
           ? this.renderMoreFileButton()
           : null}
       </div>
