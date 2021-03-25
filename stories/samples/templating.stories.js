@@ -6,9 +6,7 @@
  */
 
 import { html } from 'lit-element';
-import { withSignIn } from '../../.storybook/addons/signInAddon/signInAddon';
 import { withCodeEditor } from '../../.storybook/addons/codeEditorAddon/codeAddon';
-import '../../packages/mgt-components/dist/es6/components/mgt-get/mgt-get';
 
 export default {
   title: 'Samples | Templating',

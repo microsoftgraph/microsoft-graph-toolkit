@@ -6,7 +6,6 @@
  */
 
 import { html } from 'lit-element';
-import { withSignIn } from '../../.storybook/addons/signInAddon/signInAddon';
 import { withCodeEditor } from '../../.storybook/addons/codeEditorAddon/codeAddon';
 
 export default {
