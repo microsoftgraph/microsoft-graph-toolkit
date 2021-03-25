@@ -21,6 +21,16 @@ export class SimpleProvider extends IProvider {
   private _loginHandler: () => Promise<void>;
   private _logoutHandler: () => Promise<void>;
 
+  /**
+   * Name used for analytics
+   *
+   * @readonly
+   * @memberof IProvider
+   */
+  public get name() {
+    return 'MgtSimpleProvider';
+  }
+
   constructor(
     getAccessTokenHandler: (scopes: string[]) => Promise<string>,
     loginHandler?: () => Promise<void>,
