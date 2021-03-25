@@ -83,8 +83,8 @@ export const disableFileExpansion = () => html`
   <mgt-file-list disable-expansion></mgt-file-list>
 `;
 
-export const selectedFile = () => html`
-  <p>Selected File:</p>
+export const itemClickEvent = () => html`
+  <p>Clicked File:</p>
   <mgt-file></mgt-file>
   <mgt-file-list></mgt-file-list>
   <script>

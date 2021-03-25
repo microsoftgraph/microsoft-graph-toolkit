@@ -12,7 +12,7 @@ import {
   Providers,
   ProviderState
 } from '@microsoft/mgt-element';
-import { DriveItem } from '@microsoft/microsoft-graph-types';
+import { Drive, DriveItem } from '@microsoft/microsoft-graph-types';
 import { customElement, html, property, TemplateResult } from 'lit-element';
 import { repeat } from 'lit-html/directives/repeat';
 import {
@@ -130,16 +130,7 @@ export class MgtFileList extends MgtTemplatedComponent {
    * @memberof MgtFileList
    */
   @property({ type: Object })
-  public get files(): DriveItem[] {
-    return this._files;
-  }
-  public set files(value: DriveItem[]) {
-    if (value === this._files) {
-      return;
-    }
-
-    this._files = value;
-  }
+  public files: DriveItem[];
 
   /**
    * allows developer to provide site id for a file
@@ -356,14 +347,13 @@ export class MgtFileList extends MgtTemplatedComponent {
    * @memberof MgtFileList
    */
   @property({
-    attribute: 'disable-expansion',
+    attribute: 'hide-more-file-button',
     type: Boolean
   })
-  public disableExpansion: boolean;
+  public hideMoreFileButton: boolean;
 
   private _fileListQuery: string;
   private _fileQueries: string[];
-  private _files: DriveItem[];
   private _siteId: string;
   private _itemId: string;
   private _driveId: string;
@@ -398,7 +388,7 @@ export class MgtFileList extends MgtTemplatedComponent {
    */
   protected clearState(): void {
     super.clearState();
-    this._files = null;
+    this.files = null;
   }
 
   public render() {
@@ -457,7 +447,9 @@ export class MgtFileList extends MgtTemplatedComponent {
             `
           )}
         </ul>
-        ${!this.disableExpansion && this.pageIterator && this.pageIterator.hasNext ? this.renderMoreFileButton() : null}
+        ${!this.hideMoreFileButton && this.pageIterator && this.pageIterator.hasNext
+          ? this.renderMoreFileButton()
+          : null}
       </div>
     `;
   }
