@@ -13,8 +13,10 @@ import {
   ProviderState
 } from '@microsoft/mgt-element';
 import { Drive, DriveItem } from '@microsoft/microsoft-graph-types';
-import { customElement, html, property, TemplateResult } from 'lit-element';
+import { customElement, html, property, TemplateResult, internalProperty } from 'lit-element';
 import { repeat } from 'lit-html/directives/repeat';
+import { FluentProgressRing } from '@fluentui/web-components/dist/web-components.min';
+
 import {
   getDriveFilesByIdIterator,
   getDriveFilesByPathIterator,
@@ -32,9 +34,10 @@ import {
   getUserFilesByPathIterator,
   getUserInsightsFiles
 } from '../../graph/graph.files';
-import '../sub-components/mgt-spinner/mgt-spinner';
 import { OfficeGraphInsightString, ViewType } from '../../graph/types';
 import { styles } from './mgt-file-list-css';
+
+console.log('This is a temporary workaround for using @fluentui/web-components', FluentProgressRing.name);
 
 /**
  * The File List component displays a list of multiple folders and files by
@@ -364,6 +367,8 @@ export class MgtFileList extends MgtTemplatedComponent {
   private _userId: string;
   private pageIterator: GraphPageIterator<DriveItem>;
 
+  @internalProperty() private _isLoadingMore: boolean;
+
   constructor() {
     super();
 
@@ -447,9 +452,7 @@ export class MgtFileList extends MgtTemplatedComponent {
             `
           )}
         </ul>
-        ${!this.hideMoreFilesButton && this.pageIterator && this.pageIterator.hasNext
-          ? this.renderMoreFileButton()
-          : null}
+        ${this.renderMoreFileButton()}
       </div>
     `;
   }
@@ -479,11 +482,13 @@ export class MgtFileList extends MgtTemplatedComponent {
    * @memberof MgtFileList
    */
   protected renderMoreFileButton(): TemplateResult {
-    if (this.isLoadingState) {
+    if (this._isLoadingMore) {
       return html`
-        <mgt-spinner></mgt-spinner>
+        <fluent-design-system-provider use-defaults>
+          <fluent-progress-ring class="show-more-progress"></fluent-progress-ring>
+        </fluent-design-system-provider>
       `;
-    } else {
+    } else if (!this.hideMoreFilesButton && this.pageIterator && this.pageIterator.hasNext) {
       return html`<a id="show-more" class="show-more" @click=${() =>
         this.renderNextPage()}><span>Show more items<span></a>`;
     }
@@ -626,32 +631,33 @@ export class MgtFileList extends MgtTemplatedComponent {
    * @memberof MgtFileList
    */
   protected async renderNextPage() {
-    const root = this.renderRoot.querySelector('file-list-wrapper');
-    if (root && root.animate) {
-      // play back
-      root.animate(
-        [
-          {
-            height: 'auto',
-            transformOrigin: 'top left'
-          },
-          {
-            height: 'auto',
-            transformOrigin: 'top left'
-          }
-        ],
-        {
-          duration: 1000,
-          easing: 'ease-in-out',
-          fill: 'both'
-        }
-      );
-    }
-
     if (this.pageIterator.hasNext) {
+      this._isLoadingMore = true;
+      const root = this.renderRoot.querySelector('file-list-wrapper');
+      if (root && root.animate) {
+        // play back
+        root.animate(
+          [
+            {
+              height: 'auto',
+              transformOrigin: 'top left'
+            },
+            {
+              height: 'auto',
+              transformOrigin: 'top left'
+            }
+          ],
+          {
+            duration: 1000,
+            easing: 'ease-in-out',
+            fill: 'both'
+          }
+        );
+      }
+
       await this.pageIterator.next();
+      this._isLoadingMore = false;
       this.files = this.pageIterator.value;
-      this.requestUpdate();
     }
   }
 
