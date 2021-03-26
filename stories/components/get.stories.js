@@ -11,13 +11,7 @@ import { withCodeEditor } from '../../.storybook/addons/codeEditorAddon/codeAddo
 export default {
   title: 'Components | mgt-get',
   component: 'mgt-get',
-  decorators: [withCodeEditor],
-  parameters: {
-    options: { selectedPanel: 'mgt/sign-in' },
-    signInAddon: {
-      test: 'test'
-    }
-  }
+  decorators: [withCodeEditor]
 };
 
 export const GetEmail = () => html`

@@ -11,8 +11,7 @@ import { withCodeEditor } from '../../.storybook/addons/codeEditorAddon/codeAddo
 export default {
   title: 'Components | mgt-agenda',
   component: 'mgt-agenda',
-  decorators: [withCodeEditor],
-  parameters: { options: { selectedPanel: 'storybookjs/knobs/panel' } }
+  decorators: [withCodeEditor]
 };
 
 export const simple = () => html`

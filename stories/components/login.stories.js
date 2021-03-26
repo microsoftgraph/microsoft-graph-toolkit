@@ -11,13 +11,7 @@ import { withCodeEditor } from '../../.storybook/addons/codeEditorAddon/codeAddo
 export default {
   title: 'Components | mgt-login',
   component: 'mgt-login',
-  decorators: [withCodeEditor],
-  parameters: {
-    options: { selectedPanel: 'mgt/sign-in' },
-    signInAddon: {
-      test: 'test'
-    }
-  }
+  decorators: [withCodeEditor]
 };
 
 export const Login = () => html`

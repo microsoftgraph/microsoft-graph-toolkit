@@ -11,12 +11,7 @@ import { withCodeEditor } from '../../.storybook/addons/codeEditorAddon/codeAddo
 export default {
   title: 'Samples | Templating',
   component: 'mgt-get',
-  decorators: [withCodeEditor],
-  parameters: {
-    signInAddon: {
-      test: 'test'
-    }
-  }
+  decorators: [withCodeEditor]
 };
 
 export const PersonCardAdditionalDetails = () => html`

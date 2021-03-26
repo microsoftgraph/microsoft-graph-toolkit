@@ -11,15 +11,7 @@ import { withCodeEditor } from '../../.storybook/addons/codeEditorAddon/codeAddo
 export default {
   title: 'Samples | General',
   component: 'mgt-combo',
-  decorators: [withCodeEditor],
-  parameters: {
-    a11y: {
-      disabled: true
-    },
-    signInAddon: {
-      test: 'test'
-    }
-  }
+  decorators: [withCodeEditor]
 };
 
 export const LoginToShowAgenda = () => html`
