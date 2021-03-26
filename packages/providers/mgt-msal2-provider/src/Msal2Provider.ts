@@ -130,6 +130,7 @@ export class Msal2Provider extends IProvider {
       try {
         this._publicClientApplication.handleRedirectPromise().then((tokenResponse: AuthenticationResult | null) => {
           console.log('Redirect');
+          //Work on this later
           this.handleResponse(tokenResponse);
           if (tokenResponse === null) {
             this.trySilentSignIn();
@@ -184,7 +185,7 @@ export class Msal2Provider extends IProvider {
       prompt: 'select_account',
       domainHint: this._domainHint
     };
-    this._publicClientApplication.setActiveAccount(null);
+    this._publicClientApplication.setActiveAccount(null); //TODO: This is a temporary fix
     if (this._loginType == LoginType.Popup) {
       const response = await this._publicClientApplication.loginPopup(loginRequest);
       this.handleResponse(response);
