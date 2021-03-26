@@ -70,3 +70,7 @@ export const getFileByInsights = () => html`
     insight-id="AW1GxMvkOztMkJX-SCppUSRPF5EvyPDHRZVAqtQZXI4JoUXwI9_mfEWNlabr1f7aXRBWDMt2C2FDop4fP1vsUw9tRsTL5Ds7TJCV_kgqaVEkBA"
   ></mgt-file>
 `;
+
+export const darkTheme = () => html`
+  <mgt-file file-query="/me/drive/items/01BYE5RZZFWGWWVNHHKVHYXE3OUJHGWCT2" class="mgt-dark"></mgt-file>
+`;

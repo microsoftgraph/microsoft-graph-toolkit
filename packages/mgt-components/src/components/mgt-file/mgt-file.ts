@@ -28,6 +28,7 @@ import {
 import { getRelativeDisplayDate } from '../../utils/Utils';
 import { OfficeGraphInsightString, ViewType } from '../../graph/types';
 import { getFileTypeIconUriByExtension } from '../../styles/fluent-icons';
+import { getSvg, SvgIcon } from '../../utils/SvgHelper';
 
 /**
  * The File component is used to represent an individual file/folder from OneDrive or SharePoint by displaying information such as the file/folder name, an icon indicating the file type, and other properties such as the author, last modified date, or other details selected by the developer.
@@ -360,6 +361,7 @@ export class MgtFile extends MgtTemplatedComponent {
    * @memberof MgtFile
    */
   @property({
+    attribute: 'view',
     converter: value => {
       if (!value || value.length === 0) {
         return ViewType.threelines;
@@ -473,7 +475,13 @@ export class MgtFile extends MgtTemplatedComponent {
 
     return html`
       <div class="item__file-type-icon">
-        <img src=${fileIconSrc} />
+        ${fileIconSrc
+          ? html`
+              <img src=${fileIconSrc} />
+            `
+          : html`
+              ${getSvg(SvgIcon.File)}
+            `}
       </div>
     `;
   }
@@ -619,18 +627,27 @@ export class MgtFile extends MgtTemplatedComponent {
       const current = propertyList[i].trim();
       switch (current) {
         case 'size':
-          // convert size to mb
-          const sizeInMb = (driveItem.size / (1024 * 1024)).toFixed(2);
-          text = `Size: ${sizeInMb}MB`;
+          // convert size to kb, mb, gb
+          let size;
+          if (driveItem.size) {
+            size = this.formatBytes(driveItem.size);
+          } else {
+            size = '0';
+          }
+          text = `Size: ${size}`;
           break;
         case 'lastModifiedDateTime':
           // convert date time
           let relativeDateString;
+          let lastModifiedString;
           if (driveItem.lastModifiedDateTime) {
             const lastModifiedDateTime = new Date(driveItem.lastModifiedDateTime);
             relativeDateString = getRelativeDisplayDate(lastModifiedDateTime);
+            lastModifiedString = `Modified ${relativeDateString}`;
+          } else {
+            lastModifiedString = '';
           }
-          text = `Modified ${relativeDateString}`;
+          text = lastModifiedString;
           break;
         default:
           text = driveItem[current];
@@ -639,5 +656,15 @@ export class MgtFile extends MgtTemplatedComponent {
     }
 
     return text;
+  }
+
+  private formatBytes(bytes, decimals = 2) {
+    if (bytes === 0) return '0 Bytes';
+    const k = 1024;
+    const dm = decimals < 0 ? 0 : decimals;
+    const sizes = ['Bytes', 'KB', 'MB', 'GB', 'TB', 'PB', 'EB', 'ZB', 'YB'];
+    const i = Math.floor(Math.log(bytes) / Math.log(k));
+
+    return parseFloat((bytes / Math.pow(k, i)).toFixed(dm)) + ' ' + sizes[i];
   }
 }

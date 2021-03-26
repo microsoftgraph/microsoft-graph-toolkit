@@ -45,8 +45,13 @@ export function getFileTypeIconUri(type: string, size: IconSize, extension: 'png
 }
 
 export function getFileTypeIconUriByExtension(type: string, size: IconSize, extension: 'png' | 'svg') {
-  if (type === 'jpg' || type === 'png') {
+  const found = Object.keys(fileTypeMap).find(key => fileTypeMap[key] === type);
+  if (found) {
+    return `${baseUri}/${size.toString()}/${type}.${extension}`;
+  } else if (type === 'jpg' || type === 'png') {
     type = 'photo';
+    return `${baseUri}/${size.toString()}/${type}.${extension}`;
+  } else {
+    return null;
   }
-  return `${baseUri}/${size.toString()}/${type}.${extension}`;
 }
