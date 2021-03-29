@@ -42,6 +42,10 @@ export const PeopleQueries = () => html`
   </mgt-people>
 `;
 
+export const PeopleResource = () => html`
+  <mgt-people resource="/me/directReports"></mgt-people>
+`;
+
 export const darkTheme = () => html`
   <mgt-people class="mgt-dark"></mgt-people>
   <style>
