@@ -129,6 +129,16 @@ export class MsalProvider extends IProvider {
   }
 
   /**
+   * Name used for analytics
+   *
+   * @readonly
+   * @memberof IProvider
+   */
+  public get name() {
+    return 'MgtMsalProvider';
+  }
+
+  /**
    * client-id authentication
    *
    * @protected

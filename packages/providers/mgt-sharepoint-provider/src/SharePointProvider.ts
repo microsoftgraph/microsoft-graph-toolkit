@@ -63,7 +63,17 @@ export class SharePointProvider extends IProvider {
   }
 
   /**
-   * privilege level for authenication
+   * Name used for analytics
+   *
+   * @readonly
+   * @memberof IProvider
+   */
+  public get name() {
+    return 'MgtSharePointProvider';
+  }
+
+  /**
+   * privilege level for authentication
    *
    * @type {string[]}
    * @memberof SharePointProvider
