@@ -6,23 +6,12 @@
  */
 
 import { html } from 'lit-element';
-import { withA11y } from '@storybook/addon-a11y';
-import { withKnobs } from '@storybook/addon-knobs';
-import { withWebComponentsKnobs } from 'storybook-addon-web-components-knobs';
-import { withSignIn } from '../../.storybook/addons/signInAddon/signInAddon';
 import { withCodeEditor } from '../../.storybook/addons/codeEditorAddon/codeAddon';
-import '../../packages/mgt-components/dist/es6/components/mgt-get/mgt-get';
 
 export default {
   title: 'Components | mgt-get',
   component: 'mgt-get',
-  decorators: [withCodeEditor],
-  parameters: {
-    options: { selectedPanel: 'mgt/sign-in' },
-    signInAddon: {
-      test: 'test'
-    }
-  }
+  decorators: [withCodeEditor]
 };
 
 export const GetEmail = () => html`
