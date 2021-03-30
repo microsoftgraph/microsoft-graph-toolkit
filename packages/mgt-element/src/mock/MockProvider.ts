@@ -45,6 +45,7 @@ export class MockProvider extends IProvider {
     await new Promise(resolve => setTimeout(resolve, 3000));
     this.setState(ProviderState.SignedIn);
   }
+
   /**
    * sets Provider state to signed out
    *
@@ -56,6 +57,7 @@ export class MockProvider extends IProvider {
     await new Promise(resolve => setTimeout(resolve, 3000));
     this.setState(ProviderState.SignedOut);
   }
+
   /**
    * Promise returning token from graph.microsoft.com
    *
@@ -64,5 +66,15 @@ export class MockProvider extends IProvider {
    */
   public getAccessToken(): Promise<string> {
     return Promise.resolve('{token:https://graph.microsoft.com/}');
+  }
+
+  /**
+   * Name used for analytics
+   *
+   * @readonly
+   * @memberof IProvider
+   */
+  public get name() {
+    return 'MgtMockProvider';
   }
 }
