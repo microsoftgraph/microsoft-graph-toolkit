@@ -8,4 +8,5 @@
 export type MgtTemplateProps = {
   template?: string;
   dataContext?: any;
+  templateRendered?: any;
 };
