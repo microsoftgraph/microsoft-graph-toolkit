@@ -6,16 +6,12 @@
  */
 
 import { html } from 'lit-element';
-import { withA11y } from '@storybook/addon-a11y';
-import { withSignIn } from '../../.storybook/addons/signInAddon/signInAddon';
 import { withCodeEditor } from '../../.storybook/addons/codeEditorAddon/codeAddon';
-import '../../packages/mgt-components/dist/es6/components/mgt-teams-channel-picker/mgt-teams-channel-picker';
 
 export default {
   title: 'Components | mgt-teams-channel-picker',
   component: 'mgt-teams-channel-picker',
-  decorators: [withCodeEditor],
-  parameters: { options: { selectedPanel: 'storybookjs/knobs/panel' } }
+  decorators: [withCodeEditor]
 };
 
 export const teamsChannelPicker = () => html`
