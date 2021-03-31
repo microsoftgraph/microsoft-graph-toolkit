@@ -175,17 +175,14 @@ export const openFolderBreadcrumbs = () => html`
   <mgt-file-list></mgt-file-list>
 
   <script type="module">
-    let listId;
-    let homeListId;
     const fileList = document.querySelector('mgt-file-list');
     const nav = document.getElementById('nav');
     const home = document.getElementById('home');
 
+    let homeListId;
     if (fileList.itemId) {
-      listId = fileList.itemId;
       homeListId = fileList.itemId;
     } else {
-      listId = null;
       homeListId = null;
     }
 
@@ -198,25 +195,21 @@ export const openFolderBreadcrumbs = () => html`
     // handle create and remove menu items
     fileList.addEventListener('itemClick', e => {
       if (e.detail && e.detail.folder) {
-        const newListId = e.detail.id;
+        const id = e.detail.id;
         const name = e.detail.name;
 
         // render new file list
-        fileList.itemId = newListId;
-
-        // keep track of the old list id val in oldListId
-        const oldListId = listId;
-        listId = newListId;
+        fileList.itemId = id;
 
         // create breadcrumb menu item
         const li = document.createElement('li');
         const a = document.createElement('a');
-        li.setAttribute('id', e.detail.id);
+        li.setAttribute('id', id);
         a.appendChild(document.createTextNode(name));
         li.appendChild(a);
         nav.appendChild(li);
 
-        // remove breadcrumb menu items and render file list based on folder clicked
+        // remove breadcrumb menu items and render file list based on clicked item
         a.addEventListener('click', e => {
           const nodes = Array.from(nav.children);
           const index = nodes.indexOf(li);
