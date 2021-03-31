@@ -132,3 +132,107 @@ export const customCssProperties = () => html`
 export const darkTheme = () => html`
   <mgt-file-list class="mgt-dark"></mgt-file-list>
 `;
+
+export const openFolderBreadcrumbs = () => html`
+  <style>
+    body {
+      font-family: 'Segoe UI', 'Segoe UI Web (West European)', 'Segoe UI', -apple-system, BlinkMacSystemFont, Roboto,
+        'Helvetica Neue', sans-serif;
+    }
+
+    ul.breadcrumb {
+      margin: 0;
+      padding: 10px 16px;
+      list-style: none;
+      background-color: #eee;
+      font-size: 12px;
+    }
+
+    ul.breadcrumb li {
+      display: inline;
+    }
+
+    ul.breadcrumb li + li:before {
+      padding: 8px;
+      color: black;
+      content: '\/';
+    }
+
+    ul.breadcrumb li a {
+      color: #0275d8;
+      text-decoration: none;
+    }
+
+    ul.breadcrumb li a:hover {
+      color: #01447e;
+      text-decoration: underline;
+    }
+  </style>
+
+  <ul class="breadcrumb" id="nav">
+    <li><a id="home">Files</a></li>
+  </ul>
+  <mgt-file-list></mgt-file-list>
+
+  <script type="module">
+    let listId;
+    let homeListId;
+    const fileList = document.querySelector('mgt-file-list');
+    const nav = document.getElementById('nav');
+    const home = document.getElementById('home');
+
+    if (fileList.itemId) {
+      listId = fileList.itemId;
+      homeListId = fileList.itemId;
+    } else {
+      listId = null;
+      homeListId = null;
+    }
+
+    // handle default file list menu item
+    home.addEventListener('click', e => {
+      fileList.itemId = homeListId;
+      removeListItems(1);
+    });
+
+    // handle create and remove menu items
+    fileList.addEventListener('itemClick', e => {
+      if (e.detail && e.detail.folder) {
+        const newListId = e.detail.id;
+        const name = e.detail.name;
+
+        // render new file list
+        fileList.itemId = newListId;
+
+        // keep track of the old list id val in oldListId
+        const oldListId = listId;
+        listId = newListId;
+
+        // create breadcrumb menu item
+        const li = document.createElement('li');
+        const a = document.createElement('a');
+        li.setAttribute('id', e.detail.id);
+        a.appendChild(document.createTextNode(name));
+        li.appendChild(a);
+        nav.appendChild(li);
+
+        // remove breadcrumb menu items and render file list based on folder clicked
+        a.addEventListener('click', e => {
+          const nodes = Array.from(nav.children);
+          const index = nodes.indexOf(li);
+          if (e.target) {
+            removeListItems(index + 1);
+            fileList.itemId = li.id;
+          }
+        });
+      }
+    });
+
+    // remove li of ul where index is larger than n
+    function removeListItems(n) {
+      while (nav.getElementsByTagName('li').length > n) {
+        nav.removeChild(nav.lastChild);
+      }
+    }
+  </script>
+`;
