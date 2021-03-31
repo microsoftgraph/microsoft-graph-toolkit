@@ -5,80 +5,82 @@
  * -------------------------------------------------------------------------------------------
  */
 
-import React, { useState } from 'react';
 import { addons, types } from '@storybook/addons';
 import { STORIES_CONFIGURED, STORY_MISSING } from '@storybook/core-events';
-import { AddonPanel } from '@storybook/components';
-import { useParameter, useChannel } from '@storybook/api';
-import { Providers, LoginType, MsalProvider } from '../packages/mgt/dist/es6';
-import { CLIENTID, GETPROVIDER_EVENT, SETPROVIDER_EVENT } from './env';
+// import React, { useState } from 'react';
+// import { AddonPanel } from '@storybook/components';
+// import { useParameter, useChannel } from '@storybook/api';
+// import { Providers, LoginType, MsalProvider } from '../packages/mgt/dist/es6';
+// import { CLIENTID, GETPROVIDER_EVENT, SETPROVIDER_EVENT } from './env';
 
-const PARAM_KEY = 'signInAddon';
-const _allow_signin = false;
+// const PARAM_KEY = 'signInAddon';
+// const _allow_signin = false;
 
-const msalProvider = new MsalProvider({
-  clientId: CLIENTID,
-  loginType: LoginType.Popup
-});
+// const msalProvider = new MsalProvider({
+//   clientId: CLIENTID,
+//   loginType: LoginType.Popup
+// });
 
-Providers.globalProvider = msalProvider;
+// Providers.globalProvider = msalProvider;
 
-const SignInPanel = () => {
-  const value = useParameter(PARAM_KEY, null);
+// const SignInPanel = () => {
+//   const value = useParameter(PARAM_KEY, null);
 
-  const [state, setState] = useState(Providers.globalProvider.state);
+//   const [state, setState] = useState(Providers.globalProvider.state);
 
-  const emit = useChannel({
-    STORY_RENDERED: id => {
-      console.log('storyRendered', id);
-    },
-    [GETPROVIDER_EVENT]: params => {
-      emitProvider(state);
-    }
-  });
+//   const emit = useChannel({
+//     STORY_RENDERED: id => {
+//       console.log('storyRendered', id);
+//     },
+//     [GETPROVIDER_EVENT]: params => {
+//       emitProvider(state);
+//     }
+//   });
 
-  const emitProvider = loginState => {
-    emit(SETPROVIDER_EVENT, { state: loginState });
-  };
+//   const emitProvider = loginState => {
+//     emit(SETPROVIDER_EVENT, { state: loginState });
+//   };
 
-  Providers.onProviderUpdated(() => {
-    setState(Providers.globalProvider.state);
-    emitProvider(Providers.globalProvider.state);
-  });
+//   Providers.onProviderUpdated(() => {
+//     setState(Providers.globalProvider.state);
+//     emitProvider(Providers.globalProvider.state);
+//   });
 
-  emitProvider(state);
+//   emitProvider(state);
 
-  return (
-    <div>
-      {_allow_signin ? (
-        <mgt-login />
-      ) : (
-          'All components are using mock data - sign in function will be available in a future release'
-        )}
-    </div>
-  );
-};
+//   return (
+//     <div>
+//       {_allow_signin ? (
+//         <mgt-login />
+//       ) : (
+//           'All components are using mock data - sign in function will be available in a future release'
+//         )}
+//     </div>
+//   );
+// };
 
 addons.register('microsoft/graph-toolkit', storybookAPI => {
+
   storybookAPI.on(STORIES_CONFIGURED, (kind, story) => {
     if (storybookAPI.getUrlState().path === '/story/*') {
       storybookAPI.selectStory('mgt-login', 'login');
     }
   });
+
   storybookAPI.on(STORY_MISSING, (kind, story) => {
     storybookAPI.selectStory('mgt-login', 'login');
   });
 
-  const render = ({ active, key }) => (
-    <AddonPanel active={active} key={key}>
-      <SignInPanel />
-    </AddonPanel>
-  );
+  // const render = ({ active, key }) => (
+  //   <AddonPanel active={active} key={key}>
+  //     <SignInPanel />
+  //   </AddonPanel>
+  // );
 
-  addons.add('mgt/sign-in', {
-    type: types.PANEL,
-    title: 'Sign In',
-    render,
-    paramKey: PARAM_KEY
-  });
+  // addons.add('mgt/sign-in', {
+  //   type: types.PANEL,
+  //   title: 'Sign In',
+  //   render,
+  //   paramKey: PARAM_KEY
+  // });
 });

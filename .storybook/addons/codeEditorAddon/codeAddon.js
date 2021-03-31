@@ -7,10 +7,7 @@ const mgtScriptName = './mgt.storybook.js';
 const setupEditorResize = (first, separator, last, dragComplete) => {
   var md; // remember mouse down info
 
-  separator.onmousedown = onMouseDown;
-
-  function onMouseDown(e) {
-    // console.log('mouse down: ' + e.clientX);
+  separator.addEventListener('mousedown', (e) => {
     md = {
       e,
       offsetLeft: separator.offsetLeft,
@@ -20,18 +17,27 @@ const setupEditorResize = (first, separator, last, dragComplete) => {
       firstHeight: first.offsetHeight,
       lastHeight: last.offsetHeight
     };
-    document.onmousemove = onMouseMove;
-    document.onmouseup = () => {
-      if (typeof dragComplete === 'function') {
-        dragComplete();
-      }
-      // console.log('mouse up');
-      document.onmousemove = document.onmouseup = null;
-    };
-  }
 
-  function onMouseMove(e) {
-    // console.log('mouse move: ' + e.clientX);
+    first.style.pointerEvents = 'none';
+    last.style.pointerEvents = 'none';
+
+    document.addEventListener('mousemove', onMouseMove);
+    document.addEventListener('mouseup', onMouseUp);
+  });
+
+  const onMouseUp = () => {
+    if (typeof dragComplete === 'function') {
+      dragComplete();
+    }
+
+    first.style.pointerEvents = '';
+    last.style.pointerEvents = '';
+
+    document.removeEventListener('mousemove', onMouseMove);
+    document.removeEventListener('mouseup', onMouseUp);
+  };
+
+  const onMouseMove = (e) => {
     var delta = { x: e.clientX - md.e.x, y: e.clientY - md.e.y };
 
     if (window.innerWidth > 800) {
