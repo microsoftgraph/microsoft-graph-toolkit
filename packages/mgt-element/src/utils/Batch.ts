@@ -187,6 +187,8 @@ export class Batch implements IBatch {
         continue;
       } else if (r.headers['Content-Type'].includes('image/jpeg')) {
         response.content = 'data:image/jpeg;base64,' + r.body;
+      } else if (r.headers['Content-Type'].includes('image/pjpeg')) {
+        response.content = 'data:image/pjpeg;base64,' + r.body;
       } else {
         response.content = r.body;
       }
