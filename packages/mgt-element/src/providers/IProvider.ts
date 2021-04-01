@@ -41,7 +41,6 @@ export abstract class IProvider implements AuthenticationProvider {
   public get isMultiAccountDisabled(): boolean {
     return this.multiAccountDisabled;
   }
-  // private _clearCacheDispatcher = new EventDispatcher<ClearCache>();
   /**
    * returns state of Provider
    *
@@ -106,7 +105,7 @@ export abstract class IProvider implements AuthenticationProvider {
   public logout?(): Promise<void>;
 
   /**
-   * Only in Msal2Provider, this can be called to return all signed in accounts.
+   * Returns all signed in accounts.
    *
    * @return {*}  {any[]}
    * @memberof IProvider
@@ -114,27 +113,38 @@ export abstract class IProvider implements AuthenticationProvider {
   public getAllAccounts?(): any[];
 
   /**
-   * Only in Msal2Provider, this can be called to switched between two signed in accounts
+   * Switch between two signed in accounts
    *
    * @param {*} user
    * @memberof IProvider
    */
   public switchAccount?(user: any): void;
 
+  /**
+   * Event handler when Active account changes
+   *
+   * @param {EventHandler<ActiveAccountChanged>} eventHandler
+   * @memberof IProvider
+   */
   public onActiveAccountChanged(eventHandler: EventHandler<ActiveAccountChanged>) {
     this._activeAccountChangedDispatcher.add(eventHandler);
   }
 
+  /**
+   * Removes event handler for when Active account changes
+   *
+   * @param {EventHandler<ActiveAccountChanged>} eventHandler
+   * @memberof IProvider
+   */
   public removeActiveAccountChangedHandler(eventHandler: EventHandler<ActiveAccountChanged>) {
     this._activeAccountChangedDispatcher.remove(eventHandler);
   }
 
-  // public onCacheClear(eventHandler: EventHandler<ClearCache>) {
-  //   this._clearCacheDispatcher.add(eventHandler);
-  // }
-  // public clearCacheOnAccountSwitch() {
-  //   this._clearCacheDispatcher.fire({});
-  // }
+  /**
+   * Fires event when active account changes
+   *
+   * @memberof IProvider
+   */
   public fireActiveAccountChanged() {
     this._activeAccountChangedDispatcher.fire({});
   }
@@ -160,7 +170,6 @@ export abstract class IProvider implements AuthenticationProvider {
   public abstract getAccessToken(options?: AuthenticationProviderOptions): Promise<string>;
 }
 
-// export interface ClearCache {} //This is temporary
 /**
  * ActiveAccountChanged Event
  *
