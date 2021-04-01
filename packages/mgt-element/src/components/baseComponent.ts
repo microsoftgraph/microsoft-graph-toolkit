@@ -209,7 +209,7 @@ export abstract class MgtBaseComponent extends LitElement {
   }
 
   protected providerUpdatedHandler() {
-    if (Providers.globalProvider && Providers.globalProvider.switchAccount) {
+    if (Providers.globalProvider && !Providers.globalProvider.isMultiAccountDisabled) {
       const provider = Providers.globalProvider;
       provider.onActiveAccountChanged(() => {
         this.requestStateUpdate();
