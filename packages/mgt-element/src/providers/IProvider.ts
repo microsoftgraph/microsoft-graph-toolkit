@@ -26,9 +26,22 @@ export abstract class IProvider implements AuthenticationProvider {
    * @memberof IProvider
    */
   public graph: IGraph;
+  /**
+   * Enable/Disable multi account functionality
+   *
+   * @protected
+   * @type {boolean}
+   * @memberof IProvider
+   */
+  protected multiAccountDisabled: boolean = true;
   private _state: ProviderState;
   private _loginChangedDispatcher = new EventDispatcher<LoginChangedEvent>();
   private _activeAccountChangedDispatcher = new EventDispatcher<ActiveAccountChanged>();
+
+  public get isMultiAccountDisabled(): boolean {
+    return this.multiAccountDisabled;
+  }
+  // private _clearCacheDispatcher = new EventDispatcher<ClearCache>();
   /**
    * returns state of Provider
    *
@@ -116,6 +129,12 @@ export abstract class IProvider implements AuthenticationProvider {
     this._activeAccountChangedDispatcher.remove(eventHandler);
   }
 
+  // public onCacheClear(eventHandler: EventHandler<ClearCache>) {
+  //   this._clearCacheDispatcher.add(eventHandler);
+  // }
+  // public clearCacheOnAccountSwitch() {
+  //   this._clearCacheDispatcher.fire({});
+  // }
   public fireActiveAccountChanged() {
     this._activeAccountChangedDispatcher.fire({});
   }
@@ -141,6 +160,7 @@ export abstract class IProvider implements AuthenticationProvider {
   public abstract getAccessToken(options?: AuthenticationProviderOptions): Promise<string>;
 }
 
+// export interface ClearCache {} //This is temporary
 /**
  * ActiveAccountChanged Event
  *

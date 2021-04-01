@@ -22,6 +22,7 @@ export interface Msal2Config {
   domain_hint?: string;
   redirectUri?: string;
   authority?: string;
+  multiAccountDisabled?: boolean;
   options?: Configuration;
 }
 export class Msal2Provider extends IProvider {
@@ -80,21 +81,39 @@ export class Msal2Provider extends IProvider {
     return this._publicClientApplication;
   }
 
+  /**
+   * List of scopes
+   *
+   * @type {string[]}
+   * @memberof Msal2Provider
+   */
   public scopes: string[];
-  account: any;
 
-  // session storage
+  /**
+   * Account object
+   *
+   * @private
+   * @type {*}
+   * @memberof Msal2Provider
+   */
+  private _account: any;
 
-  //TODO: Bugs - switching accounts doesn't work with caching
-  //TODO: Adding new account does not work with loginpopup
   private sessionStorageRequestedScopesKey = 'mgt-requested-scopes';
   private sessionStorageDeniedScopesKey = 'mgt-denied-scopes';
   private homeAccountKey = '275f3731-e4a4-468a-bf9c-baca24b31e26';
+
   public constructor(config: Msal2Config) {
     super();
     this.initProvider(config);
   }
 
+  /**
+   * Initialize provider with configuration details
+   *
+   * @private
+   * @param {Msal2Config} config
+   * @memberof Msal2Provider
+   */
   private async initProvider(config: Msal2Config) {
     if (config.clientId) {
       const msalConfig: Configuration = config.options || { auth: { clientId: config.clientId } };
@@ -127,17 +146,17 @@ export class Msal2Provider extends IProvider {
       this._domainHint = typeof config.domain_hint !== 'undefined' ? config.domain_hint : null;
       this.scopes = typeof config.scopes !== 'undefined' ? config.scopes : ['user.read'];
       this._publicClientApplication = new PublicClientApplication(this.ms_config);
+      this.multiAccountDisabled =
+        typeof config.multiAccountDisabled !== 'undefined' ? config.multiAccountDisabled : true; //Set this to true for now. Once multi account is enabled, default will be false
       try {
         this._publicClientApplication.handleRedirectPromise().then((tokenResponse: AuthenticationResult | null) => {
-          console.log('Redirect');
-          //Work on this later
           this.handleResponse(tokenResponse);
           if (tokenResponse === null) {
             this.trySilentSignIn();
           }
         });
       } catch (e) {
-        console.log('redirect', e);
+        throw e;
       }
     } else {
       throw new Error('clientId must be provided');
@@ -146,38 +165,45 @@ export class Msal2Provider extends IProvider {
     this.graph = createFromProvider(this);
   }
 
+  /**
+   * Attempts to sign in user silently
+   *
+   * @memberof Msal2Provider
+   */
   public async trySilentSignIn() {
     let silentRequest: any = {
       scopes: this.scopes,
       domainHint: this._domainHint
     };
     if (this._sid || this._loginHint) {
-      console.log('trying silent with sid & loginhint', this._sid, this._loginHint);
       silentRequest.sid = this._sid;
       silentRequest.loginHint = this._loginHint;
     } else {
-      this.account = this.getAccount();
-      if (this.account) {
-        console.log('trying silent with account', this.account);
-        (silentRequest.sid = this.account.idTokenClaims.sid || null),
-          (silentRequest.loginHint = this.account.idTokenClaims.preferred_username);
+      this._account = this.getAccount();
+      if (this._account) {
+        silentRequest.sid = this._account.idTokenClaims.sid || null;
+        silentRequest.loginHint = this._account.idTokenClaims.preferred_username;
       }
     }
-    if (silentRequest.sid) {
+    if (silentRequest.sid || silentRequest.loginHint) {
       try {
         this.setState(ProviderState.Loading);
         const response = await this._publicClientApplication.ssoSilent(silentRequest);
         if (response) {
-          console.log('SILENT SUCCESSFUL!!!');
           this.handleResponse(response);
         }
       } catch (e) {
-        console.log('Silent', e);
         this.setState(ProviderState.SignedOut);
       }
     }
   }
 
+  /**
+   * Log in the user
+   *
+   * @return {*}  {Promise<void>}
+   * @memberof Msal2Provider
+   */
   public async login(): Promise<void> {
     const loginRequest: PopupRequest = {
       scopes: this.scopes,
@@ -185,17 +211,21 @@ export class Msal2Provider extends IProvider {
       prompt: 'select_account',
       domainHint: this._domainHint
     };
-    this._publicClientApplication.setActiveAccount(null); //TODO: This is a temporary fix
     if (this._loginType == LoginType.Popup) {
       const response = await this._publicClientApplication.loginPopup(loginRequest);
       this.handleResponse(response);
-      this.fireActiveAccountChanged();
     } else {
       const loginRedirectRequest: RedirectRequest = { ...loginRequest };
       this._publicClientApplication.loginRedirect(loginRedirectRequest);
     }
   }
 
+  /**
+   * Get all signed in accounts
+   *
+   * @return {*}
+   * @memberof Msal2Provider
+   */
   public getAllAccounts() {
     let usernames = [];
     this._publicClientApplication.getAllAccounts().forEach((account: AccountInfo) => {
@@ -204,31 +234,42 @@ export class Msal2Provider extends IProvider {
     return usernames;
   }
 
+  /**
+   * Switching between accounts
+   *
+   * @param {*} user
+   * @memberof Msal2Provider
+   */
   public switchAccount(user: any) {
     this._publicClientApplication.setActiveAccount(this._publicClientApplication.getAccountByHomeId(user.id));
     this.setStoredAccount();
-    console.log('New getStoredAccount', this.getStoredAccount());
     this.fireActiveAccountChanged();
   }
 
+  /**
+   * Once a succesful login occurs, set the active account and store it
+   *
+   * @param {(AuthenticationResult | null)} response
+   * @memberof Msal2Provider
+   */
   handleResponse(response: AuthenticationResult | null) {
     if (response !== null) {
-      this.account = response.account;
-      this._publicClientApplication.setActiveAccount(this.account);
+      this._account = response.account;
+      this._publicClientApplication.setActiveAccount(this._account);
       this.setStoredAccount();
       this.setState(ProviderState.SignedIn);
-      console.log(
-        'All accounts',
-        this._publicClientApplication.getAllAccounts(),
-        'Active account',
-        this._publicClientApplication.getActiveAccount()
-      );
     } else {
       this.setState(ProviderState.SignedOut);
     }
     this.clearRequestedScopes();
   }
 
+  /**
+   * Store the currently signed in account in storage
+   *
+   * @private
+   * @memberof Msal2Provider
+   */
   private setStoredAccount() {
     this.clearStoredAccount();
     window[this.ms_config.cache.cacheLocation].setItem(
@@ -236,6 +277,14 @@ export class Msal2Provider extends IProvider {
       this._publicClientApplication.getActiveAccount().homeAccountId
     );
   }
+
+  /**
+   * Get the stored account from storage
+   *
+   * @private
+   * @return {*}
+   * @memberof Msal2Provider
+   */
   private getStoredAccount() {
     let homeId = null;
 
@@ -244,16 +293,36 @@ export class Msal2Provider extends IProvider {
     return this._publicClientApplication.getAccountByHomeId(homeId);
   }
 
+  /**
+   * Clears the stored account from storage
+   *
+   * @private
+   * @memberof Msal2Provider
+   */
   private clearStoredAccount() {
     window[this.ms_config.cache.cacheLocation].removeItem(this.homeAccountKey);
   }
 
+  /**
+   * Adds scopes that have already been requested to sessionstorage
+   *
+   * @protected
+   * @param {string[]} scopes
+   * @memberof Msal2Provider
+   */
   protected setRequestedScopes(scopes: string[]) {
     if (scopes) {
       sessionStorage.setItem(this.sessionStorageRequestedScopesKey, JSON.stringify(scopes));
     }
   }
 
+  /**
+   * Adds denied scopes to session storage
+   *
+   * @protected
+   * @param {string[]} scopes
+   * @memberof Msal2Provider
+   */
   protected addDeniedScopes(scopes: string[]) {
     if (scopes) {
       let deniedScopes: string[] = this.getDeniedScopes() || [];
@@ -272,11 +341,26 @@ export class Msal2Provider extends IProvider {
     }
   }
 
+  /**
+   * Gets denied scopes
+   *
+   * @protected
+   * @return {*}
+   * @memberof Msal2Provider
+   */
   protected getDeniedScopes() {
     const scopesStr = sessionStorage.getItem(this.sessionStorageDeniedScopesKey);
     return scopesStr ? JSON.parse(scopesStr) : null;
   }
 
+  /**
+   * Checks if scopes were denied previously
+   *
+   * @protected
+   * @param {string[]} scopes
+   * @return {*}
+   * @memberof Msal2Provider
+   */
   protected areScopesDenied(scopes: string[]) {
     if (scopes) {
       const deniedScopes = this.getDeniedScopes();
@@ -287,13 +371,25 @@ export class Msal2Provider extends IProvider {
     return false;
   }
 
+  /**
+   * Clears all requested scopes from session storage
+   *
+   * @protected
+   * @memberof Msal2Provider
+   */
   protected clearRequestedScopes() {
     sessionStorage.removeItem(this.sessionStorageRequestedScopesKey);
   }
 
+  /**
+   * Gets stored account if available, otherwise fetches the first account in the list of signed in accounts
+   *
+   * @private
+   * @return {*}  {(AccountInfo | null)}
+   * @memberof Msal2Provider
+   */
   private getAccount(): AccountInfo | null {
     const account = this.getStoredAccount();
-    console.log('Stored Account', this.getStoredAccount());
     if (account) {
       return account;
     } else if (this._publicClientApplication.getAllAccounts().length > 0) {
@@ -302,17 +398,32 @@ export class Msal2Provider extends IProvider {
     return null;
   }
 
+  /**
+   * Logs out user
+   *
+   * @memberof Msal2Provider
+   */
   public async logout() {
     const logOutAccount = this._publicClientApplication.getActiveAccount();
     const logOutRequest: EndSessionRequest = {
       account: logOutAccount
     };
     this.clearStoredAccount();
-    console.log(logOutRequest.account);
-    this._publicClientApplication.logout(logOutRequest);
+    if (this._loginType == LoginType.Redirect) {
+      this._publicClientApplication.logoutRedirect(logOutRequest);
+    } else {
+      this._publicClientApplication.logoutPopup({ ...logOutRequest });
+    }
     this.setState(ProviderState.SignedOut);
   }
 
+  /**
+   * Returns access token for scopes
+   *
+   * @param {AuthenticationProviderOptions} [options]
+   * @return {*}  {Promise<string>}
+   * @memberof Msal2Provider
+   */
   public async getAccessToken(options?: AuthenticationProviderOptions): Promise<string> {
     const scopes = options ? options.scopes || this.scopes : this.scopes;
     const accessTokenRequest = {
@@ -344,7 +455,6 @@ export class Msal2Provider extends IProvider {
       } else {
         // if we don't know what the error is, just ask the user to sign in again
         this.setState(ProviderState.SignedOut);
-        console.error(e);
       }
     }
 

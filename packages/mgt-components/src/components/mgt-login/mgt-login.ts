@@ -258,7 +258,7 @@ export class MgtLogin extends MgtTemplatedComponent {
   }
 
   renderAccounts() {
-    if (Providers.globalProvider.state === ProviderState.SignedIn && Providers.globalProvider.getAllAccounts) {
+    if (Providers.globalProvider.state === ProviderState.SignedIn && !Providers.globalProvider.isMultiAccountDisabled) {
       const list = Providers.globalProvider.getAllAccounts();
 
       return html`

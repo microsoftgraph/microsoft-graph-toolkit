@@ -69,6 +69,17 @@ export class MgtMsal2Provider extends MgtBaseProvider {
   public redirectUri;
 
   /**
+   * Disables multiple account capability
+   *
+   * @memberof MgtMsal2Provider
+   */
+  @property({
+    attribute: 'multi-account-disabled',
+    type: Boolean
+  })
+  public multiAccountDisabled;
+
+  /**
    * Gets whether this provider can be used in this environment
    *
    * @readonly
@@ -85,7 +96,6 @@ export class MgtMsal2Provider extends MgtBaseProvider {
    * @memberof MgtMsalProvider
    */
   protected initializeProvider() {
-    console.log('Inside the provider');
     if (this.clientId) {
       const config: Msal2Config = {
         clientId: this.clientId
@@ -98,10 +108,9 @@ export class MgtMsal2Provider extends MgtBaseProvider {
         config.loginType = loginTypeEnum;
       }
 
-      //TODO: Add authority
-      // if (this.authority) {
-      //   config.authority = this.authority;
-      // }
+      if (this.authority) {
+        config.authority = this.authority;
+      }
 
       if (this.scopes) {
         const scope = this.scopes.split(',');
@@ -112,6 +121,10 @@ export class MgtMsal2Provider extends MgtBaseProvider {
 
       if (this.redirectUri) {
         config.redirectUri = this.redirectUri;
+      }
+
+      if (this.multiAccountDisabled) {
+        config.multiAccountDisabled = true;
       }
 
       this.provider = new Msal2Provider(config);
