@@ -52,6 +52,16 @@ export abstract class IProvider implements AuthenticationProvider {
     return this._state;
   }
 
+  /**
+   * Name used for analytics
+   *
+   * @readonly
+   * @memberof IProvider
+   */
+  public get name() {
+    return 'MgtIProvider';
+  }
+
   constructor() {
     this._state = ProviderState.Loading;
   }

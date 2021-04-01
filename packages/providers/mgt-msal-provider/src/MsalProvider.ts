@@ -37,6 +37,13 @@ interface MsalConfigBase {
    * @memberof MsalConfigBase
    */
   loginHint?: string;
+  /**
+   * Domain hint value
+   *
+   * @type {string}
+   * @memberof MsalConfigBase
+   */
+  domainHint?: string;
 }
 
 /**
@@ -122,6 +129,16 @@ export class MsalProvider extends IProvider {
   }
 
   /**
+   * Name used for analytics
+   *
+   * @readonly
+   * @memberof IProvider
+   */
+  public get name() {
+    return 'MgtMsalProvider';
+  }
+
+  /**
    * client-id authentication
    *
    * @protected
@@ -133,6 +150,7 @@ export class MsalProvider extends IProvider {
   private _userAgentApplication: UserAgentApplication;
   private _loginType: LoginType;
   private _loginHint: string;
+  private _domainHint: string;
 
   // session storage
   private sessionStorageRequestedScopesKey = 'mgt-requested-scopes';
@@ -172,11 +190,13 @@ export class MsalProvider extends IProvider {
    * @memberof MsalProvider
    */
   public async login(authenticationParameters?: AuthenticationParameters): Promise<void> {
-    const loginRequest: AuthenticationParameters = authenticationParameters || {
+    let loginRequest: AuthenticationParameters = authenticationParameters || {
       loginHint: this._loginHint,
       prompt: 'select_account',
       scopes: this.scopes
     };
+
+    this._domainHint ? (loginRequest.extraQueryParameters = { domain_hint: this._domainHint }) : '';
 
     if (this._loginType === LoginType.Popup) {
       const response = await this._userAgentApplication.loginPopup(loginRequest);
@@ -210,6 +230,7 @@ export class MsalProvider extends IProvider {
       loginHint: this._loginHint,
       scopes
     };
+    this._domainHint ? (accessTokenRequest.extraQueryParameters = { domain_hint: this._domainHint }) : '';
     try {
       const response = await this._userAgentApplication.acquireTokenSilent(accessTokenRequest);
       return response.accessToken;
@@ -362,6 +383,7 @@ export class MsalProvider extends IProvider {
     this.scopes = typeof config.scopes !== 'undefined' ? config.scopes : ['user.read'];
     this._loginType = typeof config.loginType !== 'undefined' ? config.loginType : LoginType.Redirect;
     this._loginHint = config.loginHint;
+    this._domainHint = config.domainHint;
 
     let userAgentApplication: UserAgentApplication;
     let clientId: string;

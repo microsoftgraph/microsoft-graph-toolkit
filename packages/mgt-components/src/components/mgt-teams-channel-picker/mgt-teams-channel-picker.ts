@@ -600,10 +600,10 @@ export class MgtTeamsChannelPicker extends MgtTemplatedComponent {
       teams = await getAllMyTeams(graph);
       teams = teams.filter(t => !t.isArchived);
 
-      const batch = provider.graph.createBatch();
+      const batch = graph.createBatch();
 
       for (const team of teams) {
-        batch.get(team.id, `teams/${team.id}/channels`, ['group.read.all']);
+        batch.get(team.id, `teams/${team.id}/channels`, ['Channel.ReadBasic.All']);
       }
 
       const responses = await batch.executeAll();

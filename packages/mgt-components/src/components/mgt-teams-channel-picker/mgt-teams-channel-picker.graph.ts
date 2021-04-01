@@ -17,7 +17,7 @@ import { Team } from '@microsoft/microsoft-graph-types';
 export async function getAllMyTeams(graph: IGraph): Promise<Team[]> {
   const teams = await graph
     .api('/me/joinedTeams')
-    .middlewareOptions(prepScopes('User.Read.All'))
+    .middlewareOptions(prepScopes('Team.ReadBasic.All'))
     .select(['displayName', 'id', 'isArchived'])
     .get();
   return teams ? teams.value : null;

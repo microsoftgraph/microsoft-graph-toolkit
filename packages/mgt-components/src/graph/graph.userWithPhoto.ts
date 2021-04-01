@@ -26,14 +26,20 @@ import { schemas } from './cacheStores';
  * @returns {(Promise<IDynamicPerson>)}
  * @memberof Graph
  */
-export async function getUserWithPhoto(graph: IGraph, userId?: string): Promise<IDynamicPerson> {
+export async function getUserWithPhoto(
+  graph: IGraph,
+  userId?: string,
+  requestedProps?: string[]
+): Promise<IDynamicPerson> {
   let photo = null;
   let user: IDynamicPerson = null;
 
   let cachedPhoto: CachePhoto;
   let cachedUser: CacheUser;
 
-  const resource = userId ? `users/${userId}` : 'me';
+  let resource = userId ? `users/${userId}` : 'me';
+  resource += requestedProps ? `?$select=${requestedProps.toString()}` : '';
+
   const scopes = userId ? ['user.readbasic.all'] : ['user.read'];
 
   // attempt to get user and photo from cache if enabled
@@ -42,6 +48,13 @@ export async function getUserWithPhoto(graph: IGraph, userId?: string): Promise<
     cachedUser = await cache.getValue(userId || 'me');
     if (cachedUser && getUserInvalidationTime() > Date.now() - cachedUser.timeCached) {
       user = cachedUser.user ? JSON.parse(cachedUser.user) : null;
+      if (requestedProps) {
+        const uniqueProps = requestedProps.filter(prop => !Object.keys(user).includes(prop));
+        if (uniqueProps.length >= 1) {
+          user = null;
+          cachedUser = null;
+        }
+      }
     } else {
       cachedUser = null;
     }
@@ -71,7 +84,9 @@ export async function getUserWithPhoto(graph: IGraph, userId?: string): Promise<
     // batch calls
     const batch = graph.createBatch();
     if (userId) {
-      batch.get('user', `/users/${userId}`, ['user.readbasic.all']);
+      batch.get('user', `/users/${userId}${requestedProps ? '?$select=' + requestedProps.toString() : ''}`, [
+        'user.readbasic.all'
+      ]);
       batch.get('photo', `users/${userId}/photo/$value`, ['user.readbasic.all']);
     } else {
       batch.get('user', 'me', ['user.read']);

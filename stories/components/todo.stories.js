@@ -6,16 +6,12 @@
  */
 
 import { html } from 'lit-element';
-import { withA11y } from '@storybook/addon-a11y';
-import { withSignIn } from '../../.storybook/addons/signInAddon/signInAddon';
 import { withCodeEditor } from '../../.storybook/addons/codeEditorAddon/codeAddon';
-import '../../packages/mgt-components/dist/es6/components/mgt-todo/mgt-todo';
 
 export default {
   title: 'Components | mgt-todo',
   component: 'mgt-todo',
-  decorators: [withCodeEditor],
-  parameters: { options: { selectedPanel: 'storybookjs/knobs/panel' } }
+  decorators: [withCodeEditor]
 };
 
 export const tasks = () => html`
