@@ -168,6 +168,41 @@ export class MgtLogin extends MgtTemplatedComponent {
     `;
   }
 
+  renderAccounts() {
+    if (Providers.globalProvider.state === ProviderState.SignedIn && !Providers.globalProvider.isMultiAccountDisabled) {
+      const list = Providers.globalProvider.getAllAccounts();
+
+      return html`
+        ${list.map(account => {
+          if (account.id.indexOf(this.userDetails.id) < 0) {
+            return html`
+              <button
+                @click=${() => {
+                  this.switchAccount(account);
+                }}
+              >
+                user : ${account.username}</button
+              ><br />
+            `;
+          }
+        })}
+        <button
+          @click=${() => {
+            Providers.globalProvider.login();
+          }}
+        >
+          Add account
+        </button>
+      `;
+    }
+  }
+
+  async switchAccount(account: any) {
+    Providers.globalProvider.switchAccount(account);
+    this.userDetails = null;
+    this.loadState();
+  }
+
   /**
    * Load state into the component.
    *
@@ -248,6 +283,7 @@ export class MgtLogin extends MgtTemplatedComponent {
           <div>
             ${this.renderFlyoutPersonDetails(this.userDetails, this._image)}
           </div>
+          <div id="accounts">${this.renderAccounts()}</div>
           <div class="popup-commands">
             ${this.renderFlyoutCommands()}
           </div>

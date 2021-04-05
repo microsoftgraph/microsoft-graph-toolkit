@@ -147,7 +147,7 @@ export class Msal2Provider extends IProvider {
       this.scopes = typeof config.scopes !== 'undefined' ? config.scopes : ['user.read'];
       this._publicClientApplication = new PublicClientApplication(this.ms_config);
       this.multiAccountDisabled =
-        typeof config.multiAccountDisabled !== 'undefined' ? config.multiAccountDisabled : true; //Set this to true for now. Once multi account is enabled, default will be false
+        typeof config.multiAccountDisabled !== 'undefined' ? config.multiAccountDisabled : false; //Set this to true for now. Once multi account is enabled, default will be false
       try {
         this._publicClientApplication.handleRedirectPromise().then((tokenResponse: AuthenticationResult | null) => {
           this.handleResponse(tokenResponse);
