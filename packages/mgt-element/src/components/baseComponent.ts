@@ -221,9 +221,6 @@ export abstract class MgtBaseComponent extends LitElement {
    */
   protected async requestStateUpdate(force: boolean = false): Promise<unknown> {
     // the component is still bootstraping - wait until first updated
-    if (!this) {
-      debugger;
-    }
     if (!this._isFirstUpdated) {
       return;
     }
