@@ -113,6 +113,7 @@ export abstract class MgtBaseComponent extends LitElement {
     super();
     this.handleLocalizationChanged = this.handleLocalizationChanged.bind(this);
     this.handleDirectionChanged = this.handleDirectionChanged.bind(this);
+    this.handleProviderUpdates = this.handleProviderUpdates.bind(this);
     this.handleDirectionChanged();
     this.handleLocalizationChanged();
   }
@@ -137,6 +138,8 @@ export abstract class MgtBaseComponent extends LitElement {
     super.disconnectedCallback();
     LocalizationHelper.removeOnStringsUpdated(this.handleLocalizationChanged);
     LocalizationHelper.removeOnDirectionUpdated(this.handleDirectionChanged);
+    Providers.removeProviderUpdatedListener(this.handleProviderUpdates);
+    Providers.removeActiveAccountChangedListener(this.requestStateUpdate);
   }
 
   /**
@@ -151,7 +154,8 @@ export abstract class MgtBaseComponent extends LitElement {
   protected firstUpdated(changedProperties): void {
     super.firstUpdated(changedProperties);
     this._isFirstUpdated = true;
-    Providers.onProviderUpdated(() => this.providerUpdatedHandler());
+    Providers.onProviderUpdated(this.handleProviderUpdates);
+    Providers.onActiveAccountChanged(this.requestStateUpdate);
     this.requestStateUpdate();
   }
 
@@ -208,15 +212,6 @@ export abstract class MgtBaseComponent extends LitElement {
     this.dispatchEvent(event);
   }
 
-  protected providerUpdatedHandler() {
-    if (Providers.globalProvider && !Providers.globalProvider.isMultiAccountDisabled) {
-      const provider = Providers.globalProvider;
-      provider.onActiveAccountChanged(() => {
-        this.requestStateUpdate();
-      });
-    }
-    this.requestStateUpdate();
-  }
   /**
    * Request to reload the state.
    * Use reload instead of load to ensure loading events are fired.
@@ -287,6 +282,10 @@ export abstract class MgtBaseComponent extends LitElement {
 
     this._isLoadingState = value;
     this.requestUpdate('isLoadingState');
+  }
+
+  private handleProviderUpdates() {
+    this.requestStateUpdate();
   }
 
   private handleLocalizationChanged() {
