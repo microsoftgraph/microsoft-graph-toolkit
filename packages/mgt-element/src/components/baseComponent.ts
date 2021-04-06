@@ -139,7 +139,7 @@ export abstract class MgtBaseComponent extends LitElement {
     LocalizationHelper.removeOnStringsUpdated(this.handleLocalizationChanged);
     LocalizationHelper.removeOnDirectionUpdated(this.handleDirectionChanged);
     Providers.removeProviderUpdatedListener(this.handleProviderUpdates);
-    Providers.removeActiveAccountChangedListener(this.requestStateUpdate);
+    Providers.removeActiveAccountChangedListener(this.handleProviderUpdates);
   }
 
   /**
