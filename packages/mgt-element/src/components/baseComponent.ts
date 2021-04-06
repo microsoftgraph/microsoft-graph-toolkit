@@ -139,7 +139,7 @@ export abstract class MgtBaseComponent extends LitElement {
     LocalizationHelper.removeOnStringsUpdated(this.handleLocalizationChanged);
     LocalizationHelper.removeOnDirectionUpdated(this.handleDirectionChanged);
     Providers.removeProviderUpdatedListener(this.handleProviderUpdates);
-    Providers.removeActiveAccountChangedListener(this.requestStateUpdate);
+    Providers.removeActiveAccountChangedListener(this.handleProviderUpdates);
   }
 
   /**
@@ -155,7 +155,7 @@ export abstract class MgtBaseComponent extends LitElement {
     super.firstUpdated(changedProperties);
     this._isFirstUpdated = true;
     Providers.onProviderUpdated(this.handleProviderUpdates);
-    Providers.onActiveAccountChanged(this.requestStateUpdate);
+    Providers.onActiveAccountChanged(this.handleProviderUpdates);
     this.requestStateUpdate();
   }
 
