@@ -77,7 +77,7 @@ export class MgtMsal2Provider extends MgtBaseProvider {
     attribute: 'multi-account-disabled',
     type: Boolean
   })
-  public multiAccountDisabled;
+  public isMultiAccountDisabled;
 
   /**
    * Gets whether this provider can be used in this environment
@@ -123,8 +123,8 @@ export class MgtMsal2Provider extends MgtBaseProvider {
         config.redirectUri = this.redirectUri;
       }
 
-      if (this.multiAccountDisabled) {
-        config.multiAccountDisabled = true;
+      if (this.isMultiAccountDisabled) {
+        config.isMultiAccountDisabled = true;
       }
 
       this.provider = new Msal2Provider(config);

@@ -1,4 +1,11 @@
-import { IProvider, LoginType, ProviderState, createFromProvider, Providers } from '@microsoft/mgt-element';
+import {
+  IProvider,
+  LoginType,
+  ProviderState,
+  createFromProvider,
+  Providers,
+  IProviderAccount
+} from '@microsoft/mgt-element';
 import {
   Configuration,
   PublicClientApplication,
@@ -22,7 +29,7 @@ export interface Msal2Config {
   domain_hint?: string;
   redirectUri?: string;
   authority?: string;
-  multiAccountDisabled?: boolean;
+  isMultiAccountDisabled?: boolean;
   options?: Configuration;
 }
 export class Msal2Provider extends IProvider {
@@ -146,23 +153,22 @@ export class Msal2Provider extends IProvider {
       this._domainHint = typeof config.domain_hint !== 'undefined' ? config.domain_hint : null;
       this.scopes = typeof config.scopes !== 'undefined' ? config.scopes : ['user.read'];
       this._publicClientApplication = new PublicClientApplication(this.ms_config);
-      this.multiAccountDisabled =
-        typeof config.multiAccountDisabled !== 'undefined' ? config.multiAccountDisabled : false; //Set this to true for now. Once multi account is enabled, default will be false
+      this.isMultipleAccountDisabled =
+        typeof config.isMultiAccountDisabled !== 'undefined' ? config.isMultiAccountDisabled : false; //Set this to true for now. Once multi account is enabled, default will be false
+      this.graph = createFromProvider(this);
       try {
-        this._publicClientApplication.handleRedirectPromise().then((tokenResponse: AuthenticationResult | null) => {
+        const tokenResponse = await this._publicClientApplication.handleRedirectPromise();
+        if (tokenResponse !== null) {
           this.handleResponse(tokenResponse);
-          if (tokenResponse === null) {
-            this.trySilentSignIn();
-          }
-        });
+        } else {
+          this.trySilentSignIn();
+        }
       } catch (e) {
         throw e;
       }
     } else {
       throw new Error('clientId must be provided');
     }
-
-    this.graph = createFromProvider(this);
   }
 
   /**
@@ -195,6 +201,8 @@ export class Msal2Provider extends IProvider {
       } catch (e) {
         this.setState(ProviderState.SignedOut);
       }
+    } else {
+      this.setState(ProviderState.SignedOut);
     }
   }
 
@@ -240,10 +248,10 @@ export class Msal2Provider extends IProvider {
    * @param {*} user
    * @memberof Msal2Provider
    */
-  public switchAccount(user: any) {
+  public setActiveAccount(user: IProviderAccount) {
     this._publicClientApplication.setActiveAccount(this._publicClientApplication.getAccountByHomeId(user.id));
     this.setStoredAccount();
-    this.fireActiveAccountChanged();
+    super.setActiveAccount(user);
   }
 
   /**
@@ -255,8 +263,10 @@ export class Msal2Provider extends IProvider {
   handleResponse(response: AuthenticationResult | null) {
     if (response !== null) {
       this._account = response.account;
-      this._publicClientApplication.setActiveAccount(this._account);
-      this.setStoredAccount();
+      this.setActiveAccount({
+        username: response.account.name,
+        id: response.account.homeAccountId
+      } as IProviderAccount);
       this.setState(ProviderState.SignedIn);
     } else {
       this.setState(ProviderState.SignedOut);

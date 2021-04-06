@@ -33,13 +33,12 @@ export abstract class IProvider implements AuthenticationProvider {
    * @type {boolean}
    * @memberof IProvider
    */
-  protected multiAccountDisabled: boolean = true;
+  protected isMultipleAccountDisabled: boolean = true;
   private _state: ProviderState;
   private _loginChangedDispatcher = new EventDispatcher<LoginChangedEvent>();
   private _activeAccountChangedDispatcher = new EventDispatcher<ActiveAccountChanged>();
-
   public get isMultiAccountDisabled(): boolean {
-    return this.multiAccountDisabled;
+    return this.isMultipleAccountDisabled;
   }
   /**
    * returns state of Provider
@@ -120,7 +119,7 @@ export abstract class IProvider implements AuthenticationProvider {
    * @return {*}  {any[]}
    * @memberof IProvider
    */
-  public getAllAccounts?(): any[];
+  public getAllAccounts?(): IProviderAccount[];
 
   /**
    * Switch between two signed in accounts
@@ -128,7 +127,9 @@ export abstract class IProvider implements AuthenticationProvider {
    * @param {*} user
    * @memberof IProvider
    */
-  public switchAccount?(user: any): void;
+  public setActiveAccount?(user: IProviderAccount) {
+    this.fireActiveAccountChanged();
+  }
 
   /**
    * Event handler when Active account changes
@@ -155,9 +156,10 @@ export abstract class IProvider implements AuthenticationProvider {
    *
    * @memberof IProvider
    */
-  public fireActiveAccountChanged() {
+  private fireActiveAccountChanged() {
     this._activeAccountChangedDispatcher.fire({});
   }
+
   /**
    * uses scopes to recieve access token
    *
@@ -233,3 +235,13 @@ export enum ProviderState {
    */
   SignedIn
 }
+
+/**
+ * Account details
+ *
+ * @export
+ */
+export type IProviderAccount = {
+  username?: string;
+  id: string;
+};

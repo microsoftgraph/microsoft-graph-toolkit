@@ -198,7 +198,7 @@ export class MgtLogin extends MgtTemplatedComponent {
   }
 
   async switchAccount(account: any) {
-    Providers.globalProvider.switchAccount(account);
+    Providers.globalProvider.setActiveAccount(account);
     this.userDetails = null;
     this.loadState();
   }
