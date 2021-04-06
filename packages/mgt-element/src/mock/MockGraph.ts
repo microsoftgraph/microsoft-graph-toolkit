@@ -19,12 +19,13 @@ import { MgtBaseComponent } from '../components/baseComponent';
 import { Graph } from '../Graph';
 import { chainMiddleware } from '../utils/GraphHelpers';
 import { MockProvider } from './MockProvider';
+import { setRequestHeader } from '@microsoft/microsoft-graph-client/lib/es/middleware/MiddlewareUtil';
 
 /**
  * The base URL for the mock endpoint
  */
-const BASE_URL = 'https://proxy.apisandbox.msdn.microsoft.com/svc?url=';
-
+const BASE_URL = 'https://developer.microsoft.com/en-us/graph/api/proxy?url=';
+// const BASE_URL = 'https://proxy.apisandbox.msdn.microsoft.com/svc?url=';
 /**
  * The base URL for the graph
  */
@@ -41,7 +42,6 @@ const ROOT_GRAPH_URL = 'https://graph.microsoft.com/';
 export class MockGraph extends Graph {
   constructor(mockProvider: MockProvider) {
     const middleware: Middleware[] = [
-      new AuthenticationHandler(mockProvider),
       new RetryHandler(new RetryHandlerOptions()),
       new TelemetryHandler(),
       new MockMiddleware(),
@@ -85,12 +85,16 @@ class MockMiddleware implements Middleware {
    */
   private _nextMiddleware: Middleware;
 
+  private static _headerKey = 'MS-ODXIP-API-KEY';
+  private static _headerValue = 'F4E777A5-3E38-410A-BE5D-CAC2A1998EC3';
+
   // tslint:disable-next-line: completed-docs
   public async execute(context: Context): Promise<void> {
     try {
       const url = context.request as string;
       const baseLength = BASE_URL.length;
       context.request = url.substring(0, baseLength) + escape(url.substring(baseLength));
+      setRequestHeader(context.request, context.options, MockMiddleware._headerKey, MockMiddleware._headerValue);
     } catch (error) {
       // ignore error
     }
