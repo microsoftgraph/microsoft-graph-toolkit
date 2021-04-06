@@ -39,6 +39,16 @@ export abstract class IProvider implements AuthenticationProvider {
     return this._state;
   }
 
+  /**
+   * Name used for analytics
+   *
+   * @readonly
+   * @memberof IProvider
+   */
+  public get name() {
+    return 'MgtIProvider';
+  }
+
   constructor() {
     this._state = ProviderState.Loading;
   }
@@ -92,7 +102,7 @@ export abstract class IProvider implements AuthenticationProvider {
   public logout?(): Promise<void>;
 
   /**
-   * uses scopes to recieve access token
+   * uses scopes to receive access token
    *
    * @param {...string[]} scopes
    * @returns {Promise<string>}

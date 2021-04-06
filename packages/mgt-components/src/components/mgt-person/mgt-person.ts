@@ -501,7 +501,7 @@ export class MgtPerson extends MgtTemplatedComponent {
     }
 
     // Default template
-    let personTemplate = this.renderTemplate('default', { person, personImage: image });
+    let personTemplate = this.renderTemplate('default', { person, personImage: image, personPresence: presence });
 
     if (!personTemplate) {
       const detailsTemplate: TemplateResult = this.renderDetails(person);

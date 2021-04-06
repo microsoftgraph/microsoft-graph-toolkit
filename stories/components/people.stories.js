@@ -6,18 +6,12 @@
  */
 
 import { html } from 'lit-element';
-import { withA11y } from '@storybook/addon-a11y';
-import { withKnobs } from '@storybook/addon-knobs';
-import { withWebComponentsKnobs } from 'storybook-addon-web-components-knobs';
-import { withSignIn } from '../../.storybook/addons/signInAddon/signInAddon';
 import { withCodeEditor } from '../../.storybook/addons/codeEditorAddon/codeAddon';
-import '../../packages/mgt-components/dist/es6/components/mgt-people/mgt-people';
 
 export default {
   title: 'Components | mgt-people',
   component: 'mgt-people',
-  decorators: [withCodeEditor],
-  parameters: { options: { selectedPanel: 'storybookjs/knobs/panel' } }
+  decorators: [withCodeEditor]
 };
 
 export const People = () => html`
@@ -40,6 +34,10 @@ export const PeopleQueries = () => html`
     people-queries="LidiaH@M365x214355.onmicrosoft.com, Megan Bowen, Lynne Robbins, BrianJ@M365x214355.onmicrosoft.com, JoniS@M365x214355.onmicrosoft.com"
   >
   </mgt-people>
+`;
+
+export const PeopleResource = () => html`
+  <mgt-people resource="/me/directReports"></mgt-people>
 `;
 
 export const darkTheme = () => html`
