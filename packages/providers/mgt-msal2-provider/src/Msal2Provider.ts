@@ -18,20 +18,102 @@ import {
   InteractionRequiredAuthError
 } from '@azure/msal-browser';
 import { AuthenticationProviderOptions } from '@microsoft/microsoft-graph-client/lib/es/IAuthenticationProviderOptions';
-import { isRegExp } from 'util';
 
+/**
+ * Config for MSAL2.0 Authentication
+ *
+ * @export
+ * @interface Msal2Config
+ */
 export interface Msal2Config {
+  /**
+   * Client ID of app registration
+   *
+   * @type {string}
+   * @memberof Msal2Config
+   */
   clientId: string;
+
+  /**
+   * LoginType
+   *
+   * @type {LoginType}
+   * @memberof Msal2Config
+   */
   loginType?: LoginType;
+
+  /**
+   * List of scopes required
+   *
+   * @type {string[]}
+   * @memberof Msal2Config
+   */
   scopes?: string[];
+
+  /**
+   * LoginHint
+   *
+   * @type {string}
+   * @memberof Msal2Config
+   */
   loginHint?: string;
+
+  /**
+   * Session ID
+   *
+   * @type {string}
+   * @memberof Msal2Config
+   */
   sid?: string;
+
+  /**
+   * Domain hint
+   *
+   * @type {string}
+   * @memberof Msal2Config
+   */
   domain_hint?: string;
+
+  /**
+   * Redirect URI
+   *
+   * @type {string}
+   * @memberof Msal2Config
+   */
   redirectUri?: string;
+
+  /**
+   * Authority URL
+   *
+   * @type {string}
+   * @memberof Msal2Config
+   */
   authority?: string;
+
+  /**
+   * Disable multi account functionality
+   *
+   * @type {boolean}
+   * @memberof Msal2Config
+   */
   isMultiAccountDisabled?: boolean;
+
+  /**
+   * Other options
+   *
+   * @type {Configuration}
+   * @memberof Msal2Config
+   */
   options?: Configuration;
 }
+
+/**
+ * MSAL2Provider using msal-browser to acquire tokens for authentication
+ *
+ * @export
+ * @class Msal2Provider
+ * @extends {IProvider}
+ */
 export class Msal2Provider extends IProvider {
   private _publicClientApplication: PublicClientApplication;
 
@@ -95,15 +177,6 @@ export class Msal2Provider extends IProvider {
    * @memberof Msal2Provider
    */
   public scopes: string[];
-
-  /**
-   * Account object
-   *
-   * @private
-   * @type {*}
-   * @memberof Msal2Provider
-   */
-  private _account: any;
 
   private sessionStorageRequestedScopesKey = 'mgt-requested-scopes';
   private sessionStorageDeniedScopesKey = 'mgt-denied-scopes';
@@ -185,10 +258,10 @@ export class Msal2Provider extends IProvider {
       silentRequest.sid = this._sid;
       silentRequest.loginHint = this._loginHint;
     } else {
-      this._account = this.getAccount();
-      if (this._account) {
-        silentRequest.sid = this._account.idTokenClaims.sid || null;
-        silentRequest.loginHint = this._account.idTokenClaims.preferred_username;
+      const account: any = this.getAccount();
+      if (account) {
+        silentRequest.sid = account.idTokenClaims.sid || null;
+        silentRequest.loginHint = account.idTokenClaims.preferred_username;
       }
     }
     if (silentRequest.sid || silentRequest.loginHint) {
@@ -262,7 +335,6 @@ export class Msal2Provider extends IProvider {
    */
   handleResponse(response: AuthenticationResult | null) {
     if (response !== null) {
-      this._account = response.account;
       this.setActiveAccount({
         username: response.account.name,
         id: response.account.homeAccountId
