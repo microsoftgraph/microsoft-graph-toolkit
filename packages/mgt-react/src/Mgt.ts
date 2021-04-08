@@ -57,10 +57,10 @@ export class Mgt extends Wc {
    * @memberof Wc
    */
   protected setRef(component: HTMLElement) {
-    super.setRef(component);
     if (component) {
-      this.element.addEventListener('templateRendered', this.handleTemplateRendered);
+      component.addEventListener('templateRendered', this.handleTemplateRendered);
     }
+    super.setRef(component);
   }
 
   /**
@@ -98,6 +98,7 @@ export class Mgt extends Wc {
     let element = e.detail.element;
 
     let template = this._templates[templateType];
+
     if (template) {
       template = React.cloneElement(template, { dataContext });
       ReactDOM.render(template, element);
