@@ -114,6 +114,7 @@ export abstract class MgtBaseComponent extends LitElement {
     this.handleLocalizationChanged = this.handleLocalizationChanged.bind(this);
     this.handleDirectionChanged = this.handleDirectionChanged.bind(this);
     this.handleProviderUpdates = this.handleProviderUpdates.bind(this);
+    this.handleActiveAccountUpdates = this.handleActiveAccountUpdates.bind(this);
     this.handleDirectionChanged();
     this.handleLocalizationChanged();
   }
@@ -139,7 +140,7 @@ export abstract class MgtBaseComponent extends LitElement {
     LocalizationHelper.removeOnStringsUpdated(this.handleLocalizationChanged);
     LocalizationHelper.removeOnDirectionUpdated(this.handleDirectionChanged);
     Providers.removeProviderUpdatedListener(this.handleProviderUpdates);
-    Providers.removeActiveAccountChangedListener(this.handleProviderUpdates);
+    Providers.removeActiveAccountChangedListener(this.handleActiveAccountUpdates);
   }
 
   /**
@@ -155,7 +156,7 @@ export abstract class MgtBaseComponent extends LitElement {
     super.firstUpdated(changedProperties);
     this._isFirstUpdated = true;
     Providers.onProviderUpdated(this.handleProviderUpdates);
-    Providers.onActiveAccountChanged(this.handleProviderUpdates);
+    Providers.onActiveAccountChanged(this.handleActiveAccountUpdates);
     this.requestStateUpdate();
   }
 
@@ -285,6 +286,11 @@ export abstract class MgtBaseComponent extends LitElement {
   }
 
   private handleProviderUpdates() {
+    this.requestStateUpdate();
+  }
+
+  private async handleActiveAccountUpdates() {
+    this.clearState();
     this.requestStateUpdate();
   }
 

@@ -227,7 +227,7 @@ export class Msal2Provider extends IProvider {
       this.scopes = typeof config.scopes !== 'undefined' ? config.scopes : ['user.read'];
       this._publicClientApplication = new PublicClientApplication(this.ms_config);
       this.isMultipleAccountDisabled =
-        typeof config.isMultiAccountDisabled !== 'undefined' ? config.isMultiAccountDisabled : true; //Set this to true for now. Once multi account is enabled, default will be false
+        typeof config.isMultiAccountDisabled !== 'undefined' ? config.isMultiAccountDisabled : false;
       this.graph = createFromProvider(this);
       try {
         const tokenResponse = await this._publicClientApplication.handleRedirectPromise();
@@ -493,10 +493,15 @@ export class Msal2Provider extends IProvider {
     this.clearStoredAccount();
     if (this._loginType == LoginType.Redirect) {
       this._publicClientApplication.logoutRedirect(logOutRequest);
+      this.setState(ProviderState.SignedOut);
     } else {
-      this._publicClientApplication.logoutPopup({ ...logOutRequest });
+      await this._publicClientApplication.logoutPopup({ ...logOutRequest });
+      if (this._publicClientApplication.getAllAccounts.length == 1 || this.isMultiAccountDisabled) {
+        this.setState(ProviderState.SignedOut);
+      } else {
+        this.trySilentSignIn();
+      }
     }
-    this.setState(ProviderState.SignedOut);
   }
 
   /**
