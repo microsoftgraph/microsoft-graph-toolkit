@@ -11,6 +11,10 @@ import {
 import * as MicrosoftGraph from '@microsoft/microsoft-graph-types';
 
 class App extends Component {
+  handleTemplateRendered = (e: Event) => {
+    console.log('Event Rendered: ', e);
+  };
+
   render() {
     const personDetails = {
       displayName: 'Nikola Metulev',
@@ -20,7 +24,7 @@ class App extends Component {
     return (
       <div className="App">
         <Login loginCompleted={() => console.log('login completed')} />
-        <Agenda groupByDay>
+        <Agenda groupByDay templateRendered={this.handleTemplateRendered}>
           <MyEvent template="event" />
         </Agenda>
 
