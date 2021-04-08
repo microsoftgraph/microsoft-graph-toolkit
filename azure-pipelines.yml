@@ -7,9 +7,9 @@ pool:
 
 steps:
   - task: NodeTool@0
-    displayName: 'Use Node 10.*'
+    displayName: 'Use Node 12.*'
     inputs:
-      versionSpec: '10.*'
+      versionSpec: '12.*'
 
   - task: Npm@1
     displayName: 'npm version'
@@ -17,18 +17,16 @@ steps:
       command: custom
       verbose: false
       customCommand: '--no-git-tag-version version $(baseVersionNumber).$(Build.BuildId)'
+      
+  - script: |
+      npm install -g yarn lerna
+      yarn
+    displayName: Install dependencies
 
-  - task: Npm@1
-    displayName: 'npm install'
-    inputs:
-      verbose: false
-
-  - task: Npm@1
-    displayName: 'npm run build'
-    inputs:
-      command: custom
-      verbose: false
-      customCommand: 'run build'
+  - script: |
+      yarn build
+    displayName: Build
+    
   #- task: Npm@1
   #  displayName: 'npm test'
   #  inputs:

@@ -8,8 +8,10 @@ The File List component displays a list of multiple folders and files by using t
 
 | Feature | Priority | Notes |
 | ------- | -------- | ----- |
+| **v1** | | |
 | Retrieve a list of files based on information provided | P0 | Can be from a specific drive or site or from an insight type |
 | Use the `mgt-file` component to render each item | P0 | |
+| **v2** | | |
 | Render the children of folders hierarchically using a tree view | P1 | Potentially use the FAST tree view web component |
 | Allow sorting of the files by the user | P2 | |
 
@@ -54,7 +56,7 @@ The request made : `GET /drives/123/items/456/children`
 | `group-id` | `groupId` | Id of the group the folder belongs to. Must also provide either `item-id` or `item-path`. |
 | `site-id` | `siteId` | Id of the site the folder belongs to. Must also provide either `{item-id}` or `{item-path}`. Provide `{list-id}` if you’re referencing a file from a specific list. |
 | `item-id` | `itemId` | Id of the folder. Default query is `/me/drive/items`. Provide `{drive-id}`, `{group-id}`, `{site-id}`, or `{user-id}` to query a specific location. |
-| `item-path` | `itemPath` | Item path of the folder. Default query is `/me/drive/root`. Provide `{drive-id}`, `{group-id}`, `{site-id}`, or `{user-id}` to query a specific location. |
+| `item-path` | `itemPath` | Item path of the folder (relative to the root). Default query is `/me/drive/root`. Provide `{drive-id}`, `{group-id}`, `{site-id}`, or `{user-id}` to query a specific location. |
 | `show-max` | `showMax` | A number value to indicate the maximum number of files to show. |
 
 ## APIs and Permissions
@@ -67,13 +69,17 @@ The request made : `GET /drives/123/items/456/children`
 | `GET /me/drive/items/{item-id}/children` | ONLY `{item-id}` | " | 
 | `GET /sites/{site-id}/drive/items/{item-id}/children` | `{site-id}` AND `{item-id}` | " |
 | `GET /users/{user-id}/drive/items/{item-id}/children` | `{user-id}` AND `{item-id}` | " |
-| `GET /drives/{drive-id}/root:/{path-relative-to-root}:/children` | `{drive-id}` AND `{path-relative-to-root}` | " |
+| `GET /drives/{drive-id}/root:/{item-path}:/children` | `{drive-id}` AND `{item-path}` | " |
+| `GET /groups/{group-id}/root:/{item-path}:/children` | `{group-id}` AND `{item-path}` | " |
+| `GET /sites/{site-id}/root:/{item-path}:/children` | `{site-id}` AND `{item-path}` | " |
+| `GET /users/{user-id}/root:/{item-path}:/children` | `{user-id}` AND `{item-path}` | " |
+| `GET /me/drive/root:/{item-path}:/children` | only `{item-path}` | " |
 | `GET /me/insights/trending` | `insight-type` is trending | Sites.Read.All |
 | `GET /users/{id or userPrincipalName}/insights/trending` | {user-id or upn} AND `insight-type` is `trending` | " | 
 | `GET /me/insights/used` | `insight-type` is `used` | " |
 | `GET /users/{id or userPrincipalName}/insights/used`  | {user-id or upn} AND `insight-type` is `used` | " |
 | `GET /me/insights/shared` | `insight-type` is shared | " |
-| `GET /users/{id or userPrincipalName}/insights/shared` | `{user-id or upn}` AND `insight-type` is `shared` | " |
+| `GET /users/{id or userPrincipalName}/insights/shared?$filter=((lastshared/sharedby/id eq '${user-id}') and (resourceReference/type eq 'microsoft.graph.driveItem'))` | `{user-id or upn}` AND `insight-type` is `shared` | " |
 |`POST /beta/search/query` Request body: `{"requests": [{"entityTypes": ["driveItem", "listItem"], "query":{"queryString":"foo"}}]}` | `search-query` | Files.Read, Files.Read.All, Files.ReadWrite.All, Sites.Read.All, Sites.ReadWrite.All |
 
 ## Templates

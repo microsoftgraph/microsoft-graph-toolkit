@@ -22,6 +22,17 @@ export class ProxyProvider extends IProvider {
    * @memberof ProxyProvider
    */
   public graph: Graph;
+
+  /**
+   * Name used for analytics
+   *
+   * @readonly
+   * @memberof IProvider
+   */
+  public get name() {
+    return 'MgtProxyProvider';
+  }
+
   constructor(graphProxyUrl: string, getCustomHeaders: () => Promise<object> = null) {
     super();
     this.graph = new ProxyGraph(graphProxyUrl, getCustomHeaders);

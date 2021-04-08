@@ -6,21 +6,12 @@
  */
 
 import { html } from 'lit-element';
-import { withSignIn } from '../../.storybook/addons/signInAddon/signInAddon';
 import { withCodeEditor } from '../../.storybook/addons/codeEditorAddon/codeAddon';
 
 export default {
   title: 'Samples | General',
   component: 'mgt-combo',
-  decorators: [withCodeEditor],
-  parameters: {
-    a11y: {
-      disabled: true
-    },
-    signInAddon: {
-      test: 'test'
-    }
-  }
+  decorators: [withCodeEditor]
 };
 
 export const LoginToShowAgenda = () => html`

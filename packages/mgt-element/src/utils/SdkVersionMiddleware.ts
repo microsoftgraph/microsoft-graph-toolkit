@@ -23,9 +23,11 @@ export class SdkVersionMiddleware implements Middleware {
    */
   private _nextMiddleware: Middleware;
   private _packageVersion: string;
+  private _providerName: string;
 
-  constructor(packageVersion: string) {
+  constructor(packageVersion: string, providerName?: string) {
     this._packageVersion = packageVersion;
+    this._providerName = providerName;
   }
 
   // tslint:disable-next-line: completed-docs
@@ -41,6 +43,11 @@ export class SdkVersionMiddleware implements Middleware {
       if (componentOptions) {
         const componentVersion: string = `${componentOptions.componentName}/${this._packageVersion}`;
         headerParts.push(componentVersion);
+      }
+
+      if (this._providerName) {
+        const providerVersion: string = `${this._providerName}/${this._packageVersion}`;
+        headerParts.push(providerVersion);
       }
 
       // Package version

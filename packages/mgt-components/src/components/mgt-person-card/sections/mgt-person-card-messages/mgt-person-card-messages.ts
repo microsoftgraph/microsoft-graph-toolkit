@@ -60,6 +60,7 @@ export class MgtPersonCardMessages extends BasePersonCardSection {
    * @memberof MgtPersonCardMessages
    */
   public clearState(): void {
+    super.clearState();
     this._messages = [];
   }
 

@@ -6,6 +6,7 @@
  */
 
 import { internalProperty, LitElement, PropertyValues } from 'lit-element';
+import { ProviderState } from '../providers/IProvider';
 import { Providers } from '../providers/Providers';
 import { LocalizationHelper } from '../utils/LocalizationHelper';
 
@@ -112,6 +113,7 @@ export abstract class MgtBaseComponent extends LitElement {
     super();
     this.handleLocalizationChanged = this.handleLocalizationChanged.bind(this);
     this.handleDirectionChanged = this.handleDirectionChanged.bind(this);
+    this.handleProviderUpdates = this.handleProviderUpdates.bind(this);
     this.handleDirectionChanged();
     this.handleLocalizationChanged();
   }
@@ -136,6 +138,8 @@ export abstract class MgtBaseComponent extends LitElement {
     super.disconnectedCallback();
     LocalizationHelper.removeOnStringsUpdated(this.handleLocalizationChanged);
     LocalizationHelper.removeOnDirectionUpdated(this.handleDirectionChanged);
+    Providers.removeProviderUpdatedListener(this.handleProviderUpdates);
+    Providers.removeActiveAccountChangedListener(this.handleProviderUpdates);
   }
 
   /**
@@ -150,7 +154,8 @@ export abstract class MgtBaseComponent extends LitElement {
   protected firstUpdated(changedProperties): void {
     super.firstUpdated(changedProperties);
     this._isFirstUpdated = true;
-    Providers.onProviderUpdated(() => this.requestStateUpdate());
+    Providers.onProviderUpdated(this.handleProviderUpdates);
+    Providers.onActiveAccountChanged(this.handleProviderUpdates);
     this.requestStateUpdate();
   }
 
@@ -161,6 +166,8 @@ export abstract class MgtBaseComponent extends LitElement {
   protected loadState(): Promise<void> {
     return Promise.resolve();
   }
+
+  protected clearState(): void {}
 
   /**
    * helps facilitate creation of events across components
@@ -223,29 +230,49 @@ export abstract class MgtBaseComponent extends LitElement {
       await this._currentLoadStatePromise;
     }
 
-    const loadStatePromise = new Promise(async (resolve, reject) => {
-      try {
-        this.setLoadingState(true);
-        this.fireCustomEvent('loadingInitiated');
+    const provider = Providers.globalProvider;
 
-        await this.loadState();
+    if (!provider) {
+      return Promise.resolve();
+    }
 
-        this.setLoadingState(false);
-        this.fireCustomEvent('loadingCompleted');
-        resolve();
-      } catch (e) {
-        this.setLoadingState(false);
-        this.fireCustomEvent('loadingFailed');
-        reject(e);
-      }
-    });
+    if (provider.state === ProviderState.SignedOut) {
+      // Signed out, clear the component state
+      this.clearState();
+      return;
+    } else if (provider.state === ProviderState.Loading) {
+      // The provider state is indeterminate. Do nothing.
+      return Promise.resolve();
+    } else {
+      // Signed in, load the internal component state
+      const loadStatePromise = new Promise(async (resolve, reject) => {
+        try {
+          this.setLoadingState(true);
+          this.fireCustomEvent('loadingInitiated');
 
-    // Return the load state promise.
-    // If loading + forced, chain the promises.
-    return (this._currentLoadStatePromise =
-      this.isLoadingState && !!this._currentLoadStatePromise && force
-        ? this._currentLoadStatePromise.then(() => loadStatePromise)
-        : loadStatePromise);
+          await this.loadState();
+
+          this.setLoadingState(false);
+          this.fireCustomEvent('loadingCompleted');
+          resolve();
+        } catch (e) {
+          // Loading failed. Clear any partially set data.
+          this.clearState();
+
+          this.setLoadingState(false);
+          this.fireCustomEvent('loadingFailed');
+          reject(e);
+        }
+
+        // Return the load state promise.
+        // If loading + forced, chain the promises.
+        // This is to account for the lack of a cancellation token concept.
+        return (this._currentLoadStatePromise =
+          this.isLoadingState && !!this._currentLoadStatePromise && force
+            ? this._currentLoadStatePromise.then(() => loadStatePromise)
+            : loadStatePromise);
+      });
+    }
   }
 
   private setLoadingState(value: boolean) {
@@ -255,6 +282,10 @@ export abstract class MgtBaseComponent extends LitElement {
 
     this._isLoadingState = value;
     this.requestUpdate('isLoadingState');
+  }
+
+  private handleProviderUpdates() {
+    this.requestStateUpdate();
   }
 
   private handleLocalizationChanged() {

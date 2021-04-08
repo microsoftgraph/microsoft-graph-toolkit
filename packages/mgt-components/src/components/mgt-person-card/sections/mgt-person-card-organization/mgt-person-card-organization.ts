@@ -53,6 +53,18 @@ export class MgtPersonCardOrganization extends BasePersonCardSection {
   }
 
   /**
+   * Reset any state in the section
+   *
+   * @protected
+   * @memberof MgtPersonCardMessages
+   */
+  public clearState(): void {
+    super.clearState();
+    this._state = null;
+    this._me = null;
+  }
+
+  /**
    * The name for display in the overview section.
    *
    * @readonly

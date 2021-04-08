@@ -33,10 +33,12 @@ export class Providers {
     if (provider !== this._globalProvider) {
       if (this._globalProvider) {
         this._globalProvider.removeStateChangedHandler(this.handleProviderStateChanged);
+        this._globalProvider.removeActiveAccountChangedHandler(this.handleActiveAccountChanged);
       }
 
       if (provider) {
         provider.onStateChanged(this.handleProviderStateChanged);
+        provider.onActiveAccountChanged(this.handleActiveAccountChanged);
       }
 
       this._globalProvider = provider;
@@ -64,6 +66,28 @@ export class Providers {
    */
   public static removeProviderUpdatedListener(event: EventHandler<ProvidersChangedState>) {
     this._eventDispatcher.remove(event);
+  }
+
+  /**
+   * Fires event when Provider changes state
+   *
+   * @static
+   * @param {EventHandler<ProvidersChangedState>} event
+   * @memberof Providers
+   */
+  public static onActiveAccountChanged(event: EventHandler<any>) {
+    this._activeAccountChangedDispatcher.add(event);
+  }
+
+  /**
+   * Remove event handler
+   *
+   * @static
+   * @param {EventHandler<ProvidersChangedState>} event
+   * @memberof Providers
+   */
+  public static removeActiveAccountChangedListener(event: EventHandler<any>) {
+    this._activeAccountChangedDispatcher.remove(event);
   }
 
   /**
@@ -107,6 +131,8 @@ export class Providers {
     ProvidersChangedState
   >();
 
+  private static _activeAccountChangedDispatcher: EventDispatcher<any> = new EventDispatcher<any>();
+
   private static _globalProvider: IProvider;
   private static _me: User;
 
@@ -117,6 +143,10 @@ export class Providers {
     }
 
     Providers._eventDispatcher.fire(ProvidersChangedState.ProviderStateChanged);
+  }
+
+  private static handleActiveAccountChanged() {
+    Providers._activeAccountChangedDispatcher.fire(null);
   }
 }
 

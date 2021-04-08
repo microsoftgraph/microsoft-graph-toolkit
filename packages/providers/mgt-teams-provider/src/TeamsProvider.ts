@@ -156,6 +156,16 @@ export class TeamsProvider extends MsalProvider {
   }
 
   /**
+   * Name used for analytics
+   *
+   * @readonly
+   * @memberof IProvider
+   */
+  public get name() {
+    return 'MgtTeamsProvider';
+  }
+
+  /**
    * Handle all authentication redirects in the authentication page and authenticates the user
    *
    * @static
