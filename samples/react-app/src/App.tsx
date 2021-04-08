@@ -39,7 +39,7 @@ class App extends Component {
 
         <PeoplePicker type={PersonType.any} />
 
-        <Get resource="/me" scopes={['mail.read']} maxPages={2}>
+        <Get resource="/me">
           <MyTemplate />
         </Get>
 
