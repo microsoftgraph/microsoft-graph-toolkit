@@ -190,9 +190,10 @@ export class MsalProvider extends IProvider {
   public async login(authenticationParameters?: AuthenticationParameters): Promise<void> {
     let loginRequest: AuthenticationParameters = authenticationParameters || {
       loginHint: this._loginHint,
-      prompt: this._prompt ? this._prompt : 'select_account',
       scopes: this.scopes
     };
+
+    this._prompt ? (loginRequest.prompt = this._prompt) : '';
 
     this._domainHint ? (loginRequest.extraQueryParameters = { domain_hint: this._domainHint }) : '';
 
@@ -382,6 +383,7 @@ export class MsalProvider extends IProvider {
     this._loginType = typeof config.loginType !== 'undefined' ? config.loginType : LoginType.Redirect;
     this._loginHint = config.loginHint;
     this._domainHint = config.domainHint;
+    this._prompt = config.prompt;
 
     let userAgentApplication: UserAgentApplication;
     let clientId: string;
