@@ -7,7 +7,7 @@
 
 import { customElement, property } from 'lit-element';
 import { Providers, LoginType, MgtBaseProvider } from '@microsoft/mgt-element';
-import { Msal2Config, Msal2Provider } from './Msal2Provider';
+import { Msal2Config, Msal2Provider, PromptType } from './Msal2Provider';
 /**
  * Authentication Library Provider for Microsoft personal accounts
  *
@@ -80,6 +80,17 @@ export class MgtMsal2Provider extends MgtBaseProvider {
   public isMultiAccountDisabled;
 
   /**
+   * Type of prompt for login
+   *
+   * @memberof MgtMsal2Provider
+   */
+  @property({
+    attribute: 'prompt',
+    type: String
+  })
+  public prompt: string;
+
+  /**
    * Gets whether this provider can be used in this environment
    *
    * @readonly
@@ -125,6 +136,12 @@ export class MgtMsal2Provider extends MgtBaseProvider {
 
       if (this.isMultiAccountDisabled) {
         config.isMultiAccountDisabled = true;
+      }
+
+      if (this.prompt) {
+        let prompt: string = this.prompt.toUpperCase();
+        const promptEnum = PromptType[prompt];
+        config.prompt = promptEnum;
       }
 
       this.provider = new Msal2Provider(config);

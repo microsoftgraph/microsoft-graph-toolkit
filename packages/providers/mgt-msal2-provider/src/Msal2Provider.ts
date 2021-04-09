@@ -72,7 +72,15 @@ export interface Msal2Config {
    * @type {string}
    * @memberof Msal2Config
    */
-  domain_hint?: string;
+  domainHint?: string;
+
+  /**
+   * Prompt type
+   *
+   * @type {Prompt}
+   * @memberof Msal2Config
+   */
+  prompt?: PromptType;
 
   /**
    * Redirect URI
@@ -105,6 +113,18 @@ export interface Msal2Config {
    * @memberof Msal2Config
    */
   options?: Configuration;
+}
+
+/**
+ * Prompt type enum
+ *
+ * @export
+ * @enum {number}
+ */
+export enum PromptType {
+  SELECT_ACCOUNT = 'select_account',
+  LOGIN = 'login',
+  CONSENT = 'consent'
 }
 
 /**
@@ -141,6 +161,15 @@ export class Msal2Provider extends IProvider {
    * @memberof Msal2Provider
    */
   private _domainHint;
+
+  /**
+   * Prompt type
+   *
+   * @private
+   * @type {string}
+   * @memberof Msal2Provider
+   */
+  private _prompt: string;
 
   /**
    * Session ID, if provided
@@ -223,11 +252,12 @@ export class Msal2Provider extends IProvider {
       this._loginType = typeof config.loginType !== 'undefined' ? config.loginType : LoginType.Redirect;
       this._loginHint = typeof config.loginHint !== 'undefined' ? config.loginHint : null;
       this._sid = typeof config.sid !== 'undefined' ? config.sid : null;
-      this._domainHint = typeof config.domain_hint !== 'undefined' ? config.domain_hint : null;
+      this._domainHint = typeof config.domainHint !== 'undefined' ? config.domainHint : null;
       this.scopes = typeof config.scopes !== 'undefined' ? config.scopes : ['user.read'];
       this._publicClientApplication = new PublicClientApplication(this.ms_config);
       this.isMultipleAccountDisabled =
         typeof config.isMultiAccountDisabled !== 'undefined' ? config.isMultiAccountDisabled : false;
+      this._prompt = typeof config.prompt !== 'undefined' ? config.prompt : PromptType.SELECT_ACCOUNT;
       this.graph = createFromProvider(this);
       try {
         const tokenResponse = await this._publicClientApplication.handleRedirectPromise();
@@ -289,7 +319,7 @@ export class Msal2Provider extends IProvider {
     const loginRequest: PopupRequest = {
       scopes: this.scopes,
       loginHint: this._loginHint,
-      prompt: 'select_account',
+      prompt: this._prompt,
       domainHint: this._domainHint
     };
     if (this._loginType == LoginType.Popup) {
