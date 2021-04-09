@@ -75,6 +75,14 @@ export interface Msal2Config {
   domain_hint?: string;
 
   /**
+   * Prompt type
+   *
+   * @type {Prompt}
+   * @memberof Msal2Config
+   */
+  prompt?: PromptType;
+
+  /**
    * Redirect URI
    *
    * @type {string}
@@ -105,6 +113,18 @@ export interface Msal2Config {
    * @memberof Msal2Config
    */
   options?: Configuration;
+}
+
+/**
+ * Prompt type enum
+ *
+ * @export
+ * @enum {number}
+ */
+export enum PromptType {
+  SELECT_ACCOUNT,
+  LOGIN,
+  CONSENT
 }
 
 /**
@@ -141,6 +161,15 @@ export class Msal2Provider extends IProvider {
    * @memberof Msal2Provider
    */
   private _domainHint;
+
+  /**
+   * Prompt type
+   *
+   * @private
+   * @type {string}
+   * @memberof Msal2Provider
+   */
+  private _prompt: string;
 
   /**
    * Session ID, if provided
@@ -228,6 +257,7 @@ export class Msal2Provider extends IProvider {
       this._publicClientApplication = new PublicClientApplication(this.ms_config);
       this.isMultipleAccountDisabled =
         typeof config.isMultiAccountDisabled !== 'undefined' ? config.isMultiAccountDisabled : false;
+      this._prompt = typeof config.prompt !== 'undefined' ? this.getPromptType(config.prompt) : 'select_account';
       this.graph = createFromProvider(this);
       try {
         const tokenResponse = await this._publicClientApplication.handleRedirectPromise();
@@ -241,6 +271,26 @@ export class Msal2Provider extends IProvider {
       }
     } else {
       throw new Error('clientId must be provided');
+    }
+  }
+
+  /**
+   * Returns the prompt type based on enum passed
+   *
+   * @param {PromptType} prompt
+   * @return {*}
+   * @memberof Msal2Provider
+   */
+  private getPromptType(prompt: PromptType) {
+    switch (prompt) {
+      case PromptType.SELECT_ACCOUNT:
+        return 'select_account';
+      case PromptType.CONSENT:
+        return 'consent';
+      case PromptType.LOGIN:
+        return 'login';
+      default:
+        return 'select_account';
     }
   }
 
