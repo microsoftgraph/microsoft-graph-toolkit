@@ -4,7 +4,7 @@
 
 The [Microsoft Graph Toolkit (mgt)](https://aka.ms/mgt) library is a collection of authentication providers and UI components powered by Microsoft Graph. 
 
-The `@microsoft/mgt-msal2-provider` package exposes the `Msal2Provider` class which uses MSAL.js to sign in users and acquire tokens to use with Microsoft Graph.
+The `@microsoft/mgt-msal2-provider` package exposes the `Msal2Provider` class which uses [msal-browser](https://www.npmjs.com/package/@azure/msal-browser) to sign in users and acquire tokens to use with Microsoft Graph.
 
 
 ## Usage
