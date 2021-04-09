@@ -203,3 +203,70 @@ export async function findContactsByEmail(graph: IGraph, email: string): Promise
 
   return result ? result.value : null;
 }
+
+/**
+ * async promise, returns Graph people matching the Graph query specified
+ * in the resource param
+ *
+ * @param {string} resource
+ * @returns {(Promise<Person[]>)}
+ * @memberof Graph
+ */
+export async function getPeopleFromResource(
+  graph: IGraph,
+  version: string,
+  resource: string,
+  scopes: string[]
+): Promise<Person[]> {
+  let cache: CacheStore<CachePeopleQuery>;
+  const key = `${version}${resource}`;
+  if (getIsPeopleCacheEnabled()) {
+    cache = CacheService.getCache<CachePeopleQuery>(schemas.people, schemas.people.stores.peopleQuery);
+    const result: CachePeopleQuery = await cache.getValue(key);
+    if (result && getPeopleInvalidationTime() > Date.now() - result.timeCached) {
+      return result.results.map(peopleStr => JSON.parse(peopleStr));
+    }
+  }
+
+  let request = graph.api(resource).version(version);
+
+  if (scopes && scopes.length) {
+    request = request.middlewareOptions(prepScopes(...scopes));
+  }
+
+  let response = await request.get();
+  // get more pages if there are available
+  if (response && Array.isArray(response.value) && response['@odata.nextLink']) {
+    let pageCount = 1;
+    let page = response;
+
+    while (page && page['@odata.nextLink']) {
+      pageCount++;
+      const nextResource = page['@odata.nextLink'].split(version)[1];
+      page = await graph.client
+        .api(nextResource)
+        .version(version)
+        .get();
+      if (page && page.value && page.value.length) {
+        page.value = response.value.concat(page.value);
+        response = page;
+      }
+    }
+  }
+
+  if (getIsPeopleCacheEnabled() && response) {
+    const item = { results: null };
+    if (Array.isArray(response.value)) {
+      item.results = response.value.map(personStr => JSON.stringify(personStr));
+    } else {
+      item.results = [JSON.stringify(response)];
+    }
+    cache.putValue(key, item);
+  }
+
+  if (response) {
+    return Array.isArray(response.value) ? response.value : [response];
+  } else {
+    return null;
+  }
+}

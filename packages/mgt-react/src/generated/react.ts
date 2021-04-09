@@ -16,6 +16,7 @@ export type AgendaProps = {
 	templateContext?: TemplateContext;
 	mediaQuery?: ComponentMediaQuery;
 	eventClick?: (e: Event) => void;
+	templateRendered?: (e: Event) => void;
 }
 
 export type GetProps = {
@@ -30,6 +31,7 @@ export type GetProps = {
 	templateContext?: TemplateContext;
 	mediaQuery?: ComponentMediaQuery;
 	dataChange?: (e: Event) => void;
+	templateRendered?: (e: Event) => void;
 }
 
 export type LoginProps = {
@@ -41,6 +43,7 @@ export type LoginProps = {
 	loginFailed?: (e: Event) => void;
 	logoutInitiated?: (e: Event) => void;
 	logoutCompleted?: (e: Event) => void;
+	templateRendered?: (e: Event) => void;
 }
 
 export type PeoplePickerProps = {
@@ -58,6 +61,7 @@ export type PeoplePickerProps = {
 	templateContext?: TemplateContext;
 	mediaQuery?: ComponentMediaQuery;
 	selectionChanged?: (e: Event) => void;
+	templateRendered?: (e: Event) => void;
 }
 
 export type PeopleProps = {
@@ -67,9 +71,13 @@ export type PeopleProps = {
 	peopleQueries?: string[];
 	showPresence?: boolean;
 	personCardInteraction?: PersonCardInteraction;
+	resource?: string;
+	version?: string;
+	scopes?: string[];
 	showMax?: number;
 	templateContext?: TemplateContext;
 	mediaQuery?: ComponentMediaQuery;
+	templateRendered?: (e: Event) => void;
 }
 
 export type PersonCardProps = {
@@ -84,6 +92,7 @@ export type PersonCardProps = {
 	personPresence?: MicrosoftGraphBeta.Presence;
 	templateContext?: TemplateContext;
 	mediaQuery?: ComponentMediaQuery;
+	templateRendered?: (e: Event) => void;
 }
 
 export type PersonProps = {
@@ -108,6 +117,7 @@ export type PersonProps = {
 	line1clicked?: (e: Event) => void;
 	line2clicked?: (e: Event) => void;
 	line3clicked?: (e: Event) => void;
+	templateRendered?: (e: Event) => void;
 }
 
 export type TasksProps = {
@@ -129,6 +139,7 @@ export type TasksProps = {
 	taskChanged?: (e: Event) => void;
 	taskClick?: (e: Event) => void;
 	taskRemoved?: (e: Event) => void;
+	templateRendered?: (e: Event) => void;
 }
 
 export type TeamsChannelPickerProps = {
@@ -136,6 +147,7 @@ export type TeamsChannelPickerProps = {
 	templateContext?: TemplateContext;
 	mediaQuery?: ComponentMediaQuery;
 	selectionChanged?: (e: Event) => void;
+	templateRendered?: (e: Event) => void;
 }
 
 export type TodoProps = {
@@ -147,6 +159,7 @@ export type TodoProps = {
 	initialId?: string;
 	templateContext?: TemplateContext;
 	mediaQuery?: ComponentMediaQuery;
+	templateRendered?: (e: Event) => void;
 }
 
 export const Agenda = wrapMgt<AgendaProps>('mgt-agenda');
