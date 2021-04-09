@@ -319,7 +319,7 @@ export class Msal2Provider extends IProvider {
     const loginRequest: PopupRequest = {
       scopes: this.scopes,
       loginHint: this._loginHint,
-      prompt: 'select_account',
+      prompt: this._prompt,
       domainHint: this._domainHint
     };
     if (this._loginType == LoginType.Popup) {
