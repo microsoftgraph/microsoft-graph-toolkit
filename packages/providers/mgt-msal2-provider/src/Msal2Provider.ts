@@ -72,7 +72,7 @@ export interface Msal2Config {
    * @type {string}
    * @memberof Msal2Config
    */
-  domain_hint?: string;
+  domainHint?: string;
 
   /**
    * Prompt type
@@ -122,9 +122,9 @@ export interface Msal2Config {
  * @enum {number}
  */
 export enum PromptType {
-  SELECT_ACCOUNT,
-  LOGIN,
-  CONSENT
+  SELECT_ACCOUNT = 'select_account',
+  LOGIN = 'login',
+  CONSENT = 'consent'
 }
 
 /**
@@ -252,12 +252,12 @@ export class Msal2Provider extends IProvider {
       this._loginType = typeof config.loginType !== 'undefined' ? config.loginType : LoginType.Redirect;
       this._loginHint = typeof config.loginHint !== 'undefined' ? config.loginHint : null;
       this._sid = typeof config.sid !== 'undefined' ? config.sid : null;
-      this._domainHint = typeof config.domain_hint !== 'undefined' ? config.domain_hint : null;
+      this._domainHint = typeof config.domainHint !== 'undefined' ? config.domainHint : null;
       this.scopes = typeof config.scopes !== 'undefined' ? config.scopes : ['user.read'];
       this._publicClientApplication = new PublicClientApplication(this.ms_config);
       this.isMultipleAccountDisabled =
         typeof config.isMultiAccountDisabled !== 'undefined' ? config.isMultiAccountDisabled : false;
-      this._prompt = typeof config.prompt !== 'undefined' ? this.getPromptType(config.prompt) : 'select_account';
+      this._prompt = typeof config.prompt !== 'undefined' ? config.prompt : PromptType.SELECT_ACCOUNT;
       this.graph = createFromProvider(this);
       try {
         const tokenResponse = await this._publicClientApplication.handleRedirectPromise();
@@ -271,26 +271,6 @@ export class Msal2Provider extends IProvider {
       }
     } else {
       throw new Error('clientId must be provided');
-    }
-  }
-
-  /**
-   * Returns the prompt type based on enum passed
-   *
-   * @param {PromptType} prompt
-   * @return {*}
-   * @memberof Msal2Provider
-   */
-  private getPromptType(prompt: PromptType) {
-    switch (prompt) {
-      case PromptType.SELECT_ACCOUNT:
-        return 'select_account';
-      case PromptType.CONSENT:
-        return 'consent';
-      case PromptType.LOGIN:
-        return 'login';
-      default:
-        return 'select_account';
     }
   }
 
