@@ -24,7 +24,7 @@ The `@microsoft/mgt-msal2-provider` package exposes the `Msal2Provider` class wh
     // initialize the auth provider globally
     Providers.globalProvider = new Msal2Provider({
       clientId: 'clientId',
-      isMultiAccountDisabled?: Boolean, //Set this to ```true``` to disable multi account functionality
+      isMultiAccountDisabled?: Boolean, //Set this to true to disable multi account functionality
       scopes?: string[],
       authority?: string,
       redirectUri?: string,
