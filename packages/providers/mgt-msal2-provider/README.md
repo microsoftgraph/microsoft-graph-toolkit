@@ -30,7 +30,7 @@ The `@microsoft/mgt-msal2-provider` package exposes the `Msal2Provider` class wh
       redirectUri?: string,
       loginType?: LoginType, // LoginType.Popup or LoginType.Redirect (redirect is default)
       prompt?: PromptType, // PromptType.CONSENT, PromptType.LOGIN or PromptType.SELECT_ACCOUNT
-      sid?: string, //Session ID
+      sid?: string, // Session ID
       loginHint?: string,
       domainHint?: string,
       options?: Configuration // msal js Configuration object
