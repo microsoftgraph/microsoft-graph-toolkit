@@ -49,9 +49,10 @@ Licensed under the MIT License. -->
       clientId: 'f7d38469-d9d3-4bcd-981b-52eec8432009',
       // clientId: { YOUR CLIENT ID },
       scopes: scopes,
-      autoConsent: true
+      autoConsent: true,
+      httpMethod: 'get'
     };
-    const provider = new mgt.TeamsProvider(config);
+    const provider = new mgt.Teams2Provider(config);
     mgt.Providers.globalProvider = provider;
   </script>
 </body>
