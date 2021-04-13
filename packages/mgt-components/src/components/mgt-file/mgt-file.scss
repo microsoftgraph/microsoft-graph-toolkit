@@ -81,3 +81,11 @@ mgt-file .item {
     }
   }
 }
+
+[dir='rtl'] {
+  .item {
+    &__details {
+      direction: ltr;
+    }
+  }
+}
