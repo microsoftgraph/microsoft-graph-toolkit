@@ -29,6 +29,7 @@ import { getRelativeDisplayDate } from '../../utils/Utils';
 import { OfficeGraphInsightString, ViewType } from '../../graph/types';
 import { getFileTypeIconUriByExtension } from '../../styles/fluent-icons';
 import { getSvg, SvgIcon } from '../../utils/SvgHelper';
+import { strings } from './strings';
 
 /**
  * The File component is used to represent an individual file/folder from OneDrive or SharePoint by displaying information such as the file/folder name, an icon indicating the file type, and other properties such as the author, last modified date, or other details selected by the developer.
@@ -62,6 +63,9 @@ export class MgtFile extends MgtTemplatedComponent {
    */
   static get styles() {
     return styles;
+  }
+  protected get strings() {
+    return strings;
   }
 
   /**
@@ -634,7 +638,7 @@ export class MgtFile extends MgtTemplatedComponent {
           } else {
             size = '0';
           }
-          text = `Size: ${size}`;
+          text = `${this.strings.sizeSubtitle}: ${size}`;
           break;
         case 'lastModifiedDateTime':
           // convert date time
@@ -643,7 +647,7 @@ export class MgtFile extends MgtTemplatedComponent {
           if (driveItem.lastModifiedDateTime) {
             const lastModifiedDateTime = new Date(driveItem.lastModifiedDateTime);
             relativeDateString = getRelativeDisplayDate(lastModifiedDateTime);
-            lastModifiedString = `Modified ${relativeDateString}`;
+            lastModifiedString = `${this.strings.modifiedSubtitle} ${relativeDateString}`;
           } else {
             lastModifiedString = '';
           }

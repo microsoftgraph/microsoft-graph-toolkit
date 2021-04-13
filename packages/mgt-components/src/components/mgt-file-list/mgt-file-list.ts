@@ -35,6 +35,7 @@ import {
 import '../sub-components/mgt-spinner/mgt-spinner';
 import { OfficeGraphInsightString, ViewType } from '../../graph/types';
 import { styles } from './mgt-file-list-css';
+import { strings } from './strings';
 
 /**
  * The File List component displays a list of multiple folders and files by
@@ -72,6 +73,10 @@ export class MgtFileList extends MgtTemplatedComponent {
    */
   static get styles() {
     return styles;
+  }
+
+  protected get strings() {
+    return strings;
   }
 
   /**
@@ -484,8 +489,9 @@ export class MgtFileList extends MgtTemplatedComponent {
         <mgt-spinner></mgt-spinner>
       `;
     } else {
-      return html`<a id="show-more" class="show-more" @click=${() =>
-        this.renderNextPage()}><span>Show more items<span></a>`;
+      return html`<a id="show-more" class="show-more" @click=${() => this.renderNextPage()}><span>${
+        this.strings.showMoreSubtitle
+      }<span></a>`;
     }
   }
 
