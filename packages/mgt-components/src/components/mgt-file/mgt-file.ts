@@ -424,7 +424,9 @@ export class MgtFile extends MgtTemplatedComponent {
     }
 
     return html`
-      ${fileTemplate}
+      <span dir=${this.direction}>
+        ${fileTemplate}
+      </span>
     `;
   }
 
