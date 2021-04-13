@@ -54,5 +54,25 @@ export const schemas = {
       responses: 'responses'
     },
     version: 1
+  },
+  files: {
+    name: 'files',
+    stores: {
+      driveFiles: 'driveFiles',
+      groupFiles: 'groupFiles',
+      siteFiles: 'siteFiles',
+      userFiles: 'userFiles',
+      insightFiles: 'insightFiles',
+      fileQueries: 'fileQueries'
+    },
+    version: 1
+  },
+  fileLists: {
+    name: 'file-lists',
+    stores: {
+      fileLists: 'fileLists',
+      insightfileLists: 'insightfileLists'
+    },
+    version: 1
   }
 };
