@@ -71,6 +71,9 @@ export type PeopleProps = {
 	peopleQueries?: string[];
 	showPresence?: boolean;
 	personCardInteraction?: PersonCardInteraction;
+	resource?: string;
+	version?: string;
+	scopes?: string[];
 	showMax?: number;
 	templateContext?: TemplateContext;
 	mediaQuery?: ComponentMediaQuery;
