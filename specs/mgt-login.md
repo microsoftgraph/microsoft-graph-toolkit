@@ -64,7 +64,7 @@ Key personas:
 <mgt-login></mgt-login>
 ```
 
-Single account version of Login component is rendered.
+Single account view of Login component is rendered.
 
 ### Example 2: Login component is used with MSAL 2.0 Provider
 
@@ -73,7 +73,7 @@ Single account version of Login component is rendered.
 <mgt-login></mgt-login>
 ```
 
-Multiple account version of the Login component is rendered.
+Multiple account view of the Login component is rendered.
 
 ### Example 3: Login component is used with no authentication provider
 
@@ -89,6 +89,8 @@ loginControl.userDetails = {
     }
 </script>
 ```
+
+Single account view of the Login component is rendered.
 
 ## Attributes and Properties
 
