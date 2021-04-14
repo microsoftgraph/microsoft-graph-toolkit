@@ -173,6 +173,17 @@ export class MgtTeamsChannelPicker extends MgtTemplatedComponent {
     }
   }
 
+  /**
+   * Get the scopes required for teams channel picker
+   *
+   * @static
+   * @return {*}  {string[]}
+   * @memberof MgtTeamsChannelPicker
+   */
+  public static getScopes(): string[] {
+    return ['team.readbasic.all', 'channel.readbasic.all'];
+  }
+
   private set items(value) {
     if (this._items === value) {
       return;

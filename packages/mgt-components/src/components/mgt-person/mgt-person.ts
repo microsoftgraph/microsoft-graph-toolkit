@@ -388,6 +388,17 @@ export class MgtPerson extends MgtTemplatedComponent {
   public personCardInteraction: PersonCardInteraction;
 
   /**
+   * Get the scopes required for person
+   *
+   * @static
+   * @return {*}  {string[]}
+   * @memberof MgtPerson
+   */
+  public static getScopes(): string[] {
+    return ['contacts.read', 'user.readbasic.all', 'user.read', 'people.read', 'presence.read.all'];
+  }
+
+  /**
    * Gets the flyout element
    *
    * @protected

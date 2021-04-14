@@ -183,6 +183,17 @@ export class MgtAgenda extends MgtTemplatedComponent {
   }
 
   /**
+   * Get the scopes required for agenda
+   *
+   * @static
+   * @return {*}  {string[]}
+   * @memberof MgtAgenda
+   */
+  public static getScopes(): string[] {
+    return ['calendars.read'];
+  }
+
+  /**
    * determines width available for agenda component.
    * @type {boolean}
    */

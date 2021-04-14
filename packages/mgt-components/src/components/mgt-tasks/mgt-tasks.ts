@@ -319,6 +319,17 @@ export class MgtTasks extends MgtTemplatedComponent {
    */
   public taskFilter: TaskFilter;
 
+  /**
+   * Get the scopes required for tasks
+   *
+   * @static
+   * @return {*}  {string[]}
+   * @memberof MgtTasks
+   */
+  public static getScopes(): string[] {
+    return ['group.read.all', 'group.readwrite.all', 'tasks.read', 'tasks.readwrite'];
+  }
+
   @property() private _isNewTaskVisible: boolean;
   @property() private _newTaskBeingAdded: boolean;
   @property() private _newTaskName: string;

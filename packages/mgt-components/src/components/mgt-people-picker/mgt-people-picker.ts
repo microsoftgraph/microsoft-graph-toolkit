@@ -285,6 +285,17 @@ export class MgtPeoplePicker extends MgtTemplatedComponent {
   public selectionMode: string;
 
   /**
+   * Get the scopes required for people picker
+   *
+   * @static
+   * @return {*}  {string[]}
+   * @memberof MgtPeoplePicker
+   */
+  public static getScopes(): string[] {
+    return ['user.read.all', 'people.read', 'group.read.all', 'user.readbasic.all'];
+  }
+
+  /**
    * User input in search.
    *
    * @protected

@@ -86,6 +86,17 @@ export class MgtLogin extends MgtTemplatedComponent {
   }
 
   /**
+   * Get the scopes required for login
+   *
+   * @static
+   * @return {*}  {string[]}
+   * @memberof MgtLogin
+   */
+  public static getScopes(): string[] {
+    return ['user.read'];
+  }
+
+  /**
    * determines if login menu popup should be showing
    * @type {boolean}
    */

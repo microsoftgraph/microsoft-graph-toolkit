@@ -100,6 +100,17 @@ export class MgtTodo extends MgtTasksBase {
    */
   public taskFilter: TodoFilter;
 
+  /**
+   * Get the scopes required for todo
+   *
+   * @static
+   * @return {*}  {string[]}
+   * @memberof MgtTodo
+   */
+  public static getScopes(): string[] {
+    return ['tasks.read', 'tasks.readwrite'];
+  }
+
   private _lists: TodoTaskList[];
   private _tasks: TodoTask[];
   private _currentList: TodoTaskList;
