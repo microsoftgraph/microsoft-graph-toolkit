@@ -4,7 +4,7 @@ The Login component provides a button and flyout to facilitate Microsoft Identit
 - A sign in button when there are no users signed in
 - When a user or users are signed in, the control displays the display name and profile photo or avatar of the currently active account. When clicked, a flyout is rendered with additional profile data of all signed in accounts.
 
-Two versions of the Login component will exist (single account and multi-account). The version of the component rendered will be dependent on the authentication provider used by the developer. If the developer uses the component with a provider that supports multiple accounts (ex: MSAL 2.0), the flyout will include an option to add another account and display all currently signed in accounts.
+If the developer uses the component with a provider that supports multiple accounts (ex: MSAL 2.0), the flyout will include an option to add another account and display all currently signed in accounts.
 
 The Login component uses Person components to represent signed in users.
 
