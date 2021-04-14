@@ -6,18 +6,12 @@
  */
 
 import { html } from 'lit-element';
-import { withA11y } from '@storybook/addon-a11y';
-import { withKnobs } from '@storybook/addon-knobs';
-import { withWebComponentsKnobs } from 'storybook-addon-web-components-knobs';
-import { withSignIn } from '../../.storybook/addons/signInAddon/signInAddon';
 import { withCodeEditor } from '../../.storybook/addons/codeEditorAddon/codeAddon';
-import '../../packages/mgt-components/dist/es6/components/mgt-person/mgt-person';
 
 export default {
   title: 'Components | mgt-person',
   component: 'mgt-person',
-  decorators: [withCodeEditor],
-  parameters: { options: { selectedPanel: 'storybookjs/knobs/panel' } }
+  decorators: [withCodeEditor]
 };
 
 export const person = () => html`
@@ -239,6 +233,10 @@ export const personPresenceDisplayAll = () => html`
   <mgt-person class="small" id="dndOof-small" person-query="EmilyB" show-presence></mgt-person>
   <mgt-person class="small" id="away-small" person-query="BrianJ" show-presence></mgt-person>
   <mgt-person class="small" id="oof-small" person-query="JoniS@M365x214355.onmicrosoft.com" show-presence></mgt-person>
+  <div class="title"><span>Presence badge on small avatars with line view: </span></div>
+  <mgt-person id="online-small" person-query="me" view="oneline" show-presence avatar-size="small"></mgt-person>
+  <mgt-person id="online-small" person-query="me" view="twolines" show-presence avatar-size="small"></mgt-person>
+  <mgt-person id="online-small" person-query="me" view="threelines" show-presence avatar-size="small"></mgt-person>
 `;
 
 export const darkTheme = () => html`

@@ -32,7 +32,7 @@ jobs:
         run: echo "##[set-output name=tag;]$(branch=${GITHUB_REF#refs/heads/}; echo ${branch/\//.})"
         id: extract_tag
       - run: node scripts/setVersion.js --tag ${{ steps.extract_tag.outputs.tag }}
-      - run: lerna exec --scope @microsoft/* -- "npm publish --tag ${{ steps.extract_tag.outputs.tag }}"
+      - run: lerna exec --scope @microsoft/* -- "npm publish --tag ${{ steps.extract_tag.outputs.tag }} --access=public"
         if: github.repository == 'microsoftgraph/microsoft-graph-toolkit'
         env:
           NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}

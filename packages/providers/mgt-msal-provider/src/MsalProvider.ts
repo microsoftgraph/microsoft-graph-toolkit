@@ -136,6 +136,16 @@ export class MsalProvider extends IProvider {
   }
 
   /**
+   * Name used for analytics
+   *
+   * @readonly
+   * @memberof IProvider
+   */
+  public get name() {
+    return 'MgtMsalProvider';
+  }
+
+  /**
    * client-id authentication
    *
    * @protected
@@ -194,7 +204,6 @@ export class MsalProvider extends IProvider {
     };
 
     this._prompt ? (loginRequest.prompt = this._prompt) : '';
-
     this._domainHint ? (loginRequest.extraQueryParameters = { domain_hint: this._domainHint }) : '';
 
     if (this._loginType === LoginType.Popup) {
