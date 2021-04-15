@@ -578,6 +578,9 @@ export class MgtPeoplePicker extends MgtTemplatedComponent {
    * @memberof MgtPeoplePicker
    */
   protected renderNoData(): TemplateResult {
+    if (!this._isFocused) {
+      return;
+    }
     return (
       this.renderTemplate('error', null) ||
       this.renderTemplate('no-data', null) ||
@@ -857,7 +860,6 @@ export class MgtPeoplePicker extends MgtTemplatedComponent {
   }
 
   private gainedFocus() {
-    console.log('focus happens');
     this._isFocused = true;
     if (this.input) {
       this.input.focus();
@@ -921,6 +923,9 @@ export class MgtPeoplePicker extends MgtTemplatedComponent {
     }
     if (event.keyCode === 9 && !this.flyout.isOpen) {
       // keyCodes capture: tab (9)
+      this.gainedFocus();
+    }
+    if (event.shiftKey) {
       this.gainedFocus();
     }
 
@@ -997,7 +1002,7 @@ export class MgtPeoplePicker extends MgtTemplatedComponent {
       }
     }
     if (event.keyCode === 9 || event.keyCode === 13) {
-      if (!event.shiftKey) {
+      if (!event.shiftKey && this._foundPeople) {
         // keyCodes capture: tab (9) and enter (13)
         if (this._foundPeople.length) {
           this.fireCustomEvent('blur');
