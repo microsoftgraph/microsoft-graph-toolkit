@@ -857,6 +857,7 @@ export class MgtPeoplePicker extends MgtTemplatedComponent {
   }
 
   private gainedFocus() {
+    console.log('focus happens');
     this._isFocused = true;
     if (this.input) {
       this.input.focus();
@@ -917,6 +918,10 @@ export class MgtPeoplePicker extends MgtTemplatedComponent {
     if (event.keyCode === 40 || event.keyCode === 39 || event.keyCode === 38 || event.keyCode === 37) {
       // keyCodes capture: down arrow (40), right arrow (39), up arrow (38) and left arrow (37)
       return;
+    }
+    if (event.keyCode === 9 && !this.flyout.isOpen) {
+      // keyCodes capture: tab (9)
+      this.gainedFocus();
     }
 
     const input = event.target as HTMLInputElement;
@@ -992,12 +997,14 @@ export class MgtPeoplePicker extends MgtTemplatedComponent {
       }
     }
     if (event.keyCode === 9 || event.keyCode === 13) {
-      // keyCodes capture: tab (9) and enter (13)
-      if (this._foundPeople.length) {
-        this.fireCustomEvent('blur');
-        event.preventDefault();
+      if (!event.shiftKey) {
+        // keyCodes capture: tab (9) and enter (13)
+        if (this._foundPeople.length) {
+          this.fireCustomEvent('blur');
+          event.preventDefault();
+        }
+        this.addPerson(this._foundPeople[this._arrowSelectionCount]);
       }
-      this.addPerson(this._foundPeople[this._arrowSelectionCount]);
       this.hideFlyout();
       (event.target as HTMLInputElement).value = '';
     }
