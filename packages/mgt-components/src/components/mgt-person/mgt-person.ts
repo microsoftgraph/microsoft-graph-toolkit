@@ -394,9 +394,14 @@ export class MgtPerson extends MgtTemplatedComponent {
    * @return {*}  {string[]}
    * @memberof MgtPerson
    */
-  public static getScopes(): string[] {
-    return ['contacts.read', 'user.readbasic.all', 'user.read', 'people.read', 'presence.read.all', 'presence.read'];
-  }
+  public static requiredScopes: string[] = [
+    'contacts.read',
+    'user.readbasic.all',
+    'user.read',
+    'people.read',
+    'presence.read.all',
+    'presence.read'
+  ];
 
   /**
    * Gets the flyout element

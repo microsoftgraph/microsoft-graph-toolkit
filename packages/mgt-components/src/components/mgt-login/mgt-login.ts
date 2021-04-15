@@ -92,9 +92,7 @@ export class MgtLogin extends MgtTemplatedComponent {
    * @return {*}  {string[]}
    * @memberof MgtLogin
    */
-  public static getScopes(): string[] {
-    return ['user.read'];
-  }
+  public static requiredScopes: string[] = ['user.read'];
 
   /**
    * determines if login menu popup should be showing

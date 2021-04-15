@@ -180,9 +180,7 @@ export class MgtTeamsChannelPicker extends MgtTemplatedComponent {
    * @return {*}  {string[]}
    * @memberof MgtTeamsChannelPicker
    */
-  public static getScopes(): string[] {
-    return ['team.readbasic.all', 'channel.readbasic.all'];
-  }
+  public static requiredScopes: string[] = ['team.readbasic.all', 'channel.readbasic.all'];
 
   private set items(value) {
     if (this._items === value) {

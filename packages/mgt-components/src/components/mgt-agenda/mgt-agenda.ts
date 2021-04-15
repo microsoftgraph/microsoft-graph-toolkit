@@ -190,9 +190,7 @@ export class MgtAgenda extends MgtTemplatedComponent {
    * @return {*}  {string[]}
    * @memberof MgtAgenda
    */
-  public static getScopes(): string[] {
-    return [...new Set(['calendars.read', ...MgtPeople.getScopes()])];
-  }
+  public static requiredScopes: string[] = [...new Set(['calendars.read', ...MgtPeople.requiredScopes])];
 
   /**
    * determines width available for agenda component.

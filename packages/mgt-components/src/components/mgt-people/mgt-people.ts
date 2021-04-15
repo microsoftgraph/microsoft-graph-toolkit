@@ -216,9 +216,13 @@ export class MgtPeople extends MgtTemplatedComponent {
    * @return {*}  {string[]}
    * @memberof MgtPeople
    */
-  public static getScopes(): string[] {
-    return ['user.read.all', 'people.read', 'user.readbasic.all', 'presence.read.all', 'contacts.read'];
-  }
+  public static requiredScopes: string[] = [
+    'user.read.all',
+    'people.read',
+    'user.readbasic.all',
+    'presence.read.all',
+    'contacts.read'
+  ];
 
   private _groupId: string;
   private _userIds: string[];

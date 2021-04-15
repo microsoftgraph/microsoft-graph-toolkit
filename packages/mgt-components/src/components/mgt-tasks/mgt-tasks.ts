@@ -326,9 +326,7 @@ export class MgtTasks extends MgtTemplatedComponent {
    * @return {*}  {string[]}
    * @memberof MgtTasks
    */
-  public static getScopes(): string[] {
-    return ['group.read.all', 'group.readwrite.all', 'tasks.read', 'tasks.readwrite'];
-  }
+  public static requiredScopes: string[] = ['group.read.all', 'group.readwrite.all', 'tasks.read', 'tasks.readwrite'];
 
   @property() private _isNewTaskVisible: boolean;
   @property() private _newTaskBeingAdded: boolean;

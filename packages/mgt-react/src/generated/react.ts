@@ -13,6 +13,7 @@ export type AgendaProps = {
 	showMax?: number;
 	groupByDay?: boolean;
 	preferredTimezone?: string;
+	requiredScopes?: string[];
 	templateContext?: TemplateContext;
 	mediaQuery?: ComponentMediaQuery;
 	eventClick?: (e: Event) => void;
@@ -36,6 +37,7 @@ export type GetProps = {
 
 export type LoginProps = {
 	userDetails?: IDynamicPerson;
+	requiredScopes?: string[];
 	templateContext?: TemplateContext;
 	mediaQuery?: ComponentMediaQuery;
 	loginInitiated?: (e: Event) => void;
@@ -56,6 +58,7 @@ export type PeoplePickerProps = {
 	defaultSelectedUserIds?: string[];
 	placeholder?: string;
 	selectionMode?: string;
+	requiredScopes?: string[];
 	showMax?: number;
 	disabled?: boolean;
 	templateContext?: TemplateContext;
@@ -74,6 +77,7 @@ export type PeopleProps = {
 	resource?: string;
 	version?: string;
 	scopes?: string[];
+	requiredScopes?: string[];
 	showMax?: number;
 	templateContext?: TemplateContext;
 	mediaQuery?: ComponentMediaQuery;
@@ -81,6 +85,7 @@ export type PeopleProps = {
 }
 
 export type PersonCardProps = {
+	requiredScopes?: string[];
 	personDetails?: IDynamicPerson;
 	personQuery?: string;
 	userId?: string;
@@ -106,6 +111,7 @@ export type PersonProps = {
 	fetchImage?: boolean;
 	avatarType?: string;
 	personPresence?: MicrosoftGraphBeta.Presence;
+	requiredScopes?: string[];
 	personCardInteraction?: PersonCardInteraction;
 	line1Property?: string;
 	line2Property?: string;
@@ -133,6 +139,7 @@ export type TasksProps = {
 	hideOptions?: boolean;
 	groupId?: string;
 	taskFilter?: TaskFilter;
+	requiredScopes?: string[];
 	templateContext?: TemplateContext;
 	mediaQuery?: ComponentMediaQuery;
 	taskAdded?: (e: Event) => void;
@@ -144,6 +151,7 @@ export type TasksProps = {
 
 export type TeamsChannelPickerProps = {
 	selectedItem?: SelectedChannel;
+	requiredScopes?: string[];
 	templateContext?: TemplateContext;
 	mediaQuery?: ComponentMediaQuery;
 	selectionChanged?: (e: Event) => void;
@@ -152,6 +160,7 @@ export type TeamsChannelPickerProps = {
 
 export type TodoProps = {
 	taskFilter?: TodoFilter;
+	requiredScopes?: string[];
 	readOnly?: boolean;
 	hideHeader?: boolean;
 	hideOptions?: boolean;

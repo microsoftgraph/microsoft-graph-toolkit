@@ -107,9 +107,7 @@ export class MgtTodo extends MgtTasksBase {
    * @return {*}  {string[]}
    * @memberof MgtTodo
    */
-  public static getScopes(): string[] {
-    return ['tasks.read', 'tasks.readwrite'];
-  }
+  public static requiredScopes: string[] = ['tasks.read', 'tasks.readwrite'];
 
   private _lists: TodoTaskList[];
   private _tasks: TodoTask[];
