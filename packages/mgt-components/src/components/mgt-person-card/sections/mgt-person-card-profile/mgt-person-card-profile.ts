@@ -5,7 +5,14 @@
  * -------------------------------------------------------------------------------------------
  */
 
-import { EducationalActivity, PersonAnnualEvent, PersonInterest, Profile } from '@microsoft/microsoft-graph-types-beta';
+import {
+  CompanyDetail,
+  EducationalActivity,
+  PersonAnnualEvent,
+  PersonInterest,
+  PositionDetail,
+  Profile
+} from '@microsoft/microsoft-graph-types-beta';
 import { customElement, html, TemplateResult } from 'lit-element';
 import { BasePersonCardSection } from '../BasePersonCardSection';
 import { getSvg, SvgIcon } from '../../../../utils/SvgHelper';
@@ -272,26 +279,40 @@ export class MgtPersonCardProfile extends BasePersonCardSection {
       return null;
     }
 
-    const positionItems: TemplateResult[] = [];
-    for (const position of this._profile.positions) {
-      positionItems.push(html`
-        <div class="data-list__item work-position">
-          <div class="data-list__item__header">
-            <div class="data-list__item__title">${position.detail.jobTitle}</div>
-            <div class="data-list__item__date-range">
-              ${this.getDisplayDateRange(position.detail)}
-            </div>
-          </div>
-          <div class="data-list__item__content">
+    const expandCompanyDetails = (position: PositionDetail) => {
+      let company: CompanyDetail = position.company;
+      if (company) {
+        return html`
+        <div class="data-list__item__content">
             <div class="work-position__company">
-              ${position.detail.company.displayName}
+              ${company.displayName ? company.displayName : null}
             </div>
             <div class="work-position__location">
-              ${position.detail.company.address.city}, ${position.detail.company.address.state}
+              ${company.address.city ? company.address.city : null}, ${
+          company.address.state ? company.address.state : null
+        }
             </div>
           </div>
         </div>
-      `);
+        `;
+      }
+    };
+
+    const positionItems: TemplateResult[] = [];
+    for (const position of this._profile.positions) {
+      if (position.detail) {
+        positionItems.push(html`
+          <div class="data-list__item work-position">
+            <div class="data-list__item__header">
+              <div class="data-list__item__title">${position.detail.jobTitle}</div>
+              <div class="data-list__item__date-range">
+                ${this.getDisplayDateRange(position.detail)}
+              </div>
+            </div>
+            ${expandCompanyDetails(position.detail)}
+          </div>
+        `);
+      }
     }
 
     return html`
