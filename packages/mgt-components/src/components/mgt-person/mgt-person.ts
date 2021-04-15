@@ -395,7 +395,7 @@ export class MgtPerson extends MgtTemplatedComponent {
    * @memberof MgtPerson
    */
   public static getScopes(): string[] {
-    return ['contacts.read', 'user.readbasic.all', 'user.read', 'people.read', 'presence.read.all'];
+    return ['contacts.read', 'user.readbasic.all', 'user.read', 'people.read', 'presence.read.all', 'presence.read'];
   }
 
   /**

@@ -14,6 +14,7 @@ import '../mgt-person/mgt-person';
 import { styles } from './mgt-agenda-css';
 import { getEventsPageIterator } from './mgt-agenda.graph';
 import { SvgIcon, getSvg } from '../../utils/SvgHelper';
+import { MgtPeople } from '../components';
 
 /**
  * Web Component which represents events in a user or group calendar.
@@ -190,7 +191,7 @@ export class MgtAgenda extends MgtTemplatedComponent {
    * @memberof MgtAgenda
    */
   public static getScopes(): string[] {
-    return ['calendars.read'];
+    return [...new Set(['calendars.read', ...MgtPeople.getScopes()])];
   }
 
   /**
