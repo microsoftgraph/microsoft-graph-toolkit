@@ -14,7 +14,7 @@ export const fileList = () => html`
 `;
 
 export const getFileListByListQuery = () => html`
-  <mgt-file-list file-list-query="me/drive/items/01BYE5RZYJ43UXGBP23BBIFPISHHMCDTOY/children"></mgt-file-list>
+  <mgt-file-list file-list-query="/me/drive/items/01BYE5RZYJ43UXGBP23BBIFPISHHMCDTOY/children"></mgt-file-list>
 `;
 
 export const getFileListById = () => html`
@@ -80,7 +80,7 @@ export const getFileListByExtensions = () => html`
 `;
 
 export const disableFileExpansion = () => html`
-  <mgt-file-list disable-expansion></mgt-file-list>
+  <mgt-file-list hide-more-files-button></mgt-file-list>
 `;
 
 export const itemClickEvent = () => html`

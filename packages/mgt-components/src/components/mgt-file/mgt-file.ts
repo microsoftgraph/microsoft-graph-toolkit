@@ -41,10 +41,12 @@ import { strings } from './strings';
  * @cssprop --file-type-icon-size - {Length} file type icon size
  * @cssprop --file-border - {String} file item border style
  * @cssprop --file-box-shadow - {String} file item box shadow style
+ * @cssprop --file-background-color - {Color} file background color
  * @cssprop --font-family - {String} Font family
  * @cssprop --font-size - {Length} Font size
  * @cssprop --font-weight - {Length} Font weight
  * @cssprop --text-transform - {String} text transform
+ * @cssprop --color -{Color} text color
  * @cssprop --line2-font-size - {Length} Line 2 font size
  * @cssprop --line2-font-weight - {Length} Line 2 font weight
  * @cssprop --line2-color - {Color} Line 2 color

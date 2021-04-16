@@ -12,10 +12,11 @@ import {
   Providers,
   ProviderState
 } from '@microsoft/mgt-element';
-import { Drive, DriveItem } from '@microsoft/microsoft-graph-types';
+import { DriveItem } from '@microsoft/microsoft-graph-types';
 import { customElement, html, property, TemplateResult } from 'lit-element';
 import { repeat } from 'lit-html/directives/repeat';
 import {
+  fetchNextAndCacheForFilesPageIterator,
   getDriveFilesByIdIterator,
   getDriveFilesByPathIterator,
   getFilesByIdIterator,
@@ -367,6 +368,7 @@ export class MgtFileList extends MgtTemplatedComponent {
   private _insightType: OfficeGraphInsightString;
   private _fileExtensions: string[];
   private _userId: string;
+  private _preloadedFiles: DriveItem[];
   private pageIterator: GraphPageIterator<DriveItem>;
 
   constructor() {
@@ -374,6 +376,7 @@ export class MgtFileList extends MgtTemplatedComponent {
 
     this.pageSize = 10;
     this.itemView = ViewType.twolines;
+    this._preloadedFiles = [];
   }
 
   /**
@@ -452,7 +455,7 @@ export class MgtFileList extends MgtTemplatedComponent {
             `
           )}
         </ul>
-        ${!this.hideMoreFilesButton && this.pageIterator && this.pageIterator.hasNext
+        ${!this.hideMoreFilesButton && this.pageIterator && (this.pageIterator.hasNext || this._preloadedFiles.length)
           ? this.renderMoreFileButton()
           : null}
       </div>
@@ -532,53 +535,41 @@ export class MgtFileList extends MgtTemplatedComponent {
     if (!this.files) {
       if (this.fileListQuery) {
         pageIterator = await getFilesByListQueryIterator(graph, this.fileListQuery, this.pageSize);
-        files = pageIterator ? pageIterator.value : null;
       } else if (this.fileQueries) {
         files = await getFilesByQueries(graph, this.fileQueries);
       } else if (getFromMyDrive) {
         if (this.itemId) {
           pageIterator = await getFilesByIdIterator(graph, this.itemId, this.pageSize);
-          files = pageIterator ? pageIterator.value : null;
         } else if (this.itemPath) {
           pageIterator = await getFilesByPathIterator(graph, this.itemPath, this.pageSize);
-          files = pageIterator ? pageIterator.value : null;
         } else if (this.insightType) {
           files = await getMyInsightsFiles(graph, this.insightType);
         } else {
           pageIterator = await getFilesIterator(graph, this.pageSize);
-          files = pageIterator ? pageIterator.value : null;
         }
       } else if (this.driveId) {
         if (this.itemId) {
           pageIterator = await getDriveFilesByIdIterator(graph, this.driveId, this.itemId, this.pageSize);
-          files = pageIterator ? pageIterator.value : null;
         } else if (this.itemPath) {
           pageIterator = await getDriveFilesByPathIterator(graph, this.driveId, this.itemPath, this.pageSize);
-          files = pageIterator ? pageIterator.value : null;
         }
       } else if (this.groupId) {
         if (this.itemId) {
           pageIterator = await getGroupFilesByIdIterator(graph, this.groupId, this.itemId, this.pageSize);
-          files = pageIterator ? pageIterator.value : null;
         } else if (this.itemPath) {
           pageIterator = await getGroupFilesByPathIterator(graph, this.groupId, this.itemPath, this.pageSize);
-          files = pageIterator ? pageIterator.value : null;
         }
       } else if (this.siteId) {
         if (this.itemId) {
           pageIterator = await getSiteFilesByIdIterator(graph, this.siteId, this.itemId, this.pageSize);
-          files = pageIterator ? pageIterator.value : null;
         } else if (this.itemPath) {
           pageIterator = await getSiteFilesByPathIterator(graph, this.siteId, this.itemPath, this.pageSize);
-          files = pageIterator ? pageIterator.value : null;
         }
       } else if (this.userId) {
         if (this.itemId) {
           pageIterator = await getUserFilesByIdIterator(graph, this.userId, this.itemId, this.pageSize);
-          files = pageIterator ? pageIterator.value : null;
         } else if (this.itemPath) {
           pageIterator = await getUserFilesByPathIterator(graph, this.userId, this.itemPath, this.pageSize);
-          files = pageIterator ? pageIterator.value : null;
         } else if (this.insightType) {
           files = await getUserInsightsFiles(graph, this.userId, this.insightType);
         }
@@ -586,17 +577,26 @@ export class MgtFileList extends MgtTemplatedComponent {
 
       if (pageIterator) {
         this.pageIterator = pageIterator;
+        this._preloadedFiles = [...this.pageIterator.value];
+
+        // handle when cached file length is greater than page size
+        if (this._preloadedFiles.length >= this.pageSize) {
+          files = this._preloadedFiles.splice(0, this.pageSize);
+        } else {
+          files = this._preloadedFiles.splice(0, this._preloadedFiles.length);
+        }
       }
 
       // filter files when extensions are provided
       let filteredByFileExtension: DriveItem[];
       if (this.fileExtensions && this.fileExtensions !== null) {
         // retrive all pages before filtering
-        if (pageIterator && pageIterator.value) {
-          while (pageIterator.hasNext) {
-            await pageIterator.next();
+        if (this.pageIterator && this.pageIterator.value) {
+          while (this.pageIterator.hasNext) {
+            await fetchNextAndCacheForFilesPageIterator(this.pageIterator);
           }
-          files = pageIterator.value;
+          files = this.pageIterator.value;
+          this._preloadedFiles = [];
         }
         filteredByFileExtension = files.filter(file => {
           for (const e of this.fileExtensions) {
@@ -654,11 +654,20 @@ export class MgtFileList extends MgtTemplatedComponent {
       );
     }
 
-    if (this.pageIterator.hasNext) {
-      await this.pageIterator.next();
-      this.files = this.pageIterator.value;
-      this.requestUpdate();
+    // render next page from cache if exists, or else use iterator
+    if (this._preloadedFiles.length > 0) {
+      this.files = [
+        ...this.files,
+        ...this._preloadedFiles.splice(0, Math.min(this.pageSize, this._preloadedFiles.length))
+      ];
+    } else {
+      if (this.pageIterator.hasNext) {
+        await fetchNextAndCacheForFilesPageIterator(this.pageIterator);
+        this.files = this.pageIterator.value;
+      }
     }
+
+    this.requestUpdate();
   }
 
   private getFileExtension(name) {
