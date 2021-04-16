@@ -198,7 +198,7 @@ export function getDateFromMonthYear(month: number, year: number) {
 export function debounce(func, time) {
   let timeout;
 
-  return function() {
+  return function () {
     const functionCall = () => func.apply(this, arguments);
 
     clearTimeout(timeout);
