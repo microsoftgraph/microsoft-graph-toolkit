@@ -466,7 +466,11 @@ export class MgtTasks extends MgtTemplatedComponent {
       ${header}
       <div class="Tasks" dir=${this.direction}>
         ${this._isNewTaskVisible ? this.renderNewTask() : null} ${loadingTask}
-        ${repeat(tasks, task => task.id, task => this.renderTask(task))}
+        ${repeat(
+          tasks,
+          task => task.id,
+          task => this.renderTask(task)
+        )}
       </div>
     `;
   }
@@ -528,9 +532,9 @@ export class MgtTasks extends MgtTemplatedComponent {
       (cur, ret) => [...cur, ...ret],
       []
     );
-    const tasks = (await Promise.all(
-      folders.map(folder => ts.getTasksForTaskFolder(folder.id, folder.parentId))
-    )).reduce((cur, ret) => [...cur, ...ret], []);
+    const tasks = (
+      await Promise.all(folders.map(folder => ts.getTasksForTaskFolder(folder.id, folder.parentId)))
+    ).reduce((cur, ret) => [...cur, ...ret], []);
 
     this._tasks = tasks;
     this._folders = folders;
@@ -547,9 +551,9 @@ export class MgtTasks extends MgtTemplatedComponent {
       folders = folders.filter(folder => folder.id === this.targetBucketId);
     }
 
-    const tasks = (await Promise.all(
-      folders.map(folder => ts.getTasksForTaskFolder(folder.id, folder.parentId))
-    )).reduce((cur, ret) => [...cur, ...ret], []);
+    const tasks = (
+      await Promise.all(folders.map(folder => ts.getTasksForTaskFolder(folder.id, folder.parentId)))
+    ).reduce((cur, ret) => [...cur, ...ret], []);
 
     this._tasks = tasks;
     this._folders = folders;
@@ -571,9 +575,9 @@ export class MgtTasks extends MgtTemplatedComponent {
       }
     }
 
-    const tasks = (await Promise.all(
-      folders.map(folder => ts.getTasksForTaskFolder(folder.id, folder.parentId))
-    )).reduce((cur, ret) => [...cur, ...ret], []);
+    const tasks = (
+      await Promise.all(folders.map(folder => ts.getTasksForTaskFolder(folder.id, folder.parentId)))
+    ).reduce((cur, ret) => [...cur, ...ret], []);
 
     this._tasks = tasks;
     this._folders = folders;
@@ -587,9 +591,9 @@ export class MgtTasks extends MgtTemplatedComponent {
       []
     );
 
-    const tasks = (await Promise.all(
-      folders.map(folder => ts.getTasksForTaskFolder(folder.id, folder.parentId))
-    )).reduce((cur, ret) => [...cur, ...ret], []);
+    const tasks = (
+      await Promise.all(folders.map(folder => ts.getTasksForTaskFolder(folder.id, folder.parentId)))
+    ).reduce((cur, ret) => [...cur, ...ret], []);
 
     this._tasks = tasks;
     this._folders = folders;
