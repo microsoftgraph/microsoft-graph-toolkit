@@ -44,6 +44,13 @@ interface MsalConfigBase {
    * @memberof MsalConfigBase
    */
   domainHint?: string;
+  /**
+   * prompt value
+   *
+   * @type {string}
+   * @memberof MsalConfigBase
+   */
+  prompt?: string;
 }
 
 /**
@@ -151,6 +158,7 @@ export class MsalProvider extends IProvider {
   private _loginType: LoginType;
   private _loginHint: string;
   private _domainHint: string;
+  private _prompt: string;
 
   // session storage
   private sessionStorageRequestedScopesKey = 'mgt-requested-scopes';
@@ -192,10 +200,10 @@ export class MsalProvider extends IProvider {
   public async login(authenticationParameters?: AuthenticationParameters): Promise<void> {
     let loginRequest: AuthenticationParameters = authenticationParameters || {
       loginHint: this._loginHint,
-      prompt: 'select_account',
       scopes: this.scopes
     };
 
+    this._prompt ? (loginRequest.prompt = this._prompt) : '';
     this._domainHint ? (loginRequest.extraQueryParameters = { domain_hint: this._domainHint }) : '';
 
     if (this._loginType === LoginType.Popup) {
@@ -384,6 +392,7 @@ export class MsalProvider extends IProvider {
     this._loginType = typeof config.loginType !== 'undefined' ? config.loginType : LoginType.Redirect;
     this._loginHint = config.loginHint;
     this._domainHint = config.domainHint;
+    this._prompt = typeof config.prompt !== 'undefined' ? config.prompt : 'select_account';
 
     let userAgentApplication: UserAgentApplication;
     let clientId: string;
