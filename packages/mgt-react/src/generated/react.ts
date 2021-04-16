@@ -30,6 +30,7 @@ export type FileListProps = {
 	userId?: string;
 	insightType?: OfficeGraphInsightString;
 	fileExtensions?: string[];
+	hideMoreFilesButton?: boolean;
 	pageSize?: number;
 	itemView?: ViewType;
 	templateContext?: TemplateContext;

@@ -74,6 +74,21 @@ export interface CacheConfig {
    * @memberof CacheConfig
    */
   response: CacheOptions;
+
+  /**
+   * Cache options for files store
+   *
+   * @type {CacheOptions}
+   * @memberof CacheConfig
+   */
+  files: CacheOptions;
+  /**
+   * Cache options for fileLists store
+   *
+   * @type {CacheOptions}
+   * @memberof CacheConfig
+   */
+  fileLists: CacheOptions;
 }
 
 /**
@@ -164,6 +179,14 @@ export class CacheService {
       isEnabled: true
     },
     response: {
+      invalidationPeriod: null,
+      isEnabled: true
+    },
+    files: {
+      invalidationPeriod: null,
+      isEnabled: true
+    },
+    fileLists: {
       invalidationPeriod: null,
       isEnabled: true
     }
