@@ -974,11 +974,13 @@ export class MgtPerson extends MgtTemplatedComponent {
 
       if (people && people.length) {
         this.personDetails = people[0];
-        const image = await getPersonImage(graph, people[0], MgtPerson.config.useContactApis);
+        if (this._avatarType === 'photo') {
+          const image = await getPersonImage(graph, people[0], MgtPerson.config.useContactApis);
 
-        if (image) {
-          this.personDetails.personImage = image;
-          this._fetchedImage = image;
+          if (image) {
+            this.personDetails.personImage = image;
+            this._fetchedImage = image;
+          }
         }
       }
     }
