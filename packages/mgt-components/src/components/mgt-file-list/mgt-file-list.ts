@@ -16,7 +16,7 @@ import { Drive, DriveItem } from '@microsoft/microsoft-graph-types';
 import { customElement, html, property, TemplateResult } from 'lit-element';
 import { repeat } from 'lit-html/directives/repeat';
 import {
-  getNextFilesPageIterator,
+  fetchNextAndCacheForFilesPageIterator,
   getDriveFilesByIdIterator,
   getDriveFilesByPathIterator,
   getFilesByIdIterator,
@@ -363,7 +363,7 @@ export class MgtFileList extends MgtTemplatedComponent {
   private _insightType: OfficeGraphInsightString;
   private _fileExtensions: string[];
   private _userId: string;
-  private _files: DriveItem[];
+  private _preloadedFiles: DriveItem[];
   private pageIterator: GraphPageIterator<DriveItem>;
 
   constructor() {
@@ -371,6 +371,7 @@ export class MgtFileList extends MgtTemplatedComponent {
 
     this.pageSize = 10;
     this.itemView = ViewType.twolines;
+    this._preloadedFiles = [];
   }
 
   /**
@@ -449,9 +450,7 @@ export class MgtFileList extends MgtTemplatedComponent {
             `
           )}
         </ul>
-        ${!this.hideMoreFilesButton &&
-        this.pageIterator &&
-        (this.pageIterator.hasNext || this._files.length > this.pageSize)
+        ${!this.hideMoreFilesButton && this.pageIterator && (this.pageIterator.hasNext || this._preloadedFiles.length)
           ? this.renderMoreFileButton()
           : null}
       </div>
@@ -572,14 +571,13 @@ export class MgtFileList extends MgtTemplatedComponent {
 
       if (pageIterator) {
         this.pageIterator = pageIterator;
-        this._files = this.pageIterator.value;
+        this._preloadedFiles = [...this.pageIterator.value];
 
         // handle when cached file length is greater than page size
-        if (this._files.length >= this.pageSize) {
-          files = this._files.slice(0, this.pageSize);
-          this._files = this._files.slice(this.pageSize);
+        if (this._preloadedFiles.length >= this.pageSize) {
+          files = this._preloadedFiles.splice(0, this.pageSize);
         } else {
-          files = this._files;
+          files = this._preloadedFiles.splice(0, this._preloadedFiles.length);
         }
       }
 
@@ -589,10 +587,10 @@ export class MgtFileList extends MgtTemplatedComponent {
         // retrive all pages before filtering
         if (this.pageIterator && this.pageIterator.value) {
           while (this.pageIterator.hasNext) {
-            await getNextFilesPageIterator(this.pageIterator);
+            await fetchNextAndCacheForFilesPageIterator(this.pageIterator);
           }
           files = this.pageIterator.value;
-          this._files = [];
+          this._preloadedFiles = [];
         }
         filteredByFileExtension = files.filter(file => {
           for (const e of this.fileExtensions) {
@@ -651,17 +649,14 @@ export class MgtFileList extends MgtTemplatedComponent {
     }
 
     // render next page from cache if exists, or else use iterator
-    if (this._files.length > 0) {
-      if (this._files.length >= this.pageSize) {
-        this.files = this.files.concat(this._files.slice(0, this.pageSize));
-        this._files = this._files.slice(this.pageSize);
-      } else {
-        this.files = this.files.concat(this._files.slice(0, this._files.length));
-        this._files = [];
-      }
+    if (this._preloadedFiles.length > 0) {
+      this.files = [
+        ...this.files,
+        ...this._preloadedFiles.splice(0, Math.min(this.pageSize, this._preloadedFiles.length))
+      ];
     } else {
       if (this.pageIterator.hasNext) {
-        await getNextFilesPageIterator(this.pageIterator);
+        await fetchNextAndCacheForFilesPageIterator(this.pageIterator);
         this.files = this.pageIterator.value;
       }
     }

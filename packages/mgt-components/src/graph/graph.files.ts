@@ -467,7 +467,7 @@ export async function getFilesIterator(graph: IGraph, top?: number): Promise<Gra
   const scopes = 'files.read';
   let request;
   try {
-    request = await graph.api(endpoint).middlewareOptions(prepScopes(scopes));
+    request = graph.api(endpoint).middlewareOptions(prepScopes(scopes));
     if (top) {
       request.top(top);
     }
@@ -1081,6 +1081,8 @@ async function getFileFromCache(cache: CacheStore<CacheFile>, key: string) {
       return cachedFile;
     }
   }
+
+  return null;
 }
 
 export async function getFileListFromCache(cache: CacheStore<CacheFileList>, key: string) {
@@ -1095,20 +1097,23 @@ export async function getFileListFromCache(cache: CacheStore<CacheFileList>, key
       return fileList;
     }
   }
+
+  return null;
 }
 
 // refresh filesPageIterator to its next iteration and save current page to cache
-export async function getNextFilesPageIterator(filesPageIterator) {
-  let cache: CacheStore<CacheFileList>;
-  cache = CacheService.getCache<CacheFileList>(schemas.fileLists, schemas.fileLists.stores.fileLists);
+export async function fetchNextAndCacheForFilesPageIterator(filesPageIterator) {
   const nextLink = filesPageIterator._nextLink;
-  const reg = /(?<=graph.microsoft.com\/(v1.0|beta))(.*?)(?=\?)/gi; // match only the endpoint (after version number and before OData query params) e.g. /me/drive/root/children
-  const key = reg.exec(nextLink);
 
   if (filesPageIterator.hasNext) {
     await filesPageIterator.next();
   }
   if (getIsFileListsCacheEnabled()) {
+    let cache: CacheStore<CacheFileList>;
+    cache = CacheService.getCache<CacheFileList>(schemas.fileLists, schemas.fileLists.stores.fileLists);
+    const reg = /(?<=graph.microsoft.com\/(v1.0|beta))(.*?)(?=\?)/gi; // match only the endpoint (after version number and before OData query params) e.g. /me/drive/root/children
+    const key = reg.exec(nextLink);
+
     cache.putValue(key[0], { files: filesPageIterator.value, nextLink: filesPageIterator._nextLink });
   }
 }
