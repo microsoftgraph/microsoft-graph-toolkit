@@ -623,13 +623,15 @@ export class MgtPerson extends MgtTemplatedComponent {
 
       return html`
         <span class="initials-text" aria-label="${initials}">
-          ${initials && initials.length
-            ? html`
+          ${
+            initials && initials.length
+              ? html`
                 ${initials}
               `
-            : html`
+              : html`
                 <i class="ms-Icon ms-Icon--Contact contact-icon"></i>
-              `}
+              `
+          }
         </span>
       `;
     }
@@ -942,7 +944,10 @@ export class MgtPerson extends MgtTemplatedComponent {
     if (this.personDetails) {
       if (
         !this.personDetails.personImage &&
-        (this.fetchImage && this._avatarType === 'photo' && !this.personImage && !this._fetchedImage)
+        this.fetchImage &&
+        this._avatarType === 'photo' &&
+        !this.personImage &&
+        !this._fetchedImage
       ) {
         const image = await getPersonImage(graph, this.personDetails, MgtPerson.config.useContactApis);
         if (image) {

@@ -494,8 +494,10 @@ export class MgtPeoplePicker extends MgtTemplatedComponent {
         person =>
           html`
             <div class="selected-list__person-wrapper">
-              ${this.renderTemplate('selected-person', { person }, `selected-${person.id}`) ||
-                this.renderSelectedPerson(person)}
+              ${
+                this.renderTemplate('selected-person', { person }, `selected-${person.id}`) ||
+                this.renderSelectedPerson(person)
+              }
 
               <div class="selected-list__person-wrapper__overflow">
                 <div class="selected-list__person-wrapper__overflow__gradient"></div>
