@@ -12,7 +12,7 @@ import {
   Providers,
   ProviderState
 } from '@microsoft/mgt-element';
-import { Drive, DriveItem } from '@microsoft/microsoft-graph-types';
+import { DriveItem } from '@microsoft/microsoft-graph-types';
 import { customElement, html, property, TemplateResult } from 'lit-element';
 import { repeat } from 'lit-html/directives/repeat';
 import {
