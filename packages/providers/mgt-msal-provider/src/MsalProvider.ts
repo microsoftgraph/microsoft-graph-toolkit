@@ -392,7 +392,7 @@ export class MsalProvider extends IProvider {
     this._loginType = typeof config.loginType !== 'undefined' ? config.loginType : LoginType.Redirect;
     this._loginHint = config.loginHint;
     this._domainHint = config.domainHint;
-    this._prompt = typeof config.prompt !== 'undefined' ? config.prompt : PromptState.SELECT_ACCOUNT;
+    this._prompt = typeof config.prompt !== 'undefined' ? config.prompt : 'select_account';
 
     let userAgentApplication: UserAgentApplication;
     let clientId: string;
