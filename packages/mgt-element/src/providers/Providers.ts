@@ -103,9 +103,7 @@ export class Providers {
     return null;
   }
 
-  private static _eventDispatcher: EventDispatcher<ProvidersChangedState> = new EventDispatcher<
-    ProvidersChangedState
-  >();
+  private static _eventDispatcher: EventDispatcher<ProvidersChangedState> = new EventDispatcher<ProvidersChangedState>();
 
   private static _globalProvider: IProvider;
   private static _me: User;
