@@ -64,6 +64,5 @@ gulp trust-dev-cert
 
 gulp clean
 gulp test
-gulp serve
 gulp bundle
 gulp package-solution
