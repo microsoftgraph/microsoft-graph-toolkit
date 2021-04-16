@@ -438,7 +438,7 @@ export class MgtFileList extends MgtTemplatedComponent {
    */
   protected renderFiles(): TemplateResult {
     return html`
-      <div id="file-list-wrapper" class="file-list-wrapper">
+      <div id="file-list-wrapper" class="file-list-wrapper" dir=${this.direction}>
         <ul id="file-list" class="file-list">
           ${repeat(
             this.files,
