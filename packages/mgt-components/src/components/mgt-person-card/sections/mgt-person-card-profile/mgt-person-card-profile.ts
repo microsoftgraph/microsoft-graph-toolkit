@@ -5,14 +5,7 @@
  * -------------------------------------------------------------------------------------------
  */
 
-import {
-  CompanyDetail,
-  EducationalActivity,
-  PersonAnnualEvent,
-  PersonInterest,
-  PositionDetail,
-  Profile
-} from '@microsoft/microsoft-graph-types-beta';
+import { EducationalActivity, PersonAnnualEvent, PersonInterest, Profile } from '@microsoft/microsoft-graph-types-beta';
 import { customElement, html, TemplateResult } from 'lit-element';
 import { BasePersonCardSection } from '../BasePersonCardSection';
 import { getSvg, SvgIcon } from '../../../../utils/SvgHelper';
