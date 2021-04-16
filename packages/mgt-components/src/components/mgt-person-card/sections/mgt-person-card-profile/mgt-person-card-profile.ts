@@ -279,37 +279,25 @@ export class MgtPersonCardProfile extends BasePersonCardSection {
       return null;
     }
 
-    const expandCompanyDetails = (position: PositionDetail) => {
-      let company: CompanyDetail = position.company;
-      if (company) {
-        return html`
-        <div class="data-list__item__content">
-            <div class="work-position__company">
-              ${company.displayName ? company.displayName : null}
-            </div>
-            <div class="work-position__location">
-              ${company.address.city ? company.address.city : null}, ${
-          company.address.state ? company.address.state : null
-        }
-            </div>
-          </div>
-        </div>
-        `;
-      }
-    };
-
     const positionItems: TemplateResult[] = [];
     for (const position of this._profile.positions) {
       if (position.detail) {
         positionItems.push(html`
           <div class="data-list__item work-position">
             <div class="data-list__item__header">
-              <div class="data-list__item__title">${position.detail.jobTitle}</div>
+              <div class="data-list__item__title">${position.detail?.jobTitle}</div>
               <div class="data-list__item__date-range">
                 ${this.getDisplayDateRange(position.detail)}
               </div>
             </div>
-            ${expandCompanyDetails(position.detail)}
+            <div class="data-list__item__content">
+              <div class="work-position__company">
+                ${position?.detail?.company?.displayName}
+              </div>
+              <div class="work-position__location">
+                ${position?.detail?.company?.address?.city}, ${position?.detail?.company?.address?.state}
+              </div>
+            </div>
           </div>
         `);
       }
