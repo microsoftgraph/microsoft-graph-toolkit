@@ -12,7 +12,7 @@ import { Providers, ProviderState, MgtTemplatedComponent } from '@microsoft/mgt-
 import { IDynamicPerson } from '../../graph/types';
 import { MgtFlyout } from '../sub-components/mgt-flyout/mgt-flyout';
 import { getUserWithPhoto } from '../../graph/graph.userWithPhoto';
-import { PersonViewType } from '../mgt-person/mgt-person';
+import { MgtPerson, PersonViewType } from '../mgt-person/mgt-person';
 
 import { styles } from './mgt-login-css';
 import { strings } from './strings';
@@ -93,7 +93,7 @@ export class MgtLogin extends MgtTemplatedComponent {
    * @memberof MgtLogin
    */
   public static get requiredScopes(): string[] {
-    return ['user.read'];
+    return [...new Set(['user.read', ...MgtPerson.requiredScopes])];
   }
 
   /**
