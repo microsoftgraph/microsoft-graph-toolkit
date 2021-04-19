@@ -14,7 +14,7 @@ import '../mgt-person/mgt-person';
 import { styles } from './mgt-agenda-css';
 import { getEventsPageIterator } from './mgt-agenda.graph';
 import { SvgIcon, getSvg } from '../../utils/SvgHelper';
-import { MgtPeople } from '../components';
+import {MgtPeople} from '../mgt-people/mgt-people'
 
 /**
  * Web Component which represents events in a user or group calendar.
