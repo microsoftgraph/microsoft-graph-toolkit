@@ -423,7 +423,7 @@ export class MgtFile extends MgtTemplatedComponent {
       const fileTypeIconTemplate: TemplateResult = this.renderFileTypeIcon();
 
       fileTemplate = html`
-        <div class="item">
+        <div class="item" tabindex="-1">
           ${fileTypeIconTemplate} ${fileDetailsTemplate}
         </div>
       `;
@@ -485,7 +485,7 @@ export class MgtFile extends MgtTemplatedComponent {
       <div class="item__file-type-icon">
         ${fileIconSrc
           ? html`
-              <img src=${fileIconSrc} />
+              <img src=${fileIconSrc} alt="File icon" />
             `
           : html`
               ${getSvg(SvgIcon.File)}

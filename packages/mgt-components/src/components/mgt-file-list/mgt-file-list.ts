@@ -370,6 +370,8 @@ export class MgtFileList extends MgtTemplatedComponent {
   private _userId: string;
   private _preloadedFiles: DriveItem[];
   private pageIterator: GraphPageIterator<DriveItem>;
+  // tracking user arrow key input of selection for accessibility purpose
+  private _focusedItemIndex: number = -1;
 
   constructor() {
     super();
@@ -444,7 +446,7 @@ export class MgtFileList extends MgtTemplatedComponent {
   protected renderFiles(): TemplateResult {
     return html`
       <div id="file-list-wrapper" class="file-list-wrapper" dir=${this.direction}>
-        <ul id="file-list" class="file-list">
+        <ul id="file-list" class="file-list" tabindex="0" @keydown="${this.onFileListKeyDown}">
           ${repeat(
             this.files,
             f => f.id,
@@ -492,9 +494,60 @@ export class MgtFileList extends MgtTemplatedComponent {
         <mgt-spinner></mgt-spinner>
       `;
     } else {
-      return html`<a id="show-more" class="show-more" @click=${() => this.renderNextPage()}><span>${
-        this.strings.showMoreSubtitle
-      }<span></a>`;
+      return html`<a id="show-more" class="show-more" @click=${() => this.renderNextPage()} tabindex="0" @keydown=${
+        this.onShowMoreKeyDown
+      }><span>${this.strings.showMoreSubtitle}<span></a>`;
+    }
+  }
+
+  /**
+   * Handle accessibility keyboard enter event on 'show more items' button
+   *
+   * @param event
+   */
+  private onShowMoreKeyDown(event: KeyboardEvent): void {
+    if (event && event.code === 'Enter') {
+      event.preventDefault();
+      this.renderNextPage();
+    }
+  }
+
+  /**
+   * Handle accessibility keyboard events (arrow up, arrow down, enter) on file list
+   *
+   * @param event
+   */
+  private onFileListKeyDown(event: KeyboardEvent): void {
+    const fileList = this.renderRoot.querySelector('.file-list');
+    let focusedItem;
+
+    if (!fileList || !fileList.children.length) {
+      return;
+    }
+
+    if (event.code === 'ArrowUp' || event.code === 'ArrowDown') {
+      if (event.code === 'ArrowUp') {
+        if (this._focusedItemIndex === -1) {
+          this._focusedItemIndex = fileList.children.length;
+        }
+        this._focusedItemIndex = (this._focusedItemIndex - 1 + fileList.children.length) % fileList.children.length;
+      }
+      if (event.code === 'ArrowDown') {
+        this._focusedItemIndex = (this._focusedItemIndex + 1) % fileList.children.length;
+      }
+
+      focusedItem = fileList.children[this._focusedItemIndex];
+      this.updateItemBackgroundColor(fileList, focusedItem, 'focused');
+    }
+
+    if (event.code === 'Enter') {
+      focusedItem = fileList.children[this._focusedItemIndex];
+
+      const file = focusedItem.children[0] as any;
+      event.preventDefault();
+      this.fireCustomEvent('itemClick', file.fileDetails);
+
+      this.updateItemBackgroundColor(fileList, focusedItem, 'selected');
     }
   }
 
@@ -621,8 +674,23 @@ export class MgtFileList extends MgtTemplatedComponent {
    * @protected
    * @memberof MgtFileList
    */
-  protected handleItemSelect(item: DriveItem, event: PointerEvent): void {
+  protected handleItemSelect(item: DriveItem, event): void {
     this.fireCustomEvent('itemClick', item);
+
+    // handle accessibility updates when item clicked
+    if (event) {
+      const fileList = this.renderRoot.querySelector('.file-list');
+
+      // get index of the focused item
+      const nodes = Array.from(fileList.children);
+      const li = event.target.closest('li');
+      const index = nodes.indexOf(li);
+      this._focusedItemIndex = index;
+      const focusedItem = fileList.children[this._focusedItemIndex];
+
+      this.updateItemBackgroundColor(fileList, focusedItem, 'focused');
+      this.updateItemBackgroundColor(fileList, focusedItem, 'selected');
+    }
   }
 
   /**
@@ -670,10 +738,36 @@ export class MgtFileList extends MgtTemplatedComponent {
     this.requestUpdate();
   }
 
+  /**
+   * Get file extension string from file name
+   *
+   * @param name file name
+   * @returns {string} file extension
+   */
   private getFileExtension(name) {
     const re = /(?:\.([^.]+))?$/;
     const fileExtension = re.exec(name)[1] || '';
 
     return fileExtension;
+  }
+
+  /**
+   * Handle remove and add css class on accessibility keyboard select and focus
+   *
+   * @param fileList HTML element
+   * @param focusedItem HTML element
+   * @param className background class to be applied
+   */
+  private updateItemBackgroundColor(fileList, focusedItem, className) {
+    // reset background color
+    for (let i = 0; i < fileList.children.length; i++) {
+      fileList.children[i].classList.remove(className);
+    }
+
+    // set focused item background color
+    if (focusedItem) {
+      focusedItem.classList.add(className);
+      focusedItem.scrollIntoView({ behavior: 'smooth', block: 'nearest', inline: 'start' });
+    }
   }
 }
