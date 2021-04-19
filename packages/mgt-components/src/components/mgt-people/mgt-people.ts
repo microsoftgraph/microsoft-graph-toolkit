@@ -16,6 +16,7 @@ import { Providers, ProviderState, MgtTemplatedComponent, arraysAreEqual } from 
 import '../../styles/style-helper';
 import { PersonCardInteraction } from './../PersonCardInteraction';
 import { styles } from './mgt-people-css';
+import { MgtPerson } from '../mgt-person/mgt-person';
 
 export { PersonCardInteraction } from './../PersonCardInteraction';
 
@@ -216,13 +217,18 @@ export class MgtPeople extends MgtTemplatedComponent {
    * @return {*}  {string[]}
    * @memberof MgtPeople
    */
-  public static requiredScopes: string[] = [
-    'user.read.all',
-    'people.read',
-    'user.readbasic.all',
-    'presence.read.all',
-    'contacts.read'
-  ];
+  public static get requiredScopes(): string[] {
+    return [
+      ...new Set([
+        'user.read.all',
+        'people.read',
+        'user.readbasic.all',
+        'presence.read.all',
+        'contacts.read',
+        ...MgtPerson.requiredScopes
+      ])
+    ];
+  }
 
   private _groupId: string;
   private _userIds: string[];

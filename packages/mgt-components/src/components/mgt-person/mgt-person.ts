@@ -394,14 +394,15 @@ export class MgtPerson extends MgtTemplatedComponent {
    * @return {*}  {string[]}
    * @memberof MgtPerson
    */
-  public static requiredScopes: string[] = [
-    'contacts.read',
-    'user.readbasic.all',
-    'user.read',
-    'people.read',
-    'presence.read.all',
-    'presence.read'
-  ];
+  public static get requiredScopes(): string[] {
+    const scopes = ['user.readbasic.all', 'user.read', 'people.read', 'presence.read.all', 'presence.read'];
+
+    if (MgtPerson.config.useContactApis) {
+      scopes.push('contacts.read');
+    }
+
+    return scopes;
+  }
 
   /**
    * Gets the flyout element
@@ -623,15 +624,13 @@ export class MgtPerson extends MgtTemplatedComponent {
 
       return html`
         <span class="initials-text" aria-label="${initials}">
-          ${
-            initials && initials.length
-              ? html`
+          ${initials && initials.length
+            ? html`
                 ${initials}
               `
-              : html`
+            : html`
                 <i class="ms-Icon ms-Icon--Contact contact-icon"></i>
-              `
-          }
+              `}
         </span>
       `;
     }

@@ -135,7 +135,12 @@ export async function findGroups(
     filterQuery += (query !== '' ? ' and ' : '') + filterGroups.join(' or ');
   }
 
-  const result = await graph.api('groups').filter(filterQuery).top(top).middlewareOptions(prepScopes(scopes)).get();
+  const result = await graph
+    .api('groups')
+    .filter(filterQuery)
+    .top(top)
+    .middlewareOptions(prepScopes(scopes))
+    .get();
 
   if (getIsGroupsCacheEnabled() && result) {
     cache.putValue(key, { groups: result.value.map(x => JSON.stringify(x)), top: top });

@@ -107,7 +107,9 @@ export class MgtTodo extends MgtTasksBase {
    * @return {*}  {string[]}
    * @memberof MgtTodo
    */
-  public static requiredScopes: string[] = ['tasks.read', 'tasks.readwrite'];
+  public static get requiredScopes(): string[] {
+    return ['tasks.read', 'tasks.readwrite'];
+  }
 
   private _lists: TodoTaskList[];
   private _tasks: TodoTask[];
@@ -144,11 +146,7 @@ export class MgtTodo extends MgtTasksBase {
       tasks = tasks.filter(task => this.taskFilter(task));
     }
 
-    const taskTemplates = repeat(
-      tasks,
-      task => task.id,
-      task => this.renderTask(task)
-    );
+    const taskTemplates = repeat(tasks, task => task.id, task => this.renderTask(task));
     return html`
       ${taskTemplates}
     `;

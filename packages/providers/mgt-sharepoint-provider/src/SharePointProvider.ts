@@ -94,11 +94,13 @@ export class SharePointProvider extends IProvider {
   constructor(context: WebPartContext) {
     super();
 
-    context.aadTokenProviderFactory.getTokenProvider().then((tokenProvider: AadTokenProvider): void => {
-      this._provider = tokenProvider;
-      this.graph = createFromProvider(this);
-      this.internalLogin();
-    });
+    context.aadTokenProviderFactory.getTokenProvider().then(
+      (tokenProvider: AadTokenProvider): void => {
+        this._provider = tokenProvider;
+        this.graph = createFromProvider(this);
+        this.internalLogin();
+      }
+    );
   }
 
   /**

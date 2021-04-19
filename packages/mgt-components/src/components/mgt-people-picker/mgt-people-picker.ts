@@ -17,7 +17,7 @@ import { Providers, ProviderState, MgtTemplatedComponent } from '@microsoft/mgt-
 import '../../styles/style-helper';
 import '../sub-components/mgt-spinner/mgt-spinner';
 import { debounce } from '../../utils/Utils';
-import { PersonViewType } from '../mgt-person/mgt-person';
+import { MgtPerson, PersonViewType } from '../mgt-person/mgt-person';
 import { PersonCardInteraction } from '../PersonCardInteraction';
 import { MgtFlyout } from '../sub-components/mgt-flyout/mgt-flyout';
 import { styles } from './mgt-people-picker-css';
@@ -291,7 +291,11 @@ export class MgtPeoplePicker extends MgtTemplatedComponent {
    * @return {*}  {string[]}
    * @memberof MgtPeoplePicker
    */
-  public static requiredScopes: string[] = ['user.read.all', 'people.read', 'group.read.all', 'user.readbasic.all'];
+  public static get requiredScopes(): string[] {
+    return [
+      ...new Set(['user.read.all', 'people.read', 'group.read.all', 'user.readbasic.all', ...MgtPerson.requiredScopes])
+    ];
+  }
 
   /**
    * User input in search.
@@ -494,10 +498,8 @@ export class MgtPeoplePicker extends MgtTemplatedComponent {
         person =>
           html`
             <div class="selected-list__person-wrapper">
-              ${
-                this.renderTemplate('selected-person', { person }, `selected-${person.id}`) ||
-                this.renderSelectedPerson(person)
-              }
+              ${this.renderTemplate('selected-person', { person }, `selected-${person.id}`) ||
+                this.renderSelectedPerson(person)}
 
               <div class="selected-list__person-wrapper__overflow">
                 <div class="selected-list__person-wrapper__overflow__gradient"></div>

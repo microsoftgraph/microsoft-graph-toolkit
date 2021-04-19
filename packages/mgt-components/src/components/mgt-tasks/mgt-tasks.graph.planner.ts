@@ -132,7 +132,11 @@ export async function getPlansForGroup(graph: IGraph, groupId: string): Promise<
   const scopes = 'Group.Read.All';
 
   const uri = `/groups/${groupId}/planner/plans`;
-  const plans = await graph.api(uri).header('Cache-Control', 'no-store').middlewareOptions(prepScopes(scopes)).get();
+  const plans = await graph
+    .api(uri)
+    .header('Cache-Control', 'no-store')
+    .middlewareOptions(prepScopes(scopes))
+    .get();
   return plans ? plans.value : null;
 }
 

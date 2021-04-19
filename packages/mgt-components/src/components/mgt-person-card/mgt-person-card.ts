@@ -87,9 +87,11 @@ export class MgtPersonCard extends MgtTemplatedComponent {
    * @return {*}  {string[]}
    * @memberof MgtPersonCard
    */
-  public static requiredScopes: string[] = MgtPersonCard.getScopes();
+  public static get requiredScopes(): string[] {
+    return MgtPersonCard.getScopes();
+  }
 
-  private static getScopes(): string[] {
+  public static getScopes(): string[] {
     const scopes = [];
 
     if (this.config.sections.files) {

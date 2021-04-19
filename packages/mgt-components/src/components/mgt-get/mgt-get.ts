@@ -363,7 +363,10 @@ export class MgtGet extends MgtTemplatedComponent {
               ) {
                 pageCount++;
                 const nextResource = page['@odata.nextLink'].split(this.version)[1];
-                page = await graph.client.api(nextResource).version(this.version).get();
+                page = await graph.client
+                  .api(nextResource)
+                  .version(this.version)
+                  .get();
                 if (page && page.value && page.value.length) {
                   page.value = response.value.concat(page.value);
                   response = page;

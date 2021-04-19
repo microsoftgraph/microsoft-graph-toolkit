@@ -98,7 +98,11 @@ export async function findPeople(
 
   if (personType !== PersonType.any) {
     // converts personType to capitalized case
-    const personTypeString = personType.toString().charAt(0).toUpperCase() + personType.toString().slice(1);
+    const personTypeString =
+      personType
+        .toString()
+        .charAt(0)
+        .toUpperCase() + personType.toString().slice(1);
     filterQuery = `personType/class eq '${personTypeString}'`;
   }
 
@@ -239,7 +243,10 @@ export async function getPeopleFromResource(
     while (page && page['@odata.nextLink']) {
       pageCount++;
       const nextResource = page['@odata.nextLink'].split(version)[1];
-      page = await graph.client.api(nextResource).version(version).get();
+      page = await graph.client
+        .api(nextResource)
+        .version(version)
+        .get();
       if (page && page.value && page.value.length) {
         page.value = response.value.concat(page.value);
         response = page;
