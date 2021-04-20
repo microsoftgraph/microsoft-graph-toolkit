@@ -446,7 +446,13 @@ export class MgtFileList extends MgtTemplatedComponent {
   protected renderFiles(): TemplateResult {
     return html`
       <div id="file-list-wrapper" class="file-list-wrapper" dir=${this.direction}>
-        <ul id="file-list" class="file-list" tabindex="0" @keydown="${this.onFileListKeyDown}">
+        <ul
+          id="file-list"
+          class="file-list"
+          tabindex="0"
+          @keydown="${this.onFileListKeyDown}"
+          @keyup="${this.onFileListKeyUp}"
+        >
           ${repeat(
             this.files,
             f => f.id,
@@ -509,6 +515,18 @@ export class MgtFileList extends MgtTemplatedComponent {
     if (event && event.code === 'Enter') {
       event.preventDefault();
       this.renderNextPage();
+    }
+  }
+
+  private onFileListKeyUp(event: KeyboardEvent): void {
+    const fileList = this.renderRoot.querySelector('.file-list');
+    const focusedItem = fileList.children[this._focusedItemIndex];
+
+    if (event.code === 'Enter') {
+      event.preventDefault();
+
+      focusedItem.classList.remove('selected');
+      focusedItem.classList.add('focused');
     }
   }
 
@@ -689,7 +707,6 @@ export class MgtFileList extends MgtTemplatedComponent {
       const focusedItem = fileList.children[this._focusedItemIndex];
 
       this.updateItemBackgroundColor(fileList, focusedItem, 'focused');
-      this.updateItemBackgroundColor(fileList, focusedItem, 'selected');
     }
   }
 
