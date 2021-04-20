@@ -423,7 +423,7 @@ export class MgtFile extends MgtTemplatedComponent {
       const fileTypeIconTemplate: TemplateResult = this.renderFileTypeIcon();
 
       fileTemplate = html`
-        <div class="item" tabindex="-1">
+        <div class="item">
           ${fileTypeIconTemplate} ${fileDetailsTemplate}
         </div>
       `;
