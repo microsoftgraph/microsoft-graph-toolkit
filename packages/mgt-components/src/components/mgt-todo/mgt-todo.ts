@@ -146,7 +146,11 @@ export class MgtTodo extends MgtTasksBase {
       tasks = tasks.filter(task => this.taskFilter(task));
     }
 
-    const taskTemplates = repeat(tasks, task => task.id, task => this.renderTask(task));
+    const taskTemplates = repeat(
+      tasks,
+      task => task.id,
+      task => this.renderTask(task)
+    );
     return html`
       ${taskTemplates}
     `;
