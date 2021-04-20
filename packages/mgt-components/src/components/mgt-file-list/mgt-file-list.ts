@@ -518,11 +518,16 @@ export class MgtFileList extends MgtTemplatedComponent {
     }
   }
 
+  /**
+   * Handle accessibility keyboard keyup events on file list
+   *
+   * @param event
+   */
   private onFileListKeyUp(event: KeyboardEvent): void {
     const fileList = this.renderRoot.querySelector('.file-list');
     const focusedItem = fileList.children[this._focusedItemIndex];
 
-    if (event.code === 'Enter') {
+    if (event.code === 'Enter' || event.code === 'Space') {
       event.preventDefault();
 
       focusedItem.classList.remove('selected');
@@ -531,7 +536,7 @@ export class MgtFileList extends MgtTemplatedComponent {
   }
 
   /**
-   * Handle accessibility keyboard events (arrow up, arrow down, enter) on file list
+   * Handle accessibility keyboard keydown events (arrow up, arrow down, enter) on file list
    *
    * @param event
    */
@@ -558,7 +563,7 @@ export class MgtFileList extends MgtTemplatedComponent {
       this.updateItemBackgroundColor(fileList, focusedItem, 'focused');
     }
 
-    if (event.code === 'Enter') {
+    if (event.code === 'Enter' || event.code === 'Space') {
       focusedItem = fileList.children[this._focusedItemIndex];
 
       const file = focusedItem.children[0] as any;
