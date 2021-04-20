@@ -388,6 +388,23 @@ export class MgtPerson extends MgtTemplatedComponent {
   public personCardInteraction: PersonCardInteraction;
 
   /**
+   * Get the scopes required for person
+   *
+   * @static
+   * @return {*}  {string[]}
+   * @memberof MgtPerson
+   */
+  public static get requiredScopes(): string[] {
+    const scopes = ['user.readbasic.all', 'user.read', 'people.read', 'presence.read.all', 'presence.read'];
+
+    if (MgtPerson.config.useContactApis) {
+      scopes.push('contacts.read');
+    }
+
+    return scopes;
+  }
+
+  /**
    * Gets the flyout element
    *
    * @protected
@@ -687,6 +704,9 @@ export class MgtPerson extends MgtTemplatedComponent {
             break;
           case 'OutOfOffice':
             statusClass = 'presence-oof-offline';
+            break;
+          case 'OffWork':
+            statusClass = 'presence-offline';
             break;
         }
         break;

@@ -17,7 +17,7 @@ import { Providers, ProviderState, MgtTemplatedComponent } from '@microsoft/mgt-
 import '../../styles/style-helper';
 import '../sub-components/mgt-spinner/mgt-spinner';
 import { debounce } from '../../utils/Utils';
-import { PersonViewType } from '../mgt-person/mgt-person';
+import { MgtPerson, PersonViewType } from '../mgt-person/mgt-person';
 import { PersonCardInteraction } from '../PersonCardInteraction';
 import { MgtFlyout } from '../sub-components/mgt-flyout/mgt-flyout';
 import { styles } from './mgt-people-picker-css';
@@ -283,6 +283,19 @@ export class MgtPeoplePicker extends MgtTemplatedComponent {
     type: String
   })
   public selectionMode: string;
+
+  /**
+   * Get the scopes required for people picker
+   *
+   * @static
+   * @return {*}  {string[]}
+   * @memberof MgtPeoplePicker
+   */
+  public static get requiredScopes(): string[] {
+    return [
+      ...new Set(['user.read.all', 'people.read', 'group.read.all', 'user.readbasic.all', ...MgtPerson.requiredScopes])
+    ];
+  }
 
   /**
    * User input in search.
