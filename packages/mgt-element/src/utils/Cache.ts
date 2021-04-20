@@ -282,8 +282,12 @@ export class CacheStore<T extends CacheItem> {
     if (!window.indexedDB) {
       return null;
     }
-
-    return (await this.getDb()).get(this.store, key);
+    try {
+      const db = await this.getDb();
+      return db.get(this.store, key);
+    } catch (e) {
+      return null;
+    }
   }
 
   /**
@@ -298,8 +302,12 @@ export class CacheStore<T extends CacheItem> {
     if (!window.indexedDB) {
       return;
     }
-
-    await (await this.getDb()).put(this.store, { ...item, timeCached: Date.now() }, key);
+    try {
+      const db = await this.getDb();
+      await db.put(this.store, { ...item, timeCached: Date.now() }, key);
+    } catch (e) {
+      return;
+    }
   }
 
   /**
@@ -312,8 +320,12 @@ export class CacheStore<T extends CacheItem> {
     if (!window.indexedDB) {
       return;
     }
-
-    (await this.getDb()).clear(this.store);
+    try {
+      const db = await this.getDb();
+      db.clear(this.store);
+    } catch (e) {
+      return;
+    }
   }
 
   /**
