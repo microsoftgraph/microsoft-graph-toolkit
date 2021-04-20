@@ -705,6 +705,9 @@ export class MgtPerson extends MgtTemplatedComponent {
           case 'OutOfOffice':
             statusClass = 'presence-oof-offline';
             break;
+          case 'OffWork':
+            statusClass = 'presence-offline';
+            break;
         }
         break;
       default:
