@@ -41,7 +41,6 @@ const getIsPresenceCacheEnabled = (): boolean =>
  * @memberof BetaGraph
  */
 export async function getUserPresence(graph: IGraph, userId?: string): Promise<Presence> {
-  const betaGraph = BetaGraph.fromGraph(graph);
   let cache: CacheStore<CachePresence>;
 
   if (getIsPresenceCacheEnabled()) {
@@ -55,7 +54,7 @@ export async function getUserPresence(graph: IGraph, userId?: string): Promise<P
   const scopes = userId ? ['presence.read.all'] : ['presence.read'];
   const resource = userId ? `/users/${userId}/presence` : '/me/presence';
 
-  const result = await betaGraph
+  const result = await graph
     .api(resource)
     .middlewareOptions(prepScopes(...scopes))
     .get();
@@ -77,7 +76,6 @@ export async function getUsersPresenceByPeople(graph: IGraph, people?: IDynamicP
     return {};
   }
 
-  const betaGraph = BetaGraph.fromGraph(graph);
   const peoplePresence = {};
   const peoplePresenceToQuery: string[] = [];
   const scopes = ['presence.read.all'];
@@ -109,7 +107,7 @@ export async function getUsersPresenceByPeople(graph: IGraph, people?: IDynamicP
 
   try {
     if (peoplePresenceToQuery.length > 0) {
-      const presenceResult = await betaGraph
+      const presenceResult = await graph
         .api('/communications/getPresencesByUserId')
         .middlewareOptions(prepScopes(...scopes))
         .post({
@@ -142,7 +140,7 @@ export async function getUsersPresenceByPeople(graph: IGraph, people?: IDynamicP
               'personType' in person &&
               (person as any).personType.subclass === 'OrganizationUser'
           )
-          .map(person => getUserPresence(betaGraph, person.id))
+          .map(person => getUserPresence(graph, person.id))
       );
 
       for (const r of response) {
