@@ -283,8 +283,7 @@ export class CacheStore<T extends CacheItem> {
       return null;
     }
     try {
-      const db = await this.getDb();
-      return db.get(this.store, key);
+      return (await this.getDb()).get(this.store, key);
     } catch (e) {
       return null;
     }
@@ -303,8 +302,7 @@ export class CacheStore<T extends CacheItem> {
       return;
     }
     try {
-      const db = await this.getDb();
-      await db.put(this.store, { ...item, timeCached: Date.now() }, key);
+      await (await this.getDb()).put(this.store, { ...item, timeCached: Date.now() }, key);
     } catch (e) {
       return;
     }
@@ -321,8 +319,7 @@ export class CacheStore<T extends CacheItem> {
       return;
     }
     try {
-      const db = await this.getDb();
-      db.clear(this.store);
+      (await this.getDb()).clear(this.store);
     } catch (e) {
       return;
     }
