@@ -200,6 +200,16 @@ export class Msal2Provider extends IProvider {
   }
 
   /**
+   * Name used for analytics
+   *
+   * @readonly
+   * @memberof IProvider
+   */
+  public get name() {
+    return 'MgtMsal2Provider';
+  }
+
+  /**
    * List of scopes
    *
    * @type {string[]}
@@ -340,7 +350,7 @@ export class Msal2Provider extends IProvider {
   public getAllAccounts() {
     let usernames = [];
     this._publicClientApplication.getAllAccounts().forEach((account: AccountInfo) => {
-      usernames.push({ username: account.username, id: account.homeAccountId });
+      usernames.push({ username: account.username, id: account.homeAccountId } as IProviderAccount);
     });
     return usernames;
   }

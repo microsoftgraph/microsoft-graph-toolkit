@@ -40,13 +40,6 @@ export class MgtMsal2Provider extends MgtBaseProvider {
   public loginType;
 
   /**
-   * The authority to use.
-   *
-   * @memberof MgtMsalProvider
-   */
-  @property() public authority;
-
-  /**
    * Comma separated list of scopes
    *
    * @memberof MgtMsalProvider
@@ -56,6 +49,17 @@ export class MgtMsal2Provider extends MgtBaseProvider {
     type: String
   })
   public scopes;
+
+  /**
+   * The authority to use.
+   *
+   * @memberof MgtMsalProvider
+   */
+  @property({
+    attribute: 'authority',
+    type: String
+  })
+  public authority;
 
   /**
    * The redirect uri to use
