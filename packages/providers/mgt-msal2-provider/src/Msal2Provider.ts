@@ -362,6 +362,7 @@ export class Msal2Provider extends IProvider {
    * @memberof Msal2Provider
    */
   public setActiveAccount(user: IProviderAccount) {
+    Providers.unsetCacheId();
     this._publicClientApplication.setActiveAccount(this._publicClientApplication.getAccountByHomeId(user.id));
     this.setStoredAccount();
     super.setActiveAccount(user);
@@ -531,6 +532,7 @@ export class Msal2Provider extends IProvider {
       account: logOutAccount
     };
     this.clearStoredAccount();
+    Providers.deleteCacheForUser();
     if (this._loginType == LoginType.Redirect) {
       this._publicClientApplication.logoutRedirect(logOutRequest);
       this.setState(ProviderState.SignedOut);

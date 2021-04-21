@@ -7,6 +7,7 @@
 
 import { Client } from '@microsoft/microsoft-graph-client';
 import { User } from '@microsoft/microsoft-graph-types';
+import { CacheService } from '../utils/Cache';
 
 import { EventDispatcher, EventHandler } from '../utils/EventDispatcher';
 import { IProvider, ProviderState } from './IProvider';
@@ -108,8 +109,63 @@ export class Providers {
         } catch {}
       }
     }
-
     return this._me;
+  }
+
+  /**
+   * Gets the current signed in user
+   *
+   * @static
+   * @memberof Providers
+   */
+  public static async getCacheId(force?: boolean) {
+    if (Providers.globalProvider && Providers.globalProvider.state == ProviderState.SignedIn) {
+      if (!this._cacheId || force) {
+        this._cacheId = null;
+        const client = this.client;
+        if (client) {
+          try {
+            const response: User = await client.api('me').get();
+            if (response && response.id) {
+              this._cacheId = this.createCacheId(response);
+            }
+          } catch {}
+        }
+      }
+    }
+    return this._cacheId;
+  }
+
+  /**
+   * Unset the cache ID whenever there's an active account change
+   *
+   * @static
+   * @memberof Providers
+   */
+  public static unsetCacheId() {
+    this._cacheId = null;
+  }
+
+  /**
+   * Create a cache ID
+   *
+   * @static
+   * @param {User} response
+   * @return {*}
+   * @memberof Providers
+   */
+  public static createCacheId(response: User) {
+    return response.id + '-' + response.userPrincipalName;
+  }
+
+  /**
+   * Delete the cache for current active user who is logging out (Multiple accounts only)
+   *
+   * @static
+   * @memberof Providers
+   */
+  public static async deleteCacheForUser() {
+    CacheService.clearCacheById(await this.getCacheId());
   }
 
   /**
@@ -135,11 +191,13 @@ export class Providers {
 
   private static _globalProvider: IProvider;
   private static _me: User;
+  public static _cacheId: string;
 
   private static handleProviderStateChanged() {
     if (!Providers.globalProvider || Providers.globalProvider.state !== ProviderState.SignedIn) {
       // clear current signed in user info
       Providers._me = null;
+      Providers._cacheId = null;
     }
 
     Providers._eventDispatcher.fire(ProvidersChangedState.ProviderStateChanged);

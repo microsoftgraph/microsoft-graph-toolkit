@@ -291,6 +291,7 @@ export abstract class MgtBaseComponent extends LitElement {
 
   private async handleActiveAccountUpdates() {
     this.clearState();
+    await Providers.getCacheId();
     this.requestStateUpdate();
   }
 
