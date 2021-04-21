@@ -7,7 +7,7 @@
     "@microsoft/mgt-react": "*",
     "@microsoft/mgt-msal-provider": "*",
     "@webcomponents/webcomponentsjs": "2.2.10",
-    "react": "^16.8.5",
+    "react": "^17.0.2",
     "react-app-polyfill": "1.0.1",
     "react-dom": "^16.8.5",
     "react-scripts": "^3.0.0"
