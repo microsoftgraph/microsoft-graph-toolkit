@@ -84,17 +84,6 @@ export class MgtMsal2Provider extends MgtBaseProvider {
   public prompt: string;
 
   /**
-   * Type of prompt for login
-   *
-   * @memberof MgtMsal2Provider
-   */
-  @property({
-    attribute: 'prompt',
-    type: String
-  })
-  public prompt: string;
-
-  /**
    * Gets whether this provider can be used in this environment
    *
    * @readonly
