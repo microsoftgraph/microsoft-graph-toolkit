@@ -99,14 +99,6 @@ export interface Msal2Config {
   authority?: string;
 
   /**
-   * Disable multi account functionality
-   *
-   * @type {boolean}
-   * @memberof Msal2Config
-   */
-  isMultiAccountDisabled?: boolean;
-
-  /**
    * Other options
    *
    * @type {Configuration}
@@ -265,8 +257,6 @@ export class Msal2Provider extends IProvider {
       this._domainHint = typeof config.domainHint !== 'undefined' ? config.domainHint : null;
       this.scopes = typeof config.scopes !== 'undefined' ? config.scopes : ['user.read'];
       this._publicClientApplication = new PublicClientApplication(this.ms_config);
-      this.isMultipleAccountDisabled =
-        typeof config.isMultiAccountDisabled !== 'undefined' ? config.isMultiAccountDisabled : false;
       this._prompt = typeof config.prompt !== 'undefined' ? config.prompt : PromptType.SELECT_ACCOUNT;
       this.graph = createFromProvider(this);
       try {
@@ -536,11 +526,7 @@ export class Msal2Provider extends IProvider {
       this.setState(ProviderState.SignedOut);
     } else {
       await this._publicClientApplication.logoutPopup({ ...logOutRequest });
-      if (this._publicClientApplication.getAllAccounts.length == 1 || this.isMultiAccountDisabled) {
-        this.setState(ProviderState.SignedOut);
-      } else {
-        this.trySilentSignIn();
-      }
+      this.setState(ProviderState.SignedOut);
     }
   }
 
