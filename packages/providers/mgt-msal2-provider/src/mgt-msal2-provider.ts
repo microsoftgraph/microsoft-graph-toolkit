@@ -73,17 +73,6 @@ export class MgtMsal2Provider extends MgtBaseProvider {
   public redirectUri;
 
   /**
-   * Disables multiple account capability
-   *
-   * @memberof MgtMsal2Provider
-   */
-  @property({
-    attribute: 'multi-account-disabled',
-    type: Boolean
-  })
-  public isMultiAccountDisabled;
-
-  /**
    * Type of prompt for login
    *
    * @memberof MgtMsal2Provider
@@ -136,10 +125,6 @@ export class MgtMsal2Provider extends MgtBaseProvider {
 
       if (this.redirectUri) {
         config.redirectUri = this.redirectUri;
-      }
-
-      if (this.isMultiAccountDisabled) {
-        config.isMultiAccountDisabled = true;
       }
 
       if (this.prompt) {
