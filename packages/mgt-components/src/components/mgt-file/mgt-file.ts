@@ -496,7 +496,7 @@ export class MgtFile extends MgtTemplatedComponent {
       <div class="item__file-type-icon">
         ${fileIconSrc
           ? html`
-              <img src=${fileIconSrc} />
+              <img src=${fileIconSrc} alt="File icon" />
             `
           : html`
               ${getSvg(SvgIcon.File)}

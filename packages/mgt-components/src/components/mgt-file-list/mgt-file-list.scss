@@ -66,7 +66,8 @@ mgt-file-item .file-list-wrapper {
         --file-background-color: $background-color;
       }
 
-      &:hover {
+      &:hover,
+      &.focused {
         background-color: $file-item-background-color--hover;
 
         mgt-file {
@@ -74,7 +75,8 @@ mgt-file-item .file-list-wrapper {
         }
       }
 
-      &:active {
+      &:active,
+      &.selected {
         background-color: $file-item-background-color--active;
 
         mgt-file {
