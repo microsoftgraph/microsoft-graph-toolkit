@@ -384,6 +384,17 @@ export class MgtFile extends MgtTemplatedComponent {
   })
   public view: ViewType;
 
+  /**
+   * Get the scopes required for file
+   *
+   * @static
+   * @return {*}  {string[]}
+   * @memberof MgtFile
+   */
+  public static get requiredScopes(): string[] {
+    return [...new Set(['files.read', 'files.read.all', 'sites.read.all'])];
+  }
+
   private _fileQuery: string;
   private _siteId: string;
   private _itemId: string;

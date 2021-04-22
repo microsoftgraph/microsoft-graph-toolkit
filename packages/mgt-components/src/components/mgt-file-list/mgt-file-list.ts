@@ -37,6 +37,7 @@ import '../sub-components/mgt-spinner/mgt-spinner';
 import { OfficeGraphInsightString, ViewType } from '../../graph/types';
 import { styles } from './mgt-file-list-css';
 import { strings } from './strings';
+import { MgtFile } from '../mgt-file/mgt-file';
 
 /**
  * The File List component displays a list of multiple folders and files by
@@ -357,6 +358,17 @@ export class MgtFileList extends MgtTemplatedComponent {
     type: Boolean
   })
   public hideMoreFilesButton: boolean;
+
+  /**
+   * Get the scopes required for file list
+   *
+   * @static
+   * @return {*}  {string[]}
+   * @memberof MgtFileList
+   */
+  public static get requiredScopes(): string[] {
+    return [...new Set([...MgtFile.requiredScopes])];
+  }
 
   private _fileListQuery: string;
   private _fileQueries: string[];
