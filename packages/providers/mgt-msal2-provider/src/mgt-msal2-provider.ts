@@ -84,6 +84,17 @@ export class MgtMsal2Provider extends MgtBaseProvider {
   public prompt: string;
 
   /**
+   * Type of prompt for login
+   *
+   * @memberof MgtMsal2Provider
+   */
+  @property({
+    attribute: 'prompt',
+    type: String
+  })
+  public prompt: string;
+
+  /**
    * Gets whether this provider can be used in this environment
    *
    * @readonly
@@ -125,6 +136,12 @@ export class MgtMsal2Provider extends MgtBaseProvider {
 
       if (this.redirectUri) {
         config.redirectUri = this.redirectUri;
+      }
+
+      if (this.prompt) {
+        let prompt: string = this.prompt.toUpperCase();
+        const promptEnum = PromptType[prompt];
+        config.prompt = promptEnum;
       }
 
       if (this.prompt) {
