@@ -1,7 +1,7 @@
 {
-  "name": "@microsoft/mgt-teams2-provider",
+  "name": "@microsoft/mgt-teams-sso-provider",
   "version": "2.0.0",
-  "description": "The Microsoft Graph Toolkit Teams 2.0 Provider",
+  "description": "The Microsoft Graph Toolkit Teams Single Sign-On Provider",
   "keywords": [
     "microsoft graph",
     "microsoft graph toolkit",

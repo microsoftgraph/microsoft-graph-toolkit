@@ -14,10 +14,9 @@ import jwt_decode from 'jwt-decode';
  * @returns {Promise<string | null>} - Returns the token if valid, returns null if invalid
  */
 export function validateJwt(req: Request, res: Response, next: NextFunction): void {
-  const ssoToken = req.query.ssoToken?.toString();
+  const authHeader = req.headers.authorization!;
+  const ssoToken = req.query.ssoToken ? req.query.ssoToken?.toString() : authHeader.split(' ')[1];
   if (ssoToken) {
-    // const token = authHeader.split(' ')[1];
-
     const validationOptions = {
       audience: process.env.CLIENT_ID,
     };
@@ -55,8 +54,44 @@ function getSigningKey(header: JwtHeader, callback: SigningKeyCallback): void {
  * @param authHeader - The Authorization header value containing a JWT bearer token
  * @returns {Promise<string | null>} - Returns the access token if successful, null if not
  */
+export async function getAccessTokenOnBehalfOfPost(req: Request, res: Response): Promise<void> {
+  // The token has already been validated, just grab it
+  const authHeader = req.headers.authorization!;
+  const ssoToken = authHeader.split(' ')[1];
+
+  // Create an MSAL client
+  const msalClient = new msal.ConfidentialClientApplication({
+    auth: {
+      clientId: req.body.clientid,
+      clientSecret: process.env.APP_SECRET
+    }
+  });
+
+  try {
+    const result = await msalClient.acquireTokenOnBehalfOf({
+      authority: `https://login.microsoftonline.com/${jwt_decode<any>(ssoToken).tid}`,
+      oboAssertion: ssoToken,
+      scopes: req.body.scopes,
+      skipCache: true
+    });
+    res.json({ access_token: result?.accessToken });
+  } catch (error) {
+    if (error.errorCode === 'invalid_grant' || error.errorCode === 'interaction_required') {
+      // This is expected if it's the user's first time running the app ( user must consent ) or the admin requires MFA
+      res.status(403).json({ error: 'consent_required' }); // This error triggers the consent flow in the client.
+    } else {
+      // Unknown error
+      res.status(500).json({ error: error.message });
+    }
+  }
+}
+
+/**
+ * Gets an access token for the user using the on-behalf-of flow
+ * @returns {Promise<string | null>} - Returns the access token if successful, null if not
+ */
 export async function getAccessTokenOnBehalfOf(req: Request, res: Response): Promise<void> {
-  // The token has already been validated, just grab it and the other values from the query string
+  // The token has already been validated.
   const ssoToken: string = req.query.ssoToken!.toString();
   const clientId: string = req.query.clientId!.toString();
   const graphScopes: string[] = req.query.scopes!.toString().split(',');

@@ -8,8 +8,7 @@
 import { AuthenticationProviderOptions } from '@microsoft/microsoft-graph-client/lib/es/IAuthenticationProviderOptions';
 import { Configuration, InteractionRequiredAuthError } from '@azure/msal-browser';
 import { LoginType, ProviderState, TeamsHelper } from '@microsoft/mgt-element';
-// import { MsalProvider } from '@microsoft/mgt-msal2-provider';
-import { Msal2Provider } from '@microsoft/mgt-msal2-provider';
+import { Msal2Provider, PromptType } from '@microsoft/mgt-msal2-provider';
 
 // tslint:disable-next-line: completed-docs
 declare global {
@@ -30,12 +29,12 @@ export enum HttpMethod {
   /**
    * Will use Get and the querystring
    */
-  get = 'GET',
+  GET = 'GET',
 
   /**
    * Will use Post and the request body
    */
-  post = 'POST'
+  POST = 'POST'
 }
 
 /**
@@ -74,7 +73,7 @@ interface AuthParams {
    * See Msal.js documentation for more details
    *
    * @type {Configuration}
-   * @memberof TeamsConfig
+   * @memberof AuthParams
    */
   options?: Configuration;
   /**
@@ -87,31 +86,31 @@ interface AuthParams {
 }
 
 /**
- * Interface to define the configuration when creating a TeamsProvider
+ * Interface to define the configuration when creating a TeamsSSOProvider
  *
  * @export
- * @interface Teams2Config
+ * @interface TeamsSSOConfig
  */
-export interface Teams2Config {
+export interface TeamsSSOConfig {
   /**
    * The app clientId
    *
    * @type {string}
-   * @memberof Teams2Config
+   * @memberof TeamsSSOConfig
    */
   clientId: string;
   /**
    * The relative or absolute path of the html page that will handle the authentication
    *
    * @type {string}
-   * @memberof TeamsConfig
+   * @memberof TeamsSSOConfig
    */
   authPopupUrl: string;
   /**
    * The scopes to use when authenticating the user
    *
    * @type {string[]}
-   * @memberof TeamsConfig
+   * @memberof TeamsSSOConfig
    */
   scopes?: string[];
   /**
@@ -119,28 +118,28 @@ export interface Teams2Config {
    * See Msal.js documentation for more details
    *
    * @type {Configuration}
-   * @memberof TeamsConfig
+   * @memberof TeamsSSOConfig
    */
   msalOptions?: Configuration;
   /**
    * The relative or absolute path to the token exchange backend service
    *
    * @type {string}
-   * @memberof TeamsConfig
+   * @memberof TeamsSSOConfig
    */
   ssoUrl?: string;
   /**
    * Should the provider display a consent popup automatically if needed
    *
    * @type {string}
-   * @memberof TeamsConfig
+   * @memberof TeamsSSOConfig
    */
   autoConsent?: boolean;
   /**
    * Should the provider display a consent popup automatically if needed
    *
    * @type {AuthMethod}
-   * @memberof TeamsConfig
+   * @memberof TeamsSSOConfig
    */
   httpMethod?: HttpMethod;
 }
@@ -149,17 +148,17 @@ export interface Teams2Config {
  * Enables authentication of Single page apps inside of a Microsoft Teams tab
  *
  * @export
- * @class Teams2Provider
+ * @class TeamsSSOProvider
  * @extends {Msal2Provider}
  */
-export class Teams2Provider extends Msal2Provider {
+export class TeamsSSOProvider extends Msal2Provider {
   /**
    * Gets whether the Teams provider can be used in the current context
    * (Whether the app is running in Microsoft Teams)
    *
    * @readonly
    * @static
-   * @memberof Teams2Provider
+   * @memberof TeamsSSOProvider
    */
   public static get isAvailable(): boolean {
     return TeamsHelper.isAvailable;
@@ -171,7 +170,7 @@ export class Teams2Provider extends Msal2Provider {
    * the microsoftTeams global variable.
    *
    * @static
-   * @memberof Teams2Provider
+   * @memberof TeamsSSOProvider
    */
   public static get microsoftTeamsLib(): any {
     return TeamsHelper.microsoftTeamsLib;
@@ -187,7 +186,7 @@ export class Teams2Provider extends Msal2Provider {
    * @memberof IProvider
    */
   public get name() {
-    return 'MgtTeams2Provider';
+    return 'MgtTeamsSSOProvider';
   }
 
   /**
@@ -195,15 +194,14 @@ export class Teams2Provider extends Msal2Provider {
    *
    * @static
    * @returns
-   * @memberof Teams2Provider
+   * @memberof TeamsSSOProvider
    */
   public static async handleAuth() {
-    debugger;
     // we are in popup world now - authenticate and handle it
     const teams = TeamsHelper.microsoftTeamsLib;
     if (!teams) {
       // tslint:disable-next-line: no-console
-      console.error('Make sure you have referenced the Microsoft Teams sdk before using the TeamsProvider');
+      console.error('Make sure you have referenced the Microsoft Teams sdk before using the TeamsSSOProvider');
       return;
     }
 
@@ -232,7 +230,7 @@ export class Teams2Provider extends Msal2Provider {
     }
 
     const scopes = authParams.scopes ? authParams.scopes.split(',') : null;
-    const prompt = authParams.isConsent ? 'consent' : null;
+    const prompt = authParams.isConsent ? PromptType.CONSENT : PromptType.SELECT_ACCOUNT;
 
     const options = authParams.options || { auth: { clientId: authParams.clientId } };
 
@@ -284,9 +282,9 @@ export class Teams2Provider extends Msal2Provider {
 
   protected clientId: string;
 
-  private static _localStorageParametersKey = 'msg-teams2provider-auth-parameters';
-  private static _sessionStorageLoginInProgress = 'msg-teams2provider-login-in-progress';
-  private static _sessionStorageLogoutInProgress = 'msg-teams2provider-logout-in-progress';
+  private static _localStorageParametersKey = 'msg-teamsssoprovider-auth-parameters';
+  private static _sessionStorageLoginInProgress = 'msg-teamsssoprovider-login-in-progress';
+  private static _sessionStorageLogoutInProgress = 'msg-teamsssoprovider-logout-in-progress';
 
   private teamsContext;
   private _authPopupUrl: string;
@@ -294,8 +292,9 @@ export class Teams2Provider extends Msal2Provider {
   private _ssoUrl: string;
   private _needsConsent: boolean;
   private _autoConsent: boolean;
+  private _httpMethod: HttpMethod;
 
-  constructor(config: Teams2Config) {
+  constructor(config: TeamsSSOConfig) {
     super({
       clientId: config.clientId,
       loginType: LoginType.Redirect,
@@ -306,12 +305,13 @@ export class Teams2Provider extends Msal2Provider {
     this._msalOptions = config.msalOptions;
     this._authPopupUrl = config.authPopupUrl;
     this._ssoUrl = config.ssoUrl;
-    this._autoConsent = config.autoConsent || false;
+    this._autoConsent = typeof config.autoConsent !== 'undefined' ? config.autoConsent : true;
+    this._httpMethod = typeof config.httpMethod !== 'undefined' ? config.httpMethod : HttpMethod.GET;
 
     const teams = TeamsHelper.microsoftTeamsLib;
     teams.initialize();
 
-    // SSO Mode
+    // If we are in SSO-mode.
     if (this._ssoUrl) {
       this.internalLogin();
     }
@@ -321,7 +321,7 @@ export class Teams2Provider extends Msal2Provider {
    * Opens the teams authentication popup to the authentication page
    *
    * @returns {Promise<void>}
-   * @memberof Teams2Provider
+   * @memberof TeamsSSOProvider
    */
   public async login(): Promise<void> {
     // In SSO mode the login should not be able to be run via user click
@@ -345,7 +345,7 @@ export class Teams2Provider extends Msal2Provider {
           isConsent: this._autoConsent
         };
 
-        localStorage.setItem(Teams2Provider._localStorageParametersKey, JSON.stringify(authParams));
+        localStorage.setItem(TeamsSSOProvider._localStorageParametersKey, JSON.stringify(authParams));
 
         const url = new URL(this._authPopupUrl, new URL(window.location.href));
 
@@ -355,12 +355,12 @@ export class Teams2Provider extends Msal2Provider {
             reject();
           },
           successCallback: result => {
-            // If we are in auto consent mode return the accesstoken after successful consent
-            if (this._autoConsent) {
+            // If we are in SSO Mode, the consent has been successful. Consider logged in
+            if (this._ssoUrl) {
               this.setState(ProviderState.SignedIn);
               resolve();
             } else {
-              // Otherwise log in
+              // Otherwise log in via MSAL
               this.trySilentSignIn();
               resolve();
             }
@@ -411,7 +411,7 @@ export class Teams2Provider extends Msal2Provider {
    *
    * @param {AuthenticationProviderOptions} options
    * @returns {Promise<string>}
-   * @memberof TeamsProvider
+   * @memberof TeamsSSOProvider
    */
   public async getAccessToken(options: AuthenticationProviderOptions): Promise<string> {
     if (!this.teamsContext && TeamsHelper.microsoftTeamsLib) {
@@ -420,28 +420,48 @@ export class Teams2Provider extends Msal2Provider {
       this.teamsContext = await teams.getContext();
     }
 
-    debugger;
-
     const scopes = options ? options.scopes || this.scopes : this.scopes;
 
-    // SSO Mode
+    // If we are in SSO Mode
     if (this._ssoUrl) {
-      const url = new URL(this._ssoUrl, new URL(window.location.href));
-      // Get token via SSO
+      // Get token via the Teams SDK
       const clientToken = await this.getClientToken();
 
-      const params = new URLSearchParams({
-        ssoToken: clientToken,
-        scopes: scopes.join(','),
-        clientId: this.clientId
-      });
+      let url: URL = new URL(this._ssoUrl, new URL(window.location.href));
+      let response: Response;
+
+      // Use GET and Query String
+      if (this._httpMethod === HttpMethod.GET) {
+        const params = new URLSearchParams({
+          ssoToken: clientToken,
+          scopes: scopes.join(','),
+          clientId: this.clientId
+        });
+
+        response = await fetch(`${url.href}?${params}`, {
+          method: 'GET',
+          mode: 'cors',
+          cache: 'default'
+        });
+      }
+      // Use POST and body
+      else {
+        response = await fetch(url.href, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            authorization: `Bearer ${clientToken}`
+          },
+          body: JSON.stringify({
+            scopes: scopes,
+            clientid: this.clientId
+          }),
+          mode: 'cors',
+          cache: 'default'
+        });
+      }
 
       // Exchange token from server
-      const response: Response = await fetch(`${url.href}?${params}`, {
-        method: 'GET',
-        mode: 'cors',
-        cache: 'default'
-      });
       const data = await response.json().catch(this.unhandledFetchError);
 
       if (!response.ok && data.error === 'consent_required') {
@@ -454,27 +474,35 @@ export class Teams2Provider extends Msal2Provider {
         this._needsConsent = false;
         return data.access_token;
       }
-    } else {
-      const accessTokenRequest = {
-        scopes: scopes,
-        loginHint: this.teamsContext.loginHint
-      };
+    }
+    // If we are not in SSO Mode and using the Login component
+    else {
+      const teams = TeamsHelper.microsoftTeamsLib;
+      return new Promise((resolve, reject) => {
+        teams.getContext(async context => {
+          this.teamsContext = context;
 
-      // if (this.teamsContext && this.teamsContext.loginHint) {
-      //   accessTokenRequest.loginHint = this.teamsContext.loginHint;
-      // }
+          const accessTokenRequest = {
+            scopes: scopes,
+            loginHint: this.teamsContext.loginHint
+          };
 
-      try {
-        const response = await this.publicClientApplication.acquireTokenSilent(accessTokenRequest);
-        return response.accessToken;
-      } catch (e) {
-        if (e instanceof InteractionRequiredAuthError) {
-          // nothing we can do now until we can do incremental consent
-          return null;
-        } else {
-          throw e;
-        }
-      }
+          try {
+            const response = await this.publicClientApplication.acquireTokenSilent(accessTokenRequest);
+            // return response.accessToken;
+            resolve(response.accessToken);
+          } catch (e) {
+            if (e instanceof InteractionRequiredAuthError) {
+              // nothing we can do now until we can do incremental consent
+              // return null;
+              resolve(null);
+            } else {
+              // throw e;
+              reject(e);
+            }
+          }
+        });
+      });
     }
   }
   /**
@@ -487,13 +515,26 @@ export class Teams2Provider extends Msal2Provider {
     // Try to get access token
     const accessToken: string = await this.getAccessToken(null);
 
-    // If we need to consent, auto consent mode is on, and we have scopes on the client side
-    if (!accessToken && this._needsConsent && this._autoConsent && this.scopes) {
-      this.login();
-      return;
+    // If we have an access token. Consider the user signed in
+    if (accessToken) {
+      this.setState(ProviderState.SignedIn);
+    } else {
+      // If we need to consent to additional scopes
+      if (this._needsConsent) {
+        // If autoconsent is configured. Display a popup where the user can consent
+        if (this._autoConsent) {
+          // We need to pass the scopes from the client side
+          if (!this.scopes) {
+            throw new Error('For auto consent, scopes must be provided');
+          } else {
+            this.login();
+            return;
+          }
+        } else {
+          throw new Error('Auto consent is not configured. You need to consent to additional scopes');
+        }
+      }
     }
-
-    this.setState(accessToken ? ProviderState.SignedIn : ProviderState.SignedOut);
   }
 
   /**

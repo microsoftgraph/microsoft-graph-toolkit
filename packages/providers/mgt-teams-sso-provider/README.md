@@ -4,9 +4,9 @@
 
 The [Microsoft Graph Toolkit (mgt)](https://aka.ms/mgt) library is a collection of authentication providers and UI components powered by Microsoft Graph. 
 
-The `@microsoft/mgt-teams2-provider` package exposes the `TeamsProvider` class to be used inside your Microsoft Teams tab applications to authenticate users, to call Microsoft Graph, and to power the mgt components.
+The `@microsoft/mgt-teams-sso-provider` package exposes the `TeamsSSOProvider` class to be used inside your Microsoft Teams tab applications to authenticate users, to call Microsoft Graph, and to power the mgt components.
 
-[See docs for full documentation of the TeamsProvider](https://docs.microsoft.com/graph/toolkit/providers/teams)
+[See docs for full documentation of the TeamsSSOProvider](https://docs.microsoft.com/graph/toolkit/providers/teamssso)
 
 ## Usage
 
@@ -15,7 +15,7 @@ The TeamsProvider requires the usage of the Microsoft Teams SDK which is not aut
 1. Install the packages
 
     ```bash
-    npm install @microsoft/teams-js @microsoft/mgt-element @microsoft/mgt-teams-provider
+    npm install @microsoft/teams-js @microsoft/mgt-element @microsoft/mgt-teams-sso-provider
     ```
 
 1. Before initializing the provider, create a new page in your application (ex: https://mydomain.com/auth) that will handle the auth redirect. Call the `handleAuth` function to handle all authentication on your behalf.
@@ -32,16 +32,19 @@ The TeamsProvider requires the usage of the Microsoft Teams SDK which is not aut
 
     ```ts
     import {Providers} from '@microsoft/mgt-element';
-    import {TeamsProvider} from '@microsoft/mgt-teams-provider';
+    import {TeamsSSOProvider} from '@microsoft/mgt-teams-sso-provider';
     import * as MicrosoftTeams from "@microsoft/teams-js/dist/MicrosoftTeams";
 
     TeamsProvider.microsoftTeamsLib = MicrosoftTeams;
 
-    Providers.globalProvider = new TeamsProvider({
+    Providers.globalProvider = new TeamsSSOProvider({
       clientId: string;
       authPopupUrl: string; // ex: "https://mydomain.com/auth" or "/auth"
       scopes?: string[];
       msalOptions?: Configuration;
+      ssoUrl?: string; // ex: '/api/token',
+      autoConsent?: boolean,
+      httpMethod: HttpMethod; //ex HttpMethod.POST
     })
     ```
 
@@ -50,10 +53,13 @@ The TeamsProvider requires the usage of the Microsoft Teams SDK which is not aut
     ```html
     <script type="module" src="../node_modules/@microsoft/mgt-teams-provider/dist/es6/index.js" />
 
-    <mgt-teams-provider client-id="<YOUR_CLIENT_ID>"
+    <mgt-teams-sso-provider client-id="<YOUR_CLIENT_ID>"
                         auth-popup-url="/AUTH-PATH"
                         scopes="user.read,people.read..." 
-                        authority=""></mgt-teams-provider>
+                        authority=""
+                        sso-url="/api/token" 
+                        http-method="POST">
+                        ></mgt-teams-provider>
     ```
 
 See [provider usage documentation](https://docs.microsoft.com/graph/toolkit/providers) to learn about how to use the providers with the mgt components, to sign in/sign out, get access tokens, call Microsoft Graph, and more.

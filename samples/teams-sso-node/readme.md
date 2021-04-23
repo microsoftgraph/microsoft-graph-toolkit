@@ -1,5 +1,5 @@
 # Node.js Teams Single Sign On (SSO) Sample
-This sample is using the Microsoft Graph Toolkit's [Teams Provider](https://docs.microsoft.com/graph/toolkit/providers/teams) and it will:
+This sample is using the Microsoft Graph Toolkit's [Teams SSO Provider](https://docs.microsoft.com/graph/toolkit/providers/teamssso) and it will:
 1. Get an access token for the logged-in user via the Microsoft Teams SSO experience, with the help of the Teams SDK.
 2. Call the Node.js backend to exchange the current token for one with the requested scopes - using `on-behalf-of flow`
 3. Pass the access token to the MGT components to make Microsoft Graph API calls. 
@@ -16,7 +16,7 @@ You will need:
 
 1. To test locally, [NodeJS](https://nodejs.org/en/download/) must be installed on your development machine.
 
-1. To test locally, you'll need [Ngrok](https://ngrok.com/) installed on your development machine.
+1. To test locally, you need [Ngrok](https://ngrok.com/) installed on your development machine.
 Make sure you've downloaded and installed Ngrok on your local machine. ngrok will tunnel requests from the Internet to your local computer and terminate the SSL connection from Teams.
 
 > NOTE: The free ngrok plan will generate a new URL every time you run it, which requires you to update your Azure AD registration, the Teams app manifest, and the project configuration. A paid account with a permanent ngrok URL is recommended.
@@ -26,12 +26,12 @@ Make sure you've downloaded and installed Ngrok on your local machine. ngrok wil
 Your tab needs to run as a registered Azure AD application to obtain an access token from Azure AD. In this step, you'll register the app in your tenant and give Microsoft Teams permission to obtain access tokens on its behalf.
 
 1. Run Ngrok to expose your local web server via a public URL. Make sure to point it to your Ngrok URI. This sample uses port `5000` locally. Run: 
-    * No custom sub domain: `./ngrok http 5000`
-    * Custom sub domain: `/ngrok http 5000 -subdomain="mgtsso"`
+    * No custom sub domain: `ngrok http 5000`
+    * Custom sub domain: `ngrok http 5000 -subdomain="mgtsso"`
 
 Leave this running while you're running the application locally, and open another command prompt for the steps which follow.
 
-1. Open a browser and navigate to the [Azure Active Directory admin center](https://aad.portal.azure.com). Login using a **personal account** (aka: Microsoft Account) or **Work or School Account**.
+1. Open a browser and navigate to the [Azure Active Directory admin center](https://aad.portal.azure.com). Log in using a **personal account** (aka: Microsoft Account) or **Work or School Account**.
 
 1. Select **Azure Active Directory** in the left-hand navigation, then select **App registrations** under **Manage**.
 
@@ -39,13 +39,13 @@ Leave this running while you're running the application locally, and open anothe
 
     - Set **Name** to `Node.js Teams SSO`.
     - Set **Supported account types** to **Accounts in any organizational directory and personal Microsoft accounts**.
-    - Under **Redirect URI**, set the first drop-down to `Web` and set the value to your domain. ex `https://mgtsso.ngrok.io`.
-        - Enable Implicit Grant by selecting `Access Tokens` and `ID Tokens`
+    - Under **Redirect URI**, set the first drop-down to `Single Page Application` and set the value to your domain. ex `https://mgtsso.ngrok.io/auth.html`.
+        - Under **Advanced settings** on the page, `Allow public client flows` by selecting **yes** next to `Enable the following mobile and desktop flows`. 
 
     > **IMPORTANT** 
-    Setting up the redirect URI will allow Azure AD to return authentication results to the correct URI. This is required for consent to work.
+    Setting up the redirect URI will allow Azure AD to return authentication results to the correct URI. It's required for consent to work.
 
-1. Select **Register**. On the **Node.js Teams SSO** page, copy the value of the **Application (client) ID** and **Directory (tenant) ID**. Save them, you will need them in the next step.
+1. Select **Register**. On the **Node.js Teams SSO** overview page, copy the value of the **Application (client) ID** and **Directory (tenant) ID**. You need them in the following steps.
 
 1. Select **Certificates & secrets** under **Manage**. Select the **New client secret** button. Enter a value in **Description** and select one of the options for **Expires** and select **Add**.
 
@@ -54,22 +54,25 @@ Leave this running while you're running the application locally, and open anothe
     > **IMPORTANT**
     > This client secret is never shown again, so make sure you copy it now.
 
-1. Select **API permissions** under **Manage**, then select **Add a permission**.
+1. Select **API permissions** under **Manage** > select **Add a permission** > Microsoft Graph > Delegated permissions, then add the following permissions from, then select **Add permissions**.
+    - `email`, `offline_access`, `openid`, `profile`, `User.Read`
 
-1. Select **Microsoft Graph**, then **Delegated permissions**.
+    > **NOTE**
+    > These are the permissions required for the Singe-Sign-On.
 
-1. Select the following permissions, then select **Add permissions**.
-    - `email`, `offline_access`, `openid`, `profile`, `User.Read`, `People.Read`, `User.ReadBasic.All`, `Contacts.Read`, `Presence.Read`, `Presence.Read.All`, `Tasks.ReadWrite`
+1. (OPTIONAL) If you want to pre-consent the scopes that the Microsoft Graph Toolkit components use in this sample: 
+    - `user.read.all, mail.readBasic, people.read.all, sites.read.all, user.readbasic.all, contacts.read, presence.read, presence.read.all, tasks.readwrite, tasks.read`
     
     > **NOTE**
-    > These are the permissions required for the Microsoft Graph Toolkit components used in the client application and for the Singe-Sign-On. If you use different components, you may require additional permissions. See the [documentation](https://docs.microsoft.com/graph/toolkit/overview) for each component for details on required permissions.
+    > You could also consent while running the application. If you use different components, you may require additional permissions. See the [documentation](https://docs.microsoft.com/graph/toolkit/overview) for each component for details on required permissions.
 
-1. Select **Grant admin consent**, then select **Yes**
+1. If you added the additional scopes in the previous step, select **Grant admin consent**, then select **Yes**
 
-    > **NOTE**
-    > Right now you need to pre-consent the scopes
+1. Select **Expose an API** under **Manage** > then, on the top of the page next to `Application ID URI` select **Set**.
+    This generates an API in the form of: `api://{AppID}`. 
+    - Change it and add your subdomain, ex: `api://mgtsso.ngrok.io/{appID}`
 
-1. In the **Scopes defined by this API** section, select **Add a scope**. Fill in the fields as follows and select **Add scope**.
+1. On the same page, select **Add a scope**. Fill in the fields as follows and select **Add scope**.
 
     - **Scope name:** `access_as_user`
     - **Who can consent?: Admins and users**
@@ -138,26 +141,13 @@ If you open the Microsoft Teams client—using the web-based version will enable
 
 1. Select the .zip file that you downloaded and then **Add**
 
-### Create Manifest manually
-If you want to create the manifest manually you could visit this link: [Create your app package manually](https://docs.microsoft.com/en-us/microsoftteams/platform/tabs/how-to/add-tab#create-your-app-package-manually)
-
-You could look at the `example.manifest.json` as inspiration. You would have to change the following in this manifest file:
-- Generate a new unique ID for the application and replace the id field with this GUID. On Windows, you can generate a new GUID in PowerShell with this command:
-    ``` powershell
-     [guid]::NewGuid()
-    ```
-- Ensure the package name is unique within the tenant where you will run the app
-- Replace `{ngrokSubdomain}` with the subdomain you've assigned to your Ngrok account in step #1 above.
-- Update your `webApplicationInfo` section with your Azure AD application ID that you were assigned in step #2 above.
-
 ## Configuring the sample
 
 1. Rename the example.env file to .env, and set the values as follows.
 
     | Setting | Value |
     |---------|-------|
-    | SSO_API | Set to the API URL you created in the app registration `api://mgtsso.ngrok.io/{appID}` |
-    | APP_TENANT_ID | The tenant ID from your app registration |
+    | CLIENT_ID | The client Id from your app registration |
     | APP_SECRET | The client secret from your app registration |
 
 ## Run the sample

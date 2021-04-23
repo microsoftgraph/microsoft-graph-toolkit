@@ -31,7 +31,7 @@ export class MgtMsal2Provider extends MgtBaseProvider {
   /**
    * The login type that should be used: popup or redirect
    *
-   * @memberof MgtMsalProvider
+   * @memberof MgtMsal2Provider
    */
   @property({
     attribute: 'login-type',
@@ -42,7 +42,7 @@ export class MgtMsal2Provider extends MgtBaseProvider {
   /**
    * Comma separated list of scopes
    *
-   * @memberof MgtMsalProvider
+   * @memberof MgtMsal2Provider
    */
   @property({
     attribute: 'scopes',
@@ -53,7 +53,7 @@ export class MgtMsal2Provider extends MgtBaseProvider {
   /**
    * The authority to use.
    *
-   * @memberof MgtMsalProvider
+   * @memberof MgtMsal2Provider
    */
   @property({
     attribute: 'authority',
@@ -64,7 +64,7 @@ export class MgtMsal2Provider extends MgtBaseProvider {
   /**
    * The redirect uri to use
    *
-   * @memberof MgtMsalProvider
+   * @memberof MgtMsal2Provider
    */
   @property({
     attribute: 'redirect-uri',
@@ -87,7 +87,7 @@ export class MgtMsal2Provider extends MgtBaseProvider {
    * Gets whether this provider can be used in this environment
    *
    * @readonly
-   * @memberof MgtMsalProvider
+   * @memberof MgtMsal2Provider
    */
   public get isAvailable() {
     return true;
@@ -97,7 +97,7 @@ export class MgtMsal2Provider extends MgtBaseProvider {
    * method called to initialize the provider. Each derived class should provide their own implementation.
    *
    * @protected
-   * @memberof MgtMsalProvider
+   * @memberof MgtMsal2Provider
    */
   protected initializeProvider() {
     if (this.clientId) {

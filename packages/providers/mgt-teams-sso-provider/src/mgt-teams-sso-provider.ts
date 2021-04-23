@@ -8,21 +8,21 @@
 import { customElement, property } from 'lit-element';
 import { Configuration } from '@azure/msal-browser';
 import { Providers, MgtBaseProvider } from '@microsoft/mgt-element';
-import { Teams2Config, Teams2Provider } from './Teams2Provider';
+import { HttpMethod, TeamsSSOConfig, TeamsSSOProvider } from './TeamsSSOProvider';
 
 /**
  * Authentication Library Provider for Microsoft Teams accounts
  *
  * @export
- * @class MgtTeams2Provider
+ * @class MgtTeamsSSOProvider
  * @extends {MgtBaseProvider}
  */
-@customElement('mgt-teams2-provider')
-export class MgtTeams2Provider extends MgtBaseProvider {
+@customElement('mgt-teams-sso-provider')
+export class MgtTeamsSSOProvider extends MgtBaseProvider {
   /**
    * String alphanumerical value relation to a specific user
    *
-   * @memberof MgtTeams2Provider
+   * @memberof MgtTeamsSSOProvider
    */
   @property({
     attribute: 'client-id',
@@ -33,7 +33,7 @@ export class MgtTeams2Provider extends MgtBaseProvider {
   /**
    * The relative or absolute path of the html page that will handle the authentication
    *
-   * @memberof MgtTeams2Provider
+   * @memberof MgtTeamsSSOProvider
    */
   @property({
     attribute: 'auth-popup-url',
@@ -44,7 +44,7 @@ export class MgtTeams2Provider extends MgtBaseProvider {
   /**
    * The relative or absolute path to the token exchange backend service
    *
-   * @memberof MgtTeams2Provider
+   * @memberof MgtTeamsSSOProvider
    */
   @property({
     attribute: 'sso-url',
@@ -55,14 +55,14 @@ export class MgtTeams2Provider extends MgtBaseProvider {
   /**
    * The authority to use.
    *
-   * @memberof MgtTeams2Provider
+   * @memberof MgtTeamsSSOProvider
    */
   @property() public authority;
 
   /**
    * Comma separated list of scopes.
    *
-   * @memberof MgtTeams2Provider
+   * @memberof MgtTeamsSSOProvider
    */
   @property({
     attribute: 'scopes',
@@ -70,23 +70,43 @@ export class MgtTeams2Provider extends MgtBaseProvider {
   })
   public scopes;
   /**
+   * Disables auto display of popup when consent is required
+   *
+   * @memberof MgtTeamsSSOProvider
+   */
+  @property({
+    attribute: 'auto-consent-disabled',
+    type: Boolean
+  })
+  public isAutoConsentDisabled;
+  /**
+   * Disables auto display of popup when consent is required
+   *
+   * @memberof MgtTeamsSSOProvider
+   */
+  @property({
+    attribute: 'http-method',
+    type: String
+  })
+  public httpMethod;
+  /**
    * Gets whether this provider can be used in this environment
    *
    * @readonly
-   * @memberof MgtTeams2Provider
+   * @memberof MgtTeamsSSOProvider
    */
   public get isAvailable() {
-    return Teams2Provider.isAvailable;
+    return TeamsSSOProvider.isAvailable;
   }
   /**
    * method called to initialize the provider. Each derived class should provide their own implementation
    *
    * @protected
-   * @memberof MgtTeams2Provider
+   * @memberof MgtTeamsSSOProvider
    */
   protected initializeProvider() {
     if (this.clientId && this.authPopupUrl) {
-      const config: Teams2Config = {
+      const config: TeamsSSOConfig = {
         authPopupUrl: this.authPopupUrl,
         clientId: this.clientId
       };
@@ -112,7 +132,17 @@ export class MgtTeams2Provider extends MgtBaseProvider {
         config.ssoUrl = this.ssoUrl;
       }
 
-      this.provider = new Teams2Provider(config);
+      if (this.isAutoConsentDisabled) {
+        config.autoConsent = false;
+      }
+
+      if (this.httpMethod) {
+        let httpMethod: string = this.httpMethod.toUpperCase();
+        const httpMethodEnum = HttpMethod[httpMethod];
+        config.httpMethod = httpMethodEnum;
+      }
+
+      this.provider = new TeamsSSOProvider(config);
       Providers.globalProvider = this.provider;
     }
   }

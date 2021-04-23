@@ -59,13 +59,6 @@ interface AuthParams {
    * @memberof TeamsConfig
    */
   options?: Configuration;
-  /**
-   * The login hint to be used for authentication
-   *
-   * @type {string}
-   * @memberof AuthParams
-   */
-  isConsent?: boolean;
 }
 
 /**
@@ -104,20 +97,6 @@ export interface TeamsConfig {
    * @memberof TeamsConfig
    */
   msalOptions?: Configuration;
-  /**
-   * The relative or absolute path to the token exchange backend service
-   *
-   * @type {string}
-   * @memberof TeamsConfig
-   */
-  ssoUrl?: string;
-  /**
-   * Should the provider display a consent popup automatically if needed
-   *
-   * @type {string}
-   * @memberof TeamsConfig
-   */
-  autoConsent?: boolean;
 }
 
 /**
@@ -235,23 +214,10 @@ export class TeamsProvider extends MsalProvider {
         // make sure we are calling login only once
         if (!sessionStorage.getItem(this._sessionStorageLoginInProgress)) {
           sessionStorage.setItem(this._sessionStorageLoginInProgress, 'true');
-
-          const params: AuthenticationParameters = {
+          provider.login({
             loginHint: authParams.loginHint,
             scopes: scopes || provider.scopes
-          };
-
-          // if (authParams.isConsent) {
-          //   provider.consent(params);
-          // } else {
-          //   provider.login(params);
-          // }
-
-          // If in consent mode
-          if (authParams.isConsent) {
-            params.prompt = 'consent';
-          }
-          provider.login(params);
+          });
         }
       } else if (provider.state === ProviderState.SignedIn) {
         if (isSignOut) {
@@ -280,9 +246,6 @@ export class TeamsProvider extends MsalProvider {
   private teamsContext;
   private _authPopupUrl: string;
   private _msalOptions: Configuration;
-  private _ssoUrl: string;
-  private _needsConsent: boolean;
-  private _autoConsent: boolean;
 
   constructor(config: TeamsConfig) {
     super({
@@ -294,16 +257,9 @@ export class TeamsProvider extends MsalProvider {
 
     this._msalOptions = config.msalOptions;
     this._authPopupUrl = config.authPopupUrl;
-    this._ssoUrl = config.ssoUrl;
-    this._autoConsent = config.autoConsent || false;
 
     const teams = TeamsHelper.microsoftTeamsLib;
     teams.initialize();
-
-    // SSO Mode
-    if (this._ssoUrl) {
-      this.internalLogin();
-    }
   }
 
   /**
@@ -312,13 +268,7 @@ export class TeamsProvider extends MsalProvider {
    * @returns {Promise<void>}
    * @memberof TeamsProvider
    */
-  public async login(): Promise<any> {
-    // In SSO mode the login should not be able to be run via user click
-    // this method is called from the SSO internal login process if we need to consent
-    if (this._ssoUrl && !this._needsConsent) {
-      return;
-    }
-
+  public async login(): Promise<void> {
     this.setState(ProviderState.Loading);
     const teams = TeamsHelper.microsoftTeamsLib;
 
@@ -330,8 +280,7 @@ export class TeamsProvider extends MsalProvider {
           clientId: this.clientId,
           loginHint: context.loginHint,
           options: this._msalOptions,
-          scopes: this.scopes.join(','),
-          isConsent: this._autoConsent
+          scopes: this.scopes.join(',')
         };
 
         localStorage.setItem(TeamsProvider._localStorageParametersKey, JSON.stringify(authParams));
@@ -344,14 +293,8 @@ export class TeamsProvider extends MsalProvider {
             reject();
           },
           successCallback: result => {
-            // If we are in auto consent mode return the accesstoken after successful consent
-            if (this._autoConsent) {
-              resolve(result);
-            } else {
-              // Otherwise log in
-              this.trySilentSignIn();
-              resolve();
-            }
+            this.trySilentSignIn();
+            resolve();
           },
           url: url.href
         });
@@ -366,10 +309,6 @@ export class TeamsProvider extends MsalProvider {
    * @memberof MsalProvider
    */
   public async logout(): Promise<void> {
-    // In SSO mode the logout should not be able to be run at all
-    if (this._ssoUrl) {
-      return;
-    }
     const teams = TeamsHelper.microsoftTeamsLib;
 
     return new Promise((resolve, reject) => {
@@ -409,99 +348,24 @@ export class TeamsProvider extends MsalProvider {
     }
 
     const scopes = options ? options.scopes || this.scopes : this.scopes;
+    const accessTokenRequest: AuthenticationParameters = {
+      scopes
+    };
 
-    // SSO Mode
-    if (this._ssoUrl) {
-      const url = new URL(this._ssoUrl, new URL(window.location.href));
-      // Get token via SSO
-      const clientToken = await this.getClientToken();
+    if (this.teamsContext && this.teamsContext.loginHint) {
+      accessTokenRequest.loginHint = this.teamsContext.loginHint;
+    }
 
-      const params = new URLSearchParams({
-        ssoToken: clientToken,
-        scopes: scopes.join(','),
-        clientId: this.clientId
-      });
-
-      // Exchange token from server
-      const response: Response = await fetch(`${url.href}?${params}`, {
-        method: 'GET',
-        mode: 'cors',
-        cache: 'default'
-      });
-      const data = await response.json().catch(this.unhandledFetchError);
-
-      if (!response.ok && data.error === 'consent_required') {
-        // A consent_required error means the user must consent to the requested scope, or use MFA
-        // If we are in the log in process, display a dialog
-        this._needsConsent = true;
-      } else if (!response.ok) {
-        throw data;
+    try {
+      const response = await this.userAgentApplication.acquireTokenSilent(accessTokenRequest);
+      return response.accessToken;
+    } catch (e) {
+      if (this.requiresInteraction(e)) {
+        // nothing we can do now until we can do incremental consent
+        return null;
       } else {
-        this._needsConsent = false;
-        return data.access_token;
-      }
-    } else {
-      const accessTokenRequest: AuthenticationParameters = {
-        scopes
-      };
-
-      if (this.teamsContext && this.teamsContext.loginHint) {
-        accessTokenRequest.loginHint = this.teamsContext.loginHint;
-      }
-
-      try {
-        const response = await this.userAgentApplication.acquireTokenSilent(accessTokenRequest);
-        return response.accessToken;
-      } catch (e) {
-        if (this.requiresInteraction(e)) {
-          // nothing we can do now until we can do incremental consent
-          return null;
-        } else {
-          throw e;
-        }
+        throw e;
       }
     }
-  }
-  /**
-   * Makes sure we can get an access token before considered logged in
-   *
-   * @returns {Promise<void>}
-   * @memberof TeamsSSOProvider
-   */
-  private async internalLogin(): Promise<void> {
-    // Try to get access token
-    let accessToken: string = await this.getAccessToken(null);
-
-    // If we need to consent, auto consent mode is on, and we have scopes on the client side
-    if (!accessToken && this._needsConsent && this._autoConsent && this.scopes) {
-      accessToken = await this.login();
-    }
-
-    this.setState(accessToken ? ProviderState.SignedIn : ProviderState.SignedOut);
-  }
-
-  /**
-   * Get a token via the Teams SDK
-   *
-   * @returns {Promise<string>}
-   * @memberof TeamsSSOProvider
-   */
-  private async getClientToken(): Promise<string> {
-    const teams = TeamsHelper.microsoftTeamsLib;
-    return new Promise((resolve, reject) => {
-      teams.authentication.getAuthToken({
-        successCallback: (result: string) => {
-          resolve(result);
-        },
-        failureCallback: reason => {
-          this.setState(ProviderState.SignedOut);
-          reject();
-        }
-      });
-    });
-  }
-
-  private unhandledFetchError(err: any) {
-    console.error(`There was an error during the server side token exchange: ${err}`);
   }
 }

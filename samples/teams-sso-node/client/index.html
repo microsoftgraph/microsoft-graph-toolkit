@@ -11,18 +11,15 @@ Licensed under the MIT License. -->
 
   <script src="https://unpkg.com/@microsoft/teams-js/dist/MicrosoftTeams.min.js" crossorigin="anonymous"></script>
   <script src="./mgt/mgt-loader.js"></script>
-  <link href="style.css" rel="stylesheet" type="text/css" />
 </head>
 
 <body>
   <main id="main-container" role="main" class="container">
-    <!-- One way of using the TeamsProvider with SSO is to use the component provider as below  -->
-
-    <!-- <mgt-teams-provider client-id="{ YOUR CLIENT ID }"
-      auth-popup-url="auth.html"
-      scopes="user.read,people.read,user.readbasic.all,contacts.read,presence.read,presence.read.all,tasks.readwrite,tasks.read"
-      sso-url="/api/token">
-    </mgt-teams-provider> -->
+    <!-- One way of using the TeamsSSOProvider with SSO is to use the component provider as below  -->
+    <!-- <mgt-teams-sso-provider client-id="{ YOUR CLIENT ID }"
+      scopes="user.read,user.read.all,mail.readBasic,people.read.all,sites.read.all,user.readbasic.all,contacts.read,presence.read,presence.read.all,tasks.readwrite,tasks.read"
+      sso-url="/api/token" http-method="POST">
+    </mgt-teams-sso-provider> -->
 
     <h2>Person component</h2>
     <mgt-person person-query="me" view="twoLines" person-card="hover" show-presence></mgt-person>
@@ -34,7 +31,10 @@ Licensed under the MIT License. -->
     // This is the way to use the TeamsProvider with SSO in code
     const scopes = [
       'user.read',
-      'people.read',
+      'user.read.all',
+      'mail.readBasic',
+      'people.read.all',
+      'sites.read.all',
       'user.readbasic.all',
       'contacts.read',
       'presence.read',
@@ -43,15 +43,14 @@ Licensed under the MIT License. -->
       'tasks.read'
     ];
     const config = {
-      authPopupUrl: 'auth.html',
+      authPopupUrl: '/auth.html',
       ssoUrl: '/api/token',
-      clientId: 'f7d38469-d9d3-4bcd-981b-52eec8432009',
-      // clientId: { YOUR CLIENT ID },
+      clientId: '{ YOUR CLIENT ID }',
       scopes: scopes,
       autoConsent: true,
-      httpMethod: 'get'
+      httpMethod: mgt.HttpMethod.POST
     };
-    const provider = new mgt.Teams2Provider(config);
+    const provider = new mgt.TeamsSSOProvider(config);
     mgt.Providers.globalProvider = provider;
   </script>
 </body>

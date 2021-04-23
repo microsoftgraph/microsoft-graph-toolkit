@@ -5,5 +5,5 @@
  * -------------------------------------------------------------------------------------------
  */
 
-export * from './Teams2Provider';
-export * from './mgt-teams2-provider';
+export * from './TeamsSSOProvider';
+export * from './mgt-teams-sso-provider';
