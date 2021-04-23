@@ -40,13 +40,6 @@ export class MgtMsal2Provider extends MgtBaseProvider {
   public loginType;
 
   /**
-   * The authority to use.
-   *
-   * @memberof MgtMsalProvider
-   */
-  @property() public authority;
-
-  /**
    * Comma separated list of scopes
    *
    * @memberof MgtMsalProvider
@@ -58,6 +51,17 @@ export class MgtMsal2Provider extends MgtBaseProvider {
   public scopes;
 
   /**
+   * The authority to use.
+   *
+   * @memberof MgtMsalProvider
+   */
+  @property({
+    attribute: 'authority',
+    type: String
+  })
+  public authority;
+
+  /**
    * The redirect uri to use
    *
    * @memberof MgtMsalProvider
@@ -67,17 +71,6 @@ export class MgtMsal2Provider extends MgtBaseProvider {
     type: String
   })
   public redirectUri;
-
-  /**
-   * Disables multiple account capability
-   *
-   * @memberof MgtMsal2Provider
-   */
-  @property({
-    attribute: 'multi-account-disabled',
-    type: Boolean
-  })
-  public isMultiAccountDisabled;
 
   /**
    * Type of prompt for login
@@ -134,8 +127,10 @@ export class MgtMsal2Provider extends MgtBaseProvider {
         config.redirectUri = this.redirectUri;
       }
 
-      if (this.isMultiAccountDisabled) {
-        config.isMultiAccountDisabled = true;
+      if (this.prompt) {
+        let prompt: string = this.prompt.toUpperCase();
+        const promptEnum = PromptType[prompt];
+        config.prompt = promptEnum;
       }
 
       if (this.prompt) {
