@@ -365,12 +365,9 @@ export class MgtLogin extends MgtTemplatedComponent {
             ${list.map(account => {
               if (account.id.indexOf(this.userDetails.id) < 0) {
                 return html`
-                  <fluent-option
-                    class="list-box-option"
-                    @click=${() => this.setActiveAccount(account)}
-                    value="${account.username}"
-                  >
+                  <fluent-option class="list-box-option" value="${account.username}">
                     <mgt-person
+                      @click=${() => this.setActiveAccount(account)}
                       fallback-details='{"displayName":"${account.username}", "mail":"${account.username}"}'
                       .view=${PersonViewType.twolines}
                     />

@@ -99,6 +99,7 @@ mgt-login .popup-content {
 
   .inside-content {
     overflow-y: auto;
+    max-height: 200px;
     padding-right: 10px;
     .list-box {
       background-color: $popup__background-color;
@@ -108,8 +109,12 @@ mgt-login .popup-content {
       color: black !important;
       .list-box-option {
         margin-bottom: 10px;
-        &:hover {
-          background-color: #e5e5e5;
+      }
+      &:focus {
+        .list-box-option {
+          &.selected {
+            background-color: #e5e5e5;
+          }
         }
       }
     }
