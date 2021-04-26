@@ -14,6 +14,10 @@ import { MgtFlyout } from '../sub-components/mgt-flyout/mgt-flyout';
 import { getUserWithPhoto } from '../../graph/graph.userWithPhoto';
 import { PersonViewType } from '../mgt-person/mgt-person';
 
+import { FluentListbox, FluentProgressRing } from '@fluentui/web-components/dist/web-components.min';
+import * as fluentui from '@fluentui/web-components/';
+console.log('This is a temporary workaround for using @fluentui/web-components', FluentListbox.name);
+
 import { styles } from './mgt-login-css';
 import { strings } from './strings';
 
@@ -245,12 +249,25 @@ export class MgtLogin extends MgtTemplatedComponent {
     return html`
       <div class="popup">
         <div class="popup-content">
-          <div>
-            ${this.renderFlyoutPersonDetails(this.userDetails, this._image)}
-          </div>
-          <div id="accounts">${this.renderAccounts()}</div>
           <div class="popup-commands">
             ${this.renderFlyoutCommands()}
+          </div>
+          <div class="inside-content">
+            <div class="main-profile">
+              ${this.renderFlyoutPersonDetails(this.userDetails, this._image)}
+            </div>
+            <div id="accounts">${this.renderAccounts()}</div>
+          </div>
+          <div>
+            <button
+              class="add-account"
+              aria-label="Sign in with different account"
+              @click=${() => {
+                Providers.globalProvider.login();
+              }}
+            >
+              Sign in with a different account
+            </button>
           </div>
         </div>
       </div>
@@ -340,26 +357,23 @@ export class MgtLogin extends MgtTemplatedComponent {
       const list = Providers.globalProvider.getAllAccounts();
 
       return html`
-        ${list.map(account => {
-          if (account.id.indexOf(this.userDetails.id) < 0) {
-            return html`
-              <button
-                @click=${() => {
-                  this.setActiveAccount(account);
-                }}
-              >
-                user : ${account.username}</button
-              ><br />
-            `;
-          }
-        })}
-        <button
-          @click=${() => {
-            Providers.globalProvider.login();
-          }}
-        >
-          Add account
-        </button>
+        <fluent-design-system-provider>
+          <fluent-listbox class="list-box">
+            ${list.map(account => {
+              if (account.id.indexOf(this.userDetails.id) < 0) {
+                return html`
+                  <fluent-option @click=${() => this.setActiveAccount(account)} value="${account.username}">
+                    <mgt-person
+                      person-details='{"displayName":"${account.username}", "mail":"${account.username}"}'
+                      .view=${PersonViewType.twolines}
+                    />
+                  </fluent-option>
+                  <br />
+                `;
+              }
+            })}
+          </fluent-listbox>
+        </fluent-design-system-provider>
       `;
     }
   }

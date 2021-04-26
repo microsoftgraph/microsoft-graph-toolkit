@@ -19,7 +19,7 @@ mgt-login {
   --padding: 12px 20px;
   --popup-command-font-size: #{$ms-font-size-s};
   --popup-command-margin: 16px 0 0;
-  --popup-padding: 24px 48px 16px 24px;
+  --popup-padding: 10px 10px 16px 15px;
 }
 
 :host .root,
@@ -95,6 +95,69 @@ mgt-login .popup-content {
   display: flex;
   flex-direction: column;
   padding: var(--popup-padding);
+  background-color: $popup__background-color;
+
+  .inside-content {
+    max-height: 200px;
+    overflow-y: auto;
+    padding-right: 10px;
+    .list-box {
+      background-color: $popup__background-color;
+    }
+    &:after {
+      content: '';
+      position: absolute;
+      bottom: 0;
+      background: linear-gradient(to bottom, transparent, $popup__background-color);
+      height: 35%;
+      width: 100%;
+    }
+    &::-webkit-scrollbar {
+      height: 4em;
+      width: 4px;
+      border-radius: 11px;
+    }
+    &::-webkit-scrollbar-button {
+      background: white;
+    }
+    &::-webkit-scrollbar-track {
+      background: white;
+      border-radius: 10px;
+    }
+    &::-webkit-scrollbar-track-piece {
+      background: white;
+    }
+    &::-webkit-scrollbar-thumb {
+      background: grey;
+      border-radius: 10px;
+      height: 4px;
+    }
+  }
+  .add-account {
+    position: relative;
+    color: #{$commblue_primary};
+    border: none;
+    background-color: $popup__background-color;
+    cursor: pointer;
+    padding-top: 25px;
+    padding-bottom: 10px;
+    &:after {
+      content: '';
+      position: absolute;
+      bottom: 0;
+      background: linear-gradient(to top, transparent, $popup__background-color);
+      height: 35%;
+      width: 100%;
+    }
+  }
+  .main-profile {
+    margin-bottom: 30px;
+    text-align: center;
+    mgt-person {
+      --avatar-size: 75px;
+      --avatar-direction: column;
+    }
+  }
 }
 
 :host .popup-commands ul,
@@ -102,6 +165,10 @@ mgt-login .popup-commands ul {
   list-style-type: none;
   margin: var(--popup-command-margin);
   padding: 0;
+  margin-right: 20px;
+  margin-bottom: 10px;
+  margin-top: 6px;
+  text-align: right;
 }
 
 :host .popup-command,
