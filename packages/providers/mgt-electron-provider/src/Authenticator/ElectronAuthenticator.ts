@@ -16,7 +16,7 @@ import {
   LogLevel,
   PublicClientApplication
 } from '@azure/msal-node';
-import { AuthenticationProviderOptions } from '@microsoft/microsoft-graph-client/lib/es/IAuthenticationProviderOptions';
+import { AuthenticationProviderOptions } from '@microsoft/microsoft-graph-client';
 import { BrowserWindow, ipcMain } from 'electron';
 import { CustomFileProtocolListener } from './CustomFileProtocol';
 import { REDIRECT_URI, COMMON_AUTHORITY_URL } from './Constants';
@@ -119,7 +119,7 @@ export class ElectronAuthenticator {
    */
   public mainWindow: BrowserWindow;
 
-  //Popup which will take the user through the login/consent process
+  // Popup which will take the user through the login/consent process
 
   /**
    *
@@ -249,12 +249,12 @@ export class ElectronAuthenticator {
 
     this.authCodeUrlParams = {
       scopes: requestScopes,
-      redirectUri: redirectUri
+      redirectUri
     };
 
     this.authCodeRequest = {
       scopes: requestScopes,
-      redirectUri: redirectUri,
+      redirectUri,
       code: null
     };
   }

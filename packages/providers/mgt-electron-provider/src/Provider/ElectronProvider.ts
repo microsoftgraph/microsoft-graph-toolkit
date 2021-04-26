@@ -6,7 +6,7 @@
  */
 
 import { IProvider, Providers, ProviderState, createFromProvider } from '@microsoft/mgt-element';
-import { AuthenticationProviderOptions } from '@microsoft/microsoft-graph-client/lib/es/IAuthenticationProviderOptions';
+import { AuthenticationProviderOptions } from '@microsoft/microsoft-graph-client';
 import { ipcRenderer } from 'electron';
 
 /**
