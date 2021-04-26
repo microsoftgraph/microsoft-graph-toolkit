@@ -262,7 +262,7 @@ export class Msal2Provider extends IProvider {
       try {
         const tokenResponse = await this._publicClientApplication.handleRedirectPromise();
         if (tokenResponse !== null) {
-          this.handleResponse(tokenResponse.account);
+          this.handleResponse(tokenResponse?.account);
         } else {
           this.trySilentSignIn();
         }
@@ -291,7 +291,7 @@ export class Msal2Provider extends IProvider {
         this.setState(ProviderState.Loading);
         const response = await this._publicClientApplication.ssoSilent(silentRequest);
         if (response) {
-          this.handleResponse(response.account);
+          this.handleResponse(response?.account);
         }
       } catch (e) {
         this.setState(ProviderState.SignedOut);
@@ -323,7 +323,7 @@ export class Msal2Provider extends IProvider {
     };
     if (this._loginType == LoginType.Popup) {
       const response = await this._publicClientApplication.loginPopup(loginRequest);
-      this.handleResponse(response.account);
+      this.handleResponse(response?.account);
     } else {
       const loginRedirectRequest: RedirectRequest = { ...loginRequest };
       this._publicClientApplication.loginRedirect(loginRedirectRequest);
