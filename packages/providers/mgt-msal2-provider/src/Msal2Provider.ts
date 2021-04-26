@@ -262,7 +262,7 @@ export class Msal2Provider extends IProvider {
       try {
         const tokenResponse = await this._publicClientApplication.handleRedirectPromise();
         if (tokenResponse !== null) {
-          this.handleResponse(tokenResponse);
+          this.handleResponse(tokenResponse?.account);
         } else {
           this.trySilentSignIn();
         }
@@ -287,24 +287,23 @@ export class Msal2Provider extends IProvider {
     if (this._sid || this._loginHint) {
       silentRequest.sid = this._sid;
       silentRequest.loginHint = this._loginHint;
-    } else {
-      const account: any = this.getAccount();
-      if (account) {
-        silentRequest.sid = account.idTokenClaims.sid || null;
-        silentRequest.loginHint = account.idTokenClaims.preferred_username;
-      }
-    }
-    if (silentRequest.sid || silentRequest.loginHint) {
       try {
         this.setState(ProviderState.Loading);
         const response = await this._publicClientApplication.ssoSilent(silentRequest);
         if (response) {
-          this.handleResponse(response);
+          this.handleResponse(response?.account);
         }
       } catch (e) {
         this.setState(ProviderState.SignedOut);
       }
     } else {
+      const account: AccountInfo = this.getAccount();
+      if (account) {
+        if (await this.getAccessToken(null)) {
+          this.handleResponse(account);
+          return;
+        }
+      }
       this.setState(ProviderState.SignedOut);
     }
   }
@@ -324,7 +323,7 @@ export class Msal2Provider extends IProvider {
     };
     if (this._loginType == LoginType.Popup) {
       const response = await this._publicClientApplication.loginPopup(loginRequest);
-      this.handleResponse(response);
+      this.handleResponse(response?.account);
     } else {
       const loginRedirectRequest: RedirectRequest = { ...loginRequest };
       this._publicClientApplication.loginRedirect(loginRedirectRequest);
@@ -360,14 +359,14 @@ export class Msal2Provider extends IProvider {
   /**
    * Once a succesful login occurs, set the active account and store it
    *
-   * @param {(AuthenticationResult | null)} response
+   * @param {(AuthenticationResult | null)} account
    * @memberof Msal2Provider
    */
-  handleResponse(response: AuthenticationResult | null) {
-    if (response !== null) {
+  handleResponse(account: AccountInfo) {
+    if (account !== null) {
       this.setActiveAccount({
-        username: response.account.name,
-        id: response.account.homeAccountId
+        username: account.name,
+        id: account.homeAccountId
       } as IProviderAccount);
       this.setState(ProviderState.SignedIn);
     } else {
@@ -539,10 +538,9 @@ export class Msal2Provider extends IProvider {
    */
   public async getAccessToken(options?: AuthenticationProviderOptions): Promise<string> {
     const scopes = options ? options.scopes || this.scopes : this.scopes;
-    const accessTokenRequest = {
+    const accessTokenRequest: SilentRequest = {
       scopes: scopes,
-      loginHint: this._loginHint,
-      domainHint: this._domainHint
+      account: this.getAccount()
     };
     try {
       const silentRequest: SilentRequest = accessTokenRequest;
