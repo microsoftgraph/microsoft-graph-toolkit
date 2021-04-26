@@ -388,6 +388,23 @@ export class MgtPerson extends MgtTemplatedComponent {
   public personCardInteraction: PersonCardInteraction;
 
   /**
+   * Get the scopes required for person
+   *
+   * @static
+   * @return {*}  {string[]}
+   * @memberof MgtPerson
+   */
+  public static get requiredScopes(): string[] {
+    const scopes = ['user.readbasic.all', 'user.read', 'people.read', 'presence.read.all', 'presence.read'];
+
+    if (MgtPerson.config.useContactApis) {
+      scopes.push('contacts.read');
+    }
+
+    return scopes;
+  }
+
+  /**
    * Gets the flyout element
    *
    * @protected
@@ -607,13 +624,15 @@ export class MgtPerson extends MgtTemplatedComponent {
 
       return html`
         <span class="initials-text" aria-label="${initials}">
-          ${initials && initials.length
-            ? html`
+          ${
+            initials && initials.length
+              ? html`
                 ${initials}
               `
-            : html`
+              : html`
                 <i class="ms-Icon ms-Icon--Contact contact-icon"></i>
-              `}
+              `
+          }
         </span>
       `;
     }
@@ -685,6 +704,9 @@ export class MgtPerson extends MgtTemplatedComponent {
             break;
           case 'OutOfOffice':
             statusClass = 'presence-oof-offline';
+            break;
+          case 'OffWork':
+            statusClass = 'presence-offline';
             break;
         }
         break;
@@ -926,7 +948,10 @@ export class MgtPerson extends MgtTemplatedComponent {
     if (this.personDetails) {
       if (
         !this.personDetails.personImage &&
-        (this.fetchImage && this._avatarType === 'photo' && !this.personImage && !this._fetchedImage)
+        this.fetchImage &&
+        this._avatarType === 'photo' &&
+        !this.personImage &&
+        !this._fetchedImage
       ) {
         const image = await getPersonImage(graph, this.personDetails, MgtPerson.config.useContactApis);
         if (image) {
@@ -958,11 +983,13 @@ export class MgtPerson extends MgtTemplatedComponent {
 
       if (people && people.length) {
         this.personDetails = people[0];
-        const image = await getPersonImage(graph, people[0], MgtPerson.config.useContactApis);
+        if (this._avatarType === 'photo') {
+          const image = await getPersonImage(graph, people[0], MgtPerson.config.useContactApis);
 
-        if (image) {
-          this.personDetails.personImage = image;
-          this._fetchedImage = image;
+          if (image) {
+            this.personDetails.personImage = image;
+            this._fetchedImage = image;
+          }
         }
       }
     }
