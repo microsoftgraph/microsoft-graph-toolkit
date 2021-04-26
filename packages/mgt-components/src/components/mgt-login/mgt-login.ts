@@ -340,6 +340,17 @@ export class MgtLogin extends MgtTemplatedComponent {
   }
 
   /**
+   * Clears state of the component
+   *
+   * @protected
+   * @memberof MgtLogin
+   */
+  protected clearState() {
+    this.userDetails = null;
+    this._image = null;
+  }
+
+  /**
    * Render the button content when the user is not signed in.
    *
    * @protected
