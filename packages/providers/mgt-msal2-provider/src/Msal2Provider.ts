@@ -297,7 +297,7 @@ export class Msal2Provider extends IProvider {
         this.setState(ProviderState.SignedOut);
       }
     } else {
-      const account: any = this.getAccount();
+      const account: AccountInfo = this.getAccount();
       if (account) {
         if (await this.getAccessToken(null)) {
           this.handleResponse(account);
