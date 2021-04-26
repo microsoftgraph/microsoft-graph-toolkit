@@ -98,18 +98,27 @@ mgt-login .popup-content {
   background-color: $popup__background-color;
 
   .inside-content {
-    max-height: 200px;
     overflow-y: auto;
     padding-right: 10px;
     .list-box {
       background-color: $popup__background-color;
+      --accent-fill-hover: $popup__background-color;
+      --accent-fill-active: $popup__background-color;
+      --accent-foreground-cut-rest: black;
+      color: black !important;
+      .list-box-option {
+        margin-bottom: 10px;
+        &:hover {
+          background-color: #e5e5e5;
+        }
+      }
     }
     &:after {
       content: '';
       position: absolute;
       bottom: 0;
       background: linear-gradient(to bottom, transparent, $popup__background-color);
-      height: 35%;
+      height: 25%;
       width: 100%;
     }
     &::-webkit-scrollbar {
@@ -141,13 +150,9 @@ mgt-login .popup-content {
     cursor: pointer;
     padding-top: 25px;
     padding-bottom: 10px;
-    &:after {
-      content: '';
-      position: absolute;
-      bottom: 0;
-      background: linear-gradient(to top, transparent, $popup__background-color);
-      height: 35%;
-      width: 100%;
+    .account-switch-icon {
+      vertical-align: middle;
+      display: inline-block;
     }
   }
   .main-profile {

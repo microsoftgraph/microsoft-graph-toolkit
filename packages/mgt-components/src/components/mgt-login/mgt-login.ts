@@ -18,6 +18,8 @@ import { FluentListbox, FluentProgressRing } from '@fluentui/web-components/dist
 import * as fluentui from '@fluentui/web-components/';
 console.log('This is a temporary workaround for using @fluentui/web-components', FluentListbox.name);
 
+import { getSvg, SvgIcon } from '../../utils/SvgHelper';
+
 import { styles } from './mgt-login-css';
 import { strings } from './strings';
 
@@ -266,7 +268,8 @@ export class MgtLogin extends MgtTemplatedComponent {
                 Providers.globalProvider.login();
               }}
             >
-              Sign in with a different account
+              <i class="account-switch-icon">${getSvg(SvgIcon.SelectAccount, '#000000')}</i> Sign in with a different
+              account
             </button>
           </div>
         </div>
@@ -362,13 +365,16 @@ export class MgtLogin extends MgtTemplatedComponent {
             ${list.map(account => {
               if (account.id.indexOf(this.userDetails.id) < 0) {
                 return html`
-                  <fluent-option @click=${() => this.setActiveAccount(account)} value="${account.username}">
+                  <fluent-option
+                    class="list-box-option"
+                    @click=${() => this.setActiveAccount(account)}
+                    value="${account.username}"
+                  >
                     <mgt-person
-                      person-details='{"displayName":"${account.username}", "mail":"${account.username}"}'
+                      fallback-details='{"displayName":"${account.username}", "mail":"${account.username}"}'
                       .view=${PersonViewType.twolines}
                     />
                   </fluent-option>
-                  <br />
                 `;
               }
             })}
