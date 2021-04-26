@@ -259,6 +259,7 @@ export class MgtLogin extends MgtTemplatedComponent {
           <div>
             ${this.renderFlyoutPersonDetails(this.userDetails, this._image)}
           </div>
+          <div id="accounts">${this.renderAccounts()}</div>
           <div class="popup-commands">
             ${this.renderFlyoutCommands()}
           </div>
@@ -337,6 +338,62 @@ export class MgtLogin extends MgtTemplatedComponent {
         <mgt-person .personDetails=${this.userDetails} .personImage=${this._image} .view=${PersonViewType.oneline} />
       `
     );
+  }
+
+  /**
+   * POC for multi accounts - temporary
+   *
+   * @return {*}
+   * @memberof MgtLogin
+   */
+  renderAccounts() {
+    if (Providers.globalProvider.state === ProviderState.SignedIn && !Providers.globalProvider.isMultiAccountDisabled) {
+      const list = Providers.globalProvider.getAllAccounts();
+
+      return html`
+        ${list.map(account => {
+          if (account.id.indexOf(this.userDetails.id) < 0) {
+            return html`
+              <button
+                @click=${() => {
+                  this.setActiveAccount(account);
+                }}
+              >
+                user : ${account.username}</button
+              ><br />
+            `;
+          }
+        })}
+        <button
+          @click=${() => {
+            Providers.globalProvider.login();
+          }}
+        >
+          Add account
+        </button>
+      `;
+    }
+  }
+
+  /**
+   * Set one of the non-active accounts as the active account
+   *
+   * @param {*} account
+   * @memberof MgtLogin
+   */
+  setActiveAccount(account: any) {
+    Providers.globalProvider.setActiveAccount(account);
+  }
+
+  /**
+   * Clears state of the component
+   *
+   * @protected
+   * @memberof MgtLogin
+   */
+  protected clearState() {
+    this.userDetails = null;
+    this._image = null;
   }
 
   /**
