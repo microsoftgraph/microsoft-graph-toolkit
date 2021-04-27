@@ -82,6 +82,7 @@ mgt-login .popup {
   font-family: $font-family;
   background-color: $popup__background-color;
   min-width: 240px;
+  max-width: 300px;
   z-index: 1;
   color: set-var(popup__color, $theme-default, $login);
 
@@ -99,6 +100,7 @@ mgt-login .popup-content {
 
   .inside-content {
     overflow-y: auto;
+    overflow-x: clip;
     max-height: 400px;
     padding-right: 10px;
     .list-box {
@@ -112,6 +114,18 @@ mgt-login .popup-content {
         mgt-person {
           --details-spacing: 9px;
           --avatar-size: 40px;
+          position: relative;
+          &:after {
+            content: '';
+            position: absolute;
+            z-index: 1;
+            top: 0;
+            right: 0;
+            bottom: 5px;
+            pointer-events: none;
+            background-image: linear-gradient(to right, rgba(255, 255, 255, 0), $popup__background-color 85%);
+            width: 40%;
+          }
         }
         &:hover {
           background-color: #e5e5e5;
