@@ -271,9 +271,9 @@ export class MgtLogin extends MgtTemplatedComponent {
             </div>
             <div id="accounts">${this.renderAccounts()}</div>
           </div>
-          <div>
+          <div class="add-account">
             <button
-              class="add-account"
+              class="add-account-button"
               aria-label="Sign in with different account"
               @click=${() => {
                 Providers.globalProvider.login();

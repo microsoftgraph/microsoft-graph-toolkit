@@ -155,18 +155,35 @@ mgt-login .popup-content {
     }
   }
   .add-account {
-    position: relative;
-    color: #{$commblue_primary};
-    border: none;
-    background-color: $popup__background-color;
-    cursor: pointer;
-    padding-top: 25px;
-    padding-bottom: 10px;
-    .account-switch-icon {
-      vertical-align: middle;
-      display: inline-block;
+    .add-account-button {
+      position: relative;
+      color: #{$commblue_primary};
+      border: none;
+      background-color: $popup__background-color;
+      cursor: pointer;
+      margin: 25px 0px 10px 0px;
+      padding: 0;
+      border: 1px solid transparent;
+      &:hover {
+        color: #{$commblue_shade20};
+        &:after {
+          content: '';
+          position: absolute;
+          right: 0;
+          bottom: 0;
+          width: 98%;
+
+          border-bottom: 1px solid;
+          border-radius: 0;
+        }
+      }
+      .account-switch-icon {
+        vertical-align: middle;
+        display: inline-block;
+      }
     }
   }
+
   .main-profile {
     margin-bottom: 30px;
     text-align: center;
@@ -193,16 +210,18 @@ mgt-login .popup-commands ul {
 mgt-login .popup-command {
   font-family: $font-family;
   font-size: var(--popup-command-font-size);
-  font-weight: var(--font-weight);
   color: #{$commblue_primary};
   background-color: $popup__background-color;
   border: none;
-  padding: 0;
+  padding: 0 0 1px 0;
   cursor: pointer;
   transition: color 0.3s;
+  border: 1px solid transparent;
 
   &:hover {
     color: #{$commblue_shade20};
+    border-bottom: 1px solid;
+    border-radius: 0;
   }
 }
 
