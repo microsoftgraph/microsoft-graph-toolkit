@@ -40,10 +40,7 @@ export function getEventsPageIterator(
 
   uri += `/calendarview?${sdt}&${edt}`;
 
-  let request = graph
-    .api(uri)
-    .middlewareOptions(prepScopes(scopes))
-    .orderby('start/dateTime');
+  let request = graph.api(uri).middlewareOptions(prepScopes(scopes)).orderby('start/dateTime');
 
   if (preferredTimezone) {
     request = request.header('Prefer', `outlook.timezone="${preferredTimezone}"`);

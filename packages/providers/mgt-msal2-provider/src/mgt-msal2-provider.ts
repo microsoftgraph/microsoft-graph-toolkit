@@ -133,12 +133,6 @@ export class MgtMsal2Provider extends MgtBaseProvider {
         config.prompt = promptEnum;
       }
 
-      if (this.prompt) {
-        let prompt: string = this.prompt.toUpperCase();
-        const promptEnum = PromptType[prompt];
-        config.prompt = promptEnum;
-      }
-
       this.provider = new Msal2Provider(config);
       Providers.globalProvider = this.provider;
     }
