@@ -72,7 +72,7 @@ export interface Msal2Config {
    * @type {string}
    * @memberof Msal2Config
    */
-  domain_hint?: string;
+  domainHint?: string;
 
   /**
    * Redirect URI
@@ -81,6 +81,14 @@ export interface Msal2Config {
    * @memberof Msal2Config
    */
   redirectUri?: string;
+
+  /**
+   * Prompt type
+   *
+   * @type {Prompt}
+   * @memberof Msal2Config
+   */
+  prompt?: PromptType;
 
   /**
    * Authority URL
@@ -105,6 +113,18 @@ export interface Msal2Config {
    * @memberof Msal2Config
    */
   options?: Configuration;
+}
+
+/**
+ * Prompt type enum
+ *
+ * @export
+ * @enum {number}
+ */
+export enum PromptType {
+  SELECT_ACCOUNT = 'select_account',
+  LOGIN = 'login',
+  CONSENT = 'consent'
 }
 
 /**
@@ -143,6 +163,15 @@ export class Msal2Provider extends IProvider {
   private _domainHint;
 
   /**
+   * Prompt type
+   *
+   * @private
+   * @type {string}
+   * @memberof Msal2Provider
+   */
+  private _prompt: string;
+
+  /**
    * Session ID, if provided
    *
    * @private
@@ -168,6 +197,16 @@ export class Msal2Provider extends IProvider {
    */
   public get publicClientApplication() {
     return this._publicClientApplication;
+  }
+
+  /**
+   * Name used for analytics
+   *
+   * @readonly
+   * @memberof IProvider
+   */
+  public get name() {
+    return 'MgtMsal2Provider';
   }
 
   /**
@@ -223,16 +262,17 @@ export class Msal2Provider extends IProvider {
       this._loginType = typeof config.loginType !== 'undefined' ? config.loginType : LoginType.Redirect;
       this._loginHint = typeof config.loginHint !== 'undefined' ? config.loginHint : null;
       this._sid = typeof config.sid !== 'undefined' ? config.sid : null;
-      this._domainHint = typeof config.domain_hint !== 'undefined' ? config.domain_hint : null;
+      this._domainHint = typeof config.domainHint !== 'undefined' ? config.domainHint : null;
       this.scopes = typeof config.scopes !== 'undefined' ? config.scopes : ['user.read'];
       this._publicClientApplication = new PublicClientApplication(this.ms_config);
+      this._prompt = typeof config.prompt !== 'undefined' ? config.prompt : PromptType.SELECT_ACCOUNT;
       this.isMultipleAccountDisabled =
         typeof config.isMultiAccountDisabled !== 'undefined' ? config.isMultiAccountDisabled : false;
       this.graph = createFromProvider(this);
       try {
         const tokenResponse = await this._publicClientApplication.handleRedirectPromise();
         if (tokenResponse !== null) {
-          this.handleResponse(tokenResponse);
+          this.handleResponse(tokenResponse?.account);
         } else {
           this.trySilentSignIn();
         }
@@ -257,24 +297,23 @@ export class Msal2Provider extends IProvider {
     if (this._sid || this._loginHint) {
       silentRequest.sid = this._sid;
       silentRequest.loginHint = this._loginHint;
-    } else {
-      const account: any = this.getAccount();
-      if (account) {
-        silentRequest.sid = account.idTokenClaims.sid || null;
-        silentRequest.loginHint = account.idTokenClaims.preferred_username;
-      }
-    }
-    if (silentRequest.sid || silentRequest.loginHint) {
       try {
         this.setState(ProviderState.Loading);
         const response = await this._publicClientApplication.ssoSilent(silentRequest);
         if (response) {
-          this.handleResponse(response);
+          this.handleResponse(response?.account);
         }
       } catch (e) {
         this.setState(ProviderState.SignedOut);
       }
     } else {
+      const account: AccountInfo = this.getAccount();
+      if (account) {
+        if (await this.getAccessToken(null)) {
+          this.handleResponse(account);
+          return;
+        }
+      }
       this.setState(ProviderState.SignedOut);
     }
   }
@@ -289,12 +328,12 @@ export class Msal2Provider extends IProvider {
     const loginRequest: PopupRequest = {
       scopes: this.scopes,
       loginHint: this._loginHint,
-      prompt: 'select_account',
+      prompt: this._prompt,
       domainHint: this._domainHint
     };
     if (this._loginType == LoginType.Popup) {
       const response = await this._publicClientApplication.loginPopup(loginRequest);
-      this.handleResponse(response);
+      this.handleResponse(response?.account);
     } else {
       const loginRedirectRequest: RedirectRequest = { ...loginRequest };
       this._publicClientApplication.loginRedirect(loginRedirectRequest);
@@ -310,7 +349,7 @@ export class Msal2Provider extends IProvider {
   public getAllAccounts() {
     let usernames = [];
     this._publicClientApplication.getAllAccounts().forEach((account: AccountInfo) => {
-      usernames.push({ username: account.username, id: account.homeAccountId });
+      usernames.push({ username: account.username, id: account.homeAccountId } as IProviderAccount);
     });
     return usernames;
   }
@@ -330,14 +369,14 @@ export class Msal2Provider extends IProvider {
   /**
    * Once a succesful login occurs, set the active account and store it
    *
-   * @param {(AuthenticationResult | null)} response
+   * @param {(AuthenticationResult | null)} account
    * @memberof Msal2Provider
    */
-  handleResponse(response: AuthenticationResult | null) {
-    if (response !== null) {
+  handleResponse(account: AccountInfo) {
+    if (account !== null) {
       this.setActiveAccount({
-        username: response.account.name,
-        id: response.account.homeAccountId
+        username: account.name,
+        id: account.homeAccountId
       } as IProviderAccount);
       this.setState(ProviderState.SignedIn);
     } else {
@@ -513,10 +552,9 @@ export class Msal2Provider extends IProvider {
    */
   public async getAccessToken(options?: AuthenticationProviderOptions): Promise<string> {
     const scopes = options ? options.scopes || this.scopes : this.scopes;
-    const accessTokenRequest = {
+    const accessTokenRequest: SilentRequest = {
       scopes: scopes,
-      loginHint: this._loginHint,
-      domainHint: this._domainHint
+      account: this.getAccount()
     };
     try {
       const silentRequest: SilentRequest = accessTokenRequest;
