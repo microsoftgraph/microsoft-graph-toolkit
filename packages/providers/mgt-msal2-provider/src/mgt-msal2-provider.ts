@@ -7,7 +7,7 @@
 
 import { customElement, property } from 'lit-element';
 import { Providers, LoginType, MgtBaseProvider } from '@microsoft/mgt-element';
-import { Msal2Config, Msal2Provider } from './Msal2Provider';
+import { Msal2Config, Msal2Provider, PromptType } from './Msal2Provider';
 /**
  * Authentication Library Provider for Microsoft personal accounts
  *
@@ -40,13 +40,6 @@ export class MgtMsal2Provider extends MgtBaseProvider {
   public loginType;
 
   /**
-   * The authority to use.
-   *
-   * @memberof MgtMsalProvider
-   */
-  @property() public authority;
-
-  /**
    * Comma separated list of scopes
    *
    * @memberof MgtMsalProvider
@@ -58,6 +51,17 @@ export class MgtMsal2Provider extends MgtBaseProvider {
   public scopes;
 
   /**
+   * The authority to use.
+   *
+   * @memberof MgtMsalProvider
+   */
+  @property({
+    attribute: 'authority',
+    type: String
+  })
+  public authority;
+
+  /**
    * The redirect uri to use
    *
    * @memberof MgtMsalProvider
@@ -67,6 +71,17 @@ export class MgtMsal2Provider extends MgtBaseProvider {
     type: String
   })
   public redirectUri;
+
+  /**
+   * Type of prompt for login
+   *
+   * @memberof MgtMsal2Provider
+   */
+  @property({
+    attribute: 'prompt',
+    type: String
+  })
+  public prompt: string;
 
   /**
    * Disables multiple account capability
@@ -123,10 +138,21 @@ export class MgtMsal2Provider extends MgtBaseProvider {
         config.redirectUri = this.redirectUri;
       }
 
+      if (this.prompt) {
+        let prompt: string = this.prompt.toUpperCase();
+        const promptEnum = PromptType[prompt];
+        config.prompt = promptEnum;
+      }
+
+      if (this.prompt) {
+        let prompt: string = this.prompt.toUpperCase();
+        const promptEnum = PromptType[prompt];
+        config.prompt = promptEnum;
+      }
+
       if (this.isMultiAccountDisabled) {
         config.isMultiAccountDisabled = true;
       }
-
       this.provider = new Msal2Provider(config);
       Providers.globalProvider = this.provider;
     }

@@ -35,6 +35,8 @@ interface RenderedTemplates {
  * @abstract
  * @class MgtTemplatedComponent
  * @extends {MgtBaseComponent}
+ *
+ * @fires templateRendered - fires when a template is rendered
  */
 export abstract class MgtTemplatedComponent extends MgtBaseComponent {
   /**

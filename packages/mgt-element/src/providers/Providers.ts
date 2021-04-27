@@ -127,9 +127,7 @@ export class Providers {
     return null;
   }
 
-  private static _eventDispatcher: EventDispatcher<ProvidersChangedState> = new EventDispatcher<
-    ProvidersChangedState
-  >();
+  private static _eventDispatcher: EventDispatcher<ProvidersChangedState> = new EventDispatcher<ProvidersChangedState>();
 
   private static _activeAccountChangedDispatcher: EventDispatcher<any> = new EventDispatcher<any>();
 

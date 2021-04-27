@@ -19,7 +19,7 @@ import MgtDemo from './components/MgtDemo';
 import { IMgtDemoProps } from './components/IMgtDemoProps';
 
 // import the providers at the top of the page
-import { Providers, SharePointProvider } from '@microsoft/mgt';
+import { Providers, SharePointProvider } from '@microsoft/mgt-spfx';
 
 export interface IMgtDemoWebPartProps {
   description: string;
@@ -29,11 +29,11 @@ export default class MgtDemoWebPart extends BaseClientSideWebPart<IMgtDemoWebPar
 
   // set the global provider
   protected async onInit() {
-      Providers.globalProvider = new SharePointProvider(this.context);
+    Providers.globalProvider = new SharePointProvider(this.context);
   }
 
   public render(): void {
-    const element: React.ReactElement<IMgtDemoProps > = React.createElement(
+    const element: React.ReactElement<IMgtDemoProps> = React.createElement(
       MgtDemo,
       {
         description: this.properties.description

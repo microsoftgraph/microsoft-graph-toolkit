@@ -12,7 +12,7 @@ import { Providers, ProviderState, MgtTemplatedComponent } from '@microsoft/mgt-
 import { IDynamicPerson } from '../../graph/types';
 import { MgtFlyout } from '../sub-components/mgt-flyout/mgt-flyout';
 import { getUserWithPhoto } from '../../graph/graph.userWithPhoto';
-import { PersonViewType } from '../mgt-person/mgt-person';
+import { MgtPerson, PersonViewType } from '../mgt-person/mgt-person';
 
 import { FluentListbox, FluentProgressRing } from '@fluentui/web-components/dist/web-components.min';
 import * as fluentui from '@fluentui/web-components/';
@@ -89,6 +89,17 @@ export class MgtLogin extends MgtTemplatedComponent {
    */
   protected get flyout(): MgtFlyout {
     return this.renderRoot.querySelector('.flyout');
+  }
+
+  /**
+   * Get the scopes required for login
+   *
+   * @static
+   * @return {*}  {string[]}
+   * @memberof MgtLogin
+   */
+  public static get requiredScopes(): string[] {
+    return [...new Set(['user.read', ...MgtPerson.requiredScopes])];
   }
 
   /**
