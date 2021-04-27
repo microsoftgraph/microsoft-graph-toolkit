@@ -37,9 +37,6 @@ export abstract class IProvider implements AuthenticationProvider {
   private _state: ProviderState;
   private _loginChangedDispatcher = new EventDispatcher<LoginChangedEvent>();
   private _activeAccountChangedDispatcher = new EventDispatcher<ActiveAccountChanged>();
-  public get isMultiAccountDisabled(): boolean {
-    return this.isMultipleAccountDisabled;
-  }
   /**
    * returns state of Provider
    *

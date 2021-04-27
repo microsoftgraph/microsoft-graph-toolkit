@@ -274,24 +274,26 @@ export class MgtPersonCardProfile extends BasePersonCardSection {
 
     const positionItems: TemplateResult[] = [];
     for (const position of this._profile.positions) {
-      positionItems.push(html`
-        <div class="data-list__item work-position">
-          <div class="data-list__item__header">
-            <div class="data-list__item__title">${position.detail.jobTitle}</div>
-            <div class="data-list__item__date-range">
-              ${this.getDisplayDateRange(position.detail)}
+      if (position.detail) {
+        positionItems.push(html`
+          <div class="data-list__item work-position">
+            <div class="data-list__item__header">
+              <div class="data-list__item__title">${position.detail?.jobTitle}</div>
+              <div class="data-list__item__date-range">
+                ${this.getDisplayDateRange(position.detail)}
+              </div>
+            </div>
+            <div class="data-list__item__content">
+              <div class="work-position__company">
+                ${position?.detail?.company?.displayName}
+              </div>
+              <div class="work-position__location">
+                ${position?.detail?.company?.address?.city}, ${position?.detail?.company?.address?.state}
+              </div>
             </div>
           </div>
-          <div class="data-list__item__content">
-            <div class="work-position__company">
-              ${position.detail.company.displayName}
-            </div>
-            <div class="work-position__location">
-              ${position.detail.company.address.city}, ${position.detail.company.address.state}
-            </div>
-          </div>
-        </div>
-      `);
+        `);
+      }
     }
 
     return html`
