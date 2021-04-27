@@ -27,6 +27,7 @@ export abstract class IProvider implements AuthenticationProvider {
   public graph: IGraph;
   private _state: ProviderState;
   private _loginChangedDispatcher = new EventDispatcher<LoginChangedEvent>();
+  private _activeAccountChangedDispatcher = new EventDispatcher<ActiveAccountChanged>();
   /**
    * returns state of Provider
    *
@@ -101,7 +102,54 @@ export abstract class IProvider implements AuthenticationProvider {
   public logout?(): Promise<void>;
 
   /**
-   * uses scopes to receive access token
+   * Returns all signed in accounts.
+   *
+   * @return {*}  {any[]}
+   * @memberof IProvider
+   */
+  public getAllAccounts?(): IProviderAccount[];
+
+  /**
+   * Switch between two signed in accounts
+   *
+   * @param {*} user
+   * @memberof IProvider
+   */
+  public setActiveAccount?(user: IProviderAccount) {
+    this.fireActiveAccountChanged();
+  }
+
+  /**
+   * Event handler when Active account changes
+   *
+   * @param {EventHandler<ActiveAccountChanged>} eventHandler
+   * @memberof IProvider
+   */
+  public onActiveAccountChanged(eventHandler: EventHandler<ActiveAccountChanged>) {
+    this._activeAccountChangedDispatcher.add(eventHandler);
+  }
+
+  /**
+   * Removes event handler for when Active account changes
+   *
+   * @param {EventHandler<ActiveAccountChanged>} eventHandler
+   * @memberof IProvider
+   */
+  public removeActiveAccountChangedHandler(eventHandler: EventHandler<ActiveAccountChanged>) {
+    this._activeAccountChangedDispatcher.remove(eventHandler);
+  }
+
+  /**
+   * Fires event when active account changes
+   *
+   * @memberof IProvider
+   */
+  private fireActiveAccountChanged() {
+    this._activeAccountChangedDispatcher.fire({});
+  }
+
+  /**
+   * uses scopes to recieve access token
    *
    * @param {...string[]} scopes
    * @returns {Promise<string>}
@@ -122,6 +170,13 @@ export abstract class IProvider implements AuthenticationProvider {
   public abstract getAccessToken(options?: AuthenticationProviderOptions): Promise<string>;
 }
 
+/**
+ * ActiveAccountChanged Event
+ *
+ * @export
+ * @interface ActiveAccountChanged
+ */
+export interface ActiveAccountChanged {}
 /**
  * loginChangedEvent
  *
@@ -168,3 +223,13 @@ export enum ProviderState {
    */
   SignedIn
 }
+
+/**
+ * Account details
+ *
+ * @export
+ */
+export type IProviderAccount = {
+  username?: string;
+  id: string;
+};
