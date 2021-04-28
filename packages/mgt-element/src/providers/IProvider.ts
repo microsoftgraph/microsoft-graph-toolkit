@@ -33,12 +33,12 @@ export abstract class IProvider implements AuthenticationProvider {
    * @type {boolean}
    * @memberof IProvider
    */
-  protected isMultipleAccountDisabled: boolean = true;
+  protected isMultipleAccountSupported: boolean = false;
   private _state: ProviderState;
   private _loginChangedDispatcher = new EventDispatcher<LoginChangedEvent>();
   private _activeAccountChangedDispatcher = new EventDispatcher<ActiveAccountChanged>();
-  public get isMultiAccountDisabled(): boolean {
-    return this.isMultipleAccountDisabled;
+  public get isMultiAccountSupported(): boolean {
+    return this.isMultipleAccountSupported;
   }
   /**
    * returns state of Provider

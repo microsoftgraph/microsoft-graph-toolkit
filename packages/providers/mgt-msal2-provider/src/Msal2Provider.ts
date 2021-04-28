@@ -217,6 +217,18 @@ export class Msal2Provider extends IProvider {
    */
   public scopes: string[];
 
+  /**
+   *
+   * Disables multi account functionality
+   * @private
+   * @type {boolean}
+   * @memberof Msal2Provider
+   */
+  private _isMultipleAccountDisabled: boolean = false;
+
+  public get isMultiAccountSupported(): boolean {
+    return !this._isMultipleAccountDisabled;
+  }
   private sessionStorageRequestedScopesKey = 'mgt-requested-scopes';
   private sessionStorageDeniedScopesKey = 'mgt-denied-scopes';
   private homeAccountKey = '275f3731-e4a4-468a-bf9c-baca24b31e26';
@@ -266,7 +278,7 @@ export class Msal2Provider extends IProvider {
       this.scopes = typeof config.scopes !== 'undefined' ? config.scopes : ['user.read'];
       this._publicClientApplication = new PublicClientApplication(this.ms_config);
       this._prompt = typeof config.prompt !== 'undefined' ? config.prompt : PromptType.SELECT_ACCOUNT;
-      this.isMultipleAccountDisabled =
+      this._isMultipleAccountDisabled =
         typeof config.isMultiAccountDisabled !== 'undefined' ? config.isMultiAccountDisabled : false;
       this.graph = createFromProvider(this);
       try {
@@ -547,7 +559,7 @@ export class Msal2Provider extends IProvider {
       this.setState(ProviderState.SignedOut);
     } else {
       await this._publicClientApplication.logoutPopup({ ...logOutRequest });
-      if (this._publicClientApplication.getAllAccounts.length == 1 || this.isMultiAccountDisabled) {
+      if (this._publicClientApplication.getAllAccounts.length == 1 || this._isMultipleAccountDisabled) {
         this.setState(ProviderState.SignedOut);
       } else {
         this.trySilentSignIn();
