@@ -211,7 +211,7 @@ mgt-login .popup-content {
     text-align: center;
     mgt-person {
       --avatar-size: 72px;
-      --avatar-direction: column;
+      --person-flex-direction: column;
       --details-spacing: 0px;
       --line1-color: rgba(0, 0, 0, 0.83);
       --line2-color: rgba(0, 0, 0, 0.55);

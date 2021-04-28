@@ -32,7 +32,7 @@ $line3-text-transform: var(--line3-text-transform, #{$text-transform});
 
 $details-spacing: --details-spacing;
 
-$avatar-direction: --avatar-direction;
+$person-flex-direction: --person-flex-direction;
 
 $presence-color-online: #6bb700;
 $presence-color-dnd: #c50f1f;
@@ -66,7 +66,7 @@ mgt-person .person-root {
   display: flex;
   align-items: center;
   color: $color;
-  flex-direction: var($avatar-direction, row);
+  flex-direction: var($person-flex-direction, row);
 
   .user-avatar {
     position: relative;
