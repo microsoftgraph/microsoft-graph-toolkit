@@ -88,16 +88,16 @@ You can use the components by referencing the loader directly (via unpkg), or in
 <script src="https://unpkg.com/@microsoft/mgt/dist/bundle/mgt-loader.js"></script>
 ```
 
-You can then start using the components in your html page. Here is a full working example with the Msal provider:
+You can then start using the components in your html page. Here is a full working example with the Msal2 provider:
 
 ```html
 <script src="https://unpkg.com/@microsoft/mgt/dist/bundle/mgt-loader.js"></script>
-<mgt-msal-provider client-id="[CLIENT-ID]"></mgt-msal-provider>
+<mgt-msal2-provider client-id="[CLIENT-ID]"></mgt-msal2-provider>
 <mgt-login></mgt-login>
 
 <!-- <script>
     // alternatively, you can set the provider in code and provide more options
-    mgt.Providers.globalProvider = new mgt.MsalProvider({clientId: '[CLIENT-ID]'});
+    mgt.Providers.globalProvider = new mgt.Msal2Provider({clientId: '[CLIENT-ID]'});
 </script> -->
 ```
 
@@ -116,7 +116,7 @@ Now you can reference all components and providers at the page you are using:
 ```html
 <script type="module" src="node_modules/@microsoft/mgt/dist/es6/index.js"></script>
 
-<mgt-msal-provider client-id="[CLIENT-ID]"></mgt-msal-provider>
+<mgt-msal2-provider client-id="[CLIENT-ID]"></mgt-msal2-provider>
 
 <mgt-login></mgt-login>
 <mgt-agenda></mgt-agenda>
