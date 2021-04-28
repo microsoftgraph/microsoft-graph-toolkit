@@ -47,6 +47,10 @@ export abstract class IProvider implements AuthenticationProvider {
    */
   private _isIncrementalConsentDisabled: boolean = false;
 
+  protected isMultipleAccountSupported: boolean = false;
+  public get isMultiAccountSupported(): boolean {
+    return this.isMultipleAccountSupported;
+  }
   /**
    * returns state of Provider
    *
@@ -147,6 +151,14 @@ export abstract class IProvider implements AuthenticationProvider {
    * @memberof IProvider
    */
   public getAllAccounts?(): IProviderAccount[];
+
+  /**
+   * Returns active account in case of multi-account sign in
+   *
+   * @return {*}  {any[]}
+   * @memberof IProvider
+   */
+  public getActiveAccount?(): IProviderAccount;
 
   /**
    * Switch between two signed in accounts
@@ -269,6 +281,7 @@ export enum ProviderState {
  * @export
  */
 export type IProviderAccount = {
-  username?: string;
   id: string;
+  mail?: string;
+  name?: string;
 };
