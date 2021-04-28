@@ -421,7 +421,7 @@ export class MgtLogin extends MgtTemplatedComponent {
    * @param {*} account
    * @memberof MgtLogin
    */
-  setActiveAccount(account: any) {
+  private setActiveAccount(account: IProviderAccount) {
     Providers.globalProvider.setActiveAccount(account);
   }
 
