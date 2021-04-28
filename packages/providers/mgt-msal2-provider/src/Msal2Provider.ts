@@ -349,7 +349,7 @@ export class Msal2Provider extends IProvider {
   public getAllAccounts() {
     let usernames = [];
     this._publicClientApplication.getAllAccounts().forEach((account: AccountInfo) => {
-      usernames.push({ username: account.username, id: account.homeAccountId } as IProviderAccount);
+      usernames.push({ name: account.name, mail: account.username, id: account.homeAccountId } as IProviderAccount);
     });
     return usernames;
   }
@@ -374,7 +374,7 @@ export class Msal2Provider extends IProvider {
    */
   public getActiveAccount() {
     const account = this._publicClientApplication.getActiveAccount();
-    return { username: account.username, id: account.homeAccountId } as IProviderAccount;
+    return { name: account.name, mail: account.username, id: account.homeAccountId } as IProviderAccount;
   }
 
   /**
@@ -386,8 +386,9 @@ export class Msal2Provider extends IProvider {
   handleResponse(account: AccountInfo) {
     if (account !== null) {
       this.setActiveAccount({
-        username: account.name,
-        id: account.homeAccountId
+        name: account.name,
+        id: account.homeAccountId,
+        mail: account.username
       } as IProviderAccount);
       this.setState(ProviderState.SignedIn);
     } else {

@@ -250,6 +250,7 @@ export enum ProviderState {
  * @export
  */
 export type IProviderAccount = {
-  username?: string;
   id: string;
+  mail?: string;
+  name?: string;
 };

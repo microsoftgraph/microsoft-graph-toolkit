@@ -170,12 +170,12 @@ export class MgtLogin extends MgtTemplatedComponent {
     }
 
     const provider = Providers.globalProvider;
-    if (provider && !provider.isMultiAccountDisabled) {
-      localStorage.removeItem(provider.getActiveAccount().id + this._userDetailsKey);
-    }
     if (provider && provider.logout) {
       await provider.logout();
       this.userDetails = null;
+      if (!provider.isMultiAccountDisabled) {
+        localStorage.removeItem(provider.getActiveAccount().id + this._userDetailsKey);
+      }
       this.hideFlyout();
       this.fireCustomEvent('logoutCompleted');
     }
@@ -214,7 +214,7 @@ export class MgtLogin extends MgtTemplatedComponent {
           this._image = this.userDetails.personImage;
         }
 
-        if (!Providers.globalProvider.isMultiAccountDisabled) {
+        if (!provider.isMultiAccountDisabled) {
           localStorage.setItem(
             Providers.globalProvider.getActiveAccount().id + this._userDetailsKey,
             JSON.stringify(this.userDetails)
@@ -386,19 +386,21 @@ export class MgtLogin extends MgtTemplatedComponent {
    */
   renderAccounts() {
     if (Providers.globalProvider.state === ProviderState.SignedIn && !Providers.globalProvider.isMultiAccountDisabled) {
-      const list = Providers.globalProvider.getAllAccounts();
+      const provider = Providers.globalProvider;
+      const list = provider.getAllAccounts();
 
       return html`
         <fluent-design-system-provider>
           <fluent-listbox class="list-box">
             ${list.map(account => {
-              if (account.id !== Providers.globalProvider.getActiveAccount().id) {
+              if (account.id !== provider.getActiveAccount().id) {
                 const details = localStorage.getItem(account.id + this._userDetailsKey);
                 return html`
-                  <fluent-option class="list-box-option" value="${account.username}">
+                  <fluent-option class="list-box-option" value="${account.name}">
                     <mgt-person
                       @click=${() => this.setActiveAccount(account)}
-                      .personDetails=${JSON.parse(details)}
+                      .personDetails=${details ? JSON.parse(details) : null}
+                      .fallbackDetails=${{ displayName: account.name, mail: account.mail }}
                       .view=${PersonViewType.twolines}
                     />
                   </fluent-option>
