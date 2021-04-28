@@ -15,7 +15,6 @@ import { getUserWithPhoto } from '../../graph/graph.userWithPhoto';
 import { MgtPerson, PersonViewType } from '../mgt-person/mgt-person';
 
 import { FluentListbox, FluentProgressRing } from '@fluentui/web-components/dist/web-components.min';
-import * as fluentui from '@fluentui/web-components/';
 console.log('This is a temporary workaround for using @fluentui/web-components', FluentListbox.name);
 
 import { getSvg, SvgIcon } from '../../utils/SvgHelper';
