@@ -11,9 +11,9 @@ import { customElement, html, TemplateResult } from 'lit-element';
 import { BasePersonCardSection } from '../BasePersonCardSection';
 import { getSvg, SvgIcon } from '../../../../utils/SvgHelper';
 import { MgtPersonCardState } from '../../mgt-person-card.types';
-import { PersonViewType } from '../../../mgt-person/mgt-person';
 import { styles } from './mgt-person-card-organization-css';
 import { strings } from './strings';
+import { ViewType } from '../../../../graph/types';
 
 /**
  * The member organization subsection of the person card
@@ -175,7 +175,7 @@ export class MgtPersonCardOrganization extends BasePersonCardSection {
             .line2Property=${'jobTitle'}
             .line3Property=${'department'}
             .fetchImage=${true}
-            .view=${PersonViewType.threelines}
+            .view=${ViewType.threelines}
           ></mgt-person>
         </div>
         <div class="org-member__more">
@@ -239,7 +239,7 @@ export class MgtPersonCardOrganization extends BasePersonCardSection {
                   .line2Property=${'jobTitle'}
                   .line3Property=${'department'}
                   .fetchImage=${true}
-                  .view=${PersonViewType.twolines}
+                  .view=${ViewType.twolines}
                 ></mgt-person>
               </div>
               <div class="org-member__more">
@@ -293,7 +293,7 @@ export class MgtPersonCardOrganization extends BasePersonCardSection {
             .line2Property=${'jobTitle'}
             .line3Property=${'department'}
             .fetchImage=${true}
-            .view=${PersonViewType.threelines}
+            .view=${ViewType.threelines}
           ></mgt-person>
         </div>
       </div>
@@ -316,7 +316,7 @@ export class MgtPersonCardOrganization extends BasePersonCardSection {
             .personDetails=${person}
             .line2Property=${'jobTitle'}
             .fetchImage=${true}
-            .view=${PersonViewType.twolines}
+            .view=${ViewType.twolines}
           ></mgt-person>
         </div>
       </div>
