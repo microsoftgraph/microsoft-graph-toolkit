@@ -148,6 +148,11 @@ mgt-login .popup-content {
             background: rgba(0, 0, 0, 0.1);
           }
         }
+        mgt-person {
+          &:after {
+            background-image: none;
+          }
+        }
       }
     }
     &:after {
