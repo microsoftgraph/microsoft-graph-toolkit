@@ -170,6 +170,9 @@ export class MgtLogin extends MgtTemplatedComponent {
     }
 
     const provider = Providers.globalProvider;
+    if (provider && !provider.isMultiAccountDisabled) {
+      localStorage.removeItem(provider.getActiveAccount().id + this._userDetailsKey);
+    }
     if (provider && provider.logout) {
       await provider.logout();
       this.userDetails = null;
@@ -289,9 +292,9 @@ export class MgtLogin extends MgtTemplatedComponent {
             </div>
             <div id="accounts">${this.renderAccounts()}</div>
           </div>
-          <div>
+          <div class="add-account">
             <button
-              class="add-account"
+              class="add-account-button"
               aria-label="Sign in with different account"
               @click=${() => {
                 Providers.globalProvider.login();
