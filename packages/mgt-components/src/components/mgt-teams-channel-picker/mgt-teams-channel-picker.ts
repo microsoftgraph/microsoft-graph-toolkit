@@ -173,6 +173,17 @@ export class MgtTeamsChannelPicker extends MgtTemplatedComponent {
     }
   }
 
+  /**
+   * Get the scopes required for teams channel picker
+   *
+   * @static
+   * @return {*}  {string[]}
+   * @memberof MgtTeamsChannelPicker
+   */
+  public static get requiredScopes(): string[] {
+    return ['team.readbasic.all', 'channel.readbasic.all'];
+  }
+
   private set items(value) {
     if (this._items === value) {
       return;
@@ -600,7 +611,7 @@ export class MgtTeamsChannelPicker extends MgtTemplatedComponent {
       teams = await getAllMyTeams(graph);
       teams = teams.filter(t => !t.isArchived);
 
-      const batch = provider.graph.createBatch();
+      const batch = graph.createBatch();
 
       for (const team of teams) {
         batch.get(team.id, `teams/${team.id}/channels`, ['Channel.ReadBasic.All']);

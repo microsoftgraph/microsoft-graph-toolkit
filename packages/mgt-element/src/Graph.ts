@@ -151,7 +151,7 @@ export function createFromProvider(provider: IProvider, version?: string, compon
     new AuthenticationHandler(provider),
     new RetryHandler(new RetryHandlerOptions()),
     new TelemetryHandler(),
-    new SdkVersionMiddleware(PACKAGE_VERSION),
+    new SdkVersionMiddleware(PACKAGE_VERSION, provider.name),
     new HTTPMessageHandler()
   ];
 

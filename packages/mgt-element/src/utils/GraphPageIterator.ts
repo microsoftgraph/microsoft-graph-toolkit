@@ -102,10 +102,7 @@ export class GraphPageIterator<T> {
   public async next(): Promise<T[]> {
     if (this._nextLink) {
       const nextResource = this._nextLink.split(this._version)[1];
-      const response = await this._graph
-        .api(nextResource)
-        .version(this._version)
-        .get();
+      const response = await this._graph.api(nextResource).version(this._version).get();
       if (response && response.value && response.value.length) {
         this._value = this._value.concat(response.value);
         this._nextLink = response['@odata.nextLink'];

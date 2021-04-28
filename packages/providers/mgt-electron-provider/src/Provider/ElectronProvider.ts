@@ -18,6 +18,16 @@ import { ipcRenderer } from 'electron';
  * @extends {IProvider}
  */
 export class ElectronProvider extends IProvider {
+  /**
+   * Name used for analytics
+   *
+   * @readonly
+   * @memberof IProvider
+   */
+  public get name() {
+    return 'MgtElectronProvider';
+  }
+
   constructor() {
     super();
     this.graph = createFromProvider(this);

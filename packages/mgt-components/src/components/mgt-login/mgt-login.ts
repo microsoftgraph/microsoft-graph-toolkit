@@ -12,12 +12,12 @@ import { Providers, ProviderState, MgtTemplatedComponent } from '@microsoft/mgt-
 import { IDynamicPerson, ViewType } from '../../graph/types';
 import { MgtFlyout } from '../sub-components/mgt-flyout/mgt-flyout';
 import { getUserWithPhoto } from '../../graph/graph.userWithPhoto';
+import { MgtPerson, PersonViewType } from '../mgt-person/mgt-person';
 
 import { styles } from './mgt-login-css';
 import { strings } from './strings';
 
 import '../../styles/style-helper';
-import '../mgt-person/mgt-person';
 
 /**
  * Web component button and flyout control to facilitate Microsoft identity platform authentication
@@ -82,6 +82,17 @@ export class MgtLogin extends MgtTemplatedComponent {
    */
   protected get flyout(): MgtFlyout {
     return this.renderRoot.querySelector('.flyout');
+  }
+
+  /**
+   * Get the scopes required for login
+   *
+   * @static
+   * @return {*}  {string[]}
+   * @memberof MgtLogin
+   */
+  public static get requiredScopes(): string[] {
+    return [...new Set(['user.read', ...MgtPerson.requiredScopes])];
   }
 
   /**
@@ -325,6 +336,17 @@ export class MgtLogin extends MgtTemplatedComponent {
         <mgt-person .personDetails=${this.userDetails} .personImage=${this._image} .view=${ViewType.oneline} />
       `
     );
+  }
+
+  /**
+   * Clears state of the component
+   *
+   * @protected
+   * @memberof MgtLogin
+   */
+  protected clearState() {
+    this.userDetails = null;
+    this._image = null;
   }
 
   /**

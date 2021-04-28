@@ -8,7 +8,7 @@
 import * as MicrosoftGraph from '@microsoft/microsoft-graph-types';
 import { customElement, html, property, TemplateResult } from 'lit-element';
 import { repeat } from 'lit-html/directives/repeat';
-import { getPeople, PersonType } from '../../graph/graph.people';
+import { getPeople, getPeopleFromResource, PersonType } from '../../graph/graph.people';
 import { getUsersPresenceByPeople } from '../../graph/graph.presence';
 import { findGroupMembers, getUsersForPeopleQueries, getUsersForUserIds } from '../../graph/graph.user';
 import { IDynamicPerson } from '../../graph/types';
@@ -16,6 +16,7 @@ import { Providers, ProviderState, MgtTemplatedComponent, arraysAreEqual } from 
 import '../../styles/style-helper';
 import { PersonCardInteraction } from './../PersonCardInteraction';
 import { styles } from './mgt-people-css';
+import { MgtPerson } from '../mgt-person/mgt-person';
 
 export { PersonCardInteraction } from './../PersonCardInteraction';
 
@@ -152,10 +153,89 @@ export class MgtPeople extends MgtTemplatedComponent {
   })
   public personCardInteraction: PersonCardInteraction = PersonCardInteraction.hover;
 
+  /**
+   * The resource to get
+   *
+   * @type {string}
+   * @memberof MgtPeople
+   */
+  @property({
+    attribute: 'resource',
+    type: String
+  })
+  public get resource(): string {
+    return this._resource;
+  }
+  public set resource(value) {
+    if (this._resource === value) {
+      return;
+    }
+    this._resource = value;
+    this.requestStateUpdate(true);
+  }
+
+  /**
+   * Api version to use for request
+   *
+   * @type {string}
+   * @memberof MgtPeople
+   */
+  @property({
+    attribute: 'version',
+    type: String
+  })
+  public get version(): string {
+    return this._version;
+  }
+  public set version(value) {
+    if (this._version === value) {
+      return;
+    }
+    this._version = value;
+    this.requestStateUpdate(true);
+  }
+
+  /**
+   * The scopes to request
+   *
+   * @type {string[]}
+   * @memberof MgtPeople
+   */
+  @property({
+    attribute: 'scopes',
+    converter: value => {
+      return value ? value.toLowerCase().split(',') : null;
+    },
+    reflect: true
+  })
+  public scopes: string[] = [];
+
+  /**
+   * Get the scopes required for people
+   *
+   * @static
+   * @return {*}  {string[]}
+   * @memberof MgtPeople
+   */
+  public static get requiredScopes(): string[] {
+    return [
+      ...new Set([
+        'user.read.all',
+        'people.read',
+        'user.readbasic.all',
+        'presence.read.all',
+        'contacts.read',
+        ...MgtPerson.requiredScopes
+      ])
+    ];
+  }
+
   private _groupId: string;
   private _userIds: string[];
   private _peopleQueries: string[];
   private _peoplePresence: {};
+  private _resource: string;
+  private _version: string = 'v1.0';
 
   constructor() {
     super();
@@ -329,6 +409,8 @@ export class MgtPeople extends MgtTemplatedComponent {
           this.people = await getUsersForUserIds(graph, this.userIds);
         } else if (this.peopleQueries) {
           this.people = await getUsersForPeopleQueries(graph, this.peopleQueries);
+        } else if (this.resource) {
+          this.people = await getPeopleFromResource(graph, this.version, this.resource, this.scopes);
         } else {
           this.people = await getPeople(graph);
         }

@@ -144,9 +144,6 @@ function buildFilesRequest(batch: IBatch, emailAddress?: string) {
  * @return {*}  {Promise<Profile>}
  */
 async function getProfile(graph: IGraph, userId: string): Promise<Profile> {
-  const profile = await graph
-    .api(`/users/${userId}/profile`)
-    .version('beta')
-    .get();
+  const profile = await graph.api(`/users/${userId}/profile`).version('beta').get();
   return profile;
 }

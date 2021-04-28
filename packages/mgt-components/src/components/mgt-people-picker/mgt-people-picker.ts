@@ -17,6 +17,7 @@ import { Providers, ProviderState, MgtTemplatedComponent } from '@microsoft/mgt-
 import '../../styles/style-helper';
 import '../sub-components/mgt-spinner/mgt-spinner';
 import { debounce } from '../../utils/Utils';
+import { MgtPerson, PersonViewType } from '../mgt-person/mgt-person';
 import { PersonCardInteraction } from '../PersonCardInteraction';
 import { MgtFlyout } from '../sub-components/mgt-flyout/mgt-flyout';
 import { styles } from './mgt-people-picker-css';
@@ -284,6 +285,19 @@ export class MgtPeoplePicker extends MgtTemplatedComponent {
   public selectionMode: string;
 
   /**
+   * Get the scopes required for people picker
+   *
+   * @static
+   * @return {*}  {string[]}
+   * @memberof MgtPeoplePicker
+   */
+  public static get requiredScopes(): string[] {
+    return [
+      ...new Set(['user.read.all', 'people.read', 'group.read.all', 'user.readbasic.all', ...MgtPerson.requiredScopes])
+    ];
+  }
+
+  /**
    * User input in search.
    *
    * @protected
@@ -339,11 +353,11 @@ export class MgtPeoplePicker extends MgtTemplatedComponent {
   /**
    * Queries the microsoft graph for a user based on the user id and adds them to the selectedPeople array
    *
-   * @param {[string]} an array of user ids to add to selectedPeople
+   * @param {readonly string []} an array of user ids to add to selectedPeople
    * @returns {Promise<void>}
    * @memberof MgtPeoplePicker
    */
-  public async selectUsersById(userIds: [string]): Promise<void> {
+  public async selectUsersById(userIds: readonly string[]): Promise<void> {
     const provider = Providers.globalProvider;
     const graph = Providers.globalProvider.graph;
     if (provider && provider.state === ProviderState.SignedIn) {
@@ -484,8 +498,10 @@ export class MgtPeoplePicker extends MgtTemplatedComponent {
         person =>
           html`
             <div class="selected-list__person-wrapper">
-              ${this.renderTemplate('selected-person', { person }, `selected-${person.id}`) ||
-                this.renderSelectedPerson(person)}
+              ${
+                this.renderTemplate('selected-person', { person }, `selected-${person.id}`) ||
+                this.renderSelectedPerson(person)
+              }
 
               <div class="selected-list__person-wrapper__overflow">
                 <div class="selected-list__person-wrapper__overflow__gradient"></div>
@@ -577,6 +593,9 @@ export class MgtPeoplePicker extends MgtTemplatedComponent {
    * @memberof MgtPeoplePicker
    */
   protected renderNoData(): TemplateResult {
+    if (!this._isFocused) {
+      return;
+    }
     return (
       this.renderTemplate('error', null) ||
       this.renderTemplate('no-data', null) ||
@@ -917,6 +936,13 @@ export class MgtPeoplePicker extends MgtTemplatedComponent {
       // keyCodes capture: down arrow (40), right arrow (39), up arrow (38) and left arrow (37)
       return;
     }
+    if (event.keyCode === 9 && !this.flyout.isOpen) {
+      // keyCodes capture: tab (9)
+      this.gainedFocus();
+    }
+    if (event.shiftKey) {
+      this.gainedFocus();
+    }
 
     const input = event.target as HTMLInputElement;
 
@@ -991,12 +1017,14 @@ export class MgtPeoplePicker extends MgtTemplatedComponent {
       }
     }
     if (event.keyCode === 9 || event.keyCode === 13) {
-      // keyCodes capture: tab (9) and enter (13)
-      if (this._foundPeople.length) {
-        this.fireCustomEvent('blur');
-        event.preventDefault();
+      if (!event.shiftKey && this._foundPeople) {
+        // keyCodes capture: tab (9) and enter (13)
+        if (this._foundPeople.length) {
+          this.fireCustomEvent('blur');
+          event.preventDefault();
+        }
+        this.addPerson(this._foundPeople[this._arrowSelectionCount]);
       }
-      this.addPerson(this._foundPeople[this._arrowSelectionCount]);
       this.hideFlyout();
       (event.target as HTMLInputElement).value = '';
     }
