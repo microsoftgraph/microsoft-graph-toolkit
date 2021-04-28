@@ -75,14 +75,6 @@ export interface Msal2Config {
   domainHint?: string;
 
   /**
-   * Prompt type
-   *
-   * @type {Prompt}
-   * @memberof Msal2Config
-   */
-  prompt?: PromptType;
-
-  /**
    * Redirect URI
    *
    * @type {string}
@@ -91,12 +83,28 @@ export interface Msal2Config {
   redirectUri?: string;
 
   /**
+   * Prompt type
+   *
+   * @type {Prompt}
+   * @memberof Msal2Config
+   */
+  prompt?: PromptType;
+
+  /**
    * Authority URL
    *
    * @type {string}
    * @memberof Msal2Config
    */
   authority?: string;
+
+  /**
+   * Disable multi account functionality
+   *
+   * @type {boolean}
+   * @memberof Msal2Config
+   */
+  isMultiAccountDisabled?: boolean;
 
   /**
    * Other options
@@ -209,6 +217,18 @@ export class Msal2Provider extends IProvider {
    */
   public scopes: string[];
 
+  /**
+   *
+   * Disables multi account functionality
+   * @private
+   * @type {boolean}
+   * @memberof Msal2Provider
+   */
+  private _isMultipleAccountDisabled: boolean = false;
+
+  public get isMultiAccountSupported(): boolean {
+    return !this._isMultipleAccountDisabled;
+  }
   private sessionStorageRequestedScopesKey = 'mgt-requested-scopes';
   private sessionStorageDeniedScopesKey = 'mgt-denied-scopes';
   private homeAccountKey = '275f3731-e4a4-468a-bf9c-baca24b31e26';
@@ -258,6 +278,8 @@ export class Msal2Provider extends IProvider {
       this.scopes = typeof config.scopes !== 'undefined' ? config.scopes : ['user.read'];
       this._publicClientApplication = new PublicClientApplication(this.ms_config);
       this._prompt = typeof config.prompt !== 'undefined' ? config.prompt : PromptType.SELECT_ACCOUNT;
+      this._isMultipleAccountDisabled =
+        typeof config.isMultiAccountDisabled !== 'undefined' ? config.isMultiAccountDisabled : false;
       this.graph = createFromProvider(this);
       try {
         const tokenResponse = await this._publicClientApplication.handleRedirectPromise();
@@ -339,7 +361,7 @@ export class Msal2Provider extends IProvider {
   public getAllAccounts() {
     let usernames = [];
     this._publicClientApplication.getAllAccounts().forEach((account: AccountInfo) => {
-      usernames.push({ username: account.username, id: account.homeAccountId } as IProviderAccount);
+      usernames.push({ name: account.name, mail: account.username, id: account.homeAccountId } as IProviderAccount);
     });
     return usernames;
   }
@@ -357,6 +379,17 @@ export class Msal2Provider extends IProvider {
   }
 
   /**
+   * Gets active account
+   *
+   * @return {*}
+   * @memberof Msal2Provider
+   */
+  public getActiveAccount() {
+    const account = this._publicClientApplication.getActiveAccount();
+    return { name: account.name, mail: account.username, id: account.homeAccountId } as IProviderAccount;
+  }
+
+  /**
    * Once a succesful login occurs, set the active account and store it
    *
    * @param {(AuthenticationResult | null)} account
@@ -365,8 +398,9 @@ export class Msal2Provider extends IProvider {
   handleResponse(account: AccountInfo) {
     if (account !== null) {
       this.setActiveAccount({
-        username: account.name,
-        id: account.homeAccountId
+        name: account.name,
+        id: account.homeAccountId,
+        mail: account.username
       } as IProviderAccount);
       this.setState(ProviderState.SignedIn);
     } else {
@@ -525,7 +559,11 @@ export class Msal2Provider extends IProvider {
       this.setState(ProviderState.SignedOut);
     } else {
       await this._publicClientApplication.logoutPopup({ ...logOutRequest });
-      this.setState(ProviderState.SignedOut);
+      if (this._publicClientApplication.getAllAccounts.length == 1 || this._isMultipleAccountDisabled) {
+        this.setState(ProviderState.SignedOut);
+      } else {
+        this.trySilentSignIn();
+      }
     }
   }
 

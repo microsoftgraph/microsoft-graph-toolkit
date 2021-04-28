@@ -14,6 +14,10 @@
     <!-- <script src="./packages/mgt/dist/bundle/mgt-loader.js"></script> -->
 
     <script type="module" src="./packages/mgt/dist/es6/index.js"></script>
+    <script type="module">
+      import { CacheService } from './packages/mgt/dist/es6';
+      CacheService.cacheConfig.isEnabled = false;
+    </script>
   </head>
 
   <body>
@@ -29,13 +33,13 @@
       depends-on="mgt-teams-provider"
     ></mgt-msal-provider> -->
 
-    <!-- <mgt-msal2-provider
+    <mgt-msal2-provider
       client-id="2dfea037-938a-4ed8-9b35-c05708a1b241"
       redirect-uri="http://localhost:3000"
       scopes="user.read,people.read,user.readbasic.all,contacts.read,calendars.read,presence.read.all,tasks.readwrite,presence.read,user.read.all,group.read.all,tasks.read"
-    ></mgt-msal2-provider> -->
+    ></mgt-msal2-provider>
 
-    <mgt-mock-provider></mgt-mock-provider>
+    <!-- <mgt-mock-provider></mgt-mock-provider> -->
 
     <mgt-login></mgt-login>
     <mgt-person person-query="me" view="twoLines" person-card="hover" show-presence></mgt-person>

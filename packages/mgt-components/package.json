@@ -38,6 +38,7 @@
   "dependencies": {
     "@microsoft/mgt-element": "*",
     "@microsoft/microsoft-graph-client": "^2.2.1",
+    "@fluentui/web-components": "^0.19.1",
     "@microsoft/microsoft-graph-types": "^1.36.0",
     "@microsoft/microsoft-graph-types-beta": "^0.4.0-preview",
     "office-ui-fabric-core": "11.0.0"

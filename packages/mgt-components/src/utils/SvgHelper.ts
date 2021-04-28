@@ -140,7 +140,12 @@ export enum SvgIcon {
   /**
    * Back arrow
    */
-  Back
+  Back,
+
+  /**
+   * account selection
+   */
+  SelectAccount
 }
 
 import { html } from 'lit-element';
@@ -422,6 +427,20 @@ export function getSvg(svgIcon: SvgIcon, color?: string) {
         <svg width="16" height="16" viewBox="0 0 16 16" xmlns="http://www.w3.org/2000/svg">
           <path
             d="M16 8.5H1.95312L8.10156 14.6484L7.39844 15.3516L0.046875 8L7.39844 0.648438L8.10156 1.35156L1.95312 7.5H16V8.5Z"
+          />
+        </svg>
+      `;
+
+    case SvgIcon.SelectAccount:
+      return html`
+        <svg width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <path
+            d="M10 7C10.2761 7 10.5 7.22386 10.5 7.5V9.5H12.5C12.7761 9.5 13 9.72386 13 10C13 10.2761 12.7761 10.5 12.5 10.5H10.5V12.5C10.5 12.7761 10.2761 13 10 13C9.72386 13 9.5 12.7761 9.5 12.5V10.5H7.5C7.22386 10.5 7 10.2761 7 10C7 9.72386 7.22386 9.5 7.5 9.5H9.5V7.5C9.5 7.22386 9.72386 7 10 7Z"
+            fill="#0078D4"
+          />
+          <path
+            d="M4 10C4 6.68629 6.68629 4 10 4C13.3137 4 16 6.68629 16 10C16 13.3137 13.3137 16 10 16C6.68629 16 4 13.3137 4 10ZM10 5C7.23858 5 5 7.23858 5 10C5 12.7614 7.23858 15 10 15C12.7614 15 15 12.7614 15 10C15 7.23858 12.7614 5 10 5Z"
+            fill="#0078D4"
           />
         </svg>
       `;
