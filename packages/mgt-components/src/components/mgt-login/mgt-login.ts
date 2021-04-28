@@ -110,6 +110,15 @@ export class MgtLogin extends MgtTemplatedComponent {
 
   private _image: string;
 
+  /**
+   * Suffix for user details key
+   *
+   * @private
+   * @type {string}
+   * @memberof MgtLogin
+   */
+  private _userDetailsKey: string = '-userDetails';
+
   constructor() {
     super();
     this._isFlyoutOpen = false;
@@ -161,6 +170,9 @@ export class MgtLogin extends MgtTemplatedComponent {
     }
 
     const provider = Providers.globalProvider;
+    if (provider && !provider.isMultiAccountDisabled) {
+      localStorage.removeItem(provider.getActiveAccount().id + this._userDetailsKey);
+    }
     if (provider && provider.logout) {
       await provider.logout();
       this.userDetails = null;
@@ -202,6 +214,12 @@ export class MgtLogin extends MgtTemplatedComponent {
           this._image = this.userDetails.personImage;
         }
 
+        if (!Providers.globalProvider.isMultiAccountDisabled) {
+          localStorage.setItem(
+            Providers.globalProvider.getActiveAccount().id + this._userDetailsKey,
+            JSON.stringify(this.userDetails)
+          );
+        }
         this.fireCustomEvent('loginCompleted');
       } else {
         this.userDetails = null;
@@ -374,12 +392,13 @@ export class MgtLogin extends MgtTemplatedComponent {
         <fluent-design-system-provider>
           <fluent-listbox class="list-box">
             ${list.map(account => {
-              if (account.id.indexOf(this.userDetails.id) < 0) {
+              if (account.id !== Providers.globalProvider.getActiveAccount().id) {
+                const details = localStorage.getItem(account.id + this._userDetailsKey);
                 return html`
                   <fluent-option class="list-box-option" value="${account.username}">
                     <mgt-person
                       @click=${() => this.setActiveAccount(account)}
-                      fallback-details='{"displayName":"${account.username}", "mail":"${account.username}"}'
+                      .personDetails=${JSON.parse(details)}
                       .view=${PersonViewType.twolines}
                     />
                   </fluent-option>

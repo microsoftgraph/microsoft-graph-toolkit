@@ -122,6 +122,14 @@ export abstract class IProvider implements AuthenticationProvider {
   public getAllAccounts?(): IProviderAccount[];
 
   /**
+   * Returns active account in case of multi-account sign in
+   *
+   * @return {*}  {any[]}
+   * @memberof IProvider
+   */
+  public getActiveAccount?(): IProviderAccount;
+
+  /**
    * Switch between two signed in accounts
    *
    * @param {*} user
