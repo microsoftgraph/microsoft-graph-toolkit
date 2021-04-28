@@ -112,6 +112,7 @@ mgt-login .popup-content {
         margin-bottom: 4px;
         mgt-person {
           max-width: 270px;
+          width: 270px;
           margin-left: 18px;
           --details-spacing: 9px;
           --avatar-size: 40px;
@@ -133,6 +134,11 @@ mgt-login .popup-content {
         &:hover {
           border-radius: 4px;
           background: rgba(0, 0, 0, 0.1);
+          mgt-person {
+            &:after {
+              background-image: none;
+            }
+          }
         }
       }
       &:focus {
