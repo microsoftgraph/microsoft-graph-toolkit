@@ -494,13 +494,15 @@ export class MgtFile extends MgtTemplatedComponent {
 
     return html`
       <div class="item__file-type-icon">
-        ${fileIconSrc
-          ? html`
+        ${
+          fileIconSrc
+            ? html`
               <img src=${fileIconSrc} alt="File icon" />
             `
-          : html`
+            : html`
               ${getSvg(SvgIcon.File)}
-            `}
+            `
+        }
       </div>
     `;
   }
@@ -584,12 +586,12 @@ export class MgtFile extends MgtTemplatedComponent {
 
     if (
       // return null when a combination of provided properties are required
-      (this.driveId && (!this.itemId && !this.itemPath)) ||
-      (this.siteId && (!this.itemId && !this.itemPath)) ||
-      (this.groupId && (!this.itemId && !this.itemPath)) ||
-      (this.listId && (!this.siteId && !this.itemId)) ||
+      (this.driveId && !this.itemId && !this.itemPath) ||
+      (this.siteId && !this.itemId && !this.itemPath) ||
+      (this.groupId && !this.itemId && !this.itemPath) ||
+      (this.listId && !this.siteId && !this.itemId) ||
       (this.insightType && !this.insightId) ||
-      (this.userId && (!this.itemId && !this.itemPath) && (!this.insightType && !this.insightId))
+      (this.userId && !this.itemId && !this.itemPath && !this.insightType && !this.insightId)
     ) {
       driveItem = null;
     } else if (this.fileQuery) {

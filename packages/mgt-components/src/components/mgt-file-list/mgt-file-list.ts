@@ -475,9 +475,11 @@ export class MgtFileList extends MgtTemplatedComponent {
             `
           )}
         </ul>
-        ${!this.hideMoreFilesButton && this.pageIterator && (this.pageIterator.hasNext || this._preloadedFiles.length)
-          ? this.renderMoreFileButton()
-          : null}
+        ${
+          !this.hideMoreFilesButton && this.pageIterator && (this.pageIterator.hasNext || this._preloadedFiles.length)
+            ? this.renderMoreFileButton()
+            : null
+        }
       </div>
     `;
   }
@@ -612,10 +614,10 @@ export class MgtFileList extends MgtTemplatedComponent {
     // combinations of these attributes must be provided in order for the component to know which endpoint to call to request files
     // not supplying enough for these combinations will get a null file result
     if (
-      (this.driveId && (!this.itemId && !this.itemPath)) ||
-      (this.groupId && (!this.itemId && !this.itemPath)) ||
-      (this.siteId && (!this.itemId && !this.itemPath)) ||
-      (this.userId && (!this.insightType && (!this.itemId && !this.itemPath)))
+      (this.driveId && !this.itemId && !this.itemPath) ||
+      (this.groupId && !this.itemId && !this.itemPath) ||
+      (this.siteId && !this.itemId && !this.itemPath) ||
+      (this.userId && !this.insightType && !this.itemId && !this.itemPath)
     ) {
       this.files = null;
     }

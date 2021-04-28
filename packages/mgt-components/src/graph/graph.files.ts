@@ -70,10 +70,7 @@ export async function getDriveItemByQuery(graph: IGraph, resource: string): Prom
   const scopes = 'files.read';
   let response;
   try {
-    response = await graph
-      .api(resource)
-      .middlewareOptions(prepScopes(scopes))
-      .get();
+    response = await graph.api(resource).middlewareOptions(prepScopes(scopes)).get();
 
     if (getIsFilesCacheEnabled()) {
       cache.putValue(resource, { file: JSON.stringify(response) });
@@ -99,10 +96,7 @@ export async function getDriveItemById(graph: IGraph, driveId: string, itemId: s
   const scopes = 'files.read';
   let response;
   try {
-    response = await graph
-      .api(endpoint)
-      .middlewareOptions(prepScopes(scopes))
-      .get();
+    response = await graph.api(endpoint).middlewareOptions(prepScopes(scopes)).get();
 
     if (getIsFilesCacheEnabled()) {
       cache.putValue(endpoint, { file: JSON.stringify(response) });
@@ -127,10 +121,7 @@ export async function getDriveItemByPath(graph: IGraph, driveId: string, itemPat
   const scopes = 'files.read';
   let response;
   try {
-    response = await graph
-      .api(endpoint)
-      .middlewareOptions(prepScopes(scopes))
-      .get();
+    response = await graph.api(endpoint).middlewareOptions(prepScopes(scopes)).get();
 
     if (getIsFilesCacheEnabled()) {
       cache.putValue(endpoint, { file: JSON.stringify(response) });
@@ -154,10 +145,7 @@ export async function getGroupDriveItemById(graph: IGraph, groupId: string, item
   const scopes = 'files.read';
   let response;
   try {
-    response = await graph
-      .api(endpoint)
-      .middlewareOptions(prepScopes(scopes))
-      .get();
+    response = await graph.api(endpoint).middlewareOptions(prepScopes(scopes)).get();
 
     if (getIsFilesCacheEnabled()) {
       cache.putValue(endpoint, { file: JSON.stringify(response) });
@@ -181,10 +169,7 @@ export async function getGroupDriveItemByPath(graph: IGraph, groupId: string, it
   const scopes = 'files.read';
   let response;
   try {
-    response = await graph
-      .api(endpoint)
-      .middlewareOptions(prepScopes(scopes))
-      .get();
+    response = await graph.api(endpoint).middlewareOptions(prepScopes(scopes)).get();
 
     if (getIsFilesCacheEnabled()) {
       cache.putValue(endpoint, { file: JSON.stringify(response) });
@@ -208,10 +193,7 @@ export async function getMyDriveItemById(graph: IGraph, itemId: string): Promise
   const scopes = 'files.read';
   let response;
   try {
-    response = await graph
-      .api(endpoint)
-      .middlewareOptions(prepScopes(scopes))
-      .get();
+    response = await graph.api(endpoint).middlewareOptions(prepScopes(scopes)).get();
 
     if (getIsFilesCacheEnabled()) {
       cache.putValue(endpoint, { file: JSON.stringify(response) });
@@ -235,10 +217,7 @@ export async function getMyDriveItemByPath(graph: IGraph, itemPath: string): Pro
   const scopes = 'files.read';
   let response;
   try {
-    response = await graph
-      .api(endpoint)
-      .middlewareOptions(prepScopes(scopes))
-      .get();
+    response = await graph.api(endpoint).middlewareOptions(prepScopes(scopes)).get();
 
     if (getIsFilesCacheEnabled()) {
       cache.putValue(endpoint, { file: JSON.stringify(response) });
@@ -262,10 +241,7 @@ export async function getSiteDriveItemById(graph: IGraph, siteId: string, itemId
   const scopes = 'files.read';
   let response;
   try {
-    response = await graph
-      .api(endpoint)
-      .middlewareOptions(prepScopes(scopes))
-      .get();
+    response = await graph.api(endpoint).middlewareOptions(prepScopes(scopes)).get();
 
     if (getIsFilesCacheEnabled()) {
       cache.putValue(endpoint, { file: JSON.stringify(response) });
@@ -289,10 +265,7 @@ export async function getSiteDriveItemByPath(graph: IGraph, siteId: string, item
   const scopes = 'files.read';
   let response;
   try {
-    response = await graph
-      .api(endpoint)
-      .middlewareOptions(prepScopes(scopes))
-      .get();
+    response = await graph.api(endpoint).middlewareOptions(prepScopes(scopes)).get();
 
     if (getIsFilesCacheEnabled()) {
       cache.putValue(endpoint, { file: JSON.stringify(response) });
@@ -321,10 +294,7 @@ export async function getListDriveItemById(
   const scopes = 'files.read';
   let response;
   try {
-    response = await graph
-      .api(endpoint)
-      .middlewareOptions(prepScopes(scopes))
-      .get();
+    response = await graph.api(endpoint).middlewareOptions(prepScopes(scopes)).get();
 
     if (getIsFilesCacheEnabled()) {
       cache.putValue(endpoint, { file: JSON.stringify(response) });
@@ -348,10 +318,7 @@ export async function getUserDriveItemById(graph: IGraph, userId: string, itemId
   const scopes = 'files.read';
   let response;
   try {
-    response = await graph
-      .api(endpoint)
-      .middlewareOptions(prepScopes(scopes))
-      .get();
+    response = await graph.api(endpoint).middlewareOptions(prepScopes(scopes)).get();
 
     if (getIsFilesCacheEnabled()) {
       cache.putValue(endpoint, { file: JSON.stringify(response) });
@@ -375,10 +342,7 @@ export async function getUserDriveItemByPath(graph: IGraph, userId: string, item
   const scopes = 'files.read';
   let response;
   try {
-    response = await graph
-      .api(endpoint)
-      .middlewareOptions(prepScopes(scopes))
-      .get();
+    response = await graph.api(endpoint).middlewareOptions(prepScopes(scopes)).get();
 
     if (getIsFilesCacheEnabled()) {
       cache.putValue(endpoint, { file: JSON.stringify(response) });
@@ -404,10 +368,7 @@ export async function getMyInsightsDriveItemById(graph: IGraph, insightType: str
   const scopes = 'sites.read.all';
   let response;
   try {
-    response = await graph
-      .api(endpoint)
-      .middlewareOptions(prepScopes(scopes))
-      .get();
+    response = await graph.api(endpoint).middlewareOptions(prepScopes(scopes)).get();
 
     if (getIsFilesCacheEnabled()) {
       cache.putValue(endpoint, { file: JSON.stringify(response) });
@@ -436,10 +397,7 @@ export async function getUserInsightsDriveItemById(
   const scopes = 'sites.read.all';
   let response;
   try {
-    response = await graph
-      .api(endpoint)
-      .middlewareOptions(prepScopes(scopes))
-      .get();
+    response = await graph.api(endpoint).middlewareOptions(prepScopes(scopes)).get();
 
     if (getIsFilesCacheEnabled()) {
       cache.putValue(endpoint, { file: JSON.stringify(response) });
