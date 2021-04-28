@@ -173,6 +173,7 @@ $depth-shadow--light: 0 3.2px 7.2px 0 rgba(0, 0, 0, 0.132);
 $depth-shadow--dark: 0 5px 14px 0 rgba(0, 0, 0, 0.8);
 
 $font-family: var(--default-font-family);
+$font-size: var(--default-font-size);
 
 /* ---------------Common theming vars / functions / mixins--------------- */
 $themes: ('light', 'dark');
@@ -333,6 +334,11 @@ $common: (
     _var: --list-background-color,
     dark: $list__background-color--dark,
     light: $list__background-color--light
+  ),
+  list__item__background-color--hover: (
+    _var: --list-item-background-color--hover,
+    dark: $list__item__background-color--hover--dark,
+    light: $list__item__background-color--hover--light
   )
 );
 
