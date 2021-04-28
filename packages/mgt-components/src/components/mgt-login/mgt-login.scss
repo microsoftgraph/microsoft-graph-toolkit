@@ -103,6 +103,7 @@ mgt-login .popup-content {
     max-height: 400px;
 
     .list-box {
+      margin-bottom: 25px;
       background-color: $popup__background-color;
       --accent-fill-hover: $popup__background-color;
       --accent-fill-active: $popup__background-color;
@@ -191,7 +192,7 @@ mgt-login .popup-content {
       border: none;
       background-color: $popup__background-color;
       cursor: pointer;
-      margin: 25px 0px 10px 19px;
+      margin: 0px 0px 10px 19px;
       padding: 0;
       border: 1px solid transparent;
       &:hover {

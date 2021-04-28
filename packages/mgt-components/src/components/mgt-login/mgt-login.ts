@@ -187,13 +187,13 @@ export class MgtLogin extends MgtTemplatedComponent {
    */
   protected render() {
     return html`
-      <div class="root" dir=${this.direction}>
-        <div>
-          ${this.renderButton()}
-        </div>
-        ${this.renderFlyout()}
-      </div>
-    `;
+       <div class="root" dir=${this.direction}>
+         <div>
+           ${this.renderButton()}
+         </div>
+         ${this.renderFlyout()}
+       </div>
+     `;
   }
 
   /**
@@ -238,10 +238,10 @@ export class MgtLogin extends MgtTemplatedComponent {
       'no-click': this._isFlyoutOpen
     };
     return html`
-      <button ?disabled="${this.isLoadingState}" @click=${this.onClick} class=${classMap(classes)} role="button">
-        ${this.renderButtonContent()}
-      </button>
-    `;
+       <button ?disabled="${this.isLoadingState}" @click=${this.onClick} class=${classMap(classes)} role="button">
+         ${this.renderButtonContent()}
+       </button>
+     `;
   }
 
   /**
@@ -252,17 +252,17 @@ export class MgtLogin extends MgtTemplatedComponent {
    */
   protected renderFlyout() {
     return html`
-      <mgt-flyout
-        class="flyout"
-        light-dismiss
-        @opened=${() => (this._isFlyoutOpen = true)}
-        @closed=${() => (this._isFlyoutOpen = false)}
-      >
-        <div slot="flyout">
-          ${this.renderFlyoutContent()}
-        </div>
-      </mgt-flyout>
-    `;
+       <mgt-flyout
+         class="flyout"
+         light-dismiss
+         @opened=${() => (this._isFlyoutOpen = true)}
+         @closed=${() => (this._isFlyoutOpen = false)}
+       >
+         <div slot="flyout">
+           ${this.renderFlyoutContent()}
+         </div>
+       </mgt-flyout>
+     `;
   }
 
   /**
@@ -277,32 +277,21 @@ export class MgtLogin extends MgtTemplatedComponent {
       return;
     }
     return html`
-      <div class="popup">
-        <div class="popup-content">
-          <div class="popup-commands">
-            ${this.renderFlyoutCommands()}
-          </div>
-          <div class="inside-content">
-            <div class="main-profile">
-              ${this.renderFlyoutPersonDetails(this.userDetails, this._image)}
-            </div>
-            <div id="accounts">${this.renderAccounts()}</div>
-          </div>
-          <div class="add-account">
-            <button
-              class="add-account-button"
-              aria-label="Sign in with different account"
-              @click=${() => {
-                this.login();
-              }}
-            >
-              <i class="account-switch-icon">${getSvg(SvgIcon.SelectAccount, '#000000')}</i> Sign in with a different
-              account
-            </button>
-          </div>
-        </div>
-      </div>
-    `;
+       <div class="popup">
+         <div class="popup-content">
+           <div class="popup-commands">
+             ${this.renderFlyoutCommands()}
+           </div>
+           <div class="inside-content">
+             <div class="main-profile">
+               ${this.renderFlyoutPersonDetails(this.userDetails, this._image)}
+             </div>
+             ${this.renderAccounts()}
+           </div>
+           ${this.renderAddAccountContent()}
+         </div>
+       </div>
+     `;
   }
 
   /**
@@ -317,8 +306,8 @@ export class MgtLogin extends MgtTemplatedComponent {
     return (
       template ||
       html`
-        <mgt-person .personDetails=${personDetails} .personImage=${personImage} .view=${ViewType.twolines} />
-      `
+         <mgt-person .personDetails=${personDetails} .personImage=${personImage} .view=${ViewType.twolines} />
+       `
     );
   }
 
@@ -334,14 +323,14 @@ export class MgtLogin extends MgtTemplatedComponent {
     return (
       template ||
       html`
-        <ul>
-          <li>
-            <button class="popup-command" @click=${this.logout} aria-label="Sign Out">
-              ${this.strings.signOutLinkSubtitle}
-            </button>
-          </li>
-        </ul>
-      `
+         <ul>
+           <li>
+             <button class="popup-command" @click=${this.logout} aria-label="Sign Out">
+               ${this.strings.signOutLinkSubtitle}
+             </button>
+           </li>
+         </ul>
+       `
     );
   }
 
@@ -361,6 +350,32 @@ export class MgtLogin extends MgtTemplatedComponent {
   }
 
   /**
+   * Renders multi account content to add additional users
+   *
+   * @protected
+   * @returns
+   * @memberof MgtLogin
+   */
+  protected renderAddAccountContent() {
+    if (Providers.globalProvider.isMultiAccountSupported) {
+      return html`
+          <div class="add-account">
+             <button
+               class="add-account-button"
+               aria-label="Sign in with different account"
+               @click=${() => {
+                 this.login();
+               }}
+             >
+               <i class="account-switch-icon">${getSvg(SvgIcon.SelectAccount, '#000000')}</i> Sign in with a different
+               account
+             </button>
+           </div>
+       `;
+    }
+  }
+
+  /**
    * Render the button content when the user is signed in.
    *
    * @protected
@@ -372,8 +387,8 @@ export class MgtLogin extends MgtTemplatedComponent {
     return (
       template ||
       html`
-        <mgt-person .personDetails=${this.userDetails} .personImage=${this._image} .view=${ViewType.oneline} />
-      `
+         <mgt-person .personDetails=${this.userDetails} .personImage=${this._image} .view=${ViewType.oneline} />
+       `
     );
   }
 
@@ -390,26 +405,28 @@ export class MgtLogin extends MgtTemplatedComponent {
 
       if (list && list.length > 1) {
         return html`
-        <fluent-design-system-provider>
-          <fluent-listbox class="list-box">
-            ${list.map(account => {
-              if (account.id !== provider.getActiveAccount().id) {
-                const details = localStorage.getItem(account.id + this._userDetailsKey);
-                return html`
-                  <fluent-option class="list-box-option" value="${account.name}">
-                    <mgt-person
-                      @click=${() => this.setActiveAccount(account)}
-                      .personDetails=${details ? JSON.parse(details) : null}
-                      .fallbackDetails=${{ displayName: account.name, mail: account.mail }}
-                      .view=${PersonViewType.twolines}
-                    />
-                  </fluent-option>
-                `;
-              }
-            })}
-          </fluent-listbox>
-        </fluent-design-system-provider>
-      `;
+         <div id="accounts">
+           <fluent-design-system-provider>
+             <fluent-listbox class="list-box">
+              ${list.map(account => {
+                if (account.id !== provider.getActiveAccount().id) {
+                  const details = localStorage.getItem(account.id + this._userDetailsKey);
+                  return html`
+                   <fluent-option class="list-box-option" value="${account.name}">
+                     <mgt-person
+                       @click=${() => this.setActiveAccount(account)}
+                       .personDetails=${details ? JSON.parse(details) : null}
+                       .fallbackDetails=${{ displayName: account.name, mail: account.mail }}
+                       .view=${PersonViewType.twolines}
+                     />
+                   </fluent-option>
+                 `;
+                }
+              })}
+           </fluent-listbox>
+          </fluent-design-system-provider>
+         </div>
+       `;
       }
     }
   }
@@ -447,11 +464,11 @@ export class MgtLogin extends MgtTemplatedComponent {
     return (
       template ||
       html`
-        <i class="login-icon ms-Icon ms-Icon--Contact"></i>
-        <span aria-label="Sign In">
-          ${this.strings.signInLinkSubtitle}
-        </span>
-      `
+         <i class="login-icon ms-Icon ms-Icon--Contact"></i>
+         <span aria-label="Sign In">
+           ${this.strings.signInLinkSubtitle}
+         </span>
+       `
     );
   }
 
