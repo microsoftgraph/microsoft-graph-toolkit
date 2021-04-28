@@ -7,7 +7,7 @@
 
 import { customElement, html, property } from 'lit-element';
 import { classMap } from 'lit-html/directives/class-map';
-import { Providers, ProviderState, MgtTemplatedComponent } from '@microsoft/mgt-element';
+import { Providers, ProviderState, MgtTemplatedComponent, IProviderAccount } from '@microsoft/mgt-element';
 
 import { IDynamicPerson } from '../../graph/types';
 import { MgtFlyout } from '../sub-components/mgt-flyout/mgt-flyout';
@@ -170,13 +170,13 @@ export class MgtLogin extends MgtTemplatedComponent {
     }
 
     const provider = Providers.globalProvider;
-    if (provider && !provider.isMultiAccountDisabled) {
+    if (provider && provider.isMultiAccountSupported) {
       localStorage.removeItem(provider.getActiveAccount().id + this._userDetailsKey);
     }
     if (provider && provider.logout) {
       await provider.logout();
       this.userDetails = null;
-      if (!provider.isMultiAccountDisabled) {
+      if (provider.isMultiAccountSupported) {
         localStorage.removeItem(provider.getActiveAccount().id + this._userDetailsKey);
       }
       this.hideFlyout();
@@ -217,7 +217,7 @@ export class MgtLogin extends MgtTemplatedComponent {
           this._image = this.userDetails.personImage;
         }
 
-        if (!provider.isMultiAccountDisabled) {
+        if (provider.isMultiAccountSupported) {
           localStorage.setItem(
             Providers.globalProvider.getActiveAccount().id + this._userDetailsKey,
             JSON.stringify(this.userDetails)
@@ -297,7 +297,7 @@ export class MgtLogin extends MgtTemplatedComponent {
               class="add-account-button"
               aria-label="Sign in with different account"
               @click=${() => {
-                Providers.globalProvider.login();
+                this.login();
               }}
             >
               <i class="account-switch-icon">${getSvg(SvgIcon.SelectAccount, '#000000')}</i> Sign in with a different
@@ -388,11 +388,12 @@ export class MgtLogin extends MgtTemplatedComponent {
    * @memberof MgtLogin
    */
   renderAccounts() {
-    if (Providers.globalProvider.state === ProviderState.SignedIn && !Providers.globalProvider.isMultiAccountDisabled) {
+    if (Providers.globalProvider.state === ProviderState.SignedIn && Providers.globalProvider.isMultiAccountSupported) {
       const provider = Providers.globalProvider;
       const list = provider.getAllAccounts();
 
-      return html`
+      if (list && list.length > 1) {
+        return html`
         <fluent-design-system-provider>
           <fluent-listbox class="list-box">
             ${list.map(account => {
@@ -413,6 +414,7 @@ export class MgtLogin extends MgtTemplatedComponent {
           </fluent-listbox>
         </fluent-design-system-provider>
       `;
+      }
     }
   }
 
@@ -422,7 +424,7 @@ export class MgtLogin extends MgtTemplatedComponent {
    * @param {*} account
    * @memberof MgtLogin
    */
-  setActiveAccount(account: any) {
+  setActiveAccount(account: IProviderAccount) {
     Providers.globalProvider.setActiveAccount(account);
   }
 
