@@ -50,9 +50,11 @@ The Toolkit currently includes the following components:
 * [mgt-people-picker](https://docs.microsoft.com/graph/toolkit/components/people-picker)
 * [mgt-agenda](https://docs.microsoft.com/graph/toolkit/components/agenda)
 * [mgt-tasks](https://docs.microsoft.com/graph/toolkit/components/tasks)
-* [mgt-get](https://docs.microsoft.com/graph/toolkit/components/get)
 * [mgt-todo](https://docs.microsoft.com/graph/toolkit/components/todo)
-* [mgt-teams-channel-picker](https://docs.microsoft.com/en-us/graph/toolkit/components/teams-channel-picker)
+* [mgt-teams-channel-picker](https://docs.microsoft.com/graph/toolkit/components/teams-channel-picker)
+* [mgt-file](https://docs.microsoft.com/graph/toolkit/components/file)
+* [mgt-file-list](https://docs.microsoft.com/graph/toolkit/components/file-list)
+* [mgt-get](https://docs.microsoft.com/graph/toolkit/components/get)
 
 All web components are also available as React component - see [@microsoft/mgt-react documentation](https://docs.microsoft.com/graph/toolkit/get-started/mgt-react).
 
@@ -61,6 +63,7 @@ All web components are also available as React component - see [@microsoft/mgt-r
 [Providers](https://docs.microsoft.com/graph/toolkit/providers) enable authentication and provide the implementation for acquiring access tokens on various platforms. The providers also expose a Microsoft Graph Client for calling the Microsoft Graph APIs. The components work best when used with a provider, but the providers can be used on their own as well.
 
 * [Msal Provider](https://docs.microsoft.com/graph/toolkit/providers/msal)
+* [Msal2 Provider](https://docs.microsoft.com/graph/toolkit/providers/msal2)
 * [SharePoint Provider](https://docs.microsoft.com/graph/toolkit/providers/sharepoint)
 * [Teams Provider](https://docs.microsoft.com/graph/toolkit/providers/teams)
 * [Proxy Provider](https://docs.microsoft.com/graph/toolkit/providers/proxy)
