@@ -367,6 +367,17 @@ export class Msal2Provider extends IProvider {
   }
 
   /**
+   * Gets active account
+   *
+   * @return {*}
+   * @memberof Msal2Provider
+   */
+  public getActiveAccount() {
+    const account = this._publicClientApplication.getActiveAccount();
+    return { username: account.username, id: account.homeAccountId } as IProviderAccount;
+  }
+
+  /**
    * Once a succesful login occurs, set the active account and store it
    *
    * @param {(AuthenticationResult | null)} account
