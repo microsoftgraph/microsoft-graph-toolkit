@@ -43,3 +43,15 @@ export function getFileTypeIconUri(type: string, size: IconSize, extension: 'png
   const fileType = fileTypeMap[type] || 'genericfile';
   return `${baseUri}/${size.toString()}/${fileType}.${extension}`;
 }
+
+export function getFileTypeIconUriByExtension(type: string, size: IconSize, extension: 'png' | 'svg') {
+  const found = Object.keys(fileTypeMap).find(key => fileTypeMap[key] === type);
+  if (found) {
+    return `${baseUri}/${size.toString()}/${type}.${extension}`;
+  } else if (type === 'jpg' || type === 'png') {
+    type = 'photo';
+    return `${baseUri}/${size.toString()}/${type}.${extension}`;
+  } else {
+    return null;
+  }
+}
