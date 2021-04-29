@@ -1013,6 +1013,8 @@ export class MgtPerson extends MgtTemplatedComponent {
         // set up a default Presence in case beta api changes or getting error code
         this._fetchedPresence = defaultPresence;
       }
+      this.personDetails.presenceActivity = this._fetchedPresence?.activity;
+      this.personDetails.presenceAvailability = this._fetchedPresence?.availability;
     }
   }
 

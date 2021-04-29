@@ -109,6 +109,13 @@ export const personLineClickEvents = () => html`
 
 export const personPresence = () => html`
   <mgt-person person-query="me" show-presence view="twoLines"></mgt-person>
+  <mgt-person 
+    person-query="me" 
+    show-presence 
+    view="twoLines" 
+    line1-property="presenceAvailability" 
+    line2-property="presenceActivity"
+  ></mgt-person>
 `;
 
 export const personPresenceDisplayAll = () => html`
