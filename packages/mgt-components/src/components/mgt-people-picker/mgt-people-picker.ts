@@ -23,6 +23,7 @@ import { MgtFlyout } from '../sub-components/mgt-flyout/mgt-flyout';
 import { styles } from './mgt-people-picker-css';
 
 import { strings } from './strings';
+import isEmail from 'validator/lib/isEmail';
 
 export { GroupType } from '../../graph/graph.groups';
 export { PersonType } from '../../graph/graph.people';
@@ -273,6 +274,18 @@ export class MgtPeoplePicker extends MgtTemplatedComponent {
   public disabled: boolean;
 
   /**
+   * Determines if a user can enter an email that is not in the contacts list
+   *
+   * @type {boolean}
+   * @memberof MgtPeoplePicker
+   */
+  @property({
+    attribute: 'allow-any-email',
+    type: Boolean
+  })
+  public allowAnyEmail: boolean;
+
+  /**
    * Determines whether component allows multiple or single selection of people
    *
    * @type {string}
@@ -333,6 +346,7 @@ export class MgtPeoplePicker extends MgtTemplatedComponent {
     this.showMax = 6;
 
     this.disabled = false;
+    this.allowAnyEmail = false;
   }
 
   /**
@@ -475,6 +489,7 @@ export class MgtPeoplePicker extends MgtTemplatedComponent {
           @blur=${this.lostFocus}
           @click=${this.handleFlyout}
           ?disabled=${this.disabled}
+          ?allowAnyEmail=${this.allowAnyEmail}
         />
       </div>
     `;
@@ -492,7 +507,6 @@ export class MgtPeoplePicker extends MgtTemplatedComponent {
     if (!this.selectedPeople || !this.selectedPeople.length) {
       return null;
     }
-
     return html`
       ${selectedPeople.slice(0, selectedPeople.length).map(
         person =>
@@ -837,7 +851,7 @@ export class MgtPeoplePicker extends MgtTemplatedComponent {
     if (person) {
       this.clearInput();
       const duplicatePeople = this.selectedPeople.filter(p => {
-        if (!person.id) {
+        if (!person.id && p.displayName) {
           return p.displayName === person.displayName;
         }
         return p.id === person.id;
@@ -936,10 +950,12 @@ export class MgtPeoplePicker extends MgtTemplatedComponent {
       // keyCodes capture: down arrow (40), right arrow (39), up arrow (38) and left arrow (37)
       return;
     }
-    if (event.keyCode === 9 && !this.flyout.isOpen) {
+
+    if (event.code === 'Tab' && !this.flyout.isOpen) {
       // keyCodes capture: tab (9)
       this.gainedFocus();
     }
+
     if (event.shiftKey) {
       this.gainedFocus();
     }
@@ -956,9 +972,34 @@ export class MgtPeoplePicker extends MgtTemplatedComponent {
       this.hideFlyout();
       // fire selected people changed event
       this.fireCustomEvent('selectionChanged', this.selectedPeople);
+    } else if (event.code === 'Comma' || event.code === 'Semicolon') {
+      event.preventDefault();
+      event.stopPropagation();
+      return;
     } else {
       this.userInput = input.value;
-      this.handleUserSearch();
+      const isValidEmail = isEmail(this.userInput);
+      if (!isValidEmail) {
+        this.handleUserSearch();
+      }
+    }
+  }
+
+  private handleAnyEmail() {
+    this._showLoading = false;
+    this._arrowSelectionCount = 0;
+    if (isEmail(this.userInput)) {
+      const anyMailUser = {
+        mail: this.userInput,
+        displayName: this.userInput,
+        id: this.userInput
+      };
+      this.addPerson(anyMailUser);
+    }
+    this.hideFlyout();
+    if (this.input) {
+      this.input.focus();
+      this._isFocused = true;
     }
   }
 
@@ -1016,17 +1057,31 @@ export class MgtPeoplePicker extends MgtTemplatedComponent {
         event.preventDefault();
       }
     }
-    if (event.keyCode === 9 || event.keyCode === 13) {
+
+    const input = event.target as HTMLInputElement;
+    if (event.code === 'Tab' || event.code === 'Enter') {
       if (!event.shiftKey && this._foundPeople) {
         // keyCodes capture: tab (9) and enter (13)
         if (this._foundPeople.length) {
           this.fireCustomEvent('blur');
           event.preventDefault();
         }
-        this.addPerson(this._foundPeople[this._arrowSelectionCount]);
+        const foundPerson = this._foundPeople[this._arrowSelectionCount];
+        if (foundPerson) {
+          this.addPerson(foundPerson);
+        } else {
+          event.preventDefault();
+          event.stopPropagation();
+          this.handleAnyEmail();
+        }
       }
       this.hideFlyout();
       (event.target as HTMLInputElement).value = '';
+    } else if (event.code === 'Comma' || event.code === 'Semicolon') {
+      event.preventDefault();
+      event.stopPropagation();
+      this.userInput = input.value;
+      this.handleAnyEmail();
     }
   }
 

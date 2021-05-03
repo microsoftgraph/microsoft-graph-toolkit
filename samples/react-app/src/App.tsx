@@ -37,7 +37,7 @@ class App extends Component {
           line2clicked={() => console.log('line1 clicked')}
         />
 
-        <PeoplePicker type={PersonType.any} />
+        <PeoplePicker allowAnyEmail type={PersonType.any} />
 
         <Get resource="/me">
           <MyTemplate />
@@ -68,11 +68,11 @@ const MyMessage = (props: MgtTemplateProps) => {
   return <div>
     <b>Subject:</b>{message.subject}
     <div>
-    <b>From:</b>
-    <Person
-      personQuery={message.from?.emailAddress?.address || ""}
-      fallbackDetails={{mail: message.from?.emailAddress?.address, displayName: message.from?.emailAddress?.name}}
-      view={PersonViewType.oneline}>
+      <b>From:</b>
+      <Person
+        personQuery={message.from?.emailAddress?.address || ""}
+        fallbackDetails={{ mail: message.from?.emailAddress?.address, displayName: message.from?.emailAddress?.name }}
+        view={PersonViewType.oneline}>
       </Person>
     </div>
   </div>;
