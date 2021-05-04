@@ -37,7 +37,7 @@ class App extends Component {
           line2clicked={() => console.log('line1 clicked')}
         />
 
-        <PeoplePicker allowAnyEmail type={PersonType.any} />
+        <PeoplePicker type={PersonType.any} />
 
         <Get resource="/me">
           <MyTemplate />
@@ -59,23 +59,26 @@ const MyEvent = (props: MgtTemplateProps) => {
 const MyTemplate = (props: MgtTemplateProps) => {
   const me = props.dataContext as MicrosoftGraph.User;
 
-  return <div>hello {me.displayName}</div>
-}
+  return <div>hello {me.displayName}</div>;
+};
 
 const MyMessage = (props: MgtTemplateProps) => {
   const message = props.dataContext as MicrosoftGraph.Message;
 
-  return <div>
-    <b>Subject:</b>{message.subject}
+  return (
     <div>
-      <b>From:</b>
-      <Person
-        personQuery={message.from?.emailAddress?.address || ""}
-        fallbackDetails={{ mail: message.from?.emailAddress?.address, displayName: message.from?.emailAddress?.name }}
-        view={PersonViewType.oneline}>
-      </Person>
+      <b>Subject:</b>
+      {message.subject}
+      <div>
+        <b>From:</b>
+        <Person
+          personQuery={message.from?.emailAddress?.address || ''}
+          fallbackDetails={{ mail: message.from?.emailAddress?.address, displayName: message.from?.emailAddress?.name }}
+          view={PersonViewType.oneline}
+        ></Person>
+      </div>
     </div>
-  </div>;
+  );
 };
 
 export default App;

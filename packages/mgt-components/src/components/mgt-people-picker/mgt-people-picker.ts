@@ -953,7 +953,11 @@ export class MgtPeoplePicker extends MgtTemplatedComponent {
 
     if (event.code === 'Tab' && !this.flyout.isOpen) {
       // keyCodes capture: tab (9)
-      this.gainedFocus();
+      if (this.allowAnyEmail) {
+        this.gainedFocus();
+      } else {
+        console.warn(strings.anyEmailWarning);
+      }
     }
 
     if (event.shiftKey) {
@@ -973,8 +977,12 @@ export class MgtPeoplePicker extends MgtTemplatedComponent {
       // fire selected people changed event
       this.fireCustomEvent('selectionChanged', this.selectedPeople);
     } else if (event.code === 'Comma' || event.code === 'Semicolon') {
-      event.preventDefault();
-      event.stopPropagation();
+      if (this.allowAnyEmail) {
+        event.preventDefault();
+        event.stopPropagation();
+      } else {
+        console.warn(strings.anyEmailWarning);
+      }
       return;
     } else {
       this.userInput = input.value;
@@ -1062,26 +1070,34 @@ export class MgtPeoplePicker extends MgtTemplatedComponent {
     if (event.code === 'Tab' || event.code === 'Enter') {
       if (!event.shiftKey && this._foundPeople) {
         // keyCodes capture: tab (9) and enter (13)
+        event.preventDefault();
+        event.stopPropagation();
         if (this._foundPeople.length) {
           this.fireCustomEvent('blur');
-          event.preventDefault();
         }
+
         const foundPerson = this._foundPeople[this._arrowSelectionCount];
         if (foundPerson) {
           this.addPerson(foundPerson);
-        } else {
-          event.preventDefault();
-          event.stopPropagation();
+        } else if (this.allowAnyEmail) {
           this.handleAnyEmail();
+        } else {
+          if (!this.allowAnyEmail) {
+            console.warn(strings.anyEmailWarning);
+          }
         }
       }
       this.hideFlyout();
       (event.target as HTMLInputElement).value = '';
-    } else if (event.code === 'Comma' || event.code === 'Semicolon') {
-      event.preventDefault();
-      event.stopPropagation();
-      this.userInput = input.value;
-      this.handleAnyEmail();
+    } else if ((event.code === 'Comma' || event.code === 'Semicolon') && this.allowAnyEmail) {
+      if (this.allowAnyEmail) {
+        event.preventDefault();
+        event.stopPropagation();
+        this.userInput = input.value;
+        this.handleAnyEmail();
+      } else {
+        console.warn(strings.anyEmailWarning);
+      }
     }
   }
 
