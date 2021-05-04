@@ -41,5 +41,3 @@ package-lock.json
 # storybook
 storybook-static/
 custom-elements.json
-/.vs/slnx.sqlite
-/.vs/slnx.sqlite-journal
