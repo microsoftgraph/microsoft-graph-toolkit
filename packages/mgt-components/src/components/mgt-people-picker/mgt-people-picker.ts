@@ -1089,7 +1089,7 @@ export class MgtPeoplePicker extends MgtTemplatedComponent {
       }
       this.hideFlyout();
       (event.target as HTMLInputElement).value = '';
-    } else if ((event.code === 'Comma' || event.code === 'Semicolon') && this.allowAnyEmail) {
+    } else if (event.code === 'Comma' || event.code === 'Semicolon') {
       if (this.allowAnyEmail) {
         event.preventDefault();
         event.stopPropagation();
