@@ -190,28 +190,6 @@ export class MsalProvider extends IProvider {
     }
   }
 
-  // /**
-  //  * sign in user
-  //  *
-  //  * @param {AuthenticationParameters} [authenticationParameters]
-  //  * @returns {Promise<void>}
-  //  * @memberof MsalProvider
-  //  */
-  // public async login(authenticationParameters?: AuthenticationParameters): Promise<void> {
-  //   const loginRequest: AuthenticationParameters = authenticationParameters || {
-  //     loginHint: this._loginHint,
-  //     prompt: 'select_account',
-  //     scopes: this.scopes
-  //   };
-
-  //   if (this._loginType === LoginType.Popup) {
-  //       const response = await this._userAgentApplication.loginPopup(loginRequest);
-  //       this.setState(response.account ? ProviderState.SignedIn : ProviderState.SignedOut);
-  //   } else {
-  //       this._userAgentApplication.loginRedirect(loginRequest);
-  //   }
-  // }
-
   /**
    * sign in user
    *
@@ -229,45 +207,12 @@ export class MsalProvider extends IProvider {
     this._domainHint ? (loginRequest.extraQueryParameters = { domain_hint: this._domainHint }) : '';
 
     if (this._loginType === LoginType.Popup) {
-      // if we are consenting and in popup mode
-      if (loginRequest.prompt === 'consent') {
-        const response = await this._userAgentApplication.acquireTokenPopup(loginRequest);
-        this.setState(response.accessToken ? ProviderState.SignedIn : ProviderState.SignedOut);
-      } else {
-        const response = await this._userAgentApplication.loginPopup(loginRequest);
-        this.setState(response.account ? ProviderState.SignedIn : ProviderState.SignedOut);
-      }
+      const response = await this._userAgentApplication.loginPopup(loginRequest);
+      this.setState(response.account ? ProviderState.SignedIn : ProviderState.SignedOut);
     } else {
-      // if we are consenting and need a redirect
-      if (loginRequest.prompt === 'consent') {
-        this._userAgentApplication.acquireTokenRedirect(loginRequest);
-      } else {
-        this._userAgentApplication.loginRedirect(loginRequest);
-      }
+      this._userAgentApplication.loginRedirect(loginRequest);
     }
   }
-
-  // /**
-  //  * Consent for a user
-  //  *
-  //  * @param {AuthenticationParameters} [authenticationParameters]
-  //  * @returns {Promise<void>}
-  //  * @memberof MsalProvider
-  //  */
-  // public async consent(authenticationParameters?: AuthenticationParameters): Promise<void> {
-  //   const consentRequest: AuthenticationParameters = authenticationParameters || {
-  //     loginHint: this._loginHint,
-  //     prompt: 'consent',
-  //     scopes: this.scopes
-  //   };
-
-  //   if (this._loginType === LoginType.Popup) {
-  //     const response = await this._userAgentApplication.acquireTokenPopup(consentRequest);
-  //     this.setState(response.accessToken ? ProviderState.SignedIn : ProviderState.SignedOut);
-  //   } else {
-  //     this._userAgentApplication.acquireTokenRedirect(consentRequest);
-  //   }
-  // }
 
   /**
    * sign out user

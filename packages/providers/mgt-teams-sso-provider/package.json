@@ -11,7 +11,8 @@
     "msal",
     "msal 2.0",
     "auth",
-    "authentication"
+    "authentication",
+    "sso"
   ],
   "homepage": "https://github.com/microsoftgraph/microsoft-graph-toolkit",
   "bugs": {

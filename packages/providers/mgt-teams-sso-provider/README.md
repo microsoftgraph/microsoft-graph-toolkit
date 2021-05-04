@@ -1,6 +1,6 @@
 # Microsoft Graph Toolkit Microsoft Teams Provider
 
-[![npm](https://img.shields.io/npm/v/@microsoft/mgt-teams-provider?style=for-the-badge)](https://www.npmjs.com/package/@microsoft/mgt-teams-provider)
+[![npm](https://img.shields.io/npm/v/@microsoft/mgt-teams-sso-provider?style=for-the-badge)](https://www.npmjs.com/package/@microsoft/mgt-teams-sso-provider)
 
 The [Microsoft Graph Toolkit (mgt)](https://aka.ms/mgt) library is a collection of authentication providers and UI components powered by Microsoft Graph. 
 
@@ -22,7 +22,7 @@ The TeamsProvider requires the usage of the Microsoft Teams SDK which is not aut
 
     ```ts
     import * as MicrosoftTeams from "@microsoft/teams-js/dist/MicrosoftTeams";
-    import {TeamsProvider} from '@microsoft/mgt-teams-provider';
+    import {TeamsSSOProvider} from '@microsoft/mgt-teams-sso-provider';
 
     TeamsProvider.microsoftTeamsLib = MicrosoftTeams;
     TeamsProvider.handleAuth();
