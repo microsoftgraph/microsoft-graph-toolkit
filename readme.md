@@ -50,9 +50,11 @@ The Toolkit currently includes the following components:
 * [mgt-people-picker](https://docs.microsoft.com/graph/toolkit/components/people-picker)
 * [mgt-agenda](https://docs.microsoft.com/graph/toolkit/components/agenda)
 * [mgt-tasks](https://docs.microsoft.com/graph/toolkit/components/tasks)
-* [mgt-get](https://docs.microsoft.com/graph/toolkit/components/get)
 * [mgt-todo](https://docs.microsoft.com/graph/toolkit/components/todo)
-* [mgt-teams-channel-picker](https://docs.microsoft.com/en-us/graph/toolkit/components/teams-channel-picker)
+* [mgt-teams-channel-picker](https://docs.microsoft.com/graph/toolkit/components/teams-channel-picker)
+* [mgt-file](https://docs.microsoft.com/graph/toolkit/components/file)
+* [mgt-file-list](https://docs.microsoft.com/graph/toolkit/components/file-list)
+* [mgt-get](https://docs.microsoft.com/graph/toolkit/components/get)
 
 All web components are also available as React component - see [@microsoft/mgt-react documentation](https://docs.microsoft.com/graph/toolkit/get-started/mgt-react).
 
@@ -61,6 +63,7 @@ All web components are also available as React component - see [@microsoft/mgt-r
 [Providers](https://docs.microsoft.com/graph/toolkit/providers) enable authentication and provide the implementation for acquiring access tokens on various platforms. The providers also expose a Microsoft Graph Client for calling the Microsoft Graph APIs. The components work best when used with a provider, but the providers can be used on their own as well.
 
 * [Msal Provider](https://docs.microsoft.com/graph/toolkit/providers/msal)
+* [Msal2 Provider](https://docs.microsoft.com/graph/toolkit/providers/msal2)
 * [SharePoint Provider](https://docs.microsoft.com/graph/toolkit/providers/sharepoint)
 * [Teams Provider](https://docs.microsoft.com/graph/toolkit/providers/teams)
 * [Proxy Provider](https://docs.microsoft.com/graph/toolkit/providers/proxy)
@@ -88,16 +91,16 @@ You can use the components by referencing the loader directly (via unpkg), or in
 <script src="https://unpkg.com/@microsoft/mgt/dist/bundle/mgt-loader.js"></script>
 ```
 
-You can then start using the components in your html page. Here is a full working example with the Msal provider:
+You can then start using the components in your html page. Here is a full working example with the Msal2 provider:
 
 ```html
 <script src="https://unpkg.com/@microsoft/mgt/dist/bundle/mgt-loader.js"></script>
-<mgt-msal-provider client-id="[CLIENT-ID]"></mgt-msal-provider>
+<mgt-msal2-provider client-id="[CLIENT-ID]"></mgt-msal2-provider>
 <mgt-login></mgt-login>
 
 <!-- <script>
     // alternatively, you can set the provider in code and provide more options
-    mgt.Providers.globalProvider = new mgt.MsalProvider({clientId: '[CLIENT-ID]'});
+    mgt.Providers.globalProvider = new mgt.Msal2Provider({clientId: '[CLIENT-ID]'});
 </script> -->
 ```
 
@@ -116,7 +119,7 @@ Now you can reference all components and providers at the page you are using:
 ```html
 <script type="module" src="node_modules/@microsoft/mgt/dist/es6/index.js"></script>
 
-<mgt-msal-provider client-id="[CLIENT-ID]"></mgt-msal-provider>
+<mgt-msal2-provider client-id="[CLIENT-ID]"></mgt-msal2-provider>
 
 <mgt-login></mgt-login>
 <mgt-agenda></mgt-agenda>
