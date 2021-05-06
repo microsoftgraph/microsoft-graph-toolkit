@@ -37,6 +37,7 @@ export type FileListProps = {
 	templateContext?: TemplateContext;
 	mediaQuery?: ComponentMediaQuery;
 	itemClick?: (e: Event) => void;
+	templateRendered?: (e: Event) => void;
 }
 
 export type FileProps = {
@@ -59,6 +60,7 @@ export type FileProps = {
 	view?: ViewType;
 	templateContext?: TemplateContext;
 	mediaQuery?: ComponentMediaQuery;
+	templateRendered?: (e: Event) => void;
 }
 
 export type GetProps = {

@@ -117,6 +117,9 @@ export const customCssProperties = () => html`
       --file-list-margin: 0;
       --file-item-border-radius: 12px;
       --file-item-margin: 2px 6px;
+      --file-item-border-top: 4px dotted #ffbdc3;
+      --file-item-border-left: 4px dotted #ffbdc3;
+      --file-item-border-right: 4px dotted #ffbdc3;
       --file-item-border-bottom: 4px dotted #ffbdc3;
       --show-more-button-background-color: #fef8dd;
       --show-more-button-background-color--hover: #ffe7c7;
