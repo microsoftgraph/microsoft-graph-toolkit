@@ -1,0 +1,28 @@
+/**
+ * -------------------------------------------------------------------------------------------
+ * Copyright (c) Microsoft Corporation.  All Rights Reserved.  Licensed under the MIT License.
+ * See License in the project root for license information.
+ * -------------------------------------------------------------------------------------------
+ */
+
+@import '../../styles/shared-sass-variables.scss';
+
+$file-list: (
+  list__item__background-color--hover: (
+    _var: --file-item-background-color--hover,
+    light: rgba(0, 0, 0, 0.1),
+    dark: #0078d4
+  ),
+  list__item__background-color--active: (
+    _var: --file-item-background-color--active,
+    light: rgba(0, 0, 0, 0.05),
+    dark: #238ada
+  ),
+  list__background-color: (
+    _var: --file-list-background-color,
+    light: $list__background-color--light,
+    dark: #424242
+  )
+);
+
+@include create-themes($file-list);
