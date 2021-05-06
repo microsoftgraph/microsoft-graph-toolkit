@@ -5,11 +5,21 @@ This sample is a React based SharePoint webpart that uses the Microsoft Graph To
 ### Building the code
 
 ```bash
-git clone the repo
-npm i
-npm i -g gulp
-gulp trust-dev-cert
-gulp
+> git clone https://github.com/microsoft/microsoft-graph-toolkit
+
+> cd microsoft-graph-toolkit
+
+> npm i -g gulp yarn #if you don't have them installed globally
+
+> yarn
+
+> yarn build
+
+> cd samples/sp-webpart
+
+> gulp trust-dev-cert
+
+> gulp
 ```
 
 ### Testing the webpart
@@ -54,6 +64,5 @@ gulp trust-dev-cert
 
 gulp clean
 gulp test
-gulp serve
 gulp bundle
 gulp package-solution
