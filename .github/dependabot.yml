@@ -6,56 +6,10 @@
 version: 2
 updates:
   - package-ecosystem: 'npm' # See documentation for possible values
-    directory: '/packages/mgt/' # Location of package manifests
+    directory: '/' # Location of package manifests
     schedule:
       interval: 'daily'
-
-  - package-ecosystem: 'npm' # See documentation for possible values
-    directory: '/packages/mgt-components/' # Location of package manifests
-    schedule:
-      interval: 'daily'
-
-  - package-ecosystem: 'npm' # See documentation for possible values
-    directory: '/packages/mgt-element/' # Location of package manifests
-    schedule:
-      interval: 'daily'
-
-  - package-ecosystem: 'npm' # See documentation for possible values
-    directory: '/packages/mgt-react/' # Location of package manifests
-    schedule:
-      interval: 'daily'
-
-  - package-ecosystem: 'npm' # See documentation for possible values
-    directory: '/packages/mgt-spfx/' # Location of package manifests
-    schedule:
-      interval: 'daily'
-
-  - package-ecosystem: 'npm' # See documentation for possible values
-    directory: '/packages/providers/mgt-electron-provider/' # Location of package manifests
-    schedule:
-      interval: 'daily'
-
-  - package-ecosystem: 'npm' # See documentation for possible values
-    directory: '/packages/providers/mgt-msal-provider/' # Location of package manifests
-    schedule:
-      interval: 'daily'
-
-  - package-ecosystem: 'npm' # See documentation for possible values
-    directory: '/packages/providers/mgt-msal2-provider/' # Location of package manifests
-    schedule:
-      interval: 'daily'
-
-  - package-ecosystem: 'npm' # See documentation for possible values
-    directory: '/packages/providers/mgt-proxy-provider/' # Location of package manifests
-    schedule:
-      interval: 'daily'
-
-  - package-ecosystem: 'npm' # See documentation for possible values
-    directory: '/packages/providers/mgt-sharepoint-provider/' # Location of package manifests
-    schedule:
-      interval: 'daily'
-
-  - package-ecosystem: 'npm' # See documentation for possible values
-    directory: '/packages/providers/mgt-teams-provider/' # Location of package manifests
-    schedule:
-      interval: 'daily'
+    allow:
+      - dependency-name: "@microsoft/*"
+      - dependency-name: "@azure/*"
+      - dependency-name: "msal"
