@@ -34,7 +34,7 @@
     "@microsoft/mgt-components": "*",
     "@microsoft/mgt-element": "*",
     "@microsoft/microsoft-graph-types": "^1.36.0",
-    "@microsoft/microsoft-graph-types-beta": "^0.4.0-preview",
+    "@microsoft/microsoft-graph-types-beta": "^0.5.0-preview",
     "wc-react": "^0.4.0"
   },
   "publishConfig": {
