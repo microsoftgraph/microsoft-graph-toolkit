@@ -488,7 +488,13 @@ export class MgtFile extends MgtTemplatedComponent {
     } else {
       // get file type extension from file name
       const re = /(?:\.([^.]+))?$/;
-      const fileType = re.exec(this.driveItem.name)[1] || 'folder';
+      const fileType =
+        re.exec(this.driveItem.name)[1] ||
+        (this.driveItem.package !== undefined
+          ? this.driveItem.package.type === 'oneNote'
+            ? 'onetoc'
+            : 'folder'
+          : 'folder');
       fileIconSrc = getFileTypeIconUriByExtension(fileType, 48, 'svg');
     }
 
