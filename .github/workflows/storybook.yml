@@ -1,0 +1,38 @@
+# This workflow will do a clean install of node dependencies, build the source code and run tests across different versions of node
+# For more information see: https://help.github.com/actions/language-and-framework-guides/using-nodejs-with-github-actions
+
+name: Build CI
+
+on:
+  push:
+    branches: [main, nmetulev/storybook-next]
+    paths:
+      - 'packages/**'
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    strategy:
+      matrix:
+        node-version: [12.x]
+
+    steps:
+      - uses: actions/checkout@v2
+      - name: Use Node.js ${{ matrix.node-version }}
+        uses: actions/setup-node@v1
+        with:
+          node-version: ${{ matrix.node-version }}
+          registry-url: 'https://registry.npmjs.org'
+      - run: npm install -g yarn lerna
+      - run: yarn
+      - run: yarn build
+      - run: yarn storybook:build
+      - name: Deploy 🚀
+        uses: JamesIves/github-pages-deploy-action@4.1.1
+        with:
+          BRANCH: gh-pages
+          FOLDER: storybook-static
+          TARGET_FOLDER: next
+          CLEAN: false
+        if: github.repository == 'microsoftgraph/microsoft-graph-toolkit'
