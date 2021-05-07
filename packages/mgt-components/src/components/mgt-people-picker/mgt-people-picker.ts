@@ -16,14 +16,13 @@ import { IDynamicPerson } from '../../graph/types';
 import { Providers, ProviderState, MgtTemplatedComponent } from '@microsoft/mgt-element';
 import '../../styles/style-helper';
 import '../sub-components/mgt-spinner/mgt-spinner';
-import { debounce } from '../../utils/Utils';
+import { debounce, isValidEmail } from '../../utils/Utils';
 import { MgtPerson, PersonViewType } from '../mgt-person/mgt-person';
 import { PersonCardInteraction } from '../PersonCardInteraction';
 import { MgtFlyout } from '../sub-components/mgt-flyout/mgt-flyout';
 import { styles } from './mgt-people-picker-css';
 
 import { strings } from './strings';
-import isEmail from 'validator/lib/isEmail';
 
 export { GroupType } from '../../graph/graph.groups';
 export { PersonType } from '../../graph/graph.people';
@@ -986,8 +985,8 @@ export class MgtPeoplePicker extends MgtTemplatedComponent {
       return;
     } else {
       this.userInput = input.value;
-      const isValidEmail = isEmail(this.userInput);
-      if (!isValidEmail) {
+      const validEmail = isValidEmail(this.userInput);
+      if (!validEmail) {
         this.handleUserSearch();
       }
     }
@@ -996,7 +995,7 @@ export class MgtPeoplePicker extends MgtTemplatedComponent {
   private handleAnyEmail() {
     this._showLoading = false;
     this._arrowSelectionCount = 0;
-    if (isEmail(this.userInput)) {
+    if (isValidEmail(this.userInput)) {
       const anyMailUser = {
         mail: this.userInput,
         displayName: this.userInput,
