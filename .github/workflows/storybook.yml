@@ -10,6 +10,7 @@ on:
 jobs:
   build:
     runs-on: ubuntu-latest
+    if: github.repository == 'microsoftgraph/microsoft-graph-toolkit'
 
     strategy:
       matrix:
@@ -22,14 +23,17 @@ jobs:
         with:
           node-version: ${{ matrix.node-version }}
           registry-url: 'https://registry.npmjs.org'
-      - run: npm install -g yarn lerna
-      - run: yarn
-      - run: yarn build
-      - run: yarn storybook:build
-      - name: Deploy 🚀
+
+      - name: Build 🛠
+        run: |
+          npm install -g yarn lerna
+          yarn
+          yarn build
+          yarn storybook:build
+
+      - name: Deploy mgt.dev/next 🚀
         uses: JamesIves/github-pages-deploy-action@4.1.1
         with:
           branch: gh-pages
           folder: storybook-static
           target-folder: next
-        if: github.repository == 'microsoftgraph/microsoft-graph-toolkit'
