@@ -1,4 +1,4 @@
-import { OfficeGraphInsightString,ViewType,ResponseType,IDynamicPerson,PersonType,GroupType,PersonCardInteraction,MgtPersonConfig,AvatarSize,PersonViewType,TasksStringResource,TasksSource,TaskFilter,SelectedChannel,TodoFilter } from '@microsoft/mgt-components';
+import { OfficeGraphInsightString,ViewType,ResponseType,IDynamicPerson,PersonType,GroupType,UserType,PersonCardInteraction,MgtPersonConfig,AvatarSize,PersonViewType,TasksStringResource,TasksSource,TaskFilter,SelectedChannel,TodoFilter } from '@microsoft/mgt-components';
 import { TemplateContext,ComponentMediaQuery } from '@microsoft/mgt-element';
 import * as MicrosoftGraph from '@microsoft/microsoft-graph-types';
 import * as MicrosoftGraphBeta from '@microsoft/microsoft-graph-types-beta';
@@ -94,6 +94,7 @@ export type PeoplePickerProps = {
 	groupId?: string;
 	type?: PersonType;
 	groupType?: GroupType;
+	userType?: UserType;
 	transitiveSearch?: boolean;
 	people?: IDynamicPerson[];
 	selectedPeople?: IDynamicPerson[];
@@ -230,5 +231,5 @@ export const TeamsChannelPicker = wrapMgt<TeamsChannelPickerProps>('mgt-teams-ch
 
 export const Todo = wrapMgt<TodoProps>('mgt-todo');
 
-export { OfficeGraphInsightString,ViewType,ResponseType,IDynamicPerson,PersonType,GroupType,PersonCardInteraction,MgtPersonConfig,AvatarSize,PersonViewType,TasksStringResource,TasksSource,TaskFilter,SelectedChannel,TodoFilter } from '@microsoft/mgt-components';
+export { OfficeGraphInsightString,ViewType,ResponseType,IDynamicPerson,PersonType,GroupType,UserType,PersonCardInteraction,MgtPersonConfig,AvatarSize,PersonViewType,TasksStringResource,TasksSource,TaskFilter,SelectedChannel,TodoFilter } from '@microsoft/mgt-components';
 export { TemplateContext,ComponentMediaQuery } from '@microsoft/mgt-element';
