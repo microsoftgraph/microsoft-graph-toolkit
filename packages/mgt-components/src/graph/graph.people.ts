@@ -102,18 +102,23 @@ export async function findPeople(
     filterQuery = `personType/class eq '${personTypeString}'`;
   }
 
-  const graphResult = await graph
-    .api('/me/people')
-    .search('"' + query + '"')
-    .top(top)
-    .filter(filterQuery)
-    .middlewareOptions(prepScopes(scopes))
-    .get();
+  let graphResult;
+  try {
+    graphResult = await graph
+      .api('/me/people')
+      .search('"' + query + '"')
+      .top(top)
+      .filter(filterQuery)
+      .middlewareOptions(prepScopes(scopes))
+      .get();
 
-  if (getIsPeopleCacheEnabled() && graphResult) {
-    const item = { maxResults: top, results: null };
-    item.results = graphResult.value.map(personStr => JSON.stringify(personStr));
-    cache.putValue(query, item);
+    if (getIsPeopleCacheEnabled() && graphResult) {
+      const item = { maxResults: top, results: null };
+      item.results = graphResult.value.map(personStr => JSON.stringify(personStr));
+      cache.putValue(query, item);
+    }
+  } catch (error) {
+    console.error(error);
   }
   return graphResult ? graphResult.value : null;
 }
@@ -138,13 +143,14 @@ export async function getPeople(graph: IGraph): Promise<Person[]> {
   }
 
   const uri = '/me/people';
-  const people = await graph
-    .api(uri)
-    .middlewareOptions(prepScopes(scopes))
-    .filter("personType/class eq 'Person'")
-    .get();
-  if (getIsPeopleCacheEnabled() && people) {
-    cache.putValue('*', { maxResults: 10, results: people.value.map(ppl => JSON.stringify(ppl)) });
+  let people;
+  try {
+    people = await graph.api(uri).middlewareOptions(prepScopes(scopes)).filter("personType/class eq 'Person'").get();
+    if (getIsPeopleCacheEnabled() && people) {
+      cache.putValue('*', { maxResults: 10, results: people.value.map(ppl => JSON.stringify(ppl)) });
+    }
+  } catch (error) {
+    console.error(error);
   }
   return people ? people.value : null;
 }
