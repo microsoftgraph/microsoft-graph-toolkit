@@ -8,15 +8,19 @@ on:
     branches: [release/latest, nmetulev/storybook-next]
 
 jobs:
-  build:
+  release:
     runs-on: ubuntu-latest
 
     strategy:
       matrix:
         node-version: [12.x]
 
+    environment:
+      name: release
+
     steps:
       - uses: actions/checkout@v2
+
       - name: Use Node.js ${{ matrix.node-version }}
         uses: actions/setup-node@v1
         with:
@@ -31,35 +35,57 @@ jobs:
         id: package-version
         uses: martinbeentjes/npm-get-version-action@master
 
-      - name: test conditional
+      - name: Build 🛠
         if: steps.latest-version.outputs.version != steps.package-version.outputs.current-version
-        run: echo "latest-version ${{steps.latest-version.outputs.version}}  package version ${{steps.package-version.outputs.current-version}}"
+        run: |
+          npm install -g yarn lerna
+          yarn
+          yarn build
 
-      # - name: Build 🛠
-      #   run: |
-      #         npm install -g yarn lerna
-      #         yarn
-      #         yarn build
+      # commenting out for now until we can properly test this during a release
+      # - name: Update package version
+      #   if: steps.latest-version.outputs.version != steps.package-version.outputs.current-version
+      #   run: node scripts/setVersion.js
 
-      # - run: node scripts/setVersion.js
-      # - run: lerna exec --scope @microsoft/* -- "npm publish --access=public"
-      #   if: github.repository == 'microsoftgraph/microsoft-graph-toolkit' && package.json version != npm version
+      # - name: Publish npm packages
+      #   if: steps.latest-version.outputs.version != steps.package-version.outputs.current-version
+      #   run: lerna exec --scope @microsoft/* -- "npm publish --access=public"
       #   env:
       #     NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
+
       # - name: Upload a Build Artifact - mgt-spfx Solution
+      #   if: steps.latest-version.outputs.version != steps.package-version.outputs.current-version
       #   uses: actions/upload-artifact@v2
       #   with:
       #     name: mgt-spfx solution
       #     path: packages/mgt-spfx/sharepoint/*
 
-      # - name: Build storybook
-      #   run: yarn storybook:build
+  storybook:
+    runs-on: ubuntu-latest
 
-      # - name: Deploy mgt.dev 🚀
-      #   uses: JamesIves/github-pages-deploy-action@4.1.1
-      #   with:
-      #     branch: gh-pages
-      #     folder: storybook-static
-      #     target-folder: .
-      #     clean-exclude: next
-      #   if: github.repository == 'microsoftgraph/microsoft-graph-toolkit'
+    strategy:
+      matrix:
+        node-version: [12.x]
+
+    steps:
+      - uses: actions/checkout@v2
+      - name: Use Node.js ${{ matrix.node-version }}
+        uses: actions/setup-node@v1
+        with:
+          node-version: ${{ matrix.node-version }}
+          registry-url: 'https://registry.npmjs.org'
+
+      - name: Build 🛠
+        run: |
+          npm install -g yarn lerna
+          yarn
+          yarn build
+          yarn storybook:build
+
+      - name: Deploy mgt.dev 🚀
+        uses: JamesIves/github-pages-deploy-action@4.1.1
+        with:
+          branch: gh-pages
+          folder: storybook-static
+          target-folder: .
+          clean-exclude: next
