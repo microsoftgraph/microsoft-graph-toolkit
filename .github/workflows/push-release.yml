@@ -1,0 +1,62 @@
+# This workflow will do a clean install of node dependencies, build the source code and run tests across different versions of node
+# For more information see: https://help.github.com/actions/language-and-framework-guides/using-nodejs-with-github-actions
+
+name: Build CI
+
+on:
+  push:
+    branches: [release/latest, nmetulev/storybook-next]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    strategy:
+      matrix:
+        node-version: [12.x]
+
+    steps:
+      - uses: actions/checkout@v2
+      - name: Use Node.js ${{ matrix.node-version }}
+        uses: actions/setup-node@v1
+        with:
+          node-version: ${{ matrix.node-version }}
+          registry-url: 'https://registry.npmjs.org'
+
+      - name: Get latest version from npm
+        id: latest-version
+        shell: bash
+        run: echo "##[set-output name=version;]npm show @microsoft/mgt version"
+
+      - name: Get current package version
+        id: package-version
+        uses: martinbeentjes/npm-get-version-action@master
+
+      - name: test conditional
+        if: steps.latest-version.outputs.version != steps.package-version.outputs.current-version
+        run: echo "latest-version ${{steps.latest-version.outputs.version}}  package version ${{steps.package-version.outputs.current-version}}"
+
+      - run: npm install -g yarn lerna
+      - run: yarn
+      - run: yarn build
+      - run: yarn storybook:build
+
+      - name: Deploy mgt.dev 🚀
+        uses: JamesIves/github-pages-deploy-action@4.1.1
+        with:
+          branch: gh-pages
+          folder: storybook-static
+          target-folder: .
+          clean-exclude: next
+        if: github.repository == 'microsoftgraph/microsoft-graph-toolkit'
+
+      # - run: node scripts/setVersion.js
+      # - run: lerna exec --scope @microsoft/* -- "npm publish --access=public"
+      #   if: github.repository == 'microsoftgraph/microsoft-graph-toolkit' && package.json version != npm version
+      #   env:
+      #     NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
+      # - name: Upload a Build Artifact - mgt-spfx Solution
+      #   uses: actions/upload-artifact@v2
+      #   with:
+      #     name: mgt-spfx solution
+      #     path: packages/mgt-spfx/sharepoint/*

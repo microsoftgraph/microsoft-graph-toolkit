@@ -5,7 +5,7 @@ name: Build CI
 
 on:
   push:
-    branches: [main, nmetulev/storybook-next]
+    branches: [main]
 
 jobs:
   build:
