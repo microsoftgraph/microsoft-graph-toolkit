@@ -32,5 +32,4 @@ jobs:
           branch: gh-pages
           folder: storybook-static
           target-folder: next
-          clean: false
         if: github.repository == 'microsoftgraph/microsoft-graph-toolkit'
