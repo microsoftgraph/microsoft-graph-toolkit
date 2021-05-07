@@ -25,8 +25,7 @@ jobs:
 
       - name: Get latest version from npm
         id: latest-version
-        shell: bash
-        run: echo "##[set-output name=version;]npm show @microsoft/mgt version"
+        run: echo ::set-output name=version::$(npm show @microsoft/mgt version)
 
       - name: Get current package version
         id: package-version
@@ -36,19 +35,11 @@ jobs:
         if: steps.latest-version.outputs.version != steps.package-version.outputs.current-version
         run: echo "latest-version ${{steps.latest-version.outputs.version}}  package version ${{steps.package-version.outputs.current-version}}"
 
-      - run: npm install -g yarn lerna
-      - run: yarn
-      - run: yarn build
-      - run: yarn storybook:build
-
-      - name: Deploy mgt.dev 🚀
-        uses: JamesIves/github-pages-deploy-action@4.1.1
-        with:
-          branch: gh-pages
-          folder: storybook-static
-          target-folder: .
-          clean-exclude: next
-        if: github.repository == 'microsoftgraph/microsoft-graph-toolkit'
+      # - name: Build 🛠
+      #   run: |
+      #         npm install -g yarn lerna
+      #         yarn
+      #         yarn build
 
       # - run: node scripts/setVersion.js
       # - run: lerna exec --scope @microsoft/* -- "npm publish --access=public"
@@ -60,3 +51,15 @@ jobs:
       #   with:
       #     name: mgt-spfx solution
       #     path: packages/mgt-spfx/sharepoint/*
+
+      # - name: Build storybook
+      #   run: yarn storybook:build
+
+      # - name: Deploy mgt.dev 🚀
+      #   uses: JamesIves/github-pages-deploy-action@4.1.1
+      #   with:
+      #     branch: gh-pages
+      #     folder: storybook-static
+      #     target-folder: .
+      #     clean-exclude: next
+      #   if: github.repository == 'microsoftgraph/microsoft-graph-toolkit'
