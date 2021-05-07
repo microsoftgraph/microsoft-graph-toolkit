@@ -57,6 +57,9 @@ mgt-file-item .file-list-wrapper {
     list-style: none;
 
     .file-item {
+      border-top: var(--file-item-border-top, none);
+      border-left: var(--file-item-border-left, none);
+      border-right: var(--file-item-border-right, none);
       border-bottom: var(--file-item-border-bottom, none);
       margin: $file-item-margin;
       border-radius: $file-item-border-radius;
