@@ -349,7 +349,17 @@ export class MgtFileList extends MgtTemplatedComponent {
     attribute: 'page-size',
     type: Number
   })
-  public pageSize: number;
+  public get pageSize(): number {
+    return this._pageSize;
+  }
+  public set pageSize(value: number) {
+    if (value === this._pageSize) {
+      return;
+    }
+
+    this._pageSize = value;
+    this.requestStateUpdate(true);
+  }
 
   /**
    * A boolean value indication if 'show-more' button should be disabled
@@ -382,6 +392,7 @@ export class MgtFileList extends MgtTemplatedComponent {
   private _groupId: string;
   private _insightType: OfficeGraphInsightString;
   private _fileExtensions: string[];
+  private _pageSize: number;
   private _userId: string;
   private _preloadedFiles: DriveItem[];
   private pageIterator: GraphPageIterator<DriveItem>;
