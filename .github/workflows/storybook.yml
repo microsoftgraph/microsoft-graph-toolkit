@@ -6,8 +6,6 @@ name: Build CI
 on:
   push:
     branches: [main, nmetulev/storybook-next]
-    paths:
-      - 'packages/**'
 
 jobs:
   build:
