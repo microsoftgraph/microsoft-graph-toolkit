@@ -99,6 +99,7 @@ export type PeoplePickerProps = {
 	people?: IDynamicPerson[];
 	selectedPeople?: IDynamicPerson[];
 	defaultSelectedUserIds?: string[];
+	defaultSelectedGroupIds?: string[];
 	placeholder?: string;
 	selectionMode?: string;
 	showMax?: number;

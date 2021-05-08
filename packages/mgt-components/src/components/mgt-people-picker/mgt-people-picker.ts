@@ -9,7 +9,7 @@ import { User } from '@microsoft/microsoft-graph-types';
 import { customElement, html, internalProperty, property, TemplateResult } from 'lit-element';
 import { classMap } from 'lit-html/directives/class-map';
 import { repeat } from 'lit-html/directives/repeat';
-import { findGroups, findGroupsFromGroup, GroupType } from '../../graph/graph.groups';
+import { findGroups, findGroupsFromGroup, getGroupsForGroupIds, GroupType } from '../../graph/graph.groups';
 import { findPeople, getPeople, PersonType, UserType } from '../../graph/graph.people';
 import { findUsers, findGroupMembers, getUser, getUsersForUserIds } from '../../graph/graph.user';
 import { IDynamicPerson, ViewType } from '../../graph/types';
@@ -276,6 +276,21 @@ export class MgtPeoplePicker extends MgtTemplatedComponent {
   public defaultSelectedUserIds: string[];
 
   /**
+   * array of groups to be selected upon intialization
+   *
+   * @type {string[]}
+   * @memberof MgtPeoplePicker
+   */
+  @property({
+    attribute: 'default-selected-group-ids',
+    converter: value => {
+      return value.split(',').map(v => v.trim());
+    },
+    type: String
+  })
+  public defaultSelectedGroupIds: string[];
+
+  /**
    * Placeholder text.
    *
    * @type {string}
@@ -349,6 +364,7 @@ export class MgtPeoplePicker extends MgtTemplatedComponent {
   private _groupPeople: IDynamicPerson[];
   private _debouncedSearch: { (): void; (): void };
   private defaultSelectedUsers: IDynamicPerson[];
+  private defaultSelectedGroups: IDynamicPerson[];
 
   @internalProperty() private _isFocused = false;
 
@@ -761,10 +777,15 @@ export class MgtPeoplePicker extends MgtTemplatedComponent {
       }
       this._showLoading = false;
 
-      if (this.defaultSelectedUserIds && !this.selectedPeople.length && !this.defaultSelectedUsers) {
+      if (
+        (this.defaultSelectedUserIds || this.defaultSelectedGroupIds) &&
+        !this.selectedPeople.length &&
+        !this.defaultSelectedUsers
+      ) {
         this.defaultSelectedUsers = await getUsersForUserIds(graph, this.defaultSelectedUserIds);
+        this.defaultSelectedGroups = await getGroupsForGroupIds(graph, this.defaultSelectedGroupIds);
 
-        this.selectedPeople = [...this.defaultSelectedUsers];
+        this.selectedPeople = [...this.defaultSelectedUsers, ...this.defaultSelectedGroups];
         this.requestUpdate();
         this.fireCustomEvent('selectionChanged', this.selectedPeople);
       }
