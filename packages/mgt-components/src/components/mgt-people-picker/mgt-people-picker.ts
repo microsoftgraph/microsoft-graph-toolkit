@@ -10,9 +10,9 @@ import { customElement, html, internalProperty, property, TemplateResult } from 
 import { classMap } from 'lit-html/directives/class-map';
 import { repeat } from 'lit-html/directives/repeat';
 import { findGroups, findGroupsFromGroup, GroupType } from '../../graph/graph.groups';
-import { findPeople, getPeople, PersonType } from '../../graph/graph.people';
+import { findPeople, getPeople, PersonType, UserType } from '../../graph/graph.people';
 import { findUsers, findGroupMembers, getUser, getUsersForUserIds } from '../../graph/graph.user';
-import { IDynamicPerson } from '../../graph/types';
+import { IDynamicPerson, ViewType } from '../../graph/types';
 import { Providers, ProviderState, MgtTemplatedComponent } from '@microsoft/mgt-element';
 import '../../styles/style-helper';
 import '../sub-components/mgt-spinner/mgt-spinner';
@@ -25,7 +25,7 @@ import { styles } from './mgt-people-picker-css';
 import { strings } from './strings';
 
 export { GroupType } from '../../graph/graph.groups';
-export { PersonType } from '../../graph/graph.people';
+export { PersonType, UserType } from '../../graph/graph.people';
 
 /**
  * An interface used to mark an object as 'focused',
@@ -193,6 +193,33 @@ export class MgtPeoplePicker extends MgtTemplatedComponent {
     this.requestStateUpdate(true);
   }
 
+  @property({
+    attribute: 'user-type',
+    converter: (value, type) => {
+      value = value.toLowerCase();
+      if (!value || value.length === 0) {
+        return UserType.any;
+      }
+
+      if (typeof UserType[value] === 'undefined') {
+        return UserType.any;
+      } else {
+        return UserType[value];
+      }
+    }
+  })
+  public get userType(): UserType {
+    return this._userType;
+  }
+  public set userType(value) {
+    if (this._userType === value) {
+      return;
+    }
+
+    this._userType = value;
+    this.requestStateUpdate(true);
+  }
+
   /**
    * whether the return should contain a flat list of all nested members
    * @type {boolean}
@@ -324,6 +351,7 @@ export class MgtPeoplePicker extends MgtTemplatedComponent {
   private _groupId: string;
   private _type: PersonType = PersonType.person;
   private _groupType: GroupType = GroupType.any;
+  private _userType: UserType = UserType.any;
 
   private defaultPeople: IDynamicPerson[];
 
@@ -697,7 +725,7 @@ export class MgtPeoplePicker extends MgtTemplatedComponent {
         class="selected-list__person-wrapper__person"
         .personDetails=${person}
         .fetchImage=${true}
-        .view=${PersonViewType.oneline}
+        .view=${ViewType.oneline}
         .personCardInteraction=${PersonCardInteraction.click}
       ></mgt-person>
     `;
@@ -736,7 +764,7 @@ export class MgtPeoplePicker extends MgtTemplatedComponent {
             }
             people = this._groupPeople || [];
           } else if (this.type === PersonType.person || this.type === PersonType.any) {
-            people = await getPeople(graph);
+            people = await getPeople(graph, this.userType);
           } else if (this.type === PersonType.group) {
             const groups = (await findGroups(graph, '', this.showMax, this.groupType)) || [];
             people = groups;
@@ -763,12 +791,12 @@ export class MgtPeoplePicker extends MgtTemplatedComponent {
         } else {
           if (this.type === PersonType.person || this.type === PersonType.any) {
             try {
-              people = (await findPeople(graph, input, this.showMax)) || [];
+              people = (await findPeople(graph, input, this.showMax, this.userType)) || [];
             } catch (e) {
               // nop
             }
 
-            if (people.length < this.showMax) {
+            if (people.length < this.showMax && this.userType !== UserType.contact) {
               try {
                 const users = (await findUsers(graph, input, this.showMax)) || [];
 

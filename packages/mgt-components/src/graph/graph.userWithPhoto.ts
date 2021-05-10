@@ -37,8 +37,8 @@ export async function getUserWithPhoto(
   let cachedPhoto: CachePhoto;
   let cachedUser: CacheUser;
 
-  let resource = userId ? `users/${userId}` : 'me';
-  resource += requestedProps ? `?$select=${requestedProps.toString()}` : '';
+  const resource = userId ? `users/${userId}` : 'me';
+  let fullResource = resource + (requestedProps ? `?$select=${requestedProps.toString()}` : '');
 
   const scopes = userId ? ['user.readbasic.all'] : ['user.read'];
 
@@ -125,7 +125,7 @@ export async function getUserWithPhoto(
   } else if (!cachedUser) {
     // get user from graph
     const response = await graph
-      .api(resource)
+      .api(fullResource)
       .middlewareOptions(prepScopes(...scopes))
       .get();
 

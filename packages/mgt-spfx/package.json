@@ -30,15 +30,15 @@
     "@microsoft/mgt-components": "*",
     "@microsoft/mgt-element": "*",
     "@microsoft/mgt-sharepoint-provider": "*",
-    "@microsoft/sp-core-library": "1.12.0"
+    "@microsoft/sp-core-library": "1.12.1"
   },
   "devDependencies": {
-    "@microsoft/rush-stack-compiler-3.7": "0.2.3",
-    "@microsoft/sp-build-web": "1.12.0",
-    "@microsoft/sp-module-interfaces": "1.12.0",
-    "@microsoft/sp-tslint-rules": "1.12.0",
-    "@microsoft/sp-webpart-workbench": "1.12.0",
-    "@types/webpack-env": "1.13.1",
+    "@microsoft/rush-stack-compiler-3.7": "0.6.46",
+    "@microsoft/sp-build-web": "1.12.1",
+    "@microsoft/sp-module-interfaces": "1.12.1",
+    "@microsoft/sp-tslint-rules": "1.12.1",
+    "@microsoft/sp-webpart-workbench": "1.12.1",
+    "@types/webpack-env": "1.16.0",
     "ajv": "~5.2.2",
     "gulp": "4.0.2"
   }
