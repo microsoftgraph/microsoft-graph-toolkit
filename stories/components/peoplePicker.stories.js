@@ -170,10 +170,10 @@ export const darkTheme = () => html`
 `;
 
 export const pickerAllowAnyEmail = () => html`
-  <mgt-people-picker allow-any-email id="anyEmailPicker"></mgt-people-picker>
+  <mgt-people-picker allow-any-email></mgt-people-picker>
   <!-- Type any email address and press comma(,), semicolon(;), tab or enter to add it -->
   <script type="module">
-    const peoplePicker = document.getElementById('anyEmailPicker');
+    const peoplePicker = document.querySelector('mgt-people-picker');
     peoplePicker.selectedPeople = [{mail: "any@mail.com", displayName: "any@mail.com"}]
   </script>
 `;
