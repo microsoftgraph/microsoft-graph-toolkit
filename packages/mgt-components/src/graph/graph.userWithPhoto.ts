@@ -38,7 +38,7 @@ export async function getUserWithPhoto(
   let cachedUser: CacheUser;
 
   const resource = userId ? `users/${userId}` : 'me';
-  let fullResource = requestedProps ? `?$select=${requestedProps.toString()}` : '';
+  let fullResource = resource + (requestedProps ? `?$select=${requestedProps.toString()}` : '');
 
   const scopes = userId ? ['user.readbasic.all'] : ['user.read'];
 
