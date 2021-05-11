@@ -8,6 +8,5 @@
 export const strings = {
   inputPlaceholderText: 'Start typing a name',
   noResultsFound: `We didn't find any matches.`,
-  loadingMessage: 'Loading...',
-  anyEmailWarning: 'Set allow-any-email attribute on people-picker to add emails not in your contacts'
+  loadingMessage: 'Loading...'
 };
