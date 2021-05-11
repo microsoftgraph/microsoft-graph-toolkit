@@ -2,7 +2,7 @@
   "@microsoft/generator-sharepoint": {
     "isCreatingSolution": true,
     "environment": "spo",
-    "version": "1.8.0",
+    "version": "1.12.1",
     "libraryName": "mgt-demo",
     "libraryId": "b0ed193e-b333-4796-b249-e34916ef7a85",
     "packageManager": "npm",

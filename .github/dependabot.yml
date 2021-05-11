@@ -5,7 +5,11 @@
 
 version: 2
 updates:
-  - package-ecosystem: "npm" # See documentation for possible values
-    directory: "/" # Location of package manifests
+  - package-ecosystem: 'npm' # See documentation for possible values
+    directory: '/' # Location of package manifests
     schedule:
-      interval: "daily"
+      interval: 'daily'
+    allow:
+      - dependency-name: "@microsoft/*"
+      - dependency-name: "@azure/*"
+      - dependency-name: "msal"
