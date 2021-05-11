@@ -173,7 +173,7 @@ export async function getPeople(graph: IGraph, userType: UserType = UserType.any
 
   const uri = '/me/people';
   let filter = "personType/class eq 'Person'";
-  
+
   if (userType !== UserType.any) {
     if (userType === UserType.user) {
       filter += "and personType/subclass eq 'OrganizationUser'";
@@ -181,7 +181,7 @@ export async function getPeople(graph: IGraph, userType: UserType = UserType.any
       filter += "and (personType/subclass eq 'ImplicitContact' or personType/subclass eq 'PersonalContact')";
     }
   }
-  
+
   let people;
   try {
     people = await graph.api(uri).middlewareOptions(prepScopes(scopes)).filter(filter).get();
