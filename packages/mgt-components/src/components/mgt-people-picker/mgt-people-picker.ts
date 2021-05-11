@@ -488,7 +488,6 @@ export class MgtPeoplePicker extends MgtTemplatedComponent {
           @blur=${this.lostFocus}
           @click=${this.handleFlyout}
           ?disabled=${this.disabled}
-          ?allowAnyEmail=${this.allowAnyEmail}
         />
       </div>
     `;
@@ -512,8 +511,11 @@ export class MgtPeoplePicker extends MgtTemplatedComponent {
           html`
             <div class="selected-list__person-wrapper">
               ${
-                this.renderTemplate('selected-person', { person }, `selected-${person.id}`) ||
-                this.renderSelectedPerson(person)
+                this.renderTemplate(
+                  'selected-person',
+                  { person },
+                  `selected-${person.id ? person.id : person.displayName}`
+                ) || this.renderSelectedPerson(person)
               }
 
               <div class="selected-list__person-wrapper__overflow">
@@ -834,6 +836,9 @@ export class MgtPeoplePicker extends MgtTemplatedComponent {
   protected removePerson(person: IDynamicPerson, e: MouseEvent): void {
     e.stopPropagation();
     const filteredPersonArr = this.selectedPeople.filter(p => {
+      if (!person.id && p.displayName) {
+        return p.displayName !== person.displayName;
+      }
       return p.id !== person.id;
     });
     this.selectedPeople = filteredPersonArr;
@@ -954,8 +959,6 @@ export class MgtPeoplePicker extends MgtTemplatedComponent {
       // keyCodes capture: tab (9)
       if (this.allowAnyEmail) {
         this.gainedFocus();
-      } else {
-        console.warn(strings.anyEmailWarning);
       }
     }
 
@@ -979,8 +982,6 @@ export class MgtPeoplePicker extends MgtTemplatedComponent {
       if (this.allowAnyEmail) {
         event.preventDefault();
         event.stopPropagation();
-      } else {
-        console.warn(strings.anyEmailWarning);
       }
       return;
     } else {
@@ -1080,10 +1081,6 @@ export class MgtPeoplePicker extends MgtTemplatedComponent {
           this.addPerson(foundPerson);
         } else if (this.allowAnyEmail) {
           this.handleAnyEmail();
-        } else {
-          if (!this.allowAnyEmail) {
-            console.warn(strings.anyEmailWarning);
-          }
         }
       }
       this.hideFlyout();
@@ -1094,8 +1091,6 @@ export class MgtPeoplePicker extends MgtTemplatedComponent {
         event.stopPropagation();
         this.userInput = input.value;
         this.handleAnyEmail();
-      } else {
-        console.warn(strings.anyEmailWarning);
       }
     }
   }
