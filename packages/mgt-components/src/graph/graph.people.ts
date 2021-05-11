@@ -35,6 +35,29 @@ export enum PersonType {
 }
 
 /**
+ * User Type enum
+ *
+ * @export
+ * @enum {number}
+ */
+export enum UserType {
+  /**
+   * Any user or contact
+   */
+  any = 'any',
+
+  /**
+   * An organization User
+   */
+  user = 'user',
+
+  /**
+   * An implicit or personal contact
+   */
+  contact = 'contact'
+}
+
+/**
  * Object to be stored in cache representing individual people
  */
 interface CachePerson extends CacheItem {
@@ -81,25 +104,29 @@ export async function findPeople(
   graph: IGraph,
   query: string,
   top: number = 10,
-  personType: PersonType = PersonType.person
+  userType: UserType = UserType.any
 ): Promise<Person[]> {
   const scopes = 'people.read';
 
   let cache: CacheStore<CachePeopleQuery>;
+  let cacheKey = `${query}:${top}:${userType}`;
 
   if (getIsPeopleCacheEnabled()) {
     cache = CacheService.getCache<CachePeopleQuery>(schemas.people, schemas.people.stores.peopleQuery);
-    const result: CachePeopleQuery = getIsPeopleCacheEnabled() ? await cache.getValue(query) : null;
+    const result: CachePeopleQuery = getIsPeopleCacheEnabled() ? await cache.getValue(cacheKey) : null;
     if (result && getPeopleInvalidationTime() > Date.now() - result.timeCached) {
       return result.results.map(peopleStr => JSON.parse(peopleStr));
     }
   }
-  let filterQuery = '';
 
-  if (personType !== PersonType.any) {
-    // converts personType to capitalized case
-    const personTypeString = personType.toString().charAt(0).toUpperCase() + personType.toString().slice(1);
-    filterQuery = `personType/class eq '${personTypeString}'`;
+  let filter = "personType/class eq 'Person'";
+
+  if (userType !== UserType.any) {
+    if (userType === UserType.user) {
+      filter += "and personType/subclass eq 'OrganizationUser'";
+    } else {
+      filter += "and (personType/subclass eq 'ImplicitContact' or personType/subclass eq 'PersonalContact')";
+    }
   }
 
   let graphResult;
@@ -108,7 +135,7 @@ export async function findPeople(
       .api('/me/people')
       .search('"' + query + '"')
       .top(top)
-      .filter(filterQuery)
+      .filter(filter)
       .middlewareOptions(prepScopes(scopes))
       .get();
 
@@ -129,13 +156,15 @@ export async function findPeople(
  * @returns {(Promise<Person[]>)}
  * @memberof Graph
  */
-export async function getPeople(graph: IGraph): Promise<Person[]> {
+export async function getPeople(graph: IGraph, userType: UserType = UserType.any): Promise<Person[]> {
   const scopes = 'people.read';
 
   let cache: CacheStore<CachePeopleQuery>;
+  let cacheKey = `*:${userType}`;
+
   if (getIsPeopleCacheEnabled()) {
     cache = CacheService.getCache<CachePeopleQuery>(schemas.people, schemas.people.stores.peopleQuery);
-    const cacheRes = await cache.getValue('*');
+    const cacheRes = await cache.getValue(cacheKey);
 
     if (cacheRes && getPeopleInvalidationTime() > Date.now() - cacheRes.timeCached) {
       return cacheRes.results.map(ppl => JSON.parse(ppl));
@@ -143,11 +172,21 @@ export async function getPeople(graph: IGraph): Promise<Person[]> {
   }
 
   const uri = '/me/people';
+  let filter = "personType/class eq 'Person'";
+  
+  if (userType !== UserType.any) {
+    if (userType === UserType.user) {
+      filter += "and personType/subclass eq 'OrganizationUser'";
+    } else {
+      filter += "and (personType/subclass eq 'ImplicitContact' or personType/subclass eq 'PersonalContact')";
+    }
+  }
+  
   let people;
   try {
-    people = await graph.api(uri).middlewareOptions(prepScopes(scopes)).filter("personType/class eq 'Person'").get();
+    people = await graph.api(uri).middlewareOptions(prepScopes(scopes)).filter(filter).get();
     if (getIsPeopleCacheEnabled() && people) {
-      cache.putValue('*', { maxResults: 10, results: people.value.map(ppl => JSON.stringify(ppl)) });
+      cache.putValue(cacheKey, { maxResults: 10, results: people.value.map(ppl => JSON.stringify(ppl)) });
     }
   } catch (error) {
     console.error(error);
