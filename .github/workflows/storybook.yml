@@ -6,13 +6,12 @@ name: Build CI
 on:
   push:
     branches: [main]
-    paths:
-      - 'packages/**'
 
 jobs:
   build:
     runs-on: ubuntu-latest
     if: github.repository == 'microsoftgraph/microsoft-graph-toolkit'
+
     strategy:
       matrix:
         node-version: [12.x]
@@ -30,17 +29,11 @@ jobs:
           npm install -g yarn lerna
           yarn
           yarn build
+          yarn storybook:build
 
-      - name: Set Preview Version
-        run: node scripts/setVersion.js --next
-
-      - name: Publish preview packages 🚀
-        run: lerna exec --scope @microsoft/* -- "npm publish --tag next --access=public"
-        env:
-          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
-
-      - name: Upload a Build Artifact - mgt-spfx Solution
-        uses: actions/upload-artifact@v2
+      - name: Deploy mgt.dev/next 🚀
+        uses: JamesIves/github-pages-deploy-action@4.1.1
         with:
-          name: mgt-spfx solution
-          path: packages/mgt-spfx/sharepoint/*
+          branch: gh-pages
+          folder: storybook-static
+          target-folder: next
