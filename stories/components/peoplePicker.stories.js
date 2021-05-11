@@ -121,6 +121,21 @@ export const pickDistributionGroups = () => html`
   <!-- group-type can be "any", "unified", "security", "mailenabledsecurity", "distribution" -->
 `;
 
+export const pickPeople = () => html`
+  <mgt-people-picker type="person"></mgt-people-picker>
+  <!-- type can be "any", "person", "group" -->
+`;
+
+export const pickOnlyOrganizationUsers = () => html`
+  <mgt-people-picker type="person" user-type="user"></mgt-people-picker>
+  <!-- user-type can be "any", "user", "contact" -->
+`;
+
+export const pickOnlyContacts = () => html`
+  <mgt-people-picker type="person" user-type="contact"></mgt-people-picker>
+  <!-- user-type can be "any", "user", "contact" -->
+`;
+
 export const pickerOverflowGradient = () => html`
   <mgt-people-picker
     default-selected-user-ids="e8a02cc7-df4d-4778-956d-784cc9506e5a,eeMcKFN0P0aANVSXFM_xFQ==,48d31887-5fad-4d73-a9f5-3c356e68a038,e3d0513b-449e-4198-ba6f-bd97ae7cae85"
