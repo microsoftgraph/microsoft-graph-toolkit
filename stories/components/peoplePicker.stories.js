@@ -168,3 +168,12 @@ export const darkTheme = () => html`
     }
   </style>
 `;
+
+export const pickerAllowAnyEmail = () => html`
+  <mgt-people-picker allow-any-email id="anyEmailPicker"></mgt-people-picker>
+  <!-- Type any email address and press comma(,), semicolon(;), tab or enter to add it -->
+  <script type="module">
+    const peoplePicker = document.getElementById('anyEmailPicker');
+    peoplePicker.selectedPeople = [{mail: "any@mail.com", displayName: "any@mail.com"}]
+  </script>
+`;

@@ -300,7 +300,7 @@ export class MgtPeoplePicker extends MgtTemplatedComponent {
   public disabled: boolean;
 
   /**
-   * Determines if a user can enter an email that is not in the contacts list
+   * Determines if a user can enter an email without selecting a person
    *
    * @type {boolean}
    * @memberof MgtPeoplePicker
