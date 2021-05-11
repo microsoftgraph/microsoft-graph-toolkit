@@ -22,7 +22,7 @@ import '../sub-components/mgt-flyout/mgt-flyout';
 import { MgtFlyout } from '../sub-components/mgt-flyout/mgt-flyout';
 import { PersonCardInteraction } from './../PersonCardInteraction';
 import { styles } from './mgt-person-css';
-import { Presence } from '@microsoft/microsoft-graph-types-beta';
+import { IdentitySourceType, Presence } from '@microsoft/microsoft-graph-types-beta';
 
 export { PersonCardInteraction } from '../PersonCardInteraction';
 
@@ -510,7 +510,7 @@ export class MgtPerson extends MgtTemplatedComponent {
     }
 
     // Prep data
-    const person = this.personDetails || this.fallbackDetails;
+    let person: any = this.personDetails || this.fallbackDetails;
     const image = this.getImage();
     const presence = this.personPresence || this._fetchedPresence;
 
@@ -522,7 +522,7 @@ export class MgtPerson extends MgtTemplatedComponent {
     let personTemplate = this.renderTemplate('default', { person, personImage: image, personPresence: presence });
 
     if (!personTemplate) {
-      const detailsTemplate: TemplateResult = this.renderDetails(person);
+      const detailsTemplate: TemplateResult = this.renderDetails(person, presence);
       const imageWithPresenceTemplate: TemplateResult = this.renderAvatar(person, image, presence);
 
       personTemplate = html`
@@ -800,9 +800,15 @@ export class MgtPerson extends MgtTemplatedComponent {
    * @returns {TemplateResult}
    * @memberof MgtPerson
    */
-  protected renderDetails(person: IDynamicPerson): TemplateResult {
+  protected renderDetails(person: IDynamicPerson, presence?: Presence): TemplateResult {
     if (!person || this.view === ViewType.image || this.view === PersonViewType.avatar) {
       return html``;
+    }
+
+    let personProperties: IDynamicPerson & { presenceActivity?: string; presenceAvailability?: string } = person;
+    if (presence) {
+      personProperties.presenceActivity = presence?.activity;
+      personProperties.presenceAvailability = presence?.availability;
     }
 
     const details: TemplateResult[] = [];
@@ -810,13 +816,13 @@ export class MgtPerson extends MgtTemplatedComponent {
     if (this.view > ViewType.image) {
       if (this.hasTemplate('line1')) {
         // Render the line1 template
-        const template = this.renderTemplate('line1', { person });
+        const template = this.renderTemplate('line1', { personProperties });
         details.push(html`
           <div class="line1" @click=${() => this.handleLine1Clicked()}>${template}</div>
         `);
       } else {
         // Render the line1 property value
-        const text = this.getTextFromProperty(person, this.line1Property);
+        const text = this.getTextFromProperty(personProperties, this.line1Property);
         if (text) {
           details.push(html`
             <div class="line1" @click=${() => this.handleLine1Clicked()} aria-label="${text}">${text}</div>
@@ -828,13 +834,13 @@ export class MgtPerson extends MgtTemplatedComponent {
     if (this.view > ViewType.oneline) {
       if (this.hasTemplate('line2')) {
         // Render the line2 template
-        const template = this.renderTemplate('line2', { person });
+        const template = this.renderTemplate('line2', { personProperties });
         details.push(html`
           <div class="line2" @click=${() => this.handleLine2Clicked()}>${template}</div>
         `);
       } else {
         // Render the line2 property value
-        const text = this.getTextFromProperty(person, this.line2Property);
+        const text = this.getTextFromProperty(personProperties, this.line2Property);
         if (text) {
           details.push(html`
             <div class="line2" @click=${() => this.handleLine2Clicked()} aria-label="${text}">${text}</div>
@@ -846,13 +852,13 @@ export class MgtPerson extends MgtTemplatedComponent {
     if (this.view > ViewType.twolines) {
       if (this.hasTemplate('line3')) {
         // Render the line3 template
-        const template = this.renderTemplate('line3', { person });
+        const template = this.renderTemplate('line3', { personProperties });
         details.push(html`
           <div class="line3" @click=${() => this.handleLine3Clicked()}>${template}</div>
         `);
       } else {
         // Render the line3 property value
-        const text = this.getTextFromProperty(person, this.line3Property);
+        const text = this.getTextFromProperty(personProperties, this.line3Property);
         if (text) {
           details.push(html`
             <div class="line3" @click=${() => this.handleLine3Clicked()} aria-label="${text}">${text}</div>
@@ -1014,8 +1020,6 @@ export class MgtPerson extends MgtTemplatedComponent {
         // set up a default Presence in case beta api changes or getting error code
         this._fetchedPresence = defaultPresence;
       }
-      this.personDetails.presenceActivity = this._fetchedPresence?.activity;
-      this.personDetails.presenceAvailability = this._fetchedPresence?.availability;
     }
   }
 
