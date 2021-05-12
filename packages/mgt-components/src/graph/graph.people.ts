@@ -144,9 +144,7 @@ export async function findPeople(
       item.results = graphResult.value.map(personStr => JSON.stringify(personStr));
       cache.putValue(query, item);
     }
-  } catch (error) {
-    console.error(error);
-  }
+  } catch (error) {}
   return graphResult ? graphResult.value : null;
 }
 
@@ -188,9 +186,7 @@ export async function getPeople(graph: IGraph, userType: UserType = UserType.any
     if (getIsPeopleCacheEnabled() && people) {
       cache.putValue(cacheKey, { maxResults: 10, results: people.value.map(ppl => JSON.stringify(ppl)) });
     }
-  } catch (error) {
-    console.error(error);
-  }
+  } catch (error) {}
   return people ? people.value : null;
 }
 
