@@ -160,6 +160,19 @@ export const pickerDefaultSelectedUserIds = () => html`
   </mgt-people-picker>
 `;
 
+export const pickerDefaultSelectedGroupIds = () => html`
+  <mgt-people-picker
+    default-selected-group-ids="94cb7dd0-cb3b-49e0-ad15-4efeb3c7d3e9, f2861ed7-abca-4556-bf0c-39ddc717ad81">
+  </mgt-people-picker>
+`;
+
+export const pickerDefaultSelectedUserAndGroupIds = () => html`
+  <mgt-people-picker
+    default-selected-user-ids="e3d0513b-449e-4198-ba6f-bd97ae7cae85, 40079818-3808-4585-903b-02605f061225"
+    default-selected-group-ids="94cb7dd0-cb3b-49e0-ad15-4efeb3c7d3e9, f2861ed7-abca-4556-bf0c-39ddc717ad81">
+  </mgt-people-picker>
+`;
+
 export const darkTheme = () => html`
   <mgt-people-picker class="mgt-dark"></mgt-people-picker>
   <style>
