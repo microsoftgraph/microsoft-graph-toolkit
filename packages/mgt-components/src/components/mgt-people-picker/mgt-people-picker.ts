@@ -1027,8 +1027,7 @@ export class MgtPeoplePicker extends MgtTemplatedComponent {
     if (isValidEmail(this.userInput)) {
       const anyMailUser = {
         mail: this.userInput,
-        displayName: this.userInput,
-        id: this.userInput
+        displayName: this.userInput
       };
       this.addPerson(anyMailUser);
     }
