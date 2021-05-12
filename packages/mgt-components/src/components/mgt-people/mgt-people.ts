@@ -309,7 +309,7 @@ export class MgtPeople extends MgtTemplatedComponent {
       <ul class="people-list">
         ${repeat(
           maxPeople,
-          p => p.id,
+          p => (p.id ? p.id : p.displayName),
           p => html`
             <li class="people-person">
               ${this.renderPerson(p)}
