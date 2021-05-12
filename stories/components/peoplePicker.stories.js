@@ -164,7 +164,6 @@ export const pickerDefaultSelectedGroupIds = () => html`
   <mgt-people-picker
     default-selected-group-ids="94cb7dd0-cb3b-49e0-ad15-4efeb3c7d3e9, f2861ed7-abca-4556-bf0c-39ddc717ad81">
   </mgt-people-picker>
-  </mgt-people-picker>
 `;
 
 export const pickerDefaultSelectedUserAndGroupIds = () => html`
