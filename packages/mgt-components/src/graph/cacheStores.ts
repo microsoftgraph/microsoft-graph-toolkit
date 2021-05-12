@@ -47,7 +47,7 @@ export const schemas = {
       groups: 'groups',
       groupsQuery: 'groupsQuery'
     },
-    version: 1
+    version: 2
   },
   get: {
     name: 'responses',
