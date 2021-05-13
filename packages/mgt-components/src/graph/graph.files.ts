@@ -1075,6 +1075,6 @@ export async function fetchNextAndCacheForFilesPageIterator(filesPageIterator) {
     const matches = reg.exec(nextLink);
     const key = matches[3];
 
-    cache.putValue(key[0], { files: filesPageIterator.value, nextLink: filesPageIterator._nextLink });
+    cache.putValue(key, { files: filesPageIterator.value, nextLink: filesPageIterator._nextLink });
   }
 }
