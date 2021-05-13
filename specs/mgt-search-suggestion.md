@@ -1,7 +1,7 @@
 # mgt-search-suggestion
 
 The suggestion component based on Graph Suggestion API, it provides a input box and flyout. When a query string typed in the input box, the flyout will rendered by the data from Graph Suggestion API, show some suggestions. it supports 3 kinds of entity types, File/Text/Suggestions. The component structure as below
-<img src="./images/mgt-search-suggestion.png.png" width=400/>
+<img src="./images/mgt-search-suggestion.png" width=400/>
 
 ## Supported functionality
 
@@ -20,8 +20,6 @@ The suggestion component based on Graph Suggestion API, it provides a input box 
 
 ### Example 1: basic usage without any callback function
 ```<mgt-search-suggestion></mgt-search-suggestion>```
-
-The request made: `GET /me/drives/items/123`
 
 ### Example 2: Developer provides a site-id and item-id
 ```<mgt-search-suggestion id="search-suggestion"> </mgt-search-suggestion>```
