@@ -489,12 +489,15 @@ export class MgtFile extends MgtTemplatedComponent {
       // get file type extension from file name
       const re = /(?:\.([^.]+))?$/;
       const fileType =
-        re.exec(this.driveItem.name)[1] ||
-        (this.driveItem.package !== undefined
-          ? this.driveItem.package.type === 'oneNote'
-            ? 'onetoc'
-            : 'folder'
-          : 'folder');
+        this.driveItem.package === undefined && this.driveItem.folder === undefined
+          ? re.exec(this.driveItem.name)[1]
+            ? re.exec(this.driveItem.name)[1].toLowerCase()
+            : 'null'
+          : this.driveItem.package !== undefined
+            ? this.driveItem.package.type === 'oneNote'
+              ? 'onetoc'
+              : 'folder'
+            : 'folder';
       fileIconSrc = getFileTypeIconUriByExtension(fileType, 48, 'svg');
     }
 
