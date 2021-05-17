@@ -600,7 +600,7 @@ const createAndInsertPart=(e,t)=>{const r=e.startNode.parentNode,o=void 0===t?e.
       <span dir=${this.direction}>
         ${t}
       </span>
-    `}renderLoading(){return this.renderTemplate("loading",null)||html``}renderNoData(){return this.renderTemplate("no-data",null)||html``}renderFileTypeIcon(){if(!this.fileIcon&&!this.driveItem.name)return html``;let e;if(this.fileIcon)e=this.fileIcon;else{e=function getFileTypeIconUriByExtension(e,t,r){return Object.keys(Yr).find((t=>Yr[t]===e))?`${Xr}/${t.toString()}/${e}.${r}`:"jpg"===e||"png"===e?(e="photo",`${Xr}/${t.toString()}/${e}.${r}`):null}(/(?:\.([^.]+))?$/.exec(this.driveItem.name)[1]||(void 0!==this.driveItem.package&&"oneNote"===this.driveItem.package.type?"onetoc":"folder"),48,"svg")}return html`
+    `}renderLoading(){return this.renderTemplate("loading",null)||html``}renderNoData(){return this.renderTemplate("no-data",null)||html``}renderFileTypeIcon(){if(!this.fileIcon&&!this.driveItem.name)return html``;let e;if(this.fileIcon)e=this.fileIcon;else{const t=/(?:\.([^.]+))?$/;e=function getFileTypeIconUriByExtension(e,t,r){return Object.keys(Yr).find((t=>Yr[t]===e))?`${Xr}/${t.toString()}/${e}.${r}`:"jpg"===e||"png"===e?(e="photo",`${Xr}/${t.toString()}/${e}.${r}`):null}(void 0===this.driveItem.package&&void 0===this.driveItem.folder?t.exec(this.driveItem.name)[1]?t.exec(this.driveItem.name)[1].toLowerCase():"null":void 0!==this.driveItem.package&&"oneNote"===this.driveItem.package.type?"onetoc":"folder",48,"svg")}return html`
       <div class="item__file-type-icon">
         ${e?html`
               <img src=${e} alt="File icon" />
