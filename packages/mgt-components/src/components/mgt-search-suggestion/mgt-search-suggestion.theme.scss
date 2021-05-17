@@ -1,0 +1,28 @@
+/**
+ * -------------------------------------------------------------------------------------------
+ * Copyright (c) Microsoft Corporation.  All Rights Reserved.  Licensed under the MIT License.
+ * See License in the project root for license information.
+ * -------------------------------------------------------------------------------------------
+ */
+
+@import '../../styles/shared-sass-variables.scss';
+
+$search-suggestion: (
+  suggestion__background-color--hover: (
+    _var: --suggestion-item-background-color--hover,
+    light: #f9f7f9,
+    dark: gray
+  ),
+  suggestion__background-color: (
+    _var: --suggestion-list-background-color,
+    light: white,
+    dark: black
+  ),
+  suggestion__entity-text-color: (
+    _var: --suggestion-list-text-color,
+    light: black,
+    dark: white
+  )
+);
+
+@include create-themes($search-suggestion);
