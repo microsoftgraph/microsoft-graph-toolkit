@@ -6,12 +6,11 @@
  */
 
 import { html } from 'lit-element';
-import { updateExportDeclaration } from 'typescript';
 import { withCodeEditor } from '../../../.storybook/addons/codeEditorAddon/codeAddon';
 
 export default {
   title: 'Components / mgt-person-card / Properties',
-  component: 'mgt-person',
+  component: 'mgt-person-card',
   decorators: [withCodeEditor]
 };
 
