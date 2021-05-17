@@ -6,7 +6,7 @@
  */
 
 import { html } from 'lit-element';
-import { withCodeEditor } from '../../.storybook/addons/codeEditorAddon/codeAddon';
+import { withCodeEditor } from '../../../.storybook/addons/codeEditorAddon/codeAddon';
 
 export default {
   title: 'Components | mgt-people',
@@ -16,6 +16,10 @@ export default {
 
 export const People = () => html`
   <mgt-people show-max="5"></mgt-people>
+`;
+
+export const ShowPresence = () => html`
+  <mgt-people show-presence></mgt-people>
 `;
 
 export const GroupId = () => html`
@@ -40,11 +44,30 @@ export const PeopleResource = () => html`
   <mgt-people resource="/me/directReports"></mgt-people>
 `;
 
-export const darkTheme = () => html`
-  <mgt-people class="mgt-dark"></mgt-people>
-  <style>
-    body {
-      background-color: black;
-    }
-  </style>
+export const PersonCard = () => html`
+  <div style="margin-bottom:10px">Person card Hover</div>
+  <mgt-people show-max="5" person-card="hover"></mgt-people>
+  <div style="margin-bottom:10px">Person card Click</div>
+  <mgt-people show-max="5" person-card="click"></mgt-people>
 `;
+
+export const RTL = () => html`
+  <mgt-people show-max="5" dir="RTL"></mgt-people>
+`;
+
+export const Templating = () => html`
+<style>
+  ul {
+    list-style-type: none;
+}
+</style>
+<mgt-people>
+  <template>
+    <ul><li data-for="person in people">
+      <mgt-person person-query="{{ person.userPrincipalName }}"></mgt-person>
+      <h3>{{ person.displayName }}</h3>
+      <p>{{ person.jobTitle }}</p>
+      <p>{{ person.department }}</p>
+    </li></ul>
+  </template>
+</mgt-people>`;
