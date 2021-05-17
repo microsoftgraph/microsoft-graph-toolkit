@@ -110,6 +110,27 @@ obj.onEnterKeyPressCallback = onEnterKeyPressCallback;
 | `selected-entity-types` | `selectedEntityTypes` | Suggestion entity types, free combination of text/people/file, use ',' to do the segmentation |
 | `other properties` | `other properties` | awaiting for the graph suggestion API onboard. |
 
+## Themes
+### light(default)
+<img src="./images/mgt-search-suggestion-light.png" width=400/>
+
+### dark
+<img src="./images/mgt-search-suggestion-dark.png" width=400/>
+
+## CSS custom properties
+
+The `mgt-searach-suggestion` component defines the following CSS custom properties.
+
+```css
+mgt-search-suggestion {
+
+    --suggestion-item-background-color--hover - {Color} background color for an hover item
+    --suggestion-list-background-color - {Color} background color
+    --suggestion-list-text-color - {Color} Text Suggestion font color
+    /* other more properties same with mgt-person / mgt-file */
+}
+```
+
 ## APIs and Permissions
 
 | Query | Use if | Permission Scopes |
