@@ -14,11 +14,26 @@ export default {
   decorators: [withCodeEditor]
 };
 
-export const simple = () => html`
-    <mgt-file file-query="/me/drive/items/01BYE5RZZFWGWWVNHHKVHYXE3OUJHGWCT2"></mgt-file>
- `;
+export const file = () => html`
+  <mgt-file file-query="/me/drive/items/01BYE5RZZFWGWWVNHHKVHYXE3OUJHGWCT2"></mgt-file>
+`;
 
 
 export const RTL = () => html`
-    <mgt-file file-query="/me/drive/items/01BYE5RZZFWGWWVNHHKVHYXE3OUJHGWCT2" dir="rtl"></mgt-file>
- `;
+  <mgt-file file-query="/me/drive/items/01BYE5RZZFWGWWVNHHKVHYXE3OUJHGWCT2" dir="rtl"></mgt-file>
+`;
+
+export const localization = () => html`
+  <mgt-file file-query="/me/drive/items/01BYE5RZZFWGWWVNHHKVHYXE3OUJHGWCT2" view="threelines"></mgt-file>
+  <script>
+  import { LocalizationHelper } from '@microsoft/mgt';
+  LocalizationHelper.strings = {
+    _components: {
+      'file': {
+        modifiedSubtitle: '⚡',
+        sizeSubtitle: '💾'
+      }
+    }
+  }
+  </script>
+`;
