@@ -478,6 +478,8 @@ export class MgtFileList extends MgtTemplatedComponent {
           tabindex="0"
           @keydown="${this.onFileListKeyDown}"
           @keyup="${this.onFileListKeyUp}"
+          @blur="${this.onFileListOut}"
+	        @mouseleave="${this.onFileListOut}"
         >
           ${repeat(
             this.files,
@@ -564,7 +566,7 @@ export class MgtFileList extends MgtTemplatedComponent {
   }
 
   /**
-   * Handle accessibility keyboard keydown events (arrow up, arrow down, enter) on file list
+   * Handle accessibility keyboard keydown events (arrow up, arrow down, enter, tab) on file list
    *
    * @param event
    */
@@ -600,6 +602,21 @@ export class MgtFileList extends MgtTemplatedComponent {
 
       this.updateItemBackgroundColor(fileList, focusedItem, 'selected');
     }
+
+    if (event.code === 'Tab') {
+      focusedItem = fileList.children[this._focusedItemIndex];
+      focusedItem.classList.remove('focused');
+    }
+  }
+
+  /**
+   * Remove accessibility keyboard focused when out of file list
+   *
+   */
+  private onFileListOut() {
+    const fileList = this.renderRoot.querySelector('.file-list');
+    const focusedItem = fileList.children[this._focusedItemIndex];
+    focusedItem.classList.remove('focused');
   }
 
   /**
@@ -819,5 +836,13 @@ export class MgtFileList extends MgtTemplatedComponent {
       focusedItem.classList.add(className);
       focusedItem.scrollIntoView({ behavior: 'smooth', block: 'nearest', inline: 'start' });
     }
+  }
+
+  /**
+   * Handle refresh of File List
+   *
+   */
+  public refreshFileList() {
+    this.requestStateUpdate(true);
   }
 }
