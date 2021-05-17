@@ -839,10 +839,10 @@ export class MgtFileList extends MgtTemplatedComponent {
   }
 
   /**
-   * Handle refresh of File List
+   * Handle reload of File List
    *
    */
-  public refreshFileList() {
+  public reloadFileList() {
     this.requestStateUpdate(true);
   }
 }
