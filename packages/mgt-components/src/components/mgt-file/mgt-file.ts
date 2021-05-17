@@ -494,10 +494,10 @@ export class MgtFile extends MgtTemplatedComponent {
             ? re.exec(this.driveItem.name)[1].toLowerCase()
             : 'null'
           : this.driveItem.package !== undefined
-            ? this.driveItem.package.type === 'oneNote'
-              ? 'onetoc'
-              : 'folder'
-            : 'folder';
+          ? this.driveItem.package.type === 'oneNote'
+            ? 'onetoc'
+            : 'folder'
+          : 'folder';
       fileIconSrc = getFileTypeIconUriByExtension(fileType, 48, 'svg');
     }
 
