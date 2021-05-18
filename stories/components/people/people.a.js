@@ -6,27 +6,18 @@
  */
 
 import { html } from 'lit-element';
-import { withCodeEditor } from '../../.storybook/addons/codeEditorAddon/codeAddon';
+import { withCodeEditor } from '../../../.storybook/addons/codeEditorAddon/codeAddon';
 
 export default {
-  title: 'Components | mgt-todo',
-  component: 'mgt-todo',
+  title: 'Components | mgt-people',
+  component: 'mgt-people',
   decorators: [withCodeEditor]
 };
 
-export const tasks = () => html`
-  <mgt-todo></mgt-todo>
+export const People = () => html`
+  <mgt-people show-max="5"></mgt-people>
 `;
 
-export const ReadOnly = () => html`
-  <mgt-todo read-only></mgt-todo>
-`;
-
-export const darkTheme = () => html`
-  <mgt-todo class="mgt-dark"></mgt-todo>
-  <style>
-    body {
-      background-color: black;
-    }
-  </style>
+export const RTL = () => html`
+  <mgt-people show-max="5" dir="RTL"></mgt-people>
 `;
