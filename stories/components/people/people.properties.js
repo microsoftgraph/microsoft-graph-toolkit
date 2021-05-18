@@ -9,12 +9,12 @@ import { html } from 'lit-element';
 import { withCodeEditor } from '../../../.storybook/addons/codeEditorAddon/codeAddon';
 
 export default {
-  title: 'Components | mgt-people',
+  title: 'Components / mgt-people / Properties',
   component: 'mgt-people',
   decorators: [withCodeEditor]
 };
 
-export const People = () => html`
+export const ShowMax = () => html`
   <mgt-people show-max="5"></mgt-people>
 `;
 
@@ -50,24 +50,3 @@ export const PersonCard = () => html`
   <div style="margin-bottom:10px">Person card Click</div>
   <mgt-people show-max="5" person-card="click"></mgt-people>
 `;
-
-export const RTL = () => html`
-  <mgt-people show-max="5" dir="RTL"></mgt-people>
-`;
-
-export const Templating = () => html`
-<style>
-  ul {
-    list-style-type: none;
-}
-</style>
-<mgt-people>
-  <template>
-    <ul><li data-for="person in people">
-      <mgt-person person-query="{{ person.userPrincipalName }}"></mgt-person>
-      <h3>{{ person.displayName }}</h3>
-      <p>{{ person.jobTitle }}</p>
-      <p>{{ person.department }}</p>
-    </li></ul>
-  </template>
-</mgt-people>`;

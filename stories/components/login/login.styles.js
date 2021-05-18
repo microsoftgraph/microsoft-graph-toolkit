@@ -29,7 +29,7 @@ export const customCssProperties = () => html`
   mgt-login {
     --font-size: 14px;
     --font-weight: 600;
-    --weith: '100%';
+    --weight: '100%';
     --height: '100%';
     --margin: 0;
     --padding: 12px 20px;

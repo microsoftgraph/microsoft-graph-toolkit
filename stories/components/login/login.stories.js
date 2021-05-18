@@ -20,6 +20,9 @@ export const Login = () => html`
 
 export const Templates = () => html`
   <mgt-login>
+    <template data-type="signed-out-button-content">
+      👋
+    </template>
     <template data-type="signed-in-button-content">
       {{personDetails.givenName}}
     </template>
@@ -44,43 +47,39 @@ export const Templates = () => html`
 `;
 
 export const RTL = () => html`
-   <mgt-login dir="RTL"></mgt-login>
+  <mgt-login dir="RTL"></mgt-login>
 `;
 
 export const Events = () => html`
 <mgt-login></mgt-login>
 <script>
-const login = document.querySelector('mgt-login');
-login.addEventListener('loginInitiated', (e) => {
-  console.log("Login Initiated");
-})
-login.addEventListener('loginCompleted', (e) => {
-  console.log("Login Completed");
-})
-login.addEventListener('logoutInitiated', (e) => {
-  console.log("Logout Initiated");
-})
-login.addEventListener('logoutCompleted', (e) => {
-  console.log("Logout Completed");
-})
-
+  const login = document.querySelector('mgt-login');
+  login.addEventListener('loginInitiated', (e) => {
+    console.log("Login Initiated");
+  })
+  login.addEventListener('loginCompleted', (e) => {
+    console.log("Login Completed");
+  })
+  login.addEventListener('logoutInitiated', (e) => {
+    console.log("Logout Initiated");
+  })
+  login.addEventListener('logoutCompleted', (e) => {
+    console.log("Logout Completed");
+  })
 </script>
-
 `;
 
-export const NoAuthenticationProvider = () => html`
-<script>
-Providers.globalProvider = null;
-</script>
-<mgt-login id="myLoginControl"></mgt-login>
-<script>
-Providers.globalProvider = null;
-debugger;
-let loginControl = document.getElementById('myLoginControl');
-loginControl.userDetails = {
-    displayName: 'Isaiah Langer',
-    mail: 'isaiahl@contoso.com',
-    personImage: 'url'
-}
-</script>
+export const localization = () => html`
+  <mgt-login></mgt-login>
+  <script>
+  import { LocalizationHelper } from '@microsoft/mgt';
+  LocalizationHelper.strings = {
+    _components: {
+      login: {
+        signInLinkSubtitle: 'Sign In 🤗',
+        signOutLinkSubtitle: 'Sign Out 🙋‍♀️'
+      },
+    }
+  }
+  </script>
 `;
