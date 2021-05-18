@@ -7,6 +7,10 @@
 
 import {
   arraysAreEqual,
+  CacheItem,
+  CacheService,
+  CacheSchema,
+  CacheStore,
   GraphPageIterator,
   MgtTemplatedComponent,
   Providers,
@@ -38,6 +42,15 @@ import { OfficeGraphInsightString, ViewType } from '../../graph/types';
 import { styles } from './mgt-file-list-css';
 import { strings } from './strings';
 import { MgtFile } from '../mgt-file/mgt-file';
+
+/**
+ * An interface used to extend CacheItem file for CacheFileList.
+ *
+ * @interface CacheFileList
+ */
+interface CacheFileList extends CacheItem {
+  file?: string;
+}
 
 /**
  * The File List component displays a list of multiple folders and files by
@@ -842,9 +855,21 @@ export class MgtFileList extends MgtTemplatedComponent {
    * Handle reload of File List
    *
    */
-  public reloadFileList(clearCache = false) {
+  public reload(clearCache = false) {
     if (clearCache) {
       // clear cache here
+      const cacheSchema: CacheSchema = {
+        name: 'file-lists',
+        stores: {
+          fileLists: 'fileLists',
+          insightfileLists: 'insightfileLists'
+        },
+        version: 1
+      };
+
+      let cache: CacheStore<CacheFileList>;
+      cache = CacheService.getCache<CacheFileList>(cacheSchema, 'fileLists');
+      cache.clearStore();
     }
     
     this.requestStateUpdate(true);
