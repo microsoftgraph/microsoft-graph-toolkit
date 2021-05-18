@@ -842,7 +842,11 @@ export class MgtFileList extends MgtTemplatedComponent {
    * Handle reload of File List
    *
    */
-  public reloadFileList() {
+  public reloadFileList(clearCache = false) {
+    if (clearCache) {
+      // clear cache here
+    }
+    
     this.requestStateUpdate(true);
   }
 }
