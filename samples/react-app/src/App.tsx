@@ -1,4 +1,4 @@
-import React, { Component } from 'react';
+import React, { Component, useRef } from 'react';
 import {
   Login,
   Agenda,
@@ -10,6 +10,7 @@ import {
   Get
 } from '@microsoft/mgt-react';
 import * as MicrosoftGraph from '@microsoft/microsoft-graph-types';
+import { MgtPerson } from '@microsoft/mgt-components';
 
 class App extends Component {
   handleTemplateRendered = (e: Event) => {
@@ -65,6 +66,12 @@ const MyTemplate = (props: MgtTemplateProps) => {
 const MyMessage = (props: MgtTemplateProps) => {
   const message = props.dataContext as MicrosoftGraph.Message;
 
+  const personRef = useRef<MgtPerson>();
+
+  const handlePersonClick = () => {
+    console.log(personRef.current);
+  };
+
   return (
     <div>
       <b>Subject:</b>
@@ -72,6 +79,8 @@ const MyMessage = (props: MgtTemplateProps) => {
       <div>
         <b>From:</b>
         <Person
+          ref={personRef}
+          onClick={handlePersonClick}
           personQuery={message.from?.emailAddress?.address || ''}
           fallbackDetails={{ mail: message.from?.emailAddress?.address, displayName: message.from?.emailAddress?.name }}
           view={PersonViewType.oneline}
