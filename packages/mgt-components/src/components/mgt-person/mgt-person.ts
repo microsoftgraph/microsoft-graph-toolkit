@@ -569,7 +569,6 @@ export class MgtPerson extends MgtTemplatedComponent {
   protected clearState(): void {
     this._personImage = '';
     this._personDetails = null;
-    this._fallbackDetails = null;
     this._fetchedImage = null;
     this._fetchedPresence = null;
   }
