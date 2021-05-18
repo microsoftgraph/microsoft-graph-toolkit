@@ -641,7 +641,7 @@ const createAndInsertPart=(e,t)=>{const r=e.startNode.parentNode,o=void 0===t?e.
         </ul>
         ${!this.hideMoreFilesButton&&this.pageIterator&&(this.pageIterator.hasNext||this._preloadedFiles.length)?this.renderMoreFileButton():null}
       </div>
-    `}renderFile(e){const t=this.itemView;return this.renderTemplate("file",{file:e})||html`
+    `}renderFile(e){const t=this.itemView;return this.renderTemplate("file",{file:e},e.id)||html`
         <mgt-file .fileDetails=${e} .view=${t} @click=${t=>this.handleItemSelect(e,t)}></mgt-file>
       `}renderMoreFileButton(){return this.isLoadingState?html`
         <mgt-spinner></mgt-spinner>
