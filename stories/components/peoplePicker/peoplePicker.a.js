@@ -14,7 +14,7 @@ export default {
   decorators: [withCodeEditor]
 };
 
-export const People = () => html`
+export const peoplePicker = () => html`
    <mgt-people-picker></mgt-people-picker>
  `;
 
@@ -29,8 +29,24 @@ export const selectionChangedEvent = () => html`
   document.querySelector('mgt-people-picker').addEventListener('selectionChanged', e => {
     for (let i=0; i <e.detail.length;i++){
       const person = e.detail[i];
-      console.log(person.displayName)
+      console.log(person)
     }
-});
+  });
+  </script>
+`;
+
+export const localization = () => html`
+  <mgt-people-picker></mgt-people-picker>
+  <script>
+  import { LocalizationHelper } from '@microsoft/mgt';
+  LocalizationHelper.strings = {
+    _components: {
+      'people-picker': {
+        inputPlaceholderText: 'Search for 🤼',
+        noResultsFound: '🤷‍♀️',
+        loadingMessage: '🦔'
+      }
+    }
+  }
   </script>
 `;
