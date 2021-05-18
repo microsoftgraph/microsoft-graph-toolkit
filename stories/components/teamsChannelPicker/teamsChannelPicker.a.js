@@ -6,7 +6,7 @@
  */
 
 import { html } from 'lit-element';
-import { withCodeEditor } from '../../.storybook/addons/codeEditorAddon/codeAddon';
+import { withCodeEditor } from '../../../.storybook/addons/codeEditorAddon/codeAddon';
 
 export default {
   title: 'Components | mgt-teams-channel-picker',
@@ -15,8 +15,8 @@ export default {
 };
 
 export const teamsChannelPicker = () => html`
-  <mgt-teams-channel-picker></mgt-teams-channel-picker>
-`;
+   <mgt-teams-channel-picker></mgt-teams-channel-picker>
+ `;
 
 export const getSelectedChannel = () => html`
   <mgt-teams-channel-picker></mgt-teams-channel-picker>
@@ -76,11 +76,18 @@ export const selectChannel = () => html`
   </script>
 `;
 
-export const darkTheme = () => html`
-  <mgt-teams-channel-picker class="mgt-dark"></mgt-teams-channel-picker>
-  <style>
-    body {
-      background-color: black;
-    }
-  </style>
-`;
+export const Localization = () => html`
+   <mgt-teams-channel-picker></mgt-teams-channel-picker>
+   <script>
+    import { LocalizationHelper } from '@microsoft/mgt';
+        LocalizationHelper.strings = {
+            _components: {
+                "teams-channel-picker": {
+                    inputPlaceholderText: "حدد قناة",
+                    noResultsFound: "لم يتم العثور على نتائج",
+                    loadingMessage: "جار التحميل..."
+                }
+            }
+        };
+  </script>
+ `;
