@@ -15,7 +15,18 @@ export default {
 };
 
 export const userId = () => html`
-   <mgt-person user-id="2804bc07-1e1f-4938-9085-ce6d756a32d2" view="twoLines"></mgt-person>
+  <mgt-person user-id="2804bc07-1e1f-4938-9085-ce6d756a32d2" view="twoLines"></mgt-person>
+`;
+
+export const personCard = () => html`
+  <div class="example">
+    <div style="margin-bottom:10px">Person card Hover</div>
+    <mgt-person person-query="me" view="twoLines" person-card="hover"></mgt-person>
+  </div>
+  <div class="example">
+  <div style="margin-bottom:10px">Person card Click</div>
+    <mgt-person person-query="me" view="twoLines" person-card="click"></mgt-person>
+  </div>
 `;
 
 export const setPersonDetails = () => html`
@@ -235,4 +246,85 @@ export const personQuery = () => html`
 export const personAvatarType = () => html`
   <mgt-person person-query="me" avatar-type="photo"></mgt-person>
   <mgt-person person-query="me" avatar-type="initials"></mgt-person>
+`;
+
+export const moreExamples = () => html`
+  <style>
+    .example {
+      margin-bottom: 20px;
+    }
+
+    .styled-person {
+      --font-family: 'Comic Sans MS', cursive, sans-serif;
+      --color-sub1: red;
+      --avatar-size: 60px;
+      --font-size: 20px;
+      --line2-color: green;
+      --avatar-border-radius: 10% 35%;
+      --line2-text-transform: uppercase;
+    }
+
+    .person-initials {
+      --initials-color: yellow;
+      --initials-background-color: red;
+      --avatar-size: 60px;
+      --avatar-border-radius: 10% 35%;
+    }
+  </style>
+
+  <div class="example">
+    <div>Default person</div>
+    <mgt-person person-query="me"></mgt-person>
+  </div>
+
+  <div class="example">
+    <div>One line</div>
+    <mgt-person person-query="me" view="oneline"></mgt-person>
+  </div>
+
+  <div class="example">
+    <div>Two lines</div>
+    <mgt-person person-query="me" view="twoLines"></mgt-person>
+  </div>
+
+  <div class="example">
+    <div>Change line content</div>
+    <!--add fallback property by comma separating-->
+    <mgt-person
+      person-query="me"
+      line1-property="givenName"
+      line2-property="jobTitle,mail"
+      view="twoLines"
+    ></mgt-person>
+  </div>
+
+  <div class="example">
+    <div>Large avatar</div>
+    <mgt-person person-query="me" avatar-size="large"></mgt-person>
+  </div>
+
+  <div class="example">
+    <div>Different styles (see css tab for style)</div>
+    <mgt-person class="styled-person" person-query="me" view="twoLines"></mgt-person>
+  </div>
+
+  <div class="example" style="width: 200px">
+    <div>Overflow</div>
+    <mgt-person person-query="me" view="twoLines"></mgt-person>
+  </div>
+
+  <div class="example">
+    <div>Style initials (see css tab for style)</div>
+    <mgt-person class="person-initials" person-query="alex@fineartschool.net" view="oneline"></mgt-person>
+  </div>
+
+  <div>
+    <div>Additional Person properties</div>
+    <mgt-person
+      person-query="me"
+      view="twoLines"
+      line1-property="displayName"
+      line2-property="officeLocation"
+    ></mgt-person>
+  </div>
 `;

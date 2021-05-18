@@ -9,27 +9,15 @@ import { html } from 'lit-element';
 import { withCodeEditor } from '../../../.storybook/addons/codeEditorAddon/codeAddon';
 
 export default {
-  title: 'Components / mgt-people / Styles',
+  title: 'Components | mgt-people',
   component: 'mgt-people',
   decorators: [withCodeEditor]
 };
 
-export const darkTheme = () => html`
- <mgt-people class="mgt-dark"></mgt-people>
- <style>
-   body {
-     background-color: black;
-   }
- </style>
+export const People = () => html`
+  <mgt-people show-max="5"></mgt-people>
 `;
 
-export const customCssProperties = () => html`
-<mgt-people></mgt-people>
-<style>
-  mgt-people {
-    --list-margin: 10px 4px 10px 10px; /* Margin for component */
-    --avatar-margin: 20px; /* Margin for each person */
-    --color: pink /* Text color */
-  }
-</style>
+export const RTL = () => html`
+  <mgt-people show-max="5" dir="RTL"></mgt-people>
 `;

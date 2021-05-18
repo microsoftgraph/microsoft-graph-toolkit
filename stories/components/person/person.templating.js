@@ -14,6 +14,19 @@ export default {
   decorators: [withCodeEditor]
 };
 
+export const DefaultTemplates = () => html`
+  <mgt-person person-query="me">
+    <template>
+      <div>
+        Hello, my name is: {{person.displayName}}
+      </div>
+    </template>
+    <template data-type="loading">
+      Loading
+    </template>
+  </mgt-person>
+`;
+
 export const noDataTemplate = () => html`
   <div>
     <div>No data template</div>
@@ -43,4 +56,13 @@ export const retemplateMetadata = () => html`
       </div>
     </template>
   </mgt-person>
+`;
+
+export const personCard = () => html`
+    <mgt-person person-query="me" view="twolines" person-card="hover">
+      <template data-type="person-card">
+        <!-- <mgt-person-card inherit-details></mgt-person-card> -->
+        My custom person card experience
+      </template>
+    </mgt-person>
 `;
