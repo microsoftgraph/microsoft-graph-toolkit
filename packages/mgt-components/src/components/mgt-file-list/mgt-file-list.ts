@@ -479,7 +479,6 @@ export class MgtFileList extends MgtTemplatedComponent {
           @keydown="${this.onFileListKeyDown}"
           @keyup="${this.onFileListKeyUp}"
           @blur="${this.onFileListOut}"
-	        @mouseleave="${this.onFileListOut}"
         >
           ${repeat(
             this.files,
@@ -560,8 +559,8 @@ export class MgtFileList extends MgtTemplatedComponent {
     if (event.code === 'Enter' || event.code === 'Space') {
       event.preventDefault();
 
-      focusedItem.classList.remove('selected');
-      focusedItem.classList.add('focused');
+      focusedItem?.classList.remove('selected');
+      focusedItem?.classList.add('focused');
     }
   }
 
@@ -605,7 +604,7 @@ export class MgtFileList extends MgtTemplatedComponent {
 
     if (event.code === 'Tab') {
       focusedItem = fileList.children[this._focusedItemIndex];
-      focusedItem.classList.remove('focused');
+      focusedItem?.classList.remove('focused');
     }
   }
 
@@ -616,7 +615,7 @@ export class MgtFileList extends MgtTemplatedComponent {
   private onFileListOut() {
     const fileList = this.renderRoot.querySelector('.file-list');
     const focusedItem = fileList.children[this._focusedItemIndex];
-    focusedItem.classList.remove('focused');
+    focusedItem?.classList.remove('focused');
   }
 
   /**
@@ -754,9 +753,10 @@ export class MgtFileList extends MgtTemplatedComponent {
       const li = event.target.closest('li');
       const index = nodes.indexOf(li);
       this._focusedItemIndex = index;
-      const focusedItem = fileList.children[this._focusedItemIndex];
 
-      this.updateItemBackgroundColor(fileList, focusedItem, 'focused');
+      for (let i = 0; i < fileList.children.length; i++) {
+        fileList.children[i].classList.remove('focused');
+      }
     }
   }
 
