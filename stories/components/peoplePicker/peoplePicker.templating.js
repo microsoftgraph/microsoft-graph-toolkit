@@ -14,16 +14,23 @@ export default {
   decorators: [withCodeEditor]
 };
 
+export const personTemplates = () => html`
+<mgt-people-picker>
+  <template data-type="selected-person">
+		<div>
+			🧑 {{person.displayName}}
+		</div>
+	</template>
+  <template data-type="person">
+		<div>
+			✋ {{person.displayName}} 🤚
+		</div>
+	</template>
+</mgt-people-picker>
+`;
+
 export const DefaultTemplates = () => html`
 <mgt-people-picker>
-  <template>
-    <ul><li data-for="person in people">
-    <mgt-person data-props="personDetails: person" fetch-image></mgt-person>
-      <h3>{{ person.displayName }}</h3>
-      <p>{{ person.jobTitle }}</p>
-      <p>{{ person.department }}</p>
-    </li></ul>
-  </template>
   <template data-type="loading">
 		<div class="root">
 			loading
@@ -36,3 +43,4 @@ export const DefaultTemplates = () => html`
 	</template>
 </mgt-people-picker>
 `;
+

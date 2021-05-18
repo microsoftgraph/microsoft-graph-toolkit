@@ -15,22 +15,21 @@ export default {
 };
 
 export const peoplePicker = () => html`
-   <mgt-people-picker></mgt-people-picker>
- `;
+  <mgt-people-picker></mgt-people-picker>
+`;
 
 export const RTL = () => html`
-   <mgt-people-picker dir="RTL"></mgt-people-picker>
- `;
+  <body dir="rtl">
+    <mgt-people-picker></mgt-people-picker>
+  </body>
+`;
 
 export const selectionChangedEvent = () => html`
   <mgt-people-picker></mgt-people-picker>
   <!-- Check the console tab for results -->
   <script>
   document.querySelector('mgt-people-picker').addEventListener('selectionChanged', e => {
-    for (let i=0; i <e.detail.length;i++){
-      const person = e.detail[i];
-      console.log(person)
-    }
+    console.log(e.detail)
   });
   </script>
 `;

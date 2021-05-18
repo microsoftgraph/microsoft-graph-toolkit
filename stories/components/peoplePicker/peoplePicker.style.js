@@ -38,7 +38,7 @@ export const customCssProperties = () => html`
 
     --selected-person-background-color: pink; /* person item background color */
 
-    --color: whitesmoke; /* input area border focus color */
+    --color-sub1: white;
     --placeholder-color: whitesmoke; /* placeholder text color */
     --placeholder-color--focus: pink; /* placeholder text focus color */
   }
