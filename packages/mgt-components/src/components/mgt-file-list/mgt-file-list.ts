@@ -858,17 +858,8 @@ export class MgtFileList extends MgtTemplatedComponent {
   public reload(clearCache = false) {
     if (clearCache) {
       // clear cache here
-      const cacheSchema: CacheSchema = {
-        name: 'file-lists',
-        stores: {
-          fileLists: 'fileLists',
-          insightfileLists: 'insightfileLists'
-        },
-        version: 1
-      };
-
       let cache: CacheStore<CacheFileList>;
-      cache = CacheService.getCache<CacheFileList>(cacheSchema, 'fileLists');
+      cache = CacheService.getCache<CacheFileList>(schemas.fileLists, schemas.fileLists.stores.fileLists);
       cache.clearStore();
     }
     
