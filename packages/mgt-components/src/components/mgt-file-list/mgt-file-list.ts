@@ -7,10 +7,6 @@
 
 import {
   arraysAreEqual,
-  CacheItem,
-  CacheService,
-  CacheSchema,
-  CacheStore,
   GraphPageIterator,
   MgtTemplatedComponent,
   Providers,
@@ -20,6 +16,7 @@ import { DriveItem } from '@microsoft/microsoft-graph-types';
 import { customElement, html, property, TemplateResult } from 'lit-element';
 import { repeat } from 'lit-html/directives/repeat';
 import {
+  clearFilesCache,
   fetchNextAndCacheForFilesPageIterator,
   getDriveFilesByIdIterator,
   getDriveFilesByPathIterator,
@@ -42,15 +39,6 @@ import { OfficeGraphInsightString, ViewType } from '../../graph/types';
 import { styles } from './mgt-file-list-css';
 import { strings } from './strings';
 import { MgtFile } from '../mgt-file/mgt-file';
-
-/**
- * An interface used to extend CacheItem file for CacheFileList.
- *
- * @interface CacheFileList
- */
-interface CacheFileList extends CacheItem {
-  file?: string;
-}
 
 /**
  * The File List component displays a list of multiple folders and files by
@@ -852,17 +840,16 @@ export class MgtFileList extends MgtTemplatedComponent {
   }
 
   /**
-   * Handle reload of File List
+   * Handle reload of File List and condition to clear cache
    *
+   * @param clearCache boolean, if true clear cache
    */
   public reload(clearCache = false) {
     if (clearCache) {
-      // clear cache here
-      let cache: CacheStore<CacheFileList>;
-      cache = CacheService.getCache<CacheFileList>(schemas.fileLists, schemas.fileLists.stores.fileLists);
-      cache.clearStore();
+      // clear cache File List
+      clearFilesCache();
     }
-    
+
     this.requestStateUpdate(true);
   }
 }
