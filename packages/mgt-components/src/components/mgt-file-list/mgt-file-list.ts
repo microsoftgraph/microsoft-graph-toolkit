@@ -510,7 +510,7 @@ export class MgtFileList extends MgtTemplatedComponent {
   protected renderFile(file: DriveItem): TemplateResult {
     const view = this.itemView;
     return (
-      this.renderTemplate('file', { file }) ||
+      this.renderTemplate('file', { file }, file.id) ||
       html`
         <mgt-file .fileDetails=${file} .view=${view} @click=${e => this.handleItemSelect(file, e)}></mgt-file>
       `
