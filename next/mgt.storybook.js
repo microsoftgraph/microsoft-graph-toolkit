@@ -430,7 +430,7 @@ found at http://polymer.github.io/PATENTS.txt
       >
         ${o}
       </div>
-    `}renderLoading(){return this.renderTemplate("loading",null)||html``}clearState(){this._personImage="",this._personDetails=null,this._fallbackDetails=null,this._fetchedImage=null,this._fetchedPresence=null}renderNoData(){const e=this.renderTemplate("no-data",null);if(e)return e;const t={"avatar-icon":!0,"ms-Icon":!0,"ms-Icon--Contact":!0,small:!this.isLargeAvatar()};return html`
+    `}renderLoading(){return this.renderTemplate("loading",null)||html``}clearState(){this._personImage="",this._personDetails=null,this._fetchedImage=null,this._fetchedPresence=null}renderNoData(){const e=this.renderTemplate("no-data",null);if(e)return e;const t={"avatar-icon":!0,"ms-Icon":!0,"ms-Icon--Contact":!0,small:!this.isLargeAvatar()};return html`
       <i class=${Cr(t)}></i>
     `}renderImage(e,t){const r=e&&this.personCardInteraction===Lr.none&&(e.displayName||getEmailFromGraphEntity(e))||"";if(t&&!this._isInvalidImageSrc&&"photo"===this._avatarType)return html`
         <div class="img-wrapper">
