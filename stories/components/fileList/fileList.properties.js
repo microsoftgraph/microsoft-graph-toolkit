@@ -108,4 +108,15 @@ export const fileListItemView = () => html`
     <mgt-file-list item-view="threeLines" page-size=3></mgt-file-list>
   `;
 
+export const clearCacheAndReload = () => html`
+  <button>Reload files!</button>
+  <mgt-file-list></mgt-file-list>
+  <script>
+    const fileList = document.querySelector('mgt-file-list');
+    document.querySelector('button').addEventListener('click', () => {
+      // passing true will clear file cache before reloading
+      fileList.reload(true);
+    })
+  </script>
+`;
 

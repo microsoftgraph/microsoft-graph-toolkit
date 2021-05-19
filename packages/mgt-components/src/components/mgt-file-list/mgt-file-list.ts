@@ -16,6 +16,7 @@ import { DriveItem } from '@microsoft/microsoft-graph-types';
 import { customElement, html, property, TemplateResult } from 'lit-element';
 import { repeat } from 'lit-html/directives/repeat';
 import {
+  clearFilesCache,
   fetchNextAndCacheForFilesPageIterator,
   getDriveFilesByIdIterator,
   getDriveFilesByPathIterator,
@@ -478,6 +479,7 @@ export class MgtFileList extends MgtTemplatedComponent {
           tabindex="0"
           @keydown="${this.onFileListKeyDown}"
           @keyup="${this.onFileListKeyUp}"
+          @blur="${this.onFileListOut}"
         >
           ${repeat(
             this.files,
@@ -558,13 +560,13 @@ export class MgtFileList extends MgtTemplatedComponent {
     if (event.code === 'Enter' || event.code === 'Space') {
       event.preventDefault();
 
-      focusedItem.classList.remove('selected');
-      focusedItem.classList.add('focused');
+      focusedItem?.classList.remove('selected');
+      focusedItem?.classList.add('focused');
     }
   }
 
   /**
-   * Handle accessibility keyboard keydown events (arrow up, arrow down, enter) on file list
+   * Handle accessibility keyboard keydown events (arrow up, arrow down, enter, tab) on file list
    *
    * @param event
    */
@@ -600,6 +602,21 @@ export class MgtFileList extends MgtTemplatedComponent {
 
       this.updateItemBackgroundColor(fileList, focusedItem, 'selected');
     }
+
+    if (event.code === 'Tab') {
+      focusedItem = fileList.children[this._focusedItemIndex];
+      focusedItem?.classList.remove('focused');
+    }
+  }
+
+  /**
+   * Remove accessibility keyboard focused when out of file list
+   *
+   */
+  private onFileListOut() {
+    const fileList = this.renderRoot.querySelector('.file-list');
+    const focusedItem = fileList.children[this._focusedItemIndex];
+    focusedItem?.classList.remove('focused');
   }
 
   /**
@@ -737,9 +754,10 @@ export class MgtFileList extends MgtTemplatedComponent {
       const li = event.target.closest('li');
       const index = nodes.indexOf(li);
       this._focusedItemIndex = index;
-      const focusedItem = fileList.children[this._focusedItemIndex];
 
-      this.updateItemBackgroundColor(fileList, focusedItem, 'focused');
+      for (let i = 0; i < fileList.children.length; i++) {
+        fileList.children[i].classList.remove('focused');
+      }
     }
   }
 
@@ -819,5 +837,19 @@ export class MgtFileList extends MgtTemplatedComponent {
       focusedItem.classList.add(className);
       focusedItem.scrollIntoView({ behavior: 'smooth', block: 'nearest', inline: 'start' });
     }
+  }
+
+  /**
+   * Handle reload of File List and condition to clear cache
+   *
+   * @param clearCache boolean, if true clear cache
+   */
+  public reload(clearCache = false) {
+    if (clearCache) {
+      // clear cache File List
+      clearFilesCache();
+    }
+
+    this.requestStateUpdate(true);
   }
 }
