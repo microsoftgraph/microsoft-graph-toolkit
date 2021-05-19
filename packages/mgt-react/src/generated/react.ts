@@ -233,5 +233,5 @@ export const TeamsChannelPicker = wrapMgt<TeamsChannelPickerProps>('mgt-teams-ch
 
 export const Todo = wrapMgt<TodoProps>('mgt-todo');
 
-export { OfficeGraphInsightString,ViewType,ResponseType,IDynamicPerson,PersonType,GroupType,UserType,PersonCardInteraction,MgtPersonConfig,AvatarSize,PersonViewType,TasksStringResource,TasksSource,TaskFilter,SelectedChannel,TodoFilter } from '@microsoft/mgt-components';
-export { TemplateContext,ComponentMediaQuery } from '@microsoft/mgt-element';
+// export { OfficeGraphInsightString,ViewType,ResponseType,IDynamicPerson,PersonType,GroupType,UserType,PersonCardInteraction,MgtPersonConfig,AvatarSize,PersonViewType,TasksStringResource,TasksSource,TaskFilter,SelectedChannel,TodoFilter } from '@microsoft/mgt-components';
+// export { TemplateContext,ComponentMediaQuery } from '@microsoft/mgt-element';

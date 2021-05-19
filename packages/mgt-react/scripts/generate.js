@@ -115,8 +115,8 @@ import * as MicrosoftGraph from '@microsoft/microsoft-graph-types';
 import * as MicrosoftGraphBeta from '@microsoft/microsoft-graph-types-beta';
 import {wrapMgt} from '../Mgt';
 ${output}
-export ${typeToken}{ ${Array.from(componentImports).join(',')} } from '@microsoft/mgt-components';
-export ${typeToken}{ ${Array.from(elementImports).join(',')} } from '@microsoft/mgt-element';
+// export ${typeToken}{ ${Array.from(componentImports).join(',')} } from '@microsoft/mgt-components';
+// export ${typeToken}{ ${Array.from(elementImports).join(',')} } from '@microsoft/mgt-element';
 `;
 }
 
