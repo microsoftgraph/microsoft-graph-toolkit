@@ -106,18 +106,25 @@ for (const wrapper of wrappers) {
   output += `\nexport const ${wrapper.className} = wrapMgt<${wrapper.propsType}>('${wrapper.tag}');\n`;
 }
 
-output = `import { ${Array.from(mgtComponentImports).join(',')} } from '@microsoft/mgt-components';
-import { ${Array.from(mgtElementImports).join(',')} } from '@microsoft/mgt-element';
+const generateSource = (output, componentImports, elementImports, typesOnly = false) => {
+  const typeToken = typesOnly ? 'type' : '';
+
+  return `import ${typeToken}{ ${Array.from(componentImports).join(',')} } from '@microsoft/mgt-components';
+import ${typeToken}{ ${Array.from(elementImports).join(',')} } from '@microsoft/mgt-element';
 import * as MicrosoftGraph from '@microsoft/microsoft-graph-types';
 import * as MicrosoftGraphBeta from '@microsoft/microsoft-graph-types-beta';
 import {wrapMgt} from '../Mgt';
 ${output}
-export { ${Array.from(mgtComponentImports).join(',')} } from '@microsoft/mgt-components';
-export { ${Array.from(mgtElementImports).join(',')} } from '@microsoft/mgt-element';
+export ${typeToken}{ ${Array.from(componentImports).join(',')} } from '@microsoft/mgt-components';
+export ${typeToken}{ ${Array.from(elementImports).join(',')} } from '@microsoft/mgt-element';
 `;
+}
 
 if (!fs.existsSync(`${__dirname}/../src/generated`)) {
   fs.mkdirSync(`${__dirname}/../src/generated`);
 }
 
-fs.writeFileSync(`${__dirname}/../src/generated/react.ts`, output);
+fs.writeFileSync(`${__dirname}/../src/generated/react.ts`, generateSource(output, mgtComponentImports, mgtElementImports, false));
+fs.writeFileSync(`${__dirname}/../src/generated/react-no-mgt-import.ts`, generateSource(output, mgtComponentImports, mgtElementImports, true));
+
+

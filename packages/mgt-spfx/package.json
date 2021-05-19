@@ -20,7 +20,7 @@
   "author": "Microsoft",
   "license": "MIT",
   "scripts": {
-    "build": "npm run clean && gulp bundle --production",
+    "build": "npm run clean && gulp build && gulp bundle --production",
     "clean": "gulp clean",
     "test": "gulp test",
     "package": "npm run build && gulp package-solution --production",
@@ -30,9 +30,7 @@
     "@microsoft/mgt-components": "*",
     "@microsoft/mgt-element": "*",
     "@microsoft/mgt-sharepoint-provider": "*",
-    "@microsoft/mgt-react": "*",
-    "@microsoft/sp-core-library": "1.12.1",
-    "react": "^17.0.2"
+    "@microsoft/sp-core-library": "1.12.1"
   },
   "devDependencies": {
     "@microsoft/rush-stack-compiler-3.7": "0.6.46",
