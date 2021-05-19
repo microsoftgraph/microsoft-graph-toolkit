@@ -32,7 +32,9 @@ export const events = () => html`
 `;
 
 export const RTL = () => html`
-  <mgt-person-card person-query="me" dir="rtl"></mgt-person-card>
+  <body dir="rtl">
+    <mgt-person-card person-query="me"></mgt-person-card>
+  </body>
 `;
 
 export const localization = () => html`
