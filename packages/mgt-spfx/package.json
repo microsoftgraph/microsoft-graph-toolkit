@@ -30,6 +30,7 @@
     "@microsoft/mgt-components": "*",
     "@microsoft/mgt-element": "*",
     "@microsoft/mgt-sharepoint-provider": "*",
+    "@microsoft/mgt-react": "*",
     "@microsoft/sp-core-library": "1.12.1"
   },
   "devDependencies": {
