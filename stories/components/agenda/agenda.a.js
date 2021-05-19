@@ -32,6 +32,7 @@ export const events = () => html`
 `;
 
 export const RTL = () => html`
-  <mgt-agenda dir="rtl"></mgt-agenda>
+  <body dir="rtl">
+   <mgt-agenda></mgt-agenda>
+  </body>
 `;
-

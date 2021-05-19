@@ -19,5 +19,7 @@ export const People = () => html`
 `;
 
 export const RTL = () => html`
-  <mgt-people show-max="5" dir="RTL"></mgt-people>
+  <body dir="rtl">
+    <mgt-people show-max="5"></mgt-people>
+  </body>
 `;

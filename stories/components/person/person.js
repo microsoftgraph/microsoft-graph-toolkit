@@ -59,5 +59,7 @@ export const events = () => html`
 `;
 
 export const RTL = () => html`
-  <mgt-person person-query="me" view="twoLines" dir="RTL"></mgt-person>
+  <body dir="rtl">
+    <mgt-person person-query="me" view="twoLines"></mgt-person>
+  </body>
 `;

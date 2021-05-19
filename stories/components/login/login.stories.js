@@ -47,7 +47,9 @@ export const Templates = () => html`
 `;
 
 export const RTL = () => html`
-  <mgt-login dir="RTL"></mgt-login>
+  <body dir="rtl">
+    <mgt-login></mgt-login>
+  </body>
 `;
 
 export const Events = () => html`
