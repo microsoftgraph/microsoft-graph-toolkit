@@ -20,7 +20,7 @@
   "author": "Microsoft",
   "license": "MIT",
   "scripts": {
-    "build": "npm run clean && gulp build && gulp bundle --production",
+    "build": "npm run clean && gulp bundle --production",
     "clean": "gulp clean",
     "test": "gulp test",
     "package": "npm run build && gulp package-solution --production",
