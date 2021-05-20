@@ -13,6 +13,7 @@ $avatar-size-s: var(--avatar-size-s, var(--avatar-size, 24px));
 $avatar-size: var(--avatar-size, var(--avatar-size-s, 48px));
 $avatar-border: var(--avatar-border, 0);
 $avatar-border-radius: var(--avatar-border-radius, 50%);
+$avatar-cursor: var(--avatar-cursor, default);
 
 $initials-color: var(--initials-color, white);
 $initials-background-color: --initials-background-color;
@@ -76,6 +77,7 @@ mgt-person .person-root {
     justify-content: center;
     align-items: center;
     flex-shrink: 0;
+    cursor: $avatar-cursor;
 
     .user-presence {
       margin: 0;
@@ -196,7 +198,7 @@ mgt-person .person-root {
 
       & .initials-text,
       & .contact-icon {
-        cursor: default;
+        cursor: $avatar-cursor;
         margin-top: -1px;
         font-size: calc(#{$avatar-size} * 0.4);
       }

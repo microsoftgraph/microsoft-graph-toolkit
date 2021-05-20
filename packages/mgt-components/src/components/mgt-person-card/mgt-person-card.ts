@@ -50,6 +50,8 @@ interface MgtPersonCardStateHistory {
  * @class MgtPersonCard
  * @extends {MgtTemplatedComponent}
  *
+ * @fires expanded - Fired when expanded details section is opened
+ *
  * @cssprop --person-card-display-name-font-size - {Length} Font size of display name title
  * @cssprop --person-card-display-name-color - {Color} Color of display name font
  * @cssprop --person-card-title-font-size - {Length} Font size of title

@@ -18,6 +18,10 @@ export const tasks = () => html`
   <mgt-todo></mgt-todo>
 `;
 
+export const ReadOnly = () => html`
+  <mgt-todo read-only></mgt-todo>
+`;
+
 export const darkTheme = () => html`
   <mgt-todo class="mgt-dark"></mgt-todo>
   <style>

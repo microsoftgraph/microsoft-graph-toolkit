@@ -1,0 +1,104 @@
+# This workflow will do a clean install of node dependencies, build the source code and run tests across different versions of node
+# For more information see: https://help.github.com/actions/language-and-framework-guides/using-nodejs-with-github-actions
+
+name: Build CI
+
+on:
+  push:
+    branches: [release/latest]
+
+jobs:
+  version:
+    runs-on: ubuntu-latest
+
+    outputs:
+      latest-version: ${{steps.latest-version.outputs.version}}
+      package-version: ${{steps.package-version.outputs.current-version}}
+
+    strategy:
+      matrix:
+        node-version: [12.x]
+
+    steps:
+      - uses: actions/checkout@v2
+
+      - name: Use Node.js ${{ matrix.node-version }}
+        uses: actions/setup-node@v1
+        with:
+          node-version: ${{ matrix.node-version }}
+          registry-url: 'https://registry.npmjs.org'
+
+      - name: Get latest version from npm
+        id: latest-version
+        run: echo ::set-output name=version::$(npm show @microsoft/mgt version)
+
+      - name: Get current package version
+        id: package-version
+        uses: martinbeentjes/npm-get-version-action@master
+
+  release:
+    runs-on: ubuntu-latest
+    needs: version
+    if: needs.version.outputs.latest-version != needs.version.outputs.package-version
+    strategy:
+      matrix:
+        node-version: [12.x]
+
+    environment:
+      name: release
+
+    steps:
+      - uses: actions/checkout@v2
+
+      - name: Use Node.js ${{ matrix.node-version }}
+        uses: actions/setup-node@v1
+        with:
+          node-version: ${{ matrix.node-version }}
+          registry-url: 'https://registry.npmjs.org'
+
+      - name: Build 🛠
+        run: |
+          npm install -g yarn lerna
+          yarn
+          yarn build
+
+      - name: Update package version
+        run: node scripts/setVersion.js
+
+      - name: Publish npm packages
+        run: lerna exec --scope @microsoft/* -- "npm publish --access=public"
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
+
+      - name: Attach mgt-spfx solution to GitHub release
+        run: node scripts/uploadSpfxSolution.js ${{secrets.GITHUB_TOKEN}} ${{needs.version.outputs.package-version}}
+
+  storybook:
+    runs-on: ubuntu-latest
+
+    strategy:
+      matrix:
+        node-version: [12.x]
+
+    steps:
+      - uses: actions/checkout@v2
+      - name: Use Node.js ${{ matrix.node-version }}
+        uses: actions/setup-node@v1
+        with:
+          node-version: ${{ matrix.node-version }}
+          registry-url: 'https://registry.npmjs.org'
+
+      - name: Build 🛠
+        run: |
+          npm install -g yarn lerna
+          yarn
+          yarn build
+          yarn storybook:build
+
+      - name: Deploy mgt.dev 🚀
+        uses: JamesIves/github-pages-deploy-action@4.1.1
+        with:
+          branch: gh-pages
+          folder: storybook-static
+          target-folder: .
+          clean-exclude: next

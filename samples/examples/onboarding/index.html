@@ -39,9 +39,7 @@
             <template data-type="event">
               <div class="root">
                 <div class="time-container">
-                  <div class="date">
-                    {{ dayFromDateTime(event.start.dateTime)}}
-                  </div>
+                  <div class="date">{{ dayFromDateTime(event.start.dateTime)}}</div>
                   <div class="time">{{ timeRangeFromEvent(event) }}</div>
                 </div>
                 <div class="separator">
@@ -82,9 +80,7 @@
             <template data-type="task-details">
               <div class="wrapper">
                 <div>{{task.title}}</div>
-                <div>
-                  &#128197; {{dayFromDateTime(task.dueDateTime.dateTime)}}
-                </div>
+                <div>&#128197; {{dayFromDateTime(task.dueDateTime.dateTime)}}</div>
               </div>
             </template>
           </mgt-todo>

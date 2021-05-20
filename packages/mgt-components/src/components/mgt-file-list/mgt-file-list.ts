@@ -16,6 +16,7 @@ import { DriveItem } from '@microsoft/microsoft-graph-types';
 import { customElement, html, property, TemplateResult } from 'lit-element';
 import { repeat } from 'lit-html/directives/repeat';
 import {
+  clearFilesCache,
   fetchNextAndCacheForFilesPageIterator,
   getDriveFilesByIdIterator,
   getDriveFilesByPathIterator,
@@ -55,6 +56,9 @@ import { MgtFile } from '../mgt-file/mgt-file';
  * @cssprop --file-list-padding -{String} File list padding
  * @cssprop --file-list-margin -{String} File list margin
  * @cssprop --file-item-background-color--hover - {Color} File item background hover color
+ * @cssprop --file-item-border-top - {String} File item border top style
+ * @cssprop --file-item-border-left - {String} File item border left style
+ * @cssprop --file-item-border-right - {String} File item border right style
  * @cssprop --file-item-border-bottom - {String} File item border bottom style
  * @cssprop --file-item-background-color--active - {Color} File item background active color
  * @cssprop --file-item-border-radius - {String} File item border radius
@@ -346,7 +350,17 @@ export class MgtFileList extends MgtTemplatedComponent {
     attribute: 'page-size',
     type: Number
   })
-  public pageSize: number;
+  public get pageSize(): number {
+    return this._pageSize;
+  }
+  public set pageSize(value: number) {
+    if (value === this._pageSize) {
+      return;
+    }
+
+    this._pageSize = value;
+    this.requestStateUpdate(true);
+  }
 
   /**
    * A boolean value indication if 'show-more' button should be disabled
@@ -379,6 +393,7 @@ export class MgtFileList extends MgtTemplatedComponent {
   private _groupId: string;
   private _insightType: OfficeGraphInsightString;
   private _fileExtensions: string[];
+  private _pageSize: number;
   private _userId: string;
   private _preloadedFiles: DriveItem[];
   private pageIterator: GraphPageIterator<DriveItem>;
@@ -464,6 +479,7 @@ export class MgtFileList extends MgtTemplatedComponent {
           tabindex="0"
           @keydown="${this.onFileListKeyDown}"
           @keyup="${this.onFileListKeyUp}"
+          @blur="${this.onFileListOut}"
         >
           ${repeat(
             this.files,
@@ -494,7 +510,7 @@ export class MgtFileList extends MgtTemplatedComponent {
   protected renderFile(file: DriveItem): TemplateResult {
     const view = this.itemView;
     return (
-      this.renderTemplate('file', { file }) ||
+      this.renderTemplate('file', { file }, file.id) ||
       html`
         <mgt-file .fileDetails=${file} .view=${view} @click=${e => this.handleItemSelect(file, e)}></mgt-file>
       `
@@ -544,13 +560,13 @@ export class MgtFileList extends MgtTemplatedComponent {
     if (event.code === 'Enter' || event.code === 'Space') {
       event.preventDefault();
 
-      focusedItem.classList.remove('selected');
-      focusedItem.classList.add('focused');
+      focusedItem?.classList.remove('selected');
+      focusedItem?.classList.add('focused');
     }
   }
 
   /**
-   * Handle accessibility keyboard keydown events (arrow up, arrow down, enter) on file list
+   * Handle accessibility keyboard keydown events (arrow up, arrow down, enter, tab) on file list
    *
    * @param event
    */
@@ -586,6 +602,21 @@ export class MgtFileList extends MgtTemplatedComponent {
 
       this.updateItemBackgroundColor(fileList, focusedItem, 'selected');
     }
+
+    if (event.code === 'Tab') {
+      focusedItem = fileList.children[this._focusedItemIndex];
+      focusedItem?.classList.remove('focused');
+    }
+  }
+
+  /**
+   * Remove accessibility keyboard focused when out of file list
+   *
+   */
+  private onFileListOut() {
+    const fileList = this.renderRoot.querySelector('.file-list');
+    const focusedItem = fileList.children[this._focusedItemIndex];
+    focusedItem?.classList.remove('focused');
   }
 
   /**
@@ -723,9 +754,10 @@ export class MgtFileList extends MgtTemplatedComponent {
       const li = event.target.closest('li');
       const index = nodes.indexOf(li);
       this._focusedItemIndex = index;
-      const focusedItem = fileList.children[this._focusedItemIndex];
 
-      this.updateItemBackgroundColor(fileList, focusedItem, 'focused');
+      for (let i = 0; i < fileList.children.length; i++) {
+        fileList.children[i].classList.remove('focused');
+      }
     }
   }
 
@@ -805,5 +837,19 @@ export class MgtFileList extends MgtTemplatedComponent {
       focusedItem.classList.add(className);
       focusedItem.scrollIntoView({ behavior: 'smooth', block: 'nearest', inline: 'start' });
     }
+  }
+
+  /**
+   * Handle reload of File List and condition to clear cache
+   *
+   * @param clearCache boolean, if true clear cache
+   */
+  public reload(clearCache = false) {
+    if (clearCache) {
+      // clear cache File List
+      clearFilesCache();
+    }
+
+    this.requestStateUpdate(true);
   }
 }

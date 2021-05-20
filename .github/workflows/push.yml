@@ -12,7 +12,7 @@ on:
 jobs:
   build:
     runs-on: ubuntu-latest
-
+    if: github.repository == 'microsoftgraph/microsoft-graph-toolkit'
     strategy:
       matrix:
         node-version: [12.x]
@@ -24,14 +24,21 @@ jobs:
         with:
           node-version: ${{ matrix.node-version }}
           registry-url: 'https://registry.npmjs.org'
-      - run: npm install -g yarn lerna
-      - run: yarn
-      - run: yarn build
-      - run: node scripts/setVersion.js --next
-      - run: lerna exec --scope @microsoft/* -- "npm publish --tag next --access=public"
-        if: github.repository == 'microsoftgraph/microsoft-graph-toolkit'
+
+      - name: Build 🛠
+        run: |
+          npm install -g yarn lerna
+          yarn
+          yarn build
+
+      - name: Set Preview Version
+        run: node scripts/setVersion.js --next
+
+      - name: Publish preview packages 🚀
+        run: lerna exec --scope @microsoft/* -- "npm publish --tag next --access=public"
         env:
           NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
+
       - name: Upload a Build Artifact - mgt-spfx Solution
         uses: actions/upload-artifact@v2
         with:

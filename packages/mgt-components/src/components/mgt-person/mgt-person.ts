@@ -113,6 +113,7 @@ const defaultPersonProperties = [
  * @cssprop --avatar-size - {Length} Avatar size
  * @cssprop --avatar-border - {String} Avatar border
  * @cssprop --avatar-border-radius - {String} Avatar border radius
+ * @cssprop --avatar-cursor - {String} Avatar cursor
  * @cssprop --initials-color - {Color} Initials color
  * @cssprop --initials-background-color - {Color} Initials background color
  * @cssprop --font-family - {String} Font family
@@ -569,7 +570,6 @@ export class MgtPerson extends MgtTemplatedComponent {
   protected clearState(): void {
     this._personImage = '';
     this._personDetails = null;
-    this._fallbackDetails = null;
     this._fetchedImage = null;
     this._fetchedPresence = null;
   }
