@@ -428,7 +428,13 @@ export class MgtPeoplePicker extends MgtTemplatedComponent {
       }
     }
   }
-
+  /**
+   * Queries the microsoft graph for a group of users from a group id, and adds them to the selectedPeople
+   *
+   * @param {readonly string []} an array of group ids to add to selectedPeople
+   * @returns {Promise<void>}
+   * @memberof MgtPeoplePicker
+   */
   public async selectGroupsById(groupIds: readonly string[]): Promise<void> {
     const provider = Providers.globalProvider;
     const graph = Providers.globalProvider.graph;
