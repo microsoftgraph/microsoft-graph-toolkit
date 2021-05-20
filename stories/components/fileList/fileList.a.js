@@ -19,7 +19,9 @@ export const fileList = () => html`
 `;
 
 export const RTL = () => html`
-  <mgt-file-list dir="rtl"></mgt-file-list>
+  <body dir="rtl">
+    <mgt-file-list></mgt-file-list>
+  </body>
 `;
 
 export const localization = () => html`
@@ -60,8 +62,6 @@ export const events = () => html`
     }
   </style>
 `;
-
-
 
 export const openFolderBreadcrumbs = () => html`
     <style>

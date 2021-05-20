@@ -18,9 +18,10 @@ export const file = () => html`
   <mgt-file file-query="/me/drive/items/01BYE5RZZFWGWWVNHHKVHYXE3OUJHGWCT2"></mgt-file>
 `;
 
-
 export const RTL = () => html`
-  <mgt-file file-query="/me/drive/items/01BYE5RZZFWGWWVNHHKVHYXE3OUJHGWCT2" dir="rtl"></mgt-file>
+  <body dir="rtl">
+    <mgt-file file-query="/me/drive/items/01BYE5RZZFWGWWVNHHKVHYXE3OUJHGWCT2"></mgt-file>
+  </body>
 `;
 
 export const localization = () => html`
