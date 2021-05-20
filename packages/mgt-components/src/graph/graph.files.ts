@@ -34,6 +34,15 @@ interface CacheFileList extends CacheItem {
 }
 
 /**
+ * Clear Cache of FileList
+ */
+export function clearFilesCache() {
+  let cache: CacheStore<CacheFileList>;
+  cache = CacheService.getCache<CacheFileList>(schemas.fileLists, schemas.fileLists.stores.fileLists);
+  cache.clearStore();
+}
+
+/**
  * Defines the time it takes for objects in the cache to expire
  */
 export const getFileInvalidationTime = (): number =>
@@ -1069,9 +1078,12 @@ export async function fetchNextAndCacheForFilesPageIterator(filesPageIterator) {
   if (getIsFileListsCacheEnabled()) {
     let cache: CacheStore<CacheFileList>;
     cache = CacheService.getCache<CacheFileList>(schemas.fileLists, schemas.fileLists.stores.fileLists);
-    const reg = /(?<=graph.microsoft.com\/(v1.0|beta))(.*?)(?=\?)/gi; // match only the endpoint (after version number and before OData query params) e.g. /me/drive/root/children
-    const key = reg.exec(nextLink);
 
-    cache.putValue(key[0], { files: filesPageIterator.value, nextLink: filesPageIterator._nextLink });
+    // match only the endpoint (after version number and before OData query params) e.g. /me/drive/root/children
+    const reg = /(graph.microsoft.com\/(v1.0|beta))(.*?)(?=\?)/gi;
+    const matches = reg.exec(nextLink);
+    const key = matches[3];
+
+    cache.putValue(key, { files: filesPageIterator.value, nextLink: filesPageIterator._nextLink });
   }
 }

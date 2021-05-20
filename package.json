@@ -1,7 +1,7 @@
 {
   "name": "root",
   "private": true,
-  "version": "2.2.0",
+  "version": "2.3.0",
   "workspaces": [
     "packages/*",
     "packages/providers/*",
@@ -16,6 +16,7 @@
     "build:compile": "npm run prettier:check && npm run clean && lerna run build:compile --scope @microsoft/*",
     "build:mgt": "cd ./packages/mgt && npm run build",
     "build:mgt-element": "cd ./packages/mgt-element && npm run build",
+    "build:mgt-components": "cd ./packages/mgt-components && npm run build",
     "build:mgt-react": "lerna run build --scope @microsoft/mgt-react",
     "bundle": "cd ./packages/mgt && npm run bundle",
     "bootstrap": "lerna bootstrap --useWorkspaces",
@@ -114,7 +115,8 @@
     "web-component-analyzer": "^1.1.6",
     "tslint": "^6.1.3",
     "tslint-config-prettier": "^1.18.0",
-    "tslint-microsoft-contrib": "^6.2.0"
+    "tslint-microsoft-contrib": "^6.2.0",
+    "@octokit/rest": "^18.5.3"
   },
   "husky": {
     "hooks": {

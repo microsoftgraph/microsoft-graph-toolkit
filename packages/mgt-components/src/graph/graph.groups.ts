@@ -47,6 +47,16 @@ export enum GroupType {
 }
 
 /**
+ * Object to be stored in cache
+ */
+export interface CacheGroup extends CacheItem {
+  /**
+   * stringified json representing a user
+   */
+  group?: string;
+}
+
+/**
  * Object to be stored in cache representing individual people
  */
 interface CacheGroupQuery extends CacheItem {
@@ -227,4 +237,111 @@ export async function findGroupsFromGroup(
   }
 
   return result ? result.value : null;
+}
+
+/**
+ * async promise, returns all Graph groups associated with the id provided
+ *
+ * @param {string} id
+ * @returns {(Promise<User>)}
+ * @memberof Graph
+ */
+export async function getGroup(graph: IGraph, id: string, requestedProps?: string[]): Promise<Group> {
+  const scopes = 'Group.Read.All';
+  let cache: CacheStore<CacheGroup>;
+
+  if (getIsGroupsCacheEnabled()) {
+    cache = CacheService.getCache(schemas.groups, schemas.groups.stores.groups);
+    // check cache
+    const group = await cache.getValue(id);
+
+    // is it stored and is timestamp good?
+    if (group && getGroupsInvalidationTime() > Date.now() - group.timeCached) {
+      const cachedData = group.group ? JSON.parse(group.group) : null;
+      const uniqueProps =
+        requestedProps && cachedData ? requestedProps.filter(prop => !Object.keys(cachedData).includes(prop)) : null;
+
+      // return without any worries
+      if (!uniqueProps || uniqueProps.length <= 1) {
+        return cachedData;
+      }
+    }
+  }
+
+  let apiString = `/groups/${id}`;
+  if (requestedProps) {
+    apiString = apiString + '?$select=' + requestedProps.toString();
+  }
+
+  // else we must grab it
+  const response = await graph.api(apiString).middlewareOptions(prepScopes(scopes)).get();
+  if (getIsGroupsCacheEnabled()) {
+    cache.putValue(id, { group: JSON.stringify(response) });
+  }
+  return response;
+}
+
+/**
+ * Returns a Promise of Graph Groups array associated with the groupIds array
+ *
+ * @export
+ * @param {IGraph} graph
+ * @param {string[]} groupIds, an array of string ids
+ * @returns {Promise<Group[]>}
+ */
+export async function getGroupsForGroupIds(graph: IGraph, groupIds: string[]): Promise<Group[]> {
+  if (!groupIds || groupIds.length === 0) {
+    return [];
+  }
+  const batch = graph.createBatch();
+  const groupDict = {};
+  const notInCache = [];
+  let cache: CacheStore<CacheGroup>;
+
+  if (getIsGroupsCacheEnabled()) {
+    cache = CacheService.getCache(schemas.groups, schemas.groups.stores.groups);
+  }
+
+  for (const id of groupIds) {
+    groupDict[id] = null;
+    let group = null;
+    if (getIsGroupsCacheEnabled()) {
+      group = await cache.getValue(id);
+    }
+    if (group && getGroupsInvalidationTime() > Date.now() - group.timeCached) {
+      groupDict[id] = group.group ? JSON.parse(group.group) : null;
+    } else if (id !== '') {
+      batch.get(id, `/groups/${id}`, ['Group.Read.All']);
+      notInCache.push(id);
+    }
+  }
+  try {
+    const responses = await batch.executeAll();
+    // iterate over groupIds to ensure the order of ids
+    for (const id of groupIds) {
+      const response = responses.get(id);
+      if (response && response.content) {
+        groupDict[id] = response.content;
+        if (getIsGroupsCacheEnabled()) {
+          cache.putValue(id, { group: JSON.stringify(response.content) });
+        }
+      }
+    }
+    return Promise.all(Object.values(groupDict));
+  } catch (_) {
+    // fallback to making the request one by one
+    try {
+      // call getGroup for all the users that weren't cached
+      groupIds.filter(id => notInCache.includes(id)).forEach(id => (groupDict[id] = getGroup(graph, id)));
+      if (getIsGroupsCacheEnabled()) {
+        // store all users that weren't retrieved from the cache, into the cache
+        groupIds
+          .filter(id => notInCache.includes(id))
+          .forEach(async id => cache.putValue(id, { group: JSON.stringify(await groupDict[id]) }));
+      }
+      return Promise.all(Object.values(groupDict));
+    } catch (_) {
+      return [];
+    }
+  }
 }

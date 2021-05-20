@@ -6,16 +6,42 @@
  */
 
 import { html } from 'lit-element';
-import { withCodeEditor } from '../../.storybook/addons/codeEditorAddon/codeAddon';
+import { withCodeEditor } from '../../../.storybook/addons/codeEditorAddon/codeAddon';
 
 export default {
-  title: 'Components | mgt-person',
+  title: 'Components / mgt-person / Properties',
   component: 'mgt-person',
   decorators: [withCodeEditor]
 };
 
-export const person = () => html`
-  <mgt-person person-query="me" view="twoLines"></mgt-person>
+export const userId = () => html`
+  <mgt-person user-id="2804bc07-1e1f-4938-9085-ce6d756a32d2" view="twoLines"></mgt-person>
+`;
+
+export const personCard = () => html`
+  <div class="example">
+    <div style="margin-bottom:10px">Person card Hover</div>
+    <mgt-person person-query="me" view="twoLines" person-card="hover"></mgt-person>
+  </div>
+  <div class="example">
+  <div style="margin-bottom:10px">Person card Click</div>
+    <mgt-person person-query="me" view="twoLines" person-card="click"></mgt-person>
+  </div>
+`;
+
+export const setPersonDetails = () => html`
+  <mgt-person class="my-person" view="twoLines" line2-property="title" person-card="hover" fetch-image> </mgt-person>
+  <script>
+    const person = document.querySelector('.my-person');
+
+    person.personDetails = {
+      displayName: 'Megan Bowen',
+      mail: 'MeganB@M365x214355.onmicrosoft.com'
+    };
+
+    // set image
+   // person.personImage = '';
+  </script>
 `;
 
 export const personFallbackDetails = () => html`
@@ -63,52 +89,26 @@ export const personView = () => html`
   </style>
 `;
 
-export const personAvatarType = () => html`
-  <mgt-person person-query="me" avatar-type="photo"></mgt-person>
-  <mgt-person person-query="me" avatar-type="initials"></mgt-person>
-`;
-
-export const personLineClickEvents = () => html`
-  <div class="example">
-    <mgt-person person-query="me" view="threelines"></mgt-person>
-  </div>
-
-  <div class="output">no line clicked</div>
-
-  <script>
-    const person = document.querySelector('mgt-person');
-    person.addEventListener('line1clicked', e => {
-      const output = document.querySelector('.output');
-
-      if (e && e.detail && e.detail.displayName) {
-        output.innerHTML = '<b>line1clicked:</b> ' + e.detail.displayName;
-      }
-    });
-    person.addEventListener('line2clicked', e => {
-      const output = document.querySelector('.output');
-
-      if (e && e.detail && e.detail.mail) {
-        output.innerHTML = '<b>line2clicked:</b> ' + e.detail.mail;
-      }
-    });
-    person.addEventListener('line3clicked', e => {
-      const output = document.querySelector('.output');
-
-      if (e && e.detail && e.detail.jobTitle) {
-        output.innerHTML = '<b>line3clicked:</b> ' + e.detail.jobTitle;
-      }
-    });
-  </script>
-
-  <style>
+export const personPresence = () => html`
+<script>
+const online = {
+    activity: 'Available',
+    availability: 'Available',
+    id: null
+};
+const onlinePerson = document.getElementById('online');
+onlinePerson.personPresence = online;
+</script>
+<style>
     .example {
       margin-bottom: 20px;
+      margin-top: 10px;
     }
-  </style>
-`;
-
-export const personPresence = () => html`
-  <mgt-person person-query="me" show-presence view="twoLines"></mgt-person>
+</style>
+  <div>Show presence</div>
+  <mgt-person person-query="me" show-presence view="twoLines" class="example"></mgt-person>
+  <div>Set presence</div>
+  <mgt-person person-query="me" id="online" person-presence="{activity: 'Available', availability:'Available', id:null}" show-presence view="twoLines" class="example"></mgt-person>
 `;
 
 export const personPresenceDisplayAll = () => html`
@@ -239,98 +239,13 @@ export const personPresenceDisplayAll = () => html`
   <mgt-person id="online-small" person-query="me" view="threelines" show-presence avatar-size="small"></mgt-person>
 `;
 
-export const darkTheme = () => html`
-  <div class="mgt-dark">
-    <div class="title"><span>Transparent presence badge background:</span></div>
-    <mgt-person person-query="me" view="twoLines" show-presence></mgt-person>
-    <div class="title"><span>Light presence icon:</span></div>
-    <mgt-person id="online" person-query="Isaiah Langer" show-presence view="twoLines"></mgt-person>
-    <div class="title"><span>Dark presence icon:</span></div>
-    <mgt-person id="dnd" person-query="Lynne Robbins" show-presence view="twoLines"></mgt-person>
-  </div>
-  <script>
-    const online = {
-      activity: 'Available',
-      availability: 'Available',
-      id: null
-    };
-    const dnd = {
-      activity: 'DoNotDisturb',
-      availability: 'DoNotDisturb',
-      id: null
-    };
-    const onlinePerson = document.getElementById('online');
-    const dndPerson = document.getElementById('dnd');
-
-    onlinePerson.personPresence = online;
-    dndPerson.personPresence = dnd;
-  </script>
-
-  <style>
-    body {
-      background-color: black;
-    }
-    .title {
-      color: white;
-      display: block;
-      padding: 5px;
-      font-size: 20px;
-      margin: 10px 0 10px 0;
-      font-family: 'Segoe UI', 'Segoe UI Web (West European)', 'Segoe UI', -apple-system, BlinkMacSystemFont, Roboto,
-        'Helvetica Neue', sans-serif;
-    }
-    .title span {
-      border-bottom: 1px solid #8a8886;
-      padding-bottom: 5px;
-    }
-    #online {
-      --presence-icon-color: white;
-    }
-  </style>
+export const personQuery = () => html`
+  <mgt-person person-query="me"></mgt-person>
 `;
 
-export const personCardHover = () => html`
-  <mgt-person person-query="me" person-card="hover"></mgt-person>
-`;
-
-export const personCardClick = () => html`
-  <mgt-person person-query="me" person-card="click"></mgt-person>
-`;
-
-export const setPersonDetails = () => html`
-  <mgt-person class="my-person" view="twoLines" line2-property="title" person-card="hover"> </mgt-person>
-  <script>
-    const person = document.querySelector('.my-person');
-
-    person.personDetails = {
-      displayName: 'Megan Bowen',
-      title: 'CEO',
-      mail: 'megan@contoso.com'
-    };
-
-    // set image
-    person.personImage = '';
-  </script>
-`;
-
-export const retemplateMetadata = () => html`
-  <mgt-person person-query="me" view="threeLines">
-    <template data-type="line1">
-      <div>
-        Hello, my name is: {{person.displayName}}
-      </div>
-    </template>
-    <template data-type="line2">
-      <div>
-        {{person.jobTitle}}
-      </div>
-    </template>
-    <template data-type="line3">
-      <div>
-        Loves MGT
-      </div>
-    </template>
-  </mgt-person>
+export const personAvatarType = () => html`
+  <mgt-person person-query="me" avatar-type="photo"></mgt-person>
+  <mgt-person person-query="me" avatar-type="initials"></mgt-person>
 `;
 
 export const moreExamples = () => html`
@@ -399,20 +314,6 @@ export const moreExamples = () => html`
   </div>
 
   <div class="example">
-    <div>No data template</div>
-    <mgt-person>
-      <template data-type="no-data">
-        <div>No person</div>
-      </template>
-    </mgt-person>
-  </div>
-
-  <div class="example">
-    <div>Person card</div>
-    <mgt-person person-query="me" view="twoLines" person-card="hover"></mgt-person>
-  </div>
-
-  <div class="example">
     <div>Style initials (see css tab for style)</div>
     <mgt-person class="person-initials" person-query="alex@fineartschool.net" view="oneline"></mgt-person>
   </div>
@@ -422,7 +323,7 @@ export const moreExamples = () => html`
     <mgt-person
       person-query="me"
       view="twoLines"
-      line1-property="mailNickname"
+      line1-property="displayName"
       line2-property="officeLocation"
     ></mgt-person>
   </div>

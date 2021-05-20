@@ -1,4 +1,4 @@
-import React, { Component } from 'react';
+import React, { Component, useRef } from 'react';
 import {
   Login,
   Agenda,
@@ -10,6 +10,7 @@ import {
   Get
 } from '@microsoft/mgt-react';
 import * as MicrosoftGraph from '@microsoft/microsoft-graph-types';
+import { MgtPerson } from '@microsoft/mgt-components';
 
 class App extends Component {
   handleTemplateRendered = (e: Event) => {
@@ -59,23 +60,34 @@ const MyEvent = (props: MgtTemplateProps) => {
 const MyTemplate = (props: MgtTemplateProps) => {
   const me = props.dataContext as MicrosoftGraph.User;
 
-  return <div>hello {me.displayName}</div>
-}
+  return <div>hello {me.displayName}</div>;
+};
 
 const MyMessage = (props: MgtTemplateProps) => {
   const message = props.dataContext as MicrosoftGraph.Message;
 
-  return <div>
-    <b>Subject:</b>{message.subject}
+  const personRef = useRef<MgtPerson>();
+
+  const handlePersonClick = () => {
+    console.log(personRef.current);
+  };
+
+  return (
     <div>
-    <b>From:</b>
-    <Person
-      personQuery={message.from?.emailAddress?.address || ""}
-      fallbackDetails={{mail: message.from?.emailAddress?.address, displayName: message.from?.emailAddress?.name}}
-      view={PersonViewType.oneline}>
-      </Person>
+      <b>Subject:</b>
+      {message.subject}
+      <div>
+        <b>From:</b>
+        <Person
+          ref={personRef}
+          onClick={handlePersonClick}
+          personQuery={message.from?.emailAddress?.address || ''}
+          fallbackDetails={{ mail: message.from?.emailAddress?.address, displayName: message.from?.emailAddress?.name }}
+          view={PersonViewType.oneline}
+        ></Person>
+      </div>
     </div>
-  </div>;
+  );
 };
 
 export default App;
