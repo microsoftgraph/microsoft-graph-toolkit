@@ -26,7 +26,7 @@ const octokit = new Octokit({ auth });
     repo
   })
 
-  const filteredReleases = releases.data.filter(r => r.name.includes(version));
+  const filteredReleases = releases.data.filter(r => r.tag_name.includes(version));
   let release;
 
   if (!filteredReleases.length) {
