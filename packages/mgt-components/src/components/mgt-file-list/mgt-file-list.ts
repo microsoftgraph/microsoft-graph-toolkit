@@ -507,7 +507,6 @@ export class MgtFileList extends MgtTemplatedComponent {
    */
   protected renderFile(file: DriveItem): TemplateResult {
     const view = this.itemView;
-    console.log(file);
     return (
       this.renderTemplate('file', { file }) ||
       html`

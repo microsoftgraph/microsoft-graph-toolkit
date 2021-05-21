@@ -716,7 +716,7 @@ export class MgtPeoplePicker extends MgtTemplatedComponent {
       'people-person-job-title': true,
       uppercase: !!user.jobTitle
     };
-    console.log(person);
+
     return (
       this.renderTemplate('person', { person }, person.id) ||
       html`

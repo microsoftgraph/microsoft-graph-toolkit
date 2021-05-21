@@ -89,14 +89,6 @@ export interface CacheConfig {
    * @memberof CacheConfig
    */
   fileLists: CacheOptions;
-
-  /**
-   * Cache options for suggestions store
-   *
-   * @type {CacheOptions}
-   * @memberof CacheConfig
-   */
-  suggestions: CacheOptions;
 }
 
 /**
@@ -195,10 +187,6 @@ export class CacheService {
       isEnabled: true
     },
     fileLists: {
-      invalidationPeriod: null,
-      isEnabled: true
-    },
-    suggestions: {
       invalidationPeriod: null,
       isEnabled: true
     }
