@@ -14,6 +14,7 @@ The suggestion component based on Graph Suggestion API, it provides a input box 
 | Display relevant details of the file | P0 | Developer should be able to configure what details are being rendered |
 | Provide basic default key down action and mouse action | P0 | when mouse move to an item, the backgroud/cursor should change. when arrow up/down, one item should be selected|
 | Provide callback function to get data for supporting users customization actions | P0 | when user click one item, should provide a way for getting the suggested data and support customize actions. when enter key pressed, should provide a way for getting the focused data and support customize actions|
+| Provide a way to user for override any entity type style | P1 | when user click one item, should provide a way for getting the suggested data and support customization. when enter key pressed, should provide a way for getting the focused data and support customization|
 
 ## Templates
 
