@@ -9,30 +9,41 @@ import { html } from 'lit-element';
 import { withCodeEditor } from '../../../.storybook/addons/codeEditorAddon/codeAddon';
 
 export default {
-  title: 'Components | mgt-file',
-  component: 'mgt-file',
+  title: 'Components | mgt-people-picker',
+  component: 'mgt-people-picker',
   decorators: [withCodeEditor]
 };
 
-export const file = () => html`
-  <mgt-file file-query="/me/drive/items/01BYE5RZZFWGWWVNHHKVHYXE3OUJHGWCT2"></mgt-file>
+export const peoplePicker = () => html`
+  <mgt-people-picker></mgt-people-picker>
 `;
 
 export const RTL = () => html`
   <body dir="rtl">
-    <mgt-file file-query="/me/drive/items/01BYE5RZZFWGWWVNHHKVHYXE3OUJHGWCT2"></mgt-file>
+    <mgt-people-picker></mgt-people-picker>
   </body>
 `;
 
+export const selectionChangedEvent = () => html`
+  <mgt-people-picker></mgt-people-picker>
+  <!-- Check the console tab for results -->
+  <script>
+  document.querySelector('mgt-people-picker').addEventListener('selectionChanged', e => {
+    console.log(e.detail)
+  });
+  </script>
+`;
+
 export const localization = () => html`
-  <mgt-file file-query="/me/drive/items/01BYE5RZZFWGWWVNHHKVHYXE3OUJHGWCT2" view="threelines"></mgt-file>
+  <mgt-people-picker></mgt-people-picker>
   <script>
   import { LocalizationHelper } from '@microsoft/mgt';
   LocalizationHelper.strings = {
     _components: {
-      'file': {
-        modifiedSubtitle: '⚡',
-        sizeSubtitle: '💾'
+      'people-picker': {
+        inputPlaceholderText: 'Search for 🤼',
+        noResultsFound: '🤷‍♀️',
+        loadingMessage: '🦔'
       }
     }
   }

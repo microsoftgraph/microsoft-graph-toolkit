@@ -56,34 +56,22 @@ jobs:
           node-version: ${{ matrix.node-version }}
           registry-url: 'https://registry.npmjs.org'
 
-      - name: Get latest version from npm
-        id: latest-version
-        run: echo ::set-output name=version::$(npm show @microsoft/mgt version)
-
-      - name: Get current package version
-        id: package-version
-        uses: martinbeentjes/npm-get-version-action@master
-
       - name: Build 🛠
         run: |
           npm install -g yarn lerna
           yarn
           yarn build
 
-      # commenting out for now until we can properly test this during a release
-      # - name: Update package version
-      #   run: node scripts/setVersion.js
+      - name: Update package version
+        run: node scripts/setVersion.js
 
-      # - name: Publish npm packages
-      #   run: lerna exec --scope @microsoft/* -- "npm publish --access=public"
-      #   env:
-      #     NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
+      - name: Publish npm packages
+        run: lerna exec --scope @microsoft/* -- "npm publish --access=public"
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
 
-      # - name: Upload a Build Artifact - mgt-spfx Solution
-      #   uses: actions/upload-artifact@v2
-      #   with:
-      #     name: mgt-spfx solution
-      #     path: packages/mgt-spfx/sharepoint/*
+      - name: Attach mgt-spfx solution to GitHub release
+        run: node scripts/uploadSpfxSolution.js ${{secrets.GITHUB_TOKEN}} ${{needs.version.outputs.package-version}}
 
   storybook:
     runs-on: ubuntu-latest

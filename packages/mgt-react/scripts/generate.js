@@ -112,8 +112,6 @@ import * as MicrosoftGraph from '@microsoft/microsoft-graph-types';
 import * as MicrosoftGraphBeta from '@microsoft/microsoft-graph-types-beta';
 import {wrapMgt} from '../Mgt';
 ${output}
-export { ${Array.from(mgtComponentImports).join(',')} } from '@microsoft/mgt-components';
-export { ${Array.from(mgtElementImports).join(',')} } from '@microsoft/mgt-element';
 `;
 
 if (!fs.existsSync(`${__dirname}/../src/generated`)) {

@@ -34,6 +34,15 @@ interface CacheFileList extends CacheItem {
 }
 
 /**
+ * Clear Cache of FileList
+ */
+export function clearFilesCache() {
+  let cache: CacheStore<CacheFileList>;
+  cache = CacheService.getCache<CacheFileList>(schemas.fileLists, schemas.fileLists.stores.fileLists);
+  cache.clearStore();
+}
+
+/**
  * Defines the time it takes for objects in the cache to expire
  */
 export const getFileInvalidationTime = (): number =>
