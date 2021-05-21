@@ -16,37 +16,6 @@ The suggestion component based on Graph Suggestion API, it provides a input box 
 | Provide callback function to get data for supporting users customization actions | P0 | when user click one item, should provide a way for getting the suggested data and support customize actions. when enter key pressed, should provide a way for getting the focused data and support customize actions|
 | Provide a way to user for override any entity type style | P1 | when user click one item, should provide a way for getting the suggested data and support customization. when enter key pressed, should provide a way for getting the focused data and support customization|
 
-## Templates
-
- `mgt-search-suggestion` supports several [templates](../customize-components/templates.md) that you can use to replace certain parts of the component. To specify a template, include a `<template>` element inside a component and set the `data-type` value to one of the following.
-
-| Data type | Data context | Description |
-| --- | --- | --- |
-| default | null: no data | The template used to override the rendering of the entire component.
-| loading | null: no data | The template used to render the state of picker while request to graph is being made. |
-| error | null: no data | The template used if user search returns no users. |
-| no-data | null: no data | An alternative template used if user search returns no users. |
-| search-suggestion-input | null: no data | The template to render search input box. |
-| search-suggestion-label-people | null: no data | The template to render people entity label. |
-| search-suggestion-label-text | null: no data | The template to render text entity label. |
-| search-suggestion-label-file | null: no data | The template to render file entity label. |
-| search-suggestion-people | suggestionPeople[]: The people suggestion details list | The template to render people entity. |
-| search-suggestion-text | suggestionText[]: The text suggestion details list | The template to render text entity. |
-| search-suggestion-file | suggestionFile[]: The file suggestion details list | The template to render file entity. |
-
-The following examples shows how to use the `error` template.
-
-```html
-<mgt-search-suggestion>
-    <template data-type="search-suggestion-texts">
-        <div  data-for="text in texts">
-        {{text.text}}
-        </div>
-    </template>
-</mgt-search-suggestion>
-
-```
-
 ## Proposed Solution
 
 ### Example 1: basic usage without any callback function
@@ -136,29 +105,5 @@ mgt-search-suggestion {
 | Query | Use if | Permission Scopes |
 | ----- | ------ | ----------------- |
 | `awaiting for the graph suggestion API onboard. ` | `awaiting for the graph suggestion API onboard. ` | awaiting for the graph suggestion API onboard.  |
-
-## Extend for more control
-
-We provide a way to get data from default components for development if you don't want to override the component, and also provide a way to override some internal methods.
-
-| Method | Description |
-| - | - |
-| onClickCallback | include one parameter, suggestion value that user clicked under the dropdown list |
-| onEnterKeyPressCallback | include two parameters, the first one is input box value, the second one is suggestion value |
-| renderInput | Renders the input text box. |
-| renderInput | Renders the input text box. |
-| renderFlyout | Renders the flyout chrome. |
-| renderFlyoutContent | Renders the appropriate state in the results flyout. |
-| renderLoading | Renders the loading state. |
-| renderNoData | Renders the state when no results are found for the search query. |
-| renderPeopleSearchResults | Renders the list of people search results, include no data processing |
-| renderFileSearchResults | Renders the list of file search results. include no data processing |
-| renderTextSearchResults | Renders the list of text search results. include no data processing |
-| renderSuggestionEntityLabelPeople | Renders the list of people entity label. |
-| renderSuggestionEntityLabelText | Renders the list of text entity label. |
-| renderSuggestionEntityLabelFile | Renders the list of file entity label. |
-| renderSuggestionEntityPeople | Renders the list of people search results, list length > 0, sub method of renderPeopleSearchResults. |
-| renderSuggestionEntityText | Renders the list of text search results, list length > 0, sub method of renderTextSearchResults. |
-| renderSuggestionEntityFile | Renders the list of file search results, list length > 0, sub method of renderFileleSearchResults. |
 
 
