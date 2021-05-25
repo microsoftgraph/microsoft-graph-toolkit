@@ -5,7 +5,7 @@
  * -------------------------------------------------------------------------------------------
  */
 
-import * as MicrosoftGraph from '@microsoft/microsoft-graph-types';
+import { Contact, Presence } from '@microsoft/microsoft-graph-types';
 import { customElement, html, internalProperty, property, TemplateResult } from 'lit-element';
 import { classMap } from 'lit-html/directives/class-map';
 import { findPeople, getEmailFromGraphEntity } from '../../graph/graph.people';
@@ -22,7 +22,6 @@ import '../sub-components/mgt-flyout/mgt-flyout';
 import { MgtFlyout } from '../sub-components/mgt-flyout/mgt-flyout';
 import { PersonCardInteraction } from './../PersonCardInteraction';
 import { styles } from './mgt-person-css';
-import { IdentitySourceType, Presence } from '@microsoft/microsoft-graph-types-beta';
 
 export { PersonCardInteraction } from '../PersonCardInteraction';
 
@@ -348,7 +347,7 @@ export class MgtPerson extends MgtTemplatedComponent {
   /**
    * Gets or sets presence of person
    *
-   * @type {MicrosoftGraphBeta.Presence}
+   * @type {MicrosoftGraph.Presence}
    * @memberof MgtPerson
    */
   @property({
@@ -510,7 +509,7 @@ export class MgtPerson extends MgtTemplatedComponent {
     }
 
     // Prep data
-    let person: any = this.personDetails || this.fallbackDetails;
+    const person: any = this.personDetails || this.fallbackDetails;
     const image = this.getImage();
     const presence = this.personPresence || this._fetchedPresence;
 
@@ -1034,8 +1033,8 @@ export class MgtPerson extends MgtTemplatedComponent {
       person = this.personDetails;
     }
 
-    if ((person as MicrosoftGraph.Contact).initials) {
-      return (person as MicrosoftGraph.Contact).initials;
+    if ((person as Contact).initials) {
+      return (person as Contact).initials;
     }
 
     let initials = '';
