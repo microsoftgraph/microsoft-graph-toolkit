@@ -62,6 +62,12 @@ export const personFallbackDetails = () => html`
       fallback-details='{"mail":"MeganB@M365x214355.onmicrosoft.com","displayName":"Megan Bowen"}'
     ></mgt-person>
   </div>
+  
+  <style>
+  .example {
+    margin-top: 16px;
+  }
+  </style>
 `;
 
 export const personPhotoOnly = () => html`
