@@ -99,10 +99,12 @@ export type PeoplePickerProps = {
 	people?: IDynamicPerson[];
 	selectedPeople?: IDynamicPerson[];
 	defaultSelectedUserIds?: string[];
+	defaultSelectedGroupIds?: string[];
 	placeholder?: string;
 	selectionMode?: string;
 	showMax?: number;
 	disabled?: boolean;
+	allowAnyEmail?: boolean;
 	templateContext?: TemplateContext;
 	mediaQuery?: ComponentMediaQuery;
 	selectionChanged?: (e: Event) => void;
@@ -231,5 +233,3 @@ export const TeamsChannelPicker = wrapMgt<TeamsChannelPickerProps>('mgt-teams-ch
 
 export const Todo = wrapMgt<TodoProps>('mgt-todo');
 
-export { OfficeGraphInsightString,ViewType,ResponseType,IDynamicPerson,PersonType,GroupType,UserType,PersonCardInteraction,MgtPersonConfig,AvatarSize,PersonViewType,TasksStringResource,TasksSource,TaskFilter,SelectedChannel,TodoFilter } from '@microsoft/mgt-components';
-export { TemplateContext,ComponentMediaQuery } from '@microsoft/mgt-element';

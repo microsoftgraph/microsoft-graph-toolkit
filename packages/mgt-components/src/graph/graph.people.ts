@@ -129,19 +129,22 @@ export async function findPeople(
     }
   }
 
-  const graphResult = await graph
-    .api('/me/people')
-    .search('"' + query + '"')
-    .top(top)
-    .filter(filter)
-    .middlewareOptions(prepScopes(scopes))
-    .get();
+  let graphResult;
+  try {
+    graphResult = await graph
+      .api('/me/people')
+      .search('"' + query + '"')
+      .top(top)
+      .filter(filter)
+      .middlewareOptions(prepScopes(scopes))
+      .get();
 
-  if (getIsPeopleCacheEnabled() && graphResult) {
-    const item = { maxResults: top, results: null };
-    item.results = graphResult.value.map(personStr => JSON.stringify(personStr));
-    cache.putValue(cacheKey, item);
-  }
+    if (getIsPeopleCacheEnabled() && graphResult) {
+      const item = { maxResults: top, results: null };
+      item.results = graphResult.value.map(personStr => JSON.stringify(personStr));
+      cache.putValue(query, item);
+    }
+  } catch (error) {}
   return graphResult ? graphResult.value : null;
 }
 
@@ -177,10 +180,13 @@ export async function getPeople(graph: IGraph, userType: UserType = UserType.any
     }
   }
 
-  const people = await graph.api(uri).middlewareOptions(prepScopes(scopes)).filter(filter).get();
-  if (getIsPeopleCacheEnabled() && people) {
-    cache.putValue(cacheKey, { maxResults: 10, results: people.value.map(ppl => JSON.stringify(ppl)) });
-  }
+  let people;
+  try {
+    people = await graph.api(uri).middlewareOptions(prepScopes(scopes)).filter(filter).get();
+    if (getIsPeopleCacheEnabled() && people) {
+      cache.putValue(cacheKey, { maxResults: 10, results: people.value.map(ppl => JSON.stringify(ppl)) });
+    }
+  } catch (error) {}
   return people ? people.value : null;
 }
 

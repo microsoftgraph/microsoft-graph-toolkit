@@ -11,3 +11,4 @@ $presence__background-color: var(--presence-background-color, set-var(background
 $presence__icon__color: var(--presence-icon-color, set-var(background-color, $theme-default, $common));
 $line2__color: var(--line2-color, set-var(color__sub1, $theme-default, $common));
 $line3__color: var(--line3-color, set-var(color__sub2, $theme-default, $common));
+$color: var(--color, set-var(color__sub1, $theme-default, $common));

@@ -6,18 +6,13 @@
  */
 
 import { html } from 'lit-element';
-import { withCodeEditor } from '../../.storybook/addons/codeEditorAddon/codeAddon';
+import { withCodeEditor } from '../../../.storybook/addons/codeEditorAddon/codeAddon';
 
 export default {
-  title: 'Components | mgt-people-picker',
+  title: 'Components / mgt-people-picker / Properties',
   component: 'mgt-people-picker',
   decorators: [withCodeEditor]
 };
-
-export const peoplePicker = () =>
-  html`
-    <mgt-people-picker></mgt-people-picker>
-  `;
 
 export const groupId = () => html`
   <mgt-people-picker group-id="02bd9fd6-8f93-4758-87c3-1fb73740a315"></mgt-people-picker>
@@ -160,11 +155,24 @@ export const pickerDefaultSelectedUserIds = () => html`
   </mgt-people-picker>
 `;
 
-export const darkTheme = () => html`
-  <mgt-people-picker class="mgt-dark"></mgt-people-picker>
-  <style>
-    body {
-      background-color: black;
-    }
-  </style>
+export const pickerDefaultSelectedGroupIds = () => html`
+  <mgt-people-picker
+    default-selected-group-ids="94cb7dd0-cb3b-49e0-ad15-4efeb3c7d3e9, f2861ed7-abca-4556-bf0c-39ddc717ad81">
+  </mgt-people-picker>
+`;
+
+export const pickerDefaultSelectedUserAndGroupIds = () => html`
+  <mgt-people-picker
+    default-selected-user-ids="e3d0513b-449e-4198-ba6f-bd97ae7cae85, 40079818-3808-4585-903b-02605f061225"
+    default-selected-group-ids="94cb7dd0-cb3b-49e0-ad15-4efeb3c7d3e9, f2861ed7-abca-4556-bf0c-39ddc717ad81">
+  </mgt-people-picker>
+`;
+
+export const pickerAllowAnyEmail = () => html`
+  <mgt-people-picker allow-any-email></mgt-people-picker>
+  <!-- Type any email address and press comma(,), semicolon(;), tab or enter to add it -->
+  <script type="module">
+    const peoplePicker = document.querySelector('mgt-people-picker');
+    peoplePicker.selectedPeople = [{mail: "any@mail.com", displayName: "any@mail.com"}]
+  </script>
 `;
