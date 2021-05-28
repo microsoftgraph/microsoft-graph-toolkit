@@ -509,7 +509,7 @@ export class MgtPerson extends MgtTemplatedComponent {
     }
 
     // Prep data
-    const person: any = this.personDetails || this.fallbackDetails;
+    const person = this.personDetails || this.fallbackDetails;
     const image = this.getImage();
     const presence = this.personPresence || this._fetchedPresence;
 
