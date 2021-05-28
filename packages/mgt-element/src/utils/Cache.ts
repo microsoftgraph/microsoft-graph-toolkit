@@ -360,7 +360,7 @@ export class CacheStore<T extends CacheItem> {
       upgrade: (db, oldVersion, newVersion, transaction) => {
         for (const storeName in this.schema.stores) {
           if (this.schema.stores.hasOwnProperty(storeName)) {
-            db.createObjectStore(storeName);
+            db.objectStoreNames.contains(storeName) || db.createObjectStore(storeName);
           }
         }
       }
