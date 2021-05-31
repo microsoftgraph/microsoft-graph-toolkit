@@ -106,7 +106,7 @@ The following events are fired from the component.
 | `max-query-suggestions` | `maxQuerySuggestions` | The max suggestion count for query. |
 | `max-people-suggestions` | `maxPeopleSuggestions` | The max suggestion count for people. |
 | `max-file-suggestions` | `maxFileSuggestions` | The max suggestion count for file. |
-| `selected-entity-types` | `selectedEntityTypes` | Suggestion entity types, free combination of text/people/file, use ',' to do the segmentation |
+| `suggested-entity-types` | `selectedEntityTypes` | Suggestion entity types, free combination of text/people/file, use ',' to do the segmentation |
 | `other properties` | `other properties` | awaiting for the graph suggestion API onboard. |
 
 ## Themes
