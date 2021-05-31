@@ -80,11 +80,11 @@ document.querySelector('mgt-search').addEventListener('enterPress', e => {
 
 ### Example 3: Developer can select entity types
 
-```<mgt-search selected-entity-types="file, query, people"></mgt-search>```
+```<mgt-search suggested-entity-types="file, query, people"></mgt-search>```
 
-```<mgt-search selected-entity-types="file, people"></mgt-search>```
+```<mgt-search suggested-entity-types="file, people"></mgt-search>```
 
-```<mgt-search selected-entity-types="people, query, blank-1"></mgt-search>```
+```<mgt-search suggested-entity-types="people, query, blank-1"></mgt-search>```
 
 ### Example 4: Developer can set each entity type's suggestion count
 
