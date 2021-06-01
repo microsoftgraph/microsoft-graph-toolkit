@@ -76,11 +76,11 @@ Customized entity types must be supported by microsoft graph suggestion API.
 
 <script>
 
-document.querySelector('mgt-search').addEventListener('OnEntityClick', e => {
+document.querySelector('mgt-search').addEventListener('onEntityClick', e => {
     console.log(e.detail);
 });
 
-document.querySelector('mgt-search').addEventListener('OnEnterPress', e => {
+document.querySelector('mgt-search').addEventListener('onEnterPress', e => {
   console.log(e.detail);
 });
 
@@ -111,8 +111,8 @@ The following events are fired from the component.
 
 | Event | Description |
 | --- | --- |
-| `OnEntityClick` | When click an entity , the listener will be trigged. the suggested value of the clicked item as a parameter|
-| `OnEnterPress` | When press enter key, the listener will be trigged, it has originalValue( input box value) and suggestedValue (suggestion) as parameters|
+| `onEntityClick` | When click an entity , the listener will be trigged. the suggested value of the clicked item as a parameter|
+| `onEnterPress` | When press enter key, the listener will be trigged, it has originalValue( input box value) and suggestedValue (suggestion) as parameters|
 
 ## Attributes and Properties
 
