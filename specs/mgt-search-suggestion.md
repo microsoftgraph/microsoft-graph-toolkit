@@ -9,6 +9,7 @@ The component structure as below
 | Feature | Priority | Notes |
 | ------- | -------- | ----- |
 | Retreieve text/people/file/ from Microsoft Graph endpoint based on the query string | P0 | |
+| Enable other entity types from Microsoft Graph endpoint based on the query string | P0 | |
 | Display the text of the matched query and display the name of the file/people| P0| |
 | Display the headImg or create a head icon for suggested people| P0| |
 | Display an icon indicating if it's a folder or file and the file type| P0 | Icons needed include generic folder icon, .docx, .pptx, .xlsx, and generic file icon for other file types |
@@ -29,9 +30,11 @@ The component structure as below
 | suggested-people-header | null: no data | The template to render people entity label. |
 | suggested-query-header | null: no data | The template to render text entity label. |
 | suggested-file-header | null: no data | The template to render file entity label. |
-| suggested-people | suggestionPeople[]: The people suggestion details list | The template to render people entity. |
-| suggested-query | suggestionText[]: The text suggestion details list | The template to render text entity. |
-| suggested-blank-{index} | suggestionFile[]: Customizing suggestion details list | The template to render customized entity. index can be 0,1,1 such like suggested-blank-0, developer should inject data and customize the styles by themselves. |
+| customized-{other entity type}-header | null: no data | The template to render other entity label, for example customized-sample1-header |
+| suggested-people | suggestionPeople[]: The people suggestion details  | The template to render people entity. |
+| suggested-query | suggestionQuery[]: The text suggestion details  | The template to render text entity. |
+| suggested-file | suggestionFile[]: The file suggestion details  | The template to render file entity. |
+| customized-{other entity type} | any[]: Customizing suggestion details  | The template to render customized entity, for example customized-sample1 |
 
 The following examples shows how to use customized template `suggested-query`.
 
@@ -41,54 +44,64 @@ The following examples shows how to use customized template `suggested-query`.
         <div>{{query}}</div>
     </template>
 </mgt-search>
+```
 
+
+## Customized
+Customized entity types must be supported by microsoft graph suggestion API.
+```html
+<mgt-search entity-types="query,file,people,sample1">
+    <template data-type="customized-sample1-header">
+        <div>header hahaha</div>
+    </template>
+
+    <template data-type="customized-sample1">
+        <div>{{this}}</div>
+    </template>
+</mgt-search>
+```
 
 ## Proposed Solution
 
-### Example 1: basic usage without any callback function
+## Example
+
+### Example 1: basic usage
 ```<mgt-search></mgt-search>```
 
-### Example 2: get suggestion data and customize the next actions by add a listener
-```<mgt-search id="suggestion"> </mgt-search>```
+### Example 2: get suggestion data and define click and enter key action by adding a listener
 ```
-#User can get this component then bind callback action to this component 
-function getSuggestionValue(suggestionValue) {
-    var searchValue = '';
-    if (suggestionValue.entity == 'File') {
-        searchValue = suggestionValue.name;
-    } else if (suggestionValue.entity == 'Text') {
-        searchValue = suggestionValue.text;
-    } else if (suggestionValue.entity == 'People') {
-        searchValue = suggestionValue.displayName;
-    }
-    return searchValue;
-}
+<mgt-search> </mgt-search>
+
+<script>
 
 document.querySelector('mgt-search').addEventListener('suggestionClick', e => {
-    var searchValue = e.detail.displayName;
-    window.location.assign('https://www.bing.com/search?q=' + searchValue);
+    console.log(e.detail);
 });
 
 document.querySelector('mgt-search').addEventListener('enterPress', e => {
-    var originalValue = e.detail.originalValue;
-    var suggestedValue = e.detail.suggestedValue;
-    var searchValue = getSuggestionValue(suggestedValue);
-    window.location.assign('https://www.bing.com/search?q=' + searchValue);
+  console.log(e.detail);
 });
+
+</script>
 
 ```
 
-### Example 3: Developer can select entity types
+### Example4: Select entity types & Sort & Suggestion Amount
+It allows customized entity order and max suggestion account by using entity-types properties:
+For example below shows
+Order: query, file, people
+Amount: 2,1,3 ( 3 is default value)
+```html
+  <mgt-search entity-types="query-2, file-1, people"></mgt-search>
+```
 
-```<mgt-search suggested-entity-types="file, query, people"></mgt-search>```
+```html
+  <mgt-search entity-types="query-2, people"></mgt-search>
+```
 
-```<mgt-search suggested-entity-types="file, people"></mgt-search>```
-
-```<mgt-search suggested-entity-types="people, query, blank-1"></mgt-search>```
-
-### Example 4: Developer can set each entity type's suggestion count
-
-```<mgt-search max-query-suggestions="3" max-file-suggestions="2" max-people-suggestions="3"></mgt-search>```
+```html
+  <mgt-search entity-types="query-2, people, sample1-4"></mgt-search>
+```
 
 ## Events
 
@@ -103,10 +116,7 @@ The following events are fired from the component.
 
 | Attribute | Property | Description |
 | --------- | -------- | ----------- |
-| `max-query-suggestions` | `maxQuerySuggestions` | The max suggestion count for query. |
-| `max-people-suggestions` | `maxPeopleSuggestions` | The max suggestion count for people. |
-| `max-file-suggestions` | `maxFileSuggestions` | The max suggestion count for file. |
-| `suggested-entity-types` | `selectedEntityTypes` | Suggestion entity types, free combination of text/people/file, use ',' to do the segmentation |
+| `entity-types` | `entityTypes` | Suggestion entity types, free combination of query/people/file or other entity types supported by suggestion API, it determines the order,  use ',' to do the segmentation, use '-' to do the amount limitation. for example 'file-2, query-1, people', it menas order: file,query, people.  Entity Types: file, query, people. Amount Limitation: file is 2, query is 1, people is 3 due to the default value is 3 |
 | `other properties` | `other properties` | awaiting for the graph suggestion API onboard. |
 
 ## Themes
@@ -142,14 +152,12 @@ We provide a way to get data from default components for development if you don'
 
 | Method | Description |
 | - | - |
-| onClickCallback | include one parameter, suggestion value that user clicked under the dropdown list |
-| onEnterKeyPressCallback | include two parameters, the first one is input box value, the second one is suggestion value |
-| renderInput | Renders the input text box. |
 | renderInput | Renders the input text box. |
 | renderFlyout | Renders the flyout chrome. |
 | renderFlyoutContent | Renders the appropriate state in the results flyout. |
 | renderLoading | Renders the loading state. |
 | renderNoData | Renders the state when no results are found for the search query. |
+| renderEntityRouter | provide entity type, it determined which render method should be called |
 | renderPeopleSearchResults | Renders the list of people search results, include no data processing |
 | renderFileSearchResults | Renders the list of file search results. include no data processing |
 | renderTextSearchResults | Renders the list of text search results. include no data processing |
