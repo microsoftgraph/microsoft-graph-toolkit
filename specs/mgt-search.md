@@ -2,7 +2,7 @@
 
 The suggestion component based on Graph Suggestion API, it provides a input box and flyout. When a query string typed in the input box, the flyout will rendered by the data from Graph Suggestion API, show some suggestions. it supports 3 kinds of entity types, File/Text/Suggestions, and also opened 3 blank entity types for customizing
 The component structure as below
-<img src="./images/mgt-search.png" width=400/>
+<img src="./images/mgt-search.PNG" width=400/>
 
 ## Supported functionality
 
