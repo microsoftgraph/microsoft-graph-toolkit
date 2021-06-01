@@ -26,6 +26,8 @@ The component structure as below
 | loading | null: no data | The template used to render the state of picker while request to graph is being made. |
 | error | null: no data | The template used if user search returns no users. |
 | no-data | null: no data | An alternative template used in dropdown list if suggestion returns no any results |
+| flyout-header | null: no data | The template to render flyout header. |
+| flyout-footer | null: no data | The template to render flyout footer. |
 | suggestion-input | null: no data | The template to render search input box. |
 | suggested-people-header | null: no data | The template to render people entity label. |
 | suggested-query-header | null: no data | The template to render text entity label. |
@@ -155,6 +157,8 @@ We provide a way to get data from default components for development if you don'
 | renderInput | Renders the input text box. |
 | renderFlyout | Renders the flyout chrome. |
 | renderFlyoutContent | Renders the appropriate state in the results flyout. |
+| renderFlyoutHeader | Renders the header of the flyout. |
+| renderFlyoutFooter | Renders the footer of the flyout. |
 | renderLoading | Renders the loading state. |
 | renderNoData | Renders the state when no results are found for the search query. |
 | renderEntityRouter | provide entity type, it determined which render method should be called |
