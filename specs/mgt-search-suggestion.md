@@ -158,14 +158,21 @@ We provide a way to get data from default components for development if you don'
 | renderLoading | Renders the loading state. |
 | renderNoData | Renders the state when no results are found for the search query. |
 | renderEntityRouter | provide entity type, it determined which render method should be called |
-| renderPeopleSearchResults | Renders the list of people search results, include no data processing |
-| renderFileSearchResults | Renders the list of file search results. include no data processing |
-| renderTextSearchResults | Renders the list of text search results. include no data processing |
-| renderSuggestionEntityLabelPeople | Renders the list of people entity label. |
-| renderSuggestionEntityLabelText | Renders the list of text entity label. |
-| renderSuggestionEntityLabelFile | Renders the list of file entity label. |
-| renderSuggestionEntityPeople | Renders the list of people search results, list length > 0, sub method of renderPeopleSearchResults. |
-| renderSuggestionEntityText | Renders the list of text search results, list length > 0, sub method of renderTextSearchResults. |
-| renderSuggestionEntityFile | Renders the list of file search results, list length > 0, sub method of renderFileleSearchResults. |
+| renderPeopleSearchResults | Renders people search results. |
+| renderFileSearchResults | Renders file search results |
+| renderQuerySearchResults | Renders text search results. |
+| renderCustomizedSearchResults | Renders customized entity search results. |
+| renderPeopleHeader | Renders people entity header. |
+| renderTextHeader | Renders text search result header. |
+| renderFileHeader | Renders file entity result header. |
+| renderCustomizedHeader | Renders customized entity header. |
+| renderPeople | Renders the list of people search results, list length > 0 |
+| renderQuerys | Renders the list of text search results, list length > 0 |
+| renderFiles | Renders the list of file search results, list length > 0. |
+| renderCustomizedEntities | Renders the list of file search results, list length > 0 |
+| renderPerson | Renders single person search results, list length > 0, sub method of renderPeopleSearchResults. |
+| renderQuery | Renders single text search results, list length > 0, sub method of renderTextSearchResults. |
+| renderFile | Renders single file search results, list length > 0, sub method of renderFileleSearchResults. |
+| renderCustomizedEntity | Renders single file search results, list length > 0, sub method of renderFileleSearchResults. |
 
 
