@@ -74,6 +74,21 @@ export interface CacheConfig {
    * @memberof CacheConfig
    */
   response: CacheOptions;
+
+  /**
+   * Cache options for files store
+   *
+   * @type {CacheOptions}
+   * @memberof CacheConfig
+   */
+  files: CacheOptions;
+  /**
+   * Cache options for fileLists store
+   *
+   * @type {CacheOptions}
+   * @memberof CacheConfig
+   */
+  fileLists: CacheOptions;
 }
 
 /**
@@ -164,6 +179,14 @@ export class CacheService {
       isEnabled: true
     },
     response: {
+      invalidationPeriod: null,
+      isEnabled: true
+    },
+    files: {
+      invalidationPeriod: null,
+      isEnabled: true
+    },
+    fileLists: {
       invalidationPeriod: null,
       isEnabled: true
     }
@@ -282,8 +305,11 @@ export class CacheStore<T extends CacheItem> {
     if (!window.indexedDB) {
       return null;
     }
-
-    return (await this.getDb()).get(this.store, key);
+    try {
+      return (await this.getDb()).get(this.store, key);
+    } catch (e) {
+      return null;
+    }
   }
 
   /**
@@ -298,8 +324,11 @@ export class CacheStore<T extends CacheItem> {
     if (!window.indexedDB) {
       return;
     }
-
-    await (await this.getDb()).put(this.store, { ...item, timeCached: Date.now() }, key);
+    try {
+      await (await this.getDb()).put(this.store, { ...item, timeCached: Date.now() }, key);
+    } catch (e) {
+      return;
+    }
   }
 
   /**
@@ -312,8 +341,11 @@ export class CacheStore<T extends CacheItem> {
     if (!window.indexedDB) {
       return;
     }
-
-    (await this.getDb()).clear(this.store);
+    try {
+      (await this.getDb()).clear(this.store);
+    } catch (e) {
+      return;
+    }
   }
 
   /**
@@ -328,7 +360,7 @@ export class CacheStore<T extends CacheItem> {
       upgrade: (db, oldVersion, newVersion, transaction) => {
         for (const storeName in this.schema.stores) {
           if (this.schema.stores.hasOwnProperty(storeName)) {
-            db.createObjectStore(storeName);
+            db.objectStoreNames.contains(storeName) || db.createObjectStore(storeName);
           }
         }
       }

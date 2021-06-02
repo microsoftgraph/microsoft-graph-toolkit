@@ -198,7 +198,7 @@ export function getDateFromMonthYear(month: number, year: number) {
 export function debounce(func, time) {
   let timeout;
 
-  return function() {
+  return function () {
     const functionCall = () => func.apply(this, arguments);
 
     clearTimeout(timeout);
@@ -233,4 +233,15 @@ export function extractEmailAddress(emailString: string): string {
   if (emailString.startsWith('[')) {
     return emailString.match(/([a-zA-Z0-9+._-]+@[a-zA-Z0-9._-]+\.[a-zA-Z0-9_-]+)/gi).toString();
   } else return emailString;
+}
+
+/**
+ * checks if the email string is a valid email
+ *
+ * @param {string} emailString
+ * @returns {boolean}
+ */
+export function isValidEmail(emailString: string): boolean {
+  const emailRx: RegExp = /^(?=.{1,254}$)(?=.{1,64}@)[-!#$%&'*+/0-9=?A-Z^_`a-z{|}~]+(\.[-!#$%&'*+/0-9=?A-Z^_`a-z{|}~]+)*@[A-Za-z0-9]([A-Za-z0-9-]{0,61}[A-Za-z0-9])?(\.[A-Za-z0-9]([A-Za-z0-9-]{0,61}[A-Za-z0-9])?)*$/;
+  return emailRx.test(emailString);
 }

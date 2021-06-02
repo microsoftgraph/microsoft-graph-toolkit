@@ -1,0 +1,45 @@
+{
+  "name": "@microsoft/mgt-spfx",
+  "version": "2.0.0",
+  "description": "SharePoint Framework library for Microsoft Graph Toolkit",
+  "main": "lib/index.js",
+  "keywords": [
+    "microsoft graph",
+    "microsoft graph toolkit",
+    "sharepoint framework",
+    "sharepoint"
+  ],
+  "homepage": "https://github.com/microsoftgraph/microsoft-graph-toolkit",
+  "bugs": {
+    "url": "https://github.com/microsoftgraph/microsoft-graph-toolkit/issues"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/microsoftgraph/microsoft-graph-toolkit"
+  },
+  "author": "Microsoft",
+  "license": "MIT",
+  "scripts": {
+    "build": "npm run clean && gulp bundle --production",
+    "clean": "gulp clean",
+    "test": "gulp test",
+    "package": "npm run build && gulp package-solution --production",
+    "postpublish": "npm run package"
+  },
+  "dependencies": {
+    "@microsoft/mgt-components": "*",
+    "@microsoft/mgt-element": "*",
+    "@microsoft/mgt-sharepoint-provider": "*",
+    "@microsoft/sp-core-library": "1.12.1"
+  },
+  "devDependencies": {
+    "@microsoft/rush-stack-compiler-3.7": "0.6.47",
+    "@microsoft/sp-build-web": "1.12.1",
+    "@microsoft/sp-module-interfaces": "1.12.1",
+    "@microsoft/sp-tslint-rules": "1.12.1",
+    "@microsoft/sp-webpart-workbench": "1.12.1",
+    "@types/webpack-env": "1.16.0",
+    "ajv": "~5.2.2",
+    "gulp": "4.0.2"
+  }
+}

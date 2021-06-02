@@ -1,5 +1,13 @@
 {
-  "packages": ["packages/*", "packages/providers/*", "samples/react-app", "samples/angular-app", "samples/vue-app"],
+  "packages": [
+    "packages/*",
+    "packages/providers/*",
+    "samples/react-app",
+    "samples/angular-app",
+    "samples/vue-app",
+    "samples/electron-app",
+    "samples/sp-webpart"
+  ],
   "npmClient": "yarn",
   "useWorkspaces": true,
   "version": "independent"

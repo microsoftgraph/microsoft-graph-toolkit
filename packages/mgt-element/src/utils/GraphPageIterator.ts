@@ -64,6 +64,30 @@ export class GraphPageIterator<T> {
     return null;
   }
 
+  /**
+   * Creates a new GraphPageIterator from existing value
+   *
+   * @static
+   * @template T - the type of entities expected from this request
+   * @param {IGraph} graph - the graph instance to use for making requests
+   * @param value - the existing value
+   * @param nextLink - optional nextLink to use to get the next page
+   * from the graph parameter
+   * @returns a GraphPageIterator
+   * @memberof GraphPageIterator
+   */
+  public static createFromValue<T>(graph: IGraph, value, nextLink?) {
+    let iterator = new GraphPageIterator<T>();
+
+    // create iterator from values
+    iterator._graph = graph;
+    iterator._value = value;
+    iterator._nextLink = nextLink ? nextLink : null;
+    iterator._version = graph.version;
+
+    return iterator || null;
+  }
+
   private _graph: IGraph;
   private _nextLink: string;
   private _version: string;
@@ -78,10 +102,7 @@ export class GraphPageIterator<T> {
   public async next(): Promise<T[]> {
     if (this._nextLink) {
       const nextResource = this._nextLink.split(this._version)[1];
-      const response = await this._graph
-        .api(nextResource)
-        .version(this._version)
-        .get();
+      const response = await this._graph.api(nextResource).version(this._version).get();
       if (response && response.value && response.value.length) {
         this._value = this._value.concat(response.value);
         this._nextLink = response['@odata.nextLink'];

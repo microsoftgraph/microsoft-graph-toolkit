@@ -69,6 +69,28 @@ export class MgtMsalProvider extends MgtBaseProvider {
   public redirectUri;
 
   /**
+   * The domain hint to use during login
+   *
+   * @memberof MgtMsalProvider
+   */
+  @property({
+    attribute: 'domain-hint',
+    type: String
+  })
+  public domainHint;
+
+  /**
+   * The prompt type to use during login
+   *
+   * @memberof MgtMsalProvider
+   */
+  @property({
+    attribute: 'prompt',
+    type: String
+  })
+  public prompt;
+
+  /**
    * Gets whether this provider can be used in this environment
    *
    * @readonly
@@ -87,7 +109,9 @@ export class MgtMsalProvider extends MgtBaseProvider {
   protected initializeProvider() {
     if (this.clientId) {
       const config: MsalConfig = {
-        clientId: this.clientId
+        clientId: this.clientId,
+        domainHint: this.domainHint,
+        prompt: this.prompt
       };
 
       if (this.loginType && this.loginType.length > 1) {

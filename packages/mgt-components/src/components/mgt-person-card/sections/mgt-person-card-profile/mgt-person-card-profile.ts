@@ -5,7 +5,7 @@
  * -------------------------------------------------------------------------------------------
  */
 
-import { EducationalActivity, PersonAnniversary, PersonInterest, Profile } from '@microsoft/microsoft-graph-types-beta';
+import { EducationalActivity, PersonAnnualEvent, PersonInterest, Profile } from '@microsoft/microsoft-graph-types-beta';
 import { customElement, html, TemplateResult } from 'lit-element';
 import { BasePersonCardSection } from '../BasePersonCardSection';
 import { getSvg, SvgIcon } from '../../../../utils/SvgHelper';
@@ -97,7 +97,7 @@ export class MgtPersonCardProfile extends BasePersonCardSection {
   private _profile: Profile;
   private _personalInterests: PersonInterest[];
   private _professionalInterests: PersonInterest[];
-  private _birthdayAnniversary: PersonAnniversary;
+  private _birthdayAnniversary: PersonAnnualEvent;
 
   constructor(profile: Profile) {
     super();
@@ -122,6 +122,7 @@ export class MgtPersonCardProfile extends BasePersonCardSection {
    * @memberof MgtPersonCardProfile
    */
   public clearState(): void {
+    super.clearState();
     this.profile = null;
   }
 
@@ -273,24 +274,26 @@ export class MgtPersonCardProfile extends BasePersonCardSection {
 
     const positionItems: TemplateResult[] = [];
     for (const position of this._profile.positions) {
-      positionItems.push(html`
-        <div class="data-list__item work-position">
-          <div class="data-list__item__header">
-            <div class="data-list__item__title">${position.detail.jobTitle}</div>
-            <div class="data-list__item__date-range">
-              ${this.getDisplayDateRange(position.detail)}
+      if (position.detail) {
+        positionItems.push(html`
+          <div class="data-list__item work-position">
+            <div class="data-list__item__header">
+              <div class="data-list__item__title">${position.detail?.jobTitle}</div>
+              <div class="data-list__item__date-range">
+                ${this.getDisplayDateRange(position.detail)}
+              </div>
+            </div>
+            <div class="data-list__item__content">
+              <div class="work-position__company">
+                ${position?.detail?.company?.displayName}
+              </div>
+              <div class="work-position__location">
+                ${position?.detail?.company?.address?.city}, ${position?.detail?.company?.address?.state}
+              </div>
             </div>
           </div>
-          <div class="data-list__item__content">
-            <div class="work-position__company">
-              ${position.detail.company.displayName}
-            </div>
-            <div class="work-position__location">
-              ${position.detail.company.address.city}, ${position.detail.company.address.state}
-            </div>
-          </div>
-        </div>
-      `);
+        `);
+      }
     }
 
     return html`
@@ -453,7 +456,7 @@ export class MgtPersonCardProfile extends BasePersonCardSection {
     return interest.categories && interest.categories.includes('professional');
   }
 
-  private isBirthdayAnniversary(anniversary: PersonAnniversary): boolean {
+  private isBirthdayAnniversary(anniversary: PersonAnnualEvent): boolean {
     return anniversary.type === 'birthday';
   }
 

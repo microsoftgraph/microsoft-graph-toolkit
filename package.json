@@ -1,19 +1,22 @@
 {
   "name": "root",
   "private": true,
-  "version": "2.1.0",
+  "version": "2.3.0",
   "workspaces": [
     "packages/*",
     "packages/providers/*",
     "samples/react-app",
     "samples/angular-app",
-    "samples/vue-app"
+    "samples/vue-app",
+    "samples/electron-app",
+    "samples/sp-webpart"
   ],
   "scripts": {
     "build": "npm run prettier:check && npm run clean && lerna run build --scope @microsoft/*",
     "build:compile": "npm run prettier:check && npm run clean && lerna run build:compile --scope @microsoft/*",
     "build:mgt": "cd ./packages/mgt && npm run build",
     "build:mgt-element": "cd ./packages/mgt-element && npm run build",
+    "build:mgt-components": "cd ./packages/mgt-components && npm run build",
     "build:mgt-react": "lerna run build --scope @microsoft/mgt-react",
     "bundle": "cd ./packages/mgt && npm run bundle",
     "bootstrap": "lerna bootstrap --useWorkspaces",
@@ -23,8 +26,8 @@
     "pack": "shx rm -rf artifacts/*.tgz && lerna exec --stream --scope @microsoft/* -- npm pack",
     "prepare": "lerna bootstrap --force-local",
     "sass": "lerna run sass --scope @microsoft/*",
-    "serve": "es-dev-server --port 3000 --node-resolve --open --watch --compatibility none --app-index index.html",
-    "serve:https": "es-dev-server --http2 --port 3000 --node-resolve --open --watch --compatibility none --app-index index.html",
+    "serve": "web-dev-server --port 3000 --node-resolve --open --watch --compatibility none --app-index index.html",
+    "serve:https": "web-dev-server --http2 --port 3000 --node-resolve --open --watch --compatibility none --app-index index.html",
     "start": "npm-run-all prettier:check watch:serve",
     "start:storybook": "npm-run-all storybook:dev storybook:watch",
     "start:https": "npm-run-all prettier:check build:esm watch:serve:https",
@@ -37,8 +40,9 @@
     "storybook": "start-storybook -p 6006 -s assets",
     "storybook:dev": "npm run build:compile && wca analyze packages --format json --outFile custom-elements.json",
     "storybook:watch": "npm-run-all --parallel watch storybook:bundle:watch storybook",
+    "storybook:bundle": "rollup -c ./.storybook/rollup.config.js",
     "storybook:bundle:watch": "rollup -c ./.storybook/rollup.config.js --watch",
-    "storybook:build": "npm run storybook:dev && build-storybook -s assets && cpx .storybook/CNAME storybook-static",
+    "storybook:build": "npm run storybook:bundle && npm run storybook:dev && build-storybook -s assets && cpx .storybook/CNAME storybook-static",
     "storybook:deploy": "npm run storybook:build && storybook-to-ghpages -e storybook-static",
     "setLicense": "gulp setLicense"
   },
@@ -75,9 +79,9 @@
     "@types/react": "^17.0.00",
     "@types/react-dom": "^17.0.0",
     "@webcomponents/webcomponentsjs": "^2.5.0",
+    "@web/dev-server": "^0.1.10",
     "babel-loader": "^8.2.1",
     "core-js": "^3.7.0",
-    "es-dev-server": "^1.57.8",
     "gulp": "^4.0.2",
     "gulp-append-prepend": "^1.0.8",
     "gulp-clean-css": "4.3.0",
@@ -89,16 +93,16 @@
     "jest": "^24.5.0",
     "jest-junit": "^6.3.0",
     "npm-run-all": "^4.1.5",
-    "prettier": "1.17.0",
+    "prettier": "2.2.1",
     "regenerator-runtime": "^0.13.7",
     "sass": "^1.29.0",
     "shx": "^0.3.3",
-    "ts-jest": "^24.3.0",
+    "ts-jest": "^26.5.5",
     "whatwg-fetch": "^3.5.0",
     "fs-extra": "^9.0.1",
     "react": "^17.0.1",
     "react-dom": "^17.0.1",
-    "rollup": "^2.33.3",
+    "rollup": "2.46.0",
     "rollup-plugin-babel": "^4.4.0",
     "rollup-plugin-babel-minify": "^10.0.0",
     "rollup-plugin-commonjs": "^10.1.0",
@@ -110,7 +114,9 @@
     "typescript": "^3.7.5",
     "web-component-analyzer": "^1.1.6",
     "tslint": "^6.1.3",
-    "tslint-config-prettier": "^1.18.0"
+    "tslint-config-prettier": "^1.18.0",
+    "tslint-microsoft-contrib": "^6.2.0",
+    "@octokit/rest": "^18.5.3"
   },
   "husky": {
     "hooks": {
@@ -119,6 +125,9 @@
   },
   "prettier": {
     "printWidth": 120,
-    "singleQuote": true
+    "singleQuote": true,
+    "trailingComma": "none",
+    "arrowParens": "avoid",
+    "embeddedLanguageFormatting": "off"
   }
 }

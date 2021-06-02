@@ -14,6 +14,7 @@ import '../mgt-person/mgt-person';
 import { styles } from './mgt-agenda-css';
 import { getEventsPageIterator } from './mgt-agenda.graph';
 import { SvgIcon, getSvg } from '../../utils/SvgHelper';
+import { MgtPeople } from '../mgt-people/mgt-people';
 
 /**
  * Web Component which represents events in a user or group calendar.
@@ -183,6 +184,17 @@ export class MgtAgenda extends MgtTemplatedComponent {
   }
 
   /**
+   * Get the scopes required for agenda
+   *
+   * @static
+   * @return {*}  {string[]}
+   * @memberof MgtAgenda
+   */
+  public static get requiredScopes(): string[] {
+    return [...new Set(['calendars.read', ...MgtPeople.requiredScopes])];
+  }
+
+  /**
    * determines width available for agenda component.
    * @type {boolean}
    */
@@ -298,6 +310,16 @@ export class MgtAgenda extends MgtTemplatedComponent {
         </div>
       `
     );
+  }
+
+  /**
+   * Clears state of the component
+   *
+   * @protected
+   * @memberof MgtAgenda
+   */
+  protected clearState(): void {
+    this.events = null;
   }
 
   /**
@@ -512,8 +534,20 @@ export class MgtAgenda extends MgtTemplatedComponent {
       return 'ALL DAY';
     }
 
-    const start = this.prettyPrintTimeFromDateTime(new Date(event.start.dateTime));
-    const end = this.prettyPrintTimeFromDateTime(new Date(event.end.dateTime));
+    // #937 When not specifying a preferred time zone using the
+    // preferred-timezone attribute, MGT treats the dates retrieved from
+    // Microsoft Graph as local time, rather than UTC.
+    let startString = event.start.dateTime;
+    if (event.start.timeZone === 'UTC') {
+      startString += 'Z';
+    }
+    let endString = event.end.dateTime;
+    if (event.end.timeZone === 'UTC') {
+      endString += 'Z';
+    }
+
+    const start = this.prettyPrintTimeFromDateTime(new Date(startString));
+    const end = this.prettyPrintTimeFromDateTime(new Date(endString));
 
     return `${start} - ${end}`;
   }

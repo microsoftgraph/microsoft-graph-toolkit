@@ -35,6 +35,29 @@ export enum PersonType {
 }
 
 /**
+ * User Type enum
+ *
+ * @export
+ * @enum {number}
+ */
+export enum UserType {
+  /**
+   * Any user or contact
+   */
+  any = 'any',
+
+  /**
+   * An organization User
+   */
+  user = 'user',
+
+  /**
+   * An implicit or personal contact
+   */
+  contact = 'contact'
+}
+
+/**
  * Object to be stored in cache representing individual people
  */
 interface CachePerson extends CacheItem {
@@ -81,44 +104,47 @@ export async function findPeople(
   graph: IGraph,
   query: string,
   top: number = 10,
-  personType: PersonType = PersonType.person
+  userType: UserType = UserType.any
 ): Promise<Person[]> {
   const scopes = 'people.read';
 
   let cache: CacheStore<CachePeopleQuery>;
+  let cacheKey = `${query}:${top}:${userType}`;
 
   if (getIsPeopleCacheEnabled()) {
     cache = CacheService.getCache<CachePeopleQuery>(schemas.people, schemas.people.stores.peopleQuery);
-    const result: CachePeopleQuery = getIsPeopleCacheEnabled() ? await cache.getValue(query) : null;
+    const result: CachePeopleQuery = getIsPeopleCacheEnabled() ? await cache.getValue(cacheKey) : null;
     if (result && getPeopleInvalidationTime() > Date.now() - result.timeCached) {
       return result.results.map(peopleStr => JSON.parse(peopleStr));
     }
   }
-  let filterQuery = '';
 
-  if (personType !== PersonType.any) {
-    // converts personType to capitalized case
-    const personTypeString =
-      personType
-        .toString()
-        .charAt(0)
-        .toUpperCase() + personType.toString().slice(1);
-    filterQuery = `personType/class eq '${personTypeString}'`;
+  let filter = "personType/class eq 'Person'";
+
+  if (userType !== UserType.any) {
+    if (userType === UserType.user) {
+      filter += "and personType/subclass eq 'OrganizationUser'";
+    } else {
+      filter += "and (personType/subclass eq 'ImplicitContact' or personType/subclass eq 'PersonalContact')";
+    }
   }
 
-  const graphResult = await graph
-    .api('/me/people')
-    .search('"' + query + '"')
-    .top(top)
-    .filter(filterQuery)
-    .middlewareOptions(prepScopes(scopes))
-    .get();
+  let graphResult;
+  try {
+    graphResult = await graph
+      .api('/me/people')
+      .search('"' + query + '"')
+      .top(top)
+      .filter(filter)
+      .middlewareOptions(prepScopes(scopes))
+      .get();
 
-  if (getIsPeopleCacheEnabled() && graphResult) {
-    const item = { maxResults: top, results: null };
-    item.results = graphResult.value.map(personStr => JSON.stringify(personStr));
-    cache.putValue(query, item);
-  }
+    if (getIsPeopleCacheEnabled() && graphResult) {
+      const item = { maxResults: top, results: null };
+      item.results = graphResult.value.map(personStr => JSON.stringify(personStr));
+      cache.putValue(query, item);
+    }
+  } catch (error) {}
   return graphResult ? graphResult.value : null;
 }
 
@@ -128,13 +154,15 @@ export async function findPeople(
  * @returns {(Promise<Person[]>)}
  * @memberof Graph
  */
-export async function getPeople(graph: IGraph): Promise<Person[]> {
+export async function getPeople(graph: IGraph, userType: UserType = UserType.any): Promise<Person[]> {
   const scopes = 'people.read';
 
   let cache: CacheStore<CachePeopleQuery>;
+  let cacheKey = `*:${userType}`;
+
   if (getIsPeopleCacheEnabled()) {
     cache = CacheService.getCache<CachePeopleQuery>(schemas.people, schemas.people.stores.peopleQuery);
-    const cacheRes = await cache.getValue('*');
+    const cacheRes = await cache.getValue(cacheKey);
 
     if (cacheRes && getPeopleInvalidationTime() > Date.now() - cacheRes.timeCached) {
       return cacheRes.results.map(ppl => JSON.parse(ppl));
@@ -142,14 +170,23 @@ export async function getPeople(graph: IGraph): Promise<Person[]> {
   }
 
   const uri = '/me/people';
-  const people = await graph
-    .api(uri)
-    .middlewareOptions(prepScopes(scopes))
-    .filter("personType/class eq 'Person'")
-    .get();
-  if (getIsPeopleCacheEnabled() && people) {
-    cache.putValue('*', { maxResults: 10, results: people.value.map(ppl => JSON.stringify(ppl)) });
+  let filter = "personType/class eq 'Person'";
+
+  if (userType !== UserType.any) {
+    if (userType === UserType.user) {
+      filter += "and personType/subclass eq 'OrganizationUser'";
+    } else {
+      filter += "and (personType/subclass eq 'ImplicitContact' or personType/subclass eq 'PersonalContact')";
+    }
   }
+
+  let people;
+  try {
+    people = await graph.api(uri).middlewareOptions(prepScopes(scopes)).filter(filter).get();
+    if (getIsPeopleCacheEnabled() && people) {
+      cache.putValue(cacheKey, { maxResults: 10, results: people.value.map(ppl => JSON.stringify(ppl)) });
+    }
+  } catch (error) {}
   return people ? people.value : null;
 }
 
@@ -202,4 +239,68 @@ export async function findContactsByEmail(graph: IGraph, email: string): Promise
   }
 
   return result ? result.value : null;
+}
+
+/**
+ * async promise, returns Graph people matching the Graph query specified
+ * in the resource param
+ *
+ * @param {string} resource
+ * @returns {(Promise<Person[]>)}
+ * @memberof Graph
+ */
+export async function getPeopleFromResource(
+  graph: IGraph,
+  version: string,
+  resource: string,
+  scopes: string[]
+): Promise<Person[]> {
+  let cache: CacheStore<CachePeopleQuery>;
+  const key = `${version}${resource}`;
+  if (getIsPeopleCacheEnabled()) {
+    cache = CacheService.getCache<CachePeopleQuery>(schemas.people, schemas.people.stores.peopleQuery);
+    const result: CachePeopleQuery = await cache.getValue(key);
+    if (result && getPeopleInvalidationTime() > Date.now() - result.timeCached) {
+      return result.results.map(peopleStr => JSON.parse(peopleStr));
+    }
+  }
+
+  let request = graph.api(resource).version(version);
+
+  if (scopes && scopes.length) {
+    request = request.middlewareOptions(prepScopes(...scopes));
+  }
+
+  let response = await request.get();
+  // get more pages if there are available
+  if (response && Array.isArray(response.value) && response['@odata.nextLink']) {
+    let pageCount = 1;
+    let page = response;
+
+    while (page && page['@odata.nextLink']) {
+      pageCount++;
+      const nextResource = page['@odata.nextLink'].split(version)[1];
+      page = await graph.client.api(nextResource).version(version).get();
+      if (page && page.value && page.value.length) {
+        page.value = response.value.concat(page.value);
+        response = page;
+      }
+    }
+  }
+
+  if (getIsPeopleCacheEnabled() && response) {
+    const item = { results: null };
+    if (Array.isArray(response.value)) {
+      item.results = response.value.map(personStr => JSON.stringify(personStr));
+    } else {
+      item.results = [JSON.stringify(response)];
+    }
+    cache.putValue(key, item);
+  }
+
+  if (response) {
+    return Array.isArray(response.value) ? response.value : [response];
+  } else {
+    return null;
+  }
 }

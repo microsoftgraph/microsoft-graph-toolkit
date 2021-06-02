@@ -12,13 +12,13 @@ import { classMap } from 'lit-html/directives/class-map';
 import { MgtTemplatedComponent, Providers, ProviderState, TeamsHelper } from '@microsoft/mgt-element';
 
 import { findPeople, getEmailFromGraphEntity } from '../../graph/graph.people';
-import { IDynamicPerson } from '../../graph/types';
+import { IDynamicPerson, ViewType } from '../../graph/types';
 import { getPersonImage } from '../../graph/graph.photos';
 import { getUserWithPhoto } from '../../graph/graph.userWithPhoto';
 import { getSvg, SvgIcon } from '../../utils/SvgHelper';
 import { getUserPresence } from '../../graph/graph.presence';
 import { getPersonCardGraphData } from './mgt-person-card.graph';
-import { MgtPerson, PersonViewType } from '../mgt-person/mgt-person';
+import { MgtPerson } from '../mgt-person/mgt-person';
 import { styles } from './mgt-person-card-css';
 import { BasePersonCardSection } from './sections/BasePersonCardSection';
 import { MgtPersonCardContact } from './sections/mgt-person-card-contact/mgt-person-card-contact';
@@ -49,6 +49,8 @@ interface MgtPersonCardStateHistory {
  * @export
  * @class MgtPersonCard
  * @extends {MgtTemplatedComponent}
+ *
+ * @fires expanded - Fired when expanded details section is opened
  *
  * @cssprop --person-card-display-name-font-size - {Length} Font size of display name title
  * @cssprop --person-card-display-name-color - {Color} Color of display name font
@@ -87,6 +89,10 @@ export class MgtPersonCard extends MgtTemplatedComponent {
    * @return {*}  {string[]}
    * @memberof MgtPersonCard
    */
+  public static get requiredScopes(): string[] {
+    return MgtPersonCard.getScopes();
+  }
+
   public static getScopes(): string[] {
     const scopes = [];
 
@@ -480,7 +486,7 @@ export class MgtPersonCard extends MgtTemplatedComponent {
         .personPresence=${this.personPresence}
         .showPresence=${this.showPresence}
         .avatarSize=${avatarSize}
-        .view=${PersonViewType.threelines}
+        .view=${ViewType.threelines}
         .line2Property=${'jobTitle'}
         .line3Property=${'department'}
       ></mgt-person>

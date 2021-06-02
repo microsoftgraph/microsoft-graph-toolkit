@@ -33,9 +33,9 @@
   "dependencies": {
     "@microsoft/mgt-components": "*",
     "@microsoft/mgt-element": "*",
-    "@microsoft/microsoft-graph-types": "^1.28.0",
-    "@microsoft/microsoft-graph-types-beta": "github:microsoftgraph/msgraph-typescript-typings#beta",
-    "wc-react": "^0.4.0"
+    "@microsoft/microsoft-graph-types": "^1.36.0",
+    "@microsoft/microsoft-graph-types-beta": "^0.8.0-preview",
+    "wc-react": "^0.5.0"
   },
   "publishConfig": {
     "access": "public"

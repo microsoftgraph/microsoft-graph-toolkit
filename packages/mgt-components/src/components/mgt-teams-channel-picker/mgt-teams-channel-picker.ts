@@ -116,6 +116,22 @@ interface ChannelPickerItemState {
 }
 
 /**
+ * Configuration object for the TeamsChannelPicker component
+ *
+ * @export
+ * @interface MgtTeamsChannelPickerConfig
+ */
+export interface MgtTeamsChannelPickerConfig {
+  /**
+   * Sets or gets whether the teams channel picker component should use
+   * the Teams based scopes instead of the User and Group based scopes
+   *
+   * @type {boolean}
+   */
+  useTeamsBasedScopes: boolean;
+}
+
+/**
  * Web component used to select channels from a User's Microsoft Teams profile
  *
  *
@@ -159,6 +175,22 @@ export class MgtTeamsChannelPicker extends MgtTemplatedComponent {
   }
 
   /**
+   * Global Configuration object for all
+   * teams channel picker components
+   *
+   * @static
+   * @type {MgtTeamsChannelPickerConfig}
+   * @memberof MgtTeamsChannelPicker
+   */
+  public static get config(): MgtTeamsChannelPickerConfig {
+    return this._config;
+  }
+
+  private static _config = {
+    useTeamsBasedScopes: false
+  };
+
+  /**
    * Gets Selected item to be used
    *
    * @readonly
@@ -170,6 +202,21 @@ export class MgtTeamsChannelPicker extends MgtTemplatedComponent {
       return { channel: this._selectedItemState.item, team: this._selectedItemState.parent.item };
     } else {
       return null;
+    }
+  }
+
+  /**
+   * Get the scopes required for teams channel picker
+   *
+   * @static
+   * @return {*}  {string[]}
+   * @memberof MgtTeamsChannelPicker
+   */
+  public static get requiredScopes(): string[] {
+    if (this.config.useTeamsBasedScopes) {
+      return ['team.readbasic.all', 'channel.readbasic.all'];
+    } else {
+      return ['user.read.all', 'group.read.all'];
     }
   }
 
@@ -322,6 +369,19 @@ export class MgtTeamsChannelPicker extends MgtTemplatedComponent {
         <div class="search-wrapper">${this.renderSearchIcon()} ${this.renderInput()}</div>
       </li>
     `;
+  }
+
+  /**
+   * Clears the state of the component
+   *
+   * @protected
+   * @memberof MgtTeamsChannelPicker
+   */
+  protected clearState(): void {
+    this._items = [];
+    this._inputValue = '';
+    this._treeViewState = [];
+    this._focusList = [];
   }
 
   /**
@@ -584,13 +644,18 @@ export class MgtTeamsChannelPicker extends MgtTemplatedComponent {
     if (provider && provider.state === ProviderState.SignedIn) {
       const graph = provider.graph.forComponent(this);
 
+      // make sure we have the needed scopes
+      if (!(await provider.getAccessTokenForScopes(...MgtTeamsChannelPicker.requiredScopes))) {
+        return;
+      }
+
       teams = await getAllMyTeams(graph);
       teams = teams.filter(t => !t.isArchived);
 
-      const batch = provider.graph.createBatch();
+      const batch = graph.createBatch();
 
       for (const team of teams) {
-        batch.get(team.id, `teams/${team.id}/channels`, ['group.read.all']);
+        batch.get(team.id, `teams/${team.id}/channels`);
       }
 
       const responses = await batch.executeAll();

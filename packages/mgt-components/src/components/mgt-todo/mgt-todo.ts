@@ -100,6 +100,17 @@ export class MgtTodo extends MgtTasksBase {
    */
   public taskFilter: TodoFilter;
 
+  /**
+   * Get the scopes required for todo
+   *
+   * @static
+   * @return {*}  {string[]}
+   * @memberof MgtTodo
+   */
+  public static get requiredScopes(): string[] {
+    return ['tasks.read', 'tasks.readwrite'];
+  }
+
   private _lists: TodoTaskList[];
   private _tasks: TodoTask[];
   private _currentList: TodoTaskList;
@@ -135,7 +146,11 @@ export class MgtTodo extends MgtTasksBase {
       tasks = tasks.filter(task => this.taskFilter(task));
     }
 
-    const taskTemplates = repeat(tasks, task => task.id, task => this.renderTask(task));
+    const taskTemplates = repeat(
+      tasks,
+      task => task.id,
+      task => this.renderTask(task)
+    );
     return html`
       ${taskTemplates}
     `;
@@ -421,7 +436,7 @@ export class MgtTodo extends MgtTasksBase {
     if (this._newTaskDueDate) {
       // tslint:disable-next-line: no-string-literal
       taskData['dueDateTime'] = {
-        dateTime: this._newTaskDueDate.toISOString(),
+        dateTime: this._newTaskDueDate.toLocaleDateString(),
         timeZone: 'UTC'
       };
     }

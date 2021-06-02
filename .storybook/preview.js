@@ -11,7 +11,6 @@ import { configure, addParameters, setCustomElements } from '@storybook/web-comp
 import customElements from '../custom-elements.json';
 import '../node_modules/@webcomponents/webcomponentsjs/webcomponents-bundle.js';
 import theme from './theme';
-import '../packages/mgt-components/dist/es6/components/mgt-login/mgt-login.js';
 
 setCustomElements(customElements);
 
@@ -28,7 +27,7 @@ addParameters({
 });
 
 // force full reload to not reregister web components
-const req = require.context('../stories', true, /\.stories\.(js|mdx)$/);
+const req = require.context('../stories', true, /\.(js|mdx)$/);
 configure(req, module);
 if (module.hot) {
   module.hot.accept(req.id, () => {

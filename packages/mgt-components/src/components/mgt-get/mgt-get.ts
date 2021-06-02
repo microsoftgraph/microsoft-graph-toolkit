@@ -232,6 +232,16 @@ export class MgtGet extends MgtTemplatedComponent {
   }
 
   /**
+   * Clears state of the component
+   *
+   * @protected
+   * @memberof MgtGet
+   */
+  protected clearState(): void {
+    this.response = null;
+  }
+
+  /**
    * Invoked on each update to perform rendering tasks. This method must return
    * a lit-html TemplateResult. Setting properties inside this method will *not*
    * trigger the element to update.
@@ -353,10 +363,7 @@ export class MgtGet extends MgtTemplatedComponent {
               ) {
                 pageCount++;
                 const nextResource = page['@odata.nextLink'].split(this.version)[1];
-                page = await graph.client
-                  .api(nextResource)
-                  .version(this.version)
-                  .get();
+                page = await graph.client.api(nextResource).version(this.version).get();
                 if (page && page.value && page.value.length) {
                   page.value = response.value.concat(page.value);
                   response = page;

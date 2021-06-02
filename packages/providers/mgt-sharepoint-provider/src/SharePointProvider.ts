@@ -63,7 +63,17 @@ export class SharePointProvider extends IProvider {
   }
 
   /**
-   * privilege level for authenication
+   * Name used for analytics
+   *
+   * @readonly
+   * @memberof IProvider
+   */
+  public get name() {
+    return 'MgtSharePointProvider';
+  }
+
+  /**
+   * privilege level for authentication
    *
    * @type {string[]}
    * @memberof SharePointProvider
@@ -84,13 +94,11 @@ export class SharePointProvider extends IProvider {
   constructor(context: WebPartContext) {
     super();
 
-    context.aadTokenProviderFactory.getTokenProvider().then(
-      (tokenProvider: AadTokenProvider): void => {
-        this._provider = tokenProvider;
-        this.graph = createFromProvider(this);
-        this.internalLogin();
-      }
-    );
+    context.aadTokenProviderFactory.getTokenProvider().then((tokenProvider: AadTokenProvider): void => {
+      this._provider = tokenProvider;
+      this.graph = createFromProvider(this);
+      this.internalLogin();
+    });
   }
 
   /**
