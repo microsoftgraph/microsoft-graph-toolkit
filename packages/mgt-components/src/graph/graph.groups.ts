@@ -115,11 +115,16 @@ export async function findGroups(
   }
 
   let filterQuery = '';
+  let responses;
+  let batchedResult = [];
+
   if (query !== '') {
     filterQuery = `(startswith(displayName,'${query}') or startswith(mailNickname,'${query}') or startswith(mail,'${query}'))`;
   }
 
   if (groupTypes !== GroupType.any) {
+    const batch = graph.createBatch();
+
     const filterGroups = [];
 
     // tslint:disable-next-line:no-bitwise
@@ -142,16 +147,39 @@ export async function findGroups(
       filterGroups.push('(mailEnabled eq true and securityEnabled eq false)');
     }
 
-    filterQuery += (query !== '' ? ' and ' : '') + filterGroups.join(' or ');
+    if (query !== '') {
+      filterQuery = filterQuery + ' and ';
+    }
+
+    for (let filter of filterGroups) {
+      batch.get(filter, `/groups?$filter=${filterQuery + filter}`, ['Group.Read.All']);
+    }
+
+    responses = await batch.executeAll();
+
+    for (let i = 0; i < filterGroups.length; i++) {
+      if (responses.get(filterGroups[i]).content.value) {
+        for (let group of responses.get(filterGroups[i]).content.value) {
+          let repeat = batchedResult.filter(batchedGroup => batchedGroup.id === group.id);
+          if (repeat.length === 0) {
+            batchedResult.push(group);
+          }
+          repeat = [];
+        }
+      }
+    }
+  } else {
+    if (batchedResult.length === 0) {
+      const result = await graph.api('groups').filter(filterQuery).top(top).middlewareOptions(prepScopes(scopes)).get();
+
+      if (getIsGroupsCacheEnabled() && result) {
+        cache.putValue(key, { groups: result.value.map(x => JSON.stringify(x)), top: top });
+      }
+      return result ? result.value : null;
+    }
   }
 
-  const result = await graph.api('groups').filter(filterQuery).top(top).middlewareOptions(prepScopes(scopes)).get();
-
-  if (getIsGroupsCacheEnabled() && result) {
-    cache.putValue(key, { groups: result.value.map(x => JSON.stringify(x)), top: top });
-  }
-
-  return result ? result.value : null;
+  return batchedResult;
 }
 
 /**
