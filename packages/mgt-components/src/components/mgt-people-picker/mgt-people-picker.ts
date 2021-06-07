@@ -1047,7 +1047,6 @@ export class MgtPeoplePicker extends MgtTemplatedComponent {
     const input = event.target as HTMLInputElement;
 
     if (event.code === 'Escape') {
-      this.clearHighlighted();
       this.clearInput();
       this._foundPeople = [];
     } else if (event.code === 'Backspace' && this.userInput.length === 0 && this.selectedPeople.length > 0) {
