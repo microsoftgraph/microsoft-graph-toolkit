@@ -984,7 +984,6 @@ export class MgtPeoplePicker extends MgtTemplatedComponent {
     let last: string = '';
     let highlight: string = '';
 
-    console.log('person:......', person);
     const displayName = person.displayName;
     const highlightLocation = displayName.toLowerCase().indexOf(this.userInput.toLowerCase());
     if (highlightLocation !== -1) {
