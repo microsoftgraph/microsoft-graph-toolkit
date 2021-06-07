@@ -72,6 +72,11 @@ mgt-people-picker .root {
         padding-right: 4px;
       }
 
+      &__highlighted {
+        background-color: #0078d4;
+        text-decoration-color: #ffffff;
+      }
+
       &__overflow {
         margin-left: 25px;
 

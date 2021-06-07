@@ -377,6 +377,10 @@ export class MgtPeoplePicker extends MgtTemplatedComponent {
   private _debouncedSearch: { (): void; (): void };
   private defaultSelectedUsers: IDynamicPerson[];
   private defaultSelectedGroups: IDynamicPerson[];
+  // List of users highlighted for copy/cut-pasting
+  private _highlightedUsers: Element[] = [];
+  // current user index to the left of the highlighted users
+  private _currentHighlightedUserPos: number = 0;
 
   @internalProperty() private _isFocused = false;
 
@@ -390,6 +394,9 @@ export class MgtPeoplePicker extends MgtTemplatedComponent {
 
     this.disabled = false;
     this.allowAnyEmail = false;
+    this.addEventListener('copy', this.handleCopy);
+    this.addEventListener('cut', this.handleCut);
+    this.addEventListener('paste', this.handlePaste);
   }
 
   /**
@@ -942,6 +949,7 @@ export class MgtPeoplePicker extends MgtTemplatedComponent {
   }
 
   private clearInput() {
+    this.clearHighlighted();
     this.input.value = '';
     this.userInput = '';
   }
@@ -1039,9 +1047,11 @@ export class MgtPeoplePicker extends MgtTemplatedComponent {
     const input = event.target as HTMLInputElement;
 
     if (event.code === 'Escape') {
+      this.clearHighlighted();
       this.clearInput();
       this._foundPeople = [];
     } else if (event.code === 'Backspace' && this.userInput.length === 0 && this.selectedPeople.length > 0) {
+      this.clearHighlighted();
       // remove last person in selected list
       this.selectedPeople = this.selectedPeople.splice(0, this.selectedPeople.length - 1);
       this.loadState();
@@ -1124,9 +1134,41 @@ export class MgtPeoplePicker extends MgtTemplatedComponent {
    * @param event - event tracked on user input (keydown)
    */
   private onUserKeyDown(event: KeyboardEvent): void {
+    const selectedList = this.renderRoot.querySelector('.selected-list');
+    if (event.ctrlKey && selectedList) {
+      const selectedPeople = selectedList.querySelectorAll('mgt-person.selected-list__person-wrapper__person');
+      this.flyout.close();
+      if (event.ctrlKey && event.code === 'ArrowLeft') {
+        this._currentHighlightedUserPos =
+          (this._currentHighlightedUserPos - 1 + selectedPeople.length) % selectedPeople.length;
+        if (this._currentHighlightedUserPos >= 0 && this._currentHighlightedUserPos !== NaN) {
+          this._highlightedUsers.push(selectedPeople[this._currentHighlightedUserPos]);
+        } else {
+          this._currentHighlightedUserPos = 0;
+        }
+      } else if (event.ctrlKey && event.code === 'ArrowRight') {
+        const person = this._highlightedUsers.pop();
+        if (person) {
+          person.classList.replace(
+            'selected-list__person-wrapper__highlighted',
+            'selected-list__person-wrapper__person'
+          );
+          this._currentHighlightedUserPos++;
+        }
+      } else if (event.ctrlKey && event.code === 'KeyA') {
+        this._highlightedUsers = [];
+        selectedPeople.forEach(person => this._highlightedUsers.push(person));
+      }
+      if (this._highlightedUsers) {
+        this.highlightSelectedPeople(this._highlightedUsers);
+      }
+      return;
+    }
+
     if (!this.flyout.isOpen) {
       return;
     }
+
     if (event.keyCode === 40 || event.keyCode === 38) {
       // keyCodes capture: down arrow (40) and up arrow (38)
       this.handleArrowSelection(event);
@@ -1162,6 +1204,80 @@ export class MgtPeoplePicker extends MgtTemplatedComponent {
         this.handleAnyEmail();
       }
     }
+  }
+
+  /**
+   * Gets the text of the highlighed people and writes it to the clipboard
+   */
+  private writeHighlightedText() {
+    const copyText = [];
+    for (let i = 0; i < this._highlightedUsers.length; i++) {
+      const element: any = this._highlightedUsers[i];
+      const _personDetails = element._personDetails;
+      const { id, displayName, email, userPrincipalName, scoredEmailAddresses } = _personDetails;
+      let emailAddress: string;
+      if (scoredEmailAddresses && scoredEmailAddresses.length > 0) {
+        emailAddress = scoredEmailAddresses.pop().address;
+      } else {
+        emailAddress = userPrincipalName || email;
+      }
+
+      copyText.push({ id, displayName, email: emailAddress });
+    }
+    navigator.clipboard
+      .writeText(JSON.stringify(copyText))
+      .then(() => {})
+      .catch(err => console.error(err));
+  }
+
+  /**
+   * Handles the cut event when it is fired
+   */
+  private handleCut() {
+    this.clearState();
+    this.writeHighlightedText();
+  }
+
+  /**
+   * Handles the copy event when it is fired
+   */
+  private handleCopy() {
+    this.writeHighlightedText();
+  }
+
+  /**
+   * Parses the copied people text and adds them when you paste
+   */
+  private handlePaste() {
+    navigator.clipboard.readText().then(copiedText => {
+      const people = JSON.parse(copiedText);
+      for (const person of people) {
+        this.addPerson(person);
+      }
+    });
+  }
+
+  /**
+   * Changes the color class to show which people are selected for copy/cut-paste
+   * @param people list of selected people classes
+   */
+  private highlightSelectedPeople(people: Element[]) {
+    for (let i = 0; i < people.length; i++) {
+      const person = people[i];
+      person.classList.replace('selected-list__person-wrapper__person', 'selected-list__person-wrapper__highlighted');
+    }
+  }
+
+  /**
+   * Defaults the people class back to the normal view
+   */
+  private clearHighlighted() {
+    for (let i = 0; i < this._highlightedUsers.length; i++) {
+      const person = this._highlightedUsers[i];
+      person.classList.replace('selected-list__person-wrapper__highlighted', 'selected-list__person-wrapper__person');
+    }
+    this._highlightedUsers = [];
+    this._currentHighlightedUserPos = 0;
   }
 
   /**
