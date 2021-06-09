@@ -805,7 +805,10 @@ export class MgtPeoplePicker extends MgtTemplatedComponent {
           } else if (this.type === PersonType.person || this.type === PersonType.any) {
             people = await getPeople(graph, this.userType);
           } else if (this.type === PersonType.group) {
-            const groups = (await findGroups(graph, '', this.showMax, this.groupType)) || [];
+            let groups = (await findGroups(graph, '', this.showMax, this.groupType)) || [];
+            if (groups[0]['value']) {
+              groups = groups[0]['value'];
+            }
             people = groups;
           }
           this.defaultPeople = people;
