@@ -112,7 +112,6 @@ export async function getUser(graph: IGraph, userPrincipleName: string, requeste
     }
   }
 
-  console.log(userPrincipleName);
   let apiString = `/users/${userPrincipleName}`;
   if (requestedProps) {
     apiString = apiString + '?$select=' + requestedProps.toString();
@@ -156,7 +155,6 @@ export async function getUsersForUserIds(graph: IGraph, userIds: string[]): Prom
     if (user && getUserInvalidationTime() > Date.now() - user.timeCached) {
       peopleDict[id] = user.user ? JSON.parse(user.user) : null;
     } else if (id !== '') {
-      console.log('hello');
       batch.get(id, `/users/${id}`, ['user.readbasic.all']);
       notInCache.push(id);
     }
