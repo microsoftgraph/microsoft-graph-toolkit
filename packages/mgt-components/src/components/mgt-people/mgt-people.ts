@@ -16,6 +16,7 @@ import { Providers, ProviderState, MgtTemplatedComponent, arraysAreEqual } from 
 import '../../styles/style-helper';
 import { PersonCardInteraction } from './../PersonCardInteraction';
 import { styles } from './mgt-people-css';
+import { MgtPerson } from '../mgt-person/mgt-person';
 
 export { PersonCardInteraction } from './../PersonCardInteraction';
 
@@ -209,6 +210,26 @@ export class MgtPeople extends MgtTemplatedComponent {
   })
   public scopes: string[] = [];
 
+  /**
+   * Get the scopes required for people
+   *
+   * @static
+   * @return {*}  {string[]}
+   * @memberof MgtPeople
+   */
+  public static get requiredScopes(): string[] {
+    return [
+      ...new Set([
+        'user.read.all',
+        'people.read',
+        'user.readbasic.all',
+        'presence.read.all',
+        'contacts.read',
+        ...MgtPerson.requiredScopes
+      ])
+    ];
+  }
+
   private _groupId: string;
   private _userIds: string[];
   private _peopleQueries: string[];
@@ -288,7 +309,7 @@ export class MgtPeople extends MgtTemplatedComponent {
       <ul class="people-list">
         ${repeat(
           maxPeople,
-          p => p.id,
+          p => (p.id ? p.id : p.displayName),
           p => html`
             <li class="people-person">
               ${this.renderPerson(p)}

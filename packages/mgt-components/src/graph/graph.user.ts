@@ -76,10 +76,7 @@ export async function getMe(graph: IGraph, requestedProps?: string[]): Promise<U
   if (requestedProps) {
     apiString = apiString + '?$select=' + requestedProps.toString();
   }
-  const response = graph
-    .api(apiString)
-    .middlewareOptions(prepScopes('user.read'))
-    .get();
+  const response = graph.api(apiString).middlewareOptions(prepScopes('user.read')).get();
   if (getIsUsersCacheEnabled()) {
     cache.putValue('me', { user: JSON.stringify(await response) });
   }
@@ -121,10 +118,7 @@ export async function getUser(graph: IGraph, userPrincipleName: string, requeste
   }
 
   // else we must grab it
-  const response = await graph
-    .api(apiString)
-    .middlewareOptions(prepScopes(scopes))
-    .get();
+  const response = await graph.api(apiString).middlewareOptions(prepScopes(scopes)).get();
   if (getIsUsersCacheEnabled()) {
     cache.putValue(userPrincipleName, { user: JSON.stringify(response) });
   }
@@ -289,12 +283,13 @@ export async function findUsers(graph: IGraph, query: string, top: number = 10):
 
   let graphResult;
 
+  let encodedQuery = `${query.replace(/#/g, '%2523')}`;
   try {
     graphResult = await graph
       .api('users')
       .header('ConsistencyLevel', 'eventual')
       .count(true)
-      .search(`"displayName:${query}" OR "mail:${query}"`)
+      .search(`"displayName:${encodedQuery}" OR "mail:${encodedQuery}"`)
       .top(top)
       .middlewareOptions(prepScopes(scopes))
       .get();
