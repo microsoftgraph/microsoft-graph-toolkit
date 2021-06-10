@@ -283,12 +283,13 @@ export async function findUsers(graph: IGraph, query: string, top: number = 10):
 
   let graphResult;
 
+  let encodedQuery = `${query.replace(/#/g, '%2523')}`;
   try {
     graphResult = await graph
       .api('users')
       .header('ConsistencyLevel', 'eventual')
       .count(true)
-      .search(`"displayName:${query}" OR "mail:${query}"`)
+      .search(`"displayName:${encodedQuery}" OR "mail:${encodedQuery}"`)
       .top(top)
       .middlewareOptions(prepScopes(scopes))
       .get();
