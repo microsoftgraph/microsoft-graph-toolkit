@@ -1134,10 +1134,11 @@ export class MgtPeoplePicker extends MgtTemplatedComponent {
    */
   private onUserKeyDown(event: KeyboardEvent): void {
     const selectedList = this.renderRoot.querySelector('.selected-list');
-    if (event.ctrlKey && selectedList) {
+    const isCmdOrCtrlKey = event.ctrlKey || event.metaKey;
+    if (isCmdOrCtrlKey && selectedList) {
       const selectedPeople = selectedList.querySelectorAll('mgt-person.selected-list__person-wrapper__person');
       this.flyout.close();
-      if (event.ctrlKey && event.code === 'ArrowLeft') {
+      if (isCmdOrCtrlKey && event.code === 'ArrowLeft') {
         this._currentHighlightedUserPos =
           (this._currentHighlightedUserPos - 1 + selectedPeople.length) % selectedPeople.length;
         if (this._currentHighlightedUserPos >= 0 && this._currentHighlightedUserPos !== NaN) {
@@ -1145,7 +1146,7 @@ export class MgtPeoplePicker extends MgtTemplatedComponent {
         } else {
           this._currentHighlightedUserPos = 0;
         }
-      } else if (event.ctrlKey && event.code === 'ArrowRight') {
+      } else if (isCmdOrCtrlKey && event.code === 'ArrowRight') {
         const person = this._highlightedUsers.pop();
         if (person) {
           person.classList.replace(
@@ -1154,7 +1155,7 @@ export class MgtPeoplePicker extends MgtTemplatedComponent {
           );
           this._currentHighlightedUserPos++;
         }
-      } else if (event.ctrlKey && event.code === 'KeyA') {
+      } else if (isCmdOrCtrlKey && event.code === 'KeyA') {
         this._highlightedUsers = [];
         selectedPeople.forEach(person => this._highlightedUsers.push(person));
       }
