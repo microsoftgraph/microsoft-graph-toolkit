@@ -51,7 +51,8 @@ export class MockGraph extends Graph {
     super(
       Client.initWithMiddleware({
         baseUrl: BASE_URL + ROOT_GRAPH_URL,
-        middleware: chainMiddleware(...middleware)
+        middleware: chainMiddleware(...middleware),
+        customHosts: new Set<string>([new URL(BASE_URL).hostname])
       })
     );
   }
