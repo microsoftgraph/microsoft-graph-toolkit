@@ -1,0 +1,91 @@
+/**
+ * -------------------------------------------------------------------------------------------
+ * Copyright (c) Microsoft Corporation.  All Rights Reserved.  Licensed under the MIT License.
+ * See License in the project root for license information.
+ * -------------------------------------------------------------------------------------------
+ */
+
+@import '../../../../../node_modules/office-ui-fabric-core/dist/sass/References';
+@import '../../styles/shared-styles.scss';
+@import './mgt-file.theme.scss';
+
+$file-type-icon-size: var(--file-type-icon-size, 28px);
+$file-border: var(--file-border, none);
+$file-box-shadow: var(--file-box-shadow, none);
+$file-background-color: set-var(background-color, $theme-default, $file);
+
+$font-family: var(--font-family, var(--default-font-family));
+$font-size: var(--font-size, #{$ms-font-size-m});
+$font-weight: var(--font-weight, 400);
+$text-transform: var(text-transform, none);
+
+$line2-font-size: var(--line2-font-size, var(--last-modified-font-size, #{$ms-font-size-s}));
+$line2-font-weight: var(--line2-font-weight, 400);
+$line2-text-transform: var(--line2-text-transform, #{$text-transform});
+
+$line3-font-size: var(--line3-font-size, var(--size-font-size, #{$ms-font-size-s}));
+$line3-font-weight: var(--line3-font-weight, 400);
+$line3-text-transform: var(--line3-text-transform, #{$text-transform});
+
+:host {
+  font-family: $font-family;
+}
+
+:host .item,
+mgt-file .item {
+  display: flex;
+  flex-flow: row nowrap;
+  align-items: center;
+  background-color: $file-background-color;
+
+  &__file-type-icon {
+    padding: 16px;
+    width: $file-type-icon-size;
+    min-width: $file-type-icon-size;
+    height: $file-type-icon-size;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    img {
+      height: $file-type-icon-size;
+      width: $file-type-icon-size;
+    }
+  }
+
+  &__details {
+    padding: 10px 0;
+
+    .line1 {
+      font-size: $font-size;
+      font-weight: $font-weight;
+      text-transform: $text-transform;
+      line-height: 20px;
+      color: $color;
+    }
+
+    .line2 {
+      color: $line2__color;
+      font-size: $line2-font-size;
+      font-weight: $line2-font-weight;
+      text-transform: $line2-text-transform;
+      line-height: 16px;
+    }
+
+    .line3 {
+      color: $line3__color;
+      font-size: $line3-font-size;
+      font-weight: $line3-font-weight;
+      text-transform: $line3-text-transform;
+      line-height: 16px;
+    }
+  }
+}
+
+[dir='rtl'] {
+  .item {
+    &__details {
+      direction: ltr;
+    }
+  }
+}

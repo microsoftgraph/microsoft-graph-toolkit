@@ -6,6 +6,8 @@
  */
 
 import './mgt-agenda/mgt-agenda';
+import './mgt-file/mgt-file';
+import './mgt-file-list/mgt-file-list';
 import './mgt-get/mgt-get';
 import './mgt-login/mgt-login';
 import './mgt-people-picker/mgt-people-picker';
@@ -17,6 +19,8 @@ import './mgt-teams-channel-picker/mgt-teams-channel-picker';
 import './mgt-todo/mgt-todo';
 
 export * from './mgt-agenda/mgt-agenda';
+export * from './mgt-file/mgt-file';
+export * from './mgt-file-list/mgt-file-list';
 export * from './mgt-get/mgt-get';
 export * from './mgt-login/mgt-login';
 export * from './mgt-people-picker/mgt-people-picker';

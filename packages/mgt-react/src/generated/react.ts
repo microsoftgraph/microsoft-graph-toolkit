@@ -1,4 +1,4 @@
-import { ResponseType,IDynamicPerson,PersonType,GroupType,PersonCardInteraction,MgtPersonConfig,PersonViewType,AvatarSize,TasksStringResource,TasksSource,TaskFilter,SelectedChannel,TodoFilter } from '@microsoft/mgt-components';
+import { OfficeGraphInsightString,ViewType,ResponseType,IDynamicPerson,PersonType,GroupType,UserType,PersonCardInteraction,MgtPersonConfig,AvatarSize,PersonViewType,TasksStringResource,TasksSource,TaskFilter,SelectedChannel,TodoFilter } from '@microsoft/mgt-components';
 import { TemplateContext,ComponentMediaQuery } from '@microsoft/mgt-element';
 import * as MicrosoftGraph from '@microsoft/microsoft-graph-types';
 import * as MicrosoftGraphBeta from '@microsoft/microsoft-graph-types-beta';
@@ -16,6 +16,50 @@ export type AgendaProps = {
 	templateContext?: TemplateContext;
 	mediaQuery?: ComponentMediaQuery;
 	eventClick?: (e: Event) => void;
+	templateRendered?: (e: Event) => void;
+}
+
+export type FileListProps = {
+	fileListQuery?: string;
+	fileQueries?: string[];
+	files?: MicrosoftGraph.DriveItem[];
+	siteId?: string;
+	driveId?: string;
+	groupId?: string;
+	itemId?: string;
+	itemPath?: string;
+	userId?: string;
+	insightType?: OfficeGraphInsightString;
+	fileExtensions?: string[];
+	hideMoreFilesButton?: boolean;
+	pageSize?: number;
+	itemView?: ViewType;
+	templateContext?: TemplateContext;
+	mediaQuery?: ComponentMediaQuery;
+	itemClick?: (e: Event) => void;
+	templateRendered?: (e: Event) => void;
+}
+
+export type FileProps = {
+	fileQuery?: string;
+	siteId?: string;
+	driveId?: string;
+	groupId?: string;
+	listId?: string;
+	userId?: string;
+	itemId?: string;
+	itemPath?: string;
+	insightType?: OfficeGraphInsightString;
+	insightId?: string;
+	fileDetails?: MicrosoftGraph.DriveItem;
+	fileIcon?: string;
+	driveItem?: MicrosoftGraph.DriveItem;
+	line1Property?: string;
+	line2Property?: string;
+	line3Property?: string;
+	view?: ViewType;
+	templateContext?: TemplateContext;
+	mediaQuery?: ComponentMediaQuery;
 	templateRendered?: (e: Event) => void;
 }
 
@@ -50,14 +94,17 @@ export type PeoplePickerProps = {
 	groupId?: string;
 	type?: PersonType;
 	groupType?: GroupType;
+	userType?: UserType;
 	transitiveSearch?: boolean;
 	people?: IDynamicPerson[];
 	selectedPeople?: IDynamicPerson[];
 	defaultSelectedUserIds?: string[];
+	defaultSelectedGroupIds?: string[];
 	placeholder?: string;
 	selectionMode?: string;
 	showMax?: number;
 	disabled?: boolean;
+	allowAnyEmail?: boolean;
 	templateContext?: TemplateContext;
 	mediaQuery?: ComponentMediaQuery;
 	selectionChanged?: (e: Event) => void;
@@ -92,6 +139,7 @@ export type PersonCardProps = {
 	personPresence?: MicrosoftGraphBeta.Presence;
 	templateContext?: TemplateContext;
 	mediaQuery?: ComponentMediaQuery;
+	expanded?: (e: Event) => void;
 	templateRendered?: (e: Event) => void;
 }
 
@@ -110,7 +158,7 @@ export type PersonProps = {
 	line1Property?: string;
 	line2Property?: string;
 	line3Property?: string;
-	view?: PersonViewType;
+	view?: ViewType | PersonViewType;
 	avatarSize?: AvatarSize;
 	templateContext?: TemplateContext;
 	mediaQuery?: ComponentMediaQuery;
@@ -164,6 +212,10 @@ export type TodoProps = {
 
 export const Agenda = wrapMgt<AgendaProps>('mgt-agenda');
 
+export const FileList = wrapMgt<FileListProps>('mgt-file-list');
+
+export const File = wrapMgt<FileProps>('mgt-file');
+
 export const Get = wrapMgt<GetProps>('mgt-get');
 
 export const Login = wrapMgt<LoginProps>('mgt-login');
@@ -182,5 +234,3 @@ export const TeamsChannelPicker = wrapMgt<TeamsChannelPickerProps>('mgt-teams-ch
 
 export const Todo = wrapMgt<TodoProps>('mgt-todo');
 
-export { ResponseType,IDynamicPerson,PersonType,GroupType,PersonCardInteraction,MgtPersonConfig,PersonViewType,AvatarSize,TasksStringResource,TasksSource,TaskFilter,SelectedChannel,TodoFilter } from '@microsoft/mgt-components';
-export { TemplateContext,ComponentMediaQuery } from '@microsoft/mgt-element';

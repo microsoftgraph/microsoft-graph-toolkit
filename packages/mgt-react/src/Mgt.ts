@@ -142,7 +142,8 @@ export class Mgt extends Wc {
  * @returns React component
  */
 export const wrapMgt = <T = WcProps>(tag: string) => {
-  const component: React.FC<T & React.HTMLAttributes<any>> = (props: T) =>
-    React.createElement(Mgt, { wcType: tag, ...props });
+  const component: React.ForwardRefExoticComponent<
+    React.PropsWithoutRef<T & React.HTMLAttributes<any>> & React.RefAttributes<unknown>
+  > = React.forwardRef((props: T, ref) => React.createElement(Mgt, { wcType: tag, innerRef: ref, ...props }));
   return component;
 };
