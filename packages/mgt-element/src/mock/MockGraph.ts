@@ -24,7 +24,9 @@ import { setRequestHeader } from '@microsoft/microsoft-graph-client/lib/es/middl
 /**
  * The base URL for the mock endpoint
  */
-const BASE_URL = 'https://developer.microsoft.com/en-us/graph/api/proxy?url=';
+
+const BASE_URL = 'https://graph.office-int.net/en-us/graph/api/proxy?url=';
+// const BASE_URL = 'https://developer.microsoft.com/en-us/graph/api/proxy?url=';
 // const BASE_URL = 'https://proxy.apisandbox.msdn.microsoft.com/svc?url=';
 /**
  * The base URL for the graph
@@ -85,8 +87,8 @@ class MockMiddleware implements Middleware {
    */
   private _nextMiddleware: Middleware;
 
-  private static _headerKey = 'MS-ODXIP-API-KEY';
-  private static _headerValue = 'F4E777A5-3E38-410A-BE5D-CAC2A1998EC3';
+  private static _headerKey = 'MS-M365DEVPORTALS-API-KEY';
+  private static _headerValue = '370AD7CD-2CA0-470C-A11D-BA0F2915329A';
 
   // tslint:disable-next-line: completed-docs
   public async execute(context: Context): Promise<void> {
