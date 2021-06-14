@@ -824,6 +824,10 @@ export class MgtPeoplePicker extends MgtTemplatedComponent {
         this.defaultSelectedUsers = await getUsersForUserIds(graph, this.defaultSelectedUserIds);
         this.defaultSelectedGroups = await getGroupsForGroupIds(graph, this.defaultSelectedGroupIds);
 
+        this.defaultSelectedGroups = this.defaultSelectedGroups.filter(group => {
+          return group !== null;
+        });
+
         this.selectedPeople = [...this.defaultSelectedUsers, ...this.defaultSelectedGroups];
         this.requestUpdate();
         this.fireCustomEvent('selectionChanged', this.selectedPeople);
