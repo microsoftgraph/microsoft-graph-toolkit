@@ -228,9 +228,11 @@ export async function findContactsByEmail(graph: IGraph, email: string): Promise
     }
   }
 
+  let encodedEmail = `${email.replace(/#/g, '%2523')}`;
+
   const result = await graph
     .api('/me/contacts')
-    .filter(`emailAddresses/any(a:a/address eq '${email}')`)
+    .filter(`emailAddresses/any(a:a/address eq '${encodedEmail}')`)
     .middlewareOptions(prepScopes(scopes))
     .get();
 

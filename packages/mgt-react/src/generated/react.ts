@@ -139,6 +139,7 @@ export type PersonCardProps = {
 	personPresence?: MicrosoftGraphBeta.Presence;
 	templateContext?: TemplateContext;
 	mediaQuery?: ComponentMediaQuery;
+	expanded?: (e: Event) => void;
 	templateRendered?: (e: Event) => void;
 }
 

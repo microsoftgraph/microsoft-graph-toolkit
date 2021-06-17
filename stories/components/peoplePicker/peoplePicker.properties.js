@@ -116,6 +116,11 @@ export const pickDistributionGroups = () => html`
   <!-- group-type can be "any", "unified", "security", "mailenabledsecurity", "distribution" -->
 `;
 
+export const pickMultipleGroups = () => html`
+  <mgt-people-picker type="group" group-type="unified,distribution,security"></mgt-people-picker>
+  <!-- group-type can be "any", "unified", "security", "mailenabledsecurity", "distribution" -->
+`;
+
 export const pickPeople = () => html`
   <mgt-people-picker type="person"></mgt-people-picker>
   <!-- type can be "any", "person", "group" -->

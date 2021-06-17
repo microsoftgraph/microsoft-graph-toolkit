@@ -24,7 +24,7 @@ export const personCard = () => html`
     <mgt-person person-query="me" view="twoLines" person-card="hover"></mgt-person>
   </div>
   <div class="example">
-  <div style="margin-bottom:10px">Person card Click</div>
+    <div style="margin-bottom:10px">Person card Click</div>
     <mgt-person person-query="me" view="twoLines" person-card="click"></mgt-person>
   </div>
 `;
@@ -34,13 +34,13 @@ export const setPersonDetails = () => html`
   <script>
     const person = document.querySelector('.my-person');
 
-    person.personDetails = {
-      displayName: 'Megan Bowen',
-      mail: 'MeganB@M365x214355.onmicrosoft.com'
-    };
+            person.personDetails = {
+              displayName: 'Megan Bowen',
+              mail: 'MeganB@M365x214355.onmicrosoft.com'
+            };
 
-    // set image
-   // person.personImage = '';
+            // set image
+           // person.personImage = '';
   </script>
 `;
 
@@ -62,6 +62,12 @@ export const personFallbackDetails = () => html`
       fallback-details='{"mail":"MeganB@M365x214355.onmicrosoft.com","displayName":"Megan Bowen"}'
     ></mgt-person>
   </div>
+
+  <style>
+  .example {
+    margin-top: 16px;
+  }
+  </style>
 `;
 
 export const personPhotoOnly = () => html`
@@ -89,6 +95,11 @@ export const personView = () => html`
   </style>
 `;
 
+export const personLineProperties = () => html`
+  <mgt-person person-query="me" view="threelines" show-presence line1-property="givenName" line2-property="jobTitle"
+    line3-property="presenceAvailability"></mgt-person>
+`;
+
 export const personPresence = () => html`
 <script>
 const online = {
@@ -109,6 +120,15 @@ onlinePerson.personPresence = online;
   <mgt-person person-query="me" show-presence view="twoLines" class="example"></mgt-person>
   <div>Set presence</div>
   <mgt-person person-query="me" id="online" person-presence="{activity: 'Available', availability:'Available', id:null}" show-presence view="twoLines" class="example"></mgt-person>
+  <div>Presence Line properties</div>
+  <mgt-person
+    person-query="me"
+    show-presence
+    view="twoLines"
+    class="example"
+    line1-property="presenceAvailability"
+    line2-property="presenceActivity"
+    ></mgt-person>
 `;
 
 export const personPresenceDisplayAll = () => html`
