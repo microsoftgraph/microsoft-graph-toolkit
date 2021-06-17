@@ -11,12 +11,17 @@
 
 // Main
 :host {
-  border-radius: 2px;
   font-family: $font-family;
-  height: 38px;
+  font-size: 14px;
+  line-height: 20px;
+  height: 24px;
   display: contents;
-  height: 100%;
   overflow: hidden;
+  position: absolute;
+  width: 135px;
+  left: 0px;
+  top: 0px;
+  border-radius: 20px;
 }
 
 :host .root,
@@ -105,12 +110,12 @@ mgt-people-picker .root {
 
     &__person-wrapper-highlighted {
       @extend .selected-list__person-wrapper;
-      background-color: #0078d4;
+      background: #005393;
 
       &__person {
         @extend .selected-list__person-wrapper__person;
-        // --color: set-var($color, white);
-        color: set-var($color, white);
+        color: white;
+        --color: white;
       }
 
       &__overflow {
@@ -122,8 +127,8 @@ mgt-people-picker .root {
 
         &__close-icon {
           @extend .selected-list__person-wrapper__overflow__close-icon;
-          background-color: #0078d4;
-          color: set-var($color, white);
+          background: #005393;
+          color: white;
         }
       }
     }
