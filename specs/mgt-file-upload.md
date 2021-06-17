@@ -11,7 +11,7 @@ The file upload component provide a button or a drag and drop effect where file 
 | Feature | Priority | Notes |
 | ------- | -------- | ----- |
 | **v1** | | |
-| Provide Drag and Drop functionality to upload files to Libraries | P0 | |	
+| Provide upload button and drag and drop functionality to upload files to Libraries | P0 | |	
 | Provide status information of Uploaded files | P0 | |
 | Always provide upload button when browser doesn't support drag and drop funcionality for Mobile/accessibility reason.  | P0 | |
 
