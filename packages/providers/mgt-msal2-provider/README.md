@@ -15,7 +15,7 @@ The `@microsoft/mgt-msal2-provider` package exposes the `Msal2Provider` class wh
     npm install @microsoft/mgt-element @microsoft/mgt-msal2-provider
     ```
 
-2. Initialize the provider in code
+2. Initialize the provider in code with `Msal2Config`
 
     ```ts
     import {Providers, LoginType} from '@microsoft/mgt-element';
@@ -36,7 +36,29 @@ The `@microsoft/mgt-msal2-provider` package exposes the `Msal2Provider` class wh
     });
     ```
 
-3. Alternatively, initialize the provider in html (only `client-id` is required):
+3. Initialize the provider in code with `Msal2PublicClientApplicationConfig` if a `PublicClientApplication` is already instantiated. For example, `msal-angular` instantiates `PublicClientApplication` on startup.
+
+    ```ts
+    import {Providers, LoginType} from '@microsoft/mgt-element';
+    import {Msal2Provider, PromptType} from '@microsoft/mgt-msal2-provider';
+    import {PublicClientApplication} from '@azure/msal-browser';
+
+    // initialize the auth provider globally
+    Providers.globalProvider = new Msal2Provider({
+      publicClientApplication: PublicClientApplication,
+      scopes?: string[],
+      authority?: string,
+      redirectUri?: string,
+      loginType?: LoginType, // LoginType.Popup or LoginType.Redirect (redirect is default)
+      prompt?: PromptType, // PromptType.CONSENT, PromptType.LOGIN or PromptType.SELECT_ACCOUNT
+      sid?: string, // Session ID
+      loginHint?: string,
+      domainHint?: string,
+      options?: Configuration // msal js Configuration object
+    });
+    ```
+
+4. Alternatively, initialize the provider in html (only `client-id` is required):
 
     ```html
     <script type="module" src="../node_modules/@microsoft/mgt-msal2-provider/dist/es6/index.js" />
