@@ -1149,11 +1149,15 @@ export class MgtPeoplePicker extends MgtTemplatedComponent {
       } else if (isCmdOrCtrlKey && event.code === 'ArrowRight') {
         const person = this._highlightedUsers.pop();
         if (person) {
-          person.classList.replace(
-            'selected-list__person-wrapper__highlighted',
-            'selected-list__person-wrapper__person'
-          );
-          this._currentHighlightedUserPos++;
+          // person.classList.replace(
+          //   'selected-list__person-wrapper__highlighted',
+          //   'selected-list__person-wrapper__person'
+          // );
+          const personParent = person.parentElement;
+          if (personParent) {
+            this.clearHighlighted(personParent);
+            this._currentHighlightedUserPos++;
+          }
         }
       } else if (isCmdOrCtrlKey && event.code === 'KeyA') {
         this._highlightedUsers = [];
@@ -1224,10 +1228,16 @@ export class MgtPeoplePicker extends MgtTemplatedComponent {
 
       copyText.push({ id, displayName, email: emailAddress });
     }
+    let copiedTextStr: string;
+    if (copyText.length > 0) {
+      copiedTextStr = JSON.stringify(copyText);
+    } else {
+      copiedTextStr = '';
+    }
     navigator.clipboard
-      .writeText(JSON.stringify(copyText))
+      .writeText(copiedTextStr)
       .then(() => {})
-      .catch(err => console.error(err));
+      .catch(err => {});
   }
 
   /**
@@ -1250,9 +1260,13 @@ export class MgtPeoplePicker extends MgtTemplatedComponent {
    */
   private handlePaste() {
     navigator.clipboard.readText().then(copiedText => {
-      const people = JSON.parse(copiedText);
-      for (const person of people) {
-        this.addPerson(person);
+      if (copiedText) {
+        const people = JSON.parse(copiedText);
+        if (people && people.length > 0) {
+          for (const person of people) {
+            this.addPerson(person);
+          }
+        }
       }
     });
   }
@@ -1264,20 +1278,80 @@ export class MgtPeoplePicker extends MgtTemplatedComponent {
   private highlightSelectedPeople(people: Element[]) {
     for (let i = 0; i < people.length; i++) {
       const person = people[i];
-      person.classList.replace('selected-list__person-wrapper__person', 'selected-list__person-wrapper__highlighted');
+      const parentElement = person.parentElement;
+      parentElement.setAttribute('class', 'selected-list__person-wrapper-highlighted');
+
+      const personNodes = Array.from(parentElement.getElementsByClassName('selected-list__person-wrapper__person'));
+      if (personNodes && personNodes.length > 0) {
+        const personNode = personNodes.pop();
+        personNode.setAttribute('class', 'selected-list__person-wrapper-highlighted__person');
+      }
+
+      const gradientNodes = Array.from(
+        parentElement.getElementsByClassName('selected-list__person-wrapper__overflow__gradient')
+      );
+      if (gradientNodes && gradientNodes.length > 0) {
+        const gradientNode = gradientNodes.pop();
+        gradientNode.setAttribute('class', 'selected-list__person-wrapper-highlighted__overflow__gradient');
+      }
+
+      const closeIconNodes = Array.from(
+        parentElement.getElementsByClassName('selected-list__person-wrapper__overflow__close-icon')
+      );
+      if (closeIconNodes && closeIconNodes.length > 0) {
+        const closeIconNode = closeIconNodes.pop();
+        closeIconNode.setAttribute('class', 'selected-list__person-wrapper-highlighted__overflow__close-icon');
+      }
     }
   }
 
   /**
    * Defaults the people class back to the normal view
    */
-  private clearHighlighted() {
-    for (let i = 0; i < this._highlightedUsers.length; i++) {
-      const person = this._highlightedUsers[i];
-      person.classList.replace('selected-list__person-wrapper__highlighted', 'selected-list__person-wrapper__person');
+  private clearHighlighted(node?: Element) {
+    if (node) {
+      this.clearNodeHighlights(node);
+    } else {
+      for (let i = 0; i < this._highlightedUsers.length; i++) {
+        const person = this._highlightedUsers[i];
+        const parentElement = person.parentElement;
+        if (parentElement) {
+          this.clearNodeHighlights(parentElement);
+        }
+      }
+      this._highlightedUsers = [];
+      this._currentHighlightedUserPos = 0;
     }
-    this._highlightedUsers = [];
-    this._currentHighlightedUserPos = 0;
+  }
+
+  /**
+   * Returns the original classes of a highlighted person element
+   * @param node a highlighted node element
+   */
+  private clearNodeHighlights(node: Element) {
+    node.setAttribute('class', 'selected-list__person-wrapper');
+
+    const personNodes = Array.from(node.getElementsByClassName('selected-list__person-wrapper-highlighted__person'));
+    if (personNodes && personNodes.length > 0) {
+      const personNode = personNodes.pop();
+      personNode.setAttribute('class', 'selected-list__person-wrapper__person');
+    }
+
+    const gradientNodes = Array.from(
+      node.getElementsByClassName('selected-list__person-wrapper-highlighted__overflow__gradient')
+    );
+    if (gradientNodes && gradientNodes.length > 0) {
+      const gradientNode = gradientNodes.pop();
+      gradientNode.setAttribute('class', 'selected-list__person-wrapper__overflow__gradient');
+    }
+
+    const closeIconNodes = Array.from(
+      node.getElementsByClassName('selected-list__person-wrapper-highlighted__overflow__close-icon')
+    );
+    if (closeIconNodes && closeIconNodes.length > 0) {
+      const closeIconNode = closeIconNodes.pop();
+      closeIconNode.setAttribute('class', 'selected-list__person-wrapper__overflow__close-icon');
+    }
   }
 
   /**

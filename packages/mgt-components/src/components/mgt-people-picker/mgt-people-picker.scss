@@ -72,11 +72,6 @@ mgt-people-picker .root {
         padding-right: 4px;
       }
 
-      &__highlighted {
-        background-color: #0078d4;
-        text-decoration-color: #ffffff;
-      }
-
       &__overflow {
         margin-left: 25px;
 
@@ -104,6 +99,31 @@ mgt-people-picker .root {
           right: 0;
           background-color: set-var(selected-person__background-color, $theme-default, $people-picker);
           color: $color;
+        }
+      }
+    }
+
+    &__person-wrapper-highlighted {
+      @extend .selected-list__person-wrapper;
+      background-color: #0078d4;
+
+      &__person {
+        @extend .selected-list__person-wrapper__person;
+        // --color: set-var($color, white);
+        color: set-var($color, white);
+      }
+
+      &__overflow {
+        @extend .selected-list__person-wrapper__overflow;
+        &__gradient {
+          @extend .selected-list__person-wrapper__overflow__gradient;
+          background-image: none;
+        }
+
+        &__close-icon {
+          @extend .selected-list__person-wrapper__overflow__close-icon;
+          background-color: #0078d4;
+          color: set-var($color, white);
         }
       }
     }
