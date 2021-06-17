@@ -828,6 +828,10 @@ export class MgtPeoplePicker extends MgtTemplatedComponent {
           return group !== null;
         });
 
+        this.defaultSelectedUsers = this.defaultSelectedUsers.filter(user => {
+          return user !== null;
+        });
+
         this.selectedPeople = [...this.defaultSelectedUsers, ...this.defaultSelectedGroups];
         this.requestUpdate();
         this.fireCustomEvent('selectionChanged', this.selectedPeople);
