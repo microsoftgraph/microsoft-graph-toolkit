@@ -1,4 +1,4 @@
-# Microsoft Graph Toolkit Microsoft Teams Provider
+# Microsoft Graph Toolkit Microsoft Teams SSO Provider
 
 [![npm](https://img.shields.io/npm/v/@microsoft/mgt-teams-sso-provider?style=for-the-badge)](https://www.npmjs.com/package/@microsoft/mgt-teams-sso-provider)
 
@@ -18,7 +18,7 @@ The TeamsProvider requires the usage of the Microsoft Teams SDK which is not aut
     npm install @microsoft/teams-js @microsoft/mgt-element @microsoft/mgt-teams-sso-provider
     ```
 
-1. Before initializing the provider, create a new page in your application (ex: https://mydomain.com/auth) that will handle the auth redirect. Call the `handleAuth` function to handle all authentication on your behalf.
+1. Before initializing the provider, create a new page in your application (ex: https://mydomain.com/auth) that will handle the auth redirect. Call the `handleAuth` function to handle all client side auth or permission consent.
 
     ```ts
     import * as MicrosoftTeams from "@microsoft/teams-js/dist/MicrosoftTeams";
@@ -28,7 +28,7 @@ The TeamsProvider requires the usage of the Microsoft Teams SDK which is not aut
     TeamsProvider.handleAuth();
     ```
 
-3. Initialize the provider in your main code (not on your auth page)
+3. Initialize the provider in your main code (not on your auth page). The provider can be used in "client side auth" mode or SSO mode. SSO mode is enabled by setting `ssoUrl` \ `sso-url` and requires a backend service to handle the on-behalf-of flow.
 
     ```ts
     import {Providers} from '@microsoft/mgt-element';

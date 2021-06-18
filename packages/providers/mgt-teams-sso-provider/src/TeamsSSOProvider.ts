@@ -6,7 +6,7 @@
  */
 
 import { AuthenticationProviderOptions } from '@microsoft/microsoft-graph-client/lib/es/IAuthenticationProviderOptions';
-import { Configuration, InteractionRequiredAuthError } from '@azure/msal-browser';
+import { Configuration, InteractionRequiredAuthError, SilentRequest } from '@azure/msal-browser';
 import { LoginType, ProviderState, TeamsHelper } from '@microsoft/mgt-element';
 import { Msal2Provider, PromptType } from '@microsoft/mgt-msal2-provider';
 
@@ -477,31 +477,26 @@ export class TeamsSSOProvider extends Msal2Provider {
     }
     // If we are not in SSO Mode and using the Login component
     else {
-      const teams = TeamsHelper.microsoftTeamsLib;
-      return new Promise((resolve, reject) => {
-        teams.getContext(async context => {
-          this.teamsContext = context;
+      return new Promise(async (resolve, reject) => {
+        const accessTokenRequest: SilentRequest = {
+          scopes: scopes,
+          account: this.getAccount()
+        };
 
-          const accessTokenRequest = {
-            scopes: scopes,
-            loginHint: this.teamsContext.loginHint
-          };
-
-          try {
-            const response = await this.publicClientApplication.acquireTokenSilent(accessTokenRequest);
-            // return response.accessToken;
-            resolve(response.accessToken);
-          } catch (e) {
-            if (e instanceof InteractionRequiredAuthError) {
-              // nothing we can do now until we can do incremental consent
-              // return null;
-              resolve(null);
-            } else {
-              // throw e;
-              reject(e);
-            }
+        try {
+          const response = await this.publicClientApplication.acquireTokenSilent(accessTokenRequest);
+          // return response.accessToken;
+          resolve(response.accessToken);
+        } catch (e) {
+          if (e instanceof InteractionRequiredAuthError) {
+            // nothing we can do now until we can do incremental consent
+            // return null;
+            resolve(null);
+          } else {
+            // throw e;
+            reject(e);
           }
-        });
+        }
       });
     }
   }

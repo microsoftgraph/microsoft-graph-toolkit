@@ -5,6 +5,8 @@ import express from 'express';
 import path from 'path';
 import { getAccessTokenOnBehalfOf, getAccessTokenOnBehalfOfPost, validateJwt } from './auth';
 
+var cors = require('cors');
+
 // Load .env file
 dotenv.config();
 
@@ -14,6 +16,9 @@ const PORT = process.env.port || process.env.PORT || 5000;
 // Support JSON payloads
 app.use(express.json());
 app.use(express.static(path.join(__dirname, 'client')));
+
+// enable cors for localhost for this sample
+app.use(cors());
 
 // An example for using GET and with token validation using middleware
 app.get('/api/token', validateJwt, async (req, res) => {

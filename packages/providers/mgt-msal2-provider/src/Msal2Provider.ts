@@ -528,7 +528,7 @@ export class Msal2Provider extends IProvider {
    * @return {*}  {(AccountInfo | null)}
    * @memberof Msal2Provider
    */
-  private getAccount(): AccountInfo | null {
+  protected getAccount(): AccountInfo | null {
     const account = this.getStoredAccount();
     if (account) {
       return account;
