@@ -153,7 +153,7 @@ export type PersonProps = {
 	personImage?: string;
 	fetchImage?: boolean;
 	avatarType?: string;
-	personPresence?: MicrosoftGraphBeta.Presence;
+	personPresence?: MicrosoftGraph.Presence;
 	personCardInteraction?: PersonCardInteraction;
 	line1Property?: string;
 	line2Property?: string;
