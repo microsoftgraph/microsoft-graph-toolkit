@@ -498,6 +498,8 @@ export class MgtPeoplePicker extends MgtTemplatedComponent {
     this._groupId = null;
     this.selectedPeople = [];
     this.userInput = '';
+    this._highlightedUsers = [];
+    this._currentHighlightedUserPos = 0;
   }
 
   /**
@@ -974,6 +976,7 @@ export class MgtPeoplePicker extends MgtTemplatedComponent {
   }
 
   private gainedFocus() {
+    this.clearHighlighted();
     this._isFocused = true;
     if (this.input) {
       this.input.focus();
@@ -1152,10 +1155,6 @@ export class MgtPeoplePicker extends MgtTemplatedComponent {
       } else if (isCmdOrCtrlKey && event.code === 'ArrowRight') {
         const person = this._highlightedUsers.pop();
         if (person) {
-          // person.classList.replace(
-          //   'selected-list__person-wrapper__highlighted',
-          //   'selected-list__person-wrapper__person'
-          // );
           const personParent = person.parentElement;
           if (personParent) {
             this.clearHighlighted(personParent);
@@ -1171,6 +1170,8 @@ export class MgtPeoplePicker extends MgtTemplatedComponent {
       }
       return;
     }
+
+    this.clearHighlighted();
 
     if (!this.flyout.isOpen) {
       return;
@@ -1231,12 +1232,11 @@ export class MgtPeoplePicker extends MgtTemplatedComponent {
 
       copyText.push({ id, displayName, email: emailAddress });
     }
-    let copiedTextStr: string;
+    let copiedTextStr: string = '';
     if (copyText.length > 0) {
       copiedTextStr = JSON.stringify(copyText);
-    } else {
-      copiedTextStr = '';
     }
+
     navigator.clipboard
       .writeText(copiedTextStr)
       .then(() => {})
@@ -1247,8 +1247,8 @@ export class MgtPeoplePicker extends MgtTemplatedComponent {
    * Handles the cut event when it is fired
    */
   private handleCut() {
-    this.clearState();
     this.writeHighlightedText();
+    this.clearState();
   }
 
   /**
