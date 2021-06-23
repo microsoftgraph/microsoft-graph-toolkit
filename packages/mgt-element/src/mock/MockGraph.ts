@@ -22,18 +22,6 @@ import { MockProvider } from './MockProvider';
 import { setRequestHeader } from '@microsoft/microsoft-graph-client/lib/es/middleware/MiddlewareUtil';
 
 /**
- * The base URL for the mock endpoint
- */
-
-const BASE_URL = 'https://graph.office-int.net/en-us/graph/api/proxy?url=';
-// const BASE_URL = 'https://developer.microsoft.com/en-us/graph/api/proxy?url=';
-// const BASE_URL = 'https://proxy.apisandbox.msdn.microsoft.com/svc?url=';
-/**
- * The base URL for the graph
- */
-const ROOT_GRAPH_URL = 'https://graph.microsoft.com/';
-
-/**
  * MockGraph Instance
  *
  * @export
@@ -52,7 +40,6 @@ export class MockGraph extends Graph {
 
     super(
       Client.initWithMiddleware({
-        baseUrl: BASE_URL + ROOT_GRAPH_URL,
         middleware: chainMiddleware(...middleware)
       })
     );
@@ -90,18 +77,21 @@ class MockMiddleware implements Middleware {
   private static _headerKey = 'MS-M365DEVPORTALS-API-KEY';
   private static _headerValue = '370AD7CD-2CA0-470C-A11D-BA0F2915329A';
 
+  // private static _baseUrl;
+  private static _baseUrl = 'https://graph.office-int.net/en-us/graph/api/proxy?url=';
+
   // tslint:disable-next-line: completed-docs
   public async execute(context: Context): Promise<void> {
     try {
-      const url = context.request as string;
-      const baseLength = BASE_URL.length;
-      context.request = url.substring(0, baseLength) + escape(url.substring(baseLength));
+      const baseUrl = await MockMiddleware.getBaseUrl();
+      context.request = baseUrl + escape(context.request as string);
       setRequestHeader(context.request, context.options, MockMiddleware._headerKey, MockMiddleware._headerValue);
     } catch (error) {
       // ignore error
     }
     return await this._nextMiddleware.execute(context);
   }
+
   /**
    * Handles setting of next middleware
    *
@@ -110,5 +100,20 @@ class MockMiddleware implements Middleware {
    */
   public setNext(next: Middleware): void {
     this._nextMiddleware = next;
+  }
+
+  private static async getBaseUrl() {
+    if (!this._baseUrl) {
+      try {
+        // get the url we should be using from the endpoint service
+        let response = await fetch('https://developer.microsoft.com/en-us/graph/api/proxy/endpoint');
+        this._baseUrl = (await response.json()) + '?url=';
+      } catch {
+        // fallback to hardcoded value
+        this._baseUrl = 'https://proxy.apisandbox.msdn.microsoft.com/svc?url=';
+      }
+    }
+
+    return this._baseUrl;
   }
 }
