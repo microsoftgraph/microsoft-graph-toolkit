@@ -427,11 +427,22 @@ export class MgtPeoplePicker extends MgtTemplatedComponent {
     if (provider && provider.state === ProviderState.SignedIn) {
       // tslint:disable-next-line: forin
       for (const id in userIds) {
+        const userId = userIds[id];
         try {
-          const personDetails = await getUser(graph, userIds[id]);
+          const personDetails = await getUser(graph, userId);
           this.addPerson(personDetails);
-          // tslint:disable-next-line: no-empty
-        } catch (e) {}
+        } catch (e) {
+          // This caters for allow-any-email property if it's enabled on the component
+          if (e.message && e.message.includes('does not exist') && this.allowAnyEmail) {
+            if (isValidEmail(userId)) {
+              const anyMailUser = {
+                mail: userId,
+                displayName: userId
+              };
+              this.addPerson(anyMailUser);
+            }
+          }
+        }
       }
     }
   }
@@ -1270,12 +1281,29 @@ export class MgtPeoplePicker extends MgtTemplatedComponent {
    * Parses the copied people text and adds them when you paste
    */
   private handlePaste() {
-    navigator.clipboard.readText().then(copiedText => {
+    navigator.clipboard.readText().then((copiedText: string) => {
       if (copiedText) {
-        const people = JSON.parse(copiedText);
-        if (people && people.length > 0) {
-          for (const person of people) {
-            this.addPerson(person);
+        try {
+          const people = JSON.parse(copiedText);
+          if (people && people.length > 0) {
+            for (const person of people) {
+              this.addPerson(person);
+            }
+          }
+        } catch (error) {
+          if (error instanceof SyntaxError) {
+            const _delimeters = [',', ';'];
+            let listOfUsers: Array<string>;
+            try {
+              for (let i = 0; i < _delimeters.length; i++) {
+                listOfUsers = copiedText.split(_delimeters[i]);
+                if (listOfUsers.length > 1) {
+                  this.hideFlyout();
+                  this.selectUsersById(listOfUsers);
+                  break;
+                }
+              }
+            } catch (error) {}
           }
         }
       }
