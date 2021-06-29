@@ -136,7 +136,7 @@ export type PersonCardProps = {
 	isExpanded?: boolean;
 	inheritDetails?: boolean;
 	showPresence?: boolean;
-	personPresence?: MicrosoftGraphBeta.Presence;
+	personPresence?: MicrosoftGraph.Presence;
 	templateContext?: TemplateContext;
 	mediaQuery?: ComponentMediaQuery;
 	expanded?: (e: Event) => void;

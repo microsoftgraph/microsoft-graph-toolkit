@@ -6,7 +6,6 @@
  */
 
 import * as MicrosoftGraph from '@microsoft/microsoft-graph-types';
-import { Presence } from '@microsoft/microsoft-graph-types-beta';
 import { customElement, html, internalProperty, property, TemplateResult } from 'lit-element';
 import { classMap } from 'lit-html/directives/class-map';
 import { MgtTemplatedComponent, Providers, ProviderState, TeamsHelper } from '@microsoft/mgt-element';
@@ -273,14 +272,14 @@ export class MgtPersonCard extends MgtTemplatedComponent {
   /**
    * Gets or sets presence of person
    *
-   * @type {MicrosoftGraphBeta.Presence}
+   * @type {MicrosoftGraph.Presence}
    * @memberof MgtPerson
    */
   @property({
     attribute: 'person-presence',
     type: Object
   })
-  public personPresence: Presence;
+  public personPresence: MicrosoftGraph.Presence;
 
   /**
    * The subsections for display in the lower part of the card
