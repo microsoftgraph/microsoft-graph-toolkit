@@ -6,7 +6,7 @@
  */
 
 import { IGraph, prepScopes, BetaGraph, CacheItem, CacheService, CacheStore } from '@microsoft/mgt-element';
-import { Presence } from '@microsoft/microsoft-graph-types-beta';
+import { Presence } from '@microsoft/microsoft-graph-types';
 import { schemas } from './cacheStores';
 import { IDynamicPerson } from './types';
 
