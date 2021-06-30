@@ -69,7 +69,7 @@ export class TemplateHelper {
     const start = this.escapeRegex(this._startExpression);
     const end = this.escapeRegex(this._endExpression);
 
-    this._expression = new RegExp(`${start}\\s*\([$\\w\\.()\\[\\]]+\)\\s*${end}`, 'g');
+    this._expression = new RegExp(`${start}\\s*([$\\w\\.,'"\\s()\\[\\]]+)\\s*${end}`, 'g');
   }
 
   /**
