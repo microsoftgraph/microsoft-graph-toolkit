@@ -5,11 +5,10 @@
  * -------------------------------------------------------------------------------------------
  */
 
-import * as MicrosoftGraph from '@microsoft/microsoft-graph-types';
-import { Presence } from '@microsoft/microsoft-graph-types-beta';
 import { customElement, html, internalProperty, property, TemplateResult } from 'lit-element';
 import { classMap } from 'lit-html/directives/class-map';
 import { MgtTemplatedComponent, Providers, ProviderState, TeamsHelper } from '@microsoft/mgt-element';
+import { Presence, User, Person } from '@microsoft/microsoft-graph-types';
 
 import { findPeople, getEmailFromGraphEntity } from '../../graph/graph.people';
 import { IDynamicPerson, ViewType } from '../../graph/types';
@@ -273,7 +272,7 @@ export class MgtPersonCard extends MgtTemplatedComponent {
   /**
    * Gets or sets presence of person
    *
-   * @type {MicrosoftGraphBeta.Presence}
+   * @type {MicrosoftGraph.Presence}
    * @memberof MgtPerson
    */
   @property({
@@ -298,7 +297,7 @@ export class MgtPersonCard extends MgtTemplatedComponent {
   private _chatInput: string;
   private _currentSection: BasePersonCardSection;
   private _personDetails: IDynamicPerson;
-  private _me: MicrosoftGraph.User;
+  private _me: User;
 
   private _userId: string;
 
@@ -524,7 +523,7 @@ export class MgtPersonCard extends MgtTemplatedComponent {
     }
 
     person = person || this.internalPersonDetails;
-    const userPerson = person as MicrosoftGraph.User;
+    const userPerson = person as User;
 
     // Email
     let email: TemplateResult;
@@ -773,7 +772,7 @@ export class MgtPersonCard extends MgtTemplatedComponent {
 
     // check if personDetail already populated
     if (this.personDetails) {
-      const user = this.personDetails as MicrosoftGraph.User;
+      const user = this.personDetails as User;
       const id = user.userPrincipalName || user.id;
 
       // if we have an id but no email, we should get data from the graph
@@ -875,7 +874,7 @@ export class MgtPersonCard extends MgtTemplatedComponent {
    * @memberof MgtPersonCard
    */
   protected callUser() {
-    const user = this.personDetails as MicrosoftGraph.User;
+    const user = this.personDetails as User;
     const person = this.personDetails as microsoftgraph.Person;
 
     if (user && user.businessPhones && user.businessPhones.length) {
@@ -899,7 +898,7 @@ export class MgtPersonCard extends MgtTemplatedComponent {
    * @memberof MgtPersonCard
    */
   protected chatUser(message: string = null) {
-    const user = this.personDetails as MicrosoftGraph.User;
+    const user = this.personDetails as User;
     if (user && user.userPrincipalName) {
       const users: string = user.userPrincipalName;
 
@@ -962,7 +961,7 @@ export class MgtPersonCard extends MgtTemplatedComponent {
       return;
     }
 
-    const contactSections = new MgtPersonCardContact(this.internalPersonDetails as MicrosoftGraph.User);
+    const contactSections = new MgtPersonCardContact(this.internalPersonDetails as User);
     if (contactSections.hasData) {
       this.sections.push(contactSections);
     }
@@ -1005,7 +1004,7 @@ export class MgtPersonCard extends MgtTemplatedComponent {
     return person && person.personImage ? person.personImage : null;
   }
 
-  private getPersonBusinessPhones(person: MicrosoftGraph.Person): string[] {
+  private getPersonBusinessPhones(person: Person): string[] {
     const phones = person.phones;
     const businessPhones: string[] = [];
     for (const p of phones) {
