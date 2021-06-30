@@ -1270,16 +1270,26 @@ export class MgtPeoplePicker extends MgtTemplatedComponent {
    * Parses the copied people text and adds them when you paste
    */
   private handlePaste() {
-    navigator.clipboard.readText().then(copiedText => {
-      if (copiedText) {
-        const people = JSON.parse(copiedText);
-        if (people && people.length > 0) {
-          for (const person of people) {
-            this.addPerson(person);
+    try {
+      navigator.clipboard
+        .readText()
+        .then(copiedText => {
+          if (copiedText) {
+            const people = JSON.parse(copiedText);
+            if (people && people.length > 0) {
+              for (const person of people) {
+                this.addPerson(person);
+              }
+            }
           }
-        }
-      }
-    });
+        })
+        .catch(e => {});
+    } catch (error) {
+      // 'navigator.clipboard.readText is not a function' error is thrown in Mozilla
+      // more information here https://developer.mozilla.org/en-US/docs/Web/API/Clipboard/readText#browser_compatibility
+      // Firefox only supports reading the clipboard in browser extensions,
+      // using the "clipboardRead" extension permission.
+    }
   }
 
   /**
