@@ -1281,33 +1281,41 @@ export class MgtPeoplePicker extends MgtTemplatedComponent {
    * Parses the copied people text and adds them when you paste
    */
   private handlePaste() {
-    navigator.clipboard.readText().then((copiedText: string) => {
-      if (copiedText) {
-        try {
-          const people = JSON.parse(copiedText);
-          if (people && people.length > 0) {
-            for (const person of people) {
-              this.addPerson(person);
+    try {
+      navigator.clipboard.readText().then((copiedText: string) => {
+        if (copiedText) {
+          try {
+            const people = JSON.parse(copiedText);
+            if (people && people.length > 0) {
+              for (const person of people) {
+                this.addPerson(person);
+              }
+            }
+          } catch (error) {
+            if (error instanceof SyntaxError) {
+              const _delimeters = [',', ';'];
+              let listOfUsers: Array<string>;
+              try {
+                for (let i = 0; i < _delimeters.length; i++) {
+                  listOfUsers = copiedText.split(_delimeters[i]);
+                  if (listOfUsers.length > 1) {
+                    this.hideFlyout();
+                    this.selectUsersById(listOfUsers);
+                    break;
+                  }
+                }
+                // tslint:disable-next-line: no-empty
+              } catch (error) {}
             }
           }
-        } catch (error) {
-          if (error instanceof SyntaxError) {
-            const _delimeters = [',', ';'];
-            let listOfUsers: Array<string>;
-            try {
-              for (let i = 0; i < _delimeters.length; i++) {
-                listOfUsers = copiedText.split(_delimeters[i]);
-                if (listOfUsers.length > 1) {
-                  this.hideFlyout();
-                  this.selectUsersById(listOfUsers);
-                  break;
-                }
-              }
-            } catch (error) {}
-          }
         }
-      }
-    });
+      });
+    } catch (error) {
+      // 'navigator.clipboard.readText is not a function' error is thrown in Mozilla
+      // more information here https://developer.mozilla.org/en-US/docs/Web/API/Clipboard/readText#browser_compatibility
+      // Firefox only supports reading the clipboard in browser extensions,
+      // using the "clipboardRead" extension permission.
+    }
   }
 
   /**
