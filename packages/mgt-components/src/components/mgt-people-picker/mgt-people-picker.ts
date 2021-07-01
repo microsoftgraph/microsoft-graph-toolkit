@@ -1042,8 +1042,14 @@ export class MgtPeoplePicker extends MgtTemplatedComponent {
    * Adds debounce method for set delay on user input
    */
   private onUserKeyUp(event: KeyboardEvent): void {
-    if (event.keyCode === 40 || event.keyCode === 39 || event.keyCode === 38 || event.keyCode === 37) {
-      // keyCodes capture: down arrow (40), right arrow (39), up arrow (38) and left arrow (37)
+    const isCmdOrCtrlKey = ['ControlLeft', 'ControlRight'].includes(event.code) || event.ctrlKey || event.metaKey;
+    const isArrowKey = ['ArrowDown', 'ArrowRight', 'ArrowUp', 'ArrowLeft'].includes(event.code);
+
+    if (isCmdOrCtrlKey || isArrowKey) {
+      if (isCmdOrCtrlKey || ['ArrowLeft', 'ArrowRight'].includes(event.code)) {
+        // Only hide the flyout when you're doing selections with Left/Right Arrow key
+        this.hideFlyout();
+      }
       return;
     }
 
