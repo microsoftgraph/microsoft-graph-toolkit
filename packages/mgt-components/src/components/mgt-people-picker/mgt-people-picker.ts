@@ -1151,7 +1151,7 @@ export class MgtPeoplePicker extends MgtTemplatedComponent {
     const isCmdOrCtrlKey = event.ctrlKey || event.metaKey;
     if (isCmdOrCtrlKey && selectedList) {
       const selectedPeople = selectedList.querySelectorAll('mgt-person.selected-list__person-wrapper__person');
-      this.flyout.close();
+      this.hideFlyout();
       if (isCmdOrCtrlKey && event.code === 'ArrowLeft') {
         this._currentHighlightedUserPos =
           (this._currentHighlightedUserPos - 1 + selectedPeople.length) % selectedPeople.length;
