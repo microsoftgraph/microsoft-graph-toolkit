@@ -1256,7 +1256,7 @@ export class MgtPeoplePicker extends MgtTemplatedComponent {
    */
   private handleCut() {
     this.writeHighlightedText();
-    this.clearState();
+    this.removeHighlightedOnCut();
   }
 
   /**
@@ -1292,6 +1292,17 @@ export class MgtPeoplePicker extends MgtTemplatedComponent {
     }
   }
 
+  /**
+   * Removes only the highlighted elements from the peoplePicker during cut operations.
+   */
+  private removeHighlightedOnCut() {
+    this.selectedPeople = this.selectedPeople.splice(0, this.selectedPeople.length - this._highlightedUsers.length);
+    this._highlightedUsers = [];
+    this._currentHighlightedUserPos = 0;
+    this.loadState();
+    this.hideFlyout();
+    this.fireCustomEvent('selectionChanged', this.selectedPeople);
+  }
   /**
    * Changes the color class to show which people are selected for copy/cut-paste
    * @param people list of selected people classes
