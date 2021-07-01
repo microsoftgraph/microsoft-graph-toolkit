@@ -8,6 +8,8 @@
 import { CacheItem, CacheService, CacheStore, GraphPageIterator, IGraph, prepScopes } from '@microsoft/mgt-element';
 import { DriveItem } from '@microsoft/microsoft-graph-types';
 import { schemas } from './cacheStores';
+import { ResponseType } from '@microsoft/microsoft-graph-client';
+import { blobToBase64 } from '../utils/Utils';
 
 /**
  * Object to be stored in cache
@@ -31,6 +33,20 @@ interface CacheFileList extends CacheItem {
    * nextLink string to get next page
    */
   nextLink?: string;
+}
+
+/**
+ * document thumbnail object stored in cache
+ */
+export interface CacheThumbnail extends CacheItem {
+  /**
+   * tag associated with thumbnail
+   */
+  eTag?: string;
+  /**
+   * document thumbnail
+   */
+  thumbnail?: string;
 }
 
 /**
@@ -1085,5 +1101,37 @@ export async function fetchNextAndCacheForFilesPageIterator(filesPageIterator) {
     const key = matches[3];
 
     cache.putValue(key, { files: filesPageIterator.value, nextLink: filesPageIterator._nextLink });
+  }
+}
+
+/**
+ * retrieves the specified document thumbnail
+ *
+ * @param {string} resource
+ * @param {string[]} scopes
+ * @returns {Promise<string>}
+ */
+export async function getDocumentThumbnail(graph: IGraph, resource: string, scopes: string[]): Promise<CacheThumbnail> {
+  try {
+    const response = (await graph
+      .api(resource)
+      .responseType(ResponseType.RAW)
+      .middlewareOptions(prepScopes(...scopes))
+      .get()) as Response;
+
+    if (response.status === 404) {
+      // 404 means the resource does not have a thumbnail
+      // we still want to cache that state
+      // so we return an object that can be cached
+      return { eTag: null, thumbnail: null };
+    } else if (!response.ok) {
+      return null;
+    }
+
+    const eTag = response.headers.get('eTag');
+    const blob = await blobToBase64(await response.blob());
+    return { eTag, thumbnail: blob };
+  } catch (e) {
+    return null;
   }
 }
