@@ -203,7 +203,6 @@ export class MgtGet extends MgtTemplatedComponent {
 
   private isPolling: boolean = false;
   private isRefreshing: boolean = false;
-  private refreshType: string = 'false';
 
   /**
    * Synchronizes property values when attributes change.
@@ -227,11 +226,11 @@ export class MgtGet extends MgtTemplatedComponent {
    * @memberof MgtGet
    */
   public refresh(hardRefresh = false) {
-    this.refreshType = hardRefresh.toString();
-
     this.isRefreshing = true;
+    if (hardRefresh) {
+      this.clearState();
+    }
     this.requestStateUpdate(hardRefresh);
-    this.isRefreshing = false;
   }
 
   /**
@@ -250,7 +249,7 @@ export class MgtGet extends MgtTemplatedComponent {
    * trigger the element to update.
    */
   protected render() {
-    if (this.isLoadingState && !this.isPolling && this.refreshType !== 'false') {
+    if (this.isLoadingState && !this.response) {
       return this.renderTemplate('loading', null);
     } else if (this.error) {
       return this.renderTemplate('error', this.error);
@@ -419,7 +418,7 @@ export class MgtGet extends MgtTemplatedComponent {
     } else {
       this.response = null;
     }
-
+    this.isRefreshing = false;
     this.fireCustomEvent('dataChange', { response: this.response, error: this.error });
   }
 
