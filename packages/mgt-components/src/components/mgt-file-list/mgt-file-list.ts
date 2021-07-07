@@ -39,10 +39,8 @@ import { OfficeGraphInsightString, ViewType } from '../../graph/types';
 import { styles } from './mgt-file-list-css';
 import { strings } from './strings';
 import { MgtFile } from '../mgt-file/mgt-file';
-import { FluentDesignSystemProvider, FluentProgressRing } from '@fluentui/web-components';
 
-FluentDesignSystemProvider;
-FluentProgressRing;
+export { FluentDesignSystemProvider, FluentProgressRing } from '@fluentui/web-components';
 
 /**
  * The File List component displays a list of multiple folders and files by
