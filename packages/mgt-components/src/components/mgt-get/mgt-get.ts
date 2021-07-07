@@ -228,8 +228,10 @@ export class MgtGet extends MgtTemplatedComponent {
    */
   public refresh(hardRefresh = false) {
     this.isRefreshing = true;
+    if (hardRefresh) {
+      this.clearState();
+    }
     this.requestStateUpdate(hardRefresh);
-    this.isRefreshing = false;
   }
 
   /**
@@ -248,7 +250,7 @@ export class MgtGet extends MgtTemplatedComponent {
    * trigger the element to update.
    */
   protected render() {
-    if (this.isLoadingState && !this.isPolling) {
+    if (this.isLoadingState && !this.response) {
       return this.renderTemplate('loading', null);
     } else if (this.error) {
       return this.renderTemplate('error', this.error);
@@ -428,7 +430,7 @@ export class MgtGet extends MgtTemplatedComponent {
     } else {
       this.response = null;
     }
-
+    this.isRefreshing = false;
     this.fireCustomEvent('dataChange', { response: this.response, error: this.error });
   }
 
