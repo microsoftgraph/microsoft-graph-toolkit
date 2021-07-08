@@ -1,7 +1,11 @@
-# mgt-file-upload
+# File upload extension for mgt-file-list component
 
+The file upload extension for File-List component provides the capability of users upload files to pre defined Graph queries based on Onedrive, SharePoint Libraries.
+This files can be uploaded using a Upload button or by drag and drop effect in File-list component.
+During the upload of file a progress status bar with cancellation option is visible to user. 
+If the upload is successful a green check status icon appear in associated document.
+If upload failed a red icon appear in associated document with gray shadow.  
 
-The file upload component provide a button or a drag and drop effect where file or folder with files can be uploaded to pre defined Graph queries based on Onedrive, SharePoint Libraries. During the upload of file(s) the following actions can be seen by the user (Loading process, cancellation of current upload, number of files to upload and percentage of upload status). If the upload is successful/failed a status message returns to user. 
 
 <img src="./images/mgt-file-upload.png"/>
 
@@ -12,8 +16,9 @@ The file upload component provide a button or a drag and drop effect where file 
 | ------- | -------- | ----- |
 | **v1** | | |
 | Provide upload button and drag and drop functionality to upload files to Libraries | P0 | |	
-| Provide status information of Uploaded files | P0 | |
-| Provide an upload button when browser doesn't support drag and drop funcionality for Mobile/accessibility reason.  | P0 | |
+| Provide file progress status and cancelation option | P0 | |
+| Provide successful or fail icon when upload is completed.  | P0 | |
+
 
 ## Proposed Solution
 
@@ -21,7 +26,7 @@ Folder with file to upload: ```/folder/test.txt```
 
 ### Example 1: No query, path or ids is provided
 
-```<mgt-file-upload><mgt-file-upload>```
+```<mgt-file-list file-upload="true" excluded-file-extensions="[jpg,png,zip]" max-file-size="10000" max-upload-file="10" ><mgt-file-list>```
 
 The request made is < 4 MB >: `POST /me/drive/root:/folder/test.txt:/content`
 
@@ -29,7 +34,7 @@ The request made is > 4 MB: `POST /me/drive/root:/folder/test.txt:/createUploadS
 
 ### Example 2: Developer provides a Item Id associated with folder
 
-```<mgt-file-upload item-id="123"><mgt-file-upload>```
+```<mgt-file-list item-id="123" file-upload="true" excluded-file-extensions="[jpg,png,zip]" max-file-size="10000" max-upload-file="10"><mgt-file-list>```
 
 The request made is < 4 MB: `POST /me/drive/items/123:/folder/test.txt:/content`
 
@@ -37,7 +42,7 @@ The request made is > 4 MB: `POST /me/drive/items/123:/folder/test.txt:/createUp
 
 ### Example 3: Developer only provides Item Path
 
-```<mgt-file-upload item-path="/Custom"><mgt-file-upload>```
+```<mgt-file-list item-path="/Custom" file-upload="true" excluded-file-extensions="[jpg,png,zip]" max-file-size="10000" max-upload-file="10"><mgt-file-list>```
 
 The request made is < 4 MB >: `POST /me/drive/root:/Custom/folder/test.txt:/content`
 
@@ -46,7 +51,7 @@ The request made is > 4 MB: `POST /me/drive/root:/Custom/folder/test.txt:/create
 
 ### Example 4: Developer provides drive id, item id and item path
 
-```<mgt-file-upload drive-id="123" item-id="456" item-path="/Custom" ></mgt-file-upload>```
+```<mgt-file-list drive-id="123" item-id="456" item-path="/Custom" file-upload="true" excluded-file-extensions="[jpg,png,zip]" max-file-size="10000" max-upload-file="10" ></mgt-file-list>```
 
 The request made is < 4 MB >: `POST /drives/123/items/456:/Custom/folder/test.txt:/content`
 
@@ -54,7 +59,7 @@ The request made is > 4 MB: `POST /drives/123/items/456:/Custom/folder/test.txt:
 
 ### Example 5: Developer provides Site id, item id and item path
 
-```<mgt-file-upload site-id="123" item-id="456" item-path="/Custom" ></mgt-file-upload>```
+```<mgt-file-list site-id="123" item-id="456" item-path="/Custom" file-upload="true" excluded-file-extensions="[jpg,png,zip]" max-file-size="10000" max-upload-file="10" ></mgt-file-list>```
 
 The request made is < 4 MB >: `POST /sites/123/drive/items/456:/Custom/folder/test.txt:/content`
 
@@ -71,10 +76,11 @@ The request made is > 4 MB: `POST /sites/123/drive/items/456:/Custom/folder/test
 | user-id | userId | ID of the user where the target folder to upload the file belongs to. Must also provide either `item-id` or `item-path`  |
 | item-id | itemId | The full query or path to the drive where to upload the file |
 | item-path | itemPath | Item path of the folder (relative to the root) to upload the file to. Default query is `/me/drive/root`. Provide `{drive-id}`, `{group-id}`, `{site-id}`, `{item-id}`, or `{user-id}` to query a specific location |
-| show-progress | showProgress | A boolean to indicate whether to show the progress for uploading the file |
-| file-extensions | fileExtensions | String Array of file extension to exclude from file upload |
-| file-size | fileSize | Number to restrict upload size (KB) |
-| drag-drop | dragDrop | Boolean field, if yes creates base Template for drag and drop area + Localization for upload label |
+| enable-file-upload | enablefileupload | Boolean to enable or disable file upload extension, default is false  |
+| excluded-file-extensions | excludedfileextensions | String Array of file extension to be excluded from file upload |
+| max-file-size | maxfilesize | Number to restrict upload size (KB)  |
+| max-upload-file | maxuploadfile | Number, default value are 10 Files. |
+
 
 
 ## APIs and Permissions
@@ -88,18 +94,8 @@ The request made is > 4 MB: `POST /sites/123/drive/items/456:/Custom/folder/test
 | Provide `{site-id}` AND `{item-path}` | Files.ReadWrite.All | `POST /sites/{site-id}/root:/{item-path}${file.fullPath}:/`  | `content, createUploadSession` | Include File Name and/or subfolders to simulate uploaded folder structure
 | Provide `{drive-id}` AND `{item-path}` | Files.ReadWrite.All | `POST /drives/{drive-id}/root:/{item-path}${file.fullPath}:/` | `content, createUploadSession` | Include File Name and/or subfolders to simulate uploaded folder structure
 | Provide `{drive-id}` AND `{item-id}`| Files.ReadWrite.All | `POST  /drives/{driveId}/items/{itemId}:${file.fullPath}:/` | `content, createUploadSession` | Include File Name and/or subfolders to simulate uploaded folder structure
-| Provide `{group-id}` AND `{item-id}` | Files.ReadWrite.All | `POST /groups/{group-id}/items/{itemId}:${file.fullPath}:/` | `content, createUploadSession` |  
-Include File Name and/or subfolders to simulate uploaded folder structure
+| Provide `{group-id}` AND `{item-id}` | Files.ReadWrite.All | `POST /groups/{group-id}/items/{itemId}:${file.fullPath}:/` | `content, createUploadSession` | Include File Name and/or subfolders to simulate uploaded folder structure
 | Provide `{group-id}` AND `{item-path}` | Files.ReadWrite.All | `POST /groups/{group-id}/root:/{item-path}${file.fullPath}:/` | `content, createUploadSession` |  Include File Name and/or subfolders to simulate uploaded folder structure
 | Provide only `{item-path}` | Files.ReadWrite.All | `POST /me/drive/root:/{item-path}${file.fullPath}:/` | `content, createUploadSession` | Include File Name and/or subfolders to simulate uploaded folder structure
 | Provide `{user-id}` AND `{item-id}`| Files.ReadWrite.All | `POST /me/{userId}/items/{itemId}:${file.fullPath}:/` | `content, createUploadSession` | Include File Name and/or subfolders to simulate uploaded folder structure
 
-
-
-## Templates
-
-| Data type	 | Data context	 | Description |
-| -------------------- | -------------------- | -------------------- |
-| default | `files`: list of files objects to upload. | The default template replaces the entire component with your own. |
-| end-status | `filesStatus`: Final Status message of upload with files report  | The template used when Upload process is finish. |
-| loading |  `files`: Status of uploaded files and Bytes of upload objects | The template when files are being uploaded where developer can create their own loading process. |
