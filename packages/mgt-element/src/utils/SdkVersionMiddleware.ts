@@ -6,7 +6,10 @@
  */
 
 import { Context, Middleware } from '@microsoft/microsoft-graph-client';
-import { getRequestHeader, setRequestHeader } from '@microsoft/microsoft-graph-client/lib/es/middleware/MiddlewareUtil';
+import {
+  getRequestHeader,
+  setRequestHeader
+} from '@microsoft/microsoft-graph-client/lib/es/src/middleware/MiddlewareUtil';
 import { ComponentMiddlewareOptions } from './ComponentMiddlewareOptions';
 
 /**

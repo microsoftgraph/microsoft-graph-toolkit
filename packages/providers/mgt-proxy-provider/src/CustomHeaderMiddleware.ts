@@ -6,7 +6,7 @@
  */
 
 import { Context, Middleware } from '@microsoft/microsoft-graph-client';
-import { setRequestHeader } from '@microsoft/microsoft-graph-client/lib/es/middleware/MiddlewareUtil';
+import { setRequestHeader } from '@microsoft/microsoft-graph-client/lib/es/src/middleware/MiddlewareUtil';
 
 /**
  * Custom Middleware to add custom headers when making calls

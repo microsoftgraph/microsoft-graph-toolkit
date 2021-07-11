@@ -5,7 +5,7 @@
  * -------------------------------------------------------------------------------------------
  */
 
-import { AuthenticationProviderOptions } from '@microsoft/microsoft-graph-client/lib/es/IAuthenticationProviderOptions';
+import { AuthenticationProviderOptions } from '@microsoft/microsoft-graph-client';
 import { AuthenticationParameters, Configuration, UserAgentApplication } from 'msal';
 import { TeamsHelper } from '@microsoft/mgt-element';
 import { LoginType, ProviderState } from '@microsoft/mgt-element';
