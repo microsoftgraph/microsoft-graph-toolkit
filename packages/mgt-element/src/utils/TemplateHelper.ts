@@ -28,14 +28,8 @@ export class TemplateHelper {
    * @param root the root element to parent the rendered content
    * @param template the template to render
    * @param context the data context to be applied
-   * @param additionalContext additional context that could contain functions to transform the data
    */
-  public static renderTemplate(
-    root: HTMLElement,
-    template: HTMLTemplateElement,
-    context: object,
-    additionalContext?: object
-  ) {
+  public static renderTemplate(root: HTMLElement, template: HTMLTemplateElement, context: object) {
     // inherit context from parent template
     if ((template as any).$parentTemplateContext) {
       context = { ...context, $parent: (template as any).$parentTemplateContext };
@@ -45,14 +39,14 @@ export class TemplateHelper {
 
     if (template.content && template.content.childNodes.length) {
       const templateContent = template.content.cloneNode(true);
-      rendered = this.renderNode(templateContent, root, context, additionalContext);
+      rendered = this.renderNode(templateContent, root, context);
     } else if (template.childNodes.length) {
       const div = document.createElement('div');
       // tslint:disable-next-line: prefer-for-of
       for (let i = 0; i < template.childNodes.length; i++) {
         div.appendChild(this.simpleCloneNode(template.childNodes[i]));
       }
-      rendered = this.renderNode(div, root, context, additionalContext);
+      rendered = this.renderNode(div, root, context);
     }
 
     if (rendered) {
@@ -75,7 +69,7 @@ export class TemplateHelper {
     const start = this.escapeRegex(this._startExpression);
     const end = this.escapeRegex(this._endExpression);
 
-    this._expression = new RegExp(`${start}\\s*\([$\\w\\.()\\[\\]]+\)\\s*${end}`, 'g');
+    this._expression = new RegExp(`${start}\\s*([$\\w\\.,'"\\s()\\[\\]]+)\\s*${end}`, 'g');
   }
 
   /**
@@ -128,9 +122,9 @@ export class TemplateHelper {
     return clone;
   }
 
-  private static expandExpressionsAsString(str: string, context: object, additionalContext: object) {
+  private static expandExpressionsAsString(str: string, context: object) {
     return str.replace(this.expression, (match, p1) => {
-      const value = this.evalInContext(p1 || this.trimExpression(match), { ...context, ...additionalContext });
+      const value = this.evalInContext(p1 || this.trimExpression(match), context);
       if (value) {
         if (typeof value === 'object') {
           return JSON.stringify(value);
@@ -142,9 +136,9 @@ export class TemplateHelper {
     });
   }
 
-  private static renderNode(node: Node, root: HTMLElement, context: object, additionalContext: object) {
+  private static renderNode(node: Node, root: HTMLElement, context: object) {
     if (node.nodeName === '#text') {
-      node.textContent = this.expandExpressionsAsString(node.textContent, context, additionalContext);
+      node.textContent = this.expandExpressionsAsString(node.textContent, context);
       return node;
     } else if (node.nodeName === 'TEMPLATE') {
       (node as any).$parentTemplateContext = context;
@@ -166,7 +160,7 @@ export class TemplateHelper {
             const keyValue = prop.trim().split(':');
             if (keyValue.length === 2) {
               const key = keyValue[0].trim();
-              const value = this.evalInContext(keyValue[1].trim(), { ...context, ...additionalContext });
+              const value = this.evalInContext(keyValue[1].trim(), context);
 
               if (key.startsWith('@')) {
                 // event
@@ -179,10 +173,7 @@ export class TemplateHelper {
             }
           }
         } else {
-          nodeElement.setAttribute(
-            attribute.name,
-            this.expandExpressionsAsString(attribute.value, context, additionalContext)
-          );
+          nodeElement.setAttribute(attribute.name, this.expandExpressionsAsString(attribute.value, context));
         }
       }
     }
@@ -206,7 +197,7 @@ export class TemplateHelper {
 
         if (childElement.dataset.if) {
           const expression = childElement.dataset.if;
-          if (!this.evalBoolInContext(this.trimExpression(expression), { ...context, ...additionalContext })) {
+          if (!this.evalBoolInContext(this.trimExpression(expression), context)) {
             removeChildren.push(childElement);
             childWillBeRemoved = true;
           } else {
@@ -226,10 +217,10 @@ export class TemplateHelper {
         if (childElement.dataset.for && !childWillBeRemoved) {
           loopChildren.push(childElement);
         } else if (!childWillBeRemoved) {
-          this.renderNode(childNode, root, context, additionalContext);
+          this.renderNode(childNode, root, context);
         }
       } else {
-        this.renderNode(childNode, root, context, additionalContext);
+        this.renderNode(childNode, root, context);
       }
 
       // clear the flag if the current node wasn't data-if
@@ -257,7 +248,7 @@ export class TemplateHelper {
         const itemName = loopTokens[0];
         const listKey = loopTokens[2];
 
-        const list = this.evalInContext(listKey, { ...context, ...additionalContext });
+        const list = this.evalInContext(listKey, context);
         if (Array.isArray(list)) {
           // first remove the child
           // we will need to make copy of the child for
@@ -272,7 +263,7 @@ export class TemplateHelper {
             newContext[itemName] = list[j];
 
             const clone = childElement.cloneNode(true);
-            this.renderNode(clone, root, newContext, additionalContext);
+            this.renderNode(clone, root, newContext);
             nodeElement.insertBefore(clone, childElement);
           }
         }
