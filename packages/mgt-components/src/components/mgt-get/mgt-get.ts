@@ -18,6 +18,7 @@ import {
 } from '@microsoft/mgt-element';
 
 import { getPhotoForResource } from '../../graph/graph.photos';
+import { getDocumentThumbnail } from '../../graph/graph.files';
 import { schemas } from '../../graph/cacheStores';
 
 /**
@@ -227,8 +228,10 @@ export class MgtGet extends MgtTemplatedComponent {
    */
   public refresh(hardRefresh = false) {
     this.isRefreshing = true;
+    if (hardRefresh) {
+      this.clearState();
+    }
     this.requestStateUpdate(hardRefresh);
-    this.isRefreshing = false;
   }
 
   /**
@@ -247,7 +250,7 @@ export class MgtGet extends MgtTemplatedComponent {
    * trigger the element to update.
    */
   protected render() {
-    if (this.isLoadingState && !this.isPolling) {
+    if (this.isLoadingState && !this.response) {
       return this.renderTemplate('loading', null);
     } else if (this.error) {
       return this.renderTemplate('error', this.error);
@@ -374,17 +377,28 @@ export class MgtGet extends MgtTemplatedComponent {
               }
             }
           } else {
-            if (this.resource.indexOf('/photo/$value') === -1) {
-              throw new Error('Only /photo/$value endpoints support the image type');
+            if (this.resource.indexOf('/photo/$value') === -1 && this.resource.indexOf('/thumbnails/') === -1) {
+              throw new Error('Only /photo/$value and /thumbnails/ endpoints support the image type');
             }
 
-            // Sanitizing the resource to ensure getPhotoForResource gets the right format
-            const sanitizedResource = this.resource.replace('/photo/$value', '');
-            const photoResponse = await getPhotoForResource(graph, sanitizedResource, this.scopes);
+            let image;
+            if (this.resource.indexOf('/photo/$value') > -1) {
+              // Sanitizing the resource to ensure getPhotoForResource gets the right format
+              const sanitizedResource = this.resource.replace('/photo/$value', '');
+              const photoResponse = await getPhotoForResource(graph, sanitizedResource, this.scopes);
+              if (photoResponse) {
+                image = photoResponse.photo;
+              }
+            } else if (this.resource.indexOf('/thumbnails/') > -1) {
+              const imageResponse = await getDocumentThumbnail(graph, this.resource, this.scopes);
+              if (imageResponse) {
+                image = imageResponse.thumbnail;
+              }
+            }
 
-            if (photoResponse) {
+            if (image) {
               response = {
-                image: photoResponse.photo
+                image: image
               };
             }
           }
@@ -416,7 +430,7 @@ export class MgtGet extends MgtTemplatedComponent {
     } else {
       this.response = null;
     }
-
+    this.isRefreshing = false;
     this.fireCustomEvent('dataChange', { response: this.response, error: this.error });
   }
 
