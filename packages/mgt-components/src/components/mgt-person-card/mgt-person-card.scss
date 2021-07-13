@@ -178,9 +178,49 @@ $person-card-details-item-font-size: var(--person-card-details-item-font-size, 1
 
   .section-nav {
     display: flex;
-    padding: 0 14px;
+    // padding: 0 14px;
     border-bottom: 1px solid set-var(tab__line__color, $theme-default, $common);
+    height: 36px;
+    padding-bottom: 7px;
 
+    fluent-design-system-provider {
+      background-color: $background-color;
+      --corner-radius: 0px !important;
+      --base-height-multiplier: 0;
+      fluent-tabs {
+        fluent-tab-panel {
+          max-height: 360px;
+          min-height: 360px;
+          overflow-y: auto;
+          overflow-x: hidden;
+
+          &::-webkit-scrollbar {
+            height: 4em;
+            width: 4px;
+            border-radius: 11px;
+          }
+          &::-webkit-scrollbar-button {
+            background: white;
+          }
+          &::-webkit-scrollbar-track {
+            background: white;
+            border-radius: 10px;
+          }
+          &::-webkit-scrollbar-track-piece {
+            background: white;
+          }
+          &::-webkit-scrollbar-thumb {
+            background: grey;
+            border-radius: 10px;
+            height: 4px;
+          }
+        }
+      }
+      fluent-tab {
+        padding-bottom: 4px !important;
+        margin-bottom: -3px !important;
+      }
+    }
     .section-nav__icon {
       all: initial;
       box-sizing: border-box;
@@ -205,8 +245,6 @@ $person-card-details-item-font-size: var(--person-card-details-item-font-size, 1
       }
 
       &.active {
-        border-color: $icon--active;
-
         svg {
           fill: $icon--active;
         }
@@ -221,11 +259,51 @@ $person-card-details-item-font-size: var(--person-card-details-item-font-size, 1
     height: 360px;
   }
 
+  .message-section {
+    border-top: 1px solid set-var(tab__line__color, $theme-default, $common);
+    border-bottom: 1px solid set-var(tab__line__color, $theme-default, $common);
+    fluent-design-system-provider {
+      background-color: $background-color;
+      margin-top: 15px;
+      fluent-text-field {
+        width: 83%;
+
+        padding: 4px 10px;
+        &::after {
+          border: none;
+        }
+      }
+      svg {
+        margin-bottom: 6px;
+      }
+    }
+  }
   .section-host {
     max-height: 360px;
     min-height: 360px;
     overflow-y: auto;
     overflow-x: hidden;
+
+    &::-webkit-scrollbar {
+      height: 4em;
+      width: 4px;
+      border-radius: 11px;
+    }
+    &::-webkit-scrollbar-button {
+      background: white;
+    }
+    &::-webkit-scrollbar-track {
+      background: white;
+      border-radius: 10px;
+    }
+    &::-webkit-scrollbar-track-piece {
+      background: white;
+    }
+    &::-webkit-scrollbar-thumb {
+      background: grey;
+      border-radius: 10px;
+      height: 4px;
+    }
   }
 
   .quick-message {
@@ -333,4 +411,8 @@ $person-card-details-item-font-size: var(--person-card-details-item-font-size, 1
     filter: FlipH;
     -ms-filter: 'FlipH';
   }
+}
+
+fluent-tab-panel {
+  display: block;
 }
