@@ -19,7 +19,6 @@ import { MgtBaseComponent } from '../components/baseComponent';
 import { Graph } from '../Graph';
 import { chainMiddleware } from '../utils/GraphHelpers';
 import { MockProvider } from './MockProvider';
-import { setRequestHeader } from '@microsoft/microsoft-graph-client/lib/es/middleware/MiddlewareUtil';
 
 /**
  * MockGraph Instance
@@ -32,6 +31,7 @@ import { setRequestHeader } from '@microsoft/microsoft-graph-client/lib/es/middl
 export class MockGraph extends Graph {
   constructor(mockProvider: MockProvider) {
     const middleware: Middleware[] = [
+      new AuthenticationHandler(mockProvider),
       new RetryHandler(new RetryHandlerOptions()),
       new TelemetryHandler(),
       new MockMiddleware(),
@@ -74,18 +74,13 @@ class MockMiddleware implements Middleware {
    */
   private _nextMiddleware: Middleware;
 
-  private static _headerKey = 'MS-M365DEVPORTALS-API-KEY';
-  private static _headerValue = '370AD7CD-2CA0-470C-A11D-BA0F2915329A';
-
-  // private static _baseUrl;
-  private static _baseUrl = 'https://graph.office-int.net/en-us/graph/api/proxy?url=';
+  private static _baseUrl;
 
   // tslint:disable-next-line: completed-docs
   public async execute(context: Context): Promise<void> {
     try {
       const baseUrl = await MockMiddleware.getBaseUrl();
       context.request = baseUrl + escape(context.request as string);
-      setRequestHeader(context.request, context.options, MockMiddleware._headerKey, MockMiddleware._headerValue);
     } catch (error) {
       // ignore error
     }
@@ -106,7 +101,7 @@ class MockMiddleware implements Middleware {
     if (!this._baseUrl) {
       try {
         // get the url we should be using from the endpoint service
-        let response = await fetch('https://developer.microsoft.com/en-us/graph/api/proxy/endpoint');
+        let response = await fetch('https://cdn.graph.office.net/en-us/graph/api/proxy/endpoint');
         this._baseUrl = (await response.json()) + '?url=';
       } catch {
         // fallback to hardcoded value
