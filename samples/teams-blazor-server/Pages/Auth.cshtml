@@ -1,0 +1,10 @@
+﻿@page
+@model MGT_Teams_Blazor_Server.Pages.AuthModel
+@{
+}
+
+<script src="https://unpkg.com/%40microsoft/teams-js/dist/MicrosoftTeams.min.js" crossorigin="anonymous"></script>
+<script src="https://unpkg.com/%40microsoft/mgt/dist/bundle/mgt-loader.js"></script>
+<script>
+      mgt.TeamsProvider.handleAuth();
+</script>
