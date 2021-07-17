@@ -1,0 +1,22 @@
+/**
+ * -------------------------------------------------------------------------------------------
+ * Copyright (c) Microsoft Corporation.  All Rights Reserved.  Licensed under the MIT License.
+ * See License in the project root for license information.
+ * -------------------------------------------------------------------------------------------
+ */
+
+@import '../../../styles/shared-styles.scss';
+@import '../../../styles/shared-sass-variables.scss';
+@import '../../../../../../node_modules/office-ui-fabric-core/dist/sass/References';
+
+:host .file-drag-border,
+mgt-file-upload .file-drag-border {
+  border: dashed #0078d4 1px;
+  background-color: rgba(0, 120, 212, 0.1);
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  z-index: 1;
+}

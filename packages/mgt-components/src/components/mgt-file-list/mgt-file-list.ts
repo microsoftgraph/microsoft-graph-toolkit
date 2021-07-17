@@ -35,10 +35,12 @@ import {
   getUserInsightsFiles
 } from '../../graph/graph.files';
 import '../sub-components/mgt-spinner/mgt-spinner';
+import '../sub-components/mgt-file-upload/mgt-file-upload';
 import { OfficeGraphInsightString, ViewType } from '../../graph/types';
 import { styles } from './mgt-file-list-css';
 import { strings } from './strings';
 import { MgtFile } from '../mgt-file/mgt-file';
+import { MgtFileListProperties } from '../../components/sub-components/mgt-file-upload/mgt-file-upload';
 
 export { FluentDesignSystemProvider, FluentProgressRing } from '@fluentui/web-components';
 
@@ -377,6 +379,83 @@ export class MgtFileList extends MgtTemplatedComponent {
   public hideMoreFilesButton: boolean;
 
   /**
+   * A number value to indicate the number of more files to be uploaded.
+   * @type {number}
+   * @memberof MgtFileList
+   */
+  @property({
+    attribute: 'max-file-size',
+    type: Number
+  })
+  public get maxFileSize(): number {
+    return this._maxFileSize;
+  }
+  public set maxFileSize(value: number) {
+    if (value === this._maxFileSize) {
+      return;
+    }
+
+    this._maxFileSize = value;
+    this.requestStateUpdate(true);
+  }
+
+  /**
+   * A boolean value indication if file upload extension should be enable or disabled
+   * @type {boolean}
+   * @memberof MgtFileList
+   */
+  @property({
+    attribute: 'enable-file-upload',
+    type: Boolean
+  })
+  public enableFileUpload: boolean;
+
+  /**
+   * A number value to indicate the number of more files to be uploaded.
+   * @type {number}
+   * @memberof MgtFileList
+   */
+  @property({
+    attribute: 'max-upload-file',
+    type: Number
+  })
+  public get maxUploadFile(): number {
+    return this._maxUploadFile;
+  }
+  public set maxUploadFile(value: number) {
+    if (value === this._maxUploadFile) {
+      return;
+    }
+
+    this._maxUploadFile = value;
+    this.requestStateUpdate(true);
+  }
+
+  /**
+   * allows developer to define file extensions to be excluded from file upload
+   *
+   * @type {string[]}
+   * @memberof MgtFileList
+   */
+  @property({
+    attribute: 'excluded-file-extensions',
+    converter: (value, type) => {
+      return value.split(',').map(v => v.trim());
+    }
+  })
+  public get excludedFileExtensions(): string[] {
+    return this._excludedFileExtensions;
+  }
+  public set excludedFileExtensions(value: string[]) {
+    if (arraysAreEqual(this._fileExtensions, value)) {
+      return;
+    }
+
+    this._excludedFileExtensions = value;
+    this.requestStateUpdate(true);
+  }
+
+  /**
    * Get the scopes required for file list
    *
    * @static
@@ -397,6 +476,9 @@ export class MgtFileList extends MgtTemplatedComponent {
   private _insightType: OfficeGraphInsightString;
   private _fileExtensions: string[];
   private _pageSize: number;
+  private _excludedFileExtensions: string[];
+  private _maxUploadFile: number;
+  private _maxFileSize: number;
   private _userId: string;
   private _preloadedFiles: DriveItem[];
   private pageIterator: GraphPageIterator<DriveItem>;
@@ -410,6 +492,8 @@ export class MgtFileList extends MgtTemplatedComponent {
 
     this.pageSize = 10;
     this.itemView = ViewType.twolines;
+    this.maxUploadFile = 10;
+    this.enableFileUpload = false;
     this._preloadedFiles = [];
   }
 
@@ -478,6 +562,7 @@ export class MgtFileList extends MgtTemplatedComponent {
   protected renderFiles(): TemplateResult {
     return html`
       <div id="file-list-wrapper" class="file-list-wrapper" dir=${this.direction}>
+        ${this.enableFileUpload ? this.renderDragArea() : null}
         <ul
           id="file-list"
           class="file-list"
@@ -487,20 +572,19 @@ export class MgtFileList extends MgtTemplatedComponent {
           @blur="${this.onFileListOut}"
         >
           ${repeat(
-            this.files,
-            f => f.id,
-            f => html`
+      this.files,
+      f => f.id,
+      f => html`
               <li class="file-item">
                 ${this.renderFile(f)}
               </li>
             `
-          )}
+    )}
         </ul>
-        ${
-          !this.hideMoreFilesButton && this.pageIterator && (this.pageIterator.hasNext || this._preloadedFiles.length)
-            ? this.renderMoreFileButton()
-            : null
-        }
+        ${!this.hideMoreFilesButton && this.pageIterator && (this.pageIterator.hasNext || this._preloadedFiles.length)
+        ? this.renderMoreFileButton()
+        : null
+      }
       </div>
     `;
   }
@@ -537,9 +621,28 @@ export class MgtFileList extends MgtTemplatedComponent {
         </fluent-design-system-provider>
       `;
     } else {
-      return html`<a id="show-more" class="show-more" @click=${() => this.renderNextPage()} tabindex="0" @keydown=${
-        this.onShowMoreKeyDown
-      }><span>${this.strings.showMoreSubtitle}<span></a>`;
+      return html`<a id="show-more" class="show-more" @click=${() => this.renderNextPage()} tabindex="0" @keydown=${this.onShowMoreKeyDown
+        }><span>${this.strings.showMoreSubtitle}<span></a>`;
+    }
+  }
+
+  protected renderDragArea(): TemplateResult {
+    if (this.enableFileUpload) {
+      const fileListProperties: MgtFileListProperties = {
+        driveId: this.driveId,
+        enableFileUpload: this.enableFileUpload,
+        excludedFileExtensions: this.excludedFileExtensions,
+        fileListQuery: this.fileListQuery,
+        fileQueries: this.fileQueries,
+        groupId: this.groupId,
+        itemId: this.itemId,
+        itemPath: this.itemPath,
+        maxFileSize: this.maxFileSize,
+        maxUploadFile: this.maxUploadFile
+      };
+      return html`
+        <mgt-file-upload .fileListProperties=${fileListProperties} .enableFileUpload=${this.enableFileUpload} .maxUploadFile=${this._maxUploadFile}></mgt-file-upload>
+      `;
     }
   }
 
