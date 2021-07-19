@@ -115,64 +115,10 @@ $person-card-details-item-font-size: var(--person-card-details-item-font-size, 1
       height: 28px;
       background: $background-color;
       border-top: 1px solid set-var(line-seperator__color, $theme-default, $common);
-      .expanded-details-svg {
-        margin-bottom: 3px;
-      }
     }
+
     .expanded-details-button:hover {
       background-color: set-var(background-color--hover, $theme-default, $common);
-    }
-    .expanded-details-info {
-      padding: 18px;
-      display: flex;
-      flex-direction: column;
-
-      .contact-text {
-        margin: 0 0 24px 0;
-        font-weight: 600;
-        font-size: $person-card-details-title-font-size;
-        color: $details-title__color;
-      }
-
-      .icons {
-        line-height: normal;
-        font-style: normal;
-        font-weight: normal;
-        font-size: $person-card-details-item-font-size;
-        color: set-var(details-item__color, $theme-default, $person-card);
-        text-align: left;
-
-        .details-icon {
-          margin: 0 0 10px 0;
-          display: flex;
-          flex-direction: row;
-          align-items: center;
-        }
-      }
-      .data {
-        display: block;
-        margin: 0 0 0px 10px;
-        white-space: nowrap;
-        overflow: hidden;
-        text-overflow: ellipsis;
-        width: 280px;
-      }
-      .normal-subtitle {
-        padding-top: 2px;
-      }
-      .link-subtitle {
-        color: $commblue_primary;
-        cursor: pointer;
-      }
-      .link-subtitle:hover {
-        opacity: 0.6;
-      }
-    }
-    .section-divider {
-      width: 96%;
-      min-height: 1px;
-      background: set-var(line-seperator__color, $theme-default, $common);
-      align-self: center;
     }
   }
 
