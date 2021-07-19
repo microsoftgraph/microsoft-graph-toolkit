@@ -126,15 +126,15 @@ export abstract class MgtTemplatedComponent extends MgtBaseComponent {
     div.slot = slotName;
     div.dataset.generated = 'template';
 
-    TemplateHelper.renderTemplate(div, this.templates[templateType], context, {
-      ...this.templateContext
-    });
+    const dataContext = { ...context, ...this.templateContext };
+
+    TemplateHelper.renderTemplate(div, this.templates[templateType], dataContext);
 
     this.appendChild(div);
 
     this._renderedTemplates[slotName] = { context, slot: div };
 
-    this.fireCustomEvent('templateRendered', { templateType, context, element: div });
+    this.fireCustomEvent('templateRendered', { templateType, context: dataContext, element: div });
 
     return template;
   }
