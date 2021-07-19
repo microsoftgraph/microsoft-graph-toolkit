@@ -76,7 +76,7 @@ export async function getUserWithPhoto(
       } catch (e) {
         //if 404 received (photo not found) but user already in cache, update timeCache value to prevent repeated 404 error / graph calls on each page refresh
         if (e.code === 'ErrorItemNotFound') {
-          storePhotoInCache(userId || 'me', schemas.photos.stores.users, { eTag: undefined, photo: null });
+          storePhotoInCache(userId || 'me', schemas.photos.stores.users, { eTag: null, photo: null });
         }
       }
     }
