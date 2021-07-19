@@ -484,6 +484,7 @@ export class MgtFileList extends MgtTemplatedComponent {
   private pageIterator: GraphPageIterator<DriveItem>;
   // tracking user arrow key input of selection for accessibility purpose
   private _focusedItemIndex: number = -1;
+  // tracking drag and drop status area.
 
   @internalProperty() private _isLoadingMore: boolean;
 
@@ -627,23 +628,22 @@ export class MgtFileList extends MgtTemplatedComponent {
   }
 
   protected renderDragArea(): TemplateResult {
-    if (this.enableFileUpload) {
-      const fileListProperties: MgtFileListProperties = {
-        driveId: this.driveId,
-        enableFileUpload: this.enableFileUpload,
-        excludedFileExtensions: this.excludedFileExtensions,
-        fileListQuery: this.fileListQuery,
-        fileQueries: this.fileQueries,
-        groupId: this.groupId,
-        itemId: this.itemId,
-        itemPath: this.itemPath,
-        maxFileSize: this.maxFileSize,
-        maxUploadFile: this.maxUploadFile
-      };
-      return html`
-        <mgt-file-upload .fileListProperties=${fileListProperties} .enableFileUpload=${this.enableFileUpload} .maxUploadFile=${this._maxUploadFile}></mgt-file-upload>
+    const fileListProperties: MgtFileListProperties = {
+      graph: Providers.globalProvider.graph.forComponent(this),
+      driveId: this.driveId,
+      enableFileUpload: this.enableFileUpload,
+      excludedFileExtensions: this.excludedFileExtensions,
+      fileListQuery: this.fileListQuery,
+      fileQueries: this.fileQueries,
+      groupId: this.groupId,
+      itemId: this.itemId,
+      itemPath: this.itemPath,
+      maxFileSize: this.maxFileSize,
+      maxUploadFile: this.maxUploadFile
+    };
+    return html`
+        <mgt-file-upload .fileListProperties=${fileListProperties} ></mgt-file-upload>
       `;
-    }
   }
 
   /**
