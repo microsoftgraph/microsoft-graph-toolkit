@@ -453,7 +453,7 @@ found at http://polymer.github.io/PATENTS.txt
       `:html$1`
         <i class=${Cr(r)} aria-hidden="true"></i>
       `,html$1`
-      <div class="user-presence" title=${e.activity} aria-label=${e.activity}>
+      <div class="user-presence" title=${e.activity} aria-label=${e.activity} role="img">
         ${o}
       </div>
     `}renderAvatar(e,t,r){const o=e&&this.personCardInteraction===Fr.none&&(e.displayName||getEmailFromGraphEntity(e))||"",n={initials:!t||this._isInvalidImageSrc||"initials"===this._avatarType,small:!this.isLargeAvatar(),"user-avatar":!0};t&&!this._isInvalidImageSrc&&"initials"!==this._avatarType||!e||(n[this._personAvatarBg]=!0);const i=this.renderImage(e,t),s=this.renderPresence(r);return html$1`
