@@ -11,12 +11,16 @@
 
 // Main
 :host {
-  border-radius: 2px;
   font-family: $font-family;
-  height: 38px;
+  font-size: 14px;
+  height: 24px;
   display: contents;
-  height: 100%;
   overflow: hidden;
+  position: absolute;
+  width: 135px;
+  left: 0px;
+  top: 0px;
+  border-radius: 12px;
 }
 
 :host .root,
@@ -53,7 +57,7 @@ mgt-people-picker .root {
       display: flex;
       margin: 0 5px 6px 0;
       align-items: center;
-      border-radius: 15px;
+      border-radius: 12px;
       height: 24px;
       white-space: nowrap;
       text-overflow: ellipsis;
@@ -84,23 +88,57 @@ mgt-people-picker .root {
           top: 0;
           right: 0;
           @include selected-person__overflow($theme-default);
+          background-image: none;
         }
 
         &__close-icon {
-          height: 100%;
-          top: 0;
-          margin-top: 4px;
-          margin-left: 10px;
-          position: absolute;
-          line-height: normal;
           font-family: 'FabricMDL2Icons';
-          padding-right: 7px;
           cursor: pointer;
-          right: 0;
           background-color: set-var(selected-person__background-color, $theme-default, $people-picker);
           color: $color;
+          display: flex;
+          flex-direction: column;
+          align-items: center;
+          position: absolute;
+          height: 24px;
+          width: 24px;
+          right: 0px;
+          top: 0px;
+          border-radius: 12px;
+          line-height: 24px;
         }
       }
+    }
+
+    &__person-wrapper-highlighted {
+      @extend .selected-list__person-wrapper;
+      background: #005393;
+
+      &__person {
+        @extend .selected-list__person-wrapper__person;
+        color: white;
+        --color: white;
+      }
+
+      &__overflow {
+        @extend .selected-list__person-wrapper__overflow;
+        &__gradient {
+          @extend .selected-list__person-wrapper__overflow__gradient;
+          background-image: none;
+        }
+
+        &__close-icon {
+          @extend .selected-list__person-wrapper__overflow__close-icon;
+          background: #005393;
+          color: white;
+          line-height: 24px;
+        }
+      }
+    }
+
+    &__person-wrapper-highlighted:hover {
+      @extend .selected-list__person-wrapper-highlighted;
+      background-color: #006cbe;
     }
 
     .flyout {
