@@ -5,12 +5,84 @@
  * -------------------------------------------------------------------------------------------
  */
 
-@import '../../../styles/shared-styles.scss';
-@import '../../../styles/shared-sass-variables.scss';
 @import '../../../../../../node_modules/office-ui-fabric-core/dist/sass/References';
+@import '../../../styles/shared-sass-variables.scss';
 
-:host .file-drag-border,
-mgt-file-upload .file-drag-border {
+:host .file-upload-button {
+  width: 100%;
+  text-align: var(--file-upload-button-text-align, -webkit-right);
+
+  div {
+    background-color: var(--file-upload-button-background-color, rgb(243, 242, 241));
+    width: 120px;
+    height: 32px;
+    text-align: center;
+    display: table;
+    margin-top: 39px;
+    margin-right: 16px;
+    margin-left: 16px;
+    cursor: pointer;
+    font-size: 14px;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  }
+
+  span {
+    color: var(--file-upload-button-color, inherit);
+    vertical-align: middle;
+    display: table-cell;
+  }
+
+  input {
+    width: 0.1px;
+    height: 0.1px;
+    opacity: 0;
+    overflow: hidden;
+    position: absolute;
+    z-index: -1;
+  }
+}
+
+:host .file-upload-table {
+  display: table;
+  width: 260px;
+  padding-left: 3px;
+
+  .file-upload-cell {
+    padding: 1px 0px 1px 1px;
+    display: table-cell;
+    width: 50%;
+    vertical-align: middle;
+    position: relative;
+
+    #file-upload-bar {
+      max-width: 200px;
+      background-color: rgb(243, 242, 241);
+      border-radius: 12px;
+
+      #file-upload-progress {
+        height: 5px;
+        background-color: #0078d4;
+        border-radius: 12px;
+      }
+    }
+
+    .file-upload-status {
+      position: absolute;
+      top: 12px;
+      left: 16px;
+    }
+
+    .file-upload-cancel {
+      cursor: pointer;
+    }
+  }
+}
+
+:host .mgt-file-item {
+  --file-background-color: var(--file-upload-item-background-color, transparent);
+}
+
+:host .file-drag-border {
   border: dashed #0078d4 1px;
   background-color: rgba(0, 120, 212, 0.1);
   position: absolute;

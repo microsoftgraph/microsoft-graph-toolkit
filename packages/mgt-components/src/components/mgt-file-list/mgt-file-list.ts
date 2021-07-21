@@ -40,7 +40,7 @@ import { OfficeGraphInsightString, ViewType } from '../../graph/types';
 import { styles } from './mgt-file-list-css';
 import { strings } from './strings';
 import { MgtFile } from '../mgt-file/mgt-file';
-import { MgtFileListProperties } from '../../components/sub-components/mgt-file-upload/mgt-file-upload';
+import { MgtFileUploadConfig } from '../../components/sub-components/mgt-file-upload/mgt-file-upload';
 
 export { FluentDesignSystemProvider, FluentProgressRing } from '@fluentui/web-components';
 
@@ -54,6 +54,10 @@ export { FluentDesignSystemProvider, FluentProgressRing } from '@fluentui/web-co
  * @extends {MgtTemplatedComponent}
  *
  * @fires itemClick - Fired when user click a file. Returns the file (DriveItem) details.
+ * @cssprop --file-upload-button-text-align - {text-align} Upload button aligment using -webkit-[position]
+ * @cssprop --file-upload-button-background-color - {Color} Background color of upload button
+ * @cssprop --file-upload-button-color - {Color} Text color of upload button
+ * @cssprop --file-upload-item-background-color - {Color} Background color of upload file
  * @cssprop --file-list-background-color - {Color} File list background color
  * @cssprop --file-list-box-shadow - {String} File list box shadow style
  * @cssprop --file-list-border - {String} File list border styles
@@ -628,7 +632,7 @@ export class MgtFileList extends MgtTemplatedComponent {
   }
 
   protected renderDragArea(): TemplateResult {
-    const fileListProperties: MgtFileListProperties = {
+    const fileUploadConfig: MgtFileUploadConfig = {
       graph: Providers.globalProvider.graph.forComponent(this),
       driveId: this.driveId,
       enableFileUpload: this.enableFileUpload,
@@ -642,7 +646,7 @@ export class MgtFileList extends MgtTemplatedComponent {
       maxUploadFile: this.maxUploadFile
     };
     return html`
-        <mgt-file-upload .fileListProperties=${fileListProperties} ></mgt-file-upload>
+        <mgt-file-upload .fileUploadList=${fileUploadConfig} class="${this.className}" ></mgt-file-upload>
       `;
   }
 
