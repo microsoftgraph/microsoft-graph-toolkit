@@ -7,6 +7,7 @@
 
 import { customElement, html, property, TemplateResult } from 'lit-element';
 import { styles } from './mgt-file-upload-css';
+import { strings } from './strings';
 import { getSvg, SvgIcon } from '../../../utils/SvgHelper';
 import { IGraph, MgtBaseComponent, prepScopes } from '@microsoft/mgt-element';
 import { ViewType } from '../../../graph/types';
@@ -184,6 +185,8 @@ export interface MgtFileUploadConfig {
  * @class MgtFileUpload
  * @extends {MgtBaseComponent}
  *
+ * @cssprop --file-upload-border- {String} File upload border top style
+ * @cssprop --file-upload-background-color - {Color} File upload background color with opacity style
  * @cssprop --file-upload-button-text-align - {text-align} Upload button aligment using -webkit-[position]
  * @cssprop --file-upload-button-background-color - {Color} Background color of upload button
  * @cssprop --file-upload-button-color - {Color} Text color of upload button
@@ -197,6 +200,10 @@ export class MgtFileUpload extends MgtBaseComponent {
    */
   static get styles() {
     return styles;
+  }
+
+  protected get strings() {
+    return strings;
   }
 
   /**
@@ -250,7 +257,7 @@ export class MgtFileUpload extends MgtBaseComponent {
     }
 
     return html`
-         <div id="file-drag-border" >
+         <div id="file-upload-border" >
             
          </div>
          <div class="file-upload-button">
@@ -262,7 +269,7 @@ export class MgtFileUpload extends MgtBaseComponent {
               accept=""
               @change="${this.onFileUploadChange}"
             />
-            <span @click=${this.onFileUploadClick}>${getSvg(SvgIcon.Upload)}Upload Files</span> 
+            <span @click=${this.onFileUploadClick}>${getSvg(SvgIcon.Upload)}${strings.buttonUploadFile}</span> 
           </div>
          </div>
          <div id="file-upload-Template">
@@ -408,8 +415,8 @@ export class MgtFileUpload extends MgtBaseComponent {
     this._dragCounter++;
     if (event.dataTransfer.items && event.dataTransfer.items.length > 0) {
       event.dataTransfer.dropEffect = this._dropEffect;
-      const dragFileBorder: HTMLElement = this.renderRoot.querySelector('#file-drag-border');
-      dragFileBorder.classList.add('file-drag-border');
+      const dragFileBorder: HTMLElement = this.renderRoot.querySelector('#file-upload-border');
+      dragFileBorder.style.display = 'inline-block';
     }
   };
 
@@ -423,8 +430,8 @@ export class MgtFileUpload extends MgtBaseComponent {
     event.stopPropagation();
     this._dragCounter--;
     if (this._dragCounter === 0) {
-      const dragFileBorder: HTMLElement = this.renderRoot.querySelector('#file-drag-border');
-      dragFileBorder.classList.remove('file-drag-border');
+      const dragFileBorder: HTMLElement = this.renderRoot.querySelector('#file-upload-border');
+      dragFileBorder.style.display = 'none';
     }
   };
   /**
@@ -436,8 +443,8 @@ export class MgtFileUpload extends MgtBaseComponent {
     event.preventDefault();
     event.stopPropagation();
 
-    const dragFileBorder = this.renderRoot.querySelector('#file-drag-border');
-    dragFileBorder.classList.remove('file-drag-border');
+    const dragFileBorder: HTMLElement = this.renderRoot.querySelector('#file-upload-border');
+    dragFileBorder.style.display = 'none';
     if (event.dataTransfer && event.dataTransfer.items) {
       this.getSelectedFiles(await this.getFilesFromUploadArea(event.dataTransfer.items));
     }
@@ -495,7 +502,7 @@ export class MgtFileUpload extends MgtBaseComponent {
         fileItem.driveItem = driveItem;
         this.setUploadSuccess(fileItem);
       } catch (error) {
-        this.setUploadFail(fileItem, 'File upload fail.');
+        this.setUploadFail(fileItem, strings.failUploadFile);
       }
     } else {
       fileItem.GraphUrl = `me/drive/root:/${fileItem.file.name}:/createUploadSession`;
@@ -505,39 +512,6 @@ export class MgtFileUpload extends MgtBaseComponent {
         this.setUploadSuccess(fileItem);
       }
     }
-  }
-
-  /**
-   * Change the state of Mgt-File icon upload to Success
-   *
-   * @param fileUpload
-   */
-  protected setUploadSuccess(fileUpload: MgtFileUploadItem) {
-    fileUpload.percent = 100;
-    super.requestStateUpdate(true);
-    setTimeout(() => {
-      fileUpload.iconStatus = getSvg(SvgIcon.Sucess);
-      fileUpload.view = ViewType.twolines;
-      fileUpload.fieldUploadResponse = 'lastModifiedDateTime';
-      fileUpload.completed = true;
-      super.requestStateUpdate(true);
-    }, 500);
-  }
-
-  /**
-   * Change the state of Mgt-File icon upload to Fail
-   *
-   * @param fileUpload
-   */
-  protected setUploadFail(fileUpload, errorMessage: string) {
-    setTimeout(() => {
-      fileUpload.iconStatus = getSvg(SvgIcon.Fail);
-      fileUpload.view = ViewType.twolines;
-      fileUpload.driveItem.description = errorMessage;
-      fileUpload.fieldUploadResponse = 'description';
-      fileUpload.completed = true;
-      super.requestStateUpdate(true);
-    }, 500);
   }
 
   /**
@@ -592,6 +566,7 @@ export class MgtFileUpload extends MgtBaseComponent {
       if (fileItem.mimeStreamString === undefined) {
         fileItem.mimeStreamString = (await this.readFileContent(fileItem.file)) as ArrayBuffer;
       }
+      //Graph client API uses Buffer package to manage ArrayBuffer, change to Blob avoids external package dependency
       const fileSlice: Blob = new Blob([fileItem.mimeStreamString.slice(minSize, maxSize)]);
       fileItem.percent = Math.round((maxSize / fileItem.file.size) * 100);
       super.requestStateUpdate(true);
@@ -657,14 +632,47 @@ export class MgtFileUpload extends MgtBaseComponent {
         this.fileUploadList.graph.client.api(fileItem.uploadUrl).delete(async response => {
           if (response === null) {
             fileItem.uploadUrl = undefined;
-            this.setUploadFail(fileItem, 'File upload fail.');
+            this.setUploadFail(fileItem, strings.failUploadFile);
           }
         });
       } else {
-        this.setUploadFail(fileItem, 'File cancel.');
+        this.setUploadFail(fileItem, strings.cancelUploadFile);
       }
       return undefined;
     }
+  }
+
+  /**
+   * Change the state of Mgt-File icon upload to Success
+   *
+   * @param fileUpload
+   */
+  protected setUploadSuccess(fileUpload: MgtFileUploadItem) {
+    fileUpload.percent = 100;
+    super.requestStateUpdate(true);
+    setTimeout(() => {
+      fileUpload.iconStatus = getSvg(SvgIcon.Sucess);
+      fileUpload.view = ViewType.twolines;
+      fileUpload.fieldUploadResponse = 'lastModifiedDateTime';
+      fileUpload.completed = true;
+      super.requestStateUpdate(true);
+    }, 500);
+  }
+
+  /**
+   * Change the state of Mgt-File icon upload to Fail
+   *
+   * @param fileUpload
+   */
+  protected setUploadFail(fileUpload, errorMessage: string) {
+    setTimeout(() => {
+      fileUpload.iconStatus = getSvg(SvgIcon.Fail);
+      fileUpload.view = ViewType.twolines;
+      fileUpload.driveItem.description = errorMessage;
+      fileUpload.fieldUploadResponse = 'description';
+      fileUpload.completed = true;
+      super.requestStateUpdate(true);
+    }, 500);
   }
 
   /**
@@ -754,7 +762,7 @@ export class MgtFileUpload extends MgtBaseComponent {
   }
 
   /**
-   * Retrieve Files from Folder and Subfolders to array.
+   * Retrieve files from folder and subfolders to array.
    *
    * @param folders
    * @returns

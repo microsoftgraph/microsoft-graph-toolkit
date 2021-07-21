@@ -82,13 +82,14 @@
   --file-background-color: var(--file-upload-item-background-color, transparent);
 }
 
-:host .file-drag-border {
-  border: dashed #0078d4 1px;
-  background-color: rgba(0, 120, 212, 0.1);
+:host #file-upload-border {
+  border: var(--file-upload-border, dashed #0078d4 1px);
+  background-color: var(--file-upload-background-color, rgba(0, 120, 212, 0.1));
   position: absolute;
   top: 0;
   bottom: 0;
   left: 0;
   right: 0;
   z-index: 1;
+  display: none;
 }
