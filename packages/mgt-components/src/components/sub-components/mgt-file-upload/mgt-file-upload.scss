@@ -56,12 +56,12 @@
 
     #file-upload-bar {
       max-width: 200px;
-      background-color: rgb(243, 242, 241);
+      background-color: var(--file-upload-progressBar-background-color, rgb(243, 242, 241));
       border-radius: 12px;
 
       #file-upload-progress {
         height: 5px;
-        background-color: #0078d4;
+        background-color: var(--file-upload-progress-background-color, #0078d4);
         border-radius: 12px;
       }
     }

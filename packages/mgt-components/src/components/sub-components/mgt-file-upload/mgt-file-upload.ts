@@ -190,6 +190,8 @@ export interface MgtFileUploadConfig {
  * @cssprop --file-upload-button-text-align - {text-align} Upload button aligment using -webkit-[position]
  * @cssprop --file-upload-button-background-color - {Color} Background color of upload button
  * @cssprop --file-upload-button-color - {Color} Text color of upload button
+ * @cssprop --file-upload-progress-background-color - {Color} progress background color
+ * @cssprop --file-upload-progressBar-background-color - {Color} progressBar background color
  * @cssprop --file-upload-item-background-color - {Color} Background color of upload file
  */
 @customElement('mgt-file-upload')
@@ -627,7 +629,7 @@ export class MgtFileUpload extends MgtBaseComponent {
         .put(file);
       return response;
     } catch {
-      //If upload chunch Graph call fails delete current Session
+      //If upload chunck Graph call fails delete current Session
       if (fileItem.uploadUrl !== undefined) {
         this.fileUploadList.graph.client.api(fileItem.uploadUrl).delete(async response => {
           if (response === null) {

@@ -54,9 +54,13 @@ export { FluentDesignSystemProvider, FluentProgressRing } from '@fluentui/web-co
  * @extends {MgtTemplatedComponent}
  *
  * @fires itemClick - Fired when user click a file. Returns the file (DriveItem) details.
+ * @cssprop --file-upload-border- {String} File upload border top style
+ * @cssprop --file-upload-background-color - {Color} File upload background color with opacity style
  * @cssprop --file-upload-button-text-align - {text-align} Upload button aligment using -webkit-[position]
  * @cssprop --file-upload-button-background-color - {Color} Background color of upload button
  * @cssprop --file-upload-button-color - {Color} Text color of upload button
+ * @cssprop --file-upload-progress-background-color - {Color} progress background color
+ * @cssprop --file-upload-progressBar-background-color - {Color} progressBar background color
  * @cssprop --file-upload-item-background-color - {Color} Background color of upload file
  * @cssprop --file-list-background-color - {Color} File list background color
  * @cssprop --file-list-box-shadow - {String} File list box shadow style
