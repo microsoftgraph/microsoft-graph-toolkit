@@ -6,8 +6,11 @@
       mgt.TeamsProvider.handleAuth();
     </script> -->
     <script type="module">
-      import { TeamsProvider } from './packages/providers/mgt-teams-provider/dist/es6/TeamsProvider.js';
-      TeamsProvider.handleAuth();
+      // import { TeamsProvider } from './packages/providers/mgt-teams-provider/dist/es6/TeamsProvider.js';
+      // TeamsProvider.handleAuth();
+
+      import { TeamsSSOProvider } from './packages/providers/mgt-teams-sso-provider/dist/es6/TeamsSSOProvider.js';
+      TeamsSSOProvider.handleAuth();
     </script>
   </head>
   <body>
