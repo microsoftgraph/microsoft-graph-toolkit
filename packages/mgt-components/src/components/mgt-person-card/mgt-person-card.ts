@@ -621,21 +621,24 @@ export class MgtPersonCard extends MgtTemplatedComponent {
 
     const currentSectionIndex = this._currentSection ? this.sections.indexOf(this._currentSection) : -1;
 
-    let currentSectionName = this._currentSection
-      ? /[^-]*$/.exec(this._currentSection.tagName)[0].toLowerCase()
-      : 'overview';
-
     const additionalSectionTemplates = this.sections.map((section, i) => {
-      console.log(section);
+      let name = /[^-]*$/.exec(section.tagName)[0].toLowerCase();
       const classes = classMap({
         active: i === currentSectionIndex,
         'section-nav__icon': true
       });
-      let simpleSectionName = /[^-]*$/.exec(section.tagName)[0].toLowerCase();
       return html`
-        <fluent-tab class=${classes} 
-          id=${simpleSectionName} @click=${() => this.updateCurrentSection(section)}>${section.renderIcon()}
+        <fluent-tab id="${name}Tab" class=${classes}
+          slot="tab" @click=${() => this.updateCurrentSection(section)}>${section.renderIcon()}
         </fluent-tab>
+      `;
+    });
+
+    const additionalPanelTemplates = this.sections.map((section, i) => {
+      return html`
+        <fluent-tab-panel slot="tabpanel">
+              <div id="inserted">${this._currentSection ? section.asFullView() : null}</div>
+        </fluent-tab-panel>
       `;
     });
 
@@ -646,15 +649,16 @@ export class MgtPersonCard extends MgtTemplatedComponent {
 
     return html`
             <fluent-design-system-provider use-defaults>
-                  <fluent-tabs activeid="overview" orientation="horizontal" activeindicator>
-                    <fluent-tab class="${overviewClasses}" id="overview" @click=${() =>
+                  <fluent-tabs  orientation="horizontal" activeindicator> 
+                    <fluent-tab class="overviewTab ${overviewClasses}" slot="tab" @click=${() =>
       this.updateCurrentSection(null)}>
                       <div>${getSvg(SvgIcon.Overview)}</div>
                     </fluent-tab>
-                    <fluent-tab-panel id="${currentSectionName}Panel">
-                      <div>${this.renderCurrentSection()}</div>
+                    ${additionalSectionTemplates}
+                    <fluent-tab-panel slot="tabpanel">
+                      <div class="overviewPanel">${!this._currentSection ? this.renderOverviewSection() : null}</div>
                     </fluent-tab-panel>
-                      ${additionalSectionTemplates}
+                    ${additionalPanelTemplates}
                 </fluent-tabs>
             </fluent-design-system-provider>
     `;
@@ -674,7 +678,7 @@ export class MgtPersonCard extends MgtTemplatedComponent {
           <div class="section__header">
             <div class="section__title">${section.displayName}</div>
             <fluent-design-system-provider use-defaults>
-              <fluent-button appearance="stealth" class="section__show-more" @click=${() =>
+              <fluent-button appearance="lightweight" class="section__show-more" @click=${() =>
                 this.updateCurrentSection(section)}>
                 ${this.strings.showMoreSectionButton}
               </fluent-button>
@@ -769,10 +773,15 @@ export class MgtPersonCard extends MgtTemplatedComponent {
   protected renderMessagingSection(): TemplateResult {
     return html`
       <fluent-design-system-provider use-defaults>
-        <fluent-text-field appearance="filled" placeholder="Message"></fluent-text-field>
-            <svg width="18" height="18" viewBox="0 0 18 18" fill="none" xmlns="http://www.w3.org/2000/svg">
-              <path d="M3.15962 9.18125L3.2301 9.00003L3.15962 8.81881L-0.234663 0.0906432C-0.310552 -0.104501 -0.12522 -0.299034 0.0642362 -0.242058L0.123936 -0.216678L18.1101 8.77642C18.2764 8.85955 18.2942 9.08725 18.1561 9.19494L18.0942 9.23162L0.110142 18.2236C-0.0771349 18.3173 -0.287997 18.1508 -0.248815 17.9568L-0.229073 17.895L3.15962 9.18125ZM1.62571 1.09323L0.466274 0.513508L0.936099 1.72166L3.54509 8.43066L3.66904 8.74941L4.01105 8.74944L10.6386 8.75003H10.6387C10.7606 8.75003 10.8628 8.83771 10.8844 8.95327L10.8884 9.01237C10.8827 9.12877 10.7971 9.22486 10.6854 9.24576L10.6219 9.25003L4.01114 9.24944L3.66905 9.24941L3.54508 9.56824L0.936088 16.2784L0.466377 17.4865L1.62571 16.9068L16.5449 9.44724L17.4393 9.00003L16.5449 8.55282L1.62571 1.09323Z" stroke="black" stroke-opacity="0.55"/>
-            </svg>
+        <fluent-text-field appearance="filled" placeholder="Message ${this.internalPersonDetails.displayName}"  
+          .value=${this._chatInput}  
+          @input=${(e: Event) => {
+            this._chatInput = (e.target as HTMLInputElement).value;
+          }}>
+      </fluent-text-field>
+        <span class="send-message-icon" @click=${() => this.sendQuickMessage()}>
+             ${getSvg(SvgIcon.Send)}
+           </span>
       </fluent-design-system-provider>
       `;
   }
@@ -1064,10 +1073,13 @@ export class MgtPersonCard extends MgtTemplatedComponent {
 
   private updateCurrentSection(section) {
     const sectionHost = this.renderRoot.querySelector('.section-host');
+    if (section) {
+      const sectionName = /[^-]*$/.exec(section.tagName)[0].toLowerCase();
+      const tabs: HTMLElement = this.renderRoot.querySelector(`#${sectionName}Tab`) as HTMLElement;
+      tabs.click();
+    }
     sectionHost.scrollTop = 0;
-    console.log('section BEFORE', this._currentSection);
     this._currentSection = section;
-    console.log('update section', this._currentSection);
     this.requestUpdate();
   }
 
