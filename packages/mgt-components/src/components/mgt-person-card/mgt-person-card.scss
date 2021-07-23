@@ -215,14 +215,14 @@ $person-card-details-item-font-size: var(--person-card-details-item-font-size, 1
             border-radius: 11px;
           }
           &::-webkit-scrollbar-button {
-            background: white;
+            background: $background-color;
           }
           &::-webkit-scrollbar-track {
-            background: white;
+            background: $background-color;
             border-radius: 10px;
           }
           &::-webkit-scrollbar-track-piece {
-            background: white;
+            background: $background-color;
           }
           &::-webkit-scrollbar-thumb {
             background: grey;
