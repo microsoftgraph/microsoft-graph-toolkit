@@ -737,7 +737,7 @@ export class MgtPerson extends MgtTemplatedComponent {
     }
 
     return html`
-      <div class="user-presence" title=${presence.activity} aria-label=${presence.activity}>
+      <div class="user-presence" title=${presence.activity} aria-label=${presence.activity} role="img">
         ${iconHtml}
       </div>
     `;

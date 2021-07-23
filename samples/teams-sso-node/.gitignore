@@ -1,0 +1,5 @@
+node_modules/
+build/
+client/mgt
+yarn-error.log
+.env

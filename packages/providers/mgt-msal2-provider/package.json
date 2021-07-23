@@ -41,7 +41,7 @@
   "dependencies": {
     "@microsoft/mgt-element": "*",
     "@microsoft/microsoft-graph-client": "^2.2.1",
-    "@azure/msal-browser": "^2.14.1"
+    "@azure/msal-browser": "^2.14.2"
   },
   "publishConfig": {
     "directory": "dist"

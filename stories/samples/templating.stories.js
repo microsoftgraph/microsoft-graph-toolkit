@@ -40,7 +40,7 @@ export const AgendaEventTemplate = () => html`
       <div class="root">
         <div class="time-container">
           <div class="date">{{ dayFromDateTime(event.start.dateTime)}}</div>
-          <div class="time">{{ timeRangeFromEvent(event) }}</div>
+          <div class="time">{{ timeRangeFromEvent(event, '12') }}</div>
         </div>
 
         <div class="separator">
@@ -100,7 +100,7 @@ export const AgendaEventTemplate = () => html`
         return monthNames[monthIndex] + ' ' + day + ' ' + year;
       },
 
-      timeRangeFromEvent: event => {
+      timeRangeFromEvent: (event, timeFormat) => {
         if (event.isAllDay) {
           return 'ALL DAY';
         }
@@ -109,11 +109,17 @@ export const AgendaEventTemplate = () => html`
           date.setMinutes(date.getMinutes() - date.getTimezoneOffset());
           let hours = date.getHours();
           let minutes = date.getMinutes();
-          let ampm = hours >= 12 ? 'PM' : 'AM';
-          hours = hours % 12;
-          hours = hours ? hours : 12;
           let minutesStr = minutes < 10 ? '0' + minutes : minutes;
-          return hours + ':' + minutesStr + ' ' + ampm;
+          let timeString = hours + ':' + minutesStr;
+          if (timeFormat === '12') {
+            let ampm = hours >= 12 ? 'PM' : 'AM';
+            hours = hours % 12;
+            hours = hours ? hours : 12;
+            
+            timeString = hours + ':' + minutesStr + ' ' + ampm;
+          }
+
+          return timeString;
         };
 
         let start = prettyPrintTimeFromDateTime(new Date(event.start.dateTime));
