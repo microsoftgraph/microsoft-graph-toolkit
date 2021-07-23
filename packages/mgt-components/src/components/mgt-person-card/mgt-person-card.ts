@@ -377,6 +377,10 @@ export class MgtPersonCard extends MgtTemplatedComponent {
     const historyState = this._history.pop();
     this._currentSection = null;
 
+    //resets to first tab being selected
+    const firstTab: HTMLElement = this.renderRoot.querySelector(`fluent-tab`)[0] as HTMLElement;
+    firstTab.click();
+
     this.state = historyState.state;
     this._personDetails = historyState.state;
     this.personImage = historyState.personImage;
@@ -621,13 +625,13 @@ export class MgtPersonCard extends MgtTemplatedComponent {
     const currentSectionIndex = this._currentSection ? this.sections.indexOf(this._currentSection) : -1;
 
     const additionalSectionTemplates = this.sections.map((section, i) => {
-      let name = /[^-]*$/.exec(section.tagName)[0].toLowerCase();
+      let name = section.tagName.toLowerCase();
       const classes = classMap({
         active: i === currentSectionIndex,
         'section-nav__icon': true
       });
       return html`
-        <fluent-tab id="${name}Tab" class=${classes}
+        <fluent-tab id="${name}-Tab" class=${classes}
           slot="tab" @click=${() => this.updateCurrentSection(section)}>${section.renderIcon()}
         </fluent-tab>
       `;
@@ -1073,8 +1077,8 @@ export class MgtPersonCard extends MgtTemplatedComponent {
   private updateCurrentSection(section) {
     const sectionHost = this.renderRoot.querySelector('.section-host');
     if (section) {
-      const sectionName = /[^-]*$/.exec(section.tagName)[0].toLowerCase();
-      const tabs: HTMLElement = this.renderRoot.querySelector(`#${sectionName}Tab`) as HTMLElement;
+      const sectionName = section.tagName.toLowerCase();
+      const tabs: HTMLElement = this.renderRoot.querySelector(`#${sectionName}-Tab`) as HTMLElement;
       tabs.click();
     }
     sectionHost.scrollTop = 0;
