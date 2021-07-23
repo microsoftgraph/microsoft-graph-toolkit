@@ -644,14 +644,14 @@ export class MgtPersonCard extends MgtTemplatedComponent {
 
     const overviewClasses = classMap({
       active: currentSectionIndex === -1,
-      'section-nav__icon': true
+      'section-nav__icon': true,
+      overviewTab: true
     });
 
     return html`
             <fluent-design-system-provider use-defaults>
                   <fluent-tabs  orientation="horizontal" activeindicator> 
-                    <fluent-tab class="overviewTab ${overviewClasses}" slot="tab" @click=${() =>
-      this.updateCurrentSection(null)}>
+                    <fluent-tab class="${overviewClasses}" slot="tab" @click=${() => this.updateCurrentSection(null)}>
                       <div>${getSvg(SvgIcon.Overview)}</div>
                     </fluent-tab>
                     ${additionalSectionTemplates}
