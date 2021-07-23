@@ -19,7 +19,7 @@ $person-card-details-item-font-size: var(--person-card-details-item-font-size, 1
 
 :host {
   background: $background-color;
-  width: var(--mgt-flyout-set-width, 340px);
+  width: var(--mgt-flyout-set-width, 375px);
   font-family: $font-family;
   overflow: hidden;
   user-select: none;
@@ -56,7 +56,7 @@ $person-card-details-item-font-size: var(--person-card-details-item-font-size, 1
   .person-details-container {
     display: flex;
     flex-direction: column;
-    width: calc(var(--mgt-flyout-set-width, 340px) - 40px);
+    width: calc(var(--mgt-flyout-set-width, 375px) - 40px);
     padding: 20px;
 
     .person-image {
@@ -187,6 +187,7 @@ $person-card-details-item-font-size: var(--person-card-details-item-font-size, 1
     fluent-design-system-provider {
       background-color: $background-color;
       fluent-tabs {
+        // grid-template-columns: minmax(21px, 200px);
         .activeIndicator {
           width: 40px !important;
         }
@@ -200,8 +201,12 @@ $person-card-details-item-font-size: var(--person-card-details-item-font-size, 1
           overflow-x: hidden;
           padding: 0px;
           border-top: 1px solid set-var(tab__line__color, $theme-default, $common);
+          .inserted {
+            max-width: var(--mgt-flyout-set-width, 375px);
+            min-width: var(--mgt-flyout-set-width, 360px);
+          }
           .overviewPanel {
-            max-width: var(--mgt-flyout-set-width, 340px);
+            max-width: var(--mgt-flyout-set-width, 375px);
           }
 
           &::-webkit-scrollbar {
@@ -382,6 +387,8 @@ $person-card-details-item-font-size: var(--person-card-details-item-font-size, 1
           --neutral-fill-stealth-rest: $background-color;
           --accent-foreground-hover: $background-color;
           --accent-foreground-active: $background-color;
+          --base-height-multiplier: 5;
+          vertical-align: top;
         }
       }
 

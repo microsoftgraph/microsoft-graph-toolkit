@@ -637,7 +637,7 @@ export class MgtPersonCard extends MgtTemplatedComponent {
     const additionalPanelTemplates = this.sections.map((section, i) => {
       return html`
         <fluent-tab-panel slot="tabpanel">
-              <div id="inserted">${this._currentSection ? section.asFullView() : null}</div>
+              <div class="inserted">${this._currentSection ? section.asFullView() : null}</div>
         </fluent-tab-panel>
       `;
     });
