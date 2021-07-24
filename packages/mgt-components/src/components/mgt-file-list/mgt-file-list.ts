@@ -387,7 +387,7 @@ export class MgtFileList extends MgtTemplatedComponent {
   public hideMoreFilesButton: boolean;
 
   /**
-   * A number value to indicate restrict upload size (KB)
+   * A number value indication for file size upload (KB)
    * @type {number}
    * @memberof MgtFileList
    */
@@ -419,7 +419,7 @@ export class MgtFileList extends MgtTemplatedComponent {
   public enableFileUpload: boolean;
 
   /**
-   * A number value to indicate the number of files to be uploaded.
+   * A number value to indicate the number of files to upload.
    * @type {number}
    * @memberof MgtFileList
    */
@@ -440,7 +440,7 @@ export class MgtFileList extends MgtTemplatedComponent {
   }
 
   /**
-   * allows developer to define file extensions to be excluded from file upload
+   * A Array of file extensions to be excluded from file upload.
    *
    * @type {string[]}
    * @memberof MgtFileList
@@ -455,7 +455,7 @@ export class MgtFileList extends MgtTemplatedComponent {
     return this._excludedFileExtensions;
   }
   public set excludedFileExtensions(value: string[]) {
-    if (arraysAreEqual(this._fileExtensions, value)) {
+    if (arraysAreEqual(this._excludedFileExtensions, value)) {
       return;
     }
 
@@ -571,7 +571,7 @@ export class MgtFileList extends MgtTemplatedComponent {
   protected renderFiles(): TemplateResult {
     return html`
       <div id="file-list-wrapper" class="file-list-wrapper" dir=${this.direction}>
-        ${this.enableFileUpload ? this.renderDragArea() : null}
+        ${this.enableFileUpload ? this.renderFileUpload() : null}
         <ul
           id="file-list"
           class="file-list"
@@ -635,17 +635,16 @@ export class MgtFileList extends MgtTemplatedComponent {
     }
   }
 
-  protected renderDragArea(): TemplateResult {
+  protected renderFileUpload(): TemplateResult {
     const fileUploadConfig: MgtFileUploadConfig = {
       graph: Providers.globalProvider.graph.forComponent(this),
       driveId: this.driveId,
-      enableFileUpload: this.enableFileUpload,
       excludedFileExtensions: this.excludedFileExtensions,
-      fileListQuery: this.fileListQuery,
-      fileQueries: this.fileQueries,
       groupId: this.groupId,
       itemId: this.itemId,
       itemPath: this.itemPath,
+      userId: this.userId,
+      siteId: this.siteId,
       maxFileSize: this.maxFileSize,
       maxUploadFile: this.maxUploadFile
     };

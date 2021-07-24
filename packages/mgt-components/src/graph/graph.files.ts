@@ -6,7 +6,7 @@
  */
 
 import { CacheItem, CacheService, CacheStore, GraphPageIterator, IGraph, prepScopes } from '@microsoft/mgt-element';
-import { DriveItem } from '@microsoft/microsoft-graph-types';
+import { DriveItem, UploadSession } from '@microsoft/microsoft-graph-types';
 import { schemas } from './cacheStores';
 import { ResponseType } from '@microsoft/microsoft-graph-client';
 import { blobToBase64 } from '../utils/Utils';
@@ -100,7 +100,7 @@ export async function getDriveItemByQuery(graph: IGraph, resource: string): Prom
     if (getIsFilesCacheEnabled()) {
       cache.putValue(resource, { file: JSON.stringify(response) });
     }
-  } catch {}
+  } catch { }
 
   return response || null;
 }
@@ -126,7 +126,7 @@ export async function getDriveItemById(graph: IGraph, driveId: string, itemId: s
     if (getIsFilesCacheEnabled()) {
       cache.putValue(endpoint, { file: JSON.stringify(response) });
     }
-  } catch {}
+  } catch { }
   return response || null;
 }
 
@@ -151,7 +151,7 @@ export async function getDriveItemByPath(graph: IGraph, driveId: string, itemPat
     if (getIsFilesCacheEnabled()) {
       cache.putValue(endpoint, { file: JSON.stringify(response) });
     }
-  } catch {}
+  } catch { }
   return response || null;
 }
 
@@ -175,7 +175,7 @@ export async function getGroupDriveItemById(graph: IGraph, groupId: string, item
     if (getIsFilesCacheEnabled()) {
       cache.putValue(endpoint, { file: JSON.stringify(response) });
     }
-  } catch {}
+  } catch { }
   return response || null;
 }
 
@@ -199,7 +199,7 @@ export async function getGroupDriveItemByPath(graph: IGraph, groupId: string, it
     if (getIsFilesCacheEnabled()) {
       cache.putValue(endpoint, { file: JSON.stringify(response) });
     }
-  } catch {}
+  } catch { }
   return response || null;
 }
 
@@ -223,7 +223,7 @@ export async function getMyDriveItemById(graph: IGraph, itemId: string): Promise
     if (getIsFilesCacheEnabled()) {
       cache.putValue(endpoint, { file: JSON.stringify(response) });
     }
-  } catch {}
+  } catch { }
   return response || null;
 }
 
@@ -247,7 +247,7 @@ export async function getMyDriveItemByPath(graph: IGraph, itemPath: string): Pro
     if (getIsFilesCacheEnabled()) {
       cache.putValue(endpoint, { file: JSON.stringify(response) });
     }
-  } catch {}
+  } catch { }
   return response || null;
 }
 
@@ -271,7 +271,7 @@ export async function getSiteDriveItemById(graph: IGraph, siteId: string, itemId
     if (getIsFilesCacheEnabled()) {
       cache.putValue(endpoint, { file: JSON.stringify(response) });
     }
-  } catch {}
+  } catch { }
   return response || null;
 }
 
@@ -295,7 +295,7 @@ export async function getSiteDriveItemByPath(graph: IGraph, siteId: string, item
     if (getIsFilesCacheEnabled()) {
       cache.putValue(endpoint, { file: JSON.stringify(response) });
     }
-  } catch {}
+  } catch { }
   return response || null;
 }
 
@@ -324,7 +324,7 @@ export async function getListDriveItemById(
     if (getIsFilesCacheEnabled()) {
       cache.putValue(endpoint, { file: JSON.stringify(response) });
     }
-  } catch {}
+  } catch { }
   return response || null;
 }
 
@@ -348,7 +348,7 @@ export async function getUserDriveItemById(graph: IGraph, userId: string, itemId
     if (getIsFilesCacheEnabled()) {
       cache.putValue(endpoint, { file: JSON.stringify(response) });
     }
-  } catch {}
+  } catch { }
   return response || null;
 }
 
@@ -372,7 +372,7 @@ export async function getUserDriveItemByPath(graph: IGraph, userId: string, item
     if (getIsFilesCacheEnabled()) {
       cache.putValue(endpoint, { file: JSON.stringify(response) });
     }
-  } catch {}
+  } catch { }
   return response || null;
 }
 
@@ -398,7 +398,7 @@ export async function getMyInsightsDriveItemById(graph: IGraph, insightType: str
     if (getIsFilesCacheEnabled()) {
       cache.putValue(endpoint, { file: JSON.stringify(response) });
     }
-  } catch {}
+  } catch { }
   return response || null;
 }
 
@@ -427,7 +427,7 @@ export async function getUserInsightsDriveItemById(
     if (getIsFilesCacheEnabled()) {
       cache.putValue(endpoint, { file: JSON.stringify(response) });
     }
-  } catch {}
+  } catch { }
   return response || null;
 }
 
@@ -460,7 +460,7 @@ export async function getFilesIterator(graph: IGraph, top?: number): Promise<Gra
     if (getIsFileListsCacheEnabled()) {
       cache.putValue(endpoint, { files: filesPageIterator.value, nextLink: filesPageIterator._nextLink });
     }
-  } catch {}
+  } catch { }
   return filesPageIterator || null;
 }
 
@@ -498,7 +498,7 @@ export async function getDriveFilesByIdIterator(
     if (getIsFileListsCacheEnabled()) {
       cache.putValue(endpoint, { files: filesPageIterator.value, nextLink: filesPageIterator._nextLink });
     }
-  } catch {}
+  } catch { }
   return filesPageIterator || null;
 }
 
@@ -536,7 +536,7 @@ export async function getDriveFilesByPathIterator(
     if (getIsFileListsCacheEnabled()) {
       cache.putValue(endpoint, { files: filesPageIterator.value, nextLink: filesPageIterator._nextLink });
     }
-  } catch {}
+  } catch { }
   return filesPageIterator || null;
 }
 
@@ -574,7 +574,7 @@ export async function getGroupFilesByIdIterator(
     if (getIsFileListsCacheEnabled()) {
       cache.putValue(endpoint, { files: filesPageIterator.value, nextLink: filesPageIterator._nextLink });
     }
-  } catch {}
+  } catch { }
   return filesPageIterator || null;
 }
 
@@ -612,7 +612,7 @@ export async function getGroupFilesByPathIterator(
     if (getIsFileListsCacheEnabled()) {
       cache.putValue(endpoint, { files: filesPageIterator.value, nextLink: filesPageIterator._nextLink });
     }
-  } catch {}
+  } catch { }
   return filesPageIterator || null;
 }
 
@@ -649,7 +649,7 @@ export async function getFilesByIdIterator(
     if (getIsFileListsCacheEnabled()) {
       cache.putValue(endpoint, { files: filesPageIterator.value, nextLink: filesPageIterator._nextLink });
     }
-  } catch {}
+  } catch { }
   return filesPageIterator || null;
 }
 
@@ -686,7 +686,7 @@ export async function getFilesByPathIterator(
     if (getIsFileListsCacheEnabled()) {
       cache.putValue(endpoint, { files: filesPageIterator.value, nextLink: filesPageIterator._nextLink });
     }
-  } catch {}
+  } catch { }
   return filesPageIterator || null;
 }
 
@@ -724,7 +724,7 @@ export async function getSiteFilesByIdIterator(
     if (getIsFileListsCacheEnabled()) {
       cache.putValue(endpoint, { files: filesPageIterator.value, nextLink: filesPageIterator._nextLink });
     }
-  } catch {}
+  } catch { }
   return filesPageIterator || null;
 }
 
@@ -762,7 +762,7 @@ export async function getSiteFilesByPathIterator(
     if (getIsFileListsCacheEnabled()) {
       cache.putValue(endpoint, { files: filesPageIterator.value, nextLink: filesPageIterator._nextLink });
     }
-  } catch {}
+  } catch { }
   return filesPageIterator || null;
 }
 
@@ -800,7 +800,7 @@ export async function getUserFilesByIdIterator(
     if (getIsFileListsCacheEnabled()) {
       cache.putValue(endpoint, { files: filesPageIterator.value, nextLink: filesPageIterator._nextLink });
     }
-  } catch {}
+  } catch { }
   return filesPageIterator || null;
 }
 
@@ -838,7 +838,7 @@ export async function getUserFilesByPathIterator(
     if (getIsFileListsCacheEnabled()) {
       cache.putValue(endpoint, { files: filesPageIterator.value, nextLink: filesPageIterator._nextLink });
     }
-  } catch {}
+  } catch { }
   return filesPageIterator || null;
 }
 
@@ -874,7 +874,7 @@ export async function getFilesByListQueryIterator(
     if (getIsFileListsCacheEnabled()) {
       cache.putValue(listQuery, { files: filesPageIterator.value, nextLink: filesPageIterator._nextLink });
     }
-  } catch {}
+  } catch { }
   return filesPageIterator || null;
 }
 
@@ -900,7 +900,7 @@ export async function getMyInsightsFiles(graph: IGraph, insightType: string): Pr
       .filter(`resourceReference/type eq 'microsoft.graph.driveItem'`)
       .middlewareOptions(prepScopes(...scopes))
       .get();
-  } catch {}
+  } catch { }
 
   const result = await getDriveItemsByInsights(graph, insightResponse, scopes);
   if (getIsFileListsCacheEnabled()) {
@@ -944,7 +944,7 @@ export async function getUserInsightsFiles(graph: IGraph, userId: string, insigh
       .filter(filter)
       .middlewareOptions(prepScopes(...scopes))
       .get();
-  } catch {}
+  } catch { }
 
   const result = await getDriveItemsByInsights(graph, insightResponse, scopes);
   if (getIsFileListsCacheEnabled()) {
@@ -1145,6 +1145,78 @@ export async function getDocumentThumbnail(graph: IGraph, resource: string, scop
     const eTag = response.headers.get('eTag');
     const blob = await blobToBase64(await response.blob());
     return { eTag, thumbnail: blob };
+  } catch (e) {
+    return null;
+  }
+}
+
+/**
+ * retrieve UploadSession Url for large file and send by chuncks
+ *
+ * @param graph
+ * @param resource
+ * @returns
+ */
+export async function getUploadSession(graph: IGraph, resource: string): Promise<UploadSession> {
+  try {
+    // get from graph request
+    const scopes = 'files.readwrite';
+    const sessionOptions = {
+      item: {
+        '@microsoft.graph.conflictBehavior': 'replace'
+      }
+    };
+    let response;
+    try {
+      response = await graph.api(resource).middlewareOptions(prepScopes(scopes)).post(JSON.stringify(sessionOptions));
+    } catch { }
+
+    return response || null;
+  } catch (e) {
+    return null;
+  }
+}
+
+/**
+ * send file by OneDrive, SharePoint Site
+ *
+ * @param graph
+ * @param resource
+ * @param file
+ * @returns
+ */
+export async function sendFileContent(graph: IGraph, resource: string, file: File): Promise<DriveItem> {
+  try {
+    // get from graph request
+    const scopes = 'files.readwrite';
+    let response;
+    try {
+      response = await graph.api(resource).middlewareOptions(prepScopes(scopes)).put(file);
+    } catch { }
+
+    return response || null;
+  } catch (e) {
+    return null;
+  }
+}
+
+/**
+ * delete UploadSession from upload process
+ *
+ * @param graph
+ * @param resource
+ * @returns
+ */
+export async function deleteUploadSession(graph: IGraph, resource: string): Promise<Response> {
+  try {
+    // get from graph request
+    const scopes = 'files.readwrite';
+    let response;
+    try {
+      response = await graph.api(resource).middlewareOptions(prepScopes(scopes)).delete();
+    } catch { }
+
+    return response || null;
   } catch (e) {
     return null;
   }
