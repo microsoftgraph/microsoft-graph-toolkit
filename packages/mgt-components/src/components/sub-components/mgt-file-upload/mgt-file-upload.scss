@@ -10,9 +10,9 @@
 
 :host .file-upload-button {
   width: 100%;
-  text-align: var(--file-upload-button-text-align, -webkit-right);
 
   div {
+    float: var(--file-upload-button-float, right);
     background-color: var(--file-upload-button-background-color, rgb(243, 242, 241));
     width: 120px;
     height: 32px;
@@ -45,7 +45,7 @@
 :host .file-upload-table {
   display: table;
   width: 260px;
-  padding-left: 3px;
+  margin: var(--file-item-margin, 0 4px);
 
   .file-upload-cell {
     padding: 1px 0px 1px 1px;
@@ -78,8 +78,12 @@
   }
 }
 
+:host .file-upload-Template {
+  clear: both;
+}
+
 :host .mgt-file-item {
-  --file-background-color: var(--file-upload-item-background-color, transparent);
+  --file-background-color: transparent;
 }
 
 :host #file-upload-border {

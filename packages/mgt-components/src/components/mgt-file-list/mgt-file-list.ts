@@ -56,7 +56,7 @@ export { FluentDesignSystemProvider, FluentProgressRing } from '@fluentui/web-co
  * @fires itemClick - Fired when user click a file. Returns the file (DriveItem) details.
  * @cssprop --file-upload-border- {String} File upload border top style
  * @cssprop --file-upload-background-color - {Color} File upload background color with opacity style
- * @cssprop --file-upload-button-text-align - {text-align} Upload button aligment using -webkit-[position]
+ * @cssprop --file-upload-button-float - {string} Upload button float position
  * @cssprop --file-upload-button-background-color - {Color} Background color of upload button
  * @cssprop --file-upload-button-color - {Color} Text color of upload button
  * @cssprop --file-upload-progress-background-color - {Color} progress background color
@@ -387,7 +387,7 @@ export class MgtFileList extends MgtTemplatedComponent {
   public hideMoreFilesButton: boolean;
 
   /**
-   * A number value to indicate the number of more files to be uploaded.
+   * A number value to indicate restrict upload size (KB)
    * @type {number}
    * @memberof MgtFileList
    */
@@ -419,7 +419,7 @@ export class MgtFileList extends MgtTemplatedComponent {
   public enableFileUpload: boolean;
 
   /**
-   * A number value to indicate the number of more files to be uploaded.
+   * A number value to indicate the number of files to be uploaded.
    * @type {number}
    * @memberof MgtFileList
    */

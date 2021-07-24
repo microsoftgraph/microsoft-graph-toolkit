@@ -23,7 +23,7 @@ export { FluentDesignSystemProvider, FluentProgressRing } from '@fluentui/web-co
  */
 export interface MgtFileUploadItem {
   /**
-   * Graph Url to upload file
+   * Graph functions
    *
    */
   GraphUrl?: string;
@@ -81,6 +81,10 @@ export interface MgtFileUploadItem {
    *
    */
   mimeStreamString?: ArrayBuffer;
+
+  maxSize?: number;
+
+  minSize?: number;
 }
 
 /**
@@ -90,6 +94,12 @@ export interface MgtFileUploadItem {
  * @interface MgtFileUploadConfig
  */
 export interface MgtFileUploadConfig {
+  /**
+   * Sets or gets whether the person component can use Contacts APIs to
+   *
+   *
+   * @type {IGraph}
+   */
   graph: IGraph;
 
   /**
@@ -187,12 +197,13 @@ export interface MgtFileUploadConfig {
  *
  * @cssprop --file-upload-border- {String} File upload border top style
  * @cssprop --file-upload-background-color - {Color} File upload background color with opacity style
- * @cssprop --file-upload-button-text-align - {text-align} Upload button aligment using -webkit-[position]
+ * @cssprop --file-upload-button-float - {string} Upload button float position
  * @cssprop --file-upload-button-background-color - {Color} Background color of upload button
  * @cssprop --file-upload-button-color - {Color} Text color of upload button
  * @cssprop --file-upload-progress-background-color - {Color} progress background color
  * @cssprop --file-upload-progressBar-background-color - {Color} progressBar background color
  * @cssprop --file-upload-item-background-color - {Color} Background color of upload file
+ * @cssprop --file-item-margin - {String} File item margin
  */
 @customElement('mgt-file-upload')
 export class MgtFileUpload extends MgtBaseComponent {
@@ -239,6 +250,7 @@ export class MgtFileUpload extends MgtBaseComponent {
 
   private _dragCounter: number = 0;
   private _dropEffect: string = 'copy';
+  private _maxChunckSize: number = 4 * 1024 * 1024;
 
   constructor() {
     super();
@@ -274,7 +286,7 @@ export class MgtFileUpload extends MgtBaseComponent {
             <span @click=${this.onFileUploadClick}>${getSvg(SvgIcon.Upload)}${strings.buttonUploadFile}</span> 
           </div>
          </div>
-         <div id="file-upload-Template">
+         <div class="file-upload-Template">
          ${this.renderFileTemplate(this.filesToUpload)}
          </div>
        `;
@@ -344,7 +356,7 @@ export class MgtFileUpload extends MgtBaseComponent {
             <div class='file-upload-cell' >
               <span 
                 class="file-upload-cancel" 
-                @click=${e => this.onFileUploadCancelClick(fileItem)}>
+                @click=${e => this.deleteFileUploadSession(fileItem)}>
                 ${getSvg(SvgIcon.Cancel)}
               </span>
             </div>
@@ -373,6 +385,7 @@ export class MgtFileUpload extends MgtBaseComponent {
    *
    */
   protected onFileUploadClick() {
+    //Ensure upload process are finish before upload new files
     const uploadInput: HTMLElement = this.renderRoot.querySelector('#file-upload-input');
     uploadInput.click();
   }
@@ -382,13 +395,30 @@ export class MgtFileUpload extends MgtBaseComponent {
    *
    * @param fileItem
    */
-  protected onFileUploadCancelClick(fileItem: MgtFileUploadItem) {
-    if (fileItem.uploadUrl !== undefined) {
-      this.fileUploadList.graph.client.api(fileItem.uploadUrl).delete(async response => {
-        if (response === null) {
-          fileItem.uploadUrl = undefined;
-        }
-      });
+  protected async deleteFileUploadSession(fileItem: MgtFileUploadItem) {
+    const scopes = 'files.readwrite';
+    try {
+      // Responses that confirm cancelation of session.
+      // 404 means (The upload session was not found/The resource could not be found/)
+      // 409 means The resource has changed since the caller last read it; usually an eTag mismatch
+      if (fileItem.uploadUrl !== undefined) {
+        this.fileUploadList.graph.client
+          .api(fileItem.uploadUrl)
+          .middlewareOptions(prepScopes(scopes))
+          .delete(response => {
+            fileItem.uploadUrl = undefined;
+            fileItem.completed = true;
+            this.setUploadFail(fileItem, strings.cancelUploadFile);
+          });
+      }
+    } catch {
+      // Manage Graph exception when client.api is not able
+      // Responses that confirm cancelation of session.
+      // 404 means (The upload session was not found/The resource could not be found/)
+      // 409 means The resource has changed since the caller last read it; usually an eTag mismatch
+      fileItem.uploadUrl = undefined;
+      fileItem.completed = true;
+      this.setUploadFail(fileItem, strings.cancelUploadFile);
     }
   }
 
@@ -430,6 +460,7 @@ export class MgtFileUpload extends MgtBaseComponent {
   protected handleonDragLeave = event => {
     event.preventDefault();
     event.stopPropagation();
+
     this._dragCounter--;
     if (this._dragCounter === 0) {
       const dragFileBorder: HTMLElement = this.renderRoot.querySelector('#file-upload-border');
@@ -460,28 +491,39 @@ export class MgtFileUpload extends MgtBaseComponent {
    * @param inputFiles
    */
   protected async getSelectedFiles(files: File[]) {
-    const maxFiles =
-      this.fileUploadList.maxUploadFile > files.length ? files.length : this.fileUploadList.maxUploadFile;
+    //const maxFiles = this.fileUploadList.maxUploadFile > files.length ? files.length : this.fileUploadList.maxUploadFile;
     let fileItems: MgtFileUploadItem[] = [];
 
-    if (files.length > 0) {
-      for (var i = 0; i < maxFiles; i++) {
-        //Initialize MgtFileUploadItem with files
-        let fileItem: MgtFileUploadItem = {
-          file: files[i],
-          driveItem: {
-            name: files[i].name
-          },
-          iconStatus: null,
-          percent: 1,
-          view: ViewType.image,
-          completed: false
-        };
+    //Send Files to upload asyncronous (Multiple Uploads)
+    this.filesToUpload.forEach(async fileItem => {
+      if (!fileItem.completed) {
         fileItems.push(fileItem);
       }
+    });
+
+    if (files.length > 0) {
+      for (var i = 0; i < files.length; i++) {
+        //Initialize MgtFileUploadItem with files
+        if (fileItems.filter(item => item.file.name === files[i].name).length === 0) {
+          let fileItem: MgtFileUploadItem = {
+            file: files[i],
+            driveItem: {
+              name: files[i].name
+            },
+            iconStatus: null,
+            percent: 1,
+            view: ViewType.image,
+            completed: false,
+            maxSize: this._maxChunckSize,
+            minSize: 0
+          };
+          fileItems.push(fileItem);
+        }
+      }
     }
-    //Send Files to upload asyncronous (Multiple Uploads)
+
     this.filesToUpload = fileItems;
+
     this.filesToUpload.forEach(async fileItem => {
       await this.sendFileItemGraph(fileItem);
     });
@@ -494,30 +536,31 @@ export class MgtFileUpload extends MgtBaseComponent {
    * @returns
    */
   protected async sendFileItemGraph(fileItem: MgtFileUploadItem) {
-    if (fileItem.file.size < 4 * 1024 * 1024) {
+    if (fileItem.file.size < this._maxChunckSize) {
       const scopes = 'files.readwrite';
       try {
-        const driveItem: DriveItem = await this.fileUploadList.graph
+        fileItem.driveItem = await this.fileUploadList.graph
           .api(`me/drive/root:/${fileItem.file.name}:/content`)
           .middlewareOptions(prepScopes(scopes))
           .put(fileItem.file);
-        fileItem.driveItem = driveItem;
         this.setUploadSuccess(fileItem);
       } catch (error) {
         this.setUploadFail(fileItem, strings.failUploadFile);
       }
     } else {
       fileItem.GraphUrl = `me/drive/root:/${fileItem.file.name}:/createUploadSession`;
-      const driveItem: DriveItem = await this.sendLargeFileGraph(this.fileUploadList.graph, fileItem);
-      if (driveItem !== undefined) {
-        fileItem.driveItem = driveItem;
-        this.setUploadSuccess(fileItem);
+      if (fileItem.uploadUrl === undefined) {
+        const driveItem: DriveItem = await this.sendLargeFileGraph(this.fileUploadList.graph, fileItem);
+        if (driveItem !== undefined) {
+          fileItem.driveItem = driveItem;
+          this.setUploadSuccess(fileItem);
+        }
       }
     }
   }
 
   /**
-   * Initialize Upload file using Session url "uploadUrl"
+   * Initialize Upload Session url "uploadUrl"
    *
    * @param Graph
    * @param fileItem
@@ -527,7 +570,7 @@ export class MgtFileUpload extends MgtBaseComponent {
     const graph = Graph;
     const sessionOptions = {
       item: {
-        '@microsoft.graph.conflictBehavior': 'rename'
+        '@microsoft.graph.conflictBehavior': 'replace'
       }
     };
     const scopes = 'files.readwrite';
@@ -536,18 +579,20 @@ export class MgtFileUpload extends MgtBaseComponent {
         .api('/' + fileItem.GraphUrl)
         .middlewareOptions(prepScopes(scopes))
         .post(JSON.stringify(sessionOptions))
-        .then(
-          async (response): Promise<DriveItem> => {
-            try {
-              //uploadUrl keeps upload Session open untill all chuncks are sent
-              fileItem.uploadUrl = response.uploadUrl;
-              const driveItem = await this.sendSessionUrlGraph(Graph, fileItem);
-              return driveItem;
-            } catch {
-              return undefined;
-            }
+        .then(async response => {
+          try {
+            //uploadUrl keeps upload Session open untill all chuncks are sent
+            fileItem.uploadUrl = response.uploadUrl;
+            const driveItem = await this.sendSessionUrlGraph(Graph, fileItem);
+            return driveItem;
+          } catch {
+            return undefined;
           }
-        );
+        })
+        .catch(response => {
+          // this.setUploadFail(fileItem, strings.failUploadFile);
+          return undefined;
+        });
     } catch {
       return undefined;
     }
@@ -561,39 +606,37 @@ export class MgtFileUpload extends MgtBaseComponent {
    * @returns
    */
   protected async sendSessionUrlGraph(Graph: IGraph, fileItem: MgtFileUploadItem) {
-    let minSize = 0;
-    let maxSize = 5 * 327680; //define max chunk size to upload
-
-    while (fileItem.file.size > minSize) {
+    while (fileItem.file.size > fileItem.minSize) {
       if (fileItem.mimeStreamString === undefined) {
         fileItem.mimeStreamString = (await this.readFileContent(fileItem.file)) as ArrayBuffer;
       }
       //Graph client API uses Buffer package to manage ArrayBuffer, change to Blob avoids external package dependency
-      const fileSlice: Blob = new Blob([fileItem.mimeStreamString.slice(minSize, maxSize)]);
-      fileItem.percent = Math.round((maxSize / fileItem.file.size) * 100);
+      const fileSlice: Blob = new Blob([fileItem.mimeStreamString.slice(fileItem.minSize, fileItem.maxSize)]);
+      fileItem.percent = Math.round((fileItem.maxSize / fileItem.file.size) * 100);
       super.requestStateUpdate(true);
 
       if (fileItem.uploadUrl !== undefined) {
         const driveItem = await this.sendFileChuncksGraph(
           Graph,
           fileItem,
-          `${maxSize - minSize}`,
-          `bytes ${minSize}-${maxSize - 1}/${fileItem.file.size}`,
+          `${fileItem.maxSize - fileItem.minSize}`,
+          `bytes ${fileItem.minSize}-${fileItem.maxSize - 1}/${fileItem.file.size}`,
           fileSlice
         );
+
         if (driveItem === undefined) {
           return undefined;
         } else if (driveItem.id !== undefined) {
           return driveItem;
+        } else if (driveItem.nextExpectedRanges !== undefined) {
+          fileItem.minSize = parseInt(driveItem.nextExpectedRanges[0].split('-')[0]);
+          fileItem.maxSize = fileItem.minSize + this._maxChunckSize;
+          if (fileItem.maxSize > fileItem.file.size) {
+            fileItem.maxSize = fileItem.file.size;
+          }
         }
       } else {
         return undefined;
-      }
-
-      minSize = maxSize;
-      maxSize += 5 * 327680;
-      if (maxSize > fileItem.file.size) {
-        maxSize = fileItem.file.size;
       }
     }
   }
@@ -626,20 +669,14 @@ export class MgtFileUpload extends MgtBaseComponent {
         .api(fileItem.uploadUrl)
         .middlewareOptions(prepScopes(scopes))
         .headers(header)
-        .put(file);
+        .put(file)
+        .catch(Response => {
+          //If upload chunck Graph call fails delete current Session
+          this.deleteFileUploadSession(fileItem);
+          return undefined;
+        });
       return response;
     } catch {
-      //If upload chunck Graph call fails delete current Session
-      if (fileItem.uploadUrl !== undefined) {
-        this.fileUploadList.graph.client.api(fileItem.uploadUrl).delete(async response => {
-          if (response === null) {
-            fileItem.uploadUrl = undefined;
-            this.setUploadFail(fileItem, strings.failUploadFile);
-          }
-        });
-      } else {
-        this.setUploadFail(fileItem, strings.cancelUploadFile);
-      }
       return undefined;
     }
   }
@@ -709,10 +746,8 @@ export class MgtFileUpload extends MgtBaseComponent {
     const folders = [];
     let entry: any;
     const collectFilesItems: File[] = [];
-    const maxFiles =
-      this.fileUploadList.maxUploadFile > filesItems.length ? filesItems.length : this.fileUploadList.maxUploadFile;
 
-    for (let i = 0; i < maxFiles; i++) {
+    for (let i = 0; i < filesItems.length; i++) {
       const uploadFileItem = filesItems[i];
       if (uploadFileItem.kind === 'file') {
         //Defensive code to validate if function exists in Browser
