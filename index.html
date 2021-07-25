@@ -1,48 +1,79 @@
 <!DOCTYPE html>
 <html lang="en">
-  <head>
-    <meta charset="utf-8" />
-    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
-    <title>Microsoft Graph Toolkit Test</title>
-    <meta name="viewport" content="width=device-width, initial-scale=1" />
+<head>
+  <meta charset="utf-8" />
+  <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+  <title>Microsoft Graph Toolkit Test</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
 
-    <link href="https://cdnjs.cloudflare.com/ajax/libs/normalize/8.0.1/normalize.min.css" rel="stylesheet" />
-    <!-- <script src="./node_modules/@webcomponents/webcomponentsjs/webcomponents-loader.js"></script> -->
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/normalize/8.0.1/normalize.min.css" rel="stylesheet" />
+  <!-- <script src="./node_modules/@webcomponents/webcomponentsjs/webcomponents-loader.js"></script> -->
 
-    <script src="https://unpkg.com/@microsoft/teams-js/dist/MicrosoftTeams.min.js" crossorigin="anonymous"></script>
+  <script src="https://unpkg.com/@microsoft/teams-js/dist/MicrosoftTeams.min.js" crossorigin="anonymous"></script>
 
-    <!-- <script src="./packages/mgt/dist/bundle/mgt-loader.js"></script> -->
+  <!-- <script src="./packages/mgt/dist/bundle/mgt-loader.js"></script> -->
+  <style>
 
-    <script type="module" src="./packages/mgt/dist/es6/index.js"></script>
-  </head>
+    mgt-file-list {
+      --file-upload-border: 4px dotted #ffbdc3;
+      --file-upload-background-color: rgba(255, 0, 0, 0.1);
+      --file-upload-button-float: left;
+      --file-upload-progress-background-color: #fef8dd;
+      --file-upload-progressBar-background-color: gray;
+      --file-upload-button-color: #323130;
+      --file-upload-button-background-color: #fef8dd;
+      --file-list-background-color: #e0f8db;
+      --file-item-background-color--hover: #caf1de;
+      --file-item-background-color--active: #acddde;
+      --file-list-border: 4px dotted #ffbdc3;
+      --file-list-box-shadow: none;
+      --file-list-padding: 0;
+      --file-list-margin: 0;
+      --file-item-border-radius: 12px;
+      --file-item-margin: 2px 6px;
+      --file-item-border-top: 4px dotted #ffbdc3;
+      --file-item-border-left: 4px dotted #ffbdc3;
+      --file-item-border-right: 4px dotted #ffbdc3;
+      --file-item-border-bottom: 4px dotted #ffbdc3;
+      --show-more-button-background-color: #fef8dd;
+      --show-more-button-background-color--hover: #ffe7c7;
+      --show-more-button-font-size: 14px;
+      --show-more-button-padding: 16px;
+      --show-more-button-border-bottom-right-radius: 12px;
+      --show-more-button-border-bottom-left-radius: 12px;
+    }
+  </style>
+  <script type="module" src="./packages/mgt/dist/es6/index.js"></script>
+</head>
 
-  <body>
-    <!-- <mgt-teams-provider
+<body>
+  <!-- <mgt-teams-provider
     client-id="a974dfa0-9f57-49b9-95db-90f04ce2111a"
     auth-popup-url="auth.html"
   ></mgt-teams-provider> -->
-    <!-- <mgt-msal-provider
+  <!-- <mgt-msal-provider
     client-id="a974dfa0-9f57-49b9-95db-90f04ce2111a"
     scopes="user.read,people.read,user.readbasic.all,contacts.read,calendars.read,presence.read.all,tasks.readwrite,presence.read,user.read.all,group.read.all,tasks.read,files.readwrite"
     redirect-uri="http://localhost:3000"
     depends-on="mgt-teams-provider"
   ></mgt-msal-provider> -->
-    <!-- <mgt-msal2-provider
+  <!-- <mgt-msal2-provider
     client-id="2dfea037-938a-4ed8-9b35-c05708a1b241"
     redirect-uri="http://localhost:3000"
-    scopes="user.read,people.read,user.readbasic.all,contacts.read,calendars.read,presence.read.all,tasks.readwrite,presence.read,user.read.all,group.read.all,tasks.read,files.readwrite"
+    scopes="user.read,people.read,user.readbasic.all,contacts.read,calendars.read,presence.read.all,tasks.readwrite,presence.read,user.read.all,group.read.all,tasks.read,files.readwrite,sites.readWrite.all"
   ></mgt-msal2-provider> -->
 
-    <mgt-mock-provider></mgt-mock-provider>
+  <mgt-mock-provider></mgt-mock-provider>
 
-    <mgt-login></mgt-login>
-    <mgt-person person-query="me" view="twoLines" person-card="hover" show-presence></mgt-person>
-    <mgt-people-picker></mgt-people-picker>
-    <mgt-teams-channel-picker></mgt-teams-channel-picker>
-    <mgt-tasks></mgt-tasks>
-    <mgt-agenda group-by-day></mgt-agenda>
-    <mgt-people show-presence></mgt-people>
-    <mgt-todo></mgt-todo>
-    <mgt-file-list enable-file-upload></mgt-file-list>
-  </body>
+  <mgt-login></mgt-login>
+  <mgt-person person-query="me" view="twoLines" person-card="hover" show-presence></mgt-person>
+  <mgt-people-picker></mgt-people-picker>
+  <mgt-teams-channel-picker></mgt-teams-channel-picker>
+  <mgt-tasks></mgt-tasks>
+  <mgt-agenda group-by-day></mgt-agenda>
+  <mgt-people show-presence></mgt-people>
+  <mgt-todo></mgt-todo>
+  <!-- max-upload-file="10" max-file-size="10000" excluded-file-extensions=".doc,.pdf" -->
+  <mgt-file-list enable-file-upload></mgt-file-list>
+</body>
 </html>

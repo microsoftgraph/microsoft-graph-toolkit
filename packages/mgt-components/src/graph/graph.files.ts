@@ -1178,7 +1178,40 @@ export async function getUploadSession(graph: IGraph, resource: string): Promise
 }
 
 /**
- * send file by OneDrive, SharePoint Site
+ * send file chunck to OneDrive, SharePoint Site
+ *
+ * @param graph
+ * @param resource
+ * @param file
+ * @returns
+ */
+export async function sendFileChunck(
+  graph: IGraph,
+  resource: string,
+  contentLength: string,
+  contentRange: string,
+  file: Blob
+): Promise<any> {
+  try {
+    // get from graph request
+    const scopes = 'files.readwrite';
+    const header = {
+      'Content-Length': contentLength,
+      'Content-Range': contentRange
+    };
+    let response;
+    try {
+      response = await graph.client.api(resource).middlewareOptions(prepScopes(scopes)).headers(header).put(file);
+    } catch { }
+
+    return response || null;
+  } catch (e) {
+    return null;
+  }
+}
+
+/**
+ * send file to OneDrive, SharePoint Site
  *
  * @param graph
  * @param resource
@@ -1191,7 +1224,7 @@ export async function sendFileContent(graph: IGraph, resource: string, file: Fil
     const scopes = 'files.readwrite';
     let response;
     try {
-      response = await graph.api(resource).middlewareOptions(prepScopes(scopes)).put(file);
+      response = await graph.client.api(resource).middlewareOptions(prepScopes(scopes)).put(file);
     } catch { }
 
     return response || null;
@@ -1201,19 +1234,24 @@ export async function sendFileContent(graph: IGraph, resource: string, file: Fil
 }
 
 /**
- * delete UploadSession from upload process
+ * delete upload session
  *
  * @param graph
  * @param resource
  * @returns
  */
-export async function deleteUploadSession(graph: IGraph, resource: string): Promise<Response> {
+export async function deleteSessionFile(graph: IGraph, resource: string): Promise<any> {
   try {
     // get from graph request
     const scopes = 'files.readwrite';
     let response;
     try {
-      response = await graph.api(resource).middlewareOptions(prepScopes(scopes)).delete();
+      response = await graph.client
+        .api(resource)
+        .middlewareOptions(prepScopes(scopes))
+        .delete(response => {
+          return response;
+        });
     } catch { }
 
     return response || null;

@@ -9,7 +9,7 @@ import { customElement, html, property, TemplateResult } from 'lit-element';
 import { styles } from './mgt-file-upload-css';
 import { strings } from './strings';
 import { getSvg, SvgIcon } from '../../../utils/SvgHelper';
-import { IGraph, MgtBaseComponent, prepScopes } from '@microsoft/mgt-element';
+import { IGraph, MgtBaseComponent } from '@microsoft/mgt-element';
 import { ViewType } from '../../../graph/types';
 import { DriveItem } from '@microsoft/microsoft-graph-types';
 import { getUploadSession, sendFileContent, sendFileChunck, deleteSessionFile } from '../../../graph/graph.files';
@@ -524,50 +524,60 @@ export class MgtFileUpload extends MgtBaseComponent {
    * @returns
    */
   protected getGrapQuery(fileItem: any) {
-    let fullPath = fileItem.fullPath === '' ? '/' : fileItem.fullPath;
+    let fullPath = fileItem.fullPath === '' ? '/' + fileItem.name : fileItem.fullPath;
+    let itemPath = '';
+
+    if (this.fileUploadList.itemPath) {
+      if (this.fileUploadList.itemPath.length > 0) {
+        itemPath =
+          this.fileUploadList.itemPath.substring(0, 1) === '/'
+            ? this.fileUploadList.itemPath
+            : '/' + this.fileUploadList.itemPath;
+      }
+    }
 
     // {userId} {itemId}
     if (this.fileUploadList.userId && this.fileUploadList.itemId) {
-      return `/me/${this.fileUploadList.userId}/items/${this.fileUploadList.itemId}:${fullPath}${fileItem.name}:/`;
+      return `/users/${this.fileUploadList.userId}/drive/items/${this.fileUploadList.itemId}:${fullPath}`;
     }
     // {userId} {itemPath}
-    if (this.fileUploadList.userId && this.fileUploadList.itemPath) {
-      return `/me/${this.fileUploadList.userId}/root:${this.fileUploadList.itemPath}${fullPath}${fileItem.name}:/`;
+    if (this.fileUploadList.userId && this.fileUploadList.itemId) {
+      return `/users/${this.fileUploadList.userId}/drive/root:${itemPath}${this.fileUploadList.itemId}:${fullPath}`;
     }
     // {groupId} {itemId}
     if (this.fileUploadList.groupId && this.fileUploadList.itemId) {
-      return `/groups/${this.fileUploadList.groupId}/items/${this.fileUploadList.itemId}:${fullPath}${fileItem.name}:/`;
+      return `/groups/${this.fileUploadList.groupId}/drive/items/${this.fileUploadList.itemId}:${fullPath}`;
     }
     // {groupId} {itemPath}
     if (this.fileUploadList.groupId && this.fileUploadList.itemPath) {
-      return `/groups/${this.fileUploadList.groupId}/root:${this.fileUploadList.itemPath}${fullPath}${fileItem.name}:/`;
+      return `/groups/${this.fileUploadList.groupId}/drive/root:${itemPath}${fullPath}`;
     }
     // {driveId} {itemId}
     if (this.fileUploadList.driveId && this.fileUploadList.itemId) {
-      return `/drives/${this.fileUploadList.driveId}/items/${this.fileUploadList.itemId}:${fullPath}${fileItem.name}:/`;
+      return `/drives/${this.fileUploadList.driveId}/items/${this.fileUploadList.itemId}:${fullPath}`;
     }
     // {driveId} {itemPath}
     if (this.fileUploadList.driveId && this.fileUploadList.itemPath) {
-      return `/drives/${this.fileUploadList.driveId}/root:${this.fileUploadList.itemPath}${fullPath}${fileItem.name}:/`;
+      return `/drives/${this.fileUploadList.driveId}/root:${itemPath}${fullPath}`;
     }
     // {siteId} {itemId}
     if (this.fileUploadList.siteId && this.fileUploadList.itemId) {
-      return `/sites/${this.fileUploadList.siteId}/drive/items/${this.fileUploadList.itemId}:${fullPath}${fileItem.name}:/`;
+      return `/sites/${this.fileUploadList.siteId}/drive/items/${this.fileUploadList.itemId}:${fullPath}`;
     }
     // {siteId} {itemPath}
     if (this.fileUploadList.siteId && this.fileUploadList.itemPath) {
-      return `/sites/${this.fileUploadList.siteId}/root:${this.fileUploadList.itemPath}${fullPath}${fileItem.name}:/`;
+      return `/sites/${this.fileUploadList.siteId}/drive/root:${itemPath}${fullPath}`;
     }
-    // {itemId}
+    // default OneDrive {itemId}
     if (this.fileUploadList.itemId) {
-      return `/me/drive/items/${this.fileUploadList.itemId}:${fullPath}${fileItem.name}:/`;
+      return `/me/drive/items/${this.fileUploadList.itemId}:${fullPath}`;
     }
-    // {itemPath}
+    // default OneDrive {itemPath}
     if (this.fileUploadList.itemPath) {
-      return `/me/drive/root:${this.fileUploadList.itemPath}${fullPath}${fileItem.name}:/`;
+      return `/me/drive/root:${itemPath}${fullPath}`;
     }
-    // if empty use OneDrive
-    return `/me/drive/root:${fullPath}${fileItem.name}`;
+    // default OneDrive root
+    return `/me/drive/root:${fullPath}`;
   }
 
   /**
@@ -602,12 +612,17 @@ export class MgtFileUpload extends MgtBaseComponent {
         try {
           if (response !== null) {
             // uploadSession url used to send chuncks of file
+
             fileItem.uploadUrl = response.uploadUrl;
             const driveItem = await this.sendSessionUrlGraph(graph, fileItem);
             if (driveItem !== null) {
               fileItem.driveItem = driveItem;
               this.setUploadSuccess(fileItem);
+            } else {
+              this.setUploadFail(fileItem, strings.failUploadFile);
             }
+          } else {
+            this.setUploadFail(fileItem, strings.failUploadFile);
           }
         } catch { }
       }
