@@ -166,7 +166,7 @@ export interface MgtFileUploadConfig {
  * @cssprop --file-upload-button-background-color - {Color} Background color of upload button
  * @cssprop --file-upload-button-color - {Color} Text color of upload button
  * @cssprop --file-upload-progress-background-color - {Color} progress background color
- * @cssprop --file-upload-progressBar-background-color - {Color} progressBar background color
+ * @cssprop --file-upload-progressbar-background-color - {Color} progressBar background color
  * @cssprop --file-upload-item-background-color - {Color} Background color of upload file
  * @cssprop --file-item-margin - {String} File item margin
  */
