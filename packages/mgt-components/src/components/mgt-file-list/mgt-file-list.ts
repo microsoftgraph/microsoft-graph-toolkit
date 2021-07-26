@@ -634,6 +634,11 @@ export class MgtFileList extends MgtTemplatedComponent {
     }
   }
 
+  /**
+   * Render MgtFileUpload sub component
+   *
+   * @returns
+   */
   protected renderFileUpload(): TemplateResult {
     const fileUploadConfig: MgtFileUploadConfig = {
       graph: Providers.globalProvider.graph.forComponent(this),
