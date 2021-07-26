@@ -541,7 +541,7 @@ export class MgtFileUpload extends MgtBaseComponent {
     }
     // {userId} {itemPath}
     if (this.fileUploadList.userId && this.fileUploadList.itemId) {
-      return `/users/${this.fileUploadList.userId}/drive/root:${itemPath}${this.fileUploadList.itemId}:${fullPath}`;
+      return `/users/${this.fileUploadList.userId}/drive/root:${itemPath}${fullPath}`;
     }
     // {groupId} {itemId}
     if (this.fileUploadList.groupId && this.fileUploadList.itemId) {
@@ -611,7 +611,6 @@ export class MgtFileUpload extends MgtBaseComponent {
         try {
           if (response !== null) {
             // uploadSession url used to send chuncks of file
-
             fileItem.uploadUrl = response.uploadUrl;
             const driveItem = await this.sendSessionUrlGraph(graph, fileItem);
             if (driveItem !== null) {
