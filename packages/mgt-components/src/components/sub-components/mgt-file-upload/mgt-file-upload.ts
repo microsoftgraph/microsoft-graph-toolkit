@@ -467,7 +467,7 @@ export class MgtFileUpload extends MgtBaseComponent {
         let acceptFile = true;
 
         //Exclude file based on max files upload allowed
-        if (fileItems.length > this.fileUploadList.maxUploadFile) {
+        if (fileItems.length >= this.fileUploadList.maxUploadFile) {
           acceptFile = false;
         }
 
