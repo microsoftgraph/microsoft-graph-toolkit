@@ -540,7 +540,7 @@ export class MgtFileUpload extends MgtBaseComponent {
       return `/users/${this.fileUploadList.userId}/drive/items/${this.fileUploadList.itemId}:${fullPath}`;
     }
     // {userId} {itemPath}
-    if (this.fileUploadList.userId && this.fileUploadList.itemId) {
+    if (this.fileUploadList.userId && this.fileUploadList.itemPath) {
       return `/users/${this.fileUploadList.userId}/drive/root:${itemPath}${fullPath}`;
     }
     // {groupId} {itemId}
