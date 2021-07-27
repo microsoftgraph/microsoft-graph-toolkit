@@ -5,7 +5,5 @@
  * -------------------------------------------------------------------------------------------
  */
 
-// THIS FILE IS AUTO GENERATED
-// ANY CHANGES WILL BE LOST DURING BUILD
-
-export const PACKAGE_VERSION = '2.2.1';
+export * from './TeamsSSOProvider';
+export * from './mgt-teams-sso-provider';
