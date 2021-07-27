@@ -350,7 +350,6 @@ export class MgtFileUpload extends MgtBaseComponent {
    *
    */
   protected onFileUploadClick() {
-    //Ensure upload process are finish before upload new files
     const uploadInput: HTMLElement = this.renderRoot.querySelector('#file-upload-input');
     uploadInput.click();
   }

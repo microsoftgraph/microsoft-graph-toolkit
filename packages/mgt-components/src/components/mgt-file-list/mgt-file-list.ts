@@ -35,12 +35,12 @@ import {
   getUserInsightsFiles
 } from '../../graph/graph.files';
 import '../sub-components/mgt-spinner/mgt-spinner';
-import '../sub-components/mgt-file-upload/mgt-file-upload';
+import './mgt-file-upload/mgt-file-upload';
 import { OfficeGraphInsightString, ViewType } from '../../graph/types';
 import { styles } from './mgt-file-list-css';
 import { strings } from './strings';
 import { MgtFile } from '../mgt-file/mgt-file';
-import { MgtFileUploadConfig } from '../../components/sub-components/mgt-file-upload/mgt-file-upload';
+import { MgtFileUploadConfig } from './mgt-file-upload/mgt-file-upload';
 
 export { FluentDesignSystemProvider, FluentProgressRing } from '@fluentui/web-components';
 
