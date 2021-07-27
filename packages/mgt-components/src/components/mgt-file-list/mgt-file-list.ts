@@ -580,19 +580,20 @@ export class MgtFileList extends MgtTemplatedComponent {
           @blur="${this.onFileListOut}"
         >
           ${repeat(
-      this.files,
-      f => f.id,
-      f => html`
+            this.files,
+            f => f.id,
+            f => html`
               <li class="file-item">
                 ${this.renderFile(f)}
               </li>
             `
-    )}
+          )}
         </ul>
-        ${!this.hideMoreFilesButton && this.pageIterator && (this.pageIterator.hasNext || this._preloadedFiles.length)
-        ? this.renderMoreFileButton()
-        : null
-      }
+        ${
+          !this.hideMoreFilesButton && this.pageIterator && (this.pageIterator.hasNext || this._preloadedFiles.length)
+            ? this.renderMoreFileButton()
+            : null
+        }
       </div>
     `;
   }
@@ -629,8 +630,9 @@ export class MgtFileList extends MgtTemplatedComponent {
         </fluent-design-system-provider>
       `;
     } else {
-      return html`<a id="show-more" class="show-more" @click=${() => this.renderNextPage()} tabindex="0" @keydown=${this.onShowMoreKeyDown
-        }><span>${this.strings.showMoreSubtitle}<span></a>`;
+      return html`<a id="show-more" class="show-more" @click=${() => this.renderNextPage()} tabindex="0" @keydown=${
+        this.onShowMoreKeyDown
+      }><span>${this.strings.showMoreSubtitle}<span></a>`;
     }
   }
 

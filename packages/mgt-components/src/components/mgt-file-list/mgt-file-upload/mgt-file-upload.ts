@@ -621,7 +621,7 @@ export class MgtFileUpload extends MgtBaseComponent {
           } else {
             this.setUploadFail(fileItem, strings.failUploadFile);
           }
-        } catch { }
+        } catch {}
       }
     }
   }
