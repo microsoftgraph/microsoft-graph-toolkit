@@ -83,7 +83,7 @@
         justify-content: center;
 
         svg {
-          fill: set-var(color__sub1, $theme-default, $common);
+          fill: set-var(icon__color, $theme-default, $common);
           cursor: pointer;
         }
       }
@@ -117,6 +117,7 @@
       .part__icon {
         margin-top: 0;
         margin-right: 6px;
+        margin-bottom: 2px;
       }
     }
   }

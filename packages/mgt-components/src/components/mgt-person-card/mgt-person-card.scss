@@ -25,7 +25,6 @@ $person-card-details-item-font-size: var(--person-card-details-item-font-size, 1
   user-select: none;
   box-shadow: set-var(box-shadow, $theme-default, $common);
   border: 1px solid set-var(background-color__sub1, $theme-default, $common);
-  border-radius: 4px;
 
   .nav {
     height: 0px;
@@ -241,6 +240,10 @@ $person-card-details-item-font-size: var(--person-card-details-item-font-size, 1
         height: 17px;
         width: 16px;
         margin-bottom: 6px;
+        fill: set-var(icon__color, $theme-default, $common);
+        &:hover {
+          filter: brightness(0.5);
+        }
       }
     }
   }
