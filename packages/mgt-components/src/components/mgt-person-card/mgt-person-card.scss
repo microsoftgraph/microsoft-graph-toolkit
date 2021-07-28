@@ -161,6 +161,7 @@ $person-card-details-item-font-size: var(--person-card-details-item-font-size, 1
           }
           &::-webkit-scrollbar-button {
             background: $background-color;
+            height: 1px;
           }
           &::-webkit-scrollbar-track {
             background: $background-color;

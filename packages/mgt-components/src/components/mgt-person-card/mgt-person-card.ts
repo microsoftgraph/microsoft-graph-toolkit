@@ -378,9 +378,10 @@ export class MgtPersonCard extends MgtTemplatedComponent {
     this._currentSection = null;
 
     //resets to first tab being selected
-    const firstTab: HTMLElement = this.renderRoot.querySelector(`fluent-tab`)[0] as HTMLElement;
-    firstTab.click();
-
+    const firstTab: HTMLElement = this.renderRoot.querySelector(`fluent-tab`) as HTMLElement;
+    if (firstTab) {
+      firstTab.click();
+    }
     this.state = historyState.state;
     this._personDetails = historyState.state;
     this.personImage = historyState.personImage;
