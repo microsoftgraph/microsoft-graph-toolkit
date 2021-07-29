@@ -59,8 +59,6 @@ export { FluentDesignSystemProvider, FluentProgressRing } from '@fluentui/web-co
  * @cssprop --file-upload-button-float - {string} Upload button float position
  * @cssprop --file-upload-button-background-color - {Color} Background color of upload button
  * @cssprop --file-upload-button-color - {Color} Text color of upload button
- * @cssprop --file-upload-progress-background-color - {Color} progress background color
- * @cssprop --file-upload-progressbar-background-color - {Color} progressBar background color
  * @cssprop --file-list-background-color - {Color} File list background color
  * @cssprop --file-list-box-shadow - {String} File list box shadow style
  * @cssprop --file-list-border - {String} File list border styles
