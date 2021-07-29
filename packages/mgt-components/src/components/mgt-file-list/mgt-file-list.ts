@@ -569,32 +569,34 @@ export class MgtFileList extends MgtTemplatedComponent {
    */
   protected renderFiles(): TemplateResult {
     return html`
-      <div id="file-list-wrapper" class="file-list-wrapper" dir=${this.direction}>
-        ${this.enableFileUpload ? this.renderFileUpload() : null}
-        <ul
-          id="file-list"
-          class="file-list"
-          tabindex="0"
-          @keydown="${this.onFileListKeyDown}"
-          @keyup="${this.onFileListKeyUp}"
-          @blur="${this.onFileListOut}"
-        >
-          ${repeat(
-            this.files,
-            f => f.id,
-            f => html`
-              <li class="file-item">
-                ${this.renderFile(f)}
-              </li>
-            `
-          )}
-        </ul>
-        ${
-          !this.hideMoreFilesButton && this.pageIterator && (this.pageIterator.hasNext || this._preloadedFiles.length)
-            ? this.renderMoreFileButton()
-            : null
-        }
-      </div>
+      <fluent-design-system-provider use-defaults>
+        <div id="file-list-wrapper" class="file-list-wrapper" dir=${this.direction}>
+          ${this.enableFileUpload ? this.renderFileUpload() : null}
+          <ul
+            id="file-list"
+            class="file-list"
+            tabindex="0"
+            @keydown="${this.onFileListKeyDown}"
+            @keyup="${this.onFileListKeyUp}"
+            @blur="${this.onFileListOut}"
+          >
+            ${repeat(
+              this.files,
+              f => f.id,
+              f => html`
+                <li class="file-item">
+                  ${this.renderFile(f)}
+                </li>
+              `
+            )}
+          </ul>
+          ${
+            !this.hideMoreFilesButton && this.pageIterator && (this.pageIterator.hasNext || this._preloadedFiles.length)
+              ? this.renderMoreFileButton()
+              : null
+          }
+        </div>
+      </fluent-design-system-provider>
     `;
   }
 
@@ -625,9 +627,7 @@ export class MgtFileList extends MgtTemplatedComponent {
   protected renderMoreFileButton(): TemplateResult {
     if (this._isLoadingMore) {
       return html`
-        <fluent-design-system-provider use-defaults>
-          <fluent-progress-ring role="progressbar" viewBox="0 0 8 8" class="progress-ring"></fluent-progress-ring>
-        </fluent-design-system-provider>
+        <fluent-progress-ring role="progressbar" viewBox="0 0 8 8" class="progress-ring"></fluent-progress-ring>
       `;
     } else {
       return html`<a id="show-more" class="show-more" @click=${() => this.renderNextPage()} tabindex="0" @keydown=${

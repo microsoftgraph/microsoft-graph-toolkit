@@ -14,7 +14,7 @@ import { ViewType } from '../../../graph/types';
 import { DriveItem } from '@microsoft/microsoft-graph-types';
 import { getUploadSession, sendFileContent, sendFileChunck, deleteSessionFile } from '../../../graph/graph.files';
 
-export { FluentDesignSystemProvider, FluentProgressRing } from '@fluentui/web-components';
+export { FluentProgress } from '@fluentui/web-components';
 
 /**
  * MgtFileUpload upload item lifecycle object.
@@ -238,8 +238,7 @@ export class MgtFileUpload extends MgtBaseComponent {
     }
 
     return html`
-         <div id="file-upload-border" >
-            
+         <div id="file-upload-border">
          </div>
          <div class="file-upload-button">
           <div>
@@ -311,11 +310,7 @@ export class MgtFileUpload extends MgtBaseComponent {
       <div class='file-upload-table'>
         <div class='file-upload-cell'>
           <div class='file-upload-table'>
-            <div class='file-upload-cell'>
-              <div id="file-upload-bar">   
-                <div id="file-upload-progress" style="width: ${fileItem.percent}%;"></div>
-              </div>
-            </div>
+            <fluent-progress class="file-upload-bar" value="${fileItem.percent}"></fluent-progress>
             <div class='file-upload-cell' style="padding-left:5px">
               <span>${fileItem.percent}%</span>
               <span 

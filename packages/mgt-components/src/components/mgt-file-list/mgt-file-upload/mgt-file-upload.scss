@@ -54,16 +54,8 @@
     vertical-align: middle;
     position: relative;
 
-    #file-upload-bar {
-      max-width: 200px;
-      background-color: var(--file-upload-progressbar-background-color, rgb(243, 242, 241));
-      border-radius: 12px;
-
-      #file-upload-progress {
-        height: 5px;
-        background-color: var(--file-upload-progress-background-color, #0078d4);
-        border-radius: 12px;
-      }
+    .file-upload-bar {
+      width: 180px;
     }
 
     .file-upload-status {
