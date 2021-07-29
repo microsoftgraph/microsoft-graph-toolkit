@@ -24,8 +24,6 @@ export const customCSSProperties = () => html`
         --file-upload-border: 4px dotted #ffbdc3;
         --file-upload-background-color: rgba(255, 0, 0, 0.1);
         --file-upload-button-float:left;
-        --file-upload-progress-background-color: #fef8dd;
-        --file-upload-progressbar-background-color: gray;
         --file-upload-button-color:#323130;
         --file-upload-button-background-color:#fef8dd;
         --file-list-background-color: #e0f8db;
