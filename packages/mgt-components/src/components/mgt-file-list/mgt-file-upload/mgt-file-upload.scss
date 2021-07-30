@@ -79,6 +79,10 @@ $file-upload-icon-button-background-color: var(--color, inherit);
   fill: var(--file-upload-button-color, $file-upload-icon-button-background-color);
 }
 
+:host .cancel-icon {
+  fill: var(--file-upload-button-color, $file-upload-icon-button-background-color);
+}
+
 :host .file-upload-Template {
   clear: both;
 }

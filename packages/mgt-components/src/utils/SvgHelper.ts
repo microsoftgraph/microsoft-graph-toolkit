@@ -488,7 +488,7 @@ export function getSvg(svgIcon: SvgIcon, color?: string) {
 
     case SvgIcon.Cancel:
       return html`
-    <svg width="10" height="10" xmlns="http://www.w3.org/2000/svg">
+    <svg class="cancel-icon" width="10" height="10" xmlns="http://www.w3.org/2000/svg">
       <path 
       d="m5.52795,4.92946l4.37418,4.36141l-0.57055,0.56806l-4.38052,-4.35509l-4.38052,4.35509l-0.57055,-0.56806l4.37418,-4.36141l-4.37418,-4.36141l0.57055,-0.56806l4.38052,4.35509l4.38052,-4.35509l0.57055,0.56806l-4.37418,4.36141z"
       />
