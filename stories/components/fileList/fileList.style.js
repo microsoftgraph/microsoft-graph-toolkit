@@ -15,7 +15,7 @@ export default {
 };
 
 export const darkTheme = () => html`
-    <mgt-file-list class="mgt-dark"></mgt-file-list>
+    <mgt-file-list class="mgt-dark" enable-file-upload></mgt-file-list>
   `;
 
 export const customCSSProperties = () => html`

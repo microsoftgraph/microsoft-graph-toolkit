@@ -7,13 +7,17 @@
 
 @import '../../../../../../node_modules/office-ui-fabric-core/dist/sass/References';
 @import '../../../styles/shared-sass-variables.scss';
+@import './mgt-file-upload.theme.scss';
+
+$file-upload-button-background-color: set-var(upload__button__background-color, $theme-default, $file-upload);
+$file-upload-icon-button-background-color: var(--color, inherit);
 
 :host .file-upload-button {
   width: 100%;
 
   div {
     float: var(--file-upload-button-float, right);
-    background-color: var(--file-upload-button-background-color, rgb(243, 242, 241));
+    background-color: $file-upload-button-background-color;
     width: 120px;
     height: 32px;
     text-align: center;
@@ -22,8 +26,8 @@
     margin-right: 16px;
     margin-left: 16px;
     cursor: pointer;
-    font-size: 14px;
-    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    font-size: $font-size;
+    font-family: $font-family;
   }
 
   span {
@@ -69,6 +73,10 @@
       margin-left: 20px;
     }
   }
+}
+
+:host .upload-icon {
+  fill: var(--file-upload-button-color, $file-upload-icon-button-background-color);
 }
 
 :host .file-upload-Template {

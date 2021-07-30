@@ -165,8 +165,6 @@ export interface MgtFileUploadConfig {
  * @cssprop --file-upload-button-float - {string} Upload button float position
  * @cssprop --file-upload-button-background-color - {Color} Background color of upload button
  * @cssprop --file-upload-button-color - {Color} Text color of upload button
- * @cssprop --file-upload-progress-background-color - {Color} progress background color
- * @cssprop --file-upload-progressbar-background-color - {Color} progressBar background color
  * @cssprop --file-item-margin - {String} File item margin
  */
 @customElement('mgt-file-upload')
@@ -586,7 +584,7 @@ export class MgtFileUpload extends MgtBaseComponent {
         if (!fileItem.completed) {
           fileItem.driveItem = await sendFileContent(
             graph,
-            `${this.getGrapQuery(fileItem.file)}:/content`,
+            `${this.getGrapQuery(fileItem.file)}:/content?@microsoft.graph.conflictBehavior=rename`,
             fileItem.file
           );
           if (fileItem.driveItem !== null) {

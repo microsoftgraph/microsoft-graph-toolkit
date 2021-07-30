@@ -22,6 +22,11 @@ $file-list: (
     _var: --file-list-background-color,
     light: $list__background-color--light,
     dark: #424242
+  ),
+  upload__button__background-color: (
+    _var: --file-upload-button-background-color,
+    light: rgb(243, 242, 241),
+    dark: #006cbe
   )
 );
 

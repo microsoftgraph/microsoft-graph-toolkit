@@ -1163,7 +1163,7 @@ export async function getUploadSession(graph: IGraph, resource: string): Promise
     const scopes = 'files.readwrite';
     const sessionOptions = {
       item: {
-        '@microsoft.graph.conflictBehavior': 'replace'
+        '@microsoft.graph.conflictBehavior': 'rename'
       }
     };
     let response;

@@ -461,7 +461,7 @@ export function getSvg(svgIcon: SvgIcon, color?: string) {
 
     case SvgIcon.Upload:
       return html`
-    <svg width="10" height="12"  xmlns="http://www.w3.org/2000/svg">
+    <svg class="upload-icon" width="10" height="12"  xmlns="http://www.w3.org/2000/svg">
       <path
         d="m9.58733,0l0,0.74599l-9.22101,0l0,-0.74599l9.22101,0zm0.3602,5.70569l-0.72039,0.52453l-3.73803,-2.7392l0,8.44489l-1.02456,0l0,-8.44489l-3.73803,2.7392l-0.72039,-0.52453l4.9707,-3.64838l4.9707,3.64838z"
       />
