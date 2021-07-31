@@ -10,7 +10,7 @@ The `@microsoft/mgt-teams-sso-provider` package exposes the `TeamsSSOProvider` c
 
 ## Usage
 
-The TeamsProvider requires the usage of the Microsoft Teams SDK which is not automatically installed.
+The TeamsSSOProvider requires the usage of the Microsoft Teams SDK which is not automatically installed.
 
 1. Install the packages
 
@@ -24,8 +24,8 @@ The TeamsProvider requires the usage of the Microsoft Teams SDK which is not aut
     import * as MicrosoftTeams from "@microsoft/teams-js/dist/MicrosoftTeams";
     import {TeamsSSOProvider} from '@microsoft/mgt-teams-sso-provider';
 
-    TeamsProvider.microsoftTeamsLib = MicrosoftTeams;
-    TeamsProvider.handleAuth();
+    TeamsSSOProvider.microsoftTeamsLib = MicrosoftTeams;
+    TeamsSSOProvider.handleAuth();
     ```
 
 3. Initialize the provider in your main code (not on your auth page). The provider can be used in "client side auth" mode or SSO mode. SSO mode is enabled by setting `ssoUrl` \ `sso-url` and requires a backend service to handle the on-behalf-of flow.
@@ -35,7 +35,7 @@ The TeamsProvider requires the usage of the Microsoft Teams SDK which is not aut
     import {TeamsSSOProvider} from '@microsoft/mgt-teams-sso-provider';
     import * as MicrosoftTeams from "@microsoft/teams-js/dist/MicrosoftTeams";
 
-    TeamsProvider.microsoftTeamsLib = MicrosoftTeams;
+    TeamsSSOProvider.microsoftTeamsLib = MicrosoftTeams;
 
     Providers.globalProvider = new TeamsSSOProvider({
       clientId: string;
