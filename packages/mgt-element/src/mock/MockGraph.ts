@@ -21,16 +21,6 @@ import { chainMiddleware } from '../utils/GraphHelpers';
 import { MockProvider } from './MockProvider';
 
 /**
- * The base URL for the mock endpoint
- */
-const BASE_URL = 'https://proxy.apisandbox.msdn.microsoft.com/svc?url=';
-
-/**
- * The base URL for the graph
- */
-const ROOT_GRAPH_URL = 'https://graph.microsoft.com/';
-
-/**
  * MockGraph Instance
  *
  * @export
@@ -50,7 +40,6 @@ export class MockGraph extends Graph {
 
     super(
       Client.initWithMiddleware({
-        baseUrl: BASE_URL + ROOT_GRAPH_URL,
         middleware: chainMiddleware(...middleware)
       })
     );
@@ -85,12 +74,13 @@ class MockMiddleware implements Middleware {
    */
   private _nextMiddleware: Middleware;
 
+  private static _baseUrl;
+
   // tslint:disable-next-line: completed-docs
   public async execute(context: Context): Promise<void> {
     try {
-      const url = context.request as string;
-      const baseLength = BASE_URL.length;
-      context.request = url.substring(0, baseLength) + escape(url.substring(baseLength));
+      const baseUrl = await MockMiddleware.getBaseUrl();
+      context.request = baseUrl + escape(context.request as string);
     } catch (error) {
       // ignore error
     }
@@ -104,5 +94,20 @@ class MockMiddleware implements Middleware {
    */
   public setNext(next: Middleware): void {
     this._nextMiddleware = next;
+  }
+
+  private static async getBaseUrl() {
+    if (!this._baseUrl) {
+      try {
+        // get the url we should be using from the endpoint service
+        let response = await fetch('https://cdn.graph.office.net/en-us/graph/api/proxy/endpoint');
+        this._baseUrl = (await response.json()) + '?url=';
+      } catch {
+        // fallback to hardcoded value
+        this._baseUrl = 'https://proxy.apisandbox.msdn.microsoft.com/svc?url=';
+      }
+    }
+
+    return this._baseUrl;
   }
 }

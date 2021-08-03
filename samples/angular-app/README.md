@@ -5,6 +5,8 @@ This project was generated with [Angular CLI](https://github.com/angular/angular
 ## Getting Started
 The is the sample code explained in [A Lap Around the Mircosoft Graph Toolkit Day 14 - How to use Microsoft Graph Toolkit with Angular](https://developer.microsoft.com/en-us/graph/blogs/a-lap-around-microsoft-graph-toolkit-day-14-using-microsoft-graph-toolkit-with-angular/)
 
+Documentation for Msal2Provider can be found here (https://docs.microsoft.com/en-us/graph/toolkit/get-started/use-toolkit-with-angular)
+
 > NOTE: This sample is linked to the locally built mgt packages. If you haven't already, run the following commands in the root of the repo before getting started.
 ```bash
 npm i -g yarn

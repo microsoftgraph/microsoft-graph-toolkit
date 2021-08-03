@@ -20,60 +20,12 @@ import {
 import { AuthenticationProviderOptions } from '@microsoft/microsoft-graph-client/lib/es/IAuthenticationProviderOptions';
 
 /**
- * Config for MSAL2.0 Authentication
+ * base config for MSAL 2.0 authentication
  *
  * @export
- * @interface Msal2Config
+ * @interface Msal2ConfigBase
  */
-export interface Msal2Config {
-  /**
-   * Client ID of app registration
-   *
-   * @type {string}
-   * @memberof Msal2Config
-   */
-  clientId: string;
-
-  /**
-   * LoginType
-   *
-   * @type {LoginType}
-   * @memberof Msal2Config
-   */
-  loginType?: LoginType;
-
-  /**
-   * List of scopes required
-   *
-   * @type {string[]}
-   * @memberof Msal2Config
-   */
-  scopes?: string[];
-
-  /**
-   * LoginHint
-   *
-   * @type {string}
-   * @memberof Msal2Config
-   */
-  loginHint?: string;
-
-  /**
-   * Session ID
-   *
-   * @type {string}
-   * @memberof Msal2Config
-   */
-  sid?: string;
-
-  /**
-   * Domain hint
-   *
-   * @type {string}
-   * @memberof Msal2Config
-   */
-  domainHint?: string;
-
+interface Msal2ConfigBase {
   /**
    * Redirect URI
    *
@@ -81,14 +33,6 @@ export interface Msal2Config {
    * @memberof Msal2Config
    */
   redirectUri?: string;
-
-  /**
-   * Prompt type
-   *
-   * @type {Prompt}
-   * @memberof Msal2Config
-   */
-  prompt?: PromptType;
 
   /**
    * Authority URL
@@ -99,20 +43,89 @@ export interface Msal2Config {
   authority?: string;
 
   /**
-   * Disable multi account functionality
-   *
-   * @type {boolean}
-   * @memberof Msal2Config
-   */
-  isMultiAccountDisabled?: boolean;
-
-  /**
    * Other options
    *
    * @type {Configuration}
    * @memberof Msal2Config
    */
   options?: Configuration;
+
+  /**
+   * List of scopes required
+   *
+   * @type {string[]}
+   * @memberof Msal2ConfigBase
+   */
+  scopes?: string[];
+  /**
+   * loginType if login uses popup
+   *
+   * @type {LoginType}
+   * @memberof Msal2ConfigBase
+   */
+  loginType?: LoginType;
+  /**
+   * login hint value
+   *
+   * @type {string}
+   * @memberof Msal2ConfigBase
+   */
+  loginHint?: string;
+  /**
+   * Domain hint value
+   *
+   * @type {string}
+   * @memberof Msal2ConfigBase
+   */
+  domainHint?: string;
+  /**
+   * prompt value
+   *
+   * @type {string}
+   * @memberof Msal2ConfigBase
+   */
+  prompt?: PromptType;
+
+  /**
+   * Session ID
+   *
+   * @type {string}
+   * @memberof Msal2Config
+   */
+  sid?: string;
+}
+
+/**
+ * Config for MSAL2.0 Authentication
+ *
+ * @export
+ * @interface Msal2Config
+ */
+export interface Msal2Config extends Msal2ConfigBase {
+  /**
+   * Client ID of app registration
+   *
+   * @type {boolean}
+   * @memberof Msal2Config
+   */
+  isMultiAccountDisabled?: boolean;
+  clientId: string;
+}
+
+/**
+ * Config for MSAL 2.0 Authentication where a PublicClientApplication already exists
+ *
+ * @export
+ * @interface Msal2PublicClientApplicationConfig
+ */
+export interface Msal2PublicClientApplicationConfig extends Msal2ConfigBase {
+  /**
+   * Existing PublicClientApplication instance to use
+   *
+   * @type {PublicClientApplication}
+   * @memberof Msal2PublicClientApplicationConfig
+   */
+  publicClientApplication: PublicClientApplication;
 }
 
 /**
@@ -233,7 +246,7 @@ export class Msal2Provider extends IProvider {
   private sessionStorageDeniedScopesKey = 'mgt-denied-scopes';
   private homeAccountKey = '275f3731-e4a4-468a-bf9c-baca24b31e26';
 
-  public constructor(config: Msal2Config) {
+  public constructor(config: Msal2Config | Msal2PublicClientApplicationConfig) {
     super();
     this.initProvider(config);
   }
@@ -245,29 +258,34 @@ export class Msal2Provider extends IProvider {
    * @param {Msal2Config} config
    * @memberof Msal2Provider
    */
-  private async initProvider(config: Msal2Config) {
-    if (config.clientId) {
-      const msalConfig: Configuration = config.options || { auth: { clientId: config.clientId } };
-      this.ms_config = msalConfig;
-      this.ms_config.auth.clientId = config.clientId;
-      if (config.authority) {
-        this.ms_config.auth.authority = config.authority;
-      }
-      if (config.redirectUri) {
-        this.ms_config.auth.redirectUri = config.redirectUri;
-      }
+  private async initProvider(config: Msal2Config | Msal2PublicClientApplicationConfig) {
+    const msalConfig: Configuration = config.options || { auth: { clientId: '' } };
+    this.ms_config = msalConfig;
+    this.ms_config.cache = msalConfig.cache || {};
+    this.ms_config.cache.cacheLocation = msalConfig.cache.cacheLocation || 'localStorage';
+    if (
+      typeof this.ms_config.cache.storeAuthStateInCookie === 'undefined' ||
+      this.ms_config.cache.storeAuthStateInCookie === null
+    ) {
+      this.ms_config.cache.storeAuthStateInCookie = true;
+    }
 
-      this.ms_config.cache = msalConfig.cache || {};
-      this.ms_config.cache.cacheLocation = msalConfig.cache.cacheLocation || 'localStorage';
-      if (
-        typeof this.ms_config.cache.storeAuthStateInCookie === 'undefined' ||
-        this.ms_config.cache.storeAuthStateInCookie === null
-      ) {
-        this.ms_config.cache.storeAuthStateInCookie = true;
-      }
+    this.ms_config.system = msalConfig.system || {};
+    this.ms_config.system.iframeHashTimeout = msalConfig.system.iframeHashTimeout || 10000;
 
-      if (config.redirectUri) {
-        this.ms_config.auth.redirectUri = config.redirectUri;
+    if (config.authority) {
+      this.ms_config.auth.authority = config.authority;
+    }
+    if (config.redirectUri) {
+      this.ms_config.auth.redirectUri = config.redirectUri;
+    }
+
+    if ('clientId' in config) {
+      if (config.clientId) {
+        this.ms_config.auth.clientId = config.clientId;
+        this._publicClientApplication = new PublicClientApplication(this.ms_config);
+      } else {
+        throw new Error('clientId must be provided');
       }
       this.ms_config.system = msalConfig.system || {};
       this.ms_config.system.iframeHashTimeout = msalConfig.system.iframeHashTimeout || 10000;
@@ -292,7 +310,25 @@ export class Msal2Provider extends IProvider {
         throw e;
       }
     } else {
-      throw new Error('clientId must be provided');
+      throw new Error('either clientId or publicClientApplication must be provided');
+    }
+
+    this._loginType = typeof config.loginType !== 'undefined' ? config.loginType : LoginType.Redirect;
+    this._loginHint = typeof config.loginHint !== 'undefined' ? config.loginHint : null;
+    this._sid = typeof config.sid !== 'undefined' ? config.sid : null;
+    this._domainHint = typeof config.domainHint !== 'undefined' ? config.domainHint : null;
+    this.scopes = typeof config.scopes !== 'undefined' ? config.scopes : ['user.read'];
+    this._prompt = typeof config.prompt !== 'undefined' ? config.prompt : PromptType.SELECT_ACCOUNT;
+    this.graph = createFromProvider(this);
+    try {
+      const tokenResponse = await this._publicClientApplication.handleRedirectPromise();
+      if (tokenResponse !== null) {
+        this.handleResponse(tokenResponse?.account);
+      } else {
+        this.trySilentSignIn();
+      }
+    } catch (e) {
+      throw e;
     }
   }
 
@@ -533,7 +569,7 @@ export class Msal2Provider extends IProvider {
    * @return {*}  {(AccountInfo | null)}
    * @memberof Msal2Provider
    */
-  private getAccount(): AccountInfo | null {
+  protected getAccount(): AccountInfo | null {
     const account = this.getStoredAccount();
     if (account) {
       return account;

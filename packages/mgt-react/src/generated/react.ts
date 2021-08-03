@@ -136,9 +136,10 @@ export type PersonCardProps = {
 	isExpanded?: boolean;
 	inheritDetails?: boolean;
 	showPresence?: boolean;
-	personPresence?: MicrosoftGraphBeta.Presence;
+	personPresence?: MicrosoftGraph.Presence;
 	templateContext?: TemplateContext;
 	mediaQuery?: ComponentMediaQuery;
+	expanded?: (e: Event) => void;
 	templateRendered?: (e: Event) => void;
 }
 
@@ -152,7 +153,7 @@ export type PersonProps = {
 	personImage?: string;
 	fetchImage?: boolean;
 	avatarType?: string;
-	personPresence?: MicrosoftGraphBeta.Presence;
+	personPresence?: MicrosoftGraph.Presence;
 	personCardInteraction?: PersonCardInteraction;
 	line1Property?: string;
 	line2Property?: string;

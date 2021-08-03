@@ -1,0 +1,15 @@
+<Project Sdk="Microsoft.NET.Sdk.Web">
+
+  <PropertyGroup>
+    <TargetFramework>net5.0</TargetFramework>
+    <UserSecretsId>aspnet-mgt_sso-FC64487B-1465-4E73-8AC6-CA78BD16A1B0</UserSecretsId>
+    <RootNamespace>mgt_sso</RootNamespace>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Microsoft.Identity.Web" Version="1.14.0" />
+    <PackageReference Include="Microsoft.Identity.Web.UI" Version="1.14.0" />
+    <PackageReference Include="Microsoft.Identity.Web.MicrosoftGraph" Version="1.14.0" />
+  </ItemGroup>
+
+</Project>

@@ -1,0 +1,53 @@
+{
+  "name": "@microsoft/mgt-teams-sso-provider",
+  "version": "2.0.0",
+  "description": "The Microsoft Graph Toolkit Teams Single Sign-On Provider",
+  "keywords": [
+    "microsoft graph",
+    "microsoft graph toolkit",
+    "microsoft teams",
+    "teams",
+    "mgt",
+    "msal",
+    "msal 2.0",
+    "auth",
+    "authentication",
+    "sso"
+  ],
+  "homepage": "https://github.com/microsoftgraph/microsoft-graph-toolkit",
+  "bugs": {
+    "url": "https://github.com/microsoftgraph/microsoft-graph-toolkit/issues"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/microsoftgraph/microsoft-graph-toolkit"
+  },
+  "author": "Microsoft",
+  "license": "MIT",
+  "main": "./dist/es6/index.js",
+  "types": "./dist/es6/index.d.ts",
+  "module": "./dist/es6/index.js",
+  "files": [
+    "dist",
+    "src"
+  ],
+  "scripts": {
+    "build": "npm run clean && npm run build:compile",
+    "build:compile": "npm run compile",
+    "build:watch": "npm run compile:watch",
+    "clean": "shx rm -rf ./dist && shx rm -rf ./tsconfig.tsbuildinfo",
+    "compile": "tsc -b",
+    "compile:watch": "tsc -w",
+    "lint": "tslint -c ../../../tslint.json 'src/**/*.ts'",
+    "postpack": "cpx *.tgz ../../../artifacts"
+  },
+  "dependencies": {
+    "@microsoft/mgt-element": "*",
+    "@microsoft/mgt-msal2-provider": "*",
+    "@microsoft/microsoft-graph-client": "^2.2.1",
+    "@azure/msal-browser": "^2.14.2"
+  },
+  "publishConfig": {
+    "directory": "dist"
+  }
+}

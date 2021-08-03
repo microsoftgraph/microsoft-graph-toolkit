@@ -33,6 +33,8 @@ $show-more-button-background-color--hover: var(
   --show-more-button-background-color--hover,
   $file-item-background-color--hover
 );
+$progress-ring-size: var(--progress-ring-size, 24px);
+
 :host {
   font-family: $font-family;
   font-size: $font-size;
@@ -87,6 +89,12 @@ mgt-file-item .file-list-wrapper {
         }
       }
     }
+  }
+
+  .progress-ring {
+    margin: 4px auto;
+    width: $progress-ring-size;
+    height: $progress-ring-size;
   }
 
   .show-more {
