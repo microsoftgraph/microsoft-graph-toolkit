@@ -39,6 +39,10 @@ $presence-color-away: #ffaa44;
 $presence-color-invisible: #8a8886;
 $presence-color-oof: #b4009e;
 
+mgt-flyout {
+  --mgt-flyout-border-radius: 2px;
+}
+
 :host([hidden]) {
   display: none;
 }

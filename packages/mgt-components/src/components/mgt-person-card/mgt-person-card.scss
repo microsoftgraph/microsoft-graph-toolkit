@@ -25,6 +25,7 @@ $person-card-details-item-font-size: var(--person-card-details-item-font-size, 1
   user-select: none;
   box-shadow: set-var(box-shadow, $theme-default, $common);
   border: 1px solid set-var(background-color__sub1, $theme-default, $common);
+  border-radius: 2px;
 
   .nav {
     height: 0px;
