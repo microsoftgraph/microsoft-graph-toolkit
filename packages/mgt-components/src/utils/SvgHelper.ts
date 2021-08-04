@@ -140,7 +140,12 @@ export enum SvgIcon {
   /**
    * Back arrow
    */
-  Back
+  Back,
+
+  /**
+   * Close icon
+   */
+  Close
 }
 
 import { html } from 'lit-element';
@@ -425,5 +430,12 @@ export function getSvg(svgIcon: SvgIcon, color?: string) {
           />
         </svg>
       `;
+
+    case SvgIcon.Close:
+      return html`
+        <svg width="10" height="10" viewBox="0 0 10 10" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <path d="M5.73838 5.032L9.70337 1.067L8.99638 0.360001L5.03137 4.325L1.06637 0.360001L0.359375 1.067L4.32438 5.032L0.359375 8.997L1.06637 9.704L5.03137 5.739L8.99638 9.704L9.70337 8.997L5.73838 5.032Z" fill="black"/>
+        </svg>
+     `;
   }
 }
