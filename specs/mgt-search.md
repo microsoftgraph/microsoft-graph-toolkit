@@ -1,6 +1,6 @@
 # mgt-search
 
-The suggestion component based on Graph Suggestion API, it provides a input box and flyout. When a query string typed in the input box, the flyout will rendered by the data from Graph Suggestion API, show some suggestions. it supports 3 kinds of entity types, File/Text/Suggestions, and also opened 3 blank entity types for customizing
+The suggestion component based on Graph Suggestion API, it provides a input box and flyout. When a query string typed in the input box, the flyout will rendered by the data from Graph Suggestion API, show some suggestions. it supports 3 kinds of entity types, File/People/Text, and provides a customerized sample
 The component structure as below
 <img src="./images/mgt-search.PNG" width=400/>
 
@@ -111,8 +111,8 @@ The following events are fired from the component.
 
 | Event | Description |
 | --- | --- |
-| `onEntityClick` | When click an entity , the listener will be trigged. the suggested value of the clicked item as a parameter|
-| `onEnterPress` | When press enter key, the listener will be trigged, it has originalValue( input box value) and suggestedValue (suggestion) as parameters|
+| `entityClick` | When click an entity , the listener will be trigged. the suggested value of the clicked item as a parameter|
+| `querySubmitted` | When press enter key, the listener will be trigged, it has originalValue( input box value) and suggestedValue (suggestion) as parameters|
 
 ## Attributes and Properties
 
