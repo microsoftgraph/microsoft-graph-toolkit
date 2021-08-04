@@ -482,8 +482,11 @@ export class MgtPersonCard extends MgtTemplatedComponent {
    * @memberof MgtPersonCard
    */
   protected closeCard() {
-    const person = this.parentElement.parentElement as MgtPerson;
-    person.hidePersonCard();
+    const flyout = this.parentElement.parentElement as MgtFlyout;
+    if (flyout) {
+      flyout.close();
+    }
+    this.isExpanded = false;
   }
 
   /**
