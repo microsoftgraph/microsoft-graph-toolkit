@@ -1167,7 +1167,7 @@ export class MgtPerson extends MgtTemplatedComponent {
     this._mouseLeaveTimeout = setTimeout(this.hidePersonCard.bind(this), 500);
   }
 
-  private hidePersonCard() {
+  public hidePersonCard() {
     const flyout = this.flyout;
     if (flyout) {
       flyout.close();

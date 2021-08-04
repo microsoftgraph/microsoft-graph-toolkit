@@ -53,6 +53,18 @@ $person-card-details-item-font-size: var(--person-card-details-item-font-size, 1
     }
   }
 
+  .close-card-container {
+    .close-button {
+      position: absolute;
+      right: 10px;
+      margin-top: 9px;
+      svg {
+        width: 9px;
+        height: 9px;
+      }
+    }
+  }
+
   .person-details-container {
     display: flex;
     flex-direction: column;

@@ -33,6 +33,8 @@ FluentDesignSystemProvider;
 FluentTextField;
 
 import '../sub-components/mgt-spinner/mgt-spinner';
+import { PersonCardInteraction } from '../PersonCardInteraction';
+import { MgtFlyout } from '../sub-components/mgt-flyout/mgt-flyout';
 
 export * from './mgt-person-card.types';
 
@@ -461,10 +463,27 @@ export class MgtPersonCard extends MgtTemplatedComponent {
     return html`
       <div class="root" dir=${this.direction}>
         ${navigationTemplate}
+        <div class="close-card-container">
+          <fluent-button class="close-button" @click=${() => this.closeCard()}>
+              ${getSvg(SvgIcon.Close)}
+          </fluent-button>
+        </div>
         <div class="person-details-container">${personDetailsTemplate}</div>
         <div class="expanded-details-container">${expandedDetailsTemplate}</div>
       </div>
     `;
+  }
+
+  /**
+   * Render the state when no data is available.
+   *
+   * @protected
+   * @returns {TemplateResult}
+   * @memberof MgtPersonCard
+   */
+  protected closeCard() {
+    const person = document.querySelector('mgt-person') as MgtPerson;
+    person.hidePersonCard();
   }
 
   /**
