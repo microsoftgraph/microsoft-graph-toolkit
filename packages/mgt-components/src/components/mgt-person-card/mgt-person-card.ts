@@ -482,7 +482,7 @@ export class MgtPersonCard extends MgtTemplatedComponent {
    * @memberof MgtPersonCard
    */
   protected closeCard() {
-    const person = document.querySelector('mgt-person') as MgtPerson;
+    const person = this.parentElement.parentElement as MgtPerson;
     person.hidePersonCard();
   }
 
