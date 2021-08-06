@@ -112,11 +112,13 @@ export abstract class MgtTemplatedComponent extends MgtBaseComponent {
 
     const template = html`
       <slot name=${slotName}></slot>
-    `;
+      `;
+
+    const dataContext = { ...context, ...this.templateContext };
 
     if (this._renderedTemplates.hasOwnProperty(slotName)) {
       const { context: existingContext, slot } = this._renderedTemplates[slotName];
-      if (equals(existingContext, context)) {
+      if (equals(existingContext, dataContext)) {
         return template;
       }
       this.removeChild(slot);
@@ -126,13 +128,11 @@ export abstract class MgtTemplatedComponent extends MgtBaseComponent {
     div.slot = slotName;
     div.dataset.generated = 'template';
 
-    const dataContext = { ...context, ...this.templateContext };
-
     TemplateHelper.renderTemplate(div, this.templates[templateType], dataContext);
 
     this.appendChild(div);
 
-    this._renderedTemplates[slotName] = { context, slot: div };
+    this._renderedTemplates[slotName] = { context: dataContext, slot: div };
 
     this.fireCustomEvent('templateRendered', { templateType, context: dataContext, element: div });
 
