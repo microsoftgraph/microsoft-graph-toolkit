@@ -1,15 +1,18 @@
 {
-  "name": "@microsoft/mgt-msal2-provider",
+  "name": "@microsoft/mgt-teams-sso-provider",
   "version": "2.0.0",
-  "description": "The Microsoft Graph Toolkit Msal 2.0 Provider",
+  "description": "The Microsoft Graph Toolkit Teams Single Sign-On Provider",
   "keywords": [
     "microsoft graph",
     "microsoft graph toolkit",
+    "microsoft teams",
+    "teams",
     "mgt",
     "msal",
-    "auth",
     "msal 2.0",
-    "authentication"
+    "auth",
+    "authentication",
+    "sso"
   ],
   "homepage": "https://github.com/microsoftgraph/microsoft-graph-toolkit",
   "bugs": {
@@ -40,6 +43,7 @@
   },
   "dependencies": {
     "@microsoft/mgt-element": "*",
+    "@microsoft/mgt-msal2-provider": "*",
     "@microsoft/microsoft-graph-client": "^2.2.1",
     "@azure/msal-browser": "^2.14.2"
   },
