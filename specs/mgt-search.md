@@ -1,6 +1,7 @@
 # mgt-search
 
-The suggestion component based on Graph Suggestion API, it provides a input box and flyout. When a query string typed in the input box, the flyout will rendered by the data from Graph Suggestion API, show some suggestions. it supports 3 kinds of entity types, File/People/Text, and provides a customerized sample
+The suggestion component based on Graph Suggestion API, it provides a input box and flyout. When a query string typed in the input box, the flyout will rendered by the data from Graph Suggestion API, show some suggestions. it supports 3 kinds of entity types, File/People/Query, and provides a customerized 
+
 The component structure as below
 <img src="./images/mgt-search.PNG" width=400/>
 
@@ -8,7 +9,7 @@ The component structure as below
 
 | Feature | Priority | Notes |
 | ------- | -------- | ----- |
-| Retreieve text/people/file/ from Microsoft Graph endpoint based on the query string | P0 | |
+| Retreieve query/people/file/ from Microsoft Graph endpoint based on the query string | P0 | |
 | Enable other entity types from Microsoft Graph endpoint based on the query string | P0 | |
 | Display the text of the matched query and display the name of the file/people| P0| |
 | Display the headImg or create a head icon for suggested people| P0| |
@@ -32,34 +33,38 @@ The component structure as below
 | suggested-people-header | null: no data | The template to render people entity label. |
 | suggested-query-header | null: no data | The template to render text entity label. |
 | suggested-file-header | null: no data | The template to render file entity label. |
-| customized-{other entity type}-header | null: no data | The template to render other entity label, for example customized-sample1-header |
+| customized-{other entity type}-header | null: no data | The template to render other entity label, for example customized-site-header |
 | suggested-people | suggestionPeople[]: The people suggestion details  | The template to render people entity. |
 | suggested-query | suggestionQuery[]: The text suggestion details  | The template to render text entity. |
 | suggested-file | suggestionFile[]: The file suggestion details  | The template to render file entity. |
-| customized-{other entity type} | any[]: Customizing suggestion details  | The template to render customized entity, for example customized-sample1 |
+| customized-{other entity type} | any[]: Customizing suggestion details  | The template to render customized entity, for example customized-site |
 
 The following examples shows how to use customized template `suggested-query`.
 
 ```html
 <mgt-search>
     <template data-type="suggested-query">
-        <div>{{query}}</div>
+        <div>{{this.query}}</div>
     </template>
 </mgt-search>
 ```
 
 
 ## Customized
-Customized entity types must be supported by microsoft graph suggestion API.
+Customized entity types must be supported by microsoft graph suggestion API. Provide sample below for customized entity site.
 ```html
-<mgt-search entity-types="query,file,people,sample1">
-    <template data-type="customized-sample1-header">
-        <div>header hahaha</div>
-    </template>
+<mgt-search entity-types="query,site,people">
+	<template data-type="customized-site-header">
+		<div style="margin-left:10px;">Site</div>
+	</template>
 
-    <template data-type="customized-sample1">
-        <div>{{this}}</div>
-    </template>
+	<template data-type="customized-site">
+		<div style="margin-top:5px; margin-bottom:5px;">
+            <a href={{this.accessUrl}} >
+                {{this.acronym}} - {{this.title}}
+            </a>
+        </div>
+	</template>
 </mgt-search>
 ```
 
@@ -98,10 +103,6 @@ Order: query, file, people
 
 ```html
   <mgt-search entity-types="query, people"></mgt-search>
-```
-
-```html
-  <mgt-search entity-types="query, people, sample1"></mgt-search>
 ```
 
 ### Example5: Set max suggestion count
@@ -183,5 +184,6 @@ We provide a way to get data from default components for development if you don'
 | renderQuery | Renders single text search results, list length > 0, sub method of renderTextSearchResults. |
 | renderFile | Renders single file search results, list length > 0, sub method of renderFileleSearchResults. |
 | renderCustomizedEntity | Renders single file search results, list length > 0, sub method of renderFileleSearchResults. |
+| getAliasMap | Provide a way to override the entity name |
 
 
