@@ -396,8 +396,14 @@ $person-card-details-item-font-size: var(--person-card-details-item-font-size, 1
     filter: FlipH;
     -ms-filter: 'FlipH';
   }
-}
+  .close-button {
+    right: auto !important;
+    left: 10px;
+  }
 
-// fluent-tab-panel {
-//   display: block;
-// }
+  .message-section {
+    svg {
+      transform: scale(-1, 1);
+    }
+  }
+}
