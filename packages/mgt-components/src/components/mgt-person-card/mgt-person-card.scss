@@ -231,28 +231,27 @@ $person-card-details-item-font-size: var(--person-card-details-item-font-size, 1
 
   .message-section {
     border-bottom: 1px solid set-var(tab__line__color, $theme-default, $common);
-    fluent-design-system-provider {
-      --background-color: $background-color;
-      fluent-text-field {
-        margin: 4px 0px;
-        width: 83%;
+    --background-color: $background-color;
+    fluent-text-field {
+      margin: 4px 0px;
+      width: 83%;
+      width: 300px;
 
-        padding: 4px 10px;
-        &::after {
-          border: none;
-        }
+      padding: 4px 10px;
+      &::after {
+        border: none;
       }
-      .send-message-icon {
-        max-width: 15px;
-      }
-      svg {
-        height: 17px;
-        width: 16px;
-        margin-bottom: 6px;
-        fill: set-var(icon__color, $theme-default, $common);
-        &:hover {
-          filter: brightness(0.5);
-        }
+    }
+    .send-message-icon {
+      max-width: 15px;
+    }
+    svg {
+      height: 17px;
+      width: 16px;
+      margin-bottom: 6px;
+      fill: set-var(icon__color, $theme-default, $common);
+      &:hover {
+        filter: brightness(0.5);
       }
     }
   }

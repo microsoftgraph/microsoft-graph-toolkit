@@ -29,9 +29,6 @@ import { MgtPersonCardConfig, MgtPersonCardState } from './mgt-person-card.types
 import { strings } from './strings';
 import { FluentDesignSystemProvider, FluentTextField, FluentTabs, FluentButton } from '@fluentui/web-components';
 
-FluentDesignSystemProvider;
-FluentTextField;
-
 import '../sub-components/mgt-spinner/mgt-spinner';
 import { PersonCardInteraction } from '../PersonCardInteraction';
 import { MgtFlyout } from '../sub-components/mgt-flyout/mgt-flyout';
@@ -703,12 +700,10 @@ export class MgtPersonCard extends MgtTemplatedComponent {
         <div class="section">
           <div class="section__header">
             <div class="section__title">${section.displayName}</div>
-            <fluent-design-system-provider use-defaults>
               <fluent-button appearance="lightweight" class="section__show-more" @click=${() =>
                 this.updateCurrentSection(section)}>
                 ${this.strings.showMoreSectionButton}
               </fluent-button>
-            </fluent-design-system-provider>
           </div>
           <div class="section__content">${section.asCompactView()}</div>
         </div>
@@ -798,17 +793,15 @@ export class MgtPersonCard extends MgtTemplatedComponent {
    */
   protected renderMessagingSection(): TemplateResult {
     return html`
-      <fluent-design-system-provider use-defaults>
         <fluent-text-field appearance="filled" placeholder="Message ${this.internalPersonDetails.displayName}"  
           .value=${this._chatInput}  
           @input=${(e: Event) => {
             this._chatInput = (e.target as HTMLInputElement).value;
           }}>
-      </fluent-text-field>
+        </fluent-text-field>
         <span class="send-message-icon" @click=${() => this.sendQuickMessage()}>
              ${getSvg(SvgIcon.Send)}
-           </span>
-      </fluent-design-system-provider>
+        </span>
       `;
   }
 
