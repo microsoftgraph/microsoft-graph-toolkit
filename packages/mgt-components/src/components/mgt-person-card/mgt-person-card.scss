@@ -136,64 +136,59 @@ $person-card-details-item-font-size: var(--person-card-details-item-font-size, 1
   }
 
   .section-nav {
-    // display: flex;
-    // padding: 0 14px;
     border-bottom: 1px solid set-var(tab__line__color, $theme-default, $common);
     height: 36px;
     padding-bottom: 7px;
-
-    fluent-design-system-provider {
+    fluent-tabs {
       background-color: $background-color;
-      fluent-tabs {
-        grid-template-columns: minmax(1px, 0.1fr);
-        .activeIndicator {
-          width: 40px !important;
+      grid-template-columns: minmax(1px, 0.1fr);
+      .activeIndicator {
+        width: 40px !important;
+      }
+      .tablist {
+        padding-left: 20px !important;
+      }
+      fluent-tab-panel {
+        max-height: 360px;
+        min-height: 360px;
+        overflow-y: auto;
+        overflow-x: hidden;
+        padding: 0px;
+        border-top: 1px solid set-var(tab__line__color, $theme-default, $common);
+        .inserted {
+          max-width: var(--mgt-flyout-set-width, 375px);
+          min-width: var(--mgt-flyout-set-width, 360px);
         }
-        .tablist {
-          padding-left: 20px !important;
+        .overviewPanel {
+          max-width: var(--mgt-flyout-set-width, 375px);
         }
-        fluent-tab-panel {
-          max-height: 360px;
-          min-height: 360px;
-          overflow-y: auto;
-          overflow-x: hidden;
-          padding: 0px;
-          border-top: 1px solid set-var(tab__line__color, $theme-default, $common);
-          .inserted {
-            max-width: var(--mgt-flyout-set-width, 375px);
-            min-width: var(--mgt-flyout-set-width, 360px);
-          }
-          .overviewPanel {
-            max-width: var(--mgt-flyout-set-width, 375px);
-          }
 
-          &::-webkit-scrollbar {
-            height: 4em;
-            width: 4px;
-            border-radius: 11px;
-          }
-          &::-webkit-scrollbar-button {
-            background: $background-color;
-            height: 1px;
-          }
-          &::-webkit-scrollbar-track {
-            background: $background-color;
-            border-radius: 10px;
-          }
-          &::-webkit-scrollbar-track-piece {
-            background: $background-color;
-          }
-          &::-webkit-scrollbar-thumb {
-            background: grey;
-            border-radius: 10px;
-            height: 4px;
-          }
+        &::-webkit-scrollbar {
+          height: 4em;
+          width: 4px;
+          border-radius: 11px;
+        }
+        &::-webkit-scrollbar-button {
+          background: $background-color;
+          height: 1px;
+        }
+        &::-webkit-scrollbar-track {
+          background: $background-color;
+          border-radius: 10px;
+        }
+        &::-webkit-scrollbar-track-piece {
+          background: $background-color;
+        }
+        &::-webkit-scrollbar-thumb {
+          background: grey;
+          border-radius: 10px;
+          height: 4px;
         }
       }
-      fluent-tab {
-        padding-bottom: 4px !important;
-        margin-bottom: -3px !important;
-      }
+    }
+    fluent-tab {
+      padding-bottom: 4px !important;
+      margin-bottom: -3px !important;
     }
     .section-nav__icon {
       all: initial;
@@ -237,9 +232,9 @@ $person-card-details-item-font-size: var(--person-card-details-item-font-size, 1
   .message-section {
     border-bottom: 1px solid set-var(tab__line__color, $theme-default, $common);
     fluent-design-system-provider {
-      background-color: $background-color;
-      margin: 4px 0px;
+      --background-color: $background-color;
       fluent-text-field {
+        margin: 4px 0px;
         width: 83%;
 
         padding: 4px 10px;
@@ -348,6 +343,7 @@ $person-card-details-item-font-size: var(--person-card-details-item-font-size, 1
         flex-direction: row;
         padding: 0 20px;
         fluent-button {
+          background-color: $background-color;
           --neutral-fill-stealth-rest: $background-color;
           --accent-foreground-hover: $background-color;
           --accent-foreground-active: $background-color;
