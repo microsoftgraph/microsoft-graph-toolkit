@@ -76,11 +76,11 @@ Customized entity types must be supported by microsoft graph suggestion API.
 
 <script>
 
-document.querySelector('mgt-search').addEventListener('onEntityClick', e => {
+document.querySelector('mgt-search').addEventListener('entityClick', e => {
     console.log(e.detail);
 });
 
-document.querySelector('mgt-search').addEventListener('onEnterPress', e => {
+document.querySelector('mgt-search').addEventListener('querySubmitted', e => {
   console.log(e.detail);
 });
 
@@ -88,21 +88,26 @@ document.querySelector('mgt-search').addEventListener('onEnterPress', e => {
 
 ```
 
-### Example4: Select entity types & Sort & Suggestion Amount
-It allows customized entity order and max suggestion account by using entity-types properties:
+### Example4: Select entity types & Sort
+It allows customized entity order by using entity-types properties:
 For example below shows
 Order: query, file, people
-Amount: 2,1,3 ( 3 is default value)
 ```html
-  <mgt-search entity-types="query-2, file-1, people"></mgt-search>
+  <mgt-search entity-types="query, file, people"></mgt-search>
 ```
 
 ```html
-  <mgt-search entity-types="query-2, people"></mgt-search>
+  <mgt-search entity-types="query, people"></mgt-search>
 ```
 
 ```html
-  <mgt-search entity-types="query-2, people, sample1-4"></mgt-search>
+  <mgt-search entity-types="query, people, sample1"></mgt-search>
+```
+
+### Example5: Set max suggestion count
+The default value of max-suggestion count is 3.
+```html
+  <mgt-search entity-types="query, file, people" max-suggestions="3"></mgt-search>
 ```
 
 ## Events
@@ -112,13 +117,13 @@ The following events are fired from the component.
 | Event | Description |
 | --- | --- |
 | `entityClick` | When click an entity , the listener will be trigged. the suggested value of the clicked item as a parameter|
-| `querySubmitted` | When press enter key, the listener will be trigged, it has originalValue( input box value) and suggestedValue (suggestion) as parameters|
+| `querySubmitted` | When press enter key, the listener will be trigged, it has originalValue( input box value) and suggestedValue (suggestion value) as parameters|
 
 ## Attributes and Properties
 
 | Attribute | Property | Description |
 | --------- | -------- | ----------- |
-| `entity-types` | `entityTypes` | Suggestion entity types, free combination of query/people/file or other entity types supported by suggestion API, it determines the order,  use ',' to do the segmentation, use '-' to do the amount limitation. for example 'file-2, query-1, people', it menas order: file,query, people.  Entity Types: file, query, people. Amount Limitation: file is 2, query is 1, people is 3 due to the default value is 3 |
+| `entity-types` | `entityTypes` | Suggestion entity types, free combination of query/people/file or other entity types supported by suggestion API, it determines the order,  use ',' to do the segmentation |
 | `other properties` | `other properties` | awaiting for the graph suggestion API onboard. |
 
 ## Themes
