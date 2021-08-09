@@ -51,7 +51,8 @@ The following examples shows how to use customized template `suggested-query`.
 
 
 ## Customized
-Customized entity types must be supported by microsoft graph suggestion API. Provide sample below for customized entity site.
+
+### Example 1: Entity Type Supported by Graph Suggestion API.
 ```html
 <mgt-search entity-types="query,site,people">
 	<template data-type="customized-site-header">
@@ -66,6 +67,55 @@ Customized entity types must be supported by microsoft graph suggestion API. Pro
         </div>
 	</template>
 </mgt-search>
+```
+
+### Example 2: Entity Type Not Supported by Graph Suggestion API, Other datasource.
+```html
+<mgt-search entity-types="query,people" external-entity-types="externalSite">
+	<template data-type="customized-externalsite-header">
+		<div style="margin-left:10px;">Site</div>
+	</template>
+
+	<template data-type="customized-externalsite">
+		<div style="margin-top:5px; margin-bottom:5px;">
+			<a href={{this.accessUrl}}>
+				{{this.acronym}} - {{this.title}}
+			</a>
+		</div>
+	</template>
+</mgt-search>
+
+// data comes from other API or static data.
+// Required fields:  entityType & referenceId.
+// referenceId can be insteaded by any unique value.
+async function injectDataToCustomizedEntityTypes(entityType) {
+    console.log("comes");
+    if (entityType == "externalSite") {
+        return [
+            {
+                entity: 'externalSite',
+                referenceId: '6ac3709f-dce7-f0ad-289b-57cdfca01371.7000.1',
+                acronym: 'OI',
+                title: 'Office/M365 Icon Designers',
+                accessUrl: 'https://microsoft.sharepoint-df.com/teams/OfficeM365IconDesigners',
+                referenceId: '36d3928a-7ccb-4359-9c17-fd9be6255364.10001.01'
+            },
+            {
+                entity: 'externalSite',
+                referenceId: '6ac3709f-dce7-f0ad-289b-57cdfca01371.7000.2',
+                acronym: 'MC',
+                title: '7/30/2021 M365 Core Intern Demos',
+                accessUrl: 'https://microsoft.sharepoint-df.com/teams/7302021m365coreinterndemos',
+                referenceId: '36d3928a-7ccb-4359-9c17-fd9be6255364.10001.01'
+            }
+        ]
+    }
+    else {
+        return [];
+    }
+}
+
+document.querySelector("mgt-search").injectDataToCustomizedEntityTypes = injectDataToCustomizedEntityTypes;
 ```
 
 ## Proposed Solution
@@ -124,7 +174,10 @@ The following events are fired from the component.
 
 | Attribute | Property | Description |
 | --------- | -------- | ----------- |
-| `entity-types` | `entityTypes` | Suggestion entity types, free combination of query/people/file or other entity types supported by suggestion API, it determines the order,  use ',' to do the segmentation |
+| `entity-types` | `entityTypes` | Suggestion entity types, free combination of query/people/file, also can add some other entity types supported by graph suggestion API, but requiring the customization of the styles |
+| `external-entity-types` | `external-entity-types` | extension for the entity-types, allow developer add some entity types which out of the Graph Suggestion API, requiring the customizing of the styles. Required fields: entityType & referenceId. |
+| `max-suggestions` | `max-suggestions` | max suggestion count |
+| `orders` | `orders` | Not Required, Default order = entity-types orders + external-entity-types orders, Allow developer order the suggestions, if any entity-type excluded from the orders, it won't show in the UX. |
 | `other properties` | `other properties` | awaiting for the graph suggestion API onboard. |
 
 ## Themes
@@ -185,5 +238,6 @@ We provide a way to get data from default components for development if you don'
 | renderFile | Renders single file search results, list length > 0, sub method of renderFileleSearchResults. |
 | renderCustomizedEntity | Renders single file search results, list length > 0, sub method of renderFileleSearchResults. |
 | getAliasMap | Provide a way to override the entity name |
+| injectDataToCustomizedEntityTypes | Allow developer inject 3rd part data source for suggestions|
 
 
