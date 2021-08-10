@@ -97,6 +97,25 @@ export const withCodeEditor = makeDecorator({
       css: styleCode
     };
 
+    // get token from url query params
+    const urlSearchParams = new URLSearchParams(window.location.search);
+    const token = urlSearchParams.get('token');
+
+    let providerInitCode = `
+    import {Providers, MockProvider} from "${mgtScriptName}";
+    Providers.globalProvider = new MockProvider(true);
+  `;
+
+    if (token) {
+      providerInitCode = `
+      import {Providers, SimpleProvider, ProviderState} from "${mgtScriptName}";
+      Providers.globalProvider = new SimpleProvider(async () => {
+        return '${token}';
+      });
+      Providers.globalProvider.setState(ProviderState.SignedIn);
+    `;
+    }
+
     editor.addEventListener('fileUpdated', () => {
       const storyElement = document.createElement('iframe');
 
@@ -114,8 +133,7 @@ export const withCodeEditor = makeDecorator({
             <head>
               <script type="module" src="${mgtScriptName}"></script>
               <script type="module">
-                import {Providers, MockProvider} from "${mgtScriptName}";
-                Providers.globalProvider = new MockProvider(true);
+                ${providerInitCode}
               </script>
               <style>
                 html, body {
