@@ -178,7 +178,7 @@ $task-border-completed: var(--task-complete-border, 2px dotted inherit);
         color: $detail__color;
         font-size: 12px;
         font-weight: 600;
-        white-space: nowrap;
+        white-space: normal;
         margin-bottom: 12px;
 
         .TaskDetail {
