@@ -40,7 +40,7 @@
   },
   "dependencies": {
     "@microsoft/mgt-element": "*",
-    "@microsoft/microsoft-graph-client": "^2.2.1",
+    "@microsoft/microsoft-graph-client": "^3.0.0",
     "@azure/msal-browser": "^2.14.2"
   },
   "publishConfig": {

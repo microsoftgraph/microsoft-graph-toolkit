@@ -19,19 +19,19 @@ export class MockProvider extends IProvider {
   // tslint:disable-next-line: completed-docs
   public provider: any;
 
+  private _mockGraphPromise: Promise<MockGraph>;
+
   /**
    * new instance of mock graph provider
    *
    * @memberof MockProvider
    */
-  public graph = new MockGraph(this);
+  public graph: MockGraph;
   constructor(signedIn: boolean = false) {
     super();
-    if (signedIn) {
-      this.setState(ProviderState.SignedIn);
-    } else {
-      this.setState(ProviderState.SignedOut);
-    }
+    this._mockGraphPromise = MockGraph.create(this);
+
+    this.initializeMockGraph(signedIn);
   }
 
   /**
@@ -42,6 +42,7 @@ export class MockProvider extends IProvider {
    */
   public async login(): Promise<void> {
     this.setState(ProviderState.Loading);
+    await this._mockGraphPromise;
     await new Promise(resolve => setTimeout(resolve, 3000));
     this.setState(ProviderState.SignedIn);
   }
@@ -54,6 +55,7 @@ export class MockProvider extends IProvider {
    */
   public async logout(): Promise<void> {
     this.setState(ProviderState.Loading);
+    await this._mockGraphPromise;
     await new Promise(resolve => setTimeout(resolve, 3000));
     this.setState(ProviderState.SignedOut);
   }
@@ -76,5 +78,15 @@ export class MockProvider extends IProvider {
    */
   public get name() {
     return 'MgtMockProvider';
+  }
+
+  private async initializeMockGraph(signedIn: boolean = false) {
+    this.graph = await this._mockGraphPromise;
+
+    if (signedIn) {
+      this.setState(ProviderState.SignedIn);
+    } else {
+      this.setState(ProviderState.SignedOut);
+    }
   }
 }

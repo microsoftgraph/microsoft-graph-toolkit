@@ -29,19 +29,27 @@ import { MockProvider } from './MockProvider';
  */
 // tslint:disable-next-line: max-classes-per-file
 export class MockGraph extends Graph {
-  constructor(mockProvider: MockProvider) {
+  /**
+   * Creates a new MockGraph instance. Use this static method instead of the constructor.
+   *
+   * @static
+   * @param {MockProvider} provider
+   * @return {*}  {Promise<MockGraph>}
+   * @memberof MockGraph
+   */
+  public static async create(provider: MockProvider): Promise<MockGraph> {
     const middleware: Middleware[] = [
-      new AuthenticationHandler(mockProvider),
+      new AuthenticationHandler(provider),
       new RetryHandler(new RetryHandlerOptions()),
       new TelemetryHandler(),
       new MockMiddleware(),
       new HTTPMessageHandler()
     ];
 
-    super(
+    return new MockGraph(
       Client.initWithMiddleware({
         middleware: chainMiddleware(...middleware),
-        customHosts: new Set<string>([new URL(BASE_URL).hostname])
+        customHosts: new Set<string>([new URL(await MockMiddleware.getBaseUrl()).hostname])
       })
     );
   }
@@ -97,7 +105,7 @@ class MockMiddleware implements Middleware {
     this._nextMiddleware = next;
   }
 
-  private static async getBaseUrl() {
+  public static async getBaseUrl() {
     if (!this._baseUrl) {
       try {
         // get the url we should be using from the endpoint service
