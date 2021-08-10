@@ -302,23 +302,23 @@ $common: (
   ),
   input-outlined__border-top: (
     _var: --input-border-top,
-    dark: 2px solid $input-outlined__border-color--dark,
-    light: 2px solid $input-outlined__border-color--light
+    dark: var(--input-border, 2px solid $input-outlined__border-color--dark),
+    light: var(--input-border, 2px solid $input-outlined__border-color--light)
   ),
   input-outlined__border-right: (
     _var: --input-border-right,
-    dark: 2px solid $input-outlined__border-color--dark,
-    light: 2px solid $input-outlined__border-color--light
+    dark: var(--input-border, 2px solid $input-outlined__border-color--dark),
+    light: var(--input-border, 2px solid $input-outlined__border-color--light)
   ),
   input-outlined__border-bottom: (
     _var: --input-border-bottom,
-    dark: 2px solid $input-outlined__border-color--dark,
-    light: 2px solid $input-outlined__border-color--light
+    dark: var(--input-border, 2px solid $input-outlined__border-color--dark),
+    light: var(--input-border, 2px solid $input-outlined__border-color--light)
   ),
   input-outlined__border-left: (
     _var: --input-border-left,
-    dark: 2px solid $input-outlined__border-color--dark,
-    light: 2px solid $input-outlined__border-color--light
+    dark: var(--input-border, 2px solid $input-outlined__border-color--dark),
+    light: var(--input-border, 2px solid $input-outlined__border-color--light)
   ),
   input-outlined__border-color--hover: (
     _var: --input-border-color--hover,
@@ -380,7 +380,6 @@ $dropdown-item__background-color--hover: var(
   border-right: $input__border-right;
   border-bottom: $input__border-bottom;
   border-left: $input__border-left;
-  border: $input__border;
 }
 
 @include create-themes($common);

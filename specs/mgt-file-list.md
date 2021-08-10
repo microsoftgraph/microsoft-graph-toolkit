@@ -57,7 +57,7 @@ The request made : `GET /drives/123/items/456/children`
 | `site-id` | `siteId` | Id of the site the folder belongs to. Must also provide either `{item-id}` or `{item-path}`. Provide `{list-id}` if you’re referencing a file from a specific list. |
 | `item-id` | `itemId` | Id of the folder. Default query is `/me/drive/items`. Provide `{drive-id}`, `{group-id}`, `{site-id}`, or `{user-id}` to query a specific location. |
 | `item-path` | `itemPath` | Item path of the folder (relative to the root). Default query is `/me/drive/root`. Provide `{drive-id}`, `{group-id}`, `{site-id}`, or `{user-id}` to query a specific location. |
-| `show-max` | `showMax` | A number value to indicate the maximum number of files to show. |
+| `page-size` | `pageSize` | A number value to indicate the maximum number of files to show per page. |
 
 ## APIs and Permissions
 
