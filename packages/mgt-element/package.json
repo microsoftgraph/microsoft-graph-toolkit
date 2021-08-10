@@ -31,7 +31,7 @@
     "postpack": "cpx *.tgz ../../artifacts"
   },
   "dependencies": {
-    "@microsoft/microsoft-graph-client": "^2.2.1",
+    "@microsoft/microsoft-graph-client": "^3.0.0",
     "lit-element": "^2.4.0",
     "idb": "6.0.0"
   },
