@@ -12,9 +12,23 @@ import { getSvg, SvgIcon } from '../../../utils/SvgHelper';
 import { IGraph, MgtBaseComponent } from '@microsoft/mgt-element';
 import { ViewType } from '../../../graph/types';
 import { DriveItem } from '@microsoft/microsoft-graph-types';
-import { getUploadSession, sendFileContent, sendFileChunck, deleteSessionFile } from '../../../graph/graph.files';
+import {
+  getGraphfile,
+  getUploadSession,
+  sendFileContent,
+  sendFileChunck,
+  deleteSessionFile
+} from '../../../graph/graph.files';
 
-export { FluentProgress } from '@fluentui/web-components';
+export { FluentProgress, FluentButton, FluentCheckbox } from '@fluentui/web-components';
+
+/**
+ * Upload conflict behavior status
+ */
+export const enum MgtFileUploadConflictBehavior {
+  rename,
+  replace
+}
 
 /**
  * MgtFileUpload upload item lifecycle object.
@@ -24,11 +38,6 @@ export { FluentProgress } from '@fluentui/web-components';
  */
 export interface MgtFileUploadItem {
   /**
-   * MS Graph Provider
-   */
-  GraphUrl?: string;
-
-  /**
    * Session url to keep upload progress open untill all chuncks are sent
    */
   uploadUrl?: string;
@@ -37,6 +46,11 @@ export interface MgtFileUploadItem {
    *  Upload file progress value
    */
   percent?: number;
+
+  /**
+   *  Validate if File has any conflict Behavior
+   */
+  conflictBehavior?: MgtFileUploadConflictBehavior;
 
   /**
    *  Output "Success" or "Fail" icon base on upload response
@@ -216,6 +230,16 @@ export class MgtFileUpload extends MgtBaseComponent {
   private _dropEffect: string = 'copy';
   // variable defined max chuck size "4MB" for large files .
   private _maxChunckSize: number = 4 * 1024 * 1024;
+  private _dialogTitle: string = '';
+  private _dialogContent: string = '';
+  private _dialogPrimaryButton: string = '';
+  private _dialogSecondaryButton: string = '';
+  private _dialogCheckBox: string = '';
+  private _applyAll: boolean = false;
+  private _applyAllConflitBehavior: number = null;
+  private _maximumFiles: boolean = false;
+  private _maximumFileSize: boolean = false;
+  private _excludedFileType: boolean = false;
 
   constructor() {
     super();
@@ -236,22 +260,44 @@ export class MgtFileUpload extends MgtBaseComponent {
     }
 
     return html`
-         <div id="file-upload-border">
-         </div>
-         <div class="file-upload-button">
-          <div>
-            <input
-              id="file-upload-input"
-              type="file"
-              multiple="true" 
-              @change="${this.onFileUploadChange}"
-            />
-            <span @click=${this.onFileUploadClick}>${getSvg(SvgIcon.Upload)}${strings.buttonUploadFile}</span> 
+        <div id="file-upload-dialog" class="file-upload-dialog">
+          <!-- Modal content -->
+          <div class="file-upload-dialog-content">
+            <span class="file-upload-dialog-close" >${getSvg(SvgIcon.Cancel)}</span>
+            <div class="file-upload-dialog-content-text">
+              <h2 class="file-upload-dialog-Title">${this._dialogTitle}</h2>
+              <span>${this._dialogContent}</span><br><br>
+              <fluent-checkbox id="file-upload-dialog-check" class="file-upload-dialog-check" >${this._dialogCheckBox
+      }</fluent-checkbox>
+            </div>
+            <div class="file-upload-dialog-editor">
+              <fluent-button class="file-upload-dialog-ok">
+              ${this._dialogPrimaryButton}
+              </fluent-button> 
+              <fluent-button class="file-upload-dialog-cancel">
+              ${this._dialogSecondaryButton}
+              </fluent-button> 
+            </div>
           </div>
-         </div>
-         <div class="file-upload-Template">
-         ${this.renderFileTemplate(this.filesToUpload)}
-         </div>
+        </div>
+        <div id="file-upload-border" >
+        </div>
+        <div class="file-upload-area-button">
+        <div>
+          <input
+            id="file-upload-input"
+            type="file"
+            multiple="true" 
+            @change="${this.onFileUploadChange}"
+          />
+          <fluent-button class="file-upload-button" @click=${this.onFileUploadClick}>
+            ${getSvg(SvgIcon.Upload)}${strings.buttonUploadFile}
+          </fluent-button> 
+        </div>
+        </div>
+        <div class="file-upload-Template">
+        ${this.renderFileTemplate(this.filesToUpload)}
+        </div>
        `;
   }
 
@@ -300,7 +346,7 @@ export class MgtFileUpload extends MgtBaseComponent {
   protected renderFileUploadTemplate(fileItem: MgtFileUploadItem) {
     return html`
     <div class='file-upload-cell'>
-      <div class='file-upload-table'>
+      <div class='file-upload-table file-upload-name' >
         <div class='file-upload-cell'>
           ${fileItem.file.name}
         </div>
@@ -308,7 +354,7 @@ export class MgtFileUpload extends MgtBaseComponent {
       <div class='file-upload-table'>
         <div class='file-upload-cell'>
           <div class='file-upload-table'>
-            <fluent-progress class="file-upload-bar" value="${fileItem.percent}"></fluent-progress>
+            <fluent-progress class="file-upload-bar" value="${fileItem.percent}" ></fluent-progress>
             <div class='file-upload-cell' style="padding-left:5px">
               <span>${fileItem.percent}%</span>
               <span 
@@ -335,6 +381,7 @@ export class MgtFileUpload extends MgtBaseComponent {
       return;
     } else {
       this.getSelectedFiles(await this.getFilesFromUploadArea(event.target.files));
+      event.target.value = null;
     }
   }
 
@@ -445,6 +492,11 @@ export class MgtFileUpload extends MgtBaseComponent {
    */
   protected async getSelectedFiles(files: File[]) {
     let fileItems: MgtFileUploadItem[] = [];
+    this._applyAll = false;
+    this._applyAllConflitBehavior = null;
+    this._maximumFiles = false;
+    this._maximumFileSize = false;
+    this._excludedFileType = false;
 
     //Collect ongoing upload files
     this.filesToUpload.forEach(async fileItem => {
@@ -461,12 +513,39 @@ export class MgtFileUpload extends MgtBaseComponent {
         //Exclude file based on max files upload allowed
         if (fileItems.length >= this.fileUploadList.maxUploadFile) {
           acceptFile = false;
+          if (this._maximumFiles) {
+            const maximumFiles: (number | true)[] = await this.getFileUploadStatus(
+              files[i],
+              'MaxFiles',
+              this.fileUploadList
+            );
+            if (maximumFiles !== null) {
+              if (maximumFiles[0] === 0) {
+                return null;
+              }
+              if (maximumFiles[0] === 1) {
+                this._maximumFiles = true;
+              }
+            }
+          }
         }
 
         //Exclude file based on max file size allowed
         if (this.fileUploadList.maxFileSize !== undefined && acceptFile) {
           if (files[i].size > this.fileUploadList.maxFileSize * 1024) {
             acceptFile = false;
+            if (this._maximumFileSize === false) {
+              const maximumFileSize: (number | true)[] = await this.getFileUploadStatus(
+                files[i],
+                'MaxFileSize',
+                this.fileUploadList
+              );
+              if (maximumFileSize !== null) {
+                if (maximumFileSize[0] === 1) {
+                  this._maximumFileSize = true;
+                }
+              }
+            }
           }
         }
 
@@ -479,18 +558,41 @@ export class MgtFileUpload extends MgtBaseComponent {
               }).length > 0
             ) {
               acceptFile = false;
+              if (this._excludedFileType === false) {
+                const excludedFileType: (number | true)[] = await this.getFileUploadStatus(
+                  files[i],
+                  'ExcludedFileType',
+                  this.fileUploadList
+                );
+                if (excludedFileType !== null) {
+                  if (excludedFileType[0] === 1) {
+                    this._excludedFileType = true;
+                  }
+                }
+              }
             }
           }
         }
 
         //Collect accepted files
         if (acceptFile) {
+          const conflictBehavior: (number | true)[] = await this.getFileUploadStatus(
+            files[i],
+            'Upload',
+            this.fileUploadList
+          );
+          if (conflictBehavior !== null) {
+            this._applyAll = Boolean(conflictBehavior[0]);
+            this._applyAllConflitBehavior = conflictBehavior[1] ? 1 : 0;
+          }
+
           //Initialize MgtFileUploadItem Life cycle
           fileItems.push({
             file: files[i],
             driveItem: {
               name: files[i].name
             },
+            conflictBehavior: conflictBehavior !== null ? (conflictBehavior[1] ? 1 : 0) : null,
             iconStatus: null,
             percent: 1,
             view: ViewType.image,
@@ -506,6 +608,175 @@ export class MgtFileUpload extends MgtBaseComponent {
     this.filesToUpload.forEach(async fileItem => {
       await this.sendFileItemGraph(fileItem);
     });
+  }
+
+  /**
+   * Call modal dialog to replace or keep file.
+   *
+   * @param file
+   * @returns
+   */
+  protected async getFileUploadStatus(file: File, DialogStatus: string, fileUploadList: MgtFileUploadConfig) {
+    const fileUploadDialog: HTMLElement = this.renderRoot.querySelector('#file-upload-dialog');
+
+    switch (DialogStatus) {
+      case 'Upload':
+        const driveItem = await getGraphfile(this.fileUploadList.graph, `${this.getGrapQuery(file)}?$select=id`);
+        if (driveItem !== null) {
+          if (this._applyAll === true) {
+            return [this._applyAll, this._applyAllConflitBehavior];
+          }
+          fileUploadDialog.style.display = 'inline-block';
+          this._dialogTitle = strings.fileReplaceTitle;
+          this._dialogContent = strings.fileReplace.replace('{FileName}', file.name);
+          this._dialogCheckBox = strings.checkApplyAll;
+          this._dialogPrimaryButton = strings.buttonReplace;
+          this._dialogSecondaryButton = strings.buttonKeep;
+          super.requestStateUpdate(true);
+
+          return new Promise<number[]>(async resolve => {
+            let fileUploadDialogOk: HTMLElement = this.renderRoot.querySelector('.file-upload-dialog-ok');
+            let fileUploadDialogCancel: HTMLElement = this.renderRoot.querySelector('.file-upload-dialog-cancel');
+            let fileUploadDialogCheck: HTMLInputElement = this.renderRoot.querySelector('#file-upload-dialog-check');
+            fileUploadDialogCheck.checked = false;
+            fileUploadDialogCheck.style.display = '';
+
+            //Remove and include event listener to validate options.
+            fileUploadDialogOk.removeEventListener('click', onOkDialogClick);
+            fileUploadDialogCancel.removeEventListener('click', onCancelDialogClick);
+            fileUploadDialogOk.addEventListener('click', onOkDialogClick);
+            fileUploadDialogCancel.addEventListener('click', onCancelDialogClick);
+
+            function onOkDialogClick() {
+              fileUploadDialog.style.display = 'none';
+              resolve([fileUploadDialogCheck.checked ? 1 : 0, MgtFileUploadConflictBehavior.replace]);
+            }
+
+            function onCancelDialogClick() {
+              fileUploadDialog.style.display = 'none';
+              resolve([fileUploadDialogCheck.checked ? 1 : 0, MgtFileUploadConflictBehavior.rename]);
+            }
+          });
+        } else {
+          return null;
+        }
+        break;
+      case 'MaxFiles':
+        fileUploadDialog.style.display = 'inline-block';
+        this._dialogTitle = strings.maximumFilesTitle;
+        this._dialogContent = strings.maximumFiles.split('{MaxNumber}').join(fileUploadList.maxUploadFile.toString());
+        this._dialogCheckBox = strings.checkApplyAll;
+        this._dialogPrimaryButton = strings.buttonUpload;
+        this._dialogSecondaryButton = strings.buttonReselect;
+        super.requestStateUpdate(true);
+
+        return new Promise<number[]>(async resolve => {
+          let fileUploadDialogOk: HTMLElement = this.renderRoot.querySelector('.file-upload-dialog-ok');
+          let fileUploadDialogCancel: HTMLElement = this.renderRoot.querySelector('.file-upload-dialog-cancel');
+          let fileUploadDialogCheck: HTMLInputElement = this.renderRoot.querySelector('#file-upload-dialog-check');
+          fileUploadDialogCheck.checked = false;
+          fileUploadDialogCheck.style.display = 'none';
+
+          //Remove and include event listener to validate options.
+          fileUploadDialogOk.removeEventListener('click', onOkDialogClick);
+          fileUploadDialogCancel.removeEventListener('click', onCancelDialogClick);
+          fileUploadDialogOk.addEventListener('click', onOkDialogClick);
+          fileUploadDialogCancel.addEventListener('click', onCancelDialogClick);
+
+          function onOkDialogClick() {
+            fileUploadDialog.style.display = 'none';
+            //Upload Files
+            resolve([1]);
+          }
+
+          function onCancelDialogClick() {
+            fileUploadDialog.style.display = 'none';
+            //Cancel all
+            resolve([0]);
+          }
+        });
+        break;
+      case 'ExcludedFileType':
+        fileUploadDialog.style.display = 'inline-block';
+        this._dialogTitle = strings.fileTypeTitle;
+        this._dialogContent =
+          strings.fileType.replace('{FileName}', file.name) +
+          ' (' +
+          fileUploadList.excludedFileExtensions.join(',') +
+          ')';
+        this._dialogCheckBox = strings.checkAgain;
+        this._dialogPrimaryButton = strings.buttonOk;
+        this._dialogSecondaryButton = strings.buttonCancel;
+        super.requestStateUpdate(true);
+
+        return new Promise<number[]>(async resolve => {
+          let fileUploadDialogOk: HTMLElement = this.renderRoot.querySelector('.file-upload-dialog-ok');
+          let fileUploadDialogCancel: HTMLElement = this.renderRoot.querySelector('.file-upload-dialog-cancel');
+          let fileUploadDialogCheck: HTMLInputElement = this.renderRoot.querySelector('#file-upload-dialog-check');
+          fileUploadDialogCheck.checked = false;
+          fileUploadDialogCheck.style.display = '';
+
+          //Remove and include event listener to validate options.
+          fileUploadDialogOk.removeEventListener('click', onOkDialogClick);
+          fileUploadDialogCancel.removeEventListener('click', onCancelDialogClick);
+          fileUploadDialogOk.addEventListener('click', onOkDialogClick);
+          fileUploadDialogCancel.addEventListener('click', onCancelDialogClick);
+
+          function onOkDialogClick() {
+            fileUploadDialog.style.display = 'none';
+            //Upload Files
+            resolve([fileUploadDialogCheck.checked ? 1 : 0]);
+          }
+
+          function onCancelDialogClick() {
+            fileUploadDialog.style.display = 'none';
+            //Cancel all
+            resolve([0]);
+          }
+        });
+      case 'MaxFileSize':
+        fileUploadDialog.style.display = 'inline-block';
+        this._dialogTitle = strings.maximumFileSizeTitle;
+        this._dialogContent =
+          strings.maximumFileSize
+            .replace('{FileSize}', this.formatBytes(fileUploadList.maxFileSize))
+            .replace('{FileName}', file.name) +
+          this.formatBytes(file.size) +
+          '.';
+        this._dialogCheckBox = strings.checkAgain;
+        this._dialogPrimaryButton = strings.buttonOk;
+        this._dialogSecondaryButton = strings.buttonCancel;
+        super.requestStateUpdate(true);
+
+        return new Promise<number[]>(async resolve => {
+          let fileUploadDialogOk: HTMLElement = this.renderRoot.querySelector('.file-upload-dialog-ok');
+          let fileUploadDialogCancel: HTMLElement = this.renderRoot.querySelector('.file-upload-dialog-cancel');
+          let fileUploadDialogCheck: HTMLInputElement = this.renderRoot.querySelector('#file-upload-dialog-check');
+          fileUploadDialogCheck.checked = false;
+          fileUploadDialogCheck.style.display = '';
+
+          //Remove and include event listener to validate options.
+          fileUploadDialogOk.removeEventListener('click', onOkDialogClick);
+          fileUploadDialogCancel.removeEventListener('click', onCancelDialogClick);
+          fileUploadDialogOk.addEventListener('click', onOkDialogClick);
+          fileUploadDialogCancel.addEventListener('click', onCancelDialogClick);
+
+          function onOkDialogClick() {
+            fileUploadDialog.style.display = 'none';
+            //Upload Files
+            resolve([fileUploadDialogCheck.checked ? 1 : 0]);
+          }
+
+          function onCancelDialogClick() {
+            fileUploadDialog.style.display = 'none';
+            //Cancel all
+            resolve([0]);
+          }
+        });
+
+      default:
+        break;
+    }
   }
 
   /**
@@ -579,14 +850,20 @@ export class MgtFileUpload extends MgtBaseComponent {
    */
   protected async sendFileItemGraph(fileItem: MgtFileUploadItem) {
     const graph: IGraph = this.fileUploadList.graph;
+    let graphQuery = '';
     if (fileItem.file.size < this._maxChunckSize) {
       try {
         if (!fileItem.completed) {
-          fileItem.driveItem = await sendFileContent(
-            graph,
-            `${this.getGrapQuery(fileItem.file)}:/content?@microsoft.graph.conflictBehavior=rename`,
-            fileItem.file
-          );
+          if (
+            fileItem.conflictBehavior === null ||
+            fileItem.conflictBehavior === MgtFileUploadConflictBehavior.replace
+          ) {
+            graphQuery = `${this.getGrapQuery(fileItem.file)}:/content`;
+          }
+          if (fileItem.conflictBehavior === MgtFileUploadConflictBehavior.rename) {
+            graphQuery = `${this.getGrapQuery(fileItem.file)}:/content?@microsoft.graph.conflictBehavior=rename`;
+          }
+          fileItem.driveItem = await sendFileContent(graph, graphQuery, fileItem.file);
           if (fileItem.driveItem !== null) {
             this.setUploadSuccess(fileItem);
           } else {
@@ -597,9 +874,12 @@ export class MgtFileUpload extends MgtBaseComponent {
         this.setUploadFail(fileItem, strings.failUploadFile);
       }
     } else {
-      fileItem.GraphUrl = `${this.getGrapQuery(fileItem.file)}:/createUploadSession`;
       if (fileItem.uploadUrl === undefined) {
-        const response = await getUploadSession(graph, fileItem.GraphUrl);
+        const response = await getUploadSession(
+          graph,
+          `${this.getGrapQuery(fileItem.file)}:/createUploadSession`,
+          fileItem.conflictBehavior
+        );
         try {
           if (response !== null) {
             // uploadSession url used to send chuncks of file
@@ -614,7 +894,7 @@ export class MgtFileUpload extends MgtBaseComponent {
           } else {
             this.setUploadFail(fileItem, strings.failUploadFile);
           }
-        } catch {}
+        } catch { }
       }
     }
   }
@@ -649,7 +929,7 @@ export class MgtFileUpload extends MgtBaseComponent {
         } else if (response.id !== undefined) {
           return response as DriveItem;
         } else if (response.nextExpectedRanges !== undefined) {
-          //
+          //Define next Chunck
           fileItem.minSize = parseInt(response.nextExpectedRanges[0].split('-')[0]);
           fileItem.maxSize = fileItem.minSize + this._maxChunckSize;
           if (fileItem.maxSize > fileItem.file.size) {
@@ -826,5 +1106,14 @@ export class MgtFileUpload extends MgtBaseComponent {
         });
       }
     });
+  }
+  private formatBytes(bytes, decimals = 2) {
+    if (bytes === 0) return '0 Bytes';
+    const k = 1024;
+    const dm = decimals < 0 ? 0 : decimals;
+    const sizes = ['Bytes', 'KB', 'MB', 'GB', 'TB', 'PB', 'EB', 'ZB', 'YB'];
+    const i = Math.floor(Math.log(bytes) / Math.log(k));
+
+    return parseFloat((bytes / Math.pow(k, i)).toFixed(dm)) + ' ' + sizes[i];
   }
 }

@@ -8,10 +8,20 @@
 @import '../../../styles/shared-sass-variables.scss';
 
 $file-upload: (
+  list__item__background-color--hover: (
+    _var: --file-item-background-color--hover,
+    light: rgba(0, 0, 0, 0.1),
+    dark: #0078d4
+  ),
   upload__button__background-color: (
     _var: --file-upload-button-background-color,
     light: rgb(243, 242, 241),
     dark: #006cbe
+  ),
+  upload__dialog__background-color: (
+    _var: --file-upload-dialog-background-color,
+    light: rgba(0, 0, 0, 0.1),
+    dark: rgba(0, 120, 212, 0.1)
   )
 );
 
