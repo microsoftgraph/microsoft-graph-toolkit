@@ -49,7 +49,8 @@
     "@microsoft/mgt-teams-provider": "*",
     "@microsoft/mgt-proxy-provider": "*",
     "@microsoft/mgt-sharepoint-provider": "*",
-    "@microsoft/mgt-msal2-provider": "*"
+    "@microsoft/mgt-msal2-provider": "*",
+    "@microsoft/mgt-teams-sso-provider": "*"
   },
   "devDependencies": {
     "@webcomponents/webcomponentsjs": "^2.5.0"
