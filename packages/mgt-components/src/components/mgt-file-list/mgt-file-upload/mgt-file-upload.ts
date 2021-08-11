@@ -267,8 +267,9 @@ export class MgtFileUpload extends MgtBaseComponent {
             <div class="file-upload-dialog-content-text">
               <h2 class="file-upload-dialog-Title">${this._dialogTitle}</h2>
               <span>${this._dialogContent}</span><br><br>
-              <fluent-checkbox id="file-upload-dialog-check" class="file-upload-dialog-check" >${this._dialogCheckBox
-      }</fluent-checkbox>
+              <fluent-checkbox id="file-upload-dialog-check" class="file-upload-dialog-check" >${
+                this._dialogCheckBox
+              }</fluent-checkbox>
             </div>
             <div class="file-upload-dialog-editor">
               <fluent-button class="file-upload-dialog-ok">
@@ -894,7 +895,7 @@ export class MgtFileUpload extends MgtBaseComponent {
           } else {
             this.setUploadFail(fileItem, strings.failUploadFile);
           }
-        } catch { }
+        } catch {}
       }
     }
   }
