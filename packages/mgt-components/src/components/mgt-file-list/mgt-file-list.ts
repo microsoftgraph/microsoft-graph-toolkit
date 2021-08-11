@@ -671,7 +671,7 @@ export class MgtFileList extends MgtTemplatedComponent {
         } else if (this.itemPath) {
           pageIterator = await getFilesByPathIterator(graph, this.itemPath, this.pageSize);
         } else if (this.insightType) {
-          files = await getMyInsightsFiles(graph, this.insightType);
+          files = await getMyInsightsFiles(graph, this.insightType, this.pageSize);
         } else {
           pageIterator = await getFilesIterator(graph, this.pageSize);
         }
@@ -699,7 +699,7 @@ export class MgtFileList extends MgtTemplatedComponent {
         } else if (this.itemPath) {
           pageIterator = await getUserFilesByPathIterator(graph, this.userId, this.itemPath, this.pageSize);
         } else if (this.insightType) {
-          files = await getUserInsightsFiles(graph, this.userId, this.insightType);
+          files = await getUserInsightsFiles(graph, this.userId, this.insightType, this.pageSize);
         }
       }
 

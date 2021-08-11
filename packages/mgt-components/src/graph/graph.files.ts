@@ -879,7 +879,7 @@ export async function getFilesByListQueryIterator(
 }
 
 // GET /me/insights/{trending	| used | shared}
-export async function getMyInsightsFiles(graph: IGraph, insightType: string): Promise<DriveItem[]> {
+export async function getMyInsightsFiles(graph: IGraph, insightType: string, top?: number): Promise<DriveItem[]> {
   const endpoint = `/me/insights/${insightType}`;
 
   // get files from cached values
@@ -893,13 +893,18 @@ export async function getMyInsightsFiles(graph: IGraph, insightType: string): Pr
 
   // get files from graph request
   const scopes = ['sites.read.all'];
+  const request = graph
+    .api(endpoint)
+    .filter(`resourceReference/type eq 'microsoft.graph.driveItem'`)
+    .middlewareOptions(prepScopes(...scopes));
+
+  if (top) {
+    request.top(top);
+  }
+
   let insightResponse;
   try {
-    insightResponse = await graph
-      .api(endpoint)
-      .filter(`resourceReference/type eq 'microsoft.graph.driveItem'`)
-      .middlewareOptions(prepScopes(...scopes))
-      .get();
+    insightResponse = await request.get();
   } catch {}
 
   const result = await getDriveItemsByInsights(graph, insightResponse, scopes);
@@ -911,7 +916,12 @@ export async function getMyInsightsFiles(graph: IGraph, insightType: string): Pr
 }
 
 // GET /users/{id | userPrincipalName}/insights/{trending	| used | shared}
-export async function getUserInsightsFiles(graph: IGraph, userId: string, insightType: string): Promise<DriveItem[]> {
+export async function getUserInsightsFiles(
+  graph: IGraph,
+  userId: string,
+  insightType: string,
+  top?: number
+): Promise<DriveItem[]> {
   let endpoint;
   let filter;
 
@@ -936,14 +946,18 @@ export async function getUserInsightsFiles(graph: IGraph, userId: string, insigh
 
   // get files from graph request
   const scopes = ['sites.read.all'];
-  let insightResponse;
+  const request = graph
+    .api(endpoint)
+    .filter(filter)
+    .middlewareOptions(prepScopes(...scopes));
 
+  if (top) {
+    request.top(top);
+  }
+
+  let insightResponse;
   try {
-    insightResponse = await graph
-      .api(endpoint)
-      .filter(filter)
-      .middlewareOptions(prepScopes(...scopes))
-      .get();
+    insightResponse = await request.get();
   } catch {}
 
   const result = await getDriveItemsByInsights(graph, insightResponse, scopes);
