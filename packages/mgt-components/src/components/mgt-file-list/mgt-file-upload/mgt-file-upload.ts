@@ -263,7 +263,7 @@ export class MgtFileUpload extends MgtBaseComponent {
         <div id="file-upload-dialog" class="file-upload-dialog">
           <!-- Modal content -->
           <div class="file-upload-dialog-content">
-            <span class="file-upload-dialog-close" >${getSvg(SvgIcon.Cancel)}</span>
+            <span class="file-upload-dialog-close" id="file-upload-dialog-close" >${getSvg(SvgIcon.Cancel)}</span>
             <div class="file-upload-dialog-content-text">
               <h2 class="file-upload-dialog-Title">${this._dialogTitle}</h2>
               <span>${this._dialogContent}</span><br><br>
@@ -582,9 +582,14 @@ export class MgtFileUpload extends MgtBaseComponent {
             'Upload',
             this.fileUploadList
           );
+          let _completed = false;
           if (conflictBehavior !== null) {
-            this._applyAll = Boolean(conflictBehavior[0]);
-            this._applyAllConflitBehavior = conflictBehavior[1] ? 1 : 0;
+            if (conflictBehavior[0] === -1) {
+              _completed = true;
+            } else {
+              this._applyAll = Boolean(conflictBehavior[0]);
+              this._applyAllConflitBehavior = conflictBehavior[1] ? 1 : 0;
+            }
           }
 
           //Initialize MgtFileUploadItem Life cycle
@@ -597,7 +602,7 @@ export class MgtFileUpload extends MgtBaseComponent {
             iconStatus: null,
             percent: 1,
             view: ViewType.image,
-            completed: false,
+            completed: _completed,
             maxSize: this._maxChunckSize,
             minSize: 0
           });
@@ -636,6 +641,7 @@ export class MgtFileUpload extends MgtBaseComponent {
           super.requestStateUpdate(true);
 
           return new Promise<number[]>(async resolve => {
+            let fileUploadDialogClose: HTMLElement = this.renderRoot.querySelector('.file-upload-dialog-close');
             let fileUploadDialogOk: HTMLElement = this.renderRoot.querySelector('.file-upload-dialog-ok');
             let fileUploadDialogCancel: HTMLElement = this.renderRoot.querySelector('.file-upload-dialog-cancel');
             let fileUploadDialogCheck: HTMLInputElement = this.renderRoot.querySelector('#file-upload-dialog-check');
@@ -645,8 +651,10 @@ export class MgtFileUpload extends MgtBaseComponent {
             //Remove and include event listener to validate options.
             fileUploadDialogOk.removeEventListener('click', onOkDialogClick);
             fileUploadDialogCancel.removeEventListener('click', onCancelDialogClick);
+            fileUploadDialogClose.removeEventListener('click', onCloseDialogClick);
             fileUploadDialogOk.addEventListener('click', onOkDialogClick);
             fileUploadDialogCancel.addEventListener('click', onCancelDialogClick);
+            fileUploadDialogClose.addEventListener('click', onCloseDialogClick);
 
             function onOkDialogClick() {
               fileUploadDialog.style.display = 'none';
@@ -656,6 +664,11 @@ export class MgtFileUpload extends MgtBaseComponent {
             function onCancelDialogClick() {
               fileUploadDialog.style.display = 'none';
               resolve([fileUploadDialogCheck.checked ? 1 : 0, MgtFileUploadConflictBehavior.rename]);
+            }
+
+            function onCloseDialogClick() {
+              fileUploadDialog.style.display = 'none';
+              resolve([-1]);
             }
           });
         } else {
@@ -674,6 +687,7 @@ export class MgtFileUpload extends MgtBaseComponent {
         return new Promise<number[]>(async resolve => {
           let fileUploadDialogOk: HTMLElement = this.renderRoot.querySelector('.file-upload-dialog-ok');
           let fileUploadDialogCancel: HTMLElement = this.renderRoot.querySelector('.file-upload-dialog-cancel');
+          let fileUploadDialogClose: HTMLElement = this.renderRoot.querySelector('.file-upload-dialog-close');
           let fileUploadDialogCheck: HTMLInputElement = this.renderRoot.querySelector('#file-upload-dialog-check');
           fileUploadDialogCheck.checked = false;
           fileUploadDialogCheck.style.display = 'none';
@@ -681,8 +695,10 @@ export class MgtFileUpload extends MgtBaseComponent {
           //Remove and include event listener to validate options.
           fileUploadDialogOk.removeEventListener('click', onOkDialogClick);
           fileUploadDialogCancel.removeEventListener('click', onCancelDialogClick);
+          fileUploadDialogClose.removeEventListener('click', onCancelDialogClick);
           fileUploadDialogOk.addEventListener('click', onOkDialogClick);
           fileUploadDialogCancel.addEventListener('click', onCancelDialogClick);
+          fileUploadDialogClose.addEventListener('click', onCancelDialogClick);
 
           function onOkDialogClick() {
             fileUploadDialog.style.display = 'none';
@@ -713,6 +729,7 @@ export class MgtFileUpload extends MgtBaseComponent {
         return new Promise<number[]>(async resolve => {
           let fileUploadDialogOk: HTMLElement = this.renderRoot.querySelector('.file-upload-dialog-ok');
           let fileUploadDialogCancel: HTMLElement = this.renderRoot.querySelector('.file-upload-dialog-cancel');
+          let fileUploadDialogClose: HTMLElement = this.renderRoot.querySelector('.file-upload-dialog-close');
           let fileUploadDialogCheck: HTMLInputElement = this.renderRoot.querySelector('#file-upload-dialog-check');
           fileUploadDialogCheck.checked = false;
           fileUploadDialogCheck.style.display = '';
@@ -720,8 +737,10 @@ export class MgtFileUpload extends MgtBaseComponent {
           //Remove and include event listener to validate options.
           fileUploadDialogOk.removeEventListener('click', onOkDialogClick);
           fileUploadDialogCancel.removeEventListener('click', onCancelDialogClick);
+          fileUploadDialogClose.removeEventListener('click', onCancelDialogClick);
           fileUploadDialogOk.addEventListener('click', onOkDialogClick);
           fileUploadDialogCancel.addEventListener('click', onCancelDialogClick);
+          fileUploadDialogClose.addEventListener('click', onCancelDialogClick);
 
           function onOkDialogClick() {
             fileUploadDialog.style.display = 'none';
@@ -752,6 +771,7 @@ export class MgtFileUpload extends MgtBaseComponent {
         return new Promise<number[]>(async resolve => {
           let fileUploadDialogOk: HTMLElement = this.renderRoot.querySelector('.file-upload-dialog-ok');
           let fileUploadDialogCancel: HTMLElement = this.renderRoot.querySelector('.file-upload-dialog-cancel');
+          let fileUploadDialogClose: HTMLElement = this.renderRoot.querySelector('.file-upload-dialog-close');
           let fileUploadDialogCheck: HTMLInputElement = this.renderRoot.querySelector('#file-upload-dialog-check');
           fileUploadDialogCheck.checked = false;
           fileUploadDialogCheck.style.display = '';
@@ -759,8 +779,10 @@ export class MgtFileUpload extends MgtBaseComponent {
           //Remove and include event listener to validate options.
           fileUploadDialogOk.removeEventListener('click', onOkDialogClick);
           fileUploadDialogCancel.removeEventListener('click', onCancelDialogClick);
+          fileUploadDialogClose.removeEventListener('click', onCancelDialogClick);
           fileUploadDialogOk.addEventListener('click', onOkDialogClick);
           fileUploadDialogCancel.addEventListener('click', onCancelDialogClick);
+          fileUploadDialogClose.addEventListener('click', onCancelDialogClick);
 
           function onOkDialogClick() {
             fileUploadDialog.style.display = 'none';
@@ -870,32 +892,38 @@ export class MgtFileUpload extends MgtBaseComponent {
           } else {
             this.setUploadFail(fileItem, strings.failUploadFile);
           }
+        } else {
+          this.setUploadFail(fileItem, strings.cancelUploadFile);
         }
       } catch (error) {
         this.setUploadFail(fileItem, strings.failUploadFile);
       }
     } else {
-      if (fileItem.uploadUrl === undefined) {
-        const response = await getUploadSession(
-          graph,
-          `${this.getGrapQuery(fileItem.file)}:/createUploadSession`,
-          fileItem.conflictBehavior
-        );
-        try {
-          if (response !== null) {
-            // uploadSession url used to send chuncks of file
-            fileItem.uploadUrl = response.uploadUrl;
-            const driveItem = await this.sendSessionUrlGraph(graph, fileItem);
-            if (driveItem !== null) {
-              fileItem.driveItem = driveItem;
-              this.setUploadSuccess(fileItem);
+      if (!fileItem.completed) {
+        if (fileItem.uploadUrl === undefined) {
+          const response = await getUploadSession(
+            graph,
+            `${this.getGrapQuery(fileItem.file)}:/createUploadSession`,
+            fileItem.conflictBehavior
+          );
+          try {
+            if (response !== null) {
+              // uploadSession url used to send chuncks of file
+              fileItem.uploadUrl = response.uploadUrl;
+              const driveItem = await this.sendSessionUrlGraph(graph, fileItem);
+              if (driveItem !== null) {
+                fileItem.driveItem = driveItem;
+                this.setUploadSuccess(fileItem);
+              } else {
+                this.setUploadFail(fileItem, strings.failUploadFile);
+              }
             } else {
               this.setUploadFail(fileItem, strings.failUploadFile);
             }
-          } else {
-            this.setUploadFail(fileItem, strings.failUploadFile);
-          }
-        } catch {}
+          } catch {}
+        }
+      } else {
+        this.setUploadFail(fileItem, strings.cancelUploadFile);
       }
     }
   }
