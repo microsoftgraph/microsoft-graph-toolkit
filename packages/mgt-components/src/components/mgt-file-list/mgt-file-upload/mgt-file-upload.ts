@@ -63,6 +63,11 @@ export interface MgtFileUploadItem {
   file?: File;
 
   /**
+   *  Full file Path to be upload.
+   */
+  fullPath?: string;
+
+  /**
    * Mgt-File View state change on upload response
    */
   view?: ViewType;
@@ -297,21 +302,61 @@ export class MgtFileUpload extends MgtBaseComponent {
         </div>
         </div>
         <div class="file-upload-Template">
-        ${this.renderFileTemplate(this.filesToUpload)}
+        ${this.renderFolderTemplate(this.filesToUpload)}
         </div>
        `;
   }
 
   /**
-   * Render file upload area
-   *
-   * @param fileItems
-   * @returns
-   */
-  protected renderFileTemplate(fileItems: MgtFileUploadItem[]) {
+  * Render Folder structure of files to upload
+  * @param fileItems
+  * @returns
+  */
+  protected renderFolderTemplate(fileItems: MgtFileUploadItem[]) {
+
+    let folderStructure: string[] = [];
     if (fileItems.length > 0) {
       const TemplateFileItems = fileItems.map(fileItem => {
-        return html`
+        if (folderStructure.indexOf(fileItem.fullPath.substring(0, fileItem.fullPath.lastIndexOf('/'))) === -1) {
+          if (fileItem.fullPath.substring(0, fileItem.fullPath.lastIndexOf('/')) !== '') {
+            folderStructure.push(fileItem.fullPath.substring(0, fileItem.fullPath.lastIndexOf('/')));
+            const builder = fileItem.fullPath
+              .substring(0, fileItem.fullPath.lastIndexOf('/'))
+              .split('/')
+              .filter(Boolean)
+              .map(item => {
+                return html`
+              <mgt-file 
+                .fileDetails=${{
+                  name: item,
+                  folder: 'Folder'
+                }} 
+                .view=${ViewType.oneline} 
+              >
+              </mgt-file> `;
+              });
+            return html`${builder}${this.renderFileTemplate(fileItem)}`;
+          } else {
+            return html`${this.renderFileTemplate(fileItem)}`;
+          }
+        } else {
+          return html`${this.renderFileTemplate(fileItem)}`;
+        }
+      });
+      return html`${TemplateFileItems}`;
+    } else {
+      return null;
+    }
+  }
+
+  /**
+   * Render file upload area
+   *
+   * @param fileItem
+   * @returns
+   */
+  protected renderFileTemplate(fileItem: MgtFileUploadItem) {
+    return html`
         <div class='file-upload-table' style="${fileItem.completed ? 'width: 100%;' : null}">
           <div class='file-upload-cell'>
             <div style=${fileItem.fieldUploadResponse === 'description' ? 'opacity: 0.5;' : null}>
@@ -331,11 +376,6 @@ export class MgtFileUpload extends MgtBaseComponent {
           </div>
         </div>
         `;
-      });
-      return html`${TemplateFileItems}`;
-    } else {
-      return null;
-    }
   }
 
   /**
@@ -349,7 +389,7 @@ export class MgtFileUpload extends MgtBaseComponent {
     <div class='file-upload-cell'>
       <div class='file-upload-table file-upload-name' >
         <div class='file-upload-cell'>
-          ${fileItem.file.name}
+          <div title="${fileItem.file.name}" class='file-upload-filename'>${fileItem.file.name}</div>
         </div>
       </div>
       <div class='file-upload-table'>
@@ -507,7 +547,9 @@ export class MgtFileUpload extends MgtBaseComponent {
     });
 
     for (var i = 0; i < files.length; i++) {
-      if (fileItems.filter(item => item.file.name === files[i].name).length === 0) {
+      const file: any = files[i];
+      const fullPath = file.fullPath === '' ? '/' + file.name : file.fullPath;
+      if (fileItems.filter(item => item.fullPath === fullPath).length === 0) {
         //Initialize variable for File validation
         let acceptFile = true;
 
@@ -517,6 +559,7 @@ export class MgtFileUpload extends MgtBaseComponent {
           if (this._maximumFiles) {
             const maximumFiles: (number | true)[] = await this.getFileUploadStatus(
               files[i],
+              fullPath,
               'MaxFiles',
               this.fileUploadList
             );
@@ -538,6 +581,7 @@ export class MgtFileUpload extends MgtBaseComponent {
             if (this._maximumFileSize === false) {
               const maximumFileSize: (number | true)[] = await this.getFileUploadStatus(
                 files[i],
+                fullPath,
                 'MaxFileSize',
                 this.fileUploadList
               );
@@ -562,6 +606,7 @@ export class MgtFileUpload extends MgtBaseComponent {
               if (this._excludedFileType === false) {
                 const excludedFileType: (number | true)[] = await this.getFileUploadStatus(
                   files[i],
+                  fullPath,
                   'ExcludedFileType',
                   this.fileUploadList
                 );
@@ -579,6 +624,7 @@ export class MgtFileUpload extends MgtBaseComponent {
         if (acceptFile) {
           const conflictBehavior: (number | true)[] = await this.getFileUploadStatus(
             files[i],
+            fullPath,
             'Upload',
             this.fileUploadList
           );
@@ -598,6 +644,7 @@ export class MgtFileUpload extends MgtBaseComponent {
             driveItem: {
               name: files[i].name
             },
+            fullPath: fullPath,
             conflictBehavior: conflictBehavior !== null ? (conflictBehavior[1] ? 1 : 0) : null,
             iconStatus: null,
             percent: 1,
@@ -609,7 +656,11 @@ export class MgtFileUpload extends MgtBaseComponent {
         }
       }
     }
-    this.filesToUpload = fileItems;
+    this.filesToUpload = fileItems.sort((firstFile, secondFile) => {
+      return firstFile.fullPath
+        .substring(0, firstFile.fullPath.lastIndexOf('/'))
+        .localeCompare(secondFile.fullPath.substring(0, secondFile.fullPath.lastIndexOf('/')));
+    });
     // Send multiple Files to upload
     this.filesToUpload.forEach(async fileItem => {
       await this.sendFileItemGraph(fileItem);
@@ -622,12 +673,17 @@ export class MgtFileUpload extends MgtBaseComponent {
    * @param file
    * @returns
    */
-  protected async getFileUploadStatus(file: File, DialogStatus: string, fileUploadList: MgtFileUploadConfig) {
+  protected async getFileUploadStatus(
+    file: File,
+    fullPath: string,
+    DialogStatus: string,
+    fileUploadList: MgtFileUploadConfig
+  ) {
     const fileUploadDialog: HTMLElement = this.renderRoot.querySelector('#file-upload-dialog');
 
     switch (DialogStatus) {
       case 'Upload':
-        const driveItem = await getGraphfile(this.fileUploadList.graph, `${this.getGrapQuery(file)}?$select=id`);
+        const driveItem = await getGraphfile(this.fileUploadList.graph, `${this.getGrapQuery(fullPath)}?$select=id`);
         if (driveItem !== null) {
           if (this._applyAll === true) {
             return [this._applyAll, this._applyAllConflitBehavior];
@@ -808,10 +864,8 @@ export class MgtFileUpload extends MgtBaseComponent {
    * @param fileItem
    * @returns
    */
-  protected getGrapQuery(fileItem: any) {
-    let fullPath = fileItem.fullPath === '' ? '/' + fileItem.name : fileItem.fullPath;
+  protected getGrapQuery(fullPath: string) {
     let itemPath = '';
-
     if (this.fileUploadList.itemPath) {
       if (this.fileUploadList.itemPath.length > 0) {
         itemPath =
@@ -881,10 +935,10 @@ export class MgtFileUpload extends MgtBaseComponent {
             fileItem.conflictBehavior === null ||
             fileItem.conflictBehavior === MgtFileUploadConflictBehavior.replace
           ) {
-            graphQuery = `${this.getGrapQuery(fileItem.file)}:/content`;
+            graphQuery = `${this.getGrapQuery(fileItem.fullPath)}:/content`;
           }
           if (fileItem.conflictBehavior === MgtFileUploadConflictBehavior.rename) {
-            graphQuery = `${this.getGrapQuery(fileItem.file)}:/content?@microsoft.graph.conflictBehavior=rename`;
+            graphQuery = `${this.getGrapQuery(fileItem.fullPath)}:/content?@microsoft.graph.conflictBehavior=rename`;
           }
           fileItem.driveItem = await sendFileContent(graph, graphQuery, fileItem.file);
           if (fileItem.driveItem !== null) {
@@ -903,7 +957,7 @@ export class MgtFileUpload extends MgtBaseComponent {
         if (fileItem.uploadUrl === undefined) {
           const response = await getUploadSession(
             graph,
-            `${this.getGrapQuery(fileItem.file)}:/createUploadSession`,
+            `${this.getGrapQuery(fileItem.fullPath)}:/createUploadSession`,
             fileItem.conflictBehavior
           );
           try {

@@ -13,11 +13,13 @@ $file-upload-dialog-background-color: set-var(upload__dialog__background-color, 
 $file-upload-button-background-color: set-var(upload__button__background-color, $theme-default, $file-upload);
 $file-item-background-color--hover: set-var(list__item__background-color--hover, $theme-default, $file-upload);
 $file-upload-icon-button-background-color: var(--color, inherit);
-$file-list-box-shadow: var( --file-list-box-shadow, 0px 3.2px 7.2px rgba(0, 0, 0, 0.132), 0px 0.6px 1.8px rgba(0, 0, 0, 0.108) );
-
+$file-list-box-shadow: var(
+  --file-list-box-shadow,
+  0px 3.2px 7.2px rgba(0, 0, 0, 0.132),
+  0px 0.6px 1.8px rgba(0, 0, 0, 0.108)
+);
 :host .file-upload-area-button {
   width: 100%;
-
   div {
     float: var(--file-upload-button-float, right);
     text-align: center;
@@ -38,7 +40,6 @@ $file-list-box-shadow: var( --file-list-box-shadow, 0px 3.2px 7.2px rgba(0, 0, 0
     font-size: $font-size;
     font-family: $font-family;
     position: relative;
-
     &:hover {
       background-color: $file-item-background-color--hover;
     }
@@ -58,13 +59,19 @@ $file-list-box-shadow: var( --file-list-box-shadow, 0px 3.2px 7.2px rgba(0, 0, 0
   display: table;
   width: 260px;
   margin: var(--file-item-margin, 0 4px);
-
   .file-upload-cell {
     padding: 1px 0px 1px 1px;
     display: table-cell;
     width: 50%;
     vertical-align: middle;
     position: relative;
+
+    .file-upload-filename {
+      max-width: 250px;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
 
     .file-upload-status {
       position: absolute;
@@ -81,15 +88,12 @@ $file-list-box-shadow: var( --file-list-box-shadow, 0px 3.2px 7.2px rgba(0, 0, 0
       cursor: pointer;
       margin-left: 20px;
     }
-
     .file-upload-name {
       width: auto;
     }
-
     .mgt-file-item {
       --file-background-color: transparent;
     }
-
     .cancel-icon {
       fill: var(--file-upload-button-color, $file-upload-icon-button-background-color);
     }
@@ -139,7 +143,6 @@ $file-list-box-shadow: var( --file-list-box-shadow, 0px 3.2px 7.2px rgba(0, 0, 0
     font-size: $font-size;
     font-family: $font-family;
     box-shadow: $file-list-box-shadow;
-
     div {
       color: rgb(50, 49, 48);
     }
@@ -163,13 +166,11 @@ $file-list-box-shadow: var( --file-list-box-shadow, 0px 3.2px 7.2px rgba(0, 0, 0
   .file-upload-dialog-close {
     float: right;
     cursor: pointer;
-
     svg {
       fill: rgb(50, 49, 48);
       padding-right: 5px;
     }
   }
-
   .file-upload-dialog-ok {
     height: 32px;
     min-width: 60px;
@@ -179,7 +180,6 @@ $file-list-box-shadow: var( --file-list-box-shadow, 0px 3.2px 7.2px rgba(0, 0, 0
     font-size: $font-size;
     margin-right: 5px;
   }
-
   .file-upload-dialog-cancel {
     height: 32px;
     min-width: 82px;
