@@ -319,22 +319,16 @@ export class MgtFileUpload extends MgtBaseComponent {
         if (folderStructure.indexOf(fileItem.fullPath.substring(0, fileItem.fullPath.lastIndexOf('/'))) === -1) {
           if (fileItem.fullPath.substring(0, fileItem.fullPath.lastIndexOf('/')) !== '') {
             folderStructure.push(fileItem.fullPath.substring(0, fileItem.fullPath.lastIndexOf('/')));
-            const builder = fileItem.fullPath
-              .substring(0, fileItem.fullPath.lastIndexOf('/'))
-              .split('/')
-              .filter(Boolean)
-              .map(item => {
-                return html`
-              <mgt-file 
-                .fileDetails=${{
-                  name: item,
-                  folder: 'Folder'
-                }} 
-                .view=${ViewType.oneline} 
-              >
-              </mgt-file> `;
-              });
-            return html`${builder}${this.renderFileTemplate(fileItem)}`;
+            return html`
+            <mgt-file 
+              .fileDetails=${{
+                name: fileItem.fullPath.substring(1, fileItem.fullPath.lastIndexOf('/')),
+                folder: 'Folder'
+              }} 
+              .view=${ViewType.oneline} 
+            >
+            </mgt-file> 
+            ${this.renderFileTemplate(fileItem)}`;
           } else {
             return html`${this.renderFileTemplate(fileItem)}`;
           }
