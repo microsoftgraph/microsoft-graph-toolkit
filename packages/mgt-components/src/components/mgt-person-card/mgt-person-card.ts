@@ -618,14 +618,12 @@ export class MgtPersonCard extends MgtTemplatedComponent {
     person = person || this.internalPersonDetails;
 
     const sectionNavTemplate = this.renderSectionNavigation();
-    const messageSectionTemplate = this.renderMessagingSection();
 
     return html`
       <div class="section-nav">
         ${sectionNavTemplate}
       </div>
       <div class="section-host" @wheel=${(e: WheelEvent) => this.handleSectionScroll(e)}>
-
       </div>
     `;
   }
@@ -672,18 +670,19 @@ export class MgtPersonCard extends MgtTemplatedComponent {
     });
 
     return html`
-            <fluent-design-system-provider use-defaults>
-                  <fluent-tabs  orientation="horizontal" activeindicator> 
-                    <fluent-tab class="${overviewClasses}" slot="tab" @click=${() => this.updateCurrentSection(null)}>
-                      <div>${getSvg(SvgIcon.Overview)}</div>
-                    </fluent-tab>
-                    ${additionalSectionTemplates}
-                    <fluent-tab-panel slot="tabpanel">
-                      <div class="overviewPanel">${!this._currentSection ? this.renderOverviewSection() : null}</div>
-                    </fluent-tab-panel>
-                    ${additionalPanelTemplates}
-                </fluent-tabs>
-            </fluent-design-system-provider>
+      <fluent-design-system-provider use-defaults>
+            <fluent-tabs  orientation="horizontal" activeindicator  @wheel=${(e: WheelEvent) =>
+              this.handleSectionScroll(e)}> 
+              <fluent-tab class="${overviewClasses}" slot="tab" @click=${() => this.updateCurrentSection(null)}>
+                <div>${getSvg(SvgIcon.Overview)}</div>
+              </fluent-tab>
+              ${additionalSectionTemplates}
+              <fluent-tab-panel slot="tabpanel">
+                <div class="overviewPanel">${!this._currentSection ? this.renderOverviewSection() : null}</div>
+              </fluent-tab-panel>
+              ${additionalPanelTemplates}
+          </fluent-tabs>
+      </fluent-design-system-provider>
     `;
   }
 
@@ -1091,25 +1090,31 @@ export class MgtPersonCard extends MgtTemplatedComponent {
   }
 
   private updateCurrentSection(section) {
-    const sectionHost = this.renderRoot.querySelector('.section-host');
     if (section) {
       const sectionName = section.tagName.toLowerCase();
       const tabs: HTMLElement = this.renderRoot.querySelector(`#${sectionName}-Tab`) as HTMLElement;
       tabs.click();
     }
-    sectionHost.scrollTop = 0;
+    const panels = this.renderRoot.querySelectorAll('fluent-tab-panel');
+    for (let i = 0; i < panels.length; i++) {
+      let target = panels[i] as HTMLElement;
+      target.scrollTop = 0;
+    }
     this._currentSection = section;
     this.requestUpdate();
   }
 
   private handleSectionScroll(e: WheelEvent) {
-    const target = this.renderRoot.querySelector('.section-host') as HTMLElement;
-    if (target) {
-      if (
-        !(e.deltaY < 0 && target.scrollTop === 0) &&
-        !(e.deltaY > 0 && target.clientHeight + target.scrollTop >= target.scrollHeight - 1)
-      ) {
-        e.stopPropagation();
+    let panels = this.renderRoot.querySelectorAll('fluent-tab-panel');
+    for (let i = 0; i < panels.length; i++) {
+      let target = panels[i] as HTMLElement;
+      if (target) {
+        if (
+          !(e.deltaY < 0 && target.scrollTop === 0) &&
+          !(e.deltaY > 0 && target.clientHeight + target.scrollTop >= target.scrollHeight - 1)
+        ) {
+          e.stopPropagation();
+        }
       }
     }
   }
