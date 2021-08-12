@@ -91,13 +91,15 @@ $file-list-box-shadow: var(
     .file-upload-name {
       width: auto;
     }
-    .mgt-file-item {
-      --file-background-color: transparent;
-    }
+    
     .cancel-icon {
       fill: var(--file-upload-button-color, $file-upload-icon-button-background-color);
     }
   }
+}
+
+:host .mgt-file-item {
+  --file-background-color: transparent;
 }
 
 :host .upload-icon {

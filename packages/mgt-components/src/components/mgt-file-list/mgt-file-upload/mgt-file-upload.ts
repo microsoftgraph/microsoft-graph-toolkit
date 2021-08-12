@@ -326,6 +326,7 @@ export class MgtFileUpload extends MgtBaseComponent {
                 folder: 'Folder'
               }} 
               .view=${ViewType.oneline} 
+              class="mgt-file-item"
             >
             </mgt-file> 
             ${this.renderFileTemplate(fileItem)}`;
