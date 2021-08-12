@@ -308,12 +308,11 @@ export class MgtFileUpload extends MgtBaseComponent {
   }
 
   /**
-  * Render Folder structure of files to upload
-  * @param fileItems
-  * @returns
-  */
+   * Render Folder structure of files to upload
+   * @param fileItems
+   * @returns
+   */
   protected renderFolderTemplate(fileItems: MgtFileUploadItem[]) {
-
     let folderStructure: string[] = [];
     if (fileItems.length > 0) {
       const TemplateFileItems = fileItems.map(fileItem => {
