@@ -320,21 +320,25 @@ export class MgtFileUpload extends MgtBaseComponent {
           if (fileItem.fullPath.substring(0, fileItem.fullPath.lastIndexOf('/')) !== '') {
             folderStructure.push(fileItem.fullPath.substring(0, fileItem.fullPath.lastIndexOf('/')));
             return html`
-            <mgt-file 
-              .fileDetails=${{
-                name: fileItem.fullPath.substring(1, fileItem.fullPath.lastIndexOf('/')),
-                folder: 'Folder'
-              }} 
-              .view=${ViewType.oneline} 
-              class="mgt-file-item"
-            >
-            </mgt-file> 
-            ${this.renderFileTemplate(fileItem)}`;
+            <div class='file-upload-table'>
+              <div class='file-upload-cell'>
+                <mgt-file 
+                  .fileDetails=${{
+                    name: fileItem.fullPath.substring(1, fileItem.fullPath.lastIndexOf('/')),
+                    folder: 'Folder'
+                  }} 
+                  .view=${ViewType.oneline} 
+                  class="mgt-file-item"
+                >
+                </mgt-file> 
+              </div>
+            </div>
+            ${this.renderFileTemplate(fileItem, 'padding-left: 20px;')}`;
           } else {
-            return html`${this.renderFileTemplate(fileItem)}`;
+            return html`${this.renderFileTemplate(fileItem, '')}`;
           }
         } else {
-          return html`${this.renderFileTemplate(fileItem)}`;
+          return html`${this.renderFileTemplate(fileItem, 'padding-left: 20px;')}`;
         }
       });
       return html`${TemplateFileItems}`;
@@ -349,24 +353,26 @@ export class MgtFileUpload extends MgtBaseComponent {
    * @param fileItem
    * @returns
    */
-  protected renderFileTemplate(fileItem: MgtFileUploadItem) {
+  protected renderFileTemplate(fileItem: MgtFileUploadItem, folderTabStyle: string) {
     return html`
         <div class='file-upload-table' style="${fileItem.completed ? 'width: 100%;' : null}">
-          <div class='file-upload-cell'>
-            <div style=${fileItem.fieldUploadResponse === 'description' ? 'opacity: 0.5;' : null}>
-              <div class="file-upload-status">
-                ${fileItem.iconStatus}
+          <div style="${folderTabStyle}">
+            <div class='file-upload-cell'>
+              <div style=${fileItem.fieldUploadResponse === 'description' ? 'opacity: 0.5;' : null}>
+                <div class="file-upload-status">
+                  ${fileItem.iconStatus}
+                </div>
+                <mgt-file 
+                  .fileDetails=${fileItem.driveItem} 
+                  .view=${fileItem.view} 
+                  .line2Property=${fileItem.fieldUploadResponse}
+                  class="mgt-file-item"
+                  >
+                </mgt-file> 
               </div>
-              <mgt-file 
-                .fileDetails=${fileItem.driveItem} 
-                .view=${fileItem.view} 
-                .line2Property=${fileItem.fieldUploadResponse}
-                class="mgt-file-item"
-                >
-              </mgt-file> 
             </div>
-          </div>
-            ${fileItem.completed === false ? this.renderFileUploadTemplate(fileItem) : null}
+              ${fileItem.completed === false ? this.renderFileUploadTemplate(fileItem) : null}
+            </div>
           </div>
         </div>
         `;
@@ -706,16 +712,19 @@ export class MgtFileUpload extends MgtBaseComponent {
             fileUploadDialogCancel.addEventListener('click', onCancelDialogClick);
             fileUploadDialogClose.addEventListener('click', onCloseDialogClick);
 
+            //Replace File
             function onOkDialogClick() {
               fileUploadDialog.style.display = 'none';
               resolve([fileUploadDialogCheck.checked ? 1 : 0, MgtFileUploadConflictBehavior.replace]);
             }
 
+            //Rename File
             function onCancelDialogClick() {
               fileUploadDialog.style.display = 'none';
               resolve([fileUploadDialogCheck.checked ? 1 : 0, MgtFileUploadConflictBehavior.rename]);
             }
 
+            //Cancel File
             function onCloseDialogClick() {
               fileUploadDialog.style.display = 'none';
               resolve([-1]);
@@ -752,7 +761,7 @@ export class MgtFileUpload extends MgtBaseComponent {
 
           function onOkDialogClick() {
             fileUploadDialog.style.display = 'none';
-            //Upload Files
+            //Continue upload
             resolve([1]);
           }
 
@@ -794,7 +803,7 @@ export class MgtFileUpload extends MgtBaseComponent {
 
           function onOkDialogClick() {
             fileUploadDialog.style.display = 'none';
-            //Upload Files
+            //Confirm info
             resolve([fileUploadDialogCheck.checked ? 1 : 0]);
           }
 
@@ -836,7 +845,7 @@ export class MgtFileUpload extends MgtBaseComponent {
 
           function onOkDialogClick() {
             fileUploadDialog.style.display = 'none';
-            //Upload Files
+            //Confirm info
             resolve([fileUploadDialogCheck.checked ? 1 : 0]);
           }
 
