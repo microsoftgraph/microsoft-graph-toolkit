@@ -5,7 +5,7 @@
  * -------------------------------------------------------------------------------------------
  */
 
-import { html, PropertyValues } from 'lit-element';
+import { html, property, PropertyValues } from 'lit-element';
 
 import { equals } from '../utils/equals';
 import { MgtBaseComponent } from './baseComponent';
@@ -46,7 +46,7 @@ export abstract class MgtTemplatedComponent extends MgtBaseComponent {
    * @type {MgtElement.TemplateContext}
    * @memberof MgtTemplatedComponent
    */
-  public templateContext: TemplateContext;
+  @property({ attribute: false }) public templateContext: TemplateContext;
 
   /**
    * Holds all templates defined by developer
