@@ -58,6 +58,8 @@ $person-card-details-item-font-size: var(--person-card-details-item-font-size, 1
       position: absolute;
       right: 10px;
       margin-top: 9px;
+      z-index: 1;
+      --accent-foreground-hover: none;
       svg {
         width: 9px;
         height: 9px;

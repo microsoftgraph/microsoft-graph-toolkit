@@ -27,7 +27,8 @@ import { MgtPersonCardOrganization } from './sections/mgt-person-card-organizati
 import { MgtPersonCardProfile } from './sections/mgt-person-card-profile/mgt-person-card-profile';
 import { MgtPersonCardConfig, MgtPersonCardState } from './mgt-person-card.types';
 import { strings } from './strings';
-import { FluentDesignSystemProvider, FluentTextField, FluentTabs, FluentButton } from '@fluentui/web-components';
+// figure this out: import ->
+import '@fluentui/web-components/dist/web-components.min.js';
 
 import '../sub-components/mgt-spinner/mgt-spinner';
 import { PersonCardInteraction } from '../PersonCardInteraction';
@@ -461,7 +462,7 @@ export class MgtPersonCard extends MgtTemplatedComponent {
       <div class="root" dir=${this.direction}>
         ${navigationTemplate}
         <div class="close-card-container">
-          <fluent-button class="close-button" @click=${() => this.closeCard()}>
+          <fluent-button appearance="lightweight" class="close-button" @click=${() => this.closeCard()}>
               ${getSvg(SvgIcon.Close)}
           </fluent-button>
         </div>
@@ -670,19 +671,19 @@ export class MgtPersonCard extends MgtTemplatedComponent {
     });
 
     return html`
-      <fluent-design-system-provider use-defaults>
-            <fluent-tabs  orientation="horizontal" activeindicator  @wheel=${(e: WheelEvent) =>
+        <fluent-tabs  orientation="horizontal" activeindicator  @wheel=${(e: WheelEvent) =>
+          this.handleSectionScroll(e)}> 
               this.handleSectionScroll(e)}> 
-              <fluent-tab class="${overviewClasses}" slot="tab" @click=${() => this.updateCurrentSection(null)}>
-                <div>${getSvg(SvgIcon.Overview)}</div>
-              </fluent-tab>
-              ${additionalSectionTemplates}
-              <fluent-tab-panel slot="tabpanel">
-                <div class="overviewPanel">${!this._currentSection ? this.renderOverviewSection() : null}</div>
-              </fluent-tab-panel>
-              ${additionalPanelTemplates}
-          </fluent-tabs>
-      </fluent-design-system-provider>
+          this.handleSectionScroll(e)}> 
+          <fluent-tab class="${overviewClasses}" slot="tab" @click=${() => this.updateCurrentSection(null)}>
+            <div>${getSvg(SvgIcon.Overview)}</div>
+          </fluent-tab>
+          ${additionalSectionTemplates}
+          <fluent-tab-panel slot="tabpanel">
+            <div class="overviewPanel">${!this._currentSection ? this.renderOverviewSection() : null}</div>
+          </fluent-tab-panel>
+          ${additionalPanelTemplates}
+      </fluent-tabs>
     `;
   }
 
