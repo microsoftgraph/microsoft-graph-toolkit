@@ -112,7 +112,7 @@ export abstract class MgtTemplatedComponent extends MgtBaseComponent {
 
     const template = html`
       <slot name=${slotName}></slot>
-      `;
+    `;
 
     const dataContext = { ...context, ...this.templateContext };
 
