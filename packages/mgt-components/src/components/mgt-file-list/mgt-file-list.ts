@@ -34,13 +34,15 @@ import {
   getUserFilesByPathIterator,
   getUserInsightsFiles
 } from '../../graph/graph.files';
-import '../sub-components/mgt-spinner/mgt-spinner';
 import { OfficeGraphInsightString, ViewType } from '../../graph/types';
 import { styles } from './mgt-file-list-css';
 import { strings } from './strings';
 import { MgtFile } from '../mgt-file/mgt-file';
 
-export { FluentDesignSystemProvider, FluentProgressRing } from '@fluentui/web-components';
+import { fluentProgressRing } from '@fluentui/web-components';
+import { registerFluentComponents } from '../../utils/FluentComponents';
+
+registerFluentComponents(fluentProgressRing);
 
 /**
  * The File List component displays a list of multiple folders and files by
@@ -532,9 +534,7 @@ export class MgtFileList extends MgtTemplatedComponent {
   protected renderMoreFileButton(): TemplateResult {
     if (this._isLoadingMore) {
       return html`
-        <fluent-design-system-provider use-defaults>
-          <fluent-progress-ring role="progressbar" viewBox="0 0 8 8" class="progress-ring"></fluent-progress-ring>
-        </fluent-design-system-provider>
+        <fluent-progress-ring role="progressbar" viewBox="0 0 8 8" class="progress-ring"></fluent-progress-ring>
       `;
     } else {
       return html`<a id="show-more" class="show-more" @click=${() => this.renderNextPage()} tabindex="0" @keydown=${
