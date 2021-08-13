@@ -881,6 +881,8 @@ export async function getFilesByListQueryIterator(
 // GET /me/insights/{trending	| used | shared}
 export async function getMyInsightsFiles(graph: IGraph, insightType: string, top?: number): Promise<DriveItem[]> {
   const endpoint = `/me/insights/${insightType}`;
+  const scopes = ['sites.read.all'];
+  const filter = `resourceReference/type eq 'microsoft.graph.driveItem'`;
 
   // get files from cached values
   let cache: CacheStore<CacheFileList>;
@@ -888,30 +890,10 @@ export async function getMyInsightsFiles(graph: IGraph, insightType: string, top
   cache = CacheService.getCache<CacheFileList>(schemas.fileLists, cacheStore);
   const fileList = await getFileListFromCache(cache, cacheStore, endpoint);
   if (fileList) {
-    return fileList.files as DriveItem[];
+    const files = await sortCachedFilesWithTop(graph, cache, fileList, scopes, filter, endpoint, top);
+    return files;
   }
-
-  // get files from graph request
-  const scopes = ['sites.read.all'];
-  const request = graph
-    .api(endpoint)
-    .filter(`resourceReference/type eq 'microsoft.graph.driveItem'`)
-    .middlewareOptions(prepScopes(...scopes));
-
-  if (top) {
-    request.top(top);
-  }
-
-  let insightResponse;
-  try {
-    insightResponse = await request.get();
-  } catch {}
-
-  const result = await getDriveItemsByInsights(graph, insightResponse, scopes);
-  if (getIsFileListsCacheEnabled()) {
-    cache.putValue(endpoint, { files: result });
-  }
-
+  const result = await getFilesFromGraphRequest(graph, cache, scopes, endpoint, filter, top);
   return result || null;
 }
 
@@ -934,6 +916,7 @@ export async function getUserInsightsFiles(
   }
 
   const key = `${endpoint}?$filter=${filter}`;
+  const scopes = ['sites.read.all'];
 
   // get files from cached values
   let cache: CacheStore<CacheFileList>;
@@ -941,11 +924,77 @@ export async function getUserInsightsFiles(
   cache = CacheService.getCache<CacheFileList>(schemas.fileLists, cacheStore);
   const fileList = await getFileListFromCache(cache, cacheStore, key);
   if (fileList) {
-    return fileList.files as DriveItem[];
+    const files = await sortCachedFilesWithTop(graph, cache, fileList, scopes, filter, endpoint, top);
+    return files;
   }
 
   // get files from graph request
-  const scopes = ['sites.read.all'];
+  const result = await getFilesFromGraphRequest(graph, cache, scopes, endpoint, filter, top);
+  return result || null;
+}
+
+/**
+ * Sort the fileList from the cache based on the lastModifiedDateTime property
+ * and return only the value of the top files.
+ * @param graph
+ * @param cache
+ * @param fileList
+ * @param scopes
+ * @param filter
+ * @param endpoint
+ * @param top
+ * @returns
+ */
+async function sortCachedFilesWithTop(
+  graph: IGraph,
+  cache: CacheStore<CacheFileList>,
+  fileList: CacheFileList,
+  scopes: string[],
+  filter: string,
+  endpoint: string,
+  top?: number
+): Promise<DriveItem[]> {
+  function compareFunction(fileA: any, fileB: any) {
+    const fileADate: string = fileA.lastModifiedDateTime;
+    const fileBDate: string = fileB.lastModifiedDateTime;
+    const diff: number = new Date(fileADate).valueOf() - new Date(fileBDate).valueOf();
+    return diff;
+  }
+  // Sort based on the lastModifieDateTime from cached values
+  const files = fileList.files.sort(compareFunction);
+  if (top) {
+    if (top <= fileList.files.length) {
+      const topFiles = files.slice(0, top);
+      // Update the cache with current files
+      cache.putValue(endpoint, { files: topFiles });
+      return topFiles as DriveItem[];
+    } else {
+      // Since page size (top) is bigger than what is cached, fetch from the graph
+      const result = await getFilesFromGraphRequest(graph, cache, scopes, endpoint, filter, top);
+      return result || null;
+    }
+  }
+  return files as DriveItem[];
+}
+
+/**
+ * Get file items from the graph.
+ * @param graph
+ * @param cache
+ * @param scopes
+ * @param endpoint
+ * @param filter
+ * @param top
+ * @returns
+ */
+async function getFilesFromGraphRequest(
+  graph: IGraph,
+  cache: CacheStore<CacheFileList>,
+  scopes: string[],
+  endpoint: string,
+  filter: string,
+  top?: number
+): Promise<any[]> {
   const request = graph
     .api(endpoint)
     .filter(filter)
@@ -964,7 +1013,6 @@ export async function getUserInsightsFiles(
   if (getIsFileListsCacheEnabled()) {
     cache.putValue(endpoint, { files: result });
   }
-
   return result || null;
 }
 
