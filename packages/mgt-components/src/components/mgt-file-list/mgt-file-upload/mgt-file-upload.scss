@@ -10,6 +10,18 @@
 @import './mgt-file-upload.theme.scss';
 
 $file-upload-dialog-background-color: set-var(upload__dialog__background-color, $theme-default, $file-upload);
+$file-upload-dialog-content-background-color: set-var(
+  upload__dialog__content__background-color,
+  $theme-default,
+  $file-upload
+);
+$file-upload-dialog-content-color: set-var(upload__dialog__content__color, $theme-default, $file-upload);
+$file-upload-dialog-primarybutton-color: set-var(upload__dialog__primarybutton__color, $theme-default, $file-upload);
+$file-upload-dialog-primarybutton-background-color: set-var(
+  upload__dialog__primarybutton__background-color,
+  $theme-default,
+  $file-upload
+);
 $file-upload-button-background-color: set-var(upload__button__background-color, $theme-default, $file-upload);
 $file-item-background-color--hover: set-var(list__item__background-color--hover, $theme-default, $file-upload);
 $file-upload-icon-button-background-color: var(--color, inherit);
@@ -91,7 +103,7 @@ $file-list-box-shadow: var(
     .file-upload-name {
       width: auto;
     }
-    
+
     .cancel-icon {
       fill: var(--file-upload-button-color, $file-upload-icon-button-background-color);
     }
@@ -136,17 +148,24 @@ $file-list-box-shadow: var(
   background-color: $file-upload-dialog-background-color;
 
   .file-upload-dialog-content {
-    background-color: #fefefe;
+    background-color: $file-upload-dialog-content-background-color;
     margin: auto;
     padding: 24px;
     width: 294px;
     height: 196px;
-    margin-top: 100px; /* Location of the box */
+    margin-top: 165px; /* Location of the box */
     font-size: $font-size;
     font-family: $font-family;
     box-shadow: $file-list-box-shadow;
     div {
-      color: rgb(50, 49, 48);
+      color: $file-upload-dialog-content-color;
+    }
+  }
+
+  fluent-checkbox.file-upload-dialog-check {
+    --neutral-fill-input-rest: $file-upload-dialog-content-color;
+    span {
+      color: $file-upload-dialog-content-color;
     }
   }
 
@@ -158,9 +177,6 @@ $file-list-box-shadow: var(
     margin-top: -12px;
   }
 
-  fluent-checkbox.file-upload-dialog-check {
-  }
-
   .file-upload-dialog-editor {
     text-align: right;
   }
@@ -169,24 +185,27 @@ $file-list-box-shadow: var(
     float: right;
     cursor: pointer;
     svg {
-      fill: rgb(50, 49, 48);
+      fill: var(--file-upload-button-color, $file-upload-icon-button-background-color);
       padding-right: 5px;
     }
   }
+
   .file-upload-dialog-ok {
     height: 32px;
     min-width: 60px;
     border: 1px solid rgb(138, 136, 134);
-    background-color: #006cbe;
-    color: white;
+    background-color: $file-upload-dialog-primarybutton-background-color;
+    color: $file-upload-dialog-primarybutton-color;
     font-size: $font-size;
     margin-right: 5px;
   }
+
   .file-upload-dialog-cancel {
     height: 32px;
     min-width: 82px;
     border: 1px solid rgb(138, 136, 134);
-    background-color: white;
+    background-color: $file-upload-dialog-content-background-color;
+    color: $file-upload-dialog-content-color;
     font-size: $font-size;
   }
 }

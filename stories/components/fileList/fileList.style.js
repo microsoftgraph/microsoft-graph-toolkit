@@ -26,6 +26,9 @@ export const customCSSProperties = () => html`
         --file-upload-button-float:left;
         --file-upload-button-color:#323130;
         --file-upload-button-background-color:#fef8dd;
+        --file-upload-dialog-content-background-color: #ffe7c7;
+        --file-upload-dialog-primarybutton-background-color: #ffe7c7;
+        --file-upload-dialog-primarybutton-color: #323130;
         --file-list-background-color: #e0f8db;
         --file-item-background-color--hover: #caf1de;
         --file-item-background-color--active: #acddde;

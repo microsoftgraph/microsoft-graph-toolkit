@@ -183,7 +183,12 @@ export interface MgtFileUploadConfig {
  * @cssprop --file-upload-background-color - {Color} File upload background color with opacity style
  * @cssprop --file-upload-button-float - {string} Upload button float position
  * @cssprop --file-upload-button-background-color - {Color} Background color of upload button
+ * @cssprop --file-upload-dialog-background-color - {Color} Background color of dialog
+ * @cssprop --file-upload-dialog-content-background-color - {Color} Background color of dialog content
+ * @cssprop --file-upload-dialog-content-color - {Color} Color of dialog content
  * @cssprop --file-upload-button-color - {Color} Text color of upload button
+ * @cssprop --file-upload-dialog-primarybutton-background-color - {Color} Background color of primary button
+ * @cssprop --file-upload-dialog-primarybutton-color - {Color} Color text of primary button
  * @cssprop --file-item-margin - {String} File item margin
  */
 @customElement('mgt-file-upload')
@@ -272,9 +277,9 @@ export class MgtFileUpload extends MgtBaseComponent {
             <div class="file-upload-dialog-content-text">
               <h2 class="file-upload-dialog-Title">${this._dialogTitle}</h2>
               <span>${this._dialogContent}</span><br><br>
-              <fluent-checkbox id="file-upload-dialog-check" class="file-upload-dialog-check" >${
+              <fluent-checkbox id="file-upload-dialog-check" class="file-upload-dialog-check" ><span>${
                 this._dialogCheckBox
-              }</fluent-checkbox>
+              }</span></fluent-checkbox>
             </div>
             <div class="file-upload-dialog-editor">
               <fluent-button class="file-upload-dialog-ok">

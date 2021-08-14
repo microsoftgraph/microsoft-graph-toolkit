@@ -21,7 +21,27 @@ $file-upload: (
   upload__dialog__background-color: (
     _var: --file-upload-dialog-background-color,
     light: rgba(0, 0, 0, 0.1),
-    dark: rgba(0, 120, 212, 0.1)
+    dark: rgba(black, 0.3)
+  ),
+  upload__dialog__content__background-color: (
+    _var: --file-upload-dialog-content-background-color,
+    light: rgb(255, 255, 255),
+    dark: rgb(74, 74, 74)
+  ),
+  upload__dialog__content__color: (
+    _var: --file-upload-dialog-content-color,
+    light: rgb(50, 49, 48),
+    dark: rgb(255, 255, 255)
+  ),
+  upload__dialog__primarybutton__color: (
+    _var: --file-upload-dialog-primarybutton-color,
+    light: rgb(255, 255, 255),
+    dark: rgb(255, 255, 255)
+  ),
+  upload__dialog__primarybutton__background-color: (
+    _var: --file-upload-dialog-primarybutton-background-color,
+    light: #006cbe,
+    dark: #006cbe
   )
 );
 
