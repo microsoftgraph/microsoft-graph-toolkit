@@ -121,6 +121,9 @@ $file-list-box-shadow: var(
 
 :host .file-upload-Template {
   clear: both;
+  .file-upload-folder-tab {
+    padding-left: 20px;
+  }
 }
 
 :host #file-upload-border {

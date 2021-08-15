@@ -9,6 +9,7 @@ import { customElement, html, property, TemplateResult } from 'lit-element';
 import { styles } from './mgt-file-upload-css';
 import { strings } from './strings';
 import { getSvg, SvgIcon } from '../../../utils/SvgHelper';
+import { formatBytes } from '../../../utils/Utils';
 import { IGraph, MgtBaseComponent } from '@microsoft/mgt-element';
 import { ViewType } from '../../../graph/types';
 import { DriveItem } from '@microsoft/microsoft-graph-types';
@@ -338,12 +339,12 @@ export class MgtFileUpload extends MgtBaseComponent {
                 </mgt-file> 
               </div>
             </div>
-            ${this.renderFileTemplate(fileItem, 'padding-left: 20px;')}`;
+            ${this.renderFileTemplate(fileItem, 'file-upload-folder-tab')}`;
           } else {
             return html`${this.renderFileTemplate(fileItem, '')}`;
           }
         } else {
-          return html`${this.renderFileTemplate(fileItem, 'padding-left: 20px;')}`;
+          return html`${this.renderFileTemplate(fileItem, 'file-upload-folder-tab')}`;
         }
       });
       return html`${TemplateFileItems}`;
@@ -361,7 +362,7 @@ export class MgtFileUpload extends MgtBaseComponent {
   protected renderFileTemplate(fileItem: MgtFileUploadItem, folderTabStyle: string) {
     return html`
         <div class='file-upload-table' style="${fileItem.completed ? 'width: 100%;' : null}">
-          <div style="${folderTabStyle}">
+          <div class="${folderTabStyle}">
             <div class='file-upload-cell'>
               <div style=${fileItem.fieldUploadResponse === 'description' ? 'opacity: 0.5;' : null}>
                 <div class="file-upload-status">
@@ -823,9 +824,9 @@ export class MgtFileUpload extends MgtBaseComponent {
         this._dialogTitle = strings.maximumFileSizeTitle;
         this._dialogContent =
           strings.maximumFileSize
-            .replace('{FileSize}', this.formatBytes(fileUploadList.maxFileSize))
+            .replace('{FileSize}', formatBytes(fileUploadList.maxFileSize))
             .replace('{FileName}', file.name) +
-          this.formatBytes(file.size) +
+          formatBytes(file.size) +
           '.';
         this._dialogCheckBox = strings.checkAgain;
         this._dialogPrimaryButton = strings.buttonOk;
@@ -1197,14 +1198,5 @@ export class MgtFileUpload extends MgtBaseComponent {
         });
       }
     });
-  }
-  private formatBytes(bytes, decimals = 2) {
-    if (bytes === 0) return '0 Bytes';
-    const k = 1024;
-    const dm = decimals < 0 ? 0 : decimals;
-    const sizes = ['Bytes', 'KB', 'MB', 'GB', 'TB', 'PB', 'EB', 'ZB', 'YB'];
-    const i = Math.floor(Math.log(bytes) / Math.log(k));
-
-    return parseFloat((bytes / Math.pow(k, i)).toFixed(dm)) + ' ' + sizes[i];
   }
 }
