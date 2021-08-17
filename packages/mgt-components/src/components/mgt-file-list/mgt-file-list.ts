@@ -494,7 +494,6 @@ export class MgtFileList extends MgtTemplatedComponent {
   private pageIterator: GraphPageIterator<DriveItem>;
   // tracking user arrow key input of selection for accessibility purpose
   private _focusedItemIndex: number = -1;
-  // tracking drag and drop status area.
 
   @internalProperty() private _isLoadingMore: boolean;
 
@@ -658,7 +657,7 @@ export class MgtFileList extends MgtTemplatedComponent {
       maxUploadFile: this.maxUploadFile
     };
     return html`
-        <mgt-file-upload .fileUploadList=${fileUploadConfig} class="${this.className}" ></mgt-file-upload>
+        <mgt-file-upload .fileUploadList=${fileUploadConfig} ></mgt-file-upload>
       `;
   }
 
