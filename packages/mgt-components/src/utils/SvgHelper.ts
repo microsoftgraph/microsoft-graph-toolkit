@@ -146,7 +146,7 @@ export enum SvgIcon {
    * Close icon
    */
   Close,
-  
+
   /**
    * Upload icon
    */
