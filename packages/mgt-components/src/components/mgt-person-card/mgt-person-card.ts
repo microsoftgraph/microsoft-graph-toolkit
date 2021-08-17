@@ -27,14 +27,16 @@ import { MgtPersonCardOrganization } from './sections/mgt-person-card-organizati
 import { MgtPersonCardProfile } from './sections/mgt-person-card-profile/mgt-person-card-profile';
 import { MgtPersonCardConfig, MgtPersonCardState } from './mgt-person-card.types';
 import { strings } from './strings';
-// figure this out: import ->
-import '@fluentui/web-components/dist/web-components.min.js';
 
-import '../sub-components/mgt-spinner/mgt-spinner';
 import { PersonCardInteraction } from '../PersonCardInteraction';
 import { MgtFlyout } from '../sub-components/mgt-flyout/mgt-flyout';
 
 export * from './mgt-person-card.types';
+
+import { fluentTabs, fluentTab, fluentTabPanel, fluentButton, fluentTextField } from '@fluentui/web-components';
+import { registerFluentComponents } from '../../utils/FluentComponents';
+
+registerFluentComponents(fluentTabs, fluentTab, fluentTabPanel, fluentButton, fluentTextField);
 
 // tslint:disable-next-line:completed-docs
 interface MgtPersonCardStateHistory {
