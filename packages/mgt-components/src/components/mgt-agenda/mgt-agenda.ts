@@ -460,7 +460,10 @@ export class MgtAgenda extends MgtTemplatedComponent {
     const grouped = {};
 
     events.forEach(event => {
-      const header = this.getDateHeaderFromDateTimeString(event.start.dateTime);
+      var eventDate = new Date(event.start.dateTime);
+      var dateString = eventDate.toISOString().replace('Z', '');
+
+      const header = this.getDateHeaderFromDateTimeString(dateString);
       grouped[header] = grouped[header] || [];
       grouped[header].push(event);
     });
