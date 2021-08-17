@@ -39,7 +39,7 @@
     "@microsoft/mgt-element": "*",
     "@microsoft/microsoft-graph-client": "^2.2.1",
     "@microsoft/microsoft-graph-types": "^2.0.0",
-    "@microsoft/microsoft-graph-types-beta": "^0.14.0-preview",
+    "@microsoft/microsoft-graph-types-beta": "^0.15.0-preview",
     "@fluentui/web-components": "^0.22.1",
     "office-ui-fabric-core": "11.0.0"
   },
