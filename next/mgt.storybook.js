@@ -578,7 +578,7 @@ const createAndInsertPart=(e,t)=>{const r=e.startNode.parentNode,o=void 0===t?e.
       ></mgt-people>
     `:null}renderOther(e){return this.hasTemplate("event-other")?html$1`
           ${this.renderTemplate("event-other",{event:e},e.id+"-other")}
-        `:null}renderGroups(e){const t={};return e.forEach((e=>{const r=this.getDateHeaderFromDateTimeString(e.start.dateTime);t[r]=t[r]||[],t[r].push(e)})),html$1`
+        `:null}renderGroups(e){const t={};return e.forEach((e=>{var r=new Date(e.start.dateTime).toISOString().replace("Z","");const o=this.getDateHeaderFromDateTimeString(r);t[o]=t[o]||[],t[o].push(e)})),html$1`
       ${Object.keys(t).map((e=>html$1`
             <div class="group">${this.renderHeader(e)} ${this.renderEvents(t[e])}</div>
           `))}
