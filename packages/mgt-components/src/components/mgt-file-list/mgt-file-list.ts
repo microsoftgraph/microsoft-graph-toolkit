@@ -573,32 +573,32 @@ export class MgtFileList extends MgtTemplatedComponent {
    */
   protected renderFiles(): TemplateResult {
     return html`
-        <div id="file-list-wrapper" class="file-list-wrapper" dir=${this.direction}>
-          ${this.enableFileUpload ? this.renderFileUpload() : null}
-          <ul
-            id="file-list"
-            class="file-list"
-            tabindex="0"
-            @keydown="${this.onFileListKeyDown}"
-            @keyup="${this.onFileListKeyUp}"
-            @blur="${this.onFileListOut}"
-          >
-            ${repeat(
-              this.files,
-              f => f.id,
-              f => html`
-                <li class="file-item">
-                  ${this.renderFile(f)}
-                </li>
-              `
-            )}
-          </ul>
-          ${
-            !this.hideMoreFilesButton && this.pageIterator && (this.pageIterator.hasNext || this._preloadedFiles.length)
-              ? this.renderMoreFileButton()
-              : null
-          }
-        </div>
+      <div id="file-list-wrapper" class="file-list-wrapper" dir=${this.direction}>
+        ${this.enableFileUpload ? this.renderFileUpload() : null}
+        <ul
+          id="file-list"
+          class="file-list"
+          tabindex="0"
+          @keydown="${this.onFileListKeyDown}"
+          @keyup="${this.onFileListKeyUp}"
+          @blur="${this.onFileListOut}"
+        >
+          ${repeat(
+            this.files,
+            f => f.id,
+            f => html`
+              <li class="file-item">
+                ${this.renderFile(f)}
+              </li>
+            `
+          )}
+        </ul>
+        ${
+          !this.hideMoreFilesButton && this.pageIterator && (this.pageIterator.hasNext || this._preloadedFiles.length)
+            ? this.renderMoreFileButton()
+            : null
+        }
+      </div>
     `;
   }
 
