@@ -21,7 +21,10 @@ import {
   deleteSessionFile
 } from '../../../graph/graph.files';
 
-export { FluentProgress, FluentButton, FluentCheckbox } from '@fluentui/web-components';
+import { registerFluentComponents } from '../../../utils/FluentComponents';
+import { fluentButton, fluentCheckbox, fluentProgress } from '@fluentui/web-components';
+
+registerFluentComponents(fluentProgress, fluentButton, fluentCheckbox);
 
 /**
  * Upload conflict behavior status
@@ -285,10 +288,10 @@ export class MgtFileUpload extends MgtBaseComponent {
             <div class="file-upload-dialog-editor">
               <fluent-button class="file-upload-dialog-ok">
               ${this._dialogPrimaryButton}
-              </fluent-button> 
+              </fluent-button>
               <fluent-button class="file-upload-dialog-cancel">
               ${this._dialogSecondaryButton}
-              </fluent-button> 
+              </fluent-button>
             </div>
           </div>
         </div>
@@ -299,12 +302,12 @@ export class MgtFileUpload extends MgtBaseComponent {
           <input
             id="file-upload-input"
             type="file"
-            multiple="true" 
+            multiple="true"
             @change="${this.onFileUploadChange}"
           />
           <fluent-button class="file-upload-button" @click=${this.onFileUploadClick}>
             ${getSvg(SvgIcon.Upload)}${strings.buttonUploadFile}
-          </fluent-button> 
+          </fluent-button>
         </div>
         </div>
         <div class="file-upload-Template">
@@ -328,15 +331,15 @@ export class MgtFileUpload extends MgtBaseComponent {
             return html`
             <div class='file-upload-table'>
               <div class='file-upload-cell'>
-                <mgt-file 
+                <mgt-file
                   .fileDetails=${{
                     name: fileItem.fullPath.substring(1, fileItem.fullPath.lastIndexOf('/')),
                     folder: 'Folder'
-                  }} 
-                  .view=${ViewType.oneline} 
+                  }}
+                  .view=${ViewType.oneline}
                   class="mgt-file-item"
                 >
-                </mgt-file> 
+                </mgt-file>
               </div>
             </div>
             ${this.renderFileTemplate(fileItem, 'file-upload-folder-tab')}`;
@@ -368,13 +371,13 @@ export class MgtFileUpload extends MgtBaseComponent {
                 <div class="file-upload-status">
                   ${fileItem.iconStatus}
                 </div>
-                <mgt-file 
-                  .fileDetails=${fileItem.driveItem} 
-                  .view=${fileItem.view} 
+                <mgt-file
+                  .fileDetails=${fileItem.driveItem}
+                  .view=${fileItem.view}
                   .line2Property=${fileItem.fieldUploadResponse}
                   class="mgt-file-item"
                   >
-                </mgt-file> 
+                </mgt-file>
               </div>
             </div>
               ${fileItem.completed === false ? this.renderFileUploadTemplate(fileItem) : null}
@@ -404,8 +407,8 @@ export class MgtFileUpload extends MgtBaseComponent {
             <fluent-progress class="file-upload-bar" value="${fileItem.percent}" ></fluent-progress>
             <div class='file-upload-cell' style="padding-left:5px">
               <span>${fileItem.percent}%</span>
-              <span 
-                class="file-upload-cancel" 
+              <span
+                class="file-upload-cancel"
                 @click=${e => this.deleteFileUploadSession(fileItem)}>
                 ${getSvg(SvgIcon.Cancel)}
               </span>

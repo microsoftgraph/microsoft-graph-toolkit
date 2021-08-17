@@ -34,7 +34,6 @@ import {
   getUserFilesByPathIterator,
   getUserInsightsFiles
 } from '../../graph/graph.files';
-import '../sub-components/mgt-spinner/mgt-spinner';
 import './mgt-file-upload/mgt-file-upload';
 import { OfficeGraphInsightString, ViewType } from '../../graph/types';
 import { styles } from './mgt-file-list-css';
@@ -42,7 +41,10 @@ import { strings } from './strings';
 import { MgtFile } from '../mgt-file/mgt-file';
 import { MgtFileUploadConfig } from './mgt-file-upload/mgt-file-upload';
 
-export { FluentDesignSystemProvider, FluentProgressRing } from '@fluentui/web-components';
+import { fluentProgressRing } from '@fluentui/web-components';
+import { registerFluentComponents } from '../../utils/FluentComponents';
+
+registerFluentComponents(fluentProgressRing);
 
 /**
  * The File List component displays a list of multiple folders and files by
@@ -571,34 +573,32 @@ export class MgtFileList extends MgtTemplatedComponent {
    */
   protected renderFiles(): TemplateResult {
     return html`
-      <fluent-design-system-provider use-defaults>
-        <div id="file-list-wrapper" class="file-list-wrapper" dir=${this.direction}>
-          ${this.enableFileUpload ? this.renderFileUpload() : null}
-          <ul
-            id="file-list"
-            class="file-list"
-            tabindex="0"
-            @keydown="${this.onFileListKeyDown}"
-            @keyup="${this.onFileListKeyUp}"
-            @blur="${this.onFileListOut}"
-          >
-            ${repeat(
-              this.files,
-              f => f.id,
-              f => html`
-                <li class="file-item">
-                  ${this.renderFile(f)}
-                </li>
-              `
-            )}
-          </ul>
-          ${
-            !this.hideMoreFilesButton && this.pageIterator && (this.pageIterator.hasNext || this._preloadedFiles.length)
-              ? this.renderMoreFileButton()
-              : null
-          }
-        </div>
-      </fluent-design-system-provider>
+      <div id="file-list-wrapper" class="file-list-wrapper" dir=${this.direction}>
+        ${this.enableFileUpload ? this.renderFileUpload() : null}
+        <ul
+          id="file-list"
+          class="file-list"
+          tabindex="0"
+          @keydown="${this.onFileListKeyDown}"
+          @keyup="${this.onFileListKeyUp}"
+          @blur="${this.onFileListOut}"
+        >
+          ${repeat(
+            this.files,
+            f => f.id,
+            f => html`
+              <li class="file-item">
+                ${this.renderFile(f)}
+              </li>
+            `
+          )}
+        </ul>
+        ${
+          !this.hideMoreFilesButton && this.pageIterator && (this.pageIterator.hasNext || this._preloadedFiles.length)
+            ? this.renderMoreFileButton()
+            : null
+        }
+      </div>
     `;
   }
 
