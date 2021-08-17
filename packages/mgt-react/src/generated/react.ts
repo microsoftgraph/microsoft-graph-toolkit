@@ -32,8 +32,12 @@ export type FileListProps = {
 	insightType?: OfficeGraphInsightString;
 	fileExtensions?: string[];
 	hideMoreFilesButton?: boolean;
+	maxFileSize?: number;
+	excludedFileExtensions?: string[];
 	pageSize?: number;
 	itemView?: ViewType;
+	maxUploadFile?: number;
+	enableFileUpload?: boolean;
 	templateContext?: TemplateContext;
 	mediaQuery?: ComponentMediaQuery;
 	itemClick?: (e: Event) => void;
