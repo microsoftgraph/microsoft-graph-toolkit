@@ -421,7 +421,7 @@ export class MgtFileList extends MgtTemplatedComponent {
   public enableFileUpload: boolean;
 
   /**
-   * A number value to indicate the number of files to upload.
+   * A number value to indicate the max number allowed of files to upload.
    * @type {number}
    * @memberof MgtFileList
    */
