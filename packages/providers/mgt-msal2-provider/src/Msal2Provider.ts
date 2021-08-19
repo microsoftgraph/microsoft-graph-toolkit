@@ -78,8 +78,9 @@ interface Msal2ConfigBase {
    * @memberof Msal2ConfigBase
    */
   domainHint?: string;
+
   /**
-   * prompt value
+   * Prompt type
    *
    * @type {string}
    * @memberof Msal2ConfigBase
@@ -105,10 +106,18 @@ export interface Msal2Config extends Msal2ConfigBase {
   /**
    * Client ID of app registration
    *
-   * @type {string}
+   * @type {boolean}
    * @memberof Msal2Config
    */
   clientId: string;
+
+  /**
+   * Disable multi account functionality
+   *
+   * @type {boolean}
+   * @memberof Msal2Config
+   */
+  isMultiAccountDisabled?: boolean;
 }
 
 /**
@@ -229,6 +238,18 @@ export class Msal2Provider extends IProvider {
    */
   public scopes: string[];
 
+  /**
+   *
+   * Disables multi account functionality
+   * @private
+   * @type {boolean}
+   * @memberof Msal2Provider
+   */
+  private _isMultipleAccountDisabled: boolean = false;
+
+  public get isMultiAccountSupported(): boolean {
+    return !this._isMultipleAccountDisabled;
+  }
   private sessionStorageRequestedScopesKey = 'mgt-requested-scopes';
   private sessionStorageDeniedScopesKey = 'mgt-denied-scopes';
   private homeAccountKey = '275f3731-e4a4-468a-bf9c-baca24b31e26';
@@ -284,12 +305,19 @@ export class Msal2Provider extends IProvider {
       throw new Error('either clientId or publicClientApplication must be provided');
     }
 
+    this.ms_config.system = msalConfig.system || {};
+    this.ms_config.system.iframeHashTimeout = msalConfig.system.iframeHashTimeout || 10000;
     this._loginType = typeof config.loginType !== 'undefined' ? config.loginType : LoginType.Redirect;
     this._loginHint = typeof config.loginHint !== 'undefined' ? config.loginHint : null;
     this._sid = typeof config.sid !== 'undefined' ? config.sid : null;
     this._domainHint = typeof config.domainHint !== 'undefined' ? config.domainHint : null;
     this.scopes = typeof config.scopes !== 'undefined' ? config.scopes : ['user.read'];
     this._prompt = typeof config.prompt !== 'undefined' ? config.prompt : PromptType.SELECT_ACCOUNT;
+
+    const msal2config = config as Msal2Config;
+    this._isMultipleAccountDisabled =
+      typeof msal2config.isMultiAccountDisabled !== 'undefined' ? msal2config.isMultiAccountDisabled : false;
+
     this.graph = createFromProvider(this);
     try {
       const tokenResponse = await this._publicClientApplication.handleRedirectPromise();
@@ -368,7 +396,7 @@ export class Msal2Provider extends IProvider {
   public getAllAccounts() {
     let usernames = [];
     this._publicClientApplication.getAllAccounts().forEach((account: AccountInfo) => {
-      usernames.push({ username: account.username, id: account.homeAccountId } as IProviderAccount);
+      usernames.push({ name: account.name, mail: account.username, id: account.homeAccountId } as IProviderAccount);
     });
     return usernames;
   }
@@ -386,6 +414,17 @@ export class Msal2Provider extends IProvider {
   }
 
   /**
+   * Gets active account
+   *
+   * @return {*}
+   * @memberof Msal2Provider
+   */
+  public getActiveAccount() {
+    const account = this._publicClientApplication.getActiveAccount();
+    return { name: account.name, mail: account.username, id: account.homeAccountId } as IProviderAccount;
+  }
+
+  /**
    * Once a succesful login occurs, set the active account and store it
    *
    * @param {(AuthenticationResult | null)} account
@@ -394,8 +433,9 @@ export class Msal2Provider extends IProvider {
   handleResponse(account: AccountInfo) {
     if (account !== null) {
       this.setActiveAccount({
-        username: account.name,
-        id: account.homeAccountId
+        name: account.name,
+        id: account.homeAccountId,
+        mail: account.username
       } as IProviderAccount);
       this.setState(ProviderState.SignedIn);
     } else {
@@ -554,7 +594,11 @@ export class Msal2Provider extends IProvider {
       this.setState(ProviderState.SignedOut);
     } else {
       await this._publicClientApplication.logoutPopup({ ...logOutRequest });
-      this.setState(ProviderState.SignedOut);
+      if (this._publicClientApplication.getAllAccounts.length == 1 || this._isMultipleAccountDisabled) {
+        this.setState(ProviderState.SignedOut);
+      } else {
+        this.trySilentSignIn();
+      }
     }
   }
 
