@@ -1451,7 +1451,7 @@ const createAndInsertPart=(e,t)=>{const r=e.startNode.parentNode,o=void 0===t?e.
     :host(.paused) .indeterminate-indicator-1,
     :host(.paused) .indeterminate-indicator-2 {
       animation-play-state: paused;
-      background-color: $[neutralFillRest};
+      background-color: ${ds};
     }
 
     :host(.paused) .determinate {
