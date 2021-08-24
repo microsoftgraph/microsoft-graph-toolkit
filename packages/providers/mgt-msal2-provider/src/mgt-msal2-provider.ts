@@ -85,10 +85,10 @@ export class MgtMsal2Provider extends MgtBaseProvider {
    * @memberof MgtMsal2Provider
    */
   @property({
-    attribute: 'multi-account-disabled',
+    attribute: 'multi-account-enabled',
     type: Boolean
   })
-  public isMultiAccountDisabled;
+  public isMultiAccountEnabled;
 
   /**
    * Gets whether this provider can be used in this environment
@@ -140,8 +140,8 @@ export class MgtMsal2Provider extends MgtBaseProvider {
         config.prompt = promptEnum;
       }
 
-      if (this.isMultiAccountDisabled) {
-        config.isMultiAccountEnabled = false;
+      if (this.isMultiAccountEnabled) {
+        config.isMultiAccountEnabled = true;
       }
 
       this.provider = new Msal2Provider(config);

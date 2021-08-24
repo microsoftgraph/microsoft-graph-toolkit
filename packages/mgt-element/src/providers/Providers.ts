@@ -117,7 +117,7 @@ export class Providers {
   }
 
   /**
-   * Gets the current signed in user
+   * Gets the cache ID, creates one if it does not exist
    *
    * @static
    * @memberof Providers
@@ -144,7 +144,7 @@ export class Providers {
   }
 
   /**
-   * Unset the cache ID whenever there's an active account change
+   * Unset the cache ID
    *
    * @static
    * @memberof Providers

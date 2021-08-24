@@ -137,9 +137,7 @@ export abstract class IProvider implements AuthenticationProvider {
    * @memberof IProvider
    */
   public setActiveAccount?(user: IProviderAccount) {
-    if (this.isMultiAccountEnabled) {
-      Providers.unsetCacheId();
-    }
+    Providers.unsetCacheId();
     this.fireActiveAccountChanged();
   }
 

@@ -245,7 +245,7 @@ export class Msal2Provider extends IProvider {
    * @type {boolean}
    * @memberof Msal2Provider
    */
-  private _isMultipleAccountEnabled: boolean = true;
+  private _isMultipleAccountEnabled: boolean = false;
 
   public get isMultiAccountEnabled(): boolean {
     return this._isMultipleAccountEnabled;
@@ -316,7 +316,7 @@ export class Msal2Provider extends IProvider {
 
     const msal2config = config as Msal2Config;
     this._isMultipleAccountEnabled =
-      typeof msal2config.isMultiAccountEnabled !== 'undefined' ? msal2config.isMultiAccountEnabled : true;
+      typeof msal2config.isMultiAccountEnabled !== 'undefined' ? msal2config.isMultiAccountEnabled : false;
 
     this.graph = createFromProvider(this);
     try {

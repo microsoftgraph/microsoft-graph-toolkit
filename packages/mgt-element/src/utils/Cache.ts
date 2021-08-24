@@ -239,6 +239,7 @@ export class CacheService {
         await Providers.getCacheId(true);
       }
     });
+
     Providers.onProviderUpdated(async () => {
       if (previousState === ProviderState.SignedIn && Providers.globalProvider.state === ProviderState.SignedOut) {
         if (Providers.globalProvider.isMultiAccountEnabled) {
@@ -333,8 +334,7 @@ export class CacheStore<T extends CacheItem> {
       return null;
     }
     try {
-      var output = (await this.getDb()).get(this.store, key);
-      return output;
+      return (await this.getDb()).get(this.store, key);
     } catch (e) {
       return null;
     }
