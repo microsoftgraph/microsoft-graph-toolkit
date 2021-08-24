@@ -117,7 +117,7 @@ export interface Msal2Config extends Msal2ConfigBase {
    * @type {boolean}
    * @memberof Msal2Config
    */
-  isMultiAccountDisabled?: boolean;
+  isMultiAccountEnabled?: boolean;
 }
 
 /**
@@ -245,10 +245,10 @@ export class Msal2Provider extends IProvider {
    * @type {boolean}
    * @memberof Msal2Provider
    */
-  private _isMultipleAccountDisabled: boolean = false;
+  private _isMultipleAccountEnabled: boolean = true;
 
-  public get isMultiAccountSupported(): boolean {
-    return !this._isMultipleAccountDisabled;
+  public get isMultiAccountEnabled(): boolean {
+    return this._isMultipleAccountEnabled;
   }
   private sessionStorageRequestedScopesKey = 'mgt-requested-scopes';
   private sessionStorageDeniedScopesKey = 'mgt-denied-scopes';
@@ -315,8 +315,8 @@ export class Msal2Provider extends IProvider {
     this._prompt = typeof config.prompt !== 'undefined' ? config.prompt : PromptType.SELECT_ACCOUNT;
 
     const msal2config = config as Msal2Config;
-    this._isMultipleAccountDisabled =
-      typeof msal2config.isMultiAccountDisabled !== 'undefined' ? msal2config.isMultiAccountDisabled : false;
+    this._isMultipleAccountEnabled =
+      typeof msal2config.isMultiAccountEnabled !== 'undefined' ? msal2config.isMultiAccountEnabled : true;
 
     this.graph = createFromProvider(this);
     try {
@@ -594,7 +594,7 @@ export class Msal2Provider extends IProvider {
       this.setState(ProviderState.SignedOut);
     } else {
       await this._publicClientApplication.logoutPopup({ ...logOutRequest });
-      if (this._publicClientApplication.getAllAccounts.length == 1 || this._isMultipleAccountDisabled) {
+      if (this._publicClientApplication.getAllAccounts.length == 1 || this._isMultipleAccountEnabled) {
         this.setState(ProviderState.SignedOut);
       } else {
         this.trySilentSignIn();

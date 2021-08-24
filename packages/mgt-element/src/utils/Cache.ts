@@ -149,7 +149,23 @@ export class CacheService {
    * Clears all the stores within the cache
    */
   public static clearCaches() {
-    this.cacheStore.forEach(x => indexedDB.deleteDatabase(x.getDBName()));
+    this.cacheStore.forEach(async x => indexedDB.deleteDatabase(await x.getDBName()));
+  }
+
+  /**
+   * Clears cache for a single user when ID is passed
+   *
+   * @static
+   * @param {string} id
+   * @memberof CacheService
+   */
+  public static clearCacheById(id: string) {
+    this.cacheStore.forEach(async x => {
+      const dbName = await x.getDBName(id);
+      if (dbName.includes(id)) {
+        indexedDB.deleteDatabase(dbName);
+      }
+    });
   }
 
   private static cacheStore: Map<string, CacheStore<CacheItem>> = new Map();
@@ -218,8 +234,19 @@ export class CacheService {
       previousState = Providers.globalProvider.state;
     }
 
-    Providers.onProviderUpdated(() => {
+    Providers.onActiveAccountChanged(async () => {
+      if (Providers.globalProvider && Providers.globalProvider.isMultiAccountEnabled) {
+        await Providers.getCacheId(true);
+      }
+    });
+    Providers.onProviderUpdated(async () => {
       if (previousState === ProviderState.SignedIn && Providers.globalProvider.state === ProviderState.SignedOut) {
+        if (Providers.globalProvider.isMultiAccountEnabled) {
+          const id = await Providers.getCacheId();
+          if (id !== null) {
+            this.clearCacheById(id);
+          }
+        }
         this.clearCaches();
       }
       previousState = Providers.globalProvider.state;
@@ -306,7 +333,8 @@ export class CacheStore<T extends CacheItem> {
       return null;
     }
     try {
-      return (await this.getDb()).get(this.store, key);
+      var output = (await this.getDb()).get(this.store, key);
+      return output;
     } catch (e) {
       return null;
     }
@@ -351,12 +379,17 @@ export class CacheStore<T extends CacheItem> {
   /**
    * Returns the name of the parent DB that the cache store belongs to
    */
-  public getDBName() {
-    return `mgt-${this.schema.name}`;
+  public async getDBName(cacheId?: string) {
+    if (Providers.globalProvider && Providers.globalProvider.isMultiAccountEnabled) {
+      const id = await Providers.getCacheId();
+      return `mgt-${this.schema.name}` + `-${id}`;
+    } else {
+      return `mgt-${this.schema.name}`;
+    }
   }
 
-  private getDb() {
-    return openDB(this.getDBName(), this.schema.version, {
+  private async getDb() {
+    return openDB(await this.getDBName(), this.schema.version, {
       upgrade: (db, oldVersion, newVersion, transaction) => {
         for (const storeName in this.schema.stores) {
           if (this.schema.stores.hasOwnProperty(storeName)) {

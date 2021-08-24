@@ -16,7 +16,7 @@
     <script type="module" src="./packages/mgt/dist/es6/index.js"></script>
     <script type="module">
       import { CacheService } from './packages/mgt/dist/es6';
-      CacheService.cacheConfig.isEnabled = false;
+      CacheService.cacheConfig.isEnabled = true;
     </script>
   </head>
 
@@ -57,12 +57,15 @@
     <mgt-mock-provider></mgt-mock-provider>
 
     <mgt-login></mgt-login>
+    <mgt-people-picker></mgt-people-picker>
     <mgt-person person-query="me" view="twoLines" person-card="hover" show-presence></mgt-person>
+    <mgt-teams-channel-picker></mgt-teams-channel-picker>
+    <!-- <mgt-person person-query="me" view="twoLines" person-card="hover" show-presence></mgt-person>
     <mgt-people-picker></mgt-people-picker>
     <mgt-teams-channel-picker></mgt-teams-channel-picker>
     <mgt-tasks></mgt-tasks>
     <mgt-agenda group-by-day></mgt-agenda>
     <mgt-people show-presence></mgt-people>
-    <mgt-todo></mgt-todo>
+    <mgt-todo></mgt-todo> -->
   </body>
 </html>

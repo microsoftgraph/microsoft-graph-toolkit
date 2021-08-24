@@ -33,12 +33,16 @@ export class Providers {
     if (provider !== this._globalProvider) {
       if (this._globalProvider) {
         this._globalProvider.removeStateChangedHandler(this.handleProviderStateChanged);
-        this._globalProvider.removeActiveAccountChangedHandler(this.handleActiveAccountChanged);
+        if (this._globalProvider.isMultiAccountEnabled) {
+          this._globalProvider.removeActiveAccountChangedHandler(this.handleActiveAccountChanged);
+        }
       }
 
       if (provider) {
         provider.onStateChanged(this.handleProviderStateChanged);
-        provider.onActiveAccountChanged(this.handleActiveAccountChanged);
+        if (provider.isMultiAccountEnabled) {
+          provider.onActiveAccountChanged(this.handleActiveAccountChanged);
+        }
       }
 
       this._globalProvider = provider;
@@ -113,6 +117,55 @@ export class Providers {
   }
 
   /**
+   * Gets the current signed in user
+   *
+   * @static
+   * @memberof Providers
+   */
+  public static async getCacheId(force?: boolean) {
+    if (this._cacheId && !force) {
+      return this._cacheId;
+    }
+    if (Providers.globalProvider && Providers.globalProvider.state == ProviderState.SignedIn) {
+      if (!this._cacheId || force) {
+        this._cacheId = null;
+        const client = this.client;
+        if (client) {
+          try {
+            const response: User = await client.api('me').get();
+            if (response && response.id) {
+              this._cacheId = this.createCacheId(response);
+            }
+          } catch {}
+        }
+      }
+    }
+    return this._cacheId;
+  }
+
+  /**
+   * Unset the cache ID whenever there's an active account change
+   *
+   * @static
+   * @memberof Providers
+   */
+  public static unsetCacheId() {
+    this._cacheId = null;
+  }
+
+  /**
+   * Create a cache ID
+   *
+   * @static
+   * @param {User} response
+   * @return {*}
+   * @memberof Providers
+   */
+  public static createCacheId(response: User) {
+    return response.id + '-' + response.userPrincipalName;
+  }
+
+  /**
    * Gets the current graph client
    *
    * @readonly
@@ -133,6 +186,7 @@ export class Providers {
 
   private static _globalProvider: IProvider;
   private static _me: User;
+  private static _cacheId: string;
 
   private static handleProviderStateChanged() {
     if (!Providers.globalProvider || Providers.globalProvider.state !== ProviderState.SignedIn) {
