@@ -27,6 +27,16 @@ export abstract class IProvider implements AuthenticationProvider {
    * @memberof IProvider
    */
   public graph: IGraph;
+
+  /**
+   * Specifies if the provider supports multiple account functionality
+   *
+   * @protected
+   * @type {boolean}
+   * @memberof IProvider
+   */
+  protected isMultipleAccountSupported: boolean = false;
+
   /**
    * Enable/Disable multi account functionality
    *
@@ -35,12 +45,21 @@ export abstract class IProvider implements AuthenticationProvider {
    * @memberof IProvider
    */
   protected isMultipleAccountEnabled: boolean = false;
+
+  /**
+   * Specifies if Multi account functionality is supported by the provider and enabled.
+   *
+   * @readonly
+   * @type {boolean}
+   * @memberof IProvider
+   */
+  public get isMultiAccountSupportedAndEnabled(): boolean {
+    return this.isMultipleAccountSupported && this.isMultipleAccountEnabled;
+  }
   private _state: ProviderState;
   private _loginChangedDispatcher = new EventDispatcher<LoginChangedEvent>();
   private _activeAccountChangedDispatcher = new EventDispatcher<ActiveAccountChanged>();
-  public get isMultiAccountEnabled(): boolean {
-    return this.isMultipleAccountEnabled;
-  }
+
   /**
    * returns state of Provider
    *

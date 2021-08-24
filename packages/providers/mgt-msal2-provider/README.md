@@ -4,7 +4,7 @@
 
 The [Microsoft Graph Toolkit (mgt)](https://aka.ms/mgt) library is a collection of authentication providers and UI components powered by Microsoft Graph. 
 
-The `@microsoft/mgt-msal2-provider` package exposes the `Msal2Provider` class which uses [msal-browser](https://www.npmjs.com/package/@azure/msal-browser) to sign in users and acquire tokens to use with Microsoft Graph.
+The `@microsoft/mgt-msal2-provider` package exposes the `Msal2Provider` class which uses [msal-browser](https://www.npmjs.com/package/@azure/msal-browser) to sign in users and acquire tokens to use with Microsoft Graph. This provider also supports multiple account logins.
 
 
 ## Usage
@@ -32,7 +32,7 @@ The `@microsoft/mgt-msal2-provider` package exposes the `Msal2Provider` class wh
       sid?: string, // Session ID
       loginHint?: string,
       domainHint?: string,
-      isMultiAccountEnabled?: boolean // Enables multiple account login if true
+      isMultiAccountEnabled?: boolean // True by default, disables multiple account login if false
       options?: Configuration // msal js Configuration object
     });
     ```
@@ -55,7 +55,7 @@ The `@microsoft/mgt-msal2-provider` package exposes the `Msal2Provider` class wh
       sid?: string, // Session ID
       loginHint?: string,
       domainHint?: string,
-      isMultiAccountEnabled?: boolean // Enables multiple account login if true
+      isMultiAccountEnabled?: boolean // True by default, disables multiple account login if false
       options?: Configuration // msal js Configuration object
     });
     ```
@@ -73,7 +73,7 @@ The `@microsoft/mgt-msal2-provider` package exposes the `Msal2Provider` class wh
     </mgt-msal2-provider> 
     ```
 
-5. Multi account login functionality can be enabled by adding the boolean attribute `multi-user-enabled` in the html:
+5. Multi account login functionality is enabled by default. It can be disabled by adding the boolean attribute `multi-account-disabled` in the html:
 
     ```html
     <script type="module" src="../node_modules/@microsoft/mgt-msal2-provider/dist/es6/index.js" />
@@ -83,11 +83,11 @@ The `@microsoft/mgt-msal2-provider` package exposes the `Msal2Provider` class wh
                       scopes="user.read,people.read" 
                       redirect-uri="https://my.redirect/uri" 
                       authority=""
-                      multi-account-enabled> 
+                      multi-account-disabled> 
     </mgt-msal2-provider> 
     ```
 
-    It can also be enabled in the `Msal2Config` object: 
+    It can also be enabled/disabled in the `Msal2Config` object: 
 
     ```ts
     import {Providers, LoginType} from '@microsoft/mgt-element';
@@ -96,7 +96,7 @@ The `@microsoft/mgt-msal2-provider` package exposes the `Msal2Provider` class wh
     // initialize the auth provider globally
     Providers.globalProvider = new Msal2Provider({
       clientId: 'clientId',
-      isMultiAccountEnabled?: true
+      isMultiAccountEnabled?: false
     });
     ```
     

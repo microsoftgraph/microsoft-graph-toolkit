@@ -235,14 +235,14 @@ export class CacheService {
     }
 
     Providers.onActiveAccountChanged(async () => {
-      if (Providers.globalProvider && Providers.globalProvider.isMultiAccountEnabled) {
+      if (Providers.globalProvider && Providers.globalProvider.isMultiAccountSupportedAndEnabled) {
         await Providers.getCacheId(true);
       }
     });
 
     Providers.onProviderUpdated(async () => {
       if (previousState === ProviderState.SignedIn && Providers.globalProvider.state === ProviderState.SignedOut) {
-        if (Providers.globalProvider.isMultiAccountEnabled) {
+        if (Providers.globalProvider.isMultiAccountSupportedAndEnabled) {
           const id = await Providers.getCacheId();
           if (id !== null) {
             this.clearCacheById(id);
@@ -380,7 +380,7 @@ export class CacheStore<T extends CacheItem> {
    * Returns the name of the parent DB that the cache store belongs to
    */
   public async getDBName(cacheId?: string) {
-    if (Providers.globalProvider && Providers.globalProvider.isMultiAccountEnabled) {
+    if (Providers.globalProvider && Providers.globalProvider.isMultiAccountSupportedAndEnabled) {
       const id = await Providers.getCacheId();
       return `mgt-${this.schema.name}` + `-${id}`;
     } else {

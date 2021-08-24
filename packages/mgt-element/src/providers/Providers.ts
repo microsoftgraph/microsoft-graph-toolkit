@@ -33,14 +33,14 @@ export class Providers {
     if (provider !== this._globalProvider) {
       if (this._globalProvider) {
         this._globalProvider.removeStateChangedHandler(this.handleProviderStateChanged);
-        if (this._globalProvider.isMultiAccountEnabled) {
+        if (this._globalProvider.isMultiAccountSupportedAndEnabled) {
           this._globalProvider.removeActiveAccountChangedHandler(this.handleActiveAccountChanged);
         }
       }
 
       if (provider) {
         provider.onStateChanged(this.handleProviderStateChanged);
-        if (provider.isMultiAccountEnabled) {
+        if (provider.isMultiAccountSupportedAndEnabled) {
           provider.onActiveAccountChanged(this.handleActiveAccountChanged);
         }
       }
