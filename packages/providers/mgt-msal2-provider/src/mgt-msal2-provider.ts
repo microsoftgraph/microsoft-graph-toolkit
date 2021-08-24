@@ -80,6 +80,17 @@ export class MgtMsal2Provider extends MgtBaseProvider {
   public prompt: string;
 
   /**
+   * Disables multiple account capability
+   *
+   * @memberof MgtMsal2Provider
+   */
+  @property({
+    attribute: 'multi-account-disabled',
+    type: Boolean
+  })
+  public isMultiAccountDisabled;
+
+  /**
    * Gets whether this provider can be used in this environment
    *
    * @readonly
@@ -127,6 +138,10 @@ export class MgtMsal2Provider extends MgtBaseProvider {
         let prompt: string = this.prompt.toUpperCase();
         const promptEnum = PromptType[prompt];
         config.prompt = promptEnum;
+      }
+
+      if (this.isMultiAccountDisabled) {
+        config.isMultiAccountDisabled = true;
       }
 
       this.provider = new Msal2Provider(config);

@@ -10,6 +10,7 @@ updates:
     schedule:
       interval: 'daily'
     allow:
-      - dependency-name: "@microsoft/*"
-      - dependency-name: "@azure/*"
-      - dependency-name: "msal"
+      - dependency-name: '@microsoft/*'
+      - dependency-name: '@azure/*'
+      - dependency-name: 'msal'
+      - dependency-name: '@fluentui/*'

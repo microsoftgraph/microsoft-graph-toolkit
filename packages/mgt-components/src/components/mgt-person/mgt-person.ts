@@ -131,6 +131,7 @@ const defaultPersonProperties = [
  * @cssprop --line3-color - {Color} Line 2 color
  * @cssprop --line3-text-transform - {String} Line 2 text transform
  * @cssprop --details-spacing - {Length} spacing between avatar and person details
+ * @cssprop --person-flex-direction - {String} flex direction associated with the avatar and details
  */
 @customElement('mgt-person')
 export class MgtPerson extends MgtTemplatedComponent {
@@ -524,8 +525,13 @@ export class MgtPerson extends MgtTemplatedComponent {
       const detailsTemplate: TemplateResult = this.renderDetails(person, presence);
       const imageWithPresenceTemplate: TemplateResult = this.renderAvatar(person, image, presence);
 
+      const rootClasses = {
+        'person-root': true,
+        clickable: this.personCardInteraction === PersonCardInteraction.click
+      };
+
       personTemplate = html`
-        <div class="person-root">
+        <div class=${classMap(rootClasses)}>
           ${imageWithPresenceTemplate} ${detailsTemplate}
         </div>
       `;
