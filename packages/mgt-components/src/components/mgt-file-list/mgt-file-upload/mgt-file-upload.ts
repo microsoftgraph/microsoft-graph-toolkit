@@ -956,6 +956,9 @@ export class MgtFileUpload extends MgtBaseComponent {
           if (fileItem.driveItem !== null) {
             this.setUploadSuccess(fileItem);
           } else {
+            fileItem.driveItem = {
+              name: fileItem.file.name
+            };
             this.setUploadFail(fileItem, strings.failUploadFile);
           }
         } else {
