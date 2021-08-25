@@ -23,6 +23,9 @@ This issue tracks the publishing progress for a release. It will get updated as 
   - [ ] Get docs PR reviewed and approved
   - [ ] Merge docs PR
 
+#### Design
+  - [ ] Design review
+
 #### Release
   - [ ] Ensure `main` is up to date with `release/latest`
   - [ ] Ensure `./package.json` version in `main` is correct
