@@ -37,6 +37,19 @@
 | [`@microsoft/mgt-spfx`](https://www.npmjs.com/package/@microsoft/mgt-spfx) | <img src="https://img.shields.io/npm/v/@microsoft/mgt-spfx/latest.svg"> | <img src="https://img.shields.io/npm/v/@microsoft/mgt-spfx/next.svg"> |
 | [`@microsoft/mgt-electron-provider`](https://www.npmjs.com/package/@microsoft/mgt-electron-provider) | <img src="https://img.shields.io/npm/v/@microsoft/mgt-electron-provider/latest.svg"> | <img src="https://img.shields.io/npm/v/@microsoft/mgt-electron-provider/next.svg"> |
 
+
+### Preview packages
+
+In addition to the `@next` preview packages, we also ship packages under several other preview tags with various features in progress:
+
+| Tag | Description |
+| - | - |
+| `next` | Next release - updated on each commit to `main` |
+| `next.fluentui` | Next major release (v3) with components based on FluentUI web components |
+
+To install these packages, use the tag as the version in your `npm i` command. Ex: `npm i @microsoft/mgt-element@next.fluentui`. Make sure to install the same version for all mgt packages to avoid any conflicts. Keep in mind, these are features in preview and are not recommended for production use.
+
+
 ## Components
 
 You can explore components and samples with the [playground](https://mgt.dev) powered by storybook.
