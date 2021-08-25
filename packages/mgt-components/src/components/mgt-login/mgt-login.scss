@@ -160,7 +160,7 @@ mgt-login .popup-content {
       content: '';
       position: absolute;
       bottom: 0;
-      background: linear-gradient(to bottom, transparent, $popup__background-color);
+      background: linear-gradient(to bottom, rgba(255, 255, 255, 0), $popup__background-color);
       height: 25%;
       width: 100%;
     }
