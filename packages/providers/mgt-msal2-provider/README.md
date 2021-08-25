@@ -69,7 +69,9 @@ The `@microsoft/mgt-msal2-provider` package exposes the `Msal2Provider` class wh
                       login-type="redirect/popup" 
                       scopes="user.read,people.read" 
                       redirect-uri="https://my.redirect/uri" 
-                      authority=""> 
+                      authority=""
+                      login-hint=""
+                      domain-hint=""> 
     </mgt-msal2-provider> 
     ```
 
@@ -99,8 +101,6 @@ The `@microsoft/mgt-msal2-provider` package exposes the `Msal2Provider` class wh
       isMultiAccountEnabled?: false
     });
     ```
-    
-
 This feature allows multiple accounts to be signed in at the same time, and the user has the ability to switch between the signed in accounts.
 
 See [provider usage documentation](https://docs.microsoft.com/graph/toolkit/providers) to learn about how to use the providers with the mgt components, to sign in/sign out, get access tokens, call Microsoft Graph, and more.
