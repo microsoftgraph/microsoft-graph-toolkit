@@ -234,12 +234,6 @@ export class CacheService {
       previousState = Providers.globalProvider.state;
     }
 
-    Providers.onActiveAccountChanged(async () => {
-      if (Providers.globalProvider && Providers.globalProvider.isMultiAccountSupportedAndEnabled) {
-        await Providers.getCacheId(true);
-      }
-    });
-
     Providers.onProviderUpdated(async () => {
       if (previousState === ProviderState.SignedIn && Providers.globalProvider.state === ProviderState.SignedOut) {
         if (Providers.globalProvider.isMultiAccountSupportedAndEnabled) {

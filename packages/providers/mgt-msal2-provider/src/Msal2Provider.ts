@@ -256,6 +256,17 @@ export class Msal2Provider extends IProvider {
    */
   public isMultipleAccountEnabled: boolean = true;
 
+  /**
+   * Specifies if Multi account functionality is supported by the provider and enabled.
+   *
+   * @readonly
+   * @type {boolean}
+   * @memberof IProvider
+   */
+  public get isMultiAccountSupportedAndEnabled(): boolean {
+    return this.isMultipleAccountEnabled;
+  }
+
   private sessionStorageRequestedScopesKey = 'mgt-requested-scopes';
   private sessionStorageDeniedScopesKey = 'mgt-denied-scopes';
   private homeAccountKey = '275f3731-e4a4-468a-bf9c-baca24b31e26';
@@ -427,7 +438,12 @@ export class Msal2Provider extends IProvider {
    */
   public getActiveAccount() {
     const account = this._publicClientApplication.getActiveAccount();
-    return { name: account.name, mail: account.username, id: account.homeAccountId } as IProviderAccount;
+    return {
+      name: account.name,
+      mail: account.username,
+      id: account.homeAccountId,
+      tenantId: account.tenantId
+    } as IProviderAccount;
   }
 
   /**

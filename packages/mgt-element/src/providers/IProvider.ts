@@ -9,7 +9,6 @@ import { AuthenticationProvider } from '@microsoft/microsoft-graph-client/lib/es
 import { AuthenticationProviderOptions } from '@microsoft/microsoft-graph-client/lib/es/IAuthenticationProviderOptions';
 import { IGraph } from '../IGraph';
 import { EventDispatcher, EventHandler } from '../utils/EventDispatcher';
-import { Providers } from './Providers';
 
 /**
  * Provider Type to be extended for implmenting new providers
@@ -29,24 +28,6 @@ export abstract class IProvider implements AuthenticationProvider {
   public graph: IGraph;
 
   /**
-   * Specifies if the provider supports multiple account functionality
-   *
-   * @protected
-   * @type {boolean}
-   * @memberof IProvider
-   */
-  protected isMultipleAccountSupported: boolean = false;
-
-  /**
-   * Enable/Disable multi account functionality
-   *
-   * @protected
-   * @type {boolean}
-   * @memberof IProvider
-   */
-  protected isMultipleAccountEnabled: boolean = false;
-
-  /**
    * Specifies if Multi account functionality is supported by the provider and enabled.
    *
    * @readonly
@@ -54,7 +35,7 @@ export abstract class IProvider implements AuthenticationProvider {
    * @memberof IProvider
    */
   public get isMultiAccountSupportedAndEnabled(): boolean {
-    return this.isMultipleAccountSupported && this.isMultipleAccountEnabled;
+    return false;
   }
   private _state: ProviderState;
   private _loginChangedDispatcher = new EventDispatcher<LoginChangedEvent>();
@@ -156,7 +137,6 @@ export abstract class IProvider implements AuthenticationProvider {
    * @memberof IProvider
    */
   public setActiveAccount?(user: IProviderAccount) {
-    Providers.unsetCacheId();
     this.fireActiveAccountChanged();
   }
 
@@ -274,4 +254,5 @@ export type IProviderAccount = {
   id: string;
   mail?: string;
   name?: string;
+  tenantId?: string;
 };

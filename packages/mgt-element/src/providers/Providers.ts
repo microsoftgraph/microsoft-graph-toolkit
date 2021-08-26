@@ -149,7 +149,7 @@ export class Providers {
    * @static
    * @memberof Providers
    */
-  public static unsetCacheId() {
+  private static unsetCacheId() {
     this._cacheId = null;
   }
 
@@ -161,7 +161,7 @@ export class Providers {
    * @return {*}
    * @memberof Providers
    */
-  public static createCacheId(response: User) {
+  private static createCacheId(response: User) {
     return response.id + '-' + response.userPrincipalName;
   }
 
@@ -198,6 +198,7 @@ export class Providers {
   }
 
   private static handleActiveAccountChanged() {
+    Providers.unsetCacheId();
     Providers._activeAccountChangedDispatcher.fire(null);
   }
 }
