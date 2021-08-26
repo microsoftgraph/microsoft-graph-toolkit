@@ -2,9 +2,9 @@
 
 [![npm](https://img.shields.io/npm/v/@microsoft/mgt-teams-msal2-provider?style=for-the-badge)](https://www.npmjs.com/package/@microsoft/mgt-teams-msal2-provider)
 
-The `@microsoft/mgt-teams-msal2-provider` package exposes the `TeamsMsal2Provider` class to be used inside your Microsoft Teams tab applications to authenticate users, to call Microsoft Graph, and to power the mgt components. The provider is built on top of [msal-browser](https://github.com/AzureAD/microsoft-authentication-library-for-js/tree/dev/lib/msal-browser) and supports both the interactive sign in flow on the client and Single Sign-On (SSO) flow via your own backend. SSO mode is enabled by setting `ssoUrl` \ `sso-url` and requires a backend service to handle the on-behalf-of flow.
+The `@microsoft/mgt-teams-msal2-provider` package exposes the `TeamsMsal2Provider` class to be used inside your Microsoft Teams tab applications to authenticate users, to call Microsoft Graph, and to power the Microsoft Graph Toolkit components. The provider is built on top of [msal-browser](https://github.com/AzureAD/microsoft-authentication-library-for-js/tree/dev/lib/msal-browser) and supports both the interactive sign in flow on the client and Single Sign-On (SSO) flow via your own backend. SSO mode is enabled by setting `ssoUrl` \ `sso-url` and requires a backend service to handle the on-behalf-of flow.
 
-[See docs for full documentation of the TeamsMsal2Provider](https://docs.microsoft.com/graph/toolkit/providers/teams-msal2)
+[See the full documentation of the TeamsMsal2Provider](https://docs.microsoft.com/graph/toolkit/providers/teams-msal2)
 
 The [Microsoft Graph Toolkit (mgt)](https://aka.ms/mgt) library is a collection of authentication providers and UI components powered by Microsoft Graph. 
 
