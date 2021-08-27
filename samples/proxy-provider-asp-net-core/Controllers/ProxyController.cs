@@ -33,38 +33,38 @@ namespace MicrosoftGraphAspNetCoreConnectSample.Controllers
         [Route("{*all}")]
         public async Task<IActionResult> GetAsync(string all)
         {
-            return await ProcessRequestAsync("GET", all, null).ConfigureAwait(false);
+            return await ProcessRequestAsync(Microsoft.Graph.HttpMethods.GET, all, null).ConfigureAwait(false);
         }
 
         [HttpPost]
         [Route("{*all}")]
         public async Task<IActionResult> PostAsync(string all, [FromBody] object body)
         {
-            return await ProcessRequestAsync("POST", all, body).ConfigureAwait(false);
+            return await ProcessRequestAsync(Microsoft.Graph.HttpMethods.POST, all, body).ConfigureAwait(false);
         }
 
         [HttpDelete]
         [Route("{*all}")]
         public async Task<IActionResult> DeleteAsync(string all)
         {
-            return await ProcessRequestAsync("DELETE", all, null).ConfigureAwait(false);
+            return await ProcessRequestAsync(Microsoft.Graph.HttpMethods.DELETE, all, null).ConfigureAwait(false);
         }
 
         [HttpPut]
         [Route("{*all}")]
         public async Task<IActionResult> PutAsync(string all, [FromBody] object body)
         {
-            return await ProcessRequestAsync("PUT", all, body).ConfigureAwait(false);
+            return await ProcessRequestAsync(Microsoft.Graph.HttpMethods.PUT, all, body).ConfigureAwait(false);
         }
 
         [HttpPatch]
         [Route("{*all}")]
         public async Task<IActionResult> PatchAsync(string all, [FromBody] object body)
         {
-            return await ProcessRequestAsync("PATCH", all, body).ConfigureAwait(false);
+            return await ProcessRequestAsync(Microsoft.Graph.HttpMethods.PATCH, all, body).ConfigureAwait(false);
         }
 
-        private async Task<IActionResult> ProcessRequestAsync(string method, string all, object content)
+        private async Task<IActionResult> ProcessRequestAsync(Microsoft.Graph.HttpMethods method, string all, object content)
         {
             var graphClient = _graphServiceClientFactory.GetAuthenticatedGraphClient((ClaimsIdentity)User.Identity);
 
