@@ -100,20 +100,36 @@ export class Providers {
    * @static
    * @memberof Providers
    */
-  public static async me() {
-    if (!this._me) {
-      const client = this.client;
-      if (client) {
-        try {
-          const response: User = await client.api('me').get();
-          if (response && response.id) {
-            this._me = response;
-          }
-        } catch {}
-      }
+  public static me(): Promise<User> {
+    if (!this.client) {
+      this._mePromise = null;
+      return null;
     }
 
-    return this._me;
+    if (!this._mePromise) {
+      this._mePromise = this.getMe();
+    }
+
+    return this._mePromise;
+  }
+
+  /**
+   * Get current signed in user details
+   *
+   * @private
+   * @static
+   * @return {*}  {Promise<User>}
+   * @memberof Providers
+   */
+  private static async getMe(): Promise<User> {
+    try {
+      const response: User = await this.client.api('me').get();
+      if (response && response.id) {
+        return response;
+      }
+    } catch {}
+
+    return null;
   }
 
   /**
@@ -122,20 +138,16 @@ export class Providers {
    * @static
    * @memberof Providers
    */
-  public static async getCacheId(force?: boolean) {
-    if (this._cacheId && !force) {
+  public static async getCacheId() {
+    if (this._cacheId) {
       return this._cacheId;
     }
     if (Providers.globalProvider && Providers.globalProvider.state == ProviderState.SignedIn) {
-      if (!this._cacheId || force) {
-        this._cacheId = null;
+      if (!this._cacheId) {
         const client = this.client;
         if (client) {
           try {
-            const response: User = await client.api('me').get();
-            if (response && response.id) {
-              this._cacheId = this.createCacheId(response);
-            }
+            this._cacheId = await this.createCacheId();
           } catch {}
         }
       }
@@ -151,18 +163,55 @@ export class Providers {
    */
   private static unsetCacheId() {
     this._cacheId = null;
+    this._mePromise = null;
   }
 
   /**
-   * Create a cache ID
+   * Create cache ID
+   *
+   * @private
+   * @static
+   * @return {*}  {Promise<string>}
+   * @memberof Providers
+   */
+  private static async createCacheId(): Promise<string> {
+    if (Providers.globalProvider.isMultiAccountSupportedAndEnabled) {
+      const cacheId = this.createCacheIdWithAccountDetails();
+      if (cacheId) {
+        return cacheId;
+      }
+    }
+    return await this.createCacheIdWithUserDetails();
+  }
+
+  /**
+   * Create a cache ID with user userID and principal name
    *
    * @static
    * @param {User} response
    * @return {*}
    * @memberof Providers
    */
-  private static createCacheId(response: User) {
-    return response.id + '-' + response.userPrincipalName;
+  private static async createCacheIdWithUserDetails(): Promise<string> {
+    const response: User = await this.me();
+    if (response && response.id) {
+      return response.id + '-' + response.userPrincipalName;
+    } else return null;
+  }
+
+  /**
+   * Create cache ID with tenant ID and user ID
+   *
+   * @private
+   * @static
+   * @return {*}  {string}
+   * @memberof Providers
+   */
+  private static createCacheIdWithAccountDetails(): string {
+    const user = Providers.globalProvider.getActiveAccount();
+    if (user.tenantId && user.id) {
+      return user.tenantId + user.id;
+    } else return null;
   }
 
   /**
@@ -185,13 +234,13 @@ export class Providers {
   private static _activeAccountChangedDispatcher: EventDispatcher<any> = new EventDispatcher<any>();
 
   private static _globalProvider: IProvider;
-  private static _me: User;
   private static _cacheId: string;
+  private static _mePromise: Promise<User>;
 
   private static handleProviderStateChanged() {
     if (!Providers.globalProvider || Providers.globalProvider.state !== ProviderState.SignedIn) {
       // clear current signed in user info
-      Providers._me = null;
+      Providers._mePromise = null;
     }
 
     Providers._eventDispatcher.fire(ProvidersChangedState.ProviderStateChanged);
