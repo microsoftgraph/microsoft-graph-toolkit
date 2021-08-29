@@ -239,15 +239,6 @@ export class Msal2Provider extends IProvider {
   public scopes: string[];
 
   /**
-   * Specifies that MSAL2Provider supports multiple accounts
-   *
-   * @protected
-   * @type {boolean}
-   * @memberof Msal2Provider
-   */
-  protected readonly isMultipleAccountSupported: boolean = true;
-
-  /**
    *
    * Enables multi account functionality if true, disables if false
    * @private
@@ -616,7 +607,7 @@ export class Msal2Provider extends IProvider {
       this.setState(ProviderState.SignedOut);
     } else {
       await this._publicClientApplication.logoutPopup({ ...logOutRequest });
-      if (this._publicClientApplication.getAllAccounts.length == 1 || this.isMultipleAccountEnabled) {
+      if (this._publicClientApplication.getAllAccounts.length == 1 || !this.isMultipleAccountEnabled) {
         this.setState(ProviderState.SignedOut);
       } else {
         this.trySilentSignIn();
