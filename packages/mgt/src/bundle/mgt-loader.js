@@ -5,7 +5,7 @@
  * -------------------------------------------------------------------------------------------
  */
 
-(async function () {
+(function () {
   'use strict';
 
   var rootPath = getScriptPath();
@@ -14,8 +14,6 @@
   if (es6()) {
     window.WebComponents = window.WebComponents || {};
     window.WebComponents.root = rootPath + 'wc/';
-
-    await waitUntilReady();
 
     addScript(rootPath + 'wc/webcomponents-loader.js');
     addScript(rootPath + 'mgt.es6.js');
@@ -50,19 +48,6 @@
     return true;
   }
 
-  function waitUntilReady() {
-
-    return new Promise(function (resolve, reject) {
-      if (document.body) {
-        resolve();
-      }
-
-      document.addEventListener('DOMContentLoaded', function () {
-        resolve();
-      })
-    });
-  };
-
   function addScript(src, onload) {
     // TODO: support async loading
 
@@ -73,7 +58,7 @@
     //   tag.addEventListener("load", onload);
     // }
 
-    // document.write(tag.outerHTML);
-    document.head.appendChild(tag);
+    document.write(tag.outerHTML);
+    // document.head.appendChild(tag);
   }
 })();
