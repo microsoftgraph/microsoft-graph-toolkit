@@ -10,6 +10,14 @@ import { Providers } from '../providers/Providers';
 import { ProviderState } from '../providers/IProvider';
 
 /**
+ * Localstorage key for storing names of cache databases
+ *
+ * @type {string}
+ *
+ */
+const dbListKey: string = 'mgt-db-list';
+
+/**
  * Holds the cache options for cache store
  *
  * @export
@@ -153,7 +161,7 @@ export class CacheService {
    * @memberof CacheService
    */
   public static clearCacheById(id: string) {
-    const oldDbArray: Array<string> = JSON.parse(localStorage.getItem('mgt-db-list'));
+    const oldDbArray: Array<string> = JSON.parse(localStorage.getItem(dbListKey));
     if (oldDbArray) {
       let newDbArray: Array<string> = [];
       oldDbArray.forEach(async x => {
@@ -164,8 +172,8 @@ export class CacheService {
         }
       });
       newDbArray.length > 0
-        ? localStorage.setItem('mgt-db-list', JSON.stringify(newDbArray))
-        : localStorage.removeItem('mgt-db-list');
+        ? localStorage.setItem(dbListKey, JSON.stringify(newDbArray))
+        : localStorage.removeItem(dbListKey);
     }
   }
 
@@ -384,11 +392,11 @@ export class CacheStore<T extends CacheItem> {
     if (dbName) {
       return openDB(dbName, this.schema.version, {
         upgrade: (db, oldVersion, newVersion, transaction) => {
-          let dbArray: Array<string> = JSON.parse(localStorage.getItem('mgt-db-list')) || [];
+          let dbArray: Array<string> = JSON.parse(localStorage.getItem(dbListKey)) || [];
           if (!dbArray.includes(dbName)) {
             dbArray.push(dbName);
           }
-          localStorage.setItem('mgt-db-list', JSON.stringify(dbArray));
+          localStorage.setItem(dbListKey, JSON.stringify(dbArray));
           for (const storeName in this.schema.stores) {
             if (this.schema.stores.hasOwnProperty(storeName)) {
               db.objectStoreNames.contains(storeName) || db.createObjectStore(storeName);
