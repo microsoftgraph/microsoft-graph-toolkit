@@ -7,7 +7,7 @@ const isIE = window.navigator.userAgent.indexOf('MSIE ') > -1 || window.navigato
 
 export const MsalConfig: Configuration = {
   auth: {
-    clientId: 'a974dfa0-9f57-49b9-95db-90f04ce2111a',
+    clientId: '2dfea037-938a-4ed8-9b35-c05708a1b241',
     authority: 'https://login.microsoftonline.com/common/',
     redirectUri: 'http://localhost:4200/',
     postLogoutRedirectUri: 'http://localhost:4200/',
@@ -22,7 +22,6 @@ export const MsalConfig: Configuration = {
 const consentScopes = ['user.read', 'openid', 'profile'];
 const protectedResourceMap = new Map<string, Array<string>>();
 protectedResourceMap.set('https://graph.microsoft.com/v1.0/', consentScopes);
-
 
 export const MsalInterceptorConfig: MsalInterceptorConfiguration = {
   interactionType: !isIE ? InteractionType.Popup : InteractionType.Redirect,

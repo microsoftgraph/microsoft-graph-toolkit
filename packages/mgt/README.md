@@ -30,8 +30,10 @@ The components are also available as [React components](https://docs.microsoft.c
 [Providers](https://docs.microsoft.com/graph/toolkit/providers) enable authentication and provide the implementation for acquiring access tokens on various platforms and expose a Microsoft Graph Client for calling the Microsoft Graph APIs. The components work best when used with a provider, but the providers can be used on their own.
 
 * [Msal Provider](https://docs.microsoft.com/graph/toolkit/providers/msal)
+* [Msal2 Provider](https://docs.microsoft.com/graph/toolkit/providers/msal2)
 * [SharePoint Provider](https://docs.microsoft.com/graph/toolkit/providers/sharepoint)
 * [Teams Provider](https://docs.microsoft.com/graph/toolkit/providers/teams)
+* [Teams Msal2 Provider](https://docs.microsoft.com/graph/toolkit/providers/teams-msal2)
 * [Proxy Provider](https://docs.microsoft.com/graph/toolkit/providers/proxy)
 * [Simple Provider](https://docs.microsoft.com/graph/toolkit/providers/custom)
 
