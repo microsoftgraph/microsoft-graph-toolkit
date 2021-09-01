@@ -14,6 +14,7 @@ import { IGraph, MgtBaseComponent } from '@microsoft/mgt-element';
 import { ViewType } from '../../../graph/types';
 import { DriveItem } from '@microsoft/microsoft-graph-types';
 import {
+  clearFilesCache,
   getGraphfile,
   getUploadSession,
   sendFileContent,
@@ -196,6 +197,12 @@ export interface MgtFileUploadConfig {
  * @cssprop --file-upload-dialog-primarybutton-background-color - {Color} Background color of primary button
  * @cssprop --file-upload-dialog-primarybutton-color - {Color} Color text of primary button
  * @cssprop --file-item-margin - {String} File item margin
+ * @cssprop --file-item-background-color--hover - {Color} File item background hover color
+ * @cssprop --file-item-border-top - {String} File item border top style
+ * @cssprop --file-item-border-left - {String} File item border left style
+ * @cssprop --file-item-border-right - {String} File item border right style
+ * @cssprop --file-item-border-bottom - {String} File item border bottom style
+ * @cssprop --file-item-background-color--active - {Color} File item background active color
  */
 @customElement('mgt-file-upload')
 export class MgtFileUpload extends MgtBaseComponent {
@@ -366,10 +373,13 @@ export class MgtFileUpload extends MgtBaseComponent {
    */
   protected renderFileTemplate(fileItem: MgtFileUploadItem, folderTabStyle: string) {
     return html`
-        <div class='file-upload-table' style="${fileItem.completed ? 'width: 100%;' : null}">
-          <div class="${folderTabStyle}">
+        <div class="${fileItem.completed ? 'file-upload-table' : 'file-upload-table upload'}">
+          <div class="${
+            folderTabStyle +
+            (fileItem.fieldUploadResponse === 'lastModifiedDateTime' ? ' file-upload-dialog-success' : '')
+          }">
             <div class='file-upload-cell'>
-              <div style=${fileItem.fieldUploadResponse === 'description' ? 'opacity: 0.5;' : null}>
+              <div style=${fileItem.fieldUploadResponse === 'description' ? 'opacity: 0.5;' : ''}>
                 <div class="file-upload-status">
                   ${fileItem.iconStatus}
                 </div>
@@ -499,7 +509,7 @@ export class MgtFileUpload extends MgtBaseComponent {
     if (event.dataTransfer.items && event.dataTransfer.items.length > 0) {
       event.dataTransfer.dropEffect = this._dropEffect;
       const dragFileBorder: HTMLElement = this.renderRoot.querySelector('#file-upload-border');
-      dragFileBorder.style.display = 'inline-block';
+      dragFileBorder.classList.add('visible');
     }
   };
 
@@ -515,7 +525,7 @@ export class MgtFileUpload extends MgtBaseComponent {
     this._dragCounter--;
     if (this._dragCounter === 0) {
       const dragFileBorder: HTMLElement = this.renderRoot.querySelector('#file-upload-border');
-      dragFileBorder.style.display = 'none';
+      dragFileBorder.classList.remove('visible');
     }
   };
 
@@ -529,7 +539,7 @@ export class MgtFileUpload extends MgtBaseComponent {
     event.stopPropagation();
 
     const dragFileBorder: HTMLElement = this.renderRoot.querySelector('#file-upload-border');
-    dragFileBorder.style.display = 'none';
+    dragFileBorder.classList.remove('visible');
     if (event.dataTransfer && event.dataTransfer.items) {
       this.getSelectedFiles(await this.getFilesFromUploadArea(event.dataTransfer.items));
     }
@@ -699,7 +709,7 @@ export class MgtFileUpload extends MgtBaseComponent {
           if (this._applyAll === true) {
             return [this._applyAll, this._applyAllConflitBehavior];
           }
-          fileUploadDialog.style.display = 'inline-block';
+          fileUploadDialog.classList.add('visible');
           this._dialogTitle = strings.fileReplaceTitle;
           this._dialogContent = strings.fileReplace.replace('{FileName}', file.name);
           this._dialogCheckBox = strings.checkApplyAll;
@@ -713,7 +723,7 @@ export class MgtFileUpload extends MgtBaseComponent {
             let fileUploadDialogCancel: HTMLElement = this.renderRoot.querySelector('.file-upload-dialog-cancel');
             let fileUploadDialogCheck: HTMLInputElement = this.renderRoot.querySelector('#file-upload-dialog-check');
             fileUploadDialogCheck.checked = false;
-            fileUploadDialogCheck.style.display = '';
+            fileUploadDialogCheck.classList.remove('hide');
 
             //Remove and include event listener to validate options.
             fileUploadDialogOk.removeEventListener('click', onOkDialogClick);
@@ -725,19 +735,19 @@ export class MgtFileUpload extends MgtBaseComponent {
 
             //Replace File
             function onOkDialogClick() {
-              fileUploadDialog.style.display = 'none';
+              fileUploadDialog.classList.remove('visible');
               resolve([fileUploadDialogCheck.checked ? 1 : 0, MgtFileUploadConflictBehavior.replace]);
             }
 
             //Rename File
             function onCancelDialogClick() {
-              fileUploadDialog.style.display = 'none';
+              fileUploadDialog.classList.remove('visible');
               resolve([fileUploadDialogCheck.checked ? 1 : 0, MgtFileUploadConflictBehavior.rename]);
             }
 
             //Cancel File
             function onCloseDialogClick() {
-              fileUploadDialog.style.display = 'none';
+              fileUploadDialog.classList.remove('visible');
               resolve([-1]);
             }
           });
@@ -746,7 +756,7 @@ export class MgtFileUpload extends MgtBaseComponent {
         }
         break;
       case 'MaxFiles':
-        fileUploadDialog.style.display = 'inline-block';
+        fileUploadDialog.classList.add('visible');
         this._dialogTitle = strings.maximumFilesTitle;
         this._dialogContent = strings.maximumFiles.split('{MaxNumber}').join(fileUploadList.maxUploadFile.toString());
         this._dialogCheckBox = strings.checkApplyAll;
@@ -760,7 +770,7 @@ export class MgtFileUpload extends MgtBaseComponent {
           let fileUploadDialogClose: HTMLElement = this.renderRoot.querySelector('.file-upload-dialog-close');
           let fileUploadDialogCheck: HTMLInputElement = this.renderRoot.querySelector('#file-upload-dialog-check');
           fileUploadDialogCheck.checked = false;
-          fileUploadDialogCheck.style.display = 'none';
+          fileUploadDialogCheck.classList.add('hide');
 
           //Remove and include event listener to validate options.
           fileUploadDialogOk.removeEventListener('click', onOkDialogClick);
@@ -771,20 +781,20 @@ export class MgtFileUpload extends MgtBaseComponent {
           fileUploadDialogClose.addEventListener('click', onCancelDialogClick);
 
           function onOkDialogClick() {
-            fileUploadDialog.style.display = 'none';
+            fileUploadDialog.classList.remove('visible');
             //Continue upload
             resolve([1]);
           }
 
           function onCancelDialogClick() {
-            fileUploadDialog.style.display = 'none';
+            fileUploadDialog.classList.remove('visible');
             //Cancel all
             resolve([0]);
           }
         });
         break;
       case 'ExcludedFileType':
-        fileUploadDialog.style.display = 'inline-block';
+        fileUploadDialog.classList.add('visible');
         this._dialogTitle = strings.fileTypeTitle;
         this._dialogContent =
           strings.fileType.replace('{FileName}', file.name) +
@@ -802,7 +812,7 @@ export class MgtFileUpload extends MgtBaseComponent {
           let fileUploadDialogClose: HTMLElement = this.renderRoot.querySelector('.file-upload-dialog-close');
           let fileUploadDialogCheck: HTMLInputElement = this.renderRoot.querySelector('#file-upload-dialog-check');
           fileUploadDialogCheck.checked = false;
-          fileUploadDialogCheck.style.display = '';
+          fileUploadDialogCheck.classList.remove('hide');
 
           //Remove and include event listener to validate options.
           fileUploadDialogOk.removeEventListener('click', onOkDialogClick);
@@ -813,19 +823,19 @@ export class MgtFileUpload extends MgtBaseComponent {
           fileUploadDialogClose.addEventListener('click', onCancelDialogClick);
 
           function onOkDialogClick() {
-            fileUploadDialog.style.display = 'none';
+            fileUploadDialog.classList.remove('visible');
             //Confirm info
             resolve([fileUploadDialogCheck.checked ? 1 : 0]);
           }
 
           function onCancelDialogClick() {
-            fileUploadDialog.style.display = 'none';
+            fileUploadDialog.classList.remove('visible');
             //Cancel all
             resolve([0]);
           }
         });
       case 'MaxFileSize':
-        fileUploadDialog.style.display = 'inline-block';
+        fileUploadDialog.classList.add('visible');
         this._dialogTitle = strings.maximumFileSizeTitle;
         this._dialogContent =
           strings.maximumFileSize
@@ -844,7 +854,7 @@ export class MgtFileUpload extends MgtBaseComponent {
           let fileUploadDialogClose: HTMLElement = this.renderRoot.querySelector('.file-upload-dialog-close');
           let fileUploadDialogCheck: HTMLInputElement = this.renderRoot.querySelector('#file-upload-dialog-check');
           fileUploadDialogCheck.checked = false;
-          fileUploadDialogCheck.style.display = '';
+          fileUploadDialogCheck.classList.remove('hide');
 
           //Remove and include event listener to validate options.
           fileUploadDialogOk.removeEventListener('click', onOkDialogClick);
@@ -855,13 +865,13 @@ export class MgtFileUpload extends MgtBaseComponent {
           fileUploadDialogClose.addEventListener('click', onCancelDialogClick);
 
           function onOkDialogClick() {
-            fileUploadDialog.style.display = 'none';
+            fileUploadDialog.classList.remove('visible');
             //Confirm info
             resolve([fileUploadDialogCheck.checked ? 1 : 0]);
           }
 
           function onCancelDialogClick() {
-            fileUploadDialog.style.display = 'none';
+            fileUploadDialog.classList.remove('visible');
             //Cancel all
             resolve([0]);
           }
@@ -1056,6 +1066,7 @@ export class MgtFileUpload extends MgtBaseComponent {
       fileUpload.fieldUploadResponse = 'lastModifiedDateTime';
       fileUpload.completed = true;
       super.requestStateUpdate(true);
+      clearFilesCache();
     }, 500);
   }
 
