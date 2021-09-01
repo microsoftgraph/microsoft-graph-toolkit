@@ -182,7 +182,7 @@ export class MgtPersonCard extends MgtTemplatedComponent {
     }
 
     this._personDetails = value;
-    this.personImage = null;
+    this.personImage = this.getImage();
     this.requestStateUpdate();
   }
   /**

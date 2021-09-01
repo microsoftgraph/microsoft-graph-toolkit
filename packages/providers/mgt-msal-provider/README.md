@@ -2,11 +2,15 @@
 
 [![npm](https://img.shields.io/npm/v/@microsoft/mgt-msal-provider?style=for-the-badge)](https://www.npmjs.com/package/@microsoft/mgt-msal-provider)
 
-The [Microsoft Graph Toolkit (mgt)](https://aka.ms/mgt) library is a collection of authentication providers and UI components powered by Microsoft Graph. 
+⚠️⚠️⚠️ This package is no longer receiving new features and will only receive critical bug and security fixes. All new applications should use [`@microsoft/mgt-msal2-provider`](https://docs.microsoft.com/graph/toolkit/providers/msal2) instead. ⚠️⚠️⚠️
 
-The `@microsoft/mgt-msal-provider` package exposes the `MsalProvider` class which uses MSAL.js to sign in users and acquire tokens to use with Microsoft Graph.
+The `@microsoft/mgt-msal-provider` package exposes the `MsalProvider` class which uses MSAL.js to sign in users and acquire tokens to use with Microsoft Graph via the Implicit Grant Flow.
+
+For authentication based on the more secure OAuth 2.0 Authorization Code Flow with PKCE, please use the [`@microsoft/mgt-msal2-provider`](https://docs.microsoft.com/graph/toolkit/providers/msal2) instead.
 
 [See docs for full documentation of the MsalProvider](https://docs.microsoft.com/graph/toolkit/providers/msal)
+
+The [Microsoft Graph Toolkit (mgt)](https://aka.ms/mgt) library is a collection of authentication providers and UI components powered by Microsoft Graph. 
 
 ## Usage
 
