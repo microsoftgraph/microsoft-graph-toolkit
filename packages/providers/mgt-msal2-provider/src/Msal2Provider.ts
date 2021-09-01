@@ -240,16 +240,24 @@ export class Msal2Provider extends IProvider {
 
   /**
    *
-   * Disables multi account functionality
+   * Enables multi account functionality if true, disables if false
    * @private
    * @type {boolean}
    * @memberof Msal2Provider
    */
-  private _isMultipleAccountEnabled: boolean = true;
+  public isMultipleAccountEnabled: boolean = true;
 
-  public get isMultiAccountEnabled(): boolean {
-    return this._isMultipleAccountEnabled;
+  /**
+   * Specifies if Multi account functionality is supported by the provider and enabled.
+   *
+   * @readonly
+   * @type {boolean}
+   * @memberof IProvider
+   */
+  public get isMultiAccountSupportedAndEnabled(): boolean {
+    return this.isMultipleAccountEnabled;
   }
+
   private sessionStorageRequestedScopesKey = 'mgt-requested-scopes';
   private sessionStorageDeniedScopesKey = 'mgt-denied-scopes';
   private homeAccountKey = '275f3731-e4a4-468a-bf9c-baca24b31e26';
@@ -315,7 +323,7 @@ export class Msal2Provider extends IProvider {
     this._prompt = typeof config.prompt !== 'undefined' ? config.prompt : PromptType.SELECT_ACCOUNT;
 
     const msal2config = config as Msal2Config;
-    this._isMultipleAccountEnabled =
+    this.isMultipleAccountEnabled =
       typeof msal2config.isMultiAccountEnabled !== 'undefined' ? msal2config.isMultiAccountEnabled : true;
 
     this.graph = createFromProvider(this);
@@ -421,7 +429,12 @@ export class Msal2Provider extends IProvider {
    */
   public getActiveAccount() {
     const account = this._publicClientApplication.getActiveAccount();
-    return { name: account.name, mail: account.username, id: account.homeAccountId } as IProviderAccount;
+    return {
+      name: account.name,
+      mail: account.username,
+      id: account.homeAccountId,
+      tenantId: account.tenantId
+    } as IProviderAccount;
   }
 
   /**
@@ -594,7 +607,7 @@ export class Msal2Provider extends IProvider {
       this.setState(ProviderState.SignedOut);
     } else {
       await this._publicClientApplication.logoutPopup({ ...logOutRequest });
-      if (this._publicClientApplication.getAllAccounts.length == 1 || this._isMultipleAccountEnabled) {
+      if (this._publicClientApplication.getAllAccounts.length == 1 || !this.isMultipleAccountEnabled) {
         this.setState(ProviderState.SignedOut);
       } else {
         this.trySilentSignIn();

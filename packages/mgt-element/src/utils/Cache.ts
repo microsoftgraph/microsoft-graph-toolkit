@@ -10,6 +10,14 @@ import { Providers } from '../providers/Providers';
 import { ProviderState } from '../providers/IProvider';
 
 /**
+ * Localstorage key for storing names of cache databases
+ *
+ * @type {string}
+ *
+ */
+const dbListKey: string = 'mgt-db-list';
+
+/**
  * Holds the cache options for cache store
  *
  * @export
@@ -146,13 +154,6 @@ export class CacheService {
   }
 
   /**
-   * Clears all the stores within the cache
-   */
-  public static clearCaches() {
-    this.cacheStore.forEach(async x => indexedDB.deleteDatabase(await x.getDBName()));
-  }
-
-  /**
    * Clears cache for a single user when ID is passed
    *
    * @static
@@ -160,12 +161,20 @@ export class CacheService {
    * @memberof CacheService
    */
   public static clearCacheById(id: string) {
-    this.cacheStore.forEach(async x => {
-      const dbName = await x.getDBName(id);
-      if (dbName.includes(id)) {
-        indexedDB.deleteDatabase(dbName);
-      }
-    });
+    const oldDbArray: Array<string> = JSON.parse(localStorage.getItem(dbListKey));
+    if (oldDbArray) {
+      let newDbArray: Array<string> = [];
+      oldDbArray.forEach(async x => {
+        if (x.includes(id)) {
+          indexedDB.deleteDatabase(x);
+        } else {
+          newDbArray.push(x);
+        }
+      });
+      newDbArray.length > 0
+        ? localStorage.setItem(dbListKey, JSON.stringify(newDbArray))
+        : localStorage.removeItem(dbListKey);
+    }
   }
 
   private static cacheStore: Map<string, CacheStore<CacheItem>> = new Map();
@@ -234,20 +243,12 @@ export class CacheService {
       previousState = Providers.globalProvider.state;
     }
 
-    Providers.onActiveAccountChanged(async () => {
-      if (Providers.globalProvider && Providers.globalProvider.isMultiAccountEnabled) {
-        await Providers.getCacheId(true);
-      }
-    });
     Providers.onProviderUpdated(async () => {
       if (previousState === ProviderState.SignedIn && Providers.globalProvider.state === ProviderState.SignedOut) {
-        if (Providers.globalProvider.isMultiAccountEnabled) {
-          const id = await Providers.getCacheId();
-          if (id !== null) {
-            this.clearCacheById(id);
-          }
+        const id = await Providers.getCacheId();
+        if (id !== null) {
+          this.clearCacheById(id);
         }
-        this.clearCaches();
       }
       previousState = Providers.globalProvider.state;
     });
@@ -333,8 +334,8 @@ export class CacheStore<T extends CacheItem> {
       return null;
     }
     try {
-      var output = (await this.getDb()).get(this.store, key);
-      return output;
+      const db = await this.getDb();
+      return db.get(this.store, key);
     } catch (e) {
       return null;
     }
@@ -379,24 +380,30 @@ export class CacheStore<T extends CacheItem> {
   /**
    * Returns the name of the parent DB that the cache store belongs to
    */
-  public async getDBName(cacheId?: string) {
-    if (Providers.globalProvider && Providers.globalProvider.isMultiAccountEnabled) {
-      const id = await Providers.getCacheId();
+  public async getDBName() {
+    const id = await Providers.getCacheId();
+    if (id) {
       return `mgt-${this.schema.name}` + `-${id}`;
-    } else {
-      return `mgt-${this.schema.name}`;
     }
   }
 
   private async getDb() {
-    return openDB(await this.getDBName(), this.schema.version, {
-      upgrade: (db, oldVersion, newVersion, transaction) => {
-        for (const storeName in this.schema.stores) {
-          if (this.schema.stores.hasOwnProperty(storeName)) {
-            db.objectStoreNames.contains(storeName) || db.createObjectStore(storeName);
+    const dbName = await this.getDBName();
+    if (dbName) {
+      return openDB(dbName, this.schema.version, {
+        upgrade: (db, oldVersion, newVersion, transaction) => {
+          let dbArray: Array<string> = JSON.parse(localStorage.getItem(dbListKey)) || [];
+          if (!dbArray.includes(dbName)) {
+            dbArray.push(dbName);
+          }
+          localStorage.setItem(dbListKey, JSON.stringify(dbArray));
+          for (const storeName in this.schema.stores) {
+            if (this.schema.stores.hasOwnProperty(storeName)) {
+              db.objectStoreNames.contains(storeName) || db.createObjectStore(storeName);
+            }
           }
         }
-      }
-    });
+      });
+    }
   }
 }

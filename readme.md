@@ -32,6 +32,7 @@
 | [`@microsoft/mgt-msal-provider`](https://www.npmjs.com/package/@microsoft/mgt-msal-provider) | <img src="https://img.shields.io/npm/v/@microsoft/mgt-msal-provider/latest.svg"> | <img src="https://img.shields.io/npm/v/@microsoft/mgt-msal-provider/next.svg"> |
 | [`@microsoft/mgt-msal2-provider`](https://www.npmjs.com/package/@microsoft/mgt-msal2-provider) | <img src="https://img.shields.io/npm/v/@microsoft/mgt-msal2-provider/latest.svg"> | <img src="https://img.shields.io/npm/v/@microsoft/mgt-msal2-provider/next.svg"> |
 | [`@microsoft/mgt-teams-provider`](https://www.npmjs.com/package/@microsoft/mgt-teams-provider) | <img src="https://img.shields.io/npm/v/@microsoft/mgt-teams-provider/latest.svg"> | <img src="https://img.shields.io/npm/v/@microsoft/mgt-teams-provider/next.svg"> |
+| [`@microsoft/mgt-teams-msal2-provider`](https://www.npmjs.com/package/@microsoft/mgt-teams-msal2-provider) | <img src="https://img.shields.io/npm/v/@microsoft/mgt-teams-msal2-provider/latest.svg"> | <img src="https://img.shields.io/npm/v/@microsoft/mgt-teams-msal2-provider/next.svg"> |
 | [`@microsoft/mgt-sharepoint-provider`](https://www.npmjs.com/package/@microsoft/mgt-sharepoint-provider) | <img src="https://img.shields.io/npm/v/@microsoft/mgt-sharepoint-provider/latest.svg"> | <img src="https://img.shields.io/npm/v/@microsoft/mgt-sharepoint-provider/next.svg"> |
 | [`@microsoft/mgt-proxy-provider`](https://www.npmjs.com/package/@microsoft/mgt-proxy-provider) | <img src="https://img.shields.io/npm/v/@microsoft/mgt-proxy-provider/latest.svg"> | <img src="https://img.shields.io/npm/v/@microsoft/mgt-proxy-provider/next.svg"> |
 | [`@microsoft/mgt-spfx`](https://www.npmjs.com/package/@microsoft/mgt-spfx) | <img src="https://img.shields.io/npm/v/@microsoft/mgt-spfx/latest.svg"> | <img src="https://img.shields.io/npm/v/@microsoft/mgt-spfx/next.svg"> |
@@ -75,13 +76,14 @@ All web components are also available as React component - see [@microsoft/mgt-r
 
 [Providers](https://docs.microsoft.com/graph/toolkit/providers) enable authentication and provide the implementation for acquiring access tokens on various platforms. The providers also expose a Microsoft Graph Client for calling the Microsoft Graph APIs. The components work best when used with a provider, but the providers can be used on their own as well.
 
-* [Msal Provider](https://docs.microsoft.com/graph/toolkit/providers/msal)
-* [Msal2 Provider](https://docs.microsoft.com/graph/toolkit/providers/msal2)
-* [SharePoint Provider](https://docs.microsoft.com/graph/toolkit/providers/sharepoint)
-* [Teams Provider](https://docs.microsoft.com/graph/toolkit/providers/teams)
-* [Proxy Provider](https://docs.microsoft.com/graph/toolkit/providers/proxy)
-* [Simple Provider](https://docs.microsoft.com/graph/toolkit/providers/custom)
-* [Electron Provider](https://docs.microsoft.com/graph/toolkit/providers/electron)
+* [MsalProvider](https://docs.microsoft.com/graph/toolkit/providers/msal)
+* [Msal2Provider](https://docs.microsoft.com/graph/toolkit/providers/msal2)
+* [SharePointProvider](https://docs.microsoft.com/graph/toolkit/providers/sharepoint)
+* [TeamsProvider](https://docs.microsoft.com/graph/toolkit/providers/teams)
+* [TeamsMsal2Provider](https://docs.microsoft.com/graph/toolkit/providers/teams-msal2)
+* [ProxyProvider](https://docs.microsoft.com/graph/toolkit/providers/proxy)
+* [SimpleProvider](https://docs.microsoft.com/graph/toolkit/providers/custom)
+* [ElectronProvider](https://docs.microsoft.com/graph/toolkit/providers/electron)
 
 You can also create your own providers by extending the [IProvider](https://docs.microsoft.com/graph/toolkit/providers/custom) abstract class.
 

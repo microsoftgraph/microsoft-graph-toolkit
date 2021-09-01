@@ -14,9 +14,6 @@
     <!-- <script src="./packages/mgt/dist/bundle/mgt-loader.js"></script> -->
 
     <script type="module" src="./packages/mgt/dist/es6/index.js"></script>
-    <script type="module">
-      import { CacheService } from './packages/mgt/dist/es6';
-      CacheService.cacheConfig.isEnabled = true;
     </script>
   </head>
 
@@ -26,24 +23,24 @@
       auth-popup-url="auth.html"
     ></mgt-teams-provider> -->
 
-    <!-- <mgt-teams-sso-provider
+    <!-- <mgt-teams-msal2-provider
       client-id="72482bff-ecae-44f5-8fdc-513b7f5602e7"
-      scopes="user.read,user.read.all,mail.readBasic,people.read.all,sites.read.all,user.readbasic.all,contacts.read,presence.read,presence.read.all,tasks.readwrite,tasks.read"
+      scopes="user.read,user.read.all,mail.readBasic,people.read,people.read.all,sites.read.all,user.readbasic.all,contacts.read,presence.read,presence.read.all,tasks.readwrite,tasks.read,calendars.read,group.read.all"
       auth-popup-url="auth.html"
-    ></mgt-teams-sso-provider> -->
+    ></mgt-teams-msal2-provider> -->
 
-    <!-- Teams SSO provider in SSO mode (see "teams-sso-node" sample) -->
-    <!-- <mgt-teams-sso-provider
+    <!-- Teams Msal2 provider in SSO mode (see "teams-sso-node" sample) -->
+    <!-- <mgt-teams-msal2-provider
       client-id="72482bff-ecae-44f5-8fdc-513b7f5602e7"
-      scopes="user.read,user.read.all,mail.readBasic,people.read.all,sites.read.all,user.readbasic.all,contacts.read,presence.read,presence.read.all,tasks.readwrite,tasks.read"
+      scopes="user.read,user.read.all,mail.readBasic,people.read,people.read.all,sites.read.all,user.readbasic.all,contacts.read,presence.read,presence.read.all,tasks.readwrite,tasks.read,calendars.read,group.read.all"
       auth-popup-url="auth.html"
       sso-url="http://localhost:5000/api/token"
       http-method="POST"
-    ></mgt-teams-sso-provider> -->
+    ></mgt-teams-msal2-provider> -->
 
     <!-- <mgt-msal-provider
       client-id="a974dfa0-9f57-49b9-95db-90f04ce2111a"
-      scopes="user.read,people.read,user.readbasic.all,contacts.read,calendars.read,presence.read.all,tasks.readwrite,presence.read,user.read.all,group.read.all,tasks.read"
+      scopes="user.read,user.read.all,mail.readBasic,people.read,people.read.all,sites.read.all,user.readbasic.all,contacts.read,presence.read,presence.read.all,tasks.readwrite,tasks.read,calendars.read,group.read.all"
       redirect-uri="http://localhost:3000"
       depends-on="mgt-teams-provider"
     ></mgt-msal-provider> -->
@@ -51,7 +48,7 @@
     <!-- <mgt-msal2-provider
       client-id="2dfea037-938a-4ed8-9b35-c05708a1b241"
       redirect-uri="http://localhost:3000"
-      scopes="user.read,people.read,user.readbasic.all,contacts.read,calendars.read,presence.read.all,tasks.readwrite,presence.read,user.read.all,group.read.all,tasks.read"
+      scopes="user.read,user.read.all,mail.readBasic,people.read,people.read.all,sites.read.all,user.readbasic.all,contacts.read,presence.read,presence.read.all,tasks.readwrite,tasks.read,calendars.read,group.read.all"
     ></mgt-msal2-provider> -->
 
     <mgt-mock-provider></mgt-mock-provider>
