@@ -26,14 +26,18 @@ export abstract class IProvider implements AuthenticationProvider {
    * @memberof IProvider
    */
   public graph: IGraph;
+
   /**
-   * Enable/Disable multi account functionality
+   * Specifies if Multi account functionality is supported by the provider and enabled.
    *
-   * @protected
+   * @readonly
    * @type {boolean}
    * @memberof IProvider
    */
   protected isMultipleAccountDisabled: boolean = true;
+  public get isMultiAccountSupportedAndEnabled(): boolean {
+    return false;
+  }
   private _state: ProviderState;
   private _loginChangedDispatcher = new EventDispatcher<LoginChangedEvent>();
   private _activeAccountChangedDispatcher = new EventDispatcher<ActiveAccountChanged>();
@@ -284,4 +288,5 @@ export type IProviderAccount = {
   id: string;
   mail?: string;
   name?: string;
+  tenantId?: string;
 };
