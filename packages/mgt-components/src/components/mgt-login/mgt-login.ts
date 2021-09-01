@@ -141,7 +141,7 @@ export class MgtLogin extends MgtTemplatedComponent {
    */
   public async login(): Promise<void> {
     const provider = Providers.globalProvider;
-    if (!provider.isMultiAccountSupported && (this.userDetails || !this.fireCustomEvent('loginInitiated'))) {
+    if (!provider.isMultiAccountSupportedAndEnabled && (this.userDetails || !this.fireCustomEvent('loginInitiated'))) {
       return;
     }
     if (provider && provider.login) {
@@ -167,13 +167,13 @@ export class MgtLogin extends MgtTemplatedComponent {
     }
 
     const provider = Providers.globalProvider;
-    if (provider && provider.isMultiAccountSupported) {
+    if (provider && provider.isMultiAccountSupportedAndEnabled) {
       localStorage.removeItem(provider.getActiveAccount().id + this._userDetailsKey);
     }
     if (provider && provider.logout) {
       await provider.logout();
       this.userDetails = null;
-      if (provider.isMultiAccountSupported) {
+      if (provider.isMultiAccountSupportedAndEnabled) {
         localStorage.removeItem(provider.getActiveAccount().id + this._userDetailsKey);
       }
       this.hideFlyout();
@@ -214,7 +214,7 @@ export class MgtLogin extends MgtTemplatedComponent {
           this._image = this.userDetails.personImage;
         }
 
-        if (provider.isMultiAccountSupported) {
+        if (provider.isMultiAccountSupportedAndEnabled) {
           localStorage.setItem(
             Providers.globalProvider.getActiveAccount().id + this._userDetailsKey,
             JSON.stringify(this.userDetails)
@@ -358,7 +358,7 @@ export class MgtLogin extends MgtTemplatedComponent {
    * @memberof MgtLogin
    */
   protected renderAddAccountContent() {
-    if (Providers.globalProvider.isMultiAccountSupported) {
+    if (Providers.globalProvider.isMultiAccountSupportedAndEnabled) {
       return html`
           <div class="add-account">
              <button
@@ -400,7 +400,10 @@ export class MgtLogin extends MgtTemplatedComponent {
    * @memberof MgtLogin
    */
   renderAccounts() {
-    if (Providers.globalProvider.state === ProviderState.SignedIn && Providers.globalProvider.isMultiAccountSupported) {
+    if (
+      Providers.globalProvider.state === ProviderState.SignedIn &&
+      Providers.globalProvider.isMultiAccountSupportedAndEnabled
+    ) {
       const provider = Providers.globalProvider;
       const list = provider.getAllAccounts();
 
