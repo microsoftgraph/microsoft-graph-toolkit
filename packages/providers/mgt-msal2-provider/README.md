@@ -60,7 +60,6 @@ The `@microsoft/mgt-msal2-provider` package exposes the `Msal2Provider` class wh
       domainHint?: string,
       isMultiAccountEnabled?: boolean, // True by default, disables multiple account login if false
       isIncrementalConsentDisabled?: boolean, //Disable incremental consent, true by default
-      options?: Configuration // msal js Configuration object
     });
 
 4. Alternatively, initialize the provider in html (only `client-id` is required):
@@ -94,6 +93,34 @@ The `@microsoft/mgt-msal2-provider` package exposes the `Msal2Provider` class wh
     ```
 
     It can also be enabled/disabled in the `Msal2Config` object:
+
+    ```ts
+    import {Providers, LoginType} from '@microsoft/mgt-element';
+    import {Msal2Provider, PromptType} from '@microsoft/mgt-msal2-provider';
+
+    // initialize the auth provider globally
+    Providers.globalProvider = new Msal2Provider({
+      clientId: 'clientId',
+      isMultiAccountEnabled?: false
+    });
+    ```
+This feature allows multiple accounts to be signed in at the same time, and the user has the ability to switch between the signed in accounts.
+
+5. Multi account login functionality is enabled by default. It can be disabled by adding the boolean attribute `multi-account-disabled` in the html:
+
+    ```html
+    <script type="module" src="../node_modules/@microsoft/mgt-msal2-provider/dist/es6/index.js" />
+
+    <mgt-msal2-provider client-id="<YOUR_CLIENT_ID>"
+                      login-type="redirect/popup" 
+                      scopes="user.read,people.read" 
+                      redirect-uri="https://my.redirect/uri" 
+                      authority=""
+                      multi-account-disabled> 
+    </mgt-msal2-provider> 
+    ```
+
+    It can also be enabled/disabled in the `Msal2Config` object: 
 
     ```ts
     import {Providers, LoginType} from '@microsoft/mgt-element';
