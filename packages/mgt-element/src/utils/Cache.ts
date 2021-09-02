@@ -10,6 +10,14 @@ import { Providers } from '../providers/Providers';
 import { ProviderState } from '../providers/IProvider';
 
 /**
+ * Localstorage key for storing names of cache databases
+ *
+ * @type {string}
+ *
+ */
+const dbListKey: string = 'mgt-db-list';
+
+/**
  * Holds the cache options for cache store
  *
  * @export
@@ -146,10 +154,27 @@ export class CacheService {
   }
 
   /**
-   * Clears all the stores within the cache
+   * Clears cache for a single user when ID is passed
+   *
+   * @static
+   * @param {string} id
+   * @memberof CacheService
    */
-  public static clearCaches() {
-    this.cacheStore.forEach(x => indexedDB.deleteDatabase(x.getDBName()));
+  public static clearCacheById(id: string) {
+    const oldDbArray: Array<string> = JSON.parse(localStorage.getItem(dbListKey));
+    if (oldDbArray) {
+      let newDbArray: Array<string> = [];
+      oldDbArray.forEach(async x => {
+        if (x.includes(id)) {
+          indexedDB.deleteDatabase(x);
+        } else {
+          newDbArray.push(x);
+        }
+      });
+      newDbArray.length > 0
+        ? localStorage.setItem(dbListKey, JSON.stringify(newDbArray))
+        : localStorage.removeItem(dbListKey);
+    }
   }
 
   private static cacheStore: Map<string, CacheStore<CacheItem>> = new Map();
@@ -218,9 +243,12 @@ export class CacheService {
       previousState = Providers.globalProvider.state;
     }
 
-    Providers.onProviderUpdated(() => {
+    Providers.onProviderUpdated(async () => {
       if (previousState === ProviderState.SignedIn && Providers.globalProvider.state === ProviderState.SignedOut) {
-        this.clearCaches();
+        const id = await Providers.getCacheId();
+        if (id !== null) {
+          this.clearCacheById(id);
+        }
       }
       previousState = Providers.globalProvider.state;
     });
@@ -306,7 +334,8 @@ export class CacheStore<T extends CacheItem> {
       return null;
     }
     try {
-      return (await this.getDb()).get(this.store, key);
+      const db = await this.getDb();
+      return db.get(this.store, key);
     } catch (e) {
       return null;
     }
@@ -351,19 +380,30 @@ export class CacheStore<T extends CacheItem> {
   /**
    * Returns the name of the parent DB that the cache store belongs to
    */
-  public getDBName() {
-    return `mgt-${this.schema.name}`;
+  public async getDBName() {
+    const id = await Providers.getCacheId();
+    if (id) {
+      return `mgt-${this.schema.name}` + `-${id}`;
+    }
   }
 
-  private getDb() {
-    return openDB(this.getDBName(), this.schema.version, {
-      upgrade: (db, oldVersion, newVersion, transaction) => {
-        for (const storeName in this.schema.stores) {
-          if (this.schema.stores.hasOwnProperty(storeName)) {
-            db.objectStoreNames.contains(storeName) || db.createObjectStore(storeName);
+  private async getDb() {
+    const dbName = await this.getDBName();
+    if (dbName) {
+      return openDB(dbName, this.schema.version, {
+        upgrade: (db, oldVersion, newVersion, transaction) => {
+          let dbArray: Array<string> = JSON.parse(localStorage.getItem(dbListKey)) || [];
+          if (!dbArray.includes(dbName)) {
+            dbArray.push(dbName);
+          }
+          localStorage.setItem(dbListKey, JSON.stringify(dbArray));
+          for (const storeName in this.schema.stores) {
+            if (this.schema.stores.hasOwnProperty(storeName)) {
+              db.objectStoreNames.contains(storeName) || db.createObjectStore(storeName);
+            }
           }
         }
-      }
-    });
+      });
+    }
   }
 }

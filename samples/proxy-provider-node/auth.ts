@@ -37,7 +37,8 @@ async function validateJwt(authHeader: string): Promise<string | null> {
 
     const validationOptions = {
       audience: process.env.PROXY_APP_ID,
-      issuer: `https://login.microsoftonline.com/${process.env.PROXY_APP_TENANT_ID}/v2.0`
+      // uncomment to validate tenant in single tenant scenarios
+      // issuer: `https://login.microsoftonline.com/${process.env.PROXY_APP_TENANT_ID}/v2.0` 
     };
 
     jwt.verify(token, getSigningKey, validationOptions, (err, payload) => {
@@ -78,7 +79,7 @@ export default async function getAccessTokenOnBehalfOf(authHeader: string): Prom
         scopes: ['https://graph.microsoft.com/.default']
       });
 
-      return result.accessToken;
+      return result ? result.accessToken : null;
     } catch (error) {
       console.log(`Token error: ${error}`);
       return null;

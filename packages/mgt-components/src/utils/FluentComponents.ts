@@ -9,6 +9,10 @@ export const registerFluentComponents = (...fluentComponents) => {
 
   const registry = {
     register(container: any) {
+      if (!container) {
+        return;
+      }
+
       for (const component of fluentComponents) {
         component().register(container);
       }

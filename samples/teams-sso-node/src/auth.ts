@@ -18,7 +18,7 @@ export function validateJwt(req: Request, res: Response, next: NextFunction): vo
   const ssoToken = req.query.ssoToken ? req.query.ssoToken?.toString() : authHeader.split(' ')[1];
   if (ssoToken) {
     const validationOptions = {
-      audience: process.env.CLIENT_ID,
+      audience: process.env.CLIENT_ID
     };
     jwt.verify(ssoToken, getSigningKey, validationOptions, (err, payload) => {
       if (err) {
@@ -75,7 +75,7 @@ export async function getAccessTokenOnBehalfOfPost(req: Request, res: Response):
       skipCache: true
     });
     res.json({ access_token: result?.accessToken });
-  } catch (error) {
+  } catch (error: any) {
     if (error.errorCode === 'invalid_grant' || error.errorCode === 'interaction_required') {
       // This is expected if it's the user's first time running the app ( user must consent ) or the admin requires MFA
       res.status(403).json({ error: 'consent_required' }); // This error triggers the consent flow in the client.
@@ -116,7 +116,7 @@ export async function getAccessTokenOnBehalfOf(req: Request, res: Response): Pro
       skipCache: true
     });
     res.json({ access_token: result?.accessToken });
-  } catch (error) {
+  } catch (error: any) {
     if (error.errorCode === 'invalid_grant' || error.errorCode === 'interaction_required') {
       // This is expected if it's the user's first time running the app ( user must consent ) or the admin requires MFA
       res.status(403).json({ error: 'consent_required' }); // This error triggers the consent flow in the client.
