@@ -415,7 +415,7 @@ export class MgtFileUpload extends MgtBaseComponent {
       </div>
       <div class='file-upload-table'>
         <div class='file-upload-cell'>
-          <div class='file-upload-table'>
+          <div class="${fileItem.completed ? 'file-upload-table' : 'file-upload-table upload'}">
             <fluent-progress class="file-upload-bar" value="${fileItem.percent}" ></fluent-progress>
             <div class='file-upload-cell' style="padding-left:5px">
               <span>${fileItem.percent}%</span>
