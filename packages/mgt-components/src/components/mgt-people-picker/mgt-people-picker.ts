@@ -943,7 +943,9 @@ export class MgtPeoplePicker extends MgtTemplatedComponent {
    */
   protected addPerson(person: IDynamicPerson): void {
     if (person) {
-      this.clearInput();
+      setTimeout(() => {
+        this.clearInput();
+      }, 50);
       const duplicatePeople = this.selectedPeople.filter(p => {
         if (!person.id && p.displayName) {
           return p.displayName === person.displayName;
