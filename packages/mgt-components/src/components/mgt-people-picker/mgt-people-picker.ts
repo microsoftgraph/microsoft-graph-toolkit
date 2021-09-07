@@ -13,7 +13,7 @@ import { findGroups, findGroupsFromGroup, getGroupsForGroupIds, GroupType, getGr
 import { findPeople, getPeople, PersonType, UserType } from '../../graph/graph.people';
 import { findUsers, findGroupMembers, getUser, getUsersForUserIds } from '../../graph/graph.user';
 import { IDynamicPerson, ViewType } from '../../graph/types';
-import { Providers, ProviderState, MgtTemplatedComponent } from '@microsoft/mgt-element';
+import { Providers, ProviderState, MgtTemplatedComponent, arraysAreEqual } from '@microsoft/mgt-element';
 import '../../styles/style-helper';
 import '../sub-components/mgt-spinner/mgt-spinner';
 import { debounce, isValidEmail } from '../../utils/Utils';
@@ -337,6 +337,31 @@ export class MgtPeoplePicker extends MgtTemplatedComponent {
     type: String
   })
   public selectionMode: string;
+
+  private _userIds: string[];
+  /**
+   * Array of the only users to be searched.
+   *
+   * @type {string[]}
+   * @memberof MgtPeoplePicker
+   */
+  @property({
+    attribute: 'user-ids',
+    converter: value => {
+      return value.split(',').map(v => v.trim());
+    },
+    type: String
+  })
+  public get userIds(): string[] {
+    return this._userIds;
+  }
+  public set userIds(value: string[]) {
+    if (arraysAreEqual(this._userIds, value)) {
+      return;
+    }
+    this._userIds = value;
+    this.requestStateUpdate(true);
+  }
 
   /**
    * Get the scopes required for people picker
@@ -846,7 +871,11 @@ export class MgtPeoplePicker extends MgtTemplatedComponent {
         } else {
           if (this.type === PersonType.person || this.type === PersonType.any) {
             try {
-              people = (await findPeople(graph, input, this.showMax, this.userType)) || [];
+              if (this.userIds.length) {
+                people = await getUsersForUserIds(graph, this.userIds);
+              } else {
+                people = (await findPeople(graph, input, this.showMax, this.userType)) || [];
+              }
             } catch (e) {
               // nop
             }
