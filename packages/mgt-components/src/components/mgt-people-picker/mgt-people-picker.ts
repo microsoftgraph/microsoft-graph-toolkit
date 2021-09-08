@@ -954,7 +954,9 @@ export class MgtPeoplePicker extends MgtTemplatedComponent {
    */
   protected addPerson(person: IDynamicPerson): void {
     if (person) {
-      this.clearInput();
+      setTimeout(() => {
+        this.clearInput();
+      }, 50);
       const duplicatePeople = this.selectedPeople.filter(p => {
         if (!person.id && p.displayName) {
           return p.displayName === person.displayName;
@@ -1242,7 +1244,7 @@ export class MgtPeoplePicker extends MgtTemplatedComponent {
   /**
    * Gets the text of the highlighed people and writes it to the clipboard
    */
-  private writeHighlightedText() {
+  private async writeHighlightedText() {
     const copyText = [];
     for (let i = 0; i < this._highlightedUsers.length; i++) {
       const element: any = this._highlightedUsers[i];
@@ -1262,60 +1264,56 @@ export class MgtPeoplePicker extends MgtTemplatedComponent {
       copiedTextStr = JSON.stringify(copyText);
     }
 
-    navigator.clipboard
-      .writeText(copiedTextStr)
-      .then(() => {})
-      .catch(err => {});
+    await navigator.clipboard.writeText(copiedTextStr);
   }
 
   /**
    * Handles the cut event when it is fired
    */
-  private handleCut() {
-    this.writeHighlightedText();
+  private async handleCut() {
+    await this.writeHighlightedText();
     this.removeHighlightedOnCut();
   }
 
   /**
    * Handles the copy event when it is fired
    */
-  private handleCopy() {
-    this.writeHighlightedText();
+  private async handleCopy() {
+    await this.writeHighlightedText();
   }
 
   /**
    * Parses the copied people text and adds them when you paste
    */
-  private handlePaste() {
+  private async handlePaste() {
     try {
-      navigator.clipboard.readText().then((copiedText: string) => {
-        if (copiedText) {
-          try {
-            const people = JSON.parse(copiedText);
-            if (people && people.length > 0) {
-              for (const person of people) {
-                this.addPerson(person);
-              }
-            }
-          } catch (error) {
-            if (error instanceof SyntaxError) {
-              const _delimeters = [',', ';'];
-              let listOfUsers: Array<string>;
-              try {
-                for (let i = 0; i < _delimeters.length; i++) {
-                  listOfUsers = copiedText.split(_delimeters[i]);
-                  if (listOfUsers.length > 1) {
-                    this.hideFlyout();
-                    this.selectUsersById(listOfUsers);
-                    break;
-                  }
-                }
-                // tslint:disable-next-line: no-empty
-              } catch (error) {}
+      const copiedText = await navigator.clipboard.readText();
+      if (copiedText) {
+        try {
+          const people = JSON.parse(copiedText);
+          if (people && people.length > 0) {
+            for (const person of people) {
+              this.addPerson(person);
             }
           }
+        } catch (error) {
+          if (error instanceof SyntaxError) {
+            const _delimeters = [',', ';'];
+            let listOfUsers: Array<string>;
+            try {
+              for (let i = 0; i < _delimeters.length; i++) {
+                listOfUsers = copiedText.split(_delimeters[i]);
+                if (listOfUsers.length > 1) {
+                  this.hideFlyout();
+                  this.selectUsersById(listOfUsers);
+                  break;
+                }
+              }
+              // tslint:disable-next-line: no-empty
+            } catch (error) {}
+          }
         }
-      });
+      }
     } catch (error) {
       // 'navigator.clipboard.readText is not a function' error is thrown in Mozilla
       // more information here https://developer.mozilla.org/en-US/docs/Web/API/Clipboard/readText#browser_compatibility

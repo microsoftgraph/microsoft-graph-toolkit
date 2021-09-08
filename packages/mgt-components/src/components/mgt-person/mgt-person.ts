@@ -524,8 +524,13 @@ export class MgtPerson extends MgtTemplatedComponent {
       const detailsTemplate: TemplateResult = this.renderDetails(person, presence);
       const imageWithPresenceTemplate: TemplateResult = this.renderAvatar(person, image, presence);
 
+      const rootClasses = {
+        'person-root': true,
+        clickable: this.personCardInteraction === PersonCardInteraction.click
+      };
+
       personTemplate = html`
-        <div class="person-root">
+        <div class=${classMap(rootClasses)}>
           ${imageWithPresenceTemplate} ${detailsTemplate}
         </div>
       `;
@@ -737,7 +742,7 @@ export class MgtPerson extends MgtTemplatedComponent {
     }
 
     return html`
-      <div class="user-presence" title=${presence.activity} aria-label=${presence.activity}>
+      <div class="user-presence" title=${presence.activity} aria-label=${presence.activity} role="img">
         ${iconHtml}
       </div>
     `;
