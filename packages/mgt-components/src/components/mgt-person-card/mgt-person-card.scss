@@ -55,11 +55,19 @@ $person-card-details-item-font-size: var(--person-card-details-item-font-size, 1
 
   .close-card-container {
     .close-button {
+      --focus-stroke-width: none;
+      --control-corner-radius: 2;
+      --accent-foreground-active: none;
       position: absolute;
       right: 10px;
       margin-top: 9px;
       z-index: 1;
       --accent-foreground-hover: none;
+      border: 1px solid transparent;
+      &:focus{
+        outline: none;
+        border: 1px solid #2B2B2B;
+      }
       svg {
         width: 9px;
         height: 9px;
@@ -98,6 +106,14 @@ $person-card-details-item-font-size: var(--person-card-details-item-font-size, 1
         cursor: pointer;
         font-size: 12px;
         white-space: nowrap;
+        padding: 6px 8px 6px 8px;
+        border: 1px solid transparent;
+
+        &:focus{
+          outline: none !important;
+          border: 1px solid #2B2B2B;
+          border-radius:2px;
+        }
 
         &:not(:last-child) {
           margin-right: 20px;
@@ -131,9 +147,17 @@ $person-card-details-item-font-size: var(--person-card-details-item-font-size, 1
       background: $background-color;
       border-top: 1px solid set-var(line-seperator__color, $theme-default, $common);
     }
-
-    .expanded-details-button:hover {
-      background-color: set-var(background-color--hover, $theme-default, $common);
+    .expanded-details-button{
+      &:hover{
+        background-color: set-var(background-color--hover, $theme-default, $common);
+      }
+      &:focus{
+        background-color: set-var(background-color--hover, $theme-default, $common);
+        outline: none !important;
+        border: 1px solid #2B2B2B;
+        border-bottom-left-radius: 4px;
+        border-bottom-right-radius: 4px;
+      }
     }
   }
 
@@ -157,6 +181,7 @@ $person-card-details-item-font-size: var(--person-card-details-item-font-size, 1
         overflow-x: hidden;
         padding: 0px;
         border-top: 1px solid set-var(tab__line__color, $theme-default, $common);
+        scrollbar-width: thin;
         .inserted {
           max-width: var(--mgt-flyout-set-width, 375px);
           min-width: var(--mgt-flyout-set-width, 360px);
@@ -164,7 +189,6 @@ $person-card-details-item-font-size: var(--person-card-details-item-font-size, 1
         .overviewPanel {
           max-width: var(--mgt-flyout-set-width, 375px);
         }
-
         &::-webkit-scrollbar {
           height: 4em;
           width: 4px;

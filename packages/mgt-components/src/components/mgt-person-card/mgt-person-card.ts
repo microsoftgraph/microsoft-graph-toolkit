@@ -464,7 +464,7 @@ export class MgtPersonCard extends MgtTemplatedComponent {
       <div class="root" dir=${this.direction}>
         ${navigationTemplate}
         <div class="close-card-container">
-          <fluent-button appearance="lightweight" class="close-button" @click=${() => this.closeCard()}>
+          <fluent-button appearance="lightweight" class="close-button" @click=${() => this.closeCard()} tabindex="0">
               ${getSvg(SvgIcon.Close)}
           </fluent-button>
         </div>
@@ -561,7 +561,7 @@ export class MgtPersonCard extends MgtTemplatedComponent {
     let email: TemplateResult;
     if (getEmailFromGraphEntity(person)) {
       email = html`
-        <div class="icon" @click=${() => this.emailUser()}>
+        <div class="icon" @click=${() => this.emailUser()}  tabindex="0">
           ${getSvg(SvgIcon.SmallEmail)}
           <span>${this.strings.sendEmailLinkSubtitle}</span>
         </div>
@@ -572,7 +572,7 @@ export class MgtPersonCard extends MgtTemplatedComponent {
     let chat: TemplateResult;
     if (userPerson.userPrincipalName) {
       chat = html`
-        <div class="icon" @click=${() => this.chatUser()}>
+        <div class="icon" @click=${() => this.chatUser()} tabindex="0">
           ${getSvg(SvgIcon.SmallChat)}
           <span>${this.strings.startChatLinkSubtitle}</span>
         </div>
@@ -595,7 +595,7 @@ export class MgtPersonCard extends MgtTemplatedComponent {
    */
   protected renderExpandedDetailsButton(): TemplateResult {
     return html`
-      <div class="expanded-details-button" @click=${() => this.showExpandedDetails()}>
+      <div class="expanded-details-button" @click=${this.showExpandedDetails} @keyup=${(e: KeyboardEvent) => this.showExpandedDetails(e)}  tabindex="0">
         ${getSvg(SvgIcon.ExpandDown)}
       </div>
     `;
@@ -1004,7 +1004,12 @@ export class MgtPersonCard extends MgtTemplatedComponent {
    * @protected
    * @memberof MgtPersonCard
    */
-  protected showExpandedDetails() {
+  protected showExpandedDetails(event: KeyboardEvent) {
+    if(event){
+      if(event.keyCode !== 13 && event.type !== "click") { 
+        return;
+      }
+    }
     const root = this.renderRoot.querySelector('.root');
     if (root && root.animate) {
       // play back
