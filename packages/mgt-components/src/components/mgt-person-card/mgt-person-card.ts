@@ -595,7 +595,8 @@ export class MgtPersonCard extends MgtTemplatedComponent {
    */
   protected renderExpandedDetailsButton(): TemplateResult {
     return html`
-      <div class="expanded-details-button" @click=${this.showExpandedDetails} @keyup=${(e: KeyboardEvent) => this.showExpandedDetails(e)}  tabindex="0">
+      <div class="expanded-details-button" @click=${this.showExpandedDetails} @keyup=${(e: KeyboardEvent) =>
+      this.showExpandedDetails(e)}  tabindex="0">
         ${getSvg(SvgIcon.ExpandDown)}
       </div>
     `;
@@ -1005,8 +1006,8 @@ export class MgtPersonCard extends MgtTemplatedComponent {
    * @memberof MgtPersonCard
    */
   protected showExpandedDetails(event: KeyboardEvent) {
-    if(event){
-      if(event.keyCode !== 13 && event.type !== "click") { 
+    if (event) {
+      if (event.keyCode !== 13 && event.type !== 'click') {
         return;
       }
     }
