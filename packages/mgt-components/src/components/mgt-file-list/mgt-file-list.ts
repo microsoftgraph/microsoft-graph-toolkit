@@ -41,10 +41,13 @@ import { strings } from './strings';
 import { MgtFile } from '../mgt-file/mgt-file';
 import { MgtFileUploadConfig } from './mgt-file-upload/mgt-file-upload';
 
-import { fluentProgressRing } from '@fluentui/web-components';
-import { registerFluentComponents } from '../../utils/FluentComponents';
+export { FluentDesignSystemProvider, FluentProgressRing } from '@fluentui/web-components';
+export * from './mgt-file-upload/mgt-file-upload';
 
-registerFluentComponents(fluentProgressRing);
+// import { fluentProgressRing } from '@fluentui/web-components';
+// import { registerFluentComponents } from '../../utils/FluentComponents';
+
+// registerFluentComponents(fluentProgressRing);
 
 /**
  * The File List component displays a list of multiple folders and files by
@@ -573,6 +576,7 @@ export class MgtFileList extends MgtTemplatedComponent {
    */
   protected renderFiles(): TemplateResult {
     return html`
+    <fluent-design-system-provider use-defaults>
       <div id="file-list-wrapper" class="file-list-wrapper" dir=${this.direction}>
         ${this.enableFileUpload ? this.renderFileUpload() : null}
         <ul
@@ -599,6 +603,7 @@ export class MgtFileList extends MgtTemplatedComponent {
             : null
         }
       </div>
+    </fluent-design-system-provider>
     `;
   }
 
