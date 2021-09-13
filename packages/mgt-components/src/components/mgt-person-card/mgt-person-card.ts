@@ -823,12 +823,15 @@ export class MgtPersonCard extends MgtTemplatedComponent {
       }
     }
 
-    this.state = await getPersonCardGraphData(
-      graph,
-      this.personDetails,
-      this._me === this.personDetails.id,
-      MgtPersonCard.config
-    );
+    // populate state
+    if (this.personDetails && this.personDetails.id) {
+      this.state = await getPersonCardGraphData(
+        graph,
+        this.personDetails,
+        this._me === this.personDetails.id,
+        MgtPersonCard.config
+      );
+    }
 
     this.loadSections();
 
