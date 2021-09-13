@@ -9,7 +9,7 @@ import { User } from '@microsoft/microsoft-graph-types';
 import { customElement, html, internalProperty, property, TemplateResult } from 'lit-element';
 import { classMap } from 'lit-html/directives/class-map';
 import { repeat } from 'lit-html/directives/repeat';
-import { findGroups, findGroupsFromGroup, getGroupsForGroupIds, GroupType, getGroup } from '../../graph/graph.groups';
+import { findGroups, getGroupsForGroupIds, GroupType, getGroup } from '../../graph/graph.groups';
 import { findPeople, getPeople, PersonType, UserType } from '../../graph/graph.people';
 import { findUsers, findGroupMembers, getUser, getUsersForUserIds } from '../../graph/graph.user';
 import { IDynamicPerson, ViewType } from '../../graph/types';
@@ -17,7 +17,7 @@ import { Providers, ProviderState, MgtTemplatedComponent, arraysAreEqual } from 
 import '../../styles/style-helper';
 import '../sub-components/mgt-spinner/mgt-spinner';
 import { debounce, isValidEmail } from '../../utils/Utils';
-import { MgtPerson, PersonViewType } from '../mgt-person/mgt-person';
+import { MgtPerson } from '../mgt-person/mgt-person';
 import { PersonCardInteraction } from '../PersonCardInteraction';
 import { MgtFlyout } from '../sub-components/mgt-flyout/mgt-flyout';
 import { styles } from './mgt-people-picker-css';
@@ -802,8 +802,8 @@ export class MgtPeoplePicker extends MgtTemplatedComponent {
   protected async loadState(): Promise<void> {
     let people = this.people;
     const input = this.userInput.toLowerCase();
-
     const provider = Providers.globalProvider;
+
     if (!people && provider && provider.state === ProviderState.SignedIn) {
       const graph = provider.graph.forComponent(this);
 
@@ -828,7 +828,11 @@ export class MgtPeoplePicker extends MgtTemplatedComponent {
             }
             people = this._groupPeople || [];
           } else if (this.type === PersonType.person || this.type === PersonType.any) {
-            people = await getPeople(graph, this.userType);
+            if (this.userIds) {
+              people = await getUsersForUserIds(graph, this.userIds);
+            } else {
+              people = await getPeople(graph, this.userType);
+            }
           } else if (this.type === PersonType.group) {
             let groups = (await findGroups(graph, '', this.showMax, this.groupType)) || [];
             if (groups[0]['value']) {
