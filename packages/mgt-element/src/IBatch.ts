@@ -70,7 +70,7 @@ export interface IBatch {
    * @param {{ [header: string]: string }} [headers]
    * @memberof IBatch
    */
-  get(id: string, resource: string, scopes?: string[], headers?: { [header: string]: string }, search?: string);
+  get(id: string, resource: string, scopes?: string[], headers?: { [header: string]: string });
 
   /**
    * Execute the next set of requests.
