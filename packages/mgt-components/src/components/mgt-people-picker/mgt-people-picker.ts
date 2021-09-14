@@ -875,8 +875,8 @@ export class MgtPeoplePicker extends MgtTemplatedComponent {
         } else {
           if (this.type === PersonType.person || this.type === PersonType.any) {
             try {
-              if (this.userIds.length) {
-                people = await getUsersForUserIds(graph, this.userIds);
+              if (this.userIds && this.userIds.length) {
+                people = await getUsersForUserIds(graph, this.userIds, input);
               } else {
                 people = (await findPeople(graph, input, this.showMax, this.userType)) || [];
               }
