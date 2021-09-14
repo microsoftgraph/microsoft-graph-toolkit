@@ -554,6 +554,7 @@ export class MgtFileUpload extends MgtBaseComponent {
    */
   protected async getSelectedFiles(files: File[]) {
     let fileItems: MgtFileUploadItem[] = [];
+    let fileItemsCompleted: MgtFileUploadItem[] = [];
     this._applyAll = false;
     this._applyAllConflitBehavior = null;
     this._maximumFiles = false;
@@ -564,6 +565,8 @@ export class MgtFileUpload extends MgtBaseComponent {
     this.filesToUpload.forEach(async fileItem => {
       if (!fileItem.completed) {
         fileItems.push(fileItem);
+      } else {
+        fileItemsCompleted.push(fileItem);
       }
     });
 
@@ -677,11 +680,20 @@ export class MgtFileUpload extends MgtBaseComponent {
         }
       }
     }
-    this.filesToUpload = fileItems.sort((firstFile, secondFile) => {
+    fileItems = fileItems.sort((firstFile, secondFile) => {
       return firstFile.fullPath
         .substring(0, firstFile.fullPath.lastIndexOf('/'))
         .localeCompare(secondFile.fullPath.substring(0, secondFile.fullPath.lastIndexOf('/')));
     });
+    //remove completed file report image to be reuploaded.
+    fileItems.forEach(fileItem => {
+      if (fileItemsCompleted.filter(item => item.fullPath === fileItem.fullPath).length !== 0) {
+        let index = fileItemsCompleted.findIndex(item => item.fullPath === fileItem.fullPath);
+        fileItemsCompleted.splice(index, 1);
+      }
+    });
+    fileItems.push(...fileItemsCompleted);
+    this.filesToUpload = fileItems;
     // Send multiple Files to upload
     this.filesToUpload.forEach(async fileItem => {
       await this.sendFileItemGraph(fileItem);
@@ -973,9 +985,7 @@ export class MgtFileUpload extends MgtBaseComponent {
             };
             this.setUploadFail(fileItem, strings.failUploadFile);
           }
-        } else {
-          this.setUploadFail(fileItem, strings.cancelUploadFile);
-        }
+        } 
       } catch (error) {
         this.setUploadFail(fileItem, strings.failUploadFile);
       }
@@ -1003,8 +1013,6 @@ export class MgtFileUpload extends MgtBaseComponent {
             }
           } catch {}
         }
-      } else {
-        this.setUploadFail(fileItem, strings.cancelUploadFile);
       }
     }
   }
