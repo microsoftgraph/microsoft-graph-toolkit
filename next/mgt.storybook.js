@@ -494,15 +494,15 @@ found at http://polymer.github.io/PATENTS.txt
       <div class=${Cr(i)} title=${o} aria-label=${o}>
         ${n} ${s}
       </div>
-    `}handleLine1Clicked(){this.fireCustomEvent("line1clicked",this.personDetails)}handleLine2Clicked(){this.fireCustomEvent("line2clicked",this.personDetails)}handleLine3Clicked(){this.fireCustomEvent("line3clicked",this.personDetails)}renderDetails(e,t){if(!e||this.view===Rr.image||this.view===Mr.avatar)return html$1``;let r=e;t&&(r.presenceActivity=null==t?void 0:t.activity,r.presenceAvailability=null==t?void 0:t.availability);const o=[];if(this.view>Rr.image)if(this.hasTemplate("line1")){const e=this.renderTemplate("line1",{personProperties:r});o.push(html$1`
+    `}handleLine1Clicked(){this.fireCustomEvent("line1clicked",this.personDetails)}handleLine2Clicked(){this.fireCustomEvent("line2clicked",this.personDetails)}handleLine3Clicked(){this.fireCustomEvent("line3clicked",this.personDetails)}renderDetails(e,t){if(!e||this.view===Rr.image||this.view===Mr.avatar)return html$1``;let r=e;t&&(r.presenceActivity=null==t?void 0:t.activity,r.presenceAvailability=null==t?void 0:t.availability);const o=[];if(this.view>Rr.image)if(this.hasTemplate("line1")){const e=this.renderTemplate("line1",{person:r});o.push(html$1`
           <div class="line1" @click=${()=>this.handleLine1Clicked()}>${e}</div>
         `)}else{const e=this.getTextFromProperty(r,this.line1Property);e&&o.push(html$1`
             <div class="line1" @click=${()=>this.handleLine1Clicked()} aria-label="${e}">${e}</div>
-          `)}if(this.view>Rr.oneline)if(this.hasTemplate("line2")){const e=this.renderTemplate("line2",{personProperties:r});o.push(html$1`
+          `)}if(this.view>Rr.oneline)if(this.hasTemplate("line2")){const e=this.renderTemplate("line2",{person:r});o.push(html$1`
           <div class="line2" @click=${()=>this.handleLine2Clicked()}>${e}</div>
         `)}else{const e=this.getTextFromProperty(r,this.line2Property);e&&o.push(html$1`
             <div class="line2" @click=${()=>this.handleLine2Clicked()} aria-label="${e}">${e}</div>
-          `)}if(this.view>Rr.twolines)if(this.hasTemplate("line3")){const e=this.renderTemplate("line3",{personProperties:r});o.push(html$1`
+          `)}if(this.view>Rr.twolines)if(this.hasTemplate("line3")){const e=this.renderTemplate("line3",{person:r});o.push(html$1`
           <div class="line3" @click=${()=>this.handleLine3Clicked()}>${e}</div>
         `)}else{const e=this.getTextFromProperty(r,this.line3Property);e&&o.push(html$1`
             <div class="line3" @click=${()=>this.handleLine3Clicked()} aria-label="${e}">${e}</div>
