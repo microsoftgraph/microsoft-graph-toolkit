@@ -22,12 +22,10 @@ import {
   deleteSessionFile
 } from '../../../graph/graph.files';
 
-export { FluentProgress, FluentButton, FluentCheckbox } from '@fluentui/web-components';
+import { registerFluentComponents } from '../../../utils/FluentComponents';
+import { fluentButton, fluentCheckbox, fluentProgress } from '@fluentui/web-components';
 
-// import { registerFluentComponents } from '../../../utils/FluentComponents';
-// import { fluentButton, fluentCheckbox, fluentProgress } from '@fluentui/web-components';
-
-// registerFluentComponents(fluentProgress, fluentButton, fluentCheckbox);
+registerFluentComponents(fluentProgress, fluentButton, fluentCheckbox);
 
 /**
  * Upload conflict behavior status

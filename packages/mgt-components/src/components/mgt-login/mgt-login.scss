@@ -17,9 +17,9 @@ mgt-login {
   --height: '100%';
   --margin: 0;
   --padding: 12px 20px;
-  --popup-command-font-size: #{$ms-font-size-s};
+  --popup-command-font-size: 14px;
   --popup-command-margin: 16px 0 0;
-  --popup-padding: 24px 48px 16px 24px;
+  --popup-padding: 10px 4px 16px 4px;
 }
 
 :host .root,
@@ -81,7 +81,8 @@ mgt-login .login-icon {
 mgt-login .popup {
   font-family: $font-family;
   background-color: $popup__background-color;
-  min-width: 240px;
+  width: 300px;
+  max-width: 300px;
   z-index: 1;
   color: set-var(popup__color, $theme-default, $login);
 
@@ -95,6 +96,127 @@ mgt-login .popup-content {
   display: flex;
   flex-direction: column;
   padding: var(--popup-padding);
+  background-color: $popup__background-color;
+  .inside-content {
+    overflow-y: auto;
+    overflow-x: clip;
+    max-height: 400px;
+
+    .list-box {
+      margin-bottom: 25px;
+      background-color: $popup__background-color;
+      --accent-fill-hover: $popup__background-color;
+      --accent-fill-active: $popup__background-color;
+      --accent-foreground-cut-rest: black;
+      color: black !important;
+      .list-box-option {
+        margin-bottom: 4px;
+        mgt-person {
+          max-width: 270px;
+          width: 270px;
+          margin-left: 18px;
+          --details-spacing: 9px;
+          --avatar-size: 40px;
+          position: relative;
+          --line1-color: rgba(0, 0, 0, 0.83);
+          --line2-color: rgba(0, 0, 0, 0.55);
+          &:after {
+            content: '';
+            position: absolute;
+            z-index: 1;
+            top: 0;
+            right: 8px;
+            bottom: 0px;
+            pointer-events: none;
+            background-image: linear-gradient(to right, rgba(255, 255, 255, 0), $popup__background-color 100%);
+            width: 50%;
+          }
+        }
+        &:hover {
+          border-radius: 4px;
+          background: rgba(0, 0, 0, 0.1);
+          mgt-person {
+            &:after {
+              background-image: none;
+            }
+          }
+        }
+      }
+      &:focus {
+        .list-box-option {
+          &.selected {
+            border-radius: 4px;
+            background: rgba(0, 0, 0, 0.1);
+          }
+        }
+        mgt-person {
+          &:after {
+            background-image: none;
+          }
+        }
+      }
+    }
+    &:after {
+      content: '';
+      position: absolute;
+      bottom: 0;
+      background: linear-gradient(to bottom, rgba(255, 255, 255, 0), $popup__background-color);
+      height: 25%;
+      width: 100%;
+    }
+    &::-webkit-scrollbar {
+      height: 4em;
+      width: 4px;
+      border-radius: 11px;
+    }
+    &::-webkit-scrollbar-button {
+      background: white;
+    }
+    &::-webkit-scrollbar-track {
+      background: white;
+      border-radius: 10px;
+    }
+    &::-webkit-scrollbar-track-piece {
+      background: white;
+    }
+    &::-webkit-scrollbar-thumb {
+      background: grey;
+      border-radius: 10px;
+      height: 4px;
+    }
+  }
+  .add-account {
+    .add-account-button {
+      position: relative;
+      color: #{$commblue_primary};
+      border: none;
+      background-color: $popup__background-color;
+      cursor: pointer;
+      margin: 0px 0px 10px 19px;
+      padding: 0;
+      border: 1px solid transparent;
+      &:hover {
+        color: #{$commblue_shade20};
+        text-shadow: 0 0 0.01px #{$commblue_shade20};
+      }
+      .account-switch-icon {
+        vertical-align: middle;
+        display: inline-block;
+      }
+    }
+  }
+
+  .main-profile {
+    margin-bottom: 35px;
+    text-align: center;
+    mgt-person {
+      --avatar-size: 72px;
+      --person-flex-direction: column;
+      --details-spacing: 0px;
+      --line1-color: rgba(0, 0, 0, 0.83);
+      --line2-color: rgba(0, 0, 0, 0.55);
+    }
+  }
 }
 
 :host .popup-commands ul,
@@ -102,21 +224,26 @@ mgt-login .popup-commands ul {
   list-style-type: none;
   margin: var(--popup-command-margin);
   padding: 0;
+  margin-bottom: 10px;
+  margin-top: 6px;
+  text-align: right;
+  padding-right: 16px;
 }
 
 :host .popup-command,
 mgt-login .popup-command {
   font-family: $font-family;
   font-size: var(--popup-command-font-size);
-  font-weight: var(--font-weight);
   color: #{$commblue_primary};
   background-color: $popup__background-color;
   border: none;
-  padding: 0;
+  padding: 0 0 1px 0;
   cursor: pointer;
   transition: color 0.3s;
+  border: 1px solid transparent;
 
   &:hover {
+    text-shadow: 0 0 0.01px #{$commblue_shade20};
     color: #{$commblue_shade20};
   }
 }

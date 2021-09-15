@@ -29,6 +29,28 @@ export class MgtMsal2Provider extends MgtBaseProvider {
   public clientId = '';
 
   /**
+   * login hint string
+   *
+   * @memberof MgtMsal2Provider
+   */
+  @property({
+    attribute: 'login-hint',
+    type: String
+  })
+  public loginHint;
+
+  /**
+   * domain hint string
+   *
+   * @memberof MgtMsal2Provider
+   */
+  @property({
+    attribute: 'domain-hint',
+    type: String
+  })
+  public domainHint;
+
+  /**
    * The login type that should be used: popup or redirect
    *
    * @memberof MgtMsal2Provider
@@ -80,6 +102,17 @@ export class MgtMsal2Provider extends MgtBaseProvider {
   public prompt: string;
 
   /**
+   * Disables multiple account capability
+   *
+   * @memberof MgtMsal2Provider
+   */
+  @property({
+    attribute: 'multi-account-disabled',
+    type: Boolean
+  })
+  public isMultiAccountDisabled;
+
+  /**
    * Gets whether this provider can be used in this environment
    *
    * @readonly
@@ -123,10 +156,22 @@ export class MgtMsal2Provider extends MgtBaseProvider {
         config.redirectUri = this.redirectUri;
       }
 
+      if (this.loginHint) {
+        config.loginHint = this.loginHint;
+      }
+
+      if (this.domainHint) {
+        config.domainHint = this.domainHint;
+      }
+
       if (this.prompt) {
         let prompt: string = this.prompt.toUpperCase();
         const promptEnum = PromptType[prompt];
         config.prompt = promptEnum;
+      }
+
+      if (this.isMultiAccountDisabled) {
+        config.isMultiAccountEnabled = false;
       }
 
       this.provider = new Msal2Provider(config);
