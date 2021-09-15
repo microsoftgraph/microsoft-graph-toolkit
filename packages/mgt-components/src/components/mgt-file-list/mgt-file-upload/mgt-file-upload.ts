@@ -985,7 +985,7 @@ export class MgtFileUpload extends MgtBaseComponent {
             };
             this.setUploadFail(fileItem, strings.failUploadFile);
           }
-        } 
+        }
       } catch (error) {
         this.setUploadFail(fileItem, strings.failUploadFile);
       }
