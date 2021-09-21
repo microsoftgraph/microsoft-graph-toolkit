@@ -64,9 +64,9 @@ $person-card-details-item-font-size: var(--person-card-details-item-font-size, 1
       z-index: 1;
       --accent-foreground-hover: none;
       border: 1px solid transparent;
-      &:focus{
+      &:focus {
         outline: none;
-        border: 1px solid #2B2B2B;
+        border: 1px solid #2b2b2b;
       }
       svg {
         width: 9px;
@@ -109,10 +109,10 @@ $person-card-details-item-font-size: var(--person-card-details-item-font-size, 1
         padding: 6px 8px 6px 8px;
         border: 1px solid transparent;
 
-        &:focus{
+        &:focus {
           outline: none !important;
-          border: 1px solid #2B2B2B;
-          border-radius:2px;
+          border: 1px solid #2b2b2b;
+          border-radius: 2px;
         }
 
         &:not(:last-child) {
@@ -147,14 +147,14 @@ $person-card-details-item-font-size: var(--person-card-details-item-font-size, 1
       background: $background-color;
       border-top: 1px solid set-var(line-seperator__color, $theme-default, $common);
     }
-    .expanded-details-button{
-      &:hover{
+    .expanded-details-button {
+      &:hover {
         background-color: set-var(background-color--hover, $theme-default, $common);
       }
-      &:focus{
+      &:focus {
         background-color: set-var(background-color--hover, $theme-default, $common);
         outline: none !important;
-        border: 1px solid #2B2B2B;
+        border: 1px solid #2b2b2b;
         border-bottom-left-radius: 4px;
         border-bottom-right-radius: 4px;
       }
@@ -215,6 +215,10 @@ $person-card-details-item-font-size: var(--person-card-details-item-font-size, 1
     fluent-tab {
       padding-bottom: 4px !important;
       margin-bottom: -3px !important;
+      border: 1px solid transparent;
+      &:focus {
+        border: 1px solid #2b2b2b;
+      }
     }
     .section-nav__icon {
       all: initial;

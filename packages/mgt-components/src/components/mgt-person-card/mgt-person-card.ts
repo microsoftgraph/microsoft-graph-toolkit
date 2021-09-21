@@ -482,6 +482,9 @@ export class MgtPersonCard extends MgtTemplatedComponent {
    * @memberof MgtPersonCard
    */
   protected closeCard() {
+    //reset tabs
+    this.updateCurrentSection(null);
+
     const flyout = this.parentElement.parentElement as MgtFlyout;
     if (flyout) {
       flyout.close();
@@ -654,14 +657,15 @@ export class MgtPersonCard extends MgtTemplatedComponent {
       });
       return html`
         <fluent-tab id="${name}-Tab" class=${classes}
-          slot="tab" @click=${() => this.updateCurrentSection(section)}>${section.renderIcon()}
+          slot="tab" @keyup="${() => this.updateCurrentSection(section)}" @click=${() =>
+        this.updateCurrentSection(section)}>${section.renderIcon()}
         </fluent-tab>
       `;
     });
 
     const additionalPanelTemplates = this.sections.map((section, i) => {
       return html`
-        <fluent-tab-panel slot="tabpanel">
+        <fluent-tab-panel tabindex="0" slot="tabpanel">
               <div class="inserted">${this._currentSection ? section.asFullView() : null}</div>
         </fluent-tab-panel>
       `;
@@ -676,13 +680,12 @@ export class MgtPersonCard extends MgtTemplatedComponent {
     return html`
         <fluent-tabs  orientation="horizontal" activeindicator  @wheel=${(e: WheelEvent) =>
           this.handleSectionScroll(e)}> 
-              this.handleSectionScroll(e)}> 
-          this.handleSectionScroll(e)}> 
-          <fluent-tab class="${overviewClasses}" slot="tab" @click=${() => this.updateCurrentSection(null)}>
+          <fluent-tab class="${overviewClasses}" tabindex="0" slot="tab" @keyup="${() =>
+      this.updateCurrentSection(null)}" @click=${() => this.updateCurrentSection(null)}>
             <div>${getSvg(SvgIcon.Overview)}</div>
           </fluent-tab>
           ${additionalSectionTemplates}
-          <fluent-tab-panel slot="tabpanel">
+          <fluent-tab-panel slot="tabpanel" tabindex="0">
             <div class="overviewPanel">${!this._currentSection ? this.renderOverviewSection() : null}</div>
           </fluent-tab-panel>
           ${additionalPanelTemplates}
@@ -1011,6 +1014,10 @@ export class MgtPersonCard extends MgtTemplatedComponent {
         return;
       }
     }
+    //focus on close button
+    const closeButton: HTMLElement = this.renderRoot.querySelector('.close-button');
+    closeButton.focus();
+
     const root = this.renderRoot.querySelector('.root');
     if (root && root.animate) {
       // play back
