@@ -168,12 +168,6 @@ $person-card-details-item-font-size: var(--person-card-details-item-font-size, 1
     fluent-tabs {
       background-color: $background-color;
       grid-template-columns: minmax(1px, 0.1fr);
-      .activeIndicator {
-        width: 40px !important;
-      }
-      .tablist {
-        padding-left: 20px !important;
-      }
       fluent-tab-panel {
         max-height: 360px;
         min-height: 360px;
@@ -212,12 +206,13 @@ $person-card-details-item-font-size: var(--person-card-details-item-font-size, 1
         }
       }
     }
+    border: 1px solid transparent;
     fluent-tab {
       padding-bottom: 4px !important;
       margin-bottom: -3px !important;
-      border: 1px solid transparent;
+      border: 1px solid transparent !important;
       &:focus {
-        border: 1px solid #2b2b2b;
+        border: 1px solid #2b2b2b !important;
       }
     }
     .section-nav__icon {
