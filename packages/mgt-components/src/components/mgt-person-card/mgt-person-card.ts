@@ -824,7 +824,7 @@ export class MgtPersonCard extends MgtTemplatedComponent {
     }
 
     // populate state
-    if (this.personDetails && this.personDetails.id) {
+    if (this.personDetails?.id) {
       this.state = await getPersonCardGraphData(
         graph,
         this.personDetails,
