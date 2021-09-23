@@ -7,17 +7,19 @@ export const registerFluentComponents = (...fluentComponents) => {
     return;
   }
 
-  const registry = {
-    register(container: any) {
-      if (!container) {
-        return;
-      }
+  // const registry = {
+  //   register(container: any) {
+  //     if (!container) {
+  //       return;
+  //     }
 
-      for (const component of fluentComponents) {
-        component().register(container);
-      }
-    }
-  };
+  //     for (const component of fluentComponents) {
+  //       component().register(container);
+  //     }
+  //   }
+  // };
 
-  designSystem.register(registry);
+  for (const component of fluentComponents) {
+    designSystem.register(component());
+  }
 };
