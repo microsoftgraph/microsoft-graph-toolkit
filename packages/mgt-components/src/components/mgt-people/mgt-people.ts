@@ -422,6 +422,7 @@ export class MgtPeople extends MgtTemplatedComponent {
           this._peoplePresence = null;
         }
       }
+      this.people = this.people.filter(Boolean);
     }
   }
 }
