@@ -64,7 +64,7 @@ $person-card-details-item-font-size: var(--person-card-details-item-font-size, 1
       z-index: 1;
       --accent-foreground-hover: none;
       border: 1px solid transparent;
-      &:focus {
+      &:focus-visible {
         outline: none;
         border: 1px solid #2b2b2b;
       }
@@ -109,7 +109,7 @@ $person-card-details-item-font-size: var(--person-card-details-item-font-size, 1
         padding: 6px 8px 6px 8px;
         border: 1px solid transparent;
 
-        &:focus {
+        &:focus-visible {
           outline: none !important;
           border: 1px solid #2b2b2b;
           border-radius: 2px;
@@ -151,7 +151,7 @@ $person-card-details-item-font-size: var(--person-card-details-item-font-size, 1
       &:hover {
         background-color: set-var(background-color--hover, $theme-default, $common);
       }
-      &:focus {
+      &:focus-visible {
         background-color: set-var(background-color--hover, $theme-default, $common);
         outline: none !important;
         border: 1px solid #2b2b2b;
@@ -211,7 +211,7 @@ $person-card-details-item-font-size: var(--person-card-details-item-font-size, 1
       padding-bottom: 4px !important;
       margin-bottom: -3px !important;
       border: 1px solid transparent !important;
-      &:focus {
+      &:focus-visible {
         border: 1px solid #2b2b2b !important;
       }
     }
