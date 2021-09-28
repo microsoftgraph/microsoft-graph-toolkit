@@ -1015,11 +1015,12 @@ export class MgtPersonCard extends MgtTemplatedComponent {
     if (event) {
       if (event.keyCode !== 13 && event.type !== 'click') {
         return;
+      } else if (event.keyCode === 13) {
+        //focus on close button
+        const closeButton: HTMLElement = this.renderRoot.querySelector('.close-button');
+        closeButton.focus();
       }
     }
-    //focus on close button
-    const closeButton: HTMLElement = this.renderRoot.querySelector('.close-button');
-    closeButton.focus();
 
     const root = this.renderRoot.querySelector('.root');
     if (root && root.animate) {
