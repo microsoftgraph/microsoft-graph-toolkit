@@ -180,6 +180,9 @@ export async function myPhoto(graph: IGraph): Promise<string> {
  * @export
  */
 export async function getPersonImage(graph: IGraph, person: IDynamicPerson, useContactsApis: boolean = true) {
+  if (!person.id) {
+    return null;
+  }
   // handle if person but not user
   if ('personType' in person && (person as any).personType.subclass !== 'OrganizationUser') {
     if ((person as any).personType.subclass === 'PersonalContact' && useContactsApis) {

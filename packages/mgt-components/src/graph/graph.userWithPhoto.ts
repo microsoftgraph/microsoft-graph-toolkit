@@ -48,15 +48,13 @@ export async function getUserWithPhoto(
     cachedUser = await cache.getValue(userId || 'me');
     if (cachedUser && getUserInvalidationTime() > Date.now() - cachedUser.timeCached) {
       user = cachedUser.user ? JSON.parse(cachedUser.user) : null;
-      if (requestedProps) {
+      if (requestedProps && user !== null) {
         const uniqueProps = requestedProps.filter(prop => !Object.keys(user).includes(prop));
         if (uniqueProps.length >= 1) {
           user = null;
           cachedUser = null;
         }
       }
-    } else {
-      cachedUser = null;
     }
   }
   if (getIsPhotosCacheEnabled()) {

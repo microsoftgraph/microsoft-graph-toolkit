@@ -169,6 +169,11 @@ export async function getUsersForUserIds(graph: IGraph, userIds: string[]): Prom
         if (getIsUsersCacheEnabled()) {
           cache.putValue(id, { user: JSON.stringify(response.content) });
         }
+      } else {
+        if (peopleDict[id] === null) {
+          peopleDict[id] = id;
+          cache.putValue(id, { user: JSON.stringify(id) });
+        }
       }
     }
     return Promise.all(Object.values(peopleDict));

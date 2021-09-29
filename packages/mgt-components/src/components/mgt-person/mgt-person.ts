@@ -809,7 +809,7 @@ export class MgtPerson extends MgtTemplatedComponent {
     }
 
     let person: IDynamicPerson & { presenceActivity?: string; presenceAvailability?: string } = personProps;
-    if (presence) {
+    if (presence && person.id) {
       person.presenceActivity = presence?.activity;
       person.presenceAvailability = presence?.availability;
     }
@@ -981,7 +981,11 @@ export class MgtPerson extends MgtTemplatedComponent {
           person = await getUser(graph, this.userId, personProps);
         }
       }
-      this.personDetails = person;
+      if (person === null) {
+        this.personDetails = { id: this.userId };
+      } else {
+        this.personDetails = person;
+      }
       this._fetchedImage = this.getImage();
     } else if (this.personQuery) {
       // Use the personQuery to find our person.
