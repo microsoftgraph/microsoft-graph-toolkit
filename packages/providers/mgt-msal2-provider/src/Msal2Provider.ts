@@ -94,6 +94,14 @@ interface Msal2ConfigBase {
    * @memberof Msal2Config
    */
   sid?: string;
+
+  /**
+   * Specifies if incremental consent is disabled
+   *
+   * @type {boolean}
+   * @memberof Msal2ConfigBase
+   */
+  isIncrementalConsentDisabled?: boolean;
 }
 
 /**
@@ -199,6 +207,14 @@ export class Msal2Provider extends IProvider {
    * @memberof Msal2Provider
    */
   private _sid;
+
+  /**
+   * Specifies if incremental consent is disabled
+   *
+   * @type {boolean}
+   * @memberof Msal2ConfigBase
+   */
+  private _isIncrementalConsentDisabled: boolean = false;
 
   /**
    * Configuration settings for authentication
@@ -318,6 +334,8 @@ export class Msal2Provider extends IProvider {
     this._loginType = typeof config.loginType !== 'undefined' ? config.loginType : LoginType.Redirect;
     this._loginHint = typeof config.loginHint !== 'undefined' ? config.loginHint : null;
     this._sid = typeof config.sid !== 'undefined' ? config.sid : null;
+    this._isIncrementalConsentDisabled =
+      typeof config.isIncrementalConsentDisabled !== 'undefined' ? config.isIncrementalConsentDisabled : false;
     this._domainHint = typeof config.domainHint !== 'undefined' ? config.domainHint : null;
     this.scopes = typeof config.scopes !== 'undefined' ? config.scopes : ['user.read'];
     this._prompt = typeof config.prompt !== 'undefined' ? config.prompt : PromptType.SELECT_ACCOUNT;
@@ -634,6 +652,9 @@ export class Msal2Provider extends IProvider {
       return response.accessToken;
     } catch (e) {
       if (e instanceof InteractionRequiredAuthError) {
+        if (this._isIncrementalConsentDisabled) {
+          return null;
+        }
         if (this._loginType === LoginType.Redirect) {
           if (!this.areScopesDenied(scopes)) {
             this.setRequestedScopes(scopes);
