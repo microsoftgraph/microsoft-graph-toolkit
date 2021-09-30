@@ -422,8 +422,8 @@ $person-card-details-item-font-size: var(--person-card-details-item-font-size, 1
     filter: FlipH;
     -ms-filter: 'FlipH';
   }
-  .close-button {
-    right: auto !important;
+  .close-card-container .close-button {
+    right: auto;
     left: 10px;
   }
 
