@@ -686,7 +686,7 @@ export class MgtPersonCard extends MgtTemplatedComponent {
           </fluent-tab>
           ${additionalSectionTemplates}
           <fluent-tab-panel slot="tabpanel" tabindex="0">
-            <div class="overviewPanel">${!this._currentSection ? this.renderOverviewSection() : null}</div>
+            <div class="overview-panel">${!this._currentSection ? this.renderOverviewSection() : null}</div>
           </fluent-tab-panel>
           ${additionalPanelTemplates}
       </fluent-tabs>
