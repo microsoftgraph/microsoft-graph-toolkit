@@ -1155,8 +1155,8 @@ export class MgtPerson extends MgtTemplatedComponent {
   }
 
   private handleMouseClick(e: MouseEvent) {
-    console.log(e);
-    if (this.personCardInteraction === PersonCardInteraction.click) {
+    let element = e.target as HTMLElement;
+    if (this.personCardInteraction === PersonCardInteraction.click && element.tagName !== 'MGT-PERSON-CARD') {
       this.showPersonCard();
     }
   }
