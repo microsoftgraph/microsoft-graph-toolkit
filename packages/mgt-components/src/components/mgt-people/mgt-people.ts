@@ -211,6 +211,27 @@ export class MgtPeople extends MgtTemplatedComponent {
   public scopes: string[] = [];
 
   /**
+   * Fallback when no user is found
+   * @type {IDynamicPerson[]}
+   */
+  @property({
+    attribute: 'fallback-details',
+    type: Int8Array
+  })
+  public get fallbackDetails(): IDynamicPerson[] {
+    return this._fallbackDetails;
+  }
+  public set fallbackDetails(value: IDynamicPerson[]) {
+    if (value === this._fallbackDetails) {
+      return;
+    }
+
+    this._fallbackDetails = value;
+
+    this.requestStateUpdate();
+  }
+
+  /**
    * Get the scopes required for people
    *
    * @static
@@ -236,6 +257,7 @@ export class MgtPeople extends MgtTemplatedComponent {
   private _peoplePresence: {};
   private _resource: string;
   private _version: string = 'v1.0';
+  private _fallbackDetails: IDynamicPerson[];
 
   constructor() {
     super();
@@ -303,8 +325,13 @@ export class MgtPeople extends MgtTemplatedComponent {
    * @memberof MgtPeople
    */
   protected renderPeople(): TemplateResult {
-    const maxPeople = this.people.slice(0, this.showMax);
+    if (this.fallbackDetails) {
+      for (let i = 0; i < this._fallbackDetails.length; i++) {
+        this.people.push(this.fallbackDetails[i]);
+      }
+    }
 
+    const maxPeople = this.people.slice(0, this.showMax);
     return html`
       <ul class="people-list">
         ${repeat(

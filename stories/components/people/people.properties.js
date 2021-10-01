@@ -50,3 +50,10 @@ export const PersonCard = () => html`
   <div style="margin-bottom:10px">Person card Click</div>
   <mgt-people show-max="5" person-card="click"></mgt-people>
 `;
+
+export const FallbackDetails = () => html`
+  <mgt-people
+    show-max="12"
+    fallback-details='[{"mail":"validButNotFound@email.in.ad"},{"mail": "test@test.com"}]'>
+  </mgt-people>
+`;
