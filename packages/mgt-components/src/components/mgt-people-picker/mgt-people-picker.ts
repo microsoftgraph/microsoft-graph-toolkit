@@ -386,6 +386,10 @@ export class MgtPeoplePicker extends MgtTemplatedComponent {
 
   @internalProperty() private _foundPeople: IDynamicPerson[];
 
+  private _mouseLeaveTimeout;
+  private _mouseEnterTimeout;
+  private _isKeyboardFocus: boolean = true;
+
   constructor() {
     super();
     this.clearState();
@@ -721,13 +725,13 @@ export class MgtPeoplePicker extends MgtTemplatedComponent {
     people = people || this._foundPeople;
 
     return html`
-       <div class="people-list">
+       <div class="people-list" @mouseenter=${this.handleMouseEnter} @mouseleave=${this.handleMouseLeave}>
          ${repeat(
            people,
            person => person.id,
            person => {
              const listPersonClasses = {
-               focused: (person as IFocusable).isFocused,
+               focused: this._isKeyboardFocus ? (person as IFocusable).isFocused : '',
                'list-person': true
              };
              return html`
@@ -1008,6 +1012,28 @@ export class MgtPeoplePicker extends MgtTemplatedComponent {
 
   private lostFocus() {
     this._isFocused = false;
+    this.requestUpdate();
+  }
+
+  private handleMouseEnter(e: MouseEvent) {
+    clearTimeout(this._mouseEnterTimeout);
+    clearTimeout(this._mouseLeaveTimeout);
+    this._mouseEnterTimeout = setTimeout(this.hideKeyboardFocus.bind(this), 100);
+  }
+
+  private handleMouseLeave(e: MouseEvent) {
+    clearTimeout(this._mouseEnterTimeout);
+    clearTimeout(this._mouseLeaveTimeout);
+    this._mouseLeaveTimeout = setTimeout(this.showKeyboardFocus.bind(this), 100);
+  }
+
+  private hideKeyboardFocus() {
+    this._isKeyboardFocus = false;
+    this.requestUpdate();
+  }
+
+  private showKeyboardFocus() {
+    this._isKeyboardFocus = true;
     this.requestUpdate();
   }
 
