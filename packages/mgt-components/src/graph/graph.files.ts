@@ -6,7 +6,7 @@
  */
 
 import { CacheItem, CacheService, CacheStore, GraphPageIterator, IGraph, prepScopes } from '@microsoft/mgt-element';
-import { DriveItem } from '@microsoft/microsoft-graph-types';
+import { DriveItem, UploadSession } from '@microsoft/microsoft-graph-types';
 import { schemas } from './cacheStores';
 import { ResponseType } from '@microsoft/microsoft-graph-client';
 import { blobToBase64 } from '../utils/Utils';
@@ -1145,6 +1145,148 @@ export async function getDocumentThumbnail(graph: IGraph, resource: string, scop
     const eTag = response.headers.get('eTag');
     const blob = await blobToBase64(await response.blob());
     return { eTag, thumbnail: blob };
+  } catch (e) {
+    return null;
+  }
+}
+
+/**
+ * retrieve file properties based on Graph query
+ *
+ * @param graph
+ * @param resource
+ * @returns
+ */
+export async function getGraphfile(graph: IGraph, resource: string): Promise<DriveItem> {
+  try {
+    // get from graph request
+    const scopes = 'files.read';
+    let response;
+    try {
+      response = await graph
+        .api(resource)
+        .middlewareOptions(prepScopes(scopes))
+        .get()
+        .catch(error => {
+          return null;
+        });
+    } catch {}
+
+    return response || null;
+  } catch (e) {
+    return null;
+  }
+}
+
+/**
+ * retrieve UploadSession Url for large file and send by chuncks
+ *
+ * @param graph
+ * @param resource
+ * @returns
+ */
+export async function getUploadSession(
+  graph: IGraph,
+  resource: string,
+  conflictBehavior: number
+): Promise<UploadSession> {
+  try {
+    // get from graph request
+    const scopes = 'files.readwrite';
+    const sessionOptions = {
+      item: {
+        '@microsoft.graph.conflictBehavior': conflictBehavior === 0 || conflictBehavior === null ? 'rename' : 'replace'
+      }
+    };
+    let response;
+    try {
+      response = await graph.api(resource).middlewareOptions(prepScopes(scopes)).post(JSON.stringify(sessionOptions));
+    } catch {}
+
+    return response || null;
+  } catch (e) {
+    return null;
+  }
+}
+
+/**
+ * send file chunck to OneDrive, SharePoint Site
+ *
+ * @param graph
+ * @param resource
+ * @param file
+ * @returns
+ */
+export async function sendFileChunck(
+  graph: IGraph,
+  resource: string,
+  contentLength: string,
+  contentRange: string,
+  file: Blob
+): Promise<any> {
+  try {
+    // get from graph request
+    const scopes = 'files.readwrite';
+    const header = {
+      'Content-Length': contentLength,
+      'Content-Range': contentRange
+    };
+    let response;
+    try {
+      response = await graph.client.api(resource).middlewareOptions(prepScopes(scopes)).headers(header).put(file);
+    } catch {}
+
+    return response || null;
+  } catch (e) {
+    return null;
+  }
+}
+
+/**
+ * send file to OneDrive, SharePoint Site
+ *
+ * @param graph
+ * @param resource
+ * @param file
+ * @returns
+ */
+export async function sendFileContent(graph: IGraph, resource: string, file: File): Promise<DriveItem> {
+  try {
+    // get from graph request
+    const scopes = 'files.readwrite';
+    let response;
+    try {
+      response = await graph.client.api(resource).middlewareOptions(prepScopes(scopes)).put(file);
+    } catch {}
+
+    return response || null;
+  } catch (e) {
+    return null;
+  }
+}
+
+/**
+ * delete upload session
+ *
+ * @param graph
+ * @param resource
+ * @returns
+ */
+export async function deleteSessionFile(graph: IGraph, resource: string): Promise<any> {
+  try {
+    // get from graph request
+    const scopes = 'files.readwrite';
+    let response;
+    try {
+      response = await graph.client
+        .api(resource)
+        .middlewareOptions(prepScopes(scopes))
+        .delete(response => {
+          return response;
+        });
+    } catch {}
+
+    return response || null;
   } catch (e) {
     return null;
   }

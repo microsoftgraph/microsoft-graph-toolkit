@@ -175,7 +175,7 @@ export class MgtPersonCard extends MgtTemplatedComponent {
     }
 
     this._personDetails = value;
-    this.personImage = null;
+    this.personImage = this.getImage();
     this.requestStateUpdate();
   }
   /**
@@ -823,12 +823,15 @@ export class MgtPersonCard extends MgtTemplatedComponent {
       }
     }
 
-    this.state = await getPersonCardGraphData(
-      graph,
-      this.personDetails,
-      this._me === this.personDetails.id,
-      MgtPersonCard.config
-    );
+    // populate state
+    if (this.personDetails?.id) {
+      this.state = await getPersonCardGraphData(
+        graph,
+        this.personDetails,
+        this._me === this.personDetails.id,
+        MgtPersonCard.config
+      );
+    }
 
     this.loadSections();
 
