@@ -464,7 +464,7 @@ export class MgtPersonCard extends MgtTemplatedComponent {
       <div class="root" dir=${this.direction}>
         ${navigationTemplate}
         <div class="close-card-container">
-          <fluent-button appearance="lightweight" class="close-button" @click=${() => this.closeCard()} tabindex="0">
+          <fluent-button appearance="lightweight" class="close-button" @click=${() => this.closeCard()} >
               ${getSvg(SvgIcon.Close)}
           </fluent-button>
         </div>
@@ -564,7 +564,7 @@ export class MgtPersonCard extends MgtTemplatedComponent {
     let email: TemplateResult;
     if (getEmailFromGraphEntity(person)) {
       email = html`
-        <div class="icon" @click=${() => this.emailUser()}  tabindex="0">
+        <div class="icon" @click=${() => this.emailUser()} >
           ${getSvg(SvgIcon.SmallEmail)}
           <span>${this.strings.sendEmailLinkSubtitle}</span>
         </div>
@@ -575,7 +575,7 @@ export class MgtPersonCard extends MgtTemplatedComponent {
     let chat: TemplateResult;
     if (userPerson.userPrincipalName) {
       chat = html`
-        <div class="icon" @click=${() => this.chatUser()} tabindex="0">
+        <div class="icon" @click=${() => this.chatUser()} >
           ${getSvg(SvgIcon.SmallChat)}
           <span>${this.strings.startChatLinkSubtitle}</span>
         </div>
@@ -599,7 +599,7 @@ export class MgtPersonCard extends MgtTemplatedComponent {
   protected renderExpandedDetailsButton(): TemplateResult {
     return html`
       <div class="expanded-details-button" @click=${this.showExpandedDetails} @keyup=${(e: KeyboardEvent) =>
-      this.showExpandedDetails(e)}  tabindex="0">
+      this.showExpandedDetails(e)} >
         ${getSvg(SvgIcon.ExpandDown)}
       </div>
     `;
@@ -665,7 +665,7 @@ export class MgtPersonCard extends MgtTemplatedComponent {
 
     const additionalPanelTemplates = this.sections.map((section, i) => {
       return html`
-        <fluent-tab-panel tabindex="0" slot="tabpanel">
+        <fluent-tab-panel  slot="tabpanel">
               <div class="inserted">${this._currentSection ? section.asFullView() : null}</div>
         </fluent-tab-panel>
       `;
@@ -680,12 +680,12 @@ export class MgtPersonCard extends MgtTemplatedComponent {
     return html`
         <fluent-tabs  orientation="horizontal" activeindicator  @wheel=${(e: WheelEvent) =>
           this.handleSectionScroll(e)}> 
-          <fluent-tab class="${overviewClasses}" tabindex="0" slot="tab" @keyup="${() =>
+          <fluent-tab class="${overviewClasses}"  slot="tab" @keyup="${() =>
       this.updateCurrentSection(null)}" @click=${() => this.updateCurrentSection(null)}>
             <div>${getSvg(SvgIcon.Overview)}</div>
           </fluent-tab>
           ${additionalSectionTemplates}
-          <fluent-tab-panel slot="tabpanel" tabindex="0">
+          <fluent-tab-panel slot="tabpanel" >
             <div class="overview-panel">${!this._currentSection ? this.renderOverviewSection() : null}</div>
           </fluent-tab-panel>
           ${additionalPanelTemplates}
@@ -1017,8 +1017,8 @@ export class MgtPersonCard extends MgtTemplatedComponent {
         return;
       } else if (event.keyCode === 13) {
         //focus on close button
-        const closeButton: HTMLElement = this.renderRoot.querySelector('.close-button');
-        closeButton.focus();
+        // const closeButton: HTMLElement = this.renderRoot.querySelector('.close-button');
+        // closeButton.focus();
       }
     }
 
