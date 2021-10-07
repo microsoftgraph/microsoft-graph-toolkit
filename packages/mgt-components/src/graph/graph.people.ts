@@ -142,7 +142,7 @@ export async function findPeople(
     if (getIsPeopleCacheEnabled() && graphResult) {
       const item = { maxResults: top, results: null };
       item.results = graphResult.value.map(personStr => JSON.stringify(personStr));
-      cache.putValue(query, item);
+      cache.putValue(cacheKey, item);
     }
   } catch (error) {}
   return graphResult ? graphResult.value : null;
