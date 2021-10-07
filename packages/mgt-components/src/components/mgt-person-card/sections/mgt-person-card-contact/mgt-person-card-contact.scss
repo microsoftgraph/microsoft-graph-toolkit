@@ -54,6 +54,7 @@
           color: set-var(color__sub1, $theme-default, $common);
           font-size: 14px;
           font-weight: 400;
+          line-height: normal;
 
           .part__link {
             color: $commblue_primary;

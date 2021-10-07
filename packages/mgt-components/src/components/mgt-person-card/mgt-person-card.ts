@@ -565,8 +565,7 @@ export class MgtPersonCard extends MgtTemplatedComponent {
     if (getEmailFromGraphEntity(person)) {
       email = html`
         <div class="icon" @click=${() => this.emailUser()} >
-          ${getSvg(SvgIcon.SmallEmail)}
-          <span>${this.strings.sendEmailLinkSubtitle}</span>
+         <span>\uE715</span>
         </div>
       `;
     }
@@ -576,15 +575,28 @@ export class MgtPersonCard extends MgtTemplatedComponent {
     if (userPerson.userPrincipalName) {
       chat = html`
         <div class="icon" @click=${() => this.chatUser()} >
-          ${getSvg(SvgIcon.SmallChat)}
-          <span>${this.strings.startChatLinkSubtitle}</span>
+        <span>\uE8BD</span>
         </div>
       `;
     }
 
+    let video: TemplateResult;
+    video = html`
+      <div class="icon" @click=${() => this.videoCallUser()}>
+        <span>\uE714</span>
+      </div>
+    `;
+
+    let phone: TemplateResult;
+    phone = html`
+    <div class="icon" @click=${() => this.callUser()}>
+      <span>\uE717</span>
+      </div>
+    `;
+
     return html`
       <div class="base-icons">
-        ${email} ${chat}
+        ${email} ${chat} ${video} ${phone}
       </div>
     `;
   }
@@ -990,6 +1002,33 @@ export class MgtPersonCard extends MgtTemplatedComponent {
       if (message && message.length) {
         url += `&message=${message}`;
       }
+
+      const openWindow = () => window.open(url, '_blank');
+
+      if (TeamsHelper.isAvailable) {
+        TeamsHelper.executeDeepLink(url, (status: boolean) => {
+          if (!status) {
+            openWindow();
+          }
+        });
+      } else {
+        openWindow();
+      }
+    }
+  }
+
+  /**
+   * Initiate a teams call with video with a user via deeplink.
+   *
+   * @protected
+   * @memberof MgtPersonCard
+   */
+  protected videoCallUser() {
+    const user = this.personDetails as User;
+    if (user && user.userPrincipalName) {
+      const users: string = user.userPrincipalName;
+
+      let url = `https://teams.microsoft.com/l/call/0/0?users=${users}&withVideo=true`;
 
       const openWindow = () => window.open(url, '_blank');
 

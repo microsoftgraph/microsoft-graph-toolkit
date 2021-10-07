@@ -79,7 +79,7 @@ $person-card-details-item-font-size: var(--person-card-details-item-font-size, 1
     display: flex;
     flex-direction: column;
     width: calc(var(--mgt-flyout-set-width, 375px) - 40px);
-    padding: 20px;
+    padding: 20px 20px 13px 20px;
 
     .person-image {
       --presence-background-color: #{$background-color};
@@ -100,12 +100,13 @@ $person-card-details-item-font-size: var(--person-card-details-item-font-size, 1
       max-width: 120px;
       margin-top: 16px;
       margin-left: 79px;
+      font-family: 'Segoe Fluent Icons';
 
       .icon {
         display: flex;
         align-items: center;
         cursor: pointer;
-        font-size: 12px;
+        font-size: 13px;
         white-space: nowrap;
         padding: 6px 8px 6px 8px;
         border: 1px solid transparent;
@@ -117,16 +118,11 @@ $person-card-details-item-font-size: var(--person-card-details-item-font-size, 1
         }
 
         &:not(:last-child) {
-          margin-right: 20px;
+          margin-right: 11px;
         }
 
         svg {
           fill: set-var(icon__color, $theme-default, $common);
-        }
-
-        span {
-          margin-left: 8px;
-          color: $commblue_primary;
         }
       }
       .icon:hover {
