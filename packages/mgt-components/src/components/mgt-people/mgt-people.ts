@@ -216,7 +216,7 @@ export class MgtPeople extends MgtTemplatedComponent {
    */
   @property({
     attribute: 'fallback-details',
-    type: Int8Array
+    type: Array
   })
   public get fallbackDetails(): IDynamicPerson[] {
     return this._fallbackDetails;
@@ -325,12 +325,6 @@ export class MgtPeople extends MgtTemplatedComponent {
    * @memberof MgtPeople
    */
   protected renderPeople(): TemplateResult {
-    if (this.fallbackDetails) {
-      for (let i = 0; i < this._fallbackDetails.length; i++) {
-        this.people.push(this.fallbackDetails[i]);
-      }
-    }
-
     const maxPeople = this.people.slice(0, this.showMax);
     return html`
       <ul class="people-list">
@@ -440,6 +434,30 @@ export class MgtPeople extends MgtTemplatedComponent {
           this.people = await getPeopleFromResource(graph, this.version, this.resource, this.scopes);
         } else {
           this.people = await getPeople(graph);
+        }
+
+        //replace people with fallback details
+        if (this._fallbackDetails) {
+          let personCount = 0;
+
+          let mutatedPersonArray: IDynamicPerson[] = [];
+
+          for (let person of this.people) {
+            if (person) {
+              mutatedPersonArray.push(person);
+              personCount++;
+            } else {
+              let id = this.userIds[personCount];
+              for (let i = 0; i < this._fallbackDetails.length; i++) {
+                let values = Object.values(this.fallbackDetails[i]);
+                if (values.includes(id)) {
+                  mutatedPersonArray.push(this.fallbackDetails[i]);
+                }
+              }
+            }
+          }
+
+          this.people = mutatedPersonArray;
         }
 
         // populate presence for people

@@ -118,7 +118,11 @@ export async function getUser(graph: IGraph, userPrincipleName: string, requeste
   }
 
   // else we must grab it
-  const response = await graph.api(apiString).middlewareOptions(prepScopes(scopes)).get();
+  let response;
+  try {
+    response = await graph.api(apiString).middlewareOptions(prepScopes(scopes)).get();
+  } catch (_) {}
+
   if (getIsUsersCacheEnabled()) {
     cache.putValue(userPrincipleName, { user: JSON.stringify(response) });
   }
