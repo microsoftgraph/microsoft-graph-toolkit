@@ -731,7 +731,8 @@ export class MgtPeoplePicker extends MgtTemplatedComponent {
            person => person.id,
            person => {
              const listPersonClasses = {
-               focused: this._isKeyboardFocus ? (person as IFocusable).isFocused : '',
+               focused:
+                 this._isKeyboardFocus && this._arrowSelectionCount === 0 ? (person as IFocusable).isFocused : '',
                'list-person': true
              };
              return html`
@@ -1039,12 +1040,11 @@ export class MgtPeoplePicker extends MgtTemplatedComponent {
         peopleList.children[i].classList.remove('focused');
       }
     }
-    this._arrowSelectionCount = 0;
   }
 
   private showKeyboardFocus() {
     this._isKeyboardFocus = true;
-    this.requestUpdate();
+    this.handleArrowSelection();
   }
 
   private renderHighlightText(person: IDynamicPerson): TemplateResult {
@@ -1456,25 +1456,29 @@ export class MgtPeoplePicker extends MgtTemplatedComponent {
    * Tracks user key selection for arrow key selection of people
    * @param event - tracks user key selection
    */
-  private handleArrowSelection(event: KeyboardEvent): void {
+  private handleArrowSelection(event?: KeyboardEvent): void {
     const peopleList = this.renderRoot.querySelector('.people-list');
 
-    console.log('is happening', this._isKeyboardFocus);
+    console.log('arrow selection count', this._arrowSelectionCount);
 
     if (this._isKeyboardFocus === false) {
       return;
     }
     if (peopleList && peopleList.children.length) {
-      // update arrow count
-      if (event.keyCode === 38) {
-        // up arrow
-        this._arrowSelectionCount =
-          (this._arrowSelectionCount - 1 + peopleList.children.length) % peopleList.children.length;
+      if (event) {
+        // update arrow count
+        if (event.keyCode === 38) {
+          // up arrow
+          this._arrowSelectionCount =
+            (this._arrowSelectionCount - 1 + peopleList.children.length) % peopleList.children.length;
+        }
+        if (event.keyCode === 40) {
+          // down arrow
+          this._arrowSelectionCount = (this._arrowSelectionCount + 1) % peopleList.children.length;
+        }
       }
-      if (event.keyCode === 40) {
-        // down arrow
-        this._arrowSelectionCount = (this._arrowSelectionCount + 1) % peopleList.children.length;
-      }
+
+      console.log('this should be happening');
 
       // reset background color
       // tslint:disable-next-line: prefer-for-of
