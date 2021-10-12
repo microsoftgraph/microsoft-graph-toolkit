@@ -1030,6 +1030,16 @@ export class MgtPeoplePicker extends MgtTemplatedComponent {
   private hideKeyboardFocus() {
     this._isKeyboardFocus = false;
     this.requestUpdate();
+
+    const peopleList = this.renderRoot.querySelector('.people-list');
+    if (peopleList && peopleList.children.length) {
+      // reset background color
+      // tslint:disable-next-line: prefer-for-of
+      for (let i = 0; i < peopleList.children.length; i++) {
+        peopleList.children[i].classList.remove('focused');
+      }
+    }
+    this._arrowSelectionCount = 0;
   }
 
   private showKeyboardFocus() {
@@ -1448,6 +1458,12 @@ export class MgtPeoplePicker extends MgtTemplatedComponent {
    */
   private handleArrowSelection(event: KeyboardEvent): void {
     const peopleList = this.renderRoot.querySelector('.people-list');
+
+    console.log('is happening', this._isKeyboardFocus);
+
+    if (this._isKeyboardFocus === false) {
+      return;
+    }
     if (peopleList && peopleList.children.length) {
       // update arrow count
       if (event.keyCode === 38) {
