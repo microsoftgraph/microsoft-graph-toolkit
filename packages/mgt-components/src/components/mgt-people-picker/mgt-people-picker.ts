@@ -386,6 +386,10 @@ export class MgtPeoplePicker extends MgtTemplatedComponent {
 
   @internalProperty() private _foundPeople: IDynamicPerson[];
 
+  private _mouseLeaveTimeout;
+  private _mouseEnterTimeout;
+  private _isKeyboardFocus: boolean = true;
+
   constructor() {
     super();
     this.clearState();
@@ -721,13 +725,14 @@ export class MgtPeoplePicker extends MgtTemplatedComponent {
     people = people || this._foundPeople;
 
     return html`
-       <div class="people-list">
+       <div class="people-list" @mouseenter=${this.handleMouseEnter} @mouseleave=${this.handleMouseLeave}>
          ${repeat(
            people,
            person => person.id,
            person => {
              const listPersonClasses = {
-               focused: (person as IFocusable).isFocused,
+               focused:
+                 this._isKeyboardFocus && this._arrowSelectionCount === 0 ? (person as IFocusable).isFocused : '',
                'list-person': true
              };
              return html`
@@ -1009,6 +1014,37 @@ export class MgtPeoplePicker extends MgtTemplatedComponent {
   private lostFocus() {
     this._isFocused = false;
     this.requestUpdate();
+  }
+
+  private handleMouseEnter(e: MouseEvent) {
+    clearTimeout(this._mouseEnterTimeout);
+    clearTimeout(this._mouseLeaveTimeout);
+    this._mouseEnterTimeout = setTimeout(this.hideKeyboardFocus.bind(this), 100);
+  }
+
+  private handleMouseLeave(e: MouseEvent) {
+    clearTimeout(this._mouseEnterTimeout);
+    clearTimeout(this._mouseLeaveTimeout);
+    this._mouseLeaveTimeout = setTimeout(this.showKeyboardFocus.bind(this), 100);
+  }
+
+  private hideKeyboardFocus() {
+    this._isKeyboardFocus = false;
+    this.requestUpdate();
+
+    const peopleList = this.renderRoot.querySelector('.people-list');
+    if (peopleList && peopleList.children.length) {
+      // reset background color
+      // tslint:disable-next-line: prefer-for-of
+      for (let i = 0; i < peopleList.children.length; i++) {
+        peopleList.children[i].classList.remove('focused');
+      }
+    }
+  }
+
+  private showKeyboardFocus() {
+    this._isKeyboardFocus = true;
+    this.handleArrowSelection();
   }
 
   private renderHighlightText(person: IDynamicPerson): TemplateResult {
@@ -1420,19 +1456,29 @@ export class MgtPeoplePicker extends MgtTemplatedComponent {
    * Tracks user key selection for arrow key selection of people
    * @param event - tracks user key selection
    */
-  private handleArrowSelection(event: KeyboardEvent): void {
+  private handleArrowSelection(event?: KeyboardEvent): void {
     const peopleList = this.renderRoot.querySelector('.people-list');
+
+    console.log('arrow selection count', this._arrowSelectionCount);
+
+    if (this._isKeyboardFocus === false) {
+      return;
+    }
     if (peopleList && peopleList.children.length) {
-      // update arrow count
-      if (event.keyCode === 38) {
-        // up arrow
-        this._arrowSelectionCount =
-          (this._arrowSelectionCount - 1 + peopleList.children.length) % peopleList.children.length;
+      if (event) {
+        // update arrow count
+        if (event.keyCode === 38) {
+          // up arrow
+          this._arrowSelectionCount =
+            (this._arrowSelectionCount - 1 + peopleList.children.length) % peopleList.children.length;
+        }
+        if (event.keyCode === 40) {
+          // down arrow
+          this._arrowSelectionCount = (this._arrowSelectionCount + 1) % peopleList.children.length;
+        }
       }
-      if (event.keyCode === 40) {
-        // down arrow
-        this._arrowSelectionCount = (this._arrowSelectionCount + 1) % peopleList.children.length;
-      }
+
+      console.log('this should be happening');
 
       // reset background color
       // tslint:disable-next-line: prefer-for-of
