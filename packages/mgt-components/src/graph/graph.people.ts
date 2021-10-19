@@ -9,6 +9,7 @@ import { IGraph, prepScopes, CacheItem, CacheService, CacheStore } from '@micros
 import { Contact, Person, User } from '@microsoft/microsoft-graph-types';
 import { extractEmailAddress } from '../utils/Utils';
 import { schemas } from './cacheStores';
+import { getUsersForUserIds } from './graph.user';
 import { IDynamicPerson } from './types';
 
 /**
