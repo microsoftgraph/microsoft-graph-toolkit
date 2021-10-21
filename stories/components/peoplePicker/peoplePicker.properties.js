@@ -181,3 +181,9 @@ export const pickerAllowAnyEmail = () => html`
     peoplePicker.selectedPeople = [{mail: "any@mail.com", displayName: "any@mail.com"}]
   </script>
 `;
+
+export const pickerUserIds = ()=> html`
+  <mgt-people-picker
+      user-ids="2804bc07-1e1f-4938-9085-ce6d756a32d2 ,e8a02cc7-df4d-4778-956d-784cc9506e5a,c8913c86-ceea-4d39-b1ea-f63a5b675166">
+  </mgt-people-picker>
+`
