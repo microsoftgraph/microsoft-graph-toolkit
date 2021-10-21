@@ -26,12 +26,13 @@ $person-card-nav-back-arrow-hover-color: var(--person-card-nav-back-arrow-hover-
 
 :host {
   background: $background-color;
-  width: var(--mgt-flyout-set-width, 340px);
+  width: var(--mgt-flyout-set-width, 375px);
   font-family: $font-family;
   overflow: hidden;
   user-select: none;
   box-shadow: set-var(box-shadow, $theme-default, $common);
   border-radius: 8px;
+  border: 1px solid set-var(background-color__sub1, $theme-default, $common);
 
   .nav {
     height: 0px;
@@ -59,11 +60,33 @@ $person-card-nav-back-arrow-hover-color: var(--person-card-nav-back-arrow-hover-
     }
   }
 
+  .close-card-container {
+    .close-button {
+      --focus-stroke-width: none;
+      --control-corner-radius: 2;
+      --accent-foreground-active: none;
+      position: absolute;
+      right: 10px;
+      margin-top: 9px;
+      z-index: 1;
+      --accent-foreground-hover: none;
+      border: 1px solid transparent;
+      // &:focus-visible {
+      //   outline: none;
+      //   border: 1px solid #2b2b2b;
+      // }
+      svg {
+        width: 9px;
+        height: 9px;
+      }
+    }
+  }
+
   .person-details-container {
     display: flex;
     flex-direction: column;
-    width: calc(var(--mgt-flyout-set-width, 340px) - 40px);
-    padding: 20px;
+    width: calc(var(--mgt-flyout-set-width, 375px) - 40px);
+    padding: 20px 20px 13px 20px;
 
     .person-image {
       --presence-background-color: #{$background-color};
@@ -83,18 +106,28 @@ $person-card-nav-back-arrow-hover-color: var(--person-card-nav-back-arrow-hover-
       align-items: center;
       max-width: 120px;
       margin-top: 16px;
+      margin-left: 79px;
+      font-family: 'Segoe Fluent Icons';
 
       .icon {
         display: flex;
         align-items: center;
         cursor: pointer;
-        font-size: 12px;
+        font-size: 13px;
         white-space: nowrap;
         margin: -11px -13px;
         padding: 11px 13px;
+        padding: 6px 8px 6px 8px;
+        border: 1px solid transparent;
+
+        &:focus-visible {
+          outline: none !important;
+          border: 1px solid #2b2b2b;
+          border-radius: 2px;
+        }
 
         &:not(:last-child) {
-          margin-right: 20px;
+          margin-right: 11px;
         }
 
         svg {
@@ -130,18 +163,75 @@ $person-card-nav-back-arrow-hover-color: var(--person-card-nav-back-arrow-hover-
         }
       }
     }
-
-    .expanded-details-button:hover {
-      background-color: set-var(background-color--hover, $theme-default, $common);
+    .expanded-details-button {
+      &:hover {
+        background-color: set-var(background-color--hover, $theme-default, $common);
+      }
+      &:focus-visible {
+        background-color: set-var(background-color--hover, $theme-default, $common);
+        outline: none !important;
+        border: 1px solid #2b2b2b;
+        border-bottom-left-radius: 4px;
+        border-bottom-right-radius: 4px;
+      }
     }
   }
 
   .section-nav {
-    display: flex;
-    padding: 0 14px;
     border-bottom: 1px solid set-var(tab__line__color, $theme-default, $common);
-
-    &__icon {
+    height: 36px;
+    padding-bottom: 7px;
+    fluent-tabs {
+      background-color: $background-color;
+      grid-template-columns: minmax(1px, 0.1fr);
+      fluent-tab-panel {
+        max-height: 360px;
+        min-height: 360px;
+        overflow-y: auto;
+        overflow-x: hidden;
+        padding: 0px;
+        border-top: 1px solid set-var(tab__line__color, $theme-default, $common);
+        scrollbar-width: thin;
+        .inserted {
+          max-width: var(--mgt-flyout-set-width, 375px);
+          min-width: var(--mgt-flyout-set-width, 360px);
+        }
+        .overview-panel {
+          max-width: var(--mgt-flyout-set-width, 375px);
+        }
+        &::-webkit-scrollbar {
+          height: 4em;
+          width: 4px;
+          border-radius: 11px;
+        }
+        &::-webkit-scrollbar-button {
+          background: $background-color;
+          height: 1px;
+        }
+        &::-webkit-scrollbar-track {
+          background: $background-color;
+          border-radius: 10px;
+        }
+        &::-webkit-scrollbar-track-piece {
+          background: $background-color;
+        }
+        &::-webkit-scrollbar-thumb {
+          background: grey;
+          border-radius: 10px;
+          height: 4px;
+        }
+      }
+    }
+    border: 1px solid transparent;
+    fluent-tab {
+      padding-bottom: 4px !important;
+      margin-bottom: -3px !important;
+      border: 1px solid transparent !important;
+      &:focus-visible {
+        border: 1px solid #2b2b2b !important;
+      }
+    }
+    .section-nav__icon {
       all: initial;
       box-sizing: border-box;
       width: 48px;
@@ -161,21 +251,10 @@ $person-card-nav-back-arrow-hover-color: var(--person-card-nav-back-arrow-hover-
 
       &:hover {
         background: set-var(tab__background-color--hover, $theme-default, $common);
-      }
-      &:focus {
-        border-color: black;
+        border-radius: 2px;
       }
 
       &.active {
-        // border: none none none solid $icon--active;
-        border-bottom-color: $person-card-tab-nav-color;
-        border-bottom-style: solid;
-        border-left-color: none;
-        border-right-color: none;
-        border-top-color: none;
-        border-top-style: none;
-        border-left-style: none;
-        border-right-style: none;
         svg {
           fill: $person-card-tab-nav-color;
         }
@@ -190,11 +269,58 @@ $person-card-nav-back-arrow-hover-color: var(--person-card-nav-back-arrow-hover-
     height: 360px;
   }
 
+  .message-section {
+    border-bottom: 1px solid set-var(tab__line__color, $theme-default, $common);
+    --background-color: $background-color;
+    fluent-text-field {
+      margin: 4px 0px;
+      width: 83%;
+      width: 300px;
+
+      padding: 4px 10px;
+      &::after {
+        border: none;
+      }
+    }
+    .send-message-icon {
+      max-width: 15px;
+    }
+    svg {
+      height: 17px;
+      width: 16px;
+      margin-bottom: 6px;
+      fill: set-var(icon__color, $theme-default, $common);
+      &:hover {
+        filter: brightness(0.5);
+      }
+    }
+  }
   .section-host {
     max-height: 360px;
     min-height: 360px;
     overflow-y: auto;
     overflow-x: hidden;
+
+    &::-webkit-scrollbar {
+      height: 4em;
+      width: 4px;
+      border-radius: 11px;
+    }
+    &::-webkit-scrollbar-button {
+      background: white;
+    }
+    &::-webkit-scrollbar-track {
+      background: white;
+      border-radius: 10px;
+    }
+    &::-webkit-scrollbar-track-piece {
+      background: white;
+    }
+    &::-webkit-scrollbar-thumb {
+      background: grey;
+      border-radius: 10px;
+      height: 4px;
+    }
   }
 
   .quick-message {
@@ -255,6 +381,14 @@ $person-card-nav-back-arrow-hover-color: var(--person-card-nav-back-arrow-hover-
         display: flex;
         flex-direction: row;
         padding: 0 20px;
+        fluent-button {
+          background-color: $background-color;
+          --neutral-fill-stealth-rest: $background-color;
+          --accent-foreground-hover: $background-color;
+          --accent-foreground-active: $background-color;
+          --base-height-multiplier: 5;
+          vertical-align: top;
+        }
       }
 
       &__title {
@@ -301,6 +435,16 @@ $person-card-nav-back-arrow-hover-color: var(--person-card-nav-back-arrow-hover-
     transform: scaleX(-1);
     filter: FlipH;
     -ms-filter: 'FlipH';
+  }
+  .close-card-container .close-button {
+    right: auto;
+    left: 10px;
+  }
+
+  .message-section {
+    svg {
+      transform: scale(-1, 1);
+    }
   }
 }
 
