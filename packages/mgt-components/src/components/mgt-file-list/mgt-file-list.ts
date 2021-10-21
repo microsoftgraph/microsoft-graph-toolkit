@@ -563,7 +563,18 @@ export class MgtFileList extends MgtTemplatedComponent {
    * @memberof MgtFileList
    */
   protected renderNoData(): TemplateResult {
-    return this.renderTemplate('no-data', null) || html``;
+    return (
+      this.renderTemplate('no-data', null) ||
+      (this.enableFileUpload === true && Providers.globalProvider !== undefined
+        ? html`
+      <fluent-design-system-provider use-defaults>
+        <div id="file-list-wrapper" class="file-list-wrapper" dir=${this.direction}>
+          ${this.renderFileUpload()}
+        </div>
+      </fluent-design-system-provider>
+      `
+        : html``)
+    );
   }
 
   /**
