@@ -238,7 +238,7 @@ export async function getGroupImage(graph: IGraph, group: any, useContactsApis: 
   let groupId = group.id;
 
   if (getIsPhotosCacheEnabled()) {
-    cache = CacheService.getCache<CachePhoto>(schemas.photos, schemas.photos.stores.users);
+    cache = CacheService.getCache<CachePhoto>(schemas.photos, schemas.photos.stores.groups);
     photoDetails = await cache.getValue(groupId);
     if (photoDetails && getPhotoInvalidationTime() > Date.now() - photoDetails.timeCached) {
       return photoDetails.photo;
