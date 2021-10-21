@@ -748,11 +748,11 @@ export class MgtPeoplePicker extends MgtTemplatedComponent {
    */
   protected renderSearchResults(people?: IDynamicPerson[]) {
     people = people || this._foundPeople;
-
+    let filteredPeople = people.filter(person => person.id);
     return html`
        <div class="people-list" @mouseenter=${this.handleMouseEnter} @mouseleave=${this.handleMouseLeave}>
          ${repeat(
-           people,
+           filteredPeople,
            person => person.id,
            person => {
              const listPersonClasses = {
