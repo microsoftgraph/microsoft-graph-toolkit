@@ -1218,7 +1218,8 @@ export class MgtPerson extends MgtTemplatedComponent {
   }
 
   private handleMouseClick(e: MouseEvent) {
-    if (this.personCardInteraction === PersonCardInteraction.click) {
+    let element = e.target as HTMLElement;
+    if (this.personCardInteraction === PersonCardInteraction.click && element.tagName !== 'MGT-PERSON-CARD') {
       this.showPersonCard();
     }
   }
@@ -1247,7 +1248,7 @@ export class MgtPerson extends MgtTemplatedComponent {
     this._mouseLeaveTimeout = setTimeout(this.hidePersonCard.bind(this), 500);
   }
 
-  private hidePersonCard() {
+  public hidePersonCard() {
     const flyout = this.flyout;
     if (flyout) {
       flyout.close();

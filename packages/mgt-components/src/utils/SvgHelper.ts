@@ -143,6 +143,11 @@ export enum SvgIcon {
   Back,
 
   /**
+   * Close icon
+   */
+  Close,
+
+  /**
    * Upload icon
    */
   Upload,
@@ -349,7 +354,7 @@ export function getSvg(svgIcon: SvgIcon, color?: string) {
             d="M0.5 0.772727C0.5 0.622104 0.622104 0.5 0.772727 0.5H13.2273C13.3779 0.5 13.5 0.622104 13.5 0.772727V9.22727C13.5 9.3779 13.3779 9.5 13.2273 9.5H0.772727C0.622104 9.5 0.5 9.3779 0.5 9.22727V0.772727Z"
             stroke="${color}"
           />
-          <path d="M13.5 0.5L7.18923 4.70314C6.92113 4.8817 6.57039 4.87522 6.30907 4.68687L0.5 0.5" stroke="#929292" />
+          <path d="M13.5 0.5L7.18923 4.70314C6.92113 4.8817 6.57039 4.87522 6.30907 4.68687L0.5 0.5" stroke="#605e5c" />
         </svg>
       `;
 
@@ -464,6 +469,12 @@ export function getSvg(svgIcon: SvgIcon, color?: string) {
         </svg>
       `;
 
+    case SvgIcon.Close:
+      return html`
+        <svg width="10" height="10" viewBox="0 0 10 10" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <path d="M5.73838 5.032L9.70337 1.067L8.99638 0.360001L5.03137 4.325L1.06637 0.360001L0.359375 1.067L4.32438 5.032L0.359375 8.997L1.06637 9.704L5.03137 5.739L8.99638 9.704L9.70337 8.997L5.73838 5.032Z" fill="black"/>
+        </svg>
+     `;
     case SvgIcon.Upload:
       return html`
     <svg class="upload-icon" width="10" height="12"  xmlns="http://www.w3.org/2000/svg">

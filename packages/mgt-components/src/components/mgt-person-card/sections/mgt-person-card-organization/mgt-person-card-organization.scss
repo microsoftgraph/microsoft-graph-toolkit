@@ -129,7 +129,8 @@ $person-card-active-org-member-color: var(--person-card-active-org-member-color,
     }
 
     .org-member__separator {
-      border: 1px solid set-var(line-seperator__color, $theme-default, $common);
+      border-left: 1px solid set-var(line-seperator__color, $theme-default, $common);
+      background-color: set-var(line-seperator__color, $theme-default, $common);
       box-sizing: border-box;
       width: 0;
       margin: 0 50%;
@@ -156,7 +157,7 @@ $person-card-active-org-member-color: var(--person-card-active-org-member-color,
           --font-size: 16px;
           --line2-text-transform: uppercase;
           --line2-font-size: 14px;
-          --line2-color: set-var(color__sub2, $theme-default, $common);
+          --line2-color: #797775;
           --avatar-size: 46px;
         }
       }

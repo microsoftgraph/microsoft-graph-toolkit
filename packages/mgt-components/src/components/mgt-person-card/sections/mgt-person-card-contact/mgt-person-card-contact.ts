@@ -104,17 +104,17 @@ export class MgtPersonCardContact extends BasePersonCardSection {
       title: 'Mobile Phone'
     },
     department: {
-      icon: getSvg(SvgIcon.Department, '#929292'),
+      icon: getSvg(SvgIcon.Department, '#605e5c'),
       showCompact: false,
       title: 'Department'
     },
     title: {
-      icon: getSvg(SvgIcon.Person, '#929292'),
+      icon: getSvg(SvgIcon.Person, '#605e5c'),
       showCompact: false,
       title: 'Title'
     },
     officeLocation: {
-      icon: getSvg(SvgIcon.OfficeLocation, '#929292'),
+      icon: getSvg(SvgIcon.OfficeLocation, '#605e5c'),
       showCompact: true,
       title: 'Office Location'
     }
