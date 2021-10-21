@@ -78,41 +78,41 @@ export class MgtPersonCardContact extends BasePersonCardSection {
   // tslint:disable: object-literal-sort-keys
   private _contactParts = {
     email: {
-      icon: getSvg(SvgIcon.Email, '#929292'),
+      icon: getSvg(SvgIcon.Email, '#605e5c'),
       onClick: () => this.sendEmail(),
       showCompact: true,
       title: 'Email'
     } as IContactPart,
     chat: {
-      icon: getSvg(SvgIcon.Chat, '#929292'),
+      icon: getSvg(SvgIcon.Chat, '#605e5c'),
       onClick: () => this.sendChat(),
       showCompact: false,
       title: 'Teams'
     } as IContactPart,
     businessPhone: {
-      icon: getSvg(SvgIcon.CellPhone, '#929292'),
+      icon: getSvg(SvgIcon.CellPhone, '#605e5c'),
       onClick: () => this.sendCall(),
       showCompact: true,
       title: 'Business Phone'
     } as IContactPart,
     cellPhone: {
-      icon: getSvg(SvgIcon.CellPhone, '#929292'),
+      icon: getSvg(SvgIcon.CellPhone, '#605e5c'),
       onClick: () => this.sendCall(),
       showCompact: true,
       title: 'Mobile Phone'
     } as IContactPart,
     department: {
-      icon: getSvg(SvgIcon.Department, '#929292'),
+      icon: getSvg(SvgIcon.Department, '#605e5c'),
       showCompact: false,
       title: 'Department'
     } as IContactPart,
     title: {
-      icon: getSvg(SvgIcon.Person, '#929292'),
+      icon: getSvg(SvgIcon.Person, '#605e5c'),
       showCompact: false,
       title: 'Title'
     } as IContactPart,
     officeLocation: {
-      icon: getSvg(SvgIcon.OfficeLocation, '#929292'),
+      icon: getSvg(SvgIcon.OfficeLocation, '#605e5c'),
       showCompact: true,
       title: 'Office Location'
     } as IContactPart

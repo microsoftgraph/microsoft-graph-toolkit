@@ -24,6 +24,13 @@ export interface MgtPersonCardConfig {
   useContactApis: boolean;
 
   /**
+   * is send message available
+   *
+   * @type {boolean}
+   */
+  isSendMessageVisible: boolean;
+
+  /**
    * Gets or sets whether each subsection should be shown
    *
    * @type {{

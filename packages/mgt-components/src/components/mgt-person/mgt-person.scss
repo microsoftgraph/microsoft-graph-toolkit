@@ -41,6 +41,10 @@ $presence-color-away: #ffaa44;
 $presence-color-invisible: #8a8886;
 $presence-color-oof: #b4009e;
 
+mgt-flyout {
+  --mgt-flyout-border-radius: 2px;
+}
+
 :host([hidden]) {
   display: none;
 }
@@ -53,6 +57,8 @@ $presence-color-oof: #b4009e;
 
 :host .root {
   display: block;
+  margin: -11px -13px;
+  padding: 11px 13px;
 }
 
 :host svg,

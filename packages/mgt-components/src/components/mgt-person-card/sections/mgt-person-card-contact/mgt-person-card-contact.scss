@@ -54,6 +54,7 @@
           color: set-var(color__sub1, $theme-default, $common);
           font-size: 14px;
           font-weight: 400;
+          line-height: normal;
 
           .part__link {
             color: $commblue_primary;
@@ -65,10 +66,6 @@
             white-space: nowrap;
             width: 100%;
             display: inline-block;
-
-            &:hover {
-              color: #004578;
-            }
           }
         }
       }
@@ -83,7 +80,7 @@
         justify-content: center;
 
         svg {
-          fill: set-var(color__sub1, $theme-default, $common);
+          fill: set-var(icon__color, $theme-default, $common);
           cursor: pointer;
         }
       }
@@ -117,6 +114,7 @@
       .part__icon {
         margin-top: 0;
         margin-right: 6px;
+        margin-bottom: 2px;
       }
     }
   }
