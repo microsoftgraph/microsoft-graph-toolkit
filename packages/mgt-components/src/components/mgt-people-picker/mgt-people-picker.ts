@@ -1492,8 +1492,6 @@ export class MgtPeoplePicker extends MgtTemplatedComponent {
   private handleArrowSelection(event?: KeyboardEvent): void {
     const peopleList = this.renderRoot.querySelector('.people-list');
 
-    console.log('arrow selection count', this._arrowSelectionCount);
-
     if (this._isKeyboardFocus === false) {
       return;
     }
@@ -1510,8 +1508,6 @@ export class MgtPeoplePicker extends MgtTemplatedComponent {
           this._arrowSelectionCount = (this._arrowSelectionCount + 1) % peopleList.children.length;
         }
       }
-
-      console.log('this should be happening');
 
       // reset background color
       // tslint:disable-next-line: prefer-for-of
