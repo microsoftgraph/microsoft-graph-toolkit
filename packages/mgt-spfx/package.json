@@ -30,7 +30,7 @@
     "@microsoft/mgt-components": "*",
     "@microsoft/mgt-element": "*",
     "@microsoft/mgt-sharepoint-provider": "*",
-    "@microsoft/sp-core-library": "1.12.1"
+    "@microsoft/sp-core-library": "1.13.0"
   },
   "devDependencies": {
     "@microsoft/rush-stack-compiler-3.7": "0.6.47",
