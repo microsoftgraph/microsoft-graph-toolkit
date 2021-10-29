@@ -16,12 +16,32 @@
 .root {
   position: relative;
 
+  fluent-tree-item {
+    --accent-foreground-rest: none;
+    --neutral-fill-rest: none;
+    --neutral-fill-focus: none;
+    --neutral-fill-stealth-active: none;
+    &:hover {
+      --neutral-fill-stealth-hover: none;
+    }
+    &::part(expand-collapse-button) {
+      max-width: 20px;
+      max-height: 20px;
+      margin: 0px 8px;
+    }
+    fluent-tree-item.nested {
+      &:hover {
+        background-color: $dropdown-item__background-color--hover;
+      }
+    }
+  }
+
   .input-wrapper {
     font-family: $font-family;
     display: flex;
     flex-wrap: wrap;
     align-items: center;
-    padding: 4px 10px;
+    padding: 4px 4px;
     position: relative;
     background-color: $input__background-color;
     font-size: 14px;
@@ -135,13 +155,15 @@
   .close-icon {
     display: inline-block;
     position: absolute;
-    right: 10px;
-    top: 12px;
+    right: 18px;
+    top: 16px;
     line-height: normal;
     font-family: 'FabricMDL2Icons';
     cursor: pointer;
-    color: $placeholder__color;
+    color: #1a1a1a;
     background-color: $input__background-color;
+    font-size: 10px;
+    font-weight: bold;
     &:hover {
       color: $color;
     }
@@ -171,8 +193,10 @@
     }
 
     .item {
-      .arrow svg {
-        fill: set-var(arrow, $theme-default, $channel-picker);
+      .team-photo {
+        border-radius: 20px;
+        max-width: 20px;
+        margin-right: 10px;
       }
 
       &.list-team {
@@ -184,8 +208,6 @@
         display: flex;
         flex-direction: row;
         align-items: center;
-        padding: 5px 12px 6px 14px;
-        margin-top: 6px;
         font-family: $font-family;
         font-style: normal;
         font-weight: 600;
@@ -207,9 +229,9 @@
           @include dropdown-item__overflow($theme-default);
         }
 
-        &:hover {
-          background-color: $dropdown-item__background-color--hover;
-        }
+        // &:hover {
+        //   background-color: $dropdown-item__background-color--hover;
+        // }
         .arrow {
           margin-right: 5px;
           margin-bottom: 1px;
@@ -220,9 +242,9 @@
         background-color: set-var(dropdown-item__background-color--selected, $theme-default, $channel-picker);
       }
 
-      &.focused {
-        background-color: $dropdown-item__background-color--hover;
-      }
+      // &.focused {
+      //   background-color: $dropdown-item__background-color--hover;
+      // }
     }
 
     .channel-display {

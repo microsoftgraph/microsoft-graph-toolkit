@@ -8,14 +8,18 @@
 import * as MicrosoftGraph from '@microsoft/microsoft-graph-types';
 import { customElement, html, property, TemplateResult } from 'lit-element';
 import { classMap } from 'lit-html/directives/class-map';
-import { Providers, ProviderState, MgtTemplatedComponent } from '@microsoft/mgt-element';
+import { Providers, ProviderState, MgtTemplatedComponent, BetaGraph } from '@microsoft/mgt-element';
 import '../../styles/style-helper';
 import '../sub-components/mgt-spinner/mgt-spinner';
 import { getSvg, SvgIcon } from '../../utils/SvgHelper';
 import { debounce } from '../../utils/Utils';
 import { styles } from './mgt-teams-channel-picker-css';
-import { getAllMyTeams } from './mgt-teams-channel-picker.graph';
+import { getAllMyTeams, getTeamsPhotosforPhotoIds } from './mgt-teams-channel-picker.graph';
 import { strings } from './strings';
+import { fluentTreeView, fluentTreeItem } from '@fluentui/web-components';
+import { registerFluentComponents } from '../../utils/FluentComponents';
+
+registerFluentComponents(fluentTreeView, fluentTreeItem);
 
 /**
  * Team with displayName
@@ -249,6 +253,8 @@ export class MgtTeamsChannelPicker extends MgtTemplatedComponent {
   private _focusedIndex: number = -1;
   private debouncedSearch;
 
+  private teamsPhotos = {};
+
   // determines loading state
   @property({ attribute: false }) private _isDropdownVisible;
 
@@ -340,10 +346,14 @@ export class MgtTeamsChannelPicker extends MgtTemplatedComponent {
         <div class="root" @blur=${this.lostFocus} dir=${this.direction}>
           <div class=${classMap(inputClasses)} @click=${this.gainedFocus}>
             ${this.renderSelected()}
-            <div class=${classMap(searchClasses)}>${this.renderSearchIcon()} ${this.renderInput()}</div>
+            <div class=${classMap(searchClasses)}>${this.renderInput()}</div>
           </div>
           ${this.renderCloseButton()}
-          <div class=${classMap(dropdownClasses)}>${this.renderDropdown()}</div>
+          <div class=${classMap(dropdownClasses)}>
+          <fluent-tree-view>
+          ${this.renderDropdown()}
+          </fluent-tree-view>
+        </div>
         </div>
       `
     );
@@ -437,11 +447,31 @@ export class MgtTeamsChannelPicker extends MgtTemplatedComponent {
    * @memberof MgtTeamsChannelPicker
    */
   protected renderCloseButton() {
-    return html`
+    let icon: TemplateResult;
+
+    const closeIcon = html`
       <div class="close-icon" @click="${() => this.selectChannel(null)}">
         
       </div>
     `;
+    const openDropDownIcon = html`
+      <div class="close-icon" @click=${() => this.gainedFocus()}>
+        <span>\uE70D</span>
+      </div>
+    `;
+    const closeDropDownIcon = html`
+      <div class="close-icon" @click=${() => this.lostFocus()}>
+        <span>\uE70E</span>
+      </div>
+    `;
+
+    if (this._selectedItemState) {
+      icon = closeIcon;
+    } else {
+      this._isFocused ? (icon = closeDropDownIcon) : (icon = openDropDownIcon);
+    }
+
+    return icon;
   }
 
   /**
@@ -481,12 +511,14 @@ export class MgtTeamsChannelPicker extends MgtTemplatedComponent {
     if (items && items.length) {
       return items.map((treeItem, index) => {
         const isLeaf = !treeItem.channels;
-        const renderChannels = !isLeaf && treeItem.isExpanded;
+        const renderChannels = true;
 
-        return html`
-          ${this.renderItem(treeItem)}
-          ${renderChannels ? this.renderDropdownList(treeItem.channels, level + 1) : html``}
-        `;
+        return html`   
+            <fluent-tree-item>
+            ${this.renderItem(treeItem)}
+              ${renderChannels ? this.renderDropdownList(treeItem.channels, level + 1) : html``}
+            </fluent-tree-item>
+          `;
       });
     }
 
@@ -505,7 +537,9 @@ export class MgtTeamsChannelPicker extends MgtTemplatedComponent {
 
     if (itemState.channels) {
       // must be team with channels
-      icon = itemState.isExpanded ? getSvg(SvgIcon.ArrowDown, '#252424') : getSvg(SvgIcon.ArrowRight, '#252424');
+      icon = html`
+       <img class="team-photo" src=${this.teamsPhotos[itemState.item.id].photo} />
+      `;
     }
 
     let isSelected = false;
@@ -530,9 +564,7 @@ export class MgtTeamsChannelPicker extends MgtTemplatedComponent {
 
     return html`
       <div @click=${() => this.handleItemClick(itemState)} class="${classMap(classes)}">
-        <div class="arrow">
           ${icon}
-        </div>
         ${itemState.channels ? itemState.item.displayName : this.renderHighlightedText(itemState.item)}
       </div>
     `;
@@ -641,6 +673,7 @@ export class MgtTeamsChannelPicker extends MgtTemplatedComponent {
   protected async loadState() {
     const provider = Providers.globalProvider;
     let teams: MicrosoftGraph.Team[];
+    let photos;
     if (provider && provider.state === ProviderState.SignedIn) {
       const graph = provider.graph.forComponent(this);
 
@@ -651,6 +684,12 @@ export class MgtTeamsChannelPicker extends MgtTemplatedComponent {
 
       teams = await getAllMyTeams(graph);
       teams = teams.filter(t => !t.isArchived);
+
+      let teamsIds = teams.map(t => t.id);
+
+      const beta = BetaGraph.fromGraph(graph);
+
+      photos = await getTeamsPhotosforPhotoIds(beta, teamsIds);
 
       const batch = graph.createBatch();
 
@@ -681,6 +720,11 @@ export class MgtTeamsChannelPicker extends MgtTemplatedComponent {
     }
     this.filterList();
     this.resetFocusState();
+
+    this.teamsPhotos = photos;
+
+    console.log('teams', teams);
+    console.log('photos', photos);
   }
 
   private handleItemClick(item: ChannelPickerItemState) {
