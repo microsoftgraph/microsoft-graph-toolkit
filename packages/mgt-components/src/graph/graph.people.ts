@@ -9,6 +9,7 @@ import { IGraph, prepScopes, CacheItem, CacheService, CacheStore } from '@micros
 import { Contact, Person, User } from '@microsoft/microsoft-graph-types';
 import { extractEmailAddress } from '../utils/Utils';
 import { schemas } from './cacheStores';
+import { getUsersForUserIds } from './graph.user';
 import { IDynamicPerson } from './types';
 
 /**
@@ -142,7 +143,7 @@ export async function findPeople(
     if (getIsPeopleCacheEnabled() && graphResult) {
       const item = { maxResults: top, results: null };
       item.results = graphResult.value.map(personStr => JSON.stringify(personStr));
-      cache.putValue(query, item);
+      cache.putValue(cacheKey, item);
     }
   } catch (error) {}
   return graphResult ? graphResult.value : null;

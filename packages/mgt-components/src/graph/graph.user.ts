@@ -133,13 +133,15 @@ export async function getUser(graph: IGraph, userPrincipleName: string, requeste
  * @param {string[]} userIds, an array of string ids
  * @returns {Promise<User[]>}
  */
-export async function getUsersForUserIds(graph: IGraph, userIds: string[]): Promise<User[]> {
+export async function getUsersForUserIds(graph: IGraph, userIds: string[], searchInput: string = ''): Promise<User[]> {
   if (!userIds || userIds.length === 0) {
     return [];
   }
   const batch = graph.createBatch();
   const peopleDict = {};
+  const peopleSearchMatches = {};
   const notInCache = [];
+  searchInput = searchInput.toLowerCase();
   let cache: CacheStore<CacheUser>;
 
   if (getIsUsersCacheEnabled()) {
@@ -153,7 +155,14 @@ export async function getUsersForUserIds(graph: IGraph, userIds: string[]): Prom
       user = await cache.getValue(id);
     }
     if (user && getUserInvalidationTime() > Date.now() - user.timeCached) {
-      peopleDict[id] = user.user ? JSON.parse(user.user) : null;
+      user = JSON.parse(user?.user);
+      const displayName = user.displayName;
+      const searchMatches = displayName && displayName.toLowerCase().includes(searchInput) ? true : false;
+      if (searchInput && searchMatches) {
+        peopleSearchMatches[id] = user ? user : null;
+      } else {
+        peopleDict[id] = user ? user : null;
+      }
     } else if (id !== '') {
       batch.get(id, `/users/${id}`, ['user.readbasic.all']);
       notInCache.push(id);
@@ -165,11 +174,23 @@ export async function getUsersForUserIds(graph: IGraph, userIds: string[]): Prom
     for (const id of userIds) {
       const response = responses.get(id);
       if (response && response.content) {
-        peopleDict[id] = response.content;
+        const user = response.content;
+        if (searchInput) {
+          const displayName = user?.displayName.toLowerCase();
+          if (displayName.contains(searchInput)) {
+            peopleSearchMatches[id] = user;
+          }
+        } else {
+          peopleDict[id] = user;
+        }
+
         if (getIsUsersCacheEnabled()) {
-          cache.putValue(id, { user: JSON.stringify(response.content) });
+          cache.putValue(id, { user: JSON.stringify(user) });
         }
       }
+    }
+    if (searchInput && Object.keys(peopleSearchMatches).length) {
+      return Promise.all(Object.values(peopleSearchMatches));
     }
     return Promise.all(Object.values(peopleDict));
   } catch (_) {
