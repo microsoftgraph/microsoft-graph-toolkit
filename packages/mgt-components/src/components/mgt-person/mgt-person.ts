@@ -548,6 +548,7 @@ export class MgtPerson extends MgtTemplatedComponent {
         @click=${this.handleMouseClick}
         @mouseenter=${this.handleMouseEnter}
         @mouseleave=${this.handleMouseLeave}
+        @keydown=${this.handleKeyDown}
       >
         ${personTemplate}
       </div>
@@ -1153,7 +1154,8 @@ export class MgtPerson extends MgtTemplatedComponent {
   }
 
   private handleMouseClick(e: MouseEvent) {
-    if (this.personCardInteraction === PersonCardInteraction.click) {
+    let element = e.target as HTMLElement;
+    if (this.personCardInteraction === PersonCardInteraction.click && element.tagName !== 'MGT-PERSON-CARD') {
       this.showPersonCard();
     }
   }
@@ -1173,12 +1175,20 @@ export class MgtPerson extends MgtTemplatedComponent {
     this._mouseLeaveTimeout = setTimeout(this.hidePersonCard.bind(this), 500);
   }
 
-  private hidePersonCard() {
+  private handleKeyDown(e: KeyboardEvent) {
+    //enter activates person-card
+    if (e) {
+      if (e.keyCode === 13) {
+        this.showPersonCard();
+      }
+    }
+  }
+
+  public hidePersonCard() {
     const flyout = this.flyout;
     if (flyout) {
       flyout.close();
     }
-
     const personCard = (this.querySelector('mgt-person-card') ||
       this.renderRoot.querySelector('mgt-person-card')) as MgtPersonCard;
     if (personCard) {

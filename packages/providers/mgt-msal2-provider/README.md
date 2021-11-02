@@ -33,6 +33,7 @@ The `@microsoft/mgt-msal2-provider` package exposes the `Msal2Provider` class wh
       loginHint?: string,
       domainHint?: string,
       isMultiAccountEnabled?: boolean // True by default, disables multiple account login if false
+      isIncrementalConsentDisabled?: boolean, //Disable incremental consent, true by default
       options?: Configuration // msal js Configuration object
     });
     ```
@@ -56,6 +57,7 @@ The `@microsoft/mgt-msal2-provider` package exposes the `Msal2Provider` class wh
       loginHint?: string,
       domainHint?: string,
       isMultiAccountEnabled?: boolean // True by default, disables multiple account login if false
+      isIncrementalConsentDisabled?: boolean, //Disable incremental consent, true by default
       options?: Configuration // msal js Configuration object
     });
     ```
@@ -74,6 +76,7 @@ The `@microsoft/mgt-msal2-provider` package exposes the `Msal2Provider` class wh
                       domain-hint=""> 
     </mgt-msal2-provider> 
     ```
+  Add the `incremental-consent-disabled` boolean attribute if you wish to disable incremental consent. 
 
 5. Multi account login functionality is enabled by default. It can be disabled by adding the boolean attribute `multi-account-disabled` in the html:
 
