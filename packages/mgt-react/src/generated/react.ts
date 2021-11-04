@@ -106,6 +106,7 @@ export type PeoplePickerProps = {
 	defaultSelectedGroupIds?: string[];
 	placeholder?: string;
 	selectionMode?: string;
+	userIds?: string[];
 	showMax?: number;
 	disabled?: boolean;
 	allowAnyEmail?: boolean;
