@@ -97,26 +97,25 @@ export const withCodeEditor = makeDecorator({
       css: styleCode
     };
 
-    // get token from url query params
-    const urlSearchParams = new URLSearchParams(window.location.search);
-    const token = urlSearchParams.get('token');
+    const loadEditorContent = () => {
+      const token = window.parent.location.hash.replace('#', '');
+      console.log(token);
 
-    let providerInitCode = `
-    import {Providers, MockProvider} from "${mgtScriptName}";
-    Providers.globalProvider = new MockProvider(true);
-  `;
+      let providerInitCode = `
+        import {Providers, MockProvider} from "${mgtScriptName}";
+        Providers.globalProvider = new MockProvider(true);
+      `;
 
-    if (token) {
-      providerInitCode = `
-      import {Providers, SimpleProvider, ProviderState} from "${mgtScriptName}";
-      Providers.globalProvider = new SimpleProvider(async () => {
-        return '${token}';
-      });
-      Providers.globalProvider.setState(ProviderState.SignedIn);
-    `;
-    }
+      if (token) {
+        providerInitCode = `
+          import {Providers, SimpleProvider, ProviderState} from "${mgtScriptName}";
+          Providers.globalProvider = new SimpleProvider(async () => {
+            return '${token}';
+          });
+          Providers.globalProvider.setState(ProviderState.SignedIn);
+        `;
+      }
 
-    editor.addEventListener('fileUpdated', () => {
       const storyElement = document.createElement('iframe');
 
       storyElement.addEventListener('load', () => {
@@ -159,7 +158,11 @@ export const withCodeEditor = makeDecorator({
       storyElement.className = 'story-mgt-preview';
       storyElementWrapper.innerHTML = '';
       storyElementWrapper.appendChild(storyElement);
-    });
+    };
+
+    window.parent.addEventListener('hashchange', loadEditorContent);
+
+    editor.addEventListener('fileUpdated', loadEditorContent);
 
     const separator = document.createElement('div');
 
