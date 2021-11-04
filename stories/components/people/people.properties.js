@@ -54,7 +54,7 @@ export const PersonCard = () => html`
 export const FallbackDetails = () => html`
   <mgt-people
     user-ids="2804bc07-1e1f-4938-9085-ce6d756a32d2, validButNotFound@email.in.ad"
-    fallback-details='[{"id": "validButNotFound@email.in.ad", "mail":"testmail@test.com"},{"mail": "test@test.com"}]'
+    fallback-details='[{"mail": "test@test.com"},{"displayName": "validButNotFound@email.in.ad", "mail":"validButNotFound@email.in.ad"}]'
   >
   </mgt-people>
 `;
