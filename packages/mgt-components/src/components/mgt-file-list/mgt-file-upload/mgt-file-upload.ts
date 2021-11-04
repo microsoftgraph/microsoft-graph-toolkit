@@ -22,7 +22,7 @@ import {
   deleteSessionFile
 } from '../../../graph/graph.files';
 
-export { FluentProgress, FluentButton, FluentCheckbox } from '@fluentui/web-components';
+export { FluentProgress, FluentButton, FluentCheckbox, FluentCard } from '@fluentui/web-components';
 
 // import { registerFluentComponents } from '../../../utils/FluentComponents';
 // import { fluentButton, fluentCheckbox, fluentProgress } from '@fluentui/web-components';
@@ -285,14 +285,16 @@ export class MgtFileUpload extends MgtBaseComponent {
     return html`
         <div id="file-upload-dialog" class="file-upload-dialog">
           <!-- Modal content -->
-          <div class="file-upload-dialog-content">
+          <fluent-card class="file-upload-dialog-content">
             <span class="file-upload-dialog-close" id="file-upload-dialog-close" >${getSvg(SvgIcon.Cancel)}</span>
             <div class="file-upload-dialog-content-text">
-              <h2 class="file-upload-dialog-Title">${this._dialogTitle}</h2>
-              <span>${this._dialogContent}</span><br><br>
-              <fluent-checkbox id="file-upload-dialog-check" class="file-upload-dialog-check" ><span>${
-                this._dialogCheckBox
-              }</span></fluent-checkbox>
+              <h2 class="file-upload-dialog-title">${this._dialogTitle}</h2>
+              <div>${this._dialogContent}</div>
+              <div class="file-upload-dialog-check-wrapper">
+                <fluent-checkbox id="file-upload-dialog-check" class="file-upload-dialog-check" >
+                  <span>${this._dialogCheckBox}</span>
+                </fluent-checkbox>
+              </div>
             </div>
             <div class="file-upload-dialog-editor">
               <fluent-button class="file-upload-dialog-ok">
@@ -302,7 +304,7 @@ export class MgtFileUpload extends MgtBaseComponent {
               ${this._dialogSecondaryButton}
               </fluent-button>
             </div>
-          </div>
+          </fluent-card>
         </div>
         <div id="file-upload-border" >
         </div>
@@ -1069,7 +1071,7 @@ export class MgtFileUpload extends MgtBaseComponent {
     fileUpload.percent = 100;
     super.requestStateUpdate(true);
     setTimeout(() => {
-      fileUpload.iconStatus = getSvg(SvgIcon.Sucess);
+      fileUpload.iconStatus = getSvg(SvgIcon.Success);
       fileUpload.view = ViewType.twolines;
       fileUpload.fieldUploadResponse = 'lastModifiedDateTime';
       fileUpload.completed = true;
