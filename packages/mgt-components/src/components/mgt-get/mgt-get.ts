@@ -289,6 +289,8 @@ export class MgtGet extends MgtTemplatedComponent {
       }
     } else if (this.response) {
       return this.renderTemplate('default', this.response) || html``;
+    } else if (this.hasTemplate('no-data')) {
+      return this.renderTemplate('no-data', null);
     } else {
       return html``;
     }
