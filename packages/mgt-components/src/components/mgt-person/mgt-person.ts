@@ -9,7 +9,7 @@ import { Contact, Presence } from '@microsoft/microsoft-graph-types';
 import { customElement, html, internalProperty, property, TemplateResult } from 'lit-element';
 import { classMap } from 'lit-html/directives/class-map';
 import { findPeople, getEmailFromGraphEntity } from '../../graph/graph.people';
-import { getPersonImage } from '../../graph/graph.photos';
+import { getGroupImage, getPersonImage } from '../../graph/graph.photos';
 import { getUserPresence } from '../../graph/graph.presence';
 import { getUserWithPhoto } from '../../graph/graph.userWithPhoto';
 import { findUsers, getMe, getUser } from '../../graph/graph.user';
@@ -963,7 +963,13 @@ export class MgtPerson extends MgtTemplatedComponent {
         !this.personImage &&
         !this._fetchedImage
       ) {
-        const image = await getPersonImage(graph, this.personDetails, MgtPerson.config.useContactApis);
+        this.personDetails;
+        let image;
+        if ('personType' in this.personDetails) {
+          image = await getPersonImage(graph, this.personDetails, MgtPerson.config.useContactApis);
+        } else {
+          image = await getGroupImage(graph, this.personDetails, MgtPerson.config.useContactApis);
+        }
         if (image) {
           this.personDetails.personImage = image;
           this._fetchedImage = image;
