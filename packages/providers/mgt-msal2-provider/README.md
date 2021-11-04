@@ -32,7 +32,7 @@ The `@microsoft/mgt-msal2-provider` package exposes the `Msal2Provider` class wh
       sid?: string, // Session ID
       loginHint?: string,
       domainHint?: string,
-      isMultiAccountEnabled?: boolean // True by default, disables multiple account login if false
+      isMultiAccountEnabled?: boolean, // True by default, disables multiple account login if false
       isIncrementalConsentDisabled?: boolean, //Disable incremental consent, true by default
       options?: Configuration // msal js Configuration object
     });
@@ -56,7 +56,7 @@ The `@microsoft/mgt-msal2-provider` package exposes the `Msal2Provider` class wh
       sid?: string, // Session ID
       loginHint?: string,
       domainHint?: string,
-      isMultiAccountEnabled?: boolean // True by default, disables multiple account login if false
+      isMultiAccountEnabled?: boolean, // True by default, disables multiple account login if false
       isIncrementalConsentDisabled?: boolean, //Disable incremental consent, true by default
       options?: Configuration // msal js Configuration object
     });
