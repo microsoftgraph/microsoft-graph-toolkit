@@ -428,36 +428,23 @@ export class MgtPeople extends MgtTemplatedComponent {
           this.people = await findGroupMembers(graph, null, this.groupId, this.showMax, PersonType.person);
         } else if (this.userIds) {
           this.people = await getUsersForUserIds(graph, this.userIds);
+          if (this._fallbackDetails) {
+            // replace null people with fallback details
+            this.people = this.people.map((p, i) => {
+              if (p) {
+                return p;
+              } else if (i < this._fallbackDetails.length) {
+                return this._fallbackDetails[i];
+              }
+              return null;
+            });
+          }
         } else if (this.peopleQueries) {
           this.people = await getUsersForPeopleQueries(graph, this.peopleQueries);
         } else if (this.resource) {
           this.people = await getPeopleFromResource(graph, this.version, this.resource, this.scopes);
         } else {
           this.people = await getPeople(graph);
-        }
-
-        //replace people with fallback details
-        if (this._fallbackDetails) {
-          let personCount = 0;
-
-          let mutatedPersonArray: IDynamicPerson[] = [];
-
-          for (let person of this.people) {
-            if (person) {
-              mutatedPersonArray.push(person);
-              personCount++;
-            } else {
-              let id = this.userIds[personCount];
-              for (let i = 0; i < this._fallbackDetails.length; i++) {
-                let values = Object.values(this.fallbackDetails[i]);
-                if (values.includes(id)) {
-                  mutatedPersonArray.push(this.fallbackDetails[i]);
-                }
-              }
-            }
-          }
-
-          this.people = mutatedPersonArray;
         }
 
         // populate presence for people
