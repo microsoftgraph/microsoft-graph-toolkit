@@ -53,7 +53,7 @@ export class SimpleProvider extends IProvider {
    * @memberof SimpleProvider
    */
   public getAccessToken(options?: AuthenticationProviderOptions): Promise<string> {
-    return this._getAccessTokenHandler(options.scopes);
+    return this._getAccessTokenHandler(options?.scopes);
   }
 
   /**
