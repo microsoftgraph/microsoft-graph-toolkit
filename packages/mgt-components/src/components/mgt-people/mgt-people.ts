@@ -441,6 +441,18 @@ export class MgtPeople extends MgtTemplatedComponent {
           }
         } else if (this.peopleQueries) {
           this.people = await getUsersForPeopleQueries(graph, this.peopleQueries);
+
+          if (this._fallbackDetails) {
+            // replace null people with fallback details
+            this.people = this.people.map((p, i) => {
+              if (p) {
+                return p;
+              } else if (i < this._fallbackDetails.length) {
+                return this._fallbackDetails[i];
+              }
+              return null;
+            });
+          }
         } else if (this.resource) {
           this.people = await getPeopleFromResource(graph, this.version, this.resource, this.scopes);
         } else {

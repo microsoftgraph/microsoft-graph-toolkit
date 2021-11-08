@@ -58,3 +58,11 @@ export const FallbackDetails = () => html`
   >
   </mgt-people>
 `;
+
+export const FallbackDetailsPeopleQuery = () => html`
+  <mgt-people
+  people-queries="LidiaH@M365x214355.onmicrosoft.com, test@test.com"
+  fallback-details='[{ "mail":"testmail@test.com"},{"mail": "test@test.com"}]'
+  >
+  </mgt-people>
+`;

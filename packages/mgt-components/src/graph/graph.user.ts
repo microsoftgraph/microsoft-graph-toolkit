@@ -258,6 +258,8 @@ export async function getUsersForPeopleQueries(graph: IGraph, peopleQueries: str
         if (getIsUsersCacheEnabled()) {
           cache.putValue(personQuery, { maxResults: 1, results: [JSON.stringify(response.content.value[0])] });
         }
+      } else {
+        if (people.length < peopleQueries.length) people.push(null);
       }
     }
 
