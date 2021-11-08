@@ -7,9 +7,13 @@
 
 import { IGraph, prepScopes, BetaGraph, CacheItem, CacheService, CacheStore } from '@microsoft/mgt-element';
 import { Team } from '@microsoft/microsoft-graph-types';
-import { getPhotoForResource, CachePhoto } from '../../graph/graph.photos';
-import { blobToBase64 } from '../../utils/Utils';
-import { ResponseType } from '@microsoft/microsoft-graph-client';
+import {
+  getPhotoForResource,
+  CachePhoto,
+  getPhotoInvalidationTime,
+  getIsPhotosCacheEnabled
+} from '../../graph/graph.photos';
+import { schemas } from '../../graph/cacheStores';
 
 /**
  * async promise, returns all Teams associated with the user logged in
@@ -22,19 +26,42 @@ export async function getAllMyTeams(graph: IGraph): Promise<Team[]> {
   return teams ? teams.value : null;
 }
 
-export async function getTeamsPhotosforPhotoIds(graph: BetaGraph, teamIds: string[]): Promise<any> {
-  let cache: CacheStore<CachePhoto>;
-  let photoDetails: CachePhoto;
+/** An object collection of cached photos. */
+type CachePhotos = {
+  [key: string]: CachePhoto;
+};
 
-  // const batch = graph.createBatch();
+export async function getTeamsPhotosforPhotoIds(graph: BetaGraph, teamIds: string[]): Promise<CachePhotos> {
+  let cache: CacheStore<CachePhoto>;
+  let photos: CachePhotos = {};
+
+  if (getIsPhotosCacheEnabled()) {
+    cache = CacheService.getCache<CachePhoto>(schemas.photos, schemas.photos.stores.teams);
+    for (const id of teamIds) {
+      try {
+        const photoDetail = await cache.getValue(id);
+        if (photoDetail && getPhotoInvalidationTime() > Date.now() - photoDetail.timeCached) {
+          photos[id] = photoDetail;
+        }
+      } catch (_) {}
+    }
+    if (Object.keys(photos).length) {
+      return photos;
+    }
+  }
+
   let scopes = ['team.readbasic.all'];
-  let teamDict = {};
+  photos = {};
 
   for (const id of teamIds) {
     try {
-      teamDict[id] = await getPhotoForResource(graph, `/teams/${id}`, scopes);
+      const photoDetail = await getPhotoForResource(graph, `/teams/${id}`, scopes);
+      if (getIsPhotosCacheEnabled() && photoDetail) {
+        cache.putValue(id, photoDetail);
+      }
+      photos[id] = photoDetail;
     } catch (_) {}
   }
 
-  return teamDict;
+  return photos;
 }
