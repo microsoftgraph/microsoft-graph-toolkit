@@ -16,8 +16,9 @@ import { debounce } from '../../utils/Utils';
 import { styles } from './mgt-teams-channel-picker-css';
 import { getAllMyTeams, getTeamsPhotosforPhotoIds } from './mgt-teams-channel-picker.graph';
 import { strings } from './strings';
-import { fluentTreeView, fluentTreeItem } from '@fluentui/web-components';
+import { fluentTreeView, fluentTreeItem, treeItemStyles } from '@fluentui/web-components';
 import { registerFluentComponents } from '../../utils/FluentComponents';
+import { tsExpressionWithTypeArguments } from '@babel/types';
 
 registerFluentComponents(fluentTreeView, fluentTreeItem);
 
@@ -514,7 +515,7 @@ export class MgtTeamsChannelPicker extends MgtTemplatedComponent {
         const renderChannels = true;
 
         return html`   
-            <fluent-tree-item>
+            <fluent-tree-item expanded=${treeItem.isExpanded}>
             ${this.renderItem(treeItem)}
               ${renderChannels ? this.renderDropdownList(treeItem.channels, level + 1) : html``}
             </fluent-tree-item>
@@ -722,9 +723,6 @@ export class MgtTeamsChannelPicker extends MgtTemplatedComponent {
     this.resetFocusState();
 
     this.teamsPhotos = photos;
-
-    console.log('teams', teams);
-    console.log('photos', photos);
   }
 
   private handleItemClick(item: ChannelPickerItemState) {
@@ -849,17 +847,29 @@ export class MgtTeamsChannelPicker extends MgtTemplatedComponent {
 
     const currentFocusedItem = this._focusList[this._focusedIndex];
 
+    let treeList: HTMLElement = this.renderRoot.querySelector('fluent-tree-item');
+    let input: HTMLElement = this.renderRoot.querySelector('#teams-channel-picker-input');
+
     switch (event.keyCode) {
       case 40: // down
-        this._focusedIndex = (this._focusedIndex + 1) % this._focusList.length;
+        if (this._focusedIndex === -1) {
+          treeList.focus();
+        }
+        if (this._focusedIndex < this._focusList.length - 1) {
+          this._focusedIndex = this._focusedIndex + 1;
+        }
         this.requestUpdate();
         event.preventDefault();
         break;
       case 38: // up
-        if (this._focusedIndex === -1) {
-          this._focusedIndex = this._focusList.length;
+        if (this._focusedIndex === 0) {
+          input.focus();
+          this._focusedIndex--;
+        } else {
+          if (this._focusedIndex > 0) {
+            this._focusedIndex--;
+          }
         }
-        this._focusedIndex = (this._focusedIndex - 1 + this._focusList.length) % this._focusList.length;
         this.requestUpdate();
         event.preventDefault();
         break;
@@ -919,6 +929,7 @@ export class MgtTeamsChannelPicker extends MgtTemplatedComponent {
       input.focus();
     }
 
+    this._focusedIndex = -1;
     this._isDropdownVisible = true;
   }
 
