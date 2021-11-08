@@ -128,17 +128,7 @@ export class EditorElement extends LitElement {
       }
     });
 
-    // Escape keyboard trap on MacOS
-    this.editor.addCommand(monaco.KeyMod.WinCtrl | monaco.KeyCode.KEY_M, () => {
-      this.editor.updateOptions({ readOnly: true });
-    });
-
-    // Escape keyboard trap on Windows and Linux
-    this.editor.addCommand(monaco.KeyMod.CtrlCmd | monaco.KeyCode.KEY_M, () => {
-      this.editor.updateOptions({ readOnly: true });
-    });
-
-    // Exit the editor
+    // Exit the current editor
     this.editor.addCommand(monaco.KeyCode.Escape, () => {
       this.editor.updateOptions({ readOnly: true });
       this.shadowRoot.getElementById(this.currentType).focus();
