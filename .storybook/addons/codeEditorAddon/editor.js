@@ -3,10 +3,10 @@ import * as monaco from 'monaco-editor/esm/vs/editor/editor.api';
 
 let debounce = (func, wait, immediate) => {
   var timeout;
-  return function() {
+  return function () {
     var context = this,
       args = arguments;
-    var later = function() {
+    var later = function () {
       timeout = null;
       if (!immediate) func.apply(context, args);
     };
@@ -125,10 +125,24 @@ export class EditorElement extends LitElement {
       readOnly: true,
       minimap: {
         enabled: false
-      },
+      }
     });
 
-    this.editor.addCommand(monaco.KeyMod.WinCtrl | monaco.KeyCode.Shift | monaco.KeyCode.KEY_M, () => console.log('quiting the editor'))
+    // Escape keyboard trap on MacOS
+    this.editor.addCommand(monaco.KeyMod.WinCtrl | monaco.KeyCode.KEY_M, () => {
+      this.editor.updateOptions({ readOnly: true });
+    });
+
+    // Escape keyboard trap on Windows and Linux
+    this.editor.addCommand(monaco.KeyMod.CtrlCmd | monaco.KeyCode.KEY_M, () => {
+      this.editor.updateOptions({ readOnly: true });
+    });
+
+    // Exit the editor
+    this.editor.addCommand(monaco.KeyCode.Escape, () => {
+      this.editor.updateOptions({ readOnly: true });
+      this.shadowRoot.getElementById(this.currentType).focus();
+    });
 
     const changeViewZones = () => {
       this.editor.changeViewZones(changeAccessor => {
@@ -174,10 +188,8 @@ export class EditorElement extends LitElement {
   }
 
   showTab(type, event) {
-    this.editor.updateOptions({ readOnly: true })
-
-    console.log('capturing key entrie')
-    if (event && event.keyCode != 13) return
+    this.editor.updateOptions({ readOnly: false });
+    if (event && event.keyCode != 13) return;
 
     this.currentType = type;
     if (this.files && typeof this.files[type] !== 'undefined') {
@@ -193,15 +205,20 @@ export class EditorElement extends LitElement {
 
   render() {
     return html`
-      <div class="root">
+      <div class="root" tabindex=0>
         <div class="tab-root" tabindex=0">
           ${this.fileTypes.map(
-      type => html`
-              <div @keydown=${e => this.showTab(type, e)}  tabindex=0 @click="${_ => this.showTab(type)}" class="tab ${type === this.currentType ? 'selected' : ''}">
+            type => html`
+              <div
+                @keydown=${e => this.showTab(type, e)}
+                tabindex=0
+                @click="${_ => this.showTab(type)}"
+                id="${type}"
+                class="tab ${type === this.currentType ? 'selected' : ''}">
                 ${type}
               </div>
             `
-    )}
+          )}
         </div>
         <div class="editor-root">
           <slot name="editor"></slot>
