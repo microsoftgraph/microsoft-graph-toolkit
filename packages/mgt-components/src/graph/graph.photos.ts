@@ -231,6 +231,43 @@ export async function getPersonImage(graph: IGraph, person: IDynamicPerson, useC
   return null;
 }
 
+export async function getGroupImage(graph: IGraph, group: any, useContactsApis: boolean = true) {
+  let photoDetails: CachePhoto;
+  let cache: CacheStore<CachePhoto>;
+
+  let groupId = group.id;
+
+  if (getIsPhotosCacheEnabled()) {
+    cache = CacheService.getCache<CachePhoto>(schemas.photos, schemas.photos.stores.groups);
+    photoDetails = await cache.getValue(groupId);
+    if (photoDetails && getPhotoInvalidationTime() > Date.now() - photoDetails.timeCached) {
+      return photoDetails.photo;
+    } else if (photoDetails) {
+      // there is a photo in the cache, but it's stale
+      try {
+        const response = await graph.api(`group/${groupId}/photo`).get();
+        if (
+          response &&
+          (response['@odata.mediaEtag'] !== photoDetails.eTag ||
+            (response['@odata.mediaEtag'] === null && response.eTag === null))
+        ) {
+          // set photoDetails to null so that photo gets pulled from the graph later
+          photoDetails = null;
+        }
+      } catch {
+        return null;
+      }
+    }
+  }
+
+  // if there is a photo in the cache, we got here because it was stale
+  photoDetails = photoDetails || (await getPhotoForResource(graph, `groups/${groupId}`, ['user.readbasic.all']));
+  if (getIsPhotosCacheEnabled() && photoDetails) {
+    cache.putValue(groupId, photoDetails);
+  }
+  return photoDetails ? photoDetails.photo : null;
+}
+
 /**
  * checks if user has a photo in the cache
  * @param userId
