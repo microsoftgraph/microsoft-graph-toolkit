@@ -164,8 +164,11 @@ export async function getUsersForUserIds(graph: IGraph, userIds: string[], searc
         peopleDict[id] = user ? user : null;
       }
     } else if (id !== '') {
-      batch.get(id, `/users/${id}`, ['user.readbasic.all']);
-      notInCache.push(id);
+      if (id.toString() === 'me') {
+        peopleDict[id] = await getMe(graph);
+      } else {
+        batch.get(id, `/users/${id}`, ['user.readbasic.all']);
+      }
     }
   }
   try {
