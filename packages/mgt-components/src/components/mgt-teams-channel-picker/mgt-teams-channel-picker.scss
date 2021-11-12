@@ -38,6 +38,24 @@
       }
     }
   }
+  fluent-text-field {
+    width: 100%;
+    &.selected {
+      &::part(control) {
+        padding-left: 30px;
+      }
+    }
+    &::part(root) {
+      width: 100%;
+    }
+    .team-photo {
+      z-index: 1;
+      width: 14px;
+      position: absolute;
+      margin: 13px 10px 10px 8px;
+      border-radius: 50%;
+    }
+  }
 
   .input-wrapper {
     font-family: $font-family;
@@ -52,7 +70,7 @@
     height: 29px;
     line-height: 19px;
     cursor: text;
-    @include input__border($theme-default);
+    // @include input__border($theme-default);
     &:hover {
       border-color: $input__border-color--hover;
     }
@@ -156,6 +174,7 @@
   }
 
   .close-icon {
+    z-index: 1;
     display: inline-block;
     position: absolute;
     right: 18px;
