@@ -238,8 +238,8 @@ export class MgtTeamsChannelPicker extends MgtTemplatedComponent {
   }
 
   // User input in search
-  private get _input(): HTMLElement {
-    return this.renderRoot.querySelector('.team-chosen-input');
+  private get _input(): any {
+    return this.renderRoot.querySelector('fluent-text-field');
   }
   private _inputValue: string = '';
 
@@ -514,13 +514,21 @@ export class MgtTeamsChannelPicker extends MgtTemplatedComponent {
       return items.map((treeItem, index) => {
         const isLeaf = !treeItem.channels;
         const renderChannels = true;
-
-        return html`   
-            <fluent-tree-item expanded=${treeItem.isExpanded}>
+        if (treeItem.isExpanded) {
+          return html`   
+              <fluent-tree-item @click=${() => this.handleItemClick(treeItem)} expanded>
+              ${this.renderItem(treeItem)}
+                ${renderChannels ? this.renderDropdownList(treeItem.channels, level + 1) : html``}
+              </fluent-tree-item>
+            `;
+        } else {
+          return html`   
+            <fluent-tree-item @click=${() => this.handleItemClick(treeItem)}>
             ${this.renderItem(treeItem)}
               ${renderChannels ? this.renderDropdownList(treeItem.channels, level + 1) : html``}
             </fluent-tree-item>
-          `;
+        `;
+        }
       });
     }
 
@@ -565,7 +573,7 @@ export class MgtTeamsChannelPicker extends MgtTemplatedComponent {
     }
 
     return html`
-      <div @click=${() => this.handleItemClick(itemState)} class="${classMap(classes)}">
+      <div class="${classMap(classes)}">
           ${icon}
         ${itemState.channels ? itemState.item.displayName : this.renderHighlightedText(itemState.item)}
       </div>
@@ -939,7 +947,7 @@ export class MgtTeamsChannelPicker extends MgtTemplatedComponent {
     this._isFocused = false;
     const input = this._input;
     if (input) {
-      input.textContent = this._inputValue = '';
+      input.value = this._inputValue = '';
     }
 
     this._isDropdownVisible = false;
@@ -954,7 +962,7 @@ export class MgtTeamsChannelPicker extends MgtTemplatedComponent {
 
     const input = this._input;
     if (input) {
-      input.textContent = this._inputValue = '';
+      input.value = this._inputValue = '';
     }
     this.requestUpdate();
     this.lostFocus();
