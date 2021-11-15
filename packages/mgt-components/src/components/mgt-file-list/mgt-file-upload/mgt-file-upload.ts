@@ -22,7 +22,7 @@ import {
   deleteSessionFile
 } from '../../../graph/graph.files';
 
-export { FluentProgress, FluentButton, FluentCheckbox } from '@fluentui/web-components';
+export { FluentProgress, FluentButton, FluentCheckbox, FluentCard } from '@fluentui/web-components';
 
 // import { registerFluentComponents } from '../../../utils/FluentComponents';
 // import { fluentButton, fluentCheckbox, fluentProgress } from '@fluentui/web-components';
@@ -285,14 +285,16 @@ export class MgtFileUpload extends MgtBaseComponent {
     return html`
         <div id="file-upload-dialog" class="file-upload-dialog">
           <!-- Modal content -->
-          <div class="file-upload-dialog-content">
+          <fluent-card class="file-upload-dialog-content">
             <span class="file-upload-dialog-close" id="file-upload-dialog-close" >${getSvg(SvgIcon.Cancel)}</span>
             <div class="file-upload-dialog-content-text">
-              <h2 class="file-upload-dialog-Title">${this._dialogTitle}</h2>
-              <span>${this._dialogContent}</span><br><br>
-              <fluent-checkbox id="file-upload-dialog-check" class="file-upload-dialog-check" ><span>${
-                this._dialogCheckBox
-              }</span></fluent-checkbox>
+              <h2 class="file-upload-dialog-title">${this._dialogTitle}</h2>
+              <div>${this._dialogContent}</div>
+              <div class="file-upload-dialog-check-wrapper">
+                <fluent-checkbox id="file-upload-dialog-check" class="file-upload-dialog-check" >
+                  <span>${this._dialogCheckBox}</span>
+                </fluent-checkbox>
+              </div>
             </div>
             <div class="file-upload-dialog-editor">
               <fluent-button class="file-upload-dialog-ok">
@@ -302,7 +304,7 @@ export class MgtFileUpload extends MgtBaseComponent {
               ${this._dialogSecondaryButton}
               </fluent-button>
             </div>
-          </div>
+          </fluent-card>
         </div>
         <div id="file-upload-border" >
         </div>
@@ -415,7 +417,7 @@ export class MgtFileUpload extends MgtBaseComponent {
       </div>
       <div class='file-upload-table'>
         <div class='file-upload-cell'>
-          <div class='file-upload-table'>
+          <div class="${fileItem.completed ? 'file-upload-table' : 'file-upload-table upload'}">
             <fluent-progress class="file-upload-bar" value="${fileItem.percent}" ></fluent-progress>
             <div class='file-upload-cell' style="padding-left:5px">
               <span>${fileItem.percent}%</span>
@@ -554,6 +556,7 @@ export class MgtFileUpload extends MgtBaseComponent {
    */
   protected async getSelectedFiles(files: File[]) {
     let fileItems: MgtFileUploadItem[] = [];
+    let fileItemsCompleted: MgtFileUploadItem[] = [];
     this._applyAll = false;
     this._applyAllConflitBehavior = null;
     this._maximumFiles = false;
@@ -564,6 +567,8 @@ export class MgtFileUpload extends MgtBaseComponent {
     this.filesToUpload.forEach(async fileItem => {
       if (!fileItem.completed) {
         fileItems.push(fileItem);
+      } else {
+        fileItemsCompleted.push(fileItem);
       }
     });
 
@@ -677,11 +682,20 @@ export class MgtFileUpload extends MgtBaseComponent {
         }
       }
     }
-    this.filesToUpload = fileItems.sort((firstFile, secondFile) => {
+    fileItems = fileItems.sort((firstFile, secondFile) => {
       return firstFile.fullPath
         .substring(0, firstFile.fullPath.lastIndexOf('/'))
         .localeCompare(secondFile.fullPath.substring(0, secondFile.fullPath.lastIndexOf('/')));
     });
+    //remove completed file report image to be reuploaded.
+    fileItems.forEach(fileItem => {
+      if (fileItemsCompleted.filter(item => item.fullPath === fileItem.fullPath).length !== 0) {
+        let index = fileItemsCompleted.findIndex(item => item.fullPath === fileItem.fullPath);
+        fileItemsCompleted.splice(index, 1);
+      }
+    });
+    fileItems.push(...fileItemsCompleted);
+    this.filesToUpload = fileItems;
     // Send multiple Files to upload
     this.filesToUpload.forEach(async fileItem => {
       await this.sendFileItemGraph(fileItem);
@@ -973,8 +987,6 @@ export class MgtFileUpload extends MgtBaseComponent {
             };
             this.setUploadFail(fileItem, strings.failUploadFile);
           }
-        } else {
-          this.setUploadFail(fileItem, strings.cancelUploadFile);
         }
       } catch (error) {
         this.setUploadFail(fileItem, strings.failUploadFile);
@@ -1003,8 +1015,6 @@ export class MgtFileUpload extends MgtBaseComponent {
             }
           } catch {}
         }
-      } else {
-        this.setUploadFail(fileItem, strings.cancelUploadFile);
       }
     }
   }
@@ -1061,7 +1071,7 @@ export class MgtFileUpload extends MgtBaseComponent {
     fileUpload.percent = 100;
     super.requestStateUpdate(true);
     setTimeout(() => {
-      fileUpload.iconStatus = getSvg(SvgIcon.Sucess);
+      fileUpload.iconStatus = getSvg(SvgIcon.Success);
       fileUpload.view = ViewType.twolines;
       fileUpload.fieldUploadResponse = 'lastModifiedDateTime';
       fileUpload.completed = true;

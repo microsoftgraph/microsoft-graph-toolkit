@@ -69,7 +69,7 @@ $file-list-box-shadow: var(
 }
 
 :host .file-upload-table {
-  margin: var(--file-item-margin, 0 4px);
+  margin: var(--file-item-margin, 0);
   .file-upload-cell {
     padding: 1px 0px 1px 1px;
     display: table-cell;
@@ -154,14 +154,19 @@ $file-list-box-shadow: var(
     margin: auto;
     padding: 24px;
     width: 294px;
-    height: 196px;
+    height: auto;
     margin-top: 165px; /* Location of the box */
     font-size: $font-size;
     font-family: $font-family;
     box-shadow: $file-list-box-shadow;
+    line-height: 20px;
     div {
       color: $file-upload-dialog-content-color;
     }
+  }
+
+  .file-upload-dialog-check-wrapper {
+    margin-top: 12px;
   }
 
   fluent-checkbox.file-upload-dialog-check {
@@ -172,11 +177,11 @@ $file-list-box-shadow: var(
   }
 
   .file-upload-dialog-content-text {
-    height: 170px;
+    margin-bottom: 36px;
   }
 
-  .file-upload-dialog-Title {
-    margin-top: -12px;
+  .file-upload-dialog-title {
+    margin-top: 0px;
   }
 
   .file-upload-dialog-editor {
@@ -195,7 +200,7 @@ $file-list-box-shadow: var(
   .file-upload-dialog-ok {
     height: 32px;
     min-width: 60px;
-    border: 1px solid rgb(138, 136, 134);
+    border: 1px solid $file-upload-dialog-primarybutton-background-color;
     background-color: $file-upload-dialog-primarybutton-background-color;
     color: $file-upload-dialog-primarybutton-color;
     font-size: $font-size;

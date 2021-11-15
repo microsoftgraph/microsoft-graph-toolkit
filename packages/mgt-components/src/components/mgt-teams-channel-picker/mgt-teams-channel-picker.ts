@@ -653,9 +653,10 @@ export class MgtTeamsChannelPicker extends MgtTemplatedComponent {
       teams = teams.filter(t => !t.isArchived);
 
       const batch = graph.createBatch();
+      const scopes = ['team.readbasic.all'];
 
       for (const team of teams) {
-        batch.get(team.id, `teams/${team.id}/channels`);
+        batch.get(team.id, `teams/${team.id}/channels`, scopes);
       }
 
       const responses = await batch.executeAll();
