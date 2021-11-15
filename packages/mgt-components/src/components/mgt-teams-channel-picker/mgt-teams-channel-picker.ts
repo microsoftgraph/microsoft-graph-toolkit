@@ -384,7 +384,8 @@ export class MgtTeamsChannelPicker extends MgtTemplatedComponent {
   protected renderInput() {
     const inputClasses = {
       focused: this._isFocused,
-      'hide-icon': !!this._selectedItemState
+      'hide-icon': !!this._selectedItemState,
+      selected: !!this._selectedItemState
     };
 
     let teamChannel = '';
@@ -405,7 +406,7 @@ export class MgtTeamsChannelPicker extends MgtTemplatedComponent {
     @keyup=${e => this.handleInputChanged(e)}
     class=${classMap(
       inputClasses
-    )} appearance="outline" placeholder="Select a channel" class="outline" current-value=${teamChannel}  type="text">
+    )} appearance="outline" placeholder="Select a channel" current-value=${teamChannel}  type="text">
       ${icon}
     </fluent-text-field>
     ${this.renderCloseButton()}
@@ -495,8 +496,17 @@ export class MgtTeamsChannelPicker extends MgtTemplatedComponent {
               </fluent-tree-item>
             `;
         } else {
+          let isSelected = false;
+          if (this.selectedItem) {
+            if (this.selectedItem.channel === treeItem.item) {
+              isSelected = true;
+            }
+          }
+          const classes = {
+            selected: isSelected
+          };
           return html`   
-            <fluent-tree-item @click=${() => this.handleItemClick(treeItem)}>
+            <fluent-tree-item class="${classMap(classes)}" @click=${() => this.handleItemClick(treeItem)}>
             ${this.renderItem(treeItem)}
               ${renderChannels ? this.renderDropdownList(treeItem.channels, level + 1) : html``}
             </fluent-tree-item>
@@ -525,18 +535,10 @@ export class MgtTeamsChannelPicker extends MgtTemplatedComponent {
       `;
     }
 
-    let isSelected = false;
-    if (this.selectedItem) {
-      if (this.selectedItem.channel === itemState.item) {
-        isSelected = true;
-      }
-    }
-
     const classes = {
       focused: this._focusList[this._focusedIndex] === itemState,
       item: true,
-      'list-team': itemState.channels ? true : false,
-      selected: isSelected
+      'list-team': itemState.channels ? true : false
     };
 
     const dropDown = this.renderRoot.querySelector('.dropdown');
@@ -926,7 +928,7 @@ export class MgtTeamsChannelPicker extends MgtTemplatedComponent {
   private lostFocus() {
     this._isFocused = false;
     const input = this._input;
-    if (input) {
+    if (input && !this.selectedItem) {
       input.value = this._inputValue = '';
     }
 

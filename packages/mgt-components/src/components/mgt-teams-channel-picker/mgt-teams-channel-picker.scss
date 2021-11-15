@@ -34,7 +34,8 @@
         background-color: $dropdown-item__background-color--hover;
       }
       &.selected {
-        background-color: set-var(dropdown-item__background-color--selected, $theme-default, $channel-picker);
+        --neutral-fill-stealth-rest: #edebf7;
+        --neutral-fill-stealth-hover: #edebf7;
       }
     }
   }
