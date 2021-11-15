@@ -15,12 +15,20 @@ export default {
 };
 
 export const darkTheme = () => html`
-    <mgt-file-list class="mgt-dark"></mgt-file-list>
+    <mgt-file-list class="mgt-dark" enable-file-upload></mgt-file-list>
   `;
 
 export const customCSSProperties = () => html`
     <style>
       mgt-file-list {
+        --file-upload-border: 4px dotted #ffbdc3;
+        --file-upload-background-color: rgba(255, 0, 0, 0.1);
+        --file-upload-button-float:left;
+        --file-upload-button-color:#323130;
+        --file-upload-button-background-color:#fef8dd;
+        --file-upload-dialog-content-background-color: #ffe7c7;
+        --file-upload-dialog-primarybutton-background-color: #ffe7c7;
+        --file-upload-dialog-primarybutton-color: #323130;
         --file-list-background-color: #e0f8db;
         --file-item-background-color--hover: #caf1de;
         --file-item-background-color--active: #acddde;
@@ -42,5 +50,5 @@ export const customCSSProperties = () => html`
         --show-more-button-border-bottom-left-radius: 12px;
       }
     </style>
-    <mgt-file-list></mgt-file-list>
+    <mgt-file-list enable-file-upload></mgt-file-list>
   `;

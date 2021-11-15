@@ -1,5 +1,5 @@
 # Node.js Server for Microsoft Teams Single Sign On (SSO)
-This sample is a reference implementation of a backend service that can be used with the [Teams SSO Provider](https://docs.microsoft.com/graph/toolkit/providers/teamssso) for a single sign on experience. 
+This sample is a reference implementation of a backend service that can be used with the [Teams Msal2 Provider](https://docs.microsoft.com/graph/toolkit/providers/teams-msal2) for a single sign on experience. 
 
 This sample implements both a `GET` and `POST` api for exchanging the Microsoft Teams authentication token with a token that can be used to call Microsoft Graph. It uses the [on-behalf-of flow](https://docs.microsoft.com/azure/active-directory/develop/v2-oauth2-on-behalf-of-flow) to exchange the tokens.
 
@@ -30,7 +30,7 @@ Make sure you've downloaded and installed Ngrok on your local machine. ngrok wil
 1. Open `index.html` in the root of the repo and 
     - Comment out the `mgt-mock-provider`
     - Comment out the `mgt-login` component
-    - Uncomment the `mgt-teams-sso-provider` used for sso
+    - Uncomment the `mgt-teams-msal2-provider` used for sso
     - Update the `client-id` used in the provider with your own (see below for creating the AAD registration)
 
 
