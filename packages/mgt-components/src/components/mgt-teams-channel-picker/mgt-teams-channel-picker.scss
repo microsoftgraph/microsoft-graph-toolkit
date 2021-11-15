@@ -186,6 +186,9 @@
     background-color: $input__background-color;
     font-size: 10px;
     font-weight: bold;
+    &.chevron {
+      top: 12px;
+    }
     &:hover {
       color: $color;
     }

@@ -426,8 +426,8 @@ export class MgtTeamsChannelPicker extends MgtTemplatedComponent {
     @click=${() => this.gainedFocus()}
     @keyup=${e => this.handleInputChanged(e)}
     class=${classMap(inputClasses)} appearance="outline" placeholder="Select a channel" class="outline"  type="text">
-        ${this.renderCloseButton()}
     </fluent-text-field>
+    ${this.renderCloseButton()}
   `;
 
     let selectedInput = this.renderSelected();
@@ -455,12 +455,12 @@ export class MgtTeamsChannelPicker extends MgtTemplatedComponent {
       </div>
     `;
     const openDropDownIcon = html`
-      <div class="close-icon" @click=${() => this.gainedFocus()}>
+      <div class="close-icon chevron" @click=${() => this.gainedFocus()}>
         <span>\uE70D</span>
       </div>
     `;
     const closeDropDownIcon = html`
-      <div class="close-icon" @click=${() => this.lostFocus()}>
+      <div class="close-icon chevron" @click=${() => this.lostFocus()}>
         <span>\uE70E</span>
       </div>
     `;
@@ -487,7 +487,6 @@ export class MgtTeamsChannelPicker extends MgtTemplatedComponent {
       return this.renderLoading();
     }
 
-    console.log(this._treeViewState);
     if (this._treeViewState) {
       if (!this.isLoadingState && this._treeViewState.length === 0 && this._inputValue.length > 0) {
         return this.renderError();
@@ -509,7 +508,6 @@ export class MgtTeamsChannelPicker extends MgtTemplatedComponent {
    * @memberof MgtTeamsChannelPicker
    */
   protected renderDropdownList(items: ChannelPickerItemState[], level: number = 0) {
-    console.log(items);
     if (items && items.length) {
       return items.map((treeItem, index) => {
         const isLeaf = !treeItem.channels;
@@ -828,7 +826,6 @@ export class MgtTeamsChannelPicker extends MgtTemplatedComponent {
   }
 
   private resetFocusState() {
-    console.log(this._treeViewState);
     this._focusList = this.generateFocusList(this._treeViewState);
     this.requestUpdate();
   }
