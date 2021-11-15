@@ -347,41 +347,6 @@ export class MgtTeamsChannelPicker extends MgtTemplatedComponent {
   }
 
   /**
-   * Renders selected channel
-   *
-   * @protected
-   * @returns
-   * @memberof MgtTeamsChannelPicker
-   */
-  protected renderSelected() {
-    if (!this._selectedItemState) {
-      return html``;
-    }
-    const inputClasses = {
-      focused: this._isFocused,
-      'hide-icon': !!this._selectedItemState,
-      selected: !!this._selectedItemState
-    };
-
-    let icon: TemplateResult = html`
-       <img class="team-photo" src=${this.teamsPhotos[this._selectedItemState.parent.item.id].photo} />
-      `;
-
-    const teamChannel =
-      this._selectedItemState.parent.item.displayName + ' > ' + this._selectedItemState.item.displayName;
-
-    return html`
-      <fluent-text-field 
-      class=${classMap(
-        inputClasses
-      )} appearance="outline" placeholder="Select a channel" class="outline" current-value=${teamChannel} type="text">
-          ${icon}
-          ${this.renderCloseButton()}
-      </fluent-text-field>
-    `;
-  }
-
-  /**
    * Clears the state of the component
    *
    * @protected
@@ -421,22 +386,32 @@ export class MgtTeamsChannelPicker extends MgtTemplatedComponent {
       focused: this._isFocused,
       'hide-icon': !!this._selectedItemState
     };
+
+    let teamChannel = '';
+    let icon: TemplateResult;
+    if (this._selectedItemState) {
+      icon = html`
+      <img class="team-photo" src=${this.teamsPhotos[this._selectedItemState.parent.item.id].photo} />
+     `;
+
+      teamChannel = this._selectedItemState.parent.item.displayName + ' > ' + this._selectedItemState.item.displayName;
+    } else {
+      teamChannel = this._inputValue;
+    }
+
     let input = html`
     <fluent-text-field 
     @click=${() => this.gainedFocus()}
     @keyup=${e => this.handleInputChanged(e)}
-    class=${classMap(inputClasses)} appearance="outline" placeholder="Select a channel" class="outline"  type="text">
+    class=${classMap(
+      inputClasses
+    )} appearance="outline" placeholder="Select a channel" class="outline" current-value=${teamChannel}  type="text">
+      ${icon}
     </fluent-text-field>
     ${this.renderCloseButton()}
   `;
 
-    let selectedInput = this.renderSelected();
-
-    if (!this._selectedItemState) {
-      return input;
-    } else {
-      return selectedInput;
-    }
+    return input;
   }
 
   /**
@@ -748,6 +723,14 @@ export class MgtTeamsChannelPicker extends MgtTemplatedComponent {
       this._inputValue = e.target.value;
     } else {
       return;
+    }
+
+    if (this.selectedItem) {
+      if (e.target.value) {
+        this._inputValue = this._inputValue.split(this.selectedItem.channel.displayName).pop();
+        this.filterList();
+        this._selectedItemState = null;
+      }
     }
 
     // shows list
