@@ -1,0 +1,17 @@
+.App {
+  text-align: center;
+}
+h1 {
+  color: gray;
+}
+.PropName {
+  font-weight: bold;
+  color: #6264A7;
+}
+.Logo {
+  font-size: 45pt;
+  color: #6264A7;
+}
+.Error {
+  color: red;
+}

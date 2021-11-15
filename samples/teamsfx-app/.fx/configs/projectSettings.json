@@ -1,0 +1,24 @@
+{
+    "appName": "teamsfx-app",
+    "solutionSettings": {
+        "name": "fx-solution-azure",
+        "version": "1.0.0",
+        "hostType": "Azure",
+        "capabilities": [
+            "Tab"
+        ],
+        "azureResources": [],
+        "activeResourcePlugins": [
+            "fx-resource-frontend-hosting",
+            "fx-resource-aad-app-for-teams",
+            "fx-resource-local-debug",
+            "fx-resource-appstudio",
+            "fx-resource-simple-auth"
+        ]
+    },
+    "programmingLanguage": "javascript",
+    "defaultFunctionName": "getUserProfile",
+    "activeEnvironment": "dev",
+    "version": "1.0.0",
+    "projectId": "357b11ff-6765-4716-a536-6bd23ea16fa3"
+}

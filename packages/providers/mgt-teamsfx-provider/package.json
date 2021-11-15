@@ -1,0 +1,49 @@
+{
+  "name": "@microsoft/mgt-teamsfx-provider",
+  "version": "2.0.0",
+  "description": "The Microsoft Graph Toolkit TeamsFx Provider",
+  "keywords": [
+    "microsoft graph",
+    "microsoft graph toolkit",
+    "mgt",
+    "msal",
+    "auth",
+    "msal 2.0",
+    "teamsfx",
+    "authentication"
+  ],
+  "homepage": "https://github.com/microsoftgraph/microsoft-graph-toolkit",
+  "bugs": {
+    "url": "https://github.com/microsoftgraph/microsoft-graph-toolkit/issues"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/microsoftgraph/microsoft-graph-toolkit"
+  },
+  "author": "Microsoft",
+  "license": "MIT",
+  "main": "./dist/es6/index.js",
+  "types": "./dist/es6/index.d.ts",
+  "module": "./dist/es6/index.js",
+  "files": [
+    "dist",
+    "src"
+  ],
+  "scripts": {
+    "build": "npm run clean && npm run build:compile",
+    "build:compile": "npm run compile",
+    "build:watch": "npm run compile:watch",
+    "clean": "shx rm -rf ./dist && shx rm -rf ./tsconfig.tsbuildinfo",
+    "compile": "tsc -b",
+    "compile:watch": "tsc -w",
+    "lint": "tslint -c ../../../tslint.json 'src/**/*.ts'",
+    "postpack": "cpx *.tgz ../../../artifacts"
+  },
+  "dependencies": {
+    "@microsoft/mgt-element": "*",
+    "@microsoft/teamsfx": "^0.2.1"
+  },
+  "publishConfig": {
+    "directory": "dist"
+  }
+}
