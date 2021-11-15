@@ -1,0 +1,9 @@
+node_modules
+.DS_Store
+.fx/configs/localSettings.json
+.fx/publishProfiles/*
+.fx/states/*
+.archive
+.archive.log
+.env.teamsfx.local
+subscriptionInfo.json

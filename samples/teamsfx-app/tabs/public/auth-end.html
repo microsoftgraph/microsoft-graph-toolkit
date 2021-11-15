@@ -1,0 +1,68 @@
+<!-- Copyright (c) Microsoft Corporation.
+     Licensed under the MIT License. -->
+<!--This file is used during the Teams authentication flow to assist with retrieval of the access token.-->
+<!--If you're not familiar with this, do not alter or remove this file from your project.-->
+<html>
+
+<head>
+    <title>Login End Page</title>
+    <meta charset="utf-8" />
+</head>
+
+<body>
+    <script src="https://statics.teams.cdn.office.net/sdk/v1.6.0/js/MicrosoftTeams.min.js"
+        integrity="sha384-mhp2E+BLMiZLe7rDIzj19WjgXJeI32NkPvrvvZBrMi5IvWup/1NUfS5xuYN5S3VT"
+        crossorigin="anonymous"></script>
+    <script type="text/javascript">
+        microsoftTeams.initialize();
+        let hashParams = getHashParameters();
+
+        if (hashParams["error"]) {
+            // Authentication failed
+            microsoftTeams.authentication.notifyFailure(JSON.stringify({
+                error: hashParams["error"],
+                message: JSON.stringify(hashParams)
+            }));
+        } else if (hashParams["code"]) {
+            // Get the stored state parameter and compare with incoming state
+            let expectedState = localStorage.getItem("state");
+            if (expectedState !== hashParams["state"]) {
+                // State does not match, report error
+                microsoftTeams.authentication.notifyFailure(JSON.stringify({
+                    error: "StateDoesNotMatch",
+                    message: JSON.stringify(hashParams)
+                }));
+            } else {
+                // Success -- return code information to the parent page.
+                var redirectUri = location.protocol + '//' + location.host + location.pathname;
+                var result = JSON.stringify({
+                    code: hashParams["code"],
+                    codeVerifier: localStorage.getItem("codeVerifier"),
+                    redirectUri: redirectUri
+                });
+
+                microsoftTeams.authentication.notifySuccess(result);
+            }
+        } else {
+            // Unexpected condition: hash does not contain error or access_token parameter
+            microsoftTeams.authentication.notifyFailure(JSON.stringify({
+                error: "UnexpectedFailure",
+                message: JSON.stringify(hashParams)
+            }));
+        }
+
+        // Parse hash parameters into key-value pairs
+        function getHashParameters() {
+            let hashParams = {};
+            location.hash.substr(1).split("&").forEach(function (item) {
+                let s = item.split("="),
+                    k = s[0],
+                    v = s[1] && decodeURIComponent(s[1]);
+                hashParams[k] = v;
+            });
+            return hashParams;
+        }
+    </script>
+</body>
+
+</html>

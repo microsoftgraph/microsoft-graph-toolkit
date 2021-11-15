@@ -1,0 +1,186 @@
+body,
+#root>div {
+    background-color: #F3F2F1;
+}
+
+.flex-container {
+    display: flex;
+    max-width: 900px;
+    margin: auto;
+}
+
+.features-col {
+    width: 100%;
+}
+
+.features {
+    min-height: 95vh;
+    margin: 20px;
+    background-color: #FFF;
+    box-shadow: 0px 1.2px 3.6px rgba(0, 0, 0, 0.11), 0px 6.4px 14.4px rgba(0, 0, 0, 0.13);
+    border-radius: 4px;
+}
+
+.header {
+    display: flex;
+    background-color: #f0f0f0;
+}
+
+.title {
+    margin: 20px;
+}
+
+.title h2 {
+    margin: 0;
+    font-size: 18px;
+    line-height: 24px;
+}
+
+.title span {
+    margin: 3px 0;
+    font-size: 12px;
+    line-height: 12px;
+    color: #8A8886;
+}
+
+.person-card-area {
+    padding: 12;
+    width: 50%;
+}
+
+.my-account-area {
+    padding: 12;
+}
+
+.agenda{
+    padding: 12;
+}
+
+.add-button {
+    margin: 24px 20px auto auto;
+}
+
+.header-container {
+    display: flex;
+}
+
+.header-container span {
+    font-size: 12px;
+}
+
+.note {
+    padding-left: 95px;
+    flex-grow: 1;
+}
+
+.created-by {
+    width: 290px;
+}
+
+.item {
+    margin: 10px 20px;
+    padding-bottom: 10px;
+    display: flex;
+    border-bottom: solid;
+    border-width: 1px;
+    border-color: #E0E0E0;
+}
+
+span {
+    display: inline-block;
+    margin: 5px;
+}
+
+.complete {
+    padding-left: 20px;
+    width: 60px;
+}
+
+.is-completed-input {
+    margin-right: 10px;
+}
+
+.is-completed-input>div {
+    border-radius: 50%;
+}
+
+.description {
+    flex-grow: 1;
+    padding-right: 10px;
+}
+
+.description>div {
+    width: 100%;
+}
+
+.text input {
+    width: 100%;
+}
+
+.text input:not(:focus) {
+    background-color: #FFF;
+}
+
+.text.is-completed input {
+    text-decoration-line: line-through;
+}
+
+.action button {
+    border-width: 0px;
+    box-shadow: none;
+}
+
+.action button:hover {
+    background-color: #FFF;
+}
+
+.action button span {
+    font-size: 20px;
+    margin-top: -8px;
+}
+
+.no-item {
+    margin-top: 10vh;
+}
+
+.no-item img {
+    display: block;
+    margin: auto;
+    width: 200px;
+}
+
+.no-item h2,
+.no-item p {
+    text-align: center;
+}
+
+.auth {
+    margin-top: 30vh;
+}
+
+.auth .profile {
+    margin: auto;
+}
+
+.auth h2 {
+    text-align: center;
+}
+
+.auth button {
+    display: block;
+    margin: 32px auto;
+}
+
+@media only screen and (max-width: 820px) {
+    .flex-container {
+        display: block;
+    }
+
+    .created-by {
+        width: 210px;
+    }
+
+    .profile-col {
+        height: auto;
+    }
+}
