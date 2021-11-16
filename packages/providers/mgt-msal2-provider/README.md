@@ -32,6 +32,7 @@ The `@microsoft/mgt-msal2-provider` package exposes the `Msal2Provider` class wh
       sid?: string, // Session ID
       loginHint?: string,
       domainHint?: string,
+      isIncrementalConsentDisabled?: boolean, //Disable incremental consent, true by default
       options?: Configuration // msal js Configuration object
     });
     ```
@@ -54,6 +55,7 @@ The `@microsoft/mgt-msal2-provider` package exposes the `Msal2Provider` class wh
       sid?: string, // Session ID
       loginHint?: string,
       domainHint?: string,
+      isIncrementalConsentDisabled?: boolean, //Disable incremental consent, true by default
       options?: Configuration // msal js Configuration object
     });
     ```
@@ -70,6 +72,7 @@ The `@microsoft/mgt-msal2-provider` package exposes the `Msal2Provider` class wh
                       authority=""> 
     </mgt-msal2-provider> 
     ```
+Add the `incremental-consent-disabled` boolean attribute if you wish to disable incremental consent.
 
 See [provider usage documentation](https://docs.microsoft.com/graph/toolkit/providers) to learn about how to use the providers with the mgt components, to sign in/sign out, get access tokens, call Microsoft Graph, and more.
 

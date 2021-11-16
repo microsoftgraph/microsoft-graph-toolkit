@@ -25,14 +25,16 @@ jobs:
           node-version: ${{ matrix.node-version }}
           registry-url: 'https://registry.npmjs.org'
 
-      - name: Build 🛠
+      - name: Install Dependencies
         run: |
           npm install -g yarn lerna
           yarn
-          yarn build
 
       - name: Set Preview Version
         run: node scripts/setVersion.js --next
+
+      - name: Build 🛠
+        run: yarn build
 
       - name: Publish preview packages 🚀
         run: lerna exec --scope @microsoft/* -- "npm publish --tag next --access=public"

@@ -1,0 +1,260 @@
+/**
+ * -------------------------------------------------------------------------------------------
+ * Copyright (c) Microsoft Corporation.  All Rights Reserved.  Licensed under the MIT License.
+ * See License in the project root for license information.
+ * -------------------------------------------------------------------------------------------
+ */
+
+@import '../../../../../../node_modules/office-ui-fabric-core/dist/sass/References';
+@import '../../../styles/shared-sass-variables.scss';
+@import './mgt-file-upload.theme.scss';
+
+$file-upload-dialog-background-color: set-var(upload__dialog__background-color, $theme-default, $file-upload);
+$file-upload-dialog-content-background-color: set-var(
+  upload__dialog__content__background-color,
+  $theme-default,
+  $file-upload
+);
+$file-upload-dialog-content-color: set-var(upload__dialog__content__color, $theme-default, $file-upload);
+$file-upload-dialog-primarybutton-color: set-var(upload__dialog__primarybutton__color, $theme-default, $file-upload);
+$file-upload-dialog-primarybutton-background-color: set-var(
+  upload__dialog__primarybutton__background-color,
+  $theme-default,
+  $file-upload
+);
+$file-upload-button-background-color: set-var(upload__button__background-color, $theme-default, $file-upload);
+$file-item-background-color--hover: set-var(list__item__background-color--hover, $theme-default, $file-upload);
+$file-item-background-color--active: set-var(list__item__background-color--active, $theme-default, $file-upload);
+$file-upload-icon-button-background-color: var(--color, inherit);
+$file-list-box-shadow: var(
+  --file-list-box-shadow,
+  0px 3.2px 7.2px rgba(0, 0, 0, 0.132),
+  0px 0.6px 1.8px rgba(0, 0, 0, 0.108)
+);
+:host .file-upload-area-button {
+  width: 100%;
+  div {
+    float: var(--file-upload-button-float, right);
+    text-align: center;
+    display: table;
+    margin-top: 39px;
+    margin-right: 16px;
+    margin-left: 16px;
+  }
+
+  fluent-button.file-upload-button {
+    color: var(--file-upload-button-color, inherit);
+    vertical-align: middle;
+    display: table-cell;
+    background-color: $file-upload-button-background-color;
+    width: 120px;
+    height: 32px;
+    cursor: pointer;
+    font-size: $font-size;
+    font-family: $font-family;
+    position: relative;
+    &:hover {
+      background-color: $file-item-background-color--hover;
+    }
+  }
+
+  input {
+    width: 0.1px;
+    height: 0.1px;
+    opacity: 0;
+    overflow: hidden;
+    position: absolute;
+    z-index: -1;
+  }
+}
+
+:host .file-upload-table {
+  margin: var(--file-item-margin, 0);
+  .file-upload-cell {
+    padding: 1px 0px 1px 1px;
+    display: table-cell;
+    width: 50%;
+    vertical-align: middle;
+    position: relative;
+
+    .file-upload-filename {
+      max-width: 250px;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+
+    .file-upload-status {
+      position: absolute;
+      top: 12px;
+      left: 16px;
+    }
+
+    fluent-progress.file-upload-bar {
+      width: 180px;
+      margin-top: 10px;
+    }
+
+    .file-upload-cancel {
+      cursor: pointer;
+      margin-left: 20px;
+    }
+    .file-upload-name {
+      width: auto;
+    }
+
+    .cancel-icon {
+      fill: var(--file-upload-button-color, $file-upload-icon-button-background-color);
+    }
+  }
+}
+:host .file-upload-table.upload {
+  display: table;
+  width: 260px;
+}
+
+:host .mgt-file-item {
+  --file-background-color: transparent;
+}
+
+:host .upload-icon {
+  fill: var(--file-upload-button-color, $file-upload-icon-button-background-color);
+  height: 12px;
+}
+
+:host .file-upload-Template {
+  clear: both;
+  .file-upload-folder-tab {
+    padding-left: 20px;
+  }
+}
+
+:host #file-upload-border {
+  display: none;
+}
+
+:host #file-upload-border.visible {
+  border: var(--file-upload-border, dashed #0078d4 1px);
+  background-color: var(--file-upload-background-color, rgba(0, 120, 212, 0.1));
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  z-index: 1;
+  display: inline-block;
+}
+
+/* The Modal (background) */
+:host .file-upload-dialog {
+  display: none;
+
+  .file-upload-dialog-content {
+    background-color: $file-upload-dialog-content-background-color;
+    margin: auto;
+    padding: 24px;
+    width: 294px;
+    height: auto;
+    margin-top: 165px; /* Location of the box */
+    font-size: $font-size;
+    font-family: $font-family;
+    box-shadow: $file-list-box-shadow;
+    line-height: 20px;
+    div {
+      color: $file-upload-dialog-content-color;
+    }
+  }
+
+  .file-upload-dialog-check-wrapper {
+    margin-top: 12px;
+  }
+
+  fluent-checkbox.file-upload-dialog-check {
+    --neutral-fill-input-rest: $file-upload-dialog-content-color;
+    span {
+      color: $file-upload-dialog-content-color;
+    }
+  }
+
+  .file-upload-dialog-content-text {
+    margin-bottom: 36px;
+  }
+
+  .file-upload-dialog-title {
+    margin-top: 0px;
+  }
+
+  .file-upload-dialog-editor {
+    text-align: right;
+  }
+
+  .file-upload-dialog-close {
+    float: right;
+    cursor: pointer;
+    svg {
+      fill: var(--file-upload-button-color, $file-upload-icon-button-background-color);
+      padding-right: 5px;
+    }
+  }
+
+  .file-upload-dialog-ok {
+    height: 32px;
+    min-width: 60px;
+    border: 1px solid $file-upload-dialog-primarybutton-background-color;
+    background-color: $file-upload-dialog-primarybutton-background-color;
+    color: $file-upload-dialog-primarybutton-color;
+    font-size: $font-size;
+    margin-right: 5px;
+  }
+
+  .file-upload-dialog-cancel {
+    height: 32px;
+    min-width: 82px;
+    border: 1px solid rgb(138, 136, 134);
+    background-color: $file-upload-dialog-content-background-color;
+    color: $file-upload-dialog-content-color;
+    font-size: $font-size;
+  }
+}
+:host .file-upload-dialog.visible {
+  position: absolute;
+  z-index: 1;
+  left: 0;
+  top: 0;
+  width: 100%;
+  height: 100%;
+  overflow: auto;
+  background-color: $file-upload-dialog-background-color;
+  display: inline-block;
+}
+
+:host fluent-checkbox.file-upload-dialog-check.hide {
+  display: none;
+}
+
+:host .file-upload-dialog-success {
+  border-top: var(--file-item-border-top, none);
+  border-left: var(--file-item-border-left, none);
+  border-right: var(--file-item-border-right, none);
+  border-bottom: var(--file-item-border-bottom, none);
+  border-radius: var(--file-item-border-radius, 2px);
+  cursor: pointer;
+
+  &:hover,
+  &.focused {
+    background-color: $file-item-background-color--hover;
+
+    mgt-file {
+      --file-background-color: $file-item-background-color--hover;
+    }
+  }
+
+  &:active,
+  &.selected {
+    background-color: $file-item-background-color--active;
+
+    mgt-file {
+      --file-background-color: $file-item-background-color--active;
+    }
+  }
+}
