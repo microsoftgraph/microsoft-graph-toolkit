@@ -21,21 +21,21 @@ export interface TeamsFxConfig {
    * @type {string}
    * @memberof TeamsFxConfig
    */
-  clientId: string;
+  clientId?: string;
   /**
    * Login page for Teams to redirect to.  Default value comes from REACT_APP_START_LOGIN_PAGE_URL environment variable.
    *
    * @type {string}
    * @memberof TeamsFxConfig
    */
-  initiateLoginEndpoint: string;
+  initiateLoginEndpoint?: string;
   /**
    * Endpoint of auth service provisioned by Teams Framework. Default value comes from REACT_APP_TEAMSFX_ENDPOINT environment variable.
    *
    * @type {string}
    * @memberof TeamsFxConfig
    */
-  simpleAuthEndpoint: string;
+  simpleAuthEndpoint?: string;
   /**
    * The scopes to use when authenticating the user
    *
