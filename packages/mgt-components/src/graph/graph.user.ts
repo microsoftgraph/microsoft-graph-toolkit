@@ -137,7 +137,12 @@ export async function getUser(graph: IGraph, userPrincipleName: string, requeste
  * @param {string[]} userIds, an array of string ids
  * @returns {Promise<User[]>}
  */
-export async function getUsersForUserIds(graph: IGraph, userIds: string[], searchInput: string = ''): Promise<User[]> {
+export async function getUsersForUserIds(
+  graph: IGraph,
+  userIds: string[],
+  searchInput: string = '',
+  userFilters: string = ''
+): Promise<User[]> {
   if (!userIds || userIds.length === 0) {
     return [];
   }
@@ -168,7 +173,11 @@ export async function getUsersForUserIds(graph: IGraph, userIds: string[], searc
         peopleDict[id] = user ? user : null;
       }
     } else if (id !== '') {
-      batch.get(id, `/users/${id}`, ['user.readbasic.all']);
+      let apiUrl: string = `/users/${id}`;
+      if (userFilters) {
+        apiUrl += `${apiUrl}?$filters=${userFilters}`;
+      }
+      batch.get(id, apiUrl, ['user.readbasic.all']);
       notInCache.push(id);
     }
   }
@@ -294,7 +303,12 @@ export async function getUsersForPeopleQueries(graph: IGraph, peopleQueries: str
  * @param {number} [top=10] - maximum number of results to return
  * @returns {Promise<User[]>}
  */
-export async function findUsers(graph: IGraph, query: string, top: number = 10): Promise<User[]> {
+export async function findUsers(
+  graph: IGraph,
+  query: string,
+  top: number = 10,
+  userFilters: string = ''
+): Promise<User[]> {
   const scopes = 'User.ReadBasic.All';
   const item = { maxResults: top, results: null };
   let cache: CacheStore<CacheUserQuery>;
@@ -311,15 +325,17 @@ export async function findUsers(graph: IGraph, query: string, top: number = 10):
   let graphResult;
 
   let encodedQuery = `${query.replace(/#/g, '%2523')}`;
+  graphResult = await graph
+    .api('users')
+    .header('ConsistencyLevel', 'eventual')
+    .count(true)
+    .search(`"displayName:${encodedQuery}" OR "mail:${encodedQuery}"`);
+
+  if (userFilters !== '') {
+    graphResult.filter(userFilters);
+  }
   try {
-    graphResult = await graph
-      .api('users')
-      .header('ConsistencyLevel', 'eventual')
-      .count(true)
-      .search(`"displayName:${encodedQuery}" OR "mail:${encodedQuery}"`)
-      .top(top)
-      .middlewareOptions(prepScopes(scopes))
-      .get();
+    graphResult.top(top).middlewareOptions(prepScopes(scopes)).get();
   } catch {}
 
   if (getIsUsersCacheEnabled() && graphResult) {
@@ -345,7 +361,8 @@ export async function findGroupMembers(
   groupId: string,
   top: number = 10,
   personType: PersonType = PersonType.person,
-  transitive: boolean = false
+  transitive: boolean = false,
+  groupFilters: string = ''
 ): Promise<User[]> {
   const scopes = ['user.read.all', 'people.read'];
   const item = { maxResults: top, results: null };
@@ -375,6 +392,10 @@ export async function findGroupMembers(
     if (query) {
       filter = `startswith(displayName,'${query}') or startswith(mail,'${query}')`;
     }
+  }
+
+  if (groupFilters) {
+    filter += ` and ${groupFilters}`;
   }
 
   const graphResult = await graph

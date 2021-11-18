@@ -107,6 +107,9 @@ export type PeoplePickerProps = {
 	placeholder?: string;
 	selectionMode?: string;
 	userIds?: string[];
+	userFilters?: string;
+	peopleFilters?: string;
+	groupFilters?: string;
 	showMax?: number;
 	disabled?: boolean;
 	allowAnyEmail?: boolean;
@@ -126,6 +129,7 @@ export type PeopleProps = {
 	resource?: string;
 	version?: string;
 	scopes?: string[];
+	fallbackDetails?: IDynamicPerson[];
 	showMax?: number;
 	templateContext?: TemplateContext;
 	mediaQuery?: ComponentMediaQuery;

@@ -53,8 +53,17 @@
     <mgt-mock-provider></mgt-mock-provider>
 
     <mgt-login></mgt-login>
+    <br />
+    <mgt-people-picker user-filters="id ne 'e3d0513b-449e-4198-ba6f-bd97ae7cae85'" type="person" user-type="user">
+    </mgt-people-picker>
+    <br />
     <mgt-person person-query="me" view="twoLines" person-card="hover" show-presence></mgt-person>
-    <mgt-people-picker></mgt-people-picker>
+    <mgt-people-picker
+      user-filters="id eq '2804bc07-1e1f-4938-9085-ce6d756a32d2'"
+      people-filters="jobTitle eq 'Web Marketing Manager'"
+      group-filters="id eq '02bd9fd6-8f93-4758-87c3-1fb73740a315'"
+      type="group"
+    ></mgt-people-picker>
     <mgt-teams-channel-picker></mgt-teams-channel-picker>
     <mgt-tasks></mgt-tasks>
     <mgt-agenda group-by-day></mgt-agenda>
