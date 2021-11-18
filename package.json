@@ -130,10 +130,6 @@
     "arrowParens": "avoid",
     "embeddedLanguageFormatting": "off"
   },
-  "dependencies": {
-    "global": "^4.4.0",
-    "npx": "^10.2.2"
-  },
   "resolutions": {
     "react": "16.13.1",
     "react-dom": "16.13.1"
