@@ -7,8 +7,7 @@
 
 /* global window */
 
-import { addParameters, setCustomElements, configure } from '@storybook/web-components';
-import { addons } from '@storybook/addons';
+import { addParameters } from '@storybook/web-components';
 import '../packages/mgt';
 import '../node_modules/@webcomponents/webcomponentsjs/webcomponents-bundle.js';
 import theme from './theme';
@@ -17,10 +16,9 @@ addParameters({
   docs: {
     iframeHeight: '400px',
     inlineStories: false
+  },
+  options: {
+    enableShortcuts: false,
+    theme
   }
-});
-
-addons.setConfig({
-  theme,
-  enableShortcuts: false
 });
