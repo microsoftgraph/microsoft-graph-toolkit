@@ -7,32 +7,31 @@
 
 /* global window */
 
-import { configure, addParameters, setCustomElements } from '@storybook/web-components';
-import customElements from '../custom-elements.json';
+import { addParameters, setCustomElements, configure } from '@storybook/web-components';
+import { addons } from '@storybook/addons';
+import '../packages/mgt';
 import '../node_modules/@webcomponents/webcomponentsjs/webcomponents-bundle.js';
 import theme from './theme';
-
-setCustomElements(customElements);
 
 addParameters({
   docs: {
     iframeHeight: '400px',
     inlineStories: false
-  },
-  options: {
-    // disable keyboard shortcuts because they interfere with the stories
-    enableShortcuts: false,
-    theme
   }
 });
 
+addons.setConfig({
+  theme,
+  enableShortcuts: false
+});
+
 // force full reload to not reregister web components
-const req = require.context('../stories', true, /\.(js|mdx)$/);
-configure(req, module);
-if (module.hot) {
-  module.hot.accept(req.id, () => {
-    const currentLocationHref = window.location.href;
-    window.history.pushState(null, null, currentLocationHref);
-    window.location.reload();
-  });
-}
+// const req = require.context('../stories', true, /\.(js|mdx)$/);
+// configure(req, module);
+// if (module.hot) {
+//   module.hot.accept(req.id, () => {
+//     const currentLocationHref = window.location.href;
+//     window.history.pushState(null, null, currentLocationHref);
+//     window.location.reload();
+//   });
+// }

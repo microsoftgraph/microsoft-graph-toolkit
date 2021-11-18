@@ -178,7 +178,7 @@ export const refresh = () => html`
     <label>get.refresh(true)</label>
     <button id="true">Hard refresh</button>
 
-    
+
   <script>
 
     document.querySelector('#false').addEventListener('click', _ =>{
