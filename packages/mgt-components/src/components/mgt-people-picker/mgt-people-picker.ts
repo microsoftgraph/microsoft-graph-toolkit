@@ -1014,7 +1014,9 @@ export class MgtPeoplePicker extends MgtTemplatedComponent {
 
   private clearInput() {
     this.clearHighlighted();
-    this.input.value = '';
+    if (this.selectionMode !== 'single') {
+      this.input.value = '';
+    }
     this.userInput = '';
   }
 
