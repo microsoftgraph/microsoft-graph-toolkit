@@ -1000,7 +1000,7 @@ export class MgtPerson extends MgtTemplatedComponent {
       ) {
         details;
         let image;
-        if ('personType' in details) {
+        if ('groupTypes' in details) {
           image = await getPersonImage(graph, details, MgtPerson.config.useContactApis);
         } else {
           image = await getGroupImage(graph, details, MgtPerson.config.useContactApis);

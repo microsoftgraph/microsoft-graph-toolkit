@@ -118,7 +118,11 @@ export async function getUser(graph: IGraph, userPrincipleName: string, requeste
   }
 
   // else we must grab it
-  const response = await graph.api(apiString).middlewareOptions(prepScopes(scopes)).get();
+  let response;
+  try {
+    response = await graph.api(apiString).middlewareOptions(prepScopes(scopes)).get();
+  } catch (_) {}
+
   if (getIsUsersCacheEnabled()) {
     cache.putValue(userPrincipleName, { user: JSON.stringify(response) });
   }
@@ -164,8 +168,11 @@ export async function getUsersForUserIds(graph: IGraph, userIds: string[], searc
         peopleDict[id] = user ? user : null;
       }
     } else if (id !== '') {
-      batch.get(id, `/users/${id}`, ['user.readbasic.all']);
-      notInCache.push(id);
+      if (id.toString() === 'me') {
+        peopleDict[id] = await getMe(graph);
+      } else {
+        batch.get(id, `/users/${id}`, ['user.readbasic.all']);
+      }
     }
   }
   try {
@@ -254,6 +261,8 @@ export async function getUsersForPeopleQueries(graph: IGraph, peopleQueries: str
         if (getIsUsersCacheEnabled()) {
           cache.putValue(personQuery, { maxResults: 1, results: [JSON.stringify(response.content.value[0])] });
         }
+      } else {
+        people.push(null);
       }
     }
 
