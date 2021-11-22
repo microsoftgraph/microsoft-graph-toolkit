@@ -16,9 +16,5 @@ addParameters({
   docs: {
     iframeHeight: '400px',
     inlineStories: false
-  },
-  options: {
-    enableShortcuts: false,
-    theme
   }
 });
