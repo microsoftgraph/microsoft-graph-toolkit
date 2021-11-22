@@ -988,23 +988,25 @@ export class MgtPerson extends MgtTemplatedComponent {
     let personProps = [...defaultPersonProperties, this.line1Property, this.line2Property, this.line3Property];
     personProps = personProps.filter(email => email !== 'email');
 
-    if (this.personDetailsInternal) {
+    let details = this.personDetailsInternal || this.personDetails;
+
+    if (details) {
       if (
-        !this.personDetailsInternal.personImage &&
+        !details.personImage &&
         this.fetchImage &&
         this._avatarType === 'photo' &&
         !this.personImage &&
         !this._fetchedImage
       ) {
-        this.personDetailsInternal;
+        details;
         let image;
-        if ('personType' in this.personDetailsInternal) {
-          image = await getPersonImage(graph, this.personDetailsInternal, MgtPerson.config.useContactApis);
+        if ('personType' in details) {
+          image = await getPersonImage(graph, details, MgtPerson.config.useContactApis);
         } else {
-          image = await getGroupImage(graph, this.personDetailsInternal, MgtPerson.config.useContactApis);
+          image = await getGroupImage(graph, details, MgtPerson.config.useContactApis);
         }
         if (image) {
-          this.personDetailsInternal.personImage = image;
+          details.personImage = image;
           this._fetchedImage = image;
         }
       }
