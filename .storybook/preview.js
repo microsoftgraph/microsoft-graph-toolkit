@@ -7,10 +7,12 @@
 
 /* global window */
 
-import { addParameters } from '@storybook/web-components';
-import '../packages/mgt';
+import { addParameters, setCustomElements } from '@storybook/web-components';
+
 import '../node_modules/@webcomponents/webcomponentsjs/webcomponents-bundle.js';
-import theme from './theme';
+import customElements from '../custom-elements.json';
+
+setCustomElements(customElements);
 
 addParameters({
   docs: {
@@ -18,3 +20,13 @@ addParameters({
     inlineStories: false
   }
 });
+
+const req = require.context('../stories', true, /\.(js|mdx)$/);
+// configure(req, module);
+if (module.hot) {
+  module.hot.accept(req.id, () => {
+    const currentLocationHref = window.location.href;
+    window.history.pushState(null, null, currentLocationHref);
+    window.location.reload();
+  });
+}
