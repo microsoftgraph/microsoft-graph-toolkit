@@ -197,8 +197,13 @@ export async function getUsersForUserIds(
       if (userFilters) {
         apiUrl += `${apiUrl}?$filters=${userFilters}`;
       }
-      batch.get(id, apiUrl, ['user.readbasic.all']);
-      notInCache.push(id);
+
+      if (id.toString() === 'me') {
+        peopleDict[id] = await getMe(graph);
+      } else {
+        batch.get(id, apiUrl, ['user.readbasic.all']);
+        notInCache.push(id);
+      }
     }
   }
   try {
