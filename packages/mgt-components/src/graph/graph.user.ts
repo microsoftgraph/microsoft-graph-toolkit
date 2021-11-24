@@ -10,6 +10,8 @@ import { User } from '@microsoft/microsoft-graph-types';
 
 import { findPeople, PersonType } from './graph.people';
 import { schemas } from './cacheStores';
+import { UserType } from '..';
+import { GraphRequest } from '@microsoft/microsoft-graph-client';
 
 /**
  * Object to be stored in cache
@@ -46,6 +48,24 @@ export const getUserInvalidationTime = (): number =>
  */
 export const getIsUsersCacheEnabled = (): boolean =>
   CacheService.config.users.isEnabled && CacheService.config.isEnabled;
+
+export async function getUsers(graph: IGraph, userFilters: string = ''): Promise<User[]> {
+  let apiString = '/users';
+
+  // TODO: Add 'top' parameter
+  // TODO: Implement Caching of the users found. I can re-use an existing
+  // store or create a new one.
+  const graphClient: GraphRequest = graph.api(apiString);
+
+  if (userFilters) {
+    graphClient.filter(userFilters);
+  }
+
+  try {
+    const response = await graphClient.middlewareOptions(prepScopes('user.read')).get();
+    return response.value;
+  } catch (error) {}
+}
 
 /**
  * async promise, returns Graph User data relating to the user logged in
