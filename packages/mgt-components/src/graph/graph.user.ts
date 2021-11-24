@@ -193,14 +193,13 @@ export async function getUsersForUserIds(
         peopleDict[id] = user ? user : null;
       }
     } else if (id !== '') {
-      let apiUrl: string = `/users/${id}`;
-      if (userFilters) {
-        apiUrl += `${apiUrl}?$filters=${userFilters}`;
-      }
-
       if (id.toString() === 'me') {
         peopleDict[id] = await getMe(graph);
       } else {
+        let apiUrl: string = `/users/${id}`;
+        if (userFilters) {
+          apiUrl += `${apiUrl}?$filters=${userFilters}`;
+        }
         batch.get(id, apiUrl, ['user.readbasic.all']);
         notInCache.push(id);
       }
