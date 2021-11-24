@@ -190,23 +190,19 @@ export const pickerUserIds = () => html`
 export const pickerUserFilters = () => html`
   <mgt-people-picker
       user-filters="id ne '2804bc07-1e1f-4938-9085-ce6d756a32d2'"
-      type="person"
       user-type="user">
   </mgt-people-picker>
 `;
 
 export const pickerPeopleFilters = () => html`
   <mgt-people-picker
-      people-filters="jobTitle eq 'Web Marketing Manager'"
-      type="people"
-      transitive-search=true>
+      people-filters="jobTitle eq 'Web Marketing Manager'">
   </mgt-people-picker>
 `;
 
 export const pickerGroupFilters = () => html`
   <mgt-people-picker
       group-filters="id eq '02bd9fd6-8f93-4758-87c3-1fb73740a315'"
-      type="group"
-      transitive-search=true>
+      type="group">
   </mgt-people-picker>
 `;
