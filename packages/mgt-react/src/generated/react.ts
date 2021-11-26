@@ -126,6 +126,7 @@ export type PeopleProps = {
 	resource?: string;
 	version?: string;
 	scopes?: string[];
+	fallbackDetails?: IDynamicPerson[];
 	showMax?: number;
 	templateContext?: TemplateContext;
 	mediaQuery?: ComponentMediaQuery;
