@@ -21,21 +21,21 @@ export interface TeamsFxConfig {
    * @type {string}
    * @memberof TeamsFxConfig
    */
-  clientId: string;
+  clientId?: string;
   /**
    * Login page for Teams to redirect to.  Default value comes from REACT_APP_START_LOGIN_PAGE_URL environment variable.
    *
    * @type {string}
    * @memberof TeamsFxConfig
    */
-  initiateLoginEndpoint: string;
+  initiateLoginEndpoint?: string;
   /**
    * Endpoint of auth service provisioned by Teams Framework. Default value comes from REACT_APP_TEAMSFX_ENDPOINT environment variable.
    *
    * @type {string}
    * @memberof TeamsFxConfig
    */
-  simpleAuthEndpoint: string;
+  simpleAuthEndpoint?: string;
   /**
    * The scopes to use when authenticating the user
    *
@@ -50,6 +50,17 @@ export interface TeamsFxConfig {
    * @memberof TeamsFxConfig
    */
   credential?: TeamsUserCredential;
+}
+
+export declare interface AccessToken {
+  /**
+   * The access token returned by the authentication service.
+   */
+  token: string;
+  /**
+   * The access token's expiration timestamp in milliseconds, UNIX epoch time.
+   */
+  expiresOnTimestamp: number;
 }
 
 /**
@@ -94,7 +105,7 @@ export class TeamsFxProvider extends IProvider {
    * @type {TeamsUserCredential}
    * @memberof TeamsFxProvider
    */
-  private _credential: TeamsUserCredential = null;
+  private _credential: TeamsUserCredential;
 
   /**
    * Access token provided by TeamsFx
@@ -106,8 +117,8 @@ export class TeamsFxProvider extends IProvider {
 
   constructor(config: TeamsFxConfig) {
     super();
-    this.scopes = config.scopes;
-    this._credential = config.credential;
+    this.scopes = config.scopes!;
+    this._credential = config.credential!;
 
     loadConfiguration({
       authentication: {
@@ -131,9 +142,21 @@ export class TeamsFxProvider extends IProvider {
    * @returns {Promise<string>}
    * @memberof TeamsFxProvider
    */
-  async getAccessToken() {
+  public async getAccessToken(): Promise<string> {
     let accessToken = '';
-    accessToken = (await this.credential.getToken(this.scopes)).token;
+    accessToken = (await this.credential.getToken(this.scopes))!.token;
+    return accessToken;
+  }
+
+  /**
+   * Uses provider to receive access token via TeamsFx
+   *
+   * @returns {Promise<AccessToken>}
+   * @memberof TeamsFxProvider
+   */
+  public async getFullAccessToken(): Promise<AccessToken> {
+    let accessToken: AccessToken;
+    accessToken = (await this.credential.getToken(this.scopes))!;
     return accessToken;
   }
 
@@ -143,7 +166,7 @@ export class TeamsFxProvider extends IProvider {
    * @param {string[]} scopes
    * @memberof TeamsFxProvider
    */
-  public updateScopes(scopes) {
+  public updateScopes(scopes: string[]) {
     this.scopes = scopes;
   }
 
@@ -154,10 +177,10 @@ export class TeamsFxProvider extends IProvider {
    * @memberof TeamsFxProvider
    */
   private async internalLogin(): Promise<void> {
-    let token = null;
+    let token: AccessToken | null = null;
 
     try {
-      token = await this.getAccessToken();
+      token = await this.getFullAccessToken();
     } catch (error) {
       await this.credential.login(this.scopes);
     }

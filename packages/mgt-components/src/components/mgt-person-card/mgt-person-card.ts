@@ -585,6 +585,12 @@ export class MgtPersonCard extends MgtTemplatedComponent {
         </div>
       `;
     }
+    // load sections when details are expanded
+    // when not singed in
+    const provider = Providers.globalProvider;
+    if (provider.state === ProviderState.SignedOut) {
+      this.loadSections();
+    }
 
     person = person || this.internalPersonDetails;
 
