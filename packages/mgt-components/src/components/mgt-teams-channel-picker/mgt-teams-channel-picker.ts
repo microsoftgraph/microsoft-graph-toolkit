@@ -488,7 +488,14 @@ export class MgtTeamsChannelPicker extends MgtTemplatedComponent {
       return items.map((treeItem, index) => {
         const isLeaf = !treeItem.channels;
         const renderChannels = true;
-        if (treeItem.isExpanded) {
+        let isSelected = false;
+        if (this.selectedItem) {
+          console.log('this is true', this.selectedItem.team);
+          if (this.selectedItem.channel === treeItem.item) {
+            isSelected = true;
+          }
+        }
+        if (treeItem.isExpanded || (this.selectedItem && this.selectedItem.team == treeItem.item)) {
           return html`   
               <fluent-tree-item @click=${() => this.handleItemClick(treeItem)} expanded>
               ${this.renderItem(treeItem)}
@@ -496,12 +503,6 @@ export class MgtTeamsChannelPicker extends MgtTemplatedComponent {
               </fluent-tree-item>
             `;
         } else {
-          let isSelected = false;
-          if (this.selectedItem) {
-            if (this.selectedItem.channel === treeItem.item) {
-              isSelected = true;
-            }
-          }
           const classes = {
             selected: isSelected
           };
@@ -840,7 +841,7 @@ export class MgtTeamsChannelPicker extends MgtTemplatedComponent {
     const currentFocusedItem = this._focusList[this._focusedIndex];
 
     let treeList: HTMLElement = this.renderRoot.querySelector('fluent-tree-item');
-    let input: HTMLElement = this.renderRoot.querySelector('#teams-channel-picker-input');
+    let input: HTMLElement = this.renderRoot.querySelector('fluent-text-field');
 
     switch (event.keyCode) {
       case 40: // down
@@ -850,8 +851,6 @@ export class MgtTeamsChannelPicker extends MgtTemplatedComponent {
         if (this._focusedIndex < this._focusList.length - 1) {
           this._focusedIndex = this._focusedIndex + 1;
         }
-        this.requestUpdate();
-        event.preventDefault();
         break;
       case 38: // up
         if (this._focusedIndex === 0) {
@@ -862,22 +861,6 @@ export class MgtTeamsChannelPicker extends MgtTemplatedComponent {
             this._focusedIndex--;
           }
         }
-        this.requestUpdate();
-        event.preventDefault();
-        break;
-      case 39: // right
-        if (currentFocusedItem && currentFocusedItem.channels && !currentFocusedItem.isExpanded) {
-          currentFocusedItem.isExpanded = true;
-          this.resetFocusState();
-          event.preventDefault();
-        }
-        break;
-      case 37: // left
-        if (currentFocusedItem && currentFocusedItem.channels && currentFocusedItem.isExpanded) {
-          currentFocusedItem.isExpanded = false;
-          this.resetFocusState();
-          event.preventDefault();
-        }
         break;
       case 9: // tab
         if (!currentFocusedItem) {
@@ -886,11 +869,12 @@ export class MgtTeamsChannelPicker extends MgtTemplatedComponent {
         }
       case 13: // return/enter
         if (currentFocusedItem && currentFocusedItem.channels) {
+          console.log(currentFocusedItem);
           // focus item is a Team
           currentFocusedItem.isExpanded = !currentFocusedItem.isExpanded;
-          this.resetFocusState();
-          event.preventDefault();
+          this._focusList = this.generateFocusList(this._treeViewState);
         } else if (currentFocusedItem && !currentFocusedItem.channels) {
+          console.log('this happens');
           this.selectChannel(currentFocusedItem);
 
           // refocus to new textbox on initial selection
