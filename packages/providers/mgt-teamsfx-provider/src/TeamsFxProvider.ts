@@ -143,21 +143,8 @@ export class TeamsFxProvider extends IProvider {
    * @memberof TeamsFxProvider
    */
   public async getAccessToken(): Promise<string> {
-    let accessToken = '';
-    accessToken = (await this.credential.getToken(this.scopes))!.token;
-    return accessToken;
-  }
-
-  /**
-   * Uses provider to receive access token via TeamsFx
-   *
-   * @returns {Promise<AccessToken>}
-   * @memberof TeamsFxProvider
-   */
-  public async getFullAccessToken(): Promise<AccessToken> {
-    let accessToken: AccessToken;
-    accessToken = (await this.credential.getToken(this.scopes))!;
-    return accessToken;
+    let accessToken = await this.credential.getToken(this.scopes);
+    return accessToken ? accessToken.token : '';
   }
 
   /**
@@ -177,19 +164,19 @@ export class TeamsFxProvider extends IProvider {
    * @memberof TeamsFxProvider
    */
   private async internalLogin(): Promise<void> {
-    let token: AccessToken | null = null;
+    let token: string = '';
 
     try {
-      token = await this.getFullAccessToken();
+      token = await this.getAccessToken();
     } catch (error) {
+      console.error("Can't get the access token");
+    }
+
+    if (!token) {
       await this.credential.login(this.scopes);
     }
 
-    if (!!token && token.expiresOnTimestamp < +new Date()) {
-      await this.credential.login(this.scopes);
-    }
-
-    this._accessToken = await this.getAccessToken();
+    this._accessToken = token ?? (await this.getAccessToken());
     this.setState(this._accessToken ? ProviderState.SignedIn : ProviderState.SignedOut);
   }
 }
