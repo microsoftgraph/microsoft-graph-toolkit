@@ -3,10 +3,10 @@ import * as monaco from 'monaco-editor/esm/vs/editor/editor.api';
 
 let debounce = (func, wait, immediate) => {
   var timeout;
-  return function() {
+  return function () {
     var context = this,
       args = arguments;
-    var later = function() {
+    var later = function () {
       timeout = null;
       if (!immediate) func.apply(context, args);
     };
@@ -122,9 +122,16 @@ export class EditorElement extends LitElement {
     this.editor = monaco.editor.create(htmlElement, {
       model: this.currentEditorState.model,
       scrollBeyondLastLine: false,
+      readOnly: true,
       minimap: {
         enabled: false
       }
+    });
+
+    // Exit the current editor
+    this.editor.addCommand(monaco.KeyCode.Escape, () => {
+      this.editor.updateOptions({ readOnly: true });
+      this.shadowRoot.getElementById(this.currentType).focus();
     });
 
     const changeViewZones = () => {
@@ -170,7 +177,10 @@ export class EditorElement extends LitElement {
     window.removeEventListener('resize', this.handleResize);
   }
 
-  showTab(type) {
+  showTab(type, event) {
+    this.editor.updateOptions({ readOnly: false });
+    if (event && event.keyCode != 13) return;
+
     this.currentType = type;
     if (this.files && typeof this.files[type] !== 'undefined') {
       this.currentEditorState.state = this.editor.saveViewState();
@@ -185,11 +195,16 @@ export class EditorElement extends LitElement {
 
   render() {
     return html`
-      <div class="root">
-        <div class="tab-root">
+      <div class="root" tabindex=0>
+        <div class="tab-root" tabindex=0">
           ${this.fileTypes.map(
             type => html`
-              <div @click="${_ => this.showTab(type)}" class="tab ${type === this.currentType ? 'selected' : ''}">
+              <div
+                @keydown=${e => this.showTab(type, e)}
+                tabindex=0
+                @click="${_ => this.showTab(type)}"
+                id="${type}"
+                class="tab ${type === this.currentType ? 'selected' : ''}">
                 ${type}
               </div>
             `
