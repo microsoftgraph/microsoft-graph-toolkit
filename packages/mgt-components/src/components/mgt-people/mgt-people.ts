@@ -327,7 +327,7 @@ export class MgtPeople extends MgtTemplatedComponent {
   protected renderPeople(): TemplateResult {
     const maxPeople = this.people.slice(0, this.showMax);
     return html`
-      <ul class="people-list">
+      <ul class="people-list" aria-label="people" tabindex=0>
         ${repeat(
           maxPeople,
           p => (p.id ? p.id : p.displayName),
@@ -358,7 +358,7 @@ export class MgtPeople extends MgtTemplatedComponent {
         people: this.people
       }) ||
       html`
-        <li class="overflow"><span>+${extra}<span></li>
+        <li tabindex=0 aria-label="and ${extra} more attendees" class="overflow"><span>+${extra}<span></li>
       `
     );
   }
