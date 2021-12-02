@@ -620,7 +620,7 @@ export class MgtPerson extends MgtTemplatedComponent {
     if (imageSrc && !this._isInvalidImageSrc && this._avatarType === 'photo') {
       return html`
         <div class="img-wrapper">
-          <img tabindex=0 alt=${personDetails.displayName} src=${imageSrc} @error=${() =>
+          <img tabindex=0 alt=${this.personDetails.displayName} src=${imageSrc} @error=${() =>
         (this._isInvalidImageSrc = true)} />
         </div>
       `;
