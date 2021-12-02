@@ -91,13 +91,13 @@ export class MgtPersonCardContact extends BasePersonCardSection {
     } as IContactPart,
     businessPhone: {
       icon: getSvg(SvgIcon.CellPhone, '#929292'),
-      onClick: () => this.sendCall(),
+      onClick: () => this.sendCall('businessPhone'),
       showCompact: true,
       title: 'Business Phone'
     } as IContactPart,
     cellPhone: {
       icon: getSvg(SvgIcon.CellPhone, '#929292'),
-      onClick: () => this.sendCall(),
+      onClick: () => this.sendCall('cellPhone'),
       showCompact: true,
       title: 'Mobile Phone'
     } as IContactPart,
@@ -331,10 +331,13 @@ export class MgtPersonCardContact extends BasePersonCardSection {
    * @protected
    * @memberof MgtPersonCardContact
    */
-  protected sendCall(): void {
+  protected sendCall(phone): void {
     const cellPhone = this._contactParts.cellPhone.value;
-    if (cellPhone) {
+    const businessPhone = this._contactParts.businessPhone.value;
+    if (phone === 'cellPhone') {
       window.open('tel:' + cellPhone, '_blank');
+    } else if (phone === 'businessPhone') {
+      window.open('tel:' + businessPhone, '_blank');
     }
   }
 }
