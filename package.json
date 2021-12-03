@@ -116,7 +116,8 @@
     "tslint-microsoft-contrib": "^6.2.0",
     "typescript": "^3.7.5",
     "web-component-analyzer": "^1.1.6",
-    "whatwg-fetch": "^3.5.0"
+    "whatwg-fetch": "^3.5.0",
+    "node-sass": "npm:sass@^1.44.0"
   },
   "husky": {
     "hooks": {
