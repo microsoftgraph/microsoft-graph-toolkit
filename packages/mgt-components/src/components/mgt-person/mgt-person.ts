@@ -965,10 +965,10 @@ export class MgtPerson extends MgtTemplatedComponent {
       ) {
         this.personDetails;
         let image;
-        if ('personType' in this.personDetails) {
-          image = await getPersonImage(graph, this.personDetails, MgtPerson.config.useContactApis);
-        } else {
+        if ('groupTypes' in this.personDetails) {
           image = await getGroupImage(graph, this.personDetails, MgtPerson.config.useContactApis);
+        } else {
+          image = await getPersonImage(graph, this.personDetails, MgtPerson.config.useContactApis);
         }
         if (image) {
           this.personDetails.personImage = image;
