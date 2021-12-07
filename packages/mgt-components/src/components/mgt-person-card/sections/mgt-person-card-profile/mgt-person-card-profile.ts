@@ -268,13 +268,15 @@ export class MgtPersonCardProfile extends BasePersonCardSection {
    * @memberof MgtPersonCardProfile
    */
   protected renderWorkExperience(): TemplateResult {
-    if (!this._profile || !this._profile.positions) {
+    const { positions } = this._profile;
+
+    if (!(positions && positions.length)) {
       return null;
     }
 
     const positionItems: TemplateResult[] = [];
     for (const position of this._profile.positions) {
-      if (position.detail) {
+      if (position.detail.description || position.detail.jobTitle !== '') {
         positionItems.push(html`
           <div class="data-list__item work-position">
             <div class="data-list__item__header">
@@ -295,10 +297,11 @@ export class MgtPersonCardProfile extends BasePersonCardSection {
         `);
       }
     }
+    const workExperience = positionItems.length ? this.strings.WorkExperienceSubSectionTitle : '';
 
     return html`
       <section>
-        <div class="section__title">${this.strings.WorkExperienceSubSectionTitle}</div>
+        <div class="section__title">${workExperience}</div>
         <div class="section__content">
           <div class="data-list">
             ${positionItems}
