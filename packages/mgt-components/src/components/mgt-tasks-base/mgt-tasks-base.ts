@@ -250,7 +250,7 @@ export abstract class MgtTasksBase extends MgtTemplatedComponent {
             class="TaskIcon TaskCancel"
             @click="${() => this.hideNewTaskPanel()}"
             @keypress="${(e: KeyboardEvent) => {
-              if (e.key === 'Enter' || e.key === 'Space') this.hideNewTaskPanel();
+              if (e.key === 'Enter' || e.key === ' ') this.hideNewTaskPanel();
             }}">
             <span>${this.strings.cancelNewTaskSubtitle}</span>
           </div>
@@ -259,7 +259,7 @@ export abstract class MgtTasksBase extends MgtTemplatedComponent {
             class="TaskIcon TaskAdd"
             @click="${() => this.addTask()}"
             @keypress="${(e: KeyboardEvent) => {
-              if (e.key === 'Enter' || e.key === 'Space') this.addTask();
+              if (e.key === 'Enter' || e.key === ' ') this.addTask();
             }}"
           >
             <span></span>
