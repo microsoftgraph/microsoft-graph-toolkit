@@ -35,7 +35,7 @@
     "watch:serve": "npm-run-all --parallel watch serve",
     "watch:serve:https": "npm-run-all -parallel watch serve:https",
     "prettier:base": "prettier --parser typescript",
-    "prettier:check": "npm run prettier:base -- --list-different \"packages/**/*.{ts,tsx}\"",
+    "prettier:check": "npm run prettier:base -- --check \"packages/**/*.{ts,tsx}\"",
     "prettier:write": "npm run prettier:base -- --write \"packages/**/*.{ts,tsx}\"",
     "storybook": "start-storybook -p 6006 -s assets",
     "storybook:dev": "npm run build:compile && wca analyze packages --format json --outFile custom-elements.json",
