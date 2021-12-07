@@ -9,7 +9,7 @@ import { html } from 'lit-element';
 import { withCodeEditor } from '../../.storybook/addons/codeEditorAddon/codeAddon';
 
 export default {
-  title: 'Components | mgt-get',
+  title: 'Components / mgt-get',
   component: 'mgt-get',
   decorators: [withCodeEditor]
 };
@@ -178,7 +178,7 @@ export const refresh = () => html`
     <label>get.refresh(true)</label>
     <button id="true">Hard refresh</button>
 
-    
+
   <script>
 
     document.querySelector('#false').addEventListener('click', _ =>{
