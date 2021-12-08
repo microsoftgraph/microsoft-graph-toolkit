@@ -26,10 +26,10 @@ export default create({
   // barBg: 'hotpink',
 
   // Form colors
-  inputBg: 'white',
-  inputBorder: 'silver',
-  inputTextColor: 'black',
-  inputBorderRadius: 4,
+  // inputBg: 'white',
+  // inputBorder: 'silver',
+  // inputTextColor: 'black',
+  // inputBorderRadius: 4,
 
   brandTitle: 'Microsoft Graph Toolkit Playground',
   brandUrl: 'https://aka.ms/mgt'
