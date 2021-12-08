@@ -529,7 +529,7 @@ export class MgtPersonCard extends MgtTemplatedComponent {
     let email: TemplateResult;
     if (getEmailFromGraphEntity(person)) {
       email = html`
-        <div class="icon" @click=${() => this.emailUser()}>
+        <div class="icon" @click=${() => this.emailUser()} tabindex=0>
           ${getSvg(SvgIcon.SmallEmail)}
           <span>${this.strings.sendEmailLinkSubtitle}</span>
         </div>
@@ -540,7 +540,7 @@ export class MgtPersonCard extends MgtTemplatedComponent {
     let chat: TemplateResult;
     if (userPerson.userPrincipalName) {
       chat = html`
-        <div class="icon" @click=${() => this.chatUser()}>
+        <div class="icon" @click=${() => this.chatUser()} tabindex=0>
           ${getSvg(SvgIcon.SmallChat)}
           <span>${this.strings.startChatLinkSubtitle}</span>
         </div>
@@ -563,7 +563,9 @@ export class MgtPersonCard extends MgtTemplatedComponent {
    */
   protected renderExpandedDetailsButton(): TemplateResult {
     return html`
-      <div class="expanded-details-button" @click=${() => this.showExpandedDetails()}>
+      <div class="expanded-details-button" @click=${() => this.showExpandedDetails()} @keydown=${
+      this.handleKeyDown
+    } @ tabindex=0>
         ${getSvg(SvgIcon.ExpandDown)}
       </div>
     `;
@@ -601,7 +603,7 @@ export class MgtPersonCard extends MgtTemplatedComponent {
       <div class="section-nav">
         ${sectionNavTemplate}
       </div>
-      <div class="section-host" @wheel=${(e: WheelEvent) => this.handleSectionScroll(e)}>
+      <div class="section-host" @wheel=${(e: WheelEvent) => this.handleSectionScroll(e)} tabindex=0>
         ${currentSectionTemplate}
       </div>
     `;
@@ -627,7 +629,8 @@ export class MgtPersonCard extends MgtTemplatedComponent {
         'section-nav__icon': true
       });
       return html`
-        <button class=${classes} @click=${() => this.updateCurrentSection(section)}>${section.renderIcon()}</button>
+        <button tabindex=0 class=${classes} @click=${() =>
+        this.updateCurrentSection(section)}>${section.renderIcon()}</button>
       `;
     });
 
@@ -636,7 +639,7 @@ export class MgtPersonCard extends MgtTemplatedComponent {
       'section-nav__icon': true
     });
     return html`
-      <button class=${overviewClasses} @click=${() => this.updateCurrentSection(null)}>
+      <button tabindex=0 class=${overviewClasses} @click=${() => this.updateCurrentSection(null)}>
         ${getSvg(SvgIcon.Overview)}
       </button>
       ${navIcons}
@@ -656,7 +659,9 @@ export class MgtPersonCard extends MgtTemplatedComponent {
         <div class="section">
           <div class="section__header">
             <div class="section__title">${section.displayName}</div>
-            <a class="section__show-more" @click=${() => this.updateCurrentSection(section)}
+            <a class="section__show-more" tabindex=0 @keydown=${e =>
+              e.keyCode === 13 ? this.updateCurrentSection(section) : ''} @click=${() =>
+        this.updateCurrentSection(section)}
               >${this.strings.showMoreSectionButton}</a
             >
           </div>
@@ -1040,6 +1045,15 @@ export class MgtPersonCard extends MgtTemplatedComponent {
         !(e.deltaY > 0 && target.clientHeight + target.scrollTop >= target.scrollHeight - 1)
       ) {
         e.stopPropagation();
+      }
+    }
+  }
+
+  private handleKeyDown(e: KeyboardEvent) {
+    //enter activates person-card
+    if (e) {
+      if (e.keyCode === 13) {
+        this.showExpandedDetails();
       }
     }
   }

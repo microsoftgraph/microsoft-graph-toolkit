@@ -83,6 +83,8 @@ $person-card-details-item-font-size: var(--person-card-details-item-font-size, 1
         cursor: pointer;
         font-size: 12px;
         white-space: nowrap;
+        margin: -11px -13px;
+        padding: 11px 13px;
 
         &:not(:last-child) {
           margin-right: 20px;
@@ -135,7 +137,7 @@ $person-card-details-item-font-size: var(--person-card-details-item-font-size, 1
       display: flex;
       align-items: center;
       justify-content: center;
-      border-bottom: 2px solid transparent;
+      border: 2px solid transparent;
       margin-bottom: -1px;
       cursor: pointer;
 
@@ -149,10 +151,15 @@ $person-card-details-item-font-size: var(--person-card-details-item-font-size, 1
         background: set-var(tab__background-color--hover, $theme-default, $common);
         border-color: set-var(tab__line__color--hover, $theme-default, $common);
       }
+      &:focus {
+        border-color: black;
+      }
 
       &.active {
-        border-color: $icon--active;
-
+        border-bottom-color: $icon--active;
+        border-left-color: transparent;
+        border-right-color: transparent;
+        border-top-color: transparent;
         svg {
           fill: $icon--active;
         }
