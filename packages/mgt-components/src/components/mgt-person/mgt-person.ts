@@ -1204,7 +1204,7 @@ export class MgtPerson extends MgtTemplatedComponent {
   private handleKeyDown(e: KeyboardEvent) {
     //enter activates person-card
     if (e) {
-      if (e.keyCode === 13) {
+      if (e.key === 'Enter') {
         this.showPersonCard();
       }
     }
