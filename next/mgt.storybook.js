@@ -2233,9 +2233,9 @@ const createAndInsertPart=(e,t)=>{const r=e.startNode.parentNode,o=void 0===t?e.
           <span class="language__title">${r.displayName}</span>
           ${e}
         </div>
-      `)}return html$1`
+      `)}const r=t.length?this.strings.LanguagesSubSectionTitle:"";return html$1`
       <section>
-        <div class="section__title">${this.strings.LanguagesSubSectionTitle}</div>
+        <div class="section__title">${r}</div>
         <div class="section__content">
           <div class="token-list">
             ${t}
@@ -2246,38 +2246,38 @@ const createAndInsertPart=(e,t)=>{const r=e.startNode.parentNode,o=void 0===t?e.
         <div class="token-list__item skill">
           ${r.displayName}
         </div>
-      `);return html$1`
+      `);const r=t.length?this.strings.SkillsSubSectionTitle:"";return html$1`
       <section>
-        <div class="section__title">${this.strings.SkillsSubSectionTitle}</div>
+        <div class="section__title">${r}</div>
         <div class="section__content">
           <div class="token-list">
             ${t}
           </div>
         </div>
       </section>
-    `}renderWorkExperience(){var e,t,r,o,i,n,s,a,l;if(!this._profile||!this._profile.positions)return null;const c=[];for(const d of this._profile.positions)d.detail&&c.push(html$1`
+    `}renderWorkExperience(){var e,t,r,o,i,n,s,a,l;const{positions:c}=this._profile;if(!c||!c.length)return null;const d=[];for(const c of this._profile.positions)(c.detail.description||""!==c.detail.jobTitle)&&d.push(html$1`
           <div class="data-list__item work-position">
             <div class="data-list__item__header">
-              <div class="data-list__item__title">${null===(e=d.detail)||void 0===e?void 0:e.jobTitle}</div>
+              <div class="data-list__item__title">${null===(e=c.detail)||void 0===e?void 0:e.jobTitle}</div>
               <div class="data-list__item__date-range">
-                ${this.getDisplayDateRange(d.detail)}
+                ${this.getDisplayDateRange(c.detail)}
               </div>
             </div>
             <div class="data-list__item__content">
               <div class="work-position__company">
-                ${null===(r=null===(t=null==d?void 0:d.detail)||void 0===t?void 0:t.company)||void 0===r?void 0:r.displayName}
+                ${null===(r=null===(t=null==c?void 0:c.detail)||void 0===t?void 0:t.company)||void 0===r?void 0:r.displayName}
               </div>
               <div class="work-position__location">
-                ${null===(n=null===(i=null===(o=null==d?void 0:d.detail)||void 0===o?void 0:o.company)||void 0===i?void 0:i.address)||void 0===n?void 0:n.city}, ${null===(l=null===(a=null===(s=null==d?void 0:d.detail)||void 0===s?void 0:s.company)||void 0===a?void 0:a.address)||void 0===l?void 0:l.state}
+                ${null===(n=null===(i=null===(o=null==c?void 0:c.detail)||void 0===o?void 0:o.company)||void 0===i?void 0:i.address)||void 0===n?void 0:n.city}, ${null===(l=null===(a=null===(s=null==c?void 0:c.detail)||void 0===s?void 0:s.company)||void 0===a?void 0:a.address)||void 0===l?void 0:l.state}
               </div>
             </div>
           </div>
-        `);return html$1`
+        `);const u=d.length?this.strings.WorkExperienceSubSectionTitle:"";return html$1`
       <section>
-        <div class="section__title">${this.strings.WorkExperienceSubSectionTitle}</div>
+        <div class="section__title">${u}</div>
         <div class="section__content">
           <div class="data-list">
-            ${c}
+            ${d}
           </div>
         </div>
       </section>
@@ -2295,9 +2295,9 @@ const createAndInsertPart=(e,t)=>{const r=e.startNode.parentNode,o=void 0===t?e.
             </div>
           </div>
         </div>
-      `);return html$1`
+      `);const r=t.length?this.strings.EducationSubSectionTitle:"";return html$1`
       <section>
-        <div class="section__title">${this.strings.EducationSubSectionTitle}</div>
+        <div class="section__title">${r}</div>
         <div class="section__content">
           <div class="data-list">
             ${t}
@@ -2308,9 +2308,9 @@ const createAndInsertPart=(e,t)=>{const r=e.startNode.parentNode,o=void 0===t?e.
         <div class="token-list__item interest interest--professional">
           ${t.displayName}
         </div>
-      `);return html$1`
+      `);const t=e.length?this.strings.professionalInterestsSubSectionTitle:"";return html$1`
       <section>
-        <div class="section__title">${this.strings.professionalInterestsSubSectionTitle}</div>
+        <div class="section__title">${t}</div>
         <div class="section__content">
           <div class="token-list">
             ${e}
@@ -2321,9 +2321,9 @@ const createAndInsertPart=(e,t)=>{const r=e.startNode.parentNode,o=void 0===t?e.
         <div class="token-list__item interest interest--personal">
           ${t.displayName}
         </div>
-      `);return html$1`
+      `);const t=e.length?this.strings.personalInterestsSubSectionTitle:"";return html$1`
       <section>
-        <div class="section__title">${this.strings.personalInterestsSubSectionTitle}</div>
+        <div class="section__title">${t}</div>
         <div class="section__content">
           <div class="token-list">
             ${e}
