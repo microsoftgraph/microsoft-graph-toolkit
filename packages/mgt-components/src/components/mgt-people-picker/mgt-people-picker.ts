@@ -623,6 +623,7 @@ export class MgtPeoplePicker extends MgtTemplatedComponent {
        <div
         tabindex="0"
         aria-label="selected-people"
+        aria-orientation="vertical"
         role="listbox"
         class="selected-list__options">${selectedPeople.slice(0, selectedPeople.length).map(
           person =>
