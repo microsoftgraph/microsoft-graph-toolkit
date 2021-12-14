@@ -51,6 +51,8 @@ $presence-color-oof: #b4009e;
 
 :host .root {
   display: block;
+  margin: -11px -13px;
+  padding: 11px 13px;
 }
 
 :host svg,
@@ -267,6 +269,9 @@ mgt-person .person-root {
         margin: auto;
         height: 100%;
         width: auto;
+        &:focus() {
+          outline: none;
+        }
       }
     }
 
