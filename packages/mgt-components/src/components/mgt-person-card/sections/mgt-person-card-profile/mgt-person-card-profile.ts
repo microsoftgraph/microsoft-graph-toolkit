@@ -213,9 +213,11 @@ export class MgtPersonCardProfile extends BasePersonCardSection {
       `);
     }
 
+    const languageTitle = languageItems.length ? this.strings.LanguagesSubSectionTitle : '';
+
     return html`
       <section>
-        <div class="section__title">${this.strings.LanguagesSubSectionTitle}</div>
+        <div class="section__title">${languageTitle}</div>
         <div class="section__content">
           <div class="token-list">
             ${languageItems}
@@ -248,9 +250,11 @@ export class MgtPersonCardProfile extends BasePersonCardSection {
       `);
     }
 
+    const skillsTitle = skillItems.length ? this.strings.SkillsSubSectionTitle : '';
+
     return html`
       <section>
-        <div class="section__title">${this.strings.SkillsSubSectionTitle}</div>
+        <div class="section__title">${skillsTitle}</div>
         <div class="section__content">
           <div class="token-list">
             ${skillItems}
@@ -268,13 +272,15 @@ export class MgtPersonCardProfile extends BasePersonCardSection {
    * @memberof MgtPersonCardProfile
    */
   protected renderWorkExperience(): TemplateResult {
-    if (!this._profile || !this._profile.positions) {
+    const { positions } = this._profile;
+
+    if (!(positions && positions.length)) {
       return null;
     }
 
     const positionItems: TemplateResult[] = [];
     for (const position of this._profile.positions) {
-      if (position.detail) {
+      if (position.detail.description || position.detail.jobTitle !== '') {
         positionItems.push(html`
           <div class="data-list__item work-position">
             <div class="data-list__item__header">
@@ -295,10 +301,11 @@ export class MgtPersonCardProfile extends BasePersonCardSection {
         `);
       }
     }
+    const workExperienceTitle = positionItems.length ? this.strings.WorkExperienceSubSectionTitle : '';
 
     return html`
       <section>
-        <div class="section__title">${this.strings.WorkExperienceSubSectionTitle}</div>
+        <div class="section__title">${workExperienceTitle}</div>
         <div class="section__content">
           <div class="data-list">
             ${positionItems}
@@ -341,9 +348,11 @@ export class MgtPersonCardProfile extends BasePersonCardSection {
       `);
     }
 
+    const educationTitle = positionItems.length ? this.strings.EducationSubSectionTitle : '';
+
     return html`
       <section>
-        <div class="section__title">${this.strings.EducationSubSectionTitle}</div>
+        <div class="section__title">${educationTitle}</div>
         <div class="section__content">
           <div class="data-list">
             ${positionItems}
@@ -374,9 +383,11 @@ export class MgtPersonCardProfile extends BasePersonCardSection {
       `);
     }
 
+    const professionalInterests = interestItems.length ? this.strings.professionalInterestsSubSectionTitle : '';
+
     return html`
       <section>
-        <div class="section__title">${this.strings.professionalInterestsSubSectionTitle}</div>
+        <div class="section__title">${professionalInterests}</div>
         <div class="section__content">
           <div class="token-list">
             ${interestItems}
@@ -407,9 +418,11 @@ export class MgtPersonCardProfile extends BasePersonCardSection {
       `);
     }
 
+    const personalInterests = interestItems.length ? this.strings.personalInterestsSubSectionTitle : '';
+
     return html`
       <section>
-        <div class="section__title">${this.strings.personalInterestsSubSectionTitle}</div>
+        <div class="section__title">${personalInterests}</div>
         <div class="section__content">
           <div class="token-list">
             ${interestItems}
