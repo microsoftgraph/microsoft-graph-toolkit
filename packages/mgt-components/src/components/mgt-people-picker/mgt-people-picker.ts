@@ -521,7 +521,12 @@ export class MgtPeoplePicker extends MgtTemplatedComponent {
 
     return html`
        <div dir=${this.direction} class=${classMap(inputClasses)} @click=${e => this.focus(e)}>
-         <div class="selected-list">
+         <div
+          aria-expanded="false"
+          aria-haspopup="listbox"
+          role="combobox"
+          class="selected-list"
+          id="selected-list">
            ${selectedPeopleTemplate} ${flyoutTemplate}
          </div>
        </div>
@@ -593,10 +598,16 @@ export class MgtPeoplePicker extends MgtTemplatedComponent {
            id="people-picker-input"
            class="search-box__input"
            type="text"
+           role="textbox"
            placeholder=${placeholder}
+           aria-placeholder=${placeholder}
            label="people-picker-input"
+           autocomplete="off"
            aria-label="people-picker-input"
-           role="input"
+           aria-autocomplete="list"
+           aria-controls="suggestions-list"
+           aria-multiline="false"
+           tabindex="0"
            @keydown="${this.onUserKeyDown}"
            @keyup="${this.onUserKeyUp}"
            @blur=${this.lostFocus}
@@ -749,8 +760,21 @@ export class MgtPeoplePicker extends MgtTemplatedComponent {
   protected renderSearchResults(people?: IDynamicPerson[]) {
     people = people || this._foundPeople;
     let filteredPeople = people.filter(person => person.id);
+
+    const selectedList = this.renderRoot.querySelector('.selected-list');
+    if (selectedList && filteredPeople.length > 0) {
+      selectedList.setAttribute('aria-expanded', 'true');
+    }
+    console.log('selectedList ', selectedList);
     return html`
-       <div class="people-list" @mouseenter=${this.handleMouseEnter} @mouseleave=${this.handleMouseLeave}>
+      <div
+        id="suggestions-list"
+        class="people-list"
+        aria-expanded="true"
+        aria-activedescendant="${people.shift()?.displayName}"
+        role="listbox"
+        @mouseenter=${this.handleMouseEnter}
+        @mouseleave=${this.handleMouseLeave}>
          ${repeat(
            filteredPeople,
            person => person.id,
@@ -761,7 +785,11 @@ export class MgtPeoplePicker extends MgtTemplatedComponent {
                'list-person': true
              };
              return html`
-               <li class="${classMap(listPersonClasses)}" @click="${e => this.onPersonClick(person)}">
+               <li
+                role="option"
+                tabindex="0"
+                class="${classMap(listPersonClasses)}"
+                @click="${e => this.onPersonClick(person)}">
                  ${this.renderPersonResult(person)}
                </li>
              `;
@@ -1522,6 +1550,10 @@ export class MgtPeoplePicker extends MgtTemplatedComponent {
       if (focusedItem) {
         focusedItem.classList.add('focused');
         focusedItem.scrollIntoView({ behavior: 'smooth', block: 'nearest', inline: 'start' });
+        const ariaPeopleList = this.renderRoot.querySelector('#suggestions-list');
+        if (ariaPeopleList) {
+          ariaPeopleList.setAttribute('aria-activedescendant', focusedItem.ariaLabel);
+        }
       }
     }
   }
