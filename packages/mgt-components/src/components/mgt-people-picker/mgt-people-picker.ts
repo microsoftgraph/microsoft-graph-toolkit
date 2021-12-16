@@ -760,18 +760,23 @@ export class MgtPeoplePicker extends MgtTemplatedComponent {
   protected renderSearchResults(people?: IDynamicPerson[]) {
     people = people || this._foundPeople;
     let filteredPeople = people.filter(person => person.id);
+    let firstName = '';
 
     const selectedList = this.renderRoot.querySelector('.selected-list');
     if (selectedList && filteredPeople.length > 0) {
       selectedList.setAttribute('aria-expanded', 'true');
+      firstName = filteredPeople[0]?.displayName;
+      const inputElement = this.renderRoot.querySelector('#people-picker-input');
+      if (inputElement && firstName) {
+        inputElement.setAttribute('aria-activedescendant', firstName);
+      }
     }
-    console.log('selectedList ', selectedList);
+
     return html`
       <div
         id="suggestions-list"
         class="people-list"
         aria-expanded="true"
-        aria-activedescendant="${people.shift()?.displayName}"
         role="listbox"
         @mouseenter=${this.handleMouseEnter}
         @mouseleave=${this.handleMouseLeave}>
@@ -1550,9 +1555,11 @@ export class MgtPeoplePicker extends MgtTemplatedComponent {
       if (focusedItem) {
         focusedItem.classList.add('focused');
         focusedItem.scrollIntoView({ behavior: 'smooth', block: 'nearest', inline: 'start' });
-        const ariaPeopleList = this.renderRoot.querySelector('#suggestions-list');
-        if (ariaPeopleList) {
-          ariaPeopleList.setAttribute('aria-activedescendant', focusedItem.ariaLabel);
+        const input = this.renderRoot.querySelector('#people-picker-input');
+        if (input) {
+          // set the currently highlighted option as the active descendant
+          const ariaLabel = focusedItem.getAttribute('aria-label');
+          input.setAttribute('aria-activedescendant', ariaLabel);
         }
       }
     }
