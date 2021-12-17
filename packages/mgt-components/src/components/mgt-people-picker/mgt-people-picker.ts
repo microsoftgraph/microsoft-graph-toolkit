@@ -822,6 +822,7 @@ export class MgtPeoplePicker extends MgtTemplatedComponent {
   protected renderSelectedPerson(person: IDynamicPerson): TemplateResult {
     return html`
        <mgt-person
+       tabindex="-1"
          class="selected-list__person-wrapper__person"
          .personDetails=${person}
          .fetchImage=${true}
