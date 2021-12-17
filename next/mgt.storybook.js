@@ -2037,6 +2037,7 @@ const createAndInsertPart=(e,t)=>{const r=e.startNode.parentNode,o=void 0===t?e.
          </div>
        `}renderSelectedPerson(e){return html$1`
        <mgt-person
+         tabindex="-1"
          class="selected-list__person-wrapper__person"
          .personDetails=${e}
          .fetchImage=${!0}
