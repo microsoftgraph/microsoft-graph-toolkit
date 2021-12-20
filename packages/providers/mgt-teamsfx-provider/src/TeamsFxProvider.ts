@@ -6,62 +6,7 @@
  */
 
 import { IProvider, ProviderState, createFromProvider } from '@microsoft/mgt-element';
-import { loadConfiguration, TeamsUserCredential } from '@microsoft/teamsfx';
-
-/**
- * Interface to define the configuration when creating a TeamsFxConfigProvider
- *
- * @export
- * @interface TeamsFxConfig
- */
-export interface TeamsFxConfig {
-  /**
-   * The app clientId
-   *
-   * @type {string}
-   * @memberof TeamsFxConfig
-   */
-  clientId?: string;
-  /**
-   * Login page for Teams to redirect to.  Default value comes from REACT_APP_START_LOGIN_PAGE_URL environment variable.
-   *
-   * @type {string}
-   * @memberof TeamsFxConfig
-   */
-  initiateLoginEndpoint?: string;
-  /**
-   * Endpoint of auth service provisioned by Teams Framework. Default value comes from REACT_APP_TEAMSFX_ENDPOINT environment variable.
-   *
-   * @type {string}
-   * @memberof TeamsFxConfig
-   */
-  simpleAuthEndpoint?: string;
-  /**
-   * The scopes to use when authenticating the user
-   *
-   * @type {string[]}
-   * @memberof TeamsFxConfig
-   */
-  scopes?: string[];
-  /**
-   * Credentials provided by TeamsFx
-   *
-   * @type {TeamsUserCredential}
-   * @memberof TeamsFxConfig
-   */
-  credential?: TeamsUserCredential;
-}
-
-export declare interface AccessToken {
-  /**
-   * The access token returned by the authentication service.
-   */
-  token: string;
-  /**
-   * The access token's expiration timestamp in milliseconds, UNIX epoch time.
-   */
-  expiresOnTimestamp: number;
-}
+import { TeamsUserCredential } from '@microsoft/teamsfx';
 
 /**
  * TeamsFx Provider handler
@@ -115,25 +60,16 @@ export class TeamsFxProvider extends IProvider {
    */
   private _accessToken: string = '';
 
-  constructor(config: TeamsFxConfig) {
+  constructor(credential: TeamsUserCredential, scopes: string[]) {
     super();
-    this.scopes = config.scopes!;
-    this._credential = config.credential!;
-
-    loadConfiguration({
-      authentication: {
-        clientId: config.clientId ?? process.env.REACT_APP_CLIENT_ID,
-        initiateLoginEndpoint: config.initiateLoginEndpoint ?? process.env.REACT_APP_START_LOGIN_PAGE_URL,
-        simpleAuthEndpoint: config.simpleAuthEndpoint ?? process.env.REACT_APP_TEAMSFX_ENDPOINT
-      }
-    });
 
     if (!this._credential) {
-      this._credential = new TeamsUserCredential();
+      this._credential = credential;
     }
 
+    this.updateScopes(scopes);
+
     this.graph = createFromProvider(this);
-    this.internalLogin();
   }
 
   /**
@@ -143,8 +79,34 @@ export class TeamsFxProvider extends IProvider {
    * @memberof TeamsFxProvider
    */
   public async getAccessToken(): Promise<string> {
-    let accessToken = await this.credential.getToken(this.scopes);
-    return accessToken ? accessToken.token : '';
+    try {
+      const accessToken = await this.credential.getToken(this.scopes);
+      this._accessToken = accessToken ? accessToken.token : '';
+      if (!this._accessToken) {
+        throw new Error('Access token is null');
+      }
+    } catch (error) {
+      this.setState(ProviderState.SignedOut);
+      this._accessToken = '';
+    }
+    return this._accessToken;
+  }
+
+  /**
+   * Performs the login using TeamsFx
+   *
+   * @returns {Promise<void>}
+   * @memberof TeamsFxProvider
+   */
+  public async login(): Promise<void> {
+    const token: string = await this.getAccessToken();
+
+    if (!token) {
+      await this.credential.login(this.scopes);
+    }
+
+    this._accessToken = token ?? (await this.getAccessToken());
+    this.setState(this._accessToken ? ProviderState.SignedIn : ProviderState.SignedOut);
   }
 
   /**
@@ -154,29 +116,10 @@ export class TeamsFxProvider extends IProvider {
    * @memberof TeamsFxProvider
    */
   public updateScopes(scopes: string[]) {
-    this.scopes = scopes;
-  }
-
-  /**
-   * Performs the internal login using TeamsFx
-   *
-   * @returns {Promise<void>}
-   * @memberof TeamsFxProvider
-   */
-  private async internalLogin(): Promise<void> {
-    let token: string = '';
-
-    try {
-      token = await this.getAccessToken();
-    } catch (error) {
-      console.error("Can't get the access token");
+    if (!scopes || scopes.length === 0) {
+      this.scopes = ['.default'];
+    } else {
+      this.scopes = scopes;
     }
-
-    if (!token) {
-      await this.credential.login(this.scopes);
-    }
-
-    this._accessToken = token ?? (await this.getAccessToken());
-    this.setState(this._accessToken ? ProviderState.SignedIn : ProviderState.SignedOut);
   }
 }

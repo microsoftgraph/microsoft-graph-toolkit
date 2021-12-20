@@ -11,7 +11,7 @@ The `@microsoft/mgt-teamsfx-provider` package exposes the `TeamsFxProvider` clas
 1. Install the packages
 
     ```bash
-    npm install @microsoft/mgt-element @microsoft/mgt-teamsfx-provider
+    npm install @microsoft/mgt-element @microsoft/mgt-teamsfx-provider @microsoft/teamsfx
     ```
 
 2. Initialize the provider in code with `TeamsFxConfig`
@@ -19,14 +19,12 @@ The `@microsoft/mgt-teamsfx-provider` package exposes the `TeamsFxProvider` clas
     ```ts
     import {Providers, LoginType} from '@microsoft/mgt-element';
     import {TeamsFxProvider} from '@microsoft/mgt-teamsfx-provider';
+    import {TeamsUserCredential} from "@microsoft/teamsfx";
 
-    // initialize the auth provider globally
-    Providers.globalProvider = new TeamsFxProvider({
-      scopes: [
-        "User.Read",
-        "User.ReadBasic.All"
-      ]
-    });
+    const scope = ["User.Read"];
+    const credential = new TeamsUserCredential();
+    const provider = new TeamsFxProvider(credential, scope)
+    Providers.globalProvider = provider;
    ```
 
 See [provider usage documentation](https://docs.microsoft.com/graph/toolkit/providers) to learn about how to use the providers with the mgt components, to sign in/sign out, get access tokens, call Microsoft Graph, and more.
