@@ -67,7 +67,11 @@ export class TeamsFxProvider extends IProvider {
       this._credential = credential;
     }
 
-    this.updateScopes(scopes);
+    if (!scopes || scopes.length === 0) {
+      this.scopes = ['.default'];
+    } else {
+      this.scopes = scopes;
+    }
 
     this.graph = createFromProvider(this);
   }
@@ -107,19 +111,5 @@ export class TeamsFxProvider extends IProvider {
 
     this._accessToken = token ?? (await this.getAccessToken());
     this.setState(this._accessToken ? ProviderState.SignedIn : ProviderState.SignedOut);
-  }
-
-  /**
-   * Update scopes
-   *
-   * @param {string[]} scopes
-   * @memberof TeamsFxProvider
-   */
-  public updateScopes(scopes: string[]) {
-    if (!scopes || scopes.length === 0) {
-      this.scopes = ['.default'];
-    } else {
-      this.scopes = scopes;
-    }
   }
 }
