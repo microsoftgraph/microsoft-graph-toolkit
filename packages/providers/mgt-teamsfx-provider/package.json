@@ -39,9 +39,11 @@
     "lint": "tslint -c ../../../tslint.json 'src/**/*.ts'",
     "postpack": "cpx *.tgz ../../../artifacts"
   },
+  "peerDependencies": {
+    "@microsoft/teamsfx": "^0.4.0"
+  },
   "dependencies": {
-    "@microsoft/mgt-element": "*",
-    "@microsoft/teamsfx": "^0.2.1"
+    "@microsoft/mgt-element": "*"
   },
   "publishConfig": {
     "directory": "dist"
