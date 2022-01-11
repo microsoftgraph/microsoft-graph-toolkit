@@ -598,7 +598,7 @@ export class MgtPeoplePicker extends MgtTemplatedComponent {
            id="people-picker-input"
            class="search-box__input"
            type="text"
-           role="textbox"
+           role="combobox"
            placeholder=${placeholder}
            aria-placeholder=${placeholder}
            label="people-picker-input"
@@ -607,6 +607,8 @@ export class MgtPeoplePicker extends MgtTemplatedComponent {
            aria-autocomplete="list"
            aria-controls="suggestions-list"
            aria-multiline="false"
+           aria-owns="suggestions-list"
+           aria-activedescendant="suggestions-list"
            tabindex="0"
            @keydown="${this.onUserKeyDown}"
            @keyup="${this.onUserKeyUp}"
@@ -774,13 +776,9 @@ export class MgtPeoplePicker extends MgtTemplatedComponent {
     let firstName = '';
 
     const selectedList = this.renderRoot.querySelector('.selected-list');
-    if (selectedList && filteredPeople.length > 0) {
-      selectedList.setAttribute('aria-expanded', 'true');
-      firstName = filteredPeople[0]?.displayName;
-      const inputElement = this.renderRoot.querySelector('#people-picker-input');
-      if (inputElement && firstName) {
-        inputElement.setAttribute('aria-activedescendant', firstName);
-      }
+    let names = '';
+    for (let i = 0; i < filteredPeople.length; i++) {
+      names += filteredPeople[i].displayName.toString() + ' ';
     }
 
     return html`
@@ -788,7 +786,10 @@ export class MgtPeoplePicker extends MgtTemplatedComponent {
         id="suggestions-list"
         class="people-list"
         aria-expanded="true"
-        role="listbox"
+        role="list"
+        aria-label="people-picker-input input text ${
+          this.userInput.length === 0 ? 'start typing a name' : this.userInput
+        } suggested contacts ${names}"
         @mouseenter=${this.handleMouseEnter}
         @mouseleave=${this.handleMouseLeave}>
          ${repeat(
@@ -803,6 +804,8 @@ export class MgtPeoplePicker extends MgtTemplatedComponent {
              return html`
                <li
                 role="option"
+                aria-label=" suggested contact ${person.displayName}"
+                id="${person.displayName}"
                 tabindex="0"
                 class="${classMap(listPersonClasses)}"
                 @click="${e => this.onPersonClick(person)}">
@@ -1567,12 +1570,6 @@ export class MgtPeoplePicker extends MgtTemplatedComponent {
       if (focusedItem) {
         focusedItem.classList.add('focused');
         focusedItem.scrollIntoView({ behavior: 'smooth', block: 'nearest', inline: 'start' });
-        const input = this.renderRoot.querySelector('#people-picker-input');
-        if (input) {
-          // set the currently highlighted option as the active descendant
-          const ariaLabel = focusedItem.getAttribute('aria-label');
-          input.setAttribute('aria-activedescendant', ariaLabel);
-        }
       }
     }
   }
