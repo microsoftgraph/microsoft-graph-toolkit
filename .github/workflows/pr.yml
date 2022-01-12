@@ -25,7 +25,6 @@ jobs:
       - run: yarn
       - run: node scripts/setVersion.js --next
       - run: yarn build
-      - run: yarn storybook:build
       - run: yarn run pack
 
       - name: Upload a Build Artifact - package
@@ -40,9 +39,34 @@ jobs:
           name: bundle
           path: packages/mgt/dist/bundle
 
-      - name: Deploy mgt.dev/${{ github.event.number }} 🚀
-        uses: JamesIves/github-pages-deploy-action@4.1.1
+  storybook:
+    runs-on: ubuntu-latest
+
+    strategy:
+      matrix:
+        node-version: [12.x]
+
+    environment:
+      name: storybook
+
+    steps:
+      - uses: actions/checkout@v2
+      - name: Use Node.js ${{ matrix.node-version }}
+        uses: actions/setup-node@v1
+        with:
+          node-version: ${{ matrix.node-version }}
+          registry-url: 'https://registry.npmjs.org'
+
+      - name: Build 🛠
+        run: |
+          npm install -g yarn lerna
+          yarn
+          yarn build
+          yarn storybook:build
+
+      - name: Deploy mgt.dev/next/${{ github.event.number }} 🚀
+        uses: JamesIves/github-pages-deploy-action@4.2.2
         with:
           branch: gh-pages
           folder: storybook-static
-          target-folder: ${{ github.event.number }}
+          target-folder: next/pr/${{ github.event.number }}
