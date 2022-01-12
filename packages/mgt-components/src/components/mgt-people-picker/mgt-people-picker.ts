@@ -392,6 +392,7 @@ export class MgtPeoplePicker extends MgtTemplatedComponent {
   private _type: PersonType = PersonType.person;
   private _groupType: GroupType = GroupType.any;
   private _userType: UserType = UserType.any;
+  private _currentSelectedUser: IDynamicPerson;
 
   private defaultPeople: IDynamicPerson[];
 
@@ -592,6 +593,10 @@ export class MgtPeoplePicker extends MgtTemplatedComponent {
       return null;
     }
 
+    const inputAriaLabelText = `${
+      this._currentSelectedUser !== undefined ? 'selected ' + this._currentSelectedUser.displayName + ' ' : ''
+    } ' people-picker-input'`;
+
     return html`
        <div class="${classMap(inputClasses)}">
          <input
@@ -603,7 +608,7 @@ export class MgtPeoplePicker extends MgtTemplatedComponent {
            aria-placeholder=${placeholder}
            label="people-picker-input"
            autocomplete="off"
-           aria-label="people-picker-input"
+           aria-label=${inputAriaLabelText}
            aria-autocomplete="list"
            aria-controls="suggestions-list"
            aria-multiline="false"
@@ -1242,6 +1247,7 @@ export class MgtPeoplePicker extends MgtTemplatedComponent {
   }
 
   private onPersonClick(person: IDynamicPerson): void {
+    this._currentSelectedUser = person;
     this.addPerson(person);
     this.hideFlyout();
 
