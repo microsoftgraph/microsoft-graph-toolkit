@@ -25,6 +25,7 @@ jobs:
       - run: yarn
       - run: node scripts/setVersion.js --next
       - run: yarn build
+      - run: yarn storybook:build
       - run: yarn run pack
 
       - name: Upload a Build Artifact - package
