@@ -521,7 +521,12 @@ export class MgtPeoplePicker extends MgtTemplatedComponent {
 
     return html`
        <div dir=${this.direction} class=${classMap(inputClasses)} @click=${e => this.focus(e)}>
-         <div class="selected-list">
+         <div
+          aria-expanded="false"
+          aria-haspopup="listbox"
+          role="combobox"
+          class="selected-list"
+          id="selected-list">
            ${selectedPeopleTemplate} ${flyoutTemplate}
          </div>
        </div>
@@ -593,10 +598,18 @@ export class MgtPeoplePicker extends MgtTemplatedComponent {
            id="people-picker-input"
            class="search-box__input"
            type="text"
+           role="combobox"
            placeholder=${placeholder}
+           aria-placeholder=${placeholder}
            label="people-picker-input"
+           autocomplete="off"
            aria-label="people-picker-input"
-           role="input"
+           aria-autocomplete="list"
+           aria-controls="suggestions-list"
+           aria-multiline="false"
+           aria-owns="suggestions-list"
+           aria-activedescendant="suggestions-list"
+           tabindex="0"
            @keydown="${this.onUserKeyDown}"
            @keyup="${this.onUserKeyUp}"
            @blur=${this.lostFocus}
@@ -760,8 +773,25 @@ export class MgtPeoplePicker extends MgtTemplatedComponent {
   protected renderSearchResults(people?: IDynamicPerson[]) {
     people = people || this._foundPeople;
     let filteredPeople = people.filter(person => person.id);
+    let firstName = '';
+
+    const selectedList = this.renderRoot.querySelector('.selected-list');
+    let names = '';
+    for (let i = 0; i < filteredPeople.length; i++) {
+      names += filteredPeople[i].displayName.toString() + ' ';
+    }
+
     return html`
-       <div class="people-list" @mouseenter=${this.handleMouseEnter} @mouseleave=${this.handleMouseLeave}>
+      <div
+        id="suggestions-list"
+        class="people-list"
+        aria-expanded="true"
+        role="list"
+        aria-label="people-picker-input input text ${
+          this.userInput.length === 0 ? 'start typing a name' : this.userInput
+        } suggested contacts ${names}"
+        @mouseenter=${this.handleMouseEnter}
+        @mouseleave=${this.handleMouseLeave}>
          ${repeat(
            filteredPeople,
            person => person.id,
@@ -772,7 +802,13 @@ export class MgtPeoplePicker extends MgtTemplatedComponent {
                'list-person': true
              };
              return html`
-               <li class="${classMap(listPersonClasses)}" @click="${e => this.onPersonClick(person)}">
+               <li
+                role="option"
+                aria-label=" suggested contact ${person.displayName}"
+                id="${person.displayName}"
+                tabindex="0"
+                class="${classMap(listPersonClasses)}"
+                @click="${e => this.onPersonClick(person)}">
                  ${this.renderPersonResult(person)}
                </li>
              `;
