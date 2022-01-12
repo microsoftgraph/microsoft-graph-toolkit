@@ -32,7 +32,7 @@ jobs:
           yarn storybook:build
 
       - name: Deploy mgt.dev/next 🚀
-        uses: JamesIves/github-pages-deploy-action@4.2.2
+        uses: JamesIves/github-pages-deploy-action@4.1.1
         with:
           branch: gh-pages
           folder: storybook-static
