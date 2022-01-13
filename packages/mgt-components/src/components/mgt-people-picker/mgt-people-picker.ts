@@ -620,10 +620,19 @@ export class MgtPeoplePicker extends MgtTemplatedComponent {
       return null;
     }
     return html`
-       ${selectedPeople.slice(0, selectedPeople.length).map(
-         person =>
-           html`
-             <div class="selected-list__person-wrapper">
+       <div
+        tabindex="0"
+        aria-label="selected-people"
+        aria-orientation="vertical"
+        role="listbox"
+        class="selected-list__options">${selectedPeople.slice(0, selectedPeople.length).map(
+          person =>
+            html`
+             <div
+             role="option"
+             tabindex="0"
+             aria-label=${person.displayName}
+             class="selected-list__person-wrapper">
                ${
                  this.renderTemplate(
                    'selected-person',
@@ -635,6 +644,8 @@ export class MgtPeoplePicker extends MgtTemplatedComponent {
                <div class="selected-list__person-wrapper__overflow">
                  <div class="selected-list__person-wrapper__overflow__gradient"></div>
                  <div
+                   tabindex="0"
+                   aria-label="close-icon"
                    class="selected-list__person-wrapper__overflow__close-icon"
                    @click="${e => this.removePerson(person, e)}"
                  >
@@ -643,7 +654,7 @@ export class MgtPeoplePicker extends MgtTemplatedComponent {
                </div>
              </div>
            `
-       )}
+        )}</div>
      `;
   }
   /**
@@ -811,6 +822,7 @@ export class MgtPeoplePicker extends MgtTemplatedComponent {
   protected renderSelectedPerson(person: IDynamicPerson): TemplateResult {
     return html`
        <mgt-person
+         tabindex="-1"
          class="selected-list__person-wrapper__person"
          .personDetails=${person}
          .fetchImage=${true}

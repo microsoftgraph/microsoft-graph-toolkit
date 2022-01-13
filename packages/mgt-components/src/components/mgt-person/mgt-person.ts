@@ -580,6 +580,8 @@ export class MgtPerson extends MgtTemplatedComponent {
         @click=${this.handleMouseClick}
         @mouseenter=${this.handleMouseEnter}
         @mouseleave=${this.handleMouseLeave}
+        @keydown=${this.handleKeyDown}
+        tabindex=0
       >
         ${personTemplate}
       </div>
@@ -653,7 +655,8 @@ export class MgtPerson extends MgtTemplatedComponent {
     if (imageSrc && !this._isInvalidImageSrc && this._avatarType === 'photo') {
       return html`
         <div class="img-wrapper">
-          <img alt=${title} src=${imageSrc} @error=${() => (this._isInvalidImageSrc = true)} />
+          <img alt=${personDetailsInternal.displayName} src=${imageSrc} @error=${() =>
+        (this._isInvalidImageSrc = true)} />
         </div>
       `;
     } else if (personDetailsInternal) {
@@ -1198,6 +1201,15 @@ export class MgtPerson extends MgtTemplatedComponent {
     }
   }
 
+  private handleKeyDown(e: KeyboardEvent) {
+    //enter activates person-card
+    if (e) {
+      if (e.key === 'Enter') {
+        this.showPersonCard();
+      }
+    }
+  }
+
   private handleMouseEnter(e: MouseEvent) {
     clearTimeout(this._mouseEnterTimeout);
     clearTimeout(this._mouseLeaveTimeout);
@@ -1218,7 +1230,6 @@ export class MgtPerson extends MgtTemplatedComponent {
     if (flyout) {
       flyout.close();
     }
-
     const personCard = (this.querySelector('mgt-person-card') ||
       this.renderRoot.querySelector('mgt-person-card')) as MgtPersonCard;
     if (personCard) {

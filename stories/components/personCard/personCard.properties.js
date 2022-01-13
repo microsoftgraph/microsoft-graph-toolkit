@@ -21,8 +21,10 @@ export const setCardDetails = () => html`
 
     personCard.personDetails = {
       displayName: 'Megan Bowen',
-      title: 'CEO',
-      mail: 'megan@contoso.com'
+      jobTitle: 'CEO',
+      mail: 'megan@contoso.com',
+      businessPhones: ['423-555-0120'],
+      mobilePhone: '424-555-0130',
     };
 
     // set image
