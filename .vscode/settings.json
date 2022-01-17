@@ -3,13 +3,5 @@
   "editor.defaultFormatter": "esbenp.prettier-vscode",
   "editor.codeActionsOnSave": {
     "source.fixAll.tslint": true
-  },
-  "cSpell.words": ["Templated", "flyout", "semibold", "xmlns"],
-  "tslint.configFile": "./tslint.json",
-  "markdownlint.config": {
-    "MD028": false,
-    "MD025": {
-      "front_matter_title": ""
-    }
   }
 }
