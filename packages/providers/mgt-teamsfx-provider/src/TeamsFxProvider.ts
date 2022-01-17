@@ -50,7 +50,7 @@ export class TeamsFxProvider extends IProvider {
    * @type {TeamsUserCredential}
    * @memberof TeamsFxProvider
    */
-  private _credential: TeamsUserCredential;
+  private readonly _credential: TeamsUserCredential;
 
   /**
    * Access token provided by TeamsFx
