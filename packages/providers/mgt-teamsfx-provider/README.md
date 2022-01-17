@@ -23,13 +23,13 @@ The `@microsoft/mgt-teamsfx-provider` package exposes the `TeamsFxProvider` clas
 
     const scope = ["User.Read"];
     const credential = new TeamsUserCredential();
-    const provider = new TeamsFxProvider(credential, scope)
+    const provider = new TeamsFxProvider(credential, scope);
     Providers.globalProvider = provider;
    ```
 
 See [provider usage documentation](https://docs.microsoft.com/graph/toolkit/providers) to learn about how to use the providers with the mgt components, to sign in/sign out, get access tokens, call Microsoft Graph, and more.
 
-## Sea also
+## See also
 * [Microsoft Graph Toolkit docs](https://aka.ms/mgt-docs)
 * [Microsoft Graph Toolkit repository](https://aka.ms/mgt)
 * [Microsoft Graph Toolkit playground](https://mgt.dev)
