@@ -549,7 +549,7 @@ export class MgtPerson extends MgtTemplatedComponent {
     if (!person && !image) {
       return this.renderNoData();
     }
-    if (!person.personImage && image) {
+    if (!(person && person.personImage) && image) {
       person.personImage = image;
     }
 
