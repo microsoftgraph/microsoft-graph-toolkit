@@ -1154,7 +1154,7 @@ export class MgtPerson extends MgtTemplatedComponent {
       return this._fetchedImage;
     }
 
-    const person = this.personDetailsInternal;
+    const person = this.personDetailsInternal || this.personDetails;
     return person && person.personImage ? person.personImage : null;
   }
 
