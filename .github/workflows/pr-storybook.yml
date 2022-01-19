@@ -10,7 +10,7 @@ on:
 
 jobs:
   storybook:
-    if: "contains(github.event.pull_request.labels.*.name, 'Build: Storybook')"
+    if: "contains(github.event.pull_request.labels.*.name,'Build: Storybook')"
     runs-on: ubuntu-latest
 
     strategy:
