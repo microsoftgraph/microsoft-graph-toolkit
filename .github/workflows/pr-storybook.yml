@@ -38,7 +38,7 @@ jobs:
           branch: gh-pages
           folder: storybook-static
           target-folder: next/pr/${{ github.event.number }}
-          token: ${{ secrets.GITHUB_TOKEN }}
+          token: ${{ secrets.ACCESS_TOKEN }}
 
       - name: Comment PR
         uses: thollander/actions-comment-pull-request@v1
