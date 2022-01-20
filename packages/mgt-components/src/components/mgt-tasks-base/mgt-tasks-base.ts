@@ -244,10 +244,24 @@ export abstract class MgtTasksBase extends MgtTemplatedComponent {
     });
     const taskAddTemplate = !this._isNewTaskBeingAdded
       ? html`
-          <div class="TaskIcon TaskCancel" @click="${() => this.hideNewTaskPanel()}">
+          <div
+            role='button'
+            tabindex='0'
+            class="TaskIcon TaskCancel"
+            @click="${() => this.hideNewTaskPanel()}"
+            @keypress="${(e: KeyboardEvent) => {
+              if (e.key === 'Enter' || e.key === ' ') this.hideNewTaskPanel();
+            }}">
             <span>${this.strings.cancelNewTaskSubtitle}</span>
           </div>
-          <div class="TaskIcon TaskAdd" @click="${() => this.addTask()}">
+          <div
+            tabindex='0'
+            class="TaskIcon TaskAdd"
+            @click="${() => this.addTask()}"
+            @keypress="${(e: KeyboardEvent) => {
+              if (e.key === 'Enter' || e.key === ' ') this.addTask();
+            }}"
+          >
             <span></span>
           </div>
         `

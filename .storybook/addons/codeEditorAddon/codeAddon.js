@@ -7,7 +7,7 @@ const mgtScriptName = './mgt.storybook.js';
 const setupEditorResize = (first, separator, last, dragComplete) => {
   var md; // remember mouse down info
 
-  separator.addEventListener('mousedown', (e) => {
+  separator.addEventListener('mousedown', e => {
     md = {
       e,
       offsetLeft: separator.offsetLeft,
@@ -37,7 +37,7 @@ const setupEditorResize = (first, separator, last, dragComplete) => {
     document.removeEventListener('mouseup', onMouseUp);
   };
 
-  const onMouseMove = (e) => {
+  const onMouseMove = e => {
     var delta = { x: e.clientX - md.e.x, y: e.clientY - md.e.y };
 
     if (window.innerWidth > 800) {
@@ -55,7 +55,7 @@ const setupEditorResize = (first, separator, last, dragComplete) => {
       first.style.height = md.firstHeight + delta.y - 0.5 + 'px';
       last.style.height = md.lastHeight - delta.y - 0.5 + 'px';
     }
-  }
+  };
 };
 
 let scriptRegex = /<script\b[^>]*>([\s\S]*?)<\/script>/gm;
@@ -97,7 +97,25 @@ export const withCodeEditor = makeDecorator({
       css: styleCode
     };
 
-    editor.addEventListener('fileUpdated', () => {
+    const loadEditorContent = () => {
+      const token = window.parent.location.hash.replace('#', '');
+      console.log(token);
+
+      let providerInitCode = `
+        import {Providers, MockProvider} from "${mgtScriptName}";
+        Providers.globalProvider = new MockProvider(true);
+      `;
+
+      if (token) {
+        providerInitCode = `
+          import {Providers, SimpleProvider, ProviderState} from "${mgtScriptName}";
+          Providers.globalProvider = new SimpleProvider(async () => {
+            return '${token}';
+          });
+          Providers.globalProvider.setState(ProviderState.SignedIn);
+        `;
+      }
+
       const storyElement = document.createElement('iframe');
 
       storyElement.addEventListener('load', () => {
@@ -114,8 +132,7 @@ export const withCodeEditor = makeDecorator({
             <head>
               <script type="module" src="${mgtScriptName}"></script>
               <script type="module">
-                import {Providers, MockProvider} from "${mgtScriptName}";
-                Providers.globalProvider = new MockProvider(true);
+                ${providerInitCode}
               </script>
               <style>
                 html, body {
@@ -139,9 +156,14 @@ export const withCodeEditor = makeDecorator({
       });
 
       storyElement.className = 'story-mgt-preview';
+      storyElement.title = 'story-mgt-preview';
       storyElementWrapper.innerHTML = '';
       storyElementWrapper.appendChild(storyElement);
-    });
+    };
+
+    window.parent.addEventListener('hashchange', loadEditorContent);
+
+    editor.addEventListener('fileUpdated', loadEditorContent);
 
     const separator = document.createElement('div');
 

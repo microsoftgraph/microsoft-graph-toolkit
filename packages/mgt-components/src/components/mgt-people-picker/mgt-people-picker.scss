@@ -53,6 +53,10 @@ mgt-people-picker .root {
     font-weight: normal;
     overflow: hidden;
 
+    &__options {
+      display: contents;
+    }
+
     &__person-wrapper {
       display: flex;
       margin: 0 5px 6px 0;
