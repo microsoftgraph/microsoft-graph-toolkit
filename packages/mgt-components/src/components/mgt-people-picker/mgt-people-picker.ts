@@ -754,7 +754,7 @@ export class MgtPeoplePicker extends MgtTemplatedComponent {
       this.renderTemplate('no-data', null) ||
       html`
          <div class="message-parent">
-           <div label="search-error-text" aria-label="We didn't find any matches." class="search-error-text">
+           <div label="search-error-text" aria-label=${this.strings.noResultsFound} class="search-error-text">
              ${this.strings.noResultsFound}
            </div>
          </div>
@@ -788,8 +788,8 @@ export class MgtPeoplePicker extends MgtTemplatedComponent {
         aria-expanded="true"
         role="list"
         aria-label="people-picker-input input text ${
-          this.userInput.length === 0 ? 'start typing a name' : this.userInput
-        } suggested contacts ${names}"
+          this.userInput.length === 0 ? this.strings.inputPlaceholderText : this.userInput
+        } ${this.strings.suggestedContacts} ${names}"
         @mouseenter=${this.handleMouseEnter}
         @mouseleave=${this.handleMouseLeave}>
          ${repeat(
@@ -804,7 +804,7 @@ export class MgtPeoplePicker extends MgtTemplatedComponent {
              return html`
                <li
                 role="option"
-                aria-label=" suggested contact ${person.displayName}"
+                aria-label=" ${this.strings.suggestedContact} ${person.displayName}"
                 id="${person.displayName}"
                 tabindex="0"
                 class="${classMap(listPersonClasses)}"
