@@ -594,7 +594,9 @@ export class MgtPeoplePicker extends MgtTemplatedComponent {
     }
 
     const inputAriaLabelText = `${
-      this._currentSelectedUser !== undefined ? 'selected ' + this._currentSelectedUser.displayName + ' ' : ''
+      this._currentSelectedUser !== undefined
+        ? this.strings.selected + ' ' + this._currentSelectedUser.displayName + ' '
+        : ''
     } ' people-picker-input'`;
 
     return html`
@@ -793,8 +795,8 @@ export class MgtPeoplePicker extends MgtTemplatedComponent {
         aria-expanded="true"
         role="list"
         aria-label="people-picker-input input text ${
-          this.userInput.length === 0 ? 'start typing a name' : this.userInput
-        } suggested contacts ${names}"
+          this.userInput.length === 0 ? this.strings.inputPlaceholderText : this.userInput
+        } ${this.strings.suggestedContacts} ${names}"
         @mouseenter=${this.handleMouseEnter}
         @mouseleave=${this.handleMouseLeave}>
          ${repeat(
@@ -809,7 +811,7 @@ export class MgtPeoplePicker extends MgtTemplatedComponent {
              return html`
                <li
                 role="option"
-                aria-label=" suggested contact ${person.displayName}"
+                aria-label=" ${this.strings.suggestedContact} ${person.displayName}"
                 id="${person.displayName}"
                 tabindex="0"
                 class="${classMap(listPersonClasses)}"
