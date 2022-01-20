@@ -549,6 +549,9 @@ export class MgtPerson extends MgtTemplatedComponent {
     if (!person && !image) {
       return this.renderNoData();
     }
+    if (!(person && person.personImage) && image) {
+      person.personImage = image;
+    }
 
     // Default template
     let personTemplate = this.renderTemplate('default', { person, personImage: image, personPresence: presence });
@@ -1154,7 +1157,7 @@ export class MgtPerson extends MgtTemplatedComponent {
       return this._fetchedImage;
     }
 
-    const person = this.personDetailsInternal;
+    const person = this.personDetailsInternal || this.personDetails;
     return person && person.personImage ? person.personImage : null;
   }
 
