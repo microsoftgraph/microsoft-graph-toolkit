@@ -46,9 +46,9 @@ export async function getUserWithPhoto(
   if (getIsUsersCacheEnabled()) {
     const cache = CacheService.getCache<CacheUser>(schemas.users, schemas.users.stores.users);
     cachedUser = await cache.getValue(userId || 'me');
-    if (cachedUser && getUserInvalidationTime() > Date.now() - cachedUser.timeCached) {
+    if (cachedUser !== undefined && getUserInvalidationTime() > Date.now() - cachedUser.timeCached) {
       user = cachedUser.user ? JSON.parse(cachedUser.user) : null;
-      if (requestedProps) {
+      if (user !== null && requestedProps) {
         const uniqueProps = requestedProps.filter(prop => !Object.keys(user).includes(prop));
         if (uniqueProps.length >= 1) {
           user = null;
@@ -61,7 +61,7 @@ export async function getUserWithPhoto(
   }
   if (getIsPhotosCacheEnabled()) {
     cachedPhoto = await getPhotoFromCache(userId || 'me', schemas.photos.stores.users);
-    if (cachedPhoto && getPhotoInvalidationTime() > Date.now() - cachedPhoto.timeCached) {
+    if (cachedPhoto !== undefined && getPhotoInvalidationTime() > Date.now() - cachedPhoto.timeCached) {
       photo = cachedPhoto.photo;
     } else if (cachedPhoto) {
       try {
@@ -119,28 +119,35 @@ export async function getUserWithPhoto(
       storePhotoInCache(userId || 'me', schemas.photos.stores.users, { eTag, photo: photo });
     }
   } else if (!cachedPhoto) {
-    // if only photo or user is not cached, get it individually
-    const response = await getPhotoForResource(graph, resource, scopes);
-    if (response) {
-      if (getIsPhotosCacheEnabled()) {
-        storePhotoInCache(userId || 'me', schemas.photos.stores.users, { eTag: response.eTag, photo: response.photo });
+    try {
+      // if only photo or user is not cached, get it individually
+      const response = await getPhotoForResource(graph, resource, scopes);
+      if (response) {
+        if (getIsPhotosCacheEnabled()) {
+          storePhotoInCache(userId || 'me', schemas.photos.stores.users, {
+            eTag: response.eTag,
+            photo: response.photo
+          });
+        }
+        photo = response.photo;
       }
-      photo = response.photo;
-    }
+    } catch (_) {}
   } else if (!cachedUser) {
     // get user from graph
-    const response = await graph
-      .api(fullResource)
-      .middlewareOptions(prepScopes(...scopes))
-      .get();
+    try {
+      const response = await graph
+        .api(fullResource)
+        .middlewareOptions(prepScopes(...scopes))
+        .get();
 
-    if (response) {
-      if (getIsUsersCacheEnabled()) {
-        const cache = CacheService.getCache<CacheUser>(schemas.users, schemas.users.stores.users);
-        cache.putValue(userId || 'me', { user: JSON.stringify(response) });
+      if (response) {
+        if (getIsUsersCacheEnabled()) {
+          const cache = CacheService.getCache<CacheUser>(schemas.users, schemas.users.stores.users);
+          cache.putValue(userId || 'me', { user: JSON.stringify(response) });
+        }
+        user = response;
       }
-      user = response;
-    }
+    } catch (_) {}
   }
 
   if (user) {
