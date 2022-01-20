@@ -105,7 +105,8 @@ export async function findPeople(
   graph: IGraph,
   query: string,
   top: number = 10,
-  userType: UserType = UserType.any
+  userType: UserType = UserType.any,
+  peopleFilters: string = ''
 ): Promise<Person[]> {
   const scopes = 'people.read';
 
@@ -128,6 +129,11 @@ export async function findPeople(
     } else {
       filter += "and (personType/subclass eq 'ImplicitContact' or personType/subclass eq 'PersonalContact')";
     }
+  }
+
+  if (peopleFilters !== '') {
+    // Adding the default people filters to the search filters
+    filter = `${filter} and ${peopleFilters}`;
   }
 
   let graphResult;

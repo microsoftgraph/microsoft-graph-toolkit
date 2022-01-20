@@ -346,20 +346,20 @@ export async function findUsers(
     }
   }
 
-  let graphResult;
-
   let encodedQuery = `${query.replace(/#/g, '%2523')}`;
-  graphResult = await graph
+  let graphBuilder = graph
     .api('users')
     .header('ConsistencyLevel', 'eventual')
     .count(true)
     .search(`"displayName:${encodedQuery}" OR "mail:${encodedQuery}"`);
+  let graphResult;
 
   if (userFilters !== '') {
-    graphResult.filter(userFilters);
+    graphBuilder.filter(userFilters);
+    console.log(graphBuilder);
   }
   try {
-    graphResult.top(top).middlewareOptions(prepScopes(scopes)).get();
+    graphResult = await graphBuilder.top(top).middlewareOptions(prepScopes(scopes)).get();
   } catch {}
 
   if (getIsUsersCacheEnabled() && graphResult) {

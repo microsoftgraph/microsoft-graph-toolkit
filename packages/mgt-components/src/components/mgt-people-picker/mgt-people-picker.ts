@@ -975,13 +975,16 @@ export class MgtPeoplePicker extends MgtTemplatedComponent {
               if (this.userIds && this.userIds.length) {
                 people = await getUsersForUserIds(graph, this.userIds, input, this._userFilters);
               } else {
-                people = (await findPeople(graph, input, this.showMax, this.userType)) || [];
+                people = (await findPeople(graph, input, this.showMax, this.userType, this._peopleFilters)) || [];
               }
             } catch (e) {
               // nop
             }
 
-            if (people.length < this.showMax && this.userType !== UserType.contact) {
+            // Don't follow this path if a people-filters attribute is set on the component as the
+            // default type === PersonType.person
+            if (people.length < this.showMax && this.userType !== UserType.contact && this.type !== PersonType.person) {
+              console.log('Interesting things are happening');
               try {
                 const users = (await findUsers(graph, input, this.showMax, this._userFilters)) || [];
 
@@ -997,6 +1000,7 @@ export class MgtPeoplePicker extends MgtTemplatedComponent {
               }
             }
           }
+
           if ((this.type === PersonType.group || this.type === PersonType.any) && people.length < this.showMax) {
             let groups = [];
             try {
