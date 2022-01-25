@@ -16,6 +16,12 @@ import { getEventsPageIterator } from './mgt-agenda.graph';
 import { SvgIcon, getSvg } from '../../utils/SvgHelper';
 import { MgtPeople } from '../mgt-people/mgt-people';
 
+import { fluentCard } from '@fluentui/web-components';
+import { registerFluentComponents } from '../../utils/FluentComponents';
+import { getFileTypeIconUri } from '../../styles/fluent-icons';
+
+registerFluentComponents(fluentCard);
+
 /**
  * Web Component which represents events in a user or group calendar.
  *
@@ -292,22 +298,22 @@ export class MgtAgenda extends MgtTemplatedComponent {
       this.renderTemplate('loading', null) ||
       html`
         <div class="event">
-          <div class="event-time-container">
-            <div class="event-time-loading loading-element"></div>
-          </div>
-          <div class="event-details-container">
-            <div class="event-subject-loading loading-element"></div>
-            <div class="event-location-container">
-              <div class="event-location-icon-loading loading-element"></div>
-              <div class="event-location-loading loading-element"></div>
+            <div class="event-time-container">
+              <div class="event-time-loading loading-element"></div>
             </div>
-            <div class="event-location-container">
-              <div class="event-attendee-loading loading-element"></div>
-              <div class="event-attendee-loading loading-element"></div>
-              <div class="event-attendee-loading loading-element"></div>
+            <div class="event-details-container">
+              <div class="event-subject-loading loading-element"></div>
+              <div class="event-location-container">
+                <div class="event-location-icon-loading loading-element"></div>
+                <div class="event-location-loading loading-element"></div>
+              </div>
+              <div class="event-location-container">
+                <div class="event-attendee-loading loading-element"></div>
+                <div class="event-attendee-loading loading-element"></div>
+                <div class="event-attendee-loading loading-element"></div>
+              </div>
             </div>
           </div>
-        </div>
       `
     );
   }
@@ -343,14 +349,20 @@ export class MgtAgenda extends MgtTemplatedComponent {
    */
   protected renderEvent(event: MicrosoftGraph.Event): TemplateResult {
     return html`
-      <div class="event">
-        <div class="event-time-container">
-          <div class="event-time" aria-label="${this.getEventTimeString(event)}">${this.getEventTimeString(event)}</div>
+    <div class="card-container">
+      <fluent-card>
+        <div class="event">
+          <div class="event-time-container">
+            <div class="event-time" aria-label="${this.getEventTimeString(event)}">${this.getEventTimeString(
+      event
+    )}</div>
+          </div>
+          <div class="event-details-container">
+            ${this.renderTitle(event)} ${this.renderLocation(event)} ${this.renderAttendees(event)}
+          </div>
+          <div class="event-other-container">${this.renderOther(event)}</div>
         </div>
-        <div class="event-details-container">
-          ${this.renderTitle(event)} ${this.renderLocation(event)} ${this.renderAttendees(event)}
-        </div>
-        <div class="event-other-container">${this.renderOther(event)}</div>
+          </fluent-card>
       </div>
     `;
     // <div class="event-duration">${this.getEventDuration(event)}</div>
@@ -403,7 +415,7 @@ export class MgtAgenda extends MgtTemplatedComponent {
 
     return html`
       <div class="event-location-container">
-        <div class="event-location-icon">${getSvg(SvgIcon.OfficeLocation)}</div>
+        <div class="event-location-icon"><span>\ue81d</span></div>
         <div class="event-location" aria-label="${event.location.displayName}">${event.location.displayName}</div>
       </div>
     `;
