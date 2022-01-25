@@ -585,10 +585,7 @@ export class MgtPerson extends MgtTemplatedComponent {
         @mouseenter=${this.handleMouseEnter}
         @mouseleave=${this.handleMouseLeave}
         @keydown=${this.handleKeyDown}
-<<<<<<< HEAD
-=======
         tabindex=0
->>>>>>> main
       >
         ${personTemplate}
       </div>
