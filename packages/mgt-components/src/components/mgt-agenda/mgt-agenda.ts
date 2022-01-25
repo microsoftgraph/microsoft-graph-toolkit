@@ -381,7 +381,7 @@ export class MgtAgenda extends MgtTemplatedComponent {
     return (
       this.renderTemplate('header', { header }, 'header-' + header) ||
       html`
-        <div class="header" aria-label="${header}">${header}</div>
+        <div tabindex=0 class="header" aria-label="${header}">${header}</div>
       `
     );
   }
@@ -396,7 +396,7 @@ export class MgtAgenda extends MgtTemplatedComponent {
    */
   protected renderTitle(event: MicrosoftGraph.Event): TemplateResult {
     return html`
-      <div class="event-subject">${event.subject}</div>
+      <div tabindex=0 aria-label=${event.subject} class="event-subject">${event.subject}</div>
     `;
   }
 

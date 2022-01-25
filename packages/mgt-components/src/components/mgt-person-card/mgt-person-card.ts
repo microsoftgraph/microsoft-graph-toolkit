@@ -564,8 +564,9 @@ export class MgtPersonCard extends MgtTemplatedComponent {
     let email: TemplateResult;
     if (getEmailFromGraphEntity(person)) {
       email = html`
-        <div class="icon" @click=${() => this.emailUser()} >
-         <span>\uE715</span>
+        <div class="icon" @click=${() => this.emailUser()} tabindex=0>
+          ${getSvg(SvgIcon.SmallEmail)}
+          <span>${this.strings.sendEmailLinkSubtitle}</span>
         </div>
       `;
     }
@@ -611,7 +612,7 @@ export class MgtPersonCard extends MgtTemplatedComponent {
   protected renderExpandedDetailsButton(): TemplateResult {
     return html`
       <div class="expanded-details-button" @click=${this.showExpandedDetails} @keyup=${(e: KeyboardEvent) =>
-      this.showExpandedDetails(e)} >
+      this.showExpandedDetails(e)} tabindex=0>
         ${getSvg(SvgIcon.ExpandDown)}
       </div>
     `;
@@ -632,6 +633,12 @@ export class MgtPersonCard extends MgtTemplatedComponent {
           <mgt-spinner></mgt-spinner>
         </div>
       `;
+    }
+    // load sections when details are expanded
+    // when not singed in
+    const provider = Providers.globalProvider;
+    if (provider.state === ProviderState.SignedOut) {
+      this.loadSections();
     }
 
     person = person || this.internalPersonDetails;
@@ -1174,6 +1181,15 @@ export class MgtPersonCard extends MgtTemplatedComponent {
         ) {
           e.stopPropagation();
         }
+      }
+    }
+  }
+
+  private handleKeyDown(e: KeyboardEvent) {
+    //enter activates person-card
+    if (e) {
+      if (e.keyCode === 13) {
+        this.showExpandedDetails(e);
       }
     }
   }

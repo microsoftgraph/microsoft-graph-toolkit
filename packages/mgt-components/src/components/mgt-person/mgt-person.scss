@@ -276,6 +276,9 @@ mgt-person .person-root {
         margin: auto;
         height: 100%;
         width: auto;
+        &:focus() {
+          outline: none;
+        }
       }
     }
 
