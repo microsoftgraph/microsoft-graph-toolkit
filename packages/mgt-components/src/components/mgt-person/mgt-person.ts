@@ -1230,15 +1230,6 @@ export class MgtPerson extends MgtTemplatedComponent {
     this._mouseLeaveTimeout = setTimeout(this.hidePersonCard.bind(this), 500);
   }
 
-  private handleKeyDown(e: KeyboardEvent) {
-    //enter activates person-card
-    if (e) {
-      if (e.keyCode === 13) {
-        this.showPersonCard();
-      }
-    }
-  }
-
   public hidePersonCard() {
     const flyout = this.flyout;
     if (flyout) {
