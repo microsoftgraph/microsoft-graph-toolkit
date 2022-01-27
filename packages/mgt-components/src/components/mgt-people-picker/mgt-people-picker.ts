@@ -392,6 +392,7 @@ export class MgtPeoplePicker extends MgtTemplatedComponent {
   private _type: PersonType = PersonType.person;
   private _groupType: GroupType = GroupType.any;
   private _userType: UserType = UserType.any;
+  private _currentSelectedUser: IDynamicPerson;
 
   private defaultPeople: IDynamicPerson[];
 
@@ -521,7 +522,12 @@ export class MgtPeoplePicker extends MgtTemplatedComponent {
 
     return html`
        <div dir=${this.direction} class=${classMap(inputClasses)} @click=${e => this.focus(e)}>
-         <div class="selected-list">
+         <div
+          aria-expanded="false"
+          aria-haspopup="listbox"
+          role="combobox"
+          class="selected-list"
+          id="selected-list">
            ${selectedPeopleTemplate} ${flyoutTemplate}
          </div>
        </div>
@@ -587,16 +593,30 @@ export class MgtPeoplePicker extends MgtTemplatedComponent {
       return null;
     }
 
+    const inputAriaLabelText = `${
+      this._currentSelectedUser !== undefined
+        ? this.strings.selected + ' ' + this._currentSelectedUser.displayName + ' '
+        : ''
+    } ' people-picker-input'`;
+
     return html`
        <div class="${classMap(inputClasses)}">
          <input
            id="people-picker-input"
            class="search-box__input"
            type="text"
+           role="combobox"
            placeholder=${placeholder}
+           aria-placeholder=${placeholder}
            label="people-picker-input"
-           aria-label="people-picker-input"
-           role="input"
+           autocomplete="off"
+           aria-label=${inputAriaLabelText}
+           aria-autocomplete="list"
+           aria-controls="suggestions-list"
+           aria-multiline="false"
+           aria-owns="suggestions-list"
+           aria-activedescendant="suggestions-list"
+           tabindex="0"
            @keydown="${this.onUserKeyDown}"
            @keyup="${this.onUserKeyUp}"
            @blur=${this.lostFocus}
@@ -741,7 +761,7 @@ export class MgtPeoplePicker extends MgtTemplatedComponent {
       this.renderTemplate('no-data', null) ||
       html`
          <div class="message-parent">
-           <div label="search-error-text" aria-label="We didn't find any matches." class="search-error-text">
+           <div label="search-error-text" aria-label=${this.strings.noResultsFound} class="search-error-text">
              ${this.strings.noResultsFound}
            </div>
          </div>
@@ -760,8 +780,25 @@ export class MgtPeoplePicker extends MgtTemplatedComponent {
   protected renderSearchResults(people?: IDynamicPerson[]) {
     people = people || this._foundPeople;
     let filteredPeople = people.filter(person => person.id);
+    let firstName = '';
+
+    const selectedList = this.renderRoot.querySelector('.selected-list');
+    let names = '';
+    for (let i = 0; i < filteredPeople.length; i++) {
+      names += filteredPeople[i].displayName.toString() + ' ';
+    }
+
     return html`
-       <div class="people-list" @mouseenter=${this.handleMouseEnter} @mouseleave=${this.handleMouseLeave}>
+      <div
+        id="suggestions-list"
+        class="people-list"
+        aria-expanded="true"
+        role="list"
+        aria-label="people-picker-input input text ${
+          this.userInput.length === 0 ? this.strings.inputPlaceholderText : this.userInput
+        } ${this.strings.suggestedContacts} ${names}"
+        @mouseenter=${this.handleMouseEnter}
+        @mouseleave=${this.handleMouseLeave}>
          ${repeat(
            filteredPeople,
            person => person.id,
@@ -772,7 +809,13 @@ export class MgtPeoplePicker extends MgtTemplatedComponent {
                'list-person': true
              };
              return html`
-               <li class="${classMap(listPersonClasses)}" @click="${e => this.onPersonClick(person)}">
+               <li
+                role="option"
+                aria-label=" ${this.strings.suggestedContact} ${person.displayName}"
+                id="${person.displayName}"
+                tabindex="0"
+                class="${classMap(listPersonClasses)}"
+                @click="${e => this.onPersonClick(person)}">
                  ${this.renderPersonResult(person)}
                </li>
              `;
@@ -1206,6 +1249,7 @@ export class MgtPeoplePicker extends MgtTemplatedComponent {
   }
 
   private onPersonClick(person: IDynamicPerson): void {
+    this._currentSelectedUser = person;
     this.addPerson(person);
     this.hideFlyout();
 
