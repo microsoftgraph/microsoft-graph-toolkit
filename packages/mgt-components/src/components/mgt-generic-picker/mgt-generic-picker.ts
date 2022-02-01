@@ -6,6 +6,7 @@ import { debounce } from '../../utils/Utils';
 import { MgtFlyout } from '../sub-components/mgt-flyout/mgt-flyout';
 import { strings } from './strings';
 import { styles } from './mgt-generic-picker-css';
+import { DriveItem } from '@microsoft/microsoft-graph-types';
 
 @customElement('mgt-generic-picker')
 export class MgtGenericPicker extends MgtTemplatedComponent {
@@ -20,6 +21,32 @@ export class MgtGenericPicker extends MgtTemplatedComponent {
     type: Boolean
   })
   public disabled: boolean;
+
+  /**
+   *  array of user picked drive items.
+   * @type {DriveItem[]}
+   */
+  @property({
+    attribute: 'selected-drive-items',
+    type: Array
+  })
+  public selectedDriveItems: DriveItem[];
+
+  /**
+   * array of entities to be searched on the graph
+   *
+   * @type {string[]}
+   * @memberof MgtGenericPicker
+   */
+  @property({
+    attribute: 'entity-types',
+    converter: value => {
+      return value.split(',').map(v => v.trim()?.toLowerCase());
+    },
+    type: String
+  })
+  public entityTypes: string[];
+
   // if search is still loading don't load "x not found" state
   @property({ attribute: false }) private _showLoading: boolean;
 
@@ -52,22 +79,37 @@ export class MgtGenericPicker extends MgtTemplatedComponent {
     super();
     this.clearState();
     this._showLoading = true;
+    this.addEventListener('itemClick', e => this.handleItemSelect(e));
   }
 
   public render(): TemplateResult {
+    const renderSelectedDriveItemsTpl = this.renderSelectedDriveItems(this.selectedDriveItems);
     const inputTemplate = this.renderInput();
     const flyoutTemplate = this.renderFlyout(inputTemplate);
+
+    const inputClasses = {
+      focused: this._isFocused,
+      'generic-picker': true,
+      disabled: this.disabled
+    };
     return html`
-      ${flyoutTemplate}
+      <div
+        dir=${this.direction}
+        class=${classMap(inputClasses)}>
+        <div class="selected-list">
+          ${renderSelectedDriveItemsTpl}${flyoutTemplate}
+        </div>
+      </div>
       `;
   }
 
   protected renderInput(): TemplateResult {
+    const hasSelections = !!this.selectedDriveItems.length;
+
     const placeholder = 'Enter some text';
     const inputClasses = {
-      focused: this._isFocused,
-      'people-picker': true,
-      disabled: this.disabled
+      'search-box': true,
+      'search-box-start': hasSelections
     };
     return html`
     <div class="${classMap(inputClasses)}">
@@ -104,6 +146,55 @@ export class MgtGenericPicker extends MgtTemplatedComponent {
   private lostFocus() {
     this._isFocused = false;
     this.requestUpdate();
+  }
+
+  protected renderSelectedDriveItems(driveItems?: DriveItem[]): TemplateResult {
+    if (!this.selectedDriveItems || !driveItems.length) {
+      return null;
+    }
+
+    return html`<div class="selected-list__options">
+      ${driveItems.slice(0, driveItems.length).map(item => {
+        html`<div class="selected-list__file-wrapper">
+          ${this.renderSelectedDriveItem(item)}
+
+          <div class="selected-list__file-wrapper__overflow">
+            <div class="selected-list__file-wrapper__overflow__gradient"></div>
+            <div
+              tabindex="0"
+              aria-label="close-icon"
+              class="selected-list__file-wrapper__overflow__close-icon"
+              @click="${e => this.removeDriveItem(item, e)}"
+            >
+              \uE711
+            </div>
+          </div>
+        </div>`;
+      })}
+    </div>`;
+  }
+  protected renderSelectedDriveItem(driveItem: DriveItem): TemplateResult {
+    return html`
+      <mgt-file view="twoLines" file-details=driveItem></mgt-file>
+    `;
+  }
+
+  protected removeDriveItem(driveItem: DriveItem, event: Event): void {
+    console.log('Removing selected driveItem ', driveItem);
+  }
+  /**
+   * Focuses the input element when focus is called
+   *
+   * @param {FocusOptions} [options]
+   * @memberof MgtPeoplePicker
+   */
+  public focus(options?: FocusOptions) {
+    this.gainedFocus();
+    if (!this.input) {
+      return;
+    }
+    this.input.focus(options);
+    this.input.select();
   }
 
   /**
@@ -175,24 +266,53 @@ export class MgtGenericPicker extends MgtTemplatedComponent {
   }
 
   protected renderSearchResults() {
-    if (this._driveIds && this._driveIds.length > 0) {
+    const hasFiles = this.entityTypes.includes('file-list');
+    let fileListTemplate: TemplateResult;
+
+    if (hasFiles && this._driveIds && this._driveIds.length > 0) {
       // TODO: there's a slight lag here. Maybe make the loading happen
       // some more or use the mgt-file-list load time? Also check the
       // caching
       const driveIds = this._driveIds.join(',');
-      return html`
+      fileListTemplate = html`
         <div>Files</div>
         <mgt-file-list
             hide-more-files-button
             files=${driveIds}
             insight-type="used"></mgt-file-list>
       `;
-    }
-    // TODO: page-size not supported when insight-type is available. Maybe
-    // have the page-size support handled by MGT?
-    return html`
+    } else {
+      // TODO: page-size not supported when insight-type is available. Maybe
+      // have the page-size support handled by MGT?
+      fileListTemplate = html`
         <div>Files</div>
         <mgt-file-list hide-more-files-button insight-type="used"></mgt-file-list>`;
+    }
+
+    // TODO: how to render other entities i.e. people list
+    const peopleListTemplate = this.renderPeople();
+
+    const resultsTemplate = html`
+    <div>
+      ${peopleListTemplate}
+      ${fileListTemplate ? fileListTemplate : ''}
+    </div>
+    `;
+    return resultsTemplate;
+  }
+
+  protected renderPeople(): TemplateResult {
+    return html`
+    <div>
+      <p>People</p>
+      <ul>
+        <li><mgt-person person-query="me" view="twoLines"></mgt-person></li>
+        <li><mgt-person person-query="me" view="twoLines"></mgt-person></li>
+        <li><mgt-person person-query="me" view="twoLines"></mgt-person></li>
+        <li><mgt-person person-query="me" view="twoLines"></mgt-person></li>
+      </ul>
+    </div>
+    `;
   }
 
   /**
@@ -236,12 +356,15 @@ export class MgtGenericPicker extends MgtTemplatedComponent {
     const provider = Providers.globalProvider;
     if (provider && provider.state === ProviderState.SignedIn) {
       const graph = provider.graph.forComponent(this);
-      this._showLoading = true;
       // TODO: check the required permissions are present
       // TODO: check the allowed entitytypes are set
-      console.log('Loadstate is focused ', this._isFocused);
+      console.log('input ', !input.length && this._isFocused);
       if (!input.length && this._isFocused) {
         // TODO: figure out what to load here? Check the mgt-file-list default behavior
+        console.log('We i here');
+        this._showLoading = false;
+        this._isFocused = false;
+        return;
       }
       this._showLoading = false;
       if (input) {
@@ -275,6 +398,7 @@ export class MgtGenericPicker extends MgtTemplatedComponent {
     const input = event.target as HTMLInputElement;
     this.userInput = input.value;
     // this.gainedFocus();
+    // TODO: Bug: Figure out when to set this._isFocused = true
     this.flyout.close();
     this.handleUserSearch();
   }
@@ -286,7 +410,8 @@ export class MgtGenericPicker extends MgtTemplatedComponent {
    * @memberof MgtGenericPicker
    */
   protected clearState(): void {
-    this.userInput = '';
+    this._clearInput();
+    this.selectedDriveItems = [];
   }
 
   /**
@@ -317,5 +442,28 @@ export class MgtGenericPicker extends MgtTemplatedComponent {
     }
 
     this._debouncedSearch();
+  }
+
+  protected handleItemSelect(event: Event): void {
+    // this.handleItemSelect(item, event);
+    // console.log('Clicked an item ', item);
+    this.fireCustomEvent('itemClick');
+
+    console.log('Click item event ', event);
+  }
+
+  /**
+   * Request to reload the state.
+   * Use reload instead of load to ensure loading events are fired.
+   *
+   * @protected
+   * @memberof MgtBaseComponent
+   */
+  protected requestStateUpdate(force?: boolean) {
+    if (force) {
+      this.selectedDriveItems = [];
+    }
+
+    return super.requestStateUpdate(force);
   }
 }

@@ -17,11 +17,11 @@
 }
 
 :host .root,
-mgt-people-picker .root {
+mgt-generic-picker .root {
   display: block;
 }
 
-.people-picker {
+.generic-picker {
   background-color: $input__background-color;
   @include input__border($theme-default);
   &:hover {
@@ -33,7 +33,7 @@ mgt-people-picker .root {
   &.disabled {
     pointer-events: none;
   }
-  padding: 6px 0 0;
+  padding: 6px 0px;
 
   .selected-list {
     flex: 1 0 auto;
@@ -50,7 +50,7 @@ mgt-people-picker .root {
       display: contents;
     }
 
-    &__person-wrapper {
+    &__file-wrapper {
       display: flex;
       margin: 0 5px 6px 0;
       align-items: center;
@@ -107,25 +107,25 @@ mgt-people-picker .root {
       }
     }
 
-    &__person-wrapper-highlighted {
-      @extend .selected-list__person-wrapper;
+    &__file-wrapper-highlighted {
+      @extend .selected-list__file-wrapper;
       background: #005393;
 
       &__person {
-        @extend .selected-list__person-wrapper__person;
+        @extend .selected-list__file-wrapper__person;
         color: white;
         --color: white;
       }
 
       &__overflow {
-        @extend .selected-list__person-wrapper__overflow;
+        @extend .selected-list__file-wrapper__overflow;
         &__gradient {
-          @extend .selected-list__person-wrapper__overflow__gradient;
+          @extend .selected-list__file-wrapper__overflow__gradient;
           background-image: none;
         }
 
         &__close-icon {
-          @extend .selected-list__person-wrapper__overflow__close-icon;
+          @extend .selected-list__file-wrapper__overflow__close-icon;
           background: #005393;
           color: white;
           line-height: 24px;
@@ -133,14 +133,14 @@ mgt-people-picker .root {
       }
     }
 
-    &__person-wrapper-highlighted:hover {
-      @extend .selected-list__person-wrapper-highlighted;
+    &__file-wrapper-highlighted:hover {
+      @extend .selected-list__file-wrapper-highlighted;
       background-color: #006cbe;
     }
 
     .flyout {
       .search-box {
-        margin: 1px 2px 8px;
+        margin: 0px;
 
         &.search-box-start {
           line-height: normal;
@@ -229,8 +229,8 @@ mgt-person {
 
 :host .search-error-text,
 :host .loading-text,
-mgt-people-picker .search-error-text,
-mgt-people-picker .loading-text {
+mgt-generic-picker .search-error-text,
+mgt-generic-picker .loading-text {
   font-family: $font-family;
   font-style: normal;
   font-weight: 600;
@@ -243,7 +243,7 @@ mgt-people-picker .loading-text {
 }
 
 :host .message-parent,
-mgt-people-picker .message-parent {
+mgt-generic-picker .message-parent {
   padding: 2px;
   margin-top: 30px;
   margin-bottom: 30px;
@@ -255,7 +255,7 @@ mgt-people-picker .message-parent {
 }
 
 :host .people-person-job-title,
-mgt-people-picker .people-person-job-title {
+mgt-generic-picker .people-person-job-title {
   flex: 100%;
   order: 3;
   font-weight: normal;
@@ -275,7 +275,7 @@ mgt-flyout {
   }
   .selected-list {
     margin-right: 8px !important;
-    &__person-wrapper {
+    &__file-wrapper {
       margin-left: 6px !important;
       &__person {
         margin-right: 0px !important;
