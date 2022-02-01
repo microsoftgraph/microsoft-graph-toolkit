@@ -13,7 +13,7 @@ export class MgtGenericPicker extends MgtTemplatedComponent {
    * Determines whether component should be disabled or not
    *
    * @type {boolean}
-   * @memberof MgtPeoplePicker
+   * @memberof MgtGenericPicker
    */
   @property({
     attribute: 'disabled',
@@ -25,7 +25,7 @@ export class MgtGenericPicker extends MgtTemplatedComponent {
 
   @state() private _isFocused = false;
   private _debouncedSearch: { (): void; (): void };
-  private _fileIds: string[];
+  private _driveIds: string[];
 
   protected get strings() {
     return strings;
@@ -44,7 +44,7 @@ export class MgtGenericPicker extends MgtTemplatedComponent {
    *
    * @protected
    * @type {string}
-   * @memberof MgtPeoplePicker
+   * @memberof MgtGenericPicker
    */
   protected userInput: string;
 
@@ -111,7 +111,7 @@ export class MgtGenericPicker extends MgtTemplatedComponent {
    *
    * @protected
    * @type {MgtFlyout}
-   * @memberof MgtLogin
+   * @memberof MgtGenericPicker
    */
   protected get flyout(): MgtFlyout {
     return this.renderRoot.querySelector('.flyout');
@@ -122,7 +122,7 @@ export class MgtGenericPicker extends MgtTemplatedComponent {
    *
    * @protected
    * @type {MgtFlyout}
-   * @memberof MgtLogin
+   * @memberof MgtGenericPicker
    */
   protected get input(): HTMLInputElement {
     return this.renderRoot.querySelector('.search-box__input');
@@ -132,7 +132,7 @@ export class MgtGenericPicker extends MgtTemplatedComponent {
    * Show the results flyout.
    *
    * @protected
-   * @memberof MgtPeoplePicker
+   * @memberof MgtGenericPicker
    */
   protected showFlyout(): void {
     const flyout = this.flyout;
@@ -146,7 +146,7 @@ export class MgtGenericPicker extends MgtTemplatedComponent {
    *
    * @protected
    * @returns {TemplateResult}
-   * @memberof MgtPeoplePicker
+   * @memberof MgtGenericPicker
    */
   protected renderFlyout(anchor: TemplateResult): TemplateResult {
     return html`
@@ -164,7 +164,7 @@ export class MgtGenericPicker extends MgtTemplatedComponent {
    *
    * @protected
    * @returns {TemplateResult}
-   * @memberof MgtPeoplePicker
+   * @memberof MgtGenericPicker
    */
   protected renderFlyoutContent(): TemplateResult {
     if (this.isLoadingState || this._showLoading) {
@@ -175,20 +175,24 @@ export class MgtGenericPicker extends MgtTemplatedComponent {
   }
 
   protected renderSearchResults() {
-    if (this._fileIds && this._fileIds.length > 0) {
+    if (this._driveIds && this._driveIds.length > 0) {
       // TODO: there's a slight lag here. Maybe make the loading happen
       // some more or use the mgt-file-list load time? Also check the
       // caching
+      const driveIds = this._driveIds.join(',');
       return html`
         <div>Files</div>
         <mgt-file-list
             hide-more-files-button
-            files=${this._fileIds.join(',')}></mgt-file-list>
+            files=${driveIds}
+            insight-type="used"></mgt-file-list>
       `;
     }
+    // TODO: page-size not supported when insight-type is available. Maybe
+    // have the page-size support handled by MGT?
     return html`
         <div>Files</div>
-        <mgt-file-list hide-more-files-button></mgt-file-list>`;
+        <mgt-file-list hide-more-files-button insight-type="used"></mgt-file-list>`;
   }
 
   /**
@@ -196,7 +200,7 @@ export class MgtGenericPicker extends MgtTemplatedComponent {
    *
    * @protected
    * @returns
-   * @memberof MgtPeoplePicker
+   * @memberof MgtGenericPicker
    */
   protected renderLoading(): TemplateResult {
     return (
@@ -248,7 +252,7 @@ export class MgtGenericPicker extends MgtTemplatedComponent {
           '01BYE5RZ2TWC4BCH4FQJB3HMWWDKXBHK2S',
           '01BYE5RZ5ZEXZD2H26FRALRJATDOA2TQGJ'
         ];
-        this._fileIds = fileList;
+        this._driveIds = fileList;
       }
     }
   }
@@ -279,7 +283,7 @@ export class MgtGenericPicker extends MgtTemplatedComponent {
    * Clears state of the component
    *
    * @protected
-   * @memberof MgtPeoplePicker
+   * @memberof MgtGenericPicker
    */
   protected clearState(): void {
     this.userInput = '';
