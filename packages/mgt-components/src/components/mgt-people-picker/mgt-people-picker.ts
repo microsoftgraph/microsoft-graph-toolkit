@@ -811,6 +811,7 @@ export class MgtPeoplePicker extends MgtTemplatedComponent {
              return html`
                <li
                 role="option"
+                @keydown="${this.onUserKeyDown}"
                 aria-label=" ${this.strings.suggestedContact} ${person.displayName}"
                 id="${person.displayName}"
                 tabindex="0"
@@ -1574,10 +1575,11 @@ export class MgtPeoplePicker extends MgtTemplatedComponent {
       }
 
       // set selected background
-      const focusedItem = peopleList.children[this._arrowSelectionCount];
+      const focusedItem = peopleList.children[this._arrowSelectionCount] as HTMLElement;
       if (focusedItem) {
         focusedItem.classList.add('focused');
         focusedItem.scrollIntoView({ behavior: 'smooth', block: 'nearest', inline: 'start' });
+        focusedItem.focus();
       }
     }
   }
