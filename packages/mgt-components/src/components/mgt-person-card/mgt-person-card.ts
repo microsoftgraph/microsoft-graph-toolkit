@@ -760,8 +760,10 @@ export class MgtPersonCard extends MgtTemplatedComponent {
         parent = parent.parentElement;
       }
 
-      if (parent && (parent as MgtPerson).personDetails) {
-        this.personDetails = (parent as MgtPerson).personDetails;
+      let parentPerson = (parent as MgtPerson).personDetails || parent['personDetailsInternal'];
+
+      if (parent && parentPerson) {
+        this.personDetails = parentPerson;
         this.personImage = (parent as MgtPerson).personImage;
       }
     }
