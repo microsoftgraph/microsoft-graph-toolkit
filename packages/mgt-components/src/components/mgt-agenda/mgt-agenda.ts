@@ -597,7 +597,7 @@ export class MgtAgenda extends MgtTemplatedComponent {
         } catch (e) {}
       } else {
         const start = this.date ? new Date(this.date) : new Date();
-        start.setHours(0, 0, 0, 0);
+        start.setHours(0, 0, 0, 59);
         const end = new Date(start.getTime());
         end.setDate(start.getDate() + this.days);
         try {
