@@ -597,7 +597,12 @@ export class MgtAgenda extends MgtTemplatedComponent {
         } catch (e) {}
       } else {
         const start = this.date ? new Date(this.date) : new Date();
-        start.setHours(0, 0, 0, 59);
+        // This feels like a hack. When you have a date like May 7, 2019 the Date.toISOString()
+        // is one day off. Date.setHours() ideally takes hours between 0-23. Any number above
+        // 23 is added to the datetime. In our case, this sets the date to the current day.
+        // In new Date(), it has "no effect" as the Date.toISOString() value is correct.
+        // Setting the mins, secs & ms to zero will add an extra day so we assume the defaults.
+        start.setHours(24);
         const end = new Date(start.getTime());
         end.setDate(start.getDate() + this.days);
         try {
