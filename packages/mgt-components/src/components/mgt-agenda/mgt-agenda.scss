@@ -40,6 +40,7 @@ mgt-agenda .card-container {
 :host fluent-card {
   contain: none;
   content-visibility: visible;
+  --card-height: none;
 }
 
 :host .event,
