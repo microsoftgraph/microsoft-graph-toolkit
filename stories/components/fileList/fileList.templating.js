@@ -44,3 +44,18 @@ export const fileTemplate = () => html`
     </template>
   </mgt-file-list>
 `;
+
+export const fileTemplateEvents = () => html`
+  <mgt-file-list id="fileList">
+    <template data-type="file">
+      <div>
+        <span>Found the file {{file.name}}</span>
+      </div>
+    </template>
+  </mgt-file-list>
+  <script>
+    document.getElementById('fileList').addEventListener('itemClick', e => {
+      console.log('Item Clicked:', e.detail.name)
+    })
+  </script>
+`;

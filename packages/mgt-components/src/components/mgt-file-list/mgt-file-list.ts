@@ -602,7 +602,7 @@ export class MgtFileList extends MgtTemplatedComponent {
             this.files,
             f => f.id,
             f => html`
-              <li class="file-item">
+              <li class="file-item" @click=${e => this.handleItemSelect(f, e)}>
                 ${this.renderFile(f)}
               </li>
             `
@@ -630,7 +630,7 @@ export class MgtFileList extends MgtTemplatedComponent {
     return (
       this.renderTemplate('file', { file }, file.id) ||
       html`
-        <mgt-file .fileDetails=${file} .view=${view} @click=${e => this.handleItemSelect(file, e)}></mgt-file>
+        <mgt-file .fileDetails=${file} .view=${view}></mgt-file>
       `
     );
   }
