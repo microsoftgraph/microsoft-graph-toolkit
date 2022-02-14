@@ -46,6 +46,7 @@ export const fileTemplate = () => html`
 `;
 
 export const fileTemplateEvents = () => html`
+  <!-- You will see the selected file in the JS console -->
   <mgt-file-list id="fileList">
     <template data-type="file">
       <div>
