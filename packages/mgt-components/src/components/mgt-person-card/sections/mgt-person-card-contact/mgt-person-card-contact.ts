@@ -299,7 +299,7 @@ export class MgtPersonCardContact extends BasePersonCardSection {
     }
 
     const url = `https://teams.microsoft.com/l/chat/0/0?users=${chat}`;
-    const openWindow = () => window.open(url, '_blank');
+    const openWindow = () => window.open(url, '_blank', 'noreferrer');
 
     if (TeamsHelper.isAvailable) {
       TeamsHelper.executeDeepLink(url, (status: boolean) => {
@@ -321,7 +321,7 @@ export class MgtPersonCardContact extends BasePersonCardSection {
   protected sendEmail(): void {
     const email = this._contactParts.email.value;
     if (email) {
-      window.open('mailto:' + email, '_blank');
+      window.open('mailto:' + email, '_blank', 'noreferrer');
     }
   }
 
@@ -335,9 +335,9 @@ export class MgtPersonCardContact extends BasePersonCardSection {
     const cellPhone = this._contactParts.cellPhone.value;
     const businessPhone = this._contactParts.businessPhone.value;
     if (phone === 'cellPhone') {
-      window.open('tel:' + cellPhone, '_blank');
+      window.open('tel:' + cellPhone, '_blank', 'noreferrer');
     } else if (phone === 'businessPhone') {
-      window.open('tel:' + businessPhone, '_blank');
+      window.open('tel:' + businessPhone, '_blank', 'noreferrer');
     }
   }
 }
