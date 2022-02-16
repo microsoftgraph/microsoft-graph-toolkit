@@ -1873,7 +1873,7 @@ const createAndInsertPart=(e,t)=>{const r=e.startNode.parentNode,o=void 0===t?e.
           @blur="${this.onFileListOut}"
         >
           ${Wr(this.files,(e=>e.id),(e=>html$1`
-              <li class="file-item">
+              <li class="file-item" @click=${t=>this.handleItemSelect(e,t)}>
                 ${this.renderFile(e)}
               </li>
             `))}
@@ -1882,7 +1882,7 @@ const createAndInsertPart=(e,t)=>{const r=e.startNode.parentNode,o=void 0===t?e.
       </div>
     </fluent-design-system-provider>
     `}renderFile(e){const t=this.itemView;return this.renderTemplate("file",{file:e},e.id)||html$1`
-        <mgt-file .fileDetails=${e} .view=${t} @click=${t=>this.handleItemSelect(e,t)}></mgt-file>
+        <mgt-file .fileDetails=${e} .view=${t}></mgt-file>
       `}renderMoreFileButton(){return this._isLoadingMore?html$1`
         <fluent-progress-ring role="progressbar" viewBox="0 0 8 8" class="progress-ring"></fluent-progress-ring>
       `:html$1`<a id="show-more" class="show-more" @click=${()=>this.renderNextPage()} tabindex="0" @keydown=${this.onShowMoreKeyDown}><span>${this.strings.showMoreSubtitle}<span></a>`}renderFileUpload(){const e={graph:Providers.globalProvider.graph.forComponent(this),driveId:this.driveId,excludedFileExtensions:this.excludedFileExtensions,groupId:this.groupId,itemId:this.itemId,itemPath:this.itemPath,userId:this.userId,siteId:this.siteId,maxFileSize:this.maxFileSize,maxUploadFile:this.maxUploadFile};return html$1`
