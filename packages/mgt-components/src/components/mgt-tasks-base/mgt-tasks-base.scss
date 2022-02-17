@@ -26,6 +26,13 @@ $task-border-completed: var(--task-complete-border, 2px dotted inherit);
   padding: var(--tasks-padding, 12px);
   color: $color;
 
+  input[type='date']::-webkit-inner-spin-button,
+  input[type='date']::-webkit-calendar-picker-indicator {
+    display: none;
+    -webkit-appearance: none;
+  }
+
+
   .TaskIcon {
     font-family: 'FabricMDL2Icons';
     user-select: none;
