@@ -4,7 +4,7 @@
   "name": "Microsoft Graph Toolkit Playground",
   "short_name": "MGT Playground",
   "start_url": "/",
-  "scope": "/",
+  "scope": "/next/pr/1550/",
   "lang": "en",
   "description": "The Microsoft Graph Toolkit is a collection of reusable, framework-agnostic components and authentication providers for accessing and working with Microsoft Graph. The components are fully functional right of out of the box, with built in providers that authenticate with and fetch data from Microsoft Graph.",
   "theme_color": "#F6F9FC",
