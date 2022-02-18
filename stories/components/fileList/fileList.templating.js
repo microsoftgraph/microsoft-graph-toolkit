@@ -35,7 +35,7 @@ export const defaultTemplates = () => html`
 `;
 
 export const fileTemplate = () => html`
-  <!-- You will see custom css on hover -->
+  <!-- Uncomment the CSS tab to see custom css on hover -->
   <mgt-file-list>
     <template data-type="file">
       <div>
@@ -45,10 +45,10 @@ export const fileTemplate = () => html`
     </template>
   </mgt-file-list>
   <style>
-    mgt-file-list {
+    /* mgt-file-list {
       --file-item-background-color--hover: #caf1de;
       --file-item-background-color--active: #acddde;
-    }
+    } */
   </style>
 `;
 
