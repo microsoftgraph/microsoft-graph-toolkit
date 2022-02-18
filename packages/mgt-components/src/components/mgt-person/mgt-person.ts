@@ -1019,7 +1019,12 @@ export class MgtPerson extends MgtTemplatedComponent {
     } else if (this.userId || this.personQuery === 'me') {
       // Use userId or 'me' query to get the person and image
       let person;
-      if (this._avatarType === 'photo') {
+      if (
+        this._avatarType === 'photo' &&
+        this.fetchImage &&
+        !this.personImage &&
+        !this._fetchedImage
+      ) {
         person = await getUserWithPhoto(graph, this.userId, personProps);
       } else {
         if (this.personQuery === 'me') {
@@ -1040,7 +1045,12 @@ export class MgtPerson extends MgtTemplatedComponent {
 
       if (people && people.length) {
         this.personDetailsInternal = people[0];
-        if (this._avatarType === 'photo') {
+        if (
+          this._avatarType === 'photo' &&
+          this.fetchImage &&
+          !this.personImage &&
+          !this._fetchedImage
+        ) {
           const image = await getPersonImage(graph, people[0], MgtPerson.config.useContactApis);
 
           if (image) {
