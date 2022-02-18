@@ -97,25 +97,7 @@ export const withCodeEditor = makeDecorator({
       css: styleCode
     };
 
-    const loadEditorContent = () => {
-      const token = window.parent.location.hash.replace('#', '');
-      console.log(token);
-
-      let providerInitCode = `
-        import {Providers, MockProvider} from "${mgtScriptName}";
-        Providers.globalProvider = new MockProvider(true);
-      `;
-
-      if (token) {
-        providerInitCode = `
-          import {Providers, SimpleProvider, ProviderState} from "${mgtScriptName}";
-          Providers.globalProvider = new SimpleProvider(async () => {
-            return '${token}';
-          });
-          Providers.globalProvider.setState(ProviderState.SignedIn);
-        `;
-      }
-
+    editor.addEventListener('fileUpdated', () => {
       const storyElement = document.createElement('iframe');
 
       storyElement.addEventListener('load', () => {
@@ -132,7 +114,8 @@ export const withCodeEditor = makeDecorator({
             <head>
               <script type="module" src="${mgtScriptName}"></script>
               <script type="module">
-                ${providerInitCode}
+                import {Providers, MockProvider} from "${mgtScriptName}";
+                Providers.globalProvider = new MockProvider(true);
               </script>
               <style>
                 html, body {
@@ -159,11 +142,7 @@ export const withCodeEditor = makeDecorator({
       storyElement.title = 'story-mgt-preview';
       storyElementWrapper.innerHTML = '';
       storyElementWrapper.appendChild(storyElement);
-    };
-
-    window.parent.addEventListener('hashchange', loadEditorContent);
-
-    editor.addEventListener('fileUpdated', loadEditorContent);
+    });
 
     const separator = document.createElement('div');
 

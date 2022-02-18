@@ -153,6 +153,6 @@ export class MgtPersonCardMessages extends BasePersonCardSection {
   }
 
   private handleMessageClick(message: Message): void {
-    window.open(message.webLink, '_blank');
+    window.open(message.webLink, '_blank', 'noreferrer');
   }
 }
