@@ -878,7 +878,7 @@ export class MgtPersonCard extends MgtTemplatedComponent {
     if (user) {
       const email = getEmailFromGraphEntity(user);
       if (email) {
-        window.open('mailto:' + email, '_blank');
+        window.open('mailto:' + email, '_blank', 'noreferrer');
       }
     }
   }
@@ -896,13 +896,13 @@ export class MgtPersonCard extends MgtTemplatedComponent {
     if (user && user.businessPhones && user.businessPhones.length) {
       const phone = user.businessPhones[0];
       if (phone) {
-        window.open('tel:' + phone, '_blank');
+        window.open('tel:' + phone, '_blank', 'noreferrer');
       }
     } else if (person && person.phones && person.phones.length) {
       const businessPhones = this.getPersonBusinessPhones(person);
       const phone = businessPhones[0];
       if (phone) {
-        window.open('tel:' + phone, '_blank');
+        window.open('tel:' + phone, '_blank', 'noreferrer');
       }
     }
   }
@@ -923,7 +923,7 @@ export class MgtPersonCard extends MgtTemplatedComponent {
         url += `&message=${message}`;
       }
 
-      const openWindow = () => window.open(url, '_blank');
+      const openWindow = () => window.open(url, '_blank', 'noreferrer');
 
       if (TeamsHelper.isAvailable) {
         TeamsHelper.executeDeepLink(url, (status: boolean) => {
