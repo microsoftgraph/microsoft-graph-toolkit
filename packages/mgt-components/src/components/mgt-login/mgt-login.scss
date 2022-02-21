@@ -96,6 +96,7 @@ mgt-login .popup-content {
   display: flex;
   flex-direction: column;
   padding: var(--popup-padding);
+  border-radius: 8px;
 }
 
 :host .popup-commands ul,
