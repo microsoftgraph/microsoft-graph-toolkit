@@ -118,16 +118,10 @@ $person-card-details-item-font-size: var(--person-card-details-item-font-size, 1
       height: 28px;
       background: $background-color;
       border-top: 1px solid set-var(line-seperator__color, $theme-default, $common);
-      svg {
-        stroke: #1a1a1a;
-      }
     }
 
     .expanded-details-button:hover {
       background-color: set-var(background-color--hover, $theme-default, $common);
-      svg {
-        stroke: #1a1a1a;
-      }
     }
   }
 
