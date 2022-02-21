@@ -54,6 +54,7 @@ mgt-login .login-button {
     --color: #{$button__color--hover};
     background-color: $button__background-color--hover;
     --color-sub1: #{$button__color--hover};
+    border-radius: 4px;
   }
 
   &:focus {
