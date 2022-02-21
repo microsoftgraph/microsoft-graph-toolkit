@@ -53,8 +53,25 @@
     <mgt-mock-provider></mgt-mock-provider>
 
     <mgt-login></mgt-login>
+    <br />
+    <mgt-people-picker
+        user-filters="jobTitle ne 'Auditor'"
+        user-type="user">
+    </mgt-people-picker>
+    <br>
+    <mgt-people-picker
+        people-filters="jobTitle ne 'Product Manager'"> 
+    </mgt-people-picker>
+    <br>
+    <mgt-people-picker 
+        group-filters="startsWith('displayName', 'Pi')"
+        type="group">
+    </mgt-people-picker>
+    <br />
     <mgt-person person-query="me" view="twoLines" person-card="hover" show-presence></mgt-person>
-    <mgt-people-picker></mgt-people-picker>
+    <!-- <mgt-people-picker
+      user-filters="id ne '2804bc07-1e1f-4938-9085-ce6d756a32d2'"
+      ></mgt-people-picker> -->
     <mgt-teams-channel-picker></mgt-teams-channel-picker>
     <mgt-tasks></mgt-tasks>
     <mgt-agenda group-by-day></mgt-agenda>

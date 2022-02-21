@@ -105,7 +105,8 @@ export async function findPeople(
   graph: IGraph,
   query: string,
   top: number = 10,
-  userType: UserType = UserType.any
+  userType: UserType = UserType.any,
+  peopleFilters: string = ''
 ): Promise<Person[]> {
   const scopes = 'people.read';
 
@@ -128,6 +129,11 @@ export async function findPeople(
     } else {
       filter += "and (personType/subclass eq 'ImplicitContact' or personType/subclass eq 'PersonalContact')";
     }
+  }
+
+  if (peopleFilters !== '') {
+    // Adding the default people filters to the search filters
+    filter = `${filter} and ${peopleFilters}`;
   }
 
   let graphResult;
@@ -155,24 +161,27 @@ export async function findPeople(
  * @returns {(Promise<Person[]>)}
  * @memberof Graph
  */
-export async function getPeople(graph: IGraph, userType: UserType = UserType.any): Promise<Person[]> {
+export async function getPeople(
+  graph: IGraph,
+  userType: UserType = UserType.any,
+  peopleFilters: string = ''
+): Promise<Person[]> {
   const scopes = 'people.read';
 
   let cache: CacheStore<CachePeopleQuery>;
   let cacheKey = `*:${userType}`;
 
-  if (getIsPeopleCacheEnabled()) {
-    cache = CacheService.getCache<CachePeopleQuery>(schemas.people, schemas.people.stores.peopleQuery);
-    const cacheRes = await cache.getValue(cacheKey);
+  // if (getIsPeopleCacheEnabled()) {
+  //   cache = CacheService.getCache<CachePeopleQuery>(schemas.people, schemas.people.stores.peopleQuery);
+  //   const cacheRes = await cache.getValue(cacheKey);
 
-    if (cacheRes && getPeopleInvalidationTime() > Date.now() - cacheRes.timeCached) {
-      return cacheRes.results.map(ppl => JSON.parse(ppl));
-    }
-  }
+  //   if (cacheRes && getPeopleInvalidationTime() > Date.now() - cacheRes.timeCached) {
+  //     return cacheRes.results.map(ppl => JSON.parse(ppl));
+  //   }
+  // }
 
   const uri = '/me/people';
   let filter = "personType/class eq 'Person'";
-
   if (userType !== UserType.any) {
     if (userType === UserType.user) {
       filter += "and personType/subclass eq 'OrganizationUser'";
@@ -180,6 +189,12 @@ export async function getPeople(graph: IGraph, userType: UserType = UserType.any
       filter += "and (personType/subclass eq 'ImplicitContact' or personType/subclass eq 'PersonalContact')";
     }
   }
+
+  if (peopleFilters) {
+    filter += ` and ${peopleFilters}`;
+  }
+
+  console.log('people filter ', peopleFilters);
 
   let people;
   try {
