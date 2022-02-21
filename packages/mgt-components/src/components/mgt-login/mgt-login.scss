@@ -85,6 +85,7 @@ mgt-login .popup {
   min-width: 240px;
   z-index: 1;
   color: set-var(popup__color, $theme-default, $login);
+  border-radius: 8px;
 
   mgt-person {
     --color-sub1: set-var(popup__color, $theme-default, $login);

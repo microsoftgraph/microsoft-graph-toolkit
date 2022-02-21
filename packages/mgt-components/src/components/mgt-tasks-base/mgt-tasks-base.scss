@@ -32,7 +32,6 @@ $task-border-completed: var(--task-complete-border, 2px dotted inherit);
     -webkit-appearance: none;
   }
 
-
   .TaskIcon {
     font-family: 'FabricMDL2Icons';
     user-select: none;
@@ -158,6 +157,7 @@ $task-border-completed: var(--task-complete-border, 2px dotted inherit);
     padding: var(--task-padding, 0 0 0 0);
     background-color: $background-color;
     border: set-var(border, $theme-default, $tasks);
+    border-radius: 8px;
 
     .TaskContent {
       display: flex;

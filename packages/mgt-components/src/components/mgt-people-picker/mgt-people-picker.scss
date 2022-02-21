@@ -187,6 +187,7 @@ mgt-people-picker .root {
         list-style-type: none;
         background-color: $dropdown__background-color;
         max-height: var(--mgt-flyout-set-height, unset);
+        border-radius: 8px;
         li {
           cursor: pointer;
         }
@@ -200,7 +201,12 @@ mgt-people-picker .root {
             font-style: normal;
             font-weight: 600;
             font-size: 14px;
-            &:hover,
+            &:hover {
+              background-color: $dropdown-item__background-color--hover;
+              border-radius: 4px;
+              padding-left: 4px;
+              padding-right: 4px;
+            }
             &.focused {
               background-color: $dropdown-item__background-color--hover;
             }

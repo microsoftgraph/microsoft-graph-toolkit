@@ -152,7 +152,7 @@
     padding-bottom: 11px;
     position: absolute;
     box-shadow: 0px 1.3289px 2.65781px rgba(180, 180, 180, 0.182), 0px 1.3289px 2.65781px rgba(68, 68, 68, 0.3);
-    border-radius: 2px;
+    border-radius: 8px;
     background-color: $dropdown__background-color;
     z-index: 1; /* Sit on top */
     width: 100%;
@@ -209,6 +209,9 @@
 
         &:hover {
           background-color: $dropdown-item__background-color--hover;
+          padding-left: 4px;
+          padding-right: 4px;
+          border-radius: 4px;
         }
         .arrow {
           margin-right: 5px;

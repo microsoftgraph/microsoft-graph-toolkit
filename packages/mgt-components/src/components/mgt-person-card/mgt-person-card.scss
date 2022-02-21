@@ -25,6 +25,7 @@ $person-card-details-item-font-size: var(--person-card-details-item-font-size, 1
   user-select: none;
   box-shadow: set-var(box-shadow, $theme-default, $common);
   border: 1px solid set-var(background-color__sub1, $theme-default, $common);
+  border-radius: 8px;
 
   .nav {
     height: 0px;
@@ -96,11 +97,11 @@ $person-card-details-item-font-size: var(--person-card-details-item-font-size, 1
 
         span {
           margin-left: 8px;
-          color: #023B8F;
+          color: #023b8f;
         }
       }
       .icon:hover {
-        color: #012E7F;
+        color: #012e7f;
       }
     }
   }
@@ -117,10 +118,16 @@ $person-card-details-item-font-size: var(--person-card-details-item-font-size, 1
       height: 28px;
       background: $background-color;
       border-top: 1px solid set-var(line-seperator__color, $theme-default, $common);
+      svg {
+        stroke: #1a1a1a;
+      }
     }
 
     .expanded-details-button:hover {
       background-color: set-var(background-color--hover, $theme-default, $common);
+      svg {
+        stroke: #1a1a1a;
+      }
     }
   }
 
