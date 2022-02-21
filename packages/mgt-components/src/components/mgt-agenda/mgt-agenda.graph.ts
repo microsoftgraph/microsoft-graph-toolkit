@@ -18,7 +18,7 @@ import * as MicrosoftGraph from '@microsoft/microsoft-graph-types';
  * @returns {(Promise<Event[]>)}
  * @memberof Graph
  */
-export function getEventsPageIterator(
+export async function getEventsPageIterator(
   graph: IGraph,
   startDateTime: Date,
   endDateTime: Date,
@@ -27,8 +27,9 @@ export function getEventsPageIterator(
 ): Promise<GraphPageIterator<MicrosoftGraph.Event>> {
   const scopes = 'calendars.read';
 
-  const sdt = `startdatetime=${startDateTime.toISOString()}`;
-  const edt = `enddatetime=${endDateTime.toISOString()}`;
+  let sdt = `startdatetime=${dateToLocalISO(startDateTime)}`;
+  let edt = `enddatetime=${dateToLocalISO(endDateTime)}`;
+  console.log({ sdt, edt });
 
   let uri: string;
 
@@ -36,6 +37,11 @@ export function getEventsPageIterator(
     uri = `groups/${groupId}/calendar`;
   } else {
     uri = 'me';
+  }
+
+  if (preferredTimezone) {
+    sdt = sdt.slice(0, -14);
+    edt = edt.slice(0, -14);
   }
 
   uri += `/calendarview?${sdt}&${edt}`;
@@ -47,4 +53,19 @@ export function getEventsPageIterator(
   }
 
   return GraphPageIterator.create<MicrosoftGraph.Event>(graph, request);
+}
+
+function dateToLocalISO(date: Date): string {
+  const off = date.getTimezoneOffset();
+  const absoff = Math.abs(off);
+  const dateString = new Date(date.getTime() - off * 60 * 1000).toISOString().slice(0, 23);
+  const offSetSign = off > 0 ? '-' : '+';
+  const secs = Math.floor(absoff / 60)
+    .toFixed(0)
+    .padStart(2, '0');
+  const ms = (absoff % 60).toString().padStart(2, '0');
+  const tail = `${offSetSign}${secs}${ms}`;
+  console.log({ off, secs, ms, off2: encodeURIComponent(offSetSign) });
+  const tzOffSetDateString = `${dateString}${tail}`;
+  return encodeURIComponent(tzOffSetDateString);
 }

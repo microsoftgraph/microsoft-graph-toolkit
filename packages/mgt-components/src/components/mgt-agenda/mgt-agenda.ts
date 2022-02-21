@@ -175,6 +175,7 @@ export class MgtAgenda extends MgtTemplatedComponent {
     return this._preferredTimezone;
   }
   public set preferredTimezone(value) {
+    console.log('timeZone value: ', value);
     if (this._preferredTimezone === value) {
       return;
     }
@@ -578,7 +579,7 @@ export class MgtAgenda extends MgtTemplatedComponent {
             query = this.eventQuery;
           }
 
-          let request = await graph.api(query);
+          let request = graph.api(query);
 
           if (scope) {
             request = request.middlewareOptions(prepScopes(scope));
@@ -597,17 +598,21 @@ export class MgtAgenda extends MgtTemplatedComponent {
         } catch (e) {}
       } else {
         const start = this.date ? new Date(this.date) : new Date();
-        // This feels like a hack. When you have a date like May 7, 2019 the Date.toISOString()
-        // is one day off. Date.setHours() ideally takes hours between 0-23. Any number above
-        // 23 is added to the datetime. In our case, this sets the date to the current day.
-        // In new Date(), it has "no effect" as the Date.toISOString() value is correct.
-        // Setting the mins, secs & ms to zero will add an extra day so we assume the defaults.
-        start.setHours(24);
+
+        // Get difference, in minutes, between date, as evaluated in the
+        // UTC time zone, and as evaluated in the local time zone.
+        // Why? The values of startDateTime and endDateTime are interpreted
+        // using the timezone offset specified in the value and are not impacted
+        // by the value of the Prefer: outlook.timezone header if present.
+        // If no timezone offset is included in the value, it is interpreted as UTC.
+        // https://docs.microsoft.com/en-us/graph/api/calendar-list-calendarview?view=graph-rest-1.0&tabs=http#query-parameters
+        // const utcTzOffset = start.setMinutes(start.getMinutes() - start.getTimezoneOffset());
+        // const startOffset = new Date(utcTzOffset);
+
         const end = new Date(start.getTime());
         end.setDate(start.getDate() + this.days);
         try {
           const iterator = await getEventsPageIterator(graph, start, end, this.groupId, this.preferredTimezone);
-
           if (iterator && iterator.value) {
             events = iterator.value;
 
@@ -621,7 +626,7 @@ export class MgtAgenda extends MgtTemplatedComponent {
         }
       }
     }
-
+    console.log(events);
     return events;
   }
 
