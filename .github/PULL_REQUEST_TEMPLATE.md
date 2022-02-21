@@ -21,6 +21,8 @@ Closes # <!-- REQUIRED: Add the issue number (ex: #12) so the issue is automatic
 - [ ] All public APIs (classes, methods, etc) have been documented following the jsdoc syntax
 - [ ] [Stories](https://github.com/microsoftgraph/microsoft-graph-toolkit/wiki/Storybook#writing-stories) have been added and existing stories have been tested
 - [ ] Added appropriate [documentation](https://github.com/microsoftgraph/microsoft-graph-toolkit/wiki/Documentation). Docs PR: <!-- Link to docs PR here -->
+<!-- Please uncomment if an Accessibility related changes -->
+<!-- - [ ] Accessibility tested and approved-->
 - [ ] License header has been added to all new source files (`yarn setLicense`)
 - [ ] Contains **NO** breaking changes
 
