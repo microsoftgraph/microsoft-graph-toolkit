@@ -187,10 +187,11 @@ export const pickerUserIds = () => html`
       user-ids="2804bc07-1e1f-4938-9085-ce6d756a32d2 ,e8a02cc7-df4d-4778-956d-784cc9506e5a,c8913c86-ceea-4d39-b1ea-f63a5b675166">
   </mgt-people-picker>
 `;
+
 export const pickerUserFilters = () => html`
   <mgt-people-picker
-      user-filters="id ne '2804bc07-1e1f-4938-9085-ce6d756a32d2'"
-      user-type="user">
+    user-filters="startsWith(displayName,'a')"
+    user-type="user">
   </mgt-people-picker>
 `;
 
@@ -202,7 +203,7 @@ export const pickerPeopleFilters = () => html`
 
 export const pickerGroupFilters = () => html`
   <mgt-people-picker
-      group-filters="id eq '02bd9fd6-8f93-4758-87c3-1fb73740a315'"
-      type="group">
+    group-filters="startsWith(displayName, 'a')"
+    type="group">
   </mgt-people-picker>
 `;
