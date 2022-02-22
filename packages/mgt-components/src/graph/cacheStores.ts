@@ -20,7 +20,8 @@ export const schemas = {
     name: 'users',
     stores: {
       users: 'users',
-      usersQuery: 'usersQuery'
+      usersQuery: 'usersQuery',
+      userFilters: 'userFilters'
     },
     version: 1
   },

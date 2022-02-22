@@ -49,13 +49,20 @@ export const getUserInvalidationTime = (): number =>
 export const getIsUsersCacheEnabled = (): boolean =>
   CacheService.config.users.isEnabled && CacheService.config.isEnabled;
 
-export async function getUsers(graph: IGraph, userFilters: string = ''): Promise<User[]> {
+export async function getUsers(graph: IGraph, userFilters: string = '', top: number = 10): Promise<User[]> {
   let apiString = '/users';
+  let cache: CacheStore<CacheUserQuery>;
+  const cacheKey = userFilters === '' ? '*' : userFilters;
+  const cacheItem = { maxResults: top, results: null };
 
-  // TODO: Add 'top' parameter
-  // TODO: Implement Caching of the users found. I can re-use an existing
-  // store or create a new one.
-  const graphClient: GraphRequest = graph.api(apiString);
+  if (getIsUsersCacheEnabled()) {
+    cache = CacheService.getCache<CacheUserQuery>(schemas.users, schemas.users.stores.userFilters);
+    const cacheRes = await cache.getValue(cacheKey);
+    if (cacheRes && getUserInvalidationTime() > Date.now() - cacheRes.timeCached) {
+      return cacheRes.results.map(userStr => JSON.parse(userStr));
+    }
+  }
+  const graphClient: GraphRequest = graph.api(apiString).top(top);
 
   if (userFilters) {
     graphClient.filter(userFilters);
@@ -63,6 +70,10 @@ export async function getUsers(graph: IGraph, userFilters: string = ''): Promise
 
   try {
     const response = await graphClient.middlewareOptions(prepScopes('user.read')).get();
+    if (getIsUsersCacheEnabled() && response) {
+      cacheItem.results = response.value.map(userStr => JSON.stringify(userStr));
+      cache.putValue(userFilters, cacheItem);
+    }
     return response.value;
   } catch (error) {}
 }
@@ -198,7 +209,7 @@ export async function getUsersForUserIds(
       } else {
         let apiUrl: string = `/users/${id}`;
         if (userFilters) {
-          apiUrl += `${apiUrl}?$filters=${userFilters}`;
+          apiUrl += `${apiUrl}?$filter=${userFilters}`;
         }
         batch.get(id, apiUrl, ['user.readbasic.all']);
         notInCache.push(id);

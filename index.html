@@ -54,19 +54,11 @@
 
     <mgt-login></mgt-login>
     <br />
-    <mgt-people-picker
-        user-filters="jobTitle ne 'Auditor'"
-        user-type="user">
-    </mgt-people-picker>
-    <br>
-    <mgt-people-picker
-        people-filters="jobTitle ne 'Product Manager'"> 
-    </mgt-people-picker>
-    <br>
-    <mgt-people-picker 
-        group-filters="startsWith('displayName', 'Pi')"
-        type="group">
-    </mgt-people-picker>
+    <mgt-people-picker user-filters="startsWith(displayName,'a')" user-type="user"> </mgt-people-picker>
+    <br />
+    <mgt-people-picker people-filters="jobTitle ne 'Product Manager'"> </mgt-people-picker>
+    <br />
+    <mgt-people-picker group-filters="startsWith('displayName', 'Pi')" type="group"> </mgt-people-picker>
     <br />
     <mgt-person person-query="me" view="twoLines" person-card="hover" show-presence></mgt-person>
     <!-- <mgt-people-picker

@@ -957,7 +957,7 @@ export class MgtPeoplePicker extends MgtTemplatedComponent {
             } else {
               const isUserOrContactType = this.userType === UserType.user || this.userType === UserType.contact;
               if (this._userFilters && isUserOrContactType) {
-                people = await getUsers(graph, this._userFilters);
+                people = await getUsers(graph, this._userFilters, this.showMax);
               } else {
                 people = await getPeople(graph, this.userType, this._peopleFilters);
               }
@@ -1016,8 +1016,15 @@ export class MgtPeoplePicker extends MgtTemplatedComponent {
         } else {
           if (this.type === PersonType.person || this.type === PersonType.any) {
             try {
-              if (this.userIds && this.userIds.length) {
-                people = await getUsersForUserIds(graph, this.userIds, input, this._userFilters);
+              // Default UserType === any
+              if (this.userType === UserType.contact || this.userType === UserType.user) {
+                // we might have a user-filters property set, search for users with it.
+                if (this.userIds && this.userIds.length) {
+                  // has the user-ids proerty set
+                  people = await getUsersForUserIds(graph, this.userIds, input, this._userFilters);
+                } else {
+                  people = await findUsers(graph, input, this.showMax, this._userFilters);
+                }
               } else {
                 people = (await findPeople(graph, input, this.showMax, this.userType, this._peopleFilters)) || [];
               }
