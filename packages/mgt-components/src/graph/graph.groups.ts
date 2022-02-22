@@ -180,6 +180,8 @@ export async function findGroups(
               .api('groups')
               .filter(`${filterQuery} and ${filter}`)
               .top(top)
+              .count(true)
+              .header('ConsistencyLevel', 'eventual')
               .middlewareOptions(prepScopes(scopes))
               .get()
           );
@@ -195,6 +197,7 @@ export async function findGroups(
         .api('groups')
         .filter(filterQuery)
         .top(top)
+        .count(true)
         .header('ConsistencyLevel', 'eventual')
         .middlewareOptions(prepScopes(scopes))
         .get();

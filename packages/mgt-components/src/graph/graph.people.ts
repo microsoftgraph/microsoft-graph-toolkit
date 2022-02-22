@@ -169,16 +169,16 @@ export async function getPeople(
   const scopes = 'people.read';
 
   let cache: CacheStore<CachePeopleQuery>;
-  let cacheKey = `*:${userType}`;
+  let cacheKey = peopleFilters ? peopleFilters : `*:${userType}`;
 
-  // if (getIsPeopleCacheEnabled()) {
-  //   cache = CacheService.getCache<CachePeopleQuery>(schemas.people, schemas.people.stores.peopleQuery);
-  //   const cacheRes = await cache.getValue(cacheKey);
+  if (getIsPeopleCacheEnabled()) {
+    cache = CacheService.getCache<CachePeopleQuery>(schemas.people, schemas.people.stores.peopleQuery);
+    const cacheRes = await cache.getValue(cacheKey);
 
-  //   if (cacheRes && getPeopleInvalidationTime() > Date.now() - cacheRes.timeCached) {
-  //     return cacheRes.results.map(ppl => JSON.parse(ppl));
-  //   }
-  // }
+    if (cacheRes && getPeopleInvalidationTime() > Date.now() - cacheRes.timeCached) {
+      return cacheRes.results.map(ppl => JSON.parse(ppl));
+    }
+  }
 
   const uri = '/me/people';
   let filter = "personType/class eq 'Person'";
@@ -200,7 +200,7 @@ export async function getPeople(
     if (getIsPeopleCacheEnabled() && people) {
       cache.putValue(cacheKey, { maxResults: 10, results: people.value.map(ppl => JSON.stringify(ppl)) });
     }
-  } catch (error) {}
+  } catch (_) {}
   return people ? people.value : null;
 }
 
