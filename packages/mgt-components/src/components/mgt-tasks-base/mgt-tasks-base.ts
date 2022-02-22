@@ -245,6 +245,16 @@ export abstract class MgtTasksBase extends MgtTemplatedComponent {
     const taskAddTemplate = !this._isNewTaskBeingAdded
       ? html`
           <div
+            tabindex='0'
+            class="TaskIcon TaskAdd"
+            @click="${() => this.addTask()}"
+            @keypress="${(e: KeyboardEvent) => {
+              if (e.key === 'Enter' || e.key === ' ') this.addTask();
+            }}"
+          >
+          <span>${this.strings.addTaskButtonSubtitle}</span>
+          </div>
+          <div
             role='button'
             tabindex='0'
             class="TaskIcon TaskCancel"
@@ -253,16 +263,6 @@ export abstract class MgtTasksBase extends MgtTemplatedComponent {
               if (e.key === 'Enter' || e.key === ' ') this.hideNewTaskPanel();
             }}">
             <span>${this.strings.cancelNewTaskSubtitle}</span>
-          </div>
-          <div
-            tabindex='0'
-            class="TaskIcon TaskAdd"
-            @click="${() => this.addTask()}"
-            @keypress="${(e: KeyboardEvent) => {
-              if (e.key === 'Enter' || e.key === ' ') this.addTask();
-            }}"
-          >
-            <span></span>
           </div>
         `
       : null;
@@ -326,15 +326,10 @@ export abstract class MgtTasksBase extends MgtTemplatedComponent {
    * @returns
    * @memberof MgtTodo
    */
-  protected renderBucketIcon() {
+  protected renderBoxIcon() {
     return html`
       <svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
-        <path
-          fill-rule="evenodd"
-          clip-rule="evenodd"
-          d="M14 2H2V4H3H5H6H10H11H13H14V2ZM10 5H6V6H10V5ZM5 5H3V14H13V5H11V6C11 6.55228 10.5523 7 10 7H6C5.44772 7 5 6.55228 5 6V5ZM1 5H2V14V15H3H13H14V14V5H15V4V2V1H14H2H1V2V4V5Z"
-          fill="#3C3C3C"
-        />
+        <path d="M9.29987 0.4808C8.46543 0.147025 7.53457 0.147025 6.70013 0.4808L0.942914 2.78369C0.373427 3.01148 0 3.56305 0 4.1764V11.8223C0 12.4357 0.373427 12.9873 0.942914 13.2151L6.70013 15.5179C7.53457 15.8517 8.46543 15.8517 9.29987 15.5179L15.0571 13.2151C15.6266 12.9873 16 12.4357 16 11.8223V4.1764C16 3.56305 15.6266 3.01148 15.0571 2.78369L9.29987 0.4808ZM7.07152 1.40928C7.66755 1.17087 8.33245 1.17087 8.92848 1.40928L14.1538 3.49941L11.8751 4.41088L5.72133 1.94935L7.07152 1.40928ZM4.37504 2.48787L10.5289 4.94939L8.00015 5.96088L1.84633 3.49935L4.37504 2.48787ZM8.50015 6.83791L15 4.23797V11.8223C15 12.0268 14.8755 12.2106 14.6857 12.2866L8.92848 14.5895C8.78889 14.6453 8.64552 14.6881 8.50015 14.7177V6.83791ZM7.50015 6.83791V14.7178C7.35467 14.6881 7.21121 14.6453 7.07152 14.5895L1.3143 12.2866C1.12448 12.2106 1 12.0268 1 11.8223V4.23785L7.50015 6.83791Z" fill="#212121"/>
       </svg>
     `;
   }

@@ -177,13 +177,13 @@ export class MgtTodo extends MgtTasksBase {
     const taskList = this._currentList
       ? html`
           <span class="NewTaskGroup">
-            ${this.renderBucketIcon()}
+            ${this.renderBoxIcon()}
             <span>${this._currentList.displayName}</span>
           </span>
         `
       : html`
           <span class="NewTaskGroup">
-            ${this.renderBucketIcon()}
+            ${this.renderBoxIcon()}
             <select
               .value="${this._newTaskListId}"
               @change="${(e: Event) => {
@@ -322,7 +322,7 @@ export class MgtTodo extends MgtTasksBase {
           ${task.title}
         </div>
         <div class="TaskDetail TaskBucket">
-          ${this.renderBucketIcon()}
+          ${this.renderBoxIcon()}
           <span>${this._currentList.displayName}</span>
         </div>
         ${taskDueTemplate}
