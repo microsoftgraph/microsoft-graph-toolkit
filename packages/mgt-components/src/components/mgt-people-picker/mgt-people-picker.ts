@@ -964,7 +964,7 @@ export class MgtPeoplePicker extends MgtTemplatedComponent {
             }
           } else if (this.type === PersonType.group) {
             let groups = (await findGroups(graph, '', this.showMax, this.groupType, this._groupFilters)) || [];
-            if (groups[0]['value']) {
+            if (groups.length > 0 && groups[0]['value']) {
               groups = groups[0]['value'];
             }
             people = groups;
@@ -1035,7 +1035,6 @@ export class MgtPeoplePicker extends MgtTemplatedComponent {
             // Don't follow this path if a people-filters attribute is set on the component as the
             // default type === PersonType.person
             if (people.length < this.showMax && this.userType !== UserType.contact && this.type !== PersonType.person) {
-              console.log('Interesting things are happening');
               try {
                 const users = (await findUsers(graph, input, this.showMax, this._userFilters)) || [];
 

@@ -194,8 +194,6 @@ export async function getPeople(
     filter += ` and ${peopleFilters}`;
   }
 
-  console.log('people filter ', peopleFilters);
-
   let people;
   try {
     people = await graph.api(uri).middlewareOptions(prepScopes(scopes)).filter(filter).get();

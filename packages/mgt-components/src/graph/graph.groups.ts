@@ -191,8 +191,13 @@ export async function findGroups(
     }
   } else {
     if (batchedResult.length === 0) {
-      const result = await graph.api('groups').filter(filterQuery).top(top).middlewareOptions(prepScopes(scopes)).get();
-
+      const result = await graph
+        .api('groups')
+        .filter(filterQuery)
+        .top(top)
+        .header('ConsistencyLevel', 'eventual')
+        .middlewareOptions(prepScopes(scopes))
+        .get();
       if (getIsGroupsCacheEnabled() && result) {
         cache.putValue(key, { groups: result.value.map(x => JSON.stringify(x)), top: top });
       }

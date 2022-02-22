@@ -367,7 +367,6 @@ export async function findUsers(
 
   if (userFilters !== '') {
     graphBuilder.filter(userFilters);
-    console.log(graphBuilder);
   }
   try {
     graphResult = await graphBuilder.top(top).middlewareOptions(prepScopes(scopes)).get();
