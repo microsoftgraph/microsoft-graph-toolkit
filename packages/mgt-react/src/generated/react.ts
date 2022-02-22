@@ -108,11 +108,11 @@ export type PeoplePickerProps = {
 	selectionMode?: string;
 	userIds?: string[];
 	showMax?: number;
+	fetchImages?: boolean;
 	disabled?: boolean;
 	allowAnyEmail?: boolean;
 	templateContext?: TemplateContext;
 	mediaQuery?: ComponentMediaQuery;
-	fetchImages?: boolean;
 	selectionChanged?: (e: Event) => void;
 	templateRendered?: (e: Event) => void;
 }
