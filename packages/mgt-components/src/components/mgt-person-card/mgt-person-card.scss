@@ -24,7 +24,6 @@ $person-card-details-item-font-size: var(--person-card-details-item-font-size, 1
   overflow: hidden;
   user-select: none;
   box-shadow: set-var(box-shadow, $theme-default, $common);
-  border: 1px solid set-var(background-color__sub1, $theme-default, $common);
   border-radius: 8px;
 
   .nav {
@@ -118,6 +117,11 @@ $person-card-details-item-font-size: var(--person-card-details-item-font-size, 1
       height: 28px;
       background: $background-color;
       border-top: 1px solid set-var(line-seperator__color, $theme-default, $common);
+      svg {
+        path {
+          stroke: #1a1a1a;
+        }
+      }
     }
 
     .expanded-details-button:hover {
