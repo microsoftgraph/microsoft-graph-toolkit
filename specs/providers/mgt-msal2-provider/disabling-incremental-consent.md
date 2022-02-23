@@ -14,7 +14,7 @@ The following providers are affected by this specification
 
 ## Context
 
-When utilizing the `mgt-msal2-provider` we want to allow developers to turn off the automatic consent prompt. This serves the scenario of LoB applications where the administrator want to control the scopes allowed for the users of the app. This has the impact of never requesting any scopes from the users and creates a better and controled experience.
+When utilizing the `mgt-msal2-provider` we want to allow developers to turn off the automatic consent prompt. This serves the scenario of LoB applications where the administrator want to control the scopes allowed for the users of the app. This has the impact of never requesting any scopes from the users and creates a better and controlled experience.
 
 ## Design
 
