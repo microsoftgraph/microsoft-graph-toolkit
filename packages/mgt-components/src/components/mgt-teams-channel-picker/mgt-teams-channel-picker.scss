@@ -185,7 +185,8 @@
         flex-direction: row;
         align-items: center;
         padding: 5px 12px 6px 14px;
-        margin-top: 6px;
+        margin: 6px 4px 4px 4px;
+        border-radius: 4px;
         font-family: $font-family;
         font-style: normal;
         font-weight: 600;
@@ -209,9 +210,6 @@
 
         &:hover {
           background-color: $dropdown-item__background-color--hover;
-          padding-left: 4px;
-          padding-right: 4px;
-          border-radius: 4px;
         }
         .arrow {
           margin-right: 5px;
