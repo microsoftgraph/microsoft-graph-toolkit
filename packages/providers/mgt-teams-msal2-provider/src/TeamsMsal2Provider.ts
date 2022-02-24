@@ -258,9 +258,11 @@ export class TeamsMsal2Provider extends Msal2Provider {
         if (!sessionStorage.getItem(this._sessionStorageLoginInProgress)) {
           const isInIframe = window.parent !== window;
           if (!isInIframe) {
-              sessionStorage.setItem(this._sessionStorageLoginInProgress, "true");
+            sessionStorage.setItem(this._sessionStorageLoginInProgress, 'true');
           } else {
-              console.warn("handleProviderState - Is in iframe... will try to login anyway... but will not set session storage variable");
+            console.warn(
+              'handleProviderState - Is in iframe... will try to login anyway... but will not set session storage variable'
+            );
           }
 
           provider.login();
