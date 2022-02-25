@@ -958,13 +958,13 @@ export class MgtTasks extends MgtTemplatedComponent {
     const taskFolder = this._currentFolder
       ? html`
           <span class="NewTaskBucket">
-            ${this.renderBoxIcon()}
+            ${this.renderBucketIcon()}
             <span>${this.getFolderName(this._currentFolder)}</span>
           </span>
         `
       : html`
           <span class="NewTaskBucket">
-            ${this.renderBoxIcon()}
+            ${this.renderBucketIcon()}
             <select
               .value="${this._newTaskFolderId}"
               @change="${(e: Event) => {
@@ -1136,7 +1136,7 @@ export class MgtTasks extends MgtTemplatedComponent {
         ? null
         : html`
             <div class="TaskDetail TaskBucket">
-              ${this.renderBoxIcon()}
+              ${this.renderBucketIcon()}
               <span>${this.getFolderName(task.immediateParentId)}</span>
             </div>
           `;
@@ -1327,7 +1327,7 @@ export class MgtTasks extends MgtTemplatedComponent {
     `;
   }
 
-  private renderBoxIcon() {
+  private renderBucketIcon() {
     return html`
       <svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
         <path
