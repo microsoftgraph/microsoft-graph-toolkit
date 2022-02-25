@@ -37,6 +37,16 @@ export abstract class IProvider implements AuthenticationProvider {
   private _state: ProviderState;
   private _loginChangedDispatcher = new EventDispatcher<LoginChangedEvent>();
   private _activeAccountChangedDispatcher = new EventDispatcher<ActiveAccountChanged>();
+
+  /**
+   * Enable/Disable incremental consent
+   *
+   * @protected
+   * @type {boolean}
+   * @memberof IProvider
+   */
+  private _isIncrementalConsentDisabled: boolean = false;
+
   /**
    * returns state of Provider
    *
@@ -46,6 +56,26 @@ export abstract class IProvider implements AuthenticationProvider {
    */
   public get state(): ProviderState {
     return this._state;
+  }
+
+  /**
+   * Incremental consent setting
+   *
+   * @readonly
+   * @memberof IProvider
+   */
+  public get isIncrementalConsentDisabled(): boolean {
+    return this._isIncrementalConsentDisabled;
+  }
+
+  /**
+   * Enable/Disable incremental consent
+   *
+   * @readonly
+   * @memberof IProvider
+   */
+  public set isIncrementalConsentDisabled(disabled: boolean) {
+    this._isIncrementalConsentDisabled = disabled;
   }
 
   /**
