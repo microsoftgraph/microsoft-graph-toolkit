@@ -90,14 +90,82 @@ export const withCodeEditor = makeDecorator({
       .replace(/\n?<!---->\n?/g, '')
       .trim();
 
-    let editor = new EditorElement();
+    let editor = new EditorElement();   
     editor.files = {
       html: storyHtml,
       js: scriptCode,
       css: styleCode
-    };
+    }; 
 
-    editor.addEventListener('fileUpdated', () => {
+    const getContent = async (url, json) => {
+      let content = ""
+
+      if(url) {
+        let response = await fetch(url);
+
+        if(response.ok) {
+          if(json) {
+            content = await response.json();
+          } else {
+            content = await response.text();
+          }        
+        } else {
+          console.warn(`Can't get content from '${url}'`)
+        }
+      }      
+
+      return content;
+    }
+
+    const isNotIframed = () => {
+      try {
+        return window.top.location.href != null || window.top.location.href != undefined;
+      } catch (err) {
+        return false;
+      }
+    }
+
+    const isValid = (manifestUrl) => {
+      if(manifestUrl) {
+        return manifestUrl.startsWith('https://raw.githubusercontent.com/pnp/mgt-samples/main/samples');
+      }
+
+      return false;
+    }
+
+    if(context.name === "Editor") {
+      
+      // If the editor is not iframed (Docs, GE, etc.)
+      if(isNotIframed()) {
+        var urlParams = new URLSearchParams(window.top.location.search);
+        var manifestUrl = urlParams.get('manifest');
+
+        if(isValid(manifestUrl)) {
+          getContent(manifestUrl, true).then((manifest) => {
+            Promise.all([
+              getContent(manifest[0].preview.html),
+              getContent(manifest[0].preview.js),
+              getContent(manifest[0].preview.css)
+            ]).then((values) => {
+              //editor.autoFormat = false;
+              editor.files = {
+                html: values[0],
+                js: values[1],
+                css: values[2]
+              };
+            });
+          });
+        }
+      }
+      
+    }
+
+    const loadEditorContent = () => {
+      let providerInitCode = `
+        import {Providers, MockProvider} from "${mgtScriptName}";
+        Providers.globalProvider = new MockProvider(true);
+      `;
+
       const storyElement = document.createElement('iframe');
 
       storyElement.addEventListener('load', () => {
@@ -114,8 +182,7 @@ export const withCodeEditor = makeDecorator({
             <head>
               <script type="module" src="${mgtScriptName}"></script>
               <script type="module">
-                import {Providers, MockProvider} from "${mgtScriptName}";
-                Providers.globalProvider = new MockProvider(true);
+                ${providerInitCode}
               </script>
               <style>
                 html, body {
@@ -139,10 +206,11 @@ export const withCodeEditor = makeDecorator({
       });
 
       storyElement.className = 'story-mgt-preview';
-      storyElement.title = 'story-mgt-preview';
       storyElementWrapper.innerHTML = '';
       storyElementWrapper.appendChild(storyElement);
-    });
+    };
+
+    editor.addEventListener('fileUpdated', loadEditorContent);
 
     const separator = document.createElement('div');
 
