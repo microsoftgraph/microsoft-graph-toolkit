@@ -41,7 +41,7 @@
   "dependencies": {
     "@azure/msal-node": "^1.0.3",
     "@microsoft/mgt-element": "*",
-    "@microsoft/microsoft-graph-client": "^2.2.1",
+    "@microsoft/microsoft-graph-client": "^3.0.2",
     "electron": "^11.0.2"
   },
   "publishConfig": {
