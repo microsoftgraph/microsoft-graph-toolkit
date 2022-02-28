@@ -241,7 +241,7 @@ export class TemplateHelper {
       const childElement = loopChildren[i] as HTMLElement;
 
       const loopExpression = childElement.dataset.for;
-      const loopTokens = this.trimExpression(loopExpression).split(/\s+?(in|of)\s+?/i);
+      const loopTokens = this.trimExpression(loopExpression).split(/\s?(in|of)\s?/i);
 
       if (loopTokens.length === 3) {
         // don't really care what's in the middle at this point
