@@ -175,7 +175,6 @@ export class MgtAgenda extends MgtTemplatedComponent {
     return this._preferredTimezone;
   }
   public set preferredTimezone(value) {
-    console.log('timeZone value: ', value);
     if (this._preferredTimezone === value) {
       return;
     }
