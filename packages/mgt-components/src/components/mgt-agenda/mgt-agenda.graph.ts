@@ -27,8 +27,8 @@ export async function getEventsPageIterator(
 ): Promise<GraphPageIterator<MicrosoftGraph.Event>> {
   const scopes = 'calendars.read';
 
-  let sdt = `startdatetime=${dateToLocalISO(startDateTime)}`;
-  let edt = `enddatetime=${dateToLocalISO(endDateTime)}`;
+  const sdt = `startdatetime=${dateToLocalISO(startDateTime)}`;
+  const edt = `enddatetime=${dateToLocalISO(endDateTime)}`;
 
   let uri: string;
 
