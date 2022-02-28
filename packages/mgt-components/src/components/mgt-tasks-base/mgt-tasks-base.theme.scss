@@ -16,8 +16,8 @@ $detail__color: var(--task-detail-color, set-var(color__sub2, $theme-default, $c
 $tasks: (
   border: (
     _var: --task-border,
-    light: 2px solid $background-color__sub3--light,
-    dark: 2px solid $background-color__sub3--dark
+    light: 1px solid $background-color__sub3--light,
+    dark: 1px solid $background-color__sub3--dark
   ),
   border--completed: (
     _var: --task-complete-border,
