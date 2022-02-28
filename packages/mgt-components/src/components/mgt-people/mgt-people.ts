@@ -211,6 +211,27 @@ export class MgtPeople extends MgtTemplatedComponent {
   public scopes: string[] = [];
 
   /**
+   * Fallback when no user is found
+   * @type {IDynamicPerson[]}
+   */
+  @property({
+    attribute: 'fallback-details',
+    type: Array
+  })
+  public get fallbackDetails(): IDynamicPerson[] {
+    return this._fallbackDetails;
+  }
+  public set fallbackDetails(value: IDynamicPerson[]) {
+    if (value === this._fallbackDetails) {
+      return;
+    }
+
+    this._fallbackDetails = value;
+
+    this.requestStateUpdate();
+  }
+
+  /**
    * Get the scopes required for people
    *
    * @static
@@ -236,6 +257,7 @@ export class MgtPeople extends MgtTemplatedComponent {
   private _peoplePresence: {};
   private _resource: string;
   private _version: string = 'v1.0';
+  private _fallbackDetails: IDynamicPerson[];
 
   constructor() {
     super();
@@ -304,9 +326,8 @@ export class MgtPeople extends MgtTemplatedComponent {
    */
   protected renderPeople(): TemplateResult {
     const maxPeople = this.people.slice(0, this.showMax);
-
     return html`
-      <ul class="people-list">
+      <ul class="people-list" aria-label="people">
         ${repeat(
           maxPeople,
           p => (p.id ? p.id : p.displayName),
@@ -337,7 +358,7 @@ export class MgtPeople extends MgtTemplatedComponent {
         people: this.people
       }) ||
       html`
-        <li class="overflow"><span>+${extra}<span></li>
+        <li tabindex=0 aria-label="and ${extra} more attendees" class="overflow"><span>+${extra}<span></li>
       `
     );
   }
@@ -405,10 +426,21 @@ export class MgtPeople extends MgtTemplatedComponent {
         // populate people
         if (this.groupId) {
           this.people = await findGroupMembers(graph, null, this.groupId, this.showMax, PersonType.person);
-        } else if (this.userIds) {
-          this.people = await getUsersForUserIds(graph, this.userIds);
-        } else if (this.peopleQueries) {
-          this.people = await getUsersForPeopleQueries(graph, this.peopleQueries);
+        } else if (this.userIds || this.peopleQueries) {
+          this.userIds
+            ? (this.people = await getUsersForUserIds(graph, this.userIds))
+            : (this.people = await getUsersForPeopleQueries(graph, this.peopleQueries));
+          if (this._fallbackDetails) {
+            // replace null people with fallback details
+            this.people = this.people.map((p, i) => {
+              if (p) {
+                return p;
+              } else if (i < this._fallbackDetails.length) {
+                return this._fallbackDetails[i];
+              }
+              return null;
+            });
+          }
         } else if (this.resource) {
           this.people = await getPeopleFromResource(graph, this.version, this.resource, this.scopes);
         } else {

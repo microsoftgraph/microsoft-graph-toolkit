@@ -1,14 +1,14 @@
 # This workflow will do a clean install of node dependencies, build the source code and run tests across different versions of node
 # For more information see: https://help.github.com/actions/language-and-framework-guides/using-nodejs-with-github-actions
 
-name: Build CI
+name: Release next/*
 
 on:
   push:
     branches: [next/*]
     paths:
       - 'packages/**'
-      
+
 jobs:
   build:
     runs-on: ubuntu-latest
@@ -26,12 +26,15 @@ jobs:
           registry-url: 'https://registry.npmjs.org'
       - run: npm install -g yarn lerna
       - run: yarn
-      - run: yarn build
+
       - name: Extract tag name
         shell: bash
         run: echo "##[set-output name=tag;]$(branch=${GITHUB_REF#refs/heads/}; echo ${branch/\//.})"
         id: extract_tag
       - run: node scripts/setVersion.js --tag ${{ steps.extract_tag.outputs.tag }}
+
+      - run: yarn build
+
       - run: lerna exec --scope @microsoft/* -- "npm publish --tag ${{ steps.extract_tag.outputs.tag }} --access=public"
         if: github.repository == 'microsoftgraph/microsoft-graph-toolkit'
         env:

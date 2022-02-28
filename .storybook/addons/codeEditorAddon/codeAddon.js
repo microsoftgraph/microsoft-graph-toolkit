@@ -7,7 +7,7 @@ const mgtScriptName = './mgt.storybook.js';
 const setupEditorResize = (first, separator, last, dragComplete) => {
   var md; // remember mouse down info
 
-  separator.addEventListener('mousedown', (e) => {
+  separator.addEventListener('mousedown', e => {
     md = {
       e,
       offsetLeft: separator.offsetLeft,
@@ -37,7 +37,7 @@ const setupEditorResize = (first, separator, last, dragComplete) => {
     document.removeEventListener('mouseup', onMouseUp);
   };
 
-  const onMouseMove = (e) => {
+  const onMouseMove = e => {
     var delta = { x: e.clientX - md.e.x, y: e.clientY - md.e.y };
 
     if (window.innerWidth > 800) {
@@ -55,7 +55,7 @@ const setupEditorResize = (first, separator, last, dragComplete) => {
       first.style.height = md.firstHeight + delta.y - 0.5 + 'px';
       last.style.height = md.lastHeight - delta.y - 0.5 + 'px';
     }
-  }
+  };
 };
 
 let scriptRegex = /<script\b[^>]*>([\s\S]*?)<\/script>/gm;
@@ -139,6 +139,7 @@ export const withCodeEditor = makeDecorator({
       });
 
       storyElement.className = 'story-mgt-preview';
+      storyElement.title = 'story-mgt-preview';
       storyElementWrapper.innerHTML = '';
       storyElementWrapper.appendChild(storyElement);
     });

@@ -345,7 +345,9 @@ export class MgtAgenda extends MgtTemplatedComponent {
     return html`
       <div class="event">
         <div class="event-time-container">
-          <div class="event-time" aria-label="${this.getEventTimeString(event)}">${this.getEventTimeString(event)}</div>
+          <div tabindex=0 class="event-time" aria-label="${this.getEventTimeString(event)}">${this.getEventTimeString(
+      event
+    )}</div>
         </div>
         <div class="event-details-container">
           ${this.renderTitle(event)} ${this.renderLocation(event)} ${this.renderAttendees(event)}
@@ -369,7 +371,7 @@ export class MgtAgenda extends MgtTemplatedComponent {
     return (
       this.renderTemplate('header', { header }, 'header-' + header) ||
       html`
-        <div class="header" aria-label="${header}">${header}</div>
+        <div tabindex=0 class="header" aria-label="${header}">${header}</div>
       `
     );
   }
@@ -384,7 +386,7 @@ export class MgtAgenda extends MgtTemplatedComponent {
    */
   protected renderTitle(event: MicrosoftGraph.Event): TemplateResult {
     return html`
-      <div class="event-subject">${event.subject}</div>
+      <div tabindex=0 aria-label=${event.subject} class="event-subject">${event.subject}</div>
     `;
   }
 
@@ -404,7 +406,9 @@ export class MgtAgenda extends MgtTemplatedComponent {
     return html`
       <div class="event-location-container">
         <div class="event-location-icon">${getSvg(SvgIcon.OfficeLocation)}</div>
-        <div class="event-location" aria-label="${event.location.displayName}">${event.location.displayName}</div>
+        <div tabindex=0 class="event-location" aria-label="${event.location.displayName}">${
+      event.location.displayName
+    }</div>
       </div>
     `;
   }
@@ -460,7 +464,10 @@ export class MgtAgenda extends MgtTemplatedComponent {
     const grouped = {};
 
     events.forEach(event => {
-      const header = this.getDateHeaderFromDateTimeString(event.start.dateTime);
+      var eventDate = new Date(event.start.dateTime);
+      var dateString = eventDate.toISOString().replace('Z', '');
+
+      const header = this.getDateHeaderFromDateTimeString(dateString);
       grouped[header] = grouped[header] || [];
       grouped[header].push(event);
     });

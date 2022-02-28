@@ -34,13 +34,20 @@ import {
   getUserFilesByPathIterator,
   getUserInsightsFiles
 } from '../../graph/graph.files';
-import '../sub-components/mgt-spinner/mgt-spinner';
+import './mgt-file-upload/mgt-file-upload';
 import { OfficeGraphInsightString, ViewType } from '../../graph/types';
 import { styles } from './mgt-file-list-css';
 import { strings } from './strings';
 import { MgtFile } from '../mgt-file/mgt-file';
+import { MgtFileUploadConfig } from './mgt-file-upload/mgt-file-upload';
 
 export { FluentDesignSystemProvider, FluentProgressRing } from '@fluentui/web-components';
+export * from './mgt-file-upload/mgt-file-upload';
+
+// import { fluentProgressRing } from '@fluentui/web-components';
+// import { registerFluentComponents } from '../../utils/FluentComponents';
+
+// registerFluentComponents(fluentProgressRing);
 
 /**
  * The File List component displays a list of multiple folders and files by
@@ -52,6 +59,16 @@ export { FluentDesignSystemProvider, FluentProgressRing } from '@fluentui/web-co
  * @extends {MgtTemplatedComponent}
  *
  * @fires itemClick - Fired when user click a file. Returns the file (DriveItem) details.
+ * @cssprop --file-upload-border- {String} File upload border top style
+ * @cssprop --file-upload-background-color - {Color} File upload background color with opacity style
+ * @cssprop --file-upload-button-float - {string} Upload button float position
+ * @cssprop --file-upload-button-background-color - {Color} Background color of upload button
+ * @cssprop --file-upload-dialog-background-color - {Color} Background color of upload dialog
+ * @cssprop --file-upload-dialog-content-background-color - {Color} Background color of dialog content
+ * @cssprop --file-upload-dialog-content-color - {Color} Color of dialog content
+ * @cssprop --file-upload-dialog-primarybutton-background-color - {Color} Background color of primary button
+ * @cssprop --file-upload-dialog-primarybutton-color - {Color} Color text of primary button
+ * @cssprop --file-upload-button-color - {Color} Text color of upload button
  * @cssprop --file-list-background-color - {Color} File list background color
  * @cssprop --file-list-box-shadow - {String} File list box shadow style
  * @cssprop --file-list-border - {String} File list border styles
@@ -377,6 +394,83 @@ export class MgtFileList extends MgtTemplatedComponent {
   public hideMoreFilesButton: boolean;
 
   /**
+   * A number value indication for file size upload (KB)
+   * @type {number}
+   * @memberof MgtFileList
+   */
+  @property({
+    attribute: 'max-file-size',
+    type: Number
+  })
+  public get maxFileSize(): number {
+    return this._maxFileSize;
+  }
+  public set maxFileSize(value: number) {
+    if (value === this._maxFileSize) {
+      return;
+    }
+
+    this._maxFileSize = value;
+    this.requestStateUpdate(true);
+  }
+
+  /**
+   * A boolean value indication if file upload extension should be enable or disabled
+   * @type {boolean}
+   * @memberof MgtFileList
+   */
+  @property({
+    attribute: 'enable-file-upload',
+    type: Boolean
+  })
+  public enableFileUpload: boolean;
+
+  /**
+   * A number value to indicate the max number allowed of files to upload.
+   * @type {number}
+   * @memberof MgtFileList
+   */
+  @property({
+    attribute: 'max-upload-file',
+    type: Number
+  })
+  public get maxUploadFile(): number {
+    return this._maxUploadFile;
+  }
+  public set maxUploadFile(value: number) {
+    if (value === this._maxUploadFile) {
+      return;
+    }
+
+    this._maxUploadFile = value;
+    this.requestStateUpdate(true);
+  }
+
+  /**
+   * A Array of file extensions to be excluded from file upload.
+   *
+   * @type {string[]}
+   * @memberof MgtFileList
+   */
+  @property({
+    attribute: 'excluded-file-extensions',
+    converter: (value, type) => {
+      return value.split(',').map(v => v.trim());
+    }
+  })
+  public get excludedFileExtensions(): string[] {
+    return this._excludedFileExtensions;
+  }
+  public set excludedFileExtensions(value: string[]) {
+    if (arraysAreEqual(this._excludedFileExtensions, value)) {
+      return;
+    }
+
+    this._excludedFileExtensions = value;
+    this.requestStateUpdate(true);
+  }
+
+  /**
    * Get the scopes required for file list
    *
    * @static
@@ -397,6 +491,9 @@ export class MgtFileList extends MgtTemplatedComponent {
   private _insightType: OfficeGraphInsightString;
   private _fileExtensions: string[];
   private _pageSize: number;
+  private _excludedFileExtensions: string[];
+  private _maxUploadFile: number;
+  private _maxFileSize: number;
   private _userId: string;
   private _preloadedFiles: DriveItem[];
   private pageIterator: GraphPageIterator<DriveItem>;
@@ -410,6 +507,8 @@ export class MgtFileList extends MgtTemplatedComponent {
 
     this.pageSize = 10;
     this.itemView = ViewType.twolines;
+    this.maxUploadFile = 10;
+    this.enableFileUpload = false;
     this._preloadedFiles = [];
   }
 
@@ -464,7 +563,18 @@ export class MgtFileList extends MgtTemplatedComponent {
    * @memberof MgtFileList
    */
   protected renderNoData(): TemplateResult {
-    return this.renderTemplate('no-data', null) || html``;
+    return (
+      this.renderTemplate('no-data', null) ||
+      (this.enableFileUpload === true && Providers.globalProvider !== undefined
+        ? html`
+      <fluent-design-system-provider use-defaults>
+        <div id="file-list-wrapper" class="file-list-wrapper" dir=${this.direction}>
+          ${this.renderFileUpload()}
+        </div>
+      </fluent-design-system-provider>
+      `
+        : html``)
+    );
   }
 
   /**
@@ -477,7 +587,9 @@ export class MgtFileList extends MgtTemplatedComponent {
    */
   protected renderFiles(): TemplateResult {
     return html`
+    <fluent-design-system-provider use-defaults>
       <div id="file-list-wrapper" class="file-list-wrapper" dir=${this.direction}>
+        ${this.enableFileUpload ? this.renderFileUpload() : null}
         <ul
           id="file-list"
           class="file-list"
@@ -490,7 +602,7 @@ export class MgtFileList extends MgtTemplatedComponent {
             this.files,
             f => f.id,
             f => html`
-              <li class="file-item">
+              <li class="file-item" @click=${e => this.handleItemSelect(f, e)}>
                 ${this.renderFile(f)}
               </li>
             `
@@ -502,6 +614,7 @@ export class MgtFileList extends MgtTemplatedComponent {
             : null
         }
       </div>
+    </fluent-design-system-provider>
     `;
   }
 
@@ -517,7 +630,7 @@ export class MgtFileList extends MgtTemplatedComponent {
     return (
       this.renderTemplate('file', { file }, file.id) ||
       html`
-        <mgt-file .fileDetails=${file} .view=${view} @click=${e => this.handleItemSelect(file, e)}></mgt-file>
+        <mgt-file .fileDetails=${file} .view=${view}></mgt-file>
       `
     );
   }
@@ -532,15 +645,36 @@ export class MgtFileList extends MgtTemplatedComponent {
   protected renderMoreFileButton(): TemplateResult {
     if (this._isLoadingMore) {
       return html`
-        <fluent-design-system-provider use-defaults>
-          <fluent-progress-ring role="progressbar" viewBox="0 0 8 8" class="progress-ring"></fluent-progress-ring>
-        </fluent-design-system-provider>
+        <fluent-progress-ring role="progressbar" viewBox="0 0 8 8" class="progress-ring"></fluent-progress-ring>
       `;
     } else {
       return html`<a id="show-more" class="show-more" @click=${() => this.renderNextPage()} tabindex="0" @keydown=${
         this.onShowMoreKeyDown
       }><span>${this.strings.showMoreSubtitle}<span></a>`;
     }
+  }
+
+  /**
+   * Render MgtFileUpload sub component
+   *
+   * @returns
+   */
+  protected renderFileUpload(): TemplateResult {
+    const fileUploadConfig: MgtFileUploadConfig = {
+      graph: Providers.globalProvider.graph.forComponent(this),
+      driveId: this.driveId,
+      excludedFileExtensions: this.excludedFileExtensions,
+      groupId: this.groupId,
+      itemId: this.itemId,
+      itemPath: this.itemPath,
+      userId: this.userId,
+      siteId: this.siteId,
+      maxFileSize: this.maxFileSize,
+      maxUploadFile: this.maxUploadFile
+    };
+    return html`
+        <mgt-file-upload .fileUploadList=${fileUploadConfig} ></mgt-file-upload>
+      `;
   }
 
   /**

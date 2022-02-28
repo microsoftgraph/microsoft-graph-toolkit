@@ -9,7 +9,7 @@ import { html } from 'lit-element';
 import { withCodeEditor } from '../../.storybook/addons/codeEditorAddon/codeAddon';
 
 export default {
-  title: 'Components | mgt-get',
+  title: 'Components / mgt-get',
   component: 'mgt-get',
   decorators: [withCodeEditor]
 };
@@ -18,6 +18,7 @@ export const GetEmail = () => html`
   <mgt-get resource="/me/messages" version="beta" scopes="mail.read" max-pages="2">
     <template>
       <div class="email" data-for="email in value">
+        <h3>{{ email.subject }}</h3>
         <h4>
           <mgt-person
             person-query="{{email.sender.emailAddress.address}}"
@@ -25,7 +26,6 @@ export const GetEmail = () => html`
             person-card="hover"
           ></mgt-person>
         </h4>
-        <h3>{{ email.subject }}</h3>
         <div data-if="email.bodyPreview" class="preview" innerHtml>{{email.bodyPreview}}</div>
         <div data-else class="preview">
           email body is empty
@@ -56,13 +56,13 @@ export const GetEmail = () => html`
 
     .email h3 {
       font-size: 12px;
-      margin-top: 4px;
+      margin-bottom: 4px;
     }
 
     .email h4 {
       font-size: 10px;
       margin-top: 0px;
-      margin-bottom: 0px;
+      margin-bottom: 4px;
     }
 
     .email mgt-person {
@@ -178,7 +178,7 @@ export const refresh = () => html`
     <label>get.refresh(true)</label>
     <button id="true">Hard refresh</button>
 
-    
+
   <script>
 
     document.querySelector('#false').addEventListener('click', _ =>{
