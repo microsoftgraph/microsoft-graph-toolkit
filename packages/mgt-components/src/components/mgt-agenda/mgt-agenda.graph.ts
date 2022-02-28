@@ -52,7 +52,7 @@ export async function getEventsPageIterator(
 /**
  * Convert a date object to a local time ISO string.
  * @param date Date object.
- * @returns ISO 8601 string with timezone offset.
+ * @returns ISO 8601 string without timezone offset.
  */
 function dateToLocalISO(date: Date): string {
   // Get difference, in minutes, between date, as evaluated in the
