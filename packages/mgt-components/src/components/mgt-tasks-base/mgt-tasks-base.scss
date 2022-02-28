@@ -32,7 +32,6 @@ $task-border-completed: var(--task-complete-border, 2px dotted inherit);
     -webkit-appearance: none;
   }
 
-
   .TaskIcon {
     font-family: 'FabricMDL2Icons';
     user-select: none;
@@ -517,6 +516,8 @@ $task-border-completed: var(--task-complete-border, 2px dotted inherit);
 
           .TaskTitle {
             display: flex;
+            height: 32px;
+            padding: 2px;
 
             input {
               flex: 1;
@@ -582,9 +583,6 @@ $task-border-completed: var(--task-complete-border, 2px dotted inherit);
               font-weight: 600;
               border: var(--task-new-select-border, none);
               border-bottom: 1px solid $ms-color-gray40;
-              outline: none;
-              border-radius: 0;
-              padding: 4px;
 
               &:hover {
                 border-bottom: 1px solid $ms-color-communicationShade10;
@@ -603,36 +601,39 @@ $task-border-completed: var(--task-complete-border, 2px dotted inherit);
       }
 
       .TaskAddButtonContainer {
-        flex: 0 0 auto;
-        display: flex;
+        margin-right: 28px;
 
         .TaskAdd,
         .TaskCancel {
-          height: 100%;
-          max-width: 50px;
-          min-width: 50px;
-          flex: 1 1 auto;
           justify-content: center;
           align-items: center;
-          display: flex;
           cursor: pointer;
+          flex: 0 0 auto;
+          display: flex;
+          width: var(--tasks-new-button-width, 100px);
+          height: var(--tasks-new-button-height, 32px);
+          border-radius: 4px;
+          border: var(--tasks-new-button-border, solid 1px #e5e5e5);
+          font-family: var(--default-font-family, 'Segoe UI');
+          font-size: 14px;
+          line-height: 20px;
+          // margin: 0 12px 0 32px;
         }
 
         .TaskAdd {
           color: white;
           background: var(--task-new-add-button-background, $ms-color-communicationPrimary);
+          margin: 22px 0 12px auto;
+          // margin: 22px 12px 8px 32px;
         }
 
         .TaskCancel {
-          font-family: var(--default-font-family, 'Segoe UI');
-          font-size: 14px;
-          font-weight: 600;
           color: $button__color--cancel;
-          margin: 0 12px 0 32px;
         }
 
         &.Disabled .TaskAdd {
-          background: var(--task-new-add-button-disabled-background, #eaeaea);
+          color: $button__color--cancel;
+          background: var(--task-new-add-button-disabled-background, #ffffff);
           cursor: default;
         }
       }
