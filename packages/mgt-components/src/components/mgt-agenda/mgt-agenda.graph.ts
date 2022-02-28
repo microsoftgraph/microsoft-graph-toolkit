@@ -38,12 +38,6 @@ export async function getEventsPageIterator(
     uri = 'me';
   }
 
-  if (preferredTimezone) {
-    // Remove timezone offset to avoid defaulting to it.
-    sdt = sdt.slice(0, -14);
-    edt = edt.slice(0, -14);
-  }
-
   uri += `/calendarview?${sdt}&${edt}`;
 
   let request = graph.api(uri).middlewareOptions(prepScopes(scopes)).orderby('start/dateTime');
@@ -69,14 +63,6 @@ function dateToLocalISO(date: Date): string {
   // If no timezone offset is included in the value, it is interpreted as UTC.
   // https://docs.microsoft.com/en-us/graph/api/calendar-list-calendarview?view=graph-rest-1.0&tabs=http#query-parameters
   const offset = date.getTimezoneOffset();
-  const absoff = Math.abs(offset);
   const dateString = new Date(date.getTime() - offset * 60 * 1000).toISOString().slice(0, 23);
-  const offSetSign = offset > 0 ? '-' : '+';
-  const secs = Math.floor(absoff / 60)
-    .toFixed(0)
-    .padStart(2, '0');
-  const ms = (absoff % 60).toString().padStart(2, '0');
-  const tail = `${offSetSign}${secs}${ms}`;
-  const tzOffSetDateString = `${dateString}${tail}`;
-  return encodeURIComponent(tzOffSetDateString);
+  return dateString;
 }
