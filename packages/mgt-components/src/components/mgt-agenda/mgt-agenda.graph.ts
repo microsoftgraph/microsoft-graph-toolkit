@@ -29,7 +29,6 @@ export async function getEventsPageIterator(
 
   let sdt = `startdatetime=${dateToLocalISO(startDateTime)}`;
   let edt = `enddatetime=${dateToLocalISO(endDateTime)}`;
-  console.log({ sdt, edt });
 
   let uri: string;
 
@@ -40,6 +39,7 @@ export async function getEventsPageIterator(
   }
 
   if (preferredTimezone) {
+    // Remove timezone offset to avoid defaulting to it.
     sdt = sdt.slice(0, -14);
     edt = edt.slice(0, -14);
   }
@@ -55,17 +55,28 @@ export async function getEventsPageIterator(
   return GraphPageIterator.create<MicrosoftGraph.Event>(graph, request);
 }
 
+/**
+ * Convert a date object to a local time ISO string.
+ * @param date Date object.
+ * @returns ISO 8601 string with timezone offset.
+ */
 function dateToLocalISO(date: Date): string {
-  const off = date.getTimezoneOffset();
-  const absoff = Math.abs(off);
-  const dateString = new Date(date.getTime() - off * 60 * 1000).toISOString().slice(0, 23);
-  const offSetSign = off > 0 ? '-' : '+';
+  // Get difference, in minutes, between date, as evaluated in the
+  // UTC time zone, and as evaluated in the local time zone.
+  // Why? The values of startDateTime and endDateTime are interpreted
+  // using the timezone offset specified in the value and are not impacted
+  // by the value of the Prefer: outlook.timezone header if present.
+  // If no timezone offset is included in the value, it is interpreted as UTC.
+  // https://docs.microsoft.com/en-us/graph/api/calendar-list-calendarview?view=graph-rest-1.0&tabs=http#query-parameters
+  const offset = date.getTimezoneOffset();
+  const absoff = Math.abs(offset);
+  const dateString = new Date(date.getTime() - offset * 60 * 1000).toISOString().slice(0, 23);
+  const offSetSign = offset > 0 ? '-' : '+';
   const secs = Math.floor(absoff / 60)
     .toFixed(0)
     .padStart(2, '0');
   const ms = (absoff % 60).toString().padStart(2, '0');
   const tail = `${offSetSign}${secs}${ms}`;
-  console.log({ off, secs, ms, off2: encodeURIComponent(offSetSign) });
   const tzOffSetDateString = `${dateString}${tail}`;
   return encodeURIComponent(tzOffSetDateString);
 }

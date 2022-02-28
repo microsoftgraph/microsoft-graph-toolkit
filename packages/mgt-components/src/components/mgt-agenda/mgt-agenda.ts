@@ -598,19 +598,9 @@ export class MgtAgenda extends MgtTemplatedComponent {
         } catch (e) {}
       } else {
         const start = this.date ? new Date(this.date) : new Date();
-
-        // Get difference, in minutes, between date, as evaluated in the
-        // UTC time zone, and as evaluated in the local time zone.
-        // Why? The values of startDateTime and endDateTime are interpreted
-        // using the timezone offset specified in the value and are not impacted
-        // by the value of the Prefer: outlook.timezone header if present.
-        // If no timezone offset is included in the value, it is interpreted as UTC.
-        // https://docs.microsoft.com/en-us/graph/api/calendar-list-calendarview?view=graph-rest-1.0&tabs=http#query-parameters
-        // const utcTzOffset = start.setMinutes(start.getMinutes() - start.getTimezoneOffset());
-        // const startOffset = new Date(utcTzOffset);
-
         const end = new Date(start.getTime());
         end.setDate(start.getDate() + this.days);
+
         try {
           const iterator = await getEventsPageIterator(graph, start, end, this.groupId, this.preferredTimezone);
           if (iterator && iterator.value) {
@@ -626,7 +616,6 @@ export class MgtAgenda extends MgtTemplatedComponent {
         }
       }
     }
-    console.log(events);
     return events;
   }
 
