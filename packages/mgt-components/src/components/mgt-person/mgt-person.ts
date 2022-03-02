@@ -346,6 +346,19 @@ export class MgtPerson extends MgtTemplatedComponent {
   public fetchImage: boolean;
 
   /**
+   * Sets whether to disable the person image fetch
+   * from the Microsoft Graph
+   *
+   * @type {boolean}
+   * @memberof MgtPerson
+   */
+  @property({
+    attribute: 'disable-image-fetch',
+    type: Boolean
+  })
+  public disableImageFetch: boolean;
+
+  /**
    * Determines and sets person avatar
    *
    *
@@ -526,6 +539,7 @@ export class MgtPerson extends MgtTemplatedComponent {
     this.line3Property = 'jobTitle';
     this.view = ViewType.image;
     this.avatarSize = 'auto';
+    this.disableImageFetch = false;
     this._isInvalidImageSrc = false;
     this._avatarType = 'photo';
   }
@@ -996,14 +1010,14 @@ export class MgtPerson extends MgtTemplatedComponent {
 
     let details = this.personDetailsInternal || this.personDetails;
 
-    let imageNeeded =
-      this._avatarType === 'photo' &&
-      (this.fetchImage === undefined || this.fetchImage) &&
-      !this.personImage &&
-      !this._fetchedImage;
-
     if (details) {
-      if (!details.personImage && imageNeeded) {
+      if (
+        !details.personImage &&
+        this.fetchImage &&
+        this._avatarType === 'photo' &&
+        !this.personImage &&
+        !this._fetchedImage
+      ) {
         details;
         let image;
         if ('groupTypes' in details) {
@@ -1019,7 +1033,7 @@ export class MgtPerson extends MgtTemplatedComponent {
     } else if (this.userId || this.personQuery === 'me') {
       // Use userId or 'me' query to get the person and image
       let person;
-      if (imageNeeded) {
+      if (this._avatarType === 'photo' && !this.disableImageFetch) {
         person = await getUserWithPhoto(graph, this.userId, personProps);
       } else {
         if (this.personQuery === 'me') {
@@ -1040,7 +1054,7 @@ export class MgtPerson extends MgtTemplatedComponent {
 
       if (people && people.length) {
         this.personDetailsInternal = people[0];
-        if (imageNeeded) {
+        if (this._avatarType === 'photo' && !this.disableImageFetch) {
           const image = await getPersonImage(graph, people[0], MgtPerson.config.useContactApis);
 
           if (image) {

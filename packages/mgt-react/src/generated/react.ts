@@ -166,6 +166,7 @@ export type PersonProps = {
 	line3Property?: string;
 	view?: ViewType | PersonViewType;
 	avatarSize?: AvatarSize;
+	disableImageFetch?: boolean;
 	templateContext?: TemplateContext;
 	mediaQuery?: ComponentMediaQuery;
 	line1clicked?: (e: Event) => void;
