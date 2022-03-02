@@ -75,6 +75,7 @@ mgt-file-item .file-list-wrapper {
       &:hover,
       &.focused {
         background-color: $file-item-background-color--hover;
+        border-radius: 4px;
 
         mgt-file {
           --file-background-color: $file-item-background-color--hover;

@@ -31,7 +31,7 @@ $person-card-details-item-font-size: var(--person-card-details-item-font-size, 1
     position: relative;
     z-index: 100;
 
-    .nav__back {
+    &__back {
       padding: 8px;
       height: 32px;
       width: 32px;
@@ -134,7 +134,7 @@ $person-card-details-item-font-size: var(--person-card-details-item-font-size, 1
     padding: 0 14px;
     border-bottom: 1px solid set-var(tab__line__color, $theme-default, $common);
 
-    .section-nav__icon {
+    &__icon {
       all: initial;
       box-sizing: border-box;
       width: 48px;
@@ -160,10 +160,15 @@ $person-card-details-item-font-size: var(--person-card-details-item-font-size, 1
       }
 
       &.active {
+        // border: none none none solid $icon--active;
         border-bottom-color: $icon--active;
-        border-left-color: transparent;
-        border-right-color: transparent;
-        border-top-color: transparent;
+        border-bottom-style: solid;
+        border-left-color: none;
+        border-right-color: none;
+        border-top-color: none;
+        border-top-style: none;
+        border-left-style: none;
+        border-right-style: none;
         svg {
           fill: $icon--active;
         }
@@ -191,7 +196,7 @@ $person-card-details-item-font-size: var(--person-card-details-item-font-size, 1
     border-bottom: 1px solid set-var(tab__line__color, $theme-default, $common);
     padding: 12px 10px 8px 10px;
 
-    .quick-message__input {
+    &__input {
       flex-grow: 1;
       padding-left: 8px;
       border: none;
@@ -200,7 +205,7 @@ $person-card-details-item-font-size: var(--person-card-details-item-font-size, 1
       background-color: set-var(background-color__sub2, $theme-default, $common);
     }
 
-    .quick-message__send {
+    &__send {
       all: initial;
       height: 32px;
       width: 32px;
@@ -239,20 +244,20 @@ $person-card-details-item-font-size: var(--person-card-details-item-font-size, 1
         bottom: 0;
       }
 
-      .section__header {
+      &__header {
         display: flex;
         flex-direction: row;
         padding: 0 20px;
       }
 
-      .section__title {
+      &__title {
         flex-grow: 1;
         color: set-var(title__color__subtitle, $theme-default, $common);
         font-size: 14px;
         font-weight: 600;
       }
 
-      .section__show-more {
+      &__show-more {
         color: $commblue_primary;
         font-size: 12px;
         font-weight: 600;
@@ -264,7 +269,7 @@ $person-card-details-item-font-size: var(--person-card-details-item-font-size, 1
         }
       }
 
-      .section__content {
+      &__content {
         margin-top: 14px;
       }
 
