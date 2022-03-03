@@ -45,7 +45,7 @@
     "@microsoft/mgt-element": "*",
     "@microsoft/mgt-msal2-provider": "*",
     "@microsoft/microsoft-graph-client": "^2.2.1",
-    "@azure/msal-browser": "^2.16.1"
+    "@azure/msal-browser": "^2.22.0"
   },
   "publishConfig": {
     "directory": "dist"

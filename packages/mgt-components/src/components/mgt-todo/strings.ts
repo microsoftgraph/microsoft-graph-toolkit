@@ -13,8 +13,8 @@
  */
 
 export const strings = {
-  cancelNewTaskSubtitle: 'cancel',
-  newTaskPlaceholder: 'Task...',
+  cancelNewTaskSubtitle: 'Cancel',
+  newTaskPlaceholder: 'Adding task...',
   addTaskButtonSubtitle: 'Add',
   removeTaskSubtitle: 'Delete Task'
 };
