@@ -152,7 +152,7 @@
     padding-bottom: 11px;
     position: absolute;
     box-shadow: 0px 1.3289px 2.65781px rgba(180, 180, 180, 0.182), 0px 1.3289px 2.65781px rgba(68, 68, 68, 0.3);
-    border-radius: 2px;
+    border-radius: 8px;
     background-color: $dropdown__background-color;
     z-index: 1; /* Sit on top */
     width: 100%;
@@ -185,7 +185,8 @@
         flex-direction: row;
         align-items: center;
         padding: 5px 12px 6px 14px;
-        margin-top: 6px;
+        margin: 6px 4px 4px 4px;
+        border-radius: 4px;
         font-family: $font-family;
         font-style: normal;
         font-weight: 600;

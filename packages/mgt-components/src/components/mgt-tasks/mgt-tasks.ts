@@ -1213,7 +1213,6 @@ export class MgtTasks extends MgtTemplatedComponent {
           </div>
           ${taskOptions}
 
-          <div class="Divider"></div>
         </div>
       </div>
     `;
