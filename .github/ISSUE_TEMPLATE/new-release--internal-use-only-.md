@@ -28,6 +28,7 @@ This issue tracks the publishing progress for a release. It will get updated as 
 
 #### Bug Bash
   - [ ] Bash bugs
+  - [ ] mgt.dev is embedable
 
 #### Release
   - [ ] Ensure `main` is up to date with `release/latest`
@@ -37,4 +38,5 @@ This issue tracks the publishing progress for a release. It will get updated as 
   - [ ] Validate npm packages are published
   - [ ] Validate mgt.dev is updated
   - [ ] Validate GitHub release contains `mgt-spfx` asset
+  - [ ] Validate https://aka.ms/ge and https://aka.ms/mgt/docs are embedding the latest documentation
   - [ ] Increment `./package.json` version in main for building preview packages 
