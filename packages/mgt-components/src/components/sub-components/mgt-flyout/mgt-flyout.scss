@@ -27,6 +27,7 @@
     z-index: 9999999;
     opacity: 0;
     box-shadow: set-var(box-shadow, $theme-default, $common);
+    border-radius: 8px;
   }
 
   &.visible {

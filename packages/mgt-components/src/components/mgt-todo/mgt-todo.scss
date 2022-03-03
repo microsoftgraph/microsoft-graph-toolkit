@@ -6,3 +6,12 @@
  */
 
 @import '../mgt-tasks-base/mgt-tasks-base.scss';
+
+:host {
+  @extend :host;
+  border-radius: 8px;
+  .Task {
+    @extend .Task;
+    border: none;
+  }
+}
