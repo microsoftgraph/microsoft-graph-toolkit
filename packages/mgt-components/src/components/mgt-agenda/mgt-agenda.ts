@@ -464,8 +464,7 @@ export class MgtAgenda extends MgtTemplatedComponent {
     const grouped = {};
 
     events.forEach(event => {
-      var eventDate = new Date(event.start.dateTime);
-      var dateString = eventDate.toISOString().replace('Z', '');
+      const dateString = event.start.dateTime;
 
       const header = this.getDateHeaderFromDateTimeString(dateString);
       grouped[header] = grouped[header] || [];
@@ -541,17 +540,8 @@ export class MgtAgenda extends MgtTemplatedComponent {
       return 'ALL DAY';
     }
 
-    // #937 When not specifying a preferred time zone using the
-    // preferred-timezone attribute, MGT treats the dates retrieved from
-    // Microsoft Graph as local time, rather than UTC.
-    let startString = event.start.dateTime;
-    if (event.start.timeZone === 'UTC') {
-      startString += 'Z';
-    }
-    let endString = event.end.dateTime;
-    if (event.end.timeZone === 'UTC') {
-      endString += 'Z';
-    }
+    const startString = event.start.dateTime;
+    const endString = event.end.dateTime;
 
     const start = this.prettyPrintTimeFromDateTime(new Date(startString));
     const end = this.prettyPrintTimeFromDateTime(new Date(endString));
@@ -615,21 +605,19 @@ export class MgtAgenda extends MgtTemplatedComponent {
         }
       }
     }
+
     return events;
   }
 
   private prettyPrintTimeFromDateTime(date: Date) {
-    // If a preferred time zone was sent in the Graph request
-    // times are already set correctly. Do not adjust
-    if (!this.preferredTimezone) {
-      // If no preferred time zone was specified, the times are in UTC
-      // fall back to old behavior and adjust the times to the browser's
-      // time zone
-      date.setMinutes(date.getMinutes() - date.getTimezoneOffset());
-    }
+    // The time from the response is what the user wants to see.
+    // If they set up the preferre-timezone value, that will be
+    // automatically set on the API and returend. This is to ensure
+    // we get the date in the local time that is in the response.
+    const localizedDate = new Date(date.getTime() - date.getTimezoneOffset() * 60 * 1000);
 
-    let hours = date.getHours();
-    const minutes = date.getMinutes();
+    let hours = localizedDate.getUTCHours();
+    const minutes = localizedDate.getUTCMinutes();
     const ampm = hours >= 12 ? 'PM' : 'AM';
     hours = hours % 12;
     hours = hours ? hours : 12;
@@ -639,12 +627,12 @@ export class MgtAgenda extends MgtTemplatedComponent {
 
   private getDateHeaderFromDateTimeString(dateTimeString: string) {
     const date = new Date(dateTimeString);
-    date.setMinutes(date.getMinutes() - date.getTimezoneOffset());
+    const localizedDate = new Date(date.getTime() - date.getTimezoneOffset() * 60 * 1000);
 
-    const dayIndex = date.getDay();
-    const monthIndex = date.getMonth();
-    const day = date.getDate();
-    const year = date.getFullYear();
+    const dayIndex = localizedDate.getDay();
+    const monthIndex = localizedDate.getMonth();
+    const day = localizedDate.getDate();
+    const year = localizedDate.getFullYear();
 
     return `${getDayOfWeekString(dayIndex)}, ${getMonthString(monthIndex)} ${day}, ${year}`;
   }
