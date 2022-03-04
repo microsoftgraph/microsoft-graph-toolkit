@@ -251,6 +251,19 @@ export class MgtPeoplePicker extends MgtTemplatedComponent {
   public showMax: number;
 
   /**
+   * Sets whether the person image should be fetched
+   * from the Microsoft Graph
+   *
+   * @type {boolean}
+   * @memberof MgtPerson
+   */
+  @property({
+    attribute: 'disable-images',
+    type: Boolean
+  })
+  public disableImages: boolean;
+
+  /**
    *  array of user picked people.
    * @type {IDynamicPerson[]}
    */
@@ -463,6 +476,7 @@ export class MgtPeoplePicker extends MgtTemplatedComponent {
     this.clearState();
     this._showLoading = true;
     this.showMax = 6;
+    this.disableImages = false;
 
     this.disabled = false;
     this.allowAnyEmail = false;
@@ -888,7 +902,7 @@ export class MgtPeoplePicker extends MgtTemplatedComponent {
     return (
       this.renderTemplate('person', { person }, person.id) ||
       html`
-         <mgt-person .personDetails=${person} .fetchImage=${true}></mgt-person>
+         <mgt-person .personDetails=${person} .fetchImage=${!this.disableImages}></mgt-person>
          <div class="people-person-text-area" id="${person.displayName}">
            ${this.renderHighlightText(person)}
            <span class="${classMap(classes)}">${subTitle}</span>
@@ -911,7 +925,7 @@ export class MgtPeoplePicker extends MgtTemplatedComponent {
          tabindex="-1"
          class="selected-list__person-wrapper__person"
          .personDetails=${person}
-         .fetchImage=${true}
+         .fetchImage=${!this.disableImages}
          .view=${ViewType.oneline}
          .personCardInteraction=${PersonCardInteraction.click}
        ></mgt-person>
