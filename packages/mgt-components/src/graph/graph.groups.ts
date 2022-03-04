@@ -95,12 +95,13 @@ export async function findGroups(
   graph: IGraph,
   query: string,
   top: number = 10,
-  groupTypes: GroupType = GroupType.any
+  groupTypes: GroupType = GroupType.any,
+  groupFilters: string = ''
 ): Promise<Group[]> {
   const scopes = 'Group.Read.All';
 
   let cache: CacheStore<CacheGroupQuery>;
-  const key = query || '*' + groupTypes;
+  const key = `${query ? query : '*'}*${groupTypes}*${groupFilters}`;
 
   if (getIsGroupsCacheEnabled()) {
     cache = CacheService.getCache(schemas.groups, schemas.groups.stores.groupsQuery);
@@ -120,6 +121,10 @@ export async function findGroups(
 
   if (query !== '') {
     filterQuery = `(startswith(displayName,'${query}') or startswith(mailNickname,'${query}') or startswith(mail,'${query}'))`;
+  }
+
+  if (groupFilters) {
+    filterQuery += `${query ? ' and ' : ''}${groupFilters}`;
   }
 
   if (groupTypes !== GroupType.any) {
@@ -147,10 +152,7 @@ export async function findGroups(
       filterGroups.push('(mailEnabled eq true and securityEnabled eq false)');
     }
 
-    if (query !== '') {
-      filterQuery = filterQuery + ' and ';
-    }
-
+    filterQuery += `${filterQuery} and `;
     for (let filter of filterGroups) {
       batch.get(filter, `/groups?$filter=${filterQuery + filter}`, ['Group.Read.All']);
     }
@@ -176,8 +178,10 @@ export async function findGroups(
           queries.push(
             await graph
               .api('groups')
-              .filter(filterQuery + filter)
+              .filter(`${filterQuery} and ${filter}`)
               .top(top)
+              .count(true)
+              .header('ConsistencyLevel', 'eventual')
               .middlewareOptions(prepScopes(scopes))
               .get()
           );
@@ -189,8 +193,14 @@ export async function findGroups(
     }
   } else {
     if (batchedResult.length === 0) {
-      const result = await graph.api('groups').filter(filterQuery).top(top).middlewareOptions(prepScopes(scopes)).get();
-
+      const result = await graph
+        .api('groups')
+        .filter(filterQuery)
+        .top(top)
+        .count(true)
+        .header('ConsistencyLevel', 'eventual')
+        .middlewareOptions(prepScopes(scopes))
+        .get();
       if (getIsGroupsCacheEnabled() && result) {
         cache.putValue(key, { groups: result.value.map(x => JSON.stringify(x)), top: top });
       }
@@ -336,7 +346,11 @@ export async function getGroup(graph: IGraph, id: string, requestedProps?: strin
  * @param {string[]} groupIds, an array of string ids
  * @returns {Promise<Group[]>}
  */
-export async function getGroupsForGroupIds(graph: IGraph, groupIds: string[]): Promise<Group[]> {
+export async function getGroupsForGroupIds(
+  graph: IGraph,
+  groupIds: string[],
+  groupFilters: string = ''
+): Promise<Group[]> {
   if (!groupIds || groupIds.length === 0) {
     return [];
   }
@@ -358,7 +372,11 @@ export async function getGroupsForGroupIds(graph: IGraph, groupIds: string[]): P
     if (group && getGroupsInvalidationTime() > Date.now() - group.timeCached) {
       groupDict[id] = group.group ? JSON.parse(group.group) : null;
     } else if (id !== '') {
-      batch.get(id, `/groups/${id}`, ['Group.Read.All']);
+      let apiUrl: string = `/groups/${id}`;
+      if (groupFilters) {
+        apiUrl += `${apiUrl}?$filters=${groupFilters}`;
+      }
+      batch.get(id, apiUrl, ['Group.Read.All']);
       notInCache.push(id);
     }
   }

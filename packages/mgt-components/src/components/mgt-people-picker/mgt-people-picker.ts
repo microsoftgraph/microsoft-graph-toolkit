@@ -11,7 +11,7 @@ import { classMap } from 'lit-html/directives/class-map';
 import { repeat } from 'lit-html/directives/repeat';
 import { findGroups, getGroupsForGroupIds, GroupType, getGroup } from '../../graph/graph.groups';
 import { findPeople, getPeople, PersonType, UserType } from '../../graph/graph.people';
-import { findUsers, findGroupMembers, getUser, getUsersForUserIds } from '../../graph/graph.user';
+import { findUsers, findGroupMembers, getUser, getUsersForUserIds, getUsers } from '../../graph/graph.user';
 import { IDynamicPerson, ViewType } from '../../graph/types';
 import { Providers, ProviderState, MgtTemplatedComponent, arraysAreEqual } from '@microsoft/mgt-element';
 import '../../styles/style-helper';
@@ -251,6 +251,19 @@ export class MgtPeoplePicker extends MgtTemplatedComponent {
   public showMax: number;
 
   /**
+   * Sets whether the person image should be fetched
+   * from the Microsoft Graph
+   *
+   * @type {boolean}
+   * @memberof MgtPerson
+   */
+  @property({
+    attribute: 'disable-images',
+    type: Boolean
+  })
+  public disableImages: boolean;
+
+  /**
    *  array of user picked people.
    * @type {IDynamicPerson[]}
    */
@@ -364,6 +377,45 @@ export class MgtPeoplePicker extends MgtTemplatedComponent {
   }
 
   /**
+   * Filters that can be set on the user properties query.
+   */
+  @property({ attribute: 'user-filters' })
+  public get userFilters(): string {
+    return this._userFilters;
+  }
+
+  public set userFilters(value: string) {
+    this._userFilters = value;
+    this.requestStateUpdate(true);
+  }
+
+  /**
+   * Filters that can be set on the people query properties.
+   */
+  @property({ attribute: 'people-filters' })
+  public get peopleFilters(): string {
+    return this._peopleFilters;
+  }
+
+  public set peopleFilters(value: string) {
+    this._peopleFilters = value;
+    this.requestStateUpdate(true);
+  }
+
+  /**
+   * Filters that can be set on the group query properties.
+   */
+  @property({ attribute: 'group-filters' })
+  public get groupFilters(): string {
+    return this._groupFilters;
+  }
+
+  public set groupFilters(value: string) {
+    this._groupFilters = value;
+    this.requestStateUpdate(true);
+  }
+
+  /**
    * Get the scopes required for people picker
    *
    * @static
@@ -393,6 +445,9 @@ export class MgtPeoplePicker extends MgtTemplatedComponent {
   private _groupType: GroupType = GroupType.any;
   private _userType: UserType = UserType.any;
   private _currentSelectedUser: IDynamicPerson;
+  private _userFilters: string;
+  private _groupFilters: string;
+  private _peopleFilters: string;
 
   private defaultPeople: IDynamicPerson[];
 
@@ -421,6 +476,7 @@ export class MgtPeoplePicker extends MgtTemplatedComponent {
     this.clearState();
     this._showLoading = true;
     this.showMax = 6;
+    this.disableImages = false;
 
     this.disabled = false;
     this.allowAnyEmail = false;
@@ -846,7 +902,7 @@ export class MgtPeoplePicker extends MgtTemplatedComponent {
     return (
       this.renderTemplate('person', { person }, person.id) ||
       html`
-         <mgt-person .personDetails=${person} .fetchImage=${true}></mgt-person>
+         <mgt-person .personDetails=${person} .fetchImage=${!this.disableImages}></mgt-person>
          <div class="people-person-text-area" id="${person.displayName}">
            ${this.renderHighlightText(person)}
            <span class="${classMap(classes)}">${subTitle}</span>
@@ -869,7 +925,7 @@ export class MgtPeoplePicker extends MgtTemplatedComponent {
          tabindex="-1"
          class="selected-list__person-wrapper__person"
          .personDetails=${person}
-         .fetchImage=${true}
+         .fetchImage=${!this.disableImages}
          .view=${ViewType.oneline}
          .personCardInteraction=${PersonCardInteraction.click}
        ></mgt-person>
@@ -901,7 +957,8 @@ export class MgtPeoplePicker extends MgtTemplatedComponent {
                   this.groupId,
                   this.showMax,
                   this.type,
-                  this.transitiveSearch
+                  this.transitiveSearch,
+                  this._groupFilters
                 );
               } catch (_) {
                 this._groupPeople = [];
@@ -910,13 +967,18 @@ export class MgtPeoplePicker extends MgtTemplatedComponent {
             people = this._groupPeople || [];
           } else if (this.type === PersonType.person || this.type === PersonType.any) {
             if (this.userIds) {
-              people = await getUsersForUserIds(graph, this.userIds);
+              people = await getUsersForUserIds(graph, this.userIds, '', this.userFilters);
             } else {
-              people = await getPeople(graph, this.userType);
+              const isUserOrContactType = this.userType === UserType.user || this.userType === UserType.contact;
+              if (this._userFilters && isUserOrContactType) {
+                people = await getUsers(graph, this._userFilters, this.showMax);
+              } else {
+                people = await getPeople(graph, this.userType, this._peopleFilters);
+              }
             }
           } else if (this.type === PersonType.group) {
-            let groups = (await findGroups(graph, '', this.showMax, this.groupType)) || [];
-            if (groups[0]['value']) {
+            let groups = (await findGroups(graph, '', this.showMax, this.groupType, this._groupFilters)) || [];
+            if (groups.length > 0 && groups[0]['value']) {
               groups = groups[0]['value'];
             }
             people = groups;
@@ -931,8 +993,12 @@ export class MgtPeoplePicker extends MgtTemplatedComponent {
         !this.selectedPeople.length &&
         !this.defaultSelectedUsers
       ) {
-        this.defaultSelectedUsers = await getUsersForUserIds(graph, this.defaultSelectedUserIds);
-        this.defaultSelectedGroups = await getGroupsForGroupIds(graph, this.defaultSelectedGroupIds);
+        this.defaultSelectedUsers = await getUsersForUserIds(graph, this.defaultSelectedUserIds, '', this._userFilters);
+        this.defaultSelectedGroups = await getGroupsForGroupIds(
+          graph,
+          this.defaultSelectedGroupIds,
+          this._groupFilters
+        );
 
         this.defaultSelectedGroups = this.defaultSelectedGroups.filter(group => {
           return group !== null;
@@ -952,22 +1018,39 @@ export class MgtPeoplePicker extends MgtTemplatedComponent {
 
         if (this.groupId) {
           people =
-            (await findGroupMembers(graph, input, this.groupId, this.showMax, this.type, this.transitiveSearch)) || [];
+            (await findGroupMembers(
+              graph,
+              input,
+              this.groupId,
+              this.showMax,
+              this.type,
+              this.transitiveSearch,
+              this._groupFilters
+            )) || [];
         } else {
           if (this.type === PersonType.person || this.type === PersonType.any) {
             try {
-              if (this.userIds && this.userIds.length) {
-                people = await getUsersForUserIds(graph, this.userIds, input);
+              // Default UserType === any
+              if (this.userType === UserType.contact || this.userType === UserType.user) {
+                // we might have a user-filters property set, search for users with it.
+                if (this.userIds && this.userIds.length) {
+                  // has the user-ids proerty set
+                  people = await getUsersForUserIds(graph, this.userIds, input, this._userFilters);
+                } else {
+                  people = await findUsers(graph, input, this.showMax, this._userFilters);
+                }
               } else {
-                people = (await findPeople(graph, input, this.showMax, this.userType)) || [];
+                people = (await findPeople(graph, input, this.showMax, this.userType, this._peopleFilters)) || [];
               }
             } catch (e) {
               // nop
             }
 
-            if (people.length < this.showMax && this.userType !== UserType.contact) {
+            // Don't follow this path if a people-filters attribute is set on the component as the
+            // default type === PersonType.person
+            if (people.length < this.showMax && this.userType !== UserType.contact && this.type !== PersonType.person) {
               try {
-                const users = (await findUsers(graph, input, this.showMax)) || [];
+                const users = (await findUsers(graph, input, this.showMax, this._userFilters)) || [];
 
                 // make sure only unique people
                 const peopleIds = new Set(people.map(p => p.id));
@@ -981,10 +1064,11 @@ export class MgtPeoplePicker extends MgtTemplatedComponent {
               }
             }
           }
+
           if ((this.type === PersonType.group || this.type === PersonType.any) && people.length < this.showMax) {
             let groups = [];
             try {
-              groups = (await findGroups(graph, input, this.showMax, this.groupType)) || [];
+              groups = (await findGroups(graph, input, this.showMax, this.groupType, this._groupFilters)) || [];
               people = people.concat(groups);
             } catch (e) {
               // nop
@@ -993,7 +1077,6 @@ export class MgtPeoplePicker extends MgtTemplatedComponent {
         }
       }
     }
-
     //people = this.getUniquePeople(people);
     this._foundPeople = this.filterPeople(people);
   }
@@ -1592,7 +1675,7 @@ export class MgtPeoplePicker extends MgtTemplatedComponent {
     // check if people need to be updated
     // ensuring people list is displayed
     // find ids from selected people
-    if (people) {
+    if (people && people.length > 0) {
       const idFilter = this.selectedPeople.map(el => {
         return el.id ? el.id : el.displayName;
       });
