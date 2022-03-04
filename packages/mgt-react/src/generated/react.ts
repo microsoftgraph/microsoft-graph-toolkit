@@ -107,6 +107,9 @@ export type PeoplePickerProps = {
 	placeholder?: string;
 	selectionMode?: string;
 	userIds?: string[];
+	userFilters?: string;
+	peopleFilters?: string;
+	groupFilters?: string;
 	showMax?: number;
 	disableImages?: boolean;
 	disabled?: boolean;

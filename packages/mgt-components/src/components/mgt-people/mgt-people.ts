@@ -325,7 +325,7 @@ export class MgtPeople extends MgtTemplatedComponent {
    * @memberof MgtPeople
    */
   protected renderPeople(): TemplateResult {
-    const maxPeople = this.people.slice(0, this.showMax);
+    const maxPeople = this.people.slice(0, this.showMax).filter(pple => pple);
     return html`
       <ul class="people-list" aria-label="people">
         ${repeat(
