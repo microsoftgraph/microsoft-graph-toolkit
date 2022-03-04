@@ -268,6 +268,10 @@ export const personAvatarType = () => html`
   <mgt-person person-query="me" avatar-type="initials"></mgt-person>
 `;
 
+export const personDisableImageFetch = () => html`
+  <mgt-person person-query="me" disable-image-fetch></mgt-person>
+`;
+
 export const moreExamples = () => html`
   <style>
     .example {
