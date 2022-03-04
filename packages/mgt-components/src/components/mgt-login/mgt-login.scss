@@ -54,6 +54,7 @@ mgt-login .login-button {
     --color: #{$button__color--hover};
     background-color: $button__background-color--hover;
     --color-sub1: #{$button__color--hover};
+    border-radius: 4px;
   }
 
   &:focus {
@@ -84,6 +85,7 @@ mgt-login .popup {
   min-width: 240px;
   z-index: 1;
   color: set-var(popup__color, $theme-default, $login);
+  border-radius: 8px;
 
   mgt-person {
     --color-sub1: set-var(popup__color, $theme-default, $login);
@@ -95,6 +97,7 @@ mgt-login .popup-content {
   display: flex;
   flex-direction: column;
   padding: var(--popup-padding);
+  border-radius: 8px;
 }
 
 :host .popup-commands ul,
