@@ -47,7 +47,6 @@ mgt-people-picker .root {
     display: flex;
     flex-wrap: wrap;
     vertical-align: middle;
-    margin: 0 8px;
     list-style-type: none;
     font-style: normal;
     font-weight: normal;
@@ -187,6 +186,7 @@ mgt-people-picker .root {
         list-style-type: none;
         background-color: $dropdown__background-color;
         max-height: var(--mgt-flyout-set-height, unset);
+        border-radius: 8px;
         li {
           cursor: pointer;
         }
@@ -200,7 +200,11 @@ mgt-people-picker .root {
             font-style: normal;
             font-weight: 600;
             font-size: 14px;
-            &:hover,
+            margin: var(--file-item-margin, 4px);
+            border-radius: 4px;
+            &:hover {
+              background-color: $dropdown-item__background-color--hover;
+            }
             &.focused {
               background-color: $dropdown-item__background-color--hover;
             }
