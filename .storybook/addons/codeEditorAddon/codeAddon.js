@@ -154,7 +154,6 @@ export const withCodeEditor = makeDecorator({
                 }
             }
 
-<<<<<<< HEAD
         }
 
         const loadEditorContent = () => {
@@ -167,10 +166,6 @@ export const withCodeEditor = makeDecorator({
 
             storyElement.addEventListener('load', () => {
                 let doc = storyElement.contentDocument;
-=======
-    editor.addEventListener('fileUpdated', () => {
-      const storyElement = document.createElement('iframe');
->>>>>>> release/latest
 
                 let { html, css, js } = editor.files;
                 js = js.replace(
@@ -207,7 +202,6 @@ export const withCodeEditor = makeDecorator({
                 doc.close();
             });
 
-<<<<<<< HEAD
             storyElement.className = 'story-mgt-preview';
             storyElementWrapper.innerHTML = '';
             storyElementWrapper.appendChild(storyElement);
@@ -216,13 +210,6 @@ export const withCodeEditor = makeDecorator({
         editor.addEventListener('fileUpdated', loadEditorContent);
 
         const separator = document.createElement('div');
-=======
-      storyElement.className = 'story-mgt-preview';
-      storyElement.title = 'story-mgt-preview';
-      storyElementWrapper.innerHTML = '';
-      storyElementWrapper.appendChild(storyElement);
-    });
->>>>>>> release/latest
 
         setupEditorResize(storyElementWrapper, separator, editor, () => editor.layout());
 
