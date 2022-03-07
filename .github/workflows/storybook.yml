@@ -37,4 +37,5 @@ jobs:
           branch: gh-pages
           folder: storybook-static
           target-folder: next
-          clean-exclude: next/pr
+          clean-exclude: pr
+          token: ${{ secrets.GITHUB_TOKEN }}

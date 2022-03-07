@@ -16,8 +16,9 @@ module.exports = {
     //   }
     // }
   ],
-  stories: ['../stories/**/*.@(js|mdx)'],
+  stories: ['../stories/overview.stories.mdx', '../stories/**/*.@(js|mdx)'],
   addons: [
+    '@storybook/addon-docs'
     // '@storybook/addon-a11y/register',
     // '@storybook/addon-actions/register',
     // '@storybook/addon-knobs/register',

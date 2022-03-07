@@ -153,6 +153,12 @@ export const pickerDisabled = () => html`
   </mgt-people-picker>
 `;
 
+export const pickerDisableImages = () => html`
+  <mgt-people-picker
+    default-selected-user-ids="e3d0513b-449e-4198-ba6f-bd97ae7cae85, 40079818-3808-4585-903b-02605f061225" disable-images>
+  </mgt-people-picker>
+`;
+
 export const pickerDefaultSelectedUserIds = () => html`
   <mgt-people-picker
     default-selected-user-ids="e3d0513b-449e-4198-ba6f-bd97ae7cae85, 40079818-3808-4585-903b-02605f061225">
@@ -182,8 +188,28 @@ export const pickerAllowAnyEmail = () => html`
   </script>
 `;
 
-export const pickerUserIds = ()=> html`
+export const pickerUserIds = () => html`
   <mgt-people-picker
       user-ids="2804bc07-1e1f-4938-9085-ce6d756a32d2 ,e8a02cc7-df4d-4778-956d-784cc9506e5a,c8913c86-ceea-4d39-b1ea-f63a5b675166">
   </mgt-people-picker>
-`
+`;
+
+export const pickerUserFilters = () => html`
+  <mgt-people-picker
+    user-filters="startsWith(displayName,'a')"
+    user-type="user">
+  </mgt-people-picker>
+`;
+
+export const pickerPeopleFilters = () => html`
+  <mgt-people-picker
+      people-filters="jobTitle eq 'Web Marketing Manager'">
+  </mgt-people-picker>
+`;
+
+export const pickerGroupFilters = () => html`
+  <mgt-people-picker
+    group-filters="startsWith(displayName, 'a')"
+    type="group">
+  </mgt-people-picker>
+`;

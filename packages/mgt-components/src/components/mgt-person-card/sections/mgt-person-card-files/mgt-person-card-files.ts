@@ -160,7 +160,7 @@ export class MgtPersonCardFiles extends BasePersonCardSection {
 
   private handleFileClick(file: SharedInsight) {
     if (file.resourceReference && file.resourceReference.webUrl) {
-      window.open(file.resourceReference.webUrl, '_blank');
+      window.open(file.resourceReference.webUrl, '_blank', 'noreferrer');
     }
   }
 }
