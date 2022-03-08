@@ -201,6 +201,7 @@ export class MgtTodo extends MgtTasksBase {
 
     const taskDue = html`
       <span class="NewTaskDue">
+        ${this.renderCalendarIcon()}
         <input
           type="date"
           label="new-taskDate-input"

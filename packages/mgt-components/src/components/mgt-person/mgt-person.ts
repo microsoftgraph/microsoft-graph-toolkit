@@ -346,6 +346,19 @@ export class MgtPerson extends MgtTemplatedComponent {
   public fetchImage: boolean;
 
   /**
+   * Sets whether to disable the person image fetch
+   * from the Microsoft Graph
+   *
+   * @type {boolean}
+   * @memberof MgtPerson
+   */
+  @property({
+    attribute: 'disable-image-fetch',
+    type: Boolean
+  })
+  public disableImageFetch: boolean;
+
+  /**
    * Determines and sets person avatar
    *
    *
@@ -526,6 +539,7 @@ export class MgtPerson extends MgtTemplatedComponent {
     this.line3Property = 'jobTitle';
     this.view = ViewType.image;
     this.avatarSize = 'auto';
+    this.disableImageFetch = false;
     this._isInvalidImageSrc = false;
     this._avatarType = 'photo';
   }
@@ -548,6 +562,9 @@ export class MgtPerson extends MgtTemplatedComponent {
 
     if (!person && !image) {
       return this.renderNoData();
+    }
+    if (!(person && person.personImage) && image) {
+      person.personImage = image;
     }
 
     // Default template
@@ -1016,7 +1033,7 @@ export class MgtPerson extends MgtTemplatedComponent {
     } else if (this.userId || this.personQuery === 'me') {
       // Use userId or 'me' query to get the person and image
       let person;
-      if (this._avatarType === 'photo') {
+      if (this._avatarType === 'photo' && !this.disableImageFetch) {
         person = await getUserWithPhoto(graph, this.userId, personProps);
       } else {
         if (this.personQuery === 'me') {
@@ -1037,7 +1054,7 @@ export class MgtPerson extends MgtTemplatedComponent {
 
       if (people && people.length) {
         this.personDetailsInternal = people[0];
-        if (this._avatarType === 'photo') {
+        if (this._avatarType === 'photo' && !this.disableImageFetch) {
           const image = await getPersonImage(graph, people[0], MgtPerson.config.useContactApis);
 
           if (image) {
@@ -1154,7 +1171,7 @@ export class MgtPerson extends MgtTemplatedComponent {
       return this._fetchedImage;
     }
 
-    const person = this.personDetailsInternal;
+    const person = this.personDetailsInternal || this.personDetails;
     return person && person.personImage ? person.personImage : null;
   }
 

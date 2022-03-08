@@ -9,7 +9,7 @@ import { html } from 'lit-element';
 import { withCodeEditor } from '../../../.storybook/addons/codeEditorAddon/codeAddon';
 
 export default {
-  title: 'Components | mgt-people-picker',
+  title: 'Components / mgt-people-picker',
   component: 'mgt-people-picker',
   decorators: [withCodeEditor]
 };
@@ -74,10 +74,9 @@ export const copyOrCutToPaste = () => html`
    <mgt-people-picker></mgt-people-picker>
  `;
 
-
 export const pasteListOfUserIds = () => html`
 <mgt-people-picker></mgt-people-picker>
 <!-- You can paste emails or user IDs that are delimited with a comma(",") or semi-colon(";") -->
 <!-- 48d31887-5fad-4d73-a9f5-3c356e68a038,24fcbca3-c3e2-48bf-9ffc-c7f81b81483d -->
 <!-- MeganB@M365x214355.onmicrosoft.com;martin@musale.com;BrianJ@M365x214355.onmicrosoft.com-->
-`
+`;

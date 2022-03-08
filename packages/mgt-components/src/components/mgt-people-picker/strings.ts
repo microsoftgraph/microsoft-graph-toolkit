@@ -8,5 +8,8 @@
 export const strings = {
   inputPlaceholderText: 'Start typing a name',
   noResultsFound: `We didn't find any matches.`,
-  loadingMessage: 'Loading...'
+  loadingMessage: 'Loading...',
+  suggestedContact: 'suggested contact',
+  suggestedContacts: 'suggested contacts',
+  selected: 'selected'
 };

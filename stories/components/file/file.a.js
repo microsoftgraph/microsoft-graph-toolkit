@@ -9,7 +9,7 @@ import { html } from 'lit-element';
 import { withCodeEditor } from '../../../.storybook/addons/codeEditorAddon/codeAddon';
 
 export default {
-  title: 'Components | mgt-file',
+  title: 'Components / mgt-file',
   component: 'mgt-file',
   decorators: [withCodeEditor]
 };

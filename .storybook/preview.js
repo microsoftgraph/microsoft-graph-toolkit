@@ -15,6 +15,11 @@ import customElements from '../custom-elements.json';
 setCustomElements(customElements);
 
 addParameters({
+  previewTabs: {
+    'storybook/docs/panel': {
+      hidden: true
+    }
+  },
   docs: {
     iframeHeight: '400px',
     inlineStories: false
