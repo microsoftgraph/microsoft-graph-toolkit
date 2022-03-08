@@ -6,7 +6,7 @@
  */
 
 import { IProvider, ProviderState, createFromProvider } from '@microsoft/mgt-element';
-import { TeamsUserCredential } from '@microsoft/teamsfx';
+import { TeamsFx } from '@microsoft/teamsfx';
 
 /**
  * TeamsFx Provider handler
@@ -27,30 +27,32 @@ export class TeamsFxProvider extends IProvider {
   }
 
   /**
-   * returns _credential
+   * returns teamsfx instance
    *
    * @readonly
    * @memberof TeamsFxProvider
    */
-  public get credential(): TeamsUserCredential {
-    return this._credential;
+  public get teamsfx(): TeamsFx {
+    return this._teamsfx;
   }
 
   /**
    * Privilege level for authentication
    *
-   * @type {string[]}
+   * Can use string array or space-separated string, such as ["User.Read", "Application.Read.All"] or "User.Read Application.Read.All"
+   *
+   * @type {string | string[]}
    * @memberof TeamsFxProvider
    */
-  private scopes: string[] = [];
+  private scopes: string | string[] = [];
 
   /**
-   * Underlying TeamsFx credential
+   * TeamsFx instance
    *
-   * @type {TeamsUserCredential}
+   * @type {TeamsFx}
    * @memberof TeamsFxProvider
    */
-  private readonly _credential: TeamsUserCredential;
+  private readonly _teamsfx: TeamsFx;
 
   /**
    * Access token provided by TeamsFx
@@ -60,17 +62,21 @@ export class TeamsFxProvider extends IProvider {
    */
   private _accessToken: string = '';
 
-  constructor(credential: TeamsUserCredential, scopes: string[]) {
+  constructor(teamsfx: TeamsFx, scopes: string | string[]) {
     super();
 
-    if (!this._credential) {
-      this._credential = credential;
+    if (!this._teamsfx) {
+      this._teamsfx = teamsfx;
     }
 
-    if (!scopes || scopes.length === 0) {
+    this.validateScopesType(scopes);
+
+    const scopesArr = this.getScopesArray(scopes);
+
+    if (!scopesArr || scopesArr.length === 0) {
       this.scopes = ['.default'];
     } else {
-      this.scopes = scopes;
+      this.scopes = scopesArr;
     }
 
     this.graph = createFromProvider(this);
@@ -84,12 +90,13 @@ export class TeamsFxProvider extends IProvider {
    */
   public async getAccessToken(): Promise<string> {
     try {
-      const accessToken = await this.credential.getToken(this.scopes);
+      const accessToken = await this.teamsfx.getCredential().getToken(this.scopes);
       this._accessToken = accessToken ? accessToken.token : '';
       if (!this._accessToken) {
         throw new Error('Access token is null');
       }
     } catch (error) {
+      console.error('Cannot get access token due to error: ' + error.toString());
       this.setState(ProviderState.SignedOut);
       this._accessToken = '';
     }
@@ -106,10 +113,34 @@ export class TeamsFxProvider extends IProvider {
     const token: string = await this.getAccessToken();
 
     if (!token) {
-      await this.credential.login(this.scopes);
+      await this.teamsfx.login(this.scopes);
     }
 
     this._accessToken = token ?? (await this.getAccessToken());
     this.setState(this._accessToken ? ProviderState.SignedIn : ProviderState.SignedOut);
+  }
+
+  private validateScopesType(value: any): void {
+    // string
+    if (typeof value === 'string' || value instanceof String) {
+      return;
+    }
+
+    // empty array
+    if (Array.isArray(value) && value.length === 0) {
+      return;
+    }
+
+    // string array
+    if (Array.isArray(value) && value.length > 0 && value.every(item => typeof item === 'string')) {
+      return;
+    }
+
+    throw new Error('The type of scopes is not valid, it must be string or string array');
+  }
+
+  private getScopesArray(scopes: string | string[]): string[] {
+    const scopesArray: string[] = typeof scopes === 'string' ? scopes.split(' ') : scopes;
+    return scopesArray.filter(x => x !== null && x !== '');
   }
 }

@@ -17,13 +17,13 @@ The `@microsoft/mgt-teamsfx-provider` package exposes the `TeamsFxProvider` clas
 2. Initialize the provider in code with `TeamsFxConfig`
 
     ```ts
-    import {Providers, LoginType} from '@microsoft/mgt-element';
+    import {Providers} from '@microsoft/mgt-element';
     import {TeamsFxProvider} from '@microsoft/mgt-teamsfx-provider';
     import {TeamsUserCredential} from "@microsoft/teamsfx";
 
     const scope = ["User.Read"];
-    const credential = new TeamsUserCredential();
-    const provider = new TeamsFxProvider(credential, scope);
+    const teamsfx = new TeamsFx();
+    const provider = new TeamsFxProvider(teamsfx, scope);
     Providers.globalProvider = provider;
    ```
 
