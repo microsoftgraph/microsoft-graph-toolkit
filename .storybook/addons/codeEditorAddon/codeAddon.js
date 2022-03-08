@@ -178,7 +178,8 @@ export const withCodeEditor = makeDecorator({
             <head>
               <script type="module" src="${mgtScriptName}"></script>
               <script type="module">
-                ${providerInitCode}
+                import {Providers, MockProvider} from "${mgtScriptName}";
+                Providers.globalProvider = new MockProvider(true);
               </script>
               <style>
                 html, body {
