@@ -616,8 +616,13 @@ export class MgtAgenda extends MgtTemplatedComponent {
     // we get the date in the local time that is in the response.
     const localizedDate = new Date(date.getTime() - date.getTimezoneOffset() * 60 * 1000);
 
-    let hours = localizedDate.getUTCHours();
-    const minutes = localizedDate.getUTCMinutes();
+    let hours = localizedDate.getHours();
+    let minutes = localizedDate.getMinutes();
+
+    if(this.preferredTimezone) {
+      hours = localizedDate.getUTCHours();
+      minutes = localizedDate.getUTCMinutes();
+    }
     const ampm = hours >= 12 ? 'PM' : 'AM';
     hours = hours % 12;
     hours = hours ? hours : 12;
