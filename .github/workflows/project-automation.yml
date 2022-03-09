@@ -11,6 +11,29 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - run: |
-          gh api graphql -f query='mutation($project:ID!, $issue:ID!) { addProjectNextItem(input: {projectId: $project, contentId: $issue}) { projectNextItem { id }  } }' -f project=${{ secrets.PROJECT_ID }} -f issue=${{ github.event.issue.node_id }}
+          gh api graphql -f query='
+            query($org: String!, $number: Int!) {
+              organization(login: $org){
+                projectNext(number: $number) {
+                  id
+                  fields(first:20) {
+                    nodes {
+                      id
+                      name
+                      settings
+                    }
+                  }
+                }
+              }
+            }' -f org=${{ secrets.PROJECT_ORGANIZATION }} -F number=${{ secrets.PROJECT_NUMBER }} > project_data.json
+
+          echo 'PROJECT_ID='$(jq '.data.organization.projectNext.id' project_data.json) >> $GITHUB_ENV
+
+          gh api graphql -f query='
+            mutation($project:ID!, $issue:ID!) { 
+              addProjectNextItem(input: {projectId: $project, contentId: $issue}) { 
+                projectNextItem { id }  
+              } 
+            }' -f project=$PROJECT_ID -f issue=${{ github.event.issue.node_id }}
         env:
           GITHUB_TOKEN: ${{ secrets.PROJECT_ACCESS_TOKEN }}
