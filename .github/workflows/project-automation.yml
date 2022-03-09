@@ -6,11 +6,15 @@ on:
       - opened
 
 jobs:
-  add_issue_to_project:
-    name: Add new issues to project board
+  track_issue:
     runs-on: ubuntu-latest
     steps:
-      - run: |
+      - name: Get project data
+        env:
+          GITHUB_TOKEN: ${{ secrets.PROJECT_ACCESS_TOKEN }}
+          PROJECT_ORGANIZATION: ${{ secrets.PROJECT_ORGANIZATION }}
+          PROJECT_NUMBER: ${{ secrets.PROJECT_NUMBER }}
+        run: |
           gh api graphql -f query='
             query($org: String!, $number: Int!) {
               organization(login: $org){
@@ -25,15 +29,18 @@ jobs:
                   }
                 }
               }
-            }' -f org=${{ secrets.PROJECT_ORGANIZATION }} -F number=${{ secrets.PROJECT_NUMBER }} > project_data.json
+            }' -f org=$PROJECT_ORGANIZATION -F number=$PROJECT_NUMBER > project_data.json
 
           echo 'PROJECT_ID='$(jq '.data.organization.projectNext.id' project_data.json) >> $GITHUB_ENV
-
+  
+      - name: Add issue to project        
+        env:
+          GITHUB_TOKEN: ${{ secrets.PROJECT_ACCESS_TOKEN }}
+          ISSUE_ID: ${{ github.event.issue.node_id }}
+        run: |
           gh api graphql -f query='
             mutation($project:ID!, $issue:ID!) { 
               addProjectNextItem(input: {projectId: $project, contentId: $issue}) { 
                 projectNextItem { id }  
               } 
-            }' -f project=$PROJECT_ID -f issue=${{ github.event.issue.node_id }}
-        env:
-          GITHUB_TOKEN: ${{ secrets.PROJECT_ACCESS_TOKEN }}
+            }' -f project=$PROJECT_ID -f issue=$ISSUE_ID
