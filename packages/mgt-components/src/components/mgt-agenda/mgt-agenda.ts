@@ -619,7 +619,7 @@ export class MgtAgenda extends MgtTemplatedComponent {
     let hours = localizedDate.getHours();
     let minutes = localizedDate.getMinutes();
 
-    if(this.preferredTimezone) {
+    if (this.preferredTimezone) {
       hours = localizedDate.getUTCHours();
       minutes = localizedDate.getUTCMinutes();
     }
