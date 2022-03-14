@@ -52,14 +52,21 @@
 
     <mgt-mock-provider></mgt-mock-provider>
 
-    <mgt-login></mgt-login>
-    <mgt-person person-query="me" view="twoLines" person-card="click" show-presence></mgt-person>
-    <mgt-people-picker></mgt-people-picker>
-    <mgt-teams-channel-picker></mgt-teams-channel-picker>
+    <!-- <mgt-login></mgt-login>
+    <mgt-person person-query="me" view="twoLines" person-card="click" show-presence></mgt-person> -->
+    <!-- if group-ids is set, then type=group by default.
+    if group-type is set, then type can be any or group. If it's person then this has no effect -->
+    <mgt-people-picker
+      group-ids="94cb7dd0-cb3b-49e0-ad15-4efeb3c7d3e9,f2861ed7-abca-4556-bf0c-39ddc717ad81"
+      type="group"
+      group-type="security"
+      transitive-search="true"
+    ></mgt-people-picker>
+    <!-- <mgt-teams-channel-picker></mgt-teams-channel-picker>
     <mgt-tasks></mgt-tasks>
     <mgt-agenda group-by-day></mgt-agenda>
     <mgt-people show-presence></mgt-people>
     <mgt-todo></mgt-todo>
-    <mgt-file-list></mgt-file-list>
+    <mgt-file-list></mgt-file-list> -->
   </body>
 </html>

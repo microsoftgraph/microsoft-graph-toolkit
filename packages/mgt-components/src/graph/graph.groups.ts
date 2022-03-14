@@ -303,7 +303,12 @@ export async function findGroupsFromGroup(
  * @returns {(Promise<User>)}
  * @memberof Graph
  */
-export async function getGroup(graph: IGraph, id: string, requestedProps?: string[]): Promise<Group> {
+export async function getGroup(
+  graph: IGraph,
+  id: string,
+  requestedProps?: string[],
+  transitive: boolean = false
+): Promise<Group> {
   const scopes = 'Group.Read.All';
   let cache: CacheStore<CacheGroup>;
 
@@ -326,6 +331,9 @@ export async function getGroup(graph: IGraph, id: string, requestedProps?: strin
   }
 
   let apiString = `/groups/${id}`;
+  if (transitive) {
+    apiString += '/transitiveMembers';
+  }
   if (requestedProps) {
     apiString = apiString + '?$select=' + requestedProps.toString();
   }
@@ -349,7 +357,8 @@ export async function getGroup(graph: IGraph, id: string, requestedProps?: strin
 export async function getGroupsForGroupIds(
   graph: IGraph,
   groupIds: string[],
-  groupFilters: string = ''
+  groupFilters: string = '',
+  transitive: boolean = false
 ): Promise<Group[]> {
   if (!groupIds || groupIds.length === 0) {
     return [];
@@ -373,6 +382,10 @@ export async function getGroupsForGroupIds(
       groupDict[id] = group.group ? JSON.parse(group.group) : null;
     } else if (id !== '') {
       let apiUrl: string = `/groups/${id}`;
+      if (transitive) {
+        apiUrl += '/transitiveMembers';
+      }
+      console.log('apiUrl ', apiUrl);
       if (groupFilters) {
         apiUrl += `${apiUrl}?$filters=${groupFilters}`;
       }
@@ -386,9 +399,13 @@ export async function getGroupsForGroupIds(
     for (const id of groupIds) {
       const response = responses.get(id);
       if (response && response.content) {
-        groupDict[id] = response.content;
+        if (transitive) {
+          groupDict[id] = response?.content?.value;
+        } else {
+          groupDict[id] = response?.content;
+        }
         if (getIsGroupsCacheEnabled()) {
-          cache.putValue(id, { group: JSON.stringify(response.content) });
+          cache.putValue(id, { group: JSON.stringify(groupDict[id]) });
         }
       }
     }
@@ -397,7 +414,9 @@ export async function getGroupsForGroupIds(
     // fallback to making the request one by one
     try {
       // call getGroup for all the users that weren't cached
-      groupIds.filter(id => notInCache.includes(id)).forEach(id => (groupDict[id] = getGroup(graph, id)));
+      groupIds
+        .filter(id => notInCache.includes(id))
+        .forEach(id => (groupDict[id] = getGroup(graph, id, [], transitive)));
       if (getIsGroupsCacheEnabled()) {
         // store all users that weren't retrieved from the cache, into the cache
         groupIds
