@@ -1,12 +1,14 @@
-<meta name="theme-color" content="#F6F9FC"/>
+<meta name="theme-color" content="#F6F9FC" />
 <link rel="shortcut icon" type="image/png" href="/favicon.png" />
 <link rel="manifest" href="manifest.json" />
-<script>navigator.serviceWorker.register("sw.js")</script>
+<script>
+  navigator.serviceWorker.register("sw.js")
+</script>
 
-<footer class="storybook-footer" >
+<footer class="storybook-footer">
   Microsoft Graph Toolkit Playground was founded by Microsoft as a community guided, open source project.
-  <a tabindex='-1' href="https://privacy.microsoft.com/en-us/privacystatement">Privacy & cookies</a>
-  <a tabindex='-1' href="https://www.microsoft.com/en-us/legal/intellectualproperty/copyright/default">Term of use</a>
+  <a tabindex="-1" href="https://privacy.microsoft.com/en-us/privacystatement">Privacy & cookies</a>
+  <a tabindex="-1" href="https://www.microsoft.com/en-us/legal/intellectualproperty/copyright/default">Term of use</a>
 </footer>
 
 <script src="https://consentdeliveryfd.azurefd.net/mscc/lib/v2/wcp-consent.js"></script>
@@ -62,7 +64,7 @@
 
     const repoLink = document.createElement('a');
     repoLink.href = 'https://aka.ms/mgt';
-    repoLink.target='_blank';
+    repoLink.target = '_blank';
     repoLink.style = linkStyle;
     repoLink.appendChild(repoLinkContent);
 
@@ -82,7 +84,7 @@
 
     const npmLink = document.createElement('a');
     npmLink.href = 'https://www.npmjs.com/package/@microsoft/mgt';
-    npmLink.target='_blank';
+    npmLink.target = '_blank';
     npmLink.style = linkStyle + ' margin-left: 0.5rem;';
     npmLink.appendChild(npmLinkContent);
 
@@ -97,11 +99,44 @@
   }
 </script>
 
+<script type="text/javascript">
+  const windowWidth = window.innerWidth;
+  // Whenever the browser zoom is added or reduced, as long as it's
+  // over 100%, then get the footer height and set that as the value
+  // of the bottom offset of the bar.
+  const updateOnZoom = () => {
+    const pr = window.devicePixelRatio;
+    if ((pr * 100).toFixed(0) > 110) {
+      setUpBottomBar();
+    }
+    // Add an event listener to get any zoom changes based on
+    // on the resolution.
+    matchMedia(`(resolution: ${pr}dppx)`).addEventListener("change", updateOnZoom, { once: true })
+  }
+
+  // Whenever the browser is resized, also get the footer height and set the
+  // bottom bar value offset to it.
+  const updateOnWindowResize = () => {
+    if (windowWidth.innerWidth != windowWidth) {
+      setUpBottomBar();
+    }
+    window.addEventListener("resize", updateOnWindowResize, { once: true })
+  }
+
+  const setUpBottomBar = () => {
+    const footer = document.getElementsByClassName("storybook-footer")[0];
+    const bottomBar = document.getElementsByClassName("css-1td7bem")
+    if (bottomBar && bottomBar.length > 0) {
+      bottomBar[0].style.bottom = `${footer.clientHeight}px`;
+    }
+  }
+  updateOnZoom();
+  updateOnWindowResize();
 </script>
 
 <style>
   /* this keeps the storybook body area above footer */
-  #root > div:first-of-type {
+  #root>div:first-of-type {
     height: calc(100% - 40px);
   }
 
@@ -133,7 +168,7 @@
   }
 
   @media (max-width: 768px) {
-    #root > div:first-of-type {
+    #root>div:first-of-type {
       height: calc(100% - 50px);
     }
   }
@@ -156,5 +191,3 @@
     color: inherit;
   }
 </style>
-
-
