@@ -123,6 +123,12 @@
     window.addEventListener("resize", updateOnWindowResize, { once: true })
   }
 
+  const updateOnInitialLoad = () => {
+    setUpBottomBar();
+    window.addEventListener('load', updateOnInitialLoad, { once: true });
+  }
+
+
   const setUpBottomBar = () => {
     const footer = document.getElementsByClassName("storybook-footer")[0];
     const bottomBar = document.getElementsByClassName("css-1td7bem")
@@ -130,6 +136,8 @@
       bottomBar[0].style.bottom = `${footer.clientHeight}px`;
     }
   }
+
+  updateOnInitialLoad();
   updateOnZoom();
   updateOnWindowResize();
 </script>
