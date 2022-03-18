@@ -50,7 +50,12 @@ export enum PersonViewType {
   /**
    * Render the avatar and three lines of text
    */
-  threelines = 5
+  threelines = 5,
+
+  /**
+   * Render the avatar and four lines of text
+   */
+  fourlines = 6
 }
 
 export enum avatarType {
@@ -89,6 +94,7 @@ const defaultPersonProperties = [
   'displayName',
   'givenName',
   'jobTitle',
+  'department',
   'mail',
   'mobilePhone',
   'officeLocation',
@@ -108,6 +114,7 @@ const defaultPersonProperties = [
  * @fires line1clicked - Fired when line1 is clicked
  * @fires line2clicked - Fired when line2 is clicked
  * @fires line3clicked - Fired when line3 is clicked
+ * @fires line4clicked - Fired when line4 is clicked
  *
  * @cssprop --avatar-size - {Length} Avatar size
  * @cssprop --avatar-border - {String} Avatar border
@@ -130,6 +137,10 @@ const defaultPersonProperties = [
  * @cssprop --line3-font-weight - {Length} Line 2 font weight
  * @cssprop --line3-color - {Color} Line 2 color
  * @cssprop --line3-text-transform - {String} Line 2 text transform
+ * @cssprop --line4-font-size - {Length} Line 2 font size
+ * @cssprop --line4-font-weight - {Length} Line 2 font weight
+ * @cssprop --line4-color - {Color} Line 2 color
+ * @cssprop --line4-text-transform - {String} Line 2 text transform
  * @cssprop --details-spacing - {Length} spacing between avatar and person details
  * @cssprop --person-flex-direction - {String} flex direction associated with the avatar and details
  */
@@ -480,13 +491,22 @@ export class MgtPerson extends MgtTemplatedComponent {
   @property({ attribute: 'line2-property' }) public line2Property: string;
 
   /**
-   * Sets the property of the personDetailsInternal to use for the second line of text.
+   * Sets the property of the personDetailsInternal to use for the third line of text.
    * Default is mail.
    *
    * @type {string}
    * @memberof MgtPerson
    */
   @property({ attribute: 'line3-property' }) public line3Property: string;
+
+  /**
+   * Sets the property of the personDetailsInternal to use for the fourth line of text.
+   * Default is mail.
+   *
+   * @type {string}
+   * @memberof MgtPerson
+   */
+  @property({ attribute: 'line4-property' }) public line4Property: string;
 
   /**
    * Sets what data to be rendered (image only, oneLine, twoLines).
@@ -536,8 +556,9 @@ export class MgtPerson extends MgtTemplatedComponent {
     // defaults
     this.personCardInteraction = PersonCardInteraction.none;
     this.line1Property = 'displayName';
-    this.line2Property = 'email';
-    this.line3Property = 'jobTitle';
+    this.line2Property = 'jobTitle';
+    this.line3Property = 'department';
+    this.line4Property = 'email';
     this.view = ViewType.image;
     this.avatarSize = 'auto';
     this.disableImageFetch = false;
@@ -848,6 +869,10 @@ export class MgtPerson extends MgtTemplatedComponent {
     this.fireCustomEvent('line3clicked', this.personDetailsInternal);
   }
 
+  private handleLine4Clicked() {
+    this.fireCustomEvent('line4clicked', this.personDetailsInternal);
+  }
+
   /**
    * Render the details part of the person template.
    *
@@ -922,6 +947,24 @@ export class MgtPerson extends MgtTemplatedComponent {
           details.push(html`
             <div class="line3" @click=${() =>
               this.handleLine3Clicked()} role="presentation" aria-label="${text}">${text}</div>
+          `);
+        }
+      }
+    }
+
+    if (this.view > ViewType.threelines) {
+      if (this.hasTemplate('line4')) {
+        // Render the line4 template
+        const template = this.renderTemplate('line4', { person });
+        details.push(html`
+          <div class="line4" @click=${() => this.handleLine4Clicked()}>${template}</div>
+        `);
+      } else {
+        // Render the line4 property value
+        const text = this.getTextFromProperty(person, this.line4Property);
+        if (text) {
+          details.push(html`
+            <div class="line4" @click=${() => this.handleLine4Clicked()} aria-label="${text}">${text}</div>
           `);
         }
       }
@@ -1009,8 +1052,14 @@ export class MgtPerson extends MgtTemplatedComponent {
     const graph = provider.graph.forComponent(this);
 
     // Prepare person props
-    let personProps = [...defaultPersonProperties, this.line1Property, this.line2Property, this.line3Property];
-    personProps = personProps.filter(email => email !== 'email');
+    let personProps = [
+      ...defaultPersonProperties,
+      this.line1Property,
+      this.line2Property,
+      this.line3Property,
+      this.line4Property
+    ];
+    // personProps = personProps.filter(email => email !== 'email');
 
     let details = this.personDetailsInternal || this.personDetails;
 

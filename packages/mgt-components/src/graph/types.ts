@@ -60,5 +60,10 @@ export enum ViewType {
   /**
    * Render the avatar and three lines of text
    */
-  threelines = 5
+  threelines = 5,
+
+  /**
+   * Render the avatar and four lines of text
+   */
+  fourlines = 6
 }
