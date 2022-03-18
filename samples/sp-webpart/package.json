@@ -11,7 +11,7 @@
   "dependencies": {
     "@microsoft/mgt-react": "*",
     "@microsoft/mgt-spfx": "*",
-    "@microsoft/sp-core-library": "1.13.0",
+    "@microsoft/sp-core-library": "1.14.0",
     "@microsoft/sp-lodash-subset": "1.13.0",
     "@microsoft/sp-office-ui-fabric-core": "1.13.0",
     "@microsoft/sp-property-pane": "1.13.0",
