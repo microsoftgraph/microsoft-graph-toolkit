@@ -1015,6 +1015,24 @@ export class MgtPerson extends MgtTemplatedComponent {
       }
     }
 
+    if (this.view > ViewType.threelines) {
+      if (this.hasTemplate('line4')) {
+        // Render the line4 template
+        const template = this.renderTemplate('line4', { person });
+        details.push(html`
+          <div class="line4" @click=${() => this.handleLine4Clicked()}>${template}</div>
+        `);
+      } else {
+        // Render the line4 property value
+        const text = this.getTextFromProperty(person, this.line4Property);
+        if (text) {
+          details.push(html`
+            <div class="line4" @click=${() => this.handleLine4Clicked()} aria-label="${text}">${text}</div>
+          `);
+        }
+      }
+    }
+
     const detailsClasses = classMap({
       details: true,
       small: !this.isLargeAvatar(),
