@@ -318,3 +318,18 @@ mgt-flyout {
     text-align: right !important;
   }
 }
+
+@media screen and (-ms-high-contrast: active) {
+  svg {
+    fill: white !important;
+    color: white !important;
+  }
+
+  .flyout-root {
+    border: 1px solid rgb(255, 255, 255);
+  }
+
+  .people-list .list-person {
+    border: solid 1px rgb(255, 255, 255);
+  }
+}

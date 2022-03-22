@@ -489,3 +489,15 @@ mgt-person .avatar-icon {
     }
   }
 }
+
+@media screen and (-ms-high-contrast: active) {
+  // .person-root {
+  //   border: 1px solid rgb(255, 255, 255);
+  //   padding: 11px 13px;
+  // }
+
+  :host svg,
+  mgt-person svg {
+    fill: rgb(255, 255, 255) !important;
+  }
+}

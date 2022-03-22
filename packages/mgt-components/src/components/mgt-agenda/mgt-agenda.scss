@@ -185,3 +185,10 @@ mgt-agenda .event-attendee-loading {
     }
   }
 }
+
+@media screen and (-ms-high-contrast: active) {
+  svg {
+    fill: white !important;
+    color: white !important;
+  }
+}

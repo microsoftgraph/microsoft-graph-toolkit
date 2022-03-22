@@ -356,3 +356,11 @@
     padding-left: 10px;
   }
 }
+
+@media screen and (-ms-high-contrast: active) {
+  .root {
+    svg {
+      fill: rgb(255, 255, 255) !important;
+    }
+  }
+}

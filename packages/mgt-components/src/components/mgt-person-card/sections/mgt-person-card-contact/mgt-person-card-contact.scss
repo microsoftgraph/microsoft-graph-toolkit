@@ -139,3 +139,18 @@
     }
   }
 }
+
+@media screen and (-ms-high-contrast: active) {
+  .root svg {
+    fill: rgb(255, 255, 255) !important;
+    fill-rule: nonzero !important;
+    clip-rule: nonzero !important;
+
+    path,
+    rect {
+      fill: rgb(255, 255, 255) !important;
+      fill-rule: nonzero !important;
+      clip-rule: nonzero !important;
+    }
+  }
+}

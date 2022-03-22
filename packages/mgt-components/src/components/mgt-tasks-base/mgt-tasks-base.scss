@@ -708,3 +708,17 @@ $task-border-completed: var(--task-complete-border, 2px dotted inherit);
     }
   }
 }
+
+@media screen and (-ms-high-contrast: active) {
+  :host svg {
+    fill: rgb(255, 255, 255) !important;
+    fill-rule: nonzero !important;
+    clip-rule: nonzero !important;
+
+    path {
+      fill: rgb(255, 255, 255) !important;
+      fill-rule: nonzero !important;
+      clip-rule: nonzero !important;
+    }
+  }
+}

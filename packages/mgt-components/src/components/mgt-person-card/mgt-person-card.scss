@@ -296,3 +296,18 @@ $person-card-details-item-font-size: var(--person-card-details-item-font-size, 1
     -ms-filter: 'FlipH';
   }
 }
+
+@media screen and (-ms-high-contrast: active) {
+  .root {
+    border: 1px solid rgb(255, 255, 255);
+    border-radius: inherit;
+
+    svg {
+      fill: rgb(255, 255, 255) !important;
+    }
+  }
+  svg,
+  .expanded-details-container > svg {
+    fill: rgb(255, 255, 255) !important;
+  }
+}
