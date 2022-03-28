@@ -93,7 +93,7 @@ mgt-person .person-root {
     cursor: $avatar-cursor;
 
     .user-presence {
-      margin: 0;
+      margin: 1px;
       position: absolute;
       left: calc(#{$avatar-size} * 0.72 - 2px);
       top: calc(#{$avatar-size} * 0.72 - 2px);
