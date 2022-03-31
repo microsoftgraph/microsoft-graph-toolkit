@@ -91,6 +91,25 @@
     usefulLinksContainer.append(repoLink, npmLink);
 
     sidebarNode.insertBefore(usefulLinksContainer, sidebarNode.childNodes[1]);
+
+    const arrows = document.getElementsByClassName("css-bt79wf");
+  
+    for (let i = 0; i < arrows.length; i++) {
+      const arrowSvg = document.createElementNS(xmlns, "svg");
+      arrowSvg.setAttributeNS(null, "viewBox", "0 0 12 12");
+      arrowSvg.setAttributeNS(null, "width", "12");
+      arrowSvg.setAttributeNS(null, "height", "12");
+      arrowSvg.setAttributeNS(null, "style", "margin-left:-8px;");
+
+      const arrowSvgPath = "M8 7L4.46481 10.5359L4.46481 7L4.46481 3.46413L8 7Z";
+      const path = document.createElementNS(xmlns, "path");
+      path.setAttributeNS(null, "d", arrowSvgPath);
+
+      arrowSvg.appendChild(path);
+
+      const arrow = arrows[i];
+      arrow.appendChild(arrowSvg);
+    }
   }
 
   function createSvg(svgPath, svgTitle) {
@@ -120,25 +139,53 @@
 </script>
 
 <style>
+  .css-bt79wf {
+    border-top: none;
+    border-bottom: none;
+    border-left: none;
+    margin-top: 0px;
+  }
+
+  .css-1j9r8vi {
+    border-top: none;
+    border-bottom: none;
+    border-left: none;
+    margin-left: 15px;
+    margin-top: 10px;
+  }
+
+  .css-bt79wf>svg>path,.css-1j9r8vi>svg>path {
+    color: rgba(153, 153, 153, 0.6) !important;
+    fill: rgba(153, 153, 153, 0.6) !important;
+  }
+
   @media screen and (-ms-high-contrast:active) {
     #root,
     svg,
-    button,
-    .css-bt79wf,
-    .css-1j9r8vi {
-      color: rgb(255, 255, 255) !important;
-    }
-
-    svg {
+    svg>path,
+    button {
       fill: rgb(255, 255, 255) !important;
-    }
-
-    .css-rl1ij0 svg {
-      color: white !important;
-    }
-
-    .css-128qwy8 {
       color: rgb(255, 255, 255) !important;
+    }
+
+
+    .css-bt79wf {
+      border-top: none;
+      border-bottom: none;
+      border-left: none;
+      margin-top: 0px;
+    }
+    .css-1j9r8vi {
+      border-top: none;
+      border-bottom: none;
+      border-left: none;
+      margin-left: 15px;
+      margin-top: 10px;
+    }
+
+    .css-bt79wf>svg>path,.css-1j9r8vi>svg>path {
+      color: rgba(255,255,255) !important;
+      fill: rgba(255,255,255) !important;
     }
   }
 </style>
