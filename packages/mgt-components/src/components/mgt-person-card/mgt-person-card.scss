@@ -302,12 +302,19 @@ $person-card-details-item-font-size: var(--person-card-details-item-font-size, 1
     border: 1px solid rgb(255, 255, 255);
     border-radius: inherit;
 
-    svg {
+    svg,
+    svg > path {
       fill: rgb(255, 255, 255) !important;
+      fill-rule: nonzero !important;
+      clip-rule: nonzero !important;
     }
   }
   svg,
-  .expanded-details-container > svg {
+  svg > path,
+  .expanded-details-container > svg,
+  .expanded-details-container > svg > path {
     fill: rgb(255, 255, 255) !important;
+    fill-rule: nonzero !important;
+    clip-rule: nonzero !important;
   }
 }

@@ -188,7 +188,10 @@
 }
 
 @media screen and (-ms-high-contrast: active) {
-  :host svg {
-    fill: rgb(255, 255, 255);
+  :host svg,
+  :host svg > path {
+    fill: rgb(255, 255, 255) !important;
+    fill-rule: nonzero !important;
+    clip-rule: nonzero !important;
   }
 }

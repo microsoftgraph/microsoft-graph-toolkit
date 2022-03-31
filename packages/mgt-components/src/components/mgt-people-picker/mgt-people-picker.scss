@@ -320,9 +320,12 @@ mgt-flyout {
 }
 
 @media screen and (-ms-high-contrast: active) {
-  svg {
-    fill: white !important;
-    color: white !important;
+  svg,
+  svg > path {
+    fill: rgb(255, 255, 255) !important;
+    fill-rule: nonzero !important;
+    clip-rule: nonzero !important;
+    color: rgb(255, 255, 255) !important;
   }
 
   .flyout-root {
