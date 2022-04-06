@@ -1,12 +1,14 @@
 <meta name="theme-color" content="#F6F9FC" />
 <link rel="shortcut icon" type="image/png" href="/favicon.png" />
 <link rel="manifest" href="manifest.json" />
-<script>navigator.serviceWorker.register("sw.js")</script>
+<script>
+  navigator.serviceWorker.register("sw.js")
+</script>
 
 <footer class="storybook-footer">
   Microsoft Graph Toolkit Playground was founded by Microsoft as a community guided, open source project.
-  <a tabindex='-1' href="https://privacy.microsoft.com/en-us/privacystatement">Privacy & cookies</a>
-  <a tabindex='-1' href="https://www.microsoft.com/en-us/legal/intellectualproperty/copyright/default">Term of use</a>
+  <a tabindex="-1" href="https://privacy.microsoft.com/en-us/privacystatement">Privacy & cookies</a>
+  <a tabindex="-1" href="https://www.microsoft.com/en-us/legal/intellectualproperty/copyright/default">Term of use</a>
 </footer>
 
 <script src="https://consentdeliveryfd.azurefd.net/mscc/lib/v2/wcp-consent.js"></script>
@@ -91,25 +93,6 @@
     usefulLinksContainer.append(repoLink, npmLink);
 
     sidebarNode.insertBefore(usefulLinksContainer, sidebarNode.childNodes[1]);
-
-    const arrows = document.getElementsByClassName("css-bt79wf");
-  
-    for (let i = 0; i < arrows.length; i++) {
-      const arrowSvg = document.createElementNS(xmlns, "svg");
-      arrowSvg.setAttributeNS(null, "viewBox", "0 0 12 12");
-      arrowSvg.setAttributeNS(null, "width", "12");
-      arrowSvg.setAttributeNS(null, "height", "12");
-      arrowSvg.setAttributeNS(null, "style", "margin-left:-8px;");
-
-      const arrowSvgPath = "M8 7L4.46481 10.5359L4.46481 7L4.46481 3.46413L8 7Z";
-      const path = document.createElementNS(xmlns, "path");
-      path.setAttributeNS(null, "d", arrowSvgPath);
-
-      arrowSvg.appendChild(path);
-
-      const arrow = arrows[i];
-      arrow.appendChild(arrowSvg);
-    }
   }
 
   function createSvg(svgPath, svgTitle) {
@@ -136,30 +119,15 @@
   }
 </script>
 
-</script>
-
 <style>
-  .css-bt79wf {
-    border-top: none;
-    border-bottom: none;
-    border-left: none;
-    margin-top: 0px;
-  }
-
-  .css-1j9r8vi {
-    border-top: none;
-    border-bottom: none;
-    border-left: none;
-    margin-left: 15px;
-    margin-top: 10px;
-  }
-
-  .css-bt79wf>svg>path,.css-1j9r8vi>svg>path {
+  .css-bt79wf>svg>path,
+  .css-1j9r8vi>svg>path {
     color: rgba(153, 153, 153, 0.6) !important;
     fill: rgba(153, 153, 153, 0.6) !important;
   }
 
   @media screen and (-ms-high-contrast:active) {
+
     #root,
     svg,
     svg>path,
@@ -168,24 +136,28 @@
       color: rgb(255, 255, 255) !important;
     }
 
-
-    .css-bt79wf {
-      border-top: none;
-      border-bottom: none;
-      border-left: none;
-      margin-top: 0px;
-    }
-    .css-1j9r8vi {
-      border-top: none;
-      border-bottom: none;
-      border-left: none;
-      margin-left: 15px;
-      margin-top: 10px;
+    .css-bt79wf>svg>path,
+    .css-1j9r8vi>svg>path {
+      color: rgba(255, 255, 255) !important;
+      fill: rgba(255, 255, 255) !important;
     }
 
-    .css-bt79wf>svg>path,.css-1j9r8vi>svg>path {
-      color: rgba(255,255,255) !important;
-      fill: rgba(255,255,255) !important;
+    .css-cwrfva:hover,
+    .css-cwrfva:focus-visible {
+      border: 1px solid rgba(255, 255, 255) !important;
+    }
+
+    .css-128qwy8:hover {
+      /* background-image: radial-gradient(at center center,rgba(0,0,0,0.2) 0%,transparent 70%,transparent 100%); */
+      background-image: radial-gradient(at center center, rgba(255, 255, 255) 100%, transparent 100%, transparent 100%);
+      background-size: 50px 100%;
+      background-position: 0 50%;
+      background-repeat: no-repeat;
+    }
+
+    .os-scrollbar>.os-scrollbar-track>.os-scrollbar-handle,
+    .os-scrollbar>.os-scrollbar-track {
+      border: 1px solid transparent;
     }
   }
 </style>
