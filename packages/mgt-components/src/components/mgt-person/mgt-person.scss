@@ -515,7 +515,8 @@ mgt-person .person-root {
     display: flex;
     flex-direction: column;
     overflow: hidden;
-    // line-height: 1.6;
+    line-height: 1;
+    // height: 100%;
     margin: var($details-spacing, 0px 0px 0px 12px);
 
     &.small {
@@ -575,9 +576,9 @@ mgt-person .person-root {
 
     .line1 {
       font-size: $font-size;
-      font-weight: $font-weight;
+      font-weight: 400;
       text-transform: $text-transform;
-      line-height: 20px;
+      // line-height: 20px;
     }
 
     .line2 {
