@@ -569,7 +569,7 @@ export class MgtPerson extends MgtTemplatedComponent {
     // defaults
     this.personCardInteraction = PersonCardInteraction.none;
     this.line1Property = 'displayName';
-    this.line2Property = 'jobTitle';
+    this.line2Property = 'jobTitle' || 'email';
     this.line3Property = 'department';
     this.line4Property = 'email';
     this.view = ViewType.image;
