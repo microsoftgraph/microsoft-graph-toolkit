@@ -1,12 +1,14 @@
-<meta name="theme-color" content="#F6F9FC"/>
+<meta name="theme-color" content="#F6F9FC" />
 <link rel="shortcut icon" type="image/png" href="/favicon.png" />
 <link rel="manifest" href="manifest.json" />
-<script>navigator.serviceWorker.register("sw.js")</script>
+<script>
+  navigator.serviceWorker.register("sw.js")
+</script>
 
-<footer class="storybook-footer" >
+<footer class="storybook-footer">
   Microsoft Graph Toolkit Playground was founded by Microsoft as a community guided, open source project.
-  <a tabindex='-1' href="https://privacy.microsoft.com/en-us/privacystatement">Privacy & cookies</a>
-  <a tabindex='-1' href="https://www.microsoft.com/en-us/legal/intellectualproperty/copyright/default">Term of use</a>
+  <a tabindex="-1" href="https://privacy.microsoft.com/en-us/privacystatement">Privacy & cookies</a>
+  <a tabindex="-1" href="https://www.microsoft.com/en-us/legal/intellectualproperty/copyright/default">Term of use</a>
 </footer>
 
 <script src="https://consentdeliveryfd.azurefd.net/mscc/lib/v2/wcp-consent.js"></script>
@@ -62,7 +64,7 @@
 
     const repoLink = document.createElement('a');
     repoLink.href = 'https://aka.ms/mgt';
-    repoLink.target='_blank';
+    repoLink.target = '_blank';
     repoLink.style = linkStyle;
     repoLink.appendChild(repoLinkContent);
 
@@ -82,7 +84,7 @@
 
     const npmLink = document.createElement('a');
     npmLink.href = 'https://www.npmjs.com/package/@microsoft/mgt';
-    npmLink.target='_blank';
+    npmLink.target = '_blank';
     npmLink.style = linkStyle + ' margin-left: 0.5rem;';
     npmLink.appendChild(npmLinkContent);
 
@@ -94,14 +96,61 @@
     usefulLinksContainer.append(repoLink, npmLink);
 
     sidebarNode.insertBefore(usefulLinksContainer, sidebarNode.childNodes[1]);
-  }
-</script>
 
+    const searchBox = document.querySelector(".search-field");
+    if (searchBox) {
+      searchBox.setAttribute("name", "Find Components");
+      searchBox.setAttribute("aria-expanded", "false")
+
+      const searchInput = searchBox.querySelector("input");
+      if (searchInput) {
+        searchInput.addEventListener("mouseleave", addAriaExpanded("false"));
+        searchInput.addEventListener("mouseout", addAriaExpanded("false"));
+        searchInput.addEventListener("pointerleave", addAriaExpanded("false"));
+        searchInput.addEventListener("pointerout", addAriaExpanded("false"));
+        searchInput.addEventListener("click", addAriaExpanded("true"));
+        searchInput.addEventListener("focusout", addAriaExpanded("false"));
+        searchInput.addEventListener("focus", setListItemsAc11y);
+      }
+    }
+
+    function setListItemsAc11y() {
+      const recentMenu = document.querySelector("#storybook-explorer-menu");
+      if (recentMenu) {
+        const firstLi = recentMenu.querySelector("li");
+        if (firstLi) {
+          firstLi.setAttribute("role", "heading");
+          firstLi.setAttribute("aria-level", "2");
+        }
+
+        const otherLis = recentMenu.querySelectorAll("li:not(:first-child)");
+        if (otherLis && otherLis.length > 0) {
+          for (let i = 0; i < otherLis.length; i++) {
+            const li = otherLis[i];
+            const liText = li.innerText;
+            if (liText) {
+              li.setAttribute("aria-label", liText.trim());
+            }
+            li.setAttribute("aria-hidden", "true");
+          }
+        }
+      }
+    }
+
+    function addAriaExpanded(value) {
+      const searchBox = document.querySelector(".search-field");
+      if (searchBox) {
+        searchBox.setAttribute("aria-expanded", value);
+      }
+    }
+
+    setListItemsAc11y();
+  }
 </script>
 
 <style>
   /* this keeps the storybook body area above footer */
-  #root > div:first-of-type {
+  #root>div:first-of-type {
     height: calc(100% - 40px);
   }
 
@@ -133,7 +182,7 @@
   }
 
   @media (max-width: 768px) {
-    #root > div:first-of-type {
+    #root>div:first-of-type {
       height: calc(100% - 50px);
     }
   }
@@ -155,6 +204,13 @@
     text-decoration: none;
     color: inherit;
   }
+
+  .css-ulso1l,
+  .css-gb1sl5 {
+    color: #717171 !important;
+  }
+
+  .css-1en6m26 {
+    color: #616159 !important
+  }
 </style>
-
-
