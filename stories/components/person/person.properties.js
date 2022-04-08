@@ -88,6 +88,38 @@ export const personView = () => html`
     <mgt-person person-query="me" view="threelines"></mgt-person>
   </div>
 
+  <!-- Person View with presence -->
+
+  <div class="example">
+    <mgt-person person-query="me" id="online" view="oneline" person-card="hover" show-presence></mgt-person>
+  </div>
+  <div class="example">
+    <mgt-person person-query="me" id="online2" view="twolines" person-card="hover" show-presence></mgt-person>
+  </div>
+  <div class="example">
+    <mgt-person person-query="me" id="online3" show-presence view="threelines" person-card="hover" class="example"></mgt-person>
+  </div>
+  <div class="example">
+    <mgt-person person-query="me" id="online4" show-presence view="fourLines" person-card="hover" class="example"></mgt-person>
+  </div>
+
+  <script>
+            const online = {
+          activity: 'Available',
+          availability: 'Available',
+          id: null
+      };
+      const onlinePerson = document.getElementById('online');
+      const onlinePerson2 = document.getElementById('online2');
+      const onlinePerson3 = document.getElementById('online3');
+      const onlinePerson4 = document.getElementById('online4');
+
+      onlinePerson.personPresence = online;
+      onlinePerson2.personPresence = online;
+      onlinePerson3.personPresence = online;
+      onlinePerson4.personPresence = online;
+    </script>
+
   <style>
     .example {
       margin-bottom: 20px;

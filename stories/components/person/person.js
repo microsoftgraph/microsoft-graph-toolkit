@@ -61,5 +61,35 @@ export const events = () => html`
 export const RTL = () => html`
   <body dir="rtl">
     <mgt-person person-query="me" view="twoLines"></mgt-person>
+
+    <!-- RTL with vertical layout -->
+    <div class="row">
+      <mgt-person person-query="me" vertical-layout id="online" view="oneline" person-card="hover"></mgt-person>
+    </div>
+    <div class="row">
+      <mgt-person person-query="me" vertical-layout id="online2" view="twolines" person-card="hover"></mgt-person>
+    </div>
+    <div class="row">
+      <mgt-person person-query="me" vertical-layout id="online3" view="threelines" class="example"></mgt-person>
+    </div>
+    <div class="row">
+      <mgt-person person-query="me" vertical-layout id="online4" view="fourLines" class="example"></mgt-person>
+    </div>
   </body>
+`;
+
+export const personVertical = () => html`
+
+<div class="row">
+  <mgt-person person-query="me" vertical-layout id="online" view="oneline" person-card="hover"></mgt-person>
+</div>
+<div class="row">
+  <mgt-person person-query="me" vertical-layout id="online2" view="twolines" person-card="hover"></mgt-person>
+</div>
+<div class="row">
+  <mgt-person person-query="me" vertical-layout id="online3" view="threelines" class="example"></mgt-person>
+</div>
+<div class="row">
+  <mgt-person person-query="me" vertical-layout id="online4" view="fourLines" class="example"></mgt-person>
+</div>
 `;
