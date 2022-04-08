@@ -40,6 +40,7 @@ $orange: #ffaa44; /* Person / Away */
 $violet: #b4009e; /* Person / OOF */
 $red: #c50f1f; /* Person / DND */
 $green: #6bb700; /* Person / Available */
+$greyPill: #f0f0f0; /* Person Pill */
 
 /* ---------------Common style variables--------------- */
 /* -----Background----- */
@@ -156,7 +157,7 @@ $tag__color--light: $text__color__sub1--light;
 
 /* -----Pill----- */
 // light
-$pill__background-color--light: $background-color__main--light;
+$pill__background-color--light: $greyPill;
 $pill__color--light: $text__color__sub1--light;
 // dark
 $pill__background-color--dark: $background-color__sub2--dark;

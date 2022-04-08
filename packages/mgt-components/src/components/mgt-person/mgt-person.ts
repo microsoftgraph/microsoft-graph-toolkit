@@ -371,6 +371,19 @@ export class MgtPerson extends MgtTemplatedComponent {
   public disableImageFetch: boolean;
 
   /**
+   * Sets the vertical layout of
+   * the Person Card
+   *
+   * @type {boolean}
+   * @memberof MgtPerson
+   */
+  @property({
+    attribute: 'vertical-layout',
+    type: Boolean
+  })
+  public verticalLayout: boolean;
+
+  /**
    * Determines and sets person avatar
    *
    *
@@ -556,7 +569,7 @@ export class MgtPerson extends MgtTemplatedComponent {
     // defaults
     this.personCardInteraction = PersonCardInteraction.none;
     this.line1Property = 'displayName';
-    this.line2Property = 'jobTitle' || 'email';
+    this.line2Property = 'jobTitle';
     this.line3Property = 'department';
     this.line4Property = 'email';
     this.view = ViewType.image;
@@ -564,6 +577,7 @@ export class MgtPerson extends MgtTemplatedComponent {
     this.disableImageFetch = false;
     this._isInvalidImageSrc = false;
     this._avatarType = 'photo';
+    this.verticalLayout = false;
   }
 
   /**
@@ -598,7 +612,8 @@ export class MgtPerson extends MgtTemplatedComponent {
 
       const rootClasses = {
         'person-root': true,
-        clickable: this.personCardInteraction === PersonCardInteraction.click
+        clickable: this.personCardInteraction === PersonCardInteraction.click,
+        vertical: this.isVertical()
       };
 
       personTemplate = html`
@@ -666,6 +681,7 @@ export class MgtPerson extends MgtTemplatedComponent {
 
     const avatarClasses = {
       'avatar-icon': true,
+      vertical: this.isVertical(),
       small: !this.isLargeAvatar(),
       threeLines: this.isThreeLines(),
       fourLines: this.isFourLines()
@@ -858,7 +874,8 @@ export class MgtPerson extends MgtTemplatedComponent {
       small: !this.isLargeAvatar(),
       threeLines: this.isThreeLines(),
       fourLines: this.isFourLines(),
-      'user-avatar': true
+      'user-avatar': true,
+      vertical: this.isVertical()
     };
 
     if ((!image || this._isInvalidImageSrc || this._avatarType === 'initials') && personDetailsInternal) {
@@ -993,7 +1010,8 @@ export class MgtPerson extends MgtTemplatedComponent {
       details: true,
       small: !this.isLargeAvatar(),
       threeLines: this.isThreeLines(),
-      fourLines: this.isFourLines()
+      fourLines: this.isFourLines(),
+      vertical: this.isVertical()
     });
 
     return html`
@@ -1072,6 +1090,10 @@ export class MgtPerson extends MgtTemplatedComponent {
 
     const graph = provider.graph.forComponent(this);
 
+    if (this.fallbackDetails) {
+      this.line2Property = 'email';
+    }
+
     // Prepare person props
     let personProps = [
       ...defaultPersonProperties,
@@ -1082,7 +1104,7 @@ export class MgtPerson extends MgtTemplatedComponent {
     ];
     personProps = personProps.filter(email => email !== 'email');
 
-    let details = this.personDetailsInternal || this.personDetails;
+    let details = this.personDetailsInternal || this.personDetails || this.fallbackDetails;
 
     if (details) {
       if (
@@ -1293,6 +1315,10 @@ export class MgtPerson extends MgtTemplatedComponent {
 
   private isFourLines() {
     return this.view === ViewType.fourlines;
+  }
+
+  private isVertical() {
+    return this.verticalLayout;
   }
 
   private handleMouseClick(e: MouseEvent) {

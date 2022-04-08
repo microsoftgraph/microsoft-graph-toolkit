@@ -84,6 +84,11 @@ mgt-person .person-root {
     cursor: pointer;
   }
 
+  &.vertical {
+    text-align: center;
+    display: block;
+  }
+
   .user-avatar {
     position: relative;
     width: $avatar-size;
@@ -234,18 +239,19 @@ mgt-person .person-root {
       .user-presence {
         left: calc(#{$avatar-size-s} - 8px);
         top: calc(#{$avatar-size-s} - 8px);
-        width: 8px;
-        height: 8px;
+        width: 6px;
+        height: 6px;
 
         .presence-basic {
-          width: 4px;
-          height: 4px;
-          border-radius: 4px;
+          width: 2px;
+          height: 2px;
+          border-radius: 50%;
           padding: 0;
+          font-size: calc(#{$avatar-size-s} * 0.14);
 
           & .presence-oof-offline svg {
-            height: 0;
-            width: 0;
+            width: calc(#{$avatar-size-s} * 0.14);
+            margin-left: calc(#{$avatar-size-s} * 0.07 - 2px);
           }
         }
 
@@ -257,7 +263,7 @@ mgt-person .person-root {
         .presence-dnd::before,
         .presence-oof-dnd::before,
         .presence-oof-offline::before {
-          content: '';
+          margin-left: calc(#{$avatar-size-s} * 0.07 - 2px);
         }
       }
     }
@@ -271,20 +277,21 @@ mgt-person .person-root {
         font-size: calc(#{$avatar-size-3-lines} * 0.4);
       }
       .user-presence {
-        left: calc(#{$avatar-size-3-lines} - 8px);
-        top: calc(#{$avatar-size-3-lines} - 8px);
-        width: 8px;
-        height: 8px;
+        left: calc(var(--avatar-size-3-lines, var(--avatar-size-s, 56px)) - 18px);
+        top: calc(var(--avatar-size-3-lines, var(--avatar-size-s, 56px)) - 18px);
+        width: 16px;
+        height: 16px;
 
         .presence-basic {
-          width: 4px;
-          height: 4px;
-          border-radius: 4px;
-          padding: 0;
+          width: 12px;
+          height: 12px;
+          border-radius: 50%;
+          padding: 0px;
+          font-size: calc(#{$avatar-size-3-lines} * 0.14);
 
           & .presence-oof-offline svg {
-            height: 0;
-            width: 0;
+            width: calc(#{$avatar-size-3-lines} * 0.14);
+            margin-left: calc(#{$avatar-size-4-lines} * 0.07 - 2px);
           }
         }
 
@@ -296,7 +303,7 @@ mgt-person .person-root {
         .presence-dnd::before,
         .presence-oof-dnd::before,
         .presence-oof-offline::before {
-          content: '';
+          margin-left: calc(#{$avatar-size-3-lines} * 0.07 - 2px);
         }
       }
     }
@@ -310,20 +317,21 @@ mgt-person .person-root {
         font-size: calc(#{$avatar-size-4-lines} * 0.4);
       }
       .user-presence {
-        left: calc(#{$avatar-size-4-lines} - 8px);
-        top: calc(#{$avatar-size-4-lines} - 8px);
-        width: 8px;
-        height: 8px;
+        left: calc(var(--avatar-size-4-lines, var(--avatar-size-s, 72px)) - 22px);
+        top: calc(var(--avatar-size-4-lines, var(--avatar-size-s, 72px)) - 22px);
+        width: 20px;
+        height: 20px;
 
         .presence-basic {
-          width: 4px;
-          height: 4px;
-          border-radius: 4px;
-          padding: 0;
+          width: 16px;
+          height: 16px;
+          border-radius: 50%;
+          padding: 0px;
+          font-size: calc(#{$avatar-size-4-lines} * 0.14);
 
           & .presence-oof-offline svg {
-            height: 0;
-            width: 0;
+            width: calc(#{$avatar-size-4-lines} * 0.14);
+            margin-left: calc(#{$avatar-size-4-lines} * 0.07 - 2px);
           }
         }
 
@@ -335,9 +343,15 @@ mgt-person .person-root {
         .presence-dnd::before,
         .presence-oof-dnd::before,
         .presence-oof-offline::before {
-          content: '';
+          margin-left: calc(#{$avatar-size-4-lines} * 0.07 - 2px);
         }
       }
+    }
+
+    &.vertical {
+      display: block;
+      margin-left: auto;
+      margin-right: auto;
     }
 
     .img-wrapper {
@@ -455,12 +469,32 @@ mgt-person .person-root {
     display: flex;
     flex-direction: column;
     overflow: hidden;
-    line-height: 1;
-    // height: 100%;
+    line-height: 1.6;
     margin: var($details-spacing, 0px 0px 0px 12px);
 
     &.small {
       margin: var($details-spacing, 0px 0px 0px 4px);
+      .line1 {
+        font-weight: 400;
+      }
+    }
+
+    &.threeLines {
+      .line1 {
+        font-size: 16px;
+        line-height: 22px;
+      }
+    }
+
+    &.fourLines {
+      .line1 {
+        font-size: 20px;
+        line-height: 26px;
+      }
+    }
+
+    &.vertical {
+      text-align: center;
     }
 
     & > div {
@@ -471,9 +505,9 @@ mgt-person .person-root {
 
     .line1 {
       font-size: $font-size;
-      font-weight: 400;
+      font-weight: $font-weight;
       text-transform: $text-transform;
-      // line-height: 20px;
+      line-height: 20px;
     }
 
     .line2 {
@@ -601,6 +635,16 @@ mgt-person .avatar-icon {
             width: 0;
           }
         }
+      }
+    }
+
+    &.vertical {
+      text-align: center;
+      display: block;
+      .user-avatar {
+        display: block;
+        margin-left: auto;
+        margin-right: auto;
       }
     }
   }
