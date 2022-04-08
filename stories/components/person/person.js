@@ -92,4 +92,10 @@ export const personVertical = () => html`
 <div class="row">
   <mgt-person person-query="me" vertical-layout id="online4" view="fourLines" class="example"></mgt-person>
 </div>
+
+<!-- Person unauthenticated vertical layout-->
+<div class="row">
+	<mgt-person person-query="mbowen" vertical-layout view="twoLines" fallback-details='{"mail":"MeganB@M365x214355.onmicrosoft.com"}'>
+	</mgt-person>
+</div>
 `;
