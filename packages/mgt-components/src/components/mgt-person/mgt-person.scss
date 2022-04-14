@@ -308,7 +308,8 @@ mgt-person .person-root {
       }
     }
 
-    &.fourLines {
+    &.fourLines,
+    &.vertical {
       width: $avatar-size-4-lines;
       height: $avatar-size-4-lines;
 
@@ -472,13 +473,14 @@ mgt-person .person-root {
     margin: var($details-spacing, 0px 0px 0px 12px);
 
     &.small {
-      margin: var($details-spacing, 0px 0px 0px 4px);
+      margin: var($details-spacing, 0px 0px 0px 8px);
       .line1 {
         font-weight: 400;
       }
     }
 
     &.threeLines {
+      margin: var($details-spacing, 0px 0px 0px 14px);
       .line1 {
         font-size: 16px;
         line-height: 22px;
@@ -486,6 +488,7 @@ mgt-person .person-root {
     }
 
     &.fourLines {
+      margin: var($details-spacing, 0px 0px 0px 16px);
       .line1 {
         font-size: 20px;
         line-height: 26px;
@@ -494,6 +497,16 @@ mgt-person .person-root {
 
     &.vertical {
       text-align: center;
+      margin: var($details-spacing, 12px 12px 0px 0px);
+
+      &.small {
+        margin: var($details-spacing, 12px 6px 0px 0px);
+      }
+
+      &.threelines,
+      &.fourlines {
+        margin: var($details-spacing, 16px 0px 0px 0px);
+      }
     }
 
     & > div {
@@ -579,7 +592,13 @@ mgt-person .avatar-icon {
     .details {
       margin: var($details-spacing, 0px 12px 0px 0px);
       &.small {
-        margin: var($details-spacing, 0px 6px 0px 0px);
+        margin: var($details-spacing, 0px 8px 0px 0px);
+      }
+      &.threelines {
+        margin: var($details-spacing, 0px 14px 0px 0px);
+      }
+      &.fourlines {
+        margin: var($details-spacing, 0px 16px 0px 0px);
       }
     }
 
