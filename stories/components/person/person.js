@@ -68,37 +68,68 @@ export const events = () => html`
 
 export const RTL = () => html`
   <body dir="rtl">
-    <mgt-person person-query="me" view="twoLines"></mgt-person>
+    <div class="example">
+      <mgt-person person-query="me" view="oneline"></mgt-person>
+    </div>
+    <div class="example">
+      <mgt-person person-query="me" view="twolines"></mgt-person>
+    </div>
+    <div class="example">
+      <mgt-person person-query="me" view="threelines"></mgt-person>
+    </div>
+    <div class="example">
+      <mgt-person person-query="me" view="fourlines"></mgt-person>
+    </div>
 
     <!-- RTL with vertical layout -->
     <div class="row">
-      <mgt-person person-query="me" vertical-layout id="online" view="oneline" person-card="hover"></mgt-person>
+      <mgt-person person-query="me" class="example" vertical-layout id="online" view="oneline"></mgt-person>
     </div>
     <div class="row">
-      <mgt-person person-query="me" vertical-layout id="online2" view="twolines" person-card="hover"></mgt-person>
+      <mgt-person person-query="me" class="example" vertical-layout id="online2" view="twolines"></mgt-person>
     </div>
     <div class="row">
-      <mgt-person person-query="me" vertical-layout id="online3" view="threelines" class="example"></mgt-person>
+      <mgt-person person-query="me" class="example" vertical-layout id="online3" view="threelines"></mgt-person>
     </div>
     <div class="row">
-      <mgt-person person-query="me" vertical-layout id="online4" view="fourLines" class="example"></mgt-person>
+      <mgt-person person-query="me" class="example" vertical-layout id="online4" view="fourLines"></mgt-person>
     </div>
   </body>
+  <style> 
+  .example {
+      margin-bottom: 20px;
+    }
+    </style>
 `;
 
-export const personVertical = () => html`
+export const personVertical = () => html` 
 
 <div class="row">
-  <mgt-person person-query="me" vertical-layout id="online" view="oneline" person-card="hover"></mgt-person>
+  <mgt-person person-query="me" class="example" vertical-layout view="oneline" person-card="hover"></mgt-person>
 </div>
 <div class="row">
-  <mgt-person person-query="me" vertical-layout id="online2" view="twolines" person-card="hover"></mgt-person>
+  <mgt-person person-query="me" class="example" vertical-layout view="twolines" person-card="hover"></mgt-person>
 </div>
 <div class="row">
-  <mgt-person person-query="me" vertical-layout id="online3" view="threelines" class="example"></mgt-person>
+  <mgt-person person-query="me" class="example" vertical-layout view="threelines" class="example"></mgt-person>
 </div>
 <div class="row">
-  <mgt-person person-query="me" vertical-layout id="online4" view="fourLines" class="example"></mgt-person>
+  <mgt-person person-query="me" class="example" vertical-layout view="fourLines" class="example"></mgt-person>
+</div>
+
+<!-- With Presence; Check JS tab -->
+
+<div class="row">
+  <mgt-person person-query="me" class="example" vertical-layout id="online" show-presence view="oneline" person-card="hover"></mgt-person>
+</div>
+<div class="row">
+  <mgt-person person-query="me" class="example" vertical-layout id="online2" show-presence view="twolines" person-card="hover"></mgt-person>
+</div>
+<div class="row">
+  <mgt-person person-query="me" class="example" vertical-layout id="online3" show-presence view="threelines" class="example"></mgt-person>
+</div>
+<div class="row">
+  <mgt-person person-query="me" class="example" vertical-layout id="online4" show-presence view="fourLines" class="example"></mgt-person>
 </div>
 
 <!-- Person unauthenticated vertical layout-->
@@ -106,4 +137,26 @@ export const personVertical = () => html`
 	<mgt-person person-query="mbowen" vertical-layout view="twoLines" fallback-details='{"mail":"MeganB@M365x214355.onmicrosoft.com"}'>
 	</mgt-person>
 </div>
+
+<script>
+            const online = {
+          activity: 'Available',
+          availability: 'Available',
+          id: null
+      };
+      const onlinePerson = document.getElementById('online');
+      const onlinePerson2 = document.getElementById('online2');
+      const onlinePerson3 = document.getElementById('online3');
+      const onlinePerson4 = document.getElementById('online4');
+
+      onlinePerson.personPresence = online;
+      onlinePerson2.personPresence = online;
+      onlinePerson3.personPresence = online;
+      onlinePerson4.personPresence = online;
+    </script>
+<style>
+  .example {
+      margin-bottom: 20px;
+    }
+    </style>
 `;

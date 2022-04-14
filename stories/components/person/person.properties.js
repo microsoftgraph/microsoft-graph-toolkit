@@ -87,8 +87,11 @@ export const personView = () => html`
   <div class="example">
     <mgt-person person-query="me" view="threelines"></mgt-person>
   </div>
+  <div class="example">
+    <mgt-person person-query="me" view="fourlines"></mgt-person>
+  </div>
 
-  <!-- Person View with presence -->
+  <!-- Person View with presence; check JS tab -->
 
   <div class="example">
     <mgt-person person-query="me" id="online" view="oneline" person-card="hover" show-presence></mgt-person>
@@ -97,10 +100,10 @@ export const personView = () => html`
     <mgt-person person-query="me" id="online2" view="twolines" person-card="hover" show-presence></mgt-person>
   </div>
   <div class="example">
-    <mgt-person person-query="me" id="online3" show-presence view="threelines" person-card="hover" class="example"></mgt-person>
+    <mgt-person person-query="me" id="online3" show-presence view="threelines" person-card="hover"></mgt-person>
   </div>
   <div class="example">
-    <mgt-person person-query="me" id="online4" show-presence view="fourLines" person-card="hover" class="example"></mgt-person>
+    <mgt-person person-query="me" id="online4" show-presence view="fourLines" person-card="hover"></mgt-person>
   </div>
 
   <script>
