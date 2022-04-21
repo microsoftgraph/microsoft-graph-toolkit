@@ -213,3 +213,32 @@ export const pickerGroupFilters = () => html`
     type="group">
   </mgt-people-picker>
 `;
+
+export const pickerGroupIds = () => html`
+  <mgt-people-picker
+    group-ids="94cb7dd0-cb3b-49e0-ad15-4efeb3c7d3e9, f2861ed7-abca-4556-bf0c-39ddc717ad81">
+  </mgt-people-picker>
+`;
+
+export const pickerGroupIdsWithGroupType = () => html`
+  <mgt-people-picker
+    group-ids="94cb7dd0-cb3b-49e0-ad15-4efeb3c7d3e9, f2861ed7-abca-4556-bf0c-39ddc717ad81"
+    group-type="security">
+    <!-- group-type can be "any", "unified", "security", "mailenabledsecurity", "distribution" -->
+  </mgt-people-picker>
+`;
+
+export const pickerGroupIdsWithGroupFilters = () => html`
+  <mgt-people-picker
+    group-ids="94cb7dd0-cb3b-49e0-ad15-4efeb3c7d3e9, f2861ed7-abca-4556-bf0c-39ddc717ad81"
+    group-filters="hasMembersWithLicenseErrors+eq+true">
+  </mgt-people-picker>
+`;
+
+export const pickerGroupIdsWithGroupFiltersAndGroupType = () => html`
+  <mgt-people-picker
+    group-ids="94cb7dd0-cb3b-49e0-ad15-4efeb3c7d3e9, f2861ed7-abca-4556-bf0c-39ddc717ad81"
+    group-filters="hasMembersWithLicenseErrors+eq+true"
+    group-type="security">
+  </mgt-people-picker>
+`;
