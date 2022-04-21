@@ -373,6 +373,10 @@ export async function getGroupsForGroupIds(
   const batch = graph.createBatch();
   const groupDict = {};
   const notInCache = [];
+  const otherCacheKeys = `${groupTypes ? '+' + groupTypes : ''}` + `${groupFilters ? '+' + groupFilters : ''}`;
+  const extraKeys = `${otherCacheKeys ? '+' + otherCacheKeys : ''}`;
+  const sign = query !== '' ? '&' : '?';
+
   let cache: CacheStore<CacheGroup>;
 
   if (getIsGroupsCacheEnabled()) {
@@ -380,7 +384,7 @@ export async function getGroupsForGroupIds(
   }
 
   for (const id of groupIds) {
-    const cacheKey = query !== '' ? `${id}+${query}` : id;
+    const cacheKey = query !== '' ? `${id}+${query}${extraKeys}` : id + extraKeys;
     groupDict[id] = null;
     let group = null;
     if (getIsGroupsCacheEnabled()) {
@@ -398,8 +402,7 @@ export async function getGroupsForGroupIds(
       }
 
       if (groupFilters) {
-        const sign = groupTypes ? '&' : '?';
-        apiUrl += `${apiUrl}${sign}$filters=${groupFilters}`;
+        apiUrl += `${sign}$filters=${groupFilters}`;
       }
 
       const filterGroups = getGroupTypesFilters(groupTypes);
@@ -407,11 +410,9 @@ export async function getGroupsForGroupIds(
         if (groupFilters) {
           apiUrl += (query !== '' ? ' and ' : '') + filterGroups.join(' or ');
         } else {
-          const sign = query !== '' ? '&' : '?';
           apiUrl += `${sign}$filters=${filterGroups.join(' or ')}`;
         }
       }
-
       if (query !== '') {
         batch.get(id, apiUrl, ['Group.Read.All'], { ConsistencyLevel: 'eventual' });
       } else {
@@ -424,7 +425,7 @@ export async function getGroupsForGroupIds(
     const responses = await batch.executeAll();
     // iterate over groupIds to ensure the order of ids
     for (const id of groupIds) {
-      const cacheKey = query !== '' ? `${id}+${query}` : id;
+      const cacheKey = query !== '' ? `${id}+${query}${extraKeys}` : id + extraKeys;
       const response = responses.get(id);
       if (response && response.content) {
         if (transitive) {
@@ -444,7 +445,7 @@ export async function getGroupsForGroupIds(
       // call getGroup for all the users that weren't cached
       groupIds
         .filter(id => {
-          const cacheKey = query !== '' ? `${id}+${query}` : id;
+          const cacheKey = query !== '' ? `${id}+${query}${extraKeys}` : id + extraKeys;
           notInCache.includes(cacheKey);
         })
         .forEach(id => (groupDict[id] = getGroup(graph, id, [], transitive)));
@@ -452,11 +453,11 @@ export async function getGroupsForGroupIds(
         // store all users that weren't retrieved from the cache, into the cache
         groupIds
           .filter(id => {
-            const cacheKey = query !== '' ? `${id}+${query}` : id;
+            const cacheKey = query !== '' ? `${id}+${query}${extraKeys}` : id + extraKeys;
             notInCache.includes(cacheKey);
           })
           .forEach(async id => {
-            const cacheKey = query !== '' ? `${id}+${query}` : id;
+            const cacheKey = query !== '' ? `${id}+${query}${extraKeys}` : id + extraKeys;
             cache.putValue(cacheKey, { group: JSON.stringify(await groupDict[id]) });
           });
       }
