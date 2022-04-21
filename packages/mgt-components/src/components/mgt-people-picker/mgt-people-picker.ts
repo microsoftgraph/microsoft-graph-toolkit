@@ -1008,11 +1008,17 @@ export class MgtPeoplePicker extends MgtTemplatedComponent {
               }
             }
           } else if (this.type === PersonType.group) {
-            let groups = (await findGroups(graph, '', this.showMax, this.groupType, this._groupFilters)) || [];
-            if (groups.length > 0 && groups[0]['value']) {
-              groups = groups[0]['value'];
+            if (this.groupIds) {
+              try {
+                people = await this.getGroupsForGroupIds(graph, input, people);
+              } catch (_) {}
+            } else {
+              let groups = (await findGroups(graph, '', this.showMax, this.groupType, this._groupFilters)) || [];
+              if (groups.length > 0 && groups[0]['value']) {
+                groups = groups[0]['value'];
+              }
+              people = groups;
             }
-            people = groups;
           }
           this.defaultPeople = people;
         }
@@ -1112,6 +1118,7 @@ export class MgtPeoplePicker extends MgtTemplatedComponent {
             if (this.groupIds) {
               try {
                 people = await this.getGroupsForGroupIds(graph, input, people);
+                console.log('earchihf', this.groupFilters, input);
               } catch (_) {}
             } else {
               let groups = [];
@@ -1143,6 +1150,7 @@ export class MgtPeoplePicker extends MgtTemplatedComponent {
     for (let group of groups as IDynamicPerson[]) {
       people = people.concat(group);
     }
+    people = people.filter(person => person);
     return people;
   }
 
