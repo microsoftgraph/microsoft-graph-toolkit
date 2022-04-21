@@ -255,27 +255,7 @@ export async function findGroupsFromGroup(
   }
 
   if (groupTypes !== GroupType.any) {
-    const filterGroups = [];
-
-    // tslint:disable-next-line:no-bitwise
-    if (GroupType.unified === (groupTypes & GroupType.unified)) {
-      filterGroups.push("groupTypes/any(c:c+eq+'Unified')");
-    }
-
-    // tslint:disable-next-line:no-bitwise
-    if (GroupType.security === (groupTypes & GroupType.security)) {
-      filterGroups.push('(mailEnabled eq false and securityEnabled eq true)');
-    }
-
-    // tslint:disable-next-line:no-bitwise
-    if (GroupType.mailenabledsecurity === (groupTypes & GroupType.mailenabledsecurity)) {
-      filterGroups.push('(mailEnabled eq true and securityEnabled eq true)');
-    }
-
-    // tslint:disable-next-line:no-bitwise
-    if (GroupType.distribution === (groupTypes & GroupType.distribution)) {
-      filterGroups.push('(mailEnabled eq true and securityEnabled eq false)');
-    }
+    const filterGroups = getGroupTypesFilters(groupTypes);
 
     filterQuery += (query !== '' ? ' and ' : '') + filterGroups.join(' or ');
   }
@@ -294,6 +274,31 @@ export async function findGroupsFromGroup(
   }
 
   return result ? result.value : null;
+}
+
+function getGroupTypesFilters(groupTypes: GroupType) {
+  const filterGroups = [];
+
+  // tslint:disable-next-line:no-bitwise
+  if (GroupType.unified === (groupTypes & GroupType.unified)) {
+    filterGroups.push("groupTypes/any(c:c+eq+'Unified')");
+  }
+
+  // tslint:disable-next-line:no-bitwise
+  if (GroupType.security === (groupTypes & GroupType.security)) {
+    filterGroups.push('(mailEnabled eq false and securityEnabled eq true)');
+  }
+
+  // tslint:disable-next-line:no-bitwise
+  if (GroupType.mailenabledsecurity === (groupTypes & GroupType.mailenabledsecurity)) {
+    filterGroups.push('(mailEnabled eq true and securityEnabled eq true)');
+  }
+
+  // tslint:disable-next-line:no-bitwise
+  if (GroupType.distribution === (groupTypes & GroupType.distribution)) {
+    filterGroups.push('(mailEnabled eq true and securityEnabled eq false)');
+  }
+  return filterGroups;
 }
 
 /**
@@ -358,7 +363,9 @@ export async function getGroupsForGroupIds(
   graph: IGraph,
   groupIds: string[],
   groupFilters: string = '',
-  transitive: boolean = false
+  transitive: boolean = false,
+  query: string = '',
+  groupTypes: GroupType
 ): Promise<Group[]> {
   if (!groupIds || groupIds.length === 0) {
     return [];
@@ -373,30 +380,51 @@ export async function getGroupsForGroupIds(
   }
 
   for (const id of groupIds) {
+    const cacheKey = query !== '' ? `${id}+${query}` : id;
     groupDict[id] = null;
     let group = null;
     if (getIsGroupsCacheEnabled()) {
-      group = await cache.getValue(id);
+      group = await cache.getValue(cacheKey);
     }
     if (group && getGroupsInvalidationTime() > Date.now() - group.timeCached) {
       groupDict[id] = group.group ? JSON.parse(group.group) : null;
     } else if (id !== '') {
       let apiUrl: string = `/groups/${id}`;
       if (transitive) {
-        apiUrl += '/transitiveMembers';
+        apiUrl += '/members';
+        if (query !== '') {
+          apiUrl += `/microsoft.graph.user?$count=true&$search="displayName:${query}"`;
+        }
       }
-      console.log('apiUrl ', apiUrl);
+
       if (groupFilters) {
-        apiUrl += `${apiUrl}?$filters=${groupFilters}`;
+        const sign = groupTypes ? '&' : '?';
+        apiUrl += `${apiUrl}${sign}$filters=${groupFilters}`;
       }
-      batch.get(id, apiUrl, ['Group.Read.All']);
-      notInCache.push(id);
+
+      const filterGroups = getGroupTypesFilters(groupTypes);
+      if (filterGroups && filterGroups.length > 0) {
+        if (groupFilters) {
+          apiUrl += (query !== '' ? ' and ' : '') + filterGroups.join(' or ');
+        } else {
+          const sign = query !== '' ? '&' : '?';
+          apiUrl += `${sign}$filters=${filterGroups.join(' or ')}`;
+        }
+      }
+
+      if (query !== '') {
+        batch.get(id, apiUrl, ['Group.Read.All'], { ConsistencyLevel: 'eventual' });
+      } else {
+        batch.get(id, apiUrl, ['Group.Read.All']);
+      }
+      notInCache.push(cacheKey);
     }
   }
   try {
     const responses = await batch.executeAll();
     // iterate over groupIds to ensure the order of ids
     for (const id of groupIds) {
+      const cacheKey = query !== '' ? `${id}+${query}` : id;
       const response = responses.get(id);
       if (response && response.content) {
         if (transitive) {
@@ -405,7 +433,7 @@ export async function getGroupsForGroupIds(
           groupDict[id] = response?.content;
         }
         if (getIsGroupsCacheEnabled()) {
-          cache.putValue(id, { group: JSON.stringify(groupDict[id]) });
+          cache.putValue(cacheKey, { group: JSON.stringify(groupDict[id]) });
         }
       }
     }
@@ -415,13 +443,22 @@ export async function getGroupsForGroupIds(
     try {
       // call getGroup for all the users that weren't cached
       groupIds
-        .filter(id => notInCache.includes(id))
+        .filter(id => {
+          const cacheKey = query !== '' ? `${id}+${query}` : id;
+          notInCache.includes(cacheKey);
+        })
         .forEach(id => (groupDict[id] = getGroup(graph, id, [], transitive)));
       if (getIsGroupsCacheEnabled()) {
         // store all users that weren't retrieved from the cache, into the cache
         groupIds
-          .filter(id => notInCache.includes(id))
-          .forEach(async id => cache.putValue(id, { group: JSON.stringify(await groupDict[id]) }));
+          .filter(id => {
+            const cacheKey = query !== '' ? `${id}+${query}` : id;
+            notInCache.includes(cacheKey);
+          })
+          .forEach(async id => {
+            const cacheKey = query !== '' ? `${id}+${query}` : id;
+            cache.putValue(cacheKey, { group: JSON.stringify(await groupDict[id]) });
+          });
       }
       return Promise.all(Object.values(groupDict));
     } catch (_) {

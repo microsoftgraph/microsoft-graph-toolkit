@@ -13,7 +13,7 @@ import { findGroups, getGroupsForGroupIds, GroupType, getGroup } from '../../gra
 import { findPeople, getPeople, PersonType, UserType } from '../../graph/graph.people';
 import { findUsers, findGroupMembers, getUser, getUsersForUserIds, getUsers } from '../../graph/graph.user';
 import { IDynamicPerson, ViewType } from '../../graph/types';
-import { Providers, ProviderState, MgtTemplatedComponent, arraysAreEqual } from '@microsoft/mgt-element';
+import { Providers, ProviderState, MgtTemplatedComponent, arraysAreEqual, IGraph } from '@microsoft/mgt-element';
 import '../../styles/style-helper';
 import '../sub-components/mgt-spinner/mgt-spinner';
 import { debounce, isValidEmail } from '../../utils/Utils';
@@ -138,6 +138,8 @@ export class MgtPeoplePicker extends MgtTemplatedComponent {
       return;
     }
     this._groupIds = value;
+    this._type = PersonType.group;
+    this.transitiveSearch = true;
     this.requestStateUpdate(true);
   }
 
@@ -986,26 +988,11 @@ export class MgtPeoplePicker extends MgtTemplatedComponent {
                 } catch (_) {
                   this._groupPeople = [];
                 }
-              } else if (this.groupIds) {
-                console.log('this.transitive ', this.transitiveSearch);
+              } else if (this.groupIds && this.type !== PersonType.person) {
                 try {
-                  const groups = await getGroupsForGroupIds(
-                    graph,
-                    this.groupIds,
-                    this.groupFilters,
-                    this.transitiveSearch
-                  );
-                  this._groupPeople = groups;
-                  if (this.transitiveSearch) {
-                    let peopleInGroups: IDynamicPerson[] = [];
-                    groups.forEach(group => {
-                      peopleInGroups = [...peopleInGroups, ...group];
-                    });
-                    this._groupPeople = peopleInGroups;
-                  }
-                } catch (error) {
-                  console.error(error);
-                }
+                  const peopleInGroups = await this.getGroupsForGroupIds(graph, '', []);
+                  this._groupPeople = peopleInGroups;
+                } catch (_) {}
               }
             }
             people = this._groupPeople || [];
@@ -1041,7 +1028,10 @@ export class MgtPeoplePicker extends MgtTemplatedComponent {
         this.defaultSelectedGroups = await getGroupsForGroupIds(
           graph,
           this.defaultSelectedGroupIds,
-          this._groupFilters
+          this._groupFilters,
+          this.transitiveSearch,
+          '',
+          this.groupType
         );
 
         this.defaultSelectedGroups = this.defaultSelectedGroups.filter(group => {
@@ -1084,7 +1074,16 @@ export class MgtPeoplePicker extends MgtTemplatedComponent {
                   people = await findUsers(graph, input, this.showMax, this._userFilters);
                 }
               } else {
-                people = (await findPeople(graph, input, this.showMax, this.userType, this._peopleFilters)) || [];
+                if (!this.groupIds) {
+                  people = (await findPeople(graph, input, this.showMax, this.userType, this._peopleFilters)) || [];
+                } else {
+                  if (this.type !== PersonType.person) {
+                    // Does not work when the PersonType = person.
+                    try {
+                      people = await this.getGroupsForGroupIds(graph, input, people);
+                    } catch (_) {}
+                  }
+                }
               }
             } catch (e) {
               // nop
@@ -1110,12 +1109,18 @@ export class MgtPeoplePicker extends MgtTemplatedComponent {
           }
 
           if ((this.type === PersonType.group || this.type === PersonType.any) && people.length < this.showMax) {
-            let groups = [];
-            try {
-              groups = (await findGroups(graph, input, this.showMax, this.groupType, this._groupFilters)) || [];
-              people = people.concat(groups);
-            } catch (e) {
-              // nop
+            if (this.groupIds) {
+              try {
+                people = await this.getGroupsForGroupIds(graph, input, people);
+              } catch (_) {}
+            } else {
+              let groups = [];
+              try {
+                groups = (await findGroups(graph, input, this.showMax, this.groupType, this._groupFilters)) || [];
+                people = people.concat(groups);
+              } catch (e) {
+                // nop
+              }
             }
           }
         }
@@ -1123,7 +1128,22 @@ export class MgtPeoplePicker extends MgtTemplatedComponent {
     }
     //people = this.getUniquePeople(people);
     this._foundPeople = this.filterPeople(people);
-    console.log('foundPeople ', this._foundPeople);
+  }
+
+  /**
+   * Gets the people in a list of group IDs.
+   *
+   * @param graph the graph object
+   * @param input searched value
+   * @param people already found people
+   * @returns People found in the group
+   */
+  private async getGroupsForGroupIds(graph: IGraph, input: string, people: IDynamicPerson[]) {
+    const groups = await getGroupsForGroupIds(graph, this.groupIds, this.groupFilters, true, input, this.groupType);
+    for (let group of groups as IDynamicPerson[]) {
+      people = people.concat(group);
+    }
+    return people;
   }
 
   /**
@@ -1727,10 +1747,10 @@ export class MgtPeoplePicker extends MgtTemplatedComponent {
 
       // filter id's
       const filtered = people.filter((person: IDynamicPerson) => {
-        if (person.id) {
+        if (person?.id) {
           return idFilter.indexOf(person.id) === -1;
         } else {
-          return idFilter.indexOf(person.displayName) === -1;
+          return idFilter.indexOf(person?.displayName) === -1;
         }
       });
 
