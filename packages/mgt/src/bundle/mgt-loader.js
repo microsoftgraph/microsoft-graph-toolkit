@@ -49,16 +49,14 @@
   }
 
   function addScript(src, onload) {
-    // TODO: support async loading
-
     var tag = document.createElement('script');
-    tag.src = src;
+    tag.setAttribute("async", "");
+    tag.setAttribute("src", src);
 
     // if (onload) {
     //   tag.addEventListener("load", onload);
     // }
-
-    document.write(tag.outerHTML);
-    // document.head.appendChild(tag);
+    
+    document.head.appendChild(tag);
   }
 })();
