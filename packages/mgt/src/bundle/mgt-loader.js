@@ -25,11 +25,7 @@
   function getScriptPath() {
     var scripts = document.getElementsByTagName('script');
     var path = scripts[scripts.length - 1].src.split('?')[0];
-    var dir =
-      path
-        .split('/')
-        .slice(0, -1)
-        .join('/') + '/';
+    var dir = path.split('/').slice(0, -1).join('/') + '/';
     return dir;
   }
 
@@ -50,13 +46,13 @@
 
   function addScript(src, onload) {
     var tag = document.createElement('script');
-    tag.setAttribute("async", "");
-    tag.setAttribute("src", src);
+    tag.setAttribute('async', '');
+    tag.setAttribute('src', encodeURI(src));
 
     // if (onload) {
     //   tag.addEventListener("load", onload);
     // }
-    
+
     document.head.appendChild(tag);
   }
 })();
