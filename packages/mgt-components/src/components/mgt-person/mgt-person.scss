@@ -578,6 +578,10 @@ mgt-person .person-root {
       font-weight: $font-weight;
       text-transform: $text-transform;
       line-height: 20px;
+      & > text {
+        padding: 0;
+        margin: 0;
+      }
     }
 
     .line2 {
