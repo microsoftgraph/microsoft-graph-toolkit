@@ -1734,7 +1734,7 @@ export class MgtPeoplePicker extends MgtTemplatedComponent {
       const focusedItem = peopleList.children[this._arrowSelectionCount] as HTMLElement;
       if (focusedItem) {
         focusedItem.classList.add('focused');
-        focusedItem.scrollIntoView({ behavior: 'smooth', block: 'nearest', inline: 'start' });
+        focusedItem.scrollIntoView({ behavior: 'smooth', block: 'nearest', inline: 'nearest' });
         focusedItem.focus();
       }
     }
