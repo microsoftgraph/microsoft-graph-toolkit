@@ -172,17 +172,9 @@ $person-card-nav-back-arrow-hover-color: var(--person-card-nav-back-arrow-hover-
         }
       }
     }
-    .expanded-details-button {
-      &:hover {
-        background-color: set-var(background-color--hover, $theme-default, $common);
-      }
-      &:focus-visible {
-        background-color: set-var(background-color--hover, $theme-default, $common);
-        outline: none !important;
-        border: 1px solid #2b2b2b;
-        border-bottom-left-radius: 4px;
-        border-bottom-right-radius: 4px;
-      }
+
+    .expanded-details-button:hover {
+      background-color: #efefef;
     }
   }
 
@@ -253,8 +245,8 @@ $person-card-nav-back-arrow-hover-color: var(--person-card-nav-back-arrow-hover-
       cursor: pointer;
 
       svg {
-        width: 20px;
-        height: 20px;
+        // width: 20px;
+        // height: 20px;
         fill: set-var(icon__color, $theme-default, $common);
       }
 
@@ -408,6 +400,7 @@ $person-card-nav-back-arrow-hover-color: var(--person-card-nav-back-arrow-hover-
         color: set-var(title__color__subtitle, $theme-default, $common);
         font-size: 14px;
         font-weight: 600;
+        line-height: 19px;
       }
 
       &__show-more {
@@ -419,6 +412,7 @@ $person-card-nav-back-arrow-hover-color: var(--person-card-nav-back-arrow-hover-
         &:hover {
           cursor: pointer;
           color: $person-card-show-more-hover-color;
+          background-color: $greyHover;
         }
       }
 
