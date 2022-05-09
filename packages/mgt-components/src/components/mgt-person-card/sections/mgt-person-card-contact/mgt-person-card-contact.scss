@@ -49,7 +49,7 @@ $person-card-contact-link-hover-color: var(--person-card-contact-link-hover-colo
         .part__title {
           font-size: 12px;
           color: set-var(title__color__sub2, $theme-default, $common);
-          line-height: 20px;
+          line-height: 16px;
         }
 
         .part__value {
@@ -57,7 +57,7 @@ $person-card-contact-link-hover-color: var(--person-card-contact-link-hover-colo
           color: set-var(color__sub1, $theme-default, $common);
           font-size: 14px;
           font-weight: 400;
-          line-height: normal;
+          line-height: 19px;
 
           .part__link {
             color: $person-card-contact-link-color;
@@ -93,9 +93,6 @@ $person-card-contact-link-hover-color: var(--person-card-contact-link-hover-colo
       }
 
       &:hover {
-        background-color: set-var(background-color--hover, $theme-default, $common);
-        cursor: pointer;
-
         .part__copy {
           visibility: visible;
         }
