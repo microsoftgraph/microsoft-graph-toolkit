@@ -498,15 +498,22 @@ mgt-person .person-root {
 
     &.vertical {
       text-align: center;
-      margin: var($details-spacing, 10px 12px 0px 0px);
+      margin: var($details-spacing, 7px 0px 0px 0px);
 
       &.small {
-        margin: var($details-spacing, 10px 6px 0px 0px);
+        margin: var($details-spacing, 7px 0px 0px 0px);
+      }
+
+      &.threelines {
+        margin: var($details-spacing, 12px 0px 0px 0px);
+      }
+
+      &.fourlines {
+        margin: var($details-spacing, 10px 0px 0px 0px);
       }
 
       &.threelines,
       &.fourlines {
-        margin: var($details-spacing, 14px 0px 0px 0px);
         .line1 {
           margin-bottom: 0;
         }
