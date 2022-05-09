@@ -91,7 +91,7 @@ $person-card-nav-back-arrow-hover-color: var(--person-card-nav-back-arrow-hover-
     display: flex;
     flex-direction: column;
     width: calc(var(--mgt-flyout-set-width, 375px) - 40px);
-    padding: 20px 20px 13px 20px;
+    padding: 23px 0px 0px 23px;
 
     .person-image {
       --presence-background-color: #{$background-color};
@@ -109,10 +109,7 @@ $person-card-nav-back-arrow-hover-color: var(--person-card-nav-back-arrow-hover-
       display: flex;
       -webkit-align-items: center;
       align-items: center;
-      max-width: 120px;
-      margin-top: 16px;
-      margin-left: 79px;
-      font-family: 'Segoe Fluent Icons';
+      margin-top: 13px;
 
       .icon {
         display: flex;
@@ -120,16 +117,8 @@ $person-card-nav-back-arrow-hover-color: var(--person-card-nav-back-arrow-hover-
         cursor: pointer;
         font-size: 13px;
         white-space: nowrap;
-        margin: -11px -13px;
-        padding: 11px 13px;
-        padding: 6px 8px 6px 8px;
-        border: 1px solid transparent;
-
-        &:focus-visible {
-          outline: none !important;
-          border: 1px solid #2b2b2b;
-          border-radius: 2px;
-        }
+        padding: 10px 12px;
+        margin-left: -14px;
 
         &:not(:last-child) {
           margin-right: 11px;
@@ -150,6 +139,7 @@ $person-card-nav-back-arrow-hover-color: var(--person-card-nav-back-arrow-hover-
       .icon:hover {
         color: $person-card-base-links-hover-color;
         background-color: set-var(background-color--hover, $theme-default, $common);
+        border-radius: 4px;
       }
     }
   }
@@ -163,9 +153,8 @@ $person-card-nav-back-arrow-hover-color: var(--person-card-nav-back-arrow-hover-
       display: flex;
       justify-content: center;
       align-items: center;
-      height: 28px;
+      height: 32px;
       background: $background-color;
-      border-top: 1px solid set-var(line-seperator__color, $theme-default, $common);
       svg {
         path {
           stroke: #1a1a1a;
