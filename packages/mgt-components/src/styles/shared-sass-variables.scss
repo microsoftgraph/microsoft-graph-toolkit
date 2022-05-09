@@ -8,7 +8,7 @@
 /* ---------------Common color variables--------------- */
 $white: #ffffff; /* Neutrals / White #FFFFFF */
 $black: #000000; /* Neutrals / Web / Black #000000 */
-$commblue_primary: #0078d4; /* Comm Blue / Primary #0078D4 */
+$commblue_primary: #023b8f; /* Comm Blue / Primary #0078D4 */
 $commblue_shade10: #106ebe; /* Comm Blue / Shade 10 #106EBE */
 $commblue_shade20: #005a9e; /* Comm Blue / Shade 20 #005A9E */
 
@@ -41,6 +41,11 @@ $violet: #b4009e; /* Person / OOF */
 $red: #c50f1f; /* Person / DND */
 $green: #6bb700; /* Person / Available */
 $greyPill: #f0f0f0; /* Person Pill */
+
+// Change once standard all through
+$greyHover: #f7f7f7; /* Person Card Hover */
+$greyBackground: #fbfbfb; /* Person Card Background */
+$commblue_org: #0360b9; /*Person Card Org border*/
 
 /* ---------------Common style variables--------------- */
 /* -----Background----- */

@@ -248,8 +248,8 @@ $person-card-nav-back-arrow-hover-color: var(--person-card-nav-back-arrow-hover-
       cursor: pointer;
 
       svg {
-        width: 20px;
-        height: 20px;
+        // width: 20px;
+        // height: 20px;
         fill: set-var(icon__color, $theme-default, $common);
       }
 
@@ -400,6 +400,7 @@ $person-card-nav-back-arrow-hover-color: var(--person-card-nav-back-arrow-hover-
         color: set-var(title__color__subtitle, $theme-default, $common);
         font-size: 14px;
         font-weight: 600;
+        line-height: 19px;
       }
 
       &__show-more {
