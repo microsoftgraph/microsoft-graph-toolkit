@@ -158,9 +158,8 @@ $person-card-nav-back-arrow-hover-color: var(--person-card-nav-back-arrow-hover-
       display: flex;
       justify-content: center;
       align-items: center;
-      height: 28px;
+      height: 32px;
       background: $background-color;
-      border-top: 1px solid set-var(line-seperator__color, $theme-default, $common);
       svg {
         path {
           stroke: #1a1a1a;
