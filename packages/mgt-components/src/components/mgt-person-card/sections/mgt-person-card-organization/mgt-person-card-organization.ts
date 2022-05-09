@@ -269,7 +269,12 @@ export class MgtPersonCardOrganization extends BasePersonCardSection {
         ${directReports.slice(0, 6).map(
           person => html`
             <div class="direct-report" @click=${() => this.navigateCard(person)}>
-              <mgt-person .personDetails=${person} .fetchImage=${true} .showPresence=${true}></mgt-person>
+              <mgt-person 
+                .personDetails=${person} 
+                .fetchImage=${true} 
+                .showPresence=${true} 
+                .view=${ViewType.twolines}
+              ></mgt-person>
             </div>
           `
         )}
