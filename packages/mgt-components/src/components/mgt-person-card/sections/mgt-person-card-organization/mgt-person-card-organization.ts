@@ -239,8 +239,6 @@ export class MgtPersonCardOrganization extends BasePersonCardSection {
               <div class="org-member__person">
                 <mgt-person
                   .personDetails=${person}
-                  .line2Property=${'jobTitle'}
-                  .line3Property=${'department'}
                   .fetchImage=${true}
                   .showPresence=${true}
                   .view=${ViewType.twolines}
@@ -277,7 +275,9 @@ export class MgtPersonCardOrganization extends BasePersonCardSection {
             }} @click=${() => this.navigateCard(person)} @keydown=${(e: KeyboardEvent) => {
             e.code === 'Enter' ? this.navigateCard(person) : '';
           }}>
-              <mgt-person .personDetails=${person} .fetchImage=${true} .showPresence=${true}></mgt-person>
+              <mgt-person .personDetails=${person} .fetchImage=${true} .showPresence=${true} .view=${
+            ViewType.twolines
+          }></mgt-person>
             </div>
           `
         )}
