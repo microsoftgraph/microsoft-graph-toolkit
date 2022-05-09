@@ -172,10 +172,9 @@ export class MgtPersonCardOrganization extends BasePersonCardSection {
         <div class="org-member__person">
           <mgt-person
             .personDetails=${person}
-            .line2Property=${'jobTitle'}
-            .line3Property=${'department'}
             .fetchImage=${true}
-            .view=${ViewType.threelines}
+            .view=${ViewType.twolines}
+            .showPresence=${true}
           ></mgt-person>
         </div>
         <div class="org-member__more">
@@ -239,6 +238,7 @@ export class MgtPersonCardOrganization extends BasePersonCardSection {
                   .line2Property=${'jobTitle'}
                   .line3Property=${'department'}
                   .fetchImage=${true}
+                  .showPresence=${true}
                   .view=${ViewType.twolines}
                 ></mgt-person>
               </div>
@@ -246,6 +246,7 @@ export class MgtPersonCardOrganization extends BasePersonCardSection {
                 ${getSvg(SvgIcon.ExpandRight)}
               </div>
             </div>
+            <div class="org-member__separator"></div>
           `
         )}
       </div>
@@ -268,7 +269,7 @@ export class MgtPersonCardOrganization extends BasePersonCardSection {
         ${directReports.slice(0, 6).map(
           person => html`
             <div class="direct-report" @click=${() => this.navigateCard(person)}>
-              <mgt-person .personDetails=${person} .fetchImage=${true}></mgt-person>
+              <mgt-person .personDetails=${person} .fetchImage=${true} .showPresence=${true}></mgt-person>
             </div>
           `
         )}
@@ -290,10 +291,9 @@ export class MgtPersonCardOrganization extends BasePersonCardSection {
         <div class="org-member__person">
           <mgt-person
             .personDetails=${person}
-            .line2Property=${'jobTitle'}
-            .line3Property=${'department'}
             .fetchImage=${true}
-            .view=${ViewType.threelines}
+            .showPresence=${true}
+            .view=${ViewType.twolines}
           ></mgt-person>
         </div>
       </div>
@@ -314,8 +314,8 @@ export class MgtPersonCardOrganization extends BasePersonCardSection {
         <div class="coworker__person">
           <mgt-person
             .personDetails=${person}
-            .line2Property=${'jobTitle'}
             .fetchImage=${true}
+            .showPresence=${true}
             .view=${ViewType.twolines}
           ></mgt-person>
         </div>
