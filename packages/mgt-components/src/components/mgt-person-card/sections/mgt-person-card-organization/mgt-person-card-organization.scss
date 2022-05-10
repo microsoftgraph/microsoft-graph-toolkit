@@ -78,6 +78,9 @@ $person-card-active-org-member-color: var(--person-card-active-org-member-color,
       &.org-member--target {
         background-color: $greyBackground;
         border: 1px solid $person-card-active-org-member-color;
+        mgt-person {
+          --line2-color: #000000;
+        }
       }
 
       &:not(.org-member--target) {
@@ -91,20 +94,6 @@ $person-card-active-org-member-color: var(--person-card-active-org-member-color,
 
       .org-member__person {
         flex-grow: 1;
-        mgt-person {
-          --avatar-size: 48px;
-          --avatar-size-s: 48px;
-          --font-size: 16px;
-          --color: #323130;
-          --line2-font-size: 14px;
-          --line3-font-size: 14px;
-          --line2-text-transform: uppercase;
-          --line2-color: #797775;
-          --line3-color: #797775;
-          --line3-text-transform: uppercase;
-          margin-right: 8px;
-          max-width: 230px;
-        }
       }
 
       .org-member__details {
@@ -139,21 +128,13 @@ $person-card-active-org-member-color: var(--person-card-active-org-member-color,
 
       &:hover {
         cursor: pointer;
-        background-color: set-var(background-color--hover, $theme-default, $common);
+        background-color: $greyHover;
       }
 
       .coworker__person {
         height: 46px;
         border-radius: 46px;
         margin-right: 8px;
-
-        mgt-person {
-          --font-size: 16px;
-          --line2-text-transform: uppercase;
-          --line2-font-size: 14px;
-          --line2-color: #797775;
-          --avatar-size: 46px;
-        }
       }
     }
 

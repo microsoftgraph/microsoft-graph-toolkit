@@ -234,14 +234,11 @@ $person-card-nav-back-arrow-hover-color: var(--person-card-nav-back-arrow-hover-
       cursor: pointer;
 
       svg {
-        // width: 20px;
-        // height: 20px;
         fill: set-var(icon__color, $theme-default, $common);
       }
 
       &:hover {
         background: set-var(tab__background-color--hover, $theme-default, $common);
-        border-radius: 2px;
       }
 
       &.active {
@@ -286,7 +283,6 @@ $person-card-nav-back-arrow-hover-color: var(--person-card-nav-back-arrow-hover-
     }
   }
   .section-host {
-    max-height: 360px;
     min-height: 360px;
     overflow-y: auto;
     overflow-x: hidden;
@@ -324,11 +320,17 @@ $person-card-nav-back-arrow-hover-color: var(--person-card-nav-back-arrow-hover-
 
     &__input {
       flex-grow: 1;
-      padding-left: 8px;
-      border: none;
-      border-radius: 2px;
+      padding-left: 12px;
+      border: 1px solid #efefef;
+      border-radius: 4px;
       color: $color;
-      background-color: set-var(background-color__sub2, $theme-default, $common);
+      background-color: set-var(background-color, $theme-default, $common);
+      &:focus {
+        border-color: #023b8f;
+      }
+      &:focus-visible {
+        outline: none;
+      }
     }
 
     &__send {
