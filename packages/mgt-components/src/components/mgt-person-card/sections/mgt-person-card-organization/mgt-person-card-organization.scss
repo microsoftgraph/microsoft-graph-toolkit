@@ -91,20 +91,6 @@ $person-card-active-org-member-color: var(--person-card-active-org-member-color,
 
       .org-member__person {
         flex-grow: 1;
-        mgt-person {
-          --avatar-size: 48px;
-          --avatar-size-s: 48px;
-          --font-size: 16px;
-          --color: #323130;
-          --line2-font-size: 14px;
-          --line3-font-size: 14px;
-          --line2-text-transform: uppercase;
-          --line2-color: #797775;
-          --line3-color: #797775;
-          --line3-text-transform: uppercase;
-          margin-right: 8px;
-          max-width: 230px;
-        }
       }
 
       .org-member__details {
@@ -140,7 +126,7 @@ $person-card-active-org-member-color: var(--person-card-active-org-member-color,
 
       &:hover {
         cursor: pointer;
-        background-color: set-var(background-color--hover, $theme-default, $common);
+        background-color: $greyHover;
       }
 
       .coworker__person {
