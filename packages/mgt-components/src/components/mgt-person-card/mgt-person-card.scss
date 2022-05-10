@@ -242,6 +242,17 @@ $person-card-nav-back-arrow-hover-color: var(--person-card-nav-back-arrow-hover-
       }
 
       &.active {
+        // border: none none none solid $icon--active;
+        border-bottom-color: $person-card-tab-nav-color;
+        border-bottom-style: solid;
+        border: 3px solid #036ac4;
+        border-style: none none solid;
+        border-left-color: none;
+        border-right-color: none;
+        border-top-color: none;
+        border-top-style: none;
+        border-left-style: none;
+        border-right-style: none;
         svg {
           fill: $person-card-tab-nav-color;
         }
