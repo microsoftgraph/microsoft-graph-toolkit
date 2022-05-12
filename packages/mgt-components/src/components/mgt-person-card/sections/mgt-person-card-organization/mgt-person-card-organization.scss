@@ -9,6 +9,8 @@
 @import '../../../../styles/shared-styles.scss';
 @import '../../../../styles/shared-sass-variables.scss';
 
+$person-card-active-org-member-color: var(--person-card-active-org-member-color, #{$commblue_primary});
+
 :host {
   position: relative;
   user-select: none;
@@ -74,7 +76,7 @@
 
       &.org-member--target {
         background-color: set-var(background-color__sub2, $theme-default, $common);
-        border: 1px solid $commblue_primary;
+        border: 1px solid $person-card-active-org-member-color;
       }
 
       &.org-member--direct-report:not(:last-child) {
