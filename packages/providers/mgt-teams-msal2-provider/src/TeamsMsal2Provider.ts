@@ -424,7 +424,7 @@ export class TeamsMsal2Provider extends Msal2Provider {
     if (!this.teamsContext && TeamsHelper.microsoftTeamsLib) {
       const teams = TeamsHelper.microsoftTeamsLib;
       teams.initialize();
-      this.teamsContext = await teams.getContext();
+      this.teamsContext = await this.getTeamsContext();
     }
 
     const scopes = options ? options.scopes || this.scopes : this.scopes;
@@ -556,6 +556,20 @@ export class TeamsMsal2Provider extends Msal2Provider {
           this.setState(ProviderState.SignedOut);
           reject();
         }
+      });
+    });
+  }
+
+  /**
+   * Retrieves the Teams context
+   */
+  private async getTeamsContext() {
+    return new Promise(resolve => {
+      const teams = TeamsHelper.microsoftTeamsLib;
+      teams.initialize();
+      teams.getContext(context => {
+        resolve(context);
+        return;
       });
     });
   }
