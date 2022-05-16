@@ -2137,7 +2137,7 @@ const createAndInsertPart=(e,t)=>{const r=e.startNode.parentNode,o=void 0===t?e.
         `:null;return html$1`
       <div class="file" @click=${t=>this.handleFileClick(e)}>
         <div class="file__icon">
-          <img src=${function getFileTypeIconUri(e,t,r){const o=Xr[e]||"genericfile";return`${eo}/${t.toString()}/${o}.${r}`}(e.resourceVisualization.type,48,"svg")} />
+          <img alt="${e.resourceVisualization.title}" src=${function getFileTypeIconUri(e,t,r){const o=Xr[e]||"genericfile";return`${eo}/${t.toString()}/${o}.${r}`}(e.resourceVisualization.type,48,"svg")} />
         </div>
         <div class="file__details">
           <div class="file__name">${e.resourceVisualization.title}</div>
