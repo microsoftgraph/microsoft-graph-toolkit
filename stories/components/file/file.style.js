@@ -32,7 +32,7 @@ export const customCSSProperties = () => html`
     --color: black;
     --line2-font-size: 11px;
     --line2-font-weight	: 3px;
-    --line2-color: red;
+    --line2-color: #e50000;
     --line2-text-transform: capitalize;	
     --line3-font-size: 12px;
     --line3-font-weight: 3px;

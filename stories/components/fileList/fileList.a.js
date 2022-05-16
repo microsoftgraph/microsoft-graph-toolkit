@@ -74,7 +74,7 @@ export const openFolderBreadcrumbs = () => html`
         margin: 0;
         padding: 10px 16px;
         list-style: none;
-        background-color: #eee;
+        background-color: #ffffff;
         font-size: 12px;
       }
 

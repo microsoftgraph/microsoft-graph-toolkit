@@ -35,7 +35,7 @@ export const customProperties = () => html`
 
       --agenda-header-margin: 3px;
       --agenda-header-font-size: 20px;
-      --agenda-header-color: pink;
+      --agenda-header-color: #8d696f;
 
       --event-time-font-size: 20px;
       --event-time-color: white;
