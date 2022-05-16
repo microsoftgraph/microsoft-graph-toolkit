@@ -1040,7 +1040,12 @@ export class MgtPeoplePicker extends MgtTemplatedComponent {
                   people = await findUsers(graph, input, this.showMax, this._userFilters);
                 }
               } else {
-                people = (await findPeople(graph, input, this.showMax, this.userType, this._peopleFilters)) || [];
+                if (this.userIds && this.userIds.length) {
+                  // has the user-ids proerty set
+                  people = await getUsersForUserIds(graph, this.userIds, input, this._userFilters);
+                } else {
+                  people = (await findPeople(graph, input, this.showMax, this.userType, this._peopleFilters)) || [];
+                }
               }
             } catch (e) {
               // nop
@@ -1661,7 +1666,7 @@ export class MgtPeoplePicker extends MgtTemplatedComponent {
       const focusedItem = peopleList.children[this._arrowSelectionCount] as HTMLElement;
       if (focusedItem) {
         focusedItem.classList.add('focused');
-        focusedItem.scrollIntoView({ behavior: 'smooth', block: 'nearest', inline: 'start' });
+        focusedItem.scrollIntoView({ behavior: 'smooth', block: 'nearest', inline: 'nearest' });
         focusedItem.focus();
       }
     }
@@ -1676,6 +1681,7 @@ export class MgtPeoplePicker extends MgtTemplatedComponent {
     // ensuring people list is displayed
     // find ids from selected people
     if (people && people.length > 0) {
+      people = people.filter(person => person);
       const idFilter = this.selectedPeople.map(el => {
         return el.id ? el.id : el.displayName;
       });
