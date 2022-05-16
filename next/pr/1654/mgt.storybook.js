@@ -1970,15 +1970,11 @@ const createAndInsertPart=(e,t)=>{const r=e.startNode.parentNode,o=void 0===t?e.
            type="text"
            role="combobox"
            placeholder=${t}
-           aria-placeholder=${t}
            label="people-picker-input"
            autocomplete="off"
            aria-label=${o}
            aria-autocomplete="list"
-           aria-controls="suggestions-list"
-           aria-multiline="false"
-           aria-owns="suggestions-list"
-           aria-activedescendant="suggestions-list"
+           aria-expanded="false"
            tabindex="0"
            @keydown="${this.onUserKeyDown}"
            @keyup="${this.onUserKeyUp}"
