@@ -134,7 +134,76 @@
 
     svgElem.appendChild(svgElemPath);
     return svgElem;
-  }</script><style>.css-bt79wf>svg>path,
+  }
+  const windowWidth = window.innerWidth;
+  // Whenever the browser zoom is added or reduced, as long as it's
+  // over 100%, then get the footer height and set that as the value
+  // of the bottom offset of the bar.
+  const updateOnZoom = () => {
+    const pr = window.devicePixelRatio;
+    // Add an event listener to get any zoom changes based on
+    // on the resolution.
+    matchMedia(`(resolution: ${pr}dppx)`).addEventListener("change", updateOnZoom, { once: true });
+
+    if ((pr * 100).toFixed(0) > 110) {
+      return setUpBottomBar();
+    }
+    return;
+  }
+
+  // Whenever the browser is resized, also get the footer height and set the
+  // bottom bar value offset to it.
+  const updateOnWindowResize = () => {
+    if (windowWidth.innerWidth != windowWidth) {
+      setUpBottomBar();
+    }
+    window.addEventListener("resize", updateOnWindowResize, { once: true });
+    return;
+  }
+
+  const updateOnOrientationChange = () => {
+    const orientation = window.matchMedia("(orientation: landscape)");
+    updateBottomBar();
+    // This is just to detect whether there has been an orientation change
+    // By default we expect to be in landscape so just in case it's something
+    // else, we still do the updates.
+    orientation.addEventListener("change", updateOnOrientationChange, { once: true });
+  }
+
+  const setUpBottomBar = () => {
+    const pr = (window.devicePixelRatio * 100).toFixed(0)
+    // This is a special case. When zooming in, in the first instance the content
+    // has to make the side bar disappear, the content takes a while to load. This
+    // makes the bottom bar unavailable hence it's hidden when the content loads.
+    // This delay should allow that to happen so that we are able to do get the
+    // bottom bar when we query it after 3 seconds.
+    if (pr > 190 && pr < 310) {
+      sleep(3000).then(() => {
+        updateBottomBar();
+      }).catch(() => { })
+    }
+    return updateBottomBar();
+  }
+
+  function updateBottomBar() {
+    const footer = document.getElementsByClassName("storybook-footer")[0];
+    const bottomBar = document.getElementsByClassName("css-1td7bem");
+    if (bottomBar && bottomBar.length > 0) {
+      bottomBar[0].style.bottom = `${footer.clientHeight}px`;
+    }
+    return;
+  }
+
+  function sleep(ms) {
+    return new Promise(resolve => setTimeout(resolve, ms));
+  }
+
+  window.onload = function () {
+    return setUpBottomBar();
+  }
+  updateOnZoom();
+  updateOnWindowResize();
+  updateOnOrientationChange();</script><style>.css-bt79wf>svg>path,
   .css-1j9r8vi>svg>path {
     color: rgba(153, 153, 153, 0.6) !important;
     fill: rgba(153, 153, 153, 0.6) !important;
