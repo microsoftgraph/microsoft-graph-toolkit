@@ -663,15 +663,11 @@ export class MgtPeoplePicker extends MgtTemplatedComponent {
            type="text"
            role="combobox"
            placeholder=${placeholder}
-           aria-placeholder=${placeholder}
            label="people-picker-input"
            autocomplete="off"
            aria-label=${inputAriaLabelText}
            aria-autocomplete="list"
-           aria-controls="suggestions-list"
-           aria-multiline="false"
-           aria-owns="suggestions-list"
-           aria-activedescendant="suggestions-list"
+           aria-expanded="false"
            tabindex="0"
            @keydown="${this.onUserKeyDown}"
            @keyup="${this.onUserKeyUp}"
