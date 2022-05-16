@@ -96,10 +96,65 @@
     usefulLinksContainer.append(repoLink, npmLink);
 
     sidebarNode.insertBefore(usefulLinksContainer, sidebarNode.childNodes[1]);
-  }
-</script>
 
-<script type="text/javascript">
+    const searchBox = document.querySelector(".search-field");
+    if (searchBox) {
+      searchBox.setAttribute("name", "Find Components");
+      searchBox.setAttribute("aria-expanded", "false")
+
+      const searchInput = searchBox.querySelector("input");
+      if (searchInput) {
+        searchInput.addEventListener("mouseleave", addAriaExpanded("false"));
+        searchInput.addEventListener("mouseout", addAriaExpanded("false"));
+        searchInput.addEventListener("pointerleave", addAriaExpanded("false"));
+        searchInput.addEventListener("pointerout", addAriaExpanded("false"));
+        searchInput.addEventListener("click", addAriaExpanded("true"));
+        searchInput.addEventListener("focusout", addAriaExpanded("false"));
+        searchInput.addEventListener("focus", setListItemsAc11y);
+      }
+    }
+
+    function setListItemsAc11y() {
+      const recentMenu = document.querySelector("#storybook-explorer-menu");
+      if (recentMenu) {
+        const firstLi = recentMenu.querySelector("li");
+        if (firstLi) {
+          firstLi.setAttribute("role", "heading");
+          firstLi.setAttribute("aria-level", "2");
+        }
+
+        const otherLis = recentMenu.querySelectorAll("li:not(:first-child)");
+        if (otherLis && otherLis.length > 0) {
+          for (let i = 0; i < otherLis.length; i++) {
+            const li = otherLis[i];
+            const liText = li.innerText;
+            if (liText) {
+              li.setAttribute("aria-label", liText.trim());
+            }
+            li.setAttribute("aria-hidden", "true");
+          }
+        }
+      }
+    }
+
+    function addAriaExpanded(value) {
+      const searchBox = document.querySelector(".search-field");
+      if (searchBox) {
+        searchBox.setAttribute("aria-expanded", value);
+      }
+    }
+
+    const sidebarSubheading = document.getElementsByClassName("sidebar-subheading");
+    if (sidebarSubheading) {
+      for (let i = 0; i < sidebarSubheading.length; i++) {
+        const subheading = sidebarSubheading[i];
+        subheading.removeAttribute("aria-expanded");
+      }
+    }
+
+    setListItemsAc11y();
+  }
+
   const windowWidth = window.innerWidth;
   // Whenever the browser zoom is added or reduced, as long as it's
   // over 100%, then get the footer height and set that as the value
@@ -226,5 +281,14 @@
   .sidebar-header a {
     text-decoration: none;
     color: inherit;
+  }
+
+  .css-ulso1l,
+  .css-gb1sl5 {
+    color: #717171 !important;
+  }
+
+  .css-1en6m26 {
+    color: #616159 !important
   }
 </style>
