@@ -167,6 +167,14 @@
       }
     }
 
+    const sidebarSubheading = document.getElementsByClassName("sidebar-subheading");
+    if (sidebarSubheading) {
+      for (let i = 0; i < sidebarSubheading.length; i++) {
+        const subheading = sidebarSubheading[i];
+        subheading.removeAttribute("aria-expanded");
+      }
+    }
+
     setListItemsAc11y();
   }</script><style>/* this keeps the storybook body area above footer */
   #root>div:first-of-type {
