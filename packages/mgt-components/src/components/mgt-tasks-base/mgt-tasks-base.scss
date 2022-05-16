@@ -363,7 +363,7 @@ $task-border-completed: var(--task-complete-border, 2px dotted inherit);
         span,
         select {
           vertical-align: middle;
-          color: #717171;
+          color: set-var(color__sub2, $theme-default, $common);
         }
 
         .TaskIcon {
@@ -469,7 +469,7 @@ $task-border-completed: var(--task-complete-border, 2px dotted inherit);
 
       .TaskContent .TaskDetailsContainer .TaskTitle {
         text-decoration: line-through;
-        color: #727170;
+        color: set-var(color__sub3, $theme-default, $common);
       }
     }
 
