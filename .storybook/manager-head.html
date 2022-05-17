@@ -156,6 +156,7 @@
       if (expandCollapseBtns) {
         for (let i = 0; i < expandCollapseBtns.length; i++) {
           const button = expandCollapseBtns[i];
+          setButtonAriaLabel(button);
           button.addEventListener("click", btnUpDown, { useCapture: true });
         }
       }
@@ -163,6 +164,10 @@
 
     function btnUpDown(event) {
       const element = event.target; // button when using tabs to navigate, svg when using mouse.
+      setButtonAriaLabel(element);
+    }
+
+    function setButtonAriaLabel(element) {
       const dataExpandedState = element.getAttribute("data-expanded");
       const ariaValue = dataExpandedState === "true" ? "collapse" : "expand";
       element.setAttribute("aria-label", ariaValue);
