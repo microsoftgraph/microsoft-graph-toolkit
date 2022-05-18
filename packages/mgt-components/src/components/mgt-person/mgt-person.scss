@@ -489,3 +489,25 @@ mgt-person .avatar-icon {
     }
   }
 }
+
+@media (forced-colors: active) and (prefers-color-scheme: dark) {
+  :host svg,
+  :host svg > path,
+  mgt-person svg,
+  mgt-person svg > path {
+    fill: rgb(255, 255, 255) !important;
+    fill-rule: nonzero !important;
+    clip-rule: nonzero !important;
+  }
+}
+
+@media (forced-colors: active) and (prefers-color-scheme: dark) {
+  :host svg,
+  :host svg > path,
+  mgt-person svg,
+  mgt-person svg > path {
+    fill: rgb(0,0,0) !important;
+    fill-rule: nonzero !important;
+    clip-rule: nonzero !important;
+  }
+}

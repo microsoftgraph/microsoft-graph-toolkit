@@ -14,6 +14,8 @@
 <script src="https://consentdeliveryfd.azurefd.net/mscc/lib/v2/wcp-consent.js"></script>
 <script src="https://az725175.vo.msecnd.net/scripts/jsll-4.js" type="text/javascript"></script>
 <script type="text/javascript">
+  const xmlns = "http://www.w3.org/2000/svg";
+
   var config = {
     autoCapture: {
       lineage: true
@@ -31,7 +33,6 @@
 
   function addUsefulLinks() {
     const linkStyle = 'color: black; text-decoration: none; text-align: center; cursor: pointer; padding-right: 0.5rem;';
-    const imageStyle = 'height: 0.75rem; margin-top: 0.125rem;';
     const textStyle = 'margin-left: 0.25rem; font-size: 0.75rem;';
     const linkContentStyle = 'display: flex;';
 
@@ -49,11 +50,9 @@
 
     const sidebarNode = sidebarHeader[0].parentNode;
 
-    // GitHub
-    const githubImage = document.createElement('img');
-    githubImage.src = './github.png';
-    githubImage.alt = 'GitHub';
-    githubImage.style = imageStyle;
+    // Github
+    const ghSvgPath = "M12 .297c-6.63 0-12 5.373-12 12 0 5.303 3.438 9.8 8.205 11.385.6.113.82-.258.82-.577 0-.285-.01-1.04-.015-2.04-3.338.724-4.042-1.61-4.042-1.61C4.422 18.07 3.633 17.7 3.633 17.7c-1.087-.744.084-.729.084-.729 1.205.084 1.838 1.236 1.838 1.236 1.07 1.835 2.809 1.305 3.495.998.108-.776.417-1.305.76-1.605-2.665-.3-5.466-1.332-5.466-5.93 0-1.31.465-2.38 1.235-3.22-.135-.303-.54-1.523.105-3.176 0 0 1.005-.322 3.3 1.23.96-.267 1.98-.399 3-.405 1.02.006 2.04.138 3 .405 2.28-1.552 3.285-1.23 3.285-1.23.645 1.653.24 2.873.12 3.176.765.84 1.23 1.91 1.23 3.22 0 4.61-2.805 5.625-5.475 5.92.42.36.81 1.096.81 2.22 0 1.606-.015 2.896-.015 3.286 0 .315.21.69.825.57C20.565 22.092 24 17.592 24 12.297c0-6.627-5.373-12-12-12";
+    const githubSvgElem = createSvg(ghSvgPath);
 
     const githubText = document.createElement('span');
     githubText.style = textStyle;
@@ -61,7 +60,7 @@
 
     const repoLinkContent = document.createElement('span');
     repoLinkContent.style = linkContentStyle;
-    repoLinkContent.append(githubImage, githubText);
+    repoLinkContent.append(githubSvgElem, githubText);
 
     const repoLink = document.createElement('a');
     repoLink.href = 'https://aka.ms/mgt';
@@ -70,10 +69,8 @@
     repoLink.appendChild(repoLinkContent);
 
     // npm
-    const npmImage = document.createElement('img');
-    npmImage.src = './npm.png';
-    npmImage.alt = 'npm';
-    npmImage.style = imageStyle;
+    const npmSvgPath = "M1.763 0C.786 0 0 .786 0 1.763v20.474C0 23.214.786 24 1.763 24h20.474c.977 0 1.763-.786 1.763-1.763V1.763C24 .786 23.214 0 22.237 0zM5.13 5.323l13.837.019-.009 13.836h-3.464l.01-10.382h-3.456L12.04 19.17H5.113z";
+    const npmSvgElem = createSvg(npmSvgPath);
 
     const npmText = document.createElement('span');
     npmText.style = textStyle;
@@ -81,7 +78,7 @@
 
     const npmLinkContent = document.createElement('span');
     npmLinkContent.style = linkContentStyle;
-    npmLinkContent.append(npmImage, npmText);
+    npmLinkContent.append(npmSvgElem, npmText);
 
     const npmLink = document.createElement('a');
     npmLink.href = 'https://www.npmjs.com/package/@microsoft/mgt';
@@ -156,6 +153,23 @@
     setListItemsAc11y();
   }
 
+  function createSvg(svgPath) {
+    const boxWidth = 12;
+    const boxHeight = 12;
+    const imageStyle = 'height: 0.75rem; margin-top: 0.125rem;';
+    const svgElem = document.createElementNS(xmlns, "svg");
+    svgElem.setAttributeNS(null, "viewBox", `0 0 ${boxWidth * 2} ${boxHeight * 2}`);
+    svgElem.setAttributeNS(null, "width", boxWidth);
+    svgElem.setAttributeNS(null, "height", boxHeight);
+    svgElem.setAttributeNS(null, "role", "image");
+    svgElem.setAttributeNS(null, "style", imageStyle);
+
+    const svgElemPath = document.createElementNS(xmlns, "path");
+    svgElemPath.setAttributeNS(null, "d", svgPath);
+
+    svgElem.appendChild(svgElemPath);
+    return svgElem;
+  }
   const windowWidth = window.innerWidth;
   // Whenever the browser zoom is added or reduced, as long as it's
   // over 100%, then get the footer height and set that as the value
@@ -223,6 +237,82 @@
   updateOnWindowResize();
   updateOnOrientationChange();
 </script>
+
+<style>
+  .css-bt79wf>svg>path,
+  .css-1j9r8vi>svg>path {
+    color: rgba(153, 153, 153, 0.6) !important;
+    fill: rgba(153, 153, 153, 0.6) !important;
+  }
+
+  @media (forced-colors: active) and (prefers-color-scheme: dark) {
+    #root,
+    svg,
+    svg>path,
+    button {
+      fill: rgb(255, 255, 255) !important;
+      color: rgb(255, 255, 255) !important;
+    }
+
+    .css-bt79wf>svg>path,
+    .css-1j9r8vi>svg>path {
+      color: rgba(255, 255, 255) !important;
+      fill: rgba(255, 255, 255) !important;
+    }
+
+    .css-cwrfva:hover,
+    .css-cwrfva:focus-visible {
+      border: 1px solid rgba(255, 255, 255) !important;
+    }
+
+    .css-128qwy8:hover {
+      /* background-image: radial-gradient(at center center,rgba(0,0,0,0.2) 0%,transparent 70%,transparent 100%); */
+      background-image: radial-gradient(at center center, rgba(255, 255, 255) 100%, transparent 100%, transparent 100%);
+      background-size: 50px 100%;
+      background-position: 0 50%;
+      background-repeat: no-repeat;
+    }
+
+    .os-scrollbar>.os-scrollbar-track>.os-scrollbar-handle,
+    .os-scrollbar>.os-scrollbar-track {
+      border: 1px solid transparent;
+    }
+  }
+
+  @media (forced-colors: active) and (prefers-color-scheme: light) {
+    #root,
+    svg,
+    svg>path,
+    button {
+      fill: rgb(0, 0, 0) !important;
+      color: rgb(0, 0, 0) !important;
+    }
+
+    .css-bt79wf>svg>path,
+    .css-1j9r8vi>svg>path {
+      color: rgba(0, 0, 0) !important;
+      fill: rgba(0, 0, 0) !important;
+    }
+
+    .css-cwrfva:hover,
+    .css-cwrfva:focus-visible {
+      border: 1px solid rgba(0, 0, 0) !important;
+    }
+
+    .css-128qwy8:hover {
+      /* background-image: radial-gradient(at center center,rgba(0,0,0,0.2) 0%,transparent 70%,transparent 100%); */
+      background-image: radial-gradient(at center center, rgba(0, 0, 0, 0.2) 100%, transparent 100%, transparent 100%);
+      background-size: 50px 100%;
+      background-position: 0 50%;
+      background-repeat: no-repeat;
+    }
+
+    .os-scrollbar>.os-scrollbar-track>.os-scrollbar-handle,
+    .os-scrollbar>.os-scrollbar-track {
+      border: 1px solid transparent;
+    }
+  }
+</style>
 
 <style>
   /* this keeps the storybook body area above footer */

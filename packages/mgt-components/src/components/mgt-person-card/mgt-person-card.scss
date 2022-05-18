@@ -296,3 +296,47 @@ $person-card-details-item-font-size: var(--person-card-details-item-font-size, 1
     -ms-filter: 'FlipH';
   }
 }
+
+@media (forced-colors: active) and (prefers-color-scheme: dark) {
+  .root {
+    border: 1px solid rgb(255, 255, 255);
+    border-radius: inherit;
+
+    svg,
+    svg > path {
+      fill: rgb(255, 255, 255) !important;
+      fill-rule: nonzero !important;
+      clip-rule: nonzero !important;
+    }
+  }
+  svg,
+  svg > path,
+  .expanded-details-container > svg,
+  .expanded-details-container > svg > path {
+    fill: rgb(255, 255, 255) !important;
+    fill-rule: nonzero !important;
+    clip-rule: nonzero !important;
+  }
+}
+
+@media (forced-colors: active) and (prefers-color-scheme: light) {
+  .root {
+    border: 1px solid rgb(0, 0, 0);
+    border-radius: inherit;
+
+    svg,
+    svg > path {
+      fill: rgb(0, 0, 0) !important;
+      fill-rule: nonzero !important;
+      clip-rule: nonzero !important;
+    }
+  }
+  svg,
+  svg > path,
+  .expanded-details-container > svg,
+  .expanded-details-container > svg > path {
+    fill: rgb(0, 0, 0) !important;
+    fill-rule: nonzero !important;
+    clip-rule: nonzero !important;
+  }
+}
