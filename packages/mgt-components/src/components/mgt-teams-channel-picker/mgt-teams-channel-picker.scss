@@ -356,3 +356,23 @@
     padding-left: 10px;
   }
 }
+
+@media (forced-colors: active) and (prefers-color-scheme: dark) {
+  .root {
+    svg {
+      fill: rgb(255, 255, 255) !important;
+      fill-rule: nonzero !important;
+      clip-rule: nonzero !important;
+    }
+  }
+}
+
+@media (forced-colors: active) and (prefers-color-scheme: light) {
+  .root {
+    svg {
+      fill: rgb(0, 0, 0) !important;
+      fill-rule: nonzero !important;
+      clip-rule: nonzero !important;
+    }
+  }
+}
