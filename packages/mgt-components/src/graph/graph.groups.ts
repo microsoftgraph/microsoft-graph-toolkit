@@ -375,7 +375,6 @@ export async function getGroupsForGroupIds(
   const notInCache = [];
   const otherCacheKeys = `${groupTypes ? '+' + groupTypes : ''}` + `${groupFilters ? '+' + groupFilters : ''}`;
   const extraKeys = `${otherCacheKeys ? '+' + otherCacheKeys : ''}`;
-  const sign = query !== '' ? '&' : '?';
 
   let cache: CacheStore<CacheGroup>;
 
@@ -398,11 +397,13 @@ export async function getGroupsForGroupIds(
         apiUrl += '/members';
         if (query !== '') {
           apiUrl += `/microsoft.graph.user?$count=true&$search="displayName:${query}"`;
+        } else {
+          apiUrl += '?$count=true';
         }
       }
 
       if (groupFilters) {
-        apiUrl += `${sign}$filters=${groupFilters}`;
+        apiUrl += `&$filter=${groupFilters}`;
       }
 
       const filterGroups = getGroupTypesFilters(groupTypes);
@@ -410,14 +411,10 @@ export async function getGroupsForGroupIds(
         if (groupFilters) {
           apiUrl += (query !== '' ? ' and ' : '') + filterGroups.join(' or ');
         } else {
-          apiUrl += `${sign}$filters=${filterGroups.join(' or ')}`;
+          apiUrl += `&$filter=${filterGroups.join(' or ')}`;
         }
       }
-      if (query !== '') {
-        batch.get(id, apiUrl, ['Group.Read.All'], { ConsistencyLevel: 'eventual' });
-      } else {
-        batch.get(id, apiUrl, ['Group.Read.All']);
-      }
+      batch.get(id, apiUrl, ['Group.Read.All'], { ConsistencyLevel: 'eventual' });
       notInCache.push(cacheKey);
     }
   }
