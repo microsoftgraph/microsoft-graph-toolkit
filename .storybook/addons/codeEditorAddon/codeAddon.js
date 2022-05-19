@@ -5,175 +5,173 @@ const mgtScriptName = './mgt.storybook.js';
 
 // function is used for dragging and moving
 const setupEditorResize = (first, separator, last, dragComplete) => {
-    var md; // remember mouse down info
+  var md; // remember mouse down info
 
-    separator.addEventListener('mousedown', e => {
-        md = {
-            e,
-            offsetLeft: separator.offsetLeft,
-            offsetTop: separator.offsetTop,
-            firstWidth: first.offsetWidth,
-            lastWidth: last.offsetWidth,
-            firstHeight: first.offsetHeight,
-            lastHeight: last.offsetHeight
-        };
-
-        first.style.pointerEvents = 'none';
-        last.style.pointerEvents = 'none';
-
-        document.addEventListener('mousemove', onMouseMove);
-        document.addEventListener('mouseup', onMouseUp);
-    });
-
-    const onMouseUp = () => {
-        if (typeof dragComplete === 'function') {
-            dragComplete();
-        }
-
-        first.style.pointerEvents = '';
-        last.style.pointerEvents = '';
-
-        document.removeEventListener('mousemove', onMouseMove);
-        document.removeEventListener('mouseup', onMouseUp);
+  separator.addEventListener('mousedown', e => {
+    md = {
+      e,
+      offsetLeft: separator.offsetLeft,
+      offsetTop: separator.offsetTop,
+      firstWidth: first.offsetWidth,
+      lastWidth: last.offsetWidth,
+      firstHeight: first.offsetHeight,
+      lastHeight: last.offsetHeight
     };
 
-    const onMouseMove = e => {
-        var delta = { x: e.clientX - md.e.x, y: e.clientY - md.e.y };
+    first.style.pointerEvents = 'none';
+    last.style.pointerEvents = 'none';
 
-        if (window.innerWidth > 800) {
-            // Horizontal
-            // prevent negative-sized elements
-            delta.x = Math.min(Math.max(delta.x, -md.firstWidth + 200), md.lastWidth - 200);
+    document.addEventListener('mousemove', onMouseMove);
+    document.addEventListener('mouseup', onMouseUp);
+  });
 
-            first.style.width = md.firstWidth + delta.x - 0.5 + 'px';
-            last.style.width = md.lastWidth - delta.x - 0.5 + 'px';
-        } else {
-            // Vertical
-            // prevent negative-sized elements
-            delta.y = Math.min(Math.max(delta.y, -md.firstHeight + 150), md.lastHeight - 150);
+  const onMouseUp = () => {
+    if (typeof dragComplete === 'function') {
+      dragComplete();
+    }
 
-            first.style.height = md.firstHeight + delta.y - 0.5 + 'px';
-            last.style.height = md.lastHeight - delta.y - 0.5 + 'px';
-        }
-    };
+    first.style.pointerEvents = '';
+    last.style.pointerEvents = '';
+
+    document.removeEventListener('mousemove', onMouseMove);
+    document.removeEventListener('mouseup', onMouseUp);
+  };
+
+  const onMouseMove = e => {
+    var delta = { x: e.clientX - md.e.x, y: e.clientY - md.e.y };
+
+    if (window.innerWidth > 800) {
+      // Horizontal
+      // prevent negative-sized elements
+      delta.x = Math.min(Math.max(delta.x, -md.firstWidth + 200), md.lastWidth - 200);
+
+      first.style.width = md.firstWidth + delta.x - 0.5 + 'px';
+      last.style.width = md.lastWidth - delta.x - 0.5 + 'px';
+    } else {
+      // Vertical
+      // prevent negative-sized elements
+      delta.y = Math.min(Math.max(delta.y, -md.firstHeight + 150), md.lastHeight - 150);
+
+      first.style.height = md.firstHeight + delta.y - 0.5 + 'px';
+      last.style.height = md.lastHeight - delta.y - 0.5 + 'px';
+    }
+  };
 };
 
 let scriptRegex = /<script\b[^>]*>([\s\S]*?)<\/script>/gm;
 let styleRegex = /<style\b[^>]*>([\s\S]*?)<\/style>/gm;
 
 export const withCodeEditor = makeDecorator({
-    name: `withCodeEditor`,
-    parameterName: 'myParameter',
-    skipIfNoParametersOrOptions: false,
-    wrapper: (getStory, context, { parameters }) => {
-        let story = getStory(context);
+  name: `withCodeEditor`,
+  parameterName: 'myParameter',
+  skipIfNoParametersOrOptions: false,
+  wrapper: (getStory, context, { parameters }) => {
+    let story = getStory(context);
 
-        let storyHtml;
-        const root = document.createElement('div');
-        let storyElementWrapper = document.createElement('div');
+    let storyHtml;
+    const root = document.createElement('div');
+    let storyElementWrapper = document.createElement('div');
 
-        if (story.strings) {
-            storyHtml = story.strings[0];
+    if (story.strings) {
+      storyHtml = story.strings[0];
+    } else {
+      storyHtml = story.innerHTML;
+    }
+
+    let scriptMatches = scriptRegex.exec(storyHtml);
+    let scriptCode = scriptMatches && scriptMatches.length > 1 ? scriptMatches[1].trim() : '';
+
+    let styleMatches = styleRegex.exec(storyHtml);
+    let styleCode = styleMatches && styleMatches.length > 1 ? styleMatches[1].trim() : '';
+
+    storyHtml = storyHtml
+      .replace(styleRegex, '')
+      .replace(scriptRegex, '')
+      .replace(/\n?<!---->\n?/g, '')
+      .trim();
+
+    let editor = new EditorElement();
+    editor.files = {
+      html: storyHtml,
+      js: scriptCode,
+      css: styleCode
+    };
+
+    const getContent = async (url, json) => {
+      let content = '';
+
+      if (url) {
+        let response = await fetch(url);
+
+        if (response.ok) {
+          if (json) {
+            content = await response.json();
+          } else {
+            content = await response.text();
+          }
         } else {
-            storyHtml = story.innerHTML;
+          console.warn(`Can't get content from '${url}'`);
         }
+      }
 
-        let scriptMatches = scriptRegex.exec(storyHtml);
-        let scriptCode = scriptMatches && scriptMatches.length > 1 ? scriptMatches[1].trim() : '';
+      return content;
+    };
 
-        let styleMatches = styleRegex.exec(storyHtml);
-        let styleCode = styleMatches && styleMatches.length > 1 ? styleMatches[1].trim() : '';
+    const isNotIframed = () => {
+      try {
+        return window.top.location.href != null || window.top.location.href != undefined;
+      } catch (err) {
+        return false;
+      }
+    };
 
-        storyHtml = storyHtml
-            .replace(styleRegex, '')
-            .replace(scriptRegex, '')
-            .replace(/\n?<!---->\n?/g, '')
-            .trim();
+    const isValid = manifestUrl => {
+      return manifestUrl && manifestUrl.startsWith('https://raw.githubusercontent.com/pnp/mgt-samples/main/');
+    };
 
-        let editor = new EditorElement();
-        editor.files = {
-            html: storyHtml,
-            js: scriptCode,
-            css: styleCode
-        };
+    if (context.name === 'Editor') {
+      // If the editor is not iframed (Docs, GE, etc.)
+      if (isNotIframed()) {
+        var urlParams = new URLSearchParams(window.top.location.search);
+        var manifestUrl = urlParams.get('manifest');
 
-        const getContent = async(url, json) => {
-            let content = ""
-
-            if (url) {
-                let response = await fetch(url);
-
-                if (response.ok) {
-                    if (json) {
-                        content = await response.json();
-                    } else {
-                        content = await response.text();
-                    }
-                } else {
-                    console.warn(`Can't get content from '${url}'`)
-                }
-            }
-
-            return content;
+        if (isValid(manifestUrl)) {
+          getContent(manifestUrl, true).then(manifest => {
+            Promise.all([
+              getContent(manifest[0].preview.html),
+              getContent(manifest[0].preview.js),
+              getContent(manifest[0].preview.css)
+            ]).then(values => {
+              //editor.autoFormat = false;
+              editor.files = {
+                html: values[0],
+                js: values[1],
+                css: values[2]
+              };
+            });
+          });
         }
+      }
+    }
 
-        const isNotIframed = () => {
-            try {
-                return window.top.location.href != null || window.top.location.href != undefined;
-            } catch (err) {
-                return false;
-            }
-        }
-
-        const isValid = (manifestUrl) => {
-            return manifestUrl && manifestUrl.startsWith('https://raw.githubusercontent.com/pnp/mgt-samples/main/');
-        }
-
-        if (context.name === "Editor") {
-
-            // If the editor is not iframed (Docs, GE, etc.)
-            if (isNotIframed()) {
-                var urlParams = new URLSearchParams(window.top.location.search);
-                var manifestUrl = urlParams.get('manifest');
-
-                if (isValid(manifestUrl)) {
-                    getContent(manifestUrl, true).then((manifest) => {
-                        Promise.all([
-                            getContent(manifest[0].preview.html),
-                            getContent(manifest[0].preview.js),
-                            getContent(manifest[0].preview.css)
-                        ]).then((values) => {
-                            //editor.autoFormat = false;
-                            editor.files = {
-                                html: values[0],
-                                js: values[1],
-                                css: values[2]
-                            };
-                        });
-                    });
-                }
-            }
-
-        }
-
-        const loadEditorContent = () => {
-            let providerInitCode = `
+    const loadEditorContent = () => {
+      let providerInitCode = `
         import {Providers, MockProvider} from "${mgtScriptName}";
         Providers.globalProvider = new MockProvider(true);
       `;
 
-            const storyElement = document.createElement('iframe');
+      const storyElement = document.createElement('iframe');
 
-            storyElement.addEventListener('load', () => {
-                let doc = storyElement.contentDocument;
+      storyElement.addEventListener('load', () => {
+        let doc = storyElement.contentDocument;
 
-                let { html, css, js } = editor.files;
-                js = js.replace(
-                    /import \{([^\}]+)\}\s+from\s+['"]@microsoft\/mgt['"];/gm,
-                    `import {$1} from '${mgtScriptName}';`
-                );
+        let { html, css, js } = editor.files;
+        js = js.replace(
+          /import \{([^\}]+)\}\s+from\s+['"]@microsoft\/mgt['"];/gm,
+          `import {$1} from '${mgtScriptName}';`
+        );
 
-                const docContent = `
+        const docContent = `
           <html>
             <head>
               <script type="module" src="${mgtScriptName}"></script>
@@ -197,38 +195,39 @@ export const withCodeEditor = makeDecorator({
           </html>
         `;
 
-                doc.open();
-                doc.write(docContent);
-                doc.close();
-            });
+        doc.open();
+        doc.write(docContent);
+        doc.close();
+      });
 
-            storyElement.className = 'story-mgt-preview';
-            storyElementWrapper.innerHTML = '';
-            storyElementWrapper.appendChild(storyElement);
-        };
+      storyElement.className = 'story-mgt-preview';
+      storyElement.setAttribute('title', 'preview');
+      storyElementWrapper.innerHTML = '';
+      storyElementWrapper.appendChild(storyElement);
+    };
 
-        editor.addEventListener('fileUpdated', loadEditorContent);
+    editor.addEventListener('fileUpdated', loadEditorContent);
 
-        const separator = document.createElement('div');
+    const separator = document.createElement('div');
 
-        setupEditorResize(storyElementWrapper, separator, editor, () => editor.layout());
+    setupEditorResize(storyElementWrapper, separator, editor, () => editor.layout());
 
-        root.className = 'story-mgt-root';
-        storyElementWrapper.className = 'story-mgt-preview-wrapper';
-        separator.className = 'story-mgt-separator';
-        editor.className = 'story-mgt-editor';
+    root.className = 'story-mgt-root';
+    storyElementWrapper.className = 'story-mgt-preview-wrapper';
+    separator.className = 'story-mgt-separator';
+    editor.className = 'story-mgt-editor';
 
-        root.appendChild(storyElementWrapper);
-        root.appendChild(separator);
-        root.appendChild(editor);
+    root.appendChild(storyElementWrapper);
+    root.appendChild(separator);
+    root.appendChild(editor);
 
-        window.addEventListener('resize', () => {
-            storyElementWrapper.style.height = null;
-            storyElementWrapper.style.width = null;
-            editor.style.height = null;
-            editor.style.width = null;
-        });
+    window.addEventListener('resize', () => {
+      storyElementWrapper.style.height = null;
+      storyElementWrapper.style.width = null;
+      editor.style.height = null;
+      editor.style.width = null;
+    });
 
-        return root;
-    }
+    return root;
+  }
 });
