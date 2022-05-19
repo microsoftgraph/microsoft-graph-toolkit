@@ -148,6 +148,15 @@
       }
     }
 
+    function setEventOnMenuClick() {
+      const expandCollapseMenu = document.getElementsByClassName("css-ulso1l");
+      if (expandCollapseMenu) {
+        for (let i = 0; i < expandCollapseMenu.length; i++) {
+          const menu = expandCollapseMenu[i];
+          menu.addEventListener("click", setArialLabelForExpandCollapseBtn, { useCapture: true });
+        }
+      }
+    }
     function setArialLabelForExpandCollapseBtn() {
       const expandCollapseBtns = document.getElementsByClassName("css-rl1ij0");
       if (expandCollapseBtns) {
@@ -166,10 +175,11 @@
 
     function setButtonAriaLabel(element) {
       const dataExpandedState = element.getAttribute("data-expanded");
-      const ariaValue = dataExpandedState === "true" ? "collapse" : "expand";
+      const ariaValue = dataExpandedState === "true" ? "expand" : "collapse";
       element.setAttribute("aria-label", ariaValue);
     }
 
+    setEventOnMenuClick();
     setListItemsAc11y();
     setArialLabelForExpandCollapseBtn();
   }
@@ -275,6 +285,7 @@
   }
 
   @media (forced-colors: active) and (prefers-color-scheme: dark) {
+
     #root,
     svg,
     svg>path,
@@ -309,6 +320,7 @@
   }
 
   @media (forced-colors: active) and (prefers-color-scheme: light) {
+
     #root,
     svg,
     svg>path,
