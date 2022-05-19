@@ -9,6 +9,9 @@
 @import '../../../../styles/shared-styles.scss';
 @import '../../../../styles/shared-sass-variables.scss';
 
+$person-card-contact-link-color: var(--person-card-contact-link-color, #{$commblue_primary});
+$person-card-contact-link-hover-color: var(--person-card-contact-link-hover-color, #004578);
+
 :host {
   position: relative;
   user-select: none;
@@ -56,7 +59,7 @@
           font-weight: 400;
 
           .part__link {
-            color: $commblue_primary;
+            color: $person-card-contact-link-color;
             font-family: $font-family;
             font-size: 14px;
             cursor: pointer;
@@ -67,7 +70,7 @@
             display: inline-block;
 
             &:hover {
-              color: #004578;
+              color: $person-card-contact-link-hover-color;
             }
           }
         }
