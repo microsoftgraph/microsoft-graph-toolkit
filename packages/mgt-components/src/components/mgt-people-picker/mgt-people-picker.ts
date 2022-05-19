@@ -663,15 +663,11 @@ export class MgtPeoplePicker extends MgtTemplatedComponent {
            type="text"
            role="combobox"
            placeholder=${placeholder}
-           aria-placeholder=${placeholder}
            label="people-picker-input"
            autocomplete="off"
            aria-label=${inputAriaLabelText}
            aria-autocomplete="list"
-           aria-controls="suggestions-list"
-           aria-multiline="false"
-           aria-owns="suggestions-list"
-           aria-activedescendant="suggestions-list"
+           aria-expanded="false"
            tabindex="0"
            @keydown="${this.onUserKeyDown}"
            @keyup="${this.onUserKeyUp}"
@@ -1040,7 +1036,12 @@ export class MgtPeoplePicker extends MgtTemplatedComponent {
                   people = await findUsers(graph, input, this.showMax, this._userFilters);
                 }
               } else {
-                people = (await findPeople(graph, input, this.showMax, this.userType, this._peopleFilters)) || [];
+                if (this.userIds && this.userIds.length) {
+                  // has the user-ids proerty set
+                  people = await getUsersForUserIds(graph, this.userIds, input, this._userFilters);
+                } else {
+                  people = (await findPeople(graph, input, this.showMax, this.userType, this._peopleFilters)) || [];
+                }
               }
             } catch (e) {
               // nop
@@ -1676,6 +1677,7 @@ export class MgtPeoplePicker extends MgtTemplatedComponent {
     // ensuring people list is displayed
     // find ids from selected people
     if (people && people.length > 0) {
+      people = people.filter(person => person);
       const idFilter = this.selectedPeople.map(el => {
         return el.id ? el.id : el.displayName;
       });

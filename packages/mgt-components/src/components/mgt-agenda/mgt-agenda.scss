@@ -185,3 +185,22 @@ mgt-agenda .event-attendee-loading {
     }
   }
 }
+
+@media (forced-colors: active) and (prefers-color-scheme: dark) {
+  svg,
+  svg > path {
+    fill: rgb(255, 255, 255) !important;
+    fill-rule: nonzero !important;
+    clip-rule: nonzero !important;
+    color: rgb(255, 255, 255) !important;
+  }
+}
+@media (forced-colors: active) and (prefers-color-scheme: light) {
+  svg,
+  svg > path {
+    fill: rgb(0, 0, 0) !important;
+    fill-rule: nonzero !important;
+    clip-rule: nonzero !important;
+    color: rgb(0, 0, 0) !important;
+  }
+}
