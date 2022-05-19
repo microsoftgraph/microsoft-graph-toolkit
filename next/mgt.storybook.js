@@ -643,7 +643,7 @@ const createAndInsertPart=(e,t)=>{const r=e.startNode.parentNode,o=void 0===t?e.
       `}clearState(){this.events=null}renderNoData(){return this.renderTemplate("no-data",null)||html$1``}renderEvent(e){return html$1`
       <div class="event">
         <div class="event-time-container">
-          <div tabindex=0 class="event-time" aria-label="${this.getEventTimeString(e)}">${this.getEventTimeString(e)}</div>
+          <div class="event-time" aria-label="${this.getEventTimeString(e)}">${this.getEventTimeString(e)}</div>
         </div>
         <div class="event-details-container">
           ${this.renderTitle(e)} ${this.renderLocation(e)} ${this.renderAttendees(e)}
@@ -651,13 +651,13 @@ const createAndInsertPart=(e,t)=>{const r=e.startNode.parentNode,o=void 0===t?e.
         <div class="event-other-container">${this.renderOther(e)}</div>
       </div>
     `}renderHeader(e){return this.renderTemplate("header",{header:e},"header-"+e)||html$1`
-        <div tabindex=0 class="header" aria-label="${e}">${e}</div>
+        <div class="header" aria-label="${e}">${e}</div>
       `}renderTitle(e){return html$1`
-      <div tabindex=0 aria-label=${e.subject} class="event-subject">${e.subject}</div>
+      <div aria-label=${e.subject} class="event-subject">${e.subject}</div>
     `}renderLocation(e){return e.location.displayName?html$1`
       <div class="event-location-container">
         <div class="event-location-icon">${getSvg(Fr.OfficeLocation)}</div>
-        <div tabindex=0 class="event-location" aria-label="${e.location.displayName}">${e.location.displayName}</div>
+        <div class="event-location" aria-label="${e.location.displayName}">${e.location.displayName}</div>
       </div>
     `:null}renderAttendees(e){return e.attendees.length?html$1`
       <mgt-people
