@@ -30,12 +30,12 @@ export const customProperties = () => html`
       --event-box-shadow: 0px 2px 30px pink;
       --event-margin: 0px 10px 40px 10px;
       --event-padding: 8px 0px;
-      --event-background-color: pink;
+      --event-background-color: #8d696f;
       --event-border: dotted 2px white;
 
       --agenda-header-margin: 3px;
       --agenda-header-font-size: 20px;
-      --agenda-header-color: pink;
+      --agenda-header-color: #8d696f;
 
       --event-time-font-size: 20px;
       --event-time-color: white;
