@@ -16,11 +16,6 @@ export default {
 
 export const darkTheme = () => html`
   <mgt-login class="mgt-dark"></mgt-login>
-  <style>
-    body {
-      background-color: black;
-    }
-  </style>
 `;
 
 export const customCssProperties = () => html`

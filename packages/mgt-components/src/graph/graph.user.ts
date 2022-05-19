@@ -197,9 +197,13 @@ export async function getUsersForUserIds(
     if (user && getUserInvalidationTime() > Date.now() - user.timeCached) {
       user = JSON.parse(user?.user);
       const displayName = user.displayName;
-      const searchMatches = displayName && displayName.toLowerCase().includes(searchInput) ? true : false;
-      if (searchInput && searchMatches) {
-        peopleSearchMatches[id] = user ? user : null;
+
+      if (searchInput) {
+        const match = displayName && displayName.toLowerCase().includes(searchInput);
+        const searchMatches = match ? true : false;
+        if (searchMatches) {
+          peopleSearchMatches[id] = user ? user : null;
+        }
       } else {
         peopleDict[id] = user ? user : null;
       }

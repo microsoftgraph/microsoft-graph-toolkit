@@ -152,7 +152,7 @@ export async function findGroups(
       filterGroups.push('(mailEnabled eq true and securityEnabled eq false)');
     }
 
-    filterQuery += `${filterQuery} and `;
+    filterQuery = filterQuery ? `${filterQuery} and ` : '';
     for (let filter of filterGroups) {
       batch.get(filter, `/groups?$filter=${filterQuery + filter}`, ['Group.Read.All']);
     }

@@ -363,6 +363,7 @@ $task-border-completed: var(--task-complete-border, 2px dotted inherit);
         span,
         select {
           vertical-align: middle;
+          color: set-var(color__sub2, $theme-default, $common);
         }
 
         .TaskIcon {
@@ -705,6 +706,34 @@ $task-border-completed: var(--task-complete-border, 2px dotted inherit);
   .TaskDetail {
     svg {
       margin-left: 4px;
+    }
+  }
+}
+
+@media (forced-colors: active) and (prefers-color-scheme: dark) {
+  :host svg {
+    fill: rgb(255, 255, 255) !important;
+    fill-rule: nonzero !important;
+    clip-rule: nonzero !important;
+
+    path {
+      fill: rgb(255, 255, 255) !important;
+      fill-rule: nonzero !important;
+      clip-rule: nonzero !important;
+    }
+  }
+}
+
+@media (forced-colors: active) and (prefers-color-scheme: light) {
+  :host svg {
+    fill: rgb(0, 0, 0) !important;
+    fill-rule: nonzero !important;
+    clip-rule: nonzero !important;
+
+    path {
+      fill: rgb(0, 0, 0) !important;
+      fill-rule: nonzero !important;
+      clip-rule: nonzero !important;
     }
   }
 }
