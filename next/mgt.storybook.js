@@ -551,15 +551,15 @@ found at http://polymer.github.io/PATENTS.txt
     `}handleLine1Clicked(){this.fireCustomEvent("line1clicked",this.personDetailsInternal)}handleLine2Clicked(){this.fireCustomEvent("line2clicked",this.personDetailsInternal)}handleLine3Clicked(){this.fireCustomEvent("line3clicked",this.personDetailsInternal)}renderDetails(e,t){if(!e||this.view===Dr.image||this.view===Hr.avatar)return html$1``;let r=e;t&&(r.presenceActivity=null==t?void 0:t.activity,r.presenceAvailability=null==t?void 0:t.availability);const o=[];if(this.view>Dr.image)if(this.hasTemplate("line1")){const e=this.renderTemplate("line1",{person:r});o.push(html$1`
           <div class="line1" @click=${()=>this.handleLine1Clicked()}>${e}</div>
         `)}else{const e=this.getTextFromProperty(r,this.line1Property);e&&o.push(html$1`
-            <div class="line1" @click=${()=>this.handleLine1Clicked()} aria-label="${e}">${e}</div>
+            <div class="line1" @click=${()=>this.handleLine1Clicked()} role="presentation" aria-label="${e}">${e}</div>
           `)}if(this.view>Dr.oneline)if(this.hasTemplate("line2")){const e=this.renderTemplate("line2",{person:r});o.push(html$1`
           <div class="line2" @click=${()=>this.handleLine2Clicked()}>${e}</div>
         `)}else{const e=this.getTextFromProperty(r,this.line2Property);e&&o.push(html$1`
-            <div class="line2" @click=${()=>this.handleLine2Clicked()} aria-label="${e}">${e}</div>
+            <div class="line2" @click=${()=>this.handleLine2Clicked()} role="presentation" aria-label="${e}">${e}</div>
           `)}if(this.view>Dr.twolines)if(this.hasTemplate("line3")){const e=this.renderTemplate("line3",{person:r});o.push(html$1`
           <div class="line3" @click=${()=>this.handleLine3Clicked()}>${e}</div>
         `)}else{const e=this.getTextFromProperty(r,this.line3Property);e&&o.push(html$1`
-            <div class="line3" @click=${()=>this.handleLine3Clicked()} aria-label="${e}">${e}</div>
+            <div class="line3" @click=${()=>this.handleLine3Clicked()} role="presentation" aria-label="${e}">${e}</div>
           `)}const i=_r({details:!0,small:!this.isLargeAvatar()});return html$1`
       <div class="${i}">
         ${o}
@@ -1970,15 +1970,11 @@ const createAndInsertPart=(e,t)=>{const r=e.startNode.parentNode,o=void 0===t?e.
            type="text"
            role="combobox"
            placeholder=${t}
-           aria-placeholder=${t}
            label="people-picker-input"
            autocomplete="off"
            aria-label=${o}
            aria-autocomplete="list"
-           aria-controls="suggestions-list"
-           aria-multiline="false"
-           aria-owns="suggestions-list"
-           aria-activedescendant="suggestions-list"
+           aria-expanded="false"
            tabindex="0"
            @keydown="${this.onUserKeyDown}"
            @keyup="${this.onUserKeyUp}"
