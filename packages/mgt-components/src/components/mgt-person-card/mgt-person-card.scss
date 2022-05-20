@@ -16,6 +16,13 @@ $person-card-subtitle-font-size: var(--person-card-subtitle-font-size, 12px);
 $person-card-subtitle-color: var(--person-card-subtitle-color);
 $person-card-details-title-font-size: var(--person-card-details-title-font-size, 14px);
 $person-card-details-item-font-size: var(--person-card-details-item-font-size, 15px);
+$person-card-show-more-color: var(--person-card-show-more-color, #{$commblue_primary});
+$person-card-show-more-hover-color: var(--person-card-show-more-hover-color, #{$commblue_shade20});
+$person-card-base-links-color: var(--person-card-base-links-color, #023b8f);
+$person-card-base-links-hover-color: var(--person-card-base-links-hover-color, #012e7f);
+$person-card-tab-nav-color: var(--person-card-tab-nav-color, #{$icon--active});
+$person-card-nav-back-arrow-color: var(--person-card-nav-back-arrow-color, #{$commblue_primary});
+$person-card-nav-back-arrow-hover-color: var(--person-card-nav-back-arrow-hover-color, #{$black});
 
 :host {
   background: $background-color;
@@ -39,14 +46,14 @@ $person-card-details-item-font-size: var(--person-card-details-item-font-size, 1
       justify-content: center;
 
       svg {
-        fill: #{$commblue_primary};
+        fill: $person-card-nav-back-arrow-color;
       }
 
       &:hover {
         cursor: pointer;
 
         svg {
-          fill: #{$black};
+          fill: $person-card-nav-back-arrow-hover-color;
         }
       }
     }
@@ -96,11 +103,11 @@ $person-card-details-item-font-size: var(--person-card-details-item-font-size, 1
 
         span {
           margin-left: 8px;
-          color: #023b8f;
+          color: $person-card-base-links-color;
         }
       }
       .icon:hover {
-        color: #012e7f;
+        color: $person-card-base-links-hover-color;
       }
     }
   }
@@ -161,7 +168,7 @@ $person-card-details-item-font-size: var(--person-card-details-item-font-size, 1
 
       &.active {
         // border: none none none solid $icon--active;
-        border-bottom-color: $icon--active;
+        border-bottom-color: $person-card-tab-nav-color;
         border-bottom-style: solid;
         border-left-color: none;
         border-right-color: none;
@@ -170,7 +177,7 @@ $person-card-details-item-font-size: var(--person-card-details-item-font-size, 1
         border-left-style: none;
         border-right-style: none;
         svg {
-          fill: $icon--active;
+          fill: $person-card-tab-nav-color;
         }
       }
     }
@@ -258,14 +265,14 @@ $person-card-details-item-font-size: var(--person-card-details-item-font-size, 1
       }
 
       &__show-more {
-        color: $commblue_primary;
+        color: $person-card-show-more-color;
         font-size: 12px;
         font-weight: 600;
         align-self: center;
 
         &:hover {
           cursor: pointer;
-          color: $commblue_shade20;
+          color: $person-card-show-more-hover-color;
         }
       }
 

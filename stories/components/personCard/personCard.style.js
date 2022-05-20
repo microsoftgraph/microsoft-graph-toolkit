@@ -37,6 +37,16 @@ export const customCSSProperties = () => html`
       --person-card-details-item-font-size: 20px;
       --person-card-details-item-color: #3abf0a;
       --person-card-background-color: pink;
+      --person-card-contact-link-color: red;
+      --person-card-contact-link-hover-color:green;
+      --person-card-show-more-color: red;
+      --person-card-show-more-hover-color: green;
+      --person-card-base-links-color: red;
+      --person-card-base-links-hover-color: green;
+      --person-card-tab-nav-color: red;
+      --person-card-active-org-member-color: red;
+      --person-card-nav-back-arrow-hover-color: green;
+      --person-card-nav-back-arrow-color: red;
     }
   </style>
   <mgt-person-card person-query="me"></mgt-person-card>
