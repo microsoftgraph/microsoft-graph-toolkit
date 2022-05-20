@@ -23,29 +23,29 @@
 
 ## Packages
 
-| Package | Latest | Next |
-| - | - | - |
-| [`@microsoft/mgt`](https://www.npmjs.com/package/@microsoft/mgt) | <img src="https://img.shields.io/npm/v/@microsoft/mgt/latest.svg"> | <img src="https://img.shields.io/npm/v/@microsoft/mgt/next.svg">
-| [`@microsoft/mgt-element`](https://www.npmjs.com/package/@microsoft/mgt-element) | <img src="https://img.shields.io/npm/v/@microsoft/mgt-element/latest.svg"> | <img src="https://img.shields.io/npm/v/@microsoft/mgt-element/next.svg"> |
-| [`@microsoft/mgt-components`](https://www.npmjs.com/package/@microsoft/mgt-components) | <img src="https://img.shields.io/npm/v/@microsoft/mgt-components/latest.svg"> | <img src="https://img.shields.io/npm/v/@microsoft/mgt-components/next.svg"> |
-| [`@microsoft/mgt-react`](https://www.npmjs.com/package/@microsoft/mgt-react) | <img src="https://img.shields.io/npm/v/@microsoft/mgt-react/latest.svg"> | <img src="https://img.shields.io/npm/v/@microsoft/mgt-react/next.svg"> |
-| [`@microsoft/mgt-msal-provider`](https://www.npmjs.com/package/@microsoft/mgt-msal-provider) | <img src="https://img.shields.io/npm/v/@microsoft/mgt-msal-provider/latest.svg"> | <img src="https://img.shields.io/npm/v/@microsoft/mgt-msal-provider/next.svg"> |
-| [`@microsoft/mgt-msal2-provider`](https://www.npmjs.com/package/@microsoft/mgt-msal2-provider) | <img src="https://img.shields.io/npm/v/@microsoft/mgt-msal2-provider/latest.svg"> | <img src="https://img.shields.io/npm/v/@microsoft/mgt-msal2-provider/next.svg"> |
-| [`@microsoft/mgt-teams-provider`](https://www.npmjs.com/package/@microsoft/mgt-teams-provider) | <img src="https://img.shields.io/npm/v/@microsoft/mgt-teams-provider/latest.svg"> | <img src="https://img.shields.io/npm/v/@microsoft/mgt-teams-provider/next.svg"> |
+| Package                                                                                                    | Latest                                                                                  | Next                                                                                  |
+| ---------------------------------------------------------------------------------------------------------- | --------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------- |
+| [`@microsoft/mgt`](https://www.npmjs.com/package/@microsoft/mgt)                                           | <img src="https://img.shields.io/npm/v/@microsoft/mgt/latest.svg">                      | <img src="https://img.shields.io/npm/v/@microsoft/mgt/next.svg">                      |
+| [`@microsoft/mgt-element`](https://www.npmjs.com/package/@microsoft/mgt-element)                           | <img src="https://img.shields.io/npm/v/@microsoft/mgt-element/latest.svg">              | <img src="https://img.shields.io/npm/v/@microsoft/mgt-element/next.svg">              |
+| [`@microsoft/mgt-components`](https://www.npmjs.com/package/@microsoft/mgt-components)                     | <img src="https://img.shields.io/npm/v/@microsoft/mgt-components/latest.svg">           | <img src="https://img.shields.io/npm/v/@microsoft/mgt-components/next.svg">           |
+| [`@microsoft/mgt-react`](https://www.npmjs.com/package/@microsoft/mgt-react)                               | <img src="https://img.shields.io/npm/v/@microsoft/mgt-react/latest.svg">                | <img src="https://img.shields.io/npm/v/@microsoft/mgt-react/next.svg">                |
+| [`@microsoft/mgt-msal-provider`](https://www.npmjs.com/package/@microsoft/mgt-msal-provider)               | <img src="https://img.shields.io/npm/v/@microsoft/mgt-msal-provider/latest.svg">        | <img src="https://img.shields.io/npm/v/@microsoft/mgt-msal-provider/next.svg">        |
+| [`@microsoft/mgt-msal2-provider`](https://www.npmjs.com/package/@microsoft/mgt-msal2-provider)             | <img src="https://img.shields.io/npm/v/@microsoft/mgt-msal2-provider/latest.svg">       | <img src="https://img.shields.io/npm/v/@microsoft/mgt-msal2-provider/next.svg">       |
+| [`@microsoft/mgt-teams-provider`](https://www.npmjs.com/package/@microsoft/mgt-teams-provider)             | <img src="https://img.shields.io/npm/v/@microsoft/mgt-teams-provider/latest.svg">       | <img src="https://img.shields.io/npm/v/@microsoft/mgt-teams-provider/next.svg">       |
 | [`@microsoft/mgt-teams-msal2-provider`](https://www.npmjs.com/package/@microsoft/mgt-teams-msal2-provider) | <img src="https://img.shields.io/npm/v/@microsoft/mgt-teams-msal2-provider/latest.svg"> | <img src="https://img.shields.io/npm/v/@microsoft/mgt-teams-msal2-provider/next.svg"> |
-| [`@microsoft/mgt-sharepoint-provider`](https://www.npmjs.com/package/@microsoft/mgt-sharepoint-provider) | <img src="https://img.shields.io/npm/v/@microsoft/mgt-sharepoint-provider/latest.svg"> | <img src="https://img.shields.io/npm/v/@microsoft/mgt-sharepoint-provider/next.svg"> |
-| [`@microsoft/mgt-proxy-provider`](https://www.npmjs.com/package/@microsoft/mgt-proxy-provider) | <img src="https://img.shields.io/npm/v/@microsoft/mgt-proxy-provider/latest.svg"> | <img src="https://img.shields.io/npm/v/@microsoft/mgt-proxy-provider/next.svg"> |
-| [`@microsoft/mgt-spfx`](https://www.npmjs.com/package/@microsoft/mgt-spfx) | <img src="https://img.shields.io/npm/v/@microsoft/mgt-spfx/latest.svg"> | <img src="https://img.shields.io/npm/v/@microsoft/mgt-spfx/next.svg"> |
-| [`@microsoft/mgt-electron-provider`](https://www.npmjs.com/package/@microsoft/mgt-electron-provider) | <img src="https://img.shields.io/npm/v/@microsoft/mgt-electron-provider/latest.svg"> | <img src="https://img.shields.io/npm/v/@microsoft/mgt-electron-provider/next.svg"> |
-
+| [`@microsoft/mgt-teamsfx-provider`](https://www.npmjs.com/package/@microsoft/mgt-teamsfx-provider)         | <img src="https://img.shields.io/npm/v/@microsoft/mgt-teamsfx-provider/latest.svg">     | <img src="https://img.shields.io/npm/v/@microsoft/mgt-teamsfx-provider/next.svg">     |
+| [`@microsoft/mgt-sharepoint-provider`](https://www.npmjs.com/package/@microsoft/mgt-sharepoint-provider)   | <img src="https://img.shields.io/npm/v/@microsoft/mgt-sharepoint-provider/latest.svg">  | <img src="https://img.shields.io/npm/v/@microsoft/mgt-sharepoint-provider/next.svg">  |
+| [`@microsoft/mgt-proxy-provider`](https://www.npmjs.com/package/@microsoft/mgt-proxy-provider)             | <img src="https://img.shields.io/npm/v/@microsoft/mgt-proxy-provider/latest.svg">       | <img src="https://img.shields.io/npm/v/@microsoft/mgt-proxy-provider/next.svg">       |
+| [`@microsoft/mgt-spfx`](https://www.npmjs.com/package/@microsoft/mgt-spfx)                                 | <img src="https://img.shields.io/npm/v/@microsoft/mgt-spfx/latest.svg">                 | <img src="https://img.shields.io/npm/v/@microsoft/mgt-spfx/next.svg">                 |
+| [`@microsoft/mgt-electron-provider`](https://www.npmjs.com/package/@microsoft/mgt-electron-provider)       | <img src="https://img.shields.io/npm/v/@microsoft/mgt-electron-provider/latest.svg">    | <img src="https://img.shields.io/npm/v/@microsoft/mgt-electron-provider/next.svg">    |
 
 ### Preview packages
 
 In addition to the `@next` preview packages, we also ship packages under several other preview tags with various features in progress:
 
-| Tag | Description |
-| - | - |
-| `next` | Next release - updated on each commit to `main` |
+| Tag             | Description                                                              |
+| --------------- | ------------------------------------------------------------------------ |
+| `next`          | Next release - updated on each commit to `main`                          |
 | `next.fluentui` | Next major release (v3) with components based on FluentUI web components |
 
 To install these packages, use the tag as the version in your `npm i` command. Ex: `npm i @microsoft/mgt-element@next.fluentui`. Make sure to install the same version for all mgt packages to avoid any conflicts. Keep in mind, these are features in preview and are not recommended for production use.
@@ -81,6 +81,7 @@ All web components are also available as React component - see [@microsoft/mgt-r
 * [SharePointProvider](https://docs.microsoft.com/graph/toolkit/providers/sharepoint)
 * [TeamsProvider](https://docs.microsoft.com/graph/toolkit/providers/teams)
 * [TeamsMsal2Provider](https://docs.microsoft.com/graph/toolkit/providers/teams-msal2)
+* [TeamsFxProvider](https://docs.microsoft.com/graph/toolkit/providers/teamsfx)
 * [ProxyProvider](https://docs.microsoft.com/graph/toolkit/providers/proxy)
 * [SimpleProvider](https://docs.microsoft.com/graph/toolkit/providers/custom)
 * [ElectronProvider](https://docs.microsoft.com/graph/toolkit/providers/electron)
