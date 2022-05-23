@@ -191,7 +191,8 @@
     svgElem.setAttributeNS(null, "viewBox", `0 0 ${boxWidth * 2} ${boxHeight * 2}`);
     svgElem.setAttributeNS(null, "width", boxWidth);
     svgElem.setAttributeNS(null, "height", boxHeight);
-    svgElem.setAttributeNS(null, "role", "image");
+    svgElem.setAttributeNS(null, "role", "img");
+    svgElem.setAttributeNS(null, "aria-label", " to ");
     svgElem.setAttributeNS(null, "style", imageStyle);
 
     const svgElemPath = document.createElementNS(xmlns, "path");
@@ -418,5 +419,10 @@
 
   .css-1en6m26 {
     color: #616159 !important;
+  }
+
+  /* Removes Find component feature */
+  .css-8ktt77 {
+    display: none;
   }
 </style>
