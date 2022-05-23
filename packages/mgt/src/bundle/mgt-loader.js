@@ -46,7 +46,6 @@
 
   function addScript(src, onload) {
     var tag = document.createElement('script');
-    tag.setAttribute('async', '');
     tag.setAttribute('src', encodeURI(src));
 
     // if (onload) {
