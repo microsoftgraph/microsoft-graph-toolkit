@@ -214,7 +214,8 @@
     svgElem.setAttributeNS(null, "viewBox", `0 0 ${boxWidth * 2} ${boxHeight * 2}`);
     svgElem.setAttributeNS(null, "width", boxWidth);
     svgElem.setAttributeNS(null, "height", boxHeight);
-    svgElem.setAttributeNS(null, "role", "image");
+    svgElem.setAttributeNS(null, "role", "img");
+    svgElem.setAttributeNS(null, "aria-label", " to ");
     svgElem.setAttributeNS(null, "style", imageStyle);
 
     const svgElemPath = document.createElementNS(xmlns, "path");
@@ -433,6 +434,11 @@
 
   .css-1en6m26 {
     color: #616159 !important;
+  }
+
+  /* Removes Find component feature */
+  .css-8ktt77 {
+    display: none;
   }</style><style>#root[hidden],
       #docs-root[hidden] {
         display: none !important;
@@ -452,4 +458,4 @@
           
       
           
-            window['DOCS_MODE'] = false;</script><script src="runtime~main.b7274967bd574243dc77.manager.bundle.js"></script><script src="vendors~main.79fb67f2ccfa6b8e687f.manager.bundle.js"></script><script src="main.0b2f872cb4ee8b1c5c70.manager.bundle.js"></script></body></html>
+            window['DOCS_MODE'] = false;</script><script src="runtime~main.56bb57b17acf620db467.manager.bundle.js"></script><script src="vendors~main.b7a2633dd8d16d06134d.manager.bundle.js"></script><script src="main.b07221a1c5cfc54d5253.manager.bundle.js"></script></body></html>
