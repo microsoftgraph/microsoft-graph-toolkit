@@ -52,6 +52,6 @@
     //   tag.addEventListener("load", onload);
     // }
 
-    document.write(tag.outerHTML());
+    document.write(tag.outerHTML);
   }
 })();
