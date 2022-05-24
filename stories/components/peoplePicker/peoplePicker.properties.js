@@ -80,6 +80,9 @@ export const dynamicGroupId = () => html`
       font-size: 12px;
       cursor: pointer;
     }
+    ul > li:hover, ul > li:focus {
+      background-color: lightgray;
+    }
   </style>
   <script type="module">
     import { Providers, ProviderState } from '@microsoft/mgt';
