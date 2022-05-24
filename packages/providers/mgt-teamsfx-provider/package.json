@@ -40,10 +40,10 @@
     "postpack": "cpx *.tgz ../../../artifacts"
   },
   "peerDependencies": {
-    "@microsoft/teamsfx": "0.6.x - 1.0.x"
+    "@microsoft/teamsfx": "0.6.x - 2.0"
   },
   "devDependencies": {
-    "@microsoft/teamsfx": "0.6.x - 1.0.x"
+    "@microsoft/teamsfx": "0.6.x - 2.0"
   },
   "dependencies": {
     "@microsoft/mgt-element": "*"
