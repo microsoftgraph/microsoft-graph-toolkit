@@ -46,7 +46,7 @@
 
   function addScript(src, onload) {
     var tag = document.createElement('script');
-    tag.src = encodeURI(src);
+    tag.src = src;
 
     // if (onload) {
     //   tag.addEventListener("load", onload);
