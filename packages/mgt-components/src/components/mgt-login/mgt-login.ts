@@ -209,12 +209,20 @@ export class MgtLogin extends MgtTemplatedComponent {
    * @memberof MgtLogin
    */
   protected renderButton() {
+    const signedIn = Providers.globalProvider.state === ProviderState.SignedIn;
+    const ariaLabel = signedIn
+      ? this.userDetails
+        ? this.userDetails.displayName
+        : this.strings.signInLinkSubtitle
+      : this.strings.signInLinkSubtitle;
     const classes = {
       'login-button': true,
       'no-click': this._isFlyoutOpen
     };
     return html`
-      <button ?disabled="${this.isLoadingState}" @click=${this.onClick} class=${classMap(classes)} role="button">
+      <button aria-label=${ariaLabel} ?disabled="${this.isLoadingState}" @click=${this.onClick} class=${classMap(
+      classes
+    )} role="button">
         ${this.renderButtonContent()}
       </button>
     `;
@@ -362,9 +370,7 @@ export class MgtLogin extends MgtTemplatedComponent {
       template ||
       html`
         <i class="login-icon ms-Icon ms-Icon--Contact"></i>
-        <span aria-label="Sign In">
-          ${this.strings.signInLinkSubtitle}
-        </span>
+        <span>${this.strings.signInLinkSubtitle}</span>
       `
     );
   }
