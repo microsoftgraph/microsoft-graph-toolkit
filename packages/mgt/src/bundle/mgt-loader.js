@@ -46,13 +46,12 @@
 
   function addScript(src, onload) {
     var tag = document.createElement('script');
-    tag.setAttribute('async', '');
-    tag.setAttribute('src', encodeURI(src));
+    tag.src = src;
 
     // if (onload) {
     //   tag.addEventListener("load", onload);
     // }
 
-    document.head.appendChild(tag);
+    document.write(tag.outerHTML);
   }
 })();
