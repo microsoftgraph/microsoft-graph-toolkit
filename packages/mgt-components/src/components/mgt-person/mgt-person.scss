@@ -269,6 +269,8 @@ mgt-person .person-root {
         margin: auto;
         height: 100%;
         width: 100%;
+        object-fit: cover;
+        object-position: top;
         &:focus() {
           outline: none;
         }
@@ -506,7 +508,7 @@ mgt-person .avatar-icon {
   :host svg > path,
   mgt-person svg,
   mgt-person svg > path {
-    fill: rgb(0,0,0) !important;
+    fill: rgb(0, 0, 0) !important;
     fill-rule: nonzero !important;
     clip-rule: nonzero !important;
   }
