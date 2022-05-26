@@ -212,12 +212,13 @@ export class MgtLogin extends MgtTemplatedComponent {
     const provider = Providers.globalProvider;
     const signedInState = ProviderState.SignedIn;
 
-    const signedIn = provider && provider.state === signedInState;
-    const ariaLabel = signedIn
-      ? this.userDetails
-        ? this.userDetails.displayName
-        : this.strings.signInLinkSubtitle
-      : this.strings.signInLinkSubtitle;
+    let ariaLabel = this.strings.signInLinkSubtitle;
+    if (provider) {
+      if (provider.state === signedInState) {
+        ariaLabel = this.userDetails ? this.userDetails.displayName : this.strings.signInLinkSubtitle;
+      }
+    }
+
     const classes = {
       'login-button': true,
       'no-click': this._isFlyoutOpen
