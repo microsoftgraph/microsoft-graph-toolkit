@@ -209,7 +209,10 @@ export class MgtLogin extends MgtTemplatedComponent {
    * @memberof MgtLogin
    */
   protected renderButton() {
-    const signedIn = Providers.globalProvider.state === ProviderState.SignedIn;
+    const provider = Providers.globalProvider;
+    const signedInState = ProviderState.SignedIn;
+
+    const signedIn = provider && provider.state === signedInState;
     const ariaLabel = signedIn
       ? this.userDetails
         ? this.userDetails.displayName
