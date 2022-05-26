@@ -1902,8 +1902,8 @@ const createAndInsertPart=(e,t)=>{const r=e.startNode.parentNode,o=void 0===t?e.
         </div>
         ${this.renderFlyout()}
       </div>
-    `}loadState(){return __awaiter$l(this,void 0,void 0,(function*(){const e=Providers.globalProvider;e&&!this.userDetails&&(e.state===tr.SignedIn?(this.userDetails=yield getUserWithPhoto(e.graph.forComponent(this)),this.userDetails.personImage&&(this._image=this.userDetails.personImage),this.fireCustomEvent("loginCompleted")):this.userDetails=null)}))}renderButton(){const e=Providers.globalProvider.state===tr.SignedIn&&this.userDetails?this.userDetails.displayName:this.strings.signInLinkSubtitle,t={"login-button":!0,"no-click":this._isFlyoutOpen};return html$1`
-      <button aria-label=${e} ?disabled="${this.isLoadingState}" @click=${this.onClick} class=${_r(t)} role="button">
+    `}loadState(){return __awaiter$l(this,void 0,void 0,(function*(){const e=Providers.globalProvider;e&&!this.userDetails&&(e.state===tr.SignedIn?(this.userDetails=yield getUserWithPhoto(e.graph.forComponent(this)),this.userDetails.personImage&&(this._image=this.userDetails.personImage),this.fireCustomEvent("loginCompleted")):this.userDetails=null)}))}renderButton(){const e=Providers.globalProvider,t=tr.SignedIn,r=e&&e.state===t&&this.userDetails?this.userDetails.displayName:this.strings.signInLinkSubtitle,o={"login-button":!0,"no-click":this._isFlyoutOpen};return html$1`
+      <button aria-label=${r} ?disabled="${this.isLoadingState}" @click=${this.onClick} class=${_r(o)} role="button">
         ${this.renderButtonContent()}
       </button>
     `}renderFlyout(){return html$1`
