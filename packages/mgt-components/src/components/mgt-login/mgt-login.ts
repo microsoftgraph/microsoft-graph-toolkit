@@ -309,7 +309,7 @@ export class MgtLogin extends MgtTemplatedComponent {
       html`
         <ul>
           <li>
-            <button class="popup-command" @click=${this.logout} aria-label="Sign Out">
+            <button class="popup-command" @click=${this.logout} aria-label=${this.strings.signOutLinkSubtitle}>
               ${this.strings.signOutLinkSubtitle}
             </button>
           </li>
