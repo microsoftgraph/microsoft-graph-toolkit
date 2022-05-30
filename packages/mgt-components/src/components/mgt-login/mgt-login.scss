@@ -44,6 +44,9 @@ mgt-login .login-button {
   border: none;
   cursor: pointer;
   transition: color 0.3s, background-color 0.3s;
+  word-spacing: inherit;
+  text-indent: inherit;
+  letter-spacing: inherit;
 
   mgt-person {
     --color-sub1: set-var(button__color, $theme-default, $login);
@@ -118,6 +121,9 @@ mgt-login .popup-command {
   padding: 0;
   cursor: pointer;
   transition: color 0.3s;
+  word-spacing: inherit;
+  text-indent: inherit;
+  letter-spacing: inherit;
 
   &:hover {
     color: #{$commblue_shade20};
