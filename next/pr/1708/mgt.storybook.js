@@ -1933,7 +1933,7 @@ const createAndInsertPart=(e,t)=>{const r=e.startNode.parentNode,o=void 0===t?e.
       `}renderFlyoutCommands(){return this.renderTemplate("flyout-commands",{handleSignOut:()=>this.logout()})||html$1`
         <ul>
           <li>
-            <button class="popup-command" @click=${this.logout} aria-label="Sign Out">
+            <button class="popup-command" @click=${this.logout} aria-label=${this.strings.signOutLinkSubtitle}>
               ${this.strings.signOutLinkSubtitle}
             </button>
           </li>
