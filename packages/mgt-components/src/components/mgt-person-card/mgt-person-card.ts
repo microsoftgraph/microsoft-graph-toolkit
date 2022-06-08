@@ -563,10 +563,12 @@ export class MgtPersonCard extends MgtTemplatedComponent {
    */
   protected renderExpandedDetailsButton(): TemplateResult {
     return html`
-      <div class="expanded-details-button" @click=${() => this.showExpandedDetails()} @keydown=${
-      this.handleKeyDown
-    } @ tabindex=0>
-        ${getSvg(SvgIcon.ExpandDown)}
+      <div 
+        class="expanded-details-button" 
+        @click=${() => this.showExpandedDetails()} 
+        @keydown=${this.handleKeyDown}
+        tabindex=0>
+          ${getSvg(SvgIcon.ExpandDown)}
       </div>
     `;
   }
@@ -623,14 +625,20 @@ export class MgtPersonCard extends MgtTemplatedComponent {
 
     const currentSectionIndex = this._currentSection ? this.sections.indexOf(this._currentSection) : -1;
 
-    const navIcons = this.sections.map((section, i, a) => {
+    const navIcons = this.sections.map((section, i) => {
       const classes = classMap({
         active: i === currentSectionIndex,
         'section-nav__icon': true
       });
+      const tagName = section.tagName;
+      const ariaLabel = tagName.substring(16, tagName.length).toLowerCase();
       return html`
-        <button tabindex=0 class=${classes} @click=${() =>
-        this.updateCurrentSection(section)}>${section.renderIcon()}</button>
+        <button
+          aria-label=${ariaLabel}
+          tabindex=0
+          class=${classes}
+          @click=${() => this.updateCurrentSection(section)}>
+            ${section.renderIcon()}</button>
       `;
     });
 
@@ -639,8 +647,12 @@ export class MgtPersonCard extends MgtTemplatedComponent {
       'section-nav__icon': true
     });
     return html`
-      <button tabindex=0 class=${overviewClasses} @click=${() => this.updateCurrentSection(null)}>
-        ${getSvg(SvgIcon.Overview)}
+      <button 
+        aria-label="overview"
+        tabindex=0 
+        class=${overviewClasses}
+        @click=${() => this.updateCurrentSection(null)}>
+          ${getSvg(SvgIcon.Overview)}
       </button>
       ${navIcons}
     `;
@@ -654,16 +666,21 @@ export class MgtPersonCard extends MgtTemplatedComponent {
    * @memberof MgtPersonCard
    */
   protected renderOverviewSection(): TemplateResult {
+    function handleKeyDown(e: KeyboardEvent, section: BasePersonCardSection) {
+      e.code === 'Enter' ? this.updateCurrentSection(section) : '';
+    }
+
     const compactTemplates = this.sections.map(
-      section => html`
+      (section: BasePersonCardSection) => html`
         <div class="section">
           <div class="section__header">
             <div class="section__title">${section.displayName}</div>
-            <a class="section__show-more" tabindex=0 @keydown=${e =>
-              e.keyCode === 13 ? this.updateCurrentSection(section) : ''} @click=${() =>
-        this.updateCurrentSection(section)}
-              >${this.strings.showMoreSectionButton}</a
-            >
+            <a 
+              class="section__show-more"
+              tabindex=0
+              @keydown=${(e: KeyboardEvent) => handleKeyDown(e, section)}
+              @click=${() => this.updateCurrentSection(section)}>
+                ${this.strings.showMoreSectionButton}</a>
           </div>
           <div class="section__content">${section.asCompactView()}</div>
         </div>
