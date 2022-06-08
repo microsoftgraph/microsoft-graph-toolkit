@@ -24,7 +24,6 @@ import {
 
 export { FluentProgress, FluentButton, FluentCheckbox, FluentCard } from '@fluentui/web-components';
 
-
 /**
  * Upload conflict behavior status
  */

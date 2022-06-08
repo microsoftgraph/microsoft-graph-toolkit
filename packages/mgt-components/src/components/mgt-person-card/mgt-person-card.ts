@@ -33,10 +33,10 @@ import { MgtFlyout } from '../sub-components/mgt-flyout/mgt-flyout';
 
 export * from './mgt-person-card.types';
 
-import { fluentTabs, fluentTab, fluentTabPanel, fluentButton, fluentTextField } from '@fluentui/web-components';
-import { registerFluentComponents } from '../../utils/FluentComponents';
+export { FluentTabs, FluentTab, FluentTabPanel, FluentButton, FluentTextField } from '@fluentui/web-components';
+// import { registerFluentComponents } from '../../utils/FluentComponents';
 
-registerFluentComponents(fluentTabs, fluentTab, fluentTabPanel, fluentButton, fluentTextField);
+// registerFluentComponents(FluentTabs, FluentTab, FluentTabPanel, FluentButton, FluentTextField);
 
 // tslint:disable-next-line:completed-docs
 interface MgtPersonCardStateHistory {
@@ -1241,7 +1241,7 @@ export class MgtPersonCard extends MgtTemplatedComponent {
     //enter activates person-card
     if (e) {
       if (e.keyCode === 13) {
-        this.showExpandedDetails();
+        this.showExpandedDetails(e);
       }
     }
   }
