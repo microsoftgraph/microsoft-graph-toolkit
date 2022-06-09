@@ -698,6 +698,8 @@ export class MgtPersonCard extends MgtTemplatedComponent {
         active: i === currentSectionIndex,
         'section-nav__icon': true
       });
+      const tagName = section.tagName;
+      const ariaLabel = tagName.substring(16, tagName.length).toLowerCase();
       return html`
         <fluent-tab id="${name}-Tab" class=${classes}
           slot="tab" @keyup="${() => this.updateCurrentSection(section)}" @click=${() =>
@@ -744,6 +746,10 @@ export class MgtPersonCard extends MgtTemplatedComponent {
    * @memberof MgtPersonCard
    */
   protected renderOverviewSection(): TemplateResult {
+    function handleKeyDown(e: KeyboardEvent, section: BasePersonCardSection) {
+      e.code === 'Enter' ? this.updateCurrentSection(section) : '';
+    }
+
     const compactTemplates = this.sections.map(
       (section: BasePersonCardSection) => html`
         <div class="section">
