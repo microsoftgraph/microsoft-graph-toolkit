@@ -780,6 +780,18 @@ export class MgtTasks extends MgtTemplatedComponent {
     }
   }
 
+  private onAddTaskKeyDown(e: KeyboardEvent) {
+    if (e.code === 'Enter') {
+      this.onAddTaskClick;
+    }
+  }
+
+  private newTaskButtonKeydown(e: KeyboardEvent) {
+    if (e.code === 'Enter') {
+      this.isNewTaskVisible = !this.isNewTaskVisible;
+    }
+  }
+
   private renderPlanOptions() {
     const p = Providers.globalProvider;
 
@@ -798,10 +810,12 @@ export class MgtTasks extends MgtTemplatedComponent {
         ? null
         : html`
             <div
+              tabindex="0"
               class="AddBarItem NewTaskButton"
               @click="${() => {
                 this.isNewTaskVisible = !this.isNewTaskVisible;
               }}"
+              @keydown="${this.newTaskButtonKeydown}"
             >
               <span class="TaskIcon"></span>
               <span>${this.strings.addTaskButtonSubtitle}</span>
@@ -1009,10 +1023,14 @@ export class MgtTasks extends MgtTemplatedComponent {
         `
       : html`
           <div class="TaskAddButtonContainer ${this._newTaskName === '' ? 'Disabled' : ''}">
-            <div class="TaskIcon TaskAdd" @click="${this.onAddTaskClick}">
+            <div tabindex="0" class="TaskIcon TaskAdd" 
+              @click="${this.onAddTaskClick}" 
+              @keydown="${this.onAddTaskKeyDown}">
               <span>${this.strings.addTaskButtonSubtitle}</span>
             </div>
-            <div class="TaskIcon TaskCancel" @click="${() => (this.isNewTaskVisible = false)}">
+            <div tabindex="0" class="TaskIcon TaskCancel" 
+              @click="${() => (this.isNewTaskVisible = false)}"
+              @keydown="${() => (this.isNewTaskVisible = false)}">
               <span>${this.strings.cancelNewTaskSubtitle}</span>
             </div>
           </div>
@@ -1107,7 +1125,9 @@ export class MgtTasks extends MgtTemplatedComponent {
       : null;
 
     const taskCheck = html`
-      <span class=${classMap(taskCheckClasses)}><span class="TaskCheckContent">${taskCheckContent}</span></span>
+      <span tabindex="0" class=${classMap(
+        taskCheckClasses
+      )}><span class="TaskCheckContent">${taskCheckContent}</span></span>
     `;
 
     const groupTitle = this._currentGroup ? null : this.getPlanTitle(task.topParentId);
@@ -1186,6 +1206,9 @@ export class MgtTasks extends MgtTemplatedComponent {
           @click=${() => {
             this.handleTaskClick(task);
           }}
+          @keydown=${() => {
+            this.handleTaskClick(task);
+          }}
         >
           <span
             class=${classMap({
@@ -1194,6 +1217,18 @@ export class MgtTasks extends MgtTemplatedComponent {
               TaskCheckContainer: true
             })}
             @click="${e => {
+              if (!this.readOnly) {
+                if (!task.completed) {
+                  this.completeTask(task);
+                } else {
+                  this.uncompleteTask(task);
+                }
+
+                e.stopPropagation();
+                e.preventDefault();
+              }
+            }}"
+            @keydown="${e => {
               if (!this.readOnly) {
                 if (!task.completed) {
                   this.completeTask(task);
@@ -1251,6 +1286,10 @@ export class MgtTasks extends MgtTemplatedComponent {
           this.togglePeoplePicker(task);
           e.stopPropagation();
         }}
+        @keydown=${(e: KeyboardEvent) => {
+          this.togglePeoplePicker(task);
+          e.stopPropagation();
+        }}
         >${noPeopleTemplate}
       </mgt-people>
     `;
@@ -1262,6 +1301,7 @@ export class MgtTasks extends MgtTemplatedComponent {
           <mgt-people-picker
             class="picker-${taskId}"
             @click=${(e: MouseEvent) => e.stopPropagation()}
+            @keydown=${(e: KeyboardEvent) => e.stopPropagation()}
           ></mgt-people-picker>
         </div>
       </mgt-flyout>
