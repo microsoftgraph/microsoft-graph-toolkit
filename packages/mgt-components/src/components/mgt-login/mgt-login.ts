@@ -209,12 +209,24 @@ export class MgtLogin extends MgtTemplatedComponent {
    * @memberof MgtLogin
    */
   protected renderButton() {
+    const provider = Providers.globalProvider;
+    const signedInState = ProviderState.SignedIn;
+
+    let ariaLabel = this.strings.signInLinkSubtitle;
+    if (provider) {
+      if (provider.state === signedInState) {
+        ariaLabel = this.userDetails ? this.userDetails.displayName : this.strings.signInLinkSubtitle;
+      }
+    }
+
     const classes = {
       'login-button': true,
       'no-click': this._isFlyoutOpen
     };
     return html`
-      <button ?disabled="${this.isLoadingState}" @click=${this.onClick} class=${classMap(classes)} role="button">
+      <button aria-label=${ariaLabel} ?disabled="${this.isLoadingState}" @click=${this.onClick} class=${classMap(
+      classes
+    )} role="button">
         ${this.renderButtonContent()}
       </button>
     `;
@@ -297,7 +309,7 @@ export class MgtLogin extends MgtTemplatedComponent {
       html`
         <ul>
           <li>
-            <button class="popup-command" @click=${this.logout} aria-label="Sign Out">
+            <button class="popup-command" @click=${this.logout} aria-label=${this.strings.signOutLinkSubtitle}>
               ${this.strings.signOutLinkSubtitle}
             </button>
           </li>
@@ -362,9 +374,7 @@ export class MgtLogin extends MgtTemplatedComponent {
       template ||
       html`
         <i class="login-icon ms-Icon ms-Icon--Contact"></i>
-        <span aria-label="Sign In">
-          ${this.strings.signInLinkSubtitle}
-        </span>
+        <span>${this.strings.signInLinkSubtitle}</span>
       `
     );
   }
