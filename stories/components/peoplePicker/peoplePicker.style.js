@@ -33,14 +33,14 @@ export const customCssProperties = () => html`
     --input-border-color--hover: #008394; /* input area border hover color */
     --input-border-color--focus: #0f78d4; /* input area border focus color */
 
-    --dropdown-background-color: lightpink; /* selection area background color */
+    --dropdown-background-color: #956970; /* selection area background color */
     --dropdown-item-hover-background: purple; /* person background color on hover */
 
-    --selected-person-background-color: pink; /* person item background color */
+    --selected-person-background-color: black ; /* person item background color */
 
     --color-sub1: white;
     --placeholder-color: whitesmoke; /* placeholder text color */
-    --placeholder-color--focus: pink; /* placeholder text focus color */
+    --placeholder-color--focus: black ; /* placeholder text focus color */
   }
 </style>
 `;
