@@ -792,6 +792,12 @@ export class MgtTasks extends MgtTemplatedComponent {
     }
   }
 
+  private newTaskVisible(e: KeyboardEvent) {
+    if (e.code === 'Enter') {
+      this.isNewTaskVisible = false;
+    }
+  }
+
   private renderPlanOptions() {
     const p = Providers.globalProvider;
 
@@ -1030,7 +1036,7 @@ export class MgtTasks extends MgtTemplatedComponent {
             </div>
             <div tabindex="0" class="TaskIcon TaskCancel" 
               @click="${() => (this.isNewTaskVisible = false)}"
-              @keydown="${() => (this.isNewTaskVisible = false)}">
+              @keydown="${this.newTaskVisible}">
               <span>${this.strings.cancelNewTaskSubtitle}</span>
             </div>
           </div>
@@ -1206,9 +1212,6 @@ export class MgtTasks extends MgtTemplatedComponent {
           @click=${() => {
             this.handleTaskClick(task);
           }}
-          @keydown=${() => {
-            this.handleTaskClick(task);
-          }}
         >
           <span
             class=${classMap({
@@ -1228,16 +1231,18 @@ export class MgtTasks extends MgtTemplatedComponent {
                 e.preventDefault();
               }
             }}"
-            @keydown="${e => {
-              if (!this.readOnly) {
-                if (!task.completed) {
-                  this.completeTask(task);
-                } else {
-                  this.uncompleteTask(task);
-                }
+            @keydown="${(e: KeyboardEvent) => {
+              if (e.code === 'Enter') {
+                if (!this.readOnly) {
+                  if (!task.completed) {
+                    this.completeTask(task);
+                  } else {
+                    this.uncompleteTask(task);
+                  }
 
-                e.stopPropagation();
-                e.preventDefault();
+                  e.stopPropagation();
+                  e.preventDefault();
+                }
               }
             }}"
           >
@@ -1287,8 +1292,10 @@ export class MgtTasks extends MgtTemplatedComponent {
           e.stopPropagation();
         }}
         @keydown=${(e: KeyboardEvent) => {
-          this.togglePeoplePicker(task);
-          e.stopPropagation();
+          if (e.code === 'Enter') {
+            this.togglePeoplePicker(task);
+            e.stopPropagation();
+          }
         }}
         >${noPeopleTemplate}
       </mgt-people>
@@ -1301,7 +1308,11 @@ export class MgtTasks extends MgtTemplatedComponent {
           <mgt-people-picker
             class="picker-${taskId}"
             @click=${(e: MouseEvent) => e.stopPropagation()}
-            @keydown=${(e: KeyboardEvent) => e.stopPropagation()}
+            @keydown=${(e: KeyboardEvent) => {
+              if (e.code === 'Enter') {
+                e.stopPropagation();
+              }
+            }}
           ></mgt-people-picker>
         </div>
       </mgt-flyout>
