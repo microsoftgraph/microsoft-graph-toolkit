@@ -595,9 +595,9 @@ export class MgtPersonCard extends MgtTemplatedComponent {
    * @memberof MgtPersonCard
    */
   protected renderContactIcons(person?: IDynamicPerson): TemplateResult {
-    if (this.isExpanded) {
-      return;
-    }
+    // if (this.isExpanded) {
+    //   return;
+    // }
 
     person = person || this.internalPersonDetails;
     const userPerson = person as User;
@@ -606,65 +606,47 @@ export class MgtPersonCard extends MgtTemplatedComponent {
     let email: TemplateResult;
     if (getEmailFromGraphEntity(person)) {
       email = html`
-         <div
-           class="icon"
-           @click=${() => this.emailUser()}
-           tabindex=0
-           role="button">
-             ${getSvg(SvgIcon.SmallEmail)}
-             <span class="text">${this.strings.sendEmailLinkSubtitle}</span>
-         </div>
-       `;
+        <div class="icon" @click=${() => this.emailUser()} tabindex=0 role="button">
+          ${getSvg(SvgIcon.SmallEmail)}
+        </div>
+      `;
     }
 
     // Chat
     let chat: TemplateResult;
     if (userPerson?.userPrincipalName) {
       chat = html`
-         <div
-           class="icon"
-           @click=${() => this.chatUser()}
-           tabindex=0
-           role="button">
-             ${getSvg(SvgIcon.SmallChat)}
-             <span class="text">${this.strings.startChatLinkSubtitle}</span>
-         </div>
-       `;
+        <div class="icon" @click=${() => this.chatUser()} tabindex=0 role="button">
+          ${getSvg(SvgIcon.SmallChat)}
+        </div>
+      `;
     }
 
     let video: TemplateResult;
     if (userPerson?.userPrincipalName) {
       video = html`
-         <div
-           class="icon"
-           @click=${() => this.videoCallUser()}
-           aria-label="${this.strings.video}"
-           tabindex=0
-           role="button">
-             <span>\uE714</span>
-         </div>
-       `;
+        <div class="icon" @click=${() => this.chatUser()} tabindex=0 role="button">
+          ${getSvg(SvgIcon.Video)}
+        </div>
+      `;
     }
 
-    let phone: TemplateResult;
-    if (this.hasPhone) {
-      phone = html`
-       <div
-         class="icon"
-         @click=${() => this.callUser()}
-         aria-label="${this.strings.phone}"
-         tabindex=0
-         role="button">
-           <span>\uE717</span>
-         </div>
-       `;
+    // Call
+    let call: TemplateResult;
+    if (userPerson.userPrincipalName) {
+      // Change to video call api URL when available
+      call = html`
+        <div class="icon" @click=${() => this.callUser()} tabindex=0 role="button">
+          ${getSvg(SvgIcon.Call)}
+        </div>
+      `;
     }
 
     return html`
-       <div class="base-icons">
-         ${email} ${chat} ${video} ${phone}
-       </div>
-     `;
+      <div class="base-icons">
+        ${email} ${chat} ${video} ${call}
+      </div>
+    `;
   }
 
   /**
