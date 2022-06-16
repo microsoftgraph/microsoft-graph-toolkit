@@ -554,9 +554,9 @@ export class MgtPersonCard extends MgtTemplatedComponent {
    * @memberof MgtPersonCard
    */
   protected renderContactIcons(person?: IDynamicPerson): TemplateResult {
-    if (this.isExpanded) {
-      return;
-    }
+    // if (this.isExpanded) {
+    //   return;
+    // }
 
     person = person || this.internalPersonDetails;
     const userPerson = person as User;
