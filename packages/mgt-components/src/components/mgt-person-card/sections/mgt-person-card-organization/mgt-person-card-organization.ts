@@ -209,8 +209,7 @@ export class MgtPersonCardOrganization extends BasePersonCardSection {
     if (!managers.length) {
       return null;
     }
-
-    return managers.reverse().map(manager => this.renderManager(manager));
+    return managers.reverse().map((manager: User) => this.renderManager(manager));
   }
 
   /**

@@ -449,12 +449,28 @@ export class MgtPersonCard extends MgtTemplatedComponent {
     const expandedDetailsTemplate = this.isExpanded ? this.renderExpandedDetails() : this.renderExpandedDetailsButton();
 
     return html`
-      <div class="root" dir=${this.direction}>
+      <div 
+        class="root"
+        dir=${this.direction}
+        @keydown=${this.handleCardKeyDown}>
         ${navigationTemplate}
         <div class="person-details-container">${personDetailsTemplate}</div>
         <div class="expanded-details-container">${expandedDetailsTemplate}</div>
       </div>
     `;
+  }
+
+  private handleCardKeyDown(e: KeyboardEvent) {
+    if (e.code === 'Escape') {
+      const currentElement = e.target as HTMLElement;
+      currentElement.blur();
+      const topElement = this.renderRoot.querySelector('.person-image') as HTMLElement;
+      if (topElement) {
+        // a hacky reset
+        topElement.focus();
+        topElement.blur();
+      }
+    }
   }
 
   /**
@@ -479,6 +495,7 @@ export class MgtPersonCard extends MgtTemplatedComponent {
     const avatarSize = 'large';
     return html`
       <mgt-person
+        tabindex=0
         class="person-image"
         .personDetails=${this.internalPersonDetails}
         .personImage=${this.getImage()}
@@ -601,11 +618,44 @@ export class MgtPersonCard extends MgtTemplatedComponent {
     const sectionNavTemplate = this.renderSectionNavigation();
     const currentSectionTemplate = this.renderCurrentSection();
 
+    function handleSectionKeyUp(e: KeyboardEvent) {
+      // const { person, directReports, messages, files, profile } = sectionsState;
+      // console.log({ person, directReports, messages, files, profile });
+      const section = e.target as HTMLElement;
+      const sectionFirstChild = section.firstElementChild;
+      if (sectionFirstChild) {
+        const name = sectionFirstChild.nodeName;
+
+        switch (name) {
+          case 'MGT-PERSON-CARD-CONTACT':
+          case 'MGT-PERSON-CARD-FILES':
+          case 'MGT-PERSON-CARD-PROFILE':
+            section.blur();
+            firstElement.focus();
+          case 'MGT-PERSON-CARD-ORGANIZATION':
+            const orgCard = section.querySelector('mgt-person-card-organization') as HTMLElement;
+            if (orgCard) {
+              const orgCardRoot = orgCard.shadowRoot.querySelector('.root');
+              if (orgCardRoot) {
+                const orgChildren = orgCardRoot.childNodes;
+                console.log('orgChildren ', orgChildren, orgCardRoot.lastElementChild);
+              }
+            }
+        }
+      }
+    }
+
+    const firstElement = this.renderRoot.querySelector('.person-image') as HTMLElement;
+
     return html`
       <div class="section-nav">
         ${sectionNavTemplate}
       </div>
-      <div class="section-host" @wheel=${(e: WheelEvent) => this.handleSectionScroll(e)} tabindex=0>
+      <div
+        class="section-host"
+        @keyup=${(e: KeyboardEvent) => handleSectionKeyUp(e)}
+        @wheel=${(e: WheelEvent) => this.handleSectionScroll(e)}
+        tabindex=0>
         ${currentSectionTemplate}
       </div>
     `;
@@ -670,21 +720,32 @@ export class MgtPersonCard extends MgtTemplatedComponent {
       e.code === 'Enter' ? this.updateCurrentSection(section) : '';
     }
 
+    function handleKeyUp(e: KeyboardEvent, section: BasePersonCardSection, i: Number) {
+      if (e.code === 'Tab') {
+        if (i === lastIdx) {
+          section.blur();
+          firstElement.focus();
+        }
+      }
+    }
+    const lastIdx = this.sections.length - 1;
+    const firstElement = this.renderRoot.querySelector('.person-image') as HTMLElement;
+
     const compactTemplates = this.sections.map(
-      (section: BasePersonCardSection) => html`
+      (section: BasePersonCardSection, i: Number) => html`
         <div class="section">
           <div class="section__header">
             <div class="section__title">${section.displayName}</div>
             <a 
               class="section__show-more"
               tabindex=0
-              @keydown=${(e: KeyboardEvent) => handleKeyDown(e, section)}
+              @keyup=${(e: KeyboardEvent) => handleKeyUp(e, section, i)}
+              @keydown = ${(e: KeyboardEvent) => handleKeyDown(e, section)}
               @click=${() => this.updateCurrentSection(section)}>
-                ${this.strings.showMoreSectionButton}</a>
-          </div>
-          <div class="section__content">${section.asCompactView()}</div>
-        </div>
-      `
+                ${this.strings.showMoreSectionButton} </a>
+            </div>
+          <div class="section__content"> ${section.asCompactView()} </div>
+        </div>`
     );
 
     const additionalDetails = this.renderTemplate('additional-details', {
@@ -698,9 +759,8 @@ export class MgtPersonCard extends MgtTemplatedComponent {
         0,
         html`
           <div class="section">
-            <div class="additional-details">${additionalDetails}</div>
-          </div>
-        `
+            <div class="additional-details"> ${additionalDetails} </div>
+          </div>`
       );
     }
 
@@ -1048,7 +1108,7 @@ export class MgtPersonCard extends MgtTemplatedComponent {
     return businessPhones;
   }
 
-  private updateCurrentSection(section) {
+  private updateCurrentSection(section: BasePersonCardSection) {
     const sectionHost = this.renderRoot.querySelector('.section-host');
     sectionHost.scrollTop = 0;
 
@@ -1071,8 +1131,13 @@ export class MgtPersonCard extends MgtTemplatedComponent {
   private handleKeyDown(e: KeyboardEvent) {
     //enter activates person-card
     if (e) {
-      if (e.keyCode === 13) {
+      if (e.code === 'Enter') {
         this.showExpandedDetails();
+      } else if (e.code === 'Tab') {
+        const personImage = this.renderRoot.querySelector('.person-image') as HTMLElement;
+        if (personImage) {
+          personImage.focus();
+        }
       }
     }
   }
