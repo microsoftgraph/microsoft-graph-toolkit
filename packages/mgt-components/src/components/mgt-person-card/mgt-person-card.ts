@@ -298,6 +298,8 @@ export class MgtPersonCard extends MgtTemplatedComponent {
   private _currentSection: BasePersonCardSection;
   private _personDetails: IDynamicPerson;
   private _me: User;
+  private _smallView;
+  private _windowHeight;
 
   private _userId: string;
 
@@ -447,12 +449,22 @@ export class MgtPersonCard extends MgtTemplatedComponent {
     }
 
     const expandedDetailsTemplate = this.isExpanded ? this.renderExpandedDetails() : this.renderExpandedDetailsButton();
+    this._windowHeight =
+      window.innerHeight && document.documentElement.clientHeight
+        ? Math.min(window.innerHeight, document.documentElement.clientHeight)
+        : window.innerHeight || document.documentElement.clientHeight;
+
+    if (this._windowHeight < 250) {
+      this._smallView = true;
+    }
 
     return html`
-      <div class="root" dir=${this.direction}>
-        ${navigationTemplate}
-        <div class="person-details-container">${personDetailsTemplate}</div>
-        <div class="expanded-details-container">${expandedDetailsTemplate}</div>
+      <div class="root " dir=${this.direction}>
+        <div class=${this._smallView ? 'small' : ''}>
+          ${navigationTemplate}
+          <div class="person-details-container">${personDetailsTemplate}</div>
+          <div class="expanded-details-container">${expandedDetailsTemplate}</div>
+        </div>
       </div>
     `;
   }
@@ -605,7 +617,8 @@ export class MgtPersonCard extends MgtTemplatedComponent {
       <div class="section-nav">
         ${sectionNavTemplate}
       </div>
-      <div class="section-host" @wheel=${(e: WheelEvent) => this.handleSectionScroll(e)} tabindex=0>
+      <div class="section-host ${this._smallView ? 'small' : ''}" @wheel=${(e: WheelEvent) =>
+      this.handleSectionScroll(e)} tabindex=0>
         ${currentSectionTemplate}
       </div>
     `;
