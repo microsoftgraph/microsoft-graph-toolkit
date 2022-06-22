@@ -28,7 +28,7 @@
     "@types/react-dom": "16.9.8",
     "@microsoft/sp-build-web": "1.13.0",
     "@microsoft/sp-tslint-rules": "1.13.0",
-    "@microsoft/sp-module-interfaces": "1.13.0",
+    "@microsoft/sp-module-interfaces": "1.15.0",
     "@microsoft/sp-webpart-workbench": "1.12.1",
     "@microsoft/rush-stack-compiler-3.9": "0.4.47",
     "gulp": "4.0.2",
