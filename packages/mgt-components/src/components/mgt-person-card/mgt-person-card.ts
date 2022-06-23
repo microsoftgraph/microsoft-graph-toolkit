@@ -195,6 +195,16 @@ export class MgtPersonCard extends MgtTemplatedComponent {
   public personQuery: string;
 
   /**
+   * allows the locking of navigation using tabs to not flow out of the card section
+   * @type {boolean}
+   */
+  @property({
+    attribute: 'lock-tab-navigation',
+    type: Boolean
+  })
+  public lockTabNavigation: boolean;
+
+  /**
    * user-id property allows developer to use id value for component
    * @type {string}
    */
@@ -459,7 +469,9 @@ export class MgtPersonCard extends MgtTemplatedComponent {
     }
 
     const expandedDetailsTemplate = this.isExpanded ? this.renderExpandedDetails() : this.renderExpandedDetailsButton();
-
+    const tabLocker = this.lockTabNavigation
+      ? html`<div @keydown=${this.handleEndOfCard} aria-label=${this.strings.endOfCard} tabindex="0" id="end-of-container"></div>`
+      : html``;
     return html`
       <div class="root" dir=${this.direction}>
         ${navigationTemplate}
@@ -470,8 +482,22 @@ export class MgtPersonCard extends MgtTemplatedComponent {
         </div>
         <div class="person-details-container">${personDetailsTemplate}</div>
         <div class="expanded-details-container">${expandedDetailsTemplate}</div>
+        ${tabLocker}
       </div>
     `;
+  }
+
+  private handleEndOfCard(e: KeyboardEvent) {
+    if (e && e.code === 'Tab') {
+      const endOfCardEl = this.renderRoot.querySelector('#end-of-container') as HTMLElement;
+      if (endOfCardEl) {
+        endOfCardEl.blur();
+        const imageCardEl = this.renderRoot.querySelector('mgt-person') as HTMLElement;
+        if (imageCardEl) {
+          imageCardEl.focus();
+        }
+      }
+    }
   }
 
   /**
@@ -514,6 +540,7 @@ export class MgtPersonCard extends MgtTemplatedComponent {
     const avatarSize = 'large';
     return html`
       <mgt-person
+        tabindex="0"
         class="person-image"
         .personDetails=${this.internalPersonDetails}
         .personImage=${this.getImage()}
