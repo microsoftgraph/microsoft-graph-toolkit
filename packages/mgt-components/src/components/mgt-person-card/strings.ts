@@ -11,5 +11,6 @@ export const strings = {
   showMoreSectionButton: 'Show more',
   endOfCard: 'End of the card',
   video: 'Start video call',
-  phone: 'Start phone call'
+  phone: 'Start phone call',
+  endOfCard: 'End of the card'
 };
