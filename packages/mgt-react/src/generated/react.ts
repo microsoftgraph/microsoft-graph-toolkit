@@ -140,6 +140,7 @@ export type PeopleProps = {
 export type PersonCardProps = {
 	personDetails?: IDynamicPerson;
 	personQuery?: string;
+	lockTabNavigation?: boolean;
 	userId?: string;
 	personImage?: string;
 	fetchImage?: boolean;
