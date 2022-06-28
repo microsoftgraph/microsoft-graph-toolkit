@@ -978,6 +978,7 @@ export class MgtPerson extends MgtTemplatedComponent {
       this.renderTemplate('person-card', { person: personDetails, personImage: image }) ||
       html`
         <mgt-person-card
+          lock-tab-navigation
           .personDetails=${personDetails}
           .personImage=${image}
           .personPresence=${presence}
