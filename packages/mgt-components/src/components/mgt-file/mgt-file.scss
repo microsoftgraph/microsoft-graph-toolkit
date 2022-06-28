@@ -9,7 +9,8 @@
 @import '../../styles/shared-styles.scss';
 @import './mgt-file.theme.scss';
 
-$file-type-icon-size: var(--file-type-icon-size, 28px);
+$file-type-icon-width: var(--file-type-icon-width, 22px);
+$file-type-icon-height: var(--file-type-icon-height, 28px);
 $file-border: var(--file-border, none);
 $file-box-shadow: var(--file-box-shadow, none);
 $file-background-color: set-var(background-color, $theme-default, $file);
@@ -39,29 +40,28 @@ mgt-file .item {
   background-color: $file-background-color;
 
   &__file-type-icon {
-    padding: 16px;
-    width: $file-type-icon-size;
-    min-width: $file-type-icon-size;
-    height: $file-type-icon-size;
+    width: $file-type-icon-width;
+    min-width: $file-type-icon-width;
+    height: $file-type-icon-height;
     display: flex;
     align-items: center;
     justify-content: center;
 
     img {
-      height: $file-type-icon-size;
-      width: $file-type-icon-size;
+      height: $file-type-icon-height;
+      width: $file-type-icon-width;
     }
   }
 
   &__details {
-    padding: 10px 0;
+    padding: 0 0 0 14px;
 
     .line1 {
       font-size: $font-size;
       font-weight: $font-weight;
       text-transform: $text-transform;
       line-height: 20px;
-      color: $color;
+      color: $line1__color;
     }
 
     .line2 {
