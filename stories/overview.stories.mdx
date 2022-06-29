@@ -53,16 +53,17 @@ The components are also available as [React components](https://docs.microsoft.c
 
 [Providers](https://docs.microsoft.com/graph/toolkit/providers/providers) enable authentication and provide the implementation for acquiring access tokens on various platforms and expose a Microsoft Graph client for calling the Microsoft Graph APIs. The components work best when used with a provider, but the providers can be used on their own.
 
-| Providers                                                                     | Description                                                                                                                           |
-| ----------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------- |
-| [MSAL](https://docs.microsoft.com/graph/toolkit/providers/msal)               | Uses msal.js to sign in users and acquire tokens to use with Microsoft Graph.                                                         |
-| [MSAL2](https://docs.microsoft.com/graph/toolkit/providers/msal2)             | Uses msal-browser to sign in users and acquire tokens to use with Microsoft Graph.                                                    |
-| [Electron](https://docs.microsoft.com/graph/toolkit/providers/electron)       | Authenticates and provides Microsoft Graph access to components inside of Electron apps                                               |
-| [SharePoint](https://docs.microsoft.com/graph/toolkit/providers/sharepoint)   | Authenticates and provides Microsoft Graph access to components inside of SharePoint web parts.                                       |
-| [Teams](https://docs.microsoft.com/graph/toolkit/providers/teams)             | Uses msal.js to sign in users and acquire tokens on the client in Microsoft Teams tabs.                                               |
-| [Teams MSAL2](https://docs.microsoft.com/graph/toolkit/providers/teams-msal2) | Uses msal-browser to sign in users and acquire tokens in Microsoft Teams tabs. Supports Single Sign-On with custom backend.           |
-| [Proxy](https://docs.microsoft.com/graph/toolkit/providers/proxy)             | Allows the use of backend authentication by routing all calls to Microsoft Graph through your backend.                                |
-| [Custom](https://docs.microsoft.com/graph/toolkit/providers/custom)           | Create a custom provider to enable authentication and access to Microsoft Graph with your application's existing authentication code. |
+| Providers                                                                     | Description                                                                                                                                |
+| ----------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------ |
+| [MSAL](https://docs.microsoft.com/graph/toolkit/providers/msal)               | Uses msal.js to sign in users and acquire tokens to use with Microsoft Graph.                                                              |
+| [MSAL2](https://docs.microsoft.com/graph/toolkit/providers/msal2)             | Uses msal-browser to sign in users and acquire tokens to use with Microsoft Graph.                                                         |
+| [SharePoint](https://docs.microsoft.com/graph/toolkit/providers/sharepoint)   | Authenticates and provides Microsoft Graph access to components inside of SharePoint web parts.                                            |
+| [Teams](https://docs.microsoft.com/graph/toolkit/providers/teams)             | Uses msal.js to sign in users and acquire tokens on the client in Microsoft Teams tabs.                                                    |
+| [Teams MSAL2](https://docs.microsoft.com/graph/toolkit/providers/teams-msal2) | Uses msal-browser to sign in users and acquire tokens in Microsoft Teams tabs. Supports Single Sign-On with custom backend.                |
+| [TeamsFx](https://docs.microsoft.com/graph/toolkit/providers/teamsfx)         | Use the TeamsFx provider inside your Microsoft Teams applications to provide Microsoft Graph Toolkit components access to Microsoft Graph. |
+| [Electron](https://docs.microsoft.com/graph/toolkit/providers/electron)       | Authenticates and provides Microsoft Graph access to components inside of Electron apps                                                    |
+| [Proxy](https://docs.microsoft.com/graph/toolkit/providers/proxy)             | Allows the use of backend authentication by routing all calls to Microsoft Graph through your backend.                                     |
+| [Custom](https://docs.microsoft.com/graph/toolkit/providers/custom)           | Create a custom provider to enable authentication and access to Microsoft Graph with your application's existing authentication code.      |
 
 ### Who should use it?
 
