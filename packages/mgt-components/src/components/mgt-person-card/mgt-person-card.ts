@@ -714,7 +714,7 @@ export class MgtPersonCard extends MgtTemplatedComponent {
       (section: BasePersonCardSection) => html`
         <div class="section">
           <div class="section__header">
-            <div class="section__title">${section.displayName}</div>
+            <div class="section__title" tabindex="0">${section.displayName}</div>
             <a 
               class="section__show-more"
               tabindex=0

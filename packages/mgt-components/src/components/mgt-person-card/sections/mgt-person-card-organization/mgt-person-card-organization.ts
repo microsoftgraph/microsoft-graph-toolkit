@@ -152,7 +152,7 @@ export class MgtPersonCardOrganization extends BasePersonCardSection {
 
     return html`
       <div class="root" dir=${this.direction}>
-        <div class="title">${this.strings.organizationSectionTitle}</div>
+        <div class="title" tabindex="0">${this.strings.organizationSectionTitle}</div>
         ${contentTemplate}
       </div>
     `;
@@ -344,7 +344,7 @@ export class MgtPersonCardOrganization extends BasePersonCardSection {
 
     return html`
       <div class="divider"></div>
-      <div class="subtitle">${subtitle}</div>
+      <div class="subtitle" tabindex="0">${subtitle}</div>
       <div>
         ${people.slice(0, 6).map(person => this.renderCoworker(person))}
       </div>
