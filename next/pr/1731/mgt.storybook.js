@@ -2092,7 +2092,7 @@ const createAndInsertPart=(e,t)=>{const r=e.startNode.parentNode,o=void 0===t?e.
         ${t.map((e=>this.renderContactPart(e)))}
       `}return html$1`
       <div class="root" dir=${this.direction}>
-        <div class="title">${this.displayName}</div>
+        <div class="title" tabindex="0">${this.displayName}</div>
         ${e}
       </div>
     `}renderContactPart(e){let t=!1;"Mobile Phone"!==e.title&&"Business Phone"!==e.title||(t=!0);const r={part__link:!0,phone:t},o=e.onClick?html$1`
@@ -2100,7 +2100,7 @@ const createAndInsertPart=(e,t)=>{const r=e.startNode.parentNode,o=void 0===t?e.
         `:html$1`
           ${e.value}
         `;return html$1`
-      <div class="part" @click=${t=>this.handlePartClick(t,e.value)}>
+      <div class="part" @click=${t=>this.handlePartClick(t,e.value)}  tabindex="0">
         <div class="part__icon">${e.icon}</div>
         <div class="part__details">
           <div class="part__title">${e.title}</div>
@@ -2130,7 +2130,7 @@ const createAndInsertPart=(e,t)=>{const r=e.startNode.parentNode,o=void 0===t?e.
             ${this.strings.sharedTextSubtitle} ${getRelativeDisplayDate(new Date(e.lastShared.sharedDateTime))}
           </div>
         `:null;return html$1`
-      <div class="file" @click=${t=>this.handleFileClick(e)}>
+      <div class="file" @click=${t=>this.handleFileClick(e)} tabindex="0">
         <div class="file__icon">
           <img alt="${e.resourceVisualization.title}" src=${function getFileTypeIconUri(e,t,r){const o=Xr[e]||"genericfile";return`${eo}/${t.toString()}/${o}.${r}`}(e.resourceVisualization.type,48,"svg")} />
         </div>
@@ -2151,7 +2151,7 @@ const createAndInsertPart=(e,t)=>{const r=e.startNode.parentNode,o=void 0===t?e.
         ${this._messages.slice(0,5).map((e=>this.renderMessage(e)))}
       `:this.renderNoData(),html$1`
       <div class="root">
-        <div class="title">${this.strings.emailsSectionTitle}</div>
+        <div class="title" tabindex="0">${this.strings.emailsSectionTitle}</div>
         ${e}
       </div>
     `}renderMessage(e){return html$1`
@@ -2173,7 +2173,7 @@ const createAndInsertPart=(e,t)=>{const r=e.startNode.parentNode,o=void 0===t?e.
         ${t} ${r} ${o} ${i}
       `}return html$1`
       <div class="root" dir=${this.direction}>
-        <div class="title">${this.strings.organizationSectionTitle}</div>
+        <div class="title" tabindex="0">${this.strings.organizationSectionTitle}</div>
         ${e}
       </div>
     `}renderManager(e){return html$1`
@@ -2245,7 +2245,7 @@ const createAndInsertPart=(e,t)=>{const r=e.startNode.parentNode,o=void 0===t?e.
       </div>
     `}renderCoworkers(){const{people:e}=this._state;if(!e||!e.length)return null;const t=this._me.id===this._state.person.id?this.strings.youWorkWithSubSectionTitle:`${this._state.person.givenName} ${this.strings.userWorksWithSubSectionTitle}`;return html$1`
       <div class="divider"></div>
-      <div class="subtitle">${t}</div>
+      <div class="subtitle" tabindex="0">${t}</div>
       <div>
         ${e.slice(0,6).map((e=>this.renderCoworker(e)))}
       </div>
@@ -2261,17 +2261,17 @@ const createAndInsertPart=(e,t)=>{const r=e.startNode.parentNode,o=void 0===t?e.
         ${this.renderSubSections()}
       </div>
     `}renderSubSections(){return[this.renderSkills(),this.renderBirthday(),this.renderLanguages(),this.renderWorkExperience(),this.renderEducation(),this.renderProfessionalInterests(),this.renderPersonalInterests()].filter((e=>!!e))}renderLanguages(){const{languages:e}=this._profile;if(!e||!e.length)return null;const t=[];for(const r of e){let e=null;r.proficiency&&r.proficiency.length&&(e=html$1`
-          <span class="language__proficiency">
+          <span class="language__proficiency" tabindex="0">
             &nbsp;(${r.proficiency})
           </span>
         `),t.push(html$1`
         <div class="token-list__item language">
-          <span class="language__title">${r.displayName}</span>
+          <span class="language__title" tabindex="0">${r.displayName}</span>
           ${e}
         </div>
       `)}const r=t.length?this.strings.LanguagesSubSectionTitle:"";return html$1`
       <section>
-        <div class="section__title">${r}</div>
+        <div class="section__title" tabindex="0">${r}</div>
         <div class="section__content">
           <div class="token-list">
             ${t}
@@ -2279,12 +2279,12 @@ const createAndInsertPart=(e,t)=>{const r=e.startNode.parentNode,o=void 0===t?e.
         </div>
       </section>
     `}renderSkills(){const{skills:e}=this._profile;if(!e||!e.length)return null;const t=[];for(const r of e)t.push(html$1`
-        <div class="token-list__item skill">
+        <div class="token-list__item skill" tabindex="0">
           ${r.displayName}
         </div>
       `);const r=t.length?this.strings.SkillsSubSectionTitle:"";return html$1`
       <section>
-        <div class="section__title">${r}</div>
+        <div class="section__title" tabindex="0">${r}</div>
         <div class="section__content">
           <div class="token-list">
             ${t}
@@ -2294,23 +2294,23 @@ const createAndInsertPart=(e,t)=>{const r=e.startNode.parentNode,o=void 0===t?e.
     `}renderWorkExperience(){var e,t,r,o,i,n,s,a,l;const{positions:c}=this._profile;if(!c||!c.length)return null;const d=[];for(const c of this._profile.positions)(c.detail.description||""!==c.detail.jobTitle)&&d.push(html$1`
           <div class="data-list__item work-position">
             <div class="data-list__item__header">
-              <div class="data-list__item__title">${null===(e=c.detail)||void 0===e?void 0:e.jobTitle}</div>
-              <div class="data-list__item__date-range">
+              <div class="data-list__item__title" tabindex="0">${null===(e=c.detail)||void 0===e?void 0:e.jobTitle}</div>
+              <div class="data-list__item__date-range" tabindex="0">
                 ${this.getDisplayDateRange(c.detail)}
               </div>
             </div>
             <div class="data-list__item__content">
-              <div class="work-position__company">
+              <div class="work-position__company" tabindex="0">
                 ${null===(r=null===(t=null==c?void 0:c.detail)||void 0===t?void 0:t.company)||void 0===r?void 0:r.displayName}
               </div>
-              <div class="work-position__location">
+              <div class="work-position__location" tabindex="0">
                 ${null===(n=null===(i=null===(o=null==c?void 0:c.detail)||void 0===o?void 0:o.company)||void 0===i?void 0:i.address)||void 0===n?void 0:n.city}, ${null===(l=null===(a=null===(s=null==c?void 0:c.detail)||void 0===s?void 0:s.company)||void 0===a?void 0:a.address)||void 0===l?void 0:l.state}
               </div>
             </div>
           </div>
         `);const u=d.length?this.strings.WorkExperienceSubSectionTitle:"";return html$1`
       <section>
-        <div class="section__title">${u}</div>
+        <div class="section__title" tabindex="0">${u}</div>
         <div class="section__content">
           <div class="data-list">
             ${d}
@@ -2320,20 +2320,20 @@ const createAndInsertPart=(e,t)=>{const r=e.startNode.parentNode,o=void 0===t?e.
     `}renderEducation(){const{educationalActivities:e}=this._profile;if(!e||!e.length)return null;const t=[];for(const r of e)t.push(html$1`
         <div class="data-list__item educational-activity">
           <div class="data-list__item__header">
-            <div class="data-list__item__title">${r.institution.displayName}</div>
-            <div class="data-list__item__date-range">
+            <div class="data-list__item__title" tabindex="0">${r.institution.displayName}</div>
+            <div class="data-list__item__date-range" tabindex="0">
               ${this.getDisplayDateRange(r)}
             </div>
           </div>
           <div class="data-list__item__content">
-            <div class="educational-activity__degree">
+            <div class="educational-activity__degree" tabindex="0">
               ${r.program.displayName||"Bachelors Degree"}
             </div>
           </div>
         </div>
       `);const r=t.length?this.strings.EducationSubSectionTitle:"";return html$1`
       <section>
-        <div class="section__title">${r}</div>
+        <div class="section__title" tabindex="0">${r}</div>
         <div class="section__content">
           <div class="data-list">
             ${t}
@@ -2341,12 +2341,12 @@ const createAndInsertPart=(e,t)=>{const r=e.startNode.parentNode,o=void 0===t?e.
         </div>
       </section>
     `}renderProfessionalInterests(){if(!this._professionalInterests||!this._professionalInterests.length)return null;const e=[];for(const t of this._professionalInterests)e.push(html$1`
-        <div class="token-list__item interest interest--professional">
+        <div class="token-list__item interest interest--professional" tabindex="0">
           ${t.displayName}
         </div>
       `);const t=e.length?this.strings.professionalInterestsSubSectionTitle:"";return html$1`
       <section>
-        <div class="section__title">${t}</div>
+        <div class="section__title" tabindex="0">${t}</div>
         <div class="section__content">
           <div class="token-list">
             ${e}
@@ -2354,12 +2354,12 @@ const createAndInsertPart=(e,t)=>{const r=e.startNode.parentNode,o=void 0===t?e.
         </div>
       </section>
     `}renderPersonalInterests(){if(!this._personalInterests||!this._personalInterests.length)return null;const e=[];for(const t of this._personalInterests)e.push(html$1`
-        <div class="token-list__item interest interest--personal">
+        <div class="token-list__item interest interest--personal" tabindex="0">
           ${t.displayName}
         </div>
       `);const t=e.length?this.strings.personalInterestsSubSectionTitle:"";return html$1`
       <section>
-        <div class="section__title">${t}</div>
+        <div class="section__title" tabindex="0">${t}</div>
         <div class="section__content">
           <div class="token-list">
             ${e}
@@ -2368,19 +2368,19 @@ const createAndInsertPart=(e,t)=>{const r=e.startNode.parentNode,o=void 0===t?e.
       </section>
     `}renderBirthday(){return this._birthdayAnniversary&&this._birthdayAnniversary.date?html$1`
       <section>
-        <div class="section__title">Birthday</div>
+        <div class="section__title" tabindex="0">Birthday</div>
         <div class="section__content">
           <div class="birthday">
             <div class="birthday__icon">
               ${getSvg(Fr.Birthday)}
             </div>
-            <div class="birthday__date">
+            <div class="birthday__date" tabindex="0">
               ${this.getDisplayDate(new Date(this._birthdayAnniversary.date))}
             </div>
           </div>
         </div>
       </section>
-    `:null}isPersonalInterest(e){return e.categories&&e.categories.includes("personal")}isProfessionalInterest(e){return e.categories&&e.categories.includes("professional")}isBirthdayAnniversary(e){return"birthday"===e.type}getDisplayDate(e){return e.toLocaleString("default",{day:"numeric",month:"long"})}getDisplayDateRange(e){const t=new Date(e.startMonthYear).getFullYear();if(0===t)return null;return`${t} — ${e.endMonthYear?new Date(e.endMonthYear).getFullYear():this.strings.currentYearSubtitle}`}initPostRenderOperations(){setTimeout((()=>{try{this.shadowRoot.querySelectorAll("section").forEach((e=>{this.handleTokenOverflow(e)}))}catch(e){}}),0)}handleTokenOverflow(e){const t=e.querySelectorAll(".token-list");if(t&&t.length)for(const e of Array.from(t)){const t=e.querySelectorAll(".token-list__item");if(!t||!t.length)continue;let r=null,o=t[0].getBoundingClientRect();const i=e.getBoundingClientRect(),n=2*o.height+i.top;for(let e=0;e<t.length-1;e++)if(o=t[e].getBoundingClientRect(),o.top>n){r=Array.from(t).slice(e,t.length);break}if(r){r.forEach((e=>e.classList.add("overflow")));const t=document.createElement("div");t.classList.add("token-list__item"),t.classList.add("token-list__item--show-overflow"),t.innerText=`+ ${r.length} more`,t.addEventListener("click",(e=>{t.remove(),r.forEach((e=>e.classList.remove("overflow")))})),e.appendChild(t)}}}};rl=__decorate$c([customElement$1("mgt-person-card-profile"),__metadata$c("design:paramtypes",[Object])],rl);const ol={sendEmailLinkSubtitle:"Send email",startChatLinkSubtitle:"Start chat",showMoreSectionButton:"Show more",endOfCard:"End of the card"};var il,__decorate$b=function(e,t,r,o){var i,n=arguments.length,s=n<3?t:null===o?o=Object.getOwnPropertyDescriptor(t,r):o;if("object"==typeof Reflect&&"function"==typeof Reflect.decorate)s=Reflect.decorate(e,t,r,o);else for(var a=e.length-1;a>=0;a--)(i=e[a])&&(s=(n<3?i(s):n>3?i(t,r,s):i(t,r))||s);return n>3&&s&&Object.defineProperty(t,r,s),s},__metadata$b=function(e,t){if("object"==typeof Reflect&&"function"==typeof Reflect.metadata)return Reflect.metadata(e,t)},__awaiter$h=function(e,t,r,o){return new(r||(r=Promise))((function(i,n){function fulfilled(e){try{step(o.next(e))}catch(e){n(e)}}function rejected(e){try{step(o.throw(e))}catch(e){n(e)}}function step(e){e.done?i(e.value):function adopt(e){return e instanceof r?e:new r((function(t){t(e)}))}(e.value).then(fulfilled,rejected)}step((o=o.apply(e,t||[])).next())}))};let nl=il=class MgtPersonCard extends MgtTemplatedComponent{constructor(){super(),this._chatInput="",this._currentSection=null,this._history=[],this.sections=[]}static get styles(){return Ha}get strings(){return ol}static get requiredScopes(){return il.getScopes()}static getScopes(){const e=[];return this.config.sections.files&&e.push("Sites.Read.All"),this.config.sections.mailMessages&&e.push("Mail.ReadBasic"),this.config.sections.organization&&(e.push("User.Read.All"),"boolean"!=typeof this.config.sections.organization&&this.config.sections.organization.showWorksWith&&e.push("People.Read.All")),this.config.sections.profile&&e.push("User.Read.All"),this.config.useContactApis&&e.push("Contacts.Read"),e.indexOf("User.Read.All")<0&&(e.push("User.ReadBasic.All"),e.push("User.Read")),e.indexOf("People.Read.All")<0&&e.push("People.Read"),[...new Set(e)]}static get config(){return this._config}get personDetails(){return this._personDetails}set personDetails(e){this._personDetails!==e&&(this._personDetails=e,this.personImage=this.getImage(),this.requestStateUpdate())}get userId(){return this._userId}set userId(e){e!==this._userId&&(this._userId=e,this.personDetails=null,this.state=null,this.requestStateUpdate())}get internalPersonDetails(){return this.state&&this.state.person||this.personDetails}attributeChangedCallback(e,t,r){if(super.attributeChangedCallback(e,t,r),t!==r&&"person-query"===e)this.personDetails=null,this.state=null,this.requestStateUpdate()}navigate(e){this._history.push({personDetails:this.personDetails,personImage:this.getImage(),state:this.state}),this._personDetails=e,this.state=null,this.personImage=null,this._currentSection=null,this.sections=[],this.requestStateUpdate()}goBack(){if(!this._history||!this._history.length)return;const e=this._history.pop();this._currentSection=null,this.state=e.state,this._personDetails=e.state,this.personImage=e.personImage,this.loadSections()}clearHistory(){if(this._currentSection=null,!this._history||!this._history.length)return;const e=this._history[0];this._history=[],this.state=e.state,this._personDetails=e.state,this.personImage=e.personImage,this.loadSections()}render(){if(!this.internalPersonDetails)return this.renderNoData();const e=this.internalPersonDetails,t=this.getImage();if(this.hasTemplate("default"))return this.renderTemplate("default",{person:this.internalPersonDetails,personImage:t});const r=this._history&&this._history.length?html$1`
+    `:null}isPersonalInterest(e){return e.categories&&e.categories.includes("personal")}isProfessionalInterest(e){return e.categories&&e.categories.includes("professional")}isBirthdayAnniversary(e){return"birthday"===e.type}getDisplayDate(e){return e.toLocaleString("default",{day:"numeric",month:"long"})}getDisplayDateRange(e){const t=new Date(e.startMonthYear).getFullYear();if(0===t)return null;return`${t} — ${e.endMonthYear?new Date(e.endMonthYear).getFullYear():this.strings.currentYearSubtitle}`}initPostRenderOperations(){setTimeout((()=>{try{this.shadowRoot.querySelectorAll("section").forEach((e=>{this.handleTokenOverflow(e)}))}catch(e){}}),0)}handleTokenOverflow(e){const t=e.querySelectorAll(".token-list");if(t&&t.length)for(const e of Array.from(t)){const t=e.querySelectorAll(".token-list__item");if(!t||!t.length)continue;let r=null,o=t[0].getBoundingClientRect();const i=e.getBoundingClientRect(),n=2*o.height+i.top;for(let e=0;e<t.length-1;e++)if(o=t[e].getBoundingClientRect(),o.top>n){r=Array.from(t).slice(e,t.length);break}if(r){r.forEach((e=>e.classList.add("overflow")));const t=document.createElement("div");t.classList.add("token-list__item"),t.classList.add("token-list__item--show-overflow"),t.tabIndex=0,t.innerText=`+ ${r.length} more`;const revealOverflow=()=>{t.remove(),r.forEach((e=>e.classList.remove("overflow")))};t.addEventListener("click",(e=>{revealOverflow()})),t.addEventListener("keydown",(e=>{"Enter"===e.code&&revealOverflow()})),e.appendChild(t)}}}};rl=__decorate$c([customElement$1("mgt-person-card-profile"),__metadata$c("design:paramtypes",[Object])],rl);const ol={sendEmailLinkSubtitle:"Send email",startChatLinkSubtitle:"Start chat",showMoreSectionButton:"Show more",endOfCard:"End of the card"};var il,__decorate$b=function(e,t,r,o){var i,n=arguments.length,s=n<3?t:null===o?o=Object.getOwnPropertyDescriptor(t,r):o;if("object"==typeof Reflect&&"function"==typeof Reflect.decorate)s=Reflect.decorate(e,t,r,o);else for(var a=e.length-1;a>=0;a--)(i=e[a])&&(s=(n<3?i(s):n>3?i(t,r,s):i(t,r))||s);return n>3&&s&&Object.defineProperty(t,r,s),s},__metadata$b=function(e,t){if("object"==typeof Reflect&&"function"==typeof Reflect.metadata)return Reflect.metadata(e,t)},__awaiter$h=function(e,t,r,o){return new(r||(r=Promise))((function(i,n){function fulfilled(e){try{step(o.next(e))}catch(e){n(e)}}function rejected(e){try{step(o.throw(e))}catch(e){n(e)}}function step(e){e.done?i(e.value):function adopt(e){return e instanceof r?e:new r((function(t){t(e)}))}(e.value).then(fulfilled,rejected)}step((o=o.apply(e,t||[])).next())}))};let nl=il=class MgtPersonCard extends MgtTemplatedComponent{constructor(){super(),this._chatInput="",this._currentSection=null,this._history=[],this.sections=[]}static get styles(){return Ha}get strings(){return ol}static get requiredScopes(){return il.getScopes()}static getScopes(){const e=[];return this.config.sections.files&&e.push("Sites.Read.All"),this.config.sections.mailMessages&&e.push("Mail.ReadBasic"),this.config.sections.organization&&(e.push("User.Read.All"),"boolean"!=typeof this.config.sections.organization&&this.config.sections.organization.showWorksWith&&e.push("People.Read.All")),this.config.sections.profile&&e.push("User.Read.All"),this.config.useContactApis&&e.push("Contacts.Read"),e.indexOf("User.Read.All")<0&&(e.push("User.ReadBasic.All"),e.push("User.Read")),e.indexOf("People.Read.All")<0&&e.push("People.Read"),[...new Set(e)]}static get config(){return this._config}get personDetails(){return this._personDetails}set personDetails(e){this._personDetails!==e&&(this._personDetails=e,this.personImage=this.getImage(),this.requestStateUpdate())}get userId(){return this._userId}set userId(e){e!==this._userId&&(this._userId=e,this.personDetails=null,this.state=null,this.requestStateUpdate())}get internalPersonDetails(){return this.state&&this.state.person||this.personDetails}attributeChangedCallback(e,t,r){if(super.attributeChangedCallback(e,t,r),t!==r&&"person-query"===e)this.personDetails=null,this.state=null,this.requestStateUpdate()}navigate(e){this._history.push({personDetails:this.personDetails,personImage:this.getImage(),state:this.state}),this._personDetails=e,this.state=null,this.personImage=null,this._currentSection=null,this.sections=[],this.requestStateUpdate()}goBack(){if(!this._history||!this._history.length)return;const e=this._history.pop();this._currentSection=null,this.state=e.state,this._personDetails=e.state,this.personImage=e.personImage,this.loadSections()}clearHistory(){if(this._currentSection=null,!this._history||!this._history.length)return;const e=this._history[0];this._history=[],this.state=e.state,this._personDetails=e.state,this.personImage=e.personImage,this.loadSections()}render(){if(!this.internalPersonDetails)return this.renderNoData();const e=this.internalPersonDetails,t=this.getImage();if(this.hasTemplate("default"))return this.renderTemplate("default",{person:this.internalPersonDetails,personImage:t});const r=this._history&&this._history.length?html$1`
             <div class="nav">
               <div class="nav__back" @click=${()=>this.goBack()}>${getSvg(Fr.Back)}</div>
             </div>
@@ -2462,7 +2462,7 @@ const createAndInsertPart=(e,t)=>{const r=e.startNode.parentNode,o=void 0===t?e.
     `}renderOverviewSection(){const e=this.sections.map((e=>html$1`
         <div class="section">
           <div class="section__header">
-            <div class="section__title">${e.displayName}</div>
+            <div class="section__title" tabindex="0">${e.displayName}</div>
             <a 
               class="section__show-more"
               tabindex=0
