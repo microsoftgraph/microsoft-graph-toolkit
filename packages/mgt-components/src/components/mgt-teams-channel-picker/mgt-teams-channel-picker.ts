@@ -438,8 +438,9 @@ export class MgtTeamsChannelPicker extends MgtTemplatedComponent {
    */
   protected renderCloseButton() {
     return html`
-      <div class="close-icon" @click="${() => this.selectChannel(null)}">
-        
+      <div tabindex="0" class="close-icon" 
+        @keydown="${() => this.selectChannel(null)}"
+        @click="${() => this.selectChannel(null)}"> 
       </div>
     `;
   }
