@@ -168,7 +168,9 @@ export class MgtPersonCardOrganization extends BasePersonCardSection {
    */
   protected renderManager(person: User): TemplateResult {
     return html`
-      <div class="org-member" @click=${() => this.navigateCard(person)}>
+      <div class="org-member" @keydown=${(e: KeyboardEvent) => {
+        e.code === 'Enter' ? this.navigateCard(person) : '';
+      }} @click=${() => this.navigateCard(person)}>
         <div class="org-member__person">
           <mgt-person
             .personDetails=${person}
@@ -178,7 +180,7 @@ export class MgtPersonCardOrganization extends BasePersonCardSection {
             .view=${ViewType.threelines}
           ></mgt-person>
         </div>
-        <div class="org-member__more">
+        <div tabindex="0" class="org-member__more">
           ${getSvg(SvgIcon.ExpandRight)}
         </div>
       </div>
