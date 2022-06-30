@@ -2196,7 +2196,7 @@ const createAndInsertPart=(e,t)=>{const r=e.startNode.parentNode,o=void 0===t?e.
       <div class="org-member__separator"></div>
       <div>
         ${e.map((e=>html$1`
-            <div class="org-member org-member--direct-report" @click=${()=>this.navigateCard(e)}>
+            <div class="org-member org-member--direct-report" @keydown=${t=>{"Enter"===t.code&&this.navigateCard(e)}} @click=${()=>this.navigateCard(e)}>
               <div class="org-member__person">
                 <mgt-person
                   .personDetails=${e}
@@ -2206,7 +2206,7 @@ const createAndInsertPart=(e,t)=>{const r=e.startNode.parentNode,o=void 0===t?e.
                   .view=${Dr.twolines}
                 ></mgt-person>
               </div>
-              <div class="org-member__more">
+              <div tabindex="0" class="org-member__more">
                 ${getSvg(Fr.ExpandRight)}
               </div>
             </div>
@@ -2215,7 +2215,7 @@ const createAndInsertPart=(e,t)=>{const r=e.startNode.parentNode,o=void 0===t?e.
     `:null}renderCompactDirectReports(){const{directReports:e}=this._state;return html$1`
       <div class="direct-report__compact">
         ${e.slice(0,6).map((e=>html$1`
-            <div class="direct-report" @click=${()=>this.navigateCard(e)}>
+            <div class="direct-report" @keydown=${t=>{"Enter"===t.code&&this.navigateCard(e)}} @click=${()=>this.navigateCard(e)} @keydown=${t=>{"Enter"===t.code&&this.navigateCard(e)}}>
               <mgt-person .personDetails=${e} .fetchImage=${!0}></mgt-person>
             </div>
           `))}
@@ -2233,7 +2233,7 @@ const createAndInsertPart=(e,t)=>{const r=e.startNode.parentNode,o=void 0===t?e.
         </div>
       </div>
     `}renderCoworker(e){return html$1`
-      <div class="coworker" @click=${()=>this.navigateCard(e)}>
+      <div class="coworker" @keydown=${t=>{"Enter"===t.code&&this.navigateCard(e)}} @click=${()=>this.navigateCard(e)}>
         <div class="coworker__person">
           <mgt-person
             .personDetails=${e}
