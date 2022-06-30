@@ -8,7 +8,7 @@
 @import '../../../../../../node_modules/office-ui-fabric-core/dist/sass/References';
 @import '../../../styles/shared-sass-variables.scss';
 
-$mgt-flyout-border-radius: var(--mgt-flyout-border-radius, 0px);
+$mgt-flyout-border-radius: var(--mgt-flyout-border-radius, 8px);
 
 .root {
   .scout-top {
@@ -30,6 +30,10 @@ $mgt-flyout-border-radius: var(--mgt-flyout-border-radius, 0px);
     opacity: 0;
     box-shadow: set-var(box-shadow, $theme-default, $common);
     border-radius: $mgt-flyout-border-radius;
+    &.small {
+      overflow-y: auto;
+      overflow-x: hidden;
+    }
   }
 
   &.visible {
