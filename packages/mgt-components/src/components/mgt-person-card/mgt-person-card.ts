@@ -315,6 +315,8 @@ export class MgtPersonCard extends MgtTemplatedComponent {
   private _currentSection: BasePersonCardSection;
   private _personDetails: IDynamicPerson;
   private _me: User;
+  private _smallView;
+  private _windowHeight;
 
   private _userId: string;
 
@@ -449,7 +451,9 @@ export class MgtPersonCard extends MgtTemplatedComponent {
       this._history && this._history.length
         ? html`
             <div class="nav">
-              <div class="nav__back" @click=${() => this.goBack()}>${getSvg(SvgIcon.Back)}</div>
+              <div class="nav__back" tabindex="0" @keydown=${(e: KeyboardEvent) => {
+                e.code === 'Enter' ? this.goBack() : '';
+              }} @click=${() => this.goBack()}>${getSvg(SvgIcon.Back)}</div>
             </div>
           `
         : null;
@@ -469,20 +473,30 @@ export class MgtPersonCard extends MgtTemplatedComponent {
     }
 
     const expandedDetailsTemplate = this.isExpanded ? this.renderExpandedDetails() : this.renderExpandedDetailsButton();
+    this._windowHeight =
+      window.innerHeight && document.documentElement.clientHeight
+        ? Math.min(window.innerHeight, document.documentElement.clientHeight)
+        : window.innerHeight || document.documentElement.clientHeight;
+
+    if (this._windowHeight < 250) {
+      this._smallView = true;
+    }
     const tabLocker = this.lockTabNavigation
       ? html`<div @keydown=${this.handleEndOfCard} aria-label=${this.strings.endOfCard} tabindex="0" id="end-of-container"></div>`
       : html``;
     return html`
       <div class="root" dir=${this.direction}>
-        ${navigationTemplate}
-        <div class="close-card-container">
-          <fluent-button appearance="lightweight" class="close-button" @click=${() => this.closeCard()} >
-              ${getSvg(SvgIcon.Close)}
-          </fluent-button>
+        <div class=${this._smallView ? 'small' : ''}>
+          ${navigationTemplate}
+          <div class="close-card-container">
+            <fluent-button appearance="lightweight" class="close-button" @click=${() => this.closeCard()} >
+                ${getSvg(SvgIcon.Close)}
+            </fluent-button>
+          </div>
+          <div class="person-details-container">${personDetailsTemplate}</div>
+          <div class="expanded-details-container">${expandedDetailsTemplate}</div>
+          ${tabLocker}
         </div>
-        <div class="person-details-container">${personDetailsTemplate}</div>
-        <div class="expanded-details-container">${expandedDetailsTemplate}</div>
-        ${tabLocker}
       </div>
     `;
   }
@@ -700,7 +714,8 @@ export class MgtPersonCard extends MgtTemplatedComponent {
       <div class="section-nav">
         ${sectionNavTemplate}
       </div>
-      <div class="section-host" @wheel=${(e: WheelEvent) => this.handleSectionScroll(e)} tabindex=0>
+      <div class="section-host ${this._smallView ? 'small' : ''}" @wheel=${(e: WheelEvent) =>
+      this.handleSectionScroll(e)} tabindex=0>
       </div>
     `;
   }
@@ -781,7 +796,7 @@ export class MgtPersonCard extends MgtTemplatedComponent {
       (section: BasePersonCardSection) => html`
         <div class="section">
           <div class="section__header">
-            <div class="section__title">${section.displayName}</div>
+            <div class="section__title" tabindex=0>${section.displayName}</div>
               <fluent-button appearance="lightweight" class="section__show-more" @click=${() =>
                 this.updateCurrentSection(section)}>
                 ${this.strings.showMoreSectionButton}

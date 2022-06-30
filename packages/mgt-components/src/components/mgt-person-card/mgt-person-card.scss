@@ -33,7 +33,11 @@ $person-card-nav-back-arrow-hover-color: var(--person-card-nav-back-arrow-hover-
   box-shadow: set-var(box-shadow, $theme-default, $common);
   border-radius: 8px;
   border: 1px solid set-var(background-color__sub1, $theme-default, $common);
-  border-radius: 2px;
+  .small {
+    max-height: 100vh;
+    overflow-y: auto;
+    overflow-x: hidden;
+  }
 
   .nav {
     height: 0px;
@@ -324,6 +328,9 @@ $person-card-nav-back-arrow-hover-color: var(--person-card-nav-back-arrow-hover-
       background: grey;
       border-radius: 10px;
       height: 4px;
+    }
+    &.small {
+      overflow-y: hidden;
     }
   }
 

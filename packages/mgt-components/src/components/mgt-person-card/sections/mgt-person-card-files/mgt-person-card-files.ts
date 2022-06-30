@@ -146,7 +146,7 @@ export class MgtPersonCardFiles extends BasePersonCardSection {
       : null;
 
     return html`
-      <div class="file" @click=${e => this.handleFileClick(file)}>
+      <div class="file" @click=${e => this.handleFileClick(file)} tabindex="0">
         <div class="file__icon">
           <img alt="${file.resourceVisualization.title}" src=${getFileTypeIconUri(
       file.resourceVisualization.type,
