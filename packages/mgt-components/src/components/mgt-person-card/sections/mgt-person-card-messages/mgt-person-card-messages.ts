@@ -125,7 +125,7 @@ export class MgtPersonCardMessages extends BasePersonCardSection {
 
     return html`
       <div class="root">
-        <div class="title">${this.strings.emailsSectionTitle}</div>
+        <div class="title" tabindex="0">${this.strings.emailsSectionTitle}</div>
         ${contentTemplate}
       </div>
     `;

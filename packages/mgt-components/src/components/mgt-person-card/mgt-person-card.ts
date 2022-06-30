@@ -315,6 +315,8 @@ export class MgtPersonCard extends MgtTemplatedComponent {
   private _currentSection: BasePersonCardSection;
   private _personDetails: IDynamicPerson;
   private _me: User;
+  private _smallView;
+  private _windowHeight;
 
   private _userId: string;
 
@@ -449,7 +451,9 @@ export class MgtPersonCard extends MgtTemplatedComponent {
       this._history && this._history.length
         ? html`
             <div class="nav">
-              <div class="nav__back" @click=${() => this.goBack()}>${getSvg(SvgIcon.Back)}</div>
+              <div class="nav__back" tabindex="0" @keydown=${(e: KeyboardEvent) => {
+                e.code === 'Enter' ? this.goBack() : '';
+              }} @click=${() => this.goBack()}>${getSvg(SvgIcon.Back)}</div>
             </div>
           `
         : null;
@@ -469,6 +473,14 @@ export class MgtPersonCard extends MgtTemplatedComponent {
     }
 
     const expandedDetailsTemplate = this.isExpanded ? this.renderExpandedDetails() : this.renderExpandedDetailsButton();
+    this._windowHeight =
+      window.innerHeight && document.documentElement.clientHeight
+        ? Math.min(window.innerHeight, document.documentElement.clientHeight)
+        : window.innerHeight || document.documentElement.clientHeight;
+
+    if (this._windowHeight < 250) {
+      this._smallView = true;
+    }
     const tabLocker = this.lockTabNavigation
       ? html`<div @keydown=${this.handleEndOfCard} aria-label=${this.strings.endOfCard} tabindex="0" id="end-of-container"></div>`
       : html``;
