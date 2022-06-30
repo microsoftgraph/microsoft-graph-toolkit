@@ -199,7 +199,7 @@ export class MgtPersonCardProfile extends BasePersonCardSection {
       let proficiency = null;
       if (language.proficiency && language.proficiency.length) {
         proficiency = html`
-          <span class="language__proficiency">
+          <span class="language__proficiency" tabindex="0">
             &nbsp;(${language.proficiency})
           </span>
         `;
@@ -207,7 +207,7 @@ export class MgtPersonCardProfile extends BasePersonCardSection {
 
       languageItems.push(html`
         <div class="token-list__item language">
-          <span class="language__title">${language.displayName}</span>
+          <span class="language__title" tabindex="0">${language.displayName}</span>
           ${proficiency}
         </div>
       `);
@@ -217,7 +217,7 @@ export class MgtPersonCardProfile extends BasePersonCardSection {
 
     return html`
       <section>
-        <div class="section__title">${languageTitle}</div>
+        <div class="section__title" tabindex="0">${languageTitle}</div>
         <div class="section__content">
           <div class="token-list">
             ${languageItems}
@@ -244,7 +244,7 @@ export class MgtPersonCardProfile extends BasePersonCardSection {
     const skillItems: TemplateResult[] = [];
     for (const skill of skills) {
       skillItems.push(html`
-        <div class="token-list__item skill">
+        <div class="token-list__item skill" tabindex="0">
           ${skill.displayName}
         </div>
       `);
@@ -254,7 +254,7 @@ export class MgtPersonCardProfile extends BasePersonCardSection {
 
     return html`
       <section>
-        <div class="section__title">${skillsTitle}</div>
+        <div class="section__title" tabindex="0">${skillsTitle}</div>
         <div class="section__content">
           <div class="token-list">
             ${skillItems}
@@ -284,16 +284,16 @@ export class MgtPersonCardProfile extends BasePersonCardSection {
         positionItems.push(html`
           <div class="data-list__item work-position">
             <div class="data-list__item__header">
-              <div class="data-list__item__title">${position.detail?.jobTitle}</div>
-              <div class="data-list__item__date-range">
+              <div class="data-list__item__title" tabindex="0">${position.detail?.jobTitle}</div>
+              <div class="data-list__item__date-range" tabindex="0">
                 ${this.getDisplayDateRange(position.detail)}
               </div>
             </div>
             <div class="data-list__item__content">
-              <div class="work-position__company">
+              <div class="work-position__company" tabindex="0">
                 ${position?.detail?.company?.displayName}
               </div>
-              <div class="work-position__location">
+              <div class="work-position__location" tabindex="0">
                 ${position?.detail?.company?.address?.city}, ${position?.detail?.company?.address?.state}
               </div>
             </div>
@@ -305,7 +305,7 @@ export class MgtPersonCardProfile extends BasePersonCardSection {
 
     return html`
       <section>
-        <div class="section__title">${workExperienceTitle}</div>
+        <div class="section__title" tabindex="0">${workExperienceTitle}</div>
         <div class="section__content">
           <div class="data-list">
             ${positionItems}
@@ -334,13 +334,13 @@ export class MgtPersonCardProfile extends BasePersonCardSection {
       positionItems.push(html`
         <div class="data-list__item educational-activity">
           <div class="data-list__item__header">
-            <div class="data-list__item__title">${educationalActivity.institution.displayName}</div>
-            <div class="data-list__item__date-range">
+            <div class="data-list__item__title" tabindex="0">${educationalActivity.institution.displayName}</div>
+            <div class="data-list__item__date-range" tabindex="0">
               ${this.getDisplayDateRange(educationalActivity)}
             </div>
           </div>
           <div class="data-list__item__content">
-            <div class="educational-activity__degree">
+            <div class="educational-activity__degree" tabindex="0">
               ${educationalActivity.program.displayName || 'Bachelors Degree'}
             </div>
           </div>
@@ -352,7 +352,7 @@ export class MgtPersonCardProfile extends BasePersonCardSection {
 
     return html`
       <section>
-        <div class="section__title">${educationTitle}</div>
+        <div class="section__title" tabindex="0">${educationTitle}</div>
         <div class="section__content">
           <div class="data-list">
             ${positionItems}
@@ -377,7 +377,7 @@ export class MgtPersonCardProfile extends BasePersonCardSection {
     const interestItems: TemplateResult[] = [];
     for (const interest of this._professionalInterests) {
       interestItems.push(html`
-        <div class="token-list__item interest interest--professional">
+        <div class="token-list__item interest interest--professional" tabindex="0">
           ${interest.displayName}
         </div>
       `);
@@ -387,7 +387,7 @@ export class MgtPersonCardProfile extends BasePersonCardSection {
 
     return html`
       <section>
-        <div class="section__title">${professionalInterests}</div>
+        <div class="section__title" tabindex="0">${professionalInterests}</div>
         <div class="section__content">
           <div class="token-list">
             ${interestItems}
@@ -412,7 +412,7 @@ export class MgtPersonCardProfile extends BasePersonCardSection {
     const interestItems: TemplateResult[] = [];
     for (const interest of this._personalInterests) {
       interestItems.push(html`
-        <div class="token-list__item interest interest--personal">
+        <div class="token-list__item interest interest--personal" tabindex="0">
           ${interest.displayName}
         </div>
       `);
@@ -422,7 +422,7 @@ export class MgtPersonCardProfile extends BasePersonCardSection {
 
     return html`
       <section>
-        <div class="section__title">${personalInterests}</div>
+        <div class="section__title" tabindex="0">${personalInterests}</div>
         <div class="section__content">
           <div class="token-list">
             ${interestItems}
@@ -446,13 +446,13 @@ export class MgtPersonCardProfile extends BasePersonCardSection {
 
     return html`
       <section>
-        <div class="section__title">Birthday</div>
+        <div class="section__title" tabindex="0">Birthday</div>
         <div class="section__content">
           <div class="birthday">
             <div class="birthday__icon">
               ${getSvg(SvgIcon.Birthday)}
             </div>
-            <div class="birthday__date">
+            <div class="birthday__date" tabindex="0">
               ${this.getDisplayDate(new Date(this._birthdayAnniversary.date))}
             </div>
           </div>
@@ -537,11 +537,21 @@ export class MgtPersonCardProfile extends BasePersonCardSection {
         const overflowToken = document.createElement('div');
         overflowToken.classList.add('token-list__item');
         overflowToken.classList.add('token-list__item--show-overflow');
+        overflowToken.tabIndex = 0;
         overflowToken.innerText = `+ ${overflowItems.length} more`;
-        overflowToken.addEventListener('click', (e: MouseEvent) => {
-          // On click, remove [+n more] token and reveal the hidden overflow tokens.
+
+        // On click or enter(accessibility), remove [+n more] token and reveal the hidden overflow tokens.
+        const revealOverflow = () => {
           overflowToken.remove();
           overflowItems.forEach(i => i.classList.remove('overflow'));
+        };
+        overflowToken.addEventListener('click', (e: MouseEvent) => {
+          revealOverflow();
+        });
+        overflowToken.addEventListener('keydown', (e: KeyboardEvent) => {
+          if (e.code === 'Enter') {
+            revealOverflow();
+          }
         });
         tokenList.appendChild(overflowToken);
       }
