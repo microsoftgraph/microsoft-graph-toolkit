@@ -9,7 +9,6 @@
 @import '../../styles/shared-styles.scss';
 @import './mgt-file.theme.scss';
 
-$file-type-icon-width: var(--file-type-icon-width, 22px);
 $file-type-icon-height: var(--file-type-icon-height, 28px);
 $file-border: var(--file-border, none);
 $file-box-shadow: var(--file-box-shadow, none);
@@ -40,8 +39,6 @@ mgt-file .item {
   background-color: $file-background-color;
 
   &__file-type-icon {
-    width: $file-type-icon-width;
-    min-width: $file-type-icon-width;
     height: $file-type-icon-height;
     display: flex;
     align-items: center;
@@ -49,7 +46,6 @@ mgt-file .item {
 
     img {
       height: $file-type-icon-height;
-      width: $file-type-icon-width;
     }
   }
 
