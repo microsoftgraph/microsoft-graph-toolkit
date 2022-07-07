@@ -41,6 +41,8 @@ import { strings } from './strings';
 import { MgtFile } from '../mgt-file/mgt-file';
 import { MgtFileUploadConfig } from './mgt-file-upload/mgt-file-upload';
 
+export * from './mgt-file-upload/mgt-file-upload';
+
 import { fluentProgressRing, fluentDesignSystemProvider } from '@fluentui/web-components';
 import { registerFluentComponents } from '../../utils/FluentComponents';
 
