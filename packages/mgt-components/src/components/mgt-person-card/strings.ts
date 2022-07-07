@@ -12,5 +12,6 @@ export const strings = {
   endOfCard: 'End of the card',
   video: 'Start video call',
   phone: 'Start phone call',
+  quickMessagePlaceholder: 'Type message',
   endOfCard: 'End of the card'
 };

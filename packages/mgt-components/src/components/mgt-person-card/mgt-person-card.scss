@@ -229,32 +229,24 @@ $person-card-nav-back-arrow-hover-color: var(--person-card-nav-back-arrow-hover-
       display: flex;
       align-items: center;
       justify-content: center;
-      border: 2px solid transparent;
+      border-bottom: 2px solid transparent;
       margin-bottom: -1px;
       cursor: pointer;
 
       svg {
+        width: 20px;
+        height: 20px;
         fill: set-var(icon__color, $theme-default, $common);
       }
 
       &:hover {
         background: set-var(tab__background-color--hover, $theme-default, $common);
+        border-radius: 2px;
       }
 
       &.active {
-        // border: none none none solid $icon--active;
-        border-bottom-color: $person-card-tab-nav-color;
-        border-bottom-style: solid;
-        border: 3px solid #036ac4;
-        border-style: none none solid;
-        border-left-color: none;
-        border-right-color: none;
-        border-top-color: none;
-        border-top-style: none;
-        border-left-style: none;
-        border-right-style: none;
         svg {
-          fill: $person-card-tab-nav-color;
+          fill: $icon--active;
         }
       }
     }

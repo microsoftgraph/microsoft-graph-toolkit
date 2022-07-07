@@ -31,12 +31,14 @@ import { strings } from './strings';
 import { PersonCardInteraction } from '../PersonCardInteraction';
 import { MgtFlyout } from '../sub-components/mgt-flyout/mgt-flyout';
 
+import '../sub-components/mgt-spinner/mgt-spinner';
+
 export * from './mgt-person-card.types';
 
-import { fluentTabs, fluentTab, fluentTabPanel, fluentButton, fluentTextField } from '@fluentui/web-components';
+import { fluentTabs, fluentTab, fluentTabPanel } from '@fluentui/web-components';
 import { registerFluentComponents } from '../../utils/FluentComponents';
 
-registerFluentComponents(fluentTabs, fluentTab, fluentTabPanel, fluentButton, fluentTextField);
+registerFluentComponents(fluentTabs, fluentTab, fluentTabPanel);
 
 // tslint:disable-next-line:completed-docs
 interface MgtPersonCardStateHistory {
@@ -554,19 +556,17 @@ export class MgtPersonCard extends MgtTemplatedComponent {
   protected renderPerson(): TemplateResult {
     const avatarSize = 'large';
     return html`
-       <mgt-person
-         tabindex="0"
-         class="person-image"
-         .personDetails=${this.internalPersonDetails}
-         .personImage=${this.getImage()}
-         .personPresence=${this.personPresence}
-         .showPresence=${this.showPresence}
-         .avatarSize=${avatarSize}
-         .view=${ViewType.threelines}
-         .line2Property=${'jobTitle'}
-         .line3Property=${'department'}
-       ></mgt-person>
-     `;
+      <mgt-person
+        tabindex="0"
+        class="person-image"
+        .personDetails=${this.internalPersonDetails}
+        .personImage=${this.getImage()}
+        .personPresence=${this.personPresence}
+        .showPresence=${this.showPresence}
+        .avatarSize=${avatarSize}
+        .view=${ViewType.threelines}
+      ></mgt-person>
+    `;
   }
 
   /**
@@ -623,13 +623,11 @@ export class MgtPersonCard extends MgtTemplatedComponent {
     }
 
     let video: TemplateResult;
-    if (userPerson?.userPrincipalName) {
-      video = html`
-        <div class="icon" @click=${() => this.chatUser()} tabindex=0 role="button">
+    video = html`
+       <div class="icon" @click=${() => this.videoCallUser()} tabindex=0>
           ${getSvg(SvgIcon.Video)}
         </div>
-      `;
-    }
+     `;
 
     // Call
     let call: TemplateResult;
@@ -723,8 +721,6 @@ export class MgtPersonCard extends MgtTemplatedComponent {
         active: i === currentSectionIndex,
         'section-nav__icon': true
       });
-      const tagName = section.tagName;
-      const ariaLabel = tagName.substring(16, tagName.length).toLowerCase();
       return html`
          <fluent-tab id="${name}-Tab" class=${classes}
            slot="tab" @keyup="${() => this.updateCurrentSection(section)}" @click=${() =>
@@ -808,13 +804,33 @@ export class MgtPersonCard extends MgtTemplatedComponent {
     }
 
     return html`
-       <div class="sections">
-         <div class="message-section">
-           ${this.renderMessagingSection()}
-         </div>
-         ${compactTemplates}
-       </div>
-     `;
+    <!-- ${
+      this.internalPersonDetails.id !== this._me.id && MgtPersonCard.config.isSendMessageVisible
+        ? html`
+          <div class="quick-message">
+            <input
+              type="text"
+              class="quick-message__input"
+              placeholder=${this.strings.quickMessagePlaceholder}
+              .value=${this._chatInput}
+              @input=${(e: Event) => {
+                this._chatInput = (e.target as HTMLInputElement).value;
+              }}
+            />
+            <button class="quick-message__send" @click=${() => this.sendQuickMessage()}>
+              ${getSvg(SvgIcon.Send)}
+            </button>
+          </div>
+        `
+        : null
+    } -->
+      <div class="sections">
+        <div class="message-section">
+          ${this.renderMessagingSection()}
+        </div>
+        ${compactTemplates}
+      </div>
+    `;
   }
 
   /**
@@ -1100,17 +1116,7 @@ export class MgtPersonCard extends MgtTemplatedComponent {
    * @protected
    * @memberof MgtPersonCard
    */
-  protected showExpandedDetails(event: KeyboardEvent) {
-    if (event) {
-      if (event.keyCode !== 13 && event.type !== 'click') {
-        return;
-      } else if (event.keyCode === 13) {
-        //focus on close button
-        // const closeButton: HTMLElement = this.renderRoot.querySelector('.close-button');
-        // closeButton.focus();
-      }
-    }
-
+  protected showExpandedDetails() {
     const root = this.renderRoot.querySelector('.root');
     if (root && root.animate) {
       // play back
@@ -1231,8 +1237,8 @@ export class MgtPersonCard extends MgtTemplatedComponent {
   private handleKeyDown(e: KeyboardEvent) {
     //enter activates person-card
     if (e) {
-      if (e.key === 'Enter') {
-        this.showExpandedDetails(e);
+      if (e.code === 'Enter') {
+        this.showExpandedDetails();
       }
     }
   }
