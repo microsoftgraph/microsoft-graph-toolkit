@@ -554,7 +554,6 @@ export class MgtPersonCard extends MgtTemplatedComponent {
    * @memberof MgtPersonCard
    */
   protected renderPerson(): TemplateResult {
-    const avatarSize = 'large';
     return html`
       <mgt-person
         tabindex="0"
@@ -563,9 +562,12 @@ export class MgtPersonCard extends MgtTemplatedComponent {
         .personImage=${this.getImage()}
         .personPresence=${this.personPresence}
         .showPresence=${this.showPresence}
-        .avatarSize=${avatarSize}
-        .view=${ViewType.threelines}
-      ></mgt-person>
+        .view=${ViewType.fourlines}
+      >
+      <template data-type="line4">
+
+      </template>
+      </mgt-person>
     `;
   }
 
