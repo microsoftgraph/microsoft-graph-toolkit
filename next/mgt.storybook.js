@@ -2825,13 +2825,13 @@ const createAndInsertPart=(e,t)=>{const r=e.startNode.parentNode,o=void 0===t?e.
           label="teams-channel-picker-input"
           aria-label="Select a channel"
           data-placeholder="${this._selectedItemState?"":this.strings.inputPlaceholderText} "
-          role="input"
+          role="searchbox"
           @keyup=${e=>this.handleInputChanged(e)}
           contenteditable
         ></span>
       </div>
     `}renderCloseButton(){return html$1`
-      <div tabindex="0" class="close-icon" 
+      <div tabindex="0" class="close-icon"
         @keydown="${()=>this.selectChannel(null)}"
         @click="${()=>this.selectChannel(null)}"> 
       </div>
