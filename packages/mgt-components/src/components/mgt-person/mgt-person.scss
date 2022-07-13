@@ -25,6 +25,8 @@ $font-size: var(--font-size, #{$ms-font-size-m});
 $font-weight: var(--font-weight, #{$ms-font-weight-semibold});
 $text-transform: var(text-transform, none);
 
+$line1-font-weight: var(--line1-font-weight, 600);
+
 $line2-font-size: var(--line2-font-size, var(--email-font-size, #{$ms-font-size-s}));
 $line2-font-weight: var(--line2-font-weight, 400);
 $line2-text-transform: var(--line2-text-transform, #{$text-transform});
@@ -530,6 +532,7 @@ mgt-person .person-root {
       .line1 {
         font-size: 16px;
         line-height: 22px;
+        font-weight: 600;
       }
     }
 
@@ -540,6 +543,7 @@ mgt-person .person-root {
         font-size: 20px;
         line-height: 26px;
         margin-bottom: 6px;
+        font-weight: 600;
       }
     }
 
@@ -575,7 +579,7 @@ mgt-person .person-root {
 
     .line1 {
       font-size: $font-size;
-      font-weight: $font-weight;
+      font-weight: $line1-font-weight;
       text-transform: $text-transform;
       line-height: 20px;
       & > text {
