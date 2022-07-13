@@ -421,7 +421,7 @@ export class MgtTeamsChannelPicker extends MgtTemplatedComponent {
           label="teams-channel-picker-input"
           aria-label="Select a channel"
           data-placeholder="${!!this._selectedItemState ? '' : this.strings.inputPlaceholderText} "
-          role="input"
+          role="searchbox"
           @keyup=${e => this.handleInputChanged(e)}
           contenteditable
         ></span>
@@ -438,7 +438,7 @@ export class MgtTeamsChannelPicker extends MgtTemplatedComponent {
    */
   protected renderCloseButton() {
     return html`
-      <div tabindex="0" class="close-icon" 
+      <div tabindex="0" class="close-icon"
         @keydown="${() => this.selectChannel(null)}"
         @click="${() => this.selectChannel(null)}"> 
       </div>
