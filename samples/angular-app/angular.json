@@ -72,10 +72,7 @@
         "serve": {
           "builder": "@angular-builders/custom-webpack:dev-server",
           "options": {
-            "browserTarget": "demo-mgt-angular:build",
-            "customWebpackConfig": {
-              "path": "./webpack.config.js"
-            }
+            "browserTarget": "demo-mgt-angular:build"
           },
           "configurations": {
             "production": {
