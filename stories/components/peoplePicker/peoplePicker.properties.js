@@ -23,7 +23,7 @@ export const dynamicGroupId = () => html`
   <div>
     <p class="notes">Pick a group:</p>
     <div class="groups">
-      <button id="showHideGroups">Select a group</button>
+      <button aria-label="Select a group" id="showHideGroups">Select a group</button>
       <ul id="groupChooser"></ul>
     </div>
     <p class="notes">People chosen:</p>
