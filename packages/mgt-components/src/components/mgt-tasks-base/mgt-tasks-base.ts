@@ -230,7 +230,7 @@ export abstract class MgtTasksBase extends MgtTemplatedComponent {
         .value="${newTaskName}"
         label="new-taskName-input"
         aria-label="new-taskName-input"
-        role="input"
+        role="textbox"
         @input="${(e: Event) => {
           this._newTaskName = (e.target as HTMLInputElement).value;
           this.requestUpdate();
