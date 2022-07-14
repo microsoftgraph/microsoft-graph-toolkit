@@ -38,7 +38,7 @@ export class MgtDotOptions extends MgtBaseComponent {
    *
    * @memberof MgtDotOptions
    */
-  @property({ type: Object }) public options: { [option: string]: (e: MouseEvent) => void | any };
+  @property({ type: Object }) public options: { [option: string]: (e: Event) => void | any };
 
   private _clickHandler: (e: MouseEvent) => void | any = null;
 
@@ -66,9 +66,11 @@ export class MgtDotOptions extends MgtBaseComponent {
    */
   public render() {
     return html`
-      <div class=${classMap({ DotMenu: true, Open: this.open })} @click=${e => this.onDotClick(e)}>
+      <div tabindex="0" class=${classMap({ DotMenu: true, Open: this.open })}
+        @click=${e => this.onDotClick(e)}
+        @keydown=${e => this.onDotKeydown(e)}>
         <span class="DotIcon">\uE712</span>
-        <div class="Menu">
+        <div tabindex="0" class="Menu">
           ${Object.keys(this.options).map(prop => this.getMenuOption(prop, this.options[prop]))}
         </div>
       </div>
@@ -78,17 +80,22 @@ export class MgtDotOptions extends MgtBaseComponent {
    * Used by the render method to attach click handler to each dot item
    *
    * @param {string} name
-   * @param {((e: MouseEvent) => void | any)} click
+   * @param {((e: Event) => void | any)} click
    * @returns
    * @memberof MgtDotOptions
    */
-  public getMenuOption(name: string, click: (e: MouseEvent) => void | any) {
+  public getMenuOption(name: string, click: (e: Event) => void | any) {
     return html`
       <div
         class="DotItem"
         @click="${e => {
           e.preventDefault();
           e.stopPropagation();
+          click(e);
+          this.open = false;
+        }}"
+        @keydown="${e => {
+          this.handleKeydownMenuOption;
           click(e);
           this.open = false;
         }}"
@@ -105,5 +112,21 @@ export class MgtDotOptions extends MgtBaseComponent {
     e.stopPropagation();
 
     this.open = !this.open;
+  }
+
+  private onDotKeydown(e: KeyboardEvent) {
+    if (e.code === 'Enter') {
+      e.preventDefault();
+      e.stopPropagation();
+
+      this.open = !this.open;
+    }
+  }
+
+  private handleKeydownMenuOption(e: KeyboardEvent) {
+    if (e.code === 'Enter') {
+      e.preventDefault();
+      e.stopPropagation();
+    }
   }
 }

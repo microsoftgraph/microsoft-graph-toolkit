@@ -744,6 +744,7 @@ export class MgtPeoplePicker extends MgtTemplatedComponent {
                    aria-label="close-icon"
                    class="selected-list__person-wrapper__overflow__close-icon"
                    @click="${e => this.removePerson(person, e)}"
+                   @keydown="${e => this.removePerson(person, e)}"
                  >
                    \uE711
                  </div>
