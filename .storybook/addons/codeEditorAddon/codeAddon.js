@@ -1,4 +1,5 @@
 import { makeDecorator } from '@storybook/addons';
+import { html } from 'lit-element';
 import { EditorElement } from './editor';
 
 const mgtScriptName = './mgt.storybook.js';
@@ -66,6 +67,51 @@ export const withCodeEditor = makeDecorator({
   parameterName: 'myParameter',
   skipIfNoParametersOrOptions: false,
   wrapper: (getStory, context, { parameters }) => {
+    const getStoryHtml = html => {
+      var urlParams = new URLSearchParams(window.location.search);
+      var paramsToReplace = [];
+      paramsToReplace.push({ key: '{theme}', value: urlParams.get('theme') });
+      paramsToReplace.push({ key: '{entityId}', value: urlParams.get('entityId') });
+      paramsToReplace.push({ key: '{resource}', value: atob(urlParams.get('resource')) });
+      paramsToReplace.push({ key: '{version}', value: urlParams.get('version') });
+
+      paramsToReplace.forEach(param => {
+        html = html.replace(param.key, param.value);
+      });
+
+      return html;
+    };
+
+    const getDynamicStory = (type, story, storyHtml, keys) => {
+      if (type === 'graph-explorer--get-single') {
+        let template = [];
+        let dynamicTemplate = `<tr>
+                      <td><pre>{{ key }}</pre></td>
+                      <td >{{ this.{{ key }} }}</td>
+                    </tr>\n`;
+
+        story.render();
+
+        if (keys && keys.find(key => key === 'displayName')) {
+          template.push(dynamicTemplate.replaceAll('{{ key }}', 'displayName'));
+        }
+
+        if (keys && keys.find(key => key === 'id')) {
+          template.push(dynamicTemplate.replaceAll('{{ key }}', 'id'));
+        }
+
+        keys.map(key => {
+          if (!key.startsWith('@')) {
+            template.push(dynamicTemplate.replaceAll('{{ key }}', key));
+          }
+        });
+
+        storyHtml = storyHtml.replace('{dynamicTemplate}', template.slice(0, 3).join(''));
+      }
+
+      return storyHtml;
+    };
+
     let story = getStory(context);
 
     let storyHtml;
@@ -89,6 +135,17 @@ export const withCodeEditor = makeDecorator({
       .replace(scriptRegex, '')
       .replace(/\n?<!---->\n?/g, '')
       .trim();
+
+    storyHtml = getStoryHtml(storyHtml);
+
+    var urlParams = new URLSearchParams(window.location.search);
+
+    storyHtml = getDynamicStory(
+      context.id,
+      story,
+      storyHtml,
+      urlParams.get('keys') ? JSON.parse(atob(urlParams.get('keys'))) : null
+    );
 
     let editor = new EditorElement();
     editor.files = {
@@ -155,10 +212,36 @@ export const withCodeEditor = makeDecorator({
     }
 
     const loadEditorContent = () => {
+      const parsedHash = new URLSearchParams(window.location.hash.substring(1));
+      let requiresLogin = false;
+
       let providerInitCode = `
         import {Providers, MockProvider} from "${mgtScriptName}";
         Providers.globalProvider = new MockProvider(true);
       `;
+
+      if (parsedHash.get('client_id') && parsedHash.get('login_hint')) {
+        providerInitCode = `
+          import {Providers, Msal2Provider, LoginType} from "${mgtScriptName}";
+          
+          Providers.globalProvider = new Msal2Provider({
+            clientId: '${parsedHash.get('client_id')}',
+            loginHint: '${parsedHash.get('login_hint')}',
+            loginType: LoginType.Popup
+          });
+        `;
+      } else if (parsedHash.get('client_id')) {
+        providerInitCode = `
+          import {Providers, Msal2Provider, LoginType} from "${mgtScriptName}";
+          
+          Providers.globalProvider = new Msal2Provider({
+            clientId: '${parsedHash.get('client_id')}',
+            loginType: LoginType.Popup
+          });
+        `;
+
+        requiresLogin = true;
+      }
 
       const storyElement = document.createElement('iframe');
 
@@ -176,8 +259,7 @@ export const withCodeEditor = makeDecorator({
             <head>
               <script type="module" src="${mgtScriptName}"></script>
               <script type="module">
-                import {Providers, MockProvider} from "${mgtScriptName}";
-                Providers.globalProvider = new MockProvider(true);
+                ${providerInitCode}
               </script>
               <style>
                 html, body {
@@ -187,6 +269,7 @@ export const withCodeEditor = makeDecorator({
               </style>
             </head>
             <body>
+              ${requiresLogin ? '<mgt-login></mgt-login>' : ''}
               ${html}
               <script type="module">
                 ${js}
@@ -207,6 +290,7 @@ export const withCodeEditor = makeDecorator({
     };
 
     editor.addEventListener('fileUpdated', loadEditorContent);
+    window.addEventListener('hashchange', loadEditorContent);
 
     const separator = document.createElement('div');
 
