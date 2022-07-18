@@ -212,7 +212,7 @@ export async function findGroups(
 }
 
 /**
- * Searches the Graph for Groups
+ * Searches the Graph for group members
  *
  * @export
  * @param {IGraph} graph
@@ -255,7 +255,27 @@ export async function findGroupsFromGroup(
   }
 
   if (groupTypes !== GroupType.any) {
-    const filterGroups = getGroupTypesFilters(groupTypes);
+    const filterGroups = [];
+
+    // tslint:disable-next-line:no-bitwise
+    if (GroupType.unified === (groupTypes & GroupType.unified)) {
+      filterGroups.push("groupTypes/any(c:c+eq+'Unified')");
+    }
+
+    // tslint:disable-next-line:no-bitwise
+    if (GroupType.security === (groupTypes & GroupType.security)) {
+      filterGroups.push('(mailEnabled eq false and securityEnabled eq true)');
+    }
+
+    // tslint:disable-next-line:no-bitwise
+    if (GroupType.mailenabledsecurity === (groupTypes & GroupType.mailenabledsecurity)) {
+      filterGroups.push('(mailEnabled eq true and securityEnabled eq true)');
+    }
+
+    // tslint:disable-next-line:no-bitwise
+    if (GroupType.distribution === (groupTypes & GroupType.distribution)) {
+      filterGroups.push('(mailEnabled eq true and securityEnabled eq false)');
+    }
 
     filterQuery += (query !== '' ? ' and ' : '') + filterGroups.join(' or ');
   }
@@ -276,31 +296,6 @@ export async function findGroupsFromGroup(
   return result ? result.value : null;
 }
 
-function getGroupTypesFilters(groupTypes: GroupType) {
-  const filterGroups = [];
-
-  // tslint:disable-next-line:no-bitwise
-  if (GroupType.unified === (groupTypes & GroupType.unified)) {
-    filterGroups.push("groupTypes/any(c:c+eq+'Unified')");
-  }
-
-  // tslint:disable-next-line:no-bitwise
-  if (GroupType.security === (groupTypes & GroupType.security)) {
-    filterGroups.push('(mailEnabled eq false and securityEnabled eq true)');
-  }
-
-  // tslint:disable-next-line:no-bitwise
-  if (GroupType.mailenabledsecurity === (groupTypes & GroupType.mailenabledsecurity)) {
-    filterGroups.push('(mailEnabled eq true and securityEnabled eq true)');
-  }
-
-  // tslint:disable-next-line:no-bitwise
-  if (GroupType.distribution === (groupTypes & GroupType.distribution)) {
-    filterGroups.push('(mailEnabled eq true and securityEnabled eq false)');
-  }
-  return filterGroups;
-}
-
 /**
  * async promise, returns all Graph groups associated with the id provided
  *
@@ -308,12 +303,7 @@ function getGroupTypesFilters(groupTypes: GroupType) {
  * @returns {(Promise<User>)}
  * @memberof Graph
  */
-export async function getGroup(
-  graph: IGraph,
-  id: string,
-  requestedProps?: string[],
-  transitive: boolean = false
-): Promise<Group> {
+export async function getGroup(graph: IGraph, id: string, requestedProps?: string[]): Promise<Group> {
   const scopes = 'Group.Read.All';
   let cache: CacheStore<CacheGroup>;
 
@@ -336,9 +326,6 @@ export async function getGroup(
   }
 
   let apiString = `/groups/${id}`;
-  if (transitive) {
-    apiString += '/transitiveMembers';
-  }
   if (requestedProps) {
     apiString = apiString + '?$select=' + requestedProps.toString();
   }
@@ -359,23 +346,13 @@ export async function getGroup(
  * @param {string[]} groupIds, an array of string ids
  * @returns {Promise<Group[]>}
  */
-export async function getGroupsForGroupIds(
-  graph: IGraph,
-  groupIds: string[],
-  groupFilters: string = '',
-  transitive: boolean = false,
-  query: string = '',
-  groupTypes: GroupType
-): Promise<Group[]> {
+export async function getGroupsForGroupIds(graph: IGraph, groupIds: string[], filters: string = ''): Promise<Group[]> {
   if (!groupIds || groupIds.length === 0) {
     return [];
   }
   const batch = graph.createBatch();
   const groupDict = {};
   const notInCache = [];
-  const otherCacheKeys = `${groupTypes ? '+' + groupTypes : ''}` + `${groupFilters ? '+' + groupFilters : ''}`;
-  const extraKeys = `${otherCacheKeys ? '+' + otherCacheKeys : ''}`;
-
   let cache: CacheStore<CacheGroup>;
 
   if (getIsGroupsCacheEnabled()) {
@@ -383,55 +360,31 @@ export async function getGroupsForGroupIds(
   }
 
   for (const id of groupIds) {
-    const cacheKey = query !== '' ? `${id}+${query}${extraKeys}` : id + extraKeys;
     groupDict[id] = null;
     let group = null;
     if (getIsGroupsCacheEnabled()) {
-      group = await cache.getValue(cacheKey);
+      group = await cache.getValue(id);
     }
     if (group && getGroupsInvalidationTime() > Date.now() - group.timeCached) {
       groupDict[id] = group.group ? JSON.parse(group.group) : null;
     } else if (id !== '') {
       let apiUrl: string = `/groups/${id}`;
-      if (transitive) {
-        apiUrl += '/members';
-        if (query !== '') {
-          apiUrl += `/microsoft.graph.user?$count=true&$search="displayName:${query}"`;
-        } else {
-          apiUrl += '?$count=true';
-        }
+      if (filters) {
+        apiUrl = `${apiUrl}?$filters=${filters}`;
       }
-
-      if (groupFilters) {
-        apiUrl += `&$filter=${groupFilters}`;
-      }
-
-      const filterGroups = getGroupTypesFilters(groupTypes);
-      if (filterGroups && filterGroups.length > 0) {
-        if (groupFilters) {
-          apiUrl += (query !== '' ? ' and ' : '') + filterGroups.join(' or ');
-        } else {
-          apiUrl += `&$filter=${filterGroups.join(' or ')}`;
-        }
-      }
-      batch.get(id, apiUrl, ['Group.Read.All'], { ConsistencyLevel: 'eventual' });
-      notInCache.push(cacheKey);
+      batch.get(id, apiUrl, ['Group.Read.All']);
+      notInCache.push(id);
     }
   }
   try {
     const responses = await batch.executeAll();
     // iterate over groupIds to ensure the order of ids
     for (const id of groupIds) {
-      const cacheKey = query !== '' ? `${id}+${query}${extraKeys}` : id + extraKeys;
       const response = responses.get(id);
       if (response && response.content) {
-        if (transitive) {
-          groupDict[id] = response?.content?.value;
-        } else {
-          groupDict[id] = response?.content;
-        }
+        groupDict[id] = response.content;
         if (getIsGroupsCacheEnabled()) {
-          cache.putValue(cacheKey, { group: JSON.stringify(groupDict[id]) });
+          cache.putValue(id, { group: JSON.stringify(response.content) });
         }
       }
     }
@@ -440,27 +393,48 @@ export async function getGroupsForGroupIds(
     // fallback to making the request one by one
     try {
       // call getGroup for all the users that weren't cached
-      groupIds
-        .filter(id => {
-          const cacheKey = query !== '' ? `${id}+${query}${extraKeys}` : id + extraKeys;
-          notInCache.includes(cacheKey);
-        })
-        .forEach(id => (groupDict[id] = getGroup(graph, id, [], transitive)));
+      groupIds.filter(id => notInCache.includes(id)).forEach(id => (groupDict[id] = getGroup(graph, id)));
       if (getIsGroupsCacheEnabled()) {
         // store all users that weren't retrieved from the cache, into the cache
         groupIds
-          .filter(id => {
-            const cacheKey = query !== '' ? `${id}+${query}${extraKeys}` : id + extraKeys;
-            notInCache.includes(cacheKey);
-          })
-          .forEach(async id => {
-            const cacheKey = query !== '' ? `${id}+${query}${extraKeys}` : id + extraKeys;
-            cache.putValue(cacheKey, { group: JSON.stringify(await groupDict[id]) });
-          });
+          .filter(id => notInCache.includes(id))
+          .forEach(async id => cache.putValue(id, { group: JSON.stringify(await groupDict[id]) }));
       }
       return Promise.all(Object.values(groupDict));
     } catch (_) {
       return [];
     }
   }
+}
+
+/**
+ * Gets groups from the graph that are in the group ids
+ * @param graph
+ * @param query
+ * @param groupId
+ * @param top
+ * @param transitive
+ * @param groupTypes
+ * @param filters
+ * @returns
+ */
+export async function findGroupsFromGroupIds(
+  graph: IGraph,
+  query: string,
+  groupIds: string[],
+  top: number = 10,
+  groupTypes: GroupType = GroupType.any,
+  filters: string = ''
+): Promise<Group[]> {
+  const foundGroups: Group[] = [];
+  const graphGroups = await findGroups(graph, query, top, groupTypes, filters);
+  if (graphGroups) {
+    for (let i = 0; i < graphGroups.length; i++) {
+      const group = graphGroups[i];
+      if (group.id && groupIds.includes(group.id)) {
+        foundGroups.push(group);
+      }
+    }
+  }
+  return foundGroups;
 }
