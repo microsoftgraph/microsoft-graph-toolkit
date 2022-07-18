@@ -268,30 +268,30 @@ export const pickerGroupFilters = () => html`
 `;
 
 export const pickerGroupIds = () => html`
+  <!-- This should show all the users in the groups of the group IDs -->
   <mgt-people-picker
     group-ids="94cb7dd0-cb3b-49e0-ad15-4efeb3c7d3e9,f2861ed7-abca-4556-bf0c-39ddc717ad81">
   </mgt-people-picker>
 `;
 
-export const pickerGroupIdsWithGroupType = () => html`
+export const pickerGroupIdsWithUserFilters = () => html`
+  <!-- This should return an empty result -->
   <mgt-people-picker
     group-ids="94cb7dd0-cb3b-49e0-ad15-4efeb3c7d3e9,f2861ed7-abca-4556-bf0c-39ddc717ad81"
-    group-type="security">
-    <!-- group-type can be "any", "unified", "security", "mailenabledsecurity", "distribution" -->
+    user-filters="startswith(displayName, 's')">
+  </mgt-people-picker>
+  <br>
+  <!-- This should return a result. Search for 'wil' should return Alex Wilber -->
+  <mgt-people-picker
+    group-ids="94cb7dd0-cb3b-49e0-ad15-4efeb3c7d3e9,f2861ed7-abca-4556-bf0c-39ddc717ad81"
+    user-filters="startswith(displayName, 'a')">
   </mgt-people-picker>
 `;
 
-export const pickerGroupIdsWithGroupFilters = () => html`
+export const pickerGroupIdsWithTypeGroup = () => html`
+  <!-- This should show the groups in the group-ids as groups -->
   <mgt-people-picker
     group-ids="94cb7dd0-cb3b-49e0-ad15-4efeb3c7d3e9,f2861ed7-abca-4556-bf0c-39ddc717ad81"
-    group-filters="startswith(displayName, 'e')">
-  </mgt-people-picker>
-`;
-
-export const pickerGroupIdsWithGroupFiltersAndGroupType = () => html`
-  <mgt-people-picker
-    group-ids="94cb7dd0-cb3b-49e0-ad15-4efeb3c7d3e9,f2861ed7-abca-4556-bf0c-39ddc717ad81"
-    group-filters="startswith(displayName, 'e')"
-    group-type="security">
+    type="group">
   </mgt-people-picker>
 `;
