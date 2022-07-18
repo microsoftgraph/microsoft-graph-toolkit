@@ -2591,7 +2591,7 @@ const createAndInsertPart=(e,t)=>{const r=e.startNode.parentNode,o=void 0===t?e.
         .value="${this._newTaskName}"
         label="new-taskName-input"
         aria-label="new-taskName-input"
-        role="input"
+        role="textbox"
         @input="${e=>{this._newTaskName=e.target.value}}"
       />
     `,t=this._groups;t.length>0&&!this._newTaskGroupId&&(this._newTaskGroupId=t[0].id);const r=this.dataSource===pl.todo?null:this._currentGroup?html$1`
@@ -2602,7 +2602,7 @@ const createAndInsertPart=(e,t)=>{const r=e.startNode.parentNode,o=void 0===t?e.
           `:html$1`
             <span class="NewTaskGroup">
               ${this.renderPlannerIcon()}
-              <select
+              <select aria-label="new task group"
                 .value="${this._newTaskGroupId}"
                 @change="${e=>{this._newTaskGroupId=e.target.value}}"
               >
@@ -2619,7 +2619,7 @@ const createAndInsertPart=(e,t)=>{const r=e.startNode.parentNode,o=void 0===t?e.
         `:html$1`
           <span class="NewTaskBucket">
             ${this.renderBucketIcon()}
-            <select
+            <select aria-label="new task bucket"
               .value="${this._newTaskFolderId}"
               @change="${e=>{this._newTaskFolderId=e.target.value}}"
             >
@@ -2635,7 +2635,7 @@ const createAndInsertPart=(e,t)=>{const r=e.startNode.parentNode,o=void 0===t?e.
           type="date"
           label="new-taskDate-input"
           aria-label="new-taskDate-input"
-          role="input"
+          role="textbox"
           .value="${this.dateToInputValue(this._newTaskDueDate)}"
           @change="${e=>{const t=e.target.value;this._newTaskDueDate=t?new Date(t+"T17:00"):null}}"
         />
@@ -2644,12 +2644,12 @@ const createAndInsertPart=(e,t)=>{const r=e.startNode.parentNode,o=void 0===t?e.
           <div class="TaskAddButtonContainer"></div>
         `:html$1`
           <div class="TaskAddButtonContainer ${""===this._newTaskName?"Disabled":""}">
-            <div tabindex="0" class="TaskIcon TaskAdd" 
-              @click="${this.onAddTaskClick}" 
+            <div tabindex="0" class="TaskIcon TaskAdd"
+              @click="${this.onAddTaskClick}"
               @keydown="${this.onAddTaskKeyDown}">
               <span>${this.strings.addTaskButtonSubtitle}</span>
             </div>
-            <div tabindex="0" class="TaskIcon TaskCancel" 
+            <div tabindex="0" class="TaskIcon TaskCancel"
               @click="${()=>this.isNewTaskVisible=!1}"
               @keydown="${this.newTaskVisible}">
               <span>${this.strings.cancelNewTaskSubtitle}</span>
@@ -2834,13 +2834,13 @@ const createAndInsertPart=(e,t)=>{const r=e.startNode.parentNode,o=void 0===t?e.
           label="teams-channel-picker-input"
           aria-label="Select a channel"
           data-placeholder="${this._selectedItemState?"":this.strings.inputPlaceholderText} "
-          role="input"
+          role="searchbox"
           @keyup=${e=>this.handleInputChanged(e)}
           contenteditable
         ></span>
       </div>
     `}renderCloseButton(){return html$1`
-      <div tabindex="0" class="close-icon" 
+      <div tabindex="0" class="close-icon"
         @keydown="${()=>this.selectChannel(null)}"
         @click="${()=>this.selectChannel(null)}"> 
       </div>
@@ -2916,7 +2916,7 @@ const createAndInsertPart=(e,t)=>{const r=e.startNode.parentNode,o=void 0===t?e.
         .value="${e}"
         label="new-taskName-input"
         aria-label="new-taskName-input"
-        role="input"
+        role="textbox"
         @input="${e=>{this._newTaskName=e.target.value,this.requestUpdate()}}"
       />
     `,r=kr({Disabled:!(this._isNewTaskBeingAdded||e&&e.length),TaskAddButtonContainer:!0}),o=this._isNewTaskBeingAdded?null:html$1`
@@ -2993,7 +2993,7 @@ const createAndInsertPart=(e,t)=>{const r=e.startNode.parentNode,o=void 0===t?e.
           type="date"
           label="new-taskDate-input"
           aria-label="new-taskDate-input"
-          role="input"
+          role="textbox"
           .value="${this.dateToInputValue(this._newTaskDueDate)}"
           @change="${e=>{const t=e.target.value;this._newTaskDueDate=t?new Date(t+"T17:00"):null}}"
         />
