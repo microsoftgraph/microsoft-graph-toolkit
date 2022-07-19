@@ -1,0 +1,50 @@
+/**
+ * -------------------------------------------------------------------------------------------
+ * Copyright (c) Microsoft Corporation.  All Rights Reserved.  Licensed under the MIT License.
+ * See License in the project root for license information.
+ * -------------------------------------------------------------------------------------------
+ */
+
+:host([hidden]) {
+  display: none;
+}
+
+:host {
+  display: block;
+  --default-font-family: 'Segoe UI', 'Segoe UI Web (West European)', 'Segoe UI', -apple-system, BlinkMacSystemFont,
+    Roboto, 'Helvetica Neue', sans-serif;
+  --default-font-size: 14px;
+  --theme-primary-color: #0078d7;
+  --theme-dark-color: #005a9e;
+}
+
+.ms-Icon {
+  display: inline-block;
+  font-family: 'FabricMDL2Icons';
+  font-style: normal;
+  font-weight: normal;
+  font-size: 16px;
+  -moz-osx-font-smoothing: grayscale;
+  -webkit-font-smoothing: antialiased;
+  margin: 4px 0;
+}
+
+.ms-Icon--ChevronDown::before {
+  content: '\\\E70D';
+}
+
+.ms-Icon--ChevronUp::before {
+  content: '\\\E70E';
+}
+
+.ms-Icon--Contact::before {
+  content: '\\\E77B';
+}
+
+.ms-Icon--AddFriend::before {
+  content: '\\\E8FA';
+}
+
+.ms-Icon--OutlookLogoInverse::before {
+  content: '\\\EB6D';
+}

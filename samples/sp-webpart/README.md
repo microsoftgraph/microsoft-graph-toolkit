@@ -5,11 +5,21 @@ This sample is a React based SharePoint webpart that uses the Microsoft Graph To
 ### Building the code
 
 ```bash
-git clone the repo
-npm i
-npm i -g gulp
-gulp trust-dev-cert
-gulp
+> git clone https://github.com/microsoft/microsoft-graph-toolkit
+
+> cd microsoft-graph-toolkit
+
+> npm i -g gulp yarn #if you don't have them installed globally
+
+> yarn
+
+> yarn build
+
+> cd samples/sp-webpart
+
+> gulp trust-dev-cert
+
+> gulp
 ```
 
 ### Testing the webpart
@@ -44,7 +54,7 @@ The admin of your tenant will need to approve the graph permissions in the admin
 
 3. Approve the permissions. Go to the SharePoint admin center (best reached via https://admin.microsoft.com > click **Show All** > SharePoint) and make sure you are signed in as admin.
 
-    Under *API Management* you should see the permissions that need to be approved. Approve each one by one.
+    Click on the *Advanced* menu, you should see *API access* which after clicking will show the page with permissions that need to be approved. Approve each one by one.
 
 You should now be able to test the webpart
 
@@ -54,6 +64,5 @@ gulp trust-dev-cert
 
 gulp clean
 gulp test
-gulp serve
 gulp bundle
 gulp package-solution

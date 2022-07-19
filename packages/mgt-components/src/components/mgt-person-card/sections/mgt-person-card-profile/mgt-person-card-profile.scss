@@ -1,0 +1,168 @@
+/**
+ * -------------------------------------------------------------------------------------------
+ * Copyright (c) Microsoft Corporation.  All Rights Reserved.  Licensed under the MIT License.
+ * See License in the project root for license information.
+ * -------------------------------------------------------------------------------------------
+ */
+
+@import '../base-person-card-section.scss';
+@import '../../../../styles/shared-styles.scss';
+@import '../../../../styles/shared-sass-variables.scss';
+
+:host {
+  position: relative;
+  user-select: none;
+
+  .root {
+    padding: 20px 0;
+
+    &.compact {
+      padding: 0;
+    }
+
+    .title {
+      font-size: 14px;
+      font-weight: 600;
+      color: set-var(title__color__subtitle, $theme-default, $common);
+      margin: 0 20px 12px 20px;
+    }
+
+    section {
+      margin-bottom: 24px;
+      padding: 0 20px;
+
+      &:last-child {
+        margin: 0;
+      }
+
+      .section__title {
+        font-size: 14px;
+        color: set-var(title__color__sub2, $theme-default, $common);
+      }
+
+      .section__content {
+        display: flex;
+        flex-direction: column;
+        margin-top: 10px;
+      }
+    }
+
+    .token-list {
+      display: flex;
+      flex-direction: row;
+      flex-wrap: wrap;
+      margin-top: -10px;
+
+      .token-list__item {
+        text-overflow: ellipsis;
+        white-space: nowrap;
+        display: inline-block;
+        overflow: hidden;
+        font-size: 14px;
+        align-items: center;
+        background: set-var(background-color__sub2, $theme-default, $common);
+        border-radius: 2px;
+        max-height: 28px;
+        padding: 4px 8px;
+        margin-right: 10px;
+        margin-top: 10px;
+        color: set-var(color__sub1, $theme-default, $common);
+
+        &:last-child {
+          margin-right: initial;
+        }
+
+        &.overflow {
+          display: none;
+        }
+
+        &:hover {
+          color: set-var(color__sub1, $theme-default, $common);
+        }
+
+        &.token-list__item--show-overflow {
+          cursor: pointer;
+          user-select: unset;
+        }
+      }
+    }
+
+    .data-list__item {
+      margin-bottom: 20px;
+
+      &:last-child {
+        margin-bottom: initial;
+      }
+
+      .data-list__item__header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+      }
+
+      .data-list__item__content {
+        font-size: 12px;
+        line-height: 16px;
+        color: set-var(color__sub2, $theme-default, $common);
+        margin-top: 4px;
+      }
+
+      .data-list__item__title {
+        font-size: 14px;
+        line-height: 16px;
+        color: set-var(title__color__subtitle, $theme-default, $common);
+      }
+
+      .data-list__item__date-range {
+        color: set-var(color__sub2, $theme-default, $common);
+        font-size: 10px;
+        line-height: 12px;
+      }
+    }
+
+    .language__proficiency {
+      opacity: 0.77;
+    }
+
+    .work-position {
+      .work-position__company {
+        color: $commblue_primary;
+      }
+
+      .work-position__location {
+        font-size: 10px;
+        color: set-var(color__sub2, $theme-default, $common);
+        line-height: 16px;
+      }
+    }
+
+    .educational-activity {
+      .educational-activity__degree {
+        font-size: 12px;
+        line-height: 14px;
+        color: set-var(color__sub3, $theme-default, $common);
+      }
+    }
+
+    .birthday {
+      display: flex;
+      align-items: center;
+      margin-top: -6px;
+
+      .birthday__icon {
+        margin-right: 8px;
+      }
+
+      .birthday__date {
+        font-size: 12px;
+        color: set-var(color__sub1, $theme-default, $common);
+      }
+    }
+  }
+}
+
+[dir='rtl'] {
+  .token-list__item {
+    margin-right: 0px !important;
+  }
+}

@@ -1,0 +1,66 @@
+/**
+ * -------------------------------------------------------------------------------------------
+ * Copyright (c) Microsoft Corporation.  All Rights Reserved.  Licensed under the MIT License.
+ * See License in the project root for license information.
+ * -------------------------------------------------------------------------------------------
+ */
+
+@import '../../styles/shared-sass-variables.scss';
+
+$channel-picker: (
+  dropdown-item__background-color--selected: (
+    _var: --dropdown-item-selected-background,
+    dark: #333d47,
+    light: #deecf9
+  ),
+  arrow: (
+    _var: --arrow-fill,
+    dark: $icon__main--dark,
+    light: $icon__main--light
+  )
+);
+
+// mixins
+
+@mixin selected-team__overflow($theme-default) {
+  background-image: linear-gradient(
+    to right,
+    rgba(255, 255, 255, 0) 0%,
+    rgba(255, 255, 255, 0) 80%,
+    $input__background-color 100%
+  );
+  background-image: -moz-linear-gradient(
+    left,
+    rgba(255, 255, 255, 0) 0%,
+    rgba(255, 255, 255, 0) 80%,
+    $input__background-color 100%
+  );
+  background-image: -o-linear-gradient(
+    left,
+    rgba(255, 255, 255, 0) 0%,
+    rgba(255, 255, 255, 0) 80%,
+    $input__background-color 100%
+  );
+  background-image: -ms-linear-gradient(
+    left,
+    rgba(255, 255, 255, 0) 0%,
+    rgba(255, 255, 255, 0) 80%,
+    $input__background-color 100%
+  );
+  background-image: -webkit-linear-gradient(
+    left,
+    rgba(255, 255, 255, 0) 0%,
+    rgba(255, 255, 255, 0) 80%,
+    $input__background-color 100%
+  );
+}
+
+@mixin dropdown-item__overflow($theme-default) {
+  background-image: -webkit-linear-gradient(right, $dropdown__background-color, rgba($dropdown__background-color, 0));
+  background-image: -moz-linear-gradient(right, $dropdown__background-color, rgba($dropdown__background-color, 0));
+  background-image: -ms-linear-gradient(right, $dropdown__background-color, rgba($dropdown__background-color, 0));
+  background-image: -o-linear-gradient(right, $dropdown__background-color, rgba($dropdown__background-color, 0));
+  background-image: linear-gradient(to left, $dropdown__background-color, rgba($dropdown__background-color, 0));
+}
+
+@include create-themes($channel-picker);

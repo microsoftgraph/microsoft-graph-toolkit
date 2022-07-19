@@ -1,4 +1,4 @@
-﻿<!--  Copyright (c) Microsoft. All rights reserved. Licensed under the MIT license.
+<!--  Copyright (c) Microsoft. All rights reserved. Licensed under the MIT license.
         See LICENSE in the source repository root for complete license information. -->
 
 @{
@@ -14,5 +14,5 @@
 }
 @if (User.Identity.IsAuthenticated)
 {
-    <mgt-person person-details="@ViewData["Response"]" person-image="@ViewData["Picture"]" show-presence view="twoLines" person-card="hover"></mgt-person>
+    <mgt-people></mgt-people>
 }

@@ -6,19 +6,12 @@
  */
 
 import { html } from 'lit-element';
-import { withSignIn } from '../../.storybook/addons/signInAddon/signInAddon';
 import { withCodeEditor } from '../../.storybook/addons/codeEditorAddon/codeAddon';
-import '../../packages/mgt/dist/es6/components/mgt-get/mgt-get';
 
 export default {
-  title: 'Samples | Templating',
+  title: 'Samples / Templating',
   component: 'mgt-get',
-  decorators: [withSignIn, withCodeEditor],
-  parameters: {
-    signInAddon: {
-      test: 'test'
-    }
-  }
+  decorators: [withCodeEditor]
 };
 
 export const PersonCardAdditionalDetails = () => html`
@@ -47,7 +40,7 @@ export const AgendaEventTemplate = () => html`
       <div class="root">
         <div class="time-container">
           <div class="date">{{ dayFromDateTime(event.start.dateTime)}}</div>
-          <div class="time">{{ timeRangeFromEvent(event) }}</div>
+          <div class="time">{{ timeRangeFromEvent(event, '12') }}</div>
         </div>
 
         <div class="separator">
@@ -107,7 +100,7 @@ export const AgendaEventTemplate = () => html`
         return monthNames[monthIndex] + ' ' + day + ' ' + year;
       },
 
-      timeRangeFromEvent: event => {
+      timeRangeFromEvent: (event, timeFormat) => {
         if (event.isAllDay) {
           return 'ALL DAY';
         }
@@ -116,11 +109,17 @@ export const AgendaEventTemplate = () => html`
           date.setMinutes(date.getMinutes() - date.getTimezoneOffset());
           let hours = date.getHours();
           let minutes = date.getMinutes();
-          let ampm = hours >= 12 ? 'PM' : 'AM';
-          hours = hours % 12;
-          hours = hours ? hours : 12;
           let minutesStr = minutes < 10 ? '0' + minutes : minutes;
-          return hours + ':' + minutesStr + ' ' + ampm;
+          let timeString = hours + ':' + minutesStr;
+          if (timeFormat === '12') {
+            let ampm = hours >= 12 ? 'PM' : 'AM';
+            hours = hours % 12;
+            hours = hours ? hours : 12;
+            
+            timeString = hours + ':' + minutesStr + ' ' + ampm;
+          }
+
+          return timeString;
         };
 
         let start = prettyPrintTimeFromDateTime(new Date(event.start.dateTime));
@@ -370,4 +369,60 @@ export const TeamsMessages = () => html`
     display: block;
   }
 </style>
+`;
+
+export const ChangeBindingSyntax = () => html`
+  <mgt-agenda>
+    <template data-type="event">
+      <div>
+        [[event.subject]]
+      </div>
+    </template>
+  </mgt-agenda>
+  <script>
+    import { TemplateHelper } from '@microsoft/mgt';
+
+    TemplateHelper.setBindingSyntax('[[', ']]');
+  </script>
+`;
+
+export const TemplateRenderedEvent = () => html`
+<mgt-person person-query="me" person-card="hover">
+  <template data-type="person-card">
+    <mgt-person-card inherit-details>
+      <template data-type="additional-details"></template>
+    </mgt-person-card>
+  </template>
+</mgt-person>
+
+<script type="module">
+  import { Providers } from '@microsoft/mgt';
+
+let mgtPerson = document.querySelector('mgt-person');
+
+mgtPerson.addEventListener('templateRendered', async (e) => {
+
+  // this template is rendered on demand when the user first views the person card
+  let personCard = e.detail.element.querySelector('mgt-person-card');
+  if (personCard) {
+    // make the network call before the template is rendered
+    // so the data is available when it is viewed
+    let client = Providers.globalProvider.graph.client;
+    let extensions = await client
+      .api('me')
+      .select('id')
+      .expand("extensions($filter=id eq 'com.contoso.roamingSettings')")
+      .get();
+
+    if (extensions.extensions.length) {
+      let contosoExtension = extensions.extensions[0];
+
+      personCard.addEventListener('templateRendered', e => {
+        // this will be called when the user expands the person card the first time
+        e.detail.element.innerHTML = \`<b>theme:</b> \${contosoExtension.theme}\`;
+      });
+    }
+  }
+});
+</script>
 `;

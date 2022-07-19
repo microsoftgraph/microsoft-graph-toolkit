@@ -1,0 +1,356 @@
+/**
+ * -------------------------------------------------------------------------------------------
+ * Copyright (c) Microsoft Corporation.  All Rights Reserved.  Licensed under the MIT License.
+ * See License in the project root for license information.
+ * -------------------------------------------------------------------------------------------
+ */
+
+@import '../../../../../node_modules/office-ui-fabric-core/dist/sass/References';
+@import '../../styles/shared-styles.scss';
+@import './mgt-people-picker.theme.scss';
+
+// Main
+:host {
+  font-family: $font-family;
+  font-size: 14px;
+  height: 24px;
+  display: contents;
+  overflow: hidden;
+  position: absolute;
+  width: 135px;
+  left: 0px;
+  top: 0px;
+  border-radius: 12px;
+}
+
+:host .root,
+mgt-people-picker .root {
+  display: block;
+}
+
+.people-picker {
+  background-color: $input__background-color;
+  @include input__border($theme-default);
+  &:hover {
+    border-color: $input__border-color--hover;
+  }
+  &.focused {
+    border-color: $input__border-color--focus;
+  }
+  &.disabled {
+    pointer-events: none;
+  }
+  padding: 6px 0 0;
+
+  .selected-list {
+    flex: 1 0 auto;
+    display: flex;
+    flex-wrap: wrap;
+    vertical-align: middle;
+    list-style-type: none;
+    font-style: normal;
+    font-weight: normal;
+    overflow: hidden;
+
+    &__options {
+      display: contents;
+    }
+
+    &__person-wrapper {
+      display: flex;
+      margin: 0 5px 6px 0;
+      align-items: center;
+      border-radius: 12px;
+      height: 24px;
+      white-space: nowrap;
+      text-overflow: ellipsis;
+      overflow: hidden;
+      position: relative;
+      background-color: set-var(selected-person__background-color, $theme-default, $people-picker);
+
+      &__person {
+        overflow: hidden;
+        min-width: 100%;
+        --avatar-size-s: 24px;
+        margin-left: 0px;
+        --color: #{$color};
+        color: $color;
+        padding-bottom: 1px;
+        padding-right: 4px;
+      }
+
+      &__overflow {
+        margin-left: 25px;
+
+        &__gradient {
+          content: '';
+          position: absolute;
+          margin-right: 23px;
+          width: 10px;
+          height: 90%;
+          top: 0;
+          right: 0;
+          @include selected-person__overflow($theme-default);
+          background-image: none;
+        }
+
+        &__close-icon {
+          font-family: 'FabricMDL2Icons';
+          cursor: pointer;
+          background-color: set-var(selected-person__background-color, $theme-default, $people-picker);
+          color: $color;
+          display: flex;
+          flex-direction: column;
+          align-items: center;
+          position: absolute;
+          height: 24px;
+          width: 24px;
+          right: 0px;
+          top: 0px;
+          border-radius: 12px;
+          line-height: 24px;
+        }
+      }
+    }
+
+    &__person-wrapper-highlighted {
+      @extend .selected-list__person-wrapper;
+      background: #005393;
+
+      &__person {
+        @extend .selected-list__person-wrapper__person;
+        color: white;
+        --color: white;
+      }
+
+      &__overflow {
+        @extend .selected-list__person-wrapper__overflow;
+        &__gradient {
+          @extend .selected-list__person-wrapper__overflow__gradient;
+          background-image: none;
+        }
+
+        &__close-icon {
+          @extend .selected-list__person-wrapper__overflow__close-icon;
+          background: #005393;
+          color: white;
+          line-height: 24px;
+        }
+      }
+    }
+
+    &__person-wrapper-highlighted:hover {
+      @extend .selected-list__person-wrapper-highlighted;
+      background-color: #006cbe;
+    }
+
+    .flyout {
+      .search-box {
+        margin: 1px 2px 8px;
+
+        &.search-box-start {
+          line-height: normal;
+          margin-inline-start: 0px;
+          margin-inline-end: 0px;
+        }
+
+        &__input {
+          box-sizing: border-box;
+          border-width: 0;
+          border-style: none;
+          width: 100%;
+          display: flex;
+          flex: 1 0 auto;
+          font-family: $font-family;
+          position: relative;
+          outline: none;
+          font-style: normal;
+          font-weight: normal;
+          font-size: 14px;
+          background-color: $input__background-color;
+          color: $color;
+          word-spacing: inherit;
+          text-indent: inherit;
+          letter-spacing: inherit;
+          &::placeholder {
+            color: $placeholder__color;
+          }
+        }
+      }
+
+      .flyout-root {
+        padding: 0;
+        border-radius: 2px;
+        min-width: 260px;
+        overflow-y: auto;
+        text-align: left;
+        list-style-type: none;
+        background-color: $dropdown__background-color;
+        max-height: var(--mgt-flyout-set-height, unset);
+        border-radius: 8px;
+        li {
+          cursor: pointer;
+        }
+
+        .people-list {
+          .list-person {
+            display: flex;
+            flex-direction: row;
+            align-items: center;
+            padding: 12px;
+            font-style: normal;
+            font-weight: 600;
+            font-size: 14px;
+            margin: var(--file-item-margin, 4px);
+            border-radius: 4px;
+            &:hover {
+              background-color: $dropdown-item__background-color--hover;
+            }
+            &.focused {
+              background-color: $dropdown-item__background-color--hover;
+            }
+            .people-person-text-area {
+              margin-left: 13px;
+              flex: 1 1 0;
+              max-height: 40px;
+              overflow: hidden;
+              color: $color;
+
+              .people-person-text {
+                font-size: 14px;
+                font-weight: normal;
+                margin: 0;
+                padding: 0;
+                &.highlight-search-text {
+                  font-weight: bold;
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}
+
+mgt-person {
+  --avatar-size-s: 32px;
+  margin-left: 12px;
+  cursor: default;
+}
+
+:host .search-error-text,
+:host .loading-text,
+mgt-people-picker .search-error-text,
+mgt-people-picker .loading-text {
+  font-family: $font-family;
+  font-style: normal;
+  font-weight: 600;
+  font-size: 14px;
+  line-height: 19px;
+  text-align: center;
+  margin-left: 50px;
+  margin-right: 50px;
+  color: $commblue_primary;
+}
+
+:host .message-parent,
+mgt-people-picker .message-parent {
+  padding: 2px;
+  margin-top: 30px;
+  margin-bottom: 30px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  vertical-align: middle;
+}
+
+:host .people-person-job-title,
+mgt-people-picker .people-person-job-title {
+  flex: 100%;
+  order: 3;
+  font-weight: normal;
+  font-size: 12px;
+  &.uppercase {
+    text-transform: uppercase;
+  }
+}
+
+mgt-flyout {
+  flex: 1 0 auto;
+}
+
+[dir='rtl'] {
+  mgt-person {
+    margin: 0px 12px 0px 0px;
+  }
+  .selected-list {
+    margin-right: 8px !important;
+    &__person-wrapper {
+      margin-left: 6px !important;
+      &__person {
+        margin-right: 0px !important;
+        margin-left: 4px !important;
+      }
+      &__overflow {
+        &__gradient {
+          right: auto !important;
+          position: absolute !important;
+          margin-right: 0px !important;
+          width: 10px !important;
+          height: 90%;
+          top: 0;
+        }
+        &__close-icon {
+          right: auto !important;
+          margin-left: 5px !important;
+          left: 0px !important;
+        }
+      }
+    }
+  }
+  .people-person-text-area {
+    margin-right: 13px;
+    margin-left: 0px !important;
+  }
+
+  .flyout-root {
+    text-align: right !important;
+  }
+}
+
+@media (forced-colors: active) and (prefers-color-scheme: dark) {
+  svg,
+  svg > path {
+    fill: rgb(255, 255, 255) !important;
+    fill-rule: nonzero !important;
+    clip-rule: nonzero !important;
+    color: rgb(255, 255, 255) !important;
+  }
+
+  .flyout-root {
+    border: 1px solid rgb(255, 255, 255);
+  }
+
+  .people-list .list-person {
+    border: solid 1px rgb(255, 255, 255);
+  }
+}
+@media (forced-colors: active) and (prefers-color-scheme: light) {
+  svg,
+  svg > path {
+    fill: rgb(0, 0, 0) !important;
+    fill-rule: nonzero !important;
+    clip-rule: nonzero !important;
+    color: rgb(0, 0, 0) !important;
+  }
+
+  .flyout-root {
+    border: 1px solid rgb(0, 0, 0);
+  }
+
+  .people-list .list-person {
+    border: solid 1px rgb(0, 0, 0);
+  }
+}

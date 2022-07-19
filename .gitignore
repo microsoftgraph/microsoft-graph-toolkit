@@ -1,6 +1,7 @@
 dist/
 www/
 lib/
+assets/mgt.storybook.js
 
 *~
 *.sw[mnpcod]

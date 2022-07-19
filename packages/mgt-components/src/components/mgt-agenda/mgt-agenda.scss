@@ -1,0 +1,206 @@
+/**
+ * -------------------------------------------------------------------------------------------
+ * Copyright (c) Microsoft Corporation.  All Rights Reserved.  Licensed under the MIT License.
+ * See License in the project root for license information.
+ * -------------------------------------------------------------------------------------------
+ */
+
+@import '../../../../../node_modules/office-ui-fabric-core/dist/sass/References';
+@import '../../styles/shared-styles.scss';
+@import './mgt-agenda.theme.scss';
+
+:host .header,
+mgt-agenda .header {
+  margin: var(--agenda-header-margin, 40px 10px 14px 10px);
+  font-family: $font-family;
+  font-size: var(--agenda-header-font-size, 24px);
+  color: $header__color;
+}
+
+:host .agenda > .group:first-child > .header,
+mgt-agenda .agenda > .group:first-child > .header {
+  margin-top: 0;
+}
+
+:host .agenda-list,
+mgt-agenda .agenda-list {
+  list-style-type: none;
+  padding: 0;
+  margin: 0;
+  font-family: $font-family;
+  font-style: normal;
+  font-weight: normal;
+}
+
+:host .event,
+mgt-agenda .event {
+  background: set-var(event__background-color, $theme-default, $agenda);
+  border: var(--event-border, solid 2px rgba(0, 0, 0, 0));
+  box-shadow: var(--event-box-shadow, 0px 2px 8px set-var(box-shadow__color, $theme-default, $common));
+  margin: var(--event-margin, 0px 10px 14px 10px);
+  padding: var(--event-padding, 0px);
+  display: flex;
+  border-radius: 8px;
+}
+
+:host .narrow .event,
+mgt-agenda .narrow .event {
+  flex-direction: column;
+}
+
+:host .event-time-container,
+mgt-agenda .event-time-container {
+  display: flex;
+  flex-direction: column;
+  margin: 18px 38px 18px 18px;
+  width: 125px;
+}
+
+:host .narrow .event-time-container,
+mgt-agenda .narrow .event-time-container {
+  margin: 14px 18px 8px 18px;
+}
+
+:host .event-time,
+mgt-agenda .event-time {
+  font-size: var(--event-time-font-size, 12px);
+  color: $event__time__color;
+  font-weight: 600;
+}
+
+:host .event-duration,
+mgt-agenda .event-duration {
+  color: rgba(16, 16, 16, 0.3);
+}
+
+:host .event-details-container,
+mgt-agenda .event-details-container {
+  margin: 14px 18px 14px 0px;
+}
+
+:host .narrow .event-details-container,
+mgt-agenda .narrow .event-details-container {
+  margin: 0px 18px 14px 18px;
+}
+
+:host .event-subject,
+mgt-agenda .event-subject {
+  margin: 0px 18px 0px 0px;
+  font-size: var(--event-subject-font-size, 19px);
+  color: $event__subject__color;
+}
+
+:host .event-location-container,
+mgt-agenda .event-location-container {
+  display: flex;
+  margin: 8px 18px 0px 0px;
+}
+
+:host .event-location-icon svg,
+mgt-agenda .event-location-icon svg {
+  height: 12px;
+}
+
+:host .event-location-icon svg path,
+mgt-agenda .event-location-icon svg path {
+  stroke: $event__location__color;
+}
+
+:host .event-location,
+mgt-agenda .event-location {
+  font-size: var(--event-location-font-size, 12px);
+  color: $event__location__color;
+  margin: 0px 0px 0px 4px;
+  line-height: 17px;
+}
+
+:host .event-attendees,
+mgt-agenda .event-attendees {
+  --list-margin: 8px 0 0 0;
+  --avatar-size-s: 20px;
+}
+
+:host .event-other-container,
+mgt-agenda .event-other-container {
+  margin: 2px 16px 4px 16px;
+  margin-left: auto;
+}
+
+// loading style
+
+:host .loading-element,
+mgt-agenda .loading-element {
+  background: set-var(event__background-color, $theme-default, $agenda);
+  border-radius: 1px;
+}
+
+:host .event-time-loading,
+mgt-agenda .event-time-loading {
+  width: 100px;
+  height: 10px;
+}
+
+:host .event-subject-loading,
+mgt-agenda .event-subject-loading {
+  width: 263px;
+  height: 16px;
+}
+
+:host .event-location-icon-loading,
+mgt-agenda .event-location-icon-loading {
+  width: 14px;
+  height: 14px;
+}
+
+:host .event-location-loading,
+mgt-agenda .event-location-loading {
+  width: 90px;
+  height: 10px;
+  margin: 2px 0px 0px 4px;
+}
+
+:host .event-attendee-loading,
+mgt-agenda .event-attendee-loading {
+  width: 20px;
+  height: 20px;
+  border-radius: 10px;
+  margin: 0 2px 0 0;
+}
+
+[dir='rtl'] {
+  .event-location {
+    margin: 0px 4px 0px 0px;
+  }
+  .event-time-container {
+    direction: ltr;
+    margin: 18px 18px 18px 38px;
+  }
+  .event-details-container {
+    margin: 14px 0px 14px 18px;
+    .event-subject {
+      margin: 0px 0px 0px 18px;
+    }
+    .event-location-container {
+      margin: 8px 0px 0px 18px;
+    }
+  }
+}
+
+@media (forced-colors: active) and (prefers-color-scheme: dark) {
+  svg,
+  svg > path {
+    fill: rgb(255, 255, 255) !important;
+    fill-rule: nonzero !important;
+    clip-rule: nonzero !important;
+    color: rgb(255, 255, 255) !important;
+  }
+}
+@media (forced-colors: active) and (prefers-color-scheme: light) {
+  svg,
+  svg > path {
+    fill: rgb(0, 0, 0) !important;
+    fill-rule: nonzero !important;
+    clip-rule: nonzero !important;
+    color: rgb(0, 0, 0) !important;
+  }
+}

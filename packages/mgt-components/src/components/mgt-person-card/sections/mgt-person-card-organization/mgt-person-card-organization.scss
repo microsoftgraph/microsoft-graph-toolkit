@@ -1,0 +1,208 @@
+/**
+ * -------------------------------------------------------------------------------------------
+ * Copyright (c) Microsoft Corporation.  All Rights Reserved.  Licensed under the MIT License.
+ * See License in the project root for license information.
+ * -------------------------------------------------------------------------------------------
+ */
+
+@import '../base-person-card-section.scss';
+@import '../../../../styles/shared-styles.scss';
+@import '../../../../styles/shared-sass-variables.scss';
+
+$person-card-active-org-member-color: var(--person-card-active-org-member-color, #{$commblue_primary});
+
+:host {
+  position: relative;
+  user-select: none;
+
+  .root {
+    padding: 20px 0;
+
+    &.compact {
+      padding: 0;
+
+      .coworker {
+        .coworker__image {
+          height: 40px;
+          width: 40px;
+          border-radius: 40px;
+          --avatar-size: 40px;
+          --avatar-size-s: 40px;
+          margin-right: 12px;
+        }
+
+        .coworker__name {
+          font-size: 14px;
+        }
+
+        .coworker__title {
+          font-size: 12px;
+        }
+      }
+    }
+
+    .title {
+      font-size: 14px;
+      font-weight: 600;
+      color: set-var(title__color__subtitle, $theme-default, $common);
+      margin: 0 20px 20px 20px;
+    }
+
+    .subtitle {
+      color: set-var(title__color__sub2, $theme-default, $common);
+      font-size: 14px;
+      margin: 0 20px 8px 20px;
+    }
+
+    .divider {
+      display: flex;
+      background: set-var(line-seperator__color, $theme-default, $common);
+      height: 1px;
+      margin-top: 26px;
+      margin-bottom: 18px;
+      margin-left: 20px;
+      margin-right: 20px;
+    }
+
+    .org-member {
+      height: 74px;
+      box-sizing: border-box;
+      border-radius: 2px;
+      padding: 12px;
+      display: flex;
+      align-items: center;
+      margin-left: 20px;
+      margin-right: 20px;
+
+      &.org-member--target {
+        background-color: set-var(background-color__sub2, $theme-default, $common);
+        border: 1px solid $person-card-active-org-member-color;
+      }
+
+      &.org-member--direct-report:not(:last-child) {
+        border-bottom: none;
+      }
+
+      &:not(.org-member--target) {
+        background-color: set-var(background-color__sub1, $theme-default, $common);
+        border: 1px solid set-var(line-seperator__color, $theme-default, $common);
+
+        &:hover {
+          cursor: pointer;
+          background-color: set-var(background-color--hover, $theme-default, $common);
+        }
+      }
+
+      .org-member__person {
+        flex-grow: 1;
+        mgt-person {
+          --avatar-size: 48px;
+          --avatar-size-s: 48px;
+          --font-size: 16px;
+          --color: #323130;
+          --line2-font-size: 14px;
+          --line3-font-size: 14px;
+          --line2-text-transform: uppercase;
+          --line2-color: #797775;
+          --line3-color: #797775;
+          --line3-text-transform: uppercase;
+          margin-right: 8px;
+          max-width: 230px;
+        }
+      }
+
+      .org-member__details {
+        flex-grow: 1;
+
+        .org-member__name {
+          font-size: 16px;
+          color: set-var(color__sub1, $theme-default, $common);
+          font-weight: 600;
+        }
+
+        .org-member__title,
+        .org-member__department {
+          font-weight: 14px;
+          color: set-var(color__sub2, $theme-default, $common);
+        }
+      }
+    }
+
+    .org-member__separator {
+      border: 1px solid set-var(line-seperator__color, $theme-default, $common);
+      box-sizing: border-box;
+      width: 0;
+      margin: 0 50%;
+      height: 14px;
+    }
+
+    .coworker {
+      display: flex;
+      align-items: center;
+      padding: 10px 20px;
+
+      &:hover {
+        cursor: pointer;
+        background-color: set-var(background-color--hover, $theme-default, $common);
+      }
+
+      .coworker__person {
+        height: 46px;
+        width: 46px;
+        border-radius: 46px;
+        margin-right: 8px;
+
+        mgt-person {
+          --font-size: 16px;
+          --line2-text-transform: uppercase;
+          --line2-font-size: 14px;
+          --line2-color: set-var(color__sub2, $theme-default, $common);
+          --avatar-size: 46px;
+        }
+      }
+    }
+
+    .direct-report__compact {
+      padding: 12px 20px;
+
+      .direct-report {
+        cursor: pointer;
+        width: 38px;
+        margin-right: 4px;
+        display: inline;
+        --avatar-size: 38px;
+      }
+    }
+  }
+}
+
+[dir='rtl'] {
+  .org-member {
+    .org-member__more {
+      -moz-transform: scaleX(-1);
+      -o-transform: scaleX(-1);
+      -webkit-transform: scaleX(-1);
+      transform: scaleX(-1);
+      filter: FlipH;
+      -ms-filter: 'FlipH';
+    }
+  }
+}
+
+@media (forced-colors: active) and (prefers-color-scheme: dark) {
+  :host svg,
+  :host svg > path {
+    fill: rgb(255, 255, 255) !important;
+    fill-rule: nonzero !important;
+    clip-rule: nonzero !important;
+  }
+}
+
+@media (forced-colors: active) and (prefers-color-scheme: light) {
+  :host svg,
+  :host svg > path {
+    fill: rgb(0, 0, 0) !important;
+    fill-rule: nonzero !important;
+    clip-rule: nonzero !important;
+  }
+}

@@ -1,0 +1,22 @@
+/**
+ * -------------------------------------------------------------------------------------------
+ * Copyright (c) Microsoft Corporation.  All Rights Reserved.  Licensed under the MIT License.
+ * See License in the project root for license information.
+ * -------------------------------------------------------------------------------------------
+ */
+@import '../../styles/shared-sass-variables.scss';
+
+$event__time__color: var(--event-time-color, set-var(color, $theme-default, $common));
+$event__subject__color: var(--event-subject-color, set-var(color__sub1, $theme-default, $common));
+$event__location__color: var(--event-location-color, set-var(color, $theme-default, $common));
+$header__color: var(--agenda-header-color, set-var(color__sub1, $theme-default, $common));
+
+$agenda: (
+  event__background-color: (
+    _var: --event-background-color,
+    light: $background-color__main--light,
+    dark: $background-color__sub1--dark
+  )
+);
+
+@include create-themes($agenda);

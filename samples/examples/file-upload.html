@@ -1,0 +1,134 @@
+<html lang="en">
+<head>
+  <script type="module" src="../../packages/mgt/dist/es6/index.js"></script>
+  <style>
+    body {
+      font-family: 'Segoe UI', 'Segoe UI Web (West European)', 'Segoe UI', -apple-system, BlinkMacSystemFont, Roboto, 'Helvetica Neue', sans-serif;
+    }
+
+    .custom-mgt-file-list {
+      --file-upload-border: 4px dotted #ffbdc3;
+      --file-upload-background-color: rgba(255, 0, 0, 0.1);
+      --file-upload-button-float: left;
+      --file-upload-button-color: #323130;
+      --file-upload-button-background-color: #fef8dd;
+      --file-upload-dialog-content-background-color: #ffe7c7;
+      --file-upload-dialog-primarybutton-background-color: #ffe7c7;
+      --file-upload-dialog-primarybutton-color: #323130;
+      --file-list-background-color: #e0f8db;
+      --file-item-background-color--hover: #caf1de;
+      --file-item-background-color--active: #acddde;
+      --file-list-border: 4px dotted #ffbdc3;
+      --file-list-box-shadow: none;
+      --file-list-padding: 0;
+      --file-list-margin: 0;
+      --file-item-border-radius: 12px;
+      --file-item-margin: 2px 6px;
+      --file-item-border-top: 4px dotted #ffbdc3;
+      --file-item-border-left: 4px dotted #ffbdc3;
+      --file-item-border-right: 4px dotted #ffbdc3;
+      --file-item-border-bottom: 4px dotted #ffbdc3;
+      --show-more-button-background-color: #fef8dd;
+      --show-more-button-background-color--hover: #ffe7c7;
+      --show-more-button-font-size: 14px;
+      --show-more-button-padding: 16px;
+      --show-more-button-border-bottom-right-radius: 12px;
+      --show-more-button-border-bottom-left-radius: 12px;
+    }
+  </style>
+</head>
+<body>
+  <mgt-msal2-provider client-id="2dfea037-938a-4ed8-9b35-c05708a1b241"
+                      redirect-uri="http://localhost:3000"
+                      scopes="files.readwrite,sites.readWrite.all"></mgt-msal2-provider>
+
+  <mgt-login></mgt-login>
+
+  <p>Default:</p>
+  <mgt-file-list enable-file-upload></mgt-file-list>
+
+  <p>Limit upload to 5 files:</p>
+  <mgt-file-list max-upload-file="5" enable-file-upload></mgt-file-list>
+
+  <p>Limit upload size to 10000 KB:</p>
+  <mgt-file-list max-file-size="10000" enable-file-upload></mgt-file-list>
+
+  <p>Exclude files with file extensions ".doc,.pdf":</p>
+  <mgt-file-list excluded-file-extensions=".doc,.pdf" enable-file-upload></mgt-file-list>
+
+  <p>Custom CSS included by class name:</p>
+  <mgt-file-list class="custom-mgt-file-list" enable-file-upload></mgt-file-list>
+
+  <p>Dark CSS in class name:</p>
+  <mgt-file-list class="mgt-dark" enable-file-upload></mgt-file-list>
+
+  <!--
+  <h2>To test other locations, replace parameters values with existing ones</h2>
+
+
+  <p>Enable file upload with group-id and item-id:</p>
+  <mgt-file-list
+    group-id="8090c93e-ba7c-433e-9f39-08c7ba07c0b3"
+    item-id="01AYQNNE76S6ES2SZFKFEKVD77I7JBARMB"
+    enable-file-upload
+  >
+  </mgt-file-list>
+
+  <p>Enable file upload with group-id and item-path:</p>
+  <mgt-file-list
+    group-id="8090c93e-ba7c-433e-9f39-08c7ba07c0b3"
+    item-path="/Design"
+    enable-file-upload
+  ></mgt-file-list>
+
+  <p>Enable file upload with user-id and item-id:</p>
+  <mgt-file-list
+    user-id="48d31887-5fad-4d73-a9f5-3c356e68a038"
+    item-id="01BYE5RZYFPM65IDVARFELFLNTXR4ZKABD"
+    enable-file-upload
+  >
+  </mgt-file-list>
+
+  <p>Enable file upload with user-id and item-path:</p>
+  <mgt-file-list
+    user-id="48d31887-5fad-4d73-a9f5-3c356e68a038"
+    item-path="Contoso Electronics"
+    enable-file-upload
+  ></mgt-file-list>
+
+  <p>Enable file upload with site-id and item-id:</p>
+  <mgt-file-list
+    site-id="m365x214355.sharepoint.com,5a58bb09-1fba-41c1-8125-69da264370a0,9f2ec1da-0be4-4a74-9254-973f0add78fd"
+    item-id="01OXYKUGW6HG5WM2OBTVDZ72ABJAY5P4BY"
+    enable-file-upload
+  ></mgt-file-list>
+
+  <p>Enable file upload with site-id and item-Path:</p>
+  <mgt-file-list
+    site-id="m365x214355.sharepoint.com,5a58bb09-1fba-41c1-8125-69da264370a0,9f2ec1da-0be4-4a74-9254-973f0add78fd"
+    item-Path="/DemoDocs/AdminDemo"
+    enable-file-upload
+  ></mgt-file-list>
+
+  <p>Enable file upload with drive-id and item-id:</p>
+  <mgt-file-list
+    drive-id="b!-RIj2DuyvEyV1T4NlOaMHk8XkS_I8MdFlUCq1BlcjgmhRfAj3-Z8RY2VpuvV_tpd"
+    item-id="01BYE5RZYJ43UXGBP23BBIFPISHHMCDTOY"
+    enable-file-upload
+  ></mgt-file-list>
+
+  <p>Enable file upload with drive-id and item-Path:</p>
+  <mgt-file-list
+    drive-id="b!-RIj2DuyvEyV1T4NlOaMHk8XkS_I8MdFlUCq1BlcjgmhRfAj3-Z8RY2VpuvV_tpd"
+    item-path="/Class%20Documents"
+    enable-file-upload
+  ></mgt-file-list>
+
+  <p>Enable file upload with item-id:</p>
+  <mgt-file-list item-id="01BYE5RZYJ43UXGBP23BBIFPISHHMCDTOY" enable-file-upload></mgt-file-list>
+
+  <p>Enable file upload with item-path:</p>
+  <mgt-file-list item-path="/Class%20Documents" enable-file-upload></mgt-file-list>
+  -->
+</body>
+</html>

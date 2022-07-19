@@ -1,0 +1,174 @@
+/**
+ * -------------------------------------------------------------------------------------------
+ * Copyright (c) Microsoft Corporation.  All Rights Reserved.  Licensed under the MIT License.
+ * See License in the project root for license information.
+ * -------------------------------------------------------------------------------------------
+ */
+
+@import '../base-person-card-section.scss';
+@import '../../../../styles/shared-styles.scss';
+@import '../../../../styles/shared-sass-variables.scss';
+
+$person-card-contact-link-color: var(--person-card-contact-link-color, #{$commblue_primary});
+$person-card-contact-link-hover-color: var(--person-card-contact-link-hover-color, #004578);
+
+:host {
+  position: relative;
+  user-select: none;
+
+  .root {
+    padding: 20px 0;
+
+    .title {
+      font-size: 14px;
+      font-weight: 600;
+      color: set-var(title__color__subtitle, $theme-default, $common);
+      margin: 0 20px 12px 20px;
+    }
+
+    .part {
+      display: grid;
+      grid-template-columns: auto 1fr auto;
+
+      .part__icon {
+        display: flex;
+        min-width: 20px;
+        width: 20px;
+        height: 20px;
+        align-items: center;
+        justify-content: center;
+        margin-left: 20px;
+        margin-top: 10px;
+        line-height: 20px;
+      }
+
+      .part__details {
+        margin: 10px 14px;
+        overflow: hidden;
+
+        .part__title {
+          font-size: 12px;
+          color: set-var(title__color__sub2, $theme-default, $common);
+          line-height: 20px;
+        }
+
+        .part__value {
+          grid-column: 2;
+          color: set-var(color__sub1, $theme-default, $common);
+          font-size: 14px;
+          font-weight: 400;
+
+          .part__link {
+            color: $person-card-contact-link-color;
+            font-family: $font-family;
+            font-size: 14px;
+            cursor: pointer;
+            text-overflow: ellipsis;
+            overflow: hidden;
+            white-space: nowrap;
+            width: 100%;
+            display: inline-block;
+
+            &:hover {
+              color: $person-card-contact-link-hover-color;
+            }
+          }
+        }
+      }
+
+      .part__copy {
+        width: 32px;
+        height: 100%;
+        background-color: set-var(background-color__sub2, $theme-default, $common);
+        visibility: hidden;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+
+        svg {
+          fill: set-var(color__sub1, $theme-default, $common);
+          cursor: pointer;
+        }
+      }
+
+      &:hover {
+        background-color: set-var(background-color--hover, $theme-default, $common);
+        cursor: pointer;
+
+        .part__copy {
+          visibility: visible;
+        }
+      }
+    }
+
+    &.compact {
+      padding: 0;
+
+      .part {
+        height: 30px;
+        align-items: center;
+      }
+
+      .part__details {
+        margin: 0;
+      }
+
+      .part__title {
+        display: none;
+      }
+
+      .part__icon {
+        margin-top: 0;
+        margin-right: 6px;
+      }
+    }
+  }
+}
+
+[dir='rtl'] {
+  .part__link {
+    &.phone {
+      text-align: right;
+      direction: ltr;
+    }
+  }
+  .part__icon {
+    margin: 10px 20px 0px 0px !important;
+  }
+  &.compact {
+    .part__icon {
+      margin-left: 6px !important;
+      margin-top: 0px !important;
+    }
+  }
+}
+
+@media (forced-colors: active) and (prefers-color-scheme: dark) {
+  .root svg {
+    fill: rgb(255, 255, 255) !important;
+    fill-rule: nonzero !important;
+    clip-rule: nonzero !important;
+
+    path,
+    rect {
+      fill: rgb(255, 255, 255) !important;
+      fill-rule: nonzero !important;
+      clip-rule: nonzero !important;
+    }
+  }
+}
+
+@media (forced-colors: active) and (prefers-color-scheme: light) {
+  .root svg {
+    fill: rgb(0,0,0) !important;
+    fill-rule: nonzero !important;
+    clip-rule: nonzero !important;
+
+    path,
+    rect {
+      fill: rgb(0,0,0) !important;
+      fill-rule: nonzero !important;
+      clip-rule: nonzero !important;
+    }
+  }
+}

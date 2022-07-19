@@ -1,0 +1,385 @@
+/**
+ * -------------------------------------------------------------------------------------------
+ * Copyright (c) Microsoft Corporation.  All Rights Reserved.  Licensed under the MIT License.
+ * See License in the project root for license information.
+ * -------------------------------------------------------------------------------------------
+ */
+
+/* ---------------Common color variables--------------- */
+$white: #ffffff; /* Neutrals / White #FFFFFF */
+$black: #000000; /* Neutrals / Web / Black #000000 */
+$commblue_primary: #0078d4; /* Comm Blue / Primary #0078D4 */
+$commblue_shade10: #106ebe; /* Comm Blue / Shade 10 #106EBE */
+$commblue_shade20: #005a9e; /* Comm Blue / Shade 20 #005A9E */
+
+$gray10: #faf9f8; /* Neutrals / Web / Gray 10 #FAF9F8 */
+$gray20: #f3f2f1; /* Neutrals / Web / Gray 20 #F3F2F1 */
+$gray30: #edebe9; /* Neutrals / Web / Gray 30 #EDEBE9 */
+$gray40: #e1dfdd; /* Neutrals / Web / Gray 40 #E1DFDD */
+$gray50: #d2d0ce; /* Neutrals / Web / Gray 50 #D2D0CE */
+$gray60: #c8c6c4; /* Neutrals / Web / Gray 60 #C8C6C4 */
+$gray70: #bebbb8; /* Neutrals / Web / Gray 70 #BEBBB8 */
+$gray80: #b3b0ad; /* Neutrals / Web / Gray 80 #B3B0AD */
+$gray90: #a19f9d; /* Neutrals / Web / Gray 90 #A19F9D */
+$gray100: #727170; /* Neutrals / Web / Gray 100 #979593 */
+$gray110: #8a8886; /* Neutrals / Web / Gray 110 #8A8886 */
+$gray120: #717171; /* Neutrals / Web / Gray 120 #797775 */
+$gray130: #605e5c; /* Neutrals / Web / Gray 130 #605E5C */
+$gray140: #4f4f4f; /* Neutrals / Web / Gray 140 #484644 */
+$gray150: #3b3a39; /* Neutrals / Web / Gray 150 #3B3A39 */
+$gray160: #323130; /* Neutrals / Web / Gray 160 #323130 */
+$gray170: #292827; /* Neutrals / Web / Gray 170 #292827 */
+$gray180: #252423; /* Neutrals / Web / Gray 180 #252423 */
+$gray190: #201f1e; /* Neutrals / Web / Gray 190 #201F1E */
+$gray200: #1b1a19; /* Neutrals / Web / Gray 200 #1B1A19 */
+$gray210: #161514; /* Neutrals / Web / Gray 210 #161514 */
+$gray220: #11100f; /* Neutrals / Web / Gray 220 #11100F */
+
+$magenta: #ff00ff; /* Person / Available */
+$orange: #ffaa44; /* Person / Away */
+$violet: #b4009e; /* Person / OOF */
+$red: #c50f1f; /* Person / DND */
+$green: #6bb700; /* Person / Available */
+
+/* ---------------Common style variables--------------- */
+/* -----Background----- */
+// light
+$background-color__main--light: $white;
+$background-color__sub1--light: $gray10;
+$background-color__sub2--light: $gray20;
+$background-color__sub3--light: $gray40;
+$background-color__main--hover--light: $gray30;
+$background-color__main--active--light: $gray40;
+// dark
+$background-color__main--dark: $black;
+$background-color__sub1--dark: $gray210;
+$background-color__sub2--dark: $gray140;
+$background-color__sub3--dark: $gray120;
+$background-color__main--hover--dark: $gray160;
+$background-color__main--active--dark: $gray140;
+
+/* -----Text----- */
+// light
+$text__color__main--light: $black;
+$text__color__sub1--light: $gray160;
+$text__color__sub2--light: $gray120;
+$text__color__sub3--light: $gray100;
+// dark
+$text__color__main--dark: $white;
+$text__color__sub1--dark: $gray20;
+$text__color__sub2--dark: $gray60;
+$text__color__sub3--dark: $gray100;
+
+/* -----Title----- */
+// light
+$title__color__main--light: $text__color__main--light;
+$title__color__subtitle--light: $text__color__sub1--light;
+$title__color__sub2--light: $text__color__sub2--light;
+// dark
+$title__color__main--dark: $text__color__main--dark;
+$title__color__subtitle--dark: $text__color__sub1--dark;
+$title__color__sub2--dark: $text__color__sub2--dark;
+
+/* -----Icon----- */
+// light
+$icon__main--light: $black;
+$icon__sub1--light: $gray130;
+$icon__sub2--light: $gray100;
+// dark
+$icon__main--dark: $gray130;
+$icon__sub1--dark: $gray120;
+$icon__sub2--dark: $gray100;
+
+$icon--active: $commblue_primary;
+
+/* -----Other Elements----- */
+$line-separator--light: $gray30;
+$line-separator--dark: $gray150;
+
+/* -----Tab----- (mgt-person-card) */
+// light
+$tab__line__color--light: $line-separator--light; /* gray30 #EDEBE9 */
+$tab__line__color--active--light: $commblue_primary;
+$tab__line__color--hover--light: $gray100;
+$tab__background-color--hover--light: $background-color__main--hover--light;
+$tab__icon--light: $icon__sub1--light;
+$tab__icon--active--light: $commblue_primary;
+// dark
+$tab__line__color--dark: $line-separator--dark; /* gray150  #3B3A39*/
+$tab__line__color--active--dark: $commblue_primary;
+$tab__line__color--hover--dark: $gray100;
+$tab__background-color--hover--dark: $background-color__main--hover--dark;
+$tab__icon--dark: $icon__sub1--dark;
+$tab__icon--active--dark: $commblue_primary;
+
+/* -----Input----- */
+// light
+$input-outlined__placeholder__color--light: $gray130;
+$input-outlined__placeholder__color--hover--light: $gray150;
+$input-outlined__placeholder__color--focus--light: $text__color__sub1--light;
+$input-outlined__color--light: $text__color__sub1--light;
+$input-outlined__border-color--light: $gray130;
+$input-outlined__border-color--hover--light: $gray160;
+$input-outlined__border-color--focus--light: $commblue_primary;
+$input-outlined__background-color--light: $background-color__main--light;
+$input-outlined__background-color--hover--light: $background-color__main--hover--light;
+$input-outlined__background-color--focus--light: $background-color__main--active--light;
+// dark
+$input-outlined__placeholder__color--dark: $gray120;
+$input-outlined__placeholder__color--hover--dark: $gray90;
+$input-outlined__placeholder__color--focus--dark: $text__color__sub1--dark;
+$input-outlined__color--dark: $text__color__sub1--dark;
+$input-outlined__border-color--dark: $gray110;
+$input-outlined__border-color--hover--dark: $gray90;
+$input-outlined__border-color--focus--dark: $commblue_primary;
+$input-outlined__background-color--dark: $background-color__main--dark;
+$input-outlined__background-color--hover--dark: $background-color__main--hover--dark;
+$input-outlined__background-color--focus--dark: $background-color__main--active--dark;
+
+/* -----List----- */
+// light
+$list__color__main--light: $text__color__sub1--light;
+$list__color__sub--light: $text__color__sub2--light;
+$list__background-color--light: $background-color__main--light;
+$list__item__background-color--hover--light: $background-color__main--hover--light;
+$list__icon__color--light: $icon__sub2--light;
+// dark
+$list__color__main--dark: $text__color__sub1--dark;
+$list__color__sub--dark: $text__color__sub2--dark;
+$list__background-color--dark: $background-color__sub1--dark;
+$list__item__background-color--hover--dark: $background-color__main--hover--dark;
+$list__icon__color--dark: $icon__sub2--dark;
+
+/* -----Tag----- */
+$tag__background-color--light: $gray20;
+$tag__color--light: $text__color__sub1--light;
+
+/* -----Pill----- */
+// light
+$pill__background-color--light: $background-color__sub2--light;
+$pill__color--light: $text__color__sub1--light;
+// dark
+$pill__background-color--dark: $background-color__sub2--dark;
+$pill__color--dark: $text__color__sub1--dark;
+
+/* -----Link----- */
+$link__color--light: $gray160;
+$link__color--hover--light: $commblue_primary;
+$link__color--pressed--light: $black;
+$link__color--disabled--light: $gray90;
+
+/* -----Depth----- */
+$depth-shadow--light: 0 3.2px 7.2px 0 rgba(0, 0, 0, 0.132);
+$depth-shadow--dark: 0 5px 14px 0 rgba(0, 0, 0, 0.8);
+
+$font-family: var(--default-font-family);
+$font-size: var(--default-font-size);
+
+/* ---------------Common theming vars / functions / mixins--------------- */
+$themes: ('light', 'dark');
+$theme-default: 'light';
+
+$common: (
+  color: (
+    _var: --color,
+    dark: $text__color__main--dark,
+    light: $text__color__main--light
+  ),
+  color__sub1: (
+    _var: --color-sub1,
+    dark: $text__color__sub1--dark,
+    light: $text__color__sub1--light
+  ),
+  color__sub2: (
+    _var: --color-sub2,
+    dark: $text__color__sub2--dark,
+    light: $text__color__sub2--light
+  ),
+  color__sub3: (
+    _var: --color-sub3,
+    dark: $text__color__sub3--dark,
+    light: $text__color__sub3--light
+  ),
+  background-color: (
+    _var: --background-color,
+    dark: $background-color__main--dark,
+    light: $background-color__main--light
+  ),
+  background-color--hover: (
+    _var: --background-color--hover,
+    dark: $background-color__main--hover--dark,
+    light: $background-color__main--hover--light
+  ),
+  background-color--active: (
+    _var: --background-color--active,
+    dark: $background-color__main--active--dark,
+    light: $background-color__main--active--light
+  ),
+  background-color__sub1: (
+    _var: --background-color-sub1,
+    dark: $background-color__sub1--dark,
+    light: $background-color__sub1--light
+  ),
+  background-color__sub2: (
+    _var: --background-color-sub2,
+    dark: $background-color__sub2--dark,
+    light: $background-color__sub2--light
+  ),
+  box-shadow: (
+    _var: --box-shadow,
+    dark: $depth-shadow--dark,
+    light: $depth-shadow--light
+  ),
+  box-shadow__color: (
+    _var: --box-shadow-color,
+    dark: rgba(0, 0, 0, 1),
+    light: rgba(0, 0, 0, 0.092)
+  ),
+  icon__color: (
+    _var: --icon-color,
+    dark: $icon__sub1--dark,
+    light: $icon__sub1--light
+  ),
+  tab__line__color: (
+    _var: --tab-line-color,
+    dark: $tab__line__color--dark,
+    light: $tab__line__color--light
+  ),
+  tab__line__color--hover: (
+    _var: --tab-line-color--hover,
+    dark: $tab__line__color--hover--dark,
+    light: $tab__line__color--hover--light
+  ),
+  tab__background-color--hover: (
+    _var: --tab-background-color--hover,
+    dark: $tab__background-color--hover--dark,
+    light: $tab__background-color--hover--light
+  ),
+  title__color__main: (
+    _var: --title-color-main,
+    dark: $title__color__main--dark,
+    light: $title__color__main--light
+  ),
+  title__color__subtitle: (
+    _var: --title-color-subtitle,
+    dark: $title__color__subtitle--dark,
+    light: $title__color__subtitle--light
+  ),
+  title__color__sub2: (
+    _var: --title-color-sub2,
+    dark: $title__color__sub2--dark,
+    light: $title__color__sub2--light
+  ),
+  line-seperator__color: (
+    _var: --line-seperator-color,
+    dark: $line-separator--dark,
+    light: $line-separator--light
+  ),
+  input-outlined__placeholder__color: (
+    _var: --placeholder-color,
+    dark: $input-outlined__placeholder__color--dark,
+    light: $input-outlined__placeholder__color--light
+  ),
+  input-outlined__placeholder__color--focus: (
+    _var: --placeholder-color--focus,
+    dark: $input-outlined__placeholder__color--focus--dark,
+    light: $input-outlined__placeholder__color--focus--light
+  ),
+  input-outlined__background-color: (
+    _var: --input-background-color,
+    dark: $input-outlined__background-color--dark,
+    light: $input-outlined__background-color--light
+  ),
+  input-outlined__background-color--hover: (
+    _var: --input-background-color--hover,
+    dark: $input-outlined__background-color--hover--dark,
+    light: $input-outlined__background-color--hover--light
+  ),
+  input-outlined__border: (
+    _var: --input-border,
+    dark: 2px solid $input-outlined__border-color--dark,
+    light: 2px solid $input-outlined__border-color--light
+  ),
+  input-outlined__border-top: (
+    _var: --input-border-top,
+    dark: var(--input-border, 2px solid $input-outlined__border-color--dark),
+    light: var(--input-border, 2px solid $input-outlined__border-color--light)
+  ),
+  input-outlined__border-right: (
+    _var: --input-border-right,
+    dark: var(--input-border, 2px solid $input-outlined__border-color--dark),
+    light: var(--input-border, 2px solid $input-outlined__border-color--light)
+  ),
+  input-outlined__border-bottom: (
+    _var: --input-border-bottom,
+    dark: var(--input-border, 2px solid $input-outlined__border-color--dark),
+    light: var(--input-border, 2px solid $input-outlined__border-color--light)
+  ),
+  input-outlined__border-left: (
+    _var: --input-border-left,
+    dark: var(--input-border, 2px solid $input-outlined__border-color--dark),
+    light: var(--input-border, 2px solid $input-outlined__border-color--light)
+  ),
+  input-outlined__border-color--hover: (
+    _var: --input-border-color--hover,
+    light: $input-outlined__border-color--hover--light,
+    dark: $input-outlined__border-color--hover--dark
+  ),
+  input-outlined__border-color--focus: (
+    _var: --input-border-color--focus,
+    light: $input-outlined__border-color--focus--light,
+    dark: $input-outlined__border-color--focus--dark
+  ),
+  list__background-color: (
+    _var: --list-background-color,
+    dark: $list__background-color--dark,
+    light: $list__background-color--light
+  ),
+  list__item__background-color--hover: (
+    _var: --list-item-background-color--hover,
+    dark: $list__item__background-color--hover--dark,
+    light: $list__item__background-color--hover--light
+  )
+);
+
+@function set-var($var, $theme, $component) {
+  $theme-value: map-get($component, $var);
+
+  @return var(#{map-get($theme-value, '_var')}, #{map-get($theme-value, $theme)});
+}
+
+@mixin create-themes($component) {
+  @each $theme in $themes {
+    .mgt-#{$theme} {
+      @each $name, $var in $component {
+        #{map-get($var, _var)}: #{map-get($var, $theme)};
+      }
+    }
+  }
+}
+
+$color: set-var(color__sub1, $theme-default, $common);
+$placeholder__color: set-var(input-outlined__placeholder__color, $theme-default, $common);
+$placeholder__color--focus: set-var(input-outlined__placeholder__color--focus, $theme-default, $common);
+$input__background-color: set-var(input-outlined__background-color, $theme-default, $common);
+$input__border: set-var(input-outlined__border, $theme-default, $common);
+$input__border-top: set-var(input-outlined__border-top, $theme-default, $common);
+$input__border-right: set-var(input-outlined__border-right, $theme-default, $common);
+$input__border-bottom: set-var(input-outlined__border-bottom, $theme-default, $common);
+$input__border-left: set-var(input-outlined__border-left, $theme-default, $common);
+$input__border-color--hover: set-var(input-outlined__border-color--hover, $theme-default, $common);
+$input__border-color--focus: set-var(input-outlined__border-color--focus, $theme-default, $common);
+$dropdown__background-color: var(--dropdown-background-color, set-var(list__background-color, $theme-default, $common));
+$dropdown-item__background-color--hover: var(
+  --dropdown-item-hover-background,
+  set-var(input-outlined__background-color--hover, $theme-default, $common)
+);
+
+@mixin input__border($theme) {
+  border-top: $input__border-top;
+  border-right: $input__border-right;
+  border-bottom: $input__border-bottom;
+  border-left: $input__border-left;
+}
+
+@include create-themes($common);

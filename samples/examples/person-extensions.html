@@ -2,65 +2,9 @@
 <html lang="en">
   <head>
     <script type="module" src="../../packages/mgt/dist/es6/index.js"></script>
-    <script type="module" src="../../packages/mgt/dist/es6/mock/mgt-mock-provider.js"></script>
   </head>
   <body>
     <mgt-mock-provider></mgt-mock-provider>
-    <!-- MgtPerson -->
-    <!-- No person -->
-    <mgt-person person-card="hover"></mgt-person>
-    <hr />
-    <!-- 'me' person -->
-    <mgt-person person-query="me"></mgt-person>
-    <hr />
-    <mgt-person person-query="me" show-name></mgt-person>
-    <hr />
-    <mgt-person person-query="me" show-email></mgt-person>
-    <hr />
-    <mgt-person person-card="hover" person-query="me" show-name show-email></mgt-person>
-    <hr />
-    <!-- Custom person image -->
-    <mgt-person
-      person-card="hover"
-      person-image="https://cdn.pixabay.com/photo/2013/07/25/01/31/sunlight-166733_960_720.jpg"
-    ></mgt-person>
-    <hr />
-    <mgt-person
-      person-query="me"
-      person-card="hover"
-      person-image="https://cdn.pixabay.com/photo/2013/07/25/01/31/sunlight-166733_960_720.jpg"
-      show-email
-      show-name
-    ></mgt-person>
-    <hr />
-    <!-- Custom templates -->
-    <mgt-person person-query="me" person-card="hover" show-email show-name>
-      <template data-type="default">
-        <div>Default</div>
-      </template>
-    </mgt-person>
-    <hr />
-
-    <mgt-person person-query="me" show-email show-name>
-      <template data-type="loading">
-        <h1>Loading</h1>
-      </template>
-    </mgt-person>
-    <hr />
-
-    <mgt-person>
-      <template data-type="no-data">
-        <div>No data</div>
-      </template>
-    </mgt-person>
-    <hr />
-
-    <mgt-person person-query="me" person-card="hover" show-email show-name>
-      <template data-type="person-card">
-        <h1>Person card</h1>
-      </template>
-    </mgt-person>
-    <hr />
 
     <!-- MyPerson -->
     <my-person
@@ -68,11 +12,11 @@
       person-image="https://cdn.pixabay.com/photo/2013/07/25/01/31/sunlight-166733_960_720.jpg"
     ></my-person>
     <hr />
-    <my-person person-query="me" show-name show-email person-card="hover"></my-person>
+    <my-person person-query="me" view="twolines" person-card="hover"></my-person>
     <hr />
-    <my-person person-query="me" show-name></my-person>
+    <my-person person-query="me" view="oneline"></my-person>
     <hr />
-    <my-person person-query="me" show-email></my-person>
+    <my-person person-query="me" view="oneline" line1property="email"></my-person>
 
     <script type="module">
       import { MgtPerson } from '../../packages/mgt/dist/es6/index.js';

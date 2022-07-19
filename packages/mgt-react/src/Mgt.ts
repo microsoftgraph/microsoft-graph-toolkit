@@ -1,3 +1,10 @@
+/**
+ * -------------------------------------------------------------------------------------------
+ * Copyright (c) Microsoft Corporation.  All Rights Reserved.  Licensed under the MIT License.
+ * See License in the project root for license information.
+ * -------------------------------------------------------------------------------------------
+ */
+
 import React, { ReactNode, ReactElement } from 'react';
 import ReactDOM from 'react-dom';
 import { Wc, WcProps, WcTypeProps } from 'wc-react';
@@ -23,7 +30,7 @@ export class Mgt extends Wc {
   public render() {
     const tag = this.getTag();
     if (!tag) {
-      throw '"type" must be set!';
+      throw '"wcType" must be set!';
     }
 
     this.processTemplates(this.props.children);
@@ -50,10 +57,10 @@ export class Mgt extends Wc {
    * @memberof Wc
    */
   protected setRef(component: HTMLElement) {
-    super.setRef(component);
     if (component) {
-      this.element.addEventListener('templateRendered', this.handleTemplateRendered);
+      component.addEventListener('templateRendered', this.handleTemplateRendered);
     }
+    super.setRef(component);
   }
 
   /**
@@ -91,6 +98,7 @@ export class Mgt extends Wc {
     let element = e.detail.element;
 
     let template = this._templates[templateType];
+
     if (template) {
       template = React.cloneElement(template, { dataContext });
       ReactDOM.render(template, element);
@@ -116,6 +124,8 @@ export class Mgt extends Wc {
       let element = child as ReactElement;
       if (element && element.props && element.props.template) {
         templates[element.props.template] = element;
+      } else {
+        templates['default'] = element;
       }
     });
 
@@ -132,6 +142,8 @@ export class Mgt extends Wc {
  * @returns React component
  */
 export const wrapMgt = <T = WcProps>(tag: string) => {
-  const component: React.FC<T> = (props: T) => React.createElement(Mgt, { type: tag, ...props });
+  const component: React.ForwardRefExoticComponent<
+    React.PropsWithoutRef<T & React.HTMLAttributes<any>> & React.RefAttributes<unknown>
+  > = React.forwardRef((props: T, ref) => React.createElement(Mgt, { wcType: tag, innerRef: ref, ...props }));
   return component;
 };

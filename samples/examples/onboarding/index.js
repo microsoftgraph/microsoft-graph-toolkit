@@ -1,5 +1,5 @@
-import { ProviderState } from '../../../packages/mgt-element/dist/providers/IProvider';
-import { Providers } from '../../../packages/mgt-element/dist/providers/Providers';
+import { ProviderState } from '../../../packages/mgt-element/dist/es6/providers/IProvider';
+import { Providers } from '../../../packages/mgt-element/dist/es6/providers/Providers';
 
 const provider = Providers.globalProvider;
 const initialScreen = document.getElementById('splash');

@@ -6,29 +6,19 @@
  */
 
 import { html } from 'lit-element';
-import { withA11y } from '@storybook/addon-a11y';
-import { withKnobs } from '@storybook/addon-knobs';
-import { withWebComponentsKnobs } from 'storybook-addon-web-components-knobs';
-import { withSignIn } from '../../.storybook/addons/signInAddon/signInAddon';
 import { withCodeEditor } from '../../.storybook/addons/codeEditorAddon/codeAddon';
-import '../../packages/mgt/dist/es6/components/mgt-get/mgt-get';
 
 export default {
-  title: 'Components | mgt-get',
+  title: 'Components / mgt-get',
   component: 'mgt-get',
-  decorators: [withA11y, withSignIn, withCodeEditor],
-  parameters: {
-    options: { selectedPanel: 'mgt/sign-in' },
-    signInAddon: {
-      test: 'test'
-    }
-  }
+  decorators: [withCodeEditor]
 };
 
 export const GetEmail = () => html`
   <mgt-get resource="/me/messages" version="beta" scopes="mail.read" max-pages="2">
     <template>
       <div class="email" data-for="email in value">
+        <h3>{{ email.subject }}</h3>
         <h4>
           <mgt-person
             person-query="{{email.sender.emailAddress.address}}"
@@ -36,7 +26,6 @@ export const GetEmail = () => html`
             person-card="hover"
           ></mgt-person>
         </h4>
-        <h3>{{ email.subject }}</h3>
         <div data-if="email.bodyPreview" class="preview" innerHtml>{{email.bodyPreview}}</div>
         <div data-else class="preview">
           email body is empty
@@ -67,13 +56,13 @@ export const GetEmail = () => html`
 
     .email h3 {
       font-size: 12px;
-      margin-top: 4px;
+      margin-bottom: 4px;
     }
 
     .email h4 {
       font-size: 10px;
       margin-top: 0px;
-      margin-bottom: 0px;
+      margin-bottom: 4px;
     }
 
     .email mgt-person {
@@ -156,4 +145,48 @@ export const UsingImageType = () => html`
       </mgt-get>
     </template>
   </mgt-get>
+`;
+
+export const UsingCaching = () => html`
+  <mgt-get resource="me" caching-enabled="true">
+    <template>
+      Hello {{ displayName }}
+    </template>
+  </mgt-get>
+`;
+
+export const PollingRate = () => html`
+  <mgt-get resource="/me/presence" version="beta" scopes="Presence.Read" polling-rate="2000">
+    <template>
+      {{availability}}
+    </template>
+  </mgt-get>
+`;
+
+export const refresh = () => html`
+    <mgt-get cache-enabled="true" resource="/me/presence" version="beta" scopes="Presence.Read">
+      <template data-type="default"> {{availability}} </template>
+      <template data-type="loading">
+        <h2>Loading...?!?!</h2>
+      </template>
+    </mgt-get>
+
+    <div>
+      <label>get.refresh(false)</label>
+      <button id="false">Soft refresh</button>
+    </div>
+    <label>get.refresh(true)</label>
+    <button id="true">Hard refresh</button>
+
+
+  <script>
+
+    document.querySelector('#false').addEventListener('click', _ =>{
+          document.querySelector('mgt-get').refresh(false)
+    })
+
+    document.querySelector('#true').addEventListener('click', _ =>{
+      document.querySelector('mgt-get').refresh(true)
+    })
+  </script>
 `;

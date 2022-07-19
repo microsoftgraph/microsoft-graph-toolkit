@@ -1,0 +1,40 @@
+{
+  "name": "electron-app-mgt",
+  "version": "1.0.0",
+  "description": "A sample Electron application that uses Microsoft Graph Toolkit to authenticate and call Microsoft Graph",
+  "main": "app.ts",
+  "private": true,
+  "scripts": {
+    "build": "tsc",
+    "webpack": "webpack",
+    "start": "npm run webpack && electron dist/app.js",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [
+    "msal-node",
+    "electron",
+    "javascript"
+  ],
+  "author": "",
+  "license": "MIT",
+  "devDependencies": {
+    "@babel/core": "^7.12.7",
+    "@babel/preset-env": "^7.12.7",
+    "babel": "^6.23.0",
+    "electron": "^11.0.2",
+    "electron-rebuild": "^2.3.4",
+    "es-dev-server": "^1.57.8",
+    "es-module-lexer": "^0.3.26",
+    "es-module-shims": "^0.7.1",
+    "node-loader": "^1.0.2",
+    "ts-loader": "^8.0.11",
+    "webpack": "^5.6.0",
+    "webpack-cli": "^4.2.0"
+  },
+  "dependencies": {
+    "@microsoft/mgt-components": "*",
+    "@microsoft/mgt-electron-provider": "*",
+    "@microsoft/mgt-element": "*",
+    "axios": "^0.21.0"
+  }
+}

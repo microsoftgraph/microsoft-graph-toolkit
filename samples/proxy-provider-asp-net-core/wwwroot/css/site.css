@@ -29,9 +29,9 @@ textarea {
 }
 
 mgt-login {
-    --color: #9d9d9d;
-    --background-color--hover: transparent;
-    --color-hover: white;
+    --button-color: #9d9d9d;
+    --button-background-color--hover: transparent;
+    --button-color--hover: white;
 }
 
 /* Hide/rearrange for smaller screens */

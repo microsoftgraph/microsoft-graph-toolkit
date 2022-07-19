@@ -1,0 +1,143 @@
+/**
+ * -------------------------------------------------------------------------------------------
+ * Copyright (c) Microsoft Corporation.  All Rights Reserved.  Licensed under the MIT License.
+ * See License in the project root for license information.
+ * -------------------------------------------------------------------------------------------
+ */
+
+@import '../../../../../node_modules/office-ui-fabric-core/dist/sass/References';
+@import '../../styles/shared-styles.scss';
+@import './mgt-login.theme.scss';
+
+:host,
+mgt-login {
+  --font-size: #{$ms-font-size-m};
+  --font-weight: #{$ms-font-weight-semibold};
+  --width: '100%';
+  --height: '100%';
+  --margin: 0;
+  --padding: 12px 20px;
+  --popup-command-font-size: #{$ms-font-size-s};
+  --popup-command-margin: 16px 0 0;
+  --popup-padding: 24px 48px 16px 24px;
+}
+
+:host .root,
+mgt-login .root {
+  position: relative;
+  display: inline-block;
+}
+
+:host .login-button,
+mgt-login .login-button {
+  display: flex;
+  align-items: center;
+  font-family: $font-family;
+  font-size: var(--font-size);
+  font-weight: var(--font-weight);
+  width: var(--width);
+  height: var(--height);
+  margin: var(--margin);
+  padding: var(--padding);
+  color: set-var(button__color, $theme-default, $login);
+  background-color: var(--button-background-color, transparent);
+  border: none;
+  cursor: pointer;
+  transition: color 0.3s, background-color 0.3s;
+  word-spacing: inherit;
+  text-indent: inherit;
+  letter-spacing: inherit;
+
+  mgt-person {
+    --color-sub1: set-var(button__color, $theme-default, $login);
+  }
+
+  &:hover {
+    color: $button__color--hover;
+    --color: #{$button__color--hover};
+    background-color: $button__background-color--hover;
+    --color-sub1: #{$button__color--hover};
+    border-radius: 4px;
+  }
+
+  &:focus {
+    outline: 0;
+  }
+
+  &:disabled {
+    opacity: 0.4;
+    pointer-events: none;
+  }
+
+  &.no-click {
+    pointer-events: none;
+  }
+}
+
+:host .login-icon,
+mgt-login .login-icon {
+  & + span {
+    margin-left: 6px;
+  }
+}
+
+:host .popup,
+mgt-login .popup {
+  font-family: $font-family;
+  background-color: $popup__background-color;
+  min-width: 240px;
+  z-index: 1;
+  color: set-var(popup__color, $theme-default, $login);
+  border-radius: 8px;
+
+  mgt-person {
+    --color-sub1: set-var(popup__color, $theme-default, $login);
+  }
+}
+
+:host .popup-content,
+mgt-login .popup-content {
+  display: flex;
+  flex-direction: column;
+  padding: var(--popup-padding);
+  border-radius: 8px;
+}
+
+:host .popup-commands ul,
+mgt-login .popup-commands ul {
+  list-style-type: none;
+  margin: var(--popup-command-margin);
+  padding: 0;
+}
+
+:host .popup-command,
+mgt-login .popup-command {
+  font-family: $font-family;
+  font-size: var(--popup-command-font-size);
+  font-weight: var(--font-weight);
+  color: #{$commblue_primary};
+  background-color: $popup__background-color;
+  border: none;
+  padding: 0;
+  cursor: pointer;
+  transition: color 0.3s;
+  word-spacing: inherit;
+  text-indent: inherit;
+  letter-spacing: inherit;
+
+  &:hover {
+    color: #{$commblue_shade20};
+  }
+}
+
+[dir='rtl'] {
+  --popup-padding: 24px 24px 16px 48px;
+  mgt-person {
+    .details {
+      --details-spacing: 0px 12px 0px 0px;
+      &.small {
+        --details-spacing: 0px 6px 0px 0px;
+      }
+    }
+  }
+}

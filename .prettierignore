@@ -2,3 +2,4 @@
 *.md
 **/dist
 **/generated
+**/lib

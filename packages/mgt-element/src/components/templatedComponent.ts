@@ -5,10 +5,11 @@
  * -------------------------------------------------------------------------------------------
  */
 
-import { html, PropertyValues } from 'lit-element';
-import { TemplateContext } from '../utils/TemplateContext';
+import { html, property, PropertyValues } from 'lit-element';
+
 import { equals } from '../utils/equals';
 import { MgtBaseComponent } from './baseComponent';
+import { TemplateContext } from '../utils/TemplateContext';
 import { TemplateHelper } from '../utils/TemplateHelper';
 
 /**
@@ -34,17 +35,10 @@ interface RenderedTemplates {
  * @abstract
  * @class MgtTemplatedComponent
  * @extends {MgtBaseComponent}
+ *
+ * @fires templateRendered - fires when a template is rendered
  */
 export abstract class MgtTemplatedComponent extends MgtBaseComponent {
-  /**
-   * Collection of functions to be used in template binding
-   *
-   * @type {MgtElement.TemplateContext}
-   * @memberof MgtTemplatedComponent
-   * @deprecated since 1.2 - use templateContext instead
-   */
-  public templateConverters: TemplateContext;
-
   /**
    * Additional data context to be used in template binding
    * Use this to add event listeners or value converters
@@ -52,7 +46,7 @@ export abstract class MgtTemplatedComponent extends MgtBaseComponent {
    * @type {MgtElement.TemplateContext}
    * @memberof MgtTemplatedComponent
    */
-  public templateContext: TemplateContext;
+  @property({ attribute: false }) public templateContext: TemplateContext;
 
   /**
    * Holds all templates defined by developer
@@ -70,10 +64,6 @@ export abstract class MgtTemplatedComponent extends MgtBaseComponent {
     super();
 
     this.templateContext = this.templateContext || {};
-    this.templateConverters = this.templateConverters || {};
-
-    this.templateContext.lower = (str: string) => str.toLowerCase();
-    this.templateContext.upper = (str: string) => str.toUpperCase();
   }
 
   /**
@@ -124,9 +114,11 @@ export abstract class MgtTemplatedComponent extends MgtBaseComponent {
       <slot name=${slotName}></slot>
     `;
 
+    const dataContext = { ...context, ...this.templateContext };
+
     if (this._renderedTemplates.hasOwnProperty(slotName)) {
       const { context: existingContext, slot } = this._renderedTemplates[slotName];
-      if (equals(existingContext, context)) {
+      if (equals(existingContext, dataContext)) {
         return template;
       }
       this.removeChild(slot);
@@ -136,16 +128,13 @@ export abstract class MgtTemplatedComponent extends MgtBaseComponent {
     div.slot = slotName;
     div.dataset.generated = 'template';
 
-    TemplateHelper.renderTemplate(div, this.templates[templateType], context, {
-      ...this.templateConverters,
-      ...this.templateContext
-    });
+    TemplateHelper.renderTemplate(div, this.templates[templateType], dataContext);
 
     this.appendChild(div);
 
-    this._renderedTemplates[slotName] = { context, slot: div };
+    this._renderedTemplates[slotName] = { context: dataContext, slot: div };
 
-    this.fireCustomEvent('templateRendered', { templateType, context, element: div });
+    this.fireCustomEvent('templateRendered', { templateType, context: dataContext, element: div });
 
     return template;
   }

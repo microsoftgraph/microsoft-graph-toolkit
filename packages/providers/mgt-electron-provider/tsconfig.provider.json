@@ -1,0 +1,11 @@
+{
+  "extends": "../../../tsconfig.base.json",
+  "compilerOptions": {
+    "outDir": "dist",
+    "sourceRoot": "src",
+    "composite": true,
+    "rootDir": "src"
+  },
+  "references": [{ "path": "../../mgt-element" }],
+  "include": ["src/Provider"]
+}

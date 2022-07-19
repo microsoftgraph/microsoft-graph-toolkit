@@ -1,0 +1,25 @@
+/**
+ * -------------------------------------------------------------------------------------------
+ * Copyright (c) Microsoft Corporation.  All Rights Reserved.  Licensed under the MIT License.
+ * See License in the project root for license information.
+ * -------------------------------------------------------------------------------------------
+ */
+
+@import '../../styles/shared-sass-variables.scss';
+
+$display-name__color: var(--person-card-display-name-color, set-var(color__sub1, $theme-default, $common));
+$title__color: var(--person-card-title-color, set-var(color__sub2, $theme-default, $common));
+$subtitle__color: var(--person-card-subtitle-color, set-var(color__sub2, $theme-default, $common));
+$details-title__color: var(--person-card-details-title-color, set-var(color, $theme-default, $common));
+$background-color: var(--person-card-background-color, set-var(background-color, $theme-default, $common));
+$person-card-display-name-color: var(--person-card-display-name-color, set-var(color__sub1, $theme-default, $common));
+
+$person-card: (
+  details-item__color: (
+    _var: --person-card-details-item-color,
+    light: $gray190,
+    dark: $gray10
+  )
+);
+
+@include create-themes($person-card);

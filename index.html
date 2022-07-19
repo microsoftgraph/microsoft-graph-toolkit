@@ -14,31 +14,52 @@
     <!-- <script src="./packages/mgt/dist/bundle/mgt-loader.js"></script> -->
 
     <script type="module" src="./packages/mgt/dist/es6/index.js"></script>
-    <script type="module" src="./packages/mgt/dist/es6/mock/mgt-mock-provider.js"></script>
   </head>
 
   <body>
-    <mgt-teams-provider
+    <!-- <mgt-teams-provider
       client-id="a974dfa0-9f57-49b9-95db-90f04ce2111a"
       auth-popup-url="auth.html"
-    ></mgt-teams-provider>
+    ></mgt-teams-provider> -->
 
-    <mgt-msal-provider
+    <!-- <mgt-teams-msal2-provider
+      client-id="72482bff-ecae-44f5-8fdc-513b7f5602e7"
+      scopes="user.read,user.read.all,mail.readBasic,people.read,people.read.all,sites.read.all,user.readbasic.all,contacts.read,presence.read,presence.read.all,tasks.readwrite,tasks.read,calendars.read,group.read.all"
+      auth-popup-url="auth.html"
+    ></mgt-teams-msal2-provider> -->
+
+    <!-- Teams Msal2 provider in SSO mode (see "teams-sso-node" sample) -->
+    <!-- <mgt-teams-msal2-provider
+      client-id="72482bff-ecae-44f5-8fdc-513b7f5602e7"
+      scopes="user.read,user.read.all,mail.readBasic,people.read,people.read.all,sites.read.all,user.readbasic.all,contacts.read,presence.read,presence.read.all,tasks.readwrite,tasks.read,calendars.read,group.read.all"
+      auth-popup-url="auth.html"
+      sso-url="http://localhost:5000/api/token"
+      http-method="POST"
+    ></mgt-teams-msal2-provider> -->
+
+    <!-- <mgt-msal-provider
       client-id="a974dfa0-9f57-49b9-95db-90f04ce2111a"
-      scopes="user.read,people.read,user.readbasic.all,contacts.read,calendars.read"
+      scopes="user.read,user.read.all,mail.readBasic,people.read,people.read.all,sites.read.all,user.readbasic.all,contacts.read,presence.read,presence.read.all,tasks.readwrite,tasks.read,calendars.read,group.read.all"
       redirect-uri="http://localhost:3000"
       depends-on="mgt-teams-provider"
-    ></mgt-msal-provider>
+    ></mgt-msal-provider> -->
 
-    <!-- <mgt-mock-provider></mgt-mock-provider> -->
+    <!-- <mgt-msal2-provider
+      client-id="2dfea037-938a-4ed8-9b35-c05708a1b241"
+      redirect-uri="http://localhost:3000"
+      scopes="user.read,user.read.all,mail.readBasic,people.read,people.read.all,sites.read.all,user.readbasic.all,contacts.read,presence.read,presence.read.all,tasks.readwrite,tasks.read,calendars.read,group.read.all"
+    ></mgt-msal2-provider> -->
+
+    <mgt-mock-provider></mgt-mock-provider>
 
     <mgt-login></mgt-login>
-    <mgt-person person-query="me" view="twoLines" person-card="hover" show-presence></mgt-person>
+    <mgt-person person-query="me" view="twoLines" person-card="click" show-presence></mgt-person>
     <mgt-people-picker></mgt-people-picker>
     <mgt-teams-channel-picker></mgt-teams-channel-picker>
-    <mgt-tasks data-source="todo"></mgt-tasks>
+    <mgt-tasks></mgt-tasks>
     <mgt-agenda group-by-day></mgt-agenda>
     <mgt-people show-presence></mgt-people>
     <mgt-todo></mgt-todo>
+    <mgt-file-list></mgt-file-list>
   </body>
 </html>

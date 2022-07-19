@@ -1,4 +1,4 @@
-﻿using graph_tutorial.Helpers;
+using graph_tutorial.Helpers;
 using Microsoft.Graph;
 using System;
 using System.Collections;
@@ -22,38 +22,38 @@ namespace graph_tutorial.Controllers
         [Route("{*all}")]
         public async Task<HttpResponseMessage> GetAsync(string all)
         {
-            return await ProcessRequestAsync("GET", all, null).ConfigureAwait(false);
+            return await ProcessRequestAsync(HttpMethods.GET, all, null).ConfigureAwait(false);
         }
 
         [HttpPost]
         [Route("{*all}")]
         public async Task<HttpResponseMessage> PostAsync(string all, [FromBody]object body)
         {
-            return await ProcessRequestAsync("POST", all, body).ConfigureAwait(false);
+            return await ProcessRequestAsync(HttpMethods.POST, all, body).ConfigureAwait(false);
         }
 
         [HttpDelete]
         [Route("{*all}")]
         public async Task<HttpResponseMessage> DeleteAsync(string all)
         {
-            return await ProcessRequestAsync("DELETE", all, null).ConfigureAwait(false);
+            return await ProcessRequestAsync(HttpMethods.DELETE, all, null).ConfigureAwait(false);
         }
 
         [HttpPut]
         [Route("{*all}")]
         public async Task<HttpResponseMessage> PutAsync(string all, [FromBody]object body)
         {
-            return await ProcessRequestAsync("PUT", all, body).ConfigureAwait(false);
+            return await ProcessRequestAsync(HttpMethods.PUT, all, body).ConfigureAwait(false);
         }
 
         [HttpPatch]
         [Route("{*all}")]
         public async Task<HttpResponseMessage> PatchAsync(string all, [FromBody]object body)
         {
-            return await ProcessRequestAsync("PATCH", all, body).ConfigureAwait(false);
+            return await ProcessRequestAsync(HttpMethods.PATCH, all, body).ConfigureAwait(false);
         }
 
-        private async Task<HttpResponseMessage> ProcessRequestAsync(string method, string all, object content)
+        private async Task<HttpResponseMessage> ProcessRequestAsync(HttpMethods method, string all, object content)
         {
             var graphClient = GraphHelper.GetAuthenticatedClient();
 
@@ -77,7 +77,7 @@ namespace graph_tutorial.Controllers
 
             try
             {
-                using (var response = await request.SendRequestAsync(content, CancellationToken.None, HttpCompletionOption.ResponseContentRead).ConfigureAwait(false))
+                using (var response = await request.SendRequestAsync(content?.ToString(), CancellationToken.None, HttpCompletionOption.ResponseContentRead).ConfigureAwait(false))
                 {
                     response.Content.Headers.TryGetValues("content-type", out var contentTypes);
 

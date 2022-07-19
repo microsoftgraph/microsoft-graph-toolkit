@@ -9,19 +9,20 @@ const MonacoWebpackPlugin = require('monaco-editor-webpack-plugin');
 
 module.exports = {
   presets: [
-    {
-      name: '@storybook/addon-docs/preset',
-      options: {
-        sourceLoaderOptions: null
-      }
-    }
+    // {
+    //   name: '@storybook/addon-docs/preset',
+    //   options: {
+    //     sourceLoaderOptions: null
+    //   }
+    // }
   ],
-  stories: ['../stories/**/*.stories.(js|mdx)'],
+  stories: ['../stories/overview.stories.mdx', '../stories/**/*.@(js|mdx)'],
   addons: [
-//     '@storybook/addon-a11y/register',
-//     '@storybook/addon-actions/register',
-    '@storybook/addon-knobs/register',
-//     '@storybook/addon-links/register'
+    '@storybook/addon-docs'
+    // '@storybook/addon-a11y/register',
+    // '@storybook/addon-actions/register',
+    // '@storybook/addon-knobs/register',
+    // '@storybook/addon-links/register'
   ],
   webpackFinal: async (config, { configType }) => {
     // `configType` has a value of 'DEVELOPMENT' or 'PRODUCTION'

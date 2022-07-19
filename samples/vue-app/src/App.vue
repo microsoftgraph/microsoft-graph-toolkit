@@ -1,10 +1,10 @@
 <template>
   <div id="app" :class="{ loggedOut: !signedIn, loggedIn: signedIn }">
-    <mgt-msal-provider
-      client-id="a974dfa0-9f57-49b9-95db-90f04ce2111a"
+    <mgt-msal2-provider
+      client-id="2dfea037-938a-4ed8-9b35-c05708a1b241"
       scopes="user.read,people.read,user.readbasic.all,contacts.read,calendars.read,files.read,group.read.all,tasks.readwrite"
     >
-    </mgt-msal-provider>
+    </mgt-msal2-provider>
 
     <header v-if="!signedIn">
       <h1>My Organizer</h1>
@@ -22,7 +22,7 @@
 
 <script lang="ts">
 import { Component, Vue } from 'vue-property-decorator';
-import { MgtMsalProvider, MgtLogin, ProviderState, Providers } from '@microsoft/mgt';
+import { ProviderState, Providers } from '@microsoft/mgt';
 import LoggedInPage from './components/LoggedInPage.vue';
 
 @Component({

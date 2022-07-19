@@ -33,6 +33,7 @@ If applicable, add screenshots to help explain your problem.
  - Framework [e.g. react, vue, none]
  - Context [e.g. Microsoft Teams, SharePoint, Office Add-ins, Web]
  - Version [e.g. 0.1]
+ - Provider [e.g. Msal2Provider] (bonus if you share the provider config)
 
 **Additional context**
 Add any other context about the problem here.

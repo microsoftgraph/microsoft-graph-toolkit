@@ -1,0 +1,739 @@
+/**
+ * -------------------------------------------------------------------------------------------
+ * Copyright (c) Microsoft Corporation.  All Rights Reserved.  Licensed under the MIT License.
+ * See License in the project root for license information.
+ * -------------------------------------------------------------------------------------------
+ */
+
+@import '../../styles/shared-styles.scss';
+@import '../../../../../node_modules/office-ui-fabric-core/dist/sass/References';
+@import './mgt-tasks-base.theme.scss';
+
+$task-icon-alignment: var(--task-icon-alignment, flex-start);
+$task-icon-background: var(--task-icon-background, transparent);
+$task-icon-background-completed: var(--task-icon-background-completed, $ms-color-sharedGreenCyan10);
+$task-icon-border: var(--task-icon-border, solid 1px $ms-color-gray120);
+$task-icon-border-completed: var(--task-icon-border-completed, solid 1px white);
+$task-icon-border-radius: var(--task-icon-border-radius, 50%);
+$task-icon-color-completed: var(--task-icon-color-completed, white);
+$task-border-completed: var(--task-complete-border, 2px dotted inherit);
+
+:host {
+  font-family: $font-family;
+  display: flex;
+  flex-direction: column;
+  background-color: set-var(background-color__sub1, $theme-default, $common);
+  padding: var(--tasks-padding, 12px);
+  color: $color;
+
+  input[type='date']::-webkit-inner-spin-button,
+  input[type='date']::-webkit-calendar-picker-indicator {
+    display: none;
+    -webkit-appearance: none;
+  }
+
+  .TaskIcon {
+    font-family: 'FabricMDL2Icons';
+    user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+
+    &.Divider {
+      vertical-align: initial;
+      margin: 0 12px;
+      font-size: 16px;
+    }
+  }
+
+  .Header {
+    padding: var(--tasks-header-padding, 0);
+    margin: var(--tasks-header-margin, 0 0 12px 0);
+
+    padding: var(--tasks-title-padding, 0);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+
+    .header__loading {
+      max-width: 90px;
+      width: 100%;
+      height: 20px;
+      background: #f2f2f2;
+    }
+
+    select {
+      font-family: var(--default-font-family, 'Segoe UI');
+      font-size: var(--tasks-plan-title-font-size, 1.1em);
+      padding: var(--tasks-plan-title-padding, 5px);
+      border: none;
+      -moz-appearance: none;
+      -webkit-appearance: none;
+      cursor: pointer;
+    }
+
+    select::-ms-expand {
+      display: none;
+    }
+
+    .PlanTitle {
+      font-family: var(--default-font-family, 'Segoe UI');
+      font-size: var(--tasks-plan-title-font-size, 1.1em);
+      padding: var(--tasks-plan-title-padding, 5px);
+    }
+
+    .AddBar {
+      display: flex;
+
+      .AddBarItem {
+        flex: 1 1 auto;
+      }
+    }
+
+    .NewTaskDue {
+      display: flex;
+
+      input {
+        flex: 1 1 auto;
+        background-color: set-var(background-color__sub1, $theme-default, $common);
+      }
+    }
+
+    .TitleCont {
+      flex: 1 1 auto;
+      display: flex;
+      align-items: center;
+      height: var(--tasks-new-button-height, 34px);
+    }
+
+    .NewTaskButton {
+      flex: 0 0 auto;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+
+      width: var(--tasks-new-button-width, auto);
+      height: var(--tasks-new-button-height, 32px);
+      border-radius: 2px;
+      padding: 0 20px;
+
+      background: var(--tasks-new-button-background, $ms-color-communicationPrimary);
+      border: var(--tasks-new-button-border, solid 1px rgba(0, 0, 0, 0));
+      color: var(--tasks-new-button-color, #ffffff);
+
+      user-select: none;
+      -moz-user-select: none;
+      -ms-user-select: none;
+
+      cursor: pointer;
+
+      span {
+        font-size: 14px;
+        font-weight: 600;
+        letter-spacing: 0.1px;
+        line-height: 14px;
+      }
+
+      .TaskIcon {
+        margin-right: 8px;
+      }
+
+      &.hidden {
+        visibility: hidden;
+      }
+
+      &:hover {
+        background: var(--tasks-new-button-hover-background, $ms-color-communicationShade10);
+      }
+
+      &:active {
+        background: var(--tasks-new-button-active-background, $ms-color-communicationShade20);
+      }
+    }
+  }
+
+  .Task {
+    position: relative;
+    margin: var(--task-margin, 0 0 18px 0);
+    padding: var(--task-padding, 0 0 0 0);
+    background-color: $background-color;
+    border: set-var(border, $theme-default, $tasks);
+    border-radius: 8px;
+
+    .TaskContent {
+      display: flex;
+
+      .Divider {
+        position: absolute;
+        height: 2px;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background-color: set-var(background-color__sub1, $theme-default, $common);
+      }
+
+      .TaskDetailsContainer {
+        flex: 1;
+        display: grid;
+        display: -ms-grid;
+        grid-template-columns: auto 1fr;
+        -ms-grid-columns: auto 1fr;
+        grid-template-rows: auto auto auto auto;
+        -ms-grid-rows: auto auto auto auto;
+        justify-content: space-between;
+        align-items: flex-start;
+
+        color: $detail__color;
+        font-size: 12px;
+        font-weight: 600;
+        white-space: normal;
+        margin-bottom: 12px;
+
+        .TaskDetail {
+          width: 100%;
+          height: 100%;
+          margin: 4px 24px 6px 0;
+
+          display: flex;
+          justify-content: flex-start;
+          align-items: center;
+        }
+
+        .TaskTitle {
+          color: $title__color;
+          font-size: 14px;
+          font-weight: 600;
+          grid-row: 1;
+          -ms-grid-row: 1;
+          grid-column: 1 / 3;
+          -ms-grid-column: 1;
+          -ms-grid-column-span: 2;
+          margin: 22px 0 4px;
+        }
+
+        .TaskGroup {
+          min-height: 24px;
+
+          grid-row: 2;
+          -ms-grid-row: 2;
+          grid-column: 1;
+          -ms-grid-column: 1;
+        }
+
+        .TaskBucket {
+          min-height: 24px;
+
+          grid-row: 2;
+          -ms-grid-row: 2;
+          grid-column: 2;
+          -ms-grid-column: 2;
+        }
+
+        .TaskDue {
+          justify-content: flex-end;
+          align-items: flex-start;
+
+          grid-row: 4;
+          -ms-grid-row: 4;
+          grid-column: 1 / 3;
+          -ms-grid-column: 1;
+          -ms-grid-column-span: 2;
+        }
+
+        &.tablet {
+          grid-template-columns: 1fr 0.5fr 1fr 0.5fr;
+          -ms-grid-columns: 1fr 0.5fr 1fr 0.5fr;
+          grid-template-rows: auto auto;
+          -ms-grid-rows: auto auto;
+
+          &.NoPlan {
+            grid-template-columns: 0 1fr 1fr 1fr;
+            -ms-grid-columns: 0 1fr 1fr 1fr;
+          }
+
+          .TaskDetail {
+            margin: 4px 24px 6px 0;
+          }
+
+          .TaskTitle {
+            grid-row: 1;
+            -ms-grid-row: 1;
+            grid-column: 1 / 5;
+            -ms-grid-column: 1;
+            -ms-grid-column-span: 4;
+          }
+
+          .TaskGroup {
+            grid-row: 2;
+            -ms-grid-row: 2;
+            grid-column: 1;
+            -ms-grid-column: 1;
+          }
+
+          .TaskBucket {
+            grid-row: 2;
+            -ms-grid-row: 2;
+            grid-column: 2;
+            -ms-grid-column: 2;
+          }
+
+          .TaskAssignee {
+            grid-row: 2;
+            -ms-grid-row: 2;
+            grid-column: 3;
+            -ms-grid-column: 3;
+          }
+
+          .TaskDue {
+            justify-content: flex-start;
+            align-items: center;
+
+            grid-row: 2;
+            -ms-grid-row: 2;
+            grid-column: 4;
+            -ms-grid-column: 4;
+          }
+        }
+
+        &.desktop {
+          grid-template-columns: 2fr 1fr 0.5fr 1fr 0.5fr;
+          -ms-grid-columns: 2fr 1fr 0.5fr 1fr 0.5fr;
+          grid-template-rows: auto;
+          -ms-grid-rows: auto;
+          margin: 0;
+
+          &.NoPlan {
+            grid-template-columns: 2fr 0 1fr 1fr 1fr;
+            -ms-grid-columns: 2fr 0 1fr 1fr 1fr;
+          }
+
+          .TaskDetail {
+            margin: 0 24px 0 0;
+          }
+
+          .TaskTitle {
+            padding: 0;
+
+            grid-row: 1;
+            -ms-grid-row: 1;
+            grid-column: 1;
+            -ms-grid-column: 1;
+          }
+
+          .TaskGroup {
+            min-height: 61px;
+            grid-row: 1;
+            -ms-grid-row: 1;
+            grid-column: 2;
+            -ms-grid-column: 2;
+          }
+
+          .TaskBucket {
+            grid-row: 1;
+            -ms-grid-row: 1;
+            grid-column: 3;
+            -ms-grid-column: 3;
+          }
+
+          .TaskAssignee {
+            grid-row: 1;
+            -ms-grid-row: 1;
+            grid-column: 4;
+            -ms-grid-column: 4;
+          }
+
+          .TaskDue {
+            justify-content: flex-start;
+            align-items: center;
+
+            grid-row: 1;
+            -ms-grid-row: 1;
+            grid-column: 5;
+            -ms-grid-column: 5;
+          }
+        }
+
+        svg {
+          vertical-align: middle;
+          margin-right: 4px;
+
+          path {
+            fill: $detail__color;
+          }
+        }
+        span,
+        select {
+          vertical-align: middle;
+          color: set-var(color__sub2, $theme-default, $common);
+        }
+
+        .TaskIcon {
+          color: $ms-color-gray120;
+          margin-right: 8px;
+        }
+        mgt-people {
+          color: $detail__color;
+          font-size: 16px;
+        }
+
+        mgt-person {
+          display: inline-block;
+        }
+        .Picker {
+          background-color: set-var(background-color__sub1, $theme-default, $common);
+          -webkit-background-clip: padding-box;
+          -moz-background-clip: padding-box;
+          background-clip: padding-box;
+          width: var(--mgt-flyout-set-width, 350px);
+          color: $detail__color;
+          mgt-people-picker {
+            --separator-margin: 0px 10px 0px 10px;
+          }
+        }
+
+        input,
+        select {
+          color: $detail__color;
+          font-size: 0.9em;
+          background-color: set-var(background-color__sub1, $theme-default, $common);
+        }
+      }
+    }
+
+    .TaskCheckContainer {
+      font-family: 'FabricMDL2Icons';
+      display: inline-block;
+      border-radius: 50%;
+      color: white;
+      cursor: pointer;
+      display: flex;
+      align-items: $task-icon-alignment;
+      margin: 21px 10px 20px 20px;
+
+      user-select: none;
+      -moz-user-select: none;
+      -ms-user-select: none;
+
+      &.Complete {
+        .TaskCheck {
+          background-color: $task-icon-background-completed;
+          border: $task-icon-border-completed;
+          color: $task-icon-color-completed;
+        }
+
+        .TaskContent .TaskDetailsContainer .TaskTitle {
+          text-decoration: line-through;
+          color: set-var(color__sub3, $theme-default, $common);
+        }
+      }
+
+      .TaskCheck {
+        font-family: 'FabricMDL2Icons';
+        font-size: 12px;
+        display: inline-block;
+        width: 18px;
+        height: 18px;
+        border-radius: $task-icon-border-radius;
+        border: $task-icon-border;
+        color: set-var(icon__color, $theme-default, $tasks);
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        background-color: $task-icon-background;
+
+        user-select: none;
+        -moz-user-select: none;
+        -ms-user-select: none;
+        &.Loading .TaskCheckContent {
+          animation: rotateIcon 2s infinite linear;
+        }
+      }
+    }
+
+    .TaskOptions {
+      cursor: pointer;
+      user-select: none;
+      -moz-user-select: none;
+      -ms-user-select: none;
+      margin: 16px 8px 0 0;
+    }
+
+    &.ReadOnly {
+      .TaskCheckContainer {
+        cursor: default;
+      }
+    }
+
+    &.Complete {
+      background: $background-color--completed;
+      border: set-var(border--completed, $theme-default, $tasks);
+
+      .TaskContent .TaskDetailsContainer .TaskTitle {
+        text-decoration: line-through;
+        color: set-var(color__sub3, $theme-default, $common);
+      }
+    }
+
+    &.NewTask {
+      margin: var(--task-new-margin, var(--task-margin, 0 0 24px 0));
+      display: flex;
+      flex-direction: row;
+
+      .SelfAssign {
+        display: none;
+      }
+
+      .AssignTo {
+        border: 0;
+        background: none;
+      }
+
+      .FakeCheckBox {
+        width: 15px;
+        height: 15px;
+        cursor: pointer;
+        margin: 0 5px 0 5px;
+
+        &::after {
+          font-family: 'FabricMDL2Icons';
+          content: '\uE739';
+        }
+
+        & ~ :checked {
+          font-family: 'FabricMDL2Icons';
+          content: '\uE73A';
+        }
+      }
+
+      .TaskContent {
+        flex: 1 1 auto;
+        align-content: center;
+        vertical-align: middle;
+        margin: 0 0 0 12px;
+
+        .TaskDetailsContainer {
+          display: flex;
+          flex-direction: column;
+          align-items: stretch;
+          margin: 0;
+
+          .TaskTitle {
+            display: flex;
+            height: 32px;
+            padding: 2px;
+
+            input {
+              flex: 1;
+              font-family: var(--default-font-family, 'Segoe UI');
+              margin: var(--task-new-input-margin, 0 24px 0 16px);
+              padding: var(--task-new-input-padding, 6px);
+              font-size: var(--task-new-input-font-size, 14px);
+              font-weight: 600;
+              border: var(--task-new-border, none);
+              border-bottom: 1px solid $ms-color-gray40;
+              outline: none;
+              border-radius: 0;
+              background-color: set-var(background-color__sub1, $theme-default, $common);
+            }
+
+            input:hover {
+              border-bottom: 1px solid $ms-color-communicationShade10;
+            }
+
+            input:active {
+              border-bottom: 1px solid $ms-color-communicationShade20;
+            }
+
+            input:focus {
+              border-bottom: 1px solid $ms-color-communicationPrimary;
+            }
+          }
+
+          .TaskDetails {
+            display: flex;
+            justify-content: stretch;
+            align-items: center;
+            flex-wrap: wrap;
+            margin: 14px 0 14px 4px;
+
+            .NewTaskGroup {
+              margin: 8px 16px;
+            }
+
+            .NewTaskBucket {
+              margin: 8px 16px;
+            }
+
+            .NewTaskDue {
+              margin: 8px 16px;
+            }
+
+            .NewTaskAssignee {
+              margin: 8px 16px;
+              min-width: 80px;
+            }
+
+            .TaskPeople label {
+              display: flex;
+              align-content: center;
+              align-items: center;
+            }
+
+            select,
+            input {
+              font-family: $font-family;
+              font-size: 12px;
+              font-weight: 600;
+              border: var(--task-new-select-border, none);
+              border-bottom: 1px solid $ms-color-gray40;
+
+              &:hover {
+                border-bottom: 1px solid $ms-color-communicationShade10;
+              }
+
+              &:active {
+                border-bottom: 1px solid $ms-color-communicationShade20;
+              }
+
+              &:focus {
+                border-bottom: 1px solid $ms-color-communicationPrimary;
+              }
+            }
+          }
+        }
+      }
+
+      .TaskAddButtonContainer {
+        margin-right: 28px;
+
+        .TaskAdd,
+        .TaskCancel {
+          justify-content: center;
+          align-items: center;
+          cursor: pointer;
+          flex: 0 0 auto;
+          display: flex;
+          width: var(--tasks-new-button-width, 100px);
+          height: var(--tasks-new-button-height, 32px);
+          border-radius: 4px;
+          border: var(--tasks-new-button-border, solid 1px #e5e5e5);
+          font-family: var(--default-font-family, 'Segoe UI');
+          font-size: 14px;
+          line-height: 20px;
+          // margin: 0 12px 0 32px;
+        }
+
+        .TaskAdd {
+          color: white;
+          background: var(--task-new-add-button-background, $ms-color-communicationPrimary);
+          margin: 22px 0 12px auto;
+          // margin: 22px 12px 8px 32px;
+        }
+
+        .TaskCancel {
+          color: $button__color--cancel;
+        }
+
+        &.Disabled .TaskAdd {
+          color: $button__color--cancel;
+          background: var(--task-new-add-button-disabled-background, #ffffff);
+          cursor: default;
+        }
+      }
+    }
+
+    &.LoadingTask {
+      .TaskCheckContainer {
+        cursor: default;
+      }
+      .TaskDetails {
+        display: flex;
+      }
+      .TaskCheck {
+        background: #f2f2f2;
+        border-color: #f2f2f2;
+        cursor: default;
+      }
+      .TaskDetailIcon {
+        width: 16px;
+        height: 16px;
+        margin: 5px;
+        background: #f2f2f2;
+      }
+      .TaskTitle {
+        background: #f2f2f2;
+        max-width: 400px;
+        height: 20px;
+        margin-right: 20px !important;
+      }
+      .TaskDetail {
+        margin-right: 12px;
+        display: flex;
+        flex-direction: row;
+        align-items: center;
+      }
+      .TaskDetailName {
+        width: 81px;
+        height: 10px;
+        background: #f2f2f2;
+      }
+    }
+  }
+}
+
+@keyframes rotateIcon {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+[dir='rtl'] {
+  mgt-arrow-options {
+    --arrow-options-left: auto;
+  }
+  mgt-dot-options {
+    --dot-options-translateX: translateX(60px);
+  }
+
+  .TaskDetails {
+    margin-right: 14px !important;
+  }
+  .TaskIcon {
+    margin-left: 8px;
+  }
+  .TaskDetail {
+    svg {
+      margin-left: 4px;
+    }
+  }
+}
+
+@media (forced-colors: active) and (prefers-color-scheme: dark) {
+  :host svg {
+    fill: rgb(255, 255, 255) !important;
+    fill-rule: nonzero !important;
+    clip-rule: nonzero !important;
+
+    path {
+      fill: rgb(255, 255, 255) !important;
+      fill-rule: nonzero !important;
+      clip-rule: nonzero !important;
+    }
+  }
+}
+
+@media (forced-colors: active) and (prefers-color-scheme: light) {
+  :host svg {
+    fill: rgb(0, 0, 0) !important;
+    fill-rule: nonzero !important;
+    clip-rule: nonzero !important;
+
+    path {
+      fill: rgb(0, 0, 0) !important;
+      fill-rule: nonzero !important;
+      clip-rule: nonzero !important;
+    }
+  }
+}

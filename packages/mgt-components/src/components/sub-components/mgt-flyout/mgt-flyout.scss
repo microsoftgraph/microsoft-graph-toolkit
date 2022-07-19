@@ -1,0 +1,64 @@
+/**
+ * -------------------------------------------------------------------------------------------
+ * Copyright (c) Microsoft Corporation.  All Rights Reserved.  Licensed under the MIT License.
+ * See License in the project root for license information.
+ * -------------------------------------------------------------------------------------------
+ */
+
+@import '../../../../../../node_modules/office-ui-fabric-core/dist/sass/References';
+@import '../../../styles/shared-sass-variables.scss';
+
+.root {
+  .scout-top {
+    position: fixed;
+    top: 0;
+    left: 0;
+  }
+
+  .scout-bottom {
+    position: fixed;
+    bottom: 0;
+    right: 0;
+  }
+
+  .flyout {
+    display: none;
+    position: fixed;
+    z-index: 9999999;
+    opacity: 0;
+    box-shadow: set-var(box-shadow, $theme-default, $common);
+    border-radius: 8px;
+    &.small {
+      overflow-y: auto;
+      overflow-x: hidden;
+    }
+  }
+
+  &.visible {
+    .flyout {
+      display: inline-block;
+      animation-name: fadeIn;
+      animation-duration: 0.3s;
+      animation-timing-function: cubic-bezier(0.1, 0.9, 0.2, 1);
+      animation-fill-mode: both;
+      transition: top 0.3s ease, bottom 0.3s ease, left 0.3s ease;
+      &.small {
+        overflow-y: auto;
+        overflow-x: hidden;
+      }
+    }
+  }
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    margin-top: -10px;
+    margin-bottom: -10px;
+  }
+  to {
+    opacity: 1;
+    margin-top: 0;
+    margin-bottom: 0;
+  }
+}

@@ -1,0 +1,115 @@
+/**
+ * -------------------------------------------------------------------------------------------
+ * Copyright (c) Microsoft Corporation.  All Rights Reserved.  Licensed under the MIT License.
+ * See License in the project root for license information.
+ * -------------------------------------------------------------------------------------------
+ */
+
+@import '../../../../../node_modules/office-ui-fabric-core/dist/sass/References';
+@import '../../styles/shared-styles.scss';
+@import './mgt-file-list.theme.scss';
+
+$file-item-background-color--hover: set-var(list__item__background-color--hover, $theme-default, $file-list);
+$file-item-background-color--active: set-var(list__item__background-color--active, $theme-default, $file-list);
+$background-color: set-var(list__background-color, $theme-default, $file-list);
+$file-list-border-radius: var(--file-list-border-radius, 4px);
+$file-list-box-shadow: var(
+  --file-list-box-shadow,
+  0px 3.2px 7.2px rgba(0, 0, 0, 0.132),
+  0px 0.6px 1.8px rgba(0, 0, 0, 0.108)
+);
+$file-list-border: var(--file-list-border, none);
+$file-item-border-radius: var(--file-item-border-radius, 2px);
+$file-item-margin: var(--file-item-margin, 0 4px);
+$show-more-button-font-size: var(--show-more-button-font-size, 12px);
+$show-more-button-padding: var(--show-more-button-padding, 6px);
+$show-more-button-border-bottom-right-radius: var(--show-more-button-border-bottom-right-radius, 8px);
+$show-more-button-border-bottom-left-radius: var(--show-more-button-border-bottom-left-radius, 8px);
+$show-more-button-background-color: var(
+  --show-more-button-background-color,
+  set-var(background-color__sub2, $theme-default, $common)
+);
+$show-more-button-background-color--hover: var(
+  --show-more-button-background-color--hover,
+  $file-item-background-color--hover
+);
+$progress-ring-size: var(--progress-ring-size, 24px);
+
+:host {
+  font-family: $font-family;
+  font-size: $font-size;
+}
+
+:host .file-list-wrapper,
+mgt-file-item .file-list-wrapper {
+  background-color: $background-color;
+  box-shadow: $file-list-box-shadow;
+  border-radius: $file-list-border-radius;
+  border: $file-list-border;
+  position: relative;
+  color: $color;
+  display: flex;
+  flex-direction: column;
+  border-radius: 8px;
+
+  .file-list {
+    display: flex;
+    padding: var(--file-list-padding, 4px 0);
+    margin: var(--file-list-margin, 0);
+    flex-direction: column;
+    list-style: none;
+
+    .file-item {
+      border-top: var(--file-item-border-top, none);
+      border-left: var(--file-item-border-left, none);
+      border-right: var(--file-item-border-right, none);
+      border-bottom: var(--file-item-border-bottom, none);
+      margin: $file-item-margin;
+      border-radius: $file-item-border-radius;
+      cursor: pointer;
+
+      mgt-file {
+        --file-background-color: $background-color;
+      }
+
+      &:hover,
+      &.focused {
+        background-color: $file-item-background-color--hover;
+        border-radius: 4px;
+
+        mgt-file {
+          --file-background-color: $file-item-background-color--hover;
+        }
+      }
+
+      &:active,
+      &.selected {
+        background-color: $file-item-background-color--active;
+
+        mgt-file {
+          --file-background-color: $file-item-background-color--active;
+        }
+      }
+    }
+  }
+
+  .progress-ring {
+    margin: 4px auto;
+    width: $progress-ring-size;
+    height: $progress-ring-size;
+  }
+
+  .show-more {
+    text-align: center;
+    font-size: $show-more-button-font-size;
+    padding: $show-more-button-padding;
+    border-bottom-right-radius: $show-more-button-border-bottom-right-radius;
+    border-bottom-left-radius: $show-more-button-border-bottom-left-radius;
+    cursor: pointer;
+    background-color: $show-more-button-background-color;
+
+    &:hover {
+      background-color: $show-more-button-background-color--hover;
+    }
+  }
+}

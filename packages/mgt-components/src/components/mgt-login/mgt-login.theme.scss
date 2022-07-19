@@ -1,0 +1,30 @@
+/**
+ * -------------------------------------------------------------------------------------------
+ * Copyright (c) Microsoft Corporation.  All Rights Reserved.  Licensed under the MIT License.
+ * See License in the project root for license information.
+ * -------------------------------------------------------------------------------------------
+ */
+
+@import '../../styles/shared-sass-variables.scss';
+
+$button__color--hover: var(--button-color--hover, #{$commblue_primary});
+$button__background-color--hover: var(
+  --button-background-color--hover,
+  set-var(background-color--hover, $theme-default, $common)
+);
+$popup__background-color: var(--popup-background-color, set-var(background-color, $theme-default, $common));
+
+$login: (
+  button__color: (
+    _var: --button-color,
+    dark: $text__color__sub1--dark,
+    light: $text__color__sub1--light
+  ),
+  popup__color: (
+    _var: --popup-color,
+    dark: $text__color__sub1--dark,
+    light: $text__color__sub1--light
+  )
+);
+
+@include create-themes($login);

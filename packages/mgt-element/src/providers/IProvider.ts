@@ -26,8 +26,27 @@ export abstract class IProvider implements AuthenticationProvider {
    * @memberof IProvider
    */
   public graph: IGraph;
+  /**
+   * Enable/Disable multi account functionality
+   *
+   * @protected
+   * @type {boolean}
+   * @memberof IProvider
+   */
+  protected isMultipleAccountDisabled: boolean = true;
   private _state: ProviderState;
   private _loginChangedDispatcher = new EventDispatcher<LoginChangedEvent>();
+  private _activeAccountChangedDispatcher = new EventDispatcher<ActiveAccountChanged>();
+
+  /**
+   * Enable/Disable incremental consent
+   *
+   * @protected
+   * @type {boolean}
+   * @memberof IProvider
+   */
+  private _isIncrementalConsentDisabled: boolean = false;
+
   /**
    * returns state of Provider
    *
@@ -37,6 +56,36 @@ export abstract class IProvider implements AuthenticationProvider {
    */
   public get state(): ProviderState {
     return this._state;
+  }
+
+  /**
+   * Incremental consent setting
+   *
+   * @readonly
+   * @memberof IProvider
+   */
+  public get isIncrementalConsentDisabled(): boolean {
+    return this._isIncrementalConsentDisabled;
+  }
+
+  /**
+   * Enable/Disable incremental consent
+   *
+   * @readonly
+   * @memberof IProvider
+   */
+  public set isIncrementalConsentDisabled(disabled: boolean) {
+    this._isIncrementalConsentDisabled = disabled;
+  }
+
+  /**
+   * Name used for analytics
+   *
+   * @readonly
+   * @memberof IProvider
+   */
+  public get name() {
+    return 'MgtIProvider';
   }
 
   constructor() {
@@ -92,6 +141,53 @@ export abstract class IProvider implements AuthenticationProvider {
   public logout?(): Promise<void>;
 
   /**
+   * Returns all signed in accounts.
+   *
+   * @return {*}  {any[]}
+   * @memberof IProvider
+   */
+  public getAllAccounts?(): IProviderAccount[];
+
+  /**
+   * Switch between two signed in accounts
+   *
+   * @param {*} user
+   * @memberof IProvider
+   */
+  public setActiveAccount?(user: IProviderAccount) {
+    this.fireActiveAccountChanged();
+  }
+
+  /**
+   * Event handler when Active account changes
+   *
+   * @param {EventHandler<ActiveAccountChanged>} eventHandler
+   * @memberof IProvider
+   */
+  public onActiveAccountChanged(eventHandler: EventHandler<ActiveAccountChanged>) {
+    this._activeAccountChangedDispatcher.add(eventHandler);
+  }
+
+  /**
+   * Removes event handler for when Active account changes
+   *
+   * @param {EventHandler<ActiveAccountChanged>} eventHandler
+   * @memberof IProvider
+   */
+  public removeActiveAccountChangedHandler(eventHandler: EventHandler<ActiveAccountChanged>) {
+    this._activeAccountChangedDispatcher.remove(eventHandler);
+  }
+
+  /**
+   * Fires event when active account changes
+   *
+   * @memberof IProvider
+   */
+  private fireActiveAccountChanged() {
+    this._activeAccountChangedDispatcher.fire({});
+  }
+
+  /**
    * uses scopes to recieve access token
    *
    * @param {...string[]} scopes
@@ -113,6 +209,13 @@ export abstract class IProvider implements AuthenticationProvider {
   public abstract getAccessToken(options?: AuthenticationProviderOptions): Promise<string>;
 }
 
+/**
+ * ActiveAccountChanged Event
+ *
+ * @export
+ * @interface ActiveAccountChanged
+ */
+export interface ActiveAccountChanged {}
 /**
  * loginChangedEvent
  *
@@ -159,3 +262,13 @@ export enum ProviderState {
    */
   SignedIn
 }
+
+/**
+ * Account details
+ *
+ * @export
+ */
+export type IProviderAccount = {
+  username?: string;
+  id: string;
+};

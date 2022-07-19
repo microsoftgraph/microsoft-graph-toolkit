@@ -1,0 +1,46 @@
+name: Project automation
+
+on:
+  issues:
+    types:
+      - opened
+
+jobs:
+  track_issue:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Get project data
+        env:
+          GITHUB_TOKEN: ${{ secrets.PROJECT_ACCESS_TOKEN }}
+          PROJECT_ORGANIZATION: ${{ secrets.PROJECT_ORGANIZATION }}
+          PROJECT_NUMBER: ${{ secrets.PROJECT_NUMBER }}
+        run: |
+          gh api graphql -f query='
+            query($org: String!, $number: Int!) {
+              organization(login: $org){
+                projectNext(number: $number) {
+                  id
+                  fields(first:20) {
+                    nodes {
+                      id
+                      name
+                      settings
+                    }
+                  }
+                }
+              }
+            }' -f org=$PROJECT_ORGANIZATION -F number=$PROJECT_NUMBER > project_data.json
+
+          echo 'PROJECT_ID='$(jq '.data.organization.projectNext.id' project_data.json) >> $GITHUB_ENV
+  
+      - name: Add issue to project        
+        env:
+          GITHUB_TOKEN: ${{ secrets.PROJECT_ACCESS_TOKEN }}
+          ISSUE_ID: ${{ github.event.issue.node_id }}
+        run: |
+          gh api graphql -f query='
+            mutation($project:ID!, $issue:ID!) { 
+              addProjectNextItem(input: {projectId: $project, contentId: $issue}) { 
+                projectNextItem { id }  
+              } 
+            }' -f project=$PROJECT_ID -f issue=$ISSUE_ID
