@@ -206,7 +206,7 @@ export class MgtTodo extends MgtTasksBase {
           type="date"
           label="new-taskDate-input"
           aria-label="new-taskDate-input"
-          role="input"
+          role="textbox"
           .value="${this.dateToInputValue(this._newTaskDueDate)}"
           @change="${(e: Event) => {
             const value = (e.target as HTMLInputElement).value;
