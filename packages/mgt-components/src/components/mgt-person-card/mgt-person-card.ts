@@ -614,7 +614,7 @@ export class MgtPersonCard extends MgtTemplatedComponent {
     return html`
       <div class="expanded-details-button" @click=${this.showExpandedDetails} @keydown=${
       this.handleKeyDown
-    } @ tabindex=0>>
+    } @ tabindex=0>
         ${getSvg(SvgIcon.ExpandDown)}
       </div>
     `;
