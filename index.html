@@ -1,35 +1,36 @@
 <!DOCTYPE html>
 <html lang="en">
-  <head>
-    <meta charset="utf-8" />
-    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
-    <title>Microsoft Graph Toolkit Test</title>
-    <meta name="viewport" content="width=device-width, initial-scale=1" />
 
-    <link href="https://cdnjs.cloudflare.com/ajax/libs/normalize/8.0.1/normalize.min.css" rel="stylesheet" />
-    <!-- <script src="./node_modules/@webcomponents/webcomponentsjs/webcomponents-loader.js"></script> -->
+<head>
+  <meta charset="utf-8" />
+  <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+  <title>Microsoft Graph Toolkit Test</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
 
-    <script src="https://unpkg.com/@microsoft/teams-js/dist/MicrosoftTeams.min.js" crossorigin="anonymous"></script>
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/normalize/8.0.1/normalize.min.css" rel="stylesheet" />
+  <!-- <script src="./node_modules/@webcomponents/webcomponentsjs/webcomponents-loader.js"></script> -->
 
-    <!-- <script src="./packages/mgt/dist/bundle/mgt-loader.js"></script> -->
+  <script src="https://unpkg.com/@microsoft/teams-js/dist/MicrosoftTeams.min.js" crossorigin="anonymous"></script>
 
-    <script type="module" src="./packages/mgt/dist/es6/index.js"></script>
-  </head>
+  <!-- <script src="./packages/mgt/dist/bundle/mgt-loader.js"></script> -->
 
-  <body>
-    <!-- <mgt-teams-provider
+  <script type="module" src="./packages/mgt/dist/es6/index.js"></script>
+</head>
+
+<body>
+  <!-- <mgt-teams-provider
       client-id="a974dfa0-9f57-49b9-95db-90f04ce2111a"
       auth-popup-url="auth.html"
     ></mgt-teams-provider> -->
 
-    <!-- <mgt-teams-msal2-provider
+  <!-- <mgt-teams-msal2-provider
       client-id="72482bff-ecae-44f5-8fdc-513b7f5602e7"
       scopes="user.read,user.read.all,mail.readBasic,people.read,people.read.all,sites.read.all,user.readbasic.all,contacts.read,presence.read,presence.read.all,tasks.readwrite,tasks.read,calendars.read,group.read.all"
       auth-popup-url="auth.html"
     ></mgt-teams-msal2-provider> -->
 
-    <!-- Teams Msal2 provider in SSO mode (see "teams-sso-node" sample) -->
-    <!-- <mgt-teams-msal2-provider
+  <!-- Teams Msal2 provider in SSO mode (see "teams-sso-node" sample) -->
+  <!-- <mgt-teams-msal2-provider
       client-id="72482bff-ecae-44f5-8fdc-513b7f5602e7"
       scopes="user.read,user.read.all,mail.readBasic,people.read,people.read.all,sites.read.all,user.readbasic.all,contacts.read,presence.read,presence.read.all,tasks.readwrite,tasks.read,calendars.read,group.read.all"
       auth-popup-url="auth.html"
@@ -37,29 +38,30 @@
       http-method="POST"
     ></mgt-teams-msal2-provider> -->
 
-    <!-- <mgt-msal-provider
+  <!-- <mgt-msal-provider
       client-id="a974dfa0-9f57-49b9-95db-90f04ce2111a"
       scopes="user.read,user.read.all,mail.readBasic,people.read,people.read.all,sites.read.all,user.readbasic.all,contacts.read,presence.read,presence.read.all,tasks.readwrite,tasks.read,calendars.read,group.read.all"
       redirect-uri="http://localhost:3000"
       depends-on="mgt-teams-provider"
     ></mgt-msal-provider> -->
 
-    <!-- <mgt-msal2-provider
+  <!-- <mgt-msal2-provider
       client-id="2dfea037-938a-4ed8-9b35-c05708a1b241"
       redirect-uri="http://localhost:3000"
       scopes="user.read,user.read.all,mail.readBasic,people.read,people.read.all,sites.read.all,user.readbasic.all,contacts.read,presence.read,presence.read.all,tasks.readwrite,tasks.read,calendars.read,group.read.all"
     ></mgt-msal2-provider> -->
 
-    <mgt-mock-provider></mgt-mock-provider>
+  <mgt-mock-provider></mgt-mock-provider>
 
-    <mgt-login></mgt-login>
-    <mgt-person person-query="me" view="twoLines" person-card="click" show-presence></mgt-person>
-    <mgt-people-picker></mgt-people-picker>
-    <mgt-teams-channel-picker></mgt-teams-channel-picker>
-    <mgt-tasks></mgt-tasks>
-    <mgt-agenda group-by-day></mgt-agenda>
-    <mgt-people show-presence></mgt-people>
-    <mgt-todo></mgt-todo>
-    <mgt-file-list></mgt-file-list>
-  </body>
+  <mgt-login></mgt-login>
+  <mgt-person person-query="me" view="twoLines" person-card="click" show-presence></mgt-person>
+  <mgt-people-picker></mgt-people-picker>
+  <mgt-teams-channel-picker></mgt-teams-channel-picker>
+  <mgt-tasks></mgt-tasks>
+  <mgt-agenda group-by-day></mgt-agenda>
+  <mgt-people show-presence></mgt-people>
+  <mgt-todo></mgt-todo>
+  <mgt-file-list></mgt-file-list>
+</body>
+
 </html>

@@ -212,7 +212,7 @@ export async function findGroups(
 }
 
 /**
- * Searches the Graph for Groups
+ * Searches the Graph for group members
  *
  * @export
  * @param {IGraph} graph
@@ -346,11 +346,7 @@ export async function getGroup(graph: IGraph, id: string, requestedProps?: strin
  * @param {string[]} groupIds, an array of string ids
  * @returns {Promise<Group[]>}
  */
-export async function getGroupsForGroupIds(
-  graph: IGraph,
-  groupIds: string[],
-  groupFilters: string = ''
-): Promise<Group[]> {
+export async function getGroupsForGroupIds(graph: IGraph, groupIds: string[], filters: string = ''): Promise<Group[]> {
   if (!groupIds || groupIds.length === 0) {
     return [];
   }
@@ -373,8 +369,8 @@ export async function getGroupsForGroupIds(
       groupDict[id] = group.group ? JSON.parse(group.group) : null;
     } else if (id !== '') {
       let apiUrl: string = `/groups/${id}`;
-      if (groupFilters) {
-        apiUrl += `${apiUrl}?$filters=${groupFilters}`;
+      if (filters) {
+        apiUrl = `${apiUrl}?$filters=${filters}`;
       }
       batch.get(id, apiUrl, ['Group.Read.All']);
       notInCache.push(id);
@@ -409,4 +405,36 @@ export async function getGroupsForGroupIds(
       return [];
     }
   }
+}
+
+/**
+ * Gets groups from the graph that are in the group ids
+ * @param graph
+ * @param query
+ * @param groupId
+ * @param top
+ * @param transitive
+ * @param groupTypes
+ * @param filters
+ * @returns
+ */
+export async function findGroupsFromGroupIds(
+  graph: IGraph,
+  query: string,
+  groupIds: string[],
+  top: number = 10,
+  groupTypes: GroupType = GroupType.any,
+  filters: string = ''
+): Promise<Group[]> {
+  const foundGroups: Group[] = [];
+  const graphGroups = await findGroups(graph, query, top, groupTypes, filters);
+  if (graphGroups) {
+    for (let i = 0; i < graphGroups.length; i++) {
+      const group = graphGroups[i];
+      if (group.id && groupIds.includes(group.id)) {
+        foundGroups.push(group);
+      }
+    }
+  }
+  return foundGroups;
 }

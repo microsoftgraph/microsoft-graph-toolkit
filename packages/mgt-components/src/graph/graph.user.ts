@@ -400,13 +400,14 @@ export async function findGroupMembers(
   top: number = 10,
   personType: PersonType = PersonType.person,
   transitive: boolean = false,
-  groupFilters: string = ''
+  userFilters: string = '',
+  peopleFilters: string = ''
 ): Promise<User[]> {
   const scopes = ['user.read.all', 'people.read'];
   const item = { maxResults: top, results: null };
 
   let cache: CacheStore<CacheUserQuery>;
-  const key = `${groupId || '*'}:${query || '*'}:${personType}:${transitive}`;
+  const key = `${groupId || '*'}:${query || '*'}:${personType}:${transitive}:${userFilters}`;
 
   if (getIsUsersCacheEnabled()) {
     cache = CacheService.getCache<CacheUserQuery>(schemas.users, schemas.users.stores.usersQuery);
@@ -432,8 +433,12 @@ export async function findGroupMembers(
     }
   }
 
-  if (groupFilters) {
-    filter += ` and ${groupFilters}`;
+  if (userFilters) {
+    filter += query ? ` and ${userFilters}` : userFilters;
+  }
+
+  if (peopleFilters) {
+    filter += query ? ` and ${peopleFilters}` : peopleFilters;
   }
 
   const graphResult = await graph
@@ -451,4 +456,26 @@ export async function findGroupMembers(
   }
 
   return graphResult ? graphResult.value : null;
+}
+
+export async function findUsersFromGroupIds(
+  graph: IGraph,
+  query: string,
+  groupIds: string[],
+  top: number = 10,
+  personType: PersonType = PersonType.person,
+  transitive: boolean = false,
+  groupFilters: string = ''
+): Promise<User[]> {
+  const users: User[] = [];
+  for (let i = 0; i < groupIds.length; i++) {
+    const groupId = groupIds[i];
+    try {
+      const groupUsers = await findGroupMembers(graph, query, groupId, top, personType, transitive, groupFilters);
+      users.push(...groupUsers);
+    } catch (_) {
+      continue;
+    }
+  }
+  return users;
 }

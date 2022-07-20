@@ -96,6 +96,7 @@ export type LoginProps = {
 
 export type PeoplePickerProps = {
 	groupId?: string;
+	groupIds?: string;
 	type?: PersonType;
 	groupType?: GroupType;
 	userType?: UserType;
