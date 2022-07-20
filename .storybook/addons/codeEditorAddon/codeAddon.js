@@ -198,7 +198,7 @@ export const withCodeEditor = makeDecorator({
         doc.open();
         doc.write(docContent);
         doc.close();
-      });
+      }, {once:true});
 
       storyElement.className = 'story-mgt-preview';
       storyElement.setAttribute('title', 'preview');

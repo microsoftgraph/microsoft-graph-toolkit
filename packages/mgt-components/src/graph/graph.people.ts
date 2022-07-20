@@ -106,7 +106,7 @@ export async function findPeople(
   query: string,
   top: number = 10,
   userType: UserType = UserType.any,
-  peopleFilters: string = ''
+  filters: string = ''
 ): Promise<Person[]> {
   const scopes = 'people.read';
 
@@ -131,9 +131,9 @@ export async function findPeople(
     }
   }
 
-  if (peopleFilters !== '') {
+  if (filters !== '') {
     // Adding the default people filters to the search filters
-    filter = `${filter} and ${peopleFilters}`;
+    filter += `${filter} and ${filters}`;
   }
 
   let graphResult;
