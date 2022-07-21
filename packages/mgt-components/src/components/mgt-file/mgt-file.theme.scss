@@ -12,7 +12,7 @@ $line3__color: var(--line3-color, set-var(color__sub1, $theme-default, $common))
 
 $file: (
   background-color: (
-    _var: --file-background-color,
+    _var: background-color,
     light: $background-color__main--light,
     dark: #424242
   )

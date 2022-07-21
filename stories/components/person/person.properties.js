@@ -52,7 +52,7 @@ export const personFallbackDetails = () => html`
     <mgt-person
       person-query="mbowen"
       view="twoLines"
-      fallback-details='{"mail":"MeganB@M365x214355.onmicrosoft.com"}'
+      fallback-details='{"mail":"MeganB@M365x214355.onmicrosoft.com", "displayName":"Megan Bowen"}'
     ></mgt-person>
   </div>
   <div class="example">
@@ -266,6 +266,10 @@ export const personQuery = () => html`
 export const personAvatarType = () => html`
   <mgt-person person-query="me" avatar-type="photo"></mgt-person>
   <mgt-person person-query="me" avatar-type="initials"></mgt-person>
+`;
+
+export const personDisableImageFetch = () => html`
+  <mgt-person person-query="me" disable-image-fetch></mgt-person>
 `;
 
 export const moreExamples = () => html`

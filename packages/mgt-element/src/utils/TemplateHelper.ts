@@ -241,12 +241,12 @@ export class TemplateHelper {
       const childElement = loopChildren[i] as HTMLElement;
 
       const loopExpression = childElement.dataset.for;
-      const loopTokens = this.trimExpression(loopExpression).split(/\s+(in|of)\s+/i);
+      const loopTokens = this.trimExpression(loopExpression).split(/\s(in|of)\s/i);
 
       if (loopTokens.length === 3) {
         // don't really care what's in the middle at this point
-        const itemName = loopTokens[0];
-        const listKey = loopTokens[2];
+        const itemName = loopTokens[0].trim();
+        const listKey = loopTokens[2].trim();
 
         const list = this.evalInContext(listKey, context);
         if (Array.isArray(list)) {

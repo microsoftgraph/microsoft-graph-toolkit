@@ -6,6 +6,7 @@
  */
 
 import { AuthenticationHandlerOptions, Middleware } from '@microsoft/microsoft-graph-client';
+import { Providers } from '..';
 
 /**
  * creates an AuthenticationHandlerOptions from scopes array that
@@ -19,7 +20,12 @@ export function prepScopes(...scopes: string[]) {
   const authProviderOptions = {
     scopes
   };
-  return [new AuthenticationHandlerOptions(undefined, authProviderOptions)];
+
+  if (!Providers.globalProvider.isIncrementalConsentDisabled) {
+    return [new AuthenticationHandlerOptions(undefined, authProviderOptions)];
+  } else {
+    return [];
+  }
 }
 
 /**

@@ -50,3 +50,19 @@ export const PersonCard = () => html`
   <div style="margin-bottom:10px">Person card Click</div>
   <mgt-people show-max="5" person-card="click"></mgt-people>
 `;
+
+export const FallbackDetails = () => html`
+  <mgt-people
+    user-ids="2804bc07-1e1f-4938-9085-ce6d756a32d2, validButNotFound@email.in.ad"
+    fallback-details='[{"mail": "test@test.com"},{"displayName": "validButNotFound@email.in.ad", "mail":"validButNotFound@email.in.ad"}]'
+  >
+  </mgt-people>
+`;
+
+export const FallbackDetailsPeopleQuery = () => html`
+  <mgt-people
+  people-queries="LidiaH@M365x214355.onmicrosoft.com, test@test.com"
+  fallback-details='[{ "mail":"testmail@test.com"},{"mail": "test@test.com"}]'
+  >
+  </mgt-people>
+`;

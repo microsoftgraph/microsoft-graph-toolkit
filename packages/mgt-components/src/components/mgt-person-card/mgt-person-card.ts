@@ -564,8 +564,9 @@ export class MgtPersonCard extends MgtTemplatedComponent {
     let email: TemplateResult;
     if (getEmailFromGraphEntity(person)) {
       email = html`
-        <div class="icon" @click=${() => this.emailUser()} >
-         <span>\uE715</span>
+        <div class="icon" @click=${() => this.emailUser()} tabindex=0 role="button">
+          ${getSvg(SvgIcon.SmallEmail)}
+          <span>${this.strings.sendEmailLinkSubtitle}</span>
         </div>
       `;
     }
@@ -574,22 +575,23 @@ export class MgtPersonCard extends MgtTemplatedComponent {
     let chat: TemplateResult;
     if (userPerson.userPrincipalName) {
       chat = html`
-        <div class="icon" @click=${() => this.chatUser()} >
-        <span>\uE8BD</span>
+        <div class="icon" @click=${() => this.chatUser()} tabindex=0 role="button">
+          ${getSvg(SvgIcon.SmallChat)}
+          <span>${this.strings.startChatLinkSubtitle}</span>
         </div>
       `;
     }
 
     let video: TemplateResult;
     video = html`
-      <div class="icon" @click=${() => this.videoCallUser()}>
+      <div class="icon" @click=${() => this.videoCallUser()} tabindex=0 role="button">
         <span>\uE714</span>
       </div>
     `;
 
     let phone: TemplateResult;
     phone = html`
-    <div class="icon" @click=${() => this.callUser()}>
+    <div class="icon" @click=${() => this.callUser()} tabindex=0 role="button">
       <span>\uE717</span>
       </div>
     `;
@@ -610,8 +612,9 @@ export class MgtPersonCard extends MgtTemplatedComponent {
    */
   protected renderExpandedDetailsButton(): TemplateResult {
     return html`
-      <div class="expanded-details-button" @click=${this.showExpandedDetails} @keyup=${(e: KeyboardEvent) =>
-      this.showExpandedDetails(e)} >
+      <div class="expanded-details-button" @click=${this.showExpandedDetails} @keydown=${
+      this.handleKeyDown
+    } @ tabindex=0>>
         ${getSvg(SvgIcon.ExpandDown)}
       </div>
     `;
@@ -633,6 +636,12 @@ export class MgtPersonCard extends MgtTemplatedComponent {
         </div>
       `;
     }
+    // load sections when details are expanded
+    // when not singed in
+    const provider = Providers.globalProvider;
+    if (provider.state === ProviderState.SignedOut) {
+      this.loadSections();
+    }
 
     person = person || this.internalPersonDetails;
 
@@ -642,7 +651,7 @@ export class MgtPersonCard extends MgtTemplatedComponent {
       <div class="section-nav">
         ${sectionNavTemplate}
       </div>
-      <div class="section-host" @wheel=${(e: WheelEvent) => this.handleSectionScroll(e)}>
+      <div class="section-host" @wheel=${(e: WheelEvent) => this.handleSectionScroll(e)} tabindex=0>
       </div>
     `;
   }
@@ -691,7 +700,7 @@ export class MgtPersonCard extends MgtTemplatedComponent {
 
     return html`
         <fluent-tabs  orientation="horizontal" activeindicator  @wheel=${(e: WheelEvent) =>
-          this.handleSectionScroll(e)}> 
+          this.handleSectionScroll(e)}>
           <fluent-tab class="${overviewClasses}"  slot="tab" @keyup="${() =>
       this.updateCurrentSection(null)}" @click=${() => this.updateCurrentSection(null)}>
             <div>${getSvg(SvgIcon.Overview)}</div>
@@ -811,8 +820,8 @@ export class MgtPersonCard extends MgtTemplatedComponent {
    */
   protected renderMessagingSection(): TemplateResult {
     return html`
-        <fluent-text-field appearance="filled" placeholder="Message ${this.internalPersonDetails.displayName}"  
-          .value=${this._chatInput}  
+        <fluent-text-field appearance="filled" placeholder="Message ${this.internalPersonDetails.displayName}"
+          .value=${this._chatInput}
           @input=${(e: Event) => {
             this._chatInput = (e.target as HTMLInputElement).value;
           }}>
@@ -842,8 +851,10 @@ export class MgtPersonCard extends MgtTemplatedComponent {
         parent = parent.parentElement;
       }
 
-      if (parent && (parent as MgtPerson).personDetails) {
-        this.personDetails = (parent as MgtPerson).personDetails;
+      let parentPerson = (parent as MgtPerson).personDetails || parent['personDetailsInternal'];
+
+      if (parent && parentPerson) {
+        this.personDetails = parentPerson;
         this.personImage = (parent as MgtPerson).personImage;
       }
     }
@@ -958,7 +969,7 @@ export class MgtPersonCard extends MgtTemplatedComponent {
     if (user) {
       const email = getEmailFromGraphEntity(user);
       if (email) {
-        window.open('mailto:' + email, '_blank');
+        window.open('mailto:' + email, '_blank', 'noreferrer');
       }
     }
   }
@@ -976,13 +987,13 @@ export class MgtPersonCard extends MgtTemplatedComponent {
     if (user && user.businessPhones && user.businessPhones.length) {
       const phone = user.businessPhones[0];
       if (phone) {
-        window.open('tel:' + phone, '_blank');
+        window.open('tel:' + phone, '_blank', 'noreferrer');
       }
     } else if (person && person.phones && person.phones.length) {
       const businessPhones = this.getPersonBusinessPhones(person);
       const phone = businessPhones[0];
       if (phone) {
-        window.open('tel:' + phone, '_blank');
+        window.open('tel:' + phone, '_blank', 'noreferrer');
       }
     }
   }
@@ -1003,7 +1014,7 @@ export class MgtPersonCard extends MgtTemplatedComponent {
         url += `&message=${message}`;
       }
 
-      const openWindow = () => window.open(url, '_blank');
+      const openWindow = () => window.open(url, '_blank', 'noreferrer');
 
       if (TeamsHelper.isAvailable) {
         TeamsHelper.executeDeepLink(url, (status: boolean) => {
@@ -1174,6 +1185,15 @@ export class MgtPersonCard extends MgtTemplatedComponent {
         ) {
           e.stopPropagation();
         }
+      }
+    }
+  }
+
+  private handleKeyDown(e: KeyboardEvent) {
+    //enter activates person-card
+    if (e) {
+      if (e.key === 'Enter') {
+        this.showExpandedDetails(e);
       }
     }
   }

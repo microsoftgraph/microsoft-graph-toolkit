@@ -9,7 +9,7 @@ import { html } from 'lit-element';
 import { withCodeEditor } from '../../.storybook/addons/codeEditorAddon/codeAddon';
 
 export default {
-  title: 'Samples | General',
+  title: 'Samples / General',
   component: 'mgt-combo',
   decorators: [withCodeEditor]
 };

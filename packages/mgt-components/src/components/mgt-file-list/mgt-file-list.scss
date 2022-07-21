@@ -23,8 +23,8 @@ $file-item-border-radius: var(--file-item-border-radius, 2px);
 $file-item-margin: var(--file-item-margin, 0 4px);
 $show-more-button-font-size: var(--show-more-button-font-size, 12px);
 $show-more-button-padding: var(--show-more-button-padding, 6px);
-$show-more-button-border-bottom-right-radius: var(--show-more-button-border-bottom-right-radius, 4px);
-$show-more-button-border-bottom-left-radius: var(--show-more-button-border-bottom-left-radius, 4px);
+$show-more-button-border-bottom-right-radius: var(--show-more-button-border-bottom-right-radius, 8px);
+$show-more-button-border-bottom-left-radius: var(--show-more-button-border-bottom-left-radius, 8px);
 $show-more-button-background-color: var(
   --show-more-button-background-color,
   set-var(background-color__sub2, $theme-default, $common)
@@ -50,6 +50,7 @@ mgt-file-item .file-list-wrapper {
   color: $color;
   display: flex;
   flex-direction: column;
+  border-radius: 8px;
 
   .file-list {
     display: flex;
@@ -74,6 +75,7 @@ mgt-file-item .file-list-wrapper {
       &:hover,
       &.focused {
         background-color: $file-item-background-color--hover;
+        border-radius: 4px;
 
         mgt-file {
           --file-background-color: $file-item-background-color--hover;

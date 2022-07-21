@@ -179,8 +179,8 @@ export enum SvgIcon {
    * Fail icon
    */
   Fail,
-
   /**
+   *
    * account selection
    */
   SelectAccount

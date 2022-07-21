@@ -22,9 +22,10 @@ export const dynamicGroupId = () => html`
   <mgt-people-picker id="picker"></mgt-people-picker>
   <div>
     <p class="notes">Pick a group:</p>
-    <select id="groupChooser" name="group">
-      <option value="">none</option>
-    </select>
+    <div class="groups">
+      <button id="showHideGroups">Select a group</button>
+      <ul id="groupChooser"></ul>
+    </div>
     <p class="notes">People chosen:</p>
     <div id="chosenPeople"></div>
   </div>
@@ -39,6 +40,49 @@ export const dynamicGroupId = () => html`
       font-size: 12px;
       margin-bottom: 2px;
     }
+    .groups {
+      max-width: 200px;
+    }
+
+    #showHideGroups {
+      background-color: #287ab1;
+      color: white;
+      padding: 8px;
+      font-size: 16px;
+      border: none;
+      cursor: pointer;
+      width: 100%;
+    }
+
+    #showHideGroups:hover, #showHideGroups:focus{
+      background-color: #4488EC;
+    }
+
+    #groupChooser {
+      display: none;
+      position: inherit;
+      background-color: #f1f1f1;
+      width: 100%;
+      box-shadow: 0px 8px 8px 0px rgba(0,0,0,0.2);
+      max-height: 300px;
+      overflow: scroll;
+      padding-left: 3px;
+    }
+    ul{
+      margin: 0px;
+      display: inherit;
+    }
+    ul > li {
+      color: black;
+      text-decoration: none;
+      display: block;
+      border-bottom: 1px solid;
+      font-size: 12px;
+      cursor: pointer;
+    }
+    ul > li:hover, ul > li:focus {
+      background-color: lightgray;
+    }
   </style>
   <script type="module">
     import { Providers, ProviderState } from '@microsoft/mgt';
@@ -46,12 +90,20 @@ export const dynamicGroupId = () => html`
     let picker = document.getElementById('picker');
     let chosenArea = document.getElementById('chosenPeople');
     let groupChooser = document.getElementById('groupChooser');
-
-    groupChooser.addEventListener('change', getGroupValue);
+    let button = document.getElementById('showHideGroups');
+    button.addEventListener("click", showHideGroups);
 
     loadGroups();
     Providers.onProviderUpdated(loadGroups);
 
+    function showHideGroups(){
+      const display = groupChooser.style.display;
+      if (display === "none"|| display === "") {
+          groupChooser.style.display = "inline-block";
+      } else {
+          groupChooser.style.display = "none";
+      }
+    }
     function loadGroups() {
       let provider = Providers.globalProvider;
       if (provider && provider.state === ProviderState.SignedIn) {
@@ -62,9 +114,17 @@ export const dynamicGroupId = () => html`
           .get()
           .then(groups => {
             for (let group of groups.value) {
-              let option = document.createElement('option');
-              option.value = group.id;
-              option.text = group.displayName;
+              const id = group.id;
+              let option = document.createElement('li');
+              option.setAttribute("value", id);
+              option.innerText = group.displayName;
+              option.onclick = function(event){
+                const id = event.target.getAttribute("value");
+                const displayName = event.target.innerText.trim();
+                button.innerText = displayName;
+                setGroupValue(id);
+                showHideGroups();
+              }
 
               groupChooser.appendChild(option);
             }
@@ -82,13 +142,6 @@ export const dynamicGroupId = () => html`
         chosenArea.append(newElem);
       }
     });
-
-    function getGroupValue(e) {
-      let selection = groupChooser.selectedOptions[0];
-      if (selection !== undefined) {
-        setGroupValue(selection.value);
-      }
-    }
 
     function setGroupValue(selected) {
       picker.setAttribute('group', selected);
@@ -153,6 +206,12 @@ export const pickerDisabled = () => html`
   </mgt-people-picker>
 `;
 
+export const pickerDisableImages = () => html`
+  <mgt-people-picker
+    default-selected-user-ids="e3d0513b-449e-4198-ba6f-bd97ae7cae85, 40079818-3808-4585-903b-02605f061225" disable-images>
+  </mgt-people-picker>
+`;
+
 export const pickerDefaultSelectedUserIds = () => html`
   <mgt-people-picker
     default-selected-user-ids="e3d0513b-449e-4198-ba6f-bd97ae7cae85, 40079818-3808-4585-903b-02605f061225">
@@ -182,8 +241,28 @@ export const pickerAllowAnyEmail = () => html`
   </script>
 `;
 
-export const pickerUserIds = ()=> html`
+export const pickerUserIds = () => html`
   <mgt-people-picker
       user-ids="2804bc07-1e1f-4938-9085-ce6d756a32d2 ,e8a02cc7-df4d-4778-956d-784cc9506e5a,c8913c86-ceea-4d39-b1ea-f63a5b675166">
   </mgt-people-picker>
-`
+`;
+
+export const pickerUserFilters = () => html`
+  <mgt-people-picker
+    user-filters="startsWith(displayName,'a')"
+    user-type="user">
+  </mgt-people-picker>
+`;
+
+export const pickerPeopleFilters = () => html`
+  <mgt-people-picker
+      people-filters="jobTitle eq 'Web Marketing Manager'">
+  </mgt-people-picker>
+`;
+
+export const pickerGroupFilters = () => html`
+  <mgt-people-picker
+    group-filters="startsWith(displayName, 'a')"
+    type="group">
+  </mgt-people-picker>
+`;

@@ -9,7 +9,7 @@ import { html } from 'lit-element';
 import { withCodeEditor } from '../../.storybook/addons/codeEditorAddon/codeAddon';
 
 export default {
-  title: 'Samples | Templating',
+  title: 'Samples / Templating',
   component: 'mgt-get',
   decorators: [withCodeEditor]
 };

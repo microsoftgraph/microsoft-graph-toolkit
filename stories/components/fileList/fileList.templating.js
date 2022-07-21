@@ -35,6 +35,7 @@ export const defaultTemplates = () => html`
 `;
 
 export const fileTemplate = () => html`
+  <!-- Uncomment the CSS tab to see custom css on hover -->
   <mgt-file-list>
     <template data-type="file">
       <div>
@@ -43,4 +44,26 @@ export const fileTemplate = () => html`
       </div>
     </template>
   </mgt-file-list>
+  <style>
+    /* mgt-file-list {
+      --file-item-background-color--hover: #caf1de;
+      --file-item-background-color--active: #acddde;
+    } */
+  </style>
+`;
+
+export const fileTemplateEvents = () => html`
+  <!-- You will see the selected file in the JS console -->
+  <mgt-file-list id="fileList">
+    <template data-type="file">
+      <div>
+        <span>Found the file {{file.name}}</span>
+      </div>
+    </template>
+  </mgt-file-list>
+  <script>
+    document.getElementById('fileList').addEventListener('itemClick', e => {
+      console.log('Item Clicked:', e.detail.name)
+    })
+  </script>
 `;

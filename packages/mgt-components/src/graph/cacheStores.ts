@@ -20,15 +20,17 @@ export const schemas = {
     name: 'users',
     stores: {
       users: 'users',
-      usersQuery: 'usersQuery'
+      usersQuery: 'usersQuery',
+      userFilters: 'userFilters'
     },
-    version: 1
+    version: 2
   },
   photos: {
     name: 'photos',
     stores: {
       contacts: 'contacts',
-      users: 'users'
+      users: 'users',
+      groups: 'groups'
     },
     version: 1
   },
@@ -39,7 +41,7 @@ export const schemas = {
       groupPeople: 'groupPeople',
       peopleQuery: 'peopleQuery'
     },
-    version: 1
+    version: 2
   },
   groups: {
     name: 'groups',
@@ -47,7 +49,7 @@ export const schemas = {
       groups: 'groups',
       groupsQuery: 'groupsQuery'
     },
-    version: 2
+    version: 3
   },
   get: {
     name: 'responses',

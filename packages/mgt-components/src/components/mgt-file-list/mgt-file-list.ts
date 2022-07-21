@@ -41,10 +41,10 @@ import { strings } from './strings';
 import { MgtFile } from '../mgt-file/mgt-file';
 import { MgtFileUploadConfig } from './mgt-file-upload/mgt-file-upload';
 
-import { fluentProgressRing } from '@fluentui/web-components';
+import { fluentProgressRing, fluentDesignSystemProvider } from '@fluentui/web-components';
 import { registerFluentComponents } from '../../utils/FluentComponents';
 
-registerFluentComponents(fluentProgressRing);
+registerFluentComponents(fluentProgressRing, fluentDesignSystemProvider);
 
 /**
  * The File List component displays a list of multiple folders and files by
@@ -598,7 +598,7 @@ export class MgtFileList extends MgtTemplatedComponent {
             this.files,
             f => f.id,
             f => html`
-              <li class="file-item">
+              <li class="file-item" @click=${e => this.handleItemSelect(f, e)}>
                 ${this.renderFile(f)}
               </li>
             `
@@ -625,7 +625,7 @@ export class MgtFileList extends MgtTemplatedComponent {
     return (
       this.renderTemplate('file', { file }, file.id) ||
       html`
-        <mgt-file .fileDetails=${file} .view=${view} @click=${e => this.handleItemSelect(file, e)}></mgt-file>
+        <mgt-file .fileDetails=${file} .view=${view}></mgt-file>
       `
     );
   }

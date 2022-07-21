@@ -107,7 +107,11 @@ export type PeoplePickerProps = {
 	placeholder?: string;
 	selectionMode?: string;
 	userIds?: string[];
+	userFilters?: string;
+	peopleFilters?: string;
+	groupFilters?: string;
 	showMax?: number;
+	disableImages?: boolean;
 	disabled?: boolean;
 	allowAnyEmail?: boolean;
 	templateContext?: TemplateContext;
@@ -126,6 +130,7 @@ export type PeopleProps = {
 	resource?: string;
 	version?: string;
 	scopes?: string[];
+	fallbackDetails?: IDynamicPerson[];
 	showMax?: number;
 	templateContext?: TemplateContext;
 	mediaQuery?: ComponentMediaQuery;
@@ -165,6 +170,7 @@ export type PersonProps = {
 	line3Property?: string;
 	view?: ViewType | PersonViewType;
 	avatarSize?: AvatarSize;
+	disableImageFetch?: boolean;
 	templateContext?: TemplateContext;
 	mediaQuery?: ComponentMediaQuery;
 	line1clicked?: (e: Event) => void;

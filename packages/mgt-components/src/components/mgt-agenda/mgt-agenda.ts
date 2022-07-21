@@ -384,7 +384,7 @@ export class MgtAgenda extends MgtTemplatedComponent {
    */
   protected renderTitle(event: MicrosoftGraph.Event): TemplateResult {
     return html`
-      <div class="event-subject">${event.subject}</div>
+      <div aria-label=${event.subject} class="event-subject">${event.subject}</div>
     `;
   }
 

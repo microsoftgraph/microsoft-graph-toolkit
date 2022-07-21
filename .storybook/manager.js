@@ -7,6 +7,9 @@
 
 import { addons, types } from '@storybook/addons';
 import { STORIES_CONFIGURED, STORY_MISSING } from '@storybook/core-events';
+
+import theme from './theme';
+
 // import React, { useState } from 'react';
 // import { AddonPanel } from '@storybook/components';
 // import { useParameter, useChannel } from '@storybook/api';
@@ -59,8 +62,12 @@ import { STORIES_CONFIGURED, STORY_MISSING } from '@storybook/core-events';
 //   );
 // };
 
-addons.register('microsoft/graph-toolkit', storybookAPI => {
+addons.setConfig({
+  enableShortcuts: false,
+  theme
+});
 
+addons.register('microsoft/graph-toolkit', storybookAPI => {
   storybookAPI.on(STORIES_CONFIGURED, (kind, story) => {
     if (storybookAPI.getUrlState().path === '/story/*') {
       storybookAPI.selectStory('mgt-login', 'login');
