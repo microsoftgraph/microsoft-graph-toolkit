@@ -2991,7 +2991,7 @@ PERFORMANCE OF THIS SOFTWARE.
         ${r} ${o} ${i} ${n}
       </div>
     `}renderExpandedDetailsButton(){return html$1`
-      <div class="expanded-details-button" @click=${this.showExpandedDetails} @keydown=${this.handleKeyDown} @ tabindex=0>>
+      <div class="expanded-details-button" @click=${this.showExpandedDetails} @keydown=${this.handleKeyDown} @ tabindex=0>
         ${getSvg(ge.ExpandDown)}
       </div>
     `}renderExpandedDetails(e){if(!this.state&&this.isStateLoading)return html$1`
