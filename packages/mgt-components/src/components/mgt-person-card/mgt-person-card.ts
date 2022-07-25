@@ -564,42 +564,59 @@ export class MgtPersonCard extends MgtTemplatedComponent {
     let email: TemplateResult;
     if (getEmailFromGraphEntity(person)) {
       email = html`
-        <div class="icon" @click=${() => this.emailUser()} tabindex=0 role="button">
-          ${getSvg(SvgIcon.SmallEmail)}
-          <span>${this.strings.sendEmailLinkSubtitle}</span>
+        <div
+          class="icon"
+          @click=${() => this.emailUser()}
+          tabindex=0
+          role="button">
+            ${getSvg(SvgIcon.SmallEmail)}
+            <span class="text">${this.strings.sendEmailLinkSubtitle}</span>
         </div>
       `;
     }
 
     // Chat
     let chat: TemplateResult;
-    if (userPerson.userPrincipalName) {
+    if (userPerson?.userPrincipalName) {
       chat = html`
-        <div class="icon" @click=${() => this.chatUser()} tabindex=0 role="button">
-          ${getSvg(SvgIcon.SmallChat)}
-          <span>${this.strings.startChatLinkSubtitle}</span>
+        <div
+          class="icon"
+          @click=${() => this.chatUser()}
+          tabindex=0
+          role="button">
+            ${getSvg(SvgIcon.SmallChat)}
+            <span class="text">${this.strings.startChatLinkSubtitle}</span>
         </div>
       `;
     }
 
     let video: TemplateResult;
-    video = html`
-      <div
-        class="icon"
-        @click=${() => this.videoCallUser()}
-        aria-label="${this.strings.video}"
-        tabindex=0
-        role="button">
-        <span>\uE714</span>
-      </div>
-    `;
+    if (userPerson?.userPrincipalName) {
+      video = html`
+        <div
+          class="icon"
+          @click=${() => this.videoCallUser()}
+          aria-label="${this.strings.video}"
+          tabindex=0
+          role="button">
+            <span>\uE714</span>
+        </div>
+      `;
+    }
 
     let phone: TemplateResult;
-    phone = html`
-    <div class="icon" @click=${() => this.callUser()} tabindex=0 aria-label="${this.strings.phone}" role="button">
-      <span>\uE717</span>
-      </div>
-    `;
+    if (this.hasPhone) {
+      phone = html`
+      <div
+        class="icon"
+        @click=${() => this.callUser()}
+        aria-label="${this.strings.phone}"
+        tabindex=0
+        role="button">
+          <span>\uE717</span>
+        </div>
+      `;
+    }
 
     return html`
       <div class="base-icons">
@@ -977,6 +994,12 @@ export class MgtPersonCard extends MgtTemplatedComponent {
         window.open('mailto:' + email, '_blank', 'noreferrer');
       }
     }
+  }
+
+  private get hasPhone(): boolean {
+    const user = this.personDetails as User;
+    const person = this.personDetails as microsoftgraph.Person;
+    return Boolean(user?.businessPhones?.length) || Boolean(person?.phones?.length);
   }
 
   /**
