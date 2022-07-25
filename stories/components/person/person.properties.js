@@ -46,22 +46,16 @@ export const setPersonDetails = () => html`
 
 export const personFallbackDetails = () => html`
   <div class="example">
-    <mgt-person person-query="mbowen" view="twoLines" fallback-details='{"displayName":"Megan Bowen"}'></mgt-person>
-  </div>
-  <div class="example">
-    <mgt-person
-      person-query="mbowen"
-      view="twoLines"
-      fallback-details='{"mail":"MeganB@M365x214355.onmicrosoft.com", "displayName":"Megan Bowen"}'
-    ></mgt-person>
-  </div>
-  <div class="example">
-    <mgt-person
-      person-query="mbowen"
-      view="twoLines"
-      fallback-details='{"mail":"MeganB@M365x214355.onmicrosoft.com","displayName":"Megan Bowen"}'
-    ></mgt-person>
-  </div>
+	<mgt-person person-query="mbowen" view="twoLines" fallback-details='{"displayName":"Megan Bowen"}'></mgt-person>
+</div>
+<div class="example">
+	<mgt-person person-query="mbowen" view="twoLines"
+		fallback-details='{"mail":"MeganB@M365x214355.onmicrosoft.com"}'></mgt-person>
+</div>
+<div class="example">
+	<mgt-person person-query="mbowen" view="twoLines"
+		fallback-details='{"mail":"MeganB@M365x214355.onmicrosoft.com","displayName":"Megan Bowen"}'></mgt-person>
+</div>
 
   <style>
   .example {

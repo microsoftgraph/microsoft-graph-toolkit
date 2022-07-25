@@ -45,6 +45,7 @@ $presence-color-dnd: #c50f1f;
 $presence-color-away: #ffaa44;
 $presence-color-invisible: #8a8886;
 $presence-color-oof: #b4009e;
+$background-color-initials: #e5e5e5;
 
 mgt-flyout {
   --mgt-flyout-border-radius: 2px;
@@ -460,7 +461,7 @@ mgt-person .person-root {
     // }
 
     &.lightGrey {
-      background-color: #e5e5e5;
+      background-color: $background-color-initials;
     }
   }
 
