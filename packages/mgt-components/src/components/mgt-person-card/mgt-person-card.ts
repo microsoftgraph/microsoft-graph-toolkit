@@ -584,14 +584,19 @@ export class MgtPersonCard extends MgtTemplatedComponent {
 
     let video: TemplateResult;
     video = html`
-      <div class="icon" @click=${() => this.videoCallUser()} tabindex=0 role="button">
+      <div
+        class="icon"
+        @click=${() => this.videoCallUser()}
+        aria-label="${this.strings.video}"
+        tabindex=0
+        role="button">
         <span>\uE714</span>
       </div>
     `;
 
     let phone: TemplateResult;
     phone = html`
-    <div class="icon" @click=${() => this.callUser()} tabindex=0 role="button">
+    <div class="icon" @click=${() => this.callUser()} tabindex=0 aria-label="${this.strings.phone}" role="button">
       <span>\uE717</span>
       </div>
     `;
