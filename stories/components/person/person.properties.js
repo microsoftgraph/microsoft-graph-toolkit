@@ -94,16 +94,16 @@ export const personView = () => html`
   <!-- Person View with presence; check JS tab -->
 
   <div class="example">
-    <mgt-person person-query="me" id="online" view="oneline" person-card="hover" show-presence></mgt-person>
+    <mgt-person person-query="me" id="online" view="oneline" show-presence></mgt-person>
   </div>
   <div class="example">
-    <mgt-person person-query="me" id="online2" view="twolines" person-card="hover" show-presence></mgt-person>
+    <mgt-person person-query="me" id="online2" view="twolines" show-presence></mgt-person>
   </div>
   <div class="example">
-    <mgt-person person-query="me" id="online3" show-presence view="threelines" person-card="hover"></mgt-person>
+    <mgt-person person-query="me" id="online3" show-presence view="threelines"></mgt-person>
   </div>
   <div class="example">
-    <mgt-person person-query="me" id="online4" show-presence view="fourLines" person-card="hover"></mgt-person>
+    <mgt-person person-query="me" id="online4" show-presence view="fourLines" ></mgt-person>
   </div>
 
   <script>

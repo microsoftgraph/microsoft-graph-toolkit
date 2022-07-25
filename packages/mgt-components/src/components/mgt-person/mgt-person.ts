@@ -937,7 +937,8 @@ export class MgtPerson extends MgtTemplatedComponent {
         // Render the line1 template
         const template = this.renderTemplate('line1', { person });
         details.push(html`
-          <div class="line1" @click=${() => this.handleLine1Clicked()} aria-label="${text}">${template}</div>
+          <div class="line1" @click=${() =>
+            this.handleLine1Clicked()} role="presentation" aria-label="${text}">${template}</div>
         `);
       } else {
         // Render the line1 property value
@@ -956,7 +957,8 @@ export class MgtPerson extends MgtTemplatedComponent {
         // Render the line2 template
         const template = this.renderTemplate('line2', { person });
         details.push(html`
-          <div class="line2" @click=${() => this.handleLine2Clicked()} aria-label="${text}">${template}</div>
+          <div class="line2" @click=${() =>
+            this.handleLine2Clicked()} role="presentation" aria-label="${text}">${template}</div>
         `);
       } else {
         // Render the line2 property value
@@ -975,7 +977,8 @@ export class MgtPerson extends MgtTemplatedComponent {
         // Render the line3 template
         const template = this.renderTemplate('line3', { person });
         details.push(html`
-          <div class="line3" @click=${() => this.handleLine3Clicked()} aria-label="${text}">${template}</div>
+          <div class="line3" @click=${() =>
+            this.handleLine3Clicked()} role="presentation" aria-label="${text}">${template}</div>
         `);
       } else {
         // Render the line3 property value
@@ -994,13 +997,15 @@ export class MgtPerson extends MgtTemplatedComponent {
         // Render the line4 template
         const template = this.renderTemplate('line4', { person });
         details.push(html` 
-          <div class="line4" @click=${() => this.handleLine4Clicked()} aria-label="${text}">${template}</div>
+          <div class="line4" @click=${() =>
+            this.handleLine4Clicked()} role="presentation" aria-label="${text}">${template}</div>
         `);
       } else {
         // Render the line4 property value
         if (text) {
           details.push(html`
-            <div class="line4" @click=${() => this.handleLine4Clicked()} aria-label="${text}">${text}</div>
+            <div class="line4" @click=${() =>
+              this.handleLine4Clicked()} role="presentation" aria-label="${text}">${text}</div>
           `);
         }
       }
