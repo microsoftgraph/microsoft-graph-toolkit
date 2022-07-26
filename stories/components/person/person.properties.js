@@ -56,6 +56,11 @@ export const personFallbackDetails = () => html`
 	<mgt-person person-query="mbowen" view="twoLines"
 		fallback-details='{"mail":"MeganB@M365x214355.onmicrosoft.com","displayName":"Megan Bowen"}'></mgt-person>
 </div>
+<!-- No Fallback details -->
+<div class="example">
+	<mgt-person person-query="mbowen" view="twoLines"
+		fallback-details='{}'></mgt-person>
+</div>
 
   <style>
   .example {
