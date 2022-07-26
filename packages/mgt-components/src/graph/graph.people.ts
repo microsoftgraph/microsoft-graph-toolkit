@@ -140,6 +140,7 @@ export async function findPeople(
   try {
     graphResult = await graph
       .api('/me/people')
+      .header('X-PeopleQuery-QuerySources', 'Mailbox,Directory')
       .search('"' + query + '"')
       .top(top)
       .filter(filter)
