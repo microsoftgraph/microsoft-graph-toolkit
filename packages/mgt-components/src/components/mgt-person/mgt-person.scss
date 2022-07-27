@@ -472,15 +472,15 @@ mgt-person .avatar-icon {
         font-size: calc(#{$avatar-size-s} * 0.4);
       }
       .user-presence {
-        left: calc(#{$avatar-size-s} - 8px);
+        left: calc(#{$avatar-size-s} - 6px);
         top: calc(#{$avatar-size-s} - 8px);
-        width: 8px;
-        height: 8px;
-
+        width: 6px;
+        height: 6px;
+        border: 0px;
         .presence-basic {
-          width: 4px;
-          height: 4px;
-          border-radius: 4px;
+          width: calc(#{$avatar-size-s} * 0.28 - 2px);
+          height: calc(#{$avatar-size-s} * 0.28 - 2px);
+          border-radius: 50%;
           padding: 0;
 
           & .presence-oof-offline svg {
