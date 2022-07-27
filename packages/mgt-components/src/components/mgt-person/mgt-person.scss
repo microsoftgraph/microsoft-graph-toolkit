@@ -57,8 +57,8 @@ mgt-flyout {
 
 :host .root {
   display: block;
-  margin: -11px -13px;
-  padding: 11px 13px;
+  // margin: -11px -13px;
+  // padding: 11px 13px;
 }
 
 :host svg,
@@ -229,13 +229,14 @@ mgt-person .person-root {
       .user-presence {
         left: calc(#{$avatar-size-s} - 8px);
         top: calc(#{$avatar-size-s} - 8px);
-        width: 8px;
-        height: 8px;
+        width: 6px;
+        height: 6px;
+        border: 0px;
 
         .presence-basic {
-          width: 4px;
-          height: 4px;
-          border-radius: 4px;
+          width: calc(#{$avatar-size-s} * 0.28 - 2px);
+          height: calc(#{$avatar-size-s} * 0.28 - 2px);
+          border-radius: 50%;
           padding: 0;
 
           & .presence-oof-offline svg {
@@ -269,10 +270,7 @@ mgt-person .person-root {
       img {
         position: absolute;
         display: block;
-        top: -100%;
-        right: -100%;
-        bottom: -100%;
-        left: -100%;
+        inset: -100%;
         margin: auto;
         height: 100%;
         width: auto;
@@ -513,7 +511,7 @@ mgt-person .avatar-icon {
   :host svg > path,
   mgt-person svg,
   mgt-person svg > path {
-    fill: rgb(0,0,0) !important;
+    fill: rgb(0, 0, 0) !important;
     fill-rule: nonzero !important;
     clip-rule: nonzero !important;
   }
