@@ -57,6 +57,8 @@ mgt-flyout {
 
 :host .root {
   display: block;
+  margin: -11px -13px;
+  padding: 11px 13px;
 }
 
 :host svg,
@@ -227,14 +229,20 @@ mgt-person .person-root {
       .user-presence {
         left: calc(#{$avatar-size-s} - 8px);
         top: calc(#{$avatar-size-s} - 8px);
-        width: 6px;
-        height: 6px;
-        border: 0px;
+        width: 8px;
+        height: 8px;
+
+        &__people {
+          left: calc(#{$avatar-size-s} - 6px);
+          border: 0px;
+          width: 6px;
+          height: 6px;
+        }
 
         .presence-basic {
-          width: calc(#{$avatar-size-s} * 0.28 - 2px);
-          height: calc(#{$avatar-size-s} * 0.28 - 2px);
-          border-radius: 50%;
+          width: 4px;
+          height: 4px;
+          border-radius: 4px;
           padding: 0;
 
           & .presence-oof-offline svg {
@@ -472,15 +480,22 @@ mgt-person .avatar-icon {
         font-size: calc(#{$avatar-size-s} * 0.4);
       }
       .user-presence {
-        left: calc(#{$avatar-size-s} - 6px);
+        left: calc(#{$avatar-size-s} - 8px);
         top: calc(#{$avatar-size-s} - 8px);
-        width: 6px;
-        height: 6px;
-        border: 0px;
+        width: 8px;
+        height: 8px;
+
+        &__people {
+          border: 0px;
+          width: 6px;
+          height: 6px;
+          left: calc(#{$avatar-size-s} - 6px);
+        }
+
         .presence-basic {
-          width: calc(#{$avatar-size-s} * 0.28 - 2px);
-          height: calc(#{$avatar-size-s} * 0.28 - 2px);
-          border-radius: 50%;
+          width: 4px;
+          height: 4px;
+          border-radius: 4px;
           padding: 0;
 
           & .presence-oof-offline svg {

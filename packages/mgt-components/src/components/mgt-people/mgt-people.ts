@@ -393,6 +393,7 @@ export class MgtPeople extends MgtTemplatedComponent {
           .personCardInteraction=${this.personCardInteraction}
           .showPresence=${this.showPresence}
           .personPresence=${personPresence}
+          .usage=${'people'}
         ></mgt-person>
       `
     );
