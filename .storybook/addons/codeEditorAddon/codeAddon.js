@@ -76,7 +76,7 @@ export const withCodeEditor = makeDecorator({
       paramsToReplace.push({ key: '{version}', value: urlParams.get('version') });
 
       paramsToReplace.forEach(param => {
-        html = html.replace(param.key, param.value);
+        html = html.replaceAll(param.key, param.value);
       });
 
       return html;
@@ -90,7 +90,7 @@ export const withCodeEditor = makeDecorator({
                       <td >{{ this.{{ key }} }}</td>
                     </tr>\n`;
 
-        story.render();
+        //story.render();
 
         if (keys && keys.find(key => key === 'displayName')) {
           template.push(dynamicTemplate.replaceAll('{{ key }}', 'displayName'));

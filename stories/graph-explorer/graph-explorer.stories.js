@@ -94,7 +94,7 @@ table th {
 }
 </style>
 
-<mgt-get resource="{resource}" max-pages="1" version="{version}">
+<mgt-get resource="{resource}" version="{version}">
     <template>
         <table>
             <thead>
