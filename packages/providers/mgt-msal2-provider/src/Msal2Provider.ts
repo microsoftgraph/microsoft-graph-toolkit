@@ -1,23 +1,15 @@
-import {
-  IProvider,
-  LoginType,
-  ProviderState,
-  createFromProvider,
-  Providers,
-  IProviderAccount
-} from '@microsoft/mgt-element';
+import { IProvider, LoginType, ProviderState, createFromProvider, IProviderAccount } from '@microsoft/mgt-element';
 import {
   Configuration,
   PublicClientApplication,
   SilentRequest,
   PopupRequest,
   RedirectRequest,
-  AuthenticationResult,
   AccountInfo,
   EndSessionRequest,
   InteractionRequiredAuthError
 } from '@azure/msal-browser';
-import { AuthenticationProviderOptions } from '@microsoft/microsoft-graph-client/lib/es/IAuthenticationProviderOptions';
+import { AuthenticationProviderOptions } from '@microsoft/microsoft-graph-client';
 
 /**
  * base config for MSAL 2.0 authentication

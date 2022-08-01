@@ -33,6 +33,7 @@ $person-card-nav-back-arrow-hover-color: var(--person-card-nav-back-arrow-hover-
   box-shadow: set-var(box-shadow, $theme-default, $common);
   border-radius: 8px;
   border: 1px solid set-var(background-color__sub1, $theme-default, $common);
+  border-radius: 2px;
 
   .nav {
     height: 0px;
@@ -137,6 +138,9 @@ $person-card-nav-back-arrow-hover-color: var(--person-card-nav-back-arrow-hover-
         span {
           margin-left: 8px;
           color: $person-card-base-links-color;
+        }
+        span.text {
+          font-family: $font-family;
         }
       }
       .icon:hover {

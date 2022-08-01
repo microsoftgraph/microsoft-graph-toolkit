@@ -5,8 +5,7 @@
  * -------------------------------------------------------------------------------------------
  */
 
-import { AuthenticationProvider } from '@microsoft/microsoft-graph-client/lib/es/IAuthenticationProvider';
-import { AuthenticationProviderOptions } from '@microsoft/microsoft-graph-client/lib/es/IAuthenticationProviderOptions';
+import { AuthenticationProvider, AuthenticationProviderOptions } from '@microsoft/microsoft-graph-client';
 import { IGraph } from '../IGraph';
 import { EventDispatcher, EventHandler } from '../utils/EventDispatcher';
 

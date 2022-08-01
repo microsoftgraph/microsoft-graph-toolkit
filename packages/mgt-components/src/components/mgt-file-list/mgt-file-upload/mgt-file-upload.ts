@@ -22,7 +22,10 @@ import {
   deleteSessionFile
 } from '../../../graph/graph.files';
 
-export { FluentProgress, FluentButton, FluentCheckbox, FluentCard } from '@fluentui/web-components';
+import { registerFluentComponents } from '../../../utils/FluentComponents';
+import { fluentButton, fluentCheckbox, fluentProgress, fluentCard } from '@fluentui/web-components';
+
+registerFluentComponents(fluentProgress, fluentButton, fluentCheckbox, fluentCard);
 
 /**
  * Upload conflict behavior status
