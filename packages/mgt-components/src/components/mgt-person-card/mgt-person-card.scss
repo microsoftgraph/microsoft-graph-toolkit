@@ -142,6 +142,9 @@ $person-card-nav-back-arrow-hover-color: var(--person-card-nav-back-arrow-hover-
           margin-left: 8px;
           color: $person-card-base-links-color;
         }
+        span.text {
+          font-family: $font-family;
+        }
       }
       .icon:hover {
         color: $person-card-base-links-hover-color;

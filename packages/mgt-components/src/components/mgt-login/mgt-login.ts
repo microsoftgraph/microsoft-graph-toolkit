@@ -14,15 +14,16 @@ import { MgtFlyout } from '../sub-components/mgt-flyout/mgt-flyout';
 import { getUserWithPhoto } from '../../graph/graph.userWithPhoto';
 import { MgtPerson, PersonViewType } from '../mgt-person/mgt-person';
 
-import { FluentListbox, FluentProgressRing } from '@fluentui/web-components/dist/web-components.min';
-console.log('This is a temporary workaround for using @fluentui/web-components', FluentListbox.name);
-
 import { getSvg, SvgIcon } from '../../utils/SvgHelper';
 
 import { styles } from './mgt-login-css';
 import { strings } from './strings';
 
 import '../../styles/style-helper';
+
+import { fluentListbox, fluentProgressRing } from '@fluentui/web-components';
+import { registerFluentComponents } from '../../utils/FluentComponents';
+registerFluentComponents(fluentListbox, fluentProgressRing);
 
 /**
  * Web component button and flyout control to facilitate Microsoft identity platform authentication

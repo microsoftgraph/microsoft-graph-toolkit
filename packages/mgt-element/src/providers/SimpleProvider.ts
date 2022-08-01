@@ -5,7 +5,7 @@
  * -------------------------------------------------------------------------------------------
  */
 
-import { AuthenticationProviderOptions } from '@microsoft/microsoft-graph-client/lib/es/IAuthenticationProviderOptions';
+import { AuthenticationProviderOptions } from '@microsoft/microsoft-graph-client';
 import { createFromProvider } from '../Graph';
 import { IProvider } from './IProvider';
 
