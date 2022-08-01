@@ -9,6 +9,8 @@
 @import '../../styles/shared-styles.scss';
 @import './mgt-people-picker.theme.scss';
 
+$person-wrapper-background-hover: #fafafa;
+
 // Main
 :host {
   font-family: $font-family;
@@ -68,7 +70,7 @@ mgt-people-picker .root {
       position: relative;
       background-color: set-var(selected-person__background-color, $theme-default, $people-picker);
       &:hover {
-        background-color: #fafafa;
+        background-color: $person-wrapper-background-hover;
       }
 
       &__person {
