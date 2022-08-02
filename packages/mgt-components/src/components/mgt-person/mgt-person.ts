@@ -848,9 +848,13 @@ export class MgtPerson extends MgtTemplatedComponent {
         <i class=${classMap(presenceClasses)} aria-hidden="true"></i>
       `;
     }
+    const userPresenceClass = {
+      'user-presence': true
+    };
+    userPresenceClass[statusClass] = true;
 
     return html`
-      <div class="user-presence" title=${presence.activity} aria-label=${presence.activity} role="img">
+      <div class=${classMap(userPresenceClass)} title=${presence.activity} aria-label=${presence.activity} role="img">
         ${iconHtml}
       </div>
     `;

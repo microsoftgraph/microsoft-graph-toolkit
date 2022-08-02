@@ -119,6 +119,51 @@ mgt-person .person-root {
         }
       }
 
+      &.presence-offline {
+        background-color: $presence-color-invisible;
+        border-color: $presence__background-color;
+      }
+
+      &.presence-available {
+        background-color: $presence-color-online;
+        border-color: $presence__background-color;
+      }
+
+      &.presence-oof-offline {
+        background-color: $presence__background-color;
+        border-color: $presence__background-color;
+      }
+
+      &.presence-oof-available {
+        background-color: $presence__background-color;
+        border-color: $presence__background-color;
+      }
+
+      &.presence-away {
+        background-color: $presence-color-away;
+        border-color: $presence__background-color;
+      }
+
+      &.presence-dnd {
+        background-color: $presence-color-dnd;
+        border-color: $presence__background-color;
+      }
+
+      &.presence-oof-dnd {
+        background-color: $presence__background-color;
+        border-color: $presence__background-color;
+      }
+
+      &.presence-busy {
+        background-color: $presence-color-dnd;
+        border-color: $presence__background-color;
+      }
+
+      &.presence-oof-busy {
+        background-color: $presence__background-color;
+        border-color: $presence__background-color;
+      }
+
       .presence-basic {
         width: calc(#{$avatar-size} * 0.28 - 4px);
         height: calc(#{$avatar-size} * 0.28 - 4px);
