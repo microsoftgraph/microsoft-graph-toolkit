@@ -827,9 +827,9 @@ export class MgtPersonCard extends MgtTemplatedComponent {
         : null
     } -->
       <div class="sections">
-        <div class="message-section">
+        <!-- <div class="message-section">
           ${this.renderMessagingSection()}
-        </div>
+        </div> -->
         ${compactTemplates}
       </div>
     `;
