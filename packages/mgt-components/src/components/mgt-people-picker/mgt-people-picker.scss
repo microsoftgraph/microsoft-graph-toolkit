@@ -30,17 +30,26 @@ mgt-people-picker .root {
 
 .people-picker {
   background-color: $input__background-color;
-  @include input__border($theme-default);
+  box-sizing: border-box;
+  background: padding-box linear-gradient(var(--neutral-fill-input-rest), var(--neutral-fill-input-rest)),
+    border-box var(--neutral-stroke-input-rest);
+  border: calc(var(--stroke-width) * 1px) solid transparent;
+  border-radius: calc(var(--control-corner-radius) * 1px);
+  height: calc((var(--base-height-multiplier) + var(--density)) * var(--design-unit) * 1px);
+
   &:hover {
-    border-color: $input__border-color--hover;
+    background: padding-box linear-gradient(var(--neutral-fill-input-focus), var(--neutral-fill-input-focus)),
+      border-box var(--neutral-stroke-input-rest);
   }
   &.focused {
-    border-color: $input__border-color--focus;
+    border-bottom: calc(var(--focus-stroke-width) * 1px) solid var(--accent-fill-rest);
+    border-bottom-left-radius: calc(var(--control-corner-radius) * 1px);
+    border-bottom-right-radius: calc(var(--control-corner-radius) * 1px);
   }
   &.disabled {
     pointer-events: none;
   }
-  padding: 6px 0 0;
+  padding: 3px 0 0;
 
   .selected-list {
     flex: 1 0 auto;
