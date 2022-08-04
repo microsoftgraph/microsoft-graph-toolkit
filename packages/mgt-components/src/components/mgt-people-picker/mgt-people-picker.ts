@@ -651,6 +651,7 @@ export class MgtPeoplePicker extends MgtTemplatedComponent {
       this._groupPeople = null;
       this._foundPeople = null;
       this.selectedPeople = [];
+      this.defaultPeople = null;
     }
 
     return super.requestStateUpdate(force);
