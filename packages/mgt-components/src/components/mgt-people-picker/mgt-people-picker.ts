@@ -1040,11 +1040,11 @@ export class MgtPeoplePicker extends MgtTemplatedComponent {
             } else {
               const isUserOrContactType = this.userType === UserType.user || this.userType === UserType.contact;
               if (this._userFilters && isUserOrContactType) {
+                people = await getUsers(graph, this._userFilters, this.showMax);
               } else {
                 people = await getPeople(graph, this.userType, this._peopleFilters);
               }
             }
-            people = await getUsers(graph, this._userFilters, this.showMax);
           } else if (this.type === PersonType.group) {
             if (this.groupIds) {
               try {
