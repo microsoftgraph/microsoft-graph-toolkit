@@ -709,7 +709,7 @@ export class MgtPersonCard extends MgtTemplatedComponent {
     const additionalPanelTemplates = this.sections.map((section, i) => {
       return html`
         <fluent-tab-panel  slot="tabpanel">
-              <div class="inserted">${this._currentSection ? section.asFullView() : null}</div>
+          <div class="inserted">${this._currentSection ? section.asFullView() : null}</div>
         </fluent-tab-panel>
       `;
     });
@@ -745,7 +745,7 @@ export class MgtPersonCard extends MgtTemplatedComponent {
    */
   protected renderOverviewSection(): TemplateResult {
     const compactTemplates = this.sections.map(
-      section => html`
+      (section: BasePersonCardSection) => html`
         <div class="section">
           <div class="section__header">
             <div class="section__title">${section.displayName}</div>

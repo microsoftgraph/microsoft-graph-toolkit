@@ -56,6 +56,29 @@ export const retemplateMetadata = () => html`
       </div>
     </template>
   </mgt-person>
+
+  <mgt-person view="fourLines">
+    <template data-type="line1">
+      <div>
+        Hello, my name is: {{person.displayName}}
+      </div>
+    </template>
+    <template data-type="line2">
+      <div>
+        Musician
+      </div>
+    </template>
+    <template data-type="line3">
+      <div>
+        Calif records
+      </div>
+    </template>
+    <template data-type="line4">
+      <div>
+        Nairobi
+      </div>
+    </template>
+  </mgt-person>
 `;
 
 export const personCard = () => html`
