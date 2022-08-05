@@ -658,6 +658,7 @@ export class MgtPeoplePicker extends MgtTemplatedComponent {
 
     return html`
        <div class="${classMap(inputClasses)}">
+         <span class="search-icon">\uE721</span>
          <input
            id="people-picker-input"
            class="search-box__input"
@@ -692,6 +693,7 @@ export class MgtPeoplePicker extends MgtTemplatedComponent {
     if (!this.selectedPeople || !this.selectedPeople.length) {
       return null;
     }
+    this.hideSearchIcon();
     return html`
        <div
         tabindex="0"
@@ -1127,6 +1129,9 @@ export class MgtPeoplePicker extends MgtTemplatedComponent {
     this.selectedPeople = filteredPersonArr;
     this.loadState();
     this.fireCustomEvent('selectionChanged', this.selectedPeople);
+    if (this.selectedPeople.length <= 0) {
+      this.showSearchIcon();
+    }
   }
 
   /**
@@ -1149,7 +1154,11 @@ export class MgtPeoplePicker extends MgtTemplatedComponent {
       if (duplicatePeople.length === 0) {
         this.selectedPeople = [...this.selectedPeople, person];
         this.fireCustomEvent('selectionChanged', this.selectedPeople);
-
+        if (this.selectedPeople.length <= 0) {
+          this.showSearchIcon();
+        } else {
+          this.hideSearchIcon();
+        }
         this.loadState();
         this._foundPeople = [];
       }
@@ -1302,6 +1311,9 @@ export class MgtPeoplePicker extends MgtTemplatedComponent {
       this.selectedPeople = this.selectedPeople.splice(0, this.selectedPeople.length - 1);
       this.loadState();
       this.hideFlyout();
+      if (this.selectedPeople.length <= 0) {
+        this.showSearchIcon();
+      }
       // fire selected people changed event
       this.fireCustomEvent('selectionChanged', this.selectedPeople);
     } else if (event.code === 'Comma' || event.code === 'Semicolon') {
@@ -1312,6 +1324,9 @@ export class MgtPeoplePicker extends MgtTemplatedComponent {
       return;
     } else {
       this.userInput = input.value;
+      if (this.userInput.length !== 0) {
+        this.hideSearchIcon();
+      }
       const validEmail = isValidEmail(this.userInput);
       if (!validEmail) {
         this.handleUserSearch();
@@ -1340,6 +1355,7 @@ export class MgtPeoplePicker extends MgtTemplatedComponent {
     this._currentSelectedUser = person;
     this.addPerson(person);
     this.hideFlyout();
+    this.hideSearchIcon();
 
     if (!this.input) {
       return;
@@ -1376,6 +1392,22 @@ export class MgtPeoplePicker extends MgtTemplatedComponent {
     this._debouncedSearch();
   }
 
+  /**
+   * Displays the search icon.
+   */
+  private showSearchIcon() {
+    const searchIcon = this.renderRoot?.querySelector('.search-icon');
+    if (searchIcon !== undefined || searchIcon !== null) {
+      searchIcon.style.display = null;
+    }
+  }
+
+  private hideSearchIcon() {
+    const searchIcon = this.renderRoot?.querySelector('.search-icon');
+    if (searchIcon !== undefined || searchIcon !== null) {
+      searchIcon.style.display = 'none';
+    }
+  }
   /**
    * Tracks event on user search (keydown)
    * @param event - event tracked on user input (keydown)
@@ -1419,7 +1451,7 @@ export class MgtPeoplePicker extends MgtTemplatedComponent {
       return;
     }
 
-    if (event.keyCode === 40 || event.keyCode === 38) {
+    if (event.code === 'ArrowDown' || event.code === 'ArrowUp') {
       // keyCodes capture: down arrow (40) and up arrow (38)
       this.handleArrowSelection(event);
       if (this.input.value.length > 0) {
@@ -1428,7 +1460,10 @@ export class MgtPeoplePicker extends MgtTemplatedComponent {
     }
 
     const input = event.target as HTMLInputElement;
-    if (event.code === 'Tab' || event.code === 'Enter') {
+
+    if (event.code === 'Backspace' && input.value.length === 1 && this.selectedPeople.length <= 0) {
+      this.showSearchIcon();
+    } else if (event.code === 'Tab' || event.code === 'Enter') {
       if (!event.shiftKey && this._foundPeople) {
         // keyCodes capture: tab (9) and enter (13)
         event.preventDefault();
@@ -1644,12 +1679,12 @@ export class MgtPeoplePicker extends MgtTemplatedComponent {
     if (peopleList && peopleList.children.length) {
       if (event) {
         // update arrow count
-        if (event.keyCode === 38) {
+        if (event.code === 'ArrowUp') {
           // up arrow
           this._arrowSelectionCount =
             (this._arrowSelectionCount - 1 + peopleList.children.length) % peopleList.children.length;
         }
-        if (event.keyCode === 40) {
+        if (event.code === 'ArrowDown') {
           // down arrow
           this._arrowSelectionCount = (this._arrowSelectionCount + 1) % peopleList.children.length;
         }
