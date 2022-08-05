@@ -1357,14 +1357,14 @@ export class MgtPeoplePicker extends MgtTemplatedComponent {
    * Displays the search icon.
    */
   private showSearchIcon() {
-    const searchIcon = this.renderRoot?.querySelector('.search-icon');
+    const searchIcon = this.renderRoot?.querySelector('.search-icon') as HTMLElement;
     if (searchIcon !== undefined || searchIcon !== null) {
       searchIcon.style.display = null;
     }
   }
 
   private hideSearchIcon() {
-    const searchIcon = this.renderRoot?.querySelector('.search-icon');
+    const searchIcon = this.renderRoot?.querySelector('.search-icon') as HTMLElement;
     if (searchIcon !== undefined || searchIcon !== null) {
       searchIcon.style.display = 'none';
     }
