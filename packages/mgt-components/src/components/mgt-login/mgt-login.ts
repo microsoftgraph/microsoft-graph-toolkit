@@ -319,8 +319,13 @@ export class MgtLogin extends MgtTemplatedComponent {
     return (
       template ||
       html`
-         <mgt-person .personDetails=${personDetails} .personImage=${personImage} .view=${ViewType.twolines} />
-       `
+        <mgt-person 
+          .personDetails=${personDetails}
+          .personImage=${personImage}
+          .view=${ViewType.twolines}
+          .line2Property=${'email'}
+        />
+        `
     );
   }
 
