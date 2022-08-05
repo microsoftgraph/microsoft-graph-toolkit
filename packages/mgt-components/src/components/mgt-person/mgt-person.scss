@@ -51,10 +51,6 @@ mgt-flyout {
   --mgt-flyout-border-radius: 2px;
 }
 
-mgt-flyout {
-  --mgt-flyout-border-radius: 2px;
-}
-
 :host([hidden]) {
   display: none;
 }
