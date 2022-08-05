@@ -10,5 +10,6 @@ export const strings = {
   startChatLinkSubtitle: 'Start chat',
   showMoreSectionButton: 'Show more',
   video: 'Start video call',
-  phone: 'Start phone call'
+  phone: 'Start phone call',
+  quickMessagePlaceholder: 'Type message here'
 };
