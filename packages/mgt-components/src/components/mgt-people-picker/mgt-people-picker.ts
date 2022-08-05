@@ -1235,45 +1235,6 @@ export class MgtPeoplePicker extends MgtTemplatedComponent {
     this.handleArrowSelection();
   }
 
-  private renderHighlightText(person: IDynamicPerson): TemplateResult {
-    let first: string = '';
-    let last: string = '';
-    let highlight: string = '';
-
-    const displayName = person.displayName;
-    const highlightLocation = displayName.toLowerCase().indexOf(this.userInput.toLowerCase());
-    if (highlightLocation !== -1) {
-      const userInputLength = this.userInput.length;
-
-      // no location
-      if (highlightLocation === 0) {
-        // highlight is at the beginning of sentence
-        first = '';
-        highlight = displayName.slice(0, userInputLength);
-        last = displayName.slice(userInputLength, displayName.length);
-      } else if (highlightLocation === displayName.length) {
-        // highlight is at end of the sentence
-        first = displayName.slice(0, highlightLocation);
-        highlight = displayName.slice(highlightLocation, displayName.length);
-        last = '';
-      } else {
-        // highlight is in middle of sentence
-        first = displayName.slice(0, highlightLocation);
-        highlight = displayName.slice(highlightLocation, highlightLocation + userInputLength);
-        last = displayName.slice(highlightLocation + userInputLength, displayName.length);
-      }
-    } else {
-      first = person.displayName;
-    }
-
-    return html`
-      <div class="people-person-text-area" id="${displayName}">
-        <span class="people-person-text">${first}
-        <b>${highlight}</b>
-        ${last}</span>
-  </div>`;
-  }
-
   /**
    * Adds debounce method for set delay on user input
    */
