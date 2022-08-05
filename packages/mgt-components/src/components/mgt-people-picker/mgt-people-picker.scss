@@ -35,7 +35,7 @@ mgt-people-picker .root {
     border-box var(--neutral-stroke-input-rest);
   border: calc(var(--stroke-width) * 1px) solid transparent;
   border-radius: calc(var(--control-corner-radius) * 1px);
-  height: calc((var(--base-height-multiplier) + var(--density)) * var(--design-unit) * 1px);
+  min-height: calc((var(--base-height-multiplier) + var(--density)) * var(--design-unit) * 1px);
 
   &:hover {
     background: padding-box linear-gradient(var(--neutral-fill-input-focus), var(--neutral-fill-input-focus)),
@@ -49,7 +49,7 @@ mgt-people-picker .root {
   &.disabled {
     pointer-events: none;
   }
-  padding: 3px 0 0;
+  padding: 4px;
 
   .selected-list {
     flex: 1 0 auto;
@@ -67,7 +67,7 @@ mgt-people-picker .root {
 
     &__person-wrapper {
       display: flex;
-      margin: 0 5px 6px 0;
+      margin: 0 4px;
       align-items: center;
       border-radius: 12px;
       height: 24px;
@@ -75,6 +75,7 @@ mgt-people-picker .root {
       text-overflow: ellipsis;
       overflow: hidden;
       position: relative;
+      top: 3px;
       background-color: set-var(selected-person__background-color, $theme-default, $people-picker);
 
       &__person {
@@ -84,8 +85,6 @@ mgt-people-picker .root {
         margin-left: 0px;
         --color: #{$color};
         color: $color;
-        padding-bottom: 1px;
-        padding-right: 4px;
       }
 
       &__overflow {
@@ -172,6 +171,7 @@ mgt-people-picker .root {
           flex: 1 0 auto;
           font-family: $font-family;
           position: relative;
+          top: 3px;
           outline: none;
           font-style: normal;
           font-weight: normal;
@@ -189,14 +189,14 @@ mgt-people-picker .root {
 
       .flyout-root {
         padding: 0;
-        border-radius: 2px;
         min-width: 260px;
         overflow-y: auto;
         text-align: left;
         list-style-type: none;
         background-color: $dropdown__background-color;
         max-height: var(--mgt-flyout-set-height, unset);
-        border-radius: 8px;
+        margin-top: 17px;
+
         li {
           cursor: pointer;
         }
@@ -206,10 +206,7 @@ mgt-people-picker .root {
             display: flex;
             flex-direction: row;
             align-items: center;
-            padding: 12px;
-            font-style: normal;
-            font-weight: 600;
-            font-size: 14px;
+            padding: 10px;
             margin: var(--file-item-margin, 4px);
             border-radius: 4px;
             &:hover {
@@ -244,8 +241,11 @@ mgt-people-picker .root {
 
 mgt-person {
   --avatar-size-s: 32px;
-  margin-left: 12px;
+  margin-left: 6px;
   cursor: default;
+  --line2-color: #717171; /*TODO: change to $gray120*/
+  --font-size: 14px;
+  --font-weight: 600;
 }
 
 :host .search-error-text,
@@ -292,8 +292,10 @@ mgt-flyout {
 
 [dir='rtl'] {
   mgt-person {
-    margin: 0px 12px 0px 0px;
+    margin-right: 6px;
+    --details-spacing: 0px 12px 0 0;
   }
+
   .selected-list {
     margin-right: 8px !important;
     &__person-wrapper {

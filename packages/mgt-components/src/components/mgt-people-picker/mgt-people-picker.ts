@@ -477,6 +477,7 @@ export class MgtPeoplePicker extends MgtTemplatedComponent {
     this._showLoading = true;
     this.showMax = 6;
     this.disableImages = false;
+    this.direction = this.dir;
 
     this.disabled = false;
     this.allowAnyEmail = false;
@@ -740,9 +741,10 @@ export class MgtPeoplePicker extends MgtTemplatedComponent {
     return html`
        <mgt-flyout light-dismiss class="flyout">
          ${anchor}
-         <div slot="flyout" class="flyout-root" @wheel=${(e: WheelEvent) => this.handleSectionScroll(e)}>
+         <fluent-card slot="flyout" class="flyout-root" @wheel=${(e: WheelEvent) =>
+           this.handleSectionScroll(e)} class="custom">
            ${this.renderFlyoutContent()}
-         </div>
+         </fluent-card>
        </mgt-flyout>
      `;
   }
@@ -898,12 +900,14 @@ export class MgtPeoplePicker extends MgtTemplatedComponent {
     return (
       this.renderTemplate('person', { person }, person.id) ||
       html`
-         <mgt-person .personDetails=${person} .fetchImage=${!this.disableImages}></mgt-person>
-         <div class="people-person-text-area" id="${person.displayName}">
-           ${this.renderHighlightText(person)}
-           <span class="${classMap(classes)}">${subTitle}</span>
-         </div>
-       `
+         <mgt-person
+          show-presence
+          view="twoLines"
+          line2-property="jobTitle,mail"
+          dir=${this.direction}
+          .personDetails=${person}
+          .fetchImage=${!this.disableImages}>
+        </mgt-person>`
     );
   }
 
@@ -1254,12 +1258,11 @@ export class MgtPeoplePicker extends MgtTemplatedComponent {
     }
 
     return html`
-       <div>
-         <span class="people-person-text">${first}</span
-         ><span class="people-person-text highlight-search-text">${highlight}</span
-         ><span class="people-person-text">${last}</span>
-       </div>
-     `;
+      <div class="people-person-text-area" id="${displayName}">
+        <span class="people-person-text">${first}
+        <b>${highlight}</b>
+        ${last}</span>
+  </div>`;
   }
 
   /**
