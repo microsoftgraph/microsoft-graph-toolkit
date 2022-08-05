@@ -288,6 +288,8 @@ mgt-people-picker .people-person-job-title {
 
 mgt-flyout {
   flex: 1 0 auto;
+  --box-shadow: none;
+  --mgt-flyout-border-radius: var(--layer-corner-radius);
 }
 
 [dir='rtl'] {
