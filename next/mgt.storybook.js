@@ -2004,7 +2004,7 @@ PERFORMANCE OF THIS SOFTWARE.
            ${t} ${o}
          </div>
        </div>
-     `}clearState(){this.selectedPeople=[],this.userInput="",this._highlightedUsers=[],this._currentHighlightedUserPos=0}requestStateUpdate(e){return e&&(this._groupPeople=null,this._foundPeople=null,this.selectedPeople=[]),super.requestStateUpdate(e)}renderInput(){const e=!!this.selectedPeople.length,t=this.disabled?this.placeholder||"":this.placeholder?this.placeholder:this.strings.inputPlaceholderText,r={"search-box":!0,"search-box-start":e};if("single"===(this.selectionMode?this.selectionMode:"multiple")&&this.selectedPeople.length>=1)return this.lostFocus(),null;const o=(void 0!==this._currentSelectedUser?this.strings.selected+" "+this._currentSelectedUser.displayName+" ":"")+" ' people-picker-input'";return html$1`
+     `}clearState(){this.selectedPeople=[],this.userInput="",this._highlightedUsers=[],this._currentHighlightedUserPos=0}requestStateUpdate(e){return e&&(this._groupPeople=null,this._foundPeople=null,this.selectedPeople=[],this.defaultPeople=null),super.requestStateUpdate(e)}renderInput(){const e=!!this.selectedPeople.length,t=this.disabled?this.placeholder||"":this.placeholder?this.placeholder:this.strings.inputPlaceholderText,r={"search-box":!0,"search-box-start":e};if("single"===(this.selectionMode?this.selectionMode:"multiple")&&this.selectedPeople.length>=1)return this.lostFocus(),null;const o=(void 0!==this._currentSelectedUser?this.strings.selected+" "+this._currentSelectedUser.displayName+" ":"")+" ' people-picker-input'";return html$1`
        <div class="${kr(r)}">
          <input
            id="people-picker-input"
