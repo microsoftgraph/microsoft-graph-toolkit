@@ -66,6 +66,8 @@ $person-card-nav-back-arrow-hover-color: var(--person-card-nav-back-arrow-hover-
   }
 
   .close-card-container {
+    position: relative;
+    z-index: 100;
     .close-button {
       --focus-stroke-width: none;
       --control-corner-radius: 2;
@@ -128,19 +130,13 @@ $person-card-nav-back-arrow-hover-color: var(--person-card-nav-back-arrow-hover-
         svg {
           fill: set-var(icon__color, $theme-default, $common);
         }
-
-        span {
-          margin-left: 8px;
-          color: $person-card-base-links-color;
-        }
-        span.text {
-          font-family: $font-family;
-        }
       }
       .icon:hover {
-        color: $person-card-base-links-hover-color;
-        background-color: set-var(background-color--hover, $theme-default, $common);
         border-radius: 4px;
+
+        svg {
+          fill: $person-card-base-links-color;
+        }
       }
     }
   }

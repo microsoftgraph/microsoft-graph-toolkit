@@ -29,7 +29,6 @@ import { MgtPersonCardConfig, MgtPersonCardState } from './mgt-person-card.types
 import { strings } from './strings';
 
 import { PersonCardInteraction } from '../PersonCardInteraction';
-import { MgtFlyout } from '../sub-components/mgt-flyout/mgt-flyout';
 
 import '../sub-components/mgt-spinner/mgt-spinner';
 
@@ -450,6 +449,16 @@ export class MgtPersonCard extends MgtTemplatedComponent {
       });
     }
 
+    const closeCardTemplate = this.isExpanded
+      ? html`
+          <div class="close-card-container">
+            <fluent-button appearance="lightweight" class="close-button" @click=${() => this.closeCard()} >
+              ${getSvg(SvgIcon.Close)}
+            </fluent-button>
+          </div>
+        `
+      : null;
+
     const navigationTemplate =
       this._history && this._history.length
         ? html`
@@ -491,11 +500,7 @@ export class MgtPersonCard extends MgtTemplatedComponent {
       <div class="root" dir=${this.direction}>
         <div class=${this._smallView ? 'small' : ''}>
           ${navigationTemplate}
-          <div class="close-card-container">
-            <fluent-button appearance="lightweight" class="close-button" @click=${() => this.closeCard()} >
-                ${getSvg(SvgIcon.Close)}
-            </fluent-button>
-          </div>
+          ${closeCardTemplate}
           <div class="person-details-container">${personDetailsTemplate}</div>
           <div class="expanded-details-container">${expandedDetailsTemplate}</div>
           ${tabLocker}
@@ -527,11 +532,6 @@ export class MgtPersonCard extends MgtTemplatedComponent {
   protected closeCard() {
     //reset tabs
     this.updateCurrentSection(null);
-
-    const flyout = this.parentElement.parentElement as MgtFlyout;
-    if (flyout) {
-      flyout.close();
-    }
     this.isExpanded = false;
   }
 
@@ -597,10 +597,6 @@ export class MgtPersonCard extends MgtTemplatedComponent {
    * @memberof MgtPersonCard
    */
   protected renderContactIcons(person?: IDynamicPerson): TemplateResult {
-    // if (this.isExpanded) {
-    //   return;
-    // }
-
     person = person || this.internalPersonDetails;
     const userPerson = person as User;
 
@@ -769,10 +765,6 @@ export class MgtPersonCard extends MgtTemplatedComponent {
    * @memberof MgtPersonCard
    */
   protected renderOverviewSection(): TemplateResult {
-    function handleKeyDown(e: KeyboardEvent, section: BasePersonCardSection) {
-      e.code === 'Enter' ? this.updateCurrentSection(section) : '';
-    }
-
     const compactTemplates = this.sections.map(
       (section: BasePersonCardSection) => html`
         <div class="section">
