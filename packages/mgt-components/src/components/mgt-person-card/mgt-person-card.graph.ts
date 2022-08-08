@@ -120,7 +120,7 @@ function buildWorksWithRequest(batch: IBatch, userId: string) {
 
 // tslint:disable-next-line:completed-docs
 function buildMessagesWithUserRequest(batch: IBatch, emailAddress: string) {
-  batch.get(batchKeys.messages, `me/messages?$search="from:${emailAddress}"`, ['Mail.Read']);
+  batch.get(batchKeys.messages, `me/messages?$search="from:${emailAddress}"`, ['Mail.ReadBasic']);
 }
 
 // tslint:disable-next-line:completed-docs

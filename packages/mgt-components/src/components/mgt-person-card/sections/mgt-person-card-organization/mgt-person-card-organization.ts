@@ -115,10 +115,10 @@ export class MgtPersonCardOrganization extends BasePersonCardSection {
     }
 
     return html`
-      <div class="root compact">
-        ${contentTemplate}
-      </div>
-    `;
+       <div class="root compact">
+         ${contentTemplate}
+       </div>
+     `;
   }
 
   /**
@@ -146,8 +146,8 @@ export class MgtPersonCardOrganization extends BasePersonCardSection {
       const coworkersTemplate = this.renderCoworkers();
 
       contentTemplate = html`
-        ${managerTemplates} ${currentUserTemplate} ${directReportsTemplate} ${coworkersTemplate}
-      `;
+         ${managerTemplates} ${currentUserTemplate} ${directReportsTemplate} ${coworkersTemplate}
+       `;
     }
 
     return html`
@@ -295,17 +295,18 @@ export class MgtPersonCardOrganization extends BasePersonCardSection {
   protected renderCurrentUser(): TemplateResult {
     const { person } = this._state;
     return html`
-      <div class="org-member org-member--target">
-        <div class="org-member__person">
-          <mgt-person
-            .personDetails=${person}
-            .fetchImage=${true}
-            .showPresence=${true}
-            .view=${ViewType.twolines}
-          ></mgt-person>
-        </div>
-      </div>
-    `;
+       <div class="org-member org-member--target">
+         <div class="org-member__person">
+           <mgt-person
+             .personDetails=${person}
+             .line2Property=${'jobTitle'}
+             .line3Property=${'department'}
+             .fetchImage=${true}
+             .view=${ViewType.threelines}
+           ></mgt-person>
+         </div>
+       </div>
+     `;
   }
 
   /**

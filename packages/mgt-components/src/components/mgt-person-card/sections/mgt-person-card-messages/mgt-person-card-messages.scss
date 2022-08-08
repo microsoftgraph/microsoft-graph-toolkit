@@ -34,7 +34,7 @@
       justify-content: space-between;
 
       &:hover {
-        background-color: $greyHover;
+        background-color: set-var(background-color--hover, $theme-default, $common);
         cursor: pointer;
       }
 
@@ -48,7 +48,7 @@
 
         .message__subject {
           color: set-var(color, $theme-default, $common);
-          font-size: 14px;
+          font-size: 16px;
         }
 
         .message__from {
@@ -59,7 +59,6 @@
         .message__message {
           font-size: 12px;
           color: set-var(color__sub2, $theme-default, $common);
-          line-height: 16px;
         }
 
         > div {

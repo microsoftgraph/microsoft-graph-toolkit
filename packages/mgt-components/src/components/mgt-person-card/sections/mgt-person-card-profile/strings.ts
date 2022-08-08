@@ -15,6 +15,5 @@ export const strings = {
   professionalInterestsSubSectionTitle: 'Professional Interests',
   personalInterestsSubSectionTitle: 'Personal Interests',
   birthdaySubSectionTitle: 'Birthday',
-  currentYearSubtitle: 'Current',
-  socialMediaSubSectionTitle: 'Social Media'
+  currentYearSubtitle: 'Current'
 };

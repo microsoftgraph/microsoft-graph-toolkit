@@ -11,6 +11,5 @@ export const strings = {
   showMoreSectionButton: 'Show more',
   endOfCard: 'End of the card',
   video: 'Start video call',
-  phone: 'Start phone call',
-  quickMessagePlaceholder: 'Type message here'
+  phone: 'Start phone call'
 };
