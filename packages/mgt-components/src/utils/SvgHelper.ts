@@ -223,20 +223,10 @@ export function getSvg(svgIcon: SvgIcon, color?: string) {
 
     case SvgIcon.Search:
       return html`
-        <svg width="14" height="14" viewBox="0 0 14 14" fill="none" xmlns="http://www.w3.org/2000/svg">
-          <g clip-path="url(#clip0)">
-            <circle cx="5.36377" cy="5.36396" r="4" transform="rotate(45 5.36377 5.36396)" stroke="#B3B0AD" />
-            <path
-              d="M8.19189 7.48529L12.7881 12.0815C12.9834 12.2767 12.9834 12.5933 12.7881 12.7886V12.7886C12.5928 12.9839 12.2762 12.9839 12.081 12.7886L7.48479 8.1924L8.19189 7.48529Z"
-              fill="#B3B0AD"
-            />
-          </g>
-          <defs>
-            <clipPath id="clip0">
-              <rect width="14" height="14" fill="white" />
-            </clipPath>
-          </defs>
+        <svg width="12" height="12" viewBox="0 0 12 12" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <path d="M7.30887 8.01596C6.53903 8.63179 5.56252 9.00004 4.5 9.00004C2.01472 9.00004 0 6.98531 0 4.50002C0 2.01473 2.01472 0 4.5 0C6.98528 0 9 2.01473 9 4.50002C9 5.56252 8.63177 6.53901 8.01597 7.30885L11.8536 11.1464C12.0488 11.3417 12.0488 11.6583 11.8536 11.8536C11.6583 12.0488 11.3417 12.0488 11.1464 11.8536L7.30887 8.01596ZM8 4.50002C8 2.56701 6.433 1 4.5 1C2.567 1 1 2.56701 1 4.50002C1 6.43302 2.567 8.00003 4.5 8.00003C6.433 8.00003 8 6.43302 8 4.50002Z" fill="#212121"/>
         </svg>
+
       `;
 
     case SvgIcon.SkypeArrow:
