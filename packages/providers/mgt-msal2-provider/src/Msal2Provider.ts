@@ -328,7 +328,7 @@ export class Msal2Provider extends IProvider {
       this.scopes = typeof config.scopes !== 'undefined' ? config.scopes : ['user.read'];
       this._publicClientApplication = new PublicClientApplication(this.ms_config);
       this._prompt = typeof config.prompt !== 'undefined' ? config.prompt : PromptType.SELECT_ACCOUNT;
-      this._isMultipleAccountDisabled =
+      this.isMultipleAccountDisabled =
         typeof config.isMultiAccountDisabled !== 'undefined' ? config.isMultiAccountDisabled : false;
       this.graph = createFromProvider(this);
       try {
