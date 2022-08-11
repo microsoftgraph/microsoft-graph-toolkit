@@ -129,12 +129,16 @@ const defaultPersonProperties = [
  * @cssprop --presence-background-color - {Color} Presence badge background color
  * @cssprop --presence-icon-color - {Color} Presence badge icon color
  * @cssprop --text-transform - {String} text transform
+ * @cssprop --line1-font-size - {Length} Line 1 font size
+ * @cssprop --line1-line-height - {Length} Line 1 line height
  * @cssprop --line2-font-size - {Length} Line 2 font size
  * @cssprop --line2-font-weight - {Length} Line 2 font weight
+ * @cssprop --line2-line-height - {Length} Line 2 line height
  * @cssprop --line2-color - {Color} Line 2 color
  * @cssprop --line2-text-transform - {String} Line 2 text transform
- * @cssprop --line3-font-size - {Length} Line 2 font size
- * @cssprop --line3-font-weight - {Length} Line 2 font weight
+ * @cssprop --line3-font-size - {Length} Line 3 font size
+ * @cssprop --line3-font-weight - {Length} Line 3 font weight
+ * @cssprop --line3-line-height - {Length} Line 3 line height
  * @cssprop --line3-color - {Color} Line 2 color
  * @cssprop --line3-text-transform - {String} Line 2 text transform
  * @cssprop --line4-font-size - {Length} Line 2 font size
@@ -142,6 +146,7 @@ const defaultPersonProperties = [
  * @cssprop --line4-color - {Color} Line 2 color
  * @cssprop --line4-text-transform - {String} Line 2 text transform
  * @cssprop --details-spacing - {Length} spacing between avatar and person details
+ * @cssprop --details-cta-spacing - {Length} spacing between person details and CTA icons
  * @cssprop --person-flex-direction - {String} flex direction associated with the avatar and details
  */
 @customElement('mgt-person')

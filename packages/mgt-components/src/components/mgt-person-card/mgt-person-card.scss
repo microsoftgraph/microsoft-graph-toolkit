@@ -10,9 +10,12 @@
 @import './mgt-person-card.theme.scss';
 
 $person-card-display-name-font-size: var(--person-card-display-name-font-size, 20px);
+$person-card-display-name-line-height: var(--person-card-display-name-line-height, 28px);
 $person-card-title-font-size: var(--person-card-title-font-size, 14px);
+$person-card-title-line-height: var(--person-card-title-line-height, 20px);
 $person-card-title-color: var(--person-card-title-color);
-$person-card-subtitle-font-size: var(--person-card-subtitle-font-size, 12px);
+$person-card-subtitle-font-size: var(--person-card-subtitle-font-size, 14px);
+$person-card-subtitle-line-height: var(--person-card-subtitle-line-height, 19px);
 $person-card-subtitle-color: var(--person-card-subtitle-color);
 $person-card-details-title-font-size: var(--person-card-details-title-font-size, 14px);
 $person-card-details-item-font-size: var(--person-card-details-item-font-size, 15px);
@@ -99,20 +102,24 @@ $person-card-nav-back-arrow-hover-color: var(--person-card-nav-back-arrow-hover-
       --presence-background-color: #{$background-color};
       --presence-icon-color: #{$background-color};
       --avatar-size: 75px;
-      --font-size: #{$person-card-display-name-font-size};
+      --line1-font-size: #{$person-card-display-name-font-size};
+      --line1-line-height: #{$person-card-display-name-line-height};
       --color: #{$person-card-display-name-color};
       --line2-font-size: #{$person-card-title-font-size};
+      --line2-line-height: #{$person-card-title-line-height};
       --line2-color: #{$person-card-title-color};
       --line3-font-size: #{$person-card-subtitle-font-size};
+      --line3-line-height: #{$person-card-subtitle-line-height};
       --line3-color: #{$person-card-subtitle-color};
+      --details-cta-spacing: 30px;
     }
 
     .base-icons {
       display: flex;
       -webkit-align-items: center;
       align-items: center;
-      margin-left: 90px;
-      margin-top: -25px;
+      margin-left: 91px;
+      margin-top: -35px;
 
       .icon {
         display: flex;
@@ -124,18 +131,22 @@ $person-card-nav-back-arrow-hover-color: var(--person-card-nav-back-arrow-hover-
         margin-left: -14px;
 
         &:not(:last-child) {
-          margin-right: 11px;
+          margin-right: 30px;
         }
 
         svg {
-          fill: set-var(icon__color, $theme-default, $common);
+          path {
+            fill: $icon--active;
+          }
         }
-      }
-      .icon:hover {
-        border-radius: 4px;
 
-        svg {
-          fill: $person-card-base-links-color;
+        &:active,
+        &:hover {
+          svg {
+            path {
+              fill: $icon--active;
+            }
+          }
         }
       }
     }

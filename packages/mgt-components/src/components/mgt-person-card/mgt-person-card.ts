@@ -59,10 +59,13 @@ interface MgtPersonCardStateHistory {
  * @fires expanded - Fired when expanded details section is opened
  *
  * @cssprop --person-card-display-name-font-size - {Length} Font size of display name title
+ * @cssprop --person-card-display-name-line-height - {Length} Line height of display name
  * @cssprop --person-card-display-name-color - {Color} Color of display name font
  * @cssprop --person-card-title-font-size - {Length} Font size of title
+ * @cssprop --person-card-title-line-height - {Length} Line height of title
  * @cssprop --person-card-title-color - {Color} Color of title
  * @cssprop --person-card-subtitle-font-size - {Length} Font size of subtitle
+ * @cssprop --person-card-subtitle-line-height - {Length} Line height of subtitle
  * @cssprop --person-card-subtitle-color - {Color} Color of subttitle
  * @cssprop --person-card-details-title-font-size - {Length} Font size additional details title
  * @cssprop --person-card-details-title-color- {Color} Color of additional details title
@@ -266,6 +269,33 @@ export class MgtPersonCard extends MgtTemplatedComponent {
   public isExpanded: boolean;
 
   /**
+   * Gets or sets whether an icon is hovered on
+   *
+   * @type {boolean}
+   * @memberof MgtPersonCard
+   */
+  @property({
+    attribute: 'is-email-hovered',
+    type: Boolean
+  })
+  public isEmailHovered: boolean;
+  @property({
+    attribute: 'is-chat-hovered',
+    type: Boolean
+  })
+  public isChatHovered: boolean;
+  @property({
+    attribute: 'is_video-hovered',
+    type: Boolean
+  })
+  public isVideoHovered: boolean;
+  @property({
+    attribute: 'is-call-hovered',
+    type: Boolean
+  })
+  public isCallHovered: boolean;
+
+  /**
    * Gets or sets whether person details should be inherited from an mgt-person parent
    * Useful when used as template in an mgt-person component
    *
@@ -319,6 +349,8 @@ export class MgtPersonCard extends MgtTemplatedComponent {
   private _me: User;
   private _smallView;
   private _windowHeight;
+  private _mouseLeaveTimeout;
+  private _mouseEnterTimeout;
 
   private _userId: string;
 
@@ -332,6 +364,10 @@ export class MgtPersonCard extends MgtTemplatedComponent {
     this._currentSection = null;
     this._history = [];
     this.sections = [];
+    this.isEmailHovered = false;
+    this.isChatHovered = false;
+    this.isVideoHovered = false;
+    this.isCallHovered = false;
   }
 
   /**
@@ -554,20 +590,17 @@ export class MgtPersonCard extends MgtTemplatedComponent {
    * @memberof MgtPersonCard
    */
   protected renderPerson(): TemplateResult {
+    const avatarSize = 'large';
     return html`
       <mgt-person
-        tabindex="0"
         class="person-image"
         .personDetails=${this.internalPersonDetails}
         .personImage=${this.getImage()}
         .personPresence=${this.personPresence}
         .showPresence=${this.showPresence}
-        .view=${ViewType.fourlines}
-      >
-      <template data-type="line4">
-
-      </template>
-      </mgt-person>
+        .avatarSize=${avatarSize}
+        .view=${ViewType.threelines}
+      ></mgt-person>
     `;
   }
 
@@ -604,8 +637,13 @@ export class MgtPersonCard extends MgtTemplatedComponent {
     let email: TemplateResult;
     if (getEmailFromGraphEntity(person)) {
       email = html`
-        <div class="icon" @click=${() => this.emailUser()} tabindex=0 role="button">
-          ${getSvg(SvgIcon.SmallEmail)}
+        <div class="icon" 
+          @click=${() => this.emailUser()}
+          @mouseenter=${() => this.handleMouseEnter('email')}
+          @mouseleave=${() => this.handleMouseLeave('email')}
+          tabindex=0
+          role="button">
+          ${this.isEmailHovered ? getSvg(SvgIcon.SmallEmailHovered) : getSvg(SvgIcon.SmallEmail)}
         </div>
       `;
     }
@@ -614,16 +652,28 @@ export class MgtPersonCard extends MgtTemplatedComponent {
     let chat: TemplateResult;
     if (userPerson?.userPrincipalName) {
       chat = html`
-        <div class="icon" @click=${() => this.chatUser()} tabindex=0 role="button">
-          ${getSvg(SvgIcon.SmallChat)}
+        <div class="icon"
+          @click=${() => this.chatUser()}
+          @mouseenter=${() => this.handleMouseEnter('chat')}
+          @mouseleave=${() => this.handleMouseLeave('chat')}
+          tabindex=0 
+          role="button">
+          ${this.isChatHovered ? getSvg(SvgIcon.SmallChatHovered) : getSvg(SvgIcon.SmallChat)}
+          <!-- ${getSvg(SvgIcon.SmallChat)} -->
         </div>
       `;
     }
 
     let video: TemplateResult;
     video = html`
-       <div class="icon" @click=${() => this.videoCallUser()} tabindex=0>
-          ${getSvg(SvgIcon.Video)}
+       <div class="icon"
+          @click=${() => this.videoCallUser()}
+          @mouseenter=${() => this.handleMouseEnter('video')}
+          @mouseleave=${() => this.handleMouseLeave('video')}
+          tabindex=0
+          role="button">
+          <!-- ${getSvg(SvgIcon.Video)} -->
+          ${this.isVideoHovered ? getSvg(SvgIcon.VideoHovered) : getSvg(SvgIcon.Video)}
         </div>
      `;
 
@@ -632,8 +682,14 @@ export class MgtPersonCard extends MgtTemplatedComponent {
     if (userPerson.userPrincipalName) {
       // Change to video call api URL when available
       call = html`
-        <div class="icon" @click=${() => this.callUser()} tabindex=0 role="button">
-          ${getSvg(SvgIcon.Call)}
+        <div class="icon"
+          @click=${() => this.callUser()}
+          @mouseenter=${() => this.handleMouseEnter('call')}
+          @mouseleave=${() => this.handleMouseLeave('call')}
+          tabindex=0 
+          role="button">
+          <!-- ${getSvg(SvgIcon.Call)} -->
+          ${this.isCallHovered ? getSvg(SvgIcon.CallHovered) : getSvg(SvgIcon.Call)}
         </div>
       `;
     }
@@ -798,30 +854,7 @@ export class MgtPersonCard extends MgtTemplatedComponent {
     }
 
     return html`
-    <!-- ${
-      this.internalPersonDetails.id !== this._me.id && MgtPersonCard.config.isSendMessageVisible
-        ? html`
-          <div class="quick-message">
-            <input
-              type="text"
-              class="quick-message__input"
-              placeholder=${this.strings.quickMessagePlaceholder}
-              .value=${this._chatInput}
-              @input=${(e: Event) => {
-                this._chatInput = (e.target as HTMLInputElement).value;
-              }}
-            />
-            <button class="quick-message__send" @click=${() => this.sendQuickMessage()}>
-              ${getSvg(SvgIcon.Send)}
-            </button>
-          </div>
-        `
-        : null
-    } -->
       <div class="sections">
-        <!-- <div class="message-section">
-          ${this.renderMessagingSection()}
-        </div> -->
         ${compactTemplates}
       </div>
     `;
@@ -863,16 +896,16 @@ export class MgtPersonCard extends MgtTemplatedComponent {
    */
   protected renderMessagingSection(): TemplateResult {
     return html`
-         <fluent-text-field appearance="filled" placeholder="Message ${this.internalPersonDetails.displayName}"
-           .value=${this._chatInput}
-           @input=${(e: Event) => {
-             this._chatInput = (e.target as HTMLInputElement).value;
-           }}>
-         </fluent-text-field>
-         <span class="send-message-icon" @click=${() => this.sendQuickMessage()}>
-              ${getSvg(SvgIcon.Send)}
-         </span>
-       `;
+        <fluent-text-field appearance="filled" placeholder="Message ${this.internalPersonDetails.displayName}"
+          .value=${this._chatInput}
+          @input=${(e: Event) => {
+            this._chatInput = (e.target as HTMLInputElement).value;
+          }}>
+        </fluent-text-field>
+        <span class="send-message-icon" @click=${() => this.sendQuickMessage()}>
+          ${getSvg(SvgIcon.Send)}
+        </span>
+      `;
   }
 
   /**
@@ -1185,6 +1218,37 @@ export class MgtPersonCard extends MgtTemplatedComponent {
 
     const person = this.personDetails;
     return person && person.personImage ? person.personImage : null;
+  }
+
+  private hovered(icon: string, state: boolean) {
+    switch (icon) {
+      case 'email':
+        this.isEmailHovered = state;
+        break;
+      case 'chat':
+        this.isChatHovered = state;
+        break;
+      case 'video':
+        this.isVideoHovered = state;
+        break;
+      case 'call':
+        this.isCallHovered = state;
+        break;
+    }
+  }
+
+  private handleMouseEnter(icon: string) {
+    clearTimeout(this._mouseEnterTimeout);
+    clearTimeout(this._mouseLeaveTimeout);
+    this.hovered(icon, true);
+    this._mouseEnterTimeout = setTimeout(this.hovered.bind(this), 500);
+  }
+
+  private handleMouseLeave(icon: string) {
+    clearTimeout(this._mouseEnterTimeout);
+    clearTimeout(this._mouseLeaveTimeout);
+    this.hovered(icon, false);
+    this._mouseLeaveTimeout = setTimeout(this.hovered.bind(this), 500);
   }
 
   private getPersonBusinessPhones(person: Person): string[] {
