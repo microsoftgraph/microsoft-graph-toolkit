@@ -30,7 +30,8 @@ export const schemas = {
     stores: {
       contacts: 'contacts',
       users: 'users',
-      groups: 'groups'
+      groups: 'groups',
+      teams: 'teams'
     },
     version: 1
   },

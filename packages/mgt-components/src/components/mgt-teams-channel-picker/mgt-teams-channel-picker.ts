@@ -8,14 +8,18 @@
 import * as MicrosoftGraph from '@microsoft/microsoft-graph-types';
 import { customElement, html, property, TemplateResult } from 'lit-element';
 import { classMap } from 'lit-html/directives/class-map';
-import { Providers, ProviderState, MgtTemplatedComponent } from '@microsoft/mgt-element';
+import { Providers, ProviderState, MgtTemplatedComponent, BetaGraph } from '@microsoft/mgt-element';
 import '../../styles/style-helper';
 import '../sub-components/mgt-spinner/mgt-spinner';
 import { getSvg, SvgIcon } from '../../utils/SvgHelper';
 import { debounce } from '../../utils/Utils';
 import { styles } from './mgt-teams-channel-picker-css';
-import { getAllMyTeams } from './mgt-teams-channel-picker.graph';
+import { getAllMyTeams, getTeamsPhotosforPhotoIds } from './mgt-teams-channel-picker.graph';
 import { strings } from './strings';
+import { repeat } from 'lit-html/directives/repeat';
+import { registerFluentComponents } from '../../utils/FluentComponents';
+import { fluentTreeView, fluentTreeItem, fluentCard } from '@fluentui/web-components';
+registerFluentComponents(fluentCard, fluentTreeView, fluentTreeItem);
 
 /**
  * Team with displayName
@@ -189,6 +193,7 @@ export class MgtTeamsChannelPicker extends MgtTemplatedComponent {
   private static _config = {
     useTeamsBasedScopes: false
   };
+  private teamsPhotos = {};
 
   /**
    * Gets Selected item to be used
@@ -255,9 +260,11 @@ export class MgtTeamsChannelPicker extends MgtTemplatedComponent {
   constructor() {
     super();
     this.handleWindowClick = this.handleWindowClick.bind(this);
+    this.direction = this.dir;
     this.addEventListener('keydown', e => this.onUserKeyDown(e));
     this.addEventListener('focus', _ => this.loadTeamsIfNotLoaded());
     this.addEventListener('mouseover', _ => this.loadTeamsIfNotLoaded());
+    this.clearState();
   }
 
   /**
@@ -342,8 +349,8 @@ export class MgtTeamsChannelPicker extends MgtTemplatedComponent {
             ${this.renderSelected()}
             <div class=${classMap(searchClasses)}>${this.renderSearchIcon()} ${this.renderInput()}</div>
           </div>
-          ${this.renderCloseButton()}
-          <div class=${classMap(dropdownClasses)}>${this.renderDropdown()}</div>
+          ${this.renderChevrons()}${this.renderCloseButton()}
+          <fluent-card class=${classMap(dropdownClasses)} slot="flyout">${this.renderDropdown()}</fluent-card>
         </div>
       `
     );
@@ -360,11 +367,18 @@ export class MgtTeamsChannelPicker extends MgtTemplatedComponent {
     if (!this._selectedItemState) {
       return html``;
     }
-
+    let icon: TemplateResult;
+    if (this._selectedItemState.parent.channels) {
+      icon = html`<img
+        class="team-photo"
+        alt="${this._selectedItemState.parent.item.displayName}"
+        src=${this.teamsPhotos[this._selectedItemState.parent.item.id].photo} />`;
+    }
     return html`
       <li class="selected-team" title=${this._selectedItemState.item.displayName}>
+        ${icon}
         <div class="selected-team-name">${this._selectedItemState.parent.item.displayName}</div>
-        <div class="arrow">${getSvg(SvgIcon.TeamSeparator, '#B3B0AD')}</div>
+        <div class="arrow">${getSvg(SvgIcon.TeamSeparator, '#000000')}</div>
         ${this._selectedItemState.item.displayName}
         <div class="search-wrapper">${this.renderSearchIcon()} ${this.renderInput()}</div>
       </li>
@@ -438,10 +452,70 @@ export class MgtTeamsChannelPicker extends MgtTemplatedComponent {
    */
   protected renderCloseButton() {
     return html`
-      <div class="close-icon" @click="${() => this.selectChannel(null)}">
-        
+      <div class="close-icon" style="display:none" @click="${() => this.selectChannel(null)}">
+        <svg width="8" height="8" viewBox="0 0 8 8" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <path d="M0.0885911 0.215694L0.146447 0.146447C0.320013 -0.0271197 0.589437 -0.046405 0.784306 0.0885911L0.853553 0.146447L4 3.293L7.14645 0.146447C7.34171 -0.0488154 7.65829 -0.0488154 7.85355 0.146447C8.04882 0.341709 8.04882 0.658291 7.85355 0.853553L4.707 4L7.85355 7.14645C8.02712 7.32001 8.0464 7.58944 7.91141 7.78431L7.85355 7.85355C7.67999 8.02712 7.41056 8.0464 7.21569 7.91141L7.14645 7.85355L4 4.707L0.853553 7.85355C0.658291 8.04882 0.341709 8.04882 0.146447 7.85355C-0.0488154 7.65829 -0.0488154 7.34171 0.146447 7.14645L3.293 4L0.146447 0.853553C-0.0271197 0.679987 -0.046405 0.410563 0.0885911 0.215694L0.146447 0.146447L0.0885911 0.215694Z" fill="#212121"/>
+        </svg>
       </div>
     `;
+  }
+
+  /**
+   * Displays the close button after selecting a channel.
+   */
+  protected showCloseIcon() {
+    const downChevron = this.renderRoot.querySelector('.down-chevron') as HTMLElement;
+    const upChevron = this.renderRoot.querySelector('.up-chevron') as HTMLElement;
+    const closeIcon = this.renderRoot.querySelector('.close-icon') as HTMLElement;
+    if (downChevron) {
+      downChevron.style.display = 'none';
+    }
+    if (upChevron) {
+      upChevron.style.display = 'none';
+    }
+
+    if (closeIcon) {
+      closeIcon.style.display = null;
+    }
+  }
+
+  /**
+   * Renders down chevron icon
+   *
+   * @protected
+   * @returns
+   * @memberof MgtTeamsChannelPicker
+   */
+  protected renderDownChevron() {
+    return html`
+      <div class="down-chevron" @click=${this.gainedFocus}>
+        <svg width="12" height="12" viewBox="0 0 12 12" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <path d="M2.21967 4.46967C2.51256 4.17678 2.98744 4.17678 3.28033 4.46967L6 7.18934L8.71967 4.46967C9.01256 4.17678 9.48744 4.17678 9.78033 4.46967C10.0732 4.76256 10.0732 5.23744 9.78033 5.53033L6.53033 8.78033C6.23744 9.07322 5.76256 9.07322 5.46967 8.78033L2.21967 5.53033C1.92678 5.23744 1.92678 4.76256 2.21967 4.46967Z" fill="#212121" />
+        </svg>
+      </div>`;
+  }
+
+  /**
+   * Renders up chevron icon
+   *
+   * @protected
+   * @returns
+   * @memberof MgtTeamsChannelPicker
+   */
+  protected renderUpChevron() {
+    return html`
+      <div style="display:none" class="up-chevron" @click=${this.lostFocus}>
+        <svg width="12" height="12" viewBox="0 0 12 12" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <path d="M2.21967 7.53033C2.51256 7.82322 2.98744 7.82322 3.28033 7.53033L6 4.81066L8.71967 7.53033C9.01256 7.82322 9.48744 7.82322 9.78033 7.53033C10.0732 7.23744 10.0732 6.76256 9.78033 6.46967L6.53033 3.21967C6.23744 2.92678 5.76256 2.92678 5.46967 3.21967L2.21967 6.46967C1.92678 6.76256 1.92678 7.23744 2.21967 7.53033Z" fill="#212121" />
+        </svg>
+      </div>`;
+  }
+
+  /**
+   * Renders both chevrons
+   */
+  private renderChevrons() {
+    return html`${this.renderUpChevron()}${this.renderDownChevron()}`;
   }
 
   /**
@@ -478,18 +552,35 @@ export class MgtTeamsChannelPicker extends MgtTemplatedComponent {
    * @memberof MgtTeamsChannelPicker
    */
   protected renderDropdownList(items: ChannelPickerItemState[], level: number = 0) {
-    if (items && items.length) {
-      return items.map((treeItem, index) => {
-        const isLeaf = !treeItem.channels;
-        const renderChannels = !isLeaf && treeItem.isExpanded;
+    if (items && items.length > 0) {
+      let icon: TemplateResult = null;
 
-        return html`
-          ${this.renderItem(treeItem)}
-          ${renderChannels ? this.renderDropdownList(treeItem.channels, level + 1) : html``}
-        `;
-      });
+      return html`
+        <fluent-tree-view dir=${this.direction}>
+          ${repeat(
+            items,
+            itemObj => itemObj?.item,
+            obj => {
+              if (obj.channels) {
+                icon = html`<img
+                  class="team-photo"
+                  alt="${obj.item.displayName}"
+                  src=${this.teamsPhotos[obj.item.id].photo} />`;
+              }
+              return html`
+                <fluent-tree-item dir=${this.direction}>
+                  ${icon}${obj.item.displayName}
+                  ${repeat(
+                    obj?.channels,
+                    channels => channels.item,
+                    channel => {
+                      return this.renderItem(channel);
+                    }
+                  )}</fluent-tree-item>`;
+            }
+          )}
+        </fluent-tree-view>`;
     }
-
     return null;
   }
 
@@ -501,13 +592,6 @@ export class MgtTeamsChannelPicker extends MgtTemplatedComponent {
    * @memberof MgtTeamsChannelPicker
    */
   protected renderItem(itemState: ChannelPickerItemState) {
-    let icon: TemplateResult = null;
-
-    if (itemState.channels) {
-      // must be team with channels
-      icon = itemState.isExpanded ? getSvg(SvgIcon.ArrowDown, '#252424') : getSvg(SvgIcon.ArrowRight, '#252424');
-    }
-
     let isSelected = false;
     if (this.selectedItem) {
       if (this.selectedItem.channel === itemState.item) {
@@ -515,27 +599,18 @@ export class MgtTeamsChannelPicker extends MgtTemplatedComponent {
       }
     }
 
-    const classes = {
-      focused: this._focusList[this._focusedIndex] === itemState,
-      item: true,
-      'list-team': itemState.channels ? true : false,
-      selected: isSelected
-    };
-
     const dropDown = this.renderRoot.querySelector('.dropdown');
 
-    if (dropDown.children[this._focusedIndex]) {
+    if (dropDown?.children[this._focusedIndex]) {
       dropDown.children[this._focusedIndex].scrollIntoView(false);
     }
 
     return html`
-      <div @click=${() => this.handleItemClick(itemState)} class="${classMap(classes)}">
-        <div class="arrow">
-          ${icon}
-        </div>
-        ${itemState.channels ? itemState.item.displayName : this.renderHighlightedText(itemState.item)}
-      </div>
-    `;
+      <fluent-tree-item
+        dir=${this.direction}
+        @click=${() => this.handleItemClick(itemState)}>
+          ${itemState?.item.displayName}
+      </fluent-tree-item>`;
   }
 
   /**
@@ -652,6 +727,12 @@ export class MgtTeamsChannelPicker extends MgtTemplatedComponent {
       teams = await getAllMyTeams(graph);
       teams = teams.filter(t => !t.isArchived);
 
+      let teamsIds = teams.map(t => t.id);
+
+      const beta = BetaGraph.fromGraph(graph);
+
+      this.teamsPhotos = await getTeamsPhotosforPhotoIds(beta, teamsIds);
+
       const batch = graph.createBatch();
       const scopes = ['team.readbasic.all'];
 
@@ -693,6 +774,7 @@ export class MgtTeamsChannelPicker extends MgtTemplatedComponent {
 
     this._focusedIndex = -1;
     this.resetFocusState();
+    this.showCloseIcon();
   }
 
   private handleInputChanged(e) {
@@ -877,6 +959,7 @@ export class MgtTeamsChannelPicker extends MgtTemplatedComponent {
     }
 
     this._isDropdownVisible = true;
+    this.toggleChevron();
   }
 
   private lostFocus() {
@@ -888,6 +971,11 @@ export class MgtTeamsChannelPicker extends MgtTemplatedComponent {
 
     this._isDropdownVisible = false;
     this.filterList();
+    this.toggleChevron();
+
+    if (this._selectedItemState !== undefined) {
+      this.showCloseIcon();
+    }
   }
 
   private selectChannel(item: ChannelPickerItemState) {
@@ -901,6 +989,44 @@ export class MgtTeamsChannelPicker extends MgtTemplatedComponent {
       input.textContent = this._inputValue = '';
     }
     this.requestUpdate();
+    // Show the down chevron and hide the close icon
+    this.hideCloseIcon();
     this.lostFocus();
+  }
+
+  /**
+   * Hides the close icon.
+   */
+  private hideCloseIcon() {
+    const closeIcon = this.renderRoot.querySelector('.close-icon') as HTMLElement;
+    if (closeIcon) {
+      closeIcon.style.display = 'none';
+    }
+  }
+
+  /**
+   * Toggles the up and down chevron depending on the dropdown
+   * visibility.
+   */
+  private toggleChevron() {
+    const downChevron = this.renderRoot.querySelector('.down-chevron') as HTMLElement;
+    const upChevron = this.renderRoot.querySelector('.up-chevron') as HTMLElement;
+    if (this._isDropdownVisible) {
+      if (downChevron) {
+        downChevron.style.display = 'none';
+      }
+      if (upChevron) {
+        upChevron.style.display = null;
+        this.hideCloseIcon();
+      }
+    } else {
+      if (downChevron) {
+        downChevron.style.display = null;
+        this.hideCloseIcon();
+      }
+      if (upChevron) {
+        upChevron.style.display = 'none';
+      }
+    }
   }
 }
