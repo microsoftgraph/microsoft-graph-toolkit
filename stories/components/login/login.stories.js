@@ -101,7 +101,7 @@ export const localization = () => html`
 export const MultipleAccounts = () => html`
 <mgt-login></mgt-login>
 <script>
-  import { Providers, MockProvider } from '@microsoft/mgt-element';
+  import { Providers, MockProvider } from './mgt.storybook.js';
   const signedInAccounts = [{
       name: 'Megan Bowen',
       mail: 'MeganB@M365x214355.onmicrosoft.com',
