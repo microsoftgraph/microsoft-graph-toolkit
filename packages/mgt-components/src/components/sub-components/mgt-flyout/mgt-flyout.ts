@@ -116,6 +116,8 @@ export class MgtFlyout extends MgtBaseComponent {
   }
 
   private _isOpen: boolean;
+  private _smallView;
+  private _windowHeight;
 
   constructor() {
     super();
@@ -189,11 +191,19 @@ export class MgtFlyout extends MgtBaseComponent {
 
     const anchorTemplate = this.renderAnchor();
     let flyoutTemplate = null;
+    this._windowHeight =
+      window.innerHeight && document.documentElement.clientHeight
+        ? Math.min(window.innerHeight, document.documentElement.clientHeight)
+        : window.innerHeight || document.documentElement.clientHeight;
+
+    if (this._windowHeight < 250) {
+      this._smallView = true;
+    }
 
     if (this.isOpen || this._renderedOnce) {
       this._renderedOnce = true;
       flyoutTemplate = html`
-        <div class="flyout" @wheel=${this.handleFlyoutWheel}>
+        <div class=${this._smallView ? 'flyout small' : 'flyout'} @wheel=${this.handleFlyoutWheel}>
           ${this.renderFlyout()}
         </div>
       `;
@@ -247,7 +257,7 @@ export class MgtFlyout extends MgtBaseComponent {
           ? Math.min(window.innerWidth, document.documentElement.clientWidth)
           : window.innerWidth || document.documentElement.clientWidth;
 
-      const windowHeight =
+      this._windowHeight =
         window.innerHeight && document.documentElement.clientHeight
           ? Math.min(window.innerHeight, document.documentElement.clientHeight)
           : window.innerHeight || document.documentElement.clientHeight;
@@ -264,7 +274,7 @@ export class MgtFlyout extends MgtBaseComponent {
       const bottomScoutRect = this._bottomScout.getBoundingClientRect();
 
       const windowRect: IWindowSegment = {
-        height: windowHeight,
+        height: this._windowHeight,
         left: 0,
         top: 0,
         width: windowWidth
@@ -366,7 +376,7 @@ export class MgtFlyout extends MgtBaseComponent {
         left -= topScoutRect.left;
 
         if (typeof bottom !== 'undefined') {
-          bottom += bottomScoutRect.top - windowHeight;
+          bottom += bottomScoutRect.top - this._windowHeight;
         } else {
           top -= topScoutRect.top;
         }
