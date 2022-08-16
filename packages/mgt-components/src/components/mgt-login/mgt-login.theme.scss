@@ -13,6 +13,7 @@ $button__background-color--hover: var(
   set-var(background-color--hover, $theme-default, $common)
 );
 $popup__background-color: var(--popup-background-color, set-var(background-color, $theme-default, $common));
+$popup__add-account-button-color: var(--add-account-button-color, set-var(color__sub2, $theme-default, $common));
 
 $login: (
   button__color: (

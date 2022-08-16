@@ -18,6 +18,18 @@ export const Login = () => html`
   <mgt-login></mgt-login>
 `;
 
+export const CompactLogin = () => html`
+  <mgt-login login-view="compact"></mgt-login>
+`;
+
+export const AvatarLogin = () => html`
+  <mgt-login login-view="avatar"></mgt-login>
+`;
+
+export const ShowPresenceLogin = () => html`
+  <mgt-login show-presence login-view="full"></mgt-login>
+`;
+
 export const Templates = () => html`
   <mgt-login>
     <template data-type="signed-out-button-content">

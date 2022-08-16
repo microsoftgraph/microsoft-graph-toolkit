@@ -13,13 +13,12 @@
 mgt-login {
   --font-size: #{$ms-font-size-m};
   --font-weight: #{$ms-font-weight-semibold};
-  --width: '100%';
-  --height: '100%';
   --margin: 0;
-  --padding: 12px 20px;
   --popup-command-font-size: 14px;
   --popup-command-margin: 16px 0 0;
   --popup-padding: 10px 4px 16px 4px;
+  --box-shadow: none; // disable the box-shadow on the flyout and use the one from fluent-card
+  --popup-padding: 12px 4px;
 }
 
 :host .root,
@@ -38,7 +37,6 @@ mgt-login .login-button {
   width: var(--width);
   height: var(--height);
   margin: var(--margin);
-  padding: var(--padding);
   color: set-var(button__color, $theme-default, $login);
   background-color: var(--button-background-color, transparent);
   border: none;
@@ -47,10 +45,6 @@ mgt-login .login-button {
   word-spacing: inherit;
   text-indent: inherit;
   letter-spacing: inherit;
-
-  mgt-person {
-    --color-sub1: set-var(button__color, $theme-default, $login);
-  }
 
   &:hover {
     color: $button__color--hover;
@@ -72,6 +66,35 @@ mgt-login .login-button {
   &.no-click {
     pointer-events: none;
   }
+
+  &.signed-in {
+    padding: 7px 11px;
+    &:hover {
+      color: inherit;
+      --color: inherit;
+      --color-sub1: inherit;
+    }
+
+    &.small {
+      padding: 0;
+      &:hover {
+        background-color: inherit;
+      }
+      > mgt-person {
+        --focus-offset: 2px;
+      }
+    }
+
+    &.full-size {
+      padding: 9px 11px;
+    }
+  }
+  > mgt-person {
+    --focus-offset: 8px;
+  }
+}
+:host fluent-button.login-button::part(content) {
+  margin: 5px 0;
 }
 
 :host .login-icon,
@@ -114,38 +137,20 @@ mgt-login .popup-content {
       --accent-fill-hover: $popup__background-color;
       --accent-fill-active: $popup__background-color;
       --accent-foreground-cut-rest: black;
-      color: black !important;
+      // eliminates the border on the list-box
+      --stroke-width: 0;
       .list-box-option {
-        margin-bottom: 4px;
+        // keeps background hover inside list-box and ensure focus rings don't overlap other accounts
+        margin: 3px 1px;
         mgt-person {
-          max-width: 270px;
-          width: 270px;
-          margin-left: 18px;
-          --details-spacing: 9px;
+          max-width: 246px;
+          width: 246px;
+          margin: 0 22px;
           --avatar-size: 40px;
-          position: relative;
-          --line1-color: rgba(0, 0, 0, 0.83);
-          --line2-color: rgba(0, 0, 0, 0.55);
-          &:after {
-            content: '';
-            position: absolute;
-            z-index: 1;
-            top: 0;
-            right: 8px;
-            bottom: 0px;
-            pointer-events: none;
-            background-image: linear-gradient(to right, rgba(255, 255, 255, 0), $popup__background-color 100%);
-            width: 50%;
-          }
+          --focus-offset: 2px;
         }
         &:hover {
-          border-radius: 4px;
-          background: rgba(0, 0, 0, 0.1);
-          mgt-person {
-            &:after {
-              background-image: none;
-            }
-          }
+          background-color: var(--login-hover-fill, set-var(background-color--hover, $theme-default, $common));
         }
       }
       &:focus {
@@ -194,34 +199,31 @@ mgt-login .popup-content {
   .add-account {
     .add-account-button {
       position: relative;
-      color: #{$commblue_primary};
+      color: $popup__add-account-button-color;
       border: none;
       background-color: $popup__background-color;
       cursor: pointer;
-      margin: 0px 0px 10px 19px;
       padding: 0;
       border: 1px solid transparent;
       &:hover {
-        color: #{$commblue_shade20};
-        text-shadow: 0 0 0.01px #{$commblue_shade20};
+        // hack to prevent text color changing on hover
+        --accent-foreground-hover: $popup__add-account-button-color;
       }
       .account-switch-icon {
         vertical-align: middle;
-        display: inline-block;
+        display: inline-flex;
+        svg {
+          path {
+            fill: $popup__add-account-button-color;
+          }
+        }
       }
     }
   }
 
   .main-profile {
-    margin-bottom: 35px;
-    text-align: center;
-    mgt-person {
-      --avatar-size: 72px;
-      --person-flex-direction: column;
-      --details-spacing: 0px;
-      --line1-color: rgba(0, 0, 0, 0.83);
-      --line2-color: rgba(0, 0, 0, 0.55);
-    }
+    padding: 0 21px;
+    margin: 12px 0 28px 0;
   }
 }
 
@@ -229,11 +231,9 @@ mgt-login .popup-content {
 mgt-login .popup-commands ul {
   list-style-type: none;
   margin: var(--popup-command-margin);
-  padding: 0;
-  margin-bottom: 10px;
-  margin-top: 6px;
+  padding: 0 8px;
+  margin: 0;
   text-align: right;
-  padding-right: 16px;
 }
 
 :host .popup-command,
@@ -250,10 +250,9 @@ mgt-login .popup-command {
   text-indent: inherit;
   letter-spacing: inherit;
   border: 1px solid transparent;
-
   &:hover {
-    text-shadow: 0 0 0.01px #{$commblue_shade20};
-    color: #{$commblue_shade20};
+    // hack to prevent text color changing on hover
+    --accent-foreground-hover: --accent-foreground-rest;
   }
 }
 

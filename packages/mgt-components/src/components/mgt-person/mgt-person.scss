@@ -37,6 +37,8 @@ $line4-font-size: var(--line4-font-size, var(--email-font-size, #{$ms-font-size-
 $line4-font-weight: var(--line4-font-weight, 400);
 $line4-text-transform: var(--line4-text-transform, #{$text-transform});
 
+$focus-offset: var(--focus-offset, 11px);
+
 $details-spacing: --details-spacing;
 
 $person-flex-direction: --person-flex-direction;
@@ -58,12 +60,13 @@ mgt-flyout {
 :host {
   display: block;
   font-family: $font-family;
+  :focus-visible {
+    outline-offset: $focus-offset;
+  }
 }
 
 :host .root {
   display: block;
-  margin: -11px -13px;
-  padding: 11px 13px;
 }
 
 :host svg,
@@ -545,6 +548,7 @@ mgt-person .person-root {
 
     &.vertical {
       text-align: center;
+      align-items: center;
       margin: var($details-spacing, 7px 0px 0px 0px);
 
       &.small {
@@ -578,6 +582,7 @@ mgt-person .person-root {
       font-weight: $font-weight;
       text-transform: $text-transform;
       line-height: 20px;
+      width: fit-content;
     }
 
     .line2 {
