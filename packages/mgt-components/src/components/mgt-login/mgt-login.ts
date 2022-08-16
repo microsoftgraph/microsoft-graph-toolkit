@@ -25,7 +25,7 @@ import { fluentListbox, fluentProgressRing, fluentButton, fluentCard } from '@fl
 import { registerFluentComponents } from '../../utils/FluentComponents';
 registerFluentComponents(fluentListbox, fluentProgressRing, fluentButton, fluentCard);
 
-type LoginViewType = 'avatar' | 'compact' | 'full';
+export type LoginViewType = 'avatar' | 'compact' | 'full';
 
 /**
  * Web component button and flyout control to facilitate Microsoft identity platform authentication

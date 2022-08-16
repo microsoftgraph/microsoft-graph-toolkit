@@ -5,7 +5,7 @@
  * -------------------------------------------------------------------------------------------
  */
 
-import { IProvider, ProviderState } from '../providers/IProvider';
+import { IProvider, IProviderAccount, ProviderState } from '../providers/IProvider';
 import { MockGraph } from './MockGraph';
 
 /**
@@ -27,11 +27,30 @@ export class MockProvider extends IProvider {
    * @memberof MockProvider
    */
   public graph: MockGraph;
-  constructor(signedIn: boolean = false) {
+  constructor(signedIn: boolean = false, signedInAccounts: IProviderAccount[] = []) {
     super();
     this._mockGraphPromise = MockGraph.create(this);
+    const enableMultipleLogin = Boolean(signedInAccounts.length);
+    this.isMultipleAccountSupported = enableMultipleLogin;
+    this.isMultipleAccountDisabled = !enableMultipleLogin;
+    this._accounts = signedInAccounts;
 
     this.initializeMockGraph(signedIn);
+  }
+
+  public get isMultiAccountSupportedAndEnabled(): boolean {
+    return !this.isMultipleAccountDisabled && this.isMultipleAccountSupported;
+  }
+
+  private _accounts: IProviderAccount[] = [];
+  public getAllAccounts?(): IProviderAccount[] {
+    return this._accounts;
+  }
+
+  public getActiveAccount?(): IProviderAccount {
+    if (this._accounts.length) {
+      return this._accounts[0];
+    }
   }
 
   /**
