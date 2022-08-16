@@ -141,13 +141,13 @@ mgt-login .popup-content {
       --stroke-width: 0;
       .list-box-option {
         // keeps background hover inside list-box and ensure focus rings don't overlap other accounts
-        margin: 3px 1px;
+        margin: 8px 1px;
         mgt-person {
           max-width: 246px;
           width: 246px;
           margin: 0 22px;
           --avatar-size: 40px;
-          --focus-offset: 2px;
+          --focus-offset: 4px;
         }
         &:hover {
           background-color: var(--login-hover-fill, set-var(background-color--hover, $theme-default, $common));
@@ -197,6 +197,7 @@ mgt-login .popup-content {
     }
   }
   .add-account {
+    margin: 0 8px;
     .add-account-button {
       position: relative;
       color: $popup__add-account-button-color;
@@ -205,9 +206,11 @@ mgt-login .popup-content {
       cursor: pointer;
       padding: 0;
       border: 1px solid transparent;
+      --neutral-fill-stealth-hover: #{$popup__button-color--hover};
       &:hover {
         // hack to prevent text color changing on hover
-        --accent-foreground-hover: $popup__add-account-button-color;
+        --accent-foreground-hover: #{$popup__add-account-button-color};
+        background-color: $popup__button-color--hover;
       }
       .account-switch-icon {
         vertical-align: middle;
@@ -250,9 +253,12 @@ mgt-login .popup-command {
   text-indent: inherit;
   letter-spacing: inherit;
   border: 1px solid transparent;
+  --neutral-fill-stealth-hover: #{$popup__button-color--hover};
   &:hover {
     // hack to prevent text color changing on hover
     --accent-foreground-hover: --accent-foreground-rest;
+    // ensure that the background of the popup command host element changes on hover
+    background-color: $popup__button-color--hover;
   }
 }
 
