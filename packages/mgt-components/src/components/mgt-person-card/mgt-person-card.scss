@@ -120,6 +120,7 @@ $person-card-nav-back-arrow-hover-color: var(--person-card-nav-back-arrow-hover-
       align-items: center;
       margin-left: 91px;
       margin-top: -35px;
+      z-index: 1;
 
       .icon {
         display: flex;
