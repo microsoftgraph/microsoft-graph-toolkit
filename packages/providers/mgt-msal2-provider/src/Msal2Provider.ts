@@ -94,6 +94,14 @@ interface Msal2ConfigBase {
    * @memberof Msal2ConfigBase
    */
   isIncrementalConsentDisabled?: boolean;
+
+  /**
+   * Disable multi account functionality
+   *
+   * @type {boolean}
+   * @memberof Msal2Config
+   */
+  isMultiAccountDisabled?: boolean;
 }
 
 /**
@@ -311,11 +319,27 @@ export class Msal2Provider extends IProvider {
       } else {
         throw new Error('clientId must be provided');
       }
-    } else if ('publicClientApplication' in config) {
-      if (config.publicClientApplication) {
-        this._publicClientApplication = config.publicClientApplication;
-      } else {
-        throw new Error('publicClientApplication must be provided');
+      this.ms_config.system = msalConfig.system || {};
+      this.ms_config.system.iframeHashTimeout = msalConfig.system.iframeHashTimeout || 10000;
+      this._loginType = typeof config.loginType !== 'undefined' ? config.loginType : LoginType.Redirect;
+      this._loginHint = typeof config.loginHint !== 'undefined' ? config.loginHint : null;
+      this._sid = typeof config.sid !== 'undefined' ? config.sid : null;
+      this._domainHint = typeof config.domainHint !== 'undefined' ? config.domainHint : null;
+      this.scopes = typeof config.scopes !== 'undefined' ? config.scopes : ['user.read'];
+      this._publicClientApplication = new PublicClientApplication(this.ms_config);
+      this._prompt = typeof config.prompt !== 'undefined' ? config.prompt : PromptType.SELECT_ACCOUNT;
+      this.isMultipleAccountDisabled =
+        typeof config.isMultiAccountDisabled !== 'undefined' ? config.isMultiAccountDisabled : false;
+      this.graph = createFromProvider(this);
+      try {
+        const tokenResponse = await this._publicClientApplication.handleRedirectPromise();
+        if (tokenResponse !== null) {
+          this.handleResponse(tokenResponse?.account);
+        } else {
+          this.trySilentSignIn();
+        }
+      } catch (e) {
+        throw e;
       }
     } else {
       throw new Error('either clientId or publicClientApplication must be provided');
