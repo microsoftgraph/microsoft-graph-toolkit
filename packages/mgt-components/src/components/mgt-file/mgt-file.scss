@@ -80,8 +80,10 @@ mgt-file .item {
 
 [dir='rtl'] {
   .item {
+    direction: rtl;
     &__details {
-      direction: ltr;
+      direction: rtl;
+      padding: 0 14px 0 0;
     }
   }
 }

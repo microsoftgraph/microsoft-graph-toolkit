@@ -38,7 +38,6 @@ import { strings } from './strings';
  * @class MgtFile
  * @extends {MgtTemplatedComponent}
  *
- * @cssprop --file-type-icon-width - {Length} file type icon width
  * @cssprop --file-type-icon-height - {Length} file type icon height
  * @cssprop --file-border - {String} file item border style
  * @cssprop --file-box-shadow - {String} file item box shadow style
