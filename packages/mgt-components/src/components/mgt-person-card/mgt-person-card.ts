@@ -450,12 +450,12 @@ export class MgtPersonCard extends MgtTemplatedComponent {
     const navigationTemplate =
       this._history && this._history.length
         ? html`
-            <div class="nav">
-              <div class="nav__back" tabindex="0" @keydown=${(e: KeyboardEvent) => {
-                e.code === 'Enter' ? this.goBack() : '';
-              }} @click=${() => this.goBack()}>${getSvg(SvgIcon.Back)}</div>
-            </div>
-          `
+             <div class="nav">
+               <div class="nav__back" tabindex="0" @keydown=${(e: KeyboardEvent) => {
+                 e.code === 'Enter' ? this.goBack() : '';
+               }} @click=${() => this.goBack()}>${getSvg(SvgIcon.Back)}</div>
+             </div>
+           `
         : null;
 
     // Check for a person-details template
@@ -485,18 +485,18 @@ export class MgtPersonCard extends MgtTemplatedComponent {
       ? html`<div @keydown=${this.handleEndOfCard} aria-label=${this.strings.endOfCard} tabindex="0" id="end-of-container"></div>`
       : html``;
     return html`
-      <div class="root" dir=${this.direction}>
-        ${navigationTemplate}
-        <div class="close-card-container">
-          <fluent-button appearance="lightweight" class="close-button" @click=${() => this.closeCard()} >
-              ${getSvg(SvgIcon.Close)}
-          </fluent-button>
-        </div>
-        <div class="person-details-container">${personDetailsTemplate}</div>
-        <div class="expanded-details-container">${expandedDetailsTemplate}</div>
-        ${tabLocker}
-      </div>
-    `;
+       <div class="root" dir=${this.direction}>
+         ${navigationTemplate}
+         <div class="close-card-container">
+           <fluent-button appearance="lightweight" class="close-button" @click=${() => this.closeCard()} >
+               ${getSvg(SvgIcon.Close)}
+           </fluent-button>
+         </div>
+         <div class="person-details-container">${personDetailsTemplate}</div>
+         <div class="expanded-details-container">${expandedDetailsTemplate}</div>
+         ${tabLocker}
+       </div>
+     `;
   }
 
   private handleEndOfCard(e: KeyboardEvent) {
@@ -551,19 +551,19 @@ export class MgtPersonCard extends MgtTemplatedComponent {
   protected renderPerson(): TemplateResult {
     const avatarSize = 'large';
     return html`
-      <mgt-person
-        tabindex="0"
-        class="person-image"
-        .personDetails=${this.internalPersonDetails}
-        .personImage=${this.getImage()}
-        .personPresence=${this.personPresence}
-        .showPresence=${this.showPresence}
-        .avatarSize=${avatarSize}
-        .view=${ViewType.threelines}
-        .line2Property=${'jobTitle'}
-        .line3Property=${'department'}
-      ></mgt-person>
-    `;
+       <mgt-person
+         tabindex="0"
+         class="person-image"
+         .personDetails=${this.internalPersonDetails}
+         .personImage=${this.getImage()}
+         .personPresence=${this.personPresence}
+         .showPresence=${this.showPresence}
+         .avatarSize=${avatarSize}
+         .view=${ViewType.threelines}
+         .line2Property=${'jobTitle'}
+         .line3Property=${'department'}
+       ></mgt-person>
+     `;
   }
 
   /**
