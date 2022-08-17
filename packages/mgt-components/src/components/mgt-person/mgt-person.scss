@@ -272,6 +272,10 @@ mgt-person .person-root {
         cursor: $avatar-cursor;
         margin-top: -1px;
         font-size: calc(#{$avatar-size} * 0.4);
+        svg {
+          height: 30px;
+          width: 30px;
+        }
       }
 
       & .contact-icon {
@@ -548,7 +552,6 @@ mgt-person .person-root {
         font-size: 20px;
         line-height: 26px;
         margin-bottom: 6px;
-        font-weight: 600;
       }
     }
 
@@ -586,11 +589,7 @@ mgt-person .person-root {
       font-size: $line1-font-size;
       font-weight: $line1-font-weight;
       text-transform: $text-transform;
-      line-height: 20px;
-      & > text {
-        padding: 0;
-        margin: 0;
-      }
+      line-height: $line1-line-height;
     }
 
     .line2 {

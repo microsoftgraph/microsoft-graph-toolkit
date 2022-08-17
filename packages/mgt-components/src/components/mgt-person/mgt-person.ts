@@ -1113,10 +1113,6 @@ export class MgtPerson extends MgtTemplatedComponent {
       this.line2Property = 'email';
     }
 
-    if (this.verticalLayout && this.view < ViewType.fourlines) {
-      this.line2Property = 'email';
-    }
-
     // Prepare person props
     let personProps = [
       ...defaultPersonProperties,

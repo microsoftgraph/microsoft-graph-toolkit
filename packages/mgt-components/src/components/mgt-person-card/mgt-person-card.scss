@@ -81,10 +81,7 @@ $person-card-nav-back-arrow-hover-color: var(--person-card-nav-back-arrow-hover-
       z-index: 1;
       --accent-foreground-hover: none;
       border: 1px solid transparent;
-      // &:focus-visible {
-      //   outline: none;
-      //   border: 1px solid #2b2b2b;
-      // }
+      --neutral-fill-stealth-rest: #fff;
       svg {
         width: 9px;
         height: 9px;
@@ -183,6 +180,7 @@ $person-card-nav-back-arrow-hover-color: var(--person-card-nav-back-arrow-hover-
     fluent-tabs {
       background-color: $background-color;
       grid-template-columns: minmax(1px, 0.1fr);
+      --focus-stroke-width: 1;
       fluent-tab-panel {
         max-height: 360px;
         min-height: 360px;

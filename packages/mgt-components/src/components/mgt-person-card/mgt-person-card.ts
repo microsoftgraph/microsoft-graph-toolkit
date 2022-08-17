@@ -487,12 +487,12 @@ export class MgtPersonCard extends MgtTemplatedComponent {
 
     const closeCardTemplate = this.isExpanded
       ? html`
-          <div class="close-card-container">
-            <fluent-button appearance="lightweight" class="close-button" @click=${() => this.closeCard()} >
-              ${getSvg(SvgIcon.Close)}
-            </fluent-button>
-          </div>
-        `
+           <div class="close-card-container">
+             <fluent-button appearance="lightweight" class="close-button" @click=${() => this.closeCard()} >
+               ${getSvg(SvgIcon.Close)}
+             </fluent-button>
+           </div>
+         `
       : null;
 
     const navigationTemplate =
@@ -533,16 +533,16 @@ export class MgtPersonCard extends MgtTemplatedComponent {
       ? html`<div @keydown=${this.handleEndOfCard} aria-label=${this.strings.endOfCard} tabindex="0" id="end-of-container"></div>`
       : html``;
     return html`
-      <div class="root" dir=${this.direction}>
-        <div class=${this._smallView ? 'small' : ''}>
-          ${navigationTemplate}
-          ${closeCardTemplate}
-          <div class="person-details-container">${personDetailsTemplate}</div>
-          <div class="expanded-details-container">${expandedDetailsTemplate}</div>
-          ${tabLocker}
-        </div>
-      </div>
-    `;
+       <div class="root" dir=${this.direction}>
+         <div class=${this._smallView ? 'small' : ''}>
+           ${navigationTemplate}
+           ${closeCardTemplate}
+           <div class="person-details-container">${personDetailsTemplate}</div>
+           <div class="expanded-details-container">${expandedDetailsTemplate}</div>
+           ${tabLocker}
+         </div>
+       </div>
+     `;
   }
 
   private handleEndOfCard(e: KeyboardEvent) {
@@ -592,16 +592,16 @@ export class MgtPersonCard extends MgtTemplatedComponent {
   protected renderPerson(): TemplateResult {
     const avatarSize = 'large';
     return html`
-      <mgt-person
-        class="person-image"
-        .personDetails=${this.internalPersonDetails}
-        .personImage=${this.getImage()}
-        .personPresence=${this.personPresence}
-        .showPresence=${this.showPresence}
-        .avatarSize=${avatarSize}
-        .view=${ViewType.threelines}
-      ></mgt-person>
-    `;
+       <mgt-person
+         class="person-image"
+         .personDetails=${this.internalPersonDetails}
+         .personImage=${this.getImage()}
+         .personPresence=${this.personPresence}
+         .showPresence=${this.showPresence}
+         .avatarSize=${avatarSize}
+         .view=${ViewType.threelines}
+       ></mgt-person>
+     `;
   }
 
   /**
@@ -637,68 +637,68 @@ export class MgtPersonCard extends MgtTemplatedComponent {
     let email: TemplateResult;
     if (getEmailFromGraphEntity(person)) {
       email = html`
-        <div class="icon" 
-          @click=${() => this.emailUser()}
-          @mouseenter=${() => this.handleMouseEnter('email')}
-          @mouseleave=${() => this.handleMouseLeave('email')}
-          tabindex=0
-          role="button">
-          ${this.isEmailHovered ? getSvg(SvgIcon.SmallEmailHovered) : getSvg(SvgIcon.SmallEmail)}
-        </div>
-      `;
+         <div class="icon" 
+           @click=${() => this.emailUser()}
+           @mouseenter=${() => this.handleMouseEnter('email')}
+           @mouseleave=${() => this.handleMouseLeave('email')}
+           tabindex=0
+           role="button">
+           ${this.isEmailHovered ? getSvg(SvgIcon.SmallEmailHovered) : getSvg(SvgIcon.SmallEmail)}
+         </div>
+       `;
     }
 
     // Chat
     let chat: TemplateResult;
     if (userPerson?.userPrincipalName) {
       chat = html`
-        <div class="icon"
-          @click=${() => this.chatUser()}
-          @mouseenter=${() => this.handleMouseEnter('chat')}
-          @mouseleave=${() => this.handleMouseLeave('chat')}
-          tabindex=0 
-          role="button">
-          ${this.isChatHovered ? getSvg(SvgIcon.SmallChatHovered) : getSvg(SvgIcon.SmallChat)}
-          <!-- ${getSvg(SvgIcon.SmallChat)} -->
-        </div>
-      `;
+         <div class="icon"
+           @click=${() => this.chatUser()}
+           @mouseenter=${() => this.handleMouseEnter('chat')}
+           @mouseleave=${() => this.handleMouseLeave('chat')}
+           tabindex=0 
+           role="button">
+           ${this.isChatHovered ? getSvg(SvgIcon.SmallChatHovered) : getSvg(SvgIcon.SmallChat)}
+           <!-- ${getSvg(SvgIcon.SmallChat)} -->
+         </div>
+       `;
     }
 
     let video: TemplateResult;
     video = html`
-       <div class="icon"
-          @click=${() => this.videoCallUser()}
-          @mouseenter=${() => this.handleMouseEnter('video')}
-          @mouseleave=${() => this.handleMouseLeave('video')}
-          tabindex=0
-          role="button">
-          <!-- ${getSvg(SvgIcon.Video)} -->
-          ${this.isVideoHovered ? getSvg(SvgIcon.VideoHovered) : getSvg(SvgIcon.Video)}
-        </div>
-     `;
+        <div class="icon"
+           @click=${() => this.videoCallUser()}
+           @mouseenter=${() => this.handleMouseEnter('video')}
+           @mouseleave=${() => this.handleMouseLeave('video')}
+           tabindex=0
+           role="button">
+           <!-- ${getSvg(SvgIcon.Video)} -->
+           ${this.isVideoHovered ? getSvg(SvgIcon.VideoHovered) : getSvg(SvgIcon.Video)}
+         </div>
+      `;
 
     // Call
     let call: TemplateResult;
     if (userPerson.userPrincipalName) {
       // Change to video call api URL when available
       call = html`
-        <div class="icon"
-          @click=${() => this.callUser()}
-          @mouseenter=${() => this.handleMouseEnter('call')}
-          @mouseleave=${() => this.handleMouseLeave('call')}
-          tabindex=0 
-          role="button">
-          <!-- ${getSvg(SvgIcon.Call)} -->
-          ${this.isCallHovered ? getSvg(SvgIcon.CallHovered) : getSvg(SvgIcon.Call)}
-        </div>
-      `;
+         <div class="icon"
+           @click=${() => this.callUser()}
+           @mouseenter=${() => this.handleMouseEnter('call')}
+           @mouseleave=${() => this.handleMouseLeave('call')}
+           tabindex=0 
+           role="button">
+           <!-- ${getSvg(SvgIcon.Call)} -->
+           ${this.isCallHovered ? getSvg(SvgIcon.CallHovered) : getSvg(SvgIcon.Call)}
+         </div>
+       `;
     }
 
     return html`
-      <div class="base-icons">
-        ${email} ${chat} ${video} ${call}
-      </div>
-    `;
+       <div class="base-icons">
+         ${email} ${chat} ${video} ${call}
+       </div>
+     `;
   }
 
   /**
@@ -746,13 +746,13 @@ export class MgtPersonCard extends MgtTemplatedComponent {
     const sectionNavTemplate = this.renderSectionNavigation();
 
     return html`
-      <div class="section-nav">
-        ${sectionNavTemplate}
-      </div>
-      <div class="section-host ${this._smallView ? 'small' : ''}" @wheel=${(e: WheelEvent) =>
+       <div class="section-nav">
+         ${sectionNavTemplate}
+       </div>
+       <div class="section-host ${this._smallView ? 'small' : ''}" @wheel=${(e: WheelEvent) =>
       this.handleSectionScroll(e)} tabindex=0>
-      </div>
-    `;
+       </div>
+     `;
   }
 
   /**
@@ -823,17 +823,17 @@ export class MgtPersonCard extends MgtTemplatedComponent {
   protected renderOverviewSection(): TemplateResult {
     const compactTemplates = this.sections.map(
       (section: BasePersonCardSection) => html`
-        <div class="section">
-          <div class="section__header">
-            <div class="section__title" tabindex=0>${section.displayName}</div>
-              <fluent-button appearance="lightweight" class="section__show-more" @click=${() =>
-                this.updateCurrentSection(section)}>
-                ${this.strings.showMoreSectionButton}
-              </fluent-button>
-          </div>
-          <div class="section__content">${section.asCompactView()}</div>
-        </div>
-      `
+         <div class="section">
+           <div class="section__header">
+             <div class="section__title" tabindex=0>${section.displayName}</div>
+               <fluent-button appearance="lightweight" class="section__show-more" @click=${() =>
+                 this.updateCurrentSection(section)}>
+                 ${this.strings.showMoreSectionButton}
+               </fluent-button>
+           </div>
+           <div class="section__content">${section.asCompactView()}</div>
+         </div>
+       `
     );
 
     const additionalDetails = this.renderTemplate('additional-details', {
@@ -854,10 +854,10 @@ export class MgtPersonCard extends MgtTemplatedComponent {
     }
 
     return html`
-      <div class="sections">
-        ${compactTemplates}
-      </div>
-    `;
+       <div class="sections">
+         ${compactTemplates}
+       </div>
+     `;
   }
 
   /**
@@ -896,16 +896,16 @@ export class MgtPersonCard extends MgtTemplatedComponent {
    */
   protected renderMessagingSection(): TemplateResult {
     return html`
-        <fluent-text-field appearance="filled" placeholder="Message ${this.internalPersonDetails.displayName}"
-          .value=${this._chatInput}
-          @input=${(e: Event) => {
-            this._chatInput = (e.target as HTMLInputElement).value;
-          }}>
-        </fluent-text-field>
-        <span class="send-message-icon" @click=${() => this.sendQuickMessage()}>
-          ${getSvg(SvgIcon.Send)}
-        </span>
-      `;
+         <fluent-text-field appearance="filled" placeholder="Message ${this.internalPersonDetails.displayName}"
+           .value=${this._chatInput}
+           @input=${(e: Event) => {
+             this._chatInput = (e.target as HTMLInputElement).value;
+           }}>
+         </fluent-text-field>
+         <span class="send-message-icon" @click=${() => this.sendQuickMessage()}>
+           ${getSvg(SvgIcon.Send)}
+         </span>
+       `;
   }
 
   /**
