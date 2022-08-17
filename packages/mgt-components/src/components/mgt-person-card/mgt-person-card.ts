@@ -659,7 +659,6 @@ export class MgtPersonCard extends MgtTemplatedComponent {
            tabindex=0 
            role="button">
            ${this.isChatHovered ? getSvg(SvgIcon.SmallChatHovered) : getSvg(SvgIcon.SmallChat)}
-           <!-- ${getSvg(SvgIcon.SmallChat)} -->
          </div>
        `;
     }
@@ -672,7 +671,6 @@ export class MgtPersonCard extends MgtTemplatedComponent {
            @mouseleave=${() => this.handleMouseLeave('video')}
            tabindex=0
            role="button">
-           <!-- ${getSvg(SvgIcon.Video)} -->
            ${this.isVideoHovered ? getSvg(SvgIcon.VideoHovered) : getSvg(SvgIcon.Video)}
          </div>
       `;
@@ -688,7 +686,6 @@ export class MgtPersonCard extends MgtTemplatedComponent {
            @mouseleave=${() => this.handleMouseLeave('call')}
            tabindex=0 
            role="button">
-           <!-- ${getSvg(SvgIcon.Call)} -->
            ${this.isCallHovered ? getSvg(SvgIcon.CallHovered) : getSvg(SvgIcon.Call)}
          </div>
        `;

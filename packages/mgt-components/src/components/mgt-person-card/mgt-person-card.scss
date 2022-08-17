@@ -94,6 +94,7 @@ $person-card-nav-back-arrow-hover-color: var(--person-card-nav-back-arrow-hover-
     flex-direction: column;
     width: calc(var(--mgt-flyout-set-width, 375px) - 40px);
     padding: 23px 0px 0px 23px;
+    border-bottom: 1px solid set-var(line-seperator__color, $theme-default, $common);
 
     .person-image {
       --presence-background-color: #{$background-color};
@@ -180,7 +181,6 @@ $person-card-nav-back-arrow-hover-color: var(--person-card-nav-back-arrow-hover-
     fluent-tabs {
       background-color: $background-color;
       grid-template-columns: minmax(1px, 0.1fr);
-      --focus-stroke-width: 1;
       fluent-tab-panel {
         max-height: 360px;
         min-height: 360px;
@@ -391,7 +391,7 @@ $person-card-nav-back-arrow-hover-color: var(--person-card-nav-back-arrow-hover-
           --neutral-fill-stealth-rest: $background-color;
           --accent-foreground-hover: $background-color;
           --accent-foreground-active: $background-color;
-          --base-height-multiplier: 5;
+          --base-height-multiplier: 6;
           vertical-align: top;
         }
       }

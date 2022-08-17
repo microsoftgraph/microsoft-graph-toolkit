@@ -14,7 +14,7 @@ $commblue_shade20: #005a9e; /* Comm Blue / Shade 20 #005A9E */
 
 $gray10: #faf9f8; /* Neutrals / Web / Gray 10 #FAF9F8 */
 $gray20: #f3f2f1; /* Neutrals / Web / Gray 20 #F3F2F1 */
-$gray30: #edebe9; /* Neutrals / Web / Gray 30 #EDEBE9 */
+$gray30: #ebebeb; /* Neutrals / Web / Gray 30 #EBEBEB */
 $gray40: #e1dfdd; /* Neutrals / Web / Gray 40 #E1DFDD */
 $gray50: #d2d0ce; /* Neutrals / Web / Gray 50 #D2D0CE */
 $gray60: #c8c6c4; /* Neutrals / Web / Gray 60 #C8C6C4 */
@@ -104,7 +104,7 @@ $line-separator--dark: $gray150;
 
 /* -----Tab----- (mgt-person-card) */
 // light
-$tab__line__color--light: $line-separator--light; /* gray30 #EDEBE9 */
+$tab__line__color--light: $line-separator--light; /* gray30 #EBEBEB */
 $tab__line__color--active--light: $commblue_primary;
 $tab__line__color--hover--light: $gray100;
 $tab__background-color--hover--light: $background-color__main--hover--light;

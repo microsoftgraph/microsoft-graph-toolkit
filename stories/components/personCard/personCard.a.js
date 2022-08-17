@@ -60,8 +60,6 @@ export const localization = () => html`
         signOutLinkSubtitle: 'خروج'
       },
       'person-card': {
-        sendEmailLinkSubtitle: 'ارسل بريد الكتروني',
-        startChatLinkSubtitle: 'ابدأ الدردشة',
         showMoreSectionButton: 'أظهر المزيد' // global declaration
       },
       'person-card-contact': {
