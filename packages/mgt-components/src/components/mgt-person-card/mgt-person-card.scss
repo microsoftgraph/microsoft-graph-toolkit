@@ -42,6 +42,10 @@ $person-card-nav-back-arrow-hover-color: var(--person-card-nav-back-arrow-hover-
     overflow-x: hidden;
   }
 
+  .activeIndicator {
+    width: 10px !important;
+  }
+
   .nav {
     height: 0px;
     position: relative;
@@ -241,20 +245,13 @@ $person-card-nav-back-arrow-hover-color: var(--person-card-nav-back-arrow-hover-
       cursor: pointer;
 
       svg {
-        width: 20px;
-        height: 20px;
         fill: set-var(icon__color, $theme-default, $common);
+        margin-bottom: 9px;
       }
 
       &:hover {
         background: set-var(tab__background-color--hover, $theme-default, $common);
-        border-radius: 2px;
-      }
-
-      &.active {
-        svg {
-          fill: $icon--active;
-        }
+        border-radius: 4px;
       }
     }
   }

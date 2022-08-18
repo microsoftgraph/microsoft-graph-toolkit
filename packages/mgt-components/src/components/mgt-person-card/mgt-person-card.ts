@@ -36,6 +36,7 @@ export * from './mgt-person-card.types';
 
 import { fluentTabs, fluentTab, fluentTabPanel } from '@fluentui/web-components';
 import { registerFluentComponents } from '../../utils/FluentComponents';
+import { Interface } from 'readline';
 
 registerFluentComponents(fluentTabs, fluentTab, fluentTabPanel);
 
@@ -48,6 +49,17 @@ interface MgtPersonCardStateHistory {
   // tslint:disable-next-line:completed-docs
   personImage: string;
 }
+
+// tslint:disable-next-line:completed-docs
+interface HoverStates {
+  // tslint:disable-next-line:completed-docs
+  hovered: TemplateResult;
+  // tslint:disable-next-line:completed-docs
+  normal: TemplateResult;
+}
+
+// tslint:disable-next-line:completed-docs
+type HoverStatesActions = 'email' | 'chat' | 'video' | 'call';
 
 /**
  * Web Component used to show detailed data for a person in the Microsoft Graph
@@ -639,11 +651,11 @@ export class MgtPersonCard extends MgtTemplatedComponent {
       email = html`
          <div class="icon" 
            @click=${() => this.emailUser()}
-           @mouseenter=${() => this.handleMouseEnter('email')}
-           @mouseleave=${() => this.handleMouseLeave('email')}
+           @mouseenter=${() => this.setHoveredState('email', true)}
+           @mouseleave=${() => this.setHoveredState('email', false)}
            tabindex=0
            role="button">
-           ${this.isEmailHovered ? getSvg(SvgIcon.SmallEmailHovered) : getSvg(SvgIcon.SmallEmail)}
+           ${this.isHovered('email') ? getSvg(SvgIcon.SmallEmailHovered) : getSvg(SvgIcon.SmallEmail)}
          </div>
        `;
     }
@@ -654,39 +666,39 @@ export class MgtPersonCard extends MgtTemplatedComponent {
       chat = html`
          <div class="icon"
            @click=${() => this.chatUser()}
-           @mouseenter=${() => this.handleMouseEnter('chat')}
-           @mouseleave=${() => this.handleMouseLeave('chat')}
-           tabindex=0 
+           @mouseenter=${() => this.setHoveredState('chat', true)}
+           @mouseleave=${() => this.setHoveredState('chat', false)}
+           tabindex=0
            role="button">
-           ${this.isChatHovered ? getSvg(SvgIcon.SmallChatHovered) : getSvg(SvgIcon.SmallChat)}
+           ${this.isHovered('chat') ? getSvg(SvgIcon.SmallChatHovered) : getSvg(SvgIcon.SmallChat)}
          </div>
        `;
     }
 
+    // Video
     let video: TemplateResult;
     video = html`
         <div class="icon"
            @click=${() => this.videoCallUser()}
-           @mouseenter=${() => this.handleMouseEnter('video')}
-           @mouseleave=${() => this.handleMouseLeave('video')}
+           @mouseenter=${() => this.setHoveredState('video', true)}
+           @mouseleave=${() => this.setHoveredState('video', false)}
            tabindex=0
            role="button">
-           ${this.isVideoHovered ? getSvg(SvgIcon.VideoHovered) : getSvg(SvgIcon.Video)}
+           ${this.isHovered('video') ? getSvg(SvgIcon.VideoHovered) : getSvg(SvgIcon.Video)}
          </div>
       `;
 
     // Call
     let call: TemplateResult;
     if (userPerson.userPrincipalName) {
-      // Change to video call api URL when available
       call = html`
          <div class="icon"
            @click=${() => this.callUser()}
-           @mouseenter=${() => this.handleMouseEnter('call')}
-           @mouseleave=${() => this.handleMouseLeave('call')}
-           tabindex=0 
+           @mouseenter=${() => this.setHoveredState('call', true)}
+           @mouseleave=${() => this.setHoveredState('call', false)}
+           tabindex=0
            role="button">
-           ${this.isCallHovered ? getSvg(SvgIcon.CallHovered) : getSvg(SvgIcon.Call)}
+           ${this.isHovered('call') ? getSvg(SvgIcon.CallHovered) : getSvg(SvgIcon.Call)}
          </div>
        `;
     }
@@ -1217,36 +1229,21 @@ export class MgtPersonCard extends MgtTemplatedComponent {
     return person && person.personImage ? person.personImage : null;
   }
 
-  private hovered(icon: string, state: boolean) {
-    switch (icon) {
-      case 'email':
-        this.isEmailHovered = state;
-        break;
-      case 'chat':
-        this.isChatHovered = state;
-        break;
-      case 'video':
-        this.isVideoHovered = state;
-        break;
-      case 'call':
-        this.isCallHovered = state;
-        break;
-    }
-  }
+  @internalProperty() private hoverStates: Record<HoverStatesActions, boolean> = {
+    email: false,
+    chat: false,
+    video: false,
+    call: false
+  };
 
-  private handleMouseEnter(icon: string) {
-    clearTimeout(this._mouseEnterTimeout);
-    clearTimeout(this._mouseLeaveTimeout);
-    this.hovered(icon, true);
-    this._mouseEnterTimeout = setTimeout(this.hovered.bind(this), 500);
-  }
+  private setHoveredState = (icon: string, state: boolean) => {
+    this.hoverStates[icon] = state;
+    this.hoverStates = { ...this.hoverStates };
+  };
 
-  private handleMouseLeave(icon: string) {
-    clearTimeout(this._mouseEnterTimeout);
-    clearTimeout(this._mouseLeaveTimeout);
-    this.hovered(icon, false);
-    this._mouseLeaveTimeout = setTimeout(this.hovered.bind(this), 500);
-  }
+  private isHovered = (icon: string) => {
+    return this.hoverStates[icon];
+  };
 
   private getPersonBusinessPhones(person: Person): string[] {
     const phones = person.phones;
