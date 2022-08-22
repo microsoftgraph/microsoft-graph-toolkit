@@ -53,15 +53,13 @@ To use the Microsoft Graph Connect Sample for ASP.NET Core 3.1, you need the fol
 5. On the **Register an application** page, specify the following values:
 
    - **Name** = [Desired app name]
-   - **Supported account types** = [Choose the value that applies to your needs]
+   - **Supported account types** = [Choose the **Multi-tenant** value that applies to your needs]
    - **Redirect URI**
      - Type (dropdown) = Web
      - Value = `https://localhost:44334/signin-oidc`
 
    > **Note:** Ensure that the Redirect URI value is unique within your domain. This value can be changed at a later time and does not need to point to a hosted URI. If the example URI above is already used please choose a unique value.
-
-   1. Under **Advanced settings**, set the value of the **Logout URL** to `https://localhost:44334/Account/SignOut`
-   2. Copy the **Redirect URI** as you will need it later.
+   - Copy the **Redirect URI** as you will need it later.
 
 6. Once the app is created, copy the **Application (client) ID** and **Directory (tenant) ID** from the overview page and store it temporarily as you will need both later.
 
@@ -81,7 +79,9 @@ To use the Microsoft Graph Connect Sample for ASP.NET Core 3.1, you need the fol
       > In production apps you should always use certificates as your application secrets, but for this sample we will use a simple shared secret password.
 
 8. Click **Authentication** from the current blade navigation pane.
-   1. Select 'ID tokens'
+   1. Configure the **Front-channel logout URL** to `https://localhost:44334/Account/SignOut`
+   2. Select 'ID tokens' in the **Implicit grant and hybrid flows** section
+
 9. Click **API permissions** from the current blade navigation pane.
 
    1. Click **Add a permission** from the current blade content.

@@ -50,7 +50,7 @@ export const schemas = {
       groups: 'groups',
       groupsQuery: 'groupsQuery'
     },
-    version: 3
+    version: 4
   },
   get: {
     name: 'responses',
