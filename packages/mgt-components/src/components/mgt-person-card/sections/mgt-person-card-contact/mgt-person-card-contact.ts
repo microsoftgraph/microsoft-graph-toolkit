@@ -226,7 +226,7 @@ export class MgtPersonCardContact extends BasePersonCardSection {
 
     return html`
       <div class="root" dir=${this.direction}>
-        <div class="title">${this.displayName}</div>
+        <div class="title" tabindex="0">${this.displayName}</div>
         ${contentTemplate}
       </div>
     `;
@@ -261,7 +261,7 @@ export class MgtPersonCardContact extends BasePersonCardSection {
         `;
 
     return html`
-      <div class="part" @click=${(e: MouseEvent) => this.handlePartClick(e, part.value)}>
+      <div class="part" @click=${(e: MouseEvent) => this.handlePartClick(e, part.value)}  tabindex="0">
         <div class="part__icon">${part.icon}</div>
         <div class="part__details">
           <div class="part__title">${part.title}</div>

@@ -234,15 +234,27 @@ export class MgtLogin extends MgtTemplatedComponent {
    * @memberof MgtLogin
    */
   protected renderButton() {
+    const provider = Providers.globalProvider;
+    const signedInState = ProviderState.SignedIn;
+
+    let ariaLabel = this.strings.signInLinkSubtitle;
+    if (provider) {
+      if (provider.state === signedInState) {
+        ariaLabel = this.userDetails ? this.userDetails.displayName : this.strings.signInLinkSubtitle;
+      }
+    }
+
     const classes = {
       'login-button': true,
       'no-click': this._isFlyoutOpen
     };
     return html`
-       <button ?disabled="${this.isLoadingState}" @click=${this.onClick} class=${classMap(classes)} role="button">
-         ${this.renderButtonContent()}
-       </button>
-     `;
+      <button aria-label=${ariaLabel} ?disabled="${this.isLoadingState}" @click=${this.onClick} class=${classMap(
+      classes
+    )} role="button">
+        ${this.renderButtonContent()}
+      </button>
+    `;
   }
 
   /**
@@ -307,8 +319,13 @@ export class MgtLogin extends MgtTemplatedComponent {
     return (
       template ||
       html`
-         <mgt-person .personDetails=${personDetails} .personImage=${personImage} .view=${ViewType.twolines} />
-       `
+        <mgt-person 
+          .personDetails=${personDetails}
+          .personImage=${personImage}
+          .view=${ViewType.twolines}
+          .line2Property=${'email'}
+        />
+        `
     );
   }
 
@@ -324,14 +341,14 @@ export class MgtLogin extends MgtTemplatedComponent {
     return (
       template ||
       html`
-         <ul>
-           <li>
-             <button class="popup-command" @click=${this.logout} aria-label="Sign Out">
-               ${this.strings.signOutLinkSubtitle}
-             </button>
-           </li>
-         </ul>
-       `
+        <ul>
+          <li>
+            <button class="popup-command" @click=${this.logout} aria-label=${this.strings.signOutLinkSubtitle}>
+              ${this.strings.signOutLinkSubtitle}
+            </button>
+          </li>
+        </ul>
+      `
     );
   }
 
@@ -468,11 +485,9 @@ export class MgtLogin extends MgtTemplatedComponent {
     return (
       template ||
       html`
-         <i class="login-icon ms-Icon ms-Icon--Contact"></i>
-         <span aria-label="Sign In">
-           ${this.strings.signInLinkSubtitle}
-         </span>
-       `
+        <i class="login-icon ms-Icon ms-Icon--Contact"></i>
+        <span>${this.strings.signInLinkSubtitle}</span>
+      `
     );
   }
 

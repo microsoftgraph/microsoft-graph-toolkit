@@ -46,22 +46,21 @@ export const setPersonDetails = () => html`
 
 export const personFallbackDetails = () => html`
   <div class="example">
-    <mgt-person person-query="mbowen" view="twoLines" fallback-details='{"displayName":"Megan Bowen"}'></mgt-person>
-  </div>
-  <div class="example">
-    <mgt-person
-      person-query="mbowen"
-      view="twoLines"
-      fallback-details='{"mail":"MeganB@M365x214355.onmicrosoft.com", "displayName":"Megan Bowen"}'
-    ></mgt-person>
-  </div>
-  <div class="example">
-    <mgt-person
-      person-query="mbowen"
-      view="twoLines"
-      fallback-details='{"mail":"MeganB@M365x214355.onmicrosoft.com","displayName":"Megan Bowen"}'
-    ></mgt-person>
-  </div>
+	<mgt-person person-query="mbowen" view="twoLines" fallback-details='{"displayName":"Megan Bowen"}'></mgt-person>
+</div>
+<div class="example">
+	<mgt-person person-query="mbowen" view="twoLines"
+		fallback-details='{"mail":"MeganB@M365x214355.onmicrosoft.com"}'></mgt-person>
+</div>
+<div class="example">
+	<mgt-person person-query="mbowen" view="twoLines"
+		fallback-details='{"mail":"MeganB@M365x214355.onmicrosoft.com","displayName":"Megan Bowen"}'></mgt-person>
+</div>
+<!-- No Fallback details -->
+<div class="example">
+	<mgt-person person-query="mbowen" view="twoLines"
+		fallback-details='{}'></mgt-person>
+</div>
 
   <style>
   .example {
@@ -87,6 +86,41 @@ export const personView = () => html`
   <div class="example">
     <mgt-person person-query="me" view="threelines"></mgt-person>
   </div>
+  <div class="example">
+    <mgt-person person-query="me" view="fourlines"></mgt-person>
+  </div>
+
+  <!-- Person View with presence; check JS tab -->
+
+  <div class="example">
+    <mgt-person person-query="me" id="online" view="oneline" show-presence></mgt-person>
+  </div>
+  <div class="example">
+    <mgt-person person-query="me" id="online2" view="twolines" show-presence></mgt-person>
+  </div>
+  <div class="example">
+    <mgt-person person-query="me" id="online3" show-presence view="threelines"></mgt-person>
+  </div>
+  <div class="example">
+    <mgt-person person-query="me" id="online4" show-presence view="fourLines" ></mgt-person>
+  </div>
+
+  <script>
+            const online = {
+          activity: 'Available',
+          availability: 'Available',
+          id: null
+      };
+      const onlinePerson = document.getElementById('online');
+      const onlinePerson2 = document.getElementById('online2');
+      const onlinePerson3 = document.getElementById('online3');
+      const onlinePerson4 = document.getElementById('online4');
+
+      onlinePerson.personPresence = online;
+      onlinePerson2.personPresence = online;
+      onlinePerson3.personPresence = online;
+      onlinePerson4.personPresence = online;
+    </script>
 
   <style>
     .example {

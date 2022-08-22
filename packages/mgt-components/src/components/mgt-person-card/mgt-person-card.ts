@@ -195,6 +195,16 @@ export class MgtPersonCard extends MgtTemplatedComponent {
   public personQuery: string;
 
   /**
+   * allows the locking of navigation using tabs to not flow out of the card section
+   * @type {boolean}
+   */
+  @property({
+    attribute: 'lock-tab-navigation',
+    type: Boolean
+  })
+  public lockTabNavigation: boolean;
+
+  /**
    * user-id property allows developer to use id value for component
    * @type {string}
    */
@@ -305,6 +315,8 @@ export class MgtPersonCard extends MgtTemplatedComponent {
   private _currentSection: BasePersonCardSection;
   private _personDetails: IDynamicPerson;
   private _me: User;
+  private _smallView;
+  private _windowHeight;
 
   private _userId: string;
 
@@ -439,7 +451,9 @@ export class MgtPersonCard extends MgtTemplatedComponent {
       this._history && this._history.length
         ? html`
             <div class="nav">
-              <div class="nav__back" @click=${() => this.goBack()}>${getSvg(SvgIcon.Back)}</div>
+              <div class="nav__back" tabindex="0" @keydown=${(e: KeyboardEvent) => {
+                e.code === 'Enter' ? this.goBack() : '';
+              }} @click=${() => this.goBack()}>${getSvg(SvgIcon.Back)}</div>
             </div>
           `
         : null;
@@ -459,7 +473,17 @@ export class MgtPersonCard extends MgtTemplatedComponent {
     }
 
     const expandedDetailsTemplate = this.isExpanded ? this.renderExpandedDetails() : this.renderExpandedDetailsButton();
+    this._windowHeight =
+      window.innerHeight && document.documentElement.clientHeight
+        ? Math.min(window.innerHeight, document.documentElement.clientHeight)
+        : window.innerHeight || document.documentElement.clientHeight;
 
+    if (this._windowHeight < 250) {
+      this._smallView = true;
+    }
+    const tabLocker = this.lockTabNavigation
+      ? html`<div @keydown=${this.handleEndOfCard} aria-label=${this.strings.endOfCard} tabindex="0" id="end-of-container"></div>`
+      : html``;
     return html`
       <div class="root" dir=${this.direction}>
         ${navigationTemplate}
@@ -470,8 +494,22 @@ export class MgtPersonCard extends MgtTemplatedComponent {
         </div>
         <div class="person-details-container">${personDetailsTemplate}</div>
         <div class="expanded-details-container">${expandedDetailsTemplate}</div>
+        ${tabLocker}
       </div>
     `;
+  }
+
+  private handleEndOfCard(e: KeyboardEvent) {
+    if (e && e.code === 'Tab') {
+      const endOfCardEl = this.renderRoot.querySelector('#end-of-container') as HTMLElement;
+      if (endOfCardEl) {
+        endOfCardEl.blur();
+        const imageCardEl = this.renderRoot.querySelector('mgt-person') as HTMLElement;
+        if (imageCardEl) {
+          imageCardEl.focus();
+        }
+      }
+    }
   }
 
   /**
@@ -514,6 +552,7 @@ export class MgtPersonCard extends MgtTemplatedComponent {
     const avatarSize = 'large';
     return html`
       <mgt-person
+        tabindex="0"
         class="person-image"
         .personDetails=${this.internalPersonDetails}
         .personImage=${this.getImage()}
@@ -698,6 +737,8 @@ export class MgtPersonCard extends MgtTemplatedComponent {
         active: i === currentSectionIndex,
         'section-nav__icon': true
       });
+      const tagName = section.tagName;
+      const ariaLabel = tagName.substring(16, tagName.length).toLowerCase();
       return html`
         <fluent-tab id="${name}-Tab" class=${classes}
           slot="tab" @keyup="${() => this.updateCurrentSection(section)}" @click=${() =>
@@ -709,7 +750,7 @@ export class MgtPersonCard extends MgtTemplatedComponent {
     const additionalPanelTemplates = this.sections.map((section, i) => {
       return html`
         <fluent-tab-panel  slot="tabpanel">
-              <div class="inserted">${this._currentSection ? section.asFullView() : null}</div>
+          <div class="inserted">${this._currentSection ? section.asFullView() : null}</div>
         </fluent-tab-panel>
       `;
     });
@@ -744,8 +785,12 @@ export class MgtPersonCard extends MgtTemplatedComponent {
    * @memberof MgtPersonCard
    */
   protected renderOverviewSection(): TemplateResult {
+    function handleKeyDown(e: KeyboardEvent, section: BasePersonCardSection) {
+      e.code === 'Enter' ? this.updateCurrentSection(section) : '';
+    }
+
     const compactTemplates = this.sections.map(
-      section => html`
+      (section: BasePersonCardSection) => html`
         <div class="section">
           <div class="section__header">
             <div class="section__title">${section.displayName}</div>

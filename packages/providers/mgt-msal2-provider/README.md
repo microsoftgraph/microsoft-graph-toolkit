@@ -60,7 +60,6 @@ The `@microsoft/mgt-msal2-provider` package exposes the `Msal2Provider` class wh
       domainHint?: string,
       isMultiAccountEnabled?: boolean, // True by default, disables multiple account login if false
       isIncrementalConsentDisabled?: boolean, //Disable incremental consent, true by default
-      options?: Configuration // msal js Configuration object
     });
 
 4. Alternatively, initialize the provider in html (only `client-id` is required):

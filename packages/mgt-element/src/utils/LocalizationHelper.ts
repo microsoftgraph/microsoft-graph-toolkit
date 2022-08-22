@@ -46,7 +46,7 @@ export class LocalizationHelper {
    * @memberof LocalizationHelper
    */
   public static getDocumentDirection() {
-    return document.body.getAttribute('dir') || document.documentElement.getAttribute('dir');
+    return document.body?.getAttribute('dir') || document.documentElement?.getAttribute('dir');
   }
 
   /**
