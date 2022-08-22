@@ -98,7 +98,7 @@ $person-card-nav-back-arrow-hover-color: var(--person-card-nav-back-arrow-hover-
     flex-direction: column;
     width: calc(var(--mgt-flyout-set-width, 375px) - 40px);
     padding: 23px 0px 0px 23px;
-    border-bottom: 1px solid set-var(line-seperator__color, $theme-default, $common);
+    border-bottom: 1px solid $gray30;
 
     .person-image {
       --presence-background-color: #{$background-color};
@@ -114,6 +114,7 @@ $person-card-nav-back-arrow-hover-color: var(--person-card-nav-back-arrow-hover-
       --line3-line-height: #{$person-card-subtitle-line-height};
       --line3-color: #{$person-card-subtitle-color};
       --details-cta-spacing: 30px;
+      --user-presence-margin-offset: 3px;
     }
 
     .base-icons {
@@ -130,11 +131,11 @@ $person-card-nav-back-arrow-hover-color: var(--person-card-nav-back-arrow-hover-
         cursor: pointer;
         font-size: 13px;
         white-space: nowrap;
-        padding: 10px 12px;
-        margin-left: -14px;
+        margin-top: 10px;
+        margin-bottom: 38px;
 
         &:not(:last-child) {
-          margin-right: 30px;
+          margin-right: 38px;
         }
 
         svg {

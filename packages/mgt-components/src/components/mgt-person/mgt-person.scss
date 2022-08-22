@@ -46,6 +46,8 @@ $line4-text-transform: var(--line4-text-transform, #{$text-transform});
 $details-spacing: --details-spacing;
 $details-cta-spacing: --details-cta-spacing;
 
+$user-presence-margin-offset: --user-presence-margin-offset;
+
 $person-flex-direction: --person-flex-direction;
 $presence-color-online: #13a10e;
 $presence-color-dnd: #c50f1f;
@@ -346,7 +348,7 @@ mgt-person .person-root {
 
           & .presence-oof-offline svg {
             width: calc(#{$avatar-size-3-lines} * 0.14);
-            margin-left: calc(#{$avatar-size-4-lines} * 0.07 - 2px);
+            margin-left: calc(#{$avatar-size-3-lines} * 0.07 - 2px);
           }
         }
 
@@ -358,7 +360,7 @@ mgt-person .person-root {
         .presence-dnd::before,
         .presence-oof-dnd::before,
         .presence-oof-offline::before {
-          margin-left: calc(#{$avatar-size-3-lines} * 0.07 - 2px);
+          margin-left: calc(#{$avatar-size-3-lines} * 0.07 - var(--user-presence-margin-offset, 2px));
         }
       }
     }

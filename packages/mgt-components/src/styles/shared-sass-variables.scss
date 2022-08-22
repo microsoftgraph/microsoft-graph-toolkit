@@ -45,7 +45,8 @@ $greyPill: #f0f0f0; /* Person Pill */
 // Change once standard all through
 $greyHover: #f7f7f7; /* Person Card Hover */
 $greyBackground: #fbfbfb; /* Person Card Background */
-$commblue_org: #0360b9; /*Person Card Org border*/
+$commblue_org: #0360b9; /* Person Card Org border */
+$gray_separator_org: #d6d6d6; /* Person Card Org target borders */
 
 /* ---------------Common style variables--------------- */
 /* -----Background----- */
@@ -99,7 +100,7 @@ $icon__sub2--dark: $gray100;
 $icon--active: $commblue_primary;
 
 /* -----Other Elements----- */
-$line-separator--light: $gray30;
+$line-separator--light: $gray_separator_org;
 $line-separator--dark: $gray150;
 
 /* -----Tab----- (mgt-person-card) */
