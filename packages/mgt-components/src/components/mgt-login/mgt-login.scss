@@ -19,12 +19,17 @@ mgt-login {
   --popup-padding: 10px 4px 16px 4px;
   --box-shadow: none; // disable the box-shadow on the flyout and use the one from fluent-card
   --popup-padding: 12px 4px;
+  --profile-spacing: 12px 0 28px 0;
 }
 
 :host .root,
 mgt-login .root {
   position: relative;
   display: inline-block;
+
+  &.vertical-layout {
+    --profile-spacing: 21px 0 28px 0;
+  }
 }
 
 :host .login-button,
@@ -133,6 +138,7 @@ mgt-login .popup-content {
 
     .list-box {
       margin-bottom: 25px;
+      margin-top: 6px;
       background-color: $popup__background-color;
       --accent-fill-hover: $popup__background-color;
       --accent-fill-active: $popup__background-color;
@@ -150,7 +156,9 @@ mgt-login .popup-content {
           --focus-offset: 4px;
         }
         &:hover {
+          // --neutral-fill-hover: #{$neutralFillHover};
           background-color: var(--login-hover-fill, set-var(background-color--hover, $theme-default, $common));
+          cursor: pointer;
         }
       }
       &:focus {
@@ -226,7 +234,7 @@ mgt-login .popup-content {
 
   .main-profile {
     padding: 0 21px;
-    margin: 12px 0 28px 0;
+    margin: var(--profile-spacing);
   }
 }
 

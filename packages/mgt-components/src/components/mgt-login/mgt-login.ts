@@ -212,8 +212,12 @@ export class MgtLogin extends MgtTemplatedComponent {
    * trigger the element to update.
    */
   protected render() {
+    const classes = {
+      root: true,
+      'vertical-layout': this.usesVerticalPersonCard
+    };
     return html`
-       <div class="root" dir=${this.direction}>
+       <div class=${classMap(classes)} dir=${this.direction}>
          <div>
            ${this.renderButton()}
          </div>
@@ -314,7 +318,8 @@ export class MgtLogin extends MgtTemplatedComponent {
         @closed=${() => (this._isFlyoutOpen = false)}
       >
         <div slot="flyout">
-          <fluent-card>
+          <!-- Setting the card fill ensures the correct colors on hover states -->
+          <fluent-card card-fill-color="#fbfbfb">
             ${this.renderFlyoutContent()}
           </fluent-card>
         </div>
@@ -353,9 +358,13 @@ export class MgtLogin extends MgtTemplatedComponent {
 
   private get hasMultipleAccounts(): boolean {
     return (
-      Providers.globalProvider.isMultiAccountSupportedAndEnabled &&
-      Providers.globalProvider.getAllAccounts?.()?.length > 1
+      Providers.globalProvider?.isMultiAccountSupportedAndEnabled &&
+      Providers.globalProvider?.getAllAccounts?.()?.length > 1
     );
+  }
+
+  private get usesVerticalPersonCard(): boolean {
+    return this.loginView === 'full' || this.hasMultipleAccounts;
   }
 
   /**
@@ -367,7 +376,6 @@ export class MgtLogin extends MgtTemplatedComponent {
    */
   protected renderFlyoutPersonDetails(personDetails: IDynamicPerson, personImage: string) {
     const template = this.renderTemplate('flyout-person-details', { personDetails, personImage });
-    const useVerticalLayout = this.loginView === 'full' || this.hasMultipleAccounts;
     return (
       template ||
       html`
@@ -376,7 +384,7 @@ export class MgtLogin extends MgtTemplatedComponent {
           .personImage=${personImage}
           .view=${ViewType.twolines}
           .line2Property=${'email'}
-          ?vertical-layout=${useVerticalLayout}
+          ?vertical-layout=${this.usesVerticalPersonCard}
         />
         `
     );
@@ -532,8 +540,8 @@ export class MgtLogin extends MgtTemplatedComponent {
                   `;
                 }
               })}
-           </fluent-listbox>
-          </fluent-design-system-provider>
+             </fluent-listbox>
+           </fluent-design-system-provider>
          </div>
        `;
       }
