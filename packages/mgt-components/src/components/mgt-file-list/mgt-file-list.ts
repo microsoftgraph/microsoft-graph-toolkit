@@ -41,10 +41,10 @@ import { strings } from './strings';
 import { MgtFile } from '../mgt-file/mgt-file';
 import { MgtFileUploadConfig } from './mgt-file-upload/mgt-file-upload';
 
-export { FluentProgressRing } from '@fluentui/web-components';
-// import { registerFluentComponents } from '../../utils/FluentComponents';
+import { fluentProgressRing, fluentDesignSystemProvider } from '@fluentui/web-components';
+import { registerFluentComponents } from '../../utils/FluentComponents';
 
-// registerFluentComponents(FluentProgressRing);
+registerFluentComponents(fluentProgressRing, fluentDesignSystemProvider);
 
 /**
  * The File List component displays a list of multiple folders and files by

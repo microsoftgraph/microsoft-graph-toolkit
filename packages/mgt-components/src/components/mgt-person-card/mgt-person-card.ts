@@ -33,10 +33,10 @@ import { MgtFlyout } from '../sub-components/mgt-flyout/mgt-flyout';
 
 export * from './mgt-person-card.types';
 
-export { FluentTabs, FluentTab, FluentTabPanel, FluentButton, FluentTextField } from '@fluentui/web-components';
-// import { registerFluentComponents } from '../../utils/FluentComponents';
+import { fluentTabs, fluentTab, fluentTabPanel, fluentButton, fluentTextField } from '@fluentui/web-components';
+import { registerFluentComponents } from '../../utils/FluentComponents';
 
-// registerFluentComponents(FluentTabs, FluentTab, FluentTabPanel, FluentButton, FluentTextField);
+registerFluentComponents(fluentTabs, fluentTab, fluentTabPanel, fluentButton, fluentTextField);
 
 // tslint:disable-next-line:completed-docs
 interface MgtPersonCardStateHistory {
@@ -195,6 +195,16 @@ export class MgtPersonCard extends MgtTemplatedComponent {
   public personQuery: string;
 
   /**
+   * allows the locking of navigation using tabs to not flow out of the card section
+   * @type {boolean}
+   */
+  @property({
+    attribute: 'lock-tab-navigation',
+    type: Boolean
+  })
+  public lockTabNavigation: boolean;
+
+  /**
    * user-id property allows developer to use id value for component
    * @type {string}
    */
@@ -305,6 +315,8 @@ export class MgtPersonCard extends MgtTemplatedComponent {
   private _currentSection: BasePersonCardSection;
   private _personDetails: IDynamicPerson;
   private _me: User;
+  private _smallView;
+  private _windowHeight;
 
   private _userId: string;
 
@@ -439,7 +451,9 @@ export class MgtPersonCard extends MgtTemplatedComponent {
       this._history && this._history.length
         ? html`
             <div class="nav">
-              <div class="nav__back" @click=${() => this.goBack()}>${getSvg(SvgIcon.Back)}</div>
+              <div class="nav__back" tabindex="0" @keydown=${(e: KeyboardEvent) => {
+                e.code === 'Enter' ? this.goBack() : '';
+              }} @click=${() => this.goBack()}>${getSvg(SvgIcon.Back)}</div>
             </div>
           `
         : null;
@@ -459,7 +473,17 @@ export class MgtPersonCard extends MgtTemplatedComponent {
     }
 
     const expandedDetailsTemplate = this.isExpanded ? this.renderExpandedDetails() : this.renderExpandedDetailsButton();
+    this._windowHeight =
+      window.innerHeight && document.documentElement.clientHeight
+        ? Math.min(window.innerHeight, document.documentElement.clientHeight)
+        : window.innerHeight || document.documentElement.clientHeight;
 
+    if (this._windowHeight < 250) {
+      this._smallView = true;
+    }
+    const tabLocker = this.lockTabNavigation
+      ? html`<div @keydown=${this.handleEndOfCard} aria-label=${this.strings.endOfCard} tabindex="0" id="end-of-container"></div>`
+      : html``;
     return html`
       <div class="root" dir=${this.direction}>
         ${navigationTemplate}
@@ -470,8 +494,22 @@ export class MgtPersonCard extends MgtTemplatedComponent {
         </div>
         <div class="person-details-container">${personDetailsTemplate}</div>
         <div class="expanded-details-container">${expandedDetailsTemplate}</div>
+        ${tabLocker}
       </div>
     `;
+  }
+
+  private handleEndOfCard(e: KeyboardEvent) {
+    if (e && e.code === 'Tab') {
+      const endOfCardEl = this.renderRoot.querySelector('#end-of-container') as HTMLElement;
+      if (endOfCardEl) {
+        endOfCardEl.blur();
+        const imageCardEl = this.renderRoot.querySelector('mgt-person') as HTMLElement;
+        if (imageCardEl) {
+          imageCardEl.focus();
+        }
+      }
+    }
   }
 
   /**
@@ -514,6 +552,7 @@ export class MgtPersonCard extends MgtTemplatedComponent {
     const avatarSize = 'large';
     return html`
       <mgt-person
+        tabindex="0"
         class="person-image"
         .personDetails=${this.internalPersonDetails}
         .personImage=${this.getImage()}
@@ -564,37 +603,59 @@ export class MgtPersonCard extends MgtTemplatedComponent {
     let email: TemplateResult;
     if (getEmailFromGraphEntity(person)) {
       email = html`
-        <div class="icon" @click=${() => this.emailUser()} tabindex=0>
-          ${getSvg(SvgIcon.SmallEmail)}
-          <span>${this.strings.sendEmailLinkSubtitle}</span>
+        <div
+          class="icon"
+          @click=${() => this.emailUser()}
+          tabindex=0
+          role="button">
+            ${getSvg(SvgIcon.SmallEmail)}
+            <span class="text">${this.strings.sendEmailLinkSubtitle}</span>
         </div>
       `;
     }
 
     // Chat
     let chat: TemplateResult;
-    if (userPerson.userPrincipalName) {
+    if (userPerson?.userPrincipalName) {
       chat = html`
-        <div class="icon" @click=${() => this.chatUser()} tabindex=0>
-          ${getSvg(SvgIcon.SmallChat)}
-          <span>${this.strings.startChatLinkSubtitle}</span>
+        <div
+          class="icon"
+          @click=${() => this.chatUser()}
+          tabindex=0
+          role="button">
+            ${getSvg(SvgIcon.SmallChat)}
+            <span class="text">${this.strings.startChatLinkSubtitle}</span>
         </div>
       `;
     }
 
     let video: TemplateResult;
-    video = html`
-      <div class="icon" @click=${() => this.videoCallUser()}>
-        <span>\uE714</span>
-      </div>
-    `;
+    if (userPerson?.userPrincipalName) {
+      video = html`
+        <div
+          class="icon"
+          @click=${() => this.videoCallUser()}
+          aria-label="${this.strings.video}"
+          tabindex=0
+          role="button">
+            <span>\uE714</span>
+        </div>
+      `;
+    }
 
     let phone: TemplateResult;
-    phone = html`
-    <div class="icon" @click=${() => this.callUser()}>
-      <span>\uE717</span>
-      </div>
-    `;
+    if (this.hasPhone) {
+      phone = html`
+      <div
+        class="icon"
+        @click=${() => this.callUser()}
+        aria-label="${this.strings.phone}"
+        tabindex=0
+        role="button">
+          <span>\uE717</span>
+        </div>
+      `;
+    }
 
     return html`
       <div class="base-icons">
@@ -614,7 +675,7 @@ export class MgtPersonCard extends MgtTemplatedComponent {
     return html`
       <div class="expanded-details-button" @click=${this.showExpandedDetails} @keydown=${
       this.handleKeyDown
-    } @ tabindex=0>>
+    } @ tabindex=0>
         ${getSvg(SvgIcon.ExpandDown)}
       </div>
     `;
@@ -676,6 +737,8 @@ export class MgtPersonCard extends MgtTemplatedComponent {
         active: i === currentSectionIndex,
         'section-nav__icon': true
       });
+      const tagName = section.tagName;
+      const ariaLabel = tagName.substring(16, tagName.length).toLowerCase();
       return html`
         <fluent-tab id="${name}-Tab" class=${classes}
           slot="tab" @keyup="${() => this.updateCurrentSection(section)}" @click=${() =>
@@ -687,7 +750,7 @@ export class MgtPersonCard extends MgtTemplatedComponent {
     const additionalPanelTemplates = this.sections.map((section, i) => {
       return html`
         <fluent-tab-panel  slot="tabpanel">
-              <div class="inserted">${this._currentSection ? section.asFullView() : null}</div>
+          <div class="inserted">${this._currentSection ? section.asFullView() : null}</div>
         </fluent-tab-panel>
       `;
     });
@@ -700,7 +763,7 @@ export class MgtPersonCard extends MgtTemplatedComponent {
 
     return html`
         <fluent-tabs  orientation="horizontal" activeindicator  @wheel=${(e: WheelEvent) =>
-          this.handleSectionScroll(e)}> 
+          this.handleSectionScroll(e)}>
           <fluent-tab class="${overviewClasses}"  slot="tab" @keyup="${() =>
       this.updateCurrentSection(null)}" @click=${() => this.updateCurrentSection(null)}>
             <div>${getSvg(SvgIcon.Overview)}</div>
@@ -722,8 +785,12 @@ export class MgtPersonCard extends MgtTemplatedComponent {
    * @memberof MgtPersonCard
    */
   protected renderOverviewSection(): TemplateResult {
+    function handleKeyDown(e: KeyboardEvent, section: BasePersonCardSection) {
+      e.code === 'Enter' ? this.updateCurrentSection(section) : '';
+    }
+
     const compactTemplates = this.sections.map(
-      section => html`
+      (section: BasePersonCardSection) => html`
         <div class="section">
           <div class="section__header">
             <div class="section__title">${section.displayName}</div>
@@ -820,8 +887,8 @@ export class MgtPersonCard extends MgtTemplatedComponent {
    */
   protected renderMessagingSection(): TemplateResult {
     return html`
-        <fluent-text-field appearance="filled" placeholder="Message ${this.internalPersonDetails.displayName}"  
-          .value=${this._chatInput}  
+        <fluent-text-field appearance="filled" placeholder="Message ${this.internalPersonDetails.displayName}"
+          .value=${this._chatInput}
           @input=${(e: Event) => {
             this._chatInput = (e.target as HTMLInputElement).value;
           }}>
@@ -972,6 +1039,12 @@ export class MgtPersonCard extends MgtTemplatedComponent {
         window.open('mailto:' + email, '_blank', 'noreferrer');
       }
     }
+  }
+
+  private get hasPhone(): boolean {
+    const user = this.personDetails as User;
+    const person = this.personDetails as microsoftgraph.Person;
+    return Boolean(user?.businessPhones?.length) || Boolean(person?.phones?.length);
   }
 
   /**
@@ -1192,7 +1265,7 @@ export class MgtPersonCard extends MgtTemplatedComponent {
   private handleKeyDown(e: KeyboardEvent) {
     //enter activates person-card
     if (e) {
-      if (e.keyCode === 13) {
+      if (e.key === 'Enter') {
         this.showExpandedDetails(e);
       }
     }

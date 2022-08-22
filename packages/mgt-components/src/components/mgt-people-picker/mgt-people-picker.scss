@@ -9,6 +9,8 @@
 @import '../../styles/shared-styles.scss';
 @import './mgt-people-picker.theme.scss';
 
+$person-wrapper-background-hover: #fafafa;
+
 // Main
 :host {
   font-family: $font-family;
@@ -67,6 +69,9 @@ mgt-people-picker .root {
       overflow: hidden;
       position: relative;
       background-color: set-var(selected-person__background-color, $theme-default, $people-picker);
+      &:hover {
+        background-color: $person-wrapper-background-hover;
+      }
 
       &__person {
         overflow: hidden;
@@ -97,7 +102,6 @@ mgt-people-picker .root {
         &__close-icon {
           font-family: 'FabricMDL2Icons';
           cursor: pointer;
-          background-color: set-var(selected-person__background-color, $theme-default, $people-picker);
           color: $color;
           display: flex;
           flex-direction: column;
@@ -109,6 +113,9 @@ mgt-people-picker .root {
           top: 0px;
           border-radius: 12px;
           line-height: 24px;
+          &:hover {
+            color: $commblue_primary;
+          }
         }
       }
     }

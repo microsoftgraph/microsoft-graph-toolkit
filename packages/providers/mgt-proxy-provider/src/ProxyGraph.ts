@@ -39,7 +39,8 @@ export class ProxyGraph extends Graph {
     super(
       Client.initWithMiddleware({
         baseUrl,
-        middleware: chainMiddleware(...middleware)
+        middleware: chainMiddleware(...middleware),
+        customHosts: new Set<string>([new URL(baseUrl).hostname])
       })
     );
   }

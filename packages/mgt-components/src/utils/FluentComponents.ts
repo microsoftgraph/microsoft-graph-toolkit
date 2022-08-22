@@ -1,25 +1,13 @@
-// import { provideFluentDesignSystem } from '@fluentui/web-components';
+import { provideFluentDesignSystem } from '@fluentui/web-components';
 
-// const designSystem = provideFluentDesignSystem();
+const designSystem = provideFluentDesignSystem();
 
-// export const registerFluentComponents = (...fluentComponents) => {
-//   if (!fluentComponents || !fluentComponents.length) {
-//     return;
-//   }
+export const registerFluentComponents = (...fluentComponents) => {
+  if (!fluentComponents || !fluentComponents.length) {
+    return;
+  }
 
-// const registry = {
-//   register(container: any) {
-//     if (!container) {
-//       return;
-//     }
-
-//     for (const component of fluentComponents) {
-//       component().register(container);
-//     }
-//   }
-// };
-
-//   for (const component of fluentComponents) {
-//     designSystem.register(component());
-//   }
-// };
+  for (const component of fluentComponents) {
+    designSystem.register(component());
+  }
+};
