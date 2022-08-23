@@ -2429,13 +2429,13 @@ PERFORMANCE OF THIS SOFTWARE.
                Sign in with a different account
              </fluent-button>
            </div>
-       `}renderSignedInButtonContent(e,t){const r=this.renderTemplate("signed-in-button-content",{personDetails:e,personImage:t});let o=pe.twolines,n="small";switch(this.loginView){case"avatar":o=pe.image,n="small";break;case"compact":o=pe.oneline,n="small";break;default:o=pe.twolines,n="large"}return r||html$1`
+       `}parsePersonDisplayConfiguration(){const e={view:pe.twolines,avatarSize:"small"};switch(this.loginView){case"avatar":e.view=pe.image,e.avatarSize="small";break;case"compact":e.view=pe.oneline,e.avatarSize="small";break;default:e.view=pe.twolines,e.avatarSize="large"}return e}renderSignedInButtonContent(e,t){const r=this.renderTemplate("signed-in-button-content",{personDetails:e,personImage:t}),o=this.parsePersonDisplayConfiguration();return r||html$1`
         <mgt-person
           .personDetails=${this.userDetails}
           .personImage=${this._image}
-          .view=${o}
+          .view=${o.view}
           .showPresence=${this.showPresence}
-          .avatarSize=${n}
+          .avatarSize=${o.avatarSize}
           line2-property="email"
         />
        `}renderAccounts(){if(Providers.globalProvider.state===N.SignedIn&&Providers.globalProvider.isMultiAccountSupportedAndEnabled){const e=Providers.globalProvider,t=e.getAllAccounts();if(t&&t.length>1)return html$1`
