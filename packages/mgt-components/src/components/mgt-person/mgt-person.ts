@@ -143,6 +143,7 @@ const defaultPersonProperties = [
  * @cssprop --line4-text-transform - {String} Line 2 text transform
  * @cssprop --details-spacing - {Length} spacing between avatar and person details
  * @cssprop --person-flex-direction - {String} flex direction associated with the avatar and details
+ * @cssprop --focus-offset - {Length} spacing between element and focus ring
  */
 @customElement('mgt-person')
 export class MgtPerson extends MgtTemplatedComponent {
@@ -1000,7 +1001,7 @@ export class MgtPerson extends MgtTemplatedComponent {
       if (this.hasTemplate('line4')) {
         // Render the line4 template
         const template = this.renderTemplate('line4', { person });
-        details.push(html` 
+        details.push(html`
           <div class="line4" @click=${() =>
             this.handleLine4Clicked()} role="presentation" aria-label="${text}">${template}</div>
         `);

@@ -214,7 +214,8 @@ mgt-login .popup-content {
       background-color: $popup__background-color;
       cursor: pointer;
       padding: 0;
-      border: 1px solid transparent;
+      // hack to ensure that the button matches the card color
+      --neutral-fill-stealth-rest: #{$popup__background-color};
       --neutral-fill-stealth-hover: #{$popup__button-color--hover};
       &:hover {
         // hack to prevent text color changing on hover
@@ -255,13 +256,13 @@ mgt-login .popup-command {
   color: #{$commblue_primary};
   background-color: $popup__background-color;
   border: none;
-  padding: 0 0 1px 0;
   cursor: pointer;
   transition: color 0.3s;
   word-spacing: inherit;
   text-indent: inherit;
   letter-spacing: inherit;
-  border: 1px solid transparent;
+  // hack to ensure that the button matches the card color
+  --neutral-fill-stealth-rest: #{$popup__background-color};
   --neutral-fill-stealth-hover: #{$popup__button-color--hover};
   &:hover {
     // hack to prevent text color changing on hover

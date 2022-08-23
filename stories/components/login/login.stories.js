@@ -100,6 +100,9 @@ export const localization = () => html`
 
 export const MultipleAccounts = () => html`
 <mgt-login></mgt-login>
+Note: this story configures the MockProvider with data to represent the case of multiple signed in accounts.
+It is not possible to sign in with additional accounts or switch the active account.
+Please refer to the JavaScript tab if you wish to change which accounts are being show here.
 <script>
   import { Providers, MockProvider } from './mgt.storybook.js';
   const signedInAccounts = [{
