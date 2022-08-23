@@ -31,6 +31,14 @@ registerFluentComponents(fluentListbox, fluentProgressRing, fluentButton, fluent
  */
 export type LoginViewType = 'avatar' | 'compact' | 'full';
 
+// tslint:disable-next-line: completed-docs
+type PersonViewConfig = {
+  // tslint:disable-next-line: completed-docs
+  view: ViewType;
+  // tslint:disable-next-line: completed-docs
+  avatarSize: AvatarSize;
+};
+
 /**
  * Web component button and flyout control to facilitate Microsoft identity platform authentication
  *
@@ -73,6 +81,13 @@ export class MgtLogin extends MgtTemplatedComponent {
   static get styles() {
     return styles;
   }
+  /**
+   * Returns the object of strings for localization
+   *
+   * @readonly
+   * @protected
+   * @memberof MgtLogin
+   */
   protected get strings() {
     return strings;
   }
@@ -465,6 +480,26 @@ export class MgtLogin extends MgtTemplatedComponent {
     }
   }
 
+  private parsePersonDisplayConfiguration(): PersonViewConfig {
+    const displayConfig: PersonViewConfig = { view: ViewType.twolines, avatarSize: 'small' };
+    switch (this.loginView) {
+      case 'avatar':
+        displayConfig.view = ViewType.image;
+        displayConfig.avatarSize = 'small';
+        break;
+      case 'compact':
+        displayConfig.view = ViewType.oneline;
+        displayConfig.avatarSize = 'small';
+        break;
+      case 'full':
+      default:
+        displayConfig.view = ViewType.twolines;
+        displayConfig.avatarSize = 'large';
+        break;
+    }
+    return displayConfig;
+  }
+
   /**
    * Render the button content when the user is signed in.
    *
@@ -474,32 +509,16 @@ export class MgtLogin extends MgtTemplatedComponent {
    */
   protected renderSignedInButtonContent(personDetails: IDynamicPerson, personImage: string) {
     const template = this.renderTemplate('signed-in-button-content', { personDetails, personImage });
-    let view: ViewType = ViewType.twolines;
-    let avatarSize: AvatarSize = 'small';
-    switch (this.loginView) {
-      case 'avatar':
-        view = ViewType.image;
-        avatarSize = 'small';
-        break;
-      case 'compact':
-        view = ViewType.oneline;
-        avatarSize = 'small';
-        break;
-      case 'full':
-      default:
-        view = ViewType.twolines;
-        avatarSize = 'large';
-        break;
-    }
+    const displayConfig = this.parsePersonDisplayConfiguration();
     return (
       template ||
       html`
         <mgt-person
           .personDetails=${this.userDetails}
           .personImage=${this._image}
-          .view=${view}
+          .view=${displayConfig.view}
           .showPresence=${this.showPresence}
-          .avatarSize=${avatarSize}
+          .avatarSize=${displayConfig.avatarSize}
           line2-property="email"
         />
        `

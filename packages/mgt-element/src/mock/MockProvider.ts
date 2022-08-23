@@ -38,15 +38,35 @@ export class MockProvider extends IProvider {
     this.initializeMockGraph(signedIn);
   }
 
+  /**
+   * Indicates if the MockProvider is configured to support multi account mode
+   * This is only true if the Mock provider has been configured with signedInAccounts in the constructor
+   *
+   * @readonly
+   * @type {boolean}
+   * @memberof MockProvider
+   */
   public get isMultiAccountSupportedAndEnabled(): boolean {
     return !this.isMultipleAccountDisabled && this.isMultipleAccountSupported;
   }
 
   private _accounts: IProviderAccount[] = [];
+  /**
+   * Returns the array of accounts the MockProviders has been configured with
+   *
+   * @return {*}  {IProviderAccount[]}
+   * @memberof MockProvider
+   */
   public getAllAccounts?(): IProviderAccount[] {
     return this._accounts;
   }
 
+  /**
+   * Returns the first account in the set of accounts the MockProvider has been configured with
+   *
+   * @return {*}  {IProviderAccount}
+   * @memberof MockProvider
+   */
   public getActiveAccount?(): IProviderAccount {
     if (this._accounts.length) {
       return this._accounts[0];
