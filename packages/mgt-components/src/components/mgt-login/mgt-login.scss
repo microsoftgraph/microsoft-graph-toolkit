@@ -20,6 +20,7 @@ mgt-login {
   --box-shadow: none; // disable the box-shadow on the flyout and use the one from fluent-card
   --popup-padding: 12px 4px;
   --profile-spacing: 12px 0 28px 0;
+  --profile-spacing-full: 21px 0 28px 0;
 }
 
 :host .root,
@@ -28,7 +29,7 @@ mgt-login .root {
   display: inline-block;
 
   &.vertical-layout {
-    --profile-spacing: 21px 0 28px 0;
+    --profile-spacing: var(--profile-spacing-full);
   }
 }
 

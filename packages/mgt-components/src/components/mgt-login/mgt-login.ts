@@ -25,6 +25,10 @@ import { fluentListbox, fluentProgressRing, fluentButton, fluentCard } from '@fl
 import { registerFluentComponents } from '../../utils/FluentComponents';
 registerFluentComponents(fluentListbox, fluentProgressRing, fluentButton, fluentCard);
 
+/**
+ *  loginViewType describes the enum strings that can be passed in to determine
+ *  size of the mgt-login control.
+ */
 export type LoginViewType = 'avatar' | 'compact' | 'full';
 
 /**
@@ -47,16 +51,17 @@ export type LoginViewType = 'avatar' | 'compact' | 'full';
  *
  * @cssprop --font-size - {Length} Login font size
  * @cssprop --font-weight - {Length} Login font weight
- * @cssprop --height - {String} Login height percentage
  * @cssprop --margin - {String} Margin size
- * @cssprop --padding - {String} Padding size
  * @cssprop --button-color - {Color} Login button font color
  * @cssprop --button-color--hover - {Color} Login button font hover color
- * @cssprop --button-background-color - {Color} Login button background color
  * @cssprop --button-background-color--hover - {Color} Login background hover color
  * @cssprop --popup-background-color - {Color} Popup background color
  * @cssprop --popup-color - {Color} Popup font color
  * @cssprop --popup-command-font-size - {Length} Popup command font size
+ * @cssprop --popup-command-margin - {String} margins for the logout command in the popup
+ * @cssprop --popup-padding - {String} padding applied inside the popup
+ * @cssprop --profile-spacing - {String} margin applied to the active account inside the popup
+ * @cssprop --profile-spacing-full - {String} margin applied to the active account inside the popup when login-view is full or more that one account is signed in.
  * @cssprop --add-account-button-color - {Color} Color for the text and icon of the add account button
  */
 @customElement('mgt-login')

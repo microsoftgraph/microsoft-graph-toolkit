@@ -14,7 +14,7 @@ $button__background-color--hover: var(
 );
 $popup__background-color: var(
   --popup-background-color,
-  var(----neutral-fill-rest, set-var(background-color, $theme-default, $common))
+  var(--neutral-fill-rest, set-var(background-color, $theme-default, $common))
 );
 $popup__add-account-button-color: var(--add-account-button-color, set-var(color__sub2, $theme-default, $common));
 $popup__button-color--hover: var(
