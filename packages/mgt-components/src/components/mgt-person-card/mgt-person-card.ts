@@ -476,7 +476,6 @@ export class MgtPersonCard extends MgtTemplatedComponent {
     }
 
     const person = this.internalPersonDetails;
-    priv;
     const image = this.getImage();
 
     // Check for a default template.
