@@ -115,10 +115,10 @@ export class MgtPersonCardOrganization extends BasePersonCardSection {
     }
 
     return html`
-      <div class="root compact">
-        ${contentTemplate}
-      </div>
-    `;
+       <div class="root compact">
+         ${contentTemplate}
+       </div>
+     `;
   }
 
   /**
@@ -146,16 +146,16 @@ export class MgtPersonCardOrganization extends BasePersonCardSection {
       const coworkersTemplate = this.renderCoworkers();
 
       contentTemplate = html`
-        ${managerTemplates} ${currentUserTemplate} ${directReportsTemplate} ${coworkersTemplate}
-      `;
+         ${managerTemplates} ${currentUserTemplate} ${directReportsTemplate} ${coworkersTemplate}
+       `;
     }
 
     return html`
-      <div class="root" dir=${this.direction}>
-        <div class="title" tabindex="0">${this.strings.organizationSectionTitle}</div>
-        ${contentTemplate}
-      </div>
-    `;
+       <div class="root" dir=${this.direction}>
+         <div class="title" tabindex="0">${this.strings.organizationSectionTitle}</div>
+         ${contentTemplate}
+       </div>
+     `;
   }
 
   /**
@@ -168,24 +168,24 @@ export class MgtPersonCardOrganization extends BasePersonCardSection {
    */
   protected renderManager(person: User): TemplateResult {
     return html`
-      <div class="org-member" @keydown=${(e: KeyboardEvent) => {
-        e.code === 'Enter' ? this.navigateCard(person) : '';
-      }} @click=${() => this.navigateCard(person)}>
-        <div class="org-member__person">
-          <mgt-person
-            .personDetails=${person}
-            .line2Property=${'jobTitle'}
-            .line3Property=${'department'}
-            .fetchImage=${true}
-            .view=${ViewType.threelines}
-          ></mgt-person>
-        </div>
-        <div tabindex="0" class="org-member__more">
-          ${getSvg(SvgIcon.ExpandRight)}
-        </div>
-      </div>
-      <div class="org-member__separator"></div>
-    `;
+       <div class="org-member" @keydown=${(e: KeyboardEvent) => {
+         e.code === 'Enter' ? this.navigateCard(person) : '';
+       }} @click=${() => this.navigateCard(person)}>
+         <div class="org-member__person">
+           <mgt-person
+             .personDetails=${person}
+             .line2Property=${'jobTitle'}
+             .line3Property=${'department'}
+             .fetchImage=${true}
+             .view=${ViewType.threelines}
+           ></mgt-person>
+         </div>
+         <div tabindex="0" class="org-member__more">
+           ${getSvg(SvgIcon.ExpandRight)}
+         </div>
+       </div>
+       <div class="org-member__separator"></div>
+     `;
   }
 
   /**
@@ -230,30 +230,30 @@ export class MgtPersonCardOrganization extends BasePersonCardSection {
     }
 
     return html`
-      <div class="org-member__separator"></div>
-      <div>
-        ${directReports.map(
-          person => html`
-            <div class="org-member org-member--direct-report" @keydown=${(e: KeyboardEvent) => {
-              e.code === 'Enter' ? this.navigateCard(person) : '';
-            }} @click=${() => this.navigateCard(person)}>
-              <div class="org-member__person">
-                <mgt-person
-                  .personDetails=${person}
-                  .line2Property=${'jobTitle'}
-                  .line3Property=${'department'}
-                  .fetchImage=${true}
-                  .view=${ViewType.twolines}
-                ></mgt-person>
-              </div>
-              <div tabindex="0" class="org-member__more">
-                ${getSvg(SvgIcon.ExpandRight)}
-              </div>
-            </div>
-          `
-        )}
-      </div>
-    `;
+       <div class="org-member__separator"></div>
+       <div>
+         ${directReports.map(
+           person => html`
+             <div class="org-member org-member--direct-report" @keydown=${(e: KeyboardEvent) => {
+               e.code === 'Enter' ? this.navigateCard(person) : '';
+             }} @click=${() => this.navigateCard(person)}>
+               <div class="org-member__person">
+                 <mgt-person
+                   .personDetails=${person}
+                   .line2Property=${'jobTitle'}
+                   .line3Property=${'department'}
+                   .fetchImage=${true}
+                   .view=${ViewType.twolines}
+                 ></mgt-person>
+               </div>
+               <div tabindex="0" class="org-member__more">
+                 ${getSvg(SvgIcon.ExpandRight)}
+               </div>
+             </div>
+           `
+         )}
+       </div>
+     `;
   }
 
   /**
@@ -268,20 +268,20 @@ export class MgtPersonCardOrganization extends BasePersonCardSection {
     const { directReports } = this._state;
 
     return html`
-      <div class="direct-report__compact">
-        ${directReports.slice(0, 6).map(
-          person => html`
-            <div class="direct-report" @keydown=${(e: KeyboardEvent) => {
-              e.code === 'Enter' ? this.navigateCard(person) : '';
-            }} @click=${() => this.navigateCard(person)} @keydown=${(e: KeyboardEvent) => {
-            e.code === 'Enter' ? this.navigateCard(person) : '';
-          }}>
-              <mgt-person .personDetails=${person} .fetchImage=${true}></mgt-person>
-            </div>
-          `
-        )}
-      </div>
-    `;
+       <div class="direct-report__compact">
+         ${directReports.slice(0, 6).map(
+           person => html`
+             <div class="direct-report" @keydown=${(e: KeyboardEvent) => {
+               e.code === 'Enter' ? this.navigateCard(person) : '';
+             }} @click=${() => this.navigateCard(person)} @keydown=${(e: KeyboardEvent) => {
+             e.code === 'Enter' ? this.navigateCard(person) : '';
+           }}>
+               <mgt-person .personDetails=${person} .fetchImage=${true}></mgt-person>
+             </div>
+           `
+         )}
+       </div>
+     `;
   }
 
   /**
@@ -294,18 +294,18 @@ export class MgtPersonCardOrganization extends BasePersonCardSection {
   protected renderCurrentUser(): TemplateResult {
     const { person } = this._state;
     return html`
-      <div class="org-member org-member--target">
-        <div class="org-member__person">
-          <mgt-person
-            .personDetails=${person}
-            .line2Property=${'jobTitle'}
-            .line3Property=${'department'}
-            .fetchImage=${true}
-            .view=${ViewType.threelines}
-          ></mgt-person>
-        </div>
-      </div>
-    `;
+       <div class="org-member org-member--target">
+         <div class="org-member__person">
+           <mgt-person
+             .personDetails=${person}
+             .line2Property=${'jobTitle'}
+             .line3Property=${'department'}
+             .fetchImage=${true}
+             .view=${ViewType.threelines}
+           ></mgt-person>
+         </div>
+       </div>
+     `;
   }
 
   /**
@@ -318,19 +318,19 @@ export class MgtPersonCardOrganization extends BasePersonCardSection {
    */
   protected renderCoworker(person: User): TemplateResult {
     return html`
-      <div class="coworker" @keydown=${(e: KeyboardEvent) => {
-        e.code === 'Enter' ? this.navigateCard(person) : '';
-      }} @click=${() => this.navigateCard(person)}>
-        <div class="coworker__person">
-          <mgt-person
-            .personDetails=${person}
-            .line2Property=${'jobTitle'}
-            .fetchImage=${true}
-            .view=${ViewType.twolines}
-          ></mgt-person>
-        </div>
-      </div>
-    `;
+       <div class="coworker" @keydown=${(e: KeyboardEvent) => {
+         e.code === 'Enter' ? this.navigateCard(person) : '';
+       }} @click=${() => this.navigateCard(person)}>
+         <div class="coworker__person">
+           <mgt-person
+             .personDetails=${person}
+             .line2Property=${'jobTitle'}
+             .fetchImage=${true}
+             .view=${ViewType.twolines}
+           ></mgt-person>
+         </div>
+       </div>
+     `;
   }
 
   /**
@@ -353,11 +353,11 @@ export class MgtPersonCardOrganization extends BasePersonCardSection {
         : `${this._state.person.givenName} ${this.strings.userWorksWithSubSectionTitle}`;
 
     return html`
-      <div class="divider"></div>
-      <div class="subtitle" tabindex="0">${subtitle}</div>
-      <div>
-        ${people.slice(0, 6).map(person => this.renderCoworker(person))}
-      </div>
-    `;
+       <div class="divider"></div>
+       <div class="subtitle" tabindex="0">${subtitle}</div>
+       <div>
+         ${people.slice(0, 6).map(person => this.renderCoworker(person))}
+       </div>
+     `;
   }
 }
