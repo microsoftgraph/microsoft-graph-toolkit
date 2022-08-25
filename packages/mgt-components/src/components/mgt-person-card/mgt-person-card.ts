@@ -51,14 +51,6 @@ interface MgtPersonCardStateHistory {
 }
 
 // tslint:disable-next-line:completed-docs
-interface HoverStates {
-  // tslint:disable-next-line:completed-docs
-  hovered: TemplateResult;
-  // tslint:disable-next-line:completed-docs
-  normal: TemplateResult;
-}
-
-// tslint:disable-next-line:completed-docs
 type HoverStatesActions = 'email' | 'chat' | 'video' | 'call';
 
 /**
@@ -361,8 +353,6 @@ export class MgtPersonCard extends MgtTemplatedComponent {
   private _me: User;
   private _smallView;
   private _windowHeight;
-  private _mouseLeaveTimeout;
-  private _mouseEnterTimeout;
 
   private _userId: string;
 
@@ -486,6 +476,7 @@ export class MgtPersonCard extends MgtTemplatedComponent {
     }
 
     const person = this.internalPersonDetails;
+    priv;
     const image = this.getImage();
 
     // Check for a default template.
@@ -1230,6 +1221,7 @@ export class MgtPersonCard extends MgtTemplatedComponent {
   }
 
   @internalProperty() private hoverStates: Record<HoverStatesActions, boolean> = {
+    //triggers a re-render when hovering on the CTA icons
     email: false,
     chat: false,
     video: false,
