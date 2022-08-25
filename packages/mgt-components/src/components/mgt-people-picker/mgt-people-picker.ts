@@ -6,9 +6,10 @@
  */
 
 import { User } from '@microsoft/microsoft-graph-types';
-import { customElement, html, internalProperty, property, TemplateResult } from 'lit-element';
-import { classMap } from 'lit-html/directives/class-map';
-import { repeat } from 'lit-html/directives/repeat';
+import { html, TemplateResult } from 'lit';
+import { customElement, property, state } from 'lit/decorators.js';
+import { classMap } from 'lit/directives/class-map.js';
+import { repeat } from 'lit/directives/repeat.js';
 import {
   findGroups,
   getGroupsForGroupIds,
@@ -498,9 +499,9 @@ export class MgtPeoplePicker extends MgtTemplatedComponent {
   // current user index to the left of the highlighted users
   private _currentHighlightedUserPos: number = 0;
 
-  @internalProperty() private _isFocused = false;
+  @state() private _isFocused = false;
 
-  @internalProperty() private _foundPeople: IDynamicPerson[];
+  @state() private _foundPeople: IDynamicPerson[];
 
   private _mouseLeaveTimeout;
   private _mouseEnterTimeout;
@@ -868,13 +869,11 @@ export class MgtPeoplePicker extends MgtTemplatedComponent {
    */
   protected renderSearchResults(people?: IDynamicPerson[]) {
     people = people || this._foundPeople;
-    let filteredPeople = people.filter(person => person.id);
-    let firstName = '';
+    const filteredPeople = people.filter(person => person.id);
 
-    const selectedList = this.renderRoot.querySelector('.selected-list');
     let names = '';
-    for (let i = 0; i < filteredPeople.length; i++) {
-      names += filteredPeople[i].displayName.toString() + ' ';
+    for (const person of filteredPeople) {
+      names += person.displayName.toString() + ' ';
     }
 
     return html`
@@ -1192,7 +1191,7 @@ export class MgtPeoplePicker extends MgtTemplatedComponent {
         }
       }
     }
-    //people = this.getUniquePeople(people);
+    // people = this.getUniquePeople(people);
     this._foundPeople = this.filterPeople(people);
   }
 
@@ -1205,7 +1204,7 @@ export class MgtPeoplePicker extends MgtTemplatedComponent {
    */
   private async getGroupsForGroupIds(graph: IGraph, people: IDynamicPerson[]) {
     const groups = await getGroupsForGroupIds(graph, this.groupIds, this.groupFilters);
-    for (let group of groups as IDynamicPerson[]) {
+    for (const group of groups as IDynamicPerson[]) {
       people = people.concat(group);
     }
     people = people.filter(person => person);
@@ -1644,7 +1643,7 @@ export class MgtPeoplePicker extends MgtTemplatedComponent {
         } catch (error) {
           if (error instanceof SyntaxError) {
             const _delimeters = [',', ';'];
-            let listOfUsers: Array<string>;
+            let listOfUsers: string[];
             try {
               for (let i = 0; i < _delimeters.length; i++) {
                 listOfUsers = copiedText.split(_delimeters[i]);

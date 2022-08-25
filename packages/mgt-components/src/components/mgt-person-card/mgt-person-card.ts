@@ -5,8 +5,9 @@
  * -------------------------------------------------------------------------------------------
  */
 
-import { customElement, html, internalProperty, property, TemplateResult } from 'lit-element';
-import { classMap } from 'lit-html/directives/class-map';
+import { html, TemplateResult } from 'lit';
+import { customElement, property, state } from 'lit/decorators.js';
+import { classMap } from 'lit/directives/class-map.js';
 import { MgtTemplatedComponent, Providers, ProviderState, TeamsHelper } from '@microsoft/mgt-element';
 import { Presence, User, Person } from '@microsoft/microsoft-graph-types';
 
@@ -307,8 +308,8 @@ export class MgtPersonCard extends MgtTemplatedComponent {
    */
   protected sections: BasePersonCardSection[];
 
-  @internalProperty() private state: MgtPersonCardState;
-  @internalProperty() private isStateLoading: boolean;
+  @state() private state: MgtPersonCardState;
+  @state() private isStateLoading: boolean;
 
   private _history: MgtPersonCardStateHistory[];
   private _chatInput: string;
@@ -391,8 +392,8 @@ export class MgtPersonCard extends MgtTemplatedComponent {
     const historyState = this._history.pop();
     this._currentSection = null;
 
-    //resets to first tab being selected
-    const firstTab: HTMLElement = this.renderRoot.querySelector(`fluent-tab`) as HTMLElement;
+    // resets to first tab being selected
+    const firstTab: HTMLElement = this.renderRoot.querySelector('fluent-tab') as HTMLElement;
     if (firstTab) {
       firstTab.click();
     }
@@ -520,7 +521,7 @@ export class MgtPersonCard extends MgtTemplatedComponent {
    * @memberof MgtPersonCard
    */
   protected closeCard() {
-    //reset tabs
+    // reset tabs
     this.updateCurrentSection(null);
 
     const flyout = this.parentElement.parentElement as MgtFlyout;
@@ -732,7 +733,7 @@ export class MgtPersonCard extends MgtTemplatedComponent {
     const currentSectionIndex = this._currentSection ? this.sections.indexOf(this._currentSection) : -1;
 
     const additionalSectionTemplates = this.sections.map((section, i) => {
-      let name = section.tagName.toLowerCase();
+      const name = section.tagName.toLowerCase();
       const classes = classMap({
         active: i === currentSectionIndex,
         'section-nav__icon': true
@@ -918,7 +919,8 @@ export class MgtPersonCard extends MgtTemplatedComponent {
         parent = parent.parentElement;
       }
 
-      let parentPerson = (parent as MgtPerson).personDetails || parent['personDetailsInternal'];
+      // tslint:disable-next-line: no-string-literal
+      const parentPerson = (parent as MgtPerson).personDetails || parent['personDetailsInternal'];
 
       if (parent && parentPerson) {
         this.personDetails = parentPerson;
@@ -1112,7 +1114,7 @@ export class MgtPersonCard extends MgtTemplatedComponent {
     if (user && user.userPrincipalName) {
       const users: string = user.userPrincipalName;
 
-      let url = `https://teams.microsoft.com/l/call/0/0?users=${users}&withVideo=true`;
+      const url = `https://teams.microsoft.com/l/call/0/0?users=${users}&withVideo=true`;
 
       const openWindow = () => window.open(url, '_blank');
 
@@ -1139,7 +1141,7 @@ export class MgtPersonCard extends MgtTemplatedComponent {
       if (event.keyCode !== 13 && event.type !== 'click') {
         return;
       } else if (event.keyCode === 13) {
-        //focus on close button
+        // focus on close button
         // const closeButton: HTMLElement = this.renderRoot.querySelector('.close-button');
         // closeButton.focus();
       }
@@ -1239,8 +1241,7 @@ export class MgtPersonCard extends MgtTemplatedComponent {
       tabs.click();
     }
     const panels = this.renderRoot.querySelectorAll('fluent-tab-panel');
-    for (let i = 0; i < panels.length; i++) {
-      let target = panels[i] as HTMLElement;
+    for (const target of panels) {
       target.scrollTop = 0;
     }
     this._currentSection = section;
@@ -1248,9 +1249,8 @@ export class MgtPersonCard extends MgtTemplatedComponent {
   }
 
   private handleSectionScroll(e: WheelEvent) {
-    let panels = this.renderRoot.querySelectorAll('fluent-tab-panel');
-    for (let i = 0; i < panels.length; i++) {
-      let target = panels[i] as HTMLElement;
+    const panels = this.renderRoot.querySelectorAll('fluent-tab-panel');
+    for (const target of panels) {
       if (target) {
         if (
           !(e.deltaY < 0 && target.scrollTop === 0) &&
@@ -1263,7 +1263,7 @@ export class MgtPersonCard extends MgtTemplatedComponent {
   }
 
   private handleKeyDown(e: KeyboardEvent) {
-    //enter activates person-card
+    // enter activates person-card
     if (e) {
       if (e.key === 'Enter') {
         this.showExpandedDetails(e);

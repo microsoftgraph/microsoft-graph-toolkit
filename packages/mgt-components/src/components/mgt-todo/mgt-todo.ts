@@ -5,9 +5,10 @@
  * -------------------------------------------------------------------------------------------
  */
 
-import { customElement, html, TemplateResult } from 'lit-element';
-import { classMap } from 'lit-html/directives/class-map';
-import { repeat } from 'lit-html/directives/repeat';
+import { html, TemplateResult } from 'lit';
+import { customElement } from 'lit/decorators.js';
+import { classMap } from 'lit/directives/class-map.js';
+import { repeat } from 'lit/directives/repeat.js';
 import { IGraph } from '@microsoft/mgt-element';
 import { Providers, ProviderState } from '@microsoft/mgt-element';
 import { getShortDateString } from '../../utils/Utils';

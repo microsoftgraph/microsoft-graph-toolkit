@@ -6,7 +6,8 @@
  */
 
 import { DriveItem } from '@microsoft/microsoft-graph-types';
-import { customElement, html, property, TemplateResult } from 'lit-element';
+import { html, TemplateResult } from 'lit';
+import { customElement, property } from 'lit/decorators.js';
 import { styles } from './mgt-file-css';
 import { MgtTemplatedComponent, Providers, ProviderState } from '@microsoft/mgt-element';
 import {

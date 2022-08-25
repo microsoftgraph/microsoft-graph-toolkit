@@ -91,7 +91,7 @@
     "jest": "^24.5.0",
     "jest-junit": "^6.3.0",
     "lerna": "^3.22.1",
-    "lit-element": "2.5.0",
+    "lit": "^2.3.1",
     "monaco-editor": "^0.19.3",
     "monaco-editor-webpack-plugin": "^1.8.2",
     "node-sass": "npm:sass@^1.44.0",

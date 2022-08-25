@@ -170,14 +170,17 @@ export type PersonProps = {
 	line1Property?: string;
 	line2Property?: string;
 	line3Property?: string;
+	line4Property?: string;
 	view?: ViewType | PersonViewType;
 	avatarSize?: AvatarSize;
 	disableImageFetch?: boolean;
+	verticalLayout?: boolean;
 	templateContext?: TemplateContext;
 	mediaQuery?: ComponentMediaQuery;
 	line1clicked?: (e: Event) => void;
 	line2clicked?: (e: Event) => void;
 	line3clicked?: (e: Event) => void;
+	line4clicked?: (e: Event) => void;
 	templateRendered?: (e: Event) => void;
 }
 

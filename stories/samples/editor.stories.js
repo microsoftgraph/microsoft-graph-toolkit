@@ -5,7 +5,7 @@
  * -------------------------------------------------------------------------------------------
  */
 
-import { html } from 'lit-element';
+import { html } from 'lit';
 import { withCodeEditor } from '../../.storybook/addons/codeEditorAddon/codeAddon';
 
 export default {
@@ -15,7 +15,7 @@ export default {
 
 export const Editor = () => html`
   <!-- Add your own HTML code here -->
-  
+
   <script>
     // Add your own JavaScript code here
   </script>

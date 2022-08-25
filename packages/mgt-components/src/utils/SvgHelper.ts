@@ -186,7 +186,7 @@ export enum SvgIcon {
   SelectAccount
 }
 
-import { html } from 'lit-element';
+import { html } from 'lit';
 
 /**
  * returns an svg

@@ -1,4 +1,4 @@
-import { LitElement, css, html, property, customElement } from 'lit-element';
+import { LitElement, css, html } from 'lit';
 import * as monaco from 'monaco-editor/esm/vs/editor/editor.api';
 
 let debounce = (func, wait, immediate) => {
