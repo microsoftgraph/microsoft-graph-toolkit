@@ -10,7 +10,8 @@
     "samples/vue-app",
     "samples/electron-app",
     "samples/sp-webpart",
-    "samples/teamsfx-app/tabs"
+    "samples/teamsfx-app/tabs",
+    "e2e"
   ],
   "scripts": {
     "build": "npm run prettier:check && npm run clean && lerna run build --scope @microsoft/*",
@@ -20,6 +21,8 @@
     "build:mgt-components": "cd ./packages/mgt-components && npm run build",
     "build:mgt-react": "lerna run build --scope @microsoft/mgt-react",
     "test-ct": "lerna run test-ct --scope @microsoft/mgt-react",
+    "test:playwright": "lerna run test:playwright --scope e2e",
+    "test:playwright:debug": "lerna run test:playwright:debug --scope e2e",
     "bundle": "cd ./packages/mgt && npm run bundle",
     "bootstrap": "lerna bootstrap --useWorkspaces",
     "clean": "lerna run --parallel --stream --scope @microsoft/* clean",

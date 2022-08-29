@@ -1,0 +1,17 @@
+{
+  "name": "e2e",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "devDependencies": {
+    "@axe-core/playwright": "^4.4.4",
+    "@playwright/test": "^1.25.1"
+  },
+  "scripts": {
+    "test:playwright": "playwright test",
+    "test:playwright:debug": "playwright test --debug"
+  }
+}
