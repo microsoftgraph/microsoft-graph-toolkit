@@ -24,7 +24,7 @@ export interface MgtPersonCardConfig {
   useContactApis: boolean;
 
   /**
-   * is send message available
+   * Sets whether the person card component can directly send messages
    *
    * @type {boolean}
    */
