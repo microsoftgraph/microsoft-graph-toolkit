@@ -29,7 +29,8 @@
     "clean": "node ./scripts/clean.js",
     "postpack": "cpx *.tgz ../../artifacts",
     "generate": "wca analyze ../mgt-components/src --format json --outFile temp/web-components.json && node ./scripts/generate.js",
-    "test-ct": "playwright test -c playwright-ct.config.ts"
+    "test:playwright-ct": "playwright test -c playwright-ct.config.ts",
+    "test:playwright-ct:debug": "playwright test -c playwright-ct.config.ts --debug"
   },
   "dependencies": {
     "@microsoft/mgt-components": "*",

@@ -5,7 +5,7 @@
  * -------------------------------------------------------------------------------------------
  */
 
-import { AuthenticationProviderOptions } from '@microsoft/microsoft-graph-client/lib/es/IAuthenticationProviderOptions';
+import { AuthenticationProviderOptions } from '@microsoft/microsoft-graph-client';
 import { Configuration, InteractionRequiredAuthError, SilentRequest } from '@azure/msal-browser';
 import { LoginType, ProviderState, TeamsHelper } from '@microsoft/mgt-element';
 import { Msal2Provider, PromptType } from '@microsoft/mgt-msal2-provider';

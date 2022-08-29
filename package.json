@@ -1,7 +1,7 @@
 {
   "name": "root",
   "private": true,
-  "version": "2.6.1",
+  "version": "3.0.0",
   "workspaces": [
     "packages/*",
     "packages/providers/*",
@@ -20,7 +20,8 @@
     "build:mgt-element": "cd ./packages/mgt-element && npm run build",
     "build:mgt-components": "cd ./packages/mgt-components && npm run build",
     "build:mgt-react": "lerna run build --scope @microsoft/mgt-react",
-    "test-ct": "lerna run test-ct --scope @microsoft/mgt-react",
+    "test:playwright-ct": "lerna run test:playwright-ct --scope @microsoft/mgt-react",
+    "test:playwright-ct:debug": "lerna run test:playwright-ct:debug --scope @microsoft/mgt-react",
     "test:playwright": "lerna run test:playwright --scope e2e",
     "test:playwright:debug": "lerna run test:playwright:debug --scope e2e",
     "bundle": "cd ./packages/mgt && npm run bundle",
@@ -120,7 +121,7 @@
     "tslint": "^6.1.3",
     "tslint-config-prettier": "^1.18.0",
     "tslint-microsoft-contrib": "^6.2.0",
-    "typescript": "^3.7.5",
+    "typescript": "^4.7.3",
     "web-component-analyzer": "^1.1.6",
     "whatwg-fetch": "^3.5.0"
   },

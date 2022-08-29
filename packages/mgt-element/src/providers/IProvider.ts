@@ -5,8 +5,7 @@
  * -------------------------------------------------------------------------------------------
  */
 
-import { AuthenticationProvider } from '@microsoft/microsoft-graph-client/lib/es/IAuthenticationProvider';
-import { AuthenticationProviderOptions } from '@microsoft/microsoft-graph-client/lib/es/IAuthenticationProviderOptions';
+import { AuthenticationProvider, AuthenticationProviderOptions } from '@microsoft/microsoft-graph-client';
 import { IGraph } from '../IGraph';
 import { EventDispatcher, EventHandler } from '../utils/EventDispatcher';
 
@@ -26,14 +25,18 @@ export abstract class IProvider implements AuthenticationProvider {
    * @memberof IProvider
    */
   public graph: IGraph;
+
   /**
-   * Enable/Disable multi account functionality
+   * Specifies if Multi account functionality is supported by the provider and enabled.
    *
-   * @protected
+   * @readonly
    * @type {boolean}
    * @memberof IProvider
    */
   protected isMultipleAccountDisabled: boolean = true;
+  public get isMultiAccountSupportedAndEnabled(): boolean {
+    return false;
+  }
   private _state: ProviderState;
   private _loginChangedDispatcher = new EventDispatcher<LoginChangedEvent>();
   private _activeAccountChangedDispatcher = new EventDispatcher<ActiveAccountChanged>();
@@ -47,6 +50,10 @@ export abstract class IProvider implements AuthenticationProvider {
    */
   private _isIncrementalConsentDisabled: boolean = false;
 
+  protected isMultipleAccountSupported: boolean = false;
+  public get isMultiAccountSupported(): boolean {
+    return this.isMultipleAccountSupported;
+  }
   /**
    * returns state of Provider
    *
@@ -147,6 +154,14 @@ export abstract class IProvider implements AuthenticationProvider {
    * @memberof IProvider
    */
   public getAllAccounts?(): IProviderAccount[];
+
+  /**
+   * Returns active account in case of multi-account sign in
+   *
+   * @return {*}  {any[]}
+   * @memberof IProvider
+   */
+  public getActiveAccount?(): IProviderAccount;
 
   /**
    * Switch between two signed in accounts
@@ -269,6 +284,8 @@ export enum ProviderState {
  * @export
  */
 export type IProviderAccount = {
-  username?: string;
   id: string;
+  mail?: string;
+  name?: string;
+  tenantId?: string;
 };

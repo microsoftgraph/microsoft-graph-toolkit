@@ -50,7 +50,12 @@ export enum PersonViewType {
   /**
    * Render the avatar and three lines of text
    */
-  threelines = 5
+  threelines = 5,
+
+  /**
+   * Render the avatar and four lines of text
+   */
+  fourlines = 6
 }
 
 export enum avatarType {
@@ -89,6 +94,7 @@ const defaultPersonProperties = [
   'displayName',
   'givenName',
   'jobTitle',
+  'department',
   'mail',
   'mobilePhone',
   'officeLocation',
@@ -108,6 +114,7 @@ const defaultPersonProperties = [
  * @fires line1clicked - Fired when line1 is clicked
  * @fires line2clicked - Fired when line2 is clicked
  * @fires line3clicked - Fired when line3 is clicked
+ * @fires line4clicked - Fired when line4 is clicked
  *
  * @cssprop --avatar-size - {Length} Avatar size
  * @cssprop --avatar-border - {String} Avatar border
@@ -122,15 +129,25 @@ const defaultPersonProperties = [
  * @cssprop --presence-background-color - {Color} Presence badge background color
  * @cssprop --presence-icon-color - {Color} Presence badge icon color
  * @cssprop --text-transform - {String} text transform
+ * @cssprop --line1-font-size - {Length} Line 1 font size
+ * @cssprop --line1-line-height - {Length} Line 1 line height
  * @cssprop --line2-font-size - {Length} Line 2 font size
  * @cssprop --line2-font-weight - {Length} Line 2 font weight
+ * @cssprop --line2-line-height - {Length} Line 2 line height
  * @cssprop --line2-color - {Color} Line 2 color
  * @cssprop --line2-text-transform - {String} Line 2 text transform
- * @cssprop --line3-font-size - {Length} Line 2 font size
- * @cssprop --line3-font-weight - {Length} Line 2 font weight
+ * @cssprop --line3-font-size - {Length} Line 3 font size
+ * @cssprop --line3-font-weight - {Length} Line 3 font weight
+ * @cssprop --line3-line-height - {Length} Line 3 line height
  * @cssprop --line3-color - {Color} Line 2 color
  * @cssprop --line3-text-transform - {String} Line 2 text transform
+ * @cssprop --line4-font-size - {Length} Line 2 font size
+ * @cssprop --line4-font-weight - {Length} Line 2 font weight
+ * @cssprop --line4-color - {Color} Line 2 color
+ * @cssprop --line4-text-transform - {String} Line 2 text transform
  * @cssprop --details-spacing - {Length} spacing between avatar and person details
+ * @cssprop --details-cta-spacing - {Length} spacing between person details and CTA icons
+ * @cssprop --person-flex-direction - {String} flex direction associated with the avatar and details
  */
 @customElement('mgt-person')
 export class MgtPerson extends MgtTemplatedComponent {
@@ -199,7 +216,7 @@ export class MgtPerson extends MgtTemplatedComponent {
     if (value && value.displayName) {
       this._personAvatarBg = this.getColorFromName(value.displayName);
     } else {
-      this._personAvatarBg = 'gray20';
+      this._personAvatarBg = 'lightGrey';
     }
     this.requestStateUpdate();
   }
@@ -266,7 +283,7 @@ export class MgtPerson extends MgtTemplatedComponent {
     if (value && value.displayName) {
       this._personAvatarBg = this.getColorFromName(value.displayName);
     } else {
-      this._personAvatarBg = 'gray20';
+      this._personAvatarBg = 'lightGrey';
     }
 
     this._fetchedImage = null;
@@ -297,7 +314,7 @@ export class MgtPerson extends MgtTemplatedComponent {
     if (value && value.displayName) {
       this._personAvatarBg = this.getColorFromName(value.displayName);
     } else {
-      this._personAvatarBg = 'gray20';
+      this._personAvatarBg = 'lightGrey';
     }
 
     this._fetchedImage = null;
@@ -357,6 +374,19 @@ export class MgtPerson extends MgtTemplatedComponent {
     type: Boolean
   })
   public disableImageFetch: boolean;
+
+  /**
+   * Sets the vertical layout of
+   * the Person Card
+   *
+   * @type {boolean}
+   * @memberof MgtPerson
+   */
+  @property({
+    attribute: 'vertical-layout',
+    type: Boolean
+  })
+  public verticalLayout: boolean;
 
   /**
    * Determines and sets person avatar
@@ -479,13 +509,22 @@ export class MgtPerson extends MgtTemplatedComponent {
   @property({ attribute: 'line2-property' }) public line2Property: string;
 
   /**
-   * Sets the property of the personDetailsInternal to use for the second line of text.
+   * Sets the property of the personDetailsInternal to use for the third line of text.
    * Default is mail.
    *
    * @type {string}
    * @memberof MgtPerson
    */
   @property({ attribute: 'line3-property' }) public line3Property: string;
+
+  /**
+   * Sets the property of the personDetailsInternal to use for the fourth line of text.
+   * Default is mail.
+   *
+   * @type {string}
+   * @memberof MgtPerson
+   */
+  @property({ attribute: 'line4-property' }) public line4Property: string;
 
   /**
    * Sets what data to be rendered (image only, oneLine, twoLines).
@@ -535,13 +574,15 @@ export class MgtPerson extends MgtTemplatedComponent {
     // defaults
     this.personCardInteraction = PersonCardInteraction.none;
     this.line1Property = 'displayName';
-    this.line2Property = 'email';
-    this.line3Property = 'jobTitle';
+    this.line2Property = 'jobTitle';
+    this.line3Property = 'department';
+    this.line4Property = 'email';
     this.view = ViewType.image;
     this.avatarSize = 'auto';
     this.disableImageFetch = false;
     this._isInvalidImageSrc = false;
     this._avatarType = 'photo';
+    this.verticalLayout = false;
   }
 
   /**
@@ -576,14 +617,15 @@ export class MgtPerson extends MgtTemplatedComponent {
 
       const rootClasses = {
         'person-root': true,
-        clickable: this.personCardInteraction === PersonCardInteraction.click
+        clickable: this.personCardInteraction === PersonCardInteraction.click,
+        vertical: this.isVertical()
       };
 
       personTemplate = html`
-        <div class=${classMap(rootClasses)}>
-          ${imageWithPresenceTemplate} ${detailsTemplate}
-        </div>
-      `;
+         <div class=${classMap(rootClasses)}>
+           ${imageWithPresenceTemplate} ${detailsTemplate}
+         </div>
+       `;
     }
 
     if (this.personCardInteraction !== PersonCardInteraction.none) {
@@ -591,18 +633,18 @@ export class MgtPerson extends MgtTemplatedComponent {
     }
 
     return html`
-      <div
-        class="root"
-        dir=${this.direction}
-        @click=${this.handleMouseClick}
-        @mouseenter=${this.handleMouseEnter}
-        @mouseleave=${this.handleMouseLeave}
-        @keydown=${this.handleKeyDown}
-        tabindex=0
-      >
-        ${personTemplate}
-      </div>
-    `;
+       <div
+         class="root"
+         dir=${this.direction}
+         @click=${this.handleMouseClick}
+         @mouseenter=${this.handleMouseEnter}
+         @mouseleave=${this.handleMouseLeave}
+         @keydown=${this.handleKeyDown}
+         tabindex=0
+       >
+         ${personTemplate}
+       </div>
+     `;
   }
 
   /**
@@ -644,14 +686,30 @@ export class MgtPerson extends MgtTemplatedComponent {
 
     const avatarClasses = {
       'avatar-icon': true,
-      'ms-Icon': true,
-      'ms-Icon--Contact': true,
-      small: !this.isLargeAvatar()
+      vertical: this.isVertical(),
+      small: !this.isLargeAvatar(),
+      threeLines: this.isThreeLines(),
+      fourLines: this.isFourLines()
     };
 
     return html`
-      <i class=${classMap(avatarClasses)}></i>
-    `;
+       <i class=${classMap(avatarClasses)}></i>
+     `;
+  }
+
+  /**
+   * Render a person icon.
+   *
+   * @protected
+   * @returns
+   * @memberof MgtPerson
+   */
+  protected renderPersonIcon() {
+    return html`
+       <svg width="10" height="13" viewBox="0 0 10 13" fill="none" xmlns="http://www.w3.org/2000/svg">
+       <path d="M8.5 7C9.32843 7 10 7.67157 10 8.5V9C10 10.9714 8.14049 13 5 13C1.85951 13 0 10.9714 0 9V8.5C0 7.67157 0.671573 7 1.5 7H8.5ZM8.5 8H1.5C1.22386 8 1 8.22386 1 8.5V9C1 10.4376 2.43216 12 5 12C7.56784 12 9 10.4376 9 9V8.5C9 8.22386 8.77614 8 8.5 8ZM5 0.5C6.51878 0.5 7.75 1.73122 7.75 3.25C7.75 4.76878 6.51878 6 5 6C3.48122 6 2.25 4.76878 2.25 3.25C2.25 1.73122 3.48122 0.5 5 0.5ZM5 1.5C4.0335 1.5 3.25 2.2835 3.25 3.25C3.25 4.2165 4.0335 5 5 5C5.9665 5 6.75 4.2165 6.75 3.25C6.75 2.2835 5.9665 1.5 5 1.5Z" fill="#616161"/>
+       </svg>
+     `;
   }
 
   /**
@@ -671,27 +729,29 @@ export class MgtPerson extends MgtTemplatedComponent {
         : '';
     if (imageSrc && !this._isInvalidImageSrc && this._avatarType === 'photo') {
       return html`
-        <div class="img-wrapper">
-          <img alt=${personDetailsInternal.displayName} src=${imageSrc} @error=${() =>
+         <div class="img-wrapper">
+           <img alt=${personDetailsInternal.displayName} src=${imageSrc} @error=${() =>
         (this._isInvalidImageSrc = true)} />
-        </div>
-      `;
+         </div>
+       `;
     } else if (personDetailsInternal) {
       const initials = this.getInitials(personDetailsInternal);
 
       return html`
-        <span class="initials-text" aria-label="${initials}">
-          ${
-            initials && initials.length
-              ? html`
-                ${initials}
-              `
-              : html`
-                <i class="ms-Icon ms-Icon--Contact contact-icon"></i>
-              `
-          }
-        </span>
-      `;
+         <span class="initials-text" aria-label="${initials}">
+           ${
+             initials && initials.length
+               ? html`
+                 ${initials}
+               `
+               : html`
+                 <i class="contact-icon">
+                 ${this.renderPersonIcon()}
+                 </i>
+               `
+           }
+         </span>
+       `;
     }
   }
 
@@ -782,23 +842,27 @@ export class MgtPerson extends MgtTemplatedComponent {
     let iconHtml = null;
     if (statusClass === 'presence-oof-offline') {
       iconHtml = html`
-        <div class="ms-Icon presence-basic presence-oof-offline-wrapper">
-          <i class="presence-oof-offline">
-            ${getSvg(SvgIcon.SkypeArrow, '#666666')}
-          </i>
-        </div>
-      `;
+         <div class="ms-Icon presence-basic presence-oof-offline-wrapper">
+           <i class="presence-oof-offline">
+             ${getSvg(SvgIcon.SkypeArrow, '#666666')}
+           </i>
+         </div>
+       `;
     } else {
       iconHtml = html`
-        <i class=${classMap(presenceClasses)} aria-hidden="true"></i>
-      `;
+         <i class=${classMap(presenceClasses)} aria-hidden="true"></i>
+       `;
     }
+    const userPresenceClass = {
+      'user-presence': true
+    };
+    userPresenceClass[statusClass] = true;
 
     return html`
-      <div class="user-presence" title=${presence.activity} aria-label=${presence.activity} role="img">
-        ${iconHtml}
-      </div>
-    `;
+       <div class=${classMap(userPresenceClass)} title=${presence.activity} aria-label=${presence.activity} role="img">
+         ${iconHtml}
+       </div>
+     `;
   }
 
   /**
@@ -817,7 +881,10 @@ export class MgtPerson extends MgtTemplatedComponent {
     const imageClasses = {
       initials: !image || this._isInvalidImageSrc || this._avatarType === 'initials',
       small: !this.isLargeAvatar(),
-      'user-avatar': true
+      threeLines: this.isThreeLines(),
+      fourLines: this.isFourLines(),
+      'user-avatar': true,
+      vertical: this.isVertical()
     };
 
     if ((!image || this._isInvalidImageSrc || this._avatarType === 'initials') && personDetailsInternal) {
@@ -829,10 +896,10 @@ export class MgtPerson extends MgtTemplatedComponent {
     const presenceTemplate: TemplateResult = this.renderPresence(presence);
 
     return html`
-      <div class=${classMap(imageClasses)} title=${title} aria-label=${title}>
-        ${imageTemplate} ${presenceTemplate}
-      </div>
-    `;
+       <div class=${classMap(imageClasses)} title=${title} aria-label=${title}>
+         ${imageTemplate} ${presenceTemplate}
+       </div>
+     `;
   }
 
   private handleLine1Clicked() {
@@ -845,6 +912,10 @@ export class MgtPerson extends MgtTemplatedComponent {
 
   private handleLine3Clicked() {
     this.fireCustomEvent('line3clicked', this.personDetailsInternal);
+  }
+
+  private handleLine4Clicked() {
+    this.fireCustomEvent('line4clicked', this.personDetailsInternal);
   }
 
   /**
@@ -870,72 +941,98 @@ export class MgtPerson extends MgtTemplatedComponent {
     const details: TemplateResult[] = [];
 
     if (this.view > ViewType.image) {
+      const text = this.getTextFromProperty(person, this.line1Property);
       if (this.hasTemplate('line1')) {
         // Render the line1 template
         const template = this.renderTemplate('line1', { person });
         details.push(html`
-          <div class="line1" @click=${() => this.handleLine1Clicked()}>${template}</div>
-        `);
+           <div class="line1" @click=${() =>
+             this.handleLine1Clicked()} role="presentation" aria-label="${text}">${template}</div>
+         `);
       } else {
         // Render the line1 property value
-        const text = this.getTextFromProperty(person, this.line1Property);
         if (text) {
           details.push(html`
-            <div class="line1" @click=${() =>
-              this.handleLine1Clicked()} role="presentation" aria-label="${text}">${text}</div>
-          `);
+             <div class="line1" @click=${() =>
+               this.handleLine1Clicked()} role="presentation" aria-label="${text}">${text}</div>
+           `);
         }
       }
     }
 
     if (this.view > ViewType.oneline) {
+      const text = this.getTextFromProperty(person, this.line2Property);
       if (this.hasTemplate('line2')) {
         // Render the line2 template
         const template = this.renderTemplate('line2', { person });
         details.push(html`
-          <div class="line2" @click=${() => this.handleLine2Clicked()}>${template}</div>
-        `);
+           <div class="line2" @click=${() =>
+             this.handleLine2Clicked()} role="presentation" aria-label="${text}">${template}</div>
+         `);
       } else {
         // Render the line2 property value
-        const text = this.getTextFromProperty(person, this.line2Property);
         if (text) {
           details.push(html`
-            <div class="line2" @click=${() =>
-              this.handleLine2Clicked()} role="presentation" aria-label="${text}">${text}</div>
-          `);
+             <div class="line2" @click=${() =>
+               this.handleLine2Clicked()} role="presentation" aria-label="${text}">${text}</div>
+           `);
         }
       }
     }
 
     if (this.view > ViewType.twolines) {
+      const text = this.getTextFromProperty(person, this.line3Property);
       if (this.hasTemplate('line3')) {
         // Render the line3 template
         const template = this.renderTemplate('line3', { person });
         details.push(html`
-          <div class="line3" @click=${() => this.handleLine3Clicked()}>${template}</div>
-        `);
+           <div class="line3" @click=${() =>
+             this.handleLine3Clicked()} role="presentation" aria-label="${text}">${template}</div>
+         `);
       } else {
         // Render the line3 property value
-        const text = this.getTextFromProperty(person, this.line3Property);
         if (text) {
           details.push(html`
-            <div class="line3" @click=${() =>
-              this.handleLine3Clicked()} role="presentation" aria-label="${text}">${text}</div>
-          `);
+             <div class="line3" @click=${() =>
+               this.handleLine3Clicked()} role="presentation" aria-label="${text}">${text}</div>
+           `);
+        }
+      }
+    }
+
+    if (this.view > ViewType.threelines) {
+      const text = this.getTextFromProperty(person, this.line4Property);
+      if (this.hasTemplate('line4')) {
+        // Render the line4 template
+        const template = this.renderTemplate('line4', { person });
+        details.push(html`
+           <div class="line4" @click=${() =>
+             this.handleLine4Clicked()} role="presentation" aria-label="${text}">${template}</div>
+         `);
+      } else {
+        // Render the line4 property value
+        if (text) {
+          details.push(html`
+             <div class="line4" @click=${() =>
+               this.handleLine4Clicked()} role="presentation" aria-label="${text}">${text}</div>
+           `);
         }
       }
     }
 
     const detailsClasses = classMap({
       details: true,
-      small: !this.isLargeAvatar()
+      small: !this.isLargeAvatar(),
+      threeLines: this.isThreeLines(),
+      fourLines: this.isFourLines(),
+      vertical: this.isVertical()
     });
 
     return html`
-      <div class="${detailsClasses}">
-        ${details}
-      </div>
-    `;
+       <div class="${detailsClasses}">
+         ${details}
+       </div>
+     `;
   }
 
   /**
@@ -953,17 +1050,17 @@ export class MgtPerson extends MgtTemplatedComponent {
   ): TemplateResult {
     const flyoutContent = this._personCardShouldRender
       ? html`
-          <div slot="flyout">
-            ${this.renderFlyoutContent(personDetails, image, presence)}
-          </div>
-        `
+           <div slot="flyout">
+             ${this.renderFlyoutContent(personDetails, image, presence)}
+           </div>
+         `
       : html``;
 
     return html`
-      <mgt-flyout light-dismiss class="flyout" .avoidHidingAnchor=${false}>
-        ${anchor} ${flyoutContent}
-      </mgt-flyout>
-    `;
+       <mgt-flyout light-dismiss class="flyout" .avoidHidingAnchor=${false}>
+         ${anchor} ${flyoutContent}
+       </mgt-flyout>
+     `;
   }
 
   /**
@@ -1008,11 +1105,25 @@ export class MgtPerson extends MgtTemplatedComponent {
 
     const graph = provider.graph.forComponent(this);
 
+    if (this.fallbackDetails) {
+      this.line2Property = 'email';
+    }
+
+    if (this.verticalLayout && this.view < ViewType.fourlines) {
+      this.line2Property = 'email';
+    }
+
     // Prepare person props
-    let personProps = [...defaultPersonProperties, this.line1Property, this.line2Property, this.line3Property];
+    let personProps = [
+      ...defaultPersonProperties,
+      this.line1Property,
+      this.line2Property,
+      this.line3Property,
+      this.line4Property
+    ];
     personProps = personProps.filter(email => email !== 'email');
 
-    let details = this.personDetailsInternal || this.personDetails;
+    let details = this.personDetailsInternal || this.personDetails || this.fallbackDetails;
 
     if (details) {
       if (
@@ -1161,7 +1272,8 @@ export class MgtPerson extends MgtTemplatedComponent {
       'magentaPink10',
       'orange30',
       'gray30',
-      'gray20'
+      // 'gray20',
+      'lightGrey'
     ];
     return colors[nameInt % colors.length];
   }
@@ -1216,8 +1328,21 @@ export class MgtPerson extends MgtTemplatedComponent {
     return this.avatarSize === 'large' || (this.avatarSize === 'auto' && this.view > ViewType.oneline);
   }
 
+  private isThreeLines() {
+    return this.view === ViewType.threelines;
+  }
+
+  private isFourLines() {
+    return this.view === ViewType.fourlines;
+  }
+
+  private isVertical() {
+    return this.verticalLayout;
+  }
+
   private handleMouseClick(e: MouseEvent) {
-    if (this.personCardInteraction === PersonCardInteraction.click) {
+    let element = e.target as HTMLElement;
+    if (this.personCardInteraction === PersonCardInteraction.click && element.tagName !== 'MGT-PERSON-CARD') {
       this.showPersonCard();
     }
   }
@@ -1246,7 +1371,7 @@ export class MgtPerson extends MgtTemplatedComponent {
     this._mouseLeaveTimeout = setTimeout(this.hidePersonCard.bind(this), 500);
   }
 
-  private hidePersonCard() {
+  public hidePersonCard() {
     const flyout = this.flyout;
     if (flyout) {
       flyout.close();
