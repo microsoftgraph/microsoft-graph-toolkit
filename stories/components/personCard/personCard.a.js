@@ -15,10 +15,10 @@ export default {
 };
 
 export const personCard = () => html`
-  <mgt-person-card person-query="me"></mgt-person-card>
-
-  <!-- Person Card with Presence -->
   <mgt-person-card person-query="me" id="online" show-presence></mgt-person-card>
+
+  <!-- Person Card without Presence -->
+  <!-- <mgt-person-card person-query="me"></mgt-person-card> -->
   <script>
     const online = {
       activity: 'Available',
@@ -60,8 +60,6 @@ export const localization = () => html`
         signOutLinkSubtitle: 'خروج'
       },
       'person-card': {
-        sendEmailLinkSubtitle: 'ارسل بريد الكتروني',
-        startChatLinkSubtitle: 'ابدأ الدردشة',
         showMoreSectionButton: 'أظهر المزيد' // global declaration
       },
       'person-card-contact': {

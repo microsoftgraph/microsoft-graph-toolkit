@@ -29,14 +29,16 @@ import { MgtPersonCardConfig, MgtPersonCardState } from './mgt-person-card.types
 import { strings } from './strings';
 
 import { PersonCardInteraction } from '../PersonCardInteraction';
-import { MgtFlyout } from '../sub-components/mgt-flyout/mgt-flyout';
+
+import '../sub-components/mgt-spinner/mgt-spinner';
 
 export * from './mgt-person-card.types';
 
-import { fluentTabs, fluentTab, fluentTabPanel, fluentButton, fluentTextField } from '@fluentui/web-components';
+import { fluentTabs, fluentTab, fluentTabPanel } from '@fluentui/web-components';
 import { registerFluentComponents } from '../../utils/FluentComponents';
+import { Interface } from 'readline';
 
-registerFluentComponents(fluentTabs, fluentTab, fluentTabPanel, fluentButton, fluentTextField);
+registerFluentComponents(fluentTabs, fluentTab, fluentTabPanel);
 
 // tslint:disable-next-line:completed-docs
 interface MgtPersonCardStateHistory {
@@ -48,6 +50,9 @@ interface MgtPersonCardStateHistory {
   personImage: string;
 }
 
+// tslint:disable-next-line:completed-docs
+type HoverStatesActions = 'email' | 'chat' | 'video' | 'call';
+
 /**
  * Web Component used to show detailed data for a person in the Microsoft Graph
  *
@@ -58,10 +63,13 @@ interface MgtPersonCardStateHistory {
  * @fires expanded - Fired when expanded details section is opened
  *
  * @cssprop --person-card-display-name-font-size - {Length} Font size of display name title
+ * @cssprop --person-card-display-name-line-height - {Length} Line height of display name
  * @cssprop --person-card-display-name-color - {Color} Color of display name font
  * @cssprop --person-card-title-font-size - {Length} Font size of title
+ * @cssprop --person-card-title-line-height - {Length} Line height of title
  * @cssprop --person-card-title-color - {Color} Color of title
  * @cssprop --person-card-subtitle-font-size - {Length} Font size of subtitle
+ * @cssprop --person-card-subtitle-line-height - {Length} Line height of subtitle
  * @cssprop --person-card-subtitle-color - {Color} Color of subttitle
  * @cssprop --person-card-details-title-font-size - {Length} Font size additional details title
  * @cssprop --person-card-details-title-color- {Color} Color of additional details title
@@ -106,6 +114,7 @@ export class MgtPersonCard extends MgtTemplatedComponent {
     }
 
     if (this.config.sections.mailMessages) {
+      scopes.push('Mail.Read');
       scopes.push('Mail.ReadBasic');
     }
 
@@ -264,6 +273,33 @@ export class MgtPersonCard extends MgtTemplatedComponent {
   public isExpanded: boolean;
 
   /**
+   * Gets or sets whether an icon is hovered on
+   *
+   * @type {boolean}
+   * @memberof MgtPersonCard
+   */
+  @property({
+    attribute: 'is-email-hovered',
+    type: Boolean
+  })
+  public isEmailHovered: boolean;
+  @property({
+    attribute: 'is-chat-hovered',
+    type: Boolean
+  })
+  public isChatHovered: boolean;
+  @property({
+    attribute: 'is_video-hovered',
+    type: Boolean
+  })
+  public isVideoHovered: boolean;
+  @property({
+    attribute: 'is-call-hovered',
+    type: Boolean
+  })
+  public isCallHovered: boolean;
+
+  /**
    * Gets or sets whether person details should be inherited from an mgt-person parent
    * Useful when used as template in an mgt-person component
    *
@@ -330,6 +366,10 @@ export class MgtPersonCard extends MgtTemplatedComponent {
     this._currentSection = null;
     this._history = [];
     this.sections = [];
+    this.isEmailHovered = false;
+    this.isChatHovered = false;
+    this.isVideoHovered = false;
+    this.isCallHovered = false;
   }
 
   /**
@@ -447,6 +487,16 @@ export class MgtPersonCard extends MgtTemplatedComponent {
       });
     }
 
+    const closeCardTemplate = this.isExpanded
+      ? html`
+           <div class="close-card-container">
+             <fluent-button appearance="lightweight" class="close-button" @click=${() => this.closeCard()} >
+               ${getSvg(SvgIcon.Close)}
+             </fluent-button>
+           </div>
+         `
+      : null;
+
     const navigationTemplate =
       this._history && this._history.length
         ? html`
@@ -524,11 +574,6 @@ export class MgtPersonCard extends MgtTemplatedComponent {
   protected closeCard() {
     //reset tabs
     this.updateCurrentSection(null);
-
-    const flyout = this.parentElement.parentElement as MgtFlyout;
-    if (flyout) {
-      flyout.close();
-    }
     this.isExpanded = false;
   }
 
@@ -554,7 +599,6 @@ export class MgtPersonCard extends MgtTemplatedComponent {
     const avatarSize = 'large';
     return html`
        <mgt-person
-         tabindex="0"
          class="person-image"
          .personDetails=${this.internalPersonDetails}
          .personImage=${this.getImage()}
@@ -562,8 +606,6 @@ export class MgtPersonCard extends MgtTemplatedComponent {
          .showPresence=${this.showPresence}
          .avatarSize=${avatarSize}
          .view=${ViewType.threelines}
-         .line2Property=${'jobTitle'}
-         .line3Property=${'department'}
        ></mgt-person>
      `;
   }
@@ -594,10 +636,6 @@ export class MgtPersonCard extends MgtTemplatedComponent {
    * @memberof MgtPersonCard
    */
   protected renderContactIcons(person?: IDynamicPerson): TemplateResult {
-    if (this.isExpanded) {
-      return;
-    }
-
     person = person || this.internalPersonDetails;
     const userPerson = person as User;
 
@@ -605,13 +643,13 @@ export class MgtPersonCard extends MgtTemplatedComponent {
     let email: TemplateResult;
     if (getEmailFromGraphEntity(person)) {
       email = html`
-         <div
-           class="icon"
+         <div class="icon" 
            @click=${() => this.emailUser()}
+           @mouseenter=${() => this.setHoveredState('email', true)}
+           @mouseleave=${() => this.setHoveredState('email', false)}
            tabindex=0
            role="button">
-             ${getSvg(SvgIcon.SmallEmail)}
-             <span class="text">${this.strings.sendEmailLinkSubtitle}</span>
+           ${this.isHovered('email') ? getSvg(SvgIcon.SmallEmailHovered) : getSvg(SvgIcon.SmallEmail)}
          </div>
        `;
     }
@@ -620,48 +658,48 @@ export class MgtPersonCard extends MgtTemplatedComponent {
     let chat: TemplateResult;
     if (userPerson?.userPrincipalName) {
       chat = html`
-         <div
-           class="icon"
+         <div class="icon"
            @click=${() => this.chatUser()}
+           @mouseenter=${() => this.setHoveredState('chat', true)}
+           @mouseleave=${() => this.setHoveredState('chat', false)}
            tabindex=0
            role="button">
-             ${getSvg(SvgIcon.SmallChat)}
-             <span class="text">${this.strings.startChatLinkSubtitle}</span>
+           ${this.isHovered('chat') ? getSvg(SvgIcon.SmallChatHovered) : getSvg(SvgIcon.SmallChat)}
          </div>
        `;
     }
 
+    // Video
     let video: TemplateResult;
-    if (userPerson?.userPrincipalName) {
-      video = html`
-         <div
-           class="icon"
+    video = html`
+        <div class="icon"
            @click=${() => this.videoCallUser()}
-           aria-label="${this.strings.video}"
+           @mouseenter=${() => this.setHoveredState('video', true)}
+           @mouseleave=${() => this.setHoveredState('video', false)}
            tabindex=0
            role="button">
-             <span>\uE714</span>
+           ${this.isHovered('video') ? getSvg(SvgIcon.VideoHovered) : getSvg(SvgIcon.Video)}
          </div>
-       `;
-    }
+      `;
 
-    let phone: TemplateResult;
-    if (this.hasPhone) {
-      phone = html`
-       <div
-         class="icon"
-         @click=${() => this.callUser()}
-         aria-label="${this.strings.phone}"
-         tabindex=0
-         role="button">
-           <span>\uE717</span>
+    // Call
+    let call: TemplateResult;
+    if (userPerson.userPrincipalName) {
+      call = html`
+         <div class="icon"
+           @click=${() => this.callUser()}
+           @mouseenter=${() => this.setHoveredState('call', true)}
+           @mouseleave=${() => this.setHoveredState('call', false)}
+           tabindex=0
+           role="button">
+           ${this.isHovered('call') ? getSvg(SvgIcon.CallHovered) : getSvg(SvgIcon.Call)}
          </div>
        `;
     }
 
     return html`
        <div class="base-icons">
-         ${email} ${chat} ${video} ${phone}
+         ${email} ${chat} ${video} ${call}
        </div>
      `;
   }
@@ -740,8 +778,6 @@ export class MgtPersonCard extends MgtTemplatedComponent {
         active: i === currentSectionIndex,
         'section-nav__icon': true
       });
-      const tagName = section.tagName;
-      const ariaLabel = tagName.substring(16, tagName.length).toLowerCase();
       return html`
          <fluent-tab id="${name}-Tab" class=${classes}
            slot="tab" @keyup="${() => this.updateCurrentSection(section)}" @click=${() =>
@@ -788,15 +824,11 @@ export class MgtPersonCard extends MgtTemplatedComponent {
    * @memberof MgtPersonCard
    */
   protected renderOverviewSection(): TemplateResult {
-    function handleKeyDown(e: KeyboardEvent, section: BasePersonCardSection) {
-      e.code === 'Enter' ? this.updateCurrentSection(section) : '';
-    }
-
     const compactTemplates = this.sections.map(
       (section: BasePersonCardSection) => html`
          <div class="section">
            <div class="section__header">
-             <div class="section__title">${section.displayName}</div>
+             <div class="section__title" tabindex=0>${section.displayName}</div>
                <fluent-button appearance="lightweight" class="section__show-more" @click=${() =>
                  this.updateCurrentSection(section)}>
                  ${this.strings.showMoreSectionButton}
@@ -824,31 +856,8 @@ export class MgtPersonCard extends MgtTemplatedComponent {
       );
     }
 
-    // To be included when support for direct messaging is added
-    // ${this.internalPersonDetails.id !== this._me.id && MgtPersonCard.config.isSendMessageVisible
-    //   ? html`
-    //       <div class="quick-message">
-    //         <input
-    //           type="text"
-    //           class="quick-message__input"
-    //           placeholder="Message ${this.internalPersonDetails.displayName}"
-    //           .value=${this._chatInput}
-    //           @input=${(e: Event) => {
-    //             this._chatInput = (e.target as HTMLInputElement).value;
-    //           }}
-    //         />
-    //         <button class="quick-message__send" @click=${() => this.sendQuickMessage()}>
-    //           ${getSvg(SvgIcon.Send)}
-    //         </button>
-    //       </div>
-    //     `
-    //   : null}
-
     return html`
        <div class="sections">
-         <div class="message-section">
-           ${this.renderMessagingSection()}
-         </div>
          ${compactTemplates}
        </div>
      `;
@@ -897,7 +906,7 @@ export class MgtPersonCard extends MgtTemplatedComponent {
            }}>
          </fluent-text-field>
          <span class="send-message-icon" @click=${() => this.sendQuickMessage()}>
-              ${getSvg(SvgIcon.Send)}
+           ${getSvg(SvgIcon.Send)}
          </span>
        `;
   }
@@ -1137,17 +1146,7 @@ export class MgtPersonCard extends MgtTemplatedComponent {
    * @protected
    * @memberof MgtPersonCard
    */
-  protected showExpandedDetails(event: KeyboardEvent) {
-    if (event) {
-      if (event.keyCode !== 13 && event.type !== 'click') {
-        return;
-      } else if (event.keyCode === 13) {
-        //focus on close button
-        // const closeButton: HTMLElement = this.renderRoot.querySelector('.close-button');
-        // closeButton.focus();
-      }
-    }
-
+  protected showExpandedDetails() {
     const root = this.renderRoot.querySelector('.root');
     if (root && root.animate) {
       // play back
@@ -1224,6 +1223,23 @@ export class MgtPersonCard extends MgtTemplatedComponent {
     return person && person.personImage ? person.personImage : null;
   }
 
+  @internalProperty() private hoverStates: Record<HoverStatesActions, boolean> = {
+    //triggers a re-render when hovering on the CTA icons
+    email: false,
+    chat: false,
+    video: false,
+    call: false
+  };
+
+  private setHoveredState = (icon: string, state: boolean) => {
+    this.hoverStates[icon] = state;
+    this.hoverStates = { ...this.hoverStates };
+  };
+
+  private isHovered = (icon: string) => {
+    return this.hoverStates[icon];
+  };
+
   private getPersonBusinessPhones(person: Person): string[] {
     const phones = person.phones;
     const businessPhones: string[] = [];
@@ -1268,8 +1284,8 @@ export class MgtPersonCard extends MgtTemplatedComponent {
   private handleKeyDown(e: KeyboardEvent) {
     //enter activates person-card
     if (e) {
-      if (e.key === 'Enter') {
-        this.showExpandedDetails(e);
+      if (e.code === 'Enter') {
+        this.showExpandedDetails();
       }
     }
   }

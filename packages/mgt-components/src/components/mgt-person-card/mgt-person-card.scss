@@ -10,9 +10,12 @@
 @import './mgt-person-card.theme.scss';
 
 $person-card-display-name-font-size: var(--person-card-display-name-font-size, 20px);
+$person-card-display-name-line-height: var(--person-card-display-name-line-height, 28px);
 $person-card-title-font-size: var(--person-card-title-font-size, 14px);
+$person-card-title-line-height: var(--person-card-title-line-height, 20px);
 $person-card-title-color: var(--person-card-title-color);
-$person-card-subtitle-font-size: var(--person-card-subtitle-font-size, 12px);
+$person-card-subtitle-font-size: var(--person-card-subtitle-font-size, 14px);
+$person-card-subtitle-line-height: var(--person-card-subtitle-line-height, 19px);
 $person-card-subtitle-color: var(--person-card-subtitle-color);
 $person-card-details-title-font-size: var(--person-card-details-title-font-size, 14px);
 $person-card-details-item-font-size: var(--person-card-details-item-font-size, 15px);
@@ -32,10 +35,15 @@ $person-card-nav-back-arrow-hover-color: var(--person-card-nav-back-arrow-hover-
   user-select: none;
   box-shadow: set-var(box-shadow, $theme-default, $common);
   border-radius: 8px;
+  border: 1px solid set-var(background-color__sub1, $theme-default, $common);
   .small {
     max-height: 100vh;
     overflow-y: auto;
     overflow-x: hidden;
+  }
+
+  .activeIndicator {
+    width: 10px !important;
   }
 
   .nav {
@@ -65,6 +73,8 @@ $person-card-nav-back-arrow-hover-color: var(--person-card-nav-back-arrow-hover-
   }
 
   .close-card-container {
+    position: relative;
+    z-index: 100;
     .close-button {
       --focus-stroke-width: none;
       --control-corner-radius: 2;
@@ -75,10 +85,7 @@ $person-card-nav-back-arrow-hover-color: var(--person-card-nav-back-arrow-hover-
       z-index: 1;
       --accent-foreground-hover: none;
       border: 1px solid transparent;
-      // &:focus-visible {
-      //   outline: none;
-      //   border: 1px solid #2b2b2b;
-      // }
+      --neutral-fill-stealth-rest: #fff;
       svg {
         width: 9px;
         height: 9px;
@@ -90,28 +97,33 @@ $person-card-nav-back-arrow-hover-color: var(--person-card-nav-back-arrow-hover-
     display: flex;
     flex-direction: column;
     width: calc(var(--mgt-flyout-set-width, 375px) - 40px);
-    padding: 20px 20px 13px 20px;
+    padding: 23px 0px 0px 23px;
+    border-bottom: 1px solid $gray30;
 
     .person-image {
       --presence-background-color: #{$background-color};
       --presence-icon-color: #{$background-color};
       --avatar-size: 75px;
-      --font-size: #{$person-card-display-name-font-size};
+      --line1-font-size: #{$person-card-display-name-font-size};
+      --line1-line-height: #{$person-card-display-name-line-height};
       --color: #{$person-card-display-name-color};
       --line2-font-size: #{$person-card-title-font-size};
+      --line2-line-height: #{$person-card-title-line-height};
       --line2-color: #{$person-card-title-color};
       --line3-font-size: #{$person-card-subtitle-font-size};
+      --line3-line-height: #{$person-card-subtitle-line-height};
       --line3-color: #{$person-card-subtitle-color};
+      --details-cta-spacing: 30px;
+      --user-presence-margin-offset: 3px;
     }
 
     .base-icons {
       display: flex;
       -webkit-align-items: center;
       align-items: center;
-      max-width: 120px;
-      margin-top: 16px;
-      margin-left: 79px;
-      font-family: 'Segoe Fluent Icons';
+      margin-left: 91px;
+      margin-top: -35px;
+      z-index: 1;
 
       .icon {
         display: flex;
@@ -119,35 +131,27 @@ $person-card-nav-back-arrow-hover-color: var(--person-card-nav-back-arrow-hover-
         cursor: pointer;
         font-size: 13px;
         white-space: nowrap;
-        margin: -11px -13px;
-        padding: 11px 13px;
-        padding: 6px 8px 6px 8px;
-        border: 1px solid transparent;
-
-        &:focus-visible {
-          outline: none !important;
-          border: 1px solid #2b2b2b;
-          border-radius: 2px;
-        }
+        margin-top: 10px;
+        margin-bottom: 38px;
 
         &:not(:last-child) {
-          margin-right: 11px;
+          margin-right: 38px;
         }
 
         svg {
-          fill: set-var(icon__color, $theme-default, $common);
+          path {
+            fill: $icon--active;
+          }
         }
 
-        span {
-          margin-left: 8px;
-          color: $person-card-base-links-color;
+        &:active,
+        &:hover {
+          svg {
+            path {
+              fill: $icon--active;
+            }
+          }
         }
-        span.text {
-          font-family: $font-family;
-        }
-      }
-      .icon:hover {
-        color: $person-card-base-links-hover-color;
       }
     }
   }
@@ -161,26 +165,17 @@ $person-card-nav-back-arrow-hover-color: var(--person-card-nav-back-arrow-hover-
       display: flex;
       justify-content: center;
       align-items: center;
-      height: 28px;
+      height: 32px;
       background: $background-color;
-      border-top: 1px solid set-var(line-seperator__color, $theme-default, $common);
       svg {
         path {
           stroke: #1a1a1a;
         }
       }
     }
-    .expanded-details-button {
-      &:hover {
-        background-color: set-var(background-color--hover, $theme-default, $common);
-      }
-      &:focus-visible {
-        background-color: set-var(background-color--hover, $theme-default, $common);
-        outline: none !important;
-        border: 1px solid #2b2b2b;
-        border-bottom-left-radius: 4px;
-        border-bottom-right-radius: 4px;
-      }
+
+    .expanded-details-button:hover {
+      background-color: #efefef;
     }
   }
 
@@ -246,25 +241,18 @@ $person-card-nav-back-arrow-hover-color: var(--person-card-nav-back-arrow-hover-
       display: flex;
       align-items: center;
       justify-content: center;
-      border: 2px solid transparent;
+      border-bottom: 2px solid transparent;
       margin-bottom: -1px;
       cursor: pointer;
 
       svg {
-        width: 20px;
-        height: 20px;
         fill: set-var(icon__color, $theme-default, $common);
+        margin-bottom: 9px;
       }
 
       &:hover {
         background: set-var(tab__background-color--hover, $theme-default, $common);
-        border-radius: 2px;
-      }
-
-      &.active {
-        svg {
-          fill: $person-card-tab-nav-color;
-        }
+        border-radius: 4px;
       }
     }
   }
@@ -303,7 +291,6 @@ $person-card-nav-back-arrow-hover-color: var(--person-card-nav-back-arrow-hover-
     }
   }
   .section-host {
-    max-height: 360px;
     min-height: 360px;
     overflow-y: auto;
     overflow-x: hidden;
@@ -320,11 +307,17 @@ $person-card-nav-back-arrow-hover-color: var(--person-card-nav-back-arrow-hover-
 
     &__input {
       flex-grow: 1;
-      padding-left: 8px;
-      border: none;
-      border-radius: 2px;
+      padding-left: 12px;
+      border: 1px solid #efefef;
+      border-radius: 4px;
       color: $color;
-      background-color: set-var(background-color__sub2, $theme-default, $common);
+      background-color: set-var(background-color, $theme-default, $common);
+      &:focus {
+        border-color: #023b8f;
+      }
+      &:focus-visible {
+        outline: none;
+      }
     }
 
     &__send {
@@ -375,7 +368,7 @@ $person-card-nav-back-arrow-hover-color: var(--person-card-nav-back-arrow-hover-
           --neutral-fill-stealth-rest: $background-color;
           --accent-foreground-hover: $background-color;
           --accent-foreground-active: $background-color;
-          --base-height-multiplier: 5;
+          --base-height-multiplier: 6;
           vertical-align: top;
         }
       }
@@ -385,6 +378,7 @@ $person-card-nav-back-arrow-hover-color: var(--person-card-nav-back-arrow-hover-
         color: set-var(title__color__subtitle, $theme-default, $common);
         font-size: 14px;
         font-weight: 600;
+        line-height: 19px;
       }
 
       &__show-more {
@@ -396,6 +390,7 @@ $person-card-nav-back-arrow-hover-color: var(--person-card-nav-back-arrow-hover-
         &:hover {
           cursor: pointer;
           color: $person-card-show-more-hover-color;
+          background-color: $greyHover;
         }
       }
 
