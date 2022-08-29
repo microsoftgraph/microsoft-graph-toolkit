@@ -55,8 +55,6 @@ export const Localization = () => html`
           removeTaskSubtitle: 'todoremoveTEST'
         },
         'person-card': {
-          sendEmailLinkSubtitle: 'ارسل بريد الكتروني',
-          startChatLinkSubtitle: 'ابدأ الدردشة',
           showMoreSectionButton: 'أظهر المزيد' // global declaration
         },
         'person-card-contact': {

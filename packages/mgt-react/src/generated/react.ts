@@ -149,6 +149,10 @@ export type PersonCardProps = {
 	inheritDetails?: boolean;
 	showPresence?: boolean;
 	personPresence?: MicrosoftGraph.Presence;
+	isEmailHovered?: boolean;
+	isChatHovered?: boolean;
+	isVideoHovered?: boolean;
+	isCallHovered?: boolean;
 	templateContext?: TemplateContext;
 	mediaQuery?: ComponentMediaQuery;
 	expanded?: (e: Event) => void;
