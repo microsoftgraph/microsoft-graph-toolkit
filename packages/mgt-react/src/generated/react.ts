@@ -96,6 +96,7 @@ export type LoginProps = {
 
 export type PeoplePickerProps = {
 	groupId?: string;
+	groupIds?: string;
 	type?: PersonType;
 	groupType?: GroupType;
 	userType?: UserType;
@@ -140,6 +141,7 @@ export type PeopleProps = {
 export type PersonCardProps = {
 	personDetails?: IDynamicPerson;
 	personQuery?: string;
+	lockTabNavigation?: boolean;
 	userId?: string;
 	personImage?: string;
 	fetchImage?: boolean;

@@ -177,6 +177,7 @@ export class EditorElement extends LitElement {
   }
 
   disconnectedCallback() {
+    this.editor.removeEventListener('fileUpdated');
     window.removeEventListener('resize', this.handleResize);
   }
 
@@ -193,7 +194,7 @@ export class EditorElement extends LitElement {
       this.editor.restoreViewState(this.currentEditorState.state);
     }
 
-    if(this.autoFormat) {
+    if (this.autoFormat) {
       this.editor.getAction('editor.action.formatDocument').run();
     }
   }
