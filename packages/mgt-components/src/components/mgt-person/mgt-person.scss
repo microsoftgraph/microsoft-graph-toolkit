@@ -10,9 +10,9 @@
 @import './mgt-person.theme.scss';
 
 $avatar-size-s: var(--avatar-size-s, var(--avatar-size, 24px));
-$avatar-size: var(--avatar-size, var(--avatar-size-s, 40px));
-$avatar-size-3-lines: var(--avatar-size-3-lines, var(--avatar-size-s, 56px));
-$avatar-size-4-lines: var(--avatar-size-4-lines, var(--avatar-size-s, 72px));
+$avatar-size: var(--avatar-size, var(--avatar-size, 40px));
+$avatar-size-3-lines: var(--avatar-size-3-lines, var(--avatar-size, 56px));
+$avatar-size-4-lines: var(--avatar-size-4-lines, var(--avatar-size, 72px));
 $avatar-border: var(--avatar-border, 0);
 $avatar-border-radius: var(--avatar-border-radius, 50%);
 $avatar-cursor: var(--avatar-cursor, inherit);
@@ -25,13 +25,19 @@ $font-size: var(--font-size, #{$ms-font-size-m});
 $font-weight: var(--font-weight, #{$ms-font-weight-semibold});
 $text-transform: var(text-transform, none);
 
+$line1-font-weight: var(--line1-font-weight, 600);
+$line1-font-size: var(--line1-font-size, $font-size);
+$line1-line-height: var(--line1-line-height, 20px);
+
 $line2-font-size: var(--line2-font-size, var(--email-font-size, #{$ms-font-size-s}));
 $line2-font-weight: var(--line2-font-weight, 400);
 $line2-text-transform: var(--line2-text-transform, #{$text-transform});
+$line2-line-height: var(--line2-line-height, 16px);
 
 $line3-font-size: var(--line3-font-size, var(--email-font-size, #{$ms-font-size-s}));
 $line3-font-weight: var(--line3-font-weight, 400);
 $line3-text-transform: var(--line3-text-transform, #{$text-transform});
+$line3-line-height: var(--line3-line-height, 16px);
 
 $line4-font-size: var(--line4-font-size, var(--email-font-size, #{$ms-font-size-s}));
 $line4-font-weight: var(--line4-font-weight, 400);
@@ -40,6 +46,9 @@ $line4-text-transform: var(--line4-text-transform, #{$text-transform});
 $focus-offset: var(--focus-offset, 11px);
 
 $details-spacing: --details-spacing;
+$details-cta-spacing: --details-cta-spacing;
+
+$user-presence-margin-offset: --user-presence-margin-offset;
 
 $person-flex-direction: --person-flex-direction;
 $presence-color-online: #13a10e;
@@ -71,8 +80,8 @@ mgt-flyout {
 
 :host svg,
 mgt-person svg {
-  width: $avatar-size-s;
-  height: $avatar-size-s;
+  width: $avatar-size;
+  height: $avatar-size;
 }
 
 :host .person-root,
@@ -268,6 +277,10 @@ mgt-person .person-root {
         cursor: $avatar-cursor;
         margin-top: -1px;
         font-size: calc(#{$avatar-size} * 0.4);
+        svg {
+          height: 30px;
+          width: 30px;
+        }
       }
 
       & .contact-icon {
@@ -324,8 +337,8 @@ mgt-person .person-root {
         font-size: calc(#{$avatar-size-3-lines} * 0.4);
       }
       .user-presence {
-        left: calc(var(--avatar-size-3-lines, var(--avatar-size-s, 56px)) - 18px);
-        top: calc(var(--avatar-size-3-lines, var(--avatar-size-s, 56px)) - 18px);
+        left: calc(var(--avatar-size-3-lines, var(--avatar-size, 56px)) - 18px);
+        top: calc(var(--avatar-size-3-lines, var(--avatar-size, 56px)) - 18px);
         width: 16px;
         height: 16px;
 
@@ -338,7 +351,7 @@ mgt-person .person-root {
 
           & .presence-oof-offline svg {
             width: calc(#{$avatar-size-3-lines} * 0.14);
-            margin-left: calc(#{$avatar-size-4-lines} * 0.07 - 2px);
+            margin-left: calc(#{$avatar-size-3-lines} * 0.07 - 2px);
           }
         }
 
@@ -350,7 +363,7 @@ mgt-person .person-root {
         .presence-dnd::before,
         .presence-oof-dnd::before,
         .presence-oof-offline::before {
-          margin-left: calc(#{$avatar-size-3-lines} * 0.07 - 2px);
+          margin-left: calc(#{$avatar-size-3-lines} * 0.07 - var(--user-presence-margin-offset, 2px));
         }
       }
     }
@@ -365,8 +378,8 @@ mgt-person .person-root {
         font-size: calc(#{$avatar-size-4-lines} * 0.4);
       }
       .user-presence {
-        left: calc(var(--avatar-size-4-lines, var(--avatar-size-s, 72px)) - 22px);
-        top: calc(var(--avatar-size-4-lines, var(--avatar-size-s, 72px)) - 22px);
+        left: calc(var(--avatar-size-4-lines, var(--avatar-size, 72px)) - 22px);
+        top: calc(var(--avatar-size-4-lines, var(--avatar-size, 72px)) - 22px);
         width: 20px;
         height: 20px;
 
@@ -518,7 +531,7 @@ mgt-person .person-root {
     display: flex;
     flex-direction: column;
     overflow: hidden;
-    line-height: 1.4;
+    line-height: 1.6;
     margin: var($details-spacing, 0px 0px 0px 12px);
 
     &.small {
@@ -530,9 +543,10 @@ mgt-person .person-root {
 
     &.threeLines {
       margin: var($details-spacing, 0px 0px 0px 14px);
+      margin-bottom: var($details-cta-spacing, 0);
       .line1 {
-        font-size: 16px;
-        line-height: 22px;
+        font-size: var($line1-font-size, 16px);
+        line-height: var($line1-line-height, 22px);
       }
     }
 
@@ -578,10 +592,10 @@ mgt-person .person-root {
     }
 
     .line1 {
-      font-size: $font-size;
-      font-weight: $font-weight;
+      font-size: $line1-font-size;
+      font-weight: $line1-font-weight;
       text-transform: $text-transform;
-      line-height: 20px;
+      line-height: $line1-line-height;
       width: fit-content;
     }
 
@@ -590,7 +604,7 @@ mgt-person .person-root {
       font-size: $line2-font-size;
       font-weight: $line2-font-weight;
       text-transform: $line2-text-transform;
-      line-height: 16px;
+      line-height: $line2-line-height;
     }
 
     .line3 {
@@ -598,7 +612,7 @@ mgt-person .person-root {
       font-size: $line3-font-size;
       font-weight: $line3-font-weight;
       text-transform: $line3-text-transform;
-      line-height: 16px;
+      line-height: $line3-line-height;
     }
 
     .line4 {

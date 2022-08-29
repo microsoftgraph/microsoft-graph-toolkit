@@ -33,7 +33,7 @@
       padding: 11px 20px;
 
       &:hover {
-        background-color: set-var(background-color--hover, $theme-default, $common);
+        background-color: $greyHover;
         cursor: pointer;
       }
 
