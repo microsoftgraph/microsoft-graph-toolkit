@@ -871,14 +871,10 @@ export class MgtPerson extends MgtTemplatedComponent {
       `;
     }
     const userPresenceClass = {
-      'user-presence': true
-    };
-    userPresenceClass[statusClass] = true;
-
-    const userPresenceClasses = {
       'user-presence': true,
       'user-presence__people': this._usage === 'people'
     };
+    userPresenceClass[statusClass] = true;
 
     return html`
       <div class=${classMap(userPresenceClass)} title=${presence.activity} aria-label=${presence.activity} role="img">
