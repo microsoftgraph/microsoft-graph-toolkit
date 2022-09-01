@@ -253,9 +253,10 @@ mgt-people-picker .root {
 }
 
 mgt-person {
-  --avatar-size-s: 32px;
   margin-left: 6px;
+  width: 100%;
   cursor: default;
+  --avatar-size-s: 32px;
   --line2-color: #717171; /*TODO: change to $gray120*/
   --font-size: 14px;
   --font-weight: 600;
@@ -309,6 +310,7 @@ mgt-flyout {
   mgt-person {
     margin-right: 6px;
     --details-spacing: 0px 12px 0 0;
+    width: 100%;
   }
 
   .selected-list {
