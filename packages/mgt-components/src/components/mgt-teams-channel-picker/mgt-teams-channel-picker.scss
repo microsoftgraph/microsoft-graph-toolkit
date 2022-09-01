@@ -17,6 +17,7 @@
   position: relative;
   ::slotted(fluent-tree-item) {
     --tree-item-nested-width: 2em;
+    --card-height: auto;
   }
 
   .input-wrapper {
