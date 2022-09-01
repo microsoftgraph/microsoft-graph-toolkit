@@ -712,6 +712,7 @@ export class MgtPeoplePicker extends MgtTemplatedComponent {
            @keyup="${this.onUserKeyUp}"
            @blur=${this.lostFocus}
            @click=${this.handleFlyout}
+           @focus=${e => this.focus(e)}
            ?disabled=${this.disabled}
          />
        </div>
@@ -1812,6 +1813,7 @@ export class MgtPeoplePicker extends MgtTemplatedComponent {
     // check if people need to be updated
     // ensuring people list is displayed
     // find ids from selected people
+    const uniquePeople: IDynamicPerson[] = [];
     if (people && people.length > 0) {
       people = people.filter(person => person);
       const idFilter = this.selectedPeople.map(el => {
@@ -1833,14 +1835,13 @@ export class MgtPeoplePicker extends MgtTemplatedComponent {
         const person = JSON.stringify(filtered[i]);
         dupsSet.add(person);
       }
-      const uniquePeople: IDynamicPerson[] = [];
 
       dupsSet.forEach((person: string) => {
         const p: IDynamicPerson = JSON.parse(person) as IDynamicPerson;
         uniquePeople.push(p);
       });
-      return uniquePeople;
     }
+    return uniquePeople;
   }
 
   // stop propagating wheel event to flyout so mouse scrolling works
