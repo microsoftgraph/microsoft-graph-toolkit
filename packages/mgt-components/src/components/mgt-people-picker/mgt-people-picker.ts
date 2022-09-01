@@ -781,8 +781,11 @@ export class MgtPeoplePicker extends MgtTemplatedComponent {
     return html`
        <mgt-flyout light-dismiss class="flyout">
          ${anchor}
-         <fluent-card slot="flyout" class="flyout-root" @wheel=${(e: WheelEvent) =>
-           this.handleSectionScroll(e)} class="custom">
+         <fluent-card
+          slot="flyout"
+          class="flyout-root"
+          @wheel=${(e: WheelEvent) => this.handleSectionScroll(e)}
+          class="custom">
            ${this.renderFlyoutContent()}
          </fluent-card>
        </mgt-flyout>
