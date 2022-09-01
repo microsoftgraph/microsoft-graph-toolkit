@@ -568,15 +568,18 @@ export class MgtTeamsChannelPicker extends MgtTemplatedComponent {
                   src=${this.teamsPhotos[obj.item.id].photo} />`;
               }
               return html`
-                <fluent-tree-item dir=${this.direction}>
-                  ${icon}${obj.item.displayName}
-                  ${repeat(
-                    obj?.channels,
-                    channels => channels.item,
-                    channel => {
-                      return this.renderItem(channel);
-                    }
-                  )}</fluent-tree-item>`;
+                <fluent-tree-item
+                  ?expanded=${obj?.isExpanded}
+                  dir=${this.direction}>
+                    ${icon}${obj.item.displayName}
+                    ${repeat(
+                      obj?.channels,
+                      channels => channels.item,
+                      channel => {
+                        return this.renderItem(channel);
+                      }
+                    )}
+                </fluent-tree-item>`;
             }
           )}
         </fluent-tree-view>`;
