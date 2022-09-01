@@ -10,17 +10,17 @@
 $file-upload: (
   list__item__background-color--hover: (
     _var: --file-item-background-color--hover,
-    light: rgba(0, 0, 0, 0.1),
+    light: rgba(247, 247, 247, 1),
     dark: #0078d4
   ),
   list__item__background-color--active: (
     _var: --file-item-background-color--active,
-    light: rgba(0, 0, 0, 0.05),
+    light: rgba(251, 251, 251, 1),
     dark: #238ada
   ),
   upload__button__background-color: (
     _var: --file-upload-button-background-color,
-    light: rgb(243, 242, 241),
+    light: #036ac4,
     dark: #006cbe
   ),
   upload__dialog__background-color: (
@@ -49,5 +49,7 @@ $file-upload: (
     dark: #006cbe
   )
 );
+
+$fileButtonColour: #ffffff;
 
 @include create-themes($file-upload);

@@ -25,7 +25,7 @@ $file-upload-dialog-primarybutton-background-color: set-var(
 $file-upload-button-background-color: set-var(upload__button__background-color, $theme-default, $file-upload);
 $file-item-background-color--hover: set-var(list__item__background-color--hover, $theme-default, $file-upload);
 $file-item-background-color--active: set-var(list__item__background-color--active, $theme-default, $file-upload);
-$file-upload-icon-button-background-color: var(--color, inherit);
+$file-upload-icon-button-background-color: var(--color, fileUploadIconBackground);
 $file-list-box-shadow: var(
   --file-list-box-shadow,
   0px 3.2px 7.2px rgba(0, 0, 0, 0.132),
@@ -37,15 +37,13 @@ $file-list-box-shadow: var(
     float: var(--file-upload-button-float, right);
     text-align: center;
     display: table;
-    margin-top: 39px;
-    margin-right: 16px;
-    margin-left: 16px;
+    margin-top: 30px;
+    margin-right: 36px;
   }
 
   fluent-button.file-upload-button {
-    color: var(--file-upload-button-color, inherit);
+    color: var(--file-upload-button-color, $fileButtonColour);
     vertical-align: middle;
-    display: table-cell;
     background-color: $file-upload-button-background-color;
     width: 120px;
     height: 32px;
@@ -53,9 +51,6 @@ $file-list-box-shadow: var(
     font-size: $font-size;
     font-family: $font-family;
     position: relative;
-    &:hover {
-      background-color: $file-item-background-color--hover;
-    }
   }
 
   input {
@@ -115,11 +110,7 @@ $file-list-box-shadow: var(
 
 :host .mgt-file-item {
   --file-background-color: transparent;
-}
-
-:host .upload-icon {
-  fill: var(--file-upload-button-color, $file-upload-icon-button-background-color);
-  height: 12px;
+  margin: 0 0 20px 26px;
 }
 
 :host .file-upload-Template {

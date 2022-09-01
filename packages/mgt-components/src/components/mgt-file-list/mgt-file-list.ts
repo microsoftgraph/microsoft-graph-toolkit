@@ -891,6 +891,8 @@ export class MgtFileList extends MgtTemplatedComponent {
       const li = event.target.closest('li');
       const index = nodes.indexOf(li);
       this._focusedItemIndex = index;
+      const clickedItem = fileList.children[this._focusedItemIndex];
+      this.updateItemBackgroundColor(fileList, clickedItem, 'selected');
 
       for (let i = 0; i < fileList.children.length; i++) {
         fileList.children[i].classList.remove('focused');
