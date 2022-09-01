@@ -880,7 +880,7 @@ export class MgtTeamsChannelPicker extends MgtTemplatedComponent {
   }
 
   private onUserKeyDown(event: KeyboardEvent) {
-    if (event.keyCode === 13) {
+    if (event.code === 'Enter') {
       // No new line
       event.preventDefault();
     }
@@ -891,13 +891,13 @@ export class MgtTeamsChannelPicker extends MgtTemplatedComponent {
 
     const currentFocusedItem = this._focusList[this._focusedIndex];
 
-    switch (event.keyCode) {
-      case 40: // down
+    switch (event.code) {
+      case 'ArrowDown': // down
         this._focusedIndex = (this._focusedIndex + 1) % this._focusList.length;
         this.requestUpdate();
         event.preventDefault();
         break;
-      case 38: // up
+      case 'ArrowUp': // up
         if (this._focusedIndex === -1) {
           this._focusedIndex = this._focusList.length;
         }
@@ -905,26 +905,26 @@ export class MgtTeamsChannelPicker extends MgtTemplatedComponent {
         this.requestUpdate();
         event.preventDefault();
         break;
-      case 39: // right
+      case 'ArrowRight': // right
         if (currentFocusedItem && currentFocusedItem.channels && !currentFocusedItem.isExpanded) {
           currentFocusedItem.isExpanded = true;
           this.resetFocusState();
           event.preventDefault();
         }
         break;
-      case 37: // left
+      case 'ArrowLeft': // left
         if (currentFocusedItem && currentFocusedItem.channels && currentFocusedItem.isExpanded) {
           currentFocusedItem.isExpanded = false;
           this.resetFocusState();
           event.preventDefault();
         }
         break;
-      case 9: // tab
+      case 'Tab': // tab
         if (!currentFocusedItem) {
           this.lostFocus();
           break;
         }
-      case 13: // return/enter
+      case 'Enter': // return/enter
         if (currentFocusedItem && currentFocusedItem.channels) {
           // focus item is a Team
           currentFocusedItem.isExpanded = !currentFocusedItem.isExpanded;
@@ -939,13 +939,13 @@ export class MgtTeamsChannelPicker extends MgtTemplatedComponent {
           event.preventDefault();
         }
         break;
-      case 8: // backspace
+      case 'Backspace': // backspace
         if (this._inputValue.length === 0 && this._selectedItemState) {
           this.selectChannel(null);
           event.preventDefault();
         }
         break;
-      case 27: // esc
+      case 'Escape': // esc
         this.selectChannel(this._selectedItemState);
         this._focusedIndex = -1;
         this.resetFocusState();
