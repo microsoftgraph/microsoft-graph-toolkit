@@ -9,7 +9,7 @@ import { customElement, html, property } from 'lit-element';
 import { classMap } from 'lit-html/directives/class-map';
 import { Providers, ProviderState, MgtTemplatedComponent, IProviderAccount } from '@microsoft/mgt-element';
 
-import { IDynamicPerson, ViewType } from '../../graph/types';
+import { AvatarSize, IDynamicPerson, ViewType } from '../../graph/types';
 import { MgtFlyout } from '../sub-components/mgt-flyout/mgt-flyout';
 import { getUserWithPhoto } from '../../graph/graph.userWithPhoto';
 import { MgtPerson, PersonViewType } from '../mgt-person/mgt-person';
@@ -21,9 +21,23 @@ import { strings } from './strings';
 
 import '../../styles/style-helper';
 
-import { fluentListbox, fluentProgressRing } from '@fluentui/web-components';
+import { fluentListbox, fluentProgressRing, fluentButton, fluentCard } from '@fluentui/web-components';
 import { registerFluentComponents } from '../../utils/FluentComponents';
-registerFluentComponents(fluentListbox, fluentProgressRing);
+registerFluentComponents(fluentListbox, fluentProgressRing, fluentButton, fluentCard);
+
+/**
+ *  loginViewType describes the enum strings that can be passed in to determine
+ *  size of the mgt-login control.
+ */
+export type LoginViewType = 'avatar' | 'compact' | 'full';
+
+// tslint:disable-next-line: completed-docs
+type PersonViewConfig = {
+  // tslint:disable-next-line: completed-docs
+  view: ViewType;
+  // tslint:disable-next-line: completed-docs
+  avatarSize: AvatarSize;
+};
 
 /**
  * Web component button and flyout control to facilitate Microsoft identity platform authentication
@@ -45,16 +59,18 @@ registerFluentComponents(fluentListbox, fluentProgressRing);
  *
  * @cssprop --font-size - {Length} Login font size
  * @cssprop --font-weight - {Length} Login font weight
- * @cssprop --height - {String} Login height percentage
  * @cssprop --margin - {String} Margin size
- * @cssprop --padding - {String} Padding size
  * @cssprop --button-color - {Color} Login button font color
  * @cssprop --button-color--hover - {Color} Login button font hover color
- * @cssprop --button-background-color - {Color} Login button background color
  * @cssprop --button-background-color--hover - {Color} Login background hover color
  * @cssprop --popup-background-color - {Color} Popup background color
  * @cssprop --popup-color - {Color} Popup font color
  * @cssprop --popup-command-font-size - {Length} Popup command font size
+ * @cssprop --popup-command-margin - {String} margins for the logout command in the popup
+ * @cssprop --popup-padding - {String} padding applied inside the popup
+ * @cssprop --profile-spacing - {String} margin applied to the active account inside the popup
+ * @cssprop --profile-spacing-full - {String} margin applied to the active account inside the popup when login-view is full or more that one account is signed in.
+ * @cssprop --add-account-button-color - {Color} Color for the text and icon of the add account button
  */
 @customElement('mgt-login')
 export class MgtLogin extends MgtTemplatedComponent {
@@ -65,6 +81,13 @@ export class MgtLogin extends MgtTemplatedComponent {
   static get styles() {
     return styles;
   }
+  /**
+   * Returns the object of strings for localization
+   *
+   * @readonly
+   * @protected
+   * @memberof MgtLogin
+   */
   protected get strings() {
     return strings;
   }
@@ -78,6 +101,28 @@ export class MgtLogin extends MgtTemplatedComponent {
     type: Object
   })
   public userDetails: IDynamicPerson;
+
+  /**
+   * determines if presence is shown for logged in user
+   * defaults to false
+   * @type {boolean}
+   */
+  @property({
+    attribute: 'show-presence',
+    type: Boolean
+  })
+  public showPresence = false;
+
+  /**
+   * determines the view style to apply to the logged in user
+   * options are 'full', 'compact', 'avatar', defaults to 'full'
+   * @type {LoginViewType}
+   */
+  @property({
+    attribute: 'login-view',
+    type: String
+  })
+  public loginView: LoginViewType = 'full';
 
   /**
    * Gets the flyout element
@@ -187,8 +232,12 @@ export class MgtLogin extends MgtTemplatedComponent {
    * trigger the element to update.
    */
   protected render() {
+    const classes = {
+      root: true,
+      'vertical-layout': this.usesVerticalPersonCard
+    };
     return html`
-       <div class="root" dir=${this.direction}>
+       <div class=${classMap(classes)} dir=${this.direction}>
          <div>
            ${this.renderButton()}
          </div>
@@ -227,6 +276,12 @@ export class MgtLogin extends MgtTemplatedComponent {
     }
   }
 
+  private buildAriaLabel(isSignedIn: boolean, defaultLabel: string) {
+    if (!isSignedIn) return defaultLabel;
+
+    return (defaultLabel = this.userDetails ? this.userDetails.displayName : this.strings.signInLinkSubtitle);
+  }
+
   /**
    * Render the button.
    *
@@ -234,27 +289,38 @@ export class MgtLogin extends MgtTemplatedComponent {
    * @memberof MgtLogin
    */
   protected renderButton() {
-    const provider = Providers.globalProvider;
-    const signedInState = ProviderState.SignedIn;
-
-    let ariaLabel = this.strings.signInLinkSubtitle;
-    if (provider) {
-      if (provider.state === signedInState) {
-        ariaLabel = this.userDetails ? this.userDetails.displayName : this.strings.signInLinkSubtitle;
-      }
-    }
+    const isSignedIn = Providers.globalProvider?.state === ProviderState.SignedIn;
+    const ariaLabel = this.buildAriaLabel(isSignedIn, this.strings.signInLinkSubtitle);
 
     const classes = {
       'login-button': true,
+      'signed-in': isSignedIn,
+      small: this.loginView === 'avatar',
+      'full-size': this.loginView === 'full',
       'no-click': this._isFlyoutOpen
     };
-    return html`
-      <button aria-label=${ariaLabel} ?disabled="${this.isLoadingState}" @click=${this.onClick} class=${classMap(
-      classes
-    )} role="button">
-        ${this.renderButtonContent()}
-      </button>
-    `;
+    // uses a regular button for the signed in state to ease styling
+    return isSignedIn && this.userDetails
+      ? html`
+        <button
+          aria-label=${ariaLabel}
+          @click=${this.onClick}
+          class=${classMap(classes)}
+        >
+          ${this.renderSignedInButtonContent(this.userDetails, this._image)}
+        </button>
+      `
+      : html`
+        <fluent-button
+          appearance="neutral"
+          aria-label=${ariaLabel}
+          ?disabled=${this.isLoadingState}
+          @click=${this.onClick}
+          class=${classMap(classes)}
+        >
+          ${this.renderSignedOutButtonContent()}
+        </fluent-button>
+      `;
   }
 
   /**
@@ -265,17 +331,20 @@ export class MgtLogin extends MgtTemplatedComponent {
    */
   protected renderFlyout() {
     return html`
-       <mgt-flyout
-         class="flyout"
-         light-dismiss
-         @opened=${() => (this._isFlyoutOpen = true)}
-         @closed=${() => (this._isFlyoutOpen = false)}
-       >
-         <div slot="flyout">
-           ${this.renderFlyoutContent()}
-         </div>
-       </mgt-flyout>
-     `;
+      <mgt-flyout
+        class="flyout"
+        light-dismiss
+        @opened=${() => (this._isFlyoutOpen = true)}
+        @closed=${() => (this._isFlyoutOpen = false)}
+      >
+        <div slot="flyout">
+          <!-- Setting the card fill ensures the correct colors on hover states -->
+          <fluent-card card-fill-color="#fbfbfb">
+            ${this.renderFlyoutContent()}
+          </fluent-card>
+        </div>
+      </mgt-flyout>
+      `;
   }
 
   /**
@@ -307,6 +376,17 @@ export class MgtLogin extends MgtTemplatedComponent {
      `;
   }
 
+  private get hasMultipleAccounts(): boolean {
+    return (
+      Providers.globalProvider?.isMultiAccountSupportedAndEnabled &&
+      Providers.globalProvider?.getAllAccounts?.()?.length > 1
+    );
+  }
+
+  private get usesVerticalPersonCard(): boolean {
+    return this.loginView === 'full' || this.hasMultipleAccounts;
+  }
+
   /**
    * Render the flyout person details.
    *
@@ -319,11 +399,12 @@ export class MgtLogin extends MgtTemplatedComponent {
     return (
       template ||
       html`
-        <mgt-person 
+        <mgt-person
           .personDetails=${personDetails}
           .personImage=${personImage}
           .view=${ViewType.twolines}
           .line2Property=${'email'}
+          ?vertical-layout=${this.usesVerticalPersonCard}
         />
         `
     );
@@ -343,9 +424,14 @@ export class MgtLogin extends MgtTemplatedComponent {
       html`
         <ul>
           <li>
-            <button class="popup-command" @click=${this.logout} aria-label=${this.strings.signOutLinkSubtitle}>
+            <fluent-button
+              appearance="lightweight"
+              class="popup-command"
+              @click=${this.logout}
+              aria-label=${this.strings.signOutLinkSubtitle}
+            >
               ${this.strings.signOutLinkSubtitle}
-            </button>
+            </fluent-button>
           </li>
         </ul>
       `
@@ -378,19 +464,40 @@ export class MgtLogin extends MgtTemplatedComponent {
     if (Providers.globalProvider.isMultiAccountSupportedAndEnabled) {
       return html`
           <div class="add-account">
-             <button
+             <fluent-button
+               appearance="lightweight"
                class="add-account-button"
                aria-label="Sign in with different account"
                @click=${() => {
                  this.login();
                }}
              >
-               <i class="account-switch-icon">${getSvg(SvgIcon.SelectAccount, '#000000')}</i> Sign in with a different
-               account
-             </button>
+               <i class="account-switch-icon">${getSvg(SvgIcon.SelectAccount, '#000000')}</i>
+               Sign in with a different account
+             </fluent-button>
            </div>
        `;
     }
+  }
+
+  private parsePersonDisplayConfiguration(): PersonViewConfig {
+    const displayConfig: PersonViewConfig = { view: ViewType.twolines, avatarSize: 'small' };
+    switch (this.loginView) {
+      case 'avatar':
+        displayConfig.view = ViewType.image;
+        displayConfig.avatarSize = 'small';
+        break;
+      case 'compact':
+        displayConfig.view = ViewType.oneline;
+        displayConfig.avatarSize = 'small';
+        break;
+      case 'full':
+      default:
+        displayConfig.view = ViewType.twolines;
+        displayConfig.avatarSize = 'large';
+        break;
+    }
+    return displayConfig;
   }
 
   /**
@@ -402,10 +509,18 @@ export class MgtLogin extends MgtTemplatedComponent {
    */
   protected renderSignedInButtonContent(personDetails: IDynamicPerson, personImage: string) {
     const template = this.renderTemplate('signed-in-button-content', { personDetails, personImage });
+    const displayConfig = this.parsePersonDisplayConfiguration();
     return (
       template ||
       html`
-         <mgt-person .personDetails=${this.userDetails} .personImage=${this._image} .view=${ViewType.oneline} />
+        <mgt-person
+          .personDetails=${this.userDetails}
+          .personImage=${this._image}
+          .view=${displayConfig.view}
+          .showPresence=${this.showPresence}
+          .avatarSize=${displayConfig.avatarSize}
+          line2-property="email"
+        />
        `
     );
   }
@@ -428,24 +543,29 @@ export class MgtLogin extends MgtTemplatedComponent {
         return html`
          <div id="accounts">
            <fluent-design-system-provider>
-             <fluent-listbox class="list-box">
+             <fluent-listbox class="list-box" name="Account list">
               ${list.map(account => {
                 if (account.id !== provider.getActiveAccount().id) {
                   const details = localStorage.getItem(account.id + this._userDetailsKey);
                   return html`
-                   <fluent-option class="list-box-option" value="${account.name}">
-                     <mgt-person
-                       @click=${() => this.setActiveAccount(account)}
-                       .personDetails=${details ? JSON.parse(details) : null}
-                       .fallbackDetails=${{ displayName: account.name, mail: account.mail }}
-                       .view=${PersonViewType.twolines}
-                     />
-                   </fluent-option>
-                 `;
+                    <fluent-option class="list-box-option" value="${account.name}" role="option">
+                      <mgt-person
+                        @click=${() => this.setActiveAccount(account)}
+                        @keyup=${(e: KeyboardEvent) => {
+                          if (e.key === 'Enter') {
+                            this.setActiveAccount(account);
+                          }
+                        }}
+                        .personDetails=${details ? JSON.parse(details) : null}
+                        .fallbackDetails=${{ displayName: account.name, mail: account.mail }}
+                        .view=${PersonViewType.twolines}
+                      />
+                    </fluent-option>
+                  `;
                 }
               })}
-           </fluent-listbox>
-          </fluent-design-system-provider>
+             </fluent-listbox>
+           </fluent-design-system-provider>
          </div>
        `;
       }
@@ -485,7 +605,6 @@ export class MgtLogin extends MgtTemplatedComponent {
     return (
       template ||
       html`
-        <i class="login-icon ms-Icon ms-Icon--Contact"></i>
         <span>${this.strings.signInLinkSubtitle}</span>
       `
     );
@@ -518,7 +637,9 @@ export class MgtLogin extends MgtTemplatedComponent {
   }
 
   private onClick() {
-    if (this.userDetails) {
+    if (this.userDetails && this._isFlyoutOpen) {
+      this.hideFlyout();
+    } else if (this.userDetails) {
       this.showFlyout();
     } else {
       this.login();
