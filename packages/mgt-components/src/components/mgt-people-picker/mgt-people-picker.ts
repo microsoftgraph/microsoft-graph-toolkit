@@ -977,7 +977,6 @@ export class MgtPeoplePicker extends MgtTemplatedComponent {
     if (people) {
       if (input) {
         const displayNameMatch = people.filter(person => person?.displayName.toLowerCase().includes(input));
-        // const principalNameMatch = people.filter((person as User )=> person?.userPrincipalName.toLowerCase().includes(input));
         people = displayNameMatch;
       }
       this._showLoading = false;
