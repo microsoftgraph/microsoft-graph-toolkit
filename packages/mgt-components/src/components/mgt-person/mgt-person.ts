@@ -243,6 +243,27 @@ export class MgtPerson extends MgtTemplatedComponent {
   }
 
   /**
+   * usage property allows you to specify where the component is being used to add
+   * customized personalization for it. Currently only supports "people" as used in
+   * the people component.
+   * @type {string}
+   */
+  @property({
+    attribute: 'usage'
+  })
+  public get usage(): string {
+    return this._usage;
+  }
+  public set usage(value: string) {
+    if (value === this._usage) {
+      return;
+    }
+
+    this._usage = value;
+    this.requestStateUpdate();
+  }
+
+  /**
    * determines if person component renders presence
    * @type {boolean}
    */
@@ -564,6 +585,7 @@ export class MgtPerson extends MgtTemplatedComponent {
   private _personPresence: Presence;
   private _personQuery: string;
   private _userId: string;
+  private _usage: string;
   private _avatarType: string;
 
   private _mouseLeaveTimeout;
@@ -855,7 +877,8 @@ export class MgtPerson extends MgtTemplatedComponent {
        `;
     }
     const userPresenceClass = {
-      'user-presence': true
+      'user-presence': true,
+      'user-presence__people': this._usage === 'people'
     };
     userPresenceClass[statusClass] = true;
 
