@@ -6,7 +6,8 @@
  */
 
 import * as MicrosoftGraph from '@microsoft/microsoft-graph-types';
-import { customElement, html, property, TemplateResult } from 'lit-element';
+import { html, TemplateResult } from 'lit';
+import { customElement, property } from 'lit/decorators.js';
 import { Providers, ProviderState, MgtTemplatedComponent, prepScopes } from '@microsoft/mgt-element';
 import '../../styles/style-helper';
 import { getDayOfWeekString, getMonthString } from '../../utils/Utils';
@@ -460,8 +461,8 @@ export class MgtAgenda extends MgtTemplatedComponent {
     const grouped = {};
 
     events.forEach(event => {
-      var eventDate = new Date(event.start.dateTime);
-      var dateString = eventDate.toISOString().replace('Z', '');
+      const eventDate = new Date(event.start.dateTime);
+      const dateString = eventDate.toISOString().replace('Z', '');
 
       const header = this.getDateHeaderFromDateTimeString(dateString);
       grouped[header] = grouped[header] || [];

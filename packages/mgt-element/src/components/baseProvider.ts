@@ -5,7 +5,7 @@
  * -------------------------------------------------------------------------------------------
  */
 
-import { property } from 'lit-element';
+import { property } from 'lit/decorators.js';
 import { MgtBaseComponent } from './baseComponent';
 import { IProvider } from '../providers/IProvider';
 

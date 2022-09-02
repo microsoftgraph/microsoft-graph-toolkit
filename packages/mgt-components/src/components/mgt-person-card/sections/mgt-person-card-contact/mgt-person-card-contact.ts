@@ -6,9 +6,10 @@
  */
 
 import { User } from '@microsoft/microsoft-graph-types';
-import { customElement, html, TemplateResult } from 'lit-element';
+import { html, TemplateResult } from 'lit';
+import { customElement } from 'lit/decorators.js';
 import { TeamsHelper } from '@microsoft/mgt-element';
-import { classMap } from 'lit-html/directives/class-map';
+import { classMap } from 'lit/directives/class-map.js';
 
 import { getEmailFromGraphEntity } from '../../../../graph/graph.people';
 import { BasePersonCardSection } from '../BasePersonCardSection';

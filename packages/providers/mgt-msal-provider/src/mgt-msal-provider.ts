@@ -4,8 +4,7 @@
  * See License in the project root for license information.
  * -------------------------------------------------------------------------------------------
  */
-
-import { customElement, property } from 'lit-element';
+import { customElement, property } from 'lit/decorators.js';
 import { Providers, LoginType, MgtBaseProvider } from '@microsoft/mgt-element';
 import { MsalConfig, MsalProvider } from './MsalProvider';
 /**

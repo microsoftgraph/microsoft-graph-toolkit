@@ -5,7 +5,7 @@
  * -------------------------------------------------------------------------------------------
  */
 
-import { html } from 'lit-element';
+import { html } from 'lit';
 import { withCodeEditor } from '../../../.storybook/addons/codeEditorAddon/codeAddon';
 
 export default {
@@ -33,7 +33,7 @@ export const customCSSProperties = () => html`
     --line2-font-size: 11px;
     --line2-font-weight	: 3px;
     --line2-color: #e50000;
-    --line2-text-transform: capitalize;	
+    --line2-text-transform: capitalize;
     --line3-font-size: 12px;
     --line3-font-weight: 3px;
     --line3-color: purple;

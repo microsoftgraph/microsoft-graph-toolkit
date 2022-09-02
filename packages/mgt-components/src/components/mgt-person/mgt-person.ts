@@ -6,8 +6,9 @@
  */
 
 import { Contact, Presence } from '@microsoft/microsoft-graph-types';
-import { customElement, html, internalProperty, property, TemplateResult } from 'lit-element';
-import { classMap } from 'lit-html/directives/class-map';
+import { html, TemplateResult } from 'lit';
+import { customElement, property, state } from 'lit/decorators.js';
+import { classMap } from 'lit/directives/class-map.js';
 import { findPeople, getEmailFromGraphEntity } from '../../graph/graph.people';
 import { getGroupImage, getPersonImage } from '../../graph/graph.photos';
 import { getUserPresence } from '../../graph/graph.presence';
@@ -572,10 +573,10 @@ export class MgtPerson extends MgtTemplatedComponent {
   })
   public view: ViewType | PersonViewType;
 
-  @internalProperty() private _fetchedImage: string;
-  @internalProperty() private _fetchedPresence: Presence;
-  @internalProperty() private _isInvalidImageSrc: boolean;
-  @internalProperty() private _personCardShouldRender: boolean;
+  @state() private _fetchedImage: string;
+  @state() private _fetchedPresence: Presence;
+  @state() private _isInvalidImageSrc: boolean;
+  @state() private _personCardShouldRender: boolean;
 
   private _personDetailsInternal: IDynamicPerson;
   private _personDetails: IDynamicPerson;
@@ -956,6 +957,7 @@ export class MgtPerson extends MgtTemplatedComponent {
       return html``;
     }
 
+    // tslint:disable-next-line: completed-docs
     const person: IDynamicPerson & { presenceActivity?: string; presenceAvailability?: string } = personProps;
     if (presence) {
       person.presenceActivity = presence?.activity;
@@ -1037,9 +1039,9 @@ export class MgtPerson extends MgtTemplatedComponent {
         // Render the line4 property value
         if (text) {
           details.push(html`
-             <div class="line4" @click=${() =>
-               this.handleLine4Clicked()} role="presentation" aria-label="${text}">${text}</div>
-           `);
+            <div class="line4" @click=${() =>
+              this.handleLine4Clicked()} role="presentation" aria-label="${text}">${text}</div>
+          `);
         }
       }
     }
@@ -1395,6 +1397,11 @@ export class MgtPerson extends MgtTemplatedComponent {
     this._mouseLeaveTimeout = setTimeout(this.hidePersonCard.bind(this), 500);
   }
 
+  /**
+   * hides the person card
+   *
+   * @memberof MgtPerson
+   */
   public hidePersonCard() {
     const flyout = this.flyout;
     if (flyout) {
