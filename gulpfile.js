@@ -10,7 +10,7 @@ scssFileHeader = `
 // ANY CHANGES WILL BE LOST DURING BUILD
 // MODIFY THE .SCSS FILE INSTEAD
 
-import { css } from 'lit-element';
+import { css } from 'lit';
 /**
  * exports lit-element css
  * @export styles
@@ -48,7 +48,7 @@ function runSass() {
 
 function setLicense() {
   return gulp
-    .src(['packages/**/src/**/*.{ts,js,scss}', "!packages/**/generated/**/*"], { base: './' })
+    .src(['packages/**/src/**/*.{ts,js,scss}', '!packages/**/generated/**/*'], { base: './' })
     .pipe(license(licenseStr))
     .pipe(gulp.dest('./'));
 }

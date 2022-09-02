@@ -5,8 +5,9 @@
  * -------------------------------------------------------------------------------------------
  */
 
-import { customElement, html, property } from 'lit-element';
-import { classMap } from 'lit-html/directives/class-map';
+import { html } from 'lit';
+import { customElement, property } from 'lit/decorators.js';
+import { classMap } from 'lit/directives/class-map.js';
 import { MgtBaseComponent } from '@microsoft/mgt-element';
 import { styles } from './mgt-arrow-options-css';
 

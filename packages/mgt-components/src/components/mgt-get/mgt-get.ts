@@ -5,7 +5,8 @@
  * -------------------------------------------------------------------------------------------
  */
 
-import { customElement, html, property } from 'lit-element';
+import { html } from 'lit';
+import { customElement, property } from 'lit/decorators.js';
 import {
   CacheItem,
   CacheService,
@@ -400,7 +401,7 @@ export class MgtGet extends MgtTemplatedComponent {
 
             if (image) {
               response = {
-                image: image
+                image
               };
             }
           }

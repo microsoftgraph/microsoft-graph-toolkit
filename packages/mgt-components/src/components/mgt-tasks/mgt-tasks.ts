@@ -7,9 +7,10 @@
 
 import { Person, PlannerAssignments, PlannerTask, User } from '@microsoft/microsoft-graph-types';
 import { Contact, OutlookTask, OutlookTaskFolder } from '@microsoft/microsoft-graph-types-beta';
-import { customElement, html, property } from 'lit-element';
-import { classMap } from 'lit-html/directives/class-map';
-import { repeat } from 'lit-html/directives/repeat';
+import { html } from 'lit';
+import { customElement, property } from 'lit/decorators.js';
+import { classMap } from 'lit/directives/class-map.js';
+import { repeat } from 'lit/directives/repeat.js';
 import { ComponentMediaQuery, Providers, ProviderState, MgtTemplatedComponent } from '@microsoft/mgt-element';
 import { getShortDateString } from '../../utils/Utils';
 import { MgtPeoplePicker } from '../mgt-people-picker/mgt-people-picker';
@@ -690,7 +691,7 @@ export class MgtTasks extends MgtTemplatedComponent {
     this._hiddenTasks = this._hiddenTasks.filter(id => id !== task.id);
   }
 
-  private async assignPeople(task: ITask, people: Array<User | Person | Contact>) {
+  private async assignPeople(task: ITask, people: (User | Person | Contact)[]) {
     const ts = this.getTaskSource();
     if (!ts) {
       return;

@@ -5,7 +5,7 @@
  * -------------------------------------------------------------------------------------------
  */
 
-import { customElement, property } from 'lit-element';
+import { customElement, property } from 'lit/decorators.js';
 import { Configuration } from '@azure/msal-browser';
 import { Providers, MgtBaseProvider } from '@microsoft/mgt-element';
 import { HttpMethod, TeamsMsal2Config, TeamsMsal2Provider } from './TeamsMsal2Provider';
@@ -137,7 +137,7 @@ export class MgtTeamsMsal2Provider extends MgtBaseProvider {
       }
 
       if (this.httpMethod) {
-        let httpMethod: string = this.httpMethod.toUpperCase();
+        const httpMethod: string = this.httpMethod.toUpperCase();
         const httpMethodEnum = HttpMethod[httpMethod];
         config.httpMethod = httpMethodEnum;
       }
