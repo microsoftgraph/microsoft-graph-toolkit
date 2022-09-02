@@ -26,7 +26,7 @@ import { MgtPersonCardFiles } from './sections/mgt-person-card-files/mgt-person-
 import { MgtPersonCardMessages } from './sections/mgt-person-card-messages/mgt-person-card-messages';
 import { MgtPersonCardOrganization } from './sections/mgt-person-card-organization/mgt-person-card-organization';
 import { MgtPersonCardProfile } from './sections/mgt-person-card-profile/mgt-person-card-profile';
-import { MgtPersonCardConfig, MgtPersonCardState } from './mgt-person-card.types';
+import { MgtPersonCardConfig, MgtPerson_cardState } from './mgt-person-card.types';
 import { strings } from './strings';
 
 import '../sub-components/mgt-spinner/mgt-spinner';
@@ -39,9 +39,9 @@ import { registerFluentComponents } from '../../utils/FluentComponents';
 registerFluentComponents(fluentTabs, fluentTab, fluentTabPanel);
 
 // tslint:disable-next-line:completed-docs
-interface MgtPersonCardStateHistory {
+interface MgtPerson_cardStateHistory {
   // tslint:disable-next-line:completed-docs
-  state: MgtPersonCardState;
+  state: MgtPerson_cardState;
   // tslint:disable-next-line:completed-docs
   personDetails: IDynamicPerson;
   // tslint:disable-next-line:completed-docs
@@ -227,7 +227,7 @@ export class MgtPersonCard extends MgtTemplatedComponent {
     }
     this._userId = value;
     this.personDetails = null;
-    this.state = null;
+    this._cardState = null;
     this.requestStateUpdate();
   }
 
@@ -341,10 +341,10 @@ export class MgtPersonCard extends MgtTemplatedComponent {
    */
   protected sections: BasePersonCardSection[];
 
-  @state() private state: MgtPersonCardState;
-  @state() private isStateLoading: boolean;
+  @state() private _cardState: MgtPerson_cardState;
+  @state() private _isStateLoading: boolean;
 
-  private _history: MgtPersonCardStateHistory[];
+  private _history: MgtPerson_cardStateHistory[];
   private _chatInput: string;
   private _currentSection: BasePersonCardSection;
   private _personDetails: IDynamicPerson;
@@ -355,7 +355,7 @@ export class MgtPersonCard extends MgtTemplatedComponent {
   private _userId: string;
 
   private get internalPersonDetails(): IDynamicPerson {
-    return (this.state && this.state.person) || this.personDetails;
+    return (this._cardState && this._cardState.person) || this.personDetails;
   }
 
   constructor() {
@@ -388,7 +388,7 @@ export class MgtPersonCard extends MgtTemplatedComponent {
     switch (name) {
       case 'person-query':
         this.personDetails = null;
-        this.state = null;
+        this._cardState = null;
         this.requestStateUpdate();
         break;
     }
@@ -404,11 +404,11 @@ export class MgtPersonCard extends MgtTemplatedComponent {
     this._history.push({
       personDetails: this.personDetails,
       personImage: this.getImage(),
-      state: this.state
+      state: this._cardState
     });
 
     this._personDetails = person;
-    this.state = null;
+    this._cardState = null;
     this.personImage = null;
     this._currentSection = null;
     this.sections = [];
@@ -434,7 +434,7 @@ export class MgtPersonCard extends MgtTemplatedComponent {
     if (firstTab) {
       firstTab.click();
     }
-    this.state = historyState.state;
+    this._cardState = historyState.state;
     this._personDetails = historyState.state;
     this.personImage = historyState.personImage;
     this.loadSections();
@@ -456,7 +456,7 @@ export class MgtPersonCard extends MgtTemplatedComponent {
     const historyState = this._history[0];
     this._history = [];
 
-    this.state = historyState.state;
+    this._cardState = historyState.state;
     this._personDetails = historyState.state;
     this.personImage = historyState.personImage;
     this.loadSections();
@@ -724,7 +724,7 @@ export class MgtPersonCard extends MgtTemplatedComponent {
    * @memberof MgtPersonCard
    */
   protected renderExpandedDetails(person?: IDynamicPerson): TemplateResult {
-    if (!this.state && this.isStateLoading) {
+    if (!this._cardState && this._isStateLoading) {
       return html`
          <div class="loading">
            <mgt-spinner></mgt-spinner>
@@ -836,7 +836,7 @@ export class MgtPersonCard extends MgtTemplatedComponent {
     const additionalDetails = this.renderTemplate('additional-details', {
       person: this.internalPersonDetails,
       personImage: this.getImage(),
-      state: this.state
+      state: this._cardState
     });
     if (additionalDetails) {
       compactTemplates.splice(
@@ -913,7 +913,7 @@ export class MgtPersonCard extends MgtTemplatedComponent {
    * @memberof MgtPersonCard
    */
   protected async loadState() {
-    if (this.state) {
+    if (this._cardState) {
       return;
     }
 
@@ -942,7 +942,7 @@ export class MgtPersonCard extends MgtTemplatedComponent {
 
     const graph = provider.graph.forComponent(this);
 
-    this.isStateLoading = true;
+    this._isStateLoading = true;
 
     if (!this._me) {
       this._me = await Providers.me();
@@ -1003,7 +1003,7 @@ export class MgtPersonCard extends MgtTemplatedComponent {
 
     // populate state
     if (this.personDetails?.id) {
-      this.state = await getPersonCardGraphData(
+      this._cardState = await getPersonCardGraphData(
         graph,
         this.personDetails,
         this._me === this.personDetails.id,
@@ -1013,7 +1013,7 @@ export class MgtPersonCard extends MgtTemplatedComponent {
 
     this.loadSections();
 
-    this.isStateLoading = false;
+    this._isStateLoading = false;
   }
 
   /**
@@ -1180,17 +1180,17 @@ export class MgtPersonCard extends MgtTemplatedComponent {
       this.sections.push(contactSections);
     }
 
-    if (!this.state) {
+    if (!this._cardState) {
       return;
     }
 
-    const { person, directReports, messages, files, profile } = this.state;
+    const { person, directReports, messages, files, profile } = this._cardState;
 
     if (
       MgtPersonCard.config.sections.organization &&
       ((person && person.manager) || (directReports && directReports.length))
     ) {
-      this.sections.push(new MgtPersonCardOrganization(this.state, this._me));
+      this.sections.push(new MgtPersonCardOrganization(this._cardState, this._me));
     }
 
     if (MgtPersonCard.config.sections.mailMessages && messages && messages.length) {
