@@ -148,6 +148,7 @@ const defaultPersonProperties = [
  * @cssprop --details-spacing - {Length} spacing between avatar and person details
  * @cssprop --details-cta-spacing - {Length} spacing between person details and CTA icons
  * @cssprop --person-flex-direction - {String} flex direction associated with the avatar and details
+ * @cssprop --focus-offset - {Length} spacing between element and focus ring
  */
 @customElement('mgt-person')
 export class MgtPerson extends MgtTemplatedComponent {
@@ -238,6 +239,27 @@ export class MgtPerson extends MgtTemplatedComponent {
 
     this._userId = value;
     this.personDetailsInternal = null;
+    this.requestStateUpdate();
+  }
+
+  /**
+   * usage property allows you to specify where the component is being used to add
+   * customized personalization for it. Currently only supports "people" as used in
+   * the people component.
+   * @type {string}
+   */
+  @property({
+    attribute: 'usage'
+  })
+  public get usage(): string {
+    return this._usage;
+  }
+  public set usage(value: string) {
+    if (value === this._usage) {
+      return;
+    }
+
+    this._usage = value;
     this.requestStateUpdate();
   }
 
@@ -563,6 +585,7 @@ export class MgtPerson extends MgtTemplatedComponent {
   private _personPresence: Presence;
   private _personQuery: string;
   private _userId: string;
+  private _usage: string;
   private _avatarType: string;
 
   private _mouseLeaveTimeout;
@@ -854,7 +877,8 @@ export class MgtPerson extends MgtTemplatedComponent {
        `;
     }
     const userPresenceClass = {
-      'user-presence': true
+      'user-presence': true,
+      'user-presence__people': this._usage === 'people'
     };
     userPresenceClass[statusClass] = true;
 
@@ -932,7 +956,7 @@ export class MgtPerson extends MgtTemplatedComponent {
       return html``;
     }
 
-    let person: IDynamicPerson & { presenceActivity?: string; presenceAvailability?: string } = personProps;
+    const person: IDynamicPerson & { presenceActivity?: string; presenceAvailability?: string } = personProps;
     if (presence) {
       person.presenceActivity = presence?.activity;
       person.presenceAvailability = presence?.availability;
@@ -1005,10 +1029,10 @@ export class MgtPerson extends MgtTemplatedComponent {
       if (this.hasTemplate('line4')) {
         // Render the line4 template
         const template = this.renderTemplate('line4', { person });
-        details.push(html` 
-           <div class="line4" @click=${() =>
-             this.handleLine4Clicked()} role="presentation" aria-label="${text}">${template}</div>
-         `);
+        details.push(html`
+          <div class="line4" @click=${() =>
+            this.handleLine4Clicked()} role="presentation" aria-label="${text}">${template}</div>
+        `);
       } else {
         // Render the line4 property value
         if (text) {
@@ -1123,7 +1147,7 @@ export class MgtPerson extends MgtTemplatedComponent {
     ];
     personProps = personProps.filter(email => email !== 'email');
 
-    let details = this.personDetailsInternal || this.personDetails || this.fallbackDetails;
+    const details = this.personDetailsInternal || this.personDetails || this.fallbackDetails;
 
     if (details) {
       if (
@@ -1341,14 +1365,14 @@ export class MgtPerson extends MgtTemplatedComponent {
   }
 
   private handleMouseClick(e: MouseEvent) {
-    let element = e.target as HTMLElement;
+    const element = e.target as HTMLElement;
     if (this.personCardInteraction === PersonCardInteraction.click && element.tagName !== 'MGT-PERSON-CARD') {
       this.showPersonCard();
     }
   }
 
   private handleKeyDown(e: KeyboardEvent) {
-    //enter activates person-card
+    // enter activates person-card
     if (e) {
       if (e.key === 'Enter') {
         this.showPersonCard();
