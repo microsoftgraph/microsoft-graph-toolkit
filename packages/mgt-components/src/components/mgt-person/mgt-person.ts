@@ -149,6 +149,7 @@ const defaultPersonProperties = [
  * @cssprop --details-spacing - {Length} spacing between avatar and person details
  * @cssprop --details-cta-spacing - {Length} spacing between person details and CTA icons
  * @cssprop --person-flex-direction - {String} flex direction associated with the avatar and details
+ * @cssprop --focus-offset - {Length} spacing between element and focus ring
  */
 @customElement('mgt-person')
 export class MgtPerson extends MgtTemplatedComponent {
