@@ -11,6 +11,7 @@
 
 $list-margin: var(--list-margin, 8px 4px 8px 8px);
 $avatar-margin: var(--avatar-margin, 0 4px 0 0);
+$overflow-text-color: var(--color, $black10);
 
 :host .people-list,
 mgt-people .people-list {
@@ -34,5 +35,8 @@ mgt-people .people-person {
 mgt-people .overflow {
   span {
     vertical-align: middle;
+    color: $overflow-text-color;
+    font-size: 12px;
+    font-weight: 400;
   }
 }
