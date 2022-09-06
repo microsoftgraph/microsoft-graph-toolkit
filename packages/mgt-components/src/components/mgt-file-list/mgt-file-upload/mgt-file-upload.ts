@@ -322,7 +322,7 @@ export class MgtFileUpload extends MgtBaseComponent {
             @change="${this.onFileUploadChange}"
           />
           <fluent-button class="file-upload-button" @click=${this.onFileUploadClick}>
-            ${getSvg(SvgIcon.Upload)}${strings.buttonUploadFile}
+            ${getSvg(SvgIcon.Upload)} <span class="upload-text">${strings.buttonUploadFile}</span>
           </fluent-button>
         </div>
         </div>
