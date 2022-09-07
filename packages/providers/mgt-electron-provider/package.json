@@ -47,7 +47,7 @@
   "publishConfig": {
     "directory": "dist"
   },
-  "overrides": {
-    "responselike@3.0.0": "2.0.0"
+  "resolutions": {
+    "responselike": "2.0.0"
   }
 }
