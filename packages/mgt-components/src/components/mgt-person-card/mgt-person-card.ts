@@ -271,33 +271,6 @@ export class MgtPersonCard extends MgtTemplatedComponent {
   public isExpanded: boolean;
 
   /**
-   * Gets or sets whether an icon is hovered on
-   *
-   * @type {boolean}
-   * @memberof MgtPersonCard
-   */
-  @property({
-    attribute: 'is-email-hovered',
-    type: Boolean
-  })
-  public isEmailHovered: boolean;
-  @property({
-    attribute: 'is-chat-hovered',
-    type: Boolean
-  })
-  public isChatHovered: boolean;
-  @property({
-    attribute: 'is_video-hovered',
-    type: Boolean
-  })
-  public isVideoHovered: boolean;
-  @property({
-    attribute: 'is-call-hovered',
-    type: Boolean
-  })
-  public isCallHovered: boolean;
-
-  /**
    * Gets or sets whether person details should be inherited from an mgt-person parent
    * Useful when used as template in an mgt-person component
    *
@@ -364,10 +337,6 @@ export class MgtPersonCard extends MgtTemplatedComponent {
     this._currentSection = null;
     this._history = [];
     this.sections = [];
-    this.isEmailHovered = false;
-    this.isChatHovered = false;
-    this.isVideoHovered = false;
-    this.isCallHovered = false;
   }
 
   /**
@@ -1219,7 +1188,7 @@ export class MgtPersonCard extends MgtTemplatedComponent {
   }
 
   @state() private hoverStates: Record<HoverStatesActions, boolean> = {
-    //triggers a re-render when hovering on the CTA icons
+    // triggers a re-render when hovering on the CTA icons
     email: false,
     chat: false,
     video: false,

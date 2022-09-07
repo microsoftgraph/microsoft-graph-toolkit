@@ -1,8 +1,9 @@
-import React from 'react';
-import ReactDOM from 'react-dom';
-import App from './App';
 
-import { Providers, MockProvider } from '@microsoft/mgt-element';
+import React, { lazy, Suspense } from 'react';
+import ReactDOM from 'react-dom';
+import { customElementHelper, Providers, MockProvider } from '@microsoft/mgt-element';
+
+customElementHelper.withDisambiguation('contoso');
 
 // uncomment to use MSAL provider with your own ClientID (also comment out mock provider below)
 // import { MsalProvider } from '@microsoft/mgt-msal-provider';
@@ -10,4 +11,5 @@ import { Providers, MockProvider } from '@microsoft/mgt-element';
 
 Providers.globalProvider = new MockProvider(true);
 
-ReactDOM.render(<App />, document.getElementById('root'));
+const App = lazy(() => import('./App'));
+ReactDOM.render(<Suspense fallback="..."><App /></Suspense>, document.getElementById('root'));

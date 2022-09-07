@@ -15,7 +15,7 @@ import { getUserPresence } from '../../graph/graph.presence';
 import { getUserWithPhoto } from '../../graph/graph.userWithPhoto';
 import { findUsers, getMe, getUser } from '../../graph/graph.user';
 import { AvatarSize, IDynamicPerson, ViewType } from '../../graph/types';
-import { Providers, ProviderState, MgtTemplatedComponent } from '@microsoft/mgt-element';
+import { Providers, ProviderState, MgtTemplatedComponent, mgtHtml, customElementHelper } from '@microsoft/mgt-element';
 import '../../styles/style-helper';
 import { getSvg, SvgIcon } from '../../utils/SvgHelper';
 import { MgtPersonCard } from '../mgt-person-card/mgt-person-card';
@@ -151,7 +151,8 @@ const defaultPersonProperties = [
  * @cssprop --person-flex-direction - {String} flex direction associated with the avatar and details
  * @cssprop --focus-offset - {Length} spacing between element and focus ring
  */
-@customElement('mgt-person')
+@customElement(`${customElementHelper.prefix}-person`)
+// @customElement('mgt-person')
 export class MgtPerson extends MgtTemplatedComponent {
   /**
    * Array of styles to apply to the element. The styles should be defined
@@ -1082,11 +1083,11 @@ export class MgtPerson extends MgtTemplatedComponent {
          `
       : html``;
 
-    return html`
-       <mgt-flyout light-dismiss class="flyout" .avoidHidingAnchor=${false}>
-         ${anchor} ${flyoutContent}
-       </mgt-flyout>
-     `;
+    return mgtHtml`
+      <mgt-flyout light-dismiss class="flyout" .avoidHidingAnchor=${false}>
+        ${anchor} ${flyoutContent}
+      </mgt-flyout>
+`;
   }
 
   /**

@@ -1,5 +1,5 @@
 import { OfficeGraphInsightString,ViewType,ResponseType,IDynamicPerson,PersonType,GroupType,UserType,PersonCardInteraction,MgtPersonConfig,AvatarSize,PersonViewType,TasksStringResource,TasksSource,TaskFilter,SelectedChannel,TodoFilter } from '@microsoft/mgt-components';
-import { TemplateContext,ComponentMediaQuery } from '@microsoft/mgt-element';
+import { customElementHelper, TemplateContext,ComponentMediaQuery } from '@microsoft/mgt-element';
 import * as MicrosoftGraph from '@microsoft/microsoft-graph-types';
 import * as MicrosoftGraphBeta from '@microsoft/microsoft-graph-types-beta';
 import {wrapMgt} from '../Mgt';
@@ -238,7 +238,7 @@ export const File = wrapMgt<FileProps>('mgt-file');
 
 export const Get = wrapMgt<GetProps>('mgt-get');
 
-export const Login = wrapMgt<LoginProps>('mgt-login');
+export const Login = wrapMgt<LoginProps>(`${customElementHelper.prefix}-login`);
 
 export const PeoplePicker = wrapMgt<PeoplePickerProps>('mgt-people-picker');
 
@@ -246,7 +246,7 @@ export const People = wrapMgt<PeopleProps>('mgt-people');
 
 export const PersonCard = wrapMgt<PersonCardProps>('mgt-person-card');
 
-export const Person = wrapMgt<PersonProps>('mgt-person');
+export const Person = wrapMgt<PersonProps>(`${customElementHelper.prefix}-person`);
 
 export const Tasks = wrapMgt<TasksProps>('mgt-tasks');
 
