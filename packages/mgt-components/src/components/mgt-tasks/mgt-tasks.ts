@@ -1197,9 +1197,10 @@ export class MgtTasks extends MgtTemplatedComponent {
     const taskOptions =
       this.readOnly || this.hideOptions
         ? null
-        : html`
+        : mgtHtml`
             <div class="TaskOptions">
               <mgt-dot-options
+                class="dot-options"
                 .options="${{
                   [this.strings.removeTaskSubtitle]: () => this.removeTask(task)
                 }}"

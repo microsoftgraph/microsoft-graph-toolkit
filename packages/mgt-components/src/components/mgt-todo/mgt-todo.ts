@@ -333,7 +333,7 @@ export class MgtTodo extends MgtTasksBase {
 
     const taskOptionsTemplate =
       !this.readOnly && !this.hideOptions
-        ? html`
+        ? mgtHtml`
             <div class="TaskOptions">
               <mgt-dot-options
                 .options="${{
