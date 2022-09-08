@@ -6,7 +6,7 @@
  */
 
 import { customElement, property } from 'lit/decorators.js';
-import { Providers, MgtBaseProvider } from '@microsoft/mgt-element';
+import { Providers, MgtBaseProvider, customElementHelper } from '@microsoft/mgt-element';
 import { ProxyProvider } from './ProxyProvider';
 
 /**
@@ -16,7 +16,7 @@ import { ProxyProvider } from './ProxyProvider';
  * @class MgtProxyProvider
  * @extends {LitElement}
  */
-@customElement('mgt-proxy-provider')
+@customElement(`${customElementHelper.prefix}-proxy-provider`)
 export class MgtProxyProvider extends MgtBaseProvider {
   /**
    * The base url to the proxy api
