@@ -11,7 +11,7 @@ import { html } from 'lit';
 import { customElement, property } from 'lit/decorators.js';
 import { classMap } from 'lit/directives/class-map.js';
 import { repeat } from 'lit/directives/repeat.js';
-import { ComponentMediaQuery, Providers, ProviderState, MgtTemplatedComponent } from '@microsoft/mgt-element';
+import { ComponentMediaQuery, Providers, ProviderState, MgtTemplatedComponent, mgtHtml } from '@microsoft/mgt-element';
 import { getShortDateString } from '../../utils/Utils';
 import { MgtPeoplePicker } from '../mgt-people-picker/mgt-people-picker';
 import { PersonCardInteraction } from './../PersonCardInteraction';
@@ -1301,20 +1301,23 @@ export class MgtTasks extends MgtTemplatedComponent {
         >${noPeopleTemplate}
       </mgt-people>
     `;
+    const picker = html`
+      <mgt-people-picker
+        class="picker-${taskId}"
+        @click=${(e: MouseEvent) => e.stopPropagation()}
+        @keydown=${(e: KeyboardEvent) => {
+          if (e.code === 'Enter') {
+            e.stopPropagation();
+          }
+        }}
+      ></mgt-people-picker>
+    `;
 
-    return html`
+    return mgtHtml`
       <mgt-flyout light-dismiss class=${classMap(taskAssigneeClasses)} @closed=${e => this.updateAssignedPeople(task)}>
         ${assignedPeopleHTML}
         <div slot="flyout" class=${classMap({ Picker: true })}>
-          <mgt-people-picker
-            class="picker-${taskId}"
-            @click=${(e: MouseEvent) => e.stopPropagation()}
-            @keydown=${(e: KeyboardEvent) => {
-              if (e.code === 'Enter') {
-                e.stopPropagation();
-              }
-            }}
-          ></mgt-people-picker>
+          ${picker}
         </div>
       </mgt-flyout>
     `;

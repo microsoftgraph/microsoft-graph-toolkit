@@ -27,7 +27,14 @@ import {
   getUsers
 } from '../../graph/graph.user';
 import { IDynamicPerson, ViewType } from '../../graph/types';
-import { Providers, ProviderState, MgtTemplatedComponent, arraysAreEqual, IGraph } from '@microsoft/mgt-element';
+import {
+  Providers,
+  ProviderState,
+  MgtTemplatedComponent,
+  arraysAreEqual,
+  IGraph,
+  mgtHtml
+} from '@microsoft/mgt-element';
 import '../../styles/style-helper';
 import '../sub-components/mgt-spinner/mgt-spinner';
 import { debounce, isValidEmail } from '../../utils/Utils';
@@ -780,7 +787,7 @@ export class MgtPeoplePicker extends MgtTemplatedComponent {
    * @memberof MgtPeoplePicker
    */
   protected renderFlyout(anchor: TemplateResult): TemplateResult {
-    return html`
+    return mgtHtml`
        <mgt-flyout light-dismiss class="flyout">
          ${anchor}
          <fluent-card
@@ -942,8 +949,9 @@ export class MgtPeoplePicker extends MgtTemplatedComponent {
 
     return (
       this.renderTemplate('person', { person }, person.id) ||
-      html`
+      mgtHtml`
          <mgt-person
+          class="person"
           show-presence
           view="twoLines"
           line2-property="jobTitle,mail"
@@ -963,10 +971,10 @@ export class MgtPeoplePicker extends MgtTemplatedComponent {
    * @memberof MgtPeoplePicker
    */
   protected renderSelectedPerson(person: IDynamicPerson): TemplateResult {
-    return html`
+    return mgtHtml`
        <mgt-person
          tabindex="-1"
-         class="selected-list__person-wrapper__person"
+         class="person selected-list__person-wrapper__person"
          .personDetails=${person}
          .fetchImage=${!this.disableImages}
          .view=${ViewType.oneline}
@@ -1063,7 +1071,9 @@ export class MgtPeoplePicker extends MgtTemplatedComponent {
               } catch (_) {}
             } else {
               let groups = (await findGroups(graph, '', this.showMax, this.groupType, this._groupFilters)) || [];
+              // tslint:disable-next-line: no-string-literal
               if (groups.length > 0 && groups[0]['value']) {
+                // tslint:disable-next-line: no-string-literal
                 groups = groups[0]['value'];
               }
               people = groups;

@@ -8,7 +8,7 @@
 import { html, TemplateResult } from 'lit';
 import { customElement, property, state } from 'lit/decorators.js';
 import { classMap } from 'lit/directives/class-map.js';
-import { MgtTemplatedComponent, Providers, ProviderState, TeamsHelper } from '@microsoft/mgt-element';
+import { MgtTemplatedComponent, Providers, ProviderState, TeamsHelper, mgtHtml } from '@microsoft/mgt-element';
 import { Presence, User, Person } from '@microsoft/microsoft-graph-types';
 
 import { findPeople, getEmailFromGraphEntity } from '../../graph/graph.people';
@@ -560,7 +560,7 @@ export class MgtPersonCard extends MgtTemplatedComponent {
    */
   protected renderPerson(): TemplateResult {
     const avatarSize = 'large';
-    return html`
+    return mgtHtml`
        <mgt-person
          class="person-image"
          .personDetails=${this.internalPersonDetails}

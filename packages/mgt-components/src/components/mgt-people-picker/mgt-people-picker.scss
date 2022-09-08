@@ -252,7 +252,7 @@ mgt-people-picker .root {
   }
 }
 
-mgt-person {
+.person {
   margin-left: 6px;
   width: 100%;
   cursor: default;
@@ -307,7 +307,7 @@ mgt-flyout {
 }
 
 [dir='rtl'] {
-  mgt-person {
+  .person {
     margin-right: 6px;
     --details-spacing: 0px 12px 0 0;
     width: 100%;
