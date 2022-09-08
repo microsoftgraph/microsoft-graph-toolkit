@@ -12,6 +12,7 @@ import { BasePersonCardSection } from '../BasePersonCardSection';
 import { getSvg, SvgIcon } from '../../../../utils/SvgHelper';
 import { styles } from './mgt-person-card-profile-css';
 import { strings } from './strings';
+import { customElementHelper } from '@microsoft/mgt-element';
 
 /**
  * The user profile subsection of the person card
@@ -20,7 +21,8 @@ import { strings } from './strings';
  * @class MgtPersonCardProfile
  * @extends {MgtTemplatedComponent}
  */
-@customElement('mgt-person-card-profile')
+@customElement(`${customElementHelper.prefix}-person-card-profile`)
+// @customElement('mgt-person-card-profile')
 export class MgtPersonCardProfile extends BasePersonCardSection {
   /**
    * Array of styles to apply to the element. The styles should be defined

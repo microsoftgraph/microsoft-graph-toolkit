@@ -1100,7 +1100,7 @@ export class MgtPerson extends MgtTemplatedComponent {
   protected renderFlyoutContent(personDetails: IDynamicPerson, image: string, presence: Presence): TemplateResult {
     return (
       this.renderTemplate('person-card', { person: personDetails, personImage: image }) ||
-      html`
+      mgtHtml`
          <mgt-person-card
            lock-tab-navigation
            .personDetails=${personDetails}
