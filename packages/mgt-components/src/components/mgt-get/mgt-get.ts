@@ -15,7 +15,8 @@ import {
   MgtTemplatedComponent,
   prepScopes,
   Providers,
-  ProviderState
+  ProviderState,
+  customElementHelper
 } from '@microsoft/mgt-element';
 
 import { getPhotoForResource } from '../../graph/graph.photos';
@@ -73,7 +74,8 @@ const getIsResponseCacheEnabled = (): boolean =>
  * @class mgt-get
  * @extends {MgtTemplatedComponent}
  */
-@customElement('mgt-get')
+@customElement(`${customElementHelper.prefix}-get`)
+// @customElement('mgt-get')
 export class MgtGet extends MgtTemplatedComponent {
   /**
    * The resource to get

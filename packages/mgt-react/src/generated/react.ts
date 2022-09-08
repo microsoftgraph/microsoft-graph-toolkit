@@ -236,7 +236,7 @@ export const FileList = wrapMgt<FileListProps>(`${customElementHelper}-file-list
 
 export const File = wrapMgt<FileProps>(`${customElementHelper.prefix}-file`);
 
-export const Get = wrapMgt<GetProps>('mgt-get');
+export const Get = wrapMgt<GetProps>(`${customElementHelper.prefix}-get`);
 
 export const Login = wrapMgt<LoginProps>(`${customElementHelper.prefix}-login`);
 
