@@ -15,11 +15,14 @@ const stringsCache = new WeakMap<TemplateStringsArray, TemplateStringsArray>();
  * @param strings The array of strings to be re-written
  * @param matcher A RegExp to be used for matching strings for replacement
  */
-const rewriteStrings = (strings: ReadonlyArray<string>, matcher: RegExp): ReadonlyArray<string> => {
+const rewriteStrings = (
+  strings: ReadonlyArray<string>,
+  matcher: RegExp,
+  replacement: string
+): ReadonlyArray<string> => {
   const temp: string[] = [];
-  const newPrefix = `${customElementHelper.prefix}-`;
   for (const s of strings) {
-    temp.push(s.replace(matcher, '$1' + newPrefix));
+    temp.push(s.replace(matcher, replacement));
   }
   return temp;
 };
@@ -29,12 +32,14 @@ const rewriteStrings = (strings: ReadonlyArray<string>, matcher: RegExp): Readon
  */
 const tag = (strings: TemplateStringsArray, ...values: unknown[]): HTMLTemplateResult => {
   // re-write <mgt-([a-z]+) if necessary
-  const prefix = customElementHelper.prefix;
-  if (prefix !== customElementHelper.defaultPrefix) {
+  if (customElementHelper.isDisambiguated) {
     let cached = stringsCache.get(strings);
     if (!Boolean(cached)) {
       const matcher = new RegExp('(</?)mgt-(?!contoso-)');
-      cached = Object.assign(rewriteStrings(strings, matcher), { raw: rewriteStrings(strings.raw, matcher) });
+      const newPrefix = `$1${customElementHelper.prefix}-`;
+      cached = Object.assign(rewriteStrings(strings, matcher, newPrefix), {
+        raw: rewriteStrings(strings.raw, matcher, newPrefix)
+      });
       stringsCache.set(strings, cached);
     }
     strings = cached;

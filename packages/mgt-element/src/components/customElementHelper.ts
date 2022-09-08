@@ -1,5 +1,5 @@
 class CustomElementHelper {
-  public readonly defaultPrefix = 'mgt';
+  private readonly defaultPrefix = 'mgt';
   private _disambiguation = '';
   public withDisambiguation(disambiguation: string) {
     this._disambiguation = disambiguation;
@@ -7,6 +7,9 @@ class CustomElementHelper {
   }
   public get prefix(): string {
     return this._disambiguation ? `${this.defaultPrefix}-${this._disambiguation}` : this.defaultPrefix;
+  }
+  public get isDisambiguated(): boolean {
+    return Boolean(this._disambiguation);
   }
 }
 
