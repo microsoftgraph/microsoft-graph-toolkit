@@ -902,7 +902,6 @@ export class MgtPeoplePicker extends MgtTemplatedComponent {
                 role="listitem"
                 @keydown="${this.onUserKeyDown}"
                 aria-label=" ${this.strings.suggestedContact} ${person.displayName}"
-                id="${person.displayName}"
                 tabindex="0"
                 class="${classMap(listPersonClasses)}"
                 @click="${e => this.onPersonClick(person)}">
