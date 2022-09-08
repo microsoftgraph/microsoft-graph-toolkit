@@ -10,7 +10,8 @@ import {
   GraphPageIterator,
   MgtTemplatedComponent,
   Providers,
-  ProviderState
+  ProviderState,
+  customElementHelper
 } from '@microsoft/mgt-element';
 import { DriveItem } from '@microsoft/microsoft-graph-types';
 import { html, TemplateResult } from 'lit';
@@ -89,7 +90,8 @@ registerFluentComponents(fluentProgressRing, fluentDesignSystemProvider);
  * @cssprop --progress-ring-size -{String} Progress ring height and width
  */
 
-@customElement('mgt-file-list')
+@customElement(`${customElementHelper.prefix}-file-list`)
+// @customElement('mgt-file-list')
 export class MgtFileList extends MgtTemplatedComponent {
   /**
    * Array of styles to apply to the element. The styles should be defined
