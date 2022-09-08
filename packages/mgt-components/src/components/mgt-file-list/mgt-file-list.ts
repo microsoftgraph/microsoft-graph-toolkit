@@ -671,7 +671,7 @@ export class MgtFileList extends MgtTemplatedComponent {
       maxFileSize: this.maxFileSize,
       maxUploadFile: this.maxUploadFile
     };
-    return html`
+    return mgtHtml`
         <mgt-file-upload .fileUploadList=${fileUploadConfig} ></mgt-file-upload>
       `;
   }
