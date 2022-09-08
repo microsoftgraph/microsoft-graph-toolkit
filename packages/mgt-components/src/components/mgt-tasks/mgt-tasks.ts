@@ -11,7 +11,14 @@ import { html } from 'lit';
 import { customElement, property } from 'lit/decorators.js';
 import { classMap } from 'lit/directives/class-map.js';
 import { repeat } from 'lit/directives/repeat.js';
-import { ComponentMediaQuery, Providers, ProviderState, MgtTemplatedComponent, mgtHtml } from '@microsoft/mgt-element';
+import {
+  ComponentMediaQuery,
+  Providers,
+  ProviderState,
+  MgtTemplatedComponent,
+  mgtHtml,
+  customElementHelper
+} from '@microsoft/mgt-element';
 import { getShortDateString } from '../../utils/Utils';
 import { MgtPeoplePicker } from '../mgt-people-picker/mgt-people-picker';
 import { PersonCardInteraction } from './../PersonCardInteraction';
@@ -179,7 +186,8 @@ const plannerAssignment = {
  * @cssprop --task-icon-color - {Color} Task icon color
  * @cssprop --task-icon-color-completed - {Color} Task icon color when completed
  */
-@customElement('mgt-tasks')
+@customElement(`${customElementHelper.prefix}-tasks`)
+// @customElement('mgt-tasks')
 export class MgtTasks extends MgtTemplatedComponent {
   /**
    * determines whether todo, or planner functionality for task component

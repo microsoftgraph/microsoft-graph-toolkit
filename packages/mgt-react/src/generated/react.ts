@@ -248,7 +248,7 @@ export const PersonCard = wrapMgt<PersonCardProps>(`${customElementHelper.prefix
 
 export const Person = wrapMgt<PersonProps>(`${customElementHelper.prefix}-person`);
 
-export const Tasks = wrapMgt<TasksProps>('mgt-tasks');
+export const Tasks = wrapMgt<TasksProps>(`${customElementHelper.prefix}-tasks`);
 
 export const TeamsChannelPicker = wrapMgt<TeamsChannelPickerProps>(`${customElementHelper.prefix}-teams-channel-picker`);
 
