@@ -250,7 +250,7 @@ export const Person = wrapMgt<PersonProps>(`${customElementHelper.prefix}-person
 
 export const Tasks = wrapMgt<TasksProps>('mgt-tasks');
 
-export const TeamsChannelPicker = wrapMgt<TeamsChannelPickerProps>('mgt-teams-channel-picker');
+export const TeamsChannelPicker = wrapMgt<TeamsChannelPickerProps>(`${customElementHelper.prefix}-teams-channel-picker`);
 
 export const Todo = wrapMgt<TodoProps>('mgt-todo');
 
