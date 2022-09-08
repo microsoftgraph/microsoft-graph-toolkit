@@ -2084,7 +2084,7 @@ PERFORMANCE OF THIS SOFTWARE.
         @mouseleave=${this.handleMouseLeave}>
          ${Wr(t,(e=>e.id),(e=>{const t={focused:this._isKeyboardFocus&&0===this._arrowSelectionCount?e.isFocused:"","list-person":!0};return html$1`
                <li
-                role="option"
+                role="listitem"
                 @keydown="${this.onUserKeyDown}"
                 aria-label=" ${this.strings.suggestedContact} ${e.displayName}"
                 tabindex="0"
