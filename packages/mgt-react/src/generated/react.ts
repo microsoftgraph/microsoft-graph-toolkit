@@ -242,7 +242,7 @@ export const Login = wrapMgt<LoginProps>(`${customElementHelper.prefix}-login`);
 
 export const PeoplePicker = wrapMgt<PeoplePickerProps>('mgt-people-picker');
 
-export const People = wrapMgt<PeopleProps>('mgt-people');
+export const People = wrapMgt<PeopleProps>(`${customElementHelper.prefix}-people`);
 
 export const PersonCard = wrapMgt<PersonCardProps>('mgt-person-card');
 

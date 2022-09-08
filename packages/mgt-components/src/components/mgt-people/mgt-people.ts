@@ -13,7 +13,14 @@ import { getPeople, getPeopleFromResource, PersonType } from '../../graph/graph.
 import { getUsersPresenceByPeople } from '../../graph/graph.presence';
 import { findGroupMembers, getUsersForPeopleQueries, getUsersForUserIds } from '../../graph/graph.user';
 import { IDynamicPerson } from '../../graph/types';
-import { Providers, ProviderState, MgtTemplatedComponent, arraysAreEqual, mgtHtml } from '@microsoft/mgt-element';
+import {
+  Providers,
+  ProviderState,
+  MgtTemplatedComponent,
+  arraysAreEqual,
+  mgtHtml,
+  customElementHelper
+} from '@microsoft/mgt-element';
 import '../../styles/style-helper';
 import { PersonCardInteraction } from './../PersonCardInteraction';
 import { styles } from './mgt-people-css';
@@ -31,7 +38,8 @@ export { PersonCardInteraction } from './../PersonCardInteraction';
  * @cssprop --list-margin - {String} List margin for component
  * @cssprop --avatar-margin - {String} Margin for each person
  */
-@customElement('mgt-people')
+@customElement(`${customElementHelper.prefix}-people`)
+// @customElement('mgt-people')
 export class MgtPeople extends MgtTemplatedComponent {
   /**
    * Array of styles to apply to the element. The styles should be defined

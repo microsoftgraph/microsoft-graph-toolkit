@@ -1283,9 +1283,9 @@ export class MgtTasks extends MgtTemplatedComponent {
     const taskId = task ? task.id : 'newTask';
     taskAssigneeClasses[`flyout-${taskId}`] = true;
 
-    assignedPeopleHTML = html`
+    assignedPeopleHTML = mgtHtml`
       <mgt-people
-        class="people-${taskId}"
+        class="people people-${taskId}"
         .userIds="${assignedPeople}"
         .personCardInteraction=${PersonCardInteraction.none}
         @click=${(e: MouseEvent) => {
@@ -1303,7 +1303,7 @@ export class MgtTasks extends MgtTemplatedComponent {
     `;
     const picker = html`
       <mgt-people-picker
-        class="picker-${taskId}"
+        class="people-picker picker-${taskId}"
         @click=${(e: MouseEvent) => e.stopPropagation()}
         @keydown=${(e: KeyboardEvent) => {
           if (e.code === 'Enter') {

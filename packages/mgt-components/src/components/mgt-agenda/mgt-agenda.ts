@@ -8,7 +8,7 @@
 import * as MicrosoftGraph from '@microsoft/microsoft-graph-types';
 import { html, TemplateResult } from 'lit';
 import { customElement, property } from 'lit/decorators.js';
-import { Providers, ProviderState, MgtTemplatedComponent, prepScopes } from '@microsoft/mgt-element';
+import { Providers, ProviderState, MgtTemplatedComponent, prepScopes, mgtHtml } from '@microsoft/mgt-element';
 import '../../styles/style-helper';
 import { getDayOfWeekString, getMonthString } from '../../utils/Utils';
 import '../mgt-person/mgt-person';
@@ -422,7 +422,7 @@ export class MgtAgenda extends MgtTemplatedComponent {
     if (!event.attendees.length) {
       return null;
     }
-    return html`
+    return mgtHtml`
       <mgt-people
         class="event-attendees"
         .peopleQueries=${event.attendees.map(attendee => {
