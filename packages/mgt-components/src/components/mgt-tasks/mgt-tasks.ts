@@ -853,8 +853,8 @@ export class MgtTasks extends MgtTemplatedComponent {
           this._currentFolder = null;
         };
       }
-      const groupSelect = html`
-        <mgt-arrow-options .options="${groupOptions}" .value="${currentGroup.title}"></mgt-arrow-options>
+      const groupSelect = mgtHtml`
+        <mgt-arrow-options class="arrow-options" .options="${groupOptions}" .value="${currentGroup.title}"></mgt-arrow-options>
       `;
 
       const divider = !this._currentGroup
@@ -884,8 +884,8 @@ export class MgtTasks extends MgtTemplatedComponent {
               ${this._folders[0] && this._folders[0].name}
             </span>
           `
-        : html`
-            <mgt-arrow-options .options="${folderOptions}" .value="${currentFolder.name}"></mgt-arrow-options>
+        : mgtHtml`
+            <mgt-arrow-options class="arrow-options" .options="${folderOptions}" .value="${currentFolder.name}"></mgt-arrow-options>
           `;
 
       return html`
@@ -918,8 +918,8 @@ export class MgtTasks extends MgtTemplatedComponent {
               ${folder.name}
             </span>
           `
-        : html`
-            <mgt-arrow-options .value="${currentFolder.name}" .options="${folderOptions}"></mgt-arrow-options>
+        : mgtHtml`
+            <mgt-arrow-options class="arrow-options" .value="${currentFolder.name}" .options="${folderOptions}"></mgt-arrow-options>
           `;
 
       return html`

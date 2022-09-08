@@ -690,7 +690,7 @@ $task-border-completed: var(--task-complete-border, 2px dotted inherit);
 }
 
 [dir='rtl'] {
-  mgt-arrow-options {
+  .arrow-options {
     --arrow-options-left: auto;
   }
   mgt-dot-options {
