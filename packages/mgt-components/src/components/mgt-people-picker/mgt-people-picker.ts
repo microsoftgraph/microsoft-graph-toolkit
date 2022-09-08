@@ -842,7 +842,7 @@ export class MgtPeoplePicker extends MgtTemplatedComponent {
   protected renderLoading(): TemplateResult {
     return (
       this.renderTemplate('loading', null) ||
-      html`
+      mgtHtml`
          <div class="message-parent">
            <mgt-spinner></mgt-spinner>
            <div label="loading-text" aria-label="loading" class="loading-text">

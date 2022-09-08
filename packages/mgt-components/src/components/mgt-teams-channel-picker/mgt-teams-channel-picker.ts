@@ -9,7 +9,7 @@ import * as MicrosoftGraph from '@microsoft/microsoft-graph-types';
 import { html, TemplateResult } from 'lit';
 import { customElement, property } from 'lit/decorators.js';
 import { classMap } from 'lit/directives/class-map.js';
-import { Providers, ProviderState, MgtTemplatedComponent, customElementHelper } from '@microsoft/mgt-element';
+import { Providers, ProviderState, MgtTemplatedComponent, customElementHelper, mgtHtml } from '@microsoft/mgt-element';
 import '../../styles/style-helper';
 import '../sub-components/mgt-spinner/mgt-spinner';
 import { getSvg, SvgIcon } from '../../utils/SvgHelper';
@@ -624,7 +624,7 @@ export class MgtTeamsChannelPicker extends MgtTemplatedComponent {
 
     return (
       template ||
-      html`
+      mgtHtml`
         <div class="message-parent">
           <mgt-spinner></mgt-spinner>
           <div label="loading-text" aria-label="loading" class="loading-text">

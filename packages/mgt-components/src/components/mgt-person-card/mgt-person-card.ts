@@ -702,7 +702,7 @@ export class MgtPersonCard extends MgtTemplatedComponent {
    */
   protected renderExpandedDetails(person?: IDynamicPerson): TemplateResult {
     if (!this._cardState && this._isStateLoading) {
-      return html`
+      return mgtHtml`
          <div class="loading">
            <mgt-spinner></mgt-spinner>
          </div>
