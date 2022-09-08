@@ -11,7 +11,8 @@ import {
   MgtTemplatedComponent,
   Providers,
   ProviderState,
-  customElementHelper
+  customElementHelper,
+  mgtHtml
 } from '@microsoft/mgt-element';
 import { DriveItem } from '@microsoft/microsoft-graph-types';
 import { html, TemplateResult } from 'lit';
@@ -627,8 +628,8 @@ export class MgtFileList extends MgtTemplatedComponent {
     const view = this.itemView;
     return (
       this.renderTemplate('file', { file }, file.id) ||
-      html`
-        <mgt-file .fileDetails=${file} .view=${view}></mgt-file>
+      mgtHtml`
+        <mgt-file class="mgt-file-item" .fileDetails=${file} .view=${view}></mgt-file>
       `
     );
   }

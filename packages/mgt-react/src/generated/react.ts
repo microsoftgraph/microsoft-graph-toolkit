@@ -232,9 +232,9 @@ export type TodoProps = {
 
 export const Agenda = wrapMgt<AgendaProps>(`${customElementHelper.prefix}-agenda`);
 
-export const FileList = wrapMgt<FileListProps>('mgt-file-list');
+export const FileList = wrapMgt<FileListProps>(`${customElementHelper}-file-list`);
 
-export const File = wrapMgt<FileProps>('mgt-file');
+export const File = wrapMgt<FileProps>(`${customElementHelper.prefix}-file`);
 
 export const Get = wrapMgt<GetProps>('mgt-get');
 

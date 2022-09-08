@@ -11,7 +11,7 @@ import { styles } from './mgt-file-upload-css';
 import { strings } from './strings';
 import { getSvg, SvgIcon } from '../../../utils/SvgHelper';
 import { formatBytes } from '../../../utils/Utils';
-import { IGraph, MgtBaseComponent } from '@microsoft/mgt-element';
+import { IGraph, MgtBaseComponent, mgtHtml } from '@microsoft/mgt-element';
 import { ViewType } from '../../../graph/types';
 import { DriveItem } from '@microsoft/microsoft-graph-types';
 import {
@@ -344,7 +344,7 @@ export class MgtFileUpload extends MgtBaseComponent {
         if (folderStructure.indexOf(fileItem.fullPath.substring(0, fileItem.fullPath.lastIndexOf('/'))) === -1) {
           if (fileItem.fullPath.substring(0, fileItem.fullPath.lastIndexOf('/')) !== '') {
             folderStructure.push(fileItem.fullPath.substring(0, fileItem.fullPath.lastIndexOf('/')));
-            return html`
+            return mgtHtml`
             <div class='file-upload-table'>
               <div class='file-upload-cell'>
                 <mgt-file
@@ -379,7 +379,7 @@ export class MgtFileUpload extends MgtBaseComponent {
    * @returns
    */
   protected renderFileTemplate(fileItem: MgtFileUploadItem, folderTabStyle: string) {
-    return html`
+    return mgtHtml`
         <div class="${fileItem.completed ? 'file-upload-table' : 'file-upload-table upload'}">
           <div class="${
             folderTabStyle +
