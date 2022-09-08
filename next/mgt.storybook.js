@@ -2087,7 +2087,6 @@ PERFORMANCE OF THIS SOFTWARE.
                 role="listitem"
                 @keydown="${this.onUserKeyDown}"
                 aria-label=" ${this.strings.suggestedContact} ${e.displayName}"
-                id="${e.displayName}"
                 tabindex="0"
                 class="${kr(t)}"
                 @click="${t=>this.onPersonClick(e)}">
