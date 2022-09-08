@@ -33,7 +33,8 @@ import {
   MgtTemplatedComponent,
   arraysAreEqual,
   IGraph,
-  mgtHtml
+  mgtHtml,
+  customElementHelper
 } from '@microsoft/mgt-element';
 import '../../styles/style-helper';
 import '../sub-components/mgt-spinner/mgt-spinner';
@@ -89,7 +90,8 @@ interface IFocusable {
  * @cssprop --placeholder-color - {Color} Color of placeholder text
  *
  */
-@customElement('mgt-people-picker')
+@customElement(`${customElementHelper.prefix}-people-picker`)
+// @customElement('mgt-people-picker')
 export class MgtPeoplePicker extends MgtTemplatedComponent {
   /**
    * Array of styles to apply to the element. The styles should be defined

@@ -1301,7 +1301,7 @@ export class MgtTasks extends MgtTemplatedComponent {
         >${noPeopleTemplate}
       </mgt-people>
     `;
-    const picker = html`
+    const picker = mgtHtml`
       <mgt-people-picker
         class="people-picker picker-${taskId}"
         @click=${(e: MouseEvent) => e.stopPropagation()}

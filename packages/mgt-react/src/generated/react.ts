@@ -240,7 +240,7 @@ export const Get = wrapMgt<GetProps>('mgt-get');
 
 export const Login = wrapMgt<LoginProps>(`${customElementHelper.prefix}-login`);
 
-export const PeoplePicker = wrapMgt<PeoplePickerProps>('mgt-people-picker');
+export const PeoplePicker = wrapMgt<PeoplePickerProps>(`${customElementHelper.prefix}-people-picker`);
 
 export const People = wrapMgt<PeopleProps>(`${customElementHelper.prefix}-people`);
 
