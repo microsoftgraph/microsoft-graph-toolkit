@@ -230,7 +230,7 @@ export type TodoProps = {
 	templateRendered?: (e: Event) => void;
 }
 
-export const Agenda = wrapMgt<AgendaProps>('mgt-agenda');
+export const Agenda = wrapMgt<AgendaProps>(`${customElementHelper.prefix}-agenda`);
 
 export const FileList = wrapMgt<FileListProps>('mgt-file-list');
 
