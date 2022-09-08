@@ -899,7 +899,7 @@ export class MgtPeoplePicker extends MgtTemplatedComponent {
              };
              return html`
                <li
-                role="option"
+                role="listitem"
                 @keydown="${this.onUserKeyDown}"
                 aria-label=" ${this.strings.suggestedContact} ${person.displayName}"
                 tabindex="0"
