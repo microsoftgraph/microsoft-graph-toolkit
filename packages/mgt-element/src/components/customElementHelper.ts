@@ -63,7 +63,9 @@ class CustomElementHelper {
    * @memberof CustomElementHelper
    */
   public normalize(tagName: string): string {
-    return this.isDisambiguated ? tagName.replace(this.prefix, this.defaultPrefix) : tagName;
+    return this.isDisambiguated
+      ? tagName.toUpperCase().replace(this.prefix.toUpperCase(), this.defaultPrefix.toUpperCase())
+      : tagName;
   }
 }
 
