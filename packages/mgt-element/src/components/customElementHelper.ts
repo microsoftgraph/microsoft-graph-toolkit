@@ -33,6 +33,17 @@ class CustomElementHelper {
   }
 
   /**
+   * Returns the current value for the disambiguation
+   *
+   * @readonly
+   * @type {string}
+   * @memberof CustomElementHelper
+   */
+  public get disambiguation(): string {
+    return this._disambiguation;
+  }
+
+  /**
    * Returns true if a value has been provided for the disambiguation
    *
    * @readonly
@@ -41,6 +52,18 @@ class CustomElementHelper {
    */
   public get isDisambiguated(): boolean {
     return Boolean(this._disambiguation);
+  }
+
+  /**
+   * Removes disambiguation from the provided tagName.
+   * Intended for use when providing tag names in analytics headers passed by the Graph client
+   *
+   * @param {string} tagName
+   * @return {*}  {string}
+   * @memberof CustomElementHelper
+   */
+  public normalize(tagName: string): string {
+    return this.isDisambiguated ? tagName.replace(this.prefix, this.defaultPrefix) : tagName;
   }
 }
 

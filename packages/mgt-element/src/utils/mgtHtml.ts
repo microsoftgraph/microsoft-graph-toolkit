@@ -42,7 +42,7 @@ const tag = (strings: TemplateStringsArray, ...values: unknown[]): HTMLTemplateR
   if (customElementHelper.isDisambiguated) {
     let cached = stringsCache.get(strings);
     if (!Boolean(cached)) {
-      const matcher = new RegExp('(</?)mgt-(?!contoso-)');
+      const matcher = new RegExp('(</?)mgt-(?!' + customElementHelper.disambiguation + '-)');
       const newPrefix = `$1${customElementHelper.prefix}-`;
       cached = Object.assign(rewriteStrings(strings, matcher, newPrefix), {
         raw: rewriteStrings(strings.raw, matcher, newPrefix)
