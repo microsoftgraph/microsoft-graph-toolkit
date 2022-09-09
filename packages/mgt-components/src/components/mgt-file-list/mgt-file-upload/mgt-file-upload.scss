@@ -202,9 +202,9 @@ $file-list-box-shadow: var(
   .file-upload-dialog-ok {
     height: 32px;
     min-width: 60px;
-    border: 1px solid $file-upload-dialog-primarybutton-background-color;
-    background-color: $file-upload-dialog-primarybutton-background-color;
-    color: $file-upload-dialog-primarybutton-color;
+    border: 1px solid rgb(138, 136, 134);
+    background-color: $file-upload-dialog-content-background-color;
+    color: $file-upload-dialog-content-color;
     font-size: $font-size;
     margin-right: 5px;
   }
