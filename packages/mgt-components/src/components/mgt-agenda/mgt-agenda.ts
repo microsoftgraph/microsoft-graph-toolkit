@@ -7,14 +7,14 @@
 
 import * as MicrosoftGraph from '@microsoft/microsoft-graph-types';
 import { html, TemplateResult } from 'lit';
-import { customElement, property } from 'lit/decorators.js';
+import { property } from 'lit/decorators.js';
 import {
   Providers,
   ProviderState,
   MgtTemplatedComponent,
   prepScopes,
   mgtHtml,
-  customElementHelper
+  customElement
 } from '@microsoft/mgt-element';
 import '../../styles/style-helper';
 import { getDayOfWeekString, getMonthString } from '../../utils/Utils';
@@ -48,7 +48,7 @@ import { MgtPeople } from '../mgt-people/mgt-people';
  * @cssprop --event-location-font-size - {Length} Event location font size
  * @cssprop --event-location-color - {Color} Event location color
  */
-@customElement(`${customElementHelper.prefix}-agenda`)
+@customElement('agenda')
 // @customElement('mgt-agenda')
 export class MgtAgenda extends MgtTemplatedComponent {
   /**

@@ -6,11 +6,11 @@
  */
 
 import { html, PropertyValues, TemplateResult } from 'lit';
-import { customElement, property } from 'lit/decorators.js';
+import { property } from 'lit/decorators.js';
 import { classMap } from 'lit/directives/class-map.js';
 import { getSegmentAwareWindow, isWindowSegmentAware, IWindowSegment } from '../../../utils/WindowSegmentHelpers';
 import { styles } from './mgt-flyout-css';
-import { MgtBaseComponent, customElementHelper } from '@microsoft/mgt-element/';
+import { MgtBaseComponent, customElement } from '@microsoft/mgt-element/';
 
 /**
  * A component to create flyout anchored to an element
@@ -19,7 +19,7 @@ import { MgtBaseComponent, customElementHelper } from '@microsoft/mgt-element/';
  * @class MgtFlyout
  * @extends {LitElement}
  */
-@customElement(`${customElementHelper.prefix}-flyout`)
+@customElement('flyout')
 // @customElement('mgt-flyout')
 export class MgtFlyout extends MgtBaseComponent {
   /**

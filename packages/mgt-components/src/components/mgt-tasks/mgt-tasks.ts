@@ -8,7 +8,7 @@
 import { Person, PlannerAssignments, PlannerTask, User } from '@microsoft/microsoft-graph-types';
 import { Contact, OutlookTask, OutlookTaskFolder } from '@microsoft/microsoft-graph-types-beta';
 import { html } from 'lit';
-import { customElement, property } from 'lit/decorators.js';
+import { property } from 'lit/decorators.js';
 import { classMap } from 'lit/directives/class-map.js';
 import { repeat } from 'lit/directives/repeat.js';
 import {
@@ -17,7 +17,7 @@ import {
   ProviderState,
   MgtTemplatedComponent,
   mgtHtml,
-  customElementHelper
+  customElement
 } from '@microsoft/mgt-element';
 import { getShortDateString } from '../../utils/Utils';
 import { MgtPeoplePicker } from '../mgt-people-picker/mgt-people-picker';
@@ -186,7 +186,7 @@ const plannerAssignment = {
  * @cssprop --task-icon-color - {Color} Task icon color
  * @cssprop --task-icon-color-completed - {Color} Task icon color when completed
  */
-@customElement(`${customElementHelper.prefix}-tasks`)
+@customElement('tasks')
 // @customElement('mgt-tasks')
 export class MgtTasks extends MgtTemplatedComponent {
   /**

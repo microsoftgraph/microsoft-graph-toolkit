@@ -7,8 +7,7 @@
 
 import { User } from '@microsoft/microsoft-graph-types';
 import { html, TemplateResult } from 'lit';
-import { customElement } from 'lit/decorators.js';
-import { TeamsHelper, customElementHelper } from '@microsoft/mgt-element';
+import { TeamsHelper, customElement } from '@microsoft/mgt-element';
 import { classMap } from 'lit/directives/class-map.js';
 
 import { getEmailFromGraphEntity } from '../../../../graph/graph.people';
@@ -42,7 +41,7 @@ interface IContactPart {
  * @class MgtPersonCardProfile
  * @extends {MgtTemplatedComponent}
  */
-@customElement(`${customElementHelper.prefix}-person-card-contact`)
+@customElement('person-card-contact')
 // @customElement('mgt-person-card-contact')
 export class MgtPersonCardContact extends BasePersonCardSection {
   /**

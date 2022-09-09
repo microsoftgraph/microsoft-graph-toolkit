@@ -5,9 +5,9 @@
  * -------------------------------------------------------------------------------------------
  */
 
-import { customElement, property } from 'lit/decorators.js';
+import { property } from 'lit/decorators.js';
 import { Configuration } from '@azure/msal-browser';
-import { Providers, MgtBaseProvider, customElementHelper } from '@microsoft/mgt-element';
+import { Providers, MgtBaseProvider, customElement } from '@microsoft/mgt-element';
 import { HttpMethod, TeamsMsal2Config, TeamsMsal2Provider } from './TeamsMsal2Provider';
 
 /**
@@ -17,7 +17,7 @@ import { HttpMethod, TeamsMsal2Config, TeamsMsal2Provider } from './TeamsMsal2Pr
  * @class MgtTeamsMsal2Provider
  * @extends {MgtBaseProvider}
  */
-@customElement(`${customElementHelper.prefix}-teams-msal2-provider`)
+@customElement('teams-msal2-provider')
 // @customElement('mgt-teams-msal2-provider')
 export class MgtTeamsMsal2Provider extends MgtBaseProvider {
   /**

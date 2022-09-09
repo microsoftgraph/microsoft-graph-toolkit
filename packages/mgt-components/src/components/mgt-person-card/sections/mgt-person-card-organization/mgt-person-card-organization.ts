@@ -7,7 +7,6 @@
 
 import { User } from '@microsoft/microsoft-graph-types';
 import { html, TemplateResult } from 'lit';
-import { customElement } from 'lit/decorators.js';
 
 import { BasePersonCardSection } from '../BasePersonCardSection';
 import { getSvg, SvgIcon } from '../../../../utils/SvgHelper';
@@ -15,7 +14,7 @@ import { MgtPersonCardState } from '../../mgt-person-card.types';
 import { styles } from './mgt-person-card-organization-css';
 import { strings } from './strings';
 import { ViewType } from '../../../../graph/types';
-import { mgtHtml, customElementHelper } from '@microsoft/mgt-element';
+import { mgtHtml, customElement } from '@microsoft/mgt-element';
 
 /**
  * The member organization subsection of the person card
@@ -24,7 +23,7 @@ import { mgtHtml, customElementHelper } from '@microsoft/mgt-element';
  * @class MgtPersonCardProfile
  * @extends {MgtTemplatedComponent}
  */
-@customElement(`${customElementHelper.prefix}-person-card-organization`)
+@customElement('person-card-organization')
 // @customElement('mgt-person-card-organization')
 export class MgtPersonCardOrganization extends BasePersonCardSection {
   /**

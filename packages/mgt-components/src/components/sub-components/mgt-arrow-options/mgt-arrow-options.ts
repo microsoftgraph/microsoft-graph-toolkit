@@ -6,9 +6,9 @@
  */
 
 import { html } from 'lit';
-import { customElement, property } from 'lit/decorators.js';
+import { property } from 'lit/decorators.js';
 import { classMap } from 'lit/directives/class-map.js';
-import { MgtBaseComponent, customElementHelper } from '@microsoft/mgt-element';
+import { MgtBaseComponent, customElement } from '@microsoft/mgt-element';
 import { styles } from './mgt-arrow-options-css';
 
 /*
@@ -26,7 +26,7 @@ import { styles } from './mgt-arrow-options-css';
  * @class MgtArrowOptions
  * @extends {MgtBaseComponent}
  */
-@customElement(`${customElementHelper.prefix}-arrow-options`)
+@customElement('arrow-options')
 // @customElement('mgt-arrow-options')
 export class MgtArrowOptions extends MgtBaseComponent {
   /**

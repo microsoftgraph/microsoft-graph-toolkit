@@ -6,12 +6,12 @@
  */
 
 import { html, TemplateResult } from 'lit';
-import { customElement, property } from 'lit/decorators.js';
+import { property } from 'lit/decorators.js';
 import { styles } from './mgt-file-upload-css';
 import { strings } from './strings';
 import { getSvg, SvgIcon } from '../../../utils/SvgHelper';
 import { formatBytes } from '../../../utils/Utils';
-import { IGraph, MgtBaseComponent, mgtHtml, customElementHelper } from '@microsoft/mgt-element';
+import { IGraph, MgtBaseComponent, mgtHtml, customElement } from '@microsoft/mgt-element';
 import { ViewType } from '../../../graph/types';
 import { DriveItem } from '@microsoft/microsoft-graph-types';
 import {
@@ -209,7 +209,7 @@ interface FileWithPath extends File {
  * @cssprop --file-item-border-bottom - {String} File item border bottom style
  * @cssprop --file-item-background-color--active - {Color} File item background active color
  */
-@customElement(`${customElementHelper.prefix}-file-upload`)
+@customElement('file-upload')
 // @customElement('mgt-file-upload')
 export class MgtFileUpload extends MgtBaseComponent {
   /**

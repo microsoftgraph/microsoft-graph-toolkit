@@ -5,9 +5,9 @@
  * -------------------------------------------------------------------------------------------
  */
 
-import { customElement, property } from 'lit/decorators.js';
+import { property } from 'lit/decorators.js';
 import { Configuration } from 'msal';
-import { Providers, MgtBaseProvider, customElementHelper } from '@microsoft/mgt-element';
+import { Providers, MgtBaseProvider, customElement } from '@microsoft/mgt-element';
 import { TeamsConfig, TeamsProvider } from './TeamsProvider';
 
 /**
@@ -17,7 +17,7 @@ import { TeamsConfig, TeamsProvider } from './TeamsProvider';
  * @class MgtTeamsProvider
  * @extends {MgtBaseProvider}
  */
-@customElement(`${customElementHelper.prefix}-teams-provider`)
+@customElement('teams-provider')
 // @customElement('mgt-teams-provider')
 export class MgtTeamsProvider extends MgtBaseProvider {
   /**

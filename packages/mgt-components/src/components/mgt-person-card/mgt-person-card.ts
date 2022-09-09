@@ -6,7 +6,7 @@
  */
 
 import { html, TemplateResult } from 'lit';
-import { customElement, property, state } from 'lit/decorators.js';
+import { property, state } from 'lit/decorators.js';
 import { classMap } from 'lit/directives/class-map.js';
 import {
   MgtTemplatedComponent,
@@ -14,7 +14,7 @@ import {
   ProviderState,
   TeamsHelper,
   mgtHtml,
-  customElementHelper
+  customElement
 } from '@microsoft/mgt-element';
 import { Presence, User, Person } from '@microsoft/microsoft-graph-types';
 
@@ -82,7 +82,7 @@ type HoverStatesActions = 'email' | 'chat' | 'video' | 'call';
  * @cssprop --person-card-details-item-color - {Color} Color of items in additional details section
  * @cssprop --person-card-background-color - {Color} Color of person card background
  */
-@customElement(`${customElementHelper.prefix}-person-card`)
+@customElement('person-card')
 // @customElement('mgt-person-card')
 export class MgtPersonCard extends MgtTemplatedComponent {
   /**

@@ -7,7 +7,7 @@
 
 import * as MicrosoftGraph from '@microsoft/microsoft-graph-types';
 import { html, TemplateResult } from 'lit';
-import { customElement, property } from 'lit/decorators.js';
+import { property } from 'lit/decorators.js';
 import { repeat } from 'lit/directives/repeat.js';
 import { getPeople, getPeopleFromResource, PersonType } from '../../graph/graph.people';
 import { getUsersPresenceByPeople } from '../../graph/graph.presence';
@@ -19,7 +19,7 @@ import {
   MgtTemplatedComponent,
   arraysAreEqual,
   mgtHtml,
-  customElementHelper
+  customElement
 } from '@microsoft/mgt-element';
 import '../../styles/style-helper';
 import { PersonCardInteraction } from './../PersonCardInteraction';
@@ -38,7 +38,7 @@ export { PersonCardInteraction } from './../PersonCardInteraction';
  * @cssprop --list-margin - {String} List margin for component
  * @cssprop --avatar-margin - {String} Margin for each person
  */
-@customElement(`${customElementHelper.prefix}-people`)
+@customElement('people')
 // @customElement('mgt-people')
 export class MgtPeople extends MgtTemplatedComponent {
   /**

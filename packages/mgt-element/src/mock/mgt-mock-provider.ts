@@ -5,11 +5,11 @@
  * -------------------------------------------------------------------------------------------
  */
 
-import { customElement, property } from 'lit/decorators.js';
+import { property } from 'lit/decorators.js';
 import { MgtBaseProvider } from '../components/baseProvider';
 import { Providers } from '../providers/Providers';
 import { MockProvider } from './MockProvider';
-import { customElementHelper } from '../components/customElementHelper';
+import { customElement } from '../utils/CustomElement';
 /**
  * Sets global provider to a mock Provider
  *
@@ -17,7 +17,7 @@ import { customElementHelper } from '../components/customElementHelper';
  * @class MgtMockProvider
  * @extends {LitElement}
  */
-@customElement(`${customElementHelper.prefix}-mock-provider`)
+@customElement('mock-provider')
 // @customElement('mgt-mock-provider')
 export class MgtMockProvider extends MgtBaseProvider {
   /**

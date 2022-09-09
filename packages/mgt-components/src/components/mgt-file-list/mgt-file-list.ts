@@ -11,12 +11,12 @@ import {
   MgtTemplatedComponent,
   Providers,
   ProviderState,
-  customElementHelper,
+  customElement,
   mgtHtml
 } from '@microsoft/mgt-element';
 import { DriveItem } from '@microsoft/microsoft-graph-types';
 import { html, TemplateResult } from 'lit';
-import { customElement, property, state } from 'lit/decorators.js';
+import { property, state } from 'lit/decorators.js';
 import { repeat } from 'lit/directives/repeat.js';
 import {
   clearFilesCache,
@@ -91,7 +91,7 @@ registerFluentComponents(fluentProgressRing, fluentDesignSystemProvider);
  * @cssprop --progress-ring-size -{String} Progress ring height and width
  */
 
-@customElement(`${customElementHelper.prefix}-file-list`)
+@customElement('file-list')
 // @customElement('mgt-file-list')
 export class MgtFileList extends MgtTemplatedComponent {
   /**

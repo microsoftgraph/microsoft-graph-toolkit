@@ -6,7 +6,7 @@
  */
 
 import { html } from 'lit';
-import { customElement, property } from 'lit/decorators.js';
+import { property } from 'lit/decorators.js';
 import {
   CacheItem,
   CacheService,
@@ -16,7 +16,7 @@ import {
   prepScopes,
   Providers,
   ProviderState,
-  customElementHelper
+  customElement
 } from '@microsoft/mgt-element';
 
 import { getPhotoForResource } from '../../graph/graph.photos';
@@ -74,7 +74,7 @@ const getIsResponseCacheEnabled = (): boolean =>
  * @class mgt-get
  * @extends {MgtTemplatedComponent}
  */
-@customElement(`${customElementHelper.prefix}-get`)
+@customElement('get')
 // @customElement('mgt-get')
 export class MgtGet extends MgtTemplatedComponent {
   /**

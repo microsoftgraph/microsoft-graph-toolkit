@@ -7,7 +7,7 @@
 
 import { User } from '@microsoft/microsoft-graph-types';
 import { html, TemplateResult } from 'lit';
-import { customElement, property, state } from 'lit/decorators.js';
+import { property, state } from 'lit/decorators.js';
 import { classMap } from 'lit/directives/class-map.js';
 import { repeat } from 'lit/directives/repeat.js';
 import {
@@ -34,7 +34,7 @@ import {
   arraysAreEqual,
   IGraph,
   mgtHtml,
-  customElementHelper
+  customElement
 } from '@microsoft/mgt-element';
 import '../../styles/style-helper';
 import '../sub-components/mgt-spinner/mgt-spinner';
@@ -90,7 +90,7 @@ interface IFocusable {
  * @cssprop --placeholder-color - {Color} Color of placeholder text
  *
  */
-@customElement(`${customElementHelper.prefix}-people-picker`)
+@customElement('people-picker')
 // @customElement('mgt-people-picker')
 export class MgtPeoplePicker extends MgtTemplatedComponent {
   /**

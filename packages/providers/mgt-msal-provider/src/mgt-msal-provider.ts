@@ -4,8 +4,8 @@
  * See License in the project root for license information.
  * -------------------------------------------------------------------------------------------
  */
-import { customElement, property } from 'lit/decorators.js';
-import { Providers, LoginType, MgtBaseProvider, customElementHelper } from '@microsoft/mgt-element';
+import { property } from 'lit/decorators.js';
+import { Providers, LoginType, MgtBaseProvider, customElement } from '@microsoft/mgt-element';
 import { MsalConfig, MsalProvider } from './MsalProvider';
 /**
  * Authentication Library Provider for Microsoft personal accounts
@@ -14,7 +14,7 @@ import { MsalConfig, MsalProvider } from './MsalProvider';
  * @class MgtMsalProvider
  * @extends {MgtBaseProvider}
  */
-@customElement(`${customElementHelper.prefix}-msal-provider`)
+@customElement('msal-provider')
 // @customElement('mgt-msal-provider')
 export class MgtMsalProvider extends MgtBaseProvider {
   /**

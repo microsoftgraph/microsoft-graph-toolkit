@@ -7,9 +7,9 @@
 
 import * as MicrosoftGraph from '@microsoft/microsoft-graph-types';
 import { html, TemplateResult } from 'lit';
-import { customElement, property } from 'lit/decorators.js';
+import { property } from 'lit/decorators.js';
 import { classMap } from 'lit/directives/class-map.js';
-import { Providers, ProviderState, MgtTemplatedComponent, customElementHelper, mgtHtml } from '@microsoft/mgt-element';
+import { Providers, ProviderState, MgtTemplatedComponent, customElement, mgtHtml } from '@microsoft/mgt-element';
 import '../../styles/style-helper';
 import '../sub-components/mgt-spinner/mgt-spinner';
 import { getSvg, SvgIcon } from '../../utils/SvgHelper';
@@ -161,7 +161,7 @@ export interface MgtTeamsChannelPickerConfig {
  * @cssprop --placeholder-color - {Color} Color of placeholder text
  *
  */
-@customElement(`${customElementHelper.prefix}-teams-channel-picker`)
+@customElement('teams-channel-picker')
 // @customElement('mgt-teams-channel-picker')
 export class MgtTeamsChannelPicker extends MgtTemplatedComponent {
   /**

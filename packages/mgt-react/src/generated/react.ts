@@ -1,5 +1,5 @@
-import { OfficeGraphInsightString,ViewType,ResponseType,IDynamicPerson,PersonType,GroupType,UserType,PersonCardInteraction,MgtPersonConfig,AvatarSize,PersonViewType,TasksStringResource,TasksSource,TaskFilter,SelectedChannel,TodoFilter } from '@microsoft/mgt-components';
-import { customElementHelper, TemplateContext,ComponentMediaQuery } from '@microsoft/mgt-element';
+import { OfficeGraphInsightString,ViewType,ResponseType,IDynamicPerson,LoginViewType,PersonType,GroupType,UserType,PersonCardInteraction,MgtPersonConfig,AvatarSize,PersonViewType,TasksStringResource,TasksSource,TaskFilter,SelectedChannel,TodoFilter } from '@microsoft/mgt-components';
+import { TemplateContext,ComponentMediaQuery } from '@microsoft/mgt-element';
 import * as MicrosoftGraph from '@microsoft/microsoft-graph-types';
 import * as MicrosoftGraphBeta from '@microsoft/microsoft-graph-types-beta';
 import {wrapMgt} from '../Mgt';
@@ -84,6 +84,8 @@ export type GetProps = {
 
 export type LoginProps = {
 	userDetails?: IDynamicPerson;
+	showPresence?: boolean;
+	loginView?: LoginViewType;
 	templateContext?: TemplateContext;
 	mediaQuery?: ComponentMediaQuery;
 	loginInitiated?: (e: Event) => void;
@@ -149,10 +151,6 @@ export type PersonCardProps = {
 	inheritDetails?: boolean;
 	showPresence?: boolean;
 	personPresence?: MicrosoftGraph.Presence;
-	isEmailHovered?: boolean;
-	isChatHovered?: boolean;
-	isVideoHovered?: boolean;
-	isCallHovered?: boolean;
 	templateContext?: TemplateContext;
 	mediaQuery?: ComponentMediaQuery;
 	expanded?: (e: Event) => void;
@@ -164,6 +162,7 @@ export type PersonProps = {
 	personQuery?: string;
 	fallbackDetails?: IDynamicPerson;
 	userId?: string;
+	usage?: string;
 	showPresence?: boolean;
 	personDetails?: IDynamicPerson;
 	personImage?: string;
@@ -230,27 +229,27 @@ export type TodoProps = {
 	templateRendered?: (e: Event) => void;
 }
 
-export const Agenda = wrapMgt<AgendaProps>(`${customElementHelper.prefix}-agenda`);
+export const Agenda = wrapMgt<AgendaProps>('agenda');
 
-export const FileList = wrapMgt<FileListProps>(`${customElementHelper}-file-list`);
+export const FileList = wrapMgt<FileListProps>('file-list');
 
-export const File = wrapMgt<FileProps>(`${customElementHelper.prefix}-file`);
+export const File = wrapMgt<FileProps>('file');
 
-export const Get = wrapMgt<GetProps>(`${customElementHelper.prefix}-get`);
+export const Get = wrapMgt<GetProps>('get');
 
-export const Login = wrapMgt<LoginProps>(`${customElementHelper.prefix}-login`);
+export const Login = wrapMgt<LoginProps>('login');
 
-export const PeoplePicker = wrapMgt<PeoplePickerProps>(`${customElementHelper.prefix}-people-picker`);
+export const PeoplePicker = wrapMgt<PeoplePickerProps>('people-picker');
 
-export const People = wrapMgt<PeopleProps>(`${customElementHelper.prefix}-people`);
+export const People = wrapMgt<PeopleProps>('people');
 
-export const PersonCard = wrapMgt<PersonCardProps>(`${customElementHelper.prefix}-person-card`);
+export const PersonCard = wrapMgt<PersonCardProps>('person-card');
 
-export const Person = wrapMgt<PersonProps>(`${customElementHelper.prefix}-person`);
+export const Person = wrapMgt<PersonProps>('person');
 
-export const Tasks = wrapMgt<TasksProps>(`${customElementHelper.prefix}-tasks`);
+export const Tasks = wrapMgt<TasksProps>('tasks');
 
-export const TeamsChannelPicker = wrapMgt<TeamsChannelPickerProps>(`${customElementHelper.prefix}-teams-channel-picker`);
+export const TeamsChannelPicker = wrapMgt<TeamsChannelPickerProps>('teams-channel-picker');
 
-export const Todo = wrapMgt<TodoProps>(`${customElementHelper.prefix}-todo`);
+export const Todo = wrapMgt<TodoProps>('todo');
 

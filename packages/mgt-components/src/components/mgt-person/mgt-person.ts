@@ -7,7 +7,7 @@
 
 import { Contact, Presence } from '@microsoft/microsoft-graph-types';
 import { html, TemplateResult } from 'lit';
-import { customElement, property, state } from 'lit/decorators.js';
+import { property, state } from 'lit/decorators.js';
 import { classMap } from 'lit/directives/class-map.js';
 import { findPeople, getEmailFromGraphEntity } from '../../graph/graph.people';
 import { getGroupImage, getPersonImage } from '../../graph/graph.photos';
@@ -15,7 +15,7 @@ import { getUserPresence } from '../../graph/graph.presence';
 import { getUserWithPhoto } from '../../graph/graph.userWithPhoto';
 import { findUsers, getMe, getUser } from '../../graph/graph.user';
 import { AvatarSize, IDynamicPerson, ViewType } from '../../graph/types';
-import { Providers, ProviderState, MgtTemplatedComponent, mgtHtml, customElementHelper } from '@microsoft/mgt-element';
+import { Providers, ProviderState, MgtTemplatedComponent, mgtHtml, customElement } from '@microsoft/mgt-element';
 import '../../styles/style-helper';
 import { getSvg, SvgIcon } from '../../utils/SvgHelper';
 import { MgtPersonCard } from '../mgt-person-card/mgt-person-card';
@@ -151,7 +151,7 @@ const defaultPersonProperties = [
  * @cssprop --person-flex-direction - {String} flex direction associated with the avatar and details
  * @cssprop --focus-offset - {Length} spacing between element and focus ring
  */
-@customElement(`${customElementHelper.prefix}-person`)
+@customElement('person')
 // @customElement('mgt-person')
 export class MgtPerson extends MgtTemplatedComponent {
   /**

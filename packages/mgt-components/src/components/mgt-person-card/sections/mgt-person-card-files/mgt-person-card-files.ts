@@ -7,14 +7,13 @@
 
 import { SharedInsight } from '@microsoft/microsoft-graph-types';
 import { html, TemplateResult } from 'lit';
-import { customElement } from 'lit/decorators.js';
 import { BasePersonCardSection } from '../BasePersonCardSection';
 import { getFileTypeIconUri } from '../../../../styles/fluent-icons';
 import { getSvg, SvgIcon } from '../../../../utils/SvgHelper';
 import { getRelativeDisplayDate } from '../../../../utils/Utils';
 import { styles } from './mgt-person-card-files-css';
 import { strings } from './strings';
-import { customElementHelper } from '@microsoft/mgt-element';
+import { customElement } from '@microsoft/mgt-element';
 
 /**
  * The files subsection of the person card
@@ -23,7 +22,7 @@ import { customElementHelper } from '@microsoft/mgt-element';
  * @class MgtPersonCardProfile
  * @extends {MgtTemplatedComponent}
  */
-@customElement(`${customElementHelper.prefix}-person-card-files`)
+@customElement('person-card-files')
 // @customElement('mgt-person-card-files')
 export class MgtPersonCardFiles extends BasePersonCardSection {
   /**

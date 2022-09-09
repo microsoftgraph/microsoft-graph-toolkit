@@ -6,9 +6,16 @@
  */
 
 import { html } from 'lit';
-import { customElement, property } from 'lit/decorators.js';
+import { property } from 'lit/decorators.js';
 import { classMap } from 'lit/directives/class-map.js';
-import { Providers, ProviderState, MgtTemplatedComponent, IProviderAccount, mgtHtml } from '@microsoft/mgt-element';
+import {
+  Providers,
+  ProviderState,
+  MgtTemplatedComponent,
+  IProviderAccount,
+  mgtHtml,
+  customElement
+} from '@microsoft/mgt-element';
 
 import { AvatarSize, IDynamicPerson, ViewType } from '../../graph/types';
 import { MgtFlyout } from '../sub-components/mgt-flyout/mgt-flyout';
@@ -24,7 +31,6 @@ import '../../styles/style-helper';
 
 import { fluentListbox, fluentProgressRing, fluentButton, fluentCard } from '@fluentui/web-components';
 import { registerFluentComponents } from '../../utils/FluentComponents';
-import { customElementHelper } from '@microsoft/mgt-element';
 registerFluentComponents(fluentListbox, fluentProgressRing, fluentButton, fluentCard);
 
 /**
@@ -74,7 +80,7 @@ type PersonViewConfig = {
  * @cssprop --profile-spacing-full - {String} margin applied to the active account inside the popup when login-view is full or more that one account is signed in.
  * @cssprop --add-account-button-color - {Color} Color for the text and icon of the add account button
  */
-@customElement(`${customElementHelper.prefix}-login`)
+@customElement('login')
 // @customElement('mgt-login')
 export class MgtLogin extends MgtTemplatedComponent {
   /**

@@ -7,12 +7,11 @@
 
 import { EducationalActivity, PersonAnnualEvent, PersonInterest, Profile } from '@microsoft/microsoft-graph-types-beta';
 import { html, TemplateResult } from 'lit';
-import { customElement } from 'lit/decorators.js';
 import { BasePersonCardSection } from '../BasePersonCardSection';
 import { getSvg, SvgIcon } from '../../../../utils/SvgHelper';
 import { styles } from './mgt-person-card-profile-css';
 import { strings } from './strings';
-import { customElementHelper } from '@microsoft/mgt-element';
+import { customElement } from '@microsoft/mgt-element';
 
 /**
  * The user profile subsection of the person card
@@ -21,7 +20,7 @@ import { customElementHelper } from '@microsoft/mgt-element';
  * @class MgtPersonCardProfile
  * @extends {MgtTemplatedComponent}
  */
-@customElement(`${customElementHelper.prefix}-person-card-profile`)
+@customElement('person-card-profile')
 // @customElement('mgt-person-card-profile')
 export class MgtPersonCardProfile extends BasePersonCardSection {
   /**
