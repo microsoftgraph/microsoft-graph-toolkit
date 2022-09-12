@@ -56,7 +56,7 @@ const tag = (strings: TemplateStringsArray, ...values: unknown[]): HTMLTemplateR
 };
 
 /**
- * Interprets a template literal and dynamically rewrites `<mtg-` tags with the
+ * Interprets a template literal and dynamically rewrites `<mgt-` tags with the
  * configured disambiguation if necessary.
  *
  * ```ts
