@@ -1,21 +1,21 @@
 {
-  "$schema": "https://developer.microsoft.com/json-schemas/spfx-build/package-solution.schema.json",
-  "solution": {
-    "name": "mgt-spfx-client-side-solution",
-    "id": "e342d2ab-fc3f-45f6-93a5-268fd8632211",
-    "version": "2.0.2.0",
-    "includeClientSideAssets": true,
-    "skipFeatureDeployment": true,
-    "isDomainIsolated": false,
-    "developer": {
-      "name": "Microsoft Graph Toolkit",
-      "websiteUrl": "https://docs.microsoft.com/graph/toolkit/overview",
-      "privacyUrl": "https://privacy.microsoft.com/privacystatement",
-      "termsOfUseUrl": "https://privacy.microsoft.com/privacystatement",
-      "mpnId": "000000"
-    }
-  },
-  "paths": {
-    "zippedPackage": "solution/mgt-spfx.sppkg"
-  }
+	"$schema": "https://developer.microsoft.com/json-schemas/spfx-build/package-solution.schema.json",
+	"solution": {
+		"name": "Microsoft Graph Toolkit v2 for SPFx",
+		"id": "e342d2ab-fc3f-45f6-93a5-268fd8632211",
+		"version": "2.0.2.0",
+		"includeClientSideAssets": true,
+		"skipFeatureDeployment": true,
+		"isDomainIsolated": false,
+		"developer": {
+			"name": "Microsoft Graph Toolkit",
+			"websiteUrl": "https://docs.microsoft.com/graph/toolkit/overview",
+			"privacyUrl": "https://privacy.microsoft.com/privacystatement",
+			"termsOfUseUrl": "https://privacy.microsoft.com/privacystatement",
+			"mpnId": "000000"
+		}
+	},
+	"paths": {
+		"zippedPackage": "solution/mgt-spfx.sppkg"
+	}
 }
