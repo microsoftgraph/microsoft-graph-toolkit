@@ -28,13 +28,19 @@ Run the webpart by running:
 
 `gulp serve`
 
+In the output from the `gulp serve` command you will see a query string to load your scripts e.g.:
+```
+[spfx-serve] To load your scripts, use this query string: ?debug=true&noredir=true&debugManifestsFile=https://localhost:4321/temp/manifests.js
+```
+Copy this query string value.
+
 Open the browser to:
 
-`https://<your-tenant>.sharepoint.com/_layouts/15/Workbench.aspx`
+`https://<your-tenant>.sharepoint.com/_layouts/15/Workbench.aspx<copied-query-string>`
 
-The webpart will be available to be added
+After trusting the scripts the webpart will be available to be added
 
-### Approving permissions 
+### Approving permissions
 
 The admin of your tenant will need to approve the graph permissions in the admin portal before you can use any graph APIs. You only need to do these steps once (or if you add additional permissions to `config/package-solution.json`)
 
@@ -50,7 +56,7 @@ The admin of your tenant will need to approve the graph permissions in the admin
 
 2. Upload the package to an app catalog. Navigate to the app catalog url and click on *Distribute apps for SharePoint*. Click on *new* to upload the solution to the app catalog and deploy it.
 
-    > If you do not have an app catalog on your tenant, follow [these steps](https://docs.microsoft.com/en-us/sharepoint/use-app-catalog#step-1-create-the-app-catalog-site-collection) to create one. 
+    > If you do not have an app catalog on your tenant, follow [these steps](https://docs.microsoft.com/en-us/sharepoint/use-app-catalog#step-1-create-the-app-catalog-site-collection) to create one.
 
 3. Approve the permissions. Go to the SharePoint admin center (best reached via https://admin.microsoft.com > click **Show All** > SharePoint) and make sure you are signed in as admin.
 

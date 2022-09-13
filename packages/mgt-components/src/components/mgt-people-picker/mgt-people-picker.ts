@@ -916,10 +916,9 @@ export class MgtPeoplePicker extends MgtTemplatedComponent {
              };
              return html`
                <li
-                role="option"
+                role="listitem"
                 @keydown="${this.onUserKeyDown}"
                 aria-label=" ${this.strings.suggestedContact} ${person.displayName}"
-                id="${person.displayName}"
                 tabindex="0"
                 class="${classMap(listPersonClasses)}"
                 @click="${e => this.onPersonClick(person)}">
@@ -994,7 +993,13 @@ export class MgtPeoplePicker extends MgtTemplatedComponent {
     const input = this.userInput.toLowerCase();
     const provider = Providers.globalProvider;
 
-    if (!people && provider && provider.state === ProviderState.SignedIn) {
+    if (people) {
+      if (input) {
+        const displayNameMatch = people.filter(person => person?.displayName.toLowerCase().includes(input));
+        people = displayNameMatch;
+      }
+      this._showLoading = false;
+    } else if (!people && provider && provider.state === ProviderState.SignedIn) {
       const graph = provider.graph.forComponent(this);
 
       if (!input.length && this._isFocused) {

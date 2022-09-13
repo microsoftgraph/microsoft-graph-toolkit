@@ -475,12 +475,12 @@ export class MgtPersonCard extends MgtTemplatedComponent {
     const navigationTemplate =
       this._history && this._history.length
         ? html`
-             <div class="nav">
-               <div class="nav__back" tabindex="0" @keydown=${(e: KeyboardEvent) => {
-                 e.code === 'Enter' ? this.goBack() : '';
-               }} @click=${() => this.goBack()}>${getSvg(SvgIcon.Back)}</div>
-             </div>
-           `
+            <div class="nav">
+              <div class="nav__back" tabindex="0" @keydown=${(e: KeyboardEvent) => {
+                e.code === 'Enter' ? this.goBack() : '';
+              }} @click=${() => this.goBack()}>${getSvg(SvgIcon.Back)}</div>
+            </div>
+          `
         : null;
 
     // Check for a person-details template
@@ -569,16 +569,17 @@ export class MgtPersonCard extends MgtTemplatedComponent {
   protected renderPerson(): TemplateResult {
     const avatarSize = 'large';
     return mgtHtml`
-       <mgt-person
-         class="person-image"
-         .personDetails=${this.internalPersonDetails}
-         .personImage=${this.getImage()}
-         .personPresence=${this.personPresence}
-         .showPresence=${this.showPresence}
-         .avatarSize=${avatarSize}
-         .view=${ViewType.threelines}
-       ></mgt-person>
-     `;
+      <mgt-person
+        tabindex="0"
+        class="person-image"
+        .personDetails=${this.internalPersonDetails}
+        .personImage=${this.getImage()}
+        .personPresence=${this.personPresence}
+        .showPresence=${this.showPresence}
+        .avatarSize=${avatarSize}
+        .view=${ViewType.threelines}
+      ></mgt-person>
+    `;
   }
 
   /**
@@ -684,10 +685,12 @@ export class MgtPersonCard extends MgtTemplatedComponent {
    */
   protected renderExpandedDetailsButton(): TemplateResult {
     return html`
-       <div class="expanded-details-button" @click=${this.showExpandedDetails} @keydown=${
-      this.handleKeyDown
-    } @ tabindex=0>
-         ${getSvg(SvgIcon.ExpandDown)}
+       <div
+        class="expanded-details-button"
+        @click=${this.showExpandedDetails}
+        @keydown=${this.handleKeyDown}
+        tabindex=0>
+           ${getSvg(SvgIcon.ExpandDown)}
        </div>
      `;
   }
@@ -720,13 +723,15 @@ export class MgtPersonCard extends MgtTemplatedComponent {
     const sectionNavTemplate = this.renderSectionNavigation();
 
     return html`
-       <div class="section-nav">
-         ${sectionNavTemplate}
-       </div>
-       <div class="section-host ${this._smallView ? 'small' : ''}" @wheel=${(e: WheelEvent) =>
-      this.handleSectionScroll(e)} tabindex=0>
-       </div>
-     `;
+      <div class="section-nav">
+        ${sectionNavTemplate}
+      </div>
+      <div
+        class="section-host ${this._smallView ? 'small' : ''} ${this._smallView ? 'small' : ''}"
+        @wheel=${(e: WheelEvent) => this.handleSectionScroll(e)}
+        tabindex=0>
+      </div>
+    `;
   }
 
   /**
@@ -749,12 +754,18 @@ export class MgtPersonCard extends MgtTemplatedComponent {
         active: i === currentSectionIndex,
         'section-nav__icon': true
       });
+
       return html`
-         <fluent-tab id="${name}-Tab" class=${classes}
-           slot="tab" @keyup="${() => this.updateCurrentSection(section)}" @click=${() =>
-        this.updateCurrentSection(section)}>${section.renderIcon()}
-         </fluent-tab>
-       `;
+        <fluent-tab
+          id="${name}-Tab"
+          class=${classes}
+          slot="tab"
+          @keyup="${() => this.updateCurrentSection(section)}"
+          @click=${() => this.updateCurrentSection(section)}
+        >
+          ${section.renderIcon()}
+        </fluent-tab>
+      `;
     });
 
     const additionalPanelTemplates = this.sections.map((section, i) => {

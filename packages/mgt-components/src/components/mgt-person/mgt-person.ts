@@ -1101,14 +1101,14 @@ export class MgtPerson extends MgtTemplatedComponent {
     return (
       this.renderTemplate('person-card', { person: personDetails, personImage: image }) ||
       mgtHtml`
-         <mgt-person-card
-           lock-tab-navigation
-           .personDetails=${personDetails}
-           .personImage=${image}
-           .personPresence=${presence}
-           .showPresence=${this.showPresence}
-         ></mgt-person-card>
-       `
+        <mgt-person-card
+          lock-tab-navigation
+          .personDetails=${personDetails}
+          .personImage=${image}
+          .personPresence=${presence}
+          .showPresence=${this.showPresence}
+        ></mgt-person-card>
+      `
     );
   }
 
