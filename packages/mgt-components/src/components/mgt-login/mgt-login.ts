@@ -20,7 +20,8 @@ import {
 import { AvatarSize, IDynamicPerson, ViewType } from '../../graph/types';
 import { MgtFlyout } from '../sub-components/mgt-flyout/mgt-flyout';
 import { getUserWithPhoto } from '../../graph/graph.userWithPhoto';
-import { MgtPerson, PersonViewType } from '../mgt-person/mgt-person';
+import { MgtPerson } from '../mgt-person/mgt-person';
+import { PersonViewType } from '../mgt-person/mgt-person-types';
 
 import { getSvg, SvgIcon } from '../../utils/SvgHelper';
 

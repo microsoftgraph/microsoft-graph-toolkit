@@ -4,9 +4,11 @@
   "private": true,
   "main": "lib/index.js",
   "scripts": {
+    "serve": "gulp serve",
     "build": "gulp bundle",
     "clean": "gulp clean",
-    "test": "gulp test"
+    "test": "gulp test",
+    "package": "gulp build && gulp bundle && gulp package-solution --ship"
   },
   "dependencies": {
     "@microsoft/mgt-react": "*",
