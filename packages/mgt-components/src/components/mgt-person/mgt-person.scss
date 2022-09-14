@@ -53,6 +53,9 @@ $presence-color-oof: #b4009e;
   display: block;
   margin: -11px -13px;
   padding: 11px 13px;
+  &:focus-visible {
+    outline: none;
+  }
 }
 
 :host svg,
@@ -70,6 +73,12 @@ mgt-person .person-root {
 
   &.clickable {
     cursor: pointer;
+  }
+
+  &.small {
+    &:focus-visible {
+      outline: auto;
+    }
   }
 
   .user-avatar {
