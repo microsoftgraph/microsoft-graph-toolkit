@@ -1828,6 +1828,7 @@ PERFORMANCE OF THIS SOFTWARE.
         <div>
           <input
             id="file-upload-input"
+            aria-label="file upload input"
             type="file"
             multiple="true"
             @change="${this.onFileUploadChange}"
