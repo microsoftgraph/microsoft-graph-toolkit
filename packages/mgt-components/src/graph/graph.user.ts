@@ -292,7 +292,9 @@ export async function getUsersForPeopleQueries(graph: IGraph, peopleQueries: str
     if (getIsUsersCacheEnabled() && cacheRes && getUserInvalidationTime() > Date.now() - cacheRes.timeCached) {
       people.push(JSON.parse(cacheRes.results[0]));
     } else if (personQuery !== '') {
-      batch.get(personQuery, `/me/people?$search="${personQuery}"`, ['people.read']);
+      batch.get(personQuery, `/me/people?$search="${personQuery}"`, ['people.read'], {
+        'X-PeopleQuery-QuerySources': 'Mailbox,Directory'
+      });
     }
   }
 
