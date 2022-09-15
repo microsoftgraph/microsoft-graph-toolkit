@@ -72,6 +72,10 @@ mgt-login .login-button {
   &.no-click {
     pointer-events: none;
   }
+
+  &:focus-visible {
+    outline: auto;
+  }
 }
 
 :host .login-icon,
