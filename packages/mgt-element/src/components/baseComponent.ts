@@ -247,7 +247,7 @@ export abstract class MgtBaseComponent extends LitElement {
       return Promise.resolve();
     } else {
       // Signed in, load the internal component state
-      const loadStatePromise = new Promise(async (resolve, reject) => {
+      const loadStatePromise = new Promise<void>(async (resolve, reject) => {
         try {
           this.setLoadingState(true);
           this.fireCustomEvent('loadingInitiated');

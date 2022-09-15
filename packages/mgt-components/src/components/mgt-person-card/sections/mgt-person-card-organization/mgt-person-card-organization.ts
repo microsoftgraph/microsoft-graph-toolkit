@@ -152,11 +152,11 @@ export class MgtPersonCardOrganization extends BasePersonCardSection {
     }
 
     return html`
-       <div class="root" dir=${this.direction}>
-         <div class="title" tabindex="0">${this.strings.organizationSectionTitle}</div>
-         ${contentTemplate}
-       </div>
-     `;
+      <div class="root" dir=${this.direction}>
+        <div class="title" tabindex="0">${this.strings.organizationSectionTitle}</div>
+        ${contentTemplate}
+      </div>
+    `;
   }
 
   /**
@@ -271,14 +271,19 @@ export class MgtPersonCardOrganization extends BasePersonCardSection {
       <div class="direct-report__compact">
         ${directReports.slice(0, 6).map(
           person => html`
-            <div class="direct-report" @keydown=${(e: KeyboardEvent) => {
-              e.code === 'Enter' ? this.navigateCard(person) : '';
-            }} @click=${() => this.navigateCard(person)} @keydown=${(e: KeyboardEvent) => {
-            e.code === 'Enter' ? this.navigateCard(person) : '';
-          }}>
-              <mgt-person .personDetails=${person} .fetchImage=${true} .showPresence=${true} .view=${
-            ViewType.twolines
-          }></mgt-person>
+            <div
+              class="direct-report"
+              @keydown=${(e: KeyboardEvent) => {
+                e.code === 'Enter' ? this.navigateCard(person) : '';
+              }}
+              @click=${() => this.navigateCard(person)}
+            >
+              <mgt-person
+                .personDetails=${person}
+                .fetchImage=${true}
+                .showPresence=${true}
+                .view=${ViewType.twolines}
+              ></mgt-person>
             </div>
           `
         )}
@@ -354,11 +359,11 @@ export class MgtPersonCardOrganization extends BasePersonCardSection {
         : `${this._state.person.givenName} ${this.strings.userWorksWithSubSectionTitle}`;
 
     return html`
-       <div class="divider"></div>
-       <div class="subtitle" tabindex="0">${subtitle}</div>
-       <div>
-         ${people.slice(0, 6).map(person => this.renderCoworker(person))}
-       </div>
-     `;
+      <div class="divider"></div>
+      <div class="subtitle" tabindex="0">${subtitle}</div>
+      <div>
+        ${people.slice(0, 6).map(person => this.renderCoworker(person))}
+      </div>
+    `;
   }
 }
