@@ -576,11 +576,12 @@ export class MgtPerson extends MgtTemplatedComponent {
 
       const rootClasses = {
         'person-root': true,
-        clickable: this.personCardInteraction === PersonCardInteraction.click
+        clickable: this.personCardInteraction === PersonCardInteraction.click,
+        small: !this.isLargeAvatar()
       };
 
       personTemplate = html`
-        <div class=${classMap(rootClasses)}>
+        <div class=${classMap(rootClasses)} tabindex="0">
           ${imageWithPresenceTemplate} ${detailsTemplate}
         </div>
       `;
@@ -598,7 +599,6 @@ export class MgtPerson extends MgtTemplatedComponent {
         @mouseenter=${this.handleMouseEnter}
         @mouseleave=${this.handleMouseLeave}
         @keydown=${this.handleKeyDown}
-        tabindex=0
       >
         ${personTemplate}
       </div>
