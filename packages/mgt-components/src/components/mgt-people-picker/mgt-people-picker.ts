@@ -1232,7 +1232,7 @@ export class MgtPeoplePicker extends MgtTemplatedComponent {
    */
   private async getGroupsForGroupIds(graph: IGraph, people: IDynamicPerson[]) {
     const groups = await getGroupsForGroupIds(graph, this.groupIds, this.groupFilters);
-    for (let group of groups as IDynamicPerson[]) {
+    for (const group of groups as IDynamicPerson[]) {
       people = people.concat(group);
     }
     people = people.filter(person => person);

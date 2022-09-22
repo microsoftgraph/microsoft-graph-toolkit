@@ -170,9 +170,13 @@ export class MgtPersonCardOrganization extends BasePersonCardSection {
    */
   protected renderManager(person: User): TemplateResult {
     return mgtHtml`
-      <div class="org-member" @keydown=${(e: KeyboardEvent) => {
-        e.code === 'Enter' ? this.navigateCard(person) : '';
-      }} @click=${() => this.navigateCard(person)}>
+      <div
+        class="org-member"
+        @keydown=${(e: KeyboardEvent) => {
+          e.code === 'Enter' ? this.navigateCard(person) : '';
+        }}
+        @click=${() => this.navigateCard(person)}
+      >
         <div class="org-member__person">
           <mgt-person
             .personDetails=${person}
@@ -235,9 +239,13 @@ export class MgtPersonCardOrganization extends BasePersonCardSection {
       <div>
         ${directReports.map(
           person => mgtHtml`
-            <div class="org-member org-member--direct-report" @keydown=${(e: KeyboardEvent) => {
-              e.code === 'Enter' ? this.navigateCard(person) : '';
-            }} @click=${() => this.navigateCard(person)}>
+            <div
+              class="org-member org-member--direct-report"
+              @keydown=${(e: KeyboardEvent) => {
+                e.code === 'Enter' ? this.navigateCard(person) : '';
+              }}
+              @click=${() => this.navigateCard(person)}
+            >
               <div class="org-member__person">
                 <mgt-person
                   .personDetails=${person}

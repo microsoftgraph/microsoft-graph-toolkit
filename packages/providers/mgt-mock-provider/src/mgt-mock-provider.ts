@@ -6,10 +6,10 @@
  */
 
 import { property } from 'lit/decorators.js';
-import { MgtBaseProvider } from '../components/baseProvider';
-import { Providers } from '../providers/Providers';
+import { MgtBaseProvider } from '@microsoft/mgt-element';
+import { Providers } from '@microsoft/mgt-element';
 import { MockProvider } from './MockProvider';
-import { customElement } from '../utils/CustomElement';
+import { customElement } from '@microsoft/mgt-element';
 /**
  * Sets global provider to a mock Provider
  *

@@ -755,18 +755,18 @@ export class MgtPersonCard extends MgtTemplatedComponent {
         active: i === currentSectionIndex,
         'section-nav__icon': true
       });
-      const tagName = section.tagName;
-      const ariaLabel = tagName.substring(16, tagName.length).toLowerCase();
+
       return html`
         <fluent-tab
           id="${name}-Tab"
           class=${classes}
           slot="tab"
           @keyup="${() => this.updateCurrentSection(section)}"
-          @click=${() => this.updateCurrentSection(section)}>
+          @click=${() => this.updateCurrentSection(section)}
+        >
           ${section.renderIcon()}
         </fluent-tab>
-        `;
+      `;
     });
 
     const additionalPanelTemplates = this.sections.map((section, i) => {
