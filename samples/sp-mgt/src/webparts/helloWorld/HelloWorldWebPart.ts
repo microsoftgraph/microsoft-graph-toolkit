@@ -2,8 +2,8 @@ import { BaseClientSideWebPart } from '@microsoft/sp-webpart-base';
 
 import styles from './HelloWorldWebPart.module.scss';
 
-import { Providers } from '@microsoft/mgt-element';
-import { SharePointProvider } from '@microsoft/mgt-sharepoint-provider';
+import { Providers } from '@microsoft/mgt-element/dist/es6/providers/Providers';
+import { SharePointProvider } from '@microsoft/mgt-sharepoint-provider/dist/es6/SharePointProvider';
 import { PersonCardInteraction } from '@microsoft/mgt-components/dist/es6/components/PersonCardInteraction';
 import { PersonViewType } from '@microsoft/mgt-components/dist/es6/components/mgt-person/mgt-person-types';
 import { customElementHelper } from '@microsoft/mgt-element/dist/es6/components/customElementHelper';
@@ -14,7 +14,7 @@ export default class HelloWorldWebPart extends BaseClientSideWebPart<{}> {
 
   protected onInit(): Promise<void> {
     Providers.globalProvider = new SharePointProvider(this.context);
-    customElementHelper.withDisambiguation('bar');
+    customElementHelper.withDisambiguation('contoso');
     return super.onInit();
   }
 
@@ -41,17 +41,19 @@ export default class HelloWorldWebPart extends BaseClientSideWebPart<{}> {
   private _renderMgtComponents(): string {
     return this._hasImportedMgtScripts
       ? `
-      <mgt-bar-person
-        show-presence
-        query="me"
-        view="${PersonViewType.twolines}"
-        person-card-interaction="${PersonCardInteraction.click}"
-      ></mgt-bar-person>
-      <mgt-bar-people></mgt-bar-people>
-      <mgt-bar-agenda></mgt-bar-agenda>
-      <mgt-bar-people-picker></mgt-bar-people-picker>
-      <mgt-bar-teams-channel-picker></mgt-bar-teams-channel-picker>
-      <mgt-bar-tasks></mgt-bar-tasks>
+      <div class="${styles.container}">
+        <mgt-contoso-person
+          show-presence
+          person-query="me"
+          view="twoLines"
+          person-card="hover"
+        ></mgt-contoso-person>
+        <mgt-contoso-people></mgt-contoso-people>
+        <mgt-contoso-agenda></mgt-contoso-agenda>
+        <mgt-contoso-people-picker></mgt-contoso-people-picker>
+        <mgt-contoso-teams-channel-picker></mgt-contoso-teams-channel-picker>
+        <mgt-contoso-tasks></mgt-contoso-tasks>
+      </div>
 `
       : '';
   }
