@@ -5,8 +5,9 @@
  * -------------------------------------------------------------------------------------------
  */
 
-import { html, property, TemplateResult } from 'lit-element';
-import { classMap } from 'lit-html/directives/class-map';
+import { html, TemplateResult } from 'lit';
+import { property } from 'lit/decorators.js';
+import { classMap } from 'lit/directives/class-map.js';
 import { ComponentMediaQuery, Providers, ProviderState, MgtTemplatedComponent } from '@microsoft/mgt-element';
 import { strings } from './strings';
 
@@ -367,7 +368,7 @@ export abstract class MgtTasksBase extends MgtTemplatedComponent {
     }
 
     this._isNewTaskBeingAdded = true;
-    await this.requestUpdate();
+    this.requestUpdate();
 
     try {
       await this.createNewTask();

@@ -5,7 +5,8 @@
  * -------------------------------------------------------------------------------------------
  */
 
-import { customElement, html } from 'lit-element';
+import { html } from 'lit';
+import { customElement } from 'lit/decorators.js';
 import { MgtBaseComponent } from '@microsoft/mgt-element';
 import { styles } from './mgt-spinner-css';
 

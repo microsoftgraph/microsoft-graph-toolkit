@@ -5,7 +5,8 @@
  * -------------------------------------------------------------------------------------------
  */
 
-import { internalProperty, LitElement, PropertyValues } from 'lit-element';
+import { LitElement, PropertyValues } from 'lit';
+import { state } from 'lit/decorators.js';
 import { ProviderState } from '../providers/IProvider';
 import { Providers } from '../providers/Providers';
 import { LocalizationHelper } from '../utils/LocalizationHelper';
@@ -48,7 +49,7 @@ export abstract class MgtBaseComponent extends LitElement {
    * @protected
    * @memberof MgtBaseComponent
    */
-  @internalProperty() protected direction = 'ltr';
+  @state() protected direction = 'ltr';
 
   /**
    * Gets the ComponentMediaQuery of the component
@@ -246,7 +247,7 @@ export abstract class MgtBaseComponent extends LitElement {
       return Promise.resolve();
     } else {
       // Signed in, load the internal component state
-      const loadStatePromise = new Promise(async (resolve, reject) => {
+      const loadStatePromise = new Promise<void>(async (resolve, reject) => {
         try {
           this.setLoadingState(true);
           this.fireCustomEvent('loadingInitiated');

@@ -5,7 +5,7 @@
  * -------------------------------------------------------------------------------------------
  */
 
-import { customElement, property } from 'lit-element';
+import { customElement, property } from 'lit/decorators.js';
 import { Providers, LoginType, MgtBaseProvider } from '@microsoft/mgt-element';
 import { Msal2Config, Msal2Provider, PromptType } from './Msal2Provider';
 /**
@@ -176,7 +176,7 @@ export class MgtMsal2Provider extends MgtBaseProvider {
       }
 
       if (this.prompt) {
-        let prompt: string = this.prompt.toUpperCase();
+        const prompt: string = this.prompt.toUpperCase();
         const promptEnum = PromptType[prompt];
         config.prompt = promptEnum;
       }

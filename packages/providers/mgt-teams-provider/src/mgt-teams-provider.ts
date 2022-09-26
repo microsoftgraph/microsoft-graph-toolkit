@@ -5,7 +5,7 @@
  * -------------------------------------------------------------------------------------------
  */
 
-import { customElement, property } from 'lit-element';
+import { customElement, property } from 'lit/decorators.js';
 import { Configuration } from 'msal';
 import { Providers, MgtBaseProvider } from '@microsoft/mgt-element';
 import { TeamsConfig, TeamsProvider } from './TeamsProvider';

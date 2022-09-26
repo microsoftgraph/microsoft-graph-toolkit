@@ -5,7 +5,7 @@
  * -------------------------------------------------------------------------------------------
  */
 
-import { html } from 'lit-element';
+import { html } from 'lit';
 import { withCodeEditor } from '../../../.storybook/addons/codeEditorAddon/codeAddon';
 
 export default {
@@ -95,14 +95,14 @@ export const RTL = () => html`
       <mgt-person person-query="me" class="example" vertical-layout id="online4" view="fourLines"></mgt-person>
     </div>
   </body>
-  <style> 
+  <style>
   .example {
       margin-bottom: 20px;
     }
     </style>
 `;
 
-export const personVertical = () => html` 
+export const personVertical = () => html`
 
 <div class="row">
   <mgt-person person-query="me" class="example" vertical-layout view="oneline" person-card="hover"></mgt-person>

@@ -6,7 +6,8 @@
  */
 
 import { MgtTemplatedComponent } from '@microsoft/mgt-element';
-import { html, property, TemplateResult } from 'lit-element';
+import { html, TemplateResult } from 'lit';
+import { property } from 'lit/decorators.js';
 
 import { IDynamicPerson } from '../../../graph/types';
 import { MgtPersonCard } from '../mgt-person-card';

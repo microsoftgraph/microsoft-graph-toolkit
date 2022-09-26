@@ -5,8 +5,9 @@
  * -------------------------------------------------------------------------------------------
  */
 
-import { customElement, html, property, PropertyValues, TemplateResult } from 'lit-element';
-import { classMap } from 'lit-html/directives/class-map';
+import { html, PropertyValues, TemplateResult } from 'lit';
+import { customElement, property } from 'lit/decorators.js';
+import { classMap } from 'lit/directives/class-map.js';
 import { getSegmentAwareWindow, isWindowSegmentAware, IWindowSegment } from '../../../utils/WindowSegmentHelpers';
 import { styles } from './mgt-flyout-css';
 import { MgtBaseComponent } from '@microsoft/mgt-element/';
@@ -411,7 +412,7 @@ export class MgtFlyout extends MgtBaseComponent {
         flyout.style.setProperty('--mgt-flyout-set-height', `${height}px`);
       } else {
         flyout.style.maxHeight = null;
-        flyout.style.setProperty('--mgt-flyout-set-height', `unset`);
+        flyout.style.setProperty('--mgt-flyout-set-height', 'unset');
       }
     }
   }

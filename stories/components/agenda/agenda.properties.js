@@ -5,7 +5,7 @@
  * -------------------------------------------------------------------------------------------
  */
 
-import { html } from 'lit-element';
+import { html } from 'lit';
 import { withCodeEditor } from '../../../.storybook/addons/codeEditorAddon/codeAddon';
 
 export default {
@@ -37,4 +37,3 @@ export const getEventsForNextWeek = () => html`
 export const preferredTimezone = () => html`
   <mgt-agenda preferred-timezone="Europe/Paris"></mgt-agenda>
 `;
-
