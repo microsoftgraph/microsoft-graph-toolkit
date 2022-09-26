@@ -17,7 +17,7 @@ import { debounce } from '../../utils/Utils';
 import { styles } from './mgt-teams-channel-picker-css';
 import { getAllMyTeams, getTeamsPhotosforPhotoIds } from './mgt-teams-channel-picker.graph';
 import { strings } from './strings';
-import { repeat } from 'lit-html/directives/repeat';
+import { repeat } from 'lit/directives/repeat.js';
 import { registerFluentComponents } from '../../utils/FluentComponents';
 import { fluentTreeView, fluentTreeItem, fluentCard } from '@fluentui/web-components';
 registerFluentComponents(fluentCard, fluentTreeView, fluentTreeItem);
