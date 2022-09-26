@@ -257,11 +257,11 @@ export class MgtTeamsChannelPicker extends MgtTemplatedComponent {
 
   // determines loading state
   @property({ attribute: false }) private _isDropdownVisible;
+  private _dir: string = this.direction;
 
   constructor() {
     super();
     this.handleWindowClick = this.handleWindowClick.bind(this);
-    this.direction = this.dir;
     this.addEventListener('keydown', e => this.onUserKeyDown(e));
     this.addEventListener('focus', _ => this.loadTeamsIfNotLoaded());
     this.addEventListener('mouseover', _ => this.loadTeamsIfNotLoaded());
@@ -345,7 +345,7 @@ export class MgtTeamsChannelPicker extends MgtTemplatedComponent {
     return (
       this.renderTemplate('default', { teams: this.items }) ||
       html`
-        <div class="root" @blur=${this.lostFocus} dir=${this.direction}>
+        <div class="root" @blur=${this.lostFocus} dir=${this._dir}>
           <div class=${classMap(inputClasses)} @click=${this.gainedFocus}>
             ${this.renderSelected()}
             <div class=${classMap(searchClasses)}>${this.renderSearchIcon()} ${this.renderInput()}</div>
@@ -548,16 +548,15 @@ export class MgtTeamsChannelPicker extends MgtTemplatedComponent {
    *
    * @protected
    * @param {ChannelPickerItemState[]} items
-   * @param {number} [level=0]
    * @returns
    * @memberof MgtTeamsChannelPicker
    */
-  protected renderDropdownList(items: ChannelPickerItemState[], level: number = 0) {
+  protected renderDropdownList(items: ChannelPickerItemState[]) {
     if (items && items.length > 0) {
       let icon: TemplateResult = null;
 
       return html`
-        <fluent-tree-view dir=${this.direction}>
+        <fluent-tree-view dir=${this._dir}>
           ${repeat(
             items,
             itemObj => itemObj?.item,
@@ -571,7 +570,7 @@ export class MgtTeamsChannelPicker extends MgtTemplatedComponent {
               return html`
                 <fluent-tree-item
                   ?expanded=${obj?.isExpanded}
-                  dir=${this.direction}>
+                  dir=${this._dir}>
                     ${icon}${obj.item.displayName}
                     ${repeat(
                       obj?.channels,
@@ -611,7 +610,7 @@ export class MgtTeamsChannelPicker extends MgtTemplatedComponent {
 
     return html`
       <fluent-tree-item
-        dir=${this.direction}
+        dir=${this._dir}
         @click=${() => this.handleItemClick(itemState)}>
           ${itemState?.item.displayName}
       </fluent-tree-item>`;
