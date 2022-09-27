@@ -292,7 +292,7 @@ export class MgtAgenda extends MgtTemplatedComponent {
     return (
       this.renderTemplate('loading', null) ||
       html`
-        <div class="event">
+        <fluent-card class="event">
           <div class="event-time-container">
             <div class="event-time-loading loading-element"></div>
           </div>
@@ -308,8 +308,7 @@ export class MgtAgenda extends MgtTemplatedComponent {
               <div class="event-attendee-loading loading-element"></div>
             </div>
           </div>
-        </div>
-      `
+        </fluent-card>`
     );
   }
 
