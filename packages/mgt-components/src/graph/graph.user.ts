@@ -196,7 +196,7 @@ export async function getUsersForUserIds(
     }
     if (user && getUserInvalidationTime() > Date.now() - user.timeCached) {
       user = JSON.parse(user?.user);
-      const displayName = user.displayName;
+      const displayName = user?.displayName;
 
       if (searchInput) {
         const match = displayName && displayName.toLowerCase().includes(searchInput);
