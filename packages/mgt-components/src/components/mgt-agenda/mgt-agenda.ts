@@ -16,6 +16,9 @@ import { styles } from './mgt-agenda-css';
 import { getEventsPageIterator } from './mgt-agenda.graph';
 import { SvgIcon, getSvg } from '../../utils/SvgHelper';
 import { MgtPeople } from '../mgt-people/mgt-people';
+import { registerFluentComponents } from '../../utils/FluentComponents';
+import { fluentCard, fluentTooltip } from '@fluentui/web-components';
+registerFluentComponents(fluentCard, fluentTooltip);
 
 /**
  * Web Component which represents events in a user or group calendar.
@@ -384,7 +387,8 @@ export class MgtAgenda extends MgtTemplatedComponent {
    */
   protected renderTitle(event: MicrosoftGraph.Event): TemplateResult {
     return html`
-      <div aria-label=${event.subject} class="event-subject">${event.subject}</div>
+      <div id=${event.id} aria-label=${event.subject} class="event-subject">${event.subject}</div>
+      <fluent-tooltip position="right" anchor="${event.id}">${event.subject}</fluent-tooltip>
     `;
   }
 
