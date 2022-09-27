@@ -11,10 +11,15 @@
 
 :host .header,
 mgt-agenda .header {
-  margin: var(--agenda-header-margin, 40px 10px 14px 10px);
+  margin: var(--agenda-header-margin, 18px 0px 12px 10px);
   font-family: $font-family;
   font-size: var(--agenda-header-font-size, 24px);
   color: $header__color;
+  font-style: normal;
+  font-weight: 400;
+  line-height: 32px;
+  mix-blend-mode: normal;
+  opacity: 0.9;
 }
 
 :host .agenda > .group:first-child > .header,
