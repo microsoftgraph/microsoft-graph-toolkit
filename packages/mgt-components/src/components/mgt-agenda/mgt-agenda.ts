@@ -344,7 +344,7 @@ export class MgtAgenda extends MgtTemplatedComponent {
    */
   protected renderEvent(event: MicrosoftGraph.Event): TemplateResult {
     return html`
-      <div class="event">
+      <fluent-card class="event">
         <div class="event-time-container">
           <div class="event-time" aria-label="${this.getEventTimeString(event)}">${this.getEventTimeString(event)}</div>
         </div>
@@ -352,7 +352,7 @@ export class MgtAgenda extends MgtTemplatedComponent {
           ${this.renderTitle(event)} ${this.renderLocation(event)} ${this.renderAttendees(event)}
         </div>
         <div class="event-other-container">${this.renderOther(event)}</div>
-      </div>
+      </fluent-card>
     `;
     // <div class="event-duration">${this.getEventDuration(event)}</div>
   }
@@ -424,6 +424,7 @@ export class MgtAgenda extends MgtTemplatedComponent {
     }
     return html`
       <mgt-people
+        show-presence
         class="event-attendees"
         .peopleQueries=${event.attendees.map(attendee => {
           return attendee.emailAddress.address;
@@ -489,16 +490,14 @@ export class MgtAgenda extends MgtTemplatedComponent {
    */
   protected renderEvents(events: MicrosoftGraph.Event[]): TemplateResult {
     return html`
-      <ul class="agenda-list">
         ${events.map(
           event =>
             html`
-              <li @click=${() => this.eventClicked(event)}>
+              <div @click=${() => this.eventClicked(event)}>
                 ${this.renderTemplate('event', { event }, event.id) || this.renderEvent(event)}
-              </li>
+              </div>
             `
         )}
-      </ul>
     `;
   }
 

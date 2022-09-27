@@ -22,25 +22,16 @@ mgt-agenda .agenda > .group:first-child > .header {
   margin-top: 0;
 }
 
-:host .agenda-list,
-mgt-agenda .agenda-list {
-  list-style-type: none;
-  padding: 0;
-  margin: 0;
-  font-family: $font-family;
-  font-style: normal;
-  font-weight: normal;
-}
-
 :host .event,
 mgt-agenda .event {
   background: set-var(event__background-color, $theme-default, $agenda);
-  border: var(--event-border, solid 2px rgba(0, 0, 0, 0));
-  box-shadow: var(--event-box-shadow, 0px 2px 8px set-var(box-shadow__color, $theme-default, $common));
+  border: var(--event-border, none);
+  box-shadow: var(--elevation-shadow-card-rest, --event-box-shadow);
   margin: var(--event-margin, 0px 10px 14px 10px);
-  padding: var(--event-padding, 0px);
+  padding: var(--event-padding, 12px);
+  --card-height: auto;
+  width: inherit;
   display: flex;
-  border-radius: 8px;
 }
 
 :host .narrow .event,
@@ -50,15 +41,23 @@ mgt-agenda .narrow .event {
 
 :host .event-time-container,
 mgt-agenda .event-time-container {
-  display: flex;
+  height: 16px;
+  width: 112px;
   flex-direction: column;
-  margin: 18px 38px 18px 18px;
-  width: 125px;
+  font-family: var(--default-font-family);
+  font-style: normal;
+  font-weight: 600;
+  font-size: 12px;
+  line-height: 16px;
+  color: $event__time__color;
+  position: relative;
+  left: 6px;
+  top: 8px;
 }
 
 :host .narrow .event-time-container,
 mgt-agenda .narrow .event-time-container {
-  margin: 14px 18px 8px 18px;
+  margin: 20px 40px 0px 18px;
 }
 
 :host .event-time,
@@ -75,7 +74,11 @@ mgt-agenda .event-duration {
 
 :host .event-details-container,
 mgt-agenda .event-details-container {
-  margin: 14px 18px 14px 0px;
+  flex-direction: column;
+  position: relative;
+  bottom: 8px;
+  top: 0px;
+  left: 32px;
 }
 
 :host .narrow .event-details-container,
@@ -85,20 +88,27 @@ mgt-agenda .narrow .event-details-container {
 
 :host .event-subject,
 mgt-agenda .event-subject {
-  margin: 0px 18px 0px 0px;
-  font-size: var(--event-subject-font-size, 19px);
   color: $event__subject__color;
+  width: fit-content;
+  height: 28px;
+  font-family: $font-family;
+  font-style: normal;
+  font-weight: 400;
+  font-size: var(--event-subject-font-size, 20px);
+  line-height: 28px;
+  color: $event__subject__color;
+  mix-blend-mode: normal;
 }
 
 :host .event-location-container,
 mgt-agenda .event-location-container {
-  display: flex;
-  margin: 8px 18px 0px 0px;
+  display: inline-flex;
 }
 
 :host .event-location-icon svg,
 mgt-agenda .event-location-icon svg {
-  height: 12px;
+  position: relative;
+  top: 2px;
 }
 
 :host .event-location-icon svg path,
@@ -108,10 +118,13 @@ mgt-agenda .event-location-icon svg path {
 
 :host .event-location,
 mgt-agenda .event-location {
+  margin: 0px 0px 0px 3px;
+  font-family: $font-family;
+  font-style: normal;
+  font-weight: 400;
   font-size: var(--event-location-font-size, 12px);
+  line-height: 16px;
   color: $event__location__color;
-  margin: 0px 0px 0px 4px;
-  line-height: 17px;
 }
 
 :host .event-attendees,
