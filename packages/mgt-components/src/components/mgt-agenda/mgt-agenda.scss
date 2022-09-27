@@ -42,6 +42,8 @@ mgt-agenda .event {
 :host .narrow .event,
 mgt-agenda .narrow .event {
   flex-direction: column;
+  position: relative;
+  inset: 0px;
 }
 
 :host .event-time-container,
@@ -62,7 +64,7 @@ mgt-agenda .event-time-container {
 
 :host .narrow .event-time-container,
 mgt-agenda .narrow .event-time-container {
-  margin: 20px 40px 0px 18px;
+  margin-bottom: 1px;
 }
 
 :host .event-time,
@@ -88,7 +90,9 @@ mgt-agenda .event-details-container {
 
 :host .narrow .event-details-container,
 mgt-agenda .narrow .event-details-container {
-  margin: 0px 18px 14px 18px;
+  left: 6px;
+  display: flex;
+  flex-direction: column;
 }
 
 :host .event-subject,
