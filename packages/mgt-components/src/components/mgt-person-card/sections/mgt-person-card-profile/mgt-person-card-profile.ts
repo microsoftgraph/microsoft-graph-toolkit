@@ -6,7 +6,8 @@
  */
 
 import { EducationalActivity, PersonAnnualEvent, PersonInterest, Profile } from '@microsoft/microsoft-graph-types-beta';
-import { customElement, html, TemplateResult } from 'lit-element';
+import { html, TemplateResult } from 'lit';
+import { customElement } from 'lit/decorators.js';
 import { BasePersonCardSection } from '../BasePersonCardSection';
 import { getSvg, SvgIcon } from '../../../../utils/SvgHelper';
 import { styles } from './mgt-person-card-profile-css';

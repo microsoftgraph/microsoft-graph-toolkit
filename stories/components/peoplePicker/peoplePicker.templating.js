@@ -5,7 +5,7 @@
  * -------------------------------------------------------------------------------------------
  */
 
-import { html } from 'lit-element';
+import { html } from 'lit';
 import { withCodeEditor } from '../../../.storybook/addons/codeEditorAddon/codeAddon';
 
 export default {
@@ -43,4 +43,3 @@ export const DefaultTemplates = () => html`
 	</template>
 </mgt-people-picker>
 `;
-

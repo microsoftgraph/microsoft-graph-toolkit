@@ -5,7 +5,7 @@
  * -------------------------------------------------------------------------------------------
  */
 
-import { customElement, property } from 'lit-element';
+import { customElement, property } from 'lit/decorators.js';
 import { MgtBaseProvider } from '../components/baseProvider';
 import { Providers } from '../providers/Providers';
 import { MockProvider } from './MockProvider';

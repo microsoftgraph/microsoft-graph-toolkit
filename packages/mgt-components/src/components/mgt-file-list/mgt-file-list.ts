@@ -13,8 +13,9 @@ import {
   ProviderState
 } from '@microsoft/mgt-element';
 import { DriveItem } from '@microsoft/microsoft-graph-types';
-import { customElement, html, internalProperty, property, TemplateResult } from 'lit-element';
-import { repeat } from 'lit-html/directives/repeat';
+import { html, TemplateResult } from 'lit';
+import { customElement, property, state } from 'lit/decorators.js';
+import { repeat } from 'lit/directives/repeat.js';
 import {
   clearFilesCache,
   fetchNextAndCacheForFilesPageIterator,
@@ -497,7 +498,7 @@ export class MgtFileList extends MgtTemplatedComponent {
   // tracking user arrow key input of selection for accessibility purpose
   private _focusedItemIndex: number = -1;
 
-  @internalProperty() private _isLoadingMore: boolean;
+  @state() private _isLoadingMore: boolean;
 
   constructor() {
     super();

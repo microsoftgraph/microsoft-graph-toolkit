@@ -8,9 +8,17 @@
 /* ---------------Common color variables--------------- */
 $white: #ffffff; /* Neutrals / White #FFFFFF */
 $black: #000000; /* Neutrals / Web / Black #000000 */
+$black10: #1a1a1a;
 $commblue_primary: #023b8f; /* Comm Blue / Primary #0078D4 */
 $commblue_shade10: #106ebe; /* Comm Blue / Shade 10 #106EBE */
 $commblue_shade20: #005a9e; /* Comm Blue / Shade 20 #005A9E */
+
+/* colors added in fluent-ui upgrade */
+$neutralForegroundHint: #717171;
+$neutralForegroundRest: #1a1a1a;
+$neutralFillHover: #f7f7f7;
+$neutralFillStealthHover: #efefef;
+$neutralBase: #fbfbfb;
 
 $gray10: #faf9f8; /* Neutrals / Web / Gray 10 #FAF9F8 */
 $gray20: #f3f2f1; /* Neutrals / Web / Gray 20 #F3F2F1 */
@@ -55,7 +63,7 @@ $background-color__main--light: $white;
 $background-color__sub1--light: $gray10;
 $background-color__sub2--light: $gray20;
 $background-color__sub3--light: $gray40;
-$background-color__main--hover--light: $gray30;
+$background-color__main--hover--light: var(--neutral-fill-hover, $neutralFillHover);
 $background-color__main--active--light: $gray40;
 // dark
 $background-color__main--dark: $black;
@@ -68,8 +76,10 @@ $background-color__main--active--dark: $gray140;
 /* -----Text----- */
 // light
 $text__color__main--light: $black;
-$text__color__sub1--light: $gray160;
-$text__color__sub2--light: $gray120;
+// use --neutral-foreground-rest from host if provided
+$text__color__sub1--light: var(--neutral-foreground-rest, $neutralForegroundRest);
+// use --neutral-foreground-rest from host if provided
+$text__color__sub2--light: var(--neutral-foreground-hint, $neutralForegroundHint);
 $text__color__sub3--light: $gray100;
 // dark
 $text__color__main--dark: $white;

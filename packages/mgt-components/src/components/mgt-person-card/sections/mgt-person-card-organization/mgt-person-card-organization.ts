@@ -6,7 +6,8 @@
  */
 
 import { User } from '@microsoft/microsoft-graph-types';
-import { customElement, html, TemplateResult } from 'lit-element';
+import { html, TemplateResult } from 'lit';
+import { customElement } from 'lit/decorators.js';
 
 import { BasePersonCardSection } from '../BasePersonCardSection';
 import { getSvg, SvgIcon } from '../../../../utils/SvgHelper';
@@ -270,14 +271,19 @@ export class MgtPersonCardOrganization extends BasePersonCardSection {
       <div class="direct-report__compact">
         ${directReports.slice(0, 6).map(
           person => html`
-            <div class="direct-report" @keydown=${(e: KeyboardEvent) => {
-              e.code === 'Enter' ? this.navigateCard(person) : '';
-            }} @click=${() => this.navigateCard(person)} @keydown=${(e: KeyboardEvent) => {
-            e.code === 'Enter' ? this.navigateCard(person) : '';
-          }}>
-              <mgt-person .personDetails=${person} .fetchImage=${true} .showPresence=${true} .view=${
-            ViewType.twolines
-          }></mgt-person>
+            <div
+              class="direct-report"
+              @keydown=${(e: KeyboardEvent) => {
+                e.code === 'Enter' ? this.navigateCard(person) : '';
+              }}
+              @click=${() => this.navigateCard(person)}
+            >
+              <mgt-person
+                .personDetails=${person}
+                .fetchImage=${true}
+                .showPresence=${true}
+                .view=${ViewType.twolines}
+              ></mgt-person>
             </div>
           `
         )}

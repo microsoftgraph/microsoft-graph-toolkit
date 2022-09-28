@@ -43,6 +43,8 @@ $line4-font-size: var(--line4-font-size, var(--email-font-size, #{$ms-font-size-
 $line4-font-weight: var(--line4-font-weight, 400);
 $line4-text-transform: var(--line4-text-transform, #{$text-transform});
 
+$focus-offset: var(--focus-offset, 11px);
+
 $details-spacing: --details-spacing;
 $details-cta-spacing: --details-cta-spacing;
 
@@ -67,12 +69,13 @@ mgt-flyout {
 :host {
   display: block;
   font-family: $font-family;
+  :focus-visible {
+    outline-offset: $focus-offset;
+  }
 }
 
 :host .root {
   display: block;
-  margin: -11px -13px;
-  padding: 11px 13px;
 }
 
 :host svg,
@@ -299,6 +302,13 @@ mgt-person .person-root {
         width: 6px;
         height: 6px;
 
+        &__people {
+          left: calc(#{$avatar-size-s} - 6px);
+          border: 0px;
+          width: 6px;
+          height: 6px;
+        }
+
         .presence-basic {
           width: 2px;
           height: 2px;
@@ -423,10 +433,7 @@ mgt-person .person-root {
       img {
         position: absolute;
         display: block;
-        top: -100%;
-        right: -100%;
-        bottom: -100%;
-        left: -100%;
+        inset: -100%;
         margin: auto;
         height: 100%;
         width: 100%;
@@ -559,6 +566,7 @@ mgt-person .person-root {
 
     &.vertical {
       text-align: center;
+      align-items: center;
       margin: var($details-spacing, 7px 0px 0px 0px);
 
       &.small {
@@ -592,6 +600,7 @@ mgt-person .person-root {
       font-weight: $line1-font-weight;
       text-transform: $text-transform;
       line-height: $line1-line-height;
+      width: fit-content;
     }
 
     .line2 {
@@ -718,6 +727,13 @@ mgt-person .vertical {
         top: calc(#{$avatar-size-s} - 8px);
         width: 8px;
         height: 8px;
+
+        &__people {
+          border: 0px;
+          width: 6px;
+          height: 6px;
+          left: calc(#{$avatar-size-s} - 6px);
+        }
 
         .presence-basic {
           width: 4px;
