@@ -122,7 +122,11 @@ Your tab needs to run as a registered Azure AD application to obtain an access t
     - 1fec8e78-bce4-4aaf-ab1b-5451cc387264
 ## Creating a Teams App
 
-Now you can use [Developer Portal for Teams](https://learn.microsoft.com/en-us/microsoftteams/platform/concepts/build-and-test/teams-developer-portal) to configure, distribute and manage your application. You can access the [Developer Portal for Teams in web browser](https://dev.teams.microsoft.com/) or as a Teams App by searching for **Developer Portal** in teams applications.
+Now you can use the [Developer Portal for Teams](https://learn.microsoft.com/en-us/microsoftteams/platform/concepts/build-and-test/teams-developer-portal) to configure, distribute and manage your application. You can access the [Developer Portal for Teams in a web browser](https://dev.teams.microsoft.com/) or as a [Teams App](https://teams.microsoft.com/l/app/14072831-8a2a-4f76-9294-057bf0b42a68).
+
+You can also use the [Teams Toolkit](https://marketplace.visualstudio.com/items?itemName=TeamsDevApp.ms-teams-vscode-extension) in **Visual Studio Code** to quickly create and deploy your Teams app.
+
+To use the Developer Portal for Teams:
 
 1. Open [Developer Portal for Teams](https://dev.teams.microsoft.com/).
 
