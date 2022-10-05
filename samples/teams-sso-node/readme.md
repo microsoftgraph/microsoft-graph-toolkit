@@ -7,7 +7,7 @@ This sample implements both a `GET` and `POST` api for exchanging the Microsoft 
 
 You will need:
 
-1. A global administrator account for an Office 365 tenant. Testing in a production tenant is not recommended! You can get a free tenant for development use by signing up for the [Office 365 Developer Program](https://developer.microsoft.com/en-us/microsoft-365/dev-program).
+1. A global administrator account for an Office 365 tenant. Testing in a production tenant is not recommended! You can get a free tenant for development use by signing up for the [Office 365 Developer Program](https://developer.microsoft.com/microsoft-365/dev-program).
 
 1. To test locally, [NodeJS](https://nodejs.org/en/download/) must be installed on your development machine.
 
@@ -122,7 +122,7 @@ Your tab needs to run as a registered Azure AD application to obtain an access t
     - 1fec8e78-bce4-4aaf-ab1b-5451cc387264
 ## Creating a Teams App
 
-Now you can use the [Developer Portal for Teams](https://learn.microsoft.com/en-us/microsoftteams/platform/concepts/build-and-test/teams-developer-portal) to configure, distribute and manage your application. You can access the [Developer Portal for Teams in a web browser](https://dev.teams.microsoft.com/) or as a [Teams App](https://teams.microsoft.com/l/app/14072831-8a2a-4f76-9294-057bf0b42a68).
+Now you can use the [Developer Portal for Teams](https://learn.microsoft.com/microsoftteams/platform/concepts/build-and-test/teams-developer-portal) to configure, distribute and manage your application. You can access the [Developer Portal for Teams in a web browser](https://dev.teams.microsoft.com/) or as a [Teams App](https://teams.microsoft.com/l/app/14072831-8a2a-4f76-9294-057bf0b42a68).
 
 You can also use the [Teams Toolkit](https://marketplace.visualstudio.com/items?itemName=TeamsDevApp.ms-teams-vscode-extension) in **Visual Studio Code** to quickly create and deploy your Teams app.
 
