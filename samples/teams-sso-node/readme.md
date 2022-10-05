@@ -122,49 +122,38 @@ Your tab needs to run as a registered Azure AD application to obtain an access t
     - 1fec8e78-bce4-4aaf-ab1b-5451cc387264
 ## Creating a Teams App
 
-Now you can use [App Studio](https://docs.microsoft.com/en-us/microsoftteams/platform/get-started/get-started-app-studio) app from within the Microsoft Teams client to help create your app manifest. If you do not have App studio installed in Teams, select Apps Store App at the bottom-left corner of the Teams app, and search for App Studio. Once you find the tile, select it and choose install in the pop-up window dialog box.
+Now you can use [Developer Portal for Teams](https://learn.microsoft.com/en-us/microsoftteams/platform/concepts/build-and-test/teams-developer-portal) to configure, distribute and manage your application. You can access the [Developer Portal for Teams in web browser](https://dev.teams.microsoft.com/) or as a Teams App by searching for **Developer Portal** in teams applications.
 
-1. Open App Studio and select the **Manifest editor** tab.
+1. Open [Developer Portal for Teams](https://dev.teams.microsoft.com/).
 
-1. Choose the **Create a new app** tile. This will bring you into the **App Details** section.
+2. Choose **Apps** from the left sidebar menu.
 
-1. Under **App names** fill in the short name and full name as you wish
+3. Click on **+ New app** from the options at the top left of the screen. This will open a modal where you enter an application name. Click **Add** to save it.
 
-1. Under **Identification** press **Generate** to generate an App Id (this is only for the Teams App). Then fill in
-    - **Package name:** `com.mgt.teamsSsoSample`
-    - **Version:** `1.0.0`
+4. Fill in the remaining required basic information of the application. Required fields have an asterik (*) after their titles.
+    > **Note**: The application ID is automatically created for you when you add the new application.
 
-1. Under **Descriptions** fill in the short and full description as you wish
+    a. For **App names**, the short name will be the name you entered before for your application.
 
-1. Under **Developer information** section fill out your details
+    b. For **Descriptions**, fill the **Short description** and **Long description**.
 
-1. Under **App URLs** provide links, ex:
-    - **Privacy statement** `https://www.microsoft.com/privacy`
-    - **Terms of use** `https://www.microsoft.com/termsofuse`
+    c. For **Developer**, fill a **Developer of company name**. Set the ngrok URL as the **Website**.
 
-1. In the left navigation, in the **Capabilities** section, select **Tabs**
+    d. For **App urls**, use `https://<ngrok-id>.ngrok.io/privacy` for **Privacy policy** and `https://<ngrok-id>.ngrok.io/terms` for **Terms of use**.
 
-1. Select **Add** to create a **Personal tab**
+    e. For **Application (client) ID**, fill in the client ID you got when you registered in AAD.
 
-1. In the popup you can enter your details and then press **Save**. ex:
-    - **Name** `MGT SSO Tab`
-    - **Entity ID** `com.mgt.mgtSsoSample.static`
-    - **Content URL** `https://{Your Ngrok subdomain}.ngrok.io`
+    f. Click **Save**.
 
-1. In the left navigation, in the **Finish** section, select **Domains and permissions**
+5. Click on **App features** under **Configure** to specify the features you want to include for your application. Select **Personal app** feature. Fill the name of the app in the **Name** section and the ngrok URL in the **Content URL** section. Select the **Context** as **personalTab**. Click **Confirm** to save.
+    > **Note**: This is the tab that will appear on the application when it is launched.
 
-1. Under **AAD App ID** enter the client id from your AAD App registration
+6. Click **Single sign-on** under **Configure**. Enter the API URL you set during the AAD App registration process. Click **Save**.
+    > Example: `api://mgtsso.ngrok.io/{Your App Id}`
 
-1. Under **Single-Sign-On** enter the API URL we set during the AAD App registration process.
-    -  Ex: `api://mgtsso.ngrok.io/{Your App Id}`
+7. In the top right, click on the **Preview in Teams** button. Your application will be opened in Teams. Test it out.
 
-1. From the left nav **Finish** section, select **Test and distribute**. There you can download your app package as a zip file. 
-
-1. Select **Apps** in the Teams Client, scroll down, and select **Upload a custom app**
-
-1. Select the .zip file that you downloaded and then **Add**
-
-1. Open up the newly created Teams tab and enjoy
+8. Click on **Publish** to distribute it.
 
 ### How do I know it worked?
 
