@@ -22,4 +22,4 @@ For the quickest way to run this sample, you will need:
 
     Ex: `https://b5d9404b.ngrok.io/auth.html`
 
-5. Now you can use [App Studio](https://docs.microsoft.com/en-us/microsoftteams/platform/get-started/get-started-app-studio) to quickly develop your app manifest for Microsoft Teams and test the app. Use the ngrok url for the tab url.
+5. Now you can use [Developer Portal for Teams](https://learn.microsoft.com/en-us/microsoftteams/platform/concepts/build-and-test/teams-developer-portal) to quickly develop your app manifest for Microsoft Teams and test the app. Use the ngrok url for the tab url.
