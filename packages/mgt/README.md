@@ -24,7 +24,7 @@ The components are also available as [React components](https://learn.microsoft.
 * [mgt-tasks](https://learn.microsoft.com/graph/toolkit/components/tasks)
 * [mgt-todo](https://learn.microsoft.com/graph/toolkit/components/todo)
 * [mgt-get](https://learn.microsoft.com/graph/toolkit/components/get)
-* [mgt-teams-channel-picker](https://learn.microsoft.com/en-us/graph/toolkit/components/teams-channel-picker)
+* [mgt-teams-channel-picker](https://learn.microsoft.com/graph/toolkit/components/teams-channel-picker)
 
 ## Providers
 [Providers](https://learn.microsoft.com/graph/toolkit/providers) enable authentication and provide the implementation for acquiring access tokens on various platforms and expose a Microsoft Graph Client for calling the Microsoft Graph APIs. The components work best when used with a provider, but the providers can be used on their own.

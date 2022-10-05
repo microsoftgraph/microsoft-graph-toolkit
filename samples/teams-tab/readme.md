@@ -6,7 +6,7 @@ For the quickest way to run this sample, you will need:
 * [Live Server extension in Visual Studio Code](https://marketplace.visualstudio.com/items?itemName=ritwickdey.LiveServer)
 * [ngrok](https://ngrok.com/)
 
-1. Visit the [Microsoft identity platform documentation](https://learn.microsoft.com/en-us/azure/active-directory/develop/quickstart-register-app) to learn more about creating a new application and retrieving a clientId. Add the client id in `index.html`
+1. Visit the [Microsoft identity platform documentation](https://learn.microsoft.com/azure/active-directory/develop/quickstart-register-app) to learn more about creating a new application and retrieving a clientId. Add the client id in `index.html`
 
     > Note: Msal only supports the Implicit Flow for OAuth. Make sure to enable Implicit Flow in your application in the Azure Portal (it is not enabled by default). Under `Authentication`, find the `Implicit grant` section and check both checkboxes for `Access tokens` and `ID tokens`
 

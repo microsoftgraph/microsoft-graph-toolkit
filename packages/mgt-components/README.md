@@ -22,7 +22,7 @@ The Toolkit currently includes the following components:
 * [mgt-tasks](https://learn.microsoft.com/graph/toolkit/components/tasks)
 * [mgt-todo](https://learn.microsoft.com/graph/toolkit/components/todo)
 * [mgt-get](https://learn.microsoft.com/graph/toolkit/components/get)
-* [mgt-teams-channel-picker](https://learn.microsoft.com/en-us/graph/toolkit/components/teams-channel-picker)
+* [mgt-teams-channel-picker](https://learn.microsoft.com/graph/toolkit/components/teams-channel-picker)
 
 The components work best when used with a [provider](https://learn.microsoft.com/graph/toolkit/providers). The provider handles authentication and the requests to the Microsoft Graph APIs used by the components.
 
