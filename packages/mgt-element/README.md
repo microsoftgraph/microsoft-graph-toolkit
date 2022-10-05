@@ -44,7 +44,7 @@ This example illustrates how to instantiate a new provider (MsalProvider in this
     }
     ```
 
-You can learn more about how to use the providers in the [documentation](https://docs.microsoft.com/graph/toolkit/providers).
+You can learn more about how to use the providers in the [documentation](https://learn.microsoft.com/graph/toolkit/providers).
 
 The providers work well with the `@microsoft/mgt-components` package and all components use the provider automatically when they need to call Microsoft Graph.
 
@@ -85,7 +85,7 @@ Provider.globalProvider = new SimpleProvider(getAccessToken, login, logout);
 You can extend the IProvider abstract class to create your own provider. The IProvider is similar to the SimpleProvider in that it requires the developer to implement the `getAccessToken()` function.
 
 
-See the [custom provider documentation](https://docs.microsoft.com/en-us/graph/toolkit/providers/custom) for more details on both ways to create custom providers.
+See the [custom provider documentation](https://learn.microsoft.com/en-us/graph/toolkit/providers/custom) for more details on both ways to create custom providers.
 
 ## Sea also
 * [Microsoft Graph Toolkit docs](https://aka.ms/mgt-docs)

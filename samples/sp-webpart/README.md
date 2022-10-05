@@ -56,7 +56,7 @@ The admin of your tenant will need to approve the graph permissions in the admin
 
 2. Upload the package to an app catalog. Navigate to the app catalog url and click on *Distribute apps for SharePoint*. Click on *new* to upload the solution to the app catalog and deploy it.
 
-    > If you do not have an app catalog on your tenant, follow [these steps](https://docs.microsoft.com/en-us/sharepoint/use-app-catalog#step-1-create-the-app-catalog-site-collection) to create one.
+    > If you do not have an app catalog on your tenant, follow [these steps](https://learn.microsoft.com/en-us/sharepoint/use-app-catalog#step-1-create-the-app-catalog-site-collection) to create one.
 
 3. Approve the permissions. Go to the SharePoint admin center (best reached via https://admin.microsoft.com > click **Show All** > SharePoint) and make sure you are signed in as admin.
 
