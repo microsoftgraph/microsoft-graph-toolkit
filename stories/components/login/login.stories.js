@@ -29,6 +29,13 @@ export const Templates = () => html`
     <template data-type="flyout-commands">
       <div>
         <button data-props="@click: handleSignOut">Sign Out</button>
+        <mgt-person person-query="me" person-card="click">
+          <template>
+            <button class="profile">
+              My Profile
+            </button>
+          </template>
+        </mgt-person>
       </div>
     </template>
       <template data-type="flyout-person-details">
@@ -43,6 +50,12 @@ export const Templates = () => html`
           </div>
       </template>
   </mgt-login>
+
+  <style>
+  .profile {
+      margin-top: 2px;
+  }
+  </style>
 `;
 
 export const RTL = () => html`
