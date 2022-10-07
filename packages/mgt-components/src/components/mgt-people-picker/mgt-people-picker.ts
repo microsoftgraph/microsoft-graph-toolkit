@@ -723,6 +723,7 @@ export class MgtPeoplePicker extends MgtTemplatedComponent {
    * @memberof MgtPeoplePicker
    */
   protected renderSelectedPeople(selectedPeople?: IDynamicPerson[]): TemplateResult {
+    console.log('HEre is the selected person ', selectedPeople);
     selectedPeople = selectedPeople || this.selectedPeople;
     if (!this.selectedPeople || !this.selectedPeople.length) {
       return null;
@@ -756,7 +757,7 @@ export class MgtPeoplePicker extends MgtTemplatedComponent {
                    aria-label="close-icon"
                    class="selected-list__person-wrapper__overflow__close-icon"
                    @click="${e => this.removePerson(person, e)}"
-                   @keydown="${e => this.removePerson(person, e)}"
+                   @keydown="${e => this.handleRemovePersonKeyDown(person, e)}"
                  >
                    \uE711
                  </div>
@@ -1247,7 +1248,7 @@ export class MgtPeoplePicker extends MgtTemplatedComponent {
    * Removes person from selected people
    * @param person - person and details pertaining to user selected
    */
-  protected removePerson(person: IDynamicPerson, e: MouseEvent): void {
+  protected removePerson(person: IDynamicPerson, e: UIEvent): void {
     e.stopPropagation();
     const filteredPersonArr = this.selectedPeople.filter(p => {
       if (!person.id && p.displayName) {
@@ -1258,6 +1259,17 @@ export class MgtPeoplePicker extends MgtTemplatedComponent {
     this.selectedPeople = filteredPersonArr;
     this.loadState();
     this.fireCustomEvent('selectionChanged', this.selectedPeople);
+  }
+
+  /**
+   * Checks if key pressed is an `Enter` key before removing person
+   * @param person
+   * @param e
+   */
+  protected handleRemovePersonKeyDown(person: IDynamicPerson, e: KeyboardEvent): void {
+    if (e.key === 'Enter') {
+      this.removePerson(person, e);
+    }
   }
 
   /**
@@ -1516,6 +1528,7 @@ export class MgtPeoplePicker extends MgtTemplatedComponent {
    * @param event - event tracked on user input (keydown)
    */
   private onUserKeyDown(event: KeyboardEvent): void {
+    console.log('Something gogooood is happening');
     const selectedList = this.renderRoot.querySelector('.selected-list');
     const isCmdOrCtrlKey = event.ctrlKey || event.metaKey;
     if (isCmdOrCtrlKey && selectedList) {
