@@ -181,6 +181,8 @@
 
     setEventOnMenuClick();
     setListItemsAc11y();
+    console.warn("~~~Event dispatched~~~~");
+    document.dispatchEvent(new Event('post-load-updates'));
   }
 
   function createSvg(svgPath) {

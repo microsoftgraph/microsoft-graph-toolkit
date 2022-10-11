@@ -1,7 +1,5 @@
-import { test, expect } from '@playwright/test';
+import { test, expect, Page } from '@playwright/test';
 import AxeBuilder from '@axe-core/playwright';
-
-test.use({ viewport: { width: 1906, height: 1020 } });
 
 /**
  * Helper function to ensure page has completed loading
@@ -14,6 +12,14 @@ function waitForTelemetryLoad(page, browserName) {
   return Promise.all<void>([page.waitForResponse(requestPath), page.waitForResponse(requestPath)]);
 }
 
+// tslint:disable-next-line: completed-docs
+async function waitForGraffToLoad(page: Page) {
+  await page
+    .frameLocator('#storybook-preview-iframe')
+    .locator('img.docs-img-centered')
+    .waitFor({ timeout: 8000, state: 'attached' });
+}
+
 test.describe('homepage', () => {
   test('homepage has Storybook in title and get started link linking to the mgt-login story page', async ({
     page,
@@ -23,6 +29,9 @@ test.describe('homepage', () => {
 
     // wait for the telemetry load to complete for both the host and the preview iframe
     await waitForTelemetryLoad(page, browserName);
+
+    // wait until graff is loaded
+    await waitForGraffToLoad(page);
 
     await expect(page).toHaveScreenshot({ fullPage: true });
 
@@ -45,8 +54,23 @@ test.describe('homepage', () => {
   test('should not have any automatically detectable accessibility issues', async ({ page, browserName }) => {
     await page.goto('/?path=/story/overview--page');
 
-    // wait for the telemetry load to complete for both the host and the preview iframe
-    await waitForTelemetryLoad(page, browserName);
+    await page.evaluate(
+      () =>
+        new Promise<void>(resolve => {
+          let timeout;
+          const done = () => {
+            document.removeEventListener('post-load-updates', done);
+            clearTimeout(timeout);
+            resolve();
+          };
+
+          timeout = setTimeout(done, 2000);
+
+          document.addEventListener('post-load-updates', done);
+        })
+    );
+
+    test.fail((page.viewportSize()?.width ?? 0) < 1023, 'Small view-ports need work');
 
     const accessibilityScanResults = await new AxeBuilder({ page }).analyze();
 

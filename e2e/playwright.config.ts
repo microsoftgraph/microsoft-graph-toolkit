@@ -1,5 +1,36 @@
-import type { PlaywrightTestConfig } from '@playwright/test';
-import { devices } from '@playwright/test';
+import type { PlaywrightTestConfig, PlaywrightTestOptions, PlaywrightWorkerOptions, Project } from '@playwright/test';
+
+// tslint:disable-next-line: completed-docs
+const viewports = {
+  xxxl: { width: 1920, height: 1020 },
+  xxlmax: { width: 1919, height: 1020 },
+  xxlmin: { width: 1366, height: 1020 },
+  xlmax: { width: 1365, height: 1020 },
+  xlmin: { width: 1024, height: 1020 },
+  lmax: { width: 1023, height: 1020 },
+  lmin: { width: 640, height: 1020 },
+  mmax: { width: 639, height: 1020 },
+  mmin: { width: 480, height: 1020 },
+  s: { width: 479, height: 1020 }
+};
+type BrowserName = 'chromium' | 'firefox' | 'webkit';
+const browsers: BrowserName[] = ['chromium', 'firefox'];
+
+const buildProjects = () => {
+  const projects: Project<PlaywrightTestOptions, PlaywrightWorkerOptions>[] = [];
+  for (const viewport of Object.keys(viewports)) {
+    for (const browser of browsers) {
+      projects.push({
+        name: `${browser}-${viewport}`,
+        use: {
+          browserName: browser,
+          viewport: viewports[viewport]
+        }
+      });
+    }
+  }
+  return projects;
+};
 
 /**
  * Read environment variables from file.
@@ -13,7 +44,7 @@ import { devices } from '@playwright/test';
 const config: PlaywrightTestConfig = {
   testDir: './tests',
   /* Maximum time one test can run for. */
-  timeout: 10 * 1000,
+  timeout: 20 * 1000,
   expect: {
     /**
      * Maximum time expect() should wait for the condition to be met.
@@ -43,56 +74,35 @@ const config: PlaywrightTestConfig = {
   },
 
   /* Configure projects for major browsers */
-  projects: [
-    {
-      name: 'chromium',
-      use: {
-        ...devices['Desktop Chrome']
-      }
-    },
+  projects: buildProjects()
 
-    {
-      name: 'firefox',
-      use: {
-        ...devices['Desktop Firefox']
-      }
-    },
+  /* Test against mobile viewports. */
+  // {
+  //   name: 'Mobile Chrome',
+  //   use: {
+  //     ...devices['Pixel 5']
+  //   }
+  // },
+  // {
+  //   name: 'Mobile Safari',
+  //   use: {
+  //     ...devices['iPhone 12']
+  //   }
+  // }
 
-    {
-      name: 'webkit',
-      use: {
-        ...devices['Desktop Safari']
-      }
-    }
-
-    /* Test against mobile viewports. */
-    // {
-    //   name: 'Mobile Chrome',
-    //   use: {
-    //     ...devices['Pixel 5']
-    //   }
-    // },
-    // {
-    //   name: 'Mobile Safari',
-    //   use: {
-    //     ...devices['iPhone 12']
-    //   }
-    // }
-
-    /* Test against branded browsers. */
-    // {
-    //   name: 'Microsoft Edge',
-    //   use: {
-    //     channel: 'msedge',
-    //   },
-    // },
-    // {
-    //   name: 'Google Chrome',
-    //   use: {
-    //     channel: 'chrome',
-    //   },
-    // },
-  ]
+  /* Test against branded browsers. */
+  // {
+  //   name: 'Microsoft Edge',
+  //   use: {
+  //     channel: 'msedge',
+  //   },
+  // },
+  // {
+  //   name: 'Google Chrome',
+  //   use: {
+  //     channel: 'chrome',
+  //   },
+  // },
 
   /* Folder for test artifacts such as screenshots, videos, traces, etc. */
   // outputDir: 'test-results/',
