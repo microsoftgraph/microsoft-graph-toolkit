@@ -9,220 +9,154 @@
 @import '../../styles/shared-styles.scss';
 @import './mgt-agenda.theme.scss';
 
-:host .header,
-mgt-agenda .header {
-  margin: var(--agenda-header-margin, 18px 0px 12px 10px);
-  font-family: $font-family;
-  font-size: var(--agenda-header-font-size, 24px);
-  color: $header__color;
-  font-style: normal;
-  font-weight: 400;
-  line-height: 32px;
-  mix-blend-mode: normal;
-  opacity: 0.9;
-}
-
-:host .agenda > .group:first-child > .header,
-mgt-agenda .agenda > .group:first-child > .header {
-  margin-top: 0;
-}
-
-:host .event,
-mgt-agenda .event {
-  background: set-var(event__background-color, $theme-default, $agenda);
-  border: var(--event-border, none);
-  box-shadow: var(--elevation-shadow-card-rest, --event-box-shadow);
-  margin: var(--event-margin, 0px 10px 14px 10px);
-  padding: var(--event-padding, 12px);
+:host,
+mgt-agenda {
   --card-height: auto;
-  width: inherit;
-  display: flex;
-}
 
-:host .narrow .event,
-mgt-agenda .narrow .event {
-  flex-direction: column;
-  position: relative;
-  inset: 0px;
-}
-
-:host .event-time-container,
-mgt-agenda .event-time-container {
-  height: 16px;
-  width: 112px;
-  flex-direction: column;
-  font-family: var(--default-font-family);
-  font-style: normal;
-  font-weight: 600;
-  font-size: 12px;
-  line-height: 16px;
-  color: $event__time__color;
-  position: relative;
-  left: 6px;
-  top: 8px;
-}
-
-:host .narrow .event-time-container,
-mgt-agenda .narrow .event-time-container {
-  margin-bottom: 1px;
-}
-
-:host .event-time,
-mgt-agenda .event-time {
-  font-size: var(--event-time-font-size, 12px);
-  color: $event__time__color;
-  font-weight: 600;
-}
-
-:host .event-duration,
-mgt-agenda .event-duration {
-  color: rgba(16, 16, 16, 0.3);
-}
-
-:host .event-details-container,
-mgt-agenda .event-details-container {
-  flex-direction: column;
-  position: relative;
-  bottom: 8px;
-  top: 0px;
-  left: 32px;
-}
-
-:host .narrow .event-details-container,
-mgt-agenda .narrow .event-details-container {
-  left: 6px;
-  display: flex;
-  flex-direction: column;
-}
-
-:host .event-subject,
-mgt-agenda .event-subject {
-  color: $event__subject__color;
-  width: fit-content;
-  height: 28px;
-  font-family: $font-family;
-  font-style: normal;
-  font-weight: 400;
-  font-size: var(--event-subject-font-size, 20px);
-  line-height: 28px;
-  color: $event__subject__color;
-  mix-blend-mode: normal;
-}
-
-:host .event-location-container,
-mgt-agenda .event-location-container {
-  display: inline-flex;
-}
-
-:host .event-location-icon svg,
-mgt-agenda .event-location-icon svg {
-  position: relative;
-  top: 2px;
-}
-
-:host .event-location-icon svg path,
-mgt-agenda .event-location-icon svg path {
-  stroke: $event__location__color;
-}
-
-:host .event-location,
-mgt-agenda .event-location {
-  margin: 0px 0px 0px 3px;
-  font-family: $font-family;
-  font-style: normal;
-  font-weight: 400;
-  font-size: var(--event-location-font-size, 12px);
-  line-height: 16px;
-  color: $event__location__color;
-}
-
-:host .event-attendees,
-mgt-agenda .event-attendees {
-  --list-margin: 8px 0 0 0;
-  --avatar-size-s: 20px;
-}
-
-:host .event-other-container,
-mgt-agenda .event-other-container {
-  margin: 2px 16px 4px 16px;
-  margin-left: auto;
-}
-
-// loading style
-
-:host .loading-element,
-mgt-agenda .loading-element {
-  background: set-var(event__background-color, $theme-default, $agenda);
-  border-radius: 1px;
-}
-
-:host .event-time-loading,
-mgt-agenda .event-time-loading {
-  width: 100px;
-  height: 10px;
-}
-
-:host .event-subject-loading,
-mgt-agenda .event-subject-loading {
-  width: 263px;
-  height: 16px;
-}
-
-:host .event-location-icon-loading,
-mgt-agenda .event-location-icon-loading {
-  width: 14px;
-  height: 14px;
-}
-
-:host .event-location-loading,
-mgt-agenda .event-location-loading {
-  width: 90px;
-  height: 10px;
-  margin: 2px 0px 0px 4px;
-}
-
-:host .event-attendee-loading,
-mgt-agenda .event-attendee-loading {
-  width: 20px;
-  height: 20px;
-  border-radius: 10px;
-  margin: 0 2px 0 0;
-}
-
-[dir='rtl'] {
-  .event-location {
-    margin: 0px 4px 0px 0px;
+  .header {
+    margin: var(--agenda-header-margin, 18px 0px 12px 10px);
+    font-family: $font-family;
+    font-size: var(--agenda-header-font-size, 24px);
+    font-style: normal;
+    font-weight: 400;
+    line-height: 32px;
+    color: $header__color;
+    opacity: 0.9;
   }
-  .event-time-container {
-    direction: ltr;
-    margin: 18px 18px 18px 38px;
-  }
-  .event-details-container {
-    margin: 14px 0px 14px 18px;
-    .event-subject {
-      margin: 0px 0px 0px 18px;
+
+  .agenda {
+    & > .group:first-child > .header {
+      margin-top: 0;
     }
-    .event-location-container {
-      margin: 8px 0px 0px 18px;
-    }
-  }
-}
 
-@media (forced-colors: active) and (prefers-color-scheme: dark) {
-  svg,
-  svg > path {
-    fill: rgb(255, 255, 255) !important;
-    fill-rule: nonzero !important;
-    clip-rule: nonzero !important;
-    color: rgb(255, 255, 255) !important;
-  }
-}
-@media (forced-colors: active) and (prefers-color-scheme: light) {
-  svg,
-  svg > path {
-    fill: rgb(0, 0, 0) !important;
-    fill-rule: nonzero !important;
-    clip-rule: nonzero !important;
-    color: rgb(0, 0, 0) !important;
+    .event {
+      background: set-var(event__background-color, $theme-default, $agenda);
+      border: var(--event-border, solid 2px rgba(0, 0, 0, 0));
+      box-shadow: var(--elevation-shadow-card-rest, --event-box-shadow);
+      margin: var(--event-margin, 0px 10px 14px 10px);
+      padding: var(--event-padding, 12px);
+      width: inherit;
+      position: relative;
+      display: flex;
+
+      &.narrow {
+        display: flex;
+        flex-direction: column;
+        inset: 0px;
+      }
+
+      &-time-container {
+        font-family: var(--default-font-family);
+        font-style: normal;
+        font-weight: 600;
+        font-size: 12px;
+        color: $event__time__color;
+        min-width: 112px;
+        height: 16px;
+        left: 6px;
+        top: 8px;
+
+        &.narrow {
+          margin-bottom: 1px;
+        }
+      }
+
+      &-time {
+        font-size: var(--event-time-font-size, 12px);
+        color: $event__time__color;
+        font-weight: 600;
+      }
+
+      &-details-container {
+        min-width: 74%;
+        position: relative;
+        bottom: 8px;
+        top: 0px;
+        left: 32px;
+
+        &.narrow {
+          position: inherit;
+          left: 6px;
+          display: flex;
+          flex-direction: column;
+        }
+      }
+
+      &-subject {
+        font-family: $font-family;
+        font-style: normal;
+        font-weight: 400;
+        font-size: var(--event-subject-font-size, 20px);
+        line-height: 28px;
+        color: $event__subject__color;
+        mix-blend-mode: normal;
+        position: inherit;
+        bottom: 8px;
+      }
+
+      &-location-container {
+        display: inline-flex;
+        flex-direction: row;
+
+        .event {
+          &-location {
+            margin: 0px 0px 0px 3px;
+            font-family: $font-family;
+            font-style: normal;
+            font-weight: 400;
+            font-size: var(--event-location-font-size, 12px);
+            line-height: 16px;
+            color: $event__location__color;
+
+            &-loading {
+              width: 90px;
+              height: 10px;
+              margin: 2px 0px 0px 4px;
+            }
+          }
+          &-location-icon {
+            svg {
+              position: relative;
+              top: 2px;
+
+              path {
+                stroke: $event__location__color;
+              }
+            }
+            &-loading {
+              width: 14px;
+              height: 14px;
+            }
+          }
+        }
+      }
+
+      &-attendee {
+        &s {
+          --list-margin: 8px 0 0 0;
+          --avatar-size-s: 20px;
+        }
+        &-loading {
+          width: 20px;
+          height: 20px;
+          border-radius: 10px;
+          margin: 0 2px 0 0;
+        }
+      }
+
+      &-time-loading {
+        width: 100px;
+        height: 10px;
+      }
+      &-subject-loading {
+        width: 263px;
+        height: 16px;
+      }
+    }
+
+    .loading-element {
+      background: set-var(event__background-color, $theme-default, $agenda);
+      border-radius: 1px;
+    }
   }
 }
