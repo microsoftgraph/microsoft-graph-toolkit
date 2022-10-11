@@ -215,3 +215,45 @@ mgt-agenda {
     }
   }
 }
+
+@media (forced-colors: active) and (prefers-color-scheme: dark) {
+  :host,
+  mgt-agenda {
+    .agenda {
+      .event {
+        &-location-container {
+          .event {
+            &-location-icon {
+              svg {
+                path {
+                  stroke: rgb(255, 255, 255) !important;
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}
+
+@media (forced-colors: active) and (prefers-color-scheme: light) {
+  :host,
+  mgt-agenda {
+    .agenda {
+      .event {
+        &-location-container {
+          .event {
+            &-location-icon {
+              svg {
+                path {
+                  stroke: rgb(0, 0, 0) !important;
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}
