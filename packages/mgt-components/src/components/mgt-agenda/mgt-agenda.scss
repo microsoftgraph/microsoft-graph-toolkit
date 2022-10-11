@@ -160,3 +160,58 @@ mgt-agenda {
     }
   }
 }
+
+[dir='rtl'] {
+  :host {
+    direction: rtl;
+  }
+
+  .event {
+    &.narrow {
+      display: flex;
+      flex-direction: column;
+      inset: 0px;
+    }
+
+    &-location {
+      margin: 0px 4px 0px 0px;
+    }
+
+    &-time-container {
+      direction: ltr;
+      margin: 0px 0px 14px 38px;
+      display: flex;
+      justify-content: flex-end;
+
+      &.narrow {
+        margin: 0px;
+      }
+    }
+
+    &-details-container {
+      margin: 0px 28px 14px 18px;
+      &.narrow {
+        margin: 0px;
+      }
+      .event {
+        &-subject {
+          margin: 0px;
+
+          &.narrow {
+            margin: 0px;
+          }
+        }
+        &-location-container {
+          margin: 8px 0px 0px 18px;
+          &.narrow {
+            margin: 0px;
+          }
+          .event-location {
+            position: relative;
+            right: 2px;
+          }
+        }
+      }
+    }
+  }
+}
