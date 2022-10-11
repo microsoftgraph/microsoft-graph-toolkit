@@ -268,7 +268,7 @@ export class MgtAgenda extends MgtTemplatedComponent {
 
     // Render list
     return html`
-      <div dir=${this.direction} class="agenda${this._isNarrow ? ' narrow' : ''}${this.groupByDay ? ' grouped' : ''}">
+      <div dir=${this.direction} class="agenda${this.groupByDay ? ' grouped' : ''}">
         ${this.groupByDay ? this.renderGroups(events) : this.renderEvents(events)}
         ${this.isLoadingState ? this.renderLoading() : html``}
       </div>
@@ -345,12 +345,13 @@ export class MgtAgenda extends MgtTemplatedComponent {
    * @memberof MgtAgenda
    */
   protected renderEvent(event: MicrosoftGraph.Event): TemplateResult {
+    const narrow = this._isNarrow ? ' narrow' : '';
     return html`
-      <fluent-card class="event">
-        <div class="event-time-container">
+      <fluent-card class="event${narrow}">
+        <div class="event-time-container${narrow}">
           <div class="event-time" aria-label="${this.getEventTimeString(event)}">${this.getEventTimeString(event)}</div>
         </div>
-        <div class="event-details-container">
+        <div class="event-details-container${narrow}">
           ${this.renderTitle(event)} ${this.renderLocation(event)} ${this.renderAttendees(event)}
         </div>
         <div class="event-other-container">${this.renderOther(event)}</div>
@@ -387,7 +388,12 @@ export class MgtAgenda extends MgtTemplatedComponent {
    */
   protected renderTitle(event: MicrosoftGraph.Event): TemplateResult {
     return html`
-      <div id=${event.id} aria-label=${event.subject} class="event-subject">${event.subject}</div>
+      <div
+        id=${event.id}
+        aria-label=${event.subject}
+        class="event-subject${this._isNarrow ? ' narrow' : ''}">
+          ${event.subject}
+      </div>
       <fluent-tooltip position="right" anchor="${event.id}">${event.subject}</fluent-tooltip>
     `;
   }
