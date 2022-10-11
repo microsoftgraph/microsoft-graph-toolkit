@@ -1,7 +1,7 @@
 # Node.js Server for Microsoft Teams Single Sign On (SSO)
-This sample is a reference implementation of a backend service that can be used with the [Teams Msal2 Provider](https://docs.microsoft.com/graph/toolkit/providers/teams-msal2) for a single sign on experience. 
+This sample is a reference implementation of a backend service that can be used with the [Teams Msal2 Provider](https://learn.microsoft.com/graph/toolkit/providers/teams-msal2) for a single sign on experience. 
 
-This sample implements both a `GET` and `POST` api for exchanging the Microsoft Teams authentication token with a token that can be used to call Microsoft Graph. It uses the [on-behalf-of flow](https://docs.microsoft.com/azure/active-directory/develop/v2-oauth2-on-behalf-of-flow) to exchange the tokens.
+This sample implements both a `GET` and `POST` api for exchanging the Microsoft Teams authentication token with a token that can be used to call Microsoft Graph. It uses the [on-behalf-of flow](https://learn.microsoft.com/azure/active-directory/develop/v2-oauth2-on-behalf-of-flow) to exchange the tokens.
 
 ## Prerequisites
 
@@ -98,7 +98,7 @@ Your tab needs to run as a registered Azure AD application to obtain an access t
 1. (OPTIONAL) If you want to pre-consent the scopes that the Microsoft Graph Toolkit components used in this sample, add the following permissions: 
     - `user.read.all, mail.readBasic, people.read.all, sites.read.all, user.readbasic.all, contacts.read, presence.read, presence.read.all, tasks.readwrite, tasks.read`
     
-    - If you use different components or plan to use other Microsoft Graph APIs, you may require additional permissions. See the [documentation](https://docs.microsoft.com/graph/toolkit/overview) for each component for details on required permissions.
+    - If you use different components or plan to use other Microsoft Graph APIs, you may require additional permissions. See the [documentation](https://learn.microsoft.com/graph/toolkit/overview) for each component for details on required permissions.
 
     - To pre-consent as an admin, select **Grant admin consent**, then select **Yes**
 
