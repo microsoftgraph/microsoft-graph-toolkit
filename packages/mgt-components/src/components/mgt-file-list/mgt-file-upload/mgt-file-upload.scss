@@ -35,6 +35,8 @@ $file-list-box-shadow: var(
   width: 100%;
   --neutral-fill-hover: $file-upload-button-background-color;
   --neutral-fill-rest: $file-upload-button-background-color;
+  --neutral-fill-active: $file-upload-button-background-color;
+  --neutral-fill-focus: $file-upload-button-background-color;
   div {
     float: var(--file-upload-button-float, right);
     text-align: center;
@@ -203,10 +205,14 @@ $file-list-box-shadow: var(
     height: 32px;
     min-width: 60px;
     border: 1px solid rgb(138, 136, 134);
-    background-color: $file-upload-dialog-content-background-color;
-    color: $file-upload-dialog-content-color;
+    background-color: $file-upload-button-background-color;
+    color: $fileButtonColour;
     font-size: $font-size;
     margin-right: 5px;
+    --neutral-fill-rest: $fileButtonColour;
+    --neutral-fill-hover: $fileButtonColour;
+    --neutral-fill-active: $fileButtonColour;
+    --neutral-fill-focus: $fileButtonColour;
   }
 
   .file-upload-dialog-cancel {
