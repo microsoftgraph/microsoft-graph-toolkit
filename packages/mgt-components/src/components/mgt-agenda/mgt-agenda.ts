@@ -18,6 +18,7 @@ import { SvgIcon, getSvg } from '../../utils/SvgHelper';
 import { MgtPeople } from '../mgt-people/mgt-people';
 import { registerFluentComponents } from '../../utils/FluentComponents';
 import { fluentCard, fluentTooltip } from '@fluentui/web-components';
+import { classMap } from 'lit/directives/class-map';
 registerFluentComponents(fluentCard, fluentTooltip);
 
 /**
@@ -263,12 +264,14 @@ export class MgtAgenda extends MgtTemplatedComponent {
       return renderedTemplate;
     }
 
-    // Update narrow state
-    this._isNarrow = this.offsetWidth < 600;
+    const agendaClasses = {
+      agenda: true,
+      grouped: this.groupByDay
+    };
 
     // Render list
     return html`
-      <div dir=${this.direction} class="agenda${this.groupByDay ? ' grouped' : ''}">
+      <div dir=${this.direction} class="${classMap(agendaClasses)}">
         ${this.groupByDay ? this.renderGroups(events) : this.renderEvents(events)}
         ${this.isLoadingState ? this.renderLoading() : html``}
       </div>
@@ -345,13 +348,19 @@ export class MgtAgenda extends MgtTemplatedComponent {
    * @memberof MgtAgenda
    */
   protected renderEvent(event: MicrosoftGraph.Event): TemplateResult {
-    const narrow = this._isNarrow ? ' narrow' : '';
+    // Update narrow state
+    this._isNarrow = this.offsetWidth < 600;
+
+    const eventClasses = {
+      narrow: this._isNarrow
+    };
+
     return html`
-      <fluent-card class="event${narrow}">
-        <div class="event-time-container${narrow}">
+      <fluent-card class="${classMap({ event: true, ...eventClasses })}">
+        <div class="${classMap({ 'event-time-container': true, ...eventClasses })}">
           <div class="event-time" aria-label="${this.getEventTimeString(event)}">${this.getEventTimeString(event)}</div>
         </div>
-        <div class="event-details-container${narrow}">
+        <div class="${classMap({ 'event-details-container': true, ...eventClasses })}">
           ${this.renderTitle(event)} ${this.renderLocation(event)} ${this.renderAttendees(event)}
         </div>
         <div class="event-other-container">${this.renderOther(event)}</div>
@@ -387,11 +396,15 @@ export class MgtAgenda extends MgtTemplatedComponent {
    * @memberof MgtAgenda
    */
   protected renderTitle(event: MicrosoftGraph.Event): TemplateResult {
+    const eventSubjectClasses = {
+      'event-subject': true,
+      narrow: this._isNarrow
+    };
     return html`
       <div
         id=${event.id}
         aria-label=${event.subject}
-        class="event-subject${this._isNarrow ? ' narrow' : ''}">
+        class="${classMap(eventSubjectClasses)}">
           ${event.subject}
       </div>
       <fluent-tooltip position="right" anchor="${event.id}">${event.subject}</fluent-tooltip>
