@@ -298,7 +298,7 @@ export class MgtAgenda extends MgtTemplatedComponent {
     return (
       this.renderTemplate('loading', null) ||
       html`
-        <fluent-card class="event">
+        <fluent-card class="event event-loading">
           <div class="event-time-container">
             <div class="event-time-loading loading-element"></div>
           </div>

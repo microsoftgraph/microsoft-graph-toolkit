@@ -67,6 +67,11 @@ mgt-agenda {
         &.narrow {
           margin-bottom: 1px;
         }
+        .event {
+          &-time-loading {
+            @include loading-element;
+          }
+        }
       }
 
       &-time {
@@ -87,6 +92,11 @@ mgt-agenda {
           left: 6px;
           display: flex;
           flex-direction: column;
+        }
+        .event {
+          &-subject-loading {
+            @include loading-element;
+          }
         }
       }
 
@@ -120,6 +130,7 @@ mgt-agenda {
               width: 90px;
               height: 10px;
               margin: 2px 0px 0px 4px;
+              @include loading-element;
             }
           }
           &-location-icon {
@@ -134,41 +145,36 @@ mgt-agenda {
             &-loading {
               width: 14px;
               height: 14px;
+              @include loading-element;
+            }
+          }
+          &-attendee {
+            &-loading {
+              width: 20px;
+              height: 20px;
+              border-radius: 10px;
+              margin: 0 2px 0 0;
+              @include loading-element;
             }
           }
         }
       }
 
-      &-attendee {
-        &s {
-          --list-margin: 8px 0 0 0;
-          --avatar-size-s: 20px;
-        }
-        &-loading {
-          width: 20px;
-          height: 20px;
-          border-radius: 10px;
-          margin: 0 2px 0 0;
-        }
+      &-attendees {
+        --list-margin: 8px 0 0 0;
+        --avatar-size-s: 20px;
       }
-
-      &-time-loading {
-        width: 100px;
-        height: 10px;
-      }
-      &-subject-loading {
-        width: 263px;
-        height: 16px;
-      }
-    }
-
-    .loading-element {
-      background: set-var(event__background-color, $theme-default, $agenda);
-      border-radius: 1px;
     }
   }
 }
 
+fluent-card.event {
+  &.event {
+    &-loading {
+      --card-height: 90px;
+    }
+  }
+}
 [dir='rtl'] {
   :host {
     direction: rtl;

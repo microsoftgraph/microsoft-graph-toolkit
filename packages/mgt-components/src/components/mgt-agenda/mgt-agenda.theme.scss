@@ -19,4 +19,11 @@ $agenda: (
   )
 );
 
+@mixin loading-element {
+  &.loading-element {
+    background: set-var(event__background-color, $theme-default, $agenda);
+    border-radius: 1px;
+  }
+}
+
 @include create-themes($agenda);
