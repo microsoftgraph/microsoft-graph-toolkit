@@ -74,7 +74,7 @@ The `@microsoft/mgt-msal2-provider` package exposes the `Msal2Provider` class wh
     ```
 Add the `incremental-consent-disabled` boolean attribute if you wish to disable incremental consent.
 
-See [provider usage documentation](https://docs.microsoft.com/graph/toolkit/providers) to learn about how to use the providers with the mgt components, to sign in/sign out, get access tokens, call Microsoft Graph, and more.
+See [provider usage documentation](https://learn.microsoft.com/graph/toolkit/providers) to learn about how to use the providers with the mgt components, to sign in/sign out, get access tokens, call Microsoft Graph, and more.
 
 ## Sea also
 * [Microsoft Graph Toolkit docs](https://aka.ms/mgt-docs)

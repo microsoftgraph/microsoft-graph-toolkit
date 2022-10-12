@@ -78,6 +78,6 @@ The picker is a component that can query any Microsoft Graph API and render a dr
 
 | API                                                                                                         | Use When                  | Permissions |
 | ----------------------------------------------------------------------------------------------------------- | ------------------------- | ----------- |
-| GET [/me/tasks/lists](https://docs.microsoft.com/graph/api/tasks-list-lists?view=graph-rest-beta&tabs=http) | entity-type is task-lists | Tasks.Read  |
+| GET [/me/tasks/lists](https://learn.microsoft.com/graph/api/tasks-list-lists?view=graph-rest-beta&tabs=http) | entity-type is task-lists | Tasks.Read  |
 
-Permissions required by this component when using the `resource` property depend on the data that you want to retrieve with it from Microsoft Graph. For more information about permissions, see the Microsoft Graph [permissions reference](https://docs.microsoft.com/graph/permissions-reference).
+Permissions required by this component when using the `resource` property depend on the data that you want to retrieve with it from Microsoft Graph. For more information about permissions, see the Microsoft Graph [permissions reference](https://learn.microsoft.com/graph/permissions-reference).
