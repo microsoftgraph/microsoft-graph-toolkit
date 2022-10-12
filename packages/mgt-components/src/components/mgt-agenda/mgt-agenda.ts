@@ -515,12 +515,14 @@ export class MgtAgenda extends MgtTemplatedComponent {
         ${events.map(
           event =>
             html`
-              <div @click=${() => this.eventClicked(event)}>
+              <div
+                class="event-container"
+                tabindex="0"
+                @focus=${() => this.eventClicked(event)}>
                 ${this.renderTemplate('event', { event }, event.id) || this.renderEvent(event)}
               </div>
-            `
-        )}
-    `;
+              <div class="event-divider"></div>`
+        )}`;
   }
 
   /**

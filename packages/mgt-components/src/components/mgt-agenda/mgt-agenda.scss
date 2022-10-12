@@ -33,11 +33,19 @@ mgt-agenda {
       background: set-var(event__background-color, $theme-default, $agenda);
       border: var(--event-border, solid 2px rgba(0, 0, 0, 0));
       box-shadow: var(--elevation-shadow-card-rest, --event-box-shadow);
-      margin: var(--event-margin, 0px 10px 14px 10px);
       padding: var(--event-padding, 12px);
       width: inherit;
       position: relative;
       display: flex;
+
+      &-container {
+        border-radius: calc(var(--layer-corner-radius) * 1px);
+        padding: 1px;
+      }
+
+      &-divider {
+        margin: var(--event-margin, 0px 0px 14px 0px);
+      }
 
       &.narrow {
         display: flex;
