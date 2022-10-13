@@ -1,6 +1,8 @@
 import type { PlaywrightTestConfig, PlaywrightTestOptions, PlaywrightWorkerOptions, Project } from '@playwright/test';
 
-// tslint:disable-next-line: completed-docs
+/**
+ * View ports to be used for testing.
+ */
 const viewports = {
   xxxl: { width: 1920, height: 1020 },
   xxlmax: { width: 1919, height: 1020 },
@@ -13,7 +15,14 @@ const viewports = {
   mmin: { width: 480, height: 1020 },
   s: { width: 479, height: 1020 }
 };
+/**
+ * The browser names that Playwright uses
+ * Recreated type as it's not exported from Playwright
+ */
 type BrowserName = 'chromium' | 'firefox' | 'webkit';
+/**
+ * Browsers to be used for testing
+ */
 const browsers: BrowserName[] = ['chromium', 'firefox'];
 
 const buildProjects = () => {
@@ -62,10 +71,16 @@ const config: PlaywrightTestConfig = {
   workers: process.env.CI ? 1 : undefined,
   /* Reporter to use. See https://playwright.dev/docs/test-reporters */
   reporter: 'html',
+  // webServer: {
+  //   command: 'npm run storybook',
+  //   url: process.env.BASE_URL || 'http://localhost:6006',
+  //   timeout: 120 * 1000,
+  //   reuseExistingServer: !process.env.CI
+  // },
   /* Shared settings for all the projects below. See https://playwright.dev/docs/api/class-testoptions. */
   use: {
     /* Maximum time each action such as `click()` can take. Defaults to 0 (no limit). */
-    actionTimeout: 0,
+    actionTimeout: 10 * 1000,
     /* Base URL to use in actions like `await page.goto('/')`. */
     baseURL: process.env.BASE_URL || 'http://localhost:6006',
 
