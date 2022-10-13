@@ -41,3 +41,8 @@ package-lock.json
 # storybook
 storybook-static/
 custom-elements.json
+
+#playwright
+/test-results/
+/playwright-report/
+/playwright/.cache/

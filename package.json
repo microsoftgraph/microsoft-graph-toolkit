@@ -22,8 +22,8 @@
     "build:mgt-react": "lerna run build --scope @microsoft/mgt-react",
     "test:playwright-ct": "lerna run test:playwright-ct --scope @microsoft/mgt-react",
     "test:playwright-ct:debug": "lerna run test:playwright-ct:debug --scope @microsoft/mgt-react",
-    "test:playwright": "lerna run test:playwright --scope e2e",
-    "test:playwright:debug": "lerna run test:playwright:debug --scope e2e",
+    "test:playwright": "playwright test",
+    "test:playwright:debug": "playwright test --debug",
     "bundle": "cd ./packages/mgt && npm run bundle",
     "bootstrap": "lerna bootstrap --useWorkspaces",
     "clean": "lerna run --parallel --stream --scope @microsoft/* clean",
@@ -58,6 +58,7 @@
     "commitMessage": "Deploy Storybook [skip ci]"
   },
   "devDependencies": {
+    "@axe-core/playwright": "^4.4.4",
     "@babel/core": "^7.12.8",
     "@babel/plugin-proposal-class-properties": "^7.12.1",
     "@babel/plugin-proposal-decorators": "^7.12.1",
@@ -66,6 +67,7 @@
     "@babel/preset-react": "^7.12.7",
     "@babel/preset-typescript": "^7.12.7",
     "@octokit/rest": "^18.5.3",
+    "@playwright/test": "^1.25.1",
     "@storybook/addon-a11y": "^6.4.4",
     "@storybook/addon-actions": "^6.4.4",
     "@storybook/addon-docs": "^6.4.4",
