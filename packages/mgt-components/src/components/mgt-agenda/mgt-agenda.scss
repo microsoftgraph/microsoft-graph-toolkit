@@ -24,7 +24,12 @@ mgt-agenda {
     opacity: 0.9;
   }
 
-  .agenda {
+  .agenda,
+  .group {
+    display: flex;
+    flex-direction: column;
+    row-gap: var(--event-row-gap, 14px);
+
     & > .group:first-child > .header {
       margin-top: 0;
     }
@@ -34,17 +39,13 @@ mgt-agenda {
       border: var(--event-border, solid 2px rgba(0, 0, 0, 0));
       box-shadow: var(--elevation-shadow-card-rest, --event-box-shadow);
       padding: var(--event-padding, 12px);
-      width: inherit;
       position: relative;
       display: flex;
+      flex: 1 1 auto;
 
       &-container {
         border-radius: calc(var(--layer-corner-radius) * 1px);
         padding: 1px;
-      }
-
-      &-divider {
-        margin: var(--event-margin, 0px 0px 14px 0px);
       }
 
       &.narrow {
@@ -59,13 +60,12 @@ mgt-agenda {
         font-weight: 600;
         font-size: 12px;
         color: $event__time__color;
-        min-width: 112px;
+        width: 112px;
         height: 16px;
-        left: 6px;
-        top: 8px;
 
         &.narrow {
           margin-bottom: 1px;
+          width: 100%;
         }
         .event {
           &-time-loading {
@@ -81,11 +81,11 @@ mgt-agenda {
       }
 
       &-details-container {
-        min-width: 74%;
         position: relative;
         bottom: 8px;
         top: 0px;
         left: 32px;
+        flex: auto;
 
         &.narrow {
           position: inherit;
