@@ -27,11 +27,7 @@ test.describe('homepage', () => {
   }) => {
     await page.goto('/?path=/story/overview--page');
 
-    // wait for the telemetry load to complete for both the host and the preview iframe
-    await waitForTelemetryLoad(page, browserName);
-
-    // wait until graff is loaded
-    await waitForGraffToLoad(page);
+    await ensurePageScriptsHaveRun(page);
 
     await expect(page).toHaveScreenshot({ fullPage: true });
 
@@ -54,21 +50,7 @@ test.describe('homepage', () => {
   test('should not have any automatically detectable accessibility issues', async ({ page, browserName }) => {
     await page.goto('/?path=/story/overview--page');
 
-    await page.evaluate(
-      () =>
-        new Promise<void>(resolve => {
-          let timeout;
-          const done = () => {
-            document.removeEventListener('post-load-updates', done);
-            clearTimeout(timeout);
-            resolve();
-          };
-
-          timeout = setTimeout(done, 2000);
-
-          document.addEventListener('post-load-updates', done);
-        })
-    );
+    await ensurePageScriptsHaveRun(page);
 
     test.fail((page.viewportSize()?.width ?? 0) < 1023, 'Small view-ports need work');
 
@@ -77,3 +59,26 @@ test.describe('homepage', () => {
     expect(accessibilityScanResults.violations).toEqual([]);
   });
 });
+
+/**
+ * Helper function to await the execution of the onload scripts that alter the page appearance and apply a11y fixes
+ *
+ * @param {Page} page
+ */
+async function ensurePageScriptsHaveRun(page: Page) {
+  await page.evaluate(
+    () =>
+      new Promise<void>(resolve => {
+        let timeout;
+        const done = () => {
+          document.removeEventListener('post-load-updates', done);
+          clearTimeout(timeout);
+          resolve();
+        };
+
+        timeout = setTimeout(done, 2000);
+
+        document.addEventListener('post-load-updates', done);
+      })
+  );
+}
