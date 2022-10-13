@@ -621,7 +621,7 @@ const createAndInsertPart=(e,t)=>{const r=e.startNode.parentNode,o=void 0===t?e.
         ${this.people.length>this.showMax?this.renderOverflow():null}
       </ul>
     `}renderOverflow(){const e=this.people.length-this.showMax;return this.renderTemplate("overflow",{extra:e,max:this.showMax,people:this.people})||html$1`
-        <li tabindex=0 aria-label="and ${e} more attendees" class="overflow"><span>+${e}<span></li>
+        <li aria-label="and ${e} more attendees" class="overflow"><span>+${e}<span></li>
       `}renderPerson(e){let t={activity:"Offline",availability:"Offline",id:null};this.showPresence&&this._peoplePresence&&(t=this._peoplePresence[e.id]);return this.renderTemplate("person",{person:e},e.id)||html$1`
         <mgt-person
           .personDetails=${e}
