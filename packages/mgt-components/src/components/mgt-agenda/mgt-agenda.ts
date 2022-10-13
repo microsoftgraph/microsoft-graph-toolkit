@@ -31,7 +31,7 @@ registerFluentComponents(fluentCard, fluentTooltip);
  * @fires eventClick - Fired when user click an event
  *
  * @cssprop --event-box-shadow - {String} Event box shadow color and size
- * @cssprop --event-margin - {String} Event margin
+ * @cssprop --event-row-gap - {String} The size of the gap between two event elements
  * @cssprop --event-padding - {String} Event padding
  * @cssprop --event-background-color - {Color} Event background color
  * @cssprop --event-border - {String} Event border style
@@ -520,8 +520,7 @@ export class MgtAgenda extends MgtTemplatedComponent {
                 tabindex="0"
                 @focus=${() => this.eventClicked(event)}>
                 ${this.renderTemplate('event', { event }, event.id) || this.renderEvent(event)}
-              </div>
-              <div class="event-divider"></div>`
+              </div>`
         )}`;
   }
 
