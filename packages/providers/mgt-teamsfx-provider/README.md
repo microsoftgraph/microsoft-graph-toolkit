@@ -63,4 +63,4 @@ For a sample that shows you how to initialize the TeamsFx provider, see the [Con
 * [Microsoft Graph Toolkit repository](https://aka.ms/mgt)
 * [Microsoft Graph Toolkit playground](https://mgt.dev)
 * [TeamsFx docs](https://aka.ms/teamsfx-docs)
-* [TeamsFx SDK document](https://docs.microsoft.com/en-us/microsoftteams/platform/toolkit/teamsfx-sdk)
+* [TeamsFx SDK document](https://learn.microsoft.com/microsoftteams/platform/toolkit/teamsfx-sdk)

@@ -358,7 +358,7 @@ export class MgtPeople extends MgtTemplatedComponent {
         people: this.people
       }) ||
       html`
-        <li tabindex=0 aria-label="and ${extra} more attendees" class="overflow"><span>+${extra}<span></li>
+        <li aria-label="and ${extra} more attendees" class="overflow"><span>+${extra}<span></li>
       `
     );
   }

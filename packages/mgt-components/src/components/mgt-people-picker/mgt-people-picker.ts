@@ -756,7 +756,7 @@ export class MgtPeoplePicker extends MgtTemplatedComponent {
                    aria-label="close-icon"
                    class="selected-list__person-wrapper__overflow__close-icon"
                    @click="${e => this.removePerson(person, e)}"
-                   @keydown="${e => this.removePerson(person, e)}"
+                   @keydown="${e => this.handleRemovePersonKeyDown(person, e)}"
                  >
                    \uE711
                  </div>
@@ -899,10 +899,9 @@ export class MgtPeoplePicker extends MgtTemplatedComponent {
              };
              return html`
                <li
-                role="option"
+                role="listitem"
                 @keydown="${this.onUserKeyDown}"
                 aria-label=" ${this.strings.suggestedContact} ${person.displayName}"
-                id="${person.displayName}"
                 tabindex="0"
                 class="${classMap(listPersonClasses)}"
                 @click="${e => this.onPersonClick(person)}">
@@ -974,7 +973,13 @@ export class MgtPeoplePicker extends MgtTemplatedComponent {
     const input = this.userInput.toLowerCase();
     const provider = Providers.globalProvider;
 
-    if (!people && provider && provider.state === ProviderState.SignedIn) {
+    if (people) {
+      if (input) {
+        const displayNameMatch = people.filter(person => person?.displayName.toLowerCase().includes(input));
+        people = displayNameMatch;
+      }
+      this._showLoading = false;
+    } else if (!people && provider && provider.state === ProviderState.SignedIn) {
       const graph = provider.graph.forComponent(this);
 
       if (!input.length && this._isFocused) {
@@ -1242,7 +1247,7 @@ export class MgtPeoplePicker extends MgtTemplatedComponent {
    * Removes person from selected people
    * @param person - person and details pertaining to user selected
    */
-  protected removePerson(person: IDynamicPerson, e: MouseEvent): void {
+  protected removePerson(person: IDynamicPerson, e: UIEvent): void {
     e.stopPropagation();
     const filteredPersonArr = this.selectedPeople.filter(p => {
       if (!person.id && p.displayName) {
@@ -1253,6 +1258,17 @@ export class MgtPeoplePicker extends MgtTemplatedComponent {
     this.selectedPeople = filteredPersonArr;
     this.loadState();
     this.fireCustomEvent('selectionChanged', this.selectedPeople);
+  }
+
+  /**
+   * Checks if key pressed is an `Enter` key before removing person
+   * @param person
+   * @param e
+   */
+  protected handleRemovePersonKeyDown(person: IDynamicPerson, e: KeyboardEvent): void {
+    if (e.key === 'Enter') {
+      this.removePerson(person, e);
+    }
   }
 
   /**
