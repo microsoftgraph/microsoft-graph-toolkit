@@ -29,6 +29,8 @@ test.describe('homepage', () => {
 
     await ensurePageScriptsHaveRun(page);
 
+    await waitForGraffToLoad(page);
+
     await expect(page).toHaveScreenshot({ fullPage: true });
 
     // Expect a title "to contain" a substring.

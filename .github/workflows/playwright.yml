@@ -18,7 +18,7 @@ jobs:
       - name: Install Playwright Browsers
         run: npx playwright install --with-deps
       - name: Build solution
-        run: yarn build
+        run: yarn storybook:build
       - name: Run Playwright tests
         run: yarn test:playwright
       - uses: actions/upload-artifact@v2
