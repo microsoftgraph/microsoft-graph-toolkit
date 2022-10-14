@@ -257,7 +257,6 @@ export class MgtTeamsChannelPicker extends MgtTemplatedComponent {
 
   // determines loading state
   @property({ attribute: false }) private _isDropdownVisible;
-  private _dir: string = this.direction;
 
   constructor() {
     super();
@@ -276,6 +275,11 @@ export class MgtTeamsChannelPicker extends MgtTemplatedComponent {
   public connectedCallback() {
     super.connectedCallback();
     window.addEventListener('click', this.handleWindowClick);
+
+    const ownerDocument = this.renderRoot.ownerDocument;
+    if (ownerDocument) {
+      ownerDocument.documentElement.setAttribute('dir', this.direction);
+    }
   }
 
   /**
@@ -345,7 +349,7 @@ export class MgtTeamsChannelPicker extends MgtTemplatedComponent {
     return (
       this.renderTemplate('default', { teams: this.items }) ||
       html`
-        <div class="root" @blur=${this.lostFocus} dir=${this._dir}>
+        <div class="root" @blur=${this.lostFocus}>
           <div class=${classMap(inputClasses)} @click=${this.gainedFocus}>
             ${this.renderSelected()}
             <div class=${classMap(searchClasses)}>${this.renderSearchIcon()} ${this.renderInput()}</div>
@@ -556,7 +560,7 @@ export class MgtTeamsChannelPicker extends MgtTemplatedComponent {
       let icon: TemplateResult = null;
 
       return html`
-        <fluent-tree-view dir=${this._dir}>
+        <fluent-tree-view dir=${this.direction}>
           ${repeat(
             items,
             itemObj => itemObj?.item,
@@ -568,9 +572,7 @@ export class MgtTeamsChannelPicker extends MgtTemplatedComponent {
                   src=${this.teamsPhotos[obj.item.id].photo} />`;
               }
               return html`
-                <fluent-tree-item
-                  ?expanded=${obj?.isExpanded}
-                  dir=${this._dir}>
+                <fluent-tree-item ?expanded=${obj?.isExpanded}>
                     ${icon}${obj.item.displayName}
                     ${repeat(
                       obj?.channels,
@@ -610,7 +612,7 @@ export class MgtTeamsChannelPicker extends MgtTemplatedComponent {
 
     return html`
       <fluent-tree-item
-        dir=${this._dir}
+        
         @click=${() => this.handleItemClick(itemState)}>
           ${itemState?.item.displayName}
       </fluent-tree-item>`;
