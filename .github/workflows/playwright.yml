@@ -17,7 +17,9 @@ jobs:
         run: yarn install
       - name: Install Playwright Browsers
         run: npx playwright install --with-deps
-      - name: Build solution
+      - name: Build mgt
+        run: yarn build
+      - name: Build storybook
         run: yarn storybook:build
       - name: Run Playwright tests
         run: yarn test:playwright
