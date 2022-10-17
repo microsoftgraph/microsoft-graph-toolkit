@@ -63,6 +63,7 @@
 :host fluent-card {
   --fill-color: var(--dropdown-background-color, --fill-color);
   --card-height: auto;
+  --card-width: 68%;
 }
 
 :host fluent-text-field {
