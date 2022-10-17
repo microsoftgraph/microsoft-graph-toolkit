@@ -53,7 +53,14 @@ export const localization = () => html`
         showMoreSectionButton: 'أظهر المزيد' // global declaration
       },
       'person-card-contact': {
-        contactSectionTitle: 'اتصل'
+        contactSectionTitle: 'اتصل',
+        emailTitle: 'البريد الإلكتروني',
+        chatTitle: 'دردشة',
+        businessPhoneTitle: 'هاتف العمل',
+        cellPhoneTitle: 'هاتف محمول',
+        departmentTitle: ' قسم، أقسام',
+        titleTitle: 'لقب',
+        officeLocationTitle: 'موقع المكتب'
       },
       'person-card-organization': {
         reportsToSectionTitle: 'تقارير ل',
