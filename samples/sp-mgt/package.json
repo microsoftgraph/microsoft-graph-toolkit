@@ -15,6 +15,7 @@
     "@microsoft/mgt-element": "*",
     "@microsoft/mgt-components": "*",
     "@microsoft/mgt-sharepoint-provider": "*",
+    "@microsoft/mgt-spfx-utils": "*",
     "@microsoft/sp-core-library": "1.15.2",
     "@microsoft/sp-property-pane": "1.15.2",
     "@microsoft/sp-webpart-base": "1.15.2",

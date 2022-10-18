@@ -25,15 +25,7 @@ export default class MgtDemoWebPart extends BaseClientSideWebPart<IMgtDemoWebPar
   }
 
   public render(): void {
-    const element = React.createElement(
-      React.Suspense,
-      {
-        fallback: React.createElement('div', null, 'Loading')
-      },
-      React.createElement(MgtDemo, {
-        description: this.properties.description
-      })
-    );
+    const element = lazyLoadComponent(MgtDemo, { description: this.properties.description });
 
     ReactDom.render(element, this.domElement);
   }
@@ -67,4 +59,10 @@ export default class MgtDemoWebPart extends BaseClientSideWebPart<IMgtDemoWebPar
       ]
     };
   }
+}
+function lazyLoadComponent(
+  MgtDemo: React.LazyExoticComponent<typeof import('./components/MgtDemo').default>,
+  arg1: { description: string }
+) {
+  throw new Error('Function not implemented.');
 }
