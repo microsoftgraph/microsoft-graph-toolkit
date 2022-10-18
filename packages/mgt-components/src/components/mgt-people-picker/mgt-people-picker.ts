@@ -494,7 +494,6 @@ export class MgtPeoplePicker extends MgtTemplatedComponent {
   private _userFilters: string;
   private _groupFilters: string;
   private _peopleFilters: string;
-
   private defaultPeople: IDynamicPerson[];
 
   // tracking of user arrow key input for selection
@@ -516,6 +515,7 @@ export class MgtPeoplePicker extends MgtTemplatedComponent {
   private _mouseLeaveTimeout;
   private _mouseEnterTimeout;
   private _isKeyboardFocus: boolean = true;
+  private _dir: string = this.direction;
 
   constructor() {
     super();
@@ -523,7 +523,6 @@ export class MgtPeoplePicker extends MgtTemplatedComponent {
     this._showLoading = true;
     this.showMax = 6;
     this.disableImages = false;
-    this.direction = this.dir;
 
     this.disabled = false;
     this.allowAnyEmail = false;
@@ -622,9 +621,11 @@ export class MgtPeoplePicker extends MgtTemplatedComponent {
       'people-picker': true,
       disabled: this.disabled
     };
-
     return html`
-       <div dir=${this.direction} class=${classMap(inputClasses)} @click=${e => this.focus(e)}>
+       <div
+        dir=${this._dir}
+        class=${classMap(inputClasses)}
+        @click=${(opts: FocusOptions) => this.focus(opts)}>
          <div
           aria-expanded="false"
           aria-haspopup="listbox"
@@ -722,7 +723,6 @@ export class MgtPeoplePicker extends MgtTemplatedComponent {
            @keyup="${this.onUserKeyUp}"
            @blur=${this.lostFocus}
            @click=${this.handleFlyout}
-           @focus=${e => this.focus(e)}
            ?disabled=${this.disabled}
          />
        </div>
@@ -956,7 +956,7 @@ export class MgtPeoplePicker extends MgtTemplatedComponent {
           show-presence
           view="twoLines"
           line2-property="jobTitle,mail"
-          dir=${this.direction}
+          dir=${this._dir}
           .personDetails=${person}
           .fetchImage=${!this.disableImages}>
         </mgt-person>`
@@ -1002,7 +1002,7 @@ export class MgtPeoplePicker extends MgtTemplatedComponent {
     } else if (!people && provider && provider.state === ProviderState.SignedIn) {
       const graph = provider.graph.forComponent(this);
 
-      if (!input.length && this._isFocused) {
+      if (!input.length) {
         if (this.defaultPeople) {
           people = this.defaultPeople;
         } else {
@@ -1088,8 +1088,10 @@ export class MgtPeoplePicker extends MgtTemplatedComponent {
           }
           this.defaultPeople = people;
         }
+        if (this._isFocused) {
+          this._showLoading = false;
+        }
       }
-      this._showLoading = false;
 
       if (
         (this.defaultSelectedUserIds || this.defaultSelectedGroupIds) &&
