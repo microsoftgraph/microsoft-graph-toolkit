@@ -705,6 +705,7 @@ export class MgtPeoplePicker extends MgtTemplatedComponent {
            aria-autocomplete="list"
            aria-expanded="false"
            tabindex="0"
+           @focus="${this.gainedFocus}"
            @keydown="${this.onUserKeyDown}"
            @keyup="${this.onUserKeyUp}"
            @blur=${this.lostFocus}
