@@ -46,12 +46,14 @@ export class EditorElement extends LitElement {
         cursor: pointer;
         user-select: none;
         margin: 0px -2px 0px 0px;
+        border: 1px solid transparent;
       }
 
       .tab.selected {
         background-color: white;
         color: rgb(51, 51, 51);
         font-weight: 400;
+        border: 2px solid transparent;
       }
     `;
   }
@@ -175,6 +177,7 @@ export class EditorElement extends LitElement {
   }
 
   disconnectedCallback() {
+    this.editor.removeEventListener('fileUpdated');
     window.removeEventListener('resize', this.handleResize);
   }
 
@@ -191,7 +194,7 @@ export class EditorElement extends LitElement {
       this.editor.restoreViewState(this.currentEditorState.state);
     }
 
-    if(this.autoFormat) {
+    if (this.autoFormat) {
       this.editor.getAction('editor.action.formatDocument').run();
     }
   }

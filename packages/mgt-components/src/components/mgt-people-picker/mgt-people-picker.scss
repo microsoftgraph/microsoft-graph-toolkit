@@ -163,14 +163,15 @@ mgt-people-picker .root {
           flex: 1 0 auto;
           font-family: $font-family;
           position: relative;
-          line-height: normal;
           outline: none;
           font-style: normal;
           font-weight: normal;
           font-size: 14px;
-          line-height: 19px;
           background-color: $input__background-color;
           color: $color;
+          word-spacing: inherit;
+          text-indent: inherit;
+          letter-spacing: inherit;
           &::placeholder {
             color: $placeholder__color;
           }
@@ -316,5 +317,40 @@ mgt-flyout {
 
   .flyout-root {
     text-align: right !important;
+  }
+}
+
+@media (forced-colors: active) and (prefers-color-scheme: dark) {
+  svg,
+  svg > path {
+    fill: rgb(255, 255, 255) !important;
+    fill-rule: nonzero !important;
+    clip-rule: nonzero !important;
+    color: rgb(255, 255, 255) !important;
+  }
+
+  .flyout-root {
+    border: 1px solid rgb(255, 255, 255);
+  }
+
+  .people-list .list-person {
+    border: solid 1px rgb(255, 255, 255);
+  }
+}
+@media (forced-colors: active) and (prefers-color-scheme: light) {
+  svg,
+  svg > path {
+    fill: rgb(0, 0, 0) !important;
+    fill-rule: nonzero !important;
+    clip-rule: nonzero !important;
+    color: rgb(0, 0, 0) !important;
+  }
+
+  .flyout-root {
+    border: 1px solid rgb(0, 0, 0);
+  }
+
+  .people-list .list-person {
+    border: solid 1px rgb(0, 0, 0);
   }
 }

@@ -23,29 +23,29 @@
 
 ## Packages
 
-| Package | Latest | Next |
-| - | - | - |
-| [`@microsoft/mgt`](https://www.npmjs.com/package/@microsoft/mgt) | <img src="https://img.shields.io/npm/v/@microsoft/mgt/latest.svg"> | <img src="https://img.shields.io/npm/v/@microsoft/mgt/next.svg">
-| [`@microsoft/mgt-element`](https://www.npmjs.com/package/@microsoft/mgt-element) | <img src="https://img.shields.io/npm/v/@microsoft/mgt-element/latest.svg"> | <img src="https://img.shields.io/npm/v/@microsoft/mgt-element/next.svg"> |
-| [`@microsoft/mgt-components`](https://www.npmjs.com/package/@microsoft/mgt-components) | <img src="https://img.shields.io/npm/v/@microsoft/mgt-components/latest.svg"> | <img src="https://img.shields.io/npm/v/@microsoft/mgt-components/next.svg"> |
-| [`@microsoft/mgt-react`](https://www.npmjs.com/package/@microsoft/mgt-react) | <img src="https://img.shields.io/npm/v/@microsoft/mgt-react/latest.svg"> | <img src="https://img.shields.io/npm/v/@microsoft/mgt-react/next.svg"> |
-| [`@microsoft/mgt-msal-provider`](https://www.npmjs.com/package/@microsoft/mgt-msal-provider) | <img src="https://img.shields.io/npm/v/@microsoft/mgt-msal-provider/latest.svg"> | <img src="https://img.shields.io/npm/v/@microsoft/mgt-msal-provider/next.svg"> |
-| [`@microsoft/mgt-msal2-provider`](https://www.npmjs.com/package/@microsoft/mgt-msal2-provider) | <img src="https://img.shields.io/npm/v/@microsoft/mgt-msal2-provider/latest.svg"> | <img src="https://img.shields.io/npm/v/@microsoft/mgt-msal2-provider/next.svg"> |
-| [`@microsoft/mgt-teams-provider`](https://www.npmjs.com/package/@microsoft/mgt-teams-provider) | <img src="https://img.shields.io/npm/v/@microsoft/mgt-teams-provider/latest.svg"> | <img src="https://img.shields.io/npm/v/@microsoft/mgt-teams-provider/next.svg"> |
+| Package                                                                                                    | Latest                                                                                  | Next                                                                                  |
+| ---------------------------------------------------------------------------------------------------------- | --------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------- |
+| [`@microsoft/mgt`](https://www.npmjs.com/package/@microsoft/mgt)                                           | <img src="https://img.shields.io/npm/v/@microsoft/mgt/latest.svg">                      | <img src="https://img.shields.io/npm/v/@microsoft/mgt/next.svg">                      |
+| [`@microsoft/mgt-element`](https://www.npmjs.com/package/@microsoft/mgt-element)                           | <img src="https://img.shields.io/npm/v/@microsoft/mgt-element/latest.svg">              | <img src="https://img.shields.io/npm/v/@microsoft/mgt-element/next.svg">              |
+| [`@microsoft/mgt-components`](https://www.npmjs.com/package/@microsoft/mgt-components)                     | <img src="https://img.shields.io/npm/v/@microsoft/mgt-components/latest.svg">           | <img src="https://img.shields.io/npm/v/@microsoft/mgt-components/next.svg">           |
+| [`@microsoft/mgt-react`](https://www.npmjs.com/package/@microsoft/mgt-react)                               | <img src="https://img.shields.io/npm/v/@microsoft/mgt-react/latest.svg">                | <img src="https://img.shields.io/npm/v/@microsoft/mgt-react/next.svg">                |
+| [`@microsoft/mgt-msal-provider`](https://www.npmjs.com/package/@microsoft/mgt-msal-provider)               | <img src="https://img.shields.io/npm/v/@microsoft/mgt-msal-provider/latest.svg">        | <img src="https://img.shields.io/npm/v/@microsoft/mgt-msal-provider/next.svg">        |
+| [`@microsoft/mgt-msal2-provider`](https://www.npmjs.com/package/@microsoft/mgt-msal2-provider)             | <img src="https://img.shields.io/npm/v/@microsoft/mgt-msal2-provider/latest.svg">       | <img src="https://img.shields.io/npm/v/@microsoft/mgt-msal2-provider/next.svg">       |
+| [`@microsoft/mgt-teams-provider`](https://www.npmjs.com/package/@microsoft/mgt-teams-provider)             | <img src="https://img.shields.io/npm/v/@microsoft/mgt-teams-provider/latest.svg">       | <img src="https://img.shields.io/npm/v/@microsoft/mgt-teams-provider/next.svg">       |
 | [`@microsoft/mgt-teams-msal2-provider`](https://www.npmjs.com/package/@microsoft/mgt-teams-msal2-provider) | <img src="https://img.shields.io/npm/v/@microsoft/mgt-teams-msal2-provider/latest.svg"> | <img src="https://img.shields.io/npm/v/@microsoft/mgt-teams-msal2-provider/next.svg"> |
-| [`@microsoft/mgt-sharepoint-provider`](https://www.npmjs.com/package/@microsoft/mgt-sharepoint-provider) | <img src="https://img.shields.io/npm/v/@microsoft/mgt-sharepoint-provider/latest.svg"> | <img src="https://img.shields.io/npm/v/@microsoft/mgt-sharepoint-provider/next.svg"> |
-| [`@microsoft/mgt-proxy-provider`](https://www.npmjs.com/package/@microsoft/mgt-proxy-provider) | <img src="https://img.shields.io/npm/v/@microsoft/mgt-proxy-provider/latest.svg"> | <img src="https://img.shields.io/npm/v/@microsoft/mgt-proxy-provider/next.svg"> |
-| [`@microsoft/mgt-spfx`](https://www.npmjs.com/package/@microsoft/mgt-spfx) | <img src="https://img.shields.io/npm/v/@microsoft/mgt-spfx/latest.svg"> | <img src="https://img.shields.io/npm/v/@microsoft/mgt-spfx/next.svg"> |
-| [`@microsoft/mgt-electron-provider`](https://www.npmjs.com/package/@microsoft/mgt-electron-provider) | <img src="https://img.shields.io/npm/v/@microsoft/mgt-electron-provider/latest.svg"> | <img src="https://img.shields.io/npm/v/@microsoft/mgt-electron-provider/next.svg"> |
-
+| [`@microsoft/mgt-teamsfx-provider`](https://www.npmjs.com/package/@microsoft/mgt-teamsfx-provider)         | <img src="https://img.shields.io/npm/v/@microsoft/mgt-teamsfx-provider/latest.svg">     | <img src="https://img.shields.io/npm/v/@microsoft/mgt-teamsfx-provider/next.svg">     |
+| [`@microsoft/mgt-sharepoint-provider`](https://www.npmjs.com/package/@microsoft/mgt-sharepoint-provider)   | <img src="https://img.shields.io/npm/v/@microsoft/mgt-sharepoint-provider/latest.svg">  | <img src="https://img.shields.io/npm/v/@microsoft/mgt-sharepoint-provider/next.svg">  |
+| [`@microsoft/mgt-proxy-provider`](https://www.npmjs.com/package/@microsoft/mgt-proxy-provider)             | <img src="https://img.shields.io/npm/v/@microsoft/mgt-proxy-provider/latest.svg">       | <img src="https://img.shields.io/npm/v/@microsoft/mgt-proxy-provider/next.svg">       |
+| [`@microsoft/mgt-spfx`](https://www.npmjs.com/package/@microsoft/mgt-spfx)                                 | <img src="https://img.shields.io/npm/v/@microsoft/mgt-spfx/latest.svg">                 | <img src="https://img.shields.io/npm/v/@microsoft/mgt-spfx/next.svg">                 |
+| [`@microsoft/mgt-electron-provider`](https://www.npmjs.com/package/@microsoft/mgt-electron-provider)       | <img src="https://img.shields.io/npm/v/@microsoft/mgt-electron-provider/latest.svg">    | <img src="https://img.shields.io/npm/v/@microsoft/mgt-electron-provider/next.svg">    |
 
 ### Preview packages
 
 In addition to the `@next` preview packages, we also ship packages under several other preview tags with various features in progress:
 
-| Tag | Description |
-| - | - |
-| `next` | Next release - updated on each commit to `main` |
+| Tag             | Description                                                              |
+| --------------- | ------------------------------------------------------------------------ |
+| `next`          | Next release - updated on each commit to `main`                          |
 | `next.fluentui` | Next major release (v3) with components based on FluentUI web components |
 
 To install these packages, use the tag as the version in your `npm i` command. Ex: `npm i @microsoft/mgt-element@next.fluentui`. Make sure to install the same version for all mgt packages to avoid any conflicts. Keep in mind, these are features in preview and are not recommended for production use.
@@ -57,46 +57,47 @@ You can explore components and samples with the [playground](https://mgt.dev) po
 
 The Toolkit currently includes the following components:
 
-* [mgt-login](https://docs.microsoft.com/graph/toolkit/components/login)
-* [mgt-person](https://docs.microsoft.com/graph/toolkit/components/person)
-* [mgt-person-card](https://docs.microsoft.com/graph/toolkit/components/person-card)
-* [mgt-people](https://docs.microsoft.com/graph/toolkit/components/people)
-* [mgt-people-picker](https://docs.microsoft.com/graph/toolkit/components/people-picker)
-* [mgt-agenda](https://docs.microsoft.com/graph/toolkit/components/agenda)
-* [mgt-tasks](https://docs.microsoft.com/graph/toolkit/components/tasks)
-* [mgt-todo](https://docs.microsoft.com/graph/toolkit/components/todo)
-* [mgt-teams-channel-picker](https://docs.microsoft.com/graph/toolkit/components/teams-channel-picker)
-* [mgt-file](https://docs.microsoft.com/graph/toolkit/components/file)
-* [mgt-file-list](https://docs.microsoft.com/graph/toolkit/components/file-list)
-* [mgt-get](https://docs.microsoft.com/graph/toolkit/components/get)
+* [mgt-login](https://learn.microsoft.com/graph/toolkit/components/login)
+* [mgt-person](https://learn.microsoft.com/graph/toolkit/components/person)
+* [mgt-person-card](https://learn.microsoft.com/graph/toolkit/components/person-card)
+* [mgt-people](https://learn.microsoft.com/graph/toolkit/components/people)
+* [mgt-people-picker](https://learn.microsoft.com/graph/toolkit/components/people-picker)
+* [mgt-agenda](https://learn.microsoft.com/graph/toolkit/components/agenda)
+* [mgt-tasks](https://learn.microsoft.com/graph/toolkit/components/tasks)
+* [mgt-todo](https://learn.microsoft.com/graph/toolkit/components/todo)
+* [mgt-teams-channel-picker](https://learn.microsoft.com/graph/toolkit/components/teams-channel-picker)
+* [mgt-file](https://learn.microsoft.com/graph/toolkit/components/file)
+* [mgt-file-list](https://learn.microsoft.com/graph/toolkit/components/file-list)
+* [mgt-get](https://learn.microsoft.com/graph/toolkit/components/get)
 
-All web components are also available as React component - see [@microsoft/mgt-react documentation](https://docs.microsoft.com/graph/toolkit/get-started/mgt-react).
+All web components are also available as React component - see [@microsoft/mgt-react documentation](https://learn.microsoft.com/graph/toolkit/get-started/mgt-react).
 
 ## Providers
 
-[Providers](https://docs.microsoft.com/graph/toolkit/providers) enable authentication and provide the implementation for acquiring access tokens on various platforms. The providers also expose a Microsoft Graph Client for calling the Microsoft Graph APIs. The components work best when used with a provider, but the providers can be used on their own as well.
+[Providers](https://learn.microsoft.com/graph/toolkit/providers) enable authentication and provide the implementation for acquiring access tokens on various platforms. The providers also expose a Microsoft Graph Client for calling the Microsoft Graph APIs. The components work best when used with a provider, but the providers can be used on their own as well.
 
-* [MsalProvider](https://docs.microsoft.com/graph/toolkit/providers/msal)
-* [Msal2Provider](https://docs.microsoft.com/graph/toolkit/providers/msal2)
-* [SharePointProvider](https://docs.microsoft.com/graph/toolkit/providers/sharepoint)
-* [TeamsProvider](https://docs.microsoft.com/graph/toolkit/providers/teams)
-* [TeamsMsal2Provider](https://docs.microsoft.com/graph/toolkit/providers/teams-msal2)
-* [ProxyProvider](https://docs.microsoft.com/graph/toolkit/providers/proxy)
-* [SimpleProvider](https://docs.microsoft.com/graph/toolkit/providers/custom)
-* [ElectronProvider](https://docs.microsoft.com/graph/toolkit/providers/electron)
+* [MsalProvider](https://learn.microsoft.com/graph/toolkit/providers/msal)
+* [Msal2Provider](https://learn.microsoft.com/graph/toolkit/providers/msal2)
+* [SharePointProvider](https://learn.microsoft.com/graph/toolkit/providers/sharepoint)
+* [TeamsProvider](https://learn.microsoft.com/graph/toolkit/providers/teams)
+* [TeamsMsal2Provider](https://learn.microsoft.com/graph/toolkit/providers/teams-msal2)
+* [TeamsFxProvider](https://learn.microsoft.com/graph/toolkit/providers/teamsfx)
+* [ProxyProvider](https://learn.microsoft.com/graph/toolkit/providers/proxy)
+* [SimpleProvider](https://learn.microsoft.com/graph/toolkit/providers/custom)
+* [ElectronProvider](https://learn.microsoft.com/graph/toolkit/providers/electron)
 
-You can also create your own providers by extending the [IProvider](https://docs.microsoft.com/graph/toolkit/providers/custom) abstract class.
+You can also create your own providers by extending the [IProvider](https://learn.microsoft.com/graph/toolkit/providers/custom) abstract class.
 
-[View the full documentation](https://docs.microsoft.com/graph/toolkit/overview)
+[View the full documentation](https://learn.microsoft.com/graph/toolkit/overview)
 
 ## Getting Started
 
 The following guides are available to help you get started with the Toolkit:
-* [Build a web application (vanilla JS)](https://docs.microsoft.com/graph/toolkit/get-started/build-a-web-app)
-* [Build a SharePoint Web Part](https://docs.microsoft.com/graph/toolkit/get-started/build-a-sharepoint-web-part)
-* [Build a Microsoft Teams Tab](https://docs.microsoft.com/graph/toolkit/get-started/build-a-microsoft-teams-tab)
-* [Use the Toolkit with React](https://docs.microsoft.com/graph/toolkit/get-started/use-toolkit-with-react)
-* [Use the Toolkit with Angular](https://docs.microsoft.com/graph/toolkit/get-started/use-toolkit-with-angular)
+* [Build a web application (vanilla JS)](https://learn.microsoft.com/graph/toolkit/get-started/build-a-web-app)
+* [Build a SharePoint Web Part](https://learn.microsoft.com/graph/toolkit/get-started/build-a-sharepoint-web-part)
+* [Build a Microsoft Teams Tab](https://learn.microsoft.com/graph/toolkit/get-started/build-a-microsoft-teams-tab)
+* [Use the Toolkit with React](https://learn.microsoft.com/graph/toolkit/get-started/use-toolkit-with-react)
+* [Use the Toolkit with Angular](https://learn.microsoft.com/graph/toolkit/get-started/use-toolkit-with-angular)
 
 You can use the components by referencing the loader directly (via unpkg), or installing the npm package
 

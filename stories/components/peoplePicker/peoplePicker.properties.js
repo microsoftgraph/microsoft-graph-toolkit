@@ -22,9 +22,10 @@ export const dynamicGroupId = () => html`
   <mgt-people-picker id="picker"></mgt-people-picker>
   <div>
     <p class="notes">Pick a group:</p>
-    <select id="groupChooser" name="group">
-      <option value="">none</option>
-    </select>
+    <div class="groups">
+      <button aria-label="Select a group" id="showHideGroups">Select a group</button>
+      <ul id="groupChooser"></ul>
+    </div>
     <p class="notes">People chosen:</p>
     <div id="chosenPeople"></div>
   </div>
@@ -39,6 +40,49 @@ export const dynamicGroupId = () => html`
       font-size: 12px;
       margin-bottom: 2px;
     }
+    .groups {
+      max-width: 200px;
+    }
+
+    #showHideGroups {
+      background-color: #287ab1;
+      color: white;
+      padding: 8px;
+      font-size: 16px;
+      border: none;
+      cursor: pointer;
+      width: 100%;
+    }
+
+    #showHideGroups:hover, #showHideGroups:focus{
+      background-color: #4488EC;
+    }
+
+    #groupChooser {
+      display: none;
+      position: inherit;
+      background-color: #f1f1f1;
+      width: 100%;
+      box-shadow: 0px 8px 8px 0px rgba(0,0,0,0.2);
+      max-height: 300px;
+      overflow: scroll;
+      padding-left: 3px;
+    }
+    ul{
+      margin: 0px;
+      display: inherit;
+    }
+    ul > li {
+      color: black;
+      text-decoration: none;
+      display: block;
+      border-bottom: 1px solid;
+      font-size: 12px;
+      cursor: pointer;
+    }
+    ul > li:hover, ul > li:focus {
+      background-color: lightgray;
+    }
   </style>
   <script type="module">
     import { Providers, ProviderState } from '@microsoft/mgt';
@@ -46,12 +90,20 @@ export const dynamicGroupId = () => html`
     let picker = document.getElementById('picker');
     let chosenArea = document.getElementById('chosenPeople');
     let groupChooser = document.getElementById('groupChooser');
-
-    groupChooser.addEventListener('change', getGroupValue);
+    let button = document.getElementById('showHideGroups');
+    button.addEventListener("click", showHideGroups);
 
     loadGroups();
     Providers.onProviderUpdated(loadGroups);
 
+    function showHideGroups(){
+      const display = groupChooser.style.display;
+      if (display === "none"|| display === "") {
+          groupChooser.style.display = "inline-block";
+      } else {
+          groupChooser.style.display = "none";
+      }
+    }
     function loadGroups() {
       let provider = Providers.globalProvider;
       if (provider && provider.state === ProviderState.SignedIn) {
@@ -62,9 +114,17 @@ export const dynamicGroupId = () => html`
           .get()
           .then(groups => {
             for (let group of groups.value) {
-              let option = document.createElement('option');
-              option.value = group.id;
-              option.text = group.displayName;
+              const id = group.id;
+              let option = document.createElement('li');
+              option.setAttribute("value", id);
+              option.innerText = group.displayName;
+              option.onclick = function(event){
+                const id = event.target.getAttribute("value");
+                const displayName = event.target.innerText.trim();
+                button.innerText = displayName;
+                setGroupValue(id);
+                showHideGroups();
+              }
 
               groupChooser.appendChild(option);
             }
@@ -82,13 +142,6 @@ export const dynamicGroupId = () => html`
         chosenArea.append(newElem);
       }
     });
-
-    function getGroupValue(e) {
-      let selection = groupChooser.selectedOptions[0];
-      if (selection !== undefined) {
-        setGroupValue(selection.value);
-      }
-    }
 
     function setGroupValue(selected) {
       picker.setAttribute('group', selected);
@@ -210,6 +263,35 @@ export const pickerPeopleFilters = () => html`
 export const pickerGroupFilters = () => html`
   <mgt-people-picker
     group-filters="startsWith(displayName, 'a')"
+    type="group">
+  </mgt-people-picker>
+`;
+
+export const pickerGroupIds = () => html`
+  <!-- This should show all the users in the groups of the group IDs -->
+  <mgt-people-picker
+    group-ids="94cb7dd0-cb3b-49e0-ad15-4efeb3c7d3e9,f2861ed7-abca-4556-bf0c-39ddc717ad81">
+  </mgt-people-picker>
+`;
+
+export const pickerGroupIdsWithUserFilters = () => html`
+  <!-- This should return an empty result -->
+  <mgt-people-picker
+    group-ids="94cb7dd0-cb3b-49e0-ad15-4efeb3c7d3e9,f2861ed7-abca-4556-bf0c-39ddc717ad81"
+    user-filters="startswith(displayName, 's')">
+  </mgt-people-picker>
+  <br>
+  <!-- This should return a result. Search for 'wil' should return Alex Wilber -->
+  <mgt-people-picker
+    group-ids="94cb7dd0-cb3b-49e0-ad15-4efeb3c7d3e9,f2861ed7-abca-4556-bf0c-39ddc717ad81"
+    user-filters="startswith(displayName, 'a')">
+  </mgt-people-picker>
+`;
+
+export const pickerGroupIdsWithTypeGroup = () => html`
+  <!-- This should show the groups in the group-ids as groups -->
+  <mgt-people-picker
+    group-ids="94cb7dd0-cb3b-49e0-ad15-4efeb3c7d3e9,f2861ed7-abca-4556-bf0c-39ddc717ad81"
     type="group">
   </mgt-people-picker>
 `;

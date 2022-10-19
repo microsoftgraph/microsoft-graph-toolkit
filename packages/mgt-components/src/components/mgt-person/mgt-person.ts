@@ -576,11 +576,12 @@ export class MgtPerson extends MgtTemplatedComponent {
 
       const rootClasses = {
         'person-root': true,
-        clickable: this.personCardInteraction === PersonCardInteraction.click
+        clickable: this.personCardInteraction === PersonCardInteraction.click,
+        small: !this.isLargeAvatar()
       };
 
       personTemplate = html`
-        <div class=${classMap(rootClasses)}>
+        <div class=${classMap(rootClasses)} tabindex="0">
           ${imageWithPresenceTemplate} ${detailsTemplate}
         </div>
       `;
@@ -598,7 +599,6 @@ export class MgtPerson extends MgtTemplatedComponent {
         @mouseenter=${this.handleMouseEnter}
         @mouseleave=${this.handleMouseLeave}
         @keydown=${this.handleKeyDown}
-        tabindex=0
       >
         ${personTemplate}
       </div>
@@ -881,7 +881,8 @@ export class MgtPerson extends MgtTemplatedComponent {
         const text = this.getTextFromProperty(person, this.line1Property);
         if (text) {
           details.push(html`
-            <div class="line1" @click=${() => this.handleLine1Clicked()} aria-label="${text}">${text}</div>
+            <div class="line1" @click=${() =>
+              this.handleLine1Clicked()} role="presentation" aria-label="${text}">${text}</div>
           `);
         }
       }
@@ -899,7 +900,8 @@ export class MgtPerson extends MgtTemplatedComponent {
         const text = this.getTextFromProperty(person, this.line2Property);
         if (text) {
           details.push(html`
-            <div class="line2" @click=${() => this.handleLine2Clicked()} aria-label="${text}">${text}</div>
+            <div class="line2" @click=${() =>
+              this.handleLine2Clicked()} role="presentation" aria-label="${text}">${text}</div>
           `);
         }
       }
@@ -917,7 +919,8 @@ export class MgtPerson extends MgtTemplatedComponent {
         const text = this.getTextFromProperty(person, this.line3Property);
         if (text) {
           details.push(html`
-            <div class="line3" @click=${() => this.handleLine3Clicked()} aria-label="${text}">${text}</div>
+            <div class="line3" @click=${() =>
+              this.handleLine3Clicked()} role="presentation" aria-label="${text}">${text}</div>
           `);
         }
       }
@@ -975,6 +978,7 @@ export class MgtPerson extends MgtTemplatedComponent {
       this.renderTemplate('person-card', { person: personDetails, personImage: image }) ||
       html`
         <mgt-person-card
+          lock-tab-navigation
           .personDetails=${personDetails}
           .personImage=${image}
           .personPresence=${presence}

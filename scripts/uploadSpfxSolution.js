@@ -44,7 +44,8 @@ const octokit = new Octokit({ auth });
   }
 
   const file = fs.readFileSync(assetPath);
-  const name = `mgt-spfx-${version}.sppkg`;
+  const majorVersion = version.substring(0, version.indexOf("."));
+  const filename = `mgt-spfx-v${majorVersion}.sppkg`;
 
   if (release.assets && release.assets.length) {
     const asset = release.assets.filter(a => a.name === name)[0];
@@ -58,13 +59,13 @@ const octokit = new Octokit({ auth });
     }
   }
 
-  console.log(`attaching ${assetPath} as ${name} to release`)
+  console.log(`attaching ${assetPath} as ${filename} to release`)
   await octokit.rest.repos.uploadReleaseAsset({
     owner,
     repo,
     release_id: release.id,
     data: file,
-    name: `mgt-spfx-${version}.sppkg`
+    name: filename
   });
 
   console.log('done')

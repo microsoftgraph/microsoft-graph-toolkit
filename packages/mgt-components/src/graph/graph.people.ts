@@ -106,7 +106,7 @@ export async function findPeople(
   query: string,
   top: number = 10,
   userType: UserType = UserType.any,
-  peopleFilters: string = ''
+  filters: string = ''
 ): Promise<Person[]> {
   const scopes = 'people.read';
 
@@ -131,20 +131,26 @@ export async function findPeople(
     }
   }
 
-  if (peopleFilters !== '') {
+  if (filters !== '') {
     // Adding the default people filters to the search filters
-    filter = `${filter} and ${peopleFilters}`;
+    filter += `${filter} and ${filters}`;
   }
 
   let graphResult;
   try {
-    graphResult = await graph
+    let graphRequest = graph
       .api('/me/people')
       .search('"' + query + '"')
       .top(top)
       .filter(filter)
-      .middlewareOptions(prepScopes(scopes))
-      .get();
+      .middlewareOptions(prepScopes(scopes));
+
+    if (userType != UserType.contact) {
+      // for any type other than Contact, user a wider search
+      graphRequest = graphRequest.header('X-PeopleQuery-QuerySources', 'Mailbox,Directory');
+    }
+
+    graphResult = await graphRequest.get();
 
     if (getIsPeopleCacheEnabled() && graphResult) {
       const item = { maxResults: top, results: null };
@@ -196,7 +202,14 @@ export async function getPeople(
 
   let people;
   try {
-    people = await graph.api(uri).middlewareOptions(prepScopes(scopes)).filter(filter).get();
+    let graphRequest = graph.api(uri).middlewareOptions(prepScopes(scopes)).filter(filter);
+
+    if (userType != UserType.contact) {
+      // for any type other than Contact, user a wider search
+      graphRequest = graphRequest.header('X-PeopleQuery-QuerySources', 'Mailbox,Directory');
+    }
+
+    people = await graphRequest.get();
     if (getIsPeopleCacheEnabled() && people) {
       cache.putValue(cacheKey, { maxResults: 10, results: people.value.map(ppl => JSON.stringify(ppl)) });
     }
