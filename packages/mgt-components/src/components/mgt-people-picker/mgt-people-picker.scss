@@ -47,7 +47,6 @@ mgt-people-picker .root {
     display: flex;
     flex-wrap: wrap;
     vertical-align: middle;
-    margin: 0 8px;
     list-style-type: none;
     font-style: normal;
     font-weight: normal;
@@ -164,14 +163,15 @@ mgt-people-picker .root {
           flex: 1 0 auto;
           font-family: $font-family;
           position: relative;
-          line-height: normal;
           outline: none;
           font-style: normal;
           font-weight: normal;
           font-size: 14px;
-          line-height: 19px;
           background-color: $input__background-color;
           color: $color;
+          word-spacing: inherit;
+          text-indent: inherit;
+          letter-spacing: inherit;
           &::placeholder {
             color: $placeholder__color;
           }
@@ -187,6 +187,7 @@ mgt-people-picker .root {
         list-style-type: none;
         background-color: $dropdown__background-color;
         max-height: var(--mgt-flyout-set-height, unset);
+        border-radius: 8px;
         li {
           cursor: pointer;
         }
@@ -200,7 +201,11 @@ mgt-people-picker .root {
             font-style: normal;
             font-weight: 600;
             font-size: 14px;
-            &:hover,
+            margin: var(--file-item-margin, 4px);
+            border-radius: 4px;
+            &:hover {
+              background-color: $dropdown-item__background-color--hover;
+            }
             &.focused {
               background-color: $dropdown-item__background-color--hover;
             }
@@ -312,5 +317,40 @@ mgt-flyout {
 
   .flyout-root {
     text-align: right !important;
+  }
+}
+
+@media (forced-colors: active) and (prefers-color-scheme: dark) {
+  svg,
+  svg > path {
+    fill: rgb(255, 255, 255) !important;
+    fill-rule: nonzero !important;
+    clip-rule: nonzero !important;
+    color: rgb(255, 255, 255) !important;
+  }
+
+  .flyout-root {
+    border: 1px solid rgb(255, 255, 255);
+  }
+
+  .people-list .list-person {
+    border: solid 1px rgb(255, 255, 255);
+  }
+}
+@media (forced-colors: active) and (prefers-color-scheme: light) {
+  svg,
+  svg > path {
+    fill: rgb(0, 0, 0) !important;
+    fill-rule: nonzero !important;
+    clip-rule: nonzero !important;
+    color: rgb(0, 0, 0) !important;
+  }
+
+  .flyout-root {
+    border: 1px solid rgb(0, 0, 0);
+  }
+
+  .people-list .list-person {
+    border: solid 1px rgb(0, 0, 0);
   }
 }

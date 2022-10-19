@@ -346,6 +346,19 @@ export class MgtPerson extends MgtTemplatedComponent {
   public fetchImage: boolean;
 
   /**
+   * Sets whether to disable the person image fetch
+   * from the Microsoft Graph
+   *
+   * @type {boolean}
+   * @memberof MgtPerson
+   */
+  @property({
+    attribute: 'disable-image-fetch',
+    type: Boolean
+  })
+  public disableImageFetch: boolean;
+
+  /**
    * Determines and sets person avatar
    *
    *
@@ -526,6 +539,7 @@ export class MgtPerson extends MgtTemplatedComponent {
     this.line3Property = 'jobTitle';
     this.view = ViewType.image;
     this.avatarSize = 'auto';
+    this.disableImageFetch = false;
     this._isInvalidImageSrc = false;
     this._avatarType = 'photo';
   }
@@ -562,11 +576,12 @@ export class MgtPerson extends MgtTemplatedComponent {
 
       const rootClasses = {
         'person-root': true,
-        clickable: this.personCardInteraction === PersonCardInteraction.click
+        clickable: this.personCardInteraction === PersonCardInteraction.click,
+        small: !this.isLargeAvatar()
       };
 
       personTemplate = html`
-        <div class=${classMap(rootClasses)}>
+        <div class=${classMap(rootClasses)} tabindex="0">
           ${imageWithPresenceTemplate} ${detailsTemplate}
         </div>
       `;
@@ -584,7 +599,6 @@ export class MgtPerson extends MgtTemplatedComponent {
         @mouseenter=${this.handleMouseEnter}
         @mouseleave=${this.handleMouseLeave}
         @keydown=${this.handleKeyDown}
-        tabindex=0
       >
         ${personTemplate}
       </div>
@@ -867,7 +881,8 @@ export class MgtPerson extends MgtTemplatedComponent {
         const text = this.getTextFromProperty(person, this.line1Property);
         if (text) {
           details.push(html`
-            <div class="line1" @click=${() => this.handleLine1Clicked()} aria-label="${text}">${text}</div>
+            <div class="line1" @click=${() =>
+              this.handleLine1Clicked()} role="presentation" aria-label="${text}">${text}</div>
           `);
         }
       }
@@ -885,7 +900,8 @@ export class MgtPerson extends MgtTemplatedComponent {
         const text = this.getTextFromProperty(person, this.line2Property);
         if (text) {
           details.push(html`
-            <div class="line2" @click=${() => this.handleLine2Clicked()} aria-label="${text}">${text}</div>
+            <div class="line2" @click=${() =>
+              this.handleLine2Clicked()} role="presentation" aria-label="${text}">${text}</div>
           `);
         }
       }
@@ -903,7 +919,8 @@ export class MgtPerson extends MgtTemplatedComponent {
         const text = this.getTextFromProperty(person, this.line3Property);
         if (text) {
           details.push(html`
-            <div class="line3" @click=${() => this.handleLine3Clicked()} aria-label="${text}">${text}</div>
+            <div class="line3" @click=${() =>
+              this.handleLine3Clicked()} role="presentation" aria-label="${text}">${text}</div>
           `);
         }
       }
@@ -961,6 +978,7 @@ export class MgtPerson extends MgtTemplatedComponent {
       this.renderTemplate('person-card', { person: personDetails, personImage: image }) ||
       html`
         <mgt-person-card
+          lock-tab-navigation
           .personDetails=${personDetails}
           .personImage=${image}
           .personPresence=${presence}
@@ -1019,7 +1037,7 @@ export class MgtPerson extends MgtTemplatedComponent {
     } else if (this.userId || this.personQuery === 'me') {
       // Use userId or 'me' query to get the person and image
       let person;
-      if (this._avatarType === 'photo') {
+      if (this._avatarType === 'photo' && !this.disableImageFetch) {
         person = await getUserWithPhoto(graph, this.userId, personProps);
       } else {
         if (this.personQuery === 'me') {
@@ -1040,7 +1058,7 @@ export class MgtPerson extends MgtTemplatedComponent {
 
       if (people && people.length) {
         this.personDetailsInternal = people[0];
-        if (this._avatarType === 'photo') {
+        if (this._avatarType === 'photo' && !this.disableImageFetch) {
           const image = await getPersonImage(graph, people[0], MgtPerson.config.useContactApis);
 
           if (image) {

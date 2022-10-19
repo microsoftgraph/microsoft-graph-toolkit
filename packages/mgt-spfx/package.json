@@ -1,6 +1,6 @@
 {
   "name": "@microsoft/mgt-spfx",
-  "version": "2.0.1",
+  "version": "2.0.3",
   "description": "SharePoint Framework library for Microsoft Graph Toolkit",
   "main": "lib/index.js",
   "keywords": [
@@ -30,15 +30,19 @@
     "@microsoft/mgt-components": "*",
     "@microsoft/mgt-element": "*",
     "@microsoft/mgt-sharepoint-provider": "*",
-    "@microsoft/sp-core-library": "1.13.0"
+    "@microsoft/sp-core-library": "1.15.2",
+    "tslib": "2.3.1"
   },
   "devDependencies": {
-    "@microsoft/rush-stack-compiler-3.9": "0.4.47",
-    "@microsoft/sp-build-web": "1.13.0",
-    "@microsoft/sp-module-interfaces": "1.13.0",
-    "@microsoft/sp-tslint-rules": "1.13.0",
+    "@microsoft/eslint-config-spfx": "1.15.2",
+    "@microsoft/eslint-plugin-spfx": "1.15.2",
+    "@microsoft/rush-stack-compiler-4.5": "0.2.2",
+    "@microsoft/sp-build-web": "1.15.2",
+    "@microsoft/sp-module-interfaces": "1.15.2",
+    "@rushstack/eslint-config": "2.5.1",
     "@types/webpack-env": "1.16.0",
-    "ajv": "~5.2.2",
+    "ajv": "6.12.5",
+    "eslint": "8.7.0",
     "gulp": "4.0.2"
   }
 }

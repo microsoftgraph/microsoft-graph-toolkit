@@ -6,7 +6,7 @@ The [Microsoft Graph Toolkit (mgt)](https://aka.ms/mgt) library is a collection 
 
 The `@microsoft/mgt-sharepoint-provider` package exposes the `SharePointProvider` class to be used inside your SharePoint web parts to power the components with Microsoft Graph access.
 
-[See docs for full documentation of the SharePointProvider](https://docs.microsoft.com/graph/toolkit/providers/sharepoint)
+[See docs for full documentation of the SharePointProvider](https://learn.microsoft.com/graph/toolkit/providers/sharepoint)
 
 ## Usage
 
@@ -28,7 +28,7 @@ The `@microsoft/mgt-sharepoint-provider` package exposes the `SharePointProvider
     }
     ```
 
-See [provider usage documentation](https://docs.microsoft.com/graph/toolkit/providers) to learn about how to use the providers with the mgt components, to sign in/sign out, get access tokens, call Microsoft Graph, and more.
+See [provider usage documentation](https://learn.microsoft.com/graph/toolkit/providers) to learn about how to use the providers with the mgt components, to sign in/sign out, get access tokens, call Microsoft Graph, and more.
 
 ## Sea also
 * [Microsoft Graph Toolkit docs](https://aka.ms/mgt-docs)

@@ -44,6 +44,9 @@ mgt-login .login-button {
   border: none;
   cursor: pointer;
   transition: color 0.3s, background-color 0.3s;
+  word-spacing: inherit;
+  text-indent: inherit;
+  letter-spacing: inherit;
 
   mgt-person {
     --color-sub1: set-var(button__color, $theme-default, $login);
@@ -54,6 +57,7 @@ mgt-login .login-button {
     --color: #{$button__color--hover};
     background-color: $button__background-color--hover;
     --color-sub1: #{$button__color--hover};
+    border-radius: 4px;
   }
 
   &:focus {
@@ -67,6 +71,10 @@ mgt-login .login-button {
 
   &.no-click {
     pointer-events: none;
+  }
+
+  &:focus-visible {
+    outline: auto;
   }
 }
 
@@ -84,6 +92,7 @@ mgt-login .popup {
   min-width: 240px;
   z-index: 1;
   color: set-var(popup__color, $theme-default, $login);
+  border-radius: 8px;
 
   mgt-person {
     --color-sub1: set-var(popup__color, $theme-default, $login);
@@ -95,6 +104,7 @@ mgt-login .popup-content {
   display: flex;
   flex-direction: column;
   padding: var(--popup-padding);
+  border-radius: 8px;
 }
 
 :host .popup-commands ul,
@@ -115,6 +125,9 @@ mgt-login .popup-command {
   padding: 0;
   cursor: pointer;
   transition: color 0.3s;
+  word-spacing: inherit;
+  text-indent: inherit;
+  letter-spacing: inherit;
 
   &:hover {
     color: #{$commblue_shade20};

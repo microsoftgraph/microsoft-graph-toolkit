@@ -105,7 +105,8 @@ export async function findPeople(
   graph: IGraph,
   query: string,
   top: number = 10,
-  userType: UserType = UserType.any
+  userType: UserType = UserType.any,
+  filters: string = ''
 ): Promise<Person[]> {
   const scopes = 'people.read';
 
@@ -130,15 +131,26 @@ export async function findPeople(
     }
   }
 
+  if (filters !== '') {
+    // Adding the default people filters to the search filters
+    filter += `${filter} and ${filters}`;
+  }
+
   let graphResult;
   try {
-    graphResult = await graph
+    let graphRequest = graph
       .api('/me/people')
       .search('"' + query + '"')
       .top(top)
       .filter(filter)
-      .middlewareOptions(prepScopes(scopes))
-      .get();
+      .middlewareOptions(prepScopes(scopes));
+
+    if (userType != UserType.contact) {
+      // for any type other than Contact, user a wider search
+      graphRequest = graphRequest.header('X-PeopleQuery-QuerySources', 'Mailbox,Directory');
+    }
+
+    graphResult = await graphRequest.get();
 
     if (getIsPeopleCacheEnabled() && graphResult) {
       const item = { maxResults: top, results: null };
@@ -155,11 +167,15 @@ export async function findPeople(
  * @returns {(Promise<Person[]>)}
  * @memberof Graph
  */
-export async function getPeople(graph: IGraph, userType: UserType = UserType.any): Promise<Person[]> {
+export async function getPeople(
+  graph: IGraph,
+  userType: UserType = UserType.any,
+  peopleFilters: string = ''
+): Promise<Person[]> {
   const scopes = 'people.read';
 
   let cache: CacheStore<CachePeopleQuery>;
-  let cacheKey = `*:${userType}`;
+  let cacheKey = peopleFilters ? peopleFilters : `*:${userType}`;
 
   if (getIsPeopleCacheEnabled()) {
     cache = CacheService.getCache<CachePeopleQuery>(schemas.people, schemas.people.stores.peopleQuery);
@@ -172,7 +188,6 @@ export async function getPeople(graph: IGraph, userType: UserType = UserType.any
 
   const uri = '/me/people';
   let filter = "personType/class eq 'Person'";
-
   if (userType !== UserType.any) {
     if (userType === UserType.user) {
       filter += "and personType/subclass eq 'OrganizationUser'";
@@ -181,13 +196,24 @@ export async function getPeople(graph: IGraph, userType: UserType = UserType.any
     }
   }
 
+  if (peopleFilters) {
+    filter += ` and ${peopleFilters}`;
+  }
+
   let people;
   try {
-    people = await graph.api(uri).middlewareOptions(prepScopes(scopes)).filter(filter).get();
+    let graphRequest = graph.api(uri).middlewareOptions(prepScopes(scopes)).filter(filter);
+
+    if (userType != UserType.contact) {
+      // for any type other than Contact, user a wider search
+      graphRequest = graphRequest.header('X-PeopleQuery-QuerySources', 'Mailbox,Directory');
+    }
+
+    people = await graphRequest.get();
     if (getIsPeopleCacheEnabled() && people) {
       cache.putValue(cacheKey, { maxResults: 10, results: people.value.map(ppl => JSON.stringify(ppl)) });
     }
-  } catch (error) {}
+  } catch (_) {}
   return people ? people.value : null;
 }
 

@@ -19,7 +19,7 @@ import { strings } from './strings';
 /**
  * Represents a contact part and its metadata
  *
- * @interface IContectPart
+ * @interface IContactPart
  */
 interface IContactPart {
   // tslint:disable-next-line: completed-docs
@@ -33,6 +33,8 @@ interface IContactPart {
   // tslint:disable-next-line: completed-docs
   showCompact: boolean;
 }
+
+type Protocol = 'mailto:' | 'tel:';
 
 /**
  * The contact details subsection of the person card
@@ -73,49 +75,49 @@ export class MgtPersonCardContact extends BasePersonCardSection {
     return !!availableParts.length;
   }
 
-  private _person: User;
+  private _person?: User;
 
   // tslint:disable: object-literal-sort-keys
-  private _contactParts = {
+  private _contactParts: Record<string, IContactPart> = {
     email: {
       icon: getSvg(SvgIcon.Email, '#929292'),
-      onClick: () => this.sendEmail(),
+      onClick: () => this.sendEmail(getEmailFromGraphEntity(this._person)),
       showCompact: true,
-      title: 'Email'
-    } as IContactPart,
+      title: this.strings.emailTitle
+    },
     chat: {
       icon: getSvg(SvgIcon.Chat, '#929292'),
-      onClick: () => this.sendChat(),
+      onClick: () => this.sendChat(this._person?.userPrincipalName),
       showCompact: false,
-      title: 'Teams'
-    } as IContactPart,
+      title: this.strings.chatTitle
+    },
     businessPhone: {
       icon: getSvg(SvgIcon.CellPhone, '#929292'),
-      onClick: () => this.sendCall('businessPhone'),
+      onClick: () => this.sendCall(this._person?.businessPhones?.length > 0 ? this._person.businessPhones[0] : null),
       showCompact: true,
-      title: 'Business Phone'
-    } as IContactPart,
+      title: this.strings.businessPhoneTitle
+    },
     cellPhone: {
       icon: getSvg(SvgIcon.CellPhone, '#929292'),
-      onClick: () => this.sendCall('cellPhone'),
+      onClick: () => this.sendCall(this._person?.mobilePhone),
       showCompact: true,
-      title: 'Mobile Phone'
-    } as IContactPart,
+      title: this.strings.cellPhoneTitle
+    },
     department: {
       icon: getSvg(SvgIcon.Department, '#929292'),
       showCompact: false,
-      title: 'Department'
-    } as IContactPart,
+      title: this.strings.departmentTitle
+    },
     title: {
       icon: getSvg(SvgIcon.Person, '#929292'),
       showCompact: false,
-      title: 'Title'
-    } as IContactPart,
+      title: this.strings.titleTitle
+    },
     officeLocation: {
       icon: getSvg(SvgIcon.OfficeLocation, '#929292'),
       showCompact: true,
-      title: 'Office Location'
-    } as IContactPart
+      title: this.strings.officeLocationTitle
+    }
   };
   // tslint:enable: object-literal-sort-keys
 
@@ -226,7 +228,7 @@ export class MgtPersonCardContact extends BasePersonCardSection {
 
     return html`
       <div class="root" dir=${this.direction}>
-        <div class="title">${this.displayName}</div>
+        <div class="title" tabindex="0">${this.displayName}</div>
         ${contentTemplate}
       </div>
     `;
@@ -261,7 +263,7 @@ export class MgtPersonCardContact extends BasePersonCardSection {
         `;
 
     return html`
-      <div class="part" @click=${(e: MouseEvent) => this.handlePartClick(e, part.value)}>
+      <div class="part" @click=${(e: MouseEvent) => this.handlePartClick(e, part.value)}  tabindex="0">
         <div class="part__icon">${part.icon}</div>
         <div class="part__details">
           <div class="part__title">${part.title}</div>
@@ -286,19 +288,27 @@ export class MgtPersonCardContact extends BasePersonCardSection {
     }
   }
 
+  private sendLink(protocol: Protocol, resource: string): void {
+    if (resource) {
+      window.open(`${protocol}${resource}`, '_blank', 'noreferrer');
+    } else {
+      console.error(`Target resource for ${protocol} link was not provided: resource: ${resource}`);
+    }
+  }
+
   /**
    * Send a chat message to the user
    *
    * @protected
    * @memberof MgtPersonCardContact
    */
-  protected sendChat(): void {
-    const chat = this._contactParts.chat.value;
-    if (!chat) {
+  protected sendChat(upn: string): void {
+    if (!upn) {
+      console.error("Can't send chat when upn is not provided");
       return;
     }
 
-    const url = `https://teams.microsoft.com/l/chat/0/0?users=${chat}`;
+    const url = `https://teams.microsoft.com/l/chat/0/0?users=${upn}`;
     const openWindow = () => window.open(url, '_blank', 'noreferrer');
 
     if (TeamsHelper.isAvailable) {
@@ -318,11 +328,8 @@ export class MgtPersonCardContact extends BasePersonCardSection {
    * @protected
    * @memberof MgtPersonCardContact
    */
-  protected sendEmail(): void {
-    const email = this._contactParts.email.value;
-    if (email) {
-      window.open('mailto:' + email, '_blank', 'noreferrer');
-    }
+  protected sendEmail(email: string): void {
+    this.sendLink('mailto:', email);
   }
 
   /**
@@ -331,13 +338,7 @@ export class MgtPersonCardContact extends BasePersonCardSection {
    * @protected
    * @memberof MgtPersonCardContact
    */
-  protected sendCall(phone): void {
-    const cellPhone = this._contactParts.cellPhone.value;
-    const businessPhone = this._contactParts.businessPhone.value;
-    if (phone === 'cellPhone') {
-      window.open('tel:' + cellPhone, '_blank', 'noreferrer');
-    } else if (phone === 'businessPhone') {
-      window.open('tel:' + businessPhone, '_blank', 'noreferrer');
-    }
-  }
+  protected sendCall = (phone: string): void => {
+    this.sendLink('tel:', phone);
+  };
 }

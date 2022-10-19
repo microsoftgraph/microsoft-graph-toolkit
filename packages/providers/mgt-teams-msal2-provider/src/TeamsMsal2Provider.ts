@@ -256,7 +256,14 @@ export class TeamsMsal2Provider extends Msal2Provider {
 
         // make sure we are calling login only once
         if (!sessionStorage.getItem(this._sessionStorageLoginInProgress)) {
-          sessionStorage.setItem(this._sessionStorageLoginInProgress, 'true');
+          const isInIframe = window.parent !== window;
+          if (!isInIframe) {
+            sessionStorage.setItem(this._sessionStorageLoginInProgress, 'true');
+          } else {
+            console.warn(
+              'handleProviderState - Is in iframe... will try to login anyway... but will not set session storage variable'
+            );
+          }
 
           provider.login();
         }
@@ -417,7 +424,7 @@ export class TeamsMsal2Provider extends Msal2Provider {
     if (!this.teamsContext && TeamsHelper.microsoftTeamsLib) {
       const teams = TeamsHelper.microsoftTeamsLib;
       teams.initialize();
-      this.teamsContext = await teams.getContext();
+      this.teamsContext = await this.getTeamsContext();
     }
 
     const scopes = options ? options.scopes || this.scopes : this.scopes;
@@ -549,6 +556,20 @@ export class TeamsMsal2Provider extends Msal2Provider {
           this.setState(ProviderState.SignedOut);
           reject();
         }
+      });
+    });
+  }
+
+  /**
+   * Retrieves the Teams context
+   */
+  private async getTeamsContext() {
+    return new Promise(resolve => {
+      const teams = TeamsHelper.microsoftTeamsLib;
+      teams.initialize();
+      teams.getContext(context => {
+        resolve(context);
+        return;
       });
     });
   }

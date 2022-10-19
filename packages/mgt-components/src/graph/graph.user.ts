@@ -10,6 +10,8 @@ import { User } from '@microsoft/microsoft-graph-types';
 
 import { findPeople, PersonType } from './graph.people';
 import { schemas } from './cacheStores';
+import { UserType } from '..';
+import { GraphRequest } from '@microsoft/microsoft-graph-client';
 
 /**
  * Object to be stored in cache
@@ -46,6 +48,35 @@ export const getUserInvalidationTime = (): number =>
  */
 export const getIsUsersCacheEnabled = (): boolean =>
   CacheService.config.users.isEnabled && CacheService.config.isEnabled;
+
+export async function getUsers(graph: IGraph, userFilters: string = '', top: number = 10): Promise<User[]> {
+  let apiString = '/users';
+  let cache: CacheStore<CacheUserQuery>;
+  const cacheKey = userFilters === '' ? '*' : userFilters;
+  const cacheItem = { maxResults: top, results: null };
+
+  if (getIsUsersCacheEnabled()) {
+    cache = CacheService.getCache<CacheUserQuery>(schemas.users, schemas.users.stores.userFilters);
+    const cacheRes = await cache.getValue(cacheKey);
+    if (cacheRes && getUserInvalidationTime() > Date.now() - cacheRes.timeCached) {
+      return cacheRes.results.map(userStr => JSON.parse(userStr));
+    }
+  }
+  const graphClient: GraphRequest = graph.api(apiString).top(top);
+
+  if (userFilters) {
+    graphClient.filter(userFilters);
+  }
+
+  try {
+    const response = await graphClient.middlewareOptions(prepScopes('user.read')).get();
+    if (getIsUsersCacheEnabled() && response) {
+      cacheItem.results = response.value.map(userStr => JSON.stringify(userStr));
+      cache.putValue(userFilters, cacheItem);
+    }
+    return response.value;
+  } catch (error) {}
+}
 
 /**
  * async promise, returns Graph User data relating to the user logged in
@@ -137,7 +168,12 @@ export async function getUser(graph: IGraph, userPrincipleName: string, requeste
  * @param {string[]} userIds, an array of string ids
  * @returns {Promise<User[]>}
  */
-export async function getUsersForUserIds(graph: IGraph, userIds: string[], searchInput: string = ''): Promise<User[]> {
+export async function getUsersForUserIds(
+  graph: IGraph,
+  userIds: string[],
+  searchInput: string = '',
+  userFilters: string = ''
+): Promise<User[]> {
   if (!userIds || userIds.length === 0) {
     return [];
   }
@@ -160,10 +196,14 @@ export async function getUsersForUserIds(graph: IGraph, userIds: string[], searc
     }
     if (user && getUserInvalidationTime() > Date.now() - user.timeCached) {
       user = JSON.parse(user?.user);
-      const displayName = user.displayName;
-      const searchMatches = displayName && displayName.toLowerCase().includes(searchInput) ? true : false;
-      if (searchInput && searchMatches) {
-        peopleSearchMatches[id] = user ? user : null;
+      const displayName = user?.displayName;
+
+      if (searchInput) {
+        const match = displayName && displayName.toLowerCase().includes(searchInput);
+        const searchMatches = match ? true : false;
+        if (searchMatches) {
+          peopleSearchMatches[id] = user ? user : null;
+        }
       } else {
         peopleDict[id] = user ? user : null;
       }
@@ -171,7 +211,12 @@ export async function getUsersForUserIds(graph: IGraph, userIds: string[], searc
       if (id.toString() === 'me') {
         peopleDict[id] = await getMe(graph);
       } else {
-        batch.get(id, `/users/${id}`, ['user.readbasic.all']);
+        let apiUrl: string = `/users/${id}`;
+        if (userFilters) {
+          apiUrl += `${apiUrl}?$filter=${userFilters}`;
+        }
+        batch.get(id, apiUrl, ['user.readbasic.all']);
+        notInCache.push(id);
       }
     }
   }
@@ -247,7 +292,9 @@ export async function getUsersForPeopleQueries(graph: IGraph, peopleQueries: str
     if (getIsUsersCacheEnabled() && cacheRes && getUserInvalidationTime() > Date.now() - cacheRes.timeCached) {
       people.push(JSON.parse(cacheRes.results[0]));
     } else if (personQuery !== '') {
-      batch.get(personQuery, `/me/people?$search="${personQuery}"`, ['people.read']);
+      batch.get(personQuery, `/me/people?$search="${personQuery}"`, ['people.read'], {
+        'X-PeopleQuery-QuerySources': 'Mailbox,Directory'
+      });
     }
   }
 
@@ -297,7 +344,12 @@ export async function getUsersForPeopleQueries(graph: IGraph, peopleQueries: str
  * @param {number} [top=10] - maximum number of results to return
  * @returns {Promise<User[]>}
  */
-export async function findUsers(graph: IGraph, query: string, top: number = 10): Promise<User[]> {
+export async function findUsers(
+  graph: IGraph,
+  query: string,
+  top: number = 10,
+  userFilters: string = ''
+): Promise<User[]> {
   const scopes = 'User.ReadBasic.All';
   const item = { maxResults: top, results: null };
   let cache: CacheStore<CacheUserQuery>;
@@ -311,18 +363,19 @@ export async function findUsers(graph: IGraph, query: string, top: number = 10):
     }
   }
 
+  let encodedQuery = `${query.replace(/#/g, '%2523')}`;
+  let graphBuilder = graph
+    .api('users')
+    .header('ConsistencyLevel', 'eventual')
+    .count(true)
+    .search(`"displayName:${encodedQuery}" OR "mail:${encodedQuery}"`);
   let graphResult;
 
-  let encodedQuery = `${query.replace(/#/g, '%2523')}`;
+  if (userFilters !== '') {
+    graphBuilder.filter(userFilters);
+  }
   try {
-    graphResult = await graph
-      .api('users')
-      .header('ConsistencyLevel', 'eventual')
-      .count(true)
-      .search(`"displayName:${encodedQuery}" OR "mail:${encodedQuery}"`)
-      .top(top)
-      .middlewareOptions(prepScopes(scopes))
-      .get();
+    graphResult = await graphBuilder.top(top).middlewareOptions(prepScopes(scopes)).get();
   } catch {}
 
   if (getIsUsersCacheEnabled() && graphResult) {
@@ -348,13 +401,15 @@ export async function findGroupMembers(
   groupId: string,
   top: number = 10,
   personType: PersonType = PersonType.person,
-  transitive: boolean = false
+  transitive: boolean = false,
+  userFilters: string = '',
+  peopleFilters: string = ''
 ): Promise<User[]> {
   const scopes = ['user.read.all', 'people.read'];
   const item = { maxResults: top, results: null };
 
   let cache: CacheStore<CacheUserQuery>;
-  const key = `${groupId || '*'}:${query || '*'}:${personType}:${transitive}`;
+  const key = `${groupId || '*'}:${query || '*'}:${personType}:${transitive}:${userFilters}`;
 
   if (getIsUsersCacheEnabled()) {
     cache = CacheService.getCache<CacheUserQuery>(schemas.users, schemas.users.stores.usersQuery);
@@ -380,6 +435,14 @@ export async function findGroupMembers(
     }
   }
 
+  if (userFilters) {
+    filter += query ? ` and ${userFilters}` : userFilters;
+  }
+
+  if (peopleFilters) {
+    filter += query ? ` and ${peopleFilters}` : peopleFilters;
+  }
+
   const graphResult = await graph
     .api(apiUrl)
     .count(true)
@@ -395,4 +458,26 @@ export async function findGroupMembers(
   }
 
   return graphResult ? graphResult.value : null;
+}
+
+export async function findUsersFromGroupIds(
+  graph: IGraph,
+  query: string,
+  groupIds: string[],
+  top: number = 10,
+  personType: PersonType = PersonType.person,
+  transitive: boolean = false,
+  groupFilters: string = ''
+): Promise<User[]> {
+  const users: User[] = [];
+  for (let i = 0; i < groupIds.length; i++) {
+    const groupId = groupIds[i];
+    try {
+      const groupUsers = await findGroupMembers(graph, query, groupId, top, personType, transitive, groupFilters);
+      users.push(...groupUsers);
+    } catch (_) {
+      continue;
+    }
+  }
+  return users;
 }

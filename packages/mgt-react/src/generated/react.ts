@@ -96,6 +96,7 @@ export type LoginProps = {
 
 export type PeoplePickerProps = {
 	groupId?: string;
+	groupIds?: string;
 	type?: PersonType;
 	groupType?: GroupType;
 	userType?: UserType;
@@ -107,7 +108,11 @@ export type PeoplePickerProps = {
 	placeholder?: string;
 	selectionMode?: string;
 	userIds?: string[];
+	userFilters?: string;
+	peopleFilters?: string;
+	groupFilters?: string;
 	showMax?: number;
+	disableImages?: boolean;
 	disabled?: boolean;
 	allowAnyEmail?: boolean;
 	templateContext?: TemplateContext;
@@ -136,6 +141,7 @@ export type PeopleProps = {
 export type PersonCardProps = {
 	personDetails?: IDynamicPerson;
 	personQuery?: string;
+	lockTabNavigation?: boolean;
 	userId?: string;
 	personImage?: string;
 	fetchImage?: boolean;
@@ -166,6 +172,7 @@ export type PersonProps = {
 	line3Property?: string;
 	view?: ViewType | PersonViewType;
 	avatarSize?: AvatarSize;
+	disableImageFetch?: boolean;
 	templateContext?: TemplateContext;
 	mediaQuery?: ComponentMediaQuery;
 	line1clicked?: (e: Event) => void;

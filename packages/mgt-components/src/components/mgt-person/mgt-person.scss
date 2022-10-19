@@ -53,6 +53,9 @@ $presence-color-oof: #b4009e;
   display: block;
   margin: -11px -13px;
   padding: 11px 13px;
+  &:focus-visible {
+    outline: none;
+  }
 }
 
 :host svg,
@@ -70,6 +73,12 @@ mgt-person .person-root {
 
   &.clickable {
     cursor: pointer;
+  }
+
+  &.small {
+    &:focus-visible {
+      outline: auto;
+    }
   }
 
   .user-avatar {
@@ -268,7 +277,9 @@ mgt-person .person-root {
         left: -100%;
         margin: auto;
         height: 100%;
-        width: auto;
+        width: 100%;
+        object-fit: cover;
+        object-position: top;
         &:focus() {
           outline: none;
         }
@@ -487,5 +498,27 @@ mgt-person .avatar-icon {
         }
       }
     }
+  }
+}
+
+@media (forced-colors: active) and (prefers-color-scheme: dark) {
+  :host svg,
+  :host svg > path,
+  mgt-person svg,
+  mgt-person svg > path {
+    fill: rgb(255, 255, 255) !important;
+    fill-rule: nonzero !important;
+    clip-rule: nonzero !important;
+  }
+}
+
+@media (forced-colors: active) and (prefers-color-scheme: dark) {
+  :host svg,
+  :host svg > path,
+  mgt-person svg,
+  mgt-person svg > path {
+    fill: rgb(0, 0, 0) !important;
+    fill-rule: nonzero !important;
+    clip-rule: nonzero !important;
   }
 }
