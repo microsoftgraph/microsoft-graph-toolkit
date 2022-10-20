@@ -9,7 +9,7 @@ This sample is a reference on how to leverage the [ProxyProvider](https://learn.
 The ProxyProvider is instantiated in `Views\Shares\_Layout.cshtml`:
 
 ```html
-<script src='https://unpkg.com/@Html.Raw("@")microsoft/mgt@Html.Raw("@")2/dist/bundle/mgt-loader.js'></script>
+<script src='https://unpkg.com/@Html.Raw("@")microsoft/mgt@2/dist/bundle/mgt-loader.js'></script>
 <script>
     const provider = new mgt.ProxyProvider("/api/proxy");
     provider.login = () => window.location.href = '@Url.Action("SignIn", "Account")';
