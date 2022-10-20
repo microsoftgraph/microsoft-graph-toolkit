@@ -440,8 +440,7 @@ export class MgtPeople extends MgtTemplatedComponent {
               }
               return null;
             });
-          }
-          else {
+          } else {
             // remove null people from the array
             this.people = this.people.filter(p => p !== null);
           }
