@@ -104,13 +104,13 @@ You can use the components by referencing the loader directly (via unpkg), or in
 ### Use via mgt-loader:
 
 ```html
-<script src="https://unpkg.com/@microsoft/mgt/dist/bundle/mgt-loader.js"></script>
+<script src="https://unpkg.com/@microsoft/mgt@2/dist/bundle/mgt-loader.js"></script>
 ```
 
 You can then start using the components in your html page. Here is a full working example with the Msal2 provider:
 
 ```html
-<script src="https://unpkg.com/@microsoft/mgt/dist/bundle/mgt-loader.js"></script>
+<script src="https://unpkg.com/@microsoft/mgt@2/dist/bundle/mgt-loader.js"></script>
 <mgt-msal2-provider client-id="[CLIENT-ID]"></mgt-msal2-provider>
 <mgt-login></mgt-login>
 
@@ -154,8 +154,8 @@ cd ./samples/react-app/
 yarn start
 ```
 
-This also means that running the samples in isolation may fail if there are breaking changes between the published version of mgt and the local copy. 
-To workaround this, use samples that are known to be compatible with a specific release by checking out the appropriate branch or tag first. 
+This also means that running the samples in isolation may fail if there are breaking changes between the published version of mgt and the local copy.
+To workaround this, use samples that are known to be compatible with a specific release by checking out the appropriate branch or tag first.
 
 ## Contribute
 

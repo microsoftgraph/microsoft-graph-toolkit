@@ -46,13 +46,13 @@ You can use the components by referencing the loader directly (via unpkg), or in
 ### Use via mgt-loader:
 
 ```html
-<script src="https://unpkg.com/@microsoft/mgt/dist/bundle/mgt-loader.js"></script>
+<script src="https://unpkg.com/@microsoft/mgt@2/dist/bundle/mgt-loader.js"></script>
 ```
 
 You can then start using the components in your html page. Here is a full working example with the Msal provider:
 
 ```html
-<script src="https://unpkg.com/@microsoft/mgt/dist/bundle/mgt-loader.js"></script>
+<script src="https://unpkg.com/@microsoft/mgt@2/dist/bundle/mgt-loader.js"></script>
 
 <mgt-msal-provider client-id="[CLIENT-ID]"></mgt-msal-provider>
 

@@ -36,7 +36,7 @@ To run the sample, you will need to create a client id and secret first and upda
 
 ## How it works
 
-The web app is built with ASP.NET Core and users are authenticated with the [Microsoft.Identity.Web](https://www.nuget.org/packages/Microsoft.Identity.Web) package. This allows developers to authenticate users and authorize access to Web APIs (like Microsoft Graph) from the backend. 
+The web app is built with ASP.NET Core and users are authenticated with the [Microsoft.Identity.Web](https://www.nuget.org/packages/Microsoft.Identity.Web) package. This allows developers to authenticate users and authorize access to Web APIs (like Microsoft Graph) from the backend.
 
 To use MGT components in the app, the client must also be able auth users and fetch tokens for Microsoft Graph. To avoid signing in the user twice just to be able to call Microsoft Graph from the client, we can leverage SSO to automatically sign in users via the current session that was established when the user signed in once.
 
@@ -45,7 +45,7 @@ First, we reference the toolkit and instantiate a new Msal2Provider in the **Pag
 ```js
 @if (User.Identity.IsAuthenticated)
 {
-    <script src="https://unpkg.com/@@microsoft/mgt/dist/bundle/mgt-loader.js"></script>
+    <script src="https://unpkg.com/@@microsoft/mgt@@2/dist/bundle/mgt-loader.js"></script>
 
     <script>
         mgt.Providers.globalProvider = new mgt.Msal2Provider({
@@ -58,11 +58,11 @@ First, we reference the toolkit and instantiate a new Msal2Provider in the **Pag
 }
 ```
 
-To enable SSO, we need to provide a `loginHint` (the email for the current signed in user) or an `sid` (session id). This will set the provider in SSO mode which will attempt to sign in the user if they are already signed in elsewhere. 
+To enable SSO, we need to provide a `loginHint` (the email for the current signed in user) or an `sid` (session id). This will set the provider in SSO mode which will attempt to sign in the user if they are already signed in elsewhere.
 
 Notice, we are also setting a redirect Uri to an empty page we created (`/sso.html`) as page for the sso process to redirect to. We've also added this page (`https://localhost/sso.html`) as a SPA redirect uri for our AAD app.
 
-Also notice that we are not setting any scopes here. All scopes are added on the .Net side in **appsettings.json** so that the user consents once when they sign in for the first time. 
+Also notice that we are not setting any scopes here. All scopes are added on the .Net side in **appsettings.json** so that the user consents once when they sign in for the first time.
 
 Finally, we are now able to use the mgt components through out our app. Here are the components being used in **Index.cshtml**:
 
@@ -70,7 +70,7 @@ Finally, we are now able to use the mgt components through out our app. Here are
 @if (User.Identity.IsAuthenticated)
 {
     <div>Signed in User: <mgt-person person-query="me" view="oneline"></mgt-person></div>
-    
+
     <mgt-people-picker></mgt-people-picker>
 
     <mgt-agenda></mgt-agenda>
