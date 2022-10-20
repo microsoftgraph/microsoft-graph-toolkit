@@ -4,8 +4,6 @@ import styles from './HelloWorldWebPart.module.scss';
 
 import { Providers } from '@microsoft/mgt-element/dist/es6/providers/Providers';
 import { SharePointProvider } from '@microsoft/mgt-sharepoint-provider/dist/es6/SharePointProvider';
-import { PersonCardInteraction } from '@microsoft/mgt-components/dist/es6/components/PersonCardInteraction';
-import { PersonViewType } from '@microsoft/mgt-components/dist/es6/components/mgt-person/mgt-person-types';
 import { customElementHelper } from '@microsoft/mgt-element/dist/es6/components/customElementHelper';
 
 export default class HelloWorldWebPart extends BaseClientSideWebPart<{}> {
