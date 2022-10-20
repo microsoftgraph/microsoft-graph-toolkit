@@ -45,7 +45,7 @@ First, we reference the toolkit and instantiate a new Msal2Provider in the **Pag
 ```js
 @if (User.Identity.IsAuthenticated)
 {
-    <script src="https://unpkg.com/@@microsoft/mgt@@2/dist/bundle/mgt-loader.js"></script>
+    <script src="https://unpkg.com/@@microsoft/mgt@2/dist/bundle/mgt-loader.js"></script>
 
     <script>
         mgt.Providers.globalProvider = new mgt.Msal2Provider({
