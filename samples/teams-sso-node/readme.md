@@ -141,7 +141,7 @@ To use the Developer Portal for Teams:
 
     b. For **Descriptions**, fill the **Short description** and **Long description**.
 
-    c. For **Developer**, fill a **Developer of company name**. Set the ngrok URL as the **Website**.
+    c. For **Developer**, fill a **Developer of company name**. Set the the application URL as the **Website**.
 
     d. For **App urls**, use `https://<ngrok-id>.ngrok.io/privacy` for **Privacy policy** and `https://<ngrok-id>.ngrok.io/terms` for **Terms of use**.
 
