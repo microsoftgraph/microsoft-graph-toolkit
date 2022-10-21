@@ -63,10 +63,11 @@
 :host fluent-card {
   --fill-color: var(--dropdown-background-color, --fill-color);
   --card-height: auto;
-  --card-width: 68%;
+  --card-width: 368px;
 }
 
 :host fluent-text-field {
+  width: 368px;
   --fill-color: var(--color, $color);
   --neutral-fill-input-rest: var(--input-background-color, #ffffff);
   --input-placeholder-rest: var(--placeholder-color, --input-placeholder-rest);
