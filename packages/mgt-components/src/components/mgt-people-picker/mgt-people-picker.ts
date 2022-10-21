@@ -1570,7 +1570,6 @@ export class MgtPeoplePicker extends MgtTemplatedComponent {
     const input = event.target as HTMLInputElement;
     if (event.code === 'Enter') {
       if (!event.shiftKey && this._foundPeople) {
-        // keyCodes capture: tab (9) and enter (13)
         event.preventDefault();
         event.stopPropagation();
         if (this._foundPeople.length) {
