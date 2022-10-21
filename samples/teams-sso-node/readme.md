@@ -11,8 +11,7 @@ You will need:
 
 1. To test locally, [NodeJS](https://nodejs.org/en/download/) must be installed on your development machine.
 
-1. To test locally, you need [Ngrok](https://ngrok.com/) installed on your development machine.
-Make sure you've downloaded and installed Ngrok on your local machine. ngrok will tunnel requests from the Internet to your local computer and terminate the SSL connection from Teams.
+1. To test locally, you will need to tunnel requests from the internet to your local computer. You can use [ngrok](https://ngrok.com/) for this.
 
     > NOTE: The free ngrok plan will generate a new URL every time you run it, which requires you to update your Azure AD registration, the Teams app manifest, and the project configuration. A paid account with a permanent ngrok URL is recommended.
 
@@ -55,7 +54,7 @@ Make sure you've downloaded and installed Ngrok on your local machine. ngrok wil
     > yarn start
     ```
 
-1. Open a new terminal and run Ngrok to expose your local web server via a public URL. 
+1. Open a new terminal and run the application to expose your local web server via a public URL. If you're using ngrok, you can do:
 
     ```bash
     > ngrok http 3000
@@ -80,7 +79,7 @@ Your tab needs to run as a registered Azure AD application to obtain an access t
 
     - Set **Name** to `Node.js Teams SSO` (or a name of your choice).
     - Set **Supported account types** to **Accounts in any organizational directory and personal Microsoft accounts**.
-    - Under **Redirect URI**, set the first drop-down to `Single Page Application` and set the value to the ngrok url + `/auth.html`. Ex: `https://mgtsso.ngrok.io/auth.html`. 
+    - Under **Redirect URI**, set the first drop-down to `Single Page Application` and set the value to the application's public url + `/auth.html`. Ex: `https://mgtsso.example.com/auth.html`. 
 
 1. From the app overview page, copy the value of the **Application (client) ID** for later. You will need it for the following steps. You will use this value in the `index.html` and `.env` files
 
@@ -102,7 +101,7 @@ Your tab needs to run as a registered Azure AD application to obtain an access t
 
     - To pre-consent as an admin, select **Grant admin consent**, then select **Yes**
 
-1. Navigate to **Expose an API** under **Manage**. On the top of the page next to `Application ID URI` select **Set**. This generates an API in the form of: `api://{AppID}`. Update it to add your subdomain, ex: `api://mgtsso.ngrok.io/{appID}`
+1. Navigate to **Expose an API** under **Manage**. On the top of the page next to `Application ID URI` select **Set**. This generates an API in the form of: `api://{AppID}`. Update it to add your subdomain, ex: `api://mgtsso.example.com/{appID}`
 
 1. On the same page, select **Add a scope**. Fill in the fields as follows and select **Add scope**.
 
@@ -114,7 +113,7 @@ Your tab needs to run as a registered Azure AD application to obtain an access t
     - User consent description: `Enable Teams to call this app’s APIs with the same rights as the user.`
     - State: **Enabled**
     
-    Your API URL should look like this: `api://mgtsso.ngrok.io/{appID}/access_as_user`. 
+    Your API URL should look like this: `api://mgtsso.example.com/{appID}/access_as_user`. 
 
 1. Next, add two client applications. This is for the Teams desktop/mobile clients and the web client. Under the **Authorized client applications** section, select **Add a client application**. Fill in the Client ID and select the scope we created. Then select **Add application**. Do this for the followings Ids
     
@@ -143,17 +142,17 @@ To use the Developer Portal for Teams:
 
     c. For **Developer**, fill a **Developer of company name**. Set the the application URL as the **Website**.
 
-    d. For **App urls**, use `https://<ngrok-id>.ngrok.io/privacy` for **Privacy policy** and `https://<ngrok-id>.ngrok.io/terms` for **Terms of use**.
+    d. For **App urls**, use `https://mgtsso.example.com/privacy` for **Privacy policy** and `https://mgtsso.example.com/terms` for **Terms of use**.
 
     e. For **Application (client) ID**, fill in the client ID you got when you registered in AAD.
 
     f. Click **Save**.
 
-5. Click on **App features** under **Configure** to specify the features you want to include for your application. Select **Personal app** feature. Fill the name of the app in the **Name** section and the ngrok URL in the **Content URL** section. Select the **Context** as **personalTab**. Click **Confirm** to save.
+5. Click on **App features** under **Configure** to specify the features you want to include for your application. Select **Personal app** feature. Fill the name of the app in the **Name** section and the application URL in the **Content URL** section. Select the **Context** as **personalTab**. Click **Confirm** to save.
     > **Note**: This is the tab that will appear on the application when it is launched.
 
 6. Click **Single sign-on** under **Configure**. Enter the API URL you set during the AAD App registration process. Click **Save**.
-    > Example: `api://mgtsso.ngrok.io/{Your App Id}`
+    > Example: `api://mgtsso.example.com/{Your App Id}`
 
 7. In the top right, click on the **Preview in Teams** button. Your application will be opened in Teams. Test it out.
 
