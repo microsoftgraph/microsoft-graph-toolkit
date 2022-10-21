@@ -356,7 +356,6 @@ export class MgtTeamsChannelPicker extends MgtTemplatedComponent {
             placeholder="${!!this._selectedItemState ? '' : this.strings.inputPlaceholderText} "
             label="teams-channel-picker-input"
             @click=${this.gainedFocus}
-            @keydown=${(e: KeyboardEvent) => this.onUserKeyDown(e, null)}
             @keyup=${(e: KeyboardEvent) => this.handleInputChanged(e)}>
               <div slot="start" style="width: max-content;">${this.renderSelected()}</div>
               <div slot="end">${this.renderChevrons()}${this.renderCloseButton()}</div>
@@ -581,6 +580,7 @@ export class MgtTeamsChannelPicker extends MgtTemplatedComponent {
   protected renderItem(itemState: ChannelPickerItemState) {
     return html`
       <fluent-tree-item
+        @keydown=${(e: KeyboardEvent) => this.onUserKeyDown(e, itemState)}
         @click=${() => this.handleItemClick(itemState)}>
           ${itemState?.item.displayName}
       </fluent-tree-item>`;
