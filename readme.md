@@ -107,7 +107,7 @@ You can use the components by referencing the loader directly (via unpkg), or in
 <script src="https://unpkg.com/@microsoft/mgt@2/dist/bundle/mgt-loader.js"></script>
 ```
 
-> NOTE: This link will load the highest available version of @microsoft/mgt in the range `>= 2.0.0 < 3.0.0`
+> NOTE: This link will load the highest available version of @microsoft/mgt in the range `>= 2.0.0 < 3.0.0`, omitting the `@2` fragment from the url results in loading the latest version. This could result in loading a new major version and breaking the application.
 
 You can then start using the components in your html page. Here is a full working example with the Msal2 provider:
 
