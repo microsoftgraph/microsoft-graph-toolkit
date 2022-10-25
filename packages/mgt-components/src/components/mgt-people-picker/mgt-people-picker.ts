@@ -705,6 +705,7 @@ export class MgtPeoplePicker extends MgtTemplatedComponent {
            aria-autocomplete="list"
            aria-expanded="false"
            tabindex="0"
+           @focus="${this.gainedFocus}"
            @keydown="${this.onUserKeyDown}"
            @keyup="${this.onUserKeyUp}"
            @blur=${this.lostFocus}
@@ -1424,13 +1425,6 @@ export class MgtPeoplePicker extends MgtTemplatedComponent {
       return;
     }
 
-    if (event.code === 'Tab' && !this.flyout.isOpen) {
-      // keyCodes capture: tab (9)
-      if (this.allowAnyEmail) {
-        this.gainedFocus();
-      }
-    }
-
     if (event.shiftKey) {
       this.gainedFocus();
     }
@@ -1574,9 +1568,8 @@ export class MgtPeoplePicker extends MgtTemplatedComponent {
     }
 
     const input = event.target as HTMLInputElement;
-    if (event.code === 'Tab' || event.code === 'Enter') {
+    if (event.code === 'Enter') {
       if (!event.shiftKey && this._foundPeople) {
-        // keyCodes capture: tab (9) and enter (13)
         event.preventDefault();
         event.stopPropagation();
         if (this._foundPeople.length) {
