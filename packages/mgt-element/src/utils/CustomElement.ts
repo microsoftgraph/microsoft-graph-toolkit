@@ -5,7 +5,7 @@
  * -------------------------------------------------------------------------------------------
  */
 
-import { customElement as litElement } from 'lit/decorators';
+import { customElement as litElement } from 'lit/decorators.js';
 import { customElementHelper } from '../components/customElementHelper';
 
 /**
