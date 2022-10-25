@@ -3,6 +3,7 @@ import * as ReactDom from 'react-dom';
 import { Version } from '@microsoft/sp-core-library';
 import { BaseClientSideWebPart } from '@microsoft/sp-webpart-base';
 import { IPropertyPaneConfiguration, PropertyPaneTextField } from '@microsoft/sp-property-pane';
+import { lazyLoadComponent } from '@microsoft/mgt-spfx-utils/dist/es6/lazyLoadMgtReactComponent';
 
 import * as strings from 'MgtDemoWebPartStrings';
 
@@ -59,10 +60,4 @@ export default class MgtDemoWebPart extends BaseClientSideWebPart<IMgtDemoWebPar
       ]
     };
   }
-}
-function lazyLoadComponent(
-  MgtDemo: React.LazyExoticComponent<typeof import('./components/MgtDemo').default>,
-  arg1: { description: string }
-) {
-  throw new Error('Function not implemented.');
 }

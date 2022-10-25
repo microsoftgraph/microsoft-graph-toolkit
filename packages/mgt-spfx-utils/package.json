@@ -31,7 +31,6 @@
   "license": "MIT",
   "dependencies": {
     "@microsoft/mgt-components": "*",
-    "@microsoft/sp-webpart-base": "1.15.2",
     "@types/react": "^17.0.00",
     "react": "^17.0.1"
   },

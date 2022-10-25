@@ -14,6 +14,7 @@
     "@microsoft/mgt-element": "*",
     "@microsoft/mgt-react": "*",
     "@microsoft/mgt-spfx": "*",
+    "@microsoft/mgt-spfx-utils": "*",
     "@microsoft/mgt-sharepoint-provider": "*",
     "@microsoft/sp-core-library": "1.15.2",
     "@microsoft/sp-lodash-subset": "1.15.2",

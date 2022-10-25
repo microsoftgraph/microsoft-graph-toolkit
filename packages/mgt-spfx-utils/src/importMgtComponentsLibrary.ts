@@ -1,3 +1,13 @@
+/**
+ * Function to simplify lazy loading @microsoft/mgt-components script
+ * Lazy loading of @microsoft/mgt-components is necessary when using
+ * the disambiguation feature.
+ *
+ * @export
+ * @param {boolean} hasImportedMgtScripts
+ * @param {() => void} onSuccessCallback
+ * @param {(e: Error) => void} [onErrorCallback]
+ */
 export function importMgtComponentsLibrary(
   hasImportedMgtScripts: boolean,
   onSuccessCallback: () => void,
