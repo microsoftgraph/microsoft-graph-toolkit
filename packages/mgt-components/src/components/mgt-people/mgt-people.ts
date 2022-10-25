@@ -440,6 +440,9 @@ export class MgtPeople extends MgtTemplatedComponent {
               }
               return null;
             });
+          } else {
+            // remove null people from the array
+            this.people = this.people.filter(p => p !== null);
           }
         } else if (this.resource) {
           this.people = await getPeopleFromResource(graph, this.version, this.resource, this.scopes);
