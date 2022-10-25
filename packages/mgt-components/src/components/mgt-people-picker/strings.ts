@@ -11,5 +11,6 @@ export const strings = {
   loadingMessage: 'Loading...',
   suggestedContact: 'suggested contact',
   suggestedContacts: 'suggested contacts',
-  selected: 'selected'
+  selected: 'selected',
+  removeSelectedItem: 'remove selected item'
 };
