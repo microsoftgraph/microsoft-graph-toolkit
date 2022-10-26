@@ -42,6 +42,8 @@ mgt-agenda {
       position: relative;
       display: flex;
       flex: 1 1 auto;
+      content-visibility: visible;
+      contain: none;
 
       &-container {
         border-radius: calc(var(--layer-corner-radius) * 1px);
