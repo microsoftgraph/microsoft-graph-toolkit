@@ -1,4 +1,4 @@
-import { OfficeGraphInsightString,ViewType,ResponseType,IDynamicPerson,PersonType,GroupType,UserType,PersonCardInteraction,MgtPersonConfig,AvatarSize,PersonViewType,TasksStringResource,TasksSource,TaskFilter,SelectedChannel,TodoFilter } from '@microsoft/mgt-components';
+import { OfficeGraphInsightString,ViewType,ResponseType,IDynamicPerson,LoginViewType,PersonType,GroupType,UserType,PersonCardInteraction,MgtPersonConfig,AvatarSize,PersonViewType,TasksStringResource,TasksSource,TaskFilter,SelectedChannel,TodoFilter } from '@microsoft/mgt-components';
 import { TemplateContext,ComponentMediaQuery } from '@microsoft/mgt-element';
 import * as MicrosoftGraph from '@microsoft/microsoft-graph-types';
 import * as MicrosoftGraphBeta from '@microsoft/microsoft-graph-types-beta';
@@ -84,6 +84,8 @@ export type GetProps = {
 
 export type LoginProps = {
 	userDetails?: IDynamicPerson;
+	showPresence?: boolean;
+	loginView?: LoginViewType;
 	templateContext?: TemplateContext;
 	mediaQuery?: ComponentMediaQuery;
 	loginInitiated?: (e: Event) => void;
@@ -164,6 +166,7 @@ export type PersonProps = {
 	personQuery?: string;
 	fallbackDetails?: IDynamicPerson;
 	userId?: string;
+	usage?: string;
 	showPresence?: boolean;
 	personDetails?: IDynamicPerson;
 	personImage?: string;
