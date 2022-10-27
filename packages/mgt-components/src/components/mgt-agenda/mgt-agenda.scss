@@ -84,11 +84,12 @@ mgt-agenda {
       }
 
       &-details-container {
+        display: flex;
+        flex-direction: column;
         position: relative;
         bottom: 8px;
         top: 0px;
         left: 32px;
-        flex: auto;
 
         &.narrow {
           position: inherit;
