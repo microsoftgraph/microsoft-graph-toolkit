@@ -12,6 +12,7 @@
 :host,
 mgt-agenda {
   --card-height: auto;
+  --card-width: 99%;
 
   .header {
     margin: var(--agenda-header-margin, 18px 0px 12px 10px);
