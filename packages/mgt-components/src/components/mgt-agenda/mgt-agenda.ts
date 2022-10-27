@@ -396,18 +396,38 @@ export class MgtAgenda extends MgtTemplatedComponent {
    * @memberof MgtAgenda
    */
   protected renderTitle(event: MicrosoftGraph.Event): TemplateResult {
+    let eventDescription = event?.bodyPreview ? event.bodyPreview.slice(0, 100) : '';
+    const hasDescription = eventDescription !== '';
+
     const eventSubjectClasses = {
       'event-subject': true,
       narrow: this._isNarrow
     };
-    return html`
+
+    eventDescription = eventDescription.split(' ').slice(0, -1).join(' ') + '...';
+
+    const hasDescriptionDiv = html`
       <div
         aria-describedby="tooltip-${event.id}"
         class="${classMap(eventSubjectClasses)}"
         id=${event.id}>
           ${event.subject}
       </div>
-      <fluent-tooltip id="tooltip-${event.id}" position="right" anchor="${event.id}">${event.subject}</fluent-tooltip>`;
+      <fluent-tooltip
+        id="tooltip-${event.id}"
+        position="right"
+        anchor="${event.id}">
+          ${eventDescription}
+      </fluent-tooltip>
+    `;
+
+    const noDescriptionDiv = html`
+      <div
+        aria-label=${event.subject}
+        class="${classMap(eventSubjectClasses)}">
+          ${event.subject}
+      </div>`;
+    return hasDescription ? hasDescriptionDiv : noDescriptionDiv;
   }
 
   /**
