@@ -699,9 +699,10 @@ export class MgtPeoplePicker extends MgtTemplatedComponent {
            type="text"
            role="combobox"
            placeholder=${placeholder}
-           label="people-picker-input"
            autocomplete="off"
+           aria-controls="suggestions-list"
            aria-label=${inputAriaLabelText}
+           aria-haspopup="listbox"
            aria-autocomplete="list"
            aria-expanded="false"
            tabindex="0"
@@ -730,17 +731,17 @@ export class MgtPeoplePicker extends MgtTemplatedComponent {
     }
     return html`
        <div
-        tabindex="0"
         aria-label="selected-people"
-        aria-orientation="vertical"
+        aria-multiselectable="true"
         role="listbox"
         class="selected-list__options">${selectedPeople.slice(0, selectedPeople.length).map(
           person =>
             html`
              <div
              role="option"
+             aria-checked="${selectedPeople.includes(person)}"
              tabindex="0"
-             aria-label=${person.displayName}
+             label=${person.displayName}
              class="selected-list__person-wrapper">
                ${
                  this.renderTemplate(
@@ -882,11 +883,8 @@ export class MgtPeoplePicker extends MgtTemplatedComponent {
       <div
         id="suggestions-list"
         class="people-list"
-        aria-expanded="true"
-        role="list"
-        aria-label="people-picker-input input text ${
-          this.userInput.length === 0 ? this.strings.inputPlaceholderText : this.userInput
-        } ${this.strings.suggestedContacts} ${names}"
+        tabindex="-1"
+        role="listbox"
         @mouseenter=${this.handleMouseEnter}
         @mouseleave=${this.handleMouseLeave}>
          ${repeat(
@@ -900,10 +898,10 @@ export class MgtPeoplePicker extends MgtTemplatedComponent {
              };
              return html`
                <li
-                role="listitem"
+                id="${person.id}"
+                role="option"
                 @keydown="${this.onUserKeyDown}"
                 aria-label=" ${this.strings.suggestedContact} ${person.displayName}"
-                tabindex="0"
                 class="${classMap(listPersonClasses)}"
                 @click="${e => this.onPersonClick(person)}">
                  ${this.renderPersonResult(person)}
@@ -1485,7 +1483,7 @@ export class MgtPeoplePicker extends MgtTemplatedComponent {
       return;
     }
 
-    this.input.focus();
+    // this.input.focus();
     this._isFocused = true;
     this.hideFlyout();
     if (this.selectionMode === 'single') {
@@ -1798,14 +1796,17 @@ export class MgtPeoplePicker extends MgtTemplatedComponent {
       // tslint:disable-next-line: prefer-for-of
       for (let i = 0; i < peopleList.children.length; i++) {
         peopleList.children[i].classList.remove('focused');
+        peopleList.children[i].setAttribute('aria-selected', 'false');
       }
 
       // set selected background
       const focusedItem = peopleList.children[this._arrowSelectionCount] as HTMLElement;
       if (focusedItem) {
         focusedItem.classList.add('focused');
-        focusedItem.scrollIntoView({ behavior: 'smooth', block: 'nearest', inline: 'nearest' });
-        focusedItem.focus();
+        // focusedItem.scrollIntoView({ behavior: 'smooth', block: 'nearest', inline: 'nearest' });
+        // focusedItem.focus();
+        focusedItem.setAttribute('aria-selected', 'true');
+        this.input.setAttribute('aria-activedescendant', peopleList.children[this._arrowSelectionCount].id);
       }
     }
   }
