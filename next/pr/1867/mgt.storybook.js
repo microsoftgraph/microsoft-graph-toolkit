@@ -1775,14 +1775,25 @@ PERFORMANCE OF THIS SOFTWARE.
       </fluent-card>
     `}renderHeader(t){return this.renderTemplate("header",{header:t},"header-"+t)||_e`
         <div class="header" aria-label="${t}">${t}</div>
-      `}renderTitle(t){const o={"event-subject":!0,narrow:this._isNarrow};return _e`
+      `}renderTitle(t){let o=(null==t?void 0:t.bodyPreview)?t.bodyPreview.slice(0,100):"";const n=""!==o,s={"event-subject":!0,narrow:this._isNarrow};o=o.split(" ").slice(0,-1).join(" ")+"...";const a=_e`
       <div
         aria-describedby="tooltip-${t.id}"
-        class="${tt(o)}"
+        class="${tt(s)}"
         id=${t.id}>
           ${t.subject}
       </div>
-      <fluent-tooltip id="tooltip-${t.id}" position="right" anchor="${t.id}">${t.subject}</fluent-tooltip>`}renderLocation(t){return t.location.displayName?_e`
+      <fluent-tooltip
+        id="tooltip-${t.id}"
+        position="right"
+        anchor="${t.id}">
+          ${o}
+      </fluent-tooltip>
+    `,l=_e`
+      <div
+        aria-label=${t.subject}
+        class="${tt(s)}">
+          ${t.subject}
+      </div>`;return n?a:l}renderLocation(t){return t.location.displayName?_e`
       <div class="event-location-container">
         <div class="event-location-icon">${getSvg(pt.OfficeLocation)}</div>
         <div class="event-location" aria-label="${t.location.displayName}">${t.location.displayName}</div>
