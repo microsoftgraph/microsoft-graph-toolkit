@@ -3,7 +3,7 @@ import * as ReactDom from 'react-dom';
 import { Version } from '@microsoft/sp-core-library';
 import { BaseClientSideWebPart } from '@microsoft/sp-webpart-base';
 import { IPropertyPaneConfiguration, PropertyPaneTextField } from '@microsoft/sp-property-pane';
-import { lazyLoadComponent } from '@microsoft/mgt-spfx-utils/dist/es6/lazyLoadMgtReactComponent';
+import { lazyLoadComponent } from '@microsoft/mgt-spfx-utils';
 
 import * as strings from 'MgtDemoWebPartStrings';
 

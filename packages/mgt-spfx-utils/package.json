@@ -2,7 +2,9 @@
   "name": "@microsoft/mgt-spfx-utils",
   "version": "3.0.0",
   "description": "Helper utilities for loading MGT based libraries and web parts in a SPFx context",
-  "main": "lib/index.js",
+  "main": "./dist/es6/index.js",
+  "types": "./dist/es6/index.d.ts",
+  "module": "./dist/es6/index.js",
   "keywords": [
     "microsoft graph",
     "microsoft graph toolkit",

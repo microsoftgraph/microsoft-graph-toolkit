@@ -5,9 +5,9 @@ import styles from './HelloWorldWebPart.module.scss';
 import { Providers } from '@microsoft/mgt-element/dist/es6/providers/Providers';
 import { SharePointProvider } from '@microsoft/mgt-sharepoint-provider/dist/es6/SharePointProvider';
 import { customElementHelper } from '@microsoft/mgt-element/dist/es6/components/customElementHelper';
-import { importMgtComponentsLibrary } from '@microsoft/mgt-spfx-utils/dist/es6/importMgtComponentsLibrary';
+import { importMgtComponentsLibrary } from '@microsoft/mgt-spfx-utils';
 
-export default class HelloWorldWebPart extends BaseClientSideWebPart<{}> {
+export default class HelloWorldWebPart extends BaseClientSideWebPart<Record<string, unknown>> {
   private _hasImportedMgtScripts = false;
   private _errorMessage = '';
 
