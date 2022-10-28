@@ -755,7 +755,8 @@ export class MgtPeoplePicker extends MgtTemplatedComponent {
                  <div class="selected-list__person-wrapper__overflow__gradient"></div>
                  <div
                    tabindex="0"
-                   aria-label="close-icon"
+                   role="button"
+                   aria-label="${this.strings.removeSelectedItem} ${person.displayName}"
                    class="selected-list__person-wrapper__overflow__close-icon"
                    @click="${e => this.removePerson(person, e)}"
                    @keydown="${e => this.handleRemovePersonKeyDown(person, e)}"
