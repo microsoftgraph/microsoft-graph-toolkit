@@ -6,26 +6,35 @@
  */
 
 import { html, TemplateResult } from 'lit';
-import { property, state } from 'lit/decorators.js';
-import { MgtTemplatedComponent, mgtHtml, customElement } from '@microsoft/mgt-element';
+import { customElement, property } from 'lit/decorators.js';
+import { IGraph } from '@microsoft/mgt-element';
+import { Providers, ProviderState, MgtTemplatedComponent } from '@microsoft/mgt-element';
+import { styles } from './mgt-picker-css';
 import { strings } from './strings';
 import { fluentCombobox, fluentOption } from '@fluentui/web-components';
 import { registerFluentComponents } from '../../utils/FluentComponents';
+import { getTodoTaskLists, TodoTaskList } from '../mgt-todo/graph.todo';
 import '../../styles/style-helper';
 
 registerFluentComponents(fluentCombobox, fluentOption);
 
 /**
  * Web component that allows a single entity pick from a generic endpoint from Graph. Uses mgt-get.
- *
- * @fires {CustomEvent<any>} selectionChanged - Fired when an option is clicked/selected
+
  * @export
- * @class MgtPicker
+ * @class MgtGenericPicker
  * @extends {MgtTemplatedComponent}
  */
-// @customElement('mgt-picker')
-@customElement('picker')
-export class MgtPicker extends MgtTemplatedComponent {
+@customElement('mgt-picker')
+export class MgtGenericPicker extends MgtTemplatedComponent {
+  /**
+   * Array of styles to apply to the element. The styles should be defined
+   * using the `css` tag function.
+   */
+  static get styles() {
+    return styles;
+  }
+
   protected get strings() {
     return strings;
   }
@@ -34,170 +43,115 @@ export class MgtPicker extends MgtTemplatedComponent {
    * The resource to get
    *
    * @type {string}
-   * @memberof MgtPicker
+   * @memberof MgtGenericPicker
    */
   @property({
     attribute: 'resource',
     type: String
   })
-  public resource: string;
+  public get resource(): string {
+    return this._resource;
+  }
+  public set resource(value) {
+    if (this._resource === value) {
+      return;
+    }
+    this._resource = value;
+    this.requestStateUpdate(true);
+  }
 
   /**
    * Api version to use for request
    *
    * @type {string}
-   * @memberof MgtPicker
+   * @memberof MgtGenericPicker
    */
   @property({
     attribute: 'version',
     type: String
   })
-  public version: string = 'v1.0';
-
-  /**
-   * Maximum number of pages to get for the resource
-   * default = 3
-   * if <= 0, all pages will be fetched
-   *
-   * @type {number}
-   * @memberof MgtPicker
-   */
-  @property({
-    attribute: 'max-pages',
-    type: Number
-  })
-  public maxPages: number = 3;
-
-  /**
-   * A placeholder for the picker
-   *
-   * @type {string}
-   * @memberof MgtPicker
-   */
-  @property({
-    attribute: 'placeholder',
-    type: String
-  })
-  public placeholder: string;
-
-  /**
-   * Key to be rendered in the picker
-   *
-   * @type {string}
-   * @memberof MgtPicker
-   */
-  @property({
-    attribute: 'key-name',
-    type: String
-  })
-  public keyName: string;
-
-  /**
-   * Entity to be rendered in the picker
-   *
-   * @type {string}
-   * @memberof MgtPicker
-   */
-  @property({
-    attribute: 'entity-type',
-    type: String
-  })
-  public entityType: string;
+  public get version(): string {
+    return this._version;
+  }
+  public set version(value) {
+    if (this._version === value) {
+      return;
+    }
+    this._version = value;
+    this.requestStateUpdate(true);
+  }
 
   /**
    * The scopes to request
    *
    * @type {string[]}
-   * @memberof MgtPicker
+   * @memberof MgtGenericPicker
    */
   @property({
     attribute: 'scopes',
     converter: value => {
       return value ? value.toLowerCase().split(',') : null;
-    }
+    },
+    reflect: true
   })
   public scopes: string[] = [];
 
-  /**
-   * Enables cache on the response from the specified resource
-   * default = false
-   *
-   * @type {boolean}
-   * @memberof MgtPicker
-   */
-  @property({
-    attribute: 'cache-enabled',
-    type: Boolean
-  })
-  public cacheEnabled: boolean = false;
-
-  /**
-   * Invalidation period of the cache for the responses in milliseconds
-   *
-   * @type {number}
-   * @memberof MgtPicker
-   */
-  @property({
-    attribute: 'cache-invalidation-period',
-    type: Number
-  })
-  public cacheInvalidationPeriod: number = 0;
-
-  private isRefreshing: boolean;
-
-  @state() private response: any[];
-  @state() private error: any[];
+  private _resource: string;
+  private _version: string = 'v1.0';
+  private _lists: TodoTaskList[];
+  private _graph: IGraph;
 
   constructor() {
     super();
-    this.placeholder = this.strings.comboboxPlaceholder;
-    this.entityType = null;
-    this.keyName = null;
-    this.isRefreshing = false;
-  }
-
-  /**
-   * Refresh the data
-   *
-   * @param {boolean} [hardRefresh=false]
-   * if false (default), the component will only update if the data changed
-   * if true, the data will be first cleared and reloaded completely
-   * @memberof MgtPicker
-   */
-  public refresh(hardRefresh = false) {
-    this.isRefreshing = true;
-    if (hardRefresh) {
-      this.clearState();
-    }
-    this.requestStateUpdate(hardRefresh);
+    this._lists = [];
+    this._graph = null;
   }
 
   /**
    * Clears the state of the component
    *
    * @protected
-   * @memberof MgtPicker
+   * @memberof MgtGenericPicker
    */
   protected clearState(): void {
-    this.response = null;
-    this.error = null;
+    // this.people = null;
   }
 
   /**
-   * Invoked on each update to perform rendering the picker. This method must return
+   * Request to reload the state.
+   * Use reload instead of load to ensure loading events are fired.
+   *
+   * @protected
+   * @memberof MgtBaseComponent
+   */
+  protected requestStateUpdate(force?: boolean) {
+    if (force) {
+      //   this.people = null;
+    }
+    return super.requestStateUpdate(force);
+  }
+
+  /**
+   * Invoked on each update to perform rendering tasks. This method must return
    * a lit-html TemplateResult. Setting properties inside this method will *not*
    * trigger the element to update.
    */
   public render() {
-    if (this.isLoadingState && !this.response) {
-      return this.renderTemplate('loading', null);
-    } else if (this.hasTemplate('error')) {
-      return this.renderTemplate('error', this.error ? this.error : null, 'error');
-    } else if (this.hasTemplate('no-data')) {
-      return this.renderTemplate('no-data', null);
+    if (this.isLoadingState) {
+      return this.renderLoading();
     }
+    return this.renderTemplate('default', { entity: this._lists }) || this.renderPicker(this.resource, this.scopes);
+  }
 
-    return this.response?.length > 0 ? this.renderPicker() : this.renderGet();
+  /**
+   * Render the loading state.
+   *
+   * @protected
+   * @returns
+   * @memberof MgtGenericPicker
+   */
+  protected renderLoading() {
+    return this.renderTemplate('loading', null) || html``;
   }
 
   /**
@@ -205,38 +159,31 @@ export class MgtPicker extends MgtTemplatedComponent {
    *
    * @protected
    * @returns {TemplateResult}
-   * @memberof MgtPicker
+   * @memberof MgtGenericPicker
    */
-  protected renderPicker(): TemplateResult {
-    return mgtHtml`
-      <fluent-combobox id="combobox" autocomplete="list" placeholder=${this.placeholder}>
-        ${this.response.map(
-          item => html`
-          <fluent-option value=${item.id} @click=${e => this.handleClick(e, item)}> ${
-            item[this.keyName]
-          } </fluent-option>`
-        )}
-      </fluent-combobox>
-     `;
+  protected renderPicker(resource: String, scopes: String[]): TemplateResult {
+    return html`
+      <mgt-get id="entityGet" resource=${resource} version=${this.version} scopes=${scopes}>
+        <template>
+          <fluent-combobox id="combobox" placeholder="Select a task list" autocomplete="both">
+            <div data-for="item in value">
+              <fluent-option value={{item.id}}> {{ item.displayName }} </fluent-option>
+            </div>
+          </fluent-combobox>
+        </template>
+      </mgt-get>
+       `;
   }
 
   /**
-   * Render picker.
+   * render the no data state.
    *
    * @protected
    * @returns {TemplateResult}
-   * @memberof MgtPicker
+   * @memberof MgtGenericPicker
    */
-  protected renderGet(): TemplateResult {
-    return mgtHtml`
-      <mgt-get 
-        resource=${this.resource}
-        version=${this.version} 
-        scopes=${this.scopes} 
-        max-pages=${this.maxPages} 
-        ?cache-enabled=${this.cacheEnabled}
-        ?cache-invalidation-period=${this.cacheInvalidationPeriod}>
-      </mgt-get>`;
+  protected renderNoData(): TemplateResult {
+    return this.renderTemplate('no-data', null) || html``;
   }
 
   /**
@@ -244,24 +191,24 @@ export class MgtPicker extends MgtTemplatedComponent {
    *
    * @protected
    * @returns
-   * @memberof MgtPicker
+   * @memberof MgtGenericPicker
    */
   protected async loadState() {
-    if (!this.response) {
-      let parent = this.renderRoot.querySelector('mgt-get');
-      parent.addEventListener('dataChange', (e): void => this.handleDataChange(e));
+    const provider = Providers.globalProvider;
+    if (provider && provider.state === ProviderState.SignedOut) {
+      return;
     }
-    this.isRefreshing = false;
-  }
 
-  private handleDataChange(e: any): void {
-    let response = e.detail.response.value;
-    let error = e.detail.error ? e.detail.error : null;
-    this.response = response;
-    this.error = error;
-  }
+    if (!this._graph) {
+      const graph = provider.graph.forComponent(this);
+      this._graph = graph;
+    }
 
-  private handleClick(e: MouseEvent, item: any) {
-    this.fireCustomEvent('selectionChanged', item);
+    let lists = this._lists;
+    if (!lists || !lists.length) {
+      lists = await getTodoTaskLists(this._graph);
+      this._lists = lists;
+    }
+    console.log('Lists: ', this._lists);
   }
 }
