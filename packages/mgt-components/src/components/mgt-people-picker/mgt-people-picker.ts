@@ -1516,9 +1516,6 @@ export class MgtPeoplePicker extends MgtTemplatedComponent {
           this.input.value = '';
         } else if (this.allowAnyEmail) {
           this.handleAnyEmail();
-        } else {
-          // this._showLoading = true;
-          // this.showFlyout();
         }
       }
     }
@@ -1723,9 +1720,6 @@ export class MgtPeoplePicker extends MgtTemplatedComponent {
   private handleArrowSelection(event?: KeyboardEvent): void {
     const peopleList = this.renderRoot.querySelector('.people-list');
 
-    // if (this._isKeyboardFocus === false) {
-    //   return;
-    // }
     if (peopleList && peopleList.children.length) {
       if (event) {
         // update arrow count
