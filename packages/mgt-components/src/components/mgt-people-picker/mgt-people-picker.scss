@@ -29,9 +29,6 @@ mgt-people-picker .root {
 }
 
 .people-picker {
-  display: flex;
-  flex-wrap: wrap;
-  align-items: center;
   background-color: $input__background-color;
   @include input__border($theme-default);
   &:hover {
@@ -45,6 +42,17 @@ mgt-people-picker .root {
   }
 
   padding: 6px 0 0;
+
+  .people-picker-inner {
+    flex: 1 1 auto;
+    display: flex;
+    flex-wrap: wrap;
+    vertical-align: middle;
+    list-style-type: none;
+    font-style: normal;
+    font-weight: normal;
+    overflow: hidden;
+  }
 
   .flyout {
     .search-box {
@@ -133,17 +141,6 @@ mgt-people-picker .root {
         }
       }
     }
-  }
-
-  .people-picker-inner {
-    flex: 1 1 auto;
-    display: flex;
-    flex-wrap: wrap;
-    vertical-align: middle;
-    list-style-type: none;
-    font-style: normal;
-    font-weight: normal;
-    overflow: hidden;
   }
 
   .selected-list {
