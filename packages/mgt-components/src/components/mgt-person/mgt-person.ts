@@ -666,11 +666,10 @@ export class MgtPerson extends MgtTemplatedComponent {
    */
   protected renderImage(personDetailsInternal: IDynamicPerson, imageSrc: string) {
     if (imageSrc && !this._isInvalidImageSrc && this._avatarType === 'photo') {
-      const altText = `Photo for ${personDetailsInternal.displayName}`
+      const altText = `Photo for ${personDetailsInternal.displayName}`;
       return html`
         <div class="img-wrapper">
-          <img alt=${altText} src=${imageSrc} @error=${() =>
-        (this._isInvalidImageSrc = true)} />
+          <img alt=${altText} src=${imageSrc} @error=${() => (this._isInvalidImageSrc = true)} />
         </div>
       `;
     } else if (personDetailsInternal) {
