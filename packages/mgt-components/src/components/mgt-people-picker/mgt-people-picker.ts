@@ -1203,7 +1203,6 @@ export class MgtPeoplePicker extends MgtTemplatedComponent {
     }
     if (this.input) {
       this.input.setAttribute('aria-expanded', 'true');
-      this;
     }
   }
 
@@ -1274,7 +1273,7 @@ export class MgtPeoplePicker extends MgtTemplatedComponent {
 
   // handle input click
   private handleInputClick() {
-    if (!this.flyout.isOpen) {
+    if (!this.flyout.isOpen && !this._isFocused) {
       this.handleUserSearch();
     }
   }
@@ -1345,6 +1344,7 @@ export class MgtPeoplePicker extends MgtTemplatedComponent {
     const isPaste = (event.ctrlKey || event.metaKey) && event.key === 'v';
     const isCmdOrCtrlKey = ['ControlLeft', 'ControlRight'].includes(event.code) || event.ctrlKey || event.metaKey;
     const isArrowKey = ['ArrowDown', 'ArrowRight', 'ArrowUp', 'ArrowLeft'].includes(event.code);
+    const input = event.target as HTMLInputElement;
 
     if ((!isPaste && isCmdOrCtrlKey) || isArrowKey) {
       if (isCmdOrCtrlKey || ['ArrowLeft', 'ArrowRight'].includes(event.code)) {
@@ -1354,13 +1354,11 @@ export class MgtPeoplePicker extends MgtTemplatedComponent {
       return;
     }
 
-    if (event.shiftKey) {
+    if (isArrowKey) {
       return;
     }
 
-    const input = event.target as HTMLInputElement;
-
-    if (event.code === 'Tab') {
+    if (event.shiftKey) {
       return;
     }
 
@@ -1368,7 +1366,7 @@ export class MgtPeoplePicker extends MgtTemplatedComponent {
       return;
     }
 
-    if (isArrowKey) {
+    if (event.code === 'Tab') {
       return;
     }
 
@@ -1376,13 +1374,17 @@ export class MgtPeoplePicker extends MgtTemplatedComponent {
       if (!this.flyout.isOpen && this._isFocused) {
         this.handleUserSearch();
       }
+      return;
     }
 
     if (event.code === 'Escape') {
       this.clearInput();
       this._foundPeople = [];
       this._arrowSelectionCount = -1;
-    } else if (event.code === 'Backspace' && this.userInput.length === 0 && this.selectedPeople.length > 0) {
+      return;
+    }
+
+    if (event.code === 'Backspace' && this.userInput.length === 0 && this.selectedPeople.length > 0) {
       this.clearHighlighted();
       // remove last person in selected list
       this.selectedPeople = this.selectedPeople.splice(0, this.selectedPeople.length - 1);
@@ -1390,20 +1392,23 @@ export class MgtPeoplePicker extends MgtTemplatedComponent {
       this.hideFlyout();
       // fire selected people changed event
       this.fireCustomEvent('selectionChanged', this.selectedPeople);
-    } else if (event.code === 'Comma' || event.code === 'Semicolon') {
+      return;
+    }
+
+    if (event.code === 'Comma' || event.code === 'Semicolon') {
       if (this.allowAnyEmail) {
         event.preventDefault();
         event.stopPropagation();
       }
       return;
+    }
+
+    this.userInput = input.value;
+    const validEmail = isValidEmail(this.userInput);
+    if (validEmail && this.allowAnyEmail) {
+      this.handleAnyEmail();
     } else {
-      this.userInput = input.value;
-      const validEmail = isValidEmail(this.userInput);
-      if (validEmail && this.allowAnyEmail) {
-        this.handleAnyEmail();
-      } else {
-        this.handleUserSearch();
-      }
+      this.handleUserSearch();
     }
   }
 
@@ -1496,14 +1501,15 @@ export class MgtPeoplePicker extends MgtTemplatedComponent {
       return;
     }
 
+    const input = event.target as HTMLInputElement;
+
     if (event.key === 'ArrowUp' || event.key === 'ArrowDown') {
       this.handleArrowSelection(event);
-      if (this.input.value.length > 0) {
+      if (input.value.length > 0) {
         event.preventDefault();
       }
     }
 
-    const input = event.target as HTMLInputElement;
     if (event.code === 'Enter') {
       if (!event.shiftKey && this._foundPeople) {
         event.preventDefault();
