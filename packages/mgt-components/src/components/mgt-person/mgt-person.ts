@@ -22,6 +22,7 @@ import '../sub-components/mgt-flyout/mgt-flyout';
 import { MgtFlyout } from '../sub-components/mgt-flyout/mgt-flyout';
 import { PersonCardInteraction } from './../PersonCardInteraction';
 import { styles } from './mgt-person-css';
+import { strings } from './strings';
 
 export { PersonCardInteraction } from '../PersonCardInteraction';
 
@@ -140,6 +141,10 @@ export class MgtPerson extends MgtTemplatedComponent {
    */
   static get styles() {
     return styles;
+  }
+
+  protected get strings() {
+    return strings;
   }
 
   /**
