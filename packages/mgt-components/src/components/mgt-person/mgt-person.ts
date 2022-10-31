@@ -671,7 +671,7 @@ export class MgtPerson extends MgtTemplatedComponent {
    */
   protected renderImage(personDetailsInternal: IDynamicPerson, imageSrc: string) {
     if (imageSrc && !this._isInvalidImageSrc && this._avatarType === 'photo') {
-      const altText = `Photo for ${personDetailsInternal.displayName}`;
+      const altText = `${this.strings.photoFor} ${personDetailsInternal.displayName}`;
       return html`
         <div class="img-wrapper">
           <img alt=${altText} src=${imageSrc} @error=${() => (this._isInvalidImageSrc = true)} />
@@ -681,7 +681,7 @@ export class MgtPerson extends MgtTemplatedComponent {
       const initials = this.getInitials(personDetailsInternal);
 
       return html`
-        <span class="initials-text" aria-label="${initials}">
+        <span class="initials-text" aria-label="${this.strings.initials} ${initials}">
           ${
             initials && initials.length
               ? html`
@@ -810,20 +810,31 @@ export class MgtPerson extends MgtTemplatedComponent {
    * @memberof MgtPersonCard
    */
   protected renderAvatar(personDetailsInternal: IDynamicPerson, image: string, presence: Presence): TemplateResult {
-    const title =
-      personDetailsInternal && this.personCardInteraction === PersonCardInteraction.none
-        ? personDetailsInternal.displayName || getEmailFromGraphEntity(personDetailsInternal) || ''
-        : '';
-
+    const hasInitials = !image || this._isInvalidImageSrc || this._avatarType === avatarType.initials;
     const imageClasses = {
-      initials: !image || this._isInvalidImageSrc || this._avatarType === 'initials',
+      initials: hasInitials,
       small: !this.isLargeAvatar(),
       'user-avatar': true
     };
 
-    if ((!image || this._isInvalidImageSrc || this._avatarType === 'initials') && personDetailsInternal) {
+    let title = '';
+
+    if (hasInitials && personDetailsInternal) {
       // add avatar background color
       imageClasses[this._personAvatarBg] = true;
+      title = `${this.strings.initials} ${this.getInitials(personDetailsInternal)}`;
+    } else {
+      title = personDetailsInternal ? personDetailsInternal.displayName || '' : '';
+      if (title !== '') {
+        title = `${this.strings.photoFor} ${title}`;
+      }
+    }
+
+    if (title === '') {
+      const emailAddress = getEmailFromGraphEntity(personDetailsInternal);
+      if (emailAddress !== null) {
+        title = `${this.strings.emailAddress} ${emailAddress}`;
+      }
     }
 
     const imageTemplate: TemplateResult = this.renderImage(personDetailsInternal, image);
