@@ -18,7 +18,7 @@ import { SvgIcon, getSvg } from '../../utils/SvgHelper';
 import { MgtPeople } from '../mgt-people/mgt-people';
 import { registerFluentComponents } from '../../utils/FluentComponents';
 import { fluentCard, fluentTooltip } from '@fluentui/web-components';
-import { classMap } from 'lit/directives/class-map';
+import { classMap } from 'lit/directives/class-map.js';
 registerFluentComponents(fluentCard, fluentTooltip);
 
 /**
