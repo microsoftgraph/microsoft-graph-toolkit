@@ -665,10 +665,6 @@ export class MgtPerson extends MgtTemplatedComponent {
    * @memberof MgtPerson
    */
   protected renderImage(personDetailsInternal: IDynamicPerson, imageSrc: string) {
-    const title =
-      personDetailsInternal && this.personCardInteraction === PersonCardInteraction.none
-        ? personDetailsInternal.displayName || getEmailFromGraphEntity(personDetailsInternal) || ''
-        : '';
     if (imageSrc && !this._isInvalidImageSrc && this._avatarType === 'photo') {
       return html`
         <div class="img-wrapper">
