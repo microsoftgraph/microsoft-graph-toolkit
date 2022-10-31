@@ -502,10 +502,6 @@ export class MgtPeoplePicker extends MgtTemplatedComponent {
 
   @internalProperty() private _foundPeople: IDynamicPerson[];
 
-  private _mouseLeaveTimeout;
-  private _mouseEnterTimeout;
-  private _isKeyboardFocus: boolean = true;
-
   constructor() {
     super();
     this.clearState();
@@ -714,6 +710,7 @@ export class MgtPeoplePicker extends MgtTemplatedComponent {
     return html`
        <ul
         id="selected-list"
+        aria-label="${this.strings.selected}"
         class="selected-list"
         >${selectedPeople.slice(0, selectedPeople.length).map(
           person =>
@@ -1186,8 +1183,8 @@ export class MgtPeoplePicker extends MgtTemplatedComponent {
     if (this.input) {
       this.input.setAttribute('aria-expanded', 'false');
       this.input.setAttribute('aria-activedescendant', '');
-      this._arrowSelectionCount = -1;
     }
+    this._arrowSelectionCount = -1;
   }
 
   /**
@@ -1273,7 +1270,7 @@ export class MgtPeoplePicker extends MgtTemplatedComponent {
 
   // handle input click
   private handleInputClick() {
-    if (!this.flyout.isOpen && !this._isFocused) {
+    if (!this.flyout.isOpen) {
       this.handleUserSearch();
     }
   }
@@ -1292,6 +1289,15 @@ export class MgtPeoplePicker extends MgtTemplatedComponent {
     if (this.input) {
       this.input.setAttribute('aria-expanded', 'false');
       this.input.setAttribute('aria-activedescendant', '');
+    }
+
+    const peopleList = this.renderRoot.querySelector('.people-list');
+
+    if (peopleList) {
+      for (let i = 0; i < peopleList.children.length; i++) {
+        peopleList.children[i].classList.remove('focused');
+        peopleList.children[i].setAttribute('aria-selected', 'false');
+      }
     }
 
     this.requestUpdate();
