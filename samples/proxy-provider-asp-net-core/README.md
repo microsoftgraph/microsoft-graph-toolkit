@@ -1,6 +1,6 @@
 # Proxy Provider and ASP.NET Core
 
-To use the Microsoft Graph Toolkit with backend authentication, one solution is to proxy all calls from the front end to the back end. The Microsoft Graph Toolkit ships with an authentication provider implementation (ProxyProvider) that enables all components to call the Microsoft Graph via the backend. 
+To use the Microsoft Graph Toolkit with backend authentication, one solution is to proxy all calls from the front end to the back end. The Microsoft Graph Toolkit ships with an authentication provider implementation (ProxyProvider) that enables all components to call the Microsoft Graph via the backend.
 
 This sample is a reference on how to leverage the [ProxyProvider](https://learn.microsoft.com/graph/toolkit/providers/proxy) with an ASP.NET Core backend. However, it is worth noting that the ProxyProvider can work with any backend service.
 
@@ -9,7 +9,7 @@ This sample is a reference on how to leverage the [ProxyProvider](https://learn.
 The ProxyProvider is instantiated in `Views\Shares\_Layout.cshtml`:
 
 ```html
-<script src='https://unpkg.com/@Html.Raw("@")microsoft/mgt/dist/bundle/mgt-loader.js'></script>
+<script src='https://unpkg.com/@Html.Raw("@")microsoft/mgt@2/dist/bundle/mgt-loader.js'></script>
 <script>
     const provider = new mgt.ProxyProvider("/api/proxy");
     provider.login = () => window.location.href = '@Url.Action("SignIn", "Account")';
@@ -24,7 +24,7 @@ This code snippet also defines a login and logout functions that are used by the
 
 ## Backend code
 
-The `/api/Proxy` endpoint that handles all calls to the Microsoft Graph is defined in `Controllers\ProxyController.cs`. 
+The `/api/Proxy` endpoint that handles all calls to the Microsoft Graph is defined in `Controllers\ProxyController.cs`.
 
 This custom implementation simply proxies every method (**GET**, **POST**, **DELETE**, **PUT**, **PATCH**), and makes the actual call to the Microsoft Graph using the token generated through [MSAL.NET](https://github.com/AzureAD/microsoft-authentication-library-for-dotnet). Notice that several headers required by the Microsoft Graph are also proxied with each request.
 
