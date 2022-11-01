@@ -35,6 +35,8 @@ export const customCssProperties = () => html`
 
     --dropdown-background-color: #956970; /* selection area background color */
     --dropdown-item-hover-background: purple; /* person background color on hover */
+    --dropdown-item__text__color: yellow; /* person item text color */
+    --dropdown-item__text__hover__color: blue; /* person item text color on hover */
 
     --selected-person-background-color: black ; /* person item background color */
 
