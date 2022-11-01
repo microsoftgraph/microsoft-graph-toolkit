@@ -353,7 +353,6 @@ export class MgtAgenda extends MgtTemplatedComponent {
         <div class="event-other-container">${this.renderOther(event)}</div>
       </div>
     `;
-    // <div class="event-duration">${this.getEventDuration(event)}</div>
   }
 
   /**
@@ -625,33 +624,5 @@ export class MgtAgenda extends MgtTemplatedComponent {
     const year = localizedDate.getFullYear();
 
     return `${getDayOfWeekString(dayIndex)}, ${getMonthString(monthIndex)} ${day}, ${year}`;
-  }
-
-  private getEventDuration(event: MicrosoftGraph.Event) {
-    let dtStart = new Date(event.start.dateTime);
-    const dtEnd = new Date(event.end.dateTime);
-    const dtNow = new Date();
-    let result: string = '';
-
-    if (dtNow > dtStart) {
-      dtStart = dtNow;
-    }
-
-    const diff = dtEnd.getTime() - dtStart.getTime();
-    const durationMinutes = Math.round(diff / 60000);
-
-    if (durationMinutes > 1440 || event.isAllDay) {
-      result = Math.ceil(durationMinutes / 1440) + 'd';
-    } else if (durationMinutes > 60) {
-      result = Math.round(durationMinutes / 60) + 'h';
-      const leftoverMinutes = durationMinutes % 60;
-      if (leftoverMinutes) {
-        result += leftoverMinutes + 'm';
-      }
-    } else {
-      result = durationMinutes + 'm';
-    }
-
-    return result;
   }
 }
