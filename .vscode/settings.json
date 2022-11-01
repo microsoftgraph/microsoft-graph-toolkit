@@ -6,5 +6,5 @@
   },
   "lit-html.tags": ["mgtHtml"],
   "typescript.tsdk": "node_modules/typescript/lib",
-  "cSpell.words": ["webpart"]
+  "cSpell.words": ["spfx", "webpart", "webparts"]
 }

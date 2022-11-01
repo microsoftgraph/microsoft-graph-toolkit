@@ -2,8 +2,8 @@ import { BaseClientSideWebPart } from '@microsoft/sp-webpart-base';
 
 import styles from './HelloWorldWebPart.module.scss';
 
-import { Providers } from '@microsoft/mgt-element/dist/es6/providers/Providers';
-import { SharePointProvider } from '@microsoft/mgt-sharepoint-provider/dist/es6/SharePointProvider';
+import { Providers } from '@microsoft/mgt-element';
+import { SharePointProvider } from '@microsoft/mgt-sharepoint-provider';
 import { customElementHelper } from '@microsoft/mgt-element/dist/es6/components/customElementHelper';
 import { importMgtComponentsLibrary } from '@microsoft/mgt-spfx-utils';
 
@@ -12,7 +12,9 @@ export default class HelloWorldWebPart extends BaseClientSideWebPart<Record<stri
   private _errorMessage = '';
 
   protected onInit(): Promise<void> {
-    Providers.globalProvider = new SharePointProvider(this.context);
+    if (!Providers.globalProvider) {
+      Providers.globalProvider = new SharePointProvider(this.context);
+    }
     customElementHelper.withDisambiguation('contoso');
     return super.onInit();
   }

@@ -74,10 +74,10 @@ export default class MgtNoFrameworkWebPart extends BaseClientSideWebPart<IMgtNoF
 }
 ```
 
-If you build web part using React, load components from the `@microsoft/mgt-react` package:
+If you build web part using React, load only components from the `/dist/es6/spfx` path in the `@microsoft/mgt-react` package:
 
 ```tsx
-import { Person } from '@microsoft/mgt-react';
+import { Person } from '@microsoft/mgt-react/dist/es6/spfx';
 
 // [...] trimmed for brevity
 
