@@ -569,10 +569,6 @@ export class MgtAgenda extends MgtTemplatedComponent {
             request = request.middlewareOptions(prepScopes(scope));
           }
 
-          if (this.preferredTimezone) {
-            request = request.header('Prefer', `outlook.timezone="${this.preferredTimezone}"`);
-          }
-
           const results = await request.get();
 
           if (results && results.value) {
@@ -586,7 +582,7 @@ export class MgtAgenda extends MgtTemplatedComponent {
         end.setDate(start.getDate() + this.days);
 
         try {
-          const iterator = await getEventsPageIterator(graph, start, end, this.groupId, this.preferredTimezone);
+          const iterator = await getEventsPageIterator(graph, start, end, this.groupId);
           if (iterator && iterator.value) {
             events = iterator.value;
 
@@ -605,24 +601,21 @@ export class MgtAgenda extends MgtTemplatedComponent {
   }
 
   private prettyPrintTimeFromDateTime(date: Date) {
-    let hours = date.getHours();
-    const minutes = date.getMinutes();
-    const ampm = hours >= 12 ? 'PM' : 'AM';
-    hours = hours % 12;
-    hours = hours ? hours : 12;
-    const minutesStr = minutes < 10 ? '0' + minutes : minutes;
-    return `${hours}:${minutesStr} ${ampm}`;
+    return date.toLocaleTimeString(navigator.language, {
+      hour: '2-digit',
+      minute: '2-digit',
+      timeZone: this.preferredTimezone
+    });
   }
 
   private getDateHeaderFromDateTimeString(dateTimeString: string) {
     const date = new Date(dateTimeString);
-    const localizedDate = new Date(date.getTime() - date.getTimezoneOffset() * 60 * 1000);
-
-    const dayIndex = localizedDate.getDay();
-    const monthIndex = localizedDate.getMonth();
-    const day = localizedDate.getDate();
-    const year = localizedDate.getFullYear();
-
-    return `${getDayOfWeekString(dayIndex)}, ${getMonthString(monthIndex)} ${day}, ${year}`;
+    return date.toLocaleDateString(navigator.language, {
+      weekday: 'long',
+      year: 'numeric',
+      month: 'long',
+      day: 'numeric',
+      timeZone: this.preferredTimezone
+    });
   }
 }
