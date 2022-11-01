@@ -22,7 +22,9 @@ customElementHelper.withDisambiguation('northwind');
 export default class MgtDemoWebPart extends BaseClientSideWebPart<IMgtDemoWebPartProps> {
   // set the global provider
   protected async onInit() {
-    Providers.globalProvider = new SharePointProvider(this.context);
+    if (!Providers.globalProvider) {
+      Providers.globalProvider = new SharePointProvider(this.context);
+    }
   }
 
   public render(): void {
