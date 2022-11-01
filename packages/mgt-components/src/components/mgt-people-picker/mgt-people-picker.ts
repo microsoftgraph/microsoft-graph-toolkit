@@ -1180,7 +1180,6 @@ export class MgtPeoplePicker extends MgtTemplatedComponent {
   protected hideFlyout(): void {
     const flyout = this.flyout;
     if (flyout) {
-      console.log('flyout closed');
       flyout.close();
     }
     if (this.input) {
