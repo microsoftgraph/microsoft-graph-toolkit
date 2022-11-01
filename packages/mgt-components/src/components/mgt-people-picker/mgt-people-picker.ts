@@ -884,9 +884,11 @@ export class MgtPeoplePicker extends MgtTemplatedComponent {
     return (
       this.renderTemplate('person', { person }, person.id) ||
       html`
-         <mgt-person .personDetails=${person} .fetchImage=${!this.disableImages} .personCardInteraction=${
-        PersonCardInteraction.none
-      }></mgt-person>
+         <mgt-person 
+          .personDetails=${person} 
+          .fetchImage=${!this.disableImages} 
+          .personCardInteraction=${PersonCardInteraction.none}
+         ></mgt-person>
          <div class="people-person-text-area" id="${person.displayName}">
            ${this.renderHighlightText(person)}
            <span class="${classMap(classes)}">${subTitle}</span>
@@ -1178,6 +1180,7 @@ export class MgtPeoplePicker extends MgtTemplatedComponent {
   protected hideFlyout(): void {
     const flyout = this.flyout;
     if (flyout) {
+      console.log('flyout closed');
       flyout.close();
     }
     if (this.input) {
@@ -1357,10 +1360,12 @@ export class MgtPeoplePicker extends MgtTemplatedComponent {
         // Only hide the flyout when you're doing selections with Left/Right Arrow key
         this.hideFlyout();
       }
-      return;
-    }
 
-    if (isArrowKey) {
+      if (['ArrowDown'].includes(event.code)) {
+        if (!this.flyout.isOpen && this._isFocused) {
+          this.handleUserSearch();
+        }
+      }
       return;
     }
 
@@ -1377,9 +1382,6 @@ export class MgtPeoplePicker extends MgtTemplatedComponent {
     }
 
     if (event.code === 'Enter') {
-      if (!this.flyout.isOpen && this._isFocused) {
-        this.handleUserSearch();
-      }
       return;
     }
 
