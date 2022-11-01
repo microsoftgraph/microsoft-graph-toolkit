@@ -75,6 +75,8 @@ interface IFocusable {
  *
  * @cssprop --dropdown-background-color - {Color} Background color of dropdown area
  * @cssprop --dropdown-item-hover-background - {Color} Background color of person during hover
+ * @cssprop --dropdown-item-text-color - {Color} Color of person text
+ * @cssprop --dropdown-item-text-hover-color - {Color} Color of person text during hover
  *
  * @cssprop --placeholder-color--focus - {Color} Color of placeholder text during focus state
  * @cssprop --placeholder-color - {Color} Color of placeholder text
