@@ -27,8 +27,8 @@ export async function getEventsPageIterator(
 ): Promise<GraphPageIterator<MicrosoftGraph.Event>> {
   const scopes = 'calendars.read';
 
-  const sdt = `startdatetime=${dateToLocalISO(startDateTime)}`;
-  const edt = `enddatetime=${dateToLocalISO(endDateTime)}`;
+  const sdt = `startdatetime=${startDateTime.toISOString()}`;
+  const edt = `enddatetime=${endDateTime.toISOString()}`;
 
   let uri: string;
 
@@ -47,22 +47,4 @@ export async function getEventsPageIterator(
   }
 
   return GraphPageIterator.create<MicrosoftGraph.Event>(graph, request);
-}
-
-/**
- * Convert a date object to a local time ISO string.
- * @param date Date object.
- * @returns ISO 8601 string without timezone offset.
- */
-function dateToLocalISO(date: Date): string {
-  // Get difference, in minutes, between date, as evaluated in the
-  // UTC time zone, and as evaluated in the local time zone.
-  // Why? The values of startDateTime and endDateTime are interpreted
-  // using the timezone offset specified in the value and are not impacted
-  // by the value of the Prefer: outlook.timezone header if present.
-  // If no timezone offset is included in the value, it is interpreted as UTC.
-  // https://docs.microsoft.com/en-us/graph/api/calendar-list-calendarview?view=graph-rest-1.0&tabs=http#query-parameters
-  const offset = date.getTimezoneOffset();
-  const dateString = new Date(date.getTime() - offset * 60 * 1000).toISOString().slice(0, 23);
-  return dateString;
 }
