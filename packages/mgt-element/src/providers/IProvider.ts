@@ -6,7 +6,7 @@
  */
 
 import { AuthenticationProvider, AuthenticationProviderOptions } from '@microsoft/microsoft-graph-client';
-import { IGraph } from '../IGraph';
+import { IGraph, MICROSOFT_GRAPH_DEFAULT_ENDPOINT } from '../IGraph';
 import { EventDispatcher, EventHandler } from '../utils/EventDispatcher';
 
 /**
@@ -40,6 +40,18 @@ export abstract class IProvider implements AuthenticationProvider {
   private _state: ProviderState;
   private _loginChangedDispatcher = new EventDispatcher<LoginChangedEvent>();
   private _activeAccountChangedDispatcher = new EventDispatcher<ActiveAccountChanged>();
+  private _baseURL: string = MICROSOFT_GRAPH_DEFAULT_ENDPOINT;
+
+  /**
+   * The base URL to be used in the graph client config.
+   */
+  public set baseURL(url: string) {
+    this._baseURL = url;
+  }
+
+  public get baseURL(): string {
+    return this._baseURL;
+  }
 
   /**
    * Enable/Disable incremental consent
