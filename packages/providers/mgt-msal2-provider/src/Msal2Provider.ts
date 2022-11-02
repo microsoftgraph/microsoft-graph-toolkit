@@ -150,11 +150,13 @@ export interface Msal2PublicClientApplicationConfig extends Msal2ConfigBase {
  * @export
  * @enum {number}
  */
+// tslint:disable: completed-docs
 export enum PromptType {
   SELECT_ACCOUNT = 'select_account',
   LOGIN = 'login',
   CONSENT = 'consent'
 }
+// tslint:enable: completed-docs
 
 /**
  * MSAL2Provider using msal-browser to acquire tokens for authentication
@@ -223,6 +225,7 @@ export class Msal2Provider extends IProvider {
    * @type {Configuration}
    * @memberof Msal2Provider
    */
+  // tslint:disable-next-line: variable-name
   private ms_config: Configuration;
 
   /**
@@ -255,13 +258,36 @@ export class Msal2Provider extends IProvider {
   public scopes: string[];
 
   /**
-   *
    * Enables multi account functionality if true, disables if false
+   *
    * @private
    * @type {boolean}
    * @memberof Msal2Provider
    */
   public isMultipleAccountEnabled: boolean = true;
+
+  /**
+   * Indicates if multi account functionality is disabled
+   *
+   * @protected
+   * @type {boolean}
+   * @memberof Msal2Provider
+   */
+  protected get isMultiAccountDisabled(): boolean {
+    return !this.isMultipleAccountEnabled;
+  }
+
+  /**
+   * Disables or enables multi account functionality
+   * Uses isMultipleAccountEnabled as the backing property
+   * Property provided to ensure adherence to the IProvider interface
+   *
+   * @protected
+   * @memberof Msal2Provider
+   */
+  protected set isMultiAccountDisabled(value: boolean) {
+    this.isMultipleAccountEnabled = !value;
+  }
 
   /**
    * Specifies if Multi account functionality is supported by the provider and enabled.
@@ -319,27 +345,11 @@ export class Msal2Provider extends IProvider {
       } else {
         throw new Error('clientId must be provided');
       }
-      this.ms_config.system = msalConfig.system || {};
-      this.ms_config.system.iframeHashTimeout = msalConfig.system.iframeHashTimeout || 10000;
-      this._loginType = typeof config.loginType !== 'undefined' ? config.loginType : LoginType.Redirect;
-      this._loginHint = typeof config.loginHint !== 'undefined' ? config.loginHint : null;
-      this._sid = typeof config.sid !== 'undefined' ? config.sid : null;
-      this._domainHint = typeof config.domainHint !== 'undefined' ? config.domainHint : null;
-      this.scopes = typeof config.scopes !== 'undefined' ? config.scopes : ['user.read'];
-      this._publicClientApplication = new PublicClientApplication(this.ms_config);
-      this._prompt = typeof config.prompt !== 'undefined' ? config.prompt : PromptType.SELECT_ACCOUNT;
-      this.isMultipleAccountDisabled =
-        typeof config.isMultiAccountDisabled !== 'undefined' ? config.isMultiAccountDisabled : false;
-      this.graph = createFromProvider(this);
-      try {
-        const tokenResponse = await this._publicClientApplication.handleRedirectPromise();
-        if (tokenResponse !== null) {
-          this.handleResponse(tokenResponse?.account);
-        } else {
-          this.trySilentSignIn();
-        }
-      } catch (e) {
-        throw e;
+    } else if ('publicClientApplication' in config) {
+      if (config.publicClientApplication) {
+        this._publicClientApplication = config.publicClientApplication;
+      } else {
+        throw new Error('publicClientApplication must be provided');
       }
     } else {
       throw new Error('either clientId or publicClientApplication must be provided');
@@ -379,7 +389,7 @@ export class Msal2Provider extends IProvider {
    * @memberof Msal2Provider
    */
   public async trySilentSignIn() {
-    let silentRequest: any = {
+    const silentRequest: any = {
       scopes: this.scopes,
       domainHint: this._domainHint
     };
@@ -420,7 +430,7 @@ export class Msal2Provider extends IProvider {
       prompt: this._prompt,
       domainHint: this._domainHint
     };
-    if (this._loginType == LoginType.Popup) {
+    if (this._loginType === LoginType.Popup) {
       const response = await this._publicClientApplication.loginPopup(loginRequest);
       this.handleResponse(response?.account);
     } else {
@@ -436,7 +446,7 @@ export class Msal2Provider extends IProvider {
    * @memberof Msal2Provider
    */
   public getAllAccounts() {
-    let usernames = [];
+    const usernames = [];
     this._publicClientApplication.getAllAccounts().forEach((account: AccountInfo) => {
       usernames.push({ name: account.name, mail: account.username, id: account.homeAccountId } as IProviderAccount);
     });
@@ -636,12 +646,12 @@ export class Msal2Provider extends IProvider {
       account: logOutAccount
     };
     this.clearStoredAccount();
-    if (this._loginType == LoginType.Redirect) {
+    if (this._loginType === LoginType.Redirect) {
       this._publicClientApplication.logoutRedirect(logOutRequest);
       this.setState(ProviderState.SignedOut);
     } else {
       await this._publicClientApplication.logoutPopup({ ...logOutRequest });
-      if (this._publicClientApplication.getAllAccounts.length == 1 || !this.isMultipleAccountEnabled) {
+      if (this._publicClientApplication.getAllAccounts.length === 1 || !this.isMultipleAccountEnabled) {
         this.setState(ProviderState.SignedOut);
       } else {
         this.trySilentSignIn();
@@ -659,7 +669,7 @@ export class Msal2Provider extends IProvider {
   public async getAccessToken(options?: AuthenticationProviderOptions): Promise<string> {
     const scopes = options ? options.scopes || this.scopes : this.scopes;
     const accessTokenRequest: SilentRequest = {
-      scopes: scopes,
+      scopes,
       account: this.getAccount()
     };
     try {
