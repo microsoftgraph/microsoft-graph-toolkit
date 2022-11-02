@@ -459,7 +459,10 @@ export class MgtAgenda extends MgtTemplatedComponent {
     const grouped = {};
 
     events.forEach(event => {
-      const dateString = event.start.dateTime;
+      let dateString = event?.start?.dateTime;
+      if (event.end.timeZone === 'UTC') {
+        dateString += 'Z';
+      }
 
       const header = this.getDateHeaderFromDateTimeString(dateString);
       grouped[header] = grouped[header] || [];
