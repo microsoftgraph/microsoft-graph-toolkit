@@ -614,8 +614,7 @@ export class MgtAgenda extends MgtTemplatedComponent {
 
   private prettyPrintTimeFromDateTime(date: Date) {
     return date.toLocaleTimeString(navigator.language, {
-      hour: '2-digit',
-      minute: '2-digit',
+      timeStyle: 'short',
       timeZone: this.preferredTimezone
     });
   }
@@ -623,10 +622,7 @@ export class MgtAgenda extends MgtTemplatedComponent {
   private getDateHeaderFromDateTimeString(dateTimeString: string) {
     const date = new Date(dateTimeString);
     return date.toLocaleDateString(navigator.language, {
-      weekday: 'long',
-      year: 'numeric',
-      month: 'long',
-      day: 'numeric',
+      dateStyle: 'full',
       timeZone: this.preferredTimezone
     });
   }
