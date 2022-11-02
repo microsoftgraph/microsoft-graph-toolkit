@@ -337,6 +337,14 @@ mgt-flyout {
         }
       }
     }
+    &__person-wrapper-highlighted {
+      &__overflow {
+        &__close-icon {
+          right: auto !important;
+          left: 0px !important;
+        }
+      }
+    }
   }
   .people-person-text-area {
     margin-right: 13px;
