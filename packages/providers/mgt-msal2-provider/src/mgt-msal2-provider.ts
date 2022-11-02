@@ -6,7 +6,7 @@
  */
 
 import { customElement, property } from 'lit/decorators.js';
-import { Providers, LoginType, MgtBaseProvider } from '@microsoft/mgt-element';
+import { Providers, LoginType, MgtBaseProvider, MICROSOFT_GRAPH_ENDPOINTS } from '@microsoft/mgt-element';
 import { Msal2Config, Msal2Provider, PromptType } from './Msal2Provider';
 /**
  * Authentication Library Provider for Microsoft personal accounts
@@ -124,6 +124,17 @@ export class MgtMsal2Provider extends MgtBaseProvider {
   public isMultiAccountDisabled;
 
   /**
+   * The base URL that should be used in the graph client config.
+   *
+   * @memberof MgtMsal2Provider
+   */
+  @property({
+    attribute: 'base-url',
+    type: String
+  })
+  public baseUrl: string;
+
+  /**
    * Gets whether this provider can be used in this environment
    *
    * @readonly
@@ -187,6 +198,13 @@ export class MgtMsal2Provider extends MgtBaseProvider {
 
       if (this.isMultiAccountDisabled) {
         config.isMultiAccountEnabled = false;
+      }
+
+      if (this.baseUrl) {
+        const url = new URL(this.baseUrl);
+        if (MICROSOFT_GRAPH_ENDPOINTS.has(url.hostname)) {
+          config.baseURL = url.href;
+        }
       }
       this.provider = new Msal2Provider(config);
       Providers.globalProvider = this.provider;
