@@ -6,7 +6,14 @@
  */
 
 import { customElement, property } from 'lit/decorators.js';
-import { Providers, LoginType, MgtBaseProvider, MICROSOFT_GRAPH_ENDPOINTS } from '@microsoft/mgt-element';
+import {
+  Providers,
+  LoginType,
+  MgtBaseProvider,
+  MICROSOFT_GRAPH_ENDPOINTS,
+  GraphEndpoint,
+  validateBaseURL
+} from '@microsoft/mgt-element';
 import { Msal2Config, Msal2Provider, PromptType } from './Msal2Provider';
 /**
  * Authentication Library Provider for Microsoft personal accounts
@@ -132,7 +139,7 @@ export class MgtMsal2Provider extends MgtBaseProvider {
     attribute: 'base-url',
     type: String
   })
-  public baseUrl: string;
+  public baseUrl: GraphEndpoint;
 
   /**
    * Gets whether this provider can be used in this environment
@@ -201,9 +208,9 @@ export class MgtMsal2Provider extends MgtBaseProvider {
       }
 
       if (this.baseUrl) {
-        const url = new URL(this.baseUrl);
-        if (MICROSOFT_GRAPH_ENDPOINTS.has(url.hostname)) {
-          config.baseURL = url.href;
+        const validURL = validateBaseURL(this.baseUrl);
+        if (validURL) {
+          config.baseURL = validURL;
         }
       }
       this.provider = new Msal2Provider(config);
