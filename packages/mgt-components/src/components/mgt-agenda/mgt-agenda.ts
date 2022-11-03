@@ -353,7 +353,6 @@ export class MgtAgenda extends MgtTemplatedComponent {
         <div class="event-other-container">${this.renderOther(event)}</div>
       </div>
     `;
-    // <div class="event-duration">${this.getEventDuration(event)}</div>
   }
 
   /**
@@ -460,8 +459,10 @@ export class MgtAgenda extends MgtTemplatedComponent {
     const grouped = {};
 
     events.forEach(event => {
-      var eventDate = new Date(event.start.dateTime);
-      var dateString = eventDate.toISOString().replace('Z', '');
+      let dateString = event?.start?.dateTime;
+      if (event.end.timeZone === 'UTC') {
+        dateString += 'Z';
+      }
 
       const header = this.getDateHeaderFromDateTimeString(dateString);
       grouped[header] = grouped[header] || [];
@@ -574,14 +575,10 @@ export class MgtAgenda extends MgtTemplatedComponent {
             query = this.eventQuery;
           }
 
-          let request = await graph.api(query);
+          let request = graph.api(query);
 
           if (scope) {
             request = request.middlewareOptions(prepScopes(scope));
-          }
-
-          if (this.preferredTimezone) {
-            request = request.header('Prefer', `outlook.timezone="${this.preferredTimezone}"`);
           }
 
           const results = await request.get();
@@ -593,12 +590,11 @@ export class MgtAgenda extends MgtTemplatedComponent {
         } catch (e) {}
       } else {
         const start = this.date ? new Date(this.date) : new Date();
-        start.setHours(0, 0, 0, 0);
         const end = new Date(start.getTime());
         end.setDate(start.getDate() + this.days);
-        try {
-          const iterator = await getEventsPageIterator(graph, start, end, this.groupId, this.preferredTimezone);
 
+        try {
+          const iterator = await getEventsPageIterator(graph, start, end, this.groupId);
           if (iterator && iterator.value) {
             events = iterator.value;
 
@@ -617,52 +613,17 @@ export class MgtAgenda extends MgtTemplatedComponent {
   }
 
   private prettyPrintTimeFromDateTime(date: Date) {
-    let hours = date.getHours();
-    const minutes = date.getMinutes();
-    const ampm = hours >= 12 ? 'PM' : 'AM';
-    hours = hours % 12;
-    hours = hours ? hours : 12;
-    const minutesStr = minutes < 10 ? '0' + minutes : minutes;
-    return `${hours}:${minutesStr} ${ampm}`;
+    return date.toLocaleTimeString(navigator.language, {
+      timeStyle: 'short',
+      timeZone: this.preferredTimezone
+    });
   }
 
   private getDateHeaderFromDateTimeString(dateTimeString: string) {
     const date = new Date(dateTimeString);
-    date.setMinutes(date.getMinutes() - date.getTimezoneOffset());
-
-    const dayIndex = date.getDay();
-    const monthIndex = date.getMonth();
-    const day = date.getDate();
-    const year = date.getFullYear();
-
-    return `${getDayOfWeekString(dayIndex)}, ${getMonthString(monthIndex)} ${day}, ${year}`;
-  }
-
-  private getEventDuration(event: MicrosoftGraph.Event) {
-    let dtStart = new Date(event.start.dateTime);
-    const dtEnd = new Date(event.end.dateTime);
-    const dtNow = new Date();
-    let result: string = '';
-
-    if (dtNow > dtStart) {
-      dtStart = dtNow;
-    }
-
-    const diff = dtEnd.getTime() - dtStart.getTime();
-    const durationMinutes = Math.round(diff / 60000);
-
-    if (durationMinutes > 1440 || event.isAllDay) {
-      result = Math.ceil(durationMinutes / 1440) + 'd';
-    } else if (durationMinutes > 60) {
-      result = Math.round(durationMinutes / 60) + 'h';
-      const leftoverMinutes = durationMinutes % 60;
-      if (leftoverMinutes) {
-        result += leftoverMinutes + 'm';
-      }
-    } else {
-      result = durationMinutes + 'm';
-    }
-
-    return result;
+    return date.toLocaleDateString(navigator.language, {
+      dateStyle: 'full',
+      timeZone: this.preferredTimezone
+    });
   }
 }
