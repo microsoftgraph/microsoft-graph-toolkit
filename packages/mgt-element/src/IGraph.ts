@@ -67,16 +67,23 @@ export interface IGraph {
   createBatch(): IBatch;
 }
 
+export type GraphEndpoint =
+  | 'https://graph.microsoft.com'
+  | 'https://graph.microsoft.us'
+  | 'https://dod-graph.microsoft.us'
+  | 'https://graph.microsoft.de'
+  | 'https://microsoftgraph.chinacloudapi.cn';
+
 export const MICROSOFT_GRAPH_ENDPOINTS = new Set<string>();
-export const MICROSOFT_GRAPH_DEFAULT_ENDPOINT: string = 'graph.microsoft.com';
+export const MICROSOFT_GRAPH_DEFAULT_ENDPOINT: GraphEndpoint = 'https://graph.microsoft.com';
 
 (() => {
   const endpoints = [
     MICROSOFT_GRAPH_DEFAULT_ENDPOINT,
-    'graph.microsoft.us',
-    'dod-graph.microsoft.us',
-    'graph.microsoft.de',
-    'microsoftgraph.chinacloudapi.cn'
+    'https://graph.microsoft.us',
+    'https://dod-graph.microsoft.us',
+    'https://graph.microsoft.de',
+    'https://microsoftgraph.chinacloudapi.cn'
   ];
   endpoints.forEach(endpoint => MICROSOFT_GRAPH_ENDPOINTS.add(endpoint));
 })();

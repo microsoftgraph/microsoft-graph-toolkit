@@ -1,4 +1,11 @@
-import { IProvider, LoginType, ProviderState, createFromProvider, IProviderAccount } from '@microsoft/mgt-element';
+import {
+  IProvider,
+  LoginType,
+  ProviderState,
+  createFromProvider,
+  IProviderAccount,
+  GraphEndpoint
+} from '@microsoft/mgt-element';
 import {
   Configuration,
   PublicClientApplication,
@@ -130,7 +137,7 @@ export interface Msal2Config extends Msal2ConfigBase {
   /**
    * The base URL for the graph client
    */
-  baseURL?: string;
+  baseURL?: GraphEndpoint;
 }
 
 /**
