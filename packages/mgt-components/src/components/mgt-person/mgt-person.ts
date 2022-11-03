@@ -22,6 +22,7 @@ import '../sub-components/mgt-flyout/mgt-flyout';
 import { MgtFlyout } from '../sub-components/mgt-flyout/mgt-flyout';
 import { PersonCardInteraction } from './../PersonCardInteraction';
 import { styles } from './mgt-person-css';
+import { strings } from './strings';
 
 export { PersonCardInteraction } from '../PersonCardInteraction';
 
@@ -140,6 +141,10 @@ export class MgtPerson extends MgtTemplatedComponent {
    */
   static get styles() {
     return styles;
+  }
+
+  protected get strings() {
+    return strings;
   }
 
   /**
@@ -665,22 +670,18 @@ export class MgtPerson extends MgtTemplatedComponent {
    * @memberof MgtPerson
    */
   protected renderImage(personDetailsInternal: IDynamicPerson, imageSrc: string) {
-    const title =
-      personDetailsInternal && this.personCardInteraction === PersonCardInteraction.none
-        ? personDetailsInternal.displayName || getEmailFromGraphEntity(personDetailsInternal) || ''
-        : '';
     if (imageSrc && !this._isInvalidImageSrc && this._avatarType === 'photo') {
+      const altText = `${this.strings.photoFor} ${personDetailsInternal.displayName}`;
       return html`
         <div class="img-wrapper">
-          <img alt=${personDetailsInternal.displayName} src=${imageSrc} @error=${() =>
-        (this._isInvalidImageSrc = true)} />
+          <img alt=${altText} src=${imageSrc} @error=${() => (this._isInvalidImageSrc = true)} />
         </div>
       `;
     } else if (personDetailsInternal) {
       const initials = this.getInitials(personDetailsInternal);
 
       return html`
-        <span class="initials-text" aria-label="${initials}">
+        <span class="initials-text" aria-label="${this.strings.initials} ${initials}">
           ${
             initials && initials.length
               ? html`
@@ -809,20 +810,31 @@ export class MgtPerson extends MgtTemplatedComponent {
    * @memberof MgtPersonCard
    */
   protected renderAvatar(personDetailsInternal: IDynamicPerson, image: string, presence: Presence): TemplateResult {
-    const title =
-      personDetailsInternal && this.personCardInteraction === PersonCardInteraction.none
-        ? personDetailsInternal.displayName || getEmailFromGraphEntity(personDetailsInternal) || ''
-        : '';
-
+    const hasInitials = !image || this._isInvalidImageSrc || this._avatarType === avatarType.initials;
     const imageClasses = {
-      initials: !image || this._isInvalidImageSrc || this._avatarType === 'initials',
+      initials: hasInitials,
       small: !this.isLargeAvatar(),
       'user-avatar': true
     };
 
-    if ((!image || this._isInvalidImageSrc || this._avatarType === 'initials') && personDetailsInternal) {
+    let title = '';
+
+    if (hasInitials && personDetailsInternal) {
       // add avatar background color
       imageClasses[this._personAvatarBg] = true;
+      title = `${this.strings.initials} ${this.getInitials(personDetailsInternal)}`;
+    } else {
+      title = personDetailsInternal ? personDetailsInternal.displayName || '' : '';
+      if (title !== '') {
+        title = `${this.strings.photoFor} ${title}`;
+      }
+    }
+
+    if (title === '') {
+      const emailAddress = getEmailFromGraphEntity(personDetailsInternal);
+      if (emailAddress !== null) {
+        title = `${this.strings.emailAddress} ${emailAddress}`;
+      }
     }
 
     const imageTemplate: TemplateResult = this.renderImage(personDetailsInternal, image);
