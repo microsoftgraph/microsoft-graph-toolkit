@@ -342,6 +342,7 @@ export class Msal2Provider extends IProvider {
       this._prompt = typeof config.prompt !== 'undefined' ? config.prompt : PromptType.SELECT_ACCOUNT;
       this.isMultipleAccountDisabled =
         typeof config.isMultiAccountDisabled !== 'undefined' ? config.isMultiAccountDisabled : false;
+      this.baseURL = typeof config.baseURL !== 'undefined' ? config.baseURL : this.baseURL;
       this.graph = createFromProvider(this);
       try {
         const tokenResponse = await this._publicClientApplication.handleRedirectPromise();
