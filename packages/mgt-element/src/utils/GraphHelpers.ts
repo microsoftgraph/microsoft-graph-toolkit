@@ -55,8 +55,8 @@ export function chainMiddleware(...middleware: Middleware[]): Middleware {
 export function validateBaseURL(url: string): GraphEndpoint {
   try {
     const urlObj = new URL(url);
-    if (MICROSOFT_GRAPH_ENDPOINTS.has(urlObj.href)) {
-      return urlObj.href as GraphEndpoint;
+    if (MICROSOFT_GRAPH_ENDPOINTS.has(urlObj.origin)) {
+      return urlObj.origin as GraphEndpoint;
     }
   } catch (error) {
     return;
