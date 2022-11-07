@@ -48,7 +48,7 @@ import { BaseClientSideWebPart } from '@microsoft/sp-webpart-base';
 import { Providers } from '@microsoft/mgt-element';
 import { SharePointProvider } from '@microsoft/mgt-sharepoint-provider';
 import { customElementHelper } from '@microsoft/mgt-element/dist/es6/components/customElementHelper';
-import { importMgtComponentsLibrary } from '@microsoft/mgt-spfx-utils';;
+import { importMgtComponentsLibrary } from '@microsoft/mgt-spfx-utils';
 
 export default class MgtWebPart extends BaseClientSideWebPart<Record<string, unknown>> {
   private _hasImportedMgtScripts = false;
@@ -107,6 +107,7 @@ Below is a minimal example webpart that demonstrates how to use MGT with disambi
 import { Providers } from '@microsoft/mgt-element/dist/es6/providers/Providers';
 import { customElementHelper } from '@microsoft/mgt-element/dist/es6/components/customElementHelper';
 import { SharePointProvider } from '@microsoft/mgt-sharepoint-provider/dist/es6/SharePointProvider';
+import { lazyLoadComponent } from '@microsoft/mgt-spfx-utils';
 
 // Async import of component that imports the React Components
 const MgtDemo = React.lazy(() => import('./components/MgtDemo'));
