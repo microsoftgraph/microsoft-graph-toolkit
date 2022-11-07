@@ -177,7 +177,7 @@ export class EditorElement extends LitElement {
   }
 
   disconnectedCallback() {
-    this.editor.removeEventListener('fileUpdated');
+    this.editor.dispose();
     window.removeEventListener('resize', this.handleResize);
   }
 

@@ -82,7 +82,6 @@ type PersonViewConfig = {
  * @cssprop --add-account-button-color - {Color} Color for the text and icon of the add account button
  */
 @customElement('login')
-// @customElement('mgt-login')
 export class MgtLogin extends MgtTemplatedComponent {
   /**
    * Array of styles to apply to the element. The styles should be defined
