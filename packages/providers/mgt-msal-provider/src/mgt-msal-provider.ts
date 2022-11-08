@@ -5,7 +5,7 @@
  * -------------------------------------------------------------------------------------------
  */
 import { customElement, property } from 'lit/decorators.js';
-import { Providers, LoginType, MgtBaseProvider } from '@microsoft/mgt-element';
+import { Providers, LoginType, MgtBaseProvider, GraphEndpoint, validateBaseURL } from '@microsoft/mgt-element';
 import { MsalConfig, MsalProvider } from './MsalProvider';
 /**
  * Authentication Library Provider for Microsoft personal accounts
@@ -100,6 +100,17 @@ export class MgtMsalProvider extends MgtBaseProvider {
   }
 
   /**
+   * The base URL that should be used in the graph client config.
+   *
+   * @memberof MgtMsalProvider
+   */
+  @property({
+    attribute: 'base-url',
+    type: String
+  })
+  public baseUrl: GraphEndpoint;
+
+  /**
    * method called to initialize the provider. Each derived class should provide their own implementation.
    *
    * @protected
@@ -133,6 +144,13 @@ export class MgtMsalProvider extends MgtBaseProvider {
 
       if (this.redirectUri) {
         config.redirectUri = this.redirectUri;
+      }
+
+      if (this.baseUrl) {
+        const validURL = validateBaseURL(this.baseUrl);
+        if (validURL) {
+          config.baseURL = validURL;
+        }
       }
 
       this.provider = new MsalProvider(config);
