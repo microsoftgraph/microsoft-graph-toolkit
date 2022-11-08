@@ -9,7 +9,6 @@ import { html, TemplateResult } from 'lit';
 import { customElement, property } from 'lit/decorators.js';
 import { IGraph } from '@microsoft/mgt-element';
 import { Providers, ProviderState, MgtTemplatedComponent } from '@microsoft/mgt-element';
-import { styles } from './mgt-picker-css';
 import { strings } from './strings';
 import { fluentCombobox, fluentOption } from '@fluentui/web-components';
 import { registerFluentComponents } from '../../utils/FluentComponents';
@@ -22,19 +21,11 @@ registerFluentComponents(fluentCombobox, fluentOption);
  * Web component that allows a single entity pick from a generic endpoint from Graph. Uses mgt-get.
  
  * @export
- * @class MgtGenericPicker
+ * @class MgtPicker
  * @extends {MgtTemplatedComponent}
  */
 @customElement('mgt-picker')
-export class MgtGenericPicker extends MgtTemplatedComponent {
-  /**
-   * Array of styles to apply to the element. The styles should be defined
-   * using the `css` tag function.
-   */
-  static get styles() {
-    return styles;
-  }
-
+export class MgtPicker extends MgtTemplatedComponent {
   protected get strings() {
     return strings;
   }
@@ -43,7 +34,7 @@ export class MgtGenericPicker extends MgtTemplatedComponent {
    * The resource to get
    *
    * @type {string}
-   * @memberof MgtGenericPicker
+   * @memberof MgtPicker
    */
   @property({
     attribute: 'resource',
@@ -64,7 +55,7 @@ export class MgtGenericPicker extends MgtTemplatedComponent {
    * Api version to use for request
    *
    * @type {string}
-   * @memberof MgtGenericPicker
+   * @memberof MgtPicker
    */
   @property({
     attribute: 'version',
@@ -85,7 +76,7 @@ export class MgtGenericPicker extends MgtTemplatedComponent {
    * The scopes to request
    *
    * @type {string[]}
-   * @memberof MgtGenericPicker
+   * @memberof MgtPicker
    */
   @property({
     attribute: 'scopes',
@@ -111,7 +102,7 @@ export class MgtGenericPicker extends MgtTemplatedComponent {
    * Clears the state of the component
    *
    * @protected
-   * @memberof MgtGenericPicker
+   * @memberof MgtPicker
    */
   protected clearState(): void {
     // this.people = null;
@@ -148,7 +139,7 @@ export class MgtGenericPicker extends MgtTemplatedComponent {
    *
    * @protected
    * @returns
-   * @memberof MgtGenericPicker
+   * @memberof MgtPicker
    */
   protected renderLoading() {
     return this.renderTemplate('loading', null) || html``;
@@ -159,7 +150,7 @@ export class MgtGenericPicker extends MgtTemplatedComponent {
    *
    * @protected
    * @returns {TemplateResult}
-   * @memberof MgtGenericPicker
+   * @memberof MgtPicker
    */
   protected renderPicker(resource: String, scopes: String[]): TemplateResult {
     return html`
@@ -180,7 +171,7 @@ export class MgtGenericPicker extends MgtTemplatedComponent {
    *
    * @protected
    * @returns {TemplateResult}
-   * @memberof MgtGenericPicker
+   * @memberof MgtPicker
    */
   protected renderNoData(): TemplateResult {
     return this.renderTemplate('no-data', null) || html``;
@@ -191,7 +182,7 @@ export class MgtGenericPicker extends MgtTemplatedComponent {
    *
    * @protected
    * @returns
-   * @memberof MgtGenericPicker
+   * @memberof MgtPicker
    */
   protected async loadState() {
     const provider = Providers.globalProvider;
