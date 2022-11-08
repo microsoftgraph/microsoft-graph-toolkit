@@ -5,8 +5,8 @@
  * -------------------------------------------------------------------------------------------
  */
 
-export class MgtLibrary {
-  public name(): string {
-    return 'MgtLibrary';
-  }
-}
+export const strings = {
+  photoFor: 'Photo for',
+  emailAddress: 'Email address',
+  initials: 'Initials'
+};
