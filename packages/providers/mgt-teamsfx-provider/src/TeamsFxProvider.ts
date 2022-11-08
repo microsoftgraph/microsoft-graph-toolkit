@@ -5,7 +5,13 @@
  * -------------------------------------------------------------------------------------------
  */
 
-import { IProvider, ProviderState, createFromProvider } from '@microsoft/mgt-element';
+import {
+  IProvider,
+  ProviderState,
+  createFromProvider,
+  GraphEndpoint,
+  MICROSOFT_GRAPH_DEFAULT_ENDPOINT
+} from '@microsoft/mgt-element';
 import { TeamsFx } from '@microsoft/teamsfx';
 
 /**
@@ -62,7 +68,7 @@ export class TeamsFxProvider extends IProvider {
    */
   private _accessToken: string = '';
 
-  constructor(teamsfx: TeamsFx, scopes: string | string[]) {
+  constructor(teamsfx: TeamsFx, scopes: string | string[], baseURL: GraphEndpoint = MICROSOFT_GRAPH_DEFAULT_ENDPOINT) {
     super();
 
     if (!this._teamsfx) {
@@ -79,6 +85,7 @@ export class TeamsFxProvider extends IProvider {
       this.scopes = scopesArr;
     }
 
+    this.baseURL = baseURL;
     this.graph = createFromProvider(this);
   }
 
