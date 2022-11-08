@@ -10,7 +10,8 @@ import { classMap } from 'lit/directives/class-map.js';
 import { repeat } from 'lit/directives/repeat.js';
 import { IGraph, customElement, mgtHtml } from '@microsoft/mgt-element';
 import { Providers, ProviderState } from '@microsoft/mgt-element';
-import { getShortDateString } from '../../utils/Utils';
+import { getDateString } from '../../utils/Utils';
+import { getSvg, SvgIcon } from '../../utils/SvgHelper';
 import '../mgt-person/mgt-person';
 import { MgtTasksBase } from '../mgt-tasks-base/mgt-tasks-base';
 import '../sub-components/mgt-arrow-options/mgt-arrow-options';
@@ -28,6 +29,10 @@ import {
 } from './graph.todo';
 import { styles } from './mgt-todo-css';
 import { strings } from './strings';
+import { registerFluentComponents } from '../../utils/FluentComponents';
+import { fluentRadio, fluentRadioGroup, fluentCalendar } from '@fluentui/web-components';
+
+registerFluentComponents(fluentRadio, fluentRadioGroup, fluentCalendar);
 
 /**
  * Filter function
@@ -152,7 +157,9 @@ export class MgtTodo extends MgtTasksBase {
       task => this.renderTask(task)
     );
     return html`
-      ${taskTemplates}
+      <fluent-radio-group orientation="vertical">
+        ${taskTemplates}
+      </fluent-radio-group>
     `;
   }
 
@@ -164,44 +171,9 @@ export class MgtTodo extends MgtTasksBase {
    * @memberof MgtTodo
    */
   protected renderNewTaskDetails(): TemplateResult {
-    const lists = this._lists.filter(
-      list =>
-        (this._currentList && list.id === this._currentList.id) ||
-        (!this._currentList && list.id === this._newTaskListId)
-    );
-
-    if (lists.length > 0 && !this._newTaskListId) {
-      this._newTaskListId = lists[0].id;
-    }
-
-    const taskList = this._currentList
-      ? html`
-          <span class="NewTaskGroup">
-            ${this.renderBucketIcon()}
-            <span>${this._currentList.displayName}</span>
-          </span>
-        `
-      : html`
-          <span class="NewTaskGroup">
-            ${this.renderBucketIcon()}
-            <select
-              .value="${this._newTaskListId}"
-              @change="${(e: Event) => {
-                this._newTaskListId = (e.target as HTMLInputElement).value;
-              }}"
-            >
-              ${lists.map(
-                list => html`
-                  <option value="${list.id}">${list.displayName}</option>
-                `
-              )}
-            </select>
-          </span>
-        `;
-
     const taskDue = html`
       <span class="NewTaskDue">
-        ${this.renderCalendarIcon()}
+        ${getSvg(SvgIcon.Calendar)}
         <input
           type="date"
           label="new-taskDate-input"
@@ -221,7 +193,7 @@ export class MgtTodo extends MgtTasksBase {
     `;
 
     return html`
-      ${taskList} ${taskDue}
+    ${taskDue}
     `;
   }
 
@@ -295,37 +267,26 @@ export class MgtTodo extends MgtTasksBase {
       TaskIcon: true
     };
 
-    const taskCheckContent = isLoading
+    let taskDetailsTemplate = null;
+
+    const taskDueTemplate = task.dueDateTime
       ? html`
-          
-        `
-      : isCompleted
-      ? html`
-          
-        `
+            <div class="TaskDetail TaskDue">
+              <span class="TaskDueCalendar">${getSvg(SvgIcon.Calendar)}</span>
+              <span>${getDateString(new Date(task.dueDateTime.dateTime))}</span>
+            </div>
+          `
       : null;
 
-    let taskDetailsTemplate = null;
     if (this.hasTemplate('task-details')) {
       taskDetailsTemplate = this.renderTemplate('task-details', context, `task-details-${task.id}`);
     } else {
-      const taskDueTemplate = task.dueDateTime
-        ? html`
-            <div class="TaskDetail TaskDue">
-              <span>Due ${getShortDateString(new Date(task.dueDateTime.dateTime))}</span>
-            </div>
-          `
-        : null;
-
       taskDetailsTemplate = html`
-        <div class="TaskTitle">
-          ${task.title}
-        </div>
-        <div class="TaskDetail TaskBucket">
-          ${this.renderBucketIcon()}
-          <span>${this._currentList.displayName}</span>
-        </div>
-        ${taskDueTemplate}
+      <div class="TaskDetails ${this.mediaQuery}">
+        <span class="TaskTitle"></span>${task.title}
+        <span class="TaskDue">${taskDueTemplate}</span>
+        <span class="TaskDelete">${getSvg(SvgIcon.Delete)}</span>
+      </div>
       `;
     }
 
@@ -348,27 +309,11 @@ export class MgtTodo extends MgtTasksBase {
       ReadOnly: this.readOnly,
       Task: true
     });
-    const taskCheckContainerClasses = classMap({
-      Complete: isCompleted,
-      Incomplete: !isCompleted,
-      TaskCheckContainer: true
-    });
 
     return html`
-      <div class=${taskClasses}>
-        <div class="TaskContent" @click="${(e: Event) => this.handleTaskClick(e, task)}}">
-          <span class=${taskCheckContainerClasses} @click="${(e: Event) => this.handleTaskCheckClick(e, task)}">
-            <span class=${classMap(taskCheckClasses)}>
-              <span class="TaskCheckContent">${taskCheckContent}</span>
-            </span>
-          </span>
-          <div class="TaskDetailsContainer ${this.mediaQuery}">
-            ${taskDetailsTemplate}
-          </div>
-          ${taskOptionsTemplate}
-          <div class="Divider"></div>
-        </div>
-      </div>
+      <fluent-radio class=${taskClasses} @click="${(e: Event) => this.handleTaskCheckClick(e, task)}">
+        ${taskDetailsTemplate}
+      </fluent-radio>
     `;
   }
 
@@ -514,6 +459,7 @@ export class MgtTodo extends MgtTasksBase {
   }
 
   private handleTaskCheckClick(e: Event, task: TodoTask) {
+    this.handleTaskClick(e, task);
     if (!this.readOnly) {
       if ((TaskStatus as any)[task.status] === TaskStatus.completed) {
         this.updateTaskStatus(task, TaskStatus.notStarted);
