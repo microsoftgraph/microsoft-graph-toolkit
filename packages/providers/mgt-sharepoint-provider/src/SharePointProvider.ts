@@ -5,7 +5,13 @@
  * -------------------------------------------------------------------------------------------
  */
 
-import { IProvider, ProviderState, createFromProvider } from '@microsoft/mgt-element';
+import {
+  IProvider,
+  ProviderState,
+  createFromProvider,
+  GraphEndpoint,
+  MICROSOFT_GRAPH_DEFAULT_ENDPOINT
+} from '@microsoft/mgt-element';
 
 /**
  * AadTokenProvider
@@ -91,11 +97,12 @@ export class SharePointProvider extends IProvider {
 
   private _provider: AadTokenProvider;
 
-  constructor(context: WebPartContext) {
+  constructor(context: WebPartContext, baseUrl?: GraphEndpoint) {
     super();
 
     context.aadTokenProviderFactory.getTokenProvider().then((tokenProvider: AadTokenProvider): void => {
       this._provider = tokenProvider;
+      this.baseURL = baseUrl ? baseUrl : MICROSOFT_GRAPH_DEFAULT_ENDPOINT;
       this.graph = createFromProvider(this);
       this.internalLogin();
     });
@@ -109,8 +116,9 @@ export class SharePointProvider extends IProvider {
    */
   public async getAccessToken(): Promise<string> {
     let accessToken: string;
+    const baseUrl = this.baseURL ? this.baseURL : MICROSOFT_GRAPH_DEFAULT_ENDPOINT;
     try {
-      accessToken = await this.provider.getToken('https://graph.microsoft.com');
+      accessToken = await this.provider.getToken(baseUrl);
     } catch (e) {
       throw e;
     }
