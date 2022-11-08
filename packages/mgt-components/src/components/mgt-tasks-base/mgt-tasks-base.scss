@@ -153,7 +153,7 @@ $task-border-completed: var(--task-complete-border, 2px dotted inherit);
 
   .Task {
     position: relative;
-    margin: var(--task-margin, 0 0 18px 0);
+    margin: var(--task-margin, 0 0 0 0);
     padding: var(--task-padding, 0 0 0 0);
     background-color: $background-color;
     border: set-var(border, $theme-default, $tasks);

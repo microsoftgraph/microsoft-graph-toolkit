@@ -14,4 +14,28 @@
     @extend .Task;
     border: none;
   }
+
+  .TaskDetails {
+    box-sizing: border-box;
+    border: 1px solid;
+
+    /* Auto layout */
+
+    display: flex;
+    flex-direction: row;
+    align-items: flex-start;
+    padding: 2px;
+
+    width: 800px;
+    height: 34px;
+
+    border-radius: 4px;
+
+    /* Inside auto layout */
+
+    flex: none;
+    order: 1;
+    align-self: stretch;
+    flex-grow: 1;
+  }
 }
