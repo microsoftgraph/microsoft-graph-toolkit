@@ -35,9 +35,9 @@ export class ElectronProvider extends IProvider {
     return 'MgtElectronProvider';
   }
 
-  constructor(baseUrl?: GraphEndpoint) {
+  constructor(baseUrl: GraphEndpoint = MICROSOFT_GRAPH_DEFAULT_ENDPOINT) {
     super();
-    this.baseURL = baseUrl ? baseUrl : MICROSOFT_GRAPH_DEFAULT_ENDPOINT;
+    this.baseURL = baseUrl;
     this.graph = createFromProvider(this);
     this.setupProvider();
   }
