@@ -97,12 +97,12 @@ export class SharePointProvider extends IProvider {
 
   private _provider: AadTokenProvider;
 
-  constructor(context: WebPartContext, baseUrl?: GraphEndpoint) {
+  constructor(context: WebPartContext, baseUrl: GraphEndpoint = MICROSOFT_GRAPH_DEFAULT_ENDPOINT) {
     super();
 
     context.aadTokenProviderFactory.getTokenProvider().then((tokenProvider: AadTokenProvider): void => {
       this._provider = tokenProvider;
-      this.baseURL = baseUrl ? baseUrl : MICROSOFT_GRAPH_DEFAULT_ENDPOINT;
+      this.baseURL = baseUrl;
       this.graph = createFromProvider(this);
       this.internalLogin();
     });
