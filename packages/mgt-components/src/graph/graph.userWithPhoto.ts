@@ -46,7 +46,7 @@ export async function getUserWithPhoto(
   if (getIsUsersCacheEnabled()) {
     const cache = CacheService.getCache<CacheUser>(schemas.users, schemas.users.stores.users);
     cachedUser = await cache.getValue(userId || 'me');
-    if (cachedUser !== undefined && cachedPhoto !== null && getUserInvalidationTime() > Date.now() - cachedUser.timeCached) {
+    if (cachedUser !== undefined && getUserInvalidationTime() > Date.now() - cachedUser.timeCached) {
       user = cachedUser.user ? JSON.parse(cachedUser.user) : null;
       if (user !== null && requestedProps) {
         const uniqueProps = requestedProps.filter(prop => !Object.keys(user).includes(prop));
@@ -61,7 +61,7 @@ export async function getUserWithPhoto(
   }
   if (getIsPhotosCacheEnabled()) {
     cachedPhoto = await getPhotoFromCache(userId || 'me', schemas.photos.stores.users);
-    if (cachedPhoto !== undefined && getPhotoInvalidationTime() > Date.now() - cachedPhoto.timeCached) {
+    if (cachedPhoto !== undefined && cachedPhoto !== null && getPhotoInvalidationTime() > Date.now() - cachedPhoto.timeCached) {
       photo = cachedPhoto.photo;
     } else if (cachedPhoto) {
       try {
