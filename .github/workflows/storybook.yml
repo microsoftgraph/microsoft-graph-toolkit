@@ -14,7 +14,7 @@ jobs:
 
     strategy:
       matrix:
-        node-version: [12.x]
+        node-version: [14.x]
 
     steps:
       - uses: actions/checkout@v2
@@ -37,7 +37,7 @@ jobs:
           branch: gh-pages
           folder: storybook-static
           target-folder: next
-          clean-exclude: | 
+          clean-exclude: |
             pr
             fluentui
           token: ${{ secrets.GITHUB_TOKEN }}
