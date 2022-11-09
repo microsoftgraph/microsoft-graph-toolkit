@@ -136,8 +136,8 @@ export class MgtPeoplePicker extends MgtTemplatedComponent {
   }
 
   /**
-   * value determining if search is filtered to multiple groups.
-   * @type {string}
+   * array of groups for search to be filtered by.
+   * @type {string[]}
    */
   @property({
     attribute: 'group-ids',
