@@ -61,7 +61,7 @@ export async function getUserWithPhoto(
   }
   if (getIsPhotosCacheEnabled()) {
     cachedPhoto = await getPhotoFromCache(userId || 'me', schemas.photos.stores.users);
-    if (cachedPhoto !== undefined && cachedPhoto !== null && getPhotoInvalidationTime() > Date.now() - cachedPhoto.timeCached) {
+    if (cachedPhoto && getPhotoInvalidationTime() > Date.now() - cachedPhoto.timeCached) {
       photo = cachedPhoto.photo;
     } else if (cachedPhoto) {
       try {
