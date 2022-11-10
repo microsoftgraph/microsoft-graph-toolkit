@@ -6,7 +6,8 @@
  */
 export const strings = {
   cancelNewTaskSubtitle: 'Cancel',
-  newTaskPlaceholder: 'Adding task...',
+  newTaskPlaceholder: 'Add a task',
   addTaskButtonSubtitle: 'Add',
-  removeTaskSubtitle: 'Delete Task'
+  removeTaskSubtitle: 'Delete Task',
+  dueDate: 'Due date'
 };

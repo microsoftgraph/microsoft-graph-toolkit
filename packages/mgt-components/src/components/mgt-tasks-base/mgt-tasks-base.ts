@@ -11,9 +11,10 @@ import { classMap } from 'lit/directives/class-map.js';
 import { ComponentMediaQuery, Providers, ProviderState, MgtTemplatedComponent } from '@microsoft/mgt-element';
 import { strings } from './strings';
 import { registerFluentComponents } from '../../utils/FluentComponents';
-import { fluentTextField } from '@fluentui/web-components';
+import { fluentTextField, fluentButton } from '@fluentui/web-components';
+import { getSvg, SvgIcon } from '../../utils/SvgHelper';
 
-registerFluentComponents(fluentTextField);
+registerFluentComponents(fluentTextField, fluentButton);
 
 /**
  * The foundation for creating task based components.
@@ -148,11 +149,12 @@ export abstract class MgtTasksBase extends MgtTemplatedComponent {
     }
 
     const headerTemplate = !this.hideHeader ? this.renderHeader() : null;
-    const newTaskTemplate = this._isNewTaskVisible ? this.renderNewTaskPanel() : null;
+    const newTaskTemplate = this.renderNewTaskPanel();
     const tasksTemplate = this.isLoadingState ? this.renderLoadingTask() : this.renderTasks();
 
     return html`
-      ${headerTemplate} ${newTaskTemplate}
+      <!-- ${headerTemplate}  -->
+      ${newTaskTemplate}
       <div class="Tasks" dir=${this.direction}>
         ${tasksTemplate}
       </div>
@@ -228,65 +230,56 @@ export abstract class MgtTasksBase extends MgtTemplatedComponent {
   protected renderNewTaskPanel(): TemplateResult {
     const newTaskName = this._newTaskName;
 
-    const taskTitle = html`
-      <fluent-text-area
-        class="TaskDetails"
-        appearance="outline"
-        id="new-taskName-input"
-        placeholder="${this.strings.newTaskPlaceholder}"
-        value="${newTaskName}"
-        label="new-taskName-input"
-        aria-label="new-taskName-input"
-        @input="${(e: Event) => {
-          this._newTaskName = (e.target as HTMLInputElement).value;
-          this.requestUpdate();
-        }}"
-      >
-      </fluent-text-area>
+    const addIcon = html`
+      <span 
+        tabindex='0'
+        class="task-add-icon" 
+        @click="${() => this.addTask()}"
+        @keypress="${(e: KeyboardEvent) => {
+          if (e.key === 'Enter' || e.key === ' ') this.addTask();
+        }}">
+        ${getSvg(SvgIcon.Add)}
+      </span>
     `;
 
-    const taskAddClasses = classMap({
-      Disabled: !this._isNewTaskBeingAdded && (!newTaskName || !newTaskName.length),
-      TaskAddButtonContainer: true
-    });
-    const taskAddTemplate = !this._isNewTaskBeingAdded
-      ? html`
-          <div
-            tabindex='0'
-            class="TaskIcon TaskAdd"
-            @click="${() => this.addTask()}"
-            @keypress="${(e: KeyboardEvent) => {
-              if (e.key === 'Enter' || e.key === ' ') this.addTask();
-            }}"
-          >
-          <span>${this.strings.addTaskButtonSubtitle}</span>
-          </div>
-          <div
-            role='button'
-            tabindex='0'
-            class="TaskIcon TaskCancel"
-            @click="${() => this.hideNewTaskPanel()}"
-            @keypress="${(e: KeyboardEvent) => {
-              if (e.key === 'Enter' || e.key === ' ') this.hideNewTaskPanel();
-            }}">
-            <span>${this.strings.cancelNewTaskSubtitle}</span>
-          </div>
-        `
-      : null;
+    const cancelIcon = html`
+      <span 
+        tabindex='0'
+        class="task-cancel-icon" 
+        @click="${() => this.clearNewTaskData()}"
+        @keypress="${(e: KeyboardEvent) => {
+          if (e.key === 'Enter' || e.key === ' ') this.clearNewTaskData();
+        }}">
+        ${getSvg(SvgIcon.Cancel)}
+      </span>
+    `;
 
-    const newTaskDetailsTemplate = this.renderNewTaskDetails();
+    const calendarTemplate = html`
+      <fluent-button appearance="lightweight" class="calendar" 
+        @click=${() => this.renderCalendar()}>
+        ${this.strings.dueDate}
+      </fluent-button>
+    `;
+
+    const taskTitle = html`
+       <fluent-text-field
+         appearance="outline"
+         label="new-taskName-input"
+         aria-label="new-taskName-input"
+         @input="${(e: Event) => {
+           this._newTaskName = (e.target as HTMLInputElement).value;
+           this.requestUpdate();
+         }}">
+          <div slot="start">${addIcon}</div>
+          <div slot="end">${calendarTemplate}${cancelIcon}</div>
+        </fluent-text-field>
+     `;
 
     return html`
-      <div dir=${this.direction} class="Task NewTask Incomplete">
-        <div class="TaskContent">
+       <div dir=${this.direction} class="Task NewTask Incomplete">
           ${taskTitle}
-          ${newTaskDetailsTemplate}
-        </div>
-        <div class="${taskAddClasses}">
-          ${taskAddTemplate}
-        </div>
-      </div>
-    `;
+       </div>
+     `;
   }
 
   /**
@@ -307,7 +300,7 @@ export abstract class MgtTasksBase extends MgtTemplatedComponent {
    * @returns {TemplateResult}
    * @memberof MgtTasksBase
    */
-  protected abstract renderNewTaskDetails(): TemplateResult;
+  protected abstract renderCalendar(): TemplateResult;
 
   /**
    * Render the list of todo tasks
@@ -338,6 +331,7 @@ export abstract class MgtTasksBase extends MgtTemplatedComponent {
     try {
       await this.createNewTask();
     } finally {
+      this.clearNewTaskData();
       this._isNewTaskBeingAdded = false;
       this._isNewTaskVisible = false;
       this.requestUpdate();
