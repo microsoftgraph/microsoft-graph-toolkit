@@ -170,15 +170,13 @@ export class MgtTodo extends MgtTasksBase {
    * @returns {TemplateResult}
    * @memberof MgtTodo
    */
-  protected renderNewTaskDetails(): TemplateResult {
+  protected renderCalendar(): TemplateResult {
     const taskDue = html`
       <span class="NewTaskDue">
         ${getSvg(SvgIcon.Calendar)}
-        <input
-          type="date"
+        <fluent-calendar
           label="new-taskDate-input"
           aria-label="new-taskDate-input"
-          role="textbox"
           .value="${this.dateToInputValue(this._newTaskDueDate)}"
           @change="${(e: Event) => {
             const value = (e.target as HTMLInputElement).value;
@@ -193,7 +191,7 @@ export class MgtTodo extends MgtTasksBase {
     `;
 
     return html`
-    ${taskDue}
+      ${taskDue}
     `;
   }
 
