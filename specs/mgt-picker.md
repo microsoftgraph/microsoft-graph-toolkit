@@ -26,6 +26,8 @@ The picker is a component that can query any Microsoft Graph API and render a dr
 
 `<mgt-picker resource="/groups" title-property="title"></mgt-picker>`
 
+`<mgt-picker resource="/groups" placeholder="Select a group"></mgt-picker>`
+
 `<mgt-picker resource="/groups" version="beta"></mgt-picker>`
 
 `<mgt-picker resource="/groups" version="beta" scopes="Group.Read.All"></mgt-picker>`
@@ -37,13 +39,13 @@ The picker is a component that can query any Microsoft Graph API and render a dr
 ### Advanced Examples
 
 ```
-<mgt-picker resource="/groups" title-property="title">
+<mgt-picker resource="/groups">
   <template type="rendered-item">
     Item {{id}} with title {{title}}
   </template>
 </mgt-picker>
 
-<mgt-picker resource="/groups" title-property="title">
+<mgt-picker resource="/groups">
   <template type="rendered-item">
     <span>
       <mgt-person person-details="{{ group }}" person-card="none" fetch-image></mgt-person> - {{title}}
