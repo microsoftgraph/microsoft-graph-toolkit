@@ -450,6 +450,16 @@ export class MgtPeoplePicker extends MgtTemplatedComponent {
   }
 
   /**
+   * Label that can be set on the people picker input to provide context to
+   * assistive technologies
+   */
+  @property({
+    attribute: 'aria-label',
+    type: String
+  })
+  public ariaLabel: string;
+
+  /**
    * Get the scopes required for people picker
    *
    * @static
@@ -681,6 +691,7 @@ export class MgtPeoplePicker extends MgtTemplatedComponent {
            role="combobox"
            placeholder=${placeholder}
            autocomplete="off"
+           aria-label=${this.ariaLabel}
            aria-controls="suggestions-list"
            aria-haspopup="listbox"
            aria-autocomplete="list"
