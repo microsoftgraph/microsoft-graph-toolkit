@@ -295,3 +295,11 @@ export const pickerGroupIdsWithTypeGroup = () => html`
     type="group">
   </mgt-people-picker>
 `;
+
+export const pickerWithAriaLabel = () => html`
+  <!-- This should show the groups in the group-ids as groups -->
+  <mgt-people-picker
+    aria-label="Type to search for a user or group"
+  >
+  </mgt-people-picker>
+`;
