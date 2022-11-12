@@ -297,7 +297,7 @@ export const pickerGroupIdsWithTypeGroup = () => html`
 `;
 
 export const pickerWithAriaLabel = () => html`
-  <!-- This should show the groups in the group-ids as groups -->
+  <!-- This will set the aria-label attribute on the input element of the combo box -->
   <mgt-people-picker
     aria-label="Type to search for a user or group"
   >
