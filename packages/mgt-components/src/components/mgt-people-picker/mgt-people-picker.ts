@@ -693,7 +693,7 @@ export class MgtPeoplePicker extends MgtTemplatedComponent {
            role="combobox"
            placeholder=${placeholder}
            autocomplete="off"
-           aria-label=${this.ariaLabel}
+           .ariaLabel=${this.ariaLabel}
            aria-controls="suggestions-list"
            aria-haspopup="listbox"
            aria-autocomplete="list"
@@ -855,7 +855,7 @@ export class MgtPeoplePicker extends MgtTemplatedComponent {
       <ul
         id="suggestions-list"
         aria-label="${this.strings.suggestedContacts}"
-        class="people-list" 
+        class="people-list"
         role="listbox">
          ${repeat(
            filteredPeople,
@@ -897,9 +897,9 @@ export class MgtPeoplePicker extends MgtTemplatedComponent {
     return (
       this.renderTemplate('person', { person }, person.id) ||
       html`
-         <mgt-person 
-          .personDetails=${person} 
-          .fetchImage=${!this.disableImages} 
+         <mgt-person
+          .personDetails=${person}
+          .fetchImage=${!this.disableImages}
           .personCardInteraction=${PersonCardInteraction.none}
          ></mgt-person>
          <div class="people-person-text-area" id="${person.displayName}">
