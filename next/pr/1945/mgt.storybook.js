@@ -2007,7 +2007,7 @@ PERFORMANCE OF THIS SOFTWARE.
            role="combobox"
            placeholder=${t}
            autocomplete="off"
-           aria-label=${this.ariaLabel}
+           .ariaLabel=${this.ariaLabel}
            aria-controls="suggestions-list"
            aria-haspopup="listbox"
            aria-autocomplete="list"
@@ -2069,7 +2069,7 @@ PERFORMANCE OF THIS SOFTWARE.
       <ul
         id="suggestions-list"
         aria-label="${this.strings.suggestedContacts}"
-        class="people-list" 
+        class="people-list"
         role="listbox">
          ${Qr(t,(e=>e.id),(e=>html$1`
                <li
@@ -2083,9 +2083,9 @@ PERFORMANCE OF THIS SOFTWARE.
              `))}
        </ul>
      `}renderPersonResult(e){const t=e,r=t.jobTitle||t.mail,o={"people-person-job-title":!0,uppercase:!!t.jobTitle};return this.renderTemplate("person",{person:e},e.id)||html$1`
-         <mgt-person 
-          .personDetails=${e} 
-          .fetchImage=${!this.disableImages} 
+         <mgt-person
+          .personDetails=${e}
+          .fetchImage=${!this.disableImages}
           .personCardInteraction=${Ur.none}
          ></mgt-person>
          <div class="people-person-text-area" id="${e.displayName}">
