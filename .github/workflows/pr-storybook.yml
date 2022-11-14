@@ -10,7 +10,8 @@ on:
 
 jobs:
   storybook:
-    if: "contains(github.event.pull_request.labels.*.name, 'Build: Storybook')"
+    # runs when there is a 'Build: Storybook' label, except if the run was triggered by a labeled event and the added label is not 'Build: Storybook'
+    if: "contains(github.event.pull_request.labels.*.name, 'Build: Storybook') && (github.event.action.name != 'labeled' || (github.event.action == 'labeled' && github.event.label.name == 'Build: Storybook'))"
     runs-on: ubuntu-latest
 
     strategy:
