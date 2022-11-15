@@ -5,7 +5,8 @@
  * -------------------------------------------------------------------------------------------
  */
 
-import { BatchResponse, IBatch, IGraph } from '@microsoft/mgt-element';
+import { BatchResponse, IBatch, IGraph, prepScopes } from '@microsoft/mgt-element';
+import { Chat } from '@microsoft/microsoft-graph-types';
 import { Profile } from '@microsoft/microsoft-graph-types-beta';
 
 import { getEmailFromGraphEntity } from '../../graph/graph.people';
@@ -151,4 +152,40 @@ function buildFilesRequest(batch: IBatch, emailAddress?: string) {
 async function getProfile(graph: IGraph, userId: string): Promise<Profile> {
   const profile = await graph.api(`/users/${userId}/profile`).version('beta').get();
   return profile;
+}
+
+/**
+ * Send a message to a user
+ *
+ * @export
+ * @param {IGraph} graph
+ * @param {{ chatType: string; members: [{"@odata.type": string,"roles": ["owner"],"user@odata.bind": string},{"@odata.type": string,"roles": ["owner"],"user@odata.bind": string}]  }} chatData
+ * @return {*}  {Promise<Chat>}
+ */
+export async function createChat(
+  graph: IGraph,
+  // tslint:disable-next-line: completed-docs
+  chatData: {
+    chatType: 'oneonOne';
+    members?: [
+      {
+        '@odata.type': '#microsoft.graph.aadUserConversationMember';
+        roles: ['owner'];
+        'user@odata.bind': string;
+      },
+      {
+        '@odata.type': '#microsoft.graph.aadUserConversationMember';
+        roles: ['owner'];
+        'user@odata.bind': string;
+      }
+    ];
+  }
+): Promise<Chat> {
+  const chat = await graph
+    .api(`/chats`)
+    .header('Cache-Control', 'no-store')
+    .middlewareOptions(prepScopes('Chat.Create, Chat.ReadWrite'))
+    .post(chatData);
+
+  return chat;
 }
