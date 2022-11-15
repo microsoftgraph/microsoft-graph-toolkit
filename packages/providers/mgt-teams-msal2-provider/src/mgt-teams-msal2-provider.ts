@@ -7,7 +7,7 @@
 
 import { customElement, property } from 'lit/decorators.js';
 import { Configuration } from '@azure/msal-browser';
-import { Providers, MgtBaseProvider, GraphEndpoint, validateBaseURL } from '@microsoft/mgt-element';
+import { Providers, MgtBaseProvider, validateBaseURL } from '@microsoft/mgt-element';
 import { HttpMethod, TeamsMsal2Config, TeamsMsal2Provider } from './TeamsMsal2Provider';
 
 /**
@@ -89,17 +89,6 @@ export class MgtTeamsMsal2Provider extends MgtBaseProvider {
     type: String
   })
   public httpMethod;
-
-  /**
-   * The base URL that should be used in the graph client config.
-   *
-   * @memberof MgtMsal2Provider
-   */
-  @property({
-    attribute: 'base-url',
-    type: String
-  })
-  public baseUrl: GraphEndpoint;
 
   /**
    * Gets whether this provider can be used in this environment
