@@ -36,8 +36,5 @@ jobs:
         with:
           branch: gh-pages
           folder: storybook-static
-          target-folder: fluentui
-          clean-exclude: |
-            pr
-            next
+          target-folder: next/v3
           token: ${{ secrets.GITHUB_TOKEN }}
