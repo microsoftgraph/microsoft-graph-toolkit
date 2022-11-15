@@ -33,10 +33,10 @@ import '../sub-components/mgt-spinner/mgt-spinner';
 
 export * from './mgt-person-card.types';
 
-import { fluentTabs, fluentTab, fluentTabPanel } from '@fluentui/web-components';
+import { fluentTabs, fluentTab, fluentTabPanel, fluentButton, fluentTextField } from '@fluentui/web-components';
 import { registerFluentComponents } from '../../utils/FluentComponents';
 
-registerFluentComponents(fluentTabs, fluentTab, fluentTabPanel);
+registerFluentComponents(fluentTabs, fluentTab, fluentTabPanel, fluentButton, fluentTextField);
 
 // tslint:disable-next-line:completed-docs
 interface MgtPersonCardStateHistory {
@@ -874,6 +874,9 @@ export class MgtPersonCard extends MgtTemplatedComponent {
 
     return html`
        <div class="sections">
+        <div class="message-section">
+          ${this.renderMessagingSection()}
+        </div>
          ${compactTemplates}
        </div>
      `;
@@ -915,16 +918,16 @@ export class MgtPersonCard extends MgtTemplatedComponent {
    */
   protected renderMessagingSection(): TemplateResult {
     return html`
-         <fluent-text-field appearance="filled" placeholder="Message ${this.internalPersonDetails.displayName}"
-           .value=${this._chatInput}
-           @input=${(e: Event) => {
-             this._chatInput = (e.target as HTMLInputElement).value;
-           }}>
-         </fluent-text-field>
-         <span class="send-message-icon" @click=${() => this.sendQuickMessage()}>
-           ${getSvg(SvgIcon.Send)}
-         </span>
-       `;
+      <fluent-text-field appearance="filled" placeholder="Message ${this.internalPersonDetails.displayName}"
+        .value=${this._chatInput}
+        @input=${(e: Event) => {
+          this._chatInput = (e.target as HTMLInputElement).value;
+        }}>
+      </fluent-text-field>
+      <span class="send-message-icon" @click=${() => this.sendQuickMessage()}>
+        ${getSvg(SvgIcon.Send)}
+      </span>
+    `;
   }
 
   /**
