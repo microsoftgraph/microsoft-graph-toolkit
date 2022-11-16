@@ -1025,8 +1025,8 @@ export class MgtPeoplePicker extends MgtTemplatedComponent {
               } catch (_) {}
             } else {
               let groups = (await findGroups(graph, '', this.showMax, this.groupType, this._groupFilters)) || [];
-              if (groups.length > 0 && groups[0]['value']) {
-                groups = groups[0]['value'];
+              if (groups.length > 0 && groups[0].value) {
+                groups = groups[0].value;
               }
               people = groups;
             }
@@ -1164,7 +1164,7 @@ export class MgtPeoplePicker extends MgtTemplatedComponent {
         }
       }
     }
-    //people = this.getUniquePeople(people);
+    // people = this.getUniquePeople(people);
     this._foundPeople = this.filterPeople(people);
   }
 
@@ -1177,7 +1177,7 @@ export class MgtPeoplePicker extends MgtTemplatedComponent {
    */
   private async getGroupsForGroupIds(graph: IGraph, people: IDynamicPerson[]) {
     const groups = await getGroupsForGroupIds(graph, this.groupIds, this.groupFilters);
-    for (let group of groups as IDynamicPerson[]) {
+    for (const group of groups as IDynamicPerson[]) {
       people = people.concat(group);
     }
     people = people.filter(person => person);
@@ -1491,7 +1491,7 @@ export class MgtPeoplePicker extends MgtTemplatedComponent {
       if (isCmdOrCtrlKey && event.code === 'ArrowLeft') {
         this._currentHighlightedUserPos =
           (this._currentHighlightedUserPos - 1 + selectedPeople.length) % selectedPeople.length;
-        if (this._currentHighlightedUserPos >= 0 && this._currentHighlightedUserPos !== NaN) {
+        if (this._currentHighlightedUserPos >= 0 && !Number.isNaN(this._currentHighlightedUserPos)) {
           this._highlightedUsers.push(selectedPeople[this._currentHighlightedUserPos]);
         } else {
           this._currentHighlightedUserPos = 0;
@@ -1622,7 +1622,7 @@ export class MgtPeoplePicker extends MgtTemplatedComponent {
         } catch (error) {
           if (error instanceof SyntaxError) {
             const _delimeters = [',', ';'];
-            let listOfUsers: Array<string>;
+            let listOfUsers: string[];
             try {
               for (let i = 0; i < _delimeters.length; i++) {
                 listOfUsers = copiedText.split(_delimeters[i]);
