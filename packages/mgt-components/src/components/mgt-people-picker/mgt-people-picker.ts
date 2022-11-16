@@ -1025,9 +1025,11 @@ export class MgtPeoplePicker extends MgtTemplatedComponent {
               } catch (_) {}
             } else {
               let groups = (await findGroups(graph, '', this.showMax, this.groupType, this._groupFilters)) || [];
-              if (groups.length > 0 && groups[0].value) {
-                groups = groups[0].value;
+              // tslint:disable: no-string-literal
+              if (groups.length > 0 && groups[0]['value']) {
+                groups = groups[0]['value'];
               }
+              // tslint:enable: no-string-literal
               people = groups;
             }
           }
