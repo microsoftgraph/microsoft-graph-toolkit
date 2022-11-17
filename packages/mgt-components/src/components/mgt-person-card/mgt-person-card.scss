@@ -268,13 +268,14 @@ $person-card-nav-back-arrow-hover-color: var(--person-card-nav-back-arrow-hover-
     border-bottom: 1px solid set-var(tab__line__color, $theme-default, $common);
     --background-color: $background-color;
     fluent-text-field {
-      margin: 4px 0px;
+      margin: 10px 10px 10px 16px;
+      --neutral-fill-secondary-rest: $background-color;
       width: 83%;
       width: 300px;
-
-      padding: 4px 10px;
-      &::after {
-        border: none;
+      margin-left: 16px;
+      border-radius: 4px;
+      &:focus-within {
+        --neutral-fill-secondary-rest: $background-color;
       }
     }
     .send-message-icon {

@@ -16,6 +16,7 @@ import {
   mgtHtml,
   customElement
 } from '@microsoft/mgt-element';
+import { IGraph } from '@microsoft/mgt-element';
 import { Presence, User, Person } from '@microsoft/microsoft-graph-types';
 
 import { findPeople, getEmailFromGraphEntity } from '../../graph/graph.people';
@@ -24,7 +25,7 @@ import { getPersonImage } from '../../graph/graph.photos';
 import { getUserWithPhoto } from '../../graph/graph.userWithPhoto';
 import { getSvg, SvgIcon } from '../../utils/SvgHelper';
 import { getUserPresence } from '../../graph/graph.presence';
-import { getPersonCardGraphData } from './mgt-person-card.graph';
+import { getPersonCardGraphData, createChat, sendMesage } from './mgt-person-card.graph';
 import { MgtPerson } from '../mgt-person/mgt-person';
 import { styles } from './mgt-person-card-css';
 import { BasePersonCardSection } from './sections/BasePersonCardSection';
@@ -150,6 +151,8 @@ export class MgtPersonCard extends MgtTemplatedComponent {
       // at minimum, we need these scopes
       scopes.push('People.Read');
     }
+
+    scopes.push('Chat.Create', 'Chat.ReadWrite');
 
     // return unique
     return [...new Set(scopes)];
@@ -334,6 +337,7 @@ export class MgtPersonCard extends MgtTemplatedComponent {
   private _windowHeight;
 
   private _userId: string;
+  private _graph: IGraph;
 
   private get internalPersonDetails(): IDynamicPerson {
     return (this._cardState && this._cardState.person) || this.personDetails;
@@ -345,6 +349,7 @@ export class MgtPersonCard extends MgtTemplatedComponent {
     this._currentSection = null;
     this._history = [];
     this.sections = [];
+    this._graph = null;
   }
 
   /**
@@ -894,17 +899,23 @@ export class MgtPersonCard extends MgtTemplatedComponent {
    * @memberof MgtPersonCard
    */
   protected renderMessagingSection(): TemplateResult {
-    return html`
-      <fluent-text-field appearance="filled" placeholder="Message ${this.internalPersonDetails.displayName}"
-        .value=${this._chatInput}
-        @input=${(e: Event) => {
-          this._chatInput = (e.target as HTMLInputElement).value;
-        }}>
-      </fluent-text-field>
-      <span class="send-message-icon" @click=${() => this.sendQuickMessage()}>
-        ${getSvg(SvgIcon.Send)}
-      </span>
-    `;
+    const person = this.personDetails as User;
+    const user = this._me.userPrincipalName;
+    if (person.userPrincipalName === user) {
+      return;
+    } else {
+      return html`
+        <fluent-text-field appearance="outline" placeholder="${this.strings.quickMessage}"
+          .value=${this._chatInput}
+          @input=${(e: Event) => {
+            this._chatInput = (e.target as HTMLInputElement).value;
+          }}>
+        </fluent-text-field>
+        <span class="send-message-icon" @click=${() => this.sendQuickMessage()}>
+          ${getSvg(SvgIcon.Send)}
+        </span>
+      `;
+    }
   }
 
   /**
@@ -943,6 +954,7 @@ export class MgtPersonCard extends MgtTemplatedComponent {
     }
 
     const graph = provider.graph.forComponent(this);
+    this._graph = graph;
 
     this._isStateLoading = true;
 
@@ -1025,13 +1037,24 @@ export class MgtPersonCard extends MgtTemplatedComponent {
    * @returns {void}
    * @memberof MgtPersonCard
    */
-  protected sendQuickMessage(): void {
+  protected async sendQuickMessage(): Promise<void> {
     const message = this._chatInput.trim();
     if (!message || !message.length) {
       return;
     }
+    const person = this.personDetails as User;
+    const user = this._me.userPrincipalName;
 
-    this.chatUser(message);
+    const chat = await createChat(this._graph, person.userPrincipalName, user);
+
+    const messageData = {
+      body: {
+        content: message
+      }
+    };
+
+    await sendMesage(this._graph, chat.id, messageData);
+    this.clearInputData();
   }
 
   /**
@@ -1227,6 +1250,11 @@ export class MgtPersonCard extends MgtTemplatedComponent {
     video: false,
     call: false
   };
+
+  private clearInputData() {
+    this._chatInput = '';
+    this.requestUpdate();
+  }
 
   private setHoveredState = (icon: string, hoverState: boolean) => {
     this.hoverStates[icon] = hoverState;
