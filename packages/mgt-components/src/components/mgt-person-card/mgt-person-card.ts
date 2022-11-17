@@ -879,10 +879,8 @@ export class MgtPersonCard extends MgtTemplatedComponent {
 
     return html`
        <div class="sections">
-        <div class="message-section">
           ${this.renderMessagingSection()}
-        </div>
-         ${compactTemplates}
+          ${compactTemplates}
        </div>
      `;
   }
@@ -928,6 +926,7 @@ export class MgtPersonCard extends MgtTemplatedComponent {
       return;
     } else {
       return html`
+      <div class="message-section">
         <fluent-text-field appearance="outline" placeholder="${this.strings.quickMessage}"
           .value=${this._chatInput}
           @input=${(e: Event) => {
@@ -937,6 +936,7 @@ export class MgtPersonCard extends MgtTemplatedComponent {
         <span class="send-message-icon" @click=${() => this.sendQuickMessage()}>
           ${getSvg(SvgIcon.Send)}
         </span>
+      </div>
       `;
     }
   }
