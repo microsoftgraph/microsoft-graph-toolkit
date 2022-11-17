@@ -195,7 +195,7 @@ export async function createChat(
  * @param {{ body: {"content": string}  }} messageData
  * @return {*}  {Promise<ChatMessage>}
  */
-export async function sendMesage(
+export async function sendMessage(
   graph: IGraph,
   // tslint:disable-next-line: completed-docs
   chatId: string,
