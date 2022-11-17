@@ -47,7 +47,7 @@
     <!-- <mgt-msal2-provider
       client-id="2dfea037-938a-4ed8-9b35-c05708a1b241"
       redirect-uri="http://localhost:3000"
-      scopes="user.read,user.read.all,mail.readbasic,people.read,people.read.all,sites.read.all,user.readbasic.all,contacts.read,presence.read,presence.read.all,tasks.readwrite,tasks.read,calendars.read,group.read.all,files.read,files.read.all,files.readwrite,files.readwrite.all,chat.read,chat.readbasic,chat.readwrite,chat.create"
+      scopes="user.read,user.read.all,mail.readbasic,people.read,people.read.all,sites.read.all,user.readbasic.all,contacts.read,presence.read,presence.read.all,tasks.readwrite,tasks.read,calendars.read,group.read.all,files.read,files.read.all,files.readwrite,files.readwrite.all,chat.read,chat.readbasic,chat.readwrite,chat.create,chatmessage.send"
     ></mgt-msal2-provider> -->
 
     <mgt-mock-provider></mgt-mock-provider>
@@ -59,6 +59,8 @@
       <mgt-login></mgt-login>
       <h2>mgt-person me query two lines card on click with presence</h2>
       <mgt-person person-query="me" view="twoLines" person-card="click" show-presence></mgt-person>
+      <h2>mgt-person-card</h2>
+      <mgt-person-card person-query="me"></mgt-person-card>
       <h2>mgt-people-picker</h2>
       <mgt-people-picker></mgt-people-picker>
       <h2>mgt-teams-channel-picker</h2>
