@@ -41,7 +41,7 @@ By disambiguating tag names of Microsoft Graph Toolkit components, developers ca
 ### When using no framework webparts
 
 When building SharePoint Framework web parts without a JavaScript framework the `@microsoft/mgt-components` library must be asynchronously loaded after configuring the disambiguation setting. The `importMgtComponentsLibrary` helper function wraps this functionality. Once the `@microsoft/mgt-components` library is loaded you can load components directly in your web part.
-Below is a minimal example webpart that demonstrates how to use MGT with disambiguation in SharePoint Framework Webparts. A more complete example is available in the [No Framework Webpart Sample](../../samples/sp-mgt/src/webparts/helloWorld/HelloWorldWebPart.ts).
+Below is a minimal example webpart that demonstrates how to use MGT with disambiguation in SharePoint Framework Webparts. A more complete example is available in the [No Framework Webpart Sample](https://github.com/microsoftgraph/microsoft-graph-toolkit/blob/main/samples/sp-mgt/src/webparts/helloWorld/HelloWorldWebPart.ts).
 
 ```ts
 import { BaseClientSideWebPart } from '@microsoft/sp-webpart-base';
@@ -100,7 +100,7 @@ export default class MgtWebPart extends BaseClientSideWebPart<Record<string, unk
 ### When using React to build webparts
 
 When building SharePoint Framework web parts using React any component that imports from the `@microsoft/mgt-react` library must be asynchronously loaded after configuring the disambiguation setting. The `lazyLoadComponent` helper function exists to facilitate using `React.lazy` and `React.Suspense` to lazy load these components from the top level webpart.
-Below is a minimal example webpart that demonstrates how to use MGT with disambiguation in React based SharePoint Framework Webparts. A complete example is available in the [React SharePoint Webpart Sample](../../samples/sp-webpart/src/webparts/mgtDemo/MgtDemoWebPart.ts).
+Below is a minimal example webpart that demonstrates how to use MGT with disambiguation in React based SharePoint Framework Webparts. A complete example is available in the [React SharePoint Webpart Sample](https://github.com/microsoftgraph/microsoft-graph-toolkit/blob/main/samples/sp-webpart/src/webparts/mgtDemo/MgtDemoWebPart.ts).
 
 ```ts
 // [...] trimmed for brevity
