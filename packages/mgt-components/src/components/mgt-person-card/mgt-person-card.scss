@@ -272,7 +272,7 @@ $person-card-nav-back-arrow-hover-color: var(--person-card-nav-back-arrow-hover-
       --neutral-fill-secondary-rest: $background-color;
       width: 83%;
       width: 300px;
-      margin-left: 16px;
+      margin-start: 16px;
       border-radius: 4px;
       &:focus-within {
         --neutral-fill-secondary-rest: $background-color;
