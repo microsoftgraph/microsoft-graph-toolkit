@@ -1,4 +1,4 @@
-# Utilities for SharePoint Framework Webparts using Microsoft Graph Toolkit
+# Utilities for SharePoint Framework Web Parts using Microsoft Graph Toolkit
 
 [![npm](https://img.shields.io/npm/v/@microsoft/mgt-spfx-utils?style=for-the-badge)](https://www.npmjs.com/package/@microsoft/mgt-spfx-utils)
 
