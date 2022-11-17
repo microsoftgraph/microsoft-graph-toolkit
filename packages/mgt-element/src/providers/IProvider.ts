@@ -27,13 +27,21 @@ export abstract class IProvider implements AuthenticationProvider {
   public graph: IGraph;
 
   /**
+   * Specifies if the provider has enabled support for multiple accounts
+   *
+   * @protected
+   * @type {boolean}
+   * @memberof IProvider
+   */
+  protected isMultipleAccountDisabled: boolean = true;
+
+  /**
    * Specifies if Multi account functionality is supported by the provider and enabled.
    *
    * @readonly
    * @type {boolean}
    * @memberof IProvider
    */
-  protected isMultipleAccountDisabled: boolean = true;
   public get isMultiAccountSupportedAndEnabled(): boolean {
     return false;
   }

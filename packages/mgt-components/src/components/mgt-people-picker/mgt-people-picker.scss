@@ -308,7 +308,6 @@ mgt-flyout {
 
 [dir='rtl'] {
   mgt-person {
-    margin-right: 6px;
     --details-spacing: 0px 12px 0 0;
     width: 100%;
   }
@@ -333,6 +332,14 @@ mgt-flyout {
         &__close-icon {
           right: auto !important;
           margin-left: 5px !important;
+          left: 0px !important;
+        }
+      }
+    }
+    &__person-wrapper-highlighted {
+      &__overflow {
+        &__close-icon {
+          right: auto !important;
           left: 0px !important;
         }
       }
