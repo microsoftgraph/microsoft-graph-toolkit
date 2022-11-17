@@ -4,7 +4,7 @@
 
 ![SPFx 1.15.2](https://img.shields.io/badge/SPFx-1.15.2-green.svg?style=for-the-badge)
 
-Helper functions to ease lazy loading of mgt components when using disambiguated web components in SharePoint Framework Webparts.
+Helper functions to simplify lazy loading of Microsoft Graph Toolkit components when using disambiguated web components in SharePoint Framework web parts.
 
 ## Installation
 
