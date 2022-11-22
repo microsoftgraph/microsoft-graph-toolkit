@@ -25,7 +25,7 @@ import { getPersonImage } from '../../graph/graph.photos';
 import { getUserWithPhoto } from '../../graph/graph.userWithPhoto';
 import { getSvg, SvgIcon } from '../../utils/SvgHelper';
 import { getUserPresence } from '../../graph/graph.presence';
-import { getPersonCardGraphData, createChat, sendMesage } from './mgt-person-card.graph';
+import { getPersonCardGraphData, createChat, sendMessage } from './mgt-person-card.graph';
 import { MgtPerson } from '../mgt-person/mgt-person';
 import { styles } from './mgt-person-card-css';
 import { BasePersonCardSection } from './sections/BasePersonCardSection';
