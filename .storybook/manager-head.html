@@ -93,11 +93,6 @@
 
     sidebarNode.insertBefore(usefulLinksContainer, sidebarNode.childNodes[1]);
 
-    const searchBox = document.querySelector(".search-field");
-    if (searchBox) {
-      searchBox.style.display = "none";
-    }
-
     const sidebarSubheading = document.getElementsByClassName("sidebar-subheading");
     if (sidebarSubheading) {
       for (let i = 0; i < sidebarSubheading.length; i++) {
@@ -115,7 +110,7 @@
         }
       }
     }
-    
+
     function setArialLabelForExpandCollapseBtn() {
       const expandCollapseBtns = document.getElementsByClassName("css-rl1ij0");
       if (expandCollapseBtns) {
@@ -391,5 +386,8 @@
 
   .css-14o7vtb:focus-visible {
     outline: auto;
+  }
+  .search-field {
+    display: none !important;
   }
 </style>
