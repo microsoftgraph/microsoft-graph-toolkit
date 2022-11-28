@@ -73,6 +73,25 @@ export function getDateString(date: Date) {
 }
 
 /**
+ * returns day, month, year in an object
+ *
+ * @export
+ * @param {Date} date
+ * @returns
+ */
+export function getDateMap(date: Date) {
+  const month = date.getMonth();
+  const day = date.getDate();
+  const year = date.getFullYear();
+
+  return {
+    month: month,
+    day: day,
+    year: year
+  };
+}
+
+/**
  * returns month and day
  *
  * @export
