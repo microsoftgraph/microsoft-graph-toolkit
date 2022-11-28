@@ -48,7 +48,7 @@ The picker is a component that can query any Microsoft Graph API and render a dr
 <mgt-picker resource="/groups">
   <template type="rendered-item">
     <span>
-      <mgt-person person-details="{{ item }}" person-card="none" fetch-image></mgt-person> - {{title}}
+      <mgt-person person-details="{{ this }}" person-card="none" fetch-image></mgt-person> - {{title}}
     </span>
   </template>
 </mgt-picker>
