@@ -7,8 +7,16 @@
 
 import * as MicrosoftGraph from '@microsoft/microsoft-graph-types';
 import { html, TemplateResult } from 'lit';
-import { customElement, property } from 'lit/decorators.js';
-import { Providers, ProviderState, MgtTemplatedComponent, prepScopes } from '@microsoft/mgt-element';
+import { property } from 'lit/decorators.js';
+import { classMap } from 'lit/directives/class-map.js';
+import {
+  Providers,
+  ProviderState,
+  MgtTemplatedComponent,
+  prepScopes,
+  mgtHtml,
+  customElement
+} from '@microsoft/mgt-element';
 import '../../styles/style-helper';
 import { getDayOfWeekString, getMonthString } from '../../utils/Utils';
 import '../mgt-person/mgt-person';
@@ -18,7 +26,6 @@ import { SvgIcon, getSvg } from '../../utils/SvgHelper';
 import { MgtPeople } from '../mgt-people/mgt-people';
 import { registerFluentComponents } from '../../utils/FluentComponents';
 import { fluentCard, fluentTooltip } from '@fluentui/web-components';
-import { classMap } from 'lit/directives/class-map';
 registerFluentComponents(fluentCard, fluentTooltip);
 
 /**
@@ -45,7 +52,8 @@ registerFluentComponents(fluentCard, fluentTooltip);
  * @cssprop --event-location-font-size - {Length} Event location font size
  * @cssprop --event-location-color - {Color} Event location color
  */
-@customElement('mgt-agenda')
+@customElement('agenda')
+// @customElement('mgt-agenda')
 export class MgtAgenda extends MgtTemplatedComponent {
   /**
    * Array of styles to apply to the element. The styles should be defined
@@ -463,7 +471,7 @@ export class MgtAgenda extends MgtTemplatedComponent {
     if (!event.attendees.length) {
       return null;
     }
-    return html`
+    return mgtHtml`
       <mgt-people
         show-presence
         class="event-attendees"

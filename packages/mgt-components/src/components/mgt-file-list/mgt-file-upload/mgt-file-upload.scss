@@ -251,7 +251,7 @@ $file-list-box-shadow: var(
   &.focused {
     background-color: $file-item-background-color--hover;
 
-    mgt-file {
+    .mgt-file-item {
       --file-background-color: $file-item-background-color--hover;
     }
   }
@@ -260,7 +260,7 @@ $file-list-box-shadow: var(
   &.selected {
     background-color: $file-item-background-color--active;
 
-    mgt-file {
+    .mgt-file-item {
       --file-background-color: $file-item-background-color--active;
     }
   }

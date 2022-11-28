@@ -4,13 +4,18 @@
   "private": true,
   "main": "lib/index.js",
   "scripts": {
+    "serve": "gulp serve",
     "build": "gulp bundle",
     "clean": "gulp clean",
-    "test": "gulp test"
+    "test": "gulp test",
+    "package": "gulp build --ship && gulp bundle --ship && gulp package-solution --ship"
   },
   "dependencies": {
+    "@microsoft/mgt-element": "*",
     "@microsoft/mgt-react": "*",
     "@microsoft/mgt-spfx": "*",
+    "@microsoft/mgt-spfx-utils": "*",
+    "@microsoft/mgt-sharepoint-provider": "*",
     "@microsoft/sp-core-library": "1.15.2",
     "@microsoft/sp-lodash-subset": "1.15.2",
     "@microsoft/sp-office-ui-fabric-core": "1.15.2",

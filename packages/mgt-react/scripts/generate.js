@@ -7,18 +7,18 @@ const mgtComponentImports = new Set();
 const mgtElementImports = new Set();
 
 const tags = new Set([
-  'mgt-person',
-  'mgt-person-card',
-  'mgt-agenda',
-  'mgt-get',
-  'mgt-login',
-  'mgt-people-picker',
-  'mgt-people',
-  'mgt-tasks',
-  'mgt-teams-channel-picker',
-  'mgt-todo',
-  'mgt-file',
-  'mgt-file-list'
+  'person',
+  'person-card',
+  'agenda',
+  'get',
+  'login',
+  'people-picker',
+  'people',
+  'tasks',
+  'teams-channel-picker',
+  'todo',
+  'file',
+  'file-list'
 ]);
 
 let output = '';
@@ -32,7 +32,6 @@ for (const tag of wc.tags) {
 
   const className = tag.name
     .split('-')
-    .slice(1)
     .map(t => t[0].toUpperCase() + t.substring(1))
     .join('');
 

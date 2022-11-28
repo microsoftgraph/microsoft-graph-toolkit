@@ -151,10 +151,6 @@ export type PersonCardProps = {
 	inheritDetails?: boolean;
 	showPresence?: boolean;
 	personPresence?: MicrosoftGraph.Presence;
-	isEmailHovered?: boolean;
-	isChatHovered?: boolean;
-	isVideoHovered?: boolean;
-	isCallHovered?: boolean;
 	templateContext?: TemplateContext;
 	mediaQuery?: ComponentMediaQuery;
 	expanded?: (e: Event) => void;
@@ -233,27 +229,27 @@ export type TodoProps = {
 	templateRendered?: (e: Event) => void;
 }
 
-export const Agenda = wrapMgt<AgendaProps>('mgt-agenda');
+export const Agenda = wrapMgt<AgendaProps>('agenda');
 
-export const FileList = wrapMgt<FileListProps>('mgt-file-list');
+export const FileList = wrapMgt<FileListProps>('file-list');
 
-export const File = wrapMgt<FileProps>('mgt-file');
+export const File = wrapMgt<FileProps>('file');
 
-export const Get = wrapMgt<GetProps>('mgt-get');
+export const Get = wrapMgt<GetProps>('get');
 
-export const Login = wrapMgt<LoginProps>('mgt-login');
+export const Login = wrapMgt<LoginProps>('login');
 
-export const PeoplePicker = wrapMgt<PeoplePickerProps>('mgt-people-picker');
+export const PeoplePicker = wrapMgt<PeoplePickerProps>('people-picker');
 
-export const People = wrapMgt<PeopleProps>('mgt-people');
+export const People = wrapMgt<PeopleProps>('people');
 
-export const PersonCard = wrapMgt<PersonCardProps>('mgt-person-card');
+export const PersonCard = wrapMgt<PersonCardProps>('person-card');
 
-export const Person = wrapMgt<PersonProps>('mgt-person');
+export const Person = wrapMgt<PersonProps>('person');
 
-export const Tasks = wrapMgt<TasksProps>('mgt-tasks');
+export const Tasks = wrapMgt<TasksProps>('tasks');
 
-export const TeamsChannelPicker = wrapMgt<TeamsChannelPickerProps>('mgt-teams-channel-picker');
+export const TeamsChannelPicker = wrapMgt<TeamsChannelPickerProps>('teams-channel-picker');
 
-export const Todo = wrapMgt<TodoProps>('mgt-todo');
+export const Todo = wrapMgt<TodoProps>('todo');
 
