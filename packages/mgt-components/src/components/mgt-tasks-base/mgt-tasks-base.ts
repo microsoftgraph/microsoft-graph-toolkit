@@ -173,7 +173,7 @@ export abstract class MgtTasksBase extends MgtTemplatedComponent {
 
     return html`
       <!-- ${headerTemplate}  -->
-      ${newTaskTemplate}
+      <!-- ${newTaskTemplate} -->
       <div class="Tasks" dir=${this.direction}>
         ${tasksTemplate}
       </div>
@@ -281,6 +281,11 @@ export abstract class MgtTasksBase extends MgtTemplatedComponent {
         @click=${(e: Event) => this.openCalendar()}>
         ${this.strings.dueDate}
       </fluent-button>
+      <!-- <fluent-calendar readonly="false" locale="en-US" @click=${(e: Event) => {
+        console.log('heere', (e.target as HTMLInputElement).value);
+      }} .value=${new Date()} @input=${(e: Event) => {
+      console.log('changed');
+    }}></fluent-calendar> -->
     `;
 
     const taskTitle = html`
