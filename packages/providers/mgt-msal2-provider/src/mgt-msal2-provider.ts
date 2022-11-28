@@ -6,7 +6,7 @@
  */
 
 import { customElement, property } from 'lit/decorators.js';
-import { Providers, LoginType, MgtBaseProvider } from '@microsoft/mgt-element';
+import { Providers, LoginType, MgtBaseProvider, validateBaseURL } from '@microsoft/mgt-element';
 import { Msal2Config, Msal2Provider, PromptType } from './Msal2Provider';
 /**
  * Authentication Library Provider for Microsoft personal accounts
@@ -187,6 +187,13 @@ export class MgtMsal2Provider extends MgtBaseProvider {
 
       if (this.isMultiAccountDisabled) {
         config.isMultiAccountEnabled = false;
+      }
+
+      if (this.baseUrl) {
+        const validURL = validateBaseURL(this.baseUrl);
+        if (validURL) {
+          config.baseURL = validURL;
+        }
       }
       this.provider = new Msal2Provider(config);
       Providers.globalProvider = this.provider;

@@ -7,7 +7,7 @@
 
 import { customElement, property } from 'lit/decorators.js';
 import { Configuration } from '@azure/msal-browser';
-import { Providers, MgtBaseProvider } from '@microsoft/mgt-element';
+import { Providers, MgtBaseProvider, validateBaseURL } from '@microsoft/mgt-element';
 import { HttpMethod, TeamsMsal2Config, TeamsMsal2Provider } from './TeamsMsal2Provider';
 
 /**
@@ -89,6 +89,7 @@ export class MgtTeamsMsal2Provider extends MgtBaseProvider {
     type: String
   })
   public httpMethod;
+
   /**
    * Gets whether this provider can be used in this environment
    *
@@ -140,6 +141,13 @@ export class MgtTeamsMsal2Provider extends MgtBaseProvider {
         const httpMethod: string = this.httpMethod.toUpperCase();
         const httpMethodEnum = HttpMethod[httpMethod];
         config.httpMethod = httpMethodEnum;
+      }
+
+      if (this.baseUrl) {
+        const validURL = validateBaseURL(this.baseUrl);
+        if (validURL) {
+          config.baseURL = validURL;
+        }
       }
 
       this.provider = new TeamsMsal2Provider(config);
