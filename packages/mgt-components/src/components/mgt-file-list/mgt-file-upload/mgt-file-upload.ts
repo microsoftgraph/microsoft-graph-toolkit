@@ -265,7 +265,6 @@ export class MgtFileUpload extends MgtBaseComponent {
   private _dialogCheckBox: string = '';
   private _applyAll: boolean = false;
   private _applyAllConflitBehavior: number = null;
-  private _maximumFiles: boolean = false;
   private _maximumFileSize: boolean = false;
   private _excludedFileType: boolean = false;
 
@@ -322,7 +321,7 @@ export class MgtFileUpload extends MgtBaseComponent {
             @change="${this.onFileUploadChange}"
           />
           <fluent-button class="file-upload-button" @click=${this.onFileUploadClick}>
-            ${getSvg(SvgIcon.Upload)}${strings.buttonUploadFile}
+            ${getSvg(SvgIcon.Upload)} <span class="upload-text">${strings.buttonUploadFile}</span>
           </fluent-button>
         </div>
         </div>
@@ -564,7 +563,6 @@ export class MgtFileUpload extends MgtBaseComponent {
     const fileItemsCompleted: MgtFileUploadItem[] = [];
     this._applyAll = false;
     this._applyAllConflitBehavior = null;
-    this._maximumFiles = false;
     this._maximumFileSize = false;
     this._excludedFileType = false;
 
@@ -582,27 +580,6 @@ export class MgtFileUpload extends MgtBaseComponent {
       if (fileItems.filter(item => item.fullPath === fullPath).length === 0) {
         // Initialize variable for File validation
         let acceptFile = true;
-
-        // Exclude file based on max files upload allowed
-        if (fileItems.length >= this.fileUploadList.maxUploadFile) {
-          acceptFile = false;
-          if (!this._maximumFiles) {
-            const maximumFiles: (number | true)[] = await this.getFileUploadStatus(
-              file,
-              fullPath,
-              'MaxFiles',
-              this.fileUploadList
-            );
-            if (maximumFiles !== null) {
-              if (maximumFiles[0] === 0) {
-                return null;
-              }
-              if (maximumFiles[0] === 1) {
-                this._maximumFiles = true;
-              }
-            }
-          }
-        }
 
         // Exclude file based on max file size allowed
         if (this.fileUploadList.maxFileSize !== undefined && acceptFile) {
@@ -775,46 +752,6 @@ export class MgtFileUpload extends MgtBaseComponent {
         } else {
           return null;
         }
-        break;
-      case 'MaxFiles':
-        fileUploadDialog.classList.add('visible');
-        this._dialogTitle = strings.maximumFilesTitle;
-        this._dialogContent = strings.maximumFiles.split('{MaxNumber}').join(fileUploadList.maxUploadFile.toString());
-        this._dialogCheckBox = strings.checkApplyAll;
-        this._dialogPrimaryButton = strings.buttonUpload;
-        this._dialogSecondaryButton = strings.buttonReselect;
-        super.requestStateUpdate(true);
-
-        return new Promise<number[]>(async resolve => {
-          const fileUploadDialogOk: HTMLElement = this.renderRoot.querySelector('.file-upload-dialog-ok');
-          const fileUploadDialogCancel: HTMLElement = this.renderRoot.querySelector('.file-upload-dialog-cancel');
-          const fileUploadDialogClose: HTMLElement = this.renderRoot.querySelector('.file-upload-dialog-close');
-          const fileUploadDialogCheck: HTMLInputElement = this.renderRoot.querySelector('#file-upload-dialog-check');
-          fileUploadDialogCheck.checked = false;
-          fileUploadDialogCheck.classList.add('hide');
-
-          // Remove and include event listener to validate options.
-          fileUploadDialogOk.removeEventListener('click', onOkDialogClick);
-          fileUploadDialogCancel.removeEventListener('click', onCancelDialogClick);
-          fileUploadDialogClose.removeEventListener('click', onCancelDialogClick);
-          fileUploadDialogOk.addEventListener('click', onOkDialogClick);
-          fileUploadDialogCancel.addEventListener('click', onCancelDialogClick);
-          fileUploadDialogClose.addEventListener('click', onCancelDialogClick);
-
-          // tslint:disable-next-line: completed-docs
-          function onOkDialogClick() {
-            fileUploadDialog.classList.remove('visible');
-            // Continue upload
-            resolve([1]);
-          }
-
-          // tslint:disable-next-line: completed-docs
-          function onCancelDialogClick() {
-            fileUploadDialog.classList.remove('visible');
-            // Cancel all
-            resolve([0]);
-          }
-        });
         break;
       case 'ExcludedFileType':
         fileUploadDialog.classList.add('visible');

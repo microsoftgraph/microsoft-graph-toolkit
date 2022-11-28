@@ -20,19 +20,12 @@ $file-list-box-shadow: var(
 );
 $file-list-border: var(--file-list-border, none);
 $file-item-border-radius: var(--file-item-border-radius, 2px);
-$file-item-margin: var(--file-item-margin, 0 4px);
+$file-item-margin: var(--file-item-margin, 0 4px 0 4px);
 $show-more-button-font-size: var(--show-more-button-font-size, 12px);
 $show-more-button-padding: var(--show-more-button-padding, 6px);
 $show-more-button-border-bottom-right-radius: var(--show-more-button-border-bottom-right-radius, 8px);
 $show-more-button-border-bottom-left-radius: var(--show-more-button-border-bottom-left-radius, 8px);
-$show-more-button-background-color: var(
-  --show-more-button-background-color,
-  set-var(background-color__sub2, $theme-default, $common)
-);
-$show-more-button-background-color--hover: var(
-  --show-more-button-background-color--hover,
-  $file-item-background-color--hover
-);
+$show-more-button-background-color--hover: var(--show-more-button-background-color--hover, $show_more_button_hover);
 $progress-ring-size: var(--progress-ring-size, 24px);
 
 :host {
@@ -65,6 +58,9 @@ mgt-file-item .file-list-wrapper {
       border-right: var(--file-item-border-right, none);
       border-bottom: var(--file-item-border-bottom, none);
       margin: $file-item-margin;
+      padding-inline-start: var(--file-item-padding-inline-start, 24px);
+      padding-top: var(--file-item-padding-top, 10px);
+      padding-bottom: var(--file-item-padding-bottom, 8px);
       border-radius: $file-item-border-radius;
       cursor: pointer;
 
@@ -75,7 +71,6 @@ mgt-file-item .file-list-wrapper {
       &:hover,
       &.focused {
         background-color: $file-item-background-color--hover;
-        border-radius: 4px;
 
         mgt-file {
           --file-background-color: $file-item-background-color--hover;
@@ -106,7 +101,6 @@ mgt-file-item .file-list-wrapper {
     border-bottom-right-radius: $show-more-button-border-bottom-right-radius;
     border-bottom-left-radius: $show-more-button-border-bottom-left-radius;
     cursor: pointer;
-    background-color: $show-more-button-background-color;
 
     &:hover {
       background-color: $show-more-button-background-color--hover;

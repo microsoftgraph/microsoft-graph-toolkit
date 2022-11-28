@@ -76,7 +76,7 @@ $person-card-active-org-member-color: var(--person-card-active-org-member-color,
       margin-right: 20px;
 
       &.org-member--target {
-        background-color: $greyBackground;
+        background-color: $gray_background;
         border: 1px solid $person-card-active-org-member-color;
         mgt-person {
           --line2-color: #000000;
@@ -88,7 +88,7 @@ $person-card-active-org-member-color: var(--person-card-active-org-member-color,
 
         &:hover {
           cursor: pointer;
-          background-color: $greyHover;
+          background-color: $gray_hover;
         }
       }
 
@@ -128,7 +128,7 @@ $person-card-active-org-member-color: var(--person-card-active-org-member-color,
 
       &:hover {
         cursor: pointer;
-        background-color: $greyHover;
+        background-color: $gray_hover;
       }
 
       .coworker__person {
