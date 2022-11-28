@@ -10,7 +10,7 @@ import { classMap } from 'lit/directives/class-map.js';
 import { repeat } from 'lit/directives/repeat.js';
 import { IGraph, customElement, mgtHtml } from '@microsoft/mgt-element';
 import { Providers, ProviderState } from '@microsoft/mgt-element';
-import { getDateString } from '../../utils/Utils';
+import { getDateString, getDateMap } from '../../utils/Utils';
 import { getSvg, SvgIcon } from '../../utils/SvgHelper';
 import '../mgt-person/mgt-person';
 import { MgtTasksBase } from '../mgt-tasks-base/mgt-tasks-base';
@@ -30,9 +30,9 @@ import {
 import { styles } from './mgt-todo-css';
 import { strings } from './strings';
 import { registerFluentComponents } from '../../utils/FluentComponents';
-import { fluentRadio, fluentRadioGroup, fluentCalendar } from '@fluentui/web-components';
+import { fluentRadio, fluentRadioGroup, fluentTextField } from '@fluentui/web-components';
 
-registerFluentComponents(fluentRadio, fluentRadioGroup, fluentCalendar);
+registerFluentComponents(fluentRadio, fluentRadioGroup, fluentTextField);
 
 /**
  * Filter function
@@ -164,38 +164,6 @@ export class MgtTodo extends MgtTasksBase {
   }
 
   /**
-   * Render the details part of the new task panel
-   *
-   * @protected
-   * @returns {TemplateResult}
-   * @memberof MgtTodo
-   */
-  protected renderCalendar(): TemplateResult {
-    const taskDue = html`
-      <span class="NewTaskDue">
-        ${getSvg(SvgIcon.Calendar)}
-        <fluent-calendar
-          label="new-taskDate-input"
-          aria-label="new-taskDate-input"
-          .value="${this.dateToInputValue(this._newTaskDueDate)}"
-          @change="${(e: Event) => {
-            const value = (e.target as HTMLInputElement).value;
-            if (value) {
-              this._newTaskDueDate = new Date(value + 'T17:00');
-            } else {
-              this._newTaskDueDate = null;
-            }
-          }}"
-        />
-      </span>
-    `;
-
-    return html`
-      ${taskDue}
-    `;
-  }
-
-  /**
    * Render the header part of the component.
    *
    * @protected
@@ -281,25 +249,17 @@ export class MgtTodo extends MgtTasksBase {
     } else {
       taskDetailsTemplate = html`
       <div class="TaskDetails ${this.mediaQuery}">
-        <span class="TaskTitle"></span>${task.title}
-        <span class="TaskDue">${taskDueTemplate}</span>
-        <span class="TaskDelete">${getSvg(SvgIcon.Delete)}</span>
+        <fluent-text-field appearance="filled" .value="${task.title}">
+          <div slot="end">
+            <span class="TaskDue">${taskDueTemplate}</span>
+            <span class="TaskDelete" @click="${(e: Event) => this.removeTask(e, task.id)}">
+              ${getSvg(SvgIcon.Delete)}
+            </span>
+          </div>
+        </fluent-text-field>
       </div>
       `;
     }
-
-    const taskOptionsTemplate =
-      !this.readOnly && !this.hideOptions
-        ? mgtHtml`
-            <div class="TaskOptions">
-              <mgt-dot-options
-                .options="${{
-                  [this.strings.removeTaskSubtitle]: e => this.removeTask(e, task.id)
-                }}"
-              ></mgt-dot-options>
-            </div>
-          `
-        : null;
 
     const taskClasses = classMap({
       Complete: isCompleted,
@@ -376,6 +336,7 @@ export class MgtTodo extends MgtTasksBase {
     const taskData = {
       title: this.newTaskName
     };
+    console.log('date: ', this._newTaskDueDate);
 
     if (this._newTaskDueDate) {
       // tslint:disable-next-line: no-string-literal
@@ -446,7 +407,7 @@ export class MgtTodo extends MgtTasksBase {
   }
 
   // tslint:disable-next-line: completed-docs
-  private async removeTask(e: { target: HTMLElement }, taskId: string) {
+  private async removeTask(e: Event, taskId: string) {
     this._tasks = this._tasks.filter(t => t.id !== taskId);
     this.requestUpdate();
 

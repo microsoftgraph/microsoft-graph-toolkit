@@ -17,13 +17,13 @@
 
   .TaskDetails {
     box-sizing: border-box;
-    border: 1px solid;
+    // border: 1px solid;
 
     /* Auto layout */
 
     display: flex;
     flex-direction: row;
-    align-items: flex-start;
+    align-items: center;
     padding: 2px;
 
     width: 800px;
@@ -42,5 +42,23 @@
   fluent-text-field {
     width: 800px;
     height: 34px;
+
+    > div {
+      display: flex;
+      align-items: center;
+      width: 300px;
+    }
+
+    div:nth-child(2) {
+      display: flex;
+      align-items: center;
+    }
+
+    fluent-button {
+      width: 50px;
+      margin-inline-end: 50px;
+      margin-inline-start: 10px;
+      height: 16px;
+    }
   }
 }
