@@ -92,6 +92,7 @@ export abstract class MgtTasksBase extends MgtTemplatedComponent {
   private _isNewTaskBeingAdded: boolean;
   private _openCalendar: boolean;
   private _newTaskName: string;
+  private _newTaskDueDate: Date;
   private _previousMediaQuery: ComponentMediaQuery;
 
   protected get strings(): { [x: string]: string } {
@@ -251,6 +252,11 @@ export abstract class MgtTasksBase extends MgtTemplatedComponent {
         @click=${(e: Event) => this.openCalendar()}>
         ${this.strings.dueDate}
       </fluent-button>
+      <!-- <fluent-calendar readonly="false" locale="en-US" @click=${(e: Event) => {
+        console.log('heere', (e.target as HTMLInputElement).value);
+      }} .value=${new Date()} @input=${(e: Event) => {
+      console.log('changed');
+    }}></fluent-calendar> -->
     `;
 
     const taskTitle = mgtHtml`
@@ -321,6 +327,16 @@ export abstract class MgtTasksBase extends MgtTemplatedComponent {
         </mgt-flyout>
         `;
   }
+
+  // /**
+  //  * Render the details part of the new task panel
+  //  *
+  //  * @protected
+  //  * @abstract
+  //  * @returns {TemplateResult}
+  //  * @memberof MgtTasksBase
+  //  */
+  // protected abstract renderCalendar(): TemplateResult;
 
   /**
    * Render the generic picker.
