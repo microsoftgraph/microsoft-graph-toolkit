@@ -117,9 +117,15 @@ mgt-people-picker .root {
           border-radius: 4px;
           &:hover {
             background-color: $dropdown-item__background-color--hover;
+            .people-person-text-area {
+              color: $dropdown-item__text__color--hover;
+            }
           }
           &.focused {
             background-color: $dropdown-item__background-color--hover;
+            .people-person-text-area {
+              color: $dropdown-item__text__color--hover;
+            }
           }
           .people-person-text-area {
             margin-left: 13px;
@@ -127,14 +133,6 @@ mgt-people-picker .root {
             max-height: 40px;
             overflow: hidden;
             color: $dropdown-item__text__color;
-
-            &:hover {
-              color: $dropdown-item__text__color--hover;
-            }
-            
-            &.focused {
-              color: $dropdown-item__text__color--hover;
-            }
 
             .people-person-text {
               font-size: 14px;
