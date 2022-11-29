@@ -117,16 +117,22 @@ mgt-people-picker .root {
           border-radius: 4px;
           &:hover {
             background-color: $dropdown-item__background-color--hover;
+            .people-person-text-area {
+              color: $dropdown-item__text__color--hover;
+            }
           }
           &.focused {
             background-color: $dropdown-item__background-color--hover;
+            .people-person-text-area {
+              color: $dropdown-item__text__color--hover;
+            }
           }
           .people-person-text-area {
             margin-left: 13px;
             flex: 1 1 0;
             max-height: 40px;
             overflow: hidden;
-            color: $color;
+            color: $dropdown-item__text__color;
 
             .people-person-text {
               font-size: 14px;

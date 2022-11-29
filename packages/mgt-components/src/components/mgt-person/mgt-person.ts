@@ -1034,8 +1034,7 @@ export class MgtPerson extends MgtTemplatedComponent {
         !this.personImage &&
         !this._fetchedImage
       ) {
-        details;
-        let image;
+        let image: string;
         if ('groupTypes' in details) {
           image = await getGroupImage(graph, details, MgtPerson.config.useContactApis);
         } else {
@@ -1059,6 +1058,7 @@ export class MgtPerson extends MgtTemplatedComponent {
         }
       }
       this.personDetailsInternal = person;
+      this.personDetails = person;
       this._fetchedImage = this.getImage();
     } else if (this.personQuery) {
       // Use the personQuery to find our person.
@@ -1070,11 +1070,13 @@ export class MgtPerson extends MgtTemplatedComponent {
 
       if (people && people.length) {
         this.personDetailsInternal = people[0];
+        this.personDetails = people[0];
         if (this._avatarType === 'photo' && !this.disableImageFetch) {
           const image = await getPersonImage(graph, people[0], MgtPerson.config.useContactApis);
 
           if (image) {
             this.personDetailsInternal.personImage = image;
+            this.personDetails.personImage = image;
             this._fetchedImage = image;
           }
         }
@@ -1082,16 +1084,18 @@ export class MgtPerson extends MgtTemplatedComponent {
     }
 
     // populate presence
-    const defaultPresence = {
+    const defaultPresence: Presence = {
       activity: 'Offline',
       availability: 'Offline',
       id: null
     };
+
     if (this.showPresence && !this.personPresence && !this._fetchedPresence) {
       try {
-        if (this.personDetailsInternal && this.personDetailsInternal.id) {
+        details = this.personDetailsInternal || this.personDetails;
+        if (details) {
           // setting userId to 'me' ensures only the presence.read permission is required
-          const userId = this.personQuery !== 'me' ? this.personDetailsInternal.id : null;
+          const userId = this.personQuery !== 'me' ? details?.id : null;
           this._fetchedPresence = await getUserPresence(graph, userId);
         } else {
           this._fetchedPresence = defaultPresence;

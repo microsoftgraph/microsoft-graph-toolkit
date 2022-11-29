@@ -75,6 +75,8 @@ interface IFocusable {
  *
  * @cssprop --dropdown-background-color - {Color} Background color of dropdown area
  * @cssprop --dropdown-item-hover-background - {Color} Background color of person during hover
+ * @cssprop --dropdown-item-text-color - {Color} Color of person text
+ * @cssprop --dropdown-item-text-hover-color - {Color} Color of person text during hover
  *
  * @cssprop --placeholder-color--focus - {Color} Color of placeholder text during focus state
  * @cssprop --placeholder-color - {Color} Color of placeholder text
@@ -450,6 +452,16 @@ export class MgtPeoplePicker extends MgtTemplatedComponent {
   }
 
   /**
+   * Label that can be set on the people picker input to provide context to
+   * assistive technologies
+   */
+  @property({
+    attribute: 'aria-label',
+    type: String
+  })
+  public ariaLabel: string;
+
+  /**
    * Get the scopes required for people picker
    *
    * @static
@@ -681,6 +693,7 @@ export class MgtPeoplePicker extends MgtTemplatedComponent {
            role="combobox"
            placeholder=${placeholder}
            autocomplete="off"
+           .ariaLabel=${this.ariaLabel}
            aria-controls="suggestions-list"
            aria-haspopup="listbox"
            aria-autocomplete="list"
@@ -842,7 +855,7 @@ export class MgtPeoplePicker extends MgtTemplatedComponent {
       <ul
         id="suggestions-list"
         aria-label="${this.strings.suggestedContacts}"
-        class="people-list" 
+        class="people-list"
         role="listbox">
          ${repeat(
            filteredPeople,
@@ -884,9 +897,9 @@ export class MgtPeoplePicker extends MgtTemplatedComponent {
     return (
       this.renderTemplate('person', { person }, person.id) ||
       html`
-         <mgt-person 
-          .personDetails=${person} 
-          .fetchImage=${!this.disableImages} 
+         <mgt-person
+          .personDetails=${person}
+          .fetchImage=${!this.disableImages}
           .personCardInteraction=${PersonCardInteraction.none}
          ></mgt-person>
          <div class="people-person-text-area" id="${person.displayName}">
@@ -1012,9 +1025,11 @@ export class MgtPeoplePicker extends MgtTemplatedComponent {
               } catch (_) {}
             } else {
               let groups = (await findGroups(graph, '', this.showMax, this.groupType, this._groupFilters)) || [];
+              // tslint:disable: no-string-literal
               if (groups.length > 0 && groups[0]['value']) {
                 groups = groups[0]['value'];
               }
+              // tslint:enable: no-string-literal
               people = groups;
             }
           }
@@ -1151,7 +1166,7 @@ export class MgtPeoplePicker extends MgtTemplatedComponent {
         }
       }
     }
-    //people = this.getUniquePeople(people);
+    // people = this.getUniquePeople(people);
     this._foundPeople = this.filterPeople(people);
   }
 
@@ -1164,7 +1179,7 @@ export class MgtPeoplePicker extends MgtTemplatedComponent {
    */
   private async getGroupsForGroupIds(graph: IGraph, people: IDynamicPerson[]) {
     const groups = await getGroupsForGroupIds(graph, this.groupIds, this.groupFilters);
-    for (let group of groups as IDynamicPerson[]) {
+    for (const group of groups as IDynamicPerson[]) {
       people = people.concat(group);
     }
     people = people.filter(person => person);
@@ -1478,7 +1493,7 @@ export class MgtPeoplePicker extends MgtTemplatedComponent {
       if (isCmdOrCtrlKey && event.code === 'ArrowLeft') {
         this._currentHighlightedUserPos =
           (this._currentHighlightedUserPos - 1 + selectedPeople.length) % selectedPeople.length;
-        if (this._currentHighlightedUserPos >= 0 && this._currentHighlightedUserPos !== NaN) {
+        if (this._currentHighlightedUserPos >= 0 && !Number.isNaN(this._currentHighlightedUserPos)) {
           this._highlightedUsers.push(selectedPeople[this._currentHighlightedUserPos]);
         } else {
           this._currentHighlightedUserPos = 0;
@@ -1609,7 +1624,7 @@ export class MgtPeoplePicker extends MgtTemplatedComponent {
         } catch (error) {
           if (error instanceof SyntaxError) {
             const _delimeters = [',', ';'];
-            let listOfUsers: Array<string>;
+            let listOfUsers: string[];
             try {
               for (let i = 0; i < _delimeters.length; i++) {
                 listOfUsers = copiedText.split(_delimeters[i]);
