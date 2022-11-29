@@ -225,13 +225,6 @@ export class MgtTodo extends MgtTasksBase {
     }
 
     const isCompleted = (TaskStatus as any)[task.status] === TaskStatus.completed;
-    const isLoading = this._loadingTasks.includes(task.id);
-    const taskCheckClasses = {
-      Complete: !isLoading && isCompleted,
-      Loading: isLoading,
-      TaskCheck: true,
-      TaskIcon: true
-    };
 
     let taskDetailsTemplate = null;
 
@@ -249,7 +242,7 @@ export class MgtTodo extends MgtTasksBase {
     } else {
       taskDetailsTemplate = html`
       <div class="TaskDetails ${this.mediaQuery}">
-        <fluent-text-field appearance="filled" .value="${task.title}">
+        <fluent-text-field appearance="filled" .value="${task.title}" class="Task">
           <div slot="end">
             <span class="TaskDue">${taskDueTemplate}</span>
             <span class="TaskDelete" @click="${(e: Event) => this.removeTask(e, task.id)}">
@@ -336,7 +329,6 @@ export class MgtTodo extends MgtTasksBase {
     const taskData = {
       title: this.newTaskName
     };
-    console.log('date: ', this._newTaskDueDate);
 
     if (this._newTaskDueDate) {
       // tslint:disable-next-line: no-string-literal
