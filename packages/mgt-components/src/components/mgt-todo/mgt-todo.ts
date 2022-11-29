@@ -329,7 +329,6 @@ export class MgtTodo extends MgtTasksBase {
     const taskData = {
       title: this.newTaskName
     };
-    console.log('date: ', this._newTaskDueDate);
 
     if (this._newTaskDueDate) {
       // tslint:disable-next-line: no-string-literal
