@@ -109,7 +109,7 @@ export abstract class MgtTasksBase extends MgtTemplatedComponent {
     this._newTaskDueDate = null;
     this._openCalendar = false;
     this.addEventListener('dateselected', e => {
-      console.log('sth else:', e.detail);
+      console.log('sth else:', e);
     });
   }
 
