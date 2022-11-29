@@ -21,7 +21,7 @@ export const strings = {
   buttonOk: 'OK',
   buttonCancel: 'Cancel',
   buttonUpload: 'Upload',
-  buttonKeep: 'Keep Both',
+  buttonKeep: 'Keep both',
   buttonReplace: 'Replace',
   buttonReselect: 'Reselect',
   fileReplaceTitle: 'Replace file',
