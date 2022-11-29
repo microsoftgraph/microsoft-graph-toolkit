@@ -37,6 +37,13 @@
     order: 1;
     align-self: stretch;
     flex-grow: 1;
+    .Task {
+      > div {
+        display: flex;
+        align-items: center;
+        width: 200px;
+      }
+    }
   }
 
   fluent-text-field {
@@ -46,7 +53,6 @@
     > div {
       display: flex;
       align-items: center;
-      width: 300px;
     }
 
     div:nth-child(2) {

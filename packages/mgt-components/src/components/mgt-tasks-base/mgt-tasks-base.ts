@@ -109,7 +109,7 @@ export abstract class MgtTasksBase extends MgtTemplatedComponent {
     this._newTaskDueDate = null;
     this._openCalendar = false;
     this.addEventListener('dateselected', e => {
-      console.log('sth else:', e);
+      console.log('sth else:', e.detail);
     });
   }
 
@@ -173,7 +173,7 @@ export abstract class MgtTasksBase extends MgtTemplatedComponent {
 
     return html`
       <!-- ${headerTemplate}  -->
-      <!-- ${newTaskTemplate} -->
+      ${newTaskTemplate}
       <div class="Tasks" dir=${this.direction}>
         ${tasksTemplate}
       </div>
@@ -281,11 +281,6 @@ export abstract class MgtTasksBase extends MgtTemplatedComponent {
         @click=${(e: Event) => this.openCalendar()}>
         ${this.strings.dueDate}
       </fluent-button>
-      <!-- <fluent-calendar readonly="false" locale="en-US" @click=${(e: Event) => {
-        console.log('heere', (e.target as HTMLInputElement).value);
-      }} .value=${new Date()} @input=${(e: Event) => {
-      console.log('changed');
-    }}></fluent-calendar> -->
     `;
 
     const taskTitle = html`
@@ -315,7 +310,13 @@ export abstract class MgtTasksBase extends MgtTemplatedComponent {
        <div dir=${this.direction} class="Task NewTask Incomplete">
           ${taskTitle}
        </div>
-       
+        ${
+          this._openCalendar
+            ? html`<fluent-calendar readonly="false" locale="en-US" @click=${(e: Event) => {
+                console.log('heere', (e.target as HTMLInputElement).value);
+              }} .value=${new Date()}></fluent-calendar>`
+            : null
+        }
      `;
   }
 
@@ -354,7 +355,7 @@ export abstract class MgtTasksBase extends MgtTemplatedComponent {
           @closed=${() => (this._openCalendar = false)}
         >
           <div slot="flyout">
-            <fluent-calendar readonly="false" @change=${(e: Event) => console.log('changed')}>
+            <fluent-calendar readonly="false">
             </fluent-calendar>
           </div>
         </mgt-flyout>
