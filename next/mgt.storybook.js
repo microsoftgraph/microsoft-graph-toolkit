@@ -2007,7 +2007,7 @@ PERFORMANCE OF THIS SOFTWARE.
            role="combobox"
            placeholder=${t}
            autocomplete="off"
-           .ariaLabel=${this.ariaLabel}
+           aria-label=${this.ariaLabel||""}
            aria-controls="suggestions-list"
            aria-haspopup="listbox"
            aria-autocomplete="list"
