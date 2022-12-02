@@ -36,7 +36,7 @@ $file-upload: (
   upload__dialog__content__color: (
     _var: --file-upload-dialog-content-color,
     light: rgb(50, 49, 48),
-    dark: rgb(255, 255, 255)
+    dark: #000
   ),
   upload__dialog__primarybutton__color: (
     _var: --file-upload-dialog-primarybutton-color,
