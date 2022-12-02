@@ -86,7 +86,7 @@ export async function getUsersPresenceByPeople(graph: IGraph, people?: IDynamicP
   }
 
   for (const person of people) {
-    if (person !== '' && person.id) {
+    if (person?.id) {
       const id = person.id;
       peoplePresence[id] = null;
       let presence: CachePresence;
