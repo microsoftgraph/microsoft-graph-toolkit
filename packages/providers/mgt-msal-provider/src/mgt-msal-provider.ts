@@ -147,10 +147,7 @@ export class MgtMsalProvider extends MgtBaseProvider {
       }
 
       if (this.baseUrl) {
-        const validURL = validateBaseURL(this.baseUrl);
-        if (validURL) {
-          config.baseURL = validURL;
-        }
+        config.baseURL = this.baseUrl;
       }
 
       this.provider = new MsalProvider(config);

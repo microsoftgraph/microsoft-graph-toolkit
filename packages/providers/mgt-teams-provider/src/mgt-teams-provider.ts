@@ -110,10 +110,7 @@ export class MgtTeamsProvider extends MgtBaseProvider {
       }
 
       if (this.baseUrl) {
-        const validURL = validateBaseURL(this.baseUrl);
-        if (validURL) {
-          config.baseURL = validURL;
-        }
+        config.baseURL = this.baseUrl;
       }
 
       this.provider = new TeamsProvider(config);

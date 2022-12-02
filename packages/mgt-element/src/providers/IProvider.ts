@@ -6,6 +6,7 @@
  */
 
 import { AuthenticationProvider, AuthenticationProviderOptions } from '@microsoft/microsoft-graph-client';
+import { validateBaseURL } from '../utils/GraphHelpers';
 import { GraphEndpoint, IGraph, MICROSOFT_GRAPH_DEFAULT_ENDPOINT } from '../IGraph';
 import { EventDispatcher, EventHandler } from '../utils/EventDispatcher';
 
@@ -54,7 +55,12 @@ export abstract class IProvider implements AuthenticationProvider {
    * The base URL to be used in the graph client config.
    */
   public set baseURL(url: GraphEndpoint) {
-    this._baseURL = url;
+    if (validateBaseURL(url)) {
+      this._baseURL = url;
+      return;
+    } else {
+      throw new Error(`${url} is not a valid Graph URL endpoint.`);
+    }
   }
 
   public get baseURL(): GraphEndpoint {

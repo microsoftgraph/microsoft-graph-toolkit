@@ -155,10 +155,7 @@ export class MgtTeamsMsal2Provider extends MgtBaseProvider {
       }
 
       if (this.baseUrl) {
-        const validURL = validateBaseURL(this.baseUrl);
-        if (validURL) {
-          config.baseURL = validURL;
-        }
+        config.baseURL = this.baseUrl;
       }
 
       this.provider = new TeamsMsal2Provider(config);

@@ -21,7 +21,7 @@ import { IGraph, MICROSOFT_GRAPH_DEFAULT_ENDPOINT } from './IGraph';
 import { IProvider } from './providers/IProvider';
 import { Batch } from './utils/Batch';
 import { ComponentMiddlewareOptions } from './utils/ComponentMiddlewareOptions';
-import { chainMiddleware, validateBaseURL } from './utils/GraphHelpers';
+import { chainMiddleware } from './utils/GraphHelpers';
 import { SdkVersionMiddleware } from './utils/SdkVersionMiddleware';
 import { PACKAGE_VERSION } from './utils/version';
 
@@ -156,14 +156,11 @@ export function createFromProvider(provider: IProvider, version?: string, compon
   ];
 
   let baseURL = provider.baseURL ? provider.baseURL : MICROSOFT_GRAPH_DEFAULT_ENDPOINT;
-  const validURL = validateBaseURL(baseURL);
-  if (validURL) {
-    const client = Client.initWithMiddleware({
-      middleware: chainMiddleware(...middleware),
-      baseUrl: validURL
-    });
+  const client = Client.initWithMiddleware({
+    middleware: chainMiddleware(...middleware),
+    baseUrl: baseURL
+  });
 
-    const graph = new Graph(client, version);
-    return component ? graph.forComponent(component) : graph;
-  }
+  const graph = new Graph(client, version);
+  return component ? graph.forComponent(component) : graph;
 }
