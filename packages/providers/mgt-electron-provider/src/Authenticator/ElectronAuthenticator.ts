@@ -91,6 +91,9 @@ enum AuthState {
   LOGGED_OUT = 'logged_out'
 }
 
+/**
+ * AccountDetails defines the available AccountInfo or undefined.
+ */
 type AccountDetails = AccountInfo | undefined;
 
 /**
@@ -485,12 +488,7 @@ export class ElectronAuthenticator {
   private async getAccount(): Promise<AccountDetails> {
     const cache = this.clientApplication.getTokenCache();
     const currentAccounts = await cache.getAllAccounts();
-
-    if (currentAccounts === null) {
-      return undefined;
-    }
-
-    if (currentAccounts.length >= 1) {
+    if (currentAccounts?.length >= 1) {
       return currentAccounts[0];
     }
     return undefined;
