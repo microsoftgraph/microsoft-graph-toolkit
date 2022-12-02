@@ -1,7 +1,7 @@
 {
   "name": "root",
   "private": true,
-  "version": "2.8.0",
+  "version": "2.8.1",
   "workspaces": [
     "packages/*",
     "packages/providers/*",
