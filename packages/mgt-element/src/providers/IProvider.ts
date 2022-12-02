@@ -8,7 +8,6 @@
 import { AuthenticationProvider, AuthenticationProviderOptions } from '@microsoft/microsoft-graph-client';
 import { validateBaseURL } from '../utils/GraphHelpers';
 import { GraphEndpoint, IGraph, MICROSOFT_GRAPH_DEFAULT_ENDPOINT } from '../IGraph';
-import { validateBaseURL } from '../utils/GraphHelpers';
 import { EventDispatcher, EventHandler } from '../utils/EventDispatcher';
 
 /**
