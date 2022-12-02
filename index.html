@@ -116,53 +116,6 @@
 
     sidebarNode.insertBefore(usefulLinksContainer, sidebarNode.childNodes[1]);
 
-    const searchBox = document.querySelector(".search-field");
-    if (searchBox) {
-      searchBox.setAttribute("name", "Find Components");
-      searchBox.setAttribute("aria-expanded", "false");
-
-      const searchInput = searchBox.querySelector("input");
-      if (searchInput) {
-        searchInput.addEventListener("mouseleave", addAriaExpanded("false"));
-        searchInput.addEventListener("mouseout", addAriaExpanded("false"));
-        searchInput.addEventListener("pointerleave", addAriaExpanded("false"));
-        searchInput.addEventListener("pointerout", addAriaExpanded("false"));
-        searchInput.addEventListener("click", addAriaExpanded("true"));
-        searchInput.addEventListener("focusout", addAriaExpanded("false"));
-        searchInput.addEventListener("focus", setListItemsAc11y);
-      }
-    }
-
-    function setListItemsAc11y() {
-      const recentMenu = document.querySelector("#storybook-explorer-menu");
-      if (recentMenu) {
-        const firstLi = recentMenu.querySelector("li");
-        if (firstLi) {
-          firstLi.setAttribute("role", "heading");
-          firstLi.setAttribute("aria-level", "2");
-        }
-
-        const otherLis = recentMenu.querySelectorAll("li:not(:first-child)");
-        if (otherLis && otherLis.length > 0) {
-          for (let i = 0; i < otherLis.length; i++) {
-            const li = otherLis[i];
-            const liText = li.innerText;
-            if (liText) {
-              li.setAttribute("aria-label", liText.trim());
-            }
-            li.setAttribute("aria-hidden", "true");
-          }
-        }
-      }
-    }
-
-    function addAriaExpanded(value) {
-      const searchBox = document.querySelector(".search-field");
-      if (searchBox) {
-        searchBox.setAttribute("aria-expanded", value);
-      }
-    }
-
     const sidebarSubheading = document.getElementsByClassName("sidebar-subheading");
     if (sidebarSubheading) {
       for (let i = 0; i < sidebarSubheading.length; i++) {
@@ -180,6 +133,7 @@
         }
       }
     }
+
     function setArialLabelForExpandCollapseBtn() {
       const expandCollapseBtns = document.getElementsByClassName("css-rl1ij0");
       if (expandCollapseBtns) {
@@ -203,7 +157,6 @@
     }
 
     setEventOnMenuClick();
-    setListItemsAc11y();
   }
 
   function createSvg(svgPath) {
@@ -448,6 +401,9 @@
 
   .css-14o7vtb:focus-visible {
     outline: auto;
+  }
+  .search-field {
+    display: none !important;
   }</style><style>#root[hidden],
       #docs-root[hidden] {
         display: none !important;
@@ -467,4 +423,4 @@
           
       
           
-            window['DOCS_MODE'] = false;</script><script src="runtime~main.f277d0e0feaf566452cd.manager.bundle.js"></script><script src="vendors~main.026d1db520035d125ee4.manager.bundle.js"></script><script src="main.3af51c26190a36ab52d5.manager.bundle.js"></script></body></html>
+            window['DOCS_MODE'] = false;</script><script src="runtime~main.2dfbeed02097a5522323.manager.bundle.js"></script><script src="vendors~main.1267373b55b3ea6c4895.manager.bundle.js"></script><script src="main.064d09518b292564b707.manager.bundle.js"></script></body></html>
