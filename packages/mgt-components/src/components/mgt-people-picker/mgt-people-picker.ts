@@ -684,6 +684,8 @@ export class MgtPeoplePicker extends MgtTemplatedComponent {
       return html``;
     }
 
+    // aria-label needs to provide a falsy default to avoid setting the attribute to "undefined" or "null"
+    // direct used of the ariaLabel property on the input element only works in Chromium browsers
     return html`
        <div class="${classMap(inputClasses)}">
          <input
@@ -693,7 +695,7 @@ export class MgtPeoplePicker extends MgtTemplatedComponent {
            role="combobox"
            placeholder=${placeholder}
            autocomplete="off"
-           .ariaLabel=${this.ariaLabel}
+           aria-label=${this.ariaLabel || ''}
            aria-controls="suggestions-list"
            aria-haspopup="listbox"
            aria-autocomplete="list"
