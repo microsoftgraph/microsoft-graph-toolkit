@@ -1053,7 +1053,7 @@ export class MgtPersonCard extends MgtTemplatedComponent {
       }
     };
 
-    await sendMesage(this._graph, chat.id, messageData);
+    await sendMessage(this._graph, chat.id, messageData);
     this.clearInputData();
   }
 

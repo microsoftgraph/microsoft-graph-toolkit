@@ -8,5 +8,5 @@
 export const strings = {
   showMoreSectionButton: 'Show more',
   endOfCard: 'End of the card',
-  quickMessage: 'Type your message here'
+  quickMessage: 'Send a quick message'
 };
