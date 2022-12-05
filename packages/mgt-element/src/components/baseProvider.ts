@@ -69,7 +69,7 @@ export abstract class MgtBaseProvider extends MgtBaseComponent {
   /**
    * The base URL that should be used in the graph client config.
    *
-   * @memberof MgtMsal2Provider
+   * @memberof MgtBaseProvider
    */
   @property({
     attribute: 'base-url',
