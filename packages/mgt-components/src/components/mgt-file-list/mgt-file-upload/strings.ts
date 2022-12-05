@@ -25,5 +25,6 @@ export const strings = {
   buttonReplace: 'Replace',
   buttonReselect: 'Reselect',
   fileReplaceTitle: 'Replace file',
-  fileReplace: 'Do you want to replace the file "{FileName}" or keep both files?'
+  fileReplace: 'Do you want to replace the file "{FileName}" or keep both files?',
+  uploadButtonLabel: 'File upload button'
 };

@@ -316,12 +316,16 @@ export class MgtFileUpload extends MgtBaseComponent {
         <div>
           <input
             id="file-upload-input"
+            title="${this.strings.uploadButtonLabel}"
+            tabindex="-1"
             type="file"
             multiple="true"
             @change="${this.onFileUploadChange}"
           />
-          <fluent-button class="file-upload-button" @click=${this.onFileUploadClick}>
-            ${getSvg(SvgIcon.Upload)} <span class="upload-text">${strings.buttonUploadFile}</span>
+          <fluent-button class="file-upload-button" @click=${this.onFileUploadClick} label=${
+      this.strings.uploadButtonLabel
+    }>
+            ${getSvg(SvgIcon.Upload)} <span class="upload-text">${this.strings.buttonUploadFile}</span>
           </fluent-button>
         </div>
         </div>
