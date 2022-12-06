@@ -17,7 +17,7 @@ import {
   TelemetryHandler
 } from '@microsoft/microsoft-graph-client';
 
-import { IGraph } from './IGraph';
+import { IGraph, MICROSOFT_GRAPH_DEFAULT_ENDPOINT } from './IGraph';
 import { IProvider } from './providers/IProvider';
 import { Batch } from './utils/Batch';
 import { ComponentMiddlewareOptions } from './utils/ComponentMiddlewareOptions';
@@ -155,8 +155,10 @@ export function createFromProvider(provider: IProvider, version?: string, compon
     new HTTPMessageHandler()
   ];
 
+  let baseURL = provider.baseURL ? provider.baseURL : MICROSOFT_GRAPH_DEFAULT_ENDPOINT;
   const client = Client.initWithMiddleware({
-    middleware: chainMiddleware(...middleware)
+    middleware: chainMiddleware(...middleware),
+    baseUrl: baseURL
   });
 
   const graph = new Graph(client, version);
