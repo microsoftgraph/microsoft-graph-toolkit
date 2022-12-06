@@ -45,7 +45,8 @@
     "storybook:bundle:watch": "rollup -c ./.storybook/rollup.config.js --watch",
     "storybook:build": "npm run storybook:bundle && npm run storybook:dev && build-storybook -s assets && cpx .storybook/CNAME storybook-static",
     "storybook:deploy": "npm run storybook:build && storybook-to-ghpages -e storybook-static",
-    "setLicense": "gulp setLicense"
+    "setLicense": "gulp setLicense",
+    "version:tsc": "tsc -v"
   },
   "storybook-deployer": {
     "gitUsername": "@microsoft/mgt",

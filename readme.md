@@ -57,60 +57,62 @@ You can explore components and samples with the [playground](https://mgt.dev) po
 
 The Toolkit currently includes the following components:
 
-* [mgt-login](https://docs.microsoft.com/graph/toolkit/components/login)
-* [mgt-person](https://docs.microsoft.com/graph/toolkit/components/person)
-* [mgt-person-card](https://docs.microsoft.com/graph/toolkit/components/person-card)
-* [mgt-people](https://docs.microsoft.com/graph/toolkit/components/people)
-* [mgt-people-picker](https://docs.microsoft.com/graph/toolkit/components/people-picker)
-* [mgt-agenda](https://docs.microsoft.com/graph/toolkit/components/agenda)
-* [mgt-tasks](https://docs.microsoft.com/graph/toolkit/components/tasks)
-* [mgt-todo](https://docs.microsoft.com/graph/toolkit/components/todo)
-* [mgt-teams-channel-picker](https://docs.microsoft.com/graph/toolkit/components/teams-channel-picker)
-* [mgt-file](https://docs.microsoft.com/graph/toolkit/components/file)
-* [mgt-file-list](https://docs.microsoft.com/graph/toolkit/components/file-list)
-* [mgt-get](https://docs.microsoft.com/graph/toolkit/components/get)
+* [mgt-login](https://learn.microsoft.com/graph/toolkit/components/login)
+* [mgt-person](https://learn.microsoft.com/graph/toolkit/components/person)
+* [mgt-person-card](https://learn.microsoft.com/graph/toolkit/components/person-card)
+* [mgt-people](https://learn.microsoft.com/graph/toolkit/components/people)
+* [mgt-people-picker](https://learn.microsoft.com/graph/toolkit/components/people-picker)
+* [mgt-agenda](https://learn.microsoft.com/graph/toolkit/components/agenda)
+* [mgt-tasks](https://learn.microsoft.com/graph/toolkit/components/tasks)
+* [mgt-todo](https://learn.microsoft.com/graph/toolkit/components/todo)
+* [mgt-teams-channel-picker](https://learn.microsoft.com/graph/toolkit/components/teams-channel-picker)
+* [mgt-file](https://learn.microsoft.com/graph/toolkit/components/file)
+* [mgt-file-list](https://learn.microsoft.com/graph/toolkit/components/file-list)
+* [mgt-get](https://learn.microsoft.com/graph/toolkit/components/get)
 
-All web components are also available as React component - see [@microsoft/mgt-react documentation](https://docs.microsoft.com/graph/toolkit/get-started/mgt-react).
+All web components are also available as React component - see [@microsoft/mgt-react documentation](https://learn.microsoft.com/graph/toolkit/get-started/mgt-react).
 
 ## Providers
 
-[Providers](https://docs.microsoft.com/graph/toolkit/providers) enable authentication and provide the implementation for acquiring access tokens on various platforms. The providers also expose a Microsoft Graph Client for calling the Microsoft Graph APIs. The components work best when used with a provider, but the providers can be used on their own as well.
+[Providers](https://learn.microsoft.com/graph/toolkit/providers) enable authentication and provide the implementation for acquiring access tokens on various platforms. The providers also expose a Microsoft Graph Client for calling the Microsoft Graph APIs. The components work best when used with a provider, but the providers can be used on their own as well.
 
-* [MsalProvider](https://docs.microsoft.com/graph/toolkit/providers/msal)
-* [Msal2Provider](https://docs.microsoft.com/graph/toolkit/providers/msal2)
-* [SharePointProvider](https://docs.microsoft.com/graph/toolkit/providers/sharepoint)
-* [TeamsProvider](https://docs.microsoft.com/graph/toolkit/providers/teams)
-* [TeamsMsal2Provider](https://docs.microsoft.com/graph/toolkit/providers/teams-msal2)
-* [TeamsFxProvider](https://docs.microsoft.com/graph/toolkit/providers/teamsfx)
-* [ProxyProvider](https://docs.microsoft.com/graph/toolkit/providers/proxy)
-* [SimpleProvider](https://docs.microsoft.com/graph/toolkit/providers/custom)
-* [ElectronProvider](https://docs.microsoft.com/graph/toolkit/providers/electron)
+* [MsalProvider](https://learn.microsoft.com/graph/toolkit/providers/msal)
+* [Msal2Provider](https://learn.microsoft.com/graph/toolkit/providers/msal2)
+* [SharePointProvider](https://learn.microsoft.com/graph/toolkit/providers/sharepoint)
+* [TeamsProvider](https://learn.microsoft.com/graph/toolkit/providers/teams)
+* [TeamsMsal2Provider](https://learn.microsoft.com/graph/toolkit/providers/teams-msal2)
+* [TeamsFxProvider](https://learn.microsoft.com/graph/toolkit/providers/teamsfx)
+* [ProxyProvider](https://learn.microsoft.com/graph/toolkit/providers/proxy)
+* [SimpleProvider](https://learn.microsoft.com/graph/toolkit/providers/custom)
+* [ElectronProvider](https://learn.microsoft.com/graph/toolkit/providers/electron)
 
-You can also create your own providers by extending the [IProvider](https://docs.microsoft.com/graph/toolkit/providers/custom) abstract class.
+You can also create your own providers by extending the [IProvider](https://learn.microsoft.com/graph/toolkit/providers/custom) abstract class.
 
-[View the full documentation](https://docs.microsoft.com/graph/toolkit/overview)
+[View the full documentation](https://learn.microsoft.com/graph/toolkit/overview)
 
 ## Getting Started
 
 The following guides are available to help you get started with the Toolkit:
-* [Build a web application (vanilla JS)](https://docs.microsoft.com/graph/toolkit/get-started/build-a-web-app)
-* [Build a SharePoint Web Part](https://docs.microsoft.com/graph/toolkit/get-started/build-a-sharepoint-web-part)
-* [Build a Microsoft Teams Tab](https://docs.microsoft.com/graph/toolkit/get-started/build-a-microsoft-teams-tab)
-* [Use the Toolkit with React](https://docs.microsoft.com/graph/toolkit/get-started/use-toolkit-with-react)
-* [Use the Toolkit with Angular](https://docs.microsoft.com/graph/toolkit/get-started/use-toolkit-with-angular)
+* [Build a web application (vanilla JS)](https://learn.microsoft.com/graph/toolkit/get-started/build-a-web-app)
+* [Build a SharePoint Web Part](https://learn.microsoft.com/graph/toolkit/get-started/build-a-sharepoint-web-part)
+* [Build a Microsoft Teams Tab](https://learn.microsoft.com/graph/toolkit/get-started/build-a-microsoft-teams-tab)
+* [Use the Toolkit with React](https://learn.microsoft.com/graph/toolkit/get-started/use-toolkit-with-react)
+* [Use the Toolkit with Angular](https://learn.microsoft.com/graph/toolkit/get-started/use-toolkit-with-angular)
 
 You can use the components by referencing the loader directly (via unpkg), or installing the npm package
 
 ### Use via mgt-loader:
 
 ```html
-<script src="https://unpkg.com/@microsoft/mgt/dist/bundle/mgt-loader.js"></script>
+<script src="https://unpkg.com/@microsoft/mgt@2/dist/bundle/mgt-loader.js"></script>
 ```
+
+> NOTE: This link will load the highest available version of @microsoft/mgt in the range `>= 2.0.0 < 3.0.0`, omitting the `@2` fragment from the url results in loading the latest version. This could result in loading a new major version and breaking the application.
 
 You can then start using the components in your html page. Here is a full working example with the Msal2 provider:
 
 ```html
-<script src="https://unpkg.com/@microsoft/mgt/dist/bundle/mgt-loader.js"></script>
+<script src="https://unpkg.com/@microsoft/mgt@2/dist/bundle/mgt-loader.js"></script>
 <mgt-msal2-provider client-id="[CLIENT-ID]"></mgt-msal2-provider>
 <mgt-login></mgt-login>
 
@@ -154,8 +156,8 @@ cd ./samples/react-app/
 yarn start
 ```
 
-This also means that running the samples in isolation may fail if there are breaking changes between the published version of mgt and the local copy. 
-To workaround this, use samples that are known to be compatible with a specific release by checking out the appropriate branch or tag first. 
+This also means that running the samples in isolation may fail if there are breaking changes between the published version of mgt and the local copy.
+To workaround this, use samples that are known to be compatible with a specific release by checking out the appropriate branch or tag first.
 
 ## Contribute
 

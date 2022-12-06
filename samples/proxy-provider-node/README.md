@@ -1,6 +1,6 @@
 # Node.js Graph Proxy sample
 
-This sample implements a Node.js server that acts as a proxy for Microsoft Graph. This can be used along with the Microsoft Graph Toolkit's [proxy provider](https://docs.microsoft.com/graph/toolkit/providers/proxy) to make all Microsoft Graph API calls from a backend service.
+This sample implements a Node.js server that acts as a proxy for Microsoft Graph. This can be used along with the Microsoft Graph Toolkit's [proxy provider](https://learn.microsoft.com/graph/toolkit/providers/proxy) to make all Microsoft Graph API calls from a backend service.
 
 ## Authorization modes
 
@@ -15,11 +15,11 @@ In pass-through mode, the service takes whatever bearer token is sent in the `Au
 
 ### On-behalf-of
 
-In on-behalf-of mode, the service uses the Microsoft identity platform's [on-behalf-of flow](https://docs.microsoft.com/azure/active-directory/develop/v2-oauth2-on-behalf-of-flow) to exchange the token sent by the calling client for a Microsoft Graph token. The next section gives instructions on how to register the app in Azure Active Directory.
+In on-behalf-of mode, the service uses the Microsoft identity platform's [on-behalf-of flow](https://learn.microsoft.com/azure/active-directory/develop/v2-oauth2-on-behalf-of-flow) to exchange the token sent by the calling client for a Microsoft Graph token. The next section gives instructions on how to register the app in Azure Active Directory.
 
 #### App registration
 
-This sample requires two app registrations. This is needed to take advantage of [combined consent](https://docs.microsoft.com/azure/active-directory/develop/v2-oauth2-on-behalf-of-flow#default-and-combined-consent) with the on-behalf-of flow in the Microsoft identity platform. Create an app registration for:
+This sample requires two app registrations. This is needed to take advantage of [combined consent](https://learn.microsoft.com/azure/active-directory/develop/v2-oauth2-on-behalf-of-flow#default-and-combined-consent) with the on-behalf-of flow in the Microsoft identity platform. Create an app registration for:
 
 - The Graph Proxy service
 - The React front-end app
@@ -56,7 +56,7 @@ This sample requires two app registrations. This is needed to take advantage of 
     - **User.Read** - this will allow the app to read the user's profile and photo.
 
     > **NOTE**
-    > These are the permissions required for the Microsoft Graph Toolkit components used in the client application. If you use different components, you may require additional permissions. See the [documentation](https://docs.microsoft.com/graph/toolkit/overview) for each component for details on required permissions.
+    > These are the permissions required for the Microsoft Graph Toolkit components used in the client application. If you use different components, you may require additional permissions. See the [documentation](https://learn.microsoft.com/graph/toolkit/overview) for each component for details on required permissions.
 
 1. Select **Expose an API**. Select the **Set** link next to **Application ID URI**. Accept the default and select **Save**.
 
@@ -110,7 +110,7 @@ This sample requires two app registrations. This is needed to take advantage of 
 
     | Setting | Value |
     |---------|-------|
-    | GRAPH_HOST | Set to the specific [Graph endpoint](https://docs.microsoft.com/graph/deployments#microsoft-graph-and-graph-explorer-service-root-endpoints) for your organization. |
+    | GRAPH_HOST | Set to the specific [Graph endpoint](https://learn.microsoft.com/graph/deployments#microsoft-graph-and-graph-explorer-service-root-endpoints) for your organization. |
     | AUTH_PASS_THROUGH | Set to `true` to enable pass-through mode, `false` for on-behalf-of mode. |
     | PROXY_APP_ID | The application ID of your **Node.js Graph Proxy** app registration |
     | PROXY_APP_TENANT_ID | The tenant ID from your **Node.js Graph Proxy** app registration |
