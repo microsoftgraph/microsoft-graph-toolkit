@@ -21,11 +21,12 @@ The picker is a component that can query any Microsoft Graph API and render a dr
 
 ## Proposed Solution
 
-### Example: To Do
-`<mgt-picker entity-type="task-lists"></mgt-picker>`
-
-### Example: Generic endpoint
+### Examples
 `<mgt-picker resource="/groups"></mgt-picker>`
+
+`<mgt-picker resource="/groups" title-property="title"></mgt-picker>`
+
+`<mgt-picker resource="/groups" placeholder="Select a group"></mgt-picker>`
 
 `<mgt-picker resource="/groups" version="beta"></mgt-picker>`
 
@@ -35,12 +36,31 @@ The picker is a component that can query any Microsoft Graph API and render a dr
 
 `<mgt-picker resource="/groups" version="beta" scopes="Group.Read.All" cache-enabled="true" cache-invalidation-period="50000"></mgt-picker>`
 
+### Advanced Examples
+
+```
+<mgt-picker resource="/groups">
+  <template type="rendered-item">
+    Item {{id}} with title {{title}}
+  </template>
+</mgt-picker>
+
+<mgt-picker resource="/groups">
+  <template type="rendered-item">
+    <span>
+      <mgt-person person-details="{{ this }}" person-card="none" fetch-image></mgt-person> - {{title}}
+    </span>
+  </template>
+</mgt-picker>
+```
+
 ## Properties and Attributes
 
 | Attribute                 | Property                | Description                                                                                                                                                                                                                           | Type                       |
 | ------------------------- | ----------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | -------------------------- |
+| placeholder                  | placeholder                 | Specify placeholder to use in the combobox. No default value is provided.                                                                                                                                        | string                     |
+| title-property                  | titleProperty                 | Specify the entity property to use as the title field in the picker. By default, we should use the following : `displayName` / `title` / `name` / `subject` / `id`. Property should exist in the target entity and is case sensitive.                                                                                                                                         | string                     |
 | show-max                  | showMax                 | Specify the number of results to show for the resource. Not in use if `max-pages` is used.                                                                                                                                            | Number                     |
-| entity-type               | entityType              | Specify the entity to be fetched and rendered in the picker                                                                                                                                                                           | `todo-lists`               |
 | resource                  | resource                | The resource to get from Microsoft Graph (for example, `/me`).                                                                                                                                                                        | String                     |
 | scopes                    | scopes                  | Optional array of strings if using the property or a comma delimited scope if using the attribute. The component will use these scopes (with a supported provider) to ensure that the user has consented to the right permission.     | String or array of strings |
 | version                   | version                 | Optional API version to use when making the GET request. Default is `v1.0`.                                                                                                                                                           | String                     |
@@ -68,16 +88,11 @@ The picker is a component that can query any Microsoft Graph API and render a dr
 | default       | null: no data                          | The template used to override the rendering of the entire component.                         |
 | loading       | null: no data                          | The template used to render the state of the picker while the request to Graph is being made |
 | error         | null: no data                          | The template used if search returns no results.                                              |
-| input-text    | null: no data                          | The template used to render the default text inside of the input box.                        |
 | rendered-item | renderedItem: the item being rendered  | The template used to render the item inside the dropdown.                                    |
 | selected-item | selectedItem: the selected item object | The template used to render the selected item inside the input box.                          |
 
 
 
 ## APIs and Permissions
-
-| API                                                                                                         | Use When                  | Permissions |
-| ----------------------------------------------------------------------------------------------------------- | ------------------------- | ----------- |
-| GET [/me/tasks/lists](https://learn.microsoft.com/graph/api/tasks-list-lists?view=graph-rest-beta&tabs=http) | entity-type is task-lists | Tasks.Read  |
 
 Permissions required by this component when using the `resource` property depend on the data that you want to retrieve with it from Microsoft Graph. For more information about permissions, see the Microsoft Graph [permissions reference](https://learn.microsoft.com/graph/permissions-reference).
