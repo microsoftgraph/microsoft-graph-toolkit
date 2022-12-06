@@ -5,16 +5,16 @@
  * -------------------------------------------------------------------------------------------
  */
 
-import { html, TemplateResult } from 'lit';
-import { classMap } from 'lit/directives/class-map.js';
-import { repeat } from 'lit/directives/repeat.js';
-import { IGraph, customElement, mgtHtml } from '@microsoft/mgt-element';
-import { Providers, ProviderState } from '@microsoft/mgt-element';
-import { getShortDateString } from '../../utils/Utils';
-import '../mgt-person/mgt-person';
-import { MgtTasksBase } from '../mgt-tasks-base/mgt-tasks-base';
-import '../sub-components/mgt-arrow-options/mgt-arrow-options';
-import '../sub-components/mgt-dot-options/mgt-dot-options';
+import { html, TemplateResult } from "lit";
+import { classMap } from "lit/directives/class-map.js";
+import { repeat } from "lit/directives/repeat.js";
+import { IGraph, customElement, mgtHtml } from "@microsoft/mgt-element";
+import { Providers, ProviderState } from "@microsoft/mgt-element";
+import { getShortDateString } from "../../utils/Utils";
+import "../mgt-person/mgt-person";
+import { MgtTasksBase } from "../mgt-tasks-base/mgt-tasks-base";
+import "../sub-components/mgt-arrow-options/mgt-arrow-options";
+import "../sub-components/mgt-dot-options/mgt-dot-options";
 import {
   createTodoTask,
   deleteTodoTask,
@@ -24,10 +24,10 @@ import {
   TaskStatus,
   TodoTask,
   TodoTaskList,
-  updateTodoTask
-} from './graph.todo';
-import { styles } from './mgt-todo-css';
-import { strings } from './strings';
+  updateTodoTask,
+} from "./graph.todo";
+import { styles } from "./mgt-todo-css";
+import { strings } from "./strings";
 
 /*
  * Filter function
@@ -79,7 +79,7 @@ export type TodoFilter = (task: TodoTask) => boolean;
  * @cssprop --task-icon-color - {Color} Task icon color
  * @cssprop --task-icon-color-completed - {Color} Task icon color when completed
  */
-@customElement('todo')
+@customElement("todo")
 // @customElement('mgt-todo')
 export class MgtTodo extends MgtTasksBase {
   /**
@@ -109,7 +109,7 @@ export class MgtTodo extends MgtTasksBase {
    * @memberof MgtTodo
    */
   public static get requiredScopes(): string[] {
-    return ['tasks.read', 'tasks.readwrite'];
+    return ["tasks.read", "tasks.readwrite"];
   }
 
   private _lists: TodoTaskList[];
@@ -126,7 +126,7 @@ export class MgtTodo extends MgtTasksBase {
     super();
     this._graph = null;
     this._newTaskDueDate = null;
-    this._newTaskListId = '';
+    this._newTaskListId = "";
     this._currentList = null;
     this._lists = [];
     this._tasks = [];
@@ -144,17 +144,15 @@ export class MgtTodo extends MgtTasksBase {
 
     let tasks = this._tasks;
     if (tasks && this.taskFilter) {
-      tasks = tasks.filter(task => this.taskFilter(task));
+      tasks = tasks.filter((task) => this.taskFilter(task));
     }
 
     const taskTemplates = repeat(
       tasks,
-      task => task.id,
-      task => this.renderTask(task)
+      (task) => task.id,
+      (task) => this.renderTask(task)
     );
-    return html`
-      ${taskTemplates}
-    `;
+    return html` ${taskTemplates} `;
   }
 
   /**
@@ -166,7 +164,7 @@ export class MgtTodo extends MgtTasksBase {
    */
   protected renderNewTaskDetails(): TemplateResult {
     const lists = this._lists.filter(
-      list =>
+      (list) =>
         (this._currentList && list.id === this._currentList.id) ||
         (!this._currentList && list.id === this._newTaskListId)
     );
@@ -192,7 +190,7 @@ export class MgtTodo extends MgtTasksBase {
               }}"
             >
               ${lists.map(
-                list => html`
+                (list) => html`
                   <option value="${list.id}">${list.displayName}</option>
                 `
               )}
@@ -212,7 +210,7 @@ export class MgtTodo extends MgtTasksBase {
           @change="${(e: Event) => {
             const value = (e.target as HTMLInputElement).value;
             if (value) {
-              this._newTaskDueDate = new Date(value + 'T17:00');
+              this._newTaskDueDate = new Date(value + "T17:00");
             } else {
               this._newTaskDueDate = null;
             }
@@ -221,9 +219,7 @@ export class MgtTodo extends MgtTasksBase {
       </span>
     `;
 
-    return html`
-      ${taskList} ${taskDue}
-    `;
+    return html` ${taskList} ${taskDue} `;
   }
 
   /**
@@ -235,9 +231,7 @@ export class MgtTodo extends MgtTasksBase {
    */
   protected renderHeaderContent(): TemplateResult {
     if (this.isLoadingState) {
-      return html`
-        <div class="header__loading"></div>
-      `;
+      return html` <div class="header__loading"></div> `;
     }
 
     const lists = this._lists || [];
@@ -246,12 +240,10 @@ export class MgtTodo extends MgtTasksBase {
     let listSelect: TemplateResult;
 
     if (targetId && lists.length) {
-      const list = lists.find(l => l.id === targetId);
+      const list = lists.find((l) => l.id === targetId);
       if (list) {
         listSelect = html`
-          <span class="PlanTitle">
-            ${list.displayName}
-          </span>
+          <span class="PlanTitle"> ${list.displayName} </span>
         `;
       }
     } else if (currentList) {
@@ -265,11 +257,7 @@ export class MgtTodo extends MgtTasksBase {
       `;
     }
 
-    return html`
-      <span class="TitleCont">
-        ${listSelect}
-      </span>
-    `;
+    return html` <span class="TitleCont"> ${listSelect} </span> `;
   }
 
   /**
@@ -283,45 +271,47 @@ export class MgtTodo extends MgtTasksBase {
   protected renderTask(task: TodoTask) {
     const context = { task, list: this._currentList };
 
-    if (this.hasTemplate('task')) {
-      return this.renderTemplate('task', context, task.id);
+    if (this.hasTemplate("task")) {
+      return this.renderTemplate("task", context, task.id);
     }
 
-    const isCompleted = (TaskStatus as any)[task.status] === TaskStatus.completed;
+    const isCompleted =
+      (TaskStatus as any)[task.status] === TaskStatus.completed;
     const isLoading = this._loadingTasks.includes(task.id);
     const taskCheckClasses = {
       Complete: !isLoading && isCompleted,
       Loading: isLoading,
       TaskCheck: true,
-      TaskIcon: true
+      TaskIcon: true,
     };
 
     const taskCheckContent = isLoading
-      ? html`
-          
-        `
+      ? html`  `
       : isCompleted
-      ? html`
-          
-        `
+      ? html`  `
       : null;
 
     let taskDetailsTemplate = null;
-    if (this.hasTemplate('task-details')) {
-      taskDetailsTemplate = this.renderTemplate('task-details', context, `task-details-${task.id}`);
+    if (this.hasTemplate("task-details")) {
+      taskDetailsTemplate = this.renderTemplate(
+        "task-details",
+        context,
+        `task-details-${task.id}`
+      );
     } else {
       const taskDueTemplate = task.dueDateTime
         ? html`
             <div class="TaskDetail TaskDue">
-              <span>Due ${getShortDateString(new Date(task.dueDateTime.dateTime))}</span>
+              <span
+                >Due
+                ${getShortDateString(new Date(task.dueDateTime.dateTime))}</span
+              >
             </div>
           `
         : null;
 
       taskDetailsTemplate = html`
-        <div class="TaskTitle">
-          ${task.title}
-        </div>
+        <div class="TaskTitle">${task.title}</div>
         <div class="TaskDetail TaskBucket">
           ${this.renderBucketIcon()}
           <span>${this._currentList.displayName}</span>
@@ -336,7 +326,8 @@ export class MgtTodo extends MgtTasksBase {
             <div class="TaskOptions">
               <mgt-dot-options
                 .options="${{
-                  [this.strings.removeTaskSubtitle]: e => this.removeTask(e, task.id)
+                  [this.strings.removeTaskSubtitle]: (e) =>
+                    this.removeTask(e, task.id),
                 }}"
               ></mgt-dot-options>
             </div>
@@ -347,18 +338,24 @@ export class MgtTodo extends MgtTasksBase {
       Complete: isCompleted,
       Incomplete: !isCompleted,
       ReadOnly: this.readOnly,
-      Task: true
+      Task: true,
     });
     const taskCheckContainerClasses = classMap({
       Complete: isCompleted,
       Incomplete: !isCompleted,
-      TaskCheckContainer: true
+      TaskCheckContainer: true,
     });
 
     return html`
       <div class=${taskClasses}>
-        <div class="TaskContent" @click="${(e: Event) => this.handleTaskClick(e, task)}}">
-          <span class=${taskCheckContainerClasses} @click="${(e: Event) => this.handleTaskCheckClick(e, task)}">
+        <div
+          class="TaskContent"
+          @click="${(e: Event) => this.handleTaskClick(e, task)}"
+        >
+          <span
+            class=${taskCheckContainerClasses}
+            @click="${(e: Event) => this.handleTaskCheckClick(e, task)}"
+          >
             <span class=${classMap(taskCheckClasses)}>
               <span class="TaskCheckContent">${taskCheckContent}</span>
             </span>
@@ -407,7 +404,7 @@ export class MgtTodo extends MgtTasksBase {
     let currentList = this._currentList;
     if (!currentList && lists && lists.length) {
       if (this.initialId) {
-        currentList = lists.find(l => l.id === this.initialId);
+        currentList = lists.find((l) => l.id === this.initialId);
       }
       if (!currentList) {
         currentList = lists[0];
@@ -432,14 +429,14 @@ export class MgtTodo extends MgtTasksBase {
   protected async createNewTask(): Promise<void> {
     const listId = this._currentList.id;
     const taskData = {
-      title: this.newTaskName
+      title: this.newTaskName,
     };
 
     if (this._newTaskDueDate) {
       // tslint:disable-next-line: no-string-literal
-      taskData['dueDateTime'] = {
+      taskData["dueDateTime"] = {
         dateTime: this._newTaskDueDate.toLocaleDateString(),
-        timeZone: 'UTC'
+        timeZone: "UTC",
       };
     }
 
@@ -485,7 +482,10 @@ export class MgtTodo extends MgtTasksBase {
     this.requestUpdate();
   }
 
-  private async updateTaskStatus(task: TodoTask, taskStatus: TaskStatus): Promise<void> {
+  private async updateTaskStatus(
+    task: TodoTask,
+    taskStatus: TaskStatus
+  ): Promise<void> {
     this._loadingTasks = [...this._loadingTasks, task.id];
     this.requestUpdate();
 
@@ -496,22 +496,22 @@ export class MgtTodo extends MgtTasksBase {
     const listId = this._currentList.id;
     task = await updateTodoTask(this._graph, listId, task.id, task);
 
-    const taskIndex = this._tasks.findIndex(t => t.id === task.id);
+    const taskIndex = this._tasks.findIndex((t) => t.id === task.id);
     this._tasks[taskIndex] = task;
 
-    this._loadingTasks = this._loadingTasks.filter(id => id !== task.id);
+    this._loadingTasks = this._loadingTasks.filter((id) => id !== task.id);
     this.requestUpdate();
   }
 
   // tslint:disable-next-line: completed-docs
   private async removeTask(e: { target: HTMLElement }, taskId: string) {
-    this._tasks = this._tasks.filter(t => t.id !== taskId);
+    this._tasks = this._tasks.filter((t) => t.id !== taskId);
     this.requestUpdate();
 
     const listId = this._currentList.id;
     await deleteTodoTask(this._graph, listId, taskId);
 
-    this._tasks = this._tasks.filter(t => t.id !== taskId);
+    this._tasks = this._tasks.filter((t) => t.id !== taskId);
   }
 
   private handleTaskCheckClick(e: Event, task: TodoTask) {
