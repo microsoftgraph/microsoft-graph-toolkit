@@ -41,7 +41,7 @@ The components can be used on their own, but they are at their best when they ar
     ```html
     <script type="module">
       import {Providers} from '@microsoft/mgt-element';
-      import {MsalProvider} from '@microsoft/mgt-msal-provider';
+      import {Msal2Provider} from '@microsoft/mgt-msal2-provider';
 
       // import the components
       import '@microsoft/mgt-components';
@@ -54,6 +54,40 @@ The components can be used on their own, but they are at their best when they ar
     <mgt-person person-query="Bill Gates" person-card="hover"></mgt-person>
     <mgt-agenda group-by-day></mgt-agenda>
     ```
+
+
+## <a id="disambiguation">Disambiguation</a>
+
+MGT is built using [web components](https://developer.mozilla.org/en-US/docs/Web/Web_Components). Web components use their tag name as a unique key when registering within a browser. Any attempt to register a component using a previously registered tag name results in an error being thrown when calling `CustomElementRegistry.define()`. In scenarios where multiple custom applications can be loaded into a single page this created issues for MGT, most notably in developing custom SharePoint web parts.
+
+To mitigate this challenge the [`mgt-spfx`](https://github.com/microsoftgraph/microsoft-graph-toolkit/tree/main/packages/mgt-spfx) package was built. This provided a library extension to SharePoint which centralized the registration of the MGT web components. This allowed for multiple MGT web parts to be loaded into a single page without throwing errors. When using `mgt-spfx` all MGT based web parts in a SharePoint tenant used the same version of MGT.
+
+In order to allow developers to build custom MGT web parts using the latest version of MGT and retain the ability to have web parts built using v2.x of MGT on the same page a new disambiguation feature has been added to MGT. This allows developers to specify a unique string to add to the tag name of all MGT web components in their application.
+
+The earlier example can be updated to use the disambiguation feature as follows:
+
+```html
+<script type="module">
+  import { Providers, customElementHelper } from '@microsoft/mgt-element';
+  customElementHelper.withDisambiguation('contoso');
+  import { Msal2Provider } from '@microsoft/mgt-msal2-provider';
+  Providers.globalProvider = new Msal2Provider({clientId: 'clientId'});
+
+</script>
+
+<mgt-contoso-login></mgt-contoso-login>
+<mgt-contoso-person person-query="Bill Gates" person-card="hover"></mgt-contoso-person>
+<mgt-contoso-agenda group-by-day></mgt-contoso-agenda>
+```
+> Note: the `import` of `mgt-components` must use a dynamic import to ensure that the disambiguation is applied before the components are imported. Helper utilities have been provided in the  [`mgt-spfx-utils`](https://github.com/microsoftgraph/microsoft-graph-toolkit/tree/main/packages/mgt-spfx-utils) package to make this easier in the context of SharePoint web parts.
+
+### Dynamic imports aka Lazy Loading
+
+Dynamic imports are a means to asynchronously load code. This is useful when you want to load code only when it is needed. For example, you may want to load a component only when a user clicks a button. This is a great way to reduce the initial load time of your application. In the context of disambiguation it is necessary to use this technique as the components register themselves in the browser when they are imported.
+
+When using an `import` statement the import statement is hoisted and executed before any other code in the code block. To use dynamic imports you must use the `import()` function.
+
+If you import the components before you have applied the disambiguation the disambiguation will not have been applied and using the disambiguated tag name will not work.
 
 ## Sea also
 * [Microsoft Graph Toolkit docs](https://aka.ms/mgt-docs)
