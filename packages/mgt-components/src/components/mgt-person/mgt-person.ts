@@ -770,7 +770,7 @@ export class MgtPerson extends MgtTemplatedComponent {
                 ${initials}
               `
               : html`
-                <i class="ms-Icon ms-Icon--Contact contact-icon">${this.renderPersonIcon()}</i>
+                <i class="contact-icon">${this.renderPersonIcon()}</i>
               `
           }
         </span>
