@@ -16,7 +16,7 @@ const MgtDemo = React.lazy(() => import('./components/MgtDemo'));
 export interface IMgtDemoWebPartProps {
   description: string;
 }
-// set the disambiguation before initializing any webpart
+// set the disambiguation before initializing any web part
 customElementHelper.withDisambiguation('northwind');
 
 export default class MgtDemoWebPart extends BaseClientSideWebPart<IMgtDemoWebPartProps> {

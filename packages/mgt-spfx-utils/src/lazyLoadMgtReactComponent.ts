@@ -12,6 +12,8 @@ export function lazyLoadComponent<P>(
   component: React.LazyExoticComponent<any>,
   props: P
 ): React.FunctionComponentElement<React.SuspenseProps> {
+  // imperative code analogous to:
+  // <div><Suspense fallback="Loading..."><Component {...props} /></Suspense></div>
   return React.createElement(
     React.Suspense,
     {
