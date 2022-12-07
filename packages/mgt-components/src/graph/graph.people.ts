@@ -111,7 +111,7 @@ export async function findPeople(
   const scopes = 'people.read';
 
   let cache: CacheStore<CachePeopleQuery>;
-  let cacheKey = `${query}:${top}:${userType}`;
+  const cacheKey = `${query}:${top}:${userType}`;
 
   if (getIsPeopleCacheEnabled()) {
     cache = CacheService.getCache<CachePeopleQuery>(schemas.people, schemas.people.stores.peopleQuery);
@@ -145,7 +145,7 @@ export async function findPeople(
       .filter(filter)
       .middlewareOptions(prepScopes(scopes));
 
-    if (userType != UserType.contact) {
+    if (userType !== UserType.contact) {
       // for any type other than Contact, user a wider search
       graphRequest = graphRequest.header('X-PeopleQuery-QuerySources', 'Mailbox,Directory');
     }
@@ -157,7 +157,9 @@ export async function findPeople(
       item.results = graphResult.value.map(personStr => JSON.stringify(personStr));
       cache.putValue(cacheKey, item);
     }
-  } catch (error) {}
+  } catch (error) {
+    // intentionally empty
+  }
   return graphResult ? graphResult.value : null;
 }
 
@@ -175,7 +177,7 @@ export async function getPeople(
   const scopes = 'people.read';
 
   let cache: CacheStore<CachePeopleQuery>;
-  let cacheKey = peopleFilters ? peopleFilters : `*:${userType}`;
+  const cacheKey = peopleFilters ? peopleFilters : `*:${userType}`;
 
   if (getIsPeopleCacheEnabled()) {
     cache = CacheService.getCache<CachePeopleQuery>(schemas.people, schemas.people.stores.peopleQuery);
@@ -255,7 +257,7 @@ export async function findContactsByEmail(graph: IGraph, email: string): Promise
     }
   }
 
-  let encodedEmail = `${email.replace(/#/g, '%2523')}`;
+  const encodedEmail = `${email.replace(/#/g, '%2523')}`;
 
   const result = await graph
     .api('/me/contacts')
