@@ -10,10 +10,10 @@ import { html, TemplateResult } from 'lit';
 import { TeamsHelper, customElement } from '@microsoft/mgt-element';
 import { classMap } from 'lit/directives/class-map.js';
 
-import { getEmailFromGraphEntity } from '../../../../graph/graph.people';
+import { getEmailFromGraphEntity } from '../../graph/graph.people';
 import { BasePersonCardSection } from '../BasePersonCardSection';
-import { styles } from './mgt-person-card-contact-css';
-import { getSvg, SvgIcon } from '../../../../utils/SvgHelper';
+import { styles } from './mgt-contact-css';
+import { getSvg, SvgIcon } from '../../utils/SvgHelper';
 import { strings } from './strings';
 
 /**
@@ -40,12 +40,12 @@ type Protocol = 'mailto:' | 'tel:';
  * The contact details subsection of the person card
  *
  * @export
- * @class MgtPersonCardProfile
+ * @class MgtContact
  * @extends {MgtTemplatedComponent}
  */
-@customElement('person-card-contact')
-// @customElement('mgt-person-card-contact')
-export class MgtPersonCardContact extends BasePersonCardSection {
+@customElement('contact')
+// @customElement('mgt-contact')
+export class MgtContact extends BasePersonCardSection {
   /**
    * Array of styles to apply to the element. The styles should be defined
    * using the `css` tag function.
@@ -143,7 +143,7 @@ export class MgtPersonCardContact extends BasePersonCardSection {
    *
    * @readonly
    * @type {string}
-   * @memberof MgtPersonCardContact
+   * @memberof MgtContact
    */
   public get displayName(): string {
     return this.strings.contactSectionTitle;
@@ -155,7 +155,7 @@ export class MgtPersonCardContact extends BasePersonCardSection {
    * Render the icon for display in the navigation ribbon.
    *
    * @returns {TemplateResult}
-   * @memberof MgtPersonCardContact
+   * @memberof MgtContact
    */
   public renderIcon(): TemplateResult {
     return getSvg(SvgIcon.Contact);
@@ -165,7 +165,7 @@ export class MgtPersonCardContact extends BasePersonCardSection {
    * Reset any state in the section
    *
    * @protected
-   * @memberof MgtPersonCardContact
+   * @memberof MgtContact
    */
   public clearState() {
     super.clearState();
@@ -178,7 +178,7 @@ export class MgtPersonCardContact extends BasePersonCardSection {
    * Render the compact view
    *
    * @returns {TemplateResult}
-   * @memberof MgtPersonCardContact
+   * @memberof MgtContact
    */
   protected renderCompactView(): TemplateResult {
     let contentTemplate: TemplateResult;
@@ -199,14 +199,14 @@ export class MgtPersonCardContact extends BasePersonCardSection {
     }
 
     contentTemplate = html`
-      ${compactParts.map(p => this.renderContactPart(p))}
-    `;
+       ${compactParts.map(p => this.renderContactPart(p))}
+     `;
 
     return html`
-      <div class="root compact" dir=${this.direction}>
-        ${contentTemplate}
-      </div>
-    `;
+       <div class="root compact" dir=${this.direction}>
+         ${contentTemplate}
+       </div>
+     `;
   }
 
   /**
@@ -214,7 +214,7 @@ export class MgtPersonCardContact extends BasePersonCardSection {
    *
    * @protected
    * @returns {TemplateResult}
-   * @memberof MgtPersonCardContact
+   * @memberof MgtContact
    */
   protected renderFullView(): TemplateResult {
     let contentTemplate: TemplateResult;
@@ -223,16 +223,16 @@ export class MgtPersonCardContact extends BasePersonCardSection {
       // Filter for parts with values only
       const availableParts: IContactPart[] = Object.values(this._contactParts).filter((p: IContactPart) => !!p.value);
       contentTemplate = html`
-        ${availableParts.map(part => this.renderContactPart(part))}
-      `;
+         ${availableParts.map(part => this.renderContactPart(part))}
+       `;
     }
 
     return html`
-      <div class="root" dir=${this.direction}>
-        <div class="title" tabindex="0">${this.displayName}</div>
-        ${contentTemplate}
-      </div>
-    `;
+       <div class="root" dir=${this.direction}>
+         <div class="title" tabindex="0">${this.displayName}</div>
+         ${contentTemplate}
+       </div>
+     `;
   }
 
   /**
@@ -241,7 +241,7 @@ export class MgtPersonCardContact extends BasePersonCardSection {
    * @protected
    * @param {IContactPart} part
    * @returns {TemplateResult}
-   * @memberof MgtPersonCardContact
+   * @memberof MgtContact
    */
   protected renderContactPart(part: IContactPart): TemplateResult {
     let isPhone = false;
@@ -257,11 +257,11 @@ export class MgtPersonCardContact extends BasePersonCardSection {
 
     const valueTemplate = part.onClick
       ? html`
-          <span class=${classMap(partLinkClasses)} @click=${(e: Event) => part.onClick(e)}>${part.value}</span>
-        `
+           <span class=${classMap(partLinkClasses)} @click=${(e: Event) => part.onClick(e)}>${part.value}</span>
+         `
       : html`
-          ${part.value}
-        `;
+           ${part.value}
+         `;
 
     return html`
       <div class="part" @click=${(e: MouseEvent) => this.handlePartClick(e, part.value)} tabindex="0">
@@ -283,7 +283,7 @@ export class MgtPersonCardContact extends BasePersonCardSection {
    * Handle the click event for contact parts
    *
    * @protected
-   * @memberof MgtPersonCardContact
+   * @memberof MgtContact
    */
   protected handlePartClick(e: MouseEvent, value: string): void {
     if (value) {
@@ -303,7 +303,7 @@ export class MgtPersonCardContact extends BasePersonCardSection {
    * Send a chat message to the user
    *
    * @protected
-   * @memberof MgtPersonCardContact
+   * @memberof MgtContact
    */
   protected sendChat(upn: string): void {
     if (!upn) {
@@ -329,7 +329,7 @@ export class MgtPersonCardContact extends BasePersonCardSection {
    * Send an email to the user
    *
    * @protected
-   * @memberof MgtPersonCardContact
+   * @memberof MgtContact
    */
   protected sendEmail(email: string): void {
     this.sendLink('mailto:', email);
@@ -339,7 +339,7 @@ export class MgtPersonCardContact extends BasePersonCardSection {
    * Send a call to the user
    *
    * @protected
-   * @memberof MgtPersonCardContact
+   * @memberof MgtContact
    */
   protected sendCall = (phone: string): void => {
     this.sendLink('tel:', phone);

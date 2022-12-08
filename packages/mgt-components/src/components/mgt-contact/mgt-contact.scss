@@ -5,9 +5,9 @@
  * -------------------------------------------------------------------------------------------
  */
 
-@import '../base-person-card-section.scss';
-@import '../../../../styles/shared-styles.scss';
-@import '../../../../styles/shared-sass-variables.scss';
+// @import '../base-person-card-section.scss';
+@import '../../styles/shared-styles.scss';
+@import '../../styles/shared-sass-variables.scss';
 
 $person-card-contact-link-color: var(--person-card-contact-link-color, #{$commblue_primary});
 $person-card-contact-link-hover-color: var(--person-card-contact-link-hover-color, #004578);

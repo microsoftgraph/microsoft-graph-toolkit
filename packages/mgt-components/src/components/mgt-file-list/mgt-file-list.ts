@@ -14,7 +14,7 @@ import {
   customElement,
   mgtHtml
 } from '@microsoft/mgt-element';
-import { DriveItem } from '@microsoft/microsoft-graph-types';
+import { DriveItem, SharedInsight } from '@microsoft/microsoft-graph-types';
 import { html, TemplateResult } from 'lit';
 import { property, state } from 'lit/decorators.js';
 import { repeat } from 'lit/directives/repeat.js';
@@ -38,6 +38,8 @@ import {
   getUserInsightsFiles
 } from '../../graph/graph.files';
 import './mgt-file-upload/mgt-file-upload';
+import { getSvg, SvgIcon } from '../../utils/SvgHelper';
+import { BasePersonCardSection } from '../BasePersonCardSection';
 import { OfficeGraphInsightString, ViewType } from '../../graph/types';
 import { styles } from './mgt-file-list-css';
 import { strings } from './strings';
@@ -56,7 +58,7 @@ registerFluentComponents(fluentProgressRing, fluentDesignSystemProvider);
  *
  * @export
  * @class MgtFileList
- * @extends {MgtTemplatedComponent}
+ * @extends {BasePersonCardSection}
  *
  * @fires {CustomEvent<MicrosoftGraph.DriveItem>} itemClick - Fired when user click a file. Returns the file (DriveItem) details.
  * @cssprop --file-upload-border- {String} File upload border top style
@@ -93,7 +95,7 @@ registerFluentComponents(fluentProgressRing, fluentDesignSystemProvider);
 
 @customElement('file-list')
 // @customElement('mgt-file-list')
-export class MgtFileList extends MgtTemplatedComponent {
+export class MgtFileList extends BasePersonCardSection {
   /**
    * Array of styles to apply to the element. The styles should be defined
    * using the `css` tag function.
@@ -125,6 +127,27 @@ export class MgtFileList extends MgtTemplatedComponent {
 
     this._fileListQuery = value;
     this.requestStateUpdate(true);
+  }
+
+  /**
+   * The name for display in the overview section.
+   *
+   * @readonly
+   * @type {string}
+   * @memberof MgtPersonCardFiles
+   */
+  public get displayName(): string {
+    return this.strings.filesSectionTitle;
+  }
+
+  /**
+   * Render the icon for display in the navigation ribbon.
+   *
+   * @returns {TemplateResult}
+   * @memberof MgtPersonCardFiles
+   */
+  public renderIcon(): TemplateResult {
+    return getSvg(SvgIcon.Files);
   }
 
   /**
@@ -528,9 +551,63 @@ export class MgtFileList extends MgtTemplatedComponent {
    *
    * @memberof MgtFileList
    */
-  protected clearState(): void {
+  public clearState(): void {
     super.clearState();
     this.files = null;
+  }
+
+  /**
+   * Render the compact view
+   *
+   * @returns {TemplateResult}
+   * @memberof MgtFileList
+   */
+  public renderCompactView(): TemplateResult {
+    let contentTemplate: TemplateResult;
+
+    if (this.isLoadingState) {
+      contentTemplate = this.renderLoading();
+    } else if (!this.files || !this.files.length) {
+      contentTemplate = this.renderNoData();
+    } else {
+      contentTemplate = html`
+        ${this.files.slice(0, 3).map(file => this.renderFile(file))}
+      `;
+    }
+
+    return html`
+      <div class="root compact" dir=${this.direction}>
+        ${contentTemplate}
+      </div>
+    `;
+  }
+
+  /**
+   * Render the full view
+   *
+   * @protected
+   * @returns {TemplateResult}
+   * @memberof MgtFileList
+   */
+  protected renderFullView(): TemplateResult {
+    let contentTemplate: TemplateResult;
+
+    if (this.isLoadingState) {
+      contentTemplate = this.renderLoading();
+    } else if (!this.files || !this.files.length) {
+      contentTemplate = this.renderNoData();
+    } else {
+      contentTemplate = html`
+        ${this.files.map(file => this.renderFile(file))}
+      `;
+    }
+
+    return html`
+      <div class="root" dir=${this.direction}>
+        <div class="title">${this.strings.filesSectionTitle}</div>
+        ${contentTemplate}
+      </div>
+    `;
   }
 
   public render() {
@@ -949,6 +1026,12 @@ export class MgtFileList extends MgtTemplatedComponent {
     }
 
     this.requestUpdate();
+  }
+
+  private handleFileClick(file: SharedInsight) {
+    if (file.resourceReference && file.resourceReference.webUrl) {
+      window.open(file.resourceReference.webUrl, '_blank', 'noreferrer');
+    }
   }
 
   /**

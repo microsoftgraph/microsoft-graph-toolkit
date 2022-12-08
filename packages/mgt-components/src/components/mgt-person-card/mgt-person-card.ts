@@ -28,12 +28,12 @@ import { getUserPresence } from '../../graph/graph.presence';
 import { getPersonCardGraphData, createChat, sendMessage } from './mgt-person-card.graph';
 import { MgtPerson } from '../mgt-person/mgt-person';
 import { styles } from './mgt-person-card-css';
-import { BasePersonCardSection } from './sections/BasePersonCardSection';
-import { MgtPersonCardContact } from './sections/mgt-person-card-contact/mgt-person-card-contact';
-import { MgtPersonCardFiles } from './sections/mgt-person-card-files/mgt-person-card-files';
-import { MgtPersonCardMessages } from './sections/mgt-person-card-messages/mgt-person-card-messages';
-import { MgtPersonCardOrganization } from './sections/mgt-person-card-organization/mgt-person-card-organization';
-import { MgtPersonCardProfile } from './sections/mgt-person-card-profile/mgt-person-card-profile';
+import { BasePersonCardSection } from '../BasePersonCardSection';
+import { MgtContact } from '../mgt-contact/mgt-contact';
+import { MgtFileList } from '../mgt-file-list/mgt-file-list';
+import { MgtMessages } from '../mgt-messages/mgt-messages';
+import { MgtOrganization } from '../mgt-organization/mgt-organization';
+import { MgtProfile } from '../mgt-profile/mgt-profile';
 import { MgtPersonCardConfig, MgtPersonCardState } from './mgt-person-card.types';
 import { strings } from './strings';
 
@@ -1200,7 +1200,7 @@ export class MgtPersonCard extends MgtTemplatedComponent {
       return;
     }
 
-    const contactSections = new MgtPersonCardContact(this.internalPersonDetails as User);
+    const contactSections = new MgtContact(this.internalPersonDetails as User);
     if (contactSections.hasData) {
       this.sections.push(contactSections);
     }
@@ -1215,19 +1215,19 @@ export class MgtPersonCard extends MgtTemplatedComponent {
       MgtPersonCard.config.sections.organization &&
       ((person && person.manager) || (directReports && directReports.length))
     ) {
-      this.sections.push(new MgtPersonCardOrganization(this._cardState, this._me));
+      this.sections.push(new MgtOrganization(this._cardState, this._me));
     }
 
     if (MgtPersonCard.config.sections.mailMessages && messages && messages.length) {
-      this.sections.push(new MgtPersonCardMessages(messages));
+      this.sections.push(new MgtMessages(messages));
     }
 
     if (MgtPersonCard.config.sections.files && files && files.length) {
-      this.sections.push(new MgtPersonCardFiles(files));
+      this.sections.push(new MgtFileList(files));
     }
 
     if (MgtPersonCard.config.sections.profile && profile) {
-      const profileSection = new MgtPersonCardProfile(profile);
+      const profileSection = new MgtProfile(profile);
       if (profileSection.hasData) {
         this.sections.push(profileSection);
       }
