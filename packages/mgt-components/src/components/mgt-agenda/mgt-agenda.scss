@@ -12,6 +12,7 @@
 :host,
 mgt-agenda {
   --card-height: auto;
+  --card-width: 99%;
 
   .header {
     margin: var(--agenda-header-margin, 18px 0px 12px 10px);
@@ -83,11 +84,12 @@ mgt-agenda {
       }
 
       &-details-container {
+        display: flex;
+        flex-direction: column;
         position: relative;
         bottom: 8px;
         top: 0px;
         left: 32px;
-        flex: auto;
 
         &.narrow {
           position: inherit;
