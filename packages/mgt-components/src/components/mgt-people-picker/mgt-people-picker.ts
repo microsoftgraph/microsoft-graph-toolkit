@@ -509,10 +509,19 @@ export class MgtPeoplePicker extends MgtTemplatedComponent {
   // current user index to the left of the highlighted users
   private _currentHighlightedUserPos: number = 0;
 
+  /**
+   * Checks if the input is focused.
+   */
   @state() private _isFocused = false;
 
+  /**
+   * Switch to determine if a typed email can be set.
+   */
   @state() private _setAnyEmail: boolean = false;
 
+  /**
+   * List of people found from the graph calls.
+   */
   @state() private _foundPeople: IDynamicPerson[];
 
   constructor() {
