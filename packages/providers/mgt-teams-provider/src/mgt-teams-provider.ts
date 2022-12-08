@@ -7,7 +7,7 @@
 
 import { customElement, property } from 'lit/decorators.js';
 import { Configuration } from 'msal';
-import { Providers, MgtBaseProvider } from '@microsoft/mgt-element';
+import { Providers, MgtBaseProvider, validateBaseURL } from '@microsoft/mgt-element';
 import { TeamsConfig, TeamsProvider } from './TeamsProvider';
 
 /**
@@ -64,6 +64,7 @@ export class MgtTeamsProvider extends MgtBaseProvider {
    * @readonly
    * @memberof MgtTeamsProvider
    */
+
   public get isAvailable() {
     return TeamsProvider.isAvailable;
   }
@@ -95,6 +96,10 @@ export class MgtTeamsProvider extends MgtBaseProvider {
           }
         };
         config.msalOptions = msalConfig;
+      }
+
+      if (this.baseUrl) {
+        config.baseURL = this.baseUrl;
       }
 
       this.provider = new TeamsProvider(config);
