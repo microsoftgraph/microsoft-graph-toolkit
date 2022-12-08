@@ -523,10 +523,11 @@ export class MgtFileList extends BasePersonCardSection {
   private pageIterator: GraphPageIterator<DriveItem>;
   // tracking user arrow key input of selection for accessibility purpose
   private _focusedItemIndex: number = -1;
+  private _files: SharedInsight[];
 
   @state() private _isLoadingMore: boolean;
 
-  constructor() {
+  constructor(files: SharedInsight[]) {
     super();
 
     this.pageSize = 10;
@@ -534,6 +535,7 @@ export class MgtFileList extends BasePersonCardSection {
     this.maxUploadFile = 10;
     this.enableFileUpload = false;
     this._preloadedFiles = [];
+    this._files = files;
   }
 
   /**
