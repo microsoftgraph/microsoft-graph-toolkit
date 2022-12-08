@@ -6,7 +6,7 @@
  */
 
 import { User } from '@microsoft/microsoft-graph-types';
-import { customElement, html, internalProperty, property, TemplateResult } from 'lit-element';
+import { customElement, html, state, property, TemplateResult } from 'lit-element';
 import { classMap } from 'lit-html/directives/class-map';
 import { repeat } from 'lit-html/directives/repeat';
 import {
@@ -491,7 +491,6 @@ export class MgtPeoplePicker extends MgtTemplatedComponent {
   private _type: PersonType = PersonType.person;
   private _groupType: GroupType = GroupType.any;
   private _userType: UserType = UserType.any;
-  private _currentSelectedUser: IDynamicPerson;
   private _userFilters: string;
   private _groupFilters: string;
   private _peopleFilters: string;
@@ -510,9 +509,11 @@ export class MgtPeoplePicker extends MgtTemplatedComponent {
   // current user index to the left of the highlighted users
   private _currentHighlightedUserPos: number = 0;
 
-  @internalProperty() private _isFocused = false;
+  @state() private _isFocused = false;
 
-  @internalProperty() private _foundPeople: IDynamicPerson[];
+  @state() private _setAnyEmail: boolean = false;
+
+  @state() private _foundPeople: IDynamicPerson[];
 
   constructor() {
     super();
@@ -1363,7 +1364,7 @@ export class MgtPeoplePicker extends MgtTemplatedComponent {
   }
 
   /**
-   * Adds debounce method for set delay on user input
+   * Handles input from the key up events on the keyboard.
    */
   private onUserKeyUp(event: KeyboardEvent): void {
     const isPaste = (event.ctrlKey || event.metaKey) && event.key === 'v';
@@ -1421,6 +1422,7 @@ export class MgtPeoplePicker extends MgtTemplatedComponent {
 
     if (event.code === 'Comma' || event.code === 'Semicolon') {
       if (this.allowAnyEmail) {
+        this._setAnyEmail = true;
         event.preventDefault();
         event.stopPropagation();
       }
@@ -1430,10 +1432,13 @@ export class MgtPeoplePicker extends MgtTemplatedComponent {
     this.userInput = input.value;
     const validEmail = isValidEmail(this.userInput);
     if (validEmail && this.allowAnyEmail) {
-      this.handleAnyEmail();
+      if (this._setAnyEmail) {
+        this.handleAnyEmail();
+      }
     } else {
       this.handleUserSearch();
     }
+    this._setAnyEmail = false;
   }
 
   private handleAnyEmail() {
