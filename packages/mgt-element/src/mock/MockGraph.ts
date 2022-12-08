@@ -15,6 +15,7 @@ import {
   RetryHandlerOptions,
   TelemetryHandler
 } from '@microsoft/microsoft-graph-client';
+import { Session } from '../utils/Session';
 import { MgtBaseComponent } from '../components/baseComponent';
 import { Graph } from '../Graph';
 import { chainMiddleware } from '../utils/GraphHelpers';
@@ -74,13 +75,15 @@ class MockMiddleware implements Middleware {
    */
   private _nextMiddleware: Middleware;
 
-  private static _baseUrl;
+  private static _baseUrl: string;
+
+  private static _session: Session = new Session();
 
   // tslint:disable-next-line: completed-docs
   public async execute(context: Context): Promise<void> {
     try {
       const baseUrl = await MockMiddleware.getBaseUrl();
-      context.request = baseUrl + escape(context.request as string);
+      context.request = baseUrl + encodeURI(context.request as string);
     } catch (error) {
       // ignore error
     }
@@ -98,13 +101,19 @@ class MockMiddleware implements Middleware {
 
   private static async getBaseUrl() {
     if (!this._baseUrl) {
-      try {
-        // get the url we should be using from the endpoint service
-        let response = await fetch('https://cdn.graph.office.net/en-us/graph/api/proxy/endpoint');
-        this._baseUrl = (await response.json()) + '?url=';
-      } catch {
-        // fallback to hardcoded value
-        this._baseUrl = 'https://proxy.apisandbox.msdn.microsoft.com/svc?url=';
+      const sessionEndpoint = this._session.getItem('endpointURL');
+      if (sessionEndpoint) {
+        this._baseUrl = sessionEndpoint;
+      } else {
+        try {
+          // get the url we should be using from the endpoint service
+          let response = await fetch('https://cdn.graph.office.net/en-us/graph/api/proxy/endpoint');
+          this._baseUrl = (await response.json()) + '?url=';
+        } catch {
+          // fallback to hardcoded value
+          this._baseUrl = 'https://proxy.apisandbox.msdn.microsoft.com/svc?url=';
+        }
+        this._session.setItem('endpointURL', this._baseUrl);
       }
     }
 
