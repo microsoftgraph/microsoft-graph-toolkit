@@ -1,5 +1,5 @@
 <h1 align="center">
-  <img height="120" src="https://github.com/microsoftgraph/microsoft-graph-toolkit/raw/main/assets/graff.png" title="Graff the Giraffe">
+  <a href="#"><img height="120" src="https://github.com/microsoftgraph/microsoft-graph-toolkit/raw/main/assets/graff.png" title="Graff the Giraffe"></a>
   <br>
   Microsoft Graph Toolkit
 </h1>
@@ -25,7 +25,7 @@
 
 | Package                                                                                                    | Latest                                                                                  | Next                                                                                  |
 | ---------------------------------------------------------------------------------------------------------- | --------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------- |
-| <a href="https://www.npmjs.com/package/@microsoft/mgt" target="_blank" rel="noreferrer noopener">`@microsoft/mgt`</a>                                           |  <a href="https://www.npmjs.com/package/@microsoft/mgt/v/latest" target="_blank" rel="noreferrer noopener">![](https://img.shields.io/npm/v/@microsoft/mgt/latest.svg)</a>                      | <a href="https://www.npmjs.com/package/@microsoft/mgt/v/next" target="_blank" rel="noreferrer noopener">![](https://img.shields.io/npm/v/@microsoft/mgt/next.svg)]</a>                     |
+| <a href="https://www.npmjs.com/package/@microsoft/mgt" target="_blank" rel="noreferrer noopener">`@microsoft/mgt`</a>                                           |  [<img src="https://img.shields.io/npm/v/@microsoft/mgt/latest.svg">](https://www.npmjs.com/package/@microsoft/mgt/v/latest)                     | [<img src="https://img.shields.io/npm/v/@microsoft/mgt/next.svg">](https://www.npmjs.com/package/@microsoft/mgt/v/next)                     |
 | [`@microsoft/mgt-element`](https://www.npmjs.com/package/@microsoft/mgt-element)                           | ![](https://img.shields.io/npm/v/@microsoft/mgt-element/latest.svg)              | ![](https://img.shields.io/npm/v/@microsoft/mgt-element/next.svg)              |
 | [`@microsoft/mgt-components`](https://www.npmjs.com/package/@microsoft/mgt-components)                     | ![](https://img.shields.io/npm/v/@microsoft/mgt-components/latest.svg)           | ![](https://img.shields.io/npm/v/@microsoft/mgt-components/next.svg)           |
 | [`@microsoft/mgt-react`](https://www.npmjs.com/package/@microsoft/mgt-react)                               | ![](https://img.shields.io/npm/v/@microsoft/mgt-react/latest.svg)                | ![](https://img.shields.io/npm/v/@microsoft/mgt-react/next.svg)                |
