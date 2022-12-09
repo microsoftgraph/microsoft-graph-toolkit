@@ -28,6 +28,14 @@ interface RenderedTemplates {
   };
 }
 
+// tslint:disable: completed-docs
+export interface TemplateRenderedData {
+  templateType: string;
+  context: Record<string, unknown>;
+  element: HTMLElement;
+}
+// tslint:enable: completed-docs
+
 /**
  * An abstract class that defines a templatable web component
  *
@@ -36,7 +44,7 @@ interface RenderedTemplates {
  * @class MgtTemplatedComponent
  * @extends {MgtBaseComponent}
  *
- * @fires templateRendered - fires when a template is rendered
+ * @fires {CustomEvent<MgtElement.TemplateRenderedData>} templateRendered - fires when a template is rendered
  */
 export abstract class MgtTemplatedComponent extends MgtBaseComponent {
   /**
@@ -134,7 +142,8 @@ export abstract class MgtTemplatedComponent extends MgtBaseComponent {
 
     this._renderedTemplates[slotName] = { context: dataContext, slot: div };
 
-    this.fireCustomEvent('templateRendered', { templateType, context: dataContext, element: div });
+    const templateRenderedData: TemplateRenderedData = { templateType, context: dataContext, element: div };
+    this.fireCustomEvent('templateRendered', templateRenderedData);
 
     return template;
   }

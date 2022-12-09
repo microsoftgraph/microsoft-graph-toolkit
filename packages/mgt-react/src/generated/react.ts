@@ -1,4 +1,4 @@
-import { OfficeGraphInsightString,ViewType,ResponseType,IDynamicPerson,PersonType,GroupType,UserType,PersonCardInteraction,MgtPersonConfig,AvatarSize,PersonViewType,TasksStringResource,TasksSource,TaskFilter,SelectedChannel,TodoFilter } from '@microsoft/mgt-components';
+import { OfficeGraphInsightString,ViewType,ResponseType,IDynamicPerson,PersonCardInteraction,PersonType,GroupType,UserType,AvatarSize,PersonViewType,TasksStringResource,TasksSource,TaskFilter,SelectedChannel,TodoFilter } from '@microsoft/mgt-components';
 import { TemplateContext,ComponentMediaQuery } from '@microsoft/mgt-element';
 import * as MicrosoftGraph from '@microsoft/microsoft-graph-types';
 import * as MicrosoftGraphBeta from '@microsoft/microsoft-graph-types-beta';
@@ -16,31 +16,6 @@ export type AgendaProps = {
 	templateContext?: TemplateContext;
 	mediaQuery?: ComponentMediaQuery;
 	eventClick?: (e: Event) => void;
-	templateRendered?: (e: Event) => void;
-}
-
-export type FileListProps = {
-	fileListQuery?: string;
-	fileQueries?: string[];
-	files?: MicrosoftGraph.DriveItem[];
-	siteId?: string;
-	driveId?: string;
-	groupId?: string;
-	itemId?: string;
-	itemPath?: string;
-	userId?: string;
-	insightType?: OfficeGraphInsightString;
-	fileExtensions?: string[];
-	hideMoreFilesButton?: boolean;
-	maxFileSize?: number;
-	excludedFileExtensions?: string[];
-	pageSize?: number;
-	itemView?: ViewType;
-	maxUploadFile?: number;
-	enableFileUpload?: boolean;
-	templateContext?: TemplateContext;
-	mediaQuery?: ComponentMediaQuery;
-	itemClick?: (e: Event) => void;
 	templateRendered?: (e: Event) => void;
 }
 
@@ -67,6 +42,31 @@ export type FileProps = {
 	templateRendered?: (e: Event) => void;
 }
 
+export type FileListProps = {
+	fileListQuery?: string;
+	fileQueries?: string[];
+	files?: MicrosoftGraph.DriveItem[];
+	siteId?: string;
+	driveId?: string;
+	groupId?: string;
+	itemId?: string;
+	itemPath?: string;
+	userId?: string;
+	insightType?: OfficeGraphInsightString;
+	itemView?: ViewType;
+	fileExtensions?: string[];
+	pageSize?: number;
+	hideMoreFilesButton?: boolean;
+	maxFileSize?: number;
+	enableFileUpload?: boolean;
+	maxUploadFile?: number;
+	excludedFileExtensions?: string[];
+	templateContext?: TemplateContext;
+	mediaQuery?: ComponentMediaQuery;
+	itemClick?: (e: Event) => void;
+	templateRendered?: (e: Event) => void;
+}
+
 export type GetProps = {
 	resource?: string;
 	scopes?: string[];
@@ -76,6 +76,8 @@ export type GetProps = {
 	pollingRate?: number;
 	cacheEnabled?: boolean;
 	cacheInvalidationPeriod?: number;
+	response?: any;
+	error?: any;
 	templateContext?: TemplateContext;
 	mediaQuery?: ComponentMediaQuery;
 	dataChange?: (e: Event) => void;
@@ -94,6 +96,23 @@ export type LoginProps = {
 	templateRendered?: (e: Event) => void;
 }
 
+export type PeopleProps = {
+	groupId?: string;
+	userIds?: string[];
+	people?: IDynamicPerson[];
+	peopleQueries?: string[];
+	showMax?: number;
+	showPresence?: boolean;
+	personCardInteraction?: PersonCardInteraction;
+	resource?: string;
+	version?: string;
+	scopes?: string[];
+	fallbackDetails?: IDynamicPerson[];
+	templateContext?: TemplateContext;
+	mediaQuery?: ComponentMediaQuery;
+	templateRendered?: (e: Event) => void;
+}
+
 export type PeoplePickerProps = {
 	groupId?: string;
 	groupIds?: string[];
@@ -102,40 +121,48 @@ export type PeoplePickerProps = {
 	userType?: UserType;
 	transitiveSearch?: boolean;
 	people?: IDynamicPerson[];
+	showMax?: number;
+	disableImages?: boolean;
 	selectedPeople?: IDynamicPerson[];
 	defaultSelectedUserIds?: string[];
 	defaultSelectedGroupIds?: string[];
 	placeholder?: string;
+	disabled?: boolean;
+	allowAnyEmail?: boolean;
 	selectionMode?: string;
 	userIds?: string[];
 	userFilters?: string;
 	peopleFilters?: string;
 	groupFilters?: string;
 	ariaLabel?: string;
-	showMax?: number;
-	disableImages?: boolean;
-	disabled?: boolean;
-	allowAnyEmail?: boolean;
 	templateContext?: TemplateContext;
 	mediaQuery?: ComponentMediaQuery;
-	selectionChanged?: (e: Event) => void;
+	selectionChanged?: (e: CustomEvent<IDynamicPerson[]>) => void;
 	templateRendered?: (e: Event) => void;
 }
 
-export type PeopleProps = {
-	groupId?: string;
-	userIds?: string[];
-	people?: IDynamicPerson[];
-	peopleQueries?: string[];
+export type PersonProps = {
+	personQuery?: string;
+	fallbackDetails?: IDynamicPerson;
+	userId?: string;
 	showPresence?: boolean;
+	avatarSize?: AvatarSize;
+	personDetails?: IDynamicPerson;
+	personImage?: string;
+	fetchImage?: boolean;
+	disableImageFetch?: boolean;
+	avatarType?: string;
+	personPresence?: MicrosoftGraph.Presence;
 	personCardInteraction?: PersonCardInteraction;
-	resource?: string;
-	version?: string;
-	scopes?: string[];
-	fallbackDetails?: IDynamicPerson[];
-	showMax?: number;
+	line1Property?: string;
+	line2Property?: string;
+	line3Property?: string;
+	view?: ViewType | PersonViewType;
 	templateContext?: TemplateContext;
 	mediaQuery?: ComponentMediaQuery;
+	line1clicked?: (e: Event) => void;
+	line2clicked?: (e: Event) => void;
+	line3clicked?: (e: Event) => void;
 	templateRendered?: (e: Event) => void;
 }
 
@@ -153,32 +180,6 @@ export type PersonCardProps = {
 	templateContext?: TemplateContext;
 	mediaQuery?: ComponentMediaQuery;
 	expanded?: (e: Event) => void;
-	templateRendered?: (e: Event) => void;
-}
-
-export type PersonProps = {
-	config?: MgtPersonConfig;
-	personQuery?: string;
-	fallbackDetails?: IDynamicPerson;
-	userId?: string;
-	showPresence?: boolean;
-	personDetails?: IDynamicPerson;
-	personImage?: string;
-	fetchImage?: boolean;
-	avatarType?: string;
-	personPresence?: MicrosoftGraph.Presence;
-	personCardInteraction?: PersonCardInteraction;
-	line1Property?: string;
-	line2Property?: string;
-	line3Property?: string;
-	view?: ViewType | PersonViewType;
-	avatarSize?: AvatarSize;
-	disableImageFetch?: boolean;
-	templateContext?: TemplateContext;
-	mediaQuery?: ComponentMediaQuery;
-	line1clicked?: (e: Event) => void;
-	line2clicked?: (e: Event) => void;
-	line3clicked?: (e: Event) => void;
 	templateRendered?: (e: Event) => void;
 }
 
@@ -226,21 +227,21 @@ export type TodoProps = {
 
 export const Agenda = wrapMgt<AgendaProps>('mgt-agenda');
 
-export const FileList = wrapMgt<FileListProps>('mgt-file-list');
-
 export const File = wrapMgt<FileProps>('mgt-file');
+
+export const FileList = wrapMgt<FileListProps>('mgt-file-list');
 
 export const Get = wrapMgt<GetProps>('mgt-get');
 
 export const Login = wrapMgt<LoginProps>('mgt-login');
 
-export const PeoplePicker = wrapMgt<PeoplePickerProps>('mgt-people-picker');
-
 export const People = wrapMgt<PeopleProps>('mgt-people');
 
-export const PersonCard = wrapMgt<PersonCardProps>('mgt-person-card');
+export const PeoplePicker = wrapMgt<PeoplePickerProps>('mgt-people-picker');
 
 export const Person = wrapMgt<PersonProps>('mgt-person');
+
+export const PersonCard = wrapMgt<PersonCardProps>('mgt-person-card');
 
 export const Tasks = wrapMgt<TasksProps>('mgt-tasks');
 

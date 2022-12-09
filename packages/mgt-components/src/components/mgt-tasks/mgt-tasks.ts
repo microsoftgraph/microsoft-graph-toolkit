@@ -215,7 +215,7 @@ export class MgtTasks extends MgtTemplatedComponent {
    *
    * @memberof MgtTasks
    */
-  public get isNewTaskVisible() {
+  public get isNewTaskVisible(): boolean {
     return this._isNewTaskVisible;
   }
 
