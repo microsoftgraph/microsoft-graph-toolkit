@@ -17,7 +17,7 @@
   The Microsoft Graph Toolkit is a collection of reusable, framework-agnostic components and authentication providers for accessing and working with Microsoft Graph. The components are fully functional right of out of the box, with built in providers that authenticate with and fetch data from Microsoft Graph.
 </p>
 
-<p align="center">![](
+<p align="center">
   <a href="#packages">Packages</a> • <a href="#components">Components</a> • <a href="#providers">Providers</a> • <a href="#getting-started">Getting Started</a> • <a href="#running-the-samples">Running the Samples</a> • <a href="#contribute">Contribute</a> • <a href="#feedback-and-requests">Feedback & Requests</a> <br>• <a href="#license">License</a> • <a href="#code-of-conduct">Code of Conduct</a>
 </p>
 
@@ -25,7 +25,7 @@
 
 | Package                                                                                                    | Latest                                                                                  | Next                                                                                  |
 | ---------------------------------------------------------------------------------------------------------- | --------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------- |
-| [`@microsoft/mgt`](https://www.npmjs.com/package/@microsoft/mgt)                                           | ![](https://img.shields.io/npm/v/@microsoft/mgt/latest.svg)                      | ![](https://img.shields.io/npm/v/@microsoft/mgt/next.svg)                      |
+| [`@microsoft/mgt`](https://www.npmjs.com/package/@microsoft/mgt)                                           | [![](https://img.shields.io/npm/v/@microsoft/mgt/latest.svg)](https://www.npmjs.com/package/@microsoft/mgt/v/latest)                      | [![](https://img.shields.io/npm/v/@microsoft/mgt/next.svg)](https://www.npmjs.com/package/@microsoft/mgt/v/next)                      |
 | [`@microsoft/mgt-element`](https://www.npmjs.com/package/@microsoft/mgt-element)                           | ![](https://img.shields.io/npm/v/@microsoft/mgt-element/latest.svg)              | ![](https://img.shields.io/npm/v/@microsoft/mgt-element/next.svg)              |
 | [`@microsoft/mgt-components`](https://www.npmjs.com/package/@microsoft/mgt-components)                     | ![](https://img.shields.io/npm/v/@microsoft/mgt-components/latest.svg)           | ![](https://img.shields.io/npm/v/@microsoft/mgt-components/next.svg)           |
 | [`@microsoft/mgt-react`](https://www.npmjs.com/package/@microsoft/mgt-react)                               | ![](https://img.shields.io/npm/v/@microsoft/mgt-react/latest.svg)                | ![](https://img.shields.io/npm/v/@microsoft/mgt-react/next.svg)                |
