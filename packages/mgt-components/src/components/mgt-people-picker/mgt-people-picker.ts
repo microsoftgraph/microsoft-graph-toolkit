@@ -1558,9 +1558,9 @@ export class MgtPeoplePicker extends MgtTemplatedComponent {
           this.addPerson(foundPerson);
           this.hideFlyout();
           this.input.value = '';
-        } else if (this.allowAnyEmail) {
-          this.handleAnyEmail();
         }
+      } else if (this.allowAnyEmail) {
+        this.handleAnyEmail();
       }
     }
 
