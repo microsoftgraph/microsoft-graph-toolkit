@@ -15,7 +15,7 @@ import {
 import { TokenCredential } from '@azure/core-auth';
 
 /**
- * Interface represent TeamsUserCredential in TeamsFx library
+ * Interface represents TeamsUserCredential in TeamsFx library
  */
 export interface TeamsFxUserCredential extends TokenCredential {
   login(scopes: string | string[], resources?: string[]): Promise<void>;
