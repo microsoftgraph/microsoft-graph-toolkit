@@ -15,7 +15,7 @@ import {
   RetryHandlerOptions,
   TelemetryHandler
 } from '@microsoft/microsoft-graph-client';
-import { Session } from '../utils/Session';
+import { SessionCache, storageAvailable } from '../utils/SessionCache';
 import { MgtBaseComponent } from '../components/baseComponent';
 import { Graph } from '../Graph';
 import { chainMiddleware } from '../utils/GraphHelpers';
@@ -77,13 +77,19 @@ class MockMiddleware implements Middleware {
 
   private static _baseUrl: string;
 
-  private static _session: Session = new Session();
+  private static _session: SessionCache;
+
+  constructor() {
+    if (storageAvailable('sessionStorage')) {
+      MockMiddleware._session = new SessionCache();
+    }
+  }
 
   // tslint:disable-next-line: completed-docs
   public async execute(context: Context): Promise<void> {
     try {
       const baseUrl = await MockMiddleware.getBaseUrl();
-      context.request = baseUrl + encodeURI(context.request as string);
+      context.request = baseUrl + encodeURIComponent(context.request as string);
     } catch (error) {
       // ignore error
     }
@@ -101,7 +107,7 @@ class MockMiddleware implements Middleware {
 
   private static async getBaseUrl() {
     if (!this._baseUrl) {
-      const sessionEndpoint = this._session.getItem('endpointURL');
+      const sessionEndpoint = this._session?.getItem('endpointURL');
       if (sessionEndpoint) {
         this._baseUrl = sessionEndpoint;
       } else {
@@ -113,7 +119,7 @@ class MockMiddleware implements Middleware {
           // fallback to hardcoded value
           this._baseUrl = 'https://proxy.apisandbox.msdn.microsoft.com/svc?url=';
         }
-        this._session.setItem('endpointURL', this._baseUrl);
+        this._session?.setItem('endpointURL', this._baseUrl);
       }
     }
 
