@@ -78,7 +78,7 @@ export class TeamsFxProvider extends IProvider {
 
   constructor(teamsfx: TeamsFx, scopes: string | string[], baseURL?: GraphEndpoint);
   constructor(teamsUserCredential: TeamsUserCredential, scopes: string | string[], baseURL?: GraphEndpoint);
-  constructor(authConfig: TeamsFx | TeamsUserCredential, scopes: string | string[], baseURL?: GraphEndpoint){
+  constructor(authConfig: TeamsFx | TeamsUserCredential, scopes: string | string[], baseURL?: GraphEndpoint) {
     super();
 
     if (!this._teamsfx && !this._credential) {
@@ -101,12 +101,12 @@ export class TeamsFxProvider extends IProvider {
       this.scopes = scopesArr;
     }
 
-    if (baseURL){
+    if (baseURL) {
       this.baseURL = baseURL;
     } else {
       this.baseURL = MICROSOFT_GRAPH_DEFAULT_ENDPOINT;
     }
-    
+
     this.graph = createFromProvider(this);
   }
 
