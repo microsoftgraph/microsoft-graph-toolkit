@@ -5,7 +5,14 @@
  * -------------------------------------------------------------------------------------------
  */
 
-import { IProvider, LoginType, ProviderState, createFromProvider, IProviderAccount } from '@microsoft/mgt-element';
+import {
+  IProvider,
+  LoginType,
+  ProviderState,
+  createFromProvider,
+  IProviderAccount,
+  GraphEndpoint
+} from '@microsoft/mgt-element';
 import {
   Configuration,
   PublicClientApplication,
@@ -133,6 +140,11 @@ export interface Msal2Config extends Msal2ConfigBase {
    * @memberof Msal2Config
    */
   isMultiAccountEnabled?: boolean;
+
+  /**
+   * The base URL for the graph client
+   */
+  baseURL?: GraphEndpoint;
 }
 
 /**
@@ -376,6 +388,7 @@ export class Msal2Provider extends IProvider {
     const msal2config = config as Msal2Config;
     this.isMultipleAccountEnabled =
       typeof msal2config.isMultiAccountEnabled !== 'undefined' ? msal2config.isMultiAccountEnabled : true;
+    this.baseURL = typeof msal2config.baseURL !== 'undefined' ? msal2config.baseURL : this.baseURL;
 
     this.graph = createFromProvider(this);
     try {

@@ -7,7 +7,7 @@
 
 import { AuthenticationProviderOptions } from '@microsoft/microsoft-graph-client';
 import { AuthenticationParameters, Configuration, UserAgentApplication } from 'msal';
-import { TeamsHelper } from '@microsoft/mgt-element';
+import { GraphEndpoint, MICROSOFT_GRAPH_DEFAULT_ENDPOINT, TeamsHelper } from '@microsoft/mgt-element';
 import { LoginType, ProviderState } from '@microsoft/mgt-element';
 import { MsalProvider } from '@microsoft/mgt-msal-provider';
 
@@ -97,6 +97,10 @@ export interface TeamsConfig {
    * @memberof TeamsConfig
    */
   msalOptions?: Configuration;
+  /**
+   * The base URL for the graph client
+   */
+  baseURL?: GraphEndpoint;
 }
 
 /**
@@ -151,7 +155,7 @@ export class TeamsProvider extends MsalProvider {
    * @returns
    * @memberof TeamsProvider
    */
-  public static async handleAuth() {
+  public static async handleAuth(baseURL: GraphEndpoint = MICROSOFT_GRAPH_DEFAULT_ENDPOINT) {
     // we are in popup world now - authenticate and handle it
     const teams = TeamsHelper.microsoftTeamsLib;
     if (!teams) {
@@ -194,7 +198,8 @@ export class TeamsProvider extends MsalProvider {
     const provider = new MsalProvider({
       clientId: authParams.clientId,
       options,
-      scopes
+      scopes,
+      baseURL
     });
 
     if (provider.userAgentApplication.urlContainsHash(window.location.hash)) {
@@ -252,7 +257,8 @@ export class TeamsProvider extends MsalProvider {
       clientId: config.clientId,
       loginType: LoginType.Redirect,
       options: config.msalOptions,
-      scopes: config.scopes
+      scopes: config.scopes,
+      baseURL: config.baseURL
     });
 
     this._msalOptions = config.msalOptions;

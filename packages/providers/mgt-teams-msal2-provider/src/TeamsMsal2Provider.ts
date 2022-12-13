@@ -7,7 +7,13 @@
 
 import { AuthenticationProviderOptions } from '@microsoft/microsoft-graph-client';
 import { Configuration, InteractionRequiredAuthError, SilentRequest } from '@azure/msal-browser';
-import { LoginType, ProviderState, TeamsHelper } from '@microsoft/mgt-element';
+import {
+  GraphEndpoint,
+  LoginType,
+  MICROSOFT_GRAPH_DEFAULT_ENDPOINT,
+  ProviderState,
+  TeamsHelper
+} from '@microsoft/mgt-element';
 import { Msal2Provider, PromptType } from '@microsoft/mgt-msal2-provider';
 
 // tslint:disable-next-line: completed-docs
@@ -142,6 +148,10 @@ export interface TeamsMsal2Config {
    * @memberof TeamsMsal2Config
    */
   httpMethod?: HttpMethod;
+  /**
+   * The base URL for the graph client
+   */
+  baseURL?: GraphEndpoint;
 }
 
 /**
@@ -196,7 +206,7 @@ export class TeamsMsal2Provider extends Msal2Provider {
    * @returns
    * @memberof TeamsMsal2Provider
    */
-  public static async handleAuth() {
+  public static async handleAuth(baseURL: GraphEndpoint = MICROSOFT_GRAPH_DEFAULT_ENDPOINT) {
     // we are in popup world now - authenticate and handle it
     const teams = TeamsHelper.microsoftTeamsLib;
     if (!teams) {
@@ -242,7 +252,8 @@ export class TeamsMsal2Provider extends Msal2Provider {
       options,
       scopes,
       loginHint: authParams.loginHint,
-      prompt: prompt
+      prompt: prompt,
+      baseURL: baseURL
     });
 
     const handleProviderState = async () => {
@@ -306,7 +317,8 @@ export class TeamsMsal2Provider extends Msal2Provider {
       clientId: config.clientId,
       loginType: LoginType.Redirect,
       options: config.msalOptions,
-      scopes: config.scopes
+      scopes: config.scopes,
+      baseURL: config.baseURL
     });
     this.clientId = config.clientId;
     this._msalOptions = config.msalOptions;

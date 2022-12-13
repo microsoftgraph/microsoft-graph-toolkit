@@ -6,7 +6,7 @@
  */
 
 import { AuthenticationProviderOptions } from '@microsoft/microsoft-graph-client';
-import { IProvider, LoginType, ProviderState, createFromProvider } from '@microsoft/mgt-element';
+import { IProvider, LoginType, ProviderState, createFromProvider, GraphEndpoint } from '@microsoft/mgt-element';
 import { AuthenticationParameters, AuthError, AuthResponse, Configuration, UserAgentApplication } from 'msal';
 
 /**
@@ -51,6 +51,10 @@ interface MsalConfigBase {
    * @memberof MsalConfigBase
    */
   prompt?: string;
+  /**
+   * The base URL for the graph client
+   */
+  baseURL?: GraphEndpoint;
 }
 
 /**
@@ -439,6 +443,7 @@ export class MsalProvider extends IProvider {
     }
 
     this.clientId = clientId;
+    this.baseURL = typeof config.baseURL !== 'undefined' ? config.baseURL : this.baseURL;
 
     this._userAgentApplication = userAgentApplication;
     this._userAgentApplication.handleRedirectCallback(
