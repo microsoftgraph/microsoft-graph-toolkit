@@ -75,20 +75,20 @@ class MockMiddleware implements Middleware {
    */
   private _nextMiddleware: Middleware;
 
-  private static _baseUrl: string;
+  private _baseUrl: string;
 
-  private static _session: SessionCache;
+  private _session: SessionCache;
 
   constructor() {
     if (storageAvailable('sessionStorage')) {
-      MockMiddleware._session = new SessionCache();
+      this._session = new SessionCache();
     }
   }
 
   // tslint:disable-next-line: completed-docs
   public async execute(context: Context): Promise<void> {
     try {
-      const baseUrl = await MockMiddleware.getBaseUrl();
+      const baseUrl = await this.getBaseUrl();
       context.request = baseUrl + encodeURIComponent(context.request as string);
     } catch (error) {
       // ignore error
@@ -105,7 +105,7 @@ class MockMiddleware implements Middleware {
     this._nextMiddleware = next;
   }
 
-  private static async getBaseUrl() {
+  private async getBaseUrl() {
     if (!this._baseUrl) {
       const sessionEndpoint = this._session?.getItem('endpointURL');
       if (sessionEndpoint) {
