@@ -83,7 +83,7 @@ The earlier example can be updated to use the disambiguation feature as follows:
 
 ### Dynamic imports aka Lazy Loading
 
-Dynamic imports are a means to asynchronously load code. This is useful when you want to load code only when it is needed. For example, you may want to load a component only when a user clicks a button. This is a great way to reduce the initial load time of your application. In the context of disambiguation it is necessary to use this technique as the components register themselves in the browser when they are imported.
+Using dynamic imports you can load dependencies asynchronously. This pattern allows you to load dependencies only when needed. For example, you may want to load a component only when a user clicks a button. This is a great way to reduce the initial load time of your application. In the context of disambiguation, you need to use this technique becasuse components register themselves in the browser when they are imported.
 
 When using an `import` statement the import statement is hoisted and executed before any other code in the code block. To use dynamic imports you must use the `import()` function.
 
