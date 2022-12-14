@@ -32,7 +32,7 @@ UserInterfaceState.xcuserstate
 # testing
 coverage/
 *.tgz
-testResults/junit.xml
+testResults/
 
 *-css.ts
 *.tsbuildinfo
