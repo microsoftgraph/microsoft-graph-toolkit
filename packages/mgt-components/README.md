@@ -62,7 +62,7 @@ MGT is built using [web components](https://developer.mozilla.org/en-US/docs/Web
 
 To mitigate this challenge we built the [`mgt-spfx`](https://github.com/microsoftgraph/microsoft-graph-toolkit/tree/main/packages/mgt-spfx) package. Using `mgt-spfx` developers could centralize the registration of MGT web components across all SPFx solutions deployed on the tenant. By reusing MGT components from a central location web parts from different solutions could be loaded into a single page without throwing errors. When using `mgt-spfx` all MGT based web parts in a SharePoint tenant used the same version of MGT.
 
-In order to allow developers to build custom MGT web parts using the latest version of MGT and retain the ability to have web parts built using v2.x of MGT on the same page a new disambiguation feature has been added to MGT. This allows developers to specify a unique string to add to the tag name of all MGT web components in their application.
+To allow developers to build web parts using the latest version of MGT and load them on pages along web parts that use v2.x of MGT, we've added a new disambiguation feature to MGT. Using this feature developers can specify a unique string to add to the tag name of all MGT web components in their application.
 
 The earlier example can be updated to use the disambiguation feature as follows:
 
