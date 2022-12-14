@@ -87,7 +87,7 @@ Using dynamic imports you can load dependencies asynchronously. This pattern all
 
 When using an `import` statement the import statement is hoisted and executed before any other code in the code block. To use dynamic imports you must use the `import()` function.
 
-If you import the components before you have applied the disambiguation the disambiguation will not have been applied and using the disambiguated tag name will not work.
+**Important:** If you import the components before you have applied the disambiguation, the disambiguation will not be applied and using the disambiguated tag name will not work.
 
 ## Sea also
 * [Microsoft Graph Toolkit docs](https://aka.ms/mgt-docs)
