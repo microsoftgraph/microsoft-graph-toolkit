@@ -41,6 +41,7 @@ By disambiguating tag names of Microsoft Graph Toolkit components, you can use y
 ### When using no framework web parts
 
 When building SharePoint Framework web parts without a JavaScript framework the `@microsoft/mgt-components` library must be asynchronously loaded after configuring the disambiguation setting. The `importMgtComponentsLibrary` helper function wraps this functionality. Once the `@microsoft/mgt-components` library is loaded you can load components directly in your web part.
+
 Below is a minimal example web part that demonstrates how to use MGT with disambiguation in SharePoint Framework Web parts. A more complete example is available in the [No Framework Web Part Sample](https://github.com/microsoftgraph/microsoft-graph-toolkit/blob/main/samples/sp-mgt/src/webparts/helloWorld/HelloWorldWebPart.ts).
 
 ```ts
@@ -100,6 +101,7 @@ export default class MgtWebPart extends BaseClientSideWebPart<Record<string, unk
 ### When using React to build web parts
 
 When building SharePoint Framework web parts using React any component that imports from the `@microsoft/mgt-react` library must be asynchronously loaded after configuring the disambiguation setting. The `lazyLoadComponent` helper function exists to facilitate using `React.lazy` and `React.Suspense` to lazy load these components from the top level web part.
+
 Below is a minimal example web part that demonstrates how to use MGT with disambiguation in React based SharePoint Framework Web parts. A complete example is available in the [React SharePoint Web Part Sample](https://github.com/microsoftgraph/microsoft-graph-toolkit/blob/main/samples/sp-webpart/src/webparts/mgtDemo/MgtDemoWebPart.ts).
 
 ```ts
