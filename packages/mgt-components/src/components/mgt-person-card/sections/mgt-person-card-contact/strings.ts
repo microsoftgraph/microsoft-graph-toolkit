@@ -13,5 +13,6 @@ export const strings = {
   cellPhoneTitle: 'Mobile Phone',
   departmentTitle: 'Department',
   titleTitle: 'Title',
-  officeLocationTitle: 'Office Location'
+  officeLocationTitle: 'Office Location',
+  copyToClipboardButton: 'Copy to clipboard'
 };
