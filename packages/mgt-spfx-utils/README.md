@@ -32,9 +32,9 @@ or
 yarn add @microsoft/mgt-spfx-utils @microsoft/mgt-react
 ```
 
-By disambiguating tag names of Microsoft Graph Toolkit components, you can use your own version of MGT rather than using the centrally deployed `@microsoft/mgt-spfx` package. This allows you to avoid colliding with SharePoint Framework components built by other developers. When disambiguating tag names, MGT is included in the generated SPFx bundle, increasing its size.
-
 ## Usage
+
+By disambiguating tag names of Microsoft Graph Toolkit components, you can use your own version of MGT rather than using the centrally deployed `@microsoft/mgt-spfx` package. This allows you to avoid colliding with SharePoint Framework components built by other developers. When disambiguating tag names, MGT is included in the generated SPFx bundle, increasing its size.
 
 > **Important:** Since a given web component tag can only be registered once these approaches **must** be used along with the `customElementHelper.withDisambiguation('foo')` approach as this allows developers to create disambiguated tag names.
 
