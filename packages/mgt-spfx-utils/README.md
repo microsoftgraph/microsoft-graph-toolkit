@@ -8,7 +8,7 @@ Helper functions to simplify lazy loading of Microsoft Graph Toolkit components 
 
 ## Installation
 
-To lazy load Microsoft Graph Toolkit components from the library, add the `@microsoft/mgt-spfx-utils` package and if using React, the `@microsoft/mgt-react` package as dependencies to your SharePoint Framework project:
+To lazy load Microsoft Graph Toolkit components from the library, add the `@microsoft/mgt-spfx-utils` package as a dependency to your SharePoint Framework project. If you use React, also add the `@microsoft/mgt-react` package:
 
 ```bash
 npm install @microsoft/mgt-spfx-utils
