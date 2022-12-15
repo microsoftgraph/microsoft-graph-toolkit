@@ -287,50 +287,53 @@ export async function getUsersForPeopleQueries(graph: IGraph, peopleQueries: str
   for (const personQuery of peopleQueries) {
     if (getIsUsersCacheEnabled()) {
       cacheRes = await cache.getValue(personQuery);
-    }
-
-    if (getIsUsersCacheEnabled() && cacheRes && getUserInvalidationTime() > Date.now() - cacheRes.timeCached) {
-      people.push(JSON.parse(cacheRes.results[0]));
-    } else if (personQuery !== '') {
+      if (cacheRes && getUserInvalidationTime() > Date.now() - cacheRes.timeCached) {
+        const person = JSON.parse(cacheRes.results[0]);
+        people.push(person);
+      } else {
+        batch.get(personQuery, `/me/people?$search="${personQuery}"`, ['people.read']);
+      }
+    } else {
       batch.get(personQuery, `/me/people?$search="${personQuery}"`, ['people.read']);
     }
   }
 
-  try {
-    const responses = await batch.executeAll();
+  if (batch.hasRequests) {
+    try {
+      const responses = await batch.executeAll();
 
-    for (const personQuery of peopleQueries) {
-      const response = responses.get(personQuery);
-      if (response && response.content && response.content.value && response.content.value.length > 0) {
-        people.push(response.content.value[0]);
-        if (getIsUsersCacheEnabled()) {
-          cache.putValue(personQuery, { maxResults: 1, results: [JSON.stringify(response.content.value[0])] });
+      for (const personQuery of peopleQueries) {
+        const response = responses.get(personQuery);
+        if (response && response.content && response.content.value && response.content.value.length > 0) {
+          people.push(response.content.value[0]);
+          if (getIsUsersCacheEnabled()) {
+            cache.putValue(personQuery, { maxResults: 1, results: [JSON.stringify(response.content.value[0])] });
+          }
         }
-      } else {
-        people.push(null);
+      }
+
+      return people;
+    } catch (_) {
+      try {
+        return Promise.all(
+          peopleQueries
+            .filter(personQuery => personQuery && personQuery !== '')
+            .map(async personQuery => {
+              const personArray = await findPeople(graph, personQuery, 1);
+              if (personArray && personArray.length) {
+                if (getIsUsersCacheEnabled()) {
+                  cache.putValue(personQuery, { maxResults: 1, results: [JSON.stringify(personArray[0])] });
+                }
+                return personArray[0];
+              }
+            })
+        );
+      } catch (_) {
+        return [];
       }
     }
-
-    return people;
-  } catch (_) {
-    try {
-      return Promise.all(
-        peopleQueries
-          .filter(personQuery => personQuery && personQuery !== '')
-          .map(async personQuery => {
-            const personArray = await findPeople(graph, personQuery, 1);
-            if (personArray && personArray.length) {
-              if (getIsUsersCacheEnabled()) {
-                cache.putValue(personQuery, { maxResults: 1, results: [JSON.stringify(personArray[0])] });
-              }
-              return personArray[0];
-            }
-          })
-      );
-    } catch (_) {
-      return [];
-    }
   }
+  return people;
 }
 
 /**
