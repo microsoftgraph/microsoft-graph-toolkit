@@ -71,9 +71,12 @@ The earlier example can be updated to use the disambiguation feature as follows:
 ```html
 <script type="module">
   import { Providers, customElementHelper } from '@microsoft/mgt-element';
-  customElementHelper.withDisambiguation('contoso');
   import { Msal2Provider } from '@microsoft/mgt-msal2-provider';
+  customElementHelper.withDisambiguation('contoso');
   Providers.globalProvider = new Msal2Provider({clientId: 'clientId'});
+  
+  // import the components using dynamic import to avoid hoisting
+  import('@microsoft/mgt-components');
 
 </script>
 
