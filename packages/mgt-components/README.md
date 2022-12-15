@@ -196,7 +196,11 @@ When using an `import` statement the import statement is hoisted and executed be
 
 ```typescript
 // static import via a statement
-import '@microsoft/mgt-components';
+import { Providers, customElementHelper } from '@microsoft/mgt-element';
+import { Msal2Provider } from '@microsoft/mgt-msal2-provider';
+
+customElementHelper.withDisambiguation('contoso');
+Providers.globalProvider = new Msal2Provider({clientId: 'clientId'});
 
 // dynamic import via a function
 import('@microsoft/mgt-components').then(() => {
@@ -204,7 +208,6 @@ import('@microsoft/mgt-components').then(() => {
 }).catch((e) => {
   // handle any errors
 });
-```
 
 
 ## Sea also
