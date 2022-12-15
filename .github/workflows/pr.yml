@@ -28,7 +28,7 @@ jobs:
           path: |
             node_modules
             */*/node_modules
-          key: ${{ runner.os }}-${{ matrix.node-version }}-${{ hashFiles('**/yarn.lock') }
+          key: ${{ runner.os }}-${{ matrix.node-version }}-${{ hashFiles('**/yarn.lock') }}
       - run: npm install -g yarn
       - name: Install node_modules
         if: steps.cache-node-modules.outputs.cache-hit != 'true'
