@@ -181,6 +181,11 @@ fluent-card.event {
     }
   }
 }
+
+:host mgt-people {
+  --color: $event__attendees__color;
+}
+
 [dir='rtl'] {
   :host {
     direction: rtl;
