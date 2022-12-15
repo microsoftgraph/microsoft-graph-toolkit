@@ -44,6 +44,7 @@ registerFluentComponents(fluentCard, fluentTooltip);
  * @cssprop --event-subject-color - {Color} Event subject color
  * @cssprop --event-location-font-size - {Length} Event location font size
  * @cssprop --event-location-color - {Color} Event location color
+ * @cssprop --event-attendees-color - {Color} Event attendees color
  */
 @customElement('mgt-agenda')
 export class MgtAgenda extends MgtTemplatedComponent {
