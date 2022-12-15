@@ -6,7 +6,7 @@
  */
 
 import { html, TemplateResult } from 'lit';
-import { customElement, property } from 'lit/decorators.js';
+import { customElement, property, state } from 'lit/decorators.js';
 import { MgtTemplatedComponent } from '@microsoft/mgt-element';
 import { strings } from './strings';
 import { fluentCombobox, fluentOption } from '@fluentui/web-components';
@@ -70,28 +70,6 @@ export class MgtPicker extends MgtTemplatedComponent {
   public maxPages: number = 3;
 
   /**
-   * Set the person details to render
-   *
-   * @type {object}
-   * @memberof MgtPicker
-   */
-  @property({
-    attribute: 'response',
-    type: Object
-  })
-  public get response(): any {
-    return this._response;
-  }
-  public set response(value) {
-    if (this._response === value) {
-      return;
-    }
-
-    this._response = value;
-    this.requestStateUpdate(true);
-  }
-
-  /**
    * A placeholder for the picker
    *
    * @type {string}
@@ -128,7 +106,8 @@ export class MgtPicker extends MgtTemplatedComponent {
   public scopes: string[] = [];
 
   private _placeholder: string;
-  private _response: object;
+
+  @state({}) private response: any[];
 
   constructor() {
     super();
@@ -142,7 +121,7 @@ export class MgtPicker extends MgtTemplatedComponent {
    * @memberof MgtPicker
    */
   protected clearState(): void {
-    // this.response = null;
+    this.response = null;
   }
 
   /**
@@ -168,9 +147,8 @@ export class MgtPicker extends MgtTemplatedComponent {
     if (this.isLoadingState) {
       return this.renderLoading();
     }
-    console.log('response:', this.response);
 
-    return this.renderPicker(this.resource, this.scopes);
+    return this.response?.length > 0 ? this.renderPicker() : this.renderGet();
   }
 
   /**
@@ -191,14 +169,30 @@ export class MgtPicker extends MgtTemplatedComponent {
    * @returns {TemplateResult}
    * @memberof MgtPicker
    */
-  protected renderPicker(resource: string, scopes: string[]): TemplateResult {
+  protected renderPicker(): TemplateResult {
     return html`
-    <mgt-get resource=${resource} version=${this.version} scopes=${scopes}>
-      <template>
-        <fluent-combobox id="combobox" autocomplete="list">
-          <fluent-option value={{item.id}} data-for="item in value"> {{ item.displayName }} </fluent-option>
-        </fluent-combobox>
-      </template>
+      <fluent-combobox id="combobox" autocomplete="list" placeholder=${this.placeholder}>
+        ${this.response.map(
+          item => html`
+          <fluent-option value=${item.id}> ${item.displayName} </fluent-option>
+          `
+        )}
+        
+      </fluent-combobox>
+     `;
+  }
+
+  /**
+   * Render picker.
+   *
+   * @protected
+   * @returns {TemplateResult}
+   * @memberof MgtPicker
+   */
+  protected renderGet(): TemplateResult {
+    return html`
+    <mgt-get resource=${this.resource} version=${this.version} scopes=${this.scopes}>
+      <template></template>
     </mgt-get>
      `;
   }
@@ -229,7 +223,6 @@ export class MgtPicker extends MgtTemplatedComponent {
   }
 
   private handleDataChange(e) {
-    console.log('here');
     let response = e.detail.response.value;
     this.response = response;
   }
