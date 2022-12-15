@@ -24,6 +24,8 @@ jobs:
       - run: npm install -g yarn
       - run: yarn
       - run: node scripts/setVersion.js --next
+      - run: yarn build
+      - run: yarn run pack
       - run: yarn test
       - name: Test Report
         uses: dorny/test-reporter@v1
@@ -49,9 +51,6 @@ jobs:
 
       - name: Write to Job Summary
         run: cat code-coverage-results.md >> $GITHUB_STEP_SUMMARY
-
-      - run: yarn build
-      - run: yarn run pack
 
       - name: Upload a Build Artifact - package
         uses: actions/upload-artifact@v2
