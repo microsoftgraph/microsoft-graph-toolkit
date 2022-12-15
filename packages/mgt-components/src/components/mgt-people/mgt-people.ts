@@ -449,8 +449,6 @@ export class MgtPeople extends MgtTemplatedComponent {
           this.people = await getPeople(graph);
         }
 
-        this.people = this.people.filter(person => person !== null && person !== '');
-
         // populate presence for people
         if (this.showPresence) {
           this._peoplePresence = await getUsersPresenceByPeople(graph, this.people);
