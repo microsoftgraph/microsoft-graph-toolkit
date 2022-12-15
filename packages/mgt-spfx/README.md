@@ -2,7 +2,7 @@
 
 [![npm](https://img.shields.io/npm/v/@microsoft/mgt-spfx?style=for-the-badge)](https://www.npmjs.com/package/@microsoft/mgt-spfx)
 
-![SPFx 1.15.2](https://img.shields.io/badge/SPFx-1.15.2-green.svg?style=for-the-badge)
+![SPFx 1.16.1](https://img.shields.io/badge/SPFx-1.16.1-green.svg?style=for-the-badge)
 
 Use the SharePoint Framework library for Microsoft Graph Toolkit to use Microsoft Graph Toolkit in SharePoint Framework solutions.
 

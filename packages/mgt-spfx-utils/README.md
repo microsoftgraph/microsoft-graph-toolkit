@@ -2,7 +2,7 @@
 
 [![npm](https://img.shields.io/npm/v/@microsoft/mgt-spfx-utils?style=for-the-badge)](https://www.npmjs.com/package/@microsoft/mgt-spfx-utils)
 
-![SPFx 1.15.2](https://img.shields.io/badge/SPFx-1.15.2-green.svg?style=for-the-badge)
+![SPFx 1.16.1](https://img.shields.io/badge/SPFx-1.16.1-green.svg?style=for-the-badge)
 
 Helper functions to simplify lazy loading of Microsoft Graph Toolkit components when using disambiguated web components in SharePoint Framework web parts. For more information on disambiguation in MGT see https://github.com/microsoftgraph/microsoft-graph-toolkit/tree/main/packages/mgt-components#disambiguation
 

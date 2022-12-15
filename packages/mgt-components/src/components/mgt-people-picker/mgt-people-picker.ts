@@ -1538,7 +1538,7 @@ export class MgtPeoplePicker extends MgtTemplatedComponent {
       if (isCmdOrCtrlKey && event.code === 'ArrowLeft') {
         this._currentHighlightedUserPos =
           (this._currentHighlightedUserPos - 1 + selectedPeople.length) % selectedPeople.length;
-        if (this._currentHighlightedUserPos >= 0 && this._currentHighlightedUserPos !== NaN) {
+        if (this._currentHighlightedUserPos >= 0 && !Number.isNaN(this._currentHighlightedUserPos)) {
           this._highlightedUsers.push(selectedPeople[this._currentHighlightedUserPos]);
         } else {
           this._currentHighlightedUserPos = 0;

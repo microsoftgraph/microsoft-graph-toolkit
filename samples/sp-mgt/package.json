@@ -16,21 +16,21 @@
     "@microsoft/mgt-components": "*",
     "@microsoft/mgt-sharepoint-provider": "*",
     "@microsoft/mgt-spfx-utils": "*",
-    "@microsoft/sp-core-library": "1.15.2",
-    "@microsoft/sp-property-pane": "1.15.2",
-    "@microsoft/sp-webpart-base": "1.15.2",
-    "@microsoft/sp-lodash-subset": "1.15.2",
-    "@microsoft/sp-office-ui-fabric-core": "1.15.2"
+    "@microsoft/sp-core-library": "1.16.1",
+    "@microsoft/sp-property-pane": "1.16.1",
+    "@microsoft/sp-webpart-base": "1.16.1",
+    "@microsoft/sp-lodash-subset": "1.16.1",
+    "@microsoft/sp-office-ui-fabric-core": "1.16.1"
   },
   "devDependencies": {
     "@microsoft/rush-stack-compiler-4.5": "0.2.2",
     "@rushstack/eslint-config": "2.5.1",
-    "@microsoft/eslint-plugin-spfx": "1.15.2",
-    "@microsoft/eslint-config-spfx": "1.15.2",
-    "@microsoft/sp-build-web": "1.15.2",
-    "@types/webpack-env": "~1.15.2",
+    "@microsoft/eslint-plugin-spfx": "1.16.1",
+    "@microsoft/eslint-config-spfx": "1.16.1",
+    "@microsoft/sp-build-web": "1.16.1",
+    "@types/webpack-env": "~1.16.1",
     "ajv": "^6.12.5",
     "gulp": "4.0.2",
-    "@microsoft/sp-module-interfaces": "1.15.2"
+    "@microsoft/sp-module-interfaces": "1.16.1"
   }
 }
