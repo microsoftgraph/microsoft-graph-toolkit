@@ -465,6 +465,7 @@ export class MgtAgenda extends MgtTemplatedComponent {
     }
     return html`
       <mgt-people
+        show-max="5"
         show-presence
         class="event-attendees"
         .peopleQueries=${event.attendees.map(attendee => {
