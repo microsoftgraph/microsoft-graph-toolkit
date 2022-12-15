@@ -108,7 +108,7 @@ describe('MSALProvider', () => {
     await msalProvider.login();
   });
 
-  it.skip('login should fire onLoginChanged callback when loginType is Redirect', async () => {
+  it('login should fire onLoginChanged callback when loginType is Redirect', async () => {
     const config: MsalConfig = {
       clientId: 'abc',
       loginType: LoginType.Redirect
@@ -120,7 +120,6 @@ describe('MSALProvider', () => {
 
     const msalProvider = new MsalProvider(config);
 
-    expect.assertions(1);
     msalProvider.onStateChanged(() => {
       expect(true).toBeTruthy();
     });
