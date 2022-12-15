@@ -7,19 +7,17 @@
 
 import { html, TemplateResult } from 'lit';
 import { customElement, property } from 'lit/decorators.js';
-import { IGraph } from '@microsoft/mgt-element';
-import { Providers, ProviderState, MgtTemplatedComponent } from '@microsoft/mgt-element';
+import { MgtTemplatedComponent } from '@microsoft/mgt-element';
 import { strings } from './strings';
 import { fluentCombobox, fluentOption } from '@fluentui/web-components';
 import { registerFluentComponents } from '../../utils/FluentComponents';
-import { getTodoTaskLists, TodoTaskList } from '../mgt-todo/graph.todo';
 import '../../styles/style-helper';
 
 registerFluentComponents(fluentCombobox, fluentOption);
 
 /**
  * Web component that allows a single entity pick from a generic endpoint from Graph. Uses mgt-get.
- 
+ z
  * @export
  * @class MgtPicker
  * @extends {MgtTemplatedComponent}
@@ -38,18 +36,10 @@ export class MgtPicker extends MgtTemplatedComponent {
    */
   @property({
     attribute: 'resource',
+    reflect: true,
     type: String
   })
-  public get resource(): string {
-    return this._resource;
-  }
-  public set resource(value) {
-    if (this._resource === value) {
-      return;
-    }
-    this._resource = value;
-    this.requestStateUpdate(true);
-  }
+  public resource: string;
 
   /**
    * Api version to use for request
@@ -59,16 +49,66 @@ export class MgtPicker extends MgtTemplatedComponent {
    */
   @property({
     attribute: 'version',
+    reflect: true,
     type: String
   })
-  public get version(): string {
-    return this._version;
+  public version: string = 'v1.0';
+
+  /**
+   * Maximum number of pages to get for the resource
+   * default = 3
+   * if <= 0, all pages will be fetched
+   *
+   * @type {number}
+   * @memberof MgtGet
+   */
+  @property({
+    attribute: 'max-pages',
+    reflect: true,
+    type: Number
+  })
+  public maxPages: number = 3;
+
+  /**
+   * Set the person details to render
+   *
+   * @type {object}
+   * @memberof MgtPicker
+   */
+  @property({
+    attribute: 'response',
+    type: Object
+  })
+  public get response(): any {
+    return this._response;
   }
-  public set version(value) {
-    if (this._version === value) {
+  public set response(value) {
+    if (this._response === value) {
       return;
     }
-    this._version = value;
+
+    this._response = value;
+    this.requestStateUpdate(true);
+  }
+
+  /**
+   * A placeholder for the picker
+   *
+   * @type {string}
+   * @memberof MgtPicker
+   */
+  @property({
+    attribute: 'placeholder',
+    type: String
+  })
+  public get placeholder(): string {
+    return this._placeholder;
+  }
+  public set placeholder(value) {
+    if (this._placeholder === value) {
+      return;
+    }
+    this._placeholder = value;
     this.requestStateUpdate(true);
   }
 
@@ -87,15 +127,12 @@ export class MgtPicker extends MgtTemplatedComponent {
   })
   public scopes: string[] = [];
 
-  private _resource: string;
-  private _version: string = 'v1.0';
-  private _lists: TodoTaskList[];
-  private _graph: IGraph;
+  private _placeholder: string;
+  private _response: object;
 
   constructor() {
     super();
-    this._lists = [];
-    this._graph = null;
+    this._placeholder = 'Select an item';
   }
 
   /**
@@ -105,7 +142,7 @@ export class MgtPicker extends MgtTemplatedComponent {
    * @memberof MgtPicker
    */
   protected clearState(): void {
-    // this.people = null;
+    // this.response = null;
   }
 
   /**
@@ -123,7 +160,7 @@ export class MgtPicker extends MgtTemplatedComponent {
   }
 
   /**
-   * Invoked on each update to perform rendering tasks. This method must return
+   * Invoked on each update to perform rendering the picker. This method must return
    * a lit-html TemplateResult. Setting properties inside this method will *not*
    * trigger the element to update.
    */
@@ -131,7 +168,9 @@ export class MgtPicker extends MgtTemplatedComponent {
     if (this.isLoadingState) {
       return this.renderLoading();
     }
-    return this.renderTemplate('default', { entity: this._lists }) || this.renderPicker(this.resource, this.scopes);
+    console.log('response:', this.response);
+
+    return this.renderPicker(this.resource, this.scopes);
   }
 
   /**
@@ -152,18 +191,16 @@ export class MgtPicker extends MgtTemplatedComponent {
    * @returns {TemplateResult}
    * @memberof MgtPicker
    */
-  protected renderPicker(resource: String, scopes: String[]): TemplateResult {
+  protected renderPicker(resource: string, scopes: string[]): TemplateResult {
     return html`
-      <mgt-get id="entityGet" resource=${resource} version=${this.version} scopes=${scopes}>
-        <template>
-          <fluent-combobox id="combobox" placeholder="Select a task list" autocomplete="both">
-            <div data-for="item in value">
-              <fluent-option value={{item.id}}> {{ item.displayName }} </fluent-option>
-            </div>
-          </fluent-combobox>
-        </template>
-      </mgt-get>
-       `;
+    <mgt-get resource=${resource} version=${this.version} scopes=${scopes}>
+      <template>
+        <fluent-combobox id="combobox" autocomplete="list">
+          <fluent-option value={{item.id}} data-for="item in value"> {{ item.displayName }} </fluent-option>
+        </fluent-combobox>
+      </template>
+    </mgt-get>
+     `;
   }
 
   /**
@@ -185,21 +222,15 @@ export class MgtPicker extends MgtTemplatedComponent {
    * @memberof MgtPicker
    */
   protected async loadState() {
-    const provider = Providers.globalProvider;
-    if (provider && provider.state === ProviderState.SignedOut) {
-      return;
+    if (!this.response) {
+      let parent = this.renderRoot.querySelector('mgt-get');
+      parent.addEventListener('dataChange', e => this.handleDataChange(e));
     }
+  }
 
-    if (!this._graph) {
-      const graph = provider.graph.forComponent(this);
-      this._graph = graph;
-    }
-
-    let lists = this._lists;
-    if (!lists || !lists.length) {
-      lists = await getTodoTaskLists(this._graph);
-      this._lists = lists;
-    }
-    console.log('Lists: ', this._lists);
+  private handleDataChange(e) {
+    console.log('here');
+    let response = e.detail.response.value;
+    this.response = response;
   }
 }
