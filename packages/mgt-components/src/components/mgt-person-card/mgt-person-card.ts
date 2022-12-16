@@ -394,6 +394,7 @@ export class MgtPersonCard extends MgtTemplatedComponent {
     this.personImage = null;
     this._currentSection = null;
     this.sections = [];
+    this._chatInput = '';
     this.requestStateUpdate();
   }
 
@@ -899,15 +900,17 @@ export class MgtPersonCard extends MgtTemplatedComponent {
   protected renderMessagingSection(): TemplateResult {
     const person = this.personDetails as User;
     const user = this._me.userPrincipalName;
+    const chatInput = this._chatInput;
     if (person.userPrincipalName === user) {
       return;
     } else {
       return html`
       <div class="message-section">
         <fluent-text-field appearance="outline" placeholder="${this.strings.quickMessage}"
-          .value=${this._chatInput}
+          .value=${chatInput}
           @input=${(e: Event) => {
             this._chatInput = (e.target as HTMLInputElement).value;
+            this.requestUpdate();
           }}>
         </fluent-text-field>
         <span class="send-message-icon" @click=${() => this.sendQuickMessage()}>
