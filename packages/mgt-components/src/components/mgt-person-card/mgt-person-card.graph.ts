@@ -14,7 +14,7 @@ import { MgtPersonCardConfig, MgtPersonCardState } from './mgt-person-card.types
 
 // tslint:disable-next-line:completed-docs
 const userProperties =
-  'businessPhones,companyName,department,displayName,givenName,jobTitle,mail,mobilePhone,officeLocation,preferredLanguage,surname,userPrincipalName,id';
+  'businessPhones,companyName,department,displayName,givenName,jobTitle,mail,mobilePhone,officeLocation,preferredLanguage,surname,userPrincipalName,id,accountEnabled';
 
 // tslint:disable-next-line:completed-docs
 const batchKeys = {
@@ -92,6 +92,11 @@ export async function getPersonCardGraphData(
     } catch {
       // nop
     }
+  }
+
+  // filter out disabled users from direct reports.
+  if (data.directReports && data.directReports.length > 0) {
+    data.directReports = data.directReports.filter(report => report.accountEnabled);
   }
 
   return data;
