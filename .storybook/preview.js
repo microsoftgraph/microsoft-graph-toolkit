@@ -9,10 +9,28 @@
 
 import { addParameters, setCustomElements } from '@storybook/web-components';
 
+const setCustomElementsManifestWithOptions = (customElements, options) => {
+  let { privateFields = true } = options;
+  if (!privateFields) {
+    customElements?.modules?.forEach(module => {
+      module?.declarations?.forEach(declaration => {
+        Object.keys(declaration).forEach(key => {
+          if (Array.isArray(declaration[key])) {
+            declaration[key] = declaration[key].filter(
+              member => !member.privacy?.includes('private') && !member.privacy?.includes('protected')
+            );
+          }
+        });
+      });
+    });
+  }
+  return setCustomElements(customElements);
+};
+
 import '../node_modules/@webcomponents/webcomponentsjs/webcomponents-bundle.js';
 import customElements from '../custom-elements.json';
 
-setCustomElements(customElements);
+setCustomElementsManifestWithOptions(customElements, { privateFields: false });
 
 addParameters({
   previewTabs: {

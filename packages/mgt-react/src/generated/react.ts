@@ -1,5 +1,5 @@
 import { OfficeGraphInsightString,ViewType,ResponseType,IDynamicPerson,PersonCardInteraction,PersonType,GroupType,UserType,AvatarSize,PersonViewType,TasksStringResource,TasksSource,TaskFilter,SelectedChannel,TodoFilter } from '@microsoft/mgt-components';
-import { TemplateContext,ComponentMediaQuery } from '@microsoft/mgt-element';
+import { TemplateContext,ComponentMediaQuery,TemplateRenderedData } from '@microsoft/mgt-element';
 import * as MicrosoftGraph from '@microsoft/microsoft-graph-types';
 import * as MicrosoftGraphBeta from '@microsoft/microsoft-graph-types-beta';
 import {wrapMgt} from '../Mgt';
@@ -16,7 +16,7 @@ export type AgendaProps = {
 	templateContext?: TemplateContext;
 	mediaQuery?: ComponentMediaQuery;
 	eventClick?: (e: Event) => void;
-	templateRendered?: (e: Event) => void;
+	templateRendered?: (e: CustomEvent<TemplateRenderedData>) => void;
 }
 
 export type FileProps = {
@@ -39,7 +39,7 @@ export type FileProps = {
 	view?: ViewType;
 	templateContext?: TemplateContext;
 	mediaQuery?: ComponentMediaQuery;
-	templateRendered?: (e: Event) => void;
+	templateRendered?: (e: CustomEvent<TemplateRenderedData>) => void;
 }
 
 export type FileListProps = {
@@ -64,7 +64,7 @@ export type FileListProps = {
 	templateContext?: TemplateContext;
 	mediaQuery?: ComponentMediaQuery;
 	itemClick?: (e: Event) => void;
-	templateRendered?: (e: Event) => void;
+	templateRendered?: (e: CustomEvent<TemplateRenderedData>) => void;
 }
 
 export type GetProps = {
@@ -81,7 +81,7 @@ export type GetProps = {
 	templateContext?: TemplateContext;
 	mediaQuery?: ComponentMediaQuery;
 	dataChange?: (e: Event) => void;
-	templateRendered?: (e: Event) => void;
+	templateRendered?: (e: CustomEvent<TemplateRenderedData>) => void;
 }
 
 export type LoginProps = {
@@ -93,7 +93,7 @@ export type LoginProps = {
 	loginFailed?: (e: Event) => void;
 	logoutInitiated?: (e: Event) => void;
 	logoutCompleted?: (e: Event) => void;
-	templateRendered?: (e: Event) => void;
+	templateRendered?: (e: CustomEvent<TemplateRenderedData>) => void;
 }
 
 export type PeopleProps = {
@@ -110,7 +110,7 @@ export type PeopleProps = {
 	fallbackDetails?: IDynamicPerson[];
 	templateContext?: TemplateContext;
 	mediaQuery?: ComponentMediaQuery;
-	templateRendered?: (e: Event) => void;
+	templateRendered?: (e: CustomEvent<TemplateRenderedData>) => void;
 }
 
 export type PeoplePickerProps = {
@@ -138,7 +138,7 @@ export type PeoplePickerProps = {
 	templateContext?: TemplateContext;
 	mediaQuery?: ComponentMediaQuery;
 	selectionChanged?: (e: CustomEvent<IDynamicPerson[]>) => void;
-	templateRendered?: (e: Event) => void;
+	templateRendered?: (e: CustomEvent<TemplateRenderedData>) => void;
 }
 
 export type PersonProps = {
@@ -163,7 +163,7 @@ export type PersonProps = {
 	line1clicked?: (e: Event) => void;
 	line2clicked?: (e: Event) => void;
 	line3clicked?: (e: Event) => void;
-	templateRendered?: (e: Event) => void;
+	templateRendered?: (e: CustomEvent<TemplateRenderedData>) => void;
 }
 
 export type PersonCardProps = {
@@ -180,7 +180,7 @@ export type PersonCardProps = {
 	templateContext?: TemplateContext;
 	mediaQuery?: ComponentMediaQuery;
 	expanded?: (e: Event) => void;
-	templateRendered?: (e: Event) => void;
+	templateRendered?: (e: CustomEvent<TemplateRenderedData>) => void;
 }
 
 export type TasksProps = {
@@ -202,7 +202,7 @@ export type TasksProps = {
 	taskChanged?: (e: Event) => void;
 	taskClick?: (e: Event) => void;
 	taskRemoved?: (e: Event) => void;
-	templateRendered?: (e: Event) => void;
+	templateRendered?: (e: CustomEvent<TemplateRenderedData>) => void;
 }
 
 export type TeamsChannelPickerProps = {
@@ -210,7 +210,7 @@ export type TeamsChannelPickerProps = {
 	templateContext?: TemplateContext;
 	mediaQuery?: ComponentMediaQuery;
 	selectionChanged?: (e: Event) => void;
-	templateRendered?: (e: Event) => void;
+	templateRendered?: (e: CustomEvent<TemplateRenderedData>) => void;
 }
 
 export type TodoProps = {
@@ -222,7 +222,7 @@ export type TodoProps = {
 	initialId?: string;
 	templateContext?: TemplateContext;
 	mediaQuery?: ComponentMediaQuery;
-	templateRendered?: (e: Event) => void;
+	templateRendered?: (e: CustomEvent<TemplateRenderedData>) => void;
 }
 
 export const Agenda = wrapMgt<AgendaProps>('mgt-agenda');
