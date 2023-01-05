@@ -42,10 +42,30 @@ import { strings } from './strings';
 import { MgtFile } from '../mgt-file/mgt-file';
 import { MgtFileUploadConfig } from './mgt-file-upload/mgt-file-upload';
 
-import { fluentProgressRing, fluentDesignSystemProvider } from '@fluentui/web-components';
+import {
+  fluentProgressRing,
+  fluentBreadcrumb,
+  fluentBreadcrumbItem,
+  fluentDesignSystemProvider
+} from '@fluentui/web-components';
 import { registerFluentComponents } from '../../utils/FluentComponents';
 
-registerFluentComponents(fluentProgressRing, fluentDesignSystemProvider);
+registerFluentComponents(fluentProgressRing, fluentDesignSystemProvider, fluentBreadcrumb, fluentBreadcrumbItem);
+
+type BreadcrumbInfo = {
+  name: string;
+  fileListQuery?: string;
+  itemId?: string;
+  itemPath?: string;
+  files?: DriveItem[];
+  fileQueries?: string[];
+  groupId?: string;
+  driveId?: string;
+  siteId?: string;
+  userId?: string;
+  insightType?: OfficeGraphInsightString;
+  fileExtensions?: string[];
+};
 
 /**
  * The File List component displays a list of multiple folders and files by
@@ -469,6 +489,35 @@ export class MgtFileList extends MgtTemplatedComponent {
   }
 
   /**
+   * Name to be used for the root node of the breadcrumb
+   *
+   * @type {string}
+   * @memberof MgtFileList
+   */
+  @property({
+    attribute: 'name'
+  })
+  public rootNodeName: string = 'Home';
+
+  private _breadcrumb: BreadcrumbInfo[] = [];
+  /**
+   * An array of nodes to show in the breadcrumb
+   *
+   * @type {BreadcrumbInfo[]}
+   * @readonly
+   * @memberof MgtFileList
+   */
+  @state()
+  private get breadcrumb(): BreadcrumbInfo[] {
+    return this._breadcrumb;
+  }
+  private set breadcrumb(value: BreadcrumbInfo[]) {
+    this._breadcrumb = value;
+  }
+
+  private isLastCrumb = (b: BreadcrumbInfo): boolean => this.breadcrumb.indexOf(b) === this.breadcrumb.length - 1;
+
+  /**
    * Get the scopes required for file list
    *
    * @static
@@ -508,6 +557,29 @@ export class MgtFileList extends MgtTemplatedComponent {
     this.maxUploadFile = 10;
     this.enableFileUpload = false;
     this._preloadedFiles = [];
+  }
+
+  /**
+   * Override connectedCallback to set initial breadcrumbstate.
+   *
+   * @memberof MgtFileList
+   */
+  public connectedCallback(): void {
+    super.connectedCallback();
+    this.breadcrumb.push({
+      name: this.rootNodeName,
+      siteId: this.siteId,
+      groupId: this.groupId,
+      driveId: this.driveId,
+      userId: this.userId,
+      files: this.files,
+      fileExtensions: this.fileExtensions,
+      fileListQuery: this.fileListQuery,
+      fileQueries: this.fileQueries,
+      itemPath: this.itemPath,
+      insightType: this.insightType,
+      itemId: this.itemId
+    });
   }
 
   /**
@@ -586,6 +658,26 @@ export class MgtFileList extends MgtTemplatedComponent {
   protected renderFiles(): TemplateResult {
     return html`
       <div id="file-list-wrapper" class="file-list-wrapper" dir=${this.direction}>
+        <fluent-breadcrumb>
+          ${repeat(
+            this.breadcrumb,
+            b => b.name, // feels bad to use name as key, needs a better way to identify breadcrumb
+            b =>
+              html`
+                <fluent-breadcrumb-item
+                  @click=${() => this.handleBreadcrumbClick(b)}
+                  @keypress=${(e: KeyboardEvent) => this.handleBreadcrumbKeyPress(e, b)}
+                >
+                  <span
+                    tabindex=${this.isLastCrumb(b) ? -1 : 0}
+                    class=${this.isLastCrumb(b) ? '' : 'interactive-breadcrumb'}
+                  >
+                    ${b.name}
+                  </span>
+                </fluent-breadcrumb-item>
+              `
+          )}
+        </fluent-breadcrumb>
         ${this.enableFileUpload ? this.renderFileUpload() : null}
         <ul
           id="file-list"
@@ -858,7 +950,7 @@ export class MgtFileList extends MgtTemplatedComponent {
         }
         filteredByFileExtension = files.filter(file => {
           for (const e of this.fileExtensions) {
-            if (e == this.getFileExtension(file.name)) {
+            if (e === this.getFileExtension(file.name)) {
               return file;
             }
           }
@@ -896,6 +988,45 @@ export class MgtFileList extends MgtTemplatedComponent {
         fileList.children[i].classList.remove('focused');
       }
     }
+    if (item.folder) {
+      // load folder contents, update breadcrumb
+      this.breadcrumb.push({ name: item.name, itemId: item.id });
+      // clear any existing query properties
+      this.siteId = null;
+      this.groupId = null;
+      this.driveId = null;
+      this.userId = null;
+      this.files = null;
+      this.fileExtensions = null;
+      this.fileListQuery = null;
+      this.fileQueries = null;
+      this.itemPath = null;
+      this.insightType = null;
+      // set the item id to load the folder
+      this.itemId = item.id;
+    }
+  }
+
+  private handleBreadcrumbKeyPress(event: KeyboardEvent, b: BreadcrumbInfo): void {
+    if (event.key === 'Enter' || event.key === ' ') {
+      this.handleBreadcrumbClick(b);
+    }
+  }
+  private handleBreadcrumbClick(b: BreadcrumbInfo): void {
+    // last crumb does nothing
+    if (this.isLastCrumb(b)) return;
+    this.breadcrumb = this.breadcrumb.slice(0, this.breadcrumb.indexOf(b) + 1);
+    this.siteId = b.siteId;
+    this.groupId = b.groupId;
+    this.driveId = b.driveId;
+    this.userId = b.userId;
+    this.files = b.files;
+    this.fileExtensions = b.fileExtensions;
+    this.fileListQuery = b.fileListQuery;
+    this.fileQueries = b.fileQueries;
+    this.itemPath = b.itemPath;
+    this.insightType = b.insightType;
+    this.itemId = b.itemId;
   }
 
   /**
