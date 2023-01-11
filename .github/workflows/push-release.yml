@@ -75,6 +75,14 @@ jobs:
       - name: Attach mgt-spfx solution to GitHub release
         run: node scripts/uploadSpfxSolution.js ${{secrets.GITHUB_TOKEN}} ${{needs.version.outputs.package-version}}
 
+      - name: Notify TeamsFx Repo
+        uses: peter-evans/repository-dispatch@v2
+        with:
+          token: ${{ secrets.TEAMSFX_REPO_ACCESS_TOKEN }}
+          repository: OfficeDev/TeamsFx
+          event-type: graph-toolkit-released
+          client-payload: '{"version": "${{ needs.version.outputs.package-version }}"}'
+
   storybook:
     runs-on: ubuntu-latest
 
