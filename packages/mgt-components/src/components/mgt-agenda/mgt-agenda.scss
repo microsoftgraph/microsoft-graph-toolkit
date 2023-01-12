@@ -96,6 +96,7 @@ mgt-agenda {
           left: 6px;
           display: flex;
           flex-direction: column;
+          padding-left: 0px;
         }
         .event {
           &-subject-loading {
