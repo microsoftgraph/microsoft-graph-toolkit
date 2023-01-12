@@ -17,6 +17,11 @@ $agenda: (
     _var: --event-background-color,
     light: $background-color__main--light,
     dark: $background-color__sub1--dark
+  ),
+  background-color: (
+    _var: background-color,
+    light: transparent,
+    dark: 'transparent !important'
   )
 );
 
