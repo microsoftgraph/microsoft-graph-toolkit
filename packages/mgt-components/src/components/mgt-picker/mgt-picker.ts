@@ -60,7 +60,7 @@ export class MgtPicker extends MgtTemplatedComponent {
    * if <= 0, all pages will be fetched
    *
    * @type {number}
-   * @memberof MgtGet
+   * @memberof MgtPicker
    */
   @property({
     attribute: 'max-pages',
@@ -104,6 +104,20 @@ export class MgtPicker extends MgtTemplatedComponent {
     reflect: true
   })
   public scopes: string[] = [];
+
+  /**
+   * Enables cache on the response from the specified resource
+   * default = false
+   *
+   * @type {boolean}
+   * @memberof MgtPicker
+   */
+  @property({
+    attribute: 'cache-enabled',
+    reflect: true,
+    type: Boolean
+  })
+  public cacheEnabled: boolean = false;
 
   private _placeholder: string;
 
@@ -177,7 +191,6 @@ export class MgtPicker extends MgtTemplatedComponent {
           <fluent-option value=${item.id}> ${item.displayName} </fluent-option>
           `
         )}
-        
       </fluent-combobox>
      `;
   }
@@ -191,7 +204,7 @@ export class MgtPicker extends MgtTemplatedComponent {
    */
   protected renderGet(): TemplateResult {
     return html`
-    <mgt-get resource=${this.resource} version=${this.version} scopes=${this.scopes}>
+    <mgt-get resource=${this.resource} version=${this.version} scopes=${this.scopes} cache-enabled=${this.cacheEnabled} max-pages=${this.maxPages}>
       <template></template>
     </mgt-get>
      `;
@@ -225,5 +238,6 @@ export class MgtPicker extends MgtTemplatedComponent {
   private handleDataChange(e) {
     let response = e.detail.response.value;
     this.response = response;
+    console.log('response:', this.response);
   }
 }
