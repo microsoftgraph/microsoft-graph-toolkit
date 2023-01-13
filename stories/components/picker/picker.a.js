@@ -17,3 +17,8 @@ export default {
 export const picker = () => html`
     <mgt-picker resource="me/todo/lists" scopes="tasks.read, tasks.readwrite" placeholder="Select a task list"></mgt-picker>
  `;
+
+export const MaxPages = () => html`
+<mgt-picker resource="me/todo/lists" scopes="tasks.read, tasks.readwrite" placeholder="Select a task list" max-pages="2"></mgt-picker>
+
+`;
