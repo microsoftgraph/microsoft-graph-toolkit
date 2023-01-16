@@ -89,14 +89,14 @@ mgt-agenda {
         position: relative;
         bottom: 8px;
         top: 0px;
-        padding-left: 32px;
+        padding-inline-start: 32px;
 
         &.narrow {
           position: inherit;
           left: 6px;
           display: flex;
           flex-direction: column;
-          padding-left: 0px;
+          padding-inline-start: 0px;
         }
         .event {
           &-subject-loading {
@@ -123,7 +123,8 @@ mgt-agenda {
 
         .event {
           &-location {
-            margin: 0px 0px 0px 3px;
+            // margin: 0px 0px 0px 3px;
+            padding-inline-start: 3px;
             font-family: $font-family;
             font-style: normal;
             font-weight: 400;
@@ -193,51 +194,10 @@ fluent-card.event {
   }
 
   .event {
-    &.narrow {
-      display: flex;
-      flex-direction: column;
-      inset: 0px;
-    }
-
-    &-location {
-      margin: 0px 4px 0px 0px;
-    }
-
     &-time-container {
       direction: ltr;
-      margin: 0px 0px 14px 38px;
       display: flex;
       justify-content: flex-end;
-
-      &.narrow {
-        margin: 0px;
-      }
-    }
-
-    &-details-container {
-      margin: 0px 28px 14px 18px;
-      &.narrow {
-        margin: 0px;
-      }
-      .event {
-        &-subject {
-          margin: 0px;
-
-          &.narrow {
-            margin: 0px;
-          }
-        }
-        &-location-container {
-          margin: 8px 0px 0px 18px;
-          &.narrow {
-            margin: 0px;
-          }
-          .event-location {
-            position: relative;
-            right: 2px;
-          }
-        }
-      }
     }
   }
 }
