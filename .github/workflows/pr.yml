@@ -4,7 +4,7 @@
 name: Build pr
 
 on:
-  pull_request:
+  pull_request_target:
     branches: [main, release/**, next/**, feat/add-jest-tests]
 
 jobs:
@@ -62,14 +62,14 @@ jobs:
 
       - name: Add Coverage PR Comment
         uses: marocchino/sticky-pull-request-comment@v2
-        if: github.event_name == 'pull_request'
+        if: github.event_name == 'pull_request_target'
         with:
           recreate: true
           path: code-coverage-results.md
 
       - name: Test Report
         uses: dorny/test-reporter@v1
-        if: success() || failure() # run this step even if previous step failed
+        if: always() # run this step even if previous step failed
         with:
           name: JEST Tests # Name of the check run which will be created
           path: testResults/junit.xml # Path to test results
