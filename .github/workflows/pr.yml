@@ -48,13 +48,7 @@ jobs:
         with:
           name: coverage
           path: coverage/cobertura-coverage.xml
-      - name: Test Report
-        uses: dorny/test-reporter@v1
-        if: success() || failure() # run this step even if previous step failed
-        with:
-          name: JEST Tests # Name of the check run which will be created
-          path: testResults/junit.xml # Path to test results
-          reporter: jest-junit # Format of test results
+
       - name: Code Coverage Summary Report
         uses: irongut/CodeCoverageSummary@v1.3.0
         with:
@@ -63,6 +57,9 @@ jobs:
           format: 'markdown'
           output: 'both'
 
+      - name: Write to Job Summary
+        run: cat code-coverage-results.md >> $GITHUB_STEP_SUMMARY
+
       - name: Add Coverage PR Comment
         uses: marocchino/sticky-pull-request-comment@v2
         if: github.event_name == 'pull_request'
@@ -70,8 +67,13 @@ jobs:
           recreate: true
           path: code-coverage-results.md
 
-      - name: Write to Job Summary
-        run: cat code-coverage-results.md >> $GITHUB_STEP_SUMMARY
+      - name: Test Report
+        uses: dorny/test-reporter@v1
+        if: success() || failure() # run this step even if previous step failed
+        with:
+          name: JEST Tests # Name of the check run which will be created
+          path: testResults/junit.xml # Path to test results
+          reporter: jest-junit # Format of test results
 
       - name: Upload a Build Artifact - package
         uses: actions/upload-artifact@v2
