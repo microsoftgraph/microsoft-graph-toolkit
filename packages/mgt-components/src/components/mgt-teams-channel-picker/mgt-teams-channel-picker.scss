@@ -50,18 +50,20 @@
   .loading-text {
     font-family: $font-family;
     font-style: normal;
-    font-weight: 600;
+    font-weight: 400;
     font-size: 14px;
-    color: $gray120;
-    line-height: 19px;
-    text-align: center;
+    line-height: 20px;
   }
 
   .message-parent {
-    display: -webkit-inline-box;
+    display: flex;
+    flex-direction: row;
+    gap: 5px;
+    padding: 5px;
+
     .loading-text {
-      margin: 8px 0px 0px 8px;
-      color: #0078d4;
+      color: var(--color, #0078d4);
+      margin: auto;
     }
   }
 }
