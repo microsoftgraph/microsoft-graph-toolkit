@@ -348,7 +348,7 @@ export class MgtTeamsChannelPicker extends MgtTemplatedComponent {
     return (
       this.renderTemplate('default', { teams: this.items }) ||
       html`
-        <div @blur=${this.lostFocus}>
+        <div class="container" @blur=${this.lostFocus}>
           <fluent-text-field
             appearance="outline"
             id="teams-channel-picker-input"

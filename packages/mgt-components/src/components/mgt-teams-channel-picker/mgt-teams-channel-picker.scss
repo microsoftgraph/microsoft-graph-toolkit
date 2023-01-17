@@ -13,6 +13,12 @@
 :host mgt-teams-channel-picker {
   font-family: $font-family;
 
+  .container {
+    display: flex;
+    flex-direction: column;
+    width: fit-content;
+  }
+
   .dropdown {
     z-index: 1;
     display: none;
@@ -63,7 +69,7 @@
 :host fluent-card {
   --fill-color: var(--dropdown-background-color, --fill-color);
   --card-height: auto;
-  --card-width: 368px;
+  --min-width: var(--card-width);
 }
 
 :host fluent-text-field {
