@@ -67,7 +67,7 @@
 }
 
 :host fluent-text-field {
-  width: 368px;
+  min-width: 368px;
   --fill-color: var(--color, $color);
   --neutral-fill-input-rest: var(--input-background-color, #ffffff);
   --input-placeholder-rest: var(--placeholder-color, --input-placeholder-rest);
