@@ -35,7 +35,6 @@ jobs:
         run: yarn
       - run: node scripts/setVersion.js --next
       - run: yarn build
-      - run: yarn run pack
       - run: yarn test
       - name: Archive test results
         uses: actions/upload-artifact@v2 # upload test results
