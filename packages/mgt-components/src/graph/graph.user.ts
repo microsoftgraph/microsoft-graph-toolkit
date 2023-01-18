@@ -10,7 +10,7 @@ import { User } from '@microsoft/microsoft-graph-types';
 
 import { findPeople, PersonType } from './graph.people';
 import { schemas } from './cacheStores';
-import { UserType } from '..';
+import { IDynamicPerson, UserType } from '..';
 import { GraphRequest } from '@microsoft/microsoft-graph-client';
 
 /**
@@ -172,7 +172,8 @@ export async function getUsersForUserIds(
   graph: IGraph,
   userIds: string[],
   searchInput: string = '',
-  userFilters: string = ''
+  userFilters: string = '',
+  fallbackDetails?: IDynamicPerson[]
 ): Promise<User[]> {
   if (!userIds || userIds.length === 0) {
     return [];
@@ -190,22 +191,30 @@ export async function getUsersForUserIds(
 
   for (const id of userIds) {
     peopleDict[id] = null;
+    let apiUrl: string = `/users/${id}`;
     let user = null;
     if (getIsUsersCacheEnabled()) {
       user = await cache.getValue(id);
     }
-    if (user && getUserInvalidationTime() > Date.now() - user.timeCached) {
+    if (user && user?.user && getUserInvalidationTime() > Date.now() - user.timeCached) {
       user = JSON.parse(user?.user);
-      const displayName = user.displayName;
 
       if (searchInput) {
-        const match = displayName && displayName.toLowerCase().includes(searchInput);
-        const searchMatches = match ? true : false;
-        if (searchMatches) {
-          peopleSearchMatches[id] = user ? user : null;
+        if (user) {
+          const displayName = user.displayName;
+          const match = displayName && displayName.toLowerCase().includes(searchInput);
+          const searchMatches = match ? true : false;
+          if (searchMatches) {
+            peopleSearchMatches[id] = user;
+          }
         }
       } else {
-        peopleDict[id] = user ? user : null;
+        if (user) {
+          peopleDict[id] = user;
+        } else {
+          batch.get(id, apiUrl, ['user.readbasic.all']);
+          notInCache.push(id);
+        }
       }
     } else if (id !== '') {
       if (id.toString() === 'me') {
@@ -221,30 +230,37 @@ export async function getUsersForUserIds(
     }
   }
   try {
-    const responses = await batch.executeAll();
-    // iterate over userIds to ensure the order of ids
-    for (const id of userIds) {
-      const response = responses.get(id);
-      if (response && response.content) {
-        const user = response.content;
-        if (searchInput) {
-          const displayName = user?.displayName.toLowerCase();
-          if (displayName.contains(searchInput)) {
-            peopleSearchMatches[id] = user;
+    if (batch.hasRequests) {
+      const responses = await batch.executeAll();
+      // iterate over userIds to ensure the order of ids
+      for (const id of userIds) {
+        const response = responses.get(id);
+        if (response && response.content) {
+          const user = response.content;
+          if (searchInput) {
+            const displayName = user?.displayName.toLowerCase();
+            if (displayName.contains(searchInput)) {
+              peopleSearchMatches[id] = user;
+            }
+          } else {
+            peopleDict[id] = user;
+          }
+
+          if (getIsUsersCacheEnabled()) {
+            cache.putValue(id, { user: JSON.stringify(user) });
           }
         } else {
-          peopleDict[id] = user;
-        }
-
-        if (getIsUsersCacheEnabled()) {
-          cache.putValue(id, { user: JSON.stringify(user) });
+          const fallback = fallbackDetails.find(detail => Object.values(detail).includes(id));
+          if (fallback) {
+            peopleDict[id] = fallback;
+          }
         }
       }
+      if (searchInput && Object.keys(peopleSearchMatches).length) {
+        return Promise.all(Object.values(peopleSearchMatches));
+      }
+      return Promise.all(Object.values(peopleDict));
     }
-    if (searchInput && Object.keys(peopleSearchMatches).length) {
-      return Promise.all(Object.values(peopleSearchMatches));
-    }
-    return Promise.all(Object.values(peopleDict));
   } catch (_) {
     // fallback to making the request one by one
     try {
@@ -271,7 +287,11 @@ export async function getUsersForUserIds(
  * @param {string[]} peopleQueries, an array of string ids
  * @returns {Promise<User[]>}
  */
-export async function getUsersForPeopleQueries(graph: IGraph, peopleQueries: string[]): Promise<User[]> {
+export async function getUsersForPeopleQueries(
+  graph: IGraph,
+  peopleQueries: string[],
+  fallbackDetails?: IDynamicPerson[]
+): Promise<User[]> {
   if (!peopleQueries || peopleQueries.length === 0) {
     return [];
   }
@@ -287,7 +307,7 @@ export async function getUsersForPeopleQueries(graph: IGraph, peopleQueries: str
   for (const personQuery of peopleQueries) {
     if (getIsUsersCacheEnabled()) {
       cacheRes = await cache.getValue(personQuery);
-      if (cacheRes && getUserInvalidationTime() > Date.now() - cacheRes.timeCached) {
+      if (cacheRes && cacheRes?.results[0] && getUserInvalidationTime() > Date.now() - cacheRes.timeCached) {
         const person = JSON.parse(cacheRes.results[0]);
         people.push(person);
       } else {
@@ -308,6 +328,11 @@ export async function getUsersForPeopleQueries(graph: IGraph, peopleQueries: str
           people.push(response.content.value[0]);
           if (getIsUsersCacheEnabled()) {
             cache.putValue(personQuery, { maxResults: 1, results: [JSON.stringify(response.content.value[0])] });
+          }
+        } else {
+          const fallback = fallbackDetails.find(detail => Object.values(detail).includes(personQuery));
+          if (fallback) {
+            people.push(fallback);
           }
         }
       }
