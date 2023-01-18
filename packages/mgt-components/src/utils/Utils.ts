@@ -48,16 +48,6 @@ export function getRelativeDisplayDate(date: Date): string {
 }
 
 /**
- * returns a promise that resolves after specified time
- * @param time in milliseconds
- */
-export function delay(ms: number): Promise<void> {
-  return new Promise(resolve => {
-    setTimeout(resolve, ms);
-  });
-}
-
-/**
  * returns month and day
  *
  * @export
