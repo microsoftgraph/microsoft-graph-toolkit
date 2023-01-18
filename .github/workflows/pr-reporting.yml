@@ -1,0 +1,37 @@
+on:
+  workflow_run:
+    workflows: [Build pr]
+    types:
+      - completed
+    branches: [main, release/**, next/**, feat/add-jest-tests]
+
+jobs:
+  pr_report:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Test Report
+        uses: dorny/test-reporter@v1
+        if: always() # run this step even if previous step failed
+        with:
+          artifact: test-results
+          name: JEST Tests # Name of the check run which will be created
+          path: junit.xml # Path to test results
+          reporter: jest-junit # Format of test results
+      - name: Download coverage artifact
+        uses: actions/download-artifact@v3
+        with:
+          name: coverage
+          path: coverage
+      - name: Code Coverage Summary Report
+        uses: irongut/CodeCoverageSummary@v1.3.0
+        with:
+          filename: coverage/cobertura-coverage.xml
+          badge: true
+          format: 'markdown'
+          output: 'both'
+      - name: Add Coverage PR Comment
+        uses: marocchino/sticky-pull-request-comment@v2
+        if: github.event_name == 'pull_request'
+        with:
+          recreate: true
+          path: code-coverage-results.md
