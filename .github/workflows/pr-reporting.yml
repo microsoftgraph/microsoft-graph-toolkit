@@ -11,7 +11,7 @@ jobs:
     steps:
       - name: Test Report
         uses: dorny/test-reporter@v1
-        if: success() || failure() # run this step even if previous step failed
+        if: always() # run this step even if previous step failed
         with:
           artifact: test-results
           name: JEST Tests # Name of the check run which will be created
