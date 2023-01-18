@@ -1,3 +1,5 @@
+name: PR Quality Reporting
+
 on:
   workflow_run:
     workflows: [Build pr]
