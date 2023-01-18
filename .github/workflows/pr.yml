@@ -38,13 +38,13 @@ jobs:
       - run: yarn test
       - name: Archive test results
         uses: actions/upload-artifact@v2 # upload test results
-        if: success() || failure() # run this step even if previous step failed
+        if: always() # run this step even if previous step failed
         with:
           name: test-results
           path: testResults/junit.xml
       - name: Archive coverage report
         uses: actions/upload-artifact@v2 # upload test results
-        if: success() || failure() # run this step even if previous step failed
+        if: always() # run this step even if previous step failed
         with:
           name: coverage
           path: coverage/cobertura-coverage.xml
