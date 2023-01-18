@@ -11,6 +11,8 @@ jobs:
     env:
       GH_TOKEN: ${{ github.token }}
     steps:
+      # added to work around missing .git repo wanted by gh cli
+      - uses: actions/checkout@v2
       - name: Test Report
         uses: dorny/test-reporter@v1
         if: always() # run this step even if previous step failed
