@@ -1,5 +1,7 @@
 # This workflow will do a clean install of node dependencies, build the source code and run tests across different versions of node
 # For more information see: https://help.github.com/actions/language-and-framework-guides/using-nodejs-with-github-actions
+# Tests are executed and coverage reports are emitted as to the action summary
+# A dependent workflow which uses workflow_run as a trigger reads the archived outputs and emits comments to the PR triggering this build
 
 name: Build pr
 
