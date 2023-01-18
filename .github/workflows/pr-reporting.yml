@@ -19,7 +19,7 @@ jobs:
           reporter: jest-junit # Format of test results
       - name: Download coverage artifacts with cli
         run: |
-          gh run download {{ github.context.payload.workflow_run.id }} -n coverage
+          gh run download ${{ github.context.payload.workflow_run.id }} -n coverage
           ls
           unzip coverage.zip
       - name: Code Coverage Summary Report
