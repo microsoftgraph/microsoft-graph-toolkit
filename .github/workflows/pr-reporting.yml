@@ -8,7 +8,12 @@ on:
 jobs:
   pr_report:
     runs-on: ubuntu-latest
+    env:
+      GH_TOKEN: ${{ github.token }}
     steps:
+      - name: Dump GitHub context
+        id: github_context_step
+        run: echo '${{ toJSON(github) }}'
       - name: Test Report
         uses: dorny/test-reporter@v1
         if: always() # run this step even if previous step failed
