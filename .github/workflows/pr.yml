@@ -45,7 +45,7 @@ jobs:
           name: test-results
           path: testResults/junit.xml
       - name: Archive coverage report
-        uses: actions/upload-artifact@v2 # upload test results
+        uses: actions/upload-artifact@v2 # upload coverage report
         if: always() # run this step even if previous step failed
         with:
           name: coverage
