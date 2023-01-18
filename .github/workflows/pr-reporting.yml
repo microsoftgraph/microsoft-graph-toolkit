@@ -19,10 +19,7 @@ jobs:
           name: JEST Tests # Name of the check run which will be created
           path: junit.xml # Path to test results
           reporter: jest-junit # Format of test results
-      - name: Download coverage artifact
-        uses: actions/download-artifact@v3
-        with:
-          name: coverage
+
       - name: Code Coverage Summary Report
         uses: irongut/CodeCoverageSummary@v1.3.0
         with:
