@@ -1,12 +1,12 @@
 on:
-  pull_request_target:
+  workflow_run:
+    workflows: [Build pr]
     types:
-      - closed
+      - completed
     branches: [main, release/**, next/**, feat/add-jest-tests]
 
 jobs:
-  if_merged:
-    if: github.event.pull_request.merged == true
+  pr_report:
     runs-on: ubuntu-latest
     steps:
       - name: Test Report
