@@ -23,7 +23,6 @@ jobs:
         uses: actions/download-artifact@v3
         with:
           name: coverage
-          path: coverage
       - name: Code Coverage Summary Report
         uses: irongut/CodeCoverageSummary@v1.3.0
         with:
