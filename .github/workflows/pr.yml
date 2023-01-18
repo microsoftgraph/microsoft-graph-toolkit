@@ -4,7 +4,7 @@
 name: Build pr
 
 on:
-  pull_request_target:
+  pull_request:
     branches: [main, release/**, next/**, feat/add-jest-tests]
 
 jobs:
@@ -36,6 +36,19 @@ jobs:
       - run: node scripts/setVersion.js --next
       - run: yarn build
       - run: yarn test
+      - name: Archive test results
+        uses: actions/upload-artifact@v2 # upload test results
+        if: success() || failure() # run this step even if previous step failed
+        with:
+          name: test-results
+          path: testResults/junit.xml
+      - name: Archive coverage report
+        uses: actions/upload-artifact@v2 # upload test results
+        if: success() || failure() # run this step even if previous step failed
+        with:
+          name: coverage
+          path: coverage/cobertura-coverage.xml
+
       - name: Code Coverage Summary Report
         uses: irongut/CodeCoverageSummary@v1.3.0
         with:
@@ -46,18 +59,3 @@ jobs:
 
       - name: Write to Job Summary
         run: cat code-coverage-results.md >> $GITHUB_STEP_SUMMARY
-
-      - name: Add Coverage PR Comment
-        uses: marocchino/sticky-pull-request-comment@v2
-        if: github.event_name == 'pull_request_target'
-        with:
-          recreate: true
-          path: code-coverage-results.md
-
-      - name: Test Report
-        uses: dorny/test-reporter@v1
-        if: always() # run this step even if previous step failed
-        with:
-          name: JEST Tests # Name of the check run which will be created
-          path: testResults/junit.xml # Path to test results
-          reporter: jest-junit # Format of test results
