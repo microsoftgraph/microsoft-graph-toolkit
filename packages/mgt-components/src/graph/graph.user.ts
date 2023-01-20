@@ -306,7 +306,7 @@ export async function getUsersForPeopleQueries(
   for (const personQuery of peopleQueries) {
     if (getIsUsersCacheEnabled()) {
       cacheRes = await cache.getValue(personQuery);
-      if (cacheRes && cacheRes?.results[0] && getUserInvalidationTime() > Date.now() - cacheRes.timeCached) {
+      if (cacheRes?.results[0] && getUserInvalidationTime() > Date.now() - cacheRes.timeCached) {
         const person = JSON.parse(cacheRes.results[0]);
         people.push(person);
       } else {
