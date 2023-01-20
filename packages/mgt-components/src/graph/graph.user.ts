@@ -5,13 +5,13 @@
  * -------------------------------------------------------------------------------------------
  */
 
-import { IGraph, prepScopes, CacheItem, CacheService, CacheStore } from '@microsoft/mgt-element';
+import { CacheItem, CacheService, CacheStore, IGraph, prepScopes } from '@microsoft/mgt-element';
 import { User } from '@microsoft/microsoft-graph-types';
 
-import { findPeople, PersonType } from './graph.people';
-import { schemas } from './cacheStores';
-import { IDynamicPerson, UserType } from '..';
 import { GraphRequest } from '@microsoft/microsoft-graph-client';
+import { schemas } from './cacheStores';
+import { findPeople, PersonType } from './graph.people';
+import { IDynamicPerson } from './types';
 
 /**
  * Object to be stored in cache
