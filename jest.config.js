@@ -4,6 +4,7 @@ const esModules = [
   '@open-wc',
   '@lit',
   'lit',
+  'testing-library__dom',
   '@microsoft/microsoft-graph-client',
   '@microsoft/mgt-element',
   '@microsoft/mgt-components',
@@ -24,9 +25,10 @@ const config = {
     ]
   ],
   transformIgnorePatterns: [`<rootDir>/node_modules/(?!${esModules})`],
-  testEnvironment: 'node',
+  testEnvironment: 'jsdom',
   testMatch: ['**/*.tests.{ts,tsx}'],
-  setupFiles: ['whatwg-fetch'], // polyfill fetch for Graph Client
+  setupFiles: ['whatwg-fetch'], // polyfill fetch for Graph Client,
+  setupFilesAfterEnv: ['./jest-setup.js'],
   transform: {
     // '^.+\\.[tj]sx?$' to process js/ts with `ts-jest`
     // '^.+\\.m?[tj]sx?$' to process js/ts/mjs/mts with `ts-jest`

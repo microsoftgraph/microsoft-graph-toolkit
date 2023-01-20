@@ -1076,7 +1076,7 @@ export class MgtPerson extends MgtTemplatedComponent {
   ): TemplateResult {
     const flyoutContent = this._personCardShouldRender
       ? html`
-           <div slot="flyout">
+           <div slot="flyout" data-testid="flyout-slot">
              ${this.renderFlyoutContent(personDetails, image, presence)}
            </div>
          `
