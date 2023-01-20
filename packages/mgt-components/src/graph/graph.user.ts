@@ -202,8 +202,7 @@ export async function getUsersForUserIds(
       if (searchInput) {
         if (user) {
           const displayName = user.displayName;
-          const match = displayName && displayName.toLowerCase().includes(searchInput);
-          const searchMatches = match ? true : false;
+          const searchMatches = displayName && displayName.toLowerCase().includes(searchInput);
           if (searchMatches) {
             peopleSearchMatches[id] = user;
           }
