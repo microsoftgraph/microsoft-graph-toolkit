@@ -14,6 +14,7 @@ const esModules = [
 const config = {
   collectCoverage: true,
   coverageReporters: ['cobertura', 'html'],
+  coveragePathIgnorePatterns: ['/node_modules/', '/dist/', '-css.ts', '/__test_data/'],
   reporters: [
     'default',
     [
