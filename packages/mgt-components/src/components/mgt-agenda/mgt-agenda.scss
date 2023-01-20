@@ -187,6 +187,10 @@ fluent-card.event {
   --color: $event__attendees__color;
 }
 
+:host fluent-tooltip {
+  width: auto;
+}
+
 [dir='rtl'] {
   :host {
     direction: rtl;
