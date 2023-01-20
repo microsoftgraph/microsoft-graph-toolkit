@@ -196,7 +196,7 @@ export async function getUsersForUserIds(
     if (getIsUsersCacheEnabled()) {
       user = await cache.getValue(id);
     }
-    if (user && user?.user && getUserInvalidationTime() > Date.now() - user.timeCached) {
+    if (user?.user && getUserInvalidationTime() > Date.now() - user.timeCached) {
       user = JSON.parse(user?.user);
 
       if (searchInput) {
