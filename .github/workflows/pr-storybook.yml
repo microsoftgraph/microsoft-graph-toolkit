@@ -25,10 +25,27 @@ jobs:
           node-version: ${{ matrix.node-version }}
           registry-url: 'https://registry.npmjs.org'
 
-      - name: Build 🛠
+      - name: Install deps 🛠
         run: |
           npm install -g yarn lerna
           yarn
+
+      - name: Extract tag name
+        shell: bash
+        run: |
+          tag=$(branch=${GITHUB_REF#refs/heads/}; echo ${branch/\//.})
+          if [[ $tag == next.* ]];
+          then
+            echo "##[set-output name=tag;]$tag"
+          else
+            echo "##[set-output name=tag;]pr.${{ github.event.pull_request.number }}"
+          fi
+          echo "##[set-output name=tag;]$(branch=${GITHUB_REF#refs/heads/}; echo ${branch/\//.})"
+        id: extract_tag
+      - run: node scripts/setVersion.js --tag ${{ steps.extract_tag.outputs.tag }}
+
+      - name: Build 🛠
+        run: |
           yarn build
           yarn storybook:build
 
