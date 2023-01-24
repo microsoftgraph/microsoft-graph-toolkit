@@ -30,3 +30,5 @@ export * from './utils/GraphPageIterator';
 export * from './utils/LocalizationHelper';
 export * from './utils/mgtHtml';
 export * from './utils/CustomElement';
+
+export * from './mock/MockProvider';
