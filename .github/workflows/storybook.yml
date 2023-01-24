@@ -14,7 +14,7 @@ jobs:
 
     strategy:
       matrix:
-        node-version: [12.x]
+        node-version: [16.x]
 
     steps:
       - uses: actions/checkout@v2
@@ -32,12 +32,12 @@ jobs:
           yarn storybook:build
 
       - name: Deploy mgt.dev/next 🚀
-        uses: JamesIves/github-pages-deploy-action@4.1.1
+        uses: JamesIves/github-pages-deploy-action@v4.4.1
         with:
           branch: gh-pages
           folder: storybook-static
           target-folder: next
-          clean-exclude: | 
+          clean-exclude: |
             pr
-            fluentui
+            v3
           token: ${{ secrets.GITHUB_TOKEN }}

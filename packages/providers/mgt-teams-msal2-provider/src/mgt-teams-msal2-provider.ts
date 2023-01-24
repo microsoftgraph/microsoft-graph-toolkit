@@ -90,6 +90,7 @@ export class MgtTeamsMsal2Provider extends MgtBaseProvider {
     type: String
   })
   public httpMethod;
+
   /**
    * Gets whether this provider can be used in this environment
    *
@@ -141,6 +142,10 @@ export class MgtTeamsMsal2Provider extends MgtBaseProvider {
         const httpMethod: string = this.httpMethod.toUpperCase();
         const httpMethodEnum = HttpMethod[httpMethod];
         config.httpMethod = httpMethodEnum;
+      }
+
+      if (this.baseUrl) {
+        config.baseURL = this.baseUrl;
       }
 
       this.provider = new TeamsMsal2Provider(config);

@@ -6,36 +6,36 @@ The Microsoft Graph Toolkit is a collection of reusable, framework-agnostic comp
 
 The `@microsoft/mgt` package brings all mgt packages together (with the exception of `@microsoft/mgt-react`) and bundles them in this one convenient package.
 
-[View the full documentation](https://docs.microsoft.com/graph/toolkit/overview)
+[View the full documentation](https://learn.microsoft.com/graph/toolkit/overview)
 
 You can now explore components and samples with the [playground](https://mgt.dev).
 ## Components
 
 The Microsoft Graph Toolkit includes a collection of web components for the most commonly built experiences powered by Microsoft Graph APIs.
 
-The components are also available as [React components](https://docs.microsoft.com/graph/toolkit/get-started/mgt-react).
+The components are also available as [React components](https://learn.microsoft.com/graph/toolkit/get-started/mgt-react).
 
-* [mgt-login](https://docs.microsoft.com/graph/toolkit/components/login)
-* [mgt-person](https://docs.microsoft.com/graph/toolkit/components/person)
-* [mgt-person-card](https://docs.microsoft.com/graph/toolkit/components/person-card)
-* [mgt-people](https://docs.microsoft.com/graph/toolkit/components/people)
-* [mgt-people-picker](https://docs.microsoft.com/graph/toolkit/components/people-picker)
-* [mgt-agenda](https://docs.microsoft.com/graph/toolkit/components/agenda)
-* [mgt-tasks](https://docs.microsoft.com/graph/toolkit/components/tasks)
-* [mgt-todo](https://docs.microsoft.com/graph/toolkit/components/todo)
-* [mgt-get](https://docs.microsoft.com/graph/toolkit/components/get)
-* [mgt-teams-channel-picker](https://docs.microsoft.com/en-us/graph/toolkit/components/teams-channel-picker)
+* [mgt-login](https://learn.microsoft.com/graph/toolkit/components/login)
+* [mgt-person](https://learn.microsoft.com/graph/toolkit/components/person)
+* [mgt-person-card](https://learn.microsoft.com/graph/toolkit/components/person-card)
+* [mgt-people](https://learn.microsoft.com/graph/toolkit/components/people)
+* [mgt-people-picker](https://learn.microsoft.com/graph/toolkit/components/people-picker)
+* [mgt-agenda](https://learn.microsoft.com/graph/toolkit/components/agenda)
+* [mgt-tasks](https://learn.microsoft.com/graph/toolkit/components/tasks)
+* [mgt-todo](https://learn.microsoft.com/graph/toolkit/components/todo)
+* [mgt-get](https://learn.microsoft.com/graph/toolkit/components/get)
+* [mgt-teams-channel-picker](https://learn.microsoft.com/graph/toolkit/components/teams-channel-picker)
 
 ## Providers
-[Providers](https://docs.microsoft.com/graph/toolkit/providers) enable authentication and provide the implementation for acquiring access tokens on various platforms and expose a Microsoft Graph Client for calling the Microsoft Graph APIs. The components work best when used with a provider, but the providers can be used on their own.
+[Providers](https://learn.microsoft.com/graph/toolkit/providers) enable authentication and provide the implementation for acquiring access tokens on various platforms and expose a Microsoft Graph Client for calling the Microsoft Graph APIs. The components work best when used with a provider, but the providers can be used on their own.
 
-* [Msal Provider](https://docs.microsoft.com/graph/toolkit/providers/msal)
-* [Msal2 Provider](https://docs.microsoft.com/graph/toolkit/providers/msal2)
-* [SharePoint Provider](https://docs.microsoft.com/graph/toolkit/providers/sharepoint)
-* [Teams Provider](https://docs.microsoft.com/graph/toolkit/providers/teams)
-* [Teams Msal2 Provider](https://docs.microsoft.com/graph/toolkit/providers/teams-msal2)
-* [Proxy Provider](https://docs.microsoft.com/graph/toolkit/providers/proxy)
-* [Simple Provider](https://docs.microsoft.com/graph/toolkit/providers/custom)
+* [Msal Provider](https://learn.microsoft.com/graph/toolkit/providers/msal)
+* [Msal2 Provider](https://learn.microsoft.com/graph/toolkit/providers/msal2)
+* [SharePoint Provider](https://learn.microsoft.com/graph/toolkit/providers/sharepoint)
+* [Teams Provider](https://learn.microsoft.com/graph/toolkit/providers/teams)
+* [Teams Msal2 Provider](https://learn.microsoft.com/graph/toolkit/providers/teams-msal2)
+* [Proxy Provider](https://learn.microsoft.com/graph/toolkit/providers/proxy)
+* [Simple Provider](https://learn.microsoft.com/graph/toolkit/providers/custom)
 
 ## Getting Started
 
@@ -46,13 +46,15 @@ You can use the components by referencing the loader directly (via unpkg), or in
 ### Use via mgt-loader:
 
 ```html
-<script src="https://unpkg.com/@microsoft/mgt/dist/bundle/mgt-loader.js"></script>
+<script src="https://unpkg.com/@microsoft/mgt@2/dist/bundle/mgt-loader.js"></script>
 ```
+
+> NOTE: This link will load the highest available version of @microsoft/mgt in the range `>= 2.0.0 < 3.0.0`, omitting the `@2` fragment from the url results in loading the latest version. This could result in loading a new major version and breaking the application.
 
 You can then start using the components in your html page. Here is a full working example with the Msal provider:
 
 ```html
-<script src="https://unpkg.com/@microsoft/mgt/dist/bundle/mgt-loader.js"></script>
+<script src="https://unpkg.com/@microsoft/mgt@2/dist/bundle/mgt-loader.js"></script>
 
 <mgt-msal-provider client-id="[CLIENT-ID]"></mgt-msal-provider>
 

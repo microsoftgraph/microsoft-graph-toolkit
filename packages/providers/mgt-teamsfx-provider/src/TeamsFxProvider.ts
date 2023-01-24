@@ -5,8 +5,14 @@
  * -------------------------------------------------------------------------------------------
  */
 
-import { IProvider, ProviderState, createFromProvider } from '@microsoft/mgt-element';
-import { TeamsFx } from '@microsoft/teamsfx';
+import {
+  IProvider,
+  ProviderState,
+  createFromProvider,
+  GraphEndpoint,
+  MICROSOFT_GRAPH_DEFAULT_ENDPOINT
+} from '@microsoft/mgt-element';
+import { TeamsFx, TeamsUserCredential } from '@microsoft/teamsfx';
 
 /**
  * TeamsFx Provider handler
@@ -27,7 +33,7 @@ export class TeamsFxProvider extends IProvider {
   }
 
   /**
-   * returns teamsfx instance
+   * returns teamsfx instance, if you construct TeamsFxProvider with TeamsUserCredential, this value should be null
    *
    * @readonly
    * @memberof TeamsFxProvider
@@ -47,6 +53,14 @@ export class TeamsFxProvider extends IProvider {
   private scopes: string | string[] = [];
 
   /**
+   * TeamsUserCredential instance
+   *
+   * @type {TeamsFx}
+   * @memberof TeamsFxProvider
+   */
+  private readonly _credential: TeamsUserCredential;
+
+  /**
    * TeamsFx instance
    *
    * @type {TeamsFx}
@@ -62,11 +76,19 @@ export class TeamsFxProvider extends IProvider {
    */
   private _accessToken: string = '';
 
-  constructor(teamsfx: TeamsFx, scopes: string | string[]) {
+  constructor(teamsfx: TeamsFx, scopes: string | string[], baseURL?: GraphEndpoint);
+  constructor(teamsUserCredential: TeamsUserCredential, scopes: string | string[], baseURL?: GraphEndpoint);
+  constructor(authConfig: TeamsFx | TeamsUserCredential, scopes: string | string[], baseURL?: GraphEndpoint) {
     super();
 
-    if (!this._teamsfx) {
-      this._teamsfx = teamsfx;
+    if (!this._teamsfx && !this._credential) {
+      if ((authConfig as TeamsFx).getCredential) {
+        this._teamsfx = authConfig as TeamsFx;
+        this._credential = null;
+      } else {
+        this._credential = authConfig as TeamsUserCredential;
+        this._teamsfx = null;
+      }
     }
 
     this.validateScopesType(scopes);
@@ -77,6 +99,12 @@ export class TeamsFxProvider extends IProvider {
       this.scopes = ['.default'];
     } else {
       this.scopes = scopesArr;
+    }
+
+    if (baseURL) {
+      this.baseURL = baseURL;
+    } else {
+      this.baseURL = MICROSOFT_GRAPH_DEFAULT_ENDPOINT;
     }
 
     this.graph = createFromProvider(this);
@@ -90,7 +118,12 @@ export class TeamsFxProvider extends IProvider {
    */
   public async getAccessToken(): Promise<string> {
     try {
-      const accessToken = await this.teamsfx.getCredential().getToken(this.scopes);
+      let accessToken;
+      if (this._teamsfx) {
+        accessToken = await this._teamsfx.getCredential().getToken(this.scopes);
+      } else {
+        accessToken = await this._credential.getToken(this.scopes);
+      }
       this._accessToken = accessToken ? accessToken.token : '';
       if (!this._accessToken) {
         throw new Error('Access token is null');
@@ -113,7 +146,11 @@ export class TeamsFxProvider extends IProvider {
     const token: string = await this.getAccessToken();
 
     if (!token) {
-      await this.teamsfx.login(this.scopes);
+      if (this._teamsfx) {
+        await this._teamsfx.login(this.scopes);
+      } else {
+        await this._credential.login(this.scopes);
+      }
     }
 
     this._accessToken = token ?? (await this.getAccessToken());
