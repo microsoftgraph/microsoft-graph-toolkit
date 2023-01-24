@@ -7,7 +7,7 @@
 
 import { Contact, Presence } from '@microsoft/microsoft-graph-types';
 import { html, TemplateResult } from 'lit';
-import { customElement, property, state } from 'lit/decorators.js';
+import { property, state } from 'lit/decorators.js';
 import { classMap } from 'lit/directives/class-map.js';
 import { findPeople, getEmailFromGraphEntity } from '../../graph/graph.people';
 import { getGroupImage, getPersonImage } from '../../graph/graph.photos';
@@ -15,7 +15,7 @@ import { getUserPresence } from '../../graph/graph.presence';
 import { getUserWithPhoto } from '../../graph/graph.userWithPhoto';
 import { findUsers, getMe, getUser } from '../../graph/graph.user';
 import { AvatarSize, IDynamicPerson, ViewType } from '../../graph/types';
-import { Providers, ProviderState, MgtTemplatedComponent } from '@microsoft/mgt-element';
+import { Providers, ProviderState, MgtTemplatedComponent, mgtHtml, customElement } from '@microsoft/mgt-element';
 import '../../styles/style-helper';
 import { getSvg, SvgIcon } from '../../utils/SvgHelper';
 import { MgtPersonCard } from '../mgt-person-card/mgt-person-card';
@@ -24,69 +24,9 @@ import { MgtFlyout } from '../sub-components/mgt-flyout/mgt-flyout';
 import { PersonCardInteraction } from './../PersonCardInteraction';
 import { styles } from './mgt-person-css';
 import { strings } from './strings';
+import { PersonViewType, MgtPersonConfig, avatarType } from './mgt-person-types';
 
 export { PersonCardInteraction } from '../PersonCardInteraction';
-
-/**
- * Enumeration to define what parts of the person component render
- *
- * @export
- * @enum {number}
- */
-export enum PersonViewType {
-  /**
-   * Render only the avatar
-   */
-  avatar = 2,
-
-  /**
-   * Render the avatar and one line of text
-   */
-  oneline = 3,
-
-  /**
-   * Render the avatar and two lines of text
-   */
-  twolines = 4,
-
-  /**
-   * Render the avatar and three lines of text
-   */
-  threelines = 5,
-
-  /**
-   * Render the avatar and four lines of text
-   */
-  fourlines = 6
-}
-
-export enum avatarType {
-  /**
-   * Renders avatar photo if available, falls back to initials
-   */
-  photo = 'photo',
-
-  /**
-   * Forces render avatar initials
-   */
-  initials = 'initials'
-}
-
-/**
- * Configuration object for the Person component
- *
- * @export
- * @interface MgtPersonConfig
- */
-export interface MgtPersonConfig {
-  /**
-   * Sets or gets whether the person component can use Contacts APIs to
-   * find contacts and their images
-   *
-   * @type {boolean}
-   */
-  useContactApis: boolean;
-}
 
 /**
  * Person properties part of original set provided by graph by default
@@ -152,7 +92,8 @@ const defaultPersonProperties = [
  * @cssprop --person-flex-direction - {String} flex direction associated with the avatar and details
  * @cssprop --focus-offset - {Length} spacing between element and focus ring
  */
-@customElement('mgt-person')
+@customElement('person')
+// @customElement('mgt-person')
 export class MgtPerson extends MgtTemplatedComponent {
   /**
    * Array of styles to apply to the element. The styles should be defined
@@ -1092,11 +1033,11 @@ export class MgtPerson extends MgtTemplatedComponent {
          `
       : html``;
 
-    return html`
-       <mgt-flyout light-dismiss class="flyout" .avoidHidingAnchor=${false}>
-         ${anchor} ${flyoutContent}
-       </mgt-flyout>
-     `;
+    return mgtHtml`
+      <mgt-flyout light-dismiss class="flyout" .avoidHidingAnchor=${false}>
+        ${anchor} ${flyoutContent}
+      </mgt-flyout>
+`;
   }
 
   /**
@@ -1109,7 +1050,7 @@ export class MgtPerson extends MgtTemplatedComponent {
   protected renderFlyoutContent(personDetails: IDynamicPerson, image: string, presence: Presence): TemplateResult {
     return (
       this.renderTemplate('person-card', { person: personDetails, personImage: image }) ||
-      html`
+      mgtHtml`
         <mgt-person-card
           lock-tab-navigation
           .personDetails=${personDetails}

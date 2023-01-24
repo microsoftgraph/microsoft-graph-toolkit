@@ -6,7 +6,8 @@
     "samples/angular-app",
     "samples/vue-app",
     "samples/electron-app",
-    "samples/sp-webpart"
+    "samples/sp-webpart",
+    "samples/sp-mgt"
   ],
   "npmClient": "yarn",
   "useWorkspaces": true,

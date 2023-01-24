@@ -15,9 +15,9 @@ import {
   RetryHandlerOptions,
   TelemetryHandler
 } from '@microsoft/microsoft-graph-client';
-import { MgtBaseComponent } from '../components/baseComponent';
-import { Graph } from '../Graph';
-import { chainMiddleware } from '../utils/GraphHelpers';
+import { MgtBaseComponent } from '@microsoft/mgt-element';
+import { Graph } from '@microsoft/mgt-element';
+import { chainMiddleware } from '@microsoft/mgt-element';
 import { MockProvider } from './MockProvider';
 
 /**

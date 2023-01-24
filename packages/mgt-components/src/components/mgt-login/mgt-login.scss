@@ -86,7 +86,7 @@ mgt-login .login-button {
       &:hover {
         background-color: inherit;
       }
-      > mgt-person {
+      > .person {
         --focus-offset: 2px;
       }
     }
@@ -95,7 +95,7 @@ mgt-login .login-button {
       padding: 9px 11px;
     }
   }
-  > mgt-person {
+  > .person {
     --focus-offset: 8px;
   }
 }
@@ -120,7 +120,7 @@ mgt-login .popup {
   color: set-var(popup__color, $theme-default, $login);
   border-radius: 8px;
 
-  mgt-person {
+  .person {
     --color-sub1: set-var(popup__color, $theme-default, $login);
   }
 }
@@ -149,7 +149,7 @@ mgt-login .popup-content {
       .list-box-option {
         // keeps background hover inside list-box and ensure focus rings don't overlap other accounts
         margin: 8px 1px;
-        mgt-person {
+        .person {
           max-width: 246px;
           width: 246px;
           margin: 0 22px;
@@ -169,7 +169,7 @@ mgt-login .popup-content {
             background: rgba(0, 0, 0, 0.1);
           }
         }
-        mgt-person {
+        .person {
           &:after {
             background-image: none;
           }
@@ -274,7 +274,7 @@ mgt-login .popup-command {
 
 [dir='rtl'] {
   --popup-padding: 24px 24px 16px 48px;
-  mgt-person {
+  .person {
     .details {
       --details-spacing: 0px 12px 0px 0px;
       &.small {

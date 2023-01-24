@@ -6,8 +6,7 @@
  */
 
 import { html } from 'lit';
-import { customElement } from 'lit/decorators.js';
-import { MgtBaseComponent } from '@microsoft/mgt-element';
+import { MgtBaseComponent, customElement } from '@microsoft/mgt-element';
 import { styles } from './mgt-spinner-css';
 
 /**
@@ -17,7 +16,8 @@ import { styles } from './mgt-spinner-css';
  * @class MgtSpinner
  * @extends {MgtBaseComponent}
  */
-@customElement('mgt-spinner')
+@customElement('spinner')
+// @customElement('mgt-spinner')
 export class MgtSpinner extends MgtBaseComponent {
   /**
    * Array of styles to apply to the element. The styles should be defined

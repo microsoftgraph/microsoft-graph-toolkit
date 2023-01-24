@@ -5,7 +5,7 @@
  * -------------------------------------------------------------------------------------------
  */
 
-import { IProvider, IProviderAccount, ProviderState } from '../providers/IProvider';
+import { IProvider, IProviderAccount, ProviderState } from '@microsoft/mgt-element';
 import { MockGraph } from './MockGraph';
 
 /**
