@@ -1,9 +1,9 @@
-var child_process = require('child_process')
+var child_process = require('child_process');
 var path = require('path');
 var fs = require('fs');
 var project = require('../package.json');
 
-const ignoreDirs = ['node_modules'];
+const ignoreDirs = ['node_modules', 'samples'];
 
 const getFiles = (filter, startPath = 'packages') => {
   let results = [];
@@ -25,11 +25,11 @@ const getFiles = (filter, startPath = 'packages') => {
   }
 
   return results;
-}
+};
 
 const updateMgtDependencyVersion = (packages, version) => {
   for (let package of packages) {
-    console.log(`updating package ${package} with version ${version}`)
+    console.log(`updating package ${package} with version ${version}`);
     const data = fs.readFileSync(package, 'utf8');
 
     var result = data.replace(/"(@microsoft\/mgt.*)": "(\*)"/g, `"$1": "${version}"`);
@@ -37,18 +37,18 @@ const updateMgtDependencyVersion = (packages, version) => {
 
     fs.writeFileSync(package, result, 'utf8');
   }
-}
+};
 
 const updateSpfxSolutionVersion = (solutions, version) => {
   for (let solution of solutions) {
-    console.log(`updating spfx solution ${solution} with version ${version}`)
+    console.log(`updating spfx solution ${solution} with version ${version}`);
     const data = fs.readFileSync(solution, 'utf8');
 
     var result = data.replace(/"version": "(.*)"/g, `"version": "${version}.0"`);
 
     fs.writeFileSync(solution, result, 'utf8');
   }
-}
+};
 
 let version = project.version;
 
@@ -83,8 +83,8 @@ if (process.argv.length > 2) {
       return;
   }
 }
-
-const packages = getFiles('package.json');
+// include update to the root package.json
+const packages = getFiles('package.json', '.');
 updateMgtDependencyVersion(packages, version);
 
 const spfxSolutions = getFiles('package-solution.json');
