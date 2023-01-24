@@ -15,10 +15,13 @@ export default {
 };
 
 export const picker = () => html`
-    <mgt-picker resource="me/todo/lists" scopes="tasks.read, tasks.readwrite" placeholder="Select a task list"></mgt-picker>
- `;
+  <mgt-picker resource="me/todo/lists" scopes="tasks.read, tasks.readwrite" placeholder="Select a task list" key-name="displayName"></mgt-picker>
+`;
 
 export const MaxPages = () => html`
-<mgt-picker resource="me/todo/lists" scopes="tasks.read, tasks.readwrite" placeholder="Select a task list" max-pages="2"></mgt-picker>
+  <mgt-picker resource="me/messages" scopes="mail.read" placeholder="Select a message" key-name="subject" max-pages="2"></mgt-picker>
+`;
 
+export const CacheEnabled = () => html`
+  <mgt-picker resource="/groups" placeholder="Select a group" scopes="group.read.all" key-name="displayName" cache-enabled="true" cache-invalidation-period="50000"></mgt-picker>
 `;
