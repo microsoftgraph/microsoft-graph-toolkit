@@ -359,7 +359,7 @@ export class MgtPeople extends MgtTemplatedComponent {
         people: this.people
       }) ||
       html`
-        <li tabindex=0 aria-label="and ${extra} more attendees" class="overflow"><span>+${extra}<span></li>
+        <li aria-label="and ${extra} more attendees" class="overflow"><span>+${extra}<span></li>
       `
     );
   }
@@ -442,6 +442,9 @@ export class MgtPeople extends MgtTemplatedComponent {
               }
               return null;
             });
+          } else {
+            // remove null people from the array
+            this.people = this.people.filter(p => p !== null);
           }
         } else if (this.resource) {
           this.people = await getPeopleFromResource(graph, this.version, this.resource, this.scopes);

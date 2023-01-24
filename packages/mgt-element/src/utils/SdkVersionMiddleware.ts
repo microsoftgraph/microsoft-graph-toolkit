@@ -11,6 +11,7 @@ import {
   setRequestHeader
 } from '@microsoft/microsoft-graph-client/lib/es/src/middleware/MiddlewareUtil';
 import { ComponentMiddlewareOptions } from './ComponentMiddlewareOptions';
+import { validateBaseURL } from './GraphHelpers';
 
 /**
  * Implements Middleware for the Graph sdk to inject
@@ -36,33 +37,39 @@ export class SdkVersionMiddleware implements Middleware {
   // tslint:disable-next-line: completed-docs
   public async execute(context: Context): Promise<void> {
     try {
-      // Header parts must follow the format: 'name/version'
-      const headerParts: string[] = [];
+      if (typeof context.request === 'string') {
+        if (validateBaseURL(context.request)) {
+          // Header parts must follow the format: 'name/version'
+          const headerParts: string[] = [];
 
-      const componentOptions = context.middlewareControl.getMiddlewareOptions(
-        ComponentMiddlewareOptions
-      ) as ComponentMiddlewareOptions;
+          const componentOptions = context.middlewareControl.getMiddlewareOptions(
+            ComponentMiddlewareOptions
+          ) as ComponentMiddlewareOptions;
 
-      if (componentOptions) {
-        const componentVersion: string = `${componentOptions.componentName}/${this._packageVersion}`;
-        headerParts.push(componentVersion);
+          if (componentOptions) {
+            const componentVersion: string = `${componentOptions.componentName}/${this._packageVersion}`;
+            headerParts.push(componentVersion);
+          }
+
+          if (this._providerName) {
+            const providerVersion: string = `${this._providerName}/${this._packageVersion}`;
+            headerParts.push(providerVersion);
+          }
+
+          // Package version
+          const packageVersion: string = `mgt/${this._packageVersion}`;
+          headerParts.push(packageVersion);
+
+          // Existing SdkVersion header value
+          headerParts.push(getRequestHeader(context.request, context.options, 'SdkVersion'));
+
+          // Join the header parts together and update the SdkVersion request header value
+          const sdkVersionHeaderValue = headerParts.join(', ');
+          setRequestHeader(context.request, context.options, 'SdkVersion', sdkVersionHeaderValue);
+        } else {
+          delete context?.options?.headers['SdkVersion'];
+        }
       }
-
-      if (this._providerName) {
-        const providerVersion: string = `${this._providerName}/${this._packageVersion}`;
-        headerParts.push(providerVersion);
-      }
-
-      // Package version
-      const packageVersion: string = `mgt/${this._packageVersion}`;
-      headerParts.push(packageVersion);
-
-      // Existing SdkVersion header value
-      headerParts.push(getRequestHeader(context.request, context.options, 'SdkVersion'));
-
-      // Join the header parts together and update the SdkVersion request header value
-      const sdkVersionHeaderValue = headerParts.join(', ');
-      setRequestHeader(context.request, context.options, 'SdkVersion', sdkVersionHeaderValue);
     } catch (error) {
       // ignore error
     }
