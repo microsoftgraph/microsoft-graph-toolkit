@@ -867,6 +867,10 @@ export class MgtFileList extends MgtTemplatedComponent {
 
       if (filteredByFileExtension && filteredByFileExtension.length >= 0) {
         this.files = filteredByFileExtension;
+        if (this.pageSize) {
+          files = this.files.splice(0, this.pageSize);
+          this.files = files;
+        }
       } else {
         this.files = files;
       }

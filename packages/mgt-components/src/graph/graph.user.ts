@@ -196,7 +196,7 @@ export async function getUsersForUserIds(
     }
     if (user && getUserInvalidationTime() > Date.now() - user.timeCached) {
       user = JSON.parse(user?.user);
-      const displayName = user.displayName;
+      const displayName = user?.displayName;
 
       if (searchInput) {
         const match = displayName && displayName.toLowerCase().includes(searchInput);
@@ -292,7 +292,9 @@ export async function getUsersForPeopleQueries(graph: IGraph, peopleQueries: str
     if (getIsUsersCacheEnabled() && cacheRes && getUserInvalidationTime() > Date.now() - cacheRes.timeCached) {
       people.push(JSON.parse(cacheRes.results[0]));
     } else if (personQuery !== '') {
-      batch.get(personQuery, `/me/people?$search="${personQuery}"`, ['people.read']);
+      batch.get(personQuery, `/me/people?$search="${personQuery}"`, ['people.read'], {
+        'X-PeopleQuery-QuerySources': 'Mailbox,Directory'
+      });
     }
   }
 

@@ -98,7 +98,7 @@ export type LoginProps = {
 
 export type PeoplePickerProps = {
 	groupId?: string;
-	groupIds?: string;
+	groupIds?: string[];
 	type?: PersonType;
 	groupType?: GroupType;
 	userType?: UserType;
@@ -113,6 +113,7 @@ export type PeoplePickerProps = {
 	userFilters?: string;
 	peopleFilters?: string;
 	groupFilters?: string;
+	ariaLabel?: string;
 	showMax?: number;
 	disableImages?: boolean;
 	disabled?: boolean;

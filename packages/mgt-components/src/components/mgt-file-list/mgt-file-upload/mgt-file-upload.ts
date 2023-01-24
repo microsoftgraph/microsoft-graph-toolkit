@@ -317,6 +317,7 @@ export class MgtFileUpload extends MgtBaseComponent {
         <div>
           <input
             id="file-upload-input"
+            aria-label="file upload input"
             type="file"
             multiple="true"
             @change="${this.onFileUploadChange}"

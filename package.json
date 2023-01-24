@@ -46,7 +46,8 @@
     "storybook:build": "npm run storybook:bundle && npm run storybook:dev && build-storybook -s assets && cpx .storybook/CNAME storybook-static",
     "storybook:deploy": "npm run storybook:build && storybook-to-ghpages -e storybook-static",
     "setLicense": "gulp setLicense",
-    "test": "jest"
+    "test": "jest",
+    "version:tsc": "tsc -v"
   },
   "storybook-deployer": {
     "gitUsername": "@microsoft/mgt",
