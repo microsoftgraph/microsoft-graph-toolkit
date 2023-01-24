@@ -5,7 +5,14 @@
  * -------------------------------------------------------------------------------------------
  */
 
-import { IProvider, Providers, ProviderState, createFromProvider } from '@microsoft/mgt-element';
+import {
+  IProvider,
+  Providers,
+  ProviderState,
+  createFromProvider,
+  GraphEndpoint,
+  MICROSOFT_GRAPH_DEFAULT_ENDPOINT
+} from '@microsoft/mgt-element';
 import { AuthenticationProviderOptions } from '@microsoft/microsoft-graph-client';
 import { ipcRenderer } from 'electron';
 
@@ -28,8 +35,9 @@ export class ElectronProvider extends IProvider {
     return 'MgtElectronProvider';
   }
 
-  constructor() {
+  constructor(baseUrl: GraphEndpoint = MICROSOFT_GRAPH_DEFAULT_ENDPOINT) {
     super();
+    this.baseURL = baseUrl;
     this.graph = createFromProvider(this);
     this.setupProvider();
   }

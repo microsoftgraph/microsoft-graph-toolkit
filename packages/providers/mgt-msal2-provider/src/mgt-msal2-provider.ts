@@ -189,6 +189,11 @@ export class MgtMsal2Provider extends MgtBaseProvider {
       if (this.isMultiAccountDisabled) {
         config.isMultiAccountEnabled = false;
       }
+
+      if (this.baseUrl) {
+        config.baseURL = this.baseUrl;
+      }
+
       this.provider = new Msal2Provider(config);
       Providers.globalProvider = this.provider;
     }

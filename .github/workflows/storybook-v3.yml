@@ -1,17 +1,16 @@
 # This workflow will do a clean install of node dependencies, build the source code and run tests across different versions of node
 # For more information see: https://help.github.com/actions/language-and-framework-guides/using-nodejs-with-github-actions
 
-name: Deploy pr storybook
+name: Deploy next/fluentui storybook
 
 on:
-  pull_request:
-    types: [opened, labeled, synchronize, reopened]
-    branches: [main, release/**, next/**]
+  push:
+    branches: [next/fluentui]
 
 jobs:
-  storybook:
-    if: "contains(github.event.pull_request.labels.*.name, 'Build: Storybook')"
+  build:
     runs-on: ubuntu-latest
+    if: github.repository == 'microsoftgraph/microsoft-graph-toolkit'
 
     strategy:
       matrix:
@@ -32,15 +31,10 @@ jobs:
           yarn build
           yarn storybook:build
 
-      - name: Deploy mgt.dev/next/pr/${{ github.event.number }} 🚀
-        uses: JamesIves/github-pages-deploy-action@v4.4.1
+      - name: Deploy mgt.dev/next 🚀
+        uses: JamesIves/github-pages-deploy-action@4.1.1
         with:
           branch: gh-pages
           folder: storybook-static
-          target-folder: next/pr/${{ github.event.number }}
-
-      - name: Comment PR
-        uses: thollander/actions-comment-pull-request@v1
-        with:
-          message: 'The updated storybook is available [here](https://mgt.dev/next/pr/${{ github.event.number }})'
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          target-folder: next/v3
+          token: ${{ secrets.GITHUB_TOKEN }}

@@ -6,7 +6,8 @@
  */
 
 import { AuthenticationProvider, AuthenticationProviderOptions } from '@microsoft/microsoft-graph-client';
-import { IGraph } from '../IGraph';
+import { validateBaseURL } from '../utils/GraphHelpers';
+import { GraphEndpoint, IGraph, MICROSOFT_GRAPH_DEFAULT_ENDPOINT } from '../IGraph';
 import { EventDispatcher, EventHandler } from '../utils/EventDispatcher';
 
 /**
@@ -27,19 +28,44 @@ export abstract class IProvider implements AuthenticationProvider {
   public graph: IGraph;
 
   /**
+   * Specifies if the provider has enabled support for multiple accounts
+   *
+   * @protected
+   * @type {boolean}
+   * @memberof IProvider
+   */
+  protected isMultipleAccountDisabled: boolean = true;
+
+  /**
    * Specifies if Multi account functionality is supported by the provider and enabled.
    *
    * @readonly
    * @type {boolean}
    * @memberof IProvider
    */
-  protected isMultipleAccountDisabled: boolean = true;
   public get isMultiAccountSupportedAndEnabled(): boolean {
     return false;
   }
   private _state: ProviderState;
   private _loginChangedDispatcher = new EventDispatcher<LoginChangedEvent>();
   private _activeAccountChangedDispatcher = new EventDispatcher<ActiveAccountChanged>();
+  private _baseURL: GraphEndpoint = MICROSOFT_GRAPH_DEFAULT_ENDPOINT;
+
+  /**
+   * The base URL to be used in the graph client config.
+   */
+  public set baseURL(url: GraphEndpoint) {
+    if (validateBaseURL(url)) {
+      this._baseURL = url;
+      return;
+    } else {
+      throw new Error(`${url} is not a valid Graph URL endpoint.`);
+    }
+  }
+
+  public get baseURL(): GraphEndpoint {
+    return this._baseURL;
+  }
 
   /**
    * Enable/Disable incremental consent

@@ -6,7 +6,7 @@ The [Microsoft Graph Toolkit (mgt)](https://aka.ms/mgt) library is a collection 
 
 The `@microsoft/mgt-proxy-provider` package exposes the `ProxyProvider` class which allows a developer to proxy all calls to Microsoft Graph to their own backend. This allows all mgt-components to function properly when the authentication and calls to Microsoft Graph must be done in the backend.
 
-[See docs for full documentation of the ProxyProvider](https://docs.microsoft.com/graph/toolkit/providers/proxy)
+[See docs for full documentation of the ProxyProvider](https://learn.microsoft.com/graph/toolkit/providers/proxy)
 
 ## Usage
 
@@ -34,7 +34,7 @@ The `@microsoft/mgt-proxy-provider` package exposes the `ProxyProvider` class wh
     <mgt-proxy-provider graph-proxy-url="https://myurl.com/api/GraphProxy"></mgt-proxy-provider>
     ```
 
-See [provider usage documentation](https://docs.microsoft.com/graph/toolkit/providers) to learn about how to use the providers with the mgt components, to sign in/sign out, get access tokens, call Microsoft Graph, and more.
+See [provider usage documentation](https://learn.microsoft.com/graph/toolkit/providers) to learn about how to use the providers with the mgt components, to sign in/sign out, get access tokens, call Microsoft Graph, and more.
 
 ## Sea also
 * [Microsoft Graph Toolkit docs](https://aka.ms/mgt-docs)

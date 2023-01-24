@@ -84,40 +84,40 @@ export class MgtPersonCardContact extends BasePersonCardSection {
       icon: getSvg(SvgIcon.Email, '#605e5c'),
       onClick: () => this.sendEmail(getEmailFromGraphEntity(this._person)),
       showCompact: true,
-      title: 'Email'
+      title: this.strings.emailTitle
     },
     chat: {
       icon: getSvg(SvgIcon.Chat, '#605e5c'),
       onClick: () => this.sendChat(this._person?.userPrincipalName),
       showCompact: false,
-      title: 'Teams'
+      title: this.strings.chatTitle
     },
     businessPhone: {
       icon: getSvg(SvgIcon.CellPhone, '#605e5c'),
       onClick: () => this.sendCall(this._person?.businessPhones?.length > 0 ? this._person.businessPhones[0] : null),
       showCompact: true,
-      title: 'Business Phone'
+      title: this.strings.businessPhoneTitle
     },
     cellPhone: {
       icon: getSvg(SvgIcon.CellPhone, '#605e5c'),
       onClick: () => this.sendCall(this._person?.mobilePhone),
       showCompact: true,
-      title: 'Mobile Phone'
+      title: this.strings.cellPhoneTitle
     },
     department: {
       icon: getSvg(SvgIcon.Department, '#605e5c'),
       showCompact: false,
-      title: 'Department'
+      title: this.strings.departmentTitle
     },
     title: {
       icon: getSvg(SvgIcon.Person, '#605e5c'),
       showCompact: false,
-      title: 'Title'
+      title: this.strings.titleTitle
     },
     officeLocation: {
       icon: getSvg(SvgIcon.OfficeLocation, '#605e5c'),
       showCompact: true,
-      title: 'Office Location'
+      title: this.strings.officeLocationTitle
     }
   };
   // tslint:enable: object-literal-sort-keys
