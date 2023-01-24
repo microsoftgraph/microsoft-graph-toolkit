@@ -181,7 +181,6 @@ export class MgtGet extends MgtTemplatedComponent {
    */
   @property({
     attribute: 'cache-enabled',
-    reflect: true,
     type: Boolean
   })
   public cacheEnabled: boolean = false;
