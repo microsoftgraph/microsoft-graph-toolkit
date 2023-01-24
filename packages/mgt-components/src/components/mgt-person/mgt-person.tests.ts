@@ -45,14 +45,14 @@ describe('mgt-person - tests', () => {
   it('should render', async () => {
     Providers.globalProvider = new MockProvider(true);
     person = await fixture('<mgt-person person-query="me" view="twoLines"></mgt-person>');
-    const img = await screen.findAllByAltText('Megan Bowen');
+    const img = await screen.findAllByAltText('Photo for Megan Bowen');
     expect(img).not.toBeNull();
   });
 
   it('should pop up a flyout on click', async () => {
     Providers.globalProvider = new MockProvider(true);
     person = await fixture('<mgt-person person-query="me" view="twoLines" person-card="click"></mgt-person>');
-    const img = await screen.findAllByAltText('Megan Bowen');
+    const img = await screen.findAllByAltText('Photo for Megan Bowen');
     expect(img).not.toBeNull();
     expect(img.length).toBe(1);
     // test that there is no flyout
