@@ -17,7 +17,8 @@ registerFluentComponents(fluentCombobox, fluentOption);
 
 /**
  * Web component that allows a single entity pick from a generic endpoint from Graph. Uses mgt-get.
- z
+ *
+ * @fires selectionChanged - Fired when an option is clicked/selected
  * @export
  * @class MgtPicker
  * @extends {MgtTemplatedComponent}
@@ -250,7 +251,9 @@ export class MgtPicker extends MgtTemplatedComponent {
       <fluent-combobox id="combobox" autocomplete="list" placeholder=${this.placeholder}>
         ${this.response.map(
           item => html`
-          <fluent-option value=${item.id}> ${item[this.keyName]} </fluent-option>`
+          <fluent-option value=${item.id} @click=${(e: Event) => this.handleClick(e, item)}> ${
+            item[this.keyName]
+          } </fluent-option>`
         )}
       </fluent-combobox>
      `;
@@ -264,7 +267,6 @@ export class MgtPicker extends MgtTemplatedComponent {
    * @memberof MgtPicker
    */
   protected renderGet(): TemplateResult {
-    console.log('cacheEnabled:', this.cacheEnabled);
     return this.cacheEnabled
       ? html`
       <mgt-get 
@@ -314,5 +316,9 @@ export class MgtPicker extends MgtTemplatedComponent {
     let error = e.detail.error ? e.detail.error : null;
     this.response = response;
     this.error = error;
+  }
+
+  private handleClick(e, item) {
+    this.fireCustomEvent('selectionChanged', item);
   }
 }
