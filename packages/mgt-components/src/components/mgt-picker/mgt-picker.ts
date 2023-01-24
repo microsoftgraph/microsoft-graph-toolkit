@@ -133,6 +133,14 @@ export class MgtPicker extends MgtTemplatedComponent {
   }
 
   /**
+   *
+   * Gets or sets the error (if any) of the request
+   * @type any
+   * @memberof MgtPicker
+   */
+  @property({ attribute: false }) public error: any;
+
+  /**
    * The scopes to request
    *
    * @type {string[]}
@@ -168,7 +176,6 @@ export class MgtPicker extends MgtTemplatedComponent {
    */
   @property({
     attribute: 'cache-invalidation-period',
-    reflect: true,
     type: Number
   })
   public cacheInvalidationPeriod: number = 0;
@@ -177,7 +184,7 @@ export class MgtPicker extends MgtTemplatedComponent {
   private _entityType: string;
   private _keyName: string;
 
-  @state({}) private response: any[];
+  @state() private response: any[];
 
   constructor() {
     super();
@@ -216,22 +223,13 @@ export class MgtPicker extends MgtTemplatedComponent {
    * trigger the element to update.
    */
   public render() {
-    if (this.isLoadingState) {
-      return this.renderLoading();
+    if (this.isLoadingState && !this.response) {
+      return this.renderTemplate('loading', null);
+    } else if (this.error) {
+      return this.renderTemplate('error', this.error ? this.error : null);
     }
 
     return this.response?.length > 0 ? this.renderPicker() : this.renderGet();
-  }
-
-  /**
-   * Render the loading state.
-   *
-   * @protected
-   * @returns
-   * @memberof MgtPicker
-   */
-  protected renderLoading() {
-    return this.renderTemplate('loading', null) || html``;
   }
 
   /**
@@ -261,7 +259,13 @@ export class MgtPicker extends MgtTemplatedComponent {
    */
   protected renderGet(): TemplateResult {
     return html`
-      <mgt-get resource=${this.resource} version=${this.version} scopes=${this.scopes} max-pages=${this.maxPages}>
+      <mgt-get 
+        resource=${this.resource}
+        version=${this.version} 
+        scopes=${this.scopes} 
+        max-pages=${this.maxPages} 
+        cache-enabled=${this.cacheEnabled} 
+        cache-inavalidation-period=${this.cacheInvalidationPeriod}>
       </mgt-get>`;
   }
 
@@ -292,6 +296,8 @@ export class MgtPicker extends MgtTemplatedComponent {
 
   private handleDataChange(e) {
     let response = e.detail.response.value;
+    let error = e.detail.error ? e.detail.error : null;
     this.response = response;
+    this.error = error;
   }
 }
