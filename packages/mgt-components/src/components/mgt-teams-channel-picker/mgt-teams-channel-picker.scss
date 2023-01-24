@@ -13,6 +13,12 @@
 :host mgt-teams-channel-picker {
   font-family: $font-family;
 
+  .container {
+    display: flex;
+    flex-direction: column;
+    width: fit-content;
+  }
+
   .dropdown {
     z-index: 1;
     display: none;
@@ -44,18 +50,20 @@
   .loading-text {
     font-family: $font-family;
     font-style: normal;
-    font-weight: 600;
+    font-weight: 400;
     font-size: 14px;
-    color: $gray120;
-    line-height: 19px;
-    text-align: center;
+    line-height: 20px;
   }
 
   .message-parent {
-    display: -webkit-inline-box;
+    display: flex;
+    flex-direction: row;
+    gap: 5px;
+    padding: 5px;
+
     .loading-text {
-      margin: 8px 0px 0px 8px;
-      color: #0078d4;
+      color: var(--color, #0078d4);
+      margin: auto;
     }
   }
 }
@@ -63,11 +71,11 @@
 :host fluent-card {
   --fill-color: var(--dropdown-background-color, --fill-color);
   --card-height: auto;
-  --card-width: 368px;
+  --min-width: var(--card-width);
 }
 
 :host fluent-text-field {
-  width: 368px;
+  min-width: 368px;
   --fill-color: var(--color, $color);
   --neutral-fill-input-rest: var(--input-background-color, #ffffff);
   --input-placeholder-rest: var(--placeholder-color, --input-placeholder-rest);

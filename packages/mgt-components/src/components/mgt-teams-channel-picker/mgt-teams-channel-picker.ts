@@ -264,9 +264,9 @@ export class MgtTeamsChannelPicker extends MgtTemplatedComponent {
   private _selectedItemState: ChannelPickerItemState;
   private _items: DropdownItem[];
   private _treeViewState: ChannelPickerItemState[] = [];
+  private _focusList: ChannelPickerItemState[] = [];
 
   // focus state
-  private _focusList: ChannelPickerItemState[] = [];
   private debouncedSearch;
 
   // determines loading state
@@ -278,6 +278,7 @@ export class MgtTeamsChannelPicker extends MgtTemplatedComponent {
     this.handleWindowClick = this.handleWindowClick.bind(this);
     this.addEventListener('focus', _ => this.loadTeamsIfNotLoaded());
     this.addEventListener('mouseover', _ => this.loadTeamsIfNotLoaded());
+    this.addEventListener('blur', _ => this.lostFocus());
     this.clearState();
   }
 
@@ -348,7 +349,7 @@ export class MgtTeamsChannelPicker extends MgtTemplatedComponent {
     return (
       this.renderTemplate('default', { teams: this.items }) ||
       html`
-        <div @blur=${this.lostFocus}>
+        <div class="container" @blur=${this.lostFocus}>
           <fluent-text-field
             appearance="outline"
             id="teams-channel-picker-input"
