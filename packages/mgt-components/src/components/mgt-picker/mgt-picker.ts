@@ -164,6 +164,7 @@ export class MgtPicker extends MgtTemplatedComponent {
    */
   @property({
     attribute: 'cache-enabled',
+    reflect: true,
     type: Boolean
   })
   public cacheEnabled: boolean = false;
@@ -180,6 +181,8 @@ export class MgtPicker extends MgtTemplatedComponent {
   })
   public cacheInvalidationPeriod: number = 0;
 
+  private isRefreshing: boolean;
+
   private _placeholder: string;
   private _entityType: string;
   private _keyName: string;
@@ -189,8 +192,25 @@ export class MgtPicker extends MgtTemplatedComponent {
   constructor() {
     super();
     this._placeholder = this.strings.comboboxPlaceholder;
-    this.entityType = null;
+    this._entityType = null;
     this._keyName = null;
+    this.isRefreshing = false;
+  }
+
+  /**
+   * Refresh the data
+   *
+   * @param {boolean} [hardRefresh=false]
+   * if false (default), the component will only update if the data changed
+   * if true, the data will be first cleared and reloaded completely
+   * @memberof MgtPicker
+   */
+  public refresh(hardRefresh = false) {
+    this.isRefreshing = true;
+    if (hardRefresh) {
+      this.clearState();
+    }
+    this.requestStateUpdate(hardRefresh);
   }
 
   /**
@@ -201,20 +221,6 @@ export class MgtPicker extends MgtTemplatedComponent {
    */
   protected clearState(): void {
     this.response = null;
-  }
-
-  /**
-   * Request to reload the state.
-   * Use reload instead of load to ensure loading events are fired.
-   *
-   * @protected
-   * @memberof MgtBaseComponent
-   */
-  protected requestStateUpdate(force?: boolean) {
-    if (force) {
-      this.response = null;
-    }
-    return super.requestStateUpdate(force);
   }
 
   /**
@@ -258,15 +264,23 @@ export class MgtPicker extends MgtTemplatedComponent {
    * @memberof MgtPicker
    */
   protected renderGet(): TemplateResult {
-    return html`
+    console.log('cacheEnabled:', this.cacheEnabled);
+    return this.cacheEnabled
+      ? html`
       <mgt-get 
         resource=${this.resource}
         version=${this.version} 
         scopes=${this.scopes} 
         max-pages=${this.maxPages} 
-        cache-enabled=${this.cacheEnabled} 
-        cache-inavalidation-period=${this.cacheInvalidationPeriod}>
-      </mgt-get>`;
+        cache-enabled=${this.cacheEnabled}
+        cache-invalidation-period=${this.cacheInvalidationPeriod}>
+      </mgt-get>`
+      : html`
+      <mgt-get 
+        resource=${this.resource}
+        version=${this.version} 
+        scopes=${this.scopes}
+        max-pages=${this.maxPages}>`;
   }
 
   /**
@@ -292,6 +306,7 @@ export class MgtPicker extends MgtTemplatedComponent {
       let parent = this.renderRoot.querySelector('mgt-get');
       parent.addEventListener('dataChange', e => this.handleDataChange(e));
     }
+    this.isRefreshing = false;
   }
 
   private handleDataChange(e) {
