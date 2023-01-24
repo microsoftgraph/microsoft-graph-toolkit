@@ -27,6 +27,7 @@ export * from './utils/TemplateContext';
 export * from './utils/TemplateHelper';
 export * from './utils/GraphPageIterator';
 export * from './utils/LocalizationHelper';
+export { PACKAGE_VERSION } from './utils/version';
 
 export * from './mock/MockProvider';
 export * from './mock/mgt-mock-provider';
