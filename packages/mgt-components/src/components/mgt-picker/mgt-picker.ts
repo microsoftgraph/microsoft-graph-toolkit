@@ -91,6 +91,48 @@ export class MgtPicker extends MgtTemplatedComponent {
   }
 
   /**
+   * Key to be rendered in the picker
+   *
+   * @type {string}
+   * @memberof MgtPicker
+   */
+  @property({
+    attribute: 'key-name',
+    type: String
+  })
+  public get keyName(): string {
+    return this._keyName;
+  }
+  public set keyName(value) {
+    if (this._keyName === value) {
+      return;
+    }
+    this._keyName = value;
+    this.requestStateUpdate(true);
+  }
+
+  /**
+   * Entity to be rendered in the picker
+   *
+   * @type {string}
+   * @memberof MgtPicker
+   */
+  @property({
+    attribute: 'entity-type',
+    type: String
+  })
+  public get entityType(): string {
+    return this._entityType;
+  }
+  public set entityType(value) {
+    if (this._entityType === value) {
+      return;
+    }
+    this._entityType = value;
+    this.requestStateUpdate(true);
+  }
+
+  /**
    * The scopes to request
    *
    * @type {string[]}
@@ -114,18 +156,34 @@ export class MgtPicker extends MgtTemplatedComponent {
    */
   @property({
     attribute: 'cache-enabled',
-    reflect: true,
     type: Boolean
   })
   public cacheEnabled: boolean = false;
 
+  /**
+   * Invalidation period of the cache for the responses in milliseconds
+   *
+   * @type {number}
+   * @memberof MgtPicker
+   */
+  @property({
+    attribute: 'cache-invalidation-period',
+    reflect: true,
+    type: Number
+  })
+  public cacheInvalidationPeriod: number = 0;
+
   private _placeholder: string;
+  private _entityType: string;
+  private _keyName: string;
 
   @state({}) private response: any[];
 
   constructor() {
     super();
-    this._placeholder = 'Select an item';
+    this._placeholder = this.strings.comboboxPlaceholder;
+    this.entityType = null;
+    this._keyName = null;
   }
 
   /**
@@ -147,7 +205,7 @@ export class MgtPicker extends MgtTemplatedComponent {
    */
   protected requestStateUpdate(force?: boolean) {
     if (force) {
-      //   this.people = null;
+      this.response = null;
     }
     return super.requestStateUpdate(force);
   }
@@ -188,8 +246,7 @@ export class MgtPicker extends MgtTemplatedComponent {
       <fluent-combobox id="combobox" autocomplete="list" placeholder=${this.placeholder}>
         ${this.response.map(
           item => html`
-          <fluent-option value=${item.id}> ${item.displayName} </fluent-option>
-          `
+          <fluent-option value=${item.id}> ${item[this.keyName]} </fluent-option>`
         )}
       </fluent-combobox>
      `;
@@ -204,10 +261,8 @@ export class MgtPicker extends MgtTemplatedComponent {
    */
   protected renderGet(): TemplateResult {
     return html`
-    <mgt-get resource=${this.resource} version=${this.version} scopes=${this.scopes} cache-enabled=${this.cacheEnabled} max-pages=${this.maxPages}>
-      <template></template>
-    </mgt-get>
-     `;
+      <mgt-get resource=${this.resource} version=${this.version} scopes=${this.scopes} max-pages=${this.maxPages}>
+      </mgt-get>`;
   }
 
   /**
@@ -238,6 +293,5 @@ export class MgtPicker extends MgtTemplatedComponent {
   private handleDataChange(e) {
     let response = e.detail.response.value;
     this.response = response;
-    console.log('response:', this.response);
   }
 }
