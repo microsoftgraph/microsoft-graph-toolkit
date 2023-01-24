@@ -29,14 +29,10 @@ jobs:
         run: |
           npm install -g yarn lerna
           yarn
-      - env:
-          EVENT_CONTEXT: ${{ toJSON(github.event) }}
-        run: |
-          echo $EVENT_CONTEXT
       - name: Extract tag name
         shell: bash
         run: |
-          tag=$(branch=${GITHUB_REF#refs/heads/}; echo ${branch/\//.})
+          tag=$(branch=${{ github.event.pull_request.head.ref }}; echo ${branch/\//.})
           if [[ $tag == next.* ]];
           then
             echo "##[set-output name=tag;]$tag"
