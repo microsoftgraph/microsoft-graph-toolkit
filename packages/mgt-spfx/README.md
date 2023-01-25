@@ -26,6 +26,8 @@ Before deploying your SharePoint Framework package to your tenant, you will need
 
 **Important:** Since there can be only one version of the SharePoint Framework library for Microsoft Graph Toolkit installed in the tenant, before using MGT in your solution, consult with your organization/customer if they already have a version of SharePoint Framework library for Microsoft Graph Toolkit deployed in their tenant and use the same version to avoid issues.
 
+If you need to use a different version of MGT than is supported by the centrally deployed version of `mgt-spfx` then please refer to the documentation for [disambiguation](https://github.com/microsoftgraph/microsoft-graph-toolkit/tree/main/packages/mgt-components#disambiguation) and [`mgt-spfx-utils`](https://github.com/microsoftgraph/microsoft-graph-toolkit/tree/main/packages/mgt-spfx-utils).
+
 ## Usage
 
 When building SharePoint Framework web parts and extensions, reference the Microsoft Graph Toolkit `Provider` and `SharePointProvider` from the `@microsoft/mgt-spfx` package. This will ensure, that your solution will use MGT components that are already registered on the page, rather than instantiating its own. The instantiation process is the same for all web parts no matter which JavaScript framework they use:

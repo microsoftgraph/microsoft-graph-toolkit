@@ -34,7 +34,9 @@ yarn add @microsoft/mgt-spfx-utils @microsoft/mgt-react
 
 ## Usage
 
-By disambiguating tag names of Microsoft Graph Toolkit components, you can use your own version of MGT rather than using the centrally deployed `@microsoft/mgt-spfx` package. This allows you to avoid colliding with SharePoint Framework components built by other developers. When disambiguating tag names, MGT is included in the generated SPFx bundle, increasing its size.
+Disambiguation is intended to provide developers with a mechanism to use a specific version of MGT in their solution without encountering collisions with other solutions that may be using MGT. `mgt-spfx` will allow all SPFx solutions in a tenant to use a single shared version, either v2.x or v3.x, of MGT. Currently multiple versions of `mgt-spfx` cannot be used in the same tenant. This is a limitation of the SharePoint Framework.
+
+By disambiguating tag names of Microsoft Graph Toolkit components, you can use your own version of MGT rather than using the centrally deployed `@microsoft/mgt-spfx` package. This allows you to avoid colliding with SharePoint Framework components built by other developers. When disambiguating tag names, MGT is included in the generated SPFx bundle, increasing its size. It is strongly recommended that you use a disambiguation value unique to your organization and solution to avoid collisions with other solutions, e.g. `contoso-hr-extensions`.
 
 > **Important:** Since a given web component tag can only be registered once these approaches **must** be used along with the `customElementHelper.withDisambiguation('foo')` approach as this allows developers to create disambiguated tag names.
 
@@ -138,7 +140,7 @@ export default class MgtDemoWebPart extends BaseClientSideWebPart<IMgtDemoWebPar
 }
 ```
 
-The underlying components can then use MGT components from the `@microsoft/mgt-react` package:
+The underlying components can then use MGT components from the `@microsoft/mgt-react` package as usual. Because of the earlier setup steps the the MGT React components will render html using the disambiguated tag names:
 
 ```tsx
 import { Person } from '@microsoft/mgt-react';

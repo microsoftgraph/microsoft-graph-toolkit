@@ -60,9 +60,9 @@ The components can be used on their own, but they are at their best when they ar
 
 MGT is built using [web components](https://developer.mozilla.org/en-US/docs/Web/Web_Components). Web components use their tag name as a unique key when registering within a browser. Any attempt to register a component using a previously registered tag name results in an error being thrown when calling `CustomElementRegistry.define()`. In scenarios where multiple custom applications can be loaded into a single page this created issues for MGT, most notably in developing solutions using SharePoint Framework.
 
-To mitigate this challenge we built the [`mgt-spfx`](https://github.com/microsoftgraph/microsoft-graph-toolkit/tree/main/packages/mgt-spfx) package. Using `mgt-spfx` developers could centralize the registration of MGT web components across all SPFx solutions deployed on the tenant. By reusing MGT components from a central location web parts from different solutions could be loaded into a single page without throwing errors. When using `mgt-spfx` all MGT based web parts in a SharePoint tenant used the same version of MGT.
+To mitigate this challenge we built the [`mgt-spfx`](https://github.com/microsoftgraph/microsoft-graph-toolkit/tree/main/packages/mgt-spfx) package. Using `mgt-spfx` developers can centralize the registration of MGT web components across all SPFx solutions deployed on the tenant. By reusing MGT components from a central location web parts from different solutions can be loaded into a single page without throwing errors. When using `mgt-spfx` all MGT based web parts in a SharePoint tenant use the same version of MGT.
 
-To allow developers to build web parts using the latest version of MGT and load them on pages along web parts that use v2.x of MGT, we've added a new disambiguation feature to MGT. Using this feature developers can specify a unique string to add to the tag name of all MGT web components in their application.
+To allow developers to build web parts using the latest version of MGT and load them on pages along with web parts that use v2.x of MGT, we've added a new disambiguation feature to MGT. Using this feature developers can specify a unique string to add to the tag name of all MGT web components in their application.
 
 ### Usage in standard HTML and JavaScript
 
@@ -77,10 +77,9 @@ The earlier example can be updated to use the disambiguation feature as follows:
 
   // initialize the auth provider globally
   Providers.globalProvider = new Msal2Provider({clientId: 'clientId'});
-  
+
   // import the components using dynamic import to avoid hoisting
   import('@microsoft/mgt-components');
-
 </script>
 
 <mgt-contoso-login></mgt-contoso-login>
@@ -90,7 +89,7 @@ The earlier example can be updated to use the disambiguation feature as follows:
 
 > Note: the `import` of `mgt-components` must use a dynamic import to ensure that the disambiguation is applied before the components are imported.
 
-To simplify this pattern when developing SharePoint Framework web parts we have provided helper utilities in the  [`mgt-spfx-utils`](https://github.com/microsoftgraph/microsoft-graph-toolkit/tree/main/packages/mgt-spfx-utils) package. Example usages are provided below.
+To simplify this pattern when developing SharePoint Framework web parts we have provided helper utilities in the [`mgt-spfx-utils`](https://github.com/microsoftgraph/microsoft-graph-toolkit/tree/main/packages/mgt-spfx-utils) package. Example usages are provided below.
 
 ### Usage in a SharePoint web part with no framework
 
@@ -165,7 +164,7 @@ import { customElementHelper } from '@microsoft/mgt-element/dist/es6/components/
 import { SharePointProvider } from '@microsoft/mgt-sharepoint-provider/dist/es6/SharePointProvider';
 import { lazyLoadComponent } from '@microsoft/mgt-spfx-utils';
 
-// Async import of component that imports the React Components
+// Async import of a component that uses the @microsoft/mgt-react Components
 const MgtDemo = React.lazy(() => import('./components/MgtDemo'));
 
 export interface IMgtDemoWebPartProps {
@@ -200,6 +199,8 @@ Using dynamic imports you can load dependencies asynchronously. This pattern all
 
 When using an `import` statement the import statement is hoisted and executed before any other code in the code block. To use dynamic imports you must use the `import()` function. The `import()` function returns a promise that resolves to the module. You can also use the `then` method to execute code after the module is loaded and the `catch` method to handle any errors if necessary.
 
+#### Example using dynamic imports
+
 ```typescript
 // static import via a statement
 import { Providers, customElementHelper } from '@microsoft/mgt-element';
@@ -211,10 +212,26 @@ Providers.globalProvider = new Msal2Provider({clientId: 'clientId'});
 // dynamic import via a function
 import('@microsoft/mgt-components').then(() => {
   // code to execute after the module is loaded
+  document.body.innerHTML = '<mgt-contoso-login></mgt-contoso-login>';
 }).catch((e) => {
   // handle any errors
 });
+```
 
+#### Example using static imports
+
+```typescript
+// static import via a statement
+import { Provider } from '@microsoft/mgt-element';
+import { Msal2Provider } from '@microsoft/mgt-msal2-provider';
+import '@microsoft/mgt-components';
+
+Providers.globalProvider = new Msal2Provider({clientId: 'clientId'});
+
+document.body.innerHTML = '<mgt-login></mgt-login>';
+```
+
+> Note: it is not possible to use disambiguation with static imports.
 
 ## Sea also
 * [Microsoft Graph Toolkit docs](https://aka.ms/mgt-docs)
