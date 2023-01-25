@@ -7,7 +7,7 @@
 
 import { Contact, Presence } from '@microsoft/microsoft-graph-types';
 import { html, TemplateResult } from 'lit';
-import { customElement, property, state } from 'lit/decorators.js';
+import { property, state } from 'lit/decorators.js';
 import { classMap } from 'lit/directives/class-map.js';
 import { findPeople, getEmailFromGraphEntity } from '../../graph/graph.people';
 import { getGroupImage, getPersonImage } from '../../graph/graph.photos';
@@ -15,7 +15,7 @@ import { getUserPresence } from '../../graph/graph.presence';
 import { getUserWithPhoto } from '../../graph/graph.userWithPhoto';
 import { findUsers, getMe, getUser } from '../../graph/graph.user';
 import { AvatarSize, IDynamicPerson, ViewType } from '../../graph/types';
-import { Providers, ProviderState, MgtTemplatedComponent } from '@microsoft/mgt-element';
+import { Providers, ProviderState, MgtTemplatedComponent, mgtHtml, customElement } from '@microsoft/mgt-element';
 import '../../styles/style-helper';
 import { getSvg, SvgIcon } from '../../utils/SvgHelper';
 import { MgtPersonCard } from '../mgt-person-card/mgt-person-card';
@@ -23,69 +23,10 @@ import '../sub-components/mgt-flyout/mgt-flyout';
 import { MgtFlyout } from '../sub-components/mgt-flyout/mgt-flyout';
 import { PersonCardInteraction } from './../PersonCardInteraction';
 import { styles } from './mgt-person-css';
+import { strings } from './strings';
+import { PersonViewType, MgtPersonConfig, avatarType } from './mgt-person-types';
 
 export { PersonCardInteraction } from '../PersonCardInteraction';
-
-/**
- * Enumeration to define what parts of the person component render
- *
- * @export
- * @enum {number}
- */
-export enum PersonViewType {
-  /**
-   * Render only the avatar
-   */
-  avatar = 2,
-
-  /**
-   * Render the avatar and one line of text
-   */
-  oneline = 3,
-
-  /**
-   * Render the avatar and two lines of text
-   */
-  twolines = 4,
-
-  /**
-   * Render the avatar and three lines of text
-   */
-  threelines = 5,
-
-  /**
-   * Render the avatar and four lines of text
-   */
-  fourlines = 6
-}
-
-export enum avatarType {
-  /**
-   * Renders avatar photo if available, falls back to initials
-   */
-  photo = 'photo',
-
-  /**
-   * Forces render avatar initials
-   */
-  initials = 'initials'
-}
-
-/**
- * Configuration object for the Person component
- *
- * @export
- * @interface MgtPersonConfig
- */
-export interface MgtPersonConfig {
-  /**
-   * Sets or gets whether the person component can use Contacts APIs to
-   * find contacts and their images
-   *
-   * @type {boolean}
-   */
-  useContactApis: boolean;
-}
 
 /**
  * Person properties part of original set provided by graph by default
@@ -151,7 +92,8 @@ const defaultPersonProperties = [
  * @cssprop --person-flex-direction - {String} flex direction associated with the avatar and details
  * @cssprop --focus-offset - {Length} spacing between element and focus ring
  */
-@customElement('mgt-person')
+@customElement('person')
+// @customElement('mgt-person')
 export class MgtPerson extends MgtTemplatedComponent {
   /**
    * Array of styles to apply to the element. The styles should be defined
@@ -159,6 +101,10 @@ export class MgtPerson extends MgtTemplatedComponent {
    */
   static get styles() {
     return styles;
+  }
+
+  protected get strings() {
+    return strings;
   }
 
   /**
@@ -646,10 +592,10 @@ export class MgtPerson extends MgtTemplatedComponent {
       };
 
       personTemplate = html`
-         <div class=${classMap(rootClasses)}>
-           ${imageWithPresenceTemplate} ${detailsTemplate}
-         </div>
-       `;
+        <div class=${classMap(rootClasses)}>
+          ${imageWithPresenceTemplate} ${detailsTemplate}
+        </div>
+      `;
     }
 
     if (this.personCardInteraction !== PersonCardInteraction.none) {
@@ -657,18 +603,18 @@ export class MgtPerson extends MgtTemplatedComponent {
     }
 
     return html`
-       <div
-         class="root"
-         dir=${this.direction}
-         @click=${this.handleMouseClick}
-         @mouseenter=${this.handleMouseEnter}
-         @mouseleave=${this.handleMouseLeave}
-         @keydown=${this.handleKeyDown}
-         tabindex=0
-       >
-         ${personTemplate}
-       </div>
-     `;
+      <div
+        class="root"
+        dir=${this.direction}
+        @click=${this.handleMouseClick}
+        @mouseenter=${this.handleMouseEnter}
+        @mouseleave=${this.handleMouseLeave}
+        @keydown=${this.handleKeyDown}
+        tabindex=0
+      >
+        ${personTemplate}
+      </div>
+    `;
   }
 
   /**
@@ -747,35 +693,29 @@ export class MgtPerson extends MgtTemplatedComponent {
    * @memberof MgtPerson
    */
   protected renderImage(personDetailsInternal: IDynamicPerson, imageSrc: string) {
-    const title =
-      personDetailsInternal && this.personCardInteraction === PersonCardInteraction.none
-        ? personDetailsInternal.displayName || getEmailFromGraphEntity(personDetailsInternal) || ''
-        : '';
     if (imageSrc && !this._isInvalidImageSrc && this._avatarType === 'photo') {
+      const altText = `${this.strings.photoFor} ${personDetailsInternal.displayName}`;
       return html`
-         <div class="img-wrapper">
-           <img alt=${personDetailsInternal.displayName} src=${imageSrc} @error=${() =>
-        (this._isInvalidImageSrc = true)} />
-         </div>
-       `;
+        <div class="img-wrapper">
+          <img alt=${altText} src=${imageSrc} @error=${() => (this._isInvalidImageSrc = true)} />
+        </div>
+      `;
     } else if (personDetailsInternal) {
       const initials = this.getInitials(personDetailsInternal);
 
       return html`
-         <span class="initials-text" aria-label="${initials}">
-           ${
-             initials && initials.length
-               ? html`
-                 ${initials}
-               `
-               : html`
-                 <i class="contact-icon">
-                 ${this.renderPersonIcon()}
-                 </i>
-               `
-           }
-         </span>
-       `;
+        <span class="initials-text" aria-label="${this.strings.initials} ${initials}">
+          ${
+            initials && initials.length
+              ? html`
+                ${initials}
+              `
+              : html`
+                <i class="contact-icon">${this.renderPersonIcon()}</i>
+              `
+          }
+        </span>
+      `;
     }
   }
 
@@ -898,13 +838,9 @@ export class MgtPerson extends MgtTemplatedComponent {
    * @memberof MgtPersonCard
    */
   protected renderAvatar(personDetailsInternal: IDynamicPerson, image: string, presence: Presence): TemplateResult {
-    const title =
-      personDetailsInternal && this.personCardInteraction === PersonCardInteraction.none
-        ? personDetailsInternal.displayName || getEmailFromGraphEntity(personDetailsInternal) || ''
-        : '';
-
+    const hasInitials = !image || this._isInvalidImageSrc || this._avatarType === avatarType.initials;
     const imageClasses = {
-      initials: !image || this._isInvalidImageSrc || this._avatarType === 'initials',
+      initials: hasInitials,
       small: !this.isLargeAvatar(),
       threeLines: this.isThreeLines(),
       fourLines: this.isFourLines(),
@@ -912,9 +848,24 @@ export class MgtPerson extends MgtTemplatedComponent {
       vertical: this.isVertical()
     };
 
-    if ((!image || this._isInvalidImageSrc || this._avatarType === 'initials') && personDetailsInternal) {
+    let title = '';
+
+    if (hasInitials && personDetailsInternal) {
       // add avatar background color
       imageClasses[this._personAvatarBg] = true;
+      title = `${this.strings.initials} ${this.getInitials(personDetailsInternal)}`;
+    } else {
+      title = personDetailsInternal ? personDetailsInternal.displayName || '' : '';
+      if (title !== '') {
+        title = `${this.strings.photoFor} ${title}`;
+      }
+    }
+
+    if (title === '') {
+      const emailAddress = getEmailFromGraphEntity(personDetailsInternal);
+      if (emailAddress !== null) {
+        title = `${this.strings.emailAddress} ${emailAddress}`;
+      }
     }
 
     const imageTemplate: TemplateResult = this.renderImage(personDetailsInternal, image);
@@ -1082,11 +1033,11 @@ export class MgtPerson extends MgtTemplatedComponent {
          `
       : html``;
 
-    return html`
-       <mgt-flyout light-dismiss class="flyout" .avoidHidingAnchor=${false}>
-         ${anchor} ${flyoutContent}
-       </mgt-flyout>
-     `;
+    return mgtHtml`
+      <mgt-flyout light-dismiss class="flyout" .avoidHidingAnchor=${false}>
+        ${anchor} ${flyoutContent}
+      </mgt-flyout>
+`;
   }
 
   /**
@@ -1099,7 +1050,7 @@ export class MgtPerson extends MgtTemplatedComponent {
   protected renderFlyoutContent(personDetails: IDynamicPerson, image: string, presence: Presence): TemplateResult {
     return (
       this.renderTemplate('person-card', { person: personDetails, personImage: image }) ||
-      html`
+      mgtHtml`
         <mgt-person-card
           lock-tab-navigation
           .personDetails=${personDetails}
@@ -1149,7 +1100,7 @@ export class MgtPerson extends MgtTemplatedComponent {
     ];
     personProps = personProps.filter(email => email !== 'email');
 
-    const details = this.personDetailsInternal || this.personDetails || this.fallbackDetails;
+    let details = this.personDetailsInternal || this.personDetails || this.fallbackDetails;
 
     if (details) {
       if (
@@ -1159,8 +1110,7 @@ export class MgtPerson extends MgtTemplatedComponent {
         !this.personImage &&
         !this._fetchedImage
       ) {
-        details;
-        let image;
+        let image: string;
         if ('groupTypes' in details) {
           image = await getGroupImage(graph, details, MgtPerson.config.useContactApis);
         } else {
@@ -1184,6 +1134,7 @@ export class MgtPerson extends MgtTemplatedComponent {
         }
       }
       this.personDetailsInternal = person;
+      this.personDetails = person;
       this._fetchedImage = this.getImage();
     } else if (this.personQuery) {
       // Use the personQuery to find our person.
@@ -1195,11 +1146,13 @@ export class MgtPerson extends MgtTemplatedComponent {
 
       if (people && people.length) {
         this.personDetailsInternal = people[0];
+        this.personDetails = people[0];
         if (this._avatarType === 'photo' && !this.disableImageFetch) {
           const image = await getPersonImage(graph, people[0], MgtPerson.config.useContactApis);
 
           if (image) {
             this.personDetailsInternal.personImage = image;
+            this.personDetails.personImage = image;
             this._fetchedImage = image;
           }
         }
@@ -1207,16 +1160,18 @@ export class MgtPerson extends MgtTemplatedComponent {
     }
 
     // populate presence
-    const defaultPresence = {
+    const defaultPresence: Presence = {
       activity: 'Offline',
       availability: 'Offline',
       id: null
     };
+
     if (this.showPresence && !this.personPresence && !this._fetchedPresence) {
       try {
-        if (this.personDetailsInternal && this.personDetailsInternal.id) {
+        details = this.personDetailsInternal || this.personDetails;
+        if (details) {
           // setting userId to 'me' ensures only the presence.read permission is required
-          const userId = this.personQuery !== 'me' ? this.personDetailsInternal.id : null;
+          const userId = this.personQuery !== 'me' ? details?.id : null;
           this._fetchedPresence = await getUserPresence(graph, userId);
         } else {
           this._fetchedPresence = defaultPresence;

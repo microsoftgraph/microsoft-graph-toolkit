@@ -245,7 +245,7 @@ export async function getGroupImage(graph: IGraph, group: any, useContactsApis: 
     } else if (photoDetails) {
       // there is a photo in the cache, but it's stale
       try {
-        const response = await graph.api(`group/${groupId}/photo`).get();
+        const response = await graph.api(`groups/${groupId}/photo`).get();
         if (
           response &&
           (response['@odata.mediaEtag'] !== photoDetails.eTag ||

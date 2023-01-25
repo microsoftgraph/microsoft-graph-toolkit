@@ -6,9 +6,9 @@
  */
 
 import { html } from 'lit';
-import { customElement, property } from 'lit/decorators.js';
+import { property } from 'lit/decorators.js';
 import { classMap } from 'lit/directives/class-map.js';
-import { MgtBaseComponent } from '@microsoft/mgt-element';
+import { MgtBaseComponent, customElement } from '@microsoft/mgt-element';
 import { styles } from './mgt-dot-options-css';
 /**
  * Custom Component used to handle an arrow rendering for TaskGroups utilized in the task component.
@@ -17,7 +17,8 @@ import { styles } from './mgt-dot-options-css';
  * @class MgtDotOptions
  * @extends {MgtBaseComponent}
  */
-@customElement('mgt-dot-options')
+@customElement('dot-options')
+// @customElement('mgt-dot-options')
 export class MgtDotOptions extends MgtBaseComponent {
   /**
    * Array of styles to apply to the element. The styles should be defined

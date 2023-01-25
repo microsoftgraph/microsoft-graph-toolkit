@@ -66,7 +66,7 @@ const App = (props) => {
 
 ## Templates
 
-Most Microsoft Graph Toolkit components [support templating](https://docs.microsoft.com/graph/toolkit/customize-components/templates) and `mgt-react` allows you to leverage React for writing templates.
+Most Microsoft Graph Toolkit components [support templating](https://learn.microsoft.com/graph/toolkit/customize-components/templates) and `mgt-react` allows you to leverage React for writing templates.
 
 For example, to create a template to be used for rendering events in the `mgt-agenda` component, first define a component to be used for rendering an event:
 

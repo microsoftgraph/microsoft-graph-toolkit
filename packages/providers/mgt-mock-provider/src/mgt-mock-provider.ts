@@ -5,10 +5,11 @@
  * -------------------------------------------------------------------------------------------
  */
 
-import { customElement, property } from 'lit/decorators.js';
-import { MgtBaseProvider } from '../components/baseProvider';
-import { Providers } from '../providers/Providers';
+import { property } from 'lit/decorators.js';
+import { MgtBaseProvider } from '@microsoft/mgt-element';
+import { Providers } from '@microsoft/mgt-element';
 import { MockProvider } from './MockProvider';
+import { customElement } from '@microsoft/mgt-element';
 /**
  * Sets global provider to a mock Provider
  *
@@ -16,7 +17,8 @@ import { MockProvider } from './MockProvider';
  * @class MgtMockProvider
  * @extends {LitElement}
  */
-@customElement('mgt-mock-provider')
+@customElement('mock-provider')
+// @customElement('mgt-mock-provider')
 export class MgtMockProvider extends MgtBaseProvider {
   /**
    * A property to allow the developer to start the sample logged out if they desired.

@@ -3,5 +3,7 @@
   "editor.defaultFormatter": "esbenp.prettier-vscode",
   "editor.codeActionsOnSave": {
     "source.fixAll.tslint": true
-  }
+  },
+  "lit-html.tags": ["mgtHtml"],
+  "typescript.tsdk": "node_modules/typescript/lib"
 }

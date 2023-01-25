@@ -40,8 +40,7 @@ $progress-ring-size: var(--progress-ring-size, 24px);
   font-size: $font-size;
 }
 
-:host .file-list-wrapper,
-mgt-file-item .file-list-wrapper {
+:host .file-list-wrapper {
   background-color: $background-color;
   box-shadow: $file-list-box-shadow;
   border-radius: $file-list-border-radius;
@@ -68,7 +67,7 @@ mgt-file-item .file-list-wrapper {
       border-radius: $file-item-border-radius;
       cursor: pointer;
 
-      mgt-file {
+      .mgt-file-item {
         --file-background-color: $background-color;
       }
 
@@ -77,7 +76,7 @@ mgt-file-item .file-list-wrapper {
         background-color: $file-item-background-color--hover;
         border-radius: 4px;
 
-        mgt-file {
+        .mgt-file-item {
           --file-background-color: $file-item-background-color--hover;
         }
       }
@@ -86,7 +85,7 @@ mgt-file-item .file-list-wrapper {
       &.selected {
         background-color: $file-item-background-color--active;
 
-        mgt-file {
+        .mgt-file-item {
           --file-background-color: $file-item-background-color--active;
         }
       }
