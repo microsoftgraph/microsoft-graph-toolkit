@@ -93,7 +93,7 @@ export class MgtPersonCardContact extends BasePersonCardSection {
       title: this.strings.chatTitle
     },
     businessPhone: {
-      icon: getSvg(SvgIcon.Phone, '#929292'),
+      icon: getSvg(SvgIcon.Phone, '#605e5c'),
       onClick: () => this.sendCall(this._person?.businessPhones?.length > 0 ? this._person.businessPhones[0] : null),
       showCompact: true,
       title: this.strings.businessPhoneTitle
