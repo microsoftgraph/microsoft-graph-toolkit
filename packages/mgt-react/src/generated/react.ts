@@ -15,7 +15,7 @@ export type AgendaProps = {
 	preferredTimezone?: string;
 	templateContext?: TemplateContext;
 	mediaQuery?: ComponentMediaQuery;
-	eventClick?: (e: Event) => void;
+	eventClick?: (e: CustomEvent<MicrosoftGraph.Event>) => void;
 	templateRendered?: (e: CustomEvent<TemplateRenderedData>) => void;
 }
 

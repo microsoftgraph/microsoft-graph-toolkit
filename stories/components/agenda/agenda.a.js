@@ -30,7 +30,7 @@ export const events = () => html`
   <script>
     const agenda = document.querySelector('mgt-agenda');
     agenda.addEventListener('eventClick', (e) => {
-      console.log(e.detail.event);
+      console.log(e.detail);
     })
   </script>
 `;
