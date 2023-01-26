@@ -29,10 +29,9 @@ import {
 import { styles } from './mgt-todo-css';
 import { strings } from './strings';
 
-/*
+/**
  * Filter function
  */
-// tslint:disable-next-line: completed-docs
 export type TodoFilter = (task: TodoTask) => boolean;
 
 /**

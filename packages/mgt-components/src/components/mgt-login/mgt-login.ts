@@ -26,11 +26,11 @@ import '../../styles/style-helper';
  * @class MgtLogin
  * @extends {MgtBaseComponent}
  *
- * @fires loginInitiated - Fired when login is initiated by the user
- * @fires loginCompleted - Fired when login completes
- * @fires loginFailed - Fired when login fails
- * @fires logoutInitiated - Fired when logout is initiated by the user
- * @fires logoutCompleted - Fired when logout completed
+ * @fires {CustomEvent<undefined>} loginInitiated - Fired when login is initiated by the user
+ * @fires {CustomEvent<undefined>} loginCompleted - Fired when login completes
+ * @fires {CustomEvent<undefined>} loginFailed - Fired when login fails
+ * @fires {CustomEvent<undefined>} logoutInitiated - Fired when logout is initiated by the user
+ * @fires {CustomEvent<undefined>} logoutCompleted - Fired when logout completed
  *
  * @template signed-in-button-content (dataContext: {personDetails, personImage})
  * @template signed-out-button-content (dataContext: null)

@@ -23,7 +23,7 @@ import { MgtPeople } from '../mgt-people/mgt-people';
  * @class MgtAgenda
  * @extends {MgtTemplatedComponent}
  *
- * @fires  {CustomEvent<MicrosoftGraph.Event>}  eventClick - Fired when user click an event
+ * @fires {CustomEvent<MicrosoftGraph.Event>} eventClick - Fired when user click an event
  *
  * @cssprop --event-box-shadow - {String} Event box shadow color and size
  * @cssprop --event-margin - {String} Event margin

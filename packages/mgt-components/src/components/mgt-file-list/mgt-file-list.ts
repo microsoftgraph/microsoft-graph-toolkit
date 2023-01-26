@@ -51,14 +51,14 @@ export * from './mgt-file-upload/mgt-file-upload';
 
 /**
  * The File List component displays a list of multiple folders and files by
- * using the file/folder name, an icon, and other properties specicified by the developer.
+ * using the file/folder name, an icon, and other properties specified by the developer.
  * This component uses the mgt-file component.
  *
  * @export
  * @class MgtFileList
  * @extends {MgtTemplatedComponent}
  *
- * @fires itemClick - Fired when user click a file. Returns the file (DriveItem) details.
+ * @fires {CustomEvent<MicrosoftGraph.DriveItem>} itemClick - Fired when user click a file. Returns the file (DriveItem) details.
  * @cssprop --file-upload-border- {String} File upload border top style
  * @cssprop --file-upload-background-color - {Color} File upload background color with opacity style
  * @cssprop --file-upload-button-float - {string} Upload button float position
@@ -713,7 +713,7 @@ export class MgtFileList extends MgtTemplatedComponent {
    */
   private onFileListKeyDown(event: KeyboardEvent): void {
     const fileList = this.renderRoot.querySelector('.file-list');
-    let focusedItem;
+    let focusedItem: Element;
 
     if (!fileList || !fileList.children.length) {
       return;
@@ -737,7 +737,7 @@ export class MgtFileList extends MgtTemplatedComponent {
     if (event.code === 'Enter' || event.code === 'Space') {
       focusedItem = fileList.children[this._focusedItemIndex];
 
-      const file = focusedItem.children[0] as any;
+      const file = focusedItem.children[0] as MgtFile;
       event.preventDefault();
       this.fireCustomEvent('itemClick', file.fileDetails);
 

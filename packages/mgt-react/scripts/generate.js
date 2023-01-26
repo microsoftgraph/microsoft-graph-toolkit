@@ -49,7 +49,8 @@ const addTypeToImports = type => {
   if (type === '*') {
     return;
   }
-
+  // make sure to remove any generic type decorations before trying to split for union types
+  type = removeGenericTypeDecoration(type);
   for (let t of type.split('|')) {
     t = removeGenericTypeDecoration(t.trim());
     if (t.startsWith('MicrosoftGraph.') || t.startsWith('MicrosoftGraphBeta.')) {

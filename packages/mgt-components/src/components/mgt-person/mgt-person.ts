@@ -106,9 +106,9 @@ const defaultPersonProperties = [
  * @class MgtPerson
  * @extends {MgtTemplatedComponent}
  *
- * @fires line1clicked - Fired when line1 is clicked
- * @fires line2clicked - Fired when line2 is clicked
- * @fires line3clicked - Fired when line3 is clicked
+ * @fires {CustomEvent<IDynamicPerson>} line1clicked - Fired when line1 is clicked
+ * @fires {CustomEvent<IDynamicPerson>} line2clicked - Fired when line2 is clicked
+ * @fires {CustomEvent<IDynamicPerson>} line3clicked - Fired when line3 is clicked
  *
  * @cssprop --avatar-size - {Length} Avatar size
  * @cssprop --avatar-border - {String} Avatar border
@@ -873,7 +873,7 @@ export class MgtPerson extends MgtTemplatedComponent {
       return html``;
     }
 
-    let person: IDynamicPerson & { presenceActivity?: string; presenceAvailability?: string } = personProps;
+    const person: IDynamicPerson & { presenceActivity?: string; presenceAvailability?: string } = personProps;
     if (presence) {
       person.presenceActivity = presence?.activity;
       person.presenceAvailability = presence?.availability;
@@ -1239,7 +1239,7 @@ export class MgtPerson extends MgtTemplatedComponent {
   }
 
   private handleKeyDown(e: KeyboardEvent) {
-    //enter activates person-card
+    // enter activates person-card
     if (e) {
       if (e.key === 'Enter') {
         this.showPersonCard();

@@ -49,7 +49,7 @@ interface MgtPersonCardStateHistory {
  * @class MgtPersonCard
  * @extends {MgtTemplatedComponent}
  *
- * @fires expanded - Fired when expanded details section is opened
+ * @fires {CustomEvent<null>} expanded - Fired when expanded details section is opened
  *
  * @cssprop --person-card-display-name-font-size - {Length} Font size of display name title
  * @cssprop --person-card-display-name-color - {Color} Color of display name font
@@ -604,9 +604,9 @@ export class MgtPersonCard extends MgtTemplatedComponent {
    */
   protected renderExpandedDetailsButton(): TemplateResult {
     return html`
-      <div 
-        class="expanded-details-button" 
-        @click=${() => this.showExpandedDetails()} 
+      <div
+        class="expanded-details-button"
+        @click=${() => this.showExpandedDetails()}
         @keydown=${this.handleKeyDown}
         tabindex=0>
           ${getSvg(SvgIcon.ExpandDown)}
@@ -689,9 +689,9 @@ export class MgtPersonCard extends MgtTemplatedComponent {
       'section-nav__icon': true
     });
     return html`
-      <button 
+      <button
         aria-label="overview"
-        tabindex=0 
+        tabindex=0
         class=${overviewClasses}
         @click=${() => this.updateCurrentSection(null)}>
           ${getSvg(SvgIcon.Overview)}
@@ -717,7 +717,7 @@ export class MgtPersonCard extends MgtTemplatedComponent {
         <div class="section">
           <div class="section__header">
             <div class="section__title" tabindex="0">${section.displayName}</div>
-            <a 
+            <a
               class="section__show-more"
               tabindex=0
               @keydown=${(e: KeyboardEvent) => handleKeyDown(e, section)}

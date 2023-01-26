@@ -1,4 +1,4 @@
-import { OfficeGraphInsightString,ViewType,ResponseType,IDynamicPerson,PersonCardInteraction,PersonType,GroupType,UserType,AvatarSize,PersonViewType,TasksStringResource,TasksSource,TaskFilter,SelectedChannel,TodoFilter } from '@microsoft/mgt-components';
+import { OfficeGraphInsightString,ViewType,ResponseType,DataChangedDetail,IDynamicPerson,PersonCardInteraction,PersonType,GroupType,UserType,AvatarSize,PersonViewType,TasksStringResource,TasksSource,TaskFilter,ITask,SelectedChannel,TodoFilter } from '@microsoft/mgt-components';
 import { TemplateContext,ComponentMediaQuery,TemplateRenderedData } from '@microsoft/mgt-element';
 import * as MicrosoftGraph from '@microsoft/microsoft-graph-types';
 import * as MicrosoftGraphBeta from '@microsoft/microsoft-graph-types-beta';
@@ -63,7 +63,7 @@ export type FileListProps = {
 	excludedFileExtensions?: string[];
 	templateContext?: TemplateContext;
 	mediaQuery?: ComponentMediaQuery;
-	itemClick?: (e: Event) => void;
+	itemClick?: (e: CustomEvent<MicrosoftGraph.DriveItem>) => void;
 	templateRendered?: (e: CustomEvent<TemplateRenderedData>) => void;
 }
 
@@ -80,7 +80,7 @@ export type GetProps = {
 	error?: any;
 	templateContext?: TemplateContext;
 	mediaQuery?: ComponentMediaQuery;
-	dataChange?: (e: Event) => void;
+	dataChange?: (e: CustomEvent<DataChangedDetail>) => void;
 	templateRendered?: (e: CustomEvent<TemplateRenderedData>) => void;
 }
 
@@ -88,11 +88,11 @@ export type LoginProps = {
 	userDetails?: IDynamicPerson;
 	templateContext?: TemplateContext;
 	mediaQuery?: ComponentMediaQuery;
-	loginInitiated?: (e: Event) => void;
-	loginCompleted?: (e: Event) => void;
-	loginFailed?: (e: Event) => void;
-	logoutInitiated?: (e: Event) => void;
-	logoutCompleted?: (e: Event) => void;
+	loginInitiated?: (e: CustomEvent<undefined>) => void;
+	loginCompleted?: (e: CustomEvent<undefined>) => void;
+	loginFailed?: (e: CustomEvent<undefined>) => void;
+	logoutInitiated?: (e: CustomEvent<undefined>) => void;
+	logoutCompleted?: (e: CustomEvent<undefined>) => void;
 	templateRendered?: (e: CustomEvent<TemplateRenderedData>) => void;
 }
 
@@ -160,9 +160,9 @@ export type PersonProps = {
 	view?: ViewType | PersonViewType;
 	templateContext?: TemplateContext;
 	mediaQuery?: ComponentMediaQuery;
-	line1clicked?: (e: Event) => void;
-	line2clicked?: (e: Event) => void;
-	line3clicked?: (e: Event) => void;
+	line1clicked?: (e: CustomEvent<IDynamicPerson>) => void;
+	line2clicked?: (e: CustomEvent<IDynamicPerson>) => void;
+	line3clicked?: (e: CustomEvent<IDynamicPerson>) => void;
 	templateRendered?: (e: CustomEvent<TemplateRenderedData>) => void;
 }
 
@@ -179,7 +179,7 @@ export type PersonCardProps = {
 	personPresence?: MicrosoftGraph.Presence;
 	templateContext?: TemplateContext;
 	mediaQuery?: ComponentMediaQuery;
-	expanded?: (e: Event) => void;
+	expanded?: (e: CustomEvent<null>) => void;
 	templateRendered?: (e: CustomEvent<TemplateRenderedData>) => void;
 }
 
@@ -198,10 +198,10 @@ export type TasksProps = {
 	taskFilter?: TaskFilter;
 	templateContext?: TemplateContext;
 	mediaQuery?: ComponentMediaQuery;
-	taskAdded?: (e: Event) => void;
-	taskChanged?: (e: Event) => void;
-	taskClick?: (e: Event) => void;
-	taskRemoved?: (e: Event) => void;
+	taskAdded?: (e: CustomEvent<ITask>) => void;
+	taskChanged?: (e: CustomEvent<ITask>) => void;
+	taskClick?: (e: CustomEvent<ITask>) => void;
+	taskRemoved?: (e: CustomEvent<ITask>) => void;
 	templateRendered?: (e: CustomEvent<TemplateRenderedData>) => void;
 }
 
@@ -209,7 +209,7 @@ export type TeamsChannelPickerProps = {
 	selectedItem?: SelectedChannel;
 	templateContext?: TemplateContext;
 	mediaQuery?: ComponentMediaQuery;
-	selectionChanged?: (e: Event) => void;
+	selectionChanged?: (e: CustomEvent<SelectedChannel | null>) => void;
 	templateRendered?: (e: CustomEvent<TemplateRenderedData>) => void;
 }
 

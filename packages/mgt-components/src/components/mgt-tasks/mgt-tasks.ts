@@ -126,10 +126,10 @@ const plannerAssignment = {
  * @class MgtTasks
  * @extends {MgtBaseComponent}
  *
- * @fires taskAdded - Fires when a new task has been created.
- * @fires taskChanged - Fires when task metadata has been changed, such as marking completed.
- * @fires taskClick - Fires when the user clicks or taps on a task.
- * @fires taskRemoved - Fires when an existing task has been deleted.
+ * @fires {CustomEvent<ITask>} taskAdded - Fires when a new task has been created.
+ * @fires {CustomEvent<ITask>} taskChanged - Fires when task metadata has been changed, such as marking completed.
+ * @fires {CustomEvent<ITask>} taskClick - Fires when the user clicks or taps on a task.
+ * @fires {CustomEvent<ITask>} taskRemoved - Fires when an existing task has been deleted.
  *
  * @cssprop --tasks-header-padding - {String} Tasks header padding
  * @cssprop --tasks-header-margin - {String} Tasks header margin
@@ -641,8 +641,8 @@ export class MgtTasks extends MgtTemplatedComponent {
     } as ITask;
 
     this._newTaskBeingAdded = true;
-    const task = await ts.addTask(newTask);
-    this.fireCustomEvent('taskAdded', task);
+    newTask._raw = await ts.addTask(newTask);
+    this.fireCustomEvent('taskAdded', newTask);
 
     await this.requestStateUpdate();
     this._newTaskBeingAdded = false;
@@ -690,7 +690,7 @@ export class MgtTasks extends MgtTemplatedComponent {
     this._hiddenTasks = this._hiddenTasks.filter(id => id !== task.id);
   }
 
-  private async assignPeople(task: ITask, people: Array<User | Person | Contact>) {
+  private async assignPeople(task: ITask, people: (User | Person | Contact)[]) {
     const ts = this.getTaskSource();
     if (!ts) {
       return;
@@ -1321,7 +1321,7 @@ export class MgtTasks extends MgtTemplatedComponent {
 
   private handleTaskClick(task: ITask) {
     if (task) {
-      this.fireCustomEvent('taskClick', { task: task._raw });
+      this.fireCustomEvent('taskClick', task);
     }
   }
 
@@ -1465,3 +1465,5 @@ export class MgtTasks extends MgtTemplatedComponent {
     return null;
   }
 }
+
+export { ITask };
