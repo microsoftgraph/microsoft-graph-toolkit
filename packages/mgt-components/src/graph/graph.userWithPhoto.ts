@@ -38,7 +38,7 @@ export async function getUserWithPhoto(
   let cachedUser: CacheUser;
 
   const resource = userId ? `users/${userId}` : 'me';
-  let fullResource = resource + (requestedProps ? `?$select=${requestedProps.toString()}` : '');
+  const fullResource = resource + (requestedProps ? `?$select=${requestedProps.toString()}` : '');
 
   const scopes = userId ? ['user.readbasic.all'] : ['user.read'];
 
@@ -46,7 +46,7 @@ export async function getUserWithPhoto(
   if (getIsUsersCacheEnabled()) {
     const cache = CacheService.getCache<CacheUser>(schemas.users, schemas.users.stores.users);
     cachedUser = await cache.getValue(userId || 'me');
-    if (cachedUser !== undefined && getUserInvalidationTime() > Date.now() - cachedUser.timeCached) {
+    if (cachedUser && getUserInvalidationTime() > Date.now() - cachedUser.timeCached) {
       user = cachedUser.user ? JSON.parse(cachedUser.user) : null;
       if (user !== null && requestedProps) {
         const uniqueProps = requestedProps.filter(prop => !Object.keys(user).includes(prop));
@@ -74,7 +74,7 @@ export async function getUserWithPhoto(
           cachedPhoto = null;
         }
       } catch (e) {
-        //if 404 received (photo not found) but user already in cache, update timeCache value to prevent repeated 404 error / graph calls on each page refresh
+        // if 404 received (photo not found) but user already in cache, update timeCache value to prevent repeated 404 error / graph calls on each page refresh
         if (e.code === 'ErrorItemNotFound' || e.code === 'ImageNotFound') {
           storePhotoInCache(userId || 'me', schemas.photos.stores.users, { eTag: null, photo: null });
         }
@@ -101,6 +101,7 @@ export async function getUserWithPhoto(
 
     const photoResponse = response.get('photo');
     if (photoResponse) {
+      // tslint:disable-next-line: no-string-literal
       eTag = photoResponse.headers['ETag'];
       photo = photoResponse.content;
     }
@@ -116,7 +117,7 @@ export async function getUserWithPhoto(
       cache.putValue(userId || 'me', { user: JSON.stringify(user) });
     }
     if (getIsPhotosCacheEnabled()) {
-      storePhotoInCache(userId || 'me', schemas.photos.stores.users, { eTag, photo: photo });
+      storePhotoInCache(userId || 'me', schemas.photos.stores.users, { eTag, photo });
     }
   } else if (!cachedPhoto) {
     try {
