@@ -6,13 +6,14 @@
  */
 
 import { SharedInsight } from '@microsoft/microsoft-graph-types';
-import { customElement, html, TemplateResult } from 'lit-element';
+import { html, TemplateResult } from 'lit';
 import { BasePersonCardSection } from '../BasePersonCardSection';
 import { getFileTypeIconUri } from '../../../../styles/fluent-icons';
 import { getSvg, SvgIcon } from '../../../../utils/SvgHelper';
 import { getRelativeDisplayDate } from '../../../../utils/Utils';
 import { styles } from './mgt-person-card-files-css';
 import { strings } from './strings';
+import { customElement } from '@microsoft/mgt-element';
 
 /**
  * The files subsection of the person card
@@ -21,7 +22,8 @@ import { strings } from './strings';
  * @class MgtPersonCardProfile
  * @extends {MgtTemplatedComponent}
  */
-@customElement('mgt-person-card-files')
+@customElement('person-card-files')
+// @customElement('mgt-person-card-files')
 export class MgtPersonCardFiles extends BasePersonCardSection {
   /**
    * Array of styles to apply to the element. The styles should be defined

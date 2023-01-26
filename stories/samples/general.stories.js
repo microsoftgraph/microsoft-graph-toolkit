@@ -5,7 +5,7 @@
  * -------------------------------------------------------------------------------------------
  */
 
-import { html } from 'lit-element';
+import { html } from 'lit';
 import { withCodeEditor } from '../../.storybook/addons/codeEditorAddon/codeAddon';
 import { versionInfo } from '../versionInfo';
 
@@ -58,8 +58,6 @@ export const Localization = () => html`
           removeTaskSubtitle: 'todoremoveTEST'
         },
         'person-card': {
-          sendEmailLinkSubtitle: 'ارسل بريد الكتروني',
-          startChatLinkSubtitle: 'ابدأ الدردشة',
           showMoreSectionButton: 'أظهر المزيد' // global declaration
         },
         'person-card-contact': {

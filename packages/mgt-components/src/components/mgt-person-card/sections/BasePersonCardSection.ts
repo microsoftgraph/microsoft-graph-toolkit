@@ -5,8 +5,9 @@
  * -------------------------------------------------------------------------------------------
  */
 
-import { MgtTemplatedComponent } from '@microsoft/mgt-element';
-import { html, property, TemplateResult } from 'lit-element';
+import { MgtTemplatedComponent, mgtHtml } from '@microsoft/mgt-element';
+import { html, TemplateResult } from 'lit';
+import { property } from 'lit/decorators.js';
 
 import { IDynamicPerson } from '../../../graph/types';
 import { MgtPersonCard } from '../mgt-person-card';
@@ -135,7 +136,7 @@ export abstract class BasePersonCardSection extends MgtTemplatedComponent {
    * @memberof BasePersonCardSection
    */
   protected renderLoading(): TemplateResult {
-    return html`
+    return mgtHtml`
       <div class="loading">
         <mgt-spinner></mgt-spinner>
       </div>

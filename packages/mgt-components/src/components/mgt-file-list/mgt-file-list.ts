@@ -10,11 +10,14 @@ import {
   GraphPageIterator,
   MgtTemplatedComponent,
   Providers,
-  ProviderState
+  ProviderState,
+  customElement,
+  mgtHtml
 } from '@microsoft/mgt-element';
 import { DriveItem } from '@microsoft/microsoft-graph-types';
-import { customElement, html, internalProperty, property, TemplateResult } from 'lit-element';
-import { repeat } from 'lit-html/directives/repeat';
+import { html, TemplateResult } from 'lit';
+import { property, state } from 'lit/decorators.js';
+import { repeat } from 'lit/directives/repeat.js';
 import {
   clearFilesCache,
   fetchNextAndCacheForFilesPageIterator,
@@ -41,13 +44,10 @@ import { strings } from './strings';
 import { MgtFile } from '../mgt-file/mgt-file';
 import { MgtFileUploadConfig } from './mgt-file-upload/mgt-file-upload';
 
-export { FluentDesignSystemProvider, FluentProgressRing } from '@fluentui/web-components';
-export * from './mgt-file-upload/mgt-file-upload';
+import { fluentProgressRing, fluentDesignSystemProvider } from '@fluentui/web-components';
+import { registerFluentComponents } from '../../utils/FluentComponents';
 
-// import { fluentProgressRing } from '@fluentui/web-components';
-// import { registerFluentComponents } from '../../utils/FluentComponents';
-
-// registerFluentComponents(fluentProgressRing);
+registerFluentComponents(fluentProgressRing, fluentDesignSystemProvider);
 
 /**
  * The File List component displays a list of multiple folders and files by
@@ -91,7 +91,8 @@ export * from './mgt-file-upload/mgt-file-upload';
  * @cssprop --progress-ring-size -{String} Progress ring height and width
  */
 
-@customElement('mgt-file-list')
+@customElement('file-list')
+// @customElement('mgt-file-list')
 export class MgtFileList extends MgtTemplatedComponent {
   /**
    * Array of styles to apply to the element. The styles should be defined
@@ -500,7 +501,7 @@ export class MgtFileList extends MgtTemplatedComponent {
   // tracking user arrow key input of selection for accessibility purpose
   private _focusedItemIndex: number = -1;
 
-  @internalProperty() private _isLoadingMore: boolean;
+  @state() private _isLoadingMore: boolean;
 
   constructor() {
     super();
@@ -587,7 +588,6 @@ export class MgtFileList extends MgtTemplatedComponent {
    */
   protected renderFiles(): TemplateResult {
     return html`
-    <fluent-design-system-provider use-defaults>
       <div id="file-list-wrapper" class="file-list-wrapper" dir=${this.direction}>
         ${this.enableFileUpload ? this.renderFileUpload() : null}
         <ul
@@ -614,7 +614,6 @@ export class MgtFileList extends MgtTemplatedComponent {
             : null
         }
       </div>
-    </fluent-design-system-provider>
     `;
   }
 
@@ -629,8 +628,8 @@ export class MgtFileList extends MgtTemplatedComponent {
     const view = this.itemView;
     return (
       this.renderTemplate('file', { file }, file.id) ||
-      html`
-        <mgt-file .fileDetails=${file} .view=${view}></mgt-file>
+      mgtHtml`
+        <mgt-file class="mgt-file-item" .fileDetails=${file} .view=${view}></mgt-file>
       `
     );
   }
@@ -672,7 +671,7 @@ export class MgtFileList extends MgtTemplatedComponent {
       maxFileSize: this.maxFileSize,
       maxUploadFile: this.maxUploadFile
     };
-    return html`
+    return mgtHtml`
         <mgt-file-upload .fileUploadList=${fileUploadConfig} ></mgt-file-upload>
       `;
   }

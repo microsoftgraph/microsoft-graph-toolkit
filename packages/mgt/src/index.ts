@@ -13,3 +13,4 @@ export * from '@microsoft/mgt-proxy-provider';
 export * from '@microsoft/mgt-sharepoint-provider';
 export * from '@microsoft/mgt-msal2-provider';
 export * from '@microsoft/mgt-teams-msal2-provider';
+export * from '@microsoft/mgt-mock-provider';

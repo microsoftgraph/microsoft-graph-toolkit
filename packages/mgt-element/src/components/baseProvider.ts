@@ -5,9 +5,10 @@
  * -------------------------------------------------------------------------------------------
  */
 
-import { property } from 'lit-element';
+import { property } from 'lit/decorators.js';
 import { MgtBaseComponent } from './baseComponent';
 import { IProvider } from '../providers/IProvider';
+import { GraphEndpoint } from '../IGraph';
 
 /**
  * Abstract implementation for provider component
@@ -64,6 +65,17 @@ export abstract class MgtBaseProvider extends MgtBaseComponent {
     type: String
   })
   public dependsOn: MgtBaseProvider;
+
+  /**
+   * The base URL that should be used in the graph client config.
+   *
+   * @memberof MgtBaseProvider
+   */
+  @property({
+    attribute: 'base-url',
+    type: String
+  })
+  public baseUrl: GraphEndpoint;
 
   private _provider: IProvider;
 

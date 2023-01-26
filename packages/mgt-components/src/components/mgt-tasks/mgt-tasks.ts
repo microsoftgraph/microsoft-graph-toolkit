@@ -7,10 +7,18 @@
 
 import { Person, PlannerAssignments, PlannerTask, User } from '@microsoft/microsoft-graph-types';
 import { Contact, OutlookTask, OutlookTaskFolder } from '@microsoft/microsoft-graph-types-beta';
-import { customElement, html, property } from 'lit-element';
-import { classMap } from 'lit-html/directives/class-map';
-import { repeat } from 'lit-html/directives/repeat';
-import { ComponentMediaQuery, Providers, ProviderState, MgtTemplatedComponent } from '@microsoft/mgt-element';
+import { html } from 'lit';
+import { property } from 'lit/decorators.js';
+import { classMap } from 'lit/directives/class-map.js';
+import { repeat } from 'lit/directives/repeat.js';
+import {
+  ComponentMediaQuery,
+  Providers,
+  ProviderState,
+  MgtTemplatedComponent,
+  mgtHtml,
+  customElement
+} from '@microsoft/mgt-element';
 import { getShortDateString } from '../../utils/Utils';
 import { MgtPeoplePicker } from '../mgt-people-picker/mgt-people-picker';
 import { PersonCardInteraction } from './../PersonCardInteraction';
@@ -178,7 +186,8 @@ const plannerAssignment = {
  * @cssprop --task-icon-color - {Color} Task icon color
  * @cssprop --task-icon-color-completed - {Color} Task icon color when completed
  */
-@customElement('mgt-tasks')
+@customElement('tasks')
+// @customElement('mgt-tasks')
 export class MgtTasks extends MgtTemplatedComponent {
   /**
    * determines whether todo, or planner functionality for task component
@@ -844,8 +853,8 @@ export class MgtTasks extends MgtTemplatedComponent {
           this._currentFolder = null;
         };
       }
-      const groupSelect = html`
-        <mgt-arrow-options .options="${groupOptions}" .value="${currentGroup.title}"></mgt-arrow-options>
+      const groupSelect = mgtHtml`
+        <mgt-arrow-options class="arrow-options" .options="${groupOptions}" .value="${currentGroup.title}"></mgt-arrow-options>
       `;
 
       const divider = !this._currentGroup
@@ -875,8 +884,8 @@ export class MgtTasks extends MgtTemplatedComponent {
               ${this._folders[0] && this._folders[0].name}
             </span>
           `
-        : html`
-            <mgt-arrow-options .options="${folderOptions}" .value="${currentFolder.name}"></mgt-arrow-options>
+        : mgtHtml`
+            <mgt-arrow-options class="arrow-options" .options="${folderOptions}" .value="${currentFolder.name}"></mgt-arrow-options>
           `;
 
       return html`
@@ -909,8 +918,8 @@ export class MgtTasks extends MgtTemplatedComponent {
               ${folder.name}
             </span>
           `
-        : html`
-            <mgt-arrow-options .value="${currentFolder.name}" .options="${folderOptions}"></mgt-arrow-options>
+        : mgtHtml`
+            <mgt-arrow-options class="arrow-options" .value="${currentFolder.name}" .options="${folderOptions}"></mgt-arrow-options>
           `;
 
       return html`
@@ -1188,9 +1197,10 @@ export class MgtTasks extends MgtTemplatedComponent {
     const taskOptions =
       this.readOnly || this.hideOptions
         ? null
-        : html`
+        : mgtHtml`
             <div class="TaskOptions">
               <mgt-dot-options
+                class="dot-options"
                 .options="${{
                   [this.strings.removeTaskSubtitle]: () => this.removeTask(task)
                 }}"
@@ -1282,9 +1292,9 @@ export class MgtTasks extends MgtTemplatedComponent {
     const taskId = task ? task.id : 'newTask';
     taskAssigneeClasses[`flyout-${taskId}`] = true;
 
-    assignedPeopleHTML = html`
+    assignedPeopleHTML = mgtHtml`
       <mgt-people
-        class="people-${taskId}"
+        class="people people-${taskId}"
         .userIds="${assignedPeople}"
         .personCardInteraction=${PersonCardInteraction.none}
         @click=${(e: MouseEvent) => {
@@ -1300,20 +1310,23 @@ export class MgtTasks extends MgtTemplatedComponent {
         >${noPeopleTemplate}
       </mgt-people>
     `;
+    const picker = mgtHtml`
+      <mgt-people-picker
+        class="people-picker picker-${taskId}"
+        @click=${(e: MouseEvent) => e.stopPropagation()}
+        @keydown=${(e: KeyboardEvent) => {
+          if (e.code === 'Enter') {
+            e.stopPropagation();
+          }
+        }}
+      ></mgt-people-picker>
+    `;
 
-    return html`
+    return mgtHtml`
       <mgt-flyout light-dismiss class=${classMap(taskAssigneeClasses)} @closed=${e => this.updateAssignedPeople(task)}>
         ${assignedPeopleHTML}
         <div slot="flyout" class=${classMap({ Picker: true })}>
-          <mgt-people-picker
-            class="picker-${taskId}"
-            @click=${(e: MouseEvent) => e.stopPropagation()}
-            @keydown=${(e: KeyboardEvent) => {
-              if (e.code === 'Enter') {
-                e.stopPropagation();
-              }
-            }}
-          ></mgt-people-picker>
+          ${picker}
         </div>
       </mgt-flyout>
     `;

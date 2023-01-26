@@ -10,7 +10,9 @@
 @import './mgt-person.theme.scss';
 
 $avatar-size-s: var(--avatar-size-s, var(--avatar-size, 24px));
-$avatar-size: var(--avatar-size, var(--avatar-size-s, 48px));
+$avatar-size: var(--avatar-size, var(--avatar-size, 40px));
+$avatar-size-3-lines: var(--avatar-size-3-lines, var(--avatar-size, 56px));
+$avatar-size-4-lines: var(--avatar-size-4-lines, var(--avatar-size, 72px));
 $avatar-border: var(--avatar-border, 0);
 $avatar-border-radius: var(--avatar-border-radius, 50%);
 $avatar-cursor: var(--avatar-cursor, inherit);
@@ -23,45 +25,63 @@ $font-size: var(--font-size, #{$ms-font-size-m});
 $font-weight: var(--font-weight, #{$ms-font-weight-semibold});
 $text-transform: var(text-transform, none);
 
+$line1-font-weight: var(--line1-font-weight, 600);
+$line1-font-size: var(--line1-font-size, $font-size);
+$line1-line-height: var(--line1-line-height, 20px);
+
 $line2-font-size: var(--line2-font-size, var(--email-font-size, #{$ms-font-size-s}));
 $line2-font-weight: var(--line2-font-weight, 400);
 $line2-text-transform: var(--line2-text-transform, #{$text-transform});
+$line2-line-height: var(--line2-line-height, 16px);
 
 $line3-font-size: var(--line3-font-size, var(--email-font-size, #{$ms-font-size-s}));
 $line3-font-weight: var(--line3-font-weight, 400);
 $line3-text-transform: var(--line3-text-transform, #{$text-transform});
+$line3-line-height: var(--line3-line-height, 16px);
+
+$line4-font-size: var(--line4-font-size, var(--email-font-size, #{$ms-font-size-s}));
+$line4-font-weight: var(--line4-font-weight, 400);
+$line4-text-transform: var(--line4-text-transform, #{$text-transform});
+
+$focus-offset: var(--focus-offset, 11px);
 
 $details-spacing: --details-spacing;
+$details-cta-spacing: --details-cta-spacing;
 
-$presence-color-online: #6bb700;
+$user-presence-margin-offset: --user-presence-margin-offset;
+
+$person-flex-direction: --person-flex-direction;
+$presence-color-online: #13a10e;
 $presence-color-dnd: #c50f1f;
 $presence-color-away: #ffaa44;
 $presence-color-invisible: #8a8886;
 $presence-color-oof: #b4009e;
+$background-color-initials: #e5e5e5;
+
+.flyout {
+  --mgt-flyout-border-radius: 2px;
+}
 
 :host([hidden]) {
   display: none;
 }
 
 :host {
-  display: inline-block;
+  display: block;
   font-family: $font-family;
-  vertical-align: top;
+  :focus-visible {
+    outline-offset: $focus-offset;
+  }
 }
 
 :host .root {
   display: block;
-  margin: -11px -13px;
-  padding: 11px 13px;
-  &:focus-visible {
-    outline: none;
-  }
 }
 
 :host svg,
 mgt-person svg {
-  width: $avatar-size-s;
-  height: $avatar-size-s;
+  width: $avatar-size;
+  height: $avatar-size;
 }
 
 :host .person-root,
@@ -70,15 +90,15 @@ mgt-person .person-root {
   display: flex;
   align-items: center;
   color: $color;
+  flex-direction: var($person-flex-direction, row);
 
   &.clickable {
     cursor: pointer;
   }
 
-  &.small {
-    &:focus-visible {
-      outline: auto;
-    }
+  &.vertical {
+    text-align: center;
+    display: block;
   }
 
   .user-avatar {
@@ -92,13 +112,12 @@ mgt-person .person-root {
     cursor: $avatar-cursor;
 
     .user-presence {
-      margin: 0;
       position: absolute;
-      left: calc(#{$avatar-size} * 0.72 - 4px);
-      top: calc(#{$avatar-size} * 0.72 - 4px);
+      left: calc(#{$avatar-size} * 0.72 - 2px);
+      top: calc(#{$avatar-size} * 0.72 - 2px);
       width: calc(#{$avatar-size} * 0.28);
       height: calc(#{$avatar-size} * 0.28);
-      border: 2px solid $presence__background-color;
+      border: 1px solid $presence__background-color;
       border-radius: 50%;
 
       .presence-oof-offline-wrapper {
@@ -110,6 +129,51 @@ mgt-person .person-root {
           width: calc(#{$avatar-size} * 0.14);
           margin-left: calc(#{$avatar-size} * 0.07 - 2px);
         }
+      }
+
+      &.presence-offline {
+        background-color: $presence-color-invisible;
+        border-color: $presence__background-color;
+      }
+
+      &.presence-available {
+        background-color: $presence-color-online;
+        border-color: $presence__background-color;
+      }
+
+      &.presence-oof-offline {
+        background-color: $presence__background-color;
+        border-color: $presence__background-color;
+      }
+
+      &.presence-oof-available {
+        background-color: $presence__background-color;
+        border-color: $presence__background-color;
+      }
+
+      &.presence-away {
+        background-color: $presence-color-away;
+        border-color: $presence__background-color;
+      }
+
+      &.presence-dnd {
+        background-color: $presence-color-dnd;
+        border-color: $presence__background-color;
+      }
+
+      &.presence-oof-dnd {
+        background-color: $presence__background-color;
+        border-color: $presence__background-color;
+      }
+
+      &.presence-busy {
+        background-color: $presence-color-dnd;
+        border-color: $presence__background-color;
+      }
+
+      &.presence-oof-busy {
+        background-color: $presence__background-color;
+        border-color: $presence__background-color;
       }
 
       .presence-basic {
@@ -213,6 +277,10 @@ mgt-person .person-root {
         cursor: $avatar-cursor;
         margin-top: -1px;
         font-size: calc(#{$avatar-size} * 0.4);
+        svg {
+          height: 30px;
+          width: 30px;
+        }
       }
 
       & .contact-icon {
@@ -231,18 +299,26 @@ mgt-person .person-root {
       .user-presence {
         left: calc(#{$avatar-size-s} - 8px);
         top: calc(#{$avatar-size-s} - 8px);
-        width: 8px;
-        height: 8px;
+        width: 6px;
+        height: 6px;
+
+        &__people {
+          left: calc(#{$avatar-size-s} - 6px);
+          border: 0px;
+          width: 6px;
+          height: 6px;
+        }
 
         .presence-basic {
-          width: 4px;
-          height: 4px;
-          border-radius: 4px;
+          width: 2px;
+          height: 2px;
+          border-radius: 50%;
           padding: 0;
+          font-size: calc(#{$avatar-size-s} * 0.14);
 
           & .presence-oof-offline svg {
-            height: 0;
-            width: 0;
+            width: calc(#{$avatar-size-s} * 0.14);
+            margin-left: calc(#{$avatar-size-s} * 0.07 - 2px);
           }
         }
 
@@ -254,9 +330,95 @@ mgt-person .person-root {
         .presence-dnd::before,
         .presence-oof-dnd::before,
         .presence-oof-offline::before {
-          content: '';
+          margin-left: calc(#{$avatar-size-s} * 0.07 - 2px);
         }
       }
+    }
+
+    &.threeLines {
+      width: $avatar-size-3-lines;
+      height: $avatar-size-3-lines;
+
+      & .initials-text,
+      & .contact-icon {
+        font-size: calc(#{$avatar-size-3-lines} * 0.4);
+      }
+      .user-presence {
+        left: calc(var(--avatar-size-3-lines, var(--avatar-size, 56px)) - 18px);
+        top: calc(var(--avatar-size-3-lines, var(--avatar-size, 56px)) - 18px);
+        width: 16px;
+        height: 16px;
+
+        .presence-basic {
+          width: 12px;
+          height: 12px;
+          border-radius: 50%;
+          padding: 0px;
+          font-size: calc(#{$avatar-size-3-lines} * 0.14);
+
+          & .presence-oof-offline svg {
+            width: calc(#{$avatar-size-3-lines} * 0.14);
+            margin-left: calc(#{$avatar-size-3-lines} * 0.07 - 2px);
+          }
+        }
+
+        .presence-offline::before,
+        .presence-available::before,
+        .presence-oof-available::before,
+        .presence-away::before,
+        .presence-oof-away::before,
+        .presence-dnd::before,
+        .presence-oof-dnd::before,
+        .presence-oof-offline::before {
+          margin-left: calc(#{$avatar-size-3-lines} * 0.07 - var(--user-presence-margin-offset, 2px));
+        }
+      }
+    }
+
+    &.fourLines,
+    &.vertical {
+      width: $avatar-size-4-lines;
+      height: $avatar-size-4-lines;
+
+      & .initials-text,
+      & .contact-icon {
+        font-size: calc(#{$avatar-size-4-lines} * 0.4);
+      }
+      .user-presence {
+        left: calc(var(--avatar-size-4-lines, var(--avatar-size, 72px)) - 22px);
+        top: calc(var(--avatar-size-4-lines, var(--avatar-size, 72px)) - 22px);
+        width: 20px;
+        height: 20px;
+
+        .presence-basic {
+          width: 16px;
+          height: 16px;
+          border-radius: 50%;
+          padding: 0px;
+          font-size: calc(#{$avatar-size-4-lines} * 0.14);
+
+          & .presence-oof-offline svg {
+            width: calc(#{$avatar-size-4-lines} * 0.14);
+            margin-left: calc(#{$avatar-size-4-lines} * 0.07 - 2px);
+          }
+        }
+
+        .presence-offline::before,
+        .presence-available::before,
+        .presence-oof-available::before,
+        .presence-away::before,
+        .presence-oof-away::before,
+        .presence-dnd::before,
+        .presence-oof-dnd::before,
+        .presence-oof-offline::before {
+          margin-left: calc(#{$avatar-size-4-lines} * 0.07 - 2px);
+        }
+      }
+    }
+
+    &.vertical {
+      margin-left: auto;
+      margin-right: auto;
     }
 
     .img-wrapper {
@@ -271,10 +433,7 @@ mgt-person .person-root {
       img {
         position: absolute;
         display: block;
-        top: -100%;
-        right: -100%;
-        bottom: -100%;
-        left: -100%;
+        inset: -100%;
         margin: auto;
         height: 100%;
         width: 100%;
@@ -362,8 +521,12 @@ mgt-person .person-root {
       background-color: var($initials-background-color, $ms-color-sharedGray30);
     }
 
-    &.gray20 {
-      background-color: var($initials-background-color, $ms-color-sharedGray20);
+    // &.gray20 {
+    //   background-color: var($initials-background-color, $ms-color-sharedGray20);
+    // }
+
+    &.lightGrey {
+      background-color: $background-color-initials;
     }
   }
 
@@ -372,11 +535,58 @@ mgt-person .person-root {
     display: flex;
     flex-direction: column;
     overflow: hidden;
-    line-height: 1.4;
+    line-height: 1.6;
     margin: var($details-spacing, 0px 0px 0px 12px);
 
     &.small {
-      margin: var($details-spacing, 0px 0px 0px 6px);
+      margin: var($details-spacing, 0px 0px 0px 8px);
+      .line1 {
+        font-weight: 400;
+      }
+    }
+
+    &.threeLines {
+      margin: var($details-spacing, 0px 0px 0px 14px);
+      margin-bottom: var($details-cta-spacing, 0);
+      .line1 {
+        font-size: var($line1-font-size, 16px);
+        line-height: var($line1-line-height, 22px);
+      }
+    }
+
+    &.fourLines {
+      margin: var($details-spacing, 0px 0px 0px 16px);
+      height: 84px;
+      .line1 {
+        font-size: 20px;
+        line-height: 26px;
+        margin-bottom: 6px;
+      }
+    }
+
+    &.vertical {
+      text-align: center;
+      align-items: center;
+      margin: var($details-spacing, 7px 0px 0px 0px);
+
+      &.small {
+        margin: var($details-spacing, 7px 0px 0px 0px);
+      }
+
+      &.threelines {
+        margin: var($details-spacing, 12px 0px 0px 0px);
+      }
+
+      &.fourlines {
+        margin: var($details-spacing, 10px 0px 0px 0px);
+      }
+
+      &.threelines,
+      &.fourlines {
+        .line1 {
+          margin-bottom: 0;
+        }
+      }
     }
 
     & > div {
@@ -386,9 +596,11 @@ mgt-person .person-root {
     }
 
     .line1 {
-      font-size: $font-size;
-      font-weight: $font-weight;
+      font-size: $line1-font-size;
+      font-weight: $line1-font-weight;
       text-transform: $text-transform;
+      line-height: $line1-line-height;
+      width: fit-content;
     }
 
     .line2 {
@@ -396,6 +608,7 @@ mgt-person .person-root {
       font-size: $line2-font-size;
       font-weight: $line2-font-weight;
       text-transform: $line2-text-transform;
+      line-height: $line2-line-height;
     }
 
     .line3 {
@@ -403,6 +616,15 @@ mgt-person .person-root {
       font-size: $line3-font-size;
       font-weight: $line3-font-weight;
       text-transform: $line3-text-transform;
+      line-height: $line3-line-height;
+    }
+
+    .line4 {
+      color: $line4__color;
+      font-size: $line4-font-size;
+      font-weight: $line4-font-weight;
+      text-transform: $line4-text-transform;
+      line-height: 16px;
     }
   }
 }
@@ -425,6 +647,21 @@ mgt-person .avatar-icon {
     width: $avatar-size-s;
     height: $avatar-size-s;
   }
+  &.threeLines {
+    font-size: $avatar-size-3-lines;
+    width: $avatar-size-3-lines;
+    height: $avatar-size-3-lines;
+  }
+  &.fourLines {
+    font-size: $avatar-size-4-lines;
+    width: $avatar-size-4-lines;
+    height: $avatar-size-4-lines;
+  }
+}
+
+:host .vertical,
+mgt-person .vertical {
+  display: block;
 }
 
 [dir='rtl'] {
@@ -441,7 +678,13 @@ mgt-person .avatar-icon {
     .details {
       margin: var($details-spacing, 0px 12px 0px 0px);
       &.small {
-        margin: var($details-spacing, 0px 6px 0px 0px);
+        margin: var($details-spacing, 0px 8px 0px 0px);
+      }
+      &.threelines {
+        margin: var($details-spacing, 0px 14px 0px 0px);
+      }
+      &.fourlines {
+        margin: var($details-spacing, 0px 16px 0px 0px);
       }
     }
 
@@ -485,6 +728,13 @@ mgt-person .avatar-icon {
         width: 8px;
         height: 8px;
 
+        &__people {
+          border: 0px;
+          width: 6px;
+          height: 6px;
+          left: calc(#{$avatar-size-s} - 6px);
+        }
+
         .presence-basic {
           width: 4px;
           height: 4px;
@@ -496,6 +746,16 @@ mgt-person .avatar-icon {
             width: 0;
           }
         }
+      }
+    }
+
+    &.vertical {
+      text-align: center;
+      display: block;
+      .user-avatar {
+        display: block;
+        margin-left: auto;
+        margin-right: auto;
       }
     }
   }

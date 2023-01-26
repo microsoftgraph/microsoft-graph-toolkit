@@ -5,7 +5,7 @@
  * -------------------------------------------------------------------------------------------
  */
 
-import { html } from 'lit-element';
+import { html } from 'lit';
 import { withCodeEditor } from '../../../.storybook/addons/codeEditorAddon/codeAddon';
 import { versionInfo } from '../../versionInfo';
 
@@ -57,6 +57,29 @@ export const retemplateMetadata = () => html`
     <template data-type="line3">
       <div>
         Loves MGT
+      </div>
+    </template>
+  </mgt-person>
+
+  <mgt-person view="fourLines">
+    <template data-type="line1">
+      <div>
+        Hello, my name is: {{person.displayName}}
+      </div>
+    </template>
+    <template data-type="line2">
+      <div>
+        Musician
+      </div>
+    </template>
+    <template data-type="line3">
+      <div>
+        Calif records
+      </div>
+    </template>
+    <template data-type="line4">
+      <div>
+        Nairobi
       </div>
     </template>
   </mgt-person>

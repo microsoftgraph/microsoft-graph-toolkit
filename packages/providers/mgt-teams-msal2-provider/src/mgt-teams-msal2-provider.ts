@@ -5,9 +5,9 @@
  * -------------------------------------------------------------------------------------------
  */
 
-import { customElement, property } from 'lit-element';
+import { property } from 'lit/decorators.js';
 import { Configuration } from '@azure/msal-browser';
-import { Providers, MgtBaseProvider } from '@microsoft/mgt-element';
+import { Providers, MgtBaseProvider, customElement } from '@microsoft/mgt-element';
 import { HttpMethod, TeamsMsal2Config, TeamsMsal2Provider } from './TeamsMsal2Provider';
 
 /**
@@ -17,7 +17,8 @@ import { HttpMethod, TeamsMsal2Config, TeamsMsal2Provider } from './TeamsMsal2Pr
  * @class MgtTeamsMsal2Provider
  * @extends {MgtBaseProvider}
  */
-@customElement('mgt-teams-msal2-provider')
+@customElement('teams-msal2-provider')
+// @customElement('mgt-teams-msal2-provider')
 export class MgtTeamsMsal2Provider extends MgtBaseProvider {
   /**
    * String alphanumerical value relation to a specific user
@@ -89,6 +90,7 @@ export class MgtTeamsMsal2Provider extends MgtBaseProvider {
     type: String
   })
   public httpMethod;
+
   /**
    * Gets whether this provider can be used in this environment
    *
@@ -137,9 +139,13 @@ export class MgtTeamsMsal2Provider extends MgtBaseProvider {
       }
 
       if (this.httpMethod) {
-        let httpMethod: string = this.httpMethod.toUpperCase();
+        const httpMethod: string = this.httpMethod.toUpperCase();
         const httpMethodEnum = HttpMethod[httpMethod];
         config.httpMethod = httpMethodEnum;
+      }
+
+      if (this.baseUrl) {
+        config.baseURL = this.baseUrl;
       }
 
       this.provider = new TeamsMsal2Provider(config);

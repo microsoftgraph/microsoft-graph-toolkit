@@ -13,6 +13,7 @@ export * from './BetaGraph';
 export * from './components/baseComponent';
 export * from './components/baseProvider';
 export * from './components/templatedComponent';
+export * from './components/customElementHelper';
 
 export * from './providers/IProvider';
 export * from './providers/Providers';
@@ -27,7 +28,8 @@ export * from './utils/TemplateContext';
 export * from './utils/TemplateHelper';
 export * from './utils/GraphPageIterator';
 export * from './utils/LocalizationHelper';
+export * from './utils/mgtHtml';
+export * from './utils/CustomElement';
 export { PACKAGE_VERSION } from './utils/version';
 
 export * from './mock/MockProvider';
-export * from './mock/mgt-mock-provider';

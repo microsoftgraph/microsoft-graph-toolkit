@@ -6,8 +6,6 @@
  */
 
 export const strings = {
-  sendEmailLinkSubtitle: 'Send email',
-  startChatLinkSubtitle: 'Start chat',
   showMoreSectionButton: 'Show more',
   endOfCard: 'End of the card'
 };

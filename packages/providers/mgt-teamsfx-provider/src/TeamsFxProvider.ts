@@ -5,7 +5,13 @@
  * -------------------------------------------------------------------------------------------
  */
 
-import { IProvider, ProviderState, createFromProvider } from '@microsoft/mgt-element';
+import {
+  IProvider,
+  ProviderState,
+  createFromProvider,
+  GraphEndpoint,
+  MICROSOFT_GRAPH_DEFAULT_ENDPOINT
+} from '@microsoft/mgt-element';
 import { TeamsFx, TeamsUserCredential } from '@microsoft/teamsfx';
 
 /**
@@ -70,9 +76,9 @@ export class TeamsFxProvider extends IProvider {
    */
   private _accessToken: string = '';
 
-  constructor(teamsfx: TeamsFx, scopes: string | string[]);
-  constructor(teamsUserCredential: TeamsUserCredential, scopes: string | string[]);
-  constructor(authConfig: TeamsFx | TeamsUserCredential, scopes: string | string[]) {
+  constructor(teamsfx: TeamsFx, scopes: string | string[], baseURL?: GraphEndpoint);
+  constructor(teamsUserCredential: TeamsUserCredential, scopes: string | string[], baseURL?: GraphEndpoint);
+  constructor(authConfig: TeamsFx | TeamsUserCredential, scopes: string | string[], baseURL?: GraphEndpoint) {
     super();
 
     if (!this._teamsfx && !this._credential) {
@@ -93,6 +99,12 @@ export class TeamsFxProvider extends IProvider {
       this.scopes = ['.default'];
     } else {
       this.scopes = scopesArr;
+    }
+
+    if (baseURL) {
+      this.baseURL = baseURL;
+    } else {
+      this.baseURL = MICROSOFT_GRAPH_DEFAULT_ENDPOINT;
     }
 
     this.graph = createFromProvider(this);

@@ -5,7 +5,8 @@
  * -------------------------------------------------------------------------------------------
  */
 
-import { customElement, html, property } from 'lit-element';
+import { html } from 'lit';
+import { property } from 'lit/decorators.js';
 import {
   CacheItem,
   CacheService,
@@ -14,7 +15,8 @@ import {
   MgtTemplatedComponent,
   prepScopes,
   Providers,
-  ProviderState
+  ProviderState,
+  customElement
 } from '@microsoft/mgt-element';
 
 import { getPhotoForResource } from '../../graph/graph.photos';
@@ -82,7 +84,8 @@ export type DataChangedDetail = {
  * @class mgt-get
  * @extends {MgtTemplatedComponent}
  */
-@customElement('mgt-get')
+@customElement('get')
+// @customElement('mgt-get')
 export class MgtGet extends MgtTemplatedComponent {
   /**
    * The resource to get

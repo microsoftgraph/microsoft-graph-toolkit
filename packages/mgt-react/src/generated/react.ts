@@ -1,5 +1,10 @@
+<<<<<<< HEAD
 import { OfficeGraphInsightString,ViewType,ResponseType,DataChangedDetail,IDynamicPerson,PersonCardInteraction,PersonType,GroupType,UserType,AvatarSize,PersonViewType,TasksStringResource,TasksSource,TaskFilter,ITask,SelectedChannel,TodoFilter } from '@microsoft/mgt-components';
 import { TemplateContext,ComponentMediaQuery,TemplateRenderedData } from '@microsoft/mgt-element';
+=======
+import { OfficeGraphInsightString,ViewType,ResponseType,IDynamicPerson,LoginViewType,PersonType,GroupType,UserType,PersonCardInteraction,MgtPersonConfig,AvatarSize,PersonViewType,TasksStringResource,TasksSource,TaskFilter,SelectedChannel,TodoFilter } from '@microsoft/mgt-components';
+import { TemplateContext,ComponentMediaQuery } from '@microsoft/mgt-element';
+>>>>>>> merge/from-main
 import * as MicrosoftGraph from '@microsoft/microsoft-graph-types';
 import * as MicrosoftGraphBeta from '@microsoft/microsoft-graph-types-beta';
 import {wrapMgt} from '../Mgt';
@@ -86,6 +91,8 @@ export type GetProps = {
 
 export type LoginProps = {
 	userDetails?: IDynamicPerson;
+	showPresence?: boolean;
+	loginView?: LoginViewType;
 	templateContext?: TemplateContext;
 	mediaQuery?: ComponentMediaQuery;
 	loginInitiated?: (e: CustomEvent<undefined>) => void;
@@ -179,8 +186,43 @@ export type PersonCardProps = {
 	personPresence?: MicrosoftGraph.Presence;
 	templateContext?: TemplateContext;
 	mediaQuery?: ComponentMediaQuery;
+<<<<<<< HEAD
 	expanded?: (e: CustomEvent<null>) => void;
 	templateRendered?: (e: CustomEvent<TemplateRenderedData>) => void;
+=======
+	expanded?: (e: Event) => void;
+	templateRendered?: (e: Event) => void;
+}
+
+export type PersonProps = {
+	config?: MgtPersonConfig;
+	personQuery?: string;
+	fallbackDetails?: IDynamicPerson;
+	userId?: string;
+	usage?: string;
+	showPresence?: boolean;
+	personDetails?: IDynamicPerson;
+	personImage?: string;
+	fetchImage?: boolean;
+	avatarType?: string;
+	personPresence?: MicrosoftGraph.Presence;
+	personCardInteraction?: PersonCardInteraction;
+	line1Property?: string;
+	line2Property?: string;
+	line3Property?: string;
+	line4Property?: string;
+	view?: ViewType | PersonViewType;
+	avatarSize?: AvatarSize;
+	disableImageFetch?: boolean;
+	verticalLayout?: boolean;
+	templateContext?: TemplateContext;
+	mediaQuery?: ComponentMediaQuery;
+	line1clicked?: (e: Event) => void;
+	line2clicked?: (e: Event) => void;
+	line3clicked?: (e: Event) => void;
+	line4clicked?: (e: Event) => void;
+	templateRendered?: (e: Event) => void;
+>>>>>>> merge/from-main
 }
 
 export type TasksProps = {
@@ -225,27 +267,47 @@ export type TodoProps = {
 	templateRendered?: (e: CustomEvent<TemplateRenderedData>) => void;
 }
 
-export const Agenda = wrapMgt<AgendaProps>('mgt-agenda');
+export const Agenda = wrapMgt<AgendaProps>('agenda');
 
+<<<<<<< HEAD
 export const File = wrapMgt<FileProps>('mgt-file');
 
 export const FileList = wrapMgt<FileListProps>('mgt-file-list');
 
 export const Get = wrapMgt<GetProps>('mgt-get');
+=======
+export const FileList = wrapMgt<FileListProps>('file-list');
 
-export const Login = wrapMgt<LoginProps>('mgt-login');
+export const File = wrapMgt<FileProps>('file');
 
+export const Get = wrapMgt<GetProps>('get');
+>>>>>>> merge/from-main
+
+export const Login = wrapMgt<LoginProps>('login');
+
+<<<<<<< HEAD
 export const People = wrapMgt<PeopleProps>('mgt-people');
 
 export const PeoplePicker = wrapMgt<PeoplePickerProps>('mgt-people-picker');
+=======
+export const PeoplePicker = wrapMgt<PeoplePickerProps>('people-picker');
 
-export const Person = wrapMgt<PersonProps>('mgt-person');
+export const People = wrapMgt<PeopleProps>('people');
 
+export const PersonCard = wrapMgt<PersonCardProps>('person-card');
+>>>>>>> merge/from-main
+
+export const Person = wrapMgt<PersonProps>('person');
+
+<<<<<<< HEAD
 export const PersonCard = wrapMgt<PersonCardProps>('mgt-person-card');
 
 export const Tasks = wrapMgt<TasksProps>('mgt-tasks');
+=======
+export const Tasks = wrapMgt<TasksProps>('tasks');
+>>>>>>> merge/from-main
 
-export const TeamsChannelPicker = wrapMgt<TeamsChannelPickerProps>('mgt-teams-channel-picker');
+export const TeamsChannelPicker = wrapMgt<TeamsChannelPickerProps>('teams-channel-picker');
 
-export const Todo = wrapMgt<TodoProps>('mgt-todo');
+export const Todo = wrapMgt<TodoProps>('todo');
 

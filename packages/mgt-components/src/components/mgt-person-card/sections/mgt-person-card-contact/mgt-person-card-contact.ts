@@ -6,9 +6,9 @@
  */
 
 import { User } from '@microsoft/microsoft-graph-types';
-import { customElement, html, TemplateResult } from 'lit-element';
-import { TeamsHelper } from '@microsoft/mgt-element';
-import { classMap } from 'lit-html/directives/class-map';
+import { html, TemplateResult } from 'lit';
+import { TeamsHelper, customElement } from '@microsoft/mgt-element';
+import { classMap } from 'lit/directives/class-map.js';
 
 import { getEmailFromGraphEntity } from '../../../../graph/graph.people';
 import { BasePersonCardSection } from '../BasePersonCardSection';
@@ -43,7 +43,8 @@ type Protocol = 'mailto:' | 'tel:';
  * @class MgtPersonCardProfile
  * @extends {MgtTemplatedComponent}
  */
-@customElement('mgt-person-card-contact')
+@customElement('person-card-contact')
+// @customElement('mgt-person-card-contact')
 export class MgtPersonCardContact extends BasePersonCardSection {
   /**
    * Array of styles to apply to the element. The styles should be defined
@@ -80,13 +81,13 @@ export class MgtPersonCardContact extends BasePersonCardSection {
   // tslint:disable: object-literal-sort-keys
   private _contactParts: Record<string, IContactPart> = {
     email: {
-      icon: getSvg(SvgIcon.Email, '#929292'),
+      icon: getSvg(SvgIcon.Email, '#605e5c'),
       onClick: () => this.sendEmail(getEmailFromGraphEntity(this._person)),
       showCompact: true,
       title: this.strings.emailTitle
     },
     chat: {
-      icon: getSvg(SvgIcon.Chat, '#929292'),
+      icon: getSvg(SvgIcon.Chat, '#605e5c'),
       onClick: () => this.sendChat(this._person?.userPrincipalName),
       showCompact: false,
       title: this.strings.chatTitle
@@ -98,23 +99,23 @@ export class MgtPersonCardContact extends BasePersonCardSection {
       title: this.strings.businessPhoneTitle
     },
     cellPhone: {
-      icon: getSvg(SvgIcon.CellPhone, '#929292'),
+      icon: getSvg(SvgIcon.CellPhone, '#605e5c'),
       onClick: () => this.sendCall(this._person?.mobilePhone),
       showCompact: true,
       title: this.strings.cellPhoneTitle
     },
     department: {
-      icon: getSvg(SvgIcon.Department, '#929292'),
+      icon: getSvg(SvgIcon.Department, '#605e5c'),
       showCompact: false,
       title: this.strings.departmentTitle
     },
     title: {
-      icon: getSvg(SvgIcon.Person, '#929292'),
+      icon: getSvg(SvgIcon.Person, '#605e5c'),
       showCompact: false,
       title: this.strings.titleTitle
     },
     officeLocation: {
-      icon: getSvg(SvgIcon.OfficeLocation, '#929292'),
+      icon: getSvg(SvgIcon.OfficeLocation, '#605e5c'),
       showCompact: true,
       title: this.strings.officeLocationTitle
     }

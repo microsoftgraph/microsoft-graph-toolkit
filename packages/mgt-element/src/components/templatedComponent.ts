@@ -5,7 +5,8 @@
  * -------------------------------------------------------------------------------------------
  */
 
-import { html, property, PropertyValues } from 'lit-element';
+import { html, PropertyValues, TemplateResult } from 'lit';
+import { property } from 'lit/decorators.js';
 
 import { equals } from '../utils/equals';
 import { MgtBaseComponent } from './baseComponent';
@@ -109,7 +110,7 @@ export abstract class MgtTemplatedComponent extends MgtBaseComponent {
    * @param context the data context that should be expanded in template
    * @param slotName the slot name that will be used to host the new rendered template. set to a unique value if multiple templates of this type will be rendered. default is templateType
    */
-  protected renderTemplate(templateType: string, context: object, slotName?: string) {
+  protected renderTemplate(templateType: string, context: object, slotName?: string): TemplateResult {
     if (!this.hasTemplate(templateType)) {
       return null;
     }

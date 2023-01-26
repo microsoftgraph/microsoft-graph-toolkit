@@ -13,19 +13,24 @@
 mgt-login {
   --font-size: #{$ms-font-size-m};
   --font-weight: #{$ms-font-weight-semibold};
-  --width: '100%';
-  --height: '100%';
   --margin: 0;
-  --padding: 12px 20px;
-  --popup-command-font-size: #{$ms-font-size-s};
+  --popup-command-font-size: 14px;
   --popup-command-margin: 16px 0 0;
-  --popup-padding: 24px 48px 16px 24px;
+  --popup-padding: 10px 4px 16px 4px;
+  --box-shadow: none; // disable the box-shadow on the flyout and use the one from fluent-card
+  --popup-padding: 12px 4px;
+  --profile-spacing: 12px 0 28px 0;
+  --profile-spacing-full: 21px 0 28px 0;
 }
 
 :host .root,
 mgt-login .root {
   position: relative;
   display: inline-block;
+
+  &.vertical-layout {
+    --profile-spacing: var(--profile-spacing-full);
+  }
 }
 
 :host .login-button,
@@ -38,7 +43,6 @@ mgt-login .login-button {
   width: var(--width);
   height: var(--height);
   margin: var(--margin);
-  padding: var(--padding);
   color: set-var(button__color, $theme-default, $login);
   background-color: var(--button-background-color, transparent);
   border: none;
@@ -47,10 +51,6 @@ mgt-login .login-button {
   word-spacing: inherit;
   text-indent: inherit;
   letter-spacing: inherit;
-
-  mgt-person {
-    --color-sub1: set-var(button__color, $theme-default, $login);
-  }
 
   &:hover {
     color: $button__color--hover;
@@ -73,9 +73,34 @@ mgt-login .login-button {
     pointer-events: none;
   }
 
-  &:focus-visible {
-    outline: auto;
+  &.signed-in {
+    padding: 7px 11px;
+    &:hover {
+      color: inherit;
+      --color: inherit;
+      --color-sub1: inherit;
+    }
+
+    &.small {
+      padding: 0;
+      &:hover {
+        background-color: inherit;
+      }
+      > .person {
+        --focus-offset: 2px;
+      }
+    }
+
+    &.full-size {
+      padding: 9px 11px;
+    }
   }
+  > .person {
+    --focus-offset: 8px;
+  }
+}
+:host fluent-button.login-button::part(content) {
+  margin: 5px 0;
 }
 
 :host .login-icon,
@@ -89,12 +114,13 @@ mgt-login .login-icon {
 mgt-login .popup {
   font-family: $font-family;
   background-color: $popup__background-color;
-  min-width: 240px;
+  width: 300px;
+  max-width: 300px;
   z-index: 1;
   color: set-var(popup__color, $theme-default, $login);
   border-radius: 8px;
 
-  mgt-person {
+  .person {
     --color-sub1: set-var(popup__color, $theme-default, $login);
   }
 }
@@ -105,38 +131,150 @@ mgt-login .popup-content {
   flex-direction: column;
   padding: var(--popup-padding);
   border-radius: 8px;
+  background-color: $popup__background-color;
+  .inside-content {
+    overflow-y: auto;
+    overflow-x: clip;
+    max-height: 400px;
+
+    .list-box {
+      margin-bottom: 25px;
+      margin-top: 6px;
+      background-color: $popup__background-color;
+      --accent-fill-hover: $popup__background-color;
+      --accent-fill-active: $popup__background-color;
+      --accent-foreground-cut-rest: black;
+      // eliminates the border on the list-box
+      --stroke-width: 0;
+      .list-box-option {
+        // keeps background hover inside list-box and ensure focus rings don't overlap other accounts
+        margin: 8px 1px;
+        .person {
+          max-width: 246px;
+          width: 246px;
+          margin: 0 22px;
+          --avatar-size: 40px;
+          --focus-offset: 4px;
+        }
+        &:hover {
+          // --neutral-fill-hover: #{$neutralFillHover};
+          background-color: var(--login-hover-fill, set-var(background-color--hover, $theme-default, $common));
+          cursor: pointer;
+        }
+      }
+      &:focus {
+        .list-box-option {
+          &.selected {
+            border-radius: 4px;
+            background: rgba(0, 0, 0, 0.1);
+          }
+        }
+        .person {
+          &:after {
+            background-image: none;
+          }
+        }
+      }
+    }
+    &:after {
+      content: '';
+      position: absolute;
+      bottom: 0;
+      background: linear-gradient(to bottom, rgba(255, 255, 255, 0), $popup__background-color);
+      height: 25%;
+      width: 100%;
+    }
+    &::-webkit-scrollbar {
+      height: 4em;
+      width: 4px;
+      border-radius: 11px;
+    }
+    &::-webkit-scrollbar-button {
+      background: white;
+    }
+    &::-webkit-scrollbar-track {
+      background: white;
+      border-radius: 10px;
+    }
+    &::-webkit-scrollbar-track-piece {
+      background: white;
+    }
+    &::-webkit-scrollbar-thumb {
+      background: grey;
+      border-radius: 10px;
+      height: 4px;
+    }
+  }
+  .add-account {
+    margin: 0 8px;
+    .add-account-button {
+      position: relative;
+      color: $popup__add-account-button-color;
+      border: none;
+      background-color: $popup__background-color;
+      cursor: pointer;
+      padding: 0;
+      // hack to ensure that the button matches the card color
+      --neutral-fill-stealth-rest: #{$popup__background-color};
+      --neutral-fill-stealth-hover: #{$popup__button-color--hover};
+      &:hover {
+        // hack to prevent text color changing on hover
+        --accent-foreground-hover: #{$popup__add-account-button-color};
+        background-color: $popup__button-color--hover;
+      }
+      .account-switch-icon {
+        vertical-align: middle;
+        display: inline-flex;
+        svg {
+          path {
+            fill: $popup__add-account-button-color;
+          }
+        }
+      }
+    }
+  }
+
+  .main-profile {
+    padding: 0 21px;
+    margin: var(--profile-spacing);
+  }
 }
 
 :host .popup-commands ul,
 mgt-login .popup-commands ul {
   list-style-type: none;
   margin: var(--popup-command-margin);
-  padding: 0;
+  padding: 0 8px;
+  margin: 0;
+  text-align: right;
 }
 
 :host .popup-command,
 mgt-login .popup-command {
   font-family: $font-family;
   font-size: var(--popup-command-font-size);
-  font-weight: var(--font-weight);
   color: #{$commblue_primary};
   background-color: $popup__background-color;
   border: none;
-  padding: 0;
   cursor: pointer;
   transition: color 0.3s;
   word-spacing: inherit;
   text-indent: inherit;
   letter-spacing: inherit;
-
+  // hack to ensure that the button matches the card color
+  --neutral-fill-stealth-rest: #{$popup__background-color};
+  --neutral-fill-stealth-hover: #{$popup__button-color--hover};
   &:hover {
-    color: #{$commblue_shade20};
+    // hack to prevent text color changing on hover
+    --accent-foreground-hover: --accent-foreground-rest;
+    // ensure that the background of the popup command host element changes on hover
+    background-color: $popup__button-color--hover;
   }
 }
 
 [dir='rtl'] {
   --popup-padding: 24px 24px 16px 48px;
-  mgt-person {
+  .person {
     .details {
       --details-spacing: 0px 12px 0px 0px;
       &.small {

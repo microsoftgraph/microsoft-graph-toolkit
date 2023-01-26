@@ -5,11 +5,12 @@
  * -------------------------------------------------------------------------------------------
  */
 
-import { customElement, html, property, PropertyValues, TemplateResult } from 'lit-element';
-import { classMap } from 'lit-html/directives/class-map';
+import { html, PropertyValues, TemplateResult } from 'lit';
+import { property } from 'lit/decorators.js';
+import { classMap } from 'lit/directives/class-map.js';
 import { getSegmentAwareWindow, isWindowSegmentAware, IWindowSegment } from '../../../utils/WindowSegmentHelpers';
 import { styles } from './mgt-flyout-css';
-import { MgtBaseComponent } from '@microsoft/mgt-element/';
+import { MgtBaseComponent, customElement } from '@microsoft/mgt-element/';
 
 /**
  * A component to create flyout anchored to an element
@@ -18,7 +19,8 @@ import { MgtBaseComponent } from '@microsoft/mgt-element/';
  * @class MgtFlyout
  * @extends {LitElement}
  */
-@customElement('mgt-flyout')
+@customElement('flyout')
+// @customElement('mgt-flyout')
 export class MgtFlyout extends MgtBaseComponent {
   /**
    * Array of styles to apply to the element. The styles should be defined
@@ -115,9 +117,9 @@ export class MgtFlyout extends MgtBaseComponent {
     return this.renderRoot.querySelector('.scout-bottom');
   }
 
-  private _isOpen: boolean;
-  private _smallView;
-  private _windowHeight;
+  private _isOpen = false;
+  private _smallView = false;
+  private _windowHeight: number;
 
   constructor() {
     super();
@@ -411,7 +413,7 @@ export class MgtFlyout extends MgtBaseComponent {
         flyout.style.setProperty('--mgt-flyout-set-height', `${height}px`);
       } else {
         flyout.style.maxHeight = null;
-        flyout.style.setProperty('--mgt-flyout-set-height', `unset`);
+        flyout.style.setProperty('--mgt-flyout-set-height', 'unset');
       }
     }
   }

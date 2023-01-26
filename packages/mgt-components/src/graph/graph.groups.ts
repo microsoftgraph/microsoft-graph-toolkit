@@ -5,7 +5,7 @@
  * -------------------------------------------------------------------------------------------
  */
 
-import { IGraph, prepScopes, CacheItem, CacheService, CacheStore } from '@microsoft/mgt-element';
+import { IGraph, prepScopes, CacheItem, CacheService, CacheStore, BatchResponse } from '@microsoft/mgt-element';
 import { Group } from '@microsoft/microsoft-graph-types';
 import { schemas } from './cacheStores';
 
@@ -116,8 +116,8 @@ export async function findGroups(
   }
 
   let filterQuery = '';
-  let responses;
-  let batchedResult = [];
+  let responses: Map<string, BatchResponse>;
+  const batchedResult = [];
 
   if (query !== '') {
     filterQuery = `(startswith(displayName,'${query}') or startswith(mailNickname,'${query}') or startswith(mail,'${query}'))`;
@@ -130,7 +130,7 @@ export async function findGroups(
   if (groupTypes !== GroupType.any) {
     const batch = graph.createBatch();
 
-    const filterGroups = [];
+    const filterGroups: string[] = [];
 
     // tslint:disable-next-line:no-bitwise
     if (GroupType.unified === (groupTypes & GroupType.unified)) {
@@ -153,16 +153,16 @@ export async function findGroups(
     }
 
     filterQuery = filterQuery ? `${filterQuery} and ` : '';
-    for (let filter of filterGroups) {
+    for (const filter of filterGroups) {
       batch.get(filter, `/groups?$filter=${filterQuery + filter}`, ['Group.Read.All']);
     }
 
     try {
       responses = await batch.executeAll();
 
-      for (let i = 0; i < filterGroups.length; i++) {
-        if (responses.get(filterGroups[i]).content.value) {
-          for (let group of responses.get(filterGroups[i]).content.value) {
+      for (const filterGroup of filterGroups) {
+        if (responses.get(filterGroup).content.value) {
+          for (const group of responses.get(filterGroup).content.value) {
             let repeat = batchedResult.filter(batchedGroup => batchedGroup.id === group.id);
             if (repeat.length === 0) {
               batchedResult.push(group);
@@ -173,8 +173,8 @@ export async function findGroups(
       }
     } catch (_) {
       try {
-        let queries = [];
-        for (let filter of filterGroups) {
+        const queries = [];
+        for (const filter of filterGroups) {
           queries.push(
             await graph
               .api('groups')
@@ -202,7 +202,7 @@ export async function findGroups(
         .middlewareOptions(prepScopes(scopes))
         .get();
       if (getIsGroupsCacheEnabled() && result) {
-        cache.putValue(key, { groups: result.value.map(x => JSON.stringify(x)), top: top });
+        cache.putValue(key, { groups: result.value.map(x => JSON.stringify(x)), top });
       }
       return result ? result.value : null;
     }
@@ -290,7 +290,7 @@ export async function findGroupsFromGroup(
     .get();
 
   if (getIsGroupsCacheEnabled() && result) {
-    cache.putValue(key, { groups: result.value.map(x => JSON.stringify(x)), top: top });
+    cache.putValue(key, { groups: result.value.map(x => JSON.stringify(x)), top });
   }
 
   return result ? result.value : null;

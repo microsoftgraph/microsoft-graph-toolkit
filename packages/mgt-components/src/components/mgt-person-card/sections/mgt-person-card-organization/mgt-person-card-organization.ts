@@ -6,7 +6,7 @@
  */
 
 import { User } from '@microsoft/microsoft-graph-types';
-import { customElement, html, TemplateResult } from 'lit-element';
+import { html, TemplateResult } from 'lit';
 
 import { BasePersonCardSection } from '../BasePersonCardSection';
 import { getSvg, SvgIcon } from '../../../../utils/SvgHelper';
@@ -14,6 +14,7 @@ import { MgtPersonCardState } from '../../mgt-person-card.types';
 import { styles } from './mgt-person-card-organization-css';
 import { strings } from './strings';
 import { ViewType } from '../../../../graph/types';
+import { mgtHtml, customElement } from '@microsoft/mgt-element';
 
 /**
  * The member organization subsection of the person card
@@ -22,7 +23,8 @@ import { ViewType } from '../../../../graph/types';
  * @class MgtPersonCardProfile
  * @extends {MgtTemplatedComponent}
  */
-@customElement('mgt-person-card-organization')
+@customElement('person-card-organization')
+// @customElement('mgt-person-card-organization')
 export class MgtPersonCardOrganization extends BasePersonCardSection {
   /**
    * Array of styles to apply to the element. The styles should be defined
@@ -115,10 +117,10 @@ export class MgtPersonCardOrganization extends BasePersonCardSection {
     }
 
     return html`
-      <div class="root compact">
-        ${contentTemplate}
-      </div>
-    `;
+       <div class="root compact">
+         ${contentTemplate}
+       </div>
+     `;
   }
 
   /**
@@ -146,8 +148,8 @@ export class MgtPersonCardOrganization extends BasePersonCardSection {
       const coworkersTemplate = this.renderCoworkers();
 
       contentTemplate = html`
-        ${managerTemplates} ${currentUserTemplate} ${directReportsTemplate} ${coworkersTemplate}
-      `;
+         ${managerTemplates} ${currentUserTemplate} ${directReportsTemplate} ${coworkersTemplate}
+       `;
     }
 
     return html`
@@ -167,17 +169,20 @@ export class MgtPersonCardOrganization extends BasePersonCardSection {
    * @memberof MgtPersonCardOrganization
    */
   protected renderManager(person: User): TemplateResult {
-    return html`
-      <div class="org-member" @keydown=${(e: KeyboardEvent) => {
-        e.code === 'Enter' ? this.navigateCard(person) : '';
-      }} @click=${() => this.navigateCard(person)}>
+    return mgtHtml`
+      <div
+        class="org-member"
+        @keydown=${(e: KeyboardEvent) => {
+          e.code === 'Enter' ? this.navigateCard(person) : '';
+        }}
+        @click=${() => this.navigateCard(person)}
+      >
         <div class="org-member__person">
           <mgt-person
             .personDetails=${person}
-            .line2Property=${'jobTitle'}
-            .line3Property=${'department'}
             .fetchImage=${true}
-            .view=${ViewType.threelines}
+            .view=${ViewType.twolines}
+            .showPresence=${true}
           ></mgt-person>
         </div>
         <div tabindex="0" class="org-member__more">
@@ -233,16 +238,19 @@ export class MgtPersonCardOrganization extends BasePersonCardSection {
       <div class="org-member__separator"></div>
       <div>
         ${directReports.map(
-          person => html`
-            <div class="org-member org-member--direct-report" @keydown=${(e: KeyboardEvent) => {
-              e.code === 'Enter' ? this.navigateCard(person) : '';
-            }} @click=${() => this.navigateCard(person)}>
+          person => mgtHtml`
+            <div
+              class="org-member org-member--direct-report"
+              @keydown=${(e: KeyboardEvent) => {
+                e.code === 'Enter' ? this.navigateCard(person) : '';
+              }}
+              @click=${() => this.navigateCard(person)}
+            >
               <div class="org-member__person">
                 <mgt-person
                   .personDetails=${person}
-                  .line2Property=${'jobTitle'}
-                  .line3Property=${'department'}
                   .fetchImage=${true}
+                  .showPresence=${true}
                   .view=${ViewType.twolines}
                 ></mgt-person>
               </div>
@@ -250,6 +258,7 @@ export class MgtPersonCardOrganization extends BasePersonCardSection {
                 ${getSvg(SvgIcon.ExpandRight)}
               </div>
             </div>
+            <div class="org-member__separator"></div>
           `
         )}
       </div>
@@ -270,13 +279,20 @@ export class MgtPersonCardOrganization extends BasePersonCardSection {
     return html`
       <div class="direct-report__compact">
         ${directReports.slice(0, 6).map(
-          person => html`
-            <div class="direct-report" @keydown=${(e: KeyboardEvent) => {
-              e.code === 'Enter' ? this.navigateCard(person) : '';
-            }} @click=${() => this.navigateCard(person)} @keydown=${(e: KeyboardEvent) => {
-            e.code === 'Enter' ? this.navigateCard(person) : '';
-          }}>
-              <mgt-person .personDetails=${person} .fetchImage=${true}></mgt-person>
+          person => mgtHtml`
+            <div
+              class="direct-report"
+              @keydown=${(e: KeyboardEvent) => {
+                e.code === 'Enter' ? this.navigateCard(person) : '';
+              }}
+              @click=${() => this.navigateCard(person)}
+            >
+              <mgt-person
+                .personDetails=${person}
+                .fetchImage=${true}
+                .showPresence=${true}
+                .view=${ViewType.twolines}
+              ></mgt-person>
             </div>
           `
         )}
@@ -293,15 +309,15 @@ export class MgtPersonCardOrganization extends BasePersonCardSection {
    */
   protected renderCurrentUser(): TemplateResult {
     const { person } = this._state;
-    return html`
+    return mgtHtml`
       <div class="org-member org-member--target">
         <div class="org-member__person">
           <mgt-person
+            class="person"
             .personDetails=${person}
-            .line2Property=${'jobTitle'}
-            .line3Property=${'department'}
             .fetchImage=${true}
-            .view=${ViewType.threelines}
+            .showPresence=${true}
+            .view=${ViewType.twolines}
           ></mgt-person>
         </div>
       </div>
@@ -317,15 +333,15 @@ export class MgtPersonCardOrganization extends BasePersonCardSection {
    * @memberof MgtPersonCardOrganization
    */
   protected renderCoworker(person: User): TemplateResult {
-    return html`
+    return mgtHtml`
       <div class="coworker" @keydown=${(e: KeyboardEvent) => {
         e.code === 'Enter' ? this.navigateCard(person) : '';
       }} @click=${() => this.navigateCard(person)}>
         <div class="coworker__person">
           <mgt-person
             .personDetails=${person}
-            .line2Property=${'jobTitle'}
             .fetchImage=${true}
+            .showPresence=${true}
             .view=${ViewType.twolines}
           ></mgt-person>
         </div>

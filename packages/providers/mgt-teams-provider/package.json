@@ -42,7 +42,7 @@
   "dependencies": {
     "@microsoft/mgt-element": "*",
     "@microsoft/mgt-msal-provider": "*",
-    "@microsoft/microsoft-graph-client": "^2.2.1",
+    "@microsoft/microsoft-graph-client": "^3.0.0",
     "msal": "^1.4.10"
   },
   "publishConfig": {

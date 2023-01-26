@@ -10,8 +10,8 @@ import {
   LoginType,
   ProviderState,
   createFromProvider,
-  Providers,
-  IProviderAccount
+  IProviderAccount,
+  GraphEndpoint
 } from '@microsoft/mgt-element';
 import {
   Configuration,
@@ -19,12 +19,11 @@ import {
   SilentRequest,
   PopupRequest,
   RedirectRequest,
-  AuthenticationResult,
   AccountInfo,
   EndSessionRequest,
   InteractionRequiredAuthError
 } from '@azure/msal-browser';
-import { AuthenticationProviderOptions } from '@microsoft/microsoft-graph-client/lib/es/IAuthenticationProviderOptions';
+import { AuthenticationProviderOptions } from '@microsoft/microsoft-graph-client';
 
 /**
  * base config for MSAL 2.0 authentication
@@ -85,8 +84,9 @@ interface Msal2ConfigBase {
    * @memberof Msal2ConfigBase
    */
   domainHint?: string;
+
   /**
-   * prompt value
+   * Prompt type
    *
    * @type {string}
    * @memberof Msal2ConfigBase
@@ -108,6 +108,14 @@ interface Msal2ConfigBase {
    * @memberof Msal2ConfigBase
    */
   isIncrementalConsentDisabled?: boolean;
+
+  /**
+   * Disable multi account functionality
+   *
+   * @type {boolean}
+   * @memberof Msal2Config
+   */
+  isMultiAccountDisabled?: boolean;
 }
 
 /**
@@ -120,10 +128,23 @@ export interface Msal2Config extends Msal2ConfigBase {
   /**
    * Client ID of app registration
    *
-   * @type {string}
+   * @type {boolean}
    * @memberof Msal2Config
    */
   clientId: string;
+
+  /**
+   * Disable multi account functionality
+   *
+   * @type {boolean}
+   * @memberof Msal2Config
+   */
+  isMultiAccountEnabled?: boolean;
+
+  /**
+   * The base URL for the graph client
+   */
+  baseURL?: GraphEndpoint;
 }
 
 /**
@@ -148,11 +169,13 @@ export interface Msal2PublicClientApplicationConfig extends Msal2ConfigBase {
  * @export
  * @enum {number}
  */
+// tslint:disable: completed-docs
 export enum PromptType {
   SELECT_ACCOUNT = 'select_account',
   LOGIN = 'login',
   CONSENT = 'consent'
 }
+// tslint:enable: completed-docs
 
 /**
  * MSAL2Provider using msal-browser to acquire tokens for authentication
@@ -206,6 +229,14 @@ export class Msal2Provider extends IProvider {
    */
   private _sid;
 
+  // /**
+  //  * Specifies if incremental consent is disabled
+  //  *
+  //  * @type {boolean}
+  //  * @memberof Msal2ConfigBase
+  //  */
+  // private _isIncrementalConsentDisabled: boolean = false;
+
   /**
    * Configuration settings for authentication
    *
@@ -213,6 +244,7 @@ export class Msal2Provider extends IProvider {
    * @type {Configuration}
    * @memberof Msal2Provider
    */
+  // tslint:disable-next-line: variable-name
   private ms_config: Configuration;
 
   /**
@@ -243,6 +275,49 @@ export class Msal2Provider extends IProvider {
    * @memberof Msal2Provider
    */
   public scopes: string[];
+
+  /**
+   * Enables multi account functionality if true, disables if false
+   *
+   * @private
+   * @type {boolean}
+   * @memberof Msal2Provider
+   */
+  public isMultipleAccountEnabled: boolean = true;
+
+  /**
+   * Indicates if multi account functionality is disabled
+   *
+   * @protected
+   * @type {boolean}
+   * @memberof Msal2Provider
+   */
+  protected get isMultiAccountDisabled(): boolean {
+    return !this.isMultipleAccountEnabled;
+  }
+
+  /**
+   * Disables or enables multi account functionality
+   * Uses isMultipleAccountEnabled as the backing property
+   * Property provided to ensure adherence to the IProvider interface
+   *
+   * @protected
+   * @memberof Msal2Provider
+   */
+  protected set isMultiAccountDisabled(value: boolean) {
+    this.isMultipleAccountEnabled = !value;
+  }
+
+  /**
+   * Specifies if Multi account functionality is supported by the provider and enabled.
+   *
+   * @readonly
+   * @type {boolean}
+   * @memberof IProvider
+   */
+  public get isMultiAccountSupportedAndEnabled(): boolean {
+    return this.isMultipleAccountEnabled;
+  }
 
   private sessionStorageRequestedScopesKey = 'mgt-requested-scopes';
   private sessionStorageDeniedScopesKey = 'mgt-denied-scopes';
@@ -299,6 +374,8 @@ export class Msal2Provider extends IProvider {
       throw new Error('either clientId or publicClientApplication must be provided');
     }
 
+    this.ms_config.system = msalConfig.system || {};
+    this.ms_config.system.iframeHashTimeout = msalConfig.system.iframeHashTimeout || 10000;
     this._loginType = typeof config.loginType !== 'undefined' ? config.loginType : LoginType.Redirect;
     this._loginHint = typeof config.loginHint !== 'undefined' ? config.loginHint : null;
     this._sid = typeof config.sid !== 'undefined' ? config.sid : null;
@@ -307,6 +384,12 @@ export class Msal2Provider extends IProvider {
     this._domainHint = typeof config.domainHint !== 'undefined' ? config.domainHint : null;
     this.scopes = typeof config.scopes !== 'undefined' ? config.scopes : ['user.read'];
     this._prompt = typeof config.prompt !== 'undefined' ? config.prompt : PromptType.SELECT_ACCOUNT;
+
+    const msal2config = config as Msal2Config;
+    this.isMultipleAccountEnabled =
+      typeof msal2config.isMultiAccountEnabled !== 'undefined' ? msal2config.isMultiAccountEnabled : true;
+    this.baseURL = typeof msal2config.baseURL !== 'undefined' ? msal2config.baseURL : this.baseURL;
+
     this.graph = createFromProvider(this);
     try {
       const tokenResponse = await this._publicClientApplication.handleRedirectPromise();
@@ -326,7 +409,7 @@ export class Msal2Provider extends IProvider {
    * @memberof Msal2Provider
    */
   public async trySilentSignIn() {
-    let silentRequest: any = {
+    const silentRequest: any = {
       scopes: this.scopes,
       domainHint: this._domainHint
     };
@@ -367,7 +450,7 @@ export class Msal2Provider extends IProvider {
       prompt: this._prompt,
       domainHint: this._domainHint
     };
-    if (this._loginType == LoginType.Popup) {
+    if (this._loginType === LoginType.Popup) {
       const response = await this._publicClientApplication.loginPopup(loginRequest);
       this.handleResponse(response?.account);
     } else {
@@ -383,9 +466,9 @@ export class Msal2Provider extends IProvider {
    * @memberof Msal2Provider
    */
   public getAllAccounts() {
-    let usernames = [];
+    const usernames = [];
     this._publicClientApplication.getAllAccounts().forEach((account: AccountInfo) => {
-      usernames.push({ username: account.username, id: account.homeAccountId } as IProviderAccount);
+      usernames.push({ name: account.name, mail: account.username, id: account.homeAccountId } as IProviderAccount);
     });
     return usernames;
   }
@@ -403,6 +486,22 @@ export class Msal2Provider extends IProvider {
   }
 
   /**
+   * Gets active account
+   *
+   * @return {*}
+   * @memberof Msal2Provider
+   */
+  public getActiveAccount() {
+    const account = this._publicClientApplication.getActiveAccount();
+    return {
+      name: account.name,
+      mail: account.username,
+      id: account.homeAccountId,
+      tenantId: account.tenantId
+    } as IProviderAccount;
+  }
+
+  /**
    * Once a succesful login occurs, set the active account and store it
    *
    * @param {(AuthenticationResult | null)} account
@@ -411,8 +510,9 @@ export class Msal2Provider extends IProvider {
   handleResponse(account: AccountInfo) {
     if (account !== null) {
       this.setActiveAccount({
-        username: account.name,
-        id: account.homeAccountId
+        name: account.name,
+        id: account.homeAccountId,
+        mail: account.username
       } as IProviderAccount);
       this.setState(ProviderState.SignedIn);
     } else {
@@ -566,12 +666,16 @@ export class Msal2Provider extends IProvider {
       account: logOutAccount
     };
     this.clearStoredAccount();
-    if (this._loginType == LoginType.Redirect) {
+    if (this._loginType === LoginType.Redirect) {
       this._publicClientApplication.logoutRedirect(logOutRequest);
       this.setState(ProviderState.SignedOut);
     } else {
       await this._publicClientApplication.logoutPopup({ ...logOutRequest });
-      this.setState(ProviderState.SignedOut);
+      if (this._publicClientApplication.getAllAccounts.length === 1 || !this.isMultipleAccountEnabled) {
+        this.setState(ProviderState.SignedOut);
+      } else {
+        this.trySilentSignIn();
+      }
     }
   }
 
@@ -585,7 +689,7 @@ export class Msal2Provider extends IProvider {
   public async getAccessToken(options?: AuthenticationProviderOptions): Promise<string> {
     const scopes = options ? options.scopes || this.scopes : this.scopes;
     const accessTokenRequest: SilentRequest = {
-      scopes: scopes,
+      scopes,
       account: this.getAccount()
     };
     try {

@@ -8,13 +8,21 @@
 /* ---------------Common color variables--------------- */
 $white: #ffffff; /* Neutrals / White #FFFFFF */
 $black: #000000; /* Neutrals / Web / Black #000000 */
-$commblue_primary: #0078d4; /* Comm Blue / Primary #0078D4 */
+$black10: #1a1a1a;
+$commblue_primary: #023b8f; /* Comm Blue / Primary #0078D4 */
 $commblue_shade10: #106ebe; /* Comm Blue / Shade 10 #106EBE */
 $commblue_shade20: #005a9e; /* Comm Blue / Shade 20 #005A9E */
 
+/* colors added in fluent-ui upgrade */
+$neutralForegroundHint: #717171;
+$neutralForegroundRest: #1a1a1a;
+$neutralFillHover: #f7f7f7;
+$neutralFillStealthHover: #efefef;
+$neutralBase: #fbfbfb;
+
 $gray10: #faf9f8; /* Neutrals / Web / Gray 10 #FAF9F8 */
 $gray20: #f3f2f1; /* Neutrals / Web / Gray 20 #F3F2F1 */
-$gray30: #edebe9; /* Neutrals / Web / Gray 30 #EDEBE9 */
+$gray30: #ebebeb; /* Neutrals / Web / Gray 30 #EBEBEB */
 $gray40: #e1dfdd; /* Neutrals / Web / Gray 40 #E1DFDD */
 $gray50: #d2d0ce; /* Neutrals / Web / Gray 50 #D2D0CE */
 $gray60: #c8c6c4; /* Neutrals / Web / Gray 60 #C8C6C4 */
@@ -23,7 +31,7 @@ $gray80: #b3b0ad; /* Neutrals / Web / Gray 80 #B3B0AD */
 $gray90: #a19f9d; /* Neutrals / Web / Gray 90 #A19F9D */
 $gray100: #727170; /* Neutrals / Web / Gray 100 #979593 */
 $gray110: #8a8886; /* Neutrals / Web / Gray 110 #8A8886 */
-$gray120: #717171; /* Neutrals / Web / Gray 120 #797775 */
+$gray120: #717171; /* Neutrals / Web / Gray 120 #717171 */
 $gray130: #605e5c; /* Neutrals / Web / Gray 130 #605E5C */
 $gray140: #4f4f4f; /* Neutrals / Web / Gray 140 #484644 */
 $gray150: #3b3a39; /* Neutrals / Web / Gray 150 #3B3A39 */
@@ -40,6 +48,13 @@ $orange: #ffaa44; /* Person / Away */
 $violet: #b4009e; /* Person / OOF */
 $red: #c50f1f; /* Person / DND */
 $green: #6bb700; /* Person / Available */
+$greyPill: #f0f0f0; /* Person Pill */
+
+// Change once standard all through
+$greyHover: #f7f7f7; /* Person Card Hover */
+$greyBackground: #fbfbfb; /* Person Card Background */
+$commblue_org: #0360b9; /* Person Card Org border */
+$gray_separator_org: #d6d6d6; /* Person Card Org target borders */
 
 /* ---------------Common style variables--------------- */
 /* -----Background----- */
@@ -48,7 +63,7 @@ $background-color__main--light: $white;
 $background-color__sub1--light: $gray10;
 $background-color__sub2--light: $gray20;
 $background-color__sub3--light: $gray40;
-$background-color__main--hover--light: $gray30;
+$background-color__main--hover--light: var(--neutral-fill-hover, $neutralFillHover);
 $background-color__main--active--light: $gray40;
 // dark
 $background-color__main--dark: $black;
@@ -61,8 +76,10 @@ $background-color__main--active--dark: $gray140;
 /* -----Text----- */
 // light
 $text__color__main--light: $black;
-$text__color__sub1--light: $gray160;
-$text__color__sub2--light: $gray120;
+// use --neutral-foreground-rest from host if provided
+$text__color__sub1--light: var(--neutral-foreground-rest, $neutralForegroundRest);
+// use --neutral-foreground-rest from host if provided
+$text__color__sub2--light: var(--neutral-foreground-hint, $neutralForegroundHint);
 $text__color__sub3--light: $gray100;
 // dark
 $text__color__main--dark: $white;
@@ -93,12 +110,12 @@ $icon__sub2--dark: $gray100;
 $icon--active: $commblue_primary;
 
 /* -----Other Elements----- */
-$line-separator--light: $gray30;
+$line-separator--light: $gray_separator_org;
 $line-separator--dark: $gray150;
 
 /* -----Tab----- (mgt-person-card) */
 // light
-$tab__line__color--light: $line-separator--light; /* gray30 #EDEBE9 */
+$tab__line__color--light: $line-separator--light; /* gray30 #EBEBEB */
 $tab__line__color--active--light: $commblue_primary;
 $tab__line__color--hover--light: $gray100;
 $tab__background-color--hover--light: $background-color__main--hover--light;
@@ -156,7 +173,7 @@ $tag__color--light: $text__color__sub1--light;
 
 /* -----Pill----- */
 // light
-$pill__background-color--light: $background-color__sub2--light;
+$pill__background-color--light: $greyPill;
 $pill__color--light: $text__color__sub1--light;
 // dark
 $pill__background-color--dark: $background-color__sub2--dark;

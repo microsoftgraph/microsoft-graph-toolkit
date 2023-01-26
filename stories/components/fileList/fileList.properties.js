@@ -5,7 +5,7 @@
  * -------------------------------------------------------------------------------------------
  */
 
-import { html } from 'lit-element';
+import { html } from 'lit';
 import { withCodeEditor } from '../../../.storybook/addons/codeEditorAddon/codeAddon';
 import { versionInfo } from '../../versionInfo';
 
@@ -127,3 +127,9 @@ export const clearCacheAndReload = () => html`
     })
   </script>
 `;
+
+export const fileListUpload = () => html`
+    <mgt-file-list enable-file-upload></mgt-file-list>
+    <!-- Include a maximun file size -->
+    <mgt-file-list max-file-size="10000" enable-file-upload></mgt-file-list>
+  `;

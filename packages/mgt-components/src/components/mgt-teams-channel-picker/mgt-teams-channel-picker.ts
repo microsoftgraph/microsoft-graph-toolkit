@@ -6,9 +6,10 @@
  */
 
 import * as MicrosoftGraph from '@microsoft/microsoft-graph-types';
-import { customElement, html, property, TemplateResult } from 'lit-element';
-import { classMap } from 'lit-html/directives/class-map';
-import { Providers, ProviderState, MgtTemplatedComponent } from '@microsoft/mgt-element';
+import { html, TemplateResult } from 'lit';
+import { property } from 'lit/decorators.js';
+import { classMap } from 'lit/directives/class-map.js';
+import { Providers, ProviderState, MgtTemplatedComponent, customElement, mgtHtml } from '@microsoft/mgt-element';
 import '../../styles/style-helper';
 import '../sub-components/mgt-spinner/mgt-spinner';
 import { getSvg, SvgIcon } from '../../utils/SvgHelper';
@@ -160,7 +161,8 @@ export interface MgtTeamsChannelPickerConfig {
  * @cssprop --placeholder-color - {Color} Color of placeholder text
  *
  */
-@customElement('mgt-teams-channel-picker')
+@customElement('teams-channel-picker')
+// @customElement('mgt-teams-channel-picker')
 export class MgtTeamsChannelPicker extends MgtTemplatedComponent {
   /**
    * Array of styles to apply to the element. The styles should be defined
@@ -622,7 +624,7 @@ export class MgtTeamsChannelPicker extends MgtTemplatedComponent {
 
     return (
       template ||
-      html`
+      mgtHtml`
         <div class="message-parent">
           <mgt-spinner></mgt-spinner>
           <div label="loading-text" aria-label="loading" class="loading-text">

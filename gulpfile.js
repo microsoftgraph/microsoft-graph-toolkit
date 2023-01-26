@@ -1,16 +1,17 @@
 const gulp = require('gulp');
-const sass = require('gulp-sass');
+const sass = require('gulp-sass')(require('sass'));
 const gap = require('gulp-append-prepend');
 const cleanCSS = require('gulp-clean-css');
 const rename = require('gulp-rename');
-var license = require('gulp-header-license');
+const license = require('gulp-header-license');
+const replace = require('gulp-replace-task');
 
 scssFileHeader = `
 // THIS FILE IS AUTO GENERATED
 // ANY CHANGES WILL BE LOST DURING BUILD
 // MODIFY THE .SCSS FILE INSTEAD
 
-import { css } from 'lit-element';
+import { css } from 'lit';
 /**
  * exports lit-element css
  * @export styles
@@ -36,19 +37,32 @@ export const PACKAGE_VERSION = '[VERSION]';
 `;
 
 function runSass() {
-  return gulp
-    .src('src/**/!(shared)*.scss')
-    .pipe(sass())
-    .pipe(cleanCSS())
-    .pipe(gap.prependText(scssFileHeader))
-    .pipe(gap.appendText(scssFileFooter))
-    .pipe(rename({ extname: '-css.ts' }))
-    .pipe(gulp.dest('src/'));
+  return (
+    gulp
+      .src('src/**/!(shared)*.scss')
+      .pipe(sass())
+      .pipe(cleanCSS())
+      // replacement to make office-ui-fabric-core icons work with lit-element
+      .pipe(
+        replace({
+          patterns: [
+            {
+              match: /:"\\([0-9a-f])/g,
+              replacement: ':"\\u$1'
+            }
+          ]
+        })
+      )
+      .pipe(gap.prependText(scssFileHeader))
+      .pipe(gap.appendText(scssFileFooter))
+      .pipe(rename({ extname: '-css.ts' }))
+      .pipe(gulp.dest('src/'))
+  );
 }
 
 function setLicense() {
   return gulp
-    .src(['packages/**/src/**/*.{ts,js,scss}', "!packages/**/generated/**/*"], { base: './' })
+    .src(['packages/**/src/**/*.{ts,js,scss}', '!packages/**/generated/**/*'], { base: './' })
     .pipe(license(licenseStr))
     .pipe(gulp.dest('./'));
 }

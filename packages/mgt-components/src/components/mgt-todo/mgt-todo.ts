@@ -5,10 +5,10 @@
  * -------------------------------------------------------------------------------------------
  */
 
-import { customElement, html, TemplateResult } from 'lit-element';
-import { classMap } from 'lit-html/directives/class-map';
-import { repeat } from 'lit-html/directives/repeat';
-import { IGraph } from '@microsoft/mgt-element';
+import { html, TemplateResult } from 'lit';
+import { classMap } from 'lit/directives/class-map.js';
+import { repeat } from 'lit/directives/repeat.js';
+import { IGraph, customElement, mgtHtml } from '@microsoft/mgt-element';
 import { Providers, ProviderState } from '@microsoft/mgt-element';
 import { getShortDateString } from '../../utils/Utils';
 import '../mgt-person/mgt-person';
@@ -78,7 +78,8 @@ export type TodoFilter = (task: TodoTask) => boolean;
  * @cssprop --task-icon-color - {Color} Task icon color
  * @cssprop --task-icon-color-completed - {Color} Task icon color when completed
  */
-@customElement('mgt-todo')
+@customElement('todo')
+// @customElement('mgt-todo')
 export class MgtTodo extends MgtTasksBase {
   /**
    * Array of styles to apply to the element. The styles should be defined
@@ -258,7 +259,7 @@ export class MgtTodo extends MgtTasksBase {
         listOptions[l.displayName] = () => this.loadTaskList(l);
       }
 
-      listSelect = html`
+      listSelect = mgtHtml`
         <mgt-arrow-options .value="${currentList.displayName}" .options="${listOptions}"></mgt-arrow-options>
       `;
     }
@@ -330,7 +331,7 @@ export class MgtTodo extends MgtTasksBase {
 
     const taskOptionsTemplate =
       !this.readOnly && !this.hideOptions
-        ? html`
+        ? mgtHtml`
             <div class="TaskOptions">
               <mgt-dot-options
                 .options="${{

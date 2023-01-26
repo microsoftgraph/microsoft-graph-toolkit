@@ -83,6 +83,8 @@
         &.token-list__item--show-overflow {
           cursor: pointer;
           user-select: unset;
+          background: none;
+          color: $commblue_primary;
         }
       }
     }
@@ -114,7 +116,7 @@
       }
 
       .data-list__item__date-range {
-        color: set-var(color__sub2, $theme-default, $common);
+        color: set-var(title__color__subtitle, $theme-default, $common);
         font-size: 10px;
         line-height: 12px;
       }
