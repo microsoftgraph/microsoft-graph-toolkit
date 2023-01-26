@@ -93,7 +93,7 @@ export class MgtPersonCardContact extends BasePersonCardSection {
       title: this.strings.chatTitle
     },
     businessPhone: {
-      icon: getSvg(SvgIcon.CellPhone, '#605e5c'),
+      icon: getSvg(SvgIcon.Phone, '#929292'),
       onClick: () => this.sendCall(this._person?.businessPhones?.length > 0 ? this._person.businessPhones[0] : null),
       showCompact: true,
       title: this.strings.businessPhoneTitle
@@ -264,13 +264,15 @@ export class MgtPersonCardContact extends BasePersonCardSection {
         `;
 
     return html`
-      <div class="part" @click=${(e: MouseEvent) => this.handlePartClick(e, part.value)}  tabindex="0">
-        <div class="part__icon">${part.icon}</div>
+      <div class="part" @click=${(e: MouseEvent) => this.handlePartClick(e, part.value)} tabindex="0">
+        <div class="part__icon" aria-label=${part.title} title=${part.title}>${part.icon}</div>
         <div class="part__details">
           <div class="part__title">${part.title}</div>
-          <div class="part__value">${valueTemplate}</div>
+          <div class="part__value" title=${part.title}>${valueTemplate}</div>
         </div>
-        <div class="part__copy">
+        <div class="part__copy" aria-role="button" aria-label=${this.strings.copyToClipboardButton} title=${
+      this.strings.copyToClipboardButton
+    }>
           ${getSvg(SvgIcon.Copy)}
         </div>
       </div>

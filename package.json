@@ -133,6 +133,7 @@
     "sass": "^1.29.0",
     "shx": "^0.3.3",
     "storybook-addon-web-components-knobs": "^0.3.20",
+    "storybook-version": "^0.1.1",
     "testing-library__dom": "^7.29.4-beta.1",
     "ts-jest": "^29.0.3",
     "tslint": "^6.1.3",

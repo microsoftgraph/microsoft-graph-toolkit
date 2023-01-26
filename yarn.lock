@@ -28378,6 +28378,11 @@ storybook-addon-web-components-knobs@^0.3.20:
   dependencies:
     "@open-wc/testing-helpers" "^1.8.12"
 
+storybook-version@^0.1.1:
+  version "0.1.1"
+  resolved "https://registry.yarnpkg.com/storybook-version/-/storybook-version-0.1.1.tgz#b7cc41c64ee30faa202d23dbcc93f4c3e5e807cd"
+  integrity sha512-8xASloEZzXjEmT1vYpKQWppEONR1fwoUc4+POvAu/xUDKqKFVMSG0Y/7y1jP9e36WQM6fVWrGPcWwgeP6IdNnw==
+
 stream-browserify@^2.0.1:
   version "2.0.2"
   resolved "https://registry.yarnpkg.com/stream-browserify/-/stream-browserify-2.0.2.tgz#87521d38a44aa7ee91ce1cd2a47df0cb49dd660b"

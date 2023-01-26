@@ -15,6 +15,7 @@ import {
   RetryHandlerOptions,
   TelemetryHandler
 } from '@microsoft/microsoft-graph-client';
+import { SessionCache, storageAvailable } from '../utils/SessionCache';
 import { MgtBaseComponent } from '../components/baseComponent';
 import { Graph } from '../Graph';
 import { chainMiddleware } from '../utils/GraphHelpers';
@@ -84,13 +85,21 @@ class MockMiddleware implements Middleware {
    */
   private _nextMiddleware: Middleware;
 
-  private static _baseUrl;
+  private static _baseUrl: string;
+
+  private static _cache: SessionCache;
+  private static get _sessionCache(): SessionCache {
+    if (!this._cache && storageAvailable('sessionStorage')) {
+      this._cache = new SessionCache();
+    }
+    return this._cache;
+  }
 
   // tslint:disable-next-line: completed-docs
   public async execute(context: Context): Promise<void> {
     try {
       const baseUrl = await MockMiddleware.getBaseUrl();
-      context.request = baseUrl + escape(context.request as string);
+      context.request = baseUrl + encodeURIComponent(context.request as string);
     } catch (error) {
       // ignore error
     }
@@ -106,15 +115,28 @@ class MockMiddleware implements Middleware {
     this._nextMiddleware = next;
   }
 
+  /**
+   * Gets the base url for the mock graph, either from the session cache or from the endpoint service
+   *
+   * @static
+   * @return {string} the base url for the mock graph to use.
+   * @memberof MockMiddleware
+   */
   public static async getBaseUrl() {
     if (!this._baseUrl) {
-      try {
-        // get the url we should be using from the endpoint service
-        const response = await fetch('https://cdn.graph.office.net/en-us/graph/api/proxy/endpoint');
-        this._baseUrl = (await response.json()) + '?url=';
-      } catch {
-        // fallback to hardcoded value
-        this._baseUrl = 'https://proxy.apisandbox.msdn.microsoft.com/svc?url=';
+      const sessionEndpoint = this._sessionCache?.getItem('endpointURL');
+      if (sessionEndpoint) {
+        this._baseUrl = sessionEndpoint;
+      } else {
+        try {
+          // get the url we should be using from the endpoint service
+          const response = await fetch('https://cdn.graph.office.net/en-us/graph/api/proxy/endpoint');
+          this._baseUrl = (await response.json()) + '?url=';
+        } catch {
+          // fallback to hardcoded value
+          this._baseUrl = 'https://proxy.apisandbox.msdn.microsoft.com/svc?url=';
+        }
+        this._sessionCache?.setItem('endpointURL', this._baseUrl);
       }
     }
 
