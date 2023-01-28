@@ -24,6 +24,7 @@ import { ComponentMiddlewareOptions } from './utils/ComponentMiddlewareOptions';
 import { chainMiddleware } from './utils/GraphHelpers';
 import { SdkVersionMiddleware } from './utils/SdkVersionMiddleware';
 import { PACKAGE_VERSION } from './utils/version';
+import { customElementHelper } from './components/customElementHelper';
 
 /**
  * The version of the Graph to use for making requests.
@@ -134,7 +135,7 @@ export class Graph implements IGraph {
    * @memberof Graph
    */
   protected setComponent(component: Element | string): void {
-    this._componentName = component instanceof Element ? component.tagName : component;
+    this._componentName = component instanceof Element ? customElementHelper.normalize(component.tagName) : component;
   }
 }
 

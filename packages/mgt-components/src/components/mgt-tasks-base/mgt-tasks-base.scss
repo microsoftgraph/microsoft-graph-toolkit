@@ -370,12 +370,12 @@ $task-border-completed: var(--task-complete-border, 2px dotted inherit);
           color: $ms-color-gray120;
           margin-right: 8px;
         }
-        mgt-people {
+        .people {
           color: $detail__color;
           font-size: 16px;
         }
 
-        mgt-person {
+        .person {
           display: inline-block;
         }
         .Picker {
@@ -385,7 +385,7 @@ $task-border-completed: var(--task-complete-border, 2px dotted inherit);
           background-clip: padding-box;
           width: var(--mgt-flyout-set-width, 350px);
           color: $detail__color;
-          mgt-people-picker {
+          .people-picker {
             --separator-margin: 0px 10px 0px 10px;
           }
         }
@@ -690,10 +690,10 @@ $task-border-completed: var(--task-complete-border, 2px dotted inherit);
 }
 
 [dir='rtl'] {
-  mgt-arrow-options {
+  .arrow-options {
     --arrow-options-left: auto;
   }
-  mgt-dot-options {
+  .dot-options {
     --dot-options-translateX: translateX(60px);
   }
 
