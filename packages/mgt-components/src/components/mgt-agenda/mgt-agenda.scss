@@ -189,6 +189,7 @@ fluent-card.event {
 
 :host fluent-tooltip {
   width: auto;
+  contain: inline-size;
 }
 
 [dir='rtl'] {
