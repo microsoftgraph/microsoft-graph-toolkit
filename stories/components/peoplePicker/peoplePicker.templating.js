@@ -7,8 +7,12 @@
 
 import { html } from 'lit-element';
 import { withCodeEditor } from '../../../.storybook/addons/codeEditorAddon/codeAddon';
+import { versionInfo } from '../../versionInfo';
 
 export default {
+  parameters: {
+    version: versionInfo
+  },
   title: 'Components / mgt-people-picker / Templating',
   component: 'mgt-people-picker',
   decorators: [withCodeEditor]
@@ -43,4 +47,3 @@ export const DefaultTemplates = () => html`
 	</template>
 </mgt-people-picker>
 `;
-
