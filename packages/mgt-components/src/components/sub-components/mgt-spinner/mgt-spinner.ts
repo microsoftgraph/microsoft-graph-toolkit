@@ -35,7 +35,7 @@ export class MgtSpinner extends MgtBaseComponent {
    */
   public render() {
     return html`
-      <div class="spinner"></div>
+      <div class="spinner" title="spinner"></div>
     `;
   }
 }
