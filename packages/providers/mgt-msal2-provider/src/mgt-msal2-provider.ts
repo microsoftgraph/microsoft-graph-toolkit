@@ -5,8 +5,8 @@
  * -------------------------------------------------------------------------------------------
  */
 
-import { customElement, property } from 'lit/decorators.js';
-import { Providers, LoginType, MgtBaseProvider } from '@microsoft/mgt-element';
+import { property } from 'lit/decorators.js';
+import { Providers, LoginType, MgtBaseProvider, customElement } from '@microsoft/mgt-element';
 import { Msal2Config, Msal2Provider, PromptType } from './Msal2Provider';
 /**
  * Authentication Library Provider for Microsoft personal accounts
@@ -15,7 +15,8 @@ import { Msal2Config, Msal2Provider, PromptType } from './Msal2Provider';
  * @class MgtMsalProvider
  * @extends {MgtBaseProvider}
  */
-@customElement('mgt-msal2-provider')
+@customElement('msal2-provider')
+// @customElement('mgt-msal2-provider')
 export class MgtMsal2Provider extends MgtBaseProvider {
   /**
    * String alphanumerical value relation to a specific user
@@ -188,6 +189,11 @@ export class MgtMsal2Provider extends MgtBaseProvider {
       if (this.isMultiAccountDisabled) {
         config.isMultiAccountEnabled = false;
       }
+
+      if (this.baseUrl) {
+        config.baseURL = this.baseUrl;
+      }
+
       this.provider = new Msal2Provider(config);
       Providers.globalProvider = this.provider;
     }

@@ -78,7 +78,7 @@ $person-card-active-org-member-color: var(--person-card-active-org-member-color,
       &.org-member--target {
         background-color: $greyBackground;
         border: 1px solid $person-card-active-org-member-color;
-        mgt-person {
+        .person {
           --line2-color: #000000;
         }
       }

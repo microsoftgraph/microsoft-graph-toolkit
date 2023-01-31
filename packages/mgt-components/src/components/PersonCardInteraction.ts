@@ -5,6 +5,8 @@
  * -------------------------------------------------------------------------------------------
  */
 
+/* istanbul ignore file */
+
 /**
  * Defines how a person card is shown when a user interacts with
  * a person component

@@ -18,6 +18,7 @@ import {
 import { MgtBaseComponent } from '../components/baseComponent';
 import { Graph } from '../Graph';
 import { chainMiddleware } from '../utils/GraphHelpers';
+
 import { MockProvider } from './MockProvider';
 
 /**
@@ -109,7 +110,7 @@ class MockMiddleware implements Middleware {
     if (!this._baseUrl) {
       try {
         // get the url we should be using from the endpoint service
-        let response = await fetch('https://cdn.graph.office.net/en-us/graph/api/proxy/endpoint');
+        const response = await fetch('https://cdn.graph.office.net/en-us/graph/api/proxy/endpoint');
         this._baseUrl = (await response.json()) + '?url=';
       } catch {
         // fallback to hardcoded value

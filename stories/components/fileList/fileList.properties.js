@@ -102,6 +102,10 @@ export const getFileListWithSize = () => html`
     <mgt-file-list page-size=5></mgt-file-list>
   `;
 
+export const getFileListByExtensionsAndSize = () => html`
+    <mgt-file-list file-extensions="docx, xlsx" page-size=5></mgt-file-list>
+  `;
+
 export const fileListItemView = () => html`
     <mgt-file-list item-view="oneLine" page-size=3></mgt-file-list>
     <mgt-file-list item-view="twoLines" page-size=3></mgt-file-list>

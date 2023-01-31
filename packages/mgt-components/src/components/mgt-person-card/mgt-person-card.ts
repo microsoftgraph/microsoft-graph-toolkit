@@ -6,9 +6,16 @@
  */
 
 import { html, TemplateResult } from 'lit';
-import { customElement, property, state } from 'lit/decorators.js';
+import { property, state } from 'lit/decorators.js';
 import { classMap } from 'lit/directives/class-map.js';
-import { MgtTemplatedComponent, Providers, ProviderState, TeamsHelper } from '@microsoft/mgt-element';
+import {
+  MgtTemplatedComponent,
+  Providers,
+  ProviderState,
+  TeamsHelper,
+  mgtHtml,
+  customElement
+} from '@microsoft/mgt-element';
 import { Presence, User, Person } from '@microsoft/microsoft-graph-types';
 
 import { findPeople, getEmailFromGraphEntity } from '../../graph/graph.people';
@@ -75,7 +82,8 @@ type HoverStatesActions = 'email' | 'chat' | 'video' | 'call';
  * @cssprop --person-card-details-item-color - {Color} Color of items in additional details section
  * @cssprop --person-card-background-color - {Color} Color of person card background
  */
-@customElement('mgt-person-card')
+@customElement('person-card')
+// @customElement('mgt-person-card')
 export class MgtPersonCard extends MgtTemplatedComponent {
   /**
    * Array of styles to apply to the element. The styles should be defined
@@ -271,33 +279,6 @@ export class MgtPersonCard extends MgtTemplatedComponent {
   public isExpanded: boolean;
 
   /**
-   * Gets or sets whether an icon is hovered on
-   *
-   * @type {boolean}
-   * @memberof MgtPersonCard
-   */
-  @property({
-    attribute: 'is-email-hovered',
-    type: Boolean
-  })
-  public isEmailHovered: boolean;
-  @property({
-    attribute: 'is-chat-hovered',
-    type: Boolean
-  })
-  public isChatHovered: boolean;
-  @property({
-    attribute: 'is_video-hovered',
-    type: Boolean
-  })
-  public isVideoHovered: boolean;
-  @property({
-    attribute: 'is-call-hovered',
-    type: Boolean
-  })
-  public isCallHovered: boolean;
-
-  /**
    * Gets or sets whether person details should be inherited from an mgt-person parent
    * Useful when used as template in an mgt-person component
    *
@@ -364,10 +345,6 @@ export class MgtPersonCard extends MgtTemplatedComponent {
     this._currentSection = null;
     this._history = [];
     this.sections = [];
-    this.isEmailHovered = false;
-    this.isChatHovered = false;
-    this.isVideoHovered = false;
-    this.isCallHovered = false;
   }
 
   /**
@@ -591,7 +568,7 @@ export class MgtPersonCard extends MgtTemplatedComponent {
    */
   protected renderPerson(): TemplateResult {
     const avatarSize = 'large';
-    return html`
+    return mgtHtml`
       <mgt-person
         tabindex="0"
         class="person-image"
@@ -729,7 +706,7 @@ export class MgtPersonCard extends MgtTemplatedComponent {
    */
   protected renderExpandedDetails(person?: IDynamicPerson): TemplateResult {
     if (!this._cardState && this._isStateLoading) {
-      return html`
+      return mgtHtml`
          <div class="loading">
            <mgt-spinner></mgt-spinner>
          </div>
@@ -778,18 +755,18 @@ export class MgtPersonCard extends MgtTemplatedComponent {
         active: i === currentSectionIndex,
         'section-nav__icon': true
       });
-      const tagName = section.tagName;
-      const ariaLabel = tagName.substring(16, tagName.length).toLowerCase();
+
       return html`
         <fluent-tab
           id="${name}-Tab"
           class=${classes}
           slot="tab"
           @keyup="${() => this.updateCurrentSection(section)}"
-          @click=${() => this.updateCurrentSection(section)}>
+          @click=${() => this.updateCurrentSection(section)}
+        >
           ${section.renderIcon()}
         </fluent-tab>
-        `;
+      `;
     });
 
     const additionalPanelTemplates = this.sections.map((section, i) => {

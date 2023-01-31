@@ -5,9 +5,9 @@
  * -------------------------------------------------------------------------------------------
  */
 
-import { customElement, property } from 'lit/decorators.js';
+import { property } from 'lit/decorators.js';
 import { Configuration } from 'msal';
-import { Providers, MgtBaseProvider } from '@microsoft/mgt-element';
+import { Providers, MgtBaseProvider, customElement } from '@microsoft/mgt-element';
 import { TeamsConfig, TeamsProvider } from './TeamsProvider';
 
 /**
@@ -17,7 +17,8 @@ import { TeamsConfig, TeamsProvider } from './TeamsProvider';
  * @class MgtTeamsProvider
  * @extends {MgtBaseProvider}
  */
-@customElement('mgt-teams-provider')
+@customElement('teams-provider')
+// @customElement('mgt-teams-provider')
 export class MgtTeamsProvider extends MgtBaseProvider {
   /**
    * String alphanumerical value relation to a specific user
@@ -64,6 +65,7 @@ export class MgtTeamsProvider extends MgtBaseProvider {
    * @readonly
    * @memberof MgtTeamsProvider
    */
+
   public get isAvailable() {
     return TeamsProvider.isAvailable;
   }
@@ -95,6 +97,10 @@ export class MgtTeamsProvider extends MgtBaseProvider {
           }
         };
         config.msalOptions = msalConfig;
+      }
+
+      if (this.baseUrl) {
+        config.baseURL = this.baseUrl;
       }
 
       this.provider = new TeamsProvider(config);
