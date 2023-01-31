@@ -508,8 +508,6 @@ export class MgtTeamsChannelPicker extends MgtTemplatedComponent {
   /**
    * Renders dropdown content
    *
-   * @param {ChannelPickerItemState[]} items
-   * @param {number} [level=0]
    * @returns
    * @memberof MgtTeamsChannelPicker
    */
@@ -674,7 +672,7 @@ export class MgtTeamsChannelPicker extends MgtTemplatedComponent {
         const response = responses.get(team.id);
 
         if (response && response.content && response.content.value) {
-          team.channels = response.content.value.map(c => {
+          team.channels = response.content.value.map((c: MicrosoftGraph.Team) => {
             return {
               item: c
             };

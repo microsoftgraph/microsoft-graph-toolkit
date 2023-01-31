@@ -5,7 +5,7 @@
  * -------------------------------------------------------------------------------------------
  */
 
-import { IGraph, prepScopes, BetaGraph, CacheItem, CacheService, CacheStore } from '@microsoft/mgt-element';
+import { IGraph, BetaGraph, CacheItem, CacheService, CacheStore } from '@microsoft/mgt-element';
 import { Team } from '@microsoft/microsoft-graph-types';
 import {
   getPhotoForResource,
