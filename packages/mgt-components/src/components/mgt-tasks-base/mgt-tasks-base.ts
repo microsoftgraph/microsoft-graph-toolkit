@@ -92,7 +92,6 @@ export abstract class MgtTasksBase extends MgtTemplatedComponent {
   private _isNewTaskBeingAdded: boolean;
   private _openCalendar: boolean;
   private _newTaskName: string;
-  private _newTaskDueDate: Date;
   private _previousMediaQuery: ComponentMediaQuery;
 
   protected get strings(): { [x: string]: string } {
@@ -337,6 +336,14 @@ export abstract class MgtTasksBase extends MgtTemplatedComponent {
   //  * @memberof MgtTasksBase
   //  */
   // protected abstract renderCalendar(): TemplateResult;
+
+  /**
+   * Render the generic picker.
+   *
+   * @protected
+   * @memberof MgtTasksBase
+   */
+  protected abstract renderPicker(): TemplateResult;
 
   /**
    * Render the generic picker.
