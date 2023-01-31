@@ -17,7 +17,7 @@ export interface IMgtDemoWebPartProps {
   description: string;
 }
 // set the disambiguation before initializing any web part
-customElementHelper.withDisambiguation('northwind');
+customElementHelper.withDisambiguation('mgt-demo-client-side-solution');
 
 export default class MgtDemoWebPart extends BaseClientSideWebPart<IMgtDemoWebPartProps> {
   // set the global provider

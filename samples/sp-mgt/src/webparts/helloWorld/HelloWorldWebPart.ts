@@ -15,7 +15,7 @@ export default class HelloWorldWebPart extends BaseClientSideWebPart<Record<stri
     if (!Providers.globalProvider) {
       Providers.globalProvider = new SharePointProvider(this.context);
     }
-    customElementHelper.withDisambiguation('contoso');
+    customElementHelper.withDisambiguation('sp-mgt-no-framework-client-side-solution');
     return super.onInit();
   }
 
