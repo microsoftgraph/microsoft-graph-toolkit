@@ -80,16 +80,7 @@ export class MgtPicker extends MgtTemplatedComponent {
     attribute: 'placeholder',
     type: String
   })
-  public get placeholder(): string {
-    return this._placeholder;
-  }
-  public set placeholder(value) {
-    if (this._placeholder === value) {
-      return;
-    }
-    this._placeholder = value;
-    this.requestStateUpdate(true);
-  }
+  public placeholder: string;
 
   /**
    * Key to be rendered in the picker
@@ -101,16 +92,7 @@ export class MgtPicker extends MgtTemplatedComponent {
     attribute: 'key-name',
     type: String
   })
-  public get keyName(): string {
-    return this._keyName;
-  }
-  public set keyName(value) {
-    if (this._keyName === value) {
-      return;
-    }
-    this._keyName = value;
-    this.requestStateUpdate(true);
-  }
+  public keyName: string;
 
   /**
    * Entity to be rendered in the picker
@@ -122,24 +104,7 @@ export class MgtPicker extends MgtTemplatedComponent {
     attribute: 'entity-type',
     type: String
   })
-  public get entityType(): string {
-    return this._entityType;
-  }
-  public set entityType(value) {
-    if (this._entityType === value) {
-      return;
-    }
-    this._entityType = value;
-    this.requestStateUpdate(true);
-  }
-
-  /**
-   *
-   * Gets or sets the error (if any) of the request
-   * @type any
-   * @memberof MgtPicker
-   */
-  @property({ attribute: false }) public error: any;
+  public entityType: string;
 
   /**
    * The scopes to request
@@ -184,17 +149,14 @@ export class MgtPicker extends MgtTemplatedComponent {
 
   private isRefreshing: boolean;
 
-  private _placeholder: string;
-  private _entityType: string;
-  private _keyName: string;
-
   @state() private response: any[];
+  @state() private error: any[];
 
   constructor() {
     super();
-    this._placeholder = this.strings.comboboxPlaceholder;
-    this._entityType = null;
-    this._keyName = null;
+    this.placeholder = this.strings.comboboxPlaceholder;
+    this.entityType = null;
+    this.keyName = null;
     this.isRefreshing = false;
   }
 
@@ -234,6 +196,8 @@ export class MgtPicker extends MgtTemplatedComponent {
       return this.renderTemplate('loading', null);
     } else if (this.error) {
       return this.renderTemplate('error', this.error ? this.error : null);
+    } else if (this.hasTemplate('no-data')) {
+      return this.renderTemplate('no-data', null);
     }
 
     return this.response?.length > 0 ? this.renderPicker() : this.renderGet();
@@ -251,7 +215,7 @@ export class MgtPicker extends MgtTemplatedComponent {
       <fluent-combobox id="combobox" autocomplete="list" placeholder=${this.placeholder}>
         ${this.response.map(
           item => html`
-          <fluent-option value=${item.id} @click=${(e: Event) => this.handleClick(e, item)}> ${
+          <fluent-option value=${item.id} @click=${e => this.handleClick(e, item)}> ${
             item[this.keyName]
           } </fluent-option>`
         )}
@@ -267,33 +231,15 @@ export class MgtPicker extends MgtTemplatedComponent {
    * @memberof MgtPicker
    */
   protected renderGet(): TemplateResult {
-    return this.cacheEnabled
-      ? html`
+    return html`
       <mgt-get 
         resource=${this.resource}
         version=${this.version} 
         scopes=${this.scopes} 
         max-pages=${this.maxPages} 
-        cache-enabled=${this.cacheEnabled}
-        cache-invalidation-period=${this.cacheInvalidationPeriod}>
-      </mgt-get>`
-      : html`
-      <mgt-get 
-        resource=${this.resource}
-        version=${this.version} 
-        scopes=${this.scopes}
-        max-pages=${this.maxPages}>`;
-  }
-
-  /**
-   * render the no data state.
-   *
-   * @protected
-   * @returns {TemplateResult}
-   * @memberof MgtPicker
-   */
-  protected renderNoData(): TemplateResult {
-    return this.renderTemplate('no-data', null) || html``;
+        ?cache-enabled=${this.cacheEnabled}
+        ?cache-invalidation-period=${this.cacheInvalidationPeriod}>
+      </mgt-get>`;
   }
 
   /**
@@ -319,6 +265,6 @@ export class MgtPicker extends MgtTemplatedComponent {
   }
 
   private handleClick(e, item) {
-    this.fireCustomEvent('selectionChanged', item);
+    this.fireCustomEvent('selectionChanged', { data: item });
   }
 }
