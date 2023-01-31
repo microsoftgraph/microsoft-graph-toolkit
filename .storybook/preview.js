@@ -35,7 +35,7 @@ setCustomElementsManifestWithOptions(customElements, { privateFields: false });
 addParameters({
   previewTabs: {
     'storybook/docs/panel': {
-      hidden: true
+      hidden: false
     }
   },
   docs: {
