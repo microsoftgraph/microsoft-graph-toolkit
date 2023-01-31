@@ -6,6 +6,7 @@
  */
 
 import { html, TemplateResult } from 'lit';
+import { state } from 'lit/decorators.js';
 import { classMap } from 'lit/directives/class-map.js';
 import { repeat } from 'lit/directives/repeat.js';
 import { IGraph, customElement, mgtHtml } from '@microsoft/mgt-element';
@@ -115,27 +116,27 @@ export class MgtTodo extends MgtTasksBase {
   public static get requiredScopes(): string[] {
     return ['tasks.read', 'tasks.readwrite'];
   }
-
-  private _lists: TodoTaskList[];
   private _tasks: TodoTask[];
-  private _currentList: TodoTaskList;
 
   private _isLoadingTasks: boolean;
   private _loadingTasks: string[];
   private _newTaskDueDate: Date;
-  private _newTaskListId: string;
   private _graph: IGraph;
+  @state() private currentList: TodoTaskList;
 
   constructor() {
     super();
     this._graph = null;
     this._newTaskDueDate = null;
-    this._newTaskListId = '';
-    this._currentList = null;
-    this._lists = [];
     this._tasks = [];
     this._loadingTasks = [];
     this._isLoadingTasks = false;
+  }
+
+  protected createRenderRoot() {
+    const root = super.createRenderRoot();
+    root.addEventListener('selectionChanged', (e: Event) => this.handleSelectionChanged(e));
+    return root;
   }
 
   /**
@@ -164,49 +165,24 @@ export class MgtTodo extends MgtTasksBase {
   }
 
   /**
-   * Render the header part of the component.
+   * Render the generic picker.
    *
-   * @protected
-   * @returns
-   * @memberof MgtTodo
    */
-  protected renderHeaderContent(): TemplateResult {
-    if (this.isLoadingState) {
-      return html`
-        <div class="header__loading"></div>
-      `;
-    }
-
-    const lists = this._lists || [];
-    const currentList = this._currentList;
-    const targetId = this.targetId;
-    let listSelect: TemplateResult;
-
-    if (targetId && lists.length) {
-      const list = lists.find(l => l.id === targetId);
-      if (list) {
-        listSelect = html`
-          <span class="PlanTitle">
-            ${list.displayName}
-          </span>
-        `;
-      }
-    } else if (currentList) {
-      const listOptions = {};
-      for (const l of lists) {
-        listOptions[l.displayName] = () => this.loadTaskList(l);
-      }
-
-      listSelect = mgtHtml`
-        <mgt-arrow-options .value="${currentList.displayName}" .options="${listOptions}"></mgt-arrow-options>
-      `;
-    }
-
+  protected renderPicker() {
     return html`
-      <span class="TitleCont">
-        ${listSelect}
-      </span>
-    `;
+      <mgt-picker
+        resource="me/todo/lists"
+        scopes="tasks.read, tasks.readwrite"
+        key-name="displayName"
+        placeholder="Select a task list"
+      ></mgt-picker>
+        `;
+  }
+
+  protected async handleSelectionChanged(e) {
+    let list = e.detail.data;
+    this.currentList = list;
+    await this.loadTasks(list);
   }
 
   /**
@@ -218,7 +194,7 @@ export class MgtTodo extends MgtTasksBase {
    * @memberof MgtTodo
    */
   protected renderTask(task: TodoTask) {
-    const context = { task, list: this._currentList };
+    const context = { task, list: this.currentList };
 
     if (this.hasTemplate('task')) {
       return this.renderTemplate('task', context, task.id);
@@ -285,35 +261,9 @@ export class MgtTodo extends MgtTasksBase {
       this._graph = graph;
     }
 
-    let lists = this._lists;
-    if (!lists || !lists.length) {
-      if (this.targetId) {
-        const targetList = await getTodoTaskList(this._graph, this.targetId);
-        lists = targetList ? [targetList] : [];
-      } else {
-        lists = await getTodoTaskLists(this._graph);
-      }
-
-      this._tasks = [];
-      this._currentList = null;
-      this._lists = lists;
-    }
-
-    let currentList = this._currentList;
-    if (!currentList && lists && lists.length) {
-      if (this.initialId) {
-        currentList = lists.find(l => l.id === this.initialId);
-      }
-      if (!currentList) {
-        currentList = lists[0];
-      }
-
-      this._tasks = [];
-      this._currentList = currentList;
-    }
-
+    let currentList = this.currentList;
     if (currentList) {
-      await this.loadTaskList(currentList);
+      await this.loadTasks(currentList);
     }
   }
 
@@ -325,7 +275,7 @@ export class MgtTodo extends MgtTasksBase {
    * @memberof MgtTodo
    */
   protected async createNewTask(): Promise<void> {
-    const listId = this._currentList.id;
+    const listId = this.currentList.id;
     const taskData = {
       title: this.newTaskName
     };
@@ -351,7 +301,6 @@ export class MgtTodo extends MgtTasksBase {
   protected clearNewTaskData(): void {
     super.clearNewTaskData();
     this._newTaskDueDate = null;
-    this._newTaskListId = null;
   }
 
   /**
@@ -362,16 +311,15 @@ export class MgtTodo extends MgtTasksBase {
    */
   protected clearState(): void {
     super.clearState();
-    this._currentList = null;
-    this._lists = [];
+    this.currentList = null;
     this._tasks = [];
     this._loadingTasks = [];
     this._isLoadingTasks = false;
   }
 
-  private async loadTaskList(list: TodoTaskList): Promise<void> {
+  private async loadTasks(list: TodoTaskList): Promise<void> {
     this._isLoadingTasks = true;
-    this._currentList = list;
+    this.currentList = list;
     this.requestUpdate();
 
     this._tasks = await getTodoTasks(this._graph, list.id);
@@ -388,7 +336,7 @@ export class MgtTodo extends MgtTasksBase {
     task.status = taskStatus;
 
     // Send update request
-    const listId = this._currentList.id;
+    const listId = this.currentList.id;
     task = await updateTodoTask(this._graph, listId, task.id, task);
 
     const taskIndex = this._tasks.findIndex(t => t.id === task.id);
@@ -403,7 +351,7 @@ export class MgtTodo extends MgtTasksBase {
     this._tasks = this._tasks.filter(t => t.id !== taskId);
     this.requestUpdate();
 
-    const listId = this._currentList.id;
+    const listId = this.currentList.id;
     await deleteTodoTask(this._graph, listId, taskId);
 
     this._tasks = this._tasks.filter(t => t.id !== taskId);

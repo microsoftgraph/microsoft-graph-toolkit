@@ -90,10 +90,8 @@ export abstract class MgtTasksBase extends MgtTemplatedComponent {
   }
 
   private _isNewTaskBeingAdded: boolean;
-  private _isNewTaskVisible: boolean;
   private _openCalendar: boolean;
   private _newTaskName: string;
-  private _newTaskDueDate: Date;
   private _previousMediaQuery: ComponentMediaQuery;
 
   protected get strings(): { [x: string]: string } {
@@ -106,10 +104,9 @@ export abstract class MgtTasksBase extends MgtTemplatedComponent {
     this.clearState();
     this._previousMediaQuery = this.mediaQuery;
     this.onResize = this.onResize.bind(this);
-    this._newTaskDueDate = null;
     this._openCalendar = false;
     this.addEventListener('dateselected', e => {
-      console.log('sth else:', e.detail);
+      console.log('sth else:', e.target);
     });
   }
 
@@ -167,42 +164,15 @@ export abstract class MgtTasksBase extends MgtTemplatedComponent {
       return this.renderLoadingTask();
     }
 
-    const headerTemplate = !this.hideHeader ? this.renderHeader() : null;
+    const picker = this.renderPicker();
     const newTaskTemplate = this.renderNewTaskPanel();
     const tasksTemplate = this.isLoadingState ? this.renderLoadingTask() : this.renderTasks();
 
     return html`
-      <!-- ${headerTemplate}  -->
+      ${picker}
       ${newTaskTemplate}
       <div class="Tasks" dir=${this.direction}>
         ${tasksTemplate}
-      </div>
-    `;
-  }
-
-  /**
-   * Render the header part of the component.
-   *
-   * @protected
-   * @returns
-   * @memberof MgtTodo
-   */
-  protected renderHeader() {
-    const headerContentTemplate = this.renderHeaderContent();
-
-    const addClasses = classMap({
-      AddBarItem: true,
-      NewTaskButton: true,
-      hidden: this.readOnly || this._isNewTaskVisible
-    });
-
-    return html`
-      <div class="Header" dir=${this.direction}>
-        ${headerContentTemplate}
-        <button class="${addClasses}" @click="${() => this.showNewTaskPanel()}">
-          <span class="TaskIcon"></span>
-          <span>${this.strings.addTaskButtonSubtitle}</span>
-        </button>
       </div>
     `;
   }
@@ -320,16 +290,6 @@ export abstract class MgtTasksBase extends MgtTemplatedComponent {
      `;
   }
 
-  /**
-   * Render the top header part of the component.
-   *
-   * @protected
-   * @abstract
-   * @returns {TemplateResult}
-   * @memberof MgtTasksBase
-   */
-  protected abstract renderHeaderContent(): TemplateResult;
-
   // /**
   //  * Render the details part of the new task panel
   //  *
@@ -363,6 +323,14 @@ export abstract class MgtTasksBase extends MgtTemplatedComponent {
   }
 
   /**
+   * Render the generic picker.
+   *
+   * @protected
+   * @memberof MgtTasksBase
+   */
+  protected abstract renderPicker(): TemplateResult;
+
+  /**
    * Render the list of todo tasks
    *
    * @protected
@@ -393,7 +361,6 @@ export abstract class MgtTasksBase extends MgtTemplatedComponent {
     } finally {
       this.clearNewTaskData();
       this._isNewTaskBeingAdded = false;
-      this._isNewTaskVisible = false;
       this.requestUpdate();
     }
   }
@@ -426,7 +393,6 @@ export abstract class MgtTasksBase extends MgtTemplatedComponent {
    */
   protected clearState(): void {
     this.clearNewTaskData();
-    this._isNewTaskVisible = false;
     this.requestUpdate();
   }
 
@@ -469,19 +435,8 @@ export abstract class MgtTasksBase extends MgtTemplatedComponent {
     this.requestUpdate();
   }
 
-  private showNewTaskPanel(): void {
-    this._isNewTaskVisible = true;
-    this.requestUpdate();
-  }
-
   private openCalendar(): void {
     this._openCalendar = true;
-    this.requestUpdate();
-  }
-
-  private hideNewTaskPanel(): void {
-    this._isNewTaskVisible = false;
-    this.clearNewTaskData();
     this.requestUpdate();
   }
 
