@@ -14,7 +14,7 @@ export default {
     version: versionInfo
   },
   title: 'Components / mgt-get',
-  component: 'mgt-get',
+  component: 'get',
   decorators: [withCodeEditor]
 };
 

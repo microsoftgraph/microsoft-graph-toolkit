@@ -14,7 +14,7 @@ export default {
     version: versionInfo
   },
   title: 'Components / mgt-people-picker / Templating',
-  component: 'mgt-people-picker',
+  component: 'people-picker',
   decorators: [withCodeEditor]
 };
 

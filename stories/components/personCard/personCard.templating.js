@@ -14,7 +14,7 @@ export default {
     version: versionInfo
   },
   title: 'Components / mgt-person-card / Templating',
-  component: 'mgt-person-card',
+  component: 'person-card',
   decorators: [withCodeEditor]
 };
 

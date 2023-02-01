@@ -14,7 +14,7 @@ export default {
     version: versionInfo
   },
   title: 'Components / mgt-login',
-  component: 'mgt-login',
+  component: 'login',
   decorators: [withCodeEditor]
 };
 

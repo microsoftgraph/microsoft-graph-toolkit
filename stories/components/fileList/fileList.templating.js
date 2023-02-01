@@ -13,7 +13,7 @@ export default {
     version: versionInfo
   },
   title: 'Components / mgt-file-list / Templating',
-  component: 'mgt-file',
+  component: 'file',
   decorators: [withCodeEditor]
 };
 

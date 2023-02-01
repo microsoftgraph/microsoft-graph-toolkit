@@ -14,7 +14,7 @@ export default {
     version: versionInfo
   },
   title: 'Components / mgt-person-card / Style',
-  component: 'mgt-person-card',
+  component: 'person-card',
   decorators: [withCodeEditor]
 };
 

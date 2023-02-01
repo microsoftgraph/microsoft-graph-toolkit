@@ -14,7 +14,7 @@ export default {
     version: versionInfo
   },
   title: 'Samples / Templating',
-  component: 'mgt-get',
+  component: 'get',
   decorators: [withCodeEditor]
 };
 

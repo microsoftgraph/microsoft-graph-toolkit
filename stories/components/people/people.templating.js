@@ -14,7 +14,7 @@ export default {
     version: versionInfo
   },
   title: 'Components / mgt-people / Templating',
-  component: 'mgt-people',
+  component: 'people',
   decorators: [withCodeEditor]
 };
 

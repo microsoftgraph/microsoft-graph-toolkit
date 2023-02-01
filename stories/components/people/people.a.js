@@ -14,7 +14,7 @@ export default {
     version: versionInfo
   },
   title: 'Components / mgt-people',
-  component: 'mgt-people',
+  component: 'people',
   decorators: [withCodeEditor]
 };
 

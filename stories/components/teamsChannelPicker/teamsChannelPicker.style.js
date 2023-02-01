@@ -7,7 +7,7 @@ export default {
     version: versionInfo
   },
   title: 'Components / mgt-teams-channel-picker / Style',
-  component: 'mgt-teams-channel-picker',
+  component: 'teams-channel-picker',
   decorators: [withCodeEditor]
 };
 

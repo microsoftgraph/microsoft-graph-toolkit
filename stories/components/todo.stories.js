@@ -14,7 +14,7 @@ export default {
     version: versionInfo
   },
   title: 'Components / mgt-todo',
-  component: 'mgt-todo',
+  component: 'todo',
   decorators: [withCodeEditor]
 };
 

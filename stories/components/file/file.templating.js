@@ -7,7 +7,7 @@ export default {
     version: versionInfo
   },
   title: 'Components / mgt-file / Templating',
-  component: 'mgt-file',
+  component: 'file',
   decorators: [withCodeEditor]
 };
 

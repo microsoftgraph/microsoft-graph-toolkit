@@ -14,7 +14,7 @@ export default {
     version: versionInfo
   },
   title: 'Components / mgt-file-list',
-  component: 'mgt-file-list',
+  component: 'file-list',
   decorators: [withCodeEditor]
 };
 

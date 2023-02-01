@@ -14,7 +14,7 @@ export default {
     version: versionInfo
   },
   title: 'Components / mgt-tasks',
-  component: 'mgt-tasks',
+  component: 'tasks',
   decorators: [withCodeEditor]
 };
 

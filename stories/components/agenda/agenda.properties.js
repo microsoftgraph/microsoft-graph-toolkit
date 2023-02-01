@@ -14,7 +14,7 @@ export default {
     version: versionInfo
   },
   title: 'Components / mgt-agenda / Properties',
-  component: 'mgt-agenda',
+  component: 'agenda',
   decorators: [withCodeEditor]
 };
 
