@@ -22,7 +22,7 @@ $task-border-completed: var(--task-complete-border, 2px dotted inherit);
   font-family: $font-family;
   display: flex;
   flex-direction: column;
-  background-color: set-var(background-color__sub1, $theme-default, $common);
+  background-color: set-var(background-color, $theme-default, $common);
   padding: var(--tasks-padding, 12px);
   color: $color;
 

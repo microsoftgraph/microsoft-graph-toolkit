@@ -183,6 +183,7 @@ export abstract class MgtBaseComponent extends LitElement {
    * @param {string} eventName
    * @param {*} [detail]
    * @param {boolean} [bubbles=false]
+   * @param {boolean} [composed=false]
    * @param {boolean} [cancelable=false]
    * @return {*}  {boolean}
    * @memberof MgtBaseComponent
@@ -191,10 +192,12 @@ export abstract class MgtBaseComponent extends LitElement {
     eventName: string,
     detail?: any,
     bubbles: boolean = false,
+    composed: boolean = false,
     cancelable: boolean = false
   ): boolean {
     const event = new CustomEvent(eventName, {
       bubbles,
+      composed,
       cancelable,
       detail
     });
