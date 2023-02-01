@@ -7,15 +7,18 @@
 
 import { html } from 'lit';
 import { withCodeEditor } from '../../../.storybook/addons/codeEditorAddon/codeAddon';
-import { versionInfo } from '../../versionInfo';
+import { defaultDocsPage } from '../../../.storybook/story-elements/defaultDocsPage';
 
 export default {
-  parameters: {
-    version: versionInfo
-  },
   title: 'Components / mgt-agenda',
   component: 'agenda',
-  decorators: [withCodeEditor]
+  decorators: [withCodeEditor],
+  parameters: {
+    docs: {
+      page: defaultDocsPage,
+      source: { code: '<mgt-agenda></mgt-agenda>' }
+    }
+  }
 };
 
 export const simple = () => html`
@@ -40,3 +43,14 @@ export const RTL = () => html`
    <mgt-agenda></mgt-agenda>
   </body>
 `;
+RTL.parameters = {
+  docs: {
+    source: {
+      code: `
+<body dir="rtl">
+  <mgt-agenda></mgt-agenda>
+</body>
+`
+    }
+  }
+};

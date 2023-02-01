@@ -7,12 +7,8 @@
 
 import { html } from 'lit';
 import { withCodeEditor } from '../../.storybook/addons/codeEditorAddon/codeAddon';
-import { versionInfo } from '../versionInfo';
 
 export default {
-  parameters: {
-    version: versionInfo
-  },
   title: 'Samples / Templating',
   component: 'get',
   decorators: [withCodeEditor]

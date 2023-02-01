@@ -7,12 +7,8 @@
 
 import { html } from 'lit';
 import { withCodeEditor } from '../../../.storybook/addons/codeEditorAddon/codeAddon';
-import { versionInfo } from '../../versionInfo';
 
 export default {
-  parameters: {
-    version: versionInfo
-  },
   title: 'Components / mgt-person-card / Style',
   component: 'person-card',
   decorators: [withCodeEditor]

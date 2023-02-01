@@ -8,6 +8,10 @@
 /* global window */
 
 import { addParameters, setCustomElements } from '@storybook/web-components';
+import '../node_modules/@webcomponents/webcomponentsjs/webcomponents-bundle.js';
+import customElements from '../custom-elements.json';
+import { versionInfo } from './versionInfo';
+import { noArgsDocsPage } from './story-elements/noArgsDocsPage.js';
 
 const setCustomElementsManifestWithOptions = (customElements, options) => {
   let { privateFields = true } = options;
@@ -27,21 +31,20 @@ const setCustomElementsManifestWithOptions = (customElements, options) => {
   return setCustomElements(customElements);
 };
 
-import '../node_modules/@webcomponents/webcomponentsjs/webcomponents-bundle.js';
-import customElements from '../custom-elements.json';
-
 setCustomElementsManifestWithOptions(customElements, { privateFields: false });
 
 addParameters({
   previewTabs: {
     'storybook/docs/panel': {
-      hidden: false
+      hidden: true
     }
   },
   docs: {
     iframeHeight: '400px',
-    inlineStories: false
-  }
+    inlineStories: false,
+    page: noArgsDocsPage
+  },
+  version: versionInfo
 });
 
 const req = require.context('../stories', true, /\.(js|mdx)$/);
