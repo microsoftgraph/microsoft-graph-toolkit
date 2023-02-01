@@ -40,6 +40,10 @@ $progress-ring-size: var(--progress-ring-size, 24px);
   font-size: $font-size;
 }
 
+:host .root {
+  padding-inline-start: 20px;
+}
+
 :host .file-list-wrapper {
   background-color: $background-color;
   box-shadow: $file-list-box-shadow;

@@ -606,22 +606,9 @@ export class MgtFileList extends BasePersonCardSection {
 
     return html`
       <div class="root" dir=${this.direction}>
-        <div class="title">${this.strings.filesSectionTitle}</div>
         ${contentTemplate}
       </div>
     `;
-  }
-
-  public render() {
-    if (!this.files && this.isLoadingState) {
-      return this.renderLoading();
-    }
-
-    if (!this.files || this.files.length === 0) {
-      return this.renderNoData();
-    }
-
-    return this.renderTemplate('default', { files: this.files }) || this.renderFiles();
   }
 
   /**
