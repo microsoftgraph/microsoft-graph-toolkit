@@ -17,7 +17,7 @@ class CustomElementHelper {
    * @memberof CustomElementHelper
    */
   public withDisambiguation(disambiguation: string) {
-    this._disambiguation = disambiguation;
+    if (disambiguation && !this._disambiguation) this._disambiguation = disambiguation;
     return this;
   }
 
