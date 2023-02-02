@@ -6,7 +6,7 @@
  */
 
 import { User } from '@microsoft/microsoft-graph-types';
-import { customElement, html, internalProperty, property, TemplateResult } from 'lit-element';
+import { customElement, html, state, property, TemplateResult } from 'lit-element';
 import { classMap } from 'lit-html/directives/class-map';
 import { repeat } from 'lit-html/directives/repeat';
 import {
@@ -75,6 +75,8 @@ interface IFocusable {
  *
  * @cssprop --dropdown-background-color - {Color} Background color of dropdown area
  * @cssprop --dropdown-item-hover-background - {Color} Background color of person during hover
+ * @cssprop --dropdown-item-text-color - {Color} Color of person text
+ * @cssprop --dropdown-item-text-hover-color - {Color} Color of person text during hover
  *
  * @cssprop --placeholder-color--focus - {Color} Color of placeholder text during focus state
  * @cssprop --placeholder-color - {Color} Color of placeholder text
@@ -134,8 +136,8 @@ export class MgtPeoplePicker extends MgtTemplatedComponent {
   }
 
   /**
-   * value determining if search is filtered to multiple groups.
-   * @type {string}
+   * array of groups for search to be filtered by.
+   * @type {string[]}
    */
   @property({
     attribute: 'group-ids',
@@ -450,6 +452,16 @@ export class MgtPeoplePicker extends MgtTemplatedComponent {
   }
 
   /**
+   * Label that can be set on the people picker input to provide context to
+   * assistive technologies
+   */
+  @property({
+    attribute: 'aria-label',
+    type: String
+  })
+  public ariaLabel: string;
+
+  /**
    * Get the scopes required for people picker
    *
    * @static
@@ -479,7 +491,6 @@ export class MgtPeoplePicker extends MgtTemplatedComponent {
   private _type: PersonType = PersonType.person;
   private _groupType: GroupType = GroupType.any;
   private _userType: UserType = UserType.any;
-  private _currentSelectedUser: IDynamicPerson;
   private _userFilters: string;
   private _groupFilters: string;
   private _peopleFilters: string;
@@ -487,7 +498,7 @@ export class MgtPeoplePicker extends MgtTemplatedComponent {
   private defaultPeople: IDynamicPerson[];
 
   // tracking of user arrow key input for selection
-  private _arrowSelectionCount: number = 0;
+  private _arrowSelectionCount: number = -1;
   // List of people requested if group property is provided
   private _groupPeople: IDynamicPerson[];
   private _debouncedSearch: { (): void; (): void };
@@ -498,13 +509,20 @@ export class MgtPeoplePicker extends MgtTemplatedComponent {
   // current user index to the left of the highlighted users
   private _currentHighlightedUserPos: number = 0;
 
-  @internalProperty() private _isFocused = false;
+  /**
+   * Checks if the input is focused.
+   */
+  @state() private _isFocused = false;
 
-  @internalProperty() private _foundPeople: IDynamicPerson[];
+  /**
+   * Switch to determine if a typed email can be set.
+   */
+  @state() private _setAnyEmail: boolean = false;
 
-  private _mouseLeaveTimeout;
-  private _mouseEnterTimeout;
-  private _isKeyboardFocus: boolean = true;
+  /**
+   * List of people found from the graph calls.
+   */
+  @state() private _foundPeople: IDynamicPerson[];
 
   constructor() {
     super();
@@ -527,7 +545,6 @@ export class MgtPeoplePicker extends MgtTemplatedComponent {
    * @memberof MgtPeoplePicker
    */
   public focus(options?: FocusOptions) {
-    this.gainedFocus();
     if (!this.input) {
       return;
     }
@@ -612,15 +629,8 @@ export class MgtPeoplePicker extends MgtTemplatedComponent {
     };
 
     return html`
-       <div dir=${this.direction} class=${classMap(inputClasses)} @click=${e => this.focus(e)}>
-         <div
-          aria-expanded="false"
-          aria-haspopup="listbox"
-          role="combobox"
-          class="selected-list"
-          id="selected-list">
-           ${selectedPeopleTemplate} ${flyoutTemplate}
-         </div>
+       <div dir=${this.direction} class=${classMap(inputClasses)}>
+          <div class="people-picker-inner">${selectedPeopleTemplate} ${flyoutTemplate}</div>
        </div>
      `;
   }
@@ -632,7 +642,6 @@ export class MgtPeoplePicker extends MgtTemplatedComponent {
    * @memberof MgtPeoplePicker
    */
   protected clearState(): void {
-    // this._groupId = null;
     this.selectedPeople = [];
     this.userInput = '';
     this._highlightedUsers = [];
@@ -682,15 +691,11 @@ export class MgtPeoplePicker extends MgtTemplatedComponent {
 
     if (selectionMode === 'single' && this.selectedPeople.length >= 1) {
       this.lostFocus();
-      return null;
+      return html``;
     }
 
-    const inputAriaLabelText = `${
-      this._currentSelectedUser !== undefined
-        ? this.strings.selected + ' ' + this._currentSelectedUser.displayName + ' '
-        : ''
-    } ' people-picker-input'`;
-
+    // aria-label needs to provide a falsy default to avoid setting the attribute to "undefined" or "null"
+    // direct used of the ariaLabel property on the input element only works in Chromium browsers
     return html`
        <div class="${classMap(inputClasses)}">
          <input
@@ -699,16 +704,17 @@ export class MgtPeoplePicker extends MgtTemplatedComponent {
            type="text"
            role="combobox"
            placeholder=${placeholder}
-           label="people-picker-input"
            autocomplete="off"
-           aria-label=${inputAriaLabelText}
+           aria-label=${this.ariaLabel || ''}
+           aria-controls="suggestions-list"
+           aria-haspopup="listbox"
            aria-autocomplete="list"
            aria-expanded="false"
-           tabindex="0"
+           @click="${this.handleInputClick}"
+           @focus="${this.gainedFocus}"
            @keydown="${this.onUserKeyDown}"
            @keyup="${this.onUserKeyUp}"
            @blur=${this.lostFocus}
-           @click=${this.handleFlyout}
            ?disabled=${this.disabled}
          />
        </div>
@@ -723,23 +729,18 @@ export class MgtPeoplePicker extends MgtTemplatedComponent {
    * @memberof MgtPeoplePicker
    */
   protected renderSelectedPeople(selectedPeople?: IDynamicPerson[]): TemplateResult {
-    selectedPeople = selectedPeople || this.selectedPeople;
-    if (!this.selectedPeople || !this.selectedPeople.length) {
-      return null;
+    if (!selectedPeople || !selectedPeople.length) {
+      return html``;
     }
     return html`
-       <div
-        tabindex="0"
-        aria-label="selected-people"
-        aria-orientation="vertical"
-        role="listbox"
-        class="selected-list__options">${selectedPeople.slice(0, selectedPeople.length).map(
+       <ul
+        id="selected-list"
+        aria-label="${this.strings.selected}"
+        class="selected-list"
+        >${selectedPeople.slice(0, selectedPeople.length).map(
           person =>
             html`
-             <div
-             role="option"
-             tabindex="0"
-             aria-label=${person.displayName}
+             <li
              class="selected-list__person-wrapper">
                ${
                  this.renderTemplate(
@@ -753,7 +754,8 @@ export class MgtPeoplePicker extends MgtTemplatedComponent {
                  <div class="selected-list__person-wrapper__overflow__gradient"></div>
                  <div
                    tabindex="0"
-                   aria-label="close-icon"
+                   role="button"
+                   aria-label="${this.strings.removeSelectedItem} ${person.displayName}"
                    class="selected-list__person-wrapper__overflow__close-icon"
                    @click="${e => this.removePerson(person, e)}"
                    @keydown="${e => this.handleRemovePersonKeyDown(person, e)}"
@@ -761,9 +763,9 @@ export class MgtPeoplePicker extends MgtTemplatedComponent {
                    \uE711
                  </div>
                </div>
-             </div>
+              </li>
            `
-        )}</div>
+        )}</ul>
      `;
   }
   /**
@@ -796,21 +798,13 @@ export class MgtPeoplePicker extends MgtTemplatedComponent {
       return this.renderLoading();
     }
 
-    let people = this._foundPeople;
+    const people = this._foundPeople;
 
     if (!people || people.length === 0 || this.showMax === 0) {
       return this.renderNoData();
+    } else {
+      return this.renderSearchResults(people);
     }
-
-    // clears focus
-    for (const person of people) {
-      (person as IFocusable).isFocused = false;
-    }
-
-    people = people.slice(0, this.showMax);
-    (people[0] as IFocusable).isFocused = true;
-
-    return this.renderSearchResults(people);
   }
 
   /**
@@ -866,51 +860,32 @@ export class MgtPeoplePicker extends MgtTemplatedComponent {
    * @returns
    * @memberof MgtPeoplePicker
    */
-  protected renderSearchResults(people?: IDynamicPerson[]) {
-    people = people || this._foundPeople;
-    let filteredPeople = people.filter(person => person.id);
-    let firstName = '';
-
-    const selectedList = this.renderRoot.querySelector('.selected-list');
-    let names = '';
-    for (let i = 0; i < filteredPeople.length; i++) {
-      names += filteredPeople[i].displayName.toString() + ' ';
-    }
+  protected renderSearchResults(people: IDynamicPerson[]) {
+    const filteredPeople = people.filter(person => person.id);
 
     return html`
-      <div
+      <ul
         id="suggestions-list"
+        aria-label="${this.strings.suggestedContacts}"
         class="people-list"
-        aria-expanded="true"
-        role="list"
-        aria-label="people-picker-input input text ${
-          this.userInput.length === 0 ? this.strings.inputPlaceholderText : this.userInput
-        } ${this.strings.suggestedContacts} ${names}"
-        @mouseenter=${this.handleMouseEnter}
-        @mouseleave=${this.handleMouseLeave}>
+        role="listbox">
          ${repeat(
            filteredPeople,
            person => person.id,
            person => {
-             const listPersonClasses = {
-               focused:
-                 this._isKeyboardFocus && this._arrowSelectionCount === 0 ? (person as IFocusable).isFocused : '',
-               'list-person': true
-             };
              return html`
                <li
-                role="listitem"
-                @keydown="${this.onUserKeyDown}"
+                id="${person.id}"
                 aria-label=" ${this.strings.suggestedContact} ${person.displayName}"
-                tabindex="0"
-                class="${classMap(listPersonClasses)}"
-                @click="${e => this.onPersonClick(person)}">
+                class="list-person"
+                role="option"
+                @click="${e => this.handleSuggestionClick(person)}">
                  ${this.renderPersonResult(person)}
                </li>
              `;
            }
          )}
-       </div>
+       </ul>
      `;
   }
 
@@ -934,7 +909,11 @@ export class MgtPeoplePicker extends MgtTemplatedComponent {
     return (
       this.renderTemplate('person', { person }, person.id) ||
       html`
-         <mgt-person .personDetails=${person} .fetchImage=${!this.disableImages}></mgt-person>
+         <mgt-person
+          .personDetails=${person}
+          .fetchImage=${!this.disableImages}
+          .personCardInteraction=${PersonCardInteraction.none}
+         ></mgt-person>
          <div class="people-person-text-area" id="${person.displayName}">
            ${this.renderHighlightText(person)}
            <span class="${classMap(classes)}">${subTitle}</span>
@@ -1058,9 +1037,11 @@ export class MgtPeoplePicker extends MgtTemplatedComponent {
               } catch (_) {}
             } else {
               let groups = (await findGroups(graph, '', this.showMax, this.groupType, this._groupFilters)) || [];
+              // tslint:disable: no-string-literal
               if (groups.length > 0 && groups[0]['value']) {
                 groups = groups[0]['value'];
               }
+              // tslint:enable: no-string-literal
               people = groups;
             }
           }
@@ -1197,7 +1178,7 @@ export class MgtPeoplePicker extends MgtTemplatedComponent {
         }
       }
     }
-    //people = this.getUniquePeople(people);
+    // people = this.getUniquePeople(people);
     this._foundPeople = this.filterPeople(people);
   }
 
@@ -1210,7 +1191,7 @@ export class MgtPeoplePicker extends MgtTemplatedComponent {
    */
   private async getGroupsForGroupIds(graph: IGraph, people: IDynamicPerson[]) {
     const groups = await getGroupsForGroupIds(graph, this.groupIds, this.groupFilters);
-    for (let group of groups as IDynamicPerson[]) {
+    for (const group of groups as IDynamicPerson[]) {
       people = people.concat(group);
     }
     people = people.filter(person => person);
@@ -1228,6 +1209,11 @@ export class MgtPeoplePicker extends MgtTemplatedComponent {
     if (flyout) {
       flyout.close();
     }
+    if (this.input) {
+      this.input.setAttribute('aria-expanded', 'false');
+      this.input.setAttribute('aria-activedescendant', '');
+    }
+    this._arrowSelectionCount = -1;
   }
 
   /**
@@ -1240,6 +1226,9 @@ export class MgtPeoplePicker extends MgtTemplatedComponent {
     const flyout = this.flyout;
     if (flyout) {
       flyout.open();
+    }
+    if (this.input) {
+      this.input.setAttribute('aria-expanded', 'true');
     }
   }
 
@@ -1258,6 +1247,7 @@ export class MgtPeoplePicker extends MgtTemplatedComponent {
     this.selectedPeople = filteredPersonArr;
     this.loadState();
     this.fireCustomEvent('selectionChanged', this.selectedPeople);
+    this.input.focus();
   }
 
   /**
@@ -1294,6 +1284,7 @@ export class MgtPeoplePicker extends MgtTemplatedComponent {
 
         this.loadState();
         this._foundPeople = [];
+        this._arrowSelectionCount = -1;
       }
     }
   }
@@ -1306,66 +1297,39 @@ export class MgtPeoplePicker extends MgtTemplatedComponent {
     this.userInput = '';
   }
 
-  private handleFlyout() {
-    // handles hiding control if default people have no more selections available
-    const peopleLeft = this.filterPeople(this.defaultPeople);
-    let shouldShow = true;
-    if (peopleLeft && peopleLeft.length === 0) {
-      shouldShow = false;
-    }
-
-    if (shouldShow) {
-      window.requestAnimationFrame(() => {
-        // Mouse is focused on input
-        this.showFlyout();
-      });
+  // handle input click
+  private handleInputClick() {
+    if (!this.flyout.isOpen) {
+      this.handleUserSearch();
     }
   }
 
+  // handle input focus
   private gainedFocus() {
     this.clearHighlighted();
     this._isFocused = true;
-    if (this.input) {
-      this.input.focus();
-    }
-    this._showLoading = true;
     this.loadState();
   }
 
+  // handle input blur
   private lostFocus() {
     this._isFocused = false;
-    this.requestUpdate();
-  }
-
-  private handleMouseEnter(e: MouseEvent) {
-    clearTimeout(this._mouseEnterTimeout);
-    clearTimeout(this._mouseLeaveTimeout);
-    this._mouseEnterTimeout = setTimeout(this.hideKeyboardFocus.bind(this), 100);
-  }
-
-  private handleMouseLeave(e: MouseEvent) {
-    clearTimeout(this._mouseEnterTimeout);
-    clearTimeout(this._mouseLeaveTimeout);
-    this._mouseLeaveTimeout = setTimeout(this.showKeyboardFocus.bind(this), 100);
-  }
-
-  private hideKeyboardFocus() {
-    this._isKeyboardFocus = false;
-    this.requestUpdate();
+    this._arrowSelectionCount = -1;
+    if (this.input) {
+      this.input.setAttribute('aria-expanded', 'false');
+      this.input.setAttribute('aria-activedescendant', '');
+    }
 
     const peopleList = this.renderRoot.querySelector('.people-list');
-    if (peopleList && peopleList.children.length) {
-      // reset background color
-      // tslint:disable-next-line: prefer-for-of
+
+    if (peopleList) {
       for (let i = 0; i < peopleList.children.length; i++) {
         peopleList.children[i].classList.remove('focused');
+        peopleList.children[i].setAttribute('aria-selected', 'false');
       }
     }
-  }
 
-  private showKeyboardFocus() {
-    this._isKeyboardFocus = true;
-    this.handleArrowSelection();
+    this.requestUpdate();
   }
 
   private renderHighlightText(person: IDynamicPerson): TemplateResult {
@@ -1409,38 +1373,52 @@ export class MgtPeoplePicker extends MgtTemplatedComponent {
   }
 
   /**
-   * Adds debounce method for set delay on user input
+   * Handles input from the key up events on the keyboard.
    */
   private onUserKeyUp(event: KeyboardEvent): void {
     const isPaste = (event.ctrlKey || event.metaKey) && event.key === 'v';
     const isCmdOrCtrlKey = ['ControlLeft', 'ControlRight'].includes(event.code) || event.ctrlKey || event.metaKey;
     const isArrowKey = ['ArrowDown', 'ArrowRight', 'ArrowUp', 'ArrowLeft'].includes(event.code);
+    const input = event.target as HTMLInputElement;
 
     if ((!isPaste && isCmdOrCtrlKey) || isArrowKey) {
       if (isCmdOrCtrlKey || ['ArrowLeft', 'ArrowRight'].includes(event.code)) {
         // Only hide the flyout when you're doing selections with Left/Right Arrow key
         this.hideFlyout();
       }
+
+      if (['ArrowDown'].includes(event.code)) {
+        if (!this.flyout.isOpen && this._isFocused) {
+          this.handleUserSearch();
+        }
+      }
       return;
     }
 
-    if (event.code === 'Tab' && !this.flyout.isOpen) {
-      // keyCodes capture: tab (9)
-      if (this.allowAnyEmail) {
-        this.gainedFocus();
-      }
-    }
-
     if (event.shiftKey) {
-      this.gainedFocus();
+      return;
     }
 
-    const input = event.target as HTMLInputElement;
+    if (event.code === 'ShiftLeft') {
+      return;
+    }
+
+    if (event.code === 'Tab') {
+      return;
+    }
+
+    if (event.code === 'Enter') {
+      return;
+    }
 
     if (event.code === 'Escape') {
       this.clearInput();
       this._foundPeople = [];
-    } else if (event.code === 'Backspace' && this.userInput.length === 0 && this.selectedPeople.length > 0) {
+      this._arrowSelectionCount = -1;
+      return;
+    }
+
+    if (event.code === 'Backspace' && this.userInput.length === 0 && this.selectedPeople.length > 0) {
       this.clearHighlighted();
       // remove last person in selected list
       this.selectedPeople = this.selectedPeople.splice(0, this.selectedPeople.length - 1);
@@ -1448,26 +1426,33 @@ export class MgtPeoplePicker extends MgtTemplatedComponent {
       this.hideFlyout();
       // fire selected people changed event
       this.fireCustomEvent('selectionChanged', this.selectedPeople);
-    } else if (event.code === 'Comma' || event.code === 'Semicolon') {
+      return;
+    }
+
+    if (event.code === 'Comma' || event.code === 'Semicolon') {
       if (this.allowAnyEmail) {
+        this._setAnyEmail = true;
         event.preventDefault();
         event.stopPropagation();
       }
       return;
-    } else {
-      this.userInput = input.value;
-      const validEmail = isValidEmail(this.userInput);
-      if (validEmail && this.allowAnyEmail) {
-        this.handleAnyEmail();
-      } else {
-        this.handleUserSearch();
-      }
     }
+
+    this.userInput = input.value;
+    const validEmail = isValidEmail(this.userInput);
+    if (validEmail && this.allowAnyEmail) {
+      if (this._setAnyEmail) {
+        this.handleAnyEmail();
+      }
+    } else {
+      this.handleUserSearch();
+    }
+    this._setAnyEmail = false;
   }
 
   private handleAnyEmail() {
     this._showLoading = false;
-    this._arrowSelectionCount = 0;
+    this._arrowSelectionCount = -1;
     if (isValidEmail(this.userInput)) {
       const anyMailUser = {
         mail: this.userInput,
@@ -1482,21 +1467,11 @@ export class MgtPeoplePicker extends MgtTemplatedComponent {
     }
   }
 
-  private onPersonClick(person: IDynamicPerson): void {
-    this._currentSelectedUser = person;
+  // handle suggestion list item click
+  private handleSuggestionClick(person: IDynamicPerson): void {
     this.addPerson(person);
     this.hideFlyout();
-
-    if (!this.input) {
-      return;
-    }
-
     this.input.focus();
-    this._isFocused = true;
-    this.hideFlyout();
-    if (this.selectionMode === 'single') {
-      return;
-    }
   }
 
   /**
@@ -1513,9 +1488,8 @@ export class MgtPeoplePicker extends MgtTemplatedComponent {
         await this.loadState();
         clearTimeout(loadingTimeout);
         this._showLoading = false;
+        this._arrowSelectionCount = -1;
         this.showFlyout();
-
-        this._arrowSelectionCount = 0;
       }, 400);
     }
 
@@ -1535,7 +1509,7 @@ export class MgtPeoplePicker extends MgtTemplatedComponent {
       if (isCmdOrCtrlKey && event.code === 'ArrowLeft') {
         this._currentHighlightedUserPos =
           (this._currentHighlightedUserPos - 1 + selectedPeople.length) % selectedPeople.length;
-        if (this._currentHighlightedUserPos >= 0 && this._currentHighlightedUserPos !== NaN) {
+        if (this._currentHighlightedUserPos >= 0 && !Number.isNaN(this._currentHighlightedUserPos)) {
           this._highlightedUsers.push(selectedPeople[this._currentHighlightedUserPos]);
         } else {
           this._currentHighlightedUserPos = 0;
@@ -1565,34 +1539,40 @@ export class MgtPeoplePicker extends MgtTemplatedComponent {
       return;
     }
 
-    if (event.keyCode === 40 || event.keyCode === 38) {
-      // keyCodes capture: down arrow (40) and up arrow (38)
+    const input = event.target as HTMLInputElement;
+
+    if (event.key === 'ArrowUp' || event.key === 'ArrowDown') {
       this.handleArrowSelection(event);
-      if (this.input.value.length > 0) {
+      if (input.value.length > 0) {
         event.preventDefault();
       }
     }
 
-    const input = event.target as HTMLInputElement;
-    if (event.code === 'Tab' || event.code === 'Enter') {
+    if (event.code === 'Enter') {
       if (!event.shiftKey && this._foundPeople) {
-        // keyCodes capture: tab (9) and enter (13)
         event.preventDefault();
         event.stopPropagation();
-        if (this._foundPeople.length) {
-          this.fireCustomEvent('blur');
-        }
 
         const foundPerson = this._foundPeople[this._arrowSelectionCount];
         if (foundPerson) {
           this.addPerson(foundPerson);
-        } else if (this.allowAnyEmail) {
-          this.handleAnyEmail();
+          this.hideFlyout();
+          this.input.value = '';
         }
+      } else if (this.allowAnyEmail) {
+        this.handleAnyEmail();
       }
+    }
+
+    if (event.code == 'Escape') {
+      event.stopPropagation();
+    }
+
+    if (event.code === 'Tab') {
       this.hideFlyout();
-      (event.target as HTMLInputElement).value = '';
-    } else if (event.code === 'Comma' || event.code === 'Semicolon') {
+    }
+
+    if (event.code === 'Comma' || event.code === 'Semicolon') {
       if (this.allowAnyEmail) {
         event.preventDefault();
         event.stopPropagation();
@@ -1660,7 +1640,7 @@ export class MgtPeoplePicker extends MgtTemplatedComponent {
         } catch (error) {
           if (error instanceof SyntaxError) {
             const _delimeters = [',', ';'];
-            let listOfUsers: Array<string>;
+            let listOfUsers: string[];
             try {
               for (let i = 0; i < _delimeters.length; i++) {
                 listOfUsers = copiedText.split(_delimeters[i]);
@@ -1784,35 +1764,43 @@ export class MgtPeoplePicker extends MgtTemplatedComponent {
   private handleArrowSelection(event?: KeyboardEvent): void {
     const peopleList = this.renderRoot.querySelector('.people-list');
 
-    if (this._isKeyboardFocus === false) {
-      return;
-    }
     if (peopleList && peopleList.children.length) {
       if (event) {
         // update arrow count
-        if (event.keyCode === 38) {
-          // up arrow
-          this._arrowSelectionCount =
-            (this._arrowSelectionCount - 1 + peopleList.children.length) % peopleList.children.length;
+        if (event.key === 'ArrowUp') {
+          if (this._arrowSelectionCount === -1) {
+            this._arrowSelectionCount = 0;
+          } else {
+            this._arrowSelectionCount =
+              (this._arrowSelectionCount - 1 + peopleList.children.length) % peopleList.children.length;
+          }
         }
-        if (event.keyCode === 40) {
-          // down arrow
-          this._arrowSelectionCount = (this._arrowSelectionCount + 1) % peopleList.children.length;
+        if (event.key === 'ArrowDown') {
+          if (this._arrowSelectionCount === -1) {
+            this._arrowSelectionCount = 0;
+          } else {
+            this._arrowSelectionCount = (this._arrowSelectionCount + 1) % peopleList.children.length;
+          }
         }
       }
 
       // reset background color
+      // reset aria-selected to false
       // tslint:disable-next-line: prefer-for-of
       for (let i = 0; i < peopleList.children.length; i++) {
         peopleList.children[i].classList.remove('focused');
+        peopleList.children[i].setAttribute('aria-selected', 'false');
       }
 
       // set selected background
+      // set aria-selected to true
       const focusedItem = peopleList.children[this._arrowSelectionCount] as HTMLElement;
+
       if (focusedItem) {
         focusedItem.classList.add('focused');
         focusedItem.scrollIntoView({ behavior: 'smooth', block: 'nearest', inline: 'nearest' });
-        focusedItem.focus();
+        focusedItem.setAttribute('aria-selected', 'true');
+        this.input.setAttribute('aria-activedescendant', peopleList.children[this._arrowSelectionCount].id);
       }
     }
   }

@@ -7,8 +7,12 @@
 
 import { html } from 'lit-element';
 import { withCodeEditor } from '../../../.storybook/addons/codeEditorAddon/codeAddon';
+import { versionInfo } from '../../versionInfo';
 
 export default {
+  parameters: {
+    version: versionInfo
+  },
   title: 'Components / mgt-agenda / Templating',
   component: 'mgt-agenda',
   decorators: [withCodeEditor]
@@ -261,4 +265,3 @@ export const header = () => html`
 	</template>
 </mgt-agenda>
 `;
-

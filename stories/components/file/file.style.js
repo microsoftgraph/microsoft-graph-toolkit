@@ -7,8 +7,12 @@
 
 import { html } from 'lit-element';
 import { withCodeEditor } from '../../../.storybook/addons/codeEditorAddon/codeAddon';
+import { versionInfo } from '../../versionInfo';
 
 export default {
+  parameters: {
+    version: versionInfo
+  },
   title: 'Components / mgt-file / Style',
   component: 'mgt-file',
   decorators: [withCodeEditor]
@@ -33,7 +37,7 @@ export const customCSSProperties = () => html`
     --line2-font-size: 11px;
     --line2-font-weight	: 3px;
     --line2-color: #e50000;
-    --line2-text-transform: capitalize;	
+    --line2-text-transform: capitalize;
     --line3-font-size: 12px;
     --line3-font-weight: 3px;
     --line3-color: purple;

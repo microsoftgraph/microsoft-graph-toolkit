@@ -40,10 +40,11 @@ mgt-people-picker .root {
   &.disabled {
     pointer-events: none;
   }
+
   padding: 6px 0 0;
 
-  .selected-list {
-    flex: 1 0 auto;
+  .people-picker-inner {
+    flex: 1 1 auto;
     display: flex;
     flex-wrap: wrap;
     vertical-align: middle;
@@ -51,10 +52,107 @@ mgt-people-picker .root {
     font-style: normal;
     font-weight: normal;
     overflow: hidden;
+  }
 
-    &__options {
-      display: contents;
+  .flyout {
+    .search-box {
+      margin: 1px 2px 8px;
+
+      &.search-box-start {
+        line-height: normal;
+        margin-inline-start: 0px;
+        margin-inline-end: 0px;
+      }
+
+      &__input {
+        box-sizing: border-box;
+        border-width: 0;
+        border-style: none;
+        width: 100%;
+        display: flex;
+        flex: 1 0 auto;
+        font-family: $font-family;
+        position: relative;
+        outline: none;
+        font-style: normal;
+        font-weight: normal;
+        font-size: 14px;
+        background-color: $input__background-color;
+        color: $color;
+        word-spacing: inherit;
+        text-indent: inherit;
+        letter-spacing: inherit;
+        &::placeholder {
+          color: $placeholder__color;
+        }
+      }
     }
+
+    .flyout-root {
+      padding: 0;
+      border-radius: 2px;
+      min-width: 260px;
+      overflow-y: auto;
+      text-align: left;
+      list-style-type: none;
+      background-color: $dropdown__background-color;
+      max-height: var(--mgt-flyout-set-height, unset);
+      border-radius: 8px;
+      li {
+        cursor: pointer;
+      }
+
+      .people-list {
+        list-style: none;
+        padding: 0;
+        .list-person {
+          display: flex;
+          flex-direction: row;
+          align-items: center;
+          padding: 12px;
+          font-style: normal;
+          font-weight: 600;
+          font-size: 14px;
+          margin: var(--file-item-margin, 4px);
+          border-radius: 4px;
+          &:hover {
+            background-color: $dropdown-item__background-color--hover;
+            .people-person-text-area {
+              color: $dropdown-item__text__color--hover;
+            }
+          }
+          &.focused {
+            background-color: $dropdown-item__background-color--hover;
+            .people-person-text-area {
+              color: $dropdown-item__text__color--hover;
+            }
+          }
+          .people-person-text-area {
+            margin-left: 13px;
+            flex: 1 1 0;
+            max-height: 40px;
+            overflow: hidden;
+            color: $dropdown-item__text__color;
+
+            .people-person-text {
+              font-size: 14px;
+              font-weight: normal;
+              margin: 0;
+              padding: 0;
+              &.highlight-search-text {
+                font-weight: bold;
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+
+  .selected-list {
+    list-style: none;
+    padding: 0;
+    display: contents;
 
     &__person-wrapper {
       display: flex;
@@ -142,93 +240,6 @@ mgt-people-picker .root {
     &__person-wrapper-highlighted:hover {
       @extend .selected-list__person-wrapper-highlighted;
       background-color: #006cbe;
-    }
-
-    .flyout {
-      .search-box {
-        margin: 1px 2px 8px;
-
-        &.search-box-start {
-          line-height: normal;
-          margin-inline-start: 0px;
-          margin-inline-end: 0px;
-        }
-
-        &__input {
-          box-sizing: border-box;
-          border-width: 0;
-          border-style: none;
-          width: 100%;
-          display: flex;
-          flex: 1 0 auto;
-          font-family: $font-family;
-          position: relative;
-          outline: none;
-          font-style: normal;
-          font-weight: normal;
-          font-size: 14px;
-          background-color: $input__background-color;
-          color: $color;
-          word-spacing: inherit;
-          text-indent: inherit;
-          letter-spacing: inherit;
-          &::placeholder {
-            color: $placeholder__color;
-          }
-        }
-      }
-
-      .flyout-root {
-        padding: 0;
-        border-radius: 2px;
-        min-width: 260px;
-        overflow-y: auto;
-        text-align: left;
-        list-style-type: none;
-        background-color: $dropdown__background-color;
-        max-height: var(--mgt-flyout-set-height, unset);
-        border-radius: 8px;
-        li {
-          cursor: pointer;
-        }
-
-        .people-list {
-          .list-person {
-            display: flex;
-            flex-direction: row;
-            align-items: center;
-            padding: 12px;
-            font-style: normal;
-            font-weight: 600;
-            font-size: 14px;
-            margin: var(--file-item-margin, 4px);
-            border-radius: 4px;
-            &:hover {
-              background-color: $dropdown-item__background-color--hover;
-            }
-            &.focused {
-              background-color: $dropdown-item__background-color--hover;
-            }
-            .people-person-text-area {
-              margin-left: 13px;
-              flex: 1 1 0;
-              max-height: 40px;
-              overflow: hidden;
-              color: $color;
-
-              .people-person-text {
-                font-size: 14px;
-                font-weight: normal;
-                margin: 0;
-                padding: 0;
-                &.highlight-search-text {
-                  font-weight: bold;
-                }
-              }
-            }
-          }
-        }
-      }
     }
   }
 }

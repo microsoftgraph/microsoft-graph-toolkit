@@ -7,8 +7,12 @@
 
 import { html } from 'lit-element';
 import { withCodeEditor } from '../../.storybook/addons/codeEditorAddon/codeAddon';
+import { versionInfo } from '../versionInfo';
 
 export default {
+  parameters: {
+    version: versionInfo
+  },
   title: 'Samples / Templating',
   component: 'mgt-get',
   decorators: [withCodeEditor]
@@ -115,7 +119,7 @@ export const AgendaEventTemplate = () => html`
             let ampm = hours >= 12 ? 'PM' : 'AM';
             hours = hours % 12;
             hours = hours ? hours : 12;
-            
+
             timeString = hours + ':' + minutesStr + ' ' + ampm;
           }
 
