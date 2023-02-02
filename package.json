@@ -17,7 +17,8 @@
     "nohoist": [
       "**/@microsoft/sp*",
       "**/@microsoft/eslint*",
-      "**/@rushstack/*"
+      "**/@rushstack/*",
+      "**/@vue/*"
     ]
   },
   "scripts": {
