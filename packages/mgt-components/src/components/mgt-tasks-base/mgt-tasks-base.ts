@@ -8,7 +8,7 @@
 import { html, TemplateResult } from 'lit';
 import { property } from 'lit/decorators.js';
 import { classMap } from 'lit/directives/class-map.js';
-import { ComponentMediaQuery, Providers, ProviderState, MgtTemplatedComponent } from '@microsoft/mgt-element';
+import { ComponentMediaQuery, Providers, ProviderState, MgtTemplatedComponent, mgtHtml } from '@microsoft/mgt-element';
 import { strings } from './strings';
 import { MgtFlyout } from '../sub-components/mgt-flyout/mgt-flyout';
 import { registerFluentComponents } from '../../utils/FluentComponents';
@@ -253,7 +253,7 @@ export abstract class MgtTasksBase extends MgtTemplatedComponent {
       </fluent-button>
     `;
 
-    const taskTitle = html`
+    const taskTitle = mgtHtml`
        <fluent-text-field
          appearance="outline"
          label="new-taskName-input"
