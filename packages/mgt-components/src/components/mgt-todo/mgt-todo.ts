@@ -169,7 +169,7 @@ export class MgtTodo extends MgtTasksBase {
    *
    */
   protected renderPicker() {
-    return html`
+    return mgtHtml`
       <mgt-picker
         resource="me/todo/lists"
         scopes="tasks.read, tasks.readwrite"
