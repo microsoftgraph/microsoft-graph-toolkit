@@ -148,7 +148,7 @@ export const dynamicGroupId = () => html`
     });
 
     function setGroupValue(selected) {
-      picker.setAttribute('group', selected);
+      picker.setAttribute('group-id', selected);
     }
   </script>
 `;
