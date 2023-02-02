@@ -25,3 +25,13 @@ export const MaxPages = () => html`
 export const CacheEnabled = () => html`
   <mgt-picker resource="/groups" placeholder="Select a group" scopes="group.read.all" key-name="displayName" cache-enabled="true" cache-invalidation-period="50000"></mgt-picker>
 `;
+
+export const events = () => html`
+  <!-- Inspect to view log -->
+  <mgt-picker resource="me/messages" scopes="mail.read" placeholder="Select a message" key-name="subject" max-pages="2"></mgt-picker>
+  <script>
+    document.querySelector('mgt-picker').addEventListener('selectionChanged', e => {
+      console.log('selectedItem:', e.detail.data)
+    });
+  </script>
+`;
