@@ -61,7 +61,8 @@ export default class MgtWebPart extends BaseClientSideWebPart<Record<string, unk
     if (!Providers.globalProvider) {
       Providers.globalProvider = new SharePointProvider(this.context);
     }
-    customElementHelper.withDisambiguation('foo');
+    // Use the solution name to ensure unique tag names
+    customElementHelper.withDisambiguation('spfx-solution-name');
     return super.onInit();
   }
 
@@ -120,7 +121,8 @@ export interface IMgtDemoWebPartProps {
   description: string;
 }
 // set the disambiguation before initializing any webpart
-customElementHelper.withDisambiguation('bar');
+// Use the solution name to ensure unique tag names
+customElementHelper.withDisambiguation('spfx-solution-name');
 
 export default class MgtDemoWebPart extends BaseClientSideWebPart<IMgtDemoWebPartProps> {
   // set the global provider
