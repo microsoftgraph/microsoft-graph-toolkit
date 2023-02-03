@@ -97,7 +97,8 @@ $person-card-nav-back-arrow-hover-color: var(--person-card-nav-back-arrow-hover-
     display: flex;
     flex-direction: column;
     width: calc(var(--mgt-flyout-set-width, 375px) - 40px);
-    padding: 23px 0px 0px 23px;
+    padding-inline-start: 23px;
+    padding-top: 23px;
     border-bottom: 1px solid $gray30;
 
     .person-image {
@@ -121,8 +122,9 @@ $person-card-nav-back-arrow-hover-color: var(--person-card-nav-back-arrow-hover-
       display: flex;
       -webkit-align-items: center;
       align-items: center;
-      margin-left: 91px;
-      margin-top: -35px;
+      position: relative;
+      left: 91px;
+      bottom: 25px;
       z-index: 1;
 
       .icon {
@@ -131,11 +133,9 @@ $person-card-nav-back-arrow-hover-color: var(--person-card-nav-back-arrow-hover-
         cursor: pointer;
         font-size: 13px;
         white-space: nowrap;
-        margin-top: 10px;
-        margin-bottom: 38px;
 
         &:not(:last-child) {
-          margin-right: 38px;
+          margin-inline-end: 38px;
         }
 
         svg {
@@ -226,8 +226,7 @@ $person-card-nav-back-arrow-hover-color: var(--person-card-nav-back-arrow-hover-
     }
     border: 1px solid transparent;
     fluent-tab {
-      padding-bottom: 4px !important;
-      margin-bottom: -3px !important;
+      padding-bottom: 1px !important;
       border: 1px solid transparent !important;
       &:focus-visible {
         border: 1px solid #2b2b2b !important;
@@ -272,7 +271,7 @@ $person-card-nav-back-arrow-hover-color: var(--person-card-nav-back-arrow-hover-
       --neutral-fill-secondary-rest: $background-color;
       width: 83%;
       width: 300px;
-      margin-start: 16px;
+      margin-inline-start: 16px;
       border-radius: 4px;
       &:focus-within {
         --neutral-fill-secondary-rest: $background-color;
@@ -325,11 +324,11 @@ $person-card-nav-back-arrow-hover-color: var(--person-card-nav-back-arrow-hover-
     display: flex;
     flex-direction: row;
     border-bottom: 1px solid set-var(tab__line__color, $theme-default, $common);
-    padding: 12px 10px 8px 10px;
+    padding: 12px 10px 8px;
 
     &__input {
       flex-grow: 1;
-      padding-left: 12px;
+      padding-inline-start: 12px;
       border: 1px solid #efefef;
       border-radius: 4px;
       color: $color;
@@ -429,9 +428,7 @@ $person-card-nav-back-arrow-hover-color: var(--person-card-nav-back-arrow-hover-
 
 [dir='rtl'] {
   .base-icons {
-    span {
-      margin-right: 8px;
-    }
+    right: 91px;
   }
   .nav__back {
     width: 20px !important;
