@@ -10,7 +10,7 @@ import { withCodeEditor } from '../../.storybook/addons/codeEditorAddon/codeAddo
 
 export default {
   title: 'Samples / Templating',
-  component: 'mgt-get',
+  component: 'get',
   decorators: [withCodeEditor]
 };
 

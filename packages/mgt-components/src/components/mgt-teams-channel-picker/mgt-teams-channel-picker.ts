@@ -139,7 +139,7 @@ export interface MgtTeamsChannelPickerConfig {
  * @class MgtTeamsChannelPicker
  * @extends {MgtTemplatedComponent}
  *
- * @fires selectionChanged - Fired when the selection changes
+ * @fires {CustomEvent<SelectedChannel | null>} selectionChanged - Fired when the selection changes
  *
  * @cssprop --color - {font} Default font color
  *
@@ -199,7 +199,7 @@ export class MgtTeamsChannelPicker extends MgtTemplatedComponent {
    * @type {SelectedChannel}
    * @memberof MgtTeamsChannelPicker
    */
-  public get selectedItem(): SelectedChannel {
+  public get selectedItem(): SelectedChannel | null {
     if (this._selectedItemState) {
       return { channel: this._selectedItemState.item, team: this._selectedItemState.parent.item };
     } else {
@@ -896,7 +896,7 @@ export class MgtTeamsChannelPicker extends MgtTemplatedComponent {
   private selectChannel(item: ChannelPickerItemState) {
     if (this._selectedItemState !== item) {
       this._selectedItemState = item;
-      this.fireCustomEvent('selectionChanged', item ? [this.selectedItem] : []);
+      this.fireCustomEvent('selectionChanged', this.selectedItem);
     }
 
     const input = this._input;

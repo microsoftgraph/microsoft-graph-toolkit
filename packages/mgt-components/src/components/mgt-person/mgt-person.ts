@@ -53,10 +53,10 @@ const defaultPersonProperties = [
  * @class MgtPerson
  * @extends {MgtTemplatedComponent}
  *
- * @fires line1clicked - Fired when line1 is clicked
- * @fires line2clicked - Fired when line2 is clicked
- * @fires line3clicked - Fired when line3 is clicked
- * @fires line4clicked - Fired when line4 is clicked
+ * @fires {CustomEvent<IDynamicPerson>} line1clicked - Fired when line1 is clicked
+ * @fires {CustomEvent<IDynamicPerson>} line2clicked - Fired when line2 is clicked
+ * @fires {CustomEvent<IDynamicPerson>} line3clicked - Fired when line3 is clicked
+ * @fires {CustomEvent<IDynamicPerson>} line4clicked - Fired when line4 is clicked
  *
  * @cssprop --avatar-size - {Length} Avatar size
  * @cssprop --avatar-border - {String} Avatar border

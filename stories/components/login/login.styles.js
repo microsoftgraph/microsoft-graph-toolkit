@@ -10,7 +10,7 @@ import { withCodeEditor } from '../../../.storybook/addons/codeEditorAddon/codeA
 
 export default {
   title: 'Components / mgt-login / Styles',
-  component: 'mgt-login',
+  component: 'login',
   decorators: [withCodeEditor]
 };
 
