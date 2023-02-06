@@ -44,3 +44,13 @@ export const errorTemplate = () => html`
     </mgt-picker>
   </div>
   `;
+
+export const renderedItem = () => html`
+  <mgt-picker resource="me/todo/lists" scopes="tasks.read, tasks.readwrite" key-name="displayName">
+    <template data-type="rendered-item">
+      <div data-for="item in items">
+        <p>{{ item }}</p>
+      </div>
+    </template>
+  </mgt-picker>
+`;
