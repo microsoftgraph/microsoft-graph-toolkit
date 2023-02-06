@@ -10,7 +10,7 @@ import { withCodeEditor } from '../../../.storybook/addons/codeEditorAddon/codeA
 
 export default {
   title: 'Components / mgt-person / Properties',
-  component: 'mgt-person',
+  component: 'person',
   decorators: [withCodeEditor]
 };
 
@@ -33,12 +33,12 @@ export const setPersonDetails = () => html`
    <mgt-person class="my-person" view="twoLines" line2-property="title" person-card="hover" fetch-image> </mgt-person>
    <script>
      const person = document.querySelector('.my-person');
- 
+
              person.personDetails = {
                displayName: 'Megan Bowen',
                mail: 'MeganB@M365x214355.onmicrosoft.com'
              };
- 
+
              // set image
             // person.personImage = '';
    </script>
@@ -61,7 +61,7 @@ export const personFallbackDetails = () => html`
    <mgt-person person-query="mbowen" view="twoLines"
      fallback-details='{}'></mgt-person>
  </div>
- 
+
    <style>
    .example {
      margin-top: 16px;
@@ -89,9 +89,9 @@ export const personView = () => html`
    <div class="example">
      <mgt-person person-query="me" view="fourlines"></mgt-person>
    </div>
- 
+
    <!-- Person View with presence; check JS tab -->
- 
+
    <div class="example">
      <mgt-person person-query="me" id="online" view="oneline" show-presence></mgt-person>
    </div>
@@ -104,7 +104,7 @@ export const personView = () => html`
    <div class="example">
      <mgt-person person-query="me" id="online4" show-presence view="fourLines" ></mgt-person>
    </div>
- 
+
    <script>
              const online = {
            activity: 'Available',
@@ -115,13 +115,13 @@ export const personView = () => html`
        const onlinePerson2 = document.getElementById('online2');
        const onlinePerson3 = document.getElementById('online3');
        const onlinePerson4 = document.getElementById('online4');
- 
+
        onlinePerson.personPresence = online;
        onlinePerson2.personPresence = online;
        onlinePerson3.personPresence = online;
        onlinePerson4.personPresence = online;
      </script>
- 
+
    <style>
      .example {
        margin-bottom: 20px;
@@ -212,7 +212,7 @@ export const personPresenceDisplayAll = () => html`
        availability: 'Offline',
        id: null
      };
- 
+
      const onlinePerson = document.getElementById('online');
      const onlineOofPerson = document.getElementById('onlineOof');
      const busyPerson = document.getElementById('busy');
@@ -229,7 +229,7 @@ export const personPresenceDisplayAll = () => html`
      const dndOofPersonSmall = document.getElementById('dndOof-small');
      const awayPersonSmall = document.getElementById('away-small');
      const oofPersonSmall = document.getElementById('oof-small');
- 
+
      onlinePerson.personPresence = online;
      onlineOofPerson.personPresence = onlineOof;
      busyPerson.personPresence = busy;
@@ -311,7 +311,7 @@ export const moreExamples = () => html`
      .example {
        margin-bottom: 20px;
      }
- 
+
      .styled-person {
        --font-family: 'Comic Sans MS', cursive, sans-serif;
        --color-sub1: red;
@@ -321,7 +321,7 @@ export const moreExamples = () => html`
        --avatar-border-radius: 10% 35%;
        --line2-text-transform: uppercase;
      }
- 
+
      .person-initials {
        --initials-color: yellow;
        --initials-background-color: red;
@@ -329,22 +329,22 @@ export const moreExamples = () => html`
        --avatar-border-radius: 10% 35%;
      }
    </style>
- 
+
    <div class="example">
      <div>Default person</div>
      <mgt-person person-query="me"></mgt-person>
    </div>
- 
+
    <div class="example">
      <div>One line</div>
      <mgt-person person-query="me" view="oneline"></mgt-person>
    </div>
- 
+
    <div class="example">
      <div>Two lines</div>
      <mgt-person person-query="me" view="twoLines"></mgt-person>
    </div>
- 
+
    <div class="example">
      <div>Change line content</div>
      <!--add fallback property by comma separating-->
@@ -355,27 +355,27 @@ export const moreExamples = () => html`
        view="twoLines"
      ></mgt-person>
    </div>
- 
+
    <div class="example">
      <div>Large avatar</div>
      <mgt-person person-query="me" avatar-size="large"></mgt-person>
    </div>
- 
+
    <div class="example">
      <div>Different styles (see css tab for style)</div>
      <mgt-person class="styled-person" person-query="me" view="twoLines"></mgt-person>
    </div>
- 
+
    <div class="example" style="width: 200px">
      <div>Overflow</div>
      <mgt-person person-query="me" view="twoLines"></mgt-person>
    </div>
- 
+
    <div class="example">
      <div>Style initials (see css tab for style)</div>
      <mgt-person class="person-initials" person-query="alex@fineartschool.net" view="oneline"></mgt-person>
    </div>
- 
+
    <div>
      <div>Additional Person properties</div>
      <mgt-person

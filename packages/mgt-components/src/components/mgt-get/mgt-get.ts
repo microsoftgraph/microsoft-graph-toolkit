@@ -66,9 +66,19 @@ const getIsResponseCacheEnabled = (): boolean =>
   CacheService.config.response.isEnabled && CacheService.config.isEnabled;
 
 /**
+ * Holder type emitted with the dataChange event
+ */
+export type DataChangedDetail = {
+  // tslint:disable: completed-docs
+  response?: any;
+  error?: any;
+  // tslint:enable: completed-docs
+};
+
+/**
  * Custom element for making Microsoft Graph get queries
  *
- * @fires dataChange - Fired when data changes
+ * @fires {CustomEvent<DataChangedDetail>} dataChange - Fired when data changes
  *
  * @export
  * @class mgt-get

@@ -41,12 +41,6 @@ The picker is a component that can query any Microsoft Graph API and render a dr
 ```
 <mgt-picker resource="/groups">
   <template type="rendered-item">
-    Item {{id}} with title {{title}}
-  </template>
-</mgt-picker>
-
-<mgt-picker resource="/groups">
-  <template type="rendered-item">
     <span>
       <mgt-person person-details="{{ this }}" person-card="none" fetch-image></mgt-person> - {{title}}
     </span>
@@ -89,9 +83,6 @@ The picker is a component that can query any Microsoft Graph API and render a dr
 | loading       | null: no data                          | The template used to render the state of the picker while the request to Graph is being made |
 | error         | null: no data                          | The template used if search returns no results.                                              |
 | rendered-item | renderedItem: the item being rendered  | The template used to render the item inside the dropdown.                                    |
-| selected-item | selectedItem: the selected item object | The template used to render the selected item inside the input box.                          |
-
-
 
 ## APIs and Permissions
 
