@@ -6,8 +6,8 @@
  */
 
 import { html, TemplateResult } from 'lit';
-import { customElement, property, state } from 'lit/decorators.js';
-import { MgtTemplatedComponent } from '@microsoft/mgt-element';
+import { property, state } from 'lit/decorators.js';
+import { MgtTemplatedComponent, mgtHtml, customElement } from '@microsoft/mgt-element';
 import { strings } from './strings';
 import { fluentCombobox, fluentOption } from '@fluentui/web-components';
 import { registerFluentComponents } from '../../utils/FluentComponents';
@@ -23,7 +23,8 @@ registerFluentComponents(fluentCombobox, fluentOption);
  * @class MgtPicker
  * @extends {MgtTemplatedComponent}
  */
-@customElement('mgt-picker')
+// @customElement('mgt-picker')
+@customElement('picker')
 export class MgtPicker extends MgtTemplatedComponent {
   protected get strings() {
     return strings;
@@ -202,7 +203,7 @@ export class MgtPicker extends MgtTemplatedComponent {
       let template = this.renderTemplate('rendered-item', { items });
       rendered.push(html`
         <div class="item" role="presentation" aria-label="items">${template}</div>`);
-      return html`${rendered}`;
+      return mgtHtml`${rendered}`;
     }
 
     return this.response?.length > 0 ? this.renderPicker() : this.renderGet();
@@ -216,7 +217,7 @@ export class MgtPicker extends MgtTemplatedComponent {
    * @memberof MgtPicker
    */
   protected renderPicker(): TemplateResult {
-    return html`
+    return mgtHtml`
       <fluent-combobox id="combobox" autocomplete="list" placeholder=${this.placeholder}>
         ${this.response.map(
           item => html`
@@ -236,7 +237,7 @@ export class MgtPicker extends MgtTemplatedComponent {
    * @memberof MgtPicker
    */
   protected renderGet(): TemplateResult {
-    return html`
+    return mgtHtml`
       <mgt-get 
         resource=${this.resource}
         version=${this.version} 
