@@ -37,7 +37,6 @@ export class MgtPicker extends MgtTemplatedComponent {
    */
   @property({
     attribute: 'resource',
-    reflect: true,
     type: String
   })
   public resource: string;
@@ -50,7 +49,6 @@ export class MgtPicker extends MgtTemplatedComponent {
    */
   @property({
     attribute: 'version',
-    reflect: true,
     type: String
   })
   public version: string = 'v1.0';
@@ -65,7 +63,6 @@ export class MgtPicker extends MgtTemplatedComponent {
    */
   @property({
     attribute: 'max-pages',
-    reflect: true,
     type: Number
   })
   public maxPages: number = 3;
@@ -116,8 +113,7 @@ export class MgtPicker extends MgtTemplatedComponent {
     attribute: 'scopes',
     converter: value => {
       return value ? value.toLowerCase().split(',') : null;
-    },
-    reflect: true
+    }
   })
   public scopes: string[] = [];
 
@@ -130,7 +126,6 @@ export class MgtPicker extends MgtTemplatedComponent {
    */
   @property({
     attribute: 'cache-enabled',
-    reflect: true,
     type: Boolean
   })
   public cacheEnabled: boolean = false;
@@ -198,6 +193,16 @@ export class MgtPicker extends MgtTemplatedComponent {
       return this.renderTemplate('error', this.error ? this.error : null);
     } else if (this.hasTemplate('no-data')) {
       return this.renderTemplate('no-data', null);
+    } else if (this.response?.length > 0 && this.hasTemplate('rendered-item')) {
+      let rendered: TemplateResult[] = [];
+      let items = [];
+      this.response.map(item => {
+        items.push(item[this.keyName]);
+      });
+      let template = this.renderTemplate('rendered-item', { items });
+      rendered.push(html`
+        <div class="item" role="presentation" aria-label="items">${template}</div>`);
+      return html`${rendered}`;
     }
 
     return this.response?.length > 0 ? this.renderPicker() : this.renderGet();
