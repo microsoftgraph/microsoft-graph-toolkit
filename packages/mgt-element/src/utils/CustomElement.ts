@@ -16,5 +16,18 @@ import { customElementHelper } from '../components/customElementHelper';
  * @param tagName the base name for the custom element tag
  */
 export const customElement = (tagName: string): ((classOrDescriptor: unknown) => any) => {
-  return litElement(`${customElementHelper.prefix}-${tagName}`);
+  const mgtTagName = `${customElementHelper.prefix}-${tagName}`;
+  const mgtElement = customElements.get(mgtTagName);
+  const unknownVersion = 'Unknown possibly <3.0.0';
+  const version = (mgtElement as any).version || unknownVersion;
+  if (mgtElement) {
+    // tslint:disable-next-line: no-console
+    console.error(`Element with tag name ${mgtTagName} already exists, using for using ${mgtElement.name}@${version}`);
+    return (classOrDescriptor: unknown) => {
+      // tslint:disable-next-line: no-console
+      console.error(`${mgtTagName} for wants to use v${(classOrDescriptor as any).version || unknownVersion}`);
+      return classOrDescriptor;
+    };
+  }
+  return litElement(mgtTagName);
 };
