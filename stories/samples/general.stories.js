@@ -10,7 +10,6 @@ import { withCodeEditor } from '../../.storybook/addons/codeEditorAddon/codeAddo
 
 export default {
   title: 'Samples / General',
-  component: 'mgt-combo',
   decorators: [withCodeEditor]
 };
 
