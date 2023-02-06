@@ -68,7 +68,7 @@ interface IFocusable {
  * @class MgtPicker
  * @extends {MgtTemplatedComponent}
  *
- * @fires selectionChanged - Fired when selection changes
+ * @fires {CustomEvent<IDynamicPerson[]>} selectionChanged - Fired when set of selected people changes
  *
  * @cssprop --color - {Color} Default font color
  *

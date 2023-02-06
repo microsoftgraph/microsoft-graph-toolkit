@@ -7,14 +7,10 @@
 
 import { html } from 'lit';
 import { withCodeEditor } from '../../../.storybook/addons/codeEditorAddon/codeAddon';
-import { versionInfo } from '../../versionInfo';
 
 export default {
-  parameters: {
-    version: versionInfo
-  },
   title: 'Components / mgt-teams-channel-picker',
-  component: 'mgt-teams-channel-picker',
+  component: 'teams-channel-picker',
   decorators: [withCodeEditor]
 };
 

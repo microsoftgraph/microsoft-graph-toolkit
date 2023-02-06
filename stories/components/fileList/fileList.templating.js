@@ -6,14 +6,10 @@
  */
 import { html } from 'lit';
 import { withCodeEditor } from '../../../.storybook/addons/codeEditorAddon/codeAddon';
-import { versionInfo } from '../../versionInfo';
 
 export default {
-  parameters: {
-    version: versionInfo
-  },
   title: 'Components / mgt-file-list / Templating',
-  component: 'mgt-file',
+  component: 'file',
   decorators: [withCodeEditor]
 };
 
