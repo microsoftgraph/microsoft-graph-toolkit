@@ -394,14 +394,33 @@ export class MgtTeamsChannelPicker extends MgtTemplatedComponent {
         src=${this.teamsPhotos[this._selectedItemState.parent.item.id]?.photo} />`;
     }
 
+    const maxChars = 32; // without the ellipsis
+    const originalParentName = this._selectedItemState?.parent?.item?.displayName;
+    const originalChannelName = this._selectedItemState?.item?.displayName;
+    let parentName = originalParentName.trim();
+    let channelName = originalChannelName.trim();
+
+    const totalChars = (parentName + channelName).length;
+
+    if (totalChars > maxChars) {
+      let stop = maxChars - parentName.length;
+      if (stop < 3) {
+        stop = 16; // reset to a half and half
+        parentName = parentName.slice(0, stop);
+        parentName = originalParentName.length < stop ? parentName : `${parentName}...`;
+      }
+      channelName = channelName.slice(0, stop);
+      channelName = originalChannelName.length <= stop ? channelName : `${channelName}...`;
+    }
+
     return html`
       <fluent-breadcrumb title=${this._selectedItemState.item.displayName}>
         <fluent-breadcrumb-item>
           <span slot="start">${icon}</span>
-          <span slot="end" class="team-parent-name">${this._selectedItemState.parent.item.displayName}</span>
+          <span slot="end" class="team-parent-name">${parentName}</span>
           <span slot="separator" class="arrow">${getSvg(SvgIcon.TeamSeparator, '#000000')}</span>
         </fluent-breadcrumb-item>
-        <fluent-breadcrumb-item>${this._selectedItemState.item.displayName}</fluent-breadcrumb-item>
+        <fluent-breadcrumb-item>${channelName}</fluent-breadcrumb-item>
       </fluent-breadcrumb>`;
   }
 
