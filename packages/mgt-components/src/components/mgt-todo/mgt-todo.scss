@@ -13,6 +13,9 @@
   .Task {
     @extend .Task;
     width: 800px;
+    &.NewTask {
+      margin: 0;
+    }
   }
 
   .TaskDetails {
@@ -50,7 +53,6 @@
 
   fluent-text-field {
     width: 800px;
-    height: 34px;
 
     > div {
       display: flex;
