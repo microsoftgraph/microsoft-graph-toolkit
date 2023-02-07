@@ -12,7 +12,7 @@
   border-radius: 8px;
   .Task {
     @extend .Task;
-    border: none;
+    width: 800px;
   }
 
   .TaskDetails {
@@ -25,18 +25,9 @@
     flex-direction: row;
     align-items: center;
     padding: 2px;
-
-    width: 800px;
     height: 34px;
 
     border-radius: 4px;
-
-    /* Inside auto layout */
-
-    flex: none;
-    order: 1;
-    align-self: stretch;
-    flex-grow: 1;
     .Task {
       > div {
         display: flex;
@@ -44,27 +35,16 @@
         width: 200px;
       }
     }
-  }
-
-  fluent-text-field {
-    width: 800px;
-    height: 34px;
-
-    > div {
-      display: flex;
-      align-items: center;
+    .title {
+      width: 600px;
     }
-
-    div:nth-child(2) {
-      display: flex;
-      align-items: center;
+    .TaskDelete {
+      margin-inline-end: 14px;
     }
-
-    fluent-button {
-      width: 50px;
-      margin-inline-end: 50px;
-      margin-inline-start: 10px;
-      height: 16px;
+    .TaskDue {
+      width: 111px;
+      height: 32px;
+      margin-inline-end: 30px;
     }
   }
 

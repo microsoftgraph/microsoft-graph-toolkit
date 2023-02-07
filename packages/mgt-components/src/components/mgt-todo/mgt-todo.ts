@@ -29,9 +29,9 @@ import {
 import { styles } from './mgt-todo-css';
 import { strings } from './strings';
 import { registerFluentComponents } from '../../utils/FluentComponents';
-import { fluentRadio, fluentRadioGroup, fluentTextField } from '@fluentui/web-components';
+import { fluentRadio, fluentRadioGroup, fluentButton } from '@fluentui/web-components';
 
-registerFluentComponents(fluentRadio, fluentRadioGroup, fluentTextField);
+registerFluentComponents(fluentRadio, fluentRadioGroup, fluentButton);
 
 /**
  * Filter function
@@ -204,26 +204,23 @@ export class MgtTodo extends MgtTasksBase {
 
     const taskDueTemplate = task.dueDateTime
       ? html`
-            <div class="TaskDetail TaskDue">
-              <span class="TaskDueCalendar">${getSvg(SvgIcon.Calendar)}</span>
-              <span>${getDateString(new Date(task.dueDateTime.dateTime))}</span>
-            </div>
-          `
+          <fluent-button appearance="stealth" class="TaskDue">
+            <span part="start" class="TaskDueCalendar">${getSvg(SvgIcon.Calendar)}</span>
+            <span part="content" class="TaskDueDate">${getDateString(new Date(task.dueDateTime.dateTime))}</span>
+        </fluent-button>
+        `
       : null;
 
     if (this.hasTemplate('task-details')) {
       taskDetailsTemplate = this.renderTemplate('task-details', context, `task-details-${task.id}`);
     } else {
       taskDetailsTemplate = html`
-      <div class="TaskDetails ${this.mediaQuery}">
-        <fluent-text-field appearance="filled" .value="${task.title}" class="Task">
-          <div slot="end">
-            <span class="TaskDue">${taskDueTemplate}</span>
-            <span class="TaskDelete" @click="${(e: Event) => this.removeTask(e, task.id)}">
-              ${getSvg(SvgIcon.Delete)}
-            </span>
-          </div>
-        </fluent-text-field>
+      <div class="TaskDetails">
+        <div class="title">${task.title}</div>
+        <div class="TaskDue">${taskDueTemplate}</div>
+        <div class="TaskDelete" @click="${(e: Event) => this.removeTask(e, task.id)}">
+          ${getSvg(SvgIcon.Delete)}
+        </div>
       </div>
       `;
     }
