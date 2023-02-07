@@ -498,7 +498,7 @@ export class MgtTeamsChannelPicker extends MgtTemplatedComponent {
    */
   protected renderUpChevron() {
     return html`
-      <div style="display:none" class="up-chevron" @click=${this.lostFocus}>
+      <div style="display:none" class="up-chevron" @click=${(e: Event) => this.handleUpChevronClick(e)}>
         <svg width="12" height="12" viewBox="0 0 12 12" fill="none" xmlns="http://www.w3.org/2000/svg">
           <path d="M2.21967 7.53033C2.51256 7.82322 2.98744 7.82322 3.28033 7.53033L6 4.81066L8.71967 7.53033C9.01256 7.82322 9.48744 7.82322 9.78033 7.53033C10.0732 7.23744 10.0732 6.76256 9.78033 6.46967L6.53033 3.21967C6.23744 2.92678 5.76256 2.92678 5.46967 3.21967L2.21967 6.46967C1.92678 6.76256 1.92678 7.23744 2.21967 7.53033Z" fill="#212121" />
         </svg>
@@ -737,7 +737,6 @@ export class MgtTeamsChannelPicker extends MgtTemplatedComponent {
         e.preventDefault();
         break;
       case 'Backspace':
-        console.log('key ', key, this._inputValue.length, this._selectedItemState);
         if (this._inputValue.length === 0 && this._selectedItemState) {
           this.selectChannel(null);
           this.resetFocusState();
@@ -845,16 +844,15 @@ export class MgtTeamsChannelPicker extends MgtTemplatedComponent {
       input.textContent = '';
     }
 
+    this._isFocused = false;
+    this._isDropdownVisible = false;
     this.filterList();
     this.toggleChevron();
+    this.requestUpdate();
 
     if (this._selectedItemState !== undefined) {
       this.showCloseIcon();
     }
-
-    this._isFocused = false;
-    this._isDropdownVisible = false;
-    this.requestUpdate();
   }
 
   private selectChannel(item: ChannelPickerItemState) {
@@ -862,9 +860,9 @@ export class MgtTeamsChannelPicker extends MgtTemplatedComponent {
       this._input.setAttribute('disabled', 'true');
     } else {
       this._input.removeAttribute('disabled');
-      this.lostFocus();
     }
     this._selectedItemState = item;
+    this.lostFocus();
     this.fireCustomEvent('selectionChanged', this._selectedItemState);
   }
 
@@ -891,7 +889,6 @@ export class MgtTeamsChannelPicker extends MgtTemplatedComponent {
       }
       if (upChevron) {
         upChevron.style.display = null;
-        this.hideCloseIcon();
       }
     } else {
       if (downChevron) {
@@ -902,5 +899,11 @@ export class MgtTeamsChannelPicker extends MgtTemplatedComponent {
         upChevron.style.display = 'none';
       }
     }
+    this.hideCloseIcon();
+  }
+
+  private handleUpChevronClick(e: Event) {
+    e.stopPropagation();
+    this.lostFocus();
   }
 }
