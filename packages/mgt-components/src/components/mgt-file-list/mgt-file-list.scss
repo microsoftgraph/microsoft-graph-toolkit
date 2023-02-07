@@ -111,4 +111,7 @@ $progress-ring-size: var(--progress-ring-size, 24px);
       background-color: $show-more-button-background-color--hover;
     }
   }
+  .interactive-breadcrumb {
+    cursor: pointer;
+  }
 }

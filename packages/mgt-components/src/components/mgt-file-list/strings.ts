@@ -6,5 +6,6 @@
  */
 
 export const strings = {
+  rootNode: 'Home',
   showMoreSubtitle: 'Show more items'
 };
