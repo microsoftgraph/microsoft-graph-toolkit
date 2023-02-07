@@ -178,7 +178,7 @@ export class MgtTodo extends MgtTasksBase {
   }
 
   protected async handleSelectionChanged(e: any) {
-    let list = e.detail.data;
+    let list = e.detail;
     this.currentList = list;
     await this.loadTasks(list);
   }
