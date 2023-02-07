@@ -180,6 +180,7 @@ export class MgtPicker extends MgtTemplatedComponent {
    */
   protected clearState(): void {
     this.response = null;
+    this.error = null;
   }
 
   /**
@@ -190,8 +191,8 @@ export class MgtPicker extends MgtTemplatedComponent {
   public render() {
     if (this.isLoadingState && !this.response) {
       return this.renderTemplate('loading', null);
-    } else if (this.error) {
-      return this.renderTemplate('error', this.error ? this.error : null);
+    } else if (this.hasTemplate('error')) {
+      return this.renderTemplate('error', this.error ? this.error : null, 'error');
     } else if (this.hasTemplate('no-data')) {
       return this.renderTemplate('no-data', null);
     }
