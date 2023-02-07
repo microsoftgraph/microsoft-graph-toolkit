@@ -20,8 +20,6 @@ import '../sub-components/mgt-dot-options/mgt-dot-options';
 import {
   createTodoTask,
   deleteTodoTask,
-  getTodoTaskList,
-  getTodoTaskLists,
   getTodoTasks,
   TaskStatus,
   TodoTask,
@@ -179,7 +177,7 @@ export class MgtTodo extends MgtTasksBase {
         `;
   }
 
-  protected async handleSelectionChanged(e) {
+  protected async handleSelectionChanged(e: any) {
     let list = e.detail.data;
     this.currentList = list;
     await this.loadTasks(list);
