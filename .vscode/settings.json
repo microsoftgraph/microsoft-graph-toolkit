@@ -5,5 +5,6 @@
     "source.fixAll.tslint": true
   },
   "lit-html.tags": ["mgtHtml"],
-  "typescript.tsdk": "node_modules/typescript/lib"
+  "typescript.tsdk": "node_modules/typescript/lib",
+  "cSpell.words": ["Msal", "spfx"]
 }

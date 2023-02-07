@@ -3,7 +3,7 @@ import { withCodeEditor } from '../../../.storybook/addons/codeEditorAddon/codeA
 
 export default {
   title: 'Components / mgt-file / Templating',
-  component: 'mgt-file',
+  component: 'file',
   decorators: [withCodeEditor]
 };
 

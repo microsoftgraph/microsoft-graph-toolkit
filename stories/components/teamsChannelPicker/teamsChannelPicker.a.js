@@ -10,7 +10,7 @@ import { withCodeEditor } from '../../../.storybook/addons/codeEditorAddon/codeA
 
 export default {
   title: 'Components / mgt-teams-channel-picker',
-  component: 'mgt-teams-channel-picker',
+  component: 'teams-channel-picker',
   decorators: [withCodeEditor]
 };
 

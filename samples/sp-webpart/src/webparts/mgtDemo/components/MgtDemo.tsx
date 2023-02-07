@@ -2,10 +2,10 @@ import * as React from 'react';
 import styles from './MgtDemo.module.scss';
 import { IMgtDemoProps } from './IMgtDemoProps';
 
-// to ensure your webpart is leveraging the shared mgt library,
+// to ensure your web part is leveraging the shared mgt library,
 // make sure you are only importing from
 //  - @microsoft/mgt-react/dist/es6/spfx
-//  - @microsoft/mgt-sfpx
+//  - @microsoft/mgt-spfx
 // and no other mgt packages
 // If you wish to make used of element disambiguation you should:
 // configure disambiguation at the root component while lazy loading all
