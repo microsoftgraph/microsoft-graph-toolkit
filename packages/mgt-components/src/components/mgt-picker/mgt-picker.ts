@@ -18,7 +18,7 @@ registerFluentComponents(fluentCombobox, fluentOption);
 /**
  * Web component that allows a single entity pick from a generic endpoint from Graph. Uses mgt-get.
  *
- * @fires selectionChanged - Fired when an option is clicked/selected
+ * @fires {CustomEvent<any>} selectionChanged - Fired when an option is clicked/selected
  * @export
  * @class MgtPicker
  * @extends {MgtTemplatedComponent}
@@ -194,16 +194,6 @@ export class MgtPicker extends MgtTemplatedComponent {
       return this.renderTemplate('error', this.error ? this.error : null);
     } else if (this.hasTemplate('no-data')) {
       return this.renderTemplate('no-data', null);
-    } else if (this.response?.length > 0 && this.hasTemplate('rendered-item')) {
-      let rendered: TemplateResult[] = [];
-      let items = [];
-      this.response.map(item => {
-        items.push(item[this.keyName]);
-      });
-      let template = this.renderTemplate('rendered-item', { items });
-      rendered.push(html`
-        <div class="item" role="presentation" aria-label="items">${template}</div>`);
-      return mgtHtml`${rendered}`;
     }
 
     return this.response?.length > 0 ? this.renderPicker() : this.renderGet();
@@ -222,6 +212,7 @@ export class MgtPicker extends MgtTemplatedComponent {
         ${this.response.map(
           item => html`
           <fluent-option value=${item.id} @click=${e => this.handleClick(e, item)}> ${
+            this.renderTemplate('rendered-item', { item }, `rendered-${item.id ? item.id : item[this.keyName]}`) ||
             item[this.keyName]
           } </fluent-option>`
         )}
@@ -258,19 +249,19 @@ export class MgtPicker extends MgtTemplatedComponent {
   protected async loadState() {
     if (!this.response) {
       let parent = this.renderRoot.querySelector('mgt-get');
-      parent.addEventListener('dataChange', e => this.handleDataChange(e));
+      parent.addEventListener('dataChange', (e): void => this.handleDataChange(e));
     }
     this.isRefreshing = false;
   }
 
-  private handleDataChange(e) {
+  private handleDataChange(e: any): void {
     let response = e.detail.response.value;
     let error = e.detail.error ? e.detail.error : null;
     this.response = response;
     this.error = error;
   }
 
-  private handleClick(e, item) {
-    this.fireCustomEvent('selectionChanged', { data: item }, true, true);
+  private handleClick(e: MouseEvent, item: any) {
+    this.fireCustomEvent('selectionChanged', item);
   }
 }

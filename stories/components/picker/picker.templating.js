@@ -46,10 +46,11 @@ export const errorTemplate = () => html`
   `;
 
 export const renderedItem = () => html`
-  <mgt-picker resource="me/todo/lists" scopes="tasks.read, tasks.readwrite" key-name="displayName">
+  <mgt-picker resource="/users" scopes="user.read" key-name="displayName" placeholder="Select a user" max-pages="1">
     <template data-type="rendered-item">
-      <div data-for="item in items">
-        <p>{{ item }}</p>
+      <div>
+        <mgt-person person-details="{{ item }}" person-card="hover" view="oneline"></mgt-person>
+        <!-- {{item.displayName}} -->
       </div>
     </template>
   </mgt-picker>
