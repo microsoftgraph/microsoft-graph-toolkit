@@ -7,9 +7,9 @@
 
 import * as MicrosoftGraph from '@microsoft/microsoft-graph-types';
 import { html, TemplateResult } from 'lit';
-import { customElement, property } from 'lit/decorators.js';
+import { property } from 'lit/decorators.js';
 import { classMap } from 'lit/directives/class-map.js';
-import { Providers, ProviderState, MgtTemplatedComponent } from '@microsoft/mgt-element';
+import { Providers, ProviderState, MgtTemplatedComponent, customElement, mgtHtml } from '@microsoft/mgt-element';
 import '../../styles/style-helper';
 import '../sub-components/mgt-spinner/mgt-spinner';
 import { getSvg, SvgIcon } from '../../utils/SvgHelper';
@@ -139,7 +139,7 @@ export interface MgtTeamsChannelPickerConfig {
  * @class MgtTeamsChannelPicker
  * @extends {MgtTemplatedComponent}
  *
- * @fires selectionChanged - Fired when the selection changes
+ * @fires {CustomEvent<SelectedChannel | null>} selectionChanged - Fired when the selection changes
  *
  * @cssprop --color - {font} Default font color
  *
@@ -161,7 +161,8 @@ export interface MgtTeamsChannelPickerConfig {
  * @cssprop --placeholder-color - {Color} Color of placeholder text
  *
  */
-@customElement('mgt-teams-channel-picker')
+@customElement('teams-channel-picker')
+// @customElement('mgt-teams-channel-picker')
 export class MgtTeamsChannelPicker extends MgtTemplatedComponent {
   /**
    * Array of styles to apply to the element. The styles should be defined
@@ -198,7 +199,7 @@ export class MgtTeamsChannelPicker extends MgtTemplatedComponent {
    * @type {SelectedChannel}
    * @memberof MgtTeamsChannelPicker
    */
-  public get selectedItem(): SelectedChannel {
+  public get selectedItem(): SelectedChannel | null {
     if (this._selectedItemState) {
       return { channel: this._selectedItemState.item, team: this._selectedItemState.parent.item };
     } else {
@@ -623,7 +624,7 @@ export class MgtTeamsChannelPicker extends MgtTemplatedComponent {
 
     return (
       template ||
-      html`
+      mgtHtml`
         <div class="message-parent">
           <mgt-spinner></mgt-spinner>
           <div label="loading-text" aria-label="loading" class="loading-text">
@@ -895,7 +896,7 @@ export class MgtTeamsChannelPicker extends MgtTemplatedComponent {
   private selectChannel(item: ChannelPickerItemState) {
     if (this._selectedItemState !== item) {
       this._selectedItemState = item;
-      this.fireCustomEvent('selectionChanged', item ? [this.selectedItem] : []);
+      this.fireCustomEvent('selectionChanged', this.selectedItem);
     }
 
     const input = this._input;

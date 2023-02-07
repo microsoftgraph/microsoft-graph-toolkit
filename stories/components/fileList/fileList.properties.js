@@ -10,7 +10,7 @@ import { withCodeEditor } from '../../../.storybook/addons/codeEditorAddon/codeA
 
 export default {
   title: 'Components / mgt-file-list / Properties',
-  component: 'mgt-file-list',
+  component: 'file-list',
   decorators: [withCodeEditor]
 };
 
@@ -100,6 +100,10 @@ export const disableFileExpansion = () => html`
 
 export const getFileListWithSize = () => html`
     <mgt-file-list page-size=5></mgt-file-list>
+  `;
+
+export const getFileListByExtensionsAndSize = () => html`
+    <mgt-file-list file-extensions="docx, xlsx" page-size=5></mgt-file-list>
   `;
 
 export const fileListItemView = () => html`

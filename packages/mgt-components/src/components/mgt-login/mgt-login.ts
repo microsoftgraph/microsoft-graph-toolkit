@@ -6,14 +6,22 @@
  */
 
 import { html } from 'lit';
-import { customElement, property } from 'lit/decorators.js';
+import { property } from 'lit/decorators.js';
 import { classMap } from 'lit/directives/class-map.js';
-import { Providers, ProviderState, MgtTemplatedComponent, IProviderAccount } from '@microsoft/mgt-element';
+import {
+  Providers,
+  ProviderState,
+  MgtTemplatedComponent,
+  IProviderAccount,
+  mgtHtml,
+  customElement
+} from '@microsoft/mgt-element';
 
 import { AvatarSize, IDynamicPerson, ViewType } from '../../graph/types';
 import { MgtFlyout } from '../sub-components/mgt-flyout/mgt-flyout';
 import { getUserWithPhoto } from '../../graph/graph.userWithPhoto';
-import { MgtPerson, PersonViewType } from '../mgt-person/mgt-person';
+import { MgtPerson } from '../mgt-person/mgt-person';
+import { PersonViewType } from '../mgt-person/mgt-person-types';
 
 import { getSvg, SvgIcon } from '../../utils/SvgHelper';
 
@@ -47,11 +55,11 @@ type PersonViewConfig = {
  * @class MgtLogin
  * @extends {MgtBaseComponent}
  *
- * @fires loginInitiated - Fired when login is initiated by the user
- * @fires loginCompleted - Fired when login completes
- * @fires loginFailed - Fired when login fails
- * @fires logoutInitiated - Fired when logout is initiated by the user
- * @fires logoutCompleted - Fired when logout completed
+ * @fires {CustomEvent<undefined>} loginInitiated - Fired when login is initiated by the user
+ * @fires {CustomEvent<undefined>} loginCompleted - Fired when login completes
+ * @fires {CustomEvent<undefined>} loginFailed - Fired when login fails
+ * @fires {CustomEvent<undefined>} logoutInitiated - Fired when logout is initiated by the user
+ * @fires {CustomEvent<undefined>} logoutCompleted - Fired when logout completed
  *
  * @template signed-in-button-content (dataContext: {personDetails, personImage})
  * @template signed-out-button-content (dataContext: null)
@@ -73,7 +81,7 @@ type PersonViewConfig = {
  * @cssprop --profile-spacing-full - {String} margin applied to the active account inside the popup when login-view is full or more that one account is signed in.
  * @cssprop --add-account-button-color - {Color} Color for the text and icon of the add account button
  */
-@customElement('mgt-login')
+@customElement('login')
 export class MgtLogin extends MgtTemplatedComponent {
   /**
    * Array of styles to apply to the element. The styles should be defined
@@ -324,6 +332,13 @@ export class MgtLogin extends MgtTemplatedComponent {
       `;
   }
 
+  private flyoutOpened = () => {
+    this._isFlyoutOpen = true;
+  };
+  private flyoutClosed = () => {
+    this._isFlyoutOpen = false;
+  };
+
   /**
    * Render the details flyout.
    *
@@ -331,12 +346,12 @@ export class MgtLogin extends MgtTemplatedComponent {
    * @memberof MgtLogin
    */
   protected renderFlyout() {
-    return html`
+    return mgtHtml`
       <mgt-flyout
         class="flyout"
         light-dismiss
-        @opened=${() => (this._isFlyoutOpen = true)}
-        @closed=${() => (this._isFlyoutOpen = false)}
+        @opened=${this.flyoutOpened}
+        @closed=${this.flyoutClosed}
       >
         <div slot="flyout">
           <!-- Setting the card fill ensures the correct colors on hover states -->
@@ -399,13 +414,14 @@ export class MgtLogin extends MgtTemplatedComponent {
     const template = this.renderTemplate('flyout-person-details', { personDetails, personImage });
     return (
       template ||
-      html`
+      mgtHtml`
         <mgt-person
           .personDetails=${personDetails}
           .personImage=${personImage}
           .view=${ViewType.twolines}
           .line2Property=${'email'}
           ?vertical-layout=${this.usesVerticalPersonCard}
+          class="person"
         />
         `
     );
@@ -513,7 +529,7 @@ export class MgtLogin extends MgtTemplatedComponent {
     const displayConfig = this.parsePersonDisplayConfiguration();
     return (
       template ||
-      html`
+      mgtHtml`
         <mgt-person
           .personDetails=${this.userDetails}
           .personImage=${this._image}
@@ -521,6 +537,7 @@ export class MgtLogin extends MgtTemplatedComponent {
           .showPresence=${this.showPresence}
           .avatarSize=${displayConfig.avatarSize}
           line2-property="email"
+          class="person"
         />
        `
     );
@@ -548,7 +565,7 @@ export class MgtLogin extends MgtTemplatedComponent {
               ${list.map(account => {
                 if (account.id !== provider.getActiveAccount().id) {
                   const details = localStorage.getItem(account.id + this._userDetailsKey);
-                  return html`
+                  return mgtHtml`
                     <fluent-option class="list-box-option" value="${account.name}" role="option">
                       <mgt-person
                         @click=${() => this.setActiveAccount(account)}
@@ -560,6 +577,7 @@ export class MgtLogin extends MgtTemplatedComponent {
                         .personDetails=${details ? JSON.parse(details) : null}
                         .fallbackDetails=${{ displayName: account.name, mail: account.mail }}
                         .view=${PersonViewType.twolines}
+                        class="person"
                       />
                     </fluent-option>
                   `;

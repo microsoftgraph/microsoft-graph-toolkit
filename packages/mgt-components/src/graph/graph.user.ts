@@ -310,10 +310,14 @@ export async function getUsersForPeopleQueries(
         const person = JSON.parse(cacheRes.results[0]);
         people.push(person);
       } else {
-        batch.get(personQuery, `/me/people?$search="${personQuery}"`, ['people.read']);
+        batch.get(personQuery, `/me/people?$search="${personQuery}"`, ['people.read'], {
+          'X-PeopleQuery-QuerySources': 'Mailbox,Directory'
+        });
       }
     } else {
-      batch.get(personQuery, `/me/people?$search="${personQuery}"`, ['people.read']);
+      batch.get(personQuery, `/me/people?$search="${personQuery}"`, ['people.read'], {
+        'X-PeopleQuery-QuerySources': 'Mailbox,Directory'
+      });
     }
   }
 

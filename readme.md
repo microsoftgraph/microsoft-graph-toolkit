@@ -1,5 +1,5 @@
 <h1 align="center">
-  <img height="120" src="https://github.com/microsoftgraph/microsoft-graph-toolkit/raw/main/assets/graff.png" title="Graff the Giraffe">
+  <a href="#"><img height="120" src="https://github.com/microsoftgraph/microsoft-graph-toolkit/raw/main/assets/graff.png" title="Graff the Giraffe"></a>
   <br>
   Microsoft Graph Toolkit
 </h1>
@@ -7,11 +7,11 @@
 <h4 align="center">UI Components and Authentication Providers for <a href="https://graph.microsoft.com">Microsoft Graph</a></h4>
 
 <p align="center">
-  <a href="https://github.com/microsoftgraph/msgraph-sdk-javascript"><img src="https://img.shields.io/badge/code_style-prettier-ff69b4.svg"></a> <a href="https://stackoverflow.com/questions/tagged/microsoft-graph-toolkit"><img src="https://img.shields.io/stackexchange/stackoverflow/t/microsoft-graph-toolkit.svg"></a>
-  <img src="https://github.com/microsoftgraph/microsoft-graph-toolkit/workflows/Build%20CI/badge.svg" /> <a href="https://www.webcomponents.org/element/@microsoft/mgt"><img src="https://img.shields.io/badge/webcomponents.org-published-blue.svg"></a> <a href="https://mgt.dev"><img src="https://cdn.jsdelivr.net/gh/storybookjs/brand@master/badge/badge-storybook.svg"></a> <a href="https://github.com/microsoftgraph/microsoft-graph-toolkit/issues?q=is%3Aissue+is%3Aopen+label%3A%22good+first+issue%22"><img src="https://img.shields.io/github/issues/microsoftgraph/microsoft-graph-toolkit/good%20first%20issue?color=brightgreen"></a>
+  <a href="https://stackoverflow.com/questions/tagged/microsoft-graph-toolkit" target="_blank" rel="noreferrer noopener"><img src="https://img.shields.io/stackexchange/stackoverflow/t/microsoft-graph-toolkit.svg"></a>
+  <img src="https://github.com/microsoftgraph/microsoft-graph-toolkit/workflows/Build%20CI/badge.svg" /> <a href="https://www.webcomponents.org/element/@microsoft/mgt" target="_blank" rel="noreferrer noopener"><img src="https://img.shields.io/badge/webcomponents.org-published-blue.svg"></a> <a href="https://mgt.dev" target="_blank" rel="noreferrer noopener"><img src="https://cdn.jsdelivr.net/gh/storybookjs/brand@master/badge/badge-storybook.svg"></a> <a href="https://github.com/microsoftgraph/microsoft-graph-toolkit/issues?q=is%3Aissue+is%3Aopen+label%3A%22good+first+issue%22" target="_blank" rel="noreferrer noopener"><img src="https://img.shields.io/github/issues/microsoftgraph/microsoft-graph-toolkit/good%20first%20issue?color=brightgreen"></a>
 </p>
 
-<h3 align="center"><a href="https://aka.ms/mgt-docs">Documentation</a></h3>
+<h3 align="center"><a href="https://aka.ms/mgt/docs" target="_blank" rel="noreferrer noopener">Documentation</a></h3>
 
 <p align="center">
   The Microsoft Graph Toolkit is a collection of reusable, framework-agnostic components and authentication providers for accessing and working with Microsoft Graph. The components are fully functional right of out of the box, with built in providers that authenticate with and fetch data from Microsoft Graph.
@@ -57,60 +57,65 @@ You can explore components and samples with the [playground](https://mgt.dev) po
 
 The Toolkit currently includes the following components:
 
-* [mgt-login](https://docs.microsoft.com/graph/toolkit/components/login)
-* [mgt-person](https://docs.microsoft.com/graph/toolkit/components/person)
-* [mgt-person-card](https://docs.microsoft.com/graph/toolkit/components/person-card)
-* [mgt-people](https://docs.microsoft.com/graph/toolkit/components/people)
-* [mgt-people-picker](https://docs.microsoft.com/graph/toolkit/components/people-picker)
-* [mgt-agenda](https://docs.microsoft.com/graph/toolkit/components/agenda)
-* [mgt-tasks](https://docs.microsoft.com/graph/toolkit/components/tasks)
-* [mgt-todo](https://docs.microsoft.com/graph/toolkit/components/todo)
-* [mgt-teams-channel-picker](https://docs.microsoft.com/graph/toolkit/components/teams-channel-picker)
-* [mgt-file](https://docs.microsoft.com/graph/toolkit/components/file)
-* [mgt-file-list](https://docs.microsoft.com/graph/toolkit/components/file-list)
-* [mgt-get](https://docs.microsoft.com/graph/toolkit/components/get)
+* [mgt-login](https://learn.microsoft.com/graph/toolkit/components/login)
+* [mgt-person](https://learn.microsoft.com/graph/toolkit/components/person)
+* [mgt-person-card](https://learn.microsoft.com/graph/toolkit/components/person-card)
+* [mgt-people](https://learn.microsoft.com/graph/toolkit/components/people)
+* [mgt-people-picker](https://learn.microsoft.com/graph/toolkit/components/people-picker)
+* [mgt-agenda](https://learn.microsoft.com/graph/toolkit/components/agenda)
+* [mgt-tasks](https://learn.microsoft.com/graph/toolkit/components/tasks)
+* [mgt-todo](https://learn.microsoft.com/graph/toolkit/components/todo)
+* [mgt-teams-channel-picker](https://learn.microsoft.com/graph/toolkit/components/teams-channel-picker)
+* [mgt-file](https://learn.microsoft.com/graph/toolkit/components/file)
+* [mgt-file-list](https://learn.microsoft.com/graph/toolkit/components/file-list)
+* [mgt-get](https://learn.microsoft.com/graph/toolkit/components/get)
 
-All web components are also available as React component - see [@microsoft/mgt-react documentation](https://docs.microsoft.com/graph/toolkit/get-started/mgt-react).
+All web components are also available as React component - see [@microsoft/mgt-react documentation](https://learn.microsoft.com/graph/toolkit/get-started/mgt-react).
 
 ## Providers
 
-[Providers](https://docs.microsoft.com/graph/toolkit/providers) enable authentication and provide the implementation for acquiring access tokens on various platforms. The providers also expose a Microsoft Graph Client for calling the Microsoft Graph APIs. The components work best when used with a provider, but the providers can be used on their own as well.
+[Providers](https://learn.microsoft.com/graph/toolkit/providers/providers) enable authentication and provide the implementation for acquiring access tokens on various platforms. The providers also expose a Microsoft Graph Client for calling the Microsoft Graph APIs. The components work best when used with a provider, but the providers can be used on their own as well.
 
-* [MsalProvider](https://docs.microsoft.com/graph/toolkit/providers/msal)
-* [Msal2Provider](https://docs.microsoft.com/graph/toolkit/providers/msal2)
-* [SharePointProvider](https://docs.microsoft.com/graph/toolkit/providers/sharepoint)
-* [TeamsProvider](https://docs.microsoft.com/graph/toolkit/providers/teams)
-* [TeamsMsal2Provider](https://docs.microsoft.com/graph/toolkit/providers/teams-msal2)
-* [TeamsFxProvider](https://docs.microsoft.com/graph/toolkit/providers/teamsfx)
-* [ProxyProvider](https://docs.microsoft.com/graph/toolkit/providers/proxy)
-* [SimpleProvider](https://docs.microsoft.com/graph/toolkit/providers/custom)
-* [ElectronProvider](https://docs.microsoft.com/graph/toolkit/providers/electron)
+* [MsalProvider](https://learn.microsoft.com/graph/toolkit/providers/msal)
+* [Msal2Provider](https://learn.microsoft.com/graph/toolkit/providers/msal2)
+* [SharePointProvider](https://learn.microsoft.com/graph/toolkit/providers/sharepoint)
+* [TeamsProvider](https://learn.microsoft.com/graph/toolkit/providers/teams)
+* [TeamsMsal2Provider](https://learn.microsoft.com/graph/toolkit/providers/teams-msal2)
+* [TeamsFxProvider](https://learn.microsoft.com/graph/toolkit/providers/teamsfx)
+* [ProxyProvider](https://learn.microsoft.com/graph/toolkit/providers/proxy)
+* [SimpleProvider](https://learn.microsoft.com/graph/toolkit/providers/custom)
+* [ElectronProvider](https://learn.microsoft.com/graph/toolkit/providers/electron)
 
-You can also create your own providers by extending the [IProvider](https://docs.microsoft.com/graph/toolkit/providers/custom) abstract class.
+You can also create your own providers by extending the [IProvider](https://learn.microsoft.com/graph/toolkit/providers/custom) abstract class.
 
-[View the full documentation](https://docs.microsoft.com/graph/toolkit/overview)
+[View the full documentation](https://learn.microsoft.com/graph/toolkit/overview)
 
 ## Getting Started
 
 The following guides are available to help you get started with the Toolkit:
-* [Build a web application (vanilla JS)](https://docs.microsoft.com/graph/toolkit/get-started/build-a-web-app)
-* [Build a SharePoint Web Part](https://docs.microsoft.com/graph/toolkit/get-started/build-a-sharepoint-web-part)
-* [Build a Microsoft Teams Tab](https://docs.microsoft.com/graph/toolkit/get-started/build-a-microsoft-teams-tab)
-* [Use the Toolkit with React](https://docs.microsoft.com/graph/toolkit/get-started/use-toolkit-with-react)
-* [Use the Toolkit with Angular](https://docs.microsoft.com/graph/toolkit/get-started/use-toolkit-with-angular)
+* [Build a web application (JavaScript)](https://learn.microsoft.com/graph/toolkit/get-started/build-a-web-app)
+* [Build a SharePoint web part Part](https://learn.microsoft.com/graph/toolkit/get-started/build-a-sharepoint-web-part)
+* [Build a Microsoft Teams tab](https://learn.microsoft.com/graph/toolkit/get-started/build-a-microsoft-teams-tab)
+* [Build a Microsoft Teams tab with SSO](https://learn.microsoft.com/en-us/graph/toolkit/get-started/build-a-microsoft-teams-sso-tab)
+* [Build an Electron app](https://learn.microsoft.com/en-us/graph/toolkit/get-started/build-an-electron-app)
+* [Use the Toolkit with React](https://learn.microsoft.com/graph/toolkit/get-started/use-toolkit-with-react)
+* [Use the Toolkit with Angular](https://learn.microsoft.com/graph/toolkit/get-started/use-toolkit-with-angular)
+* [Build a productivity hub app](https://learn.microsoft.com/en-us/graph/toolkit/get-started/building-one-productivity-hub)
 
 You can use the components by referencing the loader directly (via unpkg), or installing the npm package
 
 ### Use via mgt-loader:
 
 ```html
-<script src="https://unpkg.com/@microsoft/mgt/dist/bundle/mgt-loader.js"></script>
+<script src="https://unpkg.com/@microsoft/mgt@2/dist/bundle/mgt-loader.js"></script>
 ```
+
+> NOTE: This link will load the highest available version of @microsoft/mgt in the range `>= 2.0.0 < 3.0.0`, omitting the `@2` fragment from the url results in loading the latest version. This could result in loading a new major version and breaking the application.
 
 You can then start using the components in your html page. Here is a full working example with the Msal2 provider:
 
 ```html
-<script src="https://unpkg.com/@microsoft/mgt/dist/bundle/mgt-loader.js"></script>
+<script src="https://unpkg.com/@microsoft/mgt@2/dist/bundle/mgt-loader.js"></script>
 <mgt-msal2-provider client-id="[CLIENT-ID]"></mgt-msal2-provider>
 <mgt-login></mgt-login>
 
@@ -154,15 +159,15 @@ cd ./samples/react-app/
 yarn start
 ```
 
-This also means that running the samples in isolation may fail if there are breaking changes between the published version of mgt and the local copy. 
-To workaround this, use samples that are known to be compatible with a specific release by checking out the appropriate branch or tag first. 
+This also means that running the samples in isolation may fail if there are breaking changes between the published version of mgt and the local copy.
+To workaround this, use samples that are known to be compatible with a specific release by checking out the appropriate branch or tag first.
 
 ## Contribute
 
 We enthusiastically welcome contributions and feedback. Please read our [wiki](https://github.com/microsoftgraph/microsoft-graph-toolkit/wiki) and the [contributing guide](CONTRIBUTING.md) before you begin.
 
 ### Code Contribution Challenge
-There are many exciting new features or interesting bugs that have been left behind because our team is small with limited capacity. We would love your help! We have tagged these issues with 'help wanted' and/or 'good first issue'. We added them into project board [Community Love](https://github.com/microsoftgraph/microsoft-graph-toolkit/projects/29) for easy tracking. If you see anything you would like to contribute to, you can reach out to  mgt-help@microsoft.com or tag one of us ([Beth](https://github.com/beth-panx), [Elise](https://github.com/elisenyang), [Nick](https://github.com/vogtn), [Nikola](https://github.com/nmetulev), and [Shane](https://github.com/shweaver-MSFT)) in the issue for help or further discussion. By submitting a PR to solve an issue mentioned above, you can enter to win some exciting prizes! We have some cool socks and t-shirts waiting for you. Check out the official rules for [Code Contribution Challenge](contest.md). The contest will continue until March 2021 where prizes are awarded every month from now on.
+There are many exciting new features or interesting bugs that have been left behind because our team is small with limited capacity. We would love your help! We have tagged these issues with 'help wanted' and/or 'good first issue'. If you see anything you would like to contribute to, you can reach out to  mgt-help@microsoft.com or reply to the issue for help or further discussion.
 
 ## Feedback and Requests
 
@@ -172,7 +177,7 @@ Please use [GitHub Issues](https://github.com/microsoftgraph/microsoft-graph-too
 
 ## License
 
-All files in this GitHub repository are subject to the [MIT license](https://github.com/OfficeDev/office-ui-fabric-core/blob/master/LICENSE). This project also references fonts and icons from a CDN, which are subject to a separate [asset license](https://static2.sharepointonline.com/files/fabric/assets/license.txt).
+All files in this GitHub repository are subject to the [MIT license](https://github.com/microsoftgraph/microsoft-graph-toolkit/blob/main/LICENSE). This project also references fonts and icons from a CDN, which are subject to a separate [asset license](https://static2.sharepointonline.com/files/fabric/assets/license.txt).
 
 ## Code of Conduct
 

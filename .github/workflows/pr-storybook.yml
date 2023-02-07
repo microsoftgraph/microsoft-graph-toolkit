@@ -25,20 +25,34 @@ jobs:
           node-version: ${{ matrix.node-version }}
           registry-url: 'https://registry.npmjs.org'
 
-      - name: Build 🛠
+      - name: Install deps 🛠
         run: |
           npm install -g yarn lerna
           yarn
+      - name: Extract tag name
+        shell: bash
+        run: |
+          tag=$(branch=${{ github.event.pull_request.head.ref }}; echo ${branch/\//.})
+          if [[ $tag == next.* ]];
+          then
+            echo "##[set-output name=tag;]$tag"
+          else
+            echo "##[set-output name=tag;]pr.${{ github.event.pull_request.number }}"
+          fi
+        id: extract_tag
+      - run: node scripts/setVersion.js --tag ${{ steps.extract_tag.outputs.tag }}
+
+      - name: Build 🛠
+        run: |
           yarn build
           yarn storybook:build
 
       - name: Deploy mgt.dev/next/pr/${{ github.event.number }} 🚀
-        uses: JamesIves/github-pages-deploy-action@4.1.1
+        uses: JamesIves/github-pages-deploy-action@v4.4.1
         with:
           branch: gh-pages
           folder: storybook-static
           target-folder: next/pr/${{ github.event.number }}
-          token: ${{ secrets.ACCESS_TOKEN }}
 
       - name: Comment PR
         uses: thollander/actions-comment-pull-request@v1

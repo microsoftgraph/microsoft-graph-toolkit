@@ -97,7 +97,7 @@ export interface MsalConfig extends MsalConfigBase {
   authority?: string;
   /**
    * options as defined in
-   * https://docs.microsoft.com/en-us/azure/active-directory/develop/msal-js-initializing-client-applications#configuration-options
+   * https://learn.microsoft.com/azure/active-directory/develop/msal-js-initializing-client-applications#configuration-options
    *
    * @type {Configuration}
    * @memberof MsalConfig

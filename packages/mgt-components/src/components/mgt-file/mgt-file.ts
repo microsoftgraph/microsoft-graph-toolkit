@@ -7,9 +7,9 @@
 
 import { DriveItem } from '@microsoft/microsoft-graph-types';
 import { html, TemplateResult } from 'lit';
-import { customElement, property } from 'lit/decorators.js';
+import { property } from 'lit/decorators.js';
 import { styles } from './mgt-file-css';
-import { MgtTemplatedComponent, Providers, ProviderState } from '@microsoft/mgt-element';
+import { MgtTemplatedComponent, Providers, ProviderState, customElement } from '@microsoft/mgt-element';
 import {
   getDriveItemById,
   getDriveItemByPath,
@@ -58,7 +58,8 @@ import { strings } from './strings';
  * @cssprop --line3-text-transform - {String} Line 2 text transform
  */
 
-@customElement('mgt-file')
+@customElement('file')
+// @customElement('mgt-file')
 export class MgtFile extends MgtTemplatedComponent {
   /**
    * Array of styles to apply to the element. The styles should be defined

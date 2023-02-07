@@ -7,13 +7,20 @@
 
 import * as MicrosoftGraph from '@microsoft/microsoft-graph-types';
 import { html, TemplateResult } from 'lit';
-import { customElement, property } from 'lit/decorators.js';
+import { property } from 'lit/decorators.js';
 import { repeat } from 'lit/directives/repeat.js';
 import { getPeople, getPeopleFromResource, PersonType } from '../../graph/graph.people';
 import { getUsersPresenceByPeople } from '../../graph/graph.presence';
 import { findGroupMembers, getUsersForPeopleQueries, getUsersForUserIds } from '../../graph/graph.user';
 import { IDynamicPerson } from '../../graph/types';
-import { Providers, ProviderState, MgtTemplatedComponent, arraysAreEqual } from '@microsoft/mgt-element';
+import {
+  Providers,
+  ProviderState,
+  MgtTemplatedComponent,
+  arraysAreEqual,
+  mgtHtml,
+  customElement
+} from '@microsoft/mgt-element';
 import '../../styles/style-helper';
 import { PersonCardInteraction } from './../PersonCardInteraction';
 import { styles } from './mgt-people-css';
@@ -31,7 +38,8 @@ export { PersonCardInteraction } from './../PersonCardInteraction';
  * @cssprop --list-margin - {String} List margin for component
  * @cssprop --avatar-margin - {String} Margin for each person
  */
-@customElement('mgt-people')
+@customElement('people')
+// @customElement('mgt-people')
 export class MgtPeople extends MgtTemplatedComponent {
   /**
    * Array of styles to apply to the element. The styles should be defined
@@ -359,7 +367,7 @@ export class MgtPeople extends MgtTemplatedComponent {
         people: this.people
       }) ||
       html`
-        <li tabindex=0 aria-label="and ${extra} more attendees" class="overflow"><span>+${extra}<span></li>
+        <li aria-label="and ${extra} more attendees" class="overflow"><span>+${extra}<span></li>
       `
     );
   }
@@ -386,7 +394,7 @@ export class MgtPeople extends MgtTemplatedComponent {
       this.renderTemplate('person', { person }, person.id) ||
       // set image to @ to flag the mgt-person component to
       // query the image from the graph
-      html`
+      mgtHtml`
         <mgt-person
           .personDetails=${person}
           .fetchImage=${true}
