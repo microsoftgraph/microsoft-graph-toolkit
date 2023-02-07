@@ -7,7 +7,7 @@
 
 import * as MicrosoftGraph from '@microsoft/microsoft-graph-types';
 import { html, TemplateResult } from 'lit';
-import { customElement, property, state } from 'lit/decorators.js';
+import { state } from 'lit/decorators.js';
 import { classMap } from 'lit/directives/class-map.js';
 import {
   Providers,
@@ -188,7 +188,6 @@ export interface MgtTeamsChannelPickerConfig {
  *
  */
 @customElement('teams-channel-picker')
-// @customElement('mgt-teams-channel-picker')
 export class MgtTeamsChannelPicker extends MgtTemplatedComponent {
   /**
    * Array of styles to apply to the element. The styles should be defined
@@ -269,7 +268,7 @@ export class MgtTeamsChannelPicker extends MgtTemplatedComponent {
   }
   private _inputValue: string = '';
 
-  private _selectedItemState: ChannelPickerItemState;
+  @state() private _selectedItemState: ChannelPickerItemState;
   private _items: DropdownItem[];
   private _treeViewState: ChannelPickerItemState[] = [];
   private _focusList: ChannelPickerItemState[] = [];
@@ -859,10 +858,14 @@ export class MgtTeamsChannelPicker extends MgtTemplatedComponent {
   }
 
   private selectChannel(item: ChannelPickerItemState) {
-    if (this._selectedItemState !== item) {
-      this._selectedItemState = item;
-      this.fireCustomEvent('selectionChanged', this.selectedItem);
+    if (item && this._selectedItemState !== item) {
+      this._input.setAttribute('disabled', 'true');
+    } else {
+      this._input.removeAttribute('disabled');
+      this.lostFocus();
     }
+    this._selectedItemState = item;
+    this.fireCustomEvent('selectionChanged', this._selectedItemState);
   }
 
   /**
