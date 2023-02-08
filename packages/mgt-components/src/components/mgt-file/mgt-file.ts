@@ -290,6 +290,7 @@ export class MgtFile extends MgtTemplatedComponent {
    * @memberof MgtFile
    */
   @property({
+    attribute: 'file-details',
     type: Object
   })
   public get fileDetails(): DriveItem {
@@ -494,7 +495,9 @@ export class MgtFile extends MgtTemplatedComponent {
         this.driveItem.package === undefined && this.driveItem.folder === undefined
           ? re.exec(this.driveItem.name)[1]
             ? re.exec(this.driveItem.name)[1].toLowerCase()
-            : 'null'
+            : this.driveItem.size
+            ? 'null'
+            : 'folder'
           : this.driveItem.package !== undefined
           ? this.driveItem.package.type === 'oneNote'
             ? 'onetoc'
