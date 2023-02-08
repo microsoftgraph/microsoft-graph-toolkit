@@ -31,7 +31,7 @@ export const events = () => html`
   <mgt-picker resource="me/messages" scopes="mail.read" placeholder="Select a message" key-name="subject" max-pages="2"></mgt-picker>
   <script>
     document.querySelector('mgt-picker').addEventListener('selectionChanged', e => {
-      console.log('selectedItem:', e.detail.data)
+      console.log('selectedItem:', e.detail)
     });
   </script>
 `;
