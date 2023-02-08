@@ -91,6 +91,7 @@ export abstract class MgtTasksBase extends MgtTemplatedComponent {
 
   private _isNewTaskBeingAdded: boolean;
   private _openCalendar: boolean;
+  private _newTaskDueDate: Date;
   private _newTaskName: string;
   private _previousMediaQuery: ComponentMediaQuery;
 
@@ -102,11 +103,12 @@ export abstract class MgtTasksBase extends MgtTemplatedComponent {
     super();
 
     this.clearState();
+    this._newTaskDueDate = null;
     this._previousMediaQuery = this.mediaQuery;
     this.onResize = this.onResize.bind(this);
     this._openCalendar = false;
-    this.addEventListener('dateselected', e => {
-      console.log('sth else:', e.target);
+    this.addEventListener('dateselected', (e: CustomEvent<any>) => {
+      console.log('sth else:', (e.detail as HTMLInputElement).value);
     });
   }
 
@@ -248,7 +250,7 @@ export abstract class MgtTasksBase extends MgtTemplatedComponent {
     const calendarTemplate = html`
       ${getSvg(SvgIcon.Calendar)}
       <fluent-button appearance="stealth" 
-        @click=${(e: Event) => this.openCalendar()}>
+        @click=${(e: Event) => this.toggleCalendar(true)}>
         ${this.strings.dueDate}
       </fluent-button>
       <!-- <fluent-calendar readonly="false" locale="en-US" @click=${(e: Event) => {
@@ -280,30 +282,36 @@ export abstract class MgtTasksBase extends MgtTemplatedComponent {
           ${cancelIcon}</div>
         </fluent-text-field>
      `;
-
+    // .value="${this.dateToInputValue(this._newTaskDueDate)}"
     return html`
-       <div dir=${this.direction} class="Task NewTask Incomplete">
-          ${taskTitle}
-       </div>
+      <div dir=${this.direction} class="Task NewTask Incomplete">
+        ${taskTitle}
+      </div>
         ${
           this._openCalendar
-            ? html`<fluent-calendar readonly="false" locale="en-US" @click=${(e: Event) => {
-                console.log('heere', (e.target as HTMLInputElement).value);
-              }} .value=${new Date()}></fluent-calendar>`
+            ? html`
+                <fluent-calendar readonly="false" locale="en-US" 
+                  @click=${(e: Event) => {
+                    console.log('heere', (e.target as HTMLInputElement).value);
+                  }} 
+                  .value="${this.dateToInputValue(this._newTaskDueDate)}"
+                  @change="${(e: Event) => {
+                    const value = (e.target as HTMLInputElement).value;
+                    if (value) {
+                      this._newTaskDueDate = new Date(value + 'T17:00');
+                    } else {
+                      this._newTaskDueDate = null;
+                    }
+                  }}"
+                  @dateselected="${e => console.log('e:', e)}"
+                  @mouseleave=${() => this.toggleCalendar(false)}>
+                </fluent-calendar>`
             : null
         }
      `;
   }
 
-  // /**
-  //  * Render the details part of the new task panel
-  //  *
-  //  * @protected
-  //  * @abstract
-  //  * @returns {TemplateResult}
-  //  * @memberof MgtTasksBase
-  //  */
-  // protected abstract renderCalendar(): TemplateResult;
+  private handleDateSelected(e: CustomEvent<{ day: number; month: number; year: number }>) {}
 
   /**
    * Render the details flyout.
@@ -453,13 +461,8 @@ export abstract class MgtTasksBase extends MgtTemplatedComponent {
    * @protected
    * @memberof MgtTasksBase
    */
-  protected closeCalendar(): void {
-    this._openCalendar = false;
-    this.requestUpdate();
-  }
-
-  private openCalendar(): void {
-    this._openCalendar = true;
+  protected toggleCalendar(state: boolean): void {
+    this._openCalendar = state;
     this.requestUpdate();
   }
 
