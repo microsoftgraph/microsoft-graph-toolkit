@@ -8,17 +8,17 @@
 import './mock-media-match';
 import { screen } from 'testing-library__dom';
 import { fixture } from '@open-wc/testing-helpers';
-import './mgt-dark-toggle';
+import './mgt-theme-toggle';
 
-describe('mgt-dark-toggle - tests', () => {
+describe('mgt-theme-toggle - tests', () => {
   it('should render', async () => {
-    await fixture('<mgt-dark-toggle></mgt-dark-toggle>');
+    await fixture('<mgt-theme-toggle></mgt-theme-toggle>');
     const toggle = await screen.findByRole('switch');
     expect(toggle).not.toBeNull();
   });
   it("should emit darkmodechanged with the current 'checked' state on click", async () => {
     let darkModeState = false;
-    const element = await fixture('<mgt-dark-toggle></mgt-dark-toggle>');
+    const element = await fixture('<mgt-theme-toggle></mgt-theme-toggle>');
     const toggle: HTMLInputElement = await screen.findByRole('switch');
     expect(toggle).not.toBeNull();
     element.addEventListener('darkmodechanged', (e: CustomEvent<boolean>) => {
@@ -35,7 +35,7 @@ describe('mgt-dark-toggle - tests', () => {
   });
 
   it('should have a checked switch if mode is dark', async () => {
-    await fixture('<mgt-dark-toggle mode="dark"></mgt-dark-toggle>');
+    await fixture('<mgt-theme-toggle mode="dark"></mgt-theme-toggle>');
     const toggle = await screen.findByRole('switch');
     expect(toggle).not.toBeNull();
     expect(toggle.getAttribute('aria-checked')).toBe('true');
@@ -43,7 +43,7 @@ describe('mgt-dark-toggle - tests', () => {
   });
 
   it('should not have a checked switch if mode is light', async () => {
-    await fixture('<mgt-dark-toggle></mgt-dark-toggle>');
+    await fixture('<mgt-theme-toggle></mgt-theme-toggle>');
     const toggle = await screen.findByRole('switch');
     expect(toggle).not.toBeNull();
     expect(toggle.getAttribute('aria-checked')).toBe('false');
@@ -65,7 +65,7 @@ describe('mgt-dark-toggle - tests', () => {
         dispatchEvent: jest.fn()
       }))
     });
-    await fixture('<mgt-dark-toggle></mgt-dark-toggle>');
+    await fixture('<mgt-theme-toggle></mgt-theme-toggle>');
     const toggle = await screen.findByRole('switch');
     expect(toggle).not.toBeNull();
     expect(toggle.getAttribute('aria-checked')).toBe('true');

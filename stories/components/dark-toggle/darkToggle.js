@@ -10,7 +10,7 @@ import { withCodeEditor } from '../../../.storybook/addons/codeEditorAddon/codeA
 import { defaultDocsPage } from '../../../.storybook/story-elements/defaultDocsPage';
 
 export default {
-  title: 'Components / mgt-dark-toggle',
+  title: 'Components / mgt-theme-toggle',
   component: 'dark-toggle',
   decorators: [
     withCodeEditor({
@@ -20,13 +20,13 @@ export default {
   parameters: {
     docs: {
       page: defaultDocsPage,
-      source: { code: '<mgt-dark-toggle></mgt-dark-toggle>' }
+      source: { code: '<mgt-theme-toggle></mgt-theme-toggle>' }
     }
   }
 };
 
 export const userPreferenceDriven = () => html`
-  <mgt-dark-toggle></mgt-dark-toggle>
+  <mgt-theme-toggle></mgt-theme-toggle>
   <p>
     This toggle will set light or dark mode based on the user's preference set in the browser.
   </p>
@@ -40,7 +40,7 @@ body {
 `;
 
 export const darkModeOn = () => html`
-  <mgt-dark-toggle mode="dark"></mgt-dark-toggle>
+  <mgt-theme-toggle mode="dark"></mgt-theme-toggle>
   <style>
 body {
     background-color: var(--neutral-fill-rest);
@@ -49,7 +49,7 @@ body {
 `;
 
 export const lightModeOn = () => html`
-  <mgt-dark-toggle mode="light"></mgt-dark-toggle>
+  <mgt-theme-toggle mode="light"></mgt-theme-toggle>
   <style>
 body {
     background-color: var(--neutral-fill-rest);
@@ -58,7 +58,7 @@ body {
 `;
 
 export const localization = () => html`
-<mgt-dark-toggle></mgt-dark-toggle>
+<mgt-theme-toggle></mgt-theme-toggle>
   <style>
 body {
     background-color: var(--neutral-fill-rest);

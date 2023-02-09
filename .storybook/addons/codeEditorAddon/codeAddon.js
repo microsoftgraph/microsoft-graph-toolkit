@@ -174,7 +174,7 @@ export const withCodeEditor = makeDecorator({
       ? ''
       : `
       <header>
-        <mgt-dark-toggle mode="light"></mgt-dark-toggle>
+        <mgt-theme-toggle mode="light"></mgt-theme-toggle>
       </header>
 `;
     const loadEditorContent = () => {

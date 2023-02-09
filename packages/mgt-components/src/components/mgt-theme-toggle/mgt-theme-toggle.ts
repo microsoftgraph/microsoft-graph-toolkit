@@ -17,8 +17,8 @@ registerFluentComponents(fluentSwitch);
  * @class MgtDarkToggle
  * @extends {MgtBaseComponent}
  */
-@customElement('dark-toggle')
-class MgtDarkToggle extends MgtBaseComponent {
+@customElement('theme-toggle')
+class MgtThemeToggle extends MgtBaseComponent {
   constructor() {
     super();
     const prefersDarkMode = window.matchMedia('(prefers-color-scheme:dark)').matches;
