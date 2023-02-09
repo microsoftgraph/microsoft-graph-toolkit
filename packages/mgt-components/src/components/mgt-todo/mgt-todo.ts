@@ -303,7 +303,7 @@ export class MgtTodo extends MgtTasksBase {
             ? html`
                 <fluent-calendar readonly="false" locale="en-US"
                   selected-dates="${this._newTaskDueDate}"
-                  @dateselected="${e => this.handleDateSelected(e.detail)}"
+                  @dateselected="${e => this.handleDateSelected(e)}"
                   @mouseleave=${() => this.toggleCalendar(false)}>
                 </fluent-calendar>`
             : null
@@ -319,7 +319,7 @@ export class MgtTodo extends MgtTasksBase {
 
   private handleDateSelected(e: CustomEvent<{ day: number; month: number; year: number }>) {
     if (e) {
-      this._newTaskDueDate = `${e.month}-${e.day}-${e.year}`;
+      this._newTaskDueDate = `${e.detail.month}-${e.detail.day}-${e.detail.year}`;
       this.requestUpdate();
     } else {
       this._newTaskDueDate = null;
