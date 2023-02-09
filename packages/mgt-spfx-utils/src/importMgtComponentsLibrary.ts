@@ -1,4 +1,11 @@
 /**
+ * -------------------------------------------------------------------------------------------
+ * Copyright (c) Microsoft Corporation.  All Rights Reserved.  Licensed under the MIT License.
+ * See License in the project root for license information.
+ * -------------------------------------------------------------------------------------------
+ */
+
+/**
  * Function to simplify lazy loading @microsoft/mgt-components script
  * Lazy loading of @microsoft/mgt-components is necessary when using
  * the disambiguation feature.

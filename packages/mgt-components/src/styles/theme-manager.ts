@@ -1,3 +1,10 @@
+/**
+ * -------------------------------------------------------------------------------------------
+ * Copyright (c) Microsoft Corporation.  All Rights Reserved.  Licensed under the MIT License.
+ * See License in the project root for license information.
+ * -------------------------------------------------------------------------------------------
+ */
+
 import {
   accentBaseColor,
   baseLayerLuminance,
@@ -11,7 +18,7 @@ import { parseColorHexRGB } from '@microsoft/fast-colors';
 /**
  * Available predefined themes
  */
-type Theme = 'light' | 'dark' | 'teams-light' | 'teams-dark';
+type Theme = 'light' | 'dark' | 'default' | 'contrast';
 
 /**
  * Helper function to apply fluent ui theme to an element
@@ -69,19 +76,19 @@ function applyColorScheme(settings: ColorScheme, element: HTMLElement = document
  */
 function getThemeSettings(theme: Theme): ColorScheme {
   switch (theme) {
-    case 'teams-dark':
+    case 'contrast':
       return {
         accentBaseColor: '#7f85f5',
         neutralBaseColor: '#adadad',
         baseLayerLuminance: StandardLuminance.DarkMode
       };
-    case 'teams-light':
+    case 'default': // this is the Teams light theme
       return {
         accentBaseColor: '#5b5fc7',
         neutralBaseColor: '#616161',
         baseLayerLuminance: StandardLuminance.LightMode
       };
-    case 'dark':
+    case 'dark': // Both MGT default dark and Teams Dark theme
       return {
         accentBaseColor: '#479ef5',
         neutralBaseColor: '#adadad',
