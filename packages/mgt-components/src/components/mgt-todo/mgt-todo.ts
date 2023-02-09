@@ -97,6 +97,18 @@ export class MgtTodo extends MgtTasksBase {
   }
 
   /**
+   * The name of a potential new task
+   *
+   * @readonly
+   * @protected
+   * @type {string}
+   * @memberof MgtTasksBase
+   */
+  protected get newTaskName(): string {
+    return this._newTaskName;
+  }
+
+  /**
    * Optional filter function when rendering tasks
    *
    * @type {TodoFilter}
@@ -118,7 +130,10 @@ export class MgtTodo extends MgtTasksBase {
 
   private _isLoadingTasks: boolean;
   private _loadingTasks: string[];
-  private _newTaskDueDate: Date;
+  private _newTaskDueDate: string;
+  private _newTaskName: string;
+  private _isNewTaskBeingAdded: boolean;
+  private _openCalendar: boolean;
   private _graph: IGraph;
   @state() private currentList: TodoTaskList;
 
@@ -129,6 +144,7 @@ export class MgtTodo extends MgtTasksBase {
     this._tasks = [];
     this._loadingTasks = [];
     this._isLoadingTasks = false;
+    this._openCalendar = false;
   }
 
   protected createRenderRoot() {
@@ -163,6 +179,17 @@ export class MgtTodo extends MgtTasksBase {
   }
 
   /**
+   * Toggle Calendar
+   *
+   * @protected
+   * @memberof MgtTodo
+   */
+  protected toggleCalendar(state: boolean): void {
+    this._openCalendar = state;
+    this.requestUpdate();
+  }
+
+  /**
    * Render the generic picker.
    *
    */
@@ -177,10 +204,126 @@ export class MgtTodo extends MgtTasksBase {
         `;
   }
 
+  /**
+   * Create a new todo task and add it to the list
+   *
+   * @protected
+   * @returns
+   * @memberof MgtTodo
+   */
+  protected async addTask() {
+    if (this._isNewTaskBeingAdded || !this.newTaskName) {
+      return;
+    }
+
+    this._isNewTaskBeingAdded = true;
+    this.requestUpdate();
+
+    try {
+      await this.createNewTask();
+    } finally {
+      this.clearNewTaskData();
+      this._isNewTaskBeingAdded = false;
+      this.requestUpdate();
+    }
+  }
+
+  /**
+   * Render the panel for creating a new task
+   *
+   * @protected
+   * @returns {TemplateResult}
+   * @memberof MgtTodo
+   */
+  protected renderNewTask(): TemplateResult {
+    const addIcon = html`
+      <span 
+        tabindex='0'
+        class="task-add-icon" 
+        @click="${() => this.addTask()}"
+        @keypress="${(e: KeyboardEvent) => {
+          if (e.key === 'Enter') {
+            this.addTask();
+          }
+        }}">
+        ${getSvg(SvgIcon.Add)}
+      </span>
+    `;
+
+    const cancelIcon = html`
+      <span 
+        tabindex='0'
+        class="task-cancel-icon" 
+        @click="${() => this.clearNewTaskData()}"
+        @keypress="${(e: KeyboardEvent) => {
+          if (e.key === 'Enter') {
+            this.clearNewTaskData();
+          }
+        }}">
+        ${getSvg(SvgIcon.Cancel)}
+      </span>
+    `;
+
+    const calendarTemplate = html`
+      ${getSvg(SvgIcon.Calendar)}
+      <fluent-button appearance="stealth" 
+        @click=${(e: Event) => this.toggleCalendar(true)}>
+        ${this.strings.dueDate}
+      </fluent-button>
+    `;
+
+    const taskTitle = html`
+       <fluent-text-field
+         appearance="outline"
+         label="new-taskName-input"
+         aria-label="new-taskName-input"
+         .value=${this._newTaskName}
+         placeholder="${this.strings.newTaskPlaceholder}"
+         @keypress="${(e: KeyboardEvent) => {
+           if (e.key === 'Enter') {
+             this.addTask();
+           }
+         }}"
+         @input="${(e: Event) => {
+           this._newTaskName = (e.target as HTMLInputElement).value;
+           this.requestUpdate();
+         }}">
+          <div slot="start">${addIcon}</div>
+          <div slot="end">
+          ${calendarTemplate}
+          ${cancelIcon}</div>
+        </fluent-text-field>
+     `;
+    return html`
+      <div dir=${this.direction} class="Task NewTask Incomplete">
+        ${taskTitle}
+      </div>
+        ${
+          this._openCalendar
+            ? html`
+                <fluent-calendar readonly="false" locale="en-US"
+                  selected-dates="${this._newTaskDueDate}"
+                  @dateselected="${e => this.handleDateSelected(e.detail)}"
+                  @mouseleave=${() => this.toggleCalendar(false)}>
+                </fluent-calendar>`
+            : null
+        }
+     `;
+  }
+  // selected-dates="2-20-2023"
   protected async handleSelectionChanged(e: any) {
     let list = e.detail;
     this.currentList = list;
     await this.loadTasks(list);
+  }
+
+  private handleDateSelected(e: CustomEvent<{ day: number; month: number; year: number }>) {
+    if (e) {
+      this._newTaskDueDate = `${e.month}-${e.day}-${e.year}`;
+      this.requestUpdate();
+    } else {
+      this._newTaskDueDate = null;
+    }
   }
 
   /**
@@ -279,7 +422,7 @@ export class MgtTodo extends MgtTasksBase {
     if (this._newTaskDueDate) {
       // tslint:disable-next-line: no-string-literal
       taskData['dueDateTime'] = {
-        dateTime: this._newTaskDueDate.toLocaleDateString(),
+        dateTime: new Date(this._newTaskDueDate).toLocaleDateString(),
         timeZone: 'UTC'
       };
     }
@@ -297,6 +440,7 @@ export class MgtTodo extends MgtTasksBase {
   protected clearNewTaskData(): void {
     super.clearNewTaskData();
     this._newTaskDueDate = null;
+    this._newTaskName = '';
   }
 
   /**
