@@ -1,0 +1,16 @@
+/**
+ * -------------------------------------------------------------------------------------------
+ * Copyright (c) Microsoft Corporation.  All Rights Reserved.  Licensed under the MIT License.
+ * See License in the project root for license information.
+ * -------------------------------------------------------------------------------------------
+ */
+
+@import '../../../../../node_modules/office-ui-fabric-core/dist/sass/References';
+@import '../../styles/shared-styles.scss';
+@import './mgt-breadcrumb.theme.scss';
+
+:host {
+  .breadcrumb {
+    --type-ramp-base-font-size: var(--breadcrumb-base-font-size, 18px);
+  }
+}

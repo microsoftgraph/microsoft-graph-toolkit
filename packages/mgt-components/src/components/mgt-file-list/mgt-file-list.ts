@@ -51,10 +51,11 @@ import {
   fluentDesignSystemProvider
 } from '@fluentui/web-components';
 import { registerFluentComponents } from '../../utils/FluentComponents';
+import { BreadcrumbInfo } from '../mgt-breadcrumb/mgt-breadcrumb';
 
 registerFluentComponents(fluentProgressRing, fluentDesignSystemProvider, fluentBreadcrumb, fluentBreadcrumbItem);
 
-type BreadcrumbInfo = {
+type FileListBreadCrumb = {
   name: string;
   fileListQuery?: string;
   itemId?: string;
@@ -67,7 +68,7 @@ type BreadcrumbInfo = {
   userId?: string;
   insightType?: OfficeGraphInsightString;
   fileExtensions?: string[];
-};
+} & BreadcrumbInfo;
 
 /**
  * The File List component displays a list of multiple folders and files by
@@ -502,7 +503,7 @@ export class MgtFileList extends MgtTemplatedComponent {
   })
   public rootNodeName: string = 'Home';
 
-  private _breadcrumb: BreadcrumbInfo[] = [];
+  private _breadcrumb: FileListBreadCrumb[] = [];
   /**
    * An array of nodes to show in the breadcrumb
    *
@@ -511,14 +512,12 @@ export class MgtFileList extends MgtTemplatedComponent {
    * @memberof MgtFileList
    */
   @state()
-  private get breadcrumb(): BreadcrumbInfo[] {
+  private get breadcrumb(): FileListBreadCrumb[] {
     return this._breadcrumb;
   }
-  private set breadcrumb(value: BreadcrumbInfo[]) {
+  private set breadcrumb(value: FileListBreadCrumb[]) {
     this._breadcrumb = value;
   }
-
-  private isLastCrumb = (b: BreadcrumbInfo): boolean => this.breadcrumb.indexOf(b) === this.breadcrumb.length - 1;
 
   /**
    * Get the scopes required for file list
@@ -581,7 +580,8 @@ export class MgtFileList extends MgtTemplatedComponent {
       fileQueries: this.fileQueries,
       itemPath: this.itemPath,
       insightType: this.insightType,
-      itemId: this.itemId
+      itemId: this.itemId,
+      id: this.itemId
     });
   }
 
@@ -661,26 +661,7 @@ export class MgtFileList extends MgtTemplatedComponent {
   protected renderFiles(): TemplateResult {
     return html`
       <div id="file-list-wrapper" class="file-list-wrapper" dir=${this.direction}>
-        <fluent-breadcrumb>
-          ${repeat(
-            this.breadcrumb,
-            b => b.name, // feels bad to use name as key, needs a better way to identify breadcrumb
-            b =>
-              html`
-                <fluent-breadcrumb-item
-                  @click=${() => this.handleBreadcrumbClick(b)}
-                  @keypress=${(e: KeyboardEvent) => this.handleBreadcrumbKeyPress(e, b)}
-                >
-                  <span
-                    tabindex=${this.isLastCrumb(b) ? -1 : 0}
-                    class=${this.isLastCrumb(b) ? '' : 'interactive-breadcrumb'}
-                  >
-                    ${b.name}
-                  </span>
-                </fluent-breadcrumb-item>
-              `
-          )}
-        </fluent-breadcrumb>
+        <mgt-breadcrumb .breadcrumb=${this.breadcrumb} @breadcrumbclick=${this.handleBreadcrumbClick}></mgt-breadcrumb>
         ${this.enableFileUpload ? this.renderFileUpload() : null}
         <ul
           id="file-list"
@@ -991,13 +972,13 @@ export class MgtFileList extends MgtTemplatedComponent {
       const index = nodes.indexOf(li);
       this._focusedItemIndex = index;
 
-      for (let i = 0; i < fileList.children.length; i++) {
-        fileList.children[i].classList.remove('focused');
+      for (const node of fileList.children) {
+        node.classList.remove('focused');
       }
     }
     if (item.folder) {
       // load folder contents, update breadcrumb
-      this.breadcrumb.push({ name: item.name, itemId: item.id });
+      this.breadcrumb.push({ name: item.name, itemId: item.id, id: item.id });
       // clear any existing query properties
       this.siteId = null;
       this.groupId = null;
@@ -1014,14 +995,8 @@ export class MgtFileList extends MgtTemplatedComponent {
     }
   }
 
-  private handleBreadcrumbKeyPress(event: KeyboardEvent, b: BreadcrumbInfo): void {
-    if (event.key === 'Enter' || event.key === ' ') {
-      this.handleBreadcrumbClick(b);
-    }
-  }
-  private handleBreadcrumbClick(b: BreadcrumbInfo): void {
-    // last crumb does nothing
-    if (this.isLastCrumb(b)) return;
+  private handleBreadcrumbClick(e: CustomEvent<FileListBreadCrumb>): void {
+    const b = e.detail;
     this.breadcrumb = this.breadcrumb.slice(0, this.breadcrumb.indexOf(b) + 1);
     this.siteId = b.siteId;
     this.groupId = b.groupId;

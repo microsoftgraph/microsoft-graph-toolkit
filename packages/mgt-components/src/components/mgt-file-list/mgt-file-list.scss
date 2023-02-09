@@ -38,6 +38,7 @@ $progress-ring-size: var(--progress-ring-size, 24px);
 :host {
   font-family: $font-family;
   font-size: $font-size;
+  color: $color;
 }
 
 :host .file-list-wrapper {
@@ -46,7 +47,6 @@ $progress-ring-size: var(--progress-ring-size, 24px);
   border-radius: $file-list-border-radius;
   border: $file-list-border;
   position: relative;
-  color: $color;
   display: flex;
   flex-direction: column;
   border-radius: 8px;

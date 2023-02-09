@@ -18,6 +18,7 @@ import './mgt-person/mgt-person-types';
 import './mgt-tasks/mgt-tasks';
 import './mgt-teams-channel-picker/mgt-teams-channel-picker';
 import './mgt-todo/mgt-todo';
+import './mgt-breadcrumb/mgt-breadcrumb';
 
 export * from './mgt-agenda/mgt-agenda';
 export * from './mgt-file/mgt-file';
@@ -32,3 +33,4 @@ export * from './mgt-person/mgt-person-types';
 export * from './mgt-tasks/mgt-tasks';
 export * from './mgt-teams-channel-picker/mgt-teams-channel-picker';
 export * from './mgt-todo/mgt-todo';
+export * from './mgt-breadcrumb/mgt-breadcrumb';

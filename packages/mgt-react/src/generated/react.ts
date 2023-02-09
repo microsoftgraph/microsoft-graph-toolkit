@@ -61,6 +61,7 @@ export type FileListProps = {
 	enableFileUpload?: boolean;
 	maxUploadFile?: number;
 	excludedFileExtensions?: string[];
+	rootNodeName?: string;
 	templateContext?: TemplateContext;
 	mediaQuery?: ComponentMediaQuery;
 	itemClick?: (e: CustomEvent<MicrosoftGraph.DriveItem>) => void;
