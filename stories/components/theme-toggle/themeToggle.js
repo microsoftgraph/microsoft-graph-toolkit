@@ -11,7 +11,7 @@ import { defaultDocsPage } from '../../../.storybook/story-elements/defaultDocsP
 
 export default {
   title: 'Components / mgt-theme-toggle',
-  component: 'dark-toggle',
+  component: 'theme-toggle',
   decorators: [
     withCodeEditor({
       disableThemeToggle: true
@@ -68,10 +68,10 @@ body {
   import { LocalizationHelper } from '@microsoft/mgt';
   LocalizationHelper.strings = {
     _components: {
-      "dark-toggle": {
-        label: 'Theme:',
-        on: 'Late night',
-        off: 'Midday'
+      "theme-toggle": {
+        label: 'Theme 🎨:',
+        on: 'Late night 🌙',
+        off: 'Midday ☀️'
       },
     }
   }
