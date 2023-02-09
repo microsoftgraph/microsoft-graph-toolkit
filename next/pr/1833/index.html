@@ -1,4 +1,9 @@
-<!doctype html><html lang="en"><head><meta charset="utf-8"/><title>Webpack App</title><meta name="viewport" content="width=device-width,initial-scale=1"/><style>html, body {
+<!doctype html><html lang="en"><head><meta charset="utf-8"/><title>Microsoft Graph Toolkit Playground</title>
+    <meta name="og:title" content="Microsoft Graph Toolkit Playground"></meta>
+    <meta name="og:type" content="website"></meta>
+    <meta name="og:description" content="Use Microsoft Graph Toolkit to find authentication providers and reusable, framework-agnostic web components for accessing and working with Microsoft Graph."></meta>
+    <meta name="description" content="Use Microsoft Graph Toolkit to find authentication providers and reusable, framework-agnostic web components for accessing and working with Microsoft Graph."></meta>
+<meta name="viewport" content="width=device-width,initial-scale=1"/><style>html, body {
     overflow: hidden;
     height: 100%;
     width: 100%;
@@ -37,7 +42,8 @@
         /* eslint-enable object-shorthand */
       })
     );
-  };</script><meta name="theme-color" content="#F6F9FC"/><link rel="shortcut icon" type="image/png" href="/favicon.png"/><link rel="manifest" href="manifest.json"/><script>navigator.serviceWorker.register("sw.js");</script><footer class="storybook-footer">Microsoft Graph Toolkit Playground was founded by Microsoft as a community guided, open source project. <a tabindex="-1" href="https://privacy.microsoft.com/en-us/privacystatement">Privacy & cookies</a> <a tabindex="-1" href="https://www.microsoft.com/en-us/legal/intellectualproperty/copyright/default">Term of use</a></footer><script src="https://consentdeliveryfd.azurefd.net/mscc/lib/v2/wcp-consent.js"></script><script src="https://az725175.vo.msecnd.net/scripts/jsll-4.js"></script><script>const xmlns = "http://www.w3.org/2000/svg";
+  };</script><meta name="theme-color" content="#F6F9FC"/><link rel="shortcut icon" type="image/png" href="/favicon.png"/><link rel="manifest" href="manifest.json"/><script>navigator.serviceWorker.register("sw.js");</script><footer class="storybook-footer">Microsoft Graph Toolkit (v<span id="mgt-version"></span>) Playground was founded by Microsoft as a community guided, open source project. <a tabindex="-1" href="https://privacy.microsoft.com/en-us/privacystatement">Privacy & cookies</a> <a tabindex="-1" href="https://www.microsoft.com/en-us/legal/intellectualproperty/copyright/default">Term of use</a></footer><script type="module">import { PACKAGE_VERSION } from './mgt.storybook.js'
+  document.getElementById('mgt-version').innerText = PACKAGE_VERSION;</script><script src="https://consentdeliveryfd.azurefd.net/mscc/lib/v2/wcp-consent.js"></script><script src="https://az725175.vo.msecnd.net/scripts/jsll-4.js"></script><script>const xmlns = "http://www.w3.org/2000/svg";
 
   var config = {
     autoCapture: {
@@ -116,53 +122,6 @@
 
     sidebarNode.insertBefore(usefulLinksContainer, sidebarNode.childNodes[1]);
 
-    const searchBox = document.querySelector(".search-field");
-    if (searchBox) {
-      searchBox.setAttribute("name", "Find Components");
-      searchBox.setAttribute("aria-expanded", "false");
-
-      const searchInput = searchBox.querySelector("input");
-      if (searchInput) {
-        searchInput.addEventListener("mouseleave", addAriaExpanded("false"));
-        searchInput.addEventListener("mouseout", addAriaExpanded("false"));
-        searchInput.addEventListener("pointerleave", addAriaExpanded("false"));
-        searchInput.addEventListener("pointerout", addAriaExpanded("false"));
-        searchInput.addEventListener("click", addAriaExpanded("true"));
-        searchInput.addEventListener("focusout", addAriaExpanded("false"));
-        searchInput.addEventListener("focus", setListItemsAc11y);
-      }
-    }
-
-    function setListItemsAc11y() {
-      const recentMenu = document.querySelector("#storybook-explorer-menu");
-      if (recentMenu) {
-        const firstLi = recentMenu.querySelector("li");
-        if (firstLi) {
-          firstLi.setAttribute("role", "heading");
-          firstLi.setAttribute("aria-level", "2");
-        }
-
-        const otherLis = recentMenu.querySelectorAll("li:not(:first-child)");
-        if (otherLis && otherLis.length > 0) {
-          for (let i = 0; i < otherLis.length; i++) {
-            const li = otherLis[i];
-            const liText = li.innerText;
-            if (liText) {
-              li.setAttribute("aria-label", liText.trim());
-            }
-            li.setAttribute("aria-hidden", "true");
-          }
-        }
-      }
-    }
-
-    function addAriaExpanded(value) {
-      const searchBox = document.querySelector(".search-field");
-      if (searchBox) {
-        searchBox.setAttribute("aria-expanded", value);
-      }
-    }
-
     const sidebarSubheading = document.getElementsByClassName("sidebar-subheading");
     if (sidebarSubheading) {
       for (let i = 0; i < sidebarSubheading.length; i++) {
@@ -180,6 +139,7 @@
         }
       }
     }
+
     function setArialLabelForExpandCollapseBtn() {
       const expandCollapseBtns = document.getElementsByClassName("css-rl1ij0");
       if (expandCollapseBtns) {
@@ -203,7 +163,6 @@
     }
 
     setEventOnMenuClick();
-    setListItemsAc11y();
   }
 
   function createSvg(svgPath) {
@@ -371,11 +330,25 @@
     .os-scrollbar>.os-scrollbar-track {
       border: 1px solid transparent;
     }
-  }</style><style>/* this keeps the storybook body area above footer */
-  #root>div:first-of-type {
-    height: calc(100% - 40px);
+  }</style><style>/* don't show the footer on mobile */
+  @media (max-width: 599px) {
+    .storybook-footer {
+        display: none !important;
+    }
   }
 
+  /* this keeps the storybook body area above footer */
+  @media (max-width: 768px) {
+    #root>div:first-of-type {
+      height: calc(100% - 50px);
+    }
+  }
+
+  @media (min-width: 769px) {
+    #root>div:first-of-type {
+      height: calc(100% - 40px);
+    }
+  }
   .sidebar-header button {
     display: none !important;
   }
@@ -401,12 +374,6 @@
 
   .sidebar-subheading.css-ulso1l {
     color: #717171 !important;
-  }
-
-  @media (max-width: 768px) {
-    #root>div:first-of-type {
-      height: calc(100% - 50px);
-    }
   }
 
   .sidebar-header h1 {
@@ -440,6 +407,17 @@
   /* Removes Find component feature */
   .css-8ktt77 {
     display: none;
+  }
+
+  .css-14o7vtb {
+    border: 2px solid transparent;
+  }
+
+  .css-14o7vtb:focus-visible {
+    outline: auto;
+  }
+  .search-field {
+    display: none !important;
   }</style><style>#root[hidden],
       #docs-root[hidden] {
         display: none !important;
@@ -459,4 +437,4 @@
           
       
           
-            window['DOCS_MODE'] = false;</script><script src="runtime~main.9a1c421183e31e1fede9.manager.bundle.js"></script><script src="vendors~main.610a3e57356a44ecb55e.manager.bundle.js"></script><script src="main.c4239f321b9f1fd1a276.manager.bundle.js"></script></body></html>
+            window['DOCS_MODE'] = false;</script><script src="runtime~main.f592d37c7331c9ad7f98.manager.bundle.js"></script><script src="vendors~main.f450353871e2587ff7e1.manager.bundle.js"></script><script src="main.4a901f6c3fc3c4de9b3f.manager.bundle.js"></script></body></html>
