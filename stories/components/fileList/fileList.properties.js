@@ -7,8 +7,12 @@
 
 import { html } from 'lit-element';
 import { withCodeEditor } from '../../../.storybook/addons/codeEditorAddon/codeAddon';
+import { versionInfo } from '../../versionInfo';
 
 export default {
+  parameters: {
+    version: versionInfo
+  },
   title: 'Components / mgt-file-list / Properties',
   component: 'mgt-file-list',
   decorators: [withCodeEditor]
@@ -102,6 +106,10 @@ export const getFileListWithSize = () => html`
     <mgt-file-list page-size=5></mgt-file-list>
   `;
 
+export const getFileListByExtensionsAndSize = () => html`
+    <mgt-file-list file-extensions="docx, xlsx" page-size=5></mgt-file-list>
+  `;
+
 export const fileListItemView = () => html`
     <mgt-file-list item-view="oneLine" page-size=3></mgt-file-list>
     <mgt-file-list item-view="twoLines" page-size=3></mgt-file-list>
@@ -119,4 +127,3 @@ export const clearCacheAndReload = () => html`
     })
   </script>
 `;
-

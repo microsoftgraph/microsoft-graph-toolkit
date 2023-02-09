@@ -6,13 +6,7 @@
  */
 
 export const strings = {
-  contactSectionTitle: 'Contact',
-  emailTitle: 'Email',
-  chatTitle: 'Teams',
-  businessPhoneTitle: 'Business Phone',
-  cellPhoneTitle: 'Mobile Phone',
-  departmentTitle: 'Department',
-  titleTitle: 'Title',
-  officeLocationTitle: 'Office Location',
-  copyToClipboardButton: 'Copy to clipboard'
+  photoFor: 'Photo for',
+  emailAddress: 'Email address',
+  initials: 'Initials'
 };

@@ -1,4 +1,6 @@
-import { Meta } from '@storybook/addon-docs';
+import { Meta, Source } from '@storybook/addon-docs';
+import { PACKAGE_VERSION } from '@microsoft/mgt';
+import { versionInfo } from './versionInfo';
 
 <Meta title="Overview" />
 
@@ -10,21 +12,25 @@ The Microsoft Graph Toolkit is a collection of reusable, framework-agnostic comp
 
 The Microsoft Graph Toolkit makes it easy to use Microsoft Graph in your application. In the following example, a signed in user and their calendar events are displayed with just two lines of code by using the [Login](?path=/story/components-mgt-login--login) and [Agenda](?path=/story/components-mgt-agenda--simple) components.
 
+<p>This site is providing documentation for version {PACKAGE_VERSION} of the Microsoft Graph Toolkit.</p>
+
 ### Installing the Microsoft Graph Toolkit
 
 It's easy to get started! Add the Toolkit via our `mgt-loader` or via npm and you are ready to go!
 
 #### Via the mgt-loader
 
-```html
-<script src="https://unpkg.com/@microsoft/mgt/dist/bundle/mgt-loader.js"></script>
-```
+<Source
+ language="html"
+ code={`<script src="https://unpkg.com/@microsoft/mgt@${versionInfo.major}/dist/bundle/mgt-loader.js"></script>`}
+/>
 
 #### Via npm
 
-```shell
-npm i @microsoft/mgt
-```
+<Source
+ language="shell"
+ code={`npm install @microsoft/mgt@${PACKAGE_VERSION}`}
+/>
 
 ### What's in the Microsoft Graph Toolkit?
 

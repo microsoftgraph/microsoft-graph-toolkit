@@ -7,12 +7,11 @@ This sample implements both a `GET` and `POST` api for exchanging the Microsoft 
 
 You will need:
 
-1. A global administrator account for an Office 365 tenant. Testing in a production tenant is not recommended! You can get a free tenant for development use by signing up for the [Office 365 Developer Program](https://developer.microsoft.com/en-us/microsoft-365/dev-program).
+1. A global administrator account for an Office 365 tenant. Testing in a production tenant is not recommended! You can get a free tenant for development use by signing up for the [Office 365 Developer Program](https://developer.microsoft.com/microsoft-365/dev-program).
 
 1. To test locally, [NodeJS](https://nodejs.org/en/download/) must be installed on your development machine.
 
-1. To test locally, you need [Ngrok](https://ngrok.com/) installed on your development machine.
-Make sure you've downloaded and installed Ngrok on your local machine. ngrok will tunnel requests from the Internet to your local computer and terminate the SSL connection from Teams.
+1. To test locally, you will need to tunnel requests from the internet to your local computer. You can use [ngrok](https://ngrok.com/) for this.
 
     > NOTE: The free ngrok plan will generate a new URL every time you run it, which requires you to update your Azure AD registration, the Teams app manifest, and the project configuration. A paid account with a permanent ngrok URL is recommended.
 
@@ -55,7 +54,7 @@ Make sure you've downloaded and installed Ngrok on your local machine. ngrok wil
     > yarn start
     ```
 
-1. Open a new terminal and run Ngrok to expose your local web server via a public URL. 
+1. Open a new terminal and run the application to expose your local web server via a public URL. If you're using ngrok, you can do:
 
     ```bash
     > ngrok http 3000
@@ -80,7 +79,7 @@ Your tab needs to run as a registered Azure AD application to obtain an access t
 
     - Set **Name** to `Node.js Teams SSO` (or a name of your choice).
     - Set **Supported account types** to **Accounts in any organizational directory and personal Microsoft accounts**.
-    - Under **Redirect URI**, set the first drop-down to `Single Page Application` and set the value to the ngrok url + `/auth.html`. Ex: `https://mgtsso.ngrok.io/auth.html`. 
+    - Under **Redirect URI**, set the first drop-down to `Single Page Application` and set the value to the application's public url + `/auth.html`. Ex: `https://mgtsso.example.com/auth.html`. 
 
 1. From the app overview page, copy the value of the **Application (client) ID** for later. You will need it for the following steps. You will use this value in the `index.html` and `.env` files
 
@@ -102,7 +101,7 @@ Your tab needs to run as a registered Azure AD application to obtain an access t
 
     - To pre-consent as an admin, select **Grant admin consent**, then select **Yes**
 
-1. Navigate to **Expose an API** under **Manage**. On the top of the page next to `Application ID URI` select **Set**. This generates an API in the form of: `api://{AppID}`. Update it to add your subdomain, ex: `api://mgtsso.ngrok.io/{appID}`
+1. Navigate to **Expose an API** under **Manage**. On the top of the page next to `Application ID URI` select **Set**. This generates an API in the form of: `api://{AppID}`. Update it to add your subdomain, ex: `api://mgtsso.example.com/{appID}`
 
 1. On the same page, select **Add a scope**. Fill in the fields as follows and select **Add scope**.
 
@@ -114,7 +113,7 @@ Your tab needs to run as a registered Azure AD application to obtain an access t
     - User consent description: `Enable Teams to call this app’s APIs with the same rights as the user.`
     - State: **Enabled**
     
-    Your API URL should look like this: `api://mgtsso.ngrok.io/{appID}/access_as_user`. 
+    Your API URL should look like this: `api://mgtsso.example.com/{appID}/access_as_user`. 
 
 1. Next, add two client applications. This is for the Teams desktop/mobile clients and the web client. Under the **Authorized client applications** section, select **Add a client application**. Fill in the Client ID and select the scope we created. Then select **Add application**. Do this for the followings Ids
     
@@ -122,49 +121,42 @@ Your tab needs to run as a registered Azure AD application to obtain an access t
     - 1fec8e78-bce4-4aaf-ab1b-5451cc387264
 ## Creating a Teams App
 
-Now you can use [App Studio](https://docs.microsoft.com/en-us/microsoftteams/platform/get-started/get-started-app-studio) app from within the Microsoft Teams client to help create your app manifest. If you do not have App studio installed in Teams, select Apps Store App at the bottom-left corner of the Teams app, and search for App Studio. Once you find the tile, select it and choose install in the pop-up window dialog box.
+Now you can use the [Developer Portal for Teams](https://learn.microsoft.com/microsoftteams/platform/concepts/build-and-test/teams-developer-portal) to configure, distribute and manage your application. You can access the [Developer Portal for Teams in a web browser](https://dev.teams.microsoft.com/) or as a [Teams App](https://teams.microsoft.com/l/app/14072831-8a2a-4f76-9294-057bf0b42a68).
 
-1. Open App Studio and select the **Manifest editor** tab.
+You can also use the [Teams Toolkit](https://marketplace.visualstudio.com/items?itemName=TeamsDevApp.ms-teams-vscode-extension) in **Visual Studio Code** to quickly create and deploy your Teams app.
 
-1. Choose the **Create a new app** tile. This will bring you into the **App Details** section.
+To use the Developer Portal for Teams:
 
-1. Under **App names** fill in the short name and full name as you wish
+1. Open [Developer Portal for Teams](https://dev.teams.microsoft.com/).
 
-1. Under **Identification** press **Generate** to generate an App Id (this is only for the Teams App). Then fill in
-    - **Package name:** `com.mgt.teamsSsoSample`
-    - **Version:** `1.0.0`
+2. Choose **Apps** from the left sidebar menu.
 
-1. Under **Descriptions** fill in the short and full description as you wish
+3. Click on **+ New app** from the options at the top left of the screen. This will open a modal where you enter an application name. Click **Add** to save it.
 
-1. Under **Developer information** section fill out your details
+4. Fill in the remaining required basic information of the application. Required fields have an asterik (*) after their titles.
+    > **Note**: The application ID is automatically created for you when you add the new application.
 
-1. Under **App URLs** provide links, ex:
-    - **Privacy statement** `https://www.microsoft.com/privacy`
-    - **Terms of use** `https://www.microsoft.com/termsofuse`
+    a. For **App names**, the short name will be the name you entered before for your application.
 
-1. In the left navigation, in the **Capabilities** section, select **Tabs**
+    b. For **Descriptions**, fill the **Short description** and **Long description**.
 
-1. Select **Add** to create a **Personal tab**
+    c. For **Developer**, fill a **Developer of company name**. Set the the application URL as the **Website**.
 
-1. In the popup you can enter your details and then press **Save**. ex:
-    - **Name** `MGT SSO Tab`
-    - **Entity ID** `com.mgt.mgtSsoSample.static`
-    - **Content URL** `https://{Your Ngrok subdomain}.ngrok.io`
+    d. For **App urls**, use `https://mgtsso.example.com/privacy` for **Privacy policy** and `https://mgtsso.example.com/terms` for **Terms of use**.
 
-1. In the left navigation, in the **Finish** section, select **Domains and permissions**
+    e. For **Application (client) ID**, fill in the client ID you got when you registered in AAD.
 
-1. Under **AAD App ID** enter the client id from your AAD App registration
+    f. Click **Save**.
 
-1. Under **Single-Sign-On** enter the API URL we set during the AAD App registration process.
-    -  Ex: `api://mgtsso.ngrok.io/{Your App Id}`
+5. Click on **App features** under **Configure** to specify the features you want to include for your application. Select **Personal app** feature. Fill the name of the app in the **Name** section and the application URL in the **Content URL** section. Select the **Context** as **personalTab**. Click **Confirm** to save.
+    > **Note**: This is the tab that will appear on the application when it is launched.
 
-1. From the left nav **Finish** section, select **Test and distribute**. There you can download your app package as a zip file. 
+6. Click **Single sign-on** under **Configure**. Enter the API URL you set during the AAD App registration process. Click **Save**.
+    > Example: `api://mgtsso.example.com/{Your App Id}`
 
-1. Select **Apps** in the Teams Client, scroll down, and select **Upload a custom app**
+7. In the top right, click on the **Preview in Teams** button. Your application will be opened in Teams. Test it out.
 
-1. Select the .zip file that you downloaded and then **Add**
-
-1. Open up the newly created Teams tab and enjoy
+8. Click on **Publish** to distribute it.
 
 ### How do I know it worked?
 
