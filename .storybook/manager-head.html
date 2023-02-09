@@ -6,10 +6,15 @@
 </script>
 
 <footer class="storybook-footer">
-  Microsoft Graph Toolkit Playground was founded by Microsoft as a community guided, open source project.
+  Microsoft Graph Toolkit (v<span id="mgt-version"></span>) Playground was founded by Microsoft as a community guided,
+  open source project.
   <a tabindex="-1" href="https://privacy.microsoft.com/en-us/privacystatement">Privacy & cookies</a>
   <a tabindex="-1" href="https://www.microsoft.com/en-us/legal/intellectualproperty/copyright/default">Term of use</a>
 </footer>
+<script type="module">
+  import { PACKAGE_VERSION } from './mgt.storybook.js'
+  document.getElementById('mgt-version').innerText = PACKAGE_VERSION;
+</script>
 
 <script src="https://consentdeliveryfd.azurefd.net/mscc/lib/v2/wcp-consent.js"></script>
 <script src="https://az725175.vo.msecnd.net/scripts/jsll-4.js" type="text/javascript"></script>
@@ -44,7 +49,7 @@
     }
 
     // This is a fix for an accessibility issue: https://github.com/microsoftgraph/microsoft-graph-toolkit/issues/1085
-    sidebarHeader[0].innerHTML = '<h1 tabindex="0" class="css-1su1ft1">' + '<a href="https://aka.ms/mgt" target="_blank" class="css-ixbm00">' + "Microsoft Graph Toolkit Playground</a>" + "</h1>";
+    sidebarHeader[0].innerHTML = '<h1 tabindex="-1" class="css-1su1ft1">' + '<a href="https://aka.ms/mgt" target="_blank" class="css-ixbm00">' + "Microsoft Graph Toolkit Playground</a>" + "</h1>";
 
     const sidebarNode = sidebarHeader[0].parentNode;
 
@@ -93,53 +98,6 @@
 
     sidebarNode.insertBefore(usefulLinksContainer, sidebarNode.childNodes[1]);
 
-    const searchBox = document.querySelector(".search-field");
-    if (searchBox) {
-      searchBox.setAttribute("name", "Find Components");
-      searchBox.setAttribute("aria-expanded", "false");
-
-      const searchInput = searchBox.querySelector("input");
-      if (searchInput) {
-        searchInput.addEventListener("mouseleave", addAriaExpanded("false"));
-        searchInput.addEventListener("mouseout", addAriaExpanded("false"));
-        searchInput.addEventListener("pointerleave", addAriaExpanded("false"));
-        searchInput.addEventListener("pointerout", addAriaExpanded("false"));
-        searchInput.addEventListener("click", addAriaExpanded("true"));
-        searchInput.addEventListener("focusout", addAriaExpanded("false"));
-        searchInput.addEventListener("focus", setListItemsAc11y);
-      }
-    }
-
-    function setListItemsAc11y() {
-      const recentMenu = document.querySelector("#storybook-explorer-menu");
-      if (recentMenu) {
-        const firstLi = recentMenu.querySelector("li");
-        if (firstLi) {
-          firstLi.setAttribute("role", "heading");
-          firstLi.setAttribute("aria-level", "2");
-        }
-
-        const otherLis = recentMenu.querySelectorAll("li:not(:first-child)");
-        if (otherLis && otherLis.length > 0) {
-          for (let i = 0; i < otherLis.length; i++) {
-            const li = otherLis[i];
-            const liText = li.innerText;
-            if (liText) {
-              li.setAttribute("aria-label", liText.trim());
-            }
-            li.setAttribute("aria-hidden", "true");
-          }
-        }
-      }
-    }
-
-    function addAriaExpanded(value) {
-      const searchBox = document.querySelector(".search-field");
-      if (searchBox) {
-        searchBox.setAttribute("aria-expanded", value);
-      }
-    }
-
     const sidebarSubheading = document.getElementsByClassName("sidebar-subheading");
     if (sidebarSubheading) {
       for (let i = 0; i < sidebarSubheading.length; i++) {
@@ -157,6 +115,7 @@
         }
       }
     }
+
     function setArialLabelForExpandCollapseBtn() {
       const expandCollapseBtns = document.getElementsByClassName("css-rl1ij0");
       if (expandCollapseBtns) {
@@ -180,7 +139,6 @@
     }
 
     setEventOnMenuClick();
-    setListItemsAc11y();
   }
 
   function createSvg(svgPath) {
@@ -356,11 +314,26 @@
 </style>
 
 <style>
-  /* this keeps the storybook body area above footer */
-  #root>div:first-of-type {
-    height: calc(100% - 40px);
+
+  /* don't show the footer on mobile */
+  @media (max-width: 599px) {
+    .storybook-footer {
+        display: none !important;
+    }
   }
 
+  /* this keeps the storybook body area above footer */
+  @media (max-width: 768px) {
+    #root>div:first-of-type {
+      height: calc(100% - 50px);
+    }
+  }
+
+  @media (min-width: 769px) {
+    #root>div:first-of-type {
+      height: calc(100% - 40px);
+    }
+  }
   .sidebar-header button {
     display: none !important;
   }
@@ -388,12 +361,6 @@
     color: #717171 !important;
   }
 
-  @media (max-width: 768px) {
-    #root>div:first-of-type {
-      height: calc(100% - 50px);
-    }
-  }
-
   .sidebar-header h1 {
     font-size: 14px;
     font-weight: 700;
@@ -417,6 +384,7 @@
     color: #717171 !important;
   }
 
+  .sto-ulso1l,
   .css-1en6m26 {
     color: #616159 !important;
   }
@@ -424,5 +392,16 @@
   /* Removes Find component feature */
   .css-8ktt77 {
     display: none;
+  }
+
+  .css-14o7vtb {
+    border: 2px solid transparent;
+  }
+
+  .css-14o7vtb:focus-visible {
+    outline: auto;
+  }
+  .search-field {
+    display: none !important;
   }
 </style>

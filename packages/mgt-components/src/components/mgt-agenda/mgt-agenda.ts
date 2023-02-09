@@ -7,10 +7,16 @@
 
 import * as MicrosoftGraph from '@microsoft/microsoft-graph-types';
 import { html, TemplateResult } from 'lit';
-import { customElement, property } from 'lit/decorators.js';
-import { Providers, ProviderState, MgtTemplatedComponent, prepScopes } from '@microsoft/mgt-element';
+import { property } from 'lit/decorators.js';
+import {
+  Providers,
+  ProviderState,
+  MgtTemplatedComponent,
+  prepScopes,
+  mgtHtml,
+  customElement
+} from '@microsoft/mgt-element';
 import '../../styles/style-helper';
-import { getDayOfWeekString, getMonthString } from '../../utils/Utils';
 import '../mgt-person/mgt-person';
 import { styles } from './mgt-agenda-css';
 import { getEventsPageIterator } from './mgt-agenda.graph';
@@ -24,7 +30,7 @@ import { MgtPeople } from '../mgt-people/mgt-people';
  * @class MgtAgenda
  * @extends {MgtTemplatedComponent}
  *
- * @fires eventClick - Fired when user click an event
+ * @fires {CustomEvent<MicrosoftGraph.Event>} eventClick - Fired when user click an event
  *
  * @cssprop --event-box-shadow - {String} Event box shadow color and size
  * @cssprop --event-margin - {String} Event margin
@@ -41,7 +47,8 @@ import { MgtPeople } from '../mgt-people/mgt-people';
  * @cssprop --event-location-font-size - {Length} Event location font size
  * @cssprop --event-location-color - {Color} Event location color
  */
-@customElement('mgt-agenda')
+@customElement('agenda')
+// @customElement('mgt-agenda')
 export class MgtAgenda extends MgtTemplatedComponent {
   /**
    * Array of styles to apply to the element. The styles should be defined
@@ -354,7 +361,6 @@ export class MgtAgenda extends MgtTemplatedComponent {
         <div class="event-other-container">${this.renderOther(event)}</div>
       </div>
     `;
-    // <div class="event-duration">${this.getEventDuration(event)}</div>
   }
 
   /**
@@ -422,7 +428,7 @@ export class MgtAgenda extends MgtTemplatedComponent {
     if (!event.attendees.length) {
       return null;
     }
-    return html`
+    return mgtHtml`
       <mgt-people
         class="event-attendees"
         .peopleQueries=${event.attendees.map(attendee => {
@@ -461,8 +467,10 @@ export class MgtAgenda extends MgtTemplatedComponent {
     const grouped = {};
 
     events.forEach(event => {
-      const eventDate = new Date(event.start.dateTime);
-      const dateString = eventDate.toISOString().replace('Z', '');
+      let dateString = event?.start?.dateTime;
+      if (event.end.timeZone === 'UTC') {
+        dateString += 'Z';
+      }
 
       const header = this.getDateHeaderFromDateTimeString(dateString);
       grouped[header] = grouped[header] || [];
@@ -530,7 +538,7 @@ export class MgtAgenda extends MgtTemplatedComponent {
   }
 
   private eventClicked(event: MicrosoftGraph.Event) {
-    this.fireCustomEvent('eventClick', { event });
+    this.fireCustomEvent('eventClick', event);
   }
 
   private getEventTimeString(event: MicrosoftGraph.Event) {
@@ -575,14 +583,10 @@ export class MgtAgenda extends MgtTemplatedComponent {
             query = this.eventQuery;
           }
 
-          let request = await graph.api(query);
+          let request = graph.api(query);
 
           if (scope) {
             request = request.middlewareOptions(prepScopes(scope));
-          }
-
-          if (this.preferredTimezone) {
-            request = request.header('Prefer', `outlook.timezone="${this.preferredTimezone}"`);
           }
 
           const results = await request.get();
@@ -594,12 +598,11 @@ export class MgtAgenda extends MgtTemplatedComponent {
         } catch (e) {}
       } else {
         const start = this.date ? new Date(this.date) : new Date();
-        start.setHours(0, 0, 0, 0);
         const end = new Date(start.getTime());
         end.setDate(start.getDate() + this.days);
-        try {
-          const iterator = await getEventsPageIterator(graph, start, end, this.groupId, this.preferredTimezone);
 
+        try {
+          const iterator = await getEventsPageIterator(graph, start, end, this.groupId);
           if (iterator && iterator.value) {
             events = iterator.value;
 
@@ -618,61 +621,17 @@ export class MgtAgenda extends MgtTemplatedComponent {
   }
 
   private prettyPrintTimeFromDateTime(date: Date) {
-    // If a preferred time zone was sent in the Graph request
-    // times are already set correctly. Do not adjust
-    if (!this.preferredTimezone) {
-      // If no preferred time zone was specified, the times are in UTC
-      // fall back to old behavior and adjust the times to the browser's
-      // time zone
-      date.setMinutes(date.getMinutes() - date.getTimezoneOffset());
-    }
-
-    let hours = date.getHours();
-    const minutes = date.getMinutes();
-    const ampm = hours >= 12 ? 'PM' : 'AM';
-    hours = hours % 12;
-    hours = hours ? hours : 12;
-    const minutesStr = minutes < 10 ? '0' + minutes : minutes;
-    return `${hours}:${minutesStr} ${ampm}`;
+    return date.toLocaleTimeString(navigator.language, {
+      timeStyle: 'short',
+      timeZone: this.preferredTimezone
+    });
   }
 
   private getDateHeaderFromDateTimeString(dateTimeString: string) {
     const date = new Date(dateTimeString);
-    date.setMinutes(date.getMinutes() - date.getTimezoneOffset());
-
-    const dayIndex = date.getDay();
-    const monthIndex = date.getMonth();
-    const day = date.getDate();
-    const year = date.getFullYear();
-
-    return `${getDayOfWeekString(dayIndex)}, ${getMonthString(monthIndex)} ${day}, ${year}`;
-  }
-
-  private getEventDuration(event: MicrosoftGraph.Event) {
-    let dtStart = new Date(event.start.dateTime);
-    const dtEnd = new Date(event.end.dateTime);
-    const dtNow = new Date();
-    let result: string = '';
-
-    if (dtNow > dtStart) {
-      dtStart = dtNow;
-    }
-
-    const diff = dtEnd.getTime() - dtStart.getTime();
-    const durationMinutes = Math.round(diff / 60000);
-
-    if (durationMinutes > 1440 || event.isAllDay) {
-      result = Math.ceil(durationMinutes / 1440) + 'd';
-    } else if (durationMinutes > 60) {
-      result = Math.round(durationMinutes / 60) + 'h';
-      const leftoverMinutes = durationMinutes % 60;
-      if (leftoverMinutes) {
-        result += leftoverMinutes + 'm';
-      }
-    } else {
-      result = durationMinutes + 'm';
-    }
-
-    return result;
+    return date.toLocaleDateString(navigator.language, {
+      dateStyle: 'full',
+      timeZone: this.preferredTimezone
+    });
   }
 }

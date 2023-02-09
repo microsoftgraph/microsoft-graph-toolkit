@@ -6,9 +6,16 @@
  */
 
 import { html, TemplateResult } from 'lit';
-import { customElement, property, state } from 'lit/decorators.js';
+import { property, state } from 'lit/decorators.js';
 import { classMap } from 'lit/directives/class-map.js';
-import { MgtTemplatedComponent, Providers, ProviderState, TeamsHelper } from '@microsoft/mgt-element';
+import {
+  MgtTemplatedComponent,
+  Providers,
+  ProviderState,
+  TeamsHelper,
+  mgtHtml,
+  customElement
+} from '@microsoft/mgt-element';
 import { Presence, User, Person } from '@microsoft/microsoft-graph-types';
 
 import { findPeople, getEmailFromGraphEntity } from '../../graph/graph.people';
@@ -58,7 +65,7 @@ type HoverStatesActions = 'email' | 'chat' | 'video' | 'call';
  * @class MgtPersonCard
  * @extends {MgtTemplatedComponent}
  *
- * @fires expanded - Fired when expanded details section is opened
+ * @fires {CustomEvent<null>} expanded - Fired when expanded details section is opened
  *
  * @cssprop --person-card-display-name-font-size - {Length} Font size of display name title
  * @cssprop --person-card-display-name-line-height - {Length} Line height of display name
@@ -75,7 +82,8 @@ type HoverStatesActions = 'email' | 'chat' | 'video' | 'call';
  * @cssprop --person-card-details-item-color - {Color} Color of items in additional details section
  * @cssprop --person-card-background-color - {Color} Color of person card background
  */
-@customElement('mgt-person-card')
+@customElement('person-card')
+// @customElement('mgt-person-card')
 export class MgtPersonCard extends MgtTemplatedComponent {
   /**
    * Array of styles to apply to the element. The styles should be defined
@@ -271,33 +279,6 @@ export class MgtPersonCard extends MgtTemplatedComponent {
   public isExpanded: boolean;
 
   /**
-   * Gets or sets whether an icon is hovered on
-   *
-   * @type {boolean}
-   * @memberof MgtPersonCard
-   */
-  @property({
-    attribute: 'is-email-hovered',
-    type: Boolean
-  })
-  public isEmailHovered: boolean;
-  @property({
-    attribute: 'is-chat-hovered',
-    type: Boolean
-  })
-  public isChatHovered: boolean;
-  @property({
-    attribute: 'is_video-hovered',
-    type: Boolean
-  })
-  public isVideoHovered: boolean;
-  @property({
-    attribute: 'is-call-hovered',
-    type: Boolean
-  })
-  public isCallHovered: boolean;
-
-  /**
    * Gets or sets whether person details should be inherited from an mgt-person parent
    * Useful when used as template in an mgt-person component
    *
@@ -364,10 +345,6 @@ export class MgtPersonCard extends MgtTemplatedComponent {
     this._currentSection = null;
     this._history = [];
     this.sections = [];
-    this.isEmailHovered = false;
-    this.isChatHovered = false;
-    this.isVideoHovered = false;
-    this.isCallHovered = false;
   }
 
   /**
@@ -498,12 +475,12 @@ export class MgtPersonCard extends MgtTemplatedComponent {
     const navigationTemplate =
       this._history && this._history.length
         ? html`
-             <div class="nav">
-               <div class="nav__back" tabindex="0" @keydown=${(e: KeyboardEvent) => {
-                 e.code === 'Enter' ? this.goBack() : '';
-               }} @click=${() => this.goBack()}>${getSvg(SvgIcon.Back)}</div>
-             </div>
-           `
+            <div class="nav">
+              <div class="nav__back" tabindex="0" @keydown=${(e: KeyboardEvent) => {
+                e.code === 'Enter' ? this.goBack() : '';
+              }} @click=${() => this.goBack()}>${getSvg(SvgIcon.Back)}</div>
+            </div>
+          `
         : null;
 
     // Check for a person-details template
@@ -533,15 +510,15 @@ export class MgtPersonCard extends MgtTemplatedComponent {
       ? html`<div @keydown=${this.handleEndOfCard} aria-label=${this.strings.endOfCard} tabindex="0" id="end-of-container"></div>`
       : html``;
     return html`
-       <div class="root" dir=${this.direction}>
-         <div class=${this._smallView ? 'small' : ''}>
-           ${navigationTemplate}
-           ${closeCardTemplate}
-           <div class="person-details-container">${personDetailsTemplate}</div>
-           <div class="expanded-details-container">${expandedDetailsTemplate}</div>
-           ${tabLocker}
-         </div>
-       </div>
+      <div class="root" dir=${this.direction}>
+        <div class=${this._smallView ? 'small' : ''}>
+          ${navigationTemplate}
+          ${closeCardTemplate}
+          <div class="person-details-container">${personDetailsTemplate}</div>
+          <div class="expanded-details-container">${expandedDetailsTemplate}</div>
+          ${tabLocker}
+        </div>
+      </div>
      `;
   }
 
@@ -591,17 +568,18 @@ export class MgtPersonCard extends MgtTemplatedComponent {
    */
   protected renderPerson(): TemplateResult {
     const avatarSize = 'large';
-    return html`
-       <mgt-person
-         class="person-image"
-         .personDetails=${this.internalPersonDetails}
-         .personImage=${this.getImage()}
-         .personPresence=${this.personPresence}
-         .showPresence=${this.showPresence}
-         .avatarSize=${avatarSize}
-         .view=${ViewType.threelines}
-       ></mgt-person>
-     `;
+    return mgtHtml`
+      <mgt-person
+        tabindex="0"
+        class="person-image"
+        .personDetails=${this.internalPersonDetails}
+        .personImage=${this.getImage()}
+        .personPresence=${this.personPresence}
+        .showPresence=${this.showPresence}
+        .avatarSize=${avatarSize}
+        .view=${ViewType.threelines}
+      ></mgt-person>
+    `;
   }
 
   /**
@@ -707,11 +685,14 @@ export class MgtPersonCard extends MgtTemplatedComponent {
    */
   protected renderExpandedDetailsButton(): TemplateResult {
     return html`
-       <div class="expanded-details-button" @click=${this.showExpandedDetails} @keydown=${
-      this.handleKeyDown
-    } @ tabindex=0>
-         ${getSvg(SvgIcon.ExpandDown)}
-       </div>
+      <div
+        class="expanded-details-button"
+        @click=${this.showExpandedDetails}
+        @keydown=${this.handleKeyDown}
+        tabindex=0
+      >
+        ${getSvg(SvgIcon.ExpandDown)}
+      </div>
      `;
   }
 
@@ -725,7 +706,7 @@ export class MgtPersonCard extends MgtTemplatedComponent {
    */
   protected renderExpandedDetails(person?: IDynamicPerson): TemplateResult {
     if (!this._cardState && this._isStateLoading) {
-      return html`
+      return mgtHtml`
          <div class="loading">
            <mgt-spinner></mgt-spinner>
          </div>
@@ -743,13 +724,15 @@ export class MgtPersonCard extends MgtTemplatedComponent {
     const sectionNavTemplate = this.renderSectionNavigation();
 
     return html`
-       <div class="section-nav">
-         ${sectionNavTemplate}
-       </div>
-       <div class="section-host ${this._smallView ? 'small' : ''}" @wheel=${(e: WheelEvent) =>
-      this.handleSectionScroll(e)} tabindex=0>
-       </div>
-     `;
+      <div class="section-nav">
+        ${sectionNavTemplate}
+      </div>
+      <div
+        class="section-host ${this._smallView ? 'small' : ''} ${this._smallView ? 'small' : ''}"
+        @wheel=${(e: WheelEvent) => this.handleSectionScroll(e)}
+        tabindex=0
+      ></div>
+    `;
   }
 
   /**
@@ -772,20 +755,26 @@ export class MgtPersonCard extends MgtTemplatedComponent {
         active: i === currentSectionIndex,
         'section-nav__icon': true
       });
+
       return html`
-         <fluent-tab id="${name}-Tab" class=${classes}
-           slot="tab" @keyup="${() => this.updateCurrentSection(section)}" @click=${() =>
-        this.updateCurrentSection(section)}>${section.renderIcon()}
-         </fluent-tab>
-       `;
+        <fluent-tab
+          id="${name}-Tab"
+          class=${classes}
+          slot="tab"
+          @keyup="${() => this.updateCurrentSection(section)}"
+          @click=${() => this.updateCurrentSection(section)}
+        >
+          ${section.renderIcon()}
+        </fluent-tab>
+      `;
     });
 
     const additionalPanelTemplates = this.sections.map((section, i) => {
       return html`
-         <fluent-tab-panel  slot="tabpanel">
-           <div class="inserted">${this._currentSection ? section.asFullView() : null}</div>
-         </fluent-tab-panel>
-       `;
+        <fluent-tab-panel slot="tabpanel">
+          <div class="inserted">${this._currentSection ? section.asFullView() : null}</div>
+        </fluent-tab-panel>
+      `;
     });
 
     const overviewClasses = classMap({
@@ -795,19 +784,26 @@ export class MgtPersonCard extends MgtTemplatedComponent {
     });
 
     return html`
-         <fluent-tabs  orientation="horizontal" activeindicator  @wheel=${(e: WheelEvent) =>
-           this.handleSectionScroll(e)}>
-           <fluent-tab class="${overviewClasses}"  slot="tab" @keyup="${() =>
-      this.updateCurrentSection(null)}" @click=${() => this.updateCurrentSection(null)}>
-             <div>${getSvg(SvgIcon.Overview)}</div>
-           </fluent-tab>
-           ${additionalSectionTemplates}
-           <fluent-tab-panel slot="tabpanel" >
-             <div class="overview-panel">${!this._currentSection ? this.renderOverviewSection() : null}</div>
-           </fluent-tab-panel>
-           ${additionalPanelTemplates}
-       </fluent-tabs>
-     `;
+      <fluent-tabs
+        orientation="horizontal"
+        activeindicator
+        @wheel=${(e: WheelEvent) => this.handleSectionScroll(e)}
+      >
+        <fluent-tab
+          class="${overviewClasses}"
+          slot="tab"
+          @keyup="${() => this.updateCurrentSection(null)}"
+          @click=${() => this.updateCurrentSection(null)}
+        >
+          <div>${getSvg(SvgIcon.Overview)}</div>
+        </fluent-tab>
+        ${additionalSectionTemplates}
+        <fluent-tab-panel slot="tabpanel" >
+          <div class="overview-panel">${!this._currentSection ? this.renderOverviewSection() : null}</div>
+        </fluent-tab-panel>
+        ${additionalPanelTemplates}
+      </fluent-tabs>
+    `;
   }
 
   /**
@@ -820,17 +816,20 @@ export class MgtPersonCard extends MgtTemplatedComponent {
   protected renderOverviewSection(): TemplateResult {
     const compactTemplates = this.sections.map(
       (section: BasePersonCardSection) => html`
-         <div class="section">
-           <div class="section__header">
-             <div class="section__title" tabindex=0>${section.displayName}</div>
-               <fluent-button appearance="lightweight" class="section__show-more" @click=${() =>
-                 this.updateCurrentSection(section)}>
-                 ${this.strings.showMoreSectionButton}
-               </fluent-button>
-           </div>
-           <div class="section__content">${section.asCompactView()}</div>
-         </div>
-       `
+        <div class="section">
+          <div class="section__header">
+            <div class="section__title" tabindex=0>${section.displayName}</div>
+              <fluent-button
+                appearance="lightweight"
+                class="section__show-more"
+                @click=${() => this.updateCurrentSection(section)}
+              >
+                ${this.strings.showMoreSectionButton}
+              </fluent-button>
+          </div>
+          <div class="section__content">${section.asCompactView()}</div>
+        </div>
+      `
     );
 
     const additionalDetails = this.renderTemplate('additional-details', {
@@ -1219,15 +1218,15 @@ export class MgtPersonCard extends MgtTemplatedComponent {
   }
 
   @state() private hoverStates: Record<HoverStatesActions, boolean> = {
-    //triggers a re-render when hovering on the CTA icons
+    // triggers a re-render when hovering on the CTA icons
     email: false,
     chat: false,
     video: false,
     call: false
   };
 
-  private setHoveredState = (icon: string, state: boolean) => {
-    this.hoverStates[icon] = state;
+  private setHoveredState = (icon: string, hoverState: boolean) => {
+    this.hoverStates[icon] = hoverState;
     this.hoverStates = { ...this.hoverStates };
   };
 

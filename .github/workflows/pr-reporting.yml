@@ -1,0 +1,41 @@
+name: PR Quality Reporting
+
+on:
+  workflow_run:
+    workflows: [Build pr]
+    types:
+      - completed
+    branches: [main, release/**, next/**]
+
+jobs:
+  pr_report:
+    runs-on: ubuntu-latest
+    env:
+      GH_TOKEN: ${{ github.token }}
+    steps:
+      # added to work around missing .git repo wanted by gh cli
+      - uses: actions/checkout@v2
+      - name: Test Report
+        uses: dorny/test-reporter@v1
+        with:
+          artifact: test-results
+          name: JEST Tests # Name of the check run which will be created
+          path: junit.xml # Path to test results
+          reporter: jest-junit # Format of test results
+      - name: Download coverage artifacts with cli
+        run: |
+          gh run download ${{ github.event.workflow_run.id }} -n coverage
+      - name: Code Coverage Summary Report
+        uses: irongut/CodeCoverageSummary@v1.3.0
+        with:
+          filename: cobertura-coverage.xml
+          badge: true
+          format: 'markdown'
+          output: 'both'
+      - name: Add Coverage PR Comment
+        uses: marocchino/sticky-pull-request-comment@v2
+        if: github.event.workflow_run.event == 'pull_request'
+        with:
+          recreate: true
+          path: code-coverage-results.md
+          number: ${{ github.event.workflow_run.pull_requests[0].number }}

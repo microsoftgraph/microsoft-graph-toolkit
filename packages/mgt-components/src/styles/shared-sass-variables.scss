@@ -190,6 +190,12 @@ $link__color--disabled--light: $gray90;
 $depth-shadow--light: 0 3.2px 7.2px 0 rgba(0, 0, 0, 0.132);
 $depth-shadow--dark: 0 5px 14px 0 rgba(0, 0, 0, 0.8);
 
+/* -----People picker dropdown text----- */
+$dropdown__item__text__color--light: $text__color__main--light;
+$dropdown__item__text__color--dark: $text__color__main--dark;
+$dropdown__item__text__hover__color--light: $text__color__main--light;
+$dropdown__item__text__hover__color--dark: $text__color__main--dark;
+
 $font-family: var(--default-font-family);
 $font-size: var(--default-font-size);
 
@@ -357,7 +363,17 @@ $common: (
     _var: --list-item-background-color--hover,
     dark: $list__item__background-color--hover--dark,
     light: $list__item__background-color--hover--light
-  )
+  ),
+  dropdown__item__text__color: (
+    _var: --dropdown-item-text-color,
+    dark: $dropdown__item__text__color--dark,
+    light: $dropdown__item__text__color--light
+  ),
+  dropdown__item__text__color--hover: (
+    _var: --dropdown-item-text-hover-color,
+    dark:$dropdown__item__text__hover__color--dark,
+    light: $dropdown__item__text__hover__color--light
+  ),
 );
 
 @function set-var($var, $theme, $component) {
@@ -392,6 +408,8 @@ $dropdown-item__background-color--hover: var(
   --dropdown-item-hover-background,
   set-var(input-outlined__background-color--hover, $theme-default, $common)
 );
+$dropdown-item__text__color: set-var(dropdown__item__text__color, $theme-default, $common);
+$dropdown-item__text__color--hover: set-var(dropdown__item__text__color--hover, $theme-default, $common);
 
 @mixin input__border($theme) {
   border-top: $input__border-top;

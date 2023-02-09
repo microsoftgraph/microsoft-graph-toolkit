@@ -10,7 +10,7 @@ import { withCodeEditor } from '../../../.storybook/addons/codeEditorAddon/codeA
 
 export default {
   title: 'Components / mgt-person-card',
-  component: 'mgt-person-card',
+  component: 'person-card',
   decorators: [withCodeEditor]
 };
 
@@ -63,7 +63,14 @@ export const localization = () => html`
         showMoreSectionButton: 'أظهر المزيد' // global declaration
       },
       'person-card-contact': {
-        contactSectionTitle: 'اتصل'
+        contactSectionTitle: 'اتصل',
+        emailTitle: 'البريد الإلكتروني',
+        chatTitle: 'دردشة',
+        businessPhoneTitle: 'هاتف العمل',
+        cellPhoneTitle: 'هاتف محمول',
+        departmentTitle: ' قسم، أقسام',
+        titleTitle: 'لقب',
+        officeLocationTitle: 'موقع المكتب'
       },
       'person-card-organization': {
         reportsToSectionTitle: 'تقارير ل',
@@ -94,4 +101,25 @@ export const localization = () => html`
     }
   };
   </script>
+`;
+
+export const AnonymousDisplay = () => html`
+<div style="margin-bottom: 10px">
+  <strong>Note:</strong> this story forces an anonymous context and explicity sets the user being displayed.<br />
+  Refer to the JavaScript tab for setup details.
+</div>
+<mgt-person-card class="anonymous-display"></mgt-person-card>
+<script>
+  import { Providers, Msal2Provider } from './mgt.storybook.js';
+  Providers.globalProvider = new Msal2Provider({ clientId: "fake" });
+  const personCard = document.querySelector('.anonymous-display');
+  personCard.personDetails = {
+      displayName: 'Megan Bowen',
+      jobTitle: 'CEO',
+      userPrincipalName: 'megan@contoso.com',
+      mail: 'megan@contoso.com',
+      businessPhones: ['423-555-0120'],
+      mobilePhone: '424-555-0130',
+  };
+</script>
 `;

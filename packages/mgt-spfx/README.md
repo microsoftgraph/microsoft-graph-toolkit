@@ -2,7 +2,7 @@
 
 [![npm](https://img.shields.io/npm/v/@microsoft/mgt-spfx?style=for-the-badge)](https://www.npmjs.com/package/@microsoft/mgt-spfx)
 
-![SPFx 1.13.0](https://img.shields.io/badge/SPFx-1.13.0-green.svg?style=for-the-badge)
+![SPFx 1.16.1](https://img.shields.io/badge/SPFx-1.16.1-green.svg?style=for-the-badge)
 
 Use the SharePoint Framework library for Microsoft Graph Toolkit to use Microsoft Graph Toolkit in SharePoint Framework solutions.
 
@@ -25,6 +25,8 @@ yarn add @microsoft/mgt-spfx
 Before deploying your SharePoint Framework package to your tenant, you will need to deploy the `@microsoft/mgt-spfx` SharePoint Framework package to your tenant. You can download the package corresponding to the version of `@microsoft/mgt-spfx` that you used in your project, from the [Releases](https://github.com/microsoftgraph/microsoft-graph-toolkit/releases) section on GitHub.
 
 **Important:** Since there can be only one version of the SharePoint Framework library for Microsoft Graph Toolkit installed in the tenant, before using MGT in your solution, consult with your organization/customer if they already have a version of SharePoint Framework library for Microsoft Graph Toolkit deployed in their tenant and use the same version to avoid issues.
+
+If you need to use a different version of MGT other than the one supplied by the centrally deployed version of `mgt-spfx` then please refer to the documentation for [disambiguation](https://github.com/microsoftgraph/microsoft-graph-toolkit/tree/main/packages/mgt-components#disambiguation) and [`mgt-spfx-utils`](https://github.com/microsoftgraph/microsoft-graph-toolkit/tree/main/packages/mgt-spfx-utils).
 
 ## Usage
 
@@ -74,10 +76,10 @@ export default class MgtNoFrameworkWebPart extends BaseClientSideWebPart<IMgtNoF
 }
 ```
 
-If you build web part using React, load components from the `@microsoft/mgt-react` package:
+If you build web part using React, load only components from the `/dist/es6/spfx` path in the `@microsoft/mgt-react` package:
 
 ```tsx
-import { Person } from '@microsoft/mgt-react';
+import { Person } from '@microsoft/mgt-react/dist/es6/spfx';
 
 // [...] trimmed for brevity
 

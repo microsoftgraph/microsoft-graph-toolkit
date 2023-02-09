@@ -6,7 +6,8 @@
  */
 
 import { AuthenticationHandlerOptions, Middleware } from '@microsoft/microsoft-graph-client';
-import { Providers } from '..';
+import { GraphEndpoint, MICROSOFT_GRAPH_ENDPOINTS } from '../IGraph';
+import { Providers } from '../providers/Providers';
 
 /**
  * creates an AuthenticationHandlerOptions from scopes array that
@@ -45,4 +46,21 @@ export function chainMiddleware(...middleware: Middleware[]): Middleware {
     current = next;
   }
   return rootMiddleware;
+}
+
+/**
+ * Helper method to validate a base URL string
+ * @param url a URL string
+ * @returns GraphEndpoint
+ */
+export function validateBaseURL(url: string): GraphEndpoint {
+  try {
+    const urlObj = new URL(url);
+    const originAsEndpoint = urlObj.origin as GraphEndpoint;
+    if (MICROSOFT_GRAPH_ENDPOINTS.has(originAsEndpoint)) {
+      return originAsEndpoint;
+    }
+  } catch (error) {
+    return;
+  }
 }

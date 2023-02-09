@@ -17,13 +17,14 @@ import {
   TelemetryHandler
 } from '@microsoft/microsoft-graph-client';
 
-import { IGraph } from './IGraph';
+import { IGraph, MICROSOFT_GRAPH_DEFAULT_ENDPOINT } from './IGraph';
 import { IProvider } from './providers/IProvider';
 import { Batch } from './utils/Batch';
 import { ComponentMiddlewareOptions } from './utils/ComponentMiddlewareOptions';
 import { chainMiddleware } from './utils/GraphHelpers';
 import { SdkVersionMiddleware } from './utils/SdkVersionMiddleware';
 import { PACKAGE_VERSION } from './utils/version';
+import { customElementHelper } from './components/customElementHelper';
 
 /**
  * The version of the Graph to use for making requests.
@@ -134,7 +135,7 @@ export class Graph implements IGraph {
    * @memberof Graph
    */
   protected setComponent(component: Element | string): void {
-    this._componentName = component instanceof Element ? component.tagName : component;
+    this._componentName = component instanceof Element ? customElementHelper.normalize(component.tagName) : component;
   }
 }
 
@@ -155,8 +156,10 @@ export function createFromProvider(provider: IProvider, version?: string, compon
     new HTTPMessageHandler()
   ];
 
+  let baseURL = provider.baseURL ? provider.baseURL : MICROSOFT_GRAPH_DEFAULT_ENDPOINT;
   const client = Client.initWithMiddleware({
-    middleware: chainMiddleware(...middleware)
+    middleware: chainMiddleware(...middleware),
+    baseUrl: baseURL
   });
 
   const graph = new Graph(client, version);

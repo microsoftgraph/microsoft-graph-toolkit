@@ -10,11 +10,13 @@ import {
   GraphPageIterator,
   MgtTemplatedComponent,
   Providers,
-  ProviderState
+  ProviderState,
+  customElement,
+  mgtHtml
 } from '@microsoft/mgt-element';
 import { DriveItem } from '@microsoft/microsoft-graph-types';
 import { html, TemplateResult } from 'lit';
-import { customElement, property, state } from 'lit/decorators.js';
+import { property, state } from 'lit/decorators.js';
 import { repeat } from 'lit/directives/repeat.js';
 import {
   clearFilesCache,
@@ -49,14 +51,14 @@ registerFluentComponents(fluentProgressRing, fluentDesignSystemProvider);
 
 /**
  * The File List component displays a list of multiple folders and files by
- * using the file/folder name, an icon, and other properties specicified by the developer.
+ * using the file/folder name, an icon, and other properties specified by the developer.
  * This component uses the mgt-file component.
  *
  * @export
  * @class MgtFileList
  * @extends {MgtTemplatedComponent}
  *
- * @fires itemClick - Fired when user click a file. Returns the file (DriveItem) details.
+ * @fires {CustomEvent<MicrosoftGraph.DriveItem>} itemClick - Fired when user click a file. Returns the file (DriveItem) details.
  * @cssprop --file-upload-border- {String} File upload border top style
  * @cssprop --file-upload-background-color - {Color} File upload background color with opacity style
  * @cssprop --file-upload-button-float - {string} Upload button float position
@@ -89,7 +91,8 @@ registerFluentComponents(fluentProgressRing, fluentDesignSystemProvider);
  * @cssprop --progress-ring-size -{String} Progress ring height and width
  */
 
-@customElement('mgt-file-list')
+@customElement('file-list')
+// @customElement('mgt-file-list')
 export class MgtFileList extends MgtTemplatedComponent {
   /**
    * Array of styles to apply to the element. The styles should be defined
@@ -625,8 +628,8 @@ export class MgtFileList extends MgtTemplatedComponent {
     const view = this.itemView;
     return (
       this.renderTemplate('file', { file }, file.id) ||
-      html`
-        <mgt-file .fileDetails=${file} .view=${view}></mgt-file>
+      mgtHtml`
+        <mgt-file class="mgt-file-item" .fileDetails=${file} .view=${view}></mgt-file>
       `
     );
   }
@@ -668,7 +671,7 @@ export class MgtFileList extends MgtTemplatedComponent {
       maxFileSize: this.maxFileSize,
       maxUploadFile: this.maxUploadFile
     };
-    return html`
+    return mgtHtml`
         <mgt-file-upload .fileUploadList=${fileUploadConfig} ></mgt-file-upload>
       `;
   }
@@ -709,7 +712,7 @@ export class MgtFileList extends MgtTemplatedComponent {
    */
   private onFileListKeyDown(event: KeyboardEvent): void {
     const fileList = this.renderRoot.querySelector('.file-list');
-    let focusedItem;
+    let focusedItem: Element;
 
     if (!fileList || !fileList.children.length) {
       return;
@@ -733,7 +736,7 @@ export class MgtFileList extends MgtTemplatedComponent {
     if (event.code === 'Enter' || event.code === 'Space') {
       focusedItem = fileList.children[this._focusedItemIndex];
 
-      const file = focusedItem.children[0] as any;
+      const file = focusedItem.children[0] as MgtFile;
       event.preventDefault();
       this.fireCustomEvent('itemClick', file.fileDetails);
 
@@ -867,6 +870,10 @@ export class MgtFileList extends MgtTemplatedComponent {
 
       if (filteredByFileExtension && filteredByFileExtension.length >= 0) {
         this.files = filteredByFileExtension;
+        if (this.pageSize) {
+          files = this.files.splice(0, this.pageSize);
+          this.files = files;
+        }
       } else {
         this.files = files;
       }

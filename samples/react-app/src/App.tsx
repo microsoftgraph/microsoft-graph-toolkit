@@ -7,7 +7,10 @@ import {
   PersonViewType,
   PersonType,
   MgtTemplateProps,
-  Get
+  Get,
+  Todo,
+  People,
+  TeamsChannelPicker
 } from '@microsoft/mgt-react';
 import * as MicrosoftGraph from '@microsoft/microsoft-graph-types';
 import { MgtPerson } from '@microsoft/mgt-components';
@@ -24,28 +27,32 @@ class App extends Component {
     };
 
     return (
-      <div className="App">
+      <div className='App'>
         <Login loginCompleted={() => console.log('login completed')} />
         <Agenda groupByDay templateRendered={this.handleTemplateRendered}>
-          <MyEvent template="event" />
+          <MyEvent template='event' />
         </Agenda>
 
         <Person
           personDetails={personDetails}
           view={PersonViewType.twolines}
-          className="my-class"
+          className='my-class'
           onClick={() => console.log('person clicked')}
           line2clicked={() => console.log('line1 clicked')}
         />
 
         <PeoplePicker type={PersonType.any} />
 
-        <Get resource="/me">
+        <Todo />
+
+        <TeamsChannelPicker />
+
+        <Get resource='/me'>
           <MyTemplate />
         </Get>
 
-        <Get resource="/me/messages" scopes={['mail.read']} maxPages={2}>
-          <MyMessage template="value" />
+        <Get resource='/me/messages' scopes={['mail.read']} maxPages={2}>
+          <MyMessage template='value' />
         </Get>
       </div>
     );
