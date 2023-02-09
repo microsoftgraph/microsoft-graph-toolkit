@@ -213,7 +213,6 @@ export class MgtPicker extends MgtTemplatedComponent {
         ${this.response.map(
           item => html`
           <fluent-option value=${item.id} @click=${e => this.handleClick(e, item)}> ${
-            this.renderTemplate('rendered-item', { item }, `rendered-${item.id ? item.id : item[this.keyName]}`) ||
             item[this.keyName]
           } </fluent-option>`
         )}

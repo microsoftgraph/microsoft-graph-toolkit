@@ -44,14 +44,3 @@ export const errorTemplate = () => html`
     </mgt-picker>
   </div>
   `;
-
-export const renderedItem = () => html`
-  <mgt-picker resource="/users" scopes="user.read" key-name="displayName" placeholder="Select a user" max-pages="1">
-    <template data-type="rendered-item">
-      <div>
-        <mgt-person person-details="{{ item }}" person-card="hover" view="oneline"></mgt-person>
-        <!-- {{item.displayName}} -->
-      </div>
-    </template>
-  </mgt-picker>
-`;
