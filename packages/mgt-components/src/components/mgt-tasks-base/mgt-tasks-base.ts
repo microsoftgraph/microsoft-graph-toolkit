@@ -7,13 +7,11 @@
 
 import { html, TemplateResult } from 'lit';
 import { property } from 'lit/decorators.js';
-import { classMap } from 'lit/directives/class-map.js';
-import { ComponentMediaQuery, Providers, ProviderState, MgtTemplatedComponent, mgtHtml } from '@microsoft/mgt-element';
+import { ComponentMediaQuery, Providers, ProviderState, MgtTemplatedComponent } from '@microsoft/mgt-element';
 import { strings } from './strings';
 import { MgtFlyout } from '../sub-components/mgt-flyout/mgt-flyout';
 import { registerFluentComponents } from '../../utils/FluentComponents';
 import { fluentTextField, fluentButton, fluentCalendar } from '@fluentui/web-components';
-import { getSvg, SvgIcon } from '../../utils/SvgHelper';
 
 registerFluentComponents(fluentTextField, fluentButton, fluentCalendar);
 
@@ -77,22 +75,6 @@ export abstract class MgtTasksBase extends MgtTemplatedComponent {
     return this.renderRoot.querySelector('.flyout');
   }
 
-  /**
-   * The name of a potential new task
-   *
-   * @readonly
-   * @protected
-   * @type {string}
-   * @memberof MgtTasksBase
-   */
-  protected get newTaskName(): string {
-    return this._newTaskName;
-  }
-
-  private _isNewTaskBeingAdded: boolean;
-  private _openCalendar: boolean;
-  private _newTaskDueDate: Date;
-  private _newTaskName: string;
   private _previousMediaQuery: ComponentMediaQuery;
 
   protected get strings(): { [x: string]: string } {
@@ -103,13 +85,8 @@ export abstract class MgtTasksBase extends MgtTemplatedComponent {
     super();
 
     this.clearState();
-    this._newTaskDueDate = null;
     this._previousMediaQuery = this.mediaQuery;
     this.onResize = this.onResize.bind(this);
-    this._openCalendar = false;
-    this.addEventListener('dateselected', (e: CustomEvent<any>) => {
-      console.log('sth else:', (e.detail as HTMLInputElement).value);
-    });
   }
 
   /**
@@ -167,7 +144,7 @@ export abstract class MgtTasksBase extends MgtTemplatedComponent {
     }
 
     const picker = this.renderPicker();
-    const newTaskTemplate = this.renderNewTaskPanel();
+    const newTaskTemplate = this.renderNewTask();
     const tasksTemplate = this.isLoadingState ? this.renderLoadingTask() : this.renderTasks();
 
     return html`
@@ -212,128 +189,12 @@ export abstract class MgtTasksBase extends MgtTemplatedComponent {
   }
 
   /**
-   * Render the panel for creating a new task
-   *
-   * @protected
-   * @returns {TemplateResult}
-   * @memberof MgtTasksBase
-   */
-  protected renderNewTaskPanel(): TemplateResult {
-    const addIcon = html`
-      <span 
-        tabindex='0'
-        class="task-add-icon" 
-        @click="${() => this.addTask()}"
-        @keypress="${(e: KeyboardEvent) => {
-          if (e.key === 'Enter') {
-            this.addTask();
-          }
-        }}">
-        ${getSvg(SvgIcon.Add)}
-      </span>
-    `;
-
-    const cancelIcon = html`
-      <span 
-        tabindex='0'
-        class="task-cancel-icon" 
-        @click="${() => this.clearNewTaskData()}"
-        @keypress="${(e: KeyboardEvent) => {
-          if (e.key === 'Enter') {
-            this.clearNewTaskData();
-          }
-        }}">
-        ${getSvg(SvgIcon.Cancel)}
-      </span>
-    `;
-
-    const calendarTemplate = html`
-      ${getSvg(SvgIcon.Calendar)}
-      <fluent-button appearance="stealth" 
-        @click=${(e: Event) => this.toggleCalendar(true)}>
-        ${this.strings.dueDate}
-      </fluent-button>
-      <!-- <fluent-calendar readonly="false" locale="en-US" @click=${(e: Event) => {
-        console.log('heere', (e.target as HTMLInputElement).value);
-      }} .value=${new Date()} @input=${(e: Event) => {
-      console.log('changed');
-    }}></fluent-calendar> -->
-    `;
-
-    const taskTitle = mgtHtml`
-       <fluent-text-field
-         appearance="outline"
-         label="new-taskName-input"
-         aria-label="new-taskName-input"
-         .value=${this._newTaskName}
-         placeholder="${this.strings.newTaskPlaceholder}"
-         @keypress="${(e: KeyboardEvent) => {
-           if (e.key === 'Enter') {
-             this.addTask();
-           }
-         }}"
-         @input="${(e: Event) => {
-           this._newTaskName = (e.target as HTMLInputElement).value;
-           this.requestUpdate();
-         }}">
-          <div slot="start">${addIcon}</div>
-          <div slot="end">
-          ${calendarTemplate}
-          ${cancelIcon}</div>
-        </fluent-text-field>
-     `;
-    // .value="${this.dateToInputValue(this._newTaskDueDate)}"
-    return html`
-      <div dir=${this.direction} class="Task NewTask Incomplete">
-        ${taskTitle}
-      </div>
-        ${
-          this._openCalendar
-            ? html`
-                <fluent-calendar readonly="false" locale="en-US" 
-                  @click=${(e: Event) => {
-                    console.log('heere', (e.target as HTMLInputElement).value);
-                  }} 
-                  .value="${this.dateToInputValue(this._newTaskDueDate)}"
-                  @change="${(e: Event) => {
-                    const value = (e.target as HTMLInputElement).value;
-                    if (value) {
-                      this._newTaskDueDate = new Date(value + 'T17:00');
-                    } else {
-                      this._newTaskDueDate = null;
-                    }
-                  }}"
-                  @dateselected="${e => console.log('e:', e)}"
-                  @mouseleave=${() => this.toggleCalendar(false)}>
-                </fluent-calendar>`
-            : null
-        }
-     `;
-  }
-
-  private handleDateSelected(e: CustomEvent<{ day: number; month: number; year: number }>) {}
-
-  /**
-   * Render the details flyout.
+   * Render the generic picker.
    *
    * @protected
    * @memberof MgtTasksBase
    */
-  protected renderFlyout() {
-    return html`
-        <mgt-flyout
-          class="flyout"
-          light-dismiss
-          @opened=${() => (this._openCalendar = true)}
-          @closed=${() => (this._openCalendar = false)}
-        >
-          <div slot="flyout">
-            <fluent-calendar readonly="false">
-            </fluent-calendar>
-          </div>
-        </mgt-flyout>
-        `;
-  }
+  protected abstract renderNewTask(): TemplateResult;
 
   // /**
   //  * Render the details part of the new task panel
@@ -373,30 +234,6 @@ export abstract class MgtTasksBase extends MgtTemplatedComponent {
   protected abstract renderTasks(): TemplateResult;
 
   /**
-   * Create a new todo task and add it to the list
-   *
-   * @protected
-   * @returns
-   * @memberof MgtTasksBase
-   */
-  protected async addTask() {
-    if (this._isNewTaskBeingAdded || !this.newTaskName) {
-      return;
-    }
-
-    this._isNewTaskBeingAdded = true;
-    this.requestUpdate();
-
-    try {
-      await this.createNewTask();
-    } finally {
-      this.clearNewTaskData();
-      this._isNewTaskBeingAdded = false;
-      this.requestUpdate();
-    }
-  }
-
-  /**
    * Make a service call to create the new task object.
    *
    * @protected
@@ -412,7 +249,6 @@ export abstract class MgtTasksBase extends MgtTemplatedComponent {
    * @memberof MgtTasksBase
    */
   protected clearNewTaskData(): void {
-    this._newTaskName = '';
     this.requestUpdate();
   }
 
@@ -453,17 +289,6 @@ export abstract class MgtTasksBase extends MgtTemplatedComponent {
     }
 
     return null;
-  }
-
-  /**
-   * Close Calendar
-   *
-   * @protected
-   * @memberof MgtTasksBase
-   */
-  protected toggleCalendar(state: boolean): void {
-    this._openCalendar = state;
-    this.requestUpdate();
   }
 
   private onResize() {
