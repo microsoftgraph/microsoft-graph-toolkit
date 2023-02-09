@@ -1,10 +1,16 @@
-// These files are know to be ESM and should be transformed by ts-jest
+// These packages are know to be ESM and should be transformed by ts-jest
 const esModules = [
   'msal',
   '@open-wc',
   '@lit',
   'lit',
+  '@fluentui/web-components',
   'testing-library__dom',
+  '@microsoft/fast-color',
+  '@microsoft/fast-element',
+  '@microsoft/fast-foundation',
+  '@microsoft/fast-web-utilities',
+  'exenv-es6',
   '@microsoft/microsoft-graph-client',
   '@microsoft/mgt-element',
   '@microsoft/mgt-components',
