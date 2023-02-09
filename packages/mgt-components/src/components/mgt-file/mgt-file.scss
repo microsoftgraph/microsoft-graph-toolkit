@@ -50,7 +50,7 @@ mgt-file .item {
   }
 
   &__details {
-    padding: 0 0 0 14px;
+    padding-inline-start: var(--file-padding-inline-start, 14px);
 
     .line1 {
       font-size: $font-size;
@@ -83,7 +83,6 @@ mgt-file .item {
     direction: rtl;
     &__details {
       direction: rtl;
-      padding: 0 14px 0 0;
     }
   }
 }
