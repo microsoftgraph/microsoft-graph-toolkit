@@ -77,11 +77,10 @@ type HoverStatesActions = 'email' | 'chat' | 'video' | 'call';
  * @cssprop --person-card-subtitle-font-size - {Length} Font size of subtitle
  * @cssprop --person-card-subtitle-line-height - {Length} Line height of subtitle
  * @cssprop --person-card-subtitle-color - {Color} Color of subttitle
- * @cssprop --person-card-details-title-font-size - {Length} Font size additional details title
- * @cssprop --person-card-details-title-color- {Color} Color of additional details title
- * @cssprop --person-card-details-item-font-size - {Length} Font size items in additional details section
- * @cssprop --person-card-details-item-color - {Color} Color of items in additional details section
  * @cssprop --person-card-background-color - {Color} Color of person card background
+ * @cssprop --person-card-nav-back-arrow-color - {Color} Color of person back arrow when you click on a person
+ * @cssprop --person-card-nav-back-arrow-hover-color - {Color} Color of the person back arrow when you hover on it
+ * @cssprop --token-overflow-color - {Color} Color of the text showing more undisplayed values i.e. +3 more
  */
 @customElement('person-card')
 // @customElement('mgt-person-card')
