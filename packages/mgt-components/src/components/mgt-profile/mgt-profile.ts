@@ -19,9 +19,10 @@ import { customElement } from '@microsoft/mgt-element';
  * @export
  * @class MgtProfile
  * @extends {MgtTemplatedComponent}
+ *
+ * @cssprop --token-overflow-color - {Color} Color of the text showing more undisplayed values i.e. +3 more
  */
 @customElement('profile')
-// @customElement('mgt-profile')
 export class MgtProfile extends BasePersonCardSection {
   /**
    * Array of styles to apply to the element. The styles should be defined
