@@ -39,13 +39,8 @@
     "lint": "tslint -c ../../../tslint.json 'src/**/*.ts'",
     "postpack": "cpx *.tgz ../../../artifacts"
   },
-  "peerDependencies": {
-    "@microsoft/teamsfx": "0.6.0 - 2.x.x"
-  },
-  "devDependencies": {
-    "@microsoft/teamsfx": "0.6.0 - 2.x.x"
-  },
   "dependencies": {
+    "@azure/core-auth": "^1.3.0",
     "@microsoft/mgt-element": "*"
   },
   "publishConfig": {
