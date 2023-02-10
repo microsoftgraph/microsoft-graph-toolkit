@@ -1247,9 +1247,7 @@ export class MgtPeoplePicker extends MgtTemplatedComponent {
     this.selectedPeople = filteredPersonArr;
     this.loadState();
     this.fireCustomEvent('selectionChanged', this.selectedPeople);
-    if (this.input) {
-      this.input.focus();
-    }
+    this.input?.focus();
   }
 
   /**
