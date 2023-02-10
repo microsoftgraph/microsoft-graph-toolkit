@@ -92,6 +92,13 @@ export class MgtPeoplePicker extends MgtTemplatedComponent {
     return styles;
   }
 
+  /**
+   * The strings to be used for localizing the component.
+   *
+   * @readonly
+   * @protected
+   * @memberof MgtPeoplePicker
+   */
   protected get strings() {
     return strings;
   }
@@ -229,6 +236,13 @@ export class MgtPeoplePicker extends MgtTemplatedComponent {
     this.requestStateUpdate(true);
   }
 
+  /**
+   * The type of user to search for. Default is any.
+   *
+   * @readonly
+   * @type {UserType}
+   * @memberof MgtPeoplePicker
+   */
   @property({
     attribute: 'user-type',
     converter: (value, type) => {
@@ -264,7 +278,15 @@ export class MgtPeoplePicker extends MgtTemplatedComponent {
     attribute: 'transitive-search',
     type: Boolean
   })
-  public transitiveSearch: boolean;
+  public get transitiveSearch(): boolean {
+    return this._transitiveSearch;
+  }
+  public set transitiveSearch(value: boolean) {
+    if (this.transitiveSearch !== value) {
+      this._transitiveSearch = value;
+      this.requestStateUpdate(true);
+    }
+  }
 
   /**
    * containing object of IDynamicPerson.
@@ -274,7 +296,15 @@ export class MgtPeoplePicker extends MgtTemplatedComponent {
     attribute: 'people',
     type: Object
   })
-  public people: IDynamicPerson[];
+  public get people(): IDynamicPerson[] {
+    return this._people;
+  }
+  public set people(value: IDynamicPerson[]) {
+    if (!arraysAreEqual(this._people, value)) {
+      this._people = value;
+      this.requestStateUpdate(true);
+    }
+  }
 
   /**
    * determining how many people to show in list.
@@ -284,7 +314,15 @@ export class MgtPeoplePicker extends MgtTemplatedComponent {
     attribute: 'show-max',
     type: Number
   })
-  public showMax: number;
+  public get showMax(): number {
+    return this._showMax;
+  }
+  public set showMax(value: number) {
+    if (value !== this._showMax) {
+      this._showMax = value;
+      this.requestStateUpdate(true);
+    }
+  }
 
   /**
    * Sets whether the person image should be fetched
@@ -300,17 +338,25 @@ export class MgtPeoplePicker extends MgtTemplatedComponent {
   public disableImages: boolean;
 
   /**
-   *  array of user picked people.
+   * array of user picked people.
    * @type {IDynamicPerson[]}
    */
   @property({
     attribute: 'selected-people',
     type: Array
   })
-  public selectedPeople: IDynamicPerson[];
+  public get selectedPeople(): IDynamicPerson[] {
+    return this._selectedPeople;
+  }
+  public set selectedPeople(value: IDynamicPerson[]) {
+    if (!value) value = [];
+    if (!arraysAreEqual(this._selectedPeople, value)) {
+      this._selectedPeople = value;
+    }
+  }
 
   /**
-   * array of people to be selected upon intialization
+   * array of people to be selected upon initialization
    *
    * @type {string[]}
    * @memberof MgtPeoplePicker
@@ -322,10 +368,18 @@ export class MgtPeoplePicker extends MgtTemplatedComponent {
     },
     type: String
   })
-  public defaultSelectedUserIds: string[];
+  public get defaultSelectedUserIds(): string[] {
+    return this._defaultSelectedUserIds;
+  }
+  public set defaultSelectedUserIds(value) {
+    if (!arraysAreEqual(this._defaultSelectedUserIds, value)) {
+      this._defaultSelectedUserIds = value;
+      this.requestStateUpdate(true);
+    }
+  }
 
   /**
-   * array of groups to be selected upon intialization
+   * array of groups to be selected upon initialization
    *
    * @type {string[]}
    * @memberof MgtPeoplePicker
@@ -337,7 +391,15 @@ export class MgtPeoplePicker extends MgtTemplatedComponent {
     },
     type: String
   })
-  public defaultSelectedGroupIds: string[];
+  public get defaultSelectedGroupIds(): string[] {
+    return this._defaultSelectedGroupIds;
+  }
+  public set defaultSelectedGroupIds(value) {
+    if (!arraysAreEqual(this._defaultSelectedGroupIds, value)) {
+      this._defaultSelectedGroupIds = value;
+      this.requestStateUpdate(true);
+    }
+  }
 
   /**
    * Placeholder text.
@@ -387,7 +449,6 @@ export class MgtPeoplePicker extends MgtTemplatedComponent {
   })
   public selectionMode: string;
 
-  private _userIds: string[];
   /**
    * Array of the only users to be searched.
    *
@@ -484,8 +545,9 @@ export class MgtPeoplePicker extends MgtTemplatedComponent {
   protected userInput: string;
 
   // if search is still loading don't load "people not found" state
-  @property({ attribute: false }) private _showLoading: boolean;
+  @state() private _showLoading: boolean;
 
+  private _userIds: string[];
   private _groupId: string;
   private _groupIds: string[];
   private _type: PersonType = PersonType.person;
@@ -494,6 +556,12 @@ export class MgtPeoplePicker extends MgtTemplatedComponent {
   private _userFilters: string;
   private _groupFilters: string;
   private _peopleFilters: string;
+  private _defaultSelectedGroupIds: string[];
+  private _defaultSelectedUserIds: string[];
+  private _selectedPeople: IDynamicPerson[] = [];
+  private _showMax: number;
+  private _people: IDynamicPerson[];
+  private _transitiveSearch: boolean;
 
   private defaultPeople: IDynamicPerson[];
 
@@ -674,7 +742,7 @@ export class MgtPeoplePicker extends MgtTemplatedComponent {
    * @memberof MgtPeoplePicker
    */
   protected renderInput(): TemplateResult {
-    const hasSelectedPeople = !!this.selectedPeople.length;
+    const hasSelectedPeople = this.selectedPeople?.length > 0;
 
     const placeholder = !this.disabled
       ? this.placeholder
@@ -1051,7 +1119,7 @@ export class MgtPeoplePicker extends MgtTemplatedComponent {
       this._showLoading = false;
 
       if (
-        (this.defaultSelectedUserIds || this.defaultSelectedGroupIds) &&
+        (this.defaultSelectedUserIds?.length > 0 || this.defaultSelectedGroupIds?.length > 0) &&
         !this.selectedPeople.length &&
         !this.defaultSelectedUsers
       ) {
@@ -1148,7 +1216,7 @@ export class MgtPeoplePicker extends MgtTemplatedComponent {
                   }
                 }
               } catch (e) {
-                // nop
+                // no-op
               }
             }
           }
@@ -1164,7 +1232,9 @@ export class MgtPeoplePicker extends MgtTemplatedComponent {
                   this.groupType,
                   this.userFilters
                 );
-              } catch (_) {}
+              } catch (_) {
+                // no-op
+              }
             } else {
               let groups = [];
               try {
