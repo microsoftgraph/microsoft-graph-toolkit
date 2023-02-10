@@ -38,6 +38,14 @@ $progress-ring-size: var(--progress-ring-size, 24px);
 :host {
   font-family: $font-family;
   font-size: $font-size;
+
+  .title {
+    font-size: 14px;
+    font-weight: 600;
+    color: set-var(title__color__subtitle, $theme-default, $common);
+    padding: 20px 0 12px;
+    line-height: 19px;
+  }
 }
 
 :host .root {

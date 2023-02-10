@@ -606,6 +606,7 @@ export class MgtFileList extends BasePersonCardSection {
 
     return html`
       <div class="root" dir=${this.direction}>
+        <div class="title">${this.strings.filesSectionTitle}</div>
         ${contentTemplate}
       </div>
     `;
