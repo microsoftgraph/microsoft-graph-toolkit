@@ -6,11 +6,12 @@
  */
 
 @import '../../../styles/shared-styles.scss';
+@import '../../../styles/shared-sass-variables.scss';
 
 :host {
   .spinner {
-    border: 2px solid #c7e0f4; /* Light grey */
-    border-top: 2px solid #0078d4; /* Blue */
+    border: 2px solid #c7e0f4;
+    border-top: 2px solid set-var(icon__color__sub3, $theme-default, $common);
     border-radius: 50%;
     width: 20px;
     height: 20px;
