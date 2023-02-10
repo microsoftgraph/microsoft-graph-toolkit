@@ -25,7 +25,7 @@ $file-upload-dialog-primarybutton-background-color: set-var(
 $file-upload-button-background-color: set-var(upload__button__background-color, $theme-default, $file-upload);
 $file-item-background-color--hover: set-var(list__item__background-color--hover, $theme-default, $file-upload);
 $file-item-background-color--active: set-var(list__item__background-color--active, $theme-default, $file-upload);
-$file-upload-icon-button-background-color: var(--color, inherit);
+$file-upload-icon-button-background-color: var(--color, fileUploadIconBackground);
 $file-list-box-shadow: var(
   --file-list-box-shadow,
   0px 3.2px 7.2px rgba(0, 0, 0, 0.132),
@@ -33,19 +33,21 @@ $file-list-box-shadow: var(
 );
 :host .file-upload-area-button {
   width: 100%;
+  --neutral-fill-hover: $file-upload-button-background-color;
+  --neutral-fill-rest: $file-upload-button-background-color;
+  --neutral-fill-active: $file-upload-button-background-color;
+  --neutral-fill-focus: $file-upload-button-background-color;
   div {
     float: var(--file-upload-button-float, right);
     text-align: center;
     display: table;
-    margin-top: 39px;
-    margin-right: 16px;
-    margin-left: 16px;
+    margin-top: 30px;
+    margin-right: 36px;
   }
 
   fluent-button.file-upload-button {
-    color: var(--file-upload-button-color, inherit);
+    color: var(--file-upload-button-color, $fileButtonColour);
     vertical-align: middle;
-    display: table-cell;
     background-color: $file-upload-button-background-color;
     width: 120px;
     height: 32px;
@@ -53,8 +55,10 @@ $file-list-box-shadow: var(
     font-size: $font-size;
     font-family: $font-family;
     position: relative;
-    &:hover {
-      background-color: $file-item-background-color--hover;
+
+    .upload-text {
+      font-weight: 400;
+      line-height: 20px;
     }
   }
 
@@ -86,8 +90,7 @@ $file-list-box-shadow: var(
 
     .file-upload-status {
       position: absolute;
-      top: 12px;
-      left: 16px;
+      left: 48px;
     }
 
     fluent-progress.file-upload-bar {
@@ -115,11 +118,11 @@ $file-list-box-shadow: var(
 
 :host .mgt-file-item {
   --file-background-color: transparent;
+  margin: 0 0 20px 26px;
 }
 
 :host .upload-icon {
-  fill: var(--file-upload-button-color, $file-upload-icon-button-background-color);
-  height: 12px;
+  fill: var(--file-upload-button-color, $fileButtonColour);
 }
 
 :host .file-upload-Template {
@@ -200,11 +203,15 @@ $file-list-box-shadow: var(
   .file-upload-dialog-ok {
     height: 32px;
     min-width: 60px;
-    border: 1px solid $file-upload-dialog-primarybutton-background-color;
-    background-color: $file-upload-dialog-primarybutton-background-color;
-    color: $file-upload-dialog-primarybutton-color;
+    border: 1px solid rgb(138, 136, 134);
+    background-color: $file-upload-button-background-color;
+    color: $fileButtonColour;
     font-size: $font-size;
     margin-right: 5px;
+    --neutral-fill-rest: $fileButtonColour;
+    --neutral-fill-hover: $fileButtonColour;
+    --neutral-fill-active: $fileButtonColour;
+    --neutral-fill-focus: $fileButtonColour;
   }
 
   .file-upload-dialog-cancel {
