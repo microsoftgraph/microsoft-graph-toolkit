@@ -332,13 +332,30 @@ export class MgtTeamsChannelPicker extends MgtTemplatedComponent {
       for (const item of this._treeViewState) {
         for (const channel of item.channels) {
           if (channel.item.id === channelId) {
+            item.isExpanded = true;
             this.selectChannel(channel);
+            this.markSelectedChannelInDropdown(channelId);
             return true;
           }
         }
       }
     }
     return false;
+  }
+
+  /**
+   * Marks a channel selected by ID as selected in the dropdown menu.
+   * It ensures the parent team is set to as expanded to show the channel.
+   * @param channelId ID string of the selected channel
+   */
+  private markSelectedChannelInDropdown(channelId: string) {
+    const treeItem = this.renderRoot.getElementById<HTMLElement>(channelId);
+    if (treeItem) {
+      treeItem.setAttribute('selected', true);
+      if (treeItem.parentNode) {
+        treeItem.parentNode.setAttribute('expanded', true);
+      }
+    }
   }
 
   /**
@@ -569,8 +586,8 @@ export class MgtTeamsChannelPicker extends MgtTemplatedComponent {
         <fluent-tree-view class="tree-view" dir=${this.direction}>
           ${repeat(
             items,
-            itemObj => itemObj?.item,
-            obj => {
+            (itemObj: ChannelPickerItemState) => itemObj?.item,
+            (obj: ChannelPickerItemState) => {
               if (obj.channels) {
                 icon = html`<img
                   class="team-photo"
@@ -582,8 +599,8 @@ export class MgtTeamsChannelPicker extends MgtTemplatedComponent {
                     ${icon}${obj.item.displayName}
                     ${repeat(
                       obj?.channels,
-                      channels => channels.item,
-                      channel => {
+                      (channels: ChannelPickerItemState) => channels.item,
+                      (channel: ChannelPickerItemState) => {
                         return this.renderItem(channel);
                       }
                     )}
@@ -605,6 +622,7 @@ export class MgtTeamsChannelPicker extends MgtTemplatedComponent {
   protected renderItem(itemState: ChannelPickerItemState) {
     return html`
       <fluent-tree-item
+        id=${itemState?.item?.id}
         @keydown=${(e: KeyboardEvent) => this.onUserKeyDown(e, itemState)}
         @click=${() => this.handleItemClick(itemState)}>
           ${itemState?.item.displayName}
