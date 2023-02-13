@@ -2,32 +2,29 @@ import { BaseClientSideWebPart } from '@microsoft/sp-webpart-base';
 
 import styles from './HelloWorldWebPart.module.scss';
 
-import { Providers } from '@microsoft/mgt-element/dist/es6/providers/Providers';
-import { SharePointProvider } from '@microsoft/mgt-sharepoint-provider/dist/es6/SharePointProvider';
+import { Providers } from '@microsoft/mgt-element';
+import { SharePointProvider } from '@microsoft/mgt-sharepoint-provider';
 import { customElementHelper } from '@microsoft/mgt-element/dist/es6/components/customElementHelper';
+import { importMgtComponentsLibrary } from '@microsoft/mgt-spfx-utils';
 
-export default class HelloWorldWebPart extends BaseClientSideWebPart<{}> {
+export default class HelloWorldWebPart extends BaseClientSideWebPart<Record<string, unknown>> {
   private _hasImportedMgtScripts = false;
   private _errorMessage = '';
 
   protected onInit(): Promise<void> {
-    Providers.globalProvider = new SharePointProvider(this.context);
-    customElementHelper.withDisambiguation('contoso');
+    if (!Providers.globalProvider) {
+      Providers.globalProvider = new SharePointProvider(this.context);
+    }
+    customElementHelper.withDisambiguation('sp-mgt-no-framework-client-side-solution');
     return super.onInit();
   }
 
+  private onScriptsLoadedSuccessfully() {
+    this.render();
+  }
+
   public render(): void {
-    if (!this._hasImportedMgtScripts) {
-      import('@microsoft/mgt-components')
-        .then(() => {
-          this._hasImportedMgtScripts = true;
-          this.render();
-        })
-        .catch(e => {
-          this.setErrorMessage();
-          this.renderError(e);
-        });
-    }
+    importMgtComponentsLibrary(this._hasImportedMgtScripts, this.onScriptsLoadedSuccessfully, this.setErrorMessage);
 
     this.domElement.innerHTML = `
     <section class="${styles.helloWorld} ${this.context.sdks.microsoftTeams ? styles.teams : ''}">
@@ -56,7 +53,9 @@ export default class HelloWorldWebPart extends BaseClientSideWebPart<{}> {
       : '';
   }
 
-  private setErrorMessage(): void {
+  private setErrorMessage(e?: Error): void {
+    if (e) this.renderError(e);
+
     this._errorMessage = 'An error ocurred loading MGT scripts';
     this.render();
   }

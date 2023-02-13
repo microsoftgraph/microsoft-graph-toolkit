@@ -3,6 +3,7 @@ import * as ReactDom from 'react-dom';
 import { Version } from '@microsoft/sp-core-library';
 import { BaseClientSideWebPart } from '@microsoft/sp-webpart-base';
 import { IPropertyPaneConfiguration, PropertyPaneTextField } from '@microsoft/sp-property-pane';
+import { lazyLoadComponent } from '@microsoft/mgt-spfx-utils';
 
 import * as strings from 'MgtDemoWebPartStrings';
 
@@ -15,25 +16,19 @@ const MgtDemo = React.lazy(() => import('./components/MgtDemo'));
 export interface IMgtDemoWebPartProps {
   description: string;
 }
-// set the disambiguation before initializing any webpart
-customElementHelper.withDisambiguation('northwind');
+// set the disambiguation before initializing any web part
+customElementHelper.withDisambiguation('mgt-demo-client-side-solution');
 
 export default class MgtDemoWebPart extends BaseClientSideWebPart<IMgtDemoWebPartProps> {
   // set the global provider
   protected async onInit() {
-    Providers.globalProvider = new SharePointProvider(this.context);
+    if (!Providers.globalProvider) {
+      Providers.globalProvider = new SharePointProvider(this.context);
+    }
   }
 
   public render(): void {
-    const element = React.createElement(
-      React.Suspense,
-      {
-        fallback: React.createElement('div', null, 'Loading')
-      },
-      React.createElement(MgtDemo, {
-        description: this.properties.description
-      })
-    );
+    const element = lazyLoadComponent(MgtDemo, { description: this.properties.description });
 
     ReactDom.render(element, this.domElement);
   }
