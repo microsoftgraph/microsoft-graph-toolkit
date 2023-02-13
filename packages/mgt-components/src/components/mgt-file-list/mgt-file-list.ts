@@ -95,7 +95,7 @@ registerFluentComponents(fluentProgressRing, fluentDesignSystemProvider);
 
 @customElement('file-list')
 // @customElement('mgt-file-list')
-export class MgtFileList extends BasePersonCardSection {
+export class MgtFileList extends MgtTemplatedComponent {
   /**
    * Array of styles to apply to the element. The styles should be defined
    * using the `css` tag function.
@@ -134,7 +134,7 @@ export class MgtFileList extends BasePersonCardSection {
    *
    * @readonly
    * @type {string}
-   * @memberof MgtPersonCardFiles
+   * @memberof MgtFileList
    */
   public get displayName(): string {
     return this.strings.filesSectionTitle;
@@ -144,10 +144,35 @@ export class MgtFileList extends BasePersonCardSection {
    * Render the icon for display in the navigation ribbon.
    *
    * @returns {TemplateResult}
-   * @memberof MgtPersonCardFiles
+   * @memberof MgtFileList
    */
   public renderIcon(): TemplateResult {
     return getSvg(SvgIcon.Files);
+  }
+
+  /**
+   * Set the section to compact view mode
+   *
+   * @returns
+   * @memberof MgtFileList
+   */
+  public asCompactView() {
+    this._isCompact = true;
+    this.requestUpdate();
+    return this;
+  }
+
+  /**
+   * Set the section to full view mode
+   *
+   * @returns
+   * @memberof MgtFileList
+   */
+  public asFullView() {
+    this._isCompact = false;
+    this._isFullView = true;
+    this.requestUpdate();
+    return this;
   }
 
   /**
@@ -471,6 +496,20 @@ export class MgtFileList extends BasePersonCardSection {
   }
 
   /**
+   * Determines the appropriate view state: full or compact
+   *
+   * @protected
+   * @type {boolean}
+   * @memberof MgtFileList
+   */
+  protected get isCompact(): boolean {
+    return this._isCompact;
+  }
+
+  private _isCompact: boolean;
+  private _isFullView: boolean; // Set Person Card Files FullView Section
+
+  /**
    * A Array of file extensions to be excluded from file upload.
    *
    * @type {string[]}
@@ -523,11 +562,10 @@ export class MgtFileList extends BasePersonCardSection {
   private pageIterator: GraphPageIterator<DriveItem>;
   // tracking user arrow key input of selection for accessibility purpose
   private _focusedItemIndex: number = -1;
-  private _files: SharedInsight[];
 
   @state() private _isLoadingMore: boolean;
 
-  constructor(files: SharedInsight[]) {
+  constructor() {
     super();
 
     this.pageSize = 10;
@@ -535,7 +573,8 @@ export class MgtFileList extends BasePersonCardSection {
     this.maxUploadFile = 10;
     this.enableFileUpload = false;
     this._preloadedFiles = [];
-    this._files = files;
+    this._isCompact = false;
+    this._isFullView = false;
   }
 
   /**
@@ -553,9 +592,26 @@ export class MgtFileList extends BasePersonCardSection {
    *
    * @memberof MgtFileList
    */
-  public clearState(): void {
+  protected clearState(): void {
     super.clearState();
     this.files = null;
+    this._isCompact = false;
+    this._isFullView = false;
+  }
+
+  public render() {
+    if (!this.files && this.isLoadingState) {
+      return this.renderLoading();
+    }
+
+    if (!this.files || this.files.length === 0) {
+      return this.renderNoData();
+    }
+    if (this.isCompact) {
+      return this.renderCompactView();
+    }
+
+    return this.renderTemplate('default', { files: this.files }) || this.renderFiles();
   }
 
   /**
@@ -566,47 +622,12 @@ export class MgtFileList extends BasePersonCardSection {
    */
   public renderCompactView(): TemplateResult {
     let contentTemplate: TemplateResult;
-
-    if (this.isLoadingState) {
-      contentTemplate = this.renderLoading();
-    } else if (!this.files || !this.files.length) {
-      contentTemplate = this.renderNoData();
-    } else {
-      contentTemplate = html`
-        ${this.files.slice(0, 3).map(file => this.renderFile(file))}
-      `;
-    }
+    contentTemplate = html`
+      ${this.files.slice(0, 3).map(file => this.renderFile(file))}
+    `;
 
     return html`
       <div class="root compact" dir=${this.direction}>
-        ${contentTemplate}
-      </div>
-    `;
-  }
-
-  /**
-   * Render the full view
-   *
-   * @protected
-   * @returns {TemplateResult}
-   * @memberof MgtFileList
-   */
-  protected renderFullView(): TemplateResult {
-    let contentTemplate: TemplateResult;
-
-    if (this.isLoadingState) {
-      contentTemplate = this.renderLoading();
-    } else if (!this.files || !this.files.length) {
-      contentTemplate = this.renderNoData();
-    } else {
-      contentTemplate = html`
-        ${this.files.map(file => this.renderFile(file))}
-      `;
-    }
-
-    return html`
-      <div class="root" dir=${this.direction}>
-        <div class="title">${this.strings.filesSectionTitle}</div>
         ${contentTemplate}
       </div>
     `;
@@ -657,6 +678,7 @@ export class MgtFileList extends BasePersonCardSection {
     return html`
       <div id="file-list-wrapper" class="file-list-wrapper" dir=${this.direction}>
         ${this.enableFileUpload ? this.renderFileUpload() : null}
+        ${this._isFullView ? html`<div class="title">${this.strings.filesSectionTitle}</div>` : null}
         <ul
           id="file-list"
           class="file-list"

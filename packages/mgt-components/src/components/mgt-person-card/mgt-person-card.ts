@@ -319,10 +319,10 @@ export class MgtPersonCard extends MgtTemplatedComponent {
    * The subsections for display in the lower part of the card
    *
    * @protected
-   * @type {BasePersonCardSection[]}
+   * @type {any[]}
    * @memberof MgtPersonCard
    */
-  protected sections: BasePersonCardSection[];
+  protected sections: any[];
 
   @state() private _cardState: MgtPersonCardState;
   @state() private _isStateLoading: boolean;
@@ -1225,7 +1225,7 @@ export class MgtPersonCard extends MgtTemplatedComponent {
     }
 
     if (MgtPersonCard.config.sections.files && files && files.length) {
-      this.sections.push(new MgtFileList(files));
+      this.sections.push(new MgtFileList());
     }
 
     if (MgtPersonCard.config.sections.profile && profile) {

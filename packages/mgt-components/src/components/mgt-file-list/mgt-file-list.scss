@@ -55,6 +55,12 @@ $progress-ring-size: var(--progress-ring-size, 24px);
   display: flex;
   flex-direction: column;
   border-radius: 8px;
+  .title {
+    font-size: 14px;
+    font-weight: 600;
+    color: set-var(title__color__subtitle, $theme-default, $common);
+    margin: 0 20px -15px 20px;
+  }
 
   .file-list {
     display: flex;
