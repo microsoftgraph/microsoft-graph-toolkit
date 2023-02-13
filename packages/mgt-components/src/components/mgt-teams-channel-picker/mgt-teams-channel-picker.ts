@@ -7,9 +7,16 @@
 
 import * as MicrosoftGraph from '@microsoft/microsoft-graph-types';
 import { html, TemplateResult } from 'lit';
-import { customElement, property, state } from 'lit/decorators.js';
+import { state } from 'lit/decorators.js';
 import { classMap } from 'lit/directives/class-map.js';
-import { Providers, ProviderState, MgtTemplatedComponent, BetaGraph,  customElement, mgtHtml } from '@microsoft/mgt-element';
+import {
+  Providers,
+  ProviderState,
+  MgtTemplatedComponent,
+  BetaGraph,
+  customElement,
+  mgtHtml
+} from '@microsoft/mgt-element';
 import '../../styles/style-helper';
 import '../sub-components/mgt-spinner/mgt-spinner';
 import { getSvg, SvgIcon } from '../../utils/SvgHelper';
@@ -181,7 +188,6 @@ export interface MgtTeamsChannelPickerConfig {
  *
  */
 @customElement('teams-channel-picker')
-// @customElement('mgt-teams-channel-picker')
 export class MgtTeamsChannelPicker extends MgtTemplatedComponent {
   /**
    * Array of styles to apply to the element. The styles should be defined
@@ -262,7 +268,7 @@ export class MgtTeamsChannelPicker extends MgtTemplatedComponent {
   }
   private _inputValue: string = '';
 
-  private _selectedItemState: ChannelPickerItemState;
+  @state() private _selectedItemState: ChannelPickerItemState;
   private _items: DropdownItem[];
   private _treeViewState: ChannelPickerItemState[] = [];
   private _focusList: ChannelPickerItemState[] = [];
@@ -388,14 +394,33 @@ export class MgtTeamsChannelPicker extends MgtTemplatedComponent {
         src=${this.teamsPhotos[this._selectedItemState.parent.item.id]?.photo} />`;
     }
 
+    const maxChars = 32; // without the ellipsis
+    const originalParentName = this._selectedItemState?.parent?.item?.displayName;
+    const originalChannelName = this._selectedItemState?.item?.displayName;
+    let parentName = originalParentName.trim();
+    let channelName = originalChannelName.trim();
+
+    const totalChars = (parentName + channelName).length;
+
+    if (totalChars > maxChars) {
+      let stop = maxChars - parentName.length;
+      if (stop < 3) {
+        stop = 16; // reset to a half and half
+        parentName = parentName.slice(0, stop);
+        parentName = originalParentName.length < stop ? parentName : `${parentName}...`;
+      }
+      channelName = channelName.slice(0, stop);
+      channelName = originalChannelName.length <= stop ? channelName : `${channelName}...`;
+    }
+
     return html`
       <fluent-breadcrumb title=${this._selectedItemState.item.displayName}>
         <fluent-breadcrumb-item>
           <span slot="start">${icon}</span>
-          <span slot="end" class="team-parent-name">${this._selectedItemState.parent.item.displayName}</span>
+          <span slot="end" class="team-parent-name">${parentName}</span>
           <span slot="separator" class="arrow">${getSvg(SvgIcon.TeamSeparator, '#000000')}</span>
         </fluent-breadcrumb-item>
-        <fluent-breadcrumb-item>${this._selectedItemState.item.displayName}</fluent-breadcrumb-item>
+        <fluent-breadcrumb-item>${channelName}</fluent-breadcrumb-item>
       </fluent-breadcrumb>`;
   }
 
@@ -492,7 +517,7 @@ export class MgtTeamsChannelPicker extends MgtTemplatedComponent {
    */
   protected renderUpChevron() {
     return html`
-      <div style="display:none" class="up-chevron" @click=${this.lostFocus}>
+      <div style="display:none" class="up-chevron" @click=${(e: Event) => this.handleUpChevronClick(e)}>
         <svg width="12" height="12" viewBox="0 0 12 12" fill="none" xmlns="http://www.w3.org/2000/svg">
           <path d="M2.21967 7.53033C2.51256 7.82322 2.98744 7.82322 3.28033 7.53033L6 4.81066L8.71967 7.53033C9.01256 7.82322 9.48744 7.82322 9.78033 7.53033C10.0732 7.23744 10.0732 6.76256 9.78033 6.46967L6.53033 3.21967C6.23744 2.92678 5.76256 2.92678 5.46967 3.21967L2.21967 6.46967C1.92678 6.76256 1.92678 7.23744 2.21967 7.53033Z" fill="#212121" />
         </svg>
@@ -731,7 +756,6 @@ export class MgtTeamsChannelPicker extends MgtTemplatedComponent {
         e.preventDefault();
         break;
       case 'Backspace':
-        console.log('key ', key, this._inputValue.length, this._selectedItemState);
         if (this._inputValue.length === 0 && this._selectedItemState) {
           this.selectChannel(null);
           this.resetFocusState();
@@ -839,23 +863,26 @@ export class MgtTeamsChannelPicker extends MgtTemplatedComponent {
       input.textContent = '';
     }
 
+    this._isFocused = false;
+    this._isDropdownVisible = false;
     this.filterList();
     this.toggleChevron();
+    this.requestUpdate();
 
     if (this._selectedItemState !== undefined) {
       this.showCloseIcon();
     }
-
-    this._isFocused = false;
-    this._isDropdownVisible = false;
-    this.requestUpdate();
   }
 
   private selectChannel(item: ChannelPickerItemState) {
-    if (this._selectedItemState !== item) {
-      this._selectedItemState = item;
-      this.fireCustomEvent('selectionChanged', this.selectedItem);
+    if (item && this._selectedItemState !== item) {
+      this._input.setAttribute('disabled', 'true');
+    } else {
+      this._input.removeAttribute('disabled');
     }
+    this._selectedItemState = item;
+    this.lostFocus();
+    this.fireCustomEvent('selectionChanged', this._selectedItemState);
   }
 
   /**
@@ -881,7 +908,6 @@ export class MgtTeamsChannelPicker extends MgtTemplatedComponent {
       }
       if (upChevron) {
         upChevron.style.display = null;
-        this.hideCloseIcon();
       }
     } else {
       if (downChevron) {
@@ -892,5 +918,11 @@ export class MgtTeamsChannelPicker extends MgtTemplatedComponent {
         upChevron.style.display = 'none';
       }
     }
+    this.hideCloseIcon();
+  }
+
+  private handleUpChevronClick(e: Event) {
+    e.stopPropagation();
+    this.lostFocus();
   }
 }

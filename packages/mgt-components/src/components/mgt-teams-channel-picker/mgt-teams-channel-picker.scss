@@ -71,11 +71,11 @@
 :host fluent-card {
   --fill-color: var(--dropdown-background-color, --fill-color);
   --card-height: auto;
-  --min-width: var(--card-width);
+  --width: var(--card-width);
 }
 
 :host fluent-text-field {
-  min-width: 368px;
+  width: 368px;
   --fill-color: var(--color, $color);
   --neutral-fill-input-rest: var(--input-background-color, #ffffff);
   --input-placeholder-rest: var(--placeholder-color, --input-placeholder-rest);
@@ -102,10 +102,9 @@
     font-weight: bold;
   }
   .team-photo {
-    width: 24px;
+    width: 19px;
     position: inherit;
     border-radius: 50%;
-    margin: 0px 6px;
   }
   .arrow {
     margin-left: 8px;

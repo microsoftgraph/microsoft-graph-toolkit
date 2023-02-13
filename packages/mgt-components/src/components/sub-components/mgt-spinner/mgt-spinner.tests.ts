@@ -18,6 +18,6 @@ describe('mgt-spinner tests', () => {
   it('should render', async () => {
     const spinnerHtml = await screen.findByTitle('spinner');
     expect(spinnerHtml).not.toBeNull();
-    expect(spinner.shadowRoot.innerHTML).toContain('<div class="spinner" title="spinner"></div>');
+    expect(spinner.shadowRoot.innerHTML).toContain('<fluent-progress-ring title="spinner"></fluent-progress-ring>');
   });
 });
