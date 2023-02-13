@@ -583,7 +583,10 @@ export class MgtTeamsChannelPicker extends MgtTemplatedComponent {
       let icon: TemplateResult = null;
 
       return html`
-        <fluent-tree-view class="tree-view" dir=${this.direction}>
+        <fluent-tree-view
+          class="tree-view"
+          dir=${this.direction}
+          @click=${(e: Event) => e.preventDefault()}>
           ${repeat(
             items,
             (itemObj: ChannelPickerItemState) => itemObj?.item,
