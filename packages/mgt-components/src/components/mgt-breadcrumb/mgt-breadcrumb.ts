@@ -32,6 +32,7 @@ export type BreadcrumbInfo = {
  * @fires {CustomEvent<BreadcrumbInfo>} breadcrumbclick - Fired when a breadcrumb is clicked. Will not fire when the last breadcrumb is clicked.
  *
  * @cssprop --breadcrumb-base-font-size - {Length} Breadcrumb base font size. Default is 18px.
+ * @cssprop --breadcrumb-base-line-height - {Length} Breadcrumb line height. Default is 36px
  *
  * @export
  * @class MgtBreadcrumb
@@ -46,6 +47,8 @@ export class MgtBreadcrumb extends MgtBaseComponent {
   static get styles() {
     return styles;
   }
+
+  private _breadcrumb: BreadcrumbInfo[] = [];
   /**
    * An array of nodes to show in the breadcrumb
    *
@@ -53,8 +56,17 @@ export class MgtBreadcrumb extends MgtBaseComponent {
    * @readonly
    * @memberof MgtFileList
    */
-  @property()
-  private breadcrumb: BreadcrumbInfo[] = [];
+  @property({
+    attribute: false
+  })
+  public get breadcrumb(): BreadcrumbInfo[] {
+    return this._breadcrumb;
+  }
+  public set breadcrumb(value: BreadcrumbInfo[]) {
+    this._breadcrumb = value;
+    // this is needed to trigger a re-render
+    this.requestUpdate();
+  }
 
   private isLastCrumb = (b: BreadcrumbInfo): boolean => this.breadcrumb.indexOf(b) === this.breadcrumb.length - 1;
 
@@ -66,23 +78,31 @@ export class MgtBreadcrumb extends MgtBaseComponent {
    */
   public render(): TemplateResult {
     return html`
-      <fluent-breadcrumb class="breadcrumb">
+      <fluent-breadcrumb
+        exportparts="crumb, control">
         ${repeat(
           this.breadcrumb,
           b => b.id,
           b =>
-            html`
+            !this.isLastCrumb(b)
+              ? html`
               <fluent-breadcrumb-item
-                class="breadcrumb-item"
-                @click=${() => this.handleBreadcrumbClick(b)}
-                @keypress=${(e: KeyboardEvent) => this.handleBreadcrumbKeyPress(e, b)}
+                exportparts="control"
               >
-                <span
-                  tabindex=${this.isLastCrumb(b) ? -1 : 0}
-                  class=${this.isLastCrumb(b) ? '' : 'interactive-breadcrumb'}
+                <fluent-button
+                  appearance="stealth"
+                  @click=${() => this.handleBreadcrumbClick(b)}
+                  @keypress=${(e: KeyboardEvent) => this.handleBreadcrumbKeyPress(e, b)}
                 >
                   ${b.name}
-                </span>
+                </fluent-button>
+              </fluent-breadcrumb-item>
+            `
+              : html`
+              <fluent-breadcrumb-item
+                exportparts="crumb"
+              >
+                <span part="crumb">${b.name}</span>
               </fluent-breadcrumb-item>
             `
         )}

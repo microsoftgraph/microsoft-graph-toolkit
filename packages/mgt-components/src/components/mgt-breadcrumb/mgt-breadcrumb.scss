@@ -10,7 +10,24 @@
 @import './mgt-breadcrumb.theme.scss';
 
 :host {
-  .breadcrumb {
-    --type-ramp-base-font-size: var(--breadcrumb-base-font-size, 18px);
+  --type-ramp-base-font-size: var(--breadcrumb-base-font-size, 18px);
+  --type-ramp-base-line-height: var(--breadcrumb-base-line-height, 36px);
+
+  &::part(crumb),
+  &::part(control) {
+    padding: 0 calc((10 + (var(--design-unit) * 2 * var(--density))) * 1px);
+  }
+
+  &::part(crumb) {
+    font-weight: 600;
+  }
+  &::part(control) {
+    background-color: var(--neutral-fill-rest);
+    background: var(--neutral-fill-rest);
+    padding: 0 calc((10 + (var(--design-unit) * 2 * var(--density))) * 1px);
+    &:hover {
+      background-color: var(--neutral-fill-stealth-hover);
+      background: var(--neutral-fill-stealth-hover);
+    }
   }
 }

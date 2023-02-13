@@ -44,31 +44,10 @@ import { strings } from './strings';
 import { MgtFile } from '../mgt-file/mgt-file';
 import { MgtFileUploadConfig } from './mgt-file-upload/mgt-file-upload';
 
-import {
-  fluentProgressRing,
-  fluentBreadcrumb,
-  fluentBreadcrumbItem,
-  fluentDesignSystemProvider
-} from '@fluentui/web-components';
+import { fluentProgressRing, fluentDesignSystemProvider } from '@fluentui/web-components';
 import { registerFluentComponents } from '../../utils/FluentComponents';
-import { BreadcrumbInfo } from '../mgt-breadcrumb/mgt-breadcrumb';
 
-registerFluentComponents(fluentProgressRing, fluentDesignSystemProvider, fluentBreadcrumb, fluentBreadcrumbItem);
-
-type FileListBreadCrumb = {
-  name: string;
-  fileListQuery?: string;
-  itemId?: string;
-  itemPath?: string;
-  files?: DriveItem[];
-  fileQueries?: string[];
-  groupId?: string;
-  driveId?: string;
-  siteId?: string;
-  userId?: string;
-  insightType?: OfficeGraphInsightString;
-  fileExtensions?: string[];
-} & BreadcrumbInfo;
+registerFluentComponents(fluentProgressRing, fluentDesignSystemProvider);
 
 /**
  * The File List component displays a list of multiple folders and files by
@@ -493,33 +472,6 @@ export class MgtFileList extends MgtTemplatedComponent {
   }
 
   /**
-   * Name to be used for the root node of the breadcrumb
-   *
-   * @type {string}
-   * @memberof MgtFileList
-   */
-  @property({
-    attribute: 'name'
-  })
-  public rootNodeName: string = 'Home';
-
-  private _breadcrumb: FileListBreadCrumb[] = [];
-  /**
-   * An array of nodes to show in the breadcrumb
-   *
-   * @type {BreadcrumbInfo[]}
-   * @readonly
-   * @memberof MgtFileList
-   */
-  @state()
-  private get breadcrumb(): FileListBreadCrumb[] {
-    return this._breadcrumb;
-  }
-  private set breadcrumb(value: FileListBreadCrumb[]) {
-    this._breadcrumb = value;
-  }
-
-  /**
    * Get the scopes required for file list
    *
    * @static
@@ -562,30 +514,6 @@ export class MgtFileList extends MgtTemplatedComponent {
   }
 
   /**
-   * Override connectedCallback to set initial breadcrumbstate.
-   *
-   * @memberof MgtFileList
-   */
-  public connectedCallback(): void {
-    super.connectedCallback();
-    this.breadcrumb.push({
-      name: this.rootNodeName,
-      siteId: this.siteId,
-      groupId: this.groupId,
-      driveId: this.driveId,
-      userId: this.userId,
-      files: this.files,
-      fileExtensions: this.fileExtensions,
-      fileListQuery: this.fileListQuery,
-      fileQueries: this.fileQueries,
-      itemPath: this.itemPath,
-      insightType: this.insightType,
-      itemId: this.itemId,
-      id: this.itemId
-    });
-  }
-
-  /**
    * Override requestStateUpdate to include clearstate.
    *
    * @memberof MgtFileList
@@ -605,6 +533,12 @@ export class MgtFileList extends MgtTemplatedComponent {
     this.files = null;
   }
 
+  /**
+   * Render the file list
+   *
+   * @return {*}
+   * @memberof MgtFileList
+   */
   public render() {
     if (!this.files && this.isLoadingState) {
       return this.renderLoading();
@@ -661,7 +595,6 @@ export class MgtFileList extends MgtTemplatedComponent {
   protected renderFiles(): TemplateResult {
     return html`
       <div id="file-list-wrapper" class="file-list-wrapper" dir=${this.direction}>
-        <mgt-breadcrumb .breadcrumb=${this.breadcrumb} @breadcrumbclick=${this.handleBreadcrumbClick}></mgt-breadcrumb>
         ${this.enableFileUpload ? this.renderFileUpload() : null}
         <ul
           id="file-list"
@@ -976,39 +909,6 @@ export class MgtFileList extends MgtTemplatedComponent {
         node.classList.remove('focused');
       }
     }
-    if (item.folder) {
-      // load folder contents, update breadcrumb
-      this.breadcrumb.push({ name: item.name, itemId: item.id, id: item.id });
-      // clear any existing query properties
-      this.siteId = null;
-      this.groupId = null;
-      this.driveId = null;
-      this.userId = null;
-      this.files = null;
-      this.fileExtensions = null;
-      this.fileListQuery = null;
-      this.fileQueries = null;
-      this.itemPath = null;
-      this.insightType = null;
-      // set the item id to load the folder
-      this.itemId = item.id;
-    }
-  }
-
-  private handleBreadcrumbClick(e: CustomEvent<FileListBreadCrumb>): void {
-    const b = e.detail;
-    this.breadcrumb = this.breadcrumb.slice(0, this.breadcrumb.indexOf(b) + 1);
-    this.siteId = b.siteId;
-    this.groupId = b.groupId;
-    this.driveId = b.driveId;
-    this.userId = b.userId;
-    this.files = b.files;
-    this.fileExtensions = b.fileExtensions;
-    this.fileListQuery = b.fileListQuery;
-    this.fileQueries = b.fileQueries;
-    this.itemPath = b.itemPath;
-    this.insightType = b.insightType;
-    this.itemId = b.itemId;
   }
 
   /**
