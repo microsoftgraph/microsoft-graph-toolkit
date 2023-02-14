@@ -411,24 +411,8 @@ export class MgtTeamsChannelPicker extends MgtTemplatedComponent {
         src=${this.teamsPhotos[this._selectedItemState.parent.item.id]?.photo} />`;
     }
 
-    const maxChars = 32; // without the ellipsis
-    const originalParentName = this._selectedItemState?.parent?.item?.displayName;
-    const originalChannelName = this._selectedItemState?.item?.displayName;
-    let parentName = originalParentName.trim();
-    let channelName = originalChannelName.trim();
-
-    const totalChars = (parentName + channelName).length;
-
-    if (totalChars > maxChars) {
-      let stop = maxChars - parentName.length;
-      if (stop < 3) {
-        stop = 16; // reset to a half and half
-        parentName = parentName.slice(0, stop);
-        parentName = originalParentName.length < stop ? parentName : `${parentName}...`;
-      }
-      channelName = channelName.slice(0, stop);
-      channelName = originalChannelName.length <= stop ? channelName : `${channelName}...`;
-    }
+    const parentName = this._selectedItemState?.parent?.item?.displayName.trim();
+    const channelName = this._selectedItemState?.item?.displayName.trim();
 
     return html`
       <fluent-breadcrumb title=${this._selectedItemState.item.displayName}>
