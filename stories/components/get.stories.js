@@ -148,7 +148,7 @@ export const UsingImageType = () => html`
 `;
 
 export const UsingCaching = () => html`
-  <mgt-get resource="me" caching-enabled="true">
+  <mgt-get resource="me" cache-enabled="true">
     <template>
       Hello {{ displayName }}
     </template>
