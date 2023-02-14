@@ -194,7 +194,6 @@ export class MgtGet extends MgtTemplatedComponent {
    */
   @property({
     attribute: 'cache-invalidation-period',
-    reflect: true,
     type: Number
   })
   public cacheInvalidationPeriod: number = 0;
