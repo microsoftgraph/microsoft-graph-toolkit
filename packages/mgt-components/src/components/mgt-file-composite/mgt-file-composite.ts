@@ -1,6 +1,6 @@
 import { customElement, mgtHtml, MgtTemplatedComponent } from '@microsoft/mgt-element';
 import { DriveItem } from '@microsoft/microsoft-graph-types';
-import { html } from 'lit';
+import { html, nothing } from 'lit';
 import { property, state } from 'lit/decorators.js';
 import { ifDefined } from 'lit/directives/if-defined.js';
 import { OfficeGraphInsightString, ViewType } from '../../graph/types';
@@ -337,24 +337,24 @@ class MgtFileComposite extends MgtTemplatedComponent {
     return html`
       ${this.renderBreadcrumb()}
       <mgt-file-list
-        .fileListQuery=${ifDefined(this.fileListQuery)}
-        .itemId=${ifDefined(this.itemId)}
-        .itemPath=${ifDefined(this.itemPath)}
-        .files=${ifDefined(this.files)}
-        .fileQueries=${ifDefined(this.files)}
-        .groupId=${ifDefined(this.groupId)}
-        .driveId=${ifDefined(this.driveId)}
-        .siteId=${ifDefined(this.siteId)}
-        .userId=${ifDefined(this.userId)}
-        .insightType=${ifDefined(this.insightType)}
-        .fileExtensions=${ifDefined(this.fileExtensions)}
-        .itemView=${ifDefined(this.itemView)}
-        .pageSize=${ifDefined(this.pageSize)}
-        .hideMoreFilesButton=${ifDefined(this.hideMoreFilesButton)}
-        .maxFileSize=${ifDefined(this.maxFileSize)}
-        .enableFileUpload=${ifDefined(this.enableFileUpload)}
-        .maxUploadFile=${ifDefined(this.maxUploadFile)}
-        .excludedFileExtensions=${ifDefined(this.excludedFileExtensions)}
+        .fileListQuery=${this.fileListQuery || nothing}
+        .itemId=${this.itemId || nothing}
+        .itemPath=${this.itemPath || nothing}
+        .files=${this.files || nothing}
+        .fileQueries=${this.files || nothing}
+        .groupId=${this.groupId || nothing}
+        .driveId=${this.driveId || nothing}
+        .siteId=${this.siteId || nothing}
+        .userId=${this.userId || nothing}
+        .insightType=${this.insightType || nothing}
+        .fileExtensions=${this.fileExtensions || nothing}
+        .itemView=${this.itemView || nothing}
+        .pageSize=${this.pageSize || nothing}
+        .hideMoreFilesButton=${this.hideMoreFilesButton || nothing}
+        .maxFileSize=${this.maxFileSize || nothing}
+        .enableFileUpload=${this.enableFileUpload || nothing}
+        .maxUploadFile=${this.maxUploadFile || nothing}
+        .excludedFileExtensions=${this.excludedFileExtensions || nothing}
         @itemClick=${this.handleItemClick}
       ></mgt-file-list>
     `;

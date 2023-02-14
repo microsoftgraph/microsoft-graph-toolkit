@@ -78,8 +78,7 @@ export class MgtBreadcrumb extends MgtBaseComponent {
    */
   public render(): TemplateResult {
     return html`
-      <fluent-breadcrumb
-        exportparts="crumb, control">
+      <fluent-breadcrumb>
         ${repeat(
           this.breadcrumb,
           b => b.id,
