@@ -9,7 +9,7 @@ import { html } from 'lit';
 import { withCodeEditor } from '../../../.storybook/addons/codeEditorAddon/codeAddon';
 
 export default {
-  title: 'Components | mgt-file-composite',
+  title: 'Components/mgt-file-composite',
   component: 'file-composite',
   decorators: [withCodeEditor]
 };
