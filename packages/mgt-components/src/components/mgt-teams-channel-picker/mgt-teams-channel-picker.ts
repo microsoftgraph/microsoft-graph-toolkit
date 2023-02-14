@@ -349,11 +349,11 @@ export class MgtTeamsChannelPicker extends MgtTemplatedComponent {
    * @param channelId ID string of the selected channel
    */
   private markSelectedChannelInDropdown(channelId: string) {
-    const treeItem = this.renderRoot.getElementById<HTMLElement>(channelId);
+    const treeItem = this.renderRoot.querySelector(`[id='${channelId}']`) as HTMLElement;
     if (treeItem) {
-      treeItem.setAttribute('selected', true);
-      if (treeItem.parentNode) {
-        treeItem.parentNode.setAttribute('expanded', true);
+      treeItem.setAttribute('selected', 'true');
+      if (treeItem.parentElement) {
+        treeItem.parentElement.setAttribute('expanded', 'true');
       }
     }
   }
@@ -730,7 +730,7 @@ export class MgtTeamsChannelPicker extends MgtTemplatedComponent {
    */
   private removeSelectedChannel(item: ChannelPickerItemState) {
     this.selectChannel(item);
-    const treeItems = this.renderRoot.querySelectorAll<HTMLElement[]>('fluent-tree-item');
+    const treeItems = this.renderRoot.querySelectorAll('fluent-tree-item') as NodeListOf<HTMLElement>;
     if (treeItems) {
       treeItems.forEach((treeItem: HTMLElement) => {
         treeItem.removeAttribute('expanded');
