@@ -924,7 +924,7 @@ export class MgtTeamsChannelPicker extends MgtTemplatedComponent {
     }
     this._selectedItemState = item;
     this.lostFocus();
-    this.fireCustomEvent('selectionChanged', item ? [this.selectedItem] : []);
+    this.fireCustomEvent('selectionChanged', this.selectedItem);
   }
 
   /**

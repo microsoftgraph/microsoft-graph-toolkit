@@ -50,9 +50,9 @@ export const selectionChangedEvent = () => html`
     picker.addEventListener('selectionChanged', e => {
       const output = document.querySelector('.output');
 
-      if (e.detail.length) {
-        output.innerHTML = '<b>channel:</b> ' + e.detail[0].channel.displayName;
-        output.innerHTML += '<br/><b>team:</b> ' + e.detail[0].team.displayName;
+      if (e.detail) {
+        output.innerHTML = '<b>channel:</b> ' + e.detail.channel.displayName;
+        output.innerHTML += '<br/><b>team:</b> ' + e.detail.team.displayName;
       } else {
         output.innerText = 'no channel selected';
       }
