@@ -585,8 +585,7 @@ export class MgtTeamsChannelPicker extends MgtTemplatedComponent {
       return html`
         <fluent-tree-view
           class="tree-view"
-          dir=${this.direction}
-          @click=${(e: Event) => e.preventDefault()}>
+          dir=${this.direction}>
           ${repeat(
             items,
             (itemObj: ChannelPickerItemState) => itemObj?.item,
@@ -598,7 +597,9 @@ export class MgtTeamsChannelPicker extends MgtTemplatedComponent {
                   src=${this.teamsPhotos[obj.item.id].photo} />`;
               }
               return html`
-                <fluent-tree-item ?expanded=${obj?.isExpanded}>
+                <fluent-tree-item
+                  ?expanded=${obj?.isExpanded}
+                  @click=${(e: Event) => this.handleTeamTreeItemClick(e)}>
                     ${icon}${obj.item.displayName}
                     ${repeat(
                       obj?.channels,
@@ -744,6 +745,26 @@ export class MgtTeamsChannelPicker extends MgtTemplatedComponent {
     } else {
       this.selectChannel(item);
       this.lostFocus();
+    }
+  }
+
+  private handleTeamTreeItemClick(event: Event) {
+    event.preventDefault();
+    event.stopImmediatePropagation();
+    const element = event.target as HTMLElement;
+    if (element) {
+      const expanded = element.getAttribute('expanded');
+
+      if (!!expanded) {
+        element.removeAttribute('expanded');
+      } else {
+        element.setAttribute('expanded', 'true');
+      }
+      element.removeAttribute('selected');
+      const hasId = element.getAttribute('id');
+      if (hasId) {
+        element.setAttribute('selected', 'true');
+      }
     }
   }
 
