@@ -1,12 +1,12 @@
 import { html, TemplateResult } from 'lit';
 import { property } from 'lit/decorators.js';
 import { repeat } from 'lit/directives/repeat.js';
-import { fluentBreadcrumb, fluentBreadcrumbItem } from '@fluentui/web-components';
+import { fluentBreadcrumb, fluentBreadcrumbItem, fluentButton } from '@fluentui/web-components';
 import { registerFluentComponents } from '../../utils/FluentComponents';
 import { customElement, MgtBaseComponent } from '@microsoft/mgt-element';
 import { styles } from './mgt-breadcrumb-css';
 
-registerFluentComponents(fluentBreadcrumb, fluentBreadcrumbItem);
+registerFluentComponents(fluentButton, fluentBreadcrumb, fluentBreadcrumbItem);
 
 /**
  * Defines a base type for breadcrumb data
@@ -92,7 +92,6 @@ export class MgtBreadcrumb extends MgtBaseComponent {
                 <fluent-button
                   appearance="stealth"
                   @click=${() => this.handleBreadcrumbClick(b)}
-                  @keypress=${(e: KeyboardEvent) => this.handleBreadcrumbKeyPress(e, b)}
                 >
                   ${b.name}
                 </fluent-button>
@@ -110,11 +109,6 @@ export class MgtBreadcrumb extends MgtBaseComponent {
     `;
   }
 
-  private handleBreadcrumbKeyPress(event: KeyboardEvent, b: BreadcrumbInfo): void {
-    if (event.key === 'Enter' || event.key === ' ') {
-      this.handleBreadcrumbClick(b);
-    }
-  }
   private handleBreadcrumbClick(b: BreadcrumbInfo): void {
     // last crumb does nothing
     if (this.isLastCrumb(b)) return;
