@@ -16,7 +16,6 @@
   .container {
     display: flex;
     flex-direction: column;
-    width: fit-content;
   }
 
   .dropdown {
@@ -75,7 +74,7 @@
 }
 
 :host fluent-text-field {
-  width: 368px;
+  width: 100%;
   --fill-color: var(--color, $color);
   --neutral-fill-input-rest: var(--input-background-color, #ffffff);
   --input-placeholder-rest: var(--placeholder-color, --input-placeholder-rest);
