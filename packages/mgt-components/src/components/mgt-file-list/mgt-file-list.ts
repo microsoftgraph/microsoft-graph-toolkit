@@ -744,7 +744,7 @@ export class MgtFileList extends MgtTemplatedComponent {
 
       const file = focusedItem.children[0] as MgtFile;
       event.preventDefault();
-      this.fireCustomEvent('itemClick', file.fileDetails);
+      this.raiseItemClickedEvent(file.fileDetails);
 
       this.updateItemBackgroundColor(fileList, focusedItem, 'selected');
     }
@@ -753,6 +753,10 @@ export class MgtFileList extends MgtTemplatedComponent {
       focusedItem = fileList.children[this._focusedItemIndex];
       focusedItem?.classList.remove('focused');
     }
+  }
+
+  private raiseItemClickedEvent(file: DriveItem) {
+    this.fireCustomEvent('itemClick', file);
   }
 
   /**
@@ -893,7 +897,7 @@ export class MgtFileList extends MgtTemplatedComponent {
    * @memberof MgtFileList
    */
   protected handleItemSelect(item: DriveItem, event): void {
-    this.fireCustomEvent('itemClick', item);
+    this.raiseItemClickedEvent(item);
 
     // handle accessibility updates when item clicked
     if (event) {

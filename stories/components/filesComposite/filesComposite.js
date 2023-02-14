@@ -17,3 +17,20 @@ export default {
 export const fileComposite = () => html`
   <mgt-file-composite></mgt-file-composite>
 `;
+
+export const BreadcrumbRootName = () => html`
+  <mgt-file-composite breadcrumb-root-name="Drive"></mgt-file-composite>
+`;
+
+export const events = () => html`
+<mgt-file-composite></mgt-file-composite>
+<script>
+  const component = document.querySelector('mgt-file-composite');
+  component.addEventListener('breadcrumbclick', e => {
+    console.log('breadcrumbclick', e.detail);
+  });
+  component.addEventListener('itemClick', e => {
+    console.log('itemClick', e.detail);
+  });
+</script>
+`;

@@ -387,6 +387,7 @@ class MgtFileComposite extends MgtTemplatedComponent {
       this.insightType = null;
       // set the item id to load the folder
       this.itemId = item.id;
+      this.fireCustomEvent('itemClick', item);
     }
   }
 
@@ -404,5 +405,6 @@ class MgtFileComposite extends MgtTemplatedComponent {
     this.itemPath = b.itemPath;
     this.insightType = b.insightType;
     this.itemId = b.itemId;
+    this.fireCustomEvent('breadcrumbclick', b);
   }
 }
