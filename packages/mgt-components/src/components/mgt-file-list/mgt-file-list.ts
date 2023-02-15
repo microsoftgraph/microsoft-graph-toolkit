@@ -58,41 +58,26 @@ registerFluentComponents(fluentProgressRing, fluentDesignSystemProvider);
  * @class MgtFileList
  * @extends {MgtTemplatedComponent}
  *
- * @fires {CustomEvent<MicrosoftGraph.DriveItem>} itemClick - Fired when user click a file. Returns the file (DriveItem) details.
- * @cssprop --file-upload-border- {String} File upload border top style
- * @cssprop --file-upload-background-color - {Color} File upload background color with opacity style
- * @cssprop --file-upload-button-float - {string} Upload button float position
- * @cssprop --file-upload-button-background-color - {Color} Background color of upload button
- * @cssprop --file-upload-dialog-background-color - {Color} Background color of upload dialog
- * @cssprop --file-upload-dialog-content-background-color - {Color} Background color of dialog content
- * @cssprop --file-upload-dialog-content-color - {Color} Color of dialog content
- * @cssprop --file-upload-dialog-primarybutton-background-color - {Color} Background color of primary button
- * @cssprop --file-upload-dialog-primarybutton-color - {Color} Color text of primary button
- * @cssprop --file-upload-button-color - {Color} Text color of upload button
- * @cssprop --file-list-background-color - {Color} File list background color
- * @cssprop --file-list-box-shadow - {String} File list box shadow style
- * @cssprop --file-list-border - {String} File list border styles
- * @cssprop --file-list-padding -{String} File list padding
- * @cssprop --file-list-margin -{String} File list margin
- * @cssprop --file-item-background-color--hover - {Color} File item background hover color
- * @cssprop --file-item-border-top - {String} File item border top style
- * @cssprop --file-item-border-left - {String} File item border left style
- * @cssprop --file-item-border-right - {String} File item border right style
- * @cssprop --file-item-border-bottom - {String} File item border bottom style
- * @cssprop --file-item-background-color--active - {Color} File item background active color
- * @cssprop --file-item-border-radius - {String} File item border radius
- * @cssprop --file-item-margin - {String} File item margin
- * @cssprop --show-more-button-background-color - {Color} Show more button background color
- * @cssprop --show-more-button-background-color--hover - {Color} Show more button background hover color
- * @cssprop --show-more-button-font-size - {String} Show more button font size
- * @cssprop --show-more-button-padding - {String} Show more button padding
- * @cssprop --show-more-button-border-bottom-right-radius - {String} Show more button bottom right radius
- * @cssprop --show-more-button-border-bottom-left-radius - {String} Show more button bottom left radius
+ * @fires {CustomEvent<MicrosoftGraph.DriveItem>} itemClick - Fired when a user clicks on a file.
+ * it returns the file (DriveItem) details.
+ *
+ * NOTE: This component also allows customizing the tokens from mgt-file and mgt-file-upload components.
+ * @cssprop --file-list-background-color - {Color} the background color of the component.
+ * @cssprop --file-list-box-shadow - {String} the box-shadow syle of the component.
+ * @cssprop --file-list-border-radius - {Length} the file list box border radius.
+ * @cssprop --file-list-border - {String} the file list border style.
+ * @cssprop --file-list-padding -{String} the file list padding.
+ * @cssprop --file-list-margin -{String} the file list margin.
+ * @cssprop --show-more-button-background-color - {Color} the "show more" button background color.
+ * @cssprop --show-more-button-background-color--hover - {Color} the "show more" button background color on hover.
+ * @cssprop --show-more-button-font-size - {String} the "show more" text font size.
+ * @cssprop --show-more-button-padding - {String} the "show more" button padding.
+ * @cssprop --show-more-button-border-bottom-right-radius - {String} the "show more" button bottom right border radius
+ * @cssprop --show-more-button-border-bottom-left-radius - {String} the "show more" button bottom left border radius
  * @cssprop --progress-ring-size -{String} Progress ring height and width
  */
 
 @customElement('file-list')
-// @customElement('mgt-file-list')
 export class MgtFileList extends MgtTemplatedComponent {
   /**
    * Array of styles to apply to the element. The styles should be defined
@@ -602,7 +587,7 @@ export class MgtFileList extends MgtTemplatedComponent {
             this.files,
             f => f.id,
             f => html`
-              <li class="file-item" @click=${e => this.handleItemSelect(f, e)}>
+              <li class="file-item" @click=${(e: Event) => this.handleItemSelect(f, e)}>
                 ${this.renderFile(f)}
               </li>
             `
@@ -647,9 +632,15 @@ export class MgtFileList extends MgtTemplatedComponent {
         <fluent-progress-ring role="progressbar" viewBox="0 0 8 8" class="progress-ring"></fluent-progress-ring>
       `;
     } else {
-      return html`<a id="show-more" class="show-more" @click=${() => this.renderNextPage()} tabindex="0" @keydown=${
-        this.onShowMoreKeyDown
-      }><span>${this.strings.showMoreSubtitle}<span></a>`;
+      return html`
+        <a
+          id="show-more"
+          class="show-more"
+          @click=${() => this.renderNextPage()}
+          tabindex="0"
+          @keydown=${this.onShowMoreKeyDown}>
+          <span class="show-more-text">${this.strings.showMoreSubtitle}</span>
+        </a>`;
     }
   }
 
@@ -886,7 +877,7 @@ export class MgtFileList extends MgtTemplatedComponent {
    * @protected
    * @memberof MgtFileList
    */
-  protected handleItemSelect(item: DriveItem, event): void {
+  protected handleItemSelect(item: DriveItem, event: Event): void {
     this.fireCustomEvent('itemClick', item);
 
     // handle accessibility updates when item clicked

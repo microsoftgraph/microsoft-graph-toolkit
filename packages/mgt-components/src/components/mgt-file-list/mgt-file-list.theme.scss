@@ -6,23 +6,9 @@
  */
 
 @import '../../styles/shared-sass-variables.scss';
+@import '../../components/mgt-file/mgt-file.theme.scss';
 
 $file-list: (
-  list__item__background-color--hover: (
-    _var: --file-item-background-color--hover,
-    light: rgba(247, 247, 247, 1),
-    dark: #0078d4
-  ),
-  list__item__background-color--active: (
-    _var: --file-item-background-color--active,
-    light: rgba(251, 251, 251, 1),
-    dark: #238ada
-  ),
-  list__background-color: (
-    _var: --file-list-background-color,
-    light: $list__background-color--light,
-    dark: #424242
-  ),
   upload__button__background-color: (
     _var: --file-upload-button-background-color,
     light: rgb(243, 242, 241),
@@ -55,4 +41,7 @@ $file-list: (
   )
 );
 
+$file-list-background-color: var(--file-list-background-color, var(--neutral-fill-rest));
+$show-more-button-background-color: var(--show-more-button-background-color, var(--neutral-fill-rest));
+$show-more-button-background-color--hover: var(--show-more-button-background-color-hover, var(--neutral-fill-hover));
 @include create-themes($file-list);
