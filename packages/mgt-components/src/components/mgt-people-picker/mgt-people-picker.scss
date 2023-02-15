@@ -67,7 +67,11 @@ mgt-people-picker .root {
 
   .flyout {
     .search-box {
-      margin: 1px 2px 8px;
+      display: flex;
+
+      .search-icon {
+        padding: 5px;
+      }
 
       &.search-box-start {
         line-height: normal;
@@ -79,7 +83,6 @@ mgt-people-picker .root {
         box-sizing: border-box;
         border-width: 0;
         border-style: none;
-        width: 100%;
         display: flex;
         flex: 1 0 auto;
         font-family: $font-family;
@@ -255,96 +258,6 @@ mgt-people-picker .root {
     &__person-wrapper-highlighted:hover {
       @extend .selected-list__person-wrapper-highlighted;
       background-color: #006cbe;
-    }
-
-    .flyout {
-      .search-box {
-        margin: 1px 2px 8px;
-        display: inline-flex;
-
-        &.search-box-start {
-          line-height: normal;
-          margin-inline-start: 0px;
-          margin-inline-end: 0px;
-        }
-
-        .search-icon {
-          padding: 10px 10px 0px 8px;
-        }
-
-        &__input {
-          box-sizing: border-box;
-          border-width: 0;
-          border-style: none;
-          width: 100%;
-          display: flex;
-          flex: 1 0 auto;
-          font-family: $font-family;
-          position: relative;
-          top: 3px;
-          outline: none;
-          font-style: normal;
-          font-weight: normal;
-          font-size: 14px;
-          background-color: $input__background-color;
-          color: $color;
-          word-spacing: inherit;
-          text-indent: inherit;
-          letter-spacing: inherit;
-          &::placeholder {
-            color: $placeholder__color;
-          }
-        }
-      }
-
-      .flyout-root {
-        padding: 0;
-        min-width: 260px;
-        overflow-y: auto;
-        text-align: left;
-        list-style-type: none;
-        background-color: $dropdown__background-color;
-        max-height: var(--mgt-flyout-set-height, unset);
-        margin-top: 17px;
-
-        li {
-          cursor: pointer;
-        }
-
-        .people-list {
-          .list-person {
-            display: flex;
-            flex-direction: row;
-            align-items: center;
-            padding: 10px;
-            margin: var(--file-item-margin, 4px);
-            border-radius: 4px;
-            &:hover {
-              background-color: $dropdown-item__background-color--hover;
-            }
-            &.focused {
-              background-color: $dropdown-item__background-color--hover;
-            }
-            .people-person-text-area {
-              margin-left: 13px;
-              flex: 1 1 0;
-              max-height: 40px;
-              overflow: hidden;
-              color: $color;
-
-              .people-person-text {
-                font-size: 14px;
-                font-weight: normal;
-                margin: 0;
-                padding: 0;
-                &.highlight-search-text {
-                  font-weight: bold;
-                }
-              }
-            }
-          }
-        }
-      }
     }
   }
 }
