@@ -493,19 +493,8 @@ export class MgtFileList extends MgtTemplatedComponent {
     this.requestStateUpdate(true);
   }
 
-  // /**
-  //  * Determines the appropriate view state: full or compact
-  //  *
-  //  * @protected
-  //  * @type {boolean}
-  //  * @memberof MgtFileList
-  //  */
-  // protected get isCompact(): boolean {
-  //   return this._isCompact;
-  // }
-
-  @property({ attribute: false }) private _isCompact: boolean;
-  @property({ attribute: false }) private _isFullView: boolean; // Set Person Card Files FullView Section
+  @state() private _isCompact: boolean;
+  @state() private _isFullView: boolean; // Set Person Card Files FullView Section
 
   /**
    * A Array of file extensions to be excluded from file upload.
@@ -593,8 +582,6 @@ export class MgtFileList extends MgtTemplatedComponent {
   protected clearState(): void {
     super.clearState();
     this.files = null;
-    this._isCompact = false;
-    this._isFullView = false;
   }
 
   public render() {
