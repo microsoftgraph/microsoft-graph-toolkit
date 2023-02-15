@@ -39,6 +39,7 @@ mgt-people-picker .root {
   border: calc(var(--stroke-width) * 1px) solid transparent;
   border-radius: calc(var(--control-corner-radius) * 1px);
   min-height: calc((var(--base-height-multiplier) + var(--density)) * var(--design-unit) * 1px);
+  padding: 3px;
 
   &:hover {
     background: padding-box linear-gradient(var(--neutral-fill-input-focus), var(--neutral-fill-input-focus)),
@@ -52,7 +53,6 @@ mgt-people-picker .root {
   &.disabled {
     pointer-events: none;
   }
-  padding: 4px;
 
   .people-picker-inner {
     flex: 1 1 auto;
@@ -68,6 +68,7 @@ mgt-people-picker .root {
   .flyout {
     .search-box {
       display: flex;
+      height: 23px;
 
       .search-icon {
         padding: 5px;
@@ -103,7 +104,9 @@ mgt-people-picker .root {
     }
 
     .flyout-root {
-      padding: 0;
+      position: relative;
+      top: 8px;
+      padding: unset;
       border-radius: 2px;
       min-width: 260px;
       overflow-y: auto;
@@ -118,7 +121,9 @@ mgt-people-picker .root {
 
       .people-list {
         list-style: none;
-        padding: 0;
+        padding: unset;
+        margin: unset;
+
         .list-person {
           display: flex;
           flex-direction: row;
@@ -170,15 +175,14 @@ mgt-people-picker .root {
 
     &__person-wrapper {
       display: flex;
-      margin: 0 4px;
+      margin: 1px;
       align-items: center;
       border-radius: 12px;
-      height: 24px;
+      height: 23px;
       white-space: nowrap;
       text-overflow: ellipsis;
       overflow: hidden;
       position: relative;
-      top: 3px;
       background-color: set-var(selected-person__background-color, $theme-default, $people-picker);
       &:hover {
         background-color: $person-wrapper-background-hover;
