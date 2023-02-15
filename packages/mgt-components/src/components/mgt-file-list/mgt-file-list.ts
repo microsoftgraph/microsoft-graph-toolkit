@@ -39,7 +39,6 @@ import {
 } from '../../graph/graph.files';
 import './mgt-file-upload/mgt-file-upload';
 import { getSvg, SvgIcon } from '../../utils/SvgHelper';
-import { BasePersonCardSection } from '../BasePersonCardSection';
 import { OfficeGraphInsightString, ViewType } from '../../graph/types';
 import { styles } from './mgt-file-list-css';
 import { strings } from './strings';
@@ -58,7 +57,6 @@ registerFluentComponents(fluentProgressRing, fluentDesignSystemProvider);
  *
  * @export
  * @class MgtFileList
- * @extends {BasePersonCardSection}
  *
  * @fires {CustomEvent<MicrosoftGraph.DriveItem>} itemClick - Fired when user click a file. Returns the file (DriveItem) details.
  * @cssprop --file-upload-border- {String} File upload border top style
@@ -495,19 +493,19 @@ export class MgtFileList extends MgtTemplatedComponent {
     this.requestStateUpdate(true);
   }
 
-  /**
-   * Determines the appropriate view state: full or compact
-   *
-   * @protected
-   * @type {boolean}
-   * @memberof MgtFileList
-   */
-  protected get isCompact(): boolean {
-    return this._isCompact;
-  }
+  // /**
+  //  * Determines the appropriate view state: full or compact
+  //  *
+  //  * @protected
+  //  * @type {boolean}
+  //  * @memberof MgtFileList
+  //  */
+  // protected get isCompact(): boolean {
+  //   return this._isCompact;
+  // }
 
-  private _isCompact: boolean;
-  private _isFullView: boolean; // Set Person Card Files FullView Section
+  @property({ attribute: false }) private _isCompact: boolean;
+  @property({ attribute: false }) private _isFullView: boolean; // Set Person Card Files FullView Section
 
   /**
    * A Array of file extensions to be excluded from file upload.
@@ -607,11 +605,10 @@ export class MgtFileList extends MgtTemplatedComponent {
     if (!this.files || this.files.length === 0) {
       return this.renderNoData();
     }
-    if (this.isCompact) {
-      return this.renderCompactView();
-    }
 
-    return this.renderTemplate('default', { files: this.files }) || this.renderFiles();
+    return this._isCompact
+      ? this.renderCompactView()
+      : this.renderTemplate('default', { files: this.files }) || this.renderFiles();
   }
 
   /**
@@ -622,8 +619,9 @@ export class MgtFileList extends MgtTemplatedComponent {
    */
   public renderCompactView(): TemplateResult {
     let contentTemplate: TemplateResult;
+    let files = this.files.slice(0, 3);
     contentTemplate = html`
-      ${this.files.slice(0, 3).map(file => this.renderFile(file))}
+      ${files.map(file => this.renderFile(file))}
     `;
 
     return html`
@@ -976,6 +974,7 @@ export class MgtFileList extends MgtTemplatedComponent {
    * @memberof MgtFileList
    */
   protected handleItemSelect(item: DriveItem, event): void {
+    this.handleFileClick(item);
     this.fireCustomEvent('itemClick', item);
 
     // handle accessibility updates when item clicked
@@ -1042,9 +1041,9 @@ export class MgtFileList extends MgtTemplatedComponent {
     this.requestUpdate();
   }
 
-  private handleFileClick(file: SharedInsight) {
-    if (file.resourceReference && file.resourceReference.webUrl) {
-      window.open(file.resourceReference.webUrl, '_blank', 'noreferrer');
+  private handleFileClick(file: DriveItem) {
+    if (file && file.webUrl) {
+      window.open(file.webUrl, '_blank', 'noreferrer');
     }
   }
 

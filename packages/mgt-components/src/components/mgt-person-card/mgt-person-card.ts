@@ -28,7 +28,6 @@ import { getUserPresence } from '../../graph/graph.presence';
 import { getPersonCardGraphData, createChat, sendMessage } from './mgt-person-card.graph';
 import { MgtPerson } from '../mgt-person/mgt-person';
 import { styles } from './mgt-person-card-css';
-import { BasePersonCardSection } from '../BasePersonCardSection';
 import { MgtContact } from '../mgt-contact/mgt-contact';
 import { MgtFileList } from '../mgt-file-list/mgt-file-list';
 import { MgtMessages } from '../mgt-messages/mgt-messages';
@@ -329,7 +328,7 @@ export class MgtPersonCard extends MgtTemplatedComponent {
 
   private _history: MgtPersonCardStateHistory[];
   private _chatInput: string;
-  private _currentSection: BasePersonCardSection;
+  private _currentSection: any;
   private _personDetails: IDynamicPerson;
   private _me: User;
   private _smallView;
@@ -820,7 +819,7 @@ export class MgtPersonCard extends MgtTemplatedComponent {
    */
   protected renderOverviewSection(): TemplateResult {
     const compactTemplates = this.sections.map(
-      (section: BasePersonCardSection) => html`
+      (section: any) => html`
         <div class="section">
           <div class="section__header">
             <div class="section__title" tabindex=0>${section.displayName}</div>
