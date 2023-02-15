@@ -41,21 +41,26 @@ import { strings } from './strings';
  *
  * @cssprop --file-type-icon-height - {Length} file type icon height
  * @cssprop --file-border - {String} file item border style
- * @cssprop --file-box-shadow - {String} file item box shadow style
- * @cssprop --file-background-color - {Color} file item background color
- * @cssprop --file-padding-inline-start - {Length} padding between file icon and file details.
- * @cssprop --line1-font-size - {Length} Line 1 font size
- * @cssprop --line1-font-weight - {Length} Line 1 font weight
- * @cssprop --line1-color - {Color} Line 1 color
- * @cssprop --line1-text-transform - {String} Line 1 text transform
- * @cssprop --line2-font-size - {Length} Line 2 font size
- * @cssprop --line2-font-weight - {Length} Line 2 font weight
- * @cssprop --line2-color - {Color} Line 2 color
- * @cssprop --line2-text-transform - {String} Line 2 text transform
- * @cssprop --line3-font-size - {Length} Line 2 font size
- * @cssprop --line3-font-weight - {Length} Line 2 font weight
- * @cssprop --line3-color - {Color} Line 2 color
- * @cssprop --line3-text-transform - {String} Line 2 text transform
+ * @cssprop --file-border-radius - {String} the border radius of the file component
+ * @cssprop --file-box-shadow - {String} the box-shadow of the component.
+ * @cssprop --file-background-color - {Color} the background-color of the component.
+ * @cssprop --file-background-color-focus - {Color} the background-color of the component on focus.
+ * @cssprop --file-background-color-hover - {Color} the background-color of the component on hover.
+ * @cssprop --file-padding - {String} the padding around the file component.
+ * @cssprop --file-padding-inline-start - {Length} the padding between file icon and file details.
+ * @cssprop --file-margin - {String} the margin around the file component.
+ * @cssprop --file-line1-font-size - {Length} the first line text font size
+ * @cssprop --file-line1-font-weight - {Length} the first line text font weight
+ * @cssprop --file-line1-color - {Color} the first line text color
+ * @cssprop --file-line1-text-transform - {String} the first line text text transform
+ * @cssprop --file-line2-font-size - {Length} the second line text font size
+ * @cssprop --file-line2-font-weight - {Length} the second line text font weight
+ * @cssprop --file-line2-color - {Color} the second line text color
+ * @cssprop --file-line2-text-transform - {String} the second line text text transform
+ * @cssprop --file-line3-font-size - {Length} the third line text font size
+ * @cssprop --file-line3-font-weight - {Length} the third line text font weight
+ * @cssprop --file-line3-color - {Color} the third line text color
+ * @cssprop --file-line3-text-transform - {String} the third line text text transform
  */
 
 @customElement('file')
@@ -428,7 +433,7 @@ export class MgtFile extends MgtTemplatedComponent {
     }
 
     const file = this.driveItem;
-    let fileTemplate;
+    let fileTemplate: TemplateResult;
 
     fileTemplate = this.renderTemplate('default', { file });
     if (!fileTemplate) {
@@ -436,17 +441,12 @@ export class MgtFile extends MgtTemplatedComponent {
       const fileTypeIconTemplate: TemplateResult = this.renderFileTypeIcon();
 
       fileTemplate = html`
-        <div class="item">
+        <div tabindex="0" class="item">
           ${fileTypeIconTemplate} ${fileDetailsTemplate}
-        </div>
-      `;
+        </div>`;
     }
 
-    return html`
-      <span dir=${this.direction}>
-        ${fileTemplate}
-      </span>
-    `;
+    return fileTemplate;
   }
 
   /**
