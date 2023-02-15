@@ -252,3 +252,36 @@ export function formatBytes(bytes, decimals = 2) {
 
   return parseFloat((bytes / Math.pow(k, i)).toFixed(dm)) + ' ' + sizes[i];
 }
+
+/**
+ * Convert bytes to human readable.
+ *
+ * @param summary
+ * @returns string
+ */
+export function sanitizeSummary(summary: string): string {
+  summary = summary?.replace(/<ddd\/>/gi, '...');
+  summary = summary?.replace(/<c0>/gi, '<b>');
+  summary = summary?.replace(/<\/c0>/gi, '</b>');
+  return summary;
+}
+
+/**
+ * Trims the file extension from a file name
+ * @param fileName
+ * @returns
+ */
+export function trimFileExtension(fileName: string): string {
+  return fileName?.replace(/\.[^/.]+$/, '');
+}
+
+/**
+ * Get the name of a piece of content from the url
+ * @param webUrl
+ * @returns
+ */
+export function getNameFromUrl(webUrl: string): string {
+  const url = new URL(webUrl);
+  let name = url.pathname.split('/').pop();
+  return name.replace(/-/g, ' ');
+}

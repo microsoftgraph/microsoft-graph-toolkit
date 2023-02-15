@@ -277,7 +277,7 @@ export abstract class MgtBaseComponent extends LitElement {
     }
   }
 
-  private setLoadingState(value: boolean) {
+  protected setLoadingState(value: boolean) {
     if (this._isLoadingState === value) {
       return;
     }

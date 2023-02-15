@@ -15,6 +15,16 @@
     <script type="module" src="https://unpkg.com/@fluentui/web-components"></script>
 
     <script type="module" src="./packages/mgt/dist/es6/index.js"></script>
+
+    <style>
+      .app {
+        margin: 16px;
+      }
+
+      #search-input {
+        width: 100%;
+      }
+    </style>
   </head>
 
   <body>
@@ -51,8 +61,8 @@
       scopes="user.read,user.read.all,mail.read,people.read,people.read.all,sites.read.all,user.readbasic.all,contacts.read,presence.read,presence.read.all,tasks.readwrite,tasks.read,calendars.read,group.read.all,files.read,files.read.all,files.readwrite,files.readwrite.all"
     ></mgt-msal2-provider>
 
-    <h1>Developer test page</h1>
-    <main>
+    <main class="app">
+      <h1>Search Center</h1>
       <mgt-login></mgt-login>
       <!--h2>mgt-person me query two lines card on click with presence</h2>
       <mgt-person person-query="me" view="twoLines" person-card="click" show-presence></mgt-person>
@@ -71,51 +81,59 @@
       <h2>mgt-file-list</h2>
       <mgt-file-list></mgt-file-list>
       <h2>mgt-search</h2-->
-      <fluent-search id="search-input" appearance="outline" autofocus placeholder="Search"></fluent-search>
-      <mgt-search id="search-results" entity-types="driveItem" size="20">
-        <template data-type="header">
-          <span data-if="this.value && this.value[0].hitsContainers[0]">
-            {{ this.value[0].hitsContainers[0].total }} total results
-          </span>
-        </template>
-        <template data-type="loading">
-          <fluent-progress-ring></fluent-progress-ring>
-        </template>
-        <template data-type="error"> {{ this }} </template>
-        <template data-type="result">
-          <!--mgt-file drive-id="{{ resource.parentReference.driveId  }}" item-id="{{ resource.id }}"></mgt-file-->
-          <a
-            data-if="resource['@odata.type'] == '#microsoft.graph.driveItem'"
-            href="{{ resource.webUrl }}?Web=1"
-            aria-label="Navigate to {{ resource.name }}"
-            target="_blank"
-            style="text-decoration: none;"
-          >
-            <mgt-file file-details="{{ resource }}" view="twoLines"></mgt-file>
-          </a>
-          <a
-            data-if="resource['@odata.type'] == '#microsoft.graph.listItem'"
-            href="{{ resource.webUrl }}"
-            aria-label="Navigate to {{ resource.name }}"
-            target="_blank"
-            style="text-decoration: none;"
-          >
-            <mgt-file file-details="{{ resource }}" view="twoLines"></mgt-file>
-          </a>
-        </template>
-        <template data-type="footer"> Footer </template>
-      </mgt-search>
+      <fluent-search
+        id="search-input"
+        appearance="outline"
+        autofocus
+        placeholder="Search"
+        onChange="onSearchInputChanged()"
+      >
+      </fluent-search>
+
+      <fluent-tabs id="search-tab" activeId="tab-all" orientation="horizontal">
+        <fluent-tab id="tab-all">All</fluent-tab>
+        <fluent-tab id="tab-files">Files</fluent-tab>
+        <fluent-tab id="tab-sites">Sites</fluent-tab>
+        <fluent-tab id="tab-people" onclick="alert('test')">People</fluent-tab>
+        <fluent-tab-panel id="tab-panel-all">
+          <mgt-search-results entity-types="list,site,drive,driveItem,listItem" fetch-thumbnail="true">
+          </mgt-search-results>
+        </fluent-tab-panel>
+        <fluent-tab-panel id="tab-panel-files">
+          <mgt-search-results entity-types="driveItem" fetch-thumbnail="true"> </mgt-search-results>
+        </fluent-tab-panel>
+        <fluent-tab-panel id="tab-panel-sites">
+          <mgt-search-results entity-types="site"> </mgt-search-results>
+        </fluent-tab-panel>
+        <fluent-tab-panel id="tab-panel-people">
+          <mgt-search-results version="beta" entity-types="people" size="20"> </mgt-search-results>
+        </fluent-tab-panel>
+        <div>Testing</div>
+      </fluent-tabs>
     </main>
 
     <script>
+      function onSearchInputChanged() {
+        const searchInput = document.getElementById("search-input");
+        const searchResults = [...document.querySelectorAll("mgt-search-results")];
+
+        searchResults.map((result) => {
+          result.queryString = searchInput.value;
+        });
+      }
+
       const searchInput = document.getElementById("search-input");
+
       searchInput.addEventListener(
           "keyup",
           debounce(() => {
-            const searchResults = document.getElementById("search-results");
-            searchResults.queryString = searchInput.value;
-          }, 250)
-      )
+            const searchResults = [...document.querySelectorAll("mgt-search-results")];
+            searchResults.map((result) => {
+              result.queryString = searchInput.value;
+            });
+          }, 400)
+      );
+
       function debounce( callback, delay ) {
           let timeout;
           return function() {
