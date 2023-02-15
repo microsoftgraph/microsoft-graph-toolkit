@@ -65,7 +65,8 @@ export const withCodeEditor = makeDecorator({
   name: `withCodeEditor`,
   parameterName: 'myParameter',
   skipIfNoParametersOrOptions: false,
-  wrapper: (getStory, context, { parameters }) => {
+  wrapper: (getStory, context, { options }) => {
+    const disableThemeToggle = options ? options.disableThemeToggle : false;
     let story = getStory(context);
 
     let storyHtml;
@@ -153,7 +154,29 @@ export const withCodeEditor = makeDecorator({
         }
       }
     }
-
+    const themeToggleCss = disableThemeToggle
+      ? ''
+      : `
+      body {
+        background-color: var(--neutral-fill-rest);
+        color: var(--neutral-foreground-rest);
+        font-family: var(--body-font);
+        padding: 0 12px;
+      }
+      header {
+        display: flex;
+        flex-direction: row;
+        justify-content: flex-end;
+        padding: 0 0 12px 0;
+      }
+`;
+    const themeToggle = disableThemeToggle
+      ? ''
+      : `
+      <header>
+        <mgt-theme-toggle mode="light"></mgt-theme-toggle>
+      </header>
+`;
     const loadEditorContent = () => {
       let providerInitCode = `
         import {Providers, MockProvider} from "${mgtScriptName}";
@@ -162,16 +185,18 @@ export const withCodeEditor = makeDecorator({
 
       const storyElement = document.createElement('iframe');
 
-      storyElement.addEventListener('load', () => {
-        let doc = storyElement.contentDocument;
+      storyElement.addEventListener(
+        'load',
+        () => {
+          let doc = storyElement.contentDocument;
 
-        let { html, css, js } = editor.files;
-        js = js.replace(
-          /import \{([^\}]+)\}\s+from\s+['"]@microsoft\/mgt['"];/gm,
-          `import {$1} from '${mgtScriptName}';`
-        );
+          let { html, css, js } = editor.files;
+          js = js.replace(
+            /import \{([^\}]+)\}\s+from\s+['"]@microsoft\/mgt['"];/gm,
+            `import {$1} from '${mgtScriptName}';`
+          );
 
-        const docContent = `
+          const docContent = `
           <html>
             <head>
               <script type="module" src="${mgtScriptName}"></script>
@@ -183,10 +208,12 @@ export const withCodeEditor = makeDecorator({
                 html, body {
                   height: 100%;
                 }
+                ${themeToggleCss}
                 ${css}
               </style>
             </head>
             <body>
+              ${themeToggle}
               ${html}
               <script type="module">
                 ${js}
@@ -195,10 +222,12 @@ export const withCodeEditor = makeDecorator({
           </html>
         `;
 
-        doc.open();
-        doc.write(docContent);
-        doc.close();
-      }, {once:true});
+          doc.open();
+          doc.write(docContent);
+          doc.close();
+        },
+        { once: true }
+      );
 
       storyElement.className = 'story-mgt-preview';
       storyElement.setAttribute('title', 'preview');
