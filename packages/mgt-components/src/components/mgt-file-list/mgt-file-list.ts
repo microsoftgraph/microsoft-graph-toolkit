@@ -886,8 +886,8 @@ export class MgtFileList extends MgtTemplatedComponent {
 
       // get index of the focused item
       const nodes = Array.from(fileList.children);
-      const li = event.target.closest('li');
-      const index = nodes.indexOf(li);
+      const li = event.target as HTMLElement;
+      const index = nodes.indexOf(li.closest('li'));
       this._focusedItemIndex = index;
       const clickedItem = fileList.children[this._focusedItemIndex];
       this.updateItemBackgroundColor(fileList, clickedItem, 'selected');
