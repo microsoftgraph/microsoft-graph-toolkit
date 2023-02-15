@@ -8,6 +8,7 @@
 import './mgt-agenda/mgt-agenda';
 import './mgt-file/mgt-file';
 import './mgt-file-list/mgt-file-list';
+import './mgt-picker/mgt-picker';
 import './mgt-get/mgt-get';
 import './mgt-login/mgt-login';
 import './mgt-people-picker/mgt-people-picker';
@@ -22,10 +23,12 @@ import './mgt-contact/mgt-contact';
 import './mgt-messages/mgt-messages';
 import './mgt-organization/mgt-organization';
 import './mgt-profile/mgt-profile';
+import './mgt-theme-toggle/mgt-theme-toggle';
 
 export * from './mgt-agenda/mgt-agenda';
 export * from './mgt-file/mgt-file';
 export * from './mgt-file-list/mgt-file-list';
+export * from './mgt-picker/mgt-picker';
 export * from './mgt-get/mgt-get';
 export * from './mgt-login/mgt-login';
 export * from './mgt-people-picker/mgt-people-picker';
@@ -41,3 +44,4 @@ export * from './mgt-contact/mgt-contact';
 export * from './mgt-messages/mgt-messages';
 export * from './mgt-organization/mgt-organization';
 export * from './mgt-profile/mgt-profile';
+export * from './mgt-theme-toggle/mgt-theme-toggle';
