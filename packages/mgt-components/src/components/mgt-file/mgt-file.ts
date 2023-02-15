@@ -42,12 +42,12 @@ import { strings } from './strings';
  * @cssprop --file-type-icon-height - {Length} file type icon height
  * @cssprop --file-border - {String} file item border style
  * @cssprop --file-box-shadow - {String} file item box shadow style
- * @cssprop --file-background-color - {Color} file background color
- * @cssprop --font-family - {String} Font family
- * @cssprop --font-size - {Length} Font size
- * @cssprop --font-weight - {Length} Font weight
- * @cssprop --text-transform - {String} text transform
- * @cssprop --color -{Color} text color
+ * @cssprop --file-background-color - {Color} file item background color
+ * @cssprop --file-padding-inline-start - {Length} padding between file icon and file details.
+ * @cssprop --line1-font-size - {Length} Line 1 font size
+ * @cssprop --line1-font-weight - {Length} Line 1 font weight
+ * @cssprop --line1-color - {Color} Line 1 color
+ * @cssprop --line1-text-transform - {String} Line 1 text transform
  * @cssprop --line2-font-size - {Length} Line 2 font size
  * @cssprop --line2-font-weight - {Length} Line 2 font weight
  * @cssprop --line2-color - {Color} Line 2 color
