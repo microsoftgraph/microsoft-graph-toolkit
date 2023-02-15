@@ -306,14 +306,15 @@ export async function getUsersForPeopleQueries(
   for (const personQuery of peopleQueries) {
     if (getIsUsersCacheEnabled()) {
       cacheRes = await cache.getValue(personQuery);
-      if (cacheRes?.results[0] && getUserInvalidationTime() > Date.now() - cacheRes.timeCached) {
-        const person = JSON.parse(cacheRes.results[0]);
-        people.push(person);
-      } else {
-        batch.get(personQuery, `/me/people?$search="${personQuery}"`, ['people.read'], {
-          'X-PeopleQuery-QuerySources': 'Mailbox,Directory'
-        });
-      }
+    }
+
+    if (
+      getIsUsersCacheEnabled() &&
+      cacheRes?.results[0] &&
+      getUserInvalidationTime() > Date.now() - cacheRes.timeCached
+    ) {
+      const person = JSON.parse(cacheRes.results[0]);
+      people.push(person);
     } else {
       batch.get(personQuery, `/me/people?$search="${personQuery}"`, ['people.read'], {
         'X-PeopleQuery-QuerySources': 'Mailbox,Directory'
