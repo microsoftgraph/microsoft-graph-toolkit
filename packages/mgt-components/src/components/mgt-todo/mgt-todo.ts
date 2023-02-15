@@ -268,32 +268,34 @@ export class MgtTodo extends MgtTasksBase {
       ${getSvg(SvgIcon.Calendar)}
       <fluent-button appearance="stealth" 
         @click=${(e: Event) => this.toggleCalendar(true)}>
-        ${this.strings.dueDate}
+        <span class="TaskDueDate">${
+          this._newTaskDueDate ? getDateString(new Date(this._newTaskDueDate)) : this.strings.dueDate
+        }</span>
       </fluent-button>
     `;
 
     const taskTitle = html`
-       <fluent-text-field
-         appearance="outline"
-         label="new-taskName-input"
-         aria-label="new-taskName-input"
-         .value=${this._newTaskName}
-         placeholder="${this.strings.newTaskPlaceholder}"
-         @keypress="${(e: KeyboardEvent) => {
-           if (e.key === 'Enter') {
-             this.addTask();
-           }
-         }}"
-         @input="${(e: Event) => {
-           this._newTaskName = (e.target as HTMLInputElement).value;
-           this.requestUpdate();
-         }}">
-          <div slot="start">${addIcon}</div>
-          <div slot="end">
-          ${calendarTemplate}
-          ${cancelIcon}</div>
-        </fluent-text-field>
-     `;
+      <fluent-text-field
+        appearance="outline"
+        label="new-taskName-input"
+        aria-label="new-taskName-input"
+        .value=${this._newTaskName}
+        placeholder="${this.strings.newTaskPlaceholder}"
+        @keypress="${(e: KeyboardEvent) => {
+          if (e.key === 'Enter') {
+            this.addTask();
+          }
+        }}"
+        @input="${(e: Event) => {
+          this._newTaskName = (e.target as HTMLInputElement).value;
+          this.requestUpdate();
+        }}">
+        <div slot="start">${addIcon}</div>
+        <div slot="end">
+        ${calendarTemplate}
+        ${cancelIcon}</div>
+      </fluent-text-field>
+    `;
     return html`
       <div dir=${this.direction} class="Task NewTask Incomplete">
         ${taskTitle}
@@ -352,7 +354,7 @@ export class MgtTodo extends MgtTasksBase {
             <span part="content" class="TaskDueDate">${getDateString(new Date(task.dueDateTime.dateTime))}</span>
         </fluent-button>
         `
-      : null;
+      : html``;
 
     if (this.hasTemplate('task-details')) {
       taskDetailsTemplate = this.renderTemplate('task-details', context, `task-details-${task.id}`);
@@ -386,7 +388,7 @@ export class MgtTodo extends MgtTasksBase {
    * loads tasks from dataSource
    *
    * @returns
-   * @memberof MgtTasks
+   * @memberof MgtTodo
    */
   protected async loadState(): Promise<void> {
     const provider = Providers.globalProvider;
