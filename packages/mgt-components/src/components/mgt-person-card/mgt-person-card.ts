@@ -315,6 +315,18 @@ export class MgtPersonCard extends MgtTemplatedComponent {
   public personPresence: Presence;
 
   /**
+   * Gets or sets whether a quick message is sent
+   *
+   * @type {boolean}
+   * @memberof MgtPersonCard
+   */
+  @property({
+    attribute: 'is-sending',
+    type: Boolean
+  })
+  public isSending: boolean = false;
+
+  /**
    * The subsections for display in the lower part of the card
    *
    * @protected
@@ -416,7 +428,7 @@ export class MgtPersonCard extends MgtTemplatedComponent {
       firstTab.click();
     }
     this._cardState = historyState.state;
-    this._personDetails = historyState.state;
+    this._personDetails = historyState.state.person;
     this.personImage = historyState.personImage;
     this.loadSections();
   }
@@ -899,7 +911,7 @@ export class MgtPersonCard extends MgtTemplatedComponent {
     const person = this.personDetails as User;
     const user = this._me.userPrincipalName;
     const chatInput = this._chatInput;
-    if (person.userPrincipalName === user) {
+    if (person && person.userPrincipalName === user) {
       return;
     } else {
       return html`
@@ -911,8 +923,11 @@ export class MgtPersonCard extends MgtTemplatedComponent {
             this.requestUpdate();
           }}>
         </fluent-text-field>
-        <span class="send-message-icon" @click=${() => this.sendQuickMessage()}>
-          ${getSvg(SvgIcon.Send)}
+        <span class="send-message-icon" 
+          @click=${() => this.sendQuickMessage()}
+          @keydown=${this.sendQuickMessageOnEnter}
+          disabled=${this.isSending}>
+          ${!this.isSending ? getSvg(SvgIcon.Send) : getSvg(SvgIcon.Confirmation)}
         </span>
       </div>
       `;
@@ -1053,8 +1068,9 @@ export class MgtPersonCard extends MgtTemplatedComponent {
         content: message
       }
     };
-
+    this.isSending = true;
     await sendMessage(this._graph, chat.id, messageData);
+    this.isSending = false;
     this.clearInputData();
   }
 
@@ -1310,6 +1326,14 @@ export class MgtPersonCard extends MgtTemplatedComponent {
     if (e) {
       if (e.code === 'Enter') {
         this.showExpandedDetails();
+      }
+    }
+  }
+
+  private sendQuickMessageOnEnter(e: KeyboardEvent) {
+    if (e) {
+      if (e.code === 'Enter') {
+        this.sendQuickMessage();
       }
     }
   }

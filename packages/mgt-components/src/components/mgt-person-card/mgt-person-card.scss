@@ -357,6 +357,15 @@
     .send-message-icon {
       max-width: 15px;
       cursor: pointer;
+      &:disabled {
+        opacity: 0.4;
+        pointer-events: none;
+      }
+      svg {
+        &:disabled {
+          filter: none;
+        }
+      }
     }
 
     svg {
