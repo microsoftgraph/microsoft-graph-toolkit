@@ -921,11 +921,11 @@ export class MgtPersonCard extends MgtTemplatedComponent {
           @input=${(e: Event) => {
             this._chatInput = (e.target as HTMLInputElement).value;
             this.requestUpdate();
-          }}>
+          }}
+          @keydown="${(e: KeyboardEvent) => this.sendQuickMessageOnEnter(e)}">
         </fluent-text-field>
         <span class="send-message-icon" 
           @click=${() => this.sendQuickMessage()}
-          @keydown=${this.sendQuickMessageOnEnter}
           disabled=${this.isSending}>
           ${!this.isSending ? getSvg(SvgIcon.Send) : getSvg(SvgIcon.Confirmation)}
         </span>
