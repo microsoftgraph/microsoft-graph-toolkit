@@ -21,6 +21,7 @@
     ]
   },
   "scripts": {
+    "init": "yarn && yarn build",
     "analyze": "custom-elements-manifest analyze --litelement --globs \"./packages/*/src/**/*.ts\"",
     "build": "npm run prettier:check && npm run clean && lerna run build --scope @microsoft/*",
     "build:compile": "npm run prettier:check && npm run clean && lerna run build:compile --scope @microsoft/*",

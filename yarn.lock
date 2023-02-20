@@ -4183,6 +4183,11 @@
   resolved "https://registry.yarnpkg.com/@microsoft/microsoft-graph-types-beta/-/microsoft-graph-types-beta-0.16.0-preview.tgz#07db0d7459130c9da525ca57bb0030a989b0bd12"
   integrity sha512-73d1b8pv8YnKx+oiQtMZDSey4ohmx/cfM/vFiAa5ZyLSj4nr9y/7wIT5jTIO+tkdniyBsfN/QQeDiRwyutcxAQ==
 
+"@microsoft/microsoft-graph-types-beta@^0.29.0-preview":
+  version "0.29.0-preview"
+  resolved "https://registry.yarnpkg.com/@microsoft/microsoft-graph-types-beta/-/microsoft-graph-types-beta-0.29.0-preview.tgz#0f571e2bb09ad37de24bbe6ba34703fefe314294"
+  integrity sha512-83PCHDH7GxW8KM1J+MM6FPbaahIuj7VIgnY4UbMGQkkq2fBaHeKOmgjVbohvLVeIOOCTLmorPh6JtXH0VtFurA==
+
 "@microsoft/microsoft-graph-types@^2.0.0":
   version "2.25.0"
   resolved "https://registry.yarnpkg.com/@microsoft/microsoft-graph-types/-/microsoft-graph-types-2.25.0.tgz#73967562202822ef8a430117b4915806ceb69642"
