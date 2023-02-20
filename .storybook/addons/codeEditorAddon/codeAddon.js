@@ -1,5 +1,8 @@
-import { makeDecorator } from '@storybook/addons';
+import addons, { makeDecorator } from '@storybook/addons';
+
+import { ProviderState } from '../../../packages/mgt-element/dist/es6/providers/IProvider';
 import { EditorElement } from './editor';
+import { CLIENTID, SETPROVIDER_EVENT } from '../../env';
 
 const mgtScriptName = './mgt.storybook.js';
 
@@ -65,8 +68,7 @@ export const withCodeEditor = makeDecorator({
   name: `withCodeEditor`,
   parameterName: 'myParameter',
   skipIfNoParametersOrOptions: false,
-  wrapper: (getStory, context, { options }) => {
-    const disableThemeToggle = options ? options.disableThemeToggle : false;
+  wrapper: (getStory, context, { parameters }) => {
     let story = getStory(context);
 
     let storyHtml;
@@ -154,35 +156,32 @@ export const withCodeEditor = makeDecorator({
         }
       }
     }
-    const themeToggleCss = disableThemeToggle
-      ? ''
-      : `
-      body {
-        background-color: var(--neutral-fill-rest);
-        color: var(--neutral-foreground-rest);
-        font-family: var(--body-font);
-        padding: 0 12px;
-      }
-      header {
-        display: flex;
-        flex-direction: row;
-        justify-content: flex-end;
-        padding: 0 0 12px 0;
-      }
-`;
-    const themeToggle = disableThemeToggle
-      ? ''
-      : `
-      <header>
-        <mgt-theme-toggle mode="light"></mgt-theme-toggle>
-      </header>
-`;
-    const loadEditorContent = () => {
-      let providerInitCode = `
-        import {Providers, MockProvider} from "${mgtScriptName}";
-        Providers.globalProvider = new MockProvider(true);
-      `;
 
+    let providerInitCode = `
+      import {Providers, MockProvider} from "${mgtScriptName}";
+      Providers.globalProvider = new MockProvider(true);
+    `;
+
+    const channel = addons.getChannel();
+    channel.on(SETPROVIDER_EVENT, params => {
+      if (params.state === ProviderState.SignedIn && params.name === 'MgtMockProvider') {
+        providerInitCode = `
+          import { Providers, MockProvider } from "${mgtScriptName}";
+          Providers.globalProvider = new MockProvider(true);
+        `;
+      } else if (params.state === ProviderState.SignedIn && params.name === 'MgtMsal2Provider') {
+        providerInitCode = `
+          import { Providers, Msal2Provider, LoginType } from "${mgtScriptName}";
+          Providers.globalProvider = new Msal2Provider({
+            clientId: "${CLIENTID}",
+            loginType: LoginType.Popup
+          });`;
+      }
+
+      loadEditorContent();
+    });
+
+    const loadEditorContent = () => {
       const storyElement = document.createElement('iframe');
 
       storyElement.addEventListener(
@@ -201,19 +200,16 @@ export const withCodeEditor = makeDecorator({
             <head>
               <script type="module" src="${mgtScriptName}"></script>
               <script type="module">
-                import {Providers, MockProvider} from "${mgtScriptName}";
-                Providers.globalProvider = new MockProvider(true);
+                ${providerInitCode}
               </script>
               <style>
                 html, body {
                   height: 100%;
                 }
-                ${themeToggleCss}
                 ${css}
               </style>
             </head>
             <body>
-              ${themeToggle}
               ${html}
               <script type="module">
                 ${js}
