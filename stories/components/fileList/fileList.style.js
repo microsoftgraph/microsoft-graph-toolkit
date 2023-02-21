@@ -21,15 +21,24 @@ export const darkTheme = () => html`
 export const customCSSProperties = () => html`
     <style>
       mgt-file-list {
-        /**TODO: (musale) add the correct mgt-file-upload tokens */
-        --file-upload-border: 4px dotted #ffbdc3;
-        --file-upload-background-color: rgba(255, 0, 0, 0.1);
-        --file-upload-button-float:left;
-        --file-upload-button-color:#323130;
-        --file-upload-button-background-color:#fef8dd;
-        --file-upload-dialog-content-background-color: #ffe7c7;
-        --file-upload-dialog-primarybutton-background-color: #ffe7c7;
-        --file-upload-dialog-primarybutton-color: #323130;
+        /** mgt-file-upload custom styling */
+        --file-upload-background-color-drag: rgb(255, 0, 0, 0.5);
+        --file-upload-border-drag: 2px groove black;
+        --file-upload-button-background-color: orange;
+        --file-upload-button-background-color-hover: green;
+        --file-upload-button-text-color: whitesmoke;
+        --file-upload-dialog-background-color: azure;
+        --file-upload-dialog-text-color: yellow;
+        --file-upload-dialog-replace-button-background-color: white;
+        --file-upload-dialog-replace-button-background-color-hover: gray;
+        --file-upload-dialog-replace-button-text-color: black;
+        --file-upload-dialog-keep-both-button-background-color: black;
+        --file-upload-dialog-keep-both-button-background-color-hover: gray;
+        --file-upload-dialog-keep-both-button-text-color: white;
+        --file-upload-button-border: 2px dotted yellow;
+        --file-upload-dialog-replace-button-border: 2px dotted;
+        --file-upload-dialog-keep-both-button-border: 2px dashed;
+        --file-upload-dialog-border: 2px solid blue;
 
         /** mgt-file custom styling */
         --file-type-icon-height:30px;
