@@ -21,6 +21,7 @@ export type Command<T> = {
   glyph?: TemplateResult;
   onClickFunction?: (e: UIEvent, item: T) => void;
   subcommands?: Command<T>[];
+  shouldRender: (item: T) => boolean;
   // tslint:enable: completed-docs
 };
 
@@ -77,13 +78,15 @@ class MgtMenu<T extends { id: string }> extends MgtTemplatedComponent {
    * @return {*}  {TemplateResult}
    * @memberof MgtMenu
    */
-  render(): TemplateResult {
-    return html`
+  render() {
+    return this.commands?.length > 0
+      ? html`
       <fluent-button part="menu-button" id=${this.item.id} appearance="stealth" @click=${this.toggleMenu}>
         ${getSvg(SvgIcon.MoreVertical)}
       </fluent-button>
       ${this.renderMenu()}
-    `;
+    `
+      : nothing;
   }
 
   private renderMenu() {
@@ -119,8 +122,9 @@ class MgtMenu<T extends { id: string }> extends MgtTemplatedComponent {
     );
   }
 
-  private renderMenuItem(command: Command<T>): unknown {
-    return html`
+  private renderMenuItem(command: Command<T>) {
+    return command.shouldRender(this.item)
+      ? html`
           <fluent-menu-item
             @click=${(e: UIEvent) => command.onClickFunction?.(e, this.item)}
           >
@@ -134,7 +138,9 @@ class MgtMenu<T extends { id: string }> extends MgtTemplatedComponent {
                 `
                 : nothing
             }
-          </fluent-menu-item>`;
+          </fluent-menu-item>
+        `
+      : nothing;
   }
 
   /**

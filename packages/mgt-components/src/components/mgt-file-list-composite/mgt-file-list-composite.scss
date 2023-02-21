@@ -1,0 +1,26 @@
+:host {
+  fluent-dialog::part(control) {
+    height: auto;
+    width: auto;
+  }
+  fluent-button::part(control) {
+    padding: 0 32px;
+  }
+  &::part(dialog-body) {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    padding: 0 12px 12px;
+  }
+  &::part(button-row) {
+    display: flex;
+    flex-direction: row;
+    justify-content: flex-end;
+    gap: 24px;
+    align-items: center;
+    margin-top: 12px;
+  }
+  &::part(dialog-input) {
+    width: 100%;
+  }
+}

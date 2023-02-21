@@ -6,5 +6,15 @@
  */
 
 export const strings = {
-  rootNode: 'Home'
+  rootNode: 'Home',
+  deleteFileTitle: 'Delete file: ',
+  deleteFileMessage: 'Are you sure you want to delete this file? This action cannot be undone.',
+  deleteFileButton: 'Delete',
+  renameFileTitle: 'Rename file: ',
+  renameFileButton: 'Rename',
+  cancel: 'Cancel',
+  shareFileTitle: 'Share file: ',
+  shareViewOnlyLink: 'View only link',
+  shareEditableLink: 'Edit link',
+  copyToClipboardButton: 'Copy to clipboard'
 };
