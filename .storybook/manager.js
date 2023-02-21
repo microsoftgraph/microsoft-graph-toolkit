@@ -16,30 +16,28 @@ import { Msal2Provider } from '../packages/providers/mgt-msal2-provider/dist/es6
 import { CLIENTID, SETPROVIDER_EVENT } from './env';
 import { MockProvider } from '@microsoft/mgt-element';
 import { PACKAGE_VERSION } from '../packages/mgt-element/dist/es6/utils/version';
-import { URL } from 'url';
 import '../packages/mgt-components/dist/es6/components/mgt-login/mgt-login';
 import '../packages/mgt-components/dist/es6/components/mgt-person/mgt-person';
 
 const isLoginEnabled = () => {
-  const urlParams = new URL(window.location.href).searchParams;
+  const urlParams = new window.URL(window.location.href).searchParams;
   const canLogin = urlParams.get('login');
 
   return canLogin === 'true';
-  return true;
 };
 
 const getClientId = () => {
-  /*const urlParams = new URLSearchParams(window.location.search);
+  const urlParams = new window.URL(window.location.href).searchParams;
   const customClientId = urlParams.get('clientId');
 
-  return customClientId ?? CLIENTID;*/
+  return isLoginEnabled() && customClientId ? customClientId : CLIENTID;
 };
 
 document.getElementById('mgt-version').innerText = PACKAGE_VERSION;
 
 const mockProvider = new MockProvider(true);
 const msal2Provider = new Msal2Provider({
-  clientId: CLIENTID,
+  clientId: getClientId(),
   scopes: [
     // capitalize all words in the scope
     'user.read',
@@ -97,14 +95,18 @@ const SignInPanel = () => {
 
   return (
     <>
-      {Providers.globalProvider.state !== ProviderState.SignedIn ? (
-        <mgt-login login-view="compact" style={{ marginTop: '3px' }}></mgt-login>
-      ) : (
+      {loginEnabled && (
         <>
-          <mgt-person person-query="me" style={{ marginTop: '8px' }}></mgt-person>
-          <fluent-button appearance="lightweight" style={{ marginTop: '3px' }} onClick={onSignOut}>
-            Sign Out
-          </fluent-button>
+          {Providers.globalProvider.state !== ProviderState.SignedIn ? (
+            <mgt-login login-view="compact" style={{ marginTop: '3px' }}></mgt-login>
+          ) : (
+            <>
+              <mgt-person person-query="me" style={{ marginTop: '8px' }}></mgt-person>
+              <fluent-button appearance="lightweight" style={{ marginTop: '3px' }} onClick={onSignOut}>
+                Sign Out
+              </fluent-button>
+            </>
+          )}
         </>
       )}
     </>
