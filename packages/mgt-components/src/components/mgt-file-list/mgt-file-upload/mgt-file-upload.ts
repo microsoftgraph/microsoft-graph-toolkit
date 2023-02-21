@@ -207,6 +207,9 @@ interface FileWithPath extends File {
  * @cssprop --file-upload-dialog-replace-button-border - {String} the border of the file upload replace button in the dialog box.
  * @cssprop --file-upload-dialog-keep-both-button-border - {String} the border of the file upload keep both button in the dialog box.
  * @cssprop --file-upload-dialog-border - {String} the border of the file upload dialog box.
+ * @cssprop --file-upload-dialog-width - {String} the width of the file upload dialog box.
+ * @cssprop --file-upload-dialog-height - {String} the height of the file upload dialog box.
+ * @cssprop --file-upload-dialog-padding - {String} the padding of the file upload dialog box.
  */
 
 @customElement('file-upload')
