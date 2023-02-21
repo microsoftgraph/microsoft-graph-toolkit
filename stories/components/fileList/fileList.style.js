@@ -39,6 +39,9 @@ export const customCSSProperties = () => html`
         --file-upload-dialog-replace-button-border: 2px dotted;
         --file-upload-dialog-keep-both-button-border: 2px dashed;
         --file-upload-dialog-border: 2px solid blue;
+        --file-upload-dialog-width: 300px;
+        --file-upload-dialog-height: 100px;
+        --file-upload-dialog-padding: 36px;
 
         /** mgt-file custom styling */
         --file-type-icon-height:30px;
