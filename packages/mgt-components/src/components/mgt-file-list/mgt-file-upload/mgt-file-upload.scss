@@ -128,6 +128,7 @@ $file-upload-border-drag: var(--file-upload-border-drag, 1px dashed #0078d4);
 
     .description {
       opacity: 0.5;
+      position: relative;
     }
 
     .file-upload-filename {
@@ -138,9 +139,8 @@ $file-upload-border-drag: var(--file-upload-border-drag, 1px dashed #0078d4);
     }
 
     .file-upload-status {
-      position: relative;
-      left: 36px;
-      top: 20px;
+      position: absolute;
+      left: 28px;
     }
 
     .file-upload-cancel {
@@ -160,7 +160,7 @@ $file-upload-border-drag: var(--file-upload-border-drag, 1px dashed #0078d4);
 
 :host .mgt-file-item {
   --file-background-color: transparent;
-  --file-padding: 0 0 0 12px;
+  --file-padding: 0 12px;
   --file-padding-inline-start: 24px;
 }
 
@@ -233,5 +233,12 @@ $file-upload-border-drag: var(--file-upload-border-drag, 1px dashed #0078d4);
     right: 0;
     z-index: 1;
     display: inline-block;
+  }
+}
+
+[dir="rtl"] {
+  :host .file-upload-status{
+    left: 0px;
+    right: 28px;
   }
 }
