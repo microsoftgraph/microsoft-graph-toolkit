@@ -9,19 +9,31 @@ import { addons, types } from '@storybook/addons';
 import theme from './theme';
 
 import React, { useState } from 'react';
-import { useParameter, useChannel } from '@storybook/api';
+import { useChannel } from '@storybook/api';
 import { Providers } from '../packages/mgt-element/dist/es6/providers/Providers';
 import { ProviderState, LoginType } from '../packages/mgt-element/dist/es6/providers/IProvider';
 import { Msal2Provider } from '../packages/providers/mgt-msal2-provider/dist/es6/Msal2Provider';
-import { CLIENTID, GETPROVIDER_EVENT, SETPROVIDER_EVENT } from './env';
-import { IconButton, Icons } from '@storybook/components';
+import { CLIENTID, SETPROVIDER_EVENT } from './env';
 import { MockProvider } from '@microsoft/mgt-element';
 import { PACKAGE_VERSION } from '../packages/mgt-element/dist/es6/utils/version';
+import { URL } from 'url';
 import '../packages/mgt-components/dist/es6/components/mgt-login/mgt-login';
 import '../packages/mgt-components/dist/es6/components/mgt-person/mgt-person';
 
-const PARAM_KEY = 'signInAddon';
-const _allow_signin = true;
+const isLoginEnabled = () => {
+  const urlParams = new URL(window.location.href).searchParams;
+  const canLogin = urlParams.get('login');
+
+  return canLogin === 'true';
+  return true;
+};
+
+const getClientId = () => {
+  /*const urlParams = new URLSearchParams(window.location.search);
+  const customClientId = urlParams.get('clientId');
+
+  return customClientId ?? CLIENTID;*/
+};
 
 document.getElementById('mgt-version').innerText = PACKAGE_VERSION;
 
@@ -52,19 +64,11 @@ const msal2Provider = new Msal2Provider({
   loginType: LoginType.Popup
 });
 
-/*const urlParams = new URLSearchParams(window.location.search);
-const canLogin = urlParams.get('login');
-
-if (canLogin === 'true') {
-  Providers.globalProvider = msal2Provider;
-} else {
-  Providers.globalProvider = mockProvider;
-}*/
-
 Providers.globalProvider = msal2Provider;
 
 const SignInPanel = () => {
   const [state, setState] = useState(Providers.globalProvider.state);
+  const [loginEnabled] = useState(isLoginEnabled());
 
   const emit = useChannel({
     STORY_RENDERED: id => {
@@ -85,27 +89,24 @@ const SignInPanel = () => {
     emitProvider(Providers.globalProvider.state);
   });
 
+  const onSignOut = () => {
+    Providers.globalProvider.logout();
+  };
+
   emitProvider(state);
-  /*let loggedInStyles =
-    Providers.globalProvider.state === ProviderState.SignedIn
-      ? { pointerEvents: 'none', cursor: 'default' }
-      : { marginTop: '3px' };*/
+
   return (
     <>
       {Providers.globalProvider.state !== ProviderState.SignedIn ? (
         <mgt-login login-view="compact" style={{ marginTop: '3px' }}></mgt-login>
       ) : (
-        <mgt-person person-query="me"></mgt-person>
+        <>
+          <mgt-person person-query="me" style={{ marginTop: '8px' }}></mgt-person>
+          <fluent-button appearance="lightweight" style={{ marginTop: '3px' }} onClick={onSignOut}>
+            Sign Out
+          </fluent-button>
+        </>
       )}
-      {/*Providers.globalProvider.name !== 'MgtMockProvider' &&
-        Providers.globalProvider.state === ProviderState.SignedIn && (
-          <>
-            <mgt-person person-query="me"></mgt-person>
-            <IconButton active={true} title="Sign Out">
-              <Icons icon="outline" />
-            </IconButton>
-          </>
-        )*/}
     </>
   );
 };
