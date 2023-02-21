@@ -587,7 +587,7 @@ export class MgtFileList extends MgtTemplatedComponent {
             this.files,
             f => f.id,
             f => html`
-              <li class="file-item" @click=${(e: Event) => this.handleItemSelect(f, e)}>
+              <li class="file-item" @click=${(e: UIEvent) => this.handleItemSelect(f, e)}>
                 ${this.renderFile(f)}
               </li>
             `
@@ -877,7 +877,7 @@ export class MgtFileList extends MgtTemplatedComponent {
    * @protected
    * @memberof MgtFileList
    */
-  protected handleItemSelect(item: DriveItem, event: Event): void {
+  protected handleItemSelect(item: DriveItem, event: UIEvent): void {
     this.fireCustomEvent('itemClick', item);
 
     // handle accessibility updates when item clicked
