@@ -34,6 +34,55 @@ $progress-ring-size: var(--progress-ring-size, 24px);
   color: $color;
 }
 
+:host {
+  &::part(data-row) {
+    align-items: center;
+    &:hover {
+      background-color: $file-item-background-color--hover;
+
+      .mgt-file-item {
+        --file-background-color: $file-item-background-color--hover;
+      }
+    }
+  }
+  &::part(file-item) {
+    width: fit-content;
+  }
+  .selected-row {
+    background-color: $file-item-background-color--active;
+    .mgt-file-item {
+      --file-background-color: $file-item-background-color--active;
+    }
+  }
+  .file-selector {
+    height: 24px;
+    width: 24px;
+    border-radius: 50%;
+    border-color: var(--neutral-fill-strong-rest);
+    background-color: var(--neutral-fill-rest);
+    svg {
+      fill: var(--neutral-fill-rest);
+    }
+    &:hover {
+      svg {
+        fill: var(--neutral-fill-strong-hover);
+      }
+    }
+
+    &.selected {
+      border-color: var(--neutral-fill-rest);
+      svg {
+        fill: var(--accent-fill-rest);
+      }
+      :hover {
+        svg {
+          fill: var(--neutral-fill-rest);
+        }
+      }
+    }
+  }
+}
+
 :host .file-list-wrapper {
   background-color: $background-color;
   box-shadow: $file-list-box-shadow;

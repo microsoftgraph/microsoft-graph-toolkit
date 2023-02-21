@@ -57,15 +57,15 @@
       depends-on="mgt-teams-provider"
     ></mgt-msal-provider> -->
 
-    <!-- <mgt-msal2-provider
+    <mgt-msal2-provider
       client-id="2dfea037-938a-4ed8-9b35-c05708a1b241"
       redirect-uri="http://localhost:3000"
       scopes="user.read,user.read.all,mail.readBasic,people.read,people.read.all,sites.read.all,user.readbasic.all,contacts.read,presence.read,presence.read.all,tasks.readwrite,tasks.read,calendars.read,group.read.all,files.read,files.read.all,files.readwrite,files.readwrite.all"
-    ></mgt-msal2-provider> -->
+    ></mgt-msal2-provider>
 
-    <mgt-mock-provider></mgt-mock-provider>
+    <!-- <mgt-mock-provider></mgt-mock-provider> -->
     <header>
-      <mgt-theme-toggle></mgt-theme-toggle>
+      <mgt-theme-toggle mode="light"></mgt-theme-toggle>
     </header>
 
     <h1>Developer test page</h1>
@@ -89,8 +89,8 @@
       <mgt-todo></mgt-todo>
       <h2>mgt-file-list</h2>
       <mgt-file-list></mgt-file-list> -->
-      <h2>mgt-file-composite</h2>
-      <mgt-file-composite breadcrumb-root-name="Drive"></mgt-file-composite>
+      <h2>mgt-file-list-composite</h2>
+      <mgt-file-list-composite breadcrumb-root-name="Drive" use-grid-view></mgt-file-list-composite>
       <!-- <h2>mgt-picker</h2>
       <mgt-picker resource="me/todo/lists" scopes="tasks.read, tasks.readwrite"></mgt-picker> -->
     </main>

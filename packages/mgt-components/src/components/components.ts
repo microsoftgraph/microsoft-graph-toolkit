@@ -21,7 +21,7 @@ import './mgt-teams-channel-picker/mgt-teams-channel-picker';
 import './mgt-todo/mgt-todo';
 import './mgt-breadcrumb/mgt-breadcrumb';
 import './mgt-theme-toggle/mgt-theme-toggle';
-import './mgt-file-composite/mgt-file-composite';
+import './mgt-file-list-composite/mgt-file-list-composite';
 
 export * from './mgt-agenda/mgt-agenda';
 export * from './mgt-file/mgt-file';
@@ -39,4 +39,4 @@ export * from './mgt-teams-channel-picker/mgt-teams-channel-picker';
 export * from './mgt-todo/mgt-todo';
 export * from './mgt-breadcrumb/mgt-breadcrumb';
 export * from './mgt-theme-toggle/mgt-theme-toggle';
-export * from './mgt-file-composite/mgt-file-composite';
+export * from './mgt-file-list-composite/mgt-file-list-composite';

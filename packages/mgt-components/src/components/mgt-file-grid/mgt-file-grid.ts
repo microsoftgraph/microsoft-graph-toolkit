@@ -7,11 +7,12 @@
 
 import { GraphPageIterator, Providers, ProviderState, customElement, mgtHtml } from '@microsoft/mgt-element';
 import { DriveItem } from '@microsoft/microsoft-graph-types';
-import { html, TemplateResult } from 'lit';
+import { html, nothing, TemplateResult } from 'lit';
 import { state } from 'lit/decorators.js';
 import { repeat } from 'lit/directives/repeat.js';
 import {
   clearFilesCache,
+  deleteDriveItem,
   fetchNextAndCacheForFilesPageIterator,
   getDriveFilesByIdIterator,
   getDriveFilesByPathIterator,
@@ -27,32 +28,47 @@ import {
   getSiteFilesByPathIterator,
   getUserFilesByIdIterator,
   getUserFilesByPathIterator,
-  getUserInsightsFiles
+  getUserInsightsFiles,
+  renameDriveItem,
+  shareDriveItem
 } from '../../graph/graph.files';
-import './mgt-file-upload/mgt-file-upload';
+import '../mgt-file-list/mgt-file-upload/mgt-file-upload';
 import { ViewType } from '../../graph/types';
-import { styles } from './mgt-file-list-css';
-import { strings } from './strings';
+import { styles } from './mgt-file-grid-css';
+import { strings } from '../mgt-file-list/strings';
 import { MgtFile } from '../mgt-file/mgt-file';
-import { MgtFileUploadConfig } from './mgt-file-upload/mgt-file-upload';
+import { MgtFileUploadConfig } from '../mgt-file-list/mgt-file-upload/mgt-file-upload';
 
 import {
   fluentProgressRing,
   fluentDesignSystemProvider,
   fluentDataGrid,
   fluentDataGridRow,
-  fluentDataGridCell
+  fluentDataGridCell,
+  fluentButton,
+  fluentDialog,
+  fluentTextField,
+  fluentAnchor
 } from '@fluentui/web-components';
 import { registerFluentComponents } from '../../utils/FluentComponents';
+import { classMap } from 'lit/directives/class-map.js';
+import { getSvg, SvgIcon } from '../../utils/SvgHelper';
 import '../mgt-menu/mgt-menu';
-import { MgtFileListBase } from './mgt-file-list-base';
+import { MgtFileListBase } from '../mgt-file-list/mgt-file-list-base';
+import { Command } from '../mgt-menu/mgt-menu';
+import '../mgt-person/mgt-person';
+import { formatBytes, getRelativeDisplayDate } from '../../utils/Utils';
 
 registerFluentComponents(
   fluentProgressRing,
   fluentDesignSystemProvider,
   fluentDataGrid,
   fluentDataGridRow,
-  fluentDataGridCell
+  fluentDataGridCell,
+  fluentButton,
+  fluentDialog,
+  fluentTextField,
+  fluentAnchor
 );
 
 /**
@@ -100,8 +116,8 @@ registerFluentComponents(
  */
 
 // tslint:disable-next-line: max-classes-per-file
-@customElement('file-list')
-export class MgtFileList extends MgtFileListBase {
+@customElement('file-grid')
+export class MgtFileGrid extends MgtFileListBase {
   /**
    * Array of styles to apply to the element. The styles should be defined
    * using the `css` tag function.
@@ -143,11 +159,29 @@ export class MgtFileList extends MgtFileListBase {
   @state()
   private _selectedFiles: Map<string, DriveItem>;
 
+  @state()
+  private _activeFile: DriveItem;
+
+  @state()
+  private deleteDialogVisible = false;
+
+  @state()
+  private renameDialogVisible = false;
+
+  @state()
+  private shareDialogVisible = false;
+
+  @state()
+  private shareMode: 'edit' | 'view' = 'view';
+
+  @state()
+  private shareUrl: string;
+
   constructor() {
     super();
     this._selectedFiles = new Map();
     this.pageSize = 10;
-    this.itemView = ViewType.twolines;
+    this.itemView = ViewType.image;
     this.maxUploadFile = 10;
     this.enableFileUpload = false;
     this._preloadedFiles = [];
@@ -156,7 +190,7 @@ export class MgtFileList extends MgtFileListBase {
   /**
    * Override requestStateUpdate to include clearstate.
    *
-   * @memberof MgtFileList
+   * @memberof MgtFileGrid
    */
   protected requestStateUpdate(force?: boolean) {
     this.clearState();
@@ -227,42 +261,397 @@ export class MgtFileList extends MgtFileListBase {
   }
 
   /**
-   * Render the list of files.
+   * render the files in a data grid
    *
    * @protected
-   * @param {*} files
-   * @returns {TemplateResult}
-   * @memberof mgtFileList
+   * @return {*}  {TemplateResult}
+   * @memberof MgtFileList
    */
   protected renderFiles(): TemplateResult {
+    const headerClasses = {
+      header: true,
+      selected: this.allSelected()
+    };
+    // the hidden anchor tag is used to download file
     return html`
-      <div id="file-list-wrapper" class="file-list-wrapper" dir=${this.direction}>
-        ${this.enableFileUpload ? this.renderFileUpload() : null}
-        <ul
-          id="file-list"
-          class="file-list"
-          tabindex="0"
-          @keydown="${this.onFileListKeyDown}"
-          @keyup="${this.onFileListKeyUp}"
-          @blur="${this.onFileListOut}"
-        >
-          ${repeat(
-            this.files,
-            f => f.id,
-            f => html`
-              <li class="file-item" @click=${e => this.handleItemSelect(f, e)}>
-                ${this.renderFile(f)}
-              </li>
-            `
-          )}
-        </ul>
+      <a id="file-link" style="display:none"  target="_blank"></a>
+      <div id="file-list-wrapper" class="file-grid"  dir=${this.direction}>
+        <div class="file-row">
+          <div class=${classMap(headerClasses)}>${this.renderSelectorHeader()}</div>
+          <div class=${classMap(headerClasses)}></div>
+          <div class=${classMap(headerClasses)}>Name</div>
+          <div class=${classMap(headerClasses)}>Modified</div>
+          <div class=${classMap(headerClasses)}>Modified By</div>
+          <div class=${classMap(headerClasses)}>Size</div>
+        </div>
+        ${repeat(
+          this.files,
+          f => f.id,
+          f => html`
+                <div
+                  class="${this.isSelected(f) ? 'file-row selected' : 'file-row'}"
+                  @click=${() => this.onSelectorClicked(f)}
+                >
+                  <div class="cell">${this.renderSelector(f)}</div>
+                  <div class="cell">${this.renderFileIcon(f)}</div>
+                  <div class="cell file-name">
+                    ${this.renderFileName(f)}
+                    ${this.renderMenu(f)}
+                  </div>
+                  <div class="cell">${getRelativeDisplayDate(new Date(f.lastModifiedDateTime))}</div>
+                  <div class="cell">${this.renderUser(f)}</div>
+                  <div class="cell">${this.sizeText(f)}</div>
+                </div>
+              `
+        )}
+      </div>
         ${
           !this.hideMoreFilesButton && this.pageIterator && (this.pageIterator.hasNext || this._preloadedFiles.length)
             ? this.renderMoreFileButton()
             : null
         }
+      ${this.renderDeleteDialog()}
+      ${this.renderRenameDialog()}
+      ${this.renderShareDialog()}
+    `;
+  }
+
+  private sizeText(file: DriveItem) {
+    if (file.folder) return `${file.folder.childCount} ${file.folder.childCount === 0 ? strings.item : strings.items}`;
+
+    return formatBytes(file.size);
+  }
+
+  private renderUser(file: DriveItem) {
+    if (file.lastModifiedByUser)
+      return mgtHtml`
+      <mgt-person
+        show-presence
+        avatar-size="small"
+        view="oneline"
+        .personDetails=${file.lastModifiedByUser}
+      ></mgt-person>`;
+
+    if (file.lastModifiedBy?.user)
+      return mgtHtml`
+      <mgt-person
+        show-presence
+        avatar-size="small"
+        view="oneline"
+        user-id=${file.lastModifiedBy.user.id}
+      ></mgt-person>`;
+
+    return nothing;
+  }
+
+  private renderRenameDialog() {
+    return html`
+      <fluent-dialog
+        id="rename-file-dialog"
+        dir=${this.direction}
+        aria-label="Rename file dialog"
+        modal="true"
+        .hidden=${!this.renameDialogVisible}
+        @close=${this.cancelRename}
+        @cancel=${this.cancelRename}
+      >
+        <form part="dialog-body" @submit=${this.performRename}>
+          <h2>${strings.renameFileTitle} ${this._activeFile?.name}</h2>
+
+          <p>
+            <fluent-text-field
+              id="new-file-name"
+              part="dialog-input"
+              appearance="outline"
+              .value=${this._activeFile?.name}
+              required
+              auto-focus
+              maxlength="200"
+            ></fluent-text-field>
+          </p>
+          <div part="button-row">
+            <fluent-button appearance="accent" type="submit">
+              ${strings.renameFileButton}
+            </fluent-button>
+            <fluent-button appearance="outline" @click=${this.cancelRename}>
+              ${strings.cancel}
+            </fluent-button>
+          </div>
+        </form>
+      </fluent-dialog>
+`;
+  }
+
+  private renderShareDialog() {
+    return html`
+      <fluent-dialog
+        id="share-file-dialog"
+        dir=${this.direction}
+        aria-label="Share file dialog"
+        modal="true"
+        .hidden=${!this.shareDialogVisible}
+        @close=${this.cancelShare}
+        @cancel=${this.cancelShare}
+      >
+        <div part="dialog-body">
+          <h2>${strings.shareFileTitle} ${this._activeFile?.name}</h2>
+
+          <p>${this.shareMode === 'view' ? strings.shareViewOnlyLink : strings.shareEditableLink}</p>
+          <p>
+            ${
+              this.shareUrl
+                ? html`
+              <fluent-text-field
+                id="share-file-url"
+                part="dialog-input"
+                appearance="outline"
+                .value=${this.shareUrl}
+                required
+                auto-focus
+              ></fluent-text-field>
+              `
+                : mgtHtml`
+                <div class="loading-indicator">
+                  <fluent-progress-ring role="progressbar" viewBox="0 0 8 8" class="progress-ring"></fluent-progress-ring>
+                </div>
+              `
+            }
+          </p>
+          <div part="button-row">
+            <fluent-button appearance="accent" @click=${this.copyToClipboard}>
+              ${strings.copyToClipboardButton}
+            </fluent-button>
+          </div>
+        </div>
+      </fluent-dialog>
+`;
+  }
+
+  private copyToClipboard = async (e: UIEvent) => {
+    e.stopPropagation();
+    navigator.clipboard.writeText(this.shareUrl);
+    this.shareUrl = null;
+    this.shareDialogVisible = false;
+    this._activeFile = null;
+  };
+
+  private cancelShare = (e: UIEvent) => {
+    e.stopPropagation();
+    this.shareUrl = null;
+    this.shareDialogVisible = false;
+    this._activeFile = null;
+  };
+
+  private cancelRename = (e: UIEvent) => {
+    e.stopPropagation();
+    this._activeFile = null;
+    this.renameDialogVisible = false;
+  };
+
+  private performRename = async (e: UIEvent) => {
+    e.preventDefault(); // stop form submission and page refresh
+    e.stopPropagation();
+    const input: HTMLInputElement = this.renderRoot.querySelector('#new-file-name');
+    const newFileName = input.value;
+    if (newFileName) {
+      const graph = Providers.globalProvider.graph.forComponent(this);
+      await renameDriveItem(graph, this._activeFile, newFileName);
+      // need to refresh the list being shown....
+      clearFilesCache();
+      this.renameDialogVisible = false;
+      this._activeFile = null;
+      this.requestStateUpdate();
+    }
+  };
+
+  private renderDeleteDialog() {
+    return html`
+      <fluent-dialog
+        id="delete-file-dialog"
+        dir=${this.direction}
+        aria-label="Delete file dialog"
+        modal="true"
+        .hidden=${!this.deleteDialogVisible}
+        @close=${this.cancelDelete}
+        @cancel=${this.cancelDelete}
+      >
+        <div part="dialog-body">
+          <h2>${strings.deleteFileTitle} ${this._activeFile?.name}</h2>
+
+          <p>${strings.deleteFileMessage}</p>
+          <div part="button-row">
+            <fluent-button appearance="accent" @click=${this.performDelete}>
+              ${strings.deleteFileButton}
+            </fluent-button>
+            <fluent-button appearance="outline" @click=${this.cancelDelete}>
+              ${strings.cancel}
+            </fluent-button>
+          </div>
+        </div>
+      </fluent-dialog>
+`;
+  }
+
+  private performDelete = async (e: UIEvent) => {
+    e.stopPropagation();
+    const graph = Providers.globalProvider.graph.forComponent(this);
+    await deleteDriveItem(graph, this._activeFile);
+    // need to refresh the list being shown....
+    clearFilesCache();
+    this.deleteDialogVisible = false;
+    this._activeFile = null;
+    this.requestStateUpdate();
+  };
+
+  private cancelDelete = (e: UIEvent) => {
+    e.stopPropagation();
+    this._activeFile = null;
+    this.deleteDialogVisible = false;
+  };
+
+  private isSelected(file: DriveItem): boolean {
+    return this._selectedFiles.has(file.id);
+  }
+
+  private renderSelectorHeader(): TemplateResult {
+    const classes = {
+      'file-selector': true,
+      selected: this.allSelected()
+    };
+
+    return html`
+      <div class=${classMap(classes)} @click=${this.allSelected() ? this.deselectAll : this.selectAll}>
+        ${getSvg(SvgIcon.FilledCheckMark)}
       </div>
     `;
+  }
+
+  private allSelected(): boolean {
+    return this.files && this.files.length > 0 && this._selectedFiles.size === this.files.length;
+  }
+
+  private selectAll(): void {
+    const tmp = new Map();
+    this.files.forEach(file => tmp.set(file.id, file));
+    this._selectedFiles = tmp;
+    this.fireCustomEvent('selectionChanged', this.files);
+  }
+
+  private deselectAll(): void {
+    this._selectedFiles = new Map();
+    this.fireCustomEvent('selectionChanged', []);
+  }
+
+  private renderSelector(file: DriveItem): TemplateResult {
+    const classes = {
+      'file-selector': true,
+      selected: this.isSelected(file)
+    };
+
+    return html`<div class=${classMap(classes)}>${getSvg(SvgIcon.FilledCheckMark)}</div>`;
+  }
+
+  private onSelectorClicked(file: DriveItem): void {
+    if (this._selectedFiles.has(file.id)) {
+      this._selectedFiles.delete(file.id);
+    } else {
+      this._selectedFiles.set(file.id, file);
+    }
+
+    // request a re-render as we're mutating the state of the _selectedFiles map without an assignment
+    this.requestUpdate();
+
+    this.fireCustomEvent(
+      'selectionChanged',
+      Array.from(this._selectedFiles, ([, value]) => value)
+    );
+  }
+
+  private renderMenu(file: DriveItem): TemplateResult {
+    const commands: Command<DriveItem>[] = [
+      { id: 'share-edit', name: 'Create editable link', onClickFunction: this.showShareFileEditable },
+      { id: 'share-read', name: 'Create read-only link', onClickFunction: this.showShareFileReadOnly },
+      { id: 'rename', name: 'Rename', onClickFunction: this.showRenameFileDialog },
+      { id: 'delete', name: 'Delete', onClickFunction: this.showDeleteDialog }
+    ];
+    if (!file.folder) {
+      commands.push({ id: 'download', name: 'Download', onClickFunction: this.downloadFile });
+    }
+
+    return html`${
+      !commands || commands.length === 0
+        ? nothing
+        : mgtHtml`
+          <mgt-menu .commands=${commands} .item=${file}></mgt-menu>
+        `
+    }`;
+  }
+
+  private showShareFileEditable = (e: UIEvent, file: DriveItem): void => {
+    this.showShareDialog(e, file, 'edit');
+  };
+
+  private showShareFileReadOnly = (e: UIEvent, file: DriveItem): void => {
+    this.showShareDialog(e, file, 'edit');
+  };
+
+  private showShareDialog = (e: UIEvent, file: DriveItem, shareMode: 'view' | 'edit'): void => {
+    e.stopPropagation();
+    this._activeFile = file;
+    this.shareDialogVisible = true;
+    this.shareMode = shareMode;
+    const graph = Providers.globalProvider.graph.forComponent(this);
+    shareDriveItem(graph, this._activeFile, this.shareMode).then(share => {
+      this.shareUrl = share.link?.webUrl;
+    });
+  };
+
+  // needs to be an arrow function to preserve the this context
+  private downloadFile = (e: UIEvent, file: DriveItem): void => {
+    e.stopPropagation();
+    this.clickFileLink(file['@microsoft.graph.downloadUrl']);
+  };
+
+  private clickFileLink = (url: string) => {
+    const a = this.renderRoot.querySelector('#file-link') as HTMLAnchorElement;
+    a.href = url;
+    if (a.href) {
+      a.click();
+      a.href = '';
+    }
+  };
+
+  private showRenameFileDialog = (e: UIEvent, file: DriveItem): void => {
+    e.stopPropagation();
+    this._activeFile = file;
+    this.renameDialogVisible = true;
+  };
+  private showDeleteDialog = (e: UIEvent, file: DriveItem): void => {
+    e.stopPropagation();
+    this._activeFile = file;
+    this.deleteDialogVisible = true;
+  };
+
+  /**
+   * Render an individual file.
+   *
+   * @protected
+   * @returns {TemplateResult}
+   * @memberof mgtFileList
+   */
+  protected renderFileIcon(file: DriveItem): TemplateResult {
+    const view = this.itemView;
+    return (
+      this.renderTemplate('file', { file }, file.id) ||
+      mgtHtml`
+        <mgt-file
+          @click=${e => this.handleItemSelect(file, e)}
+          class="file-item"
+          .fileDetails=${file}
+          .view=${view}
+        ></mgt-file>
+      `
+    );
   }
 
   /**
@@ -272,19 +661,10 @@ export class MgtFileList extends MgtFileListBase {
    * @returns {TemplateResult}
    * @memberof mgtFileList
    */
-  protected renderFile(file: DriveItem): TemplateResult {
-    const view = this.itemView;
-    return (
-      this.renderTemplate('file', { file }, file.id) ||
-      mgtHtml`
-        <mgt-file
-          @click=${e => this.handleItemSelect(file, e)}
-          part="file-item"
-          .fileDetails=${file}
-          .view=${view}
-        ></mgt-file>
-      `
-    );
+  protected renderFileName(file: DriveItem): TemplateResult {
+    return file.folder
+      ? html`<a class="file-item" href="#" @click=${e => this.handleItemSelect(file, e)}>${file.name}</a>`
+      : html`<a class="file-item" target="_blank" href=${file.webUrl}>${file.name}</a>`;
   }
 
   /**
@@ -297,12 +677,20 @@ export class MgtFileList extends MgtFileListBase {
   protected renderMoreFileButton(): TemplateResult {
     if (this._isLoadingMore) {
       return html`
-        <fluent-progress-ring role="progressbar" viewBox="0 0 8 8" class="progress-ring"></fluent-progress-ring>
+        <div class="loading-indicator">
+          <fluent-progress-ring role="progressbar" viewBox="0 0 8 8" class="progress-ring"></fluent-progress-ring>
+        </div>
       `;
     } else {
-      return html`<a id="show-more" class="show-more" @click=${() => this.renderNextPage()} tabindex="0" @keydown=${
-        this.onShowMoreKeyDown
-      }><span>${this.strings.showMoreSubtitle}</span></a>`;
+      return html`
+        <fluent-button
+          appearance="mgt-file-grid.scss"
+          id="show-more"
+          class="show-more"
+          @click=${() => this.renderNextPage()}
+        >
+          ${this.strings.showMoreSubtitle}
+        </fluent-button>`;
     }
   }
 
@@ -327,18 +715,6 @@ export class MgtFileList extends MgtFileListBase {
     return mgtHtml`
         <mgt-file-upload .fileUploadList=${fileUploadConfig} ></mgt-file-upload>
       `;
-  }
-
-  /**
-   * Handle accessibility keyboard enter event on 'show more items' button
-   *
-   * @param event
-   */
-  private onShowMoreKeyDown(event: KeyboardEvent): void {
-    if (event && event.code === 'Enter') {
-      event.preventDefault();
-      this.renderNextPage();
-    }
   }
 
   /**
@@ -508,7 +884,7 @@ export class MgtFileList extends MgtFileListBase {
       // filter files when extensions are provided
       let filteredByFileExtension: DriveItem[];
       if (this.fileExtensions && this.fileExtensions !== null) {
-        // retrive all pages before filtering
+        // retrieve all pages before filtering
         if (this.pageIterator && this.pageIterator.value) {
           while (this.pageIterator.hasNext) {
             await fetchNextAndCacheForFilesPageIterator(this.pageIterator);
@@ -546,22 +922,9 @@ export class MgtFileList extends MgtFileListBase {
   protected handleItemSelect(item: DriveItem, event: MouseEvent): void {
     event?.stopPropagation();
     this.raiseItemClickedEvent(item);
-
-    // handle accessibility updates when item clicked
-    if (event) {
-      const fileList = this.renderRoot.querySelector('.file-list');
-
-      // get index of the focused item
-      const nodes = Array.from(fileList.children);
-      const li = (event.target as Element).closest('li');
-      const index = nodes.indexOf(li);
-      this._focusedItemIndex = index;
-      const clickedItem = fileList.children[this._focusedItemIndex];
-      this.updateItemBackgroundColor(fileList, clickedItem, 'selected');
-
-      for (const node of fileList.children) {
-        node.classList.remove('focused');
-      }
+    if (item.file && item.webUrl) {
+      // open the web url if the item is a file
+      this.clickFileLink(item.webUrl);
     }
   }
 

@@ -8,6 +8,11 @@
 import { EventDispatcher, EventHandler } from './EventDispatcher';
 
 /**
+ * Valid values for the direction attribute
+ */
+export type Direction = 'ltr' | 'rtl' | 'auto';
+
+/**
  * Helper class for Localization
  *
  *
@@ -45,8 +50,17 @@ export class LocalizationHelper {
    * @returns {string} dir
    * @memberof LocalizationHelper
    */
-  public static getDocumentDirection() {
-    return document.body?.getAttribute('dir') || document.documentElement?.getAttribute('dir');
+  public static getDocumentDirection(): Direction {
+    const fromDocument = document.body?.getAttribute('dir') || document.documentElement?.getAttribute('dir');
+    switch (fromDocument) {
+      case 'rtl':
+        return 'rtl';
+      case 'ltr':
+        return 'ltr';
+      case 'auto':
+      default:
+        return 'auto';
+    }
   }
 
   /**
@@ -117,16 +131,16 @@ export class LocalizationHelper {
     }
 
     if (this._strings && stringObj) {
-      //check for top level strings, applied per component, overridden by specific component def
-      for (let prop of Object.entries(stringObj)) {
+      // check for top level strings, applied per component, overridden by specific component def
+      for (const prop of Object.entries(stringObj)) {
         if (this._strings[prop[0]]) {
           stringObj[prop[0]] = this._strings[prop[0]];
         }
       }
-      //strings defined component specific
-      if (this._strings['_components'] && this._strings['_components'][tagName]) {
-        let strings: any = this._strings['_components'][tagName];
-        for (let key of Object.keys(strings)) {
+      // strings defined component specific
+      if (this._strings._components && this._strings._components[tagName]) {
+        const strings: any = this._strings._components[tagName];
+        for (const key of Object.keys(strings)) {
           if (stringObj[key]) {
             stringObj[key] = strings[key];
           }

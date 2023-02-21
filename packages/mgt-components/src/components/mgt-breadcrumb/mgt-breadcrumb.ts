@@ -85,9 +85,7 @@ export class MgtBreadcrumb extends MgtBaseComponent {
           b =>
             !this.isLastCrumb(b)
               ? html`
-              <fluent-breadcrumb-item
-                exportparts="control"
-              >
+              <fluent-breadcrumb-item>
                 <fluent-button
                   appearance="stealth"
                   @click=${() => this.handleBreadcrumbClick(b)}
@@ -97,9 +95,7 @@ export class MgtBreadcrumb extends MgtBaseComponent {
               </fluent-breadcrumb-item>
             `
               : html`
-              <fluent-breadcrumb-item
-                exportparts="crumb"
-              >
+              <fluent-breadcrumb-item>
                 <span part="crumb">${b.name}</span>
               </fluent-breadcrumb-item>
             `

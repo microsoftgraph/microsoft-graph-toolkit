@@ -1,0 +1,156 @@
+@import '../../../../../node_modules/office-ui-fabric-core/dist/sass/References';
+@import '../../styles/shared-styles.scss';
+@import '../mgt-file-list/mgt-file-list.theme.scss';
+
+$file-item-background-color--hover: set-var(list__item__background-color--hover, $theme-default, $file-list);
+$file-item-background-color--active: set-var(list__item__background-color--active, $theme-default, $file-list);
+$background-color: set-var(list__background-color, $theme-default, $file-list);
+$file-list-border-radius: var(--file-list-border-radius, 4px);
+$file-list-box-shadow: var(
+  --file-list-box-shadow,
+  0px 3.2px 7.2px rgba(0, 0, 0, 0.132),
+  0px 0.6px 1.8px rgba(0, 0, 0, 0.108)
+);
+$file-list-border: var(--file-list-border, none);
+$file-item-border-radius: var(--file-item-border-radius, 2px);
+$file-item-margin: var(--file-item-margin, 0 4px 0 4px);
+$show-more-button-font-size: var(--show-more-button-font-size, 12px);
+$show-more-button-padding: var(--show-more-button-padding, 6px);
+$show-more-button-border-bottom-right-radius: var(--show-more-button-border-bottom-right-radius, 8px);
+$show-more-button-border-bottom-left-radius: var(--show-more-button-border-bottom-left-radius, 8px);
+$show-more-button-background-color--hover: var(--show-more-button-background-color--hover, $show_more_button_hover);
+$progress-ring-size: var(--progress-ring-size, 24px);
+
+:host {
+  font-family: $font-family;
+  font-size: $font-size;
+  color: $color;
+}
+
+:host {
+  a {
+    color: $color;
+    text-decoration: none;
+    &:hover {
+      text-decoration: underline;
+    }
+  }
+
+  .file-item {
+    width: fit-content;
+  }
+
+  .file-grid {
+    display: grid;
+    grid-template-columns: [col-start] auto auto 1fr auto auto auto [col-end];
+    grid-template-rows: [header-start] auto [header-end row-start] auto [row-end];
+    grid-auto-rows: auto;
+    grid-auto-columns: auto;
+    overflow: hidden;
+  }
+
+  .header,
+  .cell {
+    padding: 0 12px;
+    height: 100%;
+    display: flex;
+    align-items: center;
+  }
+
+  .header {
+    font-weight: 600;
+    height: 42px;
+    grid-row: header;
+  }
+
+  .file-row {
+    display: contents;
+    &:hover > .header,
+    &:hover > .cell {
+      background-color: $file-item-background-color--hover;
+
+      .mgt-file-item {
+        --file-background-color: $file-item-background-color--hover;
+      }
+      .file-selector {
+        border: var(--neutral-foreground-rest) solid 1px;
+      }
+    }
+  }
+
+  .file-name {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: space-between;
+  }
+
+  .selected {
+    background-color: $file-item-background-color--active;
+    .mgt-file-item {
+      --file-background-color: $file-item-background-color--active;
+    }
+  }
+  .file-selector {
+    margin: auto;
+    height: 16px;
+    width: 16px;
+    border-radius: 50%;
+    overflow: hidden;
+    border-color: var(--neutral-fill-strong-rest);
+    background-color: var(--neutral-fill-rest);
+    border: transparent solid 1px;
+    svg {
+      background-color: var(--neutral-fill-rest);
+      fill: var(--neutral-fill-rest);
+    }
+    &:hover {
+      svg {
+        background-color: var(--neutral-fill-strong-hover);
+      }
+    }
+
+    &.selected {
+      border-color: var(--neutral-fill-rest);
+      svg {
+        fill: var(--accent-fill-rest);
+      }
+      &:hover {
+        svg {
+          background-color: var(--accent-fill-rest);
+          fill: var(--neutral-fill-rest);
+        }
+      }
+    }
+  }
+  .loading-indicator {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 100%;
+  }
+  fluent-dialog::part(control) {
+    height: auto;
+    width: auto;
+  }
+  fluent-button::part(control) {
+    padding: 0 32px;
+  }
+  &::part(dialog-body) {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    padding: 0 12px 12px;
+  }
+  &::part(button-row) {
+    display: flex;
+    flex-direction: row;
+    justify-content: flex-end;
+    gap: 24px;
+    align-items: center;
+    margin-top: 12px;
+  }
+  &::part(dialog-input) {
+    width: 100%;
+  }
+}

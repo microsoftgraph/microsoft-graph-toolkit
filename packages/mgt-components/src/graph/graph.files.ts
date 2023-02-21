@@ -6,7 +6,7 @@
  */
 
 import { CacheItem, CacheService, CacheStore, GraphPageIterator, IGraph, prepScopes } from '@microsoft/mgt-element';
-import { DriveItem, UploadSession } from '@microsoft/microsoft-graph-types';
+import { DriveItem, Permission, UploadSession } from '@microsoft/microsoft-graph-types';
 import { schemas } from './cacheStores';
 import { ResponseType } from '@microsoft/microsoft-graph-client';
 import { blobToBase64 } from '../utils/Utils';
@@ -897,7 +897,7 @@ export async function getMyInsightsFiles(graph: IGraph, insightType: string): Pr
   try {
     insightResponse = await graph
       .api(endpoint)
-      .filter(`resourceReference/type eq 'microsoft.graph.driveItem'`)
+      .filter("resourceReference/type eq 'microsoft.graph.driveItem'")
       .middlewareOptions(prepScopes(...scopes))
       .get();
   } catch {}
@@ -916,11 +916,11 @@ export async function getUserInsightsFiles(graph: IGraph, userId: string, insigh
   let filter;
 
   if (insightType === 'shared') {
-    endpoint = `/me/insights/shared`;
+    endpoint = '/me/insights/shared';
     filter = `((lastshared/sharedby/id eq '${userId}') and (resourceReference/type eq 'microsoft.graph.driveItem'))`;
   } else {
     endpoint = `/users/${userId}/insights/${insightType}`;
-    filter = `resourceReference/type eq 'microsoft.graph.driveItem'`;
+    filter = "resourceReference/type eq 'microsoft.graph.driveItem'";
   }
 
   const key = `${endpoint}?$filter=${filter}`;
@@ -1257,6 +1257,66 @@ export async function sendFileContent(graph: IGraph, resource: string, file: Fil
     let response;
     try {
       response = await graph.client.api(resource).middlewareOptions(prepScopes(scopes)).put(file);
+    } catch {}
+
+    return response || null;
+  } catch (e) {
+    return null;
+  }
+}
+
+/**
+ * share a drive item
+ */
+export async function shareDriveItem(graph: IGraph, item: DriveItem, permType: 'view' | 'edit'): Promise<Permission> {
+  try {
+    // build the resource from the driveItem
+    const resource = `/drives/${item.parentReference.driveId}/items/${item.id}/createLink`;
+    const scopes = 'files.readwrite';
+    const permission = {
+      type: permType,
+      scope: 'organization'
+    };
+    let response: Permission;
+    try {
+      response = await graph.client.api(resource).middlewareOptions(prepScopes(scopes)).post(permission);
+    } catch {}
+
+    return response || null;
+  } catch (e) {
+    return null;
+  }
+}
+
+/**
+ * rename a drive item
+ */
+export async function renameDriveItem(graph: IGraph, item: DriveItem, newName: string): Promise<any> {
+  try {
+    // build the resource from the driveItem
+    const resource = `/drives/${item.parentReference.driveId}/items/${item.id}`;
+    const scopes = 'files.readwrite';
+    let response;
+    try {
+      response = await graph.client.api(resource).middlewareOptions(prepScopes(scopes)).patch({ name: newName });
+    } catch {}
+
+    return response || null;
+  } catch (e) {
+    return null;
+  }
+}
+
+/**
+ * delete a drive item
+ */
+export async function deleteDriveItem(graph: IGraph, item: DriveItem): Promise<any> {
+  try {
+    // build the resource from the driveItem
+    const resource = `/drives/${item.parentReference.driveId}/items/${item.id}`;
+    let response;
+    try {
+      response = await deleteSessionFile(graph, resource);
     } catch {}
 
     return response || null;

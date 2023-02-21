@@ -9,23 +9,23 @@ import { html } from 'lit';
 import { withCodeEditor } from '../../../.storybook/addons/codeEditorAddon/codeAddon';
 
 export default {
-  title: 'Components/mgt-file-composite',
-  component: 'file-composite',
+  title: 'Components/mgt-file-list-composite',
+  component: 'file-list-composite',
   decorators: [withCodeEditor]
 };
 
 export const fileComposite = () => html`
-  <mgt-file-composite></mgt-file-composite>
+  <mgt-file-list-composite></mgt-file-list-composite>
 `;
 
 export const BreadcrumbRootName = () => html`
-  <mgt-file-composite breadcrumb-root-name="Drive"></mgt-file-composite>
+  <mgt-file-list-composite breadcrumb-root-name="Drive"></mgt-file-list-composite>
 `;
 
 export const events = () => html`
-<mgt-file-composite></mgt-file-composite>
+<mgt-file-list-composite></mgt-file-list-composite>
 <script>
-  const component = document.querySelector('mgt-file-composite');
+  const component = document.querySelector('mgt-file-list-composite');
   component.addEventListener('breadcrumbclick', e => {
     console.log('breadcrumbclick', e.detail);
   });
