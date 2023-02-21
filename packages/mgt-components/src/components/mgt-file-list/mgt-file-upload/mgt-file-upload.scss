@@ -14,6 +14,9 @@ $file-upload-button-border: var(--file-upload-button-border, none);
 $file-upload-dialog-replace-button-border: var(--file-upload-dialog-replace-button-border, 1px solid var(--neutral-foreground-rest));
 $file-upload-dialog-keep-both-button-border: var(--file-upload-dialog-keep-both-button-border, none);
 $file-upload-dialog-border: var(--file-upload-dialog-border, 1px solid var(--neutral-fill-rest));
+$file-upload-dialog-width: var(--file-upload-dialog-width, auto);
+$file-upload-dialog-height: var(--file-upload-dialog-height, auto);
+$file-upload-dialog-padding: var(--file-upload-dialog-padding, 24px);
 $file-upload-border-drag: var(--file-upload-border-drag, 1px dashed #0078d4);
 
 :host {
@@ -33,7 +36,7 @@ $file-upload-border-drag: var(--file-upload-border-drag, 1px dashed #0078d4);
       }
     }
 
-    &.fluent-upload-button {
+    &.file-upload-button {
       &::part(control) {
         border: $file-upload-button-border;
         background: $file-upload-button-background-color;
@@ -68,9 +71,9 @@ $file-upload-border-drag: var(--file-upload-border-drag, 1px dashed #0078d4);
     }
 
     &::part(control) {
-      --dialog-width: auto;
-      --dialog-height: auto;
-      padding: 24px;
+      --dialog-width: $file-upload-dialog-width;
+      --dialog-height: $file-upload-dialog-height;
+      padding: $file-dialog-padding;
       border: $file-upload-dialog-border;
     }
 
@@ -135,9 +138,9 @@ $file-upload-border-drag: var(--file-upload-border-drag, 1px dashed #0078d4);
     }
 
     .file-upload-status {
-      position: absolute;
-      left: 28px;
-      top: 3px;
+      position: relative;
+      left: 36px;
+      top: 20px;
     }
 
     .file-upload-cancel {
