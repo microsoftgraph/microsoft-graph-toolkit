@@ -1,0 +1,16 @@
+{
+  "image": "mcr.microsoft.com/devcontainers/typescript-node:0-16",
+  "customizations": {
+    "vscode": {
+      "extensions": [
+        "streetsidesoftware.code-spell-checker",
+        "nicolasparada.innerhtml",
+        "runem.lit-plugin",
+        "esbenp.prettier-vscode",
+        "rebornix.project-snippets",
+        "ms-vscode.vscode-typescript-tslint-plugin"
+      ]
+    }
+  },
+  "forwardPorts": [3000, 6006]
+}
