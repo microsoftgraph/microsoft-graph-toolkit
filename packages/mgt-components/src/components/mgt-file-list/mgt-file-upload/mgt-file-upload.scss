@@ -73,7 +73,7 @@ $file-upload-border-drag: var(--file-upload-border-drag, 1px dashed #0078d4);
     &::part(control) {
       --dialog-width: $file-upload-dialog-width;
       --dialog-height: $file-upload-dialog-height;
-      padding: $file-dialog-padding;
+      padding: $file-upload-dialog-padding;
       border: $file-upload-dialog-border;
     }
 
