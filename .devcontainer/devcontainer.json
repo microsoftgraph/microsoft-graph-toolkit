@@ -1,5 +1,4 @@
 {
-  // "build": { "dockerfile": "Dockerfile" },
   "image": "mcr.microsoft.com/devcontainers/javascript-node:0-14",
   "customizations": {
     "vscode": {
