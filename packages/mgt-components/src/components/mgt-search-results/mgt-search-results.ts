@@ -29,7 +29,8 @@ import { getNameFromUrl, getRelativeDisplayDate, sanitizeSummary, trimFileExtens
 import { getSvg, SvgIcon } from '../../utils/SvgHelper';
 import { fluentSkeleton, fluentButton, fluentTooltip } from '@fluentui/web-components';
 import { registerFluentComponents } from '../../utils/FluentComponents';
-import { SearchSource } from 'jest';
+import * as AdaptiveCards from 'adaptivecards';
+//import * as ACData from 'adaptivecards-templating';
 
 registerFluentComponents(fluentSkeleton, fluentButton, fluentTooltip);
 
@@ -145,6 +146,21 @@ export class MgtSearchResults extends MgtTemplatedComponent {
     reflect: true
   })
   public scopes: string[] = [];
+
+  /**
+   * Content sources to use with External Items
+   *
+   * @type {string[]}
+   * @memberof MgtSearchResults
+   */
+  @property({
+    attribute: 'content-sources',
+    converter: (value, type) => {
+      return value ? value.toLowerCase().split(',') : null;
+    },
+    reflect: true
+  })
+  public contentSources: string[] = [];
 
   /**
    * Api version to use for request
@@ -549,6 +565,8 @@ export class MgtSearchResults extends MgtTemplatedComponent {
           return this.renderList(result);
         case '#microsoft.graph.listItem':
           return this.renderListItem(result);
+        case '#microsoft.graph.externalItem':
+          return this.renderExternalItem(result);
         default:
           return this.renderDefault(result);
       }
@@ -795,6 +813,33 @@ export class MgtSearchResults extends MgtTemplatedComponent {
           `;
   }
 
+  private renderExternalItem(result: SearchHit): HTMLTemplateResult {
+    let resource: any = result.resource as any;
+
+    // Create an AdaptiveCard instance
+    var adaptiveCard = new AdaptiveCards.AdaptiveCard();
+
+    if (result.resultTemplateId) {
+      /*var template = new ACData.Template(this.response.value[0].resultTemplates[result.resultTemplateId]);
+      var card = template.expand(resource);
+      adaptiveCard.parse(card);
+      var renderedCard = adaptiveCard.render();
+      return html`
+        <div .innerHTML="${renderedCard.outerHTML}"> </div>
+        `;*/
+    } else {
+      return mgtHtml`
+          <div class="search-result-grid">
+            <div class="search-result-content">
+              <div class="search-result-name">
+                ${resource}
+              </div>
+            </div>  
+          </div>          
+          <hr class="search-result-separator" />`;
+    }
+  }
+
   private renderDefault(result: SearchHit): HTMLTemplateResult {
     let resource: any = result.resource as any;
     return mgtHtml`
@@ -817,17 +862,29 @@ export class MgtSearchResults extends MgtTemplatedComponent {
   }
 
   private getRequestOptions(): SearchRequest | BetaSearchRequest {
-    return {
+    var requestOptions: SearchRequest = {
       entityTypes: this.entityTypes as EntityType[],
       query: {
-        queryString: this.queryString,
-        queryTemplate: this.queryTemplate ? this.queryTemplate : undefined
+        queryString: this.queryString
       },
       from: this.from ? this.from : undefined,
       size: this.size ? this.size : undefined,
       fields: this.fields ? this.fields : undefined,
       enableTopResults: this.enableTopResults ? this.enableTopResults : undefined
     };
+
+    if (this.entityTypes.includes('externalItem')) {
+      requestOptions.contentSources = this.contentSources;
+      requestOptions.resultTemplateOptions = {
+        enableResultTemplate: true
+      };
+    }
+
+    if (this.version === 'beta') {
+      (requestOptions as BetaSearchRequest).query.queryTemplate = this.queryTemplate ? this.queryTemplate : undefined;
+    }
+
+    return requestOptions;
   }
 
   private shouldUpdateCache(): boolean {
