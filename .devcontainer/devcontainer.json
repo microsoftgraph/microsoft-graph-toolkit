@@ -1,5 +1,6 @@
 {
-  "build": { "dockerfile": "Dockerfile" },
+  // "build": { "dockerfile": "Dockerfile" },
+  "image": "mcr.microsoft.com/devcontainers/javascript-node:0-14",
   "customizations": {
     "vscode": {
       "extensions": [
@@ -8,7 +9,8 @@
         "runem.lit-plugin",
         "esbenp.prettier-vscode",
         "rebornix.project-snippets",
-        "ms-vscode.vscode-typescript-tslint-plugin"
+        "ms-vscode.vscode-typescript-tslint-plugin",
+        "mutantdino.resourcemonitor"
       ]
     }
   },
