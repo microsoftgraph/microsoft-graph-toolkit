@@ -16,5 +16,20 @@ import { customElementHelper } from '../components/customElementHelper';
  * @param tagName the base name for the custom element tag
  */
 export const customElement = (tagName: string): ((classOrDescriptor: unknown) => any) => {
-  return litElement(`${customElementHelper.prefix}-${tagName}`);
+  const mgtTagName = `${customElementHelper.prefix}-${tagName}`;
+  const mgtElement = customElements.get(mgtTagName);
+  const unknownVersion = ' Unknown likely <3.0.0';
+  const version = element => (element as any).version || unknownVersion;
+  if (mgtElement) {
+    return (classOrDescriptor: CustomElementConstructor) => {
+      // tslint:disable-next-line: no-console
+      console.error(
+        `Tag name ${mgtTagName} is already defined using class ${mgtElement.name} version ${version(mgtElement)}\n`,
+        `Currently registering class ${classOrDescriptor.name} with version ${version(classOrDescriptor)}\n`,
+        'Please use the disambiguation feature to define a unique tag name for this component see: https://github.com/microsoftgraph/microsoft-graph-toolkit/tree/main/packages/mgt-components#disambiguation'
+      );
+      return classOrDescriptor;
+    };
+  }
+  return litElement(mgtTagName);
 };
