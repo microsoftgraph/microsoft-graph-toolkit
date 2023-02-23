@@ -30,7 +30,7 @@ By disambiguating tag names of Microsoft Graph Toolkit components, you can use y
 
 ### When using no framework web parts
 
-When building SharePoint Framework web parts without a JavaScript framework the `@microsoft/mgt-components` library must be asynchronously loaded after configuring the disambiguation setting. No helper library is necessary as dynamic imports are sufficient. After the browser has loaded the `@microsoft/mgt-components` library any tags which may have already been rendered to the DOM are automatically upgraded and have the custom behavior attached to them.
+When building SharePoint Framework web parts without a JavaScript framework the `@microsoft/mgt-components` library must be asynchronously loaded after configuring the disambiguation setting. No helper library is necessary as dynamic imports are sufficient. After the browser has loaded the `@microsoft/mgt-components` library any tags which had already been rendered to the DOM without an existing custom element registration will automatically have the loaded custom behavior attached to them.
 
 Below is a minimal example web part that demonstrates how to use MGT with disambiguation in SharePoint Framework Web parts. A more complete example is available in the [No Framework Web Part Sample](https://github.com/microsoftgraph/microsoft-graph-toolkit/blob/main/samples/sp-mgt/src/webparts/helloWorld/HelloWorldWebPart.ts).
 
