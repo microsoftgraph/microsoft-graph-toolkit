@@ -418,7 +418,7 @@ export class MgtTeamsChannelPicker extends MgtTemplatedComponent {
       <fluent-breadcrumb title=${this._selectedItemState.item.displayName}>
         <fluent-breadcrumb-item>
           <span slot="start">${icon}</span>
-          <span slot="end" class="team-parent-name">${parentName}</span>
+          <span class="team-parent-name">${parentName}</span>
           <span slot="separator" class="arrow">${getSvg(SvgIcon.TeamSeparator, '#000000')}</span>
         </fluent-breadcrumb-item>
         <fluent-breadcrumb-item>${channelName}</fluent-breadcrumb-item>
