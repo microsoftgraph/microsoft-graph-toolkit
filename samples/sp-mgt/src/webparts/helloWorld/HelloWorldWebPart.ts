@@ -4,7 +4,7 @@ import styles from './HelloWorldWebPart.module.scss';
 
 import { Providers } from '@microsoft/mgt-element';
 import { SharePointProvider } from '@microsoft/mgt-sharepoint-provider';
-// import { customElementHelper } from '@microsoft/mgt-element/dist/es6/components/customElementHelper';
+import { customElementHelper } from '@microsoft/mgt-element/dist/es6/components/customElementHelper';
 import { importMgtComponentsLibrary } from '@microsoft/mgt-spfx-utils';
 
 export default class HelloWorldWebPart extends BaseClientSideWebPart<Record<string, unknown>> {
@@ -15,20 +15,16 @@ export default class HelloWorldWebPart extends BaseClientSideWebPart<Record<stri
     if (!Providers.globalProvider) {
       Providers.globalProvider = new SharePointProvider(this.context);
     }
-    // customElementHelper.withDisambiguation('sp-mgt-no-framework-client-side-solution');
+    customElementHelper.withDisambiguation('sp-mgt-no-framework-client-side-solution');
     return super.onInit();
   }
 
+  private onScriptsLoadedSuccessfully() {
+    this.render();
+  }
+
   public render(): void {
-    importMgtComponentsLibrary(
-      this._hasImportedMgtScripts,
-      () => {
-        // intentionally empty
-      },
-      e => {
-        // intentionally empty
-      }
-    );
+    importMgtComponentsLibrary(this._hasImportedMgtScripts, this.onScriptsLoadedSuccessfully, this.setErrorMessage);
 
     this.domElement.innerHTML = `
     <section class="${styles.helloWorld} ${this.context.sdks.microsoftTeams ? styles.teams : ''}">
@@ -38,21 +34,30 @@ export default class HelloWorldWebPart extends BaseClientSideWebPart<Record<stri
   }
 
   private _renderMgtComponents(): string {
-    return `
-      <div class="${styles.container}">
-        <mgt-person
-          show-presence
-          person-query="me"
-          view="twoLines"
-          person-card="hover"
-        ></mgt-person>
-        <mgt-people></mgt-people>
-        <mgt-agenda></mgt-agenda>
-        <mgt-people-picker></mgt-people-picker>
-        <mgt-teams-channel-picker></mgt-teams-channel-picker>
-        <mgt-tasks></mgt-tasks>
-      </div>
-`;
+    return this._hasImportedMgtScripts
+      ? `
+        <div class="${styles.container}">
+          <mgt-person
+            show-presence
+            person-query="me"
+            view="twoLines"
+            person-card="hover"
+          ></mgt-person>
+          <mgt-people></mgt-people>
+          <mgt-agenda></mgt-agenda>
+          <mgt-people-picker></mgt-people-picker>
+          <mgt-teams-channel-picker></mgt-teams-channel-picker>
+          <mgt-tasks></mgt-tasks>
+        </div>
+`
+      : '';
+  }
+
+  private setErrorMessage(e?: Error): void {
+    if (e) this.renderError(e);
+
+    this._errorMessage = 'An error ocurred loading MGT scripts';
+    this.render();
   }
 
   private _renderErrorMessage(): string {
