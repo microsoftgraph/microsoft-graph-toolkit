@@ -955,8 +955,8 @@ export class MgtFileList extends MgtTemplatedComponent {
 
     // remove selected or focused classes
     const removeClass = className === 'focused' ? 'selected' : 'focused';
-    for (let i = 0; i < fileList.children.length; i++) {
-      fileList.children[i].classList.remove(removeClass);
+    for (const node of fileList.children) {
+      node.classList.remove(removeClass);
     }
   }
 
