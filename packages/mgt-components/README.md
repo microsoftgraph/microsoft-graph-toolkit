@@ -114,8 +114,6 @@ export default class MgtWebPart extends BaseClientSideWebPart<Record<string, unk
   }
 
   public render(): void {
-    importMgtComponentsLibrary(this._hasImportedMgtScripts, this.onScriptsLoadedSuccessfully, this.setErrorMessage);
-
     this.domElement.innerHTML = `
     <section class="${styles.helloWorld} ${this.context.sdks.microsoftTeams ? styles.teams : ''}">
       <mgt-foo-login></mgt-foo-login>
