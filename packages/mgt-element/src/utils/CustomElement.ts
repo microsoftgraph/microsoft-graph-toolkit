@@ -18,14 +18,16 @@ import { customElementHelper } from '../components/customElementHelper';
 export const customElement = (tagName: string): ((classOrDescriptor: unknown) => any) => {
   const mgtTagName = `${customElementHelper.prefix}-${tagName}`;
   const mgtElement = customElements.get(mgtTagName);
-  const unknownVersion = 'Unknown possibly <3.0.0';
-  const version = (mgtElement as any).version || unknownVersion;
+  const unknownVersion = ' Unknown likely <3.0.0';
+  const version = element => (element as any).version || unknownVersion;
   if (mgtElement) {
-    // tslint:disable-next-line: no-console
-    console.error(`Element with tag name ${mgtTagName} already exists, using for using ${mgtElement.name}@${version}`);
-    return (classOrDescriptor: unknown) => {
+    return (classOrDescriptor: CustomElementConstructor) => {
       // tslint:disable-next-line: no-console
-      console.error(`${mgtTagName} for wants to use v${(classOrDescriptor as any).version || unknownVersion}`);
+      console.error(
+        `Tag name ${mgtTagName} is already defined using class ${mgtElement.name} version ${version(mgtElement)}\n`,
+        `Currently registering class ${classOrDescriptor.name} with version ${version(classOrDescriptor)}\n`,
+        'Please use the disambiguation feature to define a unique tag name for this component see: https://github.com/microsoftgraph/microsoft-graph-toolkit/tree/main/packages/mgt-components#disambiguation'
+      );
       return classOrDescriptor;
     };
   }
