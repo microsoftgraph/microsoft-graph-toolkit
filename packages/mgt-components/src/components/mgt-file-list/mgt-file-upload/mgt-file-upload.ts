@@ -202,14 +202,14 @@ interface FileWithPath extends File {
  * @cssprop --file-upload-dialog-keep-both-button-background-color - {Color} background color of the keep-both button in the dialog box.
  * @cssprop --file-upload-dialog-keep-both-button-background-color-hover - {Color} background color of the keep-both button in the dialog box when you hover on it.
  * @cssprop --file-upload-dialog-keep-both-button-text-color - {Color} text color of the keep-both button in the dialog box.
- * @cssprop --file-upload-border-drag - {String} the border of the file list when you upload files via drag and drop.
- * @cssprop --file-upload-button-border - {String} the border of the file upload button.
- * @cssprop --file-upload-dialog-replace-button-border - {String} the border of the file upload replace button in the dialog box.
- * @cssprop --file-upload-dialog-keep-both-button-border - {String} the border of the file upload keep both button in the dialog box.
- * @cssprop --file-upload-dialog-border - {String} the border of the file upload dialog box.
- * @cssprop --file-upload-dialog-width - {String} the width of the file upload dialog box.
- * @cssprop --file-upload-dialog-height - {String} the height of the file upload dialog box.
- * @cssprop --file-upload-dialog-padding - {String} the padding of the file upload dialog box.
+ * @cssprop --file-upload-border-drag - {String} the border of the file list when you upload files via drag and drop. Default value is 1px dashed #0078d4.
+ * @cssprop --file-upload-button-border - {String} the border of the file upload button. Default value is none.
+ * @cssprop --file-upload-dialog-replace-button-border - {String} the border of the file upload replace button in the dialog box. Default value is
+ * @cssprop --file-upload-dialog-keep-both-button-border - {String} the border of the file upload keep both button in the dialog box. Default value is none.
+ * @cssprop --file-upload-dialog-border - {String} the border of the file upload dialog box. Default value is "1px solid var(--neutral-fill-rest)".
+ * @cssprop --file-upload-dialog-width - {String} the width of the file upload dialog box. Default value is auto.
+ * @cssprop --file-upload-dialog-height - {String} the height of the file upload dialog box. Default value is auto.
+ * @cssprop --file-upload-dialog-padding - {String} the padding of the file upload dialog box. Default value is 24px;
  */
 
 @customElement('file-upload')

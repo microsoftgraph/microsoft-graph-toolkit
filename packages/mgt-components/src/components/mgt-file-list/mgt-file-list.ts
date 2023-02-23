@@ -63,18 +63,18 @@ registerFluentComponents(fluentProgressRing, fluentDesignSystemProvider);
  *
  * NOTE: This component also allows customizing the tokens from mgt-file and mgt-file-upload components.
  * @cssprop --file-list-background-color - {Color} the background color of the component.
- * @cssprop --file-list-box-shadow - {String} the box-shadow syle of the component.
- * @cssprop --file-list-border-radius - {Length} the file list box border radius.
- * @cssprop --file-list-border - {String} the file list border style.
- * @cssprop --file-list-padding -{String} the file list padding.
- * @cssprop --file-list-margin -{String} the file list margin.
+ * @cssprop --file-list-box-shadow - {String} the box-shadow syle of the component. Default value is --elevation-shadow-card-rest.
+ * @cssprop --file-list-border-radius - {Length} the file list box border radius. Default value is 8px.
+ * @cssprop --file-list-border - {String} the file list border style. Default value is none.
+ * @cssprop --file-list-padding -{String} the file list padding.  Default value is 0px.
+ * @cssprop --file-list-margin -{String} the file list margin. Default value is 0px.
  * @cssprop --show-more-button-background-color - {Color} the "show more" button background color.
  * @cssprop --show-more-button-background-color--hover - {Color} the "show more" button background color on hover.
- * @cssprop --show-more-button-font-size - {String} the "show more" text font size.
- * @cssprop --show-more-button-padding - {String} the "show more" button padding.
- * @cssprop --show-more-button-border-bottom-right-radius - {String} the "show more" button bottom right border radius
- * @cssprop --show-more-button-border-bottom-left-radius - {String} the "show more" button bottom left border radius
- * @cssprop --progress-ring-size -{String} Progress ring height and width
+ * @cssprop --show-more-button-font-size - {String} the "show more" text font size. Default value is 12px.
+ * @cssprop --show-more-button-padding - {String} the "show more" button padding. Default value is 6px.
+ * @cssprop --show-more-button-border-bottom-right-radius - {String} the "show more" button bottom right border radius. Default value is 8px.
+ * @cssprop --show-more-button-border-bottom-left-radius - {String} the "show more" button bottom left border radius. Default value is 8px;
+ * @cssprop --progress-ring-size -{String} Progress ring height and width. Default value is 24px.
  */
 
 @customElement('file-list')
