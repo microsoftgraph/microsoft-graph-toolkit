@@ -782,6 +782,7 @@ export class MgtPeoplePicker extends MgtTemplatedComponent {
            @focus="${this.gainedFocus}"
            @keydown="${this.onUserKeyDown}"
            @keyup="${this.onUserKeyUp}"
+           @input="${this.onUserInput}"
            @blur=${this.lostFocus}
            ?disabled=${this.disabled}
          />
@@ -1449,7 +1450,6 @@ export class MgtPeoplePicker extends MgtTemplatedComponent {
     const isPaste = (event.ctrlKey || event.metaKey) && event.key === 'v';
     const isCmdOrCtrlKey = ['ControlLeft', 'ControlRight'].includes(event.code) || event.ctrlKey || event.metaKey;
     const isArrowKey = ['ArrowDown', 'ArrowRight', 'ArrowUp', 'ArrowLeft'].includes(event.code);
-    const input = event.target as HTMLInputElement;
 
     if ((!isPaste && isCmdOrCtrlKey) || isArrowKey) {
       if (isCmdOrCtrlKey || ['ArrowLeft', 'ArrowRight'].includes(event.code)) {
@@ -1507,17 +1507,23 @@ export class MgtPeoplePicker extends MgtTemplatedComponent {
       }
       return;
     }
+  }
 
+  private onUserInput(event: InputEvent) {
+    console.log('userInput', event);
+    const input = event.target as HTMLInputElement;
     this.userInput = input.value;
-    const validEmail = isValidEmail(this.userInput);
-    if (validEmail && this.allowAnyEmail) {
-      if (this._setAnyEmail) {
-        this.handleAnyEmail();
+    if (this.userInput) {
+      const validEmail = isValidEmail(this.userInput);
+      if (validEmail && this.allowAnyEmail) {
+        if (this._setAnyEmail) {
+          this.handleAnyEmail();
+        }
+      } else {
+        this.handleUserSearch();
       }
-    } else {
-      this.handleUserSearch();
+      this._setAnyEmail = false;
     }
-    this._setAnyEmail = false;
   }
 
   private handleAnyEmail() {
