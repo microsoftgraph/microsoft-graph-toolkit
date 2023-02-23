@@ -18,15 +18,15 @@ $file-padding-inline-start: var(--file-padding-inline-start, 14px);
 $file-padding: var(--file-padding, 0px);
 $file-margin: var(--file-margin, 0px);
 
-$line1-font-size: var(--file-line1-font-size, var(--last-modified-font-size, #{$ms-font-size-s}));
+$line1-font-size: var(--file-line1-font-size, var(--last-modified-font-size, #{$ms-font-size-12}));
 $line1-font-weight: var(--file-line1-font-weight, $font-weight);
 $line1-text-transform: var(--file-line1-text-transform, initial);
 
-$line2-font-size: var(--file-line2-font-size, var(--last-modified-font-size, #{$ms-font-size-s}));
+$line2-font-size: var(--file-line2-font-size, var(--last-modified-font-size, #{$ms-font-size-12}));
 $line2-font-weight: var(--file-line2-font-weight, $font-weight);
 $line2-text-transform: var(--file-line2-text-transform, initial);
 
-$line3-font-size: var(--file-line3-font-size, var(--size-font-size, #{$ms-font-size-s}));
+$line3-font-size: var(--file-line3-font-size, var(--size-font-size, #{$ms-font-size-12}));
 $line3-font-weight: var(--file-line3-font-weight, $font-weight);
 $line3-text-transform: var(--file-line3-text-transform, initial);
 
