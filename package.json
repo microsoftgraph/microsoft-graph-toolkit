@@ -17,10 +17,12 @@
     "nohoist": [
       "**/@microsoft/sp*",
       "**/@microsoft/eslint*",
-      "**/@rushstack/*"
+      "**/@rushstack/*",
+      "**/@vue/*"
     ]
   },
   "scripts": {
+    "analyze": "custom-elements-manifest analyze --litelement --globs \"./packages/*/src/**/*.ts\"",
     "build": "npm run prettier:check && npm run clean && lerna run build --scope @microsoft/*",
     "build:compile": "npm run prettier:check && npm run clean && lerna run build:compile --scope @microsoft/*",
     "build:mgt": "cd ./packages/mgt && npm run build",
@@ -51,11 +53,11 @@
     "prettier:check": "npm run prettier:base -- --check \"packages/**/*.{ts,tsx}\"",
     "prettier:write": "npm run prettier:base -- --write \"packages/**/*.{ts,tsx}\"",
     "storybook": "start-storybook -p 6006 -s assets",
-    "storybook:dev": "npm run build:compile && wca analyze packages --format json --outFile custom-elements.json",
+    "storybook:dev": "npm run build:compile && npm run analyze",
     "storybook:watch": "npm-run-all --parallel watch storybook:bundle:watch storybook",
     "storybook:bundle": "rollup -c ./.storybook/rollup.config.js",
     "storybook:bundle:watch": "rollup -c ./.storybook/rollup.config.js --watch",
-    "storybook:build": "npm run storybook:bundle && npm run storybook:dev && build-storybook -s assets && cpx .storybook/CNAME storybook-static",
+    "storybook:build": "npm run storybook:bundle && npm run storybook:dev && build-storybook -s assets && cpx .storybook/CNAME storybook-static && node ./.storybook/fix-title.js 'Microsoft Graph Toolkit Playground' ../",
     "storybook:deploy": "npm run storybook:build && storybook-to-ghpages -e storybook-static",
     "setLicense": "gulp setLicense",
     "test": "jest",
@@ -74,6 +76,7 @@
     "@babel/preset-env": "^7.12.7",
     "@babel/preset-react": "^7.12.7",
     "@babel/preset-typescript": "^7.12.7",
+    "@custom-elements-manifest/analyzer": "^0.6.6",
     "@octokit/rest": "^18.5.3",
     "@open-wc/testing-helpers": "^2.1.4",
     "@storybook/addon-a11y": "^6.4.4",
@@ -133,6 +136,7 @@
     "sass": "^1.29.0",
     "shx": "^0.3.3",
     "storybook-addon-web-components-knobs": "^0.3.20",
+    "storybook-version": "^0.1.1",
     "testing-library__dom": "^7.29.4-beta.1",
     "ts-jest": "^29.0.3",
     "tslint": "^6.1.3",

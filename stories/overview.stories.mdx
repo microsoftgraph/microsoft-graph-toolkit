@@ -1,4 +1,6 @@
-import { Meta } from '@storybook/addon-docs';
+import { Meta, Source } from '@storybook/addon-docs';
+import { PACKAGE_VERSION } from '@microsoft/mgt';
+import { versionInfo } from '../.storybook/versionInfo';
 
 <Meta title="Overview" />
 
@@ -10,21 +12,25 @@ The Microsoft Graph Toolkit is a collection of reusable, framework-agnostic comp
 
 The Microsoft Graph Toolkit makes it easy to use Microsoft Graph in your application. In the following example, a signed in user and their calendar events are displayed with just two lines of code by using the [Login](?path=/story/components-mgt-login--login) and [Agenda](?path=/story/components-mgt-agenda--simple) components.
 
+<p>This site is providing documentation for version {PACKAGE_VERSION} of the Microsoft Graph Toolkit.</p>
+
 ### Installing the Microsoft Graph Toolkit
 
 It's easy to get started! Add the Toolkit via our `mgt-loader` or via npm and you are ready to go!
 
 #### Via the mgt-loader
 
-```html
-<script src="https://unpkg.com/@microsoft/mgt@2/dist/bundle/mgt-loader.js"></script>
-```
+<Source
+ language="html"
+ code={`<script src="https://unpkg.com/@microsoft/mgt@${versionInfo.major}/dist/bundle/mgt-loader.js"></script>`}
+/>
 
 #### Via npm
 
-```shell
-npm i @microsoft/mgt
-```
+<Source
+ language="shell"
+ code={`npm install @microsoft/mgt@${PACKAGE_VERSION}`}
+/>
 
 ### What's in the Microsoft Graph Toolkit?
 
@@ -42,10 +48,12 @@ The components are also available as [React components](https://learn.microsoft.
 | [Agenda](?path=/story/components-mgt-agenda--simple)                                           | Displays events in a user or group's calendar.                                                                                                   |
 | [People picker](?path=/story/components-mgt-people-picker--people-picker)                      | Provides the ability to search for people and renders the list of results.                                                                       |
 | [Person card](?path=/story/components-mgt-person-card--person-card)                            | A flyout used on the person component to display more profile information about a user.                                                          |
+| [Picker](?path=/story/components-mgt-picker--picker)                                           | Displays a generic picker that allows for picking of Microsoft Graph entities.                                                                   |
 | [File](?path=/story/components-mgt-file--file)                                                 | Represents a file or folder with icon, filename, author, and more.                                                                               |
 | [File list](?path=/story/components-mgt-file-list--file-list)                                  | Displays a list of multiple files or folders.                                                                                                    |
 | [Get](?path=/story/components-mgt-get--get-email)                                              | Make a GET query to any Microsoft Graph API directly in your HTML.                                                                               |
 | [Teams Channel picker](?path=/story/components-mgt-teams-channel-picker--teams-channel-picker) | Provides the ability to search for Microsoft Teams channels to select a channel from a rendered list of results.                                 |
+| [Theme toggle](?path=/story/components-mgt-theme-toggle--user-preference-driven)               | Provides the ability to toggle between light and dark themes.                                                                                    |
 | [To Do](?path=/story/components-mgt-todo--tasks)                                               | Displays and enables adding, removing, completing, or editing of tasks from Microsoft To Do.                                                     |
 | [Tasks](?path=/story/components-mgt-tasks--tasks)                                              | Displays and enables adding, removing, completing, or editing of tasks from Microsoft Planner or Microsoft To Do.                                |
 

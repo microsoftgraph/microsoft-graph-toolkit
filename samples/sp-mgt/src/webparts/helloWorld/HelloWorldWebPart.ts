@@ -36,19 +36,19 @@ export default class HelloWorldWebPart extends BaseClientSideWebPart<Record<stri
   private _renderMgtComponents(): string {
     return this._hasImportedMgtScripts
       ? `
-        <div class="${styles.container}">
-          <mgt-person
-            show-presence
-            person-query="me"
-            view="twoLines"
-            person-card="hover"
-          ></mgt-person>
-          <mgt-people></mgt-people>
-          <mgt-agenda></mgt-agenda>
-          <mgt-people-picker></mgt-people-picker>
-          <mgt-teams-channel-picker></mgt-teams-channel-picker>
-          <mgt-tasks></mgt-tasks>
-        </div>
+      <div class="${styles.container}">
+        <mgt-contoso-person
+          show-presence
+          person-query="me"
+          view="twoLines"
+          person-card="hover"
+        ></mgt-contoso-person>
+        <mgt-contoso-people></mgt-contoso-people>
+        <mgt-contoso-agenda></mgt-contoso-agenda>
+        <mgt-contoso-people-picker></mgt-contoso-people-picker>
+        <mgt-contoso-teams-channel-picker></mgt-contoso-teams-channel-picker>
+        <mgt-contoso-tasks></mgt-contoso-tasks>
+      </div>
 `
       : '';
   }

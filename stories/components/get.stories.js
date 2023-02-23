@@ -10,7 +10,7 @@ import { withCodeEditor } from '../../.storybook/addons/codeEditorAddon/codeAddo
 
 export default {
   title: 'Components / mgt-get',
-  component: 'mgt-get',
+  component: 'get',
   decorators: [withCodeEditor]
 };
 
@@ -148,7 +148,7 @@ export const UsingImageType = () => html`
 `;
 
 export const UsingCaching = () => html`
-  <mgt-get resource="me" caching-enabled="true">
+  <mgt-get resource="me" cache-enabled="true">
     <template>
       Hello {{ displayName }}
     </template>

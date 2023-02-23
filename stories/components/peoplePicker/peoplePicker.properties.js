@@ -10,7 +10,7 @@ import { withCodeEditor } from '../../../.storybook/addons/codeEditorAddon/codeA
 
 export default {
   title: 'Components / mgt-people-picker / Properties',
-  component: 'mgt-people-picker',
+  component: 'people-picker',
   decorators: [withCodeEditor]
 };
 
@@ -234,7 +234,7 @@ export const pickerDefaultSelectedUserAndGroupIds = () => html`
 
 export const pickerAllowAnyEmail = () => html`
   <mgt-people-picker allow-any-email></mgt-people-picker>
-  <!-- Type any email address and press comma(,), semicolon(;), tab or enter to add it -->
+  <!-- Type any email address and press comma(,), semicolon(;), or enter keys to add it -->
   <script type="module">
     const peoplePicker = document.querySelector('mgt-people-picker');
     peoplePicker.selectedPeople = [{mail: "any@mail.com", displayName: "any@mail.com"}]

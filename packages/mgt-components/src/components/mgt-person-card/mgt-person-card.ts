@@ -65,7 +65,7 @@ type HoverStatesActions = 'email' | 'chat' | 'video' | 'call';
  * @class MgtPersonCard
  * @extends {MgtTemplatedComponent}
  *
- * @fires expanded - Fired when expanded details section is opened
+ * @fires {CustomEvent<null>} expanded - Fired when expanded details section is opened
  *
  * @cssprop --person-card-display-name-font-size - {Length} Font size of display name title
  * @cssprop --person-card-display-name-line-height - {Length} Line height of display name
@@ -784,26 +784,26 @@ export class MgtPersonCard extends MgtTemplatedComponent {
     });
 
     return html`
-        <fluent-tabs
-          orientation="horizontal"
-          activeindicator
-          @wheel=${(e: WheelEvent) => this.handleSectionScroll(e)}
+      <fluent-tabs
+        orientation="horizontal"
+        activeindicator
+        @wheel=${(e: WheelEvent) => this.handleSectionScroll(e)}
+      >
+        <fluent-tab
+          class="${overviewClasses}"
+          slot="tab"
+          @keyup="${() => this.updateCurrentSection(null)}"
+          @click=${() => this.updateCurrentSection(null)}
         >
-          <fluent-tab
-            class="${overviewClasses}"
-            slot="tab"
-            @keyup="${() => this.updateCurrentSection(null)}"
-            @click=${() => this.updateCurrentSection(null)}
-          >
-            <div>${getSvg(SvgIcon.Overview)}</div>
-          </fluent-tab>
-          ${additionalSectionTemplates}
-          <fluent-tab-panel slot="tabpanel" >
-            <div class="overview-panel">${!this._currentSection ? this.renderOverviewSection() : null}</div>
-          </fluent-tab-panel>
-          ${additionalPanelTemplates}
-        </fluent-tabs>
-      `;
+          <div>${getSvg(SvgIcon.Overview)}</div>
+        </fluent-tab>
+        ${additionalSectionTemplates}
+        <fluent-tab-panel slot="tabpanel" >
+          <div class="overview-panel">${!this._currentSection ? this.renderOverviewSection() : null}</div>
+        </fluent-tab-panel>
+        ${additionalPanelTemplates}
+      </fluent-tabs>
+    `;
   }
 
   /**

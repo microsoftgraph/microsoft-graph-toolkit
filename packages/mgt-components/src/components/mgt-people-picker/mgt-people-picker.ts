@@ -68,7 +68,7 @@ interface IFocusable {
  * @class MgtPicker
  * @extends {MgtTemplatedComponent}
  *
- * @fires selectionChanged - Fired when selection changes
+ * @fires {CustomEvent<IDynamicPerson[]>} selectionChanged - Fired when set of selected people changes
  *
  * @cssprop --color - {Color} Default font color
  *
@@ -502,7 +502,6 @@ export class MgtPeoplePicker extends MgtTemplatedComponent {
   private _type: PersonType = PersonType.person;
   private _groupType: GroupType = GroupType.any;
   private _userType: UserType = UserType.any;
-  private _currentSelectedUser: IDynamicPerson;
   private _userFilters: string;
   private _groupFilters: string;
   private _peopleFilters: string;
@@ -520,8 +519,19 @@ export class MgtPeoplePicker extends MgtTemplatedComponent {
   // current user index to the left of the highlighted users
   private _currentHighlightedUserPos: number = 0;
 
+  /**
+   * Checks if the input is focused.
+   */
   @state() private _isFocused = false;
 
+  /**
+   * Switch to determine if a typed email can be set.
+   */
+  @state() private _setAnyEmail: boolean = false;
+
+  /**
+   * List of people found from the graph calls.
+   */
   @state() private _foundPeople: IDynamicPerson[];
 
   private _mouseLeaveTimeout;
@@ -1349,7 +1359,7 @@ export class MgtPeoplePicker extends MgtTemplatedComponent {
   }
 
   /**
-   * Adds debounce method for set delay on user input
+   * Handles input from the key up events on the keyboard.
    */
   private onUserKeyUp(event: KeyboardEvent): void {
     const isPaste = (event.ctrlKey || event.metaKey) && event.key === 'v';
@@ -1410,6 +1420,7 @@ export class MgtPeoplePicker extends MgtTemplatedComponent {
 
     if (event.code === 'Comma' || event.code === 'Semicolon') {
       if (this.allowAnyEmail) {
+        this._setAnyEmail = true;
         event.preventDefault();
         event.stopPropagation();
       }
@@ -1419,10 +1430,13 @@ export class MgtPeoplePicker extends MgtTemplatedComponent {
     this.userInput = input.value;
     const validEmail = isValidEmail(this.userInput);
     if (validEmail && this.allowAnyEmail) {
-      this.handleAnyEmail();
+      if (this._setAnyEmail) {
+        this.handleAnyEmail();
+      }
     } else {
       this.handleUserSearch();
     }
+    this._setAnyEmail = false;
   }
 
   private handleAnyEmail() {
@@ -1549,9 +1563,9 @@ export class MgtPeoplePicker extends MgtTemplatedComponent {
           this.addPerson(foundPerson);
           this.hideFlyout();
           this.input.value = '';
-        } else if (this.allowAnyEmail) {
-          this.handleAnyEmail();
         }
+      } else if (this.allowAnyEmail) {
+        this.handleAnyEmail();
       }
     }
 

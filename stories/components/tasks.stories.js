@@ -10,7 +10,7 @@ import { withCodeEditor } from '../../.storybook/addons/codeEditorAddon/codeAddo
 
 export default {
   title: 'Components / mgt-tasks',
-  component: 'mgt-tasks',
+  component: 'tasks',
   decorators: [withCodeEditor]
 };
 

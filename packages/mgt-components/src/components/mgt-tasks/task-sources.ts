@@ -32,7 +32,7 @@ import {
 } from './mgt-tasks.graph.todo';
 
 /**
- * Itask
+ * ITask
  *
  * @export
  * @interface ITask
@@ -611,7 +611,7 @@ export class TodoTaskSource extends TaskSourceBase implements ITaskSource {
    * @returns {Promise<any>}
    * @memberof TodoTaskSource
    */
-  public async addTask(newTask: ITask): Promise<any> {
+  public async addTask(newTask: ITask): Promise<OutlookTask> {
     const task = {
       parentFolderId: newTask.immediateParentId,
       subject: newTask.name
