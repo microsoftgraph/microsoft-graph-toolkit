@@ -16,7 +16,7 @@ $file-list-padding: var(--file-list-padding, 0);
 $file-list-margin: var(--file-list-margin, 0);
 
 $show-more-button-font-size: var(--show-more-button-font-size, 12px);
-$show-more-button-padding: var(--show-more-button-padding, 6px);
+$show-more-button-padding: var(--show-more-button-padding, 0px);
 $show-more-button-border-bottom-right-radius: var(
   --show-more-button-border-bottom-right-radius,
   $file-list-border-radius
@@ -77,12 +77,13 @@ $progress-ring-size: var(--progress-ring-size, 24px);
 
   .show-more {
     text-align: center;
-    cursor: pointer;
     font-size: $show-more-button-font-size;
     padding: $show-more-button-padding;
     border-bottom-right-radius: $show-more-button-border-bottom-right-radius;
     border-bottom-left-radius: $show-more-button-border-bottom-left-radius;
     background-color: $show-more-button-background-color;
+    border-top-left-radius: 0px;
+    border-top-right-radius: 0px;
 
     &:hover {
       background-color: $show-more-button-background-color--hover;

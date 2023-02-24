@@ -71,7 +71,7 @@ registerFluentComponents(fluentProgressRing, fluentDesignSystemProvider);
  * @cssprop --show-more-button-background-color - {Color} the "show more" button background color.
  * @cssprop --show-more-button-background-color--hover - {Color} the "show more" button background color on hover.
  * @cssprop --show-more-button-font-size - {String} the "show more" text font size. Default value is 12px.
- * @cssprop --show-more-button-padding - {String} the "show more" button padding. Default value is 6px.
+ * @cssprop --show-more-button-padding - {String} the "show more" button padding. Default value is 0px.
  * @cssprop --show-more-button-border-bottom-right-radius - {String} the "show more" button bottom right border radius. Default value is 8px.
  * @cssprop --show-more-button-border-bottom-left-radius - {String} the "show more" button bottom left border radius. Default value is 8px;
  * @cssprop --progress-ring-size -{String} Progress ring height and width. Default value is 24px.
@@ -639,14 +639,15 @@ export class MgtFileList extends MgtTemplatedComponent {
       `;
     } else {
       return html`
-        <a
+        <fluent-button
+          appearance="stealth"
           id="show-more"
           class="show-more"
           @click=${() => this.renderNextPage()}
           tabindex="0"
           @keydown=${this.onShowMoreKeyDown}>
           <span class="show-more-text">${this.strings.showMoreSubtitle}</span>
-        </a>`;
+        </fluent-button>`;
     }
   }
 
