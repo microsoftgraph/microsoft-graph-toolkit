@@ -3,7 +3,7 @@
   "solution": {
     "name": "sp-mgt-no-framework-client-side-solution",
     "id": "8606d7ab-8b1e-461f-b611-416054c65000",
-    "version": "1.0.0.1",
+    "version": "1.0.0.2",
     "includeClientSideAssets": true,
     "skipFeatureDeployment": true,
     "isDomainIsolated": false,
