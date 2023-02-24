@@ -1510,7 +1510,6 @@ export class MgtPeoplePicker extends MgtTemplatedComponent {
   }
 
   private onUserInput(event: InputEvent) {
-    console.log('userInput', event);
     const input = event.target as HTMLInputElement;
     this.userInput = input.value;
     if (this.userInput) {
