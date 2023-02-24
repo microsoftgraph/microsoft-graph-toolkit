@@ -578,14 +578,22 @@ export class MgtFileList extends MgtTemplatedComponent {
         <ul
           id="file-list"
           class="file-list"
-          tabindex="0"
-          @keydown="${this.onFileListKeyDown}"
           @blur="${this.onFileListOut}">
+          <li
+            tabindex="0"
+            class="file-item"
+            @keydown="${this.onFileListKeyDown}"
+            @click=${(e: UIEvent) => this.handleItemSelect(this.files[0], e)}>
+            ${this.renderFile(this.files[0])}
+          </li>
           ${repeat(
-            this.files,
+            this.files.slice(1),
             f => f.id,
             f => html`
-              <li class="file-item" @click=${(e: UIEvent) => this.handleItemSelect(f, e)}>
+              <li
+                class="file-item"
+                @keydown="${this.onFileListKeyDown}"
+                @click=${(e: UIEvent) => this.handleItemSelect(f, e)}>
                 ${this.renderFile(f)}
               </li>
             `
@@ -942,15 +950,18 @@ export class MgtFileList extends MgtTemplatedComponent {
    * @param className background class to be applied
    */
   private updateItemBackgroundColor(fileList: Element, focusedItem: HTMLElement, className: string) {
-    // reset background color
-    for (let i = 0; i < fileList.children.length; i++) {
-      fileList.children[i].classList.remove(className);
+    // reset background color and remove tabindex
+    for (const node of fileList.children) {
+      node.classList.remove(className);
+      node.removeAttribute('tabindex');
     }
 
     // set focused item background color
     if (focusedItem) {
       focusedItem.classList.add(className);
       focusedItem.scrollIntoView({ behavior: 'smooth', block: 'nearest', inline: 'start' });
+      focusedItem.setAttribute('tabindex', '0');
+      focusedItem.focus();
     }
 
     // remove selected or focused classes
