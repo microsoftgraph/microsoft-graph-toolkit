@@ -4,6 +4,8 @@
   "private": true,
   "dependencies": {
     "@microsoft/mgt-chat": "*",
+    "@microsoft/mgt-react": "*",
+    "@microsoft/mgt-msal2-provider": "*",
     "@testing-library/jest-dom": "^5.16.5",
     "@testing-library/react": "^13.4.0",
     "@testing-library/user-event": "^13.5.0",
@@ -28,7 +30,11 @@
     "extends": [
       "react-app",
       "react-app/jest"
-    ]
+    ],
+    "rules": {
+      "react/jsx-uses-react": "off",
+      "react/react-in-jsx-scope": "off"
+    }
   },
   "browserslist": {
     "production": [
