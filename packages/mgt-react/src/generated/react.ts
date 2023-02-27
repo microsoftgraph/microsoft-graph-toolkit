@@ -1,4 +1,4 @@
-import { ViewType,OfficeGraphInsightString,ResponseType,DataChangedDetail,IDynamicPerson,LoginViewType,PersonCardInteraction,PersonType,GroupType,UserType,AvatarSize,PersonViewType,TasksStringResource,TasksSource,TaskFilter,ITask,SelectedChannel,TodoFilter } from '@microsoft/mgt-components';
+import { ViewType,OfficeGraphInsightString,Command,ResponseType,DataChangedDetail,IDynamicPerson,LoginViewType,PersonCardInteraction,PersonType,GroupType,UserType,AvatarSize,PersonViewType,TasksStringResource,TasksSource,TaskFilter,ITask,SelectedChannel,TodoFilter } from '@microsoft/mgt-components';
 import { TemplateContext,ComponentMediaQuery,TemplateRenderedData } from '@microsoft/mgt-element';
 import * as MicrosoftGraph from '@microsoft/microsoft-graph-types';
 import * as MicrosoftGraphBeta from '@microsoft/microsoft-graph-types-beta';
@@ -42,6 +42,34 @@ export type FileProps = {
 	templateRendered?: (e: CustomEvent<TemplateRenderedData>) => void;
 }
 
+export type FileGridProps = {
+	commands?: Command<MicrosoftGraph.DriveItem>[];
+	pageSize?: number;
+	itemView?: ViewType;
+	maxUploadFile?: number;
+	enableFileUpload?: boolean;
+	fileListQuery?: string;
+	fileQueries?: string[];
+	files?: MicrosoftGraph.DriveItem[];
+	fileExtensions?: string[];
+	hideMoreFilesButton?: boolean;
+	maxFileSize?: number;
+	excludedFileExtensions?: string[];
+	siteId?: string;
+	driveId?: string;
+	groupId?: string;
+	listId?: string;
+	userId?: string;
+	itemId?: string;
+	itemPath?: string;
+	insightType?: OfficeGraphInsightString;
+	templateContext?: TemplateContext;
+	mediaQuery?: ComponentMediaQuery;
+	itemClick?: (e: CustomEvent<MicrosoftGraph.DriveItem>) => void;
+	selectionChanged?: (e: CustomEvent<MicrosoftGraph.DriveItem[]>) => void;
+	templateRendered?: (e: CustomEvent<TemplateRenderedData>) => void;
+}
+
 export type FileListProps = {
 	pageSize?: number;
 	itemView?: ViewType;
@@ -66,6 +94,33 @@ export type FileListProps = {
 	mediaQuery?: ComponentMediaQuery;
 	itemClick?: (e: CustomEvent<MicrosoftGraph.DriveItem>) => void;
 	selectionChanged?: (e: CustomEvent<MicrosoftGraph.DriveItem[]>) => void;
+	templateRendered?: (e: CustomEvent<TemplateRenderedData>) => void;
+}
+
+export type FileListCompositeProps = {
+	breadcrumbRootName?: string;
+	useGridView?: boolean;
+	fileListQuery?: string;
+	fileQueries?: string[];
+	files?: MicrosoftGraph.DriveItem[];
+	itemView?: ViewType;
+	fileExtensions?: string[];
+	pageSize?: number;
+	hideMoreFilesButton?: boolean;
+	maxFileSize?: number;
+	enableFileUpload?: boolean;
+	maxUploadFile?: number;
+	excludedFileExtensions?: string[];
+	siteId?: string;
+	driveId?: string;
+	groupId?: string;
+	listId?: string;
+	userId?: string;
+	itemId?: string;
+	itemPath?: string;
+	insightType?: OfficeGraphInsightString;
+	templateContext?: TemplateContext;
+	mediaQuery?: ComponentMediaQuery;
 	templateRendered?: (e: CustomEvent<TemplateRenderedData>) => void;
 }
 
@@ -237,7 +292,11 @@ export const Agenda = wrapMgt<AgendaProps>('agenda');
 
 export const File = wrapMgt<FileProps>('file');
 
+export const FileGrid = wrapMgt<FileGridProps>('file-grid');
+
 export const FileList = wrapMgt<FileListProps>('file-list');
+
+export const FileListComposite = wrapMgt<FileListCompositeProps>('file-list-composite');
 
 export const Get = wrapMgt<GetProps>('get');
 

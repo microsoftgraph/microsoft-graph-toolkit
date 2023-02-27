@@ -48,6 +48,8 @@ import { formatBytes, getRelativeDisplayDate } from '../../utils/Utils';
 
 registerFluentComponents(fluentProgressRing, fluentDesignSystemProvider, fluentButton);
 
+// export { Command };
+
 /**
  * The File List component displays a list of multiple folders and files by
  * using the file/folder name, an icon, and other properties specified by the developer.
@@ -128,7 +130,7 @@ export class MgtFileGrid extends MgtFileListBase {
   /**
    * Property to set the available actions on the file context menu
    *
-   * @type {Command<DriveItem>[]}
+   * @type {Command<MicrosoftGraph.DriveItem>[]}
    * @memberof MgtFileGrid
    */
   @property({
