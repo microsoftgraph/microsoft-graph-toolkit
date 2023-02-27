@@ -12,6 +12,7 @@ import { clearFilesCache, deleteDriveItem, renameDriveItem, shareDriveItem } fro
 import { styles } from './mgt-file-list-composite-css';
 import { fluentButton, fluentDialog, fluentTextField } from '@fluentui/web-components';
 import { registerFluentComponents } from '../../utils/FluentComponents';
+import { MgtFileGrid } from '../mgt-file-grid/mgt-file-grid';
 
 registerFluentComponents(fluentButton, fluentDialog, fluentTextField);
 
@@ -466,7 +467,8 @@ class MgtFileListComposite extends MgtFileListBase {
       const graph = Providers.globalProvider.graph.forComponent(this);
       await renameDriveItem(graph, this._activeFile, newFileName);
       // need to refresh the list being shown....
-      clearFilesCache();
+      const grid = this.renderRoot.querySelector('mgt-file-grid') as MgtFileGrid;
+      grid.reload(true);
       this.renameDialogVisible = false;
       this._activeFile = null;
       this.requestStateUpdate();
