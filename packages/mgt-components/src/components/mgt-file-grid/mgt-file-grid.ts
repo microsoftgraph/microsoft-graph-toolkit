@@ -48,7 +48,8 @@ import { formatBytes, getRelativeDisplayDate } from '../../utils/Utils';
 
 registerFluentComponents(fluentProgressRing, fluentDesignSystemProvider, fluentButton);
 
-// export { Command };
+// re-export to ensure it's in the final package as mgt-menu is internal only
+export { Command };
 
 /**
  * The File List component displays a list of multiple folders and files by
