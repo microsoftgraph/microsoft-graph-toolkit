@@ -5,7 +5,7 @@
  * -------------------------------------------------------------------------------------------
  */
 
-import { User } from '@microsoft/microsoft-graph-types';
+import { Person, User } from '@microsoft/microsoft-graph-types';
 import { html, TemplateResult } from 'lit';
 import { property, state } from 'lit/decorators.js';
 import { classMap } from 'lit/directives/class-map.js';
@@ -57,7 +57,7 @@ export { PersonType, UserType } from '../../graph/graph.people';
  * @interface IFocusable
  */
 interface IFocusable {
-  // tslint:disable-next-line: completed-docs
+  // eslint-disable-next-line @typescript-eslint/tslint/config
   isFocused: boolean;
 }
 
@@ -103,6 +103,13 @@ export class MgtPeoplePicker extends MgtTemplatedComponent {
     return styles;
   }
 
+  /**
+   * Strings for localization
+   *
+   * @readonly
+   * @protected
+   * @memberof MgtPeoplePicker
+   */
   protected get strings() {
     return strings;
   }
@@ -131,6 +138,7 @@ export class MgtPeoplePicker extends MgtTemplatedComponent {
 
   /**
    * value determining if search is filtered to a group.
+   *
    * @type {string}
    */
   @property({ attribute: 'group-id', converter: value => value.trim() })
@@ -143,11 +151,12 @@ export class MgtPeoplePicker extends MgtTemplatedComponent {
     }
 
     this._groupId = value;
-    this.requestStateUpdate(true);
+    void this.requestStateUpdate(true);
   }
 
   /**
    * array of groups for search to be filtered by.
+   *
    * @type {string[]}
    */
   @property({
@@ -164,11 +173,12 @@ export class MgtPeoplePicker extends MgtTemplatedComponent {
       return;
     }
     this._groupIds = value;
-    this.requestStateUpdate(true);
+    void this.requestStateUpdate(true);
   }
 
   /**
    * value determining if search is filtered to a group.
+   *
    * @type {PersonType}
    */
   @property({
@@ -182,7 +192,7 @@ export class MgtPeoplePicker extends MgtTemplatedComponent {
       if (typeof PersonType[value] === 'undefined') {
         return PersonType.any;
       } else {
-        return PersonType[value];
+        return PersonType[value] as PersonType;
       }
     }
   })
@@ -195,12 +205,13 @@ export class MgtPeoplePicker extends MgtTemplatedComponent {
     }
 
     this._type = value;
-    this.requestStateUpdate(true);
+    void this.requestStateUpdate(true);
   }
 
   /**
    * type of group to search for - requires personType to be
    * set to "Group" or "All"
+   *
    * @type {GroupType}
    */
   @property({
@@ -211,12 +222,12 @@ export class MgtPeoplePicker extends MgtTemplatedComponent {
       }
 
       const values = value.split(',');
-      const groupTypes = [];
+      const groupTypes: GroupType[] = [];
 
       for (let v of values) {
         v = v.trim();
         if (typeof GroupType[v] !== 'undefined') {
-          groupTypes.push(GroupType[v]);
+          groupTypes.push(GroupType[v] as GroupType);
         }
       }
 
@@ -224,7 +235,7 @@ export class MgtPeoplePicker extends MgtTemplatedComponent {
         return GroupType.any;
       }
 
-      // tslint:disable-next-line:no-bitwise
+      // eslint-disable-next-line no-bitwise
       const gt = groupTypes.reduce((a, c) => a | c);
       return gt;
     }
@@ -237,7 +248,7 @@ export class MgtPeoplePicker extends MgtTemplatedComponent {
       return;
     }
     this._groupType = value;
-    this.requestStateUpdate(true);
+    void this.requestStateUpdate(true);
   }
 
   /**
@@ -252,7 +263,7 @@ export class MgtPeoplePicker extends MgtTemplatedComponent {
     converter: (value, type) => {
       value = value.toLowerCase();
 
-      return !value || typeof UserType[value] === 'undefined' ? UserType.any : UserType[value];
+      return !value || typeof UserType[value] === 'undefined' ? UserType.any : (UserType[value] as UserType);
     }
   })
   public get userType(): UserType {
@@ -264,11 +275,12 @@ export class MgtPeoplePicker extends MgtTemplatedComponent {
     }
 
     this._userType = value;
-    this.requestStateUpdate(true);
+    void this.requestStateUpdate(true);
   }
 
   /**
    * whether the return should contain a flat list of all nested members
+   *
    * @type {boolean}
    */
   @property({
@@ -279,6 +291,7 @@ export class MgtPeoplePicker extends MgtTemplatedComponent {
 
   /**
    * containing object of IDynamicPerson.
+   *
    * @type {IDynamicPerson[]}
    */
   @property({
@@ -289,6 +302,7 @@ export class MgtPeoplePicker extends MgtTemplatedComponent {
 
   /**
    * determining how many people to show in list.
+   *
    * @type {number}
    */
   @property({
@@ -311,7 +325,8 @@ export class MgtPeoplePicker extends MgtTemplatedComponent {
   public disableImages: boolean;
 
   /**
-   *  array of user picked people.
+   * array of user picked people.
+   *
    * @type {IDynamicPerson[]}
    */
   @property({
@@ -420,7 +435,7 @@ export class MgtPeoplePicker extends MgtTemplatedComponent {
       return;
     }
     this._userIds = value;
-    this.requestStateUpdate(true);
+    void this.requestStateUpdate(true);
   }
 
   /**
@@ -433,7 +448,7 @@ export class MgtPeoplePicker extends MgtTemplatedComponent {
 
   public set userFilters(value: string) {
     this._userFilters = value;
-    this.requestStateUpdate(true);
+    void this.requestStateUpdate(true);
   }
 
   /**
@@ -446,7 +461,7 @@ export class MgtPeoplePicker extends MgtTemplatedComponent {
 
   public set peopleFilters(value: string) {
     this._peopleFilters = value;
-    this.requestStateUpdate(true);
+    void this.requestStateUpdate(true);
   }
 
   /**
@@ -459,7 +474,7 @@ export class MgtPeoplePicker extends MgtTemplatedComponent {
 
   public set groupFilters(value: string) {
     this._groupFilters = value;
-    this.requestStateUpdate(true);
+    void this.requestStateUpdate(true);
   }
 
   /**
@@ -508,7 +523,7 @@ export class MgtPeoplePicker extends MgtTemplatedComponent {
   private defaultPeople: IDynamicPerson[];
 
   // tracking of user arrow key input for selection
-  private _arrowSelectionCount: number = -1;
+  private _arrowSelectionCount = -1;
   // List of people requested if group property is provided
   private _groupPeople: IDynamicPerson[];
   private _debouncedSearch: { (): void; (): void };
@@ -517,7 +532,7 @@ export class MgtPeoplePicker extends MgtTemplatedComponent {
   // List of users highlighted for copy/cut-pasting
   private _highlightedUsers: Element[] = [];
   // current user index to the left of the highlighted users
-  private _currentHighlightedUserPos: number = 0;
+  private _currentHighlightedUserPos = 0;
 
   /**
    * Checks if the input is focused.
@@ -527,7 +542,7 @@ export class MgtPeoplePicker extends MgtTemplatedComponent {
   /**
    * Switch to determine if a typed email can be set.
    */
-  @state() private _setAnyEmail: boolean = false;
+  @state() private _setAnyEmail = false;
 
   /**
    * List of people found from the graph calls.
@@ -536,8 +551,8 @@ export class MgtPeoplePicker extends MgtTemplatedComponent {
 
   private _mouseLeaveTimeout;
   private _mouseEnterTimeout;
-  private _isKeyboardFocus: boolean = true;
-  private _dir: string = this.direction;
+  private _isKeyboardFocus = true;
+  private _dir = this.direction;
 
   constructor() {
     super();
@@ -578,15 +593,16 @@ export class MgtPeoplePicker extends MgtTemplatedComponent {
     const provider = Providers.globalProvider;
     const graph = Providers.globalProvider.graph;
     if (provider && provider.state === ProviderState.SignedIn) {
-      // tslint:disable-next-line: forin
+      // eslint-disable-next-line guard-for-in, @typescript-eslint/no-for-in-array
       for (const id in userIds) {
         const userId = userIds[id];
         try {
           const personDetails = await getUser(graph, userId);
           this.addPerson(personDetails);
-        } catch (e) {
+        } catch (e: any) {
           // This caters for allow-any-email property if it's enabled on the component
-          if (e.message && e.message.includes('does not exist') && this.allowAnyEmail) {
+          // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access, @typescript-eslint/no-unsafe-call
+          if (e.message?.includes('does not exist') && this.allowAnyEmail) {
             if (isValidEmail(userId)) {
               const anyMailUser = {
                 mail: userId,
@@ -610,13 +626,14 @@ export class MgtPeoplePicker extends MgtTemplatedComponent {
     const provider = Providers.globalProvider;
     const graph = Providers.globalProvider.graph;
     if (provider && provider.state === ProviderState.SignedIn) {
-      // tslint:disable-next-line: forin
+      // eslint-disable-next-line guard-for-in, @typescript-eslint/no-for-in-array
       for (const id in groupIds) {
         try {
           const groupDetails = await getGroup(graph, groupIds[id]);
           this.addPerson(groupDetails);
-          // tslint:disable-next-line: no-empty
-        } catch (e) {}
+        } catch (e) {
+          // no-op
+        }
       }
     }
   }
@@ -624,6 +641,7 @@ export class MgtPeoplePicker extends MgtTemplatedComponent {
   /**
    * Invoked on each update to perform rendering tasks. This method must return a lit-html TemplateResult.
    * Setting properties inside this method will not trigger the element to update.
+   *
    * @returns {TemplateResult}
    * @memberof MgtPeoplePicker
    */
@@ -773,8 +791,8 @@ export class MgtPeoplePicker extends MgtTemplatedComponent {
                    role="button"
                    aria-label="${this.strings.removeSelectedItem} ${person.displayName}"
                    class="selected-list__person-wrapper__overflow__close-icon"
-                   @click="${e => this.removePerson(person, e)}"
-                   @keydown="${e => this.handleRemovePersonKeyDown(person, e)}"
+                   @click="${(e: UIEvent) => this.removePerson(person, e)}"
+                   @keydown="${(e: KeyboardEvent) => this.handleRemovePersonKeyDown(person, e)}"
                  >
                    \uE711
                  </div>
@@ -1052,14 +1070,16 @@ export class MgtPeoplePicker extends MgtTemplatedComponent {
             if (this.groupIds) {
               try {
                 people = await this.getGroupsForGroupIds(graph, people);
-              } catch (_) {}
+              } catch (_) {
+                // nop
+              }
             } else {
               let groups = (await findGroups(graph, '', this.showMax, this.groupType, this._groupFilters)) || [];
-              // tslint:disable: no-string-literal
+              // eslint-disable-next-line @typescript-eslint/dot-notation
               if (groups.length > 0 && groups[0]['value']) {
+                // eslint-disable-next-line @typescript-eslint/dot-notation, @typescript-eslint/no-unsafe-assignment
                 groups = groups[0]['value'];
               }
-              // tslint:enable: no-string-literal
               people = groups;
             }
           }
@@ -1142,7 +1162,9 @@ export class MgtPeoplePicker extends MgtTemplatedComponent {
                       this.transitiveSearch,
                       this.userFilters
                     );
-                  } catch (_) {}
+                  } catch (_) {
+                    // nop
+                  }
                 }
               }
             } catch (e) {
@@ -1184,7 +1206,9 @@ export class MgtPeoplePicker extends MgtTemplatedComponent {
                   this.groupType,
                   this.userFilters
                 );
-              } catch (_) {}
+              } catch (_) {
+                // nop
+              }
             } else {
               let groups = [];
               try {
@@ -1254,6 +1278,7 @@ export class MgtPeoplePicker extends MgtTemplatedComponent {
 
   /**
    * Removes person from selected people
+   *
    * @param person - person and details pertaining to user selected
    */
   protected removePerson(person: IDynamicPerson, e: UIEvent): void {
@@ -1265,7 +1290,7 @@ export class MgtPeoplePicker extends MgtTemplatedComponent {
       return p.id !== person.id;
     });
     this.selectedPeople = filteredPersonArr;
-    this.loadState();
+    void this.loadState();
     this.fireCustomEvent('selectionChanged', this.selectedPeople);
     if (this.selectedPeople.length <= 0) this.showSearchIcon();
 
@@ -1274,6 +1299,7 @@ export class MgtPeoplePicker extends MgtTemplatedComponent {
 
   /**
    * Checks if key pressed is an `Enter` key before removing person
+   *
    * @param person
    * @param e
    */
@@ -1285,6 +1311,7 @@ export class MgtPeoplePicker extends MgtTemplatedComponent {
 
   /**
    * Tracks when user selects person from picker
+   *
    * @param person - contains details pertaining to selected user
    * @param event - tracks user event
    */
@@ -1308,7 +1335,7 @@ export class MgtPeoplePicker extends MgtTemplatedComponent {
         } else {
           this.hideSearchIcon();
         }
-        this.loadState();
+        void this.loadState();
         this._foundPeople = [];
         this._arrowSelectionCount = -1;
       }
@@ -1324,21 +1351,21 @@ export class MgtPeoplePicker extends MgtTemplatedComponent {
   }
 
   // handle input click
-  private handleInputClick() {
+  private handleInputClick = () => {
     if (!this.flyout.isOpen) {
       this.handleUserSearch();
     }
-  }
+  };
 
   // handle input focus
-  private gainedFocus() {
+  private gainedFocus = () => {
     this.clearHighlighted();
     this._isFocused = true;
-    this.loadState();
-  }
+    void this.loadState();
+  };
 
   // handle input blur
-  private lostFocus() {
+  private lostFocus = () => {
     this._isFocused = false;
     this._arrowSelectionCount = -1;
     if (this.input) {
@@ -1349,19 +1376,19 @@ export class MgtPeoplePicker extends MgtTemplatedComponent {
     const peopleList = this.renderRoot.querySelector('.people-list');
 
     if (peopleList) {
-      for (let i = 0; i < peopleList.children.length; i++) {
-        peopleList.children[i].classList.remove('focused');
-        peopleList.children[i].setAttribute('aria-selected', 'false');
+      for (const el of peopleList.children) {
+        el.classList.remove('focused');
+        el.setAttribute('aria-selected', 'false');
       }
     }
 
     this.requestUpdate();
-  }
+  };
 
   /**
    * Handles input from the key up events on the keyboard.
    */
-  private onUserKeyUp(event: KeyboardEvent): void {
+  private onUserKeyUp = (event: KeyboardEvent): void => {
     const isPaste = (event.ctrlKey || event.metaKey) && event.key === 'v';
     const isCmdOrCtrlKey = ['ControlLeft', 'ControlRight'].includes(event.code) || event.ctrlKey || event.metaKey;
     const isArrowKey = ['ArrowDown', 'ArrowRight', 'ArrowUp', 'ArrowLeft'].includes(event.code);
@@ -1408,7 +1435,7 @@ export class MgtPeoplePicker extends MgtTemplatedComponent {
       this.clearHighlighted();
       // remove last person in selected list
       this.selectedPeople = this.selectedPeople.splice(0, this.selectedPeople.length - 1);
-      this.loadState();
+      void this.loadState();
       this.hideFlyout();
       if (this.selectedPeople.length <= 0) {
         this.showSearchIcon();
@@ -1437,7 +1464,7 @@ export class MgtPeoplePicker extends MgtTemplatedComponent {
       this.handleUserSearch();
     }
     this._setAnyEmail = false;
-  }
+  };
 
   private handleAnyEmail() {
     this._showLoading = false;
@@ -1465,6 +1492,7 @@ export class MgtPeoplePicker extends MgtTemplatedComponent {
 
   /**
    * Tracks event on user input in search
+   *
    * @param input - input text
    */
   private handleUserSearch() {
@@ -1489,23 +1517,24 @@ export class MgtPeoplePicker extends MgtTemplatedComponent {
    * Displays the search icon.
    */
   private showSearchIcon() {
-    const searchIcon = this.renderRoot?.querySelector('.search-icon') as HTMLElement;
+    const searchIcon = this.renderRoot?.querySelector<HTMLElement>('.search-icon');
     if (searchIcon !== undefined || searchIcon !== null) {
       searchIcon.style.display = null;
     }
   }
 
   private hideSearchIcon() {
-    const searchIcon = this.renderRoot?.querySelector('.search-icon') as HTMLElement;
+    const searchIcon = this.renderRoot?.querySelector<HTMLElement>('.search-icon');
     if (searchIcon !== undefined || searchIcon !== null) {
       searchIcon.style.display = 'none';
     }
   }
   /**
    * Tracks event on user search (keydown)
+   *
    * @param event - event tracked on user input (keydown)
    */
-  private onUserKeyDown(event: KeyboardEvent): void {
+  private onUserKeyDown = (event: KeyboardEvent): void => {
     const selectedList = this.renderRoot.querySelector('.selected-list');
     const isCmdOrCtrlKey = event.ctrlKey || event.metaKey;
     if (isCmdOrCtrlKey && selectedList) {
@@ -1585,7 +1614,7 @@ export class MgtPeoplePicker extends MgtTemplatedComponent {
         this.handleAnyEmail();
       }
     }
-  }
+  };
 
   /**
    * Gets the text of the highlighed people and writes it to the clipboard
@@ -1593,18 +1622,19 @@ export class MgtPeoplePicker extends MgtTemplatedComponent {
   private async writeHighlightedText() {
     const copyText = [];
     for (const element of this._highlightedUsers) {
-      // tslint:disable-next-line: no-string-literal
-      const { id, displayName, email, userPrincipalName, scoredEmailAddresses } = element['_personDetails'];
+      // eslint-disable-next-line @typescript-eslint/dot-notation
+      const { id, displayName, mail, userPrincipalName, scoredEmailAddresses } = element['_personDetails'] as Person &
+        User;
       let emailAddress: string;
       if (scoredEmailAddresses && scoredEmailAddresses.length > 0) {
         emailAddress = scoredEmailAddresses.pop().address;
       } else {
-        emailAddress = userPrincipalName || email;
+        emailAddress = userPrincipalName || mail;
       }
 
       copyText.push({ id, displayName, email: emailAddress });
     }
-    let copiedTextStr: string = '';
+    let copiedTextStr = '';
     if (copyText.length > 0) {
       copiedTextStr = JSON.stringify(copyText);
     }
@@ -1615,57 +1645,66 @@ export class MgtPeoplePicker extends MgtTemplatedComponent {
   /**
    * Handles the cut event when it is fired
    */
-  private async handleCut() {
-    await this.writeHighlightedText();
-    this.removeHighlightedOnCut();
-  }
+  private handleCut = () => {
+    this.writeHighlightedText().then(
+      () => {
+        this.removeHighlightedOnCut();
+      },
+      () => {
+        // intentionally left blank
+      }
+    );
+  };
 
   /**
    * Handles the copy event when it is fired
    */
-  private async handleCopy() {
-    await this.writeHighlightedText();
-  }
+  private handleCopy = () => {
+    void this.writeHighlightedText();
+  };
 
   /**
    * Parses the copied people text and adds them when you paste
    */
-  private async handlePaste() {
-    try {
-      const copiedText = await navigator.clipboard.readText();
-      if (copiedText) {
-        try {
-          const people = JSON.parse(copiedText);
-          if (people && people.length > 0) {
-            for (const person of people) {
-              this.addPerson(person);
+  private handlePaste = () => {
+    navigator.clipboard.readText().then(
+      copiedText => {
+        if (copiedText) {
+          try {
+            const people: IDynamicPerson[] = JSON.parse(copiedText) as IDynamicPerson[];
+            if (people && people.length > 0) {
+              for (const person of people) {
+                this.addPerson(person);
+              }
+            }
+          } catch (error) {
+            if (error instanceof SyntaxError) {
+              const delimiters = [',', ';'];
+              let listOfUsers: string[];
+              try {
+                for (const delimiter of delimiters) {
+                  listOfUsers = copiedText.split(delimiter);
+                  if (listOfUsers.length > 1) {
+                    this.hideFlyout();
+                    void this.selectUsersById(listOfUsers);
+                    break;
+                  }
+                }
+                // eslint-disable-next-line no-empty
+              } catch (_) {}
             }
           }
-        } catch (error) {
-          if (error instanceof SyntaxError) {
-            const _delimeters = [',', ';'];
-            let listOfUsers: string[];
-            try {
-              for (let i = 0; i < _delimeters.length; i++) {
-                listOfUsers = copiedText.split(_delimeters[i]);
-                if (listOfUsers.length > 1) {
-                  this.hideFlyout();
-                  this.selectUsersById(listOfUsers);
-                  break;
-                }
-              }
-              // tslint:disable-next-line: no-empty
-            } catch (error) {}
-          }
         }
+      },
+      // eslint-disable-next-line @typescript-eslint/no-unused-vars
+      error => {
+        // 'navigator.clipboard.readText is not a function' error is thrown in Mozilla
+        // more information here https://developer.mozilla.org/en-US/docs/Web/API/Clipboard/readText#browser_compatibility
+        // Firefox only supports reading the clipboard in browser extensions,
+        // using the "clipboardRead" extension permission.
       }
-    } catch (error) {
-      // 'navigator.clipboard.readText is not a function' error is thrown in Mozilla
-      // more information here https://developer.mozilla.org/en-US/docs/Web/API/Clipboard/readText#browser_compatibility
-      // Firefox only supports reading the clipboard in browser extensions,
-      // using the "clipboardRead" extension permission.
-    }
-  }
+    );
+  };
 
   /**
    * Removes only the highlighted elements from the peoplePicker during cut operations.
@@ -1674,17 +1713,17 @@ export class MgtPeoplePicker extends MgtTemplatedComponent {
     this.selectedPeople = this.selectedPeople.splice(0, this.selectedPeople.length - this._highlightedUsers.length);
     this._highlightedUsers = [];
     this._currentHighlightedUserPos = 0;
-    this.loadState();
+    void this.loadState();
     this.hideFlyout();
     this.fireCustomEvent('selectionChanged', this.selectedPeople);
   }
   /**
    * Changes the color class to show which people are selected for copy/cut-paste
+   *
    * @param people list of selected people classes
    */
   private highlightSelectedPeople(people: Element[]) {
-    for (let i = 0; i < people.length; i++) {
-      const person = people[i];
+    for (const person of people) {
       const parentElement = person.parentElement;
       parentElement.setAttribute('class', 'selected-list__person-wrapper-highlighted');
 
@@ -1719,8 +1758,7 @@ export class MgtPeoplePicker extends MgtTemplatedComponent {
     if (node) {
       this.clearNodeHighlights(node);
     } else {
-      for (let i = 0; i < this._highlightedUsers.length; i++) {
-        const person = this._highlightedUsers[i];
+      for (const person of this._highlightedUsers) {
         const parentElement = person.parentElement;
         if (parentElement) {
           this.clearNodeHighlights(parentElement);
@@ -1733,6 +1771,7 @@ export class MgtPeoplePicker extends MgtTemplatedComponent {
 
   /**
    * Returns the original classes of a highlighted person element
+   *
    * @param node a highlighted node element
    */
   private clearNodeHighlights(node: Element) {
@@ -1763,6 +1802,7 @@ export class MgtPeoplePicker extends MgtTemplatedComponent {
 
   /**
    * Tracks user key selection for arrow key selection of people
+   *
    * @param event - tracks user key selection
    */
   private handleArrowSelection(event?: KeyboardEvent): void {
@@ -1790,10 +1830,9 @@ export class MgtPeoplePicker extends MgtTemplatedComponent {
 
       // reset background color
       // reset aria-selected to false
-      // tslint:disable-next-line: prefer-for-of
-      for (let i = 0; i < peopleList.children.length; i++) {
-        peopleList.children[i].classList.remove('focused');
-        peopleList.children[i].setAttribute('aria-selected', 'false');
+      for (const el of peopleList.children) {
+        el.classList.remove('focused');
+        el.setAttribute('aria-selected', 'false');
       }
 
       // set selected background
@@ -1811,6 +1850,7 @@ export class MgtPeoplePicker extends MgtTemplatedComponent {
 
   /**
    * Filters people searched from already selected people
+   *
    * @param people - array of people returned from query to Graph
    */
   private filterPeople(people: IDynamicPerson[]): IDynamicPerson[] {
@@ -1835,8 +1875,8 @@ export class MgtPeoplePicker extends MgtTemplatedComponent {
 
       // remove duplicates
       const dupsSet: Set<string> = new Set();
-      for (let i = 0; i < filtered.length; i++) {
-        const person = JSON.stringify(filtered[i]);
+      for (const d of filtered) {
+        const person = JSON.stringify(d);
         dupsSet.add(person);
       }
 
@@ -1850,7 +1890,7 @@ export class MgtPeoplePicker extends MgtTemplatedComponent {
 
   // stop propagating wheel event to flyout so mouse scrolling works
   private handleSectionScroll(e: WheelEvent) {
-    const target = this.renderRoot.querySelector('.flyout-root') as HTMLElement;
+    const target = this.renderRoot.querySelector('.flyout-root');
     if (target) {
       if (
         !(e.deltaY < 0 && target.scrollTop === 0) &&

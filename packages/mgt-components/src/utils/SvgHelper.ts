@@ -225,10 +225,11 @@ import { html } from 'lit';
 
 /**
  * returns an svg
+ *
  * @param svgIcon defined by name
  * @param color hex value
  */
-export function getSvg(svgIcon: SvgIcon, color?: string) {
+export const getSvg = (svgIcon: SvgIcon, color?: string) => {
   switch (svgIcon) {
     case SvgIcon.ArrowRight:
       return html`
@@ -547,4 +548,4 @@ export function getSvg(svgIcon: SvgIcon, color?: string) {
     </svg>
   `;
   }
-}
+};

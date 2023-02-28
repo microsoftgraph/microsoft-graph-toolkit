@@ -10,7 +10,7 @@ import { html, TemplateResult } from 'lit';
 
 import { BasePersonCardSection } from '../BasePersonCardSection';
 import { getSvg, SvgIcon } from '../../../../utils/SvgHelper';
-import { MgtPersonCardState } from '../../mgt-person-card.types';
+import { MgtPersonCardState, UserWithManager } from '../../mgt-person-card.types';
 import { styles } from './mgt-person-card-organization-css';
 import { strings } from './strings';
 import { ViewType } from '../../../../graph/types';
@@ -173,7 +173,7 @@ export class MgtPersonCardOrganization extends BasePersonCardSection {
       <div
         class="org-member"
         @keydown=${(e: KeyboardEvent) => {
-          e.code === 'Enter' ? this.navigateCard(person) : '';
+          if (e.code === 'Enter' || e.code === ' ') this.navigateCard(person);
         }}
         @click=${() => this.navigateCard(person)}
       >
@@ -206,7 +206,7 @@ export class MgtPersonCardOrganization extends BasePersonCardSection {
       return null;
     }
 
-    const managers = [];
+    const managers: UserWithManager[] = [];
     let currentManager = person;
     while (currentManager.manager) {
       managers.push(currentManager.manager);
@@ -242,7 +242,7 @@ export class MgtPersonCardOrganization extends BasePersonCardSection {
             <div
               class="org-member org-member--direct-report"
               @keydown=${(e: KeyboardEvent) => {
-                e.code === 'Enter' ? this.navigateCard(person) : '';
+                if (e.code === 'Enter' || e.code === ' ') this.navigateCard(person);
               }}
               @click=${() => this.navigateCard(person)}
             >
@@ -283,7 +283,7 @@ export class MgtPersonCardOrganization extends BasePersonCardSection {
             <div
               class="direct-report"
               @keydown=${(e: KeyboardEvent) => {
-                e.code === 'Enter' ? this.navigateCard(person) : '';
+                if (e.code === 'Enter' || e.code === ' ') this.navigateCard(person);
               }}
               @click=${() => this.navigateCard(person)}
             >
@@ -335,7 +335,7 @@ export class MgtPersonCardOrganization extends BasePersonCardSection {
   protected renderCoworker(person: User): TemplateResult {
     return mgtHtml`
       <div class="coworker" @keydown=${(e: KeyboardEvent) => {
-        e.code === 'Enter' ? this.navigateCard(person) : '';
+        if (e.code === 'Enter' || e.code === ' ') this.navigateCard(person);
       }} @click=${() => this.navigateCard(person)}>
         <div class="coworker__person">
           <mgt-person

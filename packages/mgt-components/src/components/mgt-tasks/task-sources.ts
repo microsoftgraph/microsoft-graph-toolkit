@@ -1,3 +1,4 @@
+/* eslint-disable max-classes-per-file */
 /**
  * -------------------------------------------------------------------------------------------
  * Copyright (c) Microsoft Corporation.  All Rights Reserved.  Licensed under the MIT License.
@@ -234,7 +235,7 @@ export interface ITaskSource {
    * @returns {Promise<any>}
    * @memberof ITaskSource
    */
-  setTaskComplete(id: string, eTag: string): Promise<any>;
+  setTaskComplete(id: string, eTag: string): Promise<void>;
 
   /**
    * Promise that sets a task to incomplete
@@ -264,7 +265,7 @@ export interface ITaskSource {
    * @returns {Promise<any>}
    * @memberof ITaskSource
    */
-  assignPeopleToTask(id: string, people: any, eTag: string): Promise<any>;
+  assignPeopleToTask(id: string, people: any, eTag: string): Promise<void>;
 
   /**
    * Promise to delete a task by id
@@ -314,7 +315,6 @@ class TaskSourceBase {
  * @extends {TaskSourceBase}
  * @implements {ITaskSource}
  */
-// tslint:disable-next-line: max-classes-per-file
 export class PlannerTaskSource extends TaskSourceBase implements ITaskSource {
   /**
    * returns promise with all of users plans
@@ -392,7 +392,7 @@ export class PlannerTaskSource extends TaskSourceBase implements ITaskSource {
           assignments: task.assignments,
           completed: task.percentComplete === 100,
           dueDate: task.dueDateTime && new Date(task.dueDateTime),
-          eTag: task['@odata.etag'],
+          eTag: task['@odata.etag'] as string,
           id: task.id,
           immediateParentId: task.bucketId,
           name: task.title,
@@ -409,7 +409,7 @@ export class PlannerTaskSource extends TaskSourceBase implements ITaskSource {
    * @returns {Promise<any>}
    * @memberof PlannerTaskSource
    */
-  public async setTaskComplete(id: string, eTag: string): Promise<any> {
+  public async setTaskComplete(id: string, eTag: string): Promise<void> {
     return await setPlannerTaskComplete(this.graph, id, eTag);
   }
 
@@ -421,8 +421,8 @@ export class PlannerTaskSource extends TaskSourceBase implements ITaskSource {
    * @returns {Promise<any>}
    * @memberof PlannerTaskSource
    */
-  public async setTaskIncomplete(id: string, eTag: string): Promise<any> {
-    return await setPlannerTaskIncomplete(this.graph, id, eTag);
+  public async setTaskIncomplete(id: string, eTag: string): Promise<void> {
+    return setPlannerTaskIncomplete(this.graph, id, eTag);
   }
 
   /**
@@ -451,8 +451,8 @@ export class PlannerTaskSource extends TaskSourceBase implements ITaskSource {
    * @returns {Promise<any>}
    * @memberof PlannerTaskSource
    */
-  public async assignPeopleToTask(id: string, eTag: string, people: any): Promise<any> {
-    return await assignPeopleToPlannerTask(this.graph, id, eTag, people);
+  public async assignPeopleToTask(id: string, eTag: string, people: PlannerAssignments): Promise<void> {
+    return assignPeopleToPlannerTask(this.graph, id, people, eTag);
   }
 
   /**
@@ -463,7 +463,7 @@ export class PlannerTaskSource extends TaskSourceBase implements ITaskSource {
    * @returns {Promise<any>}
    * @memberof PlannerTaskSource
    */
-  public async removeTask(id: string, eTag: string): Promise<any> {
+  public async removeTask(id: string, eTag: string): Promise<void> {
     return await removePlannerTask(this.graph, id, eTag);
   }
 
@@ -489,7 +489,6 @@ export class PlannerTaskSource extends TaskSourceBase implements ITaskSource {
  * @extends {TaskSourceBase}
  * @implements {ITaskSource}
  */
-// tslint:disable-next-line: max-classes-per-file
 export class TodoTaskSource extends TaskSourceBase implements ITaskSource {
   /**
    * get all Outlook task groups
@@ -560,7 +559,7 @@ export class TodoTaskSource extends TaskSourceBase implements ITaskSource {
           assignments: {},
           completed: !!task.completedDateTime,
           dueDate: task.dueDateTime && new Date(task.dueDateTime.dateTime + 'Z'),
-          eTag: task['@odata.etag'],
+          eTag: task['@odata.etag'] as string,
           id: task.id,
           immediateParentId: id,
           name: task.subject,
@@ -590,8 +589,8 @@ export class TodoTaskSource extends TaskSourceBase implements ITaskSource {
    * @returns {Promise<any>}
    * @memberof PlannerTaskSource
    */
-  public async assignPeopleToTask(id: string, eTag: string, people: any): Promise<any> {
-    return await assignPeopleToPlannerTask(this.graph, id, eTag, people);
+  public async assignPeopleToTask(id: string, eTag: string, people: PlannerAssignments): Promise<any> {
+    return await assignPeopleToPlannerTask(this.graph, id, people, eTag);
   }
   /**
    * set task in planner to incomplete state by id
@@ -632,7 +631,7 @@ export class TodoTaskSource extends TaskSourceBase implements ITaskSource {
    * @returns {Promise<any>}
    * @memberof TodoTaskSource
    */
-  public async removeTask(id: string, eTag: string): Promise<any> {
+  public async removeTask(id: string, eTag: string): Promise<void> {
     return await removeTodoTask(this.graph, id, eTag);
   }
 
@@ -656,6 +655,6 @@ export class TodoTaskSource extends TaskSourceBase implements ITaskSource {
    * @memberof PlannerTaskSource
    */
   public async getTaskGroupsForGroup(id: string): Promise<ITaskGroup[]> {
-    return undefined;
+    return Promise.resolve<ITaskGroup[]>(undefined);
   }
 }

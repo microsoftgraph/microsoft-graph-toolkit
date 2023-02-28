@@ -124,7 +124,7 @@ export class MgtFileList extends MgtTemplatedComponent {
     }
 
     this._fileListQuery = value;
-    this.requestStateUpdate(true);
+    void this.requestStateUpdate(true);
   }
 
   /**
@@ -152,7 +152,7 @@ export class MgtFileList extends MgtTemplatedComponent {
     }
 
     this._fileQueries = value;
-    this.requestStateUpdate(true);
+    void this.requestStateUpdate(true);
   }
 
   /**
@@ -182,7 +182,7 @@ export class MgtFileList extends MgtTemplatedComponent {
     }
 
     this._siteId = value;
-    this.requestStateUpdate(true);
+    void this.requestStateUpdate(true);
   }
 
   /**
@@ -203,7 +203,7 @@ export class MgtFileList extends MgtTemplatedComponent {
     }
 
     this._driveId = value;
-    this.requestStateUpdate(true);
+    void this.requestStateUpdate(true);
   }
 
   /**
@@ -224,7 +224,7 @@ export class MgtFileList extends MgtTemplatedComponent {
     }
 
     this._groupId = value;
-    this.requestStateUpdate(true);
+    void this.requestStateUpdate(true);
   }
 
   /**
@@ -245,7 +245,7 @@ export class MgtFileList extends MgtTemplatedComponent {
     }
 
     this._itemId = value;
-    this.requestStateUpdate(true);
+    void this.requestStateUpdate(true);
   }
 
   /**
@@ -266,7 +266,7 @@ export class MgtFileList extends MgtTemplatedComponent {
     }
 
     this._itemPath = value;
-    this.requestStateUpdate(true);
+    void this.requestStateUpdate(true);
   }
 
   /**
@@ -287,7 +287,7 @@ export class MgtFileList extends MgtTemplatedComponent {
     }
 
     this._userId = value;
-    this.requestStateUpdate(true);
+    void this.requestStateUpdate(true);
   }
 
   /**
@@ -309,7 +309,7 @@ export class MgtFileList extends MgtTemplatedComponent {
     }
 
     this._insightType = value;
-    this.requestStateUpdate(true);
+    void this.requestStateUpdate(true);
   }
 
   /**
@@ -331,7 +331,7 @@ export class MgtFileList extends MgtTemplatedComponent {
       if (typeof ViewType[value] === 'undefined') {
         return ViewType.threelines;
       } else {
-        return ViewType[value];
+        return ViewType[value] as ViewType;
       }
     }
   })
@@ -359,11 +359,12 @@ export class MgtFileList extends MgtTemplatedComponent {
     }
 
     this._fileExtensions = value;
-    this.requestStateUpdate(true);
+    void this.requestStateUpdate(true);
   }
 
   /**
    * A number value to indicate the number of more files to load when show more button is clicked
+   *
    * @type {number}
    * @memberof MgtFileList
    */
@@ -380,11 +381,12 @@ export class MgtFileList extends MgtTemplatedComponent {
     }
 
     this._pageSize = value;
-    this.requestStateUpdate(true);
+    void this.requestStateUpdate(true);
   }
 
   /**
    * A boolean value indication if 'show-more' button should be disabled
+   *
    * @type {boolean}
    * @memberof MgtFileList
    */
@@ -396,6 +398,7 @@ export class MgtFileList extends MgtTemplatedComponent {
 
   /**
    * A number value indication for file size upload (KB)
+   *
    * @type {number}
    * @memberof MgtFileList
    */
@@ -412,11 +415,12 @@ export class MgtFileList extends MgtTemplatedComponent {
     }
 
     this._maxFileSize = value;
-    this.requestStateUpdate(true);
+    void this.requestStateUpdate(true);
   }
 
   /**
    * A boolean value indication if file upload extension should be enable or disabled
+   *
    * @type {boolean}
    * @memberof MgtFileList
    */
@@ -428,6 +432,7 @@ export class MgtFileList extends MgtTemplatedComponent {
 
   /**
    * A number value to indicate the max number allowed of files to upload.
+   *
    * @type {number}
    * @memberof MgtFileList
    */
@@ -444,7 +449,7 @@ export class MgtFileList extends MgtTemplatedComponent {
     }
 
     this._maxUploadFile = value;
-    this.requestStateUpdate(true);
+    void this.requestStateUpdate(true);
   }
 
   /**
@@ -468,7 +473,7 @@ export class MgtFileList extends MgtTemplatedComponent {
     }
 
     this._excludedFileExtensions = value;
-    this.requestStateUpdate(true);
+    void this.requestStateUpdate(true);
   }
 
   /**
@@ -499,7 +504,7 @@ export class MgtFileList extends MgtTemplatedComponent {
   private _preloadedFiles: DriveItem[];
   private pageIterator: GraphPageIterator<DriveItem>;
   // tracking user arrow key input of selection for accessibility purpose
-  private _focusedItemIndex: number = -1;
+  private _focusedItemIndex = -1;
 
   @state() private _isLoadingMore: boolean;
 
@@ -602,7 +607,7 @@ export class MgtFileList extends MgtTemplatedComponent {
             this.files,
             f => f.id,
             f => html`
-              <li class="file-item" @click=${e => this.handleItemSelect(f, e)}>
+              <li class="file-item" @click=${(e: UIEvent) => this.handleItemSelect(f, e)}>
                 ${this.renderFile(f)}
               </li>
             `
@@ -647,9 +652,17 @@ export class MgtFileList extends MgtTemplatedComponent {
         <fluent-progress-ring role="progressbar" viewBox="0 0 8 8" class="progress-ring"></fluent-progress-ring>
       `;
     } else {
-      return html`<a id="show-more" class="show-more" @click=${() => this.renderNextPage()} tabindex="0" @keydown=${
-        this.onShowMoreKeyDown
-      }><span>${this.strings.showMoreSubtitle}<span></a>`;
+      return html`
+        <a
+          id="show-more"
+          class="show-more"
+          @click=${() => this.renderNextPage()}
+          tabindex="0"
+          @keydown=${this.onShowMoreKeyDown}
+        >
+          <span>${this.strings.showMoreSubtitle}</span>
+        </a>
+`;
     }
   }
 
@@ -681,19 +694,19 @@ export class MgtFileList extends MgtTemplatedComponent {
    *
    * @param event
    */
-  private onShowMoreKeyDown(event: KeyboardEvent): void {
+  private onShowMoreKeyDown = (event: KeyboardEvent): void => {
     if (event && event.code === 'Enter') {
       event.preventDefault();
-      this.renderNextPage();
+      void this.renderNextPage();
     }
-  }
+  };
 
   /**
    * Handle accessibility keyboard keyup events on file list
    *
    * @param event
    */
-  private onFileListKeyUp(event: KeyboardEvent): void {
+  private onFileListKeyUp = (event: KeyboardEvent): void => {
     const fileList = this.renderRoot.querySelector('.file-list');
     const focusedItem = fileList.children[this._focusedItemIndex];
 
@@ -703,14 +716,14 @@ export class MgtFileList extends MgtTemplatedComponent {
       focusedItem?.classList.remove('selected');
       focusedItem?.classList.add('focused');
     }
-  }
+  };
 
   /**
    * Handle accessibility keyboard keydown events (arrow up, arrow down, enter, tab) on file list
    *
    * @param event
    */
-  private onFileListKeyDown(event: KeyboardEvent): void {
+  private onFileListKeyDown = (event: KeyboardEvent): void => {
     const fileList = this.renderRoot.querySelector('.file-list');
     let focusedItem: Element;
 
@@ -747,17 +760,17 @@ export class MgtFileList extends MgtTemplatedComponent {
       focusedItem = fileList.children[this._focusedItemIndex];
       focusedItem?.classList.remove('focused');
     }
-  }
+  };
 
   /**
    * Remove accessibility keyboard focused when out of file list
    *
    */
-  private onFileListOut() {
+  private onFileListOut = () => {
     const fileList = this.renderRoot.querySelector('.file-list');
     const focusedItem = fileList.children[this._focusedItemIndex];
     focusedItem?.classList.remove('focused');
-  }
+  };
 
   /**
    * load state into the component.
@@ -861,7 +874,7 @@ export class MgtFileList extends MgtTemplatedComponent {
         }
         filteredByFileExtension = files.filter(file => {
           for (const e of this.fileExtensions) {
-            if (e == this.getFileExtension(file.name)) {
+            if (e === this.getFileExtension(file.name)) {
               return file;
             }
           }
@@ -886,7 +899,7 @@ export class MgtFileList extends MgtTemplatedComponent {
    * @protected
    * @memberof MgtFileList
    */
-  protected handleItemSelect(item: DriveItem, event): void {
+  protected handleItemSelect(item: DriveItem, event: UIEvent): void {
     this.fireCustomEvent('itemClick', item);
 
     // handle accessibility updates when item clicked
@@ -895,14 +908,14 @@ export class MgtFileList extends MgtTemplatedComponent {
 
       // get index of the focused item
       const nodes = Array.from(fileList.children);
-      const li = event.target.closest('li');
+      const li = (event.target as HTMLElement).closest('li');
       const index = nodes.indexOf(li);
       this._focusedItemIndex = index;
       const clickedItem = fileList.children[this._focusedItemIndex];
       this.updateItemBackgroundColor(fileList, clickedItem, 'selected');
 
-      for (let i = 0; i < fileList.children.length; i++) {
-        fileList.children[i].classList.remove('focused');
+      for (const c of fileList.children) {
+        c.classList.remove('focused');
       }
     }
   }
@@ -959,7 +972,7 @@ export class MgtFileList extends MgtTemplatedComponent {
    * @param name file name
    * @returns {string} file extension
    */
-  private getFileExtension(name) {
+  private getFileExtension(name: string) {
     const re = /(?:\.([^.]+))?$/;
     const fileExtension = re.exec(name)[1] || '';
 
@@ -973,10 +986,10 @@ export class MgtFileList extends MgtTemplatedComponent {
    * @param focusedItem HTML element
    * @param className background class to be applied
    */
-  private updateItemBackgroundColor(fileList, focusedItem, className) {
+  private updateItemBackgroundColor(fileList: Element, focusedItem: Element, className: string) {
     // reset background color
-    for (let i = 0; i < fileList.children.length; i++) {
-      fileList.children[i].classList.remove(className);
+    for (const c of fileList.children) {
+      c.classList.remove(className);
     }
 
     // set focused item background color
@@ -994,9 +1007,9 @@ export class MgtFileList extends MgtTemplatedComponent {
   public reload(clearCache = false) {
     if (clearCache) {
       // clear cache File List
-      clearFilesCache();
+      void clearFilesCache();
     }
 
-    this.requestStateUpdate(true);
+    void this.requestStateUpdate(true);
   }
 }

@@ -34,7 +34,7 @@ export abstract class IProvider implements AuthenticationProvider {
    * @type {boolean}
    * @memberof IProvider
    */
-  protected isMultipleAccountDisabled: boolean = true;
+  protected isMultipleAccountDisabled = true;
 
   /**
    * Specifies if Multi account functionality is supported by the provider and enabled.
@@ -74,9 +74,23 @@ export abstract class IProvider implements AuthenticationProvider {
    * @type {boolean}
    * @memberof IProvider
    */
-  private _isIncrementalConsentDisabled: boolean = false;
+  private _isIncrementalConsentDisabled = false;
 
-  protected isMultipleAccountSupported: boolean = false;
+  /**
+   * Backing field for isMultiAccountSupported
+   *
+   * @protected
+   * @memberof IProvider
+   */
+  protected isMultipleAccountSupported = false;
+
+  /**
+   * Does the provider support multiple accounts?
+   *
+   * @readonly
+   * @type {boolean}
+   * @memberof IProvider
+   */
   public get isMultiAccountSupported(): boolean {
     return this.isMultipleAccountSupported;
   }
@@ -195,6 +209,7 @@ export abstract class IProvider implements AuthenticationProvider {
    * @param {*} user
    * @memberof IProvider
    */
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   public setActiveAccount?(user: IProviderAccount) {
     this.fireActiveAccountChanged();
   }
@@ -256,6 +271,7 @@ export abstract class IProvider implements AuthenticationProvider {
  * @export
  * @interface ActiveAccountChanged
  */
+// eslint-disable-next-line @typescript-eslint/no-empty-interface
 export interface ActiveAccountChanged {}
 /**
  * loginChangedEvent
@@ -263,7 +279,7 @@ export interface ActiveAccountChanged {}
  * @export
  * @interface LoginChangedEvent
  */
-// tslint:disable-next-line: no-empty-interface
+// eslint-disable-next-line @typescript-eslint/no-empty-interface
 export interface LoginChangedEvent {}
 
 /**
@@ -310,8 +326,12 @@ export enum ProviderState {
  * @export
  */
 export type IProviderAccount = {
+  // eslint-disable-next-line @typescript-eslint/tslint/config
   id: string;
+  // eslint-disable-next-line @typescript-eslint/tslint/config
   mail?: string;
+  // eslint-disable-next-line @typescript-eslint/tslint/config
   name?: string;
+  // eslint-disable-next-line @typescript-eslint/tslint/config
   tenantId?: string;
 };

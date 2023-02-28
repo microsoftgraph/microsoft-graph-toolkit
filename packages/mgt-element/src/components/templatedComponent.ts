@@ -5,7 +5,7 @@
  * -------------------------------------------------------------------------------------------
  */
 
-import { html, PropertyValues, TemplateResult } from 'lit';
+import { html, PropertyValueMap, PropertyValues, TemplateResult } from 'lit';
 import { property } from 'lit/decorators.js';
 
 import { equals } from '../utils/equals';
@@ -29,13 +29,14 @@ interface RenderedTemplates {
   };
 }
 
-// tslint:disable: completed-docs
 export interface TemplateRenderedData {
   templateType: string;
   context: Record<string, unknown>;
   element: HTMLElement;
 }
-// tslint:enable: completed-docs
+
+// eslint-disable-next-line @typescript-eslint/tslint/config
+type OrderedHtmlTemplate = HTMLTemplateElement & { templateOrder: number };
 
 /**
  * An abstract class that defines a templatable web component
@@ -63,7 +64,7 @@ export abstract class MgtTemplatedComponent extends MgtBaseComponent {
    * @protected
    * @memberof MgtTemplatedComponent
    */
-  protected templates = {};
+  protected templates: Record<string, OrderedHtmlTemplate> = {};
 
   private _renderedSlots = false;
   private _renderedTemplates: RenderedTemplates = {};
@@ -83,7 +84,7 @@ export abstract class MgtTemplatedComponent extends MgtBaseComponent {
    *
    * * @param _changedProperties Map of changed properties with old values
    */
-  protected update(changedProperties) {
+  protected update(changedProperties: PropertyValueMap<any> | Map<PropertyKey, unknown>) {
     this.templates = this.getTemplates();
     this._slotNamesAddedDuringRender = [];
     super.update(changedProperties);
@@ -126,6 +127,7 @@ export abstract class MgtTemplatedComponent extends MgtBaseComponent {
     const dataContext = { ...context, ...this.templateContext };
 
     if (this._renderedTemplates.hasOwnProperty(slotName)) {
+      // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
       const { context: existingContext, slot } = this._renderedTemplates[slotName];
       if (equals(existingContext, dataContext)) {
         return template;
@@ -158,24 +160,23 @@ export abstract class MgtTemplatedComponent extends MgtBaseComponent {
    * @memberof MgtTemplatedComponent
    */
   protected hasTemplate(templateName: string): boolean {
-    return this.templates && this.templates[templateName];
+    return Boolean(this.templates?.[templateName]);
   }
 
   private getTemplates() {
-    const templates: any = {};
+    const templates: Record<string, OrderedHtmlTemplate> = {};
 
-    // tslint:disable-next-line: prefer-for-of
     for (let i = 0; i < this.children.length; i++) {
       const child = this.children[i];
       if (child.nodeName === 'TEMPLATE') {
-        const template = child as HTMLElement;
+        const template = child as OrderedHtmlTemplate;
         if (template.dataset.type) {
           templates[template.dataset.type] = template;
         } else {
           templates.default = template;
         }
 
-        (template as any).templateOrder = i;
+        template.templateOrder = i;
       }
     }
 

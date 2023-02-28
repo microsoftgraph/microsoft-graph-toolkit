@@ -22,15 +22,15 @@ import { strings } from './strings';
  * @interface IContactPart
  */
 interface IContactPart {
-  // tslint:disable-next-line: completed-docs
+  // eslint-disable-next-line @typescript-eslint/tslint/config
   icon: TemplateResult;
-  // tslint:disable-next-line: completed-docs
+  // eslint-disable-next-line @typescript-eslint/tslint/config
   title: string;
-  // tslint:disable-next-line: completed-docs
+  // eslint-disable-next-line @typescript-eslint/tslint/config
   value?: string;
-  // tslint:disable-next-line: completed-docs
+  // eslint-disable-next-line @typescript-eslint/tslint/config
   onClick?: (e: Event) => void;
-  // tslint:disable-next-line: completed-docs
+  // eslint-disable-next-line @typescript-eslint/tslint/config
   showCompact: boolean;
 }
 
@@ -78,7 +78,6 @@ export class MgtPersonCardContact extends BasePersonCardSection {
 
   private _person?: User;
 
-  // tslint:disable: object-literal-sort-keys
   private _contactParts: Record<string, IContactPart> = {
     email: {
       icon: getSvg(SvgIcon.Email, '#605e5c'),
@@ -120,7 +119,6 @@ export class MgtPersonCardContact extends BasePersonCardSection {
       title: this.strings.officeLocationTitle
     }
   };
-  // tslint:enable: object-literal-sort-keys
 
   public constructor(person: User) {
     super();
@@ -181,8 +179,6 @@ export class MgtPersonCardContact extends BasePersonCardSection {
    * @memberof MgtPersonCardContact
    */
   protected renderCompactView(): TemplateResult {
-    let contentTemplate: TemplateResult;
-
     if (!this.hasData) {
       return null;
     }
@@ -198,7 +194,7 @@ export class MgtPersonCardContact extends BasePersonCardSection {
       compactParts = Object.values(availableParts).slice(0, 2);
     }
 
-    contentTemplate = html`
+    const contentTemplate = html`
       ${compactParts.map(p => this.renderContactPart(p))}
     `;
 
@@ -264,13 +260,13 @@ export class MgtPersonCardContact extends BasePersonCardSection {
         `;
 
     return html`
-      <div class="part" @click=${(e: MouseEvent) => this.handlePartClick(e, part.value)} tabindex="0">
+      <div class="part" role="button" @click=${(e: MouseEvent) => this.handlePartClick(e, part.value)} tabindex="0">
         <div class="part__icon" aria-label=${part.title} title=${part.title}>${part.icon}</div>
         <div class="part__details">
           <div class="part__title">${part.title}</div>
           <div class="part__value" title=${part.title}>${valueTemplate}</div>
         </div>
-        <div class="part__copy" aria-role="button" aria-label=${this.strings.copyToClipboardButton} title=${
+        <div class="part__copy"  aria-label=${this.strings.copyToClipboardButton} title=${
       this.strings.copyToClipboardButton
     }>
           ${getSvg(SvgIcon.Copy)}
@@ -287,7 +283,7 @@ export class MgtPersonCardContact extends BasePersonCardSection {
    */
   protected handlePartClick(e: MouseEvent, value: string): void {
     if (value) {
-      navigator.clipboard.writeText(value);
+      void navigator.clipboard.writeText(value);
     }
   }
 
@@ -295,6 +291,7 @@ export class MgtPersonCardContact extends BasePersonCardSection {
     if (resource) {
       window.open(`${protocol}${resource}`, '_blank', 'noreferrer');
     } else {
+      // eslint-disable-next-line no-console
       console.error(`Target resource for ${protocol} link was not provided: resource: ${resource}`);
     }
   }
@@ -307,6 +304,7 @@ export class MgtPersonCardContact extends BasePersonCardSection {
    */
   protected sendChat(upn: string): void {
     if (!upn) {
+      // eslint-disable-next-line no-console
       console.error("Can't send chat when upn is not provided");
       return;
     }

@@ -12,11 +12,11 @@ import { getEmailFromGraphEntity } from '../../graph/graph.people';
 import { IDynamicPerson } from '../../graph/types';
 import { MgtPersonCardConfig, MgtPersonCardState } from './mgt-person-card.types';
 
-// tslint:disable-next-line:completed-docs
+// eslint-disable-next-line @typescript-eslint/tslint/config
 const userProperties =
   'businessPhones,companyName,department,displayName,givenName,jobTitle,mail,mobilePhone,officeLocation,preferredLanguage,surname,userPrincipalName,id,accountEnabled';
 
-// tslint:disable-next-line:completed-docs
+// eslint-disable-next-line @typescript-eslint/tslint/config
 const batchKeys = {
   directReports: 'directReports',
   files: 'files',
@@ -35,12 +35,12 @@ const batchKeys = {
  * @param {MgtPersonCardConfig} config
  * @return {*}  {Promise<MgtPersonCardState>}
  */
-export async function getPersonCardGraphData(
+export const getPersonCardGraphData = async (
   graph: IGraph,
   personDetails: IDynamicPerson,
   isMe: boolean,
   config: MgtPersonCardConfig
-): Promise<MgtPersonCardState> {
+): Promise<MgtPersonCardState> => {
   const userId = personDetails.id;
   const email = getEmailFromGraphEntity(personDetails);
 
@@ -79,7 +79,8 @@ export async function getPersonCardGraphData(
 
   if (response) {
     for (const [key, value] of response) {
-      data[key] = value.content.value || value.content;
+      // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment, @typescript-eslint/no-unsafe-member-access
+      data[key] = value.content?.value || value.content;
     }
   }
 
@@ -100,10 +101,10 @@ export async function getPersonCardGraphData(
   }
 
   return data;
-}
+};
 
-// tslint:disable-next-line:completed-docs
-function buildOrgStructureRequest(batch: IBatch, userId: string) {
+// eslint-disable-next-line @typescript-eslint/tslint/config
+const buildOrgStructureRequest = (batch: IBatch, userId: string) => {
   const expandManagers = `manager($levels=max;$select=${userProperties})`;
 
   batch.get(
@@ -116,20 +117,20 @@ function buildOrgStructureRequest(batch: IBatch, userId: string) {
   );
 
   batch.get(batchKeys.directReports, `users/${userId}/directReports?$select=${userProperties}`);
-}
+};
 
-// tslint:disable-next-line:completed-docs
-function buildWorksWithRequest(batch: IBatch, userId: string) {
+// eslint-disable-next-line @typescript-eslint/tslint/config
+const buildWorksWithRequest = (batch: IBatch, userId: string) => {
   batch.get(batchKeys.people, `users/${userId}/people?$filter=personType/class eq 'Person'`, ['People.Read.All']);
-}
+};
 
-// tslint:disable-next-line:completed-docs
-function buildMessagesWithUserRequest(batch: IBatch, emailAddress: string) {
+// eslint-disable-next-line @typescript-eslint/tslint/config
+const buildMessagesWithUserRequest = (batch: IBatch, emailAddress: string) => {
   batch.get(batchKeys.messages, `me/messages?$search="from:${emailAddress}"`, ['Mail.ReadBasic']);
-}
+};
 
-// tslint:disable-next-line:completed-docs
-function buildFilesRequest(batch: IBatch, emailAddress?: string) {
+// eslint-disable-next-line @typescript-eslint/tslint/config
+const buildFilesRequest = (batch: IBatch, emailAddress?: string) => {
   let request: string;
 
   if (emailAddress) {
@@ -139,7 +140,7 @@ function buildFilesRequest(batch: IBatch, emailAddress?: string) {
   }
 
   batch.get(batchKeys.files, request, ['Sites.Read.All']);
-}
+};
 
 /**
  * Get the profile for a user
@@ -148,7 +149,5 @@ function buildFilesRequest(batch: IBatch, emailAddress?: string) {
  * @param {string} userId
  * @return {*}  {Promise<Profile>}
  */
-async function getProfile(graph: IGraph, userId: string): Promise<Profile> {
-  const profile = await graph.api(`/users/${userId}/profile`).version('beta').get();
-  return profile;
-}
+const getProfile = async (graph: IGraph, userId: string): Promise<Profile> =>
+  (await graph.api(`/users/${userId}/profile`).version('beta').get()) as Profile;

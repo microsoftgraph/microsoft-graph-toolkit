@@ -41,7 +41,7 @@ export abstract class BasePersonCardSection extends MgtTemplatedComponent {
     }
 
     this._personDetails = value;
-    this.requestStateUpdate();
+    void this.requestStateUpdate();
   }
 
   /**
@@ -184,12 +184,13 @@ export abstract class BasePersonCardSection extends MgtTemplatedComponent {
    */
   protected navigateCard(person: IDynamicPerson): void {
     // Search for card parent and update it's personDetails object
-    let parent: any = this.parentNode;
+    let parent: ParentNode = this.parentNode;
     while (parent) {
       parent = parent.parentNode;
 
-      if (parent && parent.host && parent.host.tagName === 'MGT-PERSON-CARD') {
-        parent = parent.host;
+      const shadowRoot = parent as ShadowRoot;
+      if (shadowRoot?.host?.tagName === 'MGT-PERSON-CARD') {
+        parent = shadowRoot.host;
         break;
       }
     }

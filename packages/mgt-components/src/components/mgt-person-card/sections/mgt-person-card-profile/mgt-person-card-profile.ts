@@ -463,17 +463,17 @@ export class MgtPersonCardProfile extends BasePersonCardSection {
     `;
   }
 
-  private isPersonalInterest(interest: PersonInterest): boolean {
+  private isPersonalInterest = (interest: PersonInterest): boolean => {
     return interest.categories && interest.categories.includes('personal');
-  }
+  };
 
-  private isProfessionalInterest(interest: PersonInterest): boolean {
+  private isProfessionalInterest = (interest: PersonInterest): boolean => {
     return interest.categories && interest.categories.includes('professional');
-  }
+  };
 
-  private isBirthdayAnniversary(anniversary: PersonAnnualEvent): boolean {
+  private isBirthdayAnniversary = (anniversary: PersonAnnualEvent): boolean => {
     return anniversary.type === 'birthday';
-  }
+  };
 
   private getDisplayDate(date: Date): string {
     return date.toLocaleString('default', {
@@ -482,7 +482,7 @@ export class MgtPersonCardProfile extends BasePersonCardSection {
     });
   }
 
-  // tslint:disable-next-line: completed-docs
+  // eslint-disable-next-line @typescript-eslint/tslint/config
   private getDisplayDateRange(event: EducationalActivity): string {
     const start = new Date(event.startMonthYear).getFullYear();
     if (start === 0) {

@@ -58,7 +58,7 @@ export class MgtTeamsMsal2Provider extends MgtBaseProvider {
    *
    * @memberof MgtTeamsMsal2Provider
    */
-  @property() public authority;
+  @property() public authority: string;
 
   /**
    * Comma separated list of scopes.
@@ -69,7 +69,7 @@ export class MgtTeamsMsal2Provider extends MgtBaseProvider {
     attribute: 'scopes',
     type: String
   })
-  public scopes;
+  public scopes: string;
   /**
    * Disables auto display of popup when consent is required
    *
@@ -79,7 +79,7 @@ export class MgtTeamsMsal2Provider extends MgtBaseProvider {
     attribute: 'auto-consent-disabled',
     type: Boolean
   })
-  public isAutoConsentDisabled;
+  public isAutoConsentDisabled: boolean;
   /**
    * Disables auto display of popup when consent is required
    *
@@ -89,7 +89,7 @@ export class MgtTeamsMsal2Provider extends MgtBaseProvider {
     attribute: 'http-method',
     type: String
   })
-  public httpMethod;
+  public httpMethod: string;
 
   /**
    * Gets whether this provider can be used in this environment
@@ -140,7 +140,7 @@ export class MgtTeamsMsal2Provider extends MgtBaseProvider {
 
       if (this.httpMethod) {
         const httpMethod: string = this.httpMethod.toUpperCase();
-        const httpMethodEnum = HttpMethod[httpMethod];
+        const httpMethodEnum = HttpMethod[httpMethod] as HttpMethod;
         config.httpMethod = httpMethodEnum;
       }
 
