@@ -610,8 +610,7 @@ export class MgtPerson extends MgtTemplatedComponent {
         @mouseenter=${this.handleMouseEnter}
         @mouseleave=${this.handleMouseLeave}
         @keydown=${this.handleKeyDown}
-        tabindex=0
-      >
+        tabindex=0>
         ${personTemplate}
       </div>
     `;
@@ -840,11 +839,12 @@ export class MgtPerson extends MgtTemplatedComponent {
   protected renderAvatar(personDetailsInternal: IDynamicPerson, image: string, presence: Presence): TemplateResult {
     const hasInitials = !image || this._isInvalidImageSrc || this._avatarType === avatarType.initials;
     const imageClasses = {
+      'user-avatar': true,
       initials: hasInitials,
       small: !this.isLargeAvatar(),
-      threeLines: this.isThreeLines(),
-      fourLines: this.isFourLines(),
-      'user-avatar': true,
+      twolines: this.isTwoLines(),
+      threelines: this.isThreeLines(),
+      fourlines: this.isFourLines(),
       vertical: this.isVertical()
     };
 
@@ -1307,6 +1307,10 @@ export class MgtPerson extends MgtTemplatedComponent {
 
   private isLargeAvatar() {
     return this.avatarSize === 'large' || (this.avatarSize === 'auto' && this.view > ViewType.oneline);
+  }
+
+  private isTwoLines() {
+    return this.view === ViewType.twolines;
   }
 
   private isThreeLines() {
