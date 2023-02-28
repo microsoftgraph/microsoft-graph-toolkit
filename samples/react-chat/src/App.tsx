@@ -1,16 +1,25 @@
-import React from 'react';
+import React, { useCallback, useState } from 'react';
 import './App.css';
-import { Login } from '@microsoft/mgt-react';
+import { Get, Login, Picker } from '@microsoft/mgt-react';
 import { MgtChat } from '@microsoft/mgt-chat';
+import { Chat } from '@microsoft/microsoft-graph-types';
+import ChatListTemplate from './components/ChatListTemplate/ChatListTemplate';
 
 function App() {
+  const [chatId, setChatId] = useState<string>();
+  const chatSelected = useCallback((e: Chat) => {
+    setChatId(e.id);
+  }, []);
   return (
     <div className="App">
       <header className="App-header">
         Mgt Chat test harness
         <br />
         <Login />
-        <MgtChat chatId="123456789" />
+        <Get resource="me/chats?$expand=members" scopes={['chat.read']}>
+          <ChatListTemplate template="default" onSelected={chatSelected} />
+        </Get>
+        {chatId && <MgtChat chatId={chatId} />}
       </header>
     </div>
   );

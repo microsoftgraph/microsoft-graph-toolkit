@@ -187,6 +187,21 @@ export type PersonCardProps = {
 	templateRendered?: (e: CustomEvent<TemplateRenderedData>) => void;
 }
 
+export type PickerProps = {
+	resource?: string;
+	maxPages?: number;
+	placeholder?: string;
+	keyName?: string;
+	entityType?: string;
+	scopes?: string[];
+	cacheEnabled?: boolean;
+	cacheInvalidationPeriod?: number;
+	templateContext?: TemplateContext;
+	mediaQuery?: ComponentMediaQuery;
+	selectionChanged?: (e: CustomEvent<any>) => void;
+	templateRendered?: (e: CustomEvent<TemplateRenderedData>) => void;
+}
+
 export type TasksProps = {
 	res?: TasksStringResource;
 	isNewTaskVisible?: boolean;
@@ -246,6 +261,8 @@ export const PeoplePicker = wrapMgt<PeoplePickerProps>('people-picker');
 export const Person = wrapMgt<PersonProps>('person');
 
 export const PersonCard = wrapMgt<PersonCardProps>('person-card');
+
+export const Picker = wrapMgt<PickerProps>('picker');
 
 export const Tasks = wrapMgt<TasksProps>('tasks');
 
