@@ -370,9 +370,9 @@ $common: (
   ),
   dropdown__item__text__color--hover: (
     _var: --dropdown-item-text-hover-color,
-    dark:$dropdown__item__text__hover__color--dark,
+    dark: $dropdown__item__text__hover__color--dark,
     light: $dropdown__item__text__hover__color--light
-  ),
+  )
 );
 
 @function set-var($var, $theme, $component) {

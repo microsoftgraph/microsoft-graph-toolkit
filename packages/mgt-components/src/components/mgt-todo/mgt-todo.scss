@@ -16,6 +16,13 @@
     &.NewTask {
       margin: 0;
     }
+    &.Complete {
+      text-decoration: line-through;
+      border: set-var(border, $theme-default, $tasks);
+    }
+    .task-cancel-icon {
+      cursor: pointer;
+    }
   }
 
   .TaskDetails {
@@ -37,6 +44,9 @@
         align-items: center;
         width: 200px;
       }
+      .control {
+        margin-inline-start: 10px;
+      }
     }
     .title {
       width: 600px;
@@ -48,12 +58,23 @@
       width: 111px;
       height: 32px;
       margin-inline-end: 30px;
+      text-decoration: inherit;
+
+      fluent-button {
+        --neutral-fill-stealth-rest: $background-color;
+        --neutral-fill-stealth-hover: $background-color;
+      }
     }
   }
 
   fluent-calendar {
     align-self: center;
     width: 300px;
+    z-index: 1;
+    position: absolute;
+    margin-top: 60px;
+    margin-inline-start: 350px;
+    background-color: $background-color;
   }
 
   fluent-text-field {
@@ -70,10 +91,11 @@
     }
 
     fluent-button {
-      width: 50px;
       margin-inline-end: 50px;
       margin-inline-start: 10px;
       height: 16px;
+      --neutral-fill-stealth-rest: $background-color;
+      --neutral-fill-stealth-hover: $background-color;
     }
   }
 }
