@@ -911,7 +911,7 @@ export class MgtPersonCard extends MgtTemplatedComponent {
     const person = this.personDetails as User;
     const user = this._me.userPrincipalName;
     const chatInput = this._chatInput;
-    if (person && person.userPrincipalName === user) {
+    if (person?.userPrincipalName === user) {
       return;
     } else {
       return html`
