@@ -18,7 +18,8 @@ const tags = new Set([
   'teams-channel-picker',
   'todo',
   'file',
-  'file-list'
+  'file-list',
+  'picker'
 ]);
 
 let output = '';
