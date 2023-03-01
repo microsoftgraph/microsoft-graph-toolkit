@@ -1331,10 +1331,8 @@ export class MgtPersonCard extends MgtTemplatedComponent {
   }
 
   private sendQuickMessageOnEnter(e: KeyboardEvent) {
-    if (e) {
-      if (e.code === 'Enter') {
-        this.sendQuickMessage();
-      }
+    if (e.code === 'Enter') {
+      this.sendQuickMessage();
     }
   }
 }
