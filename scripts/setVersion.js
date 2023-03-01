@@ -40,7 +40,7 @@ const updateMgtDependencyVersion = (packages, version) => {
 };
 
 const updateSpfxSolutionVersion = (solutions, version) => {
-  const isPreview = version.indexOf('-preview') < 0;
+  const isPreview = version.indexOf('-preview') > 0;
   if (isPreview) {
     version = version.replace(/-preview\./, '.');
   }
