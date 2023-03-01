@@ -352,7 +352,7 @@ export class MgtTodo extends MgtTasksBase {
           <fluent-button appearance="stealth" class="TaskDue">
             <span part="start" class="TaskDueCalendar">${getSvg(SvgIcon.Calendar)}</span>
             <span part="content" class="TaskDueDate">${getDateString(new Date(task.dueDateTime.dateTime))}</span>
-        </fluent-button>
+          </fluent-button>
         `
       : html``;
 
@@ -378,7 +378,8 @@ export class MgtTodo extends MgtTasksBase {
     });
 
     return html`
-      <fluent-radio class=${taskClasses} @click="${(e: Event) => this.handleTaskCheckClick(e, task)}">
+      <fluent-radio class=${taskClasses} 
+        @click="${(e: Event) => this.handleTaskCheckClick(e, task)}">
         ${taskDetailsTemplate}
       </fluent-radio>
     `;
