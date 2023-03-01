@@ -48,7 +48,7 @@ export class LocalizationHelper {
   public static getDocumentDirection() {
     // Re-set the dir to ltr if the dir attribute is already loaded and the first two options
     // are returning null values.
-    return document.body?.getAttribute('dir') || document.documentElement?.getAttribute('dir') || 'ltr';
+    return document?.body?.getAttribute('dir') || document?.documentElement?.getAttribute('dir') || 'ltr';
   }
 
   /**
