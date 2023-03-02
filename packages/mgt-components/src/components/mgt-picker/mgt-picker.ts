@@ -262,6 +262,6 @@ export class MgtPicker extends MgtTemplatedComponent {
   }
 
   private handleClick(e: MouseEvent, item: any) {
-    this.fireCustomEvent('selectionChanged', item, true, true);
+    this.fireCustomEvent('selectionChanged', item, true, false, true);
   }
 }
