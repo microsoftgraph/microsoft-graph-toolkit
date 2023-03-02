@@ -144,7 +144,7 @@ export const dynamicGroupId = () => html`
     });
 
     function setGroupValue(selected) {
-      picker.setAttribute('group', selected);
+      picker.setAttribute('group-id', selected);
     }
   </script>
 `;
@@ -303,3 +303,20 @@ export const pickerWithAriaLabel = () => html`
   >
   </mgt-people-picker>
 `;
+
+export const asyncDefaultSelectedUserIds = () => {
+  return html`
+
+  <mgt-people-picker id="async-picker"></mgt-people-picker>
+  <script type="module">
+  window.setTimeout(() => {
+    const userIds = 'e3d0513b-449e-4198-ba6f-bd97ae7cae85,40079818-3808-4585-903b-02605f061225'.split(
+      ','
+    );
+    const picker = document.getElementById('async-picker');
+    picker.defaultSelectedUserIds = userIds;
+    console.log('defaultSelectedUserIds set');
+  }, 2000);
+  </script>
+`;
+};
