@@ -298,6 +298,10 @@ export const moreExamples = () => html`
       --avatar-size: 60px;
       --avatar-border-radius: 10% 35%;
     }
+
+    .person-with-avatar-border {
+      --avatar-border: 2px solid black;
+    }
   </style>
 
   <div class="example">
@@ -339,6 +343,11 @@ export const moreExamples = () => html`
   <div class="example" style="width: 200px">
     <div>Overflow</div>
     <mgt-person person-query="me" view="twoLines"></mgt-person>
+  </div>
+
+  <div class="example">
+    <div>Avatar with border (see css tab for style)</div>
+    <mgt-person class="person-with-avatar-border" person-query="me" avatar-size="large" view="oneline"></mgt-person>
   </div>
 
   <div class="example">
