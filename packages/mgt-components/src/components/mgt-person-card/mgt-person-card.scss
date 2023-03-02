@@ -356,17 +356,6 @@
       }
     }
 
-    fluent-button {
-      cursor: pointer;
-      &:disabled {
-        pointer-events: none;
-      }
-      svg {
-        &:disabled {
-          filter: none;
-        }
-      }
-    }
     .send-message-icon {
       max-width: 15px;
       margin-top: 10px;
@@ -379,6 +368,10 @@
 
       &:hover {
         filter: brightness(0.5);
+      }
+
+      &:disabled {
+        filter: none;
       }
     }
   }
