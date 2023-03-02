@@ -1,5 +1,5 @@
 {
-  "image": "mcr.microsoft.com/devcontainers/javascript-node:0-14",
+  "image": "mcr.microsoft.com/devcontainers/javascript-node:0-16",
   "customizations": {
     "vscode": {
       "extensions": [
@@ -13,6 +13,5 @@
       ]
     }
   },
-  "forwardPorts": [3000, 6006],
-  "postCreateCommand": "yarn"
+  "forwardPorts": [3000, 6006]
 }

@@ -226,8 +226,15 @@ mgt-people-picker .root {
           top: 0px;
           border-radius: 12px;
           line-height: 24px;
+
           &:hover {
             color: $commblue_primary;
+          }
+          &:focus,
+          &:focus-visible {
+            outline-offset: -4px;
+            outline-width: 1px;
+            outline-style: solid;
           }
         }
       }
