@@ -22,12 +22,12 @@
     }
     .task-cancel-icon {
       cursor: pointer;
+      margin-inline: 15px;
     }
   }
 
   .TaskDetails {
     box-sizing: border-box;
-    // border: 1px solid;
 
     /* Auto layout */
 
@@ -59,22 +59,18 @@
       height: 32px;
       margin-inline-end: 30px;
       text-decoration: inherit;
+      display: flex;
 
-      fluent-button {
-        --neutral-fill-stealth-rest: $background-color;
-        --neutral-fill-stealth-hover: $background-color;
+      .TaskCalendar {
+        display: flex;
+        margin-top: 5px;
+        margin-inline-end: 10px;
+      }
+      .TaskDueDate {
+        display: flex;
+        margin-top: 5px;
       }
     }
-  }
-
-  fluent-calendar {
-    align-self: center;
-    width: 300px;
-    z-index: 1;
-    position: absolute;
-    margin-top: 60px;
-    margin-inline-start: 350px;
-    background-color: $background-color;
   }
 
   fluent-text-field {
@@ -88,14 +84,12 @@
     div:nth-child(2) {
       display: flex;
       align-items: center;
-    }
-
-    fluent-button {
-      margin-inline-end: 50px;
-      margin-inline-start: 10px;
-      height: 16px;
-      --neutral-fill-stealth-rest: $background-color;
-      --neutral-fill-stealth-hover: $background-color;
+      .calendar {
+        display: inherit;
+        .date {
+          margin-inline-start: 10px;
+        }
+      }
     }
   }
 }
