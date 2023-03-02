@@ -299,6 +299,7 @@ export const personQuery = () => html`
 
 export const personAvatarType = () => html`
    <mgt-person person-query="me" avatar-type="photo"></mgt-person>
+   <br>
    <mgt-person person-query="me" avatar-type="initials"></mgt-person>
  `;
 
