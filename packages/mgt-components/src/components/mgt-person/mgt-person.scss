@@ -38,7 +38,6 @@ $person-line4-font-weight: var(--person-line4-font-weight, 400);
 $person-line4-text-transform: var(--person-line4-text-transform, inherit);
 $person-line4-text-line-height: var(--person-line4-text-line-height, 16px);
 
-
 :host {
   font-size: var(--default-font-size);
   font-family: var(--default-font-family);
@@ -185,11 +184,10 @@ $person-line4-text-line-height: var(--person-line4-text-line-height, 16px);
 }
 
 @media (forced-colors: active) and (prefers-color-scheme: dark) {
-
   :host svg,
-  :host svg>path,
+  :host svg > path,
   mgt-person svg,
-  mgt-person svg>path {
+  mgt-person svg > path {
     fill: rgb(255, 255, 255) !important;
     fill-rule: nonzero !important;
     clip-rule: nonzero !important;
@@ -197,11 +195,10 @@ $person-line4-text-line-height: var(--person-line4-text-line-height, 16px);
 }
 
 @media (forced-colors: active) and (prefers-color-scheme: dark) {
-
   :host svg,
-  :host svg>path,
+  :host svg > path,
   mgt-person svg,
-  mgt-person svg>path {
+  mgt-person svg > path {
     fill: rgb(0, 0, 0) !important;
     fill-rule: nonzero !important;
     clip-rule: nonzero !important;
