@@ -314,17 +314,8 @@ export class MgtPersonCard extends MgtTemplatedComponent {
   })
   public personPresence: Presence;
 
-  /**
-   * Gets or sets whether a quick message is sent
-   *
-   * @type {boolean}
-   * @memberof MgtPersonCard
-   */
-  @property({
-    attribute: 'is-sending',
-    type: Boolean
-  })
-  public isSending: boolean = false;
+  @state()
+  private isSending: boolean = false;
 
   /**
    * The subsections for display in the lower part of the card
@@ -1060,6 +1051,7 @@ export class MgtPersonCard extends MgtTemplatedComponent {
     }
     const person = this.personDetails as User;
     const user = this._me.userPrincipalName;
+    this.isSending = true;
 
     const chat = await createChat(this._graph, person.userPrincipalName, user);
 
@@ -1068,7 +1060,6 @@ export class MgtPersonCard extends MgtTemplatedComponent {
         content: message
       }
     };
-    this.isSending = true;
     await sendMessage(this._graph, chat.id, messageData);
     this.isSending = false;
     this.clearInputData();
