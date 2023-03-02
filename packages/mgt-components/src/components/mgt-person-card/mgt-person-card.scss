@@ -340,6 +340,7 @@
 
   .message-section {
     border-bottom: 1px solid set-var(tab__line__color, $theme-default, $common);
+    display: flex;
 
     fluent-text-field {
       margin: 10px 10px 10px 16px;
@@ -354,11 +355,10 @@
         --neutral-fill-secondary-rest: #{set-var(card-bg, $theme-default, $person-card-theme)};
       }
     }
-    .send-message-icon {
-      max-width: 15px;
+
+    fluent-button {
       cursor: pointer;
       &:disabled {
-        opacity: 0.4;
         pointer-events: none;
       }
       svg {
@@ -367,11 +367,14 @@
         }
       }
     }
+    .send-message-icon {
+      max-width: 15px;
+      margin-top: 10px;
+    }
 
     svg {
       height: 17px;
       width: 16px;
-      margin-bottom: 6px;
       fill: set-var(icon__color, $theme-default, $common);
 
       &:hover {

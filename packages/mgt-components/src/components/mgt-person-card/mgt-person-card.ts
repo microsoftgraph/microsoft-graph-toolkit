@@ -924,11 +924,11 @@ export class MgtPersonCard extends MgtTemplatedComponent {
           }}
           @keydown="${(e: KeyboardEvent) => this.sendQuickMessageOnEnter(e)}">
         </fluent-text-field>
-        <span class="send-message-icon" 
+        <fluent-button class="send-message-icon" 
           @click=${() => this.sendQuickMessage()}
-          disabled=${this.isSending}>
+          ?disabled=${this.isSending}>
           ${!this.isSending ? getSvg(SvgIcon.Send) : getSvg(SvgIcon.Confirmation)}
-        </span>
+        </fluent-button>
       </div>
       `;
     }
