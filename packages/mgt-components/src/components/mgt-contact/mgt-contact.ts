@@ -199,14 +199,14 @@ export class MgtContact extends BasePersonCardSection {
     }
 
     contentTemplate = html`
-       ${compactParts.map(p => this.renderContactPart(p))}
-     `;
+      ${compactParts.map(p => this.renderContactPart(p))}
+    `;
 
     return html`
-       <div class="root compact" dir=${this.direction}>
-         ${contentTemplate}
-       </div>
-     `;
+      <div class="root compact" dir=${this.direction}>
+        ${contentTemplate}
+      </div>
+    `;
   }
 
   /**
@@ -223,16 +223,16 @@ export class MgtContact extends BasePersonCardSection {
       // Filter for parts with values only
       const availableParts: IContactPart[] = Object.values(this._contactParts).filter((p: IContactPart) => !!p.value);
       contentTemplate = html`
-         ${availableParts.map(part => this.renderContactPart(part))}
-       `;
+        ${availableParts.map(part => this.renderContactPart(part))}
+      `;
     }
 
     return html`
-       <div class="root" dir=${this.direction}>
-         <div class="title" tabindex="0">${this.displayName}</div>
-         ${contentTemplate}
-       </div>
-     `;
+      <div class="root" dir=${this.direction}>
+        <div class="title" tabindex="0">${this.displayName}</div>
+        ${contentTemplate}
+      </div>
+    `;
   }
 
   /**
@@ -257,11 +257,11 @@ export class MgtContact extends BasePersonCardSection {
 
     const valueTemplate = part.onClick
       ? html`
-           <span class=${classMap(partLinkClasses)} @click=${(e: Event) => part.onClick(e)}>${part.value}</span>
-         `
+          <span class=${classMap(partLinkClasses)} @click=${(e: Event) => part.onClick(e)}>${part.value}</span>
+        `
       : html`
-           ${part.value}
-         `;
+          ${part.value}
+        `;
 
     return html`
       <div class="part" @click=${(e: MouseEvent) => this.handlePartClick(e, part.value)} tabindex="0">
@@ -270,9 +270,12 @@ export class MgtContact extends BasePersonCardSection {
           <div class="part__title">${part.title}</div>
           <div class="part__value" title=${part.title}>${valueTemplate}</div>
         </div>
-        <div class="part__copy" aria-role="button" aria-label=${this.strings.copyToClipboardButton} title=${
-      this.strings.copyToClipboardButton
-    }>
+        <div
+          class="part__copy"
+          aria-role="button" 
+          aria-label=${this.strings.copyToClipboardButton}
+          title=${this.strings.copyToClipboardButton}
+        >
           ${getSvg(SvgIcon.Copy)}
         </div>
       </div>
