@@ -130,10 +130,9 @@ export class MgtTodo extends MgtTasksBase {
 
   private _isLoadingTasks: boolean;
   private _loadingTasks: string[];
-  private _newTaskDueDate: string;
+  private _newTaskDueDate: Date;
   private _newTaskName: string;
   private _isNewTaskBeingAdded: boolean;
-  private _openCalendar: boolean;
   private _graph: IGraph;
   @state() private currentList: TodoTaskList;
 
@@ -144,7 +143,6 @@ export class MgtTodo extends MgtTasksBase {
     this._tasks = [];
     this._loadingTasks = [];
     this._isLoadingTasks = false;
-    this._openCalendar = false;
   }
 
   protected createRenderRoot() {
@@ -176,17 +174,6 @@ export class MgtTodo extends MgtTasksBase {
         ${taskTemplates}
       </fluent-radio-group>
     `;
-  }
-
-  /**
-   * Toggle Calendar
-   *
-   * @protected
-   * @memberof MgtTodo
-   */
-  protected toggleCalendar(state: boolean): void {
-    this._openCalendar = state;
-    this.requestUpdate();
   }
 
   /**
@@ -266,66 +253,67 @@ export class MgtTodo extends MgtTasksBase {
 
     const calendarTemplate = html`
       ${getSvg(SvgIcon.Calendar)}
-      <fluent-button appearance="stealth" 
-        @click=${(e: Event) => this.toggleCalendar(true)}>
-        <span class="TaskDueDate">${
-          this._newTaskDueDate ? getDateString(new Date(this._newTaskDueDate)) : this.strings.dueDate
-        }</span>
-      </fluent-button>
+      <input
+        type="date"
+        id="new-taskDate-input"
+        class="date"
+        label="new-taskDate-input"
+        aria-label="new-taskDate-input"
+        role="textbox"
+        .value="${this.dateToInputValue(this._newTaskDueDate)}"
+        @change="${(e: Event) => {
+          const value = (e.target as HTMLInputElement).value;
+          if (value) {
+            this._newTaskDueDate = new Date(value + 'T17:00');
+          } else {
+            this._newTaskDueDate = null;
+          }
+        }}"
+      />
     `;
 
     const taskTitle = html`
       <fluent-text-field
         appearance="outline"
+        id="new-taskName-input"
         label="new-taskName-input"
         aria-label="new-taskName-input"
         .value=${this._newTaskName}
         placeholder="${this.strings.newTaskPlaceholder}"
-        @keypress="${(e: KeyboardEvent) => {
+        @keydown="${(e: KeyboardEvent) => {
           if (e.key === 'Enter') {
             this.addTask();
           }
         }}"
         @input="${(e: Event) => {
-          this._newTaskName = (e.target as HTMLInputElement).value;
-          this.requestUpdate();
+          if ((e.target as HTMLInputElement).id === 'new-taskName-input') {
+            this._newTaskName = (e.target as HTMLInputElement).value;
+            this.requestUpdate();
+          }
         }}">
         <div slot="start">${addIcon}</div>
         <div slot="end">
-        ${calendarTemplate}
+        <span class="calendar">${calendarTemplate}</span>
         ${cancelIcon}</div>
       </fluent-text-field>
     `;
     return html`
-      <div dir=${this.direction} class="Task NewTask Incomplete">
-        ${taskTitle}
-      </div>
-        ${
-          this._openCalendar
-            ? html`
-                <fluent-calendar readonly="false" locale="en-US"
-                  selected-dates="${this._newTaskDueDate}"
-                  @dateselected="${e => this.handleDateSelected(e)}"
-                  @mouseleave=${() => this.toggleCalendar(false)}>
-                </fluent-calendar>`
-            : null
-        }
+      ${
+        this.currentList
+          ? html`
+            <div dir=${this.direction} class="Task NewTask Incomplete">
+              ${taskTitle}
+            </div>
+        `
+          : html``
+      }  
      `;
   }
-  // selected-dates="2-20-2023"
+
   protected async handleSelectionChanged(e: any) {
     let list = e.detail;
     this.currentList = list;
     await this.loadTasks(list);
-  }
-
-  private handleDateSelected(e: CustomEvent<{ day: number; month: number; year: number }>) {
-    if (e) {
-      this._newTaskDueDate = `${e.detail.month}-${e.detail.day}-${e.detail.year}`;
-      this.requestUpdate();
-    } else {
-      this._newTaskDueDate = null;
-    }
   }
 
   /**
@@ -349,11 +337,9 @@ export class MgtTodo extends MgtTasksBase {
 
     const taskDueTemplate = task.dueDateTime
       ? html`
-          <fluent-button appearance="stealth" class="TaskDue">
-            <span part="start" class="TaskDueCalendar">${getSvg(SvgIcon.Calendar)}</span>
-            <span part="content" class="TaskDueDate">${getDateString(new Date(task.dueDateTime.dateTime))}</span>
-          </fluent-button>
-        `
+        <span class="TaskCalendar">${getSvg(SvgIcon.Calendar)}</span>
+        <span class="TaskDueDate">${getDateString(new Date(task.dueDateTime.dateTime))}</span>
+      `
       : html``;
 
     if (this.hasTemplate('task-details')) {
@@ -377,9 +363,17 @@ export class MgtTodo extends MgtTasksBase {
       Task: true
     });
 
+    const taskCheckContent = isCompleted
+      ? html`
+          ${getSvg(SvgIcon.Confirmation)}
+        `
+      : null;
+
     return html`
-      <fluent-radio class=${taskClasses} 
-        @click="${(e: Event) => this.handleTaskCheckClick(e, task)}">
+      <fluent-radio class=${taskClasses} @click="${(e: Event) => this.handleTaskCheckClick(e, task)}">
+        <div slot="checked-indicator">
+          <span class="TaskCheckContent">${taskCheckContent}</span>
+        </div>
         ${taskDetailsTemplate}
       </fluent-radio>
     `;
@@ -420,7 +414,6 @@ export class MgtTodo extends MgtTasksBase {
     const taskData = {
       title: this.newTaskName
     };
-    console.log('date: ', this._newTaskDueDate);
 
     if (this._newTaskDueDate) {
       // tslint:disable-next-line: no-string-literal
