@@ -7,9 +7,10 @@
 
 @import '../../styles/shared-sass-variables.scss';
 
-$presence__background-color: var(--presence-background-color, set-var(background-color, $theme-default, $common));
-$presence__icon__color: var(--presence-icon-color, set-var(background-color, $theme-default, $common));
-$line2__color: var(--line2-color, set-var(color__sub2, $theme-default, $common));
-$line3__color: var(--line3-color, set-var(color__sub2, $theme-default, $common));
-$line4__color: var(--line4-color, set-var(color__sub2, $theme-default, $common));
-$color: var(--color, set-var(color__sub1, $theme-default, $common));
+$person-background-color: var(--person-background-color, var(--neutral-layer-1));
+$person-line1-text-color: var(--person-line1-text-color, var(--neutral-foreground-rest));
+$person-line2-text-color: var(--person-line2-text-color, var(--neutral-foreground-hint));
+$person-line3-text-color: var(--person-line3-text-color, var(--neutral-foreground-hint));
+$person-line4-text-color: var(--person-line4-text-color, var(--neutral-foreground-hint));
+$person-initials-text-color: var(--person-initials-text-color, var(--neutral-foreground-active));
+$person-initials-background-color: var(--person-initials-background-color, var(--neutral-fill-input-alt-rest));
