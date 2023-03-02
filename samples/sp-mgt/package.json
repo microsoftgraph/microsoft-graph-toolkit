@@ -1,6 +1,6 @@
 {
   "name": "sp-mgt-no-framework",
-  "version": "0.0.1",
+  "version": "0.0.2",
   "private": true,
   "main": "lib/index.js",
   "scripts": {
@@ -15,7 +15,6 @@
     "@microsoft/mgt-element": "*",
     "@microsoft/mgt-components": "*",
     "@microsoft/mgt-sharepoint-provider": "*",
-    "@microsoft/mgt-spfx-utils": "*",
     "@microsoft/sp-core-library": "1.16.1",
     "@microsoft/sp-property-pane": "1.16.1",
     "@microsoft/sp-webpart-base": "1.16.1",
