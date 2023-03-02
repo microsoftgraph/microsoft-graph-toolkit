@@ -40,7 +40,7 @@
 
 ### BREAKING CHANGES:
 
-In mgt-agenda for eventClick the clicked MicrosoftGraph.Event moves from a property of e.detail to be the value of e.detail
-All events for mgt-task now emit a CustomEvent<ITask>
-Numerous changes to design tokens that may break styling customizations
-@microsoft/microsoft-graph-client now uses v3.0.2, upgraded from v2.2.1, solutions using the graph client from the provider will experience breaking changes
+- In mgt-agenda for eventClick the clicked MicrosoftGraph.Event moves from a property of e.detail to be the value of e.detail
+- All events for mgt-task now emit a CustomEvent<ITask>
+- Numerous changes to design tokens that may break styling customizations
+- @microsoft/microsoft-graph-client now uses v3.0.2, upgraded from v2.2.1, solutions using the graph client from the provider will experience breaking changes.
