@@ -438,22 +438,8 @@ export class MgtPeople extends MgtTemplatedComponent {
           this.people = await findGroupMembers(graph, null, this.groupId, this.showMax, PersonType.person);
         } else if (this.userIds || this.peopleQueries) {
           this.userIds
-            ? (this.people = await getUsersForUserIds(graph, this.userIds))
-            : (this.people = await getUsersForPeopleQueries(graph, this.peopleQueries));
-          if (this._fallbackDetails) {
-            // replace null people with fallback details
-            this.people = this.people.map((p, i) => {
-              if (p) {
-                return p;
-              } else if (i < this._fallbackDetails.length) {
-                return this._fallbackDetails[i];
-              }
-              return null;
-            });
-          } else {
-            // remove null people from the array
-            this.people = this.people.filter(p => p !== null);
-          }
+            ? (this.people = await getUsersForUserIds(graph, this.userIds, '', '', this._fallbackDetails))
+            : (this.people = await getUsersForPeopleQueries(graph, this.peopleQueries, this._fallbackDetails));
         } else if (this.resource) {
           this.people = await getPeopleFromResource(graph, this.version, this.resource, this.scopes);
         } else {
