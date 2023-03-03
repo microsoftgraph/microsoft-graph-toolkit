@@ -1,0 +1,23 @@
+/**
+ * -------------------------------------------------------------------------------------------
+ * Copyright (c) Microsoft Corporation.  All Rights Reserved.  Licensed under the MIT License.
+ * See License in the project root for license information.
+ * -------------------------------------------------------------------------------------------
+ */
+
+@import '../../styles/shared-sass-variables.scss';
+
+$contact-theme: (
+  person-card-contact-link-color: (
+    _var: --person-card-contact-link-color,
+    light: $link__color--light,
+    dark: $link__color--dark
+  ),
+  person-card-contact-link-hover-color: (
+    _var: --person-card-contact-link-hover-color,
+    light: $link__color__hover--light,
+    dark: $link__color__hover--dark
+  )
+);
+
+@include create-themes($contact-theme);
