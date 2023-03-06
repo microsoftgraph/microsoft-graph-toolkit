@@ -9,7 +9,7 @@ const ChatListTemplate = (props: MgtTemplateProps & ChatInteractionProps) => {
   return (
     <ul>
       {chats.map(c => (
-        <ChatItem chat={c} onSelected={props.onSelected} />
+        <ChatItem key={c.id} chat={c} onSelected={props.onSelected} />
       ))}
     </ul>
   );

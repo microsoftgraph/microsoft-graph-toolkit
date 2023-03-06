@@ -115,6 +115,7 @@
     "gulp-sass": "^5.1.0",
     "gulp-util": "^3.0.8",
     "husky": "^4.3.0",
+    "immer": "^9.0.19",
     "jest": "^29.3.1",
     "jest-environment-jsdom": "^29.3.1",
     "jest-fetch-mock": "^3.0.3",
@@ -165,8 +166,6 @@
   },
   "resolutions": {
     "@microsoft/microsoft-graph-client": "3.0.2",
-    "react": "16.13.1",
-    "react-dom": "16.13.1",
     "responselike": "2.0.0"
   }
 }

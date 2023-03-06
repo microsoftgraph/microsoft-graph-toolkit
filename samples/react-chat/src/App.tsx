@@ -1,4 +1,4 @@
-import React, { useCallback, useState } from 'react';
+import React, { memo, useCallback, useState } from 'react';
 import './App.css';
 import { Get, Login, Picker } from '@microsoft/mgt-react';
 import { MgtChat } from '@microsoft/mgt-chat';
@@ -7,9 +7,13 @@ import ChatListTemplate from './components/ChatListTemplate/ChatListTemplate';
 
 function App() {
   const [chatId, setChatId] = useState<string>();
-  const chatSelected = useCallback((e: Chat) => {
-    setChatId(e.id);
-  }, []);
+  const chatSelected = useCallback(
+    (e: Chat) => {
+      setChatId(e.id);
+    },
+    [setChatId]
+  );
+
   return (
     <div className="App">
       <header className="App-header">
