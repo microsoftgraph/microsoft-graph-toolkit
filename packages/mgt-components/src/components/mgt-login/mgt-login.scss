@@ -106,7 +106,7 @@ mgt-login .login-button {
 :host .login-icon,
 mgt-login .login-icon {
   & + span {
-    margin-left: 6px;
+    margin-inline-start: 6px;
   }
 }
 
