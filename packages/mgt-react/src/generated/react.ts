@@ -44,6 +44,7 @@ export type FileProps = {
 
 export type FileListProps = {
 	fileListQuery?: string;
+	displayName?: string;
 	fileQueries?: string[];
 	files?: MicrosoftGraph.DriveItem[];
 	siteId?: string;
@@ -70,7 +71,6 @@ export type FileListProps = {
 export type GetProps = {
 	resource?: string;
 	scopes?: string[];
-	version?: string;
 	type?: ResponseType;
 	maxPages?: number;
 	pollingRate?: number;
@@ -107,7 +107,6 @@ export type PeopleProps = {
 	showPresence?: boolean;
 	personCardInteraction?: PersonCardInteraction;
 	resource?: string;
-	version?: string;
 	scopes?: string[];
 	fallbackDetails?: IDynamicPerson[];
 	templateContext?: TemplateContext;
@@ -183,9 +182,25 @@ export type PersonCardProps = {
 	inheritDetails?: boolean;
 	showPresence?: boolean;
 	personPresence?: MicrosoftGraph.Presence;
+	isSending?: boolean;
 	templateContext?: TemplateContext;
 	mediaQuery?: ComponentMediaQuery;
 	expanded?: (e: CustomEvent<null>) => void;
+	templateRendered?: (e: CustomEvent<TemplateRenderedData>) => void;
+}
+
+export type PickerProps = {
+	resource?: string;
+	maxPages?: number;
+	placeholder?: string;
+	keyName?: string;
+	entityType?: string;
+	scopes?: string[];
+	cacheEnabled?: boolean;
+	cacheInvalidationPeriod?: number;
+	templateContext?: TemplateContext;
+	mediaQuery?: ComponentMediaQuery;
+	selectionChanged?: (e: CustomEvent<any>) => void;
 	templateRendered?: (e: CustomEvent<TemplateRenderedData>) => void;
 }
 
@@ -219,6 +234,12 @@ export type TeamsChannelPickerProps = {
 	templateRendered?: (e: CustomEvent<TemplateRenderedData>) => void;
 }
 
+export type ThemeToggleProps = {
+	darkModeActive?: boolean;
+	mediaQuery?: ComponentMediaQuery;
+	darkmodechanged?: (e: CustomEvent<boolean>) => void;
+}
+
 export type TodoProps = {
 	taskFilter?: TodoFilter;
 	readOnly?: boolean;
@@ -249,9 +270,13 @@ export const Person = wrapMgt<PersonProps>('person');
 
 export const PersonCard = wrapMgt<PersonCardProps>('person-card');
 
+export const Picker = wrapMgt<PickerProps>('picker');
+
 export const Tasks = wrapMgt<TasksProps>('tasks');
 
 export const TeamsChannelPicker = wrapMgt<TeamsChannelPickerProps>('teams-channel-picker');
+
+export const ThemeToggle = wrapMgt<ThemeToggleProps>('theme-toggle');
 
 export const Todo = wrapMgt<TodoProps>('todo');
 

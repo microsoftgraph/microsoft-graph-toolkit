@@ -14,7 +14,7 @@ import {
   customElement,
   mgtHtml
 } from '@microsoft/mgt-element';
-import { DriveItem } from '@microsoft/microsoft-graph-types';
+import { DriveItem, SharedInsight } from '@microsoft/microsoft-graph-types';
 import { html, TemplateResult } from 'lit';
 import { property, state } from 'lit/decorators.js';
 import { repeat } from 'lit/directives/repeat.js';
@@ -38,6 +38,7 @@ import {
   getUserInsightsFiles
 } from '../../graph/graph.files';
 import './mgt-file-upload/mgt-file-upload';
+import { getSvg, SvgIcon } from '../../utils/SvgHelper';
 import { OfficeGraphInsightString, ViewType } from '../../graph/types';
 import { styles } from './mgt-file-list-css';
 import { strings } from './strings';
@@ -56,7 +57,6 @@ registerFluentComponents(fluentProgressRing, fluentDesignSystemProvider);
  *
  * @export
  * @class MgtFileList
- * @extends {MgtTemplatedComponent}
  *
  * @fires {CustomEvent<MicrosoftGraph.DriveItem>} itemClick - Fired when a user clicks on a file.
  * it returns the file (DriveItem) details.
@@ -110,6 +110,52 @@ export class MgtFileList extends MgtTemplatedComponent {
 
     this._fileListQuery = value;
     this.requestStateUpdate(true);
+  }
+
+  /**
+   * The name for display in the overview section.
+   *
+   * @readonly
+   * @type {string}
+   * @memberof MgtFileList
+   */
+  public get displayName(): string {
+    return this.strings.filesSectionTitle;
+  }
+
+  /**
+   * Render the icon for display in the navigation ribbon.
+   *
+   * @returns {TemplateResult}
+   * @memberof MgtFileList
+   */
+  public renderIcon(): TemplateResult {
+    return getSvg(SvgIcon.Files);
+  }
+
+  /**
+   * Set the section to compact view mode
+   *
+   * @returns
+   * @memberof MgtFileList
+   */
+  public asCompactView() {
+    this._isCompact = true;
+    this.requestUpdate();
+    return this;
+  }
+
+  /**
+   * Set the section to full view mode
+   *
+   * @returns
+   * @memberof MgtFileList
+   */
+  public asFullView() {
+    this._isCompact = false;
+    this._isFullView = true;
+    this.requestUpdate();
+    return this;
   }
 
   /**
@@ -432,6 +478,9 @@ export class MgtFileList extends MgtTemplatedComponent {
     this.requestStateUpdate(true);
   }
 
+  @state() private _isCompact: boolean;
+  @state() private _isFullView: boolean; // Set Person Card Files FullView Section
+
   /**
    * A Array of file extensions to be excluded from file upload.
    *
@@ -496,6 +545,8 @@ export class MgtFileList extends MgtTemplatedComponent {
     this.maxUploadFile = 10;
     this.enableFileUpload = false;
     this._preloadedFiles = [];
+    this._isCompact = false;
+    this._isFullView = false;
   }
 
   /**
@@ -527,7 +578,29 @@ export class MgtFileList extends MgtTemplatedComponent {
       return this.renderNoData();
     }
 
-    return this.renderTemplate('default', { files: this.files }) || this.renderFiles();
+    return this._isCompact
+      ? this.renderCompactView()
+      : this.renderTemplate('default', { files: this.files }) || this.renderFiles();
+  }
+
+  /**
+   * Render the compact view
+   *
+   * @returns {TemplateResult}
+   * @memberof MgtFileList
+   */
+  public renderCompactView(): TemplateResult {
+    let contentTemplate: TemplateResult;
+    let files = this.files.slice(0, 3);
+    contentTemplate = html`
+      ${files.map(file => this.renderFile(file))}
+    `;
+
+    return html`
+      <div class="root compact" dir=${this.direction}>
+        ${contentTemplate}
+      </div>
+    `;
   }
 
   /**
@@ -575,6 +648,7 @@ export class MgtFileList extends MgtTemplatedComponent {
     return html`
       <div id="file-list-wrapper" class="file-list-wrapper" dir=${this.direction}>
         ${this.enableFileUpload ? this.renderFileUpload() : null}
+        ${this._isFullView ? html`<div class="title">${this.strings.filesSectionTitle}</div>` : null}
         <ul
           id="file-list"
           class="file-list"
@@ -868,6 +942,7 @@ export class MgtFileList extends MgtTemplatedComponent {
    * @memberof MgtFileList
    */
   protected handleItemSelect(item: DriveItem, event: UIEvent): void {
+    this.handleFileClick(item);
     this.fireCustomEvent('itemClick', item);
 
     // handle accessibility updates when item clicked
@@ -928,6 +1003,12 @@ export class MgtFileList extends MgtTemplatedComponent {
     }
 
     this.requestUpdate();
+  }
+
+  private handleFileClick(file: DriveItem) {
+    if (file && file.webUrl) {
+      window.open(file.webUrl, '_blank', 'noreferrer');
+    }
   }
 
   /**

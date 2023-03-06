@@ -5,7 +5,14 @@
  * -------------------------------------------------------------------------------------------
  */
 
-// THIS FILE IS AUTO GENERATED
-// ANY CHANGES WILL BE LOST DURING BUILD
+@import '../../styles/shared-sass-variables.scss';
 
-export const PACKAGE_VERSION = '3.0.0-preview.1';
+$profile-section-theme: (
+  token-overflow-color: (
+    _var: --token-overflow-color,
+    light: $commblue_primary,
+    dark: $text__color__sub1--dark
+  )
+);
+
+@include create-themes($profile-section-theme);

@@ -6,8 +6,15 @@
  */
 
 @import '../base-person-card-section.scss';
-@import '../../../../styles/shared-styles.scss';
-@import '../../../../styles/shared-sass-variables.scss';
+@import '../../styles/shared-styles.scss';
+@import '../../styles/shared-sass-variables.scss';
+
+$message-subject-font-size: var(--message-subject-font-size, 14px);
+$message-subject-font-weight: var(--message-subject-font-weight, 600);
+$message-subject-line-height: var(--message-subject-line-height, 20px);
+$message-from-font-size: var(--message-subject-font-size, 12px);
+$message-from-font-weight: var(--message-subject-font-weight, 400);
+$message-from-line-height: var(--message-subject-line-height, 16px);
 
 :host {
   position: relative;
@@ -48,19 +55,23 @@
 
         .message__subject {
           color: set-var(color, $theme-default, $common);
-          font-size: 14px;
+          font-size: $message-subject-font-size;
+          font-weight: $message-subject-font-weight;
+          line-height: $message-subject-line-height;
         }
 
         .message__from {
-          font-size: 12px;
+          font-size: $message-from-font-size;
           color: set-var(color__sub1, $theme-default, $common);
-          line-height: 16px;
+          line-height: $message-from-line-height;
+          font-weight: $message-from-font-weight;
         }
 
         .message__message {
-          font-size: 12px;
+          font-size: $message-from-font-size;
           color: set-var(color__sub2, $theme-default, $common);
-          line-height: 16px;
+          line-height: $message-from-line-height;
+          font-weight: $message-from-font-weight;
         }
 
         > div {
