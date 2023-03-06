@@ -9,9 +9,9 @@ import { Message } from '@microsoft/microsoft-graph-types';
 import { html, TemplateResult } from 'lit';
 
 import { BasePersonCardSection } from '../BasePersonCardSection';
-import { getSvg, SvgIcon } from '../../../../utils/SvgHelper';
-import { getRelativeDisplayDate } from '../../../../utils/Utils';
-import { styles } from './mgt-person-card-messages-css';
+import { getSvg, SvgIcon } from '../../utils/SvgHelper';
+import { getRelativeDisplayDate } from '../../utils/Utils';
+import { styles } from './mgt-messages-css';
 import { strings } from './strings';
 import { customElement } from '@microsoft/mgt-element';
 
@@ -19,12 +19,12 @@ import { customElement } from '@microsoft/mgt-element';
  * The email messages subsection of the person card
  *
  * @export
- * @class MgtPersonCardMessages
+ * @class MgtMessages
  * @extends {MgtTemplatedComponent}
  */
-@customElement('person-card-messages')
-// @customElement('mgt-person-card-messages')
-export class MgtPersonCardMessages extends BasePersonCardSection {
+@customElement('messages')
+// @customElement('mgt-messages')
+export class MgtMessages extends BasePersonCardSection {
   /**
    * Array of styles to apply to the element. The styles should be defined
    * using the `css` tag function.
@@ -49,7 +49,7 @@ export class MgtPersonCardMessages extends BasePersonCardSection {
    *
    * @readonly
    * @type {string}
-   * @memberof MgtPersonCardMessages
+   * @memberof MgtMessages
    */
   public get displayName(): string {
     return this.strings.emailsSectionTitle;
@@ -59,7 +59,7 @@ export class MgtPersonCardMessages extends BasePersonCardSection {
    * Reset any state in the section
    *
    * @protected
-   * @memberof MgtPersonCardMessages
+   * @memberof MgtMessages
    */
   public clearState(): void {
     super.clearState();
@@ -70,7 +70,7 @@ export class MgtPersonCardMessages extends BasePersonCardSection {
    * Render the icon for display in the navigation ribbon.
    *
    * @returns {TemplateResult}
-   * @memberof MgtPersonCardMessages
+   * @memberof MgtMessages
    */
   public renderIcon(): TemplateResult {
     return getSvg(SvgIcon.Messages);
@@ -80,7 +80,7 @@ export class MgtPersonCardMessages extends BasePersonCardSection {
    * Render the compact view
    *
    * @returns {TemplateResult}
-   * @memberof MgtPersonCardMessages
+   * @memberof MgtMessages
    */
   public renderCompactView(): TemplateResult {
     let contentTemplate: TemplateResult;
@@ -94,15 +94,15 @@ export class MgtPersonCardMessages extends BasePersonCardSection {
         ? this._messages.slice(0, 3).map(message => this.renderMessage(message))
         : [];
       contentTemplate = html`
-        ${messageTemplates}
-      `;
+         ${messageTemplates}
+       `;
     }
 
     return html`
-      <div class="root compact">
-        ${contentTemplate}
-      </div>
-    `;
+       <div class="root compact">
+         ${contentTemplate}
+       </div>
+     `;
   }
 
   /**
@@ -110,7 +110,7 @@ export class MgtPersonCardMessages extends BasePersonCardSection {
    *
    * @protected
    * @returns {TemplateResult}
-   * @memberof MgtPersonCardMessages
+   * @memberof MgtMessages
    */
   protected renderFullView(): TemplateResult {
     let contentTemplate: TemplateResult;
@@ -121,16 +121,16 @@ export class MgtPersonCardMessages extends BasePersonCardSection {
       contentTemplate = this.renderNoData();
     } else {
       contentTemplate = html`
-        ${this._messages.slice(0, 5).map(message => this.renderMessage(message))}
-      `;
+         ${this._messages.slice(0, 5).map(message => this.renderMessage(message))}
+       `;
     }
 
     return html`
-      <div class="root">
-        <div class="title" tabindex="0">${this.strings.emailsSectionTitle}</div>
-        ${contentTemplate}
-      </div>
-    `;
+       <div class="root">
+         <div class="title" tabindex="0">${this.strings.emailsSectionTitle}</div>
+         ${contentTemplate}
+       </div>
+     `;
   }
 
   /**
@@ -139,19 +139,19 @@ export class MgtPersonCardMessages extends BasePersonCardSection {
    * @protected
    * @param {IMessage} message
    * @returns {TemplateResult}
-   * @memberof MgtPersonCardMessages
+   * @memberof MgtMessages
    */
   protected renderMessage(message: Message): TemplateResult {
     return html`
-      <div class="message" @click=${() => this.handleMessageClick(message)}>
-        <div class="message__detail">
-          <div class="message__subject">${message.subject}</div>
-          <div class="message__from">${message.from.emailAddress.name}</div>
-          <div class="message__message">${message.bodyPreview}</div>
-        </div>
-        <div class="message__date">${getRelativeDisplayDate(new Date(message.receivedDateTime))}</div>
-      </div>
-    `;
+       <div class="message" @click=${() => this.handleMessageClick(message)}>
+         <div class="message__detail">
+           <div class="message__subject">${message.subject}</div>
+           <div class="message__from">${message.from.emailAddress.name}</div>
+           <div class="message__message">${message.bodyPreview}</div>
+         </div>
+         <div class="message__date">${getRelativeDisplayDate(new Date(message.receivedDateTime))}</div>
+       </div>
+     `;
   }
 
   private handleMessageClick(message: Message): void {
