@@ -1,4 +1,4 @@
-import { IGraph } from '@microsoft/mgt-element';
+import { IGraph, prepScopes } from '@microsoft/mgt-element';
 import { Chat, ChatMessage } from '@microsoft/microsoft-graph-types';
 
 export type MessageCollection = {
@@ -26,4 +26,12 @@ export const loadMoreChatMessages = async (graph: IGraph, nextLink: string): Pro
   // split the nextLink on version to maintain a relative path
   response.nextLink = response['@odata.nextLink']?.split(graph.version)[1];
   return response;
+};
+
+export const sendChatMessage = async (graph: IGraph, chatId: string, content: string): Promise<ChatMessage> => {
+  const scopes = ['chatmessage.send'];
+  return (await graph
+    .api(`/chats/${chatId}/messages`)
+    .middlewareOptions(prepScopes(...scopes))
+    .post({ body: { content } })) as ChatMessage;
 };

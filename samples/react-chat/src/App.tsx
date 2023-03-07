@@ -20,7 +20,7 @@ function App() {
         Mgt Chat test harness
         <br />
         <Login />
-        <Get resource="me/chats?$expand=members" scopes={['chat.read']}>
+        <Get resource="me/chats?$expand=members" scopes={['chat.read']} cacheEnabled={true}>
           <ChatListTemplate template="default" onSelected={chatSelected} />
         </Get>
         {chatId && <MgtChat chatId={chatId} />}
