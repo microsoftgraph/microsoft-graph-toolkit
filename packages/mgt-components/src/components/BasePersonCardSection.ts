@@ -9,10 +9,10 @@ import { MgtTemplatedComponent, mgtHtml } from '@microsoft/mgt-element';
 import { html, TemplateResult } from 'lit';
 import { property } from 'lit/decorators.js';
 
-import { IDynamicPerson } from '../../../graph/types';
-import { MgtPersonCard } from '../mgt-person-card';
+import { IDynamicPerson } from '../graph/types';
+import { MgtPersonCard } from './mgt-person-card/mgt-person-card';
 
-import '../../sub-components/mgt-spinner/mgt-spinner';
+import './sub-components/mgt-spinner/mgt-spinner';
 
 /**
  * A base class for building person card subsections.

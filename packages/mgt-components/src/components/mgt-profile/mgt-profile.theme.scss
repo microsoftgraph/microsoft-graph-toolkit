@@ -5,8 +5,14 @@
  * -------------------------------------------------------------------------------------------
  */
 
-export const strings = {
-  showMoreSectionButton: 'Show more',
-  endOfCard: 'End of the card',
-  quickMessage: 'Send a quick message'
-};
+@import '../../styles/shared-sass-variables.scss';
+
+$profile-section-theme: (
+  token-overflow-color: (
+    _var: --token-overflow-color,
+    light: $commblue_primary,
+    dark: $text__color__sub1--dark
+  )
+);
+
+@include create-themes($profile-section-theme);

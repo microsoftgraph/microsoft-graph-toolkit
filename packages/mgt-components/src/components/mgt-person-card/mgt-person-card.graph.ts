@@ -5,7 +5,8 @@
  * -------------------------------------------------------------------------------------------
  */
 
-import { BatchResponse, IBatch, IGraph } from '@microsoft/mgt-element';
+import { BatchResponse, IBatch, IGraph, prepScopes } from '@microsoft/mgt-element';
+import { Chat, ChatMessage } from '@microsoft/microsoft-graph-types';
 import { Profile } from '@microsoft/microsoft-graph-types-beta';
 
 import { getEmailFromGraphEntity } from '../../graph/graph.people';
@@ -151,4 +152,69 @@ function buildFilesRequest(batch: IBatch, emailAddress?: string) {
 async function getProfile(graph: IGraph, userId: string): Promise<Profile> {
   const profile = await graph.api(`/users/${userId}/profile`).version('beta').get();
   return profile;
+}
+
+/**
+ * Initiate a chat to a user
+ *
+ * @export
+ * @param {IGraph} graph
+ * @param {{ chatType: string; members: [{"@odata.type": string,"roles": ["owner"],"user@odata.bind": string},{"@odata.type": string,"roles": ["owner"],"user@odata.bind": string}]  }} chatData
+ * @return {*}  {Promise<Chat>}
+ */
+export async function createChat(
+  graph: IGraph,
+  person: string,
+  user: string
+  // tslint:disable-next-line: completed-docs
+): Promise<Chat> {
+  const chatData = {
+    chatType: 'oneonOne',
+    members: [
+      {
+        '@odata.type': '#microsoft.graph.aadUserConversationMember',
+        roles: ['owner'],
+        'user@odata.bind': `https://graph.microsoft.com/v1.0/users('${user}')`
+      },
+      {
+        '@odata.type': '#microsoft.graph.aadUserConversationMember',
+        roles: ['owner'],
+        'user@odata.bind': `https://graph.microsoft.com/v1.0/users('${person}')`
+      }
+    ]
+  };
+  const chat = await graph
+    .api(`/chats`)
+    .header('Cache-Control', 'no-store')
+    .middlewareOptions(prepScopes('Chat.Create', 'Chat.ReadWrite'))
+    .post(chatData);
+
+  return chat;
+}
+
+/**
+ * Send a chat message to a user
+ *
+ * @export
+ * @param {IGraph} graph
+ * @param {{ body: {"content": string}  }} messageData
+ * @return {*}  {Promise<ChatMessage>}
+ */
+export async function sendMessage(
+  graph: IGraph,
+  // tslint:disable-next-line: completed-docs
+  chatId: string,
+  messageData: {
+    body?: {
+      content: string;
+    };
+  }
+): Promise<ChatMessage> {
+  const message = await graph
+    .api(`/chats/${chatId}/messages`)
+    .header('Cache-Control', 'no-store')
+    .middlewareOptions(prepScopes('Chat.ReadWrite', 'ChatMessage.Send'))
+    .post(messageData);
+
+  return message;
 }
