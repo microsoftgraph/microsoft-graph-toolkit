@@ -7,7 +7,7 @@
 
 import { SharedInsight } from '@microsoft/microsoft-graph-types';
 import { html, TemplateResult } from 'lit';
-import { BasePersonCardSection } from '../BasePersonCardSection';
+import { BasePersonCardSection } from '../../../BasePersonCardSection';
 import { getFileTypeIconUri } from '../../../../styles/fluent-icons';
 import { getSvg, SvgIcon } from '../../../../utils/SvgHelper';
 import { getRelativeDisplayDate } from '../../../../utils/Utils';

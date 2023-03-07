@@ -5,8 +5,14 @@
  * -------------------------------------------------------------------------------------------
  */
 
-export const strings = {
-  showMoreSectionButton: 'Show more',
-  endOfCard: 'End of the card',
-  quickMessage: 'Send a quick message'
-};
+@import '../../styles/shared-sass-variables.scss';
+
+$organization-section-theme: (
+  active-org-member-color: (
+    _var: --person-card-active-org-member-color,
+    light: $commblue_primary,
+    dark: $white
+  )
+);
+
+@include create-themes($organization-section-theme);
