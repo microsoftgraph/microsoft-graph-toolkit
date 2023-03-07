@@ -363,7 +363,7 @@ export class MgtTodo extends MgtTasksBase {
 
     const taskCheckContent = isCompleted
       ? html`
-          ${getSvg(SvgIcon.Confirmation)}
+          ${getSvg(SvgIcon.CheckMark)}
         `
       : null;
 
