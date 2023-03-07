@@ -1,0 +1,18 @@
+/**
+ * -------------------------------------------------------------------------------------------
+ * Copyright (c) Microsoft Corporation.  All Rights Reserved.  Licensed under the MIT License.
+ * See License in the project root for license information.
+ * -------------------------------------------------------------------------------------------
+ */
+
+@import '../../styles/shared-sass-variables.scss';
+
+$picker: (
+  background-color: (
+    _var: background-color,
+    light: $background-color__main--light,
+    dark: $background-color__main--dark
+  )
+);
+
+@include create-themes($picker);

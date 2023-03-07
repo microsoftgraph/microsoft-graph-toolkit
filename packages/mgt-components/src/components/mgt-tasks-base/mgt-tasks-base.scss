@@ -22,7 +22,7 @@ $task-border-completed: var(--task-complete-border, 2px dotted inherit);
   font-family: $font-family;
   display: flex;
   flex-direction: column;
-  background-color: set-var(background-color, $theme-default, $common);
+  background-color: $task-background-color;
   padding: var(--tasks-padding, 12px);
   color: $color;
 
@@ -155,7 +155,7 @@ $task-border-completed: var(--task-complete-border, 2px dotted inherit);
     position: relative;
     margin: var(--task-margin, 0 0 0 0);
     padding: var(--task-padding, 0 0 0 0);
-    background-color: $background-color;
+    background-color: $task-background-color;
     border: set-var(border, $theme-default, $tasks);
     border-radius: 8px;
 
@@ -464,7 +464,7 @@ $task-border-completed: var(--task-complete-border, 2px dotted inherit);
     }
 
     &.Complete {
-      background: $background-color--completed;
+      background: $task-background-color--completed;
       border: set-var(border--completed, $theme-default, $tasks);
 
       .TaskContent .TaskDetailsContainer .TaskTitle {
