@@ -147,7 +147,7 @@ export class MgtTodo extends MgtTasksBase {
 
   protected createRenderRoot() {
     const root = super.createRenderRoot();
-    root.addEventListener('selectionChanged', (e: Event) => this.handleSelectionChanged(e));
+    root.addEventListener('selectionChanged', (e: CustomEvent) => this.handleSelectionChanged(e));
     return root;
   }
 
@@ -224,31 +224,29 @@ export class MgtTodo extends MgtTasksBase {
    */
   protected renderNewTask(): TemplateResult {
     const addIcon = html`
-      <span 
-        tabindex='0'
+      <fluent-button 
         class="task-add-icon" 
         @click="${() => this.addTask()}"
-        @keypress="${(e: KeyboardEvent) => {
+        @keydown="${(e: KeyboardEvent) => {
           if (e.key === 'Enter') {
             this.addTask();
           }
         }}">
         ${getSvg(SvgIcon.Add)}
-      </span>
+      </fluent-button>
     `;
 
     const cancelIcon = html`
-      <span 
-        tabindex='0'
+      <fluent-button
         class="task-cancel-icon" 
         @click="${() => this.clearNewTaskData()}"
-        @keypress="${(e: KeyboardEvent) => {
+        @keydown="${(e: KeyboardEvent) => {
           if (e.key === 'Enter') {
             this.clearNewTaskData();
           }
         }}">
         ${getSvg(SvgIcon.Cancel)}
-      </span>
+      </fluent-button>
     `;
 
     const calendarTemplate = html`
@@ -257,9 +255,7 @@ export class MgtTodo extends MgtTasksBase {
         type="date"
         id="new-taskDate-input"
         class="date"
-        label="new-taskDate-input"
-        aria-label="new-taskDate-input"
-        role="textbox"
+        aria-label="${this.strings.newTaskDateInputLabel}"
         .value="${this.dateToInputValue(this._newTaskDueDate)}"
         @change="${(e: Event) => {
           const value = (e.target as HTMLInputElement).value;
@@ -272,7 +268,7 @@ export class MgtTodo extends MgtTasksBase {
       />
     `;
 
-    const taskTitle = html`
+    const newTaskDetails = html`
       <fluent-text-field
         appearance="outline"
         id="new-taskName-input"
@@ -291,8 +287,8 @@ export class MgtTodo extends MgtTasksBase {
             this.requestUpdate();
           }
         }}">
-        <div slot="start">${addIcon}</div>
-        <div slot="end">
+        <div slot="start" class="start">${addIcon}</div>
+        <div slot="end" class="end">
         <span class="calendar">${calendarTemplate}</span>
         ${cancelIcon}</div>
       </fluent-text-field>
@@ -302,7 +298,7 @@ export class MgtTodo extends MgtTasksBase {
         this.currentList
           ? html`
             <div dir=${this.direction} class="Task NewTask Incomplete">
-              ${taskTitle}
+              ${newTaskDetails}
             </div>
         `
           : html``
@@ -310,7 +306,7 @@ export class MgtTodo extends MgtTasksBase {
      `;
   }
 
-  protected async handleSelectionChanged(e: any) {
+  protected async handleSelectionChanged(e: CustomEvent) {
     let list = e.detail;
     this.currentList = list;
     await this.loadTasks(list);
@@ -349,9 +345,11 @@ export class MgtTodo extends MgtTasksBase {
       <div class="TaskDetails">
         <div class="title">${task.title}</div>
         <div class="TaskDue">${taskDueTemplate}</div>
-        <div class="TaskDelete" @click="${(e: Event) => this.removeTask(e, task.id)}">
+        <fluent-button class="TaskDelete"
+          @click="${(e: Event) => this.removeTask(e, task.id)}"
+          label=${this.strings.deleteTaskLabel}>
           ${getSvg(SvgIcon.Delete)}
-        </div>
+        </fluent-button>
       </div>
       `;
     }

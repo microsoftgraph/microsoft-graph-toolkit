@@ -196,16 +196,6 @@ export abstract class MgtTasksBase extends MgtTemplatedComponent {
    */
   protected abstract renderNewTask(): TemplateResult;
 
-  // /**
-  //  * Render the details part of the new task panel
-  //  *
-  //  * @protected
-  //  * @abstract
-  //  * @returns {TemplateResult}
-  //  * @memberof MgtTasksBase
-  //  */
-  // protected abstract renderCalendar(): TemplateResult;
-
   /**
    * Render the generic picker.
    *

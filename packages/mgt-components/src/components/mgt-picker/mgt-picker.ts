@@ -209,7 +209,7 @@ export class MgtPicker extends MgtTemplatedComponent {
    */
   protected renderPicker(): TemplateResult {
     return mgtHtml`
-      <fluent-combobox id="combobox" autocomplete="list" placeholder=${this.placeholder}>
+      <fluent-combobox class="picker" id="combobox" autocomplete="list" placeholder=${this.placeholder}>
         ${this.response.map(
           item => html`
           <fluent-option value=${item.id} @click=${e => this.handleClick(e, item)}> ${

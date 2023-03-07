@@ -1,0 +1,27 @@
+/**
+ * -------------------------------------------------------------------------------------------
+ * Copyright (c) Microsoft Corporation.  All Rights Reserved.  Licensed under the MIT License.
+ * See License in the project root for license information.
+ * -------------------------------------------------------------------------------------------
+ */
+
+@import '../../../../../node_modules/office-ui-fabric-core/dist/sass/References';
+@import '../../styles/shared-styles.scss';
+@import './mgt-picker.theme.scss';
+
+$picker-background-color: set-var(background-color, $theme-default, $picker);
+
+:host {
+  font-family: $font-family;
+}
+
+:host .picker,
+mgt-picker .picker {
+  background-color: $picker-background-color;
+}
+
+[dir='rtl'] {
+  .picker {
+    direction: rtl;
+  }
+}
