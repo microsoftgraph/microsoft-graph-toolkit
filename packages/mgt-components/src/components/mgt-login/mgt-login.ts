@@ -338,7 +338,7 @@ export class MgtLogin extends MgtTemplatedComponent {
     //     </fluent-button>
     //   `;
 
-    const appearance = isSignedIn ? "stealth" : "neutral";
+    const appearance = isSignedIn ? 'stealth' : 'neutral';
     return html`
     <fluent-button
       appearance=${appearance}
