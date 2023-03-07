@@ -7,5 +7,6 @@
 
 export const strings = {
   signInLinkSubtitle: 'Sign In',
-  signOutLinkSubtitle: 'Sign Out'
+  signOutLinkSubtitle: 'Sign Out',
+  signInWithADifferentAccount: 'Sign in with a different account'
 };
