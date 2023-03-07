@@ -8,8 +8,8 @@
 import { EducationalActivity, PersonAnnualEvent, PersonInterest, Profile } from '@microsoft/microsoft-graph-types-beta';
 import { html, TemplateResult } from 'lit';
 import { BasePersonCardSection } from '../BasePersonCardSection';
-import { getSvg, SvgIcon } from '../../../../utils/SvgHelper';
-import { styles } from './mgt-person-card-profile-css';
+import { getSvg, SvgIcon } from '../../utils/SvgHelper';
+import { styles } from './mgt-profile-css';
 import { strings } from './strings';
 import { customElement } from '@microsoft/mgt-element';
 
@@ -17,12 +17,13 @@ import { customElement } from '@microsoft/mgt-element';
  * The user profile subsection of the person card
  *
  * @export
- * @class MgtPersonCardProfile
+ * @class MgtProfile
  * @extends {MgtTemplatedComponent}
+ *
+ * @cssprop --token-overflow-color - {Color} Color of the text showing more undisplayed values i.e. +3 more
  */
-@customElement('person-card-profile')
-// @customElement('mgt-person-card-profile')
-export class MgtPersonCardProfile extends BasePersonCardSection {
+@customElement('profile')
+export class MgtProfile extends BasePersonCardSection {
   /**
    * Array of styles to apply to the element. The styles should be defined
    * using the `css` tag function.
@@ -40,7 +41,7 @@ export class MgtPersonCardProfile extends BasePersonCardSection {
    *
    * @readonly
    * @type {string}
-   * @memberof MgtPersonCardProfile
+   * @memberof MgtProfile
    */
   public get displayName(): string {
     return this.strings.SkillsAndExperienceSectionTitle;
@@ -52,7 +53,7 @@ export class MgtPersonCardProfile extends BasePersonCardSection {
    *
    * @readonly
    * @type {boolean}
-   * @memberof MgtPersonCardProfile
+   * @memberof MgtProfile
    */
   public get hasData(): boolean {
     if (!this.profile) {
@@ -79,7 +80,7 @@ export class MgtPersonCardProfile extends BasePersonCardSection {
    *
    * @protected
    * @type {IProfile}
-   * @memberof MgtPersonCardProfile
+   * @memberof MgtProfile
    */
   protected get profile(): Profile {
     return this._profile;
@@ -111,7 +112,7 @@ export class MgtPersonCardProfile extends BasePersonCardSection {
    * Render the icon for display in the navigation ribbon.
    *
    * @returns {TemplateResult}
-   * @memberof MgtPersonCardProfile
+   * @memberof MgtProfile
    */
   public renderIcon(): TemplateResult {
     return getSvg(SvgIcon.Profile);
@@ -121,7 +122,7 @@ export class MgtPersonCardProfile extends BasePersonCardSection {
    * Reset any state in the section
    *
    * @protected
-   * @memberof MgtPersonCardProfile
+   * @memberof MgtProfile
    */
   public clearState(): void {
     super.clearState();
@@ -133,14 +134,14 @@ export class MgtPersonCardProfile extends BasePersonCardSection {
    *
    * @protected
    * @returns {TemplateResult}
-   * @memberof MgtPersonCardProfile
+   * @memberof MgtProfile
    */
   protected renderCompactView(): TemplateResult {
     return html`
-      <div class="root compact" dir=${this.direction}>
-        ${this.renderSubSections().slice(0, 2)}
-      </div>
-    `;
+       <div class="root compact" dir=${this.direction}>
+         ${this.renderSubSections().slice(0, 2)}
+       </div>
+     `;
   }
 
   /**
@@ -148,17 +149,17 @@ export class MgtPersonCardProfile extends BasePersonCardSection {
    *
    * @protected
    * @returns
-   * @memberof MgtPersonCardProfile
+   * @memberof MgtProfile
    */
   protected renderFullView() {
     this.initPostRenderOperations();
 
     return html`
-      <div class="root" dir=${this.direction}>
-        <div class="title">${this.strings.AboutCompactSectionTitle}</div>
-        ${this.renderSubSections()}
-      </div>
-    `;
+       <div class="root" dir=${this.direction}>
+         <div class="title">${this.strings.AboutCompactSectionTitle}</div>
+         ${this.renderSubSections()}
+       </div>
+     `;
   }
 
   /**
@@ -167,7 +168,7 @@ export class MgtPersonCardProfile extends BasePersonCardSection {
    *
    * @protected
    * @return {*}
-   * @memberof MgtPersonCardProfile
+   * @memberof MgtProfile
    */
   protected renderSubSections() {
     const subSections = [
@@ -188,7 +189,7 @@ export class MgtPersonCardProfile extends BasePersonCardSection {
    *
    * @protected
    * @returns
-   * @memberof MgtPersonCardProfile
+   * @memberof MgtProfile
    */
   protected renderLanguages(): TemplateResult {
     const { languages } = this._profile;
@@ -201,32 +202,32 @@ export class MgtPersonCardProfile extends BasePersonCardSection {
       let proficiency = null;
       if (language.proficiency && language.proficiency.length) {
         proficiency = html`
-          <span class="language__proficiency" tabindex="0">
-            &nbsp;(${language.proficiency})
-          </span>
-        `;
+           <span class="language__proficiency" tabindex="0">
+             &nbsp;(${language.proficiency})
+           </span>
+         `;
       }
 
       languageItems.push(html`
-        <div class="token-list__item language">
-          <span class="language__title" tabindex="0">${language.displayName}</span>
-          ${proficiency}
-        </div>
-      `);
+         <div class="token-list__item language">
+           <span class="language__title" tabindex="0">${language.displayName}</span>
+           ${proficiency}
+         </div>
+       `);
     }
 
     const languageTitle = languageItems.length ? this.strings.LanguagesSubSectionTitle : '';
 
     return html`
-      <section>
-        <div class="section__title" tabindex="0">${languageTitle}</div>
-        <div class="section__content">
-          <div class="token-list">
-            ${languageItems}
-          </div>
-        </div>
-      </section>
-    `;
+       <section>
+         <div class="section__title" tabindex="0">${languageTitle}</div>
+         <div class="section__content">
+           <div class="token-list">
+             ${languageItems}
+           </div>
+         </div>
+       </section>
+     `;
   }
 
   /**
@@ -234,7 +235,7 @@ export class MgtPersonCardProfile extends BasePersonCardSection {
    *
    * @protected
    * @returns {TemplateResult}
-   * @memberof MgtPersonCardProfile
+   * @memberof MgtProfile
    */
   protected renderSkills(): TemplateResult {
     const { skills } = this._profile;
@@ -246,24 +247,24 @@ export class MgtPersonCardProfile extends BasePersonCardSection {
     const skillItems: TemplateResult[] = [];
     for (const skill of skills) {
       skillItems.push(html`
-        <div class="token-list__item skill" tabindex="0">
-          ${skill.displayName}
-        </div>
-      `);
+         <div class="token-list__item skill" tabindex="0">
+           ${skill.displayName}
+         </div>
+       `);
     }
 
     const skillsTitle = skillItems.length ? this.strings.SkillsSubSectionTitle : '';
 
     return html`
-      <section>
-        <div class="section__title" tabindex="0">${skillsTitle}</div>
-        <div class="section__content">
-          <div class="token-list">
-            ${skillItems}
-          </div>
-        </div>
-      </section>
-    `;
+       <section>
+         <div class="section__title" tabindex="0">${skillsTitle}</div>
+         <div class="section__content">
+           <div class="token-list">
+             ${skillItems}
+           </div>
+         </div>
+       </section>
+     `;
   }
 
   /**
@@ -271,7 +272,7 @@ export class MgtPersonCardProfile extends BasePersonCardSection {
    *
    * @protected
    * @returns {TemplateResult}
-   * @memberof MgtPersonCardProfile
+   * @memberof MgtProfile
    */
   protected renderWorkExperience(): TemplateResult {
     const { positions } = this._profile;
@@ -284,37 +285,37 @@ export class MgtPersonCardProfile extends BasePersonCardSection {
     for (const position of this._profile.positions) {
       if (position.detail.description || position.detail.jobTitle !== '') {
         positionItems.push(html`
-          <div class="data-list__item work-position">
-            <div class="data-list__item__header">
-              <div class="data-list__item__title" tabindex="0">${position.detail?.jobTitle}</div>
-              <div class="data-list__item__date-range" tabindex="0">
-                ${this.getDisplayDateRange(position.detail)}
-              </div>
-            </div>
-            <div class="data-list__item__content">
-              <div class="work-position__company" tabindex="0">
-                ${position?.detail?.company?.displayName}
-              </div>
-              <div class="work-position__location" tabindex="0">
-                ${position?.detail?.company?.address?.city}, ${position?.detail?.company?.address?.state}
-              </div>
-            </div>
-          </div>
-        `);
+           <div class="data-list__item work-position">
+             <div class="data-list__item__header">
+               <div class="data-list__item__title" tabindex="0">${position.detail?.jobTitle}</div>
+               <div class="data-list__item__date-range" tabindex="0">
+                 ${this.getDisplayDateRange(position.detail)}
+               </div>
+             </div>
+             <div class="data-list__item__content">
+               <div class="work-position__company" tabindex="0">
+                 ${position?.detail?.company?.displayName}
+               </div>
+               <div class="work-position__location" tabindex="0">
+                 ${position?.detail?.company?.address?.city}, ${position?.detail?.company?.address?.state}
+               </div>
+             </div>
+           </div>
+         `);
       }
     }
     const workExperienceTitle = positionItems.length ? this.strings.WorkExperienceSubSectionTitle : '';
 
     return html`
-      <section>
-        <div class="section__title" tabindex="0">${workExperienceTitle}</div>
-        <div class="section__content">
-          <div class="data-list">
-            ${positionItems}
-          </div>
-        </div>
-      </section>
-    `;
+       <section>
+         <div class="section__title" tabindex="0">${workExperienceTitle}</div>
+         <div class="section__content">
+           <div class="data-list">
+             ${positionItems}
+           </div>
+         </div>
+       </section>
+     `;
   }
 
   /**
@@ -322,7 +323,7 @@ export class MgtPersonCardProfile extends BasePersonCardSection {
    *
    * @protected
    * @returns {TemplateResult}
-   * @memberof MgtPersonCardProfile
+   * @memberof MgtProfile
    */
   protected renderEducation(): TemplateResult {
     const { educationalActivities } = this._profile;
@@ -334,34 +335,34 @@ export class MgtPersonCardProfile extends BasePersonCardSection {
     const positionItems: TemplateResult[] = [];
     for (const educationalActivity of educationalActivities) {
       positionItems.push(html`
-        <div class="data-list__item educational-activity">
-          <div class="data-list__item__header">
-            <div class="data-list__item__title" tabindex="0">${educationalActivity.institution.displayName}</div>
-            <div class="data-list__item__date-range" tabindex="0">
-              ${this.getDisplayDateRange(educationalActivity)}
-            </div>
-          </div>
-          <div class="data-list__item__content">
-            <div class="educational-activity__degree" tabindex="0">
-              ${educationalActivity.program.displayName || 'Bachelors Degree'}
-            </div>
-          </div>
-        </div>
-      `);
+         <div class="data-list__item educational-activity">
+           <div class="data-list__item__header">
+             <div class="data-list__item__title" tabindex="0">${educationalActivity.institution.displayName}</div>
+             <div class="data-list__item__date-range" tabindex="0">
+               ${this.getDisplayDateRange(educationalActivity)}
+             </div>
+           </div>
+           <div class="data-list__item__content">
+             <div class="educational-activity__degree" tabindex="0">
+               ${educationalActivity.program.displayName || 'Bachelors Degree'}
+             </div>
+           </div>
+         </div>
+       `);
     }
 
     const educationTitle = positionItems.length ? this.strings.EducationSubSectionTitle : '';
 
     return html`
-      <section>
-        <div class="section__title" tabindex="0">${educationTitle}</div>
-        <div class="section__content">
-          <div class="data-list">
-            ${positionItems}
-          </div>
-        </div>
-      </section>
-    `;
+       <section>
+         <div class="section__title" tabindex="0">${educationTitle}</div>
+         <div class="section__content">
+           <div class="data-list">
+             ${positionItems}
+           </div>
+         </div>
+       </section>
+     `;
   }
 
   /**
@@ -369,7 +370,7 @@ export class MgtPersonCardProfile extends BasePersonCardSection {
    *
    * @protected
    * @returns {TemplateResult}
-   * @memberof MgtPersonCardProfile
+   * @memberof MgtProfile
    */
   protected renderProfessionalInterests(): TemplateResult {
     if (!this._professionalInterests || !this._professionalInterests.length) {
@@ -379,24 +380,24 @@ export class MgtPersonCardProfile extends BasePersonCardSection {
     const interestItems: TemplateResult[] = [];
     for (const interest of this._professionalInterests) {
       interestItems.push(html`
-        <div class="token-list__item interest interest--professional" tabindex="0">
-          ${interest.displayName}
-        </div>
-      `);
+         <div class="token-list__item interest interest--professional" tabindex="0">
+           ${interest.displayName}
+         </div>
+       `);
     }
 
     const professionalInterests = interestItems.length ? this.strings.professionalInterestsSubSectionTitle : '';
 
     return html`
-      <section>
-        <div class="section__title" tabindex="0">${professionalInterests}</div>
-        <div class="section__content">
-          <div class="token-list">
-            ${interestItems}
-          </div>
-        </div>
-      </section>
-    `;
+       <section>
+         <div class="section__title" tabindex="0">${professionalInterests}</div>
+         <div class="section__content">
+           <div class="token-list">
+             ${interestItems}
+           </div>
+         </div>
+       </section>
+     `;
   }
 
   /**
@@ -404,7 +405,7 @@ export class MgtPersonCardProfile extends BasePersonCardSection {
    *
    * @protected
    * @returns {TemplateResult}
-   * @memberof MgtPersonCardProfile
+   * @memberof MgtProfile
    */
   protected renderPersonalInterests(): TemplateResult {
     if (!this._personalInterests || !this._personalInterests.length) {
@@ -414,24 +415,24 @@ export class MgtPersonCardProfile extends BasePersonCardSection {
     const interestItems: TemplateResult[] = [];
     for (const interest of this._personalInterests) {
       interestItems.push(html`
-        <div class="token-list__item interest interest--personal" tabindex="0">
-          ${interest.displayName}
-        </div>
-      `);
+         <div class="token-list__item interest interest--personal" tabindex="0">
+           ${interest.displayName}
+         </div>
+       `);
     }
 
     const personalInterests = interestItems.length ? this.strings.personalInterestsSubSectionTitle : '';
 
     return html`
-      <section>
-        <div class="section__title" tabindex="0">${personalInterests}</div>
-        <div class="section__content">
-          <div class="token-list">
-            ${interestItems}
-          </div>
-        </div>
-      </section>
-    `;
+       <section>
+         <div class="section__title" tabindex="0">${personalInterests}</div>
+         <div class="section__content">
+           <div class="token-list">
+             ${interestItems}
+           </div>
+         </div>
+       </section>
+     `;
   }
 
   /**
@@ -439,7 +440,7 @@ export class MgtPersonCardProfile extends BasePersonCardSection {
    *
    * @protected
    * @returns {TemplateResult}
-   * @memberof MgtPersonCardProfile
+   * @memberof MgtProfile
    */
   protected renderBirthday(): TemplateResult {
     if (!this._birthdayAnniversary || !this._birthdayAnniversary.date) {
@@ -447,20 +448,20 @@ export class MgtPersonCardProfile extends BasePersonCardSection {
     }
 
     return html`
-      <section>
-        <div class="section__title" tabindex="0">Birthday</div>
-        <div class="section__content">
-          <div class="birthday">
-            <div class="birthday__icon">
-              ${getSvg(SvgIcon.Birthday)}
-            </div>
-            <div class="birthday__date" tabindex="0">
-              ${this.getDisplayDate(new Date(this._birthdayAnniversary.date))}
-            </div>
-          </div>
-        </div>
-      </section>
-    `;
+       <section>
+         <div class="section__title" tabindex="0">Birthday</div>
+         <div class="section__content">
+           <div class="birthday">
+             <div class="birthday__icon">
+               ${getSvg(SvgIcon.Birthday)}
+             </div>
+             <div class="birthday__date" tabindex="0">
+               ${this.getDisplayDate(new Date(this._birthdayAnniversary.date))}
+             </div>
+           </div>
+         </div>
+       </section>
+     `;
   }
 
   private isPersonalInterest(interest: PersonInterest): boolean {

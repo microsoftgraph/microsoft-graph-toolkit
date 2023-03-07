@@ -19,7 +19,8 @@ const tags = new Set([
   'todo',
   'file',
   'file-list',
-  'picker'
+  'picker',
+  'theme-toggle'
 ]);
 
 let output = '';

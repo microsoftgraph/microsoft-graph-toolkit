@@ -9,41 +9,28 @@
 @import '../../../../../node_modules/office-ui-fabric-core/dist/sass/References';
 @import './mgt-person-card.theme.scss';
 
-$person-card-display-name-font-size: var(--person-card-display-name-font-size, 20px);
-$person-card-display-name-line-height: var(--person-card-display-name-line-height, 28px);
-$person-card-title-font-size: var(--person-card-title-font-size, 14px);
-$person-card-title-line-height: var(--person-card-title-line-height, 20px);
-$person-card-title-color: var(--person-card-title-color);
-$person-card-subtitle-font-size: var(--person-card-subtitle-font-size, 14px);
-$person-card-subtitle-line-height: var(--person-card-subtitle-line-height, 19px);
-$person-card-subtitle-color: var(--person-card-subtitle-color);
-$person-card-details-title-font-size: var(--person-card-details-title-font-size, 14px);
-$person-card-details-item-font-size: var(--person-card-details-item-font-size, 15px);
-$person-card-show-more-color: var(--person-card-show-more-color, #{$commblue_primary});
-$person-card-show-more-hover-color: var(--person-card-show-more-hover-color, #{$commblue_shade20});
-$person-card-base-links-color: var(--person-card-base-links-color, #023b8f);
-$person-card-base-links-hover-color: var(--person-card-base-links-hover-color, #012e7f);
-$person-card-tab-nav-color: var(--person-card-tab-nav-color, #{$icon--active});
-$person-card-nav-back-arrow-color: var(--person-card-nav-back-arrow-color, #{$commblue_primary});
-$person-card-nav-back-arrow-hover-color: var(--person-card-nav-back-arrow-hover-color, #{$black});
+// For documentation these are the tokens removed in v3
+// --person-card-base-links-color: red;
+// --person-card-base-links-hover-color: green;
+// --person-card-details-title-font-size: 20px;
+// --person-card-details-title-color: #b3bf0a;
+// --person-card-details-item-font-size: 30px;
+// --person-card-details-item-color: #3abf0a;
 
 :host {
-  background: $background-color;
+  box-shadow: set-var(box-shadow, $theme-default, $common);
+  background-color: set-var(card-bg, $theme-default, $person-card-theme);
   width: var(--mgt-flyout-set-width, 375px);
   font-family: $font-family;
   overflow: hidden;
   user-select: none;
-  box-shadow: set-var(box-shadow, $theme-default, $common);
   border-radius: 8px;
   border: 1px solid set-var(background-color__sub1, $theme-default, $common);
+
   .small {
     max-height: 100vh;
     overflow-y: auto;
     overflow-x: hidden;
-  }
-
-  .activeIndicator {
-    width: 10px !important;
   }
 
   .nav {
@@ -52,26 +39,24 @@ $person-card-nav-back-arrow-hover-color: var(--person-card-nav-back-arrow-hover-
     z-index: 100;
 
     &__back {
-      padding: 8px;
+      padding-top: 18px;
+      padding-inline-start: 12px;
       height: 32px;
       width: 32px;
-      align-items: center;
-      justify-content: center;
 
       svg {
-        fill: $person-card-nav-back-arrow-color;
+        fill: set-var(nav-back-arrow-color, $theme-default, $person-card-theme);
       }
 
       &:hover {
         cursor: pointer;
 
         svg {
-          fill: $person-card-nav-back-arrow-hover-color;
+          fill: set-var(nav-back-arrow-hover-color, $theme-default, $person-card-theme);
         }
       }
     }
   }
-
   .close-card-container {
     position: relative;
     z-index: 100;
@@ -79,16 +64,23 @@ $person-card-nav-back-arrow-hover-color: var(--person-card-nav-back-arrow-hover-
       --focus-stroke-width: none;
       --control-corner-radius: 2;
       --accent-foreground-active: none;
+      --accent-foreground-hover: none;
+      --neutral-fill-stealth-rest: transparent;
+      --neutral-fill-stealth-hover: #{set-var(background-color--hover, $theme-default, $common)};
+
       position: absolute;
       right: 10px;
       margin-top: 9px;
       z-index: 1;
-      --accent-foreground-hover: none;
       border: 1px solid transparent;
-      --neutral-fill-stealth-rest: #fff;
+
       svg {
         width: 9px;
         height: 9px;
+
+        path {
+          fill: set-var(icon__color__sub3, $theme-default, $common);
+        }
       }
     }
   }
@@ -96,34 +88,36 @@ $person-card-nav-back-arrow-hover-color: var(--person-card-nav-back-arrow-hover-
   .person-details-container {
     display: flex;
     flex-direction: column;
-    width: calc(var(--mgt-flyout-set-width, 375px) - 40px);
-    padding: 23px 0px 0px 23px;
-    border-bottom: 1px solid $gray30;
+    padding-inline-start: 23px;
+    padding-top: 23px;
+    border-bottom: 1px solid set-var(line-seperator__color__sub1, $theme-default, $common);
 
     .person-image {
-      --presence-background-color: #{$background-color};
-      --presence-icon-color: #{$background-color};
+      --presence-background-color: #{set-var(presence-background-color, $theme-default, $person-theme)};
+      --presence-icon-color: #{set-var(presence-icon-color, $theme-default, $person-theme)};
+      --line1-font-size: var(--person-card-display-name-font-size, 20px);
+      --line1-line-height: var(--person-card-display-name-line-height, 28px);
+      --line1-color: #{set-var(line-1-color, $theme-default, $person-card-theme)};
+      --line2-font-size: var(--person-card-title-font-size, 14px);
+      --line2-line-height: var(--person-card-title-line-height, 20px);
+      --line2-color: #{set-var(line-2-color, $theme-default, $person-card-theme)};
+      --line3-font-size: var(--person-card-subtitle-font-size, 14px);
+      --line3-line-height: var(--person-card-subtitle-line-height, 19px);
+      --line3-color: #{set-var(line-3-color, $theme-default, $person-card-theme)};
       --avatar-size: 75px;
-      --line1-font-size: #{$person-card-display-name-font-size};
-      --line1-line-height: #{$person-card-display-name-line-height};
-      --color: #{$person-card-display-name-color};
-      --line2-font-size: #{$person-card-title-font-size};
-      --line2-line-height: #{$person-card-title-line-height};
-      --line2-color: #{$person-card-title-color};
-      --line3-font-size: #{$person-card-subtitle-font-size};
-      --line3-line-height: #{$person-card-subtitle-line-height};
-      --line3-color: #{$person-card-subtitle-color};
       --details-cta-spacing: 30px;
-      --user-presence-margin-offset: 3px;
+      --user-presence-margin-offset: 5px;
     }
 
     .base-icons {
       display: flex;
       -webkit-align-items: center;
       align-items: center;
-      margin-left: 91px;
-      margin-top: -35px;
+      position: relative;
+      left: 91px;
+      bottom: 25px;
       z-index: 1;
+      width: fit-content;
 
       .icon {
         display: flex;
@@ -131,16 +125,14 @@ $person-card-nav-back-arrow-hover-color: var(--person-card-nav-back-arrow-hover-
         cursor: pointer;
         font-size: 13px;
         white-space: nowrap;
-        margin-top: 10px;
-        margin-bottom: 38px;
 
         &:not(:last-child) {
-          margin-right: 38px;
+          margin-inline-end: 38px;
         }
 
         svg {
           path {
-            fill: $icon--active;
+            fill: set-var(icon__color__sub3, $theme-default, $common);
           }
         }
 
@@ -148,7 +140,7 @@ $person-card-nav-back-arrow-hover-color: var(--person-card-nav-back-arrow-hover-
         &:hover {
           svg {
             path {
-              fill: $icon--active;
+              fill: set-var(icon__color__sub3--hover, $theme-default, $common);
             }
           }
         }
@@ -166,97 +158,179 @@ $person-card-nav-back-arrow-hover-color: var(--person-card-nav-back-arrow-hover-
       justify-content: center;
       align-items: center;
       height: 32px;
-      background: $background-color;
       svg {
         path {
-          stroke: #1a1a1a;
+          stroke: set-var(icon__color__sub3, $theme-default, $common);
         }
-      }
-    }
-
-    .expanded-details-button:hover {
-      background-color: #efefef;
-    }
-  }
-
-  .section-nav {
-    border-bottom: 1px solid set-var(tab__line__color, $theme-default, $common);
-    height: 36px;
-    padding-bottom: 7px;
-    fluent-tabs {
-      background-color: $background-color;
-      grid-template-columns: minmax(1px, 0.1fr);
-      fluent-tab-panel {
-        max-height: 360px;
-        min-height: 360px;
-        overflow-y: auto;
-        overflow-x: hidden;
-        padding: 0px;
-        border-top: 1px solid set-var(tab__line__color, $theme-default, $common);
-        scrollbar-width: thin;
-        .inserted {
-          max-width: var(--mgt-flyout-set-width, 375px);
-          min-width: var(--mgt-flyout-set-width, 360px);
-        }
-        .overview-panel {
-          max-width: var(--mgt-flyout-set-width, 375px);
-        }
-        &::-webkit-scrollbar {
-          height: 4em;
-          width: 4px;
-          border-radius: 11px;
-        }
-        &::-webkit-scrollbar-button {
-          background: $background-color;
-          height: 1px;
-        }
-        &::-webkit-scrollbar-track {
-          background: $background-color;
-          border-radius: 10px;
-        }
-        &::-webkit-scrollbar-track-piece {
-          background: $background-color;
-        }
-        &::-webkit-scrollbar-thumb {
-          background: grey;
-          border-radius: 10px;
-          height: 4px;
-        }
-      }
-    }
-    border: 1px solid transparent;
-    fluent-tab {
-      padding-bottom: 4px !important;
-      margin-bottom: -3px !important;
-      border: 1px solid transparent !important;
-      &:focus-visible {
-        border: 1px solid #2b2b2b !important;
-      }
-    }
-    .section-nav__icon {
-      all: initial;
-      box-sizing: border-box;
-      width: 48px;
-      padding: 12px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      border-bottom: 2px solid transparent;
-      margin-bottom: -1px;
-      cursor: pointer;
-
-      svg {
-        fill: set-var(icon__color, $theme-default, $common);
-        margin-bottom: 9px;
       }
 
       &:hover {
-        background: set-var(tab__background-color--hover, $theme-default, $common);
-        border-radius: 4px;
+        cursor: pointer;
+        background-color: set-var(background-color--hover, $theme-default, $common);
+      }
+    }
+
+    .sections {
+      .section {
+        padding: 20px 0;
+        display: flex;
+        flex-direction: column;
+        position: relative;
+
+        &:not(:last-child):after {
+          position: absolute;
+          content: '';
+          width: 90%;
+          transform: translateX(-50%);
+          border-bottom: 1px solid set-var(line-seperator__color__sub1, $theme-default, $common);
+          left: 50%;
+          bottom: 0;
+        }
+
+        &__header {
+          display: flex;
+          flex-direction: row;
+          padding: 0 20px;
+        }
+
+        &__title {
+          flex-grow: 1;
+          color: set-var(title__color__subtitle, $theme-default, $common);
+          font-size: 14px;
+          font-weight: 600;
+          line-height: 19px;
+        }
+
+        &__show-more {
+          color: set-var(show-more, $theme-default, $person-card-theme);
+          font-size: 12px;
+          font-weight: 600;
+          align-self: center;
+          vertical-align: top;
+          --neutral-fill-stealth-rest: transparent;
+          --neutral-fill-stealth-hover: #{set-var(background-color--active, $theme-default, $common)};
+          --base-height-multiplier: 6;
+
+          &:hover {
+            cursor: pointer;
+            color: set-var(show-more-hover, $theme-default, $person-card-theme);
+          }
+        }
+
+        &__content {
+          margin-top: 14px;
+        }
+
+        .additional-details {
+          padding: 0 20px;
+        }
+      }
+    }
+
+    .section-nav {
+      border-bottom: 1px solid set-var(line-seperator__color__sub1, $theme-default, $common);
+      height: 36px;
+      padding-bottom: 2px;
+
+      fluent-tabs {
+        grid-template-columns: minmax(1px, 0.1fr);
+        --accent-fill-rest: #{set-var(icon__color__sub3, $theme-default, $common)};
+
+        fluent-tab-panel {
+          max-height: 360px;
+          min-height: 360px;
+          overflow-y: auto;
+          overflow-x: hidden;
+          padding: 0px;
+          scrollbar-width: thin;
+
+          .inserted {
+            max-width: var(--mgt-flyout-set-width, 375px);
+            min-width: var(--mgt-flyout-set-width, 360px);
+          }
+          .overview-panel {
+            max-width: var(--mgt-flyout-set-width, 375px);
+          }
+          &::-webkit-scrollbar {
+            height: 4em;
+            width: 4px;
+            border-radius: 11px;
+          }
+          &::-webkit-scrollbar-button {
+            background: set-var(card-bg, $theme-default, $person-card-theme);
+            height: 1px;
+          }
+          &::-webkit-scrollbar-track {
+            background: set-var(card-bg, $theme-default, $person-card-theme);
+            border-radius: 10px;
+          }
+          &::-webkit-scrollbar-track-piece {
+            background: set-var(card-bg, $theme-default, $person-card-theme);
+          }
+          &::-webkit-scrollbar-thumb {
+            background: grey;
+            border-radius: 10px;
+            height: 4px;
+          }
+        }
+
+        fluent-tab {
+          padding-bottom: 1px !important;
+          border: 1px solid transparent !important;
+          &:focus-visible {
+            border: 1px solid #2b2b2b !important;
+          }
+          &.section-nav__icon {
+            cursor: pointer;
+            box-sizing: border-box;
+            width: 48px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+
+            svg {
+              fill: set-var(icon__color, $theme-default, $common);
+            }
+
+            &:hover {
+              background: set-var(tab__background-color--hover, $theme-default, $common);
+              border-radius: 4px;
+            }
+          }
+        }
+      }
+    }
+
+    .section-host {
+      min-height: 360px;
+      overflow-y: auto;
+      overflow-x: hidden;
+
+      &::-webkit-scrollbar {
+        height: 4em;
+        width: 4px;
+        border-radius: 11px;
+      }
+      &::-webkit-scrollbar-button {
+        background: white;
+      }
+      &::-webkit-scrollbar-track {
+        background: white;
+        border-radius: 10px;
+      }
+      &::-webkit-scrollbar-track-piece {
+        background: white;
+      }
+      &::-webkit-scrollbar-thumb {
+        background: grey;
+        border-radius: 10px;
+        height: 4px;
+      }
+      &.small {
+        overflow-y: hidden;
       }
     }
   }
-
   .loading {
     margin: 40px 20px;
     display: flex;
@@ -266,161 +340,38 @@ $person-card-nav-back-arrow-hover-color: var(--person-card-nav-back-arrow-hover-
 
   .message-section {
     border-bottom: 1px solid set-var(tab__line__color, $theme-default, $common);
-    --background-color: $background-color;
-    fluent-text-field {
-      margin: 4px 0px;
-      width: 83%;
-      width: 300px;
+    display: flex;
 
-      padding: 4px 10px;
-      &::after {
-        border: none;
+    fluent-text-field {
+      margin: 10px 10px 10px 16px;
+      --neutral-fill-input-rest: #{set-var(input-outlined__background-color, $theme-default, $common)};
+      --neutral-fill-input-hover: #{set-var(input-outlined__background-color--hover, $theme-default, $common)};
+      --neutral-fill-input-focus: #{set-var(input-outlined__background-color--focus, $theme-default, $common)};
+      width: 300px;
+      margin-inline-start: 16px;
+      border-radius: 4px;
+
+      &:focus-within {
+        --neutral-fill-secondary-rest: #{set-var(card-bg, $theme-default, $person-card-theme)};
       }
     }
+
     .send-message-icon {
       max-width: 15px;
+      margin-top: 10px;
     }
+
     svg {
       height: 17px;
       width: 16px;
-      margin-bottom: 6px;
       fill: set-var(icon__color, $theme-default, $common);
+
       &:hover {
         filter: brightness(0.5);
       }
-    }
-  }
-  .section-host {
-    min-height: 360px;
-    overflow-y: auto;
-    overflow-x: hidden;
 
-    &::-webkit-scrollbar {
-      height: 4em;
-      width: 4px;
-      border-radius: 11px;
-    }
-    &::-webkit-scrollbar-button {
-      background: white;
-    }
-    &::-webkit-scrollbar-track {
-      background: white;
-      border-radius: 10px;
-    }
-    &::-webkit-scrollbar-track-piece {
-      background: white;
-    }
-    &::-webkit-scrollbar-thumb {
-      background: grey;
-      border-radius: 10px;
-      height: 4px;
-    }
-    &.small {
-      overflow-y: hidden;
-    }
-  }
-
-  .quick-message {
-    display: flex;
-    flex-direction: row;
-    border-bottom: 1px solid set-var(tab__line__color, $theme-default, $common);
-    padding: 12px 10px 8px 10px;
-
-    &__input {
-      flex-grow: 1;
-      padding-left: 12px;
-      border: 1px solid #efefef;
-      border-radius: 4px;
-      color: $color;
-      background-color: set-var(background-color, $theme-default, $common);
-      &:focus {
-        border-color: #023b8f;
-      }
-      &:focus-visible {
-        outline: none;
-      }
-    }
-
-    &__send {
-      all: initial;
-      height: 32px;
-      width: 32px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-
-      svg {
-        fill: set-var(color__sub2, $theme-default, $common);
-        height: 18px;
-        width: 18px;
-      }
-
-      &:hover {
-        svg {
-          fill: set-var(color__sub1, $theme-default, $common);
-        }
-      }
-    }
-  }
-
-  .sections {
-    .section {
-      padding: 14px 0;
-      display: flex;
-      flex-direction: column;
-      position: relative;
-
-      &:not(:last-child):after {
-        position: absolute;
-        content: '';
-        width: 90%;
-        transform: translateX(-50%);
-        border-bottom: 1px solid set-var(tab__line__color, $theme-default, $common);
-        left: 50%;
-        bottom: 0;
-      }
-
-      &__header {
-        display: flex;
-        flex-direction: row;
-        padding: 0 20px;
-        fluent-button {
-          background-color: $background-color;
-          --neutral-fill-stealth-rest: $background-color;
-          --accent-foreground-hover: $background-color;
-          --accent-foreground-active: $background-color;
-          --base-height-multiplier: 6;
-          vertical-align: top;
-        }
-      }
-
-      &__title {
-        flex-grow: 1;
-        color: set-var(title__color__subtitle, $theme-default, $common);
-        font-size: 14px;
-        font-weight: 600;
-        line-height: 19px;
-      }
-
-      &__show-more {
-        color: $person-card-show-more-color;
-        font-size: 12px;
-        font-weight: 600;
-        align-self: center;
-
-        &:hover {
-          cursor: pointer;
-          color: $person-card-show-more-hover-color;
-          background-color: $gray_hover;
-        }
-      }
-
-      &__content {
-        margin-top: 14px;
-      }
-
-      .additional-details {
-        padding: 0 20px;
+      &:disabled {
+        filter: none;
       }
     }
   }
@@ -428,9 +379,7 @@ $person-card-nav-back-arrow-hover-color: var(--person-card-nav-back-arrow-hover-
 
 [dir='rtl'] {
   .base-icons {
-    span {
-      margin-right: 8px;
-    }
+    right: 91px;
   }
   .nav__back {
     width: 20px !important;

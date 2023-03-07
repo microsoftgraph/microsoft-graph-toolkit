@@ -7,19 +7,57 @@
 
 @import '../../styles/shared-sass-variables.scss';
 
-$display-name__color: var(--person-card-display-name-color, set-var(color__sub1, $theme-default, $common));
-$title__color: var(--person-card-title-color, set-var(color__sub2, $theme-default, $common));
-$subtitle__color: var(--person-card-subtitle-color, set-var(color__sub2, $theme-default, $common));
-$details-title__color: var(--person-card-details-title-color, set-var(color, $theme-default, $common));
-$background-color: var(--person-card-background-color, set-var(background-color, $theme-default, $common));
-$person-card-display-name-color: var(--person-card-display-name-color, set-var(color__sub1, $theme-default, $common));
+/**
+* Loading the themes of the components used within mgt-person-card to
+* allow mgt-dark specifications to propagate. Also it allows re-using already
+* declared theme values like $person-theme in the mgt-person-card.scss#L362,L363.
+*/
+@import '../../components/mgt-person/mgt-person.theme.scss';
+@import '../../components/mgt-contact/mgt-contact.theme.scss';
+@import '../../components/mgt-organization/mgt-organization.theme.scss';
+@import '../../components/mgt-profile/mgt-profile.theme.scss';
 
-$person-card: (
-  details-item__color: (
-    _var: --person-card-details-item-color,
-    light: $gray190,
-    dark: $gray10
+$person-card-theme: (
+  card-bg: (
+    _var: --person-card-background-color,
+    light: $background-color__main--light,
+    dark: $background-color__main--dark
+  ),
+  line-1-color: (
+    _var: --person-card-display-name-color,
+    light: $text__color__main--light,
+    dark: $text__color__main--dark
+  ),
+  line-2-color: (
+    _var: --person-card-title-color,
+    light: $text__color__sub2--light,
+    dark: $text__color__sub2--dark
+  ),
+  line-3-color: (
+    _var: --person-card-subtitle-color,
+    light: $text__color__sub2--light,
+    dark: $text__color__sub2--dark
+  ),
+  nav-back-arrow-color: (
+    _var: --person-card-nav-back-arrow-color,
+    light: $commblue_primary,
+    dark: $commblue_shade10
+  ),
+  nav-back-arrow-hover-color: (
+    _var: --person-card-nav-back-arrow-color,
+    light: $black,
+    dark: $white
+  ),
+  show-more: (
+    _var: --person-card-show-more-color,
+    light: $link__color--light,
+    dark: $link__color--dark
+  ),
+  show-more-hover: (
+    _var: --person-card-show-more-hover-color,
+    light: $link__color__hover--light,
+    dark: $link__color__hover--dark
   )
 );
 
-@include create-themes($person-card);
+@include create-themes($person-card-theme);

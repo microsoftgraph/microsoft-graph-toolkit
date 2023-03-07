@@ -44,6 +44,7 @@ export type FileProps = {
 
 export type FileListProps = {
 	fileListQuery?: string;
+	displayName?: string;
 	fileQueries?: string[];
 	files?: MicrosoftGraph.DriveItem[];
 	siteId?: string;
@@ -232,6 +233,12 @@ export type TeamsChannelPickerProps = {
 	templateRendered?: (e: CustomEvent<TemplateRenderedData>) => void;
 }
 
+export type ThemeToggleProps = {
+	darkModeActive?: boolean;
+	mediaQuery?: ComponentMediaQuery;
+	darkmodechanged?: (e: CustomEvent<boolean>) => void;
+}
+
 export type TodoProps = {
 	taskFilter?: TodoFilter;
 	readOnly?: boolean;
@@ -267,6 +274,8 @@ export const Picker = wrapMgt<PickerProps>('picker');
 export const Tasks = wrapMgt<TasksProps>('tasks');
 
 export const TeamsChannelPicker = wrapMgt<TeamsChannelPickerProps>('teams-channel-picker');
+
+export const ThemeToggle = wrapMgt<ThemeToggleProps>('theme-toggle');
 
 export const Todo = wrapMgt<TodoProps>('todo');
 

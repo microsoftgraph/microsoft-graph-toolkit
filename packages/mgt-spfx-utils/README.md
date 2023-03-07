@@ -8,19 +8,7 @@ Helper functions to simplify lazy loading of Microsoft Graph Toolkit components 
 
 ## Installation
 
-To lazy load Microsoft Graph Toolkit components from the library, add the `@microsoft/mgt-spfx-utils` package as a dependency to your SharePoint Framework project. If you use React, also add the `@microsoft/mgt-react` package:
-
-```bash
-npm install @microsoft/mgt-spfx-utils
-```
-
-or
-
-```bash
-yarn add @microsoft/mgt-spfx-utils
-```
-
-or when using React:
+To lazy load Microsoft Graph Toolkit components in a React web part add both the `@microsoft/mgt-spfx-utils` and `@microsoft/mgt-react` packages as dependencies to your SharePoint Framework project:
 
 ```bash
 npm install @microsoft/mgt-spfx-utils @microsoft/mgt-react
@@ -38,11 +26,11 @@ Disambiguation is intended to provide developers with a mechanism to use a speci
 
 By disambiguating tag names of Microsoft Graph Toolkit components, you can use your own version of MGT rather than using the centrally deployed `@microsoft/mgt-spfx` package. This allows you to avoid colliding with SharePoint Framework components built by other developers. When disambiguating tag names, MGT is included in the generated SPFx bundle, increasing its size. It is strongly recommended that you use a disambiguation value unique to your organization and solution to avoid collisions with other solutions, e.g. `contoso-hr-extensions`.
 
-> **Important:** Since a given web component tag can only be registered once these approaches **must** be used along with the `customElementHelper.withDisambiguation('foo')` approach as this allows developers to create disambiguated tag names.
+> **Important:** Since a given web component tag can only be registered once this approach **must** be used along with the `customElementHelper.withDisambiguation('foo')` as this allows developers to create disambiguated tag names.
 
 ### When using no framework web parts
 
-When building SharePoint Framework web parts without a JavaScript framework the `@microsoft/mgt-components` library must be asynchronously loaded after configuring the disambiguation setting. The `importMgtComponentsLibrary` helper function wraps this functionality. Once the `@microsoft/mgt-components` library is loaded you can load components directly in your web part.
+When building SharePoint Framework web parts without a JavaScript framework the `@microsoft/mgt-components` library must be asynchronously loaded after configuring the disambiguation setting. No helper library is necessary as dynamic imports are sufficient. After the browser has loaded the `@microsoft/mgt-components` library any tags which had already been rendered to the DOM without an existing custom element registration will automatically have the loaded custom behavior attached to them.
 
 Below is a minimal example web part that demonstrates how to use MGT with disambiguation in SharePoint Framework Web parts. A more complete example is available in the [No Framework Web Part Sample](https://github.com/microsoftgraph/microsoft-graph-toolkit/blob/main/samples/sp-mgt/src/webparts/helloWorld/HelloWorldWebPart.ts).
 
@@ -51,52 +39,23 @@ import { BaseClientSideWebPart } from '@microsoft/sp-webpart-base';
 import { Providers } from '@microsoft/mgt-element';
 import { SharePointProvider } from '@microsoft/mgt-sharepoint-provider';
 import { customElementHelper } from '@microsoft/mgt-element/dist/es6/components/customElementHelper';
-import { importMgtComponentsLibrary } from '@microsoft/mgt-spfx-utils';
 
 export default class MgtWebPart extends BaseClientSideWebPart<Record<string, unknown>> {
-  private _hasImportedMgtScripts = false;
-  private _errorMessage = '';
-
   protected onInit(): Promise<void> {
     if (!Providers.globalProvider) {
       Providers.globalProvider = new SharePointProvider(this.context);
     }
     // Use the solution name to ensure unique tag names
     customElementHelper.withDisambiguation('spfx-solution-name');
-    return super.onInit();
-  }
-
-  private onScriptsLoadedSuccessfully() {
-    this.render();
+    return import('@microsoft/mgt-components').then(() => super.onInit());
   }
 
   public render(): void {
-    importMgtComponentsLibrary(this._hasImportedMgtScripts, this.onScriptsLoadedSuccessfully, this.setErrorMessage);
 
     this.domElement.innerHTML = `
     <section class="${styles.helloWorld} ${this.context.sdks.microsoftTeams ? styles.teams : ''}">
-      ${this._renderMgtComponents()}
-      ${this._renderErrorMessage()}
+      <mgt-spfx-solution-name-login></mgt-spfx-solution-name-login>
     </section>`;
-  }
-
-  private _renderMgtComponents(): string {
-    return this._hasImportedMgtScripts
-      ? '<mgt-foo-login></mgt-foo-login>'
-      : '';
-  }
-
-  private setErrorMessage(e?: Error): void {
-    if (e) this.renderError(e);
-
-    this._errorMessage = 'An error ocurred loading MGT scripts';
-    this.render();
-  }
-
-  private _renderErrorMessage(): string {
-    return this._errorMessage
-      ? `<span>${this._errorMessage}</span>`
-      : '';
   }
 }
 ```

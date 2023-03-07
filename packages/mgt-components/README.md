@@ -89,71 +89,42 @@ The earlier example can be updated to use the disambiguation feature as follows:
 
 > Note: the `import` of `mgt-components` must use a dynamic import to ensure that the disambiguation is applied before the components are imported.
 
-To simplify this pattern when developing SharePoint Framework web parts we have provided helper utilities in the [`mgt-spfx-utils`](https://github.com/microsoftgraph/microsoft-graph-toolkit/tree/main/packages/mgt-spfx-utils) package. Example usages are provided below.
+When developing SharePoint Framework web parts the pattern for using disambiguation is based on whether or not the MGT React wrapper library is being used. If you are using React then the helper utility in the [`mgt-spfx-utils`](https://github.com/microsoftgraph/microsoft-graph-toolkit/tree/main/packages/mgt-spfx-utils) package should be used. SharePoint Framework web part example usages are provided below.
 
 ### Usage in a SharePoint web part with no framework
 
-The `importMgtComponentsLibrary` helper function wraps a dynamic import of the `@microsoft/mgt-components` library.
+A dynamic import of the `@microsoft/mgt-components` library is used after configuring the disambiguation.
 
-A more complete example is available in the [No Framework Web Part Sample](https://github.com/microsoftgraph/microsoft-graph-toolkit/blob/main/samples/sp-mgt/src/webparts/helloWorld/HelloWorldWebPart.ts).
+This example is sourced from the [No Framework Web Part Sample](https://github.com/microsoftgraph/microsoft-graph-toolkit/blob/main/samples/sp-mgt/src/webparts/helloWorld/HelloWorldWebPart.ts).
 
 ```ts
 import { BaseClientSideWebPart } from '@microsoft/sp-webpart-base';
 import { Providers } from '@microsoft/mgt-element';
 import { SharePointProvider } from '@microsoft/mgt-sharepoint-provider';
 import { customElementHelper } from '@microsoft/mgt-element/dist/es6/components/customElementHelper';
-import { importMgtComponentsLibrary } from '@microsoft/mgt-spfx-utils';
 
 export default class MgtWebPart extends BaseClientSideWebPart<Record<string, unknown>> {
-  private _hasImportedMgtScripts = false;
-  private _errorMessage = '';
 
   protected onInit(): Promise<void> {
+    customElementHelper.withDisambiguation('foo');
     if (!Providers.globalProvider) {
       Providers.globalProvider = new SharePointProvider(this.context);
     }
-    customElementHelper.withDisambiguation('foo');
-    return super.onInit();
-  }
-
-  private onScriptsLoadedSuccessfully() {
-    this.render();
+    return import('@microsoft/mgt-components').then(() => super.onInit());
   }
 
   public render(): void {
-    importMgtComponentsLibrary(this._hasImportedMgtScripts, this.onScriptsLoadedSuccessfully, this.setErrorMessage);
-
     this.domElement.innerHTML = `
     <section class="${styles.helloWorld} ${this.context.sdks.microsoftTeams ? styles.teams : ''}">
-      ${this._renderMgtComponents()}
-      ${this._renderErrorMessage()}
+      <mgt-foo-login></mgt-foo-login>
     </section>`;
-  }
-
-  private _renderMgtComponents(): string {
-    return this._hasImportedMgtScripts
-      ? '<mgt-foo-login></mgt-foo-login>'
-      : '';
-  }
-
-  private setErrorMessage(e?: Error): void {
-    if (e) this.renderError(e);
-
-    this._errorMessage = 'An error ocurred loading MGT scripts';
-    this.render();
-  }
-
-  private _renderErrorMessage(): string {
-    return this._errorMessage
-      ? `<span>${this._errorMessage}</span>`
-      : '';
   }
 }
 ```
 
 ### Usage in a SharePoint web part using React
 
-The `lazyLoadComponent` helper function leverages `React.lazy` and `React.Suspense` to asynchronously load the components which have a direct dependency on `@microsoft/mgt-react` from the top level web part component.
+The `lazyLoadComponent` helper function from [`mgt-spfx-utils`](https://github.com/microsoftgraph/microsoft-graph-toolkit/tree/main/packages/mgt-spfx-utils) leverages `React.lazy` and `React.Suspense` to asynchronously load the components which have a direct dependency on `@microsoft/mgt-react` from the top level web part component.
 
 A complete example is available in the [React SharePoint Web Part Sample](https://github.com/microsoftgraph/microsoft-graph-toolkit/blob/main/samples/sp-webpart/src/webparts/mgtDemo/MgtDemoWebPart.ts).
 
