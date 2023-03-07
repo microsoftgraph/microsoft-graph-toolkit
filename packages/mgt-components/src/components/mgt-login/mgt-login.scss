@@ -94,6 +94,10 @@ $button-padding: var(--login-button-padding, 0);
       min-width: auto;
       margin-top: 4px;
       background: $login-popup-background-color;
+
+      &:hover {
+        background: var(--neutral-fill-stealth-hover);
+      }
     }
 
     mgt-flyout,
