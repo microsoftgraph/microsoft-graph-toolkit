@@ -7,7 +7,7 @@
 
 @import '../../styles/shared-sass-variables.scss';
 
-$person-background-color: var(--person-background-color, var(--neutral-layer-1));
+$person-background-color: var(--person-background-color, transparent);
 $person-line1-text-color: var(--person-line1-text-color, var(--neutral-foreground-rest));
 $person-line2-text-color: var(--person-line2-text-color, var(--neutral-foreground-hint));
 $person-line3-text-color: var(--person-line3-text-color, var(--neutral-foreground-hint));

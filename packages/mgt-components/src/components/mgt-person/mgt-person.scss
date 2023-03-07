@@ -141,6 +141,7 @@ $person-line4-text-line-height: var(--person-line4-text-line-height, 16px);
       display: flex;
       flex-direction: column;
       margin-inline-start: $person-details-spacing;
+      align-items: flex-start;
 
       &.vertical {
         justify-content: center;
@@ -202,5 +203,12 @@ $person-line4-text-line-height: var(--person-line4-text-line-height, 16px);
     fill: rgb(0, 0, 0) !important;
     fill-rule: nonzero !important;
     clip-rule: nonzero !important;
+  }
+}
+
+[dir="rtl"]{
+  .presence-wrapper{
+    right: unset !important;
+    left: 0px;
   }
 }
