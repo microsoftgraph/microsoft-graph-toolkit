@@ -245,14 +245,21 @@ export class MgtLogin extends MgtTemplatedComponent {
       root: true,
       'vertical-layout': this.usesVerticalPersonCard
     };
+    // return html`
+    //    <div class=${classMap(classes)} dir=${this.direction}>
+    //      <div>
+    //        ${this.renderButton()}
+    //      </div>
+    //      ${this.renderFlyout()}
+    //    </div>
+    //  `;
+
     return html`
-       <div class=${classMap(classes)} dir=${this.direction}>
-         <div>
-           ${this.renderButton()}
-         </div>
-         ${this.renderFlyout()}
-       </div>
-     `;
+      <div class="login-root">
+        <div>${this.renderButton()}</div>
+        ${this.renderFlyout()}
+      </div>
+    `;
   }
 
   /**
@@ -309,27 +316,38 @@ export class MgtLogin extends MgtTemplatedComponent {
       'no-click': this._isFlyoutOpen
     };
     // uses a regular button for the signed in state to ease styling
-    return isSignedIn && this.userDetails
-      ? html`
-        <button
-          aria-label=${ariaLabel}
-          @click=${this.onClick}
-          class=${classMap(classes)}
-        >
-          ${this.renderSignedInButtonContent(this.userDetails, this._image)}
-        </button>
-      `
-      : html`
-        <fluent-button
-          appearance="neutral"
-          aria-label=${ariaLabel}
-          ?disabled=${this.isLoadingState}
-          @click=${this.onClick}
-          class=${classMap(classes)}
-        >
-          ${this.renderSignedOutButtonContent()}
-        </fluent-button>
-      `;
+    // return isSignedIn && this.userDetails
+    //   ? html`
+    //     <button
+    //       aria-label=${ariaLabel}
+    //       @click=${this.onClick}
+    //       class=${classMap(classes)}
+    //     >
+    //       ${this.renderSignedInButtonContent(this.userDetails, this._image)}
+    //     </button>
+    //   `
+    //   : html`
+    //     <fluent-button
+    //       appearance="neutral"
+    //       aria-label=${ariaLabel}
+    //       ?disabled=${this.isLoadingState}
+    //       @click=${this.onClick}
+    //       class=${classMap(classes)}
+    //     >
+    //       ${this.renderSignedOutButtonContent()}
+    //     </fluent-button>
+    //   `;
+
+    const appearance = isSignedIn ? "stealth" : "neutral";
+    return html`
+    <fluent-button
+      appearance=${appearance}
+      aria-label=${ariaLabel}
+      ?disabled=${this.isLoadingState}
+      @click=${this.onClick}
+      class=${classMap(classes)}>
+        ${this.renderSignedInButtonContent(this.userDetails, this._image)}
+    </fluent-button>`;
   }
 
   private flyoutOpened = () => {
@@ -511,7 +529,7 @@ export class MgtLogin extends MgtTemplatedComponent {
       case 'full':
       default:
         displayConfig.view = ViewType.twolines;
-        displayConfig.avatarSize = 'large';
+        displayConfig.avatarSize = 'auto';
         break;
     }
     return displayConfig;
@@ -537,9 +555,7 @@ export class MgtLogin extends MgtTemplatedComponent {
           .showPresence=${this.showPresence}
           .avatarSize=${displayConfig.avatarSize}
           line2-property="email"
-          class="person"
-        />
-       `
+          class="person"/>`
     );
   }
 
