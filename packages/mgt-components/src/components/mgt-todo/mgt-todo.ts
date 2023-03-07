@@ -288,9 +288,15 @@ export class MgtTodo extends MgtTasksBase {
           }
         }}">
         <div slot="start" class="start">${addIcon}</div>
-        <div slot="end" class="end">
-        <span class="calendar">${calendarTemplate}</span>
-        ${cancelIcon}</div>
+        ${
+          this._newTaskName
+            ? html`
+              <div slot="end" class="end">
+                <span class="calendar">${calendarTemplate}</span>
+                ${cancelIcon}
+              </div> `
+            : html``
+        }
       </fluent-text-field>
     `;
     return html`
