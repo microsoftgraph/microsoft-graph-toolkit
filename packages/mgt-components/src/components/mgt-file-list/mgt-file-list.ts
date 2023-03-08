@@ -14,7 +14,7 @@ import {
   customElement,
   mgtHtml
 } from '@microsoft/mgt-element';
-import { DriveItem, SharedInsight } from '@microsoft/microsoft-graph-types';
+import { DriveItem } from '@microsoft/microsoft-graph-types';
 import { html, TemplateResult } from 'lit';
 import { property, state } from 'lit/decorators.js';
 import { repeat } from 'lit/directives/repeat.js';
@@ -45,10 +45,11 @@ import { strings } from './strings';
 import { MgtFile } from '../mgt-file/mgt-file';
 import { MgtFileUploadConfig } from './mgt-file-upload/mgt-file-upload';
 
-import { fluentProgressRing, fluentDesignSystemProvider } from '@fluentui/web-components';
+import { fluentProgressRing } from '@fluentui/web-components';
 import { registerFluentComponents } from '../../utils/FluentComponents';
+import { KeyboardEvent } from 'react';
 
-registerFluentComponents(fluentProgressRing, fluentDesignSystemProvider);
+registerFluentComponents(fluentProgressRing);
 
 /**
  * The File List component displays a list of multiple folders and files by
@@ -657,6 +658,7 @@ export class MgtFileList extends MgtTemplatedComponent {
             tabindex="0"
             class="file-item"
             @keydown="${this.onFileListKeyDown}"
+            @keyup="${this.onFileListKeyUp}"
             @click=${(e: UIEvent) => this.handleItemSelect(this.files[0], e)}>
             ${this.renderFile(this.files[0])}
           </li>
@@ -757,6 +759,21 @@ export class MgtFileList extends MgtTemplatedComponent {
     if (event && event.code === 'Enter') {
       event.preventDefault();
       this.renderNextPage();
+    }
+  }
+
+  /**
+   * Handles keyup presses events.
+   *
+   * @param event
+   */
+  private onFileListKeyUp(event: KeyboardEvent): void {
+    const fileList = this.renderRoot.querySelector('.file-list');
+
+    if (event.code === 'Tab') {
+      if (this._focusedItemIndex === -1) {
+        this._focusedItemIndex = fileList?.children.length;
+      }
     }
   }
 

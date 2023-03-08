@@ -35,7 +35,6 @@ $progress-ring-size: var(--progress-ring-size, 24px);
   .title {
     font-size: 14px;
     font-weight: 600;
-    color: set-var(title__color__subtitle, $theme-default, $common);
     padding: 20px 0 12px;
     line-height: 19px;
   }
@@ -57,7 +56,6 @@ $progress-ring-size: var(--progress-ring-size, 24px);
   .title {
     font-size: 14px;
     font-weight: 600;
-    color: set-var(title__color__subtitle, $theme-default, $common);
     margin: 0 20px -15px 20px;
   }
 
@@ -72,6 +70,11 @@ $progress-ring-size: var(--progress-ring-size, 24px);
       cursor: pointer;
       border-radius: var(--file-border-radius);
       margin: var(--file-margin, 2px 4px);
+
+      &:focus,
+      &:focus-within {
+        --file-background-color: var(--file-background-color-focus,var(--neutral-layer-2));
+      }
 
       &.focused{
         --file-background-color: var(--file-background-color-focus,var(--neutral-layer-2));
