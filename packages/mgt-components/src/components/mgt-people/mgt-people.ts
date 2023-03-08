@@ -42,7 +42,6 @@ export { PersonCardInteraction } from './../PersonCardInteraction';
  * @cssprop --people-overflow-font-weight - {String} the font weight of the overflow text. Default is 400.
  */
 @customElement('people')
-// @customElement('mgt-people')
 export class MgtPeople extends MgtTemplatedComponent {
   /**
    * Array of styles to apply to the element. The styles should be defined
