@@ -627,12 +627,9 @@ export class MgtFileList extends MgtTemplatedComponent {
       this.renderTemplate('no-data', null) ||
       (this.enableFileUpload === true && Providers.globalProvider !== undefined
         ? html`
-      <fluent-design-system-provider use-defaults>
-        <div id="file-list-wrapper" class="file-list-wrapper" dir=${this.direction}>
-          ${this.renderFileUpload()}
-        </div>
-      </fluent-design-system-provider>
-      `
+            <div id="file-list-wrapper" class="file-list-wrapper" dir=${this.direction}>
+              ${this.renderFileUpload()}
+            </div>`
         : html``)
     );
   }
@@ -817,7 +814,6 @@ export class MgtFileList extends MgtTemplatedComponent {
 
     if (event.code === 'Tab') {
       focusedItem = fileList.children[this._focusedItemIndex] as HTMLElement;
-      focusedItem?.classList.remove('focused');
     }
   }
 
@@ -828,7 +824,6 @@ export class MgtFileList extends MgtTemplatedComponent {
   private onFileListOut() {
     const fileList = this.renderRoot.querySelector('.file-list');
     const focusedItem = fileList.children[this._focusedItemIndex];
-    focusedItem?.classList.remove('focused');
   }
 
   /**
@@ -1063,10 +1058,9 @@ export class MgtFileList extends MgtTemplatedComponent {
       focusedItem.focus();
     }
 
-    // remove selected or focused classes
-    const removeClass = className === 'focused' ? 'selected' : 'focused';
+    // remove selected classes
     for (const node of fileList.children) {
-      node.classList.remove(removeClass);
+      node.classList.remove('selected');
     }
   }
 

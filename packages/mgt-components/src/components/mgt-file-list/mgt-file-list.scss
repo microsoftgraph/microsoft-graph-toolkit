@@ -76,9 +76,6 @@ $progress-ring-size: var(--progress-ring-size, 24px);
         --file-background-color: var(--file-background-color-focus,var(--neutral-layer-2));
       }
 
-      &.focused{
-        --file-background-color: var(--file-background-color-focus,var(--neutral-layer-2));
-      }
       &.selected{
         --file-background-color: var(--file-background-color-active,var(--neutral-layer-3));
       }
