@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { FluentThemeProvider, MessageThread, SendBox } from '@azure/communication-react';
+import { ErrorBar, FluentThemeProvider, MessageThread, SendBox } from '@azure/communication-react';
 import { useGraphChatClient } from '../../statefulClient/useGraphChatClient';
 import { registerIcons } from '@fluentui/react';
 import { DEFAULT_COMPONENT_ICONS } from '@azure/communication-react';
@@ -32,8 +32,10 @@ const MgtChat = ({ chatId }: IMgtChatProps) => {
             onLoadPreviousChatMessages={chatState.onLoadPreviousChatMessages}
             // TODO: Messages date rendering is behind beta flag, find out how to enable it
             // onDisplayDateTimeString={(date: Date) => date.toISOString()}
+            onSendMessage={chatState.onResendMessage}
           />
           <SendBox autoFocus="sendBoxTextField" onSendMessage={chatState.onSendMessage} />
+          <ErrorBar activeErrorMessages={chatState.activeErrorMessages} />
         </FluentThemeProvider>
       )}
     </>

@@ -1,10 +1,11 @@
+import { ChatMessage as ACSChatMessage, ErrorBarProps } from '@azure/communication-react';
 import { MessageThreadProps, SendBoxProps } from '@azure/communication-react';
 import { Chat, ChatMessage } from '@microsoft/microsoft-graph-types';
 import { ActiveAccountChanged, IGraph, LoginChangedEvent, Providers, ProviderState } from '@microsoft/mgt-element';
 import { produce } from 'immer';
+import { v4 as uuid } from 'uuid';
 import { loadChat, loadChatThread, loadMoreChatMessages, MessageCollection, sendChatMessage } from './graph.chat';
 import { graphChatMessageToACSChatMessage } from './acs.chat';
-import { ChatMessage as ACSChatMessage } from '@azure/communication-react';
 
 type GraphChatClient = Pick<
   MessageThreadProps,
@@ -15,7 +16,8 @@ type GraphChatClient = Pick<
   | 'onLoadPreviousChatMessages'
   | 'numberOfChatMessagesToReload'
 > &
-  Pick<SendBoxProps, 'onSendMessage'>;
+  Pick<SendBoxProps, 'onSendMessage'> &
+  Pick<ErrorBarProps, 'activeErrorMessages'> & { onResendMessage: (messageId: string) => Promise<void> };
 
 type StatefulClient<T> = {
   /**
@@ -44,9 +46,10 @@ class StatefulGraphChatClient implements StatefulClient<GraphChatClient> {
   private _messagesPerCall = 5;
   private _nextLink: string = '';
   private _chat?: Chat = undefined;
+  private _userDisplayName: string = '';
 
   constructor() {
-    this.updateCurrentUserId();
+    this.updateUserInfo();
     Providers.globalProvider.onStateChanged(this.onStateChanged);
     Providers.globalProvider.onActiveAccountChanged(this.onActiveAccountChanged);
   }
@@ -76,9 +79,9 @@ class StatefulGraphChatClient implements StatefulClient<GraphChatClient> {
   private onStateChanged = (e: LoginChangedEvent) => {
     switch (Providers.globalProvider.state) {
       case ProviderState.SignedIn:
-        this.updateCurrentUserId();
-        // update userId
-        // load messages
+        // update userId and displayName
+        this.updateUserInfo();
+        // load messages?
         // configure subscriptions
         // emit new state;
         return;
@@ -96,8 +99,17 @@ class StatefulGraphChatClient implements StatefulClient<GraphChatClient> {
   };
 
   private onActiveAccountChanged = (e: ActiveAccountChanged) => {
-    this.updateCurrentUserId();
+    this.updateUserInfo();
   };
+
+  private updateUserInfo() {
+    this.updateCurrentUserId();
+    this.updateCurrentUserName();
+  }
+
+  private updateCurrentUserName() {
+    this._userDisplayName = Providers.globalProvider.getActiveAccount?.().name || '';
+  }
 
   private updateCurrentUserId() {
     this.userId = Providers.globalProvider.getActiveAccount?.().id.split('.')[0] || '';
@@ -167,12 +179,52 @@ class StatefulGraphChatClient implements StatefulClient<GraphChatClient> {
   };
 
   private sendMessage = async (content: string) => {
-    // send message
-    const chat: ChatMessage = await sendChatMessage(this.graph, this._chatId, content);
-    // emit new state
+    if (!content) return;
+
+    const pendingId = uuid();
+
+    // add a pending message to the state.
     this.notifyStateChange((draft: GraphChatClient) => {
-      draft.messages.push(graphChatMessageToACSChatMessage(chat, this._userId));
+      const pendingMessage: ACSChatMessage = {
+        messageId: pendingId,
+        contentType: 'text',
+        messageType: 'chat',
+        content: content,
+        senderDisplayName: this._userDisplayName,
+        createdOn: new Date(),
+        senderId: this._userId,
+        mine: true,
+        status: 'sending'
+      };
+      draft.messages.push(pendingMessage);
     });
+    try {
+      // send message
+      const chat: ChatMessage = await sendChatMessage(this.graph, this._chatId, content);
+      // emit new state
+      this.notifyStateChange((draft: GraphChatClient) => {
+        const draftIndex = draft.messages.findIndex(m => m.messageId === pendingId);
+        draft.messages.splice(draftIndex, 1, graphChatMessageToACSChatMessage(chat, this._userId));
+      });
+    } catch (e) {
+      this.notifyStateChange((draft: GraphChatClient) => {
+        const draftIndex = draft.messages.findIndex(m => m.messageId === pendingId);
+        (draft.messages[draftIndex] as ACSChatMessage).status = 'failed';
+      });
+    }
+  };
+
+  // TODO: revisit as messageId is actually being passed the content and not the id of the message to be resent
+  public resendMessage = async (messageId: string) => {
+    console.log('resend message', messageId);
+    const message = this._state.messages.find(m => (m as ACSChatMessage).content === messageId) as ACSChatMessage;
+    if (message?.mine && message.status === 'failed' && message.content) {
+      this.notifyStateChange((draft: GraphChatClient) => {
+        const draftIndex = draft.messages.findIndex(m => (m as ACSChatMessage).content === messageId);
+        draft.messages.splice(draftIndex, 1);
+      });
+      this.sendMessage(message.content);
+    }
   };
 
   private get graph(): IGraph {
@@ -183,9 +235,11 @@ class StatefulGraphChatClient implements StatefulClient<GraphChatClient> {
     userId: '',
     messages: [],
     participantCount: 0,
-    disableEditing: true,
+    disableEditing: false,
     numberOfChatMessagesToReload: this._messagesPerCall,
-    onSendMessage: this.sendMessage
+    onSendMessage: this.sendMessage,
+    onResendMessage: this.resendMessage,
+    activeErrorMessages: []
   };
 }
 
