@@ -486,7 +486,6 @@ export class MgtTodo extends MgtTasksBase {
     this.requestUpdate();
   }
 
-  // tslint:disable-next-line: completed-docs
   private async removeTask(e: Event, taskId: string) {
     this._tasks = this._tasks.filter(t => t.id !== taskId);
     this.requestUpdate();
