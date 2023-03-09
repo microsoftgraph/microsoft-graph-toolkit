@@ -1,5 +1,9 @@
-import { ChatMessage as ACSChatMessage, ErrorBarProps } from '@azure/communication-react';
-import { MessageThreadProps, SendBoxProps } from '@azure/communication-react';
+import {
+  MessageThreadProps,
+  SendBoxProps,
+  ChatMessage as ACSChatMessage,
+  ErrorBarProps
+} from '@azure/communication-react';
 import { Chat, ChatMessage } from '@microsoft/microsoft-graph-types';
 import { ActiveAccountChanged, IGraph, LoginChangedEvent, Providers, ProviderState } from '@microsoft/mgt-element';
 import { produce } from 'immer';
