@@ -1,8 +1,7 @@
 import React, { useEffect, useState } from 'react';
-import { FluentThemeProvider, MessageThread } from '@azure/communication-react';
+import { FluentThemeProvider, MessageThread, DEFAULT_COMPONENT_ICONS } from '@azure/communication-react';
 import { useGraphChatClient } from '../../statefulClient/useGraphChatClient';
 import { registerIcons } from '@fluentui/react';
-import { DEFAULT_COMPONENT_ICONS } from '@azure/communication-react';
 registerIcons({ icons: DEFAULT_COMPONENT_ICONS });
 interface IMgtChatProps {
   chatId: string;

@@ -1,10 +1,9 @@
-import { MessageThreadProps } from '@azure/communication-react';
-import { Chat, ChatMessage } from '@microsoft/microsoft-graph-types';
+import { MessageThreadProps, ChatMessage as ACSChatMessage } from '@azure/communication-react';
+import { Chat } from '@microsoft/microsoft-graph-types';
 import { ActiveAccountChanged, IGraph, LoginChangedEvent, Providers, ProviderState } from '@microsoft/mgt-element';
 import { produce } from 'immer';
 import { loadChat, loadChatThread, loadMoreChatMessages, MessageCollection } from './graph.chat';
 import { graphChatMessageToACSChatMessage } from './acs.chat';
-import { ChatMessage as ACSChatMessage } from '@azure/communication-react';
 
 type GraphChatClient = Pick<
   MessageThreadProps,
