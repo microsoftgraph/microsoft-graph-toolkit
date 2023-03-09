@@ -9,335 +9,115 @@
 @import '../../styles/shared-styles.scss';
 @import './mgt-teams-channel-picker.theme.scss';
 
-:host {
+:host,
+:host mgt-teams-channel-picker {
   font-family: $font-family;
-}
 
-.root {
-  position: relative;
-
-  .input-wrapper {
-    font-family: $font-family;
+  .container {
     display: flex;
-    flex-wrap: wrap;
-    align-items: center;
-    padding: 4px 10px;
-    position: relative;
-    background-color: $input__background-color;
-    font-size: 14px;
-    color: $color;
-    height: 29px;
-    line-height: 19px;
-    cursor: text;
-    @include input__border($theme-default);
-    &:hover {
-      border-color: $input__border-color--hover;
-    }
-
-    &.focused {
-      border-color: $input__border-color--focus;
-    }
-
-    .selected-team {
-      padding-right: 10px;
-      border: none;
-      display: flex;
-      position: relative;
-      overflow: hidden;
-      text-overflow: ellipsis;
-      white-space: nowrap;
-      align-items: center;
-      height: 24px;
-      white-space: nowrap;
-      overflow: hidden;
-      text-overflow: ellipsis;
-      .arrow {
-        margin-left: 8px;
-        margin-right: 8px;
-      }
-      .selected-team-name {
-        font-weight: bold;
-      }
-      .search-wrapper {
-        margin-left: 12px;
-        height: 18px;
-        display: flex;
-        flex-wrap: nowrap;
-        align-items: center;
-        margin-right: 30px;
-      }
-    }
-
-    .search-wrapper {
-      overflow: hidden;
-      height: 18px;
-      display: flex;
-      flex-wrap: nowrap;
-      align-items: center;
-      margin-right: 30px;
-    }
-    .hide-icon {
-      display: none;
-    }
-
-    .team-chosen-input {
-      display: inline-block;
-      border: none;
-      line-height: normal;
-      outline: none;
-      font-family: $font-family;
-      font-style: normal;
-      font-weight: normal;
-      font-size: 14px;
-      line-height: 19px;
-      background-color: transparent;
-      color: $color;
-      padding-left: 5px;
-      &::placeholder {
-        color: $placeholder__color;
-      }
-    }
-    .team-chosen-input[contenteditable]:empty::after {
-      content: attr(data-placeholder);
-      color: $placeholder__color;
-    }
-
-    .search-icon {
-      margin-top: 1px;
-      align-self: flex-start;
-      font-family: 'FabricMDL2Icons';
-      color: var(--accent-color, $commblue_primary);
-      line-height: normal;
-    }
-
-    .input-search {
-      height: 19px;
-    }
-
-    .input-search-start {
-      white-space: nowrap;
-      line-height: normal;
-      margin-inline-start: 0px;
-      margin-inline-end: 0px;
-    }
-
-    &::after {
-      content: '';
-      position: absolute;
-      width: 100%;
-      height: 90%;
-      top: 2px;
-      right: 2px;
-      @include selected-team__overflow($theme-default);
-    }
-  }
-
-  .close-icon {
-    display: inline-block;
-    position: absolute;
-    right: 10px;
-    top: 12px;
-    line-height: normal;
-    font-family: 'FabricMDL2Icons';
-    cursor: pointer;
-    color: $placeholder__color;
-    background-color: $input__background-color;
-    &:hover {
-      color: $color;
-    }
+    flex-direction: column;
   }
 
   .dropdown {
-    padding-top: 5px;
-    padding-bottom: 11px;
-    position: absolute;
-    box-shadow: 0px 1.3289px 2.65781px rgba(180, 180, 180, 0.182), 0px 1.3289px 2.65781px rgba(68, 68, 68, 0.3);
-    border-radius: 8px;
-    background-color: $dropdown__background-color;
-    z-index: 1; /* Sit on top */
-    width: 100%;
-    text-align: left;
-    list-style-type: none;
-    font-family: $font-family;
-    font-style: normal;
-    font-weight: normal;
-    color: $color;
+    z-index: 1;
     display: none;
-    max-height: 346px;
-    overflow-y: auto;
+    margin-top: 4px;
 
     &.visible {
-      display: block;
-    }
-
-    .item {
-      .arrow svg {
-        fill: set-var(arrow, $theme-default, $channel-picker);
-      }
-
-      &.list-team {
-        -moz-user-select: none;
-        -webkit-user-select: none;
-        -ms-user-select: none;
-        user-select: none;
-        -o-user-select: none;
-        display: flex;
-        flex-direction: row;
-        align-items: center;
-        padding: 5px 12px 6px 14px;
-        margin: 6px 4px 4px 4px;
-        border-radius: 4px;
-        font-family: $font-family;
-        font-style: normal;
-        font-weight: 600;
-        font-size: 16px;
-        color: $color;
-
-        flex-flow: nowrap;
-        position: relative;
-        overflow: hidden;
-        white-space: nowrap;
-        background-color: transparent;
-        &:after {
-          content: '';
-          position: absolute;
-          width: 36px;
-          height: 100%;
-          top: 0;
-          right: 0;
-          @include dropdown-item__overflow($theme-default);
-        }
-
-        &:hover {
-          background-color: $dropdown-item__background-color--hover;
-        }
-        .arrow {
-          margin-right: 5px;
-          margin-bottom: 1px;
-        }
-      }
-
-      &.selected {
-        background-color: set-var(dropdown-item__background-color--selected, $theme-default, $channel-picker);
-      }
-
-      &.focused {
-        background-color: $dropdown-item__background-color--hover;
-      }
-    }
-
-    .channel-display {
-      -moz-user-select: none;
-      -webkit-user-select: none;
-      -ms-user-select: none;
-      user-select: none;
-      -o-user-select: none;
-      cursor: pointer;
-      padding-left: 21px;
-      padding-right: 10px;
-
-      .showing {
-        padding-left: 10px;
-        padding-top: 4px;
-        padding-bottom: 4px;
-        .channel-name-text {
-          font-size: 14px;
-          font-weight: normal;
-          color: $color;
-          margin: 0;
-          padding: 0;
-
-          &.highlight-search-text {
-            font-weight: bold;
-          }
-        }
-      }
-
-      &:hover {
-        background-color: $dropdown-item__background-color--hover;
-      }
-    }
-
-    .search-error-text,
-    .loading-text {
-      font-family: $font-family;
-      font-style: normal;
-      font-weight: 600;
-      font-size: 14px;
-      color: $color;
-      line-height: 19px;
-      text-align: center;
-    }
-
-    .message-parent {
-      padding: 2px;
-      margin-top: 30px;
-      margin-bottom: 30px;
       display: flex;
-      flex-direction: column;
-      align-items: center;
-      justify-content: center;
-      vertical-align: middle;
-      .loading-text {
-        margin-top: 3px;
-        margin-left: 9px;
-        color: #0078d4;
+    }
+
+    .team {
+      &-photo {
+        width: 24px;
+        position: inherit;
+        border-radius: 50%;
+        margin: 0px 6px;
       }
+
+      &-start-slot {
+        width: max-content;
+      }
+
+      &-parent-name {
+        width: auto;
+      }
+    }
+  }
+
+  .search-error-text,
+  .loading-text {
+    font-family: $font-family;
+    font-style: normal;
+    font-weight: 400;
+    font-size: 14px;
+    line-height: 20px;
+  }
+
+  .message-parent {
+    display: flex;
+    flex-direction: row;
+    gap: 5px;
+    padding: 5px;
+
+    .loading-text {
+      color: var(--color, #0078d4);
+      margin: auto;
+    }
+  }
+}
+
+:host fluent-card {
+  --fill-color: var(--dropdown-background-color, --fill-color);
+  --card-height: auto;
+  --width: var(--card-width);
+}
+
+:host fluent-text-field {
+  width: 100%;
+  --fill-color: var(--color, $color);
+  --neutral-fill-input-rest: var(--input-background-color, #ffffff);
+  --input-placeholder-rest: var(--placeholder-color, --input-placeholder-rest);
+  --input-placeholder-hover: var(--placeholder-color--focus, --input-placeholder-hover);
+}
+:host fluent-tree-view {
+  --tree-item-nested-width: 2em;
+}
+
+:host fluent-tree-item {
+  --tree-item-nested-width: 2em;
+  --neutral-foreground-rest: var(--color, $color);
+  --neutral-fill-stealth-hover: var(--dropdown-item-hover-background, --neutral-fill-stealth-hover);
+  --neutral-fill-secondary-rest: var(--dropdown-item-selected-background, --neutral-fill-secondary-rest);
+  --neutral-fill-stealth-rest: var(--dropdown-background-color, --neutral-fill-stealth-rest);
+}
+
+:host fluent-tree-view {
+  min-width: 100%;
+}
+
+:host fluent-breadcrumb-item {
+  .team-parent-name {
+    font-weight: bold;
+  }
+  .team-photo {
+    width: 19px;
+    position: inherit;
+    border-radius: 50%;
+  }
+  .arrow {
+    margin-left: 8px;
+    margin-right: 8px;
+
+    svg {
+      stroke: var(--arrow-fill, $color);
     }
   }
 }
 
 [dir='rtl'] {
-  .input-wrapper::after {
-    content: '';
-    position: absolute;
-    width: 99%;
-    height: 90%;
-    top: 2px;
-    left: 0px;
-    background-image: linear-gradient(
-      to left,
-      rgba(255, 255, 255, 0) 0%,
-      rgba(255, 255, 255, 0) 80%,
-      $input__background-color 100%
-    );
-    background-image: -moz-linear-gradient(
-      right,
-      rgba(255, 255, 255, 0) 0%,
-      rgba(255, 255, 255, 0) 80%,
-      $input__background-color 100%
-    );
-    background-image: -o-linear-gradient(
-      right,
-      rgba(255, 255, 255, 0) 0%,
-      rgba(255, 255, 255, 0) 80%,
-      $input__background-color 100%
-    );
-    background-image: -ms-linear-gradient(
-      right,
-      rgba(255, 255, 255, 0) 0%,
-      rgba(255, 255, 255, 0) 80%,
-      $input__background-color 100%
-    );
-    background-image: -webkit-linear-gradient(
-      right,
-      rgba(255, 255, 255, 0) 0%,
-      rgba(255, 255, 255, 0) 80%,
-      $input__background-color 100%
-    );
-  }
-  .search-wrapper {
-    margin-right: 0px !important;
-  }
-  .search-icon {
-    margin-left: 8px !important;
-  }
-  .channel-display {
-    padding: 0px 34px 0px 10px !important;
-  }
-  .close-icon {
-    right: auto;
-    left: 10px;
+  :host {
+    --direction: rtl;
   }
   .dropdown {
     text-align: right;
@@ -355,24 +135,28 @@
   .selected-team {
     padding-left: 10px;
   }
+  .message-parent {
+    .loading-text {
+      right: auto;
+      left: 10px;
+      padding-right: 8px;
+      text-align: right;
+    }
+  }
 }
 
 @media (forced-colors: active) and (prefers-color-scheme: dark) {
-  .root {
+  :host fluent-text-field {
     svg {
-      fill: rgb(255, 255, 255) !important;
-      fill-rule: nonzero !important;
-      clip-rule: nonzero !important;
+      stroke: rgb(255, 255, 255) !important;
     }
   }
 }
 
 @media (forced-colors: active) and (prefers-color-scheme: light) {
-  .root {
+  :host fluent-text-field {
     svg {
-      fill: rgb(0, 0, 0) !important;
-      fill-rule: nonzero !important;
-      clip-rule: nonzero !important;
+      stroke: rgb(0, 0, 0) !important;
     }
   }
 }

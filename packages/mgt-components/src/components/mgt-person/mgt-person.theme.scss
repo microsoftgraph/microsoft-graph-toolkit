@@ -7,9 +7,49 @@
 
 @import '../../styles/shared-sass-variables.scss';
 
-$presence__background-color: var(--presence-background-color, set-var(background-color, $theme-default, $common));
-$presence__icon__color: var(--presence-icon-color, set-var(background-color, $theme-default, $common));
-$line2__color: var(--line2-color, set-var(color__sub2, $theme-default, $common));
-$line3__color: var(--line3-color, set-var(color__sub2, $theme-default, $common));
-$line4__color: var(--line4-color, set-var(color__sub2, $theme-default, $common));
 $color: var(--color, set-var(color__sub1, $theme-default, $common));
+
+$person-theme: (
+  presence-background-color: (
+    _var: --presence-background-color,
+    dark: $background-color__main--dark,
+    light: $background-color__main--light
+  ),
+  presence-icon-color: (
+    _var: --presence-icon-color,
+    dark: $background-color__main--dark,
+    light: $background-color__main--light
+  ),
+  line1-color: (
+    _var: --line1-color,
+    dark: $text__color__main--dark,
+    light: $text__color__main--light
+  ),
+  line2-color: (
+    _var: --line2-color,
+    dark: $text__color__sub2--dark,
+    light: $text__color__sub2--light
+  ),
+  line3-color: (
+    _var: --line3-color,
+    dark: $text__color__sub2--dark,
+    light: $text__color__sub2--light
+  ),
+  line4-color: (
+    _var: --line4-color,
+    dark: $text__color__sub2--dark,
+    light: $text__color__sub2--light
+  ),
+  initials-color: (
+    _var: --initials-color,
+    light: black,
+    dark: white
+  ),
+  initials-background-color: (
+    _var: --initials-background-color,
+    light: white,
+    dark: black
+  )
+);
+
+@include create-themes($person-theme);

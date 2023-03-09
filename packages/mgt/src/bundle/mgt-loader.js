@@ -8,6 +8,19 @@
 (function () {
   'use strict';
 
+  var loaderScript = document.querySelector('script[src*="mgt-loader.js"]');
+  if (
+    loaderScript &&
+    loaderScript.src.indexOf('unpkg.com/@microsoft/mgt') > 0 &&
+    loaderScript.src.indexOf('/mgt@') === -1
+  ) {
+    console.warn(
+      'You have loaded the mgt-loader script from unpkg without using a semver range or tag.\n',
+      'This could break your application when new major versions are released\n',
+      'Please update your application to use a mgt-loader with a semver range tag e.g. https://unpkg.com/@microsoft/mgt@2/dist/bundle/mgt-loader.js'
+    );
+  }
+
   var rootPath = getScriptPath();
 
   // decide es5 or es6

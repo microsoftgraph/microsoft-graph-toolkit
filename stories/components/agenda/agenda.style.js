@@ -45,6 +45,8 @@ export const customProperties = () => html`
 
       --event-location-font-size: 20px;
       --event-location-color: white;
+
+      --event-attendees-color: gold;
     }
   </style>
 `;
