@@ -38,7 +38,7 @@ document.getElementById('mgt-version').innerText = PACKAGE_VERSION;
 const mockProvider = new MockProvider(true);
 const msal2Provider = new Msal2Provider({
   clientId: getClientId(),
-  redirectUri: 'http://localhost:6006/blank.html',
+  redirectUri: window.location.href.replace(window.location.search, '') + 'blank.html',
   scopes: [
     // capitalize all words in the scope
     'user.read',
