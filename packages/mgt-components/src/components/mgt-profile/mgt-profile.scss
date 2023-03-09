@@ -6,8 +6,9 @@
  */
 
 @import '../base-person-card-section.scss';
-@import '../../../../styles/shared-styles.scss';
-@import '../../../../styles/shared-sass-variables.scss';
+@import '../../styles/shared-styles.scss';
+@import '../../styles/shared-sass-variables.scss';
+@import './mgt-profile.theme.scss';
 
 :host {
   position: relative;
@@ -84,7 +85,7 @@
           cursor: pointer;
           user-select: unset;
           background: none;
-          color: $commblue_primary;
+          color: set-var(token-overflow-color, $theme-default, $profile-section-theme);
         }
       }
     }

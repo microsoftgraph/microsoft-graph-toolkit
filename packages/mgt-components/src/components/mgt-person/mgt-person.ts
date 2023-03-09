@@ -73,6 +73,7 @@ const defaultPersonProperties = [
  * @cssprop --text-transform - {String} text transform
  * @cssprop --line1-font-size - {Length} Line 1 font size
  * @cssprop --line1-line-height - {Length} Line 1 line height
+ * @cssprop --line1-color - {Color} Line 2 color
  * @cssprop --line2-font-size - {Length} Line 2 font size
  * @cssprop --line2-font-weight - {Length} Line 2 font weight
  * @cssprop --line2-line-height - {Length} Line 2 line height

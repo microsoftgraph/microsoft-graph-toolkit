@@ -5,7 +5,8 @@
  * -------------------------------------------------------------------------------------------
  */
 
-import { BatchResponse, IBatch, IGraph } from '@microsoft/mgt-element';
+import { BatchResponse, IBatch, IGraph, prepScopes } from '@microsoft/mgt-element';
+import { Chat, ChatMessage } from '@microsoft/microsoft-graph-types';
 import { Profile } from '@microsoft/microsoft-graph-types-beta';
 
 import { getEmailFromGraphEntity } from '../../graph/graph.people';
@@ -151,3 +152,53 @@ const buildFilesRequest = (batch: IBatch, emailAddress?: string) => {
  */
 const getProfile = async (graph: IGraph, userId: string): Promise<Profile> =>
   (await graph.api(`/users/${userId}/profile`).version('beta').get()) as Profile;
+
+/**
+ * Initiate a chat to a user
+ *
+ * @export
+ * @param {IGraph} graph
+ * @param {{ chatType: string; members: [{"@odata.type": string,"roles": ["owner"],"user@odata.bind": string},{"@odata.type": string,"roles": ["owner"],"user@odata.bind": string}]  }} chatData
+ * @return {*}  {Promise<Chat>}
+ */
+export const createChat = async (graph: IGraph, person: string, user: string): Promise<Chat> => {
+  const chatData = {
+    chatType: 'oneonOne',
+    members: [
+      {
+        '@odata.type': '#microsoft.graph.aadUserConversationMember',
+        roles: ['owner'],
+        'user@odata.bind': `https://graph.microsoft.com/v1.0/users('${user}')`
+      },
+      {
+        '@odata.type': '#microsoft.graph.aadUserConversationMember',
+        roles: ['owner'],
+        'user@odata.bind': `https://graph.microsoft.com/v1.0/users('${person}')`
+      }
+    ]
+  };
+  return (await graph
+    .api('/chats')
+    .header('Cache-Control', 'no-store')
+    .middlewareOptions(prepScopes('Chat.Create', 'Chat.ReadWrite'))
+    .post(chatData)) as Chat;
+};
+
+/**
+ * Send a chat message to a user
+ *
+ * @export
+ * @param {IGraph} graph
+ * @param {{ body: {"content": string}  }} messageData
+ * @return {*}  {Promise<ChatMessage>}
+ */
+export const sendMessage = async (
+  graph: IGraph,
+  chatId: string,
+  messageData: Pick<ChatMessage, 'body'>
+): Promise<ChatMessage> =>
+  (await graph
+    .api(`/chats/${chatId}/messages`)
+    .header('Cache-Control', 'no-store')
+    .middlewareOptions(prepScopes('Chat.ReadWrite', 'ChatMessage.Send'))
+    .post(messageData)) as ChatMessage;

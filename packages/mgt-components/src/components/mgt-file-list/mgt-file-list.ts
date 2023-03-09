@@ -8,7 +8,6 @@
 import {
   arraysAreEqual,
   GraphPageIterator,
-  MgtTemplatedComponent,
   Providers,
   ProviderState,
   customElement,
@@ -38,6 +37,7 @@ import {
   getUserInsightsFiles
 } from '../../graph/graph.files';
 import './mgt-file-upload/mgt-file-upload';
+import { getSvg, SvgIcon } from '../../utils/SvgHelper';
 import { OfficeGraphInsightString, ViewType } from '../../graph/types';
 import { styles } from './mgt-file-list-css';
 import { strings } from './strings';
@@ -46,6 +46,7 @@ import { MgtFileUploadConfig } from './mgt-file-upload/mgt-file-upload';
 
 import { fluentProgressRing, fluentDesignSystemProvider } from '@fluentui/web-components';
 import { registerFluentComponents } from '../../utils/FluentComponents';
+import { BasePersonCardSection } from '../BasePersonCardSection';
 
 registerFluentComponents(fluentProgressRing, fluentDesignSystemProvider);
 
@@ -56,7 +57,6 @@ registerFluentComponents(fluentProgressRing, fluentDesignSystemProvider);
  *
  * @export
  * @class MgtFileList
- * @extends {MgtTemplatedComponent}
  *
  * @fires {CustomEvent<MicrosoftGraph.DriveItem>} itemClick - Fired when user click a file. Returns the file (DriveItem) details.
  * @cssprop --file-upload-border- {String} File upload border top style
@@ -93,7 +93,7 @@ registerFluentComponents(fluentProgressRing, fluentDesignSystemProvider);
 
 @customElement('file-list')
 // @customElement('mgt-file-list')
-export class MgtFileList extends MgtTemplatedComponent {
+export class MgtFileList extends BasePersonCardSection {
   /**
    * Array of styles to apply to the element. The styles should be defined
    * using the `css` tag function.
@@ -102,7 +102,7 @@ export class MgtFileList extends MgtTemplatedComponent {
     return styles;
   }
 
-  protected get strings() {
+  protected get strings(): Record<string, string> {
     return strings;
   }
 
@@ -125,6 +125,27 @@ export class MgtFileList extends MgtTemplatedComponent {
 
     this._fileListQuery = value;
     void this.requestStateUpdate(true);
+  }
+
+  /**
+   * The name for display in the overview section.
+   *
+   * @readonly
+   * @type {string}
+   * @memberof MgtFileList
+   */
+  public get displayName(): string {
+    return this.strings.filesSectionTitle;
+  }
+
+  /**
+   * Render the icon for display in the navigation ribbon.
+   *
+   * @returns {TemplateResult}
+   * @memberof MgtFileList
+   */
+  public renderIcon(): TemplateResult {
+    return getSvg(SvgIcon.Files);
   }
 
   /**
@@ -547,6 +568,35 @@ export class MgtFileList extends MgtTemplatedComponent {
       return this.renderNoData();
     }
 
+    return this.isCompact ? this.renderCompactView() : this.renderFullView();
+  }
+
+  /**
+   * Render the compact view
+   *
+   * @returns {TemplateResult}
+   * @memberof MgtFileList
+   */
+  public renderCompactView(): TemplateResult {
+    const files = this.files.slice(0, 3);
+    const contentTemplate = html`
+      ${files.map(file => this.renderFile(file))}
+    `;
+
+    return html`
+      <div class="root compact" dir=${this.direction}>
+        ${contentTemplate}
+      </div>
+    `;
+  }
+
+  /**
+   * Render the full view
+   *
+   * @returns {TemplateResult}
+   * @memberof MgtFileList
+   */
+  public renderFullView(): TemplateResult {
     return this.renderTemplate('default', { files: this.files }) || this.renderFiles();
   }
 
@@ -595,6 +645,7 @@ export class MgtFileList extends MgtTemplatedComponent {
     return html`
       <div id="file-list-wrapper" class="file-list-wrapper" dir=${this.direction}>
         ${this.enableFileUpload ? this.renderFileUpload() : null}
+        <div class="title">${this.strings.filesSectionTitle}</div>
         <ul
           id="file-list"
           class="file-list"
@@ -900,6 +951,7 @@ export class MgtFileList extends MgtTemplatedComponent {
    * @memberof MgtFileList
    */
   protected handleItemSelect(item: DriveItem, event: UIEvent): void {
+    this.handleFileClick(item);
     this.fireCustomEvent('itemClick', item);
 
     // handle accessibility updates when item clicked
@@ -964,6 +1016,12 @@ export class MgtFileList extends MgtTemplatedComponent {
     }
 
     this.requestUpdate();
+  }
+
+  private handleFileClick(file: DriveItem) {
+    if (file && file.webUrl) {
+      window.open(file.webUrl, '_blank', 'noreferrer');
+    }
   }
 
   /**

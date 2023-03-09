@@ -1,4 +1,4 @@
-import { OfficeGraphInsightString,ViewType,ResponseType,DataChangedDetail,IDynamicPerson,LoginViewType,PersonCardInteraction,PersonType,GroupType,UserType,AvatarSize,PersonViewType,TasksStringResource,TasksSource,TaskFilter,ITask,SelectedChannel,TodoFilter } from '@microsoft/mgt-components';
+import { OfficeGraphInsightString,ViewType,IDynamicPerson,ResponseType,DataChangedDetail,LoginViewType,PersonCardInteraction,PersonType,GroupType,UserType,AvatarSize,PersonViewType,TasksStringResource,TasksSource,TaskFilter,ITask,SelectedChannel,TodoFilter } from '@microsoft/mgt-components';
 import { TemplateContext,ComponentMediaQuery,TemplateRenderedData } from '@microsoft/mgt-element';
 import * as MicrosoftGraph from '@microsoft/microsoft-graph-types';
 import * as MicrosoftGraphBeta from '@microsoft/microsoft-graph-types-beta';
@@ -44,6 +44,7 @@ export type FileProps = {
 
 export type FileListProps = {
 	fileListQuery?: string;
+	displayName?: string;
 	fileQueries?: string[];
 	files?: MicrosoftGraph.DriveItem[];
 	siteId?: string;
@@ -61,6 +62,7 @@ export type FileListProps = {
 	enableFileUpload?: boolean;
 	maxUploadFile?: number;
 	excludedFileExtensions?: string[];
+	personDetails?: IDynamicPerson;
 	templateContext?: TemplateContext;
 	mediaQuery?: ComponentMediaQuery;
 	itemClick?: (e: CustomEvent<MicrosoftGraph.DriveItem>) => void;
@@ -187,6 +189,21 @@ export type PersonCardProps = {
 	templateRendered?: (e: CustomEvent<TemplateRenderedData>) => void;
 }
 
+export type PickerProps = {
+	resource?: string;
+	maxPages?: number;
+	placeholder?: string;
+	keyName?: string;
+	entityType?: string;
+	scopes?: string[];
+	cacheEnabled?: boolean;
+	cacheInvalidationPeriod?: number;
+	templateContext?: TemplateContext;
+	mediaQuery?: ComponentMediaQuery;
+	selectionChanged?: (e: CustomEvent<any>) => void;
+	templateRendered?: (e: CustomEvent<TemplateRenderedData>) => void;
+}
+
 export type TasksProps = {
 	res?: TasksStringResource;
 	isNewTaskVisible?: boolean;
@@ -215,6 +232,12 @@ export type TeamsChannelPickerProps = {
 	mediaQuery?: ComponentMediaQuery;
 	selectionChanged?: (e: CustomEvent<SelectedChannel | null>) => void;
 	templateRendered?: (e: CustomEvent<TemplateRenderedData>) => void;
+}
+
+export type ThemeToggleProps = {
+	darkModeActive?: boolean;
+	mediaQuery?: ComponentMediaQuery;
+	darkmodechanged?: (e: CustomEvent<boolean>) => void;
 }
 
 export type TodoProps = {
@@ -247,9 +270,13 @@ export const Person = wrapMgt<PersonProps>('person');
 
 export const PersonCard = wrapMgt<PersonCardProps>('person-card');
 
+export const Picker = wrapMgt<PickerProps>('picker');
+
 export const Tasks = wrapMgt<TasksProps>('tasks');
 
 export const TeamsChannelPicker = wrapMgt<TeamsChannelPickerProps>('teams-channel-picker');
+
+export const ThemeToggle = wrapMgt<ThemeToggleProps>('theme-toggle');
 
 export const Todo = wrapMgt<TodoProps>('todo');
 

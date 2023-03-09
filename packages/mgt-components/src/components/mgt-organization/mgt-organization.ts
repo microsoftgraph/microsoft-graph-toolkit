@@ -9,23 +9,23 @@ import { User } from '@microsoft/microsoft-graph-types';
 import { html, TemplateResult } from 'lit';
 
 import { BasePersonCardSection } from '../BasePersonCardSection';
-import { getSvg, SvgIcon } from '../../../../utils/SvgHelper';
-import { MgtPersonCardState, UserWithManager } from '../../mgt-person-card.types';
-import { styles } from './mgt-person-card-organization-css';
+import { getSvg, SvgIcon } from '../../utils/SvgHelper';
+import { MgtPersonCardState, UserWithManager } from '../mgt-person-card/mgt-person-card.types';
+import { styles } from './mgt-organization-css';
 import { strings } from './strings';
-import { ViewType } from '../../../../graph/types';
+import { ViewType } from '../../graph/types';
 import { mgtHtml, customElement } from '@microsoft/mgt-element';
 
 /**
  * The member organization subsection of the person card
  *
  * @export
- * @class MgtPersonCardProfile
+ * @class MgtOrganization
  * @extends {MgtTemplatedComponent}
  */
-@customElement('person-card-organization')
-// @customElement('mgt-person-card-organization')
-export class MgtPersonCardOrganization extends BasePersonCardSection {
+@customElement('organization')
+// @customElement('mgt-organization')
+export class MgtOrganization extends BasePersonCardSection {
   /**
    * Array of styles to apply to the element. The styles should be defined
    * using the `css` tag function.
@@ -71,7 +71,7 @@ export class MgtPersonCardOrganization extends BasePersonCardSection {
    *
    * @readonly
    * @type {string}
-   * @memberof MgtPersonCardOrganization
+   * @memberof MgtOrganization
    */
   public get displayName(): string {
     const { person, directReports } = this._state;
@@ -87,7 +87,7 @@ export class MgtPersonCardOrganization extends BasePersonCardSection {
    * Render the icon for display in the navigation ribbon.
    *
    * @returns {TemplateResult}
-   * @memberof MgtPersonCardOrganization
+   * @memberof MgtOrganization
    */
   public renderIcon(): TemplateResult {
     return getSvg(SvgIcon.Organization);
@@ -97,7 +97,7 @@ export class MgtPersonCardOrganization extends BasePersonCardSection {
    * Render the compact view
    *
    * @returns {TemplateResult}
-   * @memberof MgtPersonCardOrganization
+   * @memberof MgtOrganization
    */
   protected renderCompactView(): TemplateResult {
     let contentTemplate: TemplateResult;
@@ -117,10 +117,10 @@ export class MgtPersonCardOrganization extends BasePersonCardSection {
     }
 
     return html`
-       <div class="root compact">
-         ${contentTemplate}
-       </div>
-     `;
+        <div class="root compact">
+          ${contentTemplate}
+        </div>
+      `;
   }
 
   /**
@@ -128,7 +128,7 @@ export class MgtPersonCardOrganization extends BasePersonCardSection {
    *
    * @protected
    * @returns {TemplateResult}
-   * @memberof MgtPersonCardOrganization
+   * @memberof MgtOrganization
    */
   protected renderFullView(): TemplateResult {
     let contentTemplate: TemplateResult;
@@ -148,16 +148,16 @@ export class MgtPersonCardOrganization extends BasePersonCardSection {
       const coworkersTemplate = this.renderCoworkers();
 
       contentTemplate = html`
-         ${managerTemplates} ${currentUserTemplate} ${directReportsTemplate} ${coworkersTemplate}
-       `;
+          ${managerTemplates} ${currentUserTemplate} ${directReportsTemplate} ${coworkersTemplate}
+        `;
     }
 
     return html`
-      <div class="root" dir=${this.direction}>
-        <div class="title" tabindex="0">${this.strings.organizationSectionTitle}</div>
-        ${contentTemplate}
-      </div>
-    `;
+       <div class="root" dir=${this.direction}>
+         <div class="title" tabindex="0">${this.strings.organizationSectionTitle}</div>
+         ${contentTemplate}
+       </div>
+     `;
   }
 
   /**
@@ -166,7 +166,7 @@ export class MgtPersonCardOrganization extends BasePersonCardSection {
    * @protected
    * @param {User} person
    * @returns {TemplateResult}
-   * @memberof MgtPersonCardOrganization
+   * @memberof MgtOrganization
    */
   protected renderManager(person: User): TemplateResult {
     return mgtHtml`
@@ -190,7 +190,7 @@ export class MgtPersonCardOrganization extends BasePersonCardSection {
         </div>
       </div>
       <div class="org-member__separator"></div>
-    `;
+     `;
   }
 
   /**
@@ -198,7 +198,7 @@ export class MgtPersonCardOrganization extends BasePersonCardSection {
    *
    * @protected
    * @returns {TemplateResult}
-   * @memberof MgtPersonCardOrganization
+   * @memberof MgtOrganization
    */
   protected renderManagers(): TemplateResult[] {
     const { person } = this._state;
@@ -226,7 +226,7 @@ export class MgtPersonCardOrganization extends BasePersonCardSection {
    * @protected
    * @param {User} person
    * @returns {TemplateResult}
-   * @memberof MgtPersonCardOrganization
+   * @memberof MgtOrganization
    */
   protected renderDirectReports(): TemplateResult {
     const { directReports } = this._state;
@@ -262,7 +262,7 @@ export class MgtPersonCardOrganization extends BasePersonCardSection {
           `
         )}
       </div>
-    `;
+     `;
   }
 
   /**
@@ -271,7 +271,7 @@ export class MgtPersonCardOrganization extends BasePersonCardSection {
    * @protected
    * @param {User} person
    * @returns {TemplateResult}
-   * @memberof MgtPersonCardOrganization
+   * @memberof MgtOrganization
    */
   protected renderCompactDirectReports(): TemplateResult {
     const { directReports } = this._state;
@@ -305,23 +305,22 @@ export class MgtPersonCardOrganization extends BasePersonCardSection {
    *
    * @protected
    * @returns {TemplateResult}
-   * @memberof MgtPersonCardOrganization
+   * @memberof MgtOrganization
    */
   protected renderCurrentUser(): TemplateResult {
     const { person } = this._state;
     return mgtHtml`
-      <div class="org-member org-member--target">
-        <div class="org-member__person">
-          <mgt-person
-            class="person"
-            .personDetails=${person}
-            .fetchImage=${true}
-            .showPresence=${true}
-            .view=${ViewType.twolines}
-          ></mgt-person>
-        </div>
-      </div>
-    `;
+       <div class="org-member org-member--target">
+         <div class="org-member__person">
+           <mgt-person
+             .personDetails=${person}
+             .fetchImage=${true}
+             .showPresence=${true}
+             .view=${ViewType.twolines}
+           ></mgt-person>
+         </div>
+       </div>
+     `;
   }
 
   /**
@@ -330,13 +329,17 @@ export class MgtPersonCardOrganization extends BasePersonCardSection {
    * @protected
    * @param {User} person
    * @returns {TemplateResult}
-   * @memberof MgtPersonCardOrganization
+   * @memberof MgtOrganization
    */
   protected renderCoworker(person: User): TemplateResult {
     return mgtHtml`
-      <div class="coworker" @keydown=${(e: KeyboardEvent) => {
-        if (e.code === 'Enter' || e.code === ' ') this.navigateCard(person);
-      }} @click=${() => this.navigateCard(person)}>
+      <div
+        class="coworker"
+        @keydown=${(e: KeyboardEvent) => {
+          if (e.code === 'Enter' || e.code === ' ') this.navigateCard(person);
+        }}
+        @click=${() => this.navigateCard(person)}
+      >
         <div class="coworker__person">
           <mgt-person
             .personDetails=${person}
@@ -355,7 +358,7 @@ export class MgtPersonCardOrganization extends BasePersonCardSection {
    * @protected
    * @param {User} person
    * @returns {TemplateResult}
-   * @memberof MgtPersonCardOrganization
+   * @memberof MgtOrganization
    */
   protected renderCoworkers(): TemplateResult {
     const { people } = this._state;
@@ -369,11 +372,11 @@ export class MgtPersonCardOrganization extends BasePersonCardSection {
         : `${this._state.person.givenName} ${this.strings.userWorksWithSubSectionTitle}`;
 
     return html`
-      <div class="divider"></div>
-      <div class="subtitle" tabindex="0">${subtitle}</div>
-      <div>
-        ${people.slice(0, 6).map(person => this.renderCoworker(person))}
-      </div>
-    `;
+       <div class="divider"></div>
+       <div class="subtitle" tabindex="0">${subtitle}</div>
+       <div>
+         ${people.slice(0, 6).map(person => this.renderCoworker(person))}
+       </div>
+     `;
   }
 }

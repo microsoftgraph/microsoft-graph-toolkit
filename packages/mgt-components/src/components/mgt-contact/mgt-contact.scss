@@ -6,11 +6,9 @@
  */
 
 @import '../base-person-card-section.scss';
-@import '../../../../styles/shared-styles.scss';
-@import '../../../../styles/shared-sass-variables.scss';
-
-$person-card-contact-link-color: var(--person-card-contact-link-color, #{$commblue_primary});
-$person-card-contact-link-hover-color: var(--person-card-contact-link-hover-color, #004578);
+@import '../../styles/shared-styles.scss';
+@import '../../styles/shared-sass-variables.scss';
+@import './mgt-contact.theme.scss';
 
 :host {
   position: relative;
@@ -60,7 +58,7 @@ $person-card-contact-link-hover-color: var(--person-card-contact-link-hover-colo
           line-height: 19px;
 
           .part__link {
-            color: $person-card-contact-link-color;
+            color: set-var(person-card-contact-link-color, $theme-default, $contact-theme);
             font-family: $font-family;
             font-size: 14px;
             cursor: pointer;
@@ -71,7 +69,7 @@ $person-card-contact-link-hover-color: var(--person-card-contact-link-hover-colo
             display: inline-block;
 
             &:hover {
-              color: $person-card-contact-link-hover-color;
+              color: set-var(person-card-contact-link-hover-color, $theme-default, $contact-theme);
             }
           }
         }
