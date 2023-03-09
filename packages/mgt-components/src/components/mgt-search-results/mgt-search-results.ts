@@ -883,9 +883,9 @@ export class MgtSearchResults extends MgtTemplatedComponent {
 
     if (this.entityTypes.includes('externalItem')) {
       requestOptions.contentSources = this.contentSources;
-      requestOptions.resultTemplateOptions = {
+      /*requestOptions.resultTemplateOptions = {
         enableResultTemplate: true
-      };
+      };*/
     }
 
     if (this.version === 'beta') {
