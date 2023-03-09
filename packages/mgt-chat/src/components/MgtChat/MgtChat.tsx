@@ -1,10 +1,10 @@
 import React, { useEffect, useState } from 'react';
 import {
-  DEFAULT_COMPONENT_ICONS,
   ErrorBar,
   FluentThemeProvider,
   MessageThread,
-  SendBox
+  SendBox,
+  DEFAULT_COMPONENT_ICONS
 } from '@azure/communication-react';
 import { registerIcons } from '@fluentui/react';
 import { Person, PersonCardInteraction } from '@microsoft/mgt-react';
