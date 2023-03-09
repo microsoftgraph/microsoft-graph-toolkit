@@ -2,7 +2,7 @@ import addons, { makeDecorator } from '@storybook/addons';
 
 import { ProviderState } from '../../../packages/mgt-element/dist/es6/providers/IProvider';
 import { EditorElement } from './editor';
-import { CLIENTID, SETPROVIDER_EVENT } from '../../env';
+import { CLIENTID, SETPROVIDER_EVENT, AUTH_PAGE } from '../../env';
 
 const mgtScriptName = './mgt.storybook.js';
 
@@ -174,7 +174,8 @@ export const withCodeEditor = makeDecorator({
           import { Providers, Msal2Provider, LoginType } from "${mgtScriptName}";
           Providers.globalProvider = new Msal2Provider({
             clientId: "${CLIENTID}",
-            loginType: LoginType.Popup
+            loginType: LoginType.Popup,
+            redirectUri: "${window.location.origin}/${AUTH_PAGE}"
           });`;
       }
 
