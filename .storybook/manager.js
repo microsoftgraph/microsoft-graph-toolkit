@@ -13,7 +13,7 @@ import { useChannel } from '@storybook/api';
 import { Providers } from '../packages/mgt-element/dist/es6/providers/Providers';
 import { ProviderState, LoginType } from '../packages/mgt-element/dist/es6/providers/IProvider';
 import { Msal2Provider } from '../packages/providers/mgt-msal2-provider/dist/es6/Msal2Provider';
-import { CLIENTID, SETPROVIDER_EVENT } from './env';
+import { CLIENTID, SETPROVIDER_EVENT, AUTH_PAGE } from './env';
 import { MockProvider } from '@microsoft/mgt-element';
 import { PACKAGE_VERSION } from '../packages/mgt-element/dist/es6/utils/version';
 import '../packages/mgt-components/dist/es6/components/mgt-login/mgt-login';
@@ -38,7 +38,7 @@ document.getElementById('mgt-version').innerText = PACKAGE_VERSION;
 const mockProvider = new MockProvider(true);
 const msal2Provider = new Msal2Provider({
   clientId: getClientId(),
-  redirectUri: window.location.href.replace(window.location.search, '') + 'blank.html',
+  redirectUri: window.location.href.replace(window.location.search, '') + AUTH_PAGE,
   scopes: [
     // capitalize all words in the scope
     'user.read',
