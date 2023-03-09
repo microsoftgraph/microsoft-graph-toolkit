@@ -98,6 +98,7 @@
     "@web/dev-server": "^0.1.10",
     "@webcomponents/webcomponentsjs": "^2.5.0",
     "adaptivecards": "2.10.0",
+    "adaptivecards-templating": "2.2.0",
     "babel-loader": "^8.2.1",
     "core-js": "^3.7.0",
     "cpx": "^1.5.0",

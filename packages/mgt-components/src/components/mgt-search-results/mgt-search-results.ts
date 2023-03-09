@@ -29,8 +29,13 @@ import { getNameFromUrl, getRelativeDisplayDate, sanitizeSummary, trimFileExtens
 import { getSvg, SvgIcon } from '../../utils/SvgHelper';
 import { fluentSkeleton, fluentButton, fluentTooltip } from '@fluentui/web-components';
 import { registerFluentComponents } from '../../utils/FluentComponents';
-import * as AdaptiveCards from 'adaptivecards';
+//import * as AdaptiveCards from 'adaptivecards';
 //import * as ACData from 'adaptivecards-templating';
+
+/* @ts-ignore */
+const AdaptiveCards = window.AdaptiveCards;
+/* @ts-ignore */
+const ACData = window.ACData;
 
 registerFluentComponents(fluentSkeleton, fluentButton, fluentTooltip);
 
@@ -820,13 +825,16 @@ export class MgtSearchResults extends MgtTemplatedComponent {
     var adaptiveCard = new AdaptiveCards.AdaptiveCard();
 
     if (result.resultTemplateId) {
-      /*var template = new ACData.Template(this.response.value[0].resultTemplates[result.resultTemplateId]);
-      var card = template.expand(resource);
+      const resultTemplate = this.response.value[0].resultTemplates[result.resultTemplateId].body;
+      var template = new ACData.Template(resultTemplate);
+      var card = template.expand({
+        $root: resource.properties
+      });
       adaptiveCard.parse(card);
       var renderedCard = adaptiveCard.render();
       return html`
         <div .innerHTML="${renderedCard.outerHTML}"> </div>
-        `;*/
+        `;
     } else {
       return mgtHtml`
           <div class="search-result-grid">

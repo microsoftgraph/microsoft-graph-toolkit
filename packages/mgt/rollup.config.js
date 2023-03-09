@@ -1,6 +1,6 @@
 import resolve from 'rollup-plugin-node-resolve';
 import babel from 'rollup-plugin-babel';
-import commonJS from 'rollup-plugin-commonjs';
+import commonjs from 'rollup-plugin-commonjs';
 import postcss from 'rollup-plugin-postcss';
 import { terser } from 'rollup-plugin-terser';
 import json from 'rollup-plugin-json';
@@ -20,14 +20,15 @@ const getBabelConfig = isEs5 => {
       'node_modules/lit-html/**/*',
       'node_modules/@microsoft/microsoft-graph-client/lib/es/**/*',
       'node_modules/msal/lib-es6/**/*',
-      'node_modules/adaptivecards/**/*'
+      'node_modules/adaptivecards/**/*',
+      'node_modules/adaptivecards-templating/**/*'
     ]
   };
 };
 
 const commonPlugins = [
   json(),
-  commonJS(),
+  commonjs(),
   resolve({ module: true, jsnext: true, extensions }),
   postcss(),
   terser({ keep_classnames: true, keep_fnames: true })
