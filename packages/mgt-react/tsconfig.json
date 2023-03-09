@@ -3,7 +3,8 @@
   "compilerOptions": {
     "outDir": "dist/es6",
     "rootDir": "src",
-    "baseUrl": "./"
+    "baseUrl": "./",
+    "composite": true
   },
   "include": ["src/**/*"],
   "exclude": ["node_modules"],

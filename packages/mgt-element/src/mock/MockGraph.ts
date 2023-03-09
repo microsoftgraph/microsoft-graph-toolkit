@@ -63,7 +63,7 @@ export class MockGraph extends Graph {
    * @returns
    * @memberof Graph
    */
-  public forComponent(component: MgtBaseComponent): MockGraph {
+  public forComponent(component: MgtBaseComponent | string): MockGraph {
     // The purpose of the forComponent pattern is to update the headers of any outgoing Graph requests.
     // The MockGraph isn't making real Graph requests, so we can simply no-op and return the same instance.
     return this;

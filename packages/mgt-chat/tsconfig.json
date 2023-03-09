@@ -1,0 +1,20 @@
+{
+  "extends": "../../tsconfig.base.json",
+  "compilerOptions": {
+    "module": "esnext",
+    "target": "esnext",
+    "outDir": "dist/es6",
+    "rootDir": "src",
+    "baseUrl": "./",
+    "strict": true,
+    "sourceMap": true,
+    "jsx": "react"
+  },
+  "include": ["src/**/*"],
+  "exclude": ["node_modules"],
+  "references": [
+    { "path": "../mgt-element" },
+    { "path": "../mgt-react" },
+    { "path": "../providers/mgt-msal2-provider" }
+  ]
+}
