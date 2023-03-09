@@ -33,9 +33,9 @@ import { registerFluentComponents } from '../../utils/FluentComponents';
 //import * as ACData from 'adaptivecards-templating';
 
 /* @ts-ignore */
-const AdaptiveCards = window.AdaptiveCards;
+//const AdaptiveCards = window.AdaptiveCards;
 /* @ts-ignore */
-const ACData = window.ACData;
+//const ACData = window.ACData;
 
 registerFluentComponents(fluentSkeleton, fluentButton, fluentTooltip);
 
@@ -444,7 +444,7 @@ export class MgtSearchResults extends MgtTemplatedComponent {
             for (let i = 0; i < response.value[0].hitsContainers[0].hits.length; i++) {
               const element = response.value[0].hitsContainers[0].hits[i];
               if (
-                (element.resource.size > 0 || element.resource.webUrl.endsWith('.aspx')) &&
+                (element.resource.size > 0 || element.resource.webUrl?.endsWith('.aspx')) &&
                 (element.resource['@odata.type'] == '#microsoft.graph.driveItem' ||
                   element.resource['@odata.type'] == '#microsoft.graph.listItem')
               ) {
@@ -819,7 +819,7 @@ export class MgtSearchResults extends MgtTemplatedComponent {
   }
 
   private renderExternalItem(result: SearchHit): HTMLTemplateResult {
-    let resource: any = result.resource as any;
+    /*let resource: any = result.resource as any;
 
     // Create an AdaptiveCard instance
     var adaptiveCard = new AdaptiveCards.AdaptiveCard();
@@ -845,7 +845,8 @@ export class MgtSearchResults extends MgtTemplatedComponent {
             </div>  
           </div>          
           <hr class="search-result-separator" />`;
-    }
+    }*/
+    return html``;
   }
 
   private renderDefault(result: SearchHit): HTMLTemplateResult {
