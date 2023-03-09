@@ -36,6 +36,7 @@ export const graphChatMessageToACSChatMessage = (
     createdOn: new Date(graphMessage.createdDateTime ?? Date.now()),
     senderId,
     mine: senderId === currentUser,
-    status: 'seen'
+    status: 'seen',
+    attached: 'top' // this ensures that the user's avatar is shown on messages
   };
 };

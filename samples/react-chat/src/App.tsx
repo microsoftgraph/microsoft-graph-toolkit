@@ -23,7 +23,12 @@ function App() {
         <Get resource="me/chats?$expand=members" scopes={['chat.read']} cacheEnabled={true}>
           <ChatListTemplate template="default" onSelected={chatSelected} />
         </Get>
-        {chatId && <MgtChat chatId={chatId} />}
+        {chatId && (
+          <>
+            Rendering chat: {chatId}
+            <MgtChat chatId={chatId} />
+          </>
+        )}
       </header>
     </div>
   );
