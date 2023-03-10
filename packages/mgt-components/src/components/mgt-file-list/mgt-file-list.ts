@@ -655,7 +655,7 @@ export class MgtFileList extends MgtTemplatedComponent {
             tabindex="0"
             class="file-item"
             @keydown="${this.onFileListKeyDown}"
-            @focus="${this.onFileListKeyUp}"
+            @focus="${this.onFocusFirstItem}"
             @click=${(e: UIEvent) => this.handleItemSelect(this.files[0], e)}>
             ${this.renderFile(this.files[0])}
           </li>
@@ -760,15 +760,11 @@ export class MgtFileList extends MgtTemplatedComponent {
   }
 
   /**
-   * Handles keyup presses events.
-   *
-   * @param event
+   * Handles setting the focusedItemIndex to 0 when you focus on the first item
+   * in the file list.
+   * @returns void
    */
-  private onFileListKeyUp(event: KeyboardEvent): void {
-    if (event.code === 'Tab') {
-      this._focusedItemIndex = 0;
-    }
-  }
+  private onFocusFirstItem = () => (this._focusedItemIndex = 0);
 
   /**
    * Handle accessibility keyboard keydown events (arrow up, arrow down, enter, tab) on file list
@@ -791,6 +787,7 @@ export class MgtFileList extends MgtTemplatedComponent {
         this._focusedItemIndex = (this._focusedItemIndex - 1 + fileList.children.length) % fileList.children.length;
       }
       if (event.code === 'ArrowDown') {
+        console.log(this._focusedItemIndex);
         this._focusedItemIndex = (this._focusedItemIndex + 1) % fileList.children.length;
       }
 
