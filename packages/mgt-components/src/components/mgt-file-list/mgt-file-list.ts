@@ -655,7 +655,7 @@ export class MgtFileList extends MgtTemplatedComponent {
             tabindex="0"
             class="file-item"
             @keydown="${this.onFileListKeyDown}"
-            @keyup="${this.onFileListKeyUp}"
+            @focus="${this.onFileListKeyUp}"
             @click=${(e: UIEvent) => this.handleItemSelect(this.files[0], e)}>
             ${this.renderFile(this.files[0])}
           </li>
@@ -765,12 +765,8 @@ export class MgtFileList extends MgtTemplatedComponent {
    * @param event
    */
   private onFileListKeyUp(event: KeyboardEvent): void {
-    const fileList = this.renderRoot.querySelector('.file-list');
-
     if (event.code === 'Tab') {
-      if (this._focusedItemIndex === -1) {
-        this._focusedItemIndex = fileList?.children.length;
-      }
+      this._focusedItemIndex = 0;
     }
   }
 
