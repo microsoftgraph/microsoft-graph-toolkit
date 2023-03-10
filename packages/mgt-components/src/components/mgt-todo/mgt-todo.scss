@@ -15,7 +15,7 @@
     @extend .Task;
     width: auto;
     &.NewTask {
-      margin: 0;
+      margin: 14px 0 0 0;
     }
     &.Complete {
       text-decoration: line-through;
@@ -44,12 +44,11 @@
       width: 600px;
     }
     .TaskDelete {
-      display: block;
+      display: flex;
     }
     .TaskDue {
       width: 111px;
       height: 32px;
-      margin-inline-end: 20px;
       text-decoration: inherit;
       display: flex;
 
@@ -93,12 +92,13 @@
   }
 }
 
-:host fluent-text-field#new-taskName-input.outline::part(start) {
-  margin-inline-start: unset;
+:host fluent-text-field#new-taskName-input.outline::part(start),
+:host fluent-text-field#new-taskName-input.outline::part(end) {
+  margin-inline: unset;
 }
 
-:host fluent-text-field#new-taskName-input.outline::part(end) {
-  margin-inline-end: unset;
+:host fluent-text-field#new-taskName-input.outline::part(control) {
+  padding: 0;
 }
 
 :host fluent-button.TaskDelete.neutral::part(control),
@@ -117,6 +117,9 @@
 
 :host fluent-radio.Task::part(control) {
   margin-inline-start: 10px;
+}
+:host fluent-radio.Task::part(label) {
+  margin-inline-end: unset;
 }
 
 :host fluent-button.TaskDelete.neutral svg,
