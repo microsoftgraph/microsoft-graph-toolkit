@@ -297,7 +297,7 @@ export class MgtLogin extends MgtTemplatedComponent {
     const isSignedIn = Providers.globalProvider?.state === ProviderState.SignedIn;
     const ariaLabel = this.buildAriaLabel(isSignedIn, this.strings.signInLinkSubtitle);
     const loginClasses = classMap({
-      'signed-in': isSignedIn && this.userDetails,
+      'signed-in': isSignedIn && this.userDetails !== null,
       'signed-out': !isSignedIn,
       small: this.loginView === 'avatar'
     });
