@@ -84,6 +84,9 @@ $progress-ring-size: var(--progress-ring-size, 24px);
         --file-padding: 10px 8px 10px 8px;
         --file-padding-inline-start: 24px;
         --file-border-radius: 2px;
+        --file-background-color: var(--neutral-layer-1)
+        --file-background-color-focus: var(--neutral-layer-2);
+        --file-background-color-hover: var(--neutral-layer-2);
       }
     }
   }
