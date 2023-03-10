@@ -6,7 +6,8 @@
  */
 
 import { AuthenticationHandlerOptions, Middleware } from '@microsoft/microsoft-graph-client';
-import { GraphEndpoint, MICROSOFT_GRAPH_ENDPOINTS, Providers } from '..';
+import { Providers } from '../providers/Providers';
+import { GraphEndpoint, MICROSOFT_GRAPH_ENDPOINTS } from '../IGraph';
 
 /**
  * creates an AuthenticationHandlerOptions from scopes array that
