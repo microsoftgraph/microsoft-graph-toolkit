@@ -36,8 +36,8 @@ jobs:
         if: steps.cache-node-modules.outputs.cache-hit != 'true'
         run: yarn
       - run: node scripts/setVersion.js --next
-      - run: yarn lint
       - run: yarn build
+      - run: yarn lint
       - run: yarn test
       - name: Archive test results
         uses: actions/upload-artifact@v2 # upload test results
