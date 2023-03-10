@@ -9,10 +9,21 @@ import { MgtTemplatedComponent, mgtHtml } from '@microsoft/mgt-element';
 import { html, TemplateResult } from 'lit';
 import { property } from 'lit/decorators.js';
 
-import { IDynamicPerson } from '../../../graph/types';
-import { MgtPersonCard } from '../mgt-person-card';
+import { IDynamicPerson } from '../graph/types';
+import { MgtPersonCard } from './mgt-person-card/mgt-person-card';
 
-import '../../sub-components/mgt-spinner/mgt-spinner';
+import './sub-components/mgt-spinner/mgt-spinner';
+
+/**
+ * Defines the interface for a person card section.
+ * This allows us to avoid forced inheritance and allow for more flexibility in the future.
+ */
+export interface CardSection {
+  tagName: string;
+  asCompactView(): CardSection;
+  asFullView(): CardSection;
+  renderIcon(): TemplateResult;
+}
 
 /**
  * A base class for building person card subsections.
@@ -21,7 +32,7 @@ import '../../sub-components/mgt-spinner/mgt-spinner';
  * @class BasePersonCardSection
  * @extends {MgtTemplatedComponent}
  */
-export abstract class BasePersonCardSection extends MgtTemplatedComponent {
+export abstract class BasePersonCardSection extends MgtTemplatedComponent implements CardSection {
   /**
    * Set the person details to render
    *
@@ -114,7 +125,7 @@ export abstract class BasePersonCardSection extends MgtTemplatedComponent {
    * @abstract
    * @memberof BasePersonCardSection
    */
-  public clearState(): void {
+  protected clearState(): void {
     this._isCompact = false;
     this._personDetails = null;
   }

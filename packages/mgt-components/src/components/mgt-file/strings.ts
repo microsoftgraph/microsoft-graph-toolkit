@@ -7,5 +7,6 @@
 
 export const strings = {
   modifiedSubtitle: 'Modified',
-  sizeSubtitle: 'Size'
+  sizeSubtitle: 'Size',
+  filesSectionTitle: 'Files'
 };

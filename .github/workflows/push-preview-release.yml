@@ -1,11 +1,10 @@
 # This workflow will do a clean install of node dependencies, build the source code and run tests across different versions of node
 # For more information see: https://help.github.com/actions/language-and-framework-guides/using-nodejs-with-github-actions
 
-name: Release latest
-
+name: Create Preview release
 on:
   push:
-    branches: [release/latest]
+    tags: ['v3.*-preview.*']
 
 jobs:
   version:
@@ -42,7 +41,7 @@ jobs:
     if: needs.version.outputs.latest-version != needs.version.outputs.package-version
     strategy:
       matrix:
-        node-version: [14.x]
+        node-version: [16.x]
 
     environment:
       name: release
@@ -68,47 +67,18 @@ jobs:
         run: yarn build
 
       - name: Publish npm packages
-        run: lerna exec --scope @microsoft/* -- "npm publish --access=public"
+        run: lerna exec --scope @microsoft/* -- "npm publish --tag preview --access=public"
         env:
           NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
 
       - name: Attach mgt-spfx solution to GitHub release
         run: node scripts/uploadSpfxSolution.js ${{secrets.GITHUB_TOKEN}} ${{needs.version.outputs.package-version}}
 
-      - name: Notify TeamsFx Repo
-        uses: peter-evans/repository-dispatch@v2
-        with:
-          token: ${{ secrets.TEAMSFX_REPO_ACCESS_TOKEN }}
-          repository: OfficeDev/TeamsFx
-          event-type: graph-toolkit-released
-          client-payload: '{"version": "${{ needs.version.outputs.package-version }}"}'
-
-  storybook:
-    runs-on: ubuntu-latest
-
-    strategy:
-      matrix:
-        node-version: [14.x]
-
-    steps:
-      - uses: actions/checkout@v2
-      - name: Use Node.js ${{ matrix.node-version }}
-        uses: actions/setup-node@v1
-        with:
-          node-version: ${{ matrix.node-version }}
-          registry-url: 'https://registry.npmjs.org'
-
-      - name: Build 🛠
-        run: |
-          npm install -g yarn lerna
-          yarn
-          yarn build
-          yarn storybook:build
-
-      - name: Deploy mgt.dev 🚀
-        uses: JamesIves/github-pages-deploy-action@v4.4.1
-        with:
-          branch: gh-pages
-          folder: storybook-static
-          target-folder: .
-          clean-exclude: next
+      - name: ReleaseNotes
+        uses: anton-yurchenko/git-release@v5.0
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          DRAFT_RELEASE: 'true'
+          PRE_RELEASE: 'true'
+          CHANGELOG_FILE: 'CHANGELOG.md'
+          ALLOW_EMPTY_CHANGELOG: 'true'

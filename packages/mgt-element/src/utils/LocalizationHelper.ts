@@ -51,15 +51,15 @@ export class LocalizationHelper {
    * @memberof LocalizationHelper
    */
   public static getDocumentDirection(): Direction {
-    const fromDocument = document.body?.getAttribute('dir') || document.documentElement?.getAttribute('dir');
+    const fromDocument = document.body?.getAttribute('dir') || document.documentElement?.getAttribute('dir') || 'ltr';
     switch (fromDocument) {
       case 'rtl':
         return 'rtl';
-      case 'ltr':
-        return 'ltr';
       case 'auto':
-      default:
         return 'auto';
+      case 'ltr':
+      default:
+        return 'ltr';
     }
   }
 

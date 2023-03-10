@@ -30,6 +30,7 @@ import {
   getUserInsightsFiles
 } from '../../graph/graph.files';
 import './mgt-file-upload/mgt-file-upload';
+import { getSvg, SvgIcon } from '../../utils/SvgHelper';
 import { ViewType } from '../../graph/types';
 import { styles } from './mgt-file-list-css';
 import { strings } from './strings';
@@ -46,6 +47,7 @@ import {
 import { registerFluentComponents } from '../../utils/FluentComponents';
 import '../mgt-menu/mgt-menu';
 import { MgtFileListBase } from './mgt-file-list-base';
+import { CardSection } from '../BasePersonCardSection';
 
 registerFluentComponents(
   fluentProgressRing,
@@ -62,7 +64,6 @@ registerFluentComponents(
  *
  * @export
  * @class MgtFileList
- * @extends {MgtTemplatedComponent}
  *
  * @fires {CustomEvent<MicrosoftGraph.DriveItem>} itemClick - Fired when user click a file. Returns the file (DriveItem) details.
  * @fires {CustomEvent<MicrosoftGraph.DriveItem[]>} selectionChanged - Fired when user select a file. Returns the selected files (DriveItem) details.
@@ -101,7 +102,8 @@ registerFluentComponents(
 
 // tslint:disable-next-line: max-classes-per-file
 @customElement('file-list')
-export class MgtFileList extends MgtFileListBase {
+export class MgtFileList extends MgtFileListBase implements CardSection {
+  private _isCompact = false;
   /**
    * Array of styles to apply to the element. The styles should be defined
    * using the `css` tag function.
@@ -154,6 +156,27 @@ export class MgtFileList extends MgtFileListBase {
   }
 
   /**
+   * The name for display in the overview section.
+   *
+   * @readonly
+   * @type {string}
+   * @memberof MgtFileList
+   */
+  public get displayName(): string {
+    return this.strings.filesSectionTitle;
+  }
+
+  /**
+   * Render the icon for display in the navigation ribbon.
+   *
+   * @returns {TemplateResult}
+   * @memberof MgtFileList
+   */
+  public renderIcon(): TemplateResult {
+    return getSvg(SvgIcon.Files);
+  }
+
+  /**
    * Override requestStateUpdate to include clearstate.
    *
    * @memberof MgtFileList
@@ -171,8 +194,33 @@ export class MgtFileList extends MgtFileListBase {
   protected clearState(): void {
     super.clearState();
     this.files = null;
+    this._isCompact = false;
     this._selectedFiles = new Map();
     this.fireCustomEvent('selectionChanged', []);
+  }
+
+  /**
+   * Set the section to compact view mode
+   *
+   * @returns
+   * @memberof BasePersonCardSection
+   */
+  public asCompactView() {
+    this._isCompact = true;
+    this.requestUpdate();
+    return this;
+  }
+
+  /**
+   * Set the section to full view mode
+   *
+   * @returns
+   * @memberof BasePersonCardSection
+   */
+  public asFullView() {
+    this._isCompact = false;
+    this.requestUpdate();
+    return this;
   }
 
   /**
@@ -190,7 +238,37 @@ export class MgtFileList extends MgtFileListBase {
       return this.renderNoData();
     }
 
+    return this._isCompact ? this.renderCompactView() : this.renderFullView();
+  }
+
+  /**
+   * Render the full view
+   *
+   * @return {*}  {TemplateResult}
+   * @memberof MgtFileList
+   */
+  public renderFullView(): TemplateResult {
     return this.renderTemplate('default', { files: this.files }) || this.renderFiles();
+  }
+
+  /**
+   * Render the compact view
+   *
+   * @returns {TemplateResult}
+   * @memberof MgtFileList
+   */
+  public renderCompactView(): TemplateResult {
+    let contentTemplate: TemplateResult;
+    let files = this.files.slice(0, 3);
+    contentTemplate = html`
+      ${files.map(file => this.renderFile(file))}
+    `;
+
+    return html`
+      <div class="root compact" dir=${this.direction}>
+        ${contentTemplate}
+      </div>
+    `;
   }
 
   /**
@@ -238,6 +316,7 @@ export class MgtFileList extends MgtFileListBase {
     return html`
       <div id="file-list-wrapper" class="file-list-wrapper" dir=${this.direction}>
         ${this.enableFileUpload ? this.renderFileUpload() : null}
+        <div class="title">${this.strings.filesSectionTitle}</div>
         <ul
           id="file-list"
           class="file-list"
@@ -545,6 +624,7 @@ export class MgtFileList extends MgtFileListBase {
    */
   protected handleItemSelect(item: DriveItem, event: MouseEvent): void {
     event?.stopPropagation();
+    this.handleFileClick(item);
     this.raiseItemClickedEvent(item);
 
     // handle accessibility updates when item clicked
@@ -609,6 +689,12 @@ export class MgtFileList extends MgtFileListBase {
     }
 
     this.requestUpdate();
+  }
+
+  private handleFileClick(file: DriveItem) {
+    if (file && file.webUrl) {
+      window.open(file.webUrl, '_blank', 'noreferrer');
+    }
   }
 
   /**

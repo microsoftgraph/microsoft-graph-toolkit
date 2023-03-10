@@ -10,6 +10,7 @@ import { state } from 'lit/decorators.js';
 import { ProviderState } from '../providers/IProvider';
 import { Providers } from '../providers/Providers';
 import { Direction, LocalizationHelper } from '../utils/LocalizationHelper';
+import { PACKAGE_VERSION } from '../utils/version';
 
 /**
  * Defines media query based on component width
@@ -43,6 +44,10 @@ export enum ComponentMediaQuery {
  * @extends {LitElement}
  */
 export abstract class MgtBaseComponent extends LitElement {
+  public static get version() {
+    return PACKAGE_VERSION;
+  }
+
   /**
    * Gets or sets the direction of the component
    *

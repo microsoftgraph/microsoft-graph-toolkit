@@ -20,7 +20,9 @@ const tags = new Set([
   'file',
   'file-list',
   'file-grid',
-  'file-list-composite'
+  'file-list-composite',
+  'picker',
+  'theme-toggle'
 ]);
 
 let output = '';

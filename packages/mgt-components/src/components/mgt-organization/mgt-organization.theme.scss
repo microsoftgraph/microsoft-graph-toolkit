@@ -5,7 +5,14 @@
  * -------------------------------------------------------------------------------------------
  */
 
-// THIS FILE IS AUTO GENERATED
-// ANY CHANGES WILL BE LOST DURING BUILD
+@import '../../styles/shared-sass-variables.scss';
 
-export const PACKAGE_VERSION = '3.0.0-preview.1';
+$organization-section-theme: (
+  active-org-member-color: (
+    _var: --person-card-active-org-member-color,
+    light: $commblue_primary,
+    dark: $white
+  )
+);
+
+@include create-themes($organization-section-theme);

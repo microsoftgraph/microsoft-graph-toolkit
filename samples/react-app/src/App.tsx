@@ -1,4 +1,4 @@
-import React, { Component, useRef } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import {
   Login,
   Agenda,
@@ -9,54 +9,80 @@ import {
   MgtTemplateProps,
   Get,
   Todo,
-  People,
   TeamsChannelPicker
 } from '@microsoft/mgt-react';
 import * as MicrosoftGraph from '@microsoft/microsoft-graph-types';
 import { MgtPerson } from '@microsoft/mgt-components';
 
-class App extends Component {
-  handleTemplateRendered = (e: Event) => {
+const personDetails = {
+  displayName: 'Nikola Metulev',
+  mail: 'nikola@test.com'
+};
+function sleep(ms: number) {
+  return new Promise((resolve) => setTimeout(resolve, ms));
+}
+
+const App = () => {
+  const [userIds, setUserIds] = useState<any[]>([]);
+
+  useEffect(() => {
+    const load = async () => {
+      await sleep(2500);
+
+      const ids = [];
+      ids.push('87d349ed-44d7-43e1-9a83-5f2406dee5bd');
+      ids.push('5bde3e51-d13b-4db1-9948-fe4b109d11a7');
+      ids.push('AlexW@M365x214355.onmicrosoft.com');
+      setUserIds(ids);
+    };
+    void load();
+  }, []);
+
+  const handleTemplateRendered = (e: Event) => {
     console.log('Event Rendered: ', e);
   };
 
-  render() {
-    const personDetails = {
-      displayName: 'Nikola Metulev',
-      mail: 'nikola@test.com'
-    };
+  const handleSelectionChanged = (e: any) => {
+    // setSelectedPeople(e.detail);
+    console.log('e.detail: ', e.detail);
+  };
 
-    return (
-      <div className='App'>
-        <Login loginCompleted={() => console.log('login completed')} />
-        <Agenda groupByDay templateRendered={this.handleTemplateRendered}>
-          <MyEvent template='event' />
-        </Agenda>
+  return (
+    <div className='App'>
+      <Login loginCompleted={() => console.log('login completed')} />
 
-        <Person
-          personDetails={personDetails}
-          view={PersonViewType.twolines}
-          className='my-class'
-          onClick={() => console.log('person clicked')}
-          line2clicked={() => console.log('line1 clicked')}
-        />
+      <Agenda groupByDay templateRendered={handleTemplateRendered}>
+        <MyEvent template='event' />
+      </Agenda>
 
-        <PeoplePicker type={PersonType.any} />
+      <Person
+        personDetails={personDetails}
+        view={PersonViewType.twolines}
+        className='my-class'
+        onClick={() => console.log('person clicked')}
+        line2clicked={() => console.log('line1 clicked')}
+      />
 
-        <Todo />
+      <PeoplePicker
+        type={PersonType.person}
+        selectionMode='multiple'
+        defaultSelectedUserIds={userIds}
+        selectionChanged={handleSelectionChanged}
+      />
 
-        <TeamsChannelPicker />
+      <Todo />
 
-        <Get resource='/me'>
-          <MyTemplate />
-        </Get>
+      <TeamsChannelPicker />
 
-        <Get resource='/me/messages' scopes={['mail.read']} maxPages={2}>
-          <MyMessage template='value' />
-        </Get>
-      </div>
-    );
-  }
+      <Get resource='/me'>
+        <MyTemplate />
+      </Get>
+
+      <Get resource='/me/messages' scopes={['mail.read']} maxPages={2}>
+        <MyMessage template='value' />
+      </Get>
+    </div>
+  );
 }
 
 const MyEvent = (props: MgtTemplateProps) => {

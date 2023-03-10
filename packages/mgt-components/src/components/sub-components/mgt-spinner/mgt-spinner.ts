@@ -34,8 +34,6 @@ export class MgtSpinner extends MgtBaseComponent {
    * @memberof MgtSpinner
    */
   public render() {
-    return html`
-      <div class="spinner" title="spinner"></div>
-    `;
+    return html`<fluent-progress-ring title="spinner"></fluent-progress-ring>`;
   }
 }
