@@ -22,6 +22,10 @@ export const BreadcrumbRootName = () => html`
   <mgt-file-list-composite breadcrumb-root-name="Drive"></mgt-file-list-composite>
 `;
 
+export const UseGridView = () => html`
+  <mgt-file-list-composite breadcrumb-root-name="Drive" use-grid-view></mgt-file-list-composite>
+`;
+
 export const events = () => html`
 <mgt-file-list-composite></mgt-file-list-composite>
 <script>
