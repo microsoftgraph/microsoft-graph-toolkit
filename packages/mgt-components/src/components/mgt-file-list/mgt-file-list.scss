@@ -20,24 +20,29 @@ $file-list-box-shadow: var(
 );
 $file-list-border: var(--file-list-border, none);
 $file-item-border-radius: var(--file-item-border-radius, 2px);
-$file-item-margin: var(--file-item-margin, 0 4px);
+$file-item-margin: var(--file-item-margin, 0 4px 0 4px);
 $show-more-button-font-size: var(--show-more-button-font-size, 12px);
 $show-more-button-padding: var(--show-more-button-padding, 6px);
 $show-more-button-border-bottom-right-radius: var(--show-more-button-border-bottom-right-radius, 8px);
 $show-more-button-border-bottom-left-radius: var(--show-more-button-border-bottom-left-radius, 8px);
-$show-more-button-background-color: var(
-  --show-more-button-background-color,
-  set-var(background-color__sub2, $theme-default, $common)
-);
-$show-more-button-background-color--hover: var(
-  --show-more-button-background-color--hover,
-  $file-item-background-color--hover
-);
+$show-more-button-background-color--hover: var(--show-more-button-background-color--hover, $show_more_button_hover);
 $progress-ring-size: var(--progress-ring-size, 24px);
 
 :host {
   font-family: $font-family;
   font-size: $font-size;
+
+  .title {
+    font-size: 14px;
+    font-weight: 600;
+    color: set-var(title__color__subtitle, $theme-default, $common);
+    padding: 20px 0 12px;
+    line-height: 19px;
+  }
+}
+
+:host .root {
+  padding-inline-start: 20px;
 }
 
 :host .file-list-wrapper {
@@ -50,6 +55,12 @@ $progress-ring-size: var(--progress-ring-size, 24px);
   display: flex;
   flex-direction: column;
   border-radius: 8px;
+  .title {
+    font-size: 14px;
+    font-weight: 600;
+    color: set-var(title__color__subtitle, $theme-default, $common);
+    margin: 0 20px -15px 20px;
+  }
 
   .file-list {
     display: flex;
@@ -64,6 +75,9 @@ $progress-ring-size: var(--progress-ring-size, 24px);
       border-right: var(--file-item-border-right, none);
       border-bottom: var(--file-item-border-bottom, none);
       margin: $file-item-margin;
+      padding-inline-start: var(--file-item-padding-inline-start, 24px);
+      padding-top: var(--file-item-padding-top, 10px);
+      padding-bottom: var(--file-item-padding-bottom, 8px);
       border-radius: $file-item-border-radius;
       cursor: pointer;
 
@@ -74,7 +88,6 @@ $progress-ring-size: var(--progress-ring-size, 24px);
       &:hover,
       &.focused {
         background-color: $file-item-background-color--hover;
-        border-radius: 4px;
 
         .mgt-file-item {
           --file-background-color: $file-item-background-color--hover;
@@ -105,7 +118,6 @@ $progress-ring-size: var(--progress-ring-size, 24px);
     border-bottom-right-radius: $show-more-button-border-bottom-right-radius;
     border-bottom-left-radius: $show-more-button-border-bottom-left-radius;
     cursor: pointer;
-    background-color: $show-more-button-background-color;
 
     &:hover {
       background-color: $show-more-button-background-color--hover;

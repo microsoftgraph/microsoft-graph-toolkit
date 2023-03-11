@@ -1,0 +1,18 @@
+/**
+ * -------------------------------------------------------------------------------------------
+ * Copyright (c) Microsoft Corporation.  All Rights Reserved.  Licensed under the MIT License.
+ * See License in the project root for license information.
+ * -------------------------------------------------------------------------------------------
+ */
+
+@import '../../styles/shared-sass-variables.scss';
+
+$organization-section-theme: (
+  active-org-member-color: (
+    _var: --person-card-active-org-member-color,
+    light: $commblue_primary,
+    dark: $white
+  )
+);
+
+@include create-themes($organization-section-theme);
