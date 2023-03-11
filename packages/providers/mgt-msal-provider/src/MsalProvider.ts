@@ -181,7 +181,7 @@ export class MsalProvider extends IProvider {
 
   constructor(config: MsalConfig | MsalUserAgentApplicationConfig) {
     super();
-    void this.initProvider(config);
+    this.initProvider(config);
   }
 
   /**
@@ -406,7 +406,7 @@ export class MsalProvider extends IProvider {
     return false;
   }
 
-  private async initProvider(config: MsalConfig | MsalUserAgentApplicationConfig) {
+  private initProvider(config: MsalConfig | MsalUserAgentApplicationConfig) {
     this.scopes = typeof config.scopes !== 'undefined' ? config.scopes : ['user.read'];
     this._loginType = typeof config.loginType !== 'undefined' ? config.loginType : LoginType.Redirect;
     this._loginHint = config.loginHint;
@@ -468,7 +468,7 @@ export class MsalProvider extends IProvider {
 
     this.graph = createFromProvider(this);
 
-    await this.trySilentSignIn();
+    void this.trySilentSignIn();
   }
 
   private tokenReceivedCallback(response: AuthResponse) {
