@@ -45,7 +45,7 @@ $person-line4-text-line-height: var(--person-line4-text-line-height, 16px);
   mgt-flyout {
     [slot='anchor'] {
       display: flex;
-      margin-inline-start: $person-details-spacing;
+      // margin-inline-start: $person-details-spacing;
 
       &.vertical {
         flex-direction: column;
@@ -142,6 +142,7 @@ $person-line4-text-line-height: var(--person-line4-text-line-height, 16px);
       flex-direction: column;
       margin-inline-start: $person-details-spacing;
       align-items: flex-start;
+      justify-content: center;
 
       &.vertical {
         justify-content: center;
