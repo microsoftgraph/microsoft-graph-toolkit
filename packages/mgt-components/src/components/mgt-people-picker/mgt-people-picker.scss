@@ -9,405 +9,481 @@
 @import '../../styles/shared-styles.scss';
 @import './mgt-people-picker.theme.scss';
 
-$person-wrapper-background-hover: #fafafa;
-
-// Main
 :host {
-  font-family: $font-family;
-  font-size: 14px;
-  height: 24px;
-  display: contents;
-  overflow: hidden;
-  position: absolute;
-  width: 135px;
-  left: 0px;
-  top: 0px;
-  border-radius: 12px;
-  --dropdown-item-hover-background: #f7f7f7;
-}
+  width: auto;
 
-:host .root,
-mgt-people-picker .root {
-  display: block;
-}
+  fluent-text-field {
+    width: 100%;
 
-.people-picker {
-  background-color: $input__background-color;
-  box-sizing: border-box;
-  background: padding-box linear-gradient(var(--neutral-fill-input-rest), var(--neutral-fill-input-rest)),
-    border-box var(--neutral-stroke-input-rest);
-  border: calc(var(--stroke-width) * 1px) solid transparent;
-  border-radius: calc(var(--control-corner-radius) * 1px);
-  min-height: calc((var(--base-height-multiplier) + var(--density)) * var(--design-unit) * 1px);
-  padding: 3px;
-
-  &:hover {
-    background: padding-box linear-gradient(var(--neutral-fill-input-focus), var(--neutral-fill-input-focus)),
-      border-box var(--neutral-stroke-input-rest);
-  }
-  &.focused {
-    border-bottom: calc(var(--focus-stroke-width) * 1px) solid var(--accent-fill-rest);
-    border-bottom-left-radius: calc(var(--control-corner-radius) * 1px);
-    border-bottom-right-radius: calc(var(--control-corner-radius) * 1px);
-  }
-  &.disabled {
-    pointer-events: none;
-  }
-
-  .people-picker-inner {
-    flex: 1 1 auto;
-    display: flex;
-    flex-wrap: wrap;
-    vertical-align: middle;
-    list-style-type: none;
-    font-style: normal;
-    font-weight: normal;
-    overflow: hidden;
-  }
-
-  .flyout {
-    .search-box {
+    &::part(root){
       display: flex;
-      height: 23px;
-
-      .search-icon {
-        padding: 5px;
-      }
-
-      &.search-box-start {
-        line-height: normal;
-        margin-inline-start: 0px;
-        margin-inline-end: 0px;
-      }
-
-      &__input {
-        box-sizing: border-box;
-        border-width: 0;
-        border-style: none;
-        display: flex;
-        flex: 1 0 auto;
-        font-family: $font-family;
-        position: relative;
-        outline: none;
-        font-style: normal;
-        font-weight: normal;
-        font-size: 14px;
-        background-color: $input__background-color;
-        color: $color;
-        word-spacing: inherit;
-        text-indent: inherit;
-        letter-spacing: inherit;
-        &::placeholder {
-          color: $placeholder__color;
-        }
-      }
+      flex-wrap: wrap;
+      height: auto;
     }
 
-    .flyout-root {
-      position: relative;
-      top: 8px;
-      padding: unset;
-      border-radius: 2px;
-      min-width: 260px;
-      overflow-y: auto;
-      text-align: left;
-      list-style-type: none;
-      background-color: $dropdown__background-color;
-      max-height: var(--mgt-flyout-set-height, unset);
-      border-radius: 8px;
-      li {
+    &::part(start){
+      margin: unset;
+    }
+
+    &::part(control){
+      width: min-content;
+      height: calc((var(--base-height-multiplier) + var(--density)) * var(--design-unit) * 1px);
+    }
+
+  }
+
+  .selected-list {
+    display: flex;
+    flex-wrap: wrap;
+    column-gap: 5px;
+    padding: unset;
+    margin: 0 5px;
+
+    &-item {
+      display: flex;
+      column-gap: 5px;
+      border-radius: 100px;
+      margin-top: 3px;
+      background-color: var(--person-background-color, var(--neutral-layer-3));
+
+      &-close-icon{
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        padding-inline-end: 8px;
         cursor: pointer;
       }
 
-      .people-list {
-        list-style: none;
-        padding: unset;
-        margin: unset;
-
-        .list-person {
-          display: flex;
-          flex-direction: row;
-          align-items: center;
-          padding: 12px;
-          font-style: normal;
-          font-weight: 600;
-          font-size: 14px;
-          margin: var(--file-item-margin, 4px);
-          border-radius: 4px;
-          &:hover {
-            background-color: $dropdown-item__background-color--hover;
-            .people-person-text-area {
-              color: $dropdown-item__text__color--hover;
-            }
-          }
-          &.focused {
-            background-color: $dropdown-item__background-color--hover;
-            .people-person-text-area {
-              color: $dropdown-item__text__color--hover;
-            }
-          }
-          .people-person-text-area {
-            margin-left: 13px;
-            flex: 1 1 0;
-            max-height: 40px;
-            overflow: hidden;
-            color: $dropdown-item__text__color;
-
-            .people-person-text {
-              font-size: 14px;
-              font-weight: normal;
-              margin: 0;
-              padding: 0;
-              &.highlight-search-text {
-                font-weight: bold;
-              }
-            }
-          }
-        }
+      &-person {
+        width: max-content;
       }
     }
   }
 
-  .selected-list {
+  fluent-card {
+    margin-top: 4px;
+  }
+
+  .searched-people-list {
     list-style: none;
-    padding: 0;
-    display: contents;
+    padding: 4px;
+    margin: auto;
 
-    &__person-wrapper {
-      display: flex;
-      margin: 1px;
-      align-items: center;
-      border-radius: 12px;
-      height: 23px;
-      white-space: nowrap;
-      text-overflow: ellipsis;
-      overflow: hidden;
-      position: relative;
-      background-color: set-var(selected-person__background-color, $theme-default, $people-picker);
+    &-result {
+      padding: 4px;
+      border-radius: 4px;
+      background: var(--people-picker-dropdown-result-background-color, var(--person-background-color, transparent));
+
       &:hover {
-        background-color: $person-wrapper-background-hover;
+        background: var(--people-picker-dropdown-result-hover-background-color, var(--person-background-color, var(--neutral-layer-2)));
       }
 
-      &__person {
-        overflow: hidden;
-        min-width: 100%;
-        --avatar-size-s: 24px;
-        margin-left: 0px;
-        --color: #{$color};
-        color: $color;
-      }
-
-      &__overflow {
-        margin-left: 25px;
-
-        &__gradient {
-          content: '';
-          position: absolute;
-          margin-right: 23px;
-          width: 10px;
-          height: 90%;
-          top: 0;
-          right: 0;
-          @include selected-person__overflow($theme-default);
-          background-image: none;
-        }
-
-        &__close-icon {
-          font-family: 'FabricMDL2Icons';
-          cursor: pointer;
-          color: $color;
-          display: flex;
-          flex-direction: column;
-          align-items: center;
-          position: absolute;
-          height: 24px;
-          width: 24px;
-          right: 0px;
-          top: 0px;
-          border-radius: 12px;
-          line-height: 24px;
-
-          &:hover {
-            color: $commblue_primary;
-          }
-          &:focus,
-          &:focus-visible {
-            outline-offset: -4px;
-            outline-width: 1px;
-            outline-style: solid;
-          }
-        }
-      }
-    }
-
-    &__person-wrapper-highlighted {
-      @extend .selected-list__person-wrapper;
-      background: #005393;
-
-      &__person {
-        @extend .selected-list__person-wrapper__person;
-        color: white;
-        --color: white;
-      }
-
-      &__overflow {
-        @extend .selected-list__person-wrapper__overflow;
-        &__gradient {
-          @extend .selected-list__person-wrapper__overflow__gradient;
-          background-image: none;
-        }
-
-        &__close-icon {
-          @extend .selected-list__person-wrapper__overflow__close-icon;
-          background: #005393;
-          color: white;
-          line-height: 24px;
-        }
-      }
-    }
-
-    &__person-wrapper-highlighted:hover {
-      @extend .selected-list__person-wrapper-highlighted;
-      background-color: #006cbe;
-    }
-  }
-}
-
-.person {
-  margin-left: 6px;
-  width: 100%;
-  cursor: default;
-  --avatar-size-s: 32px;
-  --line2-color: #717171; /*TODO: change to $gray120*/
-  --font-size: 14px;
-  --font-weight: 600;
-}
-
-:host .search-error-text,
-:host .loading-text,
-mgt-people-picker .search-error-text,
-mgt-people-picker .loading-text {
-  font-family: $font-family;
-  font-style: normal;
-  font-weight: 600;
-  font-size: 14px;
-  line-height: 19px;
-  text-align: center;
-  margin-left: 50px;
-  margin-right: 50px;
-  color: $commblue_primary;
-}
-
-:host .message-parent,
-mgt-people-picker .message-parent {
-  padding: 2px;
-  margin-top: 30px;
-  margin-bottom: 30px;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  vertical-align: middle;
-}
-
-:host .people-person-job-title,
-mgt-people-picker .people-person-job-title {
-  flex: 100%;
-  order: 3;
-  font-weight: normal;
-  font-size: 12px;
-  &.uppercase {
-    text-transform: uppercase;
-  }
-}
-
-mgt-flyout {
-  flex: 1 0 auto;
-  --box-shadow: none;
-  --mgt-flyout-border-radius: var(--layer-corner-radius);
-}
-
-[dir='rtl'] {
-  .person {
-    margin-right: 6px;
-    --details-spacing: 0px 12px 0 0;
-    width: 100%;
-  }
-
-  .selected-list {
-    margin-right: 8px !important;
-    &__person-wrapper {
-      margin-left: 6px !important;
-      &__person {
-        margin-right: 0px !important;
-        margin-left: 4px !important;
-      }
-      &__overflow {
-        &__gradient {
-          right: auto !important;
-          position: absolute !important;
-          margin-right: 0px !important;
-          width: 10px !important;
-          height: 90%;
-          top: 0;
-        }
-        &__close-icon {
-          right: auto !important;
-          margin-left: 5px !important;
-          left: 0px !important;
-        }
-      }
-    }
-    &__person-wrapper-highlighted {
-      &__overflow {
-        &__close-icon {
-          right: auto !important;
-          left: 0px !important;
-        }
+      &:focus, &:focus-within{
+        background: var(--people-picker-dropdown-result-focus-background-color, var(--person-background-color, var(--neutral-layer-2)));
       }
     }
   }
-  .people-person-text-area {
-    margin-right: 13px;
-    margin-left: 0px !important;
-  }
-
-  .flyout-root {
-    text-align: right !important;
-  }
 }
 
-@media (forced-colors: active) and (prefers-color-scheme: dark) {
-  svg,
-  svg > path {
-    fill: rgb(255, 255, 255) !important;
-    fill-rule: nonzero !important;
-    clip-rule: nonzero !important;
-    color: rgb(255, 255, 255) !important;
-  }
+// $person-wrapper-background-hover: #fafafa;
 
-  .flyout-root {
-    border: 1px solid rgb(255, 255, 255);
-  }
+// // Main
+// :host {
+//   font-family: $font-family;
+//   font-size: 14px;
+//   height: 24px;
+//   display: contents;
+//   overflow: hidden;
+//   position: absolute;
+//   width: 135px;
+//   left: 0px;
+//   top: 0px;
+//   border-radius: 12px;
+//   --dropdown-item-hover-background: #f7f7f7;
+// }
 
-  .people-list .list-person {
-    border: solid 1px rgb(255, 255, 255);
-  }
-}
-@media (forced-colors: active) and (prefers-color-scheme: light) {
-  svg,
-  svg > path {
-    fill: rgb(0, 0, 0) !important;
-    fill-rule: nonzero !important;
-    clip-rule: nonzero !important;
-    color: rgb(0, 0, 0) !important;
-  }
+// :host .root,
+// mgt-people-picker .root {
+//   display: block;
+// }
 
-  .flyout-root {
-    border: 1px solid rgb(0, 0, 0);
-  }
+// .people-picker {
+//   background-color: $input__background-color;
+//   box-sizing: border-box;
+//   background: padding-box linear-gradient(var(--neutral-fill-input-rest), var(--neutral-fill-input-rest)),
+//     border-box var(--neutral-stroke-input-rest);
+//   border: calc(var(--stroke-width) * 1px) solid transparent;
+//   border-radius: calc(var(--control-corner-radius) * 1px);
+//   min-height: calc((var(--base-height-multiplier) + var(--density)) * var(--design-unit) * 1px);
+//   padding: 3px;
 
-  .people-list .list-person {
-    border: solid 1px rgb(0, 0, 0);
-  }
-}
+//   &:hover {
+//     background: padding-box linear-gradient(var(--neutral-fill-input-focus), var(--neutral-fill-input-focus)),
+//       border-box var(--neutral-stroke-input-rest);
+//   }
+//   &.focused {
+//     border-bottom: calc(var(--focus-stroke-width) * 1px) solid var(--accent-fill-rest);
+//     border-bottom-left-radius: calc(var(--control-corner-radius) * 1px);
+//     border-bottom-right-radius: calc(var(--control-corner-radius) * 1px);
+//   }
+//   &.disabled {
+//     pointer-events: none;
+//   }
+
+//   .people-picker-inner {
+//     flex: 1 1 auto;
+//     display: flex;
+//     flex-wrap: wrap;
+//     vertical-align: middle;
+//     list-style-type: none;
+//     font-style: normal;
+//     font-weight: normal;
+//     overflow: hidden;
+//   }
+
+//   .flyout {
+//     .search-box {
+//       display: flex;
+//       height: 23px;
+
+//       .search-icon {
+//         padding: 5px;
+//       }
+
+//       &.search-box-start {
+//         line-height: normal;
+//         margin-inline-start: 0px;
+//         margin-inline-end: 0px;
+//       }
+
+//       &__input {
+//         box-sizing: border-box;
+//         border-width: 0;
+//         border-style: none;
+//         display: flex;
+//         flex: 1 0 auto;
+//         font-family: $font-family;
+//         position: relative;
+//         outline: none;
+//         font-style: normal;
+//         font-weight: normal;
+//         font-size: 14px;
+//         background-color: $input__background-color;
+//         color: $color;
+//         word-spacing: inherit;
+//         text-indent: inherit;
+//         letter-spacing: inherit;
+//         &::placeholder {
+//           color: $placeholder__color;
+//         }
+//       }
+//     }
+
+//     .flyout-root {
+//       position: relative;
+//       top: 8px;
+//       padding: unset;
+//       border-radius: 2px;
+//       min-width: 260px;
+//       overflow-y: auto;
+//       text-align: left;
+//       list-style-type: none;
+//       background-color: $dropdown__background-color;
+//       max-height: var(--mgt-flyout-set-height, unset);
+//       border-radius: 8px;
+//       li {
+//         cursor: pointer;
+//       }
+
+//       .people-list {
+//         list-style: none;
+//         padding: unset;
+//         margin: unset;
+
+//         .list-person {
+//           display: flex;
+//           flex-direction: row;
+//           align-items: center;
+//           padding: 12px;
+//           font-style: normal;
+//           font-weight: 600;
+//           font-size: 14px;
+//           margin: var(--file-item-margin, 4px);
+//           border-radius: 4px;
+//           &:hover {
+//             background-color: $dropdown-item__background-color--hover;
+//             .people-person-text-area {
+//               color: $dropdown-item__text__color--hover;
+//             }
+//           }
+//           &.focused {
+//             background-color: $dropdown-item__background-color--hover;
+//             .people-person-text-area {
+//               color: $dropdown-item__text__color--hover;
+//             }
+//           }
+//           .people-person-text-area {
+//             margin-left: 13px;
+//             flex: 1 1 0;
+//             max-height: 40px;
+//             overflow: hidden;
+//             color: $dropdown-item__text__color;
+
+//             .people-person-text {
+//               font-size: 14px;
+//               font-weight: normal;
+//               margin: 0;
+//               padding: 0;
+//               &.highlight-search-text {
+//                 font-weight: bold;
+//               }
+//             }
+//           }
+//         }
+//       }
+//     }
+//   }
+
+//   .selected-list {
+//     list-style: none;
+//     padding: 0;
+//     display: contents;
+
+//     &__person-wrapper {
+//       display: flex;
+//       margin: 1px;
+//       align-items: center;
+//       border-radius: 12px;
+//       height: 23px;
+//       white-space: nowrap;
+//       text-overflow: ellipsis;
+//       overflow: hidden;
+//       position: relative;
+//       background-color: set-var(selected-person__background-color, $theme-default, $people-picker);
+//       &:hover {
+//         background-color: $person-wrapper-background-hover;
+//       }
+
+//       &__person {
+//         overflow: hidden;
+//         min-width: 100%;
+//         --avatar-size-s: 24px;
+//         margin-left: 0px;
+//         --color: #{$color};
+//         color: $color;
+//       }
+
+//       &__overflow {
+//         margin-left: 25px;
+
+//         &__gradient {
+//           content: '';
+//           position: absolute;
+//           margin-right: 23px;
+//           width: 10px;
+//           height: 90%;
+//           top: 0;
+//           right: 0;
+//           @include selected-person__overflow($theme-default);
+//           background-image: none;
+//         }
+
+//         &__close-icon {
+//           font-family: 'FabricMDL2Icons';
+//           cursor: pointer;
+//           color: $color;
+//           display: flex;
+//           flex-direction: column;
+//           align-items: center;
+//           position: absolute;
+//           height: 24px;
+//           width: 24px;
+//           right: 0px;
+//           top: 0px;
+//           border-radius: 12px;
+//           line-height: 24px;
+
+//           &:hover {
+//             color: $commblue_primary;
+//           }
+//           &:focus,
+//           &:focus-visible {
+//             outline-offset: -4px;
+//             outline-width: 1px;
+//             outline-style: solid;
+//           }
+//         }
+//       }
+//     }
+
+//     &__person-wrapper-highlighted {
+//       @extend .selected-list__person-wrapper;
+//       background: #005393;
+
+//       &__person {
+//         @extend .selected-list__person-wrapper__person;
+//         color: white;
+//         --color: white;
+//       }
+
+//       &__overflow {
+//         @extend .selected-list__person-wrapper__overflow;
+//         &__gradient {
+//           @extend .selected-list__person-wrapper__overflow__gradient;
+//           background-image: none;
+//         }
+
+//         &__close-icon {
+//           @extend .selected-list__person-wrapper__overflow__close-icon;
+//           background: #005393;
+//           color: white;
+//           line-height: 24px;
+//         }
+//       }
+//     }
+
+//     &__person-wrapper-highlighted:hover {
+//       @extend .selected-list__person-wrapper-highlighted;
+//       background-color: #006cbe;
+//     }
+//   }
+// }
+
+// .person {
+//   margin-left: 6px;
+//   width: 100%;
+//   cursor: default;
+//   --avatar-size-s: 32px;
+//   --line2-color: #717171; /*TODO: change to $gray120*/
+//   --font-size: 14px;
+//   --font-weight: 600;
+// }
+
+// :host .search-error-text,
+// :host .loading-text,
+// mgt-people-picker .search-error-text,
+// mgt-people-picker .loading-text {
+//   font-family: $font-family;
+//   font-style: normal;
+//   font-weight: 600;
+//   font-size: 14px;
+//   line-height: 19px;
+//   text-align: center;
+//   margin-left: 50px;
+//   margin-right: 50px;
+//   color: $commblue_primary;
+// }
+
+// :host .message-parent,
+// mgt-people-picker .message-parent {
+//   padding: 2px;
+//   margin-top: 30px;
+//   margin-bottom: 30px;
+//   display: flex;
+//   flex-direction: column;
+//   align-items: center;
+//   justify-content: center;
+//   vertical-align: middle;
+// }
+
+// :host .people-person-job-title,
+// mgt-people-picker .people-person-job-title {
+//   flex: 100%;
+//   order: 3;
+//   font-weight: normal;
+//   font-size: 12px;
+//   &.uppercase {
+//     text-transform: uppercase;
+//   }
+// }
+
+// mgt-flyout {
+//   flex: 1 0 auto;
+//   --box-shadow: none;
+//   --mgt-flyout-border-radius: var(--layer-corner-radius);
+// }
+
+// [dir='rtl'] {
+//   .person {
+//     margin-right: 6px;
+//     --details-spacing: 0px 12px 0 0;
+//     width: 100%;
+//   }
+
+//   .selected-list {
+//     margin-right: 8px !important;
+//     &__person-wrapper {
+//       margin-left: 6px !important;
+//       &__person {
+//         margin-right: 0px !important;
+//         margin-left: 4px !important;
+//       }
+//       &__overflow {
+//         &__gradient {
+//           right: auto !important;
+//           position: absolute !important;
+//           margin-right: 0px !important;
+//           width: 10px !important;
+//           height: 90%;
+//           top: 0;
+//         }
+//         &__close-icon {
+//           right: auto !important;
+//           margin-left: 5px !important;
+//           left: 0px !important;
+//         }
+//       }
+//     }
+//     &__person-wrapper-highlighted {
+//       &__overflow {
+//         &__close-icon {
+//           right: auto !important;
+//           left: 0px !important;
+//         }
+//       }
+//     }
+//   }
+//   .people-person-text-area {
+//     margin-right: 13px;
+//     margin-left: 0px !important;
+//   }
+
+//   .flyout-root {
+//     text-align: right !important;
+//   }
+// }
+
+// @media (forced-colors: active) and (prefers-color-scheme: dark) {
+//   svg,
+//   svg > path {
+//     fill: rgb(255, 255, 255) !important;
+//     fill-rule: nonzero !important;
+//     clip-rule: nonzero !important;
+//     color: rgb(255, 255, 255) !important;
+//   }
+
+//   .flyout-root {
+//     border: 1px solid rgb(255, 255, 255);
+//   }
+
+//   .people-list .list-person {
+//     border: solid 1px rgb(255, 255, 255);
+//   }
+// }
+// @media (forced-colors: active) and (prefers-color-scheme: light) {
+//   svg,
+//   svg > path {
+//     fill: rgb(0, 0, 0) !important;
+//     fill-rule: nonzero !important;
+//     clip-rule: nonzero !important;
+//     color: rgb(0, 0, 0) !important;
+//   }
+
+//   .flyout-root {
+//     border: 1px solid rgb(0, 0, 0);
+//   }
+
+//   .people-list .list-person {
+//     border: solid 1px rgb(0, 0, 0);
+//   }
+// }
