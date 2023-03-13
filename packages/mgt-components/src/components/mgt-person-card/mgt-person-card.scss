@@ -89,24 +89,11 @@
     display: flex;
     flex-direction: column;
     padding-inline-start: 23px;
-    padding-top: 23px;
+    padding-block: 23px;
     border-bottom: 1px solid set-var(line-seperator__color__sub1, $theme-default, $common);
 
     .person-image {
-      --presence-background-color: #{set-var(presence-background-color, $theme-default, $person-theme)};
-      --presence-icon-color: #{set-var(presence-icon-color, $theme-default, $person-theme)};
-      --line1-font-size: var(--person-card-display-name-font-size, 20px);
-      --line1-line-height: var(--person-card-display-name-line-height, 28px);
-      --line1-color: #{set-var(line-1-color, $theme-default, $person-card-theme)};
-      --line2-font-size: var(--person-card-title-font-size, 14px);
-      --line2-line-height: var(--person-card-title-line-height, 20px);
-      --line2-color: #{set-var(line-2-color, $theme-default, $person-card-theme)};
-      --line3-font-size: var(--person-card-subtitle-font-size, 14px);
-      --line3-line-height: var(--person-card-subtitle-line-height, 19px);
-      --line3-color: #{set-var(line-3-color, $theme-default, $person-card-theme)};
-      --avatar-size: 75px;
-      --details-cta-spacing: 30px;
-      --user-presence-margin-offset: 5px;
+      --person-details-bottom-spacing: 25px;
     }
 
     .base-icons {
@@ -114,10 +101,9 @@
       -webkit-align-items: center;
       align-items: center;
       position: relative;
-      left: 91px;
-      bottom: 25px;
+      margin-inline-start: 69px;
+      margin-block-start: -20px;
       z-index: 1;
-      width: fit-content;
 
       .icon {
         display: flex;
