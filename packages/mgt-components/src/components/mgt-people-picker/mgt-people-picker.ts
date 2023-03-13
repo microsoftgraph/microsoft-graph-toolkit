@@ -581,7 +581,7 @@ export class MgtPeoplePicker extends MgtTemplatedComponent {
   private defaultSelectedUsers: IDynamicPerson[];
   private defaultSelectedGroups: IDynamicPerson[];
   // List of users highlighted for copy/cut-pasting
-  private _highlightedUsers: Element[] = [];
+  @state() private _highlightedUsers: Element[] = [];
   // current user index to the left of the highlighted users
   private _currentHighlightedUserPos: number = 0;
 
