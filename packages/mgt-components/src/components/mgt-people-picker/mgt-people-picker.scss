@@ -93,6 +93,25 @@
       }
     }
   }
+
+  .message-parent{
+    display: flex;
+    place-content: center;
+    flex-direction: row;
+    padding: 10px 15px;
+    column-gap: 5px;
+
+    .search-error-text,
+    .loading-text{
+      font-style: normal;
+      font-weight: 600;
+      font-size: 14px;
+      line-height: 19px;
+      text-align: center;
+      color: var(--people-picker-no-results-text-color, var(--neutral-foreground-hint));
+  }
+
+  }
 }
 
 // $person-wrapper-background-hover: #fafafa;

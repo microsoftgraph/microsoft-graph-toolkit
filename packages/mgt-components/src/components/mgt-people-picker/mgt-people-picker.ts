@@ -960,7 +960,7 @@ export class MgtPeoplePicker extends MgtTemplatedComponent {
       mgtHtml`
          <div class="message-parent">
            <mgt-spinner></mgt-spinner>
-           <div label="loading-text" aria-label="loading" class="loading-text">
+           <div aria-label="loading" class="loading-text">
              ${this.strings.loadingMessage}
            </div>
          </div>
@@ -984,7 +984,7 @@ export class MgtPeoplePicker extends MgtTemplatedComponent {
       this.renderTemplate('no-data', null) ||
       html`
          <div class="message-parent">
-           <div label="search-error-text" aria-label=${this.strings.noResultsFound} class="search-error-text">
+           <div aria-label=${this.strings.noResultsFound} class="search-error-text">
              ${this.strings.noResultsFound}
            </div>
          </div>
