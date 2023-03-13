@@ -808,7 +808,8 @@ export class MgtPeoplePicker extends MgtTemplatedComponent {
     //    </div>
     //  `;
 
-    // <span slot="start" class="search-icon">${getSvg(SvgIcon.Search)}</span>
+    const searchIcon = html`<span class="search-icon">${getSvg(SvgIcon.Search)}</span>`;
+    const startSlot = this.selectedPeople?.length > 0 ? selectedPeopleTemplate : searchIcon;
     return html`
       <fluent-text-field
         appearance="outline"
@@ -823,7 +824,7 @@ export class MgtPeoplePicker extends MgtTemplatedComponent {
         @input="${this.onUserInput}"
         @blur="${this.lostFocus}"
         ?disabled=${this.disabled}>
-          <span slot="start">${selectedPeopleTemplate}</span>
+          <span slot="start">${startSlot}</span>
       </fluent-text-field>
     `;
   }
@@ -839,7 +840,6 @@ export class MgtPeoplePicker extends MgtTemplatedComponent {
     if (!selectedPeople || !selectedPeople.length) {
       return html``;
     }
-    // this.hideSearchIcon();
     // return html`
     //    <ul
     //     id="selected-list"
@@ -1434,8 +1434,6 @@ export class MgtPeoplePicker extends MgtTemplatedComponent {
     this.selectedPeople = filteredPersonArr;
     this.loadState();
     this.fireCustomEvent('selectionChanged', this.selectedPeople);
-    if (this.selectedPeople.length <= 0) this.showSearchIcon();
-
     this.input?.focus();
   }
 
@@ -1470,11 +1468,6 @@ export class MgtPeoplePicker extends MgtTemplatedComponent {
       if (duplicatePeople.length === 0) {
         this.selectedPeople = [...this.selectedPeople, person];
         this.fireCustomEvent('selectionChanged', this.selectedPeople);
-        // if (this.selectedPeople.length <= 0) {
-        //   this.showSearchIcon();
-        // } else {
-        //   this.hideSearchIcon();
-        // }
         this.loadState();
         this._foundPeople = [];
         this._arrowSelectionCount = -1;
@@ -1576,9 +1569,6 @@ export class MgtPeoplePicker extends MgtTemplatedComponent {
       this.selectedPeople = this.selectedPeople.splice(0, this.selectedPeople.length - 1);
       this.loadState();
       this.hideFlyout();
-      if (this.selectedPeople.length <= 0) {
-        this.showSearchIcon();
-      }
       // fire selected people changed event
       this.fireCustomEvent('selectionChanged', this.selectedPeople);
       return;
@@ -1656,22 +1646,6 @@ export class MgtPeoplePicker extends MgtTemplatedComponent {
     this._debouncedSearch();
   }
 
-  /**
-   * Displays the search icon.
-   */
-  private showSearchIcon() {
-    const searchIcon = this.renderRoot?.querySelector('.search-icon') as HTMLElement;
-    if (searchIcon !== undefined || searchIcon !== null) {
-      searchIcon.style.display = null;
-    }
-  }
-
-  private hideSearchIcon() {
-    const searchIcon = this.renderRoot?.querySelector('.search-icon') as HTMLElement;
-    if (searchIcon !== undefined || searchIcon !== null) {
-      searchIcon.style.display = 'none';
-    }
-  }
   /**
    * Tracks event on user search (keydown)
    * @param event - event tracked on user input (keydown)

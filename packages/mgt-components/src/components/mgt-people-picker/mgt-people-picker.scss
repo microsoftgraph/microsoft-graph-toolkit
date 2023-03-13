@@ -30,6 +30,12 @@
       height: calc((var(--base-height-multiplier) + var(--density)) * var(--design-unit) * 1px);
     }
 
+    .search-icon {
+      display: flex;
+      padding-top: 10px;
+      padding-inline-start: 10px;
+    }
+
   }
 
   .selected-list {
