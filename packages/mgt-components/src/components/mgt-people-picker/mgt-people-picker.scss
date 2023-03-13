@@ -44,7 +44,11 @@
       column-gap: 5px;
       border-radius: 100px;
       margin-top: 3px;
-      background-color: var(--person-background-color, var(--neutral-layer-3));
+      background-color: var(--people-picker-selected-option-background-color, var(--person-background-color, var(--neutral-layer-3)));
+
+      &.highlighted {
+        background-color: var(--people-picker-selected-option-highlight-background-color, var(--accent-fill-rest));
+      }
 
       &-close-icon{
         display: flex;
