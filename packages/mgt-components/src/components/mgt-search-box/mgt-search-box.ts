@@ -12,6 +12,7 @@ import { fluentSearch } from '@fluentui/web-components/dist/esm/search';
 import { registerFluentComponents } from '../../utils/FluentComponents';
 import { strings } from './strings';
 import { styles } from './mgt-search-box-css';
+import { debounce } from '../../utils/Utils';
 
 registerFluentComponents(fluentSearch);
 
@@ -25,10 +26,6 @@ registerFluentComponents(fluentSearch);
  */
 @customElement('search-box')
 class MgtSearchBox extends MgtBaseComponent {
-  constructor() {
-    super();
-  }
-
   /**
    * Array of styles to apply to the element. The styles should be defined
    * user the `css` tag function.
@@ -73,6 +70,28 @@ class MgtSearchBox extends MgtBaseComponent {
   public value: string;
 
   /**
+   * Debounce delay of the search input
+   *
+   * @type {number}
+   * @memberof MgtSearchBox
+   */
+  @property({
+    attribute: 'debounce-delay',
+    type: Number
+  })
+  public debounceDelay: number;
+
+  private debouncedSearchTermChanged;
+
+  constructor() {
+    super();
+
+    this.debounceDelay = 400;
+    this.debouncedSearchTermChanged = debounce(() => {
+      this.fireCustomEvent('searchTermChanged', this.value);
+    }, this.debounceDelay);
+  }
+  /**
    * Renders the component
    *
    * @return {TemplateResult}
@@ -83,12 +102,12 @@ class MgtSearchBox extends MgtBaseComponent {
       <fluent-search
         class="search-term-input"
         appearance="outline"
-        autofocus
+        value=${this.value ?? this.value}
         placeholder=${this.placeholder ? this.placeholder : strings.placeholder}
-        @input=${this.onInputChanged}
+        @input=${e => this.onInputChanged(e)}
+        @change=${e => this.onInputChanged(e)}
       >
-      </fluent-search>
-`;
+      </fluent-search>`;
   }
 
   /**
@@ -97,6 +116,6 @@ class MgtSearchBox extends MgtBaseComponent {
    */
   private onInputChanged(e: Event) {
     this.value = (e.target as HTMLInputElement).value;
-    this.fireCustomEvent('searchTermChanged', this.value);
+    this.debouncedSearchTermChanged();
   }
 }
