@@ -773,7 +773,7 @@ export class MgtPeoplePicker extends MgtTemplatedComponent {
     // aria-label needs to provide a falsy default to avoid setting the attribute to "undefined" or "null"
     // direct used of the ariaLabel property on the input element only works in Chromium browsers
     return html`
-       <div class="${classMap(inputClasses)}">
+       <div slot="anchor" class="${classMap(inputClasses)}">
          <span class="search-icon">${getSvg(SvgIcon.Search)}</span>
          <input
            id="people-picker-input"
