@@ -75,6 +75,11 @@ const getIsResponseCacheEnabled = (): boolean =>
 @customElement('search-results')
 export class MgtSearchResults extends MgtTemplatedComponent {
   /**
+   * Default page size is 10
+   */
+  private _size: number = 10;
+
+  /**
    * Array of styles to apply to the element. The styles should be defined
    * user the `css` tag function.
    */
@@ -203,7 +208,16 @@ export class MgtSearchResults extends MgtTemplatedComponent {
     reflect: true,
     type: Number
   })
-  public size: number = 10;
+  public get size(): number {
+    return this._size;
+  }
+  public set size(value) {
+    if (value > 1000) {
+      this._size = 1000;
+    } else {
+      this._size = value;
+    }
+  }
 
   /**
    * The maximum number of pages to be clickable
@@ -362,7 +376,7 @@ export class MgtSearchResults extends MgtTemplatedComponent {
    * a lit-html TemplateResult. Setting properties inside this method will *not*
    * trigger the element to update.
    */
-  protected render() {
+  protected render(): TemplateResult {
     let renderedTemplate = null;
     let headerTemplate = null;
     let footerTemplate = null;
