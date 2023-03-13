@@ -54,17 +54,6 @@ export { GroupType } from '../../graph/graph.groups';
 export { PersonType, UserType } from '../../graph/graph.people';
 
 /**
- * An interface used to mark an object as 'focused',
- * so it can be rendered differently.
- *
- * @interface IFocusable
- */
-interface IFocusable {
-  // tslint:disable-next-line: completed-docs
-  isFocused: boolean;
-}
-
-/**
  * Web component used to search for people from the Microsoft Graph
  *
  * @export
@@ -184,7 +173,7 @@ export class MgtPeoplePicker extends MgtTemplatedComponent {
    */
   @property({
     attribute: 'type',
-    converter: (value, type) => {
+    converter: value => {
       value = value.toLowerCase();
       if (!value || value.length === 0) {
         return PersonType.any;
@@ -216,7 +205,7 @@ export class MgtPeoplePicker extends MgtTemplatedComponent {
    */
   @property({
     attribute: 'group-type',
-    converter: (value, type) => {
+    converter: value => {
       if (!value || value.length === 0) {
         return GroupType.any;
       }
@@ -260,7 +249,7 @@ export class MgtPeoplePicker extends MgtTemplatedComponent {
    */
   @property({
     attribute: 'user-type',
-    converter: (value, type) => {
+    converter: value => {
       value = value.toLowerCase();
 
       return !value || typeof UserType[value] === 'undefined' ? UserType.any : UserType[value];
@@ -600,11 +589,6 @@ export class MgtPeoplePicker extends MgtTemplatedComponent {
    */
   @state() private _foundPeople: IDynamicPerson[];
 
-  private _mouseLeaveTimeout;
-  private _mouseEnterTimeout;
-  private _isKeyboardFocus: boolean = true;
-  private _dir: string = this.direction;
-
   constructor() {
     super();
     this.clearState();
@@ -703,17 +687,6 @@ export class MgtPeoplePicker extends MgtTemplatedComponent {
     const inputTemplate = this.renderInput(selectedPeopleTemplate);
     const flyoutTemplate = this.renderFlyout(inputTemplate);
 
-    const inputClasses = {
-      focused: this._isFocused,
-      'people-picker': true,
-      disabled: this.disabled
-    };
-    // return html`
-    //   <div dir=${this._dir} class=${classMap(inputClasses)}>
-    //       <div class="people-picker-inner">${selectedPeopleTemplate} ${flyoutTemplate}</div>
-    //   </div>
-    // `;
-
     return html`
       <div>
         ${flyoutTemplate}
@@ -770,43 +743,10 @@ export class MgtPeoplePicker extends MgtTemplatedComponent {
 
     const selectionMode = this.selectionMode ? this.selectionMode : 'multiple';
 
-    const inputClasses = {
-      'search-box': true,
-      'search-box-start': hasSelectedPeople
-    };
-
     if (selectionMode === 'single' && this.selectedPeople.length >= 1) {
       this.lostFocus();
       return html``;
     }
-
-    // aria-label needs to provide a falsy default to avoid setting the attribute to "undefined" or "null"
-    // direct used of the ariaLabel property on the input element only works in Chromium browsers
-    // return html`
-    //    <div slot="anchor" class="${classMap(inputClasses)}">
-    //      <span class="search-icon">${getSvg(SvgIcon.Search)}</span>
-    //      <input
-    //        id="people-picker-input"
-    //        class="search-box__input"
-    //        type="text"
-    //        role="combobox"
-    //        placeholder=${placeholder}
-    //        autocomplete="off"
-    //        aria-label=${this.ariaLabel || ''}
-    //        aria-controls="suggestions-list"
-    //        aria-haspopup="listbox"
-    //        aria-autocomplete="list"
-    //        aria-expanded="false"
-    //        @click="${this.handleInputClick}"
-    //        @focus="${this.gainedFocus}"
-    //        @keydown="${this.onUserKeyDown}"
-    //        @keyup="${this.onUserKeyUp}"
-    //        @input="${this.onUserInput}"
-    //        @blur=${this.lostFocus}
-    //        ?disabled=${this.disabled}
-    //      />
-    //    </div>
-    //  `;
 
     const searchIcon = html`<span class="search-icon">${getSvg(SvgIcon.Search)}</span>`;
     const startSlot = this.selectedPeople?.length > 0 ? selectedPeopleTemplate : searchIcon;
@@ -840,41 +780,7 @@ export class MgtPeoplePicker extends MgtTemplatedComponent {
     if (!selectedPeople || !selectedPeople.length) {
       return html``;
     }
-    // return html`
-    //    <ul
-    //     id="selected-list"
-    //     aria-label="${this.strings.selected}"
-    //     class="selected-list">
-    //       ${selectedPeople.slice(0, selectedPeople.length).map(
-    //       person =>
-    //         html`
-    //          <li
-    //          class="selected-list__person-wrapper">
-    //            ${
-    //              this.renderTemplate(
-    //                'selected-person',
-    //                { person },
-    //                `selected-${person.id ? person.id : person.displayName}`
-    //              ) || this.renderSelectedPerson(person)
-    //            }
 
-    //            <div class="selected-list__person-wrapper__overflow">
-    //              <div class="selected-list__person-wrapper__overflow__gradient"></div>
-    //              <div
-    //                tabindex="0"
-    //                role="button"
-    //                aria-label="${this.strings.removeSelectedItem} ${person.displayName}"
-    //                class="selected-list__person-wrapper__overflow__close-icon"
-    //                @click="${e => this.removePerson(person, e)}"
-    //                @keydown="${e => this.handleRemovePersonKeyDown(person, e)}"
-    //              >
-    //                \uE711
-    //              </div>
-    //            </div>
-    //           </li>
-    //        `
-    //     )}</ul>
-    //  `;
     return html`
        <ul
         id="selected-list"
@@ -1003,28 +909,6 @@ export class MgtPeoplePicker extends MgtTemplatedComponent {
   protected renderSearchResults(people: IDynamicPerson[]) {
     const filteredPeople = people.filter(person => person.id);
 
-    // return html`
-    //   <ul
-    //     id="suggestions-list"
-    //     aria-label="${this.strings.suggestedContacts}"
-    //     class="people-list"
-    //     role="listbox">
-    //       ${repeat(
-    //         filteredPeople,
-    //         person => person.id,
-    //         person => html`
-    //           <li
-    //           id="${person.id}"
-    //           aria-label=" ${this.strings.suggestedContact} ${person.displayName}"
-    //           class="list-person"
-    //           role="option"
-    //           @click="${e => this.handleSuggestionClick(person)}">
-    //             ${this.renderPersonResult(person)}
-    //           </li>
-    //         `
-    //       )}
-    //    </ul>
-    //  `;
     return html`
       <ul
         tabindex="0"
@@ -1058,28 +942,6 @@ export class MgtPeoplePicker extends MgtTemplatedComponent {
    * @memberof MgtPeoplePicker
    */
   protected renderPersonResult(person: IDynamicPerson): TemplateResult {
-    const user = person as User;
-    const subTitle = user.jobTitle || user.mail;
-
-    const classes = {
-      'people-person-job-title': true,
-      uppercase: !!user.jobTitle
-    };
-
-    // return (
-    //   this.renderTemplate('person', { person }, person.id) ||
-    //   mgtHtml`
-    //      <mgt-person
-    //       class="person"
-    //       show-presence
-    //       view="twoLines"
-    //       line2-property="jobTitle,mail"
-    //       dir=${this._dir}
-    //       .personDetails=${person}
-    //       .fetchImage=${!this.disableImages}>
-    //       .personCardInteraction=${PersonCardInteraction.none}
-    //     </mgt-person>`
-    // );
     return (
       this.renderTemplate('person', { person }, person.id) ||
       mgtHtml`
@@ -1104,16 +966,6 @@ export class MgtPeoplePicker extends MgtTemplatedComponent {
    * @memberof MgtPeoplePicker
    */
   protected renderSelectedPerson(person: IDynamicPerson): TemplateResult {
-    // return mgtHtml`
-    //    <mgt-person
-    //      tabindex="-1"
-    //      class="person selected-list__person-wrapper__person"
-    //      .personDetails=${person}
-    //      .fetchImage=${!this.disableImages}
-    //      .view=${ViewType.oneline}
-    //      .personCardInteraction=${PersonCardInteraction.click}
-    //    ></mgt-person>
-    //  `;
     return mgtHtml`
        <mgt-person
          tabindex="-1"
@@ -1121,7 +973,7 @@ export class MgtPeoplePicker extends MgtTemplatedComponent {
          .personDetails=${person}
          .fetchImage=${!this.disableImages}
          .view=${ViewType.oneline}
-         .personCardInteraction=${PersonCardInteraction.click}>
+         .personCardInteraction=${PersonCardInteraction.none}>
         </mgt-person>
      `;
   }
