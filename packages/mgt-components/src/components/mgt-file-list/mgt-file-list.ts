@@ -787,7 +787,6 @@ export class MgtFileList extends MgtTemplatedComponent {
         this._focusedItemIndex = (this._focusedItemIndex - 1 + fileList.children.length) % fileList.children.length;
       }
       if (event.code === 'ArrowDown') {
-        console.log(this._focusedItemIndex);
         this._focusedItemIndex = (this._focusedItemIndex + 1) % fileList.children.length;
       }
 
