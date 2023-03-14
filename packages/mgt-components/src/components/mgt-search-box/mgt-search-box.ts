@@ -21,6 +21,8 @@ registerFluentComponents(fluentSearch);
  *
  * @fires {CustomEvent<string>} searchTermChanged - Fired when the search term is changed
  *
+ * @cssprop --search-input-width - {Length} Search input width
+ *
  * @class MgtSearchBox
  * @extends {MgtBaseComponent}
  */
@@ -58,16 +60,22 @@ class MgtSearchBox extends MgtBaseComponent {
   public placeholder: string;
 
   /**
-   * Value of the search input
+   * Value of the search term
    *
    * @type {string}
    * @memberof MgtSearchBox
    */
   @property({
-    attribute: 'value',
+    attribute: 'search-term',
     type: String
   })
-  public value: string;
+  public get searchTerm() {
+    return this._searchTerm;
+  }
+  public set searchTerm(value) {
+    this._searchTerm = value;
+    this.fireSearchTermChanged();
+  }
 
   /**
    * Debounce delay of the search input
@@ -77,19 +85,22 @@ class MgtSearchBox extends MgtBaseComponent {
    */
   @property({
     attribute: 'debounce-delay',
-    type: Number
+    type: Number,
+    reflect: true
   })
-  public debounceDelay: number;
+  public get debounceDelay() {
+    return this._debounceDelay;
+  }
+  public set debounceDelay(value) {
+    this._debounceDelay = value;
+  }
 
+  private _debounceDelay: number = 300;
+  private _searchTerm: string = '';
   private debouncedSearchTermChanged;
 
   constructor() {
     super();
-
-    this.debounceDelay = 400;
-    this.debouncedSearchTermChanged = debounce(() => {
-      this.fireCustomEvent('searchTermChanged', this.value);
-    }, this.debounceDelay);
   }
   /**
    * Renders the component
@@ -102,20 +113,28 @@ class MgtSearchBox extends MgtBaseComponent {
       <fluent-search
         class="search-term-input"
         appearance="outline"
-        value=${this.value ?? this.value}
+        value=${this.searchTerm ?? this.searchTerm}
         placeholder=${this.placeholder ? this.placeholder : strings.placeholder}
-        @input=${e => this.onInputChanged(e)}
-        @change=${e => this.onInputChanged(e)}
+        @input=${(e: Event) => this.onInputChanged(e)}
+        @change=${(e: Event) => this.onInputChanged(e)}
       >
       </fluent-search>`;
   }
 
-  /**
-   * Fires the searchTermChanged even when value changes
-   * @param e
-   */
   private onInputChanged(e: Event) {
-    this.value = (e.target as HTMLInputElement).value;
+    this.searchTerm = (e.target as HTMLInputElement).value;
+  }
+
+  /**
+   * Fires and debounces the custom event to listeners
+   */
+  private fireSearchTermChanged() {
+    if (!this.debouncedSearchTermChanged) {
+      this.debouncedSearchTermChanged = debounce(() => {
+        this.fireCustomEvent('searchTermChanged', this.searchTerm);
+      }, this.debounceDelay);
+    }
+
     this.debouncedSearchTermChanged();
   }
 }

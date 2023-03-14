@@ -9,17 +9,17 @@ import { html } from 'lit';
 import { withCodeEditor } from '../../../.storybook/addons/codeEditorAddon/codeAddon';
 
 export default {
-  title: 'Components / mgt-search-box / Properties',
+  title: 'Components / mgt-search-box / Style',
   component: 'search-box',
   decorators: [withCodeEditor]
 };
 
-export const setSearchBoxSearchTerm = () => html`
-  <mgt-search-box search-term="contoso">
-  </mgt-search-box>
-`;
+export const customCSSProperties = () => html`
+  <style>
+    mgt-search-box {
+      --search-input-width: 200px;
+    }
+  </style>
 
-export const setSearchBoxDebounceDelay = () => html`
-  <mgt-search-box debounce-delay="1000">
-  </mgt-search-box>
+  <mgt-search-box></mgt-search-box>
 `;

@@ -92,6 +92,8 @@ export class MgtSearchResults extends MgtTemplatedComponent {
   }
 
   private _queryString: string;
+  private _entityTypes: string[] = ['driveItem', 'listItem', 'site'];
+
   /**
    * The query to send to Microsoft Search
    *
@@ -130,7 +132,7 @@ export class MgtSearchResults extends MgtTemplatedComponent {
    * Possible values are: list, site, listItem, message, event,
    * drive, driveItem, externalItem.
    *
-   * @type {string}
+   * @type {string[]}
    * @memberof MgtSearchResults
    */
   @property({
@@ -140,7 +142,12 @@ export class MgtSearchResults extends MgtTemplatedComponent {
     },
     type: String
   })
-  public entityTypes: string[];
+  public get entityTypes(): string[] {
+    return this._entityTypes;
+  }
+  public set entityTypes(value) {
+    this._entityTypes = value;
+  }
 
   /**
    * The scopes to request
@@ -405,7 +412,11 @@ export class MgtSearchResults extends MgtTemplatedComponent {
       renderedTemplate = html``;
     }
 
-    return html`${headerTemplate}${renderedTemplate}${footerTemplate}`;
+    return html`
+      <div class="search-results"></div>
+      ${headerTemplate}
+      ${renderedTemplate}
+      ${footerTemplate}`;
   }
 
   /**
@@ -663,22 +674,34 @@ export class MgtSearchResults extends MgtTemplatedComponent {
 
   private onPageClick(pageNumber: number) {
     this.currentPage = pageNumber;
+    this.scrollToFirstResult();
   }
 
   private onFirstPageClick() {
     this.currentPage = 1;
+    this.scrollToFirstResult();
   }
 
   private onPageBackClick(page: any) {
     this.currentPage--;
+    this.scrollToFirstResult();
   }
 
   private onPageNextClick(page: any) {
     this.currentPage++;
+    this.scrollToFirstResult();
   }
 
   private isLastPage() {
     return this.currentPage === Math.ceil(this.response.value[0].hitsContainers[0].total / this.size);
+  }
+
+  private scrollToFirstResult() {
+    const target = this.renderRoot.querySelector('.search-results') as HTMLElement;
+    target.scrollIntoView({
+      block: 'start',
+      behavior: 'smooth'
+    });
   }
 
   private getResourceType(resource: any) {

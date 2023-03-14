@@ -6,6 +6,7 @@
     "packages": [
       "packages/*",
       "packages/providers/*",
+      "samples/react-admin-app",
       "samples/react-app",
       "samples/angular-app",
       "samples/vue-app",
@@ -50,6 +51,8 @@
     "watch": "lerna run --parallel --stream --scope @microsoft/* build:watch ",
     "watch:serve": "npm-run-all --parallel watch serve",
     "watch:serve:https": "npm-run-all -parallel watch serve:https",
+    "watch:react-admin-app": "lerna run start --scope react-admin-app",
+    "watch:react-admin": "npm-run-all --parallel watch watch:react-admin-app",
     "prettier:base": "prettier --parser typescript",
     "prettier:check": "npm run prettier:base -- --check \"packages/**/*.{ts,tsx}\"",
     "prettier:write": "npm run prettier:base -- --write \"packages/**/*.{ts,tsx}\"",
