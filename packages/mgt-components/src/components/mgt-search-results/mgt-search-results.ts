@@ -651,9 +651,9 @@ export class MgtSearchResults extends MgtTemplatedComponent {
                     }">1</fluent-button>
                   ${
                     this.currentPage - Math.floor(this.pagingMax / 2) > 0
-                      ? html`<fluent-tooltip anchor="page-back-dot">Back ${Math.ceil(
+                      ? html`<fluent-tooltip anchor="page-back-dot" position="top">${strings.back} ${Math.ceil(
                           this.pagingMax / 2
-                        )} pages</fluent-tooltip>
+                        )} ${strings.pages}</fluent-tooltip>
                       <fluent-button id="page-back-dot" appearance="stealth" class="search-results-paging" @click="${() =>
                         this.onPageClick(this.currentPage - Math.ceil(this.pagingMax / 2))}">...
                           </fluent-button>`

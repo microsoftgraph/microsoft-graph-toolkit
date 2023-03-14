@@ -6,5 +6,7 @@
  */
 
 export const strings = {
-  modified: 'modified on'
+  modified: 'modified on',
+  back: 'Back',
+  pages: 'pages'
 };
