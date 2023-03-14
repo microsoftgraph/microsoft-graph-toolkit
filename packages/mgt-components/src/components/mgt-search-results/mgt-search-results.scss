@@ -89,3 +89,9 @@
   border-bottom-style: solid;
   border-bottom-color: var(--accent-base-color);
 }
+
+.search-results-paging {
+  svg {
+    height: 12px;
+  }
+}

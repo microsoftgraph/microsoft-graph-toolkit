@@ -597,6 +597,8 @@ export class MgtSearchResults extends MgtTemplatedComponent {
           return this.renderListItem(result);
         case '#microsoft.graph.externalItem':
           return this.renderExternalItem(result);
+        case '#microsoft.graph.search.bookmark':
+          return this.renderBookmark(result);
         default:
           return this.renderDefault(result);
       }
@@ -636,7 +638,9 @@ export class MgtSearchResults extends MgtTemplatedComponent {
       return html`
               ${
                 this.currentPage > 1
-                  ? html`<fluent-button appearance="stealth" class="search-results-paging" title="Back" @click="${this.onPageBackClick}"><</fluent-button>`
+                  ? html`<fluent-button appearance="stealth" class="search-results-paging" title="Back" @click="${
+                      this.onPageBackClick
+                    }">${getSvg(SvgIcon.ChevronLeft)}</fluent-button>`
                   : nothing
               }
               ${
@@ -665,7 +669,9 @@ export class MgtSearchResults extends MgtTemplatedComponent {
               )}
               ${
                 !this.isLastPage()
-                  ? html`<fluent-button appearance="stealth" class="search-results-paging" title="Next" @click="${this.onPageNextClick}">></fluent-button>`
+                  ? html`<fluent-button appearance="stealth" class="search-results-paging" title="Next" @click="${
+                      this.onPageNextClick
+                    }">${getSvg(SvgIcon.ChevronRight)}</fluent-button>`
                   : nothing
               }
           `;
@@ -733,7 +739,7 @@ export class MgtSearchResults extends MgtTemplatedComponent {
                   </mgt-person>
                 </div>
                 <div class="search-result-date">
-                  &nbsp; modified on ${getRelativeDisplayDate(new Date(resource.lastModifiedDateTime))}
+                  &nbsp; ${strings.modified} ${getRelativeDisplayDate(new Date(resource.lastModifiedDateTime))}
                 </div>
               </div>
               <div class="search-result-summary" .innerHTML="${sanitizeSummary(result.summary)}"></div>
@@ -822,7 +828,7 @@ export class MgtSearchResults extends MgtTemplatedComponent {
                   </mgt-person>
                 </div>
                 <div class="search-result-date">
-                  &nbsp; modified on ${getRelativeDisplayDate(new Date(resource.lastModifiedDateTime))}
+                  &nbsp; ${strings.modified} ${getRelativeDisplayDate(new Date(resource.lastModifiedDateTime))}
                 </div>
               </div>
               <div class="search-result-summary" .innerHTML="${sanitizeSummary(result.summary)}"></div>
@@ -884,6 +890,26 @@ export class MgtSearchResults extends MgtTemplatedComponent {
           <hr class="search-result-separator" />`;
     }*/
     return html``;
+  }
+
+  private renderBookmark(result: SearchHit): HTMLTemplateResult {
+    let resource: any = result.resource as any;
+    return mgtHtml`
+          <div class="search-result-grid">
+            <div class="search-result-icon">
+              ${getSvg(SvgIcon.DoubleBookmark)}
+            </div>
+            <div class="search-result-content">
+              <div class="search-result-name">
+                <a href="${resource.webUrl}?Web=1" target="_blank">${resource.displayName}</a>
+              </div>
+              <div class="search-result-summary">${resource.description}</div>
+            </div>  
+          </div>          
+          <hr class="search-result-separator" />
+              
+              
+          `;
   }
 
   private renderDefault(result: SearchHit): HTMLTemplateResult {

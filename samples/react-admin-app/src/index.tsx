@@ -20,7 +20,7 @@ mergeStyles({
 Providers.globalProvider = new Msal2Provider({
   clientId: process.env.REACT_APP_CLIENT_ID!,
   loginType: LoginType.Popup,
-  scopes: ['User.Read']
+  scopes: ['User.Read', 'Bookmark.Read.All', 'ExternalItem.Read.All']
 });
 
 ReactDOM.render(

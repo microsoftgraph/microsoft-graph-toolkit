@@ -6,5 +6,5 @@
  */
 
 export const strings = {
-  loadingMessage: 'Loading...'
+  modified: 'modified on'
 };
