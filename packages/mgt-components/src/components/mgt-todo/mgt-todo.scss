@@ -92,13 +92,20 @@
   }
 }
 
-:host fluent-text-field#new-taskName-input.outline::part(start),
-:host fluent-text-field#new-taskName-input.outline::part(end) {
-  margin-inline: unset;
-}
+:host {
+  fluent-text-field {
+    &::part(start),
+    &::part(end) {
+      margin-inline: unset;
+    }
 
-:host fluent-text-field#new-taskName-input.outline::part(control) {
-  padding: 0;
+    &::part(control) {
+      padding: 0;
+    }
+    &::part(root) {
+      background: none;
+    }
+  }
 }
 
 :host fluent-button.TaskDelete.neutral::part(control),
@@ -111,15 +118,15 @@
   }
 }
 
-:host fluent-text-field#new-taskName-input.outline::part(root) {
-  background: none;
-}
-
-:host fluent-radio.Task::part(control) {
-  margin-inline-start: 10px;
-}
-:host fluent-radio.Task::part(label) {
-  margin-inline-end: unset;
+:host {
+  fluent-radio {
+    &::part(control) {
+      margin-inline-start: 10px;
+    }
+    &::part(label) {
+      margin-inline-end: unset;
+    }
+  }
 }
 
 :host fluent-button.TaskDelete.neutral svg,

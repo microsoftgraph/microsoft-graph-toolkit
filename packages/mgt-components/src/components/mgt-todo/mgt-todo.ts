@@ -226,12 +226,7 @@ export class MgtTodo extends MgtTasksBase {
     const addIcon = html`
       <fluent-button 
         class="task-add-icon" 
-        @click="${() => this.addTask()}"
-        @keydown="${(e: KeyboardEvent) => {
-          if (e.key === 'Enter') {
-            this.addTask();
-          }
-        }}">
+        @click="${() => this.addTask()}">
         ${getSvg(SvgIcon.Add)}
       </fluent-button>
     `;
@@ -239,12 +234,7 @@ export class MgtTodo extends MgtTasksBase {
     const cancelIcon = html`
       <fluent-button
         class="task-cancel-icon" 
-        @click="${() => this.clearNewTaskData()}"
-        @keydown="${(e: KeyboardEvent) => {
-          if (e.key === 'Enter') {
-            this.clearNewTaskData();
-          }
-        }}">
+        @click="${() => this.clearNewTaskData()}">
         ${getSvg(SvgIcon.Cancel)}
       </fluent-button>
     `;
