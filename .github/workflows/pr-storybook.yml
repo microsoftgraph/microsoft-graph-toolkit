@@ -6,7 +6,7 @@ name: Deploy pr storybook
 on:
   pull_request:
     types: [opened, labeled, synchronize, reopened]
-    branches: [main, release/**, next/**]
+    branches: [main, release/**, next/**, fix/theme/person]
 
 jobs:
   storybook:

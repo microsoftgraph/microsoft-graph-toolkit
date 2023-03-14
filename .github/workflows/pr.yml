@@ -7,7 +7,7 @@ name: Build pr
 
 on:
   pull_request:
-    branches: [main, release/**, next/**, feat/add-jest-tests]
+    branches: [main, release/**, next/**, feat/add-jest-tests, fix/theme/person]
 
 jobs:
   build:
