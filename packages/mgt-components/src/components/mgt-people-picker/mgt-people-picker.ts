@@ -62,27 +62,24 @@ export { PersonType, UserType } from '../../graph/graph.people';
  *
  * @fires {CustomEvent<IDynamicPerson[]>} selectionChanged - Fired when set of selected people changes
  *
- * @cssprop --color - {Color} Default font color
- *
- * @cssprop --input-border - {String} Input section entire border
- * @cssprop --input-border-top - {String} Input section border top only
- * @cssprop --input-border-right - {String} Input section border right only
- * @cssprop --input-border-bottom - {String} Input section border bottom only
- * @cssprop --input-border-left - {String} Input section border left only
- * @cssprop --input-background-color - {Color} Input section background color
- * @cssprop --input-border-color--hover - {Color} Input border hover color
- * @cssprop --input-border-color--focus - {Color} Input border focus color
- *
- * @cssprop --selected-person-background-color - {Color} Selected person background color
- *
- * @cssprop --dropdown-background-color - {Color} Background color of dropdown area
- * @cssprop --dropdown-item-hover-background - {Color} Background color of person during hover
- * @cssprop --dropdown-item-text-color - {Color} Color of person text
- * @cssprop --dropdown-item-text-hover-color - {Color} Color of person text during hover
- *
- * @cssprop --placeholder-color--focus - {Color} Color of placeholder text during focus state
- * @cssprop --placeholder-color - {Color} Color of placeholder text
- *
+ * @cssprop --people-picker-selected-option-background-color - {Color} the background color of the selected person.
+ * @cssprop --people-picker-selected-option-highlight-background-color - {Color} the background color of the selected person when you select it for copy/cut.
+ * @cssprop --people-picker-dropdown-background-color - {Color} the background color of the dropdown card.
+ * @cssprop --people-picker-dropdown-result-background-color - {Color} the background color of the dropdown result.
+ * @cssprop --people-picker-dropdown-result-hover-background-color - {Color} the background color of the dropdown result on hover.
+ * @cssprop --people-picker-dropdown-result-focus-background-color - {Color} the background color of the dropdown result on focus.
+ * @cssprop --people-picker-no-results-text-color - {Color} the no results found text color.
+ * @cssprop --people-picker-input-background - {Color} the input background color.
+ * @cssprop --people-picker-input-border-color - {Color} the input border color.
+ * @cssprop --people-picker-input-hover-background - {Color} the input background color when you hover.
+ * @cssprop --people-picker-input-hover-border-color - {Color} the input border color when you hover
+ * @cssprop --people-picker-input-focus-background - {Color} the input background color when you focus.
+ * @cssprop --people-picker-input-focus-border-color - {Color} the input border color when you focus.
+ * @cssprop --people-picker-input-placeholder-focus-text-color - {Color} the placeholder text color when you focus.
+ * @cssprop --people-picker-input-placeholder-hover-text-color - {Color} the placeholder text color when you hover.
+ * @cssprop --people-picker-input-placeholder-text-color - {Color} the placeholder text color.
+ * @cssprop --people-picker-search-icon-color - {Color} the search icon color
+ * @cssprop --people-picker-remove-selected-close-icon-color - {Color} the remove selected person close icon color.
  */
 @customElement('people-picker')
 // @customElement('mgt-people-picker')
@@ -568,7 +565,7 @@ export class MgtPeoplePicker extends MgtTemplatedComponent {
   private _groupPeople: IDynamicPerson[];
   private _debouncedSearch: { (): void; (): void };
   private defaultSelectedUsers: IDynamicPerson[] = [];
-  private defaultSelectedGroups: IDynamicPerson[] = [] ;
+  private defaultSelectedGroups: IDynamicPerson[] = [];
   // List of users highlighted for copy/cut-pasting
   @state() private _highlightedUsers: Element[] = [];
   // current user index to the left of the highlighted users
@@ -788,7 +785,7 @@ export class MgtPeoplePicker extends MgtTemplatedComponent {
         class="selected-list">
           ${repeat(
             selectedPeople,
-            person=>person?.id,
+            person => person?.id,
             person => html`
             <li class="selected-list-item">
               ${
@@ -807,7 +804,8 @@ export class MgtPeoplePicker extends MgtTemplatedComponent {
                 @keydown="${(e: KeyboardEvent) => this.handleRemovePersonKeyDown(person, e)}">
                   ${getSvg(SvgIcon.Close)}
               </div>
-          </li>`)}
+          </li>`
+          )}
       </ul>`;
   }
   /**
@@ -1543,11 +1541,9 @@ export class MgtPeoplePicker extends MgtTemplatedComponent {
 
     // const input = event.target as HTMLInputElement;
 
-
     if (event.code === 'ArrowUp' || event.code === 'ArrowDown') {
       this.handleArrowSelection(event);
       if (this.input?.value?.length > 0) {
-        console.log("this.input ", this.input.value)
         event.preventDefault();
       }
     }
@@ -1581,7 +1577,7 @@ export class MgtPeoplePicker extends MgtTemplatedComponent {
       if (this.allowAnyEmail) {
         event.preventDefault();
         event.stopPropagation();
-        this.userInput = input.value;
+        this.userInput = this.input.value;
         this.handleAnyEmail();
       }
     }
