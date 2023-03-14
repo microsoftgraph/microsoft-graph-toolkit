@@ -75,8 +75,8 @@
       margin-right: 20px;
 
       &.org-member--target {
-        background-color: set-var(background-color--active, $theme-default, $common);
-        border: 1px solid set-var(active-org-member-color, $theme-default, $organization-section-theme);
+        background-color: $organization-active-org-member-target-background-color;
+        border: 1px solid $organization-active-org-member-border-color;
       }
 
       &:not(.org-member--target) {

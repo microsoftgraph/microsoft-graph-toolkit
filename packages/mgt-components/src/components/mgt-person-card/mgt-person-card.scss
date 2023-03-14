@@ -19,7 +19,6 @@
 
 :host {
   box-shadow: set-var(box-shadow, $theme-default, $common);
-  background-color: set-var(card-bg, $theme-default, $person-card-theme);
   width: var(--mgt-flyout-set-width, 375px);
   font-family: $font-family;
   overflow: hidden;
@@ -45,14 +44,14 @@
       width: 32px;
 
       svg {
-        fill: set-var(nav-back-arrow-color, $theme-default, $person-card-theme);
+        fill: $person-card-icon-color;
       }
 
       &:hover {
         cursor: pointer;
 
         svg {
-          fill: set-var(nav-back-arrow-hover-color, $theme-default, $person-card-theme);
+          fill: $person-card-nav-back-arrow-hover-color;
         }
       }
     }
@@ -61,25 +60,21 @@
     position: relative;
     z-index: 100;
     .close-button {
-      --focus-stroke-width: none;
-      --control-corner-radius: 2;
-      --accent-foreground-active: none;
-      --accent-foreground-hover: none;
-      --neutral-fill-stealth-rest: transparent;
-      --neutral-fill-stealth-hover: #{set-var(background-color--hover, $theme-default, $common)};
-
       position: absolute;
       right: 10px;
       margin-top: 9px;
       z-index: 1;
       border: 1px solid transparent;
+      &:hover {
+        background-color: $person-card-fluent-background-color-hover;
+      }
 
       svg {
         width: 9px;
         height: 9px;
 
         path {
-          fill: set-var(icon__color__sub3, $theme-default, $common);
+          fill: $person-card-icon-color;
         }
       }
     }
@@ -118,7 +113,7 @@
 
         svg {
           path {
-            fill: set-var(icon__color__sub3, $theme-default, $common);
+            fill: $person-card-icon-color;
           }
         }
 
@@ -126,7 +121,7 @@
         &:hover {
           svg {
             path {
-              fill: set-var(icon__color__sub3--hover, $theme-default, $common);
+              fill: $person-card-icon-hover-color;
             }
           }
         }
@@ -188,18 +183,14 @@
         }
 
         &__show-more {
-          color: set-var(show-more, $theme-default, $person-card-theme);
           font-size: 12px;
           font-weight: 600;
           align-self: center;
           vertical-align: top;
-          --neutral-fill-stealth-rest: transparent;
-          --neutral-fill-stealth-hover: #{set-var(background-color--active, $theme-default, $common)};
           --base-height-multiplier: 6;
 
           &:hover {
-            cursor: pointer;
-            color: set-var(show-more-hover, $theme-default, $person-card-theme);
+            background-color: $person-card-fluent-background-color-hover;
           }
         }
 
@@ -220,7 +211,6 @@
 
       fluent-tabs {
         grid-template-columns: minmax(1px, 0.1fr);
-        --accent-fill-rest: #{set-var(icon__color__sub3, $theme-default, $common)};
 
         fluent-tab-panel {
           max-height: 360px;
@@ -243,15 +233,10 @@
             border-radius: 11px;
           }
           &::-webkit-scrollbar-button {
-            background: set-var(card-bg, $theme-default, $person-card-theme);
             height: 1px;
           }
           &::-webkit-scrollbar-track {
-            background: set-var(card-bg, $theme-default, $person-card-theme);
             border-radius: 10px;
-          }
-          &::-webkit-scrollbar-track-piece {
-            background: set-var(card-bg, $theme-default, $person-card-theme);
           }
           &::-webkit-scrollbar-thumb {
             background: grey;
@@ -275,11 +260,11 @@
             justify-content: center;
 
             svg {
-              fill: set-var(icon__color, $theme-default, $common);
+              fill: $person-card-fluent-background-color;
             }
 
             &:hover {
-              background: set-var(tab__background-color--hover, $theme-default, $common);
+              background: $person-card-fluent-background-color-hover;
               border-radius: 4px;
             }
           }
@@ -338,7 +323,7 @@
       border-radius: 4px;
 
       &:focus-within {
-        --neutral-fill-secondary-rest: #{set-var(card-bg, $theme-default, $person-card-theme)};
+        // --neutral-fill-secondary-rest: #{set-var(card-bg, $theme-default, $person-card-theme)};
       }
     }
 
@@ -361,6 +346,10 @@
       }
     }
   }
+}
+:host fluent-button.section__show-more.lightweight::part(control),
+:host fluent-button.close-button.lightweight::part(control) {
+  background: $person-card-fluent-background-color;
 }
 
 [dir='rtl'] {

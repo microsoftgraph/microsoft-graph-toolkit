@@ -38,7 +38,7 @@
 
       .section__title {
         font-size: 14px;
-        color: set-var(title__color__sub2, $theme-default, $common);
+        color: $profile-title-color;
       }
 
       .section__content {
@@ -61,13 +61,13 @@
         overflow: hidden;
         font-size: 14px;
         align-items: center;
-        background: set-var(background-color__sub2, $theme-default, $common);
+        background: $profile-background-color;
         border-radius: 2px;
         max-height: 28px;
         padding: 4px 8px;
         margin-right: 10px;
         margin-top: 10px;
-        color: set-var(color__sub1, $theme-default, $common);
+        color: $profile-token-item-color;
 
         &:last-child {
           margin-right: initial;
@@ -77,15 +77,11 @@
           display: none;
         }
 
-        &:hover {
-          color: set-var(color__sub1, $theme-default, $common);
-        }
-
         &.token-list__item--show-overflow {
           cursor: pointer;
           user-select: unset;
           background: none;
-          color: set-var(token-overflow-color, $theme-default, $profile-section-theme);
+          color: $profile-token-overflow-color;
         }
       }
     }

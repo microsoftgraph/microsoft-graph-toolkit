@@ -7,12 +7,7 @@
 
 @import '../../styles/shared-sass-variables.scss';
 
-$profile-section-theme: (
-  token-overflow-color: (
-    _var: --token-overflow-color,
-    light: $commblue_primary,
-    dark: $text__color__sub1--dark
-  )
-);
-
-@include create-themes($profile-section-theme);
+$profile-background-color: var(--profile-background-color, transparent);
+$profile-title-color: var(--profile-background-color, var(--neutral-foreground-hint));
+$profile-token-item-color: var(--profile-token-item-color, var(--neutral-foreground-rest));
+$profile-token-overflow-color: var(--profile-token-overflow-color, var(--accent-foreground-rest));
