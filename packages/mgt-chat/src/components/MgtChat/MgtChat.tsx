@@ -35,13 +35,13 @@ const MgtChat = ({ chatId }: IMgtChatProps) => {
         onLoadPreviousChatMessages={chatState.onLoadPreviousChatMessages}
         // TODO: Messages date rendering is behind beta flag, find out how to enable it
         // onDisplayDateTimeString={(date: Date) => date.toISOString()}
-        onSendMessage={chatState.onResendMessage}
+
+        // current behavior for re-send is a delete call with the clientMessageId and the a new send call
+        onDeleteMessage={chatState.onDeleteMessage}
+        onSendMessage={chatState.onSendMessage}
         onUpdateMessage={chatState.onUpdateMessage}
         // render props
-        onRenderAvatar={(userId, options) => {
-          if (options) {
-            options.hidePersonaDetails = false;
-          }
+        onRenderAvatar={(userId?: string) => {
           return <Person userId={userId} avatarSize="small" personCardInteraction={PersonCardInteraction.click} />;
         }}
       />

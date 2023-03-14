@@ -65,6 +65,7 @@ export const loadChatThread = async (
 ): Promise<MessageCollection> => {
   const response = (await graph
     .api(`/chats/${chatId}/messages`)
+    .orderby('createdDateTime DESC')
     .top(messageCount)
     .middlewareOptions(prepScopes(...chatOperationScopes.loadChatMessages))
     .get()) as MessageCollection;
@@ -97,6 +98,12 @@ export const loadMoreChatMessages = async (graph: IGraph, nextLink: string): Pro
  * @returns {Promise<ChatMessage>} the newly created message
  */
 export const sendChatMessage = async (graph: IGraph, chatId: string, content: string): Promise<ChatMessage> => {
+  // TODO: remove this code that lets me simulate a failure during debugging
+  // let fail = false;
+
+  // debugger;
+  // if (fail) throw new Error('fail');
+
   return (await graph
     .api(`/chats/${chatId}/messages`)
     .middlewareOptions(prepScopes(...chatOperationScopes.sendChatMessage))
@@ -117,8 +124,29 @@ export const updateChatMessage = async (
   chatId: string,
   messageId: string,
   content: string
-): Promise<void> =>
-  graph
+): Promise<void> => {
+  // TODO: remove this code that lets me simulate a failure during debugging
+  // let fail = false;
+
+  // debugger;
+  // if (fail) throw new Error('fail');
+
+  return graph
     .api(`/chats/${chatId}/messages/${messageId}`)
     .middlewareOptions(prepScopes(...chatOperationScopes.updateChatMessage))
     .patch({ body: { content } });
+};
+
+/**
+ * Deletes a chat message via HTTP POST to the softDelete action
+ *
+ * @param graph authenticated graph client from mgt
+ * @param chatId the id of the chat containing the message to delete
+ * @param messageId the id of the message to delete
+ * @returns {Promise<void>}
+ */
+export const deleteChatMessage = async (graph: IGraph, chatId: string, messageId: string): Promise<void> =>
+  graph
+    .api(`/me/chats/${chatId}/messages/${messageId}/softDelete`)
+    .middlewareOptions(prepScopes(...chatOperationScopes.deleteChatMessage))
+    .post({});

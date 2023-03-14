@@ -9,6 +9,7 @@ import { ActiveAccountChanged, IGraph, LoginChangedEvent, Providers, ProviderSta
 import { produce } from 'immer';
 import { v4 as uuid } from 'uuid';
 import {
+  deleteChatMessage,
   loadChat,
   loadChatThread,
   loadMoreChatMessages,
@@ -27,9 +28,10 @@ type GraphChatClient = Pick<
   | 'onLoadPreviousChatMessages'
   | 'numberOfChatMessagesToReload'
   | 'onUpdateMessage'
+  | 'onDeleteMessage'
 > &
   Pick<SendBoxProps, 'onSendMessage'> &
-  Pick<ErrorBarProps, 'activeErrorMessages'> & { onResendMessage: (messageId: string) => Promise<void> };
+  Pick<ErrorBarProps, 'activeErrorMessages'>;
 
 type StatefulClient<T> = {
   /**
@@ -198,6 +200,7 @@ class StatefulGraphChatClient implements StatefulClient<GraphChatClient> {
     // add a pending message to the state.
     this.notifyStateChange((draft: GraphChatClient) => {
       const pendingMessage: ACSChatMessage = {
+        clientMessageId: pendingId,
         messageId: pendingId,
         contentType: 'text',
         messageType: 'chat',
@@ -220,22 +223,40 @@ class StatefulGraphChatClient implements StatefulClient<GraphChatClient> {
       });
     } catch (e) {
       this.notifyStateChange((draft: GraphChatClient) => {
-        const draftIndex = draft.messages.findIndex(m => m.messageId === pendingId);
-        (draft.messages[draftIndex] as ACSChatMessage).status = 'failed';
+        const draftMessage = draft.messages.find(m => m.messageId === pendingId);
+        (draftMessage as ACSChatMessage).status = 'failed';
       });
+      throw new Error('Failed to send message');
     }
   };
 
-  // TODO: revisit as messageId is actually being passed the content and not the id of the message to be resent
-  public resendMessage = async (messageId: string) => {
-    console.log('resend message', messageId);
-    const message = this._state.messages.find(m => (m as ACSChatMessage).content === messageId) as ACSChatMessage;
-    if (message?.mine && message.status === 'failed' && message.content) {
-      this.notifyStateChange((draft: GraphChatClient) => {
-        const draftIndex = draft.messages.findIndex(m => (m as ACSChatMessage).content === messageId);
-        draft.messages.splice(draftIndex, 1);
-      });
-      this.sendMessage(message.content);
+  public deleteMessage = async (messageId: string) => {
+    if (!messageId) return;
+    const message = this._state.messages.find(m => m.messageId === messageId) as ACSChatMessage;
+    // only messages not persisted to graph should have a clientMessageId
+    const uncommitted = this._state.messages.find(
+      m => (m as ACSChatMessage).clientMessageId === messageId
+    ) as ACSChatMessage;
+    if (message?.mine) {
+      try {
+        // uncommitted messages are not persisted to the graph, so don't call graph when deleting them
+        if (!uncommitted) {
+          await deleteChatMessage(this.graph, this._chatId, messageId);
+        }
+        this.notifyStateChange((draft: GraphChatClient) => {
+          const draftMessage = draft.messages.find(m => m.messageId === messageId) as ACSChatMessage;
+          if (draftMessage.clientMessageId) {
+            // just remove messages that were not saved to the graph
+            draft.messages.splice(draft.messages.indexOf(draftMessage), 1);
+          } else {
+            // show deleted messages which have been persisted to the graph as deleted in the UI
+            draftMessage.content = '<em>This message has been deleted.</em>';
+            draftMessage.contentType = 'html';
+          }
+        });
+      } catch (e) {
+        //TODO: How do we handle failed deletes?
+      }
     }
   };
 
@@ -261,6 +282,7 @@ class StatefulGraphChatClient implements StatefulClient<GraphChatClient> {
           const updating = draft.messages.find(m => m.messageId === messageId) as ACSChatMessage;
           updating.status = 'failed';
         });
+        throw new Error('Failed to update message');
       }
     }
   };
@@ -275,8 +297,8 @@ class StatefulGraphChatClient implements StatefulClient<GraphChatClient> {
     participantCount: 0,
     disableEditing: false,
     numberOfChatMessagesToReload: this._messagesPerCall,
+    onDeleteMessage: this.deleteMessage,
     onSendMessage: this.sendMessage,
-    onResendMessage: this.resendMessage,
     onUpdateMessage: this.updateMessage,
     activeErrorMessages: []
   };

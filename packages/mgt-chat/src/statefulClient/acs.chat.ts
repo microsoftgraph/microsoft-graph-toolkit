@@ -34,6 +34,7 @@ export const graphChatMessageToACSChatMessage = (
     content: graphMessage.body?.content ?? 'undefined',
     senderDisplayName: graphMessage.from?.user?.displayName ?? undefined,
     createdOn: new Date(graphMessage.createdDateTime ?? Date.now()),
+    editedOn: graphMessage.lastEditedDateTime ? new Date(graphMessage.lastEditedDateTime) : undefined,
     senderId,
     mine: senderId === currentUser,
     status: 'seen',
