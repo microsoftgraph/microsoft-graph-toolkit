@@ -104,7 +104,7 @@ module.exports = {
       'warn',
       {
         selector: 'variable',
-        format: ['camelCase', 'UPPER_CASE'],
+        format: ['camelCase', 'UPPER_CASE', 'PascalCase'],
         leadingUnderscore: 'forbid',
         trailingUnderscore: 'forbid'
       },
