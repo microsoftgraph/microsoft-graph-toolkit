@@ -7,7 +7,7 @@
 
 import { Person, PlannerAssignments, PlannerTask, User } from '@microsoft/microsoft-graph-types';
 import { Contact, OutlookTask, OutlookTaskFolder } from '@microsoft/microsoft-graph-types-beta';
-import { html } from 'lit';
+import { TemplateResult, html } from 'lit';
 import { property } from 'lit/decorators.js';
 import { classMap } from 'lit/directives/class-map.js';
 import { repeat } from 'lit/directives/repeat.js';
@@ -31,6 +31,7 @@ import '../sub-components/mgt-arrow-options/mgt-arrow-options';
 import '../sub-components/mgt-dot-options/mgt-dot-options';
 import { MgtFlyout } from '../sub-components/mgt-flyout/mgt-flyout';
 import { strings } from './strings';
+import { SvgIcon, getSvg } from '../../utils/SvgHelper';
 
 /**
  * Defines how a person card is shown when a user interacts with
@@ -401,8 +402,8 @@ export class MgtTasks extends MgtTemplatedComponent {
    * Synchronizes property values when attributes change.
    *
    * @param {*} name
-   * @param {*} oldValue
-   * @param {*} newValue
+   * @param {*} oldVal
+   * @param {*} newVal
    * @memberof MgtTasks
    */
   public attributeChangedCallback(name: string, oldVal: string, newVal: string) {
@@ -481,11 +482,11 @@ export class MgtTasks extends MgtTemplatedComponent {
 
     const loadingTask = this._inTaskLoad && !this._hasDoneInitialLoad ? this.renderLoadingTask() : null;
 
-    let header;
+    let header: TemplateResult;
 
     if (!this.hideHeader) {
       header = html`
-        <div class="Header" dir=${this.direction}>
+        <div class="Header">
           ${this.renderPlanOptions()}
         </div>
       `;
@@ -493,7 +494,7 @@ export class MgtTasks extends MgtTemplatedComponent {
 
     return html`
       ${header}
-      <div class="Tasks" dir=${this.direction}>
+      <div class="Tasks">
         ${this._isNewTaskVisible ? this.renderNewTask() : null} ${loadingTask}
         ${repeat(
           tasks,
@@ -807,7 +808,7 @@ export class MgtTasks extends MgtTemplatedComponent {
     }
   }
 
-  private renderPlanOptions() {
+  private renderPlanOptions(): TemplateResult {
     const p = Providers.globalProvider;
 
     if (!p || p.state !== ProviderState.SignedIn) {
@@ -815,40 +816,51 @@ export class MgtTasks extends MgtTemplatedComponent {
     }
 
     if (this._inTaskLoad && !this._hasDoneInitialLoad) {
-      return html`
-        <span class="LoadingHeader"></span>
-      `;
+      return html`<span class="LoadingHeader"></span>`;
     }
 
+    // const addButton =
+    //   this.readOnly || this._isNewTaskVisible
+    //     ? null
+    //     : html`
+    //         <div
+    //           tabindex="0"
+    //           class="AddBarItem NewTaskButton"
+    //           @click="${() => {
+    //             this.isNewTaskVisible = !this.isNewTaskVisible;
+    //           }}"
+    //           @keydown="${this.newTaskButtonKeydown}"
+    //         >
+    //           <span class="TaskIcon"></span>
+    //           <span>${this.strings.addTaskButtonSubtitle}</span>
+    //         </div>
+    //       `;
     const addButton =
       this.readOnly || this._isNewTaskVisible
         ? null
         : html`
-            <div
-              tabindex="0"
-              class="AddBarItem NewTaskButton"
-              @click="${() => {
-                this.isNewTaskVisible = !this.isNewTaskVisible;
-              }}"
-              @keydown="${this.newTaskButtonKeydown}"
-            >
-              <span class="TaskIcon"></span>
-              <span>${this.strings.addTaskButtonSubtitle}</span>
-            </div>
-          `;
+          <fluent-button
+            appearance="accent"
+            class="NewTaskButton"
+            @keydown=${this.newTaskButtonKeydown}
+            @click=${() => (this.isNewTaskVisible = !this.isNewTaskVisible)}>
+              <span slot="start">${getSvg(SvgIcon.Add, 'currentColor')}</span>
+              ${this.strings.addTaskButtonSubtitle}
+          </fluent-button>
+        `;
 
     if (this.dataSource === TasksSource.planner) {
       const currentGroup = this._groups.find(d => d.id === this._currentGroup) || {
         title: this.res.BASE_SELF_ASSIGNED
       };
       const groupOptions = {
-        [this.res.BASE_SELF_ASSIGNED]: e => {
+        [this.res.BASE_SELF_ASSIGNED]: () => {
           this._currentGroup = null;
           this._currentFolder = null;
         }
       };
       for (const group of this._groups) {
-        groupOptions[group.title] = e => {
+        groupOptions[group.title] = () => {
           this._currentGroup = group.id;
           this._currentFolder = null;
         };
@@ -857,11 +869,7 @@ export class MgtTasks extends MgtTemplatedComponent {
         <mgt-arrow-options class="arrow-options" .options="${groupOptions}" .value="${currentGroup.title}"></mgt-arrow-options>
       `;
 
-      const divider = !this._currentGroup
-        ? null
-        : html`
-            <span class="TaskIcon Divider">/</span>
-          `;
+      const divider = !this._currentGroup ? null : html`<span class="TaskIcon Divider">/</span>`;
 
       const currentFolder = this._folders.find(d => d.id === this._currentFolder) || {
         name: this.res.BUCKETS_SELF_ASSIGNED
@@ -882,14 +890,13 @@ export class MgtTasks extends MgtTemplatedComponent {
         ? html`
             <span class="PlanTitle">
               ${this._folders[0] && this._folders[0].name}
-            </span>
-          `
+            </span>`
         : mgtHtml`
             <mgt-arrow-options class="arrow-options" .options="${folderOptions}" .value="${currentFolder.name}"></mgt-arrow-options>
           `;
 
       return html`
-        <div class="TitleCont">
+        <div class="Title">
           ${groupSelect} ${divider} ${!this._currentGroup ? null : folderSelect}
         </div>
         ${addButton}
@@ -923,7 +930,7 @@ export class MgtTasks extends MgtTemplatedComponent {
           `;
 
       return html`
-        <span class="TitleCont">
+        <span class="Title">
           ${folderSelect}
         </span>
         ${addButton}
@@ -1211,61 +1218,80 @@ export class MgtTasks extends MgtTemplatedComponent {
     return html`
       <div
         class=${classMap({
+          Task: true,
           Complete: completed,
           Incomplete: !completed,
-          ReadOnly: this.readOnly,
-          Task: true
+          ReadOnly: this.readOnly
         })}
-      >
-        <div
-          class="TaskContent"
-          @click=${() => {
-            this.handleTaskClick(task);
-          }}
-        >
-          <span
-            class=${classMap({
-              Complete: completed,
-              Incomplete: !completed,
-              TaskCheckContainer: true
-            })}
-            @click="${e => {
-              if (!this.readOnly) {
-                if (!task.completed) {
-                  this.completeTask(task);
-                } else {
-                  this.uncompleteTask(task);
-                }
-
-                e.stopPropagation();
-                e.preventDefault();
-              }
-            }}"
-            @keydown="${(e: KeyboardEvent) => {
-              if (e.code === 'Enter') {
-                if (!this.readOnly) {
-                  if (!task.completed) {
-                    this.completeTask(task);
-                  } else {
-                    this.uncompleteTask(task);
-                  }
-
-                  e.stopPropagation();
-                  e.preventDefault();
-                }
-              }
-            }}"
-          >
-            ${taskCheck}
-          </span>
-          <div class="TaskDetailsContainer ${this.mediaQuery} ${this._currentGroup ? 'NoPlan' : ''}">
-            ${taskDetails}
-          </div>
-          ${taskOptions}
-
+        @click=${() => this.handleTaskClick(task)}>
+        <fluent-checkbox
+          @click=${(e: MouseEvent) => this.checkTask(e, task)}
+          @keydown=${(e: KeyboardEvent) => this.handleTaskCheckKeyDown(e, task)}
+          ?checked=${completed}>
+        </fluent-checkbox>
+        <div class="TaskDetailsContainer ${this.mediaQuery} ${this._currentGroup ? 'NoPlan' : ''}">
+          ${taskDetails}
         </div>
+        <div class="TaskOptions">${taskOptions}</div>
       </div>
     `;
+    // return html`
+    //   <div
+    //     class=${classMap({
+    //       Task: true,
+    //       Complete: completed,
+    //       Incomplete: !completed,
+    //       ReadOnly: this.readOnly
+    //     })}>
+    //     <div
+    //       class="TaskContent"
+    //       @click=${() => this.handleTaskClick(task)}>
+    //       <span
+    //         class=${classMap({
+    //           Complete: completed,
+    //           Incomplete: !completed,
+    //           TaskCheckContainer: true
+    //         })}
+    //         @click=${(e: MouseEvent) => this.checkTask(e, task)}
+    //         @keydown=${(e: KeyboardEvent) => this.handleTaskCheckKeyDown(e, task)}>
+    //         ${taskCheck}
+    //       </span>
+    //       <div class="TaskDetailsContainer ${this.mediaQuery} ${this._currentGroup ? 'NoPlan' : ''}">
+    //         ${taskDetails}
+    //       </div>
+    //       ${taskOptions}
+
+    //     </div>
+    //   </div>
+    // `;
+  }
+
+  private handleTaskCheckKeyDown(e: KeyboardEvent, task: ITask) {
+    if (e.code === 'Enter') {
+      if (!this.readOnly) {
+        if (!task.completed) {
+          this.completeTask(task);
+        } else {
+          this.uncompleteTask(task);
+        }
+
+        e.stopPropagation();
+        e.preventDefault();
+      }
+    }
+  }
+
+  private checkTask(e: MouseEvent, task: ITask) {
+    if (!this.readOnly) {
+      if (!task.completed) {
+        this.completeTask(task);
+      } else {
+        this.uncompleteTask(task);
+      }
+
+      e.stopPropagation();
+      e.preventDefault();
+    }
   }
 
   private renderAssignedPeople(task: ITask) {
