@@ -567,8 +567,8 @@ export class MgtPeoplePicker extends MgtTemplatedComponent {
   // List of people requested if group property is provided
   private _groupPeople: IDynamicPerson[];
   private _debouncedSearch: { (): void; (): void };
-  private defaultSelectedUsers: IDynamicPerson[];
-  private defaultSelectedGroups: IDynamicPerson[];
+  private defaultSelectedUsers: IDynamicPerson[] = [];
+  private defaultSelectedGroups: IDynamicPerson[] = [] ;
   // List of users highlighted for copy/cut-pasting
   @state() private _highlightedUsers: Element[] = [];
   // current user index to the left of the highlighted users
@@ -786,29 +786,29 @@ export class MgtPeoplePicker extends MgtTemplatedComponent {
         id="selected-list"
         aria-label="${this.strings.selected}"
         class="selected-list">
-          ${selectedPeople.slice(0, selectedPeople.length).map(
-            person =>
-              html`
-              <li class="selected-list-item">
-                ${
-                  this.renderTemplate(
-                    'selected-person',
-                    { person },
-                    `selected-${person.id ? person.id : person.displayName}`
-                  ) || this.renderSelectedPerson(person)
-                }
+          ${repeat(
+            selectedPeople,
+            person=>person?.id,
+            person => html`
+            <li class="selected-list-item">
+              ${
+                this.renderTemplate(
+                  'selected-person',
+                  { person },
+                  `selected-${person?.id ? person.id : person.displayName}`
+                ) || this.renderSelectedPerson(person)
+              }
 
-                <div
-                  role="button"
-                  tabindex="0"
-                  class="selected-list-item-close-icon"
-                  @click="${(e: UIEvent) => this.removePerson(person, e)}"
-                  @keydown="${(e: KeyboardEvent) => this.handleRemovePersonKeyDown(person, e)}">
-                    ${getSvg(SvgIcon.Close)}
-                </div>
-              </li>`
-          )}
-        </ul>`;
+              <div
+                role="button"
+                tabindex="0"
+                class="selected-list-item-close-icon"
+                @click="${(e: UIEvent) => this.removePerson(person, e)}"
+                @keydown="${(e: KeyboardEvent) => this.handleRemovePersonKeyDown(person, e)}">
+                  ${getSvg(SvgIcon.Close)}
+              </div>
+          </li>`)}
+      </ul>`;
   }
   /**
    * Render the flyout chrome.
@@ -822,9 +822,11 @@ export class MgtPeoplePicker extends MgtTemplatedComponent {
        <mgt-flyout light-dismiss class="flyout">
          ${anchor}
          <fluent-card
+          tabindex="0"
           slot="flyout"
           class="flyout-root"
           @wheel=${(e: WheelEvent) => this.handleSectionScroll(e)}
+          @keydown=${(e: KeyboardEvent) => this.onUserKeyDown(e)}
           class="custom">
            ${this.renderFlyoutContent()}
          </fluent-card>
@@ -911,11 +913,9 @@ export class MgtPeoplePicker extends MgtTemplatedComponent {
 
     return html`
       <ul
-        tabindex="0"
         id="suggestions-list"
         class="searched-people-list"
-        aria-label="${this.strings.suggestedContacts}"
-        @keydown="${(e: KeyboardEvent) => this.onUserKeyDown(e)}">
+        aria-label="${this.strings.suggestedContacts}">
           ${repeat(
             filteredPeople,
             person => person.id,
@@ -1541,11 +1541,13 @@ export class MgtPeoplePicker extends MgtTemplatedComponent {
       return;
     }
 
-    const input = event.target as HTMLInputElement;
+    // const input = event.target as HTMLInputElement;
+
 
     if (event.code === 'ArrowUp' || event.code === 'ArrowDown') {
       this.handleArrowSelection(event);
-      if (input.value.length > 0) {
+      if (this.input?.value?.length > 0) {
+        console.log("this.input ", this.input.value)
         event.preventDefault();
       }
     }
