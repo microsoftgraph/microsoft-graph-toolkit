@@ -1,0 +1,15 @@
+.chat {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  overflow: auto;
+}
+
+.chat__messages {
+  height: auto;
+  overflow-y: auto;
+}
+
+.chat__input {
+  overflow: unset;
+}

@@ -20,16 +20,16 @@ function App() {
         Mgt Chat test harness
         <br />
         <Login />
-        <Get resource="me/chats?$expand=members" scopes={['chat.read']} cacheEnabled={true}>
-          <ChatListTemplate template="default" onSelected={chatSelected} />
-        </Get>
-        {chatId && (
-          <>
-            Rendering chat: {chatId}
-            <MgtChat chatId={chatId} />
-          </>
-        )}
       </header>
+      <main className="main">
+        <div className="chat-selector">
+          <Get resource="me/chats?$expand=members" scopes={['chat.read']} cacheEnabled={true}>
+            <ChatListTemplate template="default" onSelected={chatSelected} />
+          </Get>
+          Rendering chat: {chatId}
+        </div>
+        <div className="chat-pane">{chatId && <MgtChat chatId={chatId} />}</div>
+      </main>
     </div>
   );
 }

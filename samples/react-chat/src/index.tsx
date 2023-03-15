@@ -8,7 +8,7 @@ import { Msal2Provider } from '@microsoft/mgt-msal2-provider';
 import { allChatScopes } from '@microsoft/mgt-chat';
 
 Providers.globalProvider = new Msal2Provider({
-  clientId: '2dfea037-938a-4ed8-9b35-c05708a1b241',
+  clientId: 'ed072e38-e76e-45ae-ab76-073cb95495bb',
   scopes: allChatScopes
 });
 

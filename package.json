@@ -84,6 +84,9 @@
     "@custom-elements-manifest/analyzer": "^0.6.6",
     "@octokit/rest": "^18.5.3",
     "@open-wc/testing-helpers": "^2.1.4",
+    "@parcel/packager-ts": "2.8.3",
+    "@parcel/transformer-sass": "2.8.3",
+    "@parcel/transformer-typescript-types": "2.8.3",
     "@storybook/addon-a11y": "^6.4.4",
     "@storybook/addon-actions": "^6.4.4",
     "@storybook/addon-docs": "^6.4.4",
@@ -150,7 +153,6 @@
     "tslint-config-prettier": "^1.18.0",
     "tslint-microsoft-contrib": "^6.2.0",
     "typescript": "^4.9.4",
-    "uuid": "^9.0.0",
     "web-component-analyzer": "^1.1.6",
     "whatwg-fetch": "^3.6.2"
   },
