@@ -7,7 +7,19 @@ export const AllResults: React.FunctionComponent = () => {
   return (
     <>
       <SearchBox searchTermChanged={e => setSearchTerm(e.detail)}></SearchBox>
-      <SearchResults entityTypes={['driveItem', 'listItem', 'site']} queryString={searchTerm}></SearchResults>
+      <SearchResults
+        entityTypes={['bookmark']}
+        queryString={searchTerm}
+        version="beta"
+        size={1}
+        scopes={['Bookmark.Read.All']}
+      ></SearchResults>
+      <SearchResults
+        entityTypes={['driveItem', 'listItem', 'site']}
+        queryString={searchTerm}
+        scopes={['Files.Read.All', 'Sites.Read.All']}
+        fetchThumbnail={true}
+      ></SearchResults>
     </>
   );
 };

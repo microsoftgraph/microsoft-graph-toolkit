@@ -71,6 +71,7 @@ export type FileListProps = {
 export type GetProps = {
 	resource?: string;
 	scopes?: string[];
+	version?: string;
 	type?: ResponseType;
 	maxPages?: number;
 	pollingRate?: number;
@@ -107,6 +108,7 @@ export type PeopleProps = {
 	showPresence?: boolean;
 	personCardInteraction?: PersonCardInteraction;
 	resource?: string;
+	version?: string;
 	scopes?: string[];
 	fallbackDetails?: IDynamicPerson[];
 	templateContext?: TemplateContext;
@@ -190,6 +192,7 @@ export type PersonCardProps = {
 
 export type PickerProps = {
 	resource?: string;
+	version?: string;
 	maxPages?: number;
 	placeholder?: string;
 	keyName?: string;
@@ -217,6 +220,7 @@ export type SearchResultsProps = {
 	entityTypes?: string[];
 	scopes?: string[];
 	contentSources?: string[];
+	version?: string;
 	from?: number;
 	size?: number;
 	pagingMax?: number;

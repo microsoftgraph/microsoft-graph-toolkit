@@ -19,7 +19,7 @@ export const customElement = (tagName: string): ((classOrDescriptor: unknown) =>
   const mgtTagName = `${customElementHelper.prefix}-${tagName}`;
   const mgtElement = customElements.get(mgtTagName);
   const unknownVersion = ' Unknown likely <3.0.0';
-  const version = element => (element as any).version || unknownVersion;
+  const version = element => (element as any).packageVersion || unknownVersion;
   if (mgtElement) {
     return (classOrDescriptor: CustomElementConstructor) => {
       // tslint:disable-next-line: no-console

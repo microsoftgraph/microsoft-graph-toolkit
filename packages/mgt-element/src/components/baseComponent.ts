@@ -44,7 +44,7 @@ export enum ComponentMediaQuery {
  * @extends {LitElement}
  */
 export abstract class MgtBaseComponent extends LitElement {
-  public static get version() {
+  public static get packageVersion() {
     return PACKAGE_VERSION;
   }
 

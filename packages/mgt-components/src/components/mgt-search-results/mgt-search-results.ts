@@ -67,9 +67,13 @@ const getIsResponseCacheEnabled = (): boolean =>
  * Custom element for making Microsoft Graph get queries
  *
  * @fires {CustomEvent<DataChangedDetail>} dataChange - Fired when data changes
+ * *
+ * @cssprop --bookmark-border-radius - {Length} Border radius of a bookmark
+ * @cssprop --bookmark-box-shadow - {Length} Box shadow of a bookmark
+ * @cssprop --bookmark-border - {Length} Border of a bookkmark
+ * @cssprop --bookmark-padding - {Length} Padding of a bookkmark
  *
- * @export
- * @class mgt-get
+ * @class mgt-search-results
  * @extends {MgtTemplatedComponent}
  */
 @customElement('search-results')
@@ -615,7 +619,7 @@ export class MgtSearchResults extends MgtTemplatedComponent {
         return 0;
       }
     };
-    if (hitsContainer?.moreResultsAvailable) {
+    if (hitsContainer?.moreResultsAvailable || this.currentPage * this.size < hitsContainer?.total) {
       let pages = [];
       const firstPage = getFirstPage();
 
@@ -895,7 +899,7 @@ export class MgtSearchResults extends MgtTemplatedComponent {
   private renderBookmark(result: SearchHit): HTMLTemplateResult {
     let resource: any = result.resource as any;
     return mgtHtml`
-          <div class="search-result-grid">
+          <div class="search-result-grid search-result-bookmark">
             <div class="search-result-icon">
               ${getSvg(SvgIcon.DoubleBookmark)}
             </div>

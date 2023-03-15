@@ -1,11 +1,19 @@
-import { IPivotStyles, IRawStyle, Label, Pivot, PivotItem } from '@fluentui/react';
-import { IStyle } from '@fluentui/react-theme-provider';
-import { SearchBox, SearchResults } from '@microsoft/mgt-react';
+import { IPivotStyleProps, IPivotStyles, IStyleFunctionOrObject, Pivot, PivotItem } from '@fluentui/react';
 import * as React from 'react';
 import { PageHeader } from '../components/PageHeader/PageHeader';
 import { AllResults, ExternalItems, Interleaving, PeopleResults } from './Search';
 
 export const SearchCenter: React.FunctionComponent = () => {
+  const searchCenterStyles: React.CSSProperties = {
+    maxWidth: '1028px',
+    minWidth: '1028px',
+    margin: 'auto'
+  };
+
+  const pivotStyles: IStyleFunctionOrObject<IPivotStyleProps, IPivotStyles> = {
+    root: { paddingBottom: '10px' }
+  };
+
   return (
     <>
       <PageHeader
@@ -13,20 +21,22 @@ export const SearchCenter: React.FunctionComponent = () => {
         description={'Use this Search Center to test Microsot Graph Toolkit search components capabilities'}
       ></PageHeader>
 
-      <Pivot styles={{ root: { paddingBottom: '10px' } }}>
-        <PivotItem headerText="All Results">
-          <AllResults></AllResults>
-        </PivotItem>
-        <PivotItem headerText="External Items">
-          <ExternalItems></ExternalItems>
-        </PivotItem>
-        <PivotItem headerText="Interleaving">
-          <Interleaving></Interleaving>
-        </PivotItem>
-        <PivotItem headerText="People">
-          <PeopleResults></PeopleResults>
-        </PivotItem>
-      </Pivot>
+      <div style={searchCenterStyles}>
+        <Pivot styles={pivotStyles}>
+          <PivotItem headerText="All Results">
+            <AllResults></AllResults>
+          </PivotItem>
+          <PivotItem headerText="Connectors">
+            <ExternalItems></ExternalItems>
+          </PivotItem>
+          <PivotItem headerText="Interleaving">
+            <Interleaving></Interleaving>
+          </PivotItem>
+          <PivotItem headerText="People">
+            <PeopleResults></PeopleResults>
+          </PivotItem>
+        </Pivot>
+      </div>
     </>
   );
 };

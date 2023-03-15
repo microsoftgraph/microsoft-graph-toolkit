@@ -27,6 +27,8 @@
   "scripts": {
     "build": "npm run clean && npm run generate && tsc",
     "clean": "node ./scripts/clean.js",
+    "compile:watch": "tsc -w",
+    "build:watch": "npm run compile:watch",
     "postpack": "cpx *.tgz ../../artifacts",
     "analyze": "custom-elements-manifest analyze --litelement --globs \"../*/src/**/*.ts\" --outdir temp",
     "generate": "npm run analyze && node ./scripts/generate.js"
