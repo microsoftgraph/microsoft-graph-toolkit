@@ -7,49 +7,15 @@
 
 @import '../../../styles/shared-sass-variables.scss';
 
-$file-upload: (
-  list__item__background-color--hover: (
-    _var: --file-item-background-color--hover,
-    light: rgba(247, 247, 247, 1),
-    dark: #0078d4
-  ),
-  list__item__background-color--active: (
-    _var: --file-item-background-color--active,
-    light: rgba(251, 251, 251, 1),
-    dark: #238ada
-  ),
-  upload__button__background-color: (
-    _var: --file-upload-button-background-color,
-    light: #036ac4,
-    dark: #006cbe
-  ),
-  upload__dialog__background-color: (
-    _var: --file-upload-dialog-background-color,
-    light: rgba(0, 0, 0, 0.1),
-    dark: rgba(black, 0.3)
-  ),
-  upload__dialog__content__background-color: (
-    _var: --file-upload-dialog-content-background-color,
-    light: rgb(255, 255, 255),
-    dark: #787878
-  ),
-  upload__dialog__content__color: (
-    _var: --file-upload-dialog-content-color,
-    light: rgb(50, 49, 48),
-    dark: #000
-  ),
-  upload__dialog__primarybutton__color: (
-    _var: --file-upload-dialog-primarybutton-color,
-    light: rgb(255, 255, 255),
-    dark: rgb(255, 255, 255)
-  ),
-  upload__dialog__primarybutton__background-color: (
-    _var: --file-upload-dialog-primarybutton-background-color,
-    light: #006cbe,
-    dark: #006cbe
-  )
-);
-
-$fileButtonColour: #ffffff;
-
-@include create-themes($file-upload);
+$file-upload-button-background-color: var(--file-upload-button-background-color, var(--accent-fill-rest));
+$file-upload-button-background-color-hover: var(--file-upload-button-background-color-hover, var(--accent-fill-hover));
+$file-upload-background-color-drag: var(--file-upload-background-color-drag, rgba(0, 120, 212, 0.1));
+$file-upload-button-text-color: var(--file-upload-button-text-color, var(--foreground-on-accent-rest));
+$file-upload-dialog-background-color: var(--file-upload-dialog-background-color, var(--accent-fill-rest));
+$file-upload-dialog-text-color: var(--file-upload-dialog-text-color, var(--neutral-foreground-rest));
+$file-upload-dialog-replace-button-background-color: var(--file-upload-dialog-replace-button-background-color, var(--accent-fill-rest));
+$file-upload-dialog-replace-button-background-color-hover: var(--file-upload-dialog-replace-button-background-color-hover, var(--accent-fill-hover));
+$file-upload-dialog-replace-button-text-color: var(--file-upload-dialog-replace-button-text-color, var(--neutral-foreground-rest));
+$file-upload-dialog-keep-both-button-background-color: var(--file-upload-dialog-keep-both-button-background-color, var(--accent-fill-rest));
+$file-upload-dialog-keep-both-button-background-color-hover: var(--file-upload-dialog-keep-both-button-background-color-hover, var(--accent-fill-hover));
+$file-upload-dialog-keep-both-button-text-color: var(--file-upload-dialog-keep-both-button-text-color, var(--foreground-on-accent-rest));
