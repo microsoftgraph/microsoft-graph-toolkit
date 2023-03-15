@@ -1,14 +1,14 @@
 import React, { memo, useCallback, useState } from 'react';
 import './App.css';
 import { Get, Login, Picker } from '@microsoft/mgt-react';
-import { MgtChat } from '@microsoft/mgt-chat';
-import { Chat } from '@microsoft/microsoft-graph-types';
+import { Chat } from '@microsoft/mgt-chat';
+import { Chat as GraphChat } from '@microsoft/microsoft-graph-types';
 import ChatListTemplate from './components/ChatListTemplate/ChatListTemplate';
 
 function App() {
   const [chatId, setChatId] = useState<string>();
   const chatSelected = useCallback(
-    (e: Chat) => {
+    (e: GraphChat) => {
       setChatId(e.id);
     },
     [setChatId]
@@ -28,7 +28,7 @@ function App() {
           </Get>
           Rendering chat: {chatId}
         </div>
-        <div className="chat-pane">{chatId && <MgtChat chatId={chatId} />}</div>
+        <div className="chat-pane">{chatId && <Chat chatId={chatId} />}</div>
       </main>
     </div>
   );

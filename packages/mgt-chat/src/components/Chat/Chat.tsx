@@ -18,7 +18,7 @@ interface IMgtChatProps {
   chatId: string;
 }
 
-export const MgtChat = ({ chatId }: IMgtChatProps) => {
+export const Chat = ({ chatId }: IMgtChatProps) => {
   const chatClient = useGraphChatClient(chatId);
   const [chatState, setChatState] = useState(chatClient.getState());
   useEffect(() => {
