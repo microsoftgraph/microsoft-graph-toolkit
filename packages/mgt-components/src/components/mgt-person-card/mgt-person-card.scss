@@ -126,6 +126,7 @@ $person-card-base-icons-left-spacing: var(--person-card-base-icons-left-spacing,
       --person-line3-text-line-height: #{$person-card-line3-line-height};
       --person-line3-text-color: #{$person-card-line3-text-color};
       --person-avatar-size-3-lines: #{$person-card-avatar-size};
+      --person-presence-wrapper-bottom: -15px;
     }
 
     .base-icons {
@@ -350,9 +351,9 @@ $person-card-base-icons-left-spacing: var(--person-card-base-icons-left-spacing,
 
     fluent-text-field {
       margin: 10px 10px 10px 16px;
-      --neutral-fill-input-rest: #{set-var(input-outlined__background-color, $theme-default, $common)};
-      --neutral-fill-input-hover: #{set-var(input-outlined__background-color--hover, $theme-default, $common)};
-      --neutral-fill-input-focus: #{set-var(input-outlined__background-color--focus, $theme-default, $common)};
+      --neutral-fill-input-rest: $person-card-background-color;
+      --neutral-fill-input-hover: $person-card-chat-input-hover-color;
+      --neutral-fill-input-focus: $person-card-chat-input-focus-color;
       width: 300px;
       margin-inline-start: 16px;
       border-radius: 4px;

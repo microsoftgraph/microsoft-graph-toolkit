@@ -67,19 +67,34 @@ type HoverStatesActions = 'email' | 'chat' | 'video' | 'call';
  *
  * @fires {CustomEvent<null>} expanded - Fired when expanded details section is opened
  *
- * @cssprop --person-card-display-name-font-size - {Length} Font size of display name title
- * @cssprop --person-card-display-name-line-height - {Length} Line height of display name
- * @cssprop --person-card-display-name-color - {Color} Color of display name font
- * @cssprop --person-card-title-font-size - {Length} Font size of title
- * @cssprop --person-card-title-line-height - {Length} Line height of title
- * @cssprop --person-card-title-color - {Color} Color of title
- * @cssprop --person-card-subtitle-font-size - {Length} Font size of subtitle
- * @cssprop --person-card-subtitle-line-height - {Length} Line height of subtitle
- * @cssprop --person-card-subtitle-color - {Color} Color of subttitle
- * @cssprop --person-card-background-color - {Color} Color of person card background
- * @cssprop --person-card-nav-back-arrow-color - {Color} Color of person back arrow when you click on a person
- * @cssprop --person-card-nav-back-arrow-hover-color - {Color} Color of the person back arrow when you hover on it
- * @cssprop --token-overflow-color - {Color} Color of the text showing more undisplayed values i.e. +3 more
+ * @cssprop --person-card-line1-font-size - {Length} Font size of line 1
+ * @cssprop --person-card-line1-font-weight - {FontWeight} Font weight of line 1
+ * @cssprop --person-card-line1-line-height - {Length} Line height of line 1
+ * @cssprop --person-card-line2-font-size - {Length} Font size of line 2
+ * @cssprop --person-card-line2-font-weight - {FontWeight} Font weight of line 2
+ * @cssprop --person-card-line2-line-height - {Length} Line height of line 2
+ * @cssprop --person-card-line3-font-size - {Length} Font size of line 3
+ * @cssprop --person-card-line3-font-weight - {FontWeight} Font weight of line 3
+ * @cssprop --person-card-line3-line-height - {Length} Line height of line 3
+ * @cssprop --person-card-avatar-size - {Length} Width and height of the avatar. Default is 75px
+ * @cssprop --person-card-details-left-spacing - {Length} The space between the avatar and the person details. Default is 15px
+ * @cssprop --person-card-avatar-top-spacing - {Length} The margin top of the avatar in person-card component
+ * @cssprop --person-card-details-bottom-spacing - {Length} The margin bottom of the person details in person-card component
+ * @cssprop --person-card-base-icons-left-spacing - {Length} The margin-inline-start of the base-icons in person-card component
+ * @cssprop --person-card-background-color - {Color} The color of the person-card-component
+ * @cssprop --person-card-expanded-background-color-hover - {Color} The hover color of the expanded details button of the person card component
+ * @cssprop --person-card-nav-back-arrow-hover-color - {Color} The hover color of the back arrow of the person card component
+ * @cssprop --person-card-icon-color - {Color} The color of the icons in the person card component
+ * @cssprop --person-card-icon-hover-color - {Color} The hover color of the icons in the person card component
+ * @cssprop --person-card-show-more-color - {Color} The color of the show more text in the person card component
+ * @cssprop --person-card-show-more-hover-color - {Color} The hover color of the show more text in person card component
+ * @cssprop --person-card-fluent-background-color - {Color} The background color of the fluent buttons in person card component
+ * @cssprop --person-card-line1-text-color - {Color} The color of line 1 in person card
+ * @cssprop --person-card-line2-text-color - {Color} The color of line 2 in person card
+ * @cssprop --person-card-line3-text-color - {Color} The color of line 3 in person card
+ * @cssprop --person-card-fluent-background-color-hover - {Color} The hover background color of the fluent buttons in person card component
+ * @cssprop --person-card-chat-input-hover-color - {Color} The chat input hover color
+ * @cssprop --person-card-chat-input-focus-color - {Color} The chat input focus color
  */
 @customElement('person-card')
 // @customElement('mgt-person-card')

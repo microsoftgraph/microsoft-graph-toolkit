@@ -126,7 +126,7 @@ $person-line4-text-line-height: var(--person-line4-text-line-height, 16px);
       }
 
       .presence-wrapper {
-        bottom: 0;
+        bottom: var(--person-presence-wrapper-bottom, 0);
         right: 0;
         position: absolute;
         border-radius: 52%;
