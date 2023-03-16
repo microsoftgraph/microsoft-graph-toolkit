@@ -26,7 +26,7 @@
       }
 
       &:focus,
-      &:focus-within{
+      &:focus-within {
         background: $input-focus-background;
       }
     }
@@ -39,19 +39,19 @@
       width: min-content;
       height: calc((var(--base-height-multiplier) + var(--density)) * var(--design-unit) * 1px);
 
-      &::placeholder{
+      &::placeholder {
         color: $placeholder-text-color;
       }
 
       &:hover {
-        &::placeholder{
+        &::placeholder {
           color: $placeholder-hover-text-color;
         }
       }
 
       &:focus,
       &:focus-within {
-        &::placeholder{
+        &::placeholder {
           color: $placeholder-focus-text-color;
         }
       }
@@ -68,7 +68,6 @@
         }
       }
     }
-
   }
 
   .selected-list {
