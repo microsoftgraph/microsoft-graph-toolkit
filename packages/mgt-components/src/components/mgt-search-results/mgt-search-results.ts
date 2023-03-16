@@ -475,7 +475,6 @@ export class MgtSearchResults extends MgtTemplatedComponent {
           response = await request.post({ requests: [requestOptions] });
 
           if (this.fetchThumbnail) {
-            let thumbnailResponse: Map<string, BatchResponse> = null;
             const thumbnailBatch = graph.createBatch();
             const thumbnailBatchBeta = BetaGraph.fromGraph(graph).createBatch();
 
@@ -500,6 +499,10 @@ export class MgtSearchResults extends MgtTemplatedComponent {
               }
             }
 
+            /**
+             * Based on the batch response, augment the search result resource with the thumbnail url
+             * @param thumbnailResponse
+             */
             const augmentResponse = (thumbnailResponse: Map<string, BatchResponse>) => {
               if (thumbnailResponse && thumbnailResponse.size > 0) {
                 for (const [key, value] of thumbnailResponse) {
