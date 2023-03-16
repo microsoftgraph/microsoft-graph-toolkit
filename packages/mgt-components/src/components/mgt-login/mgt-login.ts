@@ -302,7 +302,7 @@ export class MgtLogin extends MgtTemplatedComponent {
       small: this.loginView === 'avatar'
     });
     const appearance = isSignedIn ? 'stealth' : 'neutral';
-    const signedInOrOutTpl =
+    const buttonContentTemplate =
       isSignedIn && this.userDetails
         ? this.renderSignedInButtonContent(this.userDetails, this._image)
         : this.renderSignedOutButtonContent();
