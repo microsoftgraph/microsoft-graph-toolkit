@@ -23,6 +23,7 @@ export const BreadcrumbRootName = () => html`
 `;
 
 export const events = () => html`
+<!-- Open dev console and click for an event -->
 <mgt-file-composite></mgt-file-composite>
 <script>
   const component = document.querySelector('mgt-file-composite');
