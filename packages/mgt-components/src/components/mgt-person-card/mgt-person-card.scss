@@ -16,6 +16,23 @@
 // --person-card-details-title-color: #b3bf0a;
 // --person-card-details-item-font-size: 30px;
 // --person-card-details-item-color: #3abf0a;
+$person-card-line1-font-size: var(--person-card-line1-font-size, 20px);
+$person-card-line1-font-weight: var(--person-card-line1-font-weight, 600);
+$person-card-line1-line-height: var(--person-card-line1-line-height, 28px);
+
+$person-card-line2-font-size: var(--person-card-line2-font-size, 14px);
+$person-card-line2-font-weight: var(--person-card-line2-font-weight, 400);
+$person-card-line2-line-height: var(--person-card-line2-line-height, 20px);
+
+$person-card-line3-font-size: var(--person-card-line3-font-size, 14px);
+$person-card-line3-font-weight: var(--person-card-line3-font-weight, 400);
+$person-card-line3-line-height: var(--person-card-line3-line-height, 19px);
+
+$person-card-avatar-size: var(--person-card-avatar-size, 75px);
+$person-card-details-left-spacing: var(--person-card-details-left-spacing, 15px);
+$person-card-avatar-top-spacing: var(--person-card-avatar-top-spacing, 15px);
+$person-card-details-bottom-spacing: var(--person-card-details-bottom-spacing, 10px);
+$person-card-base-icons-left-spacing: var(--person-card-base-icons-left-spacing, 91px);
 
 :host {
   box-shadow: set-var(box-shadow, $theme-default, $common);
@@ -25,6 +42,7 @@
   user-select: none;
   border-radius: 8px;
   border: 1px solid set-var(background-color__sub1, $theme-default, $common);
+  background-color: $person-card-background-color;
 
   .small {
     max-height: 100vh;
@@ -83,21 +101,38 @@
   .person-details-container {
     display: flex;
     flex-direction: column;
-    padding-inline-start: 23px;
-    padding-block: 23px;
+    padding-inline-start: 22px;
+    padding-block: 36px;
     border-bottom: 1px solid set-var(line-seperator__color__sub1, $theme-default, $common);
 
     .person-image {
-      --person-details-bottom-spacing: 25px;
+      --person-avatar-top-spacing: #{$person-card-avatar-top-spacing};
+      --person-details-left-spacing: #{$person-card-details-left-spacing};
+      --person-details-bottom-spacing: #{$person-card-details-bottom-spacing};
+      --person-background-color: #{$person-card-background-color};
+
+      --person-line1-font-size: #{$person-card-line1-font-size};
+      --person-line1-font-weight: #{$person-card-line1-font-weight};
+      --person-line1-text-line-height: #{$person-card-line1-line-height};
+      --person-line1-text-color: #{$person-card-line1-text-color};
+
+      --person-line2-font-size: #{$person-card-line2-font-size};
+      --person-line2-font-weight: #{$person-card-line2-font-weight};
+      --person-line2-text-line-height: #{$person-card-line2-line-height};
+      --person-line2-text-color: #{$person-card-line2-text-color};
+
+      --person-line3-font-size: #{$person-card-line3-font-size};
+      --person-line3-font-weight: #{$person-card-line3-font-weight};
+      --person-line3-text-line-height: #{$person-card-line3-line-height};
+      --person-line3-text-color: #{$person-card-line3-text-color};
+      --person-avatar-size-3-lines: #{$person-card-avatar-size};
     }
 
     .base-icons {
       display: flex;
       -webkit-align-items: center;
       align-items: center;
-      position: relative;
-      margin-inline-start: 69px;
-      margin-block-start: -20px;
+      margin-inline-start: $person-card-base-icons-left-spacing;
       z-index: 1;
 
       .icon {
@@ -141,13 +176,13 @@
       height: 32px;
       svg {
         path {
-          stroke: set-var(icon__color__sub3, $theme-default, $common);
+          stroke: $person-card-icon-color;
         }
       }
 
       &:hover {
         cursor: pointer;
-        background-color: set-var(background-color--hover, $theme-default, $common);
+        background-color: $person-card-expanded-background-color-hover;
       }
     }
 
@@ -321,10 +356,6 @@
       width: 300px;
       margin-inline-start: 16px;
       border-radius: 4px;
-
-      &:focus-within {
-        // --neutral-fill-secondary-rest: #{set-var(card-bg, $theme-default, $person-card-theme)};
-      }
     }
 
     .send-message-icon {
@@ -347,6 +378,14 @@
     }
   }
 }
+
+:host .person-root.large,
+:host .person-root.threelines,
+:host mgt-person.person-root.large,
+:host mgt-person.person-root.threelines {
+  --person-avatar-size-3-lines: 75px;
+}
+
 :host fluent-button.section__show-more.lightweight::part(control),
 :host fluent-button.close-button.lightweight::part(control) {
   background: $person-card-fluent-background-color;

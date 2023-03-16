@@ -16,12 +16,21 @@
 @import '../../components/mgt-contact/mgt-contact.theme.scss';
 @import '../../components/mgt-organization/mgt-organization.theme.scss';
 @import '../../components/mgt-profile/mgt-profile.theme.scss';
+@import '../../components/mgt-messages/mgt-messages.theme.scss';
+@import '../../components/mgt-file-list/mgt-file-list.theme.scss';
 
-$person-card-nav-back-arrow-hover-color: var(--person-card-nav-back-arrow-hover-color, var(--accent-foreground-hover));
+$person-card-background-color: var(--person-card-background-color, transparent);
+$person-card-expanded-background-color-hover: var(
+  --person-card-expanded-background-color-hover,
+  var(--neutral-fill-hover)
+);
+$person-card-nav-back-arrow-hover-color: var(--person-card-nav-back-arrow-hover-color, var(--neutral-foreground-rest));
 $person-card-icon-color: var(--person-card-icon-color, var(--accent-foreground-rest));
 $person-card-icon-hover-color: var(--person-card-icon-hover-color, var(--accent-foreground-hover));
-$person-card-background-color: var(--person-card-background-color, transparent);
 $person-card-show-more-color: var(--person-card-show-more-color, var(--accent-base-color));
 $person-card-show-more-hover-color: var(--person-card-show-more-hover-color, var(--accent-fill-hover));
-$person-card-fluent-background-color: var(--person-card-button-background-color, transparent);
-$person-card-fluent-background-color-hover: var(--person-card-button-background-color-hover, var(--neutral-fill-hover));
+$person-card-fluent-background-color: var(--person-card-fluent-background-color, transparent);
+$person-card-line1-text-color: var(--person-card-line1-text-color, var(--neutral-foreground-rest));
+$person-card-line2-text-color: var(--person-card-line2-text-color, var(--neutral-foreground-hint));
+$person-card-line3-text-color: var(--person-card-line3-text-color, var(--neutral-foreground-hint));
+$person-card-fluent-background-color-hover: var(--person-card-fluent-background-color-hover, var(--neutral-fill-hover));

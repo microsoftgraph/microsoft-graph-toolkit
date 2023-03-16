@@ -18,6 +18,7 @@ $person-avatar-border-radius: var(--person-avatar-border-radius, 50%);
 
 $person-details-left-spacing: var(--person-details-left-spacing, 12px);
 $person-details-bottom-spacing: var(--person-details-bottom-spacing, 0px);
+$person-avatar-top-spacing: var(--person-avatar-top-spacing, 0px);
 
 $person-line1-font-size: var(--person-line1-font-size, #{ms-font-size-14});
 $person-line1-font-weight: var(--person-line1-font-weight, 600);
@@ -58,7 +59,8 @@ $person-line4-text-line-height: var(--person-line4-text-line-height, 16px);
     }
   }
 
-  .person-root {
+  .person-root,
+  mgt-person .person-root {
     display: flex;
     flex-direction: row;
     align-items: center;
@@ -84,7 +86,7 @@ $person-line4-text-line-height: var(--person-line4-text-line-height, 16px);
 
     &.threelines,
     &.large {
-      --person-avatar-size: 56px;
+      --person-avatar-size: var(--person-avatar-size-3-lines, 56px);
     }
 
     &.fourlines {
@@ -109,6 +111,7 @@ $person-line4-text-line-height: var(--person-line4-text-line-height, 16px);
         height: 100%;
         width: 100%;
         border-radius: 50%;
+        margin-block-start: $person-avatar-top-spacing;
       }
 
       .initials,
@@ -143,7 +146,6 @@ $person-line4-text-line-height: var(--person-line4-text-line-height, 16px);
       flex-direction: column;
       margin-inline-start: $person-details-left-spacing;
       align-items: flex-start;
-      justify-content: center;
       margin-block-end: $person-details-bottom-spacing;
 
       &.vertical {
