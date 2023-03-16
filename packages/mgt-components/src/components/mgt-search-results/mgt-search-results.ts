@@ -332,7 +332,8 @@ export class MgtSearchResults extends MgtTemplatedComponent {
    * @type any
    * @memberof MgtSearchResults
    */
-  @property({ attribute: false }) public error: any;
+  //@property({ attribute: false }) public error: any;
+  @state() private error: any;
 
   private isRefreshing: boolean = false;
   private readonly SEARCH_ENDPOINT: string = '/search/query';
@@ -407,7 +408,7 @@ export class MgtSearchResults extends MgtTemplatedComponent {
     if (this.isLoadingState) {
       renderedTemplate = this.renderLoading();
     } else if (this.error) {
-      renderedTemplate = this.renderTemplate('error', this.error);
+      renderedTemplate = this.renderError();
       // tslint:disable-next-line: no-string-literal
     } else if (this.response && this.response?.value[0]?.hitsContainers[0]) {
       renderedTemplate = html`${this.response?.value[0]?.hitsContainers[0]?.hits?.map(result =>
@@ -634,6 +635,20 @@ export class MgtSearchResults extends MgtTemplatedComponent {
   }
 
   /**
+   * Renders an error
+   * @returns
+   */
+  private renderError(): TemplateResult {
+    if (this.hasTemplate(`error`)) {
+      return this.renderTemplate(`error`, this.error);
+    }
+
+    return html`
+      <pre>${this.error}</pre>
+    `;
+  }
+
+  /**
    * Renders the footer with pages if required
    * @param hitsContainer Search results
    * @returns
@@ -734,26 +749,31 @@ export class MgtSearchResults extends MgtTemplatedComponent {
             }">1</fluent-button>
           ${
             this.currentPage - Math.floor(this.pagingMax / 2) > 0
-              ? html`<fluent-tooltip anchor="page-back-dot" position="top">${strings.back} ${Math.ceil(
-                  this.pagingMax / 2
-                )} ${strings.pages}</fluent-tooltip>
-              <fluent-button id="page-back-dot" appearance="stealth" class="search-results-page" @click="${() =>
-                this.onPageClick(this.currentPage - Math.ceil(this.pagingMax / 2))}">...
-                  </fluent-button>`
+              ? html`
+              <fluent-button 
+                id="page-back-dot" 
+                appearance="stealth" 
+                class="search-results-page" 
+                title="${this.getDotButtonTitle()}" 
+                @click="${() => this.onPageClick(this.currentPage - Math.ceil(this.pagingMax / 2))}"
+              >
+                ...
+              </fluent-button>`
               : nothing
           }`
       }`;
   }
 
+  private getDotButtonTitle() {
+    return `${strings.back} ${Math.ceil(this.pagingMax / 2)} ${strings.pages}`;
+  }
   /**
    * Renders the "Previous page" button
    * @returns
    */
-  private renderPreviousPage(): TemplateResult {
-    return html`
-      ${
-        this.currentPage > 1 &&
-        html`
+  private renderPreviousPage() {
+    return this.currentPage > 1
+      ? html`
           <fluent-button 
             appearance="stealth" 
             class="search-results-page" 
@@ -761,18 +781,16 @@ export class MgtSearchResults extends MgtTemplatedComponent {
             @click="${this.onPageBackClick}">
               ${getSvg(SvgIcon.ChevronLeft)}
             </fluent-button>`
-      }`;
+      : nothing;
   }
 
   /**
    * Renders the "Next page" button
    * @returns
    */
-  private renderNextPage(): TemplateResult {
-    return html`
-      ${
-        !this.isLastPage() &&
-        html`
+  private renderNextPage() {
+    return !this.isLastPage()
+      ? html`
           <fluent-button 
             appearance="stealth" 
             class="search-results-page" 
@@ -780,7 +798,7 @@ export class MgtSearchResults extends MgtTemplatedComponent {
             @click="${this.onPageNextClick}">
               ${getSvg(SvgIcon.ChevronRight)}
             </fluent-button>`
-      }`;
+      : nothing;
   }
 
   /**
